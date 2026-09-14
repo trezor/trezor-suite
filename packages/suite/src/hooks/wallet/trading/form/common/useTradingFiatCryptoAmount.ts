@@ -3,6 +3,8 @@ import { type UseFormReturn, useWatch } from 'react-hook-form';
 
 import { type FiatCurrencyCode } from 'invity-api';
 
+import { useServices } from '@suite-common/dependency-injection';
+import { selectNetworkConfigDeps } from '@suite-common/networks';
 import {
     TRADING_FORM_OUTPUT_AMOUNT,
     TRADING_FORM_OUTPUT_CURRENCY,
@@ -39,6 +41,8 @@ export const useTradingFiatCryptoAmount = <T extends TradingSellExchangeFormProp
     networkDecimals,
     shouldSendInSats,
 }: UseTradingFiatCryptoAmountProps<T>) => {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
+
     const { getValues, setValue, control } =
         methods as unknown as UseFormReturn<TradingSellExchangeFormProps>;
 
@@ -67,7 +71,7 @@ export const useTradingFiatCryptoAmount = <T extends TradingSellExchangeFormProp
         const rate = await tradingFiatValues.fiatRatesUpdater(mappedBaseCurrencyCode);
         const amount = getValues(TRADING_FORM_OUTPUT_AMOUNT);
         const formattedAmount = shouldSendInSats
-            ? subunitsToUnits({
+            ? subunitsToUnits(networkConfigDeps, {
                   value: asAmountSubunit(new BigNumber(amount)),
                   decimals: networkDecimals,
               })
@@ -80,7 +84,7 @@ export const useTradingFiatCryptoAmount = <T extends TradingSellExchangeFormProp
             formattedAmount.gt(0) // formatAmount() returns '-1' on error
         ) {
             const fiatValueBigNumber = formattedAmount.multipliedBy(rate.rate);
-            const fiatDecimals = getDecimalsForBaseCurrency({
+            const fiatDecimals = getDecimalsForBaseCurrency(networkConfigDeps, {
                 code: mappedBaseCurrencyCode,
                 isInSats: false,
             });
@@ -106,7 +110,7 @@ export const useTradingFiatCryptoAmount = <T extends TradingSellExchangeFormProp
                 return;
             }
 
-            const cryptoAmount = calcCryptoFromFiat({
+            const cryptoAmount = calcCryptoFromFiat(networkConfigDeps, {
                 fiatAmount,
                 rate: tradingFiatValues.fiatRate?.rate,
                 networkDecimals,
@@ -115,7 +119,14 @@ export const useTradingFiatCryptoAmount = <T extends TradingSellExchangeFormProp
 
             setValue(TRADING_FORM_OUTPUT_AMOUNT, cryptoAmount, { shouldValidate: true });
         },
-        [getValues, tradingFiatValues, networkDecimals, shouldSendInSats, setValue],
+        [
+            networkConfigDeps,
+            getValues,
+            tradingFiatValues,
+            networkDecimals,
+            shouldSendInSats,
+            setValue,
+        ],
     );
 
     useEffect(() => {

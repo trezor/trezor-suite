@@ -1,4 +1,5 @@
 import { selectDevices, selectSelectedDevice } from '@suite-common/device';
+import { type NetworksRootState, selectNetworkConfigAccessors } from '@suite-common/networks';
 import { createThunk } from '@suite-common/redux-utils';
 import { type TrezorDevice } from '@suite-common/suite-types';
 import {
@@ -18,7 +19,7 @@ export type ForgetDeviceThunkParams = {
     deviceId?: TrezorDevice['id'];
 };
 
-type SuiteForgetDeviceThunkState = ForgetDeviceThunkState;
+type SuiteForgetDeviceThunkState = ForgetDeviceThunkState & NetworksRootState;
 
 type SuiteForgetDeviceThunkDeps = ForgetDeviceThunkDeps;
 
@@ -32,6 +33,8 @@ export const suiteForgetDeviceThunk = createThunk<
         { skipToggleModalConnection, isOsUnpairingFinished, skipDisconnect, deviceId } = {},
         { dispatch, getState },
     ) => {
+        const networkConfigDeps = selectNetworkConfigAccessors(getState());
+
         const devices = selectDevices(getState());
 
         const explicitDevice = deviceId
@@ -49,9 +52,9 @@ export const suiteForgetDeviceThunk = createThunk<
             }),
         ).unwrap();
 
-        await dispatch(storageActions.savePersistentDeviceDataThunk());
+        await dispatch(storageActions.savePersistentDeviceDataThunk(networkConfigDeps));
         if (device?.state) {
-            await dispatch(storageActions.forgetDeviceThunk(device));
+            await dispatch(storageActions.forgetDeviceThunk(networkConfigDeps, device));
         }
     },
 );

@@ -1,3 +1,4 @@
+import { type NetworksRootState } from '@suite-common/networks';
 import { useSelector } from 'react-redux';
 
 import {
@@ -29,25 +30,25 @@ export const StakingManagementPendingSection = ({
     accountKey,
 }: StakingManagementPendingSectionProps) => {
     const claimableAmount =
-        useSelector((state: StakeRootState) =>
+        useSelector((state: StakeRootState & NetworksRootState) =>
             selectClaimableAmountByAccountKey(state, accountKey),
         ) ?? '0';
 
     const unstakingBalance =
-        useSelector((state: StakeRootState) =>
+        useSelector((state: StakeRootState & NetworksRootState) =>
             selectUnstakingBalanceByAccountKey(state, accountKey),
         ) ?? '0';
 
     const totalStakePending =
-        useSelector((state: StakeRootState) =>
+        useSelector((state: StakeRootState & NetworksRootState) =>
             selectTotalStakePendingByAccountKey(state, accountKey),
         ) ?? '0';
 
-    const unstakingPeriodInDays = useSelector((state: StakeRootState) =>
+    const unstakingPeriodInDays = useSelector((state: StakeRootState & NetworksRootState) =>
         selectUnstakingPeriodInDaysByAccountKey(state, accountKey),
     );
 
-    const canClaim = useSelector((state: StakeRootState) =>
+    const canClaim = useSelector((state: StakeRootState & NetworksRootState) =>
         selectCanClaimByAccountKey(state, accountKey),
     );
 

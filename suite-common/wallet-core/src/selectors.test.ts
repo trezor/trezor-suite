@@ -1,4 +1,6 @@
-import { mockNetworksState } from '@suite-common/networks/mocks';
+import { getNetworks } from '@suite-common/wallet-config';
+import { mockNetworkConfigDeps } from '@suite-common/networks/mocks';
+
 import { type TrezorDevice } from '@suite-common/suite-types';
 import { mockSuiteDevice } from '@suite-common/suite-types/mocks';
 import { type NetworkSymbol, asNetworkSymbol } from '@suite-common/wallet-config';
@@ -9,13 +11,15 @@ import {
 } from '@suite-common/wallet-types';
 import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
 
-import { blockchainInitialState } from './blockchain/blockchainReducer';
+import { createBlockchainInitialState } from './blockchain/blockchainReducer';
 import {
     type WalletCoreCompoundRootState,
     selectDiscoveryAccountsParam,
     selectShouldRediscover,
 } from './selectors';
 import { initialWalletSettingsState } from './settings/walletSettingsReducer';
+
+const networkConfigDeps = mockNetworkConfigDeps();
 
 const STATIC_SESSION_ID: `${string}@${string}:${number}` =
     'mvbu1Gdy8SUjTenqerxUaZyYjmveZvt33q@ABC123:1';
@@ -57,11 +61,11 @@ const getState = ({
     discovery,
     enabledNetworks = [solSymbol],
 }: GetStateOptions = {}): WalletCoreCompoundRootState => ({
-    networks: mockNetworksState([solSymbol]),
+    networks: getNetworks(networkConfigDeps),
     wallet: {
         accounts,
         settings: { ...initialWalletSettingsState, enabledNetworks },
-        blockchain: blockchainInitialState,
+        blockchain: createBlockchainInitialState(networkConfigDeps.getNetworkConfigs()),
         discovery: discovery ? { [device.path]: discovery } : {},
     },
     device: {

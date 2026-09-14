@@ -9,6 +9,7 @@ import {
     suiteRoutes,
 } from '@suite/router';
 import { useServices } from '@suite-common/dependency-injection';
+import { selectNetworkConfigDeps } from '@suite-common/networks';
 
 import { useSelector } from 'src/hooks/suite';
 
@@ -17,12 +18,18 @@ type AppRouterProps = {
 };
 
 export const AppRouter = memo(({ components }: AppRouterProps) => {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
+
     const routeName = useSelector(selectRouteName);
     const route = useSelector(selectRoute);
     const { suiteRouterHistory } = useServices(selectSuiteRouterHistoryDep);
 
     const resolvedRouteName =
-        resolveEffectiveBackgroundRouteName(route, suiteRouterHistory.getLocation()) ?? routeName;
+        resolveEffectiveBackgroundRouteName(
+            networkConfigDeps,
+            route,
+            suiteRouterHistory.getLocation(),
+        ) ?? routeName;
 
     // Resolve component by route name, with nested routes falling back to parent component
     let componentName = resolvedRouteName;

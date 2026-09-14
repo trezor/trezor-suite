@@ -14,7 +14,6 @@
     "dependencies": {
         "@reduxjs/toolkit": "2.12.0",
         "@suite-common/earn-stablecoin-defs": "workspace:*",
-        "@suite-common/legacy-network-config": "workspace:*",
         "@trezor/network-bitcoin-suite-common": "workspace:*",
         "@trezor/network-cardano-suite-common": "workspace:*",
         "@trezor/network-ethereum-suite-common": "workspace:*",

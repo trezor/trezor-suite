@@ -1,3 +1,5 @@
+import { selectNetworkConfigDeps } from '@suite-common/networks';
+import { useServices } from '@suite-common/dependency-injection';
 import { useSelector } from 'react-redux';
 
 import { type NetworkSymbol, getNetworkDisplaySymbol } from '@suite-common/wallet-config';
@@ -22,6 +24,8 @@ export const SolExternalStakingBanner = ({
     accountKey,
     networkSymbol,
 }: SolExternalStakingBannerProps) => {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
+
     const hasExternalStakingAccounts = useSelector((state: AccountsRootState) =>
         selectHasSolExternalStakingAccounts(state, accountKey),
     );
@@ -31,8 +35,8 @@ export const SolExternalStakingBanner = ({
 
     if (!hasExternalStakingAccounts) return null;
 
-    const displaySymbol = getNetworkDisplaySymbol(networkSymbol);
-    const totalStakedInUnits = subunitsToUnits({
+    const displaySymbol = getNetworkDisplaySymbol(networkConfigDeps, networkSymbol);
+    const totalStakedInUnits = subunitsToUnits(networkConfigDeps, {
         value: asAmountSubunit(new BigNumber(externalStakingTotalStaked)),
         symbol: networkSymbol,
     }).toString();

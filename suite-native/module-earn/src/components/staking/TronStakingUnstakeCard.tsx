@@ -1,3 +1,4 @@
+import { type NetworksRootState } from '@suite-common/networks';
 import { useSelector } from 'react-redux';
 
 import {
@@ -21,10 +22,10 @@ interface TronStakingUnstakeCardProps {
 export const TronStakingUnstakeCard = ({ accountKey }: TronStakingUnstakeCardProps) => {
     const account = useSelector((state: StakeRootState) => selectAccountByKey(state, accountKey));
 
-    const pendingUnstakeBalance = useSelector((state: StakeRootState) =>
+    const pendingUnstakeBalance = useSelector((state: StakeRootState & NetworksRootState) =>
         selectTronPendingUnstakeBalanceByAccountKey(state, accountKey),
     );
-    const unstakingPeriodInDays = useSelector((state: StakeRootState) =>
+    const unstakingPeriodInDays = useSelector((state: StakeRootState & NetworksRootState) =>
         selectUnstakingPeriodInDaysByAccountKey(state, accountKey),
     );
 

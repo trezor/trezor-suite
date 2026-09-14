@@ -1,3 +1,5 @@
+import { selectNetworkConfigDeps } from '@suite-common/networks';
+import { useServices } from '@suite-common/dependency-injection';
 import { getDisplaySymbol, getNetworkDisplaySymbolName } from '@suite-common/wallet-config';
 import { type Account, type TokenInfoBranded, type TokenSymbol } from '@suite-common/wallet-types';
 import { Box, Card, HStack, Text } from '@suite-native/atoms';
@@ -36,6 +38,8 @@ interface YourPositionCardProps {
 }
 
 export const YourPositionCard = ({ account, token }: YourPositionCardProps) => {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
+
     const { applyStyle } = useNativeStyles();
 
     const { symbol } = account;
@@ -48,11 +52,11 @@ export const YourPositionCard = ({ account, token }: YourPositionCardProps) => {
 
     if (!symbol) return null;
 
-    const tokenSymbol = token?.symbol ?? getDisplaySymbol(symbol);
-    const tokenName = token?.name ?? getNetworkDisplaySymbolName(symbol);
+    const tokenSymbol = token?.symbol ?? getDisplaySymbol(networkConfigDeps, symbol);
+    const tokenName = token?.name ?? getNetworkDisplaySymbolName(networkConfigDeps, symbol);
     const balance = token?.balance ?? account?.formattedBalance ?? '0';
     const tokenAmountSymbol = token?.symbol
-        ? (getDisplaySymbol(token.symbol) as TokenSymbol)
+        ? (getDisplaySymbol(networkConfigDeps, token.symbol) as TokenSymbol)
         : null;
 
     return (

@@ -1,3 +1,5 @@
+import { selectNetworkConfigDeps } from '@suite-common/networks';
+import { useServices } from '@suite-common/dependency-injection';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { formatNetworkAmount } from '@suite-common/wallet-utils';
 import { HStack, Text } from '@suite-native/atoms';
@@ -15,6 +17,8 @@ export const ReceiveAddressDetailHeader = ({
     address,
     symbol,
 }: ReceiveAddressDetailHeaderProps) => {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
+
     const isUsed = address.transfers > 0;
 
     return (
@@ -28,7 +32,11 @@ export const ReceiveAddressDetailHeader = ({
                     {isUsed ? (
                         <HStack spacing="sp4" alignItems="center">
                             <ExactCryptoAmountFormatter
-                                value={formatNetworkAmount(address.received ?? '0', symbol)}
+                                value={formatNetworkAmount(
+                                    networkConfigDeps,
+                                    address.received ?? '0',
+                                    symbol,
+                                )}
                                 symbol={symbol}
                                 variant="body-sm"
                                 color="contentSecondary"

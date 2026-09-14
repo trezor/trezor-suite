@@ -1,5 +1,7 @@
+import { useServices } from '@suite-common/dependency-injection';
 import { useMemo } from 'react';
 import { useSelector } from 'react-redux';
+import { selectNetworkConfigDeps } from '@suite-common/networks';
 
 import { useTxSimulation } from '@suite-common/tx-simulation';
 import { type Account } from '@suite-common/wallet-types';
@@ -18,18 +20,20 @@ export const useDexExchangeTxSimulation = ({
     isEnabled,
     sourceOrigin,
 }: UseDexExchangeTxSimulationParams) => {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
+
     const quote = useSelector(selectTradingExchangeSelectedQuote);
 
     const action = useMemo(
         () =>
             isEnabled
-                ? composeDexTxSimulationAction({
+                ? composeDexTxSimulationAction(networkConfigDeps, {
                       quote,
                       account,
                       sourceOrigin,
                   })
                 : null,
-        [isEnabled, quote, account, sourceOrigin],
+        [networkConfigDeps, isEnabled, quote, account, sourceOrigin],
     );
 
     const simulation = useTxSimulation(action);

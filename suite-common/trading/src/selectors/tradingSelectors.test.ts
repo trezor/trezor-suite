@@ -1,3 +1,4 @@
+import { type TokenDefinitionsRootState } from '@suite-common/token-definitions';
 import {
     type BuyTrade,
     type Coins,
@@ -1596,7 +1597,7 @@ describe('tradingSelectors', () => {
             tokens: [],
         });
 
-        let formState: TradingFormAccountRootState;
+        let formState: TradingFormAccountRootState & NetworksRootState & TokenDefinitionsRootState;
 
         beforeEach(() => {
             formState = {

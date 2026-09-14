@@ -1,3 +1,4 @@
+import { selectNetworkConfigDeps } from '@suite-common/networks';
 import { useCallback, useMemo } from 'react';
 import { useSelector } from 'react-redux';
 
@@ -84,6 +85,8 @@ export const useCancelEvmTransaction = ({
     transaction,
     onClose,
 }: UseCancelEvmTransactionParams) => {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
+
     const { dispatch } = useServices(selectDispatch);
     const navigation = useNavigation<NavigationProp>();
     const { translate } = useTranslate();
@@ -98,7 +101,7 @@ export const useCancelEvmTransaction = ({
     const ethereumAccount = account?.networkType === 'ethereum' ? account : undefined;
     const isEvmTxWithRbfParams = hasEthereumRbfParams(transaction);
     const networkFeatures = ethereumAccount
-        ? getNetworkAccountFeatures(ethereumAccount)
+        ? getNetworkAccountFeatures(networkConfigDeps, ethereumAccount)
         : undefined;
 
     // Same gate the desktop TxDetailModal uses, checked before the nonce fetch below so the

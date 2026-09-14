@@ -1,3 +1,4 @@
+import { type NetworksRootState, selectNetworkConfigAccessors } from '@suite-common/networks';
 import { createWeakMapSelector, returnStableArrayIfEmpty } from '@suite-common/redux-utils';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { type AccountKey } from '@suite-common/wallet-types';
@@ -27,25 +28,29 @@ export const selectVisibleDeviceCardanoAccountsWithStakingByNetworkSymbol = crea
 );
 
 export const selectCardanoStakedBalanceByAccountKey = (
-    state: AccountsRootState,
+    state: AccountsRootState & NetworksRootState,
     accountKey: AccountKey,
 ) => {
+    const networkConfigDeps = selectNetworkConfigAccessors(state);
+
     const account = selectAccountByKey(state, accountKey);
     if (account?.networkType !== 'cardano') return null;
 
-    const stakingData = getStakingDataForNetwork(account);
+    const stakingData = getStakingDataForNetwork(networkConfigDeps, account);
 
     return stakingData?.autocompoundBalance || '0';
 };
 
 export const selectCardanoRewardsBalanceByAccountKey = (
-    state: AccountsRootState,
+    state: AccountsRootState & NetworksRootState,
     accountKey: AccountKey,
 ) => {
+    const networkConfigDeps = selectNetworkConfigAccessors(state);
+
     const account = selectAccountByKey(state, accountKey);
     if (account?.networkType !== 'cardano') return null;
 
-    const stakingData = getStakingDataForNetwork(account);
+    const stakingData = getStakingDataForNetwork(networkConfigDeps, account);
 
     return stakingData?.restakedReward ?? '0';
 };

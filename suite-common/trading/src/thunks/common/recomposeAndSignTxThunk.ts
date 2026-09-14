@@ -5,6 +5,7 @@ import {
     isApprovalFlowSupported,
     selectSelectedDevice,
 } from '@suite-common/device';
+import { selectNetworkConfigAccessors, type NetworksRootState } from '@suite-common/networks';
 import { createThunk } from '@suite-common/redux-utils';
 import { getNetwork } from '@suite-common/wallet-config';
 import { DEFAULT_PAYMENT, DEFAULT_VALUES } from '@suite-common/wallet-constants';
@@ -82,7 +83,8 @@ export type RecomposeAndSignTxThunkState = ComposeSendFormTransactionFeeLevelsTh
     CreatePaymentRequestsThunkState &
     DeviceRootState &
     FeesRootState &
-    TradingRootState;
+    TradingRootState &
+    NetworksRootState;
 
 export const recomposeAndSignTxThunk = createThunk<
     TradingFulfillValue,
@@ -109,9 +111,11 @@ export const recomposeAndSignTxThunk = createThunk<
         },
         { dispatch, getState, rejectWithValue, fulfillWithValue },
     ) => {
+        const networkConfigDeps = selectNetworkConfigAccessors(getState());
+
         const { composed, selectedFee } = selectTradingComposedTransactionInfo(getState());
         const options: FormOptions[] = ['broadcast'];
-        const network = getNetwork(account.symbol);
+        const network = getNetwork(networkConfigDeps, account.symbol);
         const feeInfo = selectConvertedNetworkFeeInfo(getState(), account.symbol);
         const device = selectSelectedDevice(getState());
 
@@ -274,7 +278,7 @@ export const recomposeAndSignTxThunk = createThunk<
             ? firstPrecomposedOutput.amount.toString()
             : undefined;
         const formattedMaxAmount = sendAmount
-            ? subunitsToUnits({
+            ? subunitsToUnits(networkConfigDeps, {
                   value: asAmountSubunit(new BigNumber(sendAmount)),
                   symbol: account.symbol,
                   ...(composed.token?.decimals

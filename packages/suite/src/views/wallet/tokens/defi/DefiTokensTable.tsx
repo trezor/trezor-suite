@@ -1,7 +1,9 @@
 import { useMemo } from 'react';
 
 import { Translation } from '@suite/intl';
+import { useServices } from '@suite-common/dependency-injection';
 import { useAllYieldOpportunities } from '@suite-common/earn-stablecoin-api';
+import { selectNetworkConfigDeps } from '@suite-common/networks';
 import { TokenManagementAction, selectCoinDefinitions } from '@suite-common/token-definitions';
 import { selectBaseCurrency, selectCurrentFiatRates } from '@suite-common/wallet-core';
 import { type SelectedAccountLoaded } from '@suite-common/wallet-types';
@@ -24,6 +26,8 @@ interface DefiTokensTableProps {
 }
 
 export const DefiTokensTable = ({ selectedAccount, searchQuery }: DefiTokensTableProps) => {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
+
     const { account, network } = selectedAccount;
 
     const fiatRates = useSelector(selectCurrentFiatRates);
@@ -46,7 +50,7 @@ export const DefiTokensTable = ({ selectedAccount, searchQuery }: DefiTokensTabl
     }, [account.tokens, account.symbol, baseCurrencyCode, fiatRates]);
 
     const tokens = useMemo(() => {
-        const groupedTokens = getTokens({
+        const groupedTokens = getTokens(networkConfigDeps, {
             tokens: enhancedTokens,
             symbol: account.symbol,
             tokenDefinitions: coinDefinitions,
@@ -55,7 +59,7 @@ export const DefiTokensTable = ({ selectedAccount, searchQuery }: DefiTokensTabl
         groupedTokens.shownWithoutBalance.sort(sortTokensByName);
 
         return groupedTokens;
-    }, [enhancedTokens, account.symbol, coinDefinitions, searchQuery]);
+    }, [networkConfigDeps, enhancedTokens, account.symbol, coinDefinitions, searchQuery]);
 
     const hasShownTokens =
         tokens.shownWithBalance.length > 0 || tokens.shownWithoutBalance.length > 0;

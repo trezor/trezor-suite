@@ -1,3 +1,4 @@
+import { type NetworkConfigDeps } from '@suite-common/networks';
 import { type TrezorDevice } from '@suite-common/suite-types';
 import { type Account, AddressDisplayOptions } from '@suite-common/wallet-types';
 import { getAccountIdentity, getMevProtectedTxData } from '@suite-common/wallet-utils';
@@ -35,13 +36,12 @@ type PushYieldTransactionParams = {
     isMevProtectionEnabled: boolean;
 };
 
-export const pushYieldTransaction = ({
-    tx,
-    account,
-    isMevProtectionEnabled,
-}: PushYieldTransactionParams) =>
+export const pushYieldTransaction = (
+    networkConfigDeps: NetworkConfigDeps,
+    { tx, account, isMevProtectionEnabled }: PushYieldTransactionParams,
+) =>
     TrezorConnect.pushTransaction({
-        tx: getMevProtectedTxData(account.symbol, tx, isMevProtectionEnabled),
+        tx: getMevProtectedTxData(networkConfigDeps, account.symbol, tx, isMevProtectionEnabled),
         coin: account.symbol,
         identity: getAccountIdentity(account),
     });

@@ -8,6 +8,7 @@ import {
     subHours,
 } from 'date-fns';
 
+import { type NetworkConfigDeps } from '@suite-common/networks';
 import { type TimestampedRates } from '@suite-common/wallet-types';
 import {
     AMOUNT_UNIT_ZERO,
@@ -108,11 +109,10 @@ type MapCryptoBalanceMovementToFixedTimeFrameParams = {
     baseCurrencyCode: BaseCurrencyCode;
 };
 
-export const mapCryptoBalanceMovementToFixedTimeFrame = ({
-    balanceHistory,
-    fiatRates,
-    baseCurrencyCode,
-}: MapCryptoBalanceMovementToFixedTimeFrameParams): readonly FiatGraphPointWithCryptoBalance[] =>
+export const mapCryptoBalanceMovementToFixedTimeFrame = (
+    networkConfigDeps: NetworkConfigDeps,
+    { balanceHistory, fiatRates, baseCurrencyCode }: MapCryptoBalanceMovementToFixedTimeFrameParams,
+): readonly FiatGraphPointWithCryptoBalance[] =>
     pipe(
         fiatRates,
         A.map(fiatRatePoint => {
@@ -144,7 +144,7 @@ export const mapCryptoBalanceMovementToFixedTimeFrame = ({
                 rate: fiatRate,
             });
 
-            const baseCurrencyDecimal = getDecimalsForBaseCurrency({
+            const baseCurrencyDecimal = getDecimalsForBaseCurrency(networkConfigDeps, {
                 code: baseCurrencyCode,
                 // Here, we NEVER use sats. The formatting to sats shall ALWAYS be a domain of the view-component.
                 isInSats: false,

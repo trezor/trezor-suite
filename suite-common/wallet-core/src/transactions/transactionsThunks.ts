@@ -1,3 +1,4 @@
+import { type NetworksRootState, selectNetworkConfigAccessors } from '@suite-common/networks';
 import { createSingleInstanceThunk, createThunk } from '@suite-common/redux-utils';
 import { getTxsPerPage } from '@suite-common/suite-utils';
 import {
@@ -81,7 +82,8 @@ interface ReplaceTransactionThunkParams {
 
 export type ReplaceTransactionThunkState = AccountsRootState &
     SendRootState &
-    TransactionsRootState;
+    TransactionsRootState &
+    NetworksRootState;
 
 export const replaceTransactionThunk = createThunk<
     void,
@@ -92,6 +94,8 @@ export const replaceTransactionThunk = createThunk<
 >(
     `${TRANSACTIONS_MODULE_PREFIX}/replaceTransactionThunk`,
     ({ precomposedTransaction, newTxid }, { getState, dispatch }) => {
+        const networkConfigDeps = selectNetworkConfigAccessors(getState());
+
         if (!isRbfBumpFeeTransaction(precomposedTransaction)) return; // ignore if it's not a replacement tx
 
         const walletTransactions = selectTransactions(getState());
@@ -112,6 +116,7 @@ export const replaceTransactionThunk = createThunk<
             if (signedTransaction) {
                 // bitcoin-like: profile transaction for affected account
                 newTx = enhanceTransaction(
+                    networkConfigDeps,
                     blockbookUtils.transformTransaction(
                         signedTransaction,
                         affectedAccount.addresses,
@@ -136,7 +141,7 @@ export const replaceTransactionThunk = createThunk<
                     delete newTx.rbfParams;
                 } else {
                     // update tx rbfParams
-                    newTx.rbfParams = getRbfParams(newTx, affectedAccount);
+                    newTx.rbfParams = getRbfParams(networkConfigDeps, newTx, affectedAccount);
                 }
             }
 
@@ -157,7 +162,10 @@ interface AddFakePendingTransactionParams {
     account: Account;
 }
 
-type AddFakePendingTxThunkState = AccountsRootState & BlockchainRootState & SendRootState;
+type AddFakePendingTxThunkState = AccountsRootState &
+    BlockchainRootState &
+    SendRootState &
+    NetworksRootState;
 
 export const addFakePendingTxThunk = createThunk<
     void,
@@ -166,6 +174,8 @@ export const addFakePendingTxThunk = createThunk<
 >(
     `${TRANSACTIONS_MODULE_PREFIX}/addFakePendingTransaction`,
     ({ precomposedTransaction, account }, { dispatch, getState, rejectWithValue }) => {
+        const networkConfigDeps = selectNetworkConfigAccessors(getState());
+
         const blockHeight = selectBlockchainHeightBySymbol(getState(), account.symbol);
         const accounts = selectAccounts(getState());
         const signedTransaction = selectSendSignedTx(getState());
@@ -216,7 +226,7 @@ export const addFakePendingTxThunk = createThunk<
                 }
                 const prependingTx = { ...affectedAccountTransaction, deadline: blockHeight + 2 };
                 dispatch(
-                    transactionsActions.addTransaction({
+                    transactionsActions.addTransaction(networkConfigDeps, {
                         transactions: [prependingTx],
                         account: affectedAccount,
                     }),
@@ -228,7 +238,7 @@ export const addFakePendingTxThunk = createThunk<
                 return;
             }
 
-            const pendingAccount = getPendingAccount({
+            const pendingAccount = getPendingAccount(networkConfigDeps, {
                 account: affectedAccount,
                 tx: precomposedTransaction,
                 txid: signedTransaction.txid,
@@ -236,7 +246,7 @@ export const addFakePendingTxThunk = createThunk<
             });
 
             if (pendingAccount) {
-                dispatch(accountsActions.updateAccount(pendingAccount));
+                dispatch(accountsActions.updateAccount(networkConfigDeps, pendingAccount));
             }
         });
     },
@@ -388,7 +398,10 @@ type AddFakePendingEvmTxThunkParams = {
     ethereumNonce?: string;
 };
 
-type AddFakePendingEvmTxThunkState = BlockchainRootState & FeesRootState & TransactionsRootState;
+type AddFakePendingEvmTxThunkState = BlockchainRootState &
+    FeesRootState &
+    TransactionsRootState &
+    NetworksRootState;
 
 export const addFakePendingEvmTxThunk = createThunk<
     void,
@@ -402,6 +415,8 @@ export const addFakePendingEvmTxThunk = createThunk<
         { precomposedTransaction, precomposedForm, txid, account, ethereumNonce },
         { dispatch, getState },
     ) => {
+        const networkConfigDeps = selectNetworkConfigAccessors(getState());
+
         if (
             account.networkType !== 'ethereum' ||
             !precomposedForm ||
@@ -448,7 +463,12 @@ export const addFakePendingEvmTxThunk = createThunk<
             deadline,
         });
 
-        dispatch(transactionsActions.addTransaction({ transactions: [fakeTx], account }));
+        dispatch(
+            transactionsActions.addTransaction(networkConfigDeps, {
+                transactions: [fakeTx],
+                account,
+            }),
+        );
     },
 );
 
@@ -459,7 +479,7 @@ type AddFakePendingCardanoTxThunkParams = {
     cardanoSpecific?: WalletAccountTransaction['cardanoSpecific'];
 };
 
-type AddFakePendingCardanoTxThunkState = BlockchainRootState;
+type AddFakePendingCardanoTxThunkState = BlockchainRootState & NetworksRootState;
 
 export const addFakePendingCardanoTxThunk = createThunk<
     void,
@@ -468,6 +488,8 @@ export const addFakePendingCardanoTxThunk = createThunk<
 >(
     `${TRANSACTIONS_MODULE_PREFIX}/addFakePendingTransaction`,
     ({ precomposedTransaction, txid, account, cardanoSpecific }, { dispatch, getState }) => {
+        const networkConfigDeps = selectNetworkConfigAccessors(getState());
+
         const blockHeight = selectBlockchainHeightBySymbol(getState(), account.symbol);
 
         // Used in cardano send form and staking tab until Blockfrost supports pending txs on its backend
@@ -497,7 +519,12 @@ export const addFakePendingCardanoTxThunk = createThunk<
             },
             deadline: blockHeight + Math.ceil(FAKE_TX_TTL_SECONDS / CARDANO_BLOCK_TIME_SECONDS),
         };
-        dispatch(transactionsActions.addTransaction({ transactions: [fakeTx], account }));
+        dispatch(
+            transactionsActions.addTransaction(networkConfigDeps, {
+                transactions: [fakeTx],
+                account,
+            }),
+        );
     },
 );
 
@@ -512,7 +539,9 @@ interface AddFakePendingTronTxThunkParams {
     tronSpecific?: WalletAccountTransaction['tronSpecific'];
 }
 
-export type AddFakePendingTronTxThunkState = BlockchainRootState & FeesRootState;
+export type AddFakePendingTronTxThunkState = BlockchainRootState &
+    FeesRootState &
+    NetworksRootState;
 
 export const addFakePendingTronTxThunk = createThunk<
     void,
@@ -524,6 +553,8 @@ export const addFakePendingTronTxThunk = createThunk<
         { txid, account, amount, fee, type, target, tokens, tronSpecific },
         { dispatch, getState },
     ) => {
+        const networkConfigDeps = selectNetworkConfigAccessors(getState());
+
         if (account.networkType !== 'tron') return;
 
         const blockTime = selectRawNetworkFeeInfo(getState(), account.symbol)?.blockTime ?? 0;
@@ -563,7 +594,12 @@ export const addFakePendingTronTxThunk = createThunk<
             },
             deadline,
         };
-        dispatch(transactionsActions.addTransaction({ transactions: [fakeTx], account }));
+        dispatch(
+            transactionsActions.addTransaction(networkConfigDeps, {
+                transactions: [fakeTx],
+                account,
+            }),
+        );
     },
 );
 
@@ -573,7 +609,7 @@ interface AddFakePendingTronSendTxThunkParams {
     account: Account;
 }
 
-type AddFakePendingTronSendTxThunkState = AddFakePendingTronTxThunkState;
+type AddFakePendingTronSendTxThunkState = AddFakePendingTronTxThunkState & NetworksRootState;
 
 export const addFakePendingTronSendTxThunk = createThunk<
     void,
@@ -581,12 +617,15 @@ export const addFakePendingTronSendTxThunk = createThunk<
     { state: AddFakePendingTronSendTxThunkState }
 >(
     `${TRANSACTIONS_MODULE_PREFIX}/addFakePendingTransaction`,
-    ({ precomposedTransaction, txid, account }, { dispatch }) => {
+    ({ precomposedTransaction, txid, account }, { getState, dispatch }) => {
+        const networkConfigDeps = selectNetworkConfigAccessors(getState());
+
         const [output] = precomposedTransaction.outputs;
         const { token } = precomposedTransaction;
         const recipient = output?.address;
         const outputAmount = output?.amount?.toString() ?? '0';
         const feeBreakdown = calculateTronFeeBreakdown(
+            networkConfigDeps,
             precomposedTransaction,
             getTronResources(account),
             account.symbol,
@@ -644,7 +683,8 @@ type FetchTransactionsPageThunkParams = {
 
 type FetchTransactionsPageThunkState = AccountsRootState &
     BlockchainRootState &
-    TransactionsRootState;
+    TransactionsRootState &
+    NetworksRootState;
 
 export const fetchTransactionsPageThunk = createThunk<
     AccountInfo | 'ALREADY_FETCHED',
@@ -655,6 +695,8 @@ export const fetchTransactionsPageThunk = createThunk<
 >(
     `${TRANSACTIONS_MODULE_PREFIX}/fetchTransactionsPageThunk`,
     async ({ accountKey, page, perPage, forceRefetch }, { dispatch, getState }) => {
+        const networkConfigDeps = selectNetworkConfigAccessors(getState());
+
         const account = selectAccountByKey(getState(), accountKey);
         if (!account) {
             throw new Error(`Account not found: ${accountKey}`);
@@ -703,12 +745,16 @@ export const fetchTransactionsPageThunk = createThunk<
         }
 
         if (result?.success) {
-            const updateAction = accountsActions.updateAccount(currentAccount, result.payload);
+            const updateAction = accountsActions.updateAccount(
+                networkConfigDeps,
+                currentAccount,
+                result.payload,
+            );
             const updatedAccount = updateAction.payload.account;
             const updatedTransactions = result.payload.history.transactions || [];
 
             dispatch(
-                transactionsActions.addTransaction({
+                transactionsActions.addTransaction(networkConfigDeps, {
                     transactions: updatedTransactions,
                     account: updatedAccount,
                     page,
@@ -731,7 +777,9 @@ type FetchUtxoTransactionsForAccountThunkParams = {
     accountKey: AccountKey;
 };
 
-type FetchUtxoTransactionsForAccountThunkState = AccountsRootState & TransactionsRootState;
+type FetchUtxoTransactionsForAccountThunkState = AccountsRootState &
+    TransactionsRootState &
+    NetworksRootState;
 
 export const fetchUtxoTransactionsForAccountThunk = createSingleInstanceThunk<
     FetchUtxoTransactionsForAccountThunkParams,
@@ -743,6 +791,8 @@ export const fetchUtxoTransactionsForAccountThunk = createSingleInstanceThunk<
         { accountKey }: FetchUtxoTransactionsForAccountThunkParams,
         { dispatch, getState, signal },
     ) => {
+        const networkConfigDeps = selectNetworkConfigAccessors(getState());
+
         const account = selectAccountByKey(getState(), accountKey);
         if (!account) {
             throw new Error(`Account not found: ${accountKey}`);
@@ -767,7 +817,7 @@ export const fetchUtxoTransactionsForAccountThunk = createSingleInstanceThunk<
         }
 
         dispatch(
-            transactionsActions.addTransaction({
+            transactionsActions.addTransaction(networkConfigDeps, {
                 transactions: result.payload,
                 account,
             }),

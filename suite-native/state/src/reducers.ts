@@ -12,7 +12,7 @@ import {
     messageSystemPersistedWhitelist,
     prepareMessageSystemReducer,
 } from '@suite-common/message-system';
-import { networksReducer } from '@suite-common/networks';
+import { type NetworkConfigDeps, networksReducer } from '@suite-common/networks';
 import { prepareReceiveReducer } from '@suite-common/receive';
 import { suiteSyncDataReducer, suiteSyncReducer } from '@suite-common/suite-sync';
 import { suiteSyncQuotaManagerReducer } from '@suite-common/suite-sync-quota-manager';
@@ -109,9 +109,10 @@ const receiveReducer = prepareReceiveReducer(extraDependencies);
 const bluetoothReducer = prepareBluetoothReducer(extraDependencies);
 const thpReducer = prepareThpReducer(extraDependencies);
 
-type PrepareRootReducersDeps = MMKVStorageDep & {
-    getSupportedNetworks: () => readonly NetworkSymbol[];
-};
+type PrepareRootReducersDeps = NetworkConfigDeps &
+    MMKVStorageDep & {
+        getSupportedNetworks: () => readonly NetworkSymbol[];
+    };
 
 export const prepareRootReducers = (deps: PrepareRootReducersDeps) => {
     const appSettingsPersistedReducer = preparePersistReducer({
@@ -219,7 +220,7 @@ export const prepareRootReducers = (deps: PrepareRootReducersDeps) => {
         key: 'walletSettings',
         version: 5,
         migrations: {
-            1: initialMigrateAppSettingsAndDiscoveryConfig({
+            1: initialMigrateAppSettingsAndDiscoveryConfig(deps, {
                 mmkvStorage: deps.mmkvStorage,
                 getStoredState,
             }),
@@ -325,7 +326,11 @@ export const prepareRootReducers = (deps: PrepareRootReducersDeps) => {
 
                 return {
                     ...oldState,
-                    accounts: sortAccountsByCoin(oldState.accounts, deps.getSupportedNetworks()),
+                    accounts: sortAccountsByCoin(
+                        deps,
+                        oldState.accounts,
+                        deps.getSupportedNetworks(),
+                    ),
                 };
             },
         },
@@ -605,6 +610,7 @@ export const prepareRootReducers = (deps: PrepareRootReducersDeps) => {
                     wallet: {
                         ...oldState.wallet,
                         accounts: sortAccountsByCoin(
+                            deps,
                             oldState.wallet.accounts,
                             deps.getSupportedNetworks(),
                         ),

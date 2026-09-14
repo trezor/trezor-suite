@@ -4,8 +4,9 @@ import { useDevice } from '@suite/device';
 import { selectFlags, setFlag } from '@suite/flags';
 import { Translation } from '@suite/intl';
 import { useServices } from '@suite-common/dependency-injection';
+import { selectNetworkConfigDeps } from '@suite-common/networks';
 import { selectDispatch } from '@suite-common/redux-utils';
-import { networksCollection } from '@suite-common/wallet-config';
+import { getNetworksCollection } from '@suite-common/wallet-config';
 import {
     selectAllAccountsToList,
     selectBaseCurrency,
@@ -44,6 +45,8 @@ import { PortfolioCardHeader } from './PortfolioCardHeader';
 import { UnsupportedAssetsMessage, useUnsupportedNetworkMessage } from './UnsupportedAssetsMessage';
 
 export const PortfolioCard = memo(() => {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
+
     const currentFiatRates = useSelector(selectCurrentFiatRates);
     const baseCurrencyCode = useSelector(selectBaseCurrency);
     const { discovery, isDiscoveryRunning } = useDiscovery();
@@ -67,9 +70,10 @@ export const PortfolioCard = memo(() => {
     const passphraseEntryCanceled =
         accounts.length === 0 && discoveryStatus === undefined && discovery?.status === 'cancelled';
 
-    const hasNetworkWithEnabledGraph = networksCollection.some(
+    const hasNetworkWithEnabledGraph = getNetworksCollection(networkConfigDeps).some(
         network =>
-            isNetworkWithGraphFeature(network.symbol) && enabledNetworks.includes(network.symbol),
+            isNetworkWithGraphFeature(networkConfigDeps, network.symbol) &&
+            enabledNetworks.includes(network.symbol),
     );
 
     // TODO: DashboardGraph will get mounted twice (thus triggering data processing twice)

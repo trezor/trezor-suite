@@ -2,6 +2,8 @@ import { type ReactNode } from 'react';
 
 import styled from 'styled-components';
 
+import { useServices } from '@suite-common/dependency-injection';
+import { selectNetworkConfigDeps } from '@suite-common/networks';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { formatNetworkAmount } from '@suite-common/wallet-utils';
 import { typography } from '@trezor/theme';
@@ -50,17 +52,25 @@ export const CryptoAmountWithHeader = ({
     symbol,
     color,
     className,
-}: CryptoAmountWithHeaderProps) => (
-    <Container className={className}>
-        <Header>
-            {headerIcon && headerIcon} {header}
-        </Header>
+}: CryptoAmountWithHeaderProps) => {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
 
-        <CryptoAmount value={formatNetworkAmount(value, symbol)} symbol={symbol} $color={color} />
-        <BaseCurrencyValue
-            amount={formatNetworkAmount(value, symbol)}
-            symbol={symbol}
-            showApproximationIndicator
-        />
-    </Container>
-);
+    return (
+        <Container className={className}>
+            <Header>
+                {headerIcon && headerIcon} {header}
+            </Header>
+
+            <CryptoAmount
+                value={formatNetworkAmount(networkConfigDeps, value, symbol)}
+                symbol={symbol}
+                $color={color}
+            />
+            <BaseCurrencyValue
+                amount={formatNetworkAmount(networkConfigDeps, value, symbol)}
+                symbol={symbol}
+                showApproximationIndicator
+            />
+        </Container>
+    );
+};

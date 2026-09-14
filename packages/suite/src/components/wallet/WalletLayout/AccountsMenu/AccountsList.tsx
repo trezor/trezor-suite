@@ -5,7 +5,9 @@ import { selectCoinjoinIsPreloading } from '@suite/coinjoin';
 import { Translation, useTranslation } from '@suite/intl';
 import { selectAccountLabelsLegacy } from '@suite/metadata';
 import { type RouteParams, selectRouterParams } from '@suite/router';
+import { useServices } from '@suite-common/dependency-injection';
 import { selectSelectedDevice } from '@suite-common/device';
+import { selectNetworkConfigDeps } from '@suite-common/networks';
 import { selectAccountsWithSuiteSyncLabel } from '@suite-common/suite-sync';
 import { selectTokenDefinitions } from '@suite-common/token-definitions';
 import { getTokens, selectAllAccountsToList } from '@suite-common/wallet-core';
@@ -52,6 +54,8 @@ type AccountsListProps = {
 };
 
 export const AccountsList = memo(({ scrollElementRef, scrollSentinels }: AccountsListProps) => {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
+
     const device = useSelector(selectSelectedDevice);
     const baseAccounts = useSelector(selectAllAccountsToList);
 
@@ -78,7 +82,7 @@ export const AccountsList = memo(({ scrollElementRef, scrollSentinels }: Account
         () =>
             accounts
                 .map(account => {
-                    const tokens = getTokens({
+                    const tokens = getTokens(networkConfigDeps, {
                         tokens: account.tokens ?? [],
                         symbol: account.symbol,
                         tokenDefinitions: tokenDefinitions[account.symbol]?.coin,
@@ -97,7 +101,11 @@ export const AccountsList = memo(({ scrollElementRef, scrollSentinels }: Account
                         account.label ??
                         (Object.hasOwn(accountLegacyLabels, key)
                             ? accountLegacyLabels[key]
-                            : getDefaultAccountLabel(translationString, account)) ??
+                            : getDefaultAccountLabel(
+                                  networkConfigDeps,
+                                  translationString,
+                                  account,
+                              )) ??
                         '';
 
                     // Mirror the account type badge, which is hidden for normal accounts.
@@ -110,7 +118,7 @@ export const AccountsList = memo(({ scrollElementRef, scrollSentinels }: Account
                                   networkType: account.networkType,
                               });
 
-                    return accountSearchFn(account, searchString, {
+                    return accountSearchFn(networkConfigDeps, account, searchString, {
                         coinsFilter: coinFilter,
                         accountLabel,
                         searchableTokens: tokens.shownWithBalance,
@@ -120,6 +128,7 @@ export const AccountsList = memo(({ scrollElementRef, scrollSentinels }: Account
                     });
                 }),
         [
+            networkConfigDeps,
             accounts,
             searchString,
             coinFilter,

@@ -1,6 +1,8 @@
 import { FormProvider } from 'react-hook-form';
 
 import { Translation } from '@suite/intl';
+import { useServices } from '@suite-common/dependency-injection';
+import { selectNetworkConfigDeps } from '@suite-common/networks';
 import { getDisplaySymbol, getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import {
     getSolanaUnstakeAmountBounds,
@@ -21,6 +23,8 @@ import { UnstakeInputs } from './UnstakeInputs';
 import { EarnAvailableBalance } from '../../StakeModal/StakeForm/EarnAvailableBalance';
 
 export const UnstakeForm = () => {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
+
     const {
         account,
         formState: { errors },
@@ -43,14 +47,18 @@ export const UnstakeForm = () => {
         autocompoundBalance = '0',
         canClaim = false,
         claimableAmount = '0',
-    } = getStakingDataForNetwork(account) ?? {};
+    } = getStakingDataForNetwork(networkConfigDeps, account) ?? {};
 
     const inputError = errors[CRYPTO_INPUT] || errors[FIAT_INPUT] || errors?.outputs?.[0]?.amount;
     const showError = inputError && !['required', 'min'].includes(inputError.type);
 
     const unstakeAmountBounds =
         inputError?.type === 'solanaUnstakeAmount'
-            ? getSolanaUnstakeAmountBounds(account, getValues(OUTPUT_AMOUNT) ?? '')
+            ? getSolanaUnstakeAmountBounds(
+                  networkConfigDeps,
+                  account,
+                  getValues(OUTPUT_AMOUNT) ?? '',
+              )
             : null;
 
     const renderClickableUnstakeAmount = (amount: string) => (
@@ -77,7 +85,10 @@ export const UnstakeForm = () => {
                                         id="TR_STAKE_CAN_CLAIM_WARNING"
                                         values={{
                                             amount: claimableAmount,
-                                            symbol: getDisplaySymbol(account.symbol),
+                                            symbol: getDisplaySymbol(
+                                                networkConfigDeps,
+                                                account.symbol,
+                                            ),
                                             br: <br />,
                                         }}
                                     />
@@ -112,6 +123,7 @@ export const UnstakeForm = () => {
                                                     }
                                                     values={{
                                                         symbol: getNetworkDisplaySymbol(
+                                                            networkConfigDeps,
                                                             account.symbol,
                                                         ),
                                                         higher: renderClickableUnstakeAmount(
@@ -176,7 +188,10 @@ export const UnstakeForm = () => {
                                     <Translation
                                         id="TR_STAKE_UNSTAKING_APPROXIMATE"
                                         values={{
-                                            symbol: getDisplaySymbol(account.symbol),
+                                            symbol: getDisplaySymbol(
+                                                networkConfigDeps,
+                                                account.symbol,
+                                            ),
                                         }}
                                     />
                                 </Tooltip>

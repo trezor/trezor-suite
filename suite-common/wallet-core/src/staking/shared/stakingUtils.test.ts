@@ -1,8 +1,12 @@
+import { mockNetworkConfigDeps } from '@suite-common/networks/mocks';
+
 import {
     getMaxStakeAmountFixture,
     getUnstakingPeriodInDaysFixture,
 } from './__fixtures__/stakingUtils';
 import { getMaxStakeAmount, getUnstakingPeriodInDays } from './stakingUtils';
+
+const networkConfigDeps = mockNetworkConfigDeps();
 
 describe('getUnstakingPeriodInDays', () => {
     getUnstakingPeriodInDaysFixture.forEach(test => {
@@ -19,7 +23,7 @@ describe('getUnstakingPeriodInDays', () => {
 describe('getMaxStakeAmount', () => {
     getMaxStakeAmountFixture.forEach(test => {
         it(test.description, () => {
-            const result = getMaxStakeAmount({
+            const result = getMaxStakeAmount(networkConfigDeps, {
                 balance: test.args.balance,
                 symbol: test.args.symbol,
             });

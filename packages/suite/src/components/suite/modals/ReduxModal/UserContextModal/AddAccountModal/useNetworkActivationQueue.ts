@@ -2,6 +2,7 @@ import { useEffect, useMemo, useRef, useState } from 'react';
 
 import { preserveModal, removePreserveModal } from '@suite/modal';
 import { useServices } from '@suite-common/dependency-injection';
+import { selectNetworkConfigDeps } from '@suite-common/networks';
 import { selectDispatch } from '@suite-common/redux-utils';
 import { type TrezorDevice } from '@suite-common/suite-types';
 import { notificationsActions } from '@suite-common/toast-notifications';
@@ -29,6 +30,8 @@ type ActiveNetworkActivation = {
  * TODO https://github.com/trezor/trezor-suite/issues/31779
  */
 export const useNetworkActivationQueue = (device: TrezorDevice) => {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
+
     const accounts = useSelector(selectAccounts);
     const { discovery } = useDiscovery();
     const { dispatch } = useServices(selectDispatch);
@@ -147,7 +150,7 @@ export const useNetworkActivationQueue = (device: TrezorDevice) => {
                 notificationsActions.addToast({
                     type: 'accounts-discovered',
                     count: discoveredAccountCount,
-                    networkName: getNetwork(networkSymbol).name,
+                    networkName: getNetwork(networkConfigDeps, networkSymbol).name,
                 }),
             );
             setActiveActivation(undefined);
@@ -201,6 +204,7 @@ export const useNetworkActivationQueue = (device: TrezorDevice) => {
             setActiveActivation(undefined);
         });
     }, [
+        networkConfigDeps,
         accounts,
         activeActivation,
         device.path,

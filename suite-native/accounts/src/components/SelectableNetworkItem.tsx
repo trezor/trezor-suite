@@ -1,4 +1,6 @@
+import { useServices } from '@suite-common/dependency-injection';
 import { useFormatters } from '@suite-common/formatters';
+import { selectNetworkConfigDeps } from '@suite-common/networks';
 import { type NetworkSymbol, getNetwork } from '@suite-common/wallet-config';
 import { Badge, Box, HStack, PressableOpacity, Text } from '@suite-native/atoms';
 import { Icon, type IconName, TokenIcon } from '@suite-native/icons';
@@ -24,6 +26,8 @@ const tokensBadgeStyle = prepareNativeStyle(utils => ({
 }));
 
 export const SelectableNetworkItem = ({ symbol, onPress, rightIcon }: SelectableAssetItemProps) => {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
+
     const { applyStyle } = useNativeStyles();
     const { DisplaySymbolFormatter } = useFormatters();
 
@@ -32,9 +36,9 @@ export const SelectableNetworkItem = ({ symbol, onPress, rightIcon }: Selectable
         onPress(symbol);
     };
 
-    const networkName = getNetwork(symbol).name;
+    const networkName = getNetwork(networkConfigDeps, symbol).name;
 
-    const isNetworkSupportingTokens = isNetworkWithTokens(symbol);
+    const isNetworkSupportingTokens = isNetworkWithTokens(networkConfigDeps, symbol);
 
     return (
         <PressableOpacity

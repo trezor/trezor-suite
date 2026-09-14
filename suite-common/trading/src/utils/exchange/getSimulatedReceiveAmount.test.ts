@@ -1,8 +1,11 @@
 import type { CryptoId } from 'invity-api';
+import { mockNetworkConfigDeps } from '@suite-common/networks/mocks';
 
 import { type NetworkTxSimulationResult } from '@suite-common/tx-simulation';
 
 import { getSimulatedReceiveAmount } from './getSimulatedReceiveAmount';
+
+const networkConfigDeps = mockNetworkConfigDeps();
 
 const USDC_CONTRACT = '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48';
 
@@ -42,31 +45,33 @@ const tokenQuoteReceive: CryptoId = `ethereum--${USDC_CONTRACT}` as CryptoId;
 
 describe('getSimulatedReceiveAmount', () => {
     it('returns null without a simulation result', () => {
-        expect(getSimulatedReceiveAmount(undefined, nativeQuoteReceive)).toBeNull();
+        expect(
+            getSimulatedReceiveAmount(networkConfigDeps, undefined, nativeQuoteReceive),
+        ).toBeNull();
     });
 
     it('returns null without a quote', () => {
         const result = createSimulationResult([nativeAssetDiff]);
 
-        expect(getSimulatedReceiveAmount(result, undefined)).toBeNull();
+        expect(getSimulatedReceiveAmount(networkConfigDeps, result, undefined)).toBeNull();
     });
 
     it('returns null when the simulation errored', () => {
         const result = createSimulationResult([nativeAssetDiff], { simulationStatus: 'Error' });
 
-        expect(getSimulatedReceiveAmount(result, nativeQuoteReceive)).toBeNull();
+        expect(getSimulatedReceiveAmount(networkConfigDeps, result, nativeQuoteReceive)).toBeNull();
     });
 
     it('returns the incoming native amount for a native receive asset', () => {
         const result = createSimulationResult([usdcAssetDiff, nativeAssetDiff]);
 
-        expect(getSimulatedReceiveAmount(result, nativeQuoteReceive)).toBe('1');
+        expect(getSimulatedReceiveAmount(networkConfigDeps, result, nativeQuoteReceive)).toBe('1');
     });
 
     it('matches an ERC20 receive asset by contract address case-insensitively', () => {
         const result = createSimulationResult([nativeAssetDiff, usdcAssetDiff]);
 
-        expect(getSimulatedReceiveAmount(result, tokenQuoteReceive)).toBe('250');
+        expect(getSimulatedReceiveAmount(networkConfigDeps, result, tokenQuoteReceive)).toBe('250');
     });
 
     it('prefers exact raw_value math over the float-derived value', () => {
@@ -79,7 +84,9 @@ describe('getSimulatedReceiveAmount', () => {
             },
         ]);
 
-        expect(getSimulatedReceiveAmount(result, tokenQuoteReceive)).toBe('0.971813');
+        expect(getSimulatedReceiveAmount(networkConfigDeps, result, tokenQuoteReceive)).toBe(
+            '0.971813',
+        );
     });
 
     it('sums multiple incoming transfers of the receive asset', () => {
@@ -91,7 +98,9 @@ describe('getSimulatedReceiveAmount', () => {
             },
         ]);
 
-        expect(getSimulatedReceiveAmount(result, tokenQuoteReceive)).toBe('300.5');
+        expect(getSimulatedReceiveAmount(networkConfigDeps, result, tokenQuoteReceive)).toBe(
+            '300.5',
+        );
     });
 
     it('falls back to value when the asset decimals are unknown', () => {
@@ -103,19 +112,19 @@ describe('getSimulatedReceiveAmount', () => {
             },
         ]);
 
-        expect(getSimulatedReceiveAmount(result, tokenQuoteReceive)).toBe('250');
+        expect(getSimulatedReceiveAmount(networkConfigDeps, result, tokenQuoteReceive)).toBe('250');
     });
 
     it('returns null when the receive asset has no incoming transfer', () => {
         const result = createSimulationResult([{ ...nativeAssetDiff, in: [] }]);
 
-        expect(getSimulatedReceiveAmount(result, nativeQuoteReceive)).toBeNull();
+        expect(getSimulatedReceiveAmount(networkConfigDeps, result, nativeQuoteReceive)).toBeNull();
     });
 
     it('returns null when only other assets changed', () => {
         const result = createSimulationResult([usdcAssetDiff]);
 
-        expect(getSimulatedReceiveAmount(result, nativeQuoteReceive)).toBeNull();
+        expect(getSimulatedReceiveAmount(networkConfigDeps, result, nativeQuoteReceive)).toBeNull();
     });
 
     it('returns null when an incoming transfer cannot be valued', () => {
@@ -127,6 +136,6 @@ describe('getSimulatedReceiveAmount', () => {
             },
         ]);
 
-        expect(getSimulatedReceiveAmount(result, tokenQuoteReceive)).toBeNull();
+        expect(getSimulatedReceiveAmount(networkConfigDeps, result, tokenQuoteReceive)).toBeNull();
     });
 });

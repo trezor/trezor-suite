@@ -1,3 +1,5 @@
+import { selectNetworkConfigDeps } from '@suite-common/networks';
+import { useServices } from '@suite-common/dependency-injection';
 import { useCallback } from 'react';
 
 import { useNavigation, useRoute } from '@react-navigation/native';
@@ -40,6 +42,8 @@ type NavigationProp = StackToStackCompositeNavigationProps<
 >;
 
 export const ActivationFeeScreen = () => {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
+
     const route = useRoute<RouteProps>();
     const { accountKey, tokenContract, isTrading } = route.params;
     const navigation = useNavigation<NavigationProp>();
@@ -122,6 +126,7 @@ export const ActivationFeeScreen = () => {
                                 id="moduleStellarToken.networkFee.reserveInfo"
                                 values={{
                                     reserve: formatNetworkAmount(
+                                        networkConfigDeps,
                                         account.misc.baseReserve ?? STELLAR_BASE_RESERVE,
                                         account.symbol,
                                         true,
@@ -149,11 +154,13 @@ export const ActivationFeeScreen = () => {
                                         id="moduleStellarToken.networkFee.insufficientBalance"
                                         values={{
                                             required: formatNetworkAmount(
+                                                networkConfigDeps,
                                                 insufficientBalanceInfo.required,
                                                 account.symbol,
                                                 true,
                                             ),
                                             available: formatNetworkAmount(
+                                                networkConfigDeps,
                                                 insufficientBalanceInfo.available,
                                                 account.symbol,
                                                 true,

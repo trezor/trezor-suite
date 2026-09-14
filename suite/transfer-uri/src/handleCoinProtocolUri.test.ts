@@ -1,12 +1,14 @@
 import { mockDesktopAnalytics } from '@suite/analytics/mocks';
 import { type NetworksRootState, networksActions, networksReducer } from '@suite-common/networks';
-import { mockNetworkMetadata } from '@suite-common/networks/mocks';
+import { mockNetworkConfigDeps, mockNetworkMetadata } from '@suite-common/networks/mocks';
 
 import {
     type CoinProtocol,
     type HandleCoinProtocolUriThunkDeps,
     handleCoinProtocolUriThunk,
 } from './handleCoinProtocolUri';
+
+const networkConfigDeps = mockNetworkConfigDeps();
 
 const setup = () => {
     const dispatch = jest.fn();
@@ -29,7 +31,11 @@ const setup = () => {
         ),
     };
     const run = (uri: string) =>
-        handleCoinProtocolUriThunk(uri, saveCoinProtocol)(dispatch, () => state, extra);
+        handleCoinProtocolUriThunk(networkConfigDeps, uri, saveCoinProtocol)(
+            dispatch,
+            () => state,
+            extra,
+        );
 
     return { dispatch, report, saveCoinProtocol, run };
 };

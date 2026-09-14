@@ -1,6 +1,7 @@
 import { openDeferredModal } from '@suite/modal';
 import { type AnalyticsDep, events } from '@suite-common/analytics';
 import { type StablecoinYieldTxSimulationParams } from '@suite-common/earn-stablecoin';
+import { type NetworksRootState, selectNetworkConfigAccessors } from '@suite-common/networks';
 import { createThunk } from '@suite-common/redux-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { getNetwork, getNetworkDisplaySymbol } from '@suite-common/wallet-config';
@@ -20,7 +21,7 @@ import {
     getYieldSubmitErrorAnalyticsMessage,
     sendYieldTransaction,
 } from './stablecoin-yield/signingHelpers';
-import { addToken } from './tokenActions';
+import { addTokenThunk } from './tokenActions';
 
 const WRAP_NATIVE_TOKEN_PREFIX = '@wallet/wrap-native-token';
 
@@ -36,7 +37,8 @@ type WrapNativeTokenPayload = {
 };
 
 type SubmitWrapNativeTokenThunkState = ComposeYieldWrapTransactionThunkState &
-    SendYieldTransactionState;
+    SendYieldTransactionState &
+    NetworksRootState;
 
 type SubmitWrapNativeTokenThunkDeps = SendYieldTransactionDeps & {
     services: AnalyticsDep;
@@ -45,10 +47,15 @@ type SubmitWrapNativeTokenThunkDeps = SendYieldTransactionDeps & {
 export const submitWrapNativeTokenThunk = createThunk<
     { txid: string; fee: string } | undefined,
     WrapNativeTokenPayload,
-    { state: SubmitWrapNativeTokenThunkState; extra: SubmitWrapNativeTokenThunkDeps }
+    {
+        state: SubmitWrapNativeTokenThunkState;
+        extra: SubmitWrapNativeTokenThunkDeps;
+    }
 >(
     `${WRAP_NATIVE_TOKEN_PREFIX}/submit`,
     async ({ account, token, wrapAmount, yieldFlow }, { dispatch, getState, extra }) => {
+        const networkConfigDeps = selectNetworkConfigAccessors(getState());
+
         // An in-flow wrap belongs to the deposit funnel, so its failures are reported there rather
         // than as a standalone yield/wrap. Only the broadcast wrap transaction is resolved by
         // `useYieldPendingTransactionTracking`, so these pre-broadcast failures are the deposit
@@ -130,14 +137,14 @@ export const submitWrapNativeTokenThunk = createThunk<
                 return undefined;
             }
 
-            const network = getNetwork(account.symbol);
+            const network = getNetwork(networkConfigDeps, account.symbol);
 
-            const sendResult = await sendYieldTransaction({
+            const sendResult = await sendYieldTransaction(networkConfigDeps, {
                 account,
                 amount: wrapAmount,
                 token: {
                     networkSymbol: account.symbol,
-                    symbol: getNetworkDisplaySymbol(account.symbol),
+                    symbol: getNetworkDisplaySymbol(networkConfigDeps, account.symbol),
                     decimals: network.decimals,
                     contractAddress: null,
                 },
@@ -188,7 +195,7 @@ export const submitWrapNativeTokenThunk = createThunk<
                     balance: '0',
                 };
 
-                dispatch(addToken(account, [wrappedTokenInfo], { showSuccessToast: false }));
+                dispatch(addTokenThunk(account, [wrappedTokenInfo], { showSuccessToast: false }));
             }
 
             dispatch(
@@ -202,7 +209,10 @@ export const submitWrapNativeTokenThunk = createThunk<
                     metadata: {
                         send: {
                             symbol: account.symbol,
-                            displaySymbol: getNetworkDisplaySymbol(account.symbol),
+                            displaySymbol: getNetworkDisplaySymbol(
+                                networkConfigDeps,
+                                account.symbol,
+                            ),
                             amount: wrapAmount,
                         },
                         receive: {

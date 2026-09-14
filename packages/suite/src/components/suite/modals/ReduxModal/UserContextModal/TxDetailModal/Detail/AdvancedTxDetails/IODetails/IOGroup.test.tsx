@@ -1,3 +1,5 @@
+import { mockNetworkConfigDeps } from '@suite-common/networks/mocks';
+
 import '@suite-common/test-utils/globalOverrides';
 
 import { screen } from '@testing-library/react';
@@ -5,7 +7,7 @@ import { screen } from '@testing-library/react';
 import { createTestCompositionRoot } from '@suite-common/test-utils';
 import { getNetwork } from '@suite-common/wallet-config';
 import { getExplorerUrl } from '@suite-common/wallet-config/src/getExplorerUrls';
-import { explorerInitialState } from '@suite-common/wallet-core';
+import { createExplorerInitialState } from '@suite-common/wallet-core';
 import { type WalletAccountTransaction, asAccountDescriptor } from '@suite-common/wallet-types';
 import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
 
@@ -15,6 +17,8 @@ import { renderWithProviders } from 'src/support/test-utils/hooksHelper';
 import { type IODetailsType } from './IODetailsType';
 import { IOGroup } from './IOGroup';
 import { mockInitialAppState } from '../../../../../../../../../../mocks/mockInitialAppState';
+
+const networkConfigDeps = mockNetworkConfigDeps();
 
 const bitcoinAccount = mockWalletAccount({
     symbol: 'btc',
@@ -40,11 +44,11 @@ const getInitialState = (): AppState => ({
     wallet: {
         ...mockInitialAppState.wallet,
         accounts: [bitcoinAccount, ethereumAccount],
-        explorer: explorerInitialState,
+        explorer: createExplorerInitialState(networkConfigDeps.getNetworkConfigs()),
         selectedAccount: {
             status: 'loaded',
             account: ethereumAccount,
-            network: getNetwork(ethereumAccount.symbol),
+            network: getNetwork(networkConfigDeps, ethereumAccount.symbol),
             params: undefined,
         },
     },
@@ -59,8 +63,14 @@ describe('IOGroup', () => {
 
         renderWithProviders(root, <IOGroup tx={bitcoinTransaction} inputs={inputs} outputs={[]} />);
 
-        const bitcoinAddressUrl = getExplorerUrl(explorerInitialState.btc.default, 'address');
-        const ethereumAddressUrl = getExplorerUrl(explorerInitialState.eth.default, 'address');
+        const bitcoinAddressUrl = getExplorerUrl(
+            createExplorerInitialState(networkConfigDeps.getNetworkConfigs()).btc.default,
+            'address',
+        );
+        const ethereumAddressUrl = getExplorerUrl(
+            createExplorerInitialState(networkConfigDeps.getNetworkConfigs()).eth.default,
+            'address',
+        );
 
         expect(bitcoinAddressUrl).not.toBe(ethereumAddressUrl);
         expect(screen.getByRole('link')).toHaveAttribute(

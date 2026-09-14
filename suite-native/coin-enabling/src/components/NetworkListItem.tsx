@@ -1,3 +1,5 @@
+import { selectNetworkConfigDeps } from '@suite-common/networks';
+import { useServices } from '@suite-common/dependency-injection';
 import { type ReactNode } from 'react';
 import { type AccessibilityRole } from 'react-native';
 
@@ -33,9 +35,11 @@ export const NetworkListItem = ({
     accessibilityRole,
     testID,
 }: NetworkListItemProps) => {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
+
     const { applyStyle } = useNativeStyles();
 
-    const network = getNetwork(symbol);
+    const network = getNetwork(networkConfigDeps, symbol);
     const { testnet: isTestnet } = network;
 
     return (

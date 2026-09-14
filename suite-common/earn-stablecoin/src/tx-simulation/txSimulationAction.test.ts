@@ -1,4 +1,8 @@
+import { mockNetworkConfigDeps } from '@suite-common/networks/mocks';
+
 import { composeStablecoinYieldTxSimulationAction } from './txSimulationAction';
+
+const networkConfigDeps = mockNetworkConfigDeps();
 
 const sourceOrigin = 'trezor-suite-native://stablecoin-yield';
 const account = {
@@ -22,6 +26,7 @@ describe('composeStablecoinYieldTxSimulationAction', () => {
 
     it('keeps EIP-1559 fee fields for claim simulation transactions', () => {
         const result = composeStablecoinYieldTxSimulationAction(
+            networkConfigDeps,
             {
                 flow: 'claim',
                 account,
@@ -52,6 +57,7 @@ describe('composeStablecoinYieldTxSimulationAction', () => {
 
     it('keeps legacy gas price for claim simulation transactions', () => {
         const result = composeStablecoinYieldTxSimulationAction(
+            networkConfigDeps,
             {
                 flow: 'claim',
                 account,
@@ -81,6 +87,7 @@ describe('composeStablecoinYieldTxSimulationAction', () => {
     it('rejects mixed claim fee fields', () => {
         expect(
             composeStablecoinYieldTxSimulationAction(
+                networkConfigDeps,
                 {
                     flow: 'claim',
                     account,
@@ -103,6 +110,7 @@ describe('composeStablecoinYieldTxSimulationAction', () => {
     it('rejects incomplete claim fee fields', () => {
         expect(
             composeStablecoinYieldTxSimulationAction(
+                networkConfigDeps,
                 {
                     flow: 'claim',
                     account,

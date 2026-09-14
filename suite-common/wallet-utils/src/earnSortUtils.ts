@@ -1,3 +1,4 @@
+import { type NetworkConfigDeps } from '@suite-common/networks';
 import { type AccountType, type NetworkSymbol, getNetwork } from '@suite-common/wallet-config';
 import { BigNumber, type BigNumberValue, typedObjectKeys } from '@trezor/utils';
 
@@ -35,6 +36,7 @@ export const compareEarnByNetwork =
  */
 export const compareEarnByNetworkTokenOrder =
     <T>(
+        networkConfigDeps: NetworkConfigDeps,
         getKey: (item: T) => EarnNetworkTokenSortKey | undefined,
         supportedNetworks: readonly NetworkSymbol[],
     ) =>
@@ -61,7 +63,9 @@ export const compareEarnByNetworkTokenOrder =
             // collapse `keyof` to `never`; widening to the field's declared keyset yields
             // `AccountType[]` soundly.
             const orderedAccountTypes = typedObjectKeys(
-                getNetwork(keyA.symbol).accountTypes as Partial<Record<AccountType, unknown>>,
+                getNetwork(networkConfigDeps, keyA.symbol).accountTypes as Partial<
+                    Record<AccountType, unknown>
+                >,
             );
 
             return (

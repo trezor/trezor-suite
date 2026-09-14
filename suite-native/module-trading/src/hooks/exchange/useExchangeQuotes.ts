@@ -1,3 +1,5 @@
+import { type NetworksRootState } from '@suite-common/networks';
+import { selectNetworkConfigDeps } from '@suite-common/networks';
 import { type RefObject, useCallback, useEffect, useEffectEvent, useRef } from 'react';
 import { useSelector } from 'react-redux';
 
@@ -44,6 +46,8 @@ type ExchangeQuoteRequestState = {
 const useExchangeQuoteRequestState = (
     control: ExchangeFormType['control'],
 ): ExchangeQuoteRequestState => {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
+
     const [sendAsset, receiveAsset, sendCryptoAmount, sendAccount, receiveAccount] = useWatch({
         control,
         name: ['sendAsset', 'receiveAsset', 'sendCryptoAmount', 'sendAccount', 'receiveAccount'],
@@ -57,7 +61,7 @@ const useExchangeQuoteRequestState = (
         !!sendCryptoAmount &&
         parseFloat(sendCryptoAmount) > 0;
 
-    const receiveAccountAddress = getReceiveAccountAddressText(receiveAccount);
+    const receiveAccountAddress = getReceiveAccountAddressText(networkConfigDeps, receiveAccount);
 
     return {
         isFetchAllowed,
@@ -94,10 +98,12 @@ const useExchangeQuotesThunk = (
     quotesPromiseRef: RefObject<AbortablePromise | undefined>,
     debounce: ReturnType<typeof useDebounce>,
 ) => {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
+
     const { analytics, dispatch } = useServices(selectNativeAnalyticsDep, selectDispatch);
     const asset = useWatch({ control, name: 'sendAsset' });
-    const symbol = getSymbolFromTradeableAsset(asset);
-    const shouldSendInSats = useSelector((state: WalletSettingsRootState) =>
+    const symbol = getSymbolFromTradeableAsset(networkConfigDeps, asset);
+    const shouldSendInSats = useSelector((state: WalletSettingsRootState & NetworksRootState) =>
         selectIsAmountInSats(state, symbol),
     );
     const {
@@ -112,11 +118,11 @@ const useExchangeQuotesThunk = (
     const fetchQuotes = useCallback(async () => {
         const selectedAsset = getValues('sendAsset');
         invariant(selectedAsset, 'Asset is not defined');
-        const network = cryptoIdToNetwork(selectedAsset.cryptoId);
+        const network = cryptoIdToNetwork(networkConfigDeps, selectedAsset.cryptoId);
         invariant(network, `Network not found for [${selectedAsset.cryptoId}]`);
 
         const payload: HandleExchangeRequestThunkProps = {
-            formValues: tradingExchangeFormToTradingExchangeFormProps(getValues),
+            formValues: tradingExchangeFormToTradingExchangeFormProps(networkConfigDeps, getValues),
             network,
             shouldSendInSats,
             composeRequestCallback: noop,
@@ -124,7 +130,7 @@ const useExchangeQuotesThunk = (
 
         quotesPromiseRef.current = dispatch(exchangeThunks.handleRequestThunk(payload));
         await waitForPromiseAndReport(quotesPromiseRef.current, analytics);
-    }, [getValues, shouldSendInSats, quotesPromiseRef, dispatch, analytics]);
+    }, [networkConfigDeps, getValues, shouldSendInSats, quotesPromiseRef, dispatch, analytics]);
 
     const requestQuotes = useEffectEvent(() => {
         if (quotesPromiseRef.current?.abort) {

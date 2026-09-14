@@ -1,3 +1,5 @@
+import { selectNetworkConfigDeps } from '@suite-common/networks';
+import { useServices } from '@suite-common/dependency-injection';
 import { useSelector } from 'react-redux';
 
 import type { CryptoId } from 'invity-api';
@@ -22,6 +24,8 @@ export const TradingCoinAmountFormatter = ({
     cryptoId,
     ...textProps
 }: TradingCoinAmountFormatterProps) => {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
+
     const coinSymbol = useSelector((state: TradingRootState) =>
         selectTradingCoinSymbolByCryptoId(state, cryptoId),
     );
@@ -30,7 +34,7 @@ export const TradingCoinAmountFormatter = ({
         return null;
     }
 
-    if (isNetworkSymbol(coinSymbol)) {
+    if (isNetworkSymbol(networkConfigDeps, coinSymbol)) {
         return (
             <ExactCryptoAmountFormatter
                 value={amount ?? '0'}

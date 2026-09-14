@@ -1,3 +1,5 @@
+import { mockNetworkConfigDeps } from '@suite-common/networks/mocks';
+
 import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { toTokenAddress } from '@suite-common/wallet-types';
 import { mockAccountToken, mockWalletAccount } from '@suite-common/wallet-types/mocks';
@@ -5,6 +7,8 @@ import { RootStackRoutes, YieldStackRoutes } from '@suite-native/navigation';
 
 import { navigateByYieldAccountState } from './navigateByYieldAccountState';
 import { type YieldNavigationItem } from '../../types';
+
+const networkConfigDeps = mockNetworkConfigDeps();
 
 const ethSymbol = asNetworkSymbol('eth');
 
@@ -24,10 +28,11 @@ const isFirmwareSupported = jest.fn().mockReturnValue(true);
 const showFirmwareUpdateAlert = jest.fn();
 
 const navigate = (
-    account: Parameters<typeof navigateByYieldAccountState>[0],
+    account: Parameters<typeof navigateByYieldAccountState>[1],
     item = createMockItem(WETH_ADDRESS),
 ) =>
     navigateByYieldAccountState(
+        networkConfigDeps,
         account,
         item,
         mockNavigate,

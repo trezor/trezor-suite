@@ -2,6 +2,7 @@ import { useForm } from 'react-hook-form';
 
 import { act, waitFor } from '@testing-library/react';
 
+import { mockNetworkConfigDeps } from '@suite-common/networks/mocks';
 import { createTestCompositionRoot, renderHookWithStoreProvider } from '@suite-common/test-utils';
 import { type TradingSellFormProps } from '@suite-common/trading';
 import { asNetworkSymbol, getNetwork } from '@suite-common/wallet-config';
@@ -11,6 +12,8 @@ import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
 import { getComposeAddressPlaceholder } from 'src/utils/wallet/trading/tradingUtils';
 
 import { useTradingComposeTransaction } from './useTradingComposeTransaction';
+
+const networkConfigDeps = mockNetworkConfigDeps();
 
 const STALE_ADDRESS = 'stale-btc-placeholder';
 const BTC_PLACEHOLDER = 'btc-placeholder-address';
@@ -101,7 +104,7 @@ const renderComposeTransaction = () => {
             const compose = useTradingComposeTransaction({
                 type: 'sell',
                 account,
-                network: getNetwork(account.symbol),
+                network: getNetwork(networkConfigDeps, account.symbol),
                 methods,
                 setShowReserveBanner: jest.fn(),
             });

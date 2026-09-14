@@ -11,7 +11,7 @@ import {
 import { type AnalyticsDep, events } from '@suite-common/analytics';
 import * as trezorConnectPopupActions from '@suite-common/connect-popup';
 import { type DeviceRootState } from '@suite-common/device';
-import { type NetworksRootState } from '@suite-common/networks';
+import { type NetworksRootState, selectNetworkConfigAccessors } from '@suite-common/networks';
 import { type WithServices, createThunk } from '@suite-common/redux-utils';
 import { isDevEnv } from '@suite-common/suite-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
@@ -59,7 +59,10 @@ const sessionAuthenticateThunk = createThunk<
     // Support for Sign-In with Ethereum (SIWE) message, enhanced by ReCaps (ReCap Capabilities)
     try {
         const accounts = selectAllSuccessfulAccountsToList(getState());
-        const supportedNamespaces = getNamespaces(accounts);
+        const supportedNamespaces = getNamespaces(
+            selectNetworkConfigAccessors(getState()),
+            accounts,
+        );
         // @ts-expect-error: indexing with noUncheckedIndexedAccess
         const eip155Namespace: (typeof supportedNamespaces)[keyof typeof supportedNamespaces] =
             supportedNamespaces.eip155;
@@ -150,8 +153,20 @@ const sessionProposalThunk = createThunk<
     // Check supported networks
     const accounts = selectAllSuccessfulAccountsToList(getState());
     const networks: PendingConnectionProposalNetwork[] = [];
-    processNamespaces(accounts, networks, event.params.requiredNamespaces, true);
-    processNamespaces(accounts, networks, event.params.optionalNamespaces, false);
+    processNamespaces(
+        selectNetworkConfigAccessors(getState()),
+        accounts,
+        networks,
+        event.params.requiredNamespaces,
+        true,
+    );
+    processNamespaces(
+        selectNetworkConfigAccessors(getState()),
+        accounts,
+        networks,
+        event.params.optionalNamespaces,
+        false,
+    );
 
     dispatch(
         walletConnectActions.createSessionProposal({
@@ -224,7 +239,7 @@ const sessionRequestThunk = createThunk<
 });
 
 // Selected Account was switched in Suite
-type SwitchSelectedAccountThunkState = SuccessfulAccountsThunkState;
+type SwitchSelectedAccountThunkState = SuccessfulAccountsThunkState & NetworksRootState;
 
 export const switchSelectedAccountThunk = createThunk<
     void,
@@ -233,9 +248,14 @@ export const switchSelectedAccountThunk = createThunk<
 >(
     `${WALLETCONNECT_MODULE}/switchSelectedAccountThunk`,
     async ({ account, sessionTopic }, { getState }) => {
+        const networkConfigDeps = selectNetworkConfigAccessors(getState());
+
         const accounts = selectAllSuccessfulAccountsToList(getState());
-        const updatedNamespaces = getNamespaces([account, ...accounts]);
-        const network = getNetwork(account.symbol);
+        const updatedNamespaces = getNamespaces(selectNetworkConfigAccessors(getState()), [
+            account,
+            ...accounts,
+        ]);
+        const network = getNetwork(networkConfigDeps, account.symbol);
         if (!network) {
             return console.warn(`No network found for account symbol ${account.symbol}`);
         }
@@ -319,7 +339,7 @@ export const sessionProposalApproveThunk = createThunk<
             }
 
             const accounts = selectAllSuccessfulAccountsToList(getState());
-            const supportedNamespaces = getNamespaces([
+            const supportedNamespaces = getNamespaces(selectNetworkConfigAccessors(getState()), [
                 ...(selectedDefaultAccount ? [selectedDefaultAccount] : []),
                 ...accounts,
             ]);

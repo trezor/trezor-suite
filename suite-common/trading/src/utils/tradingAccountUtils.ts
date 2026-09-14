@@ -1,4 +1,5 @@
 import { type CryptoId } from 'invity-api';
+import { type NetworkConfigDeps } from '@suite-common/networks';
 
 import { type TokenDefinitionsState } from '@suite-common/token-definitions';
 import { getTokens } from '@suite-common/wallet-core';
@@ -11,6 +12,7 @@ import { type TradingType } from '../types';
 import { parseCryptoId, toTokenCryptoId } from '../utils';
 
 export const isAccountEligibleForTrade = (
+    networkConfigDeps: NetworkConfigDeps,
     account: Account,
     tradingType: TradingType,
     tokenDefinitions: TokenDefinitionsState,
@@ -23,7 +25,7 @@ export const isAccountEligibleForTrade = (
 
     const tokens =
         account.tokens && (account.tokens ?? []).length > 0
-            ? getTokens({
+            ? getTokens(networkConfigDeps, {
                   tokens: account.tokens,
                   symbol: account.symbol,
                   tokenDefinitions: tokenDefinitions[account.symbol]?.coin,
@@ -40,8 +42,13 @@ export const isAccountEligibleForTrade = (
     return (
         tokens?.shownWithBalance.some(token => {
             const id = toTokenCryptoId(
+                networkConfigDeps,
                 account.symbol,
-                getContractAddressForNetworkSymbol(account.symbol, token.contract),
+                getContractAddressForNetworkSymbol(
+                    networkConfigDeps,
+                    account.symbol,
+                    token.contract,
+                ),
             );
 
             return id === cryptoId && new BigNumber(token.balance ?? '0').gt(0);

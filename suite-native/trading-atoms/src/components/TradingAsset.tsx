@@ -1,3 +1,5 @@
+import { selectNetworkConfigDeps } from '@suite-common/networks';
+import { useServices } from '@suite-common/dependency-injection';
 import { type ReactNode } from 'react';
 
 import { type NetworkSymbol, getNetwork } from '@suite-common/wallet-config';
@@ -43,6 +45,8 @@ const rightContentStyle = prepareNativeStyle(() => ({
 }));
 
 export const TradingAsset = (props: TradingAssetProps) => {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
+
     const { applyStyle } = useNativeStyles();
     const {
         iconSize = 'medium',
@@ -101,7 +105,7 @@ export const TradingAsset = (props: TradingAssetProps) => {
                                     testID={testID ? `${testID}/network-text` : undefined}
                                     variant="body-sm"
                                 >
-                                    {getNetwork(props.networkSymbol).name}
+                                    {getNetwork(networkConfigDeps, props.networkSymbol).name}
                                 </Text>
                             ) : (
                                 <NetworkBadge symbol={props.networkSymbol} />

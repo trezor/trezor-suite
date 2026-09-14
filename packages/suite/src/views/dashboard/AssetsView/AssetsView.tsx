@@ -6,6 +6,7 @@ import { Translation } from '@suite/intl';
 import { openModal } from '@suite/modal';
 import { type AssetFiatBalance } from '@suite-common/assets';
 import { useServices } from '@suite-common/dependency-injection';
+import { selectNetworkConfigDeps } from '@suite-common/networks';
 import { selectDispatch } from '@suite-common/redux-utils';
 import {
     type NetworkSymbol,
@@ -91,6 +92,8 @@ const useAssetsFiatBalances = (
     }, []);
 
 export const AssetsView = () => {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
+
     const { dashboardAssetsGridMode } = useSelector(selectFlags);
     const enabledNetworks = useSelector(selectEnabledNetworks);
 
@@ -121,10 +124,12 @@ export const AssetsView = () => {
         assets[account.symbol] = symbolAssets;
     });
 
-    const assetSymbols = typedObjectKeys(assets).filter(symbol => isNetworkSymbol(symbol));
+    const assetSymbols = typedObjectKeys(assets).filter(symbol =>
+        isNetworkSymbol(networkConfigDeps, symbol),
+    );
 
     const assetsData: AssetData[] = assetSymbols.map((symbol): AssetData => {
-        const network = getNetwork(symbol);
+        const network = getNetwork(networkConfigDeps, symbol);
 
         const assetNativeCryptoBalance =
             assets[symbol] !== undefined
@@ -160,7 +165,7 @@ export const AssetsView = () => {
                     isSupportedTronStakingNetworkSymbol(account.symbol),
             ),
             accounts,
-            isStakeNetwork: getNetworkFeatures(symbol).includes('staking'),
+            isStakeNetwork: getNetworkFeatures(networkConfigDeps, symbol).includes('staking'),
         };
     });
 

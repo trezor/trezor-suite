@@ -1,9 +1,8 @@
 import { A, D, pipe } from '@mobily/ts-belt';
+import { selectNetworkConfigAccessors, type NetworksRootState } from '@suite-common/networks';
 
-import { type DeviceRootState } from '@suite-common/device';
 import { createWeakMapSelector, returnStableArrayIfEmpty } from '@suite-common/redux-utils';
 import {
-    type NotificationsRootState,
     type TransactionNotification,
     selectTransactionNotifications,
 } from '@suite-common/toast-notifications';
@@ -227,10 +226,13 @@ export const selectIsPhishingTransaction = (
         TransactionsRootState &
         AccountsRootState &
         FiatRatesRootState &
-        PhishingRootState,
+        PhishingRootState &
+        NetworksRootState,
     txid: string,
     accountKey: AccountKey,
 ) => {
+    const networkConfigDeps = selectNetworkConfigAccessors(state);
+
     const transaction = selectTransactionByAccountKeyAndTxid(state, accountKey, txid);
     if (!transaction) return createPhishingResult(false);
 
@@ -239,7 +241,7 @@ export const selectIsPhishingTransaction = (
 
     const dustThreshold = selectActiveDustPhishingThreshold(state);
 
-    return isPhishingTransaction({
+    return isPhishingTransaction(networkConfigDeps, {
         transaction,
         tokenDefinitions,
         historicRates,
@@ -300,21 +302,26 @@ export const selectAccountClaimTransactions = createMemoizedSelector(
         ),
 );
 
-export const selectAccountIsStakingActive = createMemoizedSelector(
-    [selectAccountClaimTransactions, selectAccountByKey],
-    (claimTransactions, account) => isAccountStakingActive(account, claimTransactions),
+export const selectAccountIsStakingActive = createWeakMapSelector(
+    [selectNetworkConfigAccessors, selectAccountClaimTransactions, selectAccountByKey],
+    (networkConfigDeps, claimTransactions, account) =>
+        isAccountStakingActive(networkConfigDeps, account, claimTransactions),
 );
 
-export const selectAnyAccountIsStakingActive = createMemoizedSelector(
-    [selectTransactions, (_: TransactionsRootState, accounts: Account[]) => accounts],
-    (transactions, accounts) =>
+export const selectAnyAccountIsStakingActive = createWeakMapSelector(
+    [
+        selectNetworkConfigAccessors,
+        selectTransactions,
+        (_: TransactionsRootState, accounts: Account[]) => accounts,
+    ],
+    (networkConfigDeps, transactions, accounts) =>
         accounts.some(account => {
             const accountTransactions = transactions[account.key] ?? [];
             const claimTransactions = accountTransactions.filter(tx =>
                 isClaimTx(tx?.ethereumSpecific?.parsedData?.methodId),
             );
 
-            return isAccountStakingActive(account, claimTransactions);
+            return isAccountStakingActive(networkConfigDeps, account, claimTransactions);
         }),
 );
 
@@ -442,19 +449,10 @@ export const selectTransactionsWithMissingRates = (
     }[];
 };
 
-const createPhishingNotificationsSelector = createWeakMapSelector.withTypes<
-    NotificationsRootState &
-        TokenDefinitionsRootState &
-        TransactionsRootState &
-        AccountsRootState &
-        FiatRatesRootState &
-        PhishingRootState &
-        DeviceRootState
->();
-
 // Returns a stable predicate; recomputed only when phishing-relevant slices change.
-const selectIsNotificationPhishing = createPhishingNotificationsSelector(
+const selectIsNotificationPhishing = createWeakMapSelector(
     [
+        selectNetworkConfigAccessors,
         selectDeviceAccounts,
         selectTransactions,
         selectPhishingTransactions,
@@ -462,7 +460,15 @@ const selectIsNotificationPhishing = createPhishingNotificationsSelector(
         selectTokenDefinitions,
         selectActiveDustPhishingThreshold,
     ],
-    (deviceAccounts, transactions, phishingMap, historicRates, tokenDefinitions, dustThreshold) =>
+    (
+        networkConfigDeps,
+        deviceAccounts,
+        transactions,
+        phishingMap,
+        historicRates,
+        tokenDefinitions,
+        dustThreshold,
+    ) =>
         (notification: TransactionNotification): boolean => {
             const account = deviceAccounts.find(
                 a => a.descriptor === notification.descriptor && a.symbol === notification.symbol,
@@ -474,7 +480,7 @@ const selectIsNotificationPhishing = createPhishingNotificationsSelector(
             );
             if (!transaction) return false;
 
-            return isPhishingTransaction({
+            return isPhishingTransaction(networkConfigDeps, {
                 transaction,
                 tokenDefinitions: tokenDefinitions?.[transaction.symbol],
                 historicRates,
@@ -484,14 +490,13 @@ const selectIsNotificationPhishing = createPhishingNotificationsSelector(
         },
 );
 
-export const selectNonPhishingTransactionNotifications = createPhishingNotificationsSelector(
+export const selectNonPhishingTransactionNotifications = createWeakMapSelector(
     [selectTransactionNotifications, selectIsNotificationPhishing],
     (notifications, isNotificationPhishing) =>
         returnStableArrayIfEmpty(notifications.filter(n => !isNotificationPhishing(n))),
 );
 
-export const selectHasUnseenNonPhishingTransactionNotifications =
-    createPhishingNotificationsSelector(
-        [selectNonPhishingTransactionNotifications],
-        notifications => notifications.some(n => !n.seen),
-    );
+export const selectHasUnseenNonPhishingTransactionNotifications = createWeakMapSelector(
+    [selectNonPhishingTransactionNotifications],
+    notifications => notifications.some(n => !n.seen),
+);

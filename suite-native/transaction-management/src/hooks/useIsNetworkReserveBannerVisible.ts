@@ -1,3 +1,5 @@
+import { selectNetworkConfigDeps } from '@suite-common/networks';
+import { useServices } from '@suite-common/dependency-injection';
 import { useSelector } from 'react-redux';
 
 import { type NetworkSymbol } from '@suite-common/wallet-config';
@@ -20,11 +22,13 @@ export const useIsNetworkReserveBannerVisible = ({
     balance,
     maxAmount,
 }: UseIsNetworkReserveBannerVisibleParams): boolean => {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
+
     const isNetworkReserveEnabled = useSelector(selectIsNetworkReserveEnabled);
 
     if (!symbol) return false;
 
-    const networkReserve = getNetworkReserve({
+    const networkReserve = getNetworkReserve(networkConfigDeps, {
         symbol,
         contractAddress,
         isEnabled: isNetworkReserveEnabled,

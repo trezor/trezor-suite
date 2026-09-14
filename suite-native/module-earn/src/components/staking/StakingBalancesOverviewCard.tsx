@@ -1,3 +1,4 @@
+import { type NetworksRootState } from '@suite-common/networks';
 import { useSelector } from 'react-redux';
 
 import {
@@ -48,7 +49,7 @@ export const StakingBalancesOverviewCard = ({
 
     const tronApr = formatTronApr(votedTronApr ?? tronMaxApr);
 
-    const rewardsBalance = useSelector((state: StakeRootState) =>
+    const rewardsBalance = useSelector((state: StakeRootState & NetworksRootState) =>
         selectRewardsBalanceByAccountKey(state, accountKey),
     );
 

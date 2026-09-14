@@ -1,5 +1,7 @@
 import { useMemo } from 'react';
 
+import { useServices } from '@suite-common/dependency-injection';
+import { selectNetworkConfigDeps } from '@suite-common/networks';
 import {
     type TradingAssetSellOption,
     type TradingComposedTransactionInfo,
@@ -41,6 +43,8 @@ export const useTradingSendAssetBalance = ({
     composedLevels,
     composedTransactionInfo,
 }: UseTradingSendAssetBalanceProps) => {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
+
     const sendCryptoAccount = useSelector(state =>
         selectAccountByKey(state, sendCryptoSelect?.accountKey),
     );
@@ -69,7 +73,7 @@ export const useTradingSendAssetBalance = ({
     );
 
     const feeInUnits = account
-        ? getFeeInUnits({
+        ? getFeeInUnits(networkConfigDeps, {
               symbol: account.symbol,
               composedLevels,
               selectedFee: composedTransactionInfo?.selectedFee,

@@ -13,6 +13,7 @@ import {
     type CoinjoinSymbol,
 } from '@suite/coinjoin';
 import { useServices } from '@suite-common/dependency-injection';
+import { selectNetworkConfigDeps } from '@suite-common/networks';
 import { selectDispatch } from '@suite-common/redux-utils';
 import { BITCOIN_ONLY_SYMBOLS } from '@suite-common/suite-constants';
 import { selectReloadAppDep } from '@suite-common/suite-types';
@@ -64,13 +65,15 @@ const CoordinatorServer = ({
     value,
     onChange,
 }: CoordinatorServerProps) => {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
+
     const options = environments.map(environment => ({
         label: environment,
         value: environment,
     }));
 
     const selectedOption = (value && options.find(option => option.value === value)) ?? options[0];
-    const networkName = getNetwork(symbol).name;
+    const networkName = getNetwork(networkConfigDeps, symbol).name;
 
     if (!isCoinjoinSupportedSymbol(symbol)) return null;
 

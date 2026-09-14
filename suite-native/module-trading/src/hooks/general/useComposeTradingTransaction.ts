@@ -1,3 +1,4 @@
+import { selectNetworkConfigDeps } from '@suite-common/networks';
 import { useCallback } from 'react';
 import { useStore } from 'react-redux';
 
@@ -37,6 +38,8 @@ type UseComposeTradingTransactionProps = {
 };
 
 export const useComposeTradingTransaction = ({ tradeType }: UseComposeTradingTransactionProps) => {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
+
     const { dispatch } = useServices(selectDispatch);
     const store = useStore<TradingTransactionRootState>();
 
@@ -79,7 +82,7 @@ export const useComposeTradingTransaction = ({ tradeType }: UseComposeTradingTra
                 composeTradingTransactionThunk({
                     tradeType,
                     account: sendAccount,
-                    network: getNetwork(sendAccount.symbol),
+                    network: getNetwork(networkConfigDeps, sendAccount.symbol),
                     feeInfo: networkFeeInfo,
                     selectedFeeLevel: draft?.selectedFee as FeeLevelLabel,
                     feePerUnit: draft?.feePerUnit,
@@ -92,7 +95,7 @@ export const useComposeTradingTransaction = ({ tradeType }: UseComposeTradingTra
         } catch (error) {
             console.error('Failed to compose trading transaction:', error);
         }
-    }, [dispatch, store, tradeType, getNetworkFeeInfo]);
+    }, [networkConfigDeps, dispatch, store, tradeType, getNetworkFeeInfo]);
 
     return { composeTradingTransaction };
 };

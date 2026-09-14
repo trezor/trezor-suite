@@ -1,12 +1,14 @@
+import { type NetworkConfigDeps } from '@suite-common/networks';
 import { invariant } from '@suite-common/suite-utils';
 import { isAccountBasedNetwork } from '@suite-common/wallet-config';
 import type { ReceiveAccount } from '@suite-native/trading-types';
 
 export const getReceiveAccountFromAccountAndAddressString = (
+    networkConfigDeps: NetworkConfigDeps,
     account: ReceiveAccount['account'],
     receiveAddress?: string,
 ): ReceiveAccount => {
-    if (!receiveAddress || isAccountBasedNetwork(account.symbol)) {
+    if (!receiveAddress || isAccountBasedNetwork(networkConfigDeps, account.symbol)) {
         return { account };
     }
 

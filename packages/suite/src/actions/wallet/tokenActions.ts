@@ -1,5 +1,6 @@
 import { type Dispatch, type UnknownAction } from '@reduxjs/toolkit';
 
+import { type NetworksRootState, selectNetworkConfigAccessors } from '@suite-common/networks';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { accountsActions } from '@suite-common/wallet-core';
 import * as accountUtils from '@suite-common/wallet-utils';
@@ -7,11 +8,14 @@ import { type TokenInfo } from '@trezor/connect';
 
 import { type Account } from 'src/types/wallet';
 
-export const addToken =
+type AddTokenThunkState = NetworksRootState;
+
+export const addTokenThunk =
     (account: Account, tokenInfo: TokenInfo[], options?: { showSuccessToast?: boolean }) =>
-    (dispatch: Dispatch<UnknownAction>) => {
+    (dispatch: Dispatch<UnknownAction>, getState: () => AddTokenThunkState) => {
+        const networkConfigDeps = selectNetworkConfigAccessors(getState());
         dispatch(
-            accountsActions.updateAccount({
+            accountsActions.updateAccount(networkConfigDeps, {
                 ...account,
                 tokens: (account.tokens || []).concat(accountUtils.enhanceTokens(tokenInfo)),
             }),

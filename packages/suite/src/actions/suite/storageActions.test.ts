@@ -13,7 +13,7 @@ import { initialMetadataState, metadataReducer } from '@suite/metadata';
 import { suiteSettingsInitialState } from '@suite/settings';
 import { prepareSuiteSyncReducer } from '@suite/suite-sync';
 import { deviceActions, selectDevices, selectDevicesCount } from '@suite-common/device';
-import { mockNetworksState } from '@suite-common/networks/mocks';
+import { mockNetworkConfigDeps, mockNetworksState } from '@suite-common/networks/mocks';
 import { asEncryptedHex } from '@suite-common/platform-encryption';
 import { prepareReceiveReducer } from '@suite-common/receive';
 import { mockActionType, mockReducer } from '@suite-common/redux-utils/mocks';
@@ -44,11 +44,13 @@ import {
     walletSettingsReducer,
 } from 'src/reducers/wallet';
 import graphReducer from 'src/reducers/wallet/graphReducer';
-import { db } from 'src/storage';
+import { getSuiteDB } from 'src/storage';
 import { preloadStore } from 'src/support/suite/preloadStore';
 import { type AcquiredDevice, type AppState } from 'src/types/suite';
 
 import * as storageActions from './storageActions';
+
+const networkConfigDeps = mockNetworkConfigDeps();
 
 const btcSymbol = asNetworkSymbol('btc');
 const ltcSymbol = asNetworkSymbol('ltc');
@@ -210,7 +212,7 @@ const getInitialState = (prevState?: Partial<PartialState>, action?: any) => ({
 });
 
 type State = ReturnType<typeof getInitialState>;
-const middlewares = [storageMiddleware];
+const middlewares = [storageMiddleware.bind(null, networkConfigDeps)];
 
 const mockStore = (preloadedState: State) =>
     createTestStore({
@@ -250,12 +252,12 @@ describe('Storage actions', () => {
         const store = mockStore(getInitialState());
 
         // save wallet settings to the db
-        await store.dispatch(storageActions.saveWalletSettingsThunk());
+        await store.dispatch(storageActions.saveWalletSettingsThunk(networkConfigDeps));
         // change local currency in the reducer, changes should be synced to the db via storageMiddleware
         await store.dispatch(discoveryActions.setBaseCurrency('czk'));
         const { settings } = store.getState().wallet;
         // TODO: Handle preloadStore returning undefined when IndexedDB is unavailable.
-        store.dispatch((await preloadStore())!);
+        store.dispatch((await preloadStore(networkConfigDeps))!);
 
         // check if stored local currency is 'czk'
         expect(store.getState().wallet.settings.localCurrency).toEqual('czk');
@@ -267,7 +269,7 @@ describe('Storage actions', () => {
         const store = mockStore(getInitialState());
         const f = global.fetch;
         global.fetch = mockFetch({ TR_ID: 'Message' });
-        await store.dispatch(storageActions.saveSuiteSettingsThunk());
+        await store.dispatch(storageActions.saveSuiteSettingsThunk(networkConfigDeps));
         await store.dispatch(initialRunCompletedThunk({ isFreshDeviceSetup: true }));
         await store.dispatch(markNewContentIndicatorAsSeen(NewContentIndicatorId.Activity26_8));
         await store.dispatch(
@@ -276,7 +278,7 @@ describe('Storage actions', () => {
                 isSeen: true,
             }),
         );
-        store.dispatch((await preloadStore())!);
+        store.dispatch((await preloadStore(networkConfigDeps))!);
 
         expect(store.getState().flags.initialRun).toEqual(false);
         expect(store.getState().flags.seenNewContentIndicators).toEqual({
@@ -292,18 +294,18 @@ describe('Storage actions', () => {
         const accountKey = mockAccountKey({ descriptor: 'accountKey' });
 
         // @ts-expect-error partial params
-        await storageActions.saveDraft({ address: 'a' }, accountKey);
-        store.dispatch((await preloadStore())!);
+        await storageActions.saveDraft(networkConfigDeps, { address: 'a' }, accountKey);
+        store.dispatch((await preloadStore(networkConfigDeps))!);
         expect(store.getState().wallet.send.drafts).toEqual({ [accountKey]: { address: 'a' } });
 
         // @ts-expect-error partial params
-        await storageActions.saveDraft({ address: 'b' }, accountKey);
-        store.dispatch((await preloadStore())!);
+        await storageActions.saveDraft(networkConfigDeps, { address: 'b' }, accountKey);
+        store.dispatch((await preloadStore(networkConfigDeps))!);
         expect(store.getState().wallet.send.drafts).toEqual({ [accountKey]: { address: 'b' } });
 
-        await storageActions.removeDraft(accountKey);
+        await storageActions.removeDraft(networkConfigDeps, accountKey);
         store = mockStore(getInitialState());
-        store.dispatch((await preloadStore())!);
+        store.dispatch((await preloadStore(networkConfigDeps))!);
         expect(store.getState().wallet.send.drafts).toEqual({});
     });
 
@@ -329,15 +331,25 @@ describe('Storage actions', () => {
         );
 
         // add txs
-        store.dispatch(transactionsActions.addTransaction({ transactions: [tx1], account: acc1 }));
-        store.dispatch(transactionsActions.addTransaction({ transactions: [tx2], account: acc2 }));
+        store.dispatch(
+            transactionsActions.addTransaction(networkConfigDeps, {
+                transactions: [tx1],
+                account: acc1,
+            }),
+        );
+        store.dispatch(
+            transactionsActions.addTransaction(networkConfigDeps, {
+                transactions: [tx2],
+                account: acc2,
+            }),
+        );
 
         // remember devices
-        await store.dispatch(storageActions.rememberDeviceThunk(dev1));
-        await store.dispatch(storageActions.rememberDeviceThunk(dev2));
-        await store.dispatch(storageActions.rememberDeviceThunk(dev2Instance1));
+        await store.dispatch(storageActions.rememberDeviceThunk(networkConfigDeps, dev1));
+        await store.dispatch(storageActions.rememberDeviceThunk(networkConfigDeps, dev2));
+        await store.dispatch(storageActions.rememberDeviceThunk(networkConfigDeps, dev2Instance1));
 
-        store.dispatch((await preloadStore())!);
+        store.dispatch((await preloadStore(networkConfigDeps))!);
 
         // stored devices
         const load1 = store.getState();
@@ -370,9 +382,9 @@ describe('Storage actions', () => {
         expect(load1.wallet.accounts[1]).toEqual(acc2);
 
         // forget dev1
-        await store.dispatch(storageActions.forgetDeviceThunk(dev1));
+        await store.dispatch(storageActions.forgetDeviceThunk(networkConfigDeps, dev1));
         store = mockStore(getInitialState());
-        store.dispatch((await preloadStore())!);
+        store.dispatch((await preloadStore(networkConfigDeps))!);
 
         const load2 = store.getState();
         // device deleted, dev2 and dev2Instance1 should still be there
@@ -392,9 +404,9 @@ describe('Storage actions', () => {
         expect(load2.wallet.accounts.length).toEqual(1);
         expect(load2.wallet.accounts[0]?.deviceState).toEqual(dev2.state?.staticSessionId);
         // forget device dev1 along with its instances
-        await store.dispatch(storageActions.forgetDeviceThunk(dev2));
-        await store.dispatch(storageActions.forgetDeviceThunk(dev2Instance1));
-        store.dispatch((await preloadStore())!);
+        await store.dispatch(storageActions.forgetDeviceThunk(networkConfigDeps, dev2));
+        await store.dispatch(storageActions.forgetDeviceThunk(networkConfigDeps, dev2Instance1));
+        store.dispatch((await preloadStore(networkConfigDeps))!);
         expect(selectDevicesCount(store.getState())).toEqual(0);
     });
 
@@ -414,17 +426,27 @@ describe('Storage actions', () => {
         );
 
         // add txs
-        store.dispatch(transactionsActions.addTransaction({ transactions: [tx1], account: acc1 }));
-        store.dispatch(transactionsActions.addTransaction({ transactions: [tx2], account: acc2 }));
+        store.dispatch(
+            transactionsActions.addTransaction(networkConfigDeps, {
+                transactions: [tx1],
+                account: acc1,
+            }),
+        );
+        store.dispatch(
+            transactionsActions.addTransaction(networkConfigDeps, {
+                transactions: [tx2],
+                account: acc2,
+            }),
+        );
 
         // store in db
-        await store.dispatch(storageActions.rememberDeviceThunk(dev1));
-        await store.dispatch(storageActions.rememberDeviceThunk(dev2));
+        await store.dispatch(storageActions.rememberDeviceThunk(networkConfigDeps, dev1));
+        await store.dispatch(storageActions.rememberDeviceThunk(networkConfigDeps, dev2));
 
         // remove txs for acc 1
-        await storageActions.removeAccountTransactions(acc1);
+        await storageActions.removeAccountTransactions(networkConfigDeps, acc1);
         store = mockStore(getInitialState());
-        store.dispatch((await preloadStore())!);
+        store.dispatch((await preloadStore(networkConfigDeps))!);
 
         const state = store.getState();
 
@@ -435,8 +457,8 @@ describe('Storage actions', () => {
         // acc2 txs are still there
         const acc2Txs = getAccountTransactions(acc2.key, state.wallet.transactions.transactions);
         expect(acc2Txs.length).toEqual(1);
-        await store.dispatch(storageActions.forgetDeviceThunk(dev1));
-        await store.dispatch(storageActions.forgetDeviceThunk(dev2));
+        await store.dispatch(storageActions.forgetDeviceThunk(networkConfigDeps, dev1));
+        await store.dispatch(storageActions.forgetDeviceThunk(networkConfigDeps, dev2));
     });
 
     it('should update device settings in the db', async () => {
@@ -457,7 +479,7 @@ describe('Storage actions', () => {
         );
 
         // store device in db
-        await store.dispatch(storageActions.rememberDeviceThunk(dev1));
+        await store.dispatch(storageActions.rememberDeviceThunk(networkConfigDeps, dev1));
 
         // Change device label inside a reducer. This is a plain action, and storageMiddleware updates the db.
         await store.dispatch(
@@ -469,7 +491,7 @@ describe('Storage actions', () => {
 
         // Hack - because the db operation is done in a middleware, it is not awaitable via dispatch
         await new Promise(resolve => setTimeout(resolve, 100));
-        store.dispatch((await preloadStore())!);
+        store.dispatch((await preloadStore(networkConfigDeps))!);
         expect(selectDevices(store.getState())[0]?.label).toBe('New Label');
     });
 
@@ -513,10 +535,10 @@ describe('Storage actions', () => {
             }),
         );
         // store device in db
-        await store.dispatch(storageActions.rememberDeviceThunk(dev1));
+        await store.dispatch(storageActions.rememberDeviceThunk(networkConfigDeps, dev1));
 
         // verify that graph data are stored
-        store.dispatch((await preloadStore())!);
+        store.dispatch((await preloadStore(networkConfigDeps))!);
         expect(store.getState().wallet.graph.data.length).toBe(2);
 
         // changeCoinVisibility awaits updateConnectSettings; mock it as a no-op success.
@@ -530,7 +552,7 @@ describe('Storage actions', () => {
         );
 
         // verify that graph data for acc1 were removed
-        store.dispatch((await preloadStore())!);
+        store.dispatch((await preloadStore(networkConfigDeps))!);
         expect(store.getState().wallet.graph.data.length).toBe(1);
         expect(store.getState().wallet.graph.data[0]?.account.symbol).toBe('ltc');
     });
@@ -549,11 +571,15 @@ describe('Storage actions', () => {
 
         await new Promise(resolve => setTimeout(resolve, 100));
 
-        expect(await db.getItemByPK('suiteSyncOwners', deviceStaticId)).toEqual('owner-key');
+        expect(
+            await getSuiteDB(networkConfigDeps).getItemByPK('suiteSyncOwners', deviceStaticId),
+        ).toEqual('owner-key');
 
-        await store.dispatch(storageActions.forgetDeviceThunk(dev1));
+        await store.dispatch(storageActions.forgetDeviceThunk(networkConfigDeps, dev1));
 
-        expect(await db.getItemByPK('suiteSyncOwners', deviceStaticId)).toBeUndefined();
+        expect(
+            await getSuiteDB(networkConfigDeps).getItemByPK('suiteSyncOwners', deviceStaticId),
+        ).toBeUndefined();
     });
 
     it('should remove legacy labels migration flag on forgetDevice', async () => {
@@ -582,11 +608,11 @@ describe('Storage actions', () => {
             }),
         );
 
-        await store.dispatch(storageActions.saveMetadataSettingsThunk());
-        await store.dispatch(storageActions.forgetDeviceThunk(forgottenDevice));
+        await store.dispatch(storageActions.saveMetadataSettingsThunk(networkConfigDeps));
+        await store.dispatch(storageActions.forgetDeviceThunk(networkConfigDeps, forgottenDevice));
 
         store = mockStore(getInitialState());
-        store.dispatch((await preloadStore())!);
+        store.dispatch((await preloadStore(networkConfigDeps))!);
 
         expect(store.getState().metadata.hasLegacyLabelsMigrated).toEqual({
             [keptWalletDescriptor]: true,

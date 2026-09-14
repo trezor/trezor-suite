@@ -1,5 +1,6 @@
 import { type CryptoId } from 'invity-api';
 
+import { type NetworkConfigDeps } from '@suite-common/networks';
 import { getCryptoId, groupTradeableAssetsByTradability } from '@suite-common/trading';
 import {
     type BaseCurrencyAmount,
@@ -51,20 +52,23 @@ export type BuildGroupedAssetOptionsProps = {
     expandedGroupKeys: readonly AssetGroupKey[];
 };
 
-export const buildGroupedAssetOptions = ({
-    assetRows,
-    tradableCryptoIds,
-    threshold,
-    fiatRates,
-    baseCurrencyCode,
-    expandedGroupKeys,
-}: BuildGroupedAssetOptionsProps): AssetPickerOption[] => {
+export const buildGroupedAssetOptions = (
+    networkConfigDeps: NetworkConfigDeps,
+    {
+        assetRows,
+        tradableCryptoIds,
+        threshold,
+        fiatRates,
+        baseCurrencyCode,
+        expandedGroupKeys,
+    }: BuildGroupedAssetOptionsProps,
+): AssetPickerOption[] => {
     const getFiatBalance = (row: AssetRowOption): BaseCurrencyAmount | null => {
         if (row.type === 'token') {
             return row.token.fiatRate ? asBaseCurrencyAmount(row.token.fiatValue) : null;
         }
 
-        return getAccountFiatBalance({
+        return getAccountFiatBalance(networkConfigDeps, {
             account: row.account,
             baseCurrencyCode,
             rates: fiatRates,
@@ -75,7 +79,11 @@ export const buildGroupedAssetOptions = ({
 
     const getIsTradeable = (row: AssetRowOption) =>
         tradableCryptoIds.has(
-            getCryptoId(row.account.symbol, row.type === 'token' ? row.token.contract : undefined),
+            getCryptoId(
+                networkConfigDeps,
+                row.account.symbol,
+                row.type === 'token' ? row.token.contract : undefined,
+            ),
         );
 
     const options: AssetPickerOption[] = [];

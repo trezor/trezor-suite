@@ -1,5 +1,7 @@
 import { useMemo } from 'react';
 
+import { useServices } from '@suite-common/dependency-injection';
+import { type NetworkConfigDeps, selectNetworkConfigDeps } from '@suite-common/networks';
 import { getNetworkByEvmChainId } from '@suite-common/wallet-config';
 import {
     type RatesByKey,
@@ -21,6 +23,7 @@ import { BigNumber } from '@trezor/utils';
 import { type MerklChainsRewards } from './useGetMerklRewards';
 
 function extendMerklRewardsWithFiat(
+    networkConfigDeps: NetworkConfigDeps,
     chainsRewards: MerklChainsRewards = [],
     baseCurrency: BaseCurrencyCode,
     currentFiatRates: RatesByKey | undefined,
@@ -35,7 +38,7 @@ function extendMerklRewardsWithFiat(
         }
 
         return toFiatCurrency({
-            amount: subunitsToUnits({
+            amount: subunitsToUnits(networkConfigDeps, {
                 value: asAmountSubunit(
                     typeof valueInSubunits === 'string'
                         ? new BigNumber(valueInSubunits)
@@ -50,7 +53,7 @@ function extendMerklRewardsWithFiat(
     const missingRateTickers: TickerId[] = [];
     const chainsRewardsWithFiat = chainsRewards
         .map(({ chainId, rewards, ...rest }) => {
-            const network = getNetworkByEvmChainId(chainId);
+            const network = getNetworkByEvmChainId(networkConfigDeps, chainId);
 
             const rewardsWithFiat = rewards.map(reward => {
                 const claimable = asBaseCurrencyAmount(new BigNumber(reward.claimable));
@@ -69,6 +72,7 @@ function extendMerklRewardsWithFiat(
                 }
 
                 const tokenAddress = getContractAddressForNetworkSymbol(
+                    networkConfigDeps,
                     network.symbol,
                     reward.token.address,
                 );
@@ -78,7 +82,7 @@ function extendMerklRewardsWithFiat(
                     toTokenAddress(tokenAddress),
                 );
                 const rate = currentFiatRates?.[fiatRateKey]?.rate;
-                const ticker = getTickerFromFiatRateKey(fiatRateKey);
+                const ticker = getTickerFromFiatRateKey(networkConfigDeps, fiatRateKey);
 
                 if (rate === undefined && ticker) {
                     missingRateTickers.push(ticker);
@@ -121,9 +125,17 @@ export function useExtendMerklRewardsWithFiat({
     baseCurrency,
     currentFiatRates,
 }: UseExtendMerklRewardsWithFiatProps) {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
+
     return useMemo(
-        () => extendMerklRewardsWithFiat(chainsRewards, baseCurrency, currentFiatRates),
-        [chainsRewards, baseCurrency, currentFiatRates],
+        () =>
+            extendMerklRewardsWithFiat(
+                networkConfigDeps,
+                chainsRewards,
+                baseCurrency,
+                currentFiatRates,
+            ),
+        [networkConfigDeps, chainsRewards, baseCurrency, currentFiatRates],
     );
 }
 

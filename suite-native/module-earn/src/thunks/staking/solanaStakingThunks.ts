@@ -1,3 +1,4 @@
+import { selectNetworkConfigAccessors, type NetworksRootState } from '@suite-common/networks';
 import { type DeviceRootState, selectSelectedDevice } from '@suite-common/device';
 import { createThunk } from '@suite-common/redux-utils';
 import {
@@ -25,7 +26,8 @@ const SIGN_LOG_PREFIX = 'signSolanaStakingTransactionThunk';
 
 export type SignSolanaStakingTransactionThunkState = ResolveSolanaStakingContextState &
     DeviceRootState &
-    WalletSettingsRootState;
+    WalletSettingsRootState &
+    NetworksRootState;
 
 export const signSolanaStakingTransactionThunk = createThunk<
     void,
@@ -44,8 +46,10 @@ export const signSolanaStakingTransactionThunk = createThunk<
         { accountKey, stakeType, precomposedTransaction },
         { dispatch, getState, rejectWithValue },
     ) => {
+        const networkConfigDeps = selectNetworkConfigAccessors(getState());
+
         try {
-            const prepared = await prepareSolanaStakingSignContext(getState(), {
+            const prepared = await prepareSolanaStakingSignContext(networkConfigDeps, getState(), {
                 accountKey,
                 stakeType,
                 precomposedTransaction,

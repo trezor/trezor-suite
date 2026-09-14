@@ -1,3 +1,5 @@
+import { mockNetworkConfigDeps } from '@suite-common/networks/mocks';
+
 import { type ChainRewardsWithFiat } from '@suite-common/earn-stablecoin-api';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
 import {
@@ -18,6 +20,8 @@ import {
     getUniqueStablecoinYieldClaimTokens,
 } from './stablecoinYieldClaimSummaryUtils';
 import { type YieldPositionItem } from '../../types';
+
+const networkConfigDeps = mockNetworkConfigDeps();
 
 const ethSymbol = asNetworkSymbol('eth');
 
@@ -104,7 +108,7 @@ const createChainRewards = ({
 
 describe('stablecoinYieldClaimSummaryUtils', () => {
     it('keeps claimable summaries when fiat values are missing and ignores zero raw claimables', () => {
-        const summaries = buildStablecoinYieldClaimSummaries({
+        const summaries = buildStablecoinYieldClaimSummaries(networkConfigDeps, {
             accounts: [ethereumAccount, anotherEthereumAccount],
             chainsRewardsWithFiat: [
                 createChainRewards({
@@ -140,7 +144,7 @@ describe('stablecoinYieldClaimSummaryUtils', () => {
     });
 
     it('builds summaries for accounts without any receipt-token balance (fully exited vaults)', () => {
-        const summaries = buildStablecoinYieldClaimSummaries({
+        const summaries = buildStablecoinYieldClaimSummaries(networkConfigDeps, {
             accounts: [anotherEthereumAccount, exitedEthereumAccount],
             chainsRewardsWithFiat: [
                 createChainRewards({
@@ -184,11 +188,11 @@ describe('stablecoinYieldClaimSummaryUtils', () => {
                 ],
             }),
         ];
-        const summaries = buildStablecoinYieldClaimSummaries({
+        const summaries = buildStablecoinYieldClaimSummaries(networkConfigDeps, {
             accounts: [ethereumAccount],
             chainsRewardsWithFiat,
         });
-        const accountRewards = getStablecoinYieldAccountRewards({
+        const accountRewards = getStablecoinYieldAccountRewards(networkConfigDeps, {
             account: ethereumAccount,
             chainsRewardsWithFiat,
         });
@@ -224,7 +228,7 @@ describe('stablecoinYieldClaimSummaryUtils', () => {
             apy: 4.2,
         });
 
-        const claimSummaries = buildStablecoinYieldClaimSummaries({
+        const claimSummaries = buildStablecoinYieldClaimSummaries(networkConfigDeps, {
             accounts: [ethereumAccount, exitedEthereumAccount],
             chainsRewardsWithFiat: [
                 createChainRewards({

@@ -1,3 +1,4 @@
+import { type NetworkConfigDeps } from '@suite-common/networks';
 import { type Account, toTokenAddress } from '@suite-common/wallet-types';
 import { isWrappedNativeToken } from '@trezor/network-ethereum-suite-common';
 
@@ -21,6 +22,7 @@ export type ChooseAccountBalanceData =
       };
 
 export const getChooseAccountBalanceData = (
+    networkConfigDeps: NetworkConfigDeps,
     account: Account,
     tokenBalance?: ChooseAccountTokenBalance,
 ): ChooseAccountBalanceData => {
@@ -37,11 +39,19 @@ export const getChooseAccountBalanceData = (
     if (isWrappedNativeToken(account.symbol, tokenBalance.tokenContractAddress)) {
         return {
             type: 'account',
-            value: getYieldVaultDepositableBalance(account, tokenBalance.tokenContractAddress),
+            value: getYieldVaultDepositableBalance(
+                networkConfigDeps,
+                account,
+                tokenBalance.tokenContractAddress,
+            ),
         };
     }
 
-    const token = getAccountTokenByContract(account, tokenBalance.tokenContractAddress);
+    const token = getAccountTokenByContract(
+        networkConfigDeps,
+        account,
+        tokenBalance.tokenContractAddress,
+    );
 
     return {
         type: 'token',

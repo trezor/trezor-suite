@@ -1,3 +1,5 @@
+import { selectNetworkConfigDeps } from '@suite-common/networks';
+import { useServices } from '@suite-common/dependency-injection';
 import { type ReactNode, useMemo } from 'react';
 import { useSelector } from 'react-redux';
 
@@ -33,12 +35,14 @@ const NetworkItemSection = ({
 );
 
 export const SelectableNetworkList = ({ onSelectItem }: SelectableAssetListProps) => {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
+
     const symbols = useSelector(selectDiscoveryNetworkSymbols);
     const areTestnetsEnabled = useSelector(selectAreTestnetsEnabled);
 
     const [testnetSymbols, mainnetSymbols] = useMemo(
-        () => arrayPartition(symbols, isTestnet),
-        [symbols],
+        () => arrayPartition(symbols, isTestnet.bind(null, networkConfigDeps)),
+        [networkConfigDeps, symbols],
     );
 
     return (

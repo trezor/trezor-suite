@@ -1,3 +1,5 @@
+import { selectNetworkConfigDeps } from '@suite-common/networks';
+import { useServices } from '@suite-common/dependency-injection';
 import { useCallback, useEffect, useMemo } from 'react';
 import { useSelector } from 'react-redux';
 
@@ -34,6 +36,8 @@ export const useMyAssetPickerNavigation = ({
     onAssetSelect,
     tradingType,
 }: UseMyAssetPickerNavigationProps) => {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
+
     const navigation = useNavigation<NavigationProp>();
     const { params } = useRoute<RouteProp<TradingStackParamList, TradingStackRoutes.Trading>>();
     const routeTradingType = params?.tradingType;
@@ -65,7 +69,7 @@ export const useMyAssetPickerNavigation = ({
 
         const tradeableAsset =
             selectedAsset?.cryptoId && coinInfo
-                ? coinInfoToTradeableAsset(selectedAsset.cryptoId, coinInfo)
+                ? coinInfoToTradeableAsset(networkConfigDeps, selectedAsset.cryptoId, coinInfo)
                 : undefined;
 
         if (!accountSection || !tradeableAsset) {
@@ -78,6 +82,7 @@ export const useMyAssetPickerNavigation = ({
         });
         onAssetSelect(tradeableAsset, accountSection.sectionData);
     }, [
+        networkConfigDeps,
         accountSection,
         coinInfo,
         navigation,

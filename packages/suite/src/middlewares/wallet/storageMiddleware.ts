@@ -31,6 +31,7 @@ import {
 import { discreetModeActions } from '@suite-common/discreet-mode';
 import { firmwareActions } from '@suite-common/firmware';
 import { messageSystemActions } from '@suite-common/message-system';
+import { type NetworkConfigDeps } from '@suite-common/networks';
 import { receiveActions } from '@suite-common/receive';
 import { type ActionFromMatcher, type Dispatch, type TypeGuard } from '@suite-common/redux-utils';
 import {
@@ -85,7 +86,7 @@ import { accountGraphFail, accountGraphSuccess } from 'src/actions/wallet/graphA
 import { type SuiteState } from 'src/reducers/suite/suiteReducer';
 import { selectGraph } from 'src/reducers/wallet/graphReducer';
 import { type GraphState } from 'src/reducers/wallet/graphReducer';
-import { db } from 'src/storage';
+import { getSuiteDB } from 'src/storage';
 
 type StorageMiddlewareState = AccountsRootState &
     DeviceRootState &
@@ -136,7 +137,9 @@ const defineRememberedDeviceHandler = <Matchers extends ReadonlyArray<TypeGuard<
 // Device-scoped data must be persisted only for remembered devices. Do not check
 // getIsDeviceRemembered by hand — register a handler here and the loop in the middleware below
 // applies the check based on the declared getDevice.
-const rememberedDeviceHandlers: RememberedDeviceHandler[] = [
+const rememberedDeviceHandlers = (
+    networkConfigDeps: NetworkConfigDeps,
+): RememberedDeviceHandler[] => [
     defineRememberedDeviceHandler({
         match: [
             accountsActions.createAccount.match,
@@ -153,8 +156,8 @@ const rememberedDeviceHandlers: RememberedDeviceHandler[] = [
                 return;
             }
 
-            storageActions.saveAccounts([account]);
-            dispatch(storageActions.saveCoinjoinAccountThunk(account.key));
+            storageActions.saveAccounts(networkConfigDeps, [account]);
+            dispatch(storageActions.saveCoinjoinAccountThunk(networkConfigDeps, account.key));
         },
     }),
     defineRememberedDeviceHandler({
@@ -172,7 +175,7 @@ const rememberedDeviceHandlers: RememberedDeviceHandler[] = [
                 isAccountSuccessful,
             );
 
-            storageActions.saveAccounts(accounts);
+            storageActions.saveAccounts(networkConfigDeps, accounts);
         },
     }),
     defineRememberedDeviceHandler({
@@ -184,7 +187,7 @@ const rememberedDeviceHandlers: RememberedDeviceHandler[] = [
                 return;
             }
 
-            storageActions.saveAccounts([action.payload]);
+            storageActions.saveAccounts(networkConfigDeps, [action.payload]);
         },
     }),
     defineRememberedDeviceHandler({
@@ -195,14 +198,24 @@ const rememberedDeviceHandlers: RememberedDeviceHandler[] = [
         ],
         getDevice: (action, state) => getDeviceByAccountKey(action.payload.accountKey, state),
         save: ({ action }, { dispatch }) => {
-            dispatch(storageActions.saveAccountReceiveThunk(action.payload.accountKey));
+            dispatch(
+                storageActions.saveAccountReceiveThunk(
+                    networkConfigDeps,
+                    action.payload.accountKey,
+                ),
+            );
         },
     }),
     defineRememberedDeviceHandler({
         match: [earnOnboardingActions.confirmEarnOnboarding.match],
         getDevice: (action, state) => getDeviceByAccountKey(action.payload.accountKey, state),
         save: ({ action }, { dispatch }) => {
-            dispatch(storageActions.saveEarnOnboardingThunk(action.payload.accountKey));
+            dispatch(
+                storageActions.saveEarnOnboardingThunk(
+                    networkConfigDeps,
+                    action.payload.accountKey,
+                ),
+            );
         },
     }),
     defineRememberedDeviceHandler({
@@ -215,8 +228,8 @@ const rememberedDeviceHandlers: RememberedDeviceHandler[] = [
         save: ({ action }, { dispatch }) => {
             const { account } = action.payload;
 
-            storageActions.removeAccountTransactions(account);
-            dispatch(storageActions.saveAccountTransactionsThunk(account));
+            storageActions.removeAccountTransactions(networkConfigDeps, account);
+            dispatch(storageActions.saveAccountTransactionsThunk(networkConfigDeps, account));
         },
     }),
     defineRememberedDeviceHandler({
@@ -226,7 +239,7 @@ const rememberedDeviceHandlers: RememberedDeviceHandler[] = [
             const account = selectAccountByKey(getState(), action.payload.key);
 
             if (account) {
-                dispatch(storageActions.saveAccountTransactionsThunk(account));
+                dispatch(storageActions.saveAccountTransactionsThunk(networkConfigDeps, account));
             }
         },
     }),
@@ -247,11 +260,17 @@ const rememberedDeviceHandlers: RememberedDeviceHandler[] = [
                 return;
             }
 
-            storageActions.removeAccountHistoricRates(account.key);
+            storageActions.removeAccountHistoricRates(networkConfigDeps, account.key);
 
             const historicRates = selectHistoricFiatRates(getState());
             if (historicRates) {
-                dispatch(storageActions.saveAccountHistoricRatesThunk(account.key, historicRates));
+                dispatch(
+                    storageActions.saveAccountHistoricRatesThunk(
+                        networkConfigDeps,
+                        account.key,
+                        historicRates,
+                    ),
+                );
             }
         },
     }),
@@ -265,17 +284,17 @@ const rememberedDeviceHandlers: RememberedDeviceHandler[] = [
                 return;
             }
 
-            (storageActions.saveAccounts([]) ?? Promise.resolve())
+            (storageActions.saveAccounts(networkConfigDeps, []) ?? Promise.resolve())
                 // This is a bit strange workaround to ensure that device data will be stored after all account-related db transactions are settled,
                 // in order not to persist successful discovery before persisting all its accounts
-                .then(() => storageActions.saveDevice(device));
+                .then(() => storageActions.saveDevice(networkConfigDeps, device));
         },
     }),
     defineRememberedDeviceHandler({
         match: [suiteSettingsActions.setCoinjoinReceiveWarningHidden.match],
         getDevice: (_action, state) => selectSelectedDevice(state),
         save: (_params, { dispatch }) => {
-            dispatch(storageActions.saveSuiteSettingsThunk());
+            dispatch(storageActions.saveSuiteSettingsThunk(networkConfigDeps));
         },
     }),
     defineRememberedDeviceHandler({
@@ -293,7 +312,7 @@ const rememberedDeviceHandlers: RememberedDeviceHandler[] = [
                     d.account.symbol === account.symbol,
             );
             if (graphEntry) {
-                storageActions.saveGraph([graphEntry]);
+                storageActions.saveGraph(networkConfigDeps, [graphEntry]);
             }
         },
     }),
@@ -302,7 +321,7 @@ const rememberedDeviceHandlers: RememberedDeviceHandler[] = [
         getDevice: (action, state) =>
             selectDeviceByStaticSessionId(state, action.payload.deviceState),
         save: ({ device }, { dispatch }) => {
-            dispatch(storageActions.saveDeviceMetadataErrorThunk(device));
+            dispatch(storageActions.saveDeviceMetadataErrorThunk(networkConfigDeps, device));
         },
     }),
     defineRememberedDeviceHandler({
@@ -312,7 +331,7 @@ const rememberedDeviceHandlers: RememberedDeviceHandler[] = [
         getDevice: (action, state) =>
             selectDeviceByStaticSessionId(state, action.payload.deviceState),
         save: ({ action, device }) => {
-            storageActions.saveDevice({
+            storageActions.saveDevice(networkConfigDeps, {
                 ...device,
                 metadata: action.payload.metadata,
             });
@@ -324,15 +343,21 @@ const rememberedDeviceHandlers: RememberedDeviceHandler[] = [
             getDeviceByAccountKey(action.payload.accountKey as AccountKey, state),
         save: ({ action }, { dispatch }) => {
             dispatch(
-                storageActions.saveCoinjoinAccountThunk(action.payload.accountKey as AccountKey),
+                storageActions.saveCoinjoinAccountThunk(
+                    networkConfigDeps,
+                    action.payload.accountKey as AccountKey,
+                ),
             );
         },
     }),
 ];
 
-export const storageMiddleware = (api: MiddlewareAPI<Dispatch, StorageMiddlewareState>) => {
-    db.onBlocking = () => api.dispatch(storageError('blocking'));
-    db.onBlocked = () => api.dispatch(storageError('blocked'));
+export const storageMiddleware = (
+    networkConfigDeps: NetworkConfigDeps,
+    api: MiddlewareAPI<Dispatch, StorageMiddlewareState>,
+) => {
+    getSuiteDB(networkConfigDeps).onBlocking = () => api.dispatch(storageError('blocking'));
+    getSuiteDB(networkConfigDeps).onBlocked = () => api.dispatch(storageError('blocked'));
 
     return (next: ReduxDispatch<UnknownAction>) =>
         (action: UnknownAction): UnknownAction => {
@@ -341,7 +366,7 @@ export const storageMiddleware = (api: MiddlewareAPI<Dispatch, StorageMiddleware
 
             // IMPORTANT: The single place enforcing that device-scoped data is persisted only for
             //            remembered devices (see rememberedDeviceHandlers above).
-            rememberedDeviceHandlers.forEach(({ match, getDevice, save }) => {
+            rememberedDeviceHandlers(networkConfigDeps).forEach(({ match, getDevice, save }) => {
                 if (!match.some(matcher => matcher(action))) {
                     return;
                 }
@@ -354,39 +379,45 @@ export const storageMiddleware = (api: MiddlewareAPI<Dispatch, StorageMiddleware
             });
 
             if (accountsActions.removeAccount.match(action)) {
-                action.payload.forEach(storageActions.removeAccountWithDependencies(api.getState));
+                action.payload.forEach(
+                    storageActions.removeAccountWithDependencies(networkConfigDeps, api.getState),
+                );
             }
 
             if (changeNetworks.match(action)) {
-                api.dispatch(storageActions.saveWalletSettingsThunk());
+                api.dispatch(storageActions.saveWalletSettingsThunk(networkConfigDeps));
             }
 
             if (transactionsActions.resetTransaction.match(action)) {
                 const { account } = action.payload;
 
-                storageActions.removeAccountTransactions(account);
-                storageActions.removeAccountHistoricRates(account.key);
-                storageActions.removeAccountPhishing(account.key);
+                storageActions.removeAccountTransactions(networkConfigDeps, account);
+                storageActions.removeAccountHistoricRates(networkConfigDeps, account.key);
+                storageActions.removeAccountPhishing(networkConfigDeps, account.key);
             }
 
             if (phishingActions.setDustPhishing.match(action)) {
                 api.dispatch(
-                    storageActions.savePhishingMetadataThunk({
+                    storageActions.savePhishingMetadataThunk(networkConfigDeps, {
                         dustPhishing: action.payload,
                     }),
                 );
             }
 
             if (blockchainActions.setBackend.match(action)) {
-                api.dispatch(storageActions.saveBackendThunk(action.payload.symbol));
+                api.dispatch(
+                    storageActions.saveBackendThunk(networkConfigDeps, action.payload.symbol),
+                );
             }
 
             if (blockchainActions.setBackendGapLimit.match(action)) {
-                api.dispatch(storageActions.saveBackendThunk(action.payload.symbol));
+                api.dispatch(
+                    storageActions.saveBackendThunk(networkConfigDeps, action.payload.symbol),
+                );
             }
 
             if (explorerActions.setExplorer.match(action)) {
-                storageActions.saveExplorer(action.payload);
+                storageActions.saveExplorer(networkConfigDeps, action.payload);
             }
 
             if (
@@ -396,7 +427,7 @@ export const storageMiddleware = (api: MiddlewareAPI<Dispatch, StorageMiddleware
                     messageSystemActions.setConfigSource,
                 )(action)
             ) {
-                api.dispatch(storageActions.saveMessageSystemThunk());
+                api.dispatch(storageActions.saveMessageSystemThunk(networkConfigDeps));
             }
 
             if (
@@ -408,7 +439,7 @@ export const storageMiddleware = (api: MiddlewareAPI<Dispatch, StorageMiddleware
                     analyticsActions.setLoggerEnabled,
                 )(action)
             ) {
-                api.dispatch(storageActions.saveAnalyticsThunk());
+                api.dispatch(storageActions.saveAnalyticsThunk(networkConfigDeps));
             }
 
             if (
@@ -419,11 +450,11 @@ export const storageMiddleware = (api: MiddlewareAPI<Dispatch, StorageMiddleware
                     setSuiteSyncRelayUrl,
                 )(action)
             ) {
-                api.dispatch(storageActions.saveSuiteSyncSettingsThunk());
+                api.dispatch(storageActions.saveSuiteSyncSettingsThunk(networkConfigDeps));
             }
 
             if (setSuiteSyncOwner.match(action)) {
-                api.dispatch(storageActions.saveSuiteSyncOwner(action.payload));
+                api.dispatch(storageActions.saveSuiteSyncOwner(networkConfigDeps, action.payload));
             }
 
             if (
@@ -434,26 +465,36 @@ export const storageMiddleware = (api: MiddlewareAPI<Dispatch, StorageMiddleware
                     suiteSyncQuotaManagerActions.eraseFetchedData,
                 )(action)
             ) {
-                api.dispatch(storageActions.saveSuiteSyncQuotaManagerThunk());
+                api.dispatch(storageActions.saveSuiteSyncQuotaManagerThunk(networkConfigDeps));
             }
 
             if (deviceActions.setRememberDevice.match(action)) {
                 const isAutoEjectEnabled = selectIsDeviceAutoEjectEnabled(api.getState());
 
                 if (action.payload.remember && !isAutoEjectEnabled) {
-                    api.dispatch(storageActions.rememberDeviceThunk(action.payload.device));
+                    api.dispatch(
+                        storageActions.rememberDeviceThunk(
+                            networkConfigDeps,
+                            action.payload.device,
+                        ),
+                    );
                 } else {
-                    api.dispatch(storageActions.forgetDeviceThunk(action.payload.device));
+                    api.dispatch(
+                        storageActions.forgetDeviceThunk(networkConfigDeps, action.payload.device),
+                    );
                 }
             }
 
             if (deviceActions.forgetDevice.match(action)) {
-                api.dispatch(storageActions.forgetDeviceThunk(action.payload.device));
+                api.dispatch(
+                    storageActions.forgetDeviceThunk(networkConfigDeps, action.payload.device),
+                );
             }
 
             if (tokenDefinitionsActions.setTokenStatus.match(action)) {
                 api.dispatch(
                     storageActions.saveTokenManagementThunk(
+                        networkConfigDeps,
                         action.payload.symbol,
                         action.payload.type,
                         TokenManagementAction.HIDE,
@@ -461,6 +502,7 @@ export const storageMiddleware = (api: MiddlewareAPI<Dispatch, StorageMiddleware
                 );
                 api.dispatch(
                     storageActions.saveTokenManagementThunk(
+                        networkConfigDeps,
                         action.payload.symbol,
                         action.payload.type,
                         TokenManagementAction.SHOW,
@@ -490,15 +532,15 @@ export const storageMiddleware = (api: MiddlewareAPI<Dispatch, StorageMiddleware
                     walletConnectActions.removeSession,
                 )(action)
             ) {
-                api.dispatch(storageActions.saveConnectSettingsThunk());
+                api.dispatch(storageActions.saveConnectSettingsThunk(networkConfigDeps));
             }
 
             if (firmwareActions.setFirmwareChannel.match(action)) {
-                api.dispatch(storageActions.saveFirmwareSettingsThunk());
+                api.dispatch(storageActions.saveFirmwareSettingsThunk(networkConfigDeps));
             }
 
             if (isAnyOf(featureUsed, feedbackRequested, feedbackDismissed)(action)) {
-                api.dispatch(storageActions.saveFeatureFeedbackThunk());
+                api.dispatch(storageActions.saveFeatureFeedbackThunk(networkConfigDeps));
             }
 
             if (
@@ -521,11 +563,11 @@ export const storageMiddleware = (api: MiddlewareAPI<Dispatch, StorageMiddleware
                     deviceActions.forgetDevicePersistentData,
                 )(action)
             ) {
-                api.dispatch(storageActions.savePersistentDeviceDataThunk());
+                api.dispatch(storageActions.savePersistentDeviceDataThunk(networkConfigDeps));
             }
 
             if (discreetModeActions.setDiscreetMode.match(action)) {
-                api.dispatch(storageActions.saveDiscreetModeThunk());
+                api.dispatch(storageActions.saveDiscreetModeThunk(networkConfigDeps));
             }
 
             if (
@@ -539,7 +581,7 @@ export const storageMiddleware = (api: MiddlewareAPI<Dispatch, StorageMiddleware
                     setSuspiciousTransactionsFilter,
                 )(action)
             ) {
-                api.dispatch(storageActions.saveWalletSettingsThunk());
+                api.dispatch(storageActions.saveWalletSettingsThunk(networkConfigDeps));
             } else if (
                 isAnyOf(
                     suiteSettingsActions.setLanguage,
@@ -561,20 +603,20 @@ export const storageMiddleware = (api: MiddlewareAPI<Dispatch, StorageMiddleware
                     confirmEvmExplanationModal,
                 )(action)
             ) {
-                api.dispatch(storageActions.saveSuiteSettingsThunk());
+                api.dispatch(storageActions.saveSuiteSettingsThunk(networkConfigDeps));
             } else if (debugActions.setShowDebugMenu.match(action)) {
-                api.dispatch(storageActions.saveDebugSettingsThunk());
+                api.dispatch(storageActions.saveDebugSettingsThunk(networkConfigDeps));
             } else if (tradingActions.saveTrade.match(action)) {
-                storageActions.saveTradingTrade(action.payload);
+                storageActions.saveTradingTrade(networkConfigDeps, action.payload);
             } else if (
                 metadataActions.enableMetadata.match(action) ||
                 metadataActions.disableMetadata.match(action) ||
                 metadataActions.addMetadataProvider.match(action) ||
                 metadataActions.removeMetadataProvider.match(action)
             ) {
-                api.dispatch(storageActions.saveMetadataSettingsThunk());
+                api.dispatch(storageActions.saveMetadataSettingsThunk(networkConfigDeps));
             } else if (setDebugSettings.match(action)) {
-                api.dispatch(storageActions.saveCoinjoinDebugSettingsThunk());
+                api.dispatch(storageActions.saveCoinjoinDebugSettingsThunk(networkConfigDeps));
             } else if (clientOnPrisonEvent.match(action)) {
                 // Not a rememberedDeviceHandlers entry: unlike those handlers (one action ->
                 // one device), this one action affects multiple accounts on potentially
@@ -586,7 +628,9 @@ export const storageMiddleware = (api: MiddlewareAPI<Dispatch, StorageMiddleware
                 affectedAccounts.forEach(key => {
                     const device = getDeviceByAccountKey(key, state);
                     if (device && getIsDeviceRemembered(device)) {
-                        api.dispatch(storageActions.saveCoinjoinAccountThunk(key));
+                        api.dispatch(
+                            storageActions.saveCoinjoinAccountThunk(networkConfigDeps, key),
+                        );
                     }
                 });
             }

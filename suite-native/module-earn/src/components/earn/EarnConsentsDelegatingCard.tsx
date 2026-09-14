@@ -1,3 +1,5 @@
+import { selectNetworkConfigDeps } from '@suite-common/networks';
+import { useServices } from '@suite-common/dependency-injection';
 import { useState } from 'react';
 
 import {
@@ -19,9 +21,12 @@ export const EarnConsentsDelegatingCard = ({
     symbol,
     onConfirm,
 }: EarnConsentsDelegatingCardProps) => {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
+
     const [hasAgreed, setHasAgreed] = useState(false);
-    const displaySymbol = getNetworkDisplaySymbol(symbol);
-    const itemsTranslationKey = getNetwork(symbol).networkType === 'solana' ? 'sol' : 'eth';
+    const displaySymbol = getNetworkDisplaySymbol(networkConfigDeps, symbol);
+    const itemsTranslationKey =
+        getNetwork(networkConfigDeps, symbol).networkType === 'solana' ? 'sol' : 'eth';
 
     return (
         <Card>

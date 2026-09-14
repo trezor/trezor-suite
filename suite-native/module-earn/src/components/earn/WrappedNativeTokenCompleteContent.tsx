@@ -1,3 +1,4 @@
+import { selectNetworkConfigDeps } from '@suite-common/networks';
 import { useCallback, useMemo } from 'react';
 import { useSelector } from 'react-redux';
 
@@ -30,6 +31,8 @@ export const WrappedNativeTokenCompleteContent = ({
     amount,
     flowType,
 }: WrappedNativeTokenCompleteContentProps) => {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
+
     const navigateToInitialScreen = useNavigateToInitialScreen();
     const { analytics } = useServices(selectNativeAnalyticsDep);
 
@@ -37,7 +40,7 @@ export const WrappedNativeTokenCompleteContent = ({
         selectAccountByKey(state, accountKey),
     );
     const wrappedNative = account ? getWrappedNativeToken(account.symbol) : undefined;
-    const nativeSymbol = account ? getNetworkDisplaySymbol(account.symbol) : '';
+    const nativeSymbol = account ? getNetworkDisplaySymbol(networkConfigDeps, account.symbol) : '';
 
     // The form replaced itself with this screen, so this stack holds it alone — any back
     // navigation leaves the whole flow, which is what closing should do. Intercepting it (as the

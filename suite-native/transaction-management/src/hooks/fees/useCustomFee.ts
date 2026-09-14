@@ -1,3 +1,4 @@
+import { type NetworksRootState } from '@suite-common/networks';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useSelector } from 'react-redux';
 
@@ -57,7 +58,7 @@ export const useCustomFee = ({ accountKey, formState }: UseCustomFeeProps) => {
         selectAccountNetworkSymbol(state, accountKey),
     );
 
-    const isEip1559Fee = useSelector((state: FeesRootState) =>
+    const isEip1559Fee = useSelector((state: FeesRootState & NetworksRootState) =>
         selectIsEip1559Fee(state, symbol ?? undefined),
     );
 

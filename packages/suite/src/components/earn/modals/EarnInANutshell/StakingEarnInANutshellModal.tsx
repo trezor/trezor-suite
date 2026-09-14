@@ -1,4 +1,6 @@
 import { Translation } from '@suite/intl';
+import { useServices } from '@suite-common/dependency-injection';
+import { selectNetworkConfigDeps } from '@suite-common/networks';
 import {
     EarnFlow,
     type EarnModalAction,
@@ -36,6 +38,8 @@ export const StakingEarnInANutshellModal = ({
     actionType,
     yieldContext,
 }: StakingEarnInANutshellModalProps) => {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
+
     const { handleAction, onCancelClick, unstakingPeriod } = useEarnInANutshell({
         flow: EarnFlow.Stake,
         provider,
@@ -45,11 +49,11 @@ export const StakingEarnInANutshellModal = ({
         yieldContext,
     });
 
-    if (!isStakingNetworkType(account.networkType)) {
+    if (!isStakingNetworkType(networkConfigDeps, account.networkType)) {
         return null;
     }
 
-    const displaySymbol = getNetworkDisplaySymbol(account.symbol);
+    const displaySymbol = getNetworkDisplaySymbol(networkConfigDeps, account.symbol);
 
     if (!displaySymbol) return null;
 

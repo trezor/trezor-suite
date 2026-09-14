@@ -1,6 +1,7 @@
 import { getStakingBatch } from '@suite-common/earn-staking-api';
+import { selectNetworkConfigAccessors, type NetworksRootState } from '@suite-common/networks';
 import { createThunk } from '@suite-common/redux-utils';
-import { PROD_STAKING_SYMBOLS } from '@suite-common/wallet-config';
+import { getProdStakingSymbols } from '@suite-common/wallet-config';
 import { type TimerId } from '@trezor/type-utils';
 
 import { stakeDataActions } from './stakingDataSlice';
@@ -25,11 +26,13 @@ function stakingDataNeedsRefetch(data: StakeRootState['wallet']['stake']['data']
     return shouldRefetch;
 }
 
-export type InitStakeDataThunkState = StakeRootState & WalletSettingsRootState;
+export type InitStakeDataThunkState = StakeRootState & WalletSettingsRootState & NetworksRootState;
 
 export const initStakeDataThunk = createThunk<void, void, { state: InitStakeDataThunkState }>(
     `${STAKE_MODULE}/initStakeDataThunk`,
     async (_, { getState, dispatch }) => {
+        const networkConfigDeps = selectNetworkConfigAccessors(getState());
+
         const enabledNetworks = selectEnabledNetworks(getState());
         const isBtcOnly = enabledNetworks.length === 1 && enabledNetworks.includes('btc');
 
@@ -45,12 +48,12 @@ export const initStakeDataThunk = createThunk<void, void, { state: InitStakeData
             dispatch(stakeDataActions.fetchStakeDataRequest(undefined));
 
             const stakingData = await getStakingBatch({
-                params: { networks: PROD_STAKING_SYMBOLS },
+                params: { networks: getProdStakingSymbols(networkConfigDeps) },
             });
 
             // A part of the batch requests failed.
             if (stakingData.errors.length) {
-                const failedNetworkSymbols = PROD_STAKING_SYMBOLS.filter(
+                const failedNetworkSymbols = getProdStakingSymbols(networkConfigDeps).filter(
                     symbol => !stakingData.data.some(item => item.symbol === symbol),
                 );
                 const errorSummary = stakingData.errors

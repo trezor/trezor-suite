@@ -1,5 +1,5 @@
 import { type DeviceRootState } from '@suite-common/device';
-import { type NetworksRootState } from '@suite-common/networks';
+import { type NetworksRootState, selectNetworkConfigAccessors } from '@suite-common/networks';
 import { createWeakMapSelector } from '@suite-common/redux-utils';
 import { aggregateTradeableAssetBalances } from '@suite-common/trading';
 import {
@@ -17,11 +17,18 @@ type TradeableAssetBalancesRootState = AccountsRootState &
     FiatRatesRootState &
     WalletSettingsRootState;
 
-const createTradeableAssetBalancesSelector =
-    createWeakMapSelector.withTypes<TradeableAssetBalancesRootState>();
-
-export const selectTradeableAssetBalances = createTradeableAssetBalancesSelector(
-    [selectAllAccountsToList, selectCurrentFiatRates, selectBaseCurrency],
-    (accounts, fiatRates, baseCurrency) =>
-        aggregateTradeableAssetBalances({ accounts, fiatRates, baseCurrency }),
-);
+export const selectTradeableAssetBalances =
+    createWeakMapSelector.withTypes<TradeableAssetBalancesRootState>()(
+        [
+            selectNetworkConfigAccessors,
+            selectAllAccountsToList,
+            selectCurrentFiatRates,
+            selectBaseCurrency,
+        ],
+        (networkConfigDeps, accounts, fiatRates, baseCurrency) =>
+            aggregateTradeableAssetBalances(networkConfigDeps, {
+                accounts,
+                fiatRates,
+                baseCurrency,
+            }),
+    );

@@ -1,3 +1,4 @@
+import { type NetworkConfigDeps } from '@suite-common/networks';
 import { type Account } from '@suite-common/wallet-types';
 import { isStakingSymbol } from '@suite-common/wallet-utils';
 import {
@@ -14,8 +15,12 @@ type StakingNavigateFn = StackNavigationProps<
     RootStackRoutes.StakingManagement
 >['navigate'];
 
-export const navigateByAccountState = (account: Account, navigate: StakingNavigateFn) => {
-    if (hasAccountActiveStaking(account)) {
+export const navigateByAccountState = (
+    networkConfigDeps: NetworkConfigDeps,
+    account: Account,
+    navigate: StakingNavigateFn,
+) => {
+    if (hasAccountActiveStaking(networkConfigDeps, account)) {
         navigate(resolveStakingTargetRoute(account.symbol), {
             accountKey: account.key,
         });
@@ -23,7 +28,7 @@ export const navigateByAccountState = (account: Account, navigate: StakingNaviga
         return;
     }
 
-    if (!isStakingSymbol(account.symbol)) {
+    if (!isStakingSymbol(networkConfigDeps, account.symbol)) {
         return;
     }
 

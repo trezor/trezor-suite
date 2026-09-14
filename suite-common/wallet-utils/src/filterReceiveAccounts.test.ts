@@ -1,3 +1,4 @@
+import { mockNetworkConfigDeps } from '@suite-common/networks/mocks';
 import { mockSuiteDevice } from '@suite-common/suite-types/mocks';
 import { type NetworkSymbol, asNetworkSymbol } from '@suite-common/wallet-config';
 import { mockGetSupportedNetworks } from '@suite-common/wallet-config/mocks';
@@ -5,6 +6,8 @@ import { type Account } from '@suite-common/wallet-types';
 import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
 
 import { filterReceiveAccounts, isDebugOnlyAccountType } from './filterReceiveAccounts';
+
+const networkConfigDeps = mockNetworkConfigDeps();
 
 const btcSymbol = asNetworkSymbol('btc');
 const ethSymbol = asNetworkSymbol('eth');
@@ -61,7 +64,7 @@ const runFilterReceiveAccouns = ({
         state: { staticSessionId: deviceState },
     });
 
-    return filterReceiveAccounts({
+    return filterReceiveAccounts(networkConfigDeps, {
         supportedNetworks: mockGetSupportedNetworks(),
         accounts,
         deviceState: device.state?.staticSessionId,
@@ -72,17 +75,23 @@ const runFilterReceiveAccouns = ({
 
 describe('filter receive accounts', () => {
     it('checks if account is debug only type', () => {
-        expect(isDebugOnlyAccountType('legacy', btcSymbol)).toBe(false);
-        expect(isDebugOnlyAccountType('segwit', btcSymbol)).toBe(false);
-        expect(isDebugOnlyAccountType('coinjoin', btcSymbol)).toBe(false);
-        expect(isDebugOnlyAccountType('taproot', btcSymbol)).toBe(false);
-        expect(isDebugOnlyAccountType('ledger', btcSymbol)).toBe(false);
-        expect(isDebugOnlyAccountType('legacy', ethSymbol)).toBe(true);
-        expect(isDebugOnlyAccountType('ledger', ethSymbol)).toBe(true);
-        expect(isDebugOnlyAccountType('ledger', asNetworkSymbol('trx'))).toBe(true);
-        expect(isDebugOnlyAccountType('normal', asNetworkSymbol('regtest'))).toBe(false);
-        expect(isDebugOnlyAccountType('legacy', tsepSymbol)).toBe(true);
-        expect(isDebugOnlyAccountType('legacy', asNetworkSymbol('thod'))).toBe(true);
+        expect(isDebugOnlyAccountType(networkConfigDeps, 'legacy', btcSymbol)).toBe(false);
+        expect(isDebugOnlyAccountType(networkConfigDeps, 'segwit', btcSymbol)).toBe(false);
+        expect(isDebugOnlyAccountType(networkConfigDeps, 'coinjoin', btcSymbol)).toBe(false);
+        expect(isDebugOnlyAccountType(networkConfigDeps, 'taproot', btcSymbol)).toBe(false);
+        expect(isDebugOnlyAccountType(networkConfigDeps, 'ledger', btcSymbol)).toBe(false);
+        expect(isDebugOnlyAccountType(networkConfigDeps, 'legacy', ethSymbol)).toBe(true);
+        expect(isDebugOnlyAccountType(networkConfigDeps, 'ledger', ethSymbol)).toBe(true);
+        expect(isDebugOnlyAccountType(networkConfigDeps, 'ledger', asNetworkSymbol('trx'))).toBe(
+            true,
+        );
+        expect(
+            isDebugOnlyAccountType(networkConfigDeps, 'normal', asNetworkSymbol('regtest')),
+        ).toBe(false);
+        expect(isDebugOnlyAccountType(networkConfigDeps, 'legacy', tsepSymbol)).toBe(true);
+        expect(isDebugOnlyAccountType(networkConfigDeps, 'legacy', asNetworkSymbol('thod'))).toBe(
+            true,
+        );
     });
 
     it('returns no results when given an empty accounts array', () => {

@@ -1,4 +1,6 @@
 import { Translation, type TranslationKey } from '@suite/intl';
+import { useServices } from '@suite-common/dependency-injection';
+import { selectNetworkConfigDeps } from '@suite-common/networks';
 import { formatDurationStrict } from '@suite-common/suite-utils';
 import { type TradingComposedTransactionInfo } from '@suite-common/trading';
 import { getNetwork } from '@suite-common/wallet-config';
@@ -33,12 +35,16 @@ export const TradingDetailSendingStep = ({
     txId,
     composedTransaction,
 }: TradingDetailSendingStepProps) => {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
+
     const locale = useLocales();
     const rawFeeInfo = useSelector(reduxState =>
         account ? selectRawNetworkFeeInfo(reduxState, account.symbol) : undefined,
     );
 
-    const networkType = account ? getNetwork(account.symbol)?.networkType : undefined;
+    const networkType = account
+        ? getNetwork(networkConfigDeps, account.symbol)?.networkType
+        : undefined;
     const estimatedTimeSeconds = getTxEstimatedTimeSeconds(
         networkType,
         rawFeeInfo,

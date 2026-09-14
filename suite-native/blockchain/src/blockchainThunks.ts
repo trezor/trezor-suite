@@ -1,3 +1,4 @@
+import { selectNetworkConfigAccessors, type NetworksRootState } from '@suite-common/networks';
 import { createThunk } from '@suite-common/redux-utils';
 import {
     type NetworkSymbol,
@@ -94,26 +95,36 @@ export const syncAllAccountsWithBlockchainThunk = createThunk<
 type OnBlockchainConnectThunkParams = { symbol: string };
 
 export type OnBlockchainConnectThunkState = SubscribeBlockchainThunkState &
-    SyncAccountsWithBlockchainThunkState;
+    SyncAccountsWithBlockchainThunkState &
+    NetworksRootState;
 
 export type OnBlockchainConnectThunkDeps = SyncAccountsWithBlockchainThunkDeps;
 
 export const onBlockchainConnectThunk = createThunk<
     void,
     OnBlockchainConnectThunkParams,
-    { state: OnBlockchainConnectThunkState; extra: OnBlockchainConnectThunkDeps }
->(`${BLOCKCHAIN_MODULE_PREFIX}/onBlockchainConnectThunk`, async ({ symbol }, { dispatch }) => {
-    const network = getNetworkOptional(symbol.toLowerCase());
-    if (!network) return;
+    {
+        state: OnBlockchainConnectThunkState;
+        extra: OnBlockchainConnectThunkDeps;
+    }
+>(
+    `${BLOCKCHAIN_MODULE_PREFIX}/onBlockchainConnectThunk`,
+    async ({ symbol }, { getState, dispatch }) => {
+        const networkConfigDeps = selectNetworkConfigAccessors(getState());
 
-    await dispatch(subscribeBlockchainThunk({ symbol: network.symbol, onConnect: true }));
+        const network = getNetworkOptional(networkConfigDeps, symbol.toLowerCase());
+        if (!network) return;
 
-    // update accounts for connected network
-    await dispatch(syncAccountsWithBlockchainThunk({ symbol: network.symbol }));
-    dispatch(blockchainActions.connected(network.symbol));
-});
+        await dispatch(subscribeBlockchainThunk({ symbol: network.symbol, onConnect: true }));
 
-export type OnBlockchainNotificationThunkState = FetchAndUpdateAccountThunkState;
+        // update accounts for connected network
+        await dispatch(syncAccountsWithBlockchainThunk({ symbol: network.symbol }));
+        dispatch(blockchainActions.connected(network.symbol));
+    },
+);
+
+export type OnBlockchainNotificationThunkState = FetchAndUpdateAccountThunkState &
+    NetworksRootState;
 
 export type OnBlockchainNotificationThunkDeps = FetchAndUpdateAccountThunkDeps;
 
@@ -125,9 +136,11 @@ export const onBlockchainNotificationThunk = createThunk<
         extra: OnBlockchainNotificationThunkDeps;
     }
 >(`${BLOCKCHAIN_MODULE_PREFIX}/onNotificationThunk`, (payload, { dispatch, getState }) => {
+    const networkConfigDeps = selectNetworkConfigAccessors(getState());
+
     const { descriptor, tx } = payload.notification;
     const symbol = payload.coin.shortcut.toLowerCase();
-    if (!isNetworkSymbol(symbol)) {
+    if (!isNetworkSymbol(networkConfigDeps, symbol)) {
         return;
     }
 

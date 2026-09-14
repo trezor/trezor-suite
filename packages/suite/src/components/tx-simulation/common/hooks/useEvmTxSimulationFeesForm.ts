@@ -1,6 +1,8 @@
 import { useCallback, useMemo } from 'react';
 import { useForm, useWatch } from 'react-hook-form';
 
+import { useServices } from '@suite-common/dependency-injection';
+import { selectNetworkConfigDeps } from '@suite-common/networks';
 import { type TxSimulationEVMResult } from '@suite-common/tx-simulation';
 import {
     type NetworkSymbol,
@@ -41,6 +43,8 @@ export function useEvmTxSimulationFeesForm({
     defaultGasLimit = ETH_CONTRACT_CALL_BACKUP_GAS_LIMIT,
     txValue = '0',
 }: UseTxFeesFormProps) {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
+
     const form = useForm<FeesFormValues>({
         defaultValues: {
             feeLimit: defaultGasLimit,
@@ -91,7 +95,9 @@ export function useEvmTxSimulationFeesForm({
         if (new BigNumber(fee).gt(accountBalance)) {
             return {
                 id: 'AMOUNT_NOT_ENOUGH_CURRENCY_FEE',
-                values: { networkDisplaySymbol: getNetworkDisplaySymbol(networkSymbol) },
+                values: {
+                    networkDisplaySymbol: getNetworkDisplaySymbol(networkConfigDeps, networkSymbol),
+                },
             } as const;
         }
 
@@ -100,7 +106,7 @@ export function useEvmTxSimulationFeesForm({
         }
 
         return undefined;
-    }, [accountBalance, composedLevels, networkSymbol, selectedFee, txValue]);
+    }, [networkConfigDeps, accountBalance, composedLevels, networkSymbol, selectedFee, txValue]);
 
     function handleTxSimulationResult({ simulation, gas_estimation }: TxSimulationEVMResult) {
         const newFeeLimit =

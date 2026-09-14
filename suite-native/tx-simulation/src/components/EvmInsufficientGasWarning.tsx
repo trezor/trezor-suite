@@ -1,3 +1,5 @@
+import { selectNetworkConfigDeps } from '@suite-common/networks';
+import { useServices } from '@suite-common/dependency-injection';
 import { computeGasFeeInWei, useHasSufficientFundsForGas } from '@suite-common/tx-simulation';
 import { type NetworkSymbol, getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import { type TxSimulationMethod } from '@suite-common/wallet-types';
@@ -18,6 +20,8 @@ export function EvmInsufficientGasWarning({
     networkSymbol,
     transaction,
 }: EvmInsufficientGasWarningProps) {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
+
     const gasPriceInWei = transaction?.maxFeePerGas ?? transaction?.gasPrice;
     const hasSufficientFunds = useHasSufficientFundsForGas(
         gasPriceInWei ? computeGasFeeInWei(gasLimit, gasPriceInWei) : undefined,
@@ -35,7 +39,10 @@ export function EvmInsufficientGasWarning({
                 <Translation
                     id="transactionManagement.precomposedTransaction.errors.amountNotEnoughCurrencyFee"
                     values={{
-                        networkDisplaySymbol: getNetworkDisplaySymbol(networkSymbol),
+                        networkDisplaySymbol: getNetworkDisplaySymbol(
+                            networkConfigDeps,
+                            networkSymbol,
+                        ),
                     }}
                 />
             }

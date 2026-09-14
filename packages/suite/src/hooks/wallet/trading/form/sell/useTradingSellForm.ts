@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { useForm, useWatch } from 'react-hook-form';
 
 import { useServices } from '@suite-common/dependency-injection';
+import { selectNetworkConfigDeps } from '@suite-common/networks';
 import { selectDispatch } from '@suite-common/redux-utils';
 import {
     TRADING_FORM_OUTPUT_AMOUNT,
@@ -38,6 +39,8 @@ import { useTradingFormReset } from '../common/useTradingFormReset';
 import { useTradingFormAccount } from '../useTradingFormAccount';
 
 export const useTradingSellForm = (): TradingSellFormContextProps => {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
+
     const type = 'sell';
     const { dispatch } = useServices(selectDispatch);
     const isLoading = useSelector(selectTradingSellIsLoading);
@@ -58,7 +61,7 @@ export const useTradingSellForm = (): TradingSellFormContextProps => {
 
     const composedTransactionInfo = useSelector(selectTradingComposedTransactionInfo);
 
-    const network = account ? getNetwork(account.symbol) : undefined;
+    const network = account ? getNetwork(networkConfigDeps, account.symbol) : undefined;
     const { isBtcSatsAmountUnit: shouldSendInSats } = useBitcoinAmountUnit(account?.symbol);
 
     const { defaultValues } = useTradingSellFormDefaultValues(

@@ -1,4 +1,6 @@
 import { useTranslation } from '@suite/intl';
+import { useServices } from '@suite-common/dependency-injection';
+import { selectNetworkConfigDeps } from '@suite-common/networks';
 import { type NetworkSymbol, type NetworkType } from '@suite-common/wallet-config';
 import { useDisplayBaseCurrency } from '@suite-common/wallet-core';
 import { type GeneralPrecomposedTransaction, type TokenAddress } from '@suite-common/wallet-types';
@@ -28,11 +30,14 @@ export function TotalSentFeeContent({
     tokenInfo,
     tronFees,
 }: TotalSentFeeContentProps) {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
+
     const { translationString } = useTranslation();
     const { shallDisplayBaseCurrency } = useDisplayBaseCurrency(networkSymbol);
 
     const hasTransactionInfo = transactionInfo.type !== 'error';
     const feeAmount = formatNetworkAmount(
+        networkConfigDeps,
         hasTransactionInfo ? transactionInfo.fee : '0',
         networkSymbol,
     );
@@ -108,7 +113,11 @@ export function TotalSentFeeContent({
         return (
             <BaseCurrencyValue
                 disableHiddenPlaceholder
-                amount={formatNetworkAmount(transactionInfo.totalSpent, networkSymbol)}
+                amount={formatNetworkAmount(
+                    networkConfigDeps,
+                    transactionInfo.totalSpent,
+                    networkSymbol,
+                )}
                 symbol={networkSymbol}
             />
         );

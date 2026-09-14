@@ -1,5 +1,9 @@
+import type { NetworksRootState } from '@suite-common/networks';
+import { mockNetworkConfigDeps } from '@suite-common/networks/mocks';
+import { getNetworks, asNetworkSymbol } from '@suite-common/wallet-config';
+
+const networks = getNetworks(mockNetworkConfigDeps());
 import { type TrezorDevice } from '@suite-common/suite-types';
-import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { type Account, type Timestamp } from '@suite-common/wallet-types';
 import { mockAccountKey } from '@suite-common/wallet-types/mocks';
 import { type StaticSessionId } from '@trezor/device-utils';
@@ -157,7 +161,8 @@ const getTestState = ({
 }: {
     accounts: Account[];
     withSolStakeData?: boolean;
-}): StakeRootState => ({
+}): StakeRootState & NetworksRootState => ({
+    networks,
     wallet: {
         accounts,
         stake: {

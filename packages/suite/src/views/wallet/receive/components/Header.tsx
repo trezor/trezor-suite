@@ -1,6 +1,8 @@
 import styled from 'styled-components';
 
 import { Translation } from '@suite/intl';
+import { useServices } from '@suite-common/dependency-injection';
+import { selectNetworkConfigDeps } from '@suite-common/networks';
 import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import { H2, Paragraph } from '@trezor/components';
 
@@ -15,10 +17,14 @@ interface HeaderProps {
 }
 
 export const Header = ({ account }: HeaderProps) => {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
+
     const title = (
         <Translation
             id="RECEIVE_TITLE"
-            values={{ networkDisplaySymbol: getNetworkDisplaySymbol(account.symbol) }}
+            values={{
+                networkDisplaySymbol: getNetworkDisplaySymbol(networkConfigDeps, account.symbol),
+            }}
         />
     );
     if (account.networkType === 'bitcoin') {

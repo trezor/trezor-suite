@@ -1,3 +1,4 @@
+import { mockNetworkConfigDeps } from '@suite-common/networks/mocks';
 import { type NetworkSymbol, asNetworkSymbol } from '@suite-common/wallet-config';
 import {
     type Account,
@@ -16,6 +17,8 @@ import {
     sortTokensWithRates,
 } from './tokenUtils';
 
+const networkConfigDeps = mockNetworkConfigDeps();
+
 describe('getTokens', () => {
     getTokensFixtures.forEach(
         ({ testName, tokens, symbol, coinDefinitions, searchQuery, result }) => {
@@ -23,7 +26,7 @@ describe('getTokens', () => {
                 const networkSymbol = asNetworkSymbol(symbol);
 
                 expect(
-                    getTokens({
+                    getTokens(networkConfigDeps, {
                         tokens,
                         symbol: networkSymbol,
                         tokenDefinitions: coinDefinitions,
@@ -40,7 +43,9 @@ describe('hasVisibleTokens', () => {
         test(testName, () => {
             const networkSymbol = asNetworkSymbol(symbol);
 
-            expect(hasVisibleTokens(networkSymbol, tokens, tokenDefinitions)).toStrictEqual(result);
+            expect(
+                hasVisibleTokens(networkConfigDeps, networkSymbol, tokens, tokenDefinitions),
+            ).toStrictEqual(result);
         });
     });
 });

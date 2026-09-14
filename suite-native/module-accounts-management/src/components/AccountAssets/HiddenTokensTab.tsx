@@ -1,3 +1,4 @@
+import { type NetworksRootState } from '@suite-common/networks';
 import { useCallback } from 'react';
 import { View } from 'react-native';
 import { useSelector } from 'react-redux';
@@ -94,10 +95,10 @@ export const HiddenTokensTab = ({ accountKey, onSelect }: HiddenTokensTabProps) 
     const account = useSelector((state: AccountsRootState) =>
         selectAccountByKey(state, accountKey),
     );
-    const manuallyHiddenTokens = useSelector((state: TokensRootState) =>
+    const manuallyHiddenTokens = useSelector((state: TokensRootState & NetworksRootState) =>
         selectAccountManuallyHiddenTokens(state, accountKey),
     );
-    const unrecognizedTokens = useSelector((state: TokensRootState) =>
+    const unrecognizedTokens = useSelector((state: TokensRootState & NetworksRootState) =>
         selectAccountUnrecognizedTokens(state, accountKey),
     );
 

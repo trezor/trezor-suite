@@ -1,9 +1,13 @@
+import { mockNetworkConfigDeps } from '@suite-common/networks/mocks';
+
 import type { ExchangeTrade, SellFiatTrade } from 'invity-api';
 
 import { mockAccountKey } from '@suite-common/wallet-types/mocks';
 import { exchangeInvity, sellInvity } from '@suite-native/trading-fixtures';
 
 import { createFormStateForSendForm } from './tradingFormUtils';
+
+const networkConfigDeps = mockNetworkConfigDeps();
 
 describe('createFormStateForSendForm', () => {
     describe('createTradingFormState', () => {
@@ -28,7 +32,7 @@ describe('createFormStateForSendForm', () => {
                 feeLimit: '21000',
             };
             const providers = { sideshiftfr: exchangeInvity };
-            const formState = createFormStateForSendForm({
+            const formState = createFormStateForSendForm(networkConfigDeps, {
                 quote: exchangeQuote,
                 feeLevel,
                 networkType: 'solana',
@@ -75,7 +79,7 @@ describe('createFormStateForSendForm', () => {
             } as SellFiatTrade;
 
             const providers = { invity: sellInvity };
-            const formState = createFormStateForSendForm({
+            const formState = createFormStateForSendForm(networkConfigDeps, {
                 quote: sellQuote,
                 networkType: 'bitcoin',
                 providers,
@@ -108,7 +112,7 @@ describe('createFormStateForSendForm', () => {
             };
 
             const providers = { invity: exchangeInvity };
-            const formState = createFormStateForSendForm({
+            const formState = createFormStateForSendForm(networkConfigDeps, {
                 quote: tokenQuote,
                 networkType: 'ethereum',
                 providers,
@@ -137,7 +141,7 @@ describe('createFormStateForSendForm', () => {
             };
 
             const providers = { changelly: exchangeInvity };
-            const formState = createFormStateForSendForm({
+            const formState = createFormStateForSendForm(networkConfigDeps, {
                 quote: xrpQuote,
                 networkType: 'ripple',
                 providers,
@@ -171,7 +175,7 @@ describe('createFormStateForSendForm', () => {
 
             const customExtraField = 'custom-tag-123';
             const providers = { invity: sellInvity };
-            const formState = createFormStateForSendForm({
+            const formState = createFormStateForSendForm(networkConfigDeps, {
                 quote,
                 extraField: customExtraField,
                 networkType: 'bitcoin',
@@ -193,7 +197,7 @@ describe('createFormStateForSendForm', () => {
 
             const providers = { test: exchangeInvity };
             expect(() =>
-                createFormStateForSendForm({
+                createFormStateForSendForm(networkConfigDeps, {
                     quote: invalidQuote as any,
                     networkType: 'bitcoin',
                     providers,
@@ -223,7 +227,7 @@ describe('createFormStateForSendForm', () => {
             };
 
             const providers = { '1inch': exchangeInvity };
-            const formState = createFormStateForSendForm({
+            const formState = createFormStateForSendForm(networkConfigDeps, {
                 quote: dexQuote,
                 networkType: 'ethereum',
                 providers,
@@ -257,7 +261,7 @@ describe('createFormStateForSendForm', () => {
                 },
             };
 
-            const formState = createFormStateForSendForm({
+            const formState = createFormStateForSendForm(networkConfigDeps, {
                 quote: dexQuote,
                 networkType: 'solana',
                 providers: { jupiter: exchangeInvity },
@@ -288,7 +292,7 @@ describe('createFormStateForSendForm', () => {
             };
 
             const providers = { '1inch': exchangeInvity };
-            const formState = createFormStateForSendForm({
+            const formState = createFormStateForSendForm(networkConfigDeps, {
                 quote: dexApprovalQuote,
                 networkType: 'ethereum',
                 providers,
@@ -316,7 +320,7 @@ describe('createFormStateForSendForm', () => {
             };
 
             const providers = { changelly: exchangeInvity };
-            const formState = createFormStateForSendForm({
+            const formState = createFormStateForSendForm(networkConfigDeps, {
                 quote: cexQuote,
                 networkType: 'ethereum',
                 providers,
@@ -342,7 +346,7 @@ describe('createFormStateForSendForm', () => {
             };
 
             const providers = { test: exchangeInvity };
-            const formState = createFormStateForSendForm({
+            const formState = createFormStateForSendForm(networkConfigDeps, {
                 quote,
                 networkType: 'bitcoin',
                 providers,

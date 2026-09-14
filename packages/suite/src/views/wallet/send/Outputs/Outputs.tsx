@@ -3,6 +3,8 @@ import { useEffect, useRef, useState } from 'react';
 import { motion } from 'framer-motion';
 import styled from 'styled-components';
 
+import { useServices } from '@suite-common/dependency-injection';
+import { selectNetworkConfigDeps } from '@suite-common/networks';
 import { getNetworkFeatures } from '@suite-common/wallet-config';
 import { Card, Column, motionEasing } from '@trezor/components';
 import { motionEasingStrings } from '@trezor/components/src/config/motion';
@@ -26,6 +28,8 @@ interface OutputsProps {
 }
 
 export const Outputs = ({ disableAnim }: OutputsProps) => {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
+
     const [height, setHeight] = useState(0);
     const [hasRenderedOutputs, setHasRenderedOutputs] = useState(false);
 
@@ -62,7 +66,7 @@ export const Outputs = ({ disableAnim }: OutputsProps) => {
         }
     }, [outputs]);
 
-    const areTokensSupported = getNetworkFeatures(symbol).includes('tokens');
+    const areTokensSupported = getNetworkFeatures(networkConfigDeps, symbol).includes('tokens');
 
     return (
         <Container $height={height || 0}>

@@ -12,6 +12,7 @@ import {
 } from '@suite-common/device';
 import { selectDeviceThunk } from '@suite-common/device';
 import { type FetchAndSaveMetadataDep } from '@suite-common/metadata-types';
+import { selectNetworkConfigAccessors } from '@suite-common/networks';
 import { type NetworksRootState, selectSupportedNetworkSymbols } from '@suite-common/networks';
 import {
     type SuiteCompatibleThunk,
@@ -312,7 +313,7 @@ type RunDiscoveryParams = {
     callId?: string;
 };
 
-export type RunDiscoveryThunkState = DiscoveryReportingThunkState;
+export type RunDiscoveryThunkState = DiscoveryReportingThunkState & NetworksRootState;
 
 export type RunDiscoveryThunkDeps = WithServices<AnalyticsDep & GetTradedAccountKeysDep> & {
     thunks: FetchAndSaveMetadataDep;
@@ -325,6 +326,8 @@ export const runDiscoveryThunk = createThunk<
 >(
     `${DISCOVERY_MODULE_PREFIX}/run`,
     async ({ device: passedDevice, callId }, { dispatch, getState, extra }): Promise<void> => {
+        const networkConfigDeps = selectNetworkConfigAccessors(getState());
+
         try {
             let device: TrezorDevice = passedDevice;
 
@@ -479,6 +482,7 @@ export const runDiscoveryThunk = createThunk<
                         accountQueue.forEach(account =>
                             dispatch(
                                 accountsActions.createAccount(
+                                    networkConfigDeps,
                                     account,
                                     selectSupportedNetworkSymbols(getState()),
                                 ),
@@ -488,6 +492,7 @@ export const runDiscoveryThunk = createThunk<
                     }
                     dispatch(
                         accountsActions.createAccount(
+                            networkConfigDeps,
                             accountPayload,
                             selectSupportedNetworkSymbols(getState()),
                         ),
@@ -684,7 +689,7 @@ export const startDiscoveryThunk = createThunk<
     },
 );
 
-type RunAdditionalDiscoveryThunkState = RunDiscoveryThunkState;
+type RunAdditionalDiscoveryThunkState = RunDiscoveryThunkState & NetworksRootState;
 
 type RunAdditionalDiscoveryThunkDeps = WithServices<AnalyticsDep & GetTradedAccountKeysDep>;
 
@@ -695,6 +700,8 @@ export const runAdditionalDiscoveryThunk = createThunk<
 >(
     `${DISCOVERY_MODULE_PREFIX}/runAdditional`,
     async (staticSessionId, { dispatch, getState }): Promise<void> => {
+        const networkConfigDeps = selectNetworkConfigAccessors(getState());
+
         // todo: not now, but in the future, there could be more devices (wallets) sharing the same static session id, for example
         // an imported wallet + wallet on the physical device. So this should run for all the applicable devices/wallets
 
@@ -766,6 +773,7 @@ export const runAdditionalDiscoveryThunk = createThunk<
 
             dispatch(
                 accountsActions.createAccount(
+                    networkConfigDeps,
                     accountPayload,
                     selectSupportedNetworkSymbols(getState()),
                 ),

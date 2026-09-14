@@ -1,3 +1,5 @@
+import { selectNetworkConfigDeps } from '@suite-common/networks';
+import { useServices } from '@suite-common/dependency-injection';
 import { useCallback } from 'react';
 
 import { type NetworkSymbol, getNetworkType } from '@suite-common/wallet-config';
@@ -50,6 +52,8 @@ type NavigationProp = StackToStackCompositeNavigationProps<
 >;
 
 export const useShowImportError = (symbol: NetworkSymbol, navigation: NavigationProp) => {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
+
     const { showAlert } = useAlert();
 
     const showImportError = useCallback(
@@ -58,7 +62,7 @@ export const useShowImportError = (symbol: NetworkSymbol, navigation: Navigation
 
             if (message) {
                 const lowerCasedMessage = message.toLowerCase();
-                const networkType = getNetworkType(symbol);
+                const networkType = getNetworkType(networkConfigDeps, symbol);
 
                 if (lowerCasedMessage.includes('invalid address')) {
                     if (networkType === 'bitcoin' || networkType === 'cardano') {
@@ -101,7 +105,7 @@ export const useShowImportError = (symbol: NetworkSymbol, navigation: Navigation
                 });
             }
         },
-        [symbol, showAlert, navigation],
+        [networkConfigDeps, symbol, showAlert, navigation],
     );
 
     return showImportError;

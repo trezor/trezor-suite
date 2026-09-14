@@ -1,3 +1,5 @@
+import { mockNetworkConfigDeps } from '@suite-common/networks/mocks';
+
 import { getCryptoId } from '@suite-common/trading';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { TestStream } from '@trezor/e2e-utils';
@@ -5,6 +7,8 @@ import { TestStream } from '@trezor/e2e-utils';
 import { countDecimalPlaces } from '../../support/common';
 import { expect, test } from '../../support/fixtures';
 import { createTestAnnotation } from '../../support/reporters/annotations';
+
+const networkConfigDeps = mockNetworkConfigDeps();
 
 const approvalAmount = '10';
 const accountLabel = 'Ethereum #2';
@@ -58,7 +62,7 @@ test.describe('Trading - DEX swap approval (LI.FI)', { tag: ['@T3T1', '@T3W1'] }
                         accountIndex: 1,
                     },
                     buyAsset: {
-                        assetCryptoId: getCryptoId(asNetworkSymbol('eth')),
+                        assetCryptoId: getCryptoId(networkConfigDeps, asNetworkSymbol('eth')),
                     },
                     selectReceiveAddress: async () => {
                         await tradingPage.receiveAccount.selectSuiteReceiveAccount(1, 'eth');

@@ -1,3 +1,4 @@
+import { type NetworksRootState } from '@suite-common/networks';
 import { useCallback } from 'react';
 import { useSelector } from 'react-redux';
 
@@ -53,11 +54,11 @@ export const StakeClaimableCard = ({ accountKey }: StakeClaimableCardProps) => {
     const symbol = useAccountsSelector(state => selectAccountNetworkSymbol(state, accountKey));
 
     const claimableAmount =
-        useSelector((state: StakeRootState) =>
+        useSelector((state: StakeRootState & NetworksRootState) =>
             selectClaimableAmountByAccountKey(state, accountKey),
         ) ?? '0';
 
-    const canClaim = useSelector((state: StakeRootState) =>
+    const canClaim = useSelector((state: StakeRootState & NetworksRootState) =>
         selectCanClaimByAccountKey(state, accountKey),
     );
 

@@ -4,6 +4,7 @@ import { type MiddlewareAPI, type Dispatch as ReduxDispatch } from 'redux';
 import { selectSelectedAccountKey } from '@suite/account';
 import { routerLocationChange, selectRouteName } from '@suite/router';
 import { deviceActions } from '@suite-common/device';
+import { type NetworkConfigDeps } from '@suite-common/networks';
 import { type Dispatch } from '@suite-common/redux-utils';
 import { getTxsPerPage } from '@suite-common/suite-utils';
 import { tradingActions } from '@suite-common/trading';
@@ -29,7 +30,7 @@ import * as tradingCommonActions from 'src/actions/wallet/trading/tradingCommonA
 import type { AppState } from 'src/types/suite';
 
 const walletMiddleware =
-    (api: MiddlewareAPI<Dispatch, AppState>) =>
+    (networkConfigDeps: NetworkConfigDeps, api: MiddlewareAPI<Dispatch, AppState>) =>
     (next: ReduxDispatch<UnknownAction>) =>
     (action: UnknownAction): UnknownAction => {
         const prevState = api.getState();
@@ -49,7 +50,7 @@ const walletMiddleware =
             // gather transactions from account.create action
             const { account } = action.payload;
             api.dispatch(
-                transactionsActions.addTransaction({
+                transactionsActions.addTransaction(networkConfigDeps, {
                     transactions: account.history.transactions || [],
                     account,
                     page: 1,
@@ -129,10 +130,10 @@ const walletMiddleware =
                     isOnSendPage: suiteRouteName === 'wallet-send',
                 }),
             );
-            api.dispatch(tradingCommonActions.convertDraftsThunk());
+            api.dispatch(tradingCommonActions.convertDraftsThunk(networkConfigDeps));
         }
 
-        api.dispatch(selectedAccountActions.syncSelectedAccountThunk(action));
+        api.dispatch(selectedAccountActions.syncSelectedAccountThunk(networkConfigDeps, action));
 
         return action;
     };

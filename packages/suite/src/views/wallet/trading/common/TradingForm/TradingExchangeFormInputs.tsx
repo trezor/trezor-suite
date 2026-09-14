@@ -1,6 +1,8 @@
 import { useMemo } from 'react';
 import { useFormContext } from 'react-hook-form';
 
+import { useServices } from '@suite-common/dependency-injection';
+import { selectNetworkConfigDeps } from '@suite-common/networks';
 import {
     TRADING_FORM_OUTPUT_AMOUNT,
     TRADING_FORM_OUTPUT_FIAT,
@@ -41,6 +43,8 @@ import { TradingNetworkReserveBanner } from './TradingNetworkReserveBanner';
 import { useTradingExchangeAssetSelect } from './useTradingExchangeAssetSelect';
 
 export const TradingExchangeFormInputs = () => {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
+
     const context = useTradingFormContext<TradingExchangeType>();
 
     const { isLoading } = useSelector(selectTradingLoadingAndTimestamp);
@@ -88,7 +92,7 @@ export const TradingExchangeFormInputs = () => {
     );
     const outputAmount =
         shouldSendInSats && output?.amount
-            ? subunitsToUnits({
+            ? subunitsToUnits(networkConfigDeps, {
                   value: asAmountSubunit(new BigNumber(output.amount)),
                   decimals: sendAssetDecimals,
               }).toString()

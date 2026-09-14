@@ -1,3 +1,4 @@
+import { type NetworksRootState } from '@suite-common/networks';
 import { useMemo } from 'react';
 import { useSelector } from 'react-redux';
 
@@ -43,7 +44,7 @@ export const StakingTransactionCompleteScreen = () => {
         selectAccountByKey(state, accountKey),
     );
 
-    const entryPeriodInDays = useSelector((state: StakeRootState) =>
+    const entryPeriodInDays = useSelector((state: StakeRootState & NetworksRootState) =>
         stakeType === 'stake' ? selectEntryPeriodInDaysBySymbol(state, account?.symbol) : undefined,
     );
 

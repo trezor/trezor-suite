@@ -1,3 +1,4 @@
+import type { NetworksRootState } from '@suite-common/networks';
 import { shallowEqual } from 'react-redux';
 
 import {
@@ -5,7 +6,10 @@ import {
     calculateAssetsPercentage,
 } from '@suite-common/assets';
 import { selectIsDeviceAuthorized } from '@suite-common/device';
-import { selectSupportedNetworkSymbols } from '@suite-common/networks';
+import {
+    selectNetworkConfigAccessors,
+    selectSupportedNetworkSymbols,
+} from '@suite-common/networks';
 import { createWeakMapSelector, returnStableArrayIfEmpty } from '@suite-common/redux-utils';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import {
@@ -43,18 +47,19 @@ export const selectDeviceNetworkSymbolsWithAssets = createMemoizedSelector(
     },
 );
 
-const selectDeviceAssetsWithBalances = createMemoizedSelector(
+const selectDeviceAssetsWithBalances = createWeakMapSelector(
     [
+        selectNetworkConfigAccessors,
         selectVisibleDeviceAccounts,
         selectDeviceNetworkSymbolsWithAssets,
         selectBaseCurrency,
         selectCurrentFiatRates,
     ],
-    (accounts, deviceNetworkSymbolsWithAssets, baseCurrencyCode, rates) => {
+    (networkConfigDeps, accounts, deviceNetworkSymbolsWithAssets, baseCurrencyCode, rates) => {
         const accountsWithFiatBalance = accounts.map(account => {
-            const shouldIncludeStaking = isStakingSymbol(account.symbol);
+            const shouldIncludeStaking = isStakingSymbol(networkConfigDeps, account.symbol);
 
-            const fiatValue = getAccountFiatBalance({
+            const fiatValue = getAccountFiatBalance(networkConfigDeps, {
                 account,
                 baseCurrencyCode,
                 rates,
@@ -64,7 +69,7 @@ const selectDeviceAssetsWithBalances = createMemoizedSelector(
             return {
                 symbol: account.symbol,
                 fiatValue,
-                cryptoValue: getAccountCryptoBalanceWithStaking(account),
+                cryptoValue: getAccountCryptoBalanceWithStaking(networkConfigDeps, account),
             };
         });
 
@@ -95,7 +100,10 @@ const selectDeviceAssetsWithBalances = createMemoizedSelector(
     },
 );
 
-export const selectAssetCryptoValue = (state: AssetsRootState, symbol: NetworkSymbol) => {
+export const selectAssetCryptoValue = (
+    state: AssetsRootState & NetworksRootState,
+    symbol: NetworkSymbol,
+) => {
     const assets = selectDeviceAssetsWithBalances(state);
     const asset = assets.find(a => a.symbol === symbol);
 
@@ -120,7 +128,9 @@ export const selectSingleDeviceAccountKeyForNetworkSymbol = (
     return selectVisibleDeviceAccountsByNetworkSymbol(state, symbol)[0]?.key ?? null;
 };
 
-export const selectAssetFiatValue = createMemoizedSelector(
+export const selectAssetFiatValue = createWeakMapSelector.withTypes<
+    AssetsRootState & NetworksRootState
+>()(
     [selectDeviceAssetsWithBalances, (_state, symbol: NetworkSymbol) => symbol],
     (assets, symbol) => {
         const asset = assets.find(a => a.symbol === symbol);
@@ -129,13 +139,15 @@ export const selectAssetFiatValue = createMemoizedSelector(
     },
 );
 
-const selectAssetsFiatValuePercentage = createMemoizedSelector(
+const selectAssetsFiatValuePercentage = createWeakMapSelector(
     [selectDeviceAssetsWithBalances, selectHasRunningDiscovery],
     (assets, hasDiscovery): AssetFiatBalanceWithPercentage[] =>
         hasDiscovery ? returnStableArrayIfEmpty([]) : calculateAssetsPercentage(assets),
 );
 
-export const selectAssetFiatValuePercentage = createMemoizedSelector(
+export const selectAssetFiatValuePercentage = createWeakMapSelector.withTypes<
+    AssetsRootState & NetworksRootState
+>()(
     [selectAssetsFiatValuePercentage, (_state, symbol: NetworkSymbol) => symbol],
     (assetsPercentages, symbol): AssetFiatPercentage => {
         const asset = assetsPercentages.find(a => a.symbol === symbol);

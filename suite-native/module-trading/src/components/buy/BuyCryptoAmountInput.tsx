@@ -1,3 +1,5 @@
+import { selectNetworkConfigDeps } from '@suite-common/networks';
+import { useServices } from '@suite-common/dependency-injection';
 import { forwardRef } from 'react';
 import { type TextInput } from 'react-native';
 import { useSelector } from 'react-redux';
@@ -21,13 +23,15 @@ const CRYPTO_AMOUNT_TEST_ID = '@trading/buy/crypto-amount-input';
 
 export const BuyCryptoAmountInput = forwardRef<TextInput, CryptoAmountInputProps>(
     ({ showAssetsSheet }, ref) => {
+        const networkConfigDeps = useServices(selectNetworkConfigDeps);
+
         const { translate } = useTranslate();
         const { control } = useBuyFormContext();
         const [amountInCrypto, asset] = useWatch({
             control,
             name: ['amountInCrypto', 'asset'],
         });
-        const symbol = getSymbolFromTradeableAsset(asset);
+        const symbol = getSymbolFromTradeableAsset(networkConfigDeps, asset);
         const { cryptoAmountTransformer } = useAmountInputTransformers(symbol);
         const isLoading = useSelector(selectTradingBuyIsLoading);
         const inputControls = useBuyInputFormControls('cryptoValue');

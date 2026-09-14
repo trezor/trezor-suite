@@ -7,7 +7,11 @@ import { selectFullSelectedAccount } from '@suite/account';
 import { selectIsDebugModeActive } from '@suite/debug';
 import { useServices } from '@suite-common/dependency-injection';
 import { selectSelectedDevice } from '@suite-common/device';
-import { selectAddressValidatorDep, selectSupportedNetworkSymbols } from '@suite-common/networks';
+import {
+    selectAddressValidatorDep,
+    selectNetworkConfigDeps,
+    selectSupportedNetworkSymbols,
+} from '@suite-common/networks';
 import { selectDispatch } from '@suite-common/redux-utils';
 import {
     type TradingType,
@@ -61,6 +65,8 @@ export const useTradingReceiveAddress = ({
     cryptoId,
     nonSuiteAccount,
 }: UseTradingReceiveAddressProps) => {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
+
     const { addressValidator, dispatch } = useServices(selectAddressValidatorDep, selectDispatch);
     const accounts = useSelector(selectAccounts);
     const walletSelectedAccount = useSelector(selectFullSelectedAccount);
@@ -80,7 +86,7 @@ export const useTradingReceiveAddress = ({
 
     const isDebug = useSelector(selectIsDebugModeActive);
 
-    const symbol = cryptoId && cryptoIdToNetworkSymbol(cryptoId);
+    const symbol = cryptoId && cryptoIdToNetworkSymbol(networkConfigDeps, cryptoId);
     const { supportedMainnets, supportedTestnets } = useNetworkSupport();
 
     const methods = useForm<TradingVerifyFormProps>({
@@ -102,14 +108,21 @@ export const useTradingReceiveAddress = ({
 
     const suiteReceiveAccounts = useMemo(
         () =>
-            filterReceiveAccounts({
+            filterReceiveAccounts(networkConfigDeps, {
                 accounts,
                 supportedNetworks,
                 deviceState: device?.state?.staticSessionId,
                 symbol,
                 isDebug,
             }),
-        [accounts, symbol, device?.state?.staticSessionId, isDebug, supportedNetworks],
+        [
+            networkConfigDeps,
+            accounts,
+            symbol,
+            device?.state?.staticSessionId,
+            isDebug,
+            supportedNetworks,
+        ],
     );
 
     const canAddSuiteAccount = !!(device?.connected && isSupportedNetwork);

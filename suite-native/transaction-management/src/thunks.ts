@@ -1,3 +1,4 @@
+import { selectNetworkConfigAccessors, type NetworksRootState } from '@suite-common/networks';
 import { D, pipe } from '@mobily/ts-belt';
 import { isFulfilled, isRejected } from '@reduxjs/toolkit';
 
@@ -51,7 +52,8 @@ export const updateFeeLimitThunk = createThunk<
 
 export type CalculateFeeLevelsMaxAmountThunkState = AccountsRootState &
     FeesRootState &
-    ComposeSendFormTransactionFeeLevelsThunkState;
+    ComposeSendFormTransactionFeeLevelsThunkState &
+    NetworksRootState;
 
 export const calculateFeeLevelsMaxAmountThunk = createThunk<
     FeeLevelsMaxAmount,
@@ -63,11 +65,13 @@ export const calculateFeeLevelsMaxAmountThunk = createThunk<
         { formState, accountKey },
         { dispatch, getState, rejectWithValue, fulfillWithValue },
     ) => {
+        const networkConfigDeps = selectNetworkConfigAccessors(getState());
+
         const account = selectAccountByKey(getState(), accountKey);
         if (!account) throw new Error('Account not found.');
 
         const networkFeeInfo = selectConvertedNetworkFeeInfo(getState(), account.symbol);
-        const network = getNetwork(account.symbol);
+        const network = getNetwork(networkConfigDeps, account.symbol);
 
         if (!networkFeeInfo) throw new Error('Network fees not found.');
 
@@ -101,7 +105,8 @@ export const calculateFeeLevelsMaxAmountThunk = createThunk<
 
 export type CalculateCustomFeeLevelThunkState = AccountsRootState &
     FeesRootState &
-    ComposeSendFormTransactionFeeLevelsThunkState;
+    ComposeSendFormTransactionFeeLevelsThunkState &
+    NetworksRootState;
 
 export const calculateCustomFeeLevelThunk = createThunk<
     PrecomposedLevels | PrecomposedLevelsCardano,
@@ -129,6 +134,8 @@ export const calculateCustomFeeLevelThunk = createThunk<
         },
         { dispatch, getState, fulfillWithValue, rejectWithValue },
     ) => {
+        const networkConfigDeps = selectNetworkConfigAccessors(getState());
+
         const account = selectAccountByKey(getState(), accountKey);
         const feeInfo = selectConvertedNetworkFeeInfo(getState(), account?.symbol);
         if (!account) {
@@ -139,7 +146,7 @@ export const calculateCustomFeeLevelThunk = createThunk<
             return rejectWithValue('Fee info not found.');
         }
 
-        const network = getNetwork(account.symbol);
+        const network = getNetwork(networkConfigDeps, account.symbol);
 
         // make a copy of the form state to avoid mutating the original state
         const formStateCopy = { ...formState };

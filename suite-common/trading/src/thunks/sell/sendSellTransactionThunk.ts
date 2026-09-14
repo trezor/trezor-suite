@@ -1,5 +1,6 @@
 import { isRejectedWithValue } from '@reduxjs/toolkit';
 import { type SellFiatTrade } from 'invity-api';
+import { selectNetworkConfigAccessors, type NetworksRootState } from '@suite-common/networks';
 
 import { createThunk } from '@suite-common/redux-utils';
 import { type Account } from '@suite-common/wallet-types';
@@ -28,7 +29,7 @@ export type SendSellTransactionThunkProps = {
     signAndPushSendFormTransaction: RecomposeAndSignTxThunkProps['signAndPushSendFormTransaction'];
 };
 
-type SendSellTransactionThunkState = TradingRootState;
+type SendSellTransactionThunkState = TradingRootState & NetworksRootState;
 
 export const sendSellTransactionThunk = createThunk<
     undefined,
@@ -48,6 +49,8 @@ export const sendSellTransactionThunk = createThunk<
         },
         { dispatch, getState, rejectWithValue },
     ) => {
+        const networkConfigDeps = selectNetworkConfigAccessors(getState());
+
         const selectedQuote = selectTradingSellSelectedQuote(getState());
         const providers = selectTradingSellProviders(getState());
         const selectedTrade = trade ?? selectedQuote;
@@ -62,7 +65,7 @@ export const sendSellTransactionThunk = createThunk<
                 error: { id: 'TR_TRADING_CANNOT_SEND_TRANSACTION' },
             });
         }
-        const tradingFormState = getTradingFormState({
+        const tradingFormState = getTradingFormState(networkConfigDeps, {
             activeSection: 'sell',
             providers,
             trade: selectedTrade,
@@ -70,7 +73,7 @@ export const sendSellTransactionThunk = createThunk<
             sendAccountKey: account.key,
         });
         const { destinationPaymentExtraId } = selectedTrade;
-        const recomposeInputs = buildRecomposeInputsFromTrade({
+        const recomposeInputs = buildRecomposeInputsFromTrade(networkConfigDeps, {
             destinationAddress,
             cryptoStringAmount: selectedTrade.cryptoStringAmount,
             destinationPaymentExtraId,

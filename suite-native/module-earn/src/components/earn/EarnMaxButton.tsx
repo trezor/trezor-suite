@@ -1,3 +1,6 @@
+import { type NetworksRootState } from '@suite-common/networks';
+import { selectNetworkConfigDeps } from '@suite-common/networks';
+import { useServices } from '@suite-common/dependency-injection';
 import { useSelector } from 'react-redux';
 
 import { type NetworkSymbol } from '@suite-common/wallet-config';
@@ -37,19 +40,21 @@ export const EarnMaxButton = ({
     onChange,
     variant = 'stake',
 }: EarnMaxButtonProps) => {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
+
     const { setValue } = useFormContext<EarnFormValues>();
 
     const account = useSelector((state: AccountsRootState) =>
         selectAccountByKey(state, accountKey),
     );
-    const stakedBalance = useSelector((state: StakeRootState) =>
+    const stakedBalance = useSelector((state: StakeRootState & NetworksRootState) =>
         selectStakedBalanceByAccountKey(state, accountKey),
     );
     const baseCurrencyCode = useSelector(selectBaseCurrency);
     const isBaseCurrencyInSats = useSelector(selectIsBaseCurrencyInSats);
     const converters = useCryptoFiatConverters({ symbol });
 
-    const baseCurrencyDecimals = getDecimalsForBaseCurrency({
+    const baseCurrencyDecimals = getDecimalsForBaseCurrency(networkConfigDeps, {
         code: baseCurrencyCode,
         isInSats: isBaseCurrencyInSats,
     });
@@ -59,9 +64,13 @@ export const EarnMaxButton = ({
             return stakedBalance ?? '0';
         }
 
-        const availableAmount = formatNetworkAmount(account!.availableBalance, symbol);
+        const availableAmount = formatNetworkAmount(
+            networkConfigDeps,
+            account!.availableBalance,
+            symbol,
+        );
 
-        return getMaxStakeAmount({ balance: availableAmount, symbol });
+        return getMaxStakeAmount(networkConfigDeps, { balance: availableAmount, symbol });
     };
 
     const setMaxAmount = () => {

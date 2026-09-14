@@ -1,3 +1,5 @@
+import { useServices } from '@suite-common/dependency-injection';
+import { selectNetworkConfigDeps } from '@suite-common/networks';
 import { useSelector } from 'react-redux';
 
 import { selectBaseCurrency } from '@suite-common/wallet-core';
@@ -27,6 +29,8 @@ export const useExchangeIssue = ({
     isEnabled,
     sourceOrigin,
 }: UseExchangeIssueParams): UseExchangeIssueResult => {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
+
     const quote = useSelector(selectTradingExchangeSelectedQuote);
     const fiatCurrency = useSelector(selectBaseCurrency);
 
@@ -36,7 +40,11 @@ export const useExchangeIssue = ({
         data: simulationResult,
     } = useDexExchangeTxSimulation({ account, isEnabled, sourceOrigin });
 
-    const simulatedReceiveAmount = getSimulatedReceiveAmount(simulationResult, quote?.receive);
+    const simulatedReceiveAmount = getSimulatedReceiveAmount(
+        networkConfigDeps,
+        simulationResult,
+        quote?.receive,
+    );
 
     const fiatDeviation = useExchangeFiatDeviation({
         fiatCurrency,

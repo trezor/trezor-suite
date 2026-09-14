@@ -1,3 +1,4 @@
+import { selectNetworkConfigDeps } from '@suite-common/networks';
 import { useCallback } from 'react';
 import { useSelector } from 'react-redux';
 
@@ -26,6 +27,8 @@ export type TradingBuyAnalyticReportCallback = (
 export const useBuyAnalyticReportCallback = (
     candidateQuote?: BuyTrade,
 ): TradingBuyAnalyticReportCallback => {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
+
     const { analytics } = useServices(selectNativeAnalyticsDep);
     const persistedQuote = useSelector(selectTradingBuySelectedQuote);
     const quote = candidateQuote || persistedQuote;
@@ -34,7 +37,7 @@ export const useBuyAnalyticReportCallback = (
         selectTradingCoinInfoByCryptoId(state, quote?.receiveCurrency),
     );
 
-    const quoteAnalyticsData = getAnalyticsTradingBuyPayload({
+    const quoteAnalyticsData = getAnalyticsTradingBuyPayload(networkConfigDeps, {
         quote,
         coinInfo,
     });

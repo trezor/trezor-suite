@@ -3,7 +3,7 @@ import { type UseFormReturn, useWatch } from 'react-hook-form';
 
 import { events, selectDesktopAnalyticsDep } from '@suite/analytics';
 import { useServices } from '@suite-common/dependency-injection';
-import { selectAddressValidatorDep } from '@suite-common/networks';
+import { selectAddressValidatorDep, selectNetworkConfigDeps } from '@suite-common/networks';
 import { selectDispatch } from '@suite-common/redux-utils';
 import {
     TRADING_EXCHANGE_FORM,
@@ -51,6 +51,8 @@ export const useExchangeQuotes = ({
     receiveAccountSymbol,
     composeRequestCallback,
 }: UseExchangeQuotesProps) => {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
+
     const { addressValidator, analytics, dispatch } = useServices(
         selectAddressValidatorDep,
         selectDesktopAnalyticsDep,
@@ -108,7 +110,7 @@ export const useExchangeQuotes = ({
         dispatch(tradingExchangeActions.saveSelectedQuote(undefined));
 
         if (
-            !isReceiveAddressCoherent({
+            !isReceiveAddressCoherent(networkConfigDeps, {
                 addressValidator,
                 receiveAddress,
                 receiveCryptoId: receiveCryptoSelect?.id,
@@ -123,6 +125,7 @@ export const useExchangeQuotes = ({
 
         refreshQuotes();
     }, [
+        networkConfigDeps,
         receiveIdentityKey,
         receiveAddress,
         receiveCryptoSelect?.id,

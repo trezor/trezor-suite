@@ -35,7 +35,7 @@ export const createWebApp =
         const root = createRoot(container);
         root.render(<LoadingScreen />);
 
-        const preloadAction = await preloadStore();
+        const preloadAction = await preloadStore(deps.services.networks);
 
         deps.services.hydrateReduxStore(preloadAction);
 

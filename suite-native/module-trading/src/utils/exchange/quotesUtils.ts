@@ -1,3 +1,4 @@
+import { type NetworkConfigDeps } from '@suite-common/networks';
 import type { ExchangeTrade } from 'invity-api';
 
 import { invariant } from '@suite-common/suite-utils';
@@ -9,10 +10,16 @@ import type { ExchangeFormType } from '@suite-native/trading-types';
 
 import { getReceiveAccountAddressText } from '../general/receiveAccountUtils';
 
-const getFromAddress = (account: Account | undefined): string | undefined =>
-    account && isAccountBasedNetwork(account.symbol) ? account.descriptor : undefined;
+const getFromAddress = (
+    networkConfigDeps: NetworkConfigDeps,
+    account: Account | undefined,
+): string | undefined =>
+    account && isAccountBasedNetwork(networkConfigDeps, account.symbol)
+        ? account.descriptor
+        : undefined;
 
 export const tradingExchangeFormToTradingExchangeFormProps = (
+    networkConfigDeps: NetworkConfigDeps,
     getValues: ExchangeFormType['getValues'],
 ): MinimalExchangeFormProps => {
     const [sendAccount, sendAsset, receiveAsset, sendCryptoAmount, receiveAccount] = getValues([
@@ -28,11 +35,11 @@ export const tradingExchangeFormToTradingExchangeFormProps = (
     invariant(sendCryptoAmount, 'sendCryptoAmount is required');
 
     return {
-        sendCryptoSelect: { id: toCaseAwareCryptoId(sendAsset.cryptoId) },
-        receiveCryptoSelect: { id: toCaseAwareCryptoId(receiveAsset.cryptoId) },
+        sendCryptoSelect: { id: toCaseAwareCryptoId(networkConfigDeps, sendAsset.cryptoId) },
+        receiveCryptoSelect: { id: toCaseAwareCryptoId(networkConfigDeps, receiveAsset.cryptoId) },
         outputs: [{ amount: sendCryptoAmount }],
-        fromAddress: getFromAddress(sendAccount),
-        receiveAddress: getReceiveAccountAddressText(receiveAccount),
+        fromAddress: getFromAddress(networkConfigDeps, sendAccount),
+        receiveAddress: getReceiveAccountAddressText(networkConfigDeps, receiveAccount),
         receiveAccountKey: receiveAccount?.account.key,
     };
 };

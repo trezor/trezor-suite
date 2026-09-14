@@ -1,3 +1,4 @@
+import { type NetworksRootState, selectNetworkConfigAccessors } from '@suite-common/networks';
 import { createThunk } from '@suite-common/redux-utils';
 import { WETH_DEPOSIT_BACKUP_GAS_LIMIT } from '@suite-common/wallet-constants';
 import { type Account, type AccountKey } from '@suite-common/wallet-types';
@@ -53,7 +54,8 @@ type ComposeYieldUnwrapTransactionPayload = {
     unwrapAmount: string;
 };
 
-export type ComposeYieldWrapTransactionThunkState = ComposeYieldEvmTransactionThunkState;
+export type ComposeYieldWrapTransactionThunkState = ComposeYieldEvmTransactionThunkState &
+    NetworksRootState;
 
 /**
  * Composes an unsigned WETH `deposit()` (wrap) transaction that carries `wrapAmount` in its value.
@@ -68,7 +70,9 @@ export const composeYieldWrapTransactionThunk = createThunk<
     }
 >(
     `${YIELD_WRAP_THUNK_PREFIX}/composeWrapTransaction`,
-    async ({ account, token, wrapAmount }, { dispatch }) => {
+    async ({ account, token, wrapAmount }, { getState, dispatch }) => {
+        const networkConfigDeps = selectNetworkConfigAccessors(getState());
+
         if (account.networkType !== 'ethereum') {
             return { type: 'error', reason: 'unsupported-network' } as const;
         }
@@ -79,7 +83,7 @@ export const composeYieldWrapTransactionThunk = createThunk<
             return { type: 'error', reason: 'not-wrapped-native' } as const;
         }
 
-        const { data, value } = buildYieldWrapTransactionData({
+        const { data, value } = buildYieldWrapTransactionData(networkConfigDeps, {
             wrapAmount,
             decimals: token.decimals,
         });
@@ -209,7 +213,8 @@ export const trackWrappedNativeTokenThunk = createThunk<
     },
 );
 
-export type ComposeYieldUnwrapTransactionThunkState = ComposeYieldEvmTransactionThunkState;
+export type ComposeYieldUnwrapTransactionThunkState = ComposeYieldEvmTransactionThunkState &
+    NetworksRootState;
 
 /**
  * Composes an unsigned WETH `withdraw(uint256)` (unwrap) transaction — the standalone WETH→ETH
@@ -223,7 +228,9 @@ export const composeYieldUnwrapTransactionThunk = createThunk<
     }
 >(
     `${YIELD_WRAP_THUNK_PREFIX}/composeUnwrapTransaction`,
-    async ({ account, token, unwrapAmount }, { dispatch }) => {
+    async ({ account, token, unwrapAmount }, { getState, dispatch }) => {
+        const networkConfigDeps = selectNetworkConfigAccessors(getState());
+
         if (account.networkType !== 'ethereum') {
             return { type: 'error', reason: 'unsupported-network' } as const;
         }
@@ -234,7 +241,7 @@ export const composeYieldUnwrapTransactionThunk = createThunk<
             return { type: 'error', reason: 'not-wrapped-native' } as const;
         }
 
-        const { data } = buildYieldUnwrapTransactionData({
+        const { data } = buildYieldUnwrapTransactionData(networkConfigDeps, {
             unwrapAmount,
             decimals: token.decimals,
         });

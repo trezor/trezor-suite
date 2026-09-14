@@ -1,6 +1,7 @@
 import { openDeferredModal } from '@suite/modal';
 import { type AnalyticsDep, events } from '@suite-common/analytics';
 import { type StablecoinYieldTxSimulationParams } from '@suite-common/earn-stablecoin';
+import { type NetworksRootState, selectNetworkConfigAccessors } from '@suite-common/networks';
 import { createThunk } from '@suite-common/redux-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
@@ -33,7 +34,8 @@ type UnwrapNativeTokenPayload = {
 };
 
 type SubmitUnwrapNativeTokenThunkState = ComposeYieldUnwrapTransactionThunkState &
-    SendYieldTransactionState;
+    SendYieldTransactionState &
+    NetworksRootState;
 
 type SubmitUnwrapNativeTokenThunkDeps = SendYieldTransactionDeps & {
     services: AnalyticsDep;
@@ -42,10 +44,15 @@ type SubmitUnwrapNativeTokenThunkDeps = SendYieldTransactionDeps & {
 export const submitUnwrapNativeTokenThunk = createThunk<
     { txid: string; fee: string } | undefined,
     UnwrapNativeTokenPayload,
-    { state: SubmitUnwrapNativeTokenThunkState; extra: SubmitUnwrapNativeTokenThunkDeps }
+    {
+        state: SubmitUnwrapNativeTokenThunkState;
+        extra: SubmitUnwrapNativeTokenThunkDeps;
+    }
 >(
     `${UNWRAP_NATIVE_TOKEN_PREFIX}/submit`,
     async ({ account, token, unwrapAmount, yieldFlow }, { dispatch, getState, extra }) => {
+        const networkConfigDeps = selectNetworkConfigAccessors(getState());
+
         // An in-flow unwrap belongs to the withdraw funnel, so its failures are reported there
         // rather than as a standalone yield/unwrap. Only the broadcast unwrap transaction is
         // resolved by `useYieldPendingTransactionTracking`, so these pre-broadcast failures are the
@@ -122,7 +129,7 @@ export const submitUnwrapNativeTokenThunk = createThunk<
                 return undefined;
             }
 
-            const sendResult = await sendYieldTransaction({
+            const sendResult = await sendYieldTransaction(networkConfigDeps, {
                 account,
                 amount: unwrapAmount,
                 token,
@@ -172,7 +179,10 @@ export const submitUnwrapNativeTokenThunk = createThunk<
                         },
                         receive: {
                             symbol: account.symbol,
-                            displaySymbol: getNetworkDisplaySymbol(account.symbol),
+                            displaySymbol: getNetworkDisplaySymbol(
+                                networkConfigDeps,
+                                account.symbol,
+                            ),
                             amount: unwrapAmount,
                         },
                     },

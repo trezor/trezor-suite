@@ -1,3 +1,5 @@
+import { selectNetworkConfigDeps } from '@suite-common/networks';
+import { useServices } from '@suite-common/dependency-injection';
 import { LinearTransition } from 'react-native-reanimated';
 import { useSelector } from 'react-redux';
 
@@ -39,6 +41,8 @@ export const ExchangeConfirmationInfo = ({
     flowType,
     transaction,
 }: ExchangeConfirmationInfoCardProps) => {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
+
     const { DateFormatter, TimeFormatter } = useFormatters();
 
     const date = transaction?.blockTime ? new Date(transaction.blockTime * 1000) : null;
@@ -49,7 +53,7 @@ export const ExchangeConfirmationInfo = ({
     }
 
     const { send, exchange } = quote;
-    const { network } = cryptoIdToNetworkAndContractAddress(send);
+    const { network } = cryptoIdToNetworkAndContractAddress(networkConfigDeps, send);
 
     if (!network?.symbol) {
         return null;

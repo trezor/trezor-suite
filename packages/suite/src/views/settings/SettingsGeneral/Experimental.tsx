@@ -10,6 +10,7 @@ import { Translation } from '@suite/intl';
 import { gotoThunk } from '@suite/router';
 import { selectExperimentalFeatures, suiteSettingsActions } from '@suite/settings';
 import { useImperativeServices, useServices } from '@suite-common/dependency-injection';
+import { selectNetworkConfigDeps } from '@suite-common/networks';
 import { selectDispatch } from '@suite-common/redux-utils';
 import { Banner, Button, Checkbox, Column, Row, Switch } from '@trezor/components';
 import { WarningIcon } from '@trezor/icons';
@@ -27,11 +28,13 @@ type FeatureLineProps = {
 };
 
 const FeatureLine = ({ feature, enabledFeatures }: FeatureLineProps) => {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
+
     const { dispatch } = useServices(selectDispatch);
     const services = useImperativeServices(selectSuiteServices);
     const checked = enabledFeatures.includes(feature);
 
-    const config = EXPERIMENTAL_FEATURES[feature];
+    const config = EXPERIMENTAL_FEATURES(networkConfigDeps)[feature];
     const { title, description } = config;
     const url = config.knowledgeBaseUrl;
 
@@ -117,6 +120,8 @@ const bannerMotionDivProps = {
 } as const;
 
 export const Experimental = () => {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
+
     const enabledFeatures = useSelector(selectExperimentalFeatures);
     const isExperimentalEnabled = enabledFeatures !== undefined;
     const isDebug = useSelector(selectIsDebugModeActive);
@@ -126,7 +131,7 @@ export const Experimental = () => {
 
     const onSwitchExperimental = () => {
         enabledFeatures?.forEach(feature =>
-            EXPERIMENTAL_FEATURES[feature]?.onToggle?.({
+            EXPERIMENTAL_FEATURES(networkConfigDeps)[feature]?.onToggle?.({
                 services,
                 newValue: !isExperimentalEnabled,
                 dispatch,
@@ -142,13 +147,13 @@ export const Experimental = () => {
 
     const experimentalFeatures = useMemo(
         () =>
-            typedObjectKeys(EXPERIMENTAL_FEATURES).filter(
+            typedObjectKeys(EXPERIMENTAL_FEATURES(networkConfigDeps)).filter(
                 feature =>
-                    !EXPERIMENTAL_FEATURES[feature]?.isDisabled?.({
+                    !EXPERIMENTAL_FEATURES(networkConfigDeps)[feature]?.isDisabled?.({
                         isDebug,
                     }),
             ),
-        [isDebug],
+        [networkConfigDeps, isDebug],
     );
 
     return (

@@ -1,3 +1,4 @@
+import { type NetworkConfigDeps } from '@suite-common/networks';
 import {
     type NetworkSymbol,
     getNetwork,
@@ -40,7 +41,13 @@ export type DBWalletAccountTransactionCompatible = {
     tx: DBWalletAccountTransaction['tx'] & { totalSpent: string };
 };
 
-export const runLegacyMigrations: OnUpgradeFunc<SuiteDBSchema> = async (
+type RunLegacyMigrations = (
+    deps: NetworkConfigDeps,
+    ...args: Parameters<OnUpgradeFunc<SuiteDBSchema>>
+) => ReturnType<OnUpgradeFunc<SuiteDBSchema>>;
+
+export const runLegacyMigrations: RunLegacyMigrations = async (
+    networkConfigDeps,
     db,
     oldVersion,
     newVersion,
@@ -159,14 +166,26 @@ export const runLegacyMigrations: OnUpgradeFunc<SuiteDBSchema> = async (
                     ...tx.tx.details,
                     vin: tx.tx.details.vin.map(v => ({
                         ...v,
-                        value: v.value ? formatNetworkAmount(v.value, tx.tx.symbol) : v.value,
+                        value: v.value
+                            ? formatNetworkAmount(networkConfigDeps, v.value, tx.tx.symbol)
+                            : v.value,
                     })),
                     vout: tx.tx.details.vout.map(v => ({
                         ...v,
-                        value: v.value ? formatNetworkAmount(v.value, tx.tx.symbol) : v.value,
+                        value: v.value
+                            ? formatNetworkAmount(networkConfigDeps, v.value, tx.tx.symbol)
+                            : v.value,
                     })),
-                    totalInput: formatNetworkAmount(tx.tx.details.totalInput, tx.tx.symbol),
-                    totalOutput: formatNetworkAmount(tx.tx.details.totalOutput, tx.tx.symbol),
+                    totalInput: formatNetworkAmount(
+                        networkConfigDeps,
+                        tx.tx.details.totalInput,
+                        tx.tx.symbol,
+                    ),
+                    totalOutput: formatNetworkAmount(
+                        networkConfigDeps,
+                        tx.tx.details.totalOutput,
+                        tx.tx.symbol,
+                    ),
                 };
             }
 
@@ -287,7 +306,7 @@ export const runLegacyMigrations: OnUpgradeFunc<SuiteDBSchema> = async (
                         },
                     };
 
-                    if (isNetworkSymbol(symbol)) {
+                    if (isNetworkSymbol(networkConfigDeps, symbol)) {
                         backendSettings.add(settings, symbol);
                     }
                 });
@@ -408,7 +427,7 @@ export const runLegacyMigrations: OnUpgradeFunc<SuiteDBSchema> = async (
             'txs',
             ({ order, tx: origTx }) => {
                 const unformat = (amount: string) =>
-                    networkAmountToSmallestUnit(amount, origTx.symbol);
+                    networkAmountToSmallestUnit(networkConfigDeps, amount, origTx.symbol);
                 const unformatIfDefined = (amount: string | undefined) =>
                     amount ? unformat(amount) : amount;
 
@@ -1074,9 +1093,7 @@ export const runLegacyMigrations: OnUpgradeFunc<SuiteDBSchema> = async (
     }
 
     if (oldVersion < 49) {
-        // TODO(#30572): Migrations run before Redux network metadata is loaded.
-        // Keep the legacy ordering until migration inputs are supplied independently.
-        const supportedNetworks = getSupportedNetworks();
+        const supportedNetworks = getSupportedNetworks(networkConfigDeps);
 
         await updateAll(transaction, 'walletSettings', walletSettings => {
             walletSettings.enabledNetworks.sort(
@@ -1110,7 +1127,7 @@ export const runLegacyMigrations: OnUpgradeFunc<SuiteDBSchema> = async (
 
         await updateAll(transaction, 'accounts', account => {
             if (account.networkType === 'ethereum' && account.symbol !== 'eth') {
-                const { chainId } = getNetwork(account.symbol);
+                const { chainId } = getNetwork(networkConfigDeps, account.symbol);
                 account.metadata.key = `${account.descriptor}-${chainId}`;
 
                 return account;
@@ -1195,7 +1212,7 @@ export const runLegacyMigrations: OnUpgradeFunc<SuiteDBSchema> = async (
     }
 
     if (oldVersion < 56) {
-        await migrateToV56(db, oldVersion, newVersion, transaction);
+        await migrateToV56(networkConfigDeps, db, oldVersion, newVersion, transaction);
     }
 
     // !!! DO NOT ADD ANY MORE MIGRATION CODE BELOW !!!

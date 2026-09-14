@@ -3,6 +3,7 @@ import {
     type YieldDtoV2,
     getProtocolIncentiveRewardTokens,
 } from '@suite-common/earn-stablecoin-api';
+import { type NetworkConfigDeps } from '@suite-common/networks';
 import { getNetworkByYieldXyzId, getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import { type Account, type TokenSymbol, toTokenSymbol } from '@suite-common/wallet-types';
 import { getApyPercent, getContractAddressForNetworkSymbol } from '@suite-common/wallet-utils';
@@ -31,11 +32,10 @@ type GetMatchedAccountTokenParams = {
     token: Pick<TokenDtoV2, 'address' | 'symbol' | 'decimals'> | undefined;
 };
 
-export const getMatchedAccountToken = ({
-    account,
-    contractAddress,
-    token,
-}: GetMatchedAccountTokenParams): AccountToken | undefined => {
+export const getMatchedAccountToken = (
+    networkConfigDeps: NetworkConfigDeps,
+    { account, contractAddress, token }: GetMatchedAccountTokenParams,
+): AccountToken | undefined => {
     if (!account.tokens?.length) {
         return undefined;
     }
@@ -43,12 +43,15 @@ export const getMatchedAccountToken = ({
     return account.tokens.find(accountToken => {
         if (contractAddress) {
             return (
-                getContractAddressForNetworkSymbol(account.symbol, accountToken.contract) ===
-                contractAddress
+                getContractAddressForNetworkSymbol(
+                    networkConfigDeps,
+                    account.symbol,
+                    accountToken.contract,
+                ) === contractAddress
             );
         }
 
-        return doTokensMatch({
+        return doTokensMatch(networkConfigDeps, {
             networkSymbol: account.symbol,
             firstToken: {
                 address: accountToken.contract,
@@ -134,11 +137,10 @@ const unresolvedYieldFlowData: UnresolvedYieldFlowData = {
     vaultTokenSymbol: null,
 };
 
-export const getResolvedYieldFlowData = ({
-    account,
-    vault,
-    tokenContract,
-}: GetResolvedYieldFlowDataProps): ResolvedYieldFlowData => {
+export const getResolvedYieldFlowData = (
+    networkConfigDeps: NetworkConfigDeps,
+    { account, vault, tokenContract }: GetResolvedYieldFlowDataProps,
+): ResolvedYieldFlowData => {
     if (!account) {
         return { ...unresolvedYieldFlowData, resolutionStatus: 'missing-account' };
     }
@@ -161,7 +163,7 @@ export const getResolvedYieldFlowData = ({
         vaultTokenSymbol: vault.outputToken.symbol,
     };
 
-    if (!getNetworkByYieldXyzId(vault.network)) {
+    if (!getNetworkByYieldXyzId(networkConfigDeps, vault.network)) {
         return {
             ...unresolvedYieldFlowData,
             ...vaultDisplayData,
@@ -172,22 +174,23 @@ export const getResolvedYieldFlowData = ({
     }
 
     const addressedContract = tokenContract
-        ? getContractAddressForNetworkSymbol(account.symbol, tokenContract)
+        ? getContractAddressForNetworkSymbol(networkConfigDeps, account.symbol, tokenContract)
         : null;
     const underlyingTokenContract = vault.token.address
-        ? getContractAddressForNetworkSymbol(account.symbol, vault.token.address)
+        ? getContractAddressForNetworkSymbol(networkConfigDeps, account.symbol, vault.token.address)
         : addressedContract;
     const receiptTokenContract = getContractAddressForNetworkSymbol(
+        networkConfigDeps,
         account.symbol,
         vault.outputToken.address,
     );
 
-    const matchedToken = getMatchedAccountToken({
+    const matchedToken = getMatchedAccountToken(networkConfigDeps, {
         account,
         contractAddress: underlyingTokenContract,
         token: vault.token,
     });
-    const matchedReceiptToken = getMatchedAccountToken({
+    const matchedReceiptToken = getMatchedAccountToken(networkConfigDeps, {
         account,
         contractAddress: receiptTokenContract,
         token: vault.outputToken,
@@ -196,7 +199,9 @@ export const getResolvedYieldFlowData = ({
     const token: YieldFlowToken = {
         networkSymbol: account.symbol,
         symbol:
-            matchedToken?.symbol ?? vault.token.symbol ?? getNetworkDisplaySymbol(account.symbol),
+            matchedToken?.symbol ??
+            vault.token.symbol ??
+            getNetworkDisplaySymbol(networkConfigDeps, account.symbol),
         decimals: matchedToken?.decimals ?? vault.token.decimals,
         contractAddress: matchedToken?.contract ?? underlyingTokenContract,
         balance: matchedToken?.balance ?? '0',
@@ -226,7 +231,7 @@ export const getResolvedYieldFlowData = ({
             tokenContract: addressedContract ?? underlyingTokenContract,
             yieldId: vault.id,
         }),
-        depositedAmount: getConvertedOutputTokenBalanceToInputTokenAmount({
+        depositedAmount: getConvertedOutputTokenBalanceToInputTokenAmount(networkConfigDeps, {
             networkSymbol: account.symbol,
             token: vault.token,
             outputToken: vault.outputToken,
@@ -235,7 +240,9 @@ export const getResolvedYieldFlowData = ({
         }),
         depositedSharesAmount,
         isWrappedNativeVault,
-        wrappedNativeSymbol: isWrappedNativeVault ? getNetworkDisplaySymbol(account.symbol) : null,
+        wrappedNativeSymbol: isWrappedNativeVault
+            ? getNetworkDisplaySymbol(networkConfigDeps, account.symbol)
+            : null,
         tokenSymbol: toTokenSymbol((matchedToken?.symbol ?? vault.token.symbol).toUpperCase()),
     };
 };

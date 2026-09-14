@@ -1,3 +1,8 @@
+import {
+    type NetworkConfigDeps,
+    type NetworksRootState,
+    selectNetworkConfigAccessors,
+} from '@suite-common/networks';
 import { createThunk } from '@suite-common/redux-utils';
 import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import {
@@ -45,6 +50,7 @@ import {
 } from '../settings/walletSettingsReducer';
 
 const calculate = (
+    networkConfigDeps: NetworkConfigDeps,
     availableBalance: string,
     output: ExternalOutput,
     feeLevel: FeeLevel,
@@ -66,17 +72,17 @@ const calculate = (
         max = availableTokenBalance || calculateMax(availableBalance, feeInLamports);
 
         if (composeContext) {
-            const feesInUnits = subunitsToUnits({
+            const feesInUnits = subunitsToUnits(networkConfigDeps, {
                 value: asAmountSubunit(new BigNumber(feeInLamports)),
                 symbol: composeContext.account.symbol,
             }).toString();
 
-            const maxInUnits = subunitsToUnits({
+            const maxInUnits = subunitsToUnits(networkConfigDeps, {
                 value: asAmountSubunit(new BigNumber(max)),
                 symbol: composeContext.account.symbol,
             }).toString();
 
-            max = getCryptoMaxAmountWithReserve({
+            max = getCryptoMaxAmountWithReserve(networkConfigDeps, {
                 symbol: composeContext.account.symbol,
                 contractAddress: token?.contract,
                 balance: composeContext.account.formattedBalance,
@@ -85,7 +91,7 @@ const calculate = (
                 isNetworkReserveEnabled,
             });
 
-            max = unitsToSubunits({
+            max = unitsToSubunits(networkConfigDeps, {
                 value: asAmountUnit(new BigNumber(max)),
                 symbol: composeContext.account.symbol,
             }).toString();
@@ -168,18 +174,23 @@ function assertIsSolanaAccount(
         throw new Error(`Invalid network type. ${account.networkType}`);
 }
 
-type ComposeSolanaTransactionFeeLevelsThunkState = BlockchainRootState;
+type ComposeSolanaTransactionFeeLevelsThunkState = BlockchainRootState & NetworksRootState;
 
 export const composeSolanaTransactionFeeLevelsThunk = createThunk<
     PrecomposedLevels,
     ComposeTransactionThunkArguments,
-    { rejectValue: ComposeFeeLevelsError; state: ComposeSolanaTransactionFeeLevelsThunkState }
+    {
+        rejectValue: ComposeFeeLevelsError;
+        state: ComposeSolanaTransactionFeeLevelsThunkState;
+    }
 >(
     `${SEND_MODULE_PREFIX}/composeSolanaTransactionFeeLevelsThunk`,
     async (
         { formState, composeContext, isNetworkReserveEnabled = false },
         { getState, rejectWithValue },
     ) => {
+        const networkConfigDeps = selectNetworkConfigAccessors(getState());
+
         const { account, network, feeInfo } = composeContext;
         const composedOutput = getExternalComposeOutput(formState, account, network);
         if (!composedOutput)
@@ -295,6 +306,7 @@ export const composeSolanaTransactionFeeLevelsThunk = createThunk<
 
         const response = predefinedLevels.map(level =>
             calculate(
+                networkConfigDeps,
                 account.availableBalance,
                 output,
                 level,
@@ -324,7 +336,10 @@ export const composeSolanaTransactionFeeLevelsThunk = createThunk<
                 tx.errorMessage = {
                     id: 'AMOUNT_NOT_ENOUGH_CURRENCY_FEE',
                     values: {
-                        networkDisplaySymbol: getNetworkDisplaySymbol(network.symbol),
+                        networkDisplaySymbol: getNetworkDisplaySymbol(
+                            networkConfigDeps,
+                            network.symbol,
+                        ),
                     },
                 };
             }

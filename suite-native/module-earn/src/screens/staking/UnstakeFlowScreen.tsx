@@ -1,3 +1,4 @@
+import { selectNetworkConfigDeps } from '@suite-common/networks';
 import { useCallback, useRef } from 'react';
 import { useSelector } from 'react-redux';
 
@@ -36,6 +37,8 @@ import { useSolanaStakingLimit } from '../../hooks/staking/useSolanaStakingLimit
 import { useUnstakeForm } from '../../hooks/staking/useUnstakeForm';
 
 export const UnstakeFlowScreen = () => {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
+
     const route = useRoute<RouteProp<RootStackParamList, RootStackRoutes.UnstakeFlow>>();
     const { accountKey } = route.params;
     const navigation =
@@ -143,7 +146,10 @@ export const UnstakeFlowScreen = () => {
                                 values={{
                                     limit: MAX_DEACTIVATE_ACCOUNTS_WITH_SPLIT,
                                     amount: unstakeLimitAmount,
-                                    symbol: getNetworkDisplaySymbol(networkSymbol),
+                                    symbol: getNetworkDisplaySymbol(
+                                        networkConfigDeps,
+                                        networkSymbol,
+                                    ),
                                 }}
                             />
                         }

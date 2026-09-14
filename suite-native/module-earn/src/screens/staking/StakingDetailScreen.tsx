@@ -1,3 +1,4 @@
+import { selectNetworkConfigDeps } from '@suite-common/networks';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { RefreshControl } from 'react-native';
 
@@ -17,6 +18,8 @@ import { StakingDetailScreenHeader } from '../../components/staking/StakingDetai
 import { StakingInfo } from '../../components/staking/StakingInfo';
 
 export const StakingDetailScreen = () => {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
+
     const route = useRoute<RouteProp<RootStackParamList, RootStackRoutes.StakingDetail>>();
     const { accountKey } = route.params;
     const { networkSymbol } = parseAccountKey(accountKey);
@@ -50,7 +53,7 @@ export const StakingDetailScreen = () => {
 
     return (
         <Screen header={<StakingDetailScreenHeader />} refreshControl={refreshControl}>
-            {isStakingSymbol(networkSymbol) && (
+            {isStakingSymbol(networkConfigDeps, networkSymbol) && (
                 <ContextMessage context={Context.getStaking(networkSymbol)} />
             )}
             <StakingInfo accountKey={accountKey} />

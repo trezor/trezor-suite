@@ -1,4 +1,5 @@
 import { USER_CANCELLED_ERROR_CODES } from '@suite-common/earn-stablecoin';
+import { mockNetworkConfigDeps } from '@suite-common/networks/mocks';
 import { mockSuiteDevice } from '@suite-common/suite-types/mocks';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { type Account } from '@suite-common/wallet-types';
@@ -10,6 +11,8 @@ import {
     type SendYieldTransactionState,
     sendYieldTransaction,
 } from './signingHelpers';
+
+const networkConfigDeps = mockNetworkConfigDeps();
 
 const mockBuildStablecoinYieldTransactionReview = jest.fn();
 const mockDevice = mockSuiteDevice({
@@ -30,7 +33,7 @@ jest.mock('@suite/modal', () => ({
 
 jest.mock('@suite-common/earn-stablecoin', () => ({
     ...jest.requireActual('@suite-common/earn-stablecoin'),
-    buildStablecoinYieldTransactionReview: (payload: unknown) =>
+    buildStablecoinYieldTransactionReview: (_deps: unknown, payload: unknown) =>
         mockBuildStablecoinYieldTransactionReview(payload),
 }));
 
@@ -63,7 +66,7 @@ const createDispatch = (isReviewModalConfirmed: boolean) =>
     }) as unknown as SendYieldTransactionParams['dispatch'];
 
 const sendTransaction = ({ isReviewModalConfirmed = true } = {}) =>
-    sendYieldTransaction({
+    sendYieldTransaction(networkConfigDeps, {
         account,
         amount: '100',
         token: {

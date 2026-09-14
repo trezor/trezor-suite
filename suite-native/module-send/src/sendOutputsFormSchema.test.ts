@@ -1,7 +1,11 @@
+import { mockNetworkConfigDeps } from '@suite-common/networks/mocks';
+
 import { mockGetNamedAddressSupport } from '@suite-common/address/mocks';
 import { type AddressValidator, type SymbolNamedAddressResolver } from '@suite-common/networks';
 
 import { type SendFormFormContext, sendOutputsFormValidationSchema } from './sendOutputsFormSchema';
+
+const networkConfigDeps = mockNetworkConfigDeps();
 
 const EVM_ADDRESS_REGEX = /^0x[a-fA-F0-9]{40}$/;
 
@@ -28,7 +32,7 @@ const validateAddress = ({
     resolvedAddress?: string;
     symbol?: SendFormFormContext['symbol'];
 }) =>
-    sendOutputsFormValidationSchema.validateAt(
+    sendOutputsFormValidationSchema(networkConfigDeps).validateAt(
         'outputs[0].address',
         { outputs: [{ address, resolvedAddress: outputResolvedAddress }] },
         {

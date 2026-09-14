@@ -1,3 +1,5 @@
+import { selectNetworkConfigDeps } from '@suite-common/networks';
+import { useServices } from '@suite-common/dependency-injection';
 import { useWatch } from 'react-hook-form';
 import { Keyboard } from 'react-native';
 import Animated, { FadeIn } from 'react-native-reanimated';
@@ -34,14 +36,16 @@ export const SendMaxSwitch = ({
     tokenContract,
     maxSpendableAmount,
 }: SendMaxSwitchProps) => {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
+
     const symbol = useSelector((state: AccountsRootState) =>
         selectAccountNetworkSymbol(state, accountKey),
     );
-    const decimals = symbol && getNetwork(symbol).decimals;
+    const decimals = symbol && getNetwork(networkConfigDeps, symbol).decimals;
 
     const isBtcAmountInSats = useSelector(selectAreSatsAmountUnit);
     const baseCurrencyCode = useSelector(selectBaseCurrency);
-    const decimalsForBaseCurrency = getDecimalsForBaseCurrency({
+    const decimalsForBaseCurrency = getDecimalsForBaseCurrency(networkConfigDeps, {
         code: baseCurrencyCode,
         isInSats: isBtcAmountInSats,
     });

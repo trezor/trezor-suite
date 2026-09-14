@@ -1,4 +1,5 @@
 import { createReducer } from '@reduxjs/toolkit';
+import { selectNetworkConfigAccessors } from '@suite-common/networks';
 
 import { createWeakMapSelector } from '@suite-common/redux-utils';
 import { formatDurationStrict } from '@suite-common/suite-utils';
@@ -51,17 +52,18 @@ const createMemoizedSelector = createWeakMapSelector.withTypes<FeesRootState>();
  * reference stays stable across unrelated fees updates — other networks' fees and status-only
  * changes (e.g. `loading`) of the same network.
  */
-export const selectConvertedNetworkFeeInfo = createMemoizedSelector(
+export const selectConvertedNetworkFeeInfo = createWeakMapSelector(
     [
+        selectNetworkConfigAccessors,
         selectRawNetworkFeeInfo,
         (state: FeesRootState, symbol?: NetworkSymbol) =>
             symbol !== undefined && selectFees(state)[symbol] !== undefined,
         (_state: FeesRootState, symbol?: NetworkSymbol) => symbol,
     ],
-    (rawFeeInfo, hasFeeEntry, symbol): FeeInfo | null => {
+    (networkConfigDeps, rawFeeInfo, hasFeeEntry, symbol): FeeInfo | null => {
         if (!symbol || !hasFeeEntry) return null;
 
-        const networkType = getNetworkType(symbol);
+        const networkType = getNetworkType(networkConfigDeps, symbol);
 
         return getConvertedOrDefaultFeeInfo({
             networkType,
@@ -73,7 +75,7 @@ export const selectConvertedNetworkFeeInfo = createMemoizedSelector(
 /**
  * Returns whether the network supports EIP-1559 based on the fee info.
  */
-export const selectIsEip1559Fee = createMemoizedSelector(
+export const selectIsEip1559Fee = createWeakMapSelector(
     [(_state: FeesRootState, symbol?: NetworkSymbol) => symbol, selectConvertedNetworkFeeInfo],
     (symbol, feeInfo): boolean => {
         if (!symbol || !feeInfo?.levels?.[0]) return false;
@@ -82,7 +84,7 @@ export const selectIsEip1559Fee = createMemoizedSelector(
     },
 );
 
-export const selectNetworkFeeLevel = createMemoizedSelector(
+export const selectNetworkFeeLevel = createWeakMapSelector(
     [
         selectConvertedNetworkFeeInfo,
         (_state: FeesRootState, _symbol?: NetworkSymbol, level?: FeeLevelLabel) => level,
@@ -95,16 +97,17 @@ export const selectNetworkFeeLevel = createMemoizedSelector(
     },
 );
 
-export const selectConvertedNetworkFeeLevelTimeEstimate = createMemoizedSelector(
+export const selectConvertedNetworkFeeLevelTimeEstimate = createWeakMapSelector(
     [
+        selectNetworkConfigAccessors,
         selectConvertedNetworkFeeInfo,
         selectNetworkFeeLevel,
         (_state: FeesRootState, symbol?: NetworkSymbol) => symbol,
     ],
-    (networkFeeInfo, feeLevel, symbol): string | null => {
+    (networkConfigDeps, networkFeeInfo, feeLevel, symbol): string | null => {
         if (!feeLevel || !networkFeeInfo) return null;
 
-        const networkType = symbol ? getNetworkType(symbol) : null;
+        const networkType = symbol ? getNetworkType(networkConfigDeps, symbol) : null;
 
         const multiplier = networkType === 'bitcoin' ? 60 : 1;
 
@@ -112,7 +115,7 @@ export const selectConvertedNetworkFeeLevelTimeEstimate = createMemoizedSelector
     },
 );
 
-export const selectConvertedNetworkFeeLevelFeePerUnit = createMemoizedSelector(
+export const selectConvertedNetworkFeeLevelFeePerUnit = createWeakMapSelector(
     [selectNetworkFeeLevel],
     (feeLevel): string | null => {
         if (!feeLevel) return null;

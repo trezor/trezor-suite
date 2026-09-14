@@ -1,3 +1,5 @@
+import { selectNetworkConfigDeps } from '@suite-common/networks';
+import { useServices } from '@suite-common/dependency-injection';
 import { invariant } from '@suite-common/suite-utils';
 import { type TradeableAssetBalance, cryptoIdToNetworkSymbol } from '@suite-common/trading';
 import { type TokenSymbol } from '@suite-common/wallet-types';
@@ -29,11 +31,13 @@ export const TradeableAssetListItem = ({
     balance,
     onPress,
 }: TradeableAssetListItemProps) => {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
+
     const { applyStyle } = useNativeStyles();
     const { animatedStyle, handlePressIn, handlePressOut } = useTradingAssetPressStyle();
     const { symbol, name, contractAddress, cryptoId, decimals } = asset;
 
-    const networkSymbol = cryptoIdToNetworkSymbol(cryptoId);
+    const networkSymbol = cryptoIdToNetworkSymbol(networkConfigDeps, cryptoId);
     invariant(networkSymbol, `Network symbol not found for cryptoId: ${cryptoId}`);
 
     const balanceContent = balance ? (

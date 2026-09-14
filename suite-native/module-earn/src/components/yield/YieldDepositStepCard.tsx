@@ -1,3 +1,5 @@
+import { type NetworkConfigDeps, selectNetworkConfigDeps } from '@suite-common/networks';
+import { useServices } from '@suite-common/dependency-injection';
 import { type NetworkSymbol, getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import { Translation } from '@suite-native/intl';
 import { getWrappedNativeSymbol } from '@trezor/network-ethereum-suite-common';
@@ -7,6 +9,7 @@ import { type YieldFlowStep, YieldFlowStepCard } from './YieldFlowStepCard';
 type YieldDepositStepId = 'wrap' | 'approval' | 'deposit';
 
 const getWrapStep = (
+    networkConfigDeps: NetworkConfigDeps,
     networkSymbol: NetworkSymbol,
     isSkipped: boolean,
 ): YieldFlowStep<YieldDepositStepId> => ({
@@ -16,7 +19,7 @@ const getWrapStep = (
         <Translation
             id="earn.yieldDepositFlowScreen.wrapStepTitle"
             values={{
-                nativeSymbol: getNetworkDisplaySymbol(networkSymbol),
+                nativeSymbol: getNetworkDisplaySymbol(networkConfigDeps, networkSymbol),
                 tokenSymbol: getWrappedNativeSymbol(networkSymbol) ?? '',
             }}
         />
@@ -62,18 +65,21 @@ export const YieldDepositStepCard = ({
     isWrapStepSkipped = false,
     networkSymbol,
     onEditStep,
-}: YieldDepositStepCardProps) => (
-    <YieldFlowStepCard
-        currentStepId={currentStepId}
-        modalTitle="earn.yieldDepositFlowScreen.modalTitle"
-        onEditStep={onEditStep}
-        steps={
-            hasWrapStep
-                ? [
-                      getWrapStep(networkSymbol, isWrapStepSkipped),
-                      ...getBaseSteps(isApprovalStepSkipped),
-                  ]
-                : getBaseSteps(isApprovalStepSkipped)
-        }
-    />
-);
+}: YieldDepositStepCardProps) => {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
+    return (
+        <YieldFlowStepCard
+            currentStepId={currentStepId}
+            modalTitle="earn.yieldDepositFlowScreen.modalTitle"
+            onEditStep={onEditStep}
+            steps={
+                hasWrapStep
+                    ? [
+                          getWrapStep(networkConfigDeps, networkSymbol, isWrapStepSkipped),
+                          ...getBaseSteps(isApprovalStepSkipped),
+                      ]
+                    : getBaseSteps(isApprovalStepSkipped)
+            }
+        />
+    );
+};

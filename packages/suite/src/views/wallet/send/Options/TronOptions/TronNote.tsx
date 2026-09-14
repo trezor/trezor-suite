@@ -1,6 +1,8 @@
 import { useEffect } from 'react';
 
 import { Translation, useTranslation } from '@suite/intl';
+import { useServices } from '@suite-common/dependency-injection';
+import { selectNetworkConfigDeps } from '@suite-common/networks';
 import { formInputsMaxLength } from '@suite-common/validators';
 import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import {
@@ -25,6 +27,8 @@ type TronNoteProps = {
 };
 
 export const TronNote = ({ close }: TronNoteProps) => {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
+
     const {
         account: { symbol },
         register,
@@ -35,7 +39,7 @@ export const TronNote = ({ close }: TronNoteProps) => {
 
     const { translationString } = useTranslation();
 
-    const networkDisplaySymbol = getNetworkDisplaySymbol(symbol);
+    const networkDisplaySymbol = getNetworkDisplaySymbol(networkConfigDeps, symbol);
 
     const value = watch(inputName);
     const byteSize = Buffer.from(value || '', 'utf8').length;

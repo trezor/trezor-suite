@@ -3,6 +3,8 @@ import { type CryptoId } from 'invity-api';
 import { AccountLabel } from '@suite/account';
 import { Address } from '@suite/address';
 import { Translation, useTranslation } from '@suite/intl';
+import { useServices } from '@suite-common/dependency-injection';
+import { selectNetworkConfigDeps } from '@suite-common/networks';
 import { cryptoIdToNetworkSymbolAndContractAddress, useTradingAssets } from '@suite-common/trading';
 import { getNetworkDisplaySymbolName } from '@suite-common/wallet-config';
 import { type Account } from '@suite-common/wallet-types';
@@ -34,9 +36,12 @@ export const TradingDetailAssetRow = ({
     cryptoAmountTestId,
     accountInfoTestId,
 }: TradingDetailAssetRowProps) => {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
+
     const { translationString } = useTranslation();
-    const { createAssetOptionFromCryptoId } = useTradingAssets();
-    const currencyInfo = currency && cryptoIdToNetworkSymbolAndContractAddress(currency);
+    const { getAssetOptionFromCryptoId } = useTradingAssets();
+    const currencyInfo =
+        currency && cryptoIdToNetworkSymbolAndContractAddress(networkConfigDeps, currency);
     const accountLabelPrefix = translationString(isReceive ? 'TR_TO' : 'TR_FROM').toLowerCase();
 
     const showAccountLabel = !!account;
@@ -52,9 +57,11 @@ export const TradingDetailAssetRow = ({
         networkName,
         contractAddress,
         symbol,
-    } = createAssetOptionFromCryptoId(currency);
+    } = getAssetOptionFromCryptoId(currency);
 
-    const displayName = isNativeToken ? getNetworkDisplaySymbolName(networkSymbol) : name;
+    const displayName = isNativeToken
+        ? getNetworkDisplaySymbolName(networkConfigDeps, networkSymbol)
+        : name;
 
     const showNetwork = networkSymbol !== displaySymbol.toLowerCase();
 

@@ -1,3 +1,4 @@
+import { type NetworkConfigDeps } from '@suite-common/networks';
 import type {
     RatesByTimestamps,
     Timestamp,
@@ -31,13 +32,16 @@ interface GetTransactionAmountInFiatProps {
     historicRates?: RatesByTimestamps;
 }
 
-const getTransactionAmountInFiat = ({
-    transaction,
-    amount,
-    contractAddress,
-    decimals,
-    historicRates,
-}: GetTransactionAmountInFiatProps) => {
+const getTransactionAmountInFiat = (
+    networkConfigDeps: NetworkConfigDeps,
+    {
+        transaction,
+        amount,
+        contractAddress,
+        decimals,
+        historicRates,
+    }: GetTransactionAmountInFiatProps,
+) => {
     if (amount === '') return '0';
 
     const fiatRateKey = getFiatRateKey(
@@ -48,6 +52,7 @@ const getTransactionAmountInFiat = ({
     const roundedTimestamp = roundTimestampToNearestPastHour(transaction.blockTime as Timestamp);
 
     const amountInUnits = subunitsToUnits(
+        networkConfigDeps,
         decimals
             ? {
                   value: asAmountSubunit(new BigNumber(amount)),
@@ -69,19 +74,19 @@ interface GetTransactionWithFiatAmountsProps {
     historicRates?: RatesByTimestamps;
 }
 
-export const getTransactionWithFiatAmounts = ({
-    transaction,
-    historicRates,
-}: GetTransactionWithFiatAmountsProps): TransactionWithFiatAmount => ({
+export const getTransactionWithFiatAmounts = (
+    networkConfigDeps: NetworkConfigDeps,
+    { transaction, historicRates }: GetTransactionWithFiatAmountsProps,
+): TransactionWithFiatAmount => ({
     ...transaction,
-    amountInFiat: getTransactionAmountInFiat({
+    amountInFiat: getTransactionAmountInFiat(networkConfigDeps, {
         transaction,
         amount: transaction.amount,
         historicRates,
     }),
     tokens: transaction.tokens.map(token => ({
         ...token,
-        amountInFiat: getTransactionAmountInFiat({
+        amountInFiat: getTransactionAmountInFiat(networkConfigDeps, {
             transaction,
             amount: token.amount,
             contractAddress: token.contract as TokenAddress,
@@ -91,7 +96,7 @@ export const getTransactionWithFiatAmounts = ({
     })),
     internalTransfers: transaction.internalTransfers.map(internalTransfer => ({
         ...internalTransfer,
-        amountInFiat: getTransactionAmountInFiat({
+        amountInFiat: getTransactionAmountInFiat(networkConfigDeps, {
             transaction,
             amount: internalTransfer.amount,
             historicRates,

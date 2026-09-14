@@ -1,3 +1,5 @@
+import { selectNetworkConfigDeps } from '@suite-common/networks';
+import { useServices } from '@suite-common/dependency-injection';
 import { type StellarAssetDiff, getStellarAssetDiffLabel } from '@suite-common/tx-simulation';
 import { type Network } from '@suite-common/wallet-config';
 import { asBaseCurrencyAmount } from '@suite-common/wallet-types';
@@ -14,6 +16,8 @@ type StellarTxSimulationAssetProps = {
 };
 
 export const StellarTxSimulationAsset = ({ assetDiff, network }: StellarTxSimulationAssetProps) => {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
+
     // Unlike EVM, Stellar reports at most one transfer per direction.
     const { in: received, out: sent, asset } = assetDiff;
 
@@ -40,6 +44,7 @@ export const StellarTxSimulationAsset = ({ assetDiff, network }: StellarTxSimula
                                     id="moduleConnectPopup.simulation.sendingAsset"
                                     values={{
                                         amount: getStellarAssetDiffLabel(
+                                            networkConfigDeps,
                                             assetDiff,
                                             sent,
                                             network.symbol,
@@ -65,6 +70,7 @@ export const StellarTxSimulationAsset = ({ assetDiff, network }: StellarTxSimula
                                     id="moduleConnectPopup.simulation.receivingAsset"
                                     values={{
                                         amount: getStellarAssetDiffLabel(
+                                            networkConfigDeps,
                                             assetDiff,
                                             received,
                                             network.symbol,

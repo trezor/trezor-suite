@@ -1,3 +1,5 @@
+import { type NetworksRootState, selectNetworkConfigDeps } from '@suite-common/networks';
+import { useServices } from '@suite-common/dependency-injection';
 import { useSelector } from 'react-redux';
 
 import type { CryptoId } from 'invity-api';
@@ -18,8 +20,10 @@ export const useTradingFiatValues = (
     amount: string | undefined,
     cryptoId: CryptoId | undefined,
 ) => {
-    const symbol = cryptoIdToNetworkSymbol(cryptoId);
-    const shouldSendInSats = useSelector((state: WalletSettingsRootState) =>
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
+
+    const symbol = cryptoIdToNetworkSymbol(networkConfigDeps, cryptoId);
+    const shouldSendInSats = useSelector((state: WalletSettingsRootState & NetworksRootState) =>
         selectIsAmountInSats(state, symbol),
     );
     const fiatCurrency = useSelector(selectBaseCurrency);

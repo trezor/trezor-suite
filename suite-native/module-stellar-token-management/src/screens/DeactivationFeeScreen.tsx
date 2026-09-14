@@ -1,3 +1,5 @@
+import { selectNetworkConfigDeps } from '@suite-common/networks';
+import { useServices } from '@suite-common/dependency-injection';
 import { useCallback } from 'react';
 
 import { useNavigation, useRoute } from '@react-navigation/native';
@@ -39,6 +41,8 @@ type NavigationProp = StackToStackCompositeNavigationProps<
 >;
 
 export const DeactivationFeeScreen = () => {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
+
     const route = useRoute<RouteProps>();
     const { accountKey, tokenContract } = route.params;
     const navigation = useNavigation<NavigationProp>();
@@ -118,6 +122,7 @@ export const DeactivationFeeScreen = () => {
                                             id="moduleStellarToken.deactivationFee.warningText"
                                             values={{
                                                 reserve: formatNetworkAmount(
+                                                    networkConfigDeps,
                                                     account.misc.baseReserve ??
                                                         STELLAR_BASE_RESERVE,
                                                     account.symbol,

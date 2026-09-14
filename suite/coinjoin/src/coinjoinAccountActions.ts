@@ -1,3 +1,4 @@
+import { selectNetworkConfigAccessors } from '@suite-common/networks';
 import { createAction, isAnyOf } from '@reduxjs/toolkit';
 
 import { type SelectedAccountRootState } from '@suite/account';
@@ -295,9 +296,11 @@ const coinjoinAccountCheckReorgThunk =
     };
 
 const coinjoinAccountAddTransactions =
-    (props: Parameters<typeof transactionsActions.addTransaction>[0]) => (dispatch: Dispatch) => {
+    (props: Parameters<typeof transactionsActions.addTransaction>[1]) =>
+    (dispatch: Dispatch, getState: () => NetworksRootState) => {
+        const networkConfigDeps = selectNetworkConfigAccessors(getState());
         if (props.transactions.length > 0) {
-            dispatch(transactionsActions.addTransaction(props));
+            dispatch(transactionsActions.addTransaction(networkConfigDeps, props));
         }
     };
 
@@ -317,7 +320,12 @@ type UpdatePendingAccountInfoThunkState = CoinjoinRootState & TransactionsRootSt
  */
 export const updatePendingAccountInfoThunk =
     (accountKey: AccountKey) =>
-    async (dispatch: Dispatch, getState: () => UpdatePendingAccountInfoThunkState) => {
+    async (
+        dispatch: Dispatch,
+        getState: () => UpdatePendingAccountInfoThunkState & NetworksRootState,
+    ) => {
+        const networkConfigDeps = selectNetworkConfigAccessors(getState());
+
         const state = getState();
         const account = selectAccountByKey(state, accountKey);
         const coinjoinAccount = selectCoinjoinAccountByKey(state, accountKey);
@@ -344,7 +352,7 @@ export const updatePendingAccountInfoThunk =
         );
         accountInfo.addresses.anonymitySet = anonymityScores;
 
-        dispatch(accountsActions.updateAccount(account, accountInfo));
+        dispatch(accountsActions.updateAccount(networkConfigDeps, account, accountInfo));
 
         // Log anonymity gain if the newly added transaction is a coinjoin transaction.
         if (accountInfo.history.transactions[0]?.type === 'joint') {
@@ -424,7 +432,12 @@ type FetchAndUpdateAccountThunkState = CoinjoinRootState &
 
 export const fetchAndUpdateAccountThunk =
     ({ key: accountKey, symbol }: Account) =>
-    async (dispatch: Dispatch, getState: () => FetchAndUpdateAccountThunkState) => {
+    async (
+        dispatch: Dispatch,
+        getState: () => FetchAndUpdateAccountThunkState & NetworksRootState,
+    ) => {
+        const networkConfigDeps = selectNetworkConfigAccessors(getState());
+
         const state = getState();
         // do not sync if any account CoinjoinSession is in critical phase
         if (selectIsAnySessionInCriticalPhase(state)) return;
@@ -507,6 +520,7 @@ export const fetchAndUpdateAccountThunk =
                 // so it's potentially stored into db
                 dispatch(
                     accountsActions.updateAccount(
+                        networkConfigDeps,
                         { ...account, status: 'ready' as const },
                         accountInfo,
                     ),
@@ -548,7 +562,12 @@ type CreateCoinjoinAccountThunkState = DeviceRootState & NetworksRootState;
 
 export const createCoinjoinAccountThunk =
     (network: Network, account: NetworkAccount) =>
-    async (dispatch: Dispatch, getState: () => CreateCoinjoinAccountThunkState) => {
+    async (
+        dispatch: Dispatch,
+        getState: () => CreateCoinjoinAccountThunkState & NetworksRootState,
+    ) => {
+        const networkConfigDeps = selectNetworkConfigAccessors(getState());
+
         if (account.accountType !== 'coinjoin') {
             throw new Error('createCoinjoinAccount: invalid account type');
         }
@@ -596,6 +615,7 @@ export const createCoinjoinAccountThunk =
         // create empty account
         const coinjoinAccount = dispatch(
             accountsActions.createAccount(
+                networkConfigDeps,
                 {
                     deviceState: device!.state!.staticSessionId!,
                     index: 0,
@@ -648,7 +668,12 @@ type RescanCoinjoinAccountThunkState = AccountsRootState & CoinjoinRootState;
 
 export const rescanCoinjoinAccountThunk =
     (accountKey: AccountKey, fullRescan = false) =>
-    async (dispatch: Dispatch, getState: () => RescanCoinjoinAccountThunkState) => {
+    async (
+        dispatch: Dispatch,
+        getState: () => RescanCoinjoinAccountThunkState & NetworksRootState,
+    ) => {
+        const networkConfigDeps = selectNetworkConfigAccessors(getState());
+
         const state = getState();
         const account = selectAccountByKey(state, accountKey);
         if (account?.backendType !== 'coinjoin' || account.syncing) return;
@@ -671,6 +696,7 @@ export const rescanCoinjoinAccountThunk =
         // reset account + unlock
         const { payload } = dispatch(
             accountsActions.updateAccount(
+                networkConfigDeps,
                 { ...account, status: 'initial' as const },
                 { ...EMPTY_ACCOUNT_INFO, descriptor: account.descriptor },
             ),

@@ -1,3 +1,5 @@
+import { type NetworksRootState } from '@suite-common/networks';
+import { selectNetworkConfigDeps } from '@suite-common/networks';
 import { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 
@@ -37,6 +39,8 @@ import { useNavigateBackAnalytics } from '../../hooks/earn/useNavigateBackAnalyt
 import { useMessageSystemStaking } from '../../hooks/staking/useMessageSystemStaking';
 
 export const HowStakeWorksScreen = () => {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
+
     const route = useRoute<RouteProp<RootStackParamList, RootStackRoutes.HowStakeWorksScreen>>();
     const { symbol, accountKey } = route.params;
     const navigation =
@@ -112,19 +116,19 @@ export const HowStakeWorksScreen = () => {
         navigation.navigate(RootStackRoutes.EarnForm, { accountKey: resolvedAccountKey });
     };
 
-    const unstakingPeriodInDays = useSelector((state: StakeRootState) =>
+    const unstakingPeriodInDays = useSelector((state: StakeRootState & NetworksRootState) =>
         selectUnstakingPeriodInDaysBySymbol(state, symbol),
     );
 
-    const entryPeriodInDays = useSelector((state: StakeRootState) =>
+    const entryPeriodInDays = useSelector((state: StakeRootState & NetworksRootState) =>
         selectEntryPeriodInDaysBySymbol(state, symbol),
     );
 
     const apy = useSelector((state: StakeRootState) => selectApy(state, { networkSymbol: symbol }));
 
-    const displaySymbol = getNetworkDisplaySymbol(symbol);
+    const displaySymbol = getNetworkDisplaySymbol(networkConfigDeps, symbol);
 
-    const { benefitItems, timelineSections } = createHowStakeWorksPreset({
+    const { benefitItems, timelineSections } = createHowStakeWorksPreset(networkConfigDeps, {
         symbol,
         entryPeriodInDays,
         unstakingPeriodInDays,

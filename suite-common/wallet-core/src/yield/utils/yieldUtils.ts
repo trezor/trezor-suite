@@ -1,5 +1,6 @@
 import { Calldata, type EvmAddress } from '@suite-common/calldata';
 import { type YieldDtoV2 } from '@suite-common/earn-stablecoin-api';
+import { type NetworkConfigDeps } from '@suite-common/networks';
 import { type NetworkSymbol, getNetworkByYieldXyzId } from '@suite-common/wallet-config';
 import { WETH_WRAP_GAS_RESERVE } from '@suite-common/wallet-constants';
 import { type AccountKey, type EvmSelectedFee } from '@suite-common/wallet-types';
@@ -165,16 +166,13 @@ export const getYieldWithdrawInputToken = ({
     flowType: YieldWithdrawFlowType;
 }): YieldFlowDisplayToken => (flowType === 'redeem' ? flowData.receiptToken : flowData.token);
 
-export const buildYieldWithdrawCalldata = ({
-    amount,
-    flowData,
-    ownerAddress,
-    receiverAddress,
-    flowType,
-}: BuildYieldWithdrawCalldataParams) => {
+export const buildYieldWithdrawCalldata = (
+    networkConfigDeps: NetworkConfigDeps,
+    { amount, flowData, ownerAddress, receiverAddress, flowType }: BuildYieldWithdrawCalldataParams,
+) => {
     const isRedeem = flowType === 'redeem';
     const inputToken = getYieldWithdrawInputToken({ flowData, flowType });
-    const amountSubunits = unitsToSubunits({
+    const amountSubunits = unitsToSubunits(networkConfigDeps, {
         value: asAmountUnit(new BigNumber(amount)),
         decimals: inputToken.decimals,
     });
@@ -206,13 +204,11 @@ export const buildYieldWithdrawCalldata = ({
     return builderResult.data;
 };
 
-export const buildYieldDepositCalldata = ({
-    amount,
-    flowData,
-    ownerAddress,
-    receiverAddress,
-}: BuildYieldDepositCalldataParams) => {
-    const amountSubunits = unitsToSubunits({
+export const buildYieldDepositCalldata = (
+    networkConfigDeps: NetworkConfigDeps,
+    { amount, flowData, ownerAddress, receiverAddress }: BuildYieldDepositCalldataParams,
+) => {
+    const amountSubunits = unitsToSubunits(networkConfigDeps, {
         value: asAmountUnit(new BigNumber(amount)),
         decimals: flowData.token.decimals,
     });
@@ -315,17 +311,17 @@ type BuildYieldWrapTransactionDataParams = {
 };
 
 // WETH `deposit()` carries the wrapped amount in the transaction value, not in calldata.
-export const buildYieldWrapTransactionData = ({
-    wrapAmount,
-    decimals,
-}: BuildYieldWrapTransactionDataParams) => {
+export const buildYieldWrapTransactionData = (
+    networkConfigDeps: NetworkConfigDeps,
+    { wrapAmount, decimals }: BuildYieldWrapTransactionDataParams,
+) => {
     const builderResult = Calldata.evm.weth.deposit.encode({});
 
     if (!builderResult.isValid || !builderResult.data) {
         throw new Error('Failed to encode WETH deposit calldata.');
     }
 
-    const valueSubunits = unitsToSubunits({
+    const valueSubunits = unitsToSubunits(networkConfigDeps, {
         value: asAmountUnit(new BigNumber(wrapAmount)),
         decimals,
     });
@@ -341,11 +337,11 @@ type BuildYieldUnwrapTransactionDataParams = {
     decimals: number;
 };
 
-export const buildYieldUnwrapTransactionData = ({
-    unwrapAmount,
-    decimals,
-}: BuildYieldUnwrapTransactionDataParams) => {
-    const wadSubunits = unitsToSubunits({
+export const buildYieldUnwrapTransactionData = (
+    networkConfigDeps: NetworkConfigDeps,
+    { unwrapAmount, decimals }: BuildYieldUnwrapTransactionDataParams,
+) => {
+    const wadSubunits = unitsToSubunits(networkConfigDeps, {
         value: asAmountUnit(new BigNumber(unwrapAmount)),
         decimals,
     });
@@ -519,31 +515,30 @@ export const splitYieldPendingTransaction = (
     };
 };
 
-const getNormalizedTokenAddress = ({
-    networkSymbol,
-    tokenAddress,
-}: NormalizedTokenAddressParams): string | undefined => {
+const getNormalizedTokenAddress = (
+    networkConfigDeps: NetworkConfigDeps,
+    { networkSymbol, tokenAddress }: NormalizedTokenAddressParams,
+): string | undefined => {
     if (!tokenAddress) {
         return undefined;
     }
 
-    return getContractAddressForNetworkSymbol(networkSymbol, tokenAddress);
+    return getContractAddressForNetworkSymbol(networkConfigDeps, networkSymbol, tokenAddress);
 };
 
-export const doTokensMatch = ({
-    networkSymbol,
-    firstToken,
-    secondToken,
-}: TokenMatchParams): boolean => {
+export const doTokensMatch = (
+    networkConfigDeps: NetworkConfigDeps,
+    { networkSymbol, firstToken, secondToken }: TokenMatchParams,
+): boolean => {
     if (!firstToken || !secondToken) {
         return false;
     }
 
-    const firstTokenAddress = getNormalizedTokenAddress({
+    const firstTokenAddress = getNormalizedTokenAddress(networkConfigDeps, {
         networkSymbol,
         tokenAddress: firstToken.address,
     });
-    const secondTokenAddress = getNormalizedTokenAddress({
+    const secondTokenAddress = getNormalizedTokenAddress(networkConfigDeps, {
         networkSymbol,
         tokenAddress: secondToken.address,
     });
@@ -558,14 +553,17 @@ export const doTokensMatch = ({
     );
 };
 
-export const getWithdrawRequestAmount = ({
-    networkSymbol,
-    amount,
-    token,
-    receiptToken,
-    pricePerShare,
-}: WithdrawRequestAmountParams): string | null => {
-    if (doTokensMatch({ networkSymbol, firstToken: token, secondToken: receiptToken })) {
+export const getWithdrawRequestAmount = (
+    networkConfigDeps: NetworkConfigDeps,
+    { networkSymbol, amount, token, receiptToken, pricePerShare }: WithdrawRequestAmountParams,
+): string | null => {
+    if (
+        doTokensMatch(networkConfigDeps, {
+            networkSymbol,
+            firstToken: token,
+            secondToken: receiptToken,
+        })
+    ) {
         return amount;
     }
 
@@ -579,29 +577,38 @@ export const getWithdrawRequestAmount = ({
         .toString();
 };
 
-export const getConvertedOutputTokenBalanceToInputTokenAmount = ({
-    networkSymbol,
-    token,
-    outputToken,
-    outputTokenBalance,
-    pricePerShareState,
-}: ConvertOutputTokenBalanceParams) => {
+export const getConvertedOutputTokenBalanceToInputTokenAmount = (
+    networkConfigDeps: NetworkConfigDeps,
+    {
+        networkSymbol,
+        token,
+        outputToken,
+        outputTokenBalance,
+        pricePerShareState,
+    }: ConvertOutputTokenBalanceParams,
+) => {
     if (!outputTokenBalance) {
         return '0';
     }
 
-    if (doTokensMatch({ networkSymbol, firstToken: outputToken, secondToken: token })) {
+    if (
+        doTokensMatch(networkConfigDeps, {
+            networkSymbol,
+            firstToken: outputToken,
+            secondToken: token,
+        })
+    ) {
         return outputTokenBalance;
     }
 
     if (
         !pricePerShareState ||
-        !doTokensMatch({
+        !doTokensMatch(networkConfigDeps, {
             networkSymbol,
             firstToken: pricePerShareState.shareToken,
             secondToken: outputToken,
         }) ||
-        !doTokensMatch({
+        !doTokensMatch(networkConfigDeps, {
             networkSymbol,
             firstToken: pricePerShareState.quoteToken,
             secondToken: token,
@@ -636,33 +643,42 @@ type GetYieldVaultsForTokenParams<TVault extends YieldVaultMatchFields> = {
     token: TokenLike;
 };
 
-const isYieldVaultOnNetwork = (vault: YieldVaultMatchFields, networkSymbol: NetworkSymbol) =>
-    getNetworkByYieldXyzId(vault.network)?.symbol === networkSymbol;
+const isYieldVaultOnNetwork = (
+    networkConfigDeps: NetworkConfigDeps,
+    vault: YieldVaultMatchFields,
+    networkSymbol: NetworkSymbol,
+) => getNetworkByYieldXyzId(networkConfigDeps, vault.network)?.symbol === networkSymbol;
 
 // Input-token matching invites a deposit, so it also requires deposits to be open.
-export const getYieldVaultsForInputToken = <TVault extends YieldVaultMatchFields>({
-    vaults,
-    networkSymbol,
-    token,
-}: GetYieldVaultsForTokenParams<TVault>): TVault[] =>
+export const getYieldVaultsForInputToken = <TVault extends YieldVaultMatchFields>(
+    networkConfigDeps: NetworkConfigDeps,
+    { vaults, networkSymbol, token }: GetYieldVaultsForTokenParams<TVault>,
+): TVault[] =>
     (vaults ?? []).filter(
         vault =>
             isYieldVaultOperational(vault) &&
             vault.status.enter &&
-            isYieldVaultOnNetwork(vault, networkSymbol) &&
-            doTokensMatch({ networkSymbol, firstToken: token, secondToken: vault.token }),
+            isYieldVaultOnNetwork(networkConfigDeps, vault, networkSymbol) &&
+            doTokensMatch(networkConfigDeps, {
+                networkSymbol,
+                firstToken: token,
+                secondToken: vault.token,
+            }),
     );
 
-export const getYieldVaultForOutputToken = <TVault extends YieldVaultMatchFields>({
-    vaults,
-    networkSymbol,
-    token,
-}: GetYieldVaultsForTokenParams<TVault>): TVault | undefined =>
+export const getYieldVaultForOutputToken = <TVault extends YieldVaultMatchFields>(
+    networkConfigDeps: NetworkConfigDeps,
+    { vaults, networkSymbol, token }: GetYieldVaultsForTokenParams<TVault>,
+): TVault | undefined =>
     vaults?.find(
         vault =>
             isYieldVaultOperational(vault) &&
-            isYieldVaultOnNetwork(vault, networkSymbol) &&
-            doTokensMatch({ networkSymbol, firstToken: token, secondToken: vault.outputToken }),
+            isYieldVaultOnNetwork(networkConfigDeps, vault, networkSymbol) &&
+            doTokensMatch(networkConfigDeps, {
+                networkSymbol,
+                firstToken: token,
+                secondToken: vault.outputToken,
+            }),
     );
 
 type YieldVaultPositionParams = {
@@ -672,15 +688,14 @@ type YieldVaultPositionParams = {
 };
 
 /** Whether the account already holds the vault's receipt token, i.e. has deposited into it. */
-export const hasYieldVaultPosition = ({
-    networkSymbol,
-    vault,
-    accountTokens,
-}: YieldVaultPositionParams): boolean =>
+export const hasYieldVaultPosition = (
+    networkConfigDeps: NetworkConfigDeps,
+    { networkSymbol, vault, accountTokens }: YieldVaultPositionParams,
+): boolean =>
     (accountTokens ?? []).some(
         accountToken =>
             accountToken.symbol !== undefined &&
-            doTokensMatch({
+            doTokensMatch(networkConfigDeps, {
                 networkSymbol,
                 firstToken: {
                     address: accountToken.contract,

@@ -1,3 +1,4 @@
+import { selectNetworkConfigDeps } from '@suite-common/networks';
 import { useCallback } from 'react';
 
 import { type UnknownAction } from '@reduxjs/toolkit';
@@ -48,6 +49,8 @@ export const useTradeableAssetChange = <TFieldValues extends FieldValues>({
     getSetTradingAccountKeyAction,
     collision,
 }: UseTradeableAssetChangeConfig<TFieldValues>) => {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
+
     const { analytics, dispatch } = useServices(selectNativeAnalyticsDep, selectDispatch);
     const { setValue, getValues } = form;
 
@@ -85,8 +88,8 @@ export const useTradeableAssetChange = <TFieldValues extends FieldValues>({
             }
 
             const isTokenChange =
-                cryptoIdToNetworkSymbol(selectedValue?.cryptoId) ===
-                cryptoIdToNetworkSymbol(asset.cryptoId);
+                cryptoIdToNetworkSymbol(networkConfigDeps, selectedValue?.cryptoId) ===
+                cryptoIdToNetworkSymbol(networkConfigDeps, asset.cryptoId);
 
             setSelectedValue(asset);
 
@@ -121,6 +124,7 @@ export const useTradeableAssetChange = <TFieldValues extends FieldValues>({
             }
         },
         [
+            networkConfigDeps,
             dispatch,
             selectedValue?.cryptoId,
             setSelectedValue,

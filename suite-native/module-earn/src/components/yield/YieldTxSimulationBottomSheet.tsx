@@ -1,3 +1,5 @@
+import { selectNetworkConfigDeps } from '@suite-common/networks';
+import { useServices } from '@suite-common/dependency-injection';
 import { useMemo } from 'react';
 
 import {
@@ -43,9 +45,12 @@ export const YieldTxSimulationBottomSheet = ({
     ref,
     unsignedTx,
 }: YieldTxSimulationBottomSheetProps) => {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
+
     const parsedData = useMemo(
         () =>
             composeStablecoinYieldTxSimulationAction(
+                networkConfigDeps,
                 {
                     flow,
                     account,
@@ -53,7 +58,7 @@ export const YieldTxSimulationBottomSheet = ({
                 },
                 STABLECOIN_YIELD_NATIVE_SOURCE_ORIGIN,
             ),
-        [account, flow, unsignedTx],
+        [networkConfigDeps, account, flow, unsignedTx],
     );
 
     return (

@@ -1,4 +1,6 @@
 import { Translation } from '@suite/intl';
+import { useServices } from '@suite-common/dependency-injection';
+import { selectNetworkConfigDeps } from '@suite-common/networks';
 import {
     selectBaseCurrency,
     selectHistoricFiatRates,
@@ -36,6 +38,8 @@ type AmountDetailsProps = {
 
 // TODO: Do not show FEE for sent but not mine transactions
 export const AmountDetails = ({ tx, isTestnet }: AmountDetailsProps) => {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
+
     const baseCurrencyCode = useSelector(selectBaseCurrency);
     const fiatRateKey = getFiatRateKey(tx.symbol, baseCurrencyCode);
 
@@ -45,10 +49,10 @@ export const AmountDetails = ({ tx, isTestnet }: AmountDetailsProps) => {
 
     const historicFiatRates = useSelector(selectHistoricFiatRates);
 
-    const fee = formatNetworkAmount(tx.fee, tx.symbol);
-    const amount = new BigNumber(formatNetworkAmount(tx.amount, tx.symbol));
-    const cardanoWithdrawal = formatCardanoWithdrawal(tx);
-    const cardanoDeposit = formatCardanoDeposit(tx);
+    const fee = formatNetworkAmount(networkConfigDeps, tx.fee, tx.symbol);
+    const amount = new BigNumber(formatNetworkAmount(networkConfigDeps, tx.amount, tx.symbol));
+    const cardanoWithdrawal = formatCardanoWithdrawal(networkConfigDeps, tx);
+    const cardanoDeposit = formatCardanoDeposit(networkConfigDeps, tx);
 
     const txSignature = tx.ethereumSpecific?.parsedData?.methodId;
     const isStakeType = isStakeTypeTx(txSignature) || tx?.solanaSpecific?.stakeOperation?.type; // ethereum or solana staking tx
@@ -162,7 +166,11 @@ export const AmountDetails = ({ tx, isTestnet }: AmountDetailsProps) => {
                         <Table.Cell align="end">
                             <Text intent="neutral">
                                 <FormattedCryptoAmount
-                                    value={formatNetworkAmount(transfer.amount, tx.symbol)}
+                                    value={formatNetworkAmount(
+                                        networkConfigDeps,
+                                        transfer.amount,
+                                        tx.symbol,
+                                    )}
                                     symbol={tx.symbol}
                                     signValue={getTxOperation(transfer.type, true)}
                                 />
@@ -171,7 +179,11 @@ export const AmountDetails = ({ tx, isTestnet }: AmountDetailsProps) => {
                         <Table.Cell align="end">
                             <Text intent="neutral">
                                 <BaseCurrencyValue
-                                    amount={formatNetworkAmount(transfer.amount, tx.symbol)}
+                                    amount={formatNetworkAmount(
+                                        networkConfigDeps,
+                                        transfer.amount,
+                                        tx.symbol,
+                                    )}
                                     symbol={tx.symbol}
                                     historicRate={historicRate}
                                     useHistoricRate
@@ -181,7 +193,11 @@ export const AmountDetails = ({ tx, isTestnet }: AmountDetailsProps) => {
                         <Table.Cell align="end">
                             <Text intent="neutral">
                                 <BaseCurrencyValue
-                                    amount={formatNetworkAmount(transfer.amount, tx.symbol)}
+                                    amount={formatNetworkAmount(
+                                        networkConfigDeps,
+                                        transfer.amount,
+                                        tx.symbol,
+                                    )}
                                     symbol={tx.symbol}
                                 />
                             </Text>

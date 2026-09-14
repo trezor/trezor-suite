@@ -1,3 +1,4 @@
+import { type NetworkConfigDeps } from '@suite-common/networks';
 import { type AccountType, type NetworkSymbol, getNetwork } from '@suite-common/wallet-config';
 import { type Account } from '@suite-common/wallet-types';
 import type { StaticSessionId } from '@trezor/connect';
@@ -5,12 +6,13 @@ import type { StaticSessionId } from '@trezor/connect';
 import { sortByCoin } from './accountUtils';
 
 export const isDebugOnlyAccountType = (
+    networkConfigDeps: NetworkConfigDeps,
     accountType: AccountType,
     symbol?: NetworkSymbol,
 ): boolean => {
     if (!symbol) return false;
 
-    const network = getNetwork(symbol);
+    const network = getNetwork(networkConfigDeps, symbol);
 
     const accountTypeInfo = network.accountTypes[accountType];
 
@@ -25,19 +27,16 @@ type FilterReceiveAccountsProps = {
     isDebug: boolean;
 };
 
-export const filterReceiveAccounts = ({
-    accounts,
-    supportedNetworks,
-    deviceState,
-    symbol,
-    isDebug,
-}: FilterReceiveAccountsProps): Account[] => {
+export const filterReceiveAccounts = (
+    networkConfigDeps: NetworkConfigDeps,
+    { accounts, supportedNetworks, deviceState, symbol, isDebug }: FilterReceiveAccountsProps,
+): Account[] => {
     const isSameDevice = (account: Account) => account.deviceState === deviceState;
     const isSameNetwork = (account: Account) => account.symbol === symbol;
     const isNotEmptyAccount = (account: Account) => !account.empty;
     const shouldDisplayDebugOnly = (account: Account) =>
         isDebug ||
-        !isDebugOnlyAccountType(account.accountType, account.symbol) ||
+        !isDebugOnlyAccountType(networkConfigDeps, account.accountType, account.symbol) ||
         isNotEmptyAccount(account);
     const isVisibleAccount = (account: Account) => account.visible;
     const isFirstNormalAccount = (account: Account) =>
@@ -51,5 +50,5 @@ export const filterReceiveAccounts = ({
         shouldDisplayDebugOnly(account) &&
         (isNotEmptyAccount(account) || isVisibleAccount(account) || isFirstNormalAccount(account));
 
-    return sortByCoin(accounts.filter(isRelevantAccount), supportedNetworks);
+    return sortByCoin(networkConfigDeps, accounts.filter(isRelevantAccount), supportedNetworks);
 };

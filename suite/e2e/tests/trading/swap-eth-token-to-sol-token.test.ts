@@ -1,3 +1,5 @@
+import { mockNetworkConfigDeps } from '@suite-common/networks/mocks';
+
 import { getCryptoId } from '@suite-common/trading';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { localizeNumber } from '@suite-common/wallet-utils';
@@ -8,6 +10,8 @@ import { formatAddressWithNewlines } from '../../support/common';
 import { expect, test } from '../../support/fixtures';
 import { createTestAnnotation } from '../../support/reporters/annotations';
 import { transformAddress } from '../../support/testExtends/customMatchers';
+
+const networkConfigDeps = mockNetworkConfigDeps();
 
 const sendAmount = '5';
 const sourceTokenSymbol = 'USDC';
@@ -49,6 +53,7 @@ test.describe('Trading - Swap', { tag: ['@T3W1', '@T3T1'] }, () => {
                         searchFilter: receiveTokenSymbol,
                         networkFilter: 'sol',
                         assetCryptoId: getCryptoId(
+                            networkConfigDeps,
                             asNetworkSymbol('sol'),
                             'Es9vMFrzaCERmJfrF4H2FYD4KCoNkY11McCe8BenwNYB',
                         ),

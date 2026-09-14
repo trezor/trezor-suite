@@ -1,6 +1,8 @@
 import { RedactNumericalValue } from '@suite/discreet-mode';
 import { TrezorLink } from '@suite/external-links';
 import { Translation, useTranslation } from '@suite/intl';
+import { useServices } from '@suite-common/dependency-injection';
+import { selectNetworkConfigDeps } from '@suite-common/networks';
 import { type SignValue } from '@suite-common/suite-types';
 import { type NetworkSymbol, getExplorerUrl, getNetworkType } from '@suite-common/wallet-config';
 import { selectExplorer } from '@suite-common/wallet-core';
@@ -32,8 +34,10 @@ export const FormattedNftAmount = ({
     alignMultitoken = 'flex-end',
     linkTypographyStyle,
 }: FormattedNftAmountProps) => {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
+
     const { translationString } = useTranslation();
-    const networkType = getNetworkType(networkSymbol);
+    const networkType = getNetworkType(networkConfigDeps, networkSymbol);
     const explorer = useSelector(state => selectExplorer(state, networkSymbol));
 
     const symbolComponent = transfer.symbol ? (

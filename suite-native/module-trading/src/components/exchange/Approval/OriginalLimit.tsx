@@ -1,3 +1,5 @@
+import { selectNetworkConfigDeps } from '@suite-common/networks';
+import { useServices } from '@suite-common/dependency-injection';
 import { useSelector } from 'react-redux';
 
 import {
@@ -13,6 +15,8 @@ import { hasPreapprovedLimit } from '../../../utils/exchange/quotesUtils';
 import { TradingCoinAmountFormatter } from '../../general/TradingCoinAmountFormatter';
 
 export const OriginalLimit = () => {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
+
     const quote = useSelector(selectTradingExchangeSelectedQuote);
 
     if (!quote?.send || !hasPreapprovedLimit(quote)) {
@@ -20,7 +24,10 @@ export const OriginalLimit = () => {
     }
 
     const { send, preapprovedStringAmount } = quote;
-    const { network, contractAddress } = cryptoIdToNetworkAndContractAddress(send);
+    const { network, contractAddress } = cryptoIdToNetworkAndContractAddress(
+        networkConfigDeps,
+        send,
+    );
 
     return (
         <TradeInfoRow testID="ExchangeApproval/OriginalLimit">

@@ -1,3 +1,5 @@
+import { selectNetworkConfigDeps } from '@suite-common/networks';
+import { useServices } from '@suite-common/dependency-injection';
 import { useMemo } from 'react';
 import { useSelector } from 'react-redux';
 
@@ -35,6 +37,8 @@ export const useYieldBadge = ({
     type,
     yieldOpportunities,
 }: UseYieldBadgeProps): YieldBadgeData | null => {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
+
     const matchedVaults = useMemo(() => {
         if (!networkSymbol || !token?.symbol) return [];
 
@@ -46,7 +50,7 @@ export const useYieldBadge = ({
 
         switch (type) {
             case 'defi': {
-                const vault = getYieldVaultForOutputToken({
+                const vault = getYieldVaultForOutputToken(networkConfigDeps, {
                     vaults: yieldOpportunities,
                     networkSymbol,
                     token: heldToken,
@@ -55,7 +59,7 @@ export const useYieldBadge = ({
                 return vault ? [vault] : [];
             }
             case 'default':
-                return getYieldVaultsForInputToken({
+                return getYieldVaultsForInputToken(networkConfigDeps, {
                     vaults: yieldOpportunities,
                     networkSymbol,
                     token: heldToken,
@@ -63,16 +67,20 @@ export const useYieldBadge = ({
             default:
                 return exhaustive(type);
         }
-    }, [yieldOpportunities, networkSymbol, token, type]);
+    }, [networkConfigDeps, yieldOpportunities, networkSymbol, token, type]);
 
     const vaultsWithPosition = useMemo(
         () =>
             networkSymbol
                 ? matchedVaults.filter(vault =>
-                      hasYieldVaultPosition({ networkSymbol, vault, accountTokens }),
+                      hasYieldVaultPosition(networkConfigDeps, {
+                          networkSymbol,
+                          vault,
+                          accountTokens,
+                      }),
                   )
                 : [],
-        [matchedVaults, networkSymbol, accountTokens],
+        [networkConfigDeps, matchedVaults, networkSymbol, accountTokens],
     );
 
     const bestEnabledVault = useSelector((state: MessageSystemRootState) =>

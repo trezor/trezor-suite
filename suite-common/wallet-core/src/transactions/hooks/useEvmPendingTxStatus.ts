@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 
 import { useServices } from '@suite-common/dependency-injection';
+import type { NetworksRootState } from '@suite-common/networks';
 import { selectDispatch } from '@suite-common/redux-utils';
 import { type Account, type EvmTransactionPurpose } from '@suite-common/wallet-types';
 import {
@@ -39,7 +40,7 @@ export const useEvmPendingTxStatus = (
     const transactions = useSelector((state: TransactionsRootState) =>
         selectAccountTransactions(state, account?.key ?? null),
     );
-    const feeInfo = useSelector((state: FeesRootState) =>
+    const feeInfo = useSelector((state: FeesRootState & NetworksRootState) =>
         selectConvertedNetworkFeeInfo(state, account?.symbol),
     );
 

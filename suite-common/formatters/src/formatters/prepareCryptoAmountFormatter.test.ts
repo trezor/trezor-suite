@@ -1,10 +1,13 @@
 import { createIntl } from 'react-intl';
 
+import { mockNetworkConfigDeps } from '@suite-common/networks/mocks';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { type TokenSymbol } from '@suite-common/wallet-types';
 import { PROTO } from '@trezor/connect';
 
 import { prepareCryptoAmountFormatter } from './prepareCryptoAmountFormatter';
+
+const networkConfigDeps = mockNetworkConfigDeps();
 
 const btcSymbol = asNetworkSymbol('btc');
 const ethSymbol = asNetworkSymbol('eth');
@@ -12,7 +15,7 @@ const usdtSymbol = 'USDT' as TokenSymbol;
 
 const intl = createIntl({ locale: 'en-US' });
 
-const CryptoAmountFormatter = prepareCryptoAmountFormatter({
+const CryptoAmountFormatter = prepareCryptoAmountFormatter(networkConfigDeps, {
     intl,
     locale: 'en-US',
     bitcoinAmountUnit: PROTO.AmountUnit.BITCOIN,
@@ -20,7 +23,7 @@ const CryptoAmountFormatter = prepareCryptoAmountFormatter({
     is24HourFormat: true,
 });
 
-const CryptoAmountFormatterSats = prepareCryptoAmountFormatter({
+const CryptoAmountFormatterSats = prepareCryptoAmountFormatter(networkConfigDeps, {
     intl,
     locale: 'en-US',
     baseCurrency: 'usd',
@@ -28,7 +31,7 @@ const CryptoAmountFormatterSats = prepareCryptoAmountFormatter({
     bitcoinAmountUnit: PROTO.AmountUnit.SATOSHI,
 });
 
-const CryptoAmountFormatterCzech = prepareCryptoAmountFormatter({
+const CryptoAmountFormatterCzech = prepareCryptoAmountFormatter(networkConfigDeps, {
     intl,
     locale: 'cs-CZ',
     bitcoinAmountUnit: PROTO.AmountUnit.BITCOIN,

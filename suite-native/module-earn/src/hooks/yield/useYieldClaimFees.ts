@@ -1,3 +1,5 @@
+import { type NetworksRootState } from '@suite-common/networks';
+import { selectNetworkConfigDeps } from '@suite-common/networks';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useSelector } from 'react-redux';
 
@@ -86,6 +88,8 @@ const getClaimFormDraft = ({
 });
 
 export const useYieldClaimFees = ({ accountRewards, isEnabled }: UseYieldClaimFeesParams) => {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
+
     const { dispatch } = useServices(selectDispatch);
     const debounce = useDebounce();
     const requestIdRef = useRef(0);
@@ -103,7 +107,7 @@ export const useYieldClaimFees = ({ accountRewards, isEnabled }: UseYieldClaimFe
         () => (accountKey ? getYieldClaimFormDraftKey(accountKey) : ''),
         [accountKey],
     );
-    const feeInfo = useSelector((state: FeesRootState) =>
+    const feeInfo = useSelector((state: FeesRootState & NetworksRootState) =>
         selectConvertedNetworkFeeInfo(state, account?.symbol),
     );
     const feeInfoRef = useFreshRef(feeInfo);
@@ -135,7 +139,7 @@ export const useYieldClaimFees = ({ accountRewards, isEnabled }: UseYieldClaimFe
             return null;
         }
 
-        const network = getNetwork(accountRewards.account.symbol);
+        const network = getNetwork(networkConfigDeps, accountRewards.account.symbol);
         const contractAddress = getEarnYieldClaimContractAddress(accountRewards.account.symbol);
 
         if (
@@ -160,7 +164,7 @@ export const useYieldClaimFees = ({ accountRewards, isEnabled }: UseYieldClaimFe
         } catch {
             return null;
         }
-    }, [accountRewards, isEnabled]);
+    }, [networkConfigDeps, accountRewards, isEnabled]);
 
     const prepareClaimFee = useCallback(
         async (

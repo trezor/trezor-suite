@@ -1,4 +1,5 @@
 import { type ExchangeTrade } from 'invity-api';
+import { type NetworkConfigDeps } from '@suite-common/networks';
 
 import { ETHEREUM_ADJUST_GAS_LIMIT } from '@suite-common/wallet-core';
 import { asAmountUnit, unitsToSubunits } from '@suite-common/wallet-utils';
@@ -47,16 +48,25 @@ type GetRecomposeAmountParams = {
     decimals: number;
 };
 
-const getRecomposeAmount = ({ value, shouldSendInSats, decimals }: GetRecomposeAmountParams) =>
+const getRecomposeAmount = (
+    networkConfigDeps: NetworkConfigDeps,
+    { value, shouldSendInSats, decimals }: GetRecomposeAmountParams,
+) =>
     shouldSendInSats
-        ? unitsToSubunits({ value: asAmountUnit(new BigNumber(value)), decimals }).toString()
+        ? unitsToSubunits(networkConfigDeps, {
+              value: asAmountUnit(new BigNumber(value)),
+              decimals,
+          }).toString()
         : value;
 
-export const buildRecomposeInputsFromTrade = (trade: TradeRecomposeInput): RecomposeInputs => {
+export const buildRecomposeInputsFromTrade = (
+    networkConfigDeps: NetworkConfigDeps,
+    trade: TradeRecomposeInput,
+): RecomposeInputs => {
     if ('sendAddress' in trade) {
         return {
             address: trade.sendAddress,
-            amount: getRecomposeAmount({
+            amount: getRecomposeAmount(networkConfigDeps, {
                 value: trade.sendStringAmount,
                 shouldSendInSats: trade.shouldSendInSats,
                 decimals: trade.decimals,
@@ -82,7 +92,7 @@ export const buildRecomposeInputsFromTrade = (trade: TradeRecomposeInput): Recom
     if ('destinationAddress' in trade) {
         return {
             address: trade.destinationAddress,
-            amount: getRecomposeAmount({
+            amount: getRecomposeAmount(networkConfigDeps, {
                 value: trade.cryptoStringAmount,
                 shouldSendInSats: trade.shouldSendInSats,
                 decimals: trade.decimals,

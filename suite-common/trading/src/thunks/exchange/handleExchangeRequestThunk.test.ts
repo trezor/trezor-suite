@@ -1,5 +1,8 @@
+import { getNetworks } from '@suite-common/wallet-config';
+
 import { combineReducers } from '@reduxjs/toolkit';
 import { type CryptoId, type ExchangeTrade } from 'invity-api';
+import { mockNetworkConfigDeps } from '@suite-common/networks/mocks';
 
 import { mockActionType, mockReducer } from '@suite-common/redux-utils/mocks';
 import { createTestStore } from '@suite-common/test-utils';
@@ -23,6 +26,8 @@ import {
 } from '../../types';
 
 import { exchangeThunks } from './index';
+
+const networkConfigDeps = mockNetworkConfigDeps();
 
 const tradingReducer = prepareTradingReducer({
     actionTypes: { storageLoad: mockActionType('storageLoad') },
@@ -65,6 +70,7 @@ describe('handleExchangeRequestThunk', () => {
                 },
             },
             reducer: combineReducers({
+                networks: () => getNetworks(mockNetworkConfigDeps()),
                 wallet: combineReducers({
                     trading: tradingReducer,
                     accounts: accountsReducer,
@@ -153,7 +159,7 @@ describe('handleExchangeRequestThunk', () => {
         };
         const input: HandleExchangeRequestThunkProps = {
             formValues,
-            network: getNetwork(btcSymbol),
+            network: getNetwork(networkConfigDeps, btcSymbol),
             shouldSendInSats: false,
             composeRequestCallback: mockComposeRequestCallback,
         };

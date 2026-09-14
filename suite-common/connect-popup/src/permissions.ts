@@ -1,3 +1,4 @@
+import { type NetworkConfigDeps } from '@suite-common/networks';
 import { type NetworkSymbol, getNetwork } from '@suite-common/wallet-config';
 import {
     type CoinSymbol,
@@ -30,10 +31,10 @@ export const PERMISSION_PREVIEW_LIMIT = 6;
  * upper-case shortcut when the coin is not known to suite (e.g. an altcoin
  * recognised only by `@trezor/connect`).
  */
-export const getCoinLabel = (shortcut: string): string => {
+export const getCoinLabel = (networkConfigDeps: NetworkConfigDeps, shortcut: string): string => {
     const key = shortcut.toLowerCase() as NetworkSymbol;
 
-    return getNetwork(key)?.name ?? shortcut.toUpperCase();
+    return getNetwork(networkConfigDeps, key)?.name ?? shortcut.toUpperCase();
 };
 
 // Icon shown for each permission. These names exist in both the web icon set and

@@ -3,7 +3,8 @@ import { type Dispatch, type UnknownAction } from '@reduxjs/toolkit';
 import type { ExperimentalFeature } from '@suite/experimental';
 import { type ExtendedMessageDescriptor } from '@suite/intl';
 import { type Route } from '@suite/router';
-import { networksCollection } from '@suite-common/wallet-config';
+import { type NetworkConfigDeps } from '@suite-common/networks';
+import { getNetworksCollection } from '@suite-common/wallet-config';
 import { blockchainActions } from '@suite-common/wallet-core';
 import { isDesktop } from '@trezor/env-utils';
 import { desktopApi } from '@trezor/suite-desktop-api';
@@ -16,10 +17,10 @@ import {
 
 import { type SuiteServices } from '../../support/createSuiteCompositionRoot';
 
-const experimentalNetworks = networksCollection.filter(
-    network => network.isExperimentalOnlyNetwork,
-);
-const experimentalNetworkNames = experimentalNetworks.map(network => network.name);
+const experimentalNetworks = (networkConfigDeps: NetworkConfigDeps) =>
+    getNetworksCollection(networkConfigDeps).filter(network => network.isExperimentalOnlyNetwork);
+const experimentalNetworkNames = (networkConfigDeps: NetworkConfigDeps) =>
+    experimentalNetworks(networkConfigDeps).map(network => network.name);
 
 export type ExperimentalFeatureConfig = {
     title: ExtendedMessageDescriptor;
@@ -38,7 +39,9 @@ export type ExperimentalFeatureConfig = {
     }) => void;
 };
 
-export const EXPERIMENTAL_FEATURES: Record<ExperimentalFeature, ExperimentalFeatureConfig> = {
+export const EXPERIMENTAL_FEATURES = (
+    networkConfigDeps: NetworkConfigDeps,
+): Record<ExperimentalFeature, ExperimentalFeatureConfig> => ({
     'password-manager': {
         title: { id: 'TR_EXPERIMENTAL_PASSWORD_MANAGER' },
         description: { id: 'TR_EXPERIMENTAL_PASSWORD_MANAGER_DESCRIPTION' },
@@ -69,18 +72,18 @@ export const EXPERIMENTAL_FEATURES: Record<ExperimentalFeature, ExperimentalFeat
         title: {
             id: 'TR_EXPERIMENTAL_NETWORKS',
             values: {
-                networkNames: experimentalNetworkNames.join(', '),
-                count: experimentalNetworks.length,
+                networkNames: experimentalNetworkNames(networkConfigDeps).join(', '),
+                count: experimentalNetworks(networkConfigDeps).length,
             },
         },
         description: {
             id: 'TR_EXPERIMENTAL_NETWORKS_DESCRIPTION',
             values: {
-                networkNames: experimentalNetworkNames.join(', '),
-                count: experimentalNetworks.length,
+                networkNames: experimentalNetworkNames(networkConfigDeps).join(', '),
+                count: experimentalNetworks(networkConfigDeps).length,
             },
         },
-        isDisabled: () => experimentalNetworks.length === 0,
+        isDisabled: () => experimentalNetworks(networkConfigDeps).length === 0,
     },
     'mcp-server': {
         title: { id: 'TR_EXPERIMENTAL_MCP_SERVER' },
@@ -97,7 +100,7 @@ export const EXPERIMENTAL_FEATURES: Record<ExperimentalFeature, ExperimentalFeat
         // TODO: let's add some knowledgeBaseUrl post if we move this forward.
         onToggle: ({ newValue, dispatch }) => {
             if (!newValue) {
-                networksCollection
+                getNetworksCollection(networkConfigDeps)
                     .filter(network => network.networkType === 'bitcoin')
                     .forEach(({ symbol }) =>
                         dispatch(
@@ -107,4 +110,4 @@ export const EXPERIMENTAL_FEATURES: Record<ExperimentalFeature, ExperimentalFeat
             }
         },
     },
-};
+});

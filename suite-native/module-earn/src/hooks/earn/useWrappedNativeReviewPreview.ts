@@ -1,3 +1,5 @@
+import { selectNetworkConfigDeps } from '@suite-common/networks';
+import { useServices } from '@suite-common/dependency-injection';
 import { useMemo } from 'react';
 import { useSelector } from 'react-redux';
 
@@ -22,6 +24,8 @@ export const useWrappedNativeReviewPreview = ({
     flowType,
     unsignedTransaction,
 }: UseWrappedNativeReviewPreviewParams) => {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
+
     const device = useSelector(selectSelectedDevice);
     const wrappedNative = account ? getWrappedNativeToken(account.symbol) : undefined;
 
@@ -33,8 +37,8 @@ export const useWrappedNativeReviewPreview = ({
         return flowType === 'wrap'
             ? {
                   networkSymbol: account.symbol,
-                  symbol: getNetworkDisplaySymbol(account.symbol),
-                  decimals: getNetwork(account.symbol).decimals,
+                  symbol: getNetworkDisplaySymbol(networkConfigDeps, account.symbol),
+                  decimals: getNetwork(networkConfigDeps, account.symbol).decimals,
                   contractAddress: null,
               }
             : {
@@ -43,21 +47,21 @@ export const useWrappedNativeReviewPreview = ({
                   decimals: wrappedNative.decimals,
                   contractAddress: wrappedNative.address,
               };
-    }, [account, flowType, wrappedNative]);
+    }, [networkConfigDeps, account, flowType, wrappedNative]);
 
     const preview = useMemo(() => {
         if (!account || !device || !spentToken || amount === undefined || !unsignedTransaction) {
             return null;
         }
 
-        return buildYieldReviewPreview({
+        return buildYieldReviewPreview(networkConfigDeps, {
             account,
             device,
             review: { amount, unsignedTransaction },
             reviewToken: spentToken,
             type: flowType,
         });
-    }, [account, amount, device, flowType, spentToken, unsignedTransaction]);
+    }, [networkConfigDeps, account, amount, device, flowType, spentToken, unsignedTransaction]);
 
     return { preview, spentToken };
 };

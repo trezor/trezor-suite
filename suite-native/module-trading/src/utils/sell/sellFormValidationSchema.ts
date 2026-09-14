@@ -1,3 +1,4 @@
+import { type NetworkConfigDeps } from '@suite-common/networks';
 import { yup } from '@suite-common/validators';
 
 import {
@@ -5,7 +6,8 @@ import {
     sendCryptoAmountValidationSchema,
 } from '../general/validationSchemes';
 
-export const sellFormValidationSchema = yup.object({
-    cryptoStringAmount: sendCryptoAmountValidationSchema,
-    fiatStringAmount: fiatAmountInputValidationSchema,
-});
+export const sellFormValidationSchema = (networkConfigDeps: NetworkConfigDeps) =>
+    yup.object({
+        cryptoStringAmount: sendCryptoAmountValidationSchema(networkConfigDeps),
+        fiatStringAmount: fiatAmountInputValidationSchema,
+    });

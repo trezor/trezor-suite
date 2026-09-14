@@ -1,3 +1,5 @@
+import { useServices } from '@suite-common/dependency-injection';
+import { selectNetworkConfigDeps } from '@suite-common/networks';
 import { type TradeableAssetBalance, type TradingAssetOption } from '@suite-common/trading';
 import { Row } from '@trezor/components';
 import { TokenIcon, shouldShowNetworkIcon } from '@trezor/product-components';
@@ -14,6 +16,8 @@ export type AssetRowAssetProps = {
 };
 
 export function AssetRowAsset({ asset, balance, dataTestId, onClick }: AssetRowAssetProps) {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
+
     return (
         <ItemClickableContainer
             onClick={() => {
@@ -30,6 +34,7 @@ export function AssetRowAsset({ asset, balance, dataTestId, onClick }: AssetRowA
                         contractAddress={asset.contractAddress}
                         placeholder={asset.displaySymbol}
                         showNetworkIcon={shouldShowNetworkIcon(
+                            networkConfigDeps,
                             asset.networkSymbol,
                             asset.contractAddress,
                         )}

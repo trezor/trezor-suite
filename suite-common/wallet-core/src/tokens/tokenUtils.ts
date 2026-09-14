@@ -1,3 +1,4 @@
+import { type NetworkConfigDeps } from '@suite-common/networks';
 import { type TokenDefinition, isTokenDefinitionKnown } from '@suite-common/token-definitions';
 import {
     type NetworkSymbol,
@@ -26,18 +27,15 @@ export type GetTokensOutputType<T extends TokenInfo = TokenInfo> = {
     unverifiedWithoutBalance: T[];
 };
 
-export const getTokens = <T extends TokenInfo = TokenInfo>({
-    tokens = [],
-    symbol,
-    tokenDefinitions,
-    searchQuery,
-    isNft = false,
-}: GetTokensInput<T>): GetTokensOutputType<T> => {
+export const getTokens = <T extends TokenInfo = TokenInfo>(
+    networkConfigDeps: NetworkConfigDeps,
+    { tokens = [], symbol, tokenDefinitions, searchQuery, isNft = false }: GetTokensInput<T>,
+): GetTokensOutputType<T> => {
     const filteredTokens = isNft
         ? tokens.filter(token => isNftToken(token))
         : tokens.filter(token => !isNftToken(token));
 
-    const hasDefinitions = getNetworkFeatures(symbol).includes(
+    const hasDefinitions = getNetworkFeatures(networkConfigDeps, symbol).includes(
         isNft ? 'nft-definitions' : 'coin-definitions',
     );
 
@@ -52,7 +50,12 @@ export const getTokens = <T extends TokenInfo = TokenInfo>({
     const shownTokens = new Set(tokenDefinitions?.show);
 
     filteredTokens.forEach(token => {
-        const isKnown = isTokenDefinitionKnown(tokenDefinitions?.data, symbol, token.contract);
+        const isKnown = isTokenDefinitionKnown(
+            networkConfigDeps,
+            tokenDefinitions?.data,
+            symbol,
+            token.contract,
+        );
         const isHidden = hiddenTokens.has(token.contract);
         const isShown = shownTokens.has(token.contract);
 
@@ -98,16 +101,21 @@ export const getTokens = <T extends TokenInfo = TokenInfo>({
 };
 
 export const getAccountAnalyticsTokenSymbols = (
+    networkConfigDeps: NetworkConfigDeps,
     account: Account,
     tokenDefinitions: TokenDefinition | undefined,
 ): TokenSymbol[] => {
     const { symbol } = account;
 
     const nativeTokenSymbol = new BigNumber(account.balance).gt(0)
-        ? (getNetworkDisplaySymbol(symbol) as TokenSymbol)
+        ? (getNetworkDisplaySymbol(networkConfigDeps, symbol) as TokenSymbol)
         : undefined;
 
-    const tokenSymbols = getTokens({ tokens: account.tokens ?? [], symbol, tokenDefinitions })
+    const tokenSymbols = getTokens(networkConfigDeps, {
+        tokens: account.tokens ?? [],
+        symbol,
+        tokenDefinitions,
+    })
         .shownWithBalance.map(token => token.symbol)
         .filter((tokenSymbol): tokenSymbol is TokenSymbol => !!tokenSymbol);
 

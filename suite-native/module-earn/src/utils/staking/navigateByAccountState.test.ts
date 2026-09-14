@@ -1,9 +1,13 @@
+import { mockNetworkConfigDeps } from '@suite-common/networks/mocks';
+
 import { type Account } from '@suite-common/wallet-types';
 import { mockAccountKey } from '@suite-common/wallet-types/mocks';
 import { getAccountTotalStakingBalance } from '@suite-common/wallet-utils';
 import { RootStackRoutes } from '@suite-native/navigation';
 
 import { navigateByAccountState } from './navigateByAccountState';
+
+const networkConfigDeps = mockNetworkConfigDeps();
 
 jest.mock('@suite-common/wallet-utils', () => ({
     ...jest.requireActual('@suite-common/wallet-utils'),
@@ -32,7 +36,7 @@ describe('navigateByAccountState', () => {
         const account = createMockAccount();
         mockGetAccountTotalStakingBalance.mockReturnValue('1000000000000000');
 
-        navigateByAccountState(account, mockNavigate);
+        navigateByAccountState(networkConfigDeps, account, mockNavigate);
 
         expect(mockNavigate).toHaveBeenCalledWith(RootStackRoutes.StakingManagement, {
             accountKey: account.key,
@@ -43,7 +47,7 @@ describe('navigateByAccountState', () => {
         const account = createMockAccount({ symbol: 'sol' });
         mockGetAccountTotalStakingBalance.mockReturnValue('1000000000');
 
-        navigateByAccountState(account, mockNavigate);
+        navigateByAccountState(networkConfigDeps, account, mockNavigate);
 
         expect(mockNavigate).toHaveBeenCalledWith(RootStackRoutes.StakingManagement, {
             accountKey: account.key,
@@ -54,7 +58,7 @@ describe('navigateByAccountState', () => {
         const account = createMockAccount({ symbol: 'sol' });
         mockGetAccountTotalStakingBalance.mockReturnValue('0');
 
-        navigateByAccountState(account, mockNavigate);
+        navigateByAccountState(networkConfigDeps, account, mockNavigate);
 
         // A first-time Solana staker starts at the intro, not the empty dashboard.
         expect(mockNavigate).toHaveBeenCalledWith(RootStackRoutes.HowStakeWorksScreen, {
@@ -67,7 +71,7 @@ describe('navigateByAccountState', () => {
         const account = createMockAccount({ symbol: 'sol', availableBalance: '100' });
         mockGetAccountTotalStakingBalance.mockReturnValue(null);
 
-        navigateByAccountState(account, mockNavigate);
+        navigateByAccountState(networkConfigDeps, account, mockNavigate);
 
         expect(mockNavigate).toHaveBeenCalledWith(RootStackRoutes.HowStakeWorksScreen, {
             symbol: 'sol',
@@ -79,7 +83,7 @@ describe('navigateByAccountState', () => {
         const account = createMockAccount({ symbol: 'ada' });
         mockGetAccountTotalStakingBalance.mockReturnValue('1000000');
 
-        navigateByAccountState(account, mockNavigate);
+        navigateByAccountState(networkConfigDeps, account, mockNavigate);
 
         expect(mockNavigate).toHaveBeenCalledWith(RootStackRoutes.StakingManagement, {
             accountKey: account.key,
@@ -90,7 +94,7 @@ describe('navigateByAccountState', () => {
         const account = createMockAccount({ symbol: 'ada' });
         mockGetAccountTotalStakingBalance.mockReturnValue('0');
 
-        navigateByAccountState(account, mockNavigate);
+        navigateByAccountState(networkConfigDeps, account, mockNavigate);
 
         expect(mockNavigate).toHaveBeenCalledWith(RootStackRoutes.HowStakeWorksScreen, {
             symbol: account.symbol,
@@ -106,7 +110,7 @@ describe('navigateByAccountState', () => {
         } as Partial<Account>);
         mockGetAccountTotalStakingBalance.mockReturnValue('0');
 
-        navigateByAccountState(account, mockNavigate);
+        navigateByAccountState(networkConfigDeps, account, mockNavigate);
 
         expect(mockNavigate).toHaveBeenCalledWith(RootStackRoutes.StakingManagement, {
             accountKey: account.key,
@@ -117,7 +121,7 @@ describe('navigateByAccountState', () => {
         const account = createMockAccount();
         mockGetAccountTotalStakingBalance.mockReturnValue('0');
 
-        navigateByAccountState(account, mockNavigate);
+        navigateByAccountState(networkConfigDeps, account, mockNavigate);
 
         expect(mockNavigate).toHaveBeenCalledWith(RootStackRoutes.HowStakeWorksScreen, {
             symbol: 'eth',
@@ -130,7 +134,7 @@ describe('navigateByAccountState', () => {
         const account = createMockAccount({ availableBalance: '100' });
         mockGetAccountTotalStakingBalance.mockReturnValue('0');
 
-        navigateByAccountState(account, mockNavigate);
+        navigateByAccountState(networkConfigDeps, account, mockNavigate);
 
         expect(mockNavigate).toHaveBeenCalledWith(RootStackRoutes.HowStakeWorksScreen, {
             symbol: 'eth',
@@ -142,7 +146,7 @@ describe('navigateByAccountState', () => {
         const account = createMockAccount();
         mockGetAccountTotalStakingBalance.mockReturnValue(null);
 
-        navigateByAccountState(account, mockNavigate);
+        navigateByAccountState(networkConfigDeps, account, mockNavigate);
 
         expect(mockNavigate).toHaveBeenCalledWith(RootStackRoutes.HowStakeWorksScreen, {
             symbol: 'eth',
@@ -154,7 +158,7 @@ describe('navigateByAccountState', () => {
         const account = createMockAccount({ symbol: 'btc' });
         mockGetAccountTotalStakingBalance.mockReturnValue('0');
 
-        navigateByAccountState(account, mockNavigate);
+        navigateByAccountState(networkConfigDeps, account, mockNavigate);
 
         expect(mockNavigate).not.toHaveBeenCalled();
     });

@@ -6,6 +6,7 @@ import {
 } from 'invity-api';
 
 import { toChecksumAddress } from '@suite-common/address';
+import { type NetworkConfigDeps } from '@suite-common/networks';
 import type { Network } from '@suite-common/wallet-config';
 import { asAmountUnit, unitsToSubunits } from '@suite-common/wallet-utils';
 import { type PROTO } from '@trezor/connect';
@@ -91,19 +92,22 @@ type TradingExchangeCreatePaymentRequestProps = {
     sendTokenDecimals?: number;
 };
 
-export const tradingExchangeCreatePaymentRequest = ({
-    trade,
-    provider,
-    macPurchase,
-    pathPurchase,
-    macRefund,
-    pathRefund,
-    nonce,
-    receiveSlip44,
-    receiveDisplaySymbol,
-    sendStringAmount,
-    sendTokenDecimals,
-}: TradingExchangeCreatePaymentRequestProps): PROTO.PaymentRequest | undefined => {
+export const tradingExchangeCreatePaymentRequest = (
+    networkConfigDeps: NetworkConfigDeps,
+    {
+        trade,
+        provider,
+        macPurchase,
+        pathPurchase,
+        macRefund,
+        pathRefund,
+        nonce,
+        receiveSlip44,
+        receiveDisplaySymbol,
+        sendStringAmount,
+        sendTokenDecimals,
+    }: TradingExchangeCreatePaymentRequestProps,
+): PROTO.PaymentRequest | undefined => {
     if (
         !provider?.companyName ||
         !trade.send ||
@@ -116,14 +120,14 @@ export const tradingExchangeCreatePaymentRequest = ({
         return undefined;
     }
 
-    const sendNetworkData = cryptoIdToNetworkAndContractAddress(trade.send);
+    const sendNetworkData = cryptoIdToNetworkAndContractAddress(networkConfigDeps, trade.send);
     const sendNetworkSymbol = sendNetworkData.network?.symbol ?? 'btc';
     if (!sendNetworkData.network) {
         return undefined;
     }
 
     // Decimal subunits (satoshis, wei, ...). `@trezor/connect` encodes to SLIP-24 bytes.
-    const sendAmount = unitsToSubunits({
+    const sendAmount = unitsToSubunits(networkConfigDeps, {
         value: asAmountUnit(new BigNumber(sendStringAmount)),
         symbol: sendNetworkSymbol,
         ...(sendTokenDecimals !== undefined ? { decimals: sendTokenDecimals } : undefined),
@@ -170,16 +174,19 @@ type TradingSellCreatePaymentRequestProps = {
     sendTokenDecimals?: number;
 };
 
-export const tradingSellCreatePaymentRequest = ({
-    trade,
-    provider,
-    macRefund,
-    pathRefund,
-    nonce,
-    memoText,
-    sendStringAmount,
-    sendTokenDecimals,
-}: TradingSellCreatePaymentRequestProps): PROTO.PaymentRequest | undefined => {
+export const tradingSellCreatePaymentRequest = (
+    networkConfigDeps: NetworkConfigDeps,
+    {
+        trade,
+        provider,
+        macRefund,
+        pathRefund,
+        nonce,
+        memoText,
+        sendStringAmount,
+        sendTokenDecimals,
+    }: TradingSellCreatePaymentRequestProps,
+): PROTO.PaymentRequest | undefined => {
     if (
         !provider?.companyName ||
         !trade.refundAddress ||
@@ -191,14 +198,17 @@ export const tradingSellCreatePaymentRequest = ({
         return undefined;
     }
 
-    const sendNetworkData = cryptoIdToNetworkAndContractAddress(trade.cryptoCurrency);
+    const sendNetworkData = cryptoIdToNetworkAndContractAddress(
+        networkConfigDeps,
+        trade.cryptoCurrency,
+    );
     const sendNetworkSymbol = sendNetworkData.network?.symbol ?? 'btc';
     if (!sendNetworkData.network) {
         return undefined;
     }
 
     // Decimal subunits (satoshis, wei, ...). `@trezor/connect` encodes to SLIP-24 bytes.
-    const sendAmount = unitsToSubunits({
+    const sendAmount = unitsToSubunits(networkConfigDeps, {
         value: asAmountUnit(new BigNumber(sendStringAmount)),
         symbol: sendNetworkSymbol,
         ...(sendTokenDecimals !== undefined ? { decimals: sendTokenDecimals } : undefined),

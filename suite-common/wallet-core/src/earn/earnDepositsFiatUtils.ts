@@ -1,4 +1,5 @@
 import { A, F } from '@mobily/ts-belt';
+import { type NetworkConfigDeps } from '@suite-common/networks';
 
 import { type NetworkSymbol, type StakingNetworkSymbol } from '@suite-common/wallet-config';
 import {
@@ -110,12 +111,15 @@ const calculateDepositFiat = (balance: string, rate: number | undefined) => {
 export const calculateEarnDepositsFiatData = <
     TStakingDeposit extends EarnStakingDepositFiatInput,
     TStablecoinYieldDeposit extends EarnStablecoinYieldDepositFiatInput,
->({
-    stakingDeposits,
-    stablecoinYieldDeposits,
-    currentFiatRates,
-    baseCurrencyCode,
-}: CalculateEarnDepositsFiatDataParams<TStakingDeposit, TStablecoinYieldDeposit>) => {
+>(
+    networkConfigDeps: NetworkConfigDeps,
+    {
+        stakingDeposits,
+        stablecoinYieldDeposits,
+        currentFiatRates,
+        baseCurrencyCode,
+    }: CalculateEarnDepositsFiatDataParams<TStakingDeposit, TStablecoinYieldDeposit>,
+) => {
     const calculatedStakingDeposits: CalculatedEarnStakingDeposit<TStakingDeposit>[] =
         stakingDeposits.flatMap(deposit => {
             if (deposit.balance === null || deposit.balance === '0') {
@@ -142,6 +146,7 @@ export const calculateEarnDepositsFiatData = <
 
             const normalizedTokenAddress = toTokenAddress(
                 getContractAddressForNetworkSymbol(
+                    networkConfigDeps,
                     deposit.networkSymbol,
                     deposit.tokenContractAddress,
                 ),

@@ -1,3 +1,5 @@
+import { mockNetworkConfigDeps } from '@suite-common/networks/mocks';
+
 import { getCryptoId } from '@suite-common/trading';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { localizeNumber } from '@suite-common/wallet-utils';
@@ -5,6 +7,8 @@ import { TestStream } from '@trezor/e2e-utils';
 
 import { expect, test } from '../../support/fixtures';
 import { createTestAnnotation } from '../../support/reporters/annotations';
+
+const networkConfigDeps = mockNetworkConfigDeps();
 
 const fiatAmount = '1000';
 const fiatCurrency = 'CZK';
@@ -36,7 +40,7 @@ test.describe('Trading - Buy Ethereum', { tag: ['@T3W1', '@T3T1'] }, () => {
                 await tradingPage.assetPicker.selectBuyAsset({
                     searchFilter: 'Ethereum',
                     networkFilter: 'eth',
-                    assetCryptoId: getCryptoId(asNetworkSymbol('eth')),
+                    assetCryptoId: getCryptoId(networkConfigDeps, asNetworkSymbol('eth')),
                 });
                 await tradingPage.fillBuyForm({
                     amount: fiatAmount,

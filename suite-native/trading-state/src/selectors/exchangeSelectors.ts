@@ -1,10 +1,12 @@
+import { createWeakMapSelector } from '@suite-common/redux-utils';
+import { type NetworksRootState, selectNetworkConfigAccessors } from '@suite-common/networks';
 import {
     EMPTY_GROUPED_EXCHANGE_QUOTES_BY_RATE_TYPE,
     type GroupedExchangeQuotesByRateType,
     selectGroupedExchangeQuotes,
     selectTradingExchangeBuyCryptoIds,
 } from '@suite-common/trading';
-import { selectAccounts } from '@suite-common/wallet-core';
+import { type AccountsRootState, selectAccounts } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
 import {
     FeatureFlag,
@@ -16,11 +18,7 @@ import {
     getReceiveAccountFromAccountAndAddressString,
 } from '@suite-native/trading-atoms';
 
-import {
-    type TradingRootState,
-    createMemoizedSelectorWithAccounts,
-    createTradingWithFeatureFlagsMemoizedSelector,
-} from '../reducers';
+import { type TradingRootState, createMemoizedSelectorWithAccounts } from '../reducers';
 import { getAssetByEnabledNetworksFilter } from '../utils';
 
 export type { GroupedExchangeQuotesByRateType };
@@ -41,29 +39,45 @@ export const selectExchangeSelectedSendAccount = createMemoizedSelectorWithAccou
     findAccountByKey,
 );
 
-export const selectExchangeSelectedReceiveAccount = createMemoizedSelectorWithAccounts(
+export const selectExchangeSelectedReceiveAccount = createWeakMapSelector.withTypes<
+    TradingRootState & AccountsRootState & NetworksRootState
+>()(
     [
+        selectNetworkConfigAccessors,
         selectAccounts,
         state => selectTradingExchange(state).receiveAccountKey,
         state => selectTradingExchange(state).receiveAddress,
     ],
-    (accounts, accountKey, receiveAddress) => {
+    (networkConfigDeps, accounts, accountKey, receiveAddress) => {
         const account = findAccountByKey(accounts, accountKey);
 
         return account
-            ? getReceiveAccountFromAccountAndAddressString(account, receiveAddress)
+            ? getReceiveAccountFromAccountAndAddressString(
+                  networkConfigDeps,
+                  account,
+                  receiveAddress,
+              )
             : undefined;
     },
 );
 
-export const selectExchangeBuyTradeableAssets = createTradingWithFeatureFlagsMemoizedSelector(
+export const selectExchangeBuyTradeableAssets = createWeakMapSelector.withTypes<
+    TradingWithFeatureFlagsRootState & NetworksRootState
+>()(
     [
+        selectNetworkConfigAccessors,
         selectTradingExchangeBuyCryptoIds,
         ({ wallet }) => wallet.trading.info.coins,
         state => selectIsFeatureFlagEnabled(state, FeatureFlag.AreDebugOnlyNetworksEnabled),
         state => selectIsFeatureFlagEnabled(state, FeatureFlag.AreExperimentalOnlyNetworksEnabled),
     ],
-    (cryptoIds, coins, areDebugOnlyNetworksEnabled, areExperimentalOnlyNetworksEnabled) => {
+    (
+        networkConfigDeps,
+        cryptoIds,
+        coins,
+        areDebugOnlyNetworksEnabled,
+        areExperimentalOnlyNetworksEnabled,
+    ) => {
         if (!coins || !cryptoIds) {
             return [];
         }
@@ -75,10 +89,11 @@ export const selectExchangeBuyTradeableAssets = createTradingWithFeatureFlagsMem
                     return [];
                 }
 
-                return [coinInfoToTradeableAsset(cryptoId, coinInfo)];
+                return [coinInfoToTradeableAsset(networkConfigDeps, cryptoId, coinInfo)];
             })
             .filter(
                 getAssetByEnabledNetworksFilter(
+                    networkConfigDeps,
                     areDebugOnlyNetworksEnabled,
                     areExperimentalOnlyNetworksEnabled,
                 ),

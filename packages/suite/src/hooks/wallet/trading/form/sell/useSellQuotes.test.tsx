@@ -4,6 +4,7 @@ import { act, waitFor } from '@testing-library/react';
 import { type CryptoId, type SellFiatTrade } from 'invity-api';
 
 import { mockDesktopAnalytics } from '@suite/analytics/mocks';
+import { mockNetworkConfigDeps } from '@suite-common/networks/mocks';
 import { createTestCompositionRoot, renderHookWithStoreProvider } from '@suite-common/test-utils';
 import {
     type TradingAssetSellOption,
@@ -16,6 +17,8 @@ import { mockAccountKey } from '@suite-common/wallet-types/mocks';
 
 import { useSellQuotes } from './useSellQuotes';
 import { DEBOUNCE_DELAY_MS } from '../common/useTradingQuoteRequest';
+
+const networkConfigDeps = mockNetworkConfigDeps();
 
 const btcSymbol = toNetworkSymbolNonTestnet('btc');
 
@@ -129,7 +132,7 @@ const renderSellQuotes = (
 ) => {
     const { resolver } = options;
     const initialProps: { currentNetwork: Network | undefined } = {
-        currentNetwork: getNetwork(btcSymbol),
+        currentNetwork: getNetwork(networkConfigDeps, btcSymbol),
     };
     const services = { analytics: mockDesktopAnalytics() };
 

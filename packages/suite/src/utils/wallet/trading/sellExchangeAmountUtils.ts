@@ -1,3 +1,4 @@
+import { type NetworkConfigDeps } from '@suite-common/networks';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import {
     asAmountUnit,
@@ -14,12 +15,10 @@ type CalcCryptoFromFiatParams = {
     shouldSendInSats: boolean | undefined;
 };
 
-export const calcCryptoFromFiat = ({
-    fiatAmount,
-    rate,
-    networkDecimals,
-    shouldSendInSats,
-}: CalcCryptoFromFiatParams): string => {
+export const calcCryptoFromFiat = (
+    networkConfigDeps: NetworkConfigDeps,
+    { fiatAmount, rate, networkDecimals, shouldSendInSats }: CalcCryptoFromFiatParams,
+): string => {
     const cryptoAmount =
         fromBaseCurrencyToCryptoUnit({ fiatAmount, rate })?.toFixed(networkDecimals) ?? null;
 
@@ -28,7 +27,7 @@ export const calcCryptoFromFiat = ({
     }
 
     return shouldSendInSats
-        ? unitsToSubunits({
+        ? unitsToSubunits(networkConfigDeps, {
               value: asAmountUnit(new BigNumber(cryptoAmount)),
               decimals: networkDecimals,
           }).toString()
@@ -48,26 +47,32 @@ type CalcRatioAmountParams = {
     fee: string | undefined;
 };
 
-export const calcRatioAmount = ({
-    divisor,
-    balance,
-    decimals,
-    networkDecimals,
-    shouldSendInSats,
-    isNetworkReserveEnabled,
-    symbol,
-    contractAddress,
-    formattedBalance,
-    fee,
-}: CalcRatioAmountParams): { cryptoInputValue: string; cryptoAmountWithReserve: string } => {
+export const calcRatioAmount = (
+    networkConfigDeps: NetworkConfigDeps,
+    {
+        divisor,
+        balance,
+        decimals,
+        networkDecimals,
+        shouldSendInSats,
+        isNetworkReserveEnabled,
+        symbol,
+        contractAddress,
+        formattedBalance,
+        fee,
+    }: CalcRatioAmountParams,
+): { cryptoInputValue: string; cryptoAmountWithReserve: string } => {
     const amount = new BigNumber(balance || '0').dividedBy(divisor).decimalPlaces(decimals);
 
     const cryptoInputValue = shouldSendInSats
-        ? unitsToSubunits({ value: asAmountUnit(amount), decimals: networkDecimals }).toString()
+        ? unitsToSubunits(networkConfigDeps, {
+              value: asAmountUnit(amount),
+              decimals: networkDecimals,
+          }).toString()
         : amount.toString();
 
     const cryptoAmountWithReserve = isNetworkReserveEnabled
-        ? getCryptoAmountWithReserve({
+        ? getCryptoAmountWithReserve(networkConfigDeps, {
               symbol,
               contractAddress,
               balance: formattedBalance,
@@ -87,15 +92,16 @@ type CalcMaxTokenAmountParams = {
     shouldSendInSats: boolean | undefined;
 };
 
-export const calcMaxTokenAmount = ({
-    balance,
-    decimals,
-    networkDecimals,
-    shouldSendInSats,
-}: CalcMaxTokenAmountParams): string => {
+export const calcMaxTokenAmount = (
+    networkConfigDeps: NetworkConfigDeps,
+    { balance, decimals, networkDecimals, shouldSendInSats }: CalcMaxTokenAmountParams,
+): string => {
     const maxAmount = new BigNumber(balance || '0').decimalPlaces(decimals);
 
     return shouldSendInSats
-        ? unitsToSubunits({ value: asAmountUnit(maxAmount), decimals: networkDecimals }).toString()
+        ? unitsToSubunits(networkConfigDeps, {
+              value: asAmountUnit(maxAmount),
+              decimals: networkDecimals,
+          }).toString()
         : maxAmount.toString();
 };

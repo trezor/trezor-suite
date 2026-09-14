@@ -1,3 +1,5 @@
+import { selectNetworkConfigDeps } from '@suite-common/networks';
+import { useServices } from '@suite-common/dependency-injection';
 import { useSelector } from 'react-redux';
 
 import { cryptoIdToNetworkSymbol } from '@suite-common/trading';
@@ -27,12 +29,14 @@ type SellCardProps = {
 const SELL_CARD_TEST_ID = '@trading/sellCard';
 
 export const SellCard = ({ isAmountInputActive, shouldAnimateEntering }: SellCardProps) => {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
+
     const { control } = useSellFormContext();
     const [asset, cryptoStringAmount, sendAccount] = useWatch({
         control,
         name: ['sendAsset', 'cryptoStringAmount', 'sendAccount'],
     });
-    const symbol = asset ? cryptoIdToNetworkSymbol(asset.cryptoId) : undefined;
+    const symbol = asset ? cryptoIdToNetworkSymbol(networkConfigDeps, asset.cryptoId) : undefined;
 
     const formattedBalance = useSelector((state: AccountsRootState) =>
         selectAccountFormattedBalance(state, sendAccount?.key),

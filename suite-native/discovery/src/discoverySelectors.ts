@@ -1,7 +1,11 @@
 import { A, pipe } from '@mobily/ts-belt';
 
 import type { DeviceRootState } from '@suite-common/device';
-import { type NetworksRootState } from '@suite-common/networks';
+import {
+    type NetworkConfigDeps,
+    selectNetworkConfigAccessors,
+    type NetworksRootState,
+} from '@suite-common/networks';
 import { createWeakMapSelector, returnStableArrayIfEmpty } from '@suite-common/redux-utils';
 import { type TrezorDevice } from '@suite-common/suite-types';
 import {
@@ -11,7 +15,7 @@ import {
     getMainnets,
     getNetwork,
     getTestnets,
-    networksCollection,
+    getNetworksCollection,
 } from '@suite-common/wallet-config';
 import {
     type AccountsRootState,
@@ -40,16 +44,15 @@ export type DiscoveryRootState = DeviceRootState &
     FeatureFlagsRootState &
     NetworksRootState;
 
-const createMemoizedSelector = createWeakMapSelector.withTypes<DiscoveryRootState>();
-
 /**
  * Filter collection of activated networks to only include those supported by device & suite
  */
 const filterUnavailableNetworks = (
+    networkConfigDeps: NetworkConfigDeps,
     enabledNetworks: NetworkSymbol[],
     device?: TrezorDevice,
 ): Network[] =>
-    networksCollection.filter(n => {
+    getNetworksCollection(networkConfigDeps).filter(n => {
         const firmwareVersion = getFirmwareVersion(device);
         const internalModel = device?.features?.internal_model;
 
@@ -67,14 +70,18 @@ const filterUnavailableNetworks = (
         );
     });
 
+const createMemoizedSelector = createWeakMapSelector.withTypes<DiscoveryRootState>();
+
 export const selectDiscoverySupportedNetworks = createMemoizedSelector(
     [
+        selectNetworkConfigAccessors,
         selectDeviceSupportedNetworks,
         selectAreTestnetsEnabled,
         state => selectIsFeatureFlagEnabled(state, FeatureFlag.AreDebugOnlyNetworksEnabled),
         state => selectIsFeatureFlagEnabled(state, FeatureFlag.AreExperimentalOnlyNetworksEnabled),
     ],
     (
+        networkConfigDeps,
         deviceNetworks,
         areTestnetsEnabled,
         areDebugOnlyNetworksEnabled,
@@ -82,10 +89,11 @@ export const selectDiscoverySupportedNetworks = createMemoizedSelector(
     ) =>
         pipe(
             deviceNetworks,
-            networkSymbols => filterTestnetNetworks(networkSymbols, areTestnetsEnabled),
+            networkSymbols =>
+                filterTestnetNetworks(networkConfigDeps, networkSymbols, areTestnetsEnabled),
             networkSymbols =>
                 networkSymbols.filter(symbol => {
-                    const network = getNetwork(symbol);
+                    const network = getNetwork(networkConfigDeps, symbol);
 
                     if (network.isDebugOnlyNetwork) {
                         return areDebugOnlyNetworksEnabled;
@@ -97,7 +105,7 @@ export const selectDiscoverySupportedNetworks = createMemoizedSelector(
 
                     return true;
                 }),
-            filterUnavailableNetworks,
+            filterUnavailableNetworks.bind(null, networkConfigDeps),
             networks => sortNetworks(networks, deviceNetworks),
             returnStableArrayIfEmpty,
         ),
@@ -119,12 +127,16 @@ export const selectDeviceEnabledDiscoveryNetworkSymbols = createMemoizedSelector
 );
 
 export const selectTokenDefinitionsEnabledNetworks = createMemoizedSelector(
-    [selectEnabledNetworks, selectNetworkSymbolsOfAccountsWithTokensAllowed],
-    (enabledNetworkSymbols, accountNetworkSymbols) =>
+    [
+        selectNetworkConfigAccessors,
+        selectEnabledNetworks,
+        selectNetworkSymbolsOfAccountsWithTokensAllowed,
+    ],
+    (networkConfigDeps, enabledNetworkSymbols, accountNetworkSymbols) =>
         returnStableArrayIfEmpty(
             pipe(
                 [...enabledNetworkSymbols, ...accountNetworkSymbols],
-                A.filter(s => isNetworkWithTokens(s)),
+                A.filter(s => isNetworkWithTokens(networkConfigDeps, s)),
                 A.uniq,
             ),
         ),
@@ -132,6 +144,7 @@ export const selectTokenDefinitionsEnabledNetworks = createMemoizedSelector(
 
 export const selectDiscoveryNetworkGroups = createMemoizedSelector(
     [
+        selectNetworkConfigAccessors,
         selectDeviceSupportedNetworks,
         state => selectIsFeatureFlagEnabled(state, FeatureFlag.AreDebugOnlyNetworksEnabled),
         state => selectIsFeatureFlagEnabled(state, FeatureFlag.AreExperimentalOnlyNetworksEnabled),
@@ -139,17 +152,18 @@ export const selectDiscoveryNetworkGroups = createMemoizedSelector(
         (_state, searchQuery: string = '') => searchQuery,
     ],
     (
+        networkConfigDeps,
         deviceSupportedNetworks,
         areDebugOnlyNetworksEnabled,
         areExperimentalOnlyNetworksEnabled,
         areTestnetsEnabled,
         searchQuery,
     ) => {
-        const mainnets = getMainnets({
+        const mainnets = getMainnets(networkConfigDeps, {
             debug: areDebugOnlyNetworksEnabled,
             useExperimentalNetworks: areExperimentalOnlyNetworksEnabled,
         });
-        const testnets = getTestnets({
+        const testnets = getTestnets(networkConfigDeps, {
             debug: areDebugOnlyNetworksEnabled,
             useExperimentalNetworks: areExperimentalOnlyNetworksEnabled,
             useTestnetNetworks: areTestnetsEnabled,

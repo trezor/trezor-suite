@@ -1,3 +1,8 @@
+import type { NetworksRootState } from '@suite-common/networks';
+import { mockNetworkConfigDeps } from '@suite-common/networks/mocks';
+import { getNetworks } from '@suite-common/wallet-config';
+
+const networks = getNetworks(mockNetworkConfigDeps());
 import { type DeviceRootState } from '@suite-common/device';
 import {
     type NotificationsRootState,
@@ -168,7 +173,8 @@ describe('selectNonPhishingTransactionNotifications', () => {
         formattedAmount: '0.0000005 ETH',
     } as TransactionNotification;
 
-    type PhishingState = NotificationsRootState &
+    type PhishingState = NetworksRootState &
+        NotificationsRootState &
         TokenDefinitionsRootState &
         TransactionsRootState &
         AccountsRootState &
@@ -184,6 +190,7 @@ describe('selectNonPhishingTransactionNotifications', () => {
         isDustPhishingEnabled?: boolean;
     }): PhishingState =>
         ({
+            networks,
             notifications: [receivedNotification],
             device: { selectedDevice: { state: { staticSessionId: DEVICE_STATE } } },
             // ETH declares the coin-definitions feature, so an entry is required here or

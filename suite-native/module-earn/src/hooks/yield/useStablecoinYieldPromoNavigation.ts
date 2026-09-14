@@ -1,3 +1,4 @@
+import { selectNetworkConfigDeps } from '@suite-common/networks';
 import { useCallback, useState } from 'react';
 import { useSelector } from 'react-redux';
 
@@ -42,6 +43,8 @@ type UseStablecoinYieldPromoNavigationReturn = {
 };
 
 export const useStablecoinYieldPromoNavigation = (): UseStablecoinYieldPromoNavigationReturn => {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
+
     const navigation =
         useNavigation<StackNavigationProps<RootStackParamList, RootStackRoutes.YieldNavigator>>();
     const { analytics } = useServices(selectNativeAnalyticsDep);
@@ -119,6 +122,7 @@ export const useStablecoinYieldPromoNavigation = (): UseStablecoinYieldPromoNavi
 
             closeChooseAccountModal();
             const destination = navigateByYieldAccountState(
+                networkConfigDeps,
                 account,
                 chosenYieldItem,
                 navigation.navigate,
@@ -128,6 +132,7 @@ export const useStablecoinYieldPromoNavigation = (): UseStablecoinYieldPromoNavi
             reportYieldEntryNavigation(destination, chosenYieldItem, 'choose-account-sheet');
         },
         [
+            networkConfigDeps,
             chosenYieldItem,
             closeChooseAccountModal,
             isFirmwareSupported,
@@ -204,6 +209,7 @@ export const useStablecoinYieldPromoNavigation = (): UseStablecoinYieldPromoNavi
             const singleAccount = accountsForNetwork[0];
             if (accountsForNetwork.length === 1 && singleAccount) {
                 const destination = navigateByYieldAccountState(
+                    networkConfigDeps,
                     singleAccount,
                     item,
                     navigation.navigate,
@@ -221,6 +227,7 @@ export const useStablecoinYieldPromoNavigation = (): UseStablecoinYieldPromoNavi
             reportYieldEntryNavigation('choose-account-sheet', item, 'earn-dashboard');
         },
         [
+            networkConfigDeps,
             accounts,
             isFirmwareSupported,
             isPortfolioTrackerDevice,

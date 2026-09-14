@@ -7,8 +7,13 @@ import {
     type MevProtectionRootState,
     selectIsMevProtectionFeatureEnabled,
 } from '@suite-common/mev';
+import {
+    type NetworkConfigDeps,
+    selectNetworkConfigAccessors,
+    type NetworksRootState,
+} from '@suite-common/networks';
 import { createThunk } from '@suite-common/redux-utils';
-import { type Network, getNetwork, networksCollection } from '@suite-common/wallet-config';
+import { type Network, getNetwork, getNetworksCollection } from '@suite-common/wallet-config';
 import { ETH_CONTRACT_CALL_BACKUP_GAS_LIMIT } from '@suite-common/wallet-constants';
 import {
     type TransactionsRootState,
@@ -46,7 +51,8 @@ export type EthereumRequestThunkState = trezorConnectPopupActions.ConnectPopupCa
     WalletConnectStateRootState &
     MevProtectionRootState &
     WalletSettingsRootState &
-    TransactionsRootState;
+    TransactionsRootState &
+    NetworksRootState;
 
 export type EthereumRequestThunkDeps = trezorConnectPopupActions.ConnectPopupCallThunkDeps;
 
@@ -57,6 +63,8 @@ const ethereumRequestThunk = createThunk<
     },
     { state: EthereumRequestThunkState; extra: EthereumRequestThunkDeps }
 >(`${WALLETCONNECT_MODULE}/ethereumRequest`, async ({ event }, { dispatch, getState }) => {
+    const networkConfigDeps = selectNetworkConfigAccessors(getState());
+
     const device = selectSelectedDevice(getState());
     const isMevProtectionEnabled = selectIsMevProtectionEnabled(getState());
     const isMevProtectionFeatureEnabled = selectIsMevProtectionFeatureEnabled(getState());
@@ -66,7 +74,7 @@ const ethereumRequestThunk = createThunk<
             a =>
                 a.descriptor.toLowerCase() === address.toLowerCase() &&
                 a.networkType === 'ethereum' &&
-                (!chainId || getNetwork(a.symbol).chainId === chainId),
+                (!chainId || getNetwork(networkConfigDeps, a.symbol).chainId === chainId),
         ) || throwError('Account not found');
 
     const session = selectSessionByTopic(getState(), event.topic);
@@ -219,6 +227,7 @@ const ethereumRequestThunk = createThunk<
                 signResponse.payload as CallMethodResponse<'ethereumSignTransaction'>;
 
             const txData = getMevProtectedTxData(
+                networkConfigDeps,
                 account.symbol,
                 typedSignPayload.serializedTx,
                 isMevProtectionEnabled && isMevProtectionFeatureEnabled,
@@ -247,7 +256,10 @@ const ethereumRequestThunk = createThunk<
 
 export const getChainId = (network: Network) => [`eip155:${network.chainId}`];
 
-export const getNamespace = (accounts: Account[]): Record<string, WalletConnectNamespace> => {
+export const getNamespace = (
+    networkConfigDeps: NetworkConfigDeps,
+    accounts: Account[],
+): Record<string, WalletConnectNamespace> => {
     const eip155 = {
         chains: [],
         accounts: [],
@@ -256,7 +268,7 @@ export const getNamespace = (accounts: Account[]): Record<string, WalletConnectN
     } as WalletConnectNamespace;
 
     accounts.forEach(account => {
-        const network = getNetwork(account.symbol);
+        const network = getNetwork(networkConfigDeps, account.symbol);
         const { networkType } = network;
 
         if (!account.visible || networkType !== 'ethereum') return;
@@ -281,6 +293,7 @@ export const getNamespace = (accounts: Account[]): Record<string, WalletConnectN
 };
 
 const processNamespaces = (
+    networkConfigDeps: NetworkConfigDeps,
     accounts: Account[],
     networks: PendingConnectionProposalNetwork[],
     namespaces: ProposalTypes.RequiredNamespaces,
@@ -292,7 +305,7 @@ const processNamespaces = (
                 namespace.chains?.forEach(chain => {
                     const alreadyAdded = networks.some(network => network.namespaceId === chain);
                     if (alreadyAdded) return;
-                    const supported = networksCollection.find(
+                    const supported = getNetworksCollection(networkConfigDeps).find(
                         nc => chain === `eip155:${nc.chainId}`,
                     );
                     const getStatus = () => {

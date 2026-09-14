@@ -1,3 +1,6 @@
+import { type NetworksRootState } from '@suite-common/networks';
+import { selectNetworkConfigDeps } from '@suite-common/networks';
+import { useServices } from '@suite-common/dependency-injection';
 import { useContext } from 'react';
 import { Pressable } from 'react-native';
 import Animated, {
@@ -103,14 +106,16 @@ export const FeeOption = ({
     isLoading = false,
     onSelectedFeeLevel,
 }: FeeOptionProps) => {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
+
     const { utils, applyStyle } = useNativeStyles();
     const { control, setValue } = useContext(FormContext);
 
-    const feeTimeEstimate = useSelector((state: FeesRootState) =>
+    const feeTimeEstimate = useSelector((state: FeesRootState & NetworksRootState) =>
         selectConvertedNetworkFeeLevelTimeEstimate(state, symbol, feeKey),
     );
 
-    const backendFeePerUnit = useSelector((state: FeesRootState) =>
+    const backendFeePerUnit = useSelector((state: FeesRootState & NetworksRootState) =>
         selectConvertedNetworkFeeLevelFeePerUnit(state, symbol, feeKey),
     );
 
@@ -140,7 +145,7 @@ export const FeeOption = ({
     );
 
     const label = feeLabelsMap[feeKey];
-    const networkType = getNetworkType(symbol);
+    const networkType = getNetworkType(networkConfigDeps, symbol);
     const feeUnits = getFeeUnits(networkType);
 
     // If trezor-connect was not able to compose the fee level (e.g. insufficient account balance), we have to mock its value.

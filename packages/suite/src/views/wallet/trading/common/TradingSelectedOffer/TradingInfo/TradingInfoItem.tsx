@@ -4,6 +4,8 @@ import { AccountLabel } from '@suite/account';
 import { Address } from '@suite/address';
 import { Translation, useTranslation } from '@suite/intl';
 import { selectShouldAnimateLoadingSkeleton } from '@suite/ui-animations';
+import { useServices } from '@suite-common/dependency-injection';
+import { selectNetworkConfigDeps } from '@suite-common/networks';
 import { cryptoIdToNetworkSymbolAndContractAddress, useTradingAssets } from '@suite-common/trading';
 import { getNetworkDisplaySymbolName } from '@suite-common/wallet-config';
 import { type Account } from '@suite-common/wallet-types';
@@ -34,10 +36,13 @@ export const TradingInfoItem = ({
     isAmountLoading,
     receiveAddress,
 }: TradingInfoItemProps) => {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
+
     const shouldAnimateSkeleton = useSelector(selectShouldAnimateLoadingSkeleton);
     const { translationString } = useTranslation();
-    const { createAssetOptionFromCryptoId } = useTradingAssets();
-    const currencyInfo = currency && cryptoIdToNetworkSymbolAndContractAddress(currency);
+    const { getAssetOptionFromCryptoId } = useTradingAssets();
+    const currencyInfo =
+        currency && cryptoIdToNetworkSymbolAndContractAddress(networkConfigDeps, currency);
     const accountLabelPrefix = translationString(isReceive ? 'TR_TO' : 'TR_FROM').toLowerCase();
 
     const showAccountLabel = !!account;
@@ -53,9 +58,11 @@ export const TradingInfoItem = ({
         networkName,
         contractAddress,
         symbol,
-    } = createAssetOptionFromCryptoId(currency);
+    } = getAssetOptionFromCryptoId(currency);
 
-    const displayName = isNativeToken ? getNetworkDisplaySymbolName(networkSymbol) : name;
+    const displayName = isNativeToken
+        ? getNetworkDisplaySymbolName(networkConfigDeps, networkSymbol)
+        : name;
 
     const showNetwork = networkSymbol !== displaySymbol.toLowerCase();
 

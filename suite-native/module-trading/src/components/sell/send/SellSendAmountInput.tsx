@@ -1,3 +1,5 @@
+import { selectNetworkConfigDeps } from '@suite-common/networks';
+import { useServices } from '@suite-common/dependency-injection';
 import { forwardRef } from 'react';
 import { type TextInput } from 'react-native';
 import { useSelector } from 'react-redux';
@@ -21,13 +23,15 @@ const SELL_SEND_INPUT_TEST_ID = '@trading/sell/send-amount-input';
 
 export const SellSendAmountInput = forwardRef<TextInput, SellSendAmountInputProps>(
     ({ showAssetsScreen }, ref) => {
+        const networkConfigDeps = useServices(selectNetworkConfigDeps);
+
         const { translate } = useTranslate();
         const { control } = useSellFormContext();
         const [asset, account, amountInCrypto] = useWatch({
             control,
             name: ['sendAsset', 'sendAccount', 'amountInCrypto'],
         });
-        const symbol = getSymbolFromTradeableAsset(asset);
+        const symbol = getSymbolFromTradeableAsset(networkConfigDeps, asset);
         const { cryptoAmountTransformer } = useAmountInputTransformers(symbol);
         const inputControls = useSellInputFormControls('cryptoStringAmount');
         const decimals = useAmountInputDecimals(account, asset?.contractAddress);

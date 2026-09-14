@@ -1,3 +1,5 @@
+import { mockNetworkConfigDeps } from '@suite-common/networks/mocks';
+import { getNetworks } from '@suite-common/wallet-config';
 import { analyticsInitialState } from '@suite-common/analytics-redux';
 import { connectPopupInitialState } from '@suite-common/connect-popup';
 import { deviceInitialState } from '@suite-common/device';
@@ -14,10 +16,10 @@ import { tokenDefinitionsInitialState } from '@suite-common/token-definitions';
 import {
     accountsInitialState,
     accountsRefreshTimeInitialState,
-    blockchainInitialState,
+    createBlockchainInitialState,
     discoveryInitialState,
     earnOnboardingInitialState,
-    explorerInitialState,
+    createExplorerInitialState,
     feesInitialState,
     fiatRatesInitialState,
     formDraftInitialState,
@@ -46,12 +48,14 @@ import { sendFormInitialState } from '@suite-native/transaction-management';
 import { appSliceInitialState } from '../src/appSlice';
 import type { FullAppState } from '../src/createReduxStore';
 
+const networkConfigDeps = mockNetworkConfigDeps();
+
 /**
  * Create a complete app state for Suite Mobile to be used as basis for state fixtures in tests.
  */
 
 export const mockInitialAppState = (partialState?: Partial<FullAppState>): FullAppState => ({
-    networks: null,
+    networks: getNetworks(mockNetworkConfigDeps()),
     analytics: analyticsInitialState,
     app: appSliceInitialState,
     appSettings: appSettingsInitialState,
@@ -86,8 +90,8 @@ export const mockInitialAppState = (partialState?: Partial<FullAppState>): FullA
         accounts: accountsInitialState,
         earnOnboarding: earnOnboardingInitialState,
         accountsRefreshTime: accountsRefreshTimeInitialState,
-        blockchain: blockchainInitialState,
-        explorer: explorerInitialState,
+        blockchain: createBlockchainInitialState(networkConfigDeps.getNetworkConfigs()),
+        explorer: createExplorerInitialState(networkConfigDeps.getNetworkConfigs()),
         fiat: fiatRatesInitialState,
         transactions: transactionsInitialState,
         phishing: phishingInitialState,

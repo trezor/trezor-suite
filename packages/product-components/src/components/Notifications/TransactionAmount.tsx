@@ -1,5 +1,7 @@
 import { type ReactNode } from 'react';
 
+import { useServices } from '@suite-common/dependency-injection';
+import { selectNetworkConfigDeps } from '@suite-common/networks';
 import { type NetworkSymbol, getDisplaySymbol } from '@suite-common/wallet-config';
 import { Row } from '@trezor/components';
 
@@ -29,9 +31,14 @@ export const TransactionAmount = ({
     unlimitedApprovalLabel,
     renderAmount,
 }: TransactionAmountProps) => {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
+
     const shouldRenderApprovalAmountWithSymbol =
         notificationType === 'tx-approved' || notificationType === 'tx-revoked';
-    const resolvedTokenDisplaySymbol = getDisplaySymbol(tokenSymbol ?? token?.symbol ?? symbol);
+    const resolvedTokenDisplaySymbol = getDisplaySymbol(
+        networkConfigDeps,
+        tokenSymbol ?? token?.symbol ?? symbol,
+    );
     const resolvedAmountValue =
         notificationType === 'tx-approved' && isInfiniteApproval
             ? (unlimitedApprovalLabel ?? amount)

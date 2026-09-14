@@ -1,4 +1,5 @@
 import { isRejected } from '@reduxjs/toolkit';
+import { selectNetworkConfigAccessors, type NetworksRootState } from '@suite-common/networks';
 
 import { createThunk } from '@suite-common/redux-utils';
 import { getNetwork } from '@suite-common/wallet-config';
@@ -30,7 +31,8 @@ export type ComposedEthereumCancelTransaction = {
 };
 
 type ComposeEthereumCancelTransactionThunkState = FeesRootState &
-    ComposeSendFormTransactionFeeLevelsThunkState;
+    ComposeSendFormTransactionFeeLevelsThunkState &
+    NetworksRootState;
 
 /**
  * Composes an EVM cancel transaction: a 0-value transfer to the account's own address reusing the
@@ -40,10 +42,15 @@ type ComposeEthereumCancelTransactionThunkState = FeesRootState &
 export const composeEthereumCancelTransactionThunk = createThunk<
     ComposedEthereumCancelTransaction,
     ComposeEthereumCancelTransactionThunkParams,
-    { state: ComposeEthereumCancelTransactionThunkState; rejectValue: ComposeFeeLevelsError }
+    {
+        state: ComposeEthereumCancelTransactionThunkState;
+        rejectValue: ComposeFeeLevelsError;
+    }
 >(
     `${SEND_MODULE_PREFIX}/composeEthereumCancelTransactionThunk`,
     async ({ account, tx }, { dispatch, getState, rejectWithValue }) => {
+        const networkConfigDeps = selectNetworkConfigAccessors(getState());
+
         const feeInfo = selectConvertedNetworkFeeInfo(getState(), account.symbol);
         const { rbfParams } = tx;
 
@@ -80,7 +87,7 @@ export const composeEthereumCancelTransactionThunk = createThunk<
                 formState: cancelFormState,
                 composeContext: {
                     account,
-                    network: getNetwork(account.symbol),
+                    network: getNetwork(networkConfigDeps, account.symbol),
                     feeInfo: getEthereumRbfFeeInfo(feeInfo, rbfParams),
                 },
             }),

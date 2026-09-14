@@ -6,7 +6,11 @@ import {
     type MessageSystemRootState,
     selectIsFeatureEnabled,
 } from '@suite-common/message-system';
-import { type NetworksRootState, selectSupportedNetworkSymbols } from '@suite-common/networks';
+import {
+    selectNetworkConfigAccessors,
+    type NetworksRootState,
+    selectSupportedNetworkSymbols,
+} from '@suite-common/networks';
 import { createWeakMapSelector, returnStableArrayIfEmpty } from '@suite-common/redux-utils';
 import {
     type TokenDefinitionsRootState,
@@ -83,15 +87,8 @@ export type CombinedSelectorsRootState = TradingRootStateWithDeviceAndAccounts &
 const createTradingWithDeviceAndAccountsMemoizedSelector =
     createWeakMapSelector.withTypes<TradingRootStateWithDeviceAndAccounts>();
 
-const createCombinedMemoizedSelector =
-    createWeakMapSelector.withTypes<CombinedSelectorsRootState>();
-
 const createFeatureFlagsMemoizedSelector = createWeakMapSelector.withTypes<
     MessageSystemRootState & FeatureFlagsRootState
->();
-
-const createFiatRatesMemoizedSelector = createWeakMapSelector.withTypes<
-    FiatRatesRootState & WalletSettingsRootState & TradingRootState
 >();
 
 export const selectTradingEnvironment = (state: TradingRootState) =>
@@ -217,15 +214,18 @@ export const selectActiveTradingType = (state: TradingRootState) =>
 export const selectHasActiveTradingType = (state: TradingRootState) =>
     state.wallet.trading.activeTradingType !== null;
 
-export const selectAmountInBaseFiatCurrency = createFiatRatesMemoizedSelector(
+export const selectAmountInBaseFiatCurrency = createWeakMapSelector.withTypes<
+    FiatRatesRootState & WalletSettingsRootState & NetworksRootState
+>()(
     [
+        selectNetworkConfigAccessors,
         selectCurrentFiatRates,
         selectBaseCurrency,
         (_state, asset: TradeableAsset) => asset,
         (_state, _symbol, amount: string) => amount,
     ],
-    (fiatRates, localCurrency, asset, amount) => {
-        const symbol = getSymbolFromTradeableAsset(asset);
+    (networkConfigDeps, fiatRates, localCurrency, asset, amount) => {
+        const symbol = getSymbolFromTradeableAsset(networkConfigDeps, asset);
 
         if (!symbol || !fiatRates) {
             return undefined;
@@ -243,8 +243,9 @@ export const selectAmountInBaseFiatCurrency = createFiatRatesMemoizedSelector(
 );
 
 export const selectAccountsWithTokensToSellSectionListByTradingType =
-    createCombinedMemoizedSelector(
+    createWeakMapSelector.withTypes<CombinedSelectorsRootState>()(
         [
+            selectNetworkConfigAccessors,
             selectVisibleDeviceAccounts,
             selectTokenDefinitions,
             selectCurrentFiatRates,
@@ -256,6 +257,7 @@ export const selectAccountsWithTokensToSellSectionListByTradingType =
             selectSupportedNetworkSymbols,
         ],
         (
+            networkConfigDeps,
             accounts,
             tokenDefinitions,
             fiatRates,
@@ -273,10 +275,10 @@ export const selectAccountsWithTokensToSellSectionListByTradingType =
             // TODO: Remove this filter when Cardano send is implemented (#15068)
             // Currently filtering out Cardano accounts and tokens from trading until Cardano send is supported
             const filteredAccounts = accounts.filter(account => {
-                if (!getNetwork(account.symbol).tradeCryptoId) {
+                if (!getNetwork(networkConfigDeps, account.symbol).tradeCryptoId) {
                     return false;
                 }
-                const networkType = getNetworkType(account.symbol);
+                const networkType = getNetworkType(networkConfigDeps, account.symbol);
 
                 return networkType !== 'cardano' || isCardanoSendEnabled;
             });
@@ -294,6 +296,7 @@ export const selectAccountsWithTokensToSellSectionListByTradingType =
                     );
 
                     const knownTokens = filterKnownTokens(
+                        networkConfigDeps,
                         networkTokenDefinitions,
                         account.symbol,
                         account.tokens ?? [],
@@ -319,7 +322,8 @@ export const selectAccountsWithTokensToSellSectionListByTradingType =
                             const tokenSymbol =
                                 (token.symbol?.toUpperCase() as TokenSymbol) ?? null;
                             const cryptoId = toCaseAwareCryptoId(
-                                toTokenCryptoId(account.symbol, token.contract),
+                                networkConfigDeps,
+                                toTokenCryptoId(networkConfigDeps, account.symbol, token.contract),
                             );
 
                             return {
@@ -350,14 +354,15 @@ export const selectAccountsWithTokensToSellSectionListByTradingType =
                         });
 
                     const cryptoId = toCaseAwareCryptoId(
-                        getNetwork(account.symbol).tradeCryptoId as CryptoId,
+                        networkConfigDeps,
+                        getNetwork(networkConfigDeps, account.symbol).tradeCryptoId as CryptoId,
                     );
 
                     const accountAsset = {
                         symbol: account.symbol,
-                        name: getNetworkDisplaySymbolName(account.symbol),
+                        name: getNetworkDisplaySymbolName(networkConfigDeps, account.symbol),
                         balance: account.formattedBalance,
-                        fiatBalance: getAccountFiatBalance({
+                        fiatBalance: getAccountFiatBalance(networkConfigDeps, {
                             account,
                             baseCurrencyCode: localCurrency,
                             rates: fiatRates,
@@ -443,10 +448,12 @@ export const selectVisibleDeviceAccountsByNetworkSymbolSorted = createWeakMapSel
 );
 
 export const selectAccountLabelWithNetworkFallback = (
-    state: AccountsRootState & CombinedLabelingState,
+    state: AccountsRootState & CombinedLabelingState & NetworksRootState,
     accountKey?: AccountKey,
     cryptoId?: CryptoId,
 ) => {
+    const networkConfigDeps = selectNetworkConfigAccessors(state);
+
     if (accountKey) {
         const {
             accountDescriptor,
@@ -467,9 +474,9 @@ export const selectAccountLabelWithNetworkFallback = (
     }
 
     if (cryptoId) {
-        const networkSymbol = cryptoIdToNetworkSymbol(cryptoId);
+        const networkSymbol = cryptoIdToNetworkSymbol(networkConfigDeps, cryptoId);
         if (networkSymbol) {
-            return getNetwork(networkSymbol).name;
+            return getNetwork(networkConfigDeps, networkSymbol).name;
         }
     }
 

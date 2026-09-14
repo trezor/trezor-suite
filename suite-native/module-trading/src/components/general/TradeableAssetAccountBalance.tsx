@@ -1,3 +1,5 @@
+import { selectNetworkConfigDeps } from '@suite-common/networks';
+import { useServices } from '@suite-common/dependency-injection';
 import { useSelector } from 'react-redux';
 
 import { isSendingEvmNativeToken } from '@suite-common/trading';
@@ -56,10 +58,14 @@ const TokenBalance = ({
 };
 
 const AssetBalance = ({ account, asset, testID }: AssetBalanceProps) => {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
+
     const { cryptoId, symbol } = asset;
     const { key: accountKey, formattedBalance } = account;
 
-    const tokenAddress = isSendingEvmNativeToken(cryptoId) ? undefined : asset.contractAddress;
+    const tokenAddress = isSendingEvmNativeToken(networkConfigDeps, cryptoId)
+        ? undefined
+        : asset.contractAddress;
 
     return (
         <DiscreetTextTrigger>

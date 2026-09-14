@@ -1,4 +1,5 @@
 import { type CryptoId } from 'invity-api';
+import { type NetworkConfigDeps } from '@suite-common/networks';
 
 import { getNetwork } from '@suite-common/wallet-config';
 import {
@@ -26,15 +27,18 @@ type AggregatedCryptoAmount = {
     contractAddress?: TokenAddress;
 };
 
-export const aggregateTradeableAssetBalances = ({
-    accounts,
-    fiatRates,
-    baseCurrency,
-}: {
-    accounts: readonly Account[];
-    fiatRates: RatesByKey | undefined;
-    baseCurrency: BaseCurrencyCode;
-}): TradeableAssetBalances => {
+export const aggregateTradeableAssetBalances = (
+    networkConfigDeps: NetworkConfigDeps,
+    {
+        accounts,
+        fiatRates,
+        baseCurrency,
+    }: {
+        accounts: readonly Account[];
+        fiatRates: RatesByKey | undefined;
+        baseCurrency: BaseCurrencyCode;
+    },
+): TradeableAssetBalances => {
     const amountsByCryptoId = new Map<CryptoId, AggregatedCryptoAmount>();
 
     const addAmount = (
@@ -63,19 +67,23 @@ export const aggregateTradeableAssetBalances = ({
     };
 
     accounts.forEach(account => {
-        const { tradeCryptoId } = getNetwork(account.symbol);
+        const { tradeCryptoId } = getNetwork(networkConfigDeps, account.symbol);
         if (!tradeCryptoId) {
             return;
         }
 
-        addAmount(getCryptoId(account.symbol), account.formattedBalance, account.symbol);
+        addAmount(
+            getCryptoId(networkConfigDeps, account.symbol),
+            account.formattedBalance,
+            account.symbol,
+        );
 
         account.tokens?.forEach(token => {
             if (!token.contract || !token.balance) {
                 return;
             }
 
-            const cryptoId = getCryptoId(account.symbol, token.contract);
+            const cryptoId = getCryptoId(networkConfigDeps, account.symbol, token.contract);
 
             addAmount(cryptoId, token.balance, account.symbol, token.contract as TokenAddress);
         });

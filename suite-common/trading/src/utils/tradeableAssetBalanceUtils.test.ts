@@ -1,4 +1,5 @@
 import { type CryptoId } from 'invity-api';
+import { mockNetworkConfigDeps } from '@suite-common/networks/mocks';
 
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import {
@@ -13,6 +14,8 @@ import { mockAccountToken, mockWalletAccount } from '@suite-common/wallet-types/
 import { getFiatRateKey } from '@suite-common/wallet-utils';
 
 import { aggregateTradeableAssetBalances } from './tradeableAssetBalanceUtils';
+
+const networkConfigDeps = mockNetworkConfigDeps();
 
 const ETH_CRYPTO_ID = 'ethereum' as CryptoId;
 const USDC_CONTRACT = toTokenAddress('0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48');
@@ -43,7 +46,7 @@ const ratesInUsd: RatesByKey = {
 
 describe('aggregateTradeableAssetBalances', () => {
     it('sums native and token balances of all accounts of the same network', () => {
-        const balances = aggregateTradeableAssetBalances({
+        const balances = aggregateTradeableAssetBalances(networkConfigDeps, {
             accounts: [
                 createEthAccount('firstEthAccount', {
                     formattedBalance: '1',
@@ -78,7 +81,7 @@ describe('aggregateTradeableAssetBalances', () => {
     });
 
     it('skips assets without a positive balance', () => {
-        const balances = aggregateTradeableAssetBalances({
+        const balances = aggregateTradeableAssetBalances(networkConfigDeps, {
             accounts: [
                 createEthAccount('emptyEthAccount', {
                     tokens: [
@@ -94,7 +97,7 @@ describe('aggregateTradeableAssetBalances', () => {
     });
 
     it('returns a null fiat amount when the rate is missing', () => {
-        const balances = aggregateTradeableAssetBalances({
+        const balances = aggregateTradeableAssetBalances(networkConfigDeps, {
             accounts: [createEthAccount('ethAccount', { formattedBalance: '1' })],
             fiatRates: undefined,
             baseCurrency: 'usd',

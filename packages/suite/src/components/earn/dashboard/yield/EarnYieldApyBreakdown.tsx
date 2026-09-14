@@ -1,11 +1,13 @@
 import styled from 'styled-components';
 
 import { Translation, type TranslationKey } from '@suite/intl';
+import { useServices } from '@suite-common/dependency-injection';
 import {
     type RewardDtoV2,
     type TokenDtoV2,
     sortRewardsByUnderlyingToken,
 } from '@suite-common/earn-stablecoin-api';
+import { selectNetworkConfigDeps } from '@suite-common/networks';
 import { type NetworkSymbol, getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import { getApyPercent } from '@suite-common/wallet-utils';
 import { Column, Divider, Icon, Row, Text } from '@trezor/components';
@@ -103,6 +105,8 @@ export const EarnYieldApyBreakdown = ({
     networkSymbol,
     underlyingToken,
 }: EarnYieldApyBreakdownProps) => {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
+
     const sortedRewards = sortRewardsByUnderlyingToken(rewards, underlyingToken);
     // Only mention APR in the footer when a row actually shows an APR rate.
     const footerId = sortedRewards.some(isAprReward)
@@ -120,7 +124,7 @@ export const EarnYieldApyBreakdown = ({
                     // A wrapped-native reward (e.g. WETH in an ETH vault) is presented as its native
                     // asset (#29881), matching how the vault itself is labelled across the earn UI.
                     const displaySymbol = isWrappedNativeToken(networkSymbol, reward.token.address)
-                        ? getNetworkDisplaySymbol(networkSymbol)
+                        ? getNetworkDisplaySymbol(networkConfigDeps, networkSymbol)
                         : reward.token.symbol;
 
                     let rateNode;

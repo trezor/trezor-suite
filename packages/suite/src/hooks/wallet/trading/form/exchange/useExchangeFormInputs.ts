@@ -1,6 +1,7 @@
 import { useWatch } from 'react-hook-form';
 
 import { useServices } from '@suite-common/dependency-injection';
+import { selectNetworkConfigDeps } from '@suite-common/networks';
 import { selectDispatch } from '@suite-common/redux-utils';
 import {
     TRADING_FORM_CRYPTO_TOKEN,
@@ -45,6 +46,8 @@ export const useExchangeFormInputs = ({
     setShowReserveBanner,
     setAccountOnChange,
 }: UseExchangeFormInputsProps): TradingUseFormActionsReturnProps => {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
+
     const { dispatch } = useServices(selectDispatch);
     const { isBtcSatsAmountUnit: shouldSendInSats } = useBitcoinAmountUnit(account?.symbol);
     const isNetworkReserveEnabled = useSelector(selectIsNetworkReserveEnabled);
@@ -96,7 +99,7 @@ export const useExchangeFormInputs = ({
 
         clearErrors([TRADING_FORM_OUTPUT_FIAT, TRADING_FORM_OUTPUT_AMOUNT]);
 
-        const { cryptoInputValue, cryptoAmountWithReserve } = calcRatioAmount({
+        const { cryptoInputValue, cryptoAmountWithReserve } = calcRatioAmount(networkConfigDeps, {
             divisor,
             balance: tokenData ? tokenData.balance || '0' : account.formattedBalance,
             decimals: tokenData ? tokenData.decimals : networkDecimals,
@@ -117,7 +120,7 @@ export const useExchangeFormInputs = ({
 
     const setAllAmount = () => {
         if (tokenData) {
-            const cryptoInputValue = calcMaxTokenAmount({
+            const cryptoInputValue = calcMaxTokenAmount(networkConfigDeps, {
                 balance: tokenData.balance || '0',
                 decimals: tokenData.decimals,
                 networkDecimals,

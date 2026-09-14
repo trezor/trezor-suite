@@ -1,4 +1,9 @@
 import { type SellFiatTrade, type SellFiatTradeQuoteRequest } from 'invity-api';
+import {
+    type NetworkConfigDeps,
+    selectNetworkConfigAccessors,
+    type NetworksRootState,
+} from '@suite-common/networks';
 
 import { createThunk } from '@suite-common/redux-utils';
 import { type Network } from '@suite-common/wallet-config';
@@ -37,13 +42,12 @@ type GetQuoteRequestData = {
     shouldSendInSats: boolean | undefined;
 };
 
-const getQuoteRequestData = ({
-    formValues,
-    network,
-    shouldSendInSats,
-}: GetQuoteRequestData): SellFiatTradeQuoteRequest | null => {
+const getQuoteRequestData = (
+    networkConfigDeps: NetworkConfigDeps,
+    { formValues, network, shouldSendInSats }: GetQuoteRequestData,
+): SellFiatTradeQuoteRequest | null => {
     const { outputs, countrySelect, sendCryptoSelect, amountInCrypto } = formValues;
-    const decimals = getNetworkDecimalsWithFallback(network.symbol);
+    const decimals = getNetworkDecimalsWithFallback(networkConfigDeps, network.symbol);
 
     // @ts-expect-error: indexing with noUncheckedIndexedAccess
     const firstOutput: (typeof outputs)[number] = outputs[0];
@@ -82,7 +86,7 @@ const getQuoteRequestData = ({
     return request;
 };
 
-type HandleSellRequestThunkState = TradingRootState;
+type HandleSellRequestThunkState = TradingRootState & NetworksRootState;
 
 export const handleSellRequestThunk = createThunk<
     SellFiatTrade[],
@@ -97,7 +101,9 @@ export const handleSellRequestThunk = createThunk<
         { formValues, network, shouldSendInSats, composeRequestCallback },
         { dispatch, getState, fulfillWithValue, rejectWithValue, signal },
     ) => {
-        const requestData = getQuoteRequestData({
+        const networkConfigDeps = selectNetworkConfigAccessors(getState());
+
+        const requestData = getQuoteRequestData(networkConfigDeps, {
             formValues,
             network,
             shouldSendInSats,

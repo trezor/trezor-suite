@@ -1,3 +1,5 @@
+import { selectNetworkConfigDeps } from '@suite-common/networks';
+import { useServices } from '@suite-common/dependency-injection';
 import { memo } from 'react';
 import { FadeIn } from 'react-native-reanimated';
 import { useSelector } from 'react-redux';
@@ -10,11 +12,13 @@ import { ScreenHeader } from '@suite-native/navigation';
 import { useDexExchangeTxSimulation } from '../../../hooks/exchange/useDexExchangeTxSimulation';
 
 const HeaderTitle = () => {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
+
     const quote = useSelector(selectTradingExchangeSelectedQuote);
 
     const { isLoading, isEnabled, error } = useDexExchangeTxSimulation();
 
-    const isCrossChain = isCrossChainTrade(quote?.send, quote?.receive);
+    const isCrossChain = isCrossChainTrade(networkConfigDeps, quote?.send, quote?.receive);
 
     if (!isEnabled || error || isCrossChain) {
         return (

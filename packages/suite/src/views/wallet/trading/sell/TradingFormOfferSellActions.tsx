@@ -1,4 +1,5 @@
 import { useServices } from '@suite-common/dependency-injection';
+import { selectNetworkConfigDeps } from '@suite-common/networks';
 import { selectDispatch } from '@suite-common/redux-utils';
 import {
     selectIsTradingNetworkFeeMissing,
@@ -18,6 +19,8 @@ import { useTradingFormOfferCommon } from 'src/views/wallet/trading/common/Tradi
 import { TradingKYCWarning } from 'src/views/wallet/trading/common/TradingKYCWarning';
 
 export const TradingFormOfferSellActions = () => {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
+
     const { dispatch } = useServices(selectDispatch);
     const context = useTradingFormContext<'sell'>();
     const {
@@ -35,7 +38,7 @@ export const TradingFormOfferSellActions = () => {
     const areSatsUsed = !!shouldSendInSats;
 
     const amountTooHigh = account
-        ? isAmountTooHigh({
+        ? isAmountTooHigh(networkConfigDeps, {
               amount,
               contractAddress: tokenAddress,
               account,

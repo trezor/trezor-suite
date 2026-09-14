@@ -4,6 +4,7 @@ import { selectDesktopAnalyticsDep } from '@suite/analytics';
 import { Translation } from '@suite/intl';
 import { openModal } from '@suite/modal';
 import { useServices } from '@suite-common/dependency-injection';
+import { selectNetworkConfigDeps } from '@suite-common/networks';
 import { selectDispatch } from '@suite-common/redux-utils';
 import { EarnFlow, type StakeModalFlow } from '@suite-common/suite-types/src/staking';
 import { type NetworkType, getNetworkDisplaySymbol } from '@suite-common/wallet-config';
@@ -41,6 +42,8 @@ export const ConfirmStakeModal = ({
     onCancel,
     flow,
 }: ConfirmStakeModalProps) => {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
+
     const { analytics, dispatch } = useServices(selectDesktopAnalyticsDep, selectDispatch);
     const [hasAgreed, setHasAgreed] = useState(false);
     const validatorsQueue = useSelector(selectEthereumValidatorsQueue);
@@ -115,7 +118,10 @@ export const ConfirmStakeModal = ({
                         <Translation
                             id={getStakeEnteringMessage(account.networkType)}
                             values={{
-                                networkDisplaySymbol: getNetworkDisplaySymbol(account.symbol),
+                                networkDisplaySymbol: getNetworkDisplaySymbol(
+                                    networkConfigDeps,
+                                    account.symbol,
+                                ),
                                 count:
                                     account.networkType === 'ethereum'
                                         ? daysToAddToPool
@@ -135,7 +141,10 @@ export const ConfirmStakeModal = ({
                         <Translation
                             id="TR_STAKE_ETH_WILL_BE_BLOCKED"
                             values={{
-                                networkDisplaySymbol: getNetworkDisplaySymbol(account.symbol),
+                                networkDisplaySymbol: getNetworkDisplaySymbol(
+                                    networkConfigDeps,
+                                    account.symbol,
+                                ),
                             }}
                         />
                     }

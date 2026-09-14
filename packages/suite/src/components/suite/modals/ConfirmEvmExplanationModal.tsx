@@ -1,6 +1,7 @@
 import { Translation, type TranslationKey } from '@suite/intl';
 import { closeModal } from '@suite/modal';
 import { useServices } from '@suite-common/dependency-injection';
+import { selectNetworkConfigDeps } from '@suite-common/networks';
 import { selectDispatch } from '@suite-common/redux-utils';
 import { getNetwork } from '@suite-common/wallet-config';
 import { type Account } from '@suite-common/wallet-types';
@@ -20,6 +21,8 @@ export const ConfirmEvmExplanationModal = ({
     account,
     route,
 }: ConfirmNetworkExplanationModalProps) => {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
+
     const { dispatch } = useServices(selectDispatch);
     const close = () => {
         dispatch(closeModal());
@@ -34,7 +37,7 @@ export const ConfirmEvmExplanationModal = ({
         return null;
     }
 
-    const network = getNetwork(account.symbol);
+    const network = getNetwork(networkConfigDeps, account.symbol);
     const isVisible =
         account.empty &&
         network.networkType === 'ethereum' &&

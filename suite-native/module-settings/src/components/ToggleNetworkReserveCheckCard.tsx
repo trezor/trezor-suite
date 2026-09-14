@@ -1,3 +1,4 @@
+import { selectNetworkConfigDeps } from '@suite-common/networks';
 import { useSelector } from 'react-redux';
 
 import { useServices } from '@suite-common/dependency-injection';
@@ -11,12 +12,14 @@ import { useOpenLink } from '@suite-native/link';
 import { NETWORK_RESERVE_URL } from '@trezor/urls';
 
 export const ToggleNetworkReserveCheckCard = () => {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
+
     const isNetworkReserveEnabled = useSelector(selectIsNetworkReserveEnabled);
 
     const { analytics, dispatch } = useServices(selectNativeAnalyticsDep, selectDispatch);
     const openLink = useOpenLink();
 
-    const supportedNetworks = getNetworksWithNativeTokenReserve();
+    const supportedNetworks = getNetworksWithNativeTokenReserve(networkConfigDeps);
 
     const toggleNetworkReserve = (value: boolean) => {
         analytics.report({

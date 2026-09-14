@@ -1,3 +1,5 @@
+import { type NetworksRootState } from '@suite-common/networks';
+import { selectNetworkConfigDeps } from '@suite-common/networks';
 import { useCallback } from 'react';
 import { useSelector } from 'react-redux';
 
@@ -52,12 +54,14 @@ export const AccountImportConfirmFormScreen = ({
     symbol,
     accountInfo,
 }: AccountImportConfirmFormScreenProps) => {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
+
     const { analytics, dispatch } = useServices(selectNativeAnalyticsDep, selectDispatch);
     const navigation = useNavigation<NavigationProp>();
     const navigateToInitialScreen = useNavigateToInitialScreen();
     const showImportError = useShowImportError(symbol, navigation);
 
-    const knownTokens = useSelector((state: TokenDefinitionsRootState) =>
+    const knownTokens = useSelector((state: TokenDefinitionsRootState & NetworksRootState) =>
         selectFilterKnownTokens(state, symbol, accountInfo.tokens ?? []),
     );
 
@@ -66,7 +70,7 @@ export const AccountImportConfirmFormScreen = ({
     );
 
     const nonEmptyTokens = knownTokens.filter(info => parseFloat(info.balance ?? '0') > 0);
-    const defaultAccountLabel = `${getNetwork(symbol).name} #${deviceNetworkAccounts.length + 1}`;
+    const defaultAccountLabel = `${getNetwork(networkConfigDeps, symbol).name} #${deviceNetworkAccounts.length + 1}`;
 
     const form = useAccountLabelForm(defaultAccountLabel);
     const {

@@ -1,15 +1,19 @@
+import { mockNetworkConfigDeps } from '@suite-common/networks/mocks';
+
 import { type CryptoId } from 'invity-api';
 
-import { createAssetOption } from './useTradingAssets';
+import { getAssetOption } from './useTradingAssets';
 import coins from '../__fixtures__/coins.json';
 import platforms from '../__fixtures__/platforms.json';
 
-describe('createAssetOption', () => {
+const networkConfigDeps = mockNetworkConfigDeps();
+
+describe('getAssetOption', () => {
     it('should return correct data for Bitcoin', () => {
         const coinInfo = coins.bitcoin;
 
         expect(
-            createAssetOption({
+            getAssetOption(networkConfigDeps, {
                 cryptoId: 'bitcoin' as CryptoId,
                 coinInfo,
             }),
@@ -33,7 +37,7 @@ describe('createAssetOption', () => {
         const platformInfo = platforms.base;
 
         expect(
-            createAssetOption({
+            getAssetOption(networkConfigDeps, {
                 cryptoId: cryptoId as CryptoId,
                 coinInfo,
                 platformInfo,
@@ -58,7 +62,7 @@ describe('createAssetOption', () => {
         const platformInfo = platforms.base;
 
         expect(
-            createAssetOption({
+            getAssetOption(networkConfigDeps, {
                 cryptoId: cryptoId as CryptoId,
                 coinInfo,
                 platformInfo,
@@ -83,7 +87,7 @@ describe('createAssetOption', () => {
         const platformInfo = platforms.base;
 
         expect(
-            createAssetOption({
+            getAssetOption(networkConfigDeps, {
                 cryptoId: cryptoId as CryptoId,
                 coinInfo,
                 platformInfo,
@@ -108,7 +112,7 @@ describe('createAssetOption', () => {
         const platformInfo = platforms.base;
 
         expect(
-            createAssetOption({
+            getAssetOption(networkConfigDeps, {
                 cryptoId: cryptoId as CryptoId,
                 coinInfo,
                 platformInfo,

@@ -1,3 +1,4 @@
+import { type NetworkConfigDeps, selectNetworkConfigAccessors } from '@suite-common/networks';
 import { A } from '@mobily/ts-belt';
 
 import {
@@ -128,19 +129,18 @@ type GetTotalFiatBalanceNativeParams = {
 };
 
 // FIXME: this function can be removed and substituted with @suite-common/wallet-utils/getTotalFiatBalance when Solana supports staking on mobile.
-const getTotalFiatBalanceNative = ({
-    deviceAccounts,
-    localCurrency,
-    rates,
-}: GetTotalFiatBalanceNativeParams): BaseCurrencyAmount => {
+const getTotalFiatBalanceNative = (
+    networkConfigDeps: NetworkConfigDeps,
+    { deviceAccounts, localCurrency, rates }: GetTotalFiatBalanceNativeParams,
+): BaseCurrencyAmount => {
     let instanceBalance = new BigNumber(0);
     deviceAccounts.forEach(a => {
         const accountFiatBalance =
-            getAccountFiatBalance({
+            getAccountFiatBalance(networkConfigDeps, {
                 account: a,
                 baseCurrencyCode: localCurrency,
                 rates,
-                shouldIncludeStaking: isStakingSymbol(a.symbol),
+                shouldIncludeStaking: isStakingSymbol(networkConfigDeps, a.symbol),
             }) ?? '0';
         instanceBalance = instanceBalance.plus(accountFiatBalance);
     });
@@ -148,13 +148,23 @@ const getTotalFiatBalanceNative = ({
     return asBaseCurrencyAmount(instanceBalance);
 };
 
-export const selectSelectedDeviceTotalFiatBalance = createMemoizedSelector(
-    [selectDeviceAccounts, selectCurrentFiatRates, selectBaseCurrency, selectHasRunningDiscovery],
-    (deviceAccounts, rates, localCurrency, hasRunningDiscovery) =>
+export const selectSelectedDeviceTotalFiatBalance = createWeakMapSelector(
+    [
+        selectNetworkConfigAccessors,
+        selectDeviceAccounts,
+        selectCurrentFiatRates,
+        selectBaseCurrency,
+        selectHasRunningDiscovery,
+    ],
+    (networkConfigDeps, deviceAccounts, rates, localCurrency, hasRunningDiscovery) =>
         // do not return any value before discovery is finished to prevent unnecessary rerenders of portfolio graph.
         hasRunningDiscovery
             ? undefined
-            : getTotalFiatBalanceNative({ deviceAccounts, localCurrency, rates }),
+            : getTotalFiatBalanceNative(networkConfigDeps, {
+                  deviceAccounts,
+                  localCurrency,
+                  rates,
+              }),
     {
         memoizeOptions: {
             // Accounts and fiat rates churn on every sync; keep the previous BigNumber reference
@@ -164,10 +174,15 @@ export const selectSelectedDeviceTotalFiatBalance = createMemoizedSelector(
     },
 );
 
-export const selectDeviceTotalFiatBalanceByDeviceState = createMemoizedSelector(
-    [selectAccountsByDeviceState, selectCurrentFiatRates, selectBaseCurrency],
-    (deviceAccounts, rates, localCurrency) =>
-        getTotalFiatBalanceNative({ deviceAccounts, localCurrency, rates }),
+export const selectDeviceTotalFiatBalanceByDeviceState = createWeakMapSelector(
+    [
+        selectNetworkConfigAccessors,
+        selectAccountsByDeviceState,
+        selectCurrentFiatRates,
+        selectBaseCurrency,
+    ],
+    (networkConfigDeps, deviceAccounts, rates, localCurrency) =>
+        getTotalFiatBalanceNative(networkConfigDeps, { deviceAccounts, localCurrency, rates }),
     {
         memoizeOptions: {
             // Accounts and fiat rates churn on every sync; keep the previous BigNumber reference

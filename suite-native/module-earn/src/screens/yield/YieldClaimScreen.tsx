@@ -1,3 +1,4 @@
+import { selectNetworkConfigDeps } from '@suite-common/networks';
 import { useCallback, useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 
@@ -53,6 +54,8 @@ type RouteProps = RouteProp<YieldStackParamList, YieldStackRoutes.YieldClaim>;
 type NavigationProps = StackNavigationProps<YieldStackParamList, YieldStackRoutes.YieldClaim>;
 
 export const YieldClaimScreen = () => {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
+
     const route = useRoute<RouteProps>();
     const navigation = useNavigation<NavigationProps>();
     const { accountKey, vault } = route.params;
@@ -217,7 +220,7 @@ export const YieldClaimScreen = () => {
         // The snapshot is built from the same frozen rewards the claim
         // calldata was built from, so the review cannot diverge from the
         // signed transaction when Merkl data refreshes in the background.
-        const rewardsSnapshot = getYieldClaimRewardsSnapshot({
+        const rewardsSnapshot = getYieldClaimRewardsSnapshot(networkConfigDeps, {
             networkSymbol: account.symbol,
             rewards: simulationPreparedAction.rewards,
         });
@@ -235,6 +238,7 @@ export const YieldClaimScreen = () => {
         closeSimulationBottomSheet();
         navigation.navigate(YieldStackRoutes.YieldClaimReview, route.params);
     }, [
+        networkConfigDeps,
         account,
         closeSimulationBottomSheet,
         dispatch,
@@ -249,7 +253,7 @@ export const YieldClaimScreen = () => {
         return null;
     }
 
-    const accountLabel = customAccountLabel ?? getNetwork(account.symbol).name;
+    const accountLabel = customAccountLabel ?? getNetwork(networkConfigDeps, account.symbol).name;
 
     return (
         <Screen

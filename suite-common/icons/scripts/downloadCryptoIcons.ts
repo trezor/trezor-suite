@@ -4,6 +4,15 @@ import fs from 'fs/promises';
 import { join } from 'path';
 
 import {
+    type NetworkConfigDeps,
+    createGetNetworkConfig,
+    createGetNetworkConfigs,
+    createNetworkModuleRepository,
+    createNetworkModulesCompositionRoot,
+} from '@suite-common/networks';
+import TrezorConnect from '@trezor/connect';
+
+import {
     FILES_CRYPTOICONS_PATH,
     RATE_LIMIT_PER_MINUTE,
     RUN_LIMIT_SECONDS,
@@ -231,7 +240,20 @@ async function ensureDirectoryExists(path: string) {
     // see downloadVaultIcons. A failure there must not discard the CoinGecko icons already
     // produced by this run, so it only logs.
     try {
-        await downloadVaultIcons();
+        const networkModuleRepository = createNetworkModuleRepository({
+            networkModules: createNetworkModulesCompositionRoot({
+                getTrezorConnect: () => TrezorConnect,
+            }),
+        });
+        const getNetworkConfig = createGetNetworkConfig({ networkModuleRepository });
+        const networkConfigDeps: NetworkConfigDeps = {
+            getNetworkConfig,
+            getNetworkConfigs: createGetNetworkConfigs({
+                getNetworkConfig,
+                networkModuleRepository,
+            }),
+        };
+        await downloadVaultIcons(networkConfigDeps);
     } catch (error) {
         console.error('Vault icons: 🔴 Error:', error);
     }

@@ -1,4 +1,5 @@
-import { type ReactNode, useState } from 'react';
+import { mockNetworkConfigDeps } from '@suite-common/networks/mocks';
+import { type ReactNode, useMemo, useState } from 'react';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 
 import { BottomSheetModalProvider } from '@gorhom/bottom-sheet';
@@ -32,6 +33,14 @@ const createTestQueryClient = () =>
 
 export const BasicProviderForTests = ({ children, formattersConfig, services }: ProviderProps) => {
     const [queryClient] = useState(createTestQueryClient);
+    const [networks] = useState(mockNetworkConfigDeps);
+    const selectedServices = useMemo(
+        () => ({
+            ...services,
+            networks: { ...networks, ...(services as { networks?: object } | undefined)?.networks },
+        }),
+        [networks, services],
+    );
 
     return (
         <SafeAreaProvider>
@@ -39,7 +48,7 @@ export const BasicProviderForTests = ({ children, formattersConfig, services }: 
                 <IntlProviderForTests>
                     <StylesProvider theme={theme} renderer={renderer}>
                         <NavigationContainer>
-                            <ServicesProvider services={services ?? {}}>
+                            <ServicesProvider services={selectedServices}>
                                 <FormatterProvider
                                     config={formattersConfig ?? DEFAULT_FORMATTERS_CONFIG}
                                 >

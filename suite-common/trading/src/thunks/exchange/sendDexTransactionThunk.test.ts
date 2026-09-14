@@ -1,3 +1,5 @@
+import { mockNetworkConfigDeps } from '@suite-common/networks/mocks';
+import { getNetworks } from '@suite-common/wallet-config';
 import { combineReducers } from '@reduxjs/toolkit';
 import { type CryptoId } from 'invity-api';
 
@@ -63,6 +65,7 @@ describe('sendDexTransactionThunk', () => {
         const store = createTestStore({
             extra: undefined,
             reducer: combineReducers({
+                networks: () => getNetworks(mockNetworkConfigDeps()),
                 wallet: combineReducers({
                     trading: tradingReducer,
                 }),

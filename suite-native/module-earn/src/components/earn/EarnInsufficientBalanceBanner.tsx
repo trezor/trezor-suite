@@ -1,3 +1,5 @@
+import { selectNetworkConfigDeps } from '@suite-common/networks';
+import { useServices } from '@suite-common/dependency-injection';
 import { useSelector } from 'react-redux';
 
 import { useNavigation } from '@react-navigation/native';
@@ -31,17 +33,22 @@ type NavigationProp = StackNavigationProps<RootStackParamList, RootStackRoutes.E
 export const EarnInsufficientBalanceBanner = ({
     accountKey,
 }: EarnInsufficientBalanceBannerProps) => {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
+
     const navigation = useNavigation<NavigationProp>();
     const account = useSelector((state: AccountsRootState) =>
         selectAccountByKey(state, accountKey),
     );
     const isTradingEnabled = useSelector(selectIsTradingEnabled);
 
-    const limits = account ? getStakingLimitsByNetworkSymbol(account.symbol) : null;
+    const limits = account
+        ? getStakingLimitsByNetworkSymbol(networkConfigDeps, account.symbol)
+        : null;
 
-    if (!account || !limits || !isBalanceBelowStakingMinimum(account)) return null;
+    if (!account || !limits || !isBalanceBelowStakingMinimum(networkConfigDeps, account))
+        return null;
 
-    const displaySymbol = getNetworkDisplaySymbol(account.symbol);
+    const displaySymbol = getNetworkDisplaySymbol(networkConfigDeps, account.symbol);
 
     const handleBuy = () => {
         navigation.navigate(RootStackRoutes.AppTabs, {

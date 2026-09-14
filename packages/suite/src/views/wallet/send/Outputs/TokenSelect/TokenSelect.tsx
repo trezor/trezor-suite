@@ -4,6 +4,7 @@ import { Address, copyAddressToClipboard, showCopyAddressModal } from '@suite/ad
 import { selectIsCopyAddressModalShown } from '@suite/flags';
 import { Translation } from '@suite/intl';
 import { useServices } from '@suite-common/dependency-injection';
+import { selectNetworkConfigDeps } from '@suite-common/networks';
 import { selectDispatch } from '@suite-common/redux-utils';
 import { selectIsSpecificCoinDefinitionKnown } from '@suite-common/token-definitions';
 import {
@@ -38,6 +39,8 @@ type TokenSelectProps = {
 };
 
 export const TokenSelect = ({ outputId }: TokenSelectProps) => {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
+
     const { account, setAmount, getValues, getDefaultValue, watch, setValue, setDraftSaveRequest } =
         useSendFormContext();
 
@@ -71,11 +74,11 @@ export const TokenSelect = ({ outputId }: TokenSelectProps) => {
     const tokenWatch = watch(tokenInputName, null);
 
     useEffect(() => {
-        if (hasNetworkFeatures(account, 'tokens') && !isSetMaxActive) {
+        if (hasNetworkFeatures(networkConfigDeps, account, 'tokens') && !isSetMaxActive) {
             const amountValue = getValues(`outputs.${outputId}.amount`);
             if (amountValue) setAmount(outputId, amountValue);
         }
-    }, [account, outputId, tokenWatch, setAmount, getValues, isSetMaxActive]);
+    }, [networkConfigDeps, account, outputId, tokenWatch, setAmount, getValues, isSetMaxActive]);
 
     useEffect(() => {
         if (prefillContractAddress) {
@@ -98,7 +101,12 @@ export const TokenSelect = ({ outputId }: TokenSelectProps) => {
     const onOpenTokensModal = !hasNoStandardTokens ? () => setIsTokensModalActive(true) : undefined;
 
     const networkTokenContractAddress =
-        selectedToken && getContractAddressForNetworkSymbol(account.symbol, selectedToken.contract);
+        selectedToken &&
+        getContractAddressForNetworkSymbol(
+            networkConfigDeps,
+            account.symbol,
+            selectedToken.contract,
+        );
 
     const isDeFiToken = !!selectedToken && isErc4626(selectedToken);
 
@@ -131,7 +139,10 @@ export const TokenSelect = ({ outputId }: TokenSelectProps) => {
                             <Row justifyContent="flex-start">
                                 <Text intent="neutral" typographyStyle="body-md">
                                     {selectedToken?.name ||
-                                        getNetworkDisplaySymbolName(account.symbol)}
+                                        getNetworkDisplaySymbolName(
+                                            networkConfigDeps,
+                                            account.symbol,
+                                        )}
                                 </Text>
                             </Row>
                             <Row>
@@ -174,7 +185,8 @@ export const TokenSelect = ({ outputId }: TokenSelectProps) => {
                                             <Link
                                                 href={getTokenExplorerUrl(
                                                     explorer,
-                                                    getNetwork(account.symbol).networkType,
+                                                    getNetwork(networkConfigDeps, account.symbol)
+                                                        .networkType,
                                                     selectedToken,
                                                 )}
                                                 onClick={ev => ev.stopPropagation()}

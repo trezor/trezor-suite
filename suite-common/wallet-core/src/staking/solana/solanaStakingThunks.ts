@@ -1,3 +1,8 @@
+import {
+    type NetworkConfigDeps,
+    type NetworksRootState,
+    selectNetworkConfigAccessors,
+} from '@suite-common/networks';
 import { createThunk } from '@suite-common/redux-utils';
 import { type NetworkSymbol, getNetwork } from '@suite-common/wallet-config';
 import {
@@ -125,7 +130,8 @@ export const resolveSolanaStakingContext = async (
 };
 
 export type ComposeSolanaStakingTransactionFeeLevelsThunkState = ResolveSolanaStakingContextState &
-    FeesRootState;
+    FeesRootState &
+    NetworksRootState;
 
 export const composeSolanaStakingTransactionFeeLevelsThunk = createThunk<
     PrecomposedLevels | undefined,
@@ -137,6 +143,8 @@ export const composeSolanaStakingTransactionFeeLevelsThunk = createThunk<
 >(
     `${STAKE_MODULE_PREFIX}/composeSolanaStakingTransactionFeeLevelsThunk`,
     async ({ accountKey, stakeType, amount, source }, { getState, rejectWithValue }) => {
+        const networkConfigDeps = selectNetworkConfigAccessors(getState());
+
         if (!amount || amount === '0') return undefined;
 
         const resolved = await resolveSolanaStakingContext(getState(), accountKey);
@@ -149,11 +157,11 @@ export const composeSolanaStakingTransactionFeeLevelsThunk = createThunk<
         const feeInfo = selectConvertedNetworkFeeInfo(getState(), account.symbol);
         if (!feeInfo) return undefined;
 
-        return await composeSolanaStakingTransaction({
+        return await composeSolanaStakingTransaction(networkConfigDeps, {
             formValues: buildSolanaStakeFormState(account, amount, stakeType),
             composeContext: {
                 account,
-                network: getNetwork(account.symbol),
+                network: getNetwork(networkConfigDeps, account.symbol),
                 feeInfo,
             },
             blockchainUrl,
@@ -181,6 +189,7 @@ const signPrepareFailed = (message?: string): PrepareSignFailure => {
 // the sign-time amount taken from the compose result, and the transaction shim built with the
 // composed fee. The caller only performs the device call and stores the results.
 export const prepareSolanaStakingSignContext = async (
+    networkConfigDeps: NetworkConfigDeps,
     state: ResolveSolanaStakingContextState,
     {
         accountKey,
@@ -209,7 +218,7 @@ export const prepareSolanaStakingSignContext = async (
             return signPrepareFailed(`Compose result for ${stakeType} is missing the amount.`);
         }
 
-        amount = formatNetworkAmount(String(composedAmount), account.symbol);
+        amount = formatNetworkAmount(networkConfigDeps, String(composedAmount), account.symbol);
     }
 
     const estimatedFee: Fee = {

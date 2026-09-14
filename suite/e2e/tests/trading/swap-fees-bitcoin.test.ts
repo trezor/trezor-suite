@@ -1,3 +1,5 @@
+import { mockNetworkConfigDeps } from '@suite-common/networks/mocks';
+
 import { getCryptoId } from '@suite-common/trading';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { TestStream } from '@trezor/e2e-utils';
@@ -5,6 +7,8 @@ import { BigNumber } from '@trezor/utils';
 
 import { expect, test } from '../../support/fixtures';
 import { createTestAnnotation } from '../../support/reporters/annotations';
+
+const networkConfigDeps = mockNetworkConfigDeps();
 
 const sendAmount = '0.0015';
 const customFee = '10';
@@ -44,7 +48,7 @@ test.describe('Trading - Swap fees Bitcoin', { tag: ['@T3T1', '@T3W1'] }, () => 
                     buyAsset: {
                         searchFilter: 'Ethereum',
                         networkFilter: 'eth',
-                        assetCryptoId: getCryptoId(asNetworkSymbol('eth')),
+                        assetCryptoId: getCryptoId(networkConfigDeps, asNetworkSymbol('eth')),
                     },
                 });
                 await tradingPage.fees.switchToCustom();

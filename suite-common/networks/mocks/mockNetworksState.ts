@@ -1,12 +1,13 @@
-import { type MockNetworkSymbol, mockNetworkMetadata } from './mockNetworkMetadata';
+import { mockNetworkConfigDeps } from './mockNetworkConfigDeps';
 import {
     type NetworksState,
     networksActions,
     networksReducer,
 } from '../reduxState/networksReducer';
+import { type NetworkSymbol } from '../src/NetworkModules';
 
-export const mockNetworksState = (symbols: readonly MockNetworkSymbol[]): NetworksState =>
+export const mockNetworksState = (symbols: readonly NetworkSymbol[]): NetworksState =>
     networksReducer(
         null,
-        networksActions.setNetworks(symbols.map(symbol => mockNetworkMetadata[symbol])),
+        networksActions.setNetworks(symbols.map(mockNetworkConfigDeps().getNetworkConfig)),
     );

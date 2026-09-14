@@ -3,6 +3,8 @@ import { type PropsWithChildren, useMemo } from 'react';
 import styled from 'styled-components';
 
 import { Translation } from '@suite/intl';
+import { useServices } from '@suite-common/dependency-injection';
+import { selectNetworkConfigDeps } from '@suite-common/networks';
 import { selectAreFeesLoading } from '@suite-common/wallet-core';
 import {
     calculateTronFeeBreakdown,
@@ -30,6 +32,8 @@ const Container = styled.div`
 `;
 
 export const TotalSent = () => {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
+
     const {
         account: { symbol, networkType, misc },
         composedLevels,
@@ -48,7 +52,7 @@ export const TotalSent = () => {
     const tronResources = misc && 'tronResources' in misc ? misc.tronResources : undefined;
     const tronFees =
         networkType === 'tron'
-            ? calculateTronFeeBreakdown(transactionInfo, tronResources, symbol)
+            ? calculateTronFeeBreakdown(networkConfigDeps, transactionInfo, tronResources, symbol)
             : null;
 
     const feeLabelId = useMemo(() => {
@@ -89,6 +93,7 @@ export const TotalSent = () => {
                                                           tokenInfo.decimals,
                                                       )
                                                     : formatNetworkAmount(
+                                                          networkConfigDeps,
                                                           transactionInfo.totalSpent,
                                                           symbol,
                                                       )

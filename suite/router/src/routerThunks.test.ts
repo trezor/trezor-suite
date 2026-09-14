@@ -1,3 +1,5 @@
+import { mockNetworkConfigDeps } from '@suite-common/networks/mocks';
+import { getNetworks } from '@suite-common/wallet-config';
 import { createMemoryHistory } from 'history';
 
 import { locksInitialState, locksReducer } from '@suite/locks';
@@ -30,6 +32,7 @@ const getInitialState = (state?: any) => {
     const locks = state?.locks;
 
     return {
+        networks: getNetworks(mockNetworkConfigDeps()),
         router: {
             ...routerReducer(undefined, EMPTY_ACTION),
             ...router,
@@ -49,6 +52,7 @@ const initStore = (state: ReturnType<typeof getInitialState>) => {
     const suiteRouterHistory = createSuiteRouterHistory({ history: createMemoryHistory() });
     const store = createTestStore({
         reducer: {
+            networks: () => getNetworks(mockNetworkConfigDeps()),
             router: routerReducer,
             modal: modalReducer,
             locks: locksReducer,

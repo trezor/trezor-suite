@@ -1,3 +1,5 @@
+import { getNetworks } from '@suite-common/wallet-config';
+import { mockNetworkConfigDeps } from '@suite-common/networks/mocks';
 import { createTestStore } from '@suite-common/test-utils';
 import { asNetworkSymbol, getNetwork } from '@suite-common/wallet-config';
 import {
@@ -9,11 +11,13 @@ import TrezorConnect from '@trezor/connect';
 
 import { composeTronTransactionFeeLevelsThunk } from './sendFormTronThunks';
 
+const networkConfigDeps = mockNetworkConfigDeps();
+
 const OWNER = 'TN3W4H6rK2ce4vX9YnFQHwKENnHjoxb3m9';
 const COLD_RECIPIENT = 'TVDGpn4hCSzJ5nkHPLetk8KQBtwaTppnkr';
 const trxSymbol = asNetworkSymbol('trx');
 
-const network = getNetwork(trxSymbol);
+const network = getNetwork(networkConfigDeps, trxSymbol);
 
 const account = {
     symbol: trxSymbol,
@@ -45,7 +49,10 @@ function assertComposed(
 }
 
 const dispatchCompose = (feeEstimationRecipient?: string, assumeNewAccount?: boolean) =>
-    createTestStore({ extra: undefined })
+    createTestStore({
+        extra: undefined,
+        preloadedState: { networks: getNetworks(mockNetworkConfigDeps()) },
+    })
         .dispatch(
             composeTronTransactionFeeLevelsThunk({
                 formState,

@@ -1,3 +1,4 @@
+import { selectNetworkConfigDeps } from '@suite-common/networks';
 import { useCallback, useRef } from 'react';
 import { useSelector } from 'react-redux';
 
@@ -25,6 +26,8 @@ export type TradingExchangeAnalyticReportCallback = (
 ) => void;
 
 const useExchangeFormAnalyticsPayload = (quote: ExchangeTrade | undefined) => {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
+
     const { send, receive, exchange } = quote || {};
 
     const sendCoinInfo = useSelector((state: TradingRootState) =>
@@ -52,8 +55,8 @@ const useExchangeFormAnalyticsPayload = (quote: ExchangeTrade | undefined) => {
         return {};
     }
 
-    const sendAsset = coinInfoToTradeableAsset(send, sendCoinInfo);
-    const receiveAsset = coinInfoToTradeableAsset(receive, receiveCoinInfo);
+    const sendAsset = coinInfoToTradeableAsset(networkConfigDeps, send, sendCoinInfo);
+    const receiveAsset = coinInfoToTradeableAsset(networkConfigDeps, receive, receiveCoinInfo);
 
     if (!sendAsset || !receiveAsset) {
         return {};
@@ -62,11 +65,11 @@ const useExchangeFormAnalyticsPayload = (quote: ExchangeTrade | undefined) => {
 
     return {
         sendCryptoLabel: sendAsset.symbol,
-        sendCryptoNetworkSymbol: cryptoIdToNetwork(send)?.symbol,
+        sendCryptoNetworkSymbol: cryptoIdToNetwork(networkConfigDeps, send)?.symbol,
         sendCryptoContractAddress: sendAsset.contractAddress,
 
         receiveCryptoLabel: receiveAsset.symbol,
-        receiveCryptoNetworkSymbol: cryptoIdToNetwork(receive)?.symbol,
+        receiveCryptoNetworkSymbol: cryptoIdToNetwork(networkConfigDeps, receive)?.symbol,
         receiveCryptoContractAddress: receiveAsset.contractAddress,
 
         exchangeName: exchange,

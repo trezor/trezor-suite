@@ -1,4 +1,5 @@
 import { parseUnsignedEvmTransactionForSigning } from '@suite-common/earn-stablecoin-api';
+import { type NetworkConfigDeps } from '@suite-common/networks';
 import { flattenEvmFees, parseEvmFeeHex } from '@suite-common/schemas/src/evm';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import {
@@ -112,36 +113,38 @@ export const getStablecoinYieldTransactionForSigning = (
     throw new Error('Yield transaction gas parameters are missing.');
 };
 
-const buildStablecoinYieldReviewToken = ({
-    token,
-    symbol,
-}: BuildStablecoinYieldReviewTokenParams): TokenInfo | undefined => {
+const buildStablecoinYieldReviewToken = (
+    networkConfigDeps: NetworkConfigDeps,
+    { token, symbol }: BuildStablecoinYieldReviewTokenParams,
+): TokenInfo | undefined => {
     if (!token.contractAddress) {
         return undefined;
     }
 
     return {
         standard: 'ERC20',
-        contract: getContractAddressForNetworkSymbol(symbol, token.contractAddress),
+        contract: getContractAddressForNetworkSymbol(
+            networkConfigDeps,
+            symbol,
+            token.contractAddress,
+        ),
         symbol: token.symbol,
         decimals: token.decimals,
         name: token.symbol,
     };
 };
 
-export const buildStablecoinYieldReviewState = ({
-    tx,
-    amount,
-    token,
-    symbol,
-}: BuildStablecoinYieldReviewStateParams): BuildStablecoinYieldReviewStateResult => {
+export const buildStablecoinYieldReviewState = (
+    networkConfigDeps: NetworkConfigDeps,
+    { tx, amount, token, symbol }: BuildStablecoinYieldReviewStateParams,
+): BuildStablecoinYieldReviewStateResult => {
     const gasPriceHex = tx.maxFeePerGas ?? tx.gasPrice ?? '0x0';
     const gasLimit = fromHex(tx.gasLimit);
     const gasPrice = fromHex(gasPriceHex);
     const feePerUnit = fromHex(gasPriceHex).asWei().toGwei();
     const fee = gasLimit.toBigNumber().multipliedBy(gasPrice.toBigNumber());
-    const reviewToken = buildStablecoinYieldReviewToken({ token, symbol });
-    const amountSubunits = unitsToSubunits({
+    const reviewToken = buildStablecoinYieldReviewToken(networkConfigDeps, { token, symbol });
+    const amountSubunits = unitsToSubunits(networkConfigDeps, {
         value: asAmountUnit(new BigNumber(amount)),
         decimals: token.decimals,
     });
@@ -201,11 +204,14 @@ export const buildStablecoinYieldReviewState = ({
     return { formState, precomposedTransaction };
 };
 
-export const buildStablecoinYieldTransactionReview = ({
-    unsignedTransaction,
-    selectedFee,
-    ...reviewStateParams
-}: BuildStablecoinYieldTransactionReviewParams): BuildStablecoinYieldTransactionReviewResult => {
+export const buildStablecoinYieldTransactionReview = (
+    networkConfigDeps: NetworkConfigDeps,
+    {
+        unsignedTransaction,
+        selectedFee,
+        ...reviewStateParams
+    }: BuildStablecoinYieldTransactionReviewParams,
+): BuildStablecoinYieldTransactionReviewResult => {
     const parsedTransaction = parseUnsignedEvmTransactionForSigning(unsignedTransaction);
 
     if (!parsedTransaction) {
@@ -215,7 +221,7 @@ export const buildStablecoinYieldTransactionReview = ({
     const tx = getStablecoinYieldTransactionWithSelectedFee(parsedTransaction, selectedFee);
 
     return {
-        ...buildStablecoinYieldReviewState({
+        ...buildStablecoinYieldReviewState(networkConfigDeps, {
             ...reviewStateParams,
             tx,
         }),

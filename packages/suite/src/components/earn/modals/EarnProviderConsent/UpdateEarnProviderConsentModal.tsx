@@ -1,4 +1,6 @@
 import { Translation } from '@suite/intl';
+import { useServices } from '@suite-common/dependency-injection';
+import { selectNetworkConfigDeps } from '@suite-common/networks';
 import {
     EarnFlow,
     type EarnProvider,
@@ -26,6 +28,8 @@ export const UpdateEarnProviderConsentModal = ({
     provider,
     yieldContext,
 }: UpdateEarnProviderConsentModalProps) => {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
+
     const { proceedToEarnFlow, onCancelClick } = useEarnProviderConsentActions({
         flow: EarnFlow.UpdateProvider,
         onCancel,
@@ -36,7 +40,7 @@ export const UpdateEarnProviderConsentModal = ({
         yieldContext,
     });
 
-    const displaySymbol = getNetworkDisplaySymbol(account.symbol);
+    const displaySymbol = getNetworkDisplaySymbol(networkConfigDeps, account.symbol);
     const providerName = getEarnProviderName(provider);
 
     return (

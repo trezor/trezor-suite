@@ -1,3 +1,5 @@
+import { selectNetworkConfigDeps } from '@suite-common/networks';
+import { useServices } from '@suite-common/dependency-injection';
 import { useMemo } from 'react';
 
 import { getNetwork } from '@suite-common/wallet-config';
@@ -10,7 +12,9 @@ type FeeFormatterProps = {
 };
 
 export const FeeFormatter = ({ transaction }: FeeFormatterProps) => {
-    const { networkType } = getNetwork(transaction.symbol);
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
+
+    const { networkType } = getNetwork(networkConfigDeps, transaction.symbol);
 
     const formattedValue = useMemo(
         () =>

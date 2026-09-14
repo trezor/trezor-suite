@@ -2,6 +2,7 @@ import { type JsonRpcScanParams } from '@blockaid/client/resources/evm';
 import { type MessageScanParams } from '@blockaid/client/resources/solana/message';
 import { type TransactionScanParams as StellarScanParams } from '@blockaid/client/resources/stellar/transaction';
 import { base58 } from '@scure/base';
+import { type NetworkConfigDeps } from '@suite-common/networks';
 
 import { U_INT_32 } from '@suite-common/wallet-constants';
 import { type TxSimulationAction, type TxSimulationMethod } from '@suite-common/wallet-types';
@@ -12,12 +13,15 @@ import {
     resolveBlockaidStellarChain,
 } from '../chains';
 
-function transformPayloadOfEthereumSignTransaction({
-    payload: { transaction },
-    fromAddress,
-    sourceOrigin,
-}: TxSimulationMethod<'ethereumSignTransaction'>) {
-    const chain = resolveBlockaidEvmChain(transaction.chainId);
+function transformPayloadOfEthereumSignTransaction(
+    networkConfigDeps: NetworkConfigDeps,
+    {
+        payload: { transaction },
+        fromAddress,
+        sourceOrigin,
+    }: TxSimulationMethod<'ethereumSignTransaction'>,
+) {
+    const chain = resolveBlockaidEvmChain(networkConfigDeps, transaction.chainId);
 
     if (!chain) {
         return null;
@@ -49,12 +53,12 @@ function transformPayloadOfEthereumSignTransaction({
     } as const satisfies JsonRpcScanParams;
 }
 
-function transformPayloadOfEthereumSignTypedData({
-    payload: { data },
-    fromAddress,
-    sourceOrigin,
-}: TxSimulationMethod<'ethereumSignTypedData'>) {
+function transformPayloadOfEthereumSignTypedData(
+    networkConfigDeps: NetworkConfigDeps,
+    { payload: { data }, fromAddress, sourceOrigin }: TxSimulationMethod<'ethereumSignTypedData'>,
+) {
     const chain = resolveBlockaidEvmChain(
+        networkConfigDeps,
         data.domain.chainId ? Number(data.domain.chainId) : undefined,
     );
 
@@ -128,19 +132,22 @@ function transformPayloadOfStellarSignTransaction({
 /**
  * Transform payload to the format expected by the tx simulation API.
  */
-export function getTxSimulationParams(action: TxSimulationAction | null) {
+export function getTxSimulationParams(
+    networkConfigDeps: NetworkConfigDeps,
+    action: TxSimulationAction | null,
+) {
     if (!action) {
         return null;
     }
 
     switch (action.method) {
         case 'ethereumSignTransaction': {
-            const params = transformPayloadOfEthereumSignTransaction(action);
+            const params = transformPayloadOfEthereumSignTransaction(networkConfigDeps, action);
 
             return params && ({ method: action.method, params } as const);
         }
         case 'ethereumSignTypedData': {
-            const params = transformPayloadOfEthereumSignTypedData(action);
+            const params = transformPayloadOfEthereumSignTypedData(networkConfigDeps, action);
 
             return params && ({ method: action.method, params } as const);
         }

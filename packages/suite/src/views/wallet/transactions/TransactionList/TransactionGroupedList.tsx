@@ -1,3 +1,5 @@
+import { useServices } from '@suite-common/dependency-injection';
+import { selectNetworkConfigDeps } from '@suite-common/networks';
 import { getNetwork } from '@suite-common/wallet-config';
 import { selectBaseCurrency } from '@suite-common/wallet-core';
 import {
@@ -26,8 +28,10 @@ export const TransactionGroupedList = ({
     account,
     isPending,
 }: TransactionGroupedListProps) => {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
+
     const baseCurrencyCode = useSelector(selectBaseCurrency);
-    const network = getNetwork(symbol);
+    const network = getNetwork(networkConfigDeps, symbol);
 
     const transactionWithLowestNonce: WalletAccountTransaction | null =
         getTransactionWithLowestNonce(transactionGroups);

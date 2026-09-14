@@ -13,6 +13,7 @@ import {
     selectConnectAppPermissions,
 } from '@suite-common/connect-popup';
 import { useServices } from '@suite-common/dependency-injection';
+import { selectNetworkConfigDeps } from '@suite-common/networks';
 import { selectDispatch } from '@suite-common/redux-utils';
 import {
     Box,
@@ -180,6 +181,8 @@ const PermissionGroup = ({
     defaultIsOpen,
     onRemovePermission,
 }: PermissionGroupProps) => {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
+
     const { translationString } = useTranslation();
     const [isOpen, setIsOpen] = useState(defaultIsOpen);
 
@@ -191,7 +194,11 @@ const PermissionGroup = ({
                         <Row gap={12}>
                             <GroupBadge coin={coin} />
                             <Text typographyStyle="body-md-strong">
-                                {coin ? getCoinLabel(coin) : <Translation id="TR_DEVICE" />}
+                                {coin ? (
+                                    getCoinLabel(networkConfigDeps, coin)
+                                ) : (
+                                    <Translation id="TR_DEVICE" />
+                                )}
                             </Text>
                         </Row>
                         {!isOpen && <PermissionPreview permissions={permissions} />}

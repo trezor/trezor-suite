@@ -1,6 +1,8 @@
 import { Translation } from '@suite/intl';
+import { useServices } from '@suite-common/dependency-injection';
 import { getFiatCurrencyFlag } from '@suite-common/flags';
 import { useFormatters } from '@suite-common/formatters';
+import { selectNetworkConfigDeps } from '@suite-common/networks';
 import { asBaseCurrencyAmount } from '@suite-common/wallet-types';
 import { getDecimalsForBaseCurrency } from '@suite-common/wallet-utils';
 import { isFiatBaseCurrencyCode } from '@trezor/blockchain-link-types';
@@ -17,6 +19,8 @@ type TradingDetailFiatRowProps = {
 };
 
 export const TradingDetailFiatRow = ({ label, currency, amount }: TradingDetailFiatRowProps) => {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
+
     const { BaseCurrencyAmountFormatter } = useFormatters();
 
     if (!currency) {
@@ -29,7 +33,7 @@ export const TradingDetailFiatRow = ({ label, currency, amount }: TradingDetailF
         style: 'decimal',
         minimumFractionDigits: 0,
         maximumFractionDigits: isFiatBaseCurrencyCode(currency)
-            ? getDecimalsForBaseCurrency({ code: currency, isInSats: false })
+            ? getDecimalsForBaseCurrency(networkConfigDeps, { code: currency, isInSats: false })
             : undefined,
     } as const;
 

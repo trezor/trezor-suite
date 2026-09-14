@@ -3,6 +3,7 @@ import { Translation } from '@suite/intl';
 import { events } from '@suite-common/analytics';
 import { useServices } from '@suite-common/dependency-injection';
 import { useYieldOpportunity } from '@suite-common/earn-stablecoin-api';
+import { selectNetworkConfigDeps } from '@suite-common/networks';
 import {
     EarnFlow,
     type EarnModalAction,
@@ -42,6 +43,8 @@ export const YieldEarnInANutshellModal = ({
     actionType,
     yieldContext,
 }: YieldEarnInANutshellModalProps) => {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
+
     const { analytics } = useServices(selectDesktopAnalyticsDep);
 
     const { handleAction, onCancelClick } = useEarnInANutshell({
@@ -54,7 +57,7 @@ export const YieldEarnInANutshellModal = ({
     });
     const { data: vault } = useYieldOpportunity(yieldContext?.id);
 
-    if (!isStakingNetworkType(account.networkType)) return null;
+    if (!isStakingNetworkType(networkConfigDeps, account.networkType)) return null;
 
     const depositSymbol = vault?.token.symbol ?? '';
     const vaultSymbol = vault?.outputToken?.symbol;
@@ -68,7 +71,7 @@ export const YieldEarnInANutshellModal = ({
     // an intro highlight plus a wrap step on deposit and an unwrap step on withdrawal.
     const isWrappedNativeVault =
         vault !== undefined && isWrappedNativeToken(account.symbol, vault.token.address);
-    const nativeSymbol = getNetworkDisplaySymbol(account.symbol);
+    const nativeSymbol = getNetworkDisplaySymbol(networkConfigDeps, account.symbol);
 
     const processes: EarnInANutshellProcess[] = [
         {

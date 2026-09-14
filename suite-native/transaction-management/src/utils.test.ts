@@ -1,6 +1,10 @@
+import { mockNetworkConfigDeps } from '@suite-common/networks/mocks';
+
 import { asNetworkSymbol } from '@suite-common/wallet-config';
 
 import { getFeeDecimals, getFeeValue } from './utils';
+
+const networkConfigDeps = mockNetworkConfigDeps();
 
 const btcSymbol = asNetworkSymbol('btc');
 const adaSymbol = asNetworkSymbol('ada');
@@ -11,30 +15,42 @@ describe('utils', () => {
         it.each(['eth', 'pol', 'bsc', 'arb', 'base', 'op', 'etc', 'tsep', 'thod'])(
             'should return 9 decimals for Ethereum network: %s',
             symbol => {
-                expect(getFeeDecimals({ symbol: asNetworkSymbol(symbol) })).toBe(9);
+                expect(getFeeDecimals(networkConfigDeps, { symbol: asNetworkSymbol(symbol) })).toBe(
+                    9,
+                );
             },
         );
 
         it.each(['btc', 'ltc', 'bch', 'doge', 'zec', 'test', 'regtest'])(
             'should return 2 decimals for Bitcoin network: %s',
             symbol => {
-                expect(getFeeDecimals({ symbol: asNetworkSymbol(symbol) })).toBe(2);
+                expect(getFeeDecimals(networkConfigDeps, { symbol: asNetworkSymbol(symbol) })).toBe(
+                    2,
+                );
             },
         );
 
         it.each(['ada', 'sol', 'xrp', 'xlm', 'dsol', 'txrp', 'txlm'])(
             'should return null for other network type: %s',
             symbol => {
-                expect(getFeeDecimals({ symbol: asNetworkSymbol(symbol) })).toBeNull();
+                expect(
+                    getFeeDecimals(networkConfigDeps, { symbol: asNetworkSymbol(symbol) }),
+                ).toBeNull();
             },
         );
     });
 
     describe('getFeeValue', () => {
         it('should return undefined when feeRate or symbol is missing', () => {
-            expect(getFeeValue({ feeRate: undefined, symbol: btcSymbol })).toBeUndefined();
-            expect(getFeeValue({ feeRate: '', symbol: btcSymbol })).toBeUndefined();
-            expect(getFeeValue({ feeRate: '100', symbol: undefined })).toBeUndefined();
+            expect(
+                getFeeValue(networkConfigDeps, { feeRate: undefined, symbol: btcSymbol }),
+            ).toBeUndefined();
+            expect(
+                getFeeValue(networkConfigDeps, { feeRate: '', symbol: btcSymbol }),
+            ).toBeUndefined();
+            expect(
+                getFeeValue(networkConfigDeps, { feeRate: '100', symbol: undefined }),
+            ).toBeUndefined();
         });
 
         it.each([
@@ -44,7 +60,9 @@ describe('utils', () => {
         ])(
             'should round down Bitcoin fees to 2 decimals: %s -> %s (%s)',
             (feeRate, symbol, expected) => {
-                expect(getFeeValue({ feeRate, symbol: asNetworkSymbol(symbol) })).toBe(expected);
+                expect(
+                    getFeeValue(networkConfigDeps, { feeRate, symbol: asNetworkSymbol(symbol) }),
+                ).toBe(expected);
             },
         );
 
@@ -55,25 +73,33 @@ describe('utils', () => {
         ])(
             'should round down Ethereum fees to 9 decimals: %s -> %s (%s)',
             (feeRate, symbol, expected) => {
-                expect(getFeeValue({ feeRate, symbol: asNetworkSymbol(symbol) })).toBe(expected);
+                expect(
+                    getFeeValue(networkConfigDeps, { feeRate, symbol: asNetworkSymbol(symbol) }),
+                ).toBe(expected);
             },
         );
 
         it('should return original value for networks without decimal limits', () => {
-            expect(getFeeValue({ feeRate: '100.123456789012345', symbol: adaSymbol })).toBe(
-                '100.123456789012345',
-            );
-            expect(getFeeValue({ feeRate: '0.000000000000001', symbol: solSymbol })).toBe(
-                '0.000000000000001',
-            );
+            expect(
+                getFeeValue(networkConfigDeps, {
+                    feeRate: '100.123456789012345',
+                    symbol: adaSymbol,
+                }),
+            ).toBe('100.123456789012345');
+            expect(
+                getFeeValue(networkConfigDeps, { feeRate: '0.000000000000001', symbol: solSymbol }),
+            ).toBe('0.000000000000001');
         });
 
         it.each(['btc', 'ltc', 'bch', 'doge', 'zec', 'test', 'regtest'])(
             'should work consistently for Bitcoin network variant: %s',
             symbol => {
-                expect(getFeeValue({ feeRate: '100.999', symbol: asNetworkSymbol(symbol) })).toBe(
-                    '100.99',
-                );
+                expect(
+                    getFeeValue(networkConfigDeps, {
+                        feeRate: '100.999',
+                        symbol: asNetworkSymbol(symbol),
+                    }),
+                ).toBe('100.99');
             },
         );
 
@@ -81,7 +107,7 @@ describe('utils', () => {
             'should work consistently for Ethereum network variant: %s',
             symbol => {
                 expect(
-                    getFeeValue({
+                    getFeeValue(networkConfigDeps, {
                         feeRate: '100.9999999999999',
                         symbol: asNetworkSymbol(symbol),
                     }),

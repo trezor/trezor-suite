@@ -1,8 +1,12 @@
+import { mockNetworkConfigDeps } from '@suite-common/networks/mocks';
+
 import { type Account } from '@suite-common/wallet-types';
 import { type SolanaStakingAccount } from '@trezor/blockchain-link-types';
 import { StakeState } from '@trezor/network-solana/constants';
 
 import { type UnstakeFormContext, unstakeFormValidationSchema } from './unstakeFormSchema';
+
+const networkConfigDeps = mockNetworkConfigDeps();
 
 const SOL = 1_000_000_000;
 
@@ -10,7 +14,7 @@ const translate = ((id: string, values?: Record<string, unknown>) =>
     values ? `${id}:${JSON.stringify(values)}` : id) as UnstakeFormContext['translate'];
 
 const validate = (amount: string, context: Omit<UnstakeFormContext, 'translate'>) =>
-    unstakeFormValidationSchema.validate(
+    unstakeFormValidationSchema(networkConfigDeps).validate(
         { amount, fiat: '' },
         { context: { translate, ...context } },
     );

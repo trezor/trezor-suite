@@ -1,11 +1,15 @@
+import { mockNetworkConfigDeps } from '@suite-common/networks/mocks';
+
 import { asNetworkSymbol } from '@suite-common/wallet-config';
-import { explorerInitialState } from '@suite-common/wallet-core';
+import { createExplorerInitialState } from '@suite-common/wallet-core';
 import { mockAccountKey } from '@suite-common/wallet-types/mocks';
 import { act } from '@suite-native/test-utils';
 import { renderHookWithStoreProvider } from '@suite-native/test-utils-store';
 import { type WalletAccountTransaction, mockTransaction } from '@suite-native/tokens';
 
 import { useTransactionDetails } from './useTransactionDetails';
+
+const networkConfigDeps = mockNetworkConfigDeps();
 
 const mockOpenLink = jest.fn();
 const btcSymbol = asNetworkSymbol('btc');
@@ -51,7 +55,7 @@ const buildPreloadedState = (
             fetchStatusDetail: {},
             phishing: {},
         },
-        explorer: explorerInitialState,
+        explorer: createExplorerInitialState(networkConfigDeps.getNetworkConfigs()),
     },
 });
 

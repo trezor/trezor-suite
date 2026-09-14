@@ -5,6 +5,7 @@ import { Translation } from '@suite/intl';
 import { gotoThunk } from '@suite/router';
 import { selectLanguage } from '@suite/settings';
 import { useServices } from '@suite-common/dependency-injection';
+import { selectNetworkConfigDeps } from '@suite-common/networks';
 import { selectDispatch } from '@suite-common/redux-utils';
 import {
     type TradingTradeBuySellType,
@@ -25,6 +26,8 @@ import {
 } from 'src/utils/wallet/trading/tradingTypingUtils';
 
 export const TradingFormOfferOTC = () => {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
+
     const { analytics, dispatch } = useServices(selectDesktopAnalyticsDep, selectDispatch);
     const otcQuery = useFetchOtc();
     const { data: otcData, isSuccess } = otcQuery;
@@ -61,7 +64,7 @@ export const TradingFormOfferOTC = () => {
     }
 
     const { network, contractAddress } = cryptoCurrency
-        ? cryptoIdToNetworkAndContractAddress(cryptoCurrency)
+        ? cryptoIdToNetworkAndContractAddress(networkConfigDeps, cryptoCurrency)
         : { network: undefined, contractAddress: undefined };
 
     const countrySelect = context.getValues().countrySelect.value;

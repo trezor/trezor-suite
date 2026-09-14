@@ -1,3 +1,4 @@
+import { type NetworkConfigDeps } from '@suite-common/networks';
 import { getNetwork } from '@suite-common/wallet-config';
 import {
     type Account,
@@ -111,6 +112,7 @@ const readVariantFromComposeDraft = (
 export type PrepareEthereumStakingContextState = AccountsRootState & FormDraftRootState;
 
 export const prepareEthereumStakingContext = (
+    networkConfigDeps: NetworkConfigDeps,
     state: PrepareEthereumStakingContextState,
     args: {
         accountKey: AccountKey;
@@ -126,7 +128,7 @@ export const prepareEthereumStakingContext = (
         return failed('Ethereum account not found.');
     }
 
-    const { chainId } = getNetwork(account.symbol);
+    const { chainId } = getNetwork(networkConfigDeps, account.symbol);
     if (!chainId) {
         return failed(
             'Chain ID not found for network.',

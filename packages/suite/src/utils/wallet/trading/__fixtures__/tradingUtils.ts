@@ -6,8 +6,8 @@ type ResolveAddressAndTokenArgs = Parameters<typeof resolveAddressAndToken>;
 
 export const FIXTURE_ACCOUNT_OPTIONS: Array<{
     option: {
-        account: ResolveAddressAndTokenArgs[0];
-        tokenContractAddress: ResolveAddressAndTokenArgs[1];
+        account: ResolveAddressAndTokenArgs[1];
+        tokenContractAddress: ResolveAddressAndTokenArgs[2];
     };
     result: { address: string; token: string | null };
 }> = [

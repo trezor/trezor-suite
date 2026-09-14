@@ -1,4 +1,5 @@
 import { type CryptoId, type ExchangeProviderInfo, type SellProviderInfo } from 'invity-api';
+import { mockNetworkConfigDeps } from '@suite-common/networks/mocks';
 
 import { type Network } from '@suite-common/wallet-config';
 
@@ -8,11 +9,13 @@ import {
     tradingSellCreatePaymentRequest,
 } from './signatureUtils';
 
+const networkConfigDeps = mockNetworkConfigDeps();
+
 // Mock external dependencies
 jest.mock('../../utils', () => ({
     cryptoIdToNetworkAndContractAddress: jest
         .fn()
-        .mockImplementation((cryptoId: CryptoId | undefined) => {
+        .mockImplementation((_deps: unknown, cryptoId: CryptoId | undefined) => {
             if (cryptoId === 'ethereum') {
                 return {
                     network: { decimals: 18, networkType: 'ethereum', symbol: 'eth' },
@@ -125,7 +128,7 @@ describe('signatureUtils', () => {
         };
 
         it('should create valid payment request for exchange trade', () => {
-            const result = tradingExchangeCreatePaymentRequest(defaultProps);
+            const result = tradingExchangeCreatePaymentRequest(networkConfigDeps, defaultProps);
 
             expect(result).toEqual({
                 recipient_name: 'TestExchange',
@@ -159,7 +162,10 @@ describe('signatureUtils', () => {
                 provider: { ...mockProvider, companyName: undefined as any },
             };
 
-            const result = tradingExchangeCreatePaymentRequest(propsWithoutCompanyName);
+            const result = tradingExchangeCreatePaymentRequest(
+                networkConfigDeps,
+                propsWithoutCompanyName,
+            );
 
             expect(result).toBeUndefined();
         });
@@ -170,7 +176,7 @@ describe('signatureUtils', () => {
                 trade: { ...mockTrade, send: undefined },
             };
 
-            const result = tradingExchangeCreatePaymentRequest(propsWithoutSend);
+            const result = tradingExchangeCreatePaymentRequest(networkConfigDeps, propsWithoutSend);
 
             expect(result).toBeUndefined();
         });
@@ -182,7 +188,10 @@ describe('signatureUtils', () => {
                 sendStringAmount: undefined as any,
             };
 
-            const result = tradingExchangeCreatePaymentRequest(propsWithoutSendAmount);
+            const result = tradingExchangeCreatePaymentRequest(
+                networkConfigDeps,
+                propsWithoutSendAmount,
+            );
 
             expect(result).toBeUndefined();
         });
@@ -193,7 +202,10 @@ describe('signatureUtils', () => {
                 trade: { ...mockTrade, receive: undefined },
             };
 
-            const result = tradingExchangeCreatePaymentRequest(propsWithoutReceive);
+            const result = tradingExchangeCreatePaymentRequest(
+                networkConfigDeps,
+                propsWithoutReceive,
+            );
 
             expect(result).toBeUndefined();
         });
@@ -204,7 +216,10 @@ describe('signatureUtils', () => {
                 trade: { ...mockTrade, receiveStringAmount: undefined },
             };
 
-            const result = tradingExchangeCreatePaymentRequest(propsWithoutReceiveAmount);
+            const result = tradingExchangeCreatePaymentRequest(
+                networkConfigDeps,
+                propsWithoutReceiveAmount,
+            );
 
             expect(result).toBeUndefined();
         });
@@ -215,7 +230,10 @@ describe('signatureUtils', () => {
                 trade: { ...mockTrade, receiveAddress: undefined },
             };
 
-            const result = tradingExchangeCreatePaymentRequest(propsWithoutReceiveAddress);
+            const result = tradingExchangeCreatePaymentRequest(
+                networkConfigDeps,
+                propsWithoutReceiveAddress,
+            );
 
             expect(result).toBeUndefined();
         });
@@ -226,7 +244,10 @@ describe('signatureUtils', () => {
                 trade: { ...mockTrade, refundAddress: undefined },
             };
 
-            const result = tradingExchangeCreatePaymentRequest(propsWithoutRefundAddress);
+            const result = tradingExchangeCreatePaymentRequest(
+                networkConfigDeps,
+                propsWithoutRefundAddress,
+            );
 
             expect(result).toBeUndefined();
         });
@@ -243,7 +264,7 @@ describe('signatureUtils', () => {
                 receiveSlip44: 1,
             };
 
-            const result = tradingExchangeCreatePaymentRequest(propsWithTestnet);
+            const result = tradingExchangeCreatePaymentRequest(networkConfigDeps, propsWithTestnet);
 
             expect(result).toBeDefined();
             if (result?.memos?.[0]) {
@@ -263,7 +284,7 @@ describe('signatureUtils', () => {
                 receiveSlip44: 145,
             };
 
-            const result = tradingExchangeCreatePaymentRequest(propsWithBch);
+            const result = tradingExchangeCreatePaymentRequest(networkConfigDeps, propsWithBch);
 
             expect(result).toBeDefined();
             if (result?.memos?.[0]) {
@@ -283,7 +304,7 @@ describe('signatureUtils', () => {
                 receiveSlip44: 2,
             };
 
-            const result = tradingExchangeCreatePaymentRequest(propsWithLtc);
+            const result = tradingExchangeCreatePaymentRequest(networkConfigDeps, propsWithLtc);
 
             expect(result).toBeDefined();
             if (result?.memos?.[0]) {
@@ -326,7 +347,7 @@ describe('signatureUtils', () => {
         };
 
         it('should create valid payment request for sell trade', () => {
-            const result = tradingSellCreatePaymentRequest(defaultSellProps);
+            const result = tradingSellCreatePaymentRequest(networkConfigDeps, defaultSellProps);
 
             expect(result).toEqual({
                 recipient_name: 'TestSeller',
@@ -356,7 +377,10 @@ describe('signatureUtils', () => {
                 provider: { ...mockSellProvider, companyName: undefined as any },
             };
 
-            const result = tradingSellCreatePaymentRequest(propsWithoutCompanyName);
+            const result = tradingSellCreatePaymentRequest(
+                networkConfigDeps,
+                propsWithoutCompanyName,
+            );
 
             expect(result).toBeUndefined();
         });
@@ -367,7 +391,10 @@ describe('signatureUtils', () => {
                 trade: { ...mockSellTrade, refundAddress: undefined },
             };
 
-            const result = tradingSellCreatePaymentRequest(propsWithoutRefundAddress);
+            const result = tradingSellCreatePaymentRequest(
+                networkConfigDeps,
+                propsWithoutRefundAddress,
+            );
 
             expect(result).toBeUndefined();
         });
@@ -378,7 +405,10 @@ describe('signatureUtils', () => {
                 trade: { ...mockSellTrade, tradeSignature: undefined as any },
             };
 
-            const result = tradingSellCreatePaymentRequest(propsWithoutSignature);
+            const result = tradingSellCreatePaymentRequest(
+                networkConfigDeps,
+                propsWithoutSignature,
+            );
 
             expect(result).toBeUndefined();
         });
@@ -389,7 +419,7 @@ describe('signatureUtils', () => {
                 trade: { ...mockSellTrade, cryptoStringAmount: undefined },
             };
 
-            const result = tradingSellCreatePaymentRequest(propsWithoutAmount);
+            const result = tradingSellCreatePaymentRequest(networkConfigDeps, propsWithoutAmount);
 
             expect(result).toBeUndefined();
         });
@@ -400,7 +430,7 @@ describe('signatureUtils', () => {
                 trade: { ...mockSellTrade, cryptoCurrency: undefined },
             };
 
-            const result = tradingSellCreatePaymentRequest(propsWithoutCurrency);
+            const result = tradingSellCreatePaymentRequest(networkConfigDeps, propsWithoutCurrency);
 
             expect(result).toBeUndefined();
         });
@@ -418,7 +448,7 @@ describe('signatureUtils', () => {
                 sendStringAmount: ethTrade.cryptoStringAmount,
             };
 
-            const result = tradingSellCreatePaymentRequest(propsWithEth);
+            const result = tradingSellCreatePaymentRequest(networkConfigDeps, propsWithEth);
 
             expect(result).toBeDefined();
             expect(result?.amount).toBe('10500000000000000000'); // subunits (wei) for 10.5 ETH
@@ -430,7 +460,7 @@ describe('signatureUtils', () => {
                 memoText: '',
             };
 
-            const result = tradingSellCreatePaymentRequest(propsWithEmptyMemo);
+            const result = tradingSellCreatePaymentRequest(networkConfigDeps, propsWithEmptyMemo);
 
             expect(result).toBeDefined();
             if (result?.memos?.[0]) {
@@ -444,7 +474,7 @@ describe('signatureUtils', () => {
                 memoText: 'Special chars: àáâãäåæçèéêë',
             };
 
-            const result = tradingSellCreatePaymentRequest(propsWithSpecialMemo);
+            const result = tradingSellCreatePaymentRequest(networkConfigDeps, propsWithSpecialMemo);
 
             expect(result).toBeDefined();
             if (result?.memos?.[0]) {
@@ -482,7 +512,7 @@ describe('signatureUtils', () => {
                 kycPolicyType: 'KYC-required',
             };
 
-            const result = tradingExchangeCreatePaymentRequest({
+            const result = tradingExchangeCreatePaymentRequest(networkConfigDeps, {
                 trade: largeTrade,
                 provider,
                 macPurchase: 'mac1',
@@ -530,7 +560,7 @@ describe('signatureUtils', () => {
                 kycPolicyType: 'KYC-required',
             };
 
-            const result = tradingExchangeCreatePaymentRequest({
+            const result = tradingExchangeCreatePaymentRequest(networkConfigDeps, {
                 trade: smallTrade,
                 provider,
                 macPurchase: 'mac1',

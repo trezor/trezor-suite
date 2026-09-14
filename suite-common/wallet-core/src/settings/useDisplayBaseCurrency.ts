@@ -1,3 +1,5 @@
+import { useServices } from '@suite-common/dependency-injection';
+import { selectNetworkConfigDeps } from '@suite-common/networks';
 import { useSelector } from 'react-redux';
 
 import { type NetworkSymbol } from '@suite-common/wallet-config';
@@ -7,10 +9,14 @@ import { isNotNullOrUndefined } from '@trezor/utils';
 import { selectBaseCurrency } from './walletSettingsReducer';
 
 export const useDisplayBaseCurrency = (symbol: NetworkSymbol | undefined | null) => {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
+
     const baseCurrencyCode = useSelector(selectBaseCurrency);
 
     return {
         shallDisplayBaseCurrency:
-            isNotNullOrUndefined(symbol) && !isTestnet(symbol) && baseCurrencyCode !== symbol,
+            isNotNullOrUndefined(symbol) &&
+            !isTestnet(networkConfigDeps, symbol) &&
+            baseCurrencyCode !== symbol,
     };
 };

@@ -1,3 +1,4 @@
+import { type NetworkConfigDeps } from '@suite-common/networks';
 import { yup } from '@suite-common/validators';
 import {
     type AccountType,
@@ -65,18 +66,21 @@ export const decodeEarnVaultAddress = (rawVaultAddress?: string): string | undef
     }
 };
 
-export const validateAccountRouteParams = ({
-    symbol,
-    index,
-    rawAccountType,
-}: {
-    symbol?: string;
-    index?: string;
-    rawAccountType?: string;
-}): CommonWalletParams => {
+export const validateAccountRouteParams = (
+    networkConfigDeps: NetworkConfigDeps,
+    {
+        symbol,
+        index,
+        rawAccountType,
+    }: {
+        symbol?: string;
+        index?: string;
+        rawAccountType?: string;
+    },
+): CommonWalletParams => {
     if (!index) return;
 
-    const network = getNetworkOptional(symbol);
+    const network = getNetworkOptional(networkConfigDeps, symbol);
     if (!network) return;
 
     const accountType = rawAccountType || 'normal';

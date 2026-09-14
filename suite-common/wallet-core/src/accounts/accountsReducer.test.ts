@@ -1,4 +1,5 @@
 import { combineReducers } from '@reduxjs/toolkit';
+import { mockNetworkConfigDeps } from '@suite-common/networks/mocks';
 
 import { mockActionType, mockReducer } from '@suite-common/redux-utils/mocks';
 import { createTestStore } from '@suite-common/test-utils';
@@ -11,6 +12,8 @@ import type { Bip43Path } from '@trezor/crypto-utils';
 import { accountsActions } from './accountsActions';
 import { type AccountsRootState, prepareAccountsReducer } from './accountsReducer';
 import { mockSetAccountAddMetadata } from '../../mocks';
+
+const networkConfigDeps = mockNetworkConfigDeps();
 
 const accountsReducer = prepareAccountsReducer({
     actionTypes: { storageLoad: mockActionType('storageLoad') },
@@ -50,6 +53,7 @@ describe('Account Reducer', () => {
         const store = initStore();
         store.dispatch(
             accountsActions.createAccount(
+                networkConfigDeps,
                 {
                     deviceState: '1stTestnetAddress@device_id:0',
                     index: 0,
@@ -107,24 +111,28 @@ describe('Account Reducer', () => {
 
         store.dispatch(
             accountsActions.createAccount(
+                networkConfigDeps,
                 createAccountPayload(ltcSymbol, 'normal', 0),
                 supportedNetworks,
             ),
         );
         store.dispatch(
             accountsActions.createAccount(
+                networkConfigDeps,
                 createAccountPayload(btcSymbol, 'legacy', 0),
                 supportedNetworks,
             ),
         );
         store.dispatch(
             accountsActions.createAccount(
+                networkConfigDeps,
                 createAccountPayload(btcSymbol, 'normal', 1),
                 supportedNetworks,
             ),
         );
         store.dispatch(
             accountsActions.createAccount(
+                networkConfigDeps,
                 createAccountPayload(btcSymbol, 'normal', 0),
                 supportedNetworks,
             ),
@@ -219,7 +227,9 @@ describe('Account Reducer', () => {
             const store = initStoreWithTrackedToken();
 
             // The stale snapshot and the account info payload know nothing about the token.
-            store.dispatch(accountsActions.updateAccount(ethereumAccount, accountInfo));
+            store.dispatch(
+                accountsActions.updateAccount(networkConfigDeps, ethereumAccount, accountInfo),
+            );
 
             expect(store.getState().wallet.accounts[0]?.tokens).toEqual([
                 expect.objectContaining({ contract: WETH_ADDRESS, balance: '1.5' }),
@@ -230,7 +240,7 @@ describe('Account Reducer', () => {
             const store = initStoreWithTrackedToken();
 
             store.dispatch(
-                accountsActions.updateAccount(ethereumAccount, {
+                accountsActions.updateAccount(networkConfigDeps, ethereumAccount, {
                     ...accountInfo,
                     tokens: [
                         {

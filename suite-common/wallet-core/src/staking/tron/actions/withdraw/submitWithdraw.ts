@@ -1,3 +1,4 @@
+import { type NetworksRootState, selectNetworkConfigAccessors } from '@suite-common/networks';
 import { createThunk } from '@suite-common/redux-utils';
 import { type TrezorDevice } from '@suite-common/suite-types';
 import { asAmountUnit, getAccountIdentity, unitsToSubunits } from '@suite-common/wallet-utils';
@@ -24,7 +25,7 @@ interface SubmitWithdrawThunkArguments extends WithdrawThunkArguments {
     onSettled?: () => void;
 }
 
-type SubmitTronWithdrawThunkState = AddFakePendingTronTxThunkState;
+type SubmitTronWithdrawThunkState = AddFakePendingTronTxThunkState & NetworksRootState;
 
 export const submitTronWithdrawThunk = createThunk<
     void,
@@ -32,7 +33,12 @@ export const submitTronWithdrawThunk = createThunk<
     { state: SubmitTronWithdrawThunkState }
 >(
     `${TRON_STAKE_MODULE}/submitTronWithdrawThunk`,
-    async ({ account, device, requestPushApproval, onSigningStart, onSettled }, { dispatch }) => {
+    async (
+        { account, device, requestPushApproval, onSigningStart, onSettled },
+        { getState, dispatch },
+    ) => {
+        const networkConfigDeps = selectNetworkConfigAccessors(getState());
+
         const { key: accountKey } = account;
         const flow: TronFlow = 'withdraw';
 
@@ -151,8 +157,12 @@ export const submitTronWithdrawThunk = createThunk<
                     type: 'self',
                     target: {
                         addresses: [account.descriptor],
-                        amount: unitsToSubunits({
-                            value: asAmountUnit(new BigNumber(getTronWithdrawableBalance(account))),
+                        amount: unitsToSubunits(networkConfigDeps, {
+                            value: asAmountUnit(
+                                new BigNumber(
+                                    getTronWithdrawableBalance(networkConfigDeps, account),
+                                ),
+                            ),
                             symbol: account.symbol,
                         }).toString(),
                     },

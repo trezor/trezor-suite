@@ -1,3 +1,5 @@
+import { mockNetworkConfigDeps } from '@suite-common/networks/mocks';
+
 import { type Account } from '@suite-common/wallet-types';
 import { Form, useForm } from '@suite-native/forms';
 import {
@@ -14,6 +16,8 @@ import {
     type UnstakeFormContext,
     unstakeFormValidationSchema,
 } from '../../utils/staking/unstakeFormSchema';
+
+const networkConfigDeps = mockNetworkConfigDeps();
 
 const SOL = 1_000_000_000;
 
@@ -47,7 +51,7 @@ const translate = ((id: string) => id) as UnstakeFormContext['translate'];
 const renderAlert = async (account: Account, amountValue: string) => {
     const { result } = await renderHookWithStoreProvider(() =>
         useForm<EarnFormValues>({
-            validation: unstakeFormValidationSchema,
+            validation: unstakeFormValidationSchema(networkConfigDeps),
             mode: 'onTouched',
             context: { account, translate },
             defaultValues: { amount: amountValue, fiat: '' },

@@ -1,3 +1,5 @@
+import { selectNetworkConfigDeps } from '@suite-common/networks';
+import { useServices } from '@suite-common/dependency-injection';
 import type { ReactNode } from 'react';
 
 import {
@@ -45,6 +47,8 @@ export const ReviewOutputItemContent = ({
     contentBuilder = noop,
     ...props
 }: ReviewOutputItemContentProps) => {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
+
     const content = contentBuilder(props);
 
     if (content) {
@@ -142,7 +146,11 @@ export const ReviewOutputItemContent = ({
 
             const isMaxApproval =
                 typeof token?.decimals === 'number' &&
-                isAllowanceUnlimited({ amount: value, decimals: token.decimals, isSubunit: true });
+                isAllowanceUnlimited(networkConfigDeps, {
+                    amount: value,
+                    decimals: token.decimals,
+                    isSubunit: true,
+                });
 
             const getPrimaryValue = () => {
                 if (!isApprovalTx && token?.symbol) {

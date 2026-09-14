@@ -1,3 +1,6 @@
+import { type NetworksRootState } from '@suite-common/networks';
+import { selectNetworkConfigDeps } from '@suite-common/networks';
+import { useServices } from '@suite-common/dependency-injection';
 import { useSelector } from 'react-redux';
 
 import { type RouteProp, useNavigation, useRoute } from '@react-navigation/native';
@@ -75,14 +78,16 @@ const AssetDetailScreenSettingsButton = ({
     account,
     tokenContract,
 }: AssetDetailScreenSettingsButtonProps) => {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
+
     const navigation = useNavigation<AccountDetailNavigationProps>();
     const { bottomSheetRef, openModal, closeModal } = useBottomSheetModal();
 
     const handleSettingsNavigation = () => {
         if (
             !!tokenContract ||
-            isNetworkWithTokens(account.symbol) ||
-            isStakingSymbol(account.symbol)
+            isNetworkWithTokens(networkConfigDeps, account.symbol) ||
+            isStakingSymbol(networkConfigDeps, account.symbol)
         ) {
             openModal();
         } else {
@@ -127,7 +132,12 @@ export const AssetDetailScreenHeader = ({
     const { closeActionType } = route.params;
 
     const tokenTab = useSelector(
-        (state: TokensRootState & FiatRatesRootState & WalletSettingsRootState) =>
+        (
+            state: TokensRootState &
+                FiatRatesRootState &
+                WalletSettingsRootState &
+                NetworksRootState,
+        ) =>
             tokenContract
                 ? selectAssetTabOfAccountToken(state, account.key, tokenContract)
                 : undefined,

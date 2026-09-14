@@ -1,3 +1,5 @@
+import { selectNetworkConfigDeps } from '@suite-common/networks';
+import { useServices } from '@suite-common/dependency-injection';
 import { type ReactNode } from 'react';
 
 import { type NetworkSymbol, isNetworkSymbol } from '@suite-common/wallet-config';
@@ -73,6 +75,8 @@ export const Badge = ({
     style,
     ...boxProps
 }: BadgeProps) => {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
+
     const { applyStyle, utils } = useNativeStyles();
     const { backgroundColor, textColor } = badgeIntentToStylePropsMap[intent];
 
@@ -80,7 +84,7 @@ export const Badge = ({
     const iconSize: IconSize = size === 'small' ? 'medium' : 'mediumLarge';
 
     const getCryptoIcon = (iconInput: IconType) =>
-        isNetworkSymbol(iconInput) ? (
+        isNetworkSymbol(networkConfigDeps, iconInput) ? (
             <TokenIcon symbol={iconInput} size={size === 'small' ? 'extraSmall' : 'small'} />
         ) : null;
 

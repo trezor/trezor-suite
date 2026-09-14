@@ -1,3 +1,4 @@
+import { type NetworksRootState } from '@suite-common/networks';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useSelector } from 'react-redux';
 
@@ -37,7 +38,7 @@ export const useEvmApprovalFees = ({ approvalTypeOverride }: UseEvmApprovalFeesP
     const account = useSelector((state: AccountsRootState) =>
         selectAccountByKey(state, sendAccount?.key),
     );
-    const feeInfo = useSelector((state: FeesRootState) =>
+    const feeInfo = useSelector((state: FeesRootState & NetworksRootState) =>
         selectConvertedNetworkFeeInfo(state, sendAccount?.symbol),
     );
     const composedTransactionInfo = useSelector(selectTradingComposedTransactionInfo);

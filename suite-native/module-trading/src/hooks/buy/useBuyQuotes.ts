@@ -1,3 +1,5 @@
+import { type NetworksRootState } from '@suite-common/networks';
+import { selectNetworkConfigDeps } from '@suite-common/networks';
 import { type RefObject, useCallback, useEffect, useEffectEvent, useRef } from 'react';
 import { useSelector } from 'react-redux';
 
@@ -40,6 +42,8 @@ type BuyQuoteRequestState = {
 };
 
 const useBuyQuoteRequestState = ({ control }: BuyFormType): BuyQuoteRequestState => {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
+
     const [
         asset,
         fiatCurrency,
@@ -74,7 +78,7 @@ const useBuyQuoteRequestState = ({ control }: BuyFormType): BuyQuoteRequestState
         amountInCrypto,
         country: country?.value,
         countrySubdivision: countrySubdivision?.value,
-        receiveAccountAddress: getReceiveAccountAddressText(receiveAccount),
+        receiveAccountAddress: getReceiveAccountAddressText(networkConfigDeps, receiveAccount),
     };
 };
 
@@ -103,10 +107,12 @@ const useBuyQuotesThunk = (
     quotesPromiseRef: RefObject<AbortablePromise | undefined>,
     debounce: ReturnType<typeof useDebounce>,
 ) => {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
+
     const { analytics, dispatch } = useServices(selectNativeAnalyticsDep, selectDispatch);
     const asset = useWatch({ control: form.control, name: 'asset' });
-    const symbol = getSymbolFromTradeableAsset(asset);
-    const shouldSendInSats = useSelector((state: WalletSettingsRootState) =>
+    const symbol = getSymbolFromTradeableAsset(networkConfigDeps, asset);
+    const shouldSendInSats = useSelector((state: WalletSettingsRootState & NetworksRootState) =>
         selectIsAmountInSats(state, symbol),
     );
     const coinInfo = useSelector((state: TradingRootState) =>
@@ -133,12 +139,17 @@ const useBuyQuotesThunk = (
 
         const selectedAsset = form.getValues('asset');
         invariant(selectedAsset, 'Asset is not defined');
-        const network = cryptoIdToNetwork(selectedAsset.cryptoId);
+        const network = cryptoIdToNetwork(networkConfigDeps, selectedAsset.cryptoId);
         invariant(network, `Network not found for [${selectedAsset.cryptoId}]`);
 
         const payload: HandleBuyRequestThunkProps = {
             network,
-            formValues: tradingBuyFormToTradingBuyFormProps(form, coinInfo, platformInfo),
+            formValues: tradingBuyFormToTradingBuyFormProps(
+                networkConfigDeps,
+                form,
+                coinInfo,
+                platformInfo,
+            ),
             shouldSendInSats,
         };
         const requestPromise = dispatch(buyThunks.handleRequestThunk(payload));
@@ -152,7 +163,16 @@ const useBuyQuotesThunk = (
                 },
             });
         }
-    }, [form, coinInfo, platformInfo, shouldSendInSats, quotesPromiseRef, dispatch, analytics]);
+    }, [
+        networkConfigDeps,
+        form,
+        coinInfo,
+        platformInfo,
+        shouldSendInSats,
+        quotesPromiseRef,
+        dispatch,
+        analytics,
+    ]);
 
     const requestQuotes = useEffectEvent(() => {
         if (quotesPromiseRef.current?.abort) {

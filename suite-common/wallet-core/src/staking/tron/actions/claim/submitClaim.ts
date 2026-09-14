@@ -1,3 +1,4 @@
+import { type NetworksRootState, selectNetworkConfigAccessors } from '@suite-common/networks';
 import { createThunk } from '@suite-common/redux-utils';
 import { type TrezorDevice } from '@suite-common/suite-types';
 import { asAmountUnit, getAccountIdentity, unitsToSubunits } from '@suite-common/wallet-utils';
@@ -24,7 +25,7 @@ interface SubmitClaimThunkArguments extends ClaimThunkArguments {
     onSettled?: () => void;
 }
 
-type SubmitTronClaimThunkState = AddFakePendingTronTxThunkState;
+type SubmitTronClaimThunkState = AddFakePendingTronTxThunkState & NetworksRootState;
 
 export const submitTronClaimThunk = createThunk<
     void,
@@ -32,7 +33,12 @@ export const submitTronClaimThunk = createThunk<
     { state: SubmitTronClaimThunkState }
 >(
     `${TRON_STAKE_MODULE}/submitTronClaimThunk`,
-    async ({ account, device, requestPushApproval, onSigningStart, onSettled }, { dispatch }) => {
+    async (
+        { account, device, requestPushApproval, onSigningStart, onSettled },
+        { getState, dispatch },
+    ) => {
+        const networkConfigDeps = selectNetworkConfigAccessors(getState());
+
         const { key: accountKey } = account;
         const flow: TronFlow = 'claim';
 
@@ -151,8 +157,10 @@ export const submitTronClaimThunk = createThunk<
                     type: 'self',
                     target: {
                         addresses: [account.descriptor],
-                        amount: unitsToSubunits({
-                            value: asAmountUnit(new BigNumber(getTronStakingRewards(account))),
+                        amount: unitsToSubunits(networkConfigDeps, {
+                            value: asAmountUnit(
+                                new BigNumber(getTronStakingRewards(networkConfigDeps, account)),
+                            ),
                             symbol: account.symbol,
                         }).toString(),
                     },

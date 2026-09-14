@@ -1,6 +1,8 @@
+import { networksActions } from '@suite-common/networks';
 import { isCodesignBuild } from '@trezor/env-utils';
 import { mergeDeepObject } from '@trezor/utils';
 
+import { STORAGE } from 'src/actions/suite/constants';
 import { type PreloadStoreAction } from 'src/support/suite/preloadStore';
 
 import { type SuiteReduxStore } from './createReduxStore';
@@ -34,7 +36,16 @@ export const createHydrateReduxStore =
 
         // Preserve the original preload semantics: reducers receive undefined, not the
         // current state, and the desktop patch is applied before any app effects run.
-        const preloadedState = deps.reducer(undefined, preloadStoreAction);
+        const initialState =
+            preloadStoreAction.type === STORAGE.LOAD
+                ? deps.reducer(
+                      undefined,
+                      networksActions.setNetworks(
+                          Object.values(preloadStoreAction.payload.networks),
+                      ),
+                  )
+                : undefined;
+        const preloadedState = deps.reducer(initialState, preloadStoreAction);
         const partialStatePatch: Partial<AppState> | undefined = statePatch;
         const patchedState =
             partialStatePatch && patchConfirm(partialStatePatch)

@@ -1,3 +1,5 @@
+import { selectNetworkConfigDeps } from '@suite-common/networks';
+import { useServices } from '@suite-common/dependency-injection';
 import Animated, { FadeInLeft, FadeOutLeft } from 'react-native-reanimated';
 import { useSelector } from 'react-redux';
 
@@ -23,6 +25,8 @@ const cardStyle = prepareNativeStyle(utils => ({
 }));
 
 export const CustomFeeCard = ({ accountKey, onEdit, onCancel }: CustomFeeCardProps) => {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
+
     const { applyStyle } = useNativeStyles();
 
     const feeLevels = useSelector(selectFeeLevels);
@@ -37,7 +41,7 @@ export const CustomFeeCard = ({ accountKey, onEdit, onCancel }: CustomFeeCardPro
         return null;
     }
 
-    const networkType = getNetworkType(symbol);
+    const networkType = getNetworkType(networkConfigDeps, symbol);
 
     return (
         <Animated.View entering={FadeInLeft.delay(300)} exiting={FadeOutLeft}>

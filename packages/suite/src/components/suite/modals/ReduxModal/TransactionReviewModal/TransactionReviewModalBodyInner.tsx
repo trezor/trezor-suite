@@ -5,7 +5,7 @@ import { Translation } from '@suite/intl';
 import { closeModal } from '@suite/modal';
 import { selectRouteName } from '@suite/router';
 import { useServices } from '@suite-common/dependency-injection';
-import type { DeviceRootState } from '@suite-common/device';
+import { selectNetworkConfigDeps } from '@suite-common/networks';
 import { selectDispatch } from '@suite-common/redux-utils';
 import {
     type SerializedTx,
@@ -109,6 +109,8 @@ export const TransactionReviewModalBodyInner = ({
     setIsSending,
     hasTxReviewExpired,
 }: TransactionReviewModalBodyInnerProps) => {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
+
     const { analytics, dispatch } = useServices(selectDesktopAnalyticsDep, selectDispatch);
     const [areDetailsVisible, setAreDetailsVisible] = useState(false);
     const { symbol, networkType } = account;
@@ -130,13 +132,13 @@ export const TransactionReviewModalBodyInner = ({
 
     const decreaseOutputId = getDecreaseOutputId(precomposedTx, precomposedForm);
 
-    const buttonRequestsCount = useSelector((state: DeviceRootState) =>
+    const buttonRequestsCount = useSelector(state =>
         selectSendFormReviewButtonRequestsCount(state, account?.symbol, decreaseOutputId),
     );
 
     const lastButtonRequestCount = useRef(buttonRequestsCount);
 
-    const lastButtonRequestCode = useSelector((state: DeviceRootState) =>
+    const lastButtonRequestCode = useSelector(state =>
         selectSendFormReviewLastButtonCode(state, symbol),
     );
 
@@ -212,7 +214,7 @@ export const TransactionReviewModalBodyInner = ({
     });
 
     const actionTranslation = (source: 'heading' | 'button') =>
-        getTransactionReviewModalActionTranslation({
+        getTransactionReviewModalActionTranslation(networkConfigDeps, {
             symbol,
             stakeType,
             precomposedForm,

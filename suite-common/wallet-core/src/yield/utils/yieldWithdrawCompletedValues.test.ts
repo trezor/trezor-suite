@@ -1,9 +1,12 @@
+import { mockNetworkConfigDeps } from '@suite-common/networks/mocks';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
 
 import { type YieldFlowDisplayToken, type YieldFlowToken } from '../yieldTypes';
 import { getYieldWithdrawCompletedValues } from './yieldWithdrawCompletedValues';
 
-type Params = Parameters<typeof getYieldWithdrawCompletedValues>[0];
+const networkConfigDeps = mockNetworkConfigDeps();
+
+type Params = Parameters<typeof getYieldWithdrawCompletedValues>[1];
 
 const ethSymbol = asNetworkSymbol('eth');
 
@@ -38,7 +41,7 @@ const base = {
 
 describe('getYieldWithdrawCompletedValues', () => {
     it('redeem without unwrap: sends the trSHETHp shares entered, receives WETH', () => {
-        const { input, output } = getYieldWithdrawCompletedValues({
+        const { input, output } = getYieldWithdrawCompletedValues(networkConfigDeps, {
             ...base,
             flowType: 'redeem',
             completedAmount: '2', // shares
@@ -50,7 +53,7 @@ describe('getYieldWithdrawCompletedValues', () => {
     });
 
     it('redeem with unwrap: sends the trSHETHp shares, receives native ETH', () => {
-        const { input, output } = getYieldWithdrawCompletedValues({
+        const { input, output } = getYieldWithdrawCompletedValues(networkConfigDeps, {
             ...base,
             flowType: 'redeem',
             completedAmount: '2', // shares
@@ -63,7 +66,7 @@ describe('getYieldWithdrawCompletedValues', () => {
     });
 
     it('withdraw (asset unit) without unwrap: derives the trSHETHp shares sent, receives WETH', () => {
-        const { input, output } = getYieldWithdrawCompletedValues({
+        const { input, output } = getYieldWithdrawCompletedValues(networkConfigDeps, {
             ...base,
             flowType: 'withdraw',
             completedAmount: '2.1', // WETH
@@ -76,7 +79,7 @@ describe('getYieldWithdrawCompletedValues', () => {
     });
 
     it('withdraw (asset unit) with unwrap: derives the trSHETHp shares sent, receives native ETH', () => {
-        const { input, output } = getYieldWithdrawCompletedValues({
+        const { input, output } = getYieldWithdrawCompletedValues(networkConfigDeps, {
             ...base,
             flowType: 'withdraw',
             completedAmount: '2.1', // WETH
@@ -91,7 +94,7 @@ describe('getYieldWithdrawCompletedValues', () => {
     it.each(['redeem', 'withdraw'] as const)(
         '%s without a known price per share: falls back to the completed amount for both legs',
         flowType => {
-            const { input, output } = getYieldWithdrawCompletedValues({
+            const { input, output } = getYieldWithdrawCompletedValues(networkConfigDeps, {
                 ...base,
                 pricePerShareState: undefined,
                 flowType,

@@ -1,6 +1,9 @@
+import { mockNetworkConfigDeps } from '@suite-common/networks/mocks';
 import { ETHEREUM_ADJUST_GAS_LIMIT } from '@suite-common/wallet-core';
 
 import { buildRecomposeInputsFromTrade } from './buildRecomposeInputsFromTrade';
+
+const networkConfigDeps = mockNetworkConfigDeps();
 
 const dexTx = {
     from: '0xSender',
@@ -12,7 +15,7 @@ const dexTx = {
 describe('buildRecomposeInputsFromTrade', () => {
     describe('sendAddress input', () => {
         it('returns address, amount, destinationTag without sats conversion', () => {
-            const result = buildRecomposeInputsFromTrade({
+            const result = buildRecomposeInputsFromTrade(networkConfigDeps, {
                 sendAddress: '0xSendAddr',
                 sendStringAmount: '1.5',
                 partnerPaymentExtraId: 'memo-cex',
@@ -28,7 +31,7 @@ describe('buildRecomposeInputsFromTrade', () => {
         });
 
         it('converts amount to sats when shouldSendInSats is true', () => {
-            const result = buildRecomposeInputsFromTrade({
+            const result = buildRecomposeInputsFromTrade(networkConfigDeps, {
                 sendAddress: '0xSendAddr',
                 sendStringAmount: '1.5',
                 partnerPaymentExtraId: 'memo-cex',
@@ -40,7 +43,7 @@ describe('buildRecomposeInputsFromTrade', () => {
         });
 
         it('uses provided decimals when converting amount to subunits', () => {
-            const result = buildRecomposeInputsFromTrade({
+            const result = buildRecomposeInputsFromTrade(networkConfigDeps, {
                 sendAddress: '0xSendAddr',
                 sendStringAmount: '1.234567890123456789',
                 partnerPaymentExtraId: 'memo-cex',
@@ -52,7 +55,7 @@ describe('buildRecomposeInputsFromTrade', () => {
         });
 
         it('treats shouldSendInSats=undefined as false', () => {
-            const result = buildRecomposeInputsFromTrade({
+            const result = buildRecomposeInputsFromTrade(networkConfigDeps, {
                 sendAddress: '0xSendAddr',
                 sendStringAmount: '1.5',
                 partnerPaymentExtraId: 'memo-cex',
@@ -64,7 +67,7 @@ describe('buildRecomposeInputsFromTrade', () => {
         });
 
         it('does not set DEX-only fields', () => {
-            const result = buildRecomposeInputsFromTrade({
+            const result = buildRecomposeInputsFromTrade(networkConfigDeps, {
                 sendAddress: '0xSendAddr',
                 sendStringAmount: '1.5',
                 partnerPaymentExtraId: 'memo-cex',
@@ -80,7 +83,7 @@ describe('buildRecomposeInputsFromTrade', () => {
 
     describe('dexTx input', () => {
         it('returns dexTx.to/value, destinationTag, DEX-only fields', () => {
-            const result = buildRecomposeInputsFromTrade({
+            const result = buildRecomposeInputsFromTrade(networkConfigDeps, {
                 dexTx,
                 partnerPaymentExtraId: 'memo-dex',
                 serializedTx: '0xabcd',
@@ -97,7 +100,7 @@ describe('buildRecomposeInputsFromTrade', () => {
         });
 
         it('forwards undefined serializedTx without synthesizing a default', () => {
-            const result = buildRecomposeInputsFromTrade({
+            const result = buildRecomposeInputsFromTrade(networkConfigDeps, {
                 dexTx,
                 partnerPaymentExtraId: 'memo-dex',
                 serializedTx: undefined,
@@ -109,7 +112,7 @@ describe('buildRecomposeInputsFromTrade', () => {
 
     describe('destinationAddress input', () => {
         it('returns destinationAddress, amount, destinationTag without sats conversion', () => {
-            const result = buildRecomposeInputsFromTrade({
+            const result = buildRecomposeInputsFromTrade(networkConfigDeps, {
                 destinationAddress: 'bc1qDest',
                 cryptoStringAmount: '0.25',
                 destinationPaymentExtraId: 'memo-sell',
@@ -125,7 +128,7 @@ describe('buildRecomposeInputsFromTrade', () => {
         });
 
         it('converts amount to sats when shouldSendInSats is true', () => {
-            const result = buildRecomposeInputsFromTrade({
+            const result = buildRecomposeInputsFromTrade(networkConfigDeps, {
                 destinationAddress: 'bc1qDest',
                 cryptoStringAmount: '0.25',
                 destinationPaymentExtraId: 'memo-sell',
@@ -137,7 +140,7 @@ describe('buildRecomposeInputsFromTrade', () => {
         });
 
         it('does not set DEX-only fields', () => {
-            const result = buildRecomposeInputsFromTrade({
+            const result = buildRecomposeInputsFromTrade(networkConfigDeps, {
                 destinationAddress: 'bc1qDest',
                 cryptoStringAmount: '0.25',
                 destinationPaymentExtraId: 'memo-sell',

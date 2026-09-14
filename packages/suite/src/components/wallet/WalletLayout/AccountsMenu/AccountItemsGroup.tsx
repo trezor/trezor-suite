@@ -3,6 +3,8 @@ import { useMemo } from 'react';
 import styled from 'styled-components';
 
 import { selectRouteName } from '@suite/router';
+import { useServices } from '@suite-common/dependency-injection';
+import { selectNetworkConfigDeps } from '@suite-common/networks';
 import { selectBaseCurrency, selectCurrentFiatRates } from '@suite-common/wallet-core';
 import {
     BASE_CURRENCY_ZERO,
@@ -60,8 +62,10 @@ export const AccountItemsGroup = ({
     dataTestKey,
     onItemClick,
 }: AccountItemsGroupProps) => {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
+
     const { isSidebarCollapsed } = useResponsiveContext();
-    const stakingBalance = getAccountTotalStakingBalance(account);
+    const stakingBalance = getAccountTotalStakingBalance(networkConfigDeps, account);
 
     const routeName = useSelector(selectRouteName);
     const baseCurrencyCode = useSelector(selectBaseCurrency);

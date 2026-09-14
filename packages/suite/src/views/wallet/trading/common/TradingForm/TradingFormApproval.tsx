@@ -5,6 +5,7 @@ import { events, selectDesktopAnalyticsDep } from '@suite/analytics';
 import { Translation } from '@suite/intl';
 import { openModal } from '@suite/modal';
 import { useServices } from '@suite-common/dependency-injection';
+import { selectNetworkConfigDeps } from '@suite-common/networks';
 import { selectDispatch } from '@suite-common/redux-utils';
 import {
     type TradingExchangeType,
@@ -39,6 +40,8 @@ const TextButton = styled.div<{ $disabled: boolean }>`
 `;
 
 export const TradingFormApproval = () => {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
+
     const context = useTradingFormContext<TradingExchangeType>();
     const { analytics, dispatch } = useServices(selectDesktopAnalyticsDep, selectDispatch);
 
@@ -85,7 +88,7 @@ export const TradingFormApproval = () => {
     });
 
     const onApproveTransactionClick = async () => {
-        if (!selectedQuote || !requiresTokenApproval(selectedQuote)) {
+        if (!selectedQuote || !requiresTokenApproval(networkConfigDeps, selectedQuote)) {
             return;
         }
 

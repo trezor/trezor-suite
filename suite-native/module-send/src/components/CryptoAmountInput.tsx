@@ -1,3 +1,5 @@
+import { selectNetworkConfigDeps } from '@suite-common/networks';
+import { useServices } from '@suite-common/dependency-injection';
 import { type ReactNode } from 'react';
 import { useSelector } from 'react-redux';
 
@@ -39,6 +41,8 @@ export const CryptoAmountInput = ({
     onPress,
     isDisabled = false,
 }: SendAmountInputProps) => {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
+
     const { setValue, trigger } = useFormContext<SendOutputsFormValues>();
     const { cryptoAmountTransformer } = useAmountInputTransformers(symbol);
     const baseCurrencyCode = useSelector(selectBaseCurrency);
@@ -60,7 +64,7 @@ export const CryptoAmountInput = ({
 
     const converters = useCryptoFiatConverters({ symbol, tokenContract });
 
-    const baseCurrencyDecimals = getDecimalsForBaseCurrency({
+    const baseCurrencyDecimals = getDecimalsForBaseCurrency(networkConfigDeps, {
         code: baseCurrencyCode,
         isInSats: isBaseCurrencyInSats,
     });
@@ -104,7 +108,7 @@ export const CryptoAmountInput = ({
             rightIcon={
                 <SendAmountCurrencyLabelWrapper isDisabled={isDisabled}>
                     {tokenSymbol !== null
-                        ? getDisplaySymbol(tokenSymbol, tokenContract)
+                        ? getDisplaySymbol(networkConfigDeps, tokenSymbol, tokenContract)
                         : formatter.format(symbol)}
                 </SendAmountCurrencyLabelWrapper>
             }

@@ -7,6 +7,7 @@ import { selectRouterUrl } from '@suite/router';
 import { useServices } from '@suite-common/dependency-injection';
 import { selectSelectedDevice } from '@suite-common/device';
 import { useYieldVaultName } from '@suite-common/earn-stablecoin';
+import { selectNetworkConfigDeps } from '@suite-common/networks';
 import { selectDispatch } from '@suite-common/redux-utils';
 import { selectTradingExchangeSelectedQuote } from '@suite-common/trading';
 import { selectYieldTxReview } from '@suite-common/wallet-core';
@@ -44,6 +45,8 @@ export const TransactionReviewModalBody = ({
     precomposedForm,
     isRbfConfirmedError,
 }: TransactionReviewModalBodyProps) => {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
+
     const { analytics, dispatch } = useServices(selectDesktopAnalyticsDep, selectDispatch);
     const account = useSelector(selectAccountIncludingChosenInTrading);
     const device = useSelector(selectSelectedDevice);
@@ -100,7 +103,7 @@ export const TransactionReviewModalBody = ({
 
     const decreaseOutputId = getDecreaseOutputId(precomposedTx, precomposedForm);
 
-    const outputs = constructTransactionReviewOutputsOptional({
+    const outputs = constructTransactionReviewOutputsOptional(networkConfigDeps, {
         account,
         decreaseOutputId,
         device,

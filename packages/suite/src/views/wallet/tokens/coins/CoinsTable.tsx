@@ -1,7 +1,9 @@
 import { useMemo } from 'react';
 
 import { Translation } from '@suite/intl';
+import { useServices } from '@suite-common/dependency-injection';
 import { useAllYieldOpportunities } from '@suite-common/earn-stablecoin-api';
+import { selectNetworkConfigDeps } from '@suite-common/networks';
 import { TokenManagementAction, selectCoinDefinitions } from '@suite-common/token-definitions';
 import { selectBaseCurrency, selectCurrentFiatRates } from '@suite-common/wallet-core';
 import { type SelectedAccountLoaded } from '@suite-common/wallet-types';
@@ -24,6 +26,8 @@ interface CoinsTableProps {
 }
 
 export const CoinsTable = ({ selectedAccount, searchQuery }: CoinsTableProps) => {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
+
     const fiatRates = useSelector(selectCurrentFiatRates);
     const baseCurrencyCode = useSelector(selectBaseCurrency);
 
@@ -54,7 +58,7 @@ export const CoinsTable = ({ selectedAccount, searchQuery }: CoinsTableProps) =>
     }, [account.tokens, account.symbol, baseCurrencyCode, fiatRates]);
 
     const tokens = useMemo(() => {
-        const groupedTokens = getTokens({
+        const groupedTokens = getTokens(networkConfigDeps, {
             tokens: enhancedTokens,
             symbol: account.symbol,
             tokenDefinitions: coinDefinitions,
@@ -63,7 +67,7 @@ export const CoinsTable = ({ selectedAccount, searchQuery }: CoinsTableProps) =>
         groupedTokens.shownWithoutBalance.sort(sortTokensByName);
 
         return groupedTokens;
-    }, [enhancedTokens, account.symbol, coinDefinitions, searchQuery]);
+    }, [networkConfigDeps, enhancedTokens, account.symbol, coinDefinitions, searchQuery]);
 
     const hiddenTokensCount =
         tokens.unverifiedWithBalance.length +
@@ -76,7 +80,7 @@ export const CoinsTable = ({ selectedAccount, searchQuery }: CoinsTableProps) =>
         searchQuery ? (
         <TokensTable
             account={account}
-            hideRates={isTestnet(account.symbol)}
+            hideRates={isTestnet(networkConfigDeps, account.symbol)}
             tokenStatusType={TokenManagementAction.HIDE}
             tokensWithBalance={tokens.shownWithBalance}
             tokensWithoutBalance={tokens.shownWithoutBalance}

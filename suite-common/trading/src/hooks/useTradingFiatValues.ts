@@ -4,6 +4,7 @@ import { useSelector } from 'react-redux';
 import type { CryptoId } from 'invity-api';
 
 import { useServices } from '@suite-common/dependency-injection';
+import { selectNetworkConfigDeps } from '@suite-common/networks';
 import { selectDispatch } from '@suite-common/redux-utils';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import {
@@ -62,19 +63,22 @@ export const useTradingFiatValues = ({
     shouldSendInSats,
     isErc4626,
 }: TradingFiatRatesProps): TradingFiatRatesReturn | null => {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
+
     const { dispatch } = useServices(selectDispatch);
 
     const isNativeToken = cryptoId && isCryptoIdForNativeToken(cryptoId);
 
     const { network, contractAddress, symbol } = useMemo(() => {
-        const assetInfo = cryptoId && cryptoIdToNetworkAndContractAddress(cryptoId);
+        const assetInfo =
+            cryptoId && cryptoIdToNetworkAndContractAddress(networkConfigDeps, cryptoId);
 
         return {
             network: assetInfo?.network,
             contractAddress: isNativeToken ? undefined : assetInfo?.contractAddress,
             symbol: assetInfo?.network?.symbol ?? TRADING_DEFAULT_CRYPTO_CURRENCY,
         };
-    }, [cryptoId, isNativeToken]);
+    }, [networkConfigDeps, cryptoId, isNativeToken]);
 
     const symbolForFiat = mapTestnetSymbol(symbol);
     const baseCurrencyCode = useSelector(selectBaseCurrency);

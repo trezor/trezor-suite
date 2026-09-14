@@ -1,8 +1,9 @@
+import { useServices } from '@suite-common/dependency-injection';
 import { memo, useCallback } from 'react';
 import { useSelector } from 'react-redux';
 
 import { selectIsDeviceConnected } from '@suite-common/device';
-import { selectSupportedNetworkSymbols } from '@suite-common/networks';
+import { selectNetworkConfigDeps, selectSupportedNetworkSymbols } from '@suite-common/networks';
 import { type Network, type NetworkSymbol, getNetwork } from '@suite-common/wallet-config';
 import { Text, VStack } from '@suite-native/atoms';
 import { type DiscoveryRootState, selectDiscoveryNetworkGroups } from '@suite-native/discovery';
@@ -56,6 +57,8 @@ export const DiscoveryCoinsFilter = ({
     searchQuery,
     onDisablingLastCoin,
 }: DiscoveryCoinsFilterProps) => {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
+
     const allNetworkSymbols = useSelector(selectSupportedNetworkSymbols);
 
     const { supportedMainnets, supportedTestnets, unsupportedMainnets, unsupportedTestnets } =
@@ -102,7 +105,7 @@ export const DiscoveryCoinsFilter = ({
             }
 
             if (!isDeviceConnected && nextIsEnabled) {
-                const { name } = getNetwork(symbol);
+                const { name } = getNetwork(networkConfigDeps, symbol);
                 showToast({
                     intent: 'neutral',
                     message: (
@@ -116,7 +119,15 @@ export const DiscoveryCoinsFilter = ({
 
             setValue(getEnabledCoinFieldName(symbol), nextIsEnabled);
         },
-        [allNetworkSymbols, getValues, isDeviceConnected, onDisablingLastCoin, setValue, showToast],
+        [
+            networkConfigDeps,
+            allNetworkSymbols,
+            getValues,
+            isDeviceConnected,
+            onDisablingLastCoin,
+            setValue,
+            showToast,
+        ],
     );
 
     if (!isAnyNetworkVisible) {

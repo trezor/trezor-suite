@@ -1,3 +1,6 @@
+import { type NetworksRootState } from '@suite-common/networks';
+import { mockNetworkConfigDeps } from '@suite-common/networks/mocks';
+import { getNetworks } from '@suite-common/wallet-config';
 import { type DeviceRootState, deviceInitialState } from '@suite-common/device';
 import { mockSuiteDevice } from '@suite-common/suite-types/mocks';
 import {
@@ -31,7 +34,11 @@ const SELECTED_DEVICE = mockSuiteDevice({
     state: { staticSessionId: DEVICE_STATIC_SESSION_ID },
 });
 
-type TestState = AccountsRootState & DeviceRootState & FiatRatesRootState & WalletSettingsRootState;
+type TestState = NetworksRootState &
+    AccountsRootState &
+    DeviceRootState &
+    FiatRatesRootState &
+    WalletSettingsRootState;
 
 const createUsdcToken = (contract: TokenAddress, balance: string) =>
     mockAccountToken({
@@ -43,6 +50,7 @@ const createUsdcToken = (contract: TokenAddress, balance: string) =>
     });
 
 const createState = (accounts: Account[], rates: Record<string, Rate> = {}): TestState => ({
+    networks: getNetworks(mockNetworkConfigDeps()),
     wallet: {
         accounts,
         ...mockWalletFiatRatesAndSettings(rates),

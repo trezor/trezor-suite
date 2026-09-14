@@ -1,3 +1,4 @@
+import { type NetworksRootState } from '@suite-common/networks';
 import { useMemo } from 'react';
 import { useSelector } from 'react-redux';
 
@@ -83,14 +84,14 @@ export const StakePendingCard = ({
     const symbol = useAccountsSelector(state => selectAccountNetworkSymbol(state, accountKey));
 
     const totalStakePending =
-        useSelector((state: StakeRootState) =>
+        useSelector((state: StakeRootState & NetworksRootState) =>
             selectTotalStakePendingByAccountKey(state, accountKey),
         ) ?? null;
 
-    const isStakePending = useSelector((state: StakeRootState) =>
+    const isStakePending = useSelector((state: StakeRootState & NetworksRootState) =>
         selectIsStakePendingByAccountKey(state, accountKey),
     );
-    const isStakeConfirming = useSelector((state: StakeRootState) =>
+    const isStakeConfirming = useSelector((state: StakeRootState & NetworksRootState) =>
         selectIsStakeConfirmingByAccountKey(state, accountKey),
     );
 

@@ -1,4 +1,6 @@
 import { Translation } from '@suite/intl';
+import { useServices } from '@suite-common/dependency-injection';
+import { selectNetworkConfigDeps } from '@suite-common/networks';
 import type { YieldFlowDisplayToken } from '@suite-common/wallet-core';
 import { isAllowanceUnlimited } from '@suite-common/wallet-utils';
 import { Spinner, Text } from '@trezor/components';
@@ -18,6 +20,8 @@ export const ApprovedAmountValue = ({
     isLoading,
     hasError,
 }: ApprovedAmountValueProps) => {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
+
     if (isLoading) {
         return <Spinner size={16} isDisabled />;
     }
@@ -26,7 +30,7 @@ export const ApprovedAmountValue = ({
         return <Text typographyStyle="body-md">-</Text>;
     }
 
-    if (isAllowanceUnlimited({ amount, decimals: token.decimals })) {
+    if (isAllowanceUnlimited(networkConfigDeps, { amount, decimals: token.decimals })) {
         return (
             <Text typographyStyle="body-md">
                 <Translation id="TR_APPROVE_AMOUNT_UNLIMITED" />

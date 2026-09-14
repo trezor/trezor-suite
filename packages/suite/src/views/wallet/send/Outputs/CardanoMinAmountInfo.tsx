@@ -1,4 +1,6 @@
 import { Translation } from '@suite/intl';
+import { useServices } from '@suite-common/dependency-injection';
+import { selectNetworkConfigDeps } from '@suite-common/networks';
 import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import { MIN_CARDANO_AMOUNT_FOR_SEND } from '@suite-common/wallet-constants';
 import {
@@ -14,6 +16,8 @@ import { FormattedCryptoAmount } from 'src/components/suite';
 import { useSendFormContext } from 'src/hooks/wallet';
 
 export const CardanoMinAmountInfo = () => {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
+
     const {
         account: { symbol, networkType, balance },
         composedLevels,
@@ -39,13 +43,16 @@ export const CardanoMinAmountInfo = () => {
     const minAdaAmount = new BigNumber(
         hasTransactionInfo
             ? transactionInfo.totalSpent
-            : new BigNumber(MIN_CARDANO_AMOUNT_FOR_SEND)
-                  .times(formOutputs.length)
-                  .plus(unitsToSubunits({ symbol, value: asAmountUnit(totalAdaAmount) })),
+            : new BigNumber(MIN_CARDANO_AMOUNT_FOR_SEND).times(formOutputs.length).plus(
+                  unitsToSubunits(networkConfigDeps, {
+                      symbol,
+                      value: asAmountUnit(totalAdaAmount),
+                  }),
+              ),
     );
 
     const hasEnoughADA = new BigNumber(balance).minus(minAdaAmount).gte(0);
-    const networkDisplaySymbol = getNetworkDisplaySymbol(symbol);
+    const networkDisplaySymbol = getNetworkDisplaySymbol(networkConfigDeps, symbol);
 
     return (
         <>
@@ -72,7 +79,7 @@ export const CardanoMinAmountInfo = () => {
                 <Text intent="neutral" priority="secondary">
                     <FormattedCryptoAmount
                         disableHiddenPlaceholder
-                        value={subunitsToUnits({
+                        value={subunitsToUnits(networkConfigDeps, {
                             symbol,
                             value: asAmountSubunit(minAdaAmount),
                         })}

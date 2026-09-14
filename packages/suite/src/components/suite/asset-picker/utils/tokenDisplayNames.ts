@@ -1,5 +1,6 @@
 import { type CryptoId } from 'invity-api';
 
+import { type NetworkConfigDeps } from '@suite-common/networks';
 import { type TradingAssetOption, getCryptoId } from '@suite-common/trading';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { type TokenInfo } from '@trezor/connect';
@@ -25,21 +26,24 @@ type GetTokenDisplaySymbolNameProps = {
     token: TokenDisplayNameSource['token'];
 };
 
-export const getTokenCryptoIds = (tokens: TokenDisplayNameSource[]) => {
+export const getTokenCryptoIds = (
+    networkConfigDeps: NetworkConfigDeps,
+    tokens: TokenDisplayNameSource[],
+) => {
     const tokenCryptoIds = new Set<CryptoId>();
 
     for (const { account, token } of tokens) {
-        tokenCryptoIds.add(getCryptoId(account.symbol, token.contract));
+        tokenCryptoIds.add(getCryptoId(networkConfigDeps, account.symbol, token.contract));
     }
 
     return tokenCryptoIds;
 };
 
-export const getTokensDisplaySymbolNames = ({
-    assets,
-    tokens,
-}: GetTokensDisplaySymbolNamesProps) => {
-    const tokenCryptoIds = getTokenCryptoIds(tokens);
+export const getTokensDisplaySymbolNames = (
+    networkConfigDeps: NetworkConfigDeps,
+    { assets, tokens }: GetTokensDisplaySymbolNamesProps,
+) => {
+    const tokenCryptoIds = getTokenCryptoIds(networkConfigDeps, tokens);
     const displaySymbolNames = new Map<CryptoId, string>();
 
     if (tokenCryptoIds.size === 0) {
@@ -61,9 +65,9 @@ export const getTokensDisplaySymbolNames = ({
     return displaySymbolNames;
 };
 
-export const getTokenDisplaySymbolName = ({
-    tokenDisplaySymbolNames,
-    account,
-    token,
-}: GetTokenDisplaySymbolNameProps) =>
-    tokenDisplaySymbolNames.get(getCryptoId(account.symbol, token.contract)) ?? token.name;
+export const getTokenDisplaySymbolName = (
+    networkConfigDeps: NetworkConfigDeps,
+    { tokenDisplaySymbolNames, account, token }: GetTokenDisplaySymbolNameProps,
+) =>
+    tokenDisplaySymbolNames.get(getCryptoId(networkConfigDeps, account.symbol, token.contract)) ??
+    token.name;

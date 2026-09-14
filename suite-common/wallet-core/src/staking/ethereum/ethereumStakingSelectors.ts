@@ -1,4 +1,8 @@
-import { type NetworkSymbol } from '@suite-common/networks';
+import {
+    type NetworkSymbol,
+    type NetworksRootState,
+    selectNetworkConfigAccessors,
+} from '@suite-common/networks';
 import { getNetworkType } from '@suite-common/wallet-config';
 import { type AccountKey } from '@suite-common/wallet-types';
 import {
@@ -121,11 +125,13 @@ export const selectEthereumValidatorsQueue = (state: StakeRootState) =>
     selectStakeData(state).eth?.validators;
 
 export const selectUnstakingPeriodInDaysBySymbol = (
-    state: StakeRootState,
+    state: StakeRootState & NetworksRootState,
     symbol: NetworkSymbol | undefined,
 ) => {
+    const networkConfigDeps = selectNetworkConfigAccessors(state);
+
     const validatorsQueue = selectEthereumValidatorsQueue(state);
-    const networkType = symbol ? getNetworkType(symbol) : undefined;
+    const networkType = symbol ? getNetworkType(networkConfigDeps, symbol) : undefined;
 
     return getUnstakingPeriodInDays(networkType, validatorsQueue);
 };

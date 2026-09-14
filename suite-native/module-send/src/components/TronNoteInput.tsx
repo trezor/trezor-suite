@@ -1,3 +1,5 @@
+import { selectNetworkConfigDeps } from '@suite-common/networks';
+import { useServices } from '@suite-common/dependency-injection';
 import { useEffect, useState } from 'react';
 import { useWatch } from 'react-hook-form';
 
@@ -25,12 +27,14 @@ type TronNoteInputProps = {
 };
 
 export const TronNoteInput = ({ symbol }: TronNoteInputProps) => {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
+
     const { bottomSheetRef, openModal, closeModal } = useBottomSheetModal();
     const { setValue, control } = useFormContext<SendOutputsFormValues>();
     const { translate } = useTranslate();
     const [localNote, setLocalNote] = useState('');
 
-    const networkDisplaySymbol = getNetworkDisplaySymbol(symbol);
+    const networkDisplaySymbol = getNetworkDisplaySymbol(networkConfigDeps, symbol);
 
     const value = useWatch({ control, name: 'destinationTag' }) ?? '';
     const hexByteSize = Buffer.from(localNote || '', 'utf8').length;

@@ -1,3 +1,4 @@
+import { type NetworksRootState, selectNetworkConfigAccessors } from '@suite-common/networks';
 import { createThunk } from '@suite-common/redux-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { getNetwork } from '@suite-common/wallet-config';
@@ -29,15 +30,20 @@ import { estimateContractCallFeeLevel } from './feeLevel';
 import { isNewTronAccount } from './isNewTronAccount';
 import { resolveCalldata } from './resolveCalldata';
 
-type ComposeTronTransactionFeeLevelsThunkState = void;
+type ComposeTronTransactionFeeLevelsThunkState = void & NetworksRootState;
 
 export const composeTronTransactionFeeLevelsThunk = createThunk<
     PrecomposedLevels,
     ComposeTransactionThunkArguments,
-    { rejectValue: ComposeFeeLevelsError; state: ComposeTronTransactionFeeLevelsThunkState }
+    {
+        rejectValue: ComposeFeeLevelsError;
+        state: ComposeTronTransactionFeeLevelsThunkState;
+    }
 >(
     `${SEND_MODULE_PREFIX}/composeTronTransactionFeeLevelsThunk`,
-    async ({ formState, composeContext }, { dispatch, rejectWithValue }) => {
+    async ({ formState, composeContext }, { getState, dispatch, rejectWithValue }) => {
+        const networkConfigDeps = selectNetworkConfigAccessors(getState());
+
         const { account, network } = composeContext;
 
         if (account.networkType !== 'tron') {
@@ -64,7 +70,7 @@ export const composeTronTransactionFeeLevelsThunk = createThunk<
 
         const isSendMax = output.type === 'send-max' || output.type === 'send-max-noaddress';
         const fallbackAmount = token
-            ? unitsToSubunits({
+            ? unitsToSubunits(networkConfigDeps, {
                   value: asAmountUnit(new BigNumber(token.balance ?? '0')),
                   decimals: token.decimals,
               }).toString()
@@ -174,6 +180,7 @@ export const composeTronTransactionFeeLevelsThunk = createThunk<
         }
 
         const tx = calculate(
+            networkConfigDeps,
             account.availableBalance,
             output,
             feeLevel,
@@ -186,7 +193,7 @@ export const composeTronTransactionFeeLevelsThunk = createThunk<
         );
 
         if (tx.type !== 'error' && tx.max !== undefined) {
-            tx.max = subunitsToUnits({
+            tx.max = subunitsToUnits(networkConfigDeps, {
                 value: asAmountSubunit(new BigNumber(tx.max)),
                 decimals,
             }).toString();
@@ -200,15 +207,23 @@ export const composeTronTransactionFeeLevelsThunk = createThunk<
     },
 );
 
-type SignTronSendFormTransactionThunkState = void;
+type SignTronSendFormTransactionThunkState = void & NetworksRootState;
 
 export const signTronSendFormTransactionThunk = createThunk<
     { serializedTx: string },
     SignTransactionThunkArguments,
-    { rejectValue: SignTransactionError; state: SignTronSendFormTransactionThunkState }
+    {
+        rejectValue: SignTransactionError;
+        state: SignTronSendFormTransactionThunkState;
+    }
 >(
     `${SEND_MODULE_PREFIX}/signTronSendFormTransactionThunk`,
-    async ({ formState, precomposedTransaction, selectedAccount, device }, { rejectWithValue }) => {
+    async (
+        { formState, precomposedTransaction, selectedAccount, device },
+        { getState, rejectWithValue },
+    ) => {
+        const networkConfigDeps = selectNetworkConfigAccessors(getState());
+
         if (selectedAccount.networkType !== 'tron') {
             return rejectWithValue({
                 error: 'sign-transaction-failed',
@@ -238,8 +253,8 @@ export const signTronSendFormTransactionThunk = createThunk<
             });
         }
 
-        const network = getNetwork(selectedAccount.symbol);
-        const amountInSubunits = unitsToSubunits({
+        const network = getNetwork(networkConfigDeps, selectedAccount.symbol);
+        const amountInSubunits = unitsToSubunits(networkConfigDeps, {
             value: asAmountUnit(new BigNumber(output.amount)),
             decimals: token ? token.decimals : network.decimals,
         }).toString();

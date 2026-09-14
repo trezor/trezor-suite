@@ -1,3 +1,5 @@
+import { type NetworksRootState } from '@suite-common/networks';
+import { selectNetworkConfigDeps } from '@suite-common/networks';
 import { useMemo } from 'react';
 import { useSelector } from 'react-redux';
 
@@ -39,18 +41,20 @@ import { useSolanaStakingLimit } from '../../hooks/staking/useSolanaStakingLimit
 import { buildEarnComposeFormState } from '../../utils/earn/utils';
 
 export const StakingClaimReviewScreen = () => {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
+
     const route = useRoute<RouteProp<RootStackParamList, RootStackRoutes.StakingClaimReview>>();
     const navigation =
         useNavigation<
             StackNavigationProps<RootStackParamList, RootStackRoutes.StakingClaimReview>
         >();
     const { accountKey, symbol } = route.params;
-    const displaySymbol = getNetworkDisplaySymbol(symbol);
+    const displaySymbol = getNetworkDisplaySymbol(networkConfigDeps, symbol);
 
-    const canClaimInstantly = useSelector((state: StakeRootState) =>
+    const canClaimInstantly = useSelector((state: StakeRootState & NetworksRootState) =>
         selectCanClaimByAccountKey(state, accountKey),
     );
-    const claimableAmount = useSelector((state: StakeRootState) =>
+    const claimableAmount = useSelector((state: StakeRootState & NetworksRootState) =>
         selectClaimableAmountByAccountKey(state, accountKey),
     );
     const account = useSelector((state: AccountsRootState) =>
@@ -58,8 +62,11 @@ export const StakingClaimReviewScreen = () => {
     );
     const availableBalance = account?.availableBalance ?? '0';
 
-    const feeBuffer = getStakingLimitsByNetworkSymbol(symbol)?.MIN_BALANCE_FOR_FEE_BUFFER;
-    const availableBalanceInUnits = subunitsToUnits({
+    const feeBuffer = getStakingLimitsByNetworkSymbol(
+        networkConfigDeps,
+        symbol,
+    )?.MIN_BALANCE_FOR_FEE_BUFFER;
+    const availableBalanceInUnits = subunitsToUnits(networkConfigDeps, {
         value: asAmountSubunit(new BigNumber(availableBalance)),
         symbol,
     });

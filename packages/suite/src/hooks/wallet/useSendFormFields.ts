@@ -1,6 +1,8 @@
 import { useCallback } from 'react';
 import { type FieldPath, type UseFormReturn } from 'react-hook-form';
 
+import { useServices } from '@suite-common/dependency-injection';
+import { selectNetworkConfigDeps } from '@suite-common/networks';
 import { selectCurrentFiatRates } from '@suite-common/wallet-core';
 import {
     type FormOptions,
@@ -37,6 +39,8 @@ export const useSendFormFields = ({
     network,
     formState: { errors },
 }: UseSendFormFieldsParams) => {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
+
     const { shouldSendInSats, areSatsDisplayed } = useBitcoinAmountUnit(network.symbol);
     const currentRates = useSelector(selectCurrentFiatRates);
 
@@ -112,7 +116,7 @@ export const useSendFormFields = ({
                     return null;
                 }
 
-                return parseCryptoToFormattedBaseCurrency({
+                return parseCryptoToFormattedBaseCurrency(networkConfigDeps, {
                     baseCurrencyCode,
                     rate: fiatRate,
                     value: new BigNumber(amount),
@@ -130,6 +134,7 @@ export const useSendFormFields = ({
             });
         },
         [
+            networkConfigDeps,
             calculateFiatFromAmountOrViceVersa,
             getValues,
             shouldSendInSats,
@@ -152,7 +157,7 @@ export const useSendFormFields = ({
                     return null;
                 }
 
-                return parseBaseCurrencyToFormattedCrypto({
+                return parseBaseCurrencyToFormattedCrypto(networkConfigDeps, {
                     cryptoDecimals,
                     rate: fiatRate,
                     isCryptoInSats: shouldSendInSats === true,
@@ -169,6 +174,7 @@ export const useSendFormFields = ({
             });
         },
         [
+            networkConfigDeps,
             calculateFiatFromAmountOrViceVersa,
             network.decimals,
             getValues,

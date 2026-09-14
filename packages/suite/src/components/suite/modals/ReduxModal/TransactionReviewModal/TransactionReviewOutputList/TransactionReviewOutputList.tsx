@@ -4,7 +4,6 @@ import styled from 'styled-components';
 
 import { Translation } from '@suite/intl';
 import { useServices } from '@suite-common/dependency-injection';
-import type { DeviceRootState } from '@suite-common/device';
 import { selectGetNamedAddressSupportDep } from '@suite-common/networks';
 import { selectAccounts, selectSendFormReviewLastButtonCode } from '@suite-common/wallet-core';
 import type {
@@ -87,7 +86,7 @@ export const TransactionReviewOutputList = ({
     const isMultirecipient = outputs.filter(({ type }) => type === 'address').length > 1;
     const isFirstOutputAddress = outputs[0]?.type === 'address';
 
-    const lastButtonRequestCode = useSelector((state: DeviceRootState) =>
+    const lastButtonRequestCode = useSelector(state =>
         selectSendFormReviewLastButtonCode(state, symbol),
     );
 

@@ -1,3 +1,5 @@
+import { selectNetworkConfigDeps } from '@suite-common/networks';
+import { useServices } from '@suite-common/dependency-injection';
 import { Translation } from '@suite/intl';
 import { type CrossChainAssetDiff, getNetworkByBlockaidChain } from '@suite-common/tx-simulation';
 import { IconCircle, Row } from '@trezor/components';
@@ -13,9 +15,11 @@ interface TxSimulationCrossChainAssetProps {
 }
 
 export function TxSimulationCrossChainAsset({ assetDiff }: TxSimulationCrossChainAssetProps) {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
+
     const { asset, chain } = assetDiff;
     // Blockaid reports on more chains than Suite holds, so fall back to its own chain name.
-    const network = getNetworkByBlockaidChain(chain);
+    const network = getNetworkByBlockaidChain(networkConfigDeps, chain);
 
     const summary = (transfer: CrossChainTransfer) =>
         transfer.summary ?? `${transfer.value ?? transfer.raw_value} ${asset.symbol ?? ''}`.trim();

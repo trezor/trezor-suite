@@ -1,6 +1,8 @@
 import React from 'react';
 
 import { Translation } from '@suite/intl';
+import { useServices } from '@suite-common/dependency-injection';
+import { selectNetworkConfigDeps } from '@suite-common/networks';
 import { EarnFlow } from '@suite-common/suite-types/src/staking';
 import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import {
@@ -167,12 +169,14 @@ const CardanoStakingRows = ({ flow, apy }: EarnStakingRowsProps) => (
 );
 
 export const EarnStakingInfo = ({ account, flow }: EarnStakingInfoProps) => {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
+
     const validatorsQueue = useSelector(selectEthereumValidatorsQueue);
 
     const apy = useSelector(state => selectPoolStatsApy(state, { networkSymbol: account.symbol }));
 
     const daysToAddToPoolInitial = getDaysToAddToPoolInitial(validatorsQueue);
-    const displaySymbol = getNetworkDisplaySymbol(account.symbol);
+    const displaySymbol = getNetworkDisplaySymbol(networkConfigDeps, account.symbol);
 
     const content = (() => {
         switch (account.networkType) {

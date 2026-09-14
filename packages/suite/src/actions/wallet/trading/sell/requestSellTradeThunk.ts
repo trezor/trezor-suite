@@ -2,7 +2,6 @@ import { type SellFiatTrade } from 'invity-api';
 
 import { createThunk } from '@suite-common/redux-utils';
 import {
-    type TradingFormAccountRootState,
     selectTradingComposedTransactionInfo,
     selectTradingSellInfo,
     selectTradingSellQuotesRequest,
@@ -16,7 +15,7 @@ import { submitRequestForm } from '../tradingCommonActions';
 
 type RequestSellTradeThunkParams = { quote: SellFiatTrade };
 
-export type RequestSellTradeThunkState = TradingFormAccountRootState;
+export type RequestSellTradeThunkState = Parameters<typeof selectTradingSendAccount>[0];
 
 export const requestSellTradeThunk = createThunk<
     void,

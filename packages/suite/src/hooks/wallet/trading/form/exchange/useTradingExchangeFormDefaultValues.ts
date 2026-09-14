@@ -2,6 +2,8 @@ import { useMemo } from 'react';
 
 import { type CryptoId } from 'invity-api';
 
+import { useServices } from '@suite-common/dependency-injection';
+import { selectNetworkConfigDeps } from '@suite-common/networks';
 import {
     TRADING_EXCHANGE_COMPARATOR_KYC_FILTER,
     TRADING_EXCHANGE_COMPARATOR_KYC_FILTER_ALL,
@@ -32,6 +34,8 @@ export const useTradingExchangeFormDefaultValues = (
     accountKey: AccountKey | undefined,
     cryptoId: CryptoId | undefined,
 ) => {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
+
     const baseCurrencyCode = useSelector(selectBaseCurrency);
 
     const defaultCurrency = useMemo(
@@ -42,7 +46,11 @@ export const useTradingExchangeFormDefaultValues = (
         [baseCurrencyCode],
     );
     const { account, defaultAsset } = useTradingDefaultSellAsset({ accountKey, cryptoId });
-    const { address, token } = resolveAddressAndToken(account, defaultAsset?.contractAddress);
+    const { address, token } = resolveAddressAndToken(
+        networkConfigDeps,
+        account,
+        defaultAsset?.contractAddress,
+    );
 
     const defaultPayment: Output = useMemo(
         () => ({

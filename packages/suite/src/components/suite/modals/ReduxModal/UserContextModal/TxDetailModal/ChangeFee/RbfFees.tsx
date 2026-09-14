@@ -1,3 +1,5 @@
+import { useServices } from '@suite-common/dependency-injection';
+import { selectNetworkConfigDeps } from '@suite-common/networks';
 import { getNetwork } from '@suite-common/wallet-config';
 
 import { Fees } from 'src/components/wallet/Fees/Fees';
@@ -5,6 +7,8 @@ import { useRbfContext } from 'src/hooks/wallet/useRbfForm';
 
 // wrapper for shareable Fees component
 export const RbfFees = () => {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
+
     const { changeFeeLevel, account, feeInfo, composedLevels } = useRbfContext();
 
     return (
@@ -14,7 +18,7 @@ export const RbfFees = () => {
             composedLevels={composedLevels}
             changeFeeLevel={changeFeeLevel}
             label={
-                getNetwork(account.symbol).networkType === 'ethereum'
+                getNetwork(networkConfigDeps, account.symbol).networkType === 'ethereum'
                     ? 'TR_NEW_MAXIMUM_FEE'
                     : 'TR_NEW_FEE'
             }

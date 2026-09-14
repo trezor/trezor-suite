@@ -1,3 +1,5 @@
+import { selectNetworkConfigDeps } from '@suite-common/networks';
+import { useServices } from '@suite-common/dependency-injection';
 import { useSelector } from 'react-redux';
 
 import { useFormatters } from '@suite-common/formatters';
@@ -31,6 +33,8 @@ type SellSendFiatAmountBadgeProps = {
 const asNonEmptyStringValue = (value: unknown): string => (value as string) ?? '0';
 
 const useMismatchedAmountMessage = (fieldName: keyof SellFormValues) => {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
+
     const { control } = useSellFormContext();
     const { translate } = useTranslate();
     const { CryptoAmountFormatter, BaseCurrencyAmountFormatter } = useFormatters();
@@ -40,7 +44,7 @@ const useMismatchedAmountMessage = (fieldName: keyof SellFormValues) => {
         control,
         name: ['sendAsset', 'quote', 'amountInCrypto', fieldName],
     });
-    const symbol = getSymbolFromTradeableAsset(asset);
+    const symbol = getSymbolFromTradeableAsset(networkConfigDeps, asset);
 
     if (!quote) {
         return undefined;
@@ -91,8 +95,10 @@ const useMismatchedAmountMessage = (fieldName: keyof SellFormValues) => {
 };
 
 const SellSendFiatAmountBadge = ({ amount, asset }: SellSendFiatAmountBadgeProps) => {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
+
     const { convertStrToBaseUnit } = useConvertFormValueToBaseUnit();
-    const symbol = getSymbolFromTradeableAsset(asset);
+    const symbol = getSymbolFromTradeableAsset(networkConfigDeps, asset);
     invariant(symbol, 'Asset symbol is undefined');
 
     const convertedAmount = convertStrToBaseUnit(amount, symbol);

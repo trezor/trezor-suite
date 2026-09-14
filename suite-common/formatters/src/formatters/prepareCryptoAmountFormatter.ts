@@ -1,6 +1,7 @@
 import { pipe } from '@mobily/ts-belt';
 
 import { redactNumericalSubstring } from '@suite-common/discreet-mode';
+import { type NetworkConfigDeps } from '@suite-common/networks';
 import { LANGUAGES, type Locale } from '@suite-common/suite-types';
 import {
     type NetworkSymbol,
@@ -97,22 +98,27 @@ type NormalizedCryptoAmount = {
     areSubunitsDisplayed: boolean;
 };
 
-const normalizeCryptoAmountForDisplay = ({
-    value,
-    config,
-    formatterContext,
-}: {
-    value: string;
-    config: FormatterConfig;
-    formatterContext: Partial<CryptoAmountFormatterDataContext>;
-}): NormalizedCryptoAmount => {
+const normalizeCryptoAmountForDisplay = (
+    networkConfigDeps: NetworkConfigDeps,
+    {
+        value,
+        config,
+        formatterContext,
+    }: {
+        value: string;
+        config: FormatterConfig;
+        formatterContext: Partial<CryptoAmountFormatterDataContext>;
+    },
+): NormalizedCryptoAmount => {
     const { symbol, isBalance = false, smallestUnitsOverride } = formatterContext;
     const { bitcoinAmountUnit } = config;
-    const decimals = getNetworkOptional(symbol)?.decimals ?? 0;
+    const decimals = getNetworkOptional(networkConfigDeps, symbol)?.decimals ?? 0;
 
     const areAmountUnitsSupported =
-        symbol && isNetworkSymbol(symbol)
-            ? getNetwork(symbol)?.features.some(feature => feature === 'amount-unit') === true
+        symbol && isNetworkSymbol(networkConfigDeps, symbol)
+            ? getNetwork(networkConfigDeps, symbol)?.features.some(
+                  feature => feature === 'amount-unit',
+              ) === true
             : false;
 
     if (smallestUnitsOverride === false) {
@@ -175,24 +181,27 @@ const formatCryptoAmountForDisplay = ({
     }
 };
 
-const appendSymbol = ({
-    value,
-    config,
-    formatterContext,
-}: {
-    value: string;
-    config: FormatterConfig;
-    formatterContext: Partial<CryptoAmountFormatterDataContext>;
-}) => {
+const appendSymbol = (
+    networkConfigDeps: NetworkConfigDeps,
+    {
+        value,
+        config,
+        formatterContext,
+    }: {
+        value: string;
+        config: FormatterConfig;
+        formatterContext: Partial<CryptoAmountFormatterDataContext>;
+    },
+) => {
     const { symbol, smallestUnitsOverride, withSymbol = true } = formatterContext;
 
     if (!withSymbol) {
         return value;
     }
 
-    const DisplaySymbolFormatter = prepareDisplaySymbolFormatter(config);
+    const DisplaySymbolFormatter = prepareDisplaySymbolFormatter(networkConfigDeps, config);
     const formattedSymbol =
-        symbol && isNetworkSymbol(symbol)
+        symbol && isNetworkSymbol(networkConfigDeps, symbol)
             ? DisplaySymbolFormatter.format(symbol, {
                   areAmountUnitsEnabled: smallestUnitsOverride,
               })
@@ -203,11 +212,18 @@ const appendSymbol = ({
     return `${value}${symbolSuffix}`;
 };
 
-export const prepareCryptoAmountFormatter = (config: FormatterConfig) =>
+export const prepareCryptoAmountFormatter = (
+    networkConfigDeps: NetworkConfigDeps,
+    config: FormatterConfig,
+) =>
     makeFormatter<CryptoAmountFormatterInputValue, string, CryptoAmountFormatterDataContext>(
         (value, formatterContext, shouldRedactNumbers) =>
             pipe(
-                normalizeCryptoAmountForDisplay({ value, config, formatterContext }),
+                normalizeCryptoAmountForDisplay(networkConfigDeps, {
+                    value,
+                    config,
+                    formatterContext,
+                }),
                 ({ value: normalizedAmount, areSubunitsDisplayed }) =>
                     formatCryptoAmountForDisplay({
                         value: normalizedAmount,
@@ -216,7 +232,11 @@ export const prepareCryptoAmountFormatter = (config: FormatterConfig) =>
                         areSubunitsDisplayed,
                     }),
                 formattedAmount =>
-                    appendSymbol({ value: formattedAmount, config, formatterContext }),
+                    appendSymbol(networkConfigDeps, {
+                        value: formattedAmount,
+                        config,
+                        formatterContext,
+                    }),
                 valueWithSymbol =>
                     shouldRedactNumbers
                         ? redactNumericalSubstring(valueWithSymbol)

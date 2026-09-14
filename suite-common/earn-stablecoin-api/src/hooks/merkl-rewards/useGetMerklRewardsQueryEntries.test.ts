@@ -1,3 +1,4 @@
+import { mockNetworkConfigDeps } from '@suite-common/networks/mocks';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { asAccountDescriptor } from '@suite-common/wallet-types';
 import {
@@ -6,6 +7,8 @@ import {
 } from '@suite-common/wallet-types/mocks';
 
 import { getMerklRewardsQueryEntriesForAccounts } from './useGetMerklRewardsQueryEntries';
+
+const networkConfigDeps = mockNetworkConfigDeps();
 
 const emptyEthereumAccount = mockWalletAccount(
     {
@@ -20,9 +23,11 @@ const emptyEthereumAccount = mockWalletAccount(
 
 describe('getMerklRewardsQueryEntriesForAccounts', () => {
     it('allows callers to include empty EVM accounts when active positions are known', () => {
-        expect(getMerklRewardsQueryEntriesForAccounts([emptyEthereumAccount])).toEqual([]);
         expect(
-            getMerklRewardsQueryEntriesForAccounts([emptyEthereumAccount], {
+            getMerklRewardsQueryEntriesForAccounts(networkConfigDeps, [emptyEthereumAccount]),
+        ).toEqual([]);
+        expect(
+            getMerklRewardsQueryEntriesForAccounts(networkConfigDeps, [emptyEthereumAccount], {
                 skipEmptyAccountCheck: true,
             }),
         ).toEqual([

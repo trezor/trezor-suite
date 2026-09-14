@@ -1,5 +1,7 @@
 import { useMemo } from 'react';
 
+import { useServices } from '@suite-common/dependency-injection';
+import { selectNetworkConfigDeps } from '@suite-common/networks';
 import { accountSearchFn } from '@suite-common/wallet-utils';
 
 import { useSelector } from 'src/hooks/suite';
@@ -8,18 +10,20 @@ import { globalSendReceiveFiltersSelectors } from 'src/slices/wallet/globalSendR
 import { type AccountOption } from './useAccountsOptions';
 
 export function useFilterAccounts(accounts: AccountOption[]) {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
+
     const { search, networkSymbol } = useSelector(globalSendReceiveFiltersSelectors.selectFilters);
 
     return useMemo(
         () =>
             accounts.filter(account =>
                 search || networkSymbol
-                    ? accountSearchFn(account.account, search, {
+                    ? accountSearchFn(networkConfigDeps, account.account, search, {
                           coinsFilter: networkSymbol,
                           accountLabel: account.account.label ?? '',
                       })
                     : true,
             ),
-        [accounts, networkSymbol, search],
+        [networkConfigDeps, accounts, networkSymbol, search],
     );
 }

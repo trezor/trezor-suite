@@ -1,3 +1,5 @@
+import type { NetworksRootState } from '@suite-common/networks';
+import { selectNetworkConfigAccessors } from '@suite-common/networks';
 import { A, pipe } from '@mobily/ts-belt';
 
 import { type DeviceRootState, selectSelectedDevice } from '@suite-common/device';
@@ -38,13 +40,13 @@ const isStakingPrefix = (
 ): prefix is 'stake' | 'unstake' | 'claim' =>
     prefix === 'stake' || prefix === 'unstake' || prefix === 'claim';
 
-export type TransactionReviewOutputsState = NativeSendRootState &
+export type TransactionReviewOutputsState = NetworksRootState &
+    NativeSendRootState &
     AccountsRootState &
     DeviceRootState &
     FormDraftRootState;
 
 const createMemoizedSelector = createWeakMapSelector.withTypes<NativeSendRootState>();
-const createSendMemoizedSelector = createWeakMapSelector.withTypes<TransactionReviewOutputsState>();
 
 export const selectFeeLevels = (state: NativeSendRootState) => state.wallet.send.feeLevels;
 
@@ -93,55 +95,58 @@ const selectSendReviewButtonRequestsCount = (
     return selectSendFormReviewButtonRequestsCount(state, account?.symbol, decreaseOutputId);
 };
 
-export const selectTransactionReviewOutputs = createSendMemoizedSelector(
-    [
-        selectSendReviewButtonRequestsCount,
+export const selectTransactionReviewOutputs =
+    createWeakMapSelector.withTypes<TransactionReviewOutputsState>()(
+        [
+            selectNetworkConfigAccessors,
+            selectSendReviewButtonRequestsCount,
+            (
+                _state,
+                _accountKey: AccountKey,
+                _tokenContract?: TokenAddress,
+                precomposedForm?: FormState | null,
+            ) => precomposedForm,
+            selectSendPrecomposedTx,
+            selectAccountByKey,
+            selectSelectedDevice,
+            selectIsTransactionAlreadySigned,
+        ],
         (
-            _state,
-            _accountKey: AccountKey,
-            _tokenContract?: TokenAddress,
-            precomposedForm?: FormState | null,
-        ) => precomposedForm,
-        selectSendPrecomposedTx,
-        selectAccountByKey,
-        selectSelectedDevice,
-        selectIsTransactionAlreadySigned,
-    ],
-    (
-        sendReviewButtonRequests,
-        precomposedForm,
-        precomposedTx,
-        account,
-        device,
-        isTransactionAlreadySigned,
-    ) => {
-        if (!account || !device || !precomposedForm || !precomposedTx) {
-            return null;
-        }
-
-        const decreaseOutputId = getDecreaseOutputId(precomposedTx, precomposedForm);
-
-        const outputs = constructTransactionReviewOutputs({
-            account,
-            decreaseOutputId,
-            device,
+            networkConfigDeps,
+            sendReviewButtonRequests,
             precomposedForm,
             precomposedTx,
-        });
+            account,
+            device,
+            isTransactionAlreadySigned,
+        ) => {
+            if (!account || !device || !precomposedForm || !precomposedTx) {
+                return null;
+            }
 
-        const newFlowOutputs = getIsUpdatedSendFlow(device)
-            ? outputs
-            : outputs?.filter(output => output.type !== 'fee'); // The `fee` output is already included in the final transaction summary output.
+            const decreaseOutputId = getDecreaseOutputId(precomposedTx, precomposedForm);
 
-        return newFlowOutputs.map((output, outputIndex) => {
-            const outputState: ReviewOutputState = isTransactionAlreadySigned
-                ? 'success'
-                : getTransactionReviewOutputState(outputIndex, sendReviewButtonRequests);
+            const outputs = constructTransactionReviewOutputs(networkConfigDeps, {
+                account,
+                decreaseOutputId,
+                device,
+                precomposedForm,
+                precomposedTx,
+            });
 
-            return { ...output, state: outputState };
-        });
-    },
-);
+            const newFlowOutputs = getIsUpdatedSendFlow(device)
+                ? outputs
+                : outputs?.filter(output => output.type !== 'fee'); // The `fee` output is already included in the final transaction summary output.
+
+            return newFlowOutputs.map((output, outputIndex) => {
+                const outputState: ReviewOutputState = isTransactionAlreadySigned
+                    ? 'success'
+                    : getTransactionReviewOutputState(outputIndex, sendReviewButtonRequests);
+
+                return { ...output, state: outputState };
+            });
+        },
+    );
 
 export const selectFormDraftByPrefix = (
     state: TransactionReviewOutputsState,
@@ -260,7 +265,7 @@ export const selectReviewSummaryOutputState = (
     return undefined;
 };
 
-export const selectReviewSummaryOutput = createSendMemoizedSelector(
+export const selectReviewSummaryOutput = createWeakMapSelector(
     [selectSendPrecomposedTx, selectReviewSummaryOutputState],
     (precomposedTx, outputState) => {
         if (!precomposedTx) {
@@ -297,8 +302,9 @@ export const selectTransactionReviewActiveStepIndex = (
     return activeIndex === -1 ? reviewOutputs.length : activeIndex;
 };
 
-export const selectIsClearSignedTradingSwap = createSendMemoizedSelector(
+export const selectIsClearSignedTradingSwap = createWeakMapSelector(
     [
+        selectNetworkConfigAccessors,
         selectAccountByKey,
         selectSelectedDevice,
         (
@@ -308,9 +314,9 @@ export const selectIsClearSignedTradingSwap = createSendMemoizedSelector(
         ) => selectFormDraftByPrefix(state, prefix, accountKey),
         selectSendPrecomposedTx,
     ],
-    (account, device, formDraft, precomposedTx) => {
+    (networkConfigDeps, account, device, formDraft, precomposedTx) => {
         if (account && device && formDraft && precomposedTx) {
-            return isClearSignedEvmTradingSwapTransaction({
+            return isClearSignedEvmTradingSwapTransaction(networkConfigDeps, {
                 account,
                 device,
                 precomposedTx,

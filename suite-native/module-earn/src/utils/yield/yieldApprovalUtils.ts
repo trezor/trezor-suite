@@ -1,3 +1,4 @@
+import { type NetworkConfigDeps } from '@suite-common/networks';
 import {
     type YieldApproveModalState,
     type YieldFlowToken,
@@ -102,14 +103,17 @@ export const getYieldAllowanceFeeState = (
     };
 };
 
-export const getYieldApprovalAllowanceAmount = ({
-    amount,
-    approvalLimitType,
-    tokenContract,
-    tokenDecimals,
-    tokenSymbol,
-}: GetYieldApprovalAllowanceAmountParams) =>
-    getAllowanceAmount({
+export const getYieldApprovalAllowanceAmount = (
+    networkConfigDeps: NetworkConfigDeps,
+    {
+        amount,
+        approvalLimitType,
+        tokenContract,
+        tokenDecimals,
+        tokenSymbol,
+    }: GetYieldApprovalAllowanceAmountParams,
+) =>
+    getAllowanceAmount(networkConfigDeps, {
         rawAmount: amount,
         approvalType: getYieldApprovalType(approvalLimitType),
         token: {
@@ -120,15 +124,18 @@ export const getYieldApprovalAllowanceAmount = ({
         },
     }).allowanceAmount;
 
-export const isYieldApprovalAllowanceUnlimited = ({
-    session,
-    token,
-}: IsYieldApprovalAllowanceUnlimitedParams): boolean => {
+export const isYieldApprovalAllowanceUnlimited = (
+    networkConfigDeps: NetworkConfigDeps,
+    { session, token }: IsYieldApprovalAllowanceUnlimitedParams,
+): boolean => {
     const allowanceAmount = session?.approval.allowanceAmount;
 
     if (!allowanceAmount || token?.decimals === undefined) {
         return false;
     }
 
-    return isAllowanceUnlimited({ amount: allowanceAmount, decimals: token.decimals });
+    return isAllowanceUnlimited(networkConfigDeps, {
+        amount: allowanceAmount,
+        decimals: token.decimals,
+    });
 };

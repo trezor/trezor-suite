@@ -7,6 +7,7 @@ import { events as sharedEvents } from '@suite-common/analytics';
 import { useServices } from '@suite-common/dependency-injection';
 import { selectSelectedDevice } from '@suite-common/device';
 import { useFormatters } from '@suite-common/formatters';
+import { selectNetworkConfigDeps } from '@suite-common/networks';
 import { selectDispatch } from '@suite-common/redux-utils';
 import { EarnFlow, EarnProvider } from '@suite-common/suite-types/src/staking';
 import {
@@ -44,6 +45,8 @@ export const EarnYieldAccountOpportunity = ({
     opportunity,
     isCardLayout,
 }: EarnYieldAccountOpportunityProps) => {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
+
     const { analytics, dispatch } = useServices(selectDesktopAnalyticsDep, selectDispatch);
     const { CryptoAmountFormatter } = useFormatters();
     const { translationString } = useTranslation();
@@ -110,14 +113,23 @@ export const EarnYieldAccountOpportunity = ({
         if (opportunity.account) {
             const tokenCryptoId = tokenAddress
                 ? toTokenCryptoId(
+                      networkConfigDeps,
                       networkSymbol,
-                      getContractAddressForNetworkSymbol(networkSymbol, tokenAddress),
+                      getContractAddressForNetworkSymbol(
+                          networkConfigDeps,
+                          networkSymbol,
+                          tokenAddress,
+                      ),
                   )
                 : undefined;
 
             dispatch(
                 tradingActions.setTradingFromPrefilledAccount(
-                    getTradingPrefilledFromAccountData(opportunity.account, tokenCryptoId),
+                    getTradingPrefilledFromAccountData(
+                        networkConfigDeps,
+                        opportunity.account,
+                        tokenCryptoId,
+                    ),
                 ),
             );
         }
@@ -228,7 +240,7 @@ export const EarnYieldAccountOpportunity = ({
         dispatch(
             gotoThunk({
                 routeName: 'earn-yield-withdraw',
-                params: getEarnRouteParams({
+                params: getEarnRouteParams(networkConfigDeps, {
                     account: opportunity.account,
                     vaultAddress: vaultContractAddress,
                 }),

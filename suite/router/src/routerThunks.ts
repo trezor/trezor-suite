@@ -1,3 +1,4 @@
+import { selectNetworkConfigAccessors, type NetworksRootState } from '@suite-common/networks';
 import { type LocksRootState, lockRouter, selectIsRouterLocked } from '@suite/locks';
 import { type ModalRootState } from '@suite/modal';
 import { type WithServices, createThunk } from '@suite-common/redux-utils';
@@ -32,13 +33,18 @@ type OnLocationChangeThunkParams = RouterPathOptional & {
     anchor?: AnchorType;
 };
 
-type OnLocationChangeThunkState = LocksRootState & ModalRootState & RouterRootState;
+type OnLocationChangeThunkState = LocksRootState &
+    ModalRootState &
+    RouterRootState &
+    NetworksRootState;
 
 export const onLocationChangeThunk = createThunk<
     ReturnType<typeof routerLocationChange> | null | undefined,
     OnLocationChangeThunkParams,
     { state: OnLocationChangeThunkState }
 >('@router/onLocationChange', (location, { dispatch, getState }) => {
+    const networkConfigDeps = selectNetworkConfigAccessors(getState());
+
     const unlocked = selectCanNavigate(getState());
     const router = selectRouter(getState());
     if (!unlocked && router.loaded) return;
@@ -48,7 +54,7 @@ export const onLocationChangeThunk = createThunk<
     }
 
     // TODO: check if the view is not locked by the device request
-    const appWithParams = getAppWithParams(location);
+    const appWithParams = getAppWithParams(networkConfigDeps, location);
 
     return dispatch(routerLocationChange({ ...location, ...appWithParams }));
 });

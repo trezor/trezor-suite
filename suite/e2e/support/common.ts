@@ -1,3 +1,4 @@
+import { type NetworkConfigDeps } from '@suite-common/networks';
 import { createIntl, createIntlCache } from 'react-intl';
 
 import test, { Locator, Page, TestInfo, expect } from '@playwright/test';
@@ -112,9 +113,12 @@ export const getCountryLabel = (country: TradingCountryCode) => {
     return countryOption.label.substring(countryOption.label.indexOf(' ') + 1);
 };
 
-export const calculatePercentageOfBalance = (params: PercentageOfBalanceParams) => {
+export const calculatePercentageOfBalance = (
+    networkConfigDeps: NetworkConfigDeps,
+    params: PercentageOfBalanceParams,
+) => {
     const fraction = (parseFloat(params.balance) * params.percentage) / 100;
-    const maxDecimals = getAccountDecimals(params.symbol);
+    const maxDecimals = getAccountDecimals(networkConfigDeps, params.symbol);
 
     return localizeNumber(fraction, 'en-US', 0, maxDecimals);
 };

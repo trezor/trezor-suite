@@ -1,3 +1,5 @@
+import { selectNetworkConfigDeps } from '@suite-common/networks';
+import { useServices } from '@suite-common/dependency-injection';
 import { useCallback, useMemo } from 'react';
 import { useSelector } from 'react-redux';
 
@@ -23,6 +25,8 @@ type UseYieldClaimRewardsParams = {
 };
 
 export const useYieldClaimRewards = ({ account }: UseYieldClaimRewardsParams) => {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
+
     const currentFiatRates = useSelector(selectCurrentFiatRates);
     const fiatCurrency = useSelector(selectBaseCurrency);
     const accounts = useMemo(() => (account ? [account] : []), [account]);
@@ -53,11 +57,11 @@ export const useYieldClaimRewards = ({ account }: UseYieldClaimRewardsParams) =>
             return null;
         }
 
-        return getStablecoinYieldAccountRewards({
+        return getStablecoinYieldAccountRewards(networkConfigDeps, {
             account,
             chainsRewardsWithFiat,
         });
-    }, [account, chainsRewardsWithFiat]);
+    }, [networkConfigDeps, account, chainsRewardsWithFiat]);
     const waitForClaimRewardsToResolve = useCallback(async () => {
         try {
             await waitForMerklToResolveClaim();

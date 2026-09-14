@@ -1,4 +1,6 @@
 import { Translation } from '@suite/intl';
+import { useServices } from '@suite-common/dependency-injection';
+import { selectNetworkConfigDeps } from '@suite-common/networks';
 import { getTronPendingUnstakeBalance, getUnstakingPeriodInDays } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
 import { Box, Card, Column, Row, Text } from '@trezor/components';
@@ -11,7 +13,9 @@ interface TronUnstakingCardProps {
 }
 
 export const TronUnstakingCard = ({ account }: TronUnstakingCardProps) => {
-    const pendingAmount = getTronPendingUnstakeBalance(account);
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
+
+    const pendingAmount = getTronPendingUnstakeBalance(networkConfigDeps, account);
 
     if (new BigNumber(pendingAmount).lte(0)) {
         return null;

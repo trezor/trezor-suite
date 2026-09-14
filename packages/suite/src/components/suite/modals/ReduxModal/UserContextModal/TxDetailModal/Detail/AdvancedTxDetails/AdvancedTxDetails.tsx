@@ -1,6 +1,8 @@
 import { useState } from 'react';
 
 import { Translation } from '@suite/intl';
+import { useServices } from '@suite-common/dependency-injection';
+import { selectNetworkConfigDeps } from '@suite-common/networks';
 import { type AccountType, type Network } from '@suite-common/wallet-config';
 import {
     type ChainedTransactions,
@@ -33,12 +35,19 @@ export const AdvancedTxDetails = ({
     chainedTxs,
     explorerUrl,
 }: AdvancedTxDetailsProps) => {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
+
     const [selectedTab, setSelectedTab] = useState<TabID>(defaultTab ?? 'amount');
 
     const getContent = () => {
         switch (selectedTab) {
             case 'amount':
-                return <AmountDetails tx={tx} isTestnet={isTestnet(network.symbol)} />;
+                return (
+                    <AmountDetails
+                        tx={tx}
+                        isTestnet={isTestnet(networkConfigDeps, network.symbol)}
+                    />
+                );
             case 'io':
                 return <IODetails tx={tx} />;
             case 'chained':

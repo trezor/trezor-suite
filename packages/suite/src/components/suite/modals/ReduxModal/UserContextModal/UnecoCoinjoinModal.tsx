@@ -4,6 +4,7 @@ import { Translation } from '@suite/intl';
 import { closeModal } from '@suite/modal';
 import { gotoThunk } from '@suite/router';
 import { useServices } from '@suite-common/dependency-injection';
+import { selectNetworkConfigDeps } from '@suite-common/networks';
 import { selectDispatch } from '@suite-common/redux-utils';
 import { convertAmountSubunitsToUnits, getAccountDecimals } from '@suite-common/wallet-utils';
 import { Column, H3, Modal, Paragraph } from '@trezor/components';
@@ -13,6 +14,8 @@ import { FormattedCryptoAmount } from 'src/components/suite/FormattedCryptoAmoun
 import { useSelector } from 'src/hooks/suite';
 
 export const UnecoCoinjoinModal = () => {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
+
     const account = useSelector(selectSelectedAccount);
     const { dispatch } = useServices(selectDispatch);
 
@@ -21,7 +24,7 @@ export const UnecoCoinjoinModal = () => {
     }
 
     const { symbol } = account;
-    const decimals = getAccountDecimals(symbol) || 8;
+    const decimals = getAccountDecimals(networkConfigDeps, symbol) || 8;
 
     const handleContinue = () => {
         dispatch(closeModal());

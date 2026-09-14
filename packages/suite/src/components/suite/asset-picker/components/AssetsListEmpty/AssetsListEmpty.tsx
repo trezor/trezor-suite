@@ -4,7 +4,7 @@ import { Translation, type TranslationKey } from '@suite/intl';
 import { openModal } from '@suite/modal';
 import { useServices } from '@suite-common/dependency-injection';
 import { selectSelectedDevice } from '@suite-common/device';
-import { selectNetworkSymbolForProtocol } from '@suite-common/networks';
+import { selectNetworkConfigDeps, selectNetworkSymbolForProtocol } from '@suite-common/networks';
 import { selectDispatch } from '@suite-common/redux-utils';
 import { getNetworkDisplaySymbolName } from '@suite-common/wallet-config';
 import { selectHasRunningDiscovery } from '@suite-common/wallet-core';
@@ -28,6 +28,8 @@ export const AssetsListEmpty = ({
     children,
     height,
 }: AssetsListEmptyProps) => {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
+
     const { dispatch } = useServices(selectDispatch);
     const protocolScheme = useSelector(selectProtocolSendFormScheme);
     const device = useSelector(selectSelectedDevice);
@@ -36,7 +38,9 @@ export const AssetsListEmpty = ({
     const protocolSymbol = useSelector(state =>
         selectNetworkSymbolForProtocol(state, protocolScheme),
     );
-    const network = protocolSymbol ? getNetworkDisplaySymbolName(protocolSymbol) : undefined;
+    const network = protocolSymbol
+        ? getNetworkDisplaySymbolName(networkConfigDeps, protocolSymbol)
+        : undefined;
 
     const openActivateNetworkModal = () => {
         if (!protocolSymbol || !device) return;

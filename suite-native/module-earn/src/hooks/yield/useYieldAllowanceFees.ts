@@ -1,3 +1,4 @@
+import { type NetworksRootState } from '@suite-common/networks';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useSelector } from 'react-redux';
 
@@ -74,7 +75,7 @@ export const useYieldAllowanceFees = ({
         () => (flowKey ? getYieldAllowanceFormDraftKey(flowKey, draftTransactionType) : ''),
         [draftTransactionType, flowKey],
     );
-    const feeInfo = useSelector((state: FeesRootState) =>
+    const feeInfo = useSelector((state: FeesRootState & NetworksRootState) =>
         selectConvertedNetworkFeeInfo(state, flowData?.account.symbol),
     );
     const formDraft = useSelector((state: FormDraftRootState) =>

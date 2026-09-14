@@ -1,7 +1,7 @@
 import { mockDesktopAnalytics } from '@suite/analytics/mocks';
 import { mockLockDevice } from '@suite-common/device/mocks';
 import { networksActions, networksReducer } from '@suite-common/networks';
-import { mockNetworkMetadata } from '@suite-common/networks/mocks';
+import { mockNetworkConfigDeps, mockNetworkMetadata } from '@suite-common/networks/mocks';
 import { createMockDispatch } from '@suite-common/redux-utils/mocks';
 
 import * as protocolConstants from './constants/protocolConstants';
@@ -11,6 +11,8 @@ import {
     type HandleProtocolRequestThunkState,
 } from './protocolActions';
 import { mockInitialAppState } from '../../../mocks/mockInitialAppState';
+
+const networkConfigDeps = mockNetworkConfigDeps();
 
 jest.mock('@suite-common/walletconnect', () => ({
     walletConnectPairThunk: jest.fn(),
@@ -46,11 +48,10 @@ describe('Protocol actions', () => {
     it('saves address, amount and label from Bitcoin URI protocol', () => {
         const { actions, dispatch, getState, extra } = createHandleProtocolRequestDeps();
 
-        protocolActions.handleProtocolRequestThunk('bitcoin:12345abcde?amount=1.02&label=Alice')(
-            dispatch,
-            getState,
-            extra,
-        );
+        protocolActions.handleProtocolRequestThunk(
+            networkConfigDeps,
+            'bitcoin:12345abcde?amount=1.02&label=Alice',
+        )(dispatch, getState, extra);
 
         expect(actions).toHaveLength(2);
         expect(actions).toContainEqual(
@@ -69,7 +70,11 @@ describe('Protocol actions', () => {
     it('saves address from Bitcoin URI protocol', () => {
         const { actions, dispatch, getState, extra } = createHandleProtocolRequestDeps();
 
-        protocolActions.handleProtocolRequestThunk('bitcoin:12345abcde')(dispatch, getState, extra);
+        protocolActions.handleProtocolRequestThunk(networkConfigDeps, 'bitcoin:12345abcde')(
+            dispatch,
+            getState,
+            extra,
+        );
 
         expect(actions).toHaveLength(2);
         expect(actions).toContainEqual(

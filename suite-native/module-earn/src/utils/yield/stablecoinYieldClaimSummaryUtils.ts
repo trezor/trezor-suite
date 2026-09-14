@@ -1,3 +1,4 @@
+import { type NetworkConfigDeps } from '@suite-common/networks';
 import {
     type ChainRewardsWithFiat,
     type MerklRewardsParams,
@@ -37,12 +38,12 @@ export type StablecoinYieldAccountRewards = {
 const getChainAddressKey = ({ chainId, address }: MerklRewardsParams<string>) =>
     `${chainId}:${address.toLowerCase()}`;
 
-const getAccountChainAddressKey = (account: Account) => {
+const getAccountChainAddressKey = (networkConfigDeps: NetworkConfigDeps, account: Account) => {
     if (account.networkType !== 'ethereum') {
         return null;
     }
 
-    const network = getNetwork(account.symbol);
+    const network = getNetwork(networkConfigDeps, account.symbol);
 
     if (!network?.chainId) {
         return null;
@@ -85,10 +86,11 @@ const getTotalFiatAmountFromClaimableRewards = (
 };
 
 const getStablecoinYieldAccountRewardsFromMap = (
+    networkConfigDeps: NetworkConfigDeps,
     account: Account,
     chainsRewardsByAccountKey: Map<string, ChainRewardsWithFiat>,
 ): StablecoinYieldAccountRewards | null => {
-    const accountChainAddressKey = getAccountChainAddressKey(account);
+    const accountChainAddressKey = getAccountChainAddressKey(networkConfigDeps, account);
 
     if (accountChainAddressKey === null) {
         return null;
@@ -115,26 +117,31 @@ const getStablecoinYieldAccountRewardsFromMap = (
     };
 };
 
-export const getStablecoinYieldAccountRewards = ({
-    account,
-    chainsRewardsWithFiat,
-}: {
-    account: Account;
-    chainsRewardsWithFiat: ChainRewardsWithFiat[];
-}): StablecoinYieldAccountRewards | null =>
+export const getStablecoinYieldAccountRewards = (
+    networkConfigDeps: NetworkConfigDeps,
+    {
+        account,
+        chainsRewardsWithFiat,
+    }: {
+        account: Account;
+        chainsRewardsWithFiat: ChainRewardsWithFiat[];
+    },
+): StablecoinYieldAccountRewards | null =>
     getStablecoinYieldAccountRewardsFromMap(
+        networkConfigDeps,
         account,
         getChainsRewardsByAccountKey(chainsRewardsWithFiat),
     );
 
-export const buildStablecoinYieldClaimSummaries = ({
-    accounts,
-    chainsRewardsWithFiat,
-}: BuildStablecoinYieldClaimSummariesParams): YieldClaimSummary[] => {
+export const buildStablecoinYieldClaimSummaries = (
+    networkConfigDeps: NetworkConfigDeps,
+    { accounts, chainsRewardsWithFiat }: BuildStablecoinYieldClaimSummariesParams,
+): YieldClaimSummary[] => {
     const chainsRewardsByAccountKey = getChainsRewardsByAccountKey(chainsRewardsWithFiat);
 
     return accounts.flatMap(account => {
         const accountRewards = getStablecoinYieldAccountRewardsFromMap(
+            networkConfigDeps,
             account,
             chainsRewardsByAccountKey,
         );
@@ -148,7 +155,7 @@ export const buildStablecoinYieldClaimSummaries = ({
         for (const reward of accountRewards.rewards) {
             const contractAddress = toTokenAddress(reward.token.address);
             const tokenKey = `${account.symbol}:${contractAddress.toLowerCase()}`;
-            const claimableAmount = subunitsToUnits({
+            const claimableAmount = subunitsToUnits(networkConfigDeps, {
                 value: asAmountSubunit(new BigNumber(reward.claimable)),
                 decimals: reward.token.decimals,
             });

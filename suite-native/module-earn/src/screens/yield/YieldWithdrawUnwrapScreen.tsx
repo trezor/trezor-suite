@@ -1,3 +1,4 @@
+import { selectNetworkConfigDeps } from '@suite-common/networks';
 import { useCallback, useEffect, useMemo } from 'react';
 
 import { type RouteProp, useIsFocused, useNavigation, useRoute } from '@react-navigation/native';
@@ -43,6 +44,8 @@ type NavigationProps = StackNavigationProps<
 >;
 
 export const YieldWithdrawUnwrapScreen = () => {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
+
     const route = useRoute<RouteProps>();
     const navigation = useNavigation<NavigationProps>();
     const isFocused = useIsFocused();
@@ -88,7 +91,9 @@ export const YieldWithdrawUnwrapScreen = () => {
         });
     }, [account?.symbol, analytics, vault?.id]);
 
-    const nativeSymbol = toTokenSymbol(account ? getNetworkDisplaySymbol(account.symbol) : '');
+    const nativeSymbol = toTokenSymbol(
+        account ? getNetworkDisplaySymbol(networkConfigDeps, account.symbol) : '',
+    );
     const wrappedBalance = token?.balance ?? '0';
 
     const handleSkipAnalytics = useCallback(() => {
@@ -152,7 +157,7 @@ export const YieldWithdrawUnwrapScreen = () => {
 
         const withdrawnWrappedAmount =
             flowType === 'redeem'
-                ? getConvertedOutputTokenBalanceToInputTokenAmount({
+                ? getConvertedOutputTokenBalanceToInputTokenAmount(networkConfigDeps, {
                       networkSymbol: account.symbol,
                       token: vault.token,
                       outputToken: vault.outputToken,
@@ -170,6 +175,7 @@ export const YieldWithdrawUnwrapScreen = () => {
 
         return clampedAmount.gt(0) ? clampedAmount.toFixed() : undefined;
     }, [
+        networkConfigDeps,
         account,
         completedAmount,
         flowType,
@@ -212,7 +218,7 @@ export const YieldWithdrawUnwrapScreen = () => {
         return null;
     }
 
-    const accountLabel = account.accountLabel ?? getNetwork(account.symbol).name;
+    const accountLabel = account.accountLabel ?? getNetwork(networkConfigDeps, account.symbol).name;
     const wrappedTokenSymbol = toTokenSymbol(token.symbol);
     const wrappedTokenContract = toTokenAddress(token.contractAddress ?? '');
     const isSubmitDisabled =
@@ -270,7 +276,8 @@ export const YieldWithdrawUnwrapScreen = () => {
                                 <Translation
                                     id="earn.yieldWithdrawFlowScreen.unwrapStepDescription"
                                     values={{
-                                        networkName: getNetwork(account.symbol).name,
+                                        networkName: getNetwork(networkConfigDeps, account.symbol)
+                                            .name,
                                         tokenSymbol: wrappedTokenSymbol,
                                     }}
                                 />
@@ -298,7 +305,9 @@ export const YieldWithdrawUnwrapScreen = () => {
                                 <YieldWrappedNativeReceivingCard
                                     amount={amountValue ?? ''}
                                     networkSymbol={account.symbol}
-                                    tokenDecimals={getNetwork(account.symbol).decimals}
+                                    tokenDecimals={
+                                        getNetwork(networkConfigDeps, account.symbol).decimals
+                                    }
                                     tokenSymbol={nativeSymbol}
                                 />
                             </Box>

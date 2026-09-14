@@ -1,3 +1,5 @@
+import { selectNetworkConfigDeps } from '@suite-common/networks';
+import { useServices } from '@suite-common/dependency-injection';
 import { useFormatters } from '@suite-common/formatters';
 import { getAccountDecimals } from '@suite-common/wallet-utils';
 
@@ -16,9 +18,12 @@ export const ExactCryptoAmountFormatter = ({
     maxDisplayedDecimals,
     ...otherProps
 }: ExactCryptoAmountFormatterProps) => {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
+
     const { CryptoAmountFormatter: formatter } = useFormatters();
 
-    const resolvedMaxDisplayedDecimals = maxDisplayedDecimals ?? getAccountDecimals(symbol);
+    const resolvedMaxDisplayedDecimals =
+        maxDisplayedDecimals ?? getAccountDecimals(networkConfigDeps, symbol);
 
     const formattedValue =
         value === null

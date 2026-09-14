@@ -1,3 +1,4 @@
+import { type NetworksRootState } from '@suite-common/networks';
 import { useSelector } from 'react-redux';
 
 import {
@@ -41,7 +42,7 @@ export const UnstakingTimelineCard = ({ accountKey }: UnstakingTimelineCardProps
         selectAccountNetworkSymbol(state, accountKey),
     );
 
-    const unstakingPeriodInDays = useSelector((state: StakeRootState) =>
+    const unstakingPeriodInDays = useSelector((state: StakeRootState & NetworksRootState) =>
         selectUnstakingPeriodInDaysBySymbol(state, symbol ?? undefined),
     );
 

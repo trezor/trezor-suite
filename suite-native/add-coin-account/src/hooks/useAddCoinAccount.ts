@@ -10,7 +10,7 @@ import {
     selectIsDeviceInViewOnlyMode,
     selectSelectedDevice,
 } from '@suite-common/device';
-import { selectSupportedNetworkSymbols } from '@suite-common/networks';
+import { selectNetworkConfigDeps, selectSupportedNetworkSymbols } from '@suite-common/networks';
 import { selectDispatch } from '@suite-common/redux-utils';
 import {
     type AccountType,
@@ -100,6 +100,8 @@ export const accountTypeTranslationKeys: Record<
 const LIMIT = 10; // Maximum number of manually added accounts per non-EVM network type.
 
 export const useAddCoinAccount = (networksSearchQuery?: string) => {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
+
     const allNetworkSymbols = useSelector(selectSupportedNetworkSymbols);
 
     const { dispatch } = useServices(selectDispatch);
@@ -139,7 +141,9 @@ export const useAddCoinAccount = (networksSearchQuery?: string) => {
             : '';
 
     const setDefaultAccountToBeAdded = (symbol: NetworkSymbol) => {
-        const defaultType = getAvailableAccountTypesForNetworkSymbol({ symbol })[0];
+        const defaultType = getAvailableAccountTypesForNetworkSymbol(networkConfigDeps, {
+            symbol,
+        })[0];
         const type = defaultType as AddCoinEnabledAccountType;
 
         if (type) {
@@ -183,10 +187,11 @@ export const useAddCoinAccount = (networksSearchQuery?: string) => {
 
         switch (earnFlowParams?.earnType) {
             case 'staking':
-                navigateByAccountState(account, navigation.navigate);
+                navigateByAccountState(networkConfigDeps, account, navigation.navigate);
                 break;
             case 'yield':
                 navigateByYieldAccountState(
+                    networkConfigDeps,
                     account,
                     earnFlowParams,
                     navigation.navigate,
@@ -318,7 +323,7 @@ export const useAddCoinAccount = (networksSearchQuery?: string) => {
         }
 
         // EVM networks have no manual-add limit. Users can add accounts beyond
-        if (isEvmNetwork(networkSymbol)) {
+        if (isEvmNetwork(networkConfigDeps, networkSymbol)) {
             return true;
         }
 
@@ -367,11 +372,11 @@ export const useAddCoinAccount = (networksSearchQuery?: string) => {
         );
 
         const nextIndex = lastVisibleAccount ? lastVisibleAccount.index + 1 : 0;
-        const network = getNetwork(symbol);
+        const network = getNetwork(networkConfigDeps, symbol);
         const networkAccount = network.accountTypes[accountType];
-        const allAccountTypes = getAvailableAccountTypes(symbol);
+        const allAccountTypes = getAvailableAccountTypes(networkConfigDeps, symbol);
 
-        const newAccountPayload = await prepareNewAccountPayload({
+        const newAccountPayload = await prepareNewAccountPayload(networkConfigDeps, {
             accountType,
             networkSymbol: symbol,
             index: nextIndex,
@@ -390,7 +395,9 @@ export const useAddCoinAccount = (networksSearchQuery?: string) => {
             return;
         }
 
-        dispatch(accountsActions.createAccount(newAccountPayload, allNetworkSymbols));
+        dispatch(
+            accountsActions.createAccount(networkConfigDeps, newAccountPayload, allNetworkSymbols),
+        );
         dispatch(reportWalletBalanceThunk());
         navigateToSuccessorScreen({
             flowType,
@@ -468,7 +475,7 @@ export const useAddCoinAccount = (networksSearchQuery?: string) => {
             }
 
             // For EVM networks: allow adding next account even if previous is empty
-            if (isEvmNetwork(symbol)) {
+            if (isEvmNetwork(networkConfigDeps, symbol)) {
                 await createNewEvmAccount({
                     symbol,
                     accountType,
@@ -527,7 +534,7 @@ export const useAddCoinAccount = (networksSearchQuery?: string) => {
             return;
         }
 
-        const types = getAvailableAccountTypesForNetworkSymbol({ symbol });
+        const types = getAvailableAccountTypesForNetworkSymbol(networkConfigDeps, { symbol });
 
         if (types.length > 1) {
             setDefaultAccountToBeAdded(symbol);

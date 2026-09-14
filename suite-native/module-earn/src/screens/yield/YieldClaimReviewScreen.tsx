@@ -1,3 +1,4 @@
+import { selectNetworkConfigDeps } from '@suite-common/networks';
 import { useEffect, useMemo } from 'react';
 import { useSelector } from 'react-redux';
 
@@ -27,6 +28,8 @@ type RouteProps = RouteProp<YieldStackParamList, YieldStackRoutes.YieldClaimRevi
 type NavigationProps = StackNavigationProps<YieldStackParamList, YieldStackRoutes.YieldClaimReview>;
 
 export const YieldClaimReviewScreen = () => {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
+
     const route = useRoute<RouteProps>();
     const navigation = useNavigation<NavigationProps>();
     const { dispatch } = useServices(selectDispatch);
@@ -45,13 +48,13 @@ export const YieldClaimReviewScreen = () => {
             return null;
         }
 
-        return buildYieldReviewPreview({
+        return buildYieldReviewPreview(networkConfigDeps, {
             account,
             device,
             review,
             type: 'claim',
         });
-    }, [account, device, review]);
+    }, [networkConfigDeps, account, device, review]);
 
     useEffect(() => {
         if (!account) {

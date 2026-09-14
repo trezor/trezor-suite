@@ -7,6 +7,7 @@ import {
     deviceActions,
     selectSelectedDevice,
 } from '@suite-common/device';
+import { type NetworksRootState, selectNetworkConfigAccessors } from '@suite-common/networks';
 import { createThunk } from '@suite-common/redux-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { getNetwork } from '@suite-common/wallet-config';
@@ -70,7 +71,9 @@ type ConnectPopupCallThunkParams<M extends CallMethodKeys> = {
     source: ConnectCallSource;
 };
 
-export type ConnectPopupCallInnerThunkState = DeviceRootState & ConnectPopupStateRootState;
+export type ConnectPopupCallInnerThunkState = DeviceRootState &
+    ConnectPopupStateRootState &
+    NetworksRootState;
 
 export type ConnectPopupCallInnerThunkDeps = {
     actions: LockDeviceDep;
@@ -88,6 +91,7 @@ export const connectPopupCallInnerThunk = createThunk<
 >(
     `${CONNECT_POPUP_MODULE}/callThunk`,
     async ({ source, ...params }, { dispatch, getState, extra }) => {
+        const networkConfigDeps = selectNetworkConfigAccessors(getState());
         try {
             const { method, payload } = compatibilityHooks({ ...params, source });
 
@@ -141,7 +145,7 @@ export const connectPopupCallInnerThunk = createThunk<
 
             // Reject a call this host cannot fulfil (e.g. selectAccount for a coin Suite can't render)
             // before asking for permissions, so the user doesn't approve access only to hit an error.
-            validateCallHooks({ method, payload });
+            validateCallHooks(networkConfigDeps, { method, payload });
 
             // Check if permission remembered (permission, coin). Keyed on THIS call's required
             // permissions (not the declared superset) so a call is silent whenever its own needs are
@@ -193,7 +197,7 @@ export const connectPopupCallInnerThunk = createThunk<
 
             const txSigningPrecomposed: PrecomposedTransactionFinal | undefined =
                 methodInfoPayload.precomposed;
-            const modifiedPayload = await preCallHooks({
+            const modifiedPayload = await preCallHooks(networkConfigDeps, {
                 method,
                 payload,
                 dispatch,
@@ -218,7 +222,7 @@ export const connectPopupCallInnerThunk = createThunk<
             } as CallMethodPayload);
             response.id = undefined;
 
-            const postCallOngoing = await postCallHooks({
+            const postCallOngoing = await postCallHooks(networkConfigDeps, {
                 method,
                 payload: modifiedPayload,
                 originalPayload: payload,
@@ -498,7 +502,8 @@ const resolveCandidateValue = (
 
 type ConnectPopupLoadSelectAccountPageThunkState = DeviceRootState &
     ConnectPopupStateRootState &
-    AccountsRootState;
+    AccountsRootState &
+    NetworksRootState;
 
 type ConnectPopupLoadSelectAccountPageThunkDeps = {
     actions: LockDeviceDep;
@@ -514,6 +519,8 @@ export const connectPopupLoadSelectAccountPageThunk = createThunk<
 >(
     `${CONNECT_POPUP_MODULE}/loadSelectAccountPageThunk`,
     async ({ page }, { dispatch, getState, extra }) => {
+        const networkConfigDeps = selectNetworkConfigAccessors(getState());
+
         // release any device lock held by the (still pending) selectAccount call
         dispatch(extra.actions.lockDevice(false));
 
@@ -555,7 +562,7 @@ export const connectPopupLoadSelectAccountPageThunk = createThunk<
 
             const { options, candidates: prevCandidates, selectedAccountTypeKey } = initialCall;
             const { symbol, accountTypeTabs, mode } = options;
-            const isUtxo = isUtxoNetwork(symbol);
+            const isUtxo = isUtxoNetwork(networkConfigDeps, symbol);
             // accountTypeTabs is guaranteed non-empty by the methodHook that builds it
             const activeTab =
                 accountTypeTabs.find(tab => tab.key === selectedAccountTypeKey) ??
@@ -640,7 +647,7 @@ export const connectPopupLoadSelectAccountPageThunk = createThunk<
             for (const row of rows) {
                 if (!row.loading) continue;
 
-                const result = await prepareNewAccountPayload({
+                const result = await prepareNewAccountPayload(networkConfigDeps, {
                     accountType: activeTab.accountType ?? 'normal',
                     networkSymbol: symbol,
                     index: row.accountIndex,
@@ -674,7 +681,11 @@ export const connectPopupLoadSelectAccountPageThunk = createThunk<
                                         addresses: result.accountInfo.addresses,
                                     })
                                   : { path: result.path }),
-                              balance: formatNetworkAmount(result.accountInfo.balance, symbol),
+                              balance: formatNetworkAmount(
+                                  networkConfigDeps,
+                                  result.accountInfo.balance,
+                                  symbol,
+                              ),
                               used: !result.accountInfo.empty,
                               loading: false,
                               loadFailed: false,
@@ -745,7 +756,7 @@ export const connectPopupLoadSelectAccountPageThunk = createThunk<
                         accountTypeKey: activeTab.key,
                         path: addr.path,
                         address: addr.address,
-                        balance: formatNetworkAmount(addr.balance, symbol),
+                        balance: formatNetworkAmount(networkConfigDeps, addr.balance, symbol),
                         used: true,
                         selected: cached?.selected ?? false,
                         loading: false,
@@ -794,7 +805,7 @@ export const connectPopupLoadSelectAccountPageThunk = createThunk<
                 paintPage(existingAccount.addresses.used);
             }
 
-            const result = await prepareNewAccountPayload({
+            const result = await prepareNewAccountPayload(networkConfigDeps, {
                 accountType: activeTab.accountType ?? 'normal',
                 networkSymbol: symbol,
                 index: manualAccountIndex,
@@ -923,7 +934,9 @@ export const connectPopupBackToManualAccountsThunk = createThunk<
 
 // Verifies a single candidate address on the device. Safe to run while the selectAccount call is
 // pending because that method holds no device session (useDevice = false).
-type ConnectPopupVerifySelectAccountThunkState = DeviceRootState & ConnectPopupStateRootState;
+type ConnectPopupVerifySelectAccountThunkState = DeviceRootState &
+    ConnectPopupStateRootState &
+    NetworksRootState;
 
 type ConnectPopupVerifySelectAccountThunkDeps = {
     actions: LockDeviceDep;
@@ -939,6 +952,8 @@ export const connectPopupVerifySelectAccountThunk = createThunk<
 >(
     `${CONNECT_POPUP_MODULE}/verifySelectAccountThunk`,
     async ({ accountIndex, accountTypeKey }, { dispatch, getState, extra }) => {
+        const networkConfigDeps = selectNetworkConfigAccessors(getState());
+
         dispatch(extra.actions.lockDevice(false));
 
         const isTarget = (c: SelectAccountCandidate) =>
@@ -969,7 +984,7 @@ export const connectPopupVerifySelectAccountThunk = createThunk<
             useEmptyPassphrase: device.useEmptyPassphrase,
         };
 
-        const { networkType } = getNetwork(candidate.symbol);
+        const { networkType } = getNetwork(networkConfigDeps, candidate.symbol);
         const accountType =
             call.options.accountTypeTabs.find(tab => tab.key === candidate.accountTypeKey)
                 ?.accountType ?? 'normal';

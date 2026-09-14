@@ -1,3 +1,5 @@
+import { selectNetworkConfigDeps } from '@suite-common/networks';
+import { useServices } from '@suite-common/dependency-injection';
 import { useSelector } from 'react-redux';
 
 import { getCompactAmount, useFormatters } from '@suite-common/formatters';
@@ -45,6 +47,8 @@ interface YieldClaimAccountCardProps {
 }
 
 export const YieldClaimAccountCard = ({ summary, onPress }: YieldClaimAccountCardProps) => {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
+
     const { applyStyle } = useNativeStyles();
     const { CryptoAmountFormatter } = useFormatters();
 
@@ -85,7 +89,7 @@ export const YieldClaimAccountCard = ({ summary, onPress }: YieldClaimAccountCar
                     />
                 ) : (
                     <Text variant="body-md-strong" numberOfLines={1}>
-                        {getNetworkDisplaySymbolName(summary.networkSymbol)}
+                        {getNetworkDisplaySymbolName(networkConfigDeps, summary.networkSymbol)}
                     </Text>
                 )}
                 <Text

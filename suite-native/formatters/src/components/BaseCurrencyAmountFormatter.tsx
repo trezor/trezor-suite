@@ -1,3 +1,5 @@
+import { selectNetworkConfigDeps } from '@suite-common/networks';
+import { useServices } from '@suite-common/dependency-injection';
 import React from 'react';
 
 import { useFormatters } from '@suite-common/formatters';
@@ -31,9 +33,11 @@ export const BaseCurrencyAmountFormatter = React.memo(
         maximumFractionDigits,
         ...otherProps
     }: FiatAmountFormatterProps) => {
+        const networkConfigDeps = useServices(selectNetworkConfigDeps);
+
         const { BaseCurrencyAmountFormatter: formatter } = useFormatters();
 
-        if (!!symbol && isTestnet(symbol)) {
+        if (!!symbol && isTestnet(networkConfigDeps, symbol)) {
             return <EmptyAmountText variant={variant} />;
         }
         if (isLoading || (value === null && !isForcedDiscreetMode)) {

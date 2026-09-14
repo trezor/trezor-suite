@@ -1,4 +1,5 @@
 import { type AdaPools } from '@suite-common/earn-staking-api';
+import { mockNetworkConfigDeps } from '@suite-common/networks/mocks';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { type AccountVotingDelegation, CARDANO_EVERSTAKE_DREP } from '@suite-common/wallet-core';
 import { type Account, type AccountKey, type CardanoAction } from '@suite-common/wallet-types';
@@ -6,6 +7,8 @@ import { mockWalletAccount, networkSpecificDefaultCardano } from '@suite-common/
 import TrezorConnect, { type CardanoCertificate, PROTO } from '@trezor/connect';
 
 import { CardanoComposeError, prepareTxPlan } from './stakeFormCardanoActions';
+
+const networkConfigDeps = mockNetworkConfigDeps();
 
 jest.mock('@trezor/connect', () => {
     const actual = jest.requireActual('@trezor/connect');
@@ -68,7 +71,12 @@ const createCardanoAccount = ({
     }) as unknown as Account;
 
 const migratePool = (account: Account, votingDelegation: AccountVotingDelegation) =>
-    prepareTxPlan({ account, action: 'delegate', cardanoPools: [], votingDelegation });
+    prepareTxPlan(networkConfigDeps, {
+        account,
+        action: 'delegate',
+        cardanoPools: [],
+        votingDelegation,
+    });
 
 const getCertificateTypes = (txData: Awaited<ReturnType<typeof prepareTxPlan>>) =>
     txData?.certificates.map(certificate => certificate.type);
@@ -146,7 +154,7 @@ const createStakeReadyAccount = () =>
 const STAKE_READY_ACCOUNT_KEY = createStakeReadyAccount().key;
 
 const prepare = (action: CardanoAction, votingDelegation?: AccountVotingDelegation) =>
-    prepareTxPlan({
+    prepareTxPlan(networkConfigDeps, {
         account: createStakeReadyAccount(),
         action,
         cardanoPools: [],
@@ -173,7 +181,7 @@ describe('prepareTxPlan', () => {
     it('composes a delegation for an account that has no staking address and no rewards yet', async () => {
         mockComposeSuccess();
 
-        const result = await prepareTxPlan({
+        const result = await prepareTxPlan(networkConfigDeps, {
             account: mockNeverStakedAccount(),
             action: 'delegate',
             cardanoPools,
@@ -203,7 +211,7 @@ describe('prepareTxPlan', () => {
             },
         });
 
-        const rejection = await prepareTxPlan({
+        const rejection = await prepareTxPlan(networkConfigDeps, {
             account: mockNeverStakedAccount(),
             action: 'delegate',
             cardanoPools,
@@ -217,7 +225,7 @@ describe('prepareTxPlan', () => {
     it('does not compose a withdrawal when there is nothing to withdraw', async () => {
         mockComposeSuccess();
 
-        const result = await prepareTxPlan({
+        const result = await prepareTxPlan(networkConfigDeps, {
             account: mockNeverStakedAccount(),
             action: 'withdrawal',
             cardanoPools,
@@ -264,7 +272,7 @@ describe('prepareTxPlan', () => {
     it('builds nothing for a vote delegation that keeps the current delegation, leaving nothing to sign', async () => {
         const account = createCardanoAccount({ drepId: PREDEFINED_DREP_ID });
 
-        const txData = await prepareTxPlan({
+        const txData = await prepareTxPlan(networkConfigDeps, {
             account,
             action: 'voteDelegate',
             cardanoPools: [],

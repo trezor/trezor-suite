@@ -17,6 +17,7 @@
         },
         { "path": "../../suite-common/logger" },
         { "path": "../../suite-common/mev" },
+        { "path": "../../suite-common/networks" },
         {
             "path": "../../suite-common/redux-utils"
         },

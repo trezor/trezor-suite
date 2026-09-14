@@ -1,3 +1,4 @@
+import { selectNetworkConfigDeps } from '@suite-common/networks';
 import { useCallback, useState } from 'react';
 import { useSelector } from 'react-redux';
 
@@ -19,13 +20,15 @@ import {
 import { getReceiveAccountAddressText } from '../../../utils/general/receiveAccountUtils';
 
 export const useApprovalFlow = () => {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
+
     const { dispatch } = useServices(selectDispatch);
     const { translate } = useTranslate();
 
     const quote = useSelector(selectTradingExchangeSelectedQuote);
     const sendAccount = useSelector(selectExchangeSelectedSendAccount);
     const toAccount = useSelector(selectExchangeSelectedReceiveAccount);
-    const receiveAddress = getReceiveAccountAddressText(toAccount);
+    const receiveAddress = getReceiveAccountAddressText(networkConfigDeps, toAccount);
 
     const [isConfirming, setIsConfirming] = useState(false);
     const [error, setError] = useState<string | null>(null);

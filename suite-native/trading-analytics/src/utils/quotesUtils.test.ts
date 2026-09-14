@@ -1,3 +1,5 @@
+import { mockNetworkConfigDeps } from '@suite-common/networks/mocks';
+
 import type { BuyTrade, CoinInfo, SellFiatTrade } from 'invity-api';
 
 import {
@@ -8,11 +10,13 @@ import {
 
 import { getAnalyticsTradingBuyPayload, getAnalyticsTradingSellPayload } from './quotesUtils';
 
+const networkConfigDeps = mockNetworkConfigDeps();
+
 describe('quotesUtils', () => {
     describe('getAnalyticsTradingSellPayload', () => {
         it('should return null when coinInfo is undefined', () => {
             const quote = banxaCreditCardSellQuote;
-            const result = getAnalyticsTradingSellPayload({
+            const result = getAnalyticsTradingSellPayload(networkConfigDeps, {
                 quote,
                 coinInfo: undefined,
             });
@@ -22,7 +26,7 @@ describe('quotesUtils', () => {
 
         it('should return null when quote is undefined', () => {
             const coinInfo = coins.ethereum as CoinInfo;
-            const result = getAnalyticsTradingSellPayload({
+            const result = getAnalyticsTradingSellPayload(networkConfigDeps, {
                 quote: undefined,
                 coinInfo,
             });
@@ -37,7 +41,7 @@ describe('quotesUtils', () => {
             } as unknown as SellFiatTrade;
             const coinInfo = coins.ethereum as CoinInfo;
 
-            const result = getAnalyticsTradingSellPayload({
+            const result = getAnalyticsTradingSellPayload(networkConfigDeps, {
                 quote,
                 coinInfo,
             });
@@ -49,7 +53,7 @@ describe('quotesUtils', () => {
             const quote = banxaCreditCardSellQuote;
             const coinInfo = coins.ethereum as CoinInfo;
 
-            const result = getAnalyticsTradingSellPayload({
+            const result = getAnalyticsTradingSellPayload(networkConfigDeps, {
                 quote,
                 coinInfo,
             });
@@ -67,7 +71,7 @@ describe('quotesUtils', () => {
 
     describe('getAnalyticsTradingBuyPayload', () => {
         it('should return null when coinInfo is undefined', () => {
-            const result = getAnalyticsTradingBuyPayload({
+            const result = getAnalyticsTradingBuyPayload(networkConfigDeps, {
                 quote: mercuryoApplePayBuyQuote,
                 coinInfo: undefined,
             });
@@ -77,7 +81,7 @@ describe('quotesUtils', () => {
 
         it('should return null when quote is undefined', () => {
             const coinInfo = coins.bitcoin as CoinInfo;
-            const result = getAnalyticsTradingBuyPayload({
+            const result = getAnalyticsTradingBuyPayload(networkConfigDeps, {
                 quote: undefined,
                 coinInfo,
             });
@@ -92,7 +96,7 @@ describe('quotesUtils', () => {
             } as unknown as BuyTrade;
             const coinInfo = coins.bitcoin as CoinInfo;
 
-            const result = getAnalyticsTradingBuyPayload({
+            const result = getAnalyticsTradingBuyPayload(networkConfigDeps, {
                 quote,
                 coinInfo,
             });
@@ -103,7 +107,7 @@ describe('quotesUtils', () => {
         it('should return correct payload otherwise', () => {
             const coinInfo = coins.bitcoin as CoinInfo;
 
-            const result = getAnalyticsTradingBuyPayload({
+            const result = getAnalyticsTradingBuyPayload(networkConfigDeps, {
                 quote: mercuryoApplePayBuyQuote,
                 coinInfo,
             });

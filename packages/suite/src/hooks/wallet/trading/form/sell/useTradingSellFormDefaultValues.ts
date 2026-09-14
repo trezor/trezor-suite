@@ -3,6 +3,8 @@ import { useMemo } from 'react';
 import { type CryptoId } from 'invity-api';
 
 import { selectIsTorEnabled } from '@suite/tor';
+import { useServices } from '@suite-common/dependency-injection';
+import { selectNetworkConfigDeps } from '@suite-common/networks';
 import {
     TRADING_DEFAULT_PAYMENT_METHOD,
     type TradingCountryCode,
@@ -29,6 +31,8 @@ export const useTradingSellFormDefaultValues = (
     sellInfoCountry: TradingCountryCode | undefined,
     sellInfoCountrySubdivision?: string,
 ): TradingSellFormDefaultValuesProps => {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
+
     const isTorEnabled = useSelector(selectIsTorEnabled);
 
     const { account, defaultAsset } = useTradingDefaultSellAsset({
@@ -44,7 +48,11 @@ export const useTradingSellFormDefaultValues = (
         [countrySubdivision],
     );
 
-    const { address, token } = resolveAddressAndToken(account, defaultAsset?.contractAddress);
+    const { address, token } = resolveAddressAndToken(
+        networkConfigDeps,
+        account,
+        defaultAsset?.contractAddress,
+    );
 
     const baseCurrencyCode = useSelector(selectBaseCurrency);
     const defaultCurrency = useMemo(

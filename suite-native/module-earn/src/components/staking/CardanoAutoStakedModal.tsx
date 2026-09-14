@@ -1,3 +1,5 @@
+import { selectNetworkConfigDeps } from '@suite-common/networks';
+import { useServices } from '@suite-common/dependency-injection';
 import { type NetworkSymbol, getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import { BottomSheetModal, type BottomSheetModalRef, Text, VStack } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
@@ -13,6 +15,8 @@ const backgroundStyle = prepareNativeStyle(utils => ({
 }));
 
 export const CardanoAutoStakedModal = ({ ref, networkSymbol }: CardanoAutoStakedModalProps) => {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
+
     const { applyStyle } = useNativeStyles();
 
     return (
@@ -28,7 +32,9 @@ export const CardanoAutoStakedModal = ({ ref, networkSymbol }: CardanoAutoStaked
                     <Text color="contentSecondary">
                         <Translation
                             id="earn.stakingManagementScreen.cardanoAutoStakedModal.delegationDescription"
-                            values={{ symbol: getNetworkDisplaySymbol(networkSymbol) }}
+                            values={{
+                                symbol: getNetworkDisplaySymbol(networkConfigDeps, networkSymbol),
+                            }}
                         />
                     </Text>
                     <Text color="contentSecondary">

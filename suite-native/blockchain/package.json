@@ -12,6 +12,7 @@
     },
     "dependencies": {
         "@suite-common/dependency-injection": "workspace:*",
+        "@suite-common/networks": "workspace:*",
         "@suite-common/redux-utils": "workspace:*",
         "@suite-common/wallet-config": "workspace:*",
         "@suite-common/wallet-core": "workspace:*",

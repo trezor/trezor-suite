@@ -1,3 +1,4 @@
+import { type NetworkConfigDeps } from '@suite-common/networks';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { toTokenAddress } from '@suite-common/wallet-types';
 import { asAmountSubunit, subunitsToUnits } from '@suite-common/wallet-utils';
@@ -22,10 +23,10 @@ interface GetYieldClaimRewardsSnapshotProps {
     rewards: YieldClaimableReward[];
 }
 
-export const getYieldClaimRewardsSnapshot = ({
-    networkSymbol,
-    rewards,
-}: GetYieldClaimRewardsSnapshotProps): YieldFlowCompleteRewardItem[] =>
+export const getYieldClaimRewardsSnapshot = (
+    networkConfigDeps: NetworkConfigDeps,
+    { networkSymbol, rewards }: GetYieldClaimRewardsSnapshotProps,
+): YieldFlowCompleteRewardItem[] =>
     rewards.map(reward => ({
         token: {
             networkSymbol,
@@ -33,7 +34,7 @@ export const getYieldClaimRewardsSnapshot = ({
             decimals: reward.token.decimals,
             contractAddress: toTokenAddress(reward.token.address),
         },
-        value: subunitsToUnits({
+        value: subunitsToUnits(networkConfigDeps, {
             value: asAmountSubunit(new BigNumber(reward.claimable)),
             decimals: reward.token.decimals,
         }).toString(),

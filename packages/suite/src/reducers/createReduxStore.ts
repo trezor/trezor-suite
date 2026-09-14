@@ -2,6 +2,7 @@ import { configureStore } from '@reduxjs/toolkit';
 
 import { MODAL_OPEN_USER_CONTEXT } from '@suite/modal';
 import { type ExtraDependenciesStatic } from '@suite-common/extra-dependencies';
+import { type NetworkConfigDeps } from '@suite-common/networks';
 import { type ReduxStoreWithThunk, createReduxExtra } from '@suite-common/redux-utils';
 import { type TokenDefinitionsMiddlewareDeps } from '@suite-common/token-definitions';
 
@@ -10,7 +11,7 @@ import { type ExtraDependenciesSuite } from 'src/support/extraDependencies';
 
 import { type AppState, type SuiteRootReducer, devTools, getCustomMiddleware } from './store';
 
-type ReduxStoreDeps = {
+type ReduxStoreDeps = NetworkConfigDeps & {
     reducer: SuiteRootReducer;
     extraDependencies: ExtraDependenciesStatic & TokenDefinitionsMiddlewareDeps;
 };
@@ -49,7 +50,7 @@ export const createReduxStore = (deps: ReduxStoreDeps): ReduxStore => {
                 },
             })
                 .prepend(thunkMiddleware)
-                .concat(getCustomMiddleware(getExtra)),
+                .concat(getCustomMiddleware(deps, getExtra)),
         devTools,
     });
 

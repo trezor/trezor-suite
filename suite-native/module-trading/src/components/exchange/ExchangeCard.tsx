@@ -1,3 +1,5 @@
+import { selectNetworkConfigDeps } from '@suite-common/networks';
+import { useServices } from '@suite-common/dependency-injection';
 import { useWatch } from '@suite-native/forms';
 import { Translation } from '@suite-native/intl';
 import { getSymbolFromTradeableAsset } from '@suite-native/trading-atoms';
@@ -18,13 +20,15 @@ type ExchangeCardProps = {
 const EXCHANGE_CARD_TEST_ID = '@trading/exchangeCard';
 
 export const ExchangeCard = ({ isAmountInputActive }: ExchangeCardProps) => {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
+
     const { control } = useExchangeFormContext();
     const [receiveAsset, receiveCryptoAmount] = useWatch({
         name: ['receiveAsset', 'receiveCryptoAmount'],
         control,
     });
     const { convertStrToBaseUnit } = useConvertFormValueToBaseUnit();
-    const receiveSymbol = getSymbolFromTradeableAsset(receiveAsset);
+    const receiveSymbol = getSymbolFromTradeableAsset(networkConfigDeps, receiveAsset);
     const receiveCryptoAmountInBaseUnit = receiveSymbol
         ? convertStrToBaseUnit(receiveCryptoAmount, receiveSymbol)
         : receiveCryptoAmount;

@@ -1,5 +1,9 @@
 import { isAddressDeprecated, isBech32AddressUppercase } from '@suite-common/address';
-import { type AddressValidator, type NamedAddressSupport } from '@suite-common/networks';
+import {
+    type NetworkConfigDeps,
+    type AddressValidator,
+    type NamedAddressSupport,
+} from '@suite-common/networks';
 import { formInputsMaxLength, yup } from '@suite-common/validators';
 import { type NetworkSymbol, getDisplaySymbol, getNetworkType } from '@suite-common/wallet-config';
 import { U_INT_32 } from '@suite-common/wallet-constants';
@@ -29,7 +33,11 @@ export type SendFormFormContext = {
     namedAddress?: NamedAddressSupport;
 };
 
-const isAmountDust = (amount: string, context?: SendFormFormContext) => {
+const isAmountDust = (
+    networkConfigDeps: NetworkConfigDeps,
+    amount: string,
+    context?: SendFormFormContext,
+) => {
     if (!amount || !context) {
         return false;
     }
@@ -44,7 +52,8 @@ const isAmountDust = (amount: string, context?: SendFormFormContext) => {
     const rawDust = networkFeeInfo.dustLimit?.toString();
 
     const dustThreshold =
-        rawDust && (isValueInSats ? rawDust : formatNetworkAmount(rawDust, symbol));
+        rawDust &&
+        (isValueInSats ? rawDust : formatNetworkAmount(networkConfigDeps, rawDust, symbol));
 
     if (!dustThreshold) {
         return false;
@@ -105,191 +114,206 @@ const hasEnoughBalanceForFees = (context?: SendFormFormContext) => {
     return amountBigNumber.gt(networkFeeInfo.minFee);
 };
 
-const outputSchema = yup.object({
-    address: yup
-        .string()
-        .required()
-        .test(
-            'is-invalid-address',
-            'The address format is incorrect.',
-            (value, { options: { context } }: yup.TestContext<SendFormFormContext>) => {
-                if (!value || !context) {
-                    return false;
-                }
-                const { addressValidator, symbol, namedAddress } = context;
+const outputSchema = (networkConfigDeps: NetworkConfigDeps) =>
+    yup.object({
+        address: yup
+            .string()
+            .required()
+            .test(
+                'is-invalid-address',
+                'The address format is incorrect.',
+                (value, { options: { context } }: yup.TestContext<SendFormFormContext>) => {
+                    if (!value || !context) {
+                        return false;
+                    }
+                    const { addressValidator, symbol, namedAddress } = context;
 
-                if (!addressValidator || !symbol) return false;
+                    if (!addressValidator || !symbol) return false;
 
-                // A named input (e.g. ENS) is not an address, so the format check would always
-                // fail it. `is-name-resolved` gates it on the address it resolved to instead.
-                if (namedAddress?.isSupported && namedAddress.isNameLike(value)) {
-                    return true;
-                }
+                    // A named input (e.g. ENS) is not an address, so the format check would always
+                    // fail it. `is-name-resolved` gates it on the address it resolved to instead.
+                    if (namedAddress?.isSupported && namedAddress.isNameLike(value)) {
+                        return true;
+                    }
 
-                return (
-                    addressValidator.isAddressValid(value, symbol) &&
-                    !isAddressDeprecated({ addressValidator, address: value, symbol }) &&
-                    !isBech32AddressUppercase(value) // bech32 addresses are valid as uppercase but are not accepted by Trezor
-                );
-            },
-        )
-        .test(
-            'is-name-resolved',
-            'Could not resolve name. Check that the name is correct.',
-            function (value, { options: { context } }: yup.TestContext<SendFormFormContext>) {
-                const { addressValidator, symbol, namedAddress } = context ?? {};
+                    return (
+                        addressValidator.isAddressValid(value, symbol) &&
+                        !isAddressDeprecated({ addressValidator, address: value, symbol }) &&
+                        !isBech32AddressUppercase(value) // bech32 addresses are valid as uppercase but are not accepted by Trezor
+                    );
+                },
+            )
+            .test(
+                'is-name-resolved',
+                'Could not resolve name. Check that the name is correct.',
+                function (value, { options: { context } }: yup.TestContext<SendFormFormContext>) {
+                    const { addressValidator, symbol, namedAddress } = context ?? {};
 
-                if (!value || !addressValidator || !symbol) return true;
-                if (!namedAddress?.isSupported) return true;
-                if (!namedAddress.isNameLike(value)) return true;
+                    if (!value || !addressValidator || !symbol) return true;
+                    if (!namedAddress?.isSupported) return true;
+                    if (!namedAddress.isNameLike(value)) return true;
 
-                const { resolvedAddress } = this.parent as { resolvedAddress?: string };
+                    const { resolvedAddress } = this.parent as { resolvedAddress?: string };
 
-                // `undefined` means the resolution has not settled yet, so there is nothing to
-                // fail on. Submission is blocked meanwhile by the send screen, not here — erroring
-                // while a name is still resolving would flash on every keystroke.
-                if (resolvedAddress === undefined) return true;
+                    // `undefined` means the resolution has not settled yet, so there is nothing to
+                    // fail on. Submission is blocked meanwhile by the send screen, not here — erroring
+                    // while a name is still resolving would flash on every keystroke.
+                    if (resolvedAddress === undefined) return true;
 
-                return addressValidator.isAddressValid(resolvedAddress, symbol);
-            },
-        )
-        .test(
-            'ripple-is-sending-to-self',
-            'Can`t send to myself.',
-            (value, { options: { context } }: yup.TestContext<SendFormFormContext>) => {
-                const { symbol, accountDescriptor } = context!;
-                if (!symbol || !accountDescriptor) return true;
+                    return addressValidator.isAddressValid(resolvedAddress, symbol);
+                },
+            )
+            .test(
+                'ripple-is-sending-to-self',
+                'Can`t send to myself.',
+                (value, { options: { context } }: yup.TestContext<SendFormFormContext>) => {
+                    const { symbol, accountDescriptor } = context!;
+                    if (!symbol || !accountDescriptor) return true;
 
-                if (getNetworkType(symbol) !== 'ripple') return true;
+                    if (getNetworkType(networkConfigDeps, symbol) !== 'ripple') return true;
 
-                return value !== accountDescriptor;
-            },
-        )
-        .test(
-            'tron-is-sending-to-self',
-            'Can`t send to myself.',
-            (value, { options: { context } }: yup.TestContext<SendFormFormContext>) => {
-                const { symbol, accountDescriptor, isTokenFlow } = context!;
-                if (!symbol || !accountDescriptor) return true;
+                    return value !== accountDescriptor;
+                },
+            )
+            .test(
+                'tron-is-sending-to-self',
+                'Can`t send to myself.',
+                (value, { options: { context } }: yup.TestContext<SendFormFormContext>) => {
+                    const { symbol, accountDescriptor, isTokenFlow } = context!;
+                    if (!symbol || !accountDescriptor) return true;
 
-                if (getNetworkType(symbol) !== 'tron') return true;
-                if (isTokenFlow) return true;
+                    if (getNetworkType(networkConfigDeps, symbol) !== 'tron') return true;
+                    if (isTokenFlow) return true;
 
-                return value !== accountDescriptor;
-            },
-        ),
-    amount: yup
-        .string()
-        .required('Amount is required.')
-        .matches(/^\d*\.?\d+$/, 'Invalid decimal value.')
-        .test(
-            'is-dust-amount',
-            'The value is lower than the dust limit.',
-            (value, { options: { context } }: yup.TestContext<SendFormFormContext>) =>
-                !isAmountDust(value, context),
-        )
-        .test(
-            'ripple-higher-than-reserve',
-            'Amount is above the required unspendable reserve',
-            function (value, { options: { context } }: yup.TestContext<SendFormFormContext>) {
-                const { symbol, availableBalance, feeLevelsMaxAmount, rippleReserve } = context!;
+                    return value !== accountDescriptor;
+                },
+            ),
+        amount: yup
+            .string()
+            .required('Amount is required.')
+            .matches(/^\d*\.?\d+$/, 'Invalid decimal value.')
+            .test(
+                'is-dust-amount',
+                'The value is lower than the dust limit.',
+                (value, { options: { context } }: yup.TestContext<SendFormFormContext>) =>
+                    !isAmountDust(networkConfigDeps, value, context),
+            )
+            .test(
+                'ripple-higher-than-reserve',
+                'Amount is above the required unspendable reserve',
+                function (value, { options: { context } }: yup.TestContext<SendFormFormContext>) {
+                    const { symbol, availableBalance, feeLevelsMaxAmount, rippleReserve } =
+                        context!;
 
-                if (!availableBalance || !symbol || getNetworkType(symbol) !== 'ripple')
-                    return true;
-
-                const amountBigNumber = new BigNumber(value);
-
-                if (
-                    feeLevelsMaxAmount?.normal &&
-                    amountBigNumber.gt(
-                        formatNetworkAmount(
-                            // availableBalance = balance - reserve
-                            availableBalance,
-                            symbol,
-                        ),
+                    if (
+                        !availableBalance ||
+                        !symbol ||
+                        getNetworkType(networkConfigDeps, symbol) !== 'ripple'
                     )
-                ) {
-                    const displaySymbol = getDisplaySymbol(symbol);
+                        return true;
 
-                    return this.createError({
-                        message: `Amount is above the required unspendable reserve${rippleReserve ? ` (${rippleReserve} ${displaySymbol})` : ''}`,
+                    const amountBigNumber = new BigNumber(value);
+
+                    if (
+                        feeLevelsMaxAmount?.normal &&
+                        amountBigNumber.gt(
+                            formatNetworkAmount(
+                                networkConfigDeps,
+                                // availableBalance = balance - reserve
+                                availableBalance,
+                                symbol,
+                            ),
+                        )
+                    ) {
+                        const displaySymbol = getDisplaySymbol(networkConfigDeps, symbol);
+
+                        return this.createError({
+                            message: `Amount is above the required unspendable reserve${rippleReserve ? ` (${rippleReserve} ${displaySymbol})` : ''}`,
+                        });
+                    }
+
+                    return true;
+                },
+            )
+            .test(
+                'has-enough-balance-for-fees',
+                `Insufficient balance to cover the transaction fees.`,
+                function (_, { options: { context } }: yup.TestContext<SendFormFormContext>) {
+                    return hasEnoughBalanceForFees(context);
+                },
+            )
+            .test(
+                'network-reserve',
+                'Not enough funds remaining after reserving network fees',
+                function (value, { options: { context } }: yup.TestContext<SendFormFormContext>) {
+                    if (!value || !context) return true;
+
+                    const {
+                        symbol,
+                        availableBalance,
+                        networkReserve,
+                        isTokenFlow,
+                        feeLevelsMaxAmount,
+                    } = context;
+
+                    if (!symbol || !availableBalance || !networkReserve || isTokenFlow) return true;
+
+                    const formattedBalance = formatNetworkAmount(
+                        networkConfigDeps,
+                        availableBalance,
+                        symbol,
+                    );
+                    if (new BigNumber(value).gt(formattedBalance)) return true;
+
+                    const isSendMaxEnabled = isNotNullOrUndefined(
+                        this.from?.[1]?.value.setMaxOutputId,
+                    );
+                    const feeLevelMaxAmount = isSendMaxEnabled
+                        ? feeLevelsMaxAmount?.economy
+                        : feeLevelsMaxAmount?.normal;
+
+                    if (!feeLevelMaxAmount) return true;
+
+                    const feeWithReserve = new BigNumber(formattedBalance)
+                        .minus(feeLevelMaxAmount)
+                        .toString();
+
+                    return isAmountWithinNetworkReserve({
+                        reserve: feeWithReserve,
+                        balance: formattedBalance,
+                        amount: value,
                     });
-                }
+                },
+            )
+            .test(
+                'is-higher-than-balance',
+                'You don’t have enough balance to send this amount.',
+                function (value, { options: { context } }: yup.TestContext<SendFormFormContext>) {
+                    const isSendMaxEnabled = isNotNullOrUndefined(
+                        this.from?.[1]?.value.setMaxOutputId,
+                    );
 
-                return true;
-            },
-        )
-        .test(
-            'has-enough-balance-for-fees',
-            `Insufficient balance to cover the transaction fees.`,
-            function (_, { options: { context } }: yup.TestContext<SendFormFormContext>) {
-                return hasEnoughBalanceForFees(context);
-            },
-        )
-        .test(
-            'network-reserve',
-            'Not enough funds remaining after reserving network fees',
-            function (value, { options: { context } }: yup.TestContext<SendFormFormContext>) {
-                if (!value || !context) return true;
+                    return !isAmountHigherThanBalance(value, isSendMaxEnabled, context);
+                },
+            )
+            .test(
+                'too-many-decimals',
+                'Too many decimals.',
+                (value, { options: { context } }: yup.TestContext<SendFormFormContext>) => {
+                    const { decimals = 8 } = context!;
 
-                const {
-                    symbol,
-                    availableBalance,
-                    networkReserve,
-                    isTokenFlow,
-                    feeLevelsMaxAmount,
-                } = context;
+                    return isDecimalsValid(value, decimals);
+                },
+            ),
+        fiat: yup.string(),
+        token: yup.string().required().nullable(),
+        label: yup.string(),
+        // Onchain address a named input resolved to. Written by `useResolvedAddress`, read by the
+        // `is-name-resolved` test above and by composing/signing through the send form draft.
+        resolvedAddress: yup.string(),
+    });
 
-                if (!symbol || !availableBalance || !networkReserve || isTokenFlow) return true;
-
-                const formattedBalance = formatNetworkAmount(availableBalance, symbol);
-                if (new BigNumber(value).gt(formattedBalance)) return true;
-
-                const isSendMaxEnabled = isNotNullOrUndefined(this.from?.[1]?.value.setMaxOutputId);
-                const feeLevelMaxAmount = isSendMaxEnabled
-                    ? feeLevelsMaxAmount?.economy
-                    : feeLevelsMaxAmount?.normal;
-
-                if (!feeLevelMaxAmount) return true;
-
-                const feeWithReserve = new BigNumber(formattedBalance)
-                    .minus(feeLevelMaxAmount)
-                    .toString();
-
-                return isAmountWithinNetworkReserve({
-                    reserve: feeWithReserve,
-                    balance: formattedBalance,
-                    amount: value,
-                });
-            },
-        )
-        .test(
-            'is-higher-than-balance',
-            'You don’t have enough balance to send this amount.',
-            function (value, { options: { context } }: yup.TestContext<SendFormFormContext>) {
-                const isSendMaxEnabled = isNotNullOrUndefined(this.from?.[1]?.value.setMaxOutputId);
-
-                return !isAmountHigherThanBalance(value, isSendMaxEnabled, context);
-            },
-        )
-        .test(
-            'too-many-decimals',
-            'Too many decimals.',
-            (value, { options: { context } }: yup.TestContext<SendFormFormContext>) => {
-                const { decimals = 8 } = context!;
-
-                return isDecimalsValid(value, decimals);
-            },
-        ),
-    fiat: yup.string(),
-    token: yup.string().required().nullable(),
-    label: yup.string(),
-    // Onchain address a named input resolved to. Written by `useResolvedAddress`, read by the
-    // `is-name-resolved` test above and by composing/signing through the send form draft.
-    resolvedAddress: yup.string(),
-});
-
-export type OutputsFormValues = yup.InferType<typeof outputSchema>;
+export type OutputsFormValues = yup.InferType<ReturnType<typeof outputSchema>>;
 
 // Must correspond with `suite-common/wallet-types/src/transaction.ts:Output` type.
 // This hacky code is here to somehow enforce it.
@@ -297,110 +321,113 @@ export type OutputsFormValues = yup.InferType<typeof outputSchema>;
     {} as unknown as OutputsFormValues,
 );
 
-export const sendOutputsFormValidationSchema = yup.object({
-    outputs: yup.array(outputSchema).required(),
-    transactionData: yup.string(),
-    isDestinationTagEnabled: yup.boolean(),
-    destinationTag: yup
-        .string()
-        .when('isDestinationTagEnabled', {
-            is: true,
-            then: schema => schema.required('Destination Tag is required'),
-            otherwise: schema => schema.notRequired(),
-        })
-        .test(
-            'is-destination-tag-a-number',
-            'You can only use positive numbers for the destination tag.',
-            (value, { options: { context } }: yup.TestContext<SendFormFormContext>) => {
-                const { symbol } = context!;
+export const sendOutputsFormValidationSchema = (networkConfigDeps: NetworkConfigDeps) =>
+    yup.object({
+        outputs: yup.array(outputSchema(networkConfigDeps)).required(),
+        transactionData: yup.string(),
+        isDestinationTagEnabled: yup.boolean(),
+        destinationTag: yup
+            .string()
+            .when('isDestinationTagEnabled', {
+                is: true,
+                then: schema => schema.required('Destination Tag is required'),
+                otherwise: schema => schema.notRequired(),
+            })
+            .test(
+                'is-destination-tag-a-number',
+                'You can only use positive numbers for the destination tag.',
+                (value, { options: { context } }: yup.TestContext<SendFormFormContext>) => {
+                    const { symbol } = context!;
 
-                if (!symbol) return true;
-                const networkType = getNetworkType(symbol);
-                if (['solana', 'stellar', 'tron'].includes(networkType)) return true;
+                    if (!symbol) return true;
+                    const networkType = getNetworkType(networkConfigDeps, symbol);
+                    if (['solana', 'stellar', 'tron'].includes(networkType)) return true;
 
-                if (!value) return true;
+                    if (!value) return true;
 
-                if (!/^\d*$/.test(value)) return false;
+                    if (!/^\d*$/.test(value)) return false;
 
-                return true;
-            },
-        )
-        .test(
-            'is-destination-tag-required',
-            'Destination tag was not set.',
-            (
-                value,
-                {
-                    options: { context },
-                    schema: { isDestinationTagEnabled },
-                }: yup.TestContext<SendFormFormContext>,
-            ) => {
-                const { symbol } = context!;
-
-                if (!symbol) return true;
-                const networkType = getNetworkType(symbol);
-                if (
-                    networkType !== 'ripple' &&
-                    networkType !== 'stellar' &&
-                    networkType !== 'solana'
-                )
                     return true;
+                },
+            )
+            .test(
+                'is-destination-tag-required',
+                'Destination tag was not set.',
+                (
+                    value,
+                    {
+                        options: { context },
+                        schema: { isDestinationTagEnabled },
+                    }: yup.TestContext<SendFormFormContext>,
+                ) => {
+                    const { symbol } = context!;
 
-                // isDestinationTagEnabled is enabled, tag should be set
-                if (!value && isDestinationTagEnabled) return false;
+                    if (!symbol) return true;
+                    const networkType = getNetworkType(networkConfigDeps, symbol);
+                    if (
+                        networkType !== 'ripple' &&
+                        networkType !== 'stellar' &&
+                        networkType !== 'solana'
+                    )
+                        return true;
 
-                return true;
-            },
-        )
-        .test(
-            'is-destination-tag-in-range',
-            'Destination tag is too high.',
-            (value, { options: { context } }: yup.TestContext<SendFormFormContext>) => {
-                const { symbol } = context!;
+                    // isDestinationTagEnabled is enabled, tag should be set
+                    if (!value && isDestinationTagEnabled) return false;
 
-                if (!symbol) return true;
-                if (getNetworkType(symbol) !== 'ripple') return true;
+                    return true;
+                },
+            )
+            .test(
+                'is-destination-tag-in-range',
+                'Destination tag is too high.',
+                (value, { options: { context } }: yup.TestContext<SendFormFormContext>) => {
+                    const { symbol } = context!;
 
-                if (!value) return true;
+                    if (!symbol) return true;
+                    if (getNetworkType(networkConfigDeps, symbol) !== 'ripple') return true;
 
-                const numberValue = Number(value);
+                    if (!value) return true;
 
-                if (numberValue > U_INT_32) {
-                    return false;
-                }
+                    const numberValue = Number(value);
 
-                return true;
-            },
-        )
-        .test(
-            'is-destination-tag-length-valid',
-            'Destination tag is too long.',
-            (value, { options: { context } }: yup.TestContext<SendFormFormContext>) => {
-                const { symbol } = context!;
-
-                if (!symbol) return true;
-                const networkType = getNetworkType(symbol);
-                if (networkType !== 'stellar' && networkType !== 'solana') return true;
-
-                if (!value) return true;
-
-                const destinationTagMaxLength = (() => {
-                    switch (networkType) {
-                        case 'stellar':
-                            return formInputsMaxLength.stellarTextMemo;
-                        case 'solana':
-                            return formInputsMaxLength.solanaMemo;
-                        default:
-                            throw new Error(`Unsupported network type: ${networkType}`);
+                    if (numberValue > U_INT_32) {
+                        return false;
                     }
-                })();
 
-                return value.length <= destinationTagMaxLength;
-            },
-        ),
-    setMaxOutputId: yup.number(),
-});
+                    return true;
+                },
+            )
+            .test(
+                'is-destination-tag-length-valid',
+                'Destination tag is too long.',
+                (value, { options: { context } }: yup.TestContext<SendFormFormContext>) => {
+                    const { symbol } = context!;
 
-export type SendOutputsFormValues = yup.InferType<typeof sendOutputsFormValidationSchema>;
+                    if (!symbol) return true;
+                    const networkType = getNetworkType(networkConfigDeps, symbol);
+                    if (networkType !== 'stellar' && networkType !== 'solana') return true;
+
+                    if (!value) return true;
+
+                    const destinationTagMaxLength = (() => {
+                        switch (networkType) {
+                            case 'stellar':
+                                return formInputsMaxLength.stellarTextMemo;
+                            case 'solana':
+                                return formInputsMaxLength.solanaMemo;
+                            default:
+                                throw new Error(`Unsupported network type: ${networkType}`);
+                        }
+                    })();
+
+                    return value.length <= destinationTagMaxLength;
+                },
+            ),
+        setMaxOutputId: yup.number(),
+    });
+
+export type SendOutputsFormValues = yup.InferType<
+    ReturnType<typeof sendOutputsFormValidationSchema>
+>;
 export type SendOutputFieldName = keyof SendOutputsFormValues['outputs'][number];
 export type SendFieldName = keyof SendOutputsFormValues | SendOutputFieldName;

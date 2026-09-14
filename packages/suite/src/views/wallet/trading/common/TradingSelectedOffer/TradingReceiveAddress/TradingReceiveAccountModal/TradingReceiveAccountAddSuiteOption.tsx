@@ -2,6 +2,7 @@ import { Translation } from '@suite/intl';
 import { openModal } from '@suite/modal';
 import { useServices } from '@suite-common/dependency-injection';
 import { selectSelectedDevice } from '@suite-common/device';
+import { selectNetworkConfigDeps } from '@suite-common/networks';
 import { selectDispatch } from '@suite-common/redux-utils';
 import { cryptoIdToNetworkSymbol, parseCryptoId, useTradingUtils } from '@suite-common/trading';
 import { selectHasRunningDiscovery } from '@suite-common/wallet-core';
@@ -15,6 +16,8 @@ import { useReceiveAddressModalControls } from 'src/views/wallet/trading/common/
 import { useTradingReceiveAddressValues } from '../useTradingReceiveAddressValues';
 
 export const TradingReceiveAccountAddSuiteOption = () => {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
+
     const { cryptoId } = useTradingReceiveAddressValues();
     const modalControls = useReceiveAddressModalControls();
 
@@ -23,7 +26,7 @@ export const TradingReceiveAccountAddSuiteOption = () => {
     const isDiscoveryRunning = useSelector(selectHasRunningDiscovery);
     const { cryptoIdToPlatformName, cryptoIdToCoinName } = useTradingUtils();
 
-    const symbol = cryptoIdToNetworkSymbol(cryptoId);
+    const symbol = cryptoIdToNetworkSymbol(networkConfigDeps, cryptoId);
 
     const { networkId, contractAddress } = parseCryptoId(cryptoId);
     const networkName = contractAddress

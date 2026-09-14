@@ -1,3 +1,4 @@
+import { mockNetworkConfigDeps } from '@suite-common/networks/mocks';
 import { type Network, asNetworkSymbol, getNetwork } from '@suite-common/wallet-config';
 import { asAccountDescriptor } from '@suite-common/wallet-types';
 import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
@@ -12,6 +13,8 @@ import {
 } from 'src/utils/wallet/trading/tradingUtils';
 
 import { FIXTURE_ACCOUNT_OPTIONS } from './__fixtures__/tradingUtils';
+
+const networkConfigDeps = mockNetworkConfigDeps();
 
 describe('trading utils', () => {
     it('tradingGetAmountLabels', () => {
@@ -73,9 +76,13 @@ describe('trading utils', () => {
 
     it('resolveAddressAndToken - testing correct returning value fot setting FormState to send currency', () => {
         FIXTURE_ACCOUNT_OPTIONS.forEach(({ option, result }) => {
-            expect(resolveAddressAndToken(option.account, option.tokenContractAddress)).toEqual(
-                result,
-            );
+            expect(
+                resolveAddressAndToken(
+                    networkConfigDeps,
+                    option.account,
+                    option.tokenContractAddress,
+                ),
+            ).toEqual(result);
         });
     });
 
@@ -90,7 +97,7 @@ describe('trading utils', () => {
                     },
                 } as unknown as Account;
 
-                const network = getNetwork('btc');
+                const network = getNetwork(networkConfigDeps, 'btc');
 
                 const result = await getComposeAddressPlaceholder(account, network);
 

@@ -1,5 +1,7 @@
 import * as net from 'net';
 
+import { mockNetworkConfigDeps } from '@suite-common/networks/mocks';
+
 // Store IPC handlers registered by the module
 const ipcHandlers: Record<string, (...args: any[]) => any> = {};
 
@@ -54,6 +56,8 @@ jest.mock('../libs/process-icon', () => ({
 
 import { init } from './mcp-server';
 
+const networkConfigDeps = mockNetworkConfigDeps();
+
 const TEST_TOKEN = 'test-token-abc123';
 
 const createMockStore = (overrides?: Partial<McpSettings>) => {
@@ -97,7 +101,7 @@ const startMcpServer = async (overrides?: {
     const store = createMockStore({ port, ...overrides?.storeOverrides });
     const mainWindowProxy = createMockMainWindowProxy(overrides?.hasWindow ?? true);
 
-    const result = init({
+    const result = init(networkConfigDeps, {
         mainWindowProxy,
         store,
         interceptor: {} as any,

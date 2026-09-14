@@ -1,3 +1,5 @@
+import { useServices } from '@suite-common/dependency-injection';
+import { selectNetworkConfigDeps } from '@suite-common/networks';
 import { selectCoinDefinitions } from '@suite-common/token-definitions';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { selectBaseCurrency, selectCurrentFiatRates } from '@suite-common/wallet-core';
@@ -19,6 +21,8 @@ type TokenIconSetWrapperProps = {
 };
 
 export const TokenIconSetWrapper = ({ accounts, symbol }: TokenIconSetWrapperProps) => {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
+
     const baseCurrencyCode = useSelector(selectBaseCurrency);
     const fiatRates = useSelector(selectCurrentFiatRates);
     const coinDefinitions = useSelector(state => selectCoinDefinitions(state, symbol));
@@ -29,7 +33,7 @@ export const TokenIconSetWrapper = ({ accounts, symbol }: TokenIconSetWrapperPro
 
     if (!allTokensWithRates.length) return null;
 
-    const tokens = getTokens<TokensWithRates>({
+    const tokens = getTokens<TokensWithRates>(networkConfigDeps, {
         tokens: allTokensWithRates,
         symbol,
         tokenDefinitions: coinDefinitions,

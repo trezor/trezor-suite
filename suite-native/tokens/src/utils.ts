@@ -1,3 +1,4 @@
+import { type NetworkConfigDeps } from '@suite-common/networks';
 import { G, S } from '@mobily/ts-belt';
 
 import { type NetworkSymbol, getNetworkFeatures } from '@suite-common/wallet-config';
@@ -8,5 +9,5 @@ export const getTokenName = (tokenName?: string) => {
     return tokenName;
 };
 
-export const isNetworkWithTokens = (symbol: NetworkSymbol) =>
-    getNetworkFeatures(symbol).includes('tokens');
+export const isNetworkWithTokens = (networkConfigDeps: NetworkConfigDeps, symbol: NetworkSymbol) =>
+    getNetworkFeatures(networkConfigDeps, symbol).includes('tokens');

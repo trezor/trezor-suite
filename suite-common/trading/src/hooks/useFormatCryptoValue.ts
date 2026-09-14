@@ -1,8 +1,10 @@
+import { useServices } from '@suite-common/dependency-injection';
 import { useCallback } from 'react';
 
 import type { CryptoId } from 'invity-api';
 
 import { useFormatters } from '@suite-common/formatters';
+import { selectNetworkConfigDeps } from '@suite-common/networks';
 import { type NetworkSymbol, getNetworkDecimals } from '@suite-common/wallet-config';
 
 import { useTradingUtils } from './useTradingUtils';
@@ -10,6 +12,8 @@ import { useTradingUtils } from './useTradingUtils';
 const TOKEN_DECIMALS_LENGTH = 16;
 
 export const useFormatCryptoValue = () => {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
+
     const { CryptoAmountFormatter } = useFormatters();
     const { cryptoIdToCoinSymbol } = useTradingUtils();
 
@@ -27,7 +31,9 @@ export const useFormatCryptoValue = () => {
             if (!coinSymbol) {
                 return undefined;
             }
-            const networkDecimals = coinSymbol ? getNetworkDecimals(coinSymbol) : undefined;
+            const networkDecimals = coinSymbol
+                ? getNetworkDecimals(networkConfigDeps, coinSymbol)
+                : undefined;
 
             return CryptoAmountFormatter.format(value, {
                 maxDisplayedDecimals: networkDecimals ?? TOKEN_DECIMALS_LENGTH,
@@ -37,6 +43,6 @@ export const useFormatCryptoValue = () => {
                 smallestUnitsOverride,
             });
         },
-        [cryptoIdToCoinSymbol, CryptoAmountFormatter],
+        [networkConfigDeps, cryptoIdToCoinSymbol, CryptoAmountFormatter],
     );
 };

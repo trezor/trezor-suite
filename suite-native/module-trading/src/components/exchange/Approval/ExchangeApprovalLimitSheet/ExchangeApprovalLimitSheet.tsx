@@ -1,3 +1,5 @@
+import { selectNetworkConfigDeps } from '@suite-common/networks';
+import { useServices } from '@suite-common/dependency-injection';
 import { memo, useEffect } from 'react';
 
 import type { DexApprovalType, ExchangeTrade } from 'invity-api';
@@ -27,6 +29,8 @@ export const ExchangeApprovalLimitSheet = memo(
         selectedApprovalType,
         quote,
     }: ExchangeApprovalLimitSheetProps) => {
+        const networkConfigDeps = useServices(selectNetworkConfigDeps);
+
         const { bottomSheetRef, openModal, closeModal } = useBottomSheetModal();
 
         useEffect(
@@ -35,7 +39,7 @@ export const ExchangeApprovalLimitSheet = memo(
         );
 
         const { symbol, contractAddress } = quote.send
-            ? cryptoIdToNetworkSymbolAndContractAddress(quote.send)
+            ? cryptoIdToNetworkSymbolAndContractAddress(networkConfigDeps, quote.send)
             : {};
 
         if (!symbol) {

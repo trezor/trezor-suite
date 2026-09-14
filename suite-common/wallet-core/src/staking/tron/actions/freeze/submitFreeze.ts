@@ -1,3 +1,4 @@
+import { type NetworksRootState, selectNetworkConfigAccessors } from '@suite-common/networks';
 import { createThunk } from '@suite-common/redux-utils';
 import { type TrezorDevice } from '@suite-common/suite-types';
 import { getNetwork } from '@suite-common/wallet-config';
@@ -24,7 +25,7 @@ interface SubmitFreezeThunkArguments extends FreezeThunkArguments {
     onSettled?: () => void;
 }
 
-type SubmitTronFreezeThunkState = AddFakePendingTronTxThunkState;
+type SubmitTronFreezeThunkState = AddFakePendingTronTxThunkState & NetworksRootState;
 
 export const submitTronFreezeThunk = createThunk<
     void,
@@ -34,8 +35,10 @@ export const submitTronFreezeThunk = createThunk<
     `${TRON_STAKE_MODULE}/submitTronFreezeThunk`,
     async (
         { account, device, amount, resourceType, requestPushApproval, onSigningStart, onSettled },
-        { dispatch },
+        { getState, dispatch },
     ) => {
+        const networkConfigDeps = selectNetworkConfigAccessors(getState());
+
         const { key: accountKey } = account;
         const flow: TronFlow = 'stake';
 
@@ -51,7 +54,7 @@ export const submitTronFreezeThunk = createThunk<
             return;
         }
 
-        const contract = buildFreezeContract(account, amount, resourceType);
+        const contract = buildFreezeContract(networkConfigDeps, account, amount, resourceType);
 
         if (!contract) {
             dispatch(
@@ -147,9 +150,9 @@ export const submitTronFreezeThunk = createThunk<
 
             const { txid } = pushResult.payload;
 
-            const stakeAmount = unitsToSubunits({
+            const stakeAmount = unitsToSubunits(networkConfigDeps, {
                 value: asAmountUnit(new BigNumber(amount)),
-                decimals: getNetwork(account.symbol).decimals,
+                decimals: getNetwork(networkConfigDeps, account.symbol).decimals,
             }).toString();
 
             dispatch(

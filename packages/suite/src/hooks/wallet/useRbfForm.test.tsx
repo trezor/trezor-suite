@@ -1,3 +1,5 @@
+import { mockNetworkConfigDeps } from '@suite-common/networks/mocks';
+
 import '@suite-common/test-utils/globalOverrides';
 
 import { screen } from '@testing-library/react';
@@ -20,6 +22,8 @@ import {
 
 import * as fixtures from './__fixtures__/useRbfForm';
 import { RbfContext, useRbf, useRbfContext } from './useRbfForm';
+
+const networkConfigDeps = mockNetworkConfigDeps();
 
 global.ResizeObserver = class MockedResizeObserver {
     observe = jest.fn();
@@ -140,7 +144,11 @@ describe('useRbfForm hook', () => {
 
     fixtures.composeAndSign.forEach(f => {
         it(`composeAndSign: ${f.description}`, async () => {
-            const rootReducer = fixtures.getRootReducer(f.store.selectedAccount, f.store.fees);
+            const rootReducer = fixtures.getRootReducer(
+                networkConfigDeps,
+                f.store.selectedAccount,
+                f.store.fees,
+            );
             const root = createTestCompositionRoot({
                 extra: {
                     services: {

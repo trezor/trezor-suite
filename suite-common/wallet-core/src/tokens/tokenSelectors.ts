@@ -1,3 +1,4 @@
+import { selectNetworkConfigAccessors } from '@suite-common/networks';
 import { createWeakMapSelector } from '@suite-common/redux-utils';
 import {
     type TokenDefinitionsRootState,
@@ -21,14 +22,12 @@ export type TokensRootState = AccountsRootState &
     FiatRatesRootState &
     WalletSettingsRootState;
 
-const createMemoizedSelector = createWeakMapSelector.withTypes<TokensRootState>();
-
-export const selectAccountTokens = createMemoizedSelector(
-    [selectAccountByKey, selectTokenDefinitions],
-    (account, tokenDefinitions): GetTokensOutputType | null => {
+export const selectAccountTokens = createWeakMapSelector(
+    [selectNetworkConfigAccessors, selectAccountByKey, selectTokenDefinitions],
+    (networkConfigDeps, account, tokenDefinitions): GetTokensOutputType | null => {
         if (!account) return null;
 
-        return getTokens({
+        return getTokens(networkConfigDeps, {
             tokens: account.tokens ?? [],
             symbol: account.symbol,
             tokenDefinitions: tokenDefinitions[account.symbol]?.coin,
@@ -36,7 +35,7 @@ export const selectAccountTokens = createMemoizedSelector(
     },
 );
 
-export const selectAccountHiddenTokens = createMemoizedSelector(
+export const selectAccountHiddenTokens = createWeakMapSelector(
     [selectAccountTokens],
     (tokenCategories): TokenInfoBranded[] => {
         if (!tokenCategories) return [];
@@ -57,7 +56,7 @@ export const selectAccountHiddenTokens = createMemoizedSelector(
     },
 );
 
-export const selectAccountManuallyHiddenTokens = createMemoizedSelector(
+export const selectAccountManuallyHiddenTokens = createWeakMapSelector(
     [selectAccountTokens],
     (tokenCategories): TokenInfoBranded[] => {
         if (!tokenCategories) return [];
@@ -71,7 +70,7 @@ export const selectAccountManuallyHiddenTokens = createMemoizedSelector(
     },
 );
 
-export const selectAccountUnrecognizedTokens = createMemoizedSelector(
+export const selectAccountUnrecognizedTokens = createWeakMapSelector(
     [selectAccountTokens],
     (tokenCategories): TokenInfoBranded[] => {
         if (!tokenCategories) return [];
@@ -85,12 +84,12 @@ export const selectAccountUnrecognizedTokens = createMemoizedSelector(
     },
 );
 
-export const selectAccountManuallyHiddenTokensCount = createMemoizedSelector(
+export const selectAccountManuallyHiddenTokensCount = createWeakMapSelector(
     [selectAccountManuallyHiddenTokens],
     (tokens): number => tokens.length,
 );
 
-export const selectAccountDefiTokens = createMemoizedSelector(
+export const selectAccountDefiTokens = createWeakMapSelector(
     [selectAccountTokens, selectAccountByKey, selectCurrentFiatRates, selectBaseCurrency],
     (tokenCategories, account, fiatRates, localCurrency): TokenInfoBranded[] => {
         if (!tokenCategories || !account) return [];
@@ -114,7 +113,7 @@ export const selectAccountDefiTokens = createMemoizedSelector(
     },
 );
 
-export const selectAccountDefiTokensCount = createMemoizedSelector(
+export const selectAccountDefiTokensCount = createWeakMapSelector(
     [selectAccountDefiTokens],
     (defiTokens): number => defiTokens.length,
 );

@@ -1,3 +1,6 @@
+import { type NetworksRootState } from '@suite-common/networks';
+import { getNetworks } from '@suite-common/wallet-config';
+import { mockNetworkConfigDeps } from '@suite-common/networks/mocks';
 import { type TrezorDevice } from '@suite-common/suite-types';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { type Account, type AccountKey } from '@suite-common/wallet-types';
@@ -99,6 +102,7 @@ const etcAccount = {
 
 const getTestState = (accounts: Account[]) =>
     ({
+        networks: getNetworks(mockNetworkConfigDeps()),
         wallet: {
             accounts,
             transactions: {
@@ -160,7 +164,7 @@ const getTestState = (accounts: Account[]) =>
             } as unknown as TrezorDevice,
             persistentDeviceData: [],
         },
-    }) satisfies StakeRootState;
+    }) satisfies StakeRootState & NetworksRootState;
 
 describe('selectClaimableAmountByAccountKey', () => {
     it('should return claimable amount for ETH account with claimable stake', () => {

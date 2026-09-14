@@ -1,3 +1,4 @@
+import { selectNetworkConfigDeps } from '@suite-common/networks';
 import { useCallback, useEffect, useState } from 'react';
 
 import {
@@ -61,6 +62,8 @@ type RouteProps = RouteProp<YieldStackParamList, YieldStackRoutes.YieldDeposit>;
 type NavigationProps = StackNavigationProps<YieldStackParamList, YieldStackRoutes.YieldDeposit>;
 
 export const YieldDepositScreen = () => {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
+
     const route = useRoute<RouteProps>();
     const navigation = useNavigation<NavigationProps>();
     const isFocused = useIsFocused();
@@ -128,7 +131,10 @@ export const YieldDepositScreen = () => {
     });
     const isDepositPending = !!actionPendingTransaction;
     const isActionSubmitting = session?.action.isSubmitting ?? false;
-    const isApprovedAmountUnlimited = isYieldApprovalAllowanceUnlimited({ session, token });
+    const isApprovedAmountUnlimited = isYieldApprovalAllowanceUnlimited(networkConfigDeps, {
+        session,
+        token,
+    });
     const isAllowanceLoaded = allowanceStatus === 'loaded';
     const isDepositSessionReady = session?.step === 'action';
     const depositForm = useYieldDepositForm({
@@ -356,7 +362,7 @@ export const YieldDepositScreen = () => {
         return null;
     }
 
-    const accountLabel = account.accountLabel ?? getNetwork(account.symbol).name;
+    const accountLabel = account.accountLabel ?? getNetwork(networkConfigDeps, account.symbol).name;
     const shouldShowDepositFee = isValid && !!amountValue && !isApprovalInsufficient;
     // Wrapped-native vault estimates should be displayed as native crypto, so
     // omit token contract to keep EarnEstimatedRewards on the crypto formatter.

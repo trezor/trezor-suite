@@ -1,3 +1,5 @@
+import { selectNetworkConfigDeps } from '@suite-common/networks';
+import { useServices } from '@suite-common/dependency-injection';
 import { useMemo } from 'react';
 import { useSelector } from 'react-redux';
 
@@ -55,6 +57,8 @@ export const useTokenYieldRate = ({
     token,
     variant,
 }: UseTokenYieldRateParams): TokenYieldRate | null => {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
+
     const yieldDepositMessageSystem = useMessageSystemYield('deposit');
     const isYieldRateRelevant =
         account.networkType === 'ethereum' && !yieldDepositMessageSystem.isDisabled;
@@ -72,7 +76,7 @@ export const useTokenYieldRate = ({
         }
 
         if (tokenContract === undefined || tokenDecimals === undefined) {
-            return getWrappedNativeYieldVaults({ vaults, networkSymbol });
+            return getWrappedNativeYieldVaults(networkConfigDeps, { vaults, networkSymbol });
         }
 
         const heldToken = {
@@ -82,7 +86,7 @@ export const useTokenYieldRate = ({
         };
 
         if (variant === 'active') {
-            const vault = getYieldVaultForOutputToken({
+            const vault = getYieldVaultForOutputToken(networkConfigDeps, {
                 vaults,
                 networkSymbol,
                 token: heldToken,
@@ -91,8 +95,13 @@ export const useTokenYieldRate = ({
             return vault ? [vault] : emptyVaults;
         }
 
-        return getYieldVaultsForInputToken({ vaults, networkSymbol, token: heldToken });
+        return getYieldVaultsForInputToken(networkConfigDeps, {
+            vaults,
+            networkSymbol,
+            token: heldToken,
+        });
     }, [
+        networkConfigDeps,
         isYieldRateRelevant,
         vaults,
         networkSymbol,

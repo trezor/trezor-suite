@@ -1,5 +1,7 @@
 import { useMemo } from 'react';
 
+import { useServices } from '@suite-common/dependency-injection';
+import { selectNetworkConfigDeps } from '@suite-common/networks';
 import { usePreferredCurrencyUsdThreshold } from '@suite-common/trading';
 import { selectBaseCurrency, selectCurrentFiatRates } from '@suite-common/wallet-core';
 import { useFreshRef } from '@trezor/react-utils';
@@ -15,6 +17,8 @@ export function useGroupedAssetOptions(
     assetRows: AccountWithTokensOption[],
     expandedGroupKeys: AssetGroupKey[],
 ) {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
+
     const { includedCryptoIds } = useAssetsContext();
     const fiatRates = useSelector(selectCurrentFiatRates);
     const baseCurrencyCode = useSelector(selectBaseCurrency);
@@ -25,7 +29,7 @@ export function useGroupedAssetOptions(
 
     return useMemo(
         () =>
-            buildGroupedAssetOptions({
+            buildGroupedAssetOptions(networkConfigDeps, {
                 assetRows,
                 tradableCryptoIds: includedCryptoIds,
                 threshold,
@@ -34,6 +38,7 @@ export function useGroupedAssetOptions(
                 expandedGroupKeys,
             }),
         [
+            networkConfigDeps,
             assetRows,
             includedCryptoIds,
             threshold,

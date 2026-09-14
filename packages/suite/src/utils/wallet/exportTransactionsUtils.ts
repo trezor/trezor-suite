@@ -2,6 +2,7 @@ import { format } from 'date-fns';
 import type PdfMake from 'pdfmake/build/pdfmake';
 import type { TDocumentDefinitions } from 'pdfmake/interfaces';
 
+import { type NetworkConfigDeps } from '@suite-common/networks';
 import { trezorLogo } from '@suite-common/suite-constants';
 import { type TokenDefinitions, isPhishingTransaction } from '@suite-common/token-definitions';
 import { type NetworkSymbol, getNetworkDisplaySymbol } from '@suite-common/wallet-config';
@@ -75,11 +76,14 @@ const timeFormat = {
     timeZoneName: 'shortOffset',
 } as const;
 
-const formatIfDefined = (amount: string | undefined, symbol: NetworkSymbol) =>
-    amount ? formatNetworkAmount(amount, symbol) : undefined;
+const formatIfDefined = (
+    networkConfigDeps: NetworkConfigDeps,
+    amount: string | undefined,
+    symbol: NetworkSymbol,
+) => (amount ? formatNetworkAmount(networkConfigDeps, amount, symbol) : undefined);
 
 const formatAmounts =
-    (symbol: NetworkSymbol) =>
+    (networkConfigDeps: NetworkConfigDeps, symbol: NetworkSymbol) =>
     (tx: AccountTransactionForExports): AccountTransactionForExports => ({
         ...tx,
         tokens: tx.tokens.map(token => ({
@@ -90,26 +94,26 @@ const formatAmounts =
         })),
         internalTransfers: tx.internalTransfers.map(internal => ({
             ...internal,
-            amount: formatNetworkAmount(internal.amount, symbol),
+            amount: formatNetworkAmount(networkConfigDeps, internal.amount, symbol),
         })),
-        amount: formatNetworkAmount(tx.amount, symbol),
-        fee: formatNetworkAmount(tx.fee, symbol),
+        amount: formatNetworkAmount(networkConfigDeps, tx.amount, symbol),
+        fee: formatNetworkAmount(networkConfigDeps, tx.fee, symbol),
         targets: tx.targets.map(tr => ({
             ...tr,
-            amount: formatIfDefined(tr.amount, symbol),
+            amount: formatIfDefined(networkConfigDeps, tr.amount, symbol),
         })),
         details: {
             ...tx.details,
             vin: tx.details.vin.map(v => ({
                 ...v,
-                value: formatIfDefined(v.value, symbol),
+                value: formatIfDefined(networkConfigDeps, v.value, symbol),
             })),
             vout: tx.details.vout.map(v => ({
                 ...v,
-                value: formatIfDefined(v.value, symbol),
+                value: formatIfDefined(networkConfigDeps, v.value, symbol),
             })),
-            totalInput: formatNetworkAmount(tx.details.totalInput, symbol),
-            totalOutput: formatNetworkAmount(tx.details.totalOutput, symbol),
+            totalInput: formatNetworkAmount(networkConfigDeps, tx.details.totalInput, symbol),
+            totalOutput: formatNetworkAmount(networkConfigDeps, tx.details.totalOutput, symbol),
         },
         ethereumSpecific: tx.ethereumSpecific
             ? {
@@ -120,8 +124,12 @@ const formatAmounts =
         cardanoSpecific: tx.cardanoSpecific
             ? {
                   ...tx.cardanoSpecific,
-                  withdrawal: formatIfDefined(tx.cardanoSpecific.withdrawal, symbol),
-                  deposit: formatIfDefined(tx.cardanoSpecific.deposit, symbol),
+                  withdrawal: formatIfDefined(
+                      networkConfigDeps,
+                      tx.cardanoSpecific.withdrawal,
+                      symbol,
+                  ),
+                  deposit: formatIfDefined(networkConfigDeps, tx.cardanoSpecific.deposit, symbol),
               }
             : undefined,
     });
@@ -142,6 +150,7 @@ const makePdf = (definitions: TDocumentDefinitions, pdfMake: typeof PdfMake): Pr
     pdfMake.createPdf(definitions).getBlob();
 
 const prepareContent = (
+    networkConfigDeps: NetworkConfigDeps,
     data: Data,
     tokenDefinitions: TokenDefinitions,
     txsMarkedAsNotScam: string[],
@@ -152,14 +161,14 @@ const prepareContent = (
     return transactions
         .filter(
             t =>
-                !isPhishingTransaction({
+                !isPhishingTransaction(networkConfigDeps, {
                     transaction: t,
                     tokenDefinitions,
                     historicRates: historicFiatRates,
                     txsMarkedAsNotScam,
                 }).isPhishing,
         )
-        .map(formatAmounts(symbol))
+        .map(formatAmounts(networkConfigDeps, symbol))
         .flatMap(t => {
             const sharedData = {
                 date: new Intl.DateTimeFormat('default', dateFormat).format(
@@ -172,7 +181,7 @@ const prepareContent = (
                 type: t.type.toUpperCase(),
                 txid: t.txid,
             };
-            const symbol = getNetworkDisplaySymbol(data.symbol);
+            const symbol = getNetworkDisplaySymbol(networkConfigDeps, data.symbol);
             const fiatRateKey = getFiatRateKey(t.symbol, baseCurrencyCode);
             const roundedTimestamp = roundTimestampToNearestPastHour(t.blockTime as Timestamp);
             const historicRate = historicFiatRates?.[fiatRateKey]?.[roundedTimestamp];
@@ -329,6 +338,7 @@ export const sanitizeCsvValue = (value: string): string => {
 };
 
 const prepareCsv = (
+    networkConfigDeps: NetworkConfigDeps,
     data: Data,
     tokenDefinitions: TokenDefinitions,
     txsMarkedAsNotScam: string[],
@@ -350,7 +360,13 @@ const prepareCsv = (
         other: 'Other',
     };
 
-    const content = prepareContent(data, tokenDefinitions, txsMarkedAsNotScam, historicFiatRates);
+    const content = prepareContent(
+        networkConfigDeps,
+        data,
+        tokenDefinitions,
+        txsMarkedAsNotScam,
+        historicFiatRates,
+    );
 
     const lines: string[] = [];
 
@@ -380,6 +396,7 @@ const prepareCsv = (
 };
 
 const preparePdf = (
+    networkConfigDeps: NetworkConfigDeps,
     data: Data,
     tokenDefinitions: TokenDefinitions,
     txsMarkedAsNotScam: string[],
@@ -397,7 +414,13 @@ const preparePdf = (
     const fieldKeys = Object.keys(pdfFields);
     const fieldValues = Object.values(pdfFields);
 
-    const content = prepareContent(data, tokenDefinitions, txsMarkedAsNotScam, historicFiatRates);
+    const content = prepareContent(
+        networkConfigDeps,
+        data,
+        tokenDefinitions,
+        txsMarkedAsNotScam,
+        historicFiatRates,
+    );
 
     const lines: any[] = [];
     content.forEach(item => {
@@ -476,6 +499,7 @@ const preparePdf = (
 };
 
 export const formatData = async (
+    networkConfigDeps: NetworkConfigDeps,
     data: Data,
     tokenDefinitions: TokenDefinitions,
     txsMarkedAsNotScam: string[],
@@ -485,12 +509,19 @@ export const formatData = async (
 
     switch (type) {
         case 'csv': {
-            const csv = prepareCsv(data, tokenDefinitions, txsMarkedAsNotScam, historicFiatRates);
+            const csv = prepareCsv(
+                networkConfigDeps,
+                data,
+                tokenDefinitions,
+                txsMarkedAsNotScam,
+                historicFiatRates,
+            );
 
             return new Blob([csv], { type: 'text/csv;charset=utf-8' });
         }
         case 'pdf': {
             const pdfLayout = preparePdf(
+                networkConfigDeps,
                 data,
                 tokenDefinitions,
                 txsMarkedAsNotScam,
@@ -505,7 +536,7 @@ export const formatData = async (
             const json = JSON.stringify(
                 {
                     coin: symbol,
-                    transactions: transactions.map(formatAmounts(symbol)),
+                    transactions: transactions.map(formatAmounts(networkConfigDeps, symbol)),
                 },
                 null,
                 2,

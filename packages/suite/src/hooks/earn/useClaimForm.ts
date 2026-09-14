@@ -2,6 +2,7 @@ import { createContext, useCallback, useContext, useEffect, useMemo } from 'reac
 import { useForm } from 'react-hook-form';
 
 import { useServices } from '@suite-common/dependency-injection';
+import { selectNetworkConfigDeps } from '@suite-common/networks';
 import { selectDispatch } from '@suite-common/redux-utils';
 import { getNetwork } from '@suite-common/wallet-config';
 import {
@@ -31,11 +32,13 @@ type UseClaimFormsProps = {
 };
 
 export const useClaimForm = ({ account }: UseClaimFormsProps): ClaimContextValues => {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
+
     const { dispatch } = useServices(selectDispatch);
 
     const baseCurrencyCode = useSelector(selectBaseCurrency);
 
-    const network = getNetwork(account.symbol);
+    const network = getNetwork(networkConfigDeps, account.symbol);
     const networkFees = useSelector(state => selectRawNetworkFeeInfo(state, account.symbol));
 
     const defaultValues = useMemo(() => {
@@ -131,7 +134,9 @@ export const useClaimForm = ({ account }: UseClaimFormsProps): ClaimContextValue
         const composedTx = composedLevels ? composedLevels[selectedFee] : undefined;
         if (composedTx?.type === 'final') {
             try {
-                const result = await dispatch(signTransactionThunk(values, composedTx));
+                const result = await dispatch(
+                    signTransactionThunk(networkConfigDeps, values, composedTx),
+                );
 
                 if (result?.success) {
                     clearForm();
@@ -144,7 +149,7 @@ export const useClaimForm = ({ account }: UseClaimFormsProps): ClaimContextValue
                 console.warn('Stake signing failed', error instanceof Error ? error.name : error);
             }
         }
-    }, [getValues, composedLevels, dispatch, clearForm, selectedFee]);
+    }, [networkConfigDeps, getValues, composedLevels, dispatch, clearForm, selectedFee]);
 
     const { calculateFeeAndDeposit, withdrawingAvailable } = useCardanoStaking();
     const isClaimingDisabled = !withdrawingAvailable.status;

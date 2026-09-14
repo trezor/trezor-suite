@@ -1,5 +1,7 @@
 import { useDevice } from '@suite/device';
 import { Translation } from '@suite/intl';
+import { useServices } from '@suite-common/dependency-injection';
+import { selectNetworkConfigDeps } from '@suite-common/networks';
 import { getNetworkDisplaySymbol, getNetworkDisplaySymbolName } from '@suite-common/wallet-config';
 import { useDisplayBaseCurrency } from '@suite-common/wallet-core';
 import { Card, Flex, InfoItem, Row, Text } from '@trezor/components';
@@ -21,6 +23,8 @@ type TradeBoxProps = {
 };
 
 export const TradeBox = ({ account }: TradeBoxProps) => {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
+
     const { isBelowTablet, isBelowMobile } = useLayoutSize();
     const { device } = useDevice();
     const { shallDisplayBaseCurrency } = useDisplayBaseCurrency(account.symbol);
@@ -42,7 +46,10 @@ export const TradeBox = ({ account }: TradeBoxProps) => {
                         <Row gap={12}>
                             <TokenIcon size={40} symbol={account.symbol} showNetworkIcon />
                             <InfoItem
-                                label={getNetworkDisplaySymbolName(account.symbol)}
+                                label={getNetworkDisplaySymbolName(
+                                    networkConfigDeps,
+                                    account.symbol,
+                                )}
                                 typographyStyle="body-md-strong"
                                 intent="neutral"
                                 priority="primary"
@@ -54,7 +61,7 @@ export const TradeBox = ({ account }: TradeBoxProps) => {
                                     priority="secondary"
                                     typographyStyle="body-sm"
                                 >
-                                    {getNetworkDisplaySymbol(account.symbol)}
+                                    {getNetworkDisplaySymbol(networkConfigDeps, account.symbol)}
                                 </Text>
                             </InfoItem>
                         </Row>

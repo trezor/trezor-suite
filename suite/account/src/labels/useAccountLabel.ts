@@ -1,3 +1,5 @@
+import { selectNetworkConfigDeps } from '@suite-common/networks';
+import { useServices } from '@suite-common/dependency-injection';
 import { useSelector } from 'react-redux';
 
 import { useTranslation } from '@suite/intl';
@@ -16,6 +18,8 @@ type UseAccountLabelParams = {
 };
 
 export const useAccountLabel = ({ account }: UseAccountLabelParams): AccountLabelResult => {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
+
     const { translationString } = useTranslation();
 
     const accountLabel = useSelector((state: SelectAccountLabelState) =>
@@ -27,7 +31,7 @@ export const useAccountLabel = ({ account }: UseAccountLabelParams): AccountLabe
         }),
     );
 
-    const defaultLabel = getDefaultAccountLabel(translationString, account);
+    const defaultLabel = getDefaultAccountLabel(networkConfigDeps, translationString, account);
 
     return {
         label: accountLabel || defaultLabel,

@@ -1,4 +1,5 @@
 import { type TranslationId } from '@suite/intl';
+import { type NetworkConfigDeps } from '@suite-common/networks';
 import { type TokenDefinitionsState } from '@suite-common/token-definitions';
 import { type NetworkSymbol, type NetworkType } from '@suite-common/wallet-config';
 import { type GetTokensOutputType, getTokens } from '@suite-common/wallet-core';
@@ -66,6 +67,7 @@ export const enhanceTokensWithRates = (
 export type EnahncedTokenInfoWithFiat = ReturnType<typeof enhanceTokensWithRates>[number];
 
 export const hasVisibleTokens = (
+    networkConfigDeps: NetworkConfigDeps,
     symbol: NetworkSymbol,
     tokens: TokenInfo[] | undefined,
     tokenDefinitions: Partial<TokenDefinitionsState>,
@@ -76,7 +78,7 @@ export const hasVisibleTokens = (
     const coinDefinitions = tokenDefinitions?.[symbol]?.coin;
     if (!coinDefinitions) return false;
 
-    const currentTokens = getTokens({
+    const currentTokens = getTokens(networkConfigDeps, {
         tokens,
         symbol,
         tokenDefinitions: coinDefinitions,

@@ -1,3 +1,4 @@
+import { selectNetworkConfigDeps } from '@suite-common/networks';
 import { useEffect } from 'react';
 import { useSelector } from 'react-redux';
 
@@ -37,9 +38,11 @@ export const useReceiveAccountPreselectionEffect = ({
     selectReceiveAccount,
     selectSendAccount,
 }: UseReceiveAccountPreselectionEffectProps) => {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
+
     const { dispatch } = useServices(selectDispatch);
 
-    const receiveAssetNetworkSymbol = getSymbolFromTradeableAsset(receiveAsset);
+    const receiveAssetNetworkSymbol = getSymbolFromTradeableAsset(networkConfigDeps, receiveAsset);
 
     const accounts = useSelector((state: CombinedSelectorsRootState) =>
         selectVisibleDeviceAccountsByNetworkSymbolSorted(state, receiveAssetNetworkSymbol ?? null),

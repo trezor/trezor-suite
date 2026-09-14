@@ -1,7 +1,9 @@
 import { useCallback, useEffect, useMemo, useRef } from 'react';
 import { type UseFormReturn, useForm, useWatch } from 'react-hook-form';
 
+import { useServices } from '@suite-common/dependency-injection';
 import { type YieldDtoV2 } from '@suite-common/earn-stablecoin-api';
+import { selectNetworkConfigDeps } from '@suite-common/networks';
 import { getNetwork } from '@suite-common/wallet-config';
 import {
     type ResolvedYieldFlowData,
@@ -55,6 +57,8 @@ export const useYieldForm = ({
     flowKey,
     session,
 }: UseYieldFormProps): UseYieldFormResult => {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
+
     const methods = useForm<YieldFlowFormValues>({
         mode: 'onChange',
         defaultValues: {
@@ -73,7 +77,7 @@ export const useYieldForm = ({
     const sessionRef = useFreshRef(session);
     const isSharesInput = flowType === 'redeem';
 
-    const rateToken = getYieldFiatRateToken({
+    const rateToken = getYieldFiatRateToken(networkConfigDeps, {
         step: session.step,
         flowType,
         accountSymbol: account.symbol,
@@ -83,7 +87,7 @@ export const useYieldForm = ({
         methods,
         symbol: rateToken?.symbol,
         tokenAddress: rateToken?.tokenAddress,
-        decimals: token?.decimals ?? getNetwork(account.symbol).decimals,
+        decimals: token?.decimals ?? getNetwork(networkConfigDeps, account.symbol).decimals,
         vaultId: vault.id,
     });
     const resetAmountsRef = useCurrentRef(resetAmounts);
@@ -138,7 +142,7 @@ export const useYieldForm = ({
             return token?.balance ?? '';
         }
 
-        return getYieldUnwrapDefaultAmount({
+        return getYieldUnwrapDefaultAmount(networkConfigDeps, {
             flowType,
             withdrawnAmount: session.result.completedAmount,
             token,
@@ -146,7 +150,14 @@ export const useYieldForm = ({
             pricePerShareState,
             fallbackAmount: token.balance,
         });
-    }, [flowType, pricePerShareState, receiptToken, session.result.completedAmount, token]);
+    }, [
+        networkConfigDeps,
+        flowType,
+        pricePerShareState,
+        receiptToken,
+        session.result.completedAmount,
+        token,
+    ]);
 
     useEffect(() => {
         const prevStep = prevStepRef.current;

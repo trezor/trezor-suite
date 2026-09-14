@@ -1,3 +1,5 @@
+import { mockNetworkConfigDeps } from '@suite-common/networks/mocks';
+
 import { localizeNumber } from '@suite-common/wallet-utils';
 import { TestCategory, TestPriority, TestStream } from '@trezor/e2e-utils';
 import { BigNumber } from '@trezor/utils';
@@ -5,6 +7,8 @@ import { BigNumber } from '@trezor/utils';
 import { calculatePercentageOfBalance } from '../../support/common';
 import { expect, test } from '../../support/fixtures';
 import { createTestAnnotation } from '../../support/reporters/annotations';
+
+const networkConfigDeps = mockNetworkConfigDeps();
 
 let ethereumStakingBalance: string;
 const WITHDRAWAL_BUFFER = 0.005;
@@ -110,7 +114,7 @@ test.describe('ETH staking form', { tag: ['@T3W1', '@T3T1'] }, () => {
                         await stakingSection.cryptoInputFractionButtons
                             .getByRole('button', { name: percentage + '%' })
                             .click();
-                        const expectedValue = calculatePercentageOfBalance({
+                        const expectedValue = calculatePercentageOfBalance(networkConfigDeps, {
                             percentage,
                             balance: ethereumStakingBalance,
                             symbol: 'eth',

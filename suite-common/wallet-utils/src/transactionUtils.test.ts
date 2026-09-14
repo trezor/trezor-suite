@@ -1,3 +1,4 @@
+import { mockNetworkConfigDeps } from '@suite-common/networks/mocks';
 import { testMocks } from '@suite-common/test-utils';
 import { type NetworkFeature, asNetworkSymbol } from '@suite-common/wallet-config';
 import {
@@ -35,6 +36,8 @@ import {
     parseTransactionDateKey,
     parseTransactionMonthKey,
 } from './transactionUtils';
+
+const networkConfigDeps = mockNetworkConfigDeps();
 
 const ethSymbol = asNetworkSymbol('eth');
 const btcSymbol = asNetworkSymbol('btc');
@@ -558,7 +561,9 @@ describe('transaction utils', () => {
     describe('enhanceTransaction', () => {
         fixtures.enhanceTransaction.forEach(f => {
             it('enhances transaction', () => {
-                expect(enhanceTransaction(f.tx as any, f.account)).toEqual(f.result);
+                expect(enhanceTransaction(networkConfigDeps, f.tx as any, f.account)).toEqual(
+                    f.result,
+                );
             });
         });
     });
@@ -566,7 +571,9 @@ describe('transaction utils', () => {
     describe('getRbfParams', () => {
         fixtures.getRbfParams.forEach(f => {
             it(f.description, () => {
-                expect(getRbfParams(f.tx as any, f.account as any)).toEqual(f.result);
+                expect(getRbfParams(networkConfigDeps, f.tx as any, f.account as any)).toEqual(
+                    f.result,
+                );
             });
         });
 
@@ -577,7 +584,7 @@ describe('transaction utils', () => {
                 tokenAmount: '500000000',
             });
 
-            expect(getRbfParams(transaction, ethereumAccount)).toEqual({
+            expect(getRbfParams(networkConfigDeps, transaction, ethereumAccount)).toEqual({
                 type: 'ethereum',
                 txid: transaction.txid,
                 outputs: [
@@ -603,7 +610,7 @@ describe('transaction utils', () => {
                 tokenAmount: '1000000',
             });
 
-            expect(getRbfParams(transaction, ethereumAccount)?.outputs).toEqual([
+            expect(getRbfParams(networkConfigDeps, transaction, ethereumAccount)?.outputs).toEqual([
                 {
                     type: 'payment',
                     address: CONTRACT_ADDRESS,
@@ -1126,7 +1133,7 @@ describe('transaction utils', () => {
         it('returns null when there is no target and the transaction amount is zero', () => {
             const transaction = getWalletTransaction({ amount: '0' });
 
-            expect(getTargetAmount(undefined, transaction)).toBeNull();
+            expect(getTargetAmount(networkConfigDeps, undefined, transaction)).toBeNull();
         });
 
         it('returns the formatted transaction amount when there is no target', () => {
@@ -1135,7 +1142,7 @@ describe('transaction utils', () => {
                 amount: '1000',
             });
 
-            expect(getTargetAmount(undefined, transaction)).toBe('0.00001');
+            expect(getTargetAmount(networkConfigDeps, undefined, transaction)).toBe('0.00001');
         });
 
         it('returns the formatted target amount for a non "sent to self" target', () => {
@@ -1147,7 +1154,7 @@ describe('transaction utils', () => {
                 targets: [target],
             });
 
-            expect(getTargetAmount(target, transaction)).toBe('0.00002');
+            expect(getTargetAmount(networkConfigDeps, target, transaction)).toBe('0.00002');
         });
 
         it('returns the formatted amount of an external target in a sent transaction', () => {
@@ -1159,7 +1166,9 @@ describe('transaction utils', () => {
                 targets: [externalTarget],
             });
 
-            expect(getTargetAmount(externalTarget, transaction)).toBe('0.000005');
+            expect(getTargetAmount(networkConfigDeps, externalTarget, transaction)).toBe(
+                '0.000005',
+            );
         });
 
         it('returns the transaction amount for a "sent to self" target when there is no external target', () => {
@@ -1171,7 +1180,7 @@ describe('transaction utils', () => {
                 targets: [selfTarget],
             });
 
-            expect(getTargetAmount(selfTarget, transaction)).toBe('0.00001');
+            expect(getTargetAmount(networkConfigDeps, selfTarget, transaction)).toBe('0.00001');
         });
 
         it('returns null for a "sent to self" target when an external target is also present', () => {
@@ -1184,7 +1193,7 @@ describe('transaction utils', () => {
                 targets: [selfTarget, externalTarget],
             });
 
-            expect(getTargetAmount(selfTarget, transaction)).toBeNull();
+            expect(getTargetAmount(networkConfigDeps, selfTarget, transaction)).toBeNull();
         });
     });
 

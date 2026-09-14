@@ -1,3 +1,4 @@
+import { type NetworkConfigDeps } from '@suite-common/networks';
 import {
     type NetworkSymbol,
     getCoingeckoId,
@@ -24,6 +25,7 @@ import {
 // Using Set greatly improves performance of this function because of O(1) complexity instead of O(n) for Array.includes
 const tokenDefinitionsMap = new WeakMap<SimpleTokenStructure, Set<string>>();
 export const isTokenDefinitionKnown = (
+    networkConfigDeps: NetworkConfigDeps,
     tokenDefinitions: SimpleTokenStructure | undefined,
     symbol: NetworkSymbol,
     contractAddress: string,
@@ -34,20 +36,35 @@ export const isTokenDefinitionKnown = (
         tokenDefinitionsMap.set(tokenDefinitions, new Set(tokenDefinitions));
     }
 
-    const contractAddressForNetwork = getContractAddressForNetworkSymbol(symbol, contractAddress);
+    const contractAddressForNetwork = getContractAddressForNetworkSymbol(
+        networkConfigDeps,
+        symbol,
+        contractAddress,
+    );
 
     return tokenDefinitionsMap.get(tokenDefinitions)?.has(contractAddressForNetwork);
 };
 
 export const filterKnownTokens = (
+    networkConfigDeps: NetworkConfigDeps,
     tokenDefinitions: SimpleTokenStructure | undefined,
     symbol: NetworkSymbol,
     tokens: TokenInfo[],
-) => tokens.filter(token => isTokenDefinitionKnown(tokenDefinitions, symbol, token.contract));
+) =>
+    tokens.filter(token =>
+        isTokenDefinitionKnown(networkConfigDeps, tokenDefinitions, symbol, token.contract),
+    );
 
-export const getSupportedDefinitionTypes = (symbol: NetworkSymbol) => {
-    const isCoinDefinitionsEnabled = getNetworkFeatures(symbol).includes('coin-definitions');
-    const isNftDefinitionsEnabled = getNetworkFeatures(symbol).includes('nft-definitions');
+export const getSupportedDefinitionTypes = (
+    networkConfigDeps: NetworkConfigDeps,
+    symbol: NetworkSymbol,
+) => {
+    const isCoinDefinitionsEnabled = getNetworkFeatures(networkConfigDeps, symbol).includes(
+        'coin-definitions',
+    );
+    const isNftDefinitionsEnabled = getNetworkFeatures(networkConfigDeps, symbol).includes(
+        'nft-definitions',
+    );
 
     return [
         ...(isCoinDefinitionsEnabled ? [DefinitionType.COIN] : []),
@@ -103,11 +120,12 @@ export const buildTokenDefinitionsFromStorage = (
 };
 
 export const fetchTokenDefinitions = async (
+    networkConfigDeps: NetworkConfigDeps,
     symbol: NetworkSymbol,
     type: DefinitionType,
     structure: TokenStructureType,
 ) => {
-    const coingeckoId = getCoingeckoId(symbol);
+    const coingeckoId = getCoingeckoId(networkConfigDeps, symbol);
 
     if (!coingeckoId) {
         throw Error('Cannot fetch token definitions for network without CoinGecko asset id!');

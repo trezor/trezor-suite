@@ -1,3 +1,4 @@
+import { type NetworkConfigDeps } from '@suite-common/networks';
 import { type TokenDefinition } from '@suite-common/token-definitions';
 import { type Account } from '@suite-common/wallet-types';
 import {
@@ -13,6 +14,7 @@ export const isAccountActiveForAnalytics = (account: Account) =>
     getAccountsWithSomeTransactionHistory([account]).length > 0 || !account.empty;
 
 export const getAccountInfoAnalyticsPayload = (
+    networkConfigDeps: NetworkConfigDeps,
     account: Account,
     tokenDefinitions: TokenDefinition | undefined,
     hasTraded: boolean,
@@ -20,8 +22,8 @@ export const getAccountInfoAnalyticsPayload = (
     network: account.symbol,
     accountType: account.accountType,
     index: account.index,
-    hasStaked: new BigNumber(getAccountTotalStakingBalance(account) || 0).gt(0),
+    hasStaked: new BigNumber(getAccountTotalStakingBalance(networkConfigDeps, account) || 0).gt(0),
     hasTraded,
-    tokenSymbols: getAccountAnalyticsTokenSymbols(account, tokenDefinitions),
-    stakingProviders: getStakingProvidersForAnalytics([account]),
+    tokenSymbols: getAccountAnalyticsTokenSymbols(networkConfigDeps, account, tokenDefinitions),
+    stakingProviders: getStakingProvidersForAnalytics(networkConfigDeps, [account]),
 });

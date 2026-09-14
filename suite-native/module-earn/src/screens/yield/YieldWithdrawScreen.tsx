@@ -1,3 +1,4 @@
+import { selectNetworkConfigDeps } from '@suite-common/networks';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { Keyboard } from 'react-native';
 
@@ -98,6 +99,8 @@ const getYieldWithdrawFlowTypeByInputView = (
 ): YieldWithdrawFlowType => (activeView === 'secondary' ? 'redeem' : 'withdraw');
 
 export const YieldWithdrawScreen = () => {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
+
     const route = useRoute<RouteProps>();
     const navigation = useNavigation<NavigationProps>();
     const isFocused = useIsFocused();
@@ -213,7 +216,7 @@ export const YieldWithdrawScreen = () => {
         }
 
         const amountFiat = amountFiatConverters?.convertCryptoToFiat(new BigNumber(amount));
-        const feeUnits = subunitsToUnits({
+        const feeUnits = subunitsToUnits(networkConfigDeps, {
             value: asAmountSubunit(new BigNumber(withdrawFee)),
             symbol: account.symbol,
         });
@@ -221,6 +224,7 @@ export const YieldWithdrawScreen = () => {
 
         return !!amountFiat && !!feeFiat && feeFiat.gt(amountFiat);
     }, [
+        networkConfigDeps,
         account,
         amount,
         isAmountValidationErrorDisplayed,
@@ -319,7 +323,7 @@ export const YieldWithdrawScreen = () => {
             }
 
             return (
-                getWithdrawRequestAmount({
+                getWithdrawRequestAmount(networkConfigDeps, {
                     networkSymbol: account.symbol,
                     amount: value,
                     token: vault.token,
@@ -328,7 +332,7 @@ export const YieldWithdrawScreen = () => {
                 }) ?? ''
             );
         },
-        [account, flowData, resolutionStatus, vault],
+        [networkConfigDeps, account, flowData, resolutionStatus, vault],
     );
 
     const getAssetAmountFromSharesAmount = useCallback(
@@ -337,7 +341,7 @@ export const YieldWithdrawScreen = () => {
                 return '';
             }
 
-            return getConvertedOutputTokenBalanceToInputTokenAmount({
+            return getConvertedOutputTokenBalanceToInputTokenAmount(networkConfigDeps, {
                 networkSymbol: account.symbol,
                 token: vault.token,
                 outputToken: vault.outputToken,
@@ -345,7 +349,7 @@ export const YieldWithdrawScreen = () => {
                 pricePerShareState: vault.state?.pricePerShareState,
             });
         },
-        [account, resolutionStatus, vault],
+        [networkConfigDeps, account, resolutionStatus, vault],
     );
 
     const handleMaxChange = (value: boolean) => {
@@ -524,7 +528,7 @@ export const YieldWithdrawScreen = () => {
     const headerTokenContract = vault.token.address
         ? toTokenAddress(vault.token.address)
         : route.params.tokenContract;
-    const accountLabel = account.accountLabel ?? getNetwork(account.symbol).name;
+    const accountLabel = account.accountLabel ?? getNetwork(networkConfigDeps, account.symbol).name;
 
     return (
         <Screen

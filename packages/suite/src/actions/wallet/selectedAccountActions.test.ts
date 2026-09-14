@@ -1,8 +1,11 @@
 import { selectedAccountReducer } from '@suite/account';
+import { mockNetworkConfigDeps } from '@suite-common/networks/mocks';
 import { createTestStore } from '@suite-common/test-utils';
 
 import fixtures from './__fixtures__/selectedAccountActions';
 import { syncSelectedAccountThunk } from './selectedAccountActions';
+
+const networkConfigDeps = mockNetworkConfigDeps();
 
 const getInitialState = (initialState: any = {}) => ({
     suite: {},
@@ -47,7 +50,7 @@ describe('selectedAccount Actions', () => {
         it(f.description, () => {
             const state = getInitialState(f.initialState);
             const store = mockStore(state);
-            store.dispatch(syncSelectedAccountThunk(f.action as any));
+            store.dispatch(syncSelectedAccountThunk(networkConfigDeps, f.action as any));
             expect(store.getState().wallet.selectedAccount).toMatchObject(f.result as any);
         });
     });

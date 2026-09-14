@@ -4,6 +4,7 @@ import { Translation } from '@suite/intl';
 import { gotoThunk } from '@suite/router';
 import { events as sharedEvents } from '@suite-common/analytics';
 import { useServices } from '@suite-common/dependency-injection';
+import { selectNetworkConfigDeps } from '@suite-common/networks';
 import { selectDispatch } from '@suite-common/redux-utils';
 import { type NetworkSymbol, getDisplaySymbol } from '@suite-common/wallet-config';
 import { Banner } from '@trezor/components';
@@ -18,10 +19,12 @@ type EarnEthBannerProps = {
 };
 
 export const EarnEthBanner = ({ networkSymbol, apy }: EarnEthBannerProps) => {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
+
     const { analytics, dispatch } = useServices(selectDesktopAnalyticsDep, selectDispatch);
     const { earnEthBannerClosed } = useSelector(selectFlags);
 
-    const displaySymbol = getDisplaySymbol(networkSymbol);
+    const displaySymbol = getDisplaySymbol(networkConfigDeps, networkSymbol);
 
     const closeBanner = () => {
         dispatch(setFlag({ key: 'earnEthBannerClosed', value: true }));

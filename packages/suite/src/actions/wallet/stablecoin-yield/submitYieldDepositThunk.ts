@@ -2,6 +2,7 @@ import { type DesktopAnalyticsDep } from '@suite/analytics';
 import { openDeferredModal } from '@suite/modal';
 import { events } from '@suite-common/analytics';
 import { type StablecoinYieldTxSimulationParams } from '@suite-common/earn-stablecoin';
+import { type NetworksRootState, selectNetworkConfigAccessors } from '@suite-common/networks';
 import { createThunk } from '@suite-common/redux-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import {
@@ -30,7 +31,8 @@ type SubmitYieldDepositPayload = {
 };
 
 type SubmitYieldDepositThunkState = ComposeYieldDepositTransactionThunkState &
-    SendYieldTransactionState;
+    SendYieldTransactionState &
+    NetworksRootState;
 
 type SubmitYieldDepositThunkDeps = SendYieldTransactionDeps & {
     services: DesktopAnalyticsDep;
@@ -43,6 +45,8 @@ export const submitYieldDepositThunk = createThunk<
 >(
     `${YIELD_PREFIX}/thunk/submitDeposit`,
     async ({ flowKey, flowData, amount }, { dispatch, getState, extra }) => {
+        const networkConfigDeps = selectNetworkConfigAccessors(getState());
+
         const flowType = 'deposit' as const;
 
         try {
@@ -113,7 +117,7 @@ export const submitYieldDepositThunk = createThunk<
 
             const selectedFee = userAcceptedTxSimulation?.selectedFee ?? null;
 
-            const sendResult = await sendYieldTransaction({
+            const sendResult = await sendYieldTransaction(networkConfigDeps, {
                 account: flowData.account,
                 amount,
                 token: flowData.token,

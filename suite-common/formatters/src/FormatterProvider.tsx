@@ -3,12 +3,14 @@ import { useIntl } from 'react-intl';
 
 import type { FormatNumberOptions } from '@formatjs/intl';
 
+import { useServices } from '@suite-common/dependency-injection';
+import { type NetworkConfigDeps, selectNetworkConfigDeps } from '@suite-common/networks';
 import type { SignValue } from '@suite-common/suite-types';
 import type { NetworkSymbol } from '@suite-common/wallet-config';
 import type { BaseCurrencyAmount } from '@suite-common/wallet-types';
 
 import { AddressFormatter, type AddressFormatterDataContext } from './formatters/AddressFormatter';
-import { NetworkNameFormatter } from './formatters/NetworkNameFormatter';
+import { prepareNetworkNameFormatter } from './formatters/NetworkNameFormatter';
 import { SignValueFormatter } from './formatters/SignValueFormatter';
 import {
     type BaseCurrencyAmountFormatterDataContext,
@@ -61,10 +63,16 @@ export type Formatters = {
 
 export const FormatterProviderContext = createContext<Formatters>({} as Formatters);
 
-export const getFormatters = (config: FormatterConfig): Formatters => {
-    const CryptoAmountFormatter = prepareCryptoAmountFormatter(config);
-    const DisplaySymbolFormatter = prepareDisplaySymbolFormatter(config);
-    const BaseCurrencyAmountFormatter = prepareBaseCurrencyAmountFormatter(config);
+export const getFormatters = (
+    networkConfigDeps: NetworkConfigDeps,
+    config: FormatterConfig,
+): Formatters => {
+    const CryptoAmountFormatter = prepareCryptoAmountFormatter(networkConfigDeps, config);
+    const DisplaySymbolFormatter = prepareDisplaySymbolFormatter(networkConfigDeps, config);
+    const BaseCurrencyAmountFormatter = prepareBaseCurrencyAmountFormatter(
+        networkConfigDeps,
+        config,
+    );
     const DateFormatter = prepareDateFormatter(config);
     const TimeFormatter = prepareTimeFormatter(config);
     const DateTimeFormatter = prepareDateTimeFormatter(config);
@@ -73,7 +81,7 @@ export const getFormatters = (config: FormatterConfig): Formatters => {
         AddressFormatter,
         CryptoAmountFormatter,
         DisplaySymbolFormatter,
-        NetworkNameFormatter,
+        NetworkNameFormatter: prepareNetworkNameFormatter(networkConfigDeps),
         BaseCurrencyAmountFormatter,
         DateFormatter,
         SignValueFormatter,
@@ -84,6 +92,8 @@ export const getFormatters = (config: FormatterConfig): Formatters => {
 };
 
 export const FormatterProvider = ({ config, children }: FormatterProviderProps) => {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
+
     const intl = useIntl();
 
     const contextValue = useMemo(() => {
@@ -92,8 +102,8 @@ export const FormatterProvider = ({ config, children }: FormatterProviderProps) 
             intl,
         };
 
-        return getFormatters(extendedConfig);
-    }, [config, intl]);
+        return getFormatters(networkConfigDeps, extendedConfig);
+    }, [config, intl, networkConfigDeps]);
 
     return (
         <FormatterProviderContext.Provider value={contextValue}>

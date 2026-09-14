@@ -1,3 +1,4 @@
+import { selectNetworkConfigAccessors, type NetworksRootState } from '@suite-common/networks';
 import { type DeviceRootState, selectSelectedDevice } from '@suite-common/device';
 import { createThunk } from '@suite-common/redux-utils';
 import {
@@ -23,7 +24,8 @@ import { type SignStakeTransactionRejectValue } from '../../types';
 const LOG_PREFIX = 'signEthereumStakingTransactionThunk';
 
 export type SignEthereumStakingTransactionThunkState = PrepareEthereumStakingContextState &
-    DeviceRootState;
+    DeviceRootState &
+    NetworksRootState;
 
 export const signEthereumStakingTransactionThunk = createThunk<
     void,
@@ -39,10 +41,12 @@ export const signEthereumStakingTransactionThunk = createThunk<
 >(
     `${EARN_MODULE_PREFIX}/${LOG_PREFIX}`,
     async ({ accountKey, stakeType, precomposedTransaction }, thunkApi) => {
+        const networkConfigDeps = selectNetworkConfigAccessors(thunkApi.getState());
+
         const { dispatch, getState, rejectWithValue } = thunkApi;
 
         try {
-            const prepared = prepareEthereumStakingContext(getState(), {
+            const prepared = prepareEthereumStakingContext(networkConfigDeps, getState(), {
                 accountKey,
                 stakeType,
                 precomposedTransaction,

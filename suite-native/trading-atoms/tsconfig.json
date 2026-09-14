@@ -2,7 +2,11 @@
     "extends": "../../tsconfig.base.json",
     "compilerOptions": { "outDir": "libDev" },
     "references": [
+        {
+            "path": "../../suite-common/dependency-injection"
+        },
         { "path": "../../suite-common/flags" },
+        { "path": "../../suite-common/networks" },
         {
             "path": "../../suite-common/suite-utils"
         },

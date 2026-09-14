@@ -1,6 +1,8 @@
 import { useState } from 'react';
 
 import { Translation } from '@suite/intl';
+import { useServices } from '@suite-common/dependency-injection';
+import { selectNetworkConfigDeps } from '@suite-common/networks';
 import { getNetwork } from '@suite-common/wallet-config';
 import { type SelectedAccountLoaded } from '@suite-common/wallet-types';
 import { Card, Column, Table } from '@trezor/components';
@@ -18,8 +20,10 @@ type NftsTableProps = {
 };
 
 const NftsTable = ({ selectedAccount, isShown, verified, nfts }: NftsTableProps) => {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
+
     const { account } = selectedAccount;
-    const network = getNetwork(account.symbol);
+    const network = getNetwork(networkConfigDeps, account.symbol);
     const [isEmptyCollectionsOpen, setIsEmptyCollectionsOpen] = useState(false);
 
     const getNftsToShow = () => {

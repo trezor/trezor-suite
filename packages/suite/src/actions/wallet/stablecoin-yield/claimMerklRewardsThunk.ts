@@ -12,6 +12,7 @@ import {
 import { type YieldAccountsRewards } from '@suite-common/earn-stablecoin-api';
 import { type MessageSystemRootState } from '@suite-common/message-system';
 import { selectIsMevProtectionFeatureEnabled } from '@suite-common/mev';
+import { type NetworksRootState, selectNetworkConfigAccessors } from '@suite-common/networks';
 import { createThunk } from '@suite-common/redux-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { getEarnYieldClaimContractAddress, getNetwork } from '@suite-common/wallet-config';
@@ -73,7 +74,8 @@ type ClaimMerklRewardsThunkState = DeviceRootState &
     EthereumGetCurrentNonceThunkState &
     MessageSystemRootState &
     SynchronizeSentTransactionThunkState &
-    WalletSettingsRootState;
+    WalletSettingsRootState &
+    NetworksRootState;
 
 type ClaimMerklRewardsThunkDeps = SynchronizeSentTransactionThunkDeps & {
     services: DesktopAnalyticsDep;
@@ -86,6 +88,8 @@ export const claimMerklRewardsThunk = createThunk<
 >(
     `${YIELD_PREFIX}/thunk/claimMerklRewards`,
     async ({ account, flowKey, rewards }, { dispatch, getState, extra }) => {
+        const networkConfigDeps = selectNetworkConfigAccessors(getState());
+
         const device = selectSelectedDevice(getState());
         const addressDisplayType = selectAddressDisplayType(getState());
 
@@ -97,7 +101,7 @@ export const claimMerklRewardsThunk = createThunk<
             throw new Error('Yield claim currently supports only EVM accounts.');
         }
 
-        const network = getNetwork(account.symbol);
+        const network = getNetwork(networkConfigDeps, account.symbol);
 
         if (!network.chainId) {
             throw new Error('Chain ID not found for network.');
@@ -216,7 +220,7 @@ export const claimMerklRewardsThunk = createThunk<
                 yieldActions.storeActionReviewData({
                     flowType: 'claim',
                     flowKey,
-                    rewards: getYieldClaimRewardsSnapshot({
+                    rewards: getYieldClaimRewardsSnapshot(networkConfigDeps, {
                         networkSymbol: account.symbol,
                         rewards,
                     }),
@@ -287,6 +291,7 @@ export const claimMerklRewardsThunk = createThunk<
 
                 const pushResponse = await TrezorConnect.pushTransaction({
                     tx: getMevProtectedTxData(
+                        networkConfigDeps,
                         account.symbol,
                         signingResponse.payload.serializedTx,
                         isMevProtectionEnabled && isMevProtectionFeatureEnabled,

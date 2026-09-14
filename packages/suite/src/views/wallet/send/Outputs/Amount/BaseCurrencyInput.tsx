@@ -4,6 +4,7 @@ import { Controller } from 'react-hook-form';
 import { useTranslation } from '@suite/intl';
 import { selectLanguage } from '@suite/settings';
 import { useServices } from '@suite-common/dependency-injection';
+import { selectNetworkConfigDeps } from '@suite-common/networks';
 import { selectDispatch } from '@suite-common/redux-utils';
 import { formInputsMaxLength } from '@suite-common/validators';
 import { updateFiatRatesThunk } from '@suite-common/wallet-core';
@@ -54,6 +55,8 @@ export const BaseCurrencyInput = ({
     labelHoverRight,
     labelRight,
 }: FiatInputProps) => {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
+
     const {
         account,
         network,
@@ -88,7 +91,7 @@ export const BaseCurrencyInput = ({
     const currencyValue = watch(currencyInputName);
     const baseCurrencyCode = currencyValue.value;
 
-    const baseCurrencyDecimals = getDecimalsForBaseCurrency({
+    const baseCurrencyDecimals = getDecimalsForBaseCurrency(networkConfigDeps, {
         code: baseCurrencyCode,
         isInSats: areSatsDisplayed,
     });
@@ -106,7 +109,7 @@ export const BaseCurrencyInput = ({
             };
 
             if (isSendMaxActive) {
-                const formattedAmount = parseCryptoToFormattedBaseCurrency({
+                const formattedAmount = parseCryptoToFormattedBaseCurrency(networkConfigDeps, {
                     ...baseFormatOptions,
                     value: cryptoValue,
                     baseCurrencyCode,
@@ -116,7 +119,7 @@ export const BaseCurrencyInput = ({
                     shouldValidate: true,
                 });
             } else {
-                const formattedAmount = parseBaseCurrencyToFormattedCrypto({
+                const formattedAmount = parseBaseCurrencyToFormattedCrypto(networkConfigDeps, {
                     ...baseFormatOptions,
                     value: fiatValue,
                     isCryptoInSats: shouldSendInSats === true,

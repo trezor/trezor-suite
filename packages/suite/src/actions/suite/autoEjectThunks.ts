@@ -1,5 +1,6 @@
 import { type GotoThunkDeps, type GotoThunkState, gotoThunk } from '@suite/router';
 import { selectDevices } from '@suite-common/device';
+import { type NetworksRootState, selectNetworkConfigAccessors } from '@suite-common/networks';
 import { createThunk } from '@suite-common/redux-utils';
 import {
     type SetDeviceAutoEjectThunkState,
@@ -12,15 +13,22 @@ const AUTO_EJECT_PREFIX = '@suite/autoEject';
 
 type SetAutoEjectEnabledThunkProps = { shouldEnable: boolean };
 
-type SetAutoEjectEnabledThunkState = GotoThunkState & SetDeviceAutoEjectThunkState;
+type SetAutoEjectEnabledThunkState = GotoThunkState &
+    SetDeviceAutoEjectThunkState &
+    NetworksRootState;
 
 type SetAutoEjectEnabledThunkDeps = GotoThunkDeps;
 
 export const setAutoEjectEnabledThunk = createThunk<
     void,
     SetAutoEjectEnabledThunkProps,
-    { state: SetAutoEjectEnabledThunkState; extra: SetAutoEjectEnabledThunkDeps }
+    {
+        state: SetAutoEjectEnabledThunkState;
+        extra: SetAutoEjectEnabledThunkDeps;
+    }
 >(`${AUTO_EJECT_PREFIX}/enableAutoEjectThunk`, async ({ shouldEnable }, { dispatch, getState }) => {
+    const networkConfigDeps = selectNetworkConfigAccessors(getState());
+
     // Disconnected devices are purged from local redux (awaited because the subsequent code may rely on updated deviceReducer state)
     await dispatch(setDeviceAutoEjectThunk({ shouldEnable }));
 
@@ -32,7 +40,7 @@ export const setAutoEjectEnabledThunk = createThunk<
     // which means connected device are preserved in local redux.
     const allDevices = selectDevices(getState());
     allDevices.forEach(device => {
-        dispatch(storageActions.forgetDeviceThunk(device));
+        dispatch(storageActions.forgetDeviceThunk(networkConfigDeps, device));
     });
 
     const currentDevices = selectDevices(getState());

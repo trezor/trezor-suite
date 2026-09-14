@@ -2,6 +2,8 @@ import { useMemo } from 'react';
 
 import { type CryptoId } from 'invity-api';
 
+import { useServices } from '@suite-common/dependency-injection';
+import { type NetworkConfigDeps, selectNetworkConfigDeps } from '@suite-common/networks';
 import { type TradingAssetOption } from '@suite-common/trading';
 import { exhaustive } from '@trezor/type-utils';
 
@@ -33,6 +35,7 @@ export const getTokenDisplayNameSources = (accountsWithTokens: AccountWithTokens
 };
 
 export const getAccountsWithTokenDisplayNames = (
+    networkConfigDeps: NetworkConfigDeps,
     accountsWithTokens: AccountWithTokensOption[],
     tokenDisplaySymbolNames: Map<CryptoId, string>,
 ): AccountWithTokensOption[] =>
@@ -45,7 +48,7 @@ export const getAccountsWithTokenDisplayNames = (
                     ...item,
                     token: {
                         ...item.token,
-                        name: getTokenDisplaySymbolName({
+                        name: getTokenDisplaySymbolName(networkConfigDeps, {
                             tokenDisplaySymbolNames,
                             account: item.account,
                             token: item.token,
@@ -57,7 +60,7 @@ export const getAccountsWithTokenDisplayNames = (
                     ...item,
                     tokens: item.tokens.map(token => ({
                         ...token,
-                        name: getTokenDisplaySymbolName({
+                        name: getTokenDisplaySymbolName(networkConfigDeps, {
                             tokenDisplaySymbolNames,
                             account: item.account,
                             token,
@@ -73,6 +76,8 @@ export const useAccountsWithTokenDisplayNames = (
     accountsWithTokens: AccountWithTokensOption[],
     assets?: TradingAssetOption[],
 ): AccountWithTokensOption[] => {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
+
     const tokens = useMemo(
         () => getTokenDisplayNameSources(accountsWithTokens),
         [accountsWithTokens],
@@ -80,7 +85,12 @@ export const useAccountsWithTokenDisplayNames = (
     const tokenDisplaySymbolNames = useTokenDisplaySymbolNames(tokens, assets);
 
     return useMemo(
-        () => getAccountsWithTokenDisplayNames(accountsWithTokens, tokenDisplaySymbolNames),
-        [accountsWithTokens, tokenDisplaySymbolNames],
+        () =>
+            getAccountsWithTokenDisplayNames(
+                networkConfigDeps,
+                accountsWithTokens,
+                tokenDisplaySymbolNames,
+            ),
+        [networkConfigDeps, accountsWithTokens, tokenDisplaySymbolNames],
     );
 };

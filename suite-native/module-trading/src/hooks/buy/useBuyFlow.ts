@@ -1,3 +1,4 @@
+import { selectNetworkConfigDeps } from '@suite-common/networks';
 import { useSelector } from 'react-redux';
 
 import { useNavigation } from '@react-navigation/native';
@@ -38,6 +39,8 @@ type NavigationProps = StackToStackCompositeNavigationProps<
 >;
 
 export const useBuyFlow = (form: BuyFormType) => {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
+
     const { analytics, dispatch } = useServices(selectNativeAnalyticsDep, selectDispatch);
     const isLoading = useSelector(selectTradingBuyIsLoading);
     const [asset, candidateQuote, receiveAccount] = useWatch({
@@ -53,7 +56,7 @@ export const useBuyFlow = (form: BuyFormType) => {
 
     const canProceed = !isLoading && !!candidateQuote;
 
-    const quoteAnalyticsData = getAnalyticsTradingBuyPayload({
+    const quoteAnalyticsData = getAnalyticsTradingBuyPayload(networkConfigDeps, {
         quote: candidateQuote,
         coinInfo,
     });
@@ -61,7 +64,7 @@ export const useBuyFlow = (form: BuyFormType) => {
     const { openBrowserForFormData } = useBrowserAuth('buy');
 
     const selectReceiveAccount = () => {
-        const selectedNetworkSymbol = getSymbolFromTradeableAsset(asset);
+        const selectedNetworkSymbol = getSymbolFromTradeableAsset(networkConfigDeps, asset);
         if (selectedNetworkSymbol) {
             navigation.navigate(RootStackRoutes.ReceiveAccounts, {
                 symbol: selectedNetworkSymbol,
@@ -84,7 +87,7 @@ export const useBuyFlow = (form: BuyFormType) => {
             },
         });
 
-        if (!isFullySelectedReceiveAccount(receiveAccount)) {
+        if (!isFullySelectedReceiveAccount(networkConfigDeps, receiveAccount)) {
             selectReceiveAccount();
 
             analytics.report({
@@ -99,7 +102,7 @@ export const useBuyFlow = (form: BuyFormType) => {
             return;
         }
 
-        const addressText = getReceiveAccountAddressText(receiveAccount);
+        const addressText = getReceiveAccountAddressText(networkConfigDeps, receiveAccount);
         invariant(addressText, 'addressText is not defined');
 
         dispatch(

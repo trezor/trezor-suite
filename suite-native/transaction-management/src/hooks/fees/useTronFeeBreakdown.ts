@@ -1,3 +1,5 @@
+import { selectNetworkConfigDeps } from '@suite-common/networks';
+import { useServices } from '@suite-common/dependency-injection';
 import { useSelector } from 'react-redux';
 
 import {
@@ -22,6 +24,8 @@ export const useTronFeeBreakdown = ({
     accountKey,
     feeLimitSunOverride,
 }: UseTronFeeBreakdownParams) => {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
+
     const account = useSelector((state: AccountsRootState) =>
         selectAccountByKey(state, accountKey),
     );
@@ -34,6 +38,7 @@ export const useTronFeeBreakdown = ({
     if (account?.networkType !== 'tron') return null;
 
     const breakdown = calculateTronFeeBreakdown(
+        networkConfigDeps,
         feeLevels.normal,
         account.misc?.tronResources,
         account.symbol,

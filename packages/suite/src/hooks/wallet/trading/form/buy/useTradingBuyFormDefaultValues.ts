@@ -26,7 +26,7 @@ export const useTradingBuyFormDefaultValues = (
 ): TradingBuyFormDefaultValuesProps => {
     const isTorEnabled = useSelector(selectIsTorEnabled);
     const { coins } = useSelector(selectTradingInfo);
-    const { createAssetOptionFromCryptoId } = useTradingAssets();
+    const { getAssetOptionFromCryptoId } = useTradingAssets();
 
     const country = !isTorEnabled
         ? (buyInfo?.buyInfo?.country as TradingCountryCode | undefined)
@@ -40,12 +40,12 @@ export const useTradingBuyFormDefaultValues = (
     );
 
     const defaultCrypto = useMemo(() => {
-        // coins is read via ref inside createAssetOptionFromCryptoId (stable callback);
+        // coins is read via ref inside getAssetOptionFromCryptoId (stable callback);
         // referencing it here keeps the linter active while ensuring recompute after API load.
         void coins;
 
-        return createAssetOptionFromCryptoId(cryptoId);
-    }, [createAssetOptionFromCryptoId, cryptoId, coins]);
+        return getAssetOptionFromCryptoId(cryptoId);
+    }, [getAssetOptionFromCryptoId, cryptoId, coins]);
 
     const baseCurrencyCode = useSelector(selectBaseCurrency);
     const suggestedFiatCurrency = getSupportedFiatCurrencyWithFallback(baseCurrencyCode);

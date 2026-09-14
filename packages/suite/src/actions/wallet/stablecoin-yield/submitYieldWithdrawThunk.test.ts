@@ -41,7 +41,7 @@ jest.mock('@suite/modal', () => ({
 
 jest.mock('./signingHelpers', () => ({
     ...jest.requireActual('./signingHelpers'),
-    sendYieldTransaction: (payload: unknown) => mockSendYieldTransaction(payload),
+    sendYieldTransaction: (_deps: unknown, payload: unknown) => mockSendYieldTransaction(payload),
 }));
 
 const account = mockWalletAccount({ symbol: asNetworkSymbol('eth') }) as Account;

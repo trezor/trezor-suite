@@ -1,3 +1,5 @@
+import { selectNetworkConfigDeps } from '@suite-common/networks';
+import { useServices } from '@suite-common/dependency-injection';
 import React, { useEffect, useRef } from 'react';
 import Animated, { FadeInLeft, FadeOutLeft } from 'react-native-reanimated';
 
@@ -118,7 +120,9 @@ const CustomFeeContentWrapper = ({ accountKey, formDraft, onCustomFeeSet }: Cust
 const CUSTOM_FEE_UNSUPPORTED_NETWORK_TYPES: NetworkType[] = ['solana', 'tron'];
 
 export const CustomFee = ({ accountKey, symbol, formDraft, onCustomFeeSet }: CustomFeeProps) => {
-    const networkType = getNetworkType(symbol);
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
+
+    const networkType = getNetworkType(networkConfigDeps, symbol);
     if (CUSTOM_FEE_UNSUPPORTED_NETWORK_TYPES.includes(networkType)) {
         return null;
     }

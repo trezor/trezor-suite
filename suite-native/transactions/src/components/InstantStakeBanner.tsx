@@ -1,3 +1,5 @@
+import { selectNetworkConfigDeps } from '@suite-common/networks';
+import { useServices } from '@suite-common/dependency-injection';
 import { useSelector } from 'react-redux';
 
 import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
@@ -27,6 +29,8 @@ const bannerStyle = prepareNativeStyle(utils => ({
 }));
 
 export const InstantStakeBanner = ({ accountKey, transaction }: InstantStakeBannerProps) => {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
+
     const { applyStyle } = useNativeStyles();
     const { translate } = useTranslate();
 
@@ -48,8 +52,13 @@ export const InstantStakeBanner = ({ accountKey, transaction }: InstantStakeBann
 
     if (!internalTransfer || !stakeType || stakeType === 'change-delegate') return null;
 
-    const amount = formatNetworkAmount(internalTransfer.amount ?? '0', symbol, false);
-    const displaySymbol = getNetworkDisplaySymbol(symbol);
+    const amount = formatNetworkAmount(
+        networkConfigDeps,
+        internalTransfer.amount ?? '0',
+        symbol,
+        false,
+    );
+    const displaySymbol = getNetworkDisplaySymbol(networkConfigDeps, symbol);
 
     const labelMap = {
         stake: translate('earn.instantStakeBanner.stakedTitle', { amount, displaySymbol }),

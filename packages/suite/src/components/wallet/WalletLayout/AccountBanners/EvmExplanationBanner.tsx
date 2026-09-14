@@ -1,6 +1,7 @@
 import { Translation } from '@suite/intl';
 import { selectRouteName } from '@suite/router';
 import { useServices } from '@suite-common/dependency-injection';
+import { selectNetworkConfigDeps } from '@suite-common/networks';
 import { selectDispatch } from '@suite-common/redux-utils';
 import { getNetwork } from '@suite-common/wallet-config';
 
@@ -17,6 +18,8 @@ interface EvmExplanationBannerProps {
 }
 
 export const EvmExplanationBanner = ({ account }: EvmExplanationBannerProps) => {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
+
     const { explanationBannerClosed } = useSelector(selectEvmSettings);
     const routeName = useSelector(selectRouteName);
     const { dispatch } = useServices(selectDispatch);
@@ -27,14 +30,14 @@ export const EvmExplanationBanner = ({ account }: EvmExplanationBannerProps) => 
         account &&
         !explanationBannerClosed[account.symbol] &&
         account.symbol !== 'eth' &&
-        getNetwork(account.symbol).networkType === 'ethereum' &&
+        getNetwork(networkConfigDeps, account.symbol).networkType === 'ethereum' &&
         !isReceiveRoute;
 
     if (!isVisible) {
         return null;
     }
 
-    const network = getNetwork(account.symbol);
+    const network = getNetwork(networkConfigDeps, account.symbol);
 
     const close = () => dispatch(closeEvmExplanationBanner(account.symbol));
 

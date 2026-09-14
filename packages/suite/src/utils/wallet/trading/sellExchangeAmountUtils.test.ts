@@ -1,10 +1,13 @@
+import { mockNetworkConfigDeps } from '@suite-common/networks/mocks';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 
 import { calcCryptoFromFiat, calcMaxTokenAmount, calcRatioAmount } from './sellExchangeAmountUtils';
 
+const networkConfigDeps = mockNetworkConfigDeps();
+
 describe('calcCryptoFromFiat', () => {
     it('converts a fiat amount to a crypto amount using the rate and network decimals', () => {
-        const result = calcCryptoFromFiat({
+        const result = calcCryptoFromFiat(networkConfigDeps, {
             fiatAmount: '100',
             rate: 50000,
             networkDecimals: 8,
@@ -15,7 +18,7 @@ describe('calcCryptoFromFiat', () => {
     });
 
     it('returns the amount in subunits (sats) when shouldSendInSats is set', () => {
-        const result = calcCryptoFromFiat({
+        const result = calcCryptoFromFiat(networkConfigDeps, {
             fiatAmount: '100',
             rate: 50000,
             networkDecimals: 8,
@@ -26,7 +29,7 @@ describe('calcCryptoFromFiat', () => {
     });
 
     it('returns an empty string when the rate is missing', () => {
-        const result = calcCryptoFromFiat({
+        const result = calcCryptoFromFiat(networkConfigDeps, {
             fiatAmount: '100',
             rate: undefined,
             networkDecimals: 8,
@@ -50,7 +53,7 @@ describe('calcRatioAmount', () => {
     };
 
     it('divides the balance by the divisor with no reserve applied', () => {
-        const { cryptoInputValue, cryptoAmountWithReserve } = calcRatioAmount({
+        const { cryptoInputValue, cryptoAmountWithReserve } = calcRatioAmount(networkConfigDeps, {
             ...defaultParams,
             divisor: 2,
             isNetworkReserveEnabled: false,
@@ -61,7 +64,7 @@ describe('calcRatioAmount', () => {
     });
 
     it('converts to subunits when shouldSendInSats is set', () => {
-        const { cryptoInputValue } = calcRatioAmount({
+        const { cryptoInputValue } = calcRatioAmount(networkConfigDeps, {
             ...defaultParams,
             divisor: 4,
             shouldSendInSats: true,
@@ -74,7 +77,7 @@ describe('calcRatioAmount', () => {
 
 describe('calcMaxTokenAmount', () => {
     it('caps the amount at the token balance decimals', () => {
-        const result = calcMaxTokenAmount({
+        const result = calcMaxTokenAmount(networkConfigDeps, {
             balance: '123.454',
             decimals: 2,
             networkDecimals: 8,
@@ -85,7 +88,7 @@ describe('calcMaxTokenAmount', () => {
     });
 
     it('returns the amount in subunits when shouldSendInSats is set', () => {
-        const result = calcMaxTokenAmount({
+        const result = calcMaxTokenAmount(networkConfigDeps, {
             balance: '1.5',
             decimals: 8,
             networkDecimals: 8,

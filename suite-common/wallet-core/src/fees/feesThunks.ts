@@ -1,5 +1,6 @@
+import { type NetworksRootState, selectNetworkConfigAccessors } from '@suite-common/networks';
 import { createThunk } from '@suite-common/redux-utils';
-import { type NetworkSymbol, getNetwork, networksCollection } from '@suite-common/wallet-config';
+import { type NetworkSymbol, getNetwork, getNetworksCollection } from '@suite-common/wallet-config';
 import { type FeeInfo } from '@suite-common/wallet-types';
 import TrezorConnect from '@trezor/connect';
 import { asCoinSymbol } from '@trezor/connect-common';
@@ -18,7 +19,7 @@ import {
     selectEnabledNetworks,
 } from '../settings/walletSettingsReducer';
 
-type PreloadFeeInfoThunkState = WalletSettingsRootState;
+type PreloadFeeInfoThunkState = WalletSettingsRootState & NetworksRootState;
 
 // Conditionally subscribe to blockchain backend
 // called after TrezorConnect.init successfully emits TRANSPORT.START event
@@ -28,10 +29,12 @@ type PreloadFeeInfoThunkState = WalletSettingsRootState;
 export const preloadFeeInfoThunk = createThunk<void, void, { state: PreloadFeeInfoThunkState }>(
     `${FEES_MODULE_PREFIX}/preloadFeeInfoThunk`,
     async (_, { dispatch, getState }) => {
+        const networkConfigDeps = selectNetworkConfigAccessors(getState());
+
         const enabledNetworks = selectEnabledNetworks(getState());
 
         // Fetch default fee levels
-        const networks = networksCollection.filter(
+        const networks = getNetworksCollection(networkConfigDeps).filter(
             n => !n.isHidden && enabledNetworks?.includes(n.symbol),
         );
 
@@ -76,7 +79,7 @@ type UpdateFeeInfoThunkProps = {
     artificialDelay?: number;
 };
 
-export type UpdateFeeInfoThunkState = BlockchainRootState & FeesRootState;
+export type UpdateFeeInfoThunkState = BlockchainRootState & FeesRootState & NetworksRootState;
 
 /**
  * Fetches feeInfo for a given network from backend.
@@ -93,7 +96,9 @@ export const updateFeeInfoThunk = createThunk<
 >(
     `${FEES_MODULE_PREFIX}/updateFeeInfoThunk`,
     async ({ networkSymbol, artificialDelay }, { getState, fulfillWithValue, rejectWithValue }) => {
-        const network = getNetwork(networkSymbol);
+        const networkConfigDeps = selectNetworkConfigAccessors(getState());
+
+        const network = getNetwork(networkConfigDeps, networkSymbol);
         const { symbol } = network;
         const blockchainInfo = selectNetworkBlockchainInfo(getState(), symbol);
 
@@ -108,7 +113,7 @@ export const updateFeeInfoThunk = createThunk<
         }
 
         const [newFeeInfo] = await Promise.all([
-            getNewFeeInfo({ network }),
+            getNewFeeInfo(networkConfigDeps, { network }),
             resolveAfter(artificialDelay ?? 0),
         ]);
 

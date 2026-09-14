@@ -5,6 +5,7 @@ import { Translation } from '@suite/intl';
 import { gotoThunk } from '@suite/router';
 import { useServices } from '@suite-common/dependency-injection';
 import { getTronVotedApr, useTronStakingStats } from '@suite-common/earn-staking-api';
+import { selectNetworkConfigDeps } from '@suite-common/networks';
 import { selectDispatch } from '@suite-common/redux-utils';
 import {
     getTronAvailableVotingPower,
@@ -37,6 +38,8 @@ interface TronStakedCardProps {
 }
 
 export const TronStakedCard = ({ account }: TronStakedCardProps) => {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
+
     const { analytics, dispatch } = useServices(selectDesktopAnalyticsDep, selectDispatch);
     const [isVoteAllocationOpen, setIsVoteAllocationOpen] = useState(false);
     const { stats, maxApr } = useTronStakingStats();
@@ -50,7 +53,7 @@ export const TronStakedCard = ({ account }: TronStakedCardProps) => {
         votingMessageContent,
     } = useMessageSystemStaking(account.symbol);
 
-    const stakedBalance = getTronAccountTotalStakingBalance(account) ?? '0';
+    const stakedBalance = getTronAccountTotalStakingBalance(networkConfigDeps, account) ?? '0';
     const hasStake = new BigNumber(stakedBalance).gt(0);
     const votedAddresses = getTronVotes(account).map(vote => vote.address);
     const apr = votedAddresses.length > 0 ? getTronVotedApr(stats.data, votedAddresses) : maxApr;

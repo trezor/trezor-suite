@@ -1,6 +1,8 @@
 import { useWatch } from 'react-hook-form';
 
 import { Translation, type TranslationKey } from '@suite/intl';
+import { useServices } from '@suite-common/dependency-injection';
+import { selectNetworkConfigDeps } from '@suite-common/networks';
 import { getResourceGain } from '@suite-common/wallet-core';
 import { TRON_RESOURCE_TYPES, type TronResourceType } from '@suite-common/wallet-types';
 import { asAmountSubunit, subunitsToUnits } from '@suite-common/wallet-utils';
@@ -16,6 +18,8 @@ const RESOURCE_LABEL: Record<TronResourceType, TranslationKey> = {
 };
 
 export const TronFreezeResourceSelect = () => {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
+
     const { account, form, actions } = useTronStakeContext();
     const { control, setValue } = form.methods;
 
@@ -23,7 +27,7 @@ export const TronFreezeResourceSelect = () => {
     const resourceType = useWatch({ control, name: 'resourceType' });
     const tronResources = account.networkType === 'tron' ? account.misc.tronResources : undefined;
 
-    const availableBalance = subunitsToUnits({
+    const availableBalance = subunitsToUnits(networkConfigDeps, {
         value: asAmountSubunit(new BigNumber(account.availableBalance)),
         symbol: account.symbol,
     }).toString();

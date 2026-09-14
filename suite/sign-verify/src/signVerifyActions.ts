@@ -1,3 +1,4 @@
+import { type NetworkConfigDeps } from '@suite-common/networks';
 import { type Dispatch } from 'redux';
 
 import { type DesktopAnalyticsDep, events } from '@suite/analytics';
@@ -235,6 +236,7 @@ type SignThunkDeps = WithServices<DesktopAnalyticsDep>;
 
 export const signThunk =
     (
+        networkConfigDeps: NetworkConfigDeps,
         account: Account,
         path: string | number[],
         message: string,
@@ -246,7 +248,7 @@ export const signThunk =
         const { analytics } = extra.services;
         // Networks signing in a single format never offered the choice, so reporting one of its
         // values would invent an answer the user never gave.
-        const formatAttributes = getHasSelectableSignatureFormat(account)
+        const formatAttributes = getHasSelectableSignatureFormat(networkConfigDeps, account)
             ? { signatureFormat: isElectrum ? ('electrum' as const) : ('trezor' as const) }
             : {};
 

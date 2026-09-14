@@ -3,6 +3,7 @@ import { TrezorLink } from '@suite/external-links';
 import { Translation } from '@suite/intl';
 import { events } from '@suite-common/analytics';
 import { useServices } from '@suite-common/dependency-injection';
+import { selectNetworkConfigDeps } from '@suite-common/networks';
 import {
     EarnFlow,
     type EarnProvider,
@@ -36,23 +37,32 @@ export const YieldEarnProviderConsentModal = ({
     provider,
     yieldContext,
 }: YieldEarnProviderConsentModalProps) => {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
+
     const { analytics } = useServices(selectDesktopAnalyticsDep);
 
     const tokenContractAddress = yieldContext?.tokenContractAddress;
     const normalizedTokenContractAddress = tokenContractAddress
-        ? getContractAddressForNetworkSymbol(account.symbol, tokenContractAddress)
+        ? getContractAddressForNetworkSymbol(
+              networkConfigDeps,
+              account.symbol,
+              tokenContractAddress,
+          )
         : undefined;
 
     const tokenSymbolFromAccount = account.tokens?.find(
         token =>
             normalizedTokenContractAddress !== undefined &&
             token.contract !== undefined &&
-            getContractAddressForNetworkSymbol(account.symbol, token.contract) ===
-                normalizedTokenContractAddress,
+            getContractAddressForNetworkSymbol(
+                networkConfigDeps,
+                account.symbol,
+                token.contract,
+            ) === normalizedTokenContractAddress,
     )?.symbol;
 
     const tokenCryptoId = normalizedTokenContractAddress
-        ? toTokenCryptoId(account.symbol, normalizedTokenContractAddress)
+        ? toTokenCryptoId(networkConfigDeps, account.symbol, normalizedTokenContractAddress)
         : undefined;
 
     const tokenSymbolFromTrading = useSelector(state =>
@@ -66,7 +76,7 @@ export const YieldEarnProviderConsentModal = ({
         networkSymbol: account.symbol,
         yieldContext,
     });
-    const displaySymbol = getNetworkDisplaySymbol(account.symbol);
+    const displaySymbol = getNetworkDisplaySymbol(networkConfigDeps, account.symbol);
     const depositSymbol = isWrappedNativeToken(account.symbol, normalizedTokenContractAddress)
         ? displaySymbol
         : (tokenSymbolFromAccount ?? tokenSymbolFromTrading ?? displaySymbol);

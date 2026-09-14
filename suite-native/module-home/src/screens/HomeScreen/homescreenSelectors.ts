@@ -1,3 +1,4 @@
+import { selectNetworkConfigAccessors } from '@suite-common/networks';
 import {
     type DeviceRootState,
     selectDeviceStaticSessionId,
@@ -41,12 +42,14 @@ const createMemoizedSelector = createWeakMapSelector.withTypes<
         MessageSystemRootState
 >();
 
-export const selectDeviceHistoryIgnoredNetworksString = createMemoizedSelector(
-    [selectDeviceHistoryIgnoredNetworkSymbols],
-    networkSymbols =>
+export const selectDeviceHistoryIgnoredNetworksString = createWeakMapSelector(
+    [selectNetworkConfigAccessors, selectDeviceHistoryIgnoredNetworkSymbols],
+    (networkConfigDeps, networkSymbols) =>
         networkSymbols.length === 0
             ? null
-            : networkSymbols.map(networkSymbol => getNetwork(networkSymbol).name).join(', '),
+            : networkSymbols
+                  .map(networkSymbol => getNetwork(networkConfigDeps, networkSymbol).name)
+                  .join(', '),
 );
 
 export const selectShouldDisplayUpgradeFirmwareAlert = createMemoizedSelector(

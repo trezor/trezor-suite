@@ -1,4 +1,8 @@
-import { asNetworkSymbol } from '@suite-common/wallet-config';
+import type { NetworksRootState } from '@suite-common/networks';
+import { mockNetworkConfigDeps } from '@suite-common/networks/mocks';
+import { getNetworks, asNetworkSymbol } from '@suite-common/wallet-config';
+
+const networks = getNetworks(mockNetworkConfigDeps());
 import { type FeeInfo, type FeesState } from '@suite-common/wallet-types';
 
 import { selectConvertedNetworkFeeInfo } from './feesReducer';
@@ -25,7 +29,10 @@ const btcFeeInfo: FeeInfo = {
     levels: [{ label: 'normal', feePerUnit: '10', blocks: 3 }],
 };
 
-const buildState = (fees: FeesState): FeesRootState => ({ wallet: { fees } });
+const buildState = (fees: FeesState): FeesRootState & NetworksRootState => ({
+    networks,
+    wallet: { fees },
+});
 
 describe('selectConvertedNetworkFeeInfo', () => {
     it('returns null when the network has no fee entry', () => {

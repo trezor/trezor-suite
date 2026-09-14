@@ -1,5 +1,8 @@
+import { getNetworks } from '@suite-common/wallet-config';
+
 import { combineReducers } from '@reduxjs/toolkit';
 import { type SellFiatTrade } from 'invity-api';
+import { mockNetworkConfigDeps } from '@suite-common/networks/mocks';
 
 import { createThunk } from '@suite-common/redux-utils';
 import { mockActionType } from '@suite-common/redux-utils/mocks';
@@ -18,6 +21,8 @@ import { sellUtilsFixtures } from '../../utils/sell/__fixtures__/sellUtils';
 import { tradingThunks } from '../common';
 
 import { sellThunks } from './index';
+
+const networkConfigDeps = mockNetworkConfigDeps();
 
 const tradingReducer = prepareTradingReducer({
     actionTypes: { storageLoad: mockActionType('storageLoad') },
@@ -62,6 +67,7 @@ describe('sendSellTransactionThunk', () => {
         const store = createTestStore({
             extra: undefined,
             reducer: combineReducers({
+                networks: () => getNetworks(mockNetworkConfigDeps()),
                 wallet: combineReducers({
                     trading: tradingReducer,
                 }),
@@ -113,7 +119,7 @@ describe('sendSellTransactionThunk', () => {
                     trade: {
                         ...(tradeTest.trade as SellFiatTrade),
                     },
-                    decimals: getNetwork(account.symbol).decimals,
+                    decimals: getNetwork(networkConfigDeps, account.symbol).decimals,
                     shouldSendInSats: false,
                     nextStep: mockNextStep,
                     signAndPushSendFormTransaction: jest.fn(),
@@ -160,7 +166,7 @@ describe('sendSellTransactionThunk', () => {
                 sellThunks.sendTransactionThunk({
                     account,
                     trade: { ...trade.data },
-                    decimals: getNetwork(account.symbol).decimals,
+                    decimals: getNetwork(networkConfigDeps, account.symbol).decimals,
                     shouldSendInSats: false,
                     nextStep: mockNextStep,
                     signAndPushSendFormTransaction: jest.fn(),
@@ -215,7 +221,7 @@ describe('sendSellTransactionThunk', () => {
                 sellThunks.sendTransactionThunk({
                     account,
                     trade: { ...trade.data },
-                    decimals: getNetwork(account.symbol).decimals,
+                    decimals: getNetwork(networkConfigDeps, account.symbol).decimals,
                     shouldSendInSats: false,
                     nextStep: mockNextStep,
                     signAndPushSendFormTransaction: jest.fn(),
@@ -253,7 +259,7 @@ describe('sendSellTransactionThunk', () => {
             sellThunks.sendTransactionThunk({
                 account,
                 trade: { ...trade.data },
-                decimals: getNetwork(account.symbol).decimals,
+                decimals: getNetwork(networkConfigDeps, account.symbol).decimals,
                 shouldSendInSats: false,
                 nextStep: mockNextStep,
                 signAndPushSendFormTransaction: jest.fn(),
@@ -294,7 +300,7 @@ describe('sendSellTransactionThunk', () => {
             sellThunks.sendTransactionThunk({
                 account,
                 trade: { ...trade.data },
-                decimals: getNetwork(account.symbol).decimals,
+                decimals: getNetwork(networkConfigDeps, account.symbol).decimals,
                 shouldSendInSats: true,
                 nextStep: mockNextStep,
                 signAndPushSendFormTransaction: jest.fn(),
@@ -343,7 +349,7 @@ describe('sendSellTransactionThunk', () => {
             sellThunks.sendTransactionThunk({
                 account,
                 trade: undefined,
-                decimals: getNetwork(account.symbol).decimals,
+                decimals: getNetwork(networkConfigDeps, account.symbol).decimals,
                 shouldSendInSats: true,
                 nextStep: mockNextStep,
                 signAndPushSendFormTransaction: jest.fn(),

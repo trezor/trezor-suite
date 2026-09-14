@@ -1,3 +1,5 @@
+import { type NetworksRootState } from '@suite-common/networks';
+import { selectNetworkConfigDeps } from '@suite-common/networks';
 import { useCallback, useEffect } from 'react';
 import { useSelector } from 'react-redux';
 
@@ -75,10 +77,12 @@ const useSellQuotesChangeEffect = ({ getValues, setValue }: SellFormType) => {
 };
 
 const useSellQuoteChangeEffect = ({ control, getValues, setValue }: SellFormType) => {
-    const [sendAsset, quote] = useWatch({ control, name: ['sendAsset', 'quote'] });
-    const symbol = getSymbolFromTradeableAsset(sendAsset);
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
 
-    const isAmountInSats = useSelector((state: WalletSettingsRootState) =>
+    const [sendAsset, quote] = useWatch({ control, name: ['sendAsset', 'quote'] });
+    const symbol = getSymbolFromTradeableAsset(networkConfigDeps, sendAsset);
+
+    const isAmountInSats = useSelector((state: WalletSettingsRootState & NetworksRootState) =>
         selectIsAmountInSats(state, symbol),
     );
 
@@ -104,12 +108,12 @@ const useSellQuoteChangeEffect = ({ control, getValues, setValue }: SellFormType
                 isAmountInSats && truncatedCryptoAmount && symbol
                     ? convertAmountUnitsToSubunits(
                           truncatedCryptoAmount,
-                          getNetwork(symbol).decimals,
+                          getNetwork(networkConfigDeps, symbol).decimals,
                       )
                     : truncatedCryptoAmount;
             setValue('cryptoStringAmount', value, { shouldValidate: true });
         }
-    }, [quote, isAmountInSats, symbol, getValues, setValue]);
+    }, [networkConfigDeps, quote, isAmountInSats, symbol, getValues, setValue]);
 };
 
 type UseValidationsParams = {
@@ -144,6 +148,8 @@ const useValidations = ({
 };
 
 export const useSellForm = (): SellFormType => {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
+
     const defaultValues = useSelector(selectSellFormDefaultValues);
     const limits = useSelector(selectSellAmountLimits);
     const {
@@ -157,7 +163,7 @@ export const useSellForm = (): SellFormType => {
 
     const form = useForm<SellFormValues>({
         defaultValues,
-        validation: sellFormValidationSchema,
+        validation: sellFormValidationSchema(networkConfigDeps),
         context,
     });
 

@@ -1,3 +1,5 @@
+import { selectNetworkConfigDeps } from '@suite-common/networks';
+import { useServices } from '@suite-common/dependency-injection';
 import { type ReactNode } from 'react';
 import { useSelector } from 'react-redux';
 
@@ -122,6 +124,8 @@ export const YieldTransactionReviewOutputContent = ({
     evmTransactionPurpose,
     reviewOutput,
 }: YieldTransactionReviewOutputContentProps) => {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
+
     const account = useSelector((state: AccountsRootState) =>
         selectAccountByKey(state, accountKey),
     );
@@ -156,7 +160,10 @@ export const YieldTransactionReviewOutputContent = ({
                     <Translation
                         id={wrappedNativeIntentMessages[evmTransactionPurpose]}
                         values={{
-                            nativeSymbol: getNetworkDisplaySymbol(account.symbol),
+                            nativeSymbol: getNetworkDisplaySymbol(
+                                networkConfigDeps,
+                                account.symbol,
+                            ),
                             tokenSymbol: getWrappedNativeSymbol(account.symbol) ?? '',
                         }}
                     />

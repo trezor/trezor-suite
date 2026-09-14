@@ -1,3 +1,4 @@
+import { type NetworksRootState } from '@suite-common/networks';
 import { useSelector } from 'react-redux';
 
 import { type TokenDefinitionsRootState } from '@suite-common/token-definitions';
@@ -28,7 +29,7 @@ export const AccountDetailEmptyState = ({
     );
     const { shallDisplayBaseCurrency } = useDisplayBaseCurrency(account?.symbol);
     const isUnrecognizedToken = useSelector(
-        (state: TokenDefinitionsRootState & AccountsRootState) =>
+        (state: TokenDefinitionsRootState & AccountsRootState & NetworksRootState) =>
             selectIsUnrecognizedToken(state, accountKey, tokenContract),
     );
 

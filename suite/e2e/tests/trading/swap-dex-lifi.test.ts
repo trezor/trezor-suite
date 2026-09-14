@@ -1,3 +1,5 @@
+import { mockNetworkConfigDeps } from '@suite-common/networks/mocks';
+
 import { getCryptoId } from '@suite-common/trading';
 import { fromGwei, localizeNumber } from '@suite-common/wallet-utils';
 import { TestStream } from '@trezor/e2e-utils';
@@ -7,10 +9,16 @@ import { dexSwapStatusFlow } from '../../fixtures/trading/statusFlow';
 import { expect, test } from '../../support/fixtures';
 import { createTestAnnotation } from '../../support/reporters/annotations';
 
+const networkConfigDeps = mockNetworkConfigDeps();
+
 const sendAmount = '0.03';
 const formattedSendAmount = `${localizeNumber(sendAmount)} ETH`;
 const accountLabel = 'Ethereum #1';
-const usdcCryptoId = getCryptoId('eth', '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48');
+const usdcCryptoId = getCryptoId(
+    networkConfigDeps,
+    'eth',
+    '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
+);
 const usdcDecimals = 6;
 
 // Firmware strings on the DEX review pages.

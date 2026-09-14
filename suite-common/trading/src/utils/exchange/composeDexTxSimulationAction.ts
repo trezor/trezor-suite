@@ -1,4 +1,5 @@
 import { type ExchangeTrade } from 'invity-api';
+import { type NetworkConfigDeps } from '@suite-common/networks';
 
 import { getNetwork } from '@suite-common/wallet-config';
 import { type Account, type TxSimulationAction } from '@suite-common/wallet-types';
@@ -16,16 +17,15 @@ type ComposeDexTxSimulationActionParams = {
     sourceOrigin: string;
 };
 
-export const composeDexTxSimulationAction = ({
-    quote,
-    account,
-    sourceOrigin,
-}: ComposeDexTxSimulationActionParams): TxSimulationAction | null => {
+export const composeDexTxSimulationAction = (
+    networkConfigDeps: NetworkConfigDeps,
+    { quote, account, sourceOrigin }: ComposeDexTxSimulationActionParams,
+): TxSimulationAction | null => {
     if (!quote?.isDex || !account) {
         return null;
     }
 
-    const network = getNetwork(account.symbol);
+    const network = getNetwork(networkConfigDeps, account.symbol);
 
     if (network.networkType !== 'ethereum' || network.chainId === undefined) {
         return null;

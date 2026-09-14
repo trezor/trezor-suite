@@ -1,3 +1,4 @@
+import { type NetworkConfigDeps } from '@suite-common/networks';
 import { yup } from '@suite-common/validators';
 import { type NetworkSymbol, getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import {
@@ -19,87 +20,100 @@ export type UnstakeFormContext = {
     translate: Translate;
 };
 
-export const unstakeFormValidationSchema = yup.object({
-    amount: yup
-        .string()
-        .required('Amount is required.')
-        .matches(/^\d*\.?\d+$/, 'Invalid decimal value.')
-        .test('is-zero', 'Amount must be greater than 0.', function (value) {
-            if (!value) return true;
+export const unstakeFormValidationSchema = (networkConfigDeps: NetworkConfigDeps) =>
+    yup.object({
+        amount: yup
+            .string()
+            .required('Amount is required.')
+            .matches(/^\d*\.?\d+$/, 'Invalid decimal value.')
+            .test('is-zero', 'Amount must be greater than 0.', function (value) {
+                if (!value) return true;
 
-            const { translate } = this.options.context as UnstakeFormContext;
+                const { translate } = this.options.context as UnstakeFormContext;
 
-            if (new BigNumber(value).isZero()) {
-                return this.createError({
-                    message: translate('earn.unstakeFormScreen.validation.amountIsZero'),
-                });
-            }
+                if (new BigNumber(value).isZero()) {
+                    return this.createError({
+                        message: translate('earn.unstakeFormScreen.validation.amountIsZero'),
+                    });
+                }
 
-            return true;
-        })
-        .test('max-amount', 'Amount exceeds maximum.', function (value) {
-            const { symbol, translate } = this.options.context as UnstakeFormContext;
+                return true;
+            })
+            .test('max-amount', 'Amount exceeds maximum.', function (value) {
+                const { symbol, translate } = this.options.context as UnstakeFormContext;
 
-            if (!value || !symbol) return true;
+                if (!value || !symbol) return true;
 
-            const limits = getStakingLimitsByNetworkSymbol(symbol);
-            if (!limits) return true;
+                const limits = getStakingLimitsByNetworkSymbol(networkConfigDeps, symbol);
+                if (!limits) return true;
 
-            if (new BigNumber(value).gt(limits.MAX_AMOUNT_FOR_STAKING)) {
-                return this.createError({
-                    message: translate('earn.unstakeFormScreen.validation.amountExceedsMax', {
-                        maxAmount: limits.MAX_AMOUNT_FOR_STAKING.toString(),
-                    }),
-                });
-            }
+                if (new BigNumber(value).gt(limits.MAX_AMOUNT_FOR_STAKING)) {
+                    return this.createError({
+                        message: translate('earn.unstakeFormScreen.validation.amountExceedsMax', {
+                            maxAmount: limits.MAX_AMOUNT_FOR_STAKING.toString(),
+                        }),
+                    });
+                }
 
-            return true;
-        })
-        .test(SOLANA_UNSTAKE_AMOUNT_BOUNDS_ERROR, 'Amount cannot be unstaked.', function (value) {
-            const { account, translate } = this.options.context as UnstakeFormContext;
+                return true;
+            })
+            .test(
+                SOLANA_UNSTAKE_AMOUNT_BOUNDS_ERROR,
+                'Amount cannot be unstaked.',
+                function (value) {
+                    const { account, translate } = this.options.context as UnstakeFormContext;
 
-            if (!value || !account) return true;
+                    if (!value || !account) return true;
 
-            const bounds = getSolanaUnstakeAmountBounds(account, value);
-            if (!bounds) return true;
+                    const bounds = getSolanaUnstakeAmountBounds(networkConfigDeps, account, value);
+                    if (!bounds) return true;
 
-            const symbol = getNetworkDisplaySymbol(account.symbol);
-            const messageId = bounds.closestLower
-                ? 'earn.unstakeFormScreen.validation.invalidUnstakeAmount'
-                : 'earn.unstakeFormScreen.validation.invalidUnstakeAmountHigherOnly';
+                    const symbol = getNetworkDisplaySymbol(networkConfigDeps, account.symbol);
+                    const messageId = bounds.closestLower
+                        ? 'earn.unstakeFormScreen.validation.invalidUnstakeAmount'
+                        : 'earn.unstakeFormScreen.validation.invalidUnstakeAmountHigherOnly';
 
-            return this.createError({
-                message: translate(messageId, {
-                    higher: `${bounds.closestHigher} ${symbol}`,
-                    lower: bounds.closestLower ? `${bounds.closestLower} ${symbol}` : undefined,
-                    higherFiat: '',
-                    lowerFiat: '',
-                }),
-            });
-        })
-        .test('is-higher-than-staked', "You don't have enough staked balance.", function (value) {
-            const { stakedBalance, translate } = this.options.context as UnstakeFormContext;
+                    return this.createError({
+                        message: translate(messageId, {
+                            higher: `${bounds.closestHigher} ${symbol}`,
+                            lower: bounds.closestLower
+                                ? `${bounds.closestLower} ${symbol}`
+                                : undefined,
+                            higherFiat: '',
+                            lowerFiat: '',
+                        }),
+                    });
+                },
+            )
+            .test(
+                'is-higher-than-staked',
+                "You don't have enough staked balance.",
+                function (value) {
+                    const { stakedBalance, translate } = this.options.context as UnstakeFormContext;
 
-            if (!value || !stakedBalance) return true;
+                    if (!value || !stakedBalance) return true;
 
-            if (new BigNumber(value).gt(stakedBalance)) {
-                return this.createError({
-                    message: translate('earn.unstakeFormScreen.validation.insufficientBalance'),
-                });
-            }
+                    if (new BigNumber(value).gt(stakedBalance)) {
+                        return this.createError({
+                            message: translate(
+                                'earn.unstakeFormScreen.validation.insufficientBalance',
+                            ),
+                        });
+                    }
 
-            return true;
-        })
-        .test('too-many-decimals', 'Too many decimals.', function (value) {
-            const { decimals = 8, translate } = this.options.context as UnstakeFormContext;
+                    return true;
+                },
+            )
+            .test('too-many-decimals', 'Too many decimals.', function (value) {
+                const { decimals = 8, translate } = this.options.context as UnstakeFormContext;
 
-            if (!isDecimalsValid(value, decimals)) {
-                return this.createError({
-                    message: translate('earn.unstakeFormScreen.validation.tooManyDecimals'),
-                });
-            }
+                if (!isDecimalsValid(value, decimals)) {
+                    return this.createError({
+                        message: translate('earn.unstakeFormScreen.validation.tooManyDecimals'),
+                    });
+                }
 
-            return true;
-        }),
-    fiat: yup.string(),
-});
+                return true;
+            }),
+        fiat: yup.string(),
+    });

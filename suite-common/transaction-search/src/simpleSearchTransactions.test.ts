@@ -1,9 +1,12 @@
+import { mockNetworkConfigDeps } from '@suite-common/networks/mocks';
 import { testMocks } from '@suite-common/test-utils';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { type WalletAccountTransaction } from '@suite-common/wallet-types';
 
 import { type SearchAccountLabels } from './searchLabels';
 import { simpleSearchTransactions } from './simpleSearchTransactions';
+
+const networkConfigDeps = mockNetworkConfigDeps();
 
 const { getWalletTransaction } = testMocks;
 const ethSymbol = asNetworkSymbol('eth');
@@ -38,7 +41,12 @@ describe(simpleSearchTransactions.name, () => {
     it('finds transactions with native balance change by native display symbol', () => {
         const transaction = getWalletTransaction({ txid: 'aaa1' });
 
-        const result = simpleSearchTransactions([transaction], emptyLabels, 'BTC');
+        const result = simpleSearchTransactions(
+            networkConfigDeps,
+            [transaction],
+            emptyLabels,
+            'BTC',
+        );
 
         expect(result).toEqual([transaction]);
     });
@@ -63,7 +71,9 @@ describe(simpleSearchTransactions.name, () => {
             ],
         });
 
-        expect(simpleSearchTransactions([transaction], emptyLabels, 'ETH')).toEqual([]);
+        expect(
+            simpleSearchTransactions(networkConfigDeps, [transaction], emptyLabels, 'ETH'),
+        ).toEqual([]);
     });
 
     it('does not match token-only transactions by native display symbol even when token symbol or name contain it', () => {
@@ -98,7 +108,9 @@ describe(simpleSearchTransactions.name, () => {
             ],
         });
 
-        expect(simpleSearchTransactions([transaction], emptyLabels, 'ETH')).toEqual([]);
+        expect(
+            simpleSearchTransactions(networkConfigDeps, [transaction], emptyLabels, 'ETH'),
+        ).toEqual([]);
     });
 
     it('matches contract transactions with native amount by native display symbol', () => {
@@ -109,13 +121,17 @@ describe(simpleSearchTransactions.name, () => {
             amount: '1.5',
         });
 
-        expect(simpleSearchTransactions([transaction], emptyLabels, 'ETH')).toEqual([transaction]);
+        expect(
+            simpleSearchTransactions(networkConfigDeps, [transaction], emptyLabels, 'ETH'),
+        ).toEqual([transaction]);
     });
 
     it('does not match fee-only self transactions by native display symbol', () => {
         const transaction = getWalletTransaction({ txid: 'aaa3', type: 'self', amount: '144' });
 
-        expect(simpleSearchTransactions([transaction], emptyLabels, 'BTC')).toEqual([]);
+        expect(
+            simpleSearchTransactions(networkConfigDeps, [transaction], emptyLabels, 'BTC'),
+        ).toEqual([]);
     });
 
     it('matches transactions with native internal transfers by native display symbol', () => {
@@ -126,7 +142,12 @@ describe(simpleSearchTransactions.name, () => {
             internalTransfers: [{ type: 'recv', from: '0x1', to: '0x2', amount: '5' }],
         });
 
-        const result = simpleSearchTransactions([transaction], emptyLabels, 'ETH');
+        const result = simpleSearchTransactions(
+            networkConfigDeps,
+            [transaction],
+            emptyLabels,
+            'ETH',
+        );
 
         expect(result).toEqual([transaction]);
     });
@@ -151,7 +172,12 @@ describe(simpleSearchTransactions.name, () => {
             ],
         });
 
-        const result = simpleSearchTransactions([transaction], emptyLabels, 'USDT');
+        const result = simpleSearchTransactions(
+            networkConfigDeps,
+            [transaction],
+            emptyLabels,
+            'USDT',
+        );
 
         expect(result).toEqual([transaction]);
     });
@@ -159,7 +185,12 @@ describe(simpleSearchTransactions.name, () => {
         const first = getTransactionForAddress('aaa8', sharedAddress);
         const second = getTransactionForAddress('aaa9', sharedAddress);
 
-        const result = simpleSearchTransactions([first, second], emptyLabels, sharedAddress);
+        const result = simpleSearchTransactions(
+            networkConfigDeps,
+            [first, second],
+            emptyLabels,
+            sharedAddress,
+        );
 
         expect(result).toEqual([first, second]);
     });
@@ -172,7 +203,7 @@ describe(simpleSearchTransactions.name, () => {
             accountLabel: null,
         };
 
-        const result = simpleSearchTransactions([transaction], labels, 'sAvIn');
+        const result = simpleSearchTransactions(networkConfigDeps, [transaction], labels, 'sAvIn');
 
         expect(result).toEqual([transaction]);
     });

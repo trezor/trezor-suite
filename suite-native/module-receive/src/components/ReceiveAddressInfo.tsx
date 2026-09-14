@@ -1,3 +1,5 @@
+import { selectNetworkConfigDeps } from '@suite-common/networks';
+import { useServices } from '@suite-common/dependency-injection';
 import { type NetworkSymbol, getNetwork } from '@suite-common/wallet-config';
 import { BannerInline, type BannerInlineProps, Box } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
@@ -8,7 +10,9 @@ type ReceiveAddressInfoProps = {
 };
 
 export const ReceiveAddressInfo = ({ networkSymbol, isTokenAddress }: ReceiveAddressInfoProps) => {
-    const { name: networkName } = getNetwork(networkSymbol);
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
+
+    const { name: networkName } = getNetwork(networkConfigDeps, networkSymbol);
 
     const getAlertProps = (): BannerInlineProps | undefined => {
         if (networkSymbol === 'ada') {

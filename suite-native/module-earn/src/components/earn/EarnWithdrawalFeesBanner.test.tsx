@@ -1,3 +1,5 @@
+import { mockNetworkConfigDeps } from '@suite-common/networks/mocks';
+
 import { getMaxStakeAmount } from '@suite-common/wallet-core';
 import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
 import { networkAmountToSmallestUnit } from '@suite-common/wallet-utils';
@@ -15,6 +17,8 @@ import {
     earnFormValidationSchema,
 } from '../../utils/earn/earnFormSchema';
 
+const networkConfigDeps = mockNetworkConfigDeps();
+
 const SOL_WITHDRAWAL_RESERVE = '0.02';
 
 const translate = ((id: string) => id) as EarnFormContext['translate'];
@@ -30,12 +34,12 @@ const renderBanner = async ({
 }) => {
     const account = mockWalletAccount({
         symbol: 'sol',
-        availableBalance: networkAmountToSmallestUnit(balance, 'sol'),
+        availableBalance: networkAmountToSmallestUnit(networkConfigDeps, balance, 'sol'),
     });
 
     const { result } = await renderHookWithStoreProvider(() =>
         useForm<EarnFormValues>({
-            validation: earnFormValidationSchema,
+            validation: earnFormValidationSchema(networkConfigDeps),
             mode: 'onTouched',
             context: { symbol: 'sol', availableBalance: balance, decimals: 9, translate },
             defaultValues: { amount, fiat: '' },
@@ -84,7 +88,7 @@ describe('EarnWithdrawalFeesBanner', () => {
         const balance = '5';
         const { getByText } = await renderBanner({
             balance,
-            amount: getMaxStakeAmount({ balance, symbol: 'sol' }),
+            amount: getMaxStakeAmount(networkConfigDeps, { balance, symbol: 'sol' }),
             isMaxSelected: true,
         });
 
@@ -103,7 +107,7 @@ describe('EarnWithdrawalFeesBanner', () => {
         const balance = '1.01';
         const { getByText } = await renderBanner({
             balance,
-            amount: getMaxStakeAmount({ balance, symbol: 'sol' }),
+            amount: getMaxStakeAmount(networkConfigDeps, { balance, symbol: 'sol' }),
             isMaxSelected: true,
         });
 

@@ -1,3 +1,5 @@
+import { selectNetworkConfigDeps } from '@suite-common/networks';
+import { useServices } from '@suite-common/dependency-injection';
 import { type Control } from 'react-hook-form';
 
 import { type NetworkSymbol, getNetwork } from '@suite-common/wallet-config';
@@ -26,6 +28,8 @@ type AssetsOverviewProps = {
 };
 
 export const AccountImportOverview = ({ balance, symbol, formControl }: AssetsOverviewProps) => {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
+
     const { translate } = useTranslate();
     const { shallDisplayBaseCurrency } = useDisplayBaseCurrency(symbol);
 
@@ -40,7 +44,7 @@ export const AccountImportOverview = ({ balance, symbol, formControl }: AssetsOv
     return (
         <AccountImportOverviewCard
             icon={<TokenIcon symbol={symbol} />}
-            coinName={getNetwork(symbol).name}
+            coinName={getNetwork(networkConfigDeps, symbol).name}
             cryptoAmount={
                 <ExactCryptoAmountFormatter
                     value={balance}

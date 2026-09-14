@@ -1,3 +1,4 @@
+import { type NetworksRootState } from '@suite-common/networks';
 import { useSelector } from 'react-redux';
 
 import { useSolStakingRewardsWarning } from '@suite-common/earn-staking-api';
@@ -38,8 +39,9 @@ export const SolStakingRewardsWarning = ({ accountKey }: SolStakingRewardsWarnin
         selectAccountByKey(state, accountKey),
     );
 
-    const isStakingActive = useSelector((state: TransactionsRootState & AccountsRootState) =>
-        selectAccountIsStakingActive(state, accountKey),
+    const isStakingActive = useSelector(
+        (state: TransactionsRootState & AccountsRootState & NetworksRootState) =>
+            selectAccountIsStakingActive(state, accountKey),
     );
 
     if (!account || !isStakingActive) return null;

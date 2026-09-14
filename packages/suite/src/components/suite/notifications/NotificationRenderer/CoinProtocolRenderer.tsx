@@ -5,7 +5,7 @@ import { Translation } from '@suite/intl';
 import { gotoThunk, selectRouteName } from '@suite/router';
 import { isBech32AddressUppercase } from '@suite-common/address';
 import { useServices } from '@suite-common/dependency-injection';
-import { selectNetworkSymbolForProtocol } from '@suite-common/networks';
+import { selectNetworkConfigDeps, selectNetworkSymbolForProtocol } from '@suite-common/networks';
 import { selectDispatch } from '@suite-common/redux-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import {
@@ -35,6 +35,8 @@ export const CoinProtocolRenderer = ({
     render,
     notification,
 }: NotificationRendererProps<'coin-scheme-protocol'>) => {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
+
     const { dispatch } = useServices(selectDispatch);
     const selectedAccount = useSelector(selectSelectedAccount);
     const routeName = useSelector(selectRouteName);
@@ -42,8 +44,10 @@ export const CoinProtocolRenderer = ({
     const networkSymbol = useSelector(state =>
         selectNetworkSymbolForProtocol(state, notification.scheme),
     );
-    const displaySymbol = networkSymbol && getNetworkDisplaySymbol(networkSymbol);
-    const networkName = networkSymbol && getNetworkDisplaySymbolName(networkSymbol);
+    const displaySymbol =
+        networkSymbol && getNetworkDisplaySymbol(networkConfigDeps, networkSymbol);
+    const networkName =
+        networkSymbol && getNetworkDisplaySymbolName(networkConfigDeps, networkSymbol);
     const networkAccounts = useSelector(state =>
         selectDeviceAccountsByNetworkSymbol(state, networkSymbol),
     ).filter(a => new BigNumber(a.balance).gt(0));

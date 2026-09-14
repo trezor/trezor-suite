@@ -2,7 +2,9 @@ import styled from 'styled-components';
 
 import { AccountLabel } from '@suite/account';
 import { Translation } from '@suite/intl';
+import { useServices } from '@suite-common/dependency-injection';
 import type { DeviceRootState } from '@suite-common/device';
+import { selectNetworkConfigDeps } from '@suite-common/networks';
 import { type TrezorDevice } from '@suite-common/suite-types';
 import {
     type NetworkSymbol,
@@ -50,6 +52,8 @@ export const SignMessageModal = ({
     coin,
     serializedPath,
 }: SignMessageModalProps) => {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
+
     const accounts = useSelector(selectDeviceAccounts);
     const deviceModelInternal = device.features?.internal_model;
 
@@ -70,8 +74,8 @@ export const SignMessageModal = ({
         eip712parsed()?.primaryType && eip712parsed()?.domain && eip712parsed()?.message;
     const eip712ChainId = eip712parsed()?.domain?.chainId;
     const network = eip712ChainId
-        ? getNetworkByEvmChainId(eip712ChainId)
-        : getNetwork(networkSymbol ?? 'eth');
+        ? getNetworkByEvmChainId(networkConfigDeps, eip712ChainId)
+        : getNetwork(networkConfigDeps, networkSymbol ?? 'eth');
 
     const address = useSelector((state: AccountsRootState & DeviceRootState) =>
         selectAddressByNetworkAndPath(state, network, serializedPath),

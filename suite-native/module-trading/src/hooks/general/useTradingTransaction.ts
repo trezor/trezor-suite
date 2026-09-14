@@ -1,3 +1,5 @@
+import { type NetworksRootState } from '@suite-common/networks';
+import { selectNetworkConfigDeps } from '@suite-common/networks';
 import { type ReactNode, useCallback, useEffect } from 'react';
 import { useSelector } from 'react-redux';
 
@@ -84,6 +86,8 @@ export const useTradingTransaction = ({
     processResponseData,
     triggerAnalyticsTradeConfirmation,
 }: UseTradingTransactionProps): UseTradingTransactionReturnProps => {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
+
     const { dispatch } = useServices(selectDispatch);
 
     const sendAccountKey = useSelector((state: TradingRootState) =>
@@ -107,6 +111,7 @@ export const useTradingTransaction = ({
     const { selectedFee } = draft ?? {};
 
     const { contractAddress } = cryptoIdToNetworkAndContractAddress(
+        networkConfigDeps,
         tradeType === 'exchange'
             ? (selectedQuote as ExchangeTrade)?.send
             : (selectedQuote as SellFiatTrade)?.cryptoCurrency,
@@ -116,7 +121,7 @@ export const useTradingTransaction = ({
         selectAccountTokenDecimals(state, sendAccount?.key, contractAddress as TokenAddress),
     );
 
-    const shouldSendInSats = useSelector((state: WalletSettingsRootState) =>
+    const shouldSendInSats = useSelector((state: WalletSettingsRootState & NetworksRootState) =>
         selectIsAmountInSats(state, sendAccount?.symbol),
     );
 
@@ -190,7 +195,7 @@ export const useTradingTransaction = ({
                 return false;
             }
 
-            const network = getNetwork(sendAccount.symbol);
+            const network = getNetwork(networkConfigDeps, sendAccount.symbol);
             const decimals = tokenDecimals ?? network.decimals;
 
             try {
@@ -235,6 +240,7 @@ export const useTradingTransaction = ({
             }
         },
         [
+            networkConfigDeps,
             selectedQuote,
             sendAccount,
             tokenDecimals,

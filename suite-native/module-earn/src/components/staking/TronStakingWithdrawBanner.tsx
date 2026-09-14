@@ -1,3 +1,4 @@
+import { type NetworksRootState } from '@suite-common/networks';
 import { useSelector } from 'react-redux';
 
 import {
@@ -20,7 +21,7 @@ export const TronStakingWithdrawBanner = ({ accountKey }: TronStakingWithdrawBan
     );
 
     const withdrawableBalance =
-        useSelector((state: StakeRootState) =>
+        useSelector((state: StakeRootState & NetworksRootState) =>
             selectUnstakingBalanceByAccountKey(state, accountKey),
         ) ?? '0';
 

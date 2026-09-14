@@ -1,3 +1,5 @@
+import { selectNetworkConfigDeps } from '@suite-common/networks';
+import { useServices } from '@suite-common/dependency-injection';
 import { useMemo } from 'react';
 import { useSelector } from 'react-redux';
 
@@ -64,6 +66,8 @@ interface AssetPriceCardProps {
 }
 
 export const AssetPriceCard = ({ accountKey, tokenContract }: AssetPriceCardProps) => {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
+
     const { applyStyle } = useNativeStyles();
 
     const symbol = useSelector((state: AccountsRootState) =>
@@ -85,7 +89,8 @@ export const AssetPriceCard = ({ accountKey, tokenContract }: AssetPriceCardProp
     if (!symbol) return null;
     if (!isLoading && currentValue === null) return null;
 
-    const tokenName = token?.name ?? token?.symbol ?? getNetworkDisplaySymbol(symbol);
+    const tokenName =
+        token?.name ?? token?.symbol ?? getNetworkDisplaySymbol(networkConfigDeps, symbol);
 
     const priceContract = isErc4626Token ? underlyingAssetContract : tokenContract;
     const isCoinPrice = !priceContract || isWrappedNativeToken(symbol, priceContract);
@@ -115,7 +120,7 @@ export const AssetPriceCard = ({ accountKey, tokenContract }: AssetPriceCardProp
                             </Text>
 
                             <Text variant="body-sm" color="contentSecondary">
-                                {getNetworkDisplaySymbolName(symbol)}
+                                {getNetworkDisplaySymbolName(networkConfigDeps, symbol)}
                             </Text>
                         </Box>
                     </HStack>

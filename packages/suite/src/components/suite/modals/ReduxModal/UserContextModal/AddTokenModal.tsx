@@ -11,7 +11,7 @@ import { Input, Modal } from '@trezor/components';
 import TrezorConnect, { type TokenInfo } from '@trezor/connect';
 import { asCoinSymbol } from '@trezor/connect-common';
 
-import { addToken } from 'src/actions/wallet/tokenActions';
+import { addTokenThunk } from 'src/actions/wallet/tokenActions';
 import { useSelector } from 'src/hooks/suite';
 import { type Account } from 'src/types/wallet';
 
@@ -99,7 +99,7 @@ export const AddTokenModal = ({ onCancel }: AddTokenModalProps) => {
     };
     const handleAddTokenButtonClick = () => {
         if (tokenInfo) {
-            dispatch(addToken(account, tokenInfo));
+            dispatch(addTokenThunk(account, tokenInfo));
             onCancel();
 
             analytics.report({

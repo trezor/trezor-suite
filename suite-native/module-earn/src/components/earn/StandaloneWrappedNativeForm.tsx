@@ -1,3 +1,5 @@
+import { selectNetworkConfigDeps } from '@suite-common/networks';
+import { useServices } from '@suite-common/dependency-injection';
 import { useSelector } from 'react-redux';
 
 import { type RouteProp, useRoute } from '@react-navigation/native';
@@ -50,6 +52,8 @@ type StandaloneWrappedNativeFormProps = {
 };
 
 export const StandaloneWrappedNativeForm = ({ flowType }: StandaloneWrappedNativeFormProps) => {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
+
     const route = useRoute<RouteProps>();
     const { accountKey, pendingTransaction } = route.params;
     const isWrap = flowType === 'wrap';
@@ -59,13 +63,16 @@ export const StandaloneWrappedNativeForm = ({ flowType }: StandaloneWrappedNativ
     );
 
     const wrappedNative = account ? getWrappedNativeToken(account.symbol) : undefined;
-    const nativeSymbol = toTokenSymbol(account ? getNetworkDisplaySymbol(account.symbol) : '');
+    const nativeSymbol = toTokenSymbol(
+        account ? getNetworkDisplaySymbol(networkConfigDeps, account.symbol) : '',
+    );
     const wrappedBalance =
         account && wrappedNative
-            ? (getAccountTokenByContract(account, wrappedNative.address)?.balance ?? '0')
+            ? (getAccountTokenByContract(networkConfigDeps, account, wrappedNative.address)
+                  ?.balance ?? '0')
             : '0';
 
-    const nativeDecimals = account ? getNetwork(account.symbol).decimals : 0;
+    const nativeDecimals = account ? getNetwork(networkConfigDeps, account.symbol).decimals : 0;
     const spentBalance = isWrap ? (account?.formattedBalance ?? '0') : wrappedBalance;
     const spentDecimals = isWrap ? nativeDecimals : (wrappedNative?.decimals ?? 0);
     const spentSymbol = isWrap ? nativeSymbol : toTokenSymbol(wrappedNative?.symbol ?? '');
@@ -126,7 +133,7 @@ export const StandaloneWrappedNativeForm = ({ flowType }: StandaloneWrappedNativ
     }
 
     const messages = wrappedNativeFlowMessages[flowType].form;
-    const accountLabel = account.accountLabel ?? getNetwork(account.symbol).name;
+    const accountLabel = account.accountLabel ?? getNetwork(networkConfigDeps, account.symbol).name;
     // An unwrap spends the token, so its contract flows into the amount input, fee section and
     // pending modal; a wrap spends the native coin and leaves them contract-less.
     const spentTokenContract = isWrap ? undefined : toTokenAddress(wrappedNative.address);

@@ -1,4 +1,6 @@
 import { Translation } from '@suite/intl';
+import { useServices } from '@suite-common/dependency-injection';
+import { selectNetworkConfigDeps } from '@suite-common/networks';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { selectAccountIsStakingActive, selectBaseCurrency } from '@suite-common/wallet-core';
 import { isTestnet } from '@suite-common/wallet-utils';
@@ -47,6 +49,8 @@ type AccountOverviewBalanceProps = {
 };
 
 export const AccountOverviewBalance = ({ selectedAccount }: AccountOverviewBalanceProps) => {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
+
     const baseCurrency = useSelector(selectBaseCurrency);
     const hasStaking = useSelector(state =>
         selectedAccount.account
@@ -72,7 +76,7 @@ export const AccountOverviewBalance = ({ selectedAccount }: AccountOverviewBalan
 
     const { symbol, formattedBalance } = account;
     const shouldDisplayBaseCurrency = baseCurrency !== symbol;
-    const isMainnet = !isTestnet(symbol);
+    const isMainnet = !isTestnet(networkConfigDeps, symbol);
     const hasTokens = !!account.tokens?.length;
     const hasStakingExcludedFromBalance = hasStaking && account.networkType !== 'cardano';
     const balanceExcludesTranslationId = getBalanceExcludesTranslationId(

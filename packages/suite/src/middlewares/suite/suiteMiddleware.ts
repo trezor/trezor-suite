@@ -18,6 +18,7 @@ import {
     selectDevicePath,
     selectDeviceThunk,
 } from '@suite-common/device';
+import { type NetworksRootState, selectNetworkConfigAccessors } from '@suite-common/networks';
 import { type WithServices, createMiddlewareWithExtraDeps } from '@suite-common/redux-utils';
 import { type SuiteSyncDep } from '@suite-common/suite-sync-types';
 import { isAnyDeviceEventAction } from '@suite-common/suite-utils';
@@ -35,7 +36,8 @@ import {
 import { handleProtocolRequestThunk } from 'src/actions/suite/protocolActions';
 import { desktopHandshake, setRecentlyDisconnectedDevice } from 'src/actions/suite/suiteActions';
 
-type SuiteMiddlewareState = AccountsRootState &
+type SuiteMiddlewareState = NetworksRootState &
+    AccountsRootState &
     DeviceRootState &
     RouterRootState &
     WalletSettingsRootState & {
@@ -77,6 +79,8 @@ const createSuiteMiddleware = createMiddlewareWithExtraDeps<
 
 export const prepareSuiteMiddleware = createSuiteMiddleware(
     (action, { dispatch, next, getState, extra }) => {
+        const networkConfigDeps = selectNetworkConfigAccessors(getState());
+
         if (
             routerAppChanged.match(action) &&
             (action.payload === 'recovery' || action.payload === 'onboarding')
@@ -142,7 +146,7 @@ export const prepareSuiteMiddleware = createSuiteMiddleware(
 
         if (desktopHandshake.match(action)) {
             if (action.payload.protocol) {
-                dispatch(handleProtocolRequestThunk(action.payload.protocol));
+                dispatch(handleProtocolRequestThunk(networkConfigDeps, action.payload.protocol));
             }
             if (action.payload.desktopUpdate?.firstRun) {
                 dispatch(

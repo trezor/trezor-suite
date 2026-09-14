@@ -1,4 +1,5 @@
 import type { CryptoId, ExchangeTrade, ExchangeTradeStatus } from 'invity-api';
+import { type NetworkConfigDeps } from '@suite-common/networks';
 
 import { invariant } from '@suite-common/suite-utils';
 import { type GeneralPrecomposedLevels } from '@suite-common/wallet-types';
@@ -20,8 +21,8 @@ type GetAmountLimitsProps = {
     currency: string;
 };
 
-const isEvmCryptoId = (cryptoId?: CryptoId) =>
-    cryptoIdToNetwork(cryptoId)?.networkType === 'ethereum';
+const isEvmCryptoId = (networkConfigDeps: NetworkConfigDeps, cryptoId?: CryptoId) =>
+    cryptoIdToNetwork(networkConfigDeps, cryptoId)?.networkType === 'ethereum';
 
 const isNativeCryptoId = (cryptoId?: CryptoId) => {
     if (!cryptoId) {
@@ -33,11 +34,13 @@ const isNativeCryptoId = (cryptoId?: CryptoId) => {
     return !contractAddress || contractAddress === CONTRACT_ADDRESS_FOR_NATIVE_TOKEN;
 };
 
-export const isSendingEvmNativeToken = (cryptoId?: CryptoId) =>
-    isEvmCryptoId(cryptoId) && isNativeCryptoId(cryptoId);
+export const isSendingEvmNativeToken = (
+    networkConfigDeps: NetworkConfigDeps,
+    cryptoId?: CryptoId,
+) => isEvmCryptoId(networkConfigDeps, cryptoId) && isNativeCryptoId(cryptoId);
 
-export const requiresErc20Approval = (cryptoId?: CryptoId) =>
-    isEvmCryptoId(cryptoId) && !isNativeCryptoId(cryptoId);
+export const requiresErc20Approval = (networkConfigDeps: NetworkConfigDeps, cryptoId?: CryptoId) =>
+    isEvmCryptoId(networkConfigDeps, cryptoId) && !isNativeCryptoId(cryptoId);
 
 // loop through quotes and if all quotes are either with error below minimum or over maximum, return error message
 const getAmountLimits = ({
@@ -124,8 +127,13 @@ export const hasEip712SignDataType = (quote?: ExchangeTrade): boolean =>
 export const hasEip712SignData = (quote?: ExchangeTrade) =>
     quote?.status === 'SIGN_DATA' && hasEip712SignDataType(quote);
 
-export const requiresTokenApproval = (quote?: ExchangeTrade): boolean =>
-    !!quote?.isDex && requiresErc20Approval(quote.send) && !hasEip712SignData(quote);
+export const requiresTokenApproval = (
+    networkConfigDeps: NetworkConfigDeps,
+    quote?: ExchangeTrade,
+): boolean =>
+    !!quote?.isDex &&
+    requiresErc20Approval(networkConfigDeps, quote.send) &&
+    !hasEip712SignData(quote);
 
 export const getDisplayNetworkFee = (
     quote: ExchangeTrade | undefined,
@@ -148,12 +156,15 @@ export const getDisplayComposedLevels = <T extends GeneralPrecomposedLevels>(
     return composedLevels;
 };
 
-export const getApprovalStatus = (candidateQuote?: ExchangeTrade): ApprovalStatus => {
+export const getApprovalStatus = (
+    networkConfigDeps: NetworkConfigDeps,
+    candidateQuote?: ExchangeTrade,
+): ApprovalStatus => {
     if (!candidateQuote) {
         return null;
     }
 
-    if (!requiresTokenApproval(candidateQuote)) {
+    if (!requiresTokenApproval(networkConfigDeps, candidateQuote)) {
         return 'not_needed';
     }
 
@@ -177,12 +188,15 @@ export const getApprovalStatus = (candidateQuote?: ExchangeTrade): ApprovalStatu
     return 'needs_approval';
 };
 
-export const getDexEstimationData = (quote: ExchangeTrade): string | undefined => {
+export const getDexEstimationData = (
+    networkConfigDeps: NetworkConfigDeps,
+    quote: ExchangeTrade,
+): string | undefined => {
     if (!quote.dexTx?.data) {
         return undefined;
     }
 
-    if (getApprovalStatus(quote) === 'needs_revoke') {
+    if (getApprovalStatus(networkConfigDeps, quote) === 'needs_revoke') {
         const spender = getErc20ApproveSpender(quote.dexTx.data);
         if (spender) {
             try {

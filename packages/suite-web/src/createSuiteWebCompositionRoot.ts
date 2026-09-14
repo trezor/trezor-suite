@@ -2,6 +2,7 @@ import { createBrowserHistory } from 'history';
 
 import { createWebauthnPlatformEncryption } from '@suite/platform-encryption-webauthn';
 import { asGetter } from '@suite-common/dependency-injection';
+import { type NetworksServices, createNetworksCompositionRoot } from '@suite-common/networks';
 import TrezorConnect from '@trezor/connect';
 import type { CreateLogger } from '@trezor/connect-common';
 import { resolveConnectPath } from '@trezor/env-utils';
@@ -9,7 +10,7 @@ import { BridgeTransport } from '@trezor/transport-common';
 import { WebUsbTransport } from '@trezor/transport-web';
 
 import { createHydrateReduxStore } from 'src/reducers/createHydrateReduxStore';
-import { createReduxStore } from 'src/reducers/createReduxStore';
+import { type SuiteReduxStore, createReduxStore } from 'src/reducers/createReduxStore';
 import { rootReducer } from 'src/reducers/store';
 import { createConnectLoggerFactory } from 'src/support/createConnectLoggerFactory';
 import { createSuiteServicesCompositionRoot } from 'src/support/createSuiteCompositionRoot';
@@ -45,11 +46,23 @@ export const createSuiteWebCompositionRoot = (): SuiteWebCompositionRoot => {
         };
     };
 
-    const { store, injectServicesIntoReduxExtra } = createReduxStore({
+    // eslint-disable-next-line prefer-const -- Forward declaration for the network dispatch closure.
+    let store: SuiteReduxStore;
+
+    const networks: NetworksServices = createNetworksCompositionRoot({
+        getTrezorConnect: () => TrezorConnect,
+        dispatch: action => store.dispatch(action),
+    });
+    const networkConfigDeps = networks;
+
+    const reduxStore = createReduxStore({
+        ...networkConfigDeps,
         reducer: rootReducer,
         extraDependencies,
     });
+    store = reduxStore.store;
     const suiteServices = createSuiteServicesCompositionRoot({
+        networks,
         dispatch: store.dispatch,
         getState: store.getState,
         history,
@@ -65,7 +78,7 @@ export const createSuiteWebCompositionRoot = (): SuiteWebCompositionRoot => {
     const services = { ...suiteServices, store, hydrateReduxStore };
     // Services need the store's dispatch/getState, while Redux thunks need those services in extra.
     // Inject them after construction to break the cycle, before the app can dispatch any actions.
-    injectServicesIntoReduxExtra(services);
+    reduxStore.injectServicesIntoReduxExtra(services);
 
     return { app: createWebApp({ services }) };
 };

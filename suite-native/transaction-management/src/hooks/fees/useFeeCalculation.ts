@@ -1,3 +1,4 @@
+import { type NetworksRootState } from '@suite-common/networks';
 import { useMemo } from 'react';
 import { useWatch } from 'react-hook-form';
 import { useSelector } from 'react-redux';
@@ -52,7 +53,7 @@ export const useFeeCalculation = ({
         ? (feeLevels[selectedFeeLevel] as GeneralPrecomposedTransactionFinal)
         : null;
 
-    const feePerUnit = useSelector((state: FeesRootState) =>
+    const feePerUnit = useSelector((state: FeesRootState & NetworksRootState) =>
         selectConvertedNetworkFeeLevelFeePerUnit(state, symbol, selectedFeeLevel),
     );
 

@@ -1,3 +1,4 @@
+import { selectNetworkConfigDeps } from '@suite-common/networks';
 import { useCallback, useEffect, useRef } from 'react';
 import { useSelector } from 'react-redux';
 
@@ -29,6 +30,8 @@ export const useEarnReviewBackNavigation = (
     formType: EarnFormDraftPrefix,
     accountKey: AccountKey,
 ) => {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
+
     const isTransactionReviewInProgress = useSelector((state: TransactionReviewOutputsState) =>
         selectIsTransactionReviewInProgress(state, formType, accountKey),
     );
@@ -56,7 +59,7 @@ export const useEarnReviewBackNavigation = (
             return;
         }
 
-        const { name, params } = resolveStakingHomeRoute(account);
+        const { name, params } = resolveStakingHomeRoute(networkConfigDeps, account);
 
         navigation.dispatch(
             CommonActions.reset({
@@ -70,7 +73,7 @@ export const useEarnReviewBackNavigation = (
                 ],
             }),
         );
-    }, [account, navigation]);
+    }, [networkConfigDeps, account, navigation]);
 
     useEffect(() => {
         const cleanup = () => {

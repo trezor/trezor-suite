@@ -1,5 +1,7 @@
 import { useMemo } from 'react';
 
+import { useServices } from '@suite-common/dependency-injection';
+import { selectNetworkConfigDeps } from '@suite-common/networks';
 import { type NetworkSymbol, type NetworkType, getNetwork } from '@suite-common/wallet-config';
 import { type PrecomposedLevels, type PrecomposedLevelsCardano } from '@suite-common/wallet-types';
 import { type AmountUnit, asAmountSubunit, subunitsToUnits } from '@suite-common/wallet-utils';
@@ -31,6 +33,8 @@ export function useNetworkFeeOptions({
     levels,
     composedLevels,
 }: UseNetworkFeeOptionsProps): FeeOptionType[] {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
+
     return useMemo(() => {
         const filteredLevels = levels.filter(level => level.label !== 'custom');
 
@@ -39,10 +43,10 @@ export function useNetworkFeeOptions({
             const hasTransactionInfo =
                 transactionInfo !== undefined && transactionInfo.type !== 'error';
             const networkAmount = hasTransactionInfo
-                ? subunitsToUnits({
+                ? subunitsToUnits(networkConfigDeps, {
                       value: asAmountSubunit(new BigNumber(transactionInfo.fee)),
                       symbol: networkSymbol,
-                      decimals: getNetwork(networkSymbol)?.decimals,
+                      decimals: getNetwork(networkConfigDeps, networkSymbol)?.decimals,
                   })
                 : null;
             // Needed only for Solana because of fee estimation on compose Tx
@@ -86,5 +90,5 @@ export function useNetworkFeeOptions({
             default:
                 return filteredLevels.map(buildBasicFeeOptions);
         }
-    }, [levels, networkType, networkSymbol, composedLevels]);
+    }, [networkConfigDeps, levels, networkType, networkSymbol, composedLevels]);
 }

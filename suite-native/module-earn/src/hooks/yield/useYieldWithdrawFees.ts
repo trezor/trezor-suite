@@ -1,3 +1,4 @@
+import { type NetworkConfigDeps, selectNetworkConfigDeps } from '@suite-common/networks';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useSelector, useStore } from 'react-redux';
 
@@ -182,25 +183,31 @@ const getYieldWithdrawFeeState = (formDraft: FormState | null | undefined) => {
     };
 };
 
-const buildYieldWithdrawFeeLevels = ({
-    amount,
-    feeInfo,
-    gasLimit,
-    reviewToken,
-    symbol,
-    unsignedTransaction,
-}: BuildYieldWithdrawFeeLevelsParams): PrecomposedLevels =>
+const buildYieldWithdrawFeeLevels = (
+    networkConfigDeps: NetworkConfigDeps,
+    {
+        amount,
+        feeInfo,
+        gasLimit,
+        reviewToken,
+        symbol,
+        unsignedTransaction,
+    }: BuildYieldWithdrawFeeLevelsParams,
+): PrecomposedLevels =>
     Object.fromEntries(
         feeInfo.levels
             .filter(feeLevel => feeLevel.label !== 'custom')
             .map(feeLevel => {
-                const { precomposedTransaction } = buildStablecoinYieldTransactionReview({
-                    amount,
-                    selectedFee: buildEvmSelectedFee({ feeLevel, gasLimit }),
-                    symbol,
-                    token: reviewToken,
-                    unsignedTransaction,
-                });
+                const { precomposedTransaction } = buildStablecoinYieldTransactionReview(
+                    networkConfigDeps,
+                    {
+                        amount,
+                        selectedFee: buildEvmSelectedFee({ feeLevel, gasLimit }),
+                        symbol,
+                        token: reviewToken,
+                        unsignedTransaction,
+                    },
+                );
 
                 return [feeLevel.label, precomposedTransaction];
             }),
@@ -213,6 +220,8 @@ export const useYieldWithdrawFees = ({
     flowKey,
     isEnabled,
 }: UseYieldWithdrawFeesParams): UseYieldWithdrawFeesResult => {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
+
     const { dispatch } = useServices(selectDispatch);
     const store = useStore<FeesRootState>();
     const debounce = useDebounce();
@@ -316,14 +325,17 @@ export const useYieldWithdrawFees = ({
                     flowData: withdrawFlowData,
                     flowType: currentFlowType,
                 });
-                const { formState: baseFormState } = buildStablecoinYieldTransactionReview({
-                    amount: withdrawAmount,
-                    selectedFee: null,
-                    symbol: withdrawFlowData.account.symbol,
-                    token: reviewToken,
-                    unsignedTransaction,
-                });
-                const withdrawFeeLevels = buildYieldWithdrawFeeLevels({
+                const { formState: baseFormState } = buildStablecoinYieldTransactionReview(
+                    networkConfigDeps,
+                    {
+                        amount: withdrawAmount,
+                        selectedFee: null,
+                        symbol: withdrawFlowData.account.symbol,
+                        token: reviewToken,
+                        unsignedTransaction,
+                    },
+                );
+                const withdrawFeeLevels = buildYieldWithdrawFeeLevels(networkConfigDeps, {
                     amount: withdrawAmount,
                     feeInfo: withdrawFeeInfo,
                     gasLimit: baseFormState.feeLimit,
@@ -392,7 +404,7 @@ export const useYieldWithdrawFees = ({
                 }
             }
         },
-        [dispatch, setHasFeeEstimationError, store],
+        [networkConfigDeps, dispatch, setHasFeeEstimationError, store],
     );
 
     useEffect(() => {

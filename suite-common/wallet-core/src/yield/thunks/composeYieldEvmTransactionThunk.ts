@@ -1,3 +1,4 @@
+import { type NetworksRootState, selectNetworkConfigAccessors } from '@suite-common/networks';
 import { createThunk } from '@suite-common/redux-utils';
 import { getNetwork } from '@suite-common/wallet-config';
 import { type Account } from '@suite-common/wallet-types';
@@ -37,7 +38,8 @@ type ComposeYieldEvmTransactionPayload = {
 };
 
 export type ComposeYieldEvmTransactionThunkState = EthereumGetCurrentNonceThunkState &
-    GetOrFetchRawFeeInfoThunkState;
+    GetOrFetchRawFeeInfoThunkState &
+    NetworksRootState;
 
 export const composeYieldEvmTransactionThunk = createThunk<
     ComposeYieldEvmTransactionResult,
@@ -47,12 +49,14 @@ export const composeYieldEvmTransactionThunk = createThunk<
     }
 >(
     `${YIELD_PREFIX}/thunk/composeEvmTransaction`,
-    async ({ account, to, data, value, gasLimitFallback }, { dispatch }) => {
+    async ({ account, to, data, value, gasLimitFallback }, { getState, dispatch }) => {
+        const networkConfigDeps = selectNetworkConfigAccessors(getState());
+
         if (account.networkType !== 'ethereum') {
             return { type: 'error', reason: 'unsupported-network' } as const;
         }
 
-        const network = getNetwork(account.symbol);
+        const network = getNetwork(networkConfigDeps, account.symbol);
 
         if (!network.chainId) {
             return { type: 'error', reason: 'missing-chain-id' } as const;

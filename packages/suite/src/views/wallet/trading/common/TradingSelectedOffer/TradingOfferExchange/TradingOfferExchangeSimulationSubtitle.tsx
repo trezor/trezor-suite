@@ -1,4 +1,6 @@
 import { Translation } from '@suite/intl';
+import { useServices } from '@suite-common/dependency-injection';
+import { selectNetworkConfigDeps } from '@suite-common/networks';
 import { isCrossChainTrade, selectTradingExchangeSelectedQuote } from '@suite-common/trading';
 import { Icon, Row, Spinner, Text } from '@trezor/components';
 import { ShieldCheckIcon } from '@trezor/icons';
@@ -19,11 +21,17 @@ export const TradingOfferExchangeSimulationSubtitle = ({
     isSimulationLoading,
     hasSimulationError,
 }: TradingOfferExchangeSimulationSubtitleProps) => {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
+
     const selectedQuote = useSelector(selectTradingExchangeSelectedQuote);
 
     // A cross-chain swap is simulated on the source chain only, so the result says nothing
     // about what arrives — we still run it, but do not credit Blockaid for it.
-    const isCrossChain = isCrossChainTrade(selectedQuote?.send, selectedQuote?.receive);
+    const isCrossChain = isCrossChainTrade(
+        networkConfigDeps,
+        selectedQuote?.send,
+        selectedQuote?.receive,
+    );
 
     if (!isSimulationEnabled || hasSimulationError || isCrossChain) {
         return null;

@@ -1,5 +1,7 @@
 import { type UnknownAction } from '@reduxjs/toolkit';
 
+import { mockNetworkConfigDeps } from '@suite-common/networks/mocks';
+
 import {
     type CreateTestStoreParams,
     type TestStoreResult,
@@ -33,15 +35,22 @@ export const createTestCompositionRoot = <
     extra = { services: {} } as Extra,
     ...storeParams
 }: CreateTestCompositionRootParams<S, A, Extra>) => {
+    const services = {
+        ...extra.services,
+        networks: {
+            ...mockNetworkConfigDeps(),
+            ...(extra.services as { networks?: object }).networks,
+        },
+    };
     const { getActions, clearActions, ...store } = createTestStore({
         ...storeParams,
-        extra,
+        extra: { ...extra, services },
     });
 
     return {
         store,
         services: {
-            ...extra.services,
+            ...services,
             store,
             dispatch: store.dispatch,
             getActions,

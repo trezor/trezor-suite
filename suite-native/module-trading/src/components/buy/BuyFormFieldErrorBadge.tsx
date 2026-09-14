@@ -1,3 +1,5 @@
+import { selectNetworkConfigDeps } from '@suite-common/networks';
+import { useServices } from '@suite-common/dependency-injection';
 import type { PropsWithChildren } from 'react';
 import { useSelector } from 'react-redux';
 
@@ -23,6 +25,8 @@ export type BuyFormFieldErrorBadgeProps = PropsWithChildren<{
 const asNonEmptyStringValue = (value: unknown): string => (value as string) ?? '0';
 
 const useMismatchedAmountMessage = (fieldName: keyof BuyFormValues) => {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
+
     const { control } = useBuyFormContext();
     const { translate } = useTranslate();
     const { CryptoAmountFormatter, BaseCurrencyAmountFormatter } = useFormatters();
@@ -32,7 +36,7 @@ const useMismatchedAmountMessage = (fieldName: keyof BuyFormValues) => {
         control,
         name: ['asset', 'quote', 'amountInCrypto', fieldName],
     });
-    const symbol = getSymbolFromTradeableAsset(asset);
+    const symbol = getSymbolFromTradeableAsset(networkConfigDeps, asset);
 
     if (!quote) {
         return undefined;

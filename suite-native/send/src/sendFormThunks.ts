@@ -1,3 +1,4 @@
+import { selectNetworkConfigAccessors, type NetworksRootState } from '@suite-common/networks';
 import { isRejected } from '@reduxjs/toolkit';
 
 import { type DeviceRootState, deviceActions, selectSelectedDevice } from '@suite-common/device';
@@ -149,7 +150,9 @@ export const cleanupSendFormThunk = createThunk<
     },
 );
 
-export type RemoveSendFormDraftsSupportingAmountUnitThunkState = AccountsRootState & SendRootState;
+export type RemoveSendFormDraftsSupportingAmountUnitThunkState = AccountsRootState &
+    SendRootState &
+    NetworksRootState;
 
 export const removeSendFormDraftsSupportingAmountUnitThunk = createThunk<
     void,
@@ -158,13 +161,15 @@ export const removeSendFormDraftsSupportingAmountUnitThunk = createThunk<
 >(
     `${SEND_MODULE_PREFIX}/removeSendFormDraftsSupportingAmountUnitThunk`,
     (_, { dispatch, getState }) => {
+        const networkConfigDeps = selectNetworkConfigAccessors(getState());
+
         const sendFormDrafts = selectSendFormDrafts(getState());
         // Draft keys may include tokenContract, but no token networks use amount-unit, so it's fine (for now).
         const accountKeys = typedObjectKeys(sendFormDrafts);
 
         accountKeys.forEach(accountKey => {
             const account = selectAccountByKey(getState(), accountKey as AccountKey); // Todo: is this cast correct? https://github.com/trezor/trezor-suite/issues/24918
-            if (account && hasNetworkFeatures(account, 'amount-unit')) {
+            if (account && hasNetworkFeatures(networkConfigDeps, account, 'amount-unit')) {
                 dispatch(sendFormActions.removeDraft({ accountKey: accountKey as AccountKey })); // Todo: is this cast correct? https://github.com/trezor/trezor-suite/issues/24918
             }
         });

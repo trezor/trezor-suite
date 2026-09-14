@@ -1,4 +1,5 @@
 import { asEvmAddress } from '@suite-common/calldata';
+import { selectNetworkConfigAccessors, type NetworksRootState } from '@suite-common/networks';
 import { createThunk } from '@suite-common/redux-utils';
 import { getNetwork } from '@suite-common/wallet-config';
 import {
@@ -60,7 +61,8 @@ type ComposeYieldDepositTransactionPayload = {
     amount: string;
 };
 
-export type ComposeYieldDepositTransactionThunkState = ComposeYieldEvmTransactionThunkState;
+export type ComposeYieldDepositTransactionThunkState = ComposeYieldEvmTransactionThunkState &
+    NetworksRootState;
 
 export const composeYieldDepositTransactionThunk = createThunk<
     PrepareYieldDepositResult,
@@ -70,14 +72,16 @@ export const composeYieldDepositTransactionThunk = createThunk<
     }
 >(
     `${YIELD_DEPOSIT_THUNK_PREFIX}/composeDepositTransaction`,
-    async ({ flowData, amount }, { dispatch }) => {
+    async ({ flowData, amount }, { getState, dispatch }) => {
+        const networkConfigDeps = selectNetworkConfigAccessors(getState());
+
         const { account, token, vault } = flowData;
 
         if (account.networkType !== 'ethereum') {
             return { type: 'error', reason: 'unsupported-network' } as const;
         }
 
-        const requestAmount = getApprovalRequestAmount({
+        const requestAmount = getApprovalRequestAmount(networkConfigDeps, {
             flowType: 'deposit',
             amount,
             flowData,
@@ -95,7 +99,7 @@ export const composeYieldDepositTransactionThunk = createThunk<
             tokenContractAddress,
             coin: account.symbol,
         });
-        const requestSubunits = unitsToSubunits({
+        const requestSubunits = unitsToSubunits(networkConfigDeps, {
             value: asAmountUnit(new BigNumber(requestAmount)),
             decimals: token.decimals,
         });
@@ -109,14 +113,14 @@ export const composeYieldDepositTransactionThunk = createThunk<
                 : { type: 'approval-required', spender };
         }
 
-        const network = getNetwork(account.symbol);
+        const network = getNetwork(networkConfigDeps, account.symbol);
 
         if (!network.chainId || vault.chainId !== network.chainId) {
             return { type: 'error', reason: 'vault-chain-mismatch' } as const;
         }
 
         const ownerAddress = asEvmAddress(account.descriptor);
-        const calldata = buildYieldDepositCalldata({
+        const calldata = buildYieldDepositCalldata(networkConfigDeps, {
             amount: requestAmount,
             flowData,
             ownerAddress,
@@ -136,7 +140,7 @@ export const composeYieldDepositTransactionThunk = createThunk<
         }
 
         const receiptAmount =
-            getWithdrawRequestAmount({
+            getWithdrawRequestAmount(networkConfigDeps, {
                 networkSymbol: account.symbol,
                 amount,
                 token: flowData.token,

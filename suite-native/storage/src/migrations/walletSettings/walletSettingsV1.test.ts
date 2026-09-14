@@ -1,3 +1,5 @@
+import { mockNetworkConfigDeps } from '@suite-common/networks/mocks';
+
 import { type getStoredState } from 'redux-persist';
 
 import { type NetworkSymbol } from '@suite-common/wallet-config';
@@ -5,6 +7,8 @@ import { PROTO } from '@trezor/connect';
 
 import { initialMigrateAppSettingsAndDiscoveryConfig } from './v1';
 import { createMMKVStorageMock } from '../../mmkvStorage.mock';
+
+const networkConfigDeps = mockNetworkConfigDeps();
 
 describe(initialMigrateAppSettingsAndDiscoveryConfig.name, () => {
     it('should migrate local currency from fiatCurrencyCode', async () => {
@@ -20,7 +24,7 @@ describe(initialMigrateAppSettingsAndDiscoveryConfig.name, () => {
                 return Promise.resolve(undefined);
             });
 
-        const migratedState = await initialMigrateAppSettingsAndDiscoveryConfig({
+        const migratedState = await initialMigrateAppSettingsAndDiscoveryConfig(networkConfigDeps, {
             getStoredState: mockGetStoredState,
             mmkvStorage: createMMKVStorageMock(),
         })({});
@@ -43,7 +47,7 @@ describe(initialMigrateAppSettingsAndDiscoveryConfig.name, () => {
                 return Promise.resolve(undefined);
             });
 
-        const migratedState = await initialMigrateAppSettingsAndDiscoveryConfig({
+        const migratedState = await initialMigrateAppSettingsAndDiscoveryConfig(networkConfigDeps, {
             getStoredState: mockGetStoreState,
             mmkvStorage: createMMKVStorageMock(),
         })({});
@@ -64,7 +68,7 @@ describe(initialMigrateAppSettingsAndDiscoveryConfig.name, () => {
                 return Promise.resolve(undefined);
             });
 
-        const migratedState = await initialMigrateAppSettingsAndDiscoveryConfig({
+        const migratedState = await initialMigrateAppSettingsAndDiscoveryConfig(networkConfigDeps, {
             getStoredState: mockGetStoredState,
             mmkvStorage: createMMKVStorageMock(),
         })({});
@@ -87,7 +91,7 @@ describe(initialMigrateAppSettingsAndDiscoveryConfig.name, () => {
                 return Promise.resolve(undefined);
             });
 
-        const migratedState = await initialMigrateAppSettingsAndDiscoveryConfig({
+        const migratedState = await initialMigrateAppSettingsAndDiscoveryConfig(networkConfigDeps, {
             getStoredState: mockGetStoredState,
             mmkvStorage: createMMKVStorageMock(),
         })({});
@@ -110,7 +114,7 @@ describe(initialMigrateAppSettingsAndDiscoveryConfig.name, () => {
                 return Promise.resolve(undefined);
             });
 
-        const migratedState = await initialMigrateAppSettingsAndDiscoveryConfig({
+        const migratedState = await initialMigrateAppSettingsAndDiscoveryConfig(networkConfigDeps, {
             getStoredState: mockGetStoredState,
             mmkvStorage: createMMKVStorageMock(),
         })({});
@@ -131,7 +135,7 @@ describe(initialMigrateAppSettingsAndDiscoveryConfig.name, () => {
                 return Promise.resolve(undefined);
             });
 
-        const migratedState = await initialMigrateAppSettingsAndDiscoveryConfig({
+        const migratedState = await initialMigrateAppSettingsAndDiscoveryConfig(networkConfigDeps, {
             getStoredState: mockGetStoredState,
             mmkvStorage: createMMKVStorageMock(),
         })({});
@@ -159,7 +163,7 @@ describe(initialMigrateAppSettingsAndDiscoveryConfig.name, () => {
                 return Promise.resolve(undefined);
             });
 
-        const migratedState = await initialMigrateAppSettingsAndDiscoveryConfig({
+        const migratedState = await initialMigrateAppSettingsAndDiscoveryConfig(networkConfigDeps, {
             getStoredState: mockGetStoredState,
             mmkvStorage: createMMKVStorageMock(),
         })({});
@@ -195,7 +199,7 @@ describe(initialMigrateAppSettingsAndDiscoveryConfig.name, () => {
                 return Promise.resolve(undefined);
             });
 
-        const migratedState = await initialMigrateAppSettingsAndDiscoveryConfig({
+        const migratedState = await initialMigrateAppSettingsAndDiscoveryConfig(networkConfigDeps, {
             getStoredState: mockGetStoredState,
             mmkvStorage: createMMKVStorageMock(),
         })({});
@@ -212,7 +216,7 @@ describe(initialMigrateAppSettingsAndDiscoveryConfig.name, () => {
 
         const walletSettingsState = { someProperty: 'value' };
 
-        const migratedState = await initialMigrateAppSettingsAndDiscoveryConfig({
+        const migratedState = await initialMigrateAppSettingsAndDiscoveryConfig(networkConfigDeps, {
             getStoredState: mockGetStoredState,
             mmkvStorage: createMMKVStorageMock(),
         })(walletSettingsState);

@@ -6,7 +6,7 @@ import { modalReducer } from '@suite/modal';
 import { routerLocationChange, routerReducer } from '@suite/router';
 import { suiteSettingsInitialState } from '@suite/settings';
 import { torReducer } from '@suite/tor';
-import { networksReducer } from '@suite-common/networks';
+import { type NetworkConfigDeps, networksReducer } from '@suite-common/networks';
 import { mockActionType, mockReducer } from '@suite-common/redux-utils/mocks';
 import { type SuiteSyncDataState, type SuiteSyncState } from '@suite-common/suite-sync';
 import { mockSuiteDevice } from '@suite-common/suite-types/mocks';
@@ -283,7 +283,11 @@ const DEFAULT_FEES: FeesState = {
 // [typescript-performace]: Keep this explicit type to prevent TypeScript from expanding the
 // inferred type in the emitted declaration.
 // Todo: Replace `any` with an accurate type.
-export const getRootReducer: any = (selectedAccount = BTC_ACCOUNT, fees = DEFAULT_FEES) =>
+export const getRootReducer: any = (
+    networkConfigDeps: NetworkConfigDeps,
+    selectedAccount = BTC_ACCOUNT,
+    fees = DEFAULT_FEES,
+) =>
     combineReducers({
         networks: networksReducer,
         suite: createReducer(
@@ -340,10 +344,10 @@ export const getRootReducer: any = (selectedAccount = BTC_ACCOUNT, fees = DEFAUL
             ),
             explorer: createReducer(
                 {
-                    btc: { default: getNetwork('btc').explorer.base },
-                    eth: { default: getNetwork('eth').explorer.base },
-                    xrp: { default: getNetwork('xrp').explorer.base },
-                    sol: { default: getNetwork('sol').explorer.base },
+                    btc: { default: getNetwork(networkConfigDeps, 'btc').explorer.base },
+                    eth: { default: getNetwork(networkConfigDeps, 'eth').explorer.base },
+                    xrp: { default: getNetwork(networkConfigDeps, 'xrp').explorer.base },
+                    sol: { default: getNetwork(networkConfigDeps, 'sol').explorer.base },
                 },
                 () => ({}),
             ),

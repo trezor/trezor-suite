@@ -1,3 +1,5 @@
+import { selectNetworkConfigDeps } from '@suite-common/networks';
+import { useServices } from '@suite-common/dependency-injection';
 import type { PropsWithChildren, ReactNode } from 'react';
 
 import type { CryptoId } from 'invity-api';
@@ -24,7 +26,12 @@ export const TradeSideCard = ({
     title,
     children,
 }: TradeSideCardProps) => {
-    const { symbol, contractAddress } = cryptoIdToNetworkSymbolAndContractAddress(cryptoId);
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
+
+    const { symbol, contractAddress } = cryptoIdToNetworkSymbolAndContractAddress(
+        networkConfigDeps,
+        cryptoId,
+    );
 
     if (!symbol) {
         return null;

@@ -1,5 +1,7 @@
 import { Translation, useTranslation } from '@suite/intl';
+import { useServices } from '@suite-common/dependency-injection';
 import { isApprovalFlowSupported, selectSelectedDevice } from '@suite-common/device';
+import { selectNetworkConfigDeps } from '@suite-common/networks';
 import { type NetworkType } from '@suite-common/wallet-config';
 import {
     type Account,
@@ -199,6 +201,8 @@ export const TransactionReviewTotalOutput = ({
     stakeType,
     isRbf,
 }: TransactionReviewTotalOutputProps) => {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
+
     const device = useSelector(selectSelectedDevice);
     const { translationString } = useTranslation();
 
@@ -220,15 +224,16 @@ export const TransactionReviewTotalOutput = ({
         account.accountType === 'placeholder' && 'nativeToken' in precomposedTx
             ? precomposedTx.nativeToken
             : undefined;
-    const isFiatVisible = !isTestnet(account.symbol) && account.accountType !== 'placeholder';
-    const isClearSignedTradingSwap = isClearSignedEvmTradingSwapTransaction({
+    const isFiatVisible =
+        !isTestnet(networkConfigDeps, account.symbol) && account.accountType !== 'placeholder';
+    const isClearSignedTradingSwap = isClearSignedEvmTradingSwapTransaction(networkConfigDeps, {
         account,
         device,
         precomposedTx,
         transactionData: precomposedForm.transactionData,
         trading: precomposedForm.trading,
     });
-    const isClearSignedWrapUnwrap = isClearSignedWrappedNativeTransaction({
+    const isClearSignedWrapUnwrap = isClearSignedWrappedNativeTransaction(networkConfigDeps, {
         account,
         device,
         precomposedTx,

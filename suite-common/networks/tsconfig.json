@@ -3,7 +3,6 @@
     "compilerOptions": { "outDir": "libDev" },
     "references": [
         { "path": "../earn-stablecoin-defs" },
-        { "path": "../legacy-network-config" },
         {
             "path": "../../networks/bitcoin/network-bitcoin-suite-common"
         },

@@ -1,3 +1,5 @@
+import { selectNetworkConfigDeps } from '@suite-common/networks';
+import { useServices } from '@suite-common/dependency-injection';
 import { type RefObject } from 'react';
 import { type TextInputProps } from 'react-native';
 import { useSelector } from 'react-redux';
@@ -35,9 +37,11 @@ export const EarnFiatAmountInput = ({
     isDisabled = false,
     onPress,
 }: EarnFiatAmountInputProps) => {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
+
     const { setValue } = useFormContext<EarnFormValues>();
     const { fiatAmountTransformer } = useAmountInputTransformers(symbol);
-    const decimals = tokenDecimals ?? getNetwork(symbol).decimals;
+    const decimals = tokenDecimals ?? getNetwork(networkConfigDeps, symbol).decimals;
     const baseCurrencyCode = useSelector(selectBaseCurrency);
     const isBaseCurrencyInSats = useSelector(selectIsBaseCurrencyInSats);
     const converters = useCryptoFiatConverters({ symbol, tokenContract });
@@ -51,7 +55,7 @@ export const EarnFiatAmountInput = ({
     const handleChangeValue = (newValue: string) => {
         const transformedValue = fiatAmountTransformer(newValue);
 
-        const baseCurrencyDecimals = getDecimalsForBaseCurrency({
+        const baseCurrencyDecimals = getDecimalsForBaseCurrency(networkConfigDeps, {
             code: baseCurrencyCode,
             isInSats: isBaseCurrencyInSats,
         });

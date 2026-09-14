@@ -1,3 +1,6 @@
+import { type NetworksRootState } from '@suite-common/networks';
+import { selectNetworkConfigDeps } from '@suite-common/networks';
+import { useServices } from '@suite-common/dependency-injection';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useSelector } from 'react-redux';
 
@@ -79,6 +82,8 @@ export const StakingTransactionDataReviewContent = ({
     amount,
     stakeType,
 }: StakingTransactionDataReviewContentProps) => {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
+
     const account = useSelector((state: AccountsRootState) =>
         selectAccountByKey(state, accountKey),
     );
@@ -98,7 +103,7 @@ export const StakingTransactionDataReviewContent = ({
 
     const isReadyToContinue = isTransactionAlreadySigned && !!account;
 
-    const claimableAmount = useSelector((state: StakeRootState) =>
+    const claimableAmount = useSelector((state: StakeRootState & NetworksRootState) =>
         stakeType === 'claim' ? selectClaimableAmountByAccountKey(state, accountKey) : undefined,
     );
 
@@ -109,16 +114,19 @@ export const StakingTransactionDataReviewContent = ({
             case 'stake':
                 return getEarnPendingAmountInBaseUnits({
                     fallbackAmountInBaseUnits: amount
-                        ? getAmountInBaseUnits(amount, account.symbol)
+                        ? getAmountInBaseUnits(networkConfigDeps, amount, account.symbol)
                         : '0',
                     isSolanaStaking,
                     precomposedTransaction,
                 });
             case 'unstake':
-                return amount ? getAmountInBaseUnits(amount, account.symbol) : '0';
+                return amount
+                    ? getAmountInBaseUnits(networkConfigDeps, amount, account.symbol)
+                    : '0';
             case 'claim':
                 return getEarnPendingAmountInBaseUnits({
                     fallbackAmountInBaseUnits: getAmountInBaseUnits(
+                        networkConfigDeps,
                         frozenClaimableAmount ?? claimableAmount ?? '0',
                         account.symbol,
                     ),
@@ -127,6 +135,7 @@ export const StakingTransactionDataReviewContent = ({
                 });
         }
     }, [
+        networkConfigDeps,
         account,
         amount,
         stakeType,

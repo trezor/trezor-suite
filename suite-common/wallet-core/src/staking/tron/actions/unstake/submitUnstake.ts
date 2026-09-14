@@ -1,3 +1,4 @@
+import { type NetworksRootState, selectNetworkConfigAccessors } from '@suite-common/networks';
 import { createThunk } from '@suite-common/redux-utils';
 import { type TrezorDevice } from '@suite-common/suite-types';
 import { getNetwork } from '@suite-common/wallet-config';
@@ -24,7 +25,7 @@ interface SubmitUnstakeThunkArguments extends UnstakeThunkArguments {
     onSettled?: () => void;
 }
 
-type SubmitTronUnstakeThunkState = AddFakePendingTronTxThunkState;
+type SubmitTronUnstakeThunkState = AddFakePendingTronTxThunkState & NetworksRootState;
 
 export const submitTronUnstakeThunk = createThunk<
     void,
@@ -34,8 +35,10 @@ export const submitTronUnstakeThunk = createThunk<
     `${TRON_STAKE_MODULE}/submitTronUnstakeThunk`,
     async (
         { account, device, amount, resourceType, requestPushApproval, onSigningStart, onSettled },
-        { dispatch },
+        { getState, dispatch },
     ) => {
+        const networkConfigDeps = selectNetworkConfigAccessors(getState());
+
         const { key: accountKey } = account;
         const flow: TronFlow = 'unstake';
 
@@ -51,7 +54,7 @@ export const submitTronUnstakeThunk = createThunk<
             return;
         }
 
-        const contract = buildUnstakeContract(account, amount, resourceType);
+        const contract = buildUnstakeContract(networkConfigDeps, account, amount, resourceType);
 
         if (!contract) {
             dispatch(
@@ -147,9 +150,9 @@ export const submitTronUnstakeThunk = createThunk<
 
             const { txid } = pushResult.payload;
 
-            const unstakeAmount = unitsToSubunits({
+            const unstakeAmount = unitsToSubunits(networkConfigDeps, {
                 value: asAmountUnit(new BigNumber(amount)),
-                decimals: getNetwork(account.symbol).decimals,
+                decimals: getNetwork(networkConfigDeps, account.symbol).decimals,
             }).toString();
 
             dispatch(

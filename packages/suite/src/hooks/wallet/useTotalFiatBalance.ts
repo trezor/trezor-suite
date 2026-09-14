@@ -1,3 +1,5 @@
+import { useServices } from '@suite-common/dependency-injection';
+import { selectNetworkConfigDeps } from '@suite-common/networks';
 import { selectTokenDefinitions } from '@suite-common/token-definitions';
 import { type Account, type RatesByKey } from '@suite-common/wallet-types';
 import { getTotalFiatBalance } from '@suite-common/wallet-utils/src/accountUtils';
@@ -11,10 +13,12 @@ export const useTotalFiatBalance = (
     baseCurrencyCode: BaseCurrencyCode,
     rates?: RatesByKey,
 ) => {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
+
     const tokenDefinitions = useSelector(selectTokenDefinitions);
     const deviceAccounts: Account[] = accounts.map(account => {
         const coinDefinitions = tokenDefinitions?.[account.symbol]?.coin;
-        const tokens = getTokens({
+        const tokens = getTokens(networkConfigDeps, {
             tokens: account.tokens ?? [],
             symbol: account.symbol,
             tokenDefinitions: coinDefinitions,
@@ -23,7 +27,7 @@ export const useTotalFiatBalance = (
         return { ...account, tokens: tokens.shownWithBalance };
     });
 
-    const totalBaseCurrencyBalance = getTotalFiatBalance({
+    const totalBaseCurrencyBalance = getTotalFiatBalance(networkConfigDeps, {
         deviceAccounts,
         baseCurrencyCode,
         rates,

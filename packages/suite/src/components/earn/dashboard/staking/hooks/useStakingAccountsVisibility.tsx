@@ -1,7 +1,8 @@
 import { useCallback, useMemo, useState } from 'react';
 import { useSelector } from 'react-redux';
 
-import { selectSupportedNetworkSymbols } from '@suite-common/networks';
+import { useServices } from '@suite-common/dependency-injection';
+import { selectNetworkConfigDeps, selectSupportedNetworkSymbols } from '@suite-common/networks';
 import { type StakingNetworkSymbol } from '@suite-common/wallet-config';
 import { getStakingLimitsByNetworkSymbol } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
@@ -31,6 +32,8 @@ export const useStakingAccountsVisibility = ({
     adaNotActivated,
     trxNotActivated,
 }: UseAccountVisibilityProps) => {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
+
     const supportedNetworks = useSelector(selectSupportedNetworkSymbols);
     const [isExpanded, setIsExpanded] = useState(false);
 
@@ -41,25 +44,29 @@ export const useStakingAccountsVisibility = ({
     const getAccountStakedAmountInFiat = useCallback(
         (account: Account) =>
             toFiatCurrency({
-                amount: getAccountTotalStakingBalance(account) ?? '0',
-                rate: isStakingSymbol(account.symbol) ? currentRates[account.symbol] : undefined,
+                amount: getAccountTotalStakingBalance(networkConfigDeps, account) ?? '0',
+                rate: isStakingSymbol(networkConfigDeps, account.symbol)
+                    ? currentRates[account.symbol]
+                    : undefined,
             }) ?? '0',
-        [currentRates],
+        [networkConfigDeps, currentRates],
     );
 
     const getAccountBalanceInFiat = useCallback(
         (account: Account) =>
             toFiatCurrency({
                 amount: account.formattedBalance,
-                rate: isStakingSymbol(account.symbol) ? currentRates[account.symbol] : undefined,
+                rate: isStakingSymbol(networkConfigDeps, account.symbol)
+                    ? currentRates[account.symbol]
+                    : undefined,
             }) ?? '0',
-        [currentRates],
+        [networkConfigDeps, currentRates],
     );
 
     const [accountsStakingActive, accountsStakingNotActive] = arrayPartition(
         stakingAccounts,
         (account: Account) => {
-            const stakedAmount = getAccountTotalStakingBalance(account);
+            const stakedAmount = getAccountTotalStakingBalance(networkConfigDeps, account);
 
             return stakedAmount !== null && stakedAmount !== '0';
         },
@@ -69,6 +76,7 @@ export const useStakingAccountsVisibility = ({
         accountsStakingNotActive,
         (account: Account) => {
             const minStakingAmount = getStakingLimitsByNetworkSymbol(
+                networkConfigDeps,
                 account.symbol,
             )?.MIN_AMOUNT_FOR_STAKING_DASHBOARD;
 
@@ -101,6 +109,7 @@ export const useStakingAccountsVisibility = ({
         const hasTrxBaseAccount = alwaysVisibleAccounts.some(account => account.symbol === 'trx');
 
         const sortedInsufficientFundsAccounts = sortByCoin(
+            networkConfigDeps,
             [...accountsInsufficientFunds],
             supportedNetworks,
         );
@@ -139,8 +148,9 @@ export const useStakingAccountsVisibility = ({
             if (account) additionalAccounts.push(account);
         }
 
-        return sortByCoin([...additionalAccounts], supportedNetworks);
+        return sortByCoin(networkConfigDeps, [...additionalAccounts], supportedNetworks);
     }, [
+        networkConfigDeps,
         alwaysVisibleAccounts,
         accountsInsufficientFunds,
         supportedNetworks,
@@ -154,7 +164,7 @@ export const useStakingAccountsVisibility = ({
 
     const expandedAccounts = [
         ...alwaysVisibleAccounts,
-        ...sortByCoin([...accountsInsufficientFunds], supportedNetworks),
+        ...sortByCoin(networkConfigDeps, [...accountsInsufficientFunds], supportedNetworks),
     ];
 
     const displayedAccounts = isExpanded ? expandedAccounts : collapsedAccounts;

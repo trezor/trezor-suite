@@ -1,3 +1,4 @@
+import { mockNetworkConfigDeps } from '@suite-common/networks/mocks';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
 
 import {
@@ -11,12 +12,15 @@ import {
     isTokenDefinitionKnown,
 } from './tokenDefinitionsUtils';
 
+const networkConfigDeps = mockNetworkConfigDeps();
+
 describe('isTokenDefinitionKnown', () => {
     isTokenDefinitionKnownFixtures.forEach(
         ({ testName, tokenDefinitions, symbol, contractAddress, result }) => {
             test(testName, () => {
                 expect(
                     isTokenDefinitionKnown(
+                        networkConfigDeps,
                         tokenDefinitions,
                         asNetworkSymbol(symbol),
                         contractAddress,
@@ -30,7 +34,9 @@ describe('isTokenDefinitionKnown', () => {
 describe('getSupportedDefinitionTypes', () => {
     getSupportedDefinitionTypesFixtures.forEach(({ testName, symbol, result }) => {
         test(testName, () => {
-            expect(getSupportedDefinitionTypes(asNetworkSymbol(symbol))).toEqual(result);
+            expect(getSupportedDefinitionTypes(networkConfigDeps, asNetworkSymbol(symbol))).toEqual(
+                result,
+            );
         });
     });
 });

@@ -1,3 +1,4 @@
+import { mockNetworkConfigDeps } from '@suite-common/networks/mocks';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { getYieldFlowStepSequence } from '@suite-common/wallet-core';
 
@@ -12,6 +13,8 @@ import {
     getYieldUnwrapDefaultAmount,
     shouldInitializeYieldAllowance,
 } from './yieldFlowUtils';
+
+const networkConfigDeps = mockNetworkConfigDeps();
 
 // Checksummed WETH address; the helper lower-cases it for the (evm) rate key.
 const WETH = '0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2';
@@ -52,7 +55,7 @@ const pricePerShareState = {
     },
 };
 
-const baseUnwrapParams: Parameters<typeof getYieldUnwrapDefaultAmount>[0] = {
+const baseUnwrapParams: Parameters<typeof getYieldUnwrapDefaultAmount>[1] = {
     flowType: 'withdraw',
     withdrawnAmount: '0.5',
     token: {
@@ -163,7 +166,7 @@ describe('yieldFlowUtils', () => {
         // The regression from #30559: the unwrap step must not default to the full WETH balance.
         it('defaults to the withdrawn asset amount for an asset (withdraw) input', () => {
             expect(
-                getYieldUnwrapDefaultAmount({
+                getYieldUnwrapDefaultAmount(networkConfigDeps, {
                     ...baseUnwrapParams,
                     flowType: 'withdraw',
                     withdrawnAmount: '0.5',
@@ -173,7 +176,7 @@ describe('yieldFlowUtils', () => {
 
         it('converts the withdrawn shares to their asset equivalent for a redeem input', () => {
             expect(
-                getYieldUnwrapDefaultAmount({
+                getYieldUnwrapDefaultAmount(networkConfigDeps, {
                     ...baseUnwrapParams,
                     flowType: 'redeem',
                     withdrawnAmount: '1',
@@ -183,7 +186,7 @@ describe('yieldFlowUtils', () => {
 
         it('falls back to the balance when the withdrawn amount is zero', () => {
             expect(
-                getYieldUnwrapDefaultAmount({
+                getYieldUnwrapDefaultAmount(networkConfigDeps, {
                     ...baseUnwrapParams,
                     flowType: 'withdraw',
                     withdrawnAmount: '0',
@@ -194,7 +197,7 @@ describe('yieldFlowUtils', () => {
 
         it('falls back to the balance when shares cannot be converted without a price', () => {
             expect(
-                getYieldUnwrapDefaultAmount({
+                getYieldUnwrapDefaultAmount(networkConfigDeps, {
                     ...baseUnwrapParams,
                     flowType: 'redeem',
                     withdrawnAmount: '1',
@@ -281,7 +284,7 @@ describe('yieldFlowUtils', () => {
     describe('getYieldFiatRateToken', () => {
         it('prices wrap/unwrap by the account native symbol (no token address)', () => {
             expect(
-                getYieldFiatRateToken({
+                getYieldFiatRateToken(networkConfigDeps, {
                     step: 'wrap',
                     flowType: 'deposit',
                     accountSymbol: ethSymbol,
@@ -290,7 +293,7 @@ describe('yieldFlowUtils', () => {
             ).toEqual({ symbol: 'eth' });
 
             expect(
-                getYieldFiatRateToken({
+                getYieldFiatRateToken(networkConfigDeps, {
                     step: 'unwrap',
                     flowType: 'withdraw',
                     accountSymbol: ethSymbol,
@@ -301,7 +304,7 @@ describe('yieldFlowUtils', () => {
 
         it('prices deposit by the asset token contract address (lower-cased)', () => {
             expect(
-                getYieldFiatRateToken({
+                getYieldFiatRateToken(networkConfigDeps, {
                     step: 'action',
                     flowType: 'deposit',
                     accountSymbol: ethSymbol,
@@ -312,7 +315,7 @@ describe('yieldFlowUtils', () => {
 
         it('returns null when fiat entry is impossible (withdraw flow or no token address)', () => {
             expect(
-                getYieldFiatRateToken({
+                getYieldFiatRateToken(networkConfigDeps, {
                     step: 'action',
                     flowType: 'withdraw',
                     accountSymbol: ethSymbol,
@@ -321,7 +324,7 @@ describe('yieldFlowUtils', () => {
             ).toBeNull();
 
             expect(
-                getYieldFiatRateToken({
+                getYieldFiatRateToken(networkConfigDeps, {
                     step: 'action',
                     flowType: 'redeem',
                     accountSymbol: ethSymbol,
@@ -330,7 +333,7 @@ describe('yieldFlowUtils', () => {
             ).toBeNull();
 
             expect(
-                getYieldFiatRateToken({
+                getYieldFiatRateToken(networkConfigDeps, {
                     step: 'action',
                     flowType: 'deposit',
                     accountSymbol: ethSymbol,
@@ -339,7 +342,7 @@ describe('yieldFlowUtils', () => {
             ).toBeNull();
 
             expect(
-                getYieldFiatRateToken({
+                getYieldFiatRateToken(networkConfigDeps, {
                     step: 'action',
                     flowType: 'deposit',
                     accountSymbol: ethSymbol,

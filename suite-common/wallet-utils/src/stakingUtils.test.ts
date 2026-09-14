@@ -1,3 +1,4 @@
+import { mockNetworkConfigDeps } from '@suite-common/networks/mocks';
 import { type Account } from '@suite-common/wallet-types';
 import { type TronStakingInfo, type TronUnstakingBatch } from '@trezor/blockchain-link-types';
 
@@ -12,6 +13,8 @@ import {
     getTronResources,
     getTronStakingInfo,
 } from './stakingUtils';
+
+const networkConfigDeps = mockNetworkConfigDeps();
 
 const TRX = 1_000_000;
 
@@ -121,13 +124,13 @@ describe('getTronStakingInfo', () => {
 
 describe('getTronAccountTotalStakingBalance', () => {
     it('returns null when there is no stakingInfo', () => {
-        expect(getTronAccountTotalStakingBalance(buildTronAccount())).toBeNull();
+        expect(getTronAccountTotalStakingBalance(networkConfigDeps, buildTronAccount())).toBeNull();
     });
 
     it('converts the staked balance from Sun to TRX', () => {
         const account = buildTronAccount({
             stakingInfo: buildStakingInfo({ stakedBalance: String(5 * TRX) }),
         });
-        expect(getTronAccountTotalStakingBalance(account)).toBe('5');
+        expect(getTronAccountTotalStakingBalance(networkConfigDeps, account)).toBe('5');
     });
 });

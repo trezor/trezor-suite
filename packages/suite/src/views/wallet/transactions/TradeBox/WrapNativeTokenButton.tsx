@@ -8,6 +8,7 @@ import { gotoThunk } from '@suite/router';
 import { events } from '@suite-common/analytics';
 import { useServices } from '@suite-common/dependency-injection';
 import { selectSelectedDevice } from '@suite-common/device';
+import { selectNetworkConfigDeps } from '@suite-common/networks';
 import { selectDispatch } from '@suite-common/redux-utils';
 import { getNetworkType } from '@suite-common/wallet-config';
 import { isWrappedNativeFlowSupported } from '@suite-common/wallet-core';
@@ -32,6 +33,8 @@ type WrapNativeTokenButtonProps = {
  * without a wrapped-native contract configured.
  */
 export const WrapNativeTokenButton = ({ account }: WrapNativeTokenButtonProps) => {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
+
     const { translationString } = useTranslation();
     const { analytics, dispatch } = useServices(selectDesktopAnalyticsDep, selectDispatch);
     const isDebugModeActive = useSelector(selectIsDebugModeActive);
@@ -48,7 +51,7 @@ export const WrapNativeTokenButton = ({ account }: WrapNativeTokenButtonProps) =
 
     if (
         !isDebugModeActive ||
-        getNetworkType(symbol) !== 'ethereum' ||
+        getNetworkType(networkConfigDeps, symbol) !== 'ethereum' ||
         !wrappedAddress ||
         !wrappedSymbol
     ) {

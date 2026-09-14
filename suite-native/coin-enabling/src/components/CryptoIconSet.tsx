@@ -1,3 +1,5 @@
+import { selectNetworkConfigDeps } from '@suite-common/networks';
+import { useServices } from '@suite-common/dependency-injection';
 import {
     type NetworkSymbol,
     getNetwork,
@@ -41,6 +43,8 @@ const countStyle = prepareNativeStyle(utils => ({
 }));
 
 export const CryptoIconSet = ({ symbol }: CryptoIconSetProps) => {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
+
     const { applyStyle } = useNativeStyles();
 
     const assets = getRepresentativeAssets(symbol);
@@ -53,7 +57,7 @@ export const CryptoIconSet = ({ symbol }: CryptoIconSetProps) => {
 
     // Native coins have no contract – render their icon via the settlement layer symbol
     // (e.g. Base/Arbitrum... → ETH), falling back to the network symbol itself.
-    const nativeCoinSymbol = getNetwork(symbol).settlementLayer ?? symbol;
+    const nativeCoinSymbol = getNetwork(networkConfigDeps, symbol).settlementLayer ?? symbol;
 
     return (
         <Box flexDirection="row" alignItems="center">

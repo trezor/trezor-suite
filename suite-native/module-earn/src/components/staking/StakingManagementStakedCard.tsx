@@ -1,3 +1,4 @@
+import { type NetworksRootState } from '@suite-common/networks';
 import { useSelector } from 'react-redux';
 
 import { useNavigation } from '@react-navigation/native';
@@ -129,7 +130,7 @@ export const StakingManagementStakedCard = ({
         navigation.navigate(RootStackRoutes.UnstakeFlow, { accountKey });
     };
 
-    const stakedBalance = useSelector((state: StakeRootState) =>
+    const stakedBalance = useSelector((state: StakeRootState & NetworksRootState) =>
         selectStakedBalanceByAccountKey(state, accountKey),
     );
     const hasStakedBalance = new BigNumber(stakedBalance ?? '0').gt(0);

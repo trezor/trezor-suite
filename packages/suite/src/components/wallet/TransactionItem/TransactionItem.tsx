@@ -7,6 +7,7 @@ import { Translation } from '@suite/intl';
 import { openModal } from '@suite/modal';
 import { AccountTransactionBaseAnchor, useAnchor } from '@suite/router';
 import { useServices } from '@suite-common/dependency-injection';
+import { selectNetworkConfigDeps } from '@suite-common/networks';
 import { selectDispatch } from '@suite-common/redux-utils';
 import { type AccountType, type Network } from '@suite-common/wallet-config';
 import {
@@ -72,6 +73,8 @@ export const TransactionItem = memo(
         disableBumpFee,
         index,
     }: TransactionItemProps) => {
+        const networkConfigDeps = useServices(selectNetworkConfigDeps);
+
         const { shallDisplayBaseCurrency } = useDisplayBaseCurrency(transaction.symbol);
 
         const account = useSelector(selectSelectedAccount) || null;
@@ -87,7 +90,7 @@ export const TransactionItem = memo(
 
         const allOutputs = account !== null ? createTargets({ transaction, account }) : [];
 
-        const fee = formatNetworkAmount(transaction.fee, transaction.symbol);
+        const fee = formatNetworkAmount(networkConfigDeps, transaction.fee, transaction.symbol);
         const showFeeRow = isTxFeePaid(transaction);
 
         const isTxCancellable = isTransactionCancellable(transaction, isPending, networkFeatures);

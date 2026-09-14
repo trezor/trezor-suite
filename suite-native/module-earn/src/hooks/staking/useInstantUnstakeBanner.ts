@@ -1,3 +1,6 @@
+import { type NetworksRootState } from '@suite-common/networks';
+import { selectNetworkConfigDeps } from '@suite-common/networks';
+import { useServices } from '@suite-common/dependency-injection';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { useSelector } from 'react-redux';
 
@@ -26,6 +29,8 @@ type InstantUnstakeBannerData = {
 export const useInstantUnstakeBanner = (
     accountKey: AccountKey,
 ): InstantUnstakeBannerData | null => {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
+
     const account = useSelector((state: AccountsRootState) =>
         selectAccountByKey(state, accountKey),
     );
@@ -35,7 +40,7 @@ export const useInstantUnstakeBanner = (
     const descriptor = account?.descriptor;
     const symbol = account?.symbol;
 
-    const unstakingPeriodInDays = useSelector((state: StakeRootState) =>
+    const unstakingPeriodInDays = useSelector((state: StakeRootState & NetworksRootState) =>
         selectUnstakingPeriodInDaysBySymbol(state, symbol ?? undefined),
     );
 
@@ -53,12 +58,14 @@ export const useInstantUnstakeBanner = (
 
         const transfer = getChangedInternalTx(prevTxs.current, txs, descriptor, symbol);
         if (transfer && getInstantStakeType(transfer, descriptor, symbol) === 'unstake') {
-            setAmount(formatNetworkAmount(transfer.amount ?? '0', symbol, false));
+            setAmount(
+                formatNetworkAmount(networkConfigDeps, transfer.amount ?? '0', symbol, false),
+            );
             setIsVisible(true);
         }
 
         prevTxs.current = txs;
-    }, [txs, descriptor, symbol]);
+    }, [networkConfigDeps, txs, descriptor, symbol]);
 
     const dismiss = useCallback(() => setIsVisible(false), []);
 
@@ -66,7 +73,7 @@ export const useInstantUnstakeBanner = (
 
     return {
         amount,
-        displaySymbol: getNetworkDisplaySymbol(symbol),
+        displaySymbol: getNetworkDisplaySymbol(networkConfigDeps, symbol),
         unstakingPeriodInDays,
         dismiss,
     };

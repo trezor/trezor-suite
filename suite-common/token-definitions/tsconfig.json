@@ -3,6 +3,7 @@
     "compilerOptions": { "outDir": "libDev" },
     "references": [
         { "path": "../dependency-injection" },
+        { "path": "../networks" },
         { "path": "../redux-utils" },
         { "path": "../wallet-config" },
         { "path": "../wallet-types" },

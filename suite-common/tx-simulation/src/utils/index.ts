@@ -1,3 +1,4 @@
+import { type NetworkConfigDeps } from '@suite-common/networks';
 import { type Network, getNetwork, getNetworkByEvmChainId } from '@suite-common/wallet-config';
 import { type TxSimulationAction, type TxSimulationMethod } from '@suite-common/wallet-types';
 
@@ -19,35 +20,40 @@ export function getTargetContractFromTxSimulationAction({
     }
 }
 
-function resolveChainIdOfEvmNetwork({
-    method,
-    payload,
-}: TxSimulationMethod<'ethereumSignTransaction' | 'ethereumSignTypedData'>): number {
+function resolveChainIdOfEvmNetwork(
+    networkConfigDeps: NetworkConfigDeps,
+    { method, payload }: TxSimulationMethod<'ethereumSignTransaction' | 'ethereumSignTypedData'>,
+): number {
     switch (method) {
         case 'ethereumSignTransaction':
             return payload.transaction.chainId;
         case 'ethereumSignTypedData':
-            return Number(payload.data.domain.chainId ?? getNetwork('eth').chainId);
+            return Number(
+                payload.data.domain.chainId ?? getNetwork(networkConfigDeps, 'eth').chainId,
+            );
         default:
-            return getNetwork('eth').chainId;
+            return getNetwork(networkConfigDeps, 'eth').chainId;
     }
 }
 
 /**
  * Get network based on the tx simulation action, default to Ethereum mainnet.
  */
-export function getNetworkFromTxSimulationAction(action: TxSimulationAction): Network | null {
+export function getNetworkFromTxSimulationAction(
+    networkConfigDeps: NetworkConfigDeps,
+    action: TxSimulationAction,
+): Network | null {
     switch (action.method) {
         case 'ethereumSignTransaction':
         case 'ethereumSignTypedData': {
-            const chainId = resolveChainIdOfEvmNetwork(action);
+            const chainId = resolveChainIdOfEvmNetwork(networkConfigDeps, action);
 
-            return getNetworkByEvmChainId(chainId) ?? null;
+            return getNetworkByEvmChainId(networkConfigDeps, chainId) ?? null;
         }
 
         case 'solanaSignTransaction':
         case 'stellarSignTransaction':
-            return getNetwork(action.symbol);
+            return getNetwork(networkConfigDeps, action.symbol);
 
         default:
             return null;

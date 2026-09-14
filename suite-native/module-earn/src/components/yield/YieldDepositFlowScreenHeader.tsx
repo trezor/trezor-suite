@@ -1,3 +1,5 @@
+import { selectNetworkConfigDeps } from '@suite-common/networks';
+import { useServices } from '@suite-common/dependency-injection';
 import { type ReactNode } from 'react';
 
 import { getNetwork } from '@suite-common/wallet-config';
@@ -22,7 +24,9 @@ export const YieldDepositFlowScreenHeader = ({
     title,
     tokenContract,
 }: YieldDepositFlowScreenHeaderProps) => {
-    const accountLabel = account.accountLabel ?? getNetwork(account.symbol).name;
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
+
+    const accountLabel = account.accountLabel ?? getNetwork(networkConfigDeps, account.symbol).name;
 
     return (
         <ScreenHeader

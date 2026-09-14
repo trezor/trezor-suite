@@ -1,3 +1,4 @@
+import { type NetworkConfigDeps } from '@suite-common/networks';
 import {
     type Explorer,
     type NetworkSymbol,
@@ -5,7 +6,7 @@ import {
     type NetworkType,
     getExplorerUrl,
     getNetworkDisplaySymbol,
-    getNetworkType,
+    getNetworkOptional,
 } from '@suite-common/wallet-config';
 import { type WalletAccountTransaction } from '@suite-common/wallet-types';
 import {
@@ -18,10 +19,11 @@ import { parseAsset } from '@trezor/blockchain-link-utils/src/blockfrost';
 import stellar from '@trezor/network-stellar/runtime';
 
 export const getContractAddressForNetworkSymbol = (
+    networkConfigDeps: NetworkConfigDeps,
     symbol: NetworkSymbolExtended,
     contractAddress: string,
 ) => {
-    const networkType = getNetworkType(symbol.toLowerCase() as NetworkSymbol);
+    const networkType = getNetworkOptional(networkConfigDeps, symbol.toLowerCase())?.networkType;
 
     switch (networkType) {
         case 'ethereum':
@@ -74,13 +76,14 @@ const getXlmAssetLogoContractAddresses = (contract: string, stellarRuntime: Stel
  * while the lazily loaded stellar module is being fetched.
  */
 export const getAssetLogoContractAddresses = (
+    networkConfigDeps: NetworkConfigDeps,
     symbol: NetworkSymbolExtended | undefined,
     contract: string | null | undefined,
 ): string[] | Promise<string[]> | undefined => {
     if (!contract || !symbol) return undefined;
 
     if (symbol === 'ada') {
-        const policyId = getContractAddressForNetworkSymbol(symbol, contract);
+        const policyId = getContractAddressForNetworkSymbol(networkConfigDeps, symbol, contract);
 
         return [policyId, contract];
     }
@@ -100,7 +103,7 @@ export const getAssetLogoContractAddresses = (
         );
     }
 
-    return [getContractAddressForNetworkSymbol(symbol, contract)];
+    return [getContractAddressForNetworkSymbol(networkConfigDeps, symbol, contract)];
 };
 
 export const getTokenExplorerUrl = (
@@ -155,14 +158,18 @@ export const isTokenTransferMatchesSearch = (token: TokenTransfer, search: strin
     isTokenNameMatchesSearch(token.name, search) ||
     token.contract.toLowerCase().includes(search);
 
-export const isNativeDisplaySymbolSearch = (symbol: NetworkSymbol, search: string) =>
-    getNetworkDisplaySymbol(symbol).toLowerCase() === search;
+export const isNativeDisplaySymbolSearch = (
+    networkConfigDeps: NetworkConfigDeps,
+    symbol: NetworkSymbol,
+    search: string,
+) => getNetworkDisplaySymbol(networkConfigDeps, symbol).toLowerCase() === search;
 
 export const isNativeTransferMatchesSearch = (
+    networkConfigDeps: NetworkConfigDeps,
     transaction: WalletAccountTransaction,
     search: string,
 ) => {
-    if (!isNativeDisplaySymbolSearch(transaction.symbol, search)) {
+    if (!isNativeDisplaySymbolSearch(networkConfigDeps, transaction.symbol, search)) {
         return false;
     }
 

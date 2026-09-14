@@ -7,8 +7,10 @@ import { LabelingSettings } from '@suite/labeling';
 import { ContextMessage } from '@suite/message-system';
 import { selectIsLegacyLabelingVisible, selectSelectedProviderForLabels } from '@suite/metadata';
 import { selectHasExperimentalFeature } from '@suite/settings';
+import { useServices } from '@suite-common/dependency-injection';
 import { Context } from '@suite-common/message-system';
 import { selectIsMevProtectionSettingsVisible } from '@suite-common/mev';
+import { selectNetworkConfigDeps } from '@suite-common/networks';
 import { getNetwork } from '@suite-common/wallet-config';
 import {
     selectEnabledNetworks,
@@ -65,6 +67,8 @@ type SettingsGeneralProps = {
 };
 
 export const SettingsGeneral = ({ torSettings }: SettingsGeneralProps) => {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
+
     const shouldShowSettingsDesktopAppPromoBanner = useSelector(
         selectIsSettingsDesktopAppPromoBannerShown,
     );
@@ -76,7 +80,7 @@ export const SettingsGeneral = ({ torSettings }: SettingsGeneralProps) => {
     const hasContentBelowMobileWidth = useIsContentBelowBreakpoint(breakpoints.mobile);
 
     const hasBitcoinNetworks = enabledNetworks.some(symbol => {
-        const networkFeatures = getNetwork(symbol).features;
+        const networkFeatures = getNetwork(networkConfigDeps, symbol).features;
 
         return networkFeatures.includes('amount-unit');
     });

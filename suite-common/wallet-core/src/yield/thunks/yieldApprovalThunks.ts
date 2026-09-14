@@ -1,3 +1,8 @@
+import {
+    selectNetworkConfigAccessors,
+    type NetworksRootState,
+    type NetworkConfigDeps,
+} from '@suite-common/networks';
 import { type Dispatch } from '@reduxjs/toolkit';
 
 import { createThunk } from '@suite-common/redux-utils';
@@ -91,16 +96,15 @@ export const getApprovalContractAddress = ({
         ? (flowData.token.contractAddress ?? undefined)
         : (flowData.receiptToken.contractAddress ?? undefined);
 
-export const getApprovalRequestAmount = ({
-    flowType,
-    amount,
-    flowData,
-}: GetApprovalRequestAmountParams) => {
+export const getApprovalRequestAmount = (
+    networkConfigDeps: NetworkConfigDeps,
+    { flowType, amount, flowData }: GetApprovalRequestAmountParams,
+) => {
     if (flowType === 'deposit') {
         return amount;
     }
 
-    return getWithdrawRequestAmount({
+    return getWithdrawRequestAmount(networkConfigDeps, {
         networkSymbol: flowData.account.symbol,
         amount,
         token: flowData.token,
@@ -109,12 +113,10 @@ export const getApprovalRequestAmount = ({
     });
 };
 
-export const getRevokeModalAmount = ({
-    flowType,
-    amount,
-    flowData,
-}: GetApprovalRequestAmountParams) =>
-    getApprovalRequestAmount({ flowType, amount, flowData }) ?? amount;
+export const getRevokeModalAmount = (
+    networkConfigDeps: NetworkConfigDeps,
+    { flowType, amount, flowData }: GetApprovalRequestAmountParams,
+) => getApprovalRequestAmount(networkConfigDeps, { flowType, amount, flowData }) ?? amount;
 
 export const openYieldApproveModal = ({
     dispatch,
@@ -149,14 +151,10 @@ export const openYieldApproveModal = ({
     return true;
 };
 
-export const openYieldRevokeModal = ({
-    dispatch,
-    flowKey,
-    flowType,
-    flowData,
-    approveAmount,
-    spender,
-}: OpenYieldRevokeModalParams) => {
+export const openYieldRevokeModal = (
+    networkConfigDeps: NetworkConfigDeps,
+    { dispatch, flowKey, flowType, flowData, approveAmount, spender }: OpenYieldRevokeModalParams,
+) => {
     if (!spender) {
         setYieldError({ dispatch, flowType, flowKey });
 
@@ -168,7 +166,11 @@ export const openYieldRevokeModal = ({
         flowKey,
         flowType,
         flowData,
-        amount: getRevokeModalAmount({ flowType, amount: approveAmount, flowData }),
+        amount: getRevokeModalAmount(networkConfigDeps, {
+            flowType,
+            amount: approveAmount,
+            flowData,
+        }),
         spender,
         txType: 'revoke',
     });
@@ -217,7 +219,7 @@ export const handleYieldApproveCancelThunk = createThunk<void, YieldSessionPaylo
     },
 );
 
-type InitYieldAllowanceThunkState = YieldRootState;
+type InitYieldAllowanceThunkState = YieldRootState & NetworksRootState;
 
 export const initYieldAllowanceThunk = createThunk<
     void,
@@ -229,6 +231,8 @@ export const initYieldAllowanceThunk = createThunk<
         { flowKey, flowType, flowData, shouldSkipApprovalStep = true },
         { dispatch, getState },
     ) => {
+        const networkConfigDeps = selectNetworkConfigAccessors(getState());
+
         dispatch(yieldActions.startInitializingAllowance({ flowType, flowKey }));
 
         try {
@@ -247,7 +251,7 @@ export const initYieldAllowanceThunk = createThunk<
                 tokenContractAddress,
                 coin: flowData.account.symbol,
             });
-            const fetchedAmount = subunitsToUnits({
+            const fetchedAmount = subunitsToUnits(networkConfigDeps, {
                 value: allowanceSubunits,
                 decimals: flowData.token.decimals,
             });
@@ -274,7 +278,7 @@ export const initYieldAllowanceThunk = createThunk<
                 // insufficiency is still caught later via the modify-approval path.
                 const allowanceCoversRequest = hasRequestAmount
                     ? allowanceSubunits.gte(
-                          unitsToSubunits({
+                          unitsToSubunits(networkConfigDeps, {
                               value: asAmountUnit(new BigNumber(requestAmount)),
                               decimals: flowData.token.decimals,
                           }),
@@ -292,34 +296,47 @@ export const initYieldAllowanceThunk = createThunk<
     },
 );
 
-type SubmitYieldRevokeThunkState = YieldRootState;
+type SubmitYieldRevokeThunkState = YieldRootState & NetworksRootState;
 
 export const submitYieldRevokeThunk = createThunk<
     void,
     YieldSessionDataAmountPayload,
     { state: SubmitYieldRevokeThunkState }
->(`${YIELD_THUNK_PREFIX}/submitRevoke`, ({ flowKey, flowType, flowData, amount }, { dispatch }) => {
-    const spender = getYieldVaultAddress(flowData);
+>(
+    `${YIELD_THUNK_PREFIX}/submitRevoke`,
+    ({ flowKey, flowType, flowData, amount }, { getState, dispatch }) => {
+        const networkConfigDeps = selectNetworkConfigAccessors(getState());
 
-    dispatch(yieldActions.clearError({ flowType, flowKey }));
-    dispatch(yieldActions.startSubmittingApproval({ flowType, flowKey }));
+        const spender = getYieldVaultAddress(flowData);
 
-    openYieldRevokeModal({
-        dispatch,
-        flowKey,
-        flowType,
-        flowData,
-        approveAmount: amount,
-        spender,
-    });
+        dispatch(yieldActions.clearError({ flowType, flowKey }));
+        dispatch(yieldActions.startSubmittingApproval({ flowType, flowKey }));
 
-    dispatch(yieldActions.finishSubmittingApproval({ flowType, flowKey }));
-});
+        openYieldRevokeModal(networkConfigDeps, {
+            dispatch,
+            flowKey,
+            flowType,
+            flowData,
+            approveAmount: amount,
+            spender,
+        });
 
-export const submitYieldApproveThunk = createThunk<void, SubmitYieldApprovePayload, void>(
+        dispatch(yieldActions.finishSubmittingApproval({ flowType, flowKey }));
+    },
+);
+
+export type SubmitYieldApproveThunkState = NetworksRootState;
+
+export const submitYieldApproveThunk = createThunk<
+    void,
+    SubmitYieldApprovePayload,
+    { state: SubmitYieldApproveThunkState }
+>(
     `${YIELD_THUNK_PREFIX}/submitApprove`,
-    async ({ flowKey, flowType, flowData, amount }, { dispatch }) => {
-        const requestAmount = getApprovalRequestAmount({
+    async ({ flowKey, flowType, flowData, amount }, { getState, dispatch }) => {
+        const networkConfigDeps = selectNetworkConfigAccessors(getState());
+
+        const requestAmount = getApprovalRequestAmount(networkConfigDeps, {
             flowType,
             amount,
             flowData,
@@ -349,7 +366,7 @@ export const submitYieldApproveThunk = createThunk<void, SubmitYieldApprovePaylo
                 tokenContractAddress,
                 coin: flowData.account.symbol,
             });
-            const requestSubunits = unitsToSubunits({
+            const requestSubunits = unitsToSubunits(networkConfigDeps, {
                 value: asAmountUnit(new BigNumber(requestAmount)),
                 decimals: flowData.token.decimals,
             });

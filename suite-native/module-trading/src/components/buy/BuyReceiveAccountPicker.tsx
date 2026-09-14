@@ -1,3 +1,5 @@
+import { selectNetworkConfigDeps } from '@suite-common/networks';
+import { useServices } from '@suite-common/dependency-injection';
 import { useSelector } from 'react-redux';
 
 import { useWatch } from '@suite-native/forms';
@@ -10,11 +12,13 @@ import { ReceiveAccountPicker } from '../general/ReceiveAccount/ReceiveAccountPi
 const RECEIVE_ACCOUNT_PICKER_TEST_ID = '@trading/buy/receive-account';
 
 export const BuyReceiveAccountPicker = () => {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
+
     const { control } = useBuyFormContext();
     const selectedReceiveAccount = useSelector(selectBuySelectedReceiveAccount);
 
     const asset = useWatch({ control, name: 'asset' });
-    const selectedSymbol = getSymbolFromTradeableAsset(asset);
+    const selectedSymbol = getSymbolFromTradeableAsset(networkConfigDeps, asset);
 
     return (
         <ReceiveAccountPicker

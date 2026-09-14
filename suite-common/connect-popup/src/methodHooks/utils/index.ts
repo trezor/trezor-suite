@@ -1,13 +1,16 @@
+import type { NetworkConfigDeps } from '@suite-common/networks';
 import { type Network, type NetworkSymbol } from '@suite-common/wallet-config';
 import { accountsActions } from '@suite-common/wallet-core';
 import type { Bip43Path } from '@trezor/crypto-utils';
 
-export const createPlaceholderAccount = (
+export const preparePlaceholderAccount = (
+    networkConfigDeps: NetworkConfigDeps,
     network: Pick<Network, 'networkType' | 'symbol' | 'name'>,
     path: Bip43Path,
     supportedNetworks: readonly NetworkSymbol[],
 ) =>
     accountsActions.createAccount(
+        networkConfigDeps,
         {
             // Real device state not needed, this is also better to differentiate from real accounts
             deviceState: 'placeholder@connect:0',

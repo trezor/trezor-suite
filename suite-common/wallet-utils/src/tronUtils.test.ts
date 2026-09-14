@@ -1,3 +1,4 @@
+import { mockNetworkConfigDeps } from '@suite-common/networks/mocks';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { type GeneralPrecomposedTransaction } from '@suite-common/wallet-types';
 import { type TronAccountExtraData } from '@trezor/blockchain-link-types';
@@ -7,6 +8,8 @@ import {
     computeBandwidthFeeLevel,
     isTronAccountActivation,
 } from './tronUtils';
+
+const networkConfigDeps = mockNetworkConfigDeps();
 
 const trxSymbol = asNetworkSymbol('trx');
 
@@ -126,7 +129,12 @@ describe(calculateTronFeeBreakdown.name, () => {
         // Tx: bandwidth: 300
         // Account: bandwidth: 300, energy: 0
         // Expected: trxBurned: 0 TRX, coveredBandwidth: 300
-        const result = calculateTronFeeBreakdown(makeNativeTrxTx(), makeTronResources(), trxSymbol);
+        const result = calculateTronFeeBreakdown(
+            networkConfigDeps,
+            makeNativeTrxTx(),
+            makeTronResources(),
+            trxSymbol,
+        );
         expect(result?.trxBurned.toNumber()).toBe(0);
         expect(result?.coveredBandwidth.toNumber()).toBe(300);
         expect(result?.isAccountActivation).toBe(false);
@@ -137,6 +145,7 @@ describe(calculateTronFeeBreakdown.name, () => {
         // Account: bandwidth: 0, energy: 0
         // Expected: trxBurned: 0.3 TRX, coveredBandwidth: 0
         const result = calculateTronFeeBreakdown(
+            networkConfigDeps,
             makeNativeTrxTx({ fee: '300000' }),
             makeTronResources({ availableFreeBandwidth: 0 }),
             trxSymbol,
@@ -150,6 +159,7 @@ describe(calculateTronFeeBreakdown.name, () => {
         // Account: bandwidth: 300, energy: 1000
         // Expected: trxBurned: 0 TRX, coveredBandwidth: 300, coveredEnergy: 1000
         const result = calculateTronFeeBreakdown(
+            networkConfigDeps,
             makeTrc20Tx(),
             makeTronResources({ availableEnergy: 1000 }),
             trxSymbol,
@@ -164,6 +174,7 @@ describe(calculateTronFeeBreakdown.name, () => {
         // Account: bandwidth: 300, energy: 400
         // Expected: trxBurned: 0.06 TRX, coveredBandwidth: 300, coveredEnergy: 400
         const result = calculateTronFeeBreakdown(
+            networkConfigDeps,
             makeTrc20Tx(),
             makeTronResources({ availableEnergy: 400 }),
             trxSymbol,
@@ -178,6 +189,7 @@ describe(calculateTronFeeBreakdown.name, () => {
         // Account: bandwidth: 300, energy: 0
         // Expected: trxBurned: 0.1 TRX, coveredBandwidth: 300, coveredEnergy: 0
         const result = calculateTronFeeBreakdown(
+            networkConfigDeps,
             makeTrc20Tx(),
             makeTronResources({ availableEnergy: 0 }),
             trxSymbol,
@@ -192,6 +204,7 @@ describe(calculateTronFeeBreakdown.name, () => {
         // Account: bandwidth: 0, energy: 1000
         // Expected: trxBurned: 0.3 TRX, coveredBandwidth: 0, coveredEnergy: 1000
         const result = calculateTronFeeBreakdown(
+            networkConfigDeps,
             makeTrc20Tx(),
             makeTronResources({ availableEnergy: 1000, availableFreeBandwidth: 0 }),
             trxSymbol,
@@ -207,6 +220,7 @@ describe(calculateTronFeeBreakdown.name, () => {
         // Account: bandwidth: 300, energy: 1000
         // Expected: trxBurned: 0.01 TRX, coveredEnergy: 1000
         const result = calculateTronFeeBreakdown(
+            networkConfigDeps,
             makeTrc20Tx(),
             makeTronResources({ availableEnergy: 1000 }),
             trxSymbol,
@@ -221,7 +235,12 @@ describe(calculateTronFeeBreakdown.name, () => {
         // Account: free bandwidth: 300, staked bandwidth: 0
         // Expected: trxBurned: 1.1 TRX, coveredBandwidth: 0 (free bandwidth is not accepted)
         const tx = makeNativeTrxTx({ fee: '1100000', accountActivationFee: '1000000' });
-        const result = calculateTronFeeBreakdown(tx, makeTronResources(), trxSymbol);
+        const result = calculateTronFeeBreakdown(
+            networkConfigDeps,
+            tx,
+            makeTronResources(),
+            trxSymbol,
+        );
         expect(result?.trxBurned.toString()).toBe('1.1');
         expect(result?.coveredBandwidth.toNumber()).toBe(0);
         expect(result?.isAccountActivation).toBe(true);
@@ -233,6 +252,7 @@ describe(calculateTronFeeBreakdown.name, () => {
         // Expected: trxBurned: 1 TRX, coveredBandwidth: 300
         const tx = makeNativeTrxTx({ fee: '1000000', accountActivationFee: '1000000' });
         const result = calculateTronFeeBreakdown(
+            networkConfigDeps,
             tx,
             makeTronResources({ availableFreeBandwidth: 0, availableStakedBandwidth: 300 }),
             trxSymbol,
@@ -246,7 +266,12 @@ describe(calculateTronFeeBreakdown.name, () => {
         // Account: bandwidth: 300
         // Expected: trxBurned: 1 TRX (memo only, bandwidth covered)
         const tx = makeNativeTrxTx({ fee: '1000000', memoFee: '1000000' });
-        const result = calculateTronFeeBreakdown(tx, makeTronResources(), trxSymbol);
+        const result = calculateTronFeeBreakdown(
+            networkConfigDeps,
+            tx,
+            makeTronResources(),
+            trxSymbol,
+        );
         expect(result?.trxBurned.toString()).toBe('1');
         expect(result?.coveredBandwidth.toNumber()).toBe(300);
     });
@@ -257,6 +282,7 @@ describe(calculateTronFeeBreakdown.name, () => {
         // Expected: trxBurned: 1 TRX (memo only, bandwidth+energy covered)
         const tx = makeTrc20Tx({ memoFee: '1000000' });
         const result = calculateTronFeeBreakdown(
+            networkConfigDeps,
             tx,
             makeTronResources({ availableEnergy: 1000 }),
             trxSymbol,

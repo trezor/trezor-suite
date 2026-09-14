@@ -1,5 +1,7 @@
 import { useMemo } from 'react';
 
+import { useServices } from '@suite-common/dependency-injection';
+import { selectNetworkConfigDeps } from '@suite-common/networks';
 import {
     type GetResolvedYieldFlowDataProps,
     type ResolvedYieldFlowData,
@@ -16,11 +18,13 @@ export const useYieldFlowData = ({
     vault,
     tokenContract,
 }: GetResolvedYieldFlowDataProps): ResolvedYieldFlowData => {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
+
     const baseCurrencyCode = useSelector(selectBaseCurrency);
 
     const yieldFlowData = useMemo(
-        () => getResolvedYieldFlowData({ account, vault, tokenContract }),
-        [account, vault, tokenContract],
+        () => getResolvedYieldFlowData(networkConfigDeps, { account, vault, tokenContract }),
+        [networkConfigDeps, account, vault, tokenContract],
     );
 
     const { token } = yieldFlowData;

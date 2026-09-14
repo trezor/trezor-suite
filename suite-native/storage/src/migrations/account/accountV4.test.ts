@@ -1,6 +1,10 @@
+import { mockNetworkConfigDeps } from '@suite-common/networks/mocks';
+
 import { mockGetSupportedNetworks } from '@suite-common/wallet-config/mocks';
 
 import { sortAccountsByCoin } from './v4';
+
+const networkConfigDeps = mockNetworkConfigDeps();
 
 describe('sortAccountsByCoin', () => {
     const supportedNetworks = mockGetSupportedNetworks();
@@ -13,7 +17,7 @@ describe('sortAccountsByCoin', () => {
             { symbol: 'btc', accountType: 'normal', index: 0 },
         ];
 
-        expect(sortAccountsByCoin(oldAccounts, supportedNetworks)).toEqual([
+        expect(sortAccountsByCoin(networkConfigDeps, oldAccounts, supportedNetworks)).toEqual([
             { symbol: 'btc', accountType: 'normal', index: 0 },
             { symbol: 'btc', accountType: 'normal', index: 1 },
             { symbol: 'btc', accountType: 'legacy', index: 0 },
@@ -28,7 +32,7 @@ describe('sortAccountsByCoin', () => {
             { symbol: 'deprecatedcoin', accountType: 'normal', index: 0 },
         ];
 
-        expect(sortAccountsByCoin(oldAccounts, supportedNetworks)).toEqual([
+        expect(sortAccountsByCoin(networkConfigDeps, oldAccounts, supportedNetworks)).toEqual([
             { symbol: 'deprecatedcoin', accountType: 'normal', index: 0 },
             { symbol: 'btc', accountType: 'normal', index: 0 },
         ]);
@@ -40,7 +44,7 @@ describe('sortAccountsByCoin', () => {
             { symbol: 'btc', accountType: 'normal', index: 0 },
         ];
 
-        sortAccountsByCoin(oldAccounts, supportedNetworks);
+        sortAccountsByCoin(networkConfigDeps, oldAccounts, supportedNetworks);
 
         expect(oldAccounts[0]?.symbol).toBe('eth');
     });

@@ -3,8 +3,13 @@ import type { ProposalTypes } from '@walletconnect/types';
 
 import * as trezorConnectPopupActions from '@suite-common/connect-popup';
 import { selectSelectedDevice } from '@suite-common/device';
+import {
+    type NetworkConfigDeps,
+    selectNetworkConfigAccessors,
+    type NetworksRootState,
+} from '@suite-common/networks';
 import { createThunk } from '@suite-common/redux-utils';
-import { type Network, getNetwork, networksCollection } from '@suite-common/wallet-config';
+import { type Network, getNetwork, getNetworksCollection } from '@suite-common/wallet-config';
 import { type AccountsRootState, selectAccounts } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
 import TrezorConnect, { type CallMethodResponse } from '@trezor/connect';
@@ -22,9 +27,12 @@ import {
 
 const methods = ['stellar_signXDR', 'stellar_signAndSubmitXDR'];
 
-const resolveStellarRequestContext = (event: WalletKitTypes.SessionRequest) => {
+const resolveStellarRequestContext = (
+    networkConfigDeps: NetworkConfigDeps,
+    event: WalletKitTypes.SessionRequest,
+) => {
     const { chainId } = event.params;
-    const network = networksCollection.find(
+    const network = getNetworksCollection(networkConfigDeps).find(
         nc => nc.networkType === 'stellar' && nc.caipId === chainId,
     );
 
@@ -39,7 +47,8 @@ const resolveStellarRequestContext = (event: WalletKitTypes.SessionRequest) => {
 };
 
 type StellarSignXDRThunkState = trezorConnectPopupActions.ConnectPopupCallThunkState &
-    AccountsRootState;
+    AccountsRootState &
+    NetworksRootState;
 
 type StellarSignXDRThunkDeps = trezorConnectPopupActions.ConnectPopupCallThunkDeps;
 
@@ -55,7 +64,9 @@ const stellarSignXDRThunk = createThunk<
 >(
     `${WALLETCONNECT_MODULE}/stellarSignXDR`,
     async ({ session, xdrBase64, origin, event }, { dispatch, getState }) => {
-        const { testnet } = resolveStellarRequestContext(event);
+        const networkConfigDeps = selectNetworkConfigAccessors(getState());
+
+        const { testnet } = resolveStellarRequestContext(networkConfigDeps, event);
 
         const { parseTransactionFromXDR } = await loadStellar();
 
@@ -106,7 +117,9 @@ const stellarSignXDRThunk = createThunk<
     },
 );
 
-export type StellarRequestThunkState = StellarSignXDRThunkState & WalletConnectStateRootState;
+export type StellarRequestThunkState = StellarSignXDRThunkState &
+    WalletConnectStateRootState &
+    NetworksRootState;
 
 export type StellarRequestThunkDeps = StellarSignXDRThunkDeps;
 
@@ -117,6 +130,8 @@ const stellarRequestThunk = createThunk<
     },
     { state: StellarRequestThunkState; extra: StellarRequestThunkDeps }
 >(`${WALLETCONNECT_MODULE}/stellarRequest`, async ({ event }, { dispatch, getState }) => {
+    const networkConfigDeps = selectNetworkConfigAccessors(getState());
+
     const session = selectSessionByTopic(getState(), event.topic);
     if (!session) {
         throw new Error('WalletConnect Session not found');
@@ -137,7 +152,7 @@ const stellarRequestThunk = createThunk<
         case 'stellar_signAndSubmitXDR': {
             const { xdr } = event.params.request.params;
             const { origin } = event.verifyContext.verified;
-            const context = resolveStellarRequestContext(event);
+            const context = resolveStellarRequestContext(networkConfigDeps, event);
 
             const result = await dispatch(
                 stellarSignXDRThunk({ session, xdrBase64: xdr, origin, event }),
@@ -158,7 +173,10 @@ const stellarRequestThunk = createThunk<
 
 export const getChainId = (network: Network) => (network.caipId ? [network.caipId] : []);
 
-export const getNamespace = (accounts: Account[]): Record<string, WalletConnectNamespace> => {
+export const getNamespace = (
+    networkConfigDeps: NetworkConfigDeps,
+    accounts: Account[],
+): Record<string, WalletConnectNamespace> => {
     const stellar = {
         chains: [],
         accounts: [],
@@ -167,7 +185,7 @@ export const getNamespace = (accounts: Account[]): Record<string, WalletConnectN
     } as WalletConnectNamespace;
 
     accounts.forEach(account => {
-        const network = getNetwork(account.symbol);
+        const network = getNetwork(networkConfigDeps, account.symbol);
         const { networkType } = network;
 
         if (!account.visible || networkType !== 'stellar') return;
@@ -189,6 +207,7 @@ export const getNamespace = (accounts: Account[]): Record<string, WalletConnectN
 };
 
 const processNamespaces = (
+    networkConfigDeps: NetworkConfigDeps,
     accounts: Account[],
     networks: PendingConnectionProposalNetwork[],
     namespaces: ProposalTypes.RequiredNamespaces,
@@ -200,7 +219,9 @@ const processNamespaces = (
                 namespace.chains?.forEach(chain => {
                     const alreadyAdded = networks.some(network => network.namespaceId === chain);
                     if (alreadyAdded) return;
-                    const supported = networksCollection.find(nc => chain === nc.caipId);
+                    const supported = getNetworksCollection(networkConfigDeps).find(
+                        nc => chain === nc.caipId,
+                    );
                     const getStatus = () => {
                         if (!supported) return 'unsupported';
                         const hasAccounts = accounts.some(

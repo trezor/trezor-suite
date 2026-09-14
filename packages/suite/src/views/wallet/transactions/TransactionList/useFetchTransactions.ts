@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
 
 import { useServices } from '@suite-common/dependency-injection';
+import { selectNetworkConfigDeps } from '@suite-common/networks';
 import { selectDispatch } from '@suite-common/redux-utils';
 import { getTxsPerPage } from '@suite-common/suite-utils';
 import { isPhishingTransaction } from '@suite-common/token-definitions';
@@ -156,6 +157,8 @@ export const useVisibleTransactions = ({
     numberOfPagesRequested: number;
     enableFiltering?: boolean;
 }) => {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
+
     const allTransactions = useSelector(state =>
         selectAccountTransactionsWithNulls(state, account.key),
     );
@@ -183,7 +186,7 @@ export const useVisibleTransactions = ({
             enableFiltering
                 ? allTransactions.filter(
                       transaction =>
-                          !isPhishingTransaction({
+                          !isPhishingTransaction(networkConfigDeps, {
                               transaction,
                               tokenDefinitions,
                               txsMarkedAsNotScam,
@@ -193,6 +196,7 @@ export const useVisibleTransactions = ({
                   )
                 : allTransactions,
         [
+            networkConfigDeps,
             enableFiltering,
             allTransactions,
             tokenDefinitions,

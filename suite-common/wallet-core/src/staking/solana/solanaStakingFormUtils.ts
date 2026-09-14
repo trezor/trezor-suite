@@ -1,3 +1,4 @@
+import { type NetworkConfigDeps } from '@suite-common/networks';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import {
     type ComposeActionContext,
@@ -34,6 +35,7 @@ import {
 
 // Rent-aware Solana stake fee calc for `composeStakingTransaction` / `calculateStakeFormTransaction`.
 const calculateSolanaStakeTransaction = (
+    networkConfigDeps: NetworkConfigDeps,
     availableBalance: string,
     output: ExternalOutput,
     feeLevel: FeeLevel,
@@ -47,14 +49,17 @@ const calculateSolanaStakeTransaction = (
     const stakingParams = {
         feeInBaseUnits: feeInLamports,
         minBalanceForStakingInBaseUnits: networkAmountToSmallestUnit(
+            networkConfigDeps,
             MIN_SOL_BALANCE_FOR_STAKING.toString(),
             symbol,
         ),
         minAmountForStakingInBaseUnits: networkAmountToSmallestUnit(
+            networkConfigDeps,
             MIN_SOL_AMOUNT_FOR_STAKING.toString(),
             symbol,
         ),
         minAmountForWithdrawalInBaseUnits: networkAmountToSmallestUnit(
+            networkConfigDeps,
             MIN_SOL_FOR_WITHDRAWALS.toString(),
             symbol,
         ),
@@ -63,6 +68,7 @@ const calculateSolanaStakeTransaction = (
     const estimatedFeeLevel = { ...feeLevel, ...estimatedFee?.payload };
 
     return calculateStakeFormTransaction(
+        networkConfigDeps,
         availableBalance,
         output,
         estimatedFeeLevel,
@@ -200,13 +206,16 @@ type ComposeSolanaStakingTransactionParams = {
 };
 
 // Solana stake compose: build tx, estimate fee, rebuild with fee and solanaTxMeta (not send-form).
-export const composeSolanaStakingTransaction = async ({
-    formValues,
-    composeContext,
-    blockchainUrl,
-    userAgent,
-    source,
-}: ComposeSolanaStakingTransactionParams): Promise<PrecomposedLevels | undefined> => {
+export const composeSolanaStakingTransaction = async (
+    networkConfigDeps: NetworkConfigDeps,
+    {
+        formValues,
+        composeContext,
+        blockchainUrl,
+        userAgent,
+        source,
+    }: ComposeSolanaStakingTransactionParams,
+): Promise<PrecomposedLevels | undefined> => {
     const { account, feeInfo } = composeContext;
     const amount = formValues.outputs[0]?.amount;
     const { stakeType } = formValues;
@@ -232,10 +241,11 @@ export const composeSolanaStakingTransaction = async ({
     const predefinedLevels = feeInfo.levels.filter(level => level.label !== 'custom');
 
     const composed = composeStakingTransaction(
+        networkConfigDeps,
         formValues,
         composeContext,
         predefinedLevels,
-        calculateSolanaStakeTransaction,
+        calculateSolanaStakeTransaction.bind(null, networkConfigDeps),
         estimatedFee,
         undefined,
     );

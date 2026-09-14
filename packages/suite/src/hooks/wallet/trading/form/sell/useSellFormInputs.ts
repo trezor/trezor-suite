@@ -1,5 +1,7 @@
 import { useWatch } from 'react-hook-form';
 
+import { useServices } from '@suite-common/dependency-injection';
+import { selectNetworkConfigDeps } from '@suite-common/networks';
 import {
     TRADING_FORM_CRYPTO_TOKEN,
     TRADING_FORM_OUTPUT_AMOUNT,
@@ -42,6 +44,8 @@ export const useSellFormInputs = ({
     setShowReserveBanner,
     setAccountOnChange,
 }: UseSellFormInputsProps): TradingUseFormActionsReturnProps => {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
+
     const isNetworkReserveEnabled = useSelector(selectIsNetworkReserveEnabled);
     const accounts = useSelector(selectVisibleDeviceAccounts);
 
@@ -95,7 +99,7 @@ export const useSellFormInputs = ({
 
         clearErrors([TRADING_FORM_OUTPUT_FIAT, TRADING_FORM_OUTPUT_AMOUNT]);
 
-        const { cryptoInputValue, cryptoAmountWithReserve } = calcRatioAmount({
+        const { cryptoInputValue, cryptoAmountWithReserve } = calcRatioAmount(networkConfigDeps, {
             divisor,
             balance: tokenData ? tokenData.balance || '0' : account.formattedBalance,
             decimals: tokenData ? tokenData.decimals : networkDecimals,
@@ -116,7 +120,7 @@ export const useSellFormInputs = ({
 
     const setAllAmount = () => {
         if (tokenData) {
-            const cryptoInputValue = calcMaxTokenAmount({
+            const cryptoInputValue = calcMaxTokenAmount(networkConfigDeps, {
                 balance: tokenData.balance || '0',
                 decimals: tokenData.decimals,
                 networkDecimals,

@@ -1,3 +1,4 @@
+import { type NetworkConfigDeps } from '@suite-common/networks';
 import { type TranslationFunction } from '@suite/intl';
 import { getNetwork, isSingleAccountType } from '@suite-common/wallet-config';
 import { type Account } from '@suite-common/wallet-types';
@@ -6,6 +7,7 @@ import { getTitleForCoinjoinAccount } from '@suite-common/wallet-utils';
 type GetDefaultAccountLabelParams = Pick<Account, 'accountType' | 'symbol' | 'index'>;
 
 export const getDefaultAccountLabel = (
+    networkConfigDeps: NetworkConfigDeps,
     translationString: TranslationFunction,
     { accountType, symbol, index = 0 }: GetDefaultAccountLabelParams,
 ) => {
@@ -13,7 +15,7 @@ export const getDefaultAccountLabel = (
         return translationString(getTitleForCoinjoinAccount(symbol));
     }
 
-    const network = getNetwork(symbol);
+    const network = getNetwork(networkConfigDeps, symbol);
 
     // a single-account type has no other accounts to number against
     if (isSingleAccountType(network, accountType)) {

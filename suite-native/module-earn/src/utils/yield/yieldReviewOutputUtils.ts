@@ -1,3 +1,4 @@
+import { type NetworkConfigDeps } from '@suite-common/networks';
 import {
     buildClaimTransactionReview,
     buildStablecoinYieldTransactionReview,
@@ -174,18 +175,21 @@ const getYieldReviewEvmTransactionPurpose = (
     }
 };
 
-const buildYieldReviewPreviewResult = ({
-    account,
-    availableRewards,
-    device,
-    evmTransactionPurposeOverride,
-    formState,
-    precomposedTransaction,
-    vaultName,
-}: BuildYieldReviewPreviewBaseParams): YieldReviewPreview => {
+const buildYieldReviewPreviewResult = (
+    networkConfigDeps: NetworkConfigDeps,
+    {
+        account,
+        availableRewards,
+        device,
+        evmTransactionPurposeOverride,
+        formState,
+        precomposedTransaction,
+        vaultName,
+    }: BuildYieldReviewPreviewBaseParams,
+): YieldReviewPreview => {
     const evmTransactionPurpose =
         evmTransactionPurposeOverride ?? getYieldReviewEvmTransactionPurpose(formState);
-    const outputs = constructTransactionReviewOutputs({
+    const outputs = constructTransactionReviewOutputs(networkConfigDeps, {
         account,
         availableRewards,
         decreaseOutputId: undefined,
@@ -214,12 +218,14 @@ const buildYieldReviewPreviewResult = ({
 };
 
 export const buildYieldReviewPreview = (
+    networkConfigDeps: NetworkConfigDeps,
     params: BuildYieldReviewPreviewParams,
 ): YieldReviewPreview | null => {
     try {
         switch (params.type) {
             case 'deposit': {
                 const { formState, precomposedTransaction } = buildStablecoinYieldTransactionReview(
+                    networkConfigDeps,
                     {
                         amount: params.review.amount,
                         selectedFee: null,
@@ -229,7 +235,7 @@ export const buildYieldReviewPreview = (
                     },
                 );
 
-                return buildYieldReviewPreviewResult({
+                return buildYieldReviewPreviewResult(networkConfigDeps, {
                     account: params.flowData.account,
                     device: params.device,
                     formState,
@@ -239,6 +245,7 @@ export const buildYieldReviewPreview = (
             }
             case 'withdraw': {
                 const { formState, precomposedTransaction } = buildStablecoinYieldTransactionReview(
+                    networkConfigDeps,
                     {
                         amount: params.review.amount,
                         selectedFee: params.selectedFee ?? null,
@@ -248,7 +255,7 @@ export const buildYieldReviewPreview = (
                     },
                 );
 
-                return buildYieldReviewPreviewResult({
+                return buildYieldReviewPreviewResult(networkConfigDeps, {
                     account: params.flowData.account,
                     device: params.device,
                     formState,
@@ -266,7 +273,7 @@ export const buildYieldReviewPreview = (
                         unsignedTransaction: params.review.unsignedTransaction,
                     });
 
-                return buildYieldReviewPreviewResult({
+                return buildYieldReviewPreviewResult(networkConfigDeps, {
                     account: params.account,
                     availableRewards,
                     device: params.device,
@@ -277,6 +284,7 @@ export const buildYieldReviewPreview = (
             case 'wrap':
             case 'unwrap': {
                 const { formState, precomposedTransaction } = buildStablecoinYieldTransactionReview(
+                    networkConfigDeps,
                     {
                         amount: params.review.amount,
                         selectedFee: null,
@@ -286,7 +294,7 @@ export const buildYieldReviewPreview = (
                     },
                 );
 
-                return buildYieldReviewPreviewResult({
+                return buildYieldReviewPreviewResult(networkConfigDeps, {
                     account: params.account,
                     device: params.device,
                     evmTransactionPurposeOverride: params.type,
@@ -296,7 +304,7 @@ export const buildYieldReviewPreview = (
             }
             case 'approve':
             case 'revoke':
-                return buildYieldReviewPreviewResult({
+                return buildYieldReviewPreviewResult(networkConfigDeps, {
                     account: params.account,
                     device: params.device,
                     formState: params.formState,

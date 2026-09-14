@@ -1,3 +1,5 @@
+import { selectNetworkConfigDeps } from '@suite-common/networks';
+import { useServices } from '@suite-common/dependency-injection';
 import { forwardRef } from 'react';
 import { type TextInput } from 'react-native';
 import { useSelector } from 'react-redux';
@@ -20,6 +22,8 @@ const EXCHANGE_RECEIVE_INPUT_TEST_ID = '@trading/exchange/receive-amount-input';
 
 export const ExchangeReceiveAmountInput = forwardRef<TextInput, ExchangeReceiveAmountInputProps>(
     ({ showAssetsSheet }, ref) => {
+        const networkConfigDeps = useServices(selectNetworkConfigDeps);
+
         const { translate } = useTranslate();
         const isLoading = useSelector(selectTradingExchangeIsLoading);
         const { control } = useExchangeFormContext();
@@ -27,7 +31,7 @@ export const ExchangeReceiveAmountInput = forwardRef<TextInput, ExchangeReceiveA
             control,
             name: ['receiveAsset', 'receiveCryptoAmount'],
         });
-        const symbol = getSymbolFromTradeableAsset(asset);
+        const symbol = getSymbolFromTradeableAsset(networkConfigDeps, asset);
         const { cryptoAmountTransformer } = useAmountInputTransformers(symbol);
 
         return (

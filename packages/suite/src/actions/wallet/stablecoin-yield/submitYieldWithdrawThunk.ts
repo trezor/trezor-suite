@@ -2,6 +2,7 @@ import { type DesktopAnalyticsDep } from '@suite/analytics';
 import { openDeferredModal } from '@suite/modal';
 import { events } from '@suite-common/analytics';
 import { type StablecoinYieldTxSimulationParams } from '@suite-common/earn-stablecoin';
+import { type NetworksRootState, selectNetworkConfigAccessors } from '@suite-common/networks';
 import { createThunk } from '@suite-common/redux-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import {
@@ -30,7 +31,8 @@ type SubmitYieldWithdrawPayload = {
 };
 
 type SubmitYieldWithdrawThunkState = ComposeYieldWithdrawTransactionThunkState &
-    SendYieldTransactionState;
+    SendYieldTransactionState &
+    NetworksRootState;
 
 type SubmitYieldWithdrawThunkDeps = SendYieldTransactionDeps & {
     services: DesktopAnalyticsDep;
@@ -39,10 +41,15 @@ type SubmitYieldWithdrawThunkDeps = SendYieldTransactionDeps & {
 export const submitYieldWithdrawThunk = createThunk<
     void,
     SubmitYieldWithdrawPayload,
-    { state: SubmitYieldWithdrawThunkState; extra: SubmitYieldWithdrawThunkDeps }
+    {
+        state: SubmitYieldWithdrawThunkState;
+        extra: SubmitYieldWithdrawThunkDeps;
+    }
 >(
     `${YIELD_PREFIX}/thunk/submitWithdraw`,
     async ({ flowKey, flowData, amount, flowType }, { dispatch, getState, extra }) => {
+        const networkConfigDeps = selectNetworkConfigAccessors(getState());
+
         const reportSubmitError = (errorMessage = 'submit-failed') =>
             extra.services.analytics.report({
                 type: events.yieldWithdrawEvent.name,
@@ -117,7 +124,7 @@ export const submitYieldWithdrawThunk = createThunk<
             const selectedFee = userAcceptedTxSimulation?.selectedFee ?? null;
             const reviewToken = flowType === 'redeem' ? flowData.receiptToken : flowData.token;
 
-            const result = await sendYieldTransaction({
+            const result = await sendYieldTransaction(networkConfigDeps, {
                 account,
                 amount,
                 token: reviewToken,

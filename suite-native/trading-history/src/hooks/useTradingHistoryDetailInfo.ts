@@ -1,3 +1,5 @@
+import { selectNetworkConfigDeps } from '@suite-common/networks';
+import { useServices } from '@suite-common/dependency-injection';
 import { useSelector } from 'react-redux';
 
 import type { CryptoId, FiatCurrencyCode } from 'invity-api';
@@ -76,7 +78,7 @@ const getTradingHistoryDetailRateType = ({
 type GetTradingHistoryDetailAssetParams = {
     accountLabel?: string;
     amount?: string;
-    createAssetOptionFromCryptoId: (cryptoId?: CryptoId) => TradingAssetOption;
+    getAssetOptionFromCryptoId: (cryptoId?: CryptoId) => TradingAssetOption;
     currency?: string;
     isCrypto?: boolean;
 };
@@ -84,7 +86,7 @@ type GetTradingHistoryDetailAssetParams = {
 const getTradingHistoryDetailAsset = ({
     accountLabel,
     amount,
-    createAssetOptionFromCryptoId,
+    getAssetOptionFromCryptoId,
     currency,
     isCrypto,
 }: GetTradingHistoryDetailAssetParams): TradingHistoryDetailAsset | undefined => {
@@ -101,7 +103,7 @@ const getTradingHistoryDetailAsset = ({
     }
 
     const cryptoId = currency as CryptoId;
-    const cryptoAsset = createAssetOptionFromCryptoId(cryptoId);
+    const cryptoAsset = getAssetOptionFromCryptoId(cryptoId);
 
     return {
         type: 'crypto',
@@ -117,6 +119,8 @@ const getTradingHistoryDetailAsset = ({
 };
 
 export const useTradingHistoryDetailInfo = (orderId: string) => {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
+
     const trade = useSelector((state: TradingRootState) =>
         selectTradingTradeByOrderId(state, orderId),
     );
@@ -149,7 +153,7 @@ export const useTradingHistoryDetailInfo = (orderId: string) => {
     const isMevProtectionFeatureEnabled = useSelector(selectIsMevProtectionFeatureEnabled);
 
     const formatCryptoValue = useFormatCryptoValue();
-    const { createAssetOptionFromCryptoId } = useTradingAssets();
+    const { getAssetOptionFromCryptoId } = useTradingAssets();
 
     if (!trade) {
         return null;
@@ -169,7 +173,9 @@ export const useTradingHistoryDetailInfo = (orderId: string) => {
             ? formatCryptoValue(minimumReceived, operation.toCurrency)
             : undefined;
     const sendNetwork =
-        trade.tradeType === 'exchange' ? cryptoIdToNetwork(trade.data.send) : undefined;
+        trade.tradeType === 'exchange'
+            ? cryptoIdToNetwork(networkConfigDeps, trade.data.send)
+            : undefined;
     const shouldShowMevProtection =
         isDex &&
         isMevProtectionFeatureEnabled &&
@@ -180,14 +186,14 @@ export const useTradingHistoryDetailInfo = (orderId: string) => {
     const payAsset = getTradingHistoryDetailAsset({
         accountLabel: payAccountLabel,
         amount: operation.fromValue,
-        createAssetOptionFromCryptoId,
+        getAssetOptionFromCryptoId,
         currency: operation.fromCurrency,
         isCrypto: operation.isFromCrypto,
     });
     const getAsset = getTradingHistoryDetailAsset({
         accountLabel: getAccountLabel,
         amount: operation.toValue,
-        createAssetOptionFromCryptoId,
+        getAssetOptionFromCryptoId,
         currency: operation.toCurrency,
         isCrypto: operation.isToCrypto,
     });

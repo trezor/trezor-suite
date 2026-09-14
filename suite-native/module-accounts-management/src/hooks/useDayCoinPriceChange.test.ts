@@ -60,6 +60,7 @@ describe('useDayCoinPriceChange', () => {
         expect(result.current.underlyingAssetContract).toBeNull();
         expect(fetchErc4626UnderlyingAssetMock).not.toHaveBeenCalled();
         expect(getFiatRatesForTimestampsMock).toHaveBeenCalledWith(
+            expect.any(Object),
             { symbol: ethSymbol, tokenAddress: underlyingContract },
             expect.any(Array),
             'usd',
@@ -96,6 +97,7 @@ describe('useDayCoinPriceChange', () => {
             contract: vaultContract,
         });
         expect(getFiatRatesForTimestampsMock).toHaveBeenCalledWith(
+            expect.any(Object),
             { symbol: ethSymbol, tokenAddress: underlyingContract },
             expect.any(Array),
             'usd',

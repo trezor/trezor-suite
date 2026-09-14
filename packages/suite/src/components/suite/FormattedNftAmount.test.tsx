@@ -1,3 +1,5 @@
+import { mockNetworkConfigDeps } from '@suite-common/networks/mocks';
+
 import '@suite-common/test-utils/globalOverrides';
 
 import { screen } from '@testing-library/react';
@@ -5,7 +7,7 @@ import { screen } from '@testing-library/react';
 import { createTestCompositionRoot } from '@suite-common/test-utils';
 import { getNetwork } from '@suite-common/wallet-config';
 import { getExplorerUrl } from '@suite-common/wallet-config/src/getExplorerUrls';
-import { explorerInitialState } from '@suite-common/wallet-core';
+import { createExplorerInitialState } from '@suite-common/wallet-core';
 import { asAccountDescriptor } from '@suite-common/wallet-types';
 import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
 import { type TokenTransfer } from '@trezor/connect';
@@ -15,6 +17,8 @@ import { renderWithProviders } from 'src/support/test-utils/hooksHelper';
 
 import { FormattedNftAmount } from './FormattedNftAmount';
 import { mockInitialAppState } from '../../../mocks/mockInitialAppState';
+
+const networkConfigDeps = mockNetworkConfigDeps();
 
 const ethereumAccount = mockWalletAccount({
     symbol: 'eth',
@@ -36,11 +40,11 @@ const getInitialState = (): AppState => ({
     ...mockInitialAppState,
     wallet: {
         ...mockInitialAppState.wallet,
-        explorer: explorerInitialState,
+        explorer: createExplorerInitialState(networkConfigDeps.getNetworkConfigs()),
         selectedAccount: {
             status: 'loaded',
             account: ethereumAccount,
-            network: getNetwork(ethereumAccount.symbol),
+            network: getNetwork(networkConfigDeps, ethereumAccount.symbol),
             params: undefined,
         },
     },
@@ -58,8 +62,14 @@ describe('FormattedNftAmount', () => {
             <FormattedNftAmount transfer={nftTransfer} networkSymbol="pol" isWithLink />,
         );
 
-        const polygonNftUrl = getExplorerUrl(explorerInitialState.pol.default, 'nft');
-        const ethereumNftUrl = getExplorerUrl(explorerInitialState.eth.default, 'nft');
+        const polygonNftUrl = getExplorerUrl(
+            createExplorerInitialState(networkConfigDeps.getNetworkConfigs()).pol.default,
+            'nft',
+        );
+        const ethereumNftUrl = getExplorerUrl(
+            createExplorerInitialState(networkConfigDeps.getNetworkConfigs()).eth.default,
+            'nft',
+        );
 
         expect(polygonNftUrl).not.toBe(ethereumNftUrl);
         expect(screen.getByRole('link')).toHaveAttribute(

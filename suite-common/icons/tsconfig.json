@@ -4,6 +4,8 @@
     "include": [".", "**/*.json"],
     "references": [
         { "path": "../http-client" },
+        { "path": "../networks" },
+        { "path": "../../packages/connect" },
         { "path": "../wallet-config" },
         {
             "path": "../../networks/ethereum/network-ethereum-suite-common"

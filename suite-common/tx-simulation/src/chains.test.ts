@@ -1,3 +1,4 @@
+import { mockNetworkConfigDeps } from '@suite-common/networks/mocks';
 import { getNetwork } from '@suite-common/wallet-config';
 
 import {
@@ -6,29 +7,31 @@ import {
     resolveBlockaidStellarChain,
 } from './chains';
 
+const networkConfigDeps = mockNetworkConfigDeps();
+
 describe('resolveBlockaidEvmChain', () => {
     it.each([
-        [getNetwork('eth').chainId, 'ethereum'],
-        [getNetwork('hype').chainId, 'hyperevm'],
-        [getNetwork('rhc').chainId, 'robinhood'],
-        [getNetwork('tsep').chainId, 'ethereum-sepolia'],
+        [getNetwork(networkConfigDeps, 'eth').chainId, 'ethereum'],
+        [getNetwork(networkConfigDeps, 'hype').chainId, 'hyperevm'],
+        [getNetwork(networkConfigDeps, 'rhc').chainId, 'robinhood'],
+        [getNetwork(networkConfigDeps, 'tsep').chainId, 'ethereum-sepolia'],
     ])('maps chainId %i to %s', (chainId, expected) => {
-        expect(resolveBlockaidEvmChain(chainId)).toBe(expected);
+        expect(resolveBlockaidEvmChain(networkConfigDeps, chainId)).toBe(expected);
     });
 
     it('defaults to Ethereum mainnet when the chainId is unknown to the payload', () => {
-        expect(resolveBlockaidEvmChain(undefined)).toBe('ethereum');
+        expect(resolveBlockaidEvmChain(networkConfigDeps, undefined)).toBe('ethereum');
     });
 
     it.each([
-        ['Ethereum Classic', getNetwork('etc').chainId],
-        ['Ethereum Hoodi', getNetwork('thod').chainId],
+        ['Ethereum Classic', getNetwork(networkConfigDeps, 'etc').chainId],
+        ['Ethereum Hoodi', getNetwork(networkConfigDeps, 'thod').chainId],
     ])('has no chain for %s', (_name, chainId) => {
-        expect(resolveBlockaidEvmChain(chainId)).toBeNull();
+        expect(resolveBlockaidEvmChain(networkConfigDeps, chainId)).toBeNull();
     });
 
     it('returns null for a chainId Suite does not know', () => {
-        expect(resolveBlockaidEvmChain(1234567)).toBeNull();
+        expect(resolveBlockaidEvmChain(networkConfigDeps, 1234567)).toBeNull();
     });
 });
 

@@ -1,4 +1,5 @@
 import { type TranslationFunction } from '@suite/intl';
+import { mockNetworkConfigDeps } from '@suite-common/networks/mocks';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { type RatesByKey, asCryptoBaseCurrencyCode } from '@suite-common/wallet-types';
 import { type BaseCurrencyCode } from '@trezor/blockchain-link-types';
@@ -6,12 +7,14 @@ import { BigNumber } from '@trezor/utils';
 
 import { getFiatInputRules } from './tradingFormInputFiatCryptoRules';
 
+const networkConfigDeps = mockNetworkConfigDeps();
+
 const t = ((key: string, values?: Record<string, unknown>) =>
     values ? `${key}:${JSON.stringify(values)}` : key) as TranslationFunction;
 
 const btcUsdKey = asCryptoBaseCurrencyCode('btc-usd');
 
-type Props = Parameters<typeof getFiatInputRules>[0];
+type Props = Parameters<typeof getFiatInputRules>[1];
 type Validator = (value: string) => string | undefined;
 type ValidateMap = Record<
     'min' | 'decimals' | 'balance' | 'networkReserve' | 'minFiat' | 'maxFiat',
@@ -35,7 +38,7 @@ const baseProps: Props = {
 };
 
 const getValidators = (props: Props) =>
-    (getFiatInputRules(props) as { validate: ValidateMap }).validate;
+    (getFiatInputRules(networkConfigDeps, props) as { validate: ValidateMap }).validate;
 
 describe('getFiatInputRules — exchange context', () => {
     const exchangeProps = { ...baseProps, isExchangeContext: true };

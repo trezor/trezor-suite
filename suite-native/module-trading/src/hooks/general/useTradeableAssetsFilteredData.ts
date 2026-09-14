@@ -1,3 +1,5 @@
+import { type NetworkConfigDeps, selectNetworkConfigDeps } from '@suite-common/networks';
+import { useServices } from '@suite-common/dependency-injection';
 import { useMemo, useState } from 'react';
 
 import {
@@ -16,8 +18,11 @@ const EMPTY_ASSET_BALANCES: TradeableAssetBalances = new Map();
 
 const getAssetCryptoId = (asset: TradeableAsset) => asset.cryptoId;
 
-const getAssetSearchFields = (asset: TradeableAsset): TradeableAssetSearchFields => {
-    const network = getNetworkByCoingeckoId(asset.networkId);
+const getAssetSearchFields = (
+    networkConfigDeps: NetworkConfigDeps,
+    asset: TradeableAsset,
+): TradeableAssetSearchFields => {
+    const network = getNetworkByCoingeckoId(networkConfigDeps, asset.networkId);
 
     return {
         name: asset.name,
@@ -37,12 +42,18 @@ export const useTradeableAssetsFilteredData = ({
     assetBalances?: TradeableAssetBalances;
     preferredCurrencyUsdThreshold?: BaseCurrencyAmount | null;
 }) => {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
+
     const [filterSymbol, setFilterSymbol] = useState<NetworkSymbol | undefined>(undefined);
     const [filterValue, setFilterValue] = useState('');
 
     const searchIndex = useMemo(
-        () => buildTradeableAssetSearchIndex({ assets, getSearchFields: getAssetSearchFields }),
-        [assets],
+        () =>
+            buildTradeableAssetSearchIndex({
+                assets,
+                getSearchFields: getAssetSearchFields.bind(null, networkConfigDeps),
+            }),
+        [networkConfigDeps, assets],
     );
 
     const orderedAssets = useMemo(
@@ -62,9 +73,9 @@ export const useTradeableAssetsFilteredData = ({
         }
 
         return orderedAssets.filter(
-            asset => filterSymbol === cryptoIdToNetworkSymbol(asset.cryptoId),
+            asset => filterSymbol === cryptoIdToNetworkSymbol(networkConfigDeps, asset.cryptoId),
         );
-    }, [filterSymbol, orderedAssets]);
+    }, [networkConfigDeps, filterSymbol, orderedAssets]);
 
     const filteredData = useMemo(
         () =>

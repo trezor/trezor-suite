@@ -1,3 +1,4 @@
+import { type NetworkConfigDeps } from '@suite-common/networks';
 import { getNetwork } from '@suite-common/wallet-config';
 import { type Account } from '@suite-common/wallet-types';
 
@@ -6,7 +7,10 @@ import { type Account } from '@suite-common/wallet-types';
  * one. Empty accountTypes means the network has the 'normal' account type alone and both formats
  * produce the same signature.
  */
-export const getHasSelectableSignatureFormat = (account: Account): boolean =>
+export const getHasSelectableSignatureFormat = (
+    networkConfigDeps: NetworkConfigDeps,
+    account: Account,
+): boolean =>
     account.networkType === 'bitcoin' &&
     account.accountType !== 'legacy' &&
-    Object.keys(getNetwork(account.symbol).accountTypes).length >= 1;
+    Object.keys(getNetwork(networkConfigDeps, account.symbol).accountTypes).length >= 1;

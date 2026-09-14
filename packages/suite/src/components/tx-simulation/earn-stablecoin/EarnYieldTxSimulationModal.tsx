@@ -1,7 +1,9 @@
 import { useMemo } from 'react';
 
 import { type UserContextModalType } from '@suite/modal';
+import { useServices } from '@suite-common/dependency-injection';
 import { composeStablecoinYieldTxSimulationAction } from '@suite-common/earn-stablecoin';
+import { selectNetworkConfigDeps } from '@suite-common/networks';
 import { selectAccountByKey } from '@suite-common/wallet-core';
 
 import { useSelector } from 'src/hooks/suite';
@@ -20,9 +22,16 @@ export function EarnYieldTxSimulationModal({
     decision,
     closeModal,
 }: EarnYieldTxSimulationModalProps) {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
+
     const parsedData = useMemo(
-        () => composeStablecoinYieldTxSimulationAction(data, globalThis.location.origin),
-        [data],
+        () =>
+            composeStablecoinYieldTxSimulationAction(
+                networkConfigDeps,
+                data,
+                globalThis.location.origin,
+            ),
+        [networkConfigDeps, data],
     );
     const account = useSelector(state =>
         parsedData ? selectAccountByKey(state, parsedData.accountKey) : null,

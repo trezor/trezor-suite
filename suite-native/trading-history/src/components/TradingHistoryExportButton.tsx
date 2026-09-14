@@ -1,3 +1,5 @@
+import { selectNetworkConfigDeps } from '@suite-common/networks';
+import { useServices } from '@suite-common/dependency-injection';
 import { useState } from 'react';
 import { useSelector, useStore } from 'react-redux';
 
@@ -20,6 +22,8 @@ import {
 import { useTradingHistoryCsvColumnLabels } from '../hooks/useTradingHistoryCsvColumnLabels';
 
 export const TradingHistoryExportButton = () => {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
+
     const { showToast } = useToast();
     const { showAlert, hideAlert } = useAlert();
     const { translate } = useTranslate();
@@ -43,7 +47,10 @@ export const TradingHistoryExportButton = () => {
 
             const state = store.getState();
             const trades = selectDeviceTradingTradesOrderedByDate(state);
-            const csvContent = prepareTradingHistoryCsv(columnLabels)(state, trades);
+            const csvContent = prepareTradingHistoryCsv(networkConfigDeps, columnLabels)(
+                state,
+                trades,
+            );
 
             result = await exportTradingHistoryCsv(csvContent);
             // eslint-disable-next-line @typescript-eslint/no-unused-vars

@@ -1,3 +1,6 @@
+import { type NetworksRootState } from '@suite-common/networks';
+import { selectNetworkConfigDeps } from '@suite-common/networks';
+import { useServices } from '@suite-common/dependency-injection';
 import { useSelector } from 'react-redux';
 
 import { type TokenDefinitionsRootState } from '@suite-common/token-definitions';
@@ -48,6 +51,8 @@ export const TokenTransferListItemValues = ({
     transaction,
     accountKey,
 }: TokenTransferListItemValuesProps) => {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
+
     const { applyStyle } = useNativeStyles();
 
     const historicRate = useSelector((state: WalletSettingsRootState & FiatRatesRootState) =>
@@ -59,7 +64,8 @@ export const TokenTransferListItemValues = ({
             state: TokenDefinitionsRootState &
                 TransactionsRootState &
                 FiatRatesRootState &
-                PhishingRootState,
+                PhishingRootState &
+                NetworksRootState,
         ) => selectIsPhishingTransaction(state, transaction.txid, accountKey),
     );
 
@@ -93,7 +99,7 @@ export const TokenTransferListItemValues = ({
                 value={convertTokenValueToDecimal(tokenTransfer.amount, tokenTransfer.decimals)}
                 tokenSymbol={
                     tokenTransfer.symbol
-                        ? toTokenSymbol(getDisplaySymbol(tokenTransfer.symbol))
+                        ? toTokenSymbol(getDisplaySymbol(networkConfigDeps, tokenTransfer.symbol))
                         : null
                 }
                 tokenDecimals={tokenTransfer.decimals}

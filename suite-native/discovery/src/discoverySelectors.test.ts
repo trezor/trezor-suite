@@ -1,7 +1,7 @@
 import { type StateFromReducersMapObject } from '@reduxjs/toolkit';
 
 import { deviceInitialState } from '@suite-common/device';
-import { mockNetworksState } from '@suite-common/networks/mocks';
+import { mockNetworkConfigDeps, mockNetworksState } from '@suite-common/networks/mocks';
 import { type TrezorDevice } from '@suite-common/suite-types';
 import { type NetworkSymbol, getNetwork } from '@suite-common/wallet-config';
 import { mockGetSupportedNetworks } from '@suite-common/wallet-config/mocks';
@@ -18,6 +18,8 @@ import {
     selectDiscoveryNetworkGroups,
     selectDiscoverySupportedNetworks,
 } from './discoverySelectors';
+
+const networkConfigDeps = mockNetworkConfigDeps();
 
 // Mock the dependencies
 jest.mock('@suite-native/config', () => ({
@@ -179,7 +181,7 @@ describe(selectDiscoveryNetworkGroups.name, () => {
         const { supportedMainnets, supportedTestnets, unsupportedMainnets, unsupportedTestnets } =
             selectDiscoveryNetworkGroups(store.getState());
 
-        expect(supportedMainnets).toContain(getNetwork('btc'));
+        expect(supportedMainnets).toContain(getNetwork(networkConfigDeps, 'btc'));
         expect(supportedTestnets).toEqual([]);
         expect(unsupportedMainnets).toEqual([]);
         expect(unsupportedTestnets).toEqual([]);
@@ -193,9 +195,9 @@ describe(selectDiscoveryNetworkGroups.name, () => {
         const { supportedMainnets, supportedTestnets, unsupportedMainnets, unsupportedTestnets } =
             selectDiscoveryNetworkGroups(store.getState());
 
-        expect(supportedMainnets).toContain(getNetwork('btc'));
-        expect(supportedTestnets).toContain(getNetwork('test'));
-        expect(supportedTestnets).not.toContain(getNetwork('regtest'));
+        expect(supportedMainnets).toContain(getNetwork(networkConfigDeps, 'btc'));
+        expect(supportedTestnets).toContain(getNetwork(networkConfigDeps, 'test'));
+        expect(supportedTestnets).not.toContain(getNetwork(networkConfigDeps, 'regtest'));
         expect(unsupportedMainnets).toEqual([]);
         expect(unsupportedTestnets).toEqual([]);
     });
@@ -209,9 +211,9 @@ describe(selectDiscoveryNetworkGroups.name, () => {
         const { supportedMainnets, supportedTestnets, unsupportedMainnets, unsupportedTestnets } =
             selectDiscoveryNetworkGroups(store.getState());
 
-        expect(supportedMainnets).toContain(getNetwork('btc'));
-        expect(supportedTestnets).toContain(getNetwork('test'));
-        expect(supportedTestnets).toContain(getNetwork('regtest'));
+        expect(supportedMainnets).toContain(getNetwork(networkConfigDeps, 'btc'));
+        expect(supportedTestnets).toContain(getNetwork(networkConfigDeps, 'test'));
+        expect(supportedTestnets).toContain(getNetwork(networkConfigDeps, 'regtest'));
         expect(unsupportedMainnets).toEqual([]);
         expect(unsupportedTestnets).toEqual([]);
     });
@@ -230,10 +232,10 @@ describe(selectDiscoveryNetworkGroups.name, () => {
         const { supportedMainnets, supportedTestnets, unsupportedMainnets, unsupportedTestnets } =
             selectDiscoveryNetworkGroups(store.getState());
 
-        expect(supportedMainnets).toContain(getNetwork('btc'));
-        expect(supportedTestnets).toContain(getNetwork('test'));
-        expect(unsupportedMainnets).toContain(getNetwork('eth'));
-        expect(unsupportedTestnets).toContain(getNetwork('tsep'));
+        expect(supportedMainnets).toContain(getNetwork(networkConfigDeps, 'btc'));
+        expect(supportedTestnets).toContain(getNetwork(networkConfigDeps, 'test'));
+        expect(unsupportedMainnets).toContain(getNetwork(networkConfigDeps, 'eth'));
+        expect(unsupportedTestnets).toContain(getNetwork(networkConfigDeps, 'tsep'));
     });
 
     it('returns both supported and unsupported networks filtered by searchQuery', () => {
@@ -250,9 +252,9 @@ describe(selectDiscoveryNetworkGroups.name, () => {
         const { supportedMainnets, supportedTestnets, unsupportedMainnets, unsupportedTestnets } =
             selectDiscoveryNetworkGroups(store.getState(), 'bitcoin');
 
-        expect(supportedMainnets).toContain(getNetwork('btc'));
-        expect(supportedTestnets).toContain(getNetwork('test'));
-        expect(supportedTestnets).toContain(getNetwork('regtest'));
+        expect(supportedMainnets).toContain(getNetwork(networkConfigDeps, 'btc'));
+        expect(supportedTestnets).toContain(getNetwork(networkConfigDeps, 'test'));
+        expect(supportedTestnets).toContain(getNetwork(networkConfigDeps, 'regtest'));
         expect(unsupportedMainnets).toEqual([]);
         expect(unsupportedTestnets).toEqual([]);
     });

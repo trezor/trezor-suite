@@ -1,4 +1,4 @@
-import type { NetworkSymbol } from '@suite-common/networks';
+import type { NetworkConfigDeps, NetworkSymbol } from '@suite-common/networks';
 import { type Protocol, asProtocol } from '@trezor/network-module-suite-common-types';
 import { err, ok } from '@trezor/type-utils';
 import { safeParseUrl } from '@trezor/utils';
@@ -31,6 +31,7 @@ const erc681ToTransferUriInfo = (
  * BIP-321 / BIP-21 URI.
  */
 export const parseTransferUri = (
+    networkConfigDeps: NetworkConfigDeps,
     uri: string,
     findNetworkSymbolForProtocol: FindNetworkSymbolForProtocol,
 ): TransferUriResult => {
@@ -43,7 +44,7 @@ export const parseTransferUri = (
     }
 
     if (scheme === 'ethereum') {
-        const erc681 = parseErc681TransferUri(uri);
+        const erc681 = parseErc681TransferUri(networkConfigDeps, uri);
         if (erc681) return ok(erc681ToTransferUriInfo(erc681, scheme));
     }
 

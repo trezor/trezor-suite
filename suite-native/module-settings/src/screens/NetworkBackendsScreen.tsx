@@ -1,3 +1,5 @@
+import { selectNetworkConfigDeps } from '@suite-common/networks';
+import { useServices } from '@suite-common/dependency-injection';
 import { useNavigation } from '@react-navigation/native';
 
 import { getNetwork } from '@suite-common/wallet-config';
@@ -21,10 +23,12 @@ import { useNetworkExplorerForm } from '../hooks/useNetworkExplorerForm';
 export const NetworkBackendsScreen = ({
     route,
 }: StackProps<SettingsStackParamList, SettingsStackRoutes.SettingsNetworkBackends>) => {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
+
     const { showAlert } = useAlert();
     const navigation = useNavigation();
 
-    const network = getNetwork(route.params.networkSymbol);
+    const network = getNetwork(networkConfigDeps, route.params.networkSymbol);
     const networkBackendForm = useNetworkBackendForm(network);
     const networkExplorerForm = useNetworkExplorerForm(network);
 

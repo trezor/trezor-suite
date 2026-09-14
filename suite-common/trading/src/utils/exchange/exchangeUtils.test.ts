@@ -1,4 +1,5 @@
 import { type CryptoId } from 'invity-api';
+import { mockNetworkConfigDeps } from '@suite-common/networks/mocks';
 
 import { type PrecomposedLevels } from '@suite-common/wallet-types';
 import { buildApprovalTransactionData } from '@suite-common/wallet-utils';
@@ -14,6 +15,8 @@ import {
     tokenSupportsIncreasingAllowance,
 } from './exchangeUtils';
 
+const networkConfigDeps = mockNetworkConfigDeps();
+
 const USDT_CRYPTO_ID = 'ethereum--0xdac17f958d2ee523a2206206994597c13d831ec7' as CryptoId;
 const DAI_CRYPTO_ID = 'ethereum--0x6b175474e89094c44da98b954eedeac495271d0f' as CryptoId;
 const USDT_SOLANA_CRYPTO_ID = 'solana--Es9vMFrzaCERmJfrF4H2FYD4KCoNkY11McCe8BenwNYB' as CryptoId;
@@ -21,36 +24,39 @@ const USDC_BASE_CRYPTO_ID = 'base--0x833589fcd6edb6e08f4c7c32d4f71b54bda02913' a
 
 describe('requiresErc20Approval', () => {
     it('should return false when no crypto id is provided', () => {
-        expect(requiresErc20Approval(undefined)).toBe(false);
+        expect(requiresErc20Approval(networkConfigDeps, undefined)).toBe(false);
     });
 
     it('should return true for an ERC-20 token', () => {
-        expect(requiresErc20Approval(USDT_CRYPTO_ID)).toBe(true);
+        expect(requiresErc20Approval(networkConfigDeps, USDT_CRYPTO_ID)).toBe(true);
     });
 
     it('should return true for a token on another EVM network', () => {
-        expect(requiresErc20Approval(USDC_BASE_CRYPTO_ID)).toBe(true);
+        expect(requiresErc20Approval(networkConfigDeps, USDC_BASE_CRYPTO_ID)).toBe(true);
     });
 
     it('should return false for a native EVM coin', () => {
-        expect(requiresErc20Approval('ethereum' as CryptoId)).toBe(false);
+        expect(requiresErc20Approval(networkConfigDeps, 'ethereum' as CryptoId)).toBe(false);
     });
 
     it('should return false for a native EVM coin addressed by the zero contract', () => {
         expect(
-            requiresErc20Approval('base--0x0000000000000000000000000000000000000000' as CryptoId),
+            requiresErc20Approval(
+                networkConfigDeps,
+                'base--0x0000000000000000000000000000000000000000' as CryptoId,
+            ),
         ).toBe(false);
     });
 
     it('should return false for a non-EVM network, both native and token', () => {
-        expect(requiresErc20Approval('solana' as CryptoId)).toBe(false);
-        expect(requiresErc20Approval(USDT_SOLANA_CRYPTO_ID)).toBe(false);
+        expect(requiresErc20Approval(networkConfigDeps, 'solana' as CryptoId)).toBe(false);
+        expect(requiresErc20Approval(networkConfigDeps, USDT_SOLANA_CRYPTO_ID)).toBe(false);
     });
 });
 
 describe('requiresTokenApproval', () => {
     it('should return false when no quote is provided', () => {
-        const result = requiresTokenApproval(undefined);
+        const result = requiresTokenApproval(networkConfigDeps, undefined);
         expect(result).toBe(false);
     });
 
@@ -60,7 +66,7 @@ describe('requiresTokenApproval', () => {
             isDex: false,
             send: 'ethereum' as CryptoId,
         };
-        const result = requiresTokenApproval(quote);
+        const result = requiresTokenApproval(networkConfigDeps, quote);
         expect(result).toBe(false);
     });
 
@@ -70,7 +76,7 @@ describe('requiresTokenApproval', () => {
             isDex: true,
             send: 'ethereum' as CryptoId,
         };
-        const result = requiresTokenApproval(quote);
+        const result = requiresTokenApproval(networkConfigDeps, quote);
         expect(result).toBe(false);
     });
 
@@ -79,7 +85,7 @@ describe('requiresTokenApproval', () => {
             orderId: 'test-order',
             isDex: true,
         };
-        const result = requiresTokenApproval(quote);
+        const result = requiresTokenApproval(networkConfigDeps, quote);
         expect(result).toBe(false);
     });
 
@@ -89,7 +95,7 @@ describe('requiresTokenApproval', () => {
             isDex: true,
             send: 'solana' as CryptoId,
         };
-        const result = requiresTokenApproval(quote);
+        const result = requiresTokenApproval(networkConfigDeps, quote);
         expect(result).toBe(false);
     });
 
@@ -99,7 +105,7 @@ describe('requiresTokenApproval', () => {
             isDex: true,
             send: USDT_SOLANA_CRYPTO_ID,
         };
-        const result = requiresTokenApproval(quote);
+        const result = requiresTokenApproval(networkConfigDeps, quote);
         expect(result).toBe(false);
     });
 
@@ -109,7 +115,7 @@ describe('requiresTokenApproval', () => {
             isDex: true,
             send: USDT_CRYPTO_ID,
         };
-        const result = requiresTokenApproval(quote);
+        const result = requiresTokenApproval(networkConfigDeps, quote);
         expect(result).toBe(true);
     });
 
@@ -120,7 +126,7 @@ describe('requiresTokenApproval', () => {
             send: USDT_CRYPTO_ID,
             status: 'SIGN_DATA' as const,
         };
-        const result = requiresTokenApproval(quote);
+        const result = requiresTokenApproval(networkConfigDeps, quote);
         expect(result).toBe(true);
     });
 
@@ -135,7 +141,7 @@ describe('requiresTokenApproval', () => {
                 data: {},
             } as any,
         };
-        const result = requiresTokenApproval(quote);
+        const result = requiresTokenApproval(networkConfigDeps, quote);
         expect(result).toBe(true);
     });
 
@@ -150,14 +156,14 @@ describe('requiresTokenApproval', () => {
                 data: {},
             },
         };
-        const result = requiresTokenApproval(quote);
+        const result = requiresTokenApproval(networkConfigDeps, quote);
         expect(result).toBe(false);
     });
 });
 
 describe('getApprovalStatus', () => {
     it('should return null when no quote is provided', () => {
-        const result = getApprovalStatus(undefined);
+        const result = getApprovalStatus(networkConfigDeps, undefined);
         expect(result).toBe(null);
     });
 
@@ -169,7 +175,7 @@ describe('getApprovalStatus', () => {
             send: DAI_CRYPTO_ID,
             status: 'CONFIRM' as const,
         };
-        const result = getApprovalStatus(quote);
+        const result = getApprovalStatus(networkConfigDeps, quote);
         expect(result).toBe('approved');
     });
 
@@ -180,7 +186,7 @@ describe('getApprovalStatus', () => {
             isDex: true,
             send: DAI_CRYPTO_ID,
         };
-        const result = getApprovalStatus(quote);
+        const result = getApprovalStatus(networkConfigDeps, quote);
         expect(result).toBe('approved');
     });
 
@@ -192,7 +198,7 @@ describe('getApprovalStatus', () => {
             send: DAI_CRYPTO_ID,
             status: 'APPROVAL_REQ' as const,
         };
-        const result = getApprovalStatus(quote);
+        const result = getApprovalStatus(networkConfigDeps, quote);
         expect(result).toBe('needs_increase');
     });
 
@@ -204,7 +210,7 @@ describe('getApprovalStatus', () => {
             send: USDT_CRYPTO_ID,
             status: 'APPROVAL_REQ' as const,
         };
-        const result = getApprovalStatus(quote);
+        const result = getApprovalStatus(networkConfigDeps, quote);
         expect(result).toBe('needs_revoke');
     });
 
@@ -215,7 +221,7 @@ describe('getApprovalStatus', () => {
             isDex: true,
             send: DAI_CRYPTO_ID,
         };
-        const result = getApprovalStatus(quote);
+        const result = getApprovalStatus(networkConfigDeps, quote);
         expect(result).toBe('needs_approval');
     });
 
@@ -226,7 +232,7 @@ describe('getApprovalStatus', () => {
             isDex: true,
             send: DAI_CRYPTO_ID,
         };
-        const result = getApprovalStatus(quote);
+        const result = getApprovalStatus(networkConfigDeps, quote);
         expect(result).toBe('needs_approval');
     });
 
@@ -236,7 +242,7 @@ describe('getApprovalStatus', () => {
             preapprovedStringAmount: undefined,
             isDex: false,
         };
-        const result = getApprovalStatus(quote);
+        const result = getApprovalStatus(networkConfigDeps, quote);
         expect(result).toBe('not_needed');
     });
 
@@ -251,7 +257,7 @@ describe('getApprovalStatus', () => {
                 data: {},
             },
         };
-        const result = getApprovalStatus(quote);
+        const result = getApprovalStatus(networkConfigDeps, quote);
         expect(result).toBe('not_needed');
     });
 
@@ -266,7 +272,7 @@ describe('getApprovalStatus', () => {
                 data: {},
             } as any,
         };
-        const result = getApprovalStatus(quote);
+        const result = getApprovalStatus(networkConfigDeps, quote);
         expect(result).toBe('needs_approval');
     });
 
@@ -280,7 +286,7 @@ describe('getApprovalStatus', () => {
                 data: {},
             },
         };
-        const result = getApprovalStatus(quote);
+        const result = getApprovalStatus(networkConfigDeps, quote);
         expect(result).toBe('needs_approval');
     });
 });
@@ -339,7 +345,7 @@ describe('getDexEstimationData', () => {
             dexTx: buildDexTx(approveData),
         };
 
-        const result = getDexEstimationData(quote);
+        const result = getDexEstimationData(networkConfigDeps, quote);
         expect(result).toBe(buildApprovalTransactionData({ spender, amount: '0' }));
         expect(result).not.toBe(approveData);
     });
@@ -354,7 +360,7 @@ describe('getDexEstimationData', () => {
             dexTx: buildDexTx(approveData),
         };
 
-        expect(getDexEstimationData(quote)).toBe(approveData);
+        expect(getDexEstimationData(networkConfigDeps, quote)).toBe(approveData);
     });
 
     it('returns undefined when the quote has no dexTx', () => {
@@ -364,7 +370,7 @@ describe('getDexEstimationData', () => {
             send: USDT_CRYPTO_ID,
         };
 
-        expect(getDexEstimationData(quote)).toBeUndefined();
+        expect(getDexEstimationData(networkConfigDeps, quote)).toBeUndefined();
     });
 });
 

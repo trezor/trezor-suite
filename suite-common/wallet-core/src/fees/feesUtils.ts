@@ -1,3 +1,4 @@
+import { type NetworkConfigDeps } from '@suite-common/networks';
 import { type Network, type NetworkSymbol, getNetwork } from '@suite-common/wallet-config';
 import { isEip1559 } from '@suite-common/wallet-utils';
 import TrezorConnect, { type FeeLevel } from '@trezor/connect';
@@ -30,13 +31,16 @@ type GetEip1559AvailabilityProps = {
     symbol: NetworkSymbol;
     feeLevel: FeeLevel;
 };
-const getEip1559Availability = ({ symbol, feeLevel }: GetEip1559AvailabilityProps) =>
-    getNetwork(symbol).features.includes('eip1559') && isEip1559(feeLevel);
+const getEip1559Availability = (
+    networkConfigDeps: NetworkConfigDeps,
+    { symbol, feeLevel }: GetEip1559AvailabilityProps,
+) => getNetwork(networkConfigDeps, symbol).features.includes('eip1559') && isEip1559(feeLevel);
 
 type GetNewFeeInfoProps = { network: Network };
-export const getNewFeeInfo = async ({
-    network,
-}: GetNewFeeInfoProps): Promise<BlockchainEstimatedFeeLevel | undefined> => {
+export const getNewFeeInfo = async (
+    networkConfigDeps: NetworkConfigDeps,
+    { network }: GetNewFeeInfoProps,
+): Promise<BlockchainEstimatedFeeLevel | undefined> => {
     const { symbol } = network;
 
     if (network.networkType === 'ethereum') {
@@ -56,7 +60,7 @@ export const getNewFeeInfo = async ({
         const feeLevelBase = result.payload.levels.at(0);
         // should never occur, all coins have at least one fee level defined
         if (feeLevelBase === undefined) return;
-        const isEip1559ActivatedAndAvailable = getEip1559Availability({
+        const isEip1559ActivatedAndAvailable = getEip1559Availability(networkConfigDeps, {
             symbol,
             feeLevel: feeLevelBase,
         });

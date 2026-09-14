@@ -1,3 +1,4 @@
+import { mockNetworkConfigDeps } from '@suite-common/networks/mocks';
 import { DefinitionType, type TokenDefinitionsState } from '@suite-common/token-definitions';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { mockGetSupportedNetworks } from '@suite-common/wallet-config/mocks';
@@ -12,6 +13,8 @@ import { mockAccountToken, mockWalletAccount } from '@suite-common/wallet-types/
 import { getFiatRateKey } from '@suite-common/wallet-utils';
 
 import { buildSellAssetRows } from './buildSellAssetRows';
+
+const networkConfigDeps = mockNetworkConfigDeps();
 
 const USDT_CONTRACT = toTokenAddress('0xdac17f958d2ee523a2206206994597c13d831ec7');
 const USDC_CONTRACT = toTokenAddress('0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48');
@@ -79,7 +82,7 @@ const buildRows = ({
     accounts: Account[];
     networkSymbolFilter?: NetworkSymbol;
 }) =>
-    buildSellAssetRows({
+    buildSellAssetRows(networkConfigDeps, {
         supportedNetworks: mockGetSupportedNetworks(),
         accounts,
         networkSymbolFilter,

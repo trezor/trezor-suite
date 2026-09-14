@@ -1,5 +1,6 @@
 import { type AnalyticsDep, events } from '@suite-common/analytics';
 import { asGetter } from '@suite-common/dependency-injection';
+import { mockNetworkConfigDeps } from '@suite-common/networks/mocks';
 import { type WithServices } from '@suite-common/redux-utils';
 import { createTestStore } from '@suite-common/test-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
@@ -11,6 +12,8 @@ import { mockAnalytics } from '@trezor/analytics-uploader/mocks';
 
 import { type SendYieldTransactionDeps } from './stablecoin-yield/signingHelpers';
 import { submitUnwrapNativeTokenThunk } from './unwrapNativeTokenThunks';
+
+const networkConfigDeps = mockNetworkConfigDeps();
 
 const mockComposeYieldUnwrapTransactionThunk = jest.fn();
 const mockOpenDeferredModal = jest.fn();
@@ -40,7 +43,7 @@ jest.mock('@suite/modal', () => ({
 }));
 
 jest.mock('./stablecoin-yield/signingHelpers', () => ({
-    sendYieldTransaction: (payload: unknown) => mockSendYieldTransaction(payload),
+    sendYieldTransaction: (_deps: unknown, payload: unknown) => mockSendYieldTransaction(payload),
     getYieldSubmitErrorAnalyticsMessage: jest.fn(() => 'submit-failed'),
 }));
 
@@ -157,7 +160,7 @@ describe('submitUnwrapNativeTokenThunk', () => {
                 },
                 receive: {
                     symbol: account.symbol,
-                    displaySymbol: getNetworkDisplaySymbol(account.symbol),
+                    displaySymbol: getNetworkDisplaySymbol(networkConfigDeps, account.symbol),
                     amount: '1.5',
                 },
             },

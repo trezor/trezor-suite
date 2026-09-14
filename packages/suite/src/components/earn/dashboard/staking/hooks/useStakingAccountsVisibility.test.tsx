@@ -19,7 +19,7 @@ const adaSymbol = asNetworkSymbol('ada');
 
 jest.mock('@suite-common/wallet-utils', () => ({
     ...jest.requireActual('@suite-common/wallet-utils'),
-    getAccountTotalStakingBalance: (...args: [Account]) =>
+    getAccountTotalStakingBalance: (_deps: unknown, ...args: [Account]) =>
         mockGetAccountTotalStakingBalance(...args),
 }));
 

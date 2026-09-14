@@ -1,7 +1,9 @@
 import { memo, useCallback, useMemo, useRef } from 'react';
 
 import { Translation, type TranslationKey, useTranslation } from '@suite/intl';
+import { useServices } from '@suite-common/dependency-injection';
 import { isNetworkIconSymbol } from '@suite-common/icons';
+import { selectNetworkConfigDeps } from '@suite-common/networks';
 import { type NetworkSymbol, getNetwork } from '@suite-common/wallet-config';
 import {
     Button,
@@ -52,6 +54,8 @@ export const AssetPickerSearchHeader = memo(function AssetPickerSearchHeaderInne
     networks,
     autoFocus,
 }: AssetPickerSearchHeaderProps) {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
+
     const { translationString } = useTranslation();
     const popoverRef = useRef<PopoverRef>(null);
 
@@ -69,12 +73,17 @@ export const AssetPickerSearchHeader = memo(function AssetPickerSearchHeaderInne
                 'data-testid': `${DATA_TESTID_BASE}/filter/select-option/all-networks`,
             },
             ...networks.map(symbol => ({
-                label: <NetworkLabel symbol={symbol} name={getNetwork(symbol).name} />,
+                label: (
+                    <NetworkLabel
+                        symbol={symbol}
+                        name={getNetwork(networkConfigDeps, symbol).name}
+                    />
+                ),
                 onClick: () => setNetworkFilter(symbol),
                 'data-testid': `${DATA_TESTID_BASE}/filter/select-option/${symbol}`,
             })),
         ],
-        [networks, setNetworkFilter],
+        [networkConfigDeps, networks, setNetworkFilter],
     );
 
     return (

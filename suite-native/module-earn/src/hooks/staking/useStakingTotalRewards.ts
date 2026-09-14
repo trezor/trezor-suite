@@ -1,3 +1,6 @@
+import { type NetworksRootState } from '@suite-common/networks';
+import { selectNetworkConfigDeps } from '@suite-common/networks';
+import { useServices } from '@suite-common/dependency-injection';
 import { useSelector } from 'react-redux';
 
 import { useSolanaRewardsTotal } from '@suite-common/earn-staking-api';
@@ -17,10 +20,12 @@ const NON_SOLANA_PLACEHOLDER_ACCOUNT = {
 } as const;
 
 export const useStakingTotalRewards = (accountKey: AccountKey) => {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
+
     const account = useSelector((state: AccountsRootState) =>
         selectAccountByKey(state, accountKey),
     );
-    const rewardsBalance = useSelector((state: StakeRootState) =>
+    const rewardsBalance = useSelector((state: StakeRootState & NetworksRootState) =>
         selectRewardsBalanceByAccountKey(state, accountKey),
     );
 
@@ -31,7 +36,7 @@ export const useStakingTotalRewards = (accountKey: AccountKey) => {
     // Only mainnet 'sol' is served by the Earn rewards API.
     // Other networks keep the Redux-derived rewards balance.
     if (account?.symbol === 'sol') {
-        const totalRewards = subunitsToUnits({
+        const totalRewards = subunitsToUnits(networkConfigDeps, {
             value: asAmountSubunit(new BigNumber(solanaRewardsTotalQuery.data ?? '0')),
             symbol: account.symbol,
         }).toString();

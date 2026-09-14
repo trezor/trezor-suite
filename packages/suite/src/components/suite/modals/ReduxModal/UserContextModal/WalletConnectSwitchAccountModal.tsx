@@ -3,7 +3,7 @@ import { useMemo, useState } from 'react';
 import { Translation } from '@suite/intl';
 import { closeModal } from '@suite/modal';
 import { useServices } from '@suite-common/dependency-injection';
-import { selectSupportedNetworkSymbols } from '@suite-common/networks';
+import { selectNetworkConfigDeps, selectSupportedNetworkSymbols } from '@suite-common/networks';
 import { selectDispatch } from '@suite-common/redux-utils';
 import { selectAllAccountsToList } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
@@ -27,6 +27,8 @@ interface WalletConnectSwitchAccountModalProps {
 export const WalletConnectSwitchAccountModal = ({
     sessionTopic,
 }: WalletConnectSwitchAccountModalProps) => {
+    const networkConfigDeps = useServices(selectNetworkConfigDeps);
+
     const { dispatch } = useServices(selectDispatch);
     const supportedNetworks = useSelector(selectSupportedNetworkSymbols);
     const sessions = useSelector(selectSessions);
@@ -37,7 +39,8 @@ export const WalletConnectSwitchAccountModal = ({
         () =>
             session
                 ? sortByCoin(
-                      getSessionNetworks(session)
+                      networkConfigDeps,
+                      getSessionNetworks(networkConfigDeps, session)
                           .filter(network => network.status === 'active')
                           .flatMap(network =>
                               accounts.filter(account => account.symbol === network.symbol),
@@ -45,7 +48,7 @@ export const WalletConnectSwitchAccountModal = ({
                       supportedNetworks,
                   )
                 : [],
-        [accounts, session, supportedNetworks],
+        [networkConfigDeps, accounts, session, supportedNetworks],
     );
     const [selectedDefaultAccount, setSelectedDefaultAccount] = useState<Account | null>(
         session?.lastAccount || selectableAccounts[0] || null,

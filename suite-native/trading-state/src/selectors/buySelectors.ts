@@ -1,3 +1,5 @@
+import { createWeakMapSelector } from '@suite-common/redux-utils';
+import { type NetworksRootState, selectNetworkConfigAccessors } from '@suite-common/networks';
 import { Platform } from 'react-native';
 
 import type { BuyTrade } from 'invity-api';
@@ -16,7 +18,11 @@ import {
     selectValidTradingBuyQuotes,
 } from '@suite-common/trading';
 import { type AccountsRootState, selectAccountByKey } from '@suite-common/wallet-core';
-import { FeatureFlag, selectIsFeatureFlagEnabled } from '@suite-native/feature-flags';
+import {
+    type FeatureFlagsRootState,
+    FeatureFlag,
+    selectIsFeatureFlagEnabled,
+} from '@suite-native/feature-flags';
 import {
     coinInfoToTradeableAsset,
     getReceiveAccountFromAccountAndAddressString,
@@ -29,12 +35,7 @@ import {
     selectTradingResidenceCountry,
     selectTradingResidenceCountrySubdivision,
 } from './residenceSelectors';
-import {
-    type TradingRootState,
-    createMemoizedSelector,
-    createMemoizedSelectorWithAccounts,
-    createTradingWithFeatureFlagsMemoizedSelector,
-} from '../reducers';
+import { type TradingRootState, createMemoizedSelector } from '../reducers';
 
 const DEFAULT_FIAT_CURRENCY_FALLBACK = 'USD';
 
@@ -49,28 +50,41 @@ const selectBuyReceiveAccount = (state: TradingRootState & AccountsRootState) =>
 const selectTradingBuyReceiveAddress = (state: TradingRootState) =>
     selectTradingBuy(state).receiveAddress;
 
-export const selectBuySelectedReceiveAccount = createMemoizedSelectorWithAccounts(
-    [selectBuyReceiveAccount, selectTradingBuyReceiveAddress],
-    (account, receiveAddress) => {
+export const selectBuySelectedReceiveAccount = createWeakMapSelector(
+    [selectNetworkConfigAccessors, selectBuyReceiveAccount, selectTradingBuyReceiveAddress],
+    (networkConfigDeps, account, receiveAddress) => {
         if (!account) {
             return undefined;
         }
 
-        return getReceiveAccountFromAccountAndAddressString(account, receiveAddress);
+        return getReceiveAccountFromAccountAndAddressString(
+            networkConfigDeps,
+            account,
+            receiveAddress,
+        );
     },
 );
 
 export const selectBuySupportedFiatCurrencies = (state: TradingRootState) =>
     returnStableArrayIfEmpty(selectTradingBuy(state).buyInfo?.supportedFiatCurrencies);
 
-export const selectBuyTradeableAssets = createTradingWithFeatureFlagsMemoizedSelector(
+export const selectBuyTradeableAssets = createWeakMapSelector.withTypes<
+    TradingRootState & FeatureFlagsRootState & NetworksRootState
+>()(
     [
+        selectNetworkConfigAccessors,
         selectTradingBuySupportedCryptoIds,
         ({ wallet }) => wallet.trading.info.coins,
         state => selectIsFeatureFlagEnabled(state, FeatureFlag.AreDebugOnlyNetworksEnabled),
         state => selectIsFeatureFlagEnabled(state, FeatureFlag.AreExperimentalOnlyNetworksEnabled),
     ],
-    (cryptoIds, coins, areDebugOnlyNetworksEnabled, areExperimentalOnlyNetworksEnabled) => {
+    (
+        networkConfigDeps,
+        cryptoIds,
+        coins,
+        areDebugOnlyNetworksEnabled,
+        areExperimentalOnlyNetworksEnabled,
+    ) => {
         if (!coins || !cryptoIds) {
             return [];
         }
@@ -80,10 +94,11 @@ export const selectBuyTradeableAssets = createTradingWithFeatureFlagsMemoizedSel
                 const coinInfo = coins[cryptoId];
                 if (!coinInfo) return [];
 
-                return [coinInfoToTradeableAsset(cryptoId, coinInfo)];
+                return [coinInfoToTradeableAsset(networkConfigDeps, cryptoId, coinInfo)];
             })
             .filter(
                 getAssetByEnabledNetworksFilter(
+                    networkConfigDeps,
                     areDebugOnlyNetworksEnabled,
                     areExperimentalOnlyNetworksEnabled,
                 ),
