@@ -13,6 +13,7 @@ import {
     prepareMessageSystemReducer,
 } from '@suite-common/message-system';
 import { networksReducer } from '@suite-common/networks';
+import { preparePersistentDeviceDataReducer } from '@suite-common/persistent-device-data';
 import { prepareReceiveReducer } from '@suite-common/receive';
 import { suiteSyncDataReducer, suiteSyncReducer } from '@suite-common/suite-sync';
 import { suiteSyncQuotaManagerReducer } from '@suite-common/suite-sync-quota-manager';
@@ -96,6 +97,7 @@ const explorerReducer = prepareExplorerReducer(extraDependencies);
 const analyticsReducer = prepareAnalyticsReducer(extraDependencies);
 const messageSystemReducer = prepareMessageSystemReducer(extraDependencies);
 const deviceReducer = prepareDeviceReducer(extraDependencies);
+const persistentDeviceDataReducer = preparePersistentDeviceDataReducer(extraDependencies);
 const discoveryReducer = prepareDiscoveryReducer(extraDependencies);
 const tokenDefinitionsReducer = prepareTokenDefinitionsReducer(extraDependencies);
 const sendFormReducer = prepareSendFormReducer(extraDependencies);
@@ -292,13 +294,14 @@ export const prepareRootReducers = (deps: PrepareRootReducersDeps) => {
         trading: tradingPersistedReducer,
         settings: walletSettingsPersistedReducer,
         formDrafts: formDraftReducer,
+        persistentDeviceData: persistentDeviceDataReducer,
     });
 
     const walletPersistedReducer = preparePersistReducer({
         reducer: walletReducers,
-        persistedKeys: ['accounts', 'transactions'],
+        persistedKeys: ['accounts', 'transactions', 'persistentDeviceData'],
         key: 'wallet',
-        version: 4,
+        version: 5,
         migrations: {
             2: (oldState: any /* FIXME */) => {
                 if (!oldState?.accounts) return oldState;
@@ -328,6 +331,22 @@ export const prepareRootReducers = (deps: PrepareRootReducersDeps) => {
                     accounts: sortAccountsByCoin(oldState.accounts, deps.getSupportedNetworks()),
                 };
             },
+            5: async (oldState: any /* FIXME */) => {
+                // persistentDeviceData used to be persisted as part of the `devices` persist key
+                const oldDevicesState = await getStoredState({
+                    key: 'devices',
+                    storage: deps.mmkvStorage,
+                });
+
+                const persistentDeviceData =
+                    oldDevicesState &&
+                    typeof oldDevicesState === 'object' &&
+                    'persistentDeviceData' in oldDevicesState
+                        ? oldDevicesState.persistentDeviceData
+                        : [];
+
+                return { ...(oldState ?? {}), persistentDeviceData };
+            },
         },
         transforms: [walletStopPersistTransform],
         // This remains for backward compatibility. If any data was persisted under the 'wallet' key,
@@ -352,9 +371,9 @@ export const prepareRootReducers = (deps: PrepareRootReducersDeps) => {
 
     const devicePersistedReducer = preparePersistReducer({
         reducer: deviceReducer,
-        persistedKeys: ['devices', 'persistentDeviceData'],
+        persistedKeys: ['devices'],
         key: 'devices',
-        version: 5,
+        version: 6,
         transforms: [devicePersistTransform],
         migrations: {
             2: (oldState: any /* FIXME */) => {
@@ -387,6 +406,14 @@ export const prepareRootReducers = (deps: PrepareRootReducersDeps) => {
                 );
 
                 return { ...oldState, persistentDeviceData: migratedPersistentDeviceData };
+            },
+            6: (oldState: any /* FIXME */) => {
+                if (!oldState) return oldState;
+                // persistentDeviceData was split out into its own `persistentDeviceData` persist
+                // key (nested under `wallet`); see migration 5 of the `wallet` persist key.
+                const { persistentDeviceData: _persistentDeviceData, ...rest } = oldState;
+
+                return rest;
             },
         },
         storage: deps.mmkvStorage,
