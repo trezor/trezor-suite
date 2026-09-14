@@ -50,6 +50,23 @@ describe('createDeferredManager', () => {
         expect(onTimeout).toHaveBeenNthCalledWith(3, second.promiseId);
     });
 
+    it('lastDeadline', () => {
+        const manager = createDeferredManager({ timeout: 200 });
+
+        expect(manager.lastDeadline()).toBe(0);
+
+        manager.create();
+        const longest = manager.create(5000);
+        // A promise without a deadline must not be mistaken for the longest-lived one.
+        manager.create(0);
+
+        expect(manager.lastDeadline()).toBe(Date.now() + 5000);
+
+        manager.resolve(longest.promiseId, undefined);
+
+        expect(manager.lastDeadline()).toBe(Date.now() + 200);
+    });
+
     it('generateId — uses provided function instead of counter', async () => {
         const ids = ['uuid-a', 'uuid-b', 'uuid-c'];
         let callCount = 0;
