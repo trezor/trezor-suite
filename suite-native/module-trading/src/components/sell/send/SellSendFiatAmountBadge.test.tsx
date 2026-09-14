@@ -46,9 +46,9 @@ describe('SellSendFiatAmountBadge', () => {
     });
 
     it('should display nothing when asset is not selected', async () => {
-        const { toJSON } = await renderSellSendFiatAmountBadge(tradingForm);
+        const { root } = await renderSellSendFiatAmountBadge(tradingForm);
 
-        expect(toJSON()).toBeNull();
+        expect(root).toBeEmptyElement();
     });
 
     describe('with asset', () => {
@@ -59,9 +59,9 @@ describe('SellSendFiatAmountBadge', () => {
         });
 
         it('should display nothing when amount is not set', async () => {
-            const { toJSON } = await renderSellSendFiatAmountBadge(tradingForm);
+            const { root } = await renderSellSendFiatAmountBadge(tradingForm);
 
-            expect(toJSON()).toBeNull();
+            expect(root).toBeEmptyElement();
         });
 
         it('should display formatted value when amount is 0', async () => {

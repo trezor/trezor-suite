@@ -54,11 +54,7 @@ export const SellCard = ({ isAmountInputActive, shouldAnimateEntering }: SellCar
                 bottomBorder
                 testID={`${SELL_CARD_TEST_ID}/cryptoSection`}
                 title={<Translation id="moduleTrading.selectCoinToSell.title" />}
-                titleAction={
-                    <Box alignItems="flex-end">
-                        <SellFormFieldErrorBadge fieldName="cryptoStringAmount" />
-                    </Box>
-                }
+                titleAction={<SellFormFieldErrorBadge fieldName="cryptoStringAmount" />}
             >
                 <SellSendAssetPicker />
                 <HStack justifyContent="space-between" alignItems="center" spacing="sp4">

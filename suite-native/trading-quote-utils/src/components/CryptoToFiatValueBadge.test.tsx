@@ -27,23 +27,23 @@ describe('CryptoToFiatValueBadge', () => {
     };
 
     it('should render nothing when no rate is loaded', async () => {
-        const { toJSON } = await renderCryptoToFiatValueBadge({
+        const { root } = await renderCryptoToFiatValueBadge({
             amount: '1',
             cryptoId: ethAsset.cryptoId,
         });
 
-        expect(toJSON()).toBeNull();
+        expect(root).toBeEmptyElement();
     });
 
     it.each([undefined, ''])(
         'should render nothing when cryptoValue is [%s]',
         async cryptoValue => {
-            const { toJSON } = await renderCryptoToFiatValueBadge({
+            const { root } = await renderCryptoToFiatValueBadge({
                 amount: cryptoValue,
                 cryptoId: btcAsset.cryptoId,
             });
 
-            expect(toJSON()).toBeNull();
+            expect(root).toBeEmptyElement();
         },
     );
 

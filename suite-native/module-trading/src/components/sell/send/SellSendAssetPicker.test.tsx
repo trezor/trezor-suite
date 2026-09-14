@@ -9,12 +9,16 @@ import { asBaseCurrencyAmount } from '@suite-common/wallet-types';
 import { type NativeAnalyticsDep, events } from '@suite-native/analytics';
 import { mockNativeAnalytics } from '@suite-native/analytics/mocks';
 import { Form } from '@suite-native/forms';
+import { getTranslation } from '@suite-native/intl';
 import {
+    act,
     renderHookWithStoreProvider,
     renderWithStoreProvider,
     userEvent,
+    waitFor,
 } from '@suite-native/test-utils-store';
 import {
+    ethAsset,
     getBtcAccount,
     getEthAccount,
     getInitializedTradingState,
@@ -182,14 +186,29 @@ describe('SellSendAssetPicker', () => {
     });
 
     it('should apply sell asset change effects for an asset returned from the screen', async () => {
-        form.setValue('cryptoStringAmount', '1');
+        const dispatchSpy = jest.spyOn(store, 'dispatch');
+
+        await act(() => {
+            form.setValue('sendAsset', ethAsset);
+        });
+
+        const { getByLabelText, rerender } = await renderSellSendAssetPicker();
+
+        await userEvent.type(
+            getByLabelText(getTranslation('moduleTrading.selectCoinToSell.amountLabel')),
+            '1',
+        );
+
         mockSelectedMyAssetAccountKey = btcAccount.key;
         mockSelectedMyAssetCryptoId = 'bitcoin';
-        const dispatchSpy = jest.spyOn(store, 'dispatch');
-        await renderSellSendAssetPicker();
+
+        await rerender(<SellSendAssetPicker />);
+
+        await waitFor(() => {
+            expect(dispatchSpy).toHaveBeenCalledWith(sellActions.sendAssetChanged());
+        });
 
         expect(form.getValues('cryptoStringAmount')).toBe('1');
-        expect(dispatchSpy).toHaveBeenCalledWith(sellActions.sendAssetChanged());
         expect(mockSetParams).toHaveBeenCalledWith({
             selectedMyAssetAccountKey: undefined,
             selectedMyAssetCryptoId: undefined,
