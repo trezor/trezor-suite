@@ -81,6 +81,59 @@ export const getTransactionName = (
     }
 };
 
+// Whether the account's own balance moved at all. With nothing moved the generic wording
+// misleads — a `self` transaction reads as "Sent 0 XLM to self", a stranger's claimable balance
+// as a payment received — so those are named by their operation instead.
+const hasValueMovement = (transaction: WalletAccountTransaction) =>
+    !new BigNumber(transaction.amount).isZero() ||
+    transaction.tokens.some(({ amount }) => !new BigNumber(amount ?? '0').isZero()) ||
+    transaction.internalTransfers.some(({ amount }) => !new BigNumber(amount).isZero());
+
+const getStellarOperationMessageId = (
+    transaction: WalletAccountTransaction,
+): TxKeyPath | undefined => {
+    const { stellarSpecific } = transaction;
+
+    if (hasValueMovement(transaction)) {
+        return undefined;
+    }
+
+    switch (stellarSpecific?.operationType) {
+        case 'accountMerge':
+            return 'transactions.name.stellarAccountMerge';
+        case 'allowTrust':
+        case 'trustLineFlags':
+            return 'transactions.name.stellarTrustlineFlags';
+        case 'bumpSequence':
+            return 'transactions.name.stellarSequenceBumped';
+        // A liquidity-pool share has no asset code, so the detailed wording below cannot be built.
+        case 'changeTrust':
+            return stellarSpecific.changeTrust
+                ? undefined
+                : 'transactions.name.stellarTrustlineUpdated';
+        case 'claimClaimableBalance':
+            return 'transactions.name.stellarClaimableBalanceClaimed';
+        case 'createClaimableBalance':
+            return stellarSpecific.claimableBalanceOffer?.isClaimant
+                ? 'transactions.name.stellarClaimableBalanceOffered'
+                : 'transactions.name.stellarClaimableBalanceCreated';
+        case 'footprint':
+            return 'transactions.name.stellarFootprint';
+        case 'liquidityPool':
+            return 'transactions.name.stellarLiquidityPool';
+        case 'manageData':
+            return 'transactions.name.stellarDataEntry';
+        case 'offer':
+            return 'transactions.name.stellarOffer';
+        case 'setOptions':
+            return 'transactions.name.stellarSetOptions';
+        case 'sponsorship':
+            return 'transactions.name.stellarSponsorship';
+        default:
+            return undefined;
+    }
+};
+
 const getTronTransactionMessage = (transaction: WalletAccountTransaction) => {
     const contractType = transaction.tronSpecific?.contractType as TronTxContractType;
 
@@ -131,6 +184,15 @@ export const TransactionName = ({ transaction, isPending, ...textProps }: Transa
     const wrapKind = getNativeWrapTxKind(transaction);
     if (wrapKind) {
         return <WrapTransactionName transaction={transaction} kind={wrapKind} {...textProps} />;
+    }
+
+    const stellarOperationId = getStellarOperationMessageId(transaction);
+    if (stellarOperationId) {
+        return (
+            <Text {...textProps}>
+                <Translation id={stellarOperationId} />
+            </Text>
+        );
     }
 
     // Stellar trustline addition/removal (short version without asset code)

@@ -747,6 +747,7 @@ export const analyzeTransactions = (
 
     // make sure the known transactions are sorted properly
     const knownSorted = [...knownRest].sort(sortByBlockHeight);
+    const knownTxids = new Set(knownSorted.map(({ txid }) => txid));
     // run thru all fresh txs
     fresh.forEach((tx, i) => {
         const height = tx.blockHeight;
@@ -779,6 +780,19 @@ export const analyzeTransactions = (
                 }
                 // known tx is on the same height
                 if (kTx.blockHeight === height) {
+                    // Stellar reports no block hash, so two undefined ones cannot mean "the same
+                    // block", only that neither side said. Within one five-second close the txid
+                    // is all that tells a rollback from a second arrival, so this is an addition.
+                    if (
+                        kTx.blockHash === undefined &&
+                        tx.blockHash === undefined &&
+                        !knownTxids.has(tx.txid)
+                    ) {
+                        addTxs.push(tx);
+                        newTxs.push(tx);
+                        break;
+                    }
+
                     firstKnownIndex = index + 1;
                     // known tx changed (rollback)
                     if (kTx.blockHash !== tx.blockHash) {

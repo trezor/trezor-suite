@@ -1,4 +1,4 @@
-import { Translation, useTranslation } from '@suite/intl';
+import { Translation, type TranslationKey, useTranslation } from '@suite/intl';
 import { redactNumericalSubstring, useDiscreetMode } from '@suite-common/discreet-mode';
 import { getNetworkDisplaySymbol, isNetworkSymbol } from '@suite-common/wallet-config';
 import { type TronTxContractType } from '@suite-common/wallet-constants';
@@ -76,6 +76,57 @@ const getTransactionMessageId = ({ transaction, isPending }: GetTransactionMessa
         case 'unknown':
         default:
             return 'TR_UNKNOWN_TRANSACTION';
+    }
+};
+
+// Whether the account's own balance moved at all. With nothing moved the generic wording
+// misleads — a `self` transaction reads as "Sent 0 XLM to self", a stranger's claimable balance
+// as a payment received — so those are named by their operation instead.
+const hasValueMovement = (transaction: WalletAccountTransaction) =>
+    !new BigNumber(transaction.amount).isZero() ||
+    transaction.tokens.some(({ amount }) => !new BigNumber(amount ?? '0').isZero()) ||
+    transaction.internalTransfers.some(({ amount }) => !new BigNumber(amount).isZero());
+
+const getStellarOperationMessageId = (
+    transaction: WalletAccountTransaction,
+): TranslationKey | undefined => {
+    const { stellarSpecific } = transaction;
+
+    if (hasValueMovement(transaction)) {
+        return undefined;
+    }
+
+    switch (stellarSpecific?.operationType) {
+        case 'accountMerge':
+            return 'TR_STELLAR_TX_ACCOUNT_MERGE';
+        case 'allowTrust':
+        case 'trustLineFlags':
+            return 'TR_STELLAR_TX_TRUSTLINE_FLAGS';
+        case 'bumpSequence':
+            return 'TR_STELLAR_TX_SEQUENCE_BUMPED';
+        // A liquidity-pool share has no asset code, so the detailed wording below cannot be built.
+        case 'changeTrust':
+            return stellarSpecific.changeTrust ? undefined : 'TR_STELLAR_TX_TRUSTLINE_UPDATED';
+        case 'claimClaimableBalance':
+            return 'TR_STELLAR_TX_CLAIMABLE_BALANCE_CLAIMED';
+        case 'createClaimableBalance':
+            return stellarSpecific.claimableBalanceOffer?.isClaimant
+                ? 'TR_STELLAR_TX_CLAIMABLE_BALANCE_OFFERED'
+                : 'TR_STELLAR_TX_CLAIMABLE_BALANCE_CREATED';
+        case 'footprint':
+            return 'TR_STELLAR_TX_FOOTPRINT';
+        case 'liquidityPool':
+            return 'TR_STELLAR_TX_LIQUIDITY_POOL';
+        case 'manageData':
+            return 'TR_STELLAR_TX_DATA_ENTRY';
+        case 'offer':
+            return 'TR_STELLAR_TX_OFFER';
+        case 'setOptions':
+            return 'TR_STELLAR_TX_SET_OPTIONS';
+        case 'sponsorship':
+            return 'TR_STELLAR_TX_SPONSORSHIP';
+        default:
+            return undefined;
     }
 };
 
@@ -217,6 +268,11 @@ export const TransactionHeader = ({ transaction, isPending }: TransactionHeaderP
                 )}
             </>
         );
+    }
+
+    const stellarOperationId = getStellarOperationMessageId(transaction);
+    if (stellarOperationId) {
+        return <Translation id={stellarOperationId} />;
     }
 
     // Stellar trustline addition/removal

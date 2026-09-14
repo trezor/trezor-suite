@@ -1,6 +1,8 @@
 import { Horizon, NotFoundError } from '@stellar/stellar-sdk';
 
+import { STELLAR_RPC_READ_FALLBACK } from '../constants';
 import type { StellarAPI } from '../types';
+import { readNetworkFromHorizon } from './horizon/network';
 import { readNetwork } from './rpc/network';
 import { getStellarRpcServer } from './rpc/server';
 
@@ -22,7 +24,19 @@ export const getStellarConnection = async (
     });
     const rpc = getStellarRpcServer(url, userAgent);
 
-    const { isTestnet, passphrase } = await readNetwork(rpc);
+    // This is the handshake every other request waits on, so an RPC outage here would fail the
+    // whole backend before any read could degrade — what `STELLAR_RPC_READ_FALLBACK` prevents.
+    const { isTestnet, passphrase } = await readNetwork(rpc).catch(async error => {
+        if (STELLAR_RPC_READ_FALLBACK !== 'horizon') {
+            throw error;
+        }
+
+        try {
+            return await readNetworkFromHorizon(horizon);
+        } catch {
+            throw error;
+        }
+    });
 
     return { rpc, horizon, isTestnet, passphrase, url };
 };

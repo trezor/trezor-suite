@@ -2,6 +2,7 @@ export * from './api';
 export * from './assets';
 export * from './datasource';
 export * from './horizon/account';
+export * from './horizon/effects';
 export * from './horizon/history';
 export * from './rpc/account';
 export * from './rpc/decode';
