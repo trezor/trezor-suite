@@ -6,6 +6,7 @@ export {
     toStellarNetworkSymbol,
 } from './networkSymbol';
 export type { StellarNetworkSymbol } from './networkSymbol';
+export * from './rpc';
 
 export const STELLAR_DECIMALS = 7;
 

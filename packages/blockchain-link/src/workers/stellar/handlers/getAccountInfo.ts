@@ -1,11 +1,10 @@
 import type { AccountInfo, MessageTypes } from '@trezor/blockchain-link-types';
-import { CustomError, RESPONSES } from '@trezor/blockchain-link-types';
+import { RESPONSES } from '@trezor/blockchain-link-types';
 import * as utils from '@trezor/blockchain-link-utils/src/stellar';
-import { STELLAR_DECIMALS, toStroops } from '@trezor/network-stellar/constants';
+import { STELLAR_DECIMALS } from '@trezor/network-stellar/constants';
 import stellar from '@trezor/network-stellar/runtime';
 import { BigNumber } from '@trezor/utils';
 
-import { RESERVE } from '../reserve';
 import type { Request } from '../types';
 
 const DEFAULT_TXS_PER_PAGE = 20;
@@ -22,6 +21,7 @@ const toLedgerSequence = (operationId: string) => {
 
 export const getAccountInfo = async (request: Request<MessageTypes.GetAccountInfo>) => {
     const { payload } = request;
+    const baseReserve = new BigNumber(await request.getBaseReserve());
 
     // initial state (basic)
     const account: AccountInfo = {
@@ -38,74 +38,62 @@ export const getAccountInfo = async (request: Request<MessageTypes.GetAccountInf
         misc: {
             // default misc
             stellarSequence: '0',
-            reserve: RESERVE.BASE.times(2).toString(),
-            baseReserve: RESERVE.BASE.toString(),
+            reserve: baseReserve.times(2).toString(),
+            baseReserve: baseReserve.toString(),
         },
     };
 
     const api = await request.connect();
-    const { identifyTransaction, isNotFoundError, readAccountHistory } = await stellar();
-    let info;
-    try {
-        info = await api.accounts().accountId(payload.descriptor).call();
-    } catch (error) {
-        // Other errors (rate limiting, outage) must not be reported as an empty account
-        if (!isNotFoundError(error)) {
-            throw error;
-        }
+    const { createStellarDataSource, identifyTransaction, parseClassicAssetContract } =
+        await stellar();
+    const dataSource = createStellarDataSource(api);
 
-        // Account not found, we set the account as empty
+    const tokenMetadata = await request.getTokenMetadata();
+    // Only consulted when trustlines are discovered over RPC, which cannot enumerate them.
+    const knownAssets = [
+        ...new Set([...Object.keys(tokenMetadata), ...(payload.stellarClassicTokens ?? [])]),
+    ].flatMap(contract => parseClassicAssetContract(contract) ?? []);
+
+    const state = await dataSource.readAccountState({
+        descriptor: payload.descriptor,
+        knownAssets,
+    });
+
+    if (!state.exists) {
         return {
             type: RESPONSES.GET_ACCOUNT_INFO,
             payload: account,
         } as const;
     }
 
-    // Account is not empty, we can fill the account object with the data
     // https://developers.stellar.org/docs/learn/fundamentals/lumens#minimum-balance
-    const reserve = RESERVE.BASE.times(2 + info.subentry_count);
+    const reserve = baseReserve.times(2 + state.numSubEntries);
     account.misc = {
-        stellarSequence: info.sequence,
+        stellarSequence: state.sequence,
         reserve: reserve.toString(),
-        baseReserve: RESERVE.BASE.toString(),
+        baseReserve: baseReserve.toString(),
     };
 
-    // XLM balance
-    const nativeTokenBalance = info.balances.find(balance => balance.asset_type === 'native');
-    if (!nativeTokenBalance) {
-        // This should never happen, but just in case
-        throw new CustomError('stellar_missing_native_balance');
-    }
-    const sellingLiabilities = toStroops(nativeTokenBalance.selling_liabilities);
-    account.balance = toStroops(nativeTokenBalance.balance).toString();
+    account.balance = state.balance;
     account.availableBalance = new BigNumber(account.balance)
         .minus(reserve)
-        .minus(sellingLiabilities)
-        .minus(RESERVE.BASE.times(info.num_sponsoring)) // See https://developers.stellar.org/docs/learn/encyclopedia/transactions-specialized/sponsored-reserves
-        .plus(RESERVE.BASE.times(info.num_sponsored))
+        .minus(state.sellingLiabilities)
+        .minus(baseReserve.times(state.numSponsoring)) // See https://developers.stellar.org/docs/learn/encyclopedia/transactions-specialized/sponsored-reserves
+        .plus(baseReserve.times(state.numSponsored))
         .toString();
 
-    // Tokens balance
-    const tokenMetadata = await request.getTokenMetadata();
-    account.tokens = info.balances
-        .filter(
-            balanceInfo =>
-                balanceInfo.asset_type === 'credit_alphanum4' ||
-                balanceInfo.asset_type === 'credit_alphanum12',
-        )
-        .map(balanceInfo => {
-            const contract = `${balanceInfo.asset_code}-${balanceInfo.asset_issuer}`;
-            const balance = toStroops(balanceInfo.balance);
+    account.tokens = state.trustlines.map(({ assetCode, assetIssuer, balance }) => {
+        const contract = `${assetCode}-${assetIssuer}`;
 
-            return {
-                standard: 'STELLAR-CLASSIC',
-                contract,
-                balance: balance.toString(),
-                name: tokenMetadata[contract]?.name || balanceInfo.asset_code,
-                symbol: (tokenMetadata[contract]?.symbol || balanceInfo.asset_code).toUpperCase(),
-                decimals: STELLAR_DECIMALS,
-            };
-        });
+        return {
+            standard: 'STELLAR-CLASSIC',
+            contract,
+            balance,
+            name: tokenMetadata[contract]?.name || assetCode,
+            symbol: (tokenMetadata[contract]?.symbol || assetCode).toUpperCase(),
+            decimals: STELLAR_DECIMALS,
+        };
+    });
     account.empty = false;
 
     if (payload.details !== 'txs') {
@@ -115,8 +103,7 @@ export const getAccountInfo = async (request: Request<MessageTypes.GetAccountInf
         } as const;
     }
 
-    const pageGroups = await readAccountHistory({
-        horizon: api,
+    const pageGroups = await dataSource.readAccountHistory({
         descriptor: payload.descriptor,
         pageSize: payload.pageSize || DEFAULT_TXS_PER_PAGE,
         cursor: payload.page && payload.page !== 1 ? payload.pageCursor : undefined,

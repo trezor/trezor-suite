@@ -1,3 +1,5 @@
+import { Asset, Keypair, xdr } from '@stellar/stellar-sdk';
+
 // eslint-disable-next-line @typescript-eslint/no-restricted-imports
 import { NotFoundError } from '@trezor/network-stellar';
 
@@ -17,20 +19,54 @@ const TX_HASH = '3a44b5d0159890a1e2b3e7ef30ff90e014ee68ac64f23a24a6cbe4c366c088a
 
 const mockState: {
     accountError?: unknown;
+    ledgerEntriesError?: unknown;
     operationsError?: unknown;
     operationRecords: unknown[];
     joinedApplied?: boolean;
-} = { operationRecords: [] };
+    ledgerEntries: { val: xdr.LedgerEntryData }[];
+    horizonBalances: unknown[];
+    /** Merged into the Horizon account record, for the RPC-outage fallback. */
+    horizonAccount?: Record<string, unknown>;
+} = { operationRecords: [], ledgerEntries: [], horizonBalances: [] };
 
 const mockNotFoundError = () => new NotFoundError('Not Found', { status: 404 });
 
-const mockAccount = {
-    sequence: '1',
-    subentry_count: 0,
-    num_sponsoring: 0,
-    num_sponsored: 0,
-    balances: [{ asset_type: 'native', balance: '3.3580137', selling_liabilities: '0' }],
-};
+const accountId = () => Keypair.fromPublicKey(DESCRIPTOR).xdrAccountId();
+
+// Ledger entries as `getLedgerEntries` returns them: real XDR, balances already in stroops.
+const accountEntry = ({ balance = '33580137', sequence = '123456', numSubEntries = 0 } = {}) =>
+    xdr.LedgerEntryData.account(
+        new xdr.AccountEntry({
+            accountId: accountId(),
+            balance: xdr.Int64.fromString(balance),
+            seqNum: xdr.Int64.fromString(sequence),
+            numSubEntries,
+            inflationDest: null,
+            flags: 0,
+            homeDomain: '',
+            thresholds: Buffer.alloc(4),
+            signers: [],
+            ext: xdr.AccountEntryExt.v0(),
+        }),
+    );
+
+const trustlineEntry = (assetCode: string, assetIssuer: string, balance: string) =>
+    xdr.LedgerEntryData.trustline(
+        new xdr.TrustLineEntry({
+            accountId: accountId(),
+            asset: new Asset(assetCode, assetIssuer).toTrustLineXdrObject(),
+            balance: xdr.Int64.fromString(balance),
+            limit: xdr.Int64.fromString('9223372036854775807'),
+            flags: 1,
+            ext: xdr.TrustLineEntryExt.v0(),
+        }),
+    );
+
+const horizonBalance = (assetCode: string, assetIssuer: string) => ({
+    asset_type: assetCode.length > 4 ? 'credit_alphanum12' : 'credit_alphanum4',
+    asset_code: assetCode,
+    asset_issuer: assetIssuer,
+});
 
 const mockTransaction = {
     hash: TX_HASH,
@@ -73,13 +109,39 @@ jest.mock('@trezor/network-stellar/runtime', () => ({
             ...actual,
             getStellarConnection: () =>
                 Promise.resolve({
-                    api: {
+                    url: 'https://stellar.mock',
+                    passphrase: 'Public Global Stellar Network ; September 2015',
+                    isTestnet: false,
+                    rpc: {
+                        // No header means the protocol base reserve, as Horizon reported here.
+                        _getLatestLedger: () =>
+                            Promise.resolve({
+                                id: 'ledgerhash',
+                                sequence: 56802294,
+                                protocolVersion: '23',
+                                closeTime: '1756900000',
+                                headerXdr: '',
+                                metadataXdr: '',
+                            }),
+                        getLedgerEntries: () => {
+                            if (mockState.ledgerEntriesError) throw mockState.ledgerEntriesError;
+
+                            return Promise.resolve({
+                                entries: mockState.ledgerEntries,
+                                latestLedger: 56802294,
+                            });
+                        },
+                    },
+                    horizon: {
                         accounts: () => ({
                             accountId: () => ({
                                 call: () => {
                                     if (mockState.accountError) throw mockState.accountError;
 
-                                    return Promise.resolve(mockAccount);
+                                    return Promise.resolve({
+                                        balances: mockState.horizonBalances,
+                                        ...mockState.horizonAccount,
+                                    });
                                 },
                             }),
                         }),
@@ -109,7 +171,6 @@ jest.mock('@trezor/network-stellar/runtime', () => ({
                             return builder;
                         },
                     },
-                    isTestnet: false,
                 }),
         });
     },
@@ -120,7 +181,11 @@ describe('Stellar worker account history', () => {
 
     beforeEach(() => {
         mockState.accountError = undefined;
+        mockState.ledgerEntriesError = undefined;
         mockState.operationsError = undefined;
+        mockState.ledgerEntries = [{ val: accountEntry() }];
+        mockState.horizonBalances = [];
+        mockState.horizonAccount = undefined;
         mockState.operationRecords = [];
         mockState.joinedApplied = false;
         blockchain = new BlockchainLink({
@@ -151,18 +216,72 @@ describe('Stellar worker account history', () => {
         ).rejects.toThrow('Internal Server Error');
     });
 
-    it('account not found is returned as an empty account', async () => {
+    it('a missing account ledger entry is returned as an empty account', async () => {
         mockState.accountError = mockNotFoundError();
+        mockState.ledgerEntries = [];
         const result = await blockchain.getAccountInfo({ descriptor: DESCRIPTOR, details: 'txs' });
         expect(result.empty).toBe(true);
         expect(result.balance).toBe('0');
     });
 
-    it('account fetch failure is rethrown', async () => {
+    it('trustline discovery failure is rethrown', async () => {
         mockState.accountError = new Error('Too Many Requests');
         await expect(
             blockchain.getAccountInfo({ descriptor: DESCRIPTOR, details: 'txs' }),
         ).rejects.toThrow('Too Many Requests');
+    });
+
+    it('account state failure is rethrown when Horizon cannot stand in either', async () => {
+        // Horizon cannot report a balance from trustlines alone, so the RPC failure surfaces.
+        mockState.ledgerEntriesError = new Error('Internal Server Error');
+        await expect(
+            blockchain.getAccountInfo({ descriptor: DESCRIPTOR, details: 'txs' }),
+        ).rejects.toThrow('Internal Server Error');
+    });
+
+    it('degrades to Horizon when the RPC account read is unavailable', async () => {
+        mockState.ledgerEntriesError = new Error('Internal Server Error');
+        mockState.horizonBalances = [
+            { asset_type: 'native', balance: '10.0000000' },
+            {
+                asset_type: 'credit_alphanum4',
+                asset_code: 'USDC',
+                asset_issuer: ASSET_ISSUER,
+                balance: '2.5000000',
+            },
+        ];
+        mockState.horizonAccount = { sequence: '99', subentry_count: 1 };
+
+        const account = await blockchain.getAccountInfo({
+            descriptor: DESCRIPTOR,
+            details: 'txs',
+        });
+
+        expect(account.balance).toBe('100000000');
+        expect(account.tokens?.map(token => token.symbol)).toEqual(['USDC']);
+    });
+
+    it('reads trustline balances as stroops, without a decimal round-trip', async () => {
+        mockState.horizonBalances = [horizonBalance('KALE', ASSET_ISSUER)];
+        mockState.ledgerEntries = [
+            { val: accountEntry({ numSubEntries: 1 }) },
+            { val: trustlineEntry('KALE', ASSET_ISSUER, '1447280') },
+        ];
+
+        const result = await blockchain.getAccountInfo({ descriptor: DESCRIPTOR });
+
+        expect(result.tokens).toEqual([
+            {
+                standard: 'STELLAR-CLASSIC',
+                contract: `KALE-${ASSET_ISSUER}`,
+                balance: '1447280',
+                name: 'KALE',
+                symbol: 'KALE',
+                decimals: 7,
+            },
+        ]);
+        // 2 + 1 subentry, at the protocol base reserve of 0.5 XLM.
+        expect(result.misc?.reserve).toBe('15000000');
     });
 
     it('joins the transaction into the operations request', async () => {
