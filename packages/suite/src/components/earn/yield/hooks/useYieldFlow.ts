@@ -58,7 +58,7 @@ type UseYieldFlowProps = {
     flowType: YieldPositionFlowType;
 };
 
-type UseYieldFlowStepsResult = {
+type YieldFlowStepState = {
     currentStep: YieldFlowStepId;
     isWrappedNativeVault: boolean;
 };
@@ -109,7 +109,7 @@ export type UseYieldFlowResult = {
     fiatToggle: YieldAmountCardFiatToggleProps | undefined;
     setMaxAmount: (cryptoMax: string) => void;
     methods: UseFormReturn<YieldFlowFormValues>;
-    flow: UseYieldFlowStepsResult;
+    flow: YieldFlowStepState;
 };
 
 /** Context value type shared by both deposit and withdraw — non-null token/receiptToken/vault. */
