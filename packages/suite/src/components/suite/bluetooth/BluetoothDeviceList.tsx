@@ -1,6 +1,5 @@
+import { type DesktopBluetoothDevice } from '@suite/bluetooth';
 import { Card, Column, Row, Skeleton } from '@trezor/components';
-
-import { type DesktopBluetoothDevice } from 'src/actions/bluetooth/DesktopBluetoothDevice';
 
 import { BluetoothDeviceListItem } from './BluetoothDeviceListItem';
 

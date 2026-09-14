@@ -1,11 +1,11 @@
 import { useCallback, useEffect, useRef } from 'react';
 
+import { type DesktopBluetoothDevice } from '@suite/bluetooth';
 import { bluetoothActions } from '@suite-common/bluetooth';
 import { useServices } from '@suite-common/dependency-injection';
 import { selectDispatch } from '@suite-common/redux-utils';
 import { type TimerId } from '@trezor/type-utils';
 
-import { type DesktopBluetoothDevice } from 'src/actions/bluetooth/DesktopBluetoothDevice';
 import { bluetoothStartScanningThunk } from 'src/actions/bluetooth/bluetoothStartScanningThunk';
 import { bluetoothStopScanningThunk } from 'src/actions/bluetooth/bluetoothStopScanningThunk';
 import { removeNonResponsiveNearbyDevicesThunk } from 'src/actions/bluetooth/removeNonResponsiveNearbyDevicesThunk';

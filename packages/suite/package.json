@@ -99,6 +99,7 @@
         "@suite/analytics": "workspace:*",
         "@suite/authenticity-checks": "workspace:*",
         "@suite/backup": "workspace:*",
+        "@suite/bluetooth": "workspace:*",
         "@suite/coinjoin": "workspace:*",
         "@suite/debug": "workspace:*",
         "@suite/desktop-update": "workspace:*",

@@ -1,0 +1,13 @@
+{
+    "extends": "../../tsconfig.base.json",
+    "compilerOptions": { "outDir": "libDev" },
+    "references": [
+        {
+            "path": "../../suite-common/bluetooth"
+        },
+        { "path": "../../packages/connect" },
+        {
+            "path": "../../packages/transport-bluetooth"
+        }
+    ]
+}

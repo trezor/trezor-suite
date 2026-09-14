@@ -1,6 +1,7 @@
 import { useMemo, useState } from 'react';
 
 import { selectDesktopAnalyticsDep } from '@suite/analytics';
+import { type DesktopBluetoothDevice } from '@suite/bluetooth';
 import { setConnectionModal } from '@suite/device';
 import { events } from '@suite-common/analytics';
 import { selectKnownDevices } from '@suite-common/bluetooth';
@@ -8,7 +9,6 @@ import { useServices } from '@suite-common/dependency-injection';
 import { selectDispatch } from '@suite-common/redux-utils';
 import { type BluetoothDeviceId } from '@trezor/connect';
 
-import { type DesktopBluetoothDevice } from 'src/actions/bluetooth/DesktopBluetoothDevice';
 import { bluetoothConnectDeviceThunk } from 'src/actions/bluetooth/bluetoothConnectDeviceThunk';
 import { bluetoothDisconnectDeviceThunk } from 'src/actions/bluetooth/bluetoothDisconnectDeviceThunk';
 import { useSelector } from 'src/hooks/suite';

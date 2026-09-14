@@ -15244,6 +15244,16 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"@suite/bluetooth@workspace:*, @suite/bluetooth@workspace:suite/bluetooth":
+  version: 0.0.0-use.local
+  resolution: "@suite/bluetooth@workspace:suite/bluetooth"
+  dependencies:
+    "@suite-common/bluetooth": "workspace:*"
+    "@trezor/connect": "workspace:*"
+    "@trezor/transport-bluetooth": "workspace:*"
+  languageName: unknown
+  linkType: soft
+
 "@suite/coinjoin@workspace:*, @suite/coinjoin@workspace:suite/coinjoin":
   version: 0.0.0-use.local
   resolution: "@suite/coinjoin@workspace:suite/coinjoin"
@@ -18074,6 +18084,7 @@ __metadata:
     "@suite/analytics": "workspace:*"
     "@suite/authenticity-checks": "workspace:*"
     "@suite/backup": "workspace:*"
+    "@suite/bluetooth": "workspace:*"
     "@suite/coinjoin": "workspace:*"
     "@suite/debug": "workspace:*"
     "@suite/desktop-update": "workspace:*"

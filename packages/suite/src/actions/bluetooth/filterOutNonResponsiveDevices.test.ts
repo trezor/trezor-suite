@@ -1,3 +1,4 @@
+import { type DesktopBluetoothDevice } from '@suite/bluetooth';
 import { asBluetoothDeviceId } from '@trezor/connect';
 import { isLinux } from '@trezor/env-utils';
 
@@ -6,7 +7,6 @@ jest.mock('@trezor/env-utils', () => ({
     isLinux: jest.fn(),
 }));
 
-import { type DesktopBluetoothDevice } from './DesktopBluetoothDevice';
 import {
     filterOutNonResponsiveDevices,
     getLastUpdatedLimitForDevice,

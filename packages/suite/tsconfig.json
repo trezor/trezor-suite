@@ -175,6 +175,7 @@
             "path": "../../suite/authenticity-checks"
         },
         { "path": "../../suite/backup" },
+        { "path": "../../suite/bluetooth" },
         { "path": "../../suite/coinjoin" },
         { "path": "../../suite/debug" },
         { "path": "../../suite/desktop-update" },

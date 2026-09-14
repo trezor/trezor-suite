@@ -1,4 +1,9 @@
 import {
+    type DesktopBluetoothDevice,
+    fromBluetoothDevice,
+    toBluetoothDevice,
+} from '@suite/bluetooth';
+import {
     BLUETOOTH_PREFIX,
     bluetoothActions,
     selectAdapterStatus,
@@ -14,11 +19,6 @@ import { desktopApi } from '@trezor/suite-desktop-api';
 import { type BluetoothDevice, bluetoothIpc } from '@trezor/transport-bluetooth';
 import { resolveAfter } from '@trezor/utils';
 
-import {
-    type DesktopBluetoothDevice,
-    fromBluetoothDevice,
-    toBluetoothDevice,
-} from './DesktopBluetoothDevice';
 import { bluetoothConnectDeviceThunk } from './bluetoothConnectDeviceThunk';
 import { bluetoothStartScanningThunk } from './bluetoothStartScanningThunk';
 import { type WithBluetoothRootState } from './desktopBluetoothReducer';
