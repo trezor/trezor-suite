@@ -29,6 +29,12 @@ async fn start_scanning(adapter: &Adapter) -> Result<(), AdapterError> {
 async fn stop_scanning(adapter: &Adapter) {
     if let Err(err) = adapter.stop_scan().await {
         info!("start_scan/adapter.stop_scan: {err}");
+
+        return;
+    }
+
+    if let Err(err) = adapter.clear_peripherals().await {
+        info!("start_scan/adapter.clear_peripherals: {err}");
     }
 }
 

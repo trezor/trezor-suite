@@ -8,6 +8,7 @@ import type {
     BluetoothIpcEvents,
     BluetoothIpcState,
     IpcResponse,
+    ScanOwner,
     TrezorBluetoothSettings,
 } from './types';
 
@@ -18,7 +19,8 @@ import type {
 export class BluetoothIpc extends TypedEmitter<BluetoothIpcEvents> implements BluetoothIpcApi {
     private api: TrezorBluetooth;
     private state: BluetoothIpcState = { knownDevices: [] };
-    private isScanning = false;
+    private shouldScan = false;
+    private scanOwners = new Set<ScanOwner>();
 
     constructor(settings: TrezorBluetoothSettings) {
         super();
@@ -56,7 +58,7 @@ export class BluetoothIpc extends TypedEmitter<BluetoothIpcEvents> implements Bl
 
         const emitAdapterState = ({ state }: { state: BluetoothAdapterState }) => {
             this.emit('adapter-event', state);
-            if (state === 'enabled' && this.isScanning) {
+            if (state === 'enabled' && this.shouldScan) {
                 // auto restart scan if adapter becomes enabled
                 this.api.send('start_scan').catch(error => {
                     console.warn('Auto start_scan error', error);
@@ -97,7 +99,6 @@ export class BluetoothIpc extends TypedEmitter<BluetoothIpcEvents> implements Bl
 
                 const { devices: scanResult } = await this.api
                     .send('start_scan')
-                    .then(res => res)
                     // todo: bluetooth-ipc-main.init is called in inInitBluetoothThunk. If it returns an error there, thunk does not proceed and listeners are not registered.
                     // This is a hotfix, I believe, that initBluetoothThunks call to bluetoothIpc.init should only check that ipc channel is established, nothing more.
                     .catch(error => {
@@ -116,6 +117,10 @@ export class BluetoothIpc extends TypedEmitter<BluetoothIpcEvents> implements Bl
                     // wait. devices may not be returned immediately
                     await resolveAfter(1000);
                 }
+
+                await this.api.send('stop_scan').catch(error => {
+                    console.warn('Initial stop_scan error', error);
+                });
             } catch (error) {
                 return this.result(error.message);
             }
@@ -139,7 +144,14 @@ export class BluetoothIpc extends TypedEmitter<BluetoothIpcEvents> implements Bl
         return Promise.resolve(this.result());
     }
 
-    async startScan() {
+    async startScan(owner?: ScanOwner) {
+        this.shouldScan = true;
+
+        const addOwner = () => {
+            if (owner) {
+                this.scanOwners.add(owner);
+            }
+        };
         try {
             await this.connectApi();
         } catch (error) {
@@ -148,7 +160,8 @@ export class BluetoothIpc extends TypedEmitter<BluetoothIpcEvents> implements Bl
 
         try {
             const { devices } = await this.api.send('start_scan');
-            this.isScanning = true;
+            addOwner();
+
             this.emit('device-list-update', this.filterConnectableDevices(devices));
         } catch (error) {
             return this.result(error.message);
@@ -157,13 +170,20 @@ export class BluetoothIpc extends TypedEmitter<BluetoothIpcEvents> implements Bl
         return this.result();
     }
 
-    async stopScan() {
+    async stopScan(owner?: ScanOwner) {
+        if (owner) {
+            this.scanOwners.delete(owner);
+        }
+
+        if (this.scanOwners.size > 0) {
+            return this.result();
+        }
+
+        this.shouldScan = false;
+
         try {
             await this.connectApi();
-            if (this.state.knownDevices.length === 0) {
-                this.isScanning = false;
-                await this.api.send('stop_scan');
-            }
+            await this.api.send('stop_scan');
         } catch (error) {
             return this.result(error.message);
         }

@@ -18,5 +18,9 @@ pub async fn stop_scan(manager: AdapterManager, broadcast: ConnectionBroadcast) 
         return Ok(WsResponsePayload::Success { success: false });
     }
 
+    if let Err(err) = adapter.clear_peripherals().await {
+        info!("stop_scan/adapter.clear_peripherals error: {err}");
+    }
+
     Ok(WsResponsePayload::Success { success: true })
 }

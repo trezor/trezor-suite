@@ -3,7 +3,6 @@ import { type MiddlewareAPI } from 'redux';
 
 import { PAYMENT_REQUEST_BUTTON_NAMES, selectAccountByKey } from '@suite-common/wallet-core';
 import { UI_EVENTS, isUiEventOfType } from '@trezor/connect';
-import { bluetoothIpc } from '@trezor/transport-bluetooth';
 
 import { type AppState } from 'src/types/suite';
 
@@ -91,18 +90,6 @@ const buttonRequest =
     (api: MiddlewareAPI<Dispatch<UnknownAction>, AppState>) =>
     (next: Dispatch<UnknownAction>) =>
     (action: UnknownAction): UnknownAction => {
-        if (
-            isUiEventOfType(action, UI_EVENTS.FIRMWARE_DISCONNECT) &&
-            action.payload.device.descriptor.apiType === 'bluetooth' &&
-            action.payload.device.descriptor.id
-        ) {
-            const { id } = action.payload.device.descriptor;
-            bluetoothIpc
-                .disconnectDevice(id)
-                .then(() => bluetoothIpc.startScan()) // restart scanning
-                .catch(() => {});
-        }
-
         // firmware bug https://github.com/trezor/trezor-firmware/issues/35
         // ugly hack to make Cardano review modal work
         // ugly hack to make Ethereum staking and bump fee review modal on specific devices work
