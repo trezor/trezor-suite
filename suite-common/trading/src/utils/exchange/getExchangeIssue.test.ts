@@ -11,7 +11,13 @@ const createSimulationResult = (
     scan: Pick<TxSimulationEVMResult, 'validation' | 'simulation'>,
 ): NetworkTxSimulationResult => ({
     method: 'ethereumSignTransaction',
-    payload: { block: '123', chain: 'ethereum', needsDisclaimer: false, ...scan },
+    payload: {
+        block: '123',
+        chain: 'ethereum',
+        needsDisclaimer: false,
+        isChainSupported: true,
+        ...scan,
+    },
 });
 
 const createValidation = (

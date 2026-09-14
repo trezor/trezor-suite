@@ -98,6 +98,7 @@ const createSimulationResult = (): SimulationResult => ({
         block: '123',
         chain: 'ethereum',
         needsDisclaimer: false,
+        isChainSupported: true,
     },
 });
 
