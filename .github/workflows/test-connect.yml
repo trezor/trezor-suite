@@ -90,7 +90,9 @@ jobs:
 
       - name: Set T1B1 main matrix
         id: set-matrix-t1b1-main
-        run: echo "matrix=$(node ./scripts/ci/connect-test-matrix-generator.js --model=T1B1 --firmware=1-main --env=node --groups=api,ethereum,btc-sign,btc-others --disable_cache_tx=false --transport=node-bridge)" >> $GITHUB_OUTPUT
+        # TODO(readd after ~2026-10-01): ethereum group temporarily removed because
+        # of unreleased v2 definitions (https://github.com/trezor/trezor-firmware/pull/7844)
+        run: echo "matrix=$(node ./scripts/ci/connect-test-matrix-generator.js --model=T1B1 --firmware=1-main --env=node --groups=api,btc-sign,btc-others --disable_cache_tx=false --transport=node-bridge)" >> $GITHUB_OUTPUT
 
       - name: Set experimental methods matrix
         id: set-matrix-experimental-methods
