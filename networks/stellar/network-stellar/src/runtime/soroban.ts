@@ -5,6 +5,7 @@ import {
     Contract,
     Networks,
     StrKey,
+    type Transaction,
     TransactionBuilder,
     nativeToScVal,
     rpc,
@@ -105,6 +106,33 @@ export const getContractTokenBalance = async (
     return typeof balance === 'bigint' || typeof balance === 'number'
         ? balance.toString()
         : undefined;
+};
+
+/** Carries the contract's own diagnostic, the only account of *why* a call would fail. */
+export class SorobanSimulationError extends Error {
+    constructor(public readonly diagnostic: string) {
+        super(`Soroban simulation failed: ${diagnostic}`);
+        this.name = 'SorobanSimulationError';
+    }
+}
+
+/**
+ * Simulates the transaction to fill in the ledger footprint and resource fee it cannot know about
+ * itself — the network rejects a host-function transaction carrying neither — and to learn it
+ * would fail before the device prompt. The result costs more than its input and is tied to the
+ * ledger it simulated against, so sign and submit it promptly.
+ */
+export const prepareContractTransaction = async (
+    server: StellarRpcServer,
+    transaction: Transaction,
+): Promise<Transaction> => {
+    const simulation = await server.simulateTransaction(transaction);
+
+    if (rpc.Api.isSimulationError(simulation)) {
+        throw new SorobanSimulationError(simulation.error);
+    }
+
+    return rpc.assembleTransaction(transaction, simulation).build();
 };
 
 /** SEP-41 descriptive metadata, read from the token contract itself. */
