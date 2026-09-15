@@ -19,6 +19,7 @@
     "scripts": {
         "depcheck": "yarn g:depcheck",
         "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'",
+        "test:unit": "yarn g:jest",
         "type-check": "yarn g:tsc --build",
         "lint:rs": "cargo fmt --all -- --check",
         "lint:rs:fix": "cargo fmt --all",
