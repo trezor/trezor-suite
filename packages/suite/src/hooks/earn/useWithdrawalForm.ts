@@ -169,6 +169,7 @@ export const useWithdrawalForm = ({ account }: UseWithdrawalFormProps): Withdraw
         onFeeLevelChange,
     } = useStakeCompose({
         ...methods,
+        formState,
         state,
     });
 
@@ -178,6 +179,7 @@ export const useWithdrawalForm = ({ account }: UseWithdrawalFormProps): Withdraw
         onChange: onFeeLevelChange,
         composeRequest,
         ...methods,
+        formState,
     });
     const selectedFee = _selectedFee ?? 'normal';
 
