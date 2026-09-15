@@ -64,6 +64,11 @@ export type InterceptedEvent =
           domains: string[];
       }
     | {
+          type: 'SET_WHITELISTED_DOMAIN_FOR_COINJOIN_COORDINATOR';
+          coin: string;
+          domain: string | null;
+      }
+    | {
           type: 'ADD_WHITELISTED_DOMAIN';
           domain: string;
       };
