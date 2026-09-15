@@ -106,7 +106,7 @@ test.describe('Trading - Buy Ethereum', { tag: ['@T3W1', '@T3T1'] }, () => {
 
             await test.step('Return to account buy form', async () => {
                 await tradingPage.backToAccountButton('Buy').click();
-                await tradingPage.verifyBuyFormOpened(/Bitcoin/);
+                await tradingPage.verifyBuyFormOpened(/Ethereum/);
             });
         },
     );
