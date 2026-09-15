@@ -1,6 +1,6 @@
 import { type ReactNode } from 'react';
-import { FormProvider } from 'react-hook-form';
 
+import { Form } from '@suite/form';
 import { Translation } from '@suite/intl';
 import { type NetworkType, getNetwork } from '@suite-common/wallet-config';
 import { type WalletAccountTransaction } from '@suite-common/wallet-types';
@@ -55,8 +55,10 @@ const ChangeFeeLoaded = (props: ChangeFeeProps) => {
 
     const fee = formatNetworkAmount(tx.fee, tx.symbol);
 
+    const { formState } = methods;
+
     return (
-        <FormProvider {...methods}>
+        <Form form={methods} formState={formState}>
             <Card
                 type="contrast"
                 paddingType="small"
@@ -107,7 +109,7 @@ const ChangeFeeLoaded = (props: ChangeFeeProps) => {
             <DecreasedOutputs />
 
             <AffectedTransactions chainedTxs={chainedTxs} showChained={showChained} />
-        </FormProvider>
+        </Form>
     );
 };
 
