@@ -188,6 +188,10 @@ jobs:
         run: ./scripts/ci/list-missing-dependencies.sh
       - name: Verify Workspace Resolutions
         run: yarn check-workspace-resolutions
+      # Neither ESLint nor jest can see a React Compiler frozen form read; see
+      # packages/suite-build/reactCompilerFrozenReads.ts.
+      - name: React Compiler frozen form reads
+        run: yarn react-compiler:check
       - name: Msg-system Config Validation
         run: yarn workspace @suite-common/message-system validate-config
       - name: Translation Duplicates

@@ -22,7 +22,8 @@
         "type-check": "yarn g:tsc --build tsconfig.json",
         "type-check:watch": "yarn type-check -- --watch",
         "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'",
-        "test:unit": "yarn g:jest"
+        "test:unit": "yarn g:jest",
+        "react-compiler:check": "yarn g:tsx ./checkReactCompilerFrozenReads.ts"
     },
     "dependencies": {
         "@babel/core": "7.29.7",

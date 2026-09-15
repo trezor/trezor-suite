@@ -48,7 +48,10 @@ when in doubt and treat the list below as a summary that can lag it by a commit.
   (`incompatible-library`, `unsupported-syntax`, `exhaustive-deps` all are, before this repo's
   overrides) fails a lint run exactly like an `error`.
 - **Green lint is not a correctness gate for the compiler rollout.** None of these rules — nor jest —
-  can see the failure mode in the next section.
+  can see the failure mode in the next section. `yarn react-compiler:check` is the gate that does:
+  it compiles every enabled tree and fails on a render-time `react-hook-form` read
+  ([`reactCompilerFrozenReads.ts`](../../packages/suite-build/reactCompilerFrozenReads.ts), run by
+  the `other-checks` CI job). Run it locally before pushing anything that reads a form.
 
 ## Compiled paths: three review rules no linter enforces
 

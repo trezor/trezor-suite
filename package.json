@@ -59,6 +59,7 @@
         "requirements:fix": "yarn workspace @trezor/requirements requirements:fix",
         "verify-project-references": "yarn update-project-references --test",
         "check-workspace-resolutions": "yarn tsx ./scripts/check-workspace-resolutions.ts",
+        "react-compiler:check": "yarn workspace @trezor/suite-build react-compiler:check",
         "build:libs:verify": "yarn nx affected --target=build:lib",
         "validate": "yarn verify-project-references && yarn lint:js:fix && yarn lint:styles && yarn build:libs:verify && yarn type-check && yarn check-workspace-resolutions && yarn depcheck",
         "_______ Global Scripts _______": "Generic script definitions to be run in individual workspaces.",
