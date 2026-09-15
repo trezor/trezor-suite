@@ -25,8 +25,8 @@ import { TRON_STAKING_CONTRACT_TYPES } from './tronStakingConstants';
 
 export function isSupportedTronStakingNetworkSymbol(
     symbol: NetworkSymbol,
-): symbol is NetworkSymbol & SupportedTronNetworkSymbols {
-    return isArrayMember(symbol as string, supportedTronNetworkSymbols);
+): symbol is SupportedTronNetworkSymbols {
+    return isArrayMember(symbol, supportedTronNetworkSymbols);
 }
 
 export const isTronClaimSupported = (device: TrezorDevice | undefined): boolean => {

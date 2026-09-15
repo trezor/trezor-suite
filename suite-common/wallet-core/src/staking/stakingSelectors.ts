@@ -1,4 +1,4 @@
-import { type NetworkSymbol, asNetworkSymbol } from '@suite-common/wallet-config';
+import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { type Account, type AccountKey } from '@suite-common/wallet-types';
 import { isStakingSymbol } from '@suite-common/wallet-utils';
 import { SOLANA_EPOCH_DAYS } from '@trezor/network-solana/constants';
@@ -67,26 +67,14 @@ const selectDeviceAccountsWithStaking = (
     switch (symbol) {
         case 'eth':
         case 'thod':
-            return selectVisibleDeviceEthereumAccountsWithStakingByNetworkSymbol(
-                state,
-                asNetworkSymbol('eth'),
-            );
+            return selectVisibleDeviceEthereumAccountsWithStakingByNetworkSymbol(state, symbol);
         case 'dsol':
         case 'sol':
-            return selectVisibleDeviceSolanaAccountsWithStakingByNetworkSymbol(
-                state,
-                asNetworkSymbol('sol'),
-            );
+            return selectVisibleDeviceSolanaAccountsWithStakingByNetworkSymbol(state, symbol);
         case 'ada':
-            return selectVisibleDeviceCardanoAccountsWithStakingByNetworkSymbol(
-                state,
-                asNetworkSymbol('ada'),
-            );
+            return selectVisibleDeviceCardanoAccountsWithStakingByNetworkSymbol(state, symbol);
         case 'trx':
-            return selectVisibleDeviceTronAccountsWithStakingByNetworkSymbol(
-                state,
-                asNetworkSymbol('trx'),
-            );
+            return selectVisibleDeviceTronAccountsWithStakingByNetworkSymbol(state, symbol);
         default:
             return exhaustive(symbol);
     }

@@ -20,8 +20,8 @@ import { CARDANO_EVERSTAKE_STAKING_POOL } from './cardanoStakingConstants';
 
 export function isSupportedAdaStakingNetworkSymbol(
     symbol: NetworkSymbol,
-): symbol is NetworkSymbol & SupportedCardanoNetworkSymbols {
-    return isArrayMember(symbol as string, supportedCardanoNetworkSymbols);
+): symbol is SupportedCardanoNetworkSymbols {
+    return isArrayMember(symbol, supportedCardanoNetworkSymbols);
 }
 
 export const isCardanoStakingActive = (account: Account | null) => {
