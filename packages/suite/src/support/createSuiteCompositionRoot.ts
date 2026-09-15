@@ -1,4 +1,3 @@
-import { type ThunkDispatch, type UnknownAction } from '@reduxjs/toolkit';
 import { saveAs } from 'file-saver';
 
 import { type DesktopAnalyticsDep, createAnalytics } from '@suite/analytics';
@@ -46,6 +45,7 @@ import { selectAccountsByDeviceState } from '@suite-common/wallet-core';
 import { type CreateLoggerDep, type GetTrezorConnectPrivilegedDep } from '@trezor/connect';
 import { isDesktop } from '@trezor/env-utils';
 
+import { type SuiteReduxStore } from 'src/reducers/createReduxStore';
 import { selectIsWindowVisible } from 'src/reducers/suite/windowReducer';
 import { type DbDep } from 'src/storage/createDb';
 import { reportSecurityCheck } from 'src/utils/suite/sentry';
@@ -74,10 +74,7 @@ export type SuiteServices = CommonServices &
     TransportsDep &
     BluetoothDep;
 
-export type StoreAPIDep = {
-    getState: () => AppState;
-    dispatch: ThunkDispatch<AppState, Record<never, never>, UnknownAction>;
-};
+export type StoreAPIDep = Pick<SuiteReduxStore, 'getState' | 'dispatch'>;
 
 export type SuiteAppDeps = StoreAPIDep &
     DbDep &
