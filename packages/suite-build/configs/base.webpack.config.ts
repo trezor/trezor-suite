@@ -38,10 +38,8 @@ const gitRevision = getRevision();
  * from a stale cache.
  */
 const babelCacheIdentifier = [
-    // eslint-disable-next-line import/no-extraneous-dependencies
     `core${require('@babel/core/package.json').version}`,
     `loader${require('babel-loader/package.json').version}`,
-    // eslint-disable-next-line import/no-extraneous-dependencies
     `react-compiler${require('babel-plugin-react-compiler/package.json').version}`,
 ].join(',');
 

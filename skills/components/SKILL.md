@@ -28,7 +28,7 @@ The following structure is just a recommendation, in fact it's not even always p
 6. Values / components
 7. Render
 
-Generally, it's considered a _good_ practice to not use optimisation techniques until you see that you need them. Also when it's obvious from the start that something would require to be memo'ed – _expensive calculation, frequent state updates, expensive re-renders._
+Generally, it's considered a _good_ practice to not use optimisation techniques until you see that you need them. In a tree the React Compiler compiles there is a stronger rule: don't add `useMemo`, `useCallback` or `memo()` at all — auto-memoization already covers it, and a hand-written memo whose equivalence the compiler cannot prove fails `react-hooks/preserve-manual-memoization`, which is `error` both locally and on CI. Which trees are compiled is defined by `REACT_COMPILER_PATHS` in [`reactCompiler.ts`](../../packages/suite-build/reactCompiler.ts) and summarised in [React hooks performance](../performance-react-hooks/SKILL.md). Outside those trees, memoize when it's obvious from the start that something requires it – _expensive calculation, frequent state updates, expensive re-renders._
 
 ## Passing props to components
 
