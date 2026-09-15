@@ -62,7 +62,7 @@ import {
 
 export const DEFAULT_NETWORK_SYNC_INTERVAL = 60 * 1000; // 1 minute
 
-const NETWORK_SYNC_INTERVALS: Partial<Record<string, number>> = {
+const NETWORK_SYNC_INTERVALS: Partial<Record<LegacyNetworkSymbol, number>> = {
     bsc: DEFAULT_NETWORK_SYNC_INTERVAL / 1.5,
     pol: DEFAULT_NETWORK_SYNC_INTERVAL / 1.5,
     op: DEFAULT_NETWORK_SYNC_INTERVAL / 1.5,
@@ -78,7 +78,7 @@ const NETWORK_SYNC_INTERVALS: Partial<Record<string, number>> = {
 const getNetworkSyncInterval = (
     symbol: NetworkSymbol,
     defaultInterval: number = DEFAULT_NETWORK_SYNC_INTERVAL,
-) => NETWORK_SYNC_INTERVALS[symbol] ?? defaultInterval;
+) => NETWORK_SYNC_INTERVALS[symbol as LegacyNetworkSymbol] ?? defaultInterval;
 
 type ReconnectBlockchainThunkParams = {
     symbol: NetworkSymbol;

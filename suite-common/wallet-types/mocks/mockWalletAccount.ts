@@ -1,3 +1,4 @@
+import { type LegacyNetworkSymbol } from '@suite-common/legacy-network-config';
 import type { NetworkSymbol } from '@suite-common/wallet-config';
 import type { StaticSessionId } from '@trezor/connect';
 
@@ -81,8 +82,8 @@ type NetworkSpecificDefault =
     | typeof networkSpecificDefaultCardano
     | typeof networkSpecificDefaultStellar;
 
-// Keyed by plain string: the symbol is open, so a lookup table cannot enumerate it as keys.
-const networkTypeMap: Record<string, NetworkSpecificDefault> = {
+// Keyed by the networks the legacy config defines, so a typo in a key is still caught.
+const networkTypeMap: Record<LegacyNetworkSymbol, NetworkSpecificDefault> = {
     // Bitcoin-like
     btc: networkSpecificDefaultBitcoin,
     regtest: networkSpecificDefaultBitcoin,
@@ -170,7 +171,8 @@ export const mockWalletAccount = (
         symbol: account.symbol,
     };
 
-    const networkSpecificDefault = networkSpecific ?? networkTypeMap[account.symbol];
+    const networkSpecificDefault =
+        networkSpecific ?? networkTypeMap[account.symbol as LegacyNetworkSymbol];
 
     if (!networkSpecificDefault) {
         throw new Error(`No mock defaults registered for network symbol: ${account.symbol}.`);

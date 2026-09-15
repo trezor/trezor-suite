@@ -1,4 +1,4 @@
-import { networkDisplayOrder } from '@suite-common/legacy-network-config';
+import { type LegacyNetworkSymbol, networkDisplayOrder } from '@suite-common/legacy-network-config';
 
 import type { NetworkModuleRepositoryDep } from './NetworkModuleRepository';
 import type { NetworkSymbol } from './NetworkModules';
@@ -11,16 +11,16 @@ export type GetNetworkConfigs = () => readonly NetworkMetadata[];
 
 export type GetNetworkConfigsDep = { getNetworkConfigs: GetNetworkConfigs };
 
-// Keyed by plain string: the display order is a legacy list, while the symbol is now open.
+// Keyed by the legacy display-order list; the open symbol is narrowed at the lookup.
 // TODO: refactor this legacy ordering away with the rest of the legacy network config.
 // See https://github.com/trezor/trezor-suite/issues/32060
 // and https://github.com/trezor/trezor-suite/pull/32469
-const displayOrderBySymbol = new Map<string, number>(
+const displayOrderBySymbol = new Map<LegacyNetworkSymbol, number>(
     networkDisplayOrder.map((symbol, index) => [symbol, index]),
 );
 
 const getDisplayOrder = (symbol: NetworkSymbol) =>
-    displayOrderBySymbol.get(symbol) ?? Number.MAX_SAFE_INTEGER;
+    displayOrderBySymbol.get(symbol as LegacyNetworkSymbol) ?? Number.MAX_SAFE_INTEGER;
 
 export const createGetNetworkConfigs =
     (deps: GetNetworkConfigsDeps): GetNetworkConfigs =>

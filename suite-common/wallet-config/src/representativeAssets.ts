@@ -1,3 +1,5 @@
+import { type LegacyNetworkSymbol } from '@suite-common/legacy-network-config';
+
 import { type NetworkSymbol } from './networkTypes';
 
 export type RepresentativeAsset = {
@@ -5,8 +7,8 @@ export type RepresentativeAsset = {
     contract?: string;
 };
 
-// Keyed by plain string: the symbol is open, so a lookup table cannot enumerate it as keys.
-const representativeAssets: Partial<Record<string, readonly RepresentativeAsset[]>> = {
+// Keyed by the networks the legacy config defines, so a typo in a key is still caught.
+const representativeAssets: Partial<Record<LegacyNetworkSymbol, readonly RepresentativeAsset[]>> = {
     btc: [{ symbol: 'BTC' }],
     eth: [
         { symbol: 'ETH' },
@@ -139,4 +141,5 @@ const representativeAssets: Partial<Record<string, readonly RepresentativeAsset[
 
 export const getRepresentativeAssets = (
     networkSymbol: NetworkSymbol,
-): readonly RepresentativeAsset[] => representativeAssets[networkSymbol] ?? [];
+): readonly RepresentativeAsset[] =>
+    representativeAssets[networkSymbol as LegacyNetworkSymbol] ?? [];

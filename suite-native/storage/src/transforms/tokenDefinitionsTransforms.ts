@@ -1,7 +1,8 @@
 import { createTransform } from 'redux-persist';
 
+import { type LegacyNetworkSymbol } from '@suite-common/legacy-network-config';
 import { DefinitionType, type TokenDefinitionsState } from '@suite-common/token-definitions';
-import { type NetworkSymbol, asNetworkSymbol } from '@suite-common/wallet-config';
+import { type NetworkSymbol } from '@suite-common/wallet-config';
 
 type PersistedTokenDefinitions = {
     coin?: { hide: string[]; show: string[] };
@@ -9,7 +10,7 @@ type PersistedTokenDefinitions = {
 
 // Mirrors TokenDefinitionsState, whose entries are optional.
 type PersistedTokenDefinitionsState = {
-    [symbol: NetworkSymbol]: PersistedTokenDefinitions | undefined;
+    [TSymbol in LegacyNetworkSymbol]?: PersistedTokenDefinitions;
 };
 
 export const tokenDefinitionsPersistTransform = createTransform<
@@ -30,8 +31,7 @@ export const tokenDefinitionsPersistTransform = createTransform<
                 };
             }
 
-            // Object.entries widens the key to string; the persisted shape keeps the branded one.
-            result[asNetworkSymbol(symbol)] = persisted;
+            result[symbol as LegacyNetworkSymbol] = persisted;
         }
 
         return result;
@@ -43,7 +43,7 @@ export const tokenDefinitionsPersistTransform = createTransform<
             if (!persisted?.coin) continue;
 
             // Only the user's hide/show lists are persisted; the fetch state starts clean.
-            result[asNetworkSymbol(symbol)] = {
+            result[symbol as NetworkSymbol] = {
                 [DefinitionType.COIN]: {
                     error: false,
                     isLoading: false,
