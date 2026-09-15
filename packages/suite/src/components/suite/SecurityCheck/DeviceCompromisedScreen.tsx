@@ -13,14 +13,14 @@ import { type FirmwareHashCheckError } from '@trezor/connect';
 
 import { useSelector } from 'src/hooks/suite';
 
-import { SecurityCheckFail } from './SecurityCheckFail';
-import { hardFailureChecklistItems, softFailureChecklistItems } from './checklistItems';
+import { SecurityCheckFail } from './components/SecurityCheckFail';
+import { hardFailureChecklistItems, softFailureChecklistItems } from './components/checklistItems';
 import {
     DismissFwAuthenticityCheckButton,
     EntropyCheckSupportButton,
     FwAuthencityChecksCtas,
     FwAuthenticityCheckSupportButton,
-} from './deviceCompromisedCtas';
+} from './components/ctas';
 import { WelcomeLayout } from '../layouts/WelcomeLayout/WelcomeLayout';
 
 const hashCheckSubtitleMap: Record<
@@ -122,7 +122,7 @@ const DeviceCompromisedContent = () => {
     return <SecurityCheckFail ctaSection={<FwAuthencityChecksCtas />} />;
 };
 
-export const DeviceCompromised = () => (
+export const DeviceCompromisedScreen = () => (
     <WelcomeLayout showAccounts={false}>
         <Card data-testid="@device-compromised" paddingType="large">
             <DeviceCompromisedContent />

@@ -2,7 +2,7 @@ import { Translation } from '@suite/intl';
 import { Icon } from '@trezor/components';
 import { BrowsersIcon, ChatIcon, HandIcon, PlugsIcon } from '@trezor/icons';
 
-import { type SecurityChecklistItem } from 'src/views/onboarding/steps/DeviceAuthenticityStep/types';
+import type { SecurityChecklistItem } from '../types';
 
 export const hardFailureChecklistItems: SecurityChecklistItem[] = [
     {

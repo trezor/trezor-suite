@@ -5,11 +5,11 @@ import { Column, Divider, H2, Paragraph } from '@trezor/components';
 import { breakpoints } from '@trezor/theme';
 
 import { ContentFlex } from 'src/support/suite/ContentFlex';
-import { SecurityChecklist } from 'src/views/onboarding/steps/DeviceAuthenticityStep/SecurityChecklist';
-import { type SecurityChecklistItem } from 'src/views/onboarding/steps/DeviceAuthenticityStep/types';
 
 import { SecurityCheckLayout } from './SecurityCheckLayout';
+import { SecurityChecklist } from './SecurityChecklist';
 import { hardFailureChecklistItems } from './checklistItems';
+import { type SecurityChecklistItem } from '../types';
 
 type SecurityCheckFailProps = {
     ctaSection: ReactNode;

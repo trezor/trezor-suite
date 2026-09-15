@@ -1,10 +1,10 @@
 import { Translation } from '@suite/intl';
 import { TREZOR_SUPPORT_FW_REVISION_CHECK_FAILED_URL } from '@trezor/urls';
 
-import { SecurityCheckButton } from '../../suite/SecurityCheck/SecurityCheckButton';
-import { SecurityCheckFail } from '../../suite/SecurityCheck/SecurityCheckFail';
-import { hardFailureChecklistItems } from '../../suite/SecurityCheck/checklistItems';
-import { ContactSupport } from '../../suite/SecurityCheck/deviceCompromisedCtas';
+import { SecurityCheckButton } from '../../suite/SecurityCheck/components/SecurityCheckButton';
+import { SecurityCheckFail } from '../../suite/SecurityCheck/components/SecurityCheckFail';
+import { hardFailureChecklistItems } from '../../suite/SecurityCheck/components/checklistItems';
+import { ContactSupport } from '../../suite/SecurityCheck/components/ctas';
 
 // Url is shared with FW authenticity checks, the page is not precise for this check, but close enough.
 // It's not worth creating a new page for this temporary measure.
