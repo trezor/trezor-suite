@@ -5,10 +5,11 @@ import { useNavigation } from '@react-navigation/native';
 
 import {
     BannerInline,
-    BottomSheetListItem,
     BottomSheetModal,
     Box,
     Button,
+    IconList,
+    IconListTextItem,
     TitleHeader,
     VStack,
 } from '@suite-native/atoms';
@@ -65,26 +66,19 @@ export const EmptyWalletInfoSheet = forwardRef<BottomSheetModalMethods, EmptyWal
                         <Translation id="modulePassphrase.emptyPassphraseWallet.confirmEmptyWalletSheet.title" />
                     }
                 />
-                <VStack alignItems="center" spacing="sp24" padding="sp8">
-                    <BottomSheetListItem
-                        iconName="pencilSimpleLine"
-                        translationKey="modulePassphrase.emptyPassphraseWallet.confirmEmptyWalletSheet.list.backup"
-                        intent="neutral"
-                        size={36}
-                    />
-                    <BottomSheetListItem
-                        iconName="copy"
-                        translationKey="modulePassphrase.emptyPassphraseWallet.confirmEmptyWalletSheet.list.store"
-                        intent="neutral"
-                        size={36}
-                    />
-                    <BottomSheetListItem
-                        iconName="eyeSlash"
-                        translationKey="modulePassphrase.emptyPassphraseWallet.confirmEmptyWalletSheet.list.neverShare"
-                        intent="neutral"
-                        size={36}
-                    />
-                </VStack>
+                <Box padding="sp8">
+                    <IconList iconSize={36} textVariant="body-md">
+                        <IconListTextItem icon="pencilSimpleLine">
+                            <Translation id="modulePassphrase.emptyPassphraseWallet.confirmEmptyWalletSheet.list.backup" />
+                        </IconListTextItem>
+                        <IconListTextItem icon="copy">
+                            <Translation id="modulePassphrase.emptyPassphraseWallet.confirmEmptyWalletSheet.list.store" />
+                        </IconListTextItem>
+                        <IconListTextItem icon="eyeSlash">
+                            <Translation id="modulePassphrase.emptyPassphraseWallet.confirmEmptyWalletSheet.list.neverShare" />
+                        </IconListTextItem>
+                    </IconList>
+                </Box>
                 <VStack style={applyStyle(bottomSheetBottomStyle)}>
                     <BannerInline
                         intent="warning"

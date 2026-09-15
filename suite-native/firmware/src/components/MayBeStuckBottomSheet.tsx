@@ -7,7 +7,8 @@ import {
     BottomSheetModal,
     type BottomSheetModalRef,
     Button,
-    NumberedListItem,
+    IconList,
+    IconListTextItem,
     TitleHeader,
     VStack,
 } from '@suite-native/atoms';
@@ -62,17 +63,17 @@ export const MayBeStuckBottomSheet = ({
                         title={<Translation id="firmware.stuckedBottomSheet.part2.title" />}
                         subtitle={<Translation id="firmware.stuckedBottomSheet.part2.subtitle" />}
                     />
-                    <VStack spacing="sp2">
-                        <NumberedListItem number={1}>
+                    <IconList textVariant="body-md">
+                        <IconListTextItem icon={1}>
                             <Translation id="firmware.stuckedBottomSheet.part2.tip1" />
-                        </NumberedListItem>
-                        <NumberedListItem number={2}>
+                        </IconListTextItem>
+                        <IconListTextItem icon={2}>
                             <Translation id="firmware.stuckedBottomSheet.part2.tip2" />
-                        </NumberedListItem>
-                        <NumberedListItem number={3}>
+                        </IconListTextItem>
+                        <IconListTextItem icon={3}>
                             <Translation id="firmware.stuckedBottomSheet.part2.tip3" />
-                        </NumberedListItem>
-                    </VStack>
+                        </IconListTextItem>
+                    </IconList>
                     <Button onPress={handleClose} intent="brand" priority="primary">
                         <Translation id="firmware.stuckedBottomSheet.part2.gotItButton" />
                     </Button>

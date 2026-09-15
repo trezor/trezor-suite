@@ -62,7 +62,7 @@ const defaultItemIconProps = {
 } as const;
 
 const renderDefaultItemIcon = (index: number) => (
-    <IconSquare iconNumber={index + 1} {...defaultItemIconProps} />
+    <IconSquare icon={index + 1} {...defaultItemIconProps} />
 );
 
 interface TimelineDetailsCardItemComponentProps {

@@ -1,25 +1,21 @@
-import { BottomSheetListItem, Text, VStack } from '@suite-native/atoms';
+import { IconList, IconListTextItem, Text, VStack } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 
 export const UninitializedDeviceModalAppendix = () => (
-    <VStack>
+    <VStack spacing="sp24">
         <Text variant="body-sm-strong">
             <Translation id="moduleDevice.noSeedModal.appendix.title" />
         </Text>
-        <VStack spacing="sp16" paddingTop="sp24">
-            <BottomSheetListItem
-                iconNumber={1}
-                translationKey="moduleDevice.noSeedModal.appendix.lines.1"
-            />
-            <BottomSheetListItem
-                iconNumber={2}
-                translationKey="moduleDevice.noSeedModal.appendix.lines.2"
-            />
-            <BottomSheetListItem
-                iconName="checkCircle"
-                intent="brand"
-                translationKey="moduleDevice.noSeedModal.appendix.lines.3"
-            />
-        </VStack>
+        <IconList textVariant="body-md">
+            <IconListTextItem icon={1}>
+                <Translation id="moduleDevice.noSeedModal.appendix.lines.1" />
+            </IconListTextItem>
+            <IconListTextItem icon={2}>
+                <Translation id="moduleDevice.noSeedModal.appendix.lines.2" />
+            </IconListTextItem>
+            <IconListTextItem icon="checkCircle" intent="brand">
+                <Translation id="moduleDevice.noSeedModal.appendix.lines.3" />
+            </IconListTextItem>
+        </IconList>
     </VStack>
 );
