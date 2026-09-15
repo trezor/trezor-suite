@@ -2,7 +2,6 @@ import { type DeviceRootState, selectDeviceStaticSessionId } from '@suite-common
 import { createWeakMapSelector, returnStableArrayIfEmpty } from '@suite-common/redux-utils';
 import {
     type TokenDefinitionsRootState,
-    isTokenDefinitionKnown,
     selectTokenDefinitions,
 } from '@suite-common/token-definitions';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
@@ -12,13 +11,14 @@ import {
     type FiatRatesRootState,
     type WalletSettingsRootState,
     accountsIndex,
+    getTokens,
     parseAccountAssetKey,
     selectBaseCurrency,
     selectCurrentFiatRates,
     selectEnabledNetworks,
     selectLastWeekFiatRates,
 } from '@suite-common/wallet-core';
-import { type Account, type TokenAddress } from '@suite-common/wallet-types';
+import { type Account, type AccountKey, type TokenAddress } from '@suite-common/wallet-types';
 import { getFiatRateKey } from '@suite-common/wallet-utils';
 import { BigNumber } from '@trezor/utils';
 
@@ -98,6 +98,29 @@ const selectAssetFirstRows = createMemoizedSelector(
 
         const rows: AssetRow[] = [];
         const fiatValueByDisplaySymbol = new Map<string, BigNumber>();
+        // Which tokens an account contributes is `getTokens`' decision — it resolves the user's
+        // own hidden and shown lists against the network's definitions, and a network without
+        // definitions shows what it holds. Cached per account because an account appears in as
+        // many groups as it holds assets.
+        const shownContractsByAccountKey = new Map<AccountKey, ReadonlySet<string>>();
+
+        const getShownContracts = (account: Account) => {
+            const cached = shownContractsByAccountKey.get(account.key);
+
+            if (cached) {
+                return cached;
+            }
+
+            const { shownWithBalance } = getTokens({
+                tokens: account.tokens ?? [],
+                symbol: account.symbol,
+                tokenDefinitions: tokenDefinitions?.[account.symbol]?.coin,
+            });
+            const contracts = new Set(shownWithBalance.map(token => token.contract));
+            shownContractsByAccountKey.set(account.key, contracts);
+
+            return contracts;
+        };
 
         assetGroups.forEach((group, assetKey) => {
             const parts = parseAccountAssetKey(assetKey);
@@ -111,21 +134,12 @@ const selectAssetFirstRows = createMemoizedSelector(
 
             const { symbol, contractAddress } = parts;
 
-            // An unknown token is one nothing vouches for — the same rule the network-first table
-            // applies before it adds a token to a network's balance.
-            const isUnknownToken =
-                contractAddress !== undefined &&
-                !isTokenDefinitionKnown(
-                    tokenDefinitions?.[symbol]?.coin?.data,
-                    symbol,
-                    contractAddress,
-                );
-
-            if (isUnknownToken) {
-                return;
-            }
-
-            const visibleAccounts = group.entities.filter((account: Account) => account.visible);
+            const visibleAccounts = group.entities.filter(
+                (account: Account) =>
+                    account.visible &&
+                    (contractAddress === undefined ||
+                        getShownContracts(account).has(contractAddress)),
+            );
 
             if (visibleAccounts.length === 0) {
                 return;

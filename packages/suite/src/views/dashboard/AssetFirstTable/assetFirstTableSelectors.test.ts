@@ -48,6 +48,8 @@ type MockStateParams = {
     enabledNetworks?: Account['symbol'][];
     rates?: Record<string, { rate: number }>;
     knownTokens?: TokenAddress[];
+    hiddenTokens?: TokenAddress[];
+    shownTokens?: TokenAddress[];
 };
 
 const createState = ({
@@ -55,19 +57,24 @@ const createState = ({
     enabledNetworks = ['btc', 'eth', 'pol'],
     rates = {},
     knownTokens = [USDC_ON_ETH, USDC_ON_POL],
-}: MockStateParams): AssetFirstTableState =>
-    ({
+    hiddenTokens = [],
+    shownTokens = [],
+}: MockStateParams): AssetFirstTableState => {
+    const definitions = {
+        coin: { data: knownTokens, hide: hiddenTokens, show: shownTokens },
+    };
+
+    return {
         device: { selectedDevice: { state: { staticSessionId: ALICE } } },
         wallet: {
             accounts,
             settings: { enabledNetworks, localCurrency: 'usd' },
             fiat: { current: rates, lastWeek: {}, historic: {} },
         },
-        tokenDefinitions: {
-            eth: { coin: { data: knownTokens } },
-            pol: { coin: { data: knownTokens } },
-        },
-    }) as unknown as AssetFirstTableState;
+        // `dsol` has no `coin-definitions` feature, which is what makes it the testnet case below.
+        tokenDefinitions: { eth: definitions, pol: definitions, dsol: definitions },
+    } as unknown as AssetFirstTableState;
+};
 
 describe('selectAssetFirstTableKeys', () => {
     it('lists one key per asset and network', () => {
@@ -145,6 +152,41 @@ describe('selectAssetFirstTableKeys', () => {
         });
 
         expect(selectAssetFirstTableKeys(state)).not.toContain(`${ALICE}/eth/${UNKNOWN_TOKEN}`);
+    });
+
+    it('leaves out a token the user hid', () => {
+        const state = createState({
+            accounts: [mockAccount({ tokens: [{ contract: USDC_ON_ETH, balance: '10' }] })],
+            hiddenTokens: [USDC_ON_ETH],
+        });
+
+        expect(selectAssetFirstTableKeys(state)).not.toContain(`${ALICE}/eth/${USDC_ON_ETH}`);
+    });
+
+    it('keeps a token the user asked to see, definition or not', () => {
+        const state = createState({
+            accounts: [mockAccount({ tokens: [{ contract: UNKNOWN_TOKEN, balance: '10' }] })],
+            shownTokens: [UNKNOWN_TOKEN],
+        });
+
+        expect(selectAssetFirstTableKeys(state)).toContain(`${ALICE}/eth/${UNKNOWN_TOKEN}`);
+    });
+
+    it('keeps the tokens of a network that has no definitions at all', () => {
+        // `dsol` and the other testnets have no `coin-definitions` feature, so nothing can vouch
+        // for their tokens and nothing needs to.
+        const state = createState({
+            accounts: [
+                mockAccount({
+                    symbol: 'dsol',
+                    tokens: [{ contract: UNKNOWN_TOKEN, balance: '3' }],
+                }),
+            ],
+            enabledNetworks: ['dsol'],
+            knownTokens: [],
+        });
+
+        expect(selectAssetFirstTableKeys(state)).toContain(`${ALICE}/dsol/${UNKNOWN_TOKEN}`);
     });
 
     it('leaves out an account the user hid', () => {
