@@ -19,6 +19,7 @@ import {
     type WalletConnectMiddlewareDeps,
     prepareWalletConnectMiddleware,
 } from '@suite-common/walletconnect';
+import { type GetTrezorConnectPrivilegedDep } from '@trezor/connect';
 
 import { type DbDep } from 'src/storage/createDb';
 
@@ -30,7 +31,7 @@ import walletMiddleware from './walletMiddleware';
 
 export type GetWalletMiddlewaresDeps = WalletConnectMiddlewareDeps &
     TokenDefinitionsMiddlewareDeps & {
-        services: SuiteSyncDep & DbDep;
+        services: SuiteSyncDep & DbDep & GetTrezorConnectPrivilegedDep;
     };
 
 export const getWalletMiddlewares = (

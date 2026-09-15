@@ -11,10 +11,11 @@ import {
     selectDiscoveryForSelectedDevice,
 } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
-import TrezorConnect, {
+import {
     type CoinInfo,
     type DiscoveryAccount,
     type DiscoveryAccountType,
+    type GetTrezorConnectPrivilegedDep,
     UI_EVENTS,
     UI_REQUESTS,
     UI_RESPONSE,
@@ -92,10 +93,12 @@ const buildDiscoveryAccounts = (accounts: Account[], coinInfo: CoinInfo): Discov
 type ConnectPopupMiddlewareState = AccountsRootState & DeviceRootState & DiscoveryRootState;
 
 export const prepareConnectPopupMiddleware = createMiddlewareWithExtraDeps<
-    void,
+    { services: GetTrezorConnectPrivilegedDep },
     UnknownAction,
     ConnectPopupMiddlewareState
->(async (action, { dispatch, next, getState }) => {
+>(async (action, { dispatch, next, getState, extra }) => {
+    const TrezorConnect = extra.services.getTrezorConnect();
+
     await next(action);
 
     if (action.type === UI_EVENTS.ACCOUNT_INSUFFICIENT_FUNDS) {
