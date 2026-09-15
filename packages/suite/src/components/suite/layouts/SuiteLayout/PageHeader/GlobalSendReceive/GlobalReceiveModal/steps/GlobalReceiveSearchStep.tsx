@@ -1,7 +1,12 @@
 import { useRef } from 'react';
 
+import { selectDesktopAnalyticsDep } from '@suite/analytics';
 import { useDevice } from '@suite/device';
 import { Translation, type TranslationKey } from '@suite/intl';
+import {
+    type ReceiveEntryInteractionAction,
+    events as sharedEvents,
+} from '@suite-common/analytics';
 import { useServices } from '@suite-common/dependency-injection';
 import { selectDispatch } from '@suite-common/redux-utils';
 import { type TradingAssetOption } from '@suite-common/trading';
@@ -69,12 +74,47 @@ export const GlobalReceiveSearchStep = ({
 }: GlobalReceiveSearchStepProps) => {
     const { device } = useDevice();
     const { isDiscoveryRunning } = useDiscovery();
-    const { dispatch } = useServices(selectDispatch);
+    const { analytics, dispatch } = useServices(selectDesktopAnalyticsDep, selectDispatch);
     const listRef = useRef<HTMLDivElement>(null);
     const isAddAccountDisabled = isDiscoveryRunning || !device?.connected || !device?.available;
     const assetDisabledMessage = getAssetDisabledMessage(device?.connected, isDiscoveryRunning);
+
+    const reportEntryInteraction = (
+        action: ReceiveEntryInteractionAction,
+        networkSymbol?: NetworkSymbol,
+    ) => {
+        analytics.report({
+            type: sharedEvents.receiveEntryInteractionEvent.name,
+            payload: {
+                action,
+                platform: 'desktop',
+                ...(networkSymbol ? { networkSymbol } : {}),
+            },
+        });
+    };
+
+    const handleTabChange = (tab: GlobalReceiveTab) => {
+        if (tab === activeTab) {
+            return;
+        }
+
+        reportEntryInteraction(tab === 'assets' ? 'assets-tab' : 'accounts-tab');
+        onTabChange(tab);
+    };
+
+    const handleNetworkFilterChange = (networkSymbol: NetworkSymbol | undefined) => {
+        if (networkSymbol) {
+            reportEntryInteraction('network-filter-select', networkSymbol);
+
+            return;
+        }
+
+        reportEntryInteraction('network-filter-clear');
+    };
+
     const handleViewAccountsClick = () => {
         dispatch(globalSendReceiveFiltersActions.setSearch(''));
+        reportEntryInteraction('view-accounts');
         onTabChange('accounts');
     };
 
@@ -86,7 +126,12 @@ export const GlobalReceiveSearchStep = ({
                     id="TR_GLOBAL_RECEIVE_DESCRIPTION"
                     values={{
                         a: (...chunks) => (
-                            <Link href={HOW_TO_CHOOSE_RIGHT_NETWORK_URL}>{chunks}</Link>
+                            <Link
+                                href={HOW_TO_CHOOSE_RIGHT_NETWORK_URL}
+                                onClick={() => reportEntryInteraction('right-network-link')}
+                            >
+                                {chunks}
+                            </Link>
                         ),
                     }}
                 />
@@ -106,20 +151,22 @@ export const GlobalReceiveSearchStep = ({
                         listRef={listRef}
                         modal="receive"
                         networks={activeTab === 'assets' ? assetNetworks : accountNetworks}
+                        onNetworkFilterChange={handleNetworkFilterChange}
+                        onNetworkFilterOpen={() => reportEntryInteraction('network-filter-open')}
                         shouldResetSearchOnNetworkChange={false}
                     />
                     <SubTabs activeItemId={activeTab}>
                         <SubTabs.Item
                             id="assets"
                             data-testid="@global-receive/tab/assets"
-                            onClick={() => onTabChange('assets')}
+                            onClick={() => handleTabChange('assets')}
                         >
                             <Translation id="TR_GLOBAL_RECEIVE_ASSETS_TAB" />
                         </SubTabs.Item>
                         <SubTabs.Item
                             id="accounts"
                             data-testid="@global-receive/tab/accounts"
-                            onClick={() => onTabChange('accounts')}
+                            onClick={() => handleTabChange('accounts')}
                         >
                             <Translation id="TR_GLOBAL_RECEIVE_ACCOUNTS_TAB" />
                         </SubTabs.Item>

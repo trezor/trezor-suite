@@ -7,6 +7,7 @@ export interface SearchAssetSelectConfig {
     networks: readonly NetworkSymbol[];
     selectedNetwork: NetworkSymbol | undefined;
     onChange: (network?: NetworkSymbol) => void;
+    onMenuOpen?: () => void;
     includeAllOption?: boolean;
     allLabel?: string;
 }

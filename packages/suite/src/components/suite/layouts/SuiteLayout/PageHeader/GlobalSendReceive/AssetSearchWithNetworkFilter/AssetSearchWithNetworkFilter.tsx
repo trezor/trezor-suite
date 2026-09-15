@@ -20,6 +20,8 @@ export type AssetSearchWithNetworkFilterProps = {
     listRef: RefObject<HTMLDivElement | null>;
     modal?: NonNullable<GlobalSendReceiveType>;
     networks?: readonly NetworkSymbol[];
+    onNetworkFilterChange?: (networkSymbol: NetworkSymbol | undefined) => void;
+    onNetworkFilterOpen?: () => void;
     shouldResetSearchOnNetworkChange?: boolean;
 };
 
@@ -28,6 +30,8 @@ export const AssetSearchWithNetworkFilter = memo(function AssetSearchWithNetwork
     listRef,
     modal,
     networks: providedNetworks,
+    onNetworkFilterChange,
+    onNetworkFilterOpen,
     shouldResetSearchOnNetworkChange = true,
 }: AssetSearchWithNetworkFilterProps) {
     const isBitcoinOnlyFirmware = useSelector(selectHasBitcoinOnlyFirmware);
@@ -58,7 +62,11 @@ export const AssetSearchWithNetworkFilter = memo(function AssetSearchWithNetwork
         : {
               networks,
               selectedNetwork: networkFilter,
-              onChange: setNetworkFilter,
+              onChange: (networkSymbol: NetworkSymbol | undefined) => {
+                  setNetworkFilter(networkSymbol);
+                  onNetworkFilterChange?.(networkSymbol);
+              },
+              onMenuOpen: onNetworkFilterOpen,
               includeAllOption: !protocolSymbol,
               allLabel: translationString('TR_ALL_NETWORKS'),
           };

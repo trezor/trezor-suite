@@ -29,6 +29,7 @@ export const SearchAsset = ({
             options={options}
             value={selectedOption}
             onChange={option => selectConfig.onChange(option.value)}
+            onMenuOpen={selectConfig.onMenuOpen}
             size="small"
             isClean
             formatOptionLabel={(option, meta) => (
