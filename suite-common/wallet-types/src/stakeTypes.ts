@@ -3,7 +3,7 @@ import type { BaseCurrencyCode } from '@trezor/blockchain-link-types';
 import type { FeeLevel } from '@trezor/connect';
 import { type BigNumber } from '@trezor/utils';
 
-import { type Account } from './account';
+import { type Account, type AccountKey } from './account';
 import { type StakeFormState } from './stakeForm';
 import { type ExcludedUtxos, type FeeInfo, type PrecomposedLevels } from './transaction';
 
@@ -42,7 +42,7 @@ export type ChangeDelegateFormState = StakeFormState;
 
 // TODO: is this still needed?
 export interface ComposeActionContext {
-    account: Account;
+    accountKey: AccountKey;
     network: Network;
     feeInfo: FeeInfo;
     excludedUtxos?: ExcludedUtxos;
@@ -53,3 +53,7 @@ export interface ComposeActionContext {
     // per-trade deposit address.
     assumeNewAccount?: boolean;
 }
+
+export type ComposeActionContextWithAccount = Omit<ComposeActionContext, 'accountKey'> & {
+    account: Account;
+};

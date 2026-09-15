@@ -32,7 +32,7 @@ import {
 import {
     type Account,
     type CardanoAction,
-    type ComposeActionContext,
+    type ComposeActionContextWithAccount,
     type ExternalOutput,
     type PrecomposedTransaction,
     type PrecomposedTransactionFinal,
@@ -287,7 +287,7 @@ export const calculateOutputAmount = (
 type ComposeTransactionThunkState = SelectedAccountRootState & StakeRootState;
 
 export const composeTransactionThunk =
-    (formValues: StakeFormState, formState: ComposeActionContext) =>
+    (formValues: StakeFormState, formState: ComposeActionContextWithAccount) =>
     async (_: Dispatch<UnknownAction>, getState: () => ComposeTransactionThunkState) => {
         const selectedAccount = selectFullSelectedAccount(getState());
         const cardanoPools = selectCardanoPoolsInfo(getState());

@@ -78,7 +78,7 @@ export const calculateFeeLevelsMaxAmountThunk = createThunk<
                     setMaxOutputId: 0, // Marks first outputs as the one that should be maximized.
                 },
                 composeContext: {
-                    account,
+                    accountKey,
                     network,
                     feeInfo: networkFeeInfo,
                 },
@@ -163,7 +163,7 @@ export const calculateCustomFeeLevelThunk = createThunk<
             composeSendFormTransactionFeeLevelsThunk({
                 formState: formStateCopy,
                 composeContext: {
-                    account,
+                    accountKey,
                     feeInfo,
                     network,
                 },

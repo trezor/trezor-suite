@@ -8,18 +8,19 @@ import { asNetworkSymbol, getNetwork } from '@suite-common/wallet-config';
 import { type ComposeActionContext, type StakeFormState } from '@suite-common/wallet-types';
 import { mockWalletAccount, networkSpecificDefaultCardano } from '@suite-common/wallet-types/mocks';
 
-import { composeTransaction } from 'src/actions/wallet/stakeActions';
+import { composeTransactionThunk } from 'src/actions/wallet/stakeActions';
 
 import { useStakeCompose } from './useStakeCompose';
 
 jest.mock('src/actions/wallet/stakeActions', () => ({
-    composeTransaction: jest.fn(),
+    composeTransactionThunk: jest.fn(),
 }));
 
-const composeTransactionMock = composeTransaction as jest.Mock;
+const composeTransactionMock = composeTransactionThunk as jest.Mock;
 
 const composeActionContext = (): ComposeActionContext => ({
-    account: mockWalletAccount({ symbol: asNetworkSymbol('ada') }, networkSpecificDefaultCardano),
+    accountKey: mockWalletAccount({ symbol: asNetworkSymbol('ada') }, networkSpecificDefaultCardano)
+        .key,
     network: getNetwork(asNetworkSymbol('ada')),
     feeInfo: {
         blockHeight: 0,

@@ -7,7 +7,11 @@ import { isTranslationKey, useTranslation } from '@suite/intl';
 import { useServices } from '@suite-common/dependency-injection';
 import { selectDispatch } from '@suite-common/redux-utils';
 import { COMPOSE_ERROR_TYPES } from '@suite-common/wallet-constants';
-import { composeSendFormTransactionFeeLevelsThunk } from '@suite-common/wallet-core';
+import {
+    type AccountsRootState,
+    composeSendFormTransactionFeeLevelsThunk,
+    selectAccountByKey,
+} from '@suite-common/wallet-core';
 import {
     type ComposeActionContext,
     type FormState,
@@ -21,6 +25,7 @@ import { type FeeLevel } from '@trezor/connect';
 import { useDebounce } from '@trezor/react-utils';
 
 import { signAndPushSendFormTransactionThunk } from 'src/actions/wallet/send/sendFormThunks';
+import { useSelector } from 'src/hooks/suite';
 import { type SendContextValues } from 'src/types/wallet/sendForm';
 
 const DEFAULT_FIELD = 'outputs.0.amount';
@@ -33,7 +38,7 @@ interface Props<TFieldValues extends FormState> extends UseFormReturn<TFieldValu
 // shareable sub-hook used in useRbfForm and useSendForm (TODO)
 
 export const useCompose = <TFieldValues extends FormState>({
-    state,
+    state: composeContext,
     defaultField,
     getValues,
     formState: { errors },
@@ -42,7 +47,7 @@ export const useCompose = <TFieldValues extends FormState>({
 }: Props<TFieldValues>) => {
     const [isLoading, setLoading] = useState(false);
     const composeRequestIDRef = useRef(0);
-    const prevFeeInfoRef = useRef(state?.feeInfo);
+    const prevFeeInfoRef = useRef(composeContext?.feeInfo);
     const defaultFieldRef = useRef(defaultField || DEFAULT_FIELD);
     const [composedLevels, setComposedLevels] =
         useState<SendContextValues['composedLevels']>(undefined);
@@ -50,6 +55,9 @@ export const useCompose = <TFieldValues extends FormState>({
     const { translationString } = useTranslation();
 
     const { dispatch } = useServices(selectDispatch);
+    const selectedAccount = useSelector((rootState: AccountsRootState) =>
+        selectAccountByKey(rootState, composeContext?.accountKey),
+    );
 
     // actions
     const debounce = useDebounce();
@@ -62,7 +70,10 @@ export const useCompose = <TFieldValues extends FormState>({
     const composeRequest = useCallback(
         async (field = defaultFieldRef.current) => {
             // skip compose for cached older fee (edge case for trading)
-            if (!state || (prevFeeInfoRef.current?.blockHeight ?? 0) > state.feeInfo.blockHeight) {
+            if (
+                !composeContext ||
+                (prevFeeInfoRef.current?.blockHeight ?? 0) > composeContext.feeInfo.blockHeight
+            ) {
                 return;
             }
 
@@ -92,7 +103,7 @@ export const useCompose = <TFieldValues extends FormState>({
                 return dispatch(
                     composeSendFormTransactionFeeLevelsThunk({
                         formState,
-                        composeContext: state,
+                        composeContext,
                     }),
                 ).then(res => (isFulfilled(res) ? res.payload : undefined));
             });
@@ -112,7 +123,7 @@ export const useCompose = <TFieldValues extends FormState>({
                 }
             }
         },
-        [state, errors, debounce, clearErrors, getValues, dispatch],
+        [composeContext, errors, debounce, clearErrors, getValues, dispatch],
     );
 
     // update fields AFTER composedLevels change or selectedFee change (below)
@@ -238,20 +249,21 @@ export const useCompose = <TFieldValues extends FormState>({
 
     // trigger initial compose process
     useEffect(() => {
-        if (state && composeRequestIDRef.current === 0) {
+        if (composeContext && composeRequestIDRef.current === 0) {
             composeRequest();
         }
-    }, [state, composeRequest]);
+    }, [composeContext, composeRequest]);
 
     useEffect(() => {
         const hasFeeInfoChanged =
-            state && state?.feeInfo.blockHeight !== prevFeeInfoRef.current?.blockHeight;
+            composeContext &&
+            composeContext?.feeInfo.blockHeight !== prevFeeInfoRef.current?.blockHeight;
 
         if (hasFeeInfoChanged) {
-            prevFeeInfoRef.current = state.feeInfo;
+            prevFeeInfoRef.current = composeContext.feeInfo;
             composeRequest();
         }
-    }, [state, state?.feeInfo, composeRequest]);
+    }, [composeContext, composeContext?.feeInfo, composeRequest]);
 
     // handle composedLevels change
     useEffect(() => {
@@ -262,7 +274,7 @@ export const useCompose = <TFieldValues extends FormState>({
 
     // called from the UI, triggers signing process
     const sign = async () => {
-        if (!state) return;
+        if (!selectedAccount) return;
 
         const formState = getValues();
         const precomposedTransaction = composedLevels
@@ -275,7 +287,7 @@ export const useCompose = <TFieldValues extends FormState>({
                 signAndPushSendFormTransactionThunk({
                     formState,
                     precomposedTransaction,
-                    selectedAccount: state.account,
+                    selectedAccount,
                 }),
             ).unwrap();
 

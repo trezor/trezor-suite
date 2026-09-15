@@ -88,12 +88,12 @@ export const useStakeForm = ({ account }: UseStakeFormProps): StakeContextValues
         });
 
         return {
-            account,
+            accountKey: account.key,
             network,
             feeInfo,
             formValues: defaultValues,
         };
-    }, [account, defaultValues, networkFees, network]);
+    }, [account.key, account.networkType, defaultValues, networkFees, network]);
 
     const methods = useForm<StakeFormState>({
         mode: 'onChange',

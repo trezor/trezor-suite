@@ -79,7 +79,7 @@ export const composeEthereumCancelTransactionThunk = createThunk<
             composeSendFormTransactionFeeLevelsThunk({
                 formState: cancelFormState,
                 composeContext: {
-                    account,
+                    accountKey: account.key,
                     network: getNetwork(account.symbol),
                     feeInfo: getEthereumRbfFeeInfo(feeInfo, rbfParams),
                 },

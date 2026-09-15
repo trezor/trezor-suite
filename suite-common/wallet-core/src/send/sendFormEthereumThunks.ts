@@ -15,7 +15,7 @@ import {
 import {
     type AccountWithNetworkType,
     AddressDisplayOptions,
-    type ComposeActionContext,
+    type ComposeActionContextWithAccount,
     type ExternalOutput,
     type FeeInfo,
     type PrecomposedLevels,
@@ -144,7 +144,7 @@ export const calculate = (
     output: ExternalOutput,
     feeLevel: FeeLevel,
     token?: TokenInfo,
-    composeContext?: ComposeActionContext,
+    composeContext?: ComposeActionContextWithAccount,
     isNetworkReserveEnabled = false,
 ): PrecomposedTransaction => {
     let amount: string;

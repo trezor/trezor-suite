@@ -1,4 +1,5 @@
 import { type FormState, type TokenAddress } from '@suite-common/wallet-types';
+import { convertAmountUnitsToSubunits } from '@suite-common/wallet-utils';
 import { type Utxo } from '@trezor/blockchain-link-types';
 import { type FeeLevel } from '@trezor/connect';
 
@@ -8,6 +9,19 @@ export const getOutputFieldName = <TField extends SendOutputFieldName>(
     index: number,
     field: TField,
 ): `outputs.${number}.${TField}` => `outputs.${index}.${field}`;
+
+type GetSendFormAmountInSubunitsParams = {
+    amount: string;
+    decimals: number;
+    isAmountInSats: boolean;
+};
+
+export const getSendFormAmountInSubunits = ({
+    amount,
+    decimals,
+    isAmountInSats,
+}: GetSendFormAmountInSubunitsParams) =>
+    isAmountInSats ? amount : convertAmountUnitsToSubunits(amount, decimals);
 
 export const constructFormDraft = ({
     formValues: { outputs, transactionData, ...restFormValues },

@@ -18,7 +18,7 @@ import {
 } from '@suite-common/wallet-core';
 import {
     AddressDisplayOptions,
-    type ComposeActionContext,
+    type ComposeActionContextWithAccount,
     type PrecomposedTransactionFinal,
     type StakeFormState,
 } from '@suite-common/wallet-types';
@@ -27,7 +27,7 @@ import TrezorConnect from '@trezor/connect';
 type ComposeTransactionThunkState = BlockchainRootState & SelectedAccountRootState;
 
 export const composeTransactionThunk =
-    (formValues: StakeFormState, formState: ComposeActionContext) =>
+    (formValues: StakeFormState, formState: ComposeActionContextWithAccount) =>
     async (_: Dispatch<UnknownAction>, getState: () => ComposeTransactionThunkState) => {
         const selectedAccount = selectFullSelectedAccount(getState());
         const blockchain = selectBlockchainState(getState());
