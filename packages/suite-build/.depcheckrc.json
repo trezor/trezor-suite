@@ -3,6 +3,7 @@
     "ignores": [
         "raw-loader",
         "babel-loader",
+        "babel-plugin-react-compiler",
         "babel-plugin-styled-components",
         "worker-loader",
         "buffer"
