@@ -63,7 +63,7 @@ export const DismissFwAuthenticityCheckButton = () => {
     return <DismissButton onClick={goToSuite} />;
 };
 
-export const FwAuthencityChecksCtas = () => (
+export const FwAuthenticityChecksCtas = () => (
     <>
         <DismissFwAuthenticityCheckButton />
         <FwAuthenticityCheckSupportButton />
