@@ -3,7 +3,7 @@ import { type DesktopApiDep } from '@trezor/suite-desktop-api';
 import { mockGetHttpReceiverAddress } from '@trezor/suite-desktop-api/mocks';
 
 import { type Account } from 'src/types/wallet';
-import { buildQuoteLink } from 'src/utils/wallet/trading/sellUtils';
+import { createQuoteLink } from 'src/utils/wallet/trading/sellUtils';
 
 import * as fixtures from './__fixtures__/sellUtils';
 
@@ -36,10 +36,10 @@ describe('sellUtils', () => {
 
     const mockQuoteId = 'quoteId';
 
-    describe('buildQuoteLink', () => {
+    describe('createQuoteLink', () => {
         it('should create link for quote for fiat', async () => {
             expect(
-                await buildQuoteLink(
+                await createQuoteLink(
                     deps,
                     QUOTE_REQUEST_FIAT,
                     mockAccount,
@@ -53,7 +53,7 @@ describe('sellUtils', () => {
 
         it('should create link for quote when selectedFee is high', async () => {
             expect(
-                await buildQuoteLink(
+                await createQuoteLink(
                     deps,
                     QUOTE_REQUEST_CRYPTO,
                     mockAccount,
@@ -67,7 +67,7 @@ describe('sellUtils', () => {
 
         it('should create link for quote when selectedFee is custom', async () => {
             expect(
-                await buildQuoteLink(
+                await createQuoteLink(
                     deps,
                     QUOTE_REQUEST_CRYPTO,
                     mockAccount,
@@ -81,7 +81,7 @@ describe('sellUtils', () => {
 
         it('should create link for quote when account network type is solana', async () => {
             expect(
-                await buildQuoteLink(
+                await createQuoteLink(
                     deps,
                     QUOTE_REQUEST_CRYPTO,
                     {

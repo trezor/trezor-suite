@@ -21,7 +21,7 @@ import { selectDesktopApiDep } from '@trezor/suite-desktop-api';
 
 import { submitRequestFormThunk } from 'src/actions/wallet/trading/tradingCommonActions';
 import { useSelector } from 'src/hooks/suite';
-import { buildTxLink } from 'src/utils/wallet/trading/buyUtils';
+import { createTxLink } from 'src/utils/wallet/trading/buyUtils';
 
 export const useTradingBuyConfirm = () => {
     const { desktopApi, analytics, dispatch } = useServices(
@@ -50,7 +50,7 @@ export const useTradingBuyConfirm = () => {
         if (!account || !receiveAddress || !selectedQuote) return;
 
         const tradeAccount = receiveAccount ?? account;
-        const returnUrl = await buildTxLink({ desktopApi }, selectedQuote, tradeAccount);
+        const returnUrl = await createTxLink({ desktopApi }, selectedQuote, tradeAccount);
 
         const processResponseData = (response: BuyTradeResponse) => {
             if (response.tradeForm) {

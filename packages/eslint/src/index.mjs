@@ -9,7 +9,6 @@ import {
     desktopApiRestrictedImports,
     globalNoExtraneousDependenciesDevDependencies,
     importConfig,
-    libDevRestrictedImportPattern,
 } from './importConfig.mjs';
 import {
     javascriptConfig,
@@ -30,7 +29,6 @@ export {
     desktopApiCompositionRootAllowance,
     desktopApiRestrictedImports,
     globalNoExtraneousDependenciesDevDependencies,
-    libDevRestrictedImportPattern,
     noCastedObjectHelpersSyntax,
     noRestrictedSyntax,
     restrictedImportsPatterns,

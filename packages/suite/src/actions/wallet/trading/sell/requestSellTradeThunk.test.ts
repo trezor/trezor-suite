@@ -10,10 +10,10 @@ import { mockGetHttpReceiverAddress } from '@trezor/suite-desktop-api/mocks';
 
 import { type RequestSellTradeThunkDeps, requestSellTradeThunk } from './requestSellTradeThunk';
 
-const mockBuildQuoteLink = jest.fn((..._args: unknown[]) => Promise.resolve('https://return.url'));
+const mockCreateQuoteLink = jest.fn((..._args: unknown[]) => Promise.resolve('https://return.url'));
 jest.mock('src/utils/wallet/trading/sellUtils', () => ({
     ...jest.requireActual('src/utils/wallet/trading/sellUtils'),
-    buildQuoteLink: (...args: unknown[]) => mockBuildQuoteLink(...args),
+    createQuoteLink: (...args: unknown[]) => mockCreateQuoteLink(...args),
 }));
 
 let redirectResponse: unknown;
@@ -100,7 +100,7 @@ const buildStore = (accounts: Account[] = [ACCOUNT]) =>
 
 describe('requestSellTradeThunk', () => {
     beforeEach(() => {
-        mockBuildQuoteLink.mockClear();
+        mockCreateQuoteLink.mockClear();
         mockHandleTradeThunk.mockClear();
         mockSubmitRequestForm.mockClear();
         redirectResponse = undefined;

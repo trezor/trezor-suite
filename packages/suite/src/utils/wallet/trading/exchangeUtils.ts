@@ -6,8 +6,8 @@ import { type DesktopApiDep } from '@trezor/suite-desktop-api';
 
 import { type Account } from 'src/types/wallet';
 
-export const buildQuoteLink = async (
-    deps: DesktopApiDep<'getHttpReceiverAddress'>,
+export const createQuoteLink = async (
+    { desktopApi }: DesktopApiDep<'getHttpReceiverAddress'>,
     request: ExchangeTradeQuoteRequest,
     account: Account,
     composedInfo: TradingComposedTransactionInfo,
@@ -32,7 +32,7 @@ export const buildQuoteLink = async (
     const params = `exchange-offers/${account.symbol}/${account.accountType}/${account.index}/${hash}`;
 
     if (isDesktop()) {
-        const url = await deps.desktopApi.getHttpReceiverAddress('/exchange-redirect');
+        const url = await desktopApi.getHttpReceiverAddress('/exchange-redirect');
 
         return `${url}?p=${encodeURIComponent(`/coinmarket-redirect/${params}`)}`;
     }

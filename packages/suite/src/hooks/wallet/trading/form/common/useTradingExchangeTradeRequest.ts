@@ -14,7 +14,7 @@ import { selectDesktopApiDep } from '@trezor/suite-desktop-api';
 
 import { submitRequestFormThunk } from 'src/actions/wallet/trading/tradingCommonActions';
 import { useSelector } from 'src/hooks/suite';
-import { buildQuoteLink } from 'src/utils/wallet/trading/exchangeUtils';
+import { createQuoteLink } from 'src/utils/wallet/trading/exchangeUtils';
 
 export const useTradingExchangeTradeRequest = (account: Account | undefined) => {
     const { desktopApi, analytics, dispatch } = useServices(
@@ -33,7 +33,7 @@ export const useTradingExchangeTradeRequest = (account: Account | undefined) => 
             return;
         }
 
-        const returnUrl = await buildQuoteLink(
+        const returnUrl = await createQuoteLink(
             { desktopApi },
             quotesRequest,
             account,

@@ -3,7 +3,6 @@ import {
     desktopApiRestrictedImports,
     eslint,
     globalNoExtraneousDependenciesDevDependencies,
-    libDevRestrictedImportPattern,
 } from '@trezor/eslint';
 
 export default [
@@ -24,7 +23,12 @@ export default [
                 'error',
                 {
                     paths: [...desktopApiRestrictedImports],
-                    patterns: [libDevRestrictedImportPattern],
+                    patterns: [
+                        {
+                            regex: '/libDev/src',
+                            message: 'Importing from "*/libDev/src" path is not allowed.',
+                        },
+                    ],
                 },
             ],
         },

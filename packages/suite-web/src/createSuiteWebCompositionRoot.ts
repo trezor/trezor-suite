@@ -5,7 +5,6 @@ import { asGetter } from '@suite-common/dependency-injection';
 import TrezorConnect from '@trezor/connect';
 import type { CreateLogger } from '@trezor/connect-common';
 import { resolveConnectPath } from '@trezor/env-utils';
-import { createWebDesktopApi } from '@trezor/suite-desktop-api-web';
 import { BridgeTransport } from '@trezor/transport-common';
 import { WebUsbTransport } from '@trezor/transport-web';
 
@@ -19,6 +18,7 @@ import { extraDependencies } from 'src/support/extraDependencies';
 import { createPreloadStore } from 'src/support/suite/createPreloadStore';
 
 import { type WebApp, createWebApp } from './createWebApp';
+import { createWebDesktopApi } from './support/createWebDesktopApi';
 import { getWebThpHostName } from './support/getWebThpHostName';
 
 type SuiteWebCompositionRoot = { app: WebApp };

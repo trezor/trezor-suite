@@ -16,7 +16,7 @@ import {
 } from '@suite-common/trading';
 import { type DesktopApiDep } from '@trezor/suite-desktop-api';
 
-import { buildQuoteLink } from 'src/utils/wallet/trading/buyUtils';
+import { createQuoteLink } from 'src/utils/wallet/trading/buyUtils';
 
 import { submitRequestFormThunk } from '../tradingCommonActions';
 
@@ -44,7 +44,7 @@ export const selectBuyQuoteThunk = createThunk<
         return;
     }
 
-    const returnUrl = await buildQuoteLink(
+    const returnUrl = await createQuoteLink(
         extra.services,
         { ...quotesRequest, paymentMethod: quote.paymentMethod },
         receiveAccount ?? account,

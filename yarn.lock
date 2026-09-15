@@ -17801,14 +17801,6 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@trezor/suite-desktop-api-web@workspace:*, @trezor/suite-desktop-api-web@workspace:packages/suite-desktop-api-web":
-  version: 0.0.0-use.local
-  resolution: "@trezor/suite-desktop-api-web@workspace:packages/suite-desktop-api-web"
-  dependencies:
-    "@trezor/suite-desktop-api": "workspace:*"
-  languageName: unknown
-  linkType: soft
-
 "@trezor/suite-desktop-api@workspace:*, @trezor/suite-desktop-api@workspace:packages/suite-desktop-api":
   version: 0.0.0-use.local
   resolution: "@trezor/suite-desktop-api@workspace:packages/suite-desktop-api"
@@ -18035,7 +18027,7 @@ __metadata:
     "@trezor/env-utils": "workspace:*"
     "@trezor/eslint": "workspace:*"
     "@trezor/suite": "workspace:*"
-    "@trezor/suite-desktop-api-web": "workspace:*"
+    "@trezor/suite-desktop-api": "workspace:*"
     "@trezor/transport-common": "workspace:*"
     "@trezor/transport-web": "workspace:*"
     "@trezor/utils": "workspace:*"
