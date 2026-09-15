@@ -50,11 +50,11 @@ export const ReceiveAddressVerificationBottomSheet = ({
                 {!isSharedAddress && (
                     <VStack spacing="sp20">
                         <BottomSheetListItem
-                            iconNumber={1}
+                            icon={1}
                             translationKey="moduleReceive.addressCopiedBottomSheet.steps.pasteAddress"
                         />
                         <BottomSheetListItem
-                            iconNumber={2}
+                            icon={2}
                             translationKey="moduleReceive.addressCopiedBottomSheet.steps.verifyAddress"
                         />
                     </VStack>

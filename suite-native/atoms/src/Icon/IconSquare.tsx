@@ -1,5 +1,3 @@
-import { type RequireExactlyOne } from 'type-fest';
-
 import { Icon, type IconName, type IconSize } from '@suite-native/icons';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 import { type Color } from '@trezor/theme';
@@ -7,15 +5,11 @@ import { type Color } from '@trezor/theme';
 import { Box } from '../Box';
 import { Text } from '../Text';
 
-export type IconSquareProps = RequireExactlyOne<
-    {
-        iconName: IconName;
-        iconNumber: number;
-        intent?: IconSquareIntent;
-        size?: IconSquareSize;
-    },
-    'iconName' | 'iconNumber'
->;
+export type IconSquareProps = {
+    icon: IconName | number;
+    intent?: IconSquareIntent;
+    size?: IconSquareSize;
+};
 
 export const ICON_SQUARE_INTENTS = ['brand', 'neutral', 'info', 'warning', 'critical'] as const;
 export type IconSquareIntent = (typeof ICON_SQUARE_INTENTS)[number];
@@ -77,12 +71,7 @@ const iconSquareStyle = prepareNativeStyle<{
     justifyContent: 'center',
 }));
 
-export const IconSquare = ({
-    iconName,
-    iconNumber,
-    intent = 'neutral',
-    size = 40,
-}: IconSquareProps) => {
+export const IconSquare = ({ icon, intent = 'neutral', size = 40 }: IconSquareProps) => {
     const { applyStyle } = useNativeStyles();
 
     const { borderColor, backgroundColor, iconColor } = intentToColorsMap[intent];
@@ -96,8 +85,11 @@ export const IconSquare = ({
                 backgroundColor,
             })}
         >
-            {iconNumber && <Text color={iconColor}>{iconNumber}</Text>}
-            {iconName && <Icon name={iconName} color={iconColor} size={iconSize} />}
+            {typeof icon === 'number' ? (
+                <Text color={iconColor}>{icon}</Text>
+            ) : (
+                <Icon name={icon} color={iconColor} size={iconSize} />
+            )}
         </Box>
     );
 };

@@ -31,7 +31,7 @@ export const IconListItem = ({ icon, intent, children }: IconListItemProps) => {
 
     return (
         <HStack spacing="sp12" alignItems={verticalAlign} style={applyStyle(itemStyle)}>
-            <IconSquare iconName={icon} intent={intent ?? iconIntent} size={iconSize} />
+            <IconSquare icon={icon} intent={intent ?? iconIntent} size={iconSize} />
             <Box flexShrink={1}>{children}</Box>
         </HStack>
     );
