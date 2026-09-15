@@ -11,9 +11,10 @@ import { selectDispatch } from '@suite-common/redux-utils';
 import { Card, Column, Grid, Icon, type IconComponent, Paragraph } from '@trezor/components';
 import { CpuIcon, ListChecksIcon, ShieldCheckIcon } from '@trezor/icons';
 
-import { SecurityCheckFail } from 'src/components/suite/SecurityCheck/SecurityCheckFail';
-import { AuthenticateDeviceSupportButton } from 'src/components/suite/SecurityCheck/deviceCompromisedCtas';
 import { useLayoutSize, useSelector } from 'src/hooks/suite';
+
+import { SecurityCheckFail } from './components/SecurityCheckFail';
+import { AuthenticateDeviceSupportButton } from './components/ctas';
 
 const items: { id: string; icon: IconComponent; text: TranslationKey }[] = [
     { id: 'security', icon: ShieldCheckIcon, text: 'TR_DEVICE_AUTHENTICITY_ITEM_1' },
@@ -21,11 +22,11 @@ const items: { id: string; icon: IconComponent; text: TranslationKey }[] = [
     { id: 'checks', icon: ListChecksIcon, text: 'TR_DEVICE_AUTHENTICITY_ITEM_3' },
 ];
 
-type DeviceAuthenticityProps = {
+type DeviceAuthenticityCheckProps = {
     goToNext: () => void;
 };
 
-export const DeviceAuthenticityStep = ({ goToNext }: DeviceAuthenticityProps) => {
+export const DeviceAuthenticityCheck = ({ goToNext }: DeviceAuthenticityCheckProps) => {
     const device = useSelector(selectSelectedDevice);
     const selectedDeviceAuthenticity = useSelector(state =>
         selectDeviceAuthenticityByDeviceId(state, device?.id),

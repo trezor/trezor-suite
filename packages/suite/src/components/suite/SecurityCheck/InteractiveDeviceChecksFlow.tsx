@@ -40,18 +40,17 @@ import {
 } from '@trezor/urls';
 
 import { Hologram } from 'src/components/onboarding/Hologram';
-import { SecurityCheckButton } from 'src/components/suite/SecurityCheck/SecurityCheckButton';
-import { SecurityCheckFail } from 'src/components/suite/SecurityCheck/SecurityCheckFail';
-import { SecurityCheckLayout } from 'src/components/suite/SecurityCheck/SecurityCheckLayout';
-import { ContactSupport } from 'src/components/suite/SecurityCheck/deviceCompromisedCtas';
 import { useLayoutSize, useOnboarding, useSelector } from 'src/hooks/suite';
 import { selectIsOnboardingActive } from 'src/reducers/onboarding/onboardingReducer';
 import { ContentFlex, useIsContentBelowBreakpoint } from 'src/support/suite/ContentFlex';
 
-import { SecurityChecklist } from './SecurityChecklist';
+import { DeviceAuthenticityCheck } from './DeviceAuthenticityCheck';
+import { SecurityCheckButton } from './components/SecurityCheckButton';
+import { SecurityCheckFail } from './components/SecurityCheckFail';
+import { SecurityCheckLayout } from './components/SecurityCheckLayout';
+import { SecurityChecklist } from './components/SecurityChecklist';
+import { ContactSupport } from './components/ctas';
 import { type SecurityChecklistItem } from './types';
-
-import { DeviceAuthenticityStep } from './index';
 
 const firmwareInstalledChecklist = [
     {
@@ -114,7 +113,7 @@ type SecurityCheckContentProps = {
     shouldAuthenticateSelectedDevice: boolean;
 };
 
-const SecurityCheckContent = ({
+const ManualDeviceCheck = ({
     goToDeviceAuthentication,
     goToSuiteOrNextDevice,
     shouldAuthenticateSelectedDevice,
@@ -288,7 +287,7 @@ const SecurityCheckContent = ({
     );
 };
 
-export const SecurityCheck = () => {
+export const InteractiveDeviceChecksFlow = () => {
     const selectedDevice = useSelector(selectSelectedDevice);
     const devices = useSelector(selectDevices);
     const { initialRun } = useSelector(selectFlags);
@@ -337,7 +336,7 @@ export const SecurityCheck = () => {
     if (isAuthenticityCheckStep) {
         return (
             <Box padding={{ top: 40 }} width="100%">
-                <DeviceAuthenticityStep
+                <DeviceAuthenticityCheck
                     goToNext={() => goToSuiteOrNextDevice(() => setIsAuthenticityCheckStep(false))}
                 />
             </Box>
@@ -348,7 +347,7 @@ export const SecurityCheck = () => {
 
     return (
         <Card paddingType="large">
-            <SecurityCheckContent
+            <ManualDeviceCheck
                 goToDeviceAuthentication={goToDeviceAuthentication}
                 goToSuiteOrNextDevice={goToSuiteOrNextDevice}
                 shouldAuthenticateSelectedDevice={shouldAuthenticateSelectedDevice}

@@ -1,12 +1,12 @@
 import { Card } from '@trezor/components';
 
 import { PrerequisitesGuide } from 'src/components/suite';
+import { InteractiveDeviceChecksFlow } from 'src/components/suite/SecurityCheck/InteractiveDeviceChecksFlow';
 import { useSelector } from 'src/hooks/suite';
 import { selectPrerequisite } from 'src/selectors/suite/suiteSelectors';
 import { type PrerequisiteType } from 'src/utils/suite/prerequisites';
 
 import { ModalSwitcher } from '../../components/suite/modals/ModalSwitcher/ModalSwitcher';
-import { SecurityCheck } from '../onboarding/steps/DeviceAuthenticityStep/SecurityCheck';
 
 const startAppExcludedPrerequisites: PrerequisiteType[] = [
     'device-initialize',
@@ -26,7 +26,7 @@ export const StartContent = () => {
         );
     }
 
-    // Security check has to be without <ModalSwitcher /> as it handles the
+    // InteractiveDeviceChecksFlow has to be without <ModalSwitcher /> as it handles the
     // button request without it. Its terrible, but it is what it is.
-    return <SecurityCheck />;
+    return <InteractiveDeviceChecksFlow />;
 };
