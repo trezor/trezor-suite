@@ -4,7 +4,6 @@ import { useIntl } from 'react-intl';
 import { Translation, messages } from '@suite/intl';
 import { OnboardingCard } from '@suite/onboarding-components';
 import { useServices } from '@suite-common/dependency-injection';
-import { selectSelectedDevice } from '@suite-common/device';
 import { selectDispatch } from '@suite-common/redux-utils';
 import { DEFAULT_FLAGSHIP_MODEL } from '@suite-common/suite-constants';
 import TrezorConnect from '@trezor/connect';
@@ -12,14 +11,18 @@ import { mapTrezorModelToFilledIcon } from '@trezor/product-components';
 
 import { beginOnboardingTutorialThunk } from 'src/actions/onboarding/onboardingActions';
 import { useSelector } from 'src/hooks/suite';
+import { selectOnboardedDevice } from 'src/selectors/onboarding/onboardingSelectors';
 
 export const DeviceTutorialStep = () => {
-    const device = useSelector(selectSelectedDevice);
+    const device = useSelector(selectOnboardedDevice);
     const { dispatch } = useServices(selectDispatch);
     const intl = useIntl();
 
     useEffect(() => {
-        dispatch(beginOnboardingTutorialThunk());
+        dispatch(beginOnboardingTutorialThunk(device));
+        // `device` is deliberately not a dependency: it changes as the device reports button
+        // requests, and re-running this would restart the tutorial on the device.
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [dispatch]);
 
     // Cancelling before the `showDeviceTutorial` call reaches the device (and registers in Connect

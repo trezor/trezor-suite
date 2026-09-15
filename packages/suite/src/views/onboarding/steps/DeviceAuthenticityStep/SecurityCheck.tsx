@@ -38,13 +38,14 @@ import {
     TREZOR_URL,
 } from '@trezor/urls';
 
+import { armOnboardedDeviceTracking } from 'src/actions/onboarding/onboardingActions';
 import { Hologram } from 'src/components/onboarding/Hologram';
 import { SecurityCheckButton } from 'src/components/suite/SecurityCheck/SecurityCheckButton';
 import { SecurityCheckFail } from 'src/components/suite/SecurityCheck/SecurityCheckFail';
 import { SecurityCheckLayout } from 'src/components/suite/SecurityCheck/SecurityCheckLayout';
 import { ContactSupport } from 'src/components/suite/SecurityCheck/deviceCompromisedCtas';
 import { useLayoutSize, useOnboarding, useSelector } from 'src/hooks/suite';
-import { selectIsOnboardingActive } from 'src/reducers/onboarding/onboardingReducer';
+import { selectIsOnboardingInProgress } from 'src/selectors/onboarding/onboardingSelectors';
 import { ContentFlex, useIsContentBelowBreakpoint } from 'src/support/suite/ContentFlex';
 
 import { SecurityChecklist } from './SecurityChecklist';
@@ -125,7 +126,7 @@ const SecurityCheckContent = ({
     const isVerticalLayout = useIsContentBelowBreakpoint(breakpoints.tablet);
     const deviceId = device?.id;
     const deviceModel = device?.features?.internal_model || DeviceModelInternal.UNKNOWN;
-    const isOnboardingActive = useSelector(selectIsOnboardingActive);
+    const isOnboardingActive = useSelector(selectIsOnboardingInProgress);
     const [isFailed, setIsFailed] = useState(false);
 
     const { goToNextStep, rerun, updateAnalytics } = useOnboarding();
@@ -170,12 +171,25 @@ const SecurityCheckContent = ({
             { force: true },
         );
 
+        if (isOnboardingActive) {
+            // Already inside onboarding and already pinned to a device; this only unsticks the
+            // 'start' FullscreenApp, so re-arming here would throw away a ref that may be
+            // following the device through a reboot right now.
+            goToNextStep('firmware');
+            dispatch(gotoThunk({ routeName: 'onboarding-index' }));
+
+            return;
+        }
+
+        // Onboarding begins here. Pin it to the device the user pressed the button for, which is
+        // the last moment the selection is guaranteed to be that device — from here on onboarding
+        // installs firmware and wipes it, so it disconnects and the selection drifts.
+        if (device?.connected) {
+            dispatch(armOnboardedDeviceTracking(device));
+        }
+
         if (isRecoveryInProgress) {
             rerun();
-        } else if (isOnboardingActive) {
-            goToNextStep('firmware');
-            // ensure that we are not stuck in the 'start' FullscreenApp
-            dispatch(gotoThunk({ routeName: 'onboarding-index' }));
         } else {
             dispatch(gotoThunk({ routeName: 'onboarding-index' }));
         }
@@ -337,6 +351,7 @@ export const SecurityCheck = () => {
         return (
             <Box padding={{ top: 40 }} width="100%">
                 <DeviceAuthenticityStep
+                    device={selectedDevice}
                     goToNext={() => goToSuiteOrNextDevice(() => setIsAuthenticityCheckStep(false))}
                 />
             </Box>

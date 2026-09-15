@@ -15,7 +15,7 @@ import {
     selectIsFeatureDisabled,
 } from '@suite-common/message-system';
 import { createThunk } from '@suite-common/redux-utils';
-import { type ReportSecurityCheckDep } from '@suite-common/suite-types';
+import { type ReportSecurityCheckDep, type TrezorDevice } from '@suite-common/suite-types';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { processEntropyCheckResultThunk } from '@suite-common/wallet-core';
 import TrezorConnect from '@trezor/connect';
@@ -49,13 +49,18 @@ export const applySettingsThunk =
         return result;
     };
 
-type ChangePinThunkState = DeviceRootState;
-
-export const changePinThunk =
-    (params: Parameters<typeof TrezorConnect.changePin>[0] = {}, skipSuccessToast?: boolean) =>
-    async (dispatch: Dispatch<UnknownAction>, getState: () => ChangePinThunkState) => {
-        const device = selectSelectedDevice(getState());
-
+/**
+ * Sets the PIN on the device it is handed, rather than on whichever one is selected. Onboarding
+ * needs this: it addresses the device it pinned at the start, which is not the selection once the
+ * device has rebooted through a firmware update. See `selectOnboardedDevice`.
+ */
+export const changePinForDeviceThunk =
+    (
+        device: TrezorDevice | undefined,
+        params: Parameters<typeof TrezorConnect.changePin>[0] = {},
+        skipSuccessToast?: boolean,
+    ) =>
+    async (dispatch: Dispatch<UnknownAction>) => {
         if (!device) return;
 
         const result = await TrezorConnect.changePin({
@@ -83,6 +88,17 @@ export const changePinThunk =
             dispatch(notificationsActions.addToast({ type: 'error', error: result.error.message }));
         }
     };
+
+type ChangePinThunkState = DeviceRootState;
+
+export const changePinThunk =
+    (params: Parameters<typeof TrezorConnect.changePin>[0] = {}, skipSuccessToast?: boolean) =>
+    (dispatch: Dispatch<UnknownAction>, getState: () => ChangePinThunkState) =>
+        changePinForDeviceThunk(
+            selectSelectedDevice(getState()),
+            params,
+            skipSuccessToast,
+        )(dispatch);
 
 type ChangeWipeCodeThunkState = DeviceRootState;
 
@@ -112,17 +128,24 @@ export const changeWipeCodeThunk =
         }
     };
 
-type ResetDeviceThunkState = DeviceRootState & SuiteSettingsRootState & MessageSystemRootState;
+type ResetForDeviceThunkState = DeviceRootState & SuiteSettingsRootState & MessageSystemRootState;
 
-type ResetDeviceThunkDeps = { services: ReportSecurityCheckDep };
+type ResetForDeviceThunkDeps = { services: ReportSecurityCheckDep };
 
-export const resetDeviceThunk =
-    (params: Parameters<typeof TrezorConnect.resetDevice>[0] = {}) =>
+/**
+ * Wipes and initialises the device it is handed, rather than whichever one is selected. Onboarding
+ * needs this: it addresses the device it pinned at the start, which is not the selection once the
+ * device has rebooted through a firmware update. See `selectOnboardedDevice`.
+ */
+export const resetForDeviceThunk =
+    (
+        device: TrezorDevice | undefined,
+        params: Parameters<typeof TrezorConnect.resetDevice>[0] = {},
+    ) =>
     async (
-        dispatch: ThunkDispatch<ResetDeviceThunkState, ResetDeviceThunkDeps, UnknownAction>,
-        getState: () => ResetDeviceThunkState,
+        dispatch: ThunkDispatch<ResetForDeviceThunkState, ResetForDeviceThunkDeps, UnknownAction>,
+        getState: () => ResetForDeviceThunkState,
     ) => {
-        const device = selectSelectedDevice(getState());
         const isEntropyCheckEnabledInSettings = selectIsEntropyCheckEnabled(getState());
         const isEntropyCheckDisabledByMessageSystem = selectIsFeatureDisabled(
             getState(),
@@ -198,6 +221,18 @@ export const resetDeviceThunk =
 
         return result;
     };
+
+type ResetDeviceThunkState = ResetForDeviceThunkState;
+
+type ResetDeviceThunkDeps = ResetForDeviceThunkDeps;
+
+export const resetDeviceThunk =
+    (params: Parameters<typeof TrezorConnect.resetDevice>[0] = {}) =>
+    (
+        dispatch: ThunkDispatch<ResetDeviceThunkState, ResetDeviceThunkDeps, UnknownAction>,
+        getState: () => ResetDeviceThunkState,
+    ) =>
+        dispatch(resetForDeviceThunk(selectSelectedDevice(getState()), params));
 
 type ChangeLanguageThunkState = DeviceRootState;
 

@@ -28,7 +28,6 @@ import {
 import { isCodesignBuild } from '@trezor/env-utils';
 
 import { suiteSyncQuotaManagerSlice } from 'src/actions/suiteSyncQuotaManager/suiteSyncQuotaManagerSlice';
-import onboardingMiddlewares from 'src/middlewares/onboarding';
 import { type GetSuiteMiddlewareDeps, getSuiteMiddleware } from 'src/middlewares/suite';
 import { toastMiddleware } from 'src/middlewares/suite/toastMiddleware';
 import { type GetWalletMiddlewaresDeps, getWalletMiddlewares } from 'src/middlewares/wallet';
@@ -109,7 +108,6 @@ export const getCustomMiddleware = (getExtra: () => GetCustomMiddlewareDeps | nu
         toastMiddleware,
         ...getSuiteMiddleware(getExtra),
         ...getWalletMiddlewares(getExtra),
-        ...onboardingMiddlewares,
         backupMiddleware,
     ];
 

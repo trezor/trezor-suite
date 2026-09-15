@@ -1,14 +1,14 @@
 import { Translation } from '@suite/intl';
 import { OnboardingCard } from '@suite/onboarding-components';
-import { selectSelectedDevice } from '@suite-common/device';
 import { DEFAULT_FLAGSHIP_MODEL } from '@suite-common/suite-constants';
 import { mapTrezorModelToFilledIcon } from '@trezor/product-components';
 
 import { useOnboarding, useSelector } from 'src/hooks/suite';
+import { selectOnboardedDevice } from 'src/selectors/onboarding/onboardingSelectors';
 
 export const DeviceDifferentStep = () => {
-    const { resetOnboarding, enableOnboardingReducer } = useOnboarding();
-    const device = useSelector(selectSelectedDevice);
+    const { resetOnboarding } = useOnboarding();
+    const device = useSelector(selectOnboardedDevice);
 
     return (
         <OnboardingCard
@@ -29,7 +29,6 @@ export const DeviceDifferentStep = () => {
                 <OnboardingCard.Button
                     onClick={() => {
                         resetOnboarding();
-                        enableOnboardingReducer(true);
                     }}
                     intent="warning"
                     data-testid="@onboarding/unexpected-state/is-same/start-over-button"

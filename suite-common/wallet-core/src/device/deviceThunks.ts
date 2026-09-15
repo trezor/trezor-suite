@@ -30,6 +30,7 @@ import {
 import { type WithServices, createThunk } from '@suite-common/redux-utils';
 import {
     type AcquiredDevice,
+    type OnboardingServiceDep,
     type OpenModalDep,
     type TrezorDevice,
 } from '@suite-common/suite-types';
@@ -148,6 +149,8 @@ type ObserveSelectedDeviceResult = {
 
 type ObserveSelectedDeviceThunkState = DeviceRootState;
 
+type ObserveSelectedDeviceThunkDeps = WithServices<OnboardingServiceDep>;
+
 /**
  * Keep selected device synchronized with the `devices` reducer, because selected device is a copy
  * of one of the `devices` (and those are updated via DEVICE.CHANGED. etc.).
@@ -156,10 +159,10 @@ type ObserveSelectedDeviceThunkState = DeviceRootState;
 export const observeSelectedDeviceThunk = createThunk<
     ObserveSelectedDeviceResult,
     void,
-    { state: ObserveSelectedDeviceThunkState }
+    { state: ObserveSelectedDeviceThunkState; extra: ObserveSelectedDeviceThunkDeps }
 >(
     `${DEVICE_MODULE_PREFIX}/observeSelectedDevice`,
-    (_, { dispatch, getState, fulfillWithValue }) => {
+    (_, { dispatch, getState, extra, fulfillWithValue }) => {
         const devices = selectDevices(getState());
 
         const selectedDevice = selectSelectedDevice(getState());
@@ -182,6 +185,9 @@ export const observeSelectedDeviceThunk = createThunk<
         const isDeviceChanged = isChanged(selectedDevice, deviceFromReducer);
         if (isDeviceChanged) {
             dispatch(deviceActions.updateSelectedDevice(deviceFromReducer));
+            // Onboarding is written per platform, so what a changed device means for it — a device
+            // that turned up mid-recovery, say — is not something shared code can decide.
+            extra.services.onboardingService.onSelectedDeviceUpdated(deviceFromReducer);
         }
 
         // The "Is becoming acquired/connect" logic lives here, because currently we only care about

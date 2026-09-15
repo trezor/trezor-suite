@@ -3,6 +3,7 @@ export { useLayout } from './useLayout';
 export { useLayoutSize } from './useLayoutSize';
 export { useGraph } from './useGraph';
 export { useAccountSearch } from './useAccountSearch';
+export { useOnboardedDeviceTracking } from './useOnboardedDeviceTracking';
 export { useOnboarding } from './useOnboarding';
 export { useFilteredModal } from './useFilteredModal';
 export { usePreferredModal } from './usePreferredModal';

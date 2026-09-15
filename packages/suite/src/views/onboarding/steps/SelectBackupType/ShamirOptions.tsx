@@ -1,12 +1,12 @@
 import { satisfies } from 'semver';
 
 import { Translation } from '@suite/intl';
-import { selectSelectedDevice } from '@suite-common/device';
 import { type BackupType } from '@suite-common/suite-types';
 import { Badge, Tooltip } from '@trezor/components';
 import { getFirmwareVersion } from '@trezor/device-utils';
 
 import { useLayoutSize, useSelector } from 'src/hooks/suite';
+import { selectOnboardedDevice } from 'src/selectors/onboarding/onboardingSelectors';
 
 import { DefaultTag } from './DefaultTag';
 import { OptionWithContent } from './OptionWithContent';
@@ -38,7 +38,7 @@ type ShamirOptionsProps = {
 };
 
 export const ShamirOptions = ({ defaultType, onSelect, selected }: ShamirOptionsProps) => {
-    const device = useSelector(selectSelectedDevice);
+    const device = useSelector(selectOnboardedDevice);
     const firmwareVersion = getFirmwareVersion(device);
 
     const is1of1shamirSupportedByFirmware = satisfies(firmwareVersion, '>=2.7.1');

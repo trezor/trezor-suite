@@ -59,7 +59,7 @@ export const BackupStep1Initial = ({
                 <>
                     <Modal.Button
                         data-testid="@backup/start-button"
-                        onClick={() => dispatch(backupDeviceThunk({ params }))}
+                        onClick={() => dispatch(backupDeviceThunk({ device, params }))}
                         isDisabled={!canStart(backup.userConfirmed, isDeviceLocked)}
                     >
                         <Translation id="TR_CREATE_BACKUP" />

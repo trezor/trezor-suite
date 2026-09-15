@@ -25,7 +25,7 @@ import {
 } from '@suite-common/connect-init';
 import { delegatedIdentityKeyCompositionRoot } from '@suite-common/delegated-identity-key';
 import { toGetter } from '@suite-common/dependency-injection';
-import { selectDeviceByStaticSessionId } from '@suite-common/device';
+import { createDeviceReceiver, selectDeviceByStaticSessionId } from '@suite-common/device';
 import { type CommonServices } from '@suite-common/extra-dependencies';
 import { FW_HASH_CHECK_DEFAULT_TIMEOUTS } from '@suite-common/firmware-authenticity';
 import { createNetworksCompositionRoot } from '@suite-common/networks';
@@ -49,6 +49,7 @@ import { type DbDep } from 'src/storage/createDb';
 import { reportSecurityCheck } from 'src/utils/suite/sentry';
 
 import { createConnectInitHooks } from './createConnectInitHooks';
+import { createOnboardingService } from './createOnboardingService';
 import { type AppState } from '../types/suite';
 
 const connectInitSettings: ConnectInitSettings = {
@@ -97,6 +98,11 @@ export const createSuiteServicesCompositionRoot = (deps: SuiteAppDeps): SuiteSer
     });
 
     const analytics = createAnalytics();
+    const deviceReceiver = createDeviceReceiver();
+    const onboardingService = createOnboardingService({
+        dispatch: deps.dispatch,
+        getState: deps.getState,
+    });
 
     const getCurrentAccountLabels = toGetter(deps.getState, selectAllLabelsForAccount);
     const getAccountsByDeviceState = toGetter(deps.getState, selectAccountsByDeviceState);
@@ -162,10 +168,12 @@ export const createSuiteServicesCompositionRoot = (deps: SuiteAppDeps): SuiteSer
         networks,
         suiteSync,
         bip329,
+        onboardingService,
         migrateLegacyLabelsToSuiteSync,
         ensureDelegatedIdentityKey,
         platformEncryption: deps.platformEncryption,
         analytics,
+        deviceReceiver,
         suiteRouterHistory: createSuiteRouterHistory({
             history: deps.history,
         }),

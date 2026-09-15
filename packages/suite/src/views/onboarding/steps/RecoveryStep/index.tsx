@@ -5,14 +5,13 @@ import { OnboardingCard } from '@suite/onboarding-components';
 import {
     type RecoveryInputType,
     isRecoveryInputTypeDisabled,
-    recoverDeviceThunk,
+    recoverForDeviceThunk,
     recoveryActions,
     selectRecoveryError,
     selectRecoveryStatus,
     selectWordsCount,
 } from '@suite/recovery';
 import { useServices } from '@suite-common/dependency-injection';
-import { selectSelectedDevice } from '@suite-common/device';
 import { selectDispatch } from '@suite-common/redux-utils';
 import { isDeviceWithButtonOnlyNoTouchscreen } from '@suite-common/suite-utils';
 import { Badge, Banner, Column } from '@trezor/components';
@@ -22,11 +21,12 @@ import { HELP_CENTER_ADVANCED_RECOVERY_URL } from '@trezor/urls';
 import { goToNextStepThunk, updateAnalytics } from 'src/actions/onboarding/onboardingActions';
 import { SelectRecoveryType, SelectRecoveryWord, SelectWordCount } from 'src/components/recovery';
 import { useSelector } from 'src/hooks/suite';
+import { selectOnboardedDevice } from 'src/selectors/onboarding/onboardingSelectors';
 
 import RecoveryStepBox from './RecoveryStepBox';
 
 export const RecoveryStep = () => {
-    const device = useSelector(selectSelectedDevice);
+    const device = useSelector(selectOnboardedDevice);
     const status = useSelector(selectRecoveryStatus);
     const error = useSelector(selectRecoveryError);
     const wordsCount = useSelector(selectWordsCount);
@@ -72,7 +72,7 @@ export const RecoveryStep = () => {
                             if (shouldSkipSelection) {
                                 dispatch(recoveryActions.setRecoveryInputType('advanced'));
                                 dispatch(updateAnalytics({ recoveryType: 'advanced' }));
-                                dispatch(recoverDeviceThunk());
+                                dispatch(recoverForDeviceThunk({ device }));
                             } else {
                                 dispatch(recoveryActions.setStatus('select-recovery-type'));
                             }
@@ -96,7 +96,7 @@ export const RecoveryStep = () => {
                 innerActions={
                     <OnboardingCard.Button
                         data-testid="@onboarding/recovery/start-button"
-                        onClick={() => dispatch(recoverDeviceThunk())}
+                        onClick={() => dispatch(recoverForDeviceThunk({ device }))}
                     >
                         <Translation id="TR_START_RECOVERY" />
                     </OnboardingCard.Button>
@@ -117,7 +117,7 @@ export const RecoveryStep = () => {
         const handleSelect = (type: RecoveryInputType) => {
             dispatch(recoveryActions.setRecoveryInputType(type));
             dispatch(updateAnalytics({ recoveryType: type }));
-            dispatch(recoverDeviceThunk());
+            dispatch(recoverForDeviceThunk({ device }));
         };
 
         return (
@@ -224,7 +224,7 @@ export const RecoveryStep = () => {
 
     if (device?.mode === 'normal') {
         // Ready to continue to the next step
-        const handleClick = () => dispatch(goToNextStepThunk('set-pin'));
+        const handleClick = () => dispatch(goToNextStepThunk(device, 'set-pin'));
 
         return (
             <RecoveryStepBox
@@ -266,7 +266,7 @@ export const RecoveryStep = () => {
                         onClick={
                             deviceModelInternal === DeviceModelInternal.T1B1
                                 ? () => dispatch(recoveryActions.resetReducer())
-                                : () => dispatch(recoverDeviceThunk())
+                                : () => dispatch(recoverForDeviceThunk({ device }))
                         }
                         intent="critical"
                     >

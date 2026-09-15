@@ -38,11 +38,16 @@ export const selectHasTransportOfType = (type: TransportInfo['type']) => (state:
 export const selectTransportOfType = (type: TransportInfo['type']) => (state: SuiteRootState) =>
     state.suite.transport?.transports.find(t => t.type === type);
 
-export const selectPrerequisite = (
+/**
+ * The prerequisite blocking a given device, for a caller that addresses a specific one rather than
+ * the selection — onboarding follows the device it pinned, so asking about the selected device
+ * would gate it on a device it is not working with. See `selectOnboardedDevice`.
+ */
+export const selectPrerequisiteForDevice = (
     state: SuiteRootState & RouterRootState & DeviceRootState,
+    device: TrezorDevice | undefined,
 ): PrerequisiteType | null => {
     const { transport } = state.suite;
-    const device = selectSelectedDevice(state);
     const router = selectRouter(state);
 
     const prerequisite = getPrerequisiteName({ router, device, transport });
@@ -54,6 +59,9 @@ export const selectPrerequisite = (
 
     return prerequisite;
 };
+
+export const selectPrerequisite = (state: SuiteRootState & RouterRootState & DeviceRootState) =>
+    selectPrerequisiteForDevice(state, selectSelectedDevice(state));
 
 // TODO use selectDeviceByDeviceRef from wallet-core; currently WIP in https://github.com/trezor/trezor-suite/pull/20955
 export const selectRecentlyConnectedDevice = (

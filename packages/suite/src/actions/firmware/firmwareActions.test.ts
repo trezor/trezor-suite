@@ -21,6 +21,10 @@ const extra: FirmwareUpdateThunkDeps = {
         getBinFilesBaseUrl: mockGetBinFilesBaseUrl(),
         getLanguage: mockGetLanguage(),
         reportSecurityCheck: mockReportSecurityCheck(),
+        onboardingService: {
+            onFirmwareInstallationFinished: jest.fn(),
+            onSelectedDeviceUpdated: jest.fn(),
+        },
     },
 };
 

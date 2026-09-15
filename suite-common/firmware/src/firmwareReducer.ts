@@ -1,6 +1,18 @@
 import { type PayloadAction } from '@reduxjs/toolkit';
 
-import { type ActionTypesDep, createReducerWithExtraDeps } from '@suite-common/redux-utils';
+import {
+    type DeviceRootState,
+    getDeviceLabelOrName,
+    getIsDeviceConnectedViaBluetoothLowOnBattery,
+    resolveConnectedDevice,
+    selectDevices,
+    selectSelectedDevice,
+} from '@suite-common/device';
+import {
+    type ActionTypesDep,
+    createReducerWithExtraDeps,
+    createWeakMapSelector,
+} from '@suite-common/redux-utils';
 import { type FirmwareStatus, type TrezorDevice } from '@suite-common/suite-types';
 import {
     DEVICE,
@@ -142,6 +154,17 @@ export const selectSwitchFirmwareType = (state: FirmwareRootState) =>
 export const selectIsFirmwareInstallationRunning = (state: FirmwareRootState) =>
     state.firmware.status === 'started';
 
+/**
+ * Whether an installation has run to the end.
+ *
+ * Deliberately not true for `'error'`. A failed call is not the end of the flow: the reconnect
+ * prompt treats `'error'` as "the device could not reboot itself, ask the user to do it", so the
+ * device coming back there is the user following instructions with the flow still running. Anything
+ * that takes the device back — selecting it, acquiring it — has to wait for this.
+ */
+export const selectIsFirmwareUpdateFinished = (state: FirmwareRootState) =>
+    state.firmware.status === 'done';
+
 // When a user is in the Early Access Program, the firmware channel is forced to
 // `production-early-access`. `allowPrerelease` is passed in as a parameter because it is a
 // platform-specific extra dependency, not a part of the state.
@@ -157,3 +180,63 @@ export const selectIsProductionFirmwareChannel = (
     ['production', 'production-early-access'].includes(
         selectEffectiveFirmwareChannel(state, allowPrerelease),
     );
+
+const createFirmwareSelector = createWeakMapSelector.withTypes<
+    FirmwareRootState & DeviceRootState
+>();
+
+/**
+ * The physical device this firmware flow is on, as the device list has it right now, or
+ * `undefined` while it is not reachable — which is most of an update, since the device drops off
+ * the list on every reboot. Callers must handle that.
+ *
+ * Derived rather than tracked. A firmware update cannot complete with a second device of the same
+ * transport attached — `@trezor/connect` waits for exactly one before it adopts the reconnected
+ * device — so while an update is possible at all, the only usable device on the transport we
+ * started on is ours, whatever path or id the reboots have given it. Where the path did survive,
+ * it is preferred, which keeps the answer exact in the ordinary case.
+ *
+ * It deliberately never falls back to the globally selected device: while the device reboots the
+ * selection moves to whatever else is around (a remembered wallet of the same model, typically)
+ * and reporting on that device instead of the one being updated is the bug this avoids. For
+ * rendering the device a firmware flow is *about*, use `selectFirmwareOriginalDevice`.
+ */
+export const selectFirmwareDevice = createFirmwareSelector(
+    [selectDevices, state => state.firmware.cachedDevice],
+    (devices, cachedDevice) =>
+        cachedDevice &&
+        resolveConnectedDevice(devices, {
+            apiType: cachedDevice.descriptor.apiType,
+            path: cachedDevice.path,
+        }),
+);
+
+/**
+ * The device a firmware flow is about, for display and for pre-flight checks.
+ *
+ * Prefers the snapshot taken when the installation began, so the UI can keep showing the firmware
+ * version and type the user is upgrading from once the device is in bootloader mode reporting
+ * nothing. Before an update is pinned there is nothing to resolve, so it follows the selection —
+ * which is what the screens ahead of the install button are showing anyway, and what the mobile
+ * app, which never pins a device, uses throughout.
+ */
+export const selectFirmwareOriginalDevice = createFirmwareSelector(
+    [state => state.firmware.cachedDevice, selectFirmwareDevice, selectSelectedDevice],
+    (cachedDevice, firmwareUpdateDevice, selectedDevice) =>
+        cachedDevice ?? firmwareUpdateDevice ?? selectedDevice,
+);
+
+export const selectFirmwareDeviceLabelOrName = createFirmwareSelector(
+    [selectFirmwareOriginalDevice],
+    getDeviceLabelOrName,
+);
+
+/**
+ * Battery state of the device the firmware flow is about, rather than of whatever is selected.
+ * Starting an update on a device that is about to die is what this gate prevents, so it has to be
+ * asked about the right device — and it is asked before the update pins one.
+ */
+export const selectIsFirmwareDeviceLowOnBattery = createFirmwareSelector(
+    [selectFirmwareOriginalDevice],
+    getIsDeviceConnectedViaBluetoothLowOnBattery,
+);

@@ -1,6 +1,7 @@
 import { type DesktopAnalyticsDep, events } from '@suite/analytics';
-import { type DeviceRootState, selectSelectedDevice } from '@suite-common/device';
+import { type DeviceRootState } from '@suite-common/device';
 import { type WithServices, createThunk } from '@suite-common/redux-utils';
+import { type TrezorDevice } from '@suite-common/suite-types';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import TrezorConnect from '@trezor/connect';
 
@@ -8,6 +9,12 @@ import { actionPrefix, backupActions } from './backupReducer';
 import type { BackupDeviceParams } from './types';
 
 type BackupDeviceThunkParams = {
+    /**
+     * The device to back up. Named by the caller rather than read from the global selection: the
+     * device disconnects and reconnects during onboarding, and the selection moves while it is
+     * away.
+     */
+    device: TrezorDevice | undefined;
     params?: BackupDeviceParams;
     skipSuccessToast?: boolean;
 };
@@ -22,8 +29,7 @@ export const backupDeviceThunk = createThunk<
     { state: BackupDeviceThunkState; extra: BackupDeviceThunkDeps }
 >(
     `${actionPrefix}/backupDeviceThunk`,
-    async ({ params = {}, skipSuccessToast }, { dispatch, getState, extra }) => {
-        const device = selectSelectedDevice(getState());
+    async ({ device, params = {}, skipSuccessToast }, { dispatch, extra }) => {
         if (!device) {
             dispatch(
                 notificationsActions.addToast({

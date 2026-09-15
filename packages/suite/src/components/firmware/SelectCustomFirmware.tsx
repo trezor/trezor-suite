@@ -1,7 +1,6 @@
 import { type Dispatch, type ReactNode, type SetStateAction } from 'react';
 
-import { useDevice } from '@suite/device';
-import { validateFirmware } from '@suite/firmware-upgrade';
+import { useFirmwareSessionDevice, validateFirmware } from '@suite/firmware-upgrade';
 import { Translation } from '@suite/intl';
 import { Button, Row, StepList } from '@trezor/components';
 import { DropZone } from '@trezor/product-components';
@@ -12,16 +11,16 @@ type SelectCustomFirmwareProps = {
 };
 
 export const SelectCustomFirmware = ({ setFirmwareBinary }: SelectCustomFirmwareProps) => {
-    const { device } = useDevice();
+    const firmwareUpdateDevice = useFirmwareSessionDevice();
 
-    const deviceModel = device?.features?.internal_model;
+    const deviceModel = firmwareUpdateDevice?.features?.internal_model;
     const githubUrl = deviceModel
         ? `${GITHUB_FW_BINARIES_URL}/${deviceModel.toLowerCase()}`
         : GITHUB_FW_BINARIES_URL;
 
     const onFirmwareUpload = async (firmware: File, setError: (msg: ReactNode) => void) => {
         const fw = await firmware.arrayBuffer();
-        const validationError = validateFirmware(fw, device);
+        const validationError = validateFirmware(fw, firmwareUpdateDevice);
 
         if (validationError) {
             setError(<Translation id={validationError} />);

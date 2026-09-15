@@ -42,7 +42,8 @@ const firmwareUpdateResponsePayload = {
 export const actions = [
     {
         description: 'Success T2T1',
-        action: () => firmwareUpdateThunk({ firmwareType: FirmwareType.Universal }),
+        action: () =>
+            firmwareUpdateThunk({ device: bootloaderDevice, firmwareType: FirmwareType.Universal }),
         mocks: {
             connect: {
                 success: true,
@@ -68,7 +69,11 @@ export const actions = [
     },
     {
         description: 'Success T2T1 - install Bitcoin-only firmware',
-        action: () => firmwareUpdateThunk({ firmwareType: FirmwareType.BitcoinOnly }),
+        action: () =>
+            firmwareUpdateThunk({
+                device: bootloaderDevice,
+                firmwareType: FirmwareType.BitcoinOnly,
+            }),
         mocks: {
             connect: {
                 success: true,
@@ -94,7 +99,11 @@ export const actions = [
     },
     {
         description: 'Success T1B1 (with intermediary)',
-        action: () => firmwareUpdateThunk({ firmwareType: FirmwareType.Universal }),
+        action: () =>
+            firmwareUpdateThunk({
+                device: bootloaderDeviceNeedsIntermediary,
+                firmwareType: FirmwareType.Universal,
+            }),
         mocks: {
             connect: {
                 success: true,
@@ -123,7 +132,11 @@ export const actions = [
     },
     {
         description: 'Success T1B1 (without intermediary)',
-        action: () => firmwareUpdateThunk({ firmwareType: FirmwareType.Universal }),
+        action: () =>
+            firmwareUpdateThunk({
+                device: bootloaderDeviceNoIntermediaryT1,
+                firmwareType: FirmwareType.Universal,
+            }),
         mocks: {
             connect: {
                 success: true,
@@ -151,11 +164,15 @@ export const actions = [
         },
     },
     {
+        // An update always names a device; this one is not in the device list, so there is nothing
+        // to pin the update to.
         description: 'Errors for missing device',
-        action: () => firmwareUpdateThunk({ firmwareType: FirmwareType.Universal }),
+        action: () =>
+            firmwareUpdateThunk({ device: bootloaderDevice, firmwareType: FirmwareType.Universal }),
         initialState: {
             device: {
                 selectedDevice: undefined,
+                devices: [],
             },
             suite: {},
         },
@@ -165,7 +182,8 @@ export const actions = [
     },
     {
         description: 'FirmwareUpdate call to connect errors',
-        action: () => firmwareUpdateThunk({ firmwareType: FirmwareType.Universal }),
+        action: () =>
+            firmwareUpdateThunk({ device: bootloaderDevice, firmwareType: FirmwareType.Universal }),
         initialState: {
             device: {
                 selectedDevice: bootloaderDevice,
@@ -202,7 +220,8 @@ export const actions = [
     },
     {
         description: 'FirmwareUpdate call to connect errors due to cancelling on device',
-        action: () => firmwareUpdateThunk({ firmwareType: FirmwareType.Universal }),
+        action: () =>
+            firmwareUpdateThunk({ device: bootloaderDevice, firmwareType: FirmwareType.Universal }),
         initialState: {
             device: {
                 selectedDevice: bootloaderDevice,

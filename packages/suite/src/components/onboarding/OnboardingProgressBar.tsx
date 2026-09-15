@@ -1,6 +1,5 @@
 import { useMemo } from 'react';
 
-import { useDevice } from '@suite/device';
 import { Translation, type TranslationKey } from '@suite/intl';
 import {
     selectIsDeviceAuthenticityCheckEnabled,
@@ -9,6 +8,7 @@ import {
 import { StepList, type StepListItemState, Text } from '@trezor/components';
 
 import { useOnboarding, useSelector } from 'src/hooks/suite';
+import { selectOnboardedDevice } from 'src/selectors/onboarding/onboardingSelectors';
 
 import { stepCategories } from '../../config/onboarding/steps';
 import { isStepCategoryUsed } from '../../utils/onboarding/steps';
@@ -18,7 +18,7 @@ import { isStepCategoryUsed } from '../../utils/onboarding/steps';
  * (for example Coin selection `step` is alone in its category, so the category is hidden for BTC-only onboarding)
  * */
 const useOnboardingStepCategoriesInPath = () => {
-    const { device } = useDevice();
+    const device = useSelector(selectOnboardedDevice);
     const { path: onboardingPath } = useOnboarding();
     const isDeviceAuthenticityCheckEnabled = useSelector(selectIsDeviceAuthenticityCheckEnabled);
     const isUnlockedBootloaderAllowed = useSelector(selectIsUnlockedBootloaderAllowed);
