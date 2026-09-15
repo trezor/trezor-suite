@@ -3,6 +3,7 @@ import { type BrowserWindow, dialog } from 'electron';
 import { type TimerId } from '@trezor/type-utils';
 
 import { ipcMain } from './ipcMain';
+import { isMainWindowUsable } from './libs/isMainWindowUsable';
 import { loadIndex } from './libs/loadIndex';
 
 const HANG_WAIT = 30000;
@@ -40,7 +41,7 @@ export const handshakeAndHangDetect = ({
     const handshake = new Promise<HandshakeResult>(resolve => {
         const timeoutCallback = async () => {
             // if renderer process was killed during timeout, then do not invoke any renderer api
-            if (mainWindow.isDestroyed()) return {};
+            if (!isMainWindowUsable(mainWindow)) return {};
 
             // TODO: what happen if handshake will be fired up after timeout?
             const result = await showDialog(mainWindow);
