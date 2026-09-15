@@ -7,26 +7,54 @@ description: React render performance for Trezor Suite — memoization under Rea
 
 Values that change identity on every render, and the memos, effects and requests that fire because of it.
 Check a re-render claim before and after: [`DebugView`](../../suite-native/atoms/src/DebugView.tsx) plus
-the dev-utils rerender-count toggle on mobile, the React DevTools Profiler on web. React Compiler doesn't
-run in native jest (`@swc/jest`), so render-count assertions there say nothing about production.
+the dev-utils rerender-count toggle on mobile, the React DevTools Profiler on web. Jest never runs the
+compiler on either platform — `packages/suite` and `suite-native` both transform with `@swc/jest`, which
+executes no babel plugin and does not enable `jsc.transform.reactCompiler` — so a render-count assertion
+in a unit test says nothing about production anywhere. On web, A/B a profile by emptying
+`REACT_COMPILER_PATHS` ([`reactCompiler.ts`](../../packages/suite-build/reactCompiler.ts)) on the same
+working tree; a branch-vs-`develop` comparison measures every unrelated change too.
 
-## Check which app you are in before adding or removing a memo
+## Check whether the file you are touching is compiled before adding or removing a memo
 
-- **Mobile (`suite-native`) is compiled.** `experiments.reactCompiler: true` in
-  [`app.config.ts`](../../suite-native/app/app.config.ts) auto-memoizes every component and hook, so
-  don't add new manual memoization. A bail-out is worse than a missing memo — it silently drops
-  auto-memoization for the whole component; `react-hook-form`'s `watch()` causes one, use `useWatch()`.
-- **Web and desktop (`packages/suite`) are not compiled.** Manual memoization is the only mechanism at
-  runtime. `suite-common/*` and `packages/components` ship to both, so memoize for the web consumer.
-- **The compiler's lint rules apply everywhere, but only on CI.**
-  [`reactConfig.mjs`](../../packages/eslint/src/reactConfig.mjs) switches off ten of them —
-  `preserve-manual-memoization`, `immutability`, `purity`, `incompatible-library`, `globals`,
-  `error-boundaries`, `set-state-in-render`, `unsupported-syntax`, `config`, `gating` — unless
-  `ESLINT_RUN_EXPENSIVE_CHECKS=true`, which CI sets and your local `yarn lint:js` does not. The same flag
-  gates `reportUnusedDisableDirectives` ([`index.mjs:52`](../../packages/eslint/src/index.mjs)), so a
-  suppression that has stopped being necessary is also only reported on CI. Reproduce a green-locally,
-  red-on-CI run with `ESLINT_RUN_EXPENSIVE_CHECKS=true yarn lint:js`. `rules-of-hooks` and
-  `exhaustive-deps` are `error` everywhere, always.
+On web and desktop, auto-memoization is enabled directory by directory and the list grows wave by wave.
+[`REACT_COMPILER_PATHS`](../../packages/suite-build/reactCompiler.ts) is the source of truth; read it
+when in doubt and treat the list below as a summary that can lag it by a commit.
+
+- **Mobile (`suite-native`) is compiled whole-app.** `experiments.reactCompiler: true` in
+  [`app.config.ts`](../../suite-native/app/app.config.ts) auto-memoizes every component and hook in its
+  bundle, including the `suite-common/*` and `packages/*` sources it pulls in — so those already have to
+  satisfy the compiled rules whichever web wave they are in.
+- **Web and desktop are compiled tree by tree. Compiled today: nothing** — the wiring is in place but
+  `REACT_COMPILER_PATHS` is still empty, so every web/desktop tree ships uncompiled and manual
+  memoization is its only runtime mechanism. The compiler's lint rules below already apply.
+- **In a compiled tree, stop adding manual memoization — and don't mass-delete what is already there.**
+  The compiler prunes the memo blocks it can prove redundant; a sweep of the ~600 existing
+  `useMemo`/`useCallback` sites is a large unreviewable diff for a modest win. A hand-written memo whose
+  equivalence the compiler cannot prove fails `react-hooks/preserve-manual-memoization`.
+- **A bail-out is worse than a missing memo** — it silently drops auto-memoization for the whole
+  function. `react-hook-form`'s `useForm().watch()` causes one; use `useWatch()`.
+- **Green lint is not a correctness gate for the compiler rollout.** None of these rules — nor jest —
+  can see the failure mode in the next section.
+
+## Compiled paths: three review rules no linter enforces
+
+The compiler's proven failure mode in this repo is code it compiles _successfully_, not code it bails
+on. `useForm()` returns a `useRef` payload, so `watch`, `getValues` and anything closing over them keep
+one identity for the component's whole life. The compiler then emits `if ($[0] !== getValues) { … }`,
+that test is false after the first render, and the value read inside the block freezes permanently.
+Lint cannot see it, `@swc/jest` cannot see it, and the send-form E2E specs fill a field once and never
+assert a second change.
+
+- **A render-body `watch()`, `getValues()` or `getDefaultValue()` call in a compiled path is a blocker.**
+  Subscribe with `useWatch()` instead and keep imperative reads inside event handlers and effects. This
+  overrides the `getValues()` suggestion under "Never add a new `eslint-disable` for `exhaustive-deps`"
+  below whenever the file is compiled.
+- **A new `eslint-disable` for `react-hooks/exhaustive-deps` or `react-hooks/rules-of-hooks` also opts
+  code out of compilation.** Those two rule names are `babel-plugin-react-compiler`'s
+  `DEFAULT_ESLINT_SUPPRESSIONS`, and the repo passes no `eslintSuppressionRules` override. A
+  `// eslint-disable-next-line` inside a component drops that whole component; a file-top `/* eslint-disable */` for either rule drops the whole
+  file. Nothing reports it — `panicThreshold` stays at its `'none'` default. Suppressing any other rule name has no effect on compilation.
+- **`'use no memo'` is the escape hatch, not `REACT_COMPILER_PATHS`.** Don't use for new code explicitly allowed by developer. The goal is to eliminate the directive completely.
 
 ## Relocate render-body work before memoizing it, and memoize only what pays
 
@@ -117,12 +145,16 @@ about the third case, and nothing warns you about the second one at all.
 ## Never add a new `eslint-disable` for `exhaustive-deps`
 
 "Please, let's never use this comment. It leads to bugs and mem leaks." The failure mode is a lying
-dependency array on a memo whose callback reads through a ref. Restructure instead: read imperatively
-(`getValues()`), convert the memo to `useState` + `useEffect`, or hold the value in a ref — but check
-which one. When the value is genuinely read through a stable callback and the linter therefore cannot see
-it, keep the dependency listed and reference it with a `void` statement so the rule stays live rather than
-suppressed — `useTradingBuyFormDefaultValues.ts:45` does exactly that with `void coins;`, and carries no
-`eslint-disable` at all.
+dependency array on a memo whose callback reads through a ref. It now has a second cost:
+`react-hooks/exhaustive-deps` is one of the React Compiler's `DEFAULT_ESLINT_SUPPRESSIONS`, so the
+disable comment silently removes the enclosing function — or, at file scope, the whole file — from
+compilation. Restructure instead: subscribe with `useWatch()`, convert the memo to `useState` +
+`useEffect`, or hold the value in a ref — but check which one. Reading imperatively with `getValues()`
+used to be the first suggestion here; in a compiled path it is the frozen-read bug above, so keep it to
+event handlers and effects. When the value is genuinely read through a stable callback and the linter
+therefore cannot see it, keep the dependency listed and reference it with a `void` statement so the rule
+stays live rather than suppressed — `useTradingBuyFormDefaultValues.ts:45` does exactly that with
+`void coins;`, and carries no `eslint-disable` at all.
 [`useFreshRef`](../../packages/react-utils/src/hooks/useFreshRef.ts) assigns during render, so `.current`
 is always the newest value; it is the only correct choice when the ref is read in render or inside a
 `useMemo`. [`useCurrentRef`](../../packages/react-utils/src/hooks/useCurrentRef.ts) assigns in an effect,
