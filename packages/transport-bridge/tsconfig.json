@@ -1,9 +1,6 @@
 {
     "extends": "../../tsconfig.base.json",
-    "compilerOptions": {
-        "outDir": "libDev",
-        "types": ["jest", "node", "w3c-web-usb"]
-    },
+    "compilerOptions": { "outDir": "libDev" },
     "references": [
         { "path": "../components" },
         { "path": "../eslint" },
