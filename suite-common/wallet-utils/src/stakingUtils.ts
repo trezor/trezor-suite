@@ -34,7 +34,7 @@ export const secondsToDays = (seconds: number) => Math.round(seconds / 60 / 60 /
 export const isStakingNetworkType = (type: NetworkType): type is StakingNetworkType =>
     (STAKING_TYPES as readonly string[]).includes(type);
 
-export const isStakingSymbol = (symbol: NetworkSymbol): symbol is StakingNetworkSymbol =>
+export const isStakingSymbol = (symbol: string): symbol is StakingNetworkSymbol =>
     (STAKING_SYMBOLS as readonly string[]).includes(symbol);
 
 const getEverstakePool = (account?: Account) => {

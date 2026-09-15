@@ -14,7 +14,6 @@ const publishableTrezorPackages = [
     '@trezor/network-bitcoin',
     '@trezor/network-cardano',
     '@trezor/network-ethereum',
-    '@trezor/network-module',
     '@trezor/network-ripple',
     '@trezor/network-solana',
     '@trezor/network-stellar',

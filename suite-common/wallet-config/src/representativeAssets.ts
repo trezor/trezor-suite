@@ -5,7 +5,8 @@ export type RepresentativeAsset = {
     contract?: string;
 };
 
-const representativeAssets: Partial<Record<NetworkSymbol, readonly RepresentativeAsset[]>> = {
+// Keyed by plain string: the symbol is open, so a lookup table cannot enumerate it as keys.
+const representativeAssets: Partial<Record<string, readonly RepresentativeAsset[]>> = {
     btc: [{ symbol: 'BTC' }],
     eth: [
         { symbol: 'ETH' },

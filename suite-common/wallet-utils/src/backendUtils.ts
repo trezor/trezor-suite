@@ -45,9 +45,12 @@ export const getCustomBackends = (
     supportedNetworks: readonly NetworkSymbol[],
 ): CustomBackend[] =>
     supportedNetworks
-        .map(symbol => ({ symbol, blockchain: blockchains[symbol] }))
-        .filter(({ blockchain }) => !!blockchain)
-        .map(({ symbol, blockchain: { backends } }) => ({
+        .flatMap(symbol => {
+            const blockchain = blockchains[symbol];
+
+            return blockchain ? [{ symbol, backends: blockchain.backends }] : [];
+        })
+        .map(({ symbol, backends }) => ({
             symbol,
             type: backends.selected,
             urls: backends.selected && backends.urls?.[backends.selected],

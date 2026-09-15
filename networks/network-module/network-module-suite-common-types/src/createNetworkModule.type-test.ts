@@ -1,4 +1,4 @@
-import { type NetworkSymbol, asNetworkSymbol } from '@trezor/network-module/constants';
+import { type NetworkSymbol, asNetworkSymbol } from '@trezor/network-module';
 
 import type { AddressValidator } from './AddressValidator';
 import type { NamedAddressResolver } from './NamedAddressResolver';
@@ -75,8 +75,6 @@ const _fromUnknownSymbol: SuiteCommonNetworkConfig = _module.getNetworkConfig(
 // @ts-expect-error an unbranded string is not a network symbol
 _module.getNetworkConfig('aaa');
 
-declare const openSymbol: NetworkSymbol;
-const _supported: boolean = _module.isSupportedNetwork(openSymbol);
 const _supportedNetworks: readonly NetworkSymbol[] = _module.getSupportedNetworks();
 
 void _module;
@@ -87,5 +85,4 @@ void _foreignList;
 void _narrowNetworkConfig;
 void _fromOpenSymbol;
 void _fromUnknownSymbol;
-void _supported;
 void _supportedNetworks;

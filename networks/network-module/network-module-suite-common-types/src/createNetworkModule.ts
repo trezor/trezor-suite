@@ -1,4 +1,4 @@
-import { type NetworkSymbol, asNetworkSymbols } from '@trezor/network-module/constants';
+import { type NetworkSymbol, asNetworkSymbols } from '@trezor/network-module';
 import { isArrayMember } from '@trezor/utils';
 
 import type { AddressValidator } from './AddressValidator';
@@ -68,7 +68,6 @@ export const createNetworkModule = <TSymbol extends string>(
         addressValidator,
         namedAddressResolver,
         getSupportedNetworks: () => asNetworkSymbols(supportedNetworks),
-        isSupportedNetwork,
         getNetworkConfig: symbol => definition.getNetworkConfig(narrow(symbol)),
     };
 };

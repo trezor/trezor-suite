@@ -10,7 +10,6 @@ export const mockNetworkModule = (
         getAddressType: () => undefined,
     },
     getSupportedNetworks: () => [],
-    isSupportedNetwork: () => false,
     getNetworkConfig: () => ({ ...mockNetworkMetadata.btc, color: '#000000', protocols: [] }),
     ...overrides,
 });

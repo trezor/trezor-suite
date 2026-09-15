@@ -1,3 +1,4 @@
+import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { asAccountDescriptor } from '@suite-common/wallet-types';
 import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
 
@@ -12,7 +13,7 @@ export const ACCOUNTS = {
             'vpub5YoEd2jJofNDXriAXpt4fyX23uRhrViFG3721C1wRRKUvDS4P6St7tqFfDP4JZsRARVhaVcGvW5jerdWBVc1c3fgqZeAYt29QSTiafKdwck',
         ),
         accountType: 'normal',
-        symbol: 'test',
+        symbol: asNetworkSymbol('test'),
         empty: false,
         visible: true,
         balance: '68000',
@@ -262,6 +263,6 @@ export const ACCOUNTS = {
     txrp: mockWalletAccount({
         deviceState: '1stTestnetAddress@device_id:0',
         descriptor: asAccountDescriptor('rNaqKtKrMSwpwZSzRckPf7S96DkimjkF4H'),
-        symbol: 'txrp',
+        symbol: asNetworkSymbol('txrp'),
     }),
 };

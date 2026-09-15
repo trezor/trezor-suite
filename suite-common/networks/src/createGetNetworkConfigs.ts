@@ -12,6 +12,9 @@ export type GetNetworkConfigs = () => readonly NetworkMetadata[];
 export type GetNetworkConfigsDep = { getNetworkConfigs: GetNetworkConfigs };
 
 // Keyed by plain string: the display order is a legacy list, while the symbol is now open.
+// TODO: refactor this legacy ordering away with the rest of the legacy network config.
+// See https://github.com/trezor/trezor-suite/issues/32060
+// and https://github.com/trezor/trezor-suite/pull/32469
 const displayOrderBySymbol = new Map<string, number>(
     networkDisplayOrder.map((symbol, index) => [symbol, index]),
 );

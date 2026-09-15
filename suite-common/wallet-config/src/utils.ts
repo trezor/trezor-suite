@@ -9,6 +9,7 @@ import {
     type NetworkSymbol,
     type NetworkSymbolExtended,
     type NetworkType,
+    asNetworkSymbol,
 } from './networkTypes';
 
 export const NORMAL_ACCOUNT_TYPE = 'normal' satisfies AccountType;
@@ -16,7 +17,10 @@ export const NORMAL_ACCOUNT_TYPE = 'normal' satisfies AccountType;
 /**
  * array from `networks` as a `Network[]` type instead of inferred type
  */
-export const networksCollection: Network[] = Object.values(networks);
+export const networksCollection: Network[] = Object.values(networks).map(network => ({
+    ...network,
+    symbol: asNetworkSymbol(network.symbol),
+}));
 
 /**
  * array of network symbols
@@ -42,9 +46,13 @@ export const getNetworks = () => networks;
  * @deprecated TODO: Replace with a networks store selector or inject via
  * deps.getNetwork() when network configurations are modularized.
  */
-export const getNetwork = <TSymbol extends NetworkSymbol>(
+// Accepts both a branded NetworkSymbol and a plain literal: the symbol is open, while the legacy
+// config is still keyed by literals, and a literal caller keeps that config's precise type.
+export const getNetwork = <TSymbol extends string>(
     symbol: TSymbol,
-): Network & (typeof networks)[TSymbol] => networks[symbol];
+): Network & (typeof networks)[TSymbol & keyof typeof networks] =>
+    networks[symbol as keyof typeof networks] as Network &
+        (typeof networks)[TSymbol & keyof typeof networks];
 
 interface GetMainnetsProps {
     debug?: boolean;

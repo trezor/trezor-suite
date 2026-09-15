@@ -1,6 +1,6 @@
 import type { Bip43PathTemplate } from '@trezor/crypto-utils';
 import type { DeviceModelInternal } from '@trezor/device-utils';
-import type { NetworkSymbol } from '@trezor/network-module/constants';
+import type { NetworkSymbol } from '@trezor/network-module';
 
 import type { Protocol } from './Protocol';
 

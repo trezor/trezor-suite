@@ -1,5 +1,5 @@
 import type { EthereumNetworkSymbol } from '@trezor/network-ethereum/constants';
-import { asNetworkSymbol } from '@trezor/network-module/constants';
+import { asNetworkSymbol } from '@trezor/network-module';
 import {
     type Explorer,
     type SuiteCommonNetworkConfig,

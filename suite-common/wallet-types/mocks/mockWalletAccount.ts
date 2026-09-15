@@ -81,7 +81,8 @@ type NetworkSpecificDefault =
     | typeof networkSpecificDefaultCardano
     | typeof networkSpecificDefaultStellar;
 
-const networkTypeMap: Record<NetworkSymbol, NetworkSpecificDefault> = {
+// Keyed by plain string: the symbol is open, so a lookup table cannot enumerate it as keys.
+const networkTypeMap: Record<string, NetworkSpecificDefault> = {
     // Bitcoin-like
     btc: networkSpecificDefaultBitcoin,
     regtest: networkSpecificDefaultBitcoin,
@@ -169,12 +170,18 @@ export const mockWalletAccount = (
         symbol: account.symbol,
     };
 
+    const networkSpecificDefault = networkSpecific ?? networkTypeMap[account.symbol];
+
+    if (!networkSpecificDefault) {
+        throw new Error(`No mock defaults registered for network symbol: ${account.symbol}.`);
+    }
+
     // This is needed to be separated, as typing the `Account` type with the union-type of
     // the Networks and Backends seems impossible.
     // This way, we at least get type-safety for AccountBase and AccountFailureSpecific data.
     return {
         ...accountBase,
         ...accountFailure,
-        ...(networkSpecific ?? networkTypeMap[account.symbol]),
+        ...networkSpecificDefault,
     };
 };

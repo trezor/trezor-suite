@@ -3,7 +3,8 @@ import { getNetworkFeatures } from './utils';
 
 export const EARN_YIELD_CLAIM_PROVIDER = 'Merkl.xyz';
 
-const MERKL_XYZ_CONTRACT: Partial<Record<NetworkSymbol, `0x${string}`>> = {
+// Keyed by plain string: the symbol is open, so a lookup table cannot enumerate it as keys.
+const MERKL_XYZ_CONTRACT: Partial<Record<string, `0x${string}`>> = {
     eth: '0x3Ef3D8bA38EBe18DB133cEc108f4D14CE00Dd9Ae',
     arb: '0x3Ef3D8bA38EBe18DB133cEc108f4D14CE00Dd9Ae',
     base: '0x3Ef3D8bA38EBe18DB133cEc108f4D14CE00Dd9Ae',

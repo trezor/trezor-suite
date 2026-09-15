@@ -1,4 +1,4 @@
-import { asNetworkSymbol } from './networkTypes';
+import { type Network, asNetworkSymbol } from './networkTypes';
 import {
     filterNetworksByName,
     getDisplaySymbol,
@@ -13,7 +13,23 @@ import {
     isSingleAccountType,
 } from './utils';
 
-const { btc: bitcoin, eth: ethereum, test: testnet, regtest, sol: solana } = getNetworks();
+// The legacy configs carry plain literal symbols; the shared Network API takes branded ones.
+const asNetwork = (network: { symbol: string }): Network =>
+    ({ ...network, symbol: asNetworkSymbol(network.symbol) }) as Network;
+
+const {
+    btc: legacyBitcoin,
+    eth: legacyEthereum,
+    test: legacyTestnet,
+    regtest: legacyRegtest,
+    sol: legacySolana,
+} = getNetworks();
+
+const bitcoin = asNetwork(legacyBitcoin);
+const ethereum = asNetwork(legacyEthereum);
+const testnet = asNetwork(legacyTestnet);
+const regtest = asNetwork(legacyRegtest);
+const solana = asNetwork(legacySolana);
 
 const mockNetworks = [bitcoin, ethereum, testnet, regtest];
 

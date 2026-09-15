@@ -1,4 +1,4 @@
-import type { NetworkSymbol } from '@trezor/network-module/constants';
+import type { NetworkSymbol } from '@trezor/network-module';
 
 import type { AddressValidator } from './AddressValidator';
 import type { NamedAddressResolver } from './NamedAddressResolver';
@@ -11,8 +11,6 @@ export type SuiteCommonNetworkModule = {
     namedAddressResolver?: NamedAddressResolver<NetworkSymbol>;
 
     getSupportedNetworks: () => readonly NetworkSymbol[];
-
-    isSupportedNetwork: (symbol: NetworkSymbol) => boolean;
 
     getNetworkConfig(symbol: NetworkSymbol): SuiteCommonNetworkConfig;
 };

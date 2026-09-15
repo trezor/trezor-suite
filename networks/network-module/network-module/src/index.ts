@@ -1,1 +1,1 @@
-export { asNetworkSymbol, asNetworkSymbols, type NetworkSymbol } from './constants/networkSymbol';
+export { asNetworkSymbols, asNetworkSymbol, type NetworkSymbol } from './networkSymbol';
