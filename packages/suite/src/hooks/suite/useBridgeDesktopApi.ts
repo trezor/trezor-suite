@@ -48,7 +48,9 @@ export const useBridgeDesktopApi = () => {
         };
     }, [desktopApi]);
 
-    const changeBridgeSettings = (settings: BridgeSettings) => {
+    const changeBridgeSettings = (settings: Partial<BridgeSettings>) => {
+        // main-process merges a partial into the current settings, so a single control can send
+        // only its own field without clobbering the rest.
         desktopApi.changeBridgeSettings(settings);
     };
 
