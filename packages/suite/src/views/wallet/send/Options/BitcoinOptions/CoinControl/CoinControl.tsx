@@ -47,6 +47,12 @@ type CoinControlProps = {
 };
 
 export const CoinControl = ({ close }: CoinControlProps) => {
+    // React Compiler: `getDefaultValue` reads the form imperatively, so a compiled render-time read
+    // of it freezes as soon as its own identity is stable -- including the one inside the
+    // `outputs.map` below, which runs during render. Remove once these reads move to `useWatch` or
+    // out of render.
+    'use no memo';
+
     const [currentPage, setSelectedPage] = useState(1);
     const [searchQuery, setSearchQuery] = useState('');
     const {
