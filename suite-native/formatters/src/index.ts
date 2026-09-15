@@ -16,4 +16,5 @@ export { EmptyAmountText } from './components/EmptyAmountText';
 export { useFiatFromCryptoValue } from './hooks/useFiatFromCryptoValue';
 export { useCryptoFiatConverters } from './hooks/useCryptoFiatConverters';
 export { useFormattedGraphHeaderValues } from './hooks/useFormattedGraphHeaderValues';
-export { convertTokenValueToDecimal } from './utils';
+export { convertTokenValueToDecimal, asDecimalTokenAmount } from './utils';
+export type { DecimalTokenAmount } from './utils';

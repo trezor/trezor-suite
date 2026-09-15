@@ -1,6 +1,10 @@
 import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import { AnimatedPressable, Box, VStack } from '@suite-native/atoms';
-import { BaseCurrencyAmountFormatter, CryptoAmountFormatter } from '@suite-native/formatters';
+import {
+    BaseCurrencyAmountFormatter,
+    CryptoAmountFormatter,
+    asDecimalTokenAmount,
+} from '@suite-native/formatters';
 import { TradingAsset } from '@suite-native/trading-atoms';
 import { type MyAsset } from '@suite-native/trading-types';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
@@ -31,7 +35,7 @@ export const MyAssetListItem = ({ asset, onPress }: MyAssetListItemProps) => {
         tokenSymbol != null ? (
             <CryptoAmountFormatter
                 formatStyle="compact-balance"
-                value={balance}
+                value={asDecimalTokenAmount(balance)}
                 tokenSymbol={tokenSymbol}
                 tokenDecimals={decimals}
                 numberOfLines={1}

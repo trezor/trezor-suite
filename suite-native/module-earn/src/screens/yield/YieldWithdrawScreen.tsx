@@ -33,7 +33,11 @@ import {
     VStack,
     useBottomSheetModal,
 } from '@suite-native/atoms';
-import { CryptoAmountFormatter, useCryptoFiatConverters } from '@suite-native/formatters';
+import {
+    CryptoAmountFormatter,
+    asDecimalTokenAmount,
+    useCryptoFiatConverters,
+} from '@suite-native/formatters';
 import { decimalTransformer } from '@suite-native/helpers';
 import { Translation, useTranslate } from '@suite-native/intl';
 import { ContextMessage } from '@suite-native/message-system';
@@ -664,7 +668,7 @@ export const YieldWithdrawScreen = () => {
                                         </Text>
                                         <Box flexShrink={1}>
                                             <CryptoAmountFormatter
-                                                value={maxAmount}
+                                                value={asDecimalTokenAmount(maxAmount)}
                                                 symbol={account.symbol}
                                                 formatStyle="compact-balance"
                                                 tokenContract={activeUnitTokenContract}

@@ -7,6 +7,7 @@ import {
     CryptoAmountFormatter,
     CryptoToFiatAmountFormatter,
     TokenToFiatAmountFormatter,
+    asDecimalTokenAmount,
 } from '@suite-native/formatters';
 import { Icon, TokenIcon } from '@suite-native/icons';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
@@ -90,7 +91,7 @@ export const ChooseAccountItem = ({ account, balanceData, onPress }: ChooseAccou
                         <>
                             <CryptoAmountFormatter
                                 formatStyle="compact-balance"
-                                value={balanceData.value}
+                                value={asDecimalTokenAmount(balanceData.value)}
                                 tokenSymbol={balanceData.tokenSymbol}
                                 tokenDecimals={balanceData.tokenDecimals}
                                 variant="body-md"

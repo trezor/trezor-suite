@@ -9,7 +9,11 @@ import { type SignValue } from '@suite-common/suite-types';
 import { type NetworkSymbol, getNetworkType } from '@suite-common/wallet-config';
 import { type AccountKey, type TokenAddress } from '@suite-common/wallet-types';
 import { Box, Card, Text } from '@suite-native/atoms';
-import { CryptoAmountFormatter, SignValueFormatter } from '@suite-native/formatters';
+import {
+    CryptoAmountFormatter,
+    SignValueFormatter,
+    asDecimalTokenAmount,
+} from '@suite-native/formatters';
 import { type EventTooltipComponentProps } from '@suite-native/react-native-graph';
 import { type TokensRootState, selectAccountTokenInfo } from '@suite-native/tokens';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
@@ -77,7 +81,7 @@ const TokenAmountTooltipFormatter = ({
             <CryptoAmountFormatter
                 color="contentPrimary"
                 variant="body-xs"
-                value={value}
+                value={asDecimalTokenAmount(value)}
                 tokenSymbol={token.symbol}
             />
         );

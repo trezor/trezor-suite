@@ -5,6 +5,7 @@ import {
     CryptoAmountFormatter,
     CryptoToFiatAmountFormatter,
     TokenToFiatAmountFormatter,
+    asDecimalTokenAmount,
 } from '@suite-native/formatters';
 import { TokenIcon } from '@suite-native/icons';
 import { YieldBadge } from '@suite-native/module-earn';
@@ -112,7 +113,7 @@ export const YourPositionCard = ({ account, token }: YourPositionCardProps) => {
                         {token ? (
                             <CryptoAmountFormatter
                                 formatStyle="compact-balance"
-                                value={token.balance ?? '0'}
+                                value={asDecimalTokenAmount(token.balance ?? '0')}
                                 tokenSymbol={tokenAmountSymbol}
                                 tokenDecimals={token.decimals}
                                 numberOfLines={1}

@@ -18,7 +18,11 @@ import {
 import { isApyAvailable } from '@suite-common/wallet-utils';
 import { selectNativeAnalyticsDep } from '@suite-native/analytics';
 import { Box, Button, Card, HStack, Text, VStack } from '@suite-native/atoms';
-import { CryptoAmountFormatter, TokenToFiatAmountFormatter } from '@suite-native/formatters';
+import {
+    CryptoAmountFormatter,
+    TokenToFiatAmountFormatter,
+    asDecimalTokenAmount,
+} from '@suite-native/formatters';
 import { Translation } from '@suite-native/intl';
 import {
     type RootStackParamList,
@@ -283,7 +287,7 @@ export const YieldVaultDetailScreenContent = ({
 
                             <CryptoAmountFormatter
                                 formatStyle="compact-balance"
-                                value={yieldToken.balance ?? '0'}
+                                value={asDecimalTokenAmount(yieldToken.balance ?? '0')}
                                 tokenSymbol={yieldToken.symbol}
                                 tokenDecimals={yieldToken.decimals}
                                 color="contentPrimary"
@@ -308,7 +312,7 @@ export const YieldVaultDetailScreenContent = ({
 
                             <CryptoAmountFormatter
                                 formatStyle="compact-balance"
-                                value={yearlyRewards.yearlyRewards}
+                                value={asDecimalTokenAmount(yearlyRewards.yearlyRewards)}
                                 tokenSymbol={
                                     wrappedNativeSymbol
                                         ? toTokenSymbol(wrappedNativeSymbol)
@@ -338,7 +342,7 @@ export const YieldVaultDetailScreenContent = ({
 
                             <CryptoAmountFormatter
                                 formatStyle="compact-balance"
-                                value={potentialRewards.potentialRewards}
+                                value={asDecimalTokenAmount(potentialRewards.potentialRewards)}
                                 tokenSymbol={
                                     wrappedNativeSymbol
                                         ? toTokenSymbol(wrappedNativeSymbol)

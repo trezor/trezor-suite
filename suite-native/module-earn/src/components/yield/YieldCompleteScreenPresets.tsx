@@ -3,7 +3,7 @@ import { type ReactNode } from 'react';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { type YieldFlowCompleteRewardItem } from '@suite-common/wallet-core';
 import { Box, HStack, Text, VStack } from '@suite-native/atoms';
-import { CryptoAmountFormatter } from '@suite-native/formatters';
+import { CryptoAmountFormatter, asDecimalTokenAmount } from '@suite-native/formatters';
 import { Icon, TokenIcon } from '@suite-native/icons';
 import { Translation } from '@suite-native/intl';
 
@@ -27,27 +27,45 @@ const getYieldCompleteAmountValue = ({
     accountSymbol,
     amount,
     numberOfLines = 2,
-}: YieldCompleteAmountValueParams): ReactNode => (
-    <HStack spacing="sp4" alignItems="center" flexShrink={1}>
-        <TokenIcon
+}: YieldCompleteAmountValueParams): ReactNode => {
+    const formattedAmount = amount.tokenContract ? (
+        <CryptoAmountFormatter
+            value={asDecimalTokenAmount(amount.value)}
             symbol={accountSymbol}
-            contractAddress={amount.tokenContract ?? undefined}
-            size="extraSmall"
+            tokenContract={amount.tokenContract}
+            tokenDecimals={amount.tokenDecimals}
+            tokenSymbol={amount.tokenSymbol}
+            formatStyle="compact-balance"
+            isDiscreetText={false}
+            variant="body-md-strong"
+            color="contentPrimary"
+            numberOfLines={numberOfLines}
+            textAlign="right"
         />
-        <Box flexShrink={1}>
-            <CryptoAmountFormatter
-                {...amount}
+    ) : (
+        <CryptoAmountFormatter
+            value={amount.value}
+            symbol={accountSymbol}
+            formatStyle="compact-balance"
+            isDiscreetText={false}
+            variant="body-md-strong"
+            color="contentPrimary"
+            numberOfLines={numberOfLines}
+            textAlign="right"
+        />
+    );
+
+    return (
+        <HStack spacing="sp4" alignItems="center" flexShrink={1}>
+            <TokenIcon
                 symbol={accountSymbol}
-                formatStyle="compact-balance"
-                isDiscreetText={false}
-                variant="body-md-strong"
-                color="contentPrimary"
-                numberOfLines={numberOfLines}
-                textAlign="right"
+                contractAddress={amount.tokenContract ?? undefined}
+                size="extraSmall"
             />
-        </Box>
-    </HStack>
-);
+            <Box flexShrink={1}>{formattedAmount}</Box>
+        </HStack>
+    );
+};
 
 type GetYieldDepositCompleteRowsParams = {
     accountSymbol: NetworkSymbol;

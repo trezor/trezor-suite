@@ -2,7 +2,11 @@ import { type ReactNode } from 'react';
 import { useSelector } from 'react-redux';
 
 import { type Account, type TokenInfoBranded } from '@suite-common/wallet-types';
-import { CryptoAmountFormatter, TokenToFiatAmountFormatter } from '@suite-native/formatters';
+import {
+    CryptoAmountFormatter,
+    TokenToFiatAmountFormatter,
+    asDecimalTokenAmount,
+} from '@suite-native/formatters';
 import { TokenIcon } from '@suite-native/icons';
 import { type TokensRootState, getTokenName, selectAccountTokenSymbol } from '@suite-native/tokens';
 
@@ -62,7 +66,7 @@ export const AccountsListTokenItem = ({
             secondaryValue={
                 <CryptoAmountFormatter
                     formatStyle="compact-balance"
-                    value={balance}
+                    value={asDecimalTokenAmount(balance)}
                     tokenSymbol={tokenSymbol}
                     tokenDecimals={token.decimals}
                     numberOfLines={1}

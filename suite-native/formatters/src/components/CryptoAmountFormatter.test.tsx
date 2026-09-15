@@ -3,6 +3,7 @@ import { type TokenSymbol } from '@suite-common/wallet-types';
 import { renderWithBasicProvider } from '@suite-native/test-utils';
 
 import { CryptoAmountFormatter } from './CryptoAmountFormatter';
+import { asDecimalTokenAmount } from '../utils';
 
 jest.mock('@suite-common/discreet-mode', () => ({
     useDiscreetMode: () => ({
@@ -36,7 +37,7 @@ describe('CryptoAmountFormatter', () => {
     it('renders compact token amount when token contract is provided', async () => {
         const { getByTestId } = await renderWithBasicProvider(
             <CryptoAmountFormatter
-                value="23.910287"
+                value={asDecimalTokenAmount('23.910287')}
                 symbol={ethSymbol}
                 formatStyle="compact-balance"
                 tokenContract="0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48"
@@ -66,7 +67,7 @@ describe('CryptoAmountFormatter', () => {
     it('renders compact token amount when token symbol is provided', async () => {
         const { getByTestId } = await renderWithBasicProvider(
             <CryptoAmountFormatter
-                value="0.000009"
+                value={asDecimalTokenAmount('0.000009')}
                 formatStyle="compact-balance"
                 tokenSymbol={'USDC' as TokenSymbol}
             />,
@@ -78,7 +79,7 @@ describe('CryptoAmountFormatter', () => {
     it('renders token amount when token symbol is null and network symbol is not provided', async () => {
         const { getByTestId } = await renderWithBasicProvider(
             <CryptoAmountFormatter
-                value="0.000009"
+                value={asDecimalTokenAmount('0.000009')}
                 formatStyle="compact-balance"
                 tokenSymbol={null}
             />,
@@ -90,7 +91,7 @@ describe('CryptoAmountFormatter', () => {
     it('renders exact token amount when token contract is provided', async () => {
         const { getByTestId } = await renderWithBasicProvider(
             <CryptoAmountFormatter
-                value="0.000000000000000001"
+                value={asDecimalTokenAmount('0.000000000000000001')}
                 symbol={ethSymbol}
                 maxDisplayedDecimals={18}
                 tokenContract="0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48"
@@ -104,7 +105,7 @@ describe('CryptoAmountFormatter', () => {
     it('renders phishing transaction with empty value as discreet text', async () => {
         const { getByTestId } = await renderWithBasicProvider(
             <CryptoAmountFormatter
-                value=""
+                value={asDecimalTokenAmount('')}
                 tokenSymbol={'USDC' as TokenSymbol}
                 isPhishingTransaction
             />,

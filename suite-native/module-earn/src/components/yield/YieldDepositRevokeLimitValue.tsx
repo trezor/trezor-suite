@@ -1,6 +1,6 @@
 import { type Account, type TokenAddress, type TokenSymbol } from '@suite-common/wallet-types';
 import { HStack, Text } from '@suite-native/atoms';
-import { CryptoAmountFormatter } from '@suite-native/formatters';
+import { CryptoAmountFormatter, asDecimalTokenAmount } from '@suite-native/formatters';
 import { Icon, TokenIcon } from '@suite-native/icons';
 import { Translation } from '@suite-native/intl';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
@@ -58,7 +58,7 @@ export const YieldDepositRevokeLimitValue = ({
             ) : null}
             {!isApprovedAmountUnlimited && approvedAmount ? (
                 <CryptoAmountFormatter
-                    value={approvedAmount}
+                    value={asDecimalTokenAmount(approvedAmount)}
                     symbol={networkSymbol}
                     formatStyle="compact-balance"
                     tokenContract={tokenContract}
@@ -74,7 +74,7 @@ export const YieldDepositRevokeLimitValue = ({
             ) : null}
             <Icon name="arrowRight" size="medium" color="contentSecondary" />
             <CryptoAmountFormatter
-                value="0"
+                value={asDecimalTokenAmount('0')}
                 symbol={networkSymbol}
                 formatStyle="compact-balance"
                 tokenContract={tokenContract}

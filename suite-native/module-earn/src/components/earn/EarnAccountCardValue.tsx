@@ -1,4 +1,4 @@
-import { CryptoAmountFormatter } from '@suite-native/formatters';
+import { CryptoAmountFormatter, asDecimalTokenAmount } from '@suite-native/formatters';
 import { isWrappedNativeToken } from '@trezor/network-ethereum-suite-common';
 
 import { type EarnDepositsCardActiveItem } from '../../types';
@@ -41,7 +41,7 @@ export const EarnAccountCardValue = ({ item }: EarnAccountCardValueProps) => {
     return (
         <CryptoAmountFormatter
             formatStyle="compact-balance"
-            value={item.balance}
+            value={asDecimalTokenAmount(item.balance)}
             tokenSymbol={item.tokenSymbol}
             tokenDecimals={item.tokenDecimals}
             numberOfLines={1}

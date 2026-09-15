@@ -1,17 +1,15 @@
-import { type RequireAtLeastOne } from 'type-fest';
-
 import { type CryptoAmountFormatterFormatStyle, useFormatters } from '@suite-common/formatters';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { type TokenSymbol, toTokenSymbol } from '@suite-common/wallet-types';
 import { getAccountDecimals } from '@suite-common/wallet-utils';
 import { type TextProps } from '@suite-native/atoms';
-import { exhaustive } from '@trezor/type-utils';
+import { type RequireAtLeastOne, exhaustive } from '@trezor/type-utils';
 
 import { AmountText } from './AmountText';
 import { FormattedCryptoAmountText } from './FormattedCryptoAmountText';
+import { type DecimalTokenAmount } from '../utils';
 
 type CryptoAmountFormatterCommonProps = {
-    value: string | number | null;
     formatStyle?: CryptoAmountFormatterFormatStyle;
     isBalance?: boolean;
     isDiscreetText?: boolean;
@@ -23,8 +21,12 @@ type CryptoAmountFormatterCommonProps = {
 } & TextProps;
 
 type CoinCryptoAmountFormatterProps = {
+    value: string | number | null;
     symbol: NetworkSymbol;
-} & Partial<TokenCryptoAmountMetadataProps>;
+    tokenContract?: undefined;
+    tokenDecimals?: undefined;
+    tokenSymbol?: undefined;
+};
 
 type TokenCryptoAmountMetadataProps = {
     tokenContract: string | null | undefined;
@@ -33,7 +35,8 @@ type TokenCryptoAmountMetadataProps = {
 };
 
 type TokenCryptoAmountFormatterProps = {
-    symbol?: undefined;
+    value: DecimalTokenAmount;
+    symbol?: NetworkSymbol;
 } & RequireAtLeastOne<TokenCryptoAmountMetadataProps>;
 
 export type CryptoAmountFormatterProps = CryptoAmountFormatterCommonProps &

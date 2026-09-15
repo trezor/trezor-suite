@@ -42,6 +42,7 @@ import {
     CoinToFiatAmountFormatter,
     CryptoAmountFormatter,
     TokenToFiatAmountFormatter,
+    asDecimalTokenAmount,
 } from '@suite-native/formatters';
 import { TokenIcon } from '@suite-native/icons';
 import { Translation } from '@suite-native/intl';
@@ -271,7 +272,7 @@ export const TokenSettingsBottomSheet = forwardRef(
                                     <VStack spacing={0} alignItems="flex-end">
                                         {tokenContract ? (
                                             <CryptoAmountFormatter
-                                                value={tokenBalance}
+                                                value={asDecimalTokenAmount(tokenBalance)}
                                                 tokenSymbol={tokenSymbol}
                                                 variant="body-sm"
                                                 color="contentPrimary"

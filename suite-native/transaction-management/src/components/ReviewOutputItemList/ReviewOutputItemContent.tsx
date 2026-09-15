@@ -6,7 +6,6 @@ import {
     type FormStateTradingFiatCurrency,
     type ReviewOutputType,
     type TokenAddress,
-    type TokenSymbol,
 } from '@suite-common/wallet-types';
 import { isAllowanceUnlimited } from '@suite-common/wallet-utils';
 import { Box, HStack, Text, VStack } from '@suite-native/atoms';
@@ -179,7 +178,7 @@ export const ReviewOutputItemContent = ({
                         color="contentPrimary"
                         textAlign="right"
                         value={convertTokenValueToDecimal(value, token.decimals)}
-                        tokenSymbol={token.symbol as TokenSymbol}
+                        tokenSymbol={token.symbol}
                         maxDisplayedDecimals={token.decimals}
                         isDiscreetText={false}
                     />

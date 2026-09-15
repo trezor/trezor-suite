@@ -5,7 +5,11 @@ import {
     toTokenSymbol,
 } from '@suite-common/wallet-types';
 import { Box, HStack, Text } from '@suite-native/atoms';
-import { BaseCurrencyAmountFormatter, CryptoAmountFormatter } from '@suite-native/formatters';
+import {
+    BaseCurrencyAmountFormatter,
+    CryptoAmountFormatter,
+    asDecimalTokenAmount,
+} from '@suite-native/formatters';
 import { TokenIcon } from '@suite-native/icons';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 import { BigNumber } from '@trezor/utils';
@@ -54,7 +58,7 @@ export const YieldClaimRewardRow = ({
                 />
                 <Box flexShrink={1}>
                     <CryptoAmountFormatter
-                        value={amount}
+                        value={asDecimalTokenAmount(amount)}
                         tokenSymbol={toTokenSymbol(tokenSymbol)}
                         maxDisplayedDecimals={tokenDecimals}
                         variant="body-sm-strong"

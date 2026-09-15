@@ -12,7 +12,7 @@ import {
     Text,
     VStack,
 } from '@suite-native/atoms';
-import { CryptoAmountFormatter } from '@suite-native/formatters';
+import { CryptoAmountFormatter, asDecimalTokenAmount } from '@suite-native/formatters';
 import { useFormContext } from '@suite-native/forms';
 import { Icon } from '@suite-native/icons';
 import { Translation } from '@suite-native/intl';
@@ -141,7 +141,7 @@ export const YieldAmountInputCard = ({
                         </Text>
                         <CryptoAmountFormatter
                             formatStyle="compact-balance"
-                            value={balance}
+                            value={asDecimalTokenAmount(balance)}
                             tokenSymbol={tokenSymbol}
                             tokenDecimals={tokenDecimals}
                             variant="body-sm"

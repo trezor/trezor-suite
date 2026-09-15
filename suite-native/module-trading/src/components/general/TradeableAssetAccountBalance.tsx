@@ -2,9 +2,9 @@ import { useSelector } from 'react-redux';
 
 import { isSendingEvmNativeToken } from '@suite-common/trading';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
-import { type Account, type TokenAddress, type TokenSymbol } from '@suite-common/wallet-types';
+import { type Account, type TokenAddress } from '@suite-common/wallet-types';
 import { DiscreetTextTrigger, HStack, Text } from '@suite-native/atoms';
-import { CryptoAmountFormatter } from '@suite-native/formatters';
+import { CryptoAmountFormatter, asDecimalTokenAmount } from '@suite-native/formatters';
 import { Translation } from '@suite-native/intl';
 import { type TokensRootState, selectAccountTokenBalance } from '@suite-native/tokens';
 import { type TradeableAsset } from '@suite-native/trading-types';
@@ -44,8 +44,8 @@ const TokenBalance = ({
     return (
         <CryptoAmountFormatter
             formatStyle="compact-balance"
-            value={balance}
-            tokenSymbol={symbol as TokenSymbol}
+            value={asDecimalTokenAmount(balance)}
+            tokenSymbol={symbol}
             tokenDecimals={tokenDecimals}
             testID={testID}
         />
