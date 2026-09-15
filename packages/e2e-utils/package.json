@@ -45,9 +45,11 @@
         "@anthropic-ai/sdk": "0.100.0",
         "@currents/mcp": "^2.3.3",
         "@currents/playwright": "^2.5.0",
+        "@opencode-ai/sdk": "1.18.23",
         "@playwright/test": "1.62.1",
         "@trezor/eslint": "workspace:*",
         "claude-pretty-printer": "1.5.0",
+        "opencode-ai": "1.18.23",
         "tsx": "^4.21.0"
     }
 }

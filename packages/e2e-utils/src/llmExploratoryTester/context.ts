@@ -1,3 +1,5 @@
+import { execFileSync } from 'node:child_process';
+
 import { error, log } from '../logger';
 import { downloadAttachmentImages } from './contextImages';
 import { CONTEXT_FILE, writeJson } from './paths';
@@ -68,6 +70,13 @@ function toContextItem(item: GithubIssue | PullRequest) {
 }
 
 async function main(): Promise<void> {
+    // Linked-references --json needs gh >= 2.73 (`gh version X.Y.Z`).
+    const ghVersion = execFileSync('gh', ['--version'], { encoding: 'utf-8' }).split(' ')[2] ?? '';
+    const [ghMajor = 0, ghMinor = 0] = ghVersion.split('.').map(Number);
+    if (ghMajor < 2 || (ghMajor === 2 && ghMinor < 73)) {
+        throw new Error(`gh >= 2.73 required, found ${ghVersion}`);
+    }
+
     const target = parseTarget(process.env.TARGET);
     const deviceModel = DeviceModelSchema.parse(process.env.DEVICE_MODEL ?? DEFAULT_MODEL);
 

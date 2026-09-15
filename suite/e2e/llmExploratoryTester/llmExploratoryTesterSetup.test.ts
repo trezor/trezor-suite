@@ -69,7 +69,18 @@ test.describe(
 
             await test.step('Enable networks', async () => {
                 await settingsPage.changeNetworks({
-                    enableNetworks: ['eth', 'btc', 'sol'],
+                    enableNetworks: [
+                        'eth',
+                        'btc',
+                        'sol',
+                        'doge',
+                        'ada',
+                        'xlm',
+                        'xrp',
+                        'trx',
+                        'rhc',
+                        'base',
+                    ],
                 });
             });
 

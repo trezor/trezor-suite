@@ -9,6 +9,7 @@
 @jest/reporters
 @jest/types
 @octokit/rest
+@opencode-ai/sdk
 @playwright/browser-chromium
 @playwright/browser-firefox
 @playwright/browser-webkit
@@ -27,6 +28,7 @@ jest-extended
 jest-junit
 jest-watch-typeahead
 minimist
+opencode-ai
 test-renderer
 ts-jest
 uri-scheme
