@@ -2,7 +2,7 @@ import { combineReducers } from '@reduxjs/toolkit';
 
 import { mockActionType, mockReducer } from '@suite-common/redux-utils/mocks';
 import { createTestStore } from '@suite-common/test-utils';
-import { type NetworkSymbol } from '@suite-common/wallet-config';
+import { type NetworkSymbol, asNetworkSymbol } from '@suite-common/wallet-config';
 import TrezorConnect from '@trezor/connect';
 
 import { blockchainInitialState, prepareBlockchainReducer } from './blockchainReducer';
@@ -61,9 +61,9 @@ describe(setCustomBackendThunk.name, () => {
         const reconnect = jest
             .spyOn(TrezorConnect, 'blockchainUnsubscribeFiatRates')
             .mockResolvedValue({ success: true, payload: { subscribed: false } });
-        const store = initStore(['btc']);
+        const store = initStore([asNetworkSymbol('btc')]);
 
-        await store.dispatch(setCustomBackendThunk('btc'));
+        await store.dispatch(setCustomBackendThunk(asNetworkSymbol('btc')));
 
         expect(setCustomBackend).toHaveBeenCalledWith({
             coin: 'btc',
@@ -85,7 +85,7 @@ describe(setCustomBackendThunk.name, () => {
             .mockResolvedValue({ success: true, payload: { subscribed: false } });
         const store = initStore([]);
 
-        await store.dispatch(setCustomBackendThunk('btc'));
+        await store.dispatch(setCustomBackendThunk(asNetworkSymbol('btc')));
 
         expect(setCustomBackend).toHaveBeenCalledWith({
             coin: 'btc',

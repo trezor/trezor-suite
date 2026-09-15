@@ -8,7 +8,7 @@ import {
     createWeakMapSelector,
     returnStableArrayIfEmpty,
 } from '@suite-common/redux-utils';
-import { type NetworkSymbol, getNetwork } from '@suite-common/wallet-config';
+import { type NetworkSymbol, asNetworkSymbol, getNetwork } from '@suite-common/wallet-config';
 import {
     AddressDisplayOptions,
     type SuspiciousTransactionsFilter,
@@ -149,7 +149,7 @@ export const selectIsAnyNetworkEnabled = (state: WalletSettingsRootState) =>
 
 export const selectIsBitcoinEnabled = createMemoizedSelector(
     [selectEnabledNetworks],
-    enabledNetworks => enabledNetworks.includes('btc'),
+    enabledNetworks => enabledNetworks.includes(asNetworkSymbol('btc')),
 );
 
 export const selectAreSatsAmountUnit = (state: WalletSettingsRootState) => {

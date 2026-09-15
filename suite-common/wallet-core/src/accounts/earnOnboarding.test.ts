@@ -1,4 +1,5 @@
 import { mockActionType, mockReducer } from '@suite-common/redux-utils/mocks';
+import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
 
 import { accountsActions } from './accountsActions';
@@ -15,8 +16,11 @@ const reducer = prepareEarnOnboardingReducer({
     reducers: { storageLoadEarnOnboarding: mockReducer() },
 });
 
-const account = mockWalletAccount({ symbol: 'eth' });
-const otherAccount = mockWalletAccount({ symbol: 'eth', deviceState: 'anotherwallet@device:0' });
+const account = mockWalletAccount({ symbol: asNetworkSymbol(asNetworkSymbol('eth')) });
+const otherAccount = mockWalletAccount({
+    symbol: asNetworkSymbol('eth'),
+    deviceState: 'anotherwallet@device:0',
+});
 const opportunity = getEarnOpportunityKey({ type: 'staking', provider: 'everstake' });
 
 describe('earn onboarding', () => {

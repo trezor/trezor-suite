@@ -1,4 +1,5 @@
 import { testMocks } from '@suite-common/test-utils';
+import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { asAccountDescriptor } from '@suite-common/wallet-types';
 import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
 
@@ -7,7 +8,7 @@ import type { TransactionsState } from '../transactionsReducerTypes';
 
 const ACCOUNT = mockWalletAccount({
     descriptor: asAccountDescriptor('btc1'),
-    symbol: 'btc',
+    symbol: asNetworkSymbol('btc'),
     deviceState: '1@2:3',
 });
 

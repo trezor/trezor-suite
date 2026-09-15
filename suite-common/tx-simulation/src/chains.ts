@@ -42,7 +42,7 @@ const BLOCKAID_STELLAR_CHAIN_BY_SYMBOL = {
 } as const satisfies Readonly<Record<StellarNetworkSymbol, BlockaidStellarChain>>;
 
 export const resolveBlockaidEvmChain = (chainId: number | undefined = getNetwork('eth').chainId) =>
-    BLOCKAID_EVM_CHAIN_BY_CHAIN_ID[chainId as EvmChainId] ?? null;
+    BLOCKAID_EVM_CHAIN_BY_CHAIN_ID[chainId] ?? null;
 
 export const resolveBlockaidSolanaChain = (symbol: SolanaNetworkSymbol) =>
     BLOCKAID_SOLANA_CHAIN_BY_SYMBOL[symbol];

@@ -285,7 +285,7 @@ export const verifyEthereumStakingLiveState = async ({
 export const getEthNetworkForWalletSdk = (
     symbol: NetworkSymbol | 'unknown' | undefined,
 ): EthNetwork | null => {
-    const ethNetworks: PartialRecord<NetworkSymbol, EthNetwork> = {
+    const ethNetworks: PartialRecord<string, EthNetwork> = {
         thod: 'hoodi',
         eth: 'mainnet',
     };
