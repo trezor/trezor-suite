@@ -36,7 +36,10 @@ when in doubt and treat the list below as a summary that can lag it by a commit.
 - **A bail-out is worse than a missing memo** — it silently drops auto-memoization for the whole
   function. `react-hook-form`'s `useForm().watch()` causes one; use `useWatch()`.
 - **Green lint is not a correctness gate for the compiler rollout.** None of these rules — nor jest —
-  can see the failure mode in the next section.
+  can see the failure mode in the next section. `yarn react-compiler:check` is the gate that does:
+  it compiles every enabled tree and fails on a render-time `react-hook-form` read
+  ([`reactCompilerFrozenReads.ts`](../../packages/suite-build/reactCompilerFrozenReads.ts), run by
+  the `other-checks` CI job). Run it locally before pushing anything that reads a form.
 
 ## Compiled paths: three review rules no linter enforces
 
