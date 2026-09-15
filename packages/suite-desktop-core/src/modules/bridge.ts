@@ -18,14 +18,21 @@ export const SERVICE_NAME = 'bridge';
 
 class TrezordNodeProcess {
     private readonly proxy;
+    private readonly store;
 
-    constructor() {
+    constructor(store: Dependencies['store']) {
+        this.store = store;
         this.proxy = new ThreadProxy<TrezordNode>({ name: 'bridge', keepAlive: true });
     }
 
     private async startProxy(mode: 'start' | 'startTest') {
         if (this.proxy.running) return;
-        await this.proxy.run({ api: bridgeTest ? 'udp' : 'usb' });
+        // usb implementation is read from persisted settings at cold start; a change applies on the
+        // next app launch (default 'legacy' = usb 2.x, the known-good baseline).
+        const api = bridgeTest
+            ? 'udp'
+            : (this.store.getBridgeSettings().usbImplementation ?? 'legacy');
+        await this.proxy.run({ api });
         // Call `start` again in case of respawning due to keepAlive
         this.proxy.watch('started', () => this.proxy.request(mode, []));
         await this.proxy.request(mode, []);
@@ -124,7 +131,7 @@ export const initBackground = ({
 }: Pick<Dependencies, 'store' | 'mainThreadEmitter' | 'mainWindowProxy'>) => {
     let loaded = false;
 
-    bridge = new TrezordNodeProcess();
+    bridge = new TrezordNodeProcess(store);
 
     const onLoad = async () => {
         if (loaded) return;
@@ -179,9 +186,11 @@ export const initBackground = ({
 };
 
 export const init = ({ store, mainWindowProxy, mainThreadEmitter }: Dependencies) => {
-    ipcMain.handle('bridge/change-settings', (_, payload: { doNotStartOnStartup: boolean }) => {
+    ipcMain.handle('bridge/change-settings', (_, payload: Partial<BridgeSettings>) => {
         try {
-            store.setBridgeSettings(payload);
+            // merge: each control (Run-on-startup, usb implementation) sends only its own field,
+            // and store.set replaces the whole object, so we must not drop the other settings.
+            store.setBridgeSettings({ ...store.getBridgeSettings(), ...payload });
 
             return { success: true };
         } catch (error) {
