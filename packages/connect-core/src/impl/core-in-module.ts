@@ -31,6 +31,7 @@ import { createUUIDDeferredManager } from '@trezor/connect-common/src/utils/defe
 import { type AbstractTransportParams, TRANSPORT, type Transport } from '@trezor/transport-common';
 import { type Logger, cloneObject } from '@trezor/utils';
 
+import { updateProxy } from '../backend/BlockchainLink';
 import { initCoreState } from '../core';
 
 export abstract class CoreInModule implements TrezorConnectCore<ConnectSettings> {
@@ -151,7 +152,12 @@ export abstract class CoreInModule implements TrezorConnectCore<ConnectSettings>
         await this.coreManager.getOrInit(this.settings, this.boundOnCoreEvent);
     }
 
-    protected abstract updateProxy(proxy: UpdateConnectSettings['proxy']): Promise<void>;
+    // Default proxy handling delegates to the blockchain backends. Web overrides this to reject
+    // (proxy is unsupported in a browser); node, native and the platform-neutral local root all
+    // share this implementation.
+    protected async updateProxy(proxy: UpdateConnectSettings['proxy']) {
+        await updateProxy(proxy);
+    }
 
     public async updateConnectSettings(params: UpdateConnectSettings) {
         const { proxy, transports: newTransports, enabledNetworks } = params;

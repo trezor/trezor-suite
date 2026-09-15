@@ -1,10 +1,5 @@
-import {
-    type TrezorConnectPrivilegedAPI,
-    type UpdateConnectSettings,
-    factoryPrivileged,
-} from '@trezor/connect-common';
+import { type TrezorConnectPrivilegedAPI, factoryPrivileged } from '@trezor/connect-common';
 
-import { updateProxy } from './backend/BlockchainLink';
 import { CoreInModule } from './impl/core-in-module';
 
 // Platform-neutral composition root. Core never selects concrete transports; a host consuming
@@ -13,10 +8,6 @@ import { CoreInModule } from './impl/core-in-module';
 class CoreInModuleLocal extends CoreInModule {
     protected defaultTransports() {
         return [];
-    }
-
-    protected async updateProxy(proxy: UpdateConnectSettings['proxy']) {
-        await updateProxy(proxy);
     }
 }
 
