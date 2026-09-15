@@ -17,6 +17,8 @@ const allSteps = stepCategories.flatMap(category => category.steps);
 
 const createDevice = (overrides: Partial<AcquiredDevice['features']>) =>
     ({
+        connected: true,
+        available: true,
         features: {
             internal_model: DeviceModelInternal.T2T1,
             ...overrides,
