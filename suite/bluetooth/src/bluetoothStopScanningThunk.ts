@@ -23,5 +23,5 @@ export const bluetoothStopScanningThunk = createThunk<
 
     dispatch(bluetoothActions.scanStatusAction({ status: 'idle' }));
     // This can fail, but there is nothing we can do about it
-    bluetoothIpc.stopScan();
+    bluetoothIpc.stopScan('ui');
 });
