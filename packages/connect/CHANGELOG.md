@@ -16,6 +16,53 @@
 
 Connect 10 has no stable release yet — use [connect.trezor.io/10.0.0-beta.2](https://connect.trezor.io/10.0.0-beta.2/) to access the prerelease version of Connect Explorer. Once Connect 10 is released, the persistent link [connect.trezor.io/10](https://connect.trezor.io/10/) will point to the latest stable version.
 
+# 10.0.0-beta.2
+
+An incremental prerelease on top of beta.1. It adds a handful of new methods (`sendTransaction`, `composePsbt`, `solanaSignMessage`), EIP-7702 and Stellar Soroban signing, and a Node entry point for `@trezor/connect` built on `@trezor/connect-core`, plus a batch of coin/backend fixes. It also carries several breaking changes — mostly to the UI-event and fee-selection channels used by custom-UI / host integrations, and to a couple of public method/result shapes — so read **Breaking since beta.1** before upgrading.
+
+## New & improved
+
+- **`sendTransaction`** — new Bitcoin method that composes, signs and (optionally, `push`) broadcasts a transaction in one call. This is the replacement for `composeTransaction`'s old signing overload (see Breaking). (919967d6a43)
+- **`composePsbt`** — new device-less method that composes a Bitcoin transaction from PSBT data plus account addresses/UTXOs, returning a precomposed result with `version` and `locktime` (no permissions required). (019eada6052)
+- **`solanaSignMessage`** — new method to sign Solana off-chain messages (OCMS v1): plain text plus optional signer public keys, with the device serializing the envelope. (1611924b04b)
+- **EIP-7702 signing.** `ethereumSignTransaction` now signs EIP-7702 set-code (type-4) transactions — pass `authorizationList` on an EIP-1559 transaction, and the parsed `authorizationList` is returned on the result. (6aeeda9b667)
+- **Stellar Soroban.** `stellarSignTransaction` now supports the `InvokeHostFunction` operation (auth entries, `SorobanTransactionData` extension, full sint64 nonce precision), gated on firmware 2.12.4. (ea9b52e4402)
+- **Node entry point.** `@trezor/connect` now ships a Node build (on top of `@trezor/connect-core`) that injects Bridge and NodeUSB transports by default, so a Node consumer can install only `@trezor/connect` and talk to a device over bridge or USB. Browser (`[bridge, WebUSB]`) and react-native (`[bridge]`) defaults are unchanged. (ce5690f82a7)
+- **`FIRMWARE_TYPE_CHANGED`** — new UI event (payload `{ device }`) emitted during a firmware update when the installed firmware type changes. (c2e11a9572b)
+- `signMessage` accepts an optional `scriptType` param that overrides the script type inferred from the derivation path (e.g. for custom purpose-45 paths). (390fdd4c819)
+- `getAccountInfo` and `discoverAccounts` now accept index-less **root** derivation paths (min path length 2) for single-account coin types, e.g. the Solana root path. (31fe1d9f725)
+- `getAccountInfo` and `blockchainEstimateFee` accept a new optional `privatePending` param (in-flight nonces/txids) for EVM blockbook discovery. (754da40740d)
+- `@trezor/connect-common` now exports `GRANTABLE_PERMISSIONS`, the canonical allowlist of upfront-grantable permission scopes for building `requestedPermissions` UIs. (5a8804c06f9)
+- New `test-unsigned-nightly` value on the public `FirmwareChannel` type (a nightly/dev release channel). (fe1eb6ac0ed)
+
+## Behavior & fixes
+
+- **Named EVM inputs resolve to hex.** `getAccountInfo` now returns the backend-resolved hex address in `descriptor` for named EVM inputs (e.g. `.eth`), instead of echoing the name back. (de776b8cc76)
+- **Pending BTC tx size.** The optimistic pending Bitcoin transaction now reports `size` in bytes (`byteLength`) instead of weight units (~4×), matching blockbook's byte-valued `size`. (2ec843049c0)
+- **EVM slip44.** `getCoinInfo` now returns `slip44: 60` for every EVM network except ETC (61), rather than per-chain registry values — e.g. RHC and HYPE change from 4663/999 to 60. (8c4cbf2bf44)
+- **`selectAccount` unsupported coins.** A Connect-valid but Suite-unmodeled coin (dash, dgb, xtz, testnets, …) is now rejected up front with the distinct `Method_UnsupportedCoinForHost` error instead of a generic modal. (2877a16d71d)
+- **Manifest name sanitizing.** `manifest.appName` (and THP `hostName`) are sanitized — control chars stripped, whitespace runs collapsed, trimmed; a name that becomes empty is rejected. `appName` is also now strictly required at manifest parse (as beta.1 announced). (c6a11d3a93b, fe8e15c7fe7)
+- **Solana.** `solanaSignTransaction` no longer fails precompose for transactions using address lookup tables (467c4002c3f), and rejects unsupported v1 transactions upfront with `Method_InvalidParameter` (d24fa8a5d8c). `solanaComposeTransaction` now returns token metadata (`newAccountProgramName`, `tokenAccountInfo`) in `additionalInfo` for pre-serialized token transfers, fixing Solana token trades. (bb7502fedc8)
+- **Backend reconnect back-off.** A dropped blockchain backend no longer triggers a tight reconnect loop / Solana reconnect storm — reconnect delay is clamped to 1–20s, the attempt counter resets only after a connection holds for 30s, and back-off attempts reject with `Backend_Disconnected` rather than forcing an immediate re-sync (explicit reconnects still bypass the wait). (f02219132e6, d1fc98016c3)
+- **TRON.** Default fee info now exposes real `minFee=1` / `maxFee=15,000,000,000` SUN instead of the `-1`/unknown placeholders (f124fe96ceb), and TRX/tTRX block notifications are throttled together with EVM at ~12s per block event (2524bc4d2ca).
+- `ethereumSignTypedData` no longer requires the `eip712-domain-only` firmware capability for `EIP712Domain`-only payloads. (d4ead6f1780)
+- **BTC custom-fee fallback** now composes a single transaction at the coin's `minFee` instead of scanning fees down from the top level, changing which custom fee is offered when no standard level is affordable. (7988531569c)
+- **Firmware rollout bucketing** no longer permanently excludes the ~1% of devices that hash into the top bucket, even at 100% rollout. (3debf109035)
+- On THP devices, the PIN matrix is now requested **before** the passphrase entry. (b2c3d73ce4c)
+
+## Breaking since beta.1
+
+These mostly affect **custom-UI and host (Suite-style) integrations**; a couple touch public method/result shapes.
+
+- **`UI_EVENT` split.** The public `UI_REQUEST` constant map is split into `UI_EVENTS` (fire-and-forget notifications) and `UI_REQUESTS` (messages needing a `UI_RESPONSE`), a new `UI_REQUEST`/`UI_REQUESTS` event channel is added, and several members are renamed (e.g. `TRANSPORT`→`TRANSPORT_MISSING`, `INVALID_PIN`→`PIN_INVALID`). The event payloads were also reshaped: `requestId` was removed from `UI_EVENT` payloads (`callId` remains) and is now emitted on standalone `UI_REQUEST` payloads. Migrate `UI_REQUEST.*` references to `UI_EVENTS.*` / `UI_REQUESTS.*`. (8d5768be292, b372b090361, f26a6147e01)
+- **`composeTransaction` is precompose-only.** Its signing/broadcast overload (`ComposeParams` → `SignedTransaction`, including `push`) is removed — migrate signing+push flows to the new `sendTransaction`. (919967d6a43)
+- **`ethereumGetPublicKey.displayablePublicKey`** is now the hex-encoded compressed public key (byte-identical to `publicKey`, matching what firmware shows on screen) instead of the xpub. (a508e4ab6e4)
+- **`blockchainEvmRpcGetChainId`** (formerly `blockchainValidateEvmRpcUrl` in beta.1) now takes only `{ url }` and returns `{ chainId }`, instead of validating a supplied chainId and returning `{ valid, actualChainId }`. (39fa982888d)
+- **`SELECT_FEE` event** payload now carries `feeLevels` as `FeeLevel[]` (only composable/valid levels), and the `SelectFeeLevel` type is removed from `@trezor/connect-common`. (a300e1be087)
+- **`RECEIVE_FEE` response** payload is restructured: use `{ type: 'select-fee', value }` and `{ type: 'select-fee-custom', value }` (replacing `'compose-custom'` / `'send'`). (eedb2fdde5f)
+- **`UPDATE_CUSTOM_FEE` UI event removed.** The `ui-update_custom_fee` member of the `UI_REQUEST` map and its `UpdateCustomFee` type are removed from `@trezor/connect-common`; custom-UI code that listened for it should drop the handler. (4f5b240fcb0)
+- **`KnownDevice.availableTranslations`** now maps language codes to `TranslationMetadata` objects instead of plain strings. (26f0cd334c5)
+
 # 10.0.0-beta.1
 
 Connect 10 moves the Connect core out of the self-hosted iframe + popup and into **Trezor Suite**, which now hosts the core and renders every approval, PIN, passphrase and confirmation screen. Your app stays a thin client calling the same `TrezorConnect` methods — nothing to install, and it works whether or not Suite desktop is running. Alongside the move, the SDK gains a privacy-friendly account picker (`selectAccount`), granular per-coin permissions, and much smaller ESM-only client packages.
