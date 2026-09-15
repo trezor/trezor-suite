@@ -26,7 +26,6 @@
         "@suite-common/suite-types": "workspace:*",
         "@suite-common/toast-notifications": "workspace:*",
         "@suite-common/wallet-config": "workspace:*",
-        "@suite-common/wallet-core": "workspace:*",
         "@suite-common/wallet-utils": "workspace:*",
         "@trezor/asset-utils": "workspace:*",
         "@trezor/components": "workspace:*",

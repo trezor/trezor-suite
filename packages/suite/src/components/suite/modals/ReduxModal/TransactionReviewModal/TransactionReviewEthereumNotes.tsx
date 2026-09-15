@@ -9,8 +9,8 @@ import { type GeneralPrecomposedTransactionFinal } from '@suite-common/wallet-ty
 import { getFee, hasEip1559MaxPriorityFee, isEip1559 } from '@suite-common/wallet-utils';
 import { Note, Text } from '@trezor/components';
 import { CheckCircleIcon, GasPumpIcon } from '@trezor/icons';
-import { FeeRate } from '@trezor/product-components';
 
+import { FeeRate } from 'src/components/wallet/Fees/FeeRate';
 import { useSelector } from 'src/hooks/suite';
 import { type AppState } from 'src/types/suite';
 import { type Account } from 'src/types/wallet';

@@ -40,10 +40,11 @@ import {
     TagIcon,
     WarningIcon,
 } from '@trezor/icons';
-import { FeeRate, TokenIcon } from '@trezor/product-components';
+import { TokenIcon } from '@trezor/product-components';
 import { BigNumber } from '@trezor/utils';
 
 import { FormattedDateWithBullet } from 'src/components/suite/FormattedDateWithBullet';
+import { FeeRate } from 'src/components/wallet/Fees/FeeRate';
 import { TransactionHeader } from 'src/components/wallet/TransactionItem/TransactionHeader';
 import { useLayoutSize } from 'src/hooks/suite/useLayoutSize';
 import { type WalletAccountTransaction } from 'src/types/wallet';
