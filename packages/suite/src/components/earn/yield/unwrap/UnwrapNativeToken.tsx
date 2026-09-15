@@ -1,8 +1,9 @@
 import { useEffect, useState } from 'react';
-import { FormProvider, useForm, useWatch } from 'react-hook-form';
+import { useForm, useWatch } from 'react-hook-form';
 
 import { useMutation } from '@tanstack/react-query';
 
+import { Form } from '@suite/form';
 import { Translation } from '@suite/intl';
 import { openModal } from '@suite/modal';
 import { useServices } from '@suite-common/dependency-injection';
@@ -190,6 +191,8 @@ export const UnwrapNativeToken = ({
         );
     };
 
+    const { formState } = methods;
+
     const renderContent = () => {
         if (broadcast && isFlowComplete) {
             return (
@@ -234,7 +237,7 @@ export const UnwrapNativeToken = ({
                     />
                 </Text>
 
-                <FormProvider {...methods}>
+                <Form form={methods} formState={formState}>
                     <YieldUnwrapStep
                         tokenSymbol={tokenSymbol}
                         tokenDecimals={tokenDecimals}
@@ -257,7 +260,7 @@ export const UnwrapNativeToken = ({
                         onSubmit={handleSubmit}
                         onPendingTxClick={openTxDetail}
                     />
-                </FormProvider>
+                </Form>
             </>
         );
     };
