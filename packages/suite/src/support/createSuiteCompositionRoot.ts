@@ -31,6 +31,7 @@ import { type CommonServices } from '@suite-common/extra-dependencies';
 import { FW_HASH_CHECK_DEFAULT_TIMEOUTS } from '@suite-common/firmware-authenticity';
 import { createNetworksCompositionRoot } from '@suite-common/networks';
 import { type PlatformEncryptionDep } from '@suite-common/platform-encryption';
+import { type WithServices } from '@suite-common/redux-utils';
 import { createMigrateSuiteSyncLabelsForRbfTransactionCompositionRoot } from '@suite-common/suite-rbf-labels-migrations';
 import {
     createSuiteSyncWriteLabels,
@@ -76,7 +77,7 @@ export type SuiteServices = CommonServices &
 
 export type StoreAPIDep = {
     getState: () => AppState;
-    dispatch: ThunkDispatch<AppState, Record<never, never>, UnknownAction>;
+    dispatch: ThunkDispatch<AppState, WithServices<SuiteServices>, UnknownAction>;
 };
 
 export type SuiteAppDeps = StoreAPIDep &
