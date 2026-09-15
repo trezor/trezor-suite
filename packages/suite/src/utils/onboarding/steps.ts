@@ -1,3 +1,4 @@
+import { getIsDeviceAuthenticityCheckSupportedAndEnabled } from '@suite/authenticity-checks';
 import { getFirmwareVersion } from '@trezor/device-utils';
 import { versionUtils } from '@trezor/utils';
 
@@ -63,12 +64,11 @@ export const isStepUsed = (step: Step, props: IsStepUsedProps): boolean => {
     }
 
     if (step.id === ID_AUTHENTICATE_DEVICE_STEP) {
-        const isBootloaderUnlocked = device?.features?.bootloader_locked === false;
-
-        return (
-            isDeviceAuthenticityCheckEnabled &&
-            (!isUnlockedBootloaderAllowed || !isBootloaderUnlocked)
-        );
+        return getIsDeviceAuthenticityCheckSupportedAndEnabled({
+            device,
+            isDeviceAuthenticityCheckEnabled,
+            isUnlockedBootloaderAllowed,
+        });
     }
 
     if (!step.path) {

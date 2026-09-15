@@ -9,5 +9,11 @@ export {
     selectShouldDisplayDeviceCompromised,
     selectShouldDisplayDeviceCompromisedOnRoute,
     selectShouldRetryFirmwareRevisionCheckError,
-    type AuthenticityChecksRootState,
 } from './authenticityChecksSelectors';
+export {
+    getIsDeviceAuthenticityCheckSupportedAndEnabled,
+    selectShouldCheckDeviceAuthenticity,
+    selectShouldEnterInteractiveDeviceChecks,
+    selectShouldEnterInteractiveDeviceChecksOnRoute,
+} from './interactiveAuthenticityChecksSelectors';
+export type { AuthenticityChecksRootState } from './types';

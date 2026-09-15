@@ -35,3 +35,14 @@ export const SHOULD_ROUTER_APP_SKIP_AUTHENTICITY_CHECKS: Record<RouterApp, boole
     notifications: false,
     unknown: false,
 };
+
+/**
+ * The interactive device checks (Manual Device Check, Device Authenticity Check) are baked into the
+ * onboarding wizard itself as one of its steps once the user is inside it, so `Preloader` must not
+ * also try to render them globally while onboarding is active. Otherwise identical to
+ * `SHOULD_ROUTER_APP_SKIP_AUTHENTICITY_CHECKS`, for the same deadlock-prevention reasons.
+ */
+export const SHOULD_ROUTER_APP_SKIP_INTERACTIVE_DEVICE_CHECKS: Record<RouterApp, boolean> = {
+    ...SHOULD_ROUTER_APP_SKIP_AUTHENTICITY_CHECKS,
+    onboarding: true,
+};

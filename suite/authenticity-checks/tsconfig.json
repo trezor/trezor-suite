@@ -12,6 +12,9 @@
         {
             "path": "../../suite-common/persistent-device-data"
         },
+        {
+            "path": "../../suite-common/suite-constants"
+        },
         { "path": "../router" },
         { "path": "../router-config" },
         { "path": "../settings" },
