@@ -44,7 +44,8 @@
     "scripts": {
         "depcheck": "yarn g:depcheck",
         "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'",
-        "test:unit": "yarn g:jest --passWithNoTests",
+        "test:unit": "yarn g:jest --passWithNoTests && yarn test:unit:asmjs",
+        "test:unit:asmjs": "yarn g:jest -c jest.config.asmjs.cjs --passWithNoTests",
         "type-check": "yarn g:tsc --build tsconfig.json",
         "build:lib": "yarn g:rimraf ./lib && yarn g:tsc --build tsconfig.lib.json && ../../../scripts/publish/replace-imports.sh ./lib"
     },
@@ -52,5 +53,8 @@
         "@fivebinaries/coin-selection": "3.0.0",
         "@trezor/utils": "workspace:*",
         "cbor": "^10.0.12"
+    },
+    "devDependencies": {
+        "@emurgo/cardano-serialization-lib-asmjs": "13.2.0"
     }
 }

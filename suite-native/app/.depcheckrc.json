@@ -1,6 +1,7 @@
 {
     "ignore-patterns": ["libDev", "lib"],
     "ignores": [
+        "@emurgo/cardano-serialization-lib-asmjs",
         "@rozenite/redux-devtools-plugin",
         "@react-native-async-storage/async-storage",
         "@react-native-community/netinfo",
