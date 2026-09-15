@@ -7,6 +7,7 @@ import {
     analyseCompiledModule,
     compileForAnalysis,
     evaluateFrozenReadReport,
+    findSuppressedFile,
     scanDirectories,
 } from './reactCompilerFrozenReads';
 
@@ -256,6 +257,56 @@ export const Amount = () => {
     });
 });
 
+describe('findSuppressedFile', () => {
+    const inspect = (source: string, filename = 'fixture.tsx') => {
+        const compiled = compileForAnalysis(source, filename);
+
+        if ('error' in compiled) {
+            throw new Error(`fixture failed to compile: ${compiled.error}`);
+        }
+
+        return findSuppressedFile(source, filename, filename, compiled.ast);
+    };
+
+    const SUPPRESSED_COMPONENT = `import { useEffect } from 'react';
+
+type ThingProps = { items: string[]; other: string };
+
+export const Thing = ({ items, other }: ThingProps) => {
+    useEffect(() => {
+        console.log(other);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [items]);
+
+    return <span>{items.join(',')}</span>;
+};
+`;
+
+    it('reports a component the compiler skips only because of a suppression', () => {
+        // The shape that let `useSendForm.ts` sit uncompiled inside a compiled tree unnoticed.
+        expect(inspect(SUPPRESSED_COMPONENT)).toEqual({
+            file: 'fixture.tsx',
+            caches: 0,
+            cachesWithoutSuppressions: 1,
+        });
+    });
+
+    it('says nothing about a file with no suppression', () => {
+        expect(inspect(SUPPRESSED_COMPONENT.replace(/^.*eslint-disable.*\n/m, ''))).toBeNull();
+    });
+
+    it('says nothing once the opt-out is deliberate', () => {
+        // `'use no memo'` already tells the next reader; a second warning would be noise.
+        expect(inspect(`'use no memo';\n${SUPPRESSED_COMPONENT}`)).toBeNull();
+    });
+
+    it('ignores a suppression for a rule the compiler does not honour', () => {
+        expect(
+            inspect(SUPPRESSED_COMPONENT.replace('react-hooks/exhaustive-deps', 'no-console')),
+        ).toBeNull();
+    });
+});
+
 describe('scanDirectories', () => {
     it('finds nothing when asked to scan nothing', () => {
         const report = scanDirectories([]);
@@ -266,6 +317,7 @@ describe('scanDirectories', () => {
             guards: 0,
             findings: [],
             impureCaches: [],
+            suppressedFiles: [],
             unknownGuardShapes: [],
             transformErrors: [],
         });
@@ -299,6 +351,7 @@ describe('evaluateFrozenReadReport', () => {
         guards: 20,
         findings: [],
         impureCaches: [],
+        suppressedFiles: [],
         unknownGuardShapes: [],
         transformErrors: [],
     };
@@ -363,6 +416,20 @@ describe('evaluateFrozenReadReport', () => {
         expect(failures[0]).toContain('Amount.tsx:12:4');
         expect(failures[0]).toContain('watch');
         expect(failures[0]).toContain('useWatch');
+    });
+
+    it('does not fail on the advisory suppressed-file channel', () => {
+        const failures = evaluateFrozenReadReport(
+            {
+                ...cleanReport,
+                suppressedFiles: [
+                    { file: 'useSendForm.ts', caches: 0, cachesWithoutSuppressions: 1 },
+                ],
+            },
+            ['packages/suite/src/hooks'],
+        );
+
+        expect(failures).toEqual([]);
     });
 
     it('does not fail on the advisory impure-cache channel', () => {
