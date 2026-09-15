@@ -1,6 +1,6 @@
 import { type ReactNode } from 'react';
 
-import { type ReviewOutputState } from '@suite-common/wallet-types';
+import { type TransactionReviewOutputState } from '@suite-common/wallet-types';
 import { Box, Card, CardDivider, HStack, Text, VStack } from '@suite-native/atoms';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
@@ -9,7 +9,7 @@ import { ReviewOutputStatusBadge } from './ReviewOutputStatusBadge';
 type ReviewOutputCardProps = {
     children: ReactNode;
     title: ReactNode;
-    outputState: ReviewOutputState;
+    outputState: TransactionReviewOutputState;
 };
 
 const REVIEW_OUTPUT_CARD_TEST_ID = 'review-output-card';

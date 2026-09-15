@@ -17,8 +17,8 @@ import {
     type Account,
     type FormState,
     type GeneralPrecomposedTransactionFinal,
-    type ReviewOutput,
     type StakeType,
+    type TransactionReviewOutput,
     type YieldClaimReward,
 } from '@suite-common/wallet-types';
 import {
@@ -76,7 +76,7 @@ const shouldShowTxValidityTimer = ({
 };
 
 export type TransactionReviewModalBodyInnerProps = {
-    outputs: ReviewOutput[];
+    outputs: TransactionReviewOutput[];
     account: Account;
     decision: Deferred<boolean, string | number | undefined> | undefined;
     txInfoState: TxInfoState;

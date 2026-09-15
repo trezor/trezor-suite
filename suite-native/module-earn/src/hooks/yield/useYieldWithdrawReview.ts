@@ -106,22 +106,35 @@ export const useYieldWithdrawReview = ({
 
     const onPushSuccess = useCallback(() => navigation.goBack(), [navigation]);
 
-    const review = useEarnTransactionReview({
-        formType: 'yield-withdraw',
-        isSigned: isWithdrawSigned,
-        navigation,
-        onPushSuccess,
-        onReviewLeave,
-        reportCancel: reportWithdrawCancel,
-        reportError: reportWithdrawError,
-        signAction,
-        pushAction,
-    });
+    const { finalizeSubmit, leaveReviewFromDeviceCancel, startReview, status, submitReview } =
+        useEarnTransactionReview({
+            formType: 'yield-withdraw',
+            isSigned: isWithdrawSigned,
+            navigation,
+            onPushSuccess,
+            onReviewLeave,
+            reportCancel: reportWithdrawCancel,
+            reportError: reportWithdrawError,
+            signAction,
+            pushAction,
+        });
+
+    const submitWithdraw = useCallback(async () => {
+        const pushedPayload = await submitReview();
+
+        return pushedPayload?.txid;
+    }, [submitReview]);
+
+    const finalizeWithdrawSubmit = useCallback(
+        (txid: string) => finalizeSubmit({ txid }),
+        [finalizeSubmit],
+    );
 
     return {
-        status: review.status,
-        submit: review.handleSubmitted,
-        startReview: review.startReview,
-        leaveReviewFromDeviceCancel: review.leaveReviewFromDeviceCancel,
+        finalizeWithdrawSubmit,
+        leaveReviewFromDeviceCancel,
+        startReview,
+        status,
+        submitWithdraw,
     };
 };

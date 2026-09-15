@@ -14,8 +14,8 @@ import { BTC_LOCKTIME_VALUE } from '@suite-common/wallet-constants';
 import { selectAccounts } from '@suite-common/wallet-core';
 import {
     type EvmTransactionPurpose,
-    type ReviewOutput,
     type StakeType,
+    type TransactionReviewOutput as TransactionReviewOutputType,
     type YieldClaimReward,
 } from '@suite-common/wallet-types';
 import {
@@ -187,7 +187,7 @@ const getContractTitle = (
 };
 
 const getOutputTitle = (
-    type: ReviewOutput['type'],
+    type: TransactionReviewOutputType['type'],
     networkType: NetworkType,
     value: string,
     isRbf: boolean,
@@ -289,7 +289,7 @@ const getOutputTitle = (
 };
 
 interface GetOutputLinesParams {
-    type: ReviewOutput['type'];
+    type: TransactionReviewOutputType['type'];
     account: Account;
     value: string;
     value2?: string;
@@ -297,7 +297,7 @@ interface GetOutputLinesParams {
     stakeType?: StakeType;
     evmTxType?: EvmTransactionPurpose;
     device?: TrezorDevice;
-    token?: ReviewOutput['token'];
+    token?: TransactionReviewOutputType['token'];
     nativeToken?: TokenInfo;
     rewards?: YieldClaimReward[];
     translationString: TranslationFunction;
@@ -648,7 +648,7 @@ export type TransactionReviewOutputProps = {
     evmTxType?: EvmTransactionPurpose;
     nativeToken?: TokenInfo;
     isTronStakeFreeze?: boolean;
-} & ReviewOutput;
+} & TransactionReviewOutputType;
 
 export const TransactionReviewOutput = (props: TransactionReviewOutputProps) => {
     const {

@@ -90,6 +90,7 @@
         { "path": "../tokens" },
         { "path": "../trading-state" },
         { "path": "../transaction-management" },
+        { "path": "../transaction-review" },
         { "path": "../transactions" },
         { "path": "../tx-simulation" },
         {

@@ -1,9 +1,9 @@
-import type { TokenInfo } from '@trezor/connect';
+import { type TokenInfo } from '@trezor/connect';
 
 import { type FormStateTradingCryptoCurrency, type FormStateTradingFiatCurrency } from './sendForm';
-import type { YieldClaimReward } from './stablecoinYield';
+import { type YieldClaimReward } from './stablecoinYield';
 
-export type ReviewOutput =
+export type TransactionReviewOutput =
     | {
           type:
               | 'opreturn'
@@ -79,6 +79,15 @@ export type ReviewOutput =
           receiveAddress?: undefined;
       };
 
-export type ReviewOutputType = ReviewOutput['type'];
+export type TransactionReviewOutputType = TransactionReviewOutput['type'];
+export type TransactionReviewOutputState = 'active' | 'success' | undefined;
 
-export type ReviewOutputState = 'active' | 'success' | undefined;
+export type TransactionReviewStatefulOutput = TransactionReviewOutput & {
+    state: TransactionReviewOutputState;
+};
+
+export type TransactionReviewSummaryOutput = {
+    state: TransactionReviewOutputState;
+    totalSpent: string;
+    fee: string;
+};

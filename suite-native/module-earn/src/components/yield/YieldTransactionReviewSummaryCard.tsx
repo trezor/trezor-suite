@@ -1,14 +1,15 @@
 import { type LayoutChangeEvent, View } from 'react-native';
 
-import { type AccountKey, type ReviewOutputState } from '@suite-common/wallet-types';
+import { type AccountKey, type TransactionReviewOutputState } from '@suite-common/wallet-types';
 import { Translation } from '@suite-native/intl';
-import { ReviewOutputCard, ReviewOutputItemValues } from '@suite-native/transaction-management';
+import { ReviewOutputItemValues } from '@suite-native/transaction-management';
+import { TransactionReviewOutputCard } from '@suite-native/transaction-review';
 
 type YieldTransactionReviewSummaryCardProps = {
     accountKey: AccountKey;
     fee: string;
     onLayout: (event: LayoutChangeEvent) => void;
-    outputState: ReviewOutputState;
+    outputState: TransactionReviewOutputState;
 };
 
 export const YieldTransactionReviewSummaryCard = ({
@@ -18,7 +19,7 @@ export const YieldTransactionReviewSummaryCard = ({
     outputState,
 }: YieldTransactionReviewSummaryCardProps) => (
     <View onLayout={onLayout}>
-        <ReviewOutputCard
+        <TransactionReviewOutputCard
             title={<Translation id="transactionManagement.review.outputs.summary.label" />}
             outputState={outputState}
         >
@@ -27,6 +28,6 @@ export const YieldTransactionReviewSummaryCard = ({
                 value={fee}
                 translationKey="transactionManagement.review.outputs.summary.maxFee"
             />
-        </ReviewOutputCard>
+        </TransactionReviewOutputCard>
     </View>
 );

@@ -99,6 +99,20 @@ describe('useTxValidityTimer', () => {
             expect(result.current.showTimer).toBe(false);
         });
 
+        it('should disable the whole flow when isEnabled is false', async () => {
+            const { result } = await renderTimer({ isEnabled: false });
+
+            expect(result.current.showTimer).toBe(false);
+
+            // No timeout cancellation may be scheduled either — a disabled flow
+            // must not interfere with a caller running its own validity handling.
+            await act(() => {
+                jest.advanceTimersByTime(SOLANA_TIMEOUT_MS + 1);
+            });
+
+            expect(mockTrezorConnectCancel).not.toHaveBeenCalled();
+        });
+
         it('should not show the timer when the network type is unknown', async () => {
             const { result } = await renderTimer({ networkType: undefined });
 
