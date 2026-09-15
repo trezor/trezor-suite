@@ -12,11 +12,10 @@ import { type TokenSymbol } from '@suite-common/wallet-types';
 import {
     convertAmountSubunitsToUnits,
     convertAmountUnitsToSubunits,
-    localizeNumber,
 } from '@suite-common/wallet-utils';
 import { PROTO } from '@trezor/connect';
 import { exhaustive } from '@trezor/type-utils';
-import { BigNumber } from '@trezor/utils';
+import { BigNumber, localizeNumber } from '@trezor/utils';
 
 import { makeFormatter } from '../makeFormatter';
 import { type FormatterConfig } from '../types';

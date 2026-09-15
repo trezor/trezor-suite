@@ -1,7 +1,6 @@
 import { Locator, Page } from '@playwright/test';
 
-import { localizeNumber } from '@suite-common/wallet-utils';
-import { BigNumber } from '@trezor/utils';
+import { BigNumber, localizeNumber } from '@trezor/utils';
 
 import { step } from '../../common';
 import { expect } from '../../testExtends/customMatchers';

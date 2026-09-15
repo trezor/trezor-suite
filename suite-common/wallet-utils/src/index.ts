@@ -16,7 +16,6 @@ export * from './fiatRatesUtils';
 export * from './filterReceiveAccounts';
 export * from './formDraftUtils';
 export * from './getMyInputsFromTransaction';
-export * from './localizeNumberUtils';
 export * from './localizePercentage';
 export * from './reviewTransactionUtils';
 export * from './clearSignedSwapUtils';
