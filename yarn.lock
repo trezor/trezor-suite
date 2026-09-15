@@ -17828,18 +17828,18 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@trezor/suite-desktop-api-electron@workspace:*, @trezor/suite-desktop-api-electron@workspace:packages/suite-desktop-api-electron":
+"@trezor/suite-desktop-api-electron@workspace:*, @trezor/suite-desktop-api-electron@workspace:suite/desktop-app-api-electron":
   version: 0.0.0-use.local
-  resolution: "@trezor/suite-desktop-api-electron@workspace:packages/suite-desktop-api-electron"
+  resolution: "@trezor/suite-desktop-api-electron@workspace:suite/desktop-app-api-electron"
   dependencies:
     "@trezor/suite-desktop-api": "workspace:*"
     electron: "npm:43.2.0"
   languageName: unknown
   linkType: soft
 
-"@trezor/suite-desktop-api@workspace:*, @trezor/suite-desktop-api@workspace:packages/suite-desktop-api":
+"@trezor/suite-desktop-api@workspace:*, @trezor/suite-desktop-api@workspace:suite/desktop-app-api":
   version: 0.0.0-use.local
-  resolution: "@trezor/suite-desktop-api@workspace:packages/suite-desktop-api"
+  resolution: "@trezor/suite-desktop-api@workspace:suite/desktop-app-api"
   dependencies:
     "@suite-common/dependency-injection": "workspace:*"
     "@suite-common/platform-encryption": "workspace:*"
