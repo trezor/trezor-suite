@@ -3,6 +3,7 @@ import { saveAs } from 'file-saver';
 
 import { type DesktopAnalyticsDep, createAnalytics } from '@suite/analytics';
 import { selectShouldRetryFirmwareRevisionCheckError } from '@suite/authenticity-checks';
+import { type BluetoothDep, createBluetoothCompositionRoot } from '@suite/bluetooth';
 import { rerunFwAuthenticityChecksThunk } from '@suite/device';
 import { selectLabelingDataForAccount } from '@suite/metadata';
 import {
@@ -30,6 +31,7 @@ import { type CommonServices } from '@suite-common/extra-dependencies';
 import { FW_HASH_CHECK_DEFAULT_TIMEOUTS } from '@suite-common/firmware-authenticity';
 import { createNetworksCompositionRoot } from '@suite-common/networks';
 import { type PlatformEncryptionDep } from '@suite-common/platform-encryption';
+import { type WithServices } from '@suite-common/redux-utils';
 import { createMigrateSuiteSyncLabelsForRbfTransactionCompositionRoot } from '@suite-common/suite-rbf-labels-migrations';
 import {
     createSuiteSyncWriteLabels,
@@ -70,11 +72,12 @@ export type SuiteServices = CommonServices &
     DesktopAnalyticsDep &
     MetadataMigrationDep &
     SuiteRouterHistoryDep &
-    TransportsDep;
+    TransportsDep &
+    BluetoothDep;
 
 export type StoreAPIDep = {
     getState: () => AppState;
-    dispatch: ThunkDispatch<AppState, Record<never, never>, UnknownAction>;
+    dispatch: ThunkDispatch<AppState, WithServices<SuiteServices>, UnknownAction>;
 };
 
 export type SuiteAppDeps = StoreAPIDep &
@@ -100,6 +103,10 @@ export const createSuiteServicesCompositionRoot = (deps: SuiteAppDeps): SuiteSer
     });
 
     const analytics = createAnalytics();
+    const bluetooth = createBluetoothCompositionRoot({
+        dispatch: deps.dispatch,
+        getState: deps.getState,
+    });
 
     const getCurrentAccountLabels = toGetter(deps.getState, selectAllLabelsForAccount);
     const getAccountsByDeviceState = toGetter(deps.getState, selectAccountsByDeviceState);
@@ -170,6 +177,7 @@ export const createSuiteServicesCompositionRoot = (deps: SuiteAppDeps): SuiteSer
         ensureDelegatedIdentityKey,
         platformEncryption: deps.platformEncryption,
         analytics,
+        bluetooth,
         suiteRouterHistory: createSuiteRouterHistory({
             history: deps.history,
         }),

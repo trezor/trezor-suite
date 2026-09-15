@@ -1,4 +1,9 @@
-export { prepareBluetoothMiddleware } from './bluetoothMiddleware';
+export {
+    prepareBluetoothMiddleware,
+    type PrepareBluetoothMiddlewareDeps,
+} from './bluetoothMiddleware';
+export { createBluetoothCompositionRoot } from './bluetoothCompositionRoot';
+export { type BluetoothService, type BluetoothDep } from './bluetoothServiceTypes';
 export {
     type DesktopBluetoothDevice,
     fromBluetoothDevice,
