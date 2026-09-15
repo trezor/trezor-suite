@@ -8,6 +8,7 @@ import type {
     BluetoothIpcEvents,
     BluetoothIpcState,
     IpcResponse,
+    ScanOwner,
     TrezorBluetoothSettings,
 } from './types';
 
@@ -18,11 +19,20 @@ import type {
 export class BluetoothIpc extends TypedEmitter<BluetoothIpcEvents> implements BluetoothIpcApi {
     private api: TrezorBluetooth;
     private state: BluetoothIpcState = { knownDevices: [] };
-    private isScanning = false;
+    private shouldScan = false;
+    private scanOwners = new Set<ScanOwner>();
+    private scanPromise: Promise<unknown> = Promise.resolve();
 
     constructor(settings: TrezorBluetoothSettings) {
         super();
         this.api = new TrezorBluetooth(settings);
+    }
+
+    private serializeScan<T>(action: () => Promise<T>): Promise<T> {
+        const next = this.scanPromise.catch(() => {}).then(action);
+        this.scanPromise = next;
+
+        return next;
     }
 
     // 1. suite knows the device but system may not. device could be removed manually from the system UI
@@ -56,9 +66,12 @@ export class BluetoothIpc extends TypedEmitter<BluetoothIpcEvents> implements Bl
 
         const emitAdapterState = ({ state }: { state: BluetoothAdapterState }) => {
             this.emit('adapter-event', state);
-            if (state === 'enabled' && this.isScanning) {
+            if (state === 'enabled' && this.shouldScan) {
                 // auto restart scan if adapter becomes enabled
-                this.api.send('start_scan').catch(error => {
+                this.serializeScan(async () => {
+                    if (!this.shouldScan) return;
+                    await this.api.send('start_scan');
+                }).catch(error => {
                     console.warn('Auto start_scan error', error);
                 });
             }
@@ -95,9 +108,8 @@ export class BluetoothIpc extends TypedEmitter<BluetoothIpcEvents> implements Bl
                     devices: this.state.knownDevices,
                 });
 
-                const { devices: scanResult } = await this.api
+                const initialScan = await this.api
                     .send('start_scan')
-                    .then(res => res)
                     // todo: bluetooth-ipc-main.init is called in inInitBluetoothThunk. If it returns an error there, thunk does not proceed and listeners are not registered.
                     // This is a hotfix, I believe, that initBluetoothThunks call to bluetoothIpc.init should only check that ipc channel is established, nothing more.
                     .catch(error => {
@@ -108,14 +120,28 @@ export class BluetoothIpc extends TypedEmitter<BluetoothIpcEvents> implements Bl
                         ) {
                             this.emit('adapter-event', 'disabled');
 
-                            return { devices: [] };
+                            return undefined;
                         }
                         throw error;
                     });
-                if (scanResult.length === 0) {
+
+                if (!initialScan) {
+                    // Nothing is scanning, so there is nothing to wait for.
+                    return this.result();
+                }
+
+                if (initialScan.devices.length === 0) {
                     // wait. devices may not be returned immediately
                     await resolveAfter(1000);
                 }
+
+                // Block start_scan before this stop.
+                await this.serializeScan(async () => {
+                    if (this.shouldScan) return;
+                    await this.api.send('stop_scan');
+                }).catch(error => {
+                    console.warn('Initial stop_scan error', error);
+                });
             } catch (error) {
                 return this.result(error.message);
             }
@@ -139,36 +165,63 @@ export class BluetoothIpc extends TypedEmitter<BluetoothIpcEvents> implements Bl
         return Promise.resolve(this.result());
     }
 
-    async startScan() {
-        try {
-            await this.connectApi();
-        } catch (error) {
-            return this.result(error.message);
+    startScan(owner?: ScanOwner) {
+        this.shouldScan = true;
+        if (owner) {
+            this.scanOwners.add(owner);
         }
 
-        try {
-            const { devices } = await this.api.send('start_scan');
-            this.isScanning = true;
-            this.emit('device-list-update', this.filterConnectableDevices(devices));
-        } catch (error) {
-            return this.result(error.message);
-        }
+        return this.serializeScan(async () => {
+            try {
+                const connection = await this.connectApi();
+                if (connection && !connection.success) {
+                    return connection;
+                }
 
-        return this.result();
+                const { devices } = await this.api.send('start_scan');
+
+                this.emit('device-list-update', this.filterConnectableDevices(devices));
+
+                return this.result();
+            } catch (error) {
+                return this.result(error.message);
+            }
+        });
     }
 
-    async stopScan() {
-        try {
-            await this.connectApi();
-            if (this.state.knownDevices.length === 0) {
-                this.isScanning = false;
-                await this.api.send('stop_scan');
-            }
-        } catch (error) {
-            return this.result(error.message);
+    stopScan(owner?: ScanOwner) {
+        if (owner) {
+            this.scanOwners.delete(owner);
         }
 
-        return this.result();
+        if (this.scanOwners.size > 0) {
+            return Promise.resolve(this.result());
+        }
+
+        this.shouldScan = false;
+
+        return this.serializeScan(async () => {
+            if (this.shouldScan || this.scanOwners.size > 0) {
+                return this.result();
+            }
+
+            try {
+                const connection = await this.connectApi();
+                if (connection && !connection.success) {
+                    return connection;
+                }
+
+                if (this.shouldScan || this.scanOwners.size > 0) {
+                    return this.result();
+                }
+
+                await this.api.send('stop_scan');
+
+                return this.result();
+            } catch (error) {
+                return this.result(error.message);
+            }
+        });
     }
 
     async connectDevice(id: string) {
