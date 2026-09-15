@@ -19,8 +19,8 @@ import {
 } from 'src/components/suite';
 import { useSelector } from 'src/hooks/suite';
 
-import { ASSET_FIRST_CELL_PADDING } from './assetFirstTableLayout';
 import {
+    ASSET_FIRST_CELL_PADDING,
     getAssetDisplaySymbol,
     getAssetHolding,
     getAssetName,

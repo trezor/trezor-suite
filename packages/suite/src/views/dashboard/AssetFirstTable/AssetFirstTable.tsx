@@ -7,8 +7,8 @@ import { HORIZONTAL_LAYOUT_PADDINGS } from 'src/constants/suite/layout';
 import { useSelector } from 'src/hooks/suite';
 
 import { AssetFirstRow } from './AssetFirstRow';
-import { ASSET_FIRST_CELL_PADDING } from './assetFirstTableLayout';
 import { selectAssetFirstTableKeys } from './assetFirstTableSelectors';
+import { ASSET_FIRST_CELL_PADDING } from './assetFirstTableUtils';
 
 /**
  * The rows run the full width of the page rather than sitting in a card: the design separates
