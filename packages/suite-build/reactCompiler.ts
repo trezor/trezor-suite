@@ -19,6 +19,8 @@ export const REACT_COMPILER_PATHS: readonly string[] = [
     // Wave 1a. Already compiled in production on mobile, where `experiments.reactCompiler` covers
     // every `suite-common/*` source the Expo bundle pulls in.
     'suite-common',
+    // Wave 1b, one revertible entry per sub-wave, lowest bailout rate first.
+    'packages/suite/src/views',
 ];
 
 /**

@@ -1,6 +1,6 @@
 import { useCallback } from 'react';
-import { FormProvider } from 'react-hook-form';
 
+import { Form } from '@suite/form';
 import { Translation } from '@suite/intl';
 import { Anchor, SettingsAnchor } from '@suite/router';
 import { ActionColumn, SectionItem, TextColumn } from '@trezor/product-components';
@@ -24,6 +24,8 @@ export const DeviceLabel = ({ isDeviceLocked }: DeviceLabelProps) => {
         [handleSubmit],
     );
 
+    const { formState } = form;
+
     return (
         <Anchor anchorId={SettingsAnchor.DeviceLabel}>
             {({ anchorId, anchorRef, shouldHighlight }) => (
@@ -42,13 +44,13 @@ export const DeviceLabel = ({ isDeviceLocked }: DeviceLabelProps) => {
                         }
                     />
                     <ActionColumn>
-                        <FormProvider {...form}>
+                        <Form form={form} formState={formState}>
                             <ChangeDeviceLabelForm
                                 isVertical
                                 isDeviceLocked={isDeviceLocked}
                                 onClick={onSubmit}
                             />
-                        </FormProvider>
+                        </Form>
                     </ActionColumn>
                 </SectionItem>
             )}
