@@ -1,5 +1,4 @@
-import { FormProvider } from 'react-hook-form';
-
+import { Form } from '@suite/form';
 import { ContextMessage } from '@suite/message-system';
 import { type YieldDtoV2 } from '@suite-common/earn-stablecoin-api';
 import { Context } from '@suite-common/message-system';
@@ -43,6 +42,8 @@ export const YieldDeposit = ({ account, vault }: YieldDepositProps) => {
     const isFormHidden =
         !hasVaultTokenContract || (isDisabled && !yieldDepositContextValues.hasTransactionActivity);
 
+    const { formState } = yieldDepositContextValues.methods;
+
     return (
         <AllowanceContext.Provider value={allowanceContextValue}>
             <Column gap={24}>
@@ -55,9 +56,9 @@ export const YieldDeposit = ({ account, vault }: YieldDepositProps) => {
                     />
                 ) : (
                     <YieldDepositContext.Provider value={yieldDepositContextValues}>
-                        <FormProvider {...yieldDepositContextValues.methods}>
+                        <Form form={yieldDepositContextValues.methods} formState={formState}>
                             <YieldDepositForm />
-                        </FormProvider>
+                        </Form>
                     </YieldDepositContext.Provider>
                 )}
             </Column>
