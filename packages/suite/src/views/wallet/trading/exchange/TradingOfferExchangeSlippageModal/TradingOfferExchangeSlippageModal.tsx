@@ -1,9 +1,10 @@
 import { useState } from 'react';
-import { FormProvider, useForm } from 'react-hook-form';
+import { useForm } from 'react-hook-form';
 
 import { yupResolver } from '@hookform/resolvers/yup';
 import { type ExchangeTrade } from 'invity-api';
 
+import { Form } from '@suite/form';
 import { Translation, useTranslation } from '@suite/intl';
 import {
     type SlippageFormValues,
@@ -86,8 +87,10 @@ export const TradingOfferExchangeSlippageModal = ({
         onClose();
     };
 
+    const { formState } = form;
+
     return (
-        <FormProvider {...form}>
+        <Form form={form} formState={formState}>
             <Modal
                 heading={<Translation id="TR_EXCHANGE_SWAP_SLIPPAGE_AMOUNT" />}
                 description={<Translation id="TR_EXCHANGE_SWAP_SLIPPAGE_INFO" />}
@@ -127,6 +130,6 @@ export const TradingOfferExchangeSlippageModal = ({
                     )}
                 </Column>
             </Modal>
-        </FormProvider>
+        </Form>
     );
 };
