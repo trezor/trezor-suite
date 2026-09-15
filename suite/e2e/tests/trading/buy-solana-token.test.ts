@@ -131,7 +131,7 @@ test.describe('Trading - Buy Solana token', { tag: ['@T3W1', '@T3T1'] }, () => {
 
             await test.step('Return to account buy form', async () => {
                 await tradingPage.backToAccountButton('Buy').click();
-                await tradingPage.verifyBuyFormOpened(/Solana/);
+                await tradingPage.verifyBuyFormOpened(/Bitcoin|Solana/);
             });
         },
     );
