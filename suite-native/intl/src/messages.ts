@@ -3035,7 +3035,7 @@ export const messages = {
             },
             chooseAccountSheet: {
                 stakingTitle: 'Choose account to stake',
-                yieldTitle: 'Choose account to yield',
+                yieldTitle: 'Choose account for yield',
                 title: 'Choose account',
             },
             earnItem: {
@@ -3817,9 +3817,9 @@ export const messages = {
                 howTradingWorksSheet: {
                     title: 'How trading works',
                     sheetTitle: 'How trading with Trezor works',
-                    item1: 'Trezor compares trusted exchange providers to find the best offer',
-                    item2: 'Providers use your location to show relevant offers',
-                    item3: 'Trezor never sees your payment or KYC data\n<text>It’s shared only with the provider if you complete your trade.</text>',
+                    item1: 'Trezor compares trusted exchange providers to find the best offer.',
+                    item2: 'Providers use your location to show relevant offers.',
+                    item3: 'Trezor never sees your payment or KYC data.\n<text>It’s shared only with the provider if you complete your trade.</text>',
                     item4: 'How fees are calculated',
                     item5: "Trezor's Terms of Use",
                 },
