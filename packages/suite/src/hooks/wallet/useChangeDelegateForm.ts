@@ -92,6 +92,7 @@ export const useChangeDelegateForm = ({
         onFeeLevelChange,
     } = useStakeCompose({
         ...methods,
+        formState,
         state,
     });
 
@@ -107,6 +108,7 @@ export const useChangeDelegateForm = ({
         onChange: onFeeLevelChange,
         composeRequest,
         ...methods,
+        formState,
     });
     const selectedFee = _selectedFee ?? 'normal';
 
