@@ -62,6 +62,7 @@ export const Navigation = ({ children }: NavigationProps) => {
     const { analytics, dispatch } = useServices(injectDesktopAnalytics, injectDispatch);
 
     const isInitialRun = useSelector(selectIsInitialRun);
+    // During initialRun, Dashboard is not yet available, and Start screen takes precedence.
     const startRoute: Route['name'] = isInitialRun ? 'suite-start' : 'suite-index';
 
     const isBtcOnly = useSelector(selectHasBitcoinOnlyFirmware);

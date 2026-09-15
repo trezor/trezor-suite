@@ -22,6 +22,11 @@ import { Card } from '@trezor/components';
 
 import * as analyticsActions from 'src/actions/suite/analyticsActions';
 import { initThunk } from 'src/actions/suite/initAction';
+import {
+    InteractiveDeviceChecksFlow,
+    useInteractiveDeviceChecksFlowState,
+} from 'src/components/suite/SecurityCheck/InteractiveDeviceChecksFlow';
+import { WelcomeLayoutWithoutModalSwitcher } from 'src/components/suite/layouts/WelcomeLayout/WelcomeLayoutWithoutModalSwitcher';
 import { useGuideDesktopMenu, useGuideKeyboard } from 'src/hooks/guide';
 import { useAppShortcuts, useSelector } from 'src/hooks/suite';
 import { useWindowVisibility } from 'src/hooks/suite/useWindowVisibility';
@@ -32,7 +37,6 @@ import {
 } from 'src/selectors/suite/suiteSelectors';
 import { Onboarding } from 'src/views/onboarding';
 import { AnalyticsConsentScreen } from 'src/views/start/AnalyticsConsentScreen';
-import { SuiteStart } from 'src/views/start/SuiteStart';
 import { ErrorPage } from 'src/views/suite/ErrorPage';
 
 import { DatabaseCorruptedModal } from './DatabaseCorruptedModal';
@@ -46,8 +50,6 @@ import { WelcomeLayout } from '../layouts/WelcomeLayout/WelcomeLayout';
 
 const getFullscreenApp = (app: RouterAppWithParams['app']): FC | undefined => {
     switch (app) {
-        case 'start':
-            return SuiteStart;
         case 'onboarding':
             return Onboarding;
         default:
@@ -103,6 +105,12 @@ export const Preloader = memo(function Preloader({ children }: PropsWithChildren
     useAppShortcuts();
     useWindowVisibility();
 
+    const {
+        isInteractiveDeviceChecksFlowDisplayed,
+        isAuthenticityCheckStepActive,
+        setIsAuthenticityCheckStepActive,
+    } = useInteractiveDeviceChecksFlowState();
+
     // Failed storage loading also prevents persisted analytics consent from loading.
     // Show the failure before consent so it cannot hide the database error.
     if (lifecycle.status === 'db-corrupted') {
@@ -133,6 +141,17 @@ export const Preloader = memo(function Preloader({ children }: PropsWithChildren
 
     if (shouldDisplayDeviceCompromisedOnRoute) {
         return <DeviceCompromisedScreen />;
+    }
+
+    if (isInteractiveDeviceChecksFlowDisplayed) {
+        return (
+            <WelcomeLayoutWithoutModalSwitcher>
+                <InteractiveDeviceChecksFlow
+                    isAuthenticityCheckStepActive={isAuthenticityCheckStepActive}
+                    setIsAuthenticityCheckStepActive={setIsAuthenticityCheckStepActive}
+                />
+            </WelcomeLayoutWithoutModalSwitcher>
+        );
     }
 
     // TODO: murder the fullscreen app logic, there must be a better way

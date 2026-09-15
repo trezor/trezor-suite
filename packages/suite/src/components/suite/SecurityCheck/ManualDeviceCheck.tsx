@@ -58,7 +58,7 @@ The component structure in this file may seem confusing at first, but it has its
 can undergo a Manual Device Check in three distinct cases:
   A) uninitialized device without FW (fresh or factory-reset)
   B) uninitialized device with FW (after a wipe or partial onboarding)
-  C) initialized device with FW (shown only once in fresh suite)
+  C) initialized device with FW, which hasn't been confirmed yet
 
 Of course, an initialized device without FW is impossible (just for completness).
 
@@ -391,6 +391,7 @@ export const InitializedManualDeviceCheck = ({ onSuccess }: InitializedManualDev
 type ManualDeviceCheckProps = { onSuccess: () => void };
 
 // TODO this will be removed in subsequent refactoring, but in this commit, it works just like before!
+// ORLY????
 export const ManualDeviceCheck = ({ onSuccess }: ManualDeviceCheckProps) => {
     const device = useSelector(selectSelectedDevice);
 
