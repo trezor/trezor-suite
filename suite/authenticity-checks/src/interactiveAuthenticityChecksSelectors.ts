@@ -3,14 +3,8 @@ import {
     selectIsDeviceAuthenticityCheckEnabled,
     selectIsUnlockedBootloaderAllowed,
 } from '@suite/settings';
-import {
-    getIsDeviceAuthenticityCheckSupportedAndEnabled,
-    selectSelectedDevice,
-} from '@suite-common/device';
-import {
-    selectDeviceAuthenticityByDeviceId,
-    selectDeviceNeedsManualCheck,
-} from '@suite-common/persistent-device-data';
+import { getIsDeviceAuthenticityCheckSupportedAndEnabled } from '@suite-common/device';
+import { selectDeviceAuthenticityByDeviceId } from '@suite-common/persistent-device-data';
 import type { TrezorDevice } from '@suite-common/suite-types';
 import { isDeviceAcquired } from '@suite-common/suite-utils';
 
@@ -50,29 +44,5 @@ export const selectShouldCheckDeviceAuthenticity = (
     return !isSuccessfulPersistedResult;
 };
 
-/**
- * Whether to enter the Interactive Device Checks Flow to perform the interactive security checks,
- * i.e. the checks that need to prompt the user for confirmation, and can be rerun again until success.
- * For the non-interactive checks, see `selectShouldDisplayDeviceCompromised`.
- *
- * - Manual Device Check: always reversible by user action.
- * - Device Authenticity Check: when failed result has been persisted, check will be redone.
- */
-export const selectShouldEnterInteractiveDeviceChecks = (
-    state: AuthenticityChecksRootState,
-    device?: TrezorDevice,
-): boolean => {
-    const shouldDoManualDeviceCheck = selectDeviceNeedsManualCheck(state, device);
-    const shouldDoDeviceAuthenticityCheck = selectShouldCheckDeviceAuthenticity(state, device);
-
-    return shouldDoManualDeviceCheck || shouldDoDeviceAuthenticityCheck;
-};
-
 export const selectShouldRouterAppSkipInteractiveDeviceChecks = (state: RouterRootState): boolean =>
     SHOULD_ROUTER_APP_SKIP_INTERACTIVE_DEVICE_CHECKS[selectRouterApp(state)];
-
-export const selectShouldEnterInteractiveDeviceChecksOnRoute = (
-    state: AuthenticityChecksRootState,
-): boolean =>
-    !selectShouldRouterAppSkipInteractiveDeviceChecks(state) &&
-    selectShouldEnterInteractiveDeviceChecks(state, selectSelectedDevice(state));

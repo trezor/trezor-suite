@@ -1,6 +1,7 @@
 import { type ModalRootState, modalReducer } from '@suite/modal';
 import { type RouterRootState, routerAppChanged, routerReducer } from '@suite/router';
 import { type RouterStateOverrides, createRouterStateMock } from '@suite/router/mocks';
+import { type FirmwareRootState, firmwareInitialState } from '@suite-common/firmware';
 import { createTestCompositionRoot } from '@suite-common/test-utils';
 
 import onboardingMiddlewares from 'src/middlewares/onboarding';
@@ -17,7 +18,11 @@ jest.mock('@trezor/suite-storage', () => ({
 
 jest.mock('src/actions/suite/storageActions', () => ({ __esModule: true }));
 
-type State = SuiteRootState & RouterRootState & OnboardingRootState & ModalRootState;
+type State = SuiteRootState &
+    RouterRootState &
+    OnboardingRootState &
+    ModalRootState &
+    FirmwareRootState;
 
 const getInitialState = (
     router?: RouterStateOverrides,
@@ -34,6 +39,7 @@ const getInitialState = (
         ...onboarding,
     },
     modal: modalReducer(undefined, { type: 'foo' } as any),
+    firmware: firmwareInitialState,
 });
 
 const initStore = (state: State) =>

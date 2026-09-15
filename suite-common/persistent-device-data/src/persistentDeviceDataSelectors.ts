@@ -1,6 +1,7 @@
 import { createWeakMapSelector } from '@suite-common/redux-utils';
 import type { TrezorDevice } from '@suite-common/suite-types';
 import { getIsFactoryResetDevice } from '@suite-common/suite-utils';
+import type { Device } from '@trezor/connect';
 
 import {
     deviceInvariabilityCheck,
@@ -53,8 +54,8 @@ export const selectIsEntropyCheckFailed = createMemoizedSelector(
 
 export const selectIsDeviceInvariabilityCheckSuccess = createMemoizedSelector(
     [
-        (_state, device?: TrezorDevice) => device,
-        (state, device?: TrezorDevice) => selectPersistentDeviceDataById(state, device?.id),
+        (_state, device?: Device) => device,
+        (state, device?: Device) => selectPersistentDeviceDataById(state, device?.id),
     ],
     (device, previousData) => {
         const dto = rawDataToDeviceInvariabilityCheckDTO({ device, previousData });

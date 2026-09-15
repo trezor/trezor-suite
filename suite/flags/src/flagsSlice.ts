@@ -139,7 +139,6 @@ export const flagsActions = flagsSlice.actions;
 export const prepareFlagsReducer = flagsSlice.prepareReducer;
 
 export const selectFlags = (state: FlagsRootState) => state.flags;
-export const selectIsInitialRun = (state: FlagsRootState) => state.flags.initialRun;
 export const selectIsTEXDashboardPromoBannerShown = (state: FlagsRootState) =>
     state.flags.showTEXDashboardPromoBanner;
 export const selectIsTS7DashboardPromoBannerShown = (state: FlagsRootState) =>

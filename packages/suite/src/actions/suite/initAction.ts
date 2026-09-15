@@ -138,7 +138,7 @@ export const initThunk =
         }
 
         // 5. redirecting user into welcome screen (if needed)
-        dispatch(initialRedirectionThunk({ isInitialRun: selectFlags(getState()).initialRun }));
+        dispatch(initialRedirectionThunk());
 
         // Do not initialize Connect or anything else related to it, if there is an app-wide killswitch via message-system.
         const activeKillswitchMessage = selectActiveKillswitchMessage(getState());

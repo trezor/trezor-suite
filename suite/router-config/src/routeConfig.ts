@@ -28,6 +28,7 @@ type RouteDefinition = {
     // Whether this app renders with priority over Prerequisites, see Preloader.tsc
     isForegroundApp?: boolean;
     // When navigating to this URL, should it be cleared of hash and get parameters?
+    // TODO also delete now that suite-start functionality was removed?
     clearUrl?: boolean;
     hasNestedRoutes?: boolean;
     isNestedRoute?: boolean;
@@ -38,8 +39,6 @@ export const routes = [
         name: 'suite-start',
         pattern: '/start',
         app: 'start',
-        isFullscreenApp: true,
-        isForegroundApp: true,
         clearUrl: true,
     },
     {
