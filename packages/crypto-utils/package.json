@@ -42,6 +42,7 @@
         "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'"
     },
     "dependencies": {
+        "@scure/base": "^2.0.0",
         "@trezor/type-utils": "workspace:*"
     },
     "peerDependencies": {

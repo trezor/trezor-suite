@@ -1,7 +1,8 @@
-import { decode, verify } from 'jws';
+import { decode } from 'jws';
 
 import type { FirmwareChannel } from '@trezor/connect-common/src/types/firmware';
 import { getFirmwareReleaseJwsPublicKey } from '@trezor/connect-data';
+import { verifyJWS } from '@trezor/crypto-utils';
 import type { FirmwareReleaseConfig } from '@trezor/device-utils';
 
 import { firmwareReleaseConfigAssets } from './assetUtils';
@@ -142,7 +143,10 @@ const fetchRemoteJws = async (firmwareChannel?: FirmwareChannel): Promise<JwsInf
     };
 };
 
-const verifyAndDecodeJws = (jws: string, publicKey: string): FirmwareReleaseConfig => {
+const verifyAndDecodeJws = async (
+    jws: string,
+    publicKey: string,
+): Promise<FirmwareReleaseConfig> => {
     const decoded = decode(jws);
 
     if (!decoded?.payload || !decoded.header) {
@@ -159,7 +163,7 @@ const verifyAndDecodeJws = (jws: string, publicKey: string): FirmwareReleaseConf
         throw new Error('Config version mismatch.');
     }
 
-    if (!verify(jws, JWS_CONFIG.SIGN_ALGORITHM, publicKey)) {
+    if (!(await verifyJWS({ jws, publicKeyPEM: publicKey }))) {
         throw new Error('JWS signature is invalid.');
     }
 
@@ -181,7 +185,7 @@ export const getFirmwareReleaseConfig = async (firmwareChannel?: FirmwareChannel
             resolvedChannel,
         );
         const publicKey = getFirmwareReleaseJwsPublicKey(useProductionKey);
-        const remoteConfig = verifyAndDecodeJws(jws, publicKey);
+        const remoteConfig = await verifyAndDecodeJws(jws, publicKey);
 
         if (remoteConfig.sequence > firmwareReleaseConfigAssets.sequence) {
             return {
