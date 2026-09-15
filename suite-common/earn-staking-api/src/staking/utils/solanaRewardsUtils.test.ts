@@ -54,7 +54,9 @@ describe('hasActiveSolanaStakingAccount', () => {
     });
 
     it('returns false for a non-solana account', () => {
-        expect(hasActiveSolanaStakingAccount(mockWalletAccount({ symbol: 'btc' }))).toBe(false);
+        expect(
+            hasActiveSolanaStakingAccount(mockWalletAccount({ symbol: asNetworkSymbol('btc') })),
+        ).toBe(false);
     });
 });
 
@@ -181,8 +183,9 @@ describe('getSolanaRewardsSyncStatus', () => {
 
     it('is not out of sync for a non-solana account', () => {
         expect(
-            getSolanaRewardsSyncStatus(mockWalletAccount({ symbol: 'btc' }), [mockReward({})])
-                .isOutOfSync,
+            getSolanaRewardsSyncStatus(mockWalletAccount({ symbol: asNetworkSymbol('btc') }), [
+                mockReward({}),
+            ]).isOutOfSync,
         ).toBe(false);
     });
 });

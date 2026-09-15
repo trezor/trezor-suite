@@ -1,6 +1,6 @@
 import { createMockDeps } from '@suite-common/dependency-injection';
 
-import { type NetworkSymbol } from './NetworkModules';
+import { asNetworkSymbol } from './NetworkModules';
 import {
     type GetNamedAddressSupportDeps,
     type SymbolNamedAddressResolver,
@@ -11,8 +11,7 @@ import { mockNetworkModule } from '../mocks/mockNetworkModule';
 const createDeps = (resolver?: SymbolNamedAddressResolver) =>
     createMockDeps<GetNamedAddressSupportDeps>({
         networkModuleRepository: {
-            get: <TSymbol extends NetworkSymbol>() =>
-                mockNetworkModule<TSymbol>({ namedAddressResolver: resolver }),
+            get: () => mockNetworkModule({ namedAddressResolver: resolver }),
             getSupportedNetworks: null,
             isSupportedNetwork: null,
         },
@@ -34,7 +33,7 @@ describe('createGetNamedAddressSupport', () => {
         resolver.isNameLike.mockReturnValue(true);
         const deps = createDeps(resolver);
 
-        const support = createGetNamedAddressSupport(deps)('eth');
+        const support = createGetNamedAddressSupport(deps)(asNetworkSymbol('eth'));
 
         expect(support).toEqual({ isSupported: true, resolver, isNameLike: expect.any(Function) });
         expect(support.isNameLike('alice.eth')).toBe(true);
@@ -49,7 +48,7 @@ describe('createGetNamedAddressSupport', () => {
         resolver.isNameLike.mockReturnValue(true);
         const deps = createDeps(resolver);
 
-        const support = createGetNamedAddressSupport(deps)('base');
+        const support = createGetNamedAddressSupport(deps)(asNetworkSymbol('base'));
 
         expect(support.isSupported).toBe(false);
         expect(support.isNameLike('alice.eth')).toBe(true);
@@ -59,7 +58,7 @@ describe('createGetNamedAddressSupport', () => {
     it('recognizes no names when the module has no resolver', () => {
         const deps = createDeps();
 
-        const support = createGetNamedAddressSupport(deps)('btc');
+        const support = createGetNamedAddressSupport(deps)(asNetworkSymbol('btc'));
 
         expect(support.isSupported).toBe(false);
         expect(support.isNameLike('alice.eth')).toBe(false);

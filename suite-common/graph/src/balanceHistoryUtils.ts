@@ -348,7 +348,8 @@ export const getAccountHistoryMovementFromTransactions = ({
             return getAccountHistoryMovementItemETH({ transactions, from, to });
 
         default:
-            symbol satisfies never;
+            // No exhaustiveness check: the symbol is open, so the compiler cannot prove the
+            // switch covers it. The throw is what catches an unhandled network.
             throw new Error(`getAccountHistoryMovementItem: Unsupported network ${symbol}`);
     }
 };

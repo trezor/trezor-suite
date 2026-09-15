@@ -1,3 +1,4 @@
+import { type LegacyNetworkSymbol } from '@suite-common/legacy-network-config';
 import {
     type BackendType,
     type NetworkSymbol,
@@ -7,6 +8,7 @@ import {
 import type {
     Account,
     BackendSettings,
+    Blockchain,
     BlockchainNetworks,
     CustomBackend,
 } from '@suite-common/wallet-types';
@@ -45,8 +47,11 @@ export const getCustomBackends = (
     supportedNetworks: readonly NetworkSymbol[],
 ): CustomBackend[] =>
     supportedNetworks
-        .map(symbol => ({ symbol, blockchain: blockchains[symbol] }))
-        .filter(({ blockchain }) => !!blockchain)
+        .map(symbol => ({ symbol, blockchain: blockchains[symbol as LegacyNetworkSymbol] }))
+        .filter(
+            (entry): entry is { symbol: NetworkSymbol; blockchain: Blockchain } =>
+                !!entry.blockchain,
+        )
         .map(({ symbol, blockchain: { backends } }) => ({
             symbol,
             type: backends.selected,

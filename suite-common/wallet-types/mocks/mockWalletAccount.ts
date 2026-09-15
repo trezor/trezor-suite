@@ -81,7 +81,9 @@ type NetworkSpecificDefault =
     | typeof networkSpecificDefaultCardano
     | typeof networkSpecificDefaultStellar;
 
-const networkTypeMap: Record<NetworkSymbol, NetworkSpecificDefault> = {
+// Keys stay plain literals: a branded symbol cannot type an object literal's keys. A symbol with
+// no entry is caught by the lookup below rather than by the type.
+const networkTypeMap: Record<string, NetworkSpecificDefault> = {
     // Bitcoin-like
     btc: networkSpecificDefaultBitcoin,
     regtest: networkSpecificDefaultBitcoin,
@@ -169,12 +171,18 @@ export const mockWalletAccount = (
         symbol: account.symbol,
     };
 
+    const networkSpecificDefault = networkSpecific ?? networkTypeMap[account.symbol];
+
+    if (!networkSpecificDefault) {
+        throw new Error(`No mock defaults registered for network symbol: ${account.symbol}.`);
+    }
+
     // This is needed to be separated, as typing the `Account` type with the union-type of
     // the Networks and Backends seems impossible.
     // This way, we at least get type-safety for AccountBase and AccountFailureSpecific data.
     return {
         ...accountBase,
         ...accountFailure,
-        ...(networkSpecific ?? networkTypeMap[account.symbol]),
+        ...networkSpecificDefault,
     };
 };

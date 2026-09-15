@@ -6,7 +6,7 @@ import type { NetworkSymbol, StaticNetworkModulesDep } from './NetworkModules';
 export type NetworkModuleRepositoryDeps = StaticNetworkModulesDep;
 
 export type NetworkModuleRepository = {
-    get: <T extends NetworkSymbol>(symbol: T) => SuiteCommonNetworkModule<T>;
+    get: (symbol: NetworkSymbol) => SuiteCommonNetworkModule;
     getSupportedNetworks: () => readonly NetworkSymbol[];
     isSupportedNetwork: (symbol: string) => symbol is NetworkSymbol;
 };
@@ -18,10 +18,7 @@ export type NetworkModuleRepositoryDep = {
 export const createNetworkModuleRepository = (
     deps: NetworkModuleRepositoryDeps,
 ): NetworkModuleRepository => {
-    const networkModuleByNetworkSymbol = new Map<
-        NetworkSymbol,
-        SuiteCommonNetworkModule<NetworkSymbol>
-    >();
+    const networkModuleByNetworkSymbol = new Map<NetworkSymbol, SuiteCommonNetworkModule>();
 
     typedObjectValues(deps.networkModules).forEach(networkModule => {
         networkModule.getSupportedNetworks().forEach(networkSymbol => {
@@ -32,14 +29,14 @@ export const createNetworkModuleRepository = (
     const supportedNetworks = Array.from(networkModuleByNetworkSymbol.keys());
 
     return {
-        get: <T extends NetworkSymbol>(symbol: T): SuiteCommonNetworkModule<T> => {
+        get: (symbol: NetworkSymbol): SuiteCommonNetworkModule => {
             const networkModule = networkModuleByNetworkSymbol.get(symbol);
 
             if (!networkModule) {
                 throw new Error(`Network module for ${symbol} is not registered.`);
             }
 
-            return networkModule as SuiteCommonNetworkModule<T>;
+            return networkModule;
         },
         getSupportedNetworks: (): readonly NetworkSymbol[] => supportedNetworks,
         isSupportedNetwork: (symbol: string): symbol is NetworkSymbol =>

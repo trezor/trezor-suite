@@ -4,6 +4,7 @@ import { useSelector } from 'react-redux';
 
 import { useServices } from '@suite-common/dependency-injection';
 import { selectDispatch } from '@suite-common/redux-utils';
+import { asNetworkSymbol } from '@suite-common/wallet-config';
 import type { NetworkSymbol } from '@suite-common/wallet-config';
 import {
     type BlockchainRootState,
@@ -14,7 +15,7 @@ import TrezorConnect from '@trezor/connect';
 import { asCoinSymbol } from '@trezor/connect-common';
 
 // No other networks need managing at the moment.
-const symbol: NetworkSymbol = 'btc';
+const symbol: NetworkSymbol = asNetworkSymbol('btc');
 
 export const useBlockchainConnectionManager = () => {
     const { dispatch } = useServices(selectDispatch);

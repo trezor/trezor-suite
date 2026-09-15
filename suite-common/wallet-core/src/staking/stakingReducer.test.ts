@@ -1,3 +1,4 @@
+import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { type AccountKey } from '@suite-common/wallet-types';
 
 import { type AccountVotingDelegation, stakeActions } from './stakingActions';
@@ -50,7 +51,10 @@ describe('stakeReducer voting delegation', () => {
 
     it('keeps the selection on dispose, so backing out of the review modal does not discard it', () => {
         const state = stakeReducer(
-            { ...stateWith(anotherDrep), serializedTx: { tx: 'tx', symbol: 'ada' } },
+            {
+                ...stateWith(anotherDrep),
+                serializedTx: { tx: 'tx', symbol: asNetworkSymbol('ada') },
+            },
             stakeActions.dispose(),
         );
 

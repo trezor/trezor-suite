@@ -4,7 +4,7 @@ import type { SuiteCommonNetworkConfig } from '@trezor/network-module-suite-comm
 import type { NetworkSymbol } from './NetworkModules';
 
 export type Network = Omit<
-    SuiteCommonNetworkConfig<NetworkSymbol>,
+    SuiteCommonNetworkConfig,
     // TODO: Remove these legacy omissions and the Yield API override once configs are modularized.
     // Tracked in https://github.com/trezor/trezor-suite/issues/30663.
     'yieldXyzId' | 'color' | 'protocols'

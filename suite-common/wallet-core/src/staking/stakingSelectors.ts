@@ -67,14 +67,14 @@ const selectDeviceAccountsWithStaking = (
     switch (symbol) {
         case 'eth':
         case 'thod':
-            return selectVisibleDeviceEthereumAccountsWithStakingByNetworkSymbol(state, 'eth');
+            return selectVisibleDeviceEthereumAccountsWithStakingByNetworkSymbol(state, symbol);
         case 'dsol':
         case 'sol':
-            return selectVisibleDeviceSolanaAccountsWithStakingByNetworkSymbol(state, 'sol');
+            return selectVisibleDeviceSolanaAccountsWithStakingByNetworkSymbol(state, symbol);
         case 'ada':
-            return selectVisibleDeviceCardanoAccountsWithStakingByNetworkSymbol(state, 'ada');
+            return selectVisibleDeviceCardanoAccountsWithStakingByNetworkSymbol(state, symbol);
         case 'trx':
-            return selectVisibleDeviceTronAccountsWithStakingByNetworkSymbol(state, 'trx');
+            return selectVisibleDeviceTronAccountsWithStakingByNetworkSymbol(state, symbol);
         default:
             return exhaustive(symbol);
     }

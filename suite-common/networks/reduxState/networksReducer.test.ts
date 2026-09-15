@@ -1,8 +1,10 @@
+import { asNetworkSymbol } from '@trezor/network-module';
+
 import type { NetworkMetadata } from './NetworkMetadata';
 import { networksActions, networksReducer } from './networksReducer';
 
 const bitcoin: NetworkMetadata = {
-    symbol: 'btc',
+    symbol: asNetworkSymbol('btc'),
     bip43Path: "m/84'/0'/i'",
     accountTypes: {},
     features: [],
@@ -28,7 +30,11 @@ describe('networksReducer', () => {
     });
 
     it('stores the supplied configuration and network order', () => {
-        const testnet: NetworkMetadata = { ...bitcoin, symbol: 'test', testnet: true };
+        const testnet: NetworkMetadata = {
+            ...bitcoin,
+            symbol: asNetworkSymbol('test'),
+            testnet: true,
+        };
 
         const state = networksReducer(undefined, networksActions.setNetworks([testnet, bitcoin]));
 

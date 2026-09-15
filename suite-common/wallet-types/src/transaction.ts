@@ -1,3 +1,4 @@
+import { type LegacyNetworkSymbol } from '@suite-common/legacy-network-config';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { type BaseCurrencyCode } from '@trezor/blockchain-link-types';
 import type {
@@ -109,7 +110,7 @@ export interface FeeInfo {
 export type FeesStatus = 'preloaded' | 'loading' | 'loaded' | 'error';
 
 export type FeesState = {
-    [key in NetworkSymbol]?: {
+    [key in LegacyNetworkSymbol]?: {
         status: FeesStatus;
         data?: FeeInfo;
     };

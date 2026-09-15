@@ -11,7 +11,7 @@ const getExplorerUrls = (baseUrl: string): Explorer => ({
     address: `${baseUrl}/address/`,
 });
 
-type NetworkConfig = SuiteCommonNetworkConfig<BitcoinNetworkSymbol> & {
+type NetworkConfig = SuiteCommonNetworkConfig & {
     readonly networkType: 'bitcoin';
 };
 

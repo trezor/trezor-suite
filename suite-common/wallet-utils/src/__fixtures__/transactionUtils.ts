@@ -1,3 +1,4 @@
+import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { type WalletAccountTransaction, asAccountDescriptor } from '@suite-common/wallet-types';
 import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
 import { type TokenTransfer, type TransferType } from '@trezor/blockchain-link-types';
@@ -468,7 +469,7 @@ export const enhanceTransaction = [
             descriptor: asAccountDescriptor(
                 'zpub6rszzdAK6RuafeRwyN8z1cgWcXCuKbLmjjfnrW4fWKtcoXQ8787214pNJjnBG5UATyghuNzjn6Lfp5k5xymrLFJnCy46bMYJPyZsbpFGagT',
             ),
-            symbol: 'btc',
+            symbol: asNetworkSymbol('btc'),
         }),
         result: {
             amount: '123',
@@ -480,7 +481,7 @@ export const enhanceTransaction = [
             deviceState: '1stTestnetAddress@device_id:0',
             fee: '0.00002929',
             totalSpent: '123.00002929',
-            symbol: 'btc',
+            symbol: asNetworkSymbol('btc'),
             targets: [],
             tokens: [
                 {
@@ -560,7 +561,7 @@ export const enhanceTransaction = [
             descriptor: asAccountDescriptor(
                 'zpub6rszzdAK6RuafeRwyN8z1cgWcXCuKbLmjjfnrW4fWKtcoXQ8787214pNJjnBG5UATyghuNzjn6Lfp5k5xymrLFJnCy46bMYJPyZsbpFGagT',
             ),
-            symbol: 'btc',
+            symbol: asNetworkSymbol('btc'),
         }),
         result: {
             amount: '0.00006497',
@@ -572,7 +573,7 @@ export const enhanceTransaction = [
             deviceState: '1stTestnetAddress@device_id:0',
             fee: '0.00002929',
             totalSpent: '0.00009426',
-            symbol: 'btc',
+            symbol: asNetworkSymbol('btc'),
             targets: [
                 {
                     addresses: ['0x4f4f1488acb1ae1b46146ceff804f591dfe660ac'],
@@ -623,7 +624,7 @@ export const enhanceTransaction = [
             descriptor: asAccountDescriptor(
                 'zpub6rszzdAK6RuafeRwyN8z1cgWcXCuKbLmjjfnrW4fWKtcoXQ8787214pNJjnBG5UATyghuNzjn6Lfp5k5xymrLFJnCy46bMYJPyZsbpFGagT',
             ),
-            symbol: 'btc',
+            symbol: asNetworkSymbol('btc'),
         }),
         result: {
             amount: '0.00006497',
@@ -635,7 +636,7 @@ export const enhanceTransaction = [
             deviceState: '1stTestnetAddress@device_id:0',
             fee: '0.00002929',
             totalSpent: '0.00009426',
-            symbol: 'btc',
+            symbol: asNetworkSymbol('btc'),
             targets: [
                 {
                     addresses: ['0x4f4f1488acb1ae1b46146ceff804f591dfe660ac'],
@@ -825,7 +826,7 @@ export const getRbfParams = [
         description: 'ethereum tx signed by the account itself',
         account: {
             networkType: 'ethereum',
-            symbol: 'eth',
+            symbol: asNetworkSymbol('eth'),
             descriptor: '0x37567E60ab231b7D7f26B5b34FDD719098E4Ee1b',
         },
         tx: {
@@ -1144,7 +1145,7 @@ export const getAccountTransactions = [
             descriptor: asAccountDescriptor(
                 'zpub6rszzdAK6RuafeRwyN8z1cgWcXCuKbLmjjfnrW4fWKtcoXQ8787214pNJjnBG5UATyghuNzjn6Lfp5k5xymrLFJnCy46bMYJPyZsbpFGagT',
             ),
-            symbol: 'btc',
+            symbol: asNetworkSymbol('btc'),
         }),
         result: [
             {
@@ -1157,7 +1158,7 @@ export const getAccountTransactions = [
                 deviceState: '1stTestnetAddress@device_id:0',
                 fee: '0.00002929',
 
-                symbol: 'btc',
+                symbol: asNetworkSymbol('btc'),
                 targets: [
                     { addresses: ['36JkLACrdxARqXXffZk91V9W6SJvghKaVK'], amount: '0.00006497' },
                 ],
@@ -1175,7 +1176,7 @@ export const getAccountTransactions = [
                 deviceState: '1stTestnetAddress@device_id:0',
                 fee: '0.00000166',
 
-                symbol: 'btc',
+                symbol: asNetworkSymbol('btc'),
                 targets: [
                     { addresses: ['3Bvy87TmQhhSBqfiCBh8w5yPx6usiDM8SY'], amount: '0.00319488' },
                 ],
@@ -1191,13 +1192,13 @@ export const getAccountTransactions = [
         account: mockWalletAccount({
             deviceState: '1stTestnetAddress@device_id:0',
             descriptor: asAccountDescriptor('rNaqKtKrMSwpwZSzRckPf7S96DkimjkF4H'),
-            symbol: 'txrp',
+            symbol: asNetworkSymbol('txrp'),
         }),
         result: [
             {
                 descriptor: 'rNaqKtKrMSwpwZSzRckPf7S96DkimjkF4H',
                 deviceState: '1stTestnetAddress@device_id:0',
-                symbol: 'txrp',
+                symbol: asNetworkSymbol('txrp'),
                 type: 'recv',
                 txid: 'A62FDA65E3B84FA2BED47086DB9458CFF8AF475196E327FC51DA0143BD998A9B',
                 blockTime: 621951942,
@@ -1217,7 +1218,7 @@ export const getAccountTransactions = [
             {
                 descriptor: 'rNaqKtKrMSwpwZSzRckPf7S96DkimjkF4H',
                 deviceState: '1stTestnetAddress@device_id:0',
-                symbol: 'txrp',
+                symbol: asNetworkSymbol('txrp'),
                 type: 'recv',
                 txid: 'DFA960521E384047E56946F9A441FB717475D132E49737A347CA8B6C80AFC84B',
                 blockTime: 621951942,
@@ -1242,13 +1243,13 @@ export const getAccountTransactions = [
         account: mockWalletAccount({
             deviceState: '1stTestnetAddress@device_id:0',
             descriptor: asAccountDescriptor('0xFA01a39f8Abaeb660c3137f14A310d0b414b2A15'),
-            symbol: 'eth',
+            symbol: asNetworkSymbol('eth'),
         }),
         result: [
             {
                 descriptor: '0xFA01a39f8Abaeb660c3137f14A310d0b414b2A15',
                 deviceState: '1stTestnetAddress@device_id:0',
-                symbol: 'eth',
+                symbol: asNetworkSymbol('eth'),
                 type: 'recv',
                 txid: '0x63635c5ca1e21d13780d5a0a66cc16dfe0b49ffb9eff191f15b3da271b1ad1d3',
                 blockTime: 1495456394,
@@ -1271,7 +1272,7 @@ export const getAccountTransactions = [
             {
                 descriptor: '0xFA01a39f8Abaeb660c3137f14A310d0b414b2A15',
                 deviceState: '1stTestnetAddress@device_id:0',
-                symbol: 'eth',
+                symbol: asNetworkSymbol('eth'),
                 type: 'sent',
                 txid: '0x5f3cba8a6dee792594dcce71c5aa39a872bce57cb33e0da8db02d9f2f865806c',
                 blockTime: 1494938897,
@@ -1298,7 +1299,7 @@ export const getAccountTransactions = [
             {
                 descriptor: '0xFA01a39f8Abaeb660c3137f14A310d0b414b2A15',
                 deviceState: '1stTestnetAddress@device_id:0',
-                symbol: 'eth',
+                symbol: asNetworkSymbol('eth'),
                 type: 'sent',
                 txid: '0xfaae2e7927e97002f15300c6011ca792243cbd57d574db34ccb2a9c18c272b3e',
                 blockTime: 1493811343,
@@ -1330,7 +1331,7 @@ export const getAccountTransactions = [
             {
                 descriptor: '0xFA01a39f8Abaeb660c3137f14A310d0b414b2A15',
                 deviceState: '1stTestnetAddress@device_id:0',
-                symbol: 'eth',
+                symbol: asNetworkSymbol('eth'),
                 type: 'recv',
                 txid: '0x0833ce97c3f4ce6c170c94aff0acfa1cbfd528bf0d3faa06676cad7daddd2e5c',
                 blockTime: 1493811263,
@@ -1353,7 +1354,7 @@ export const getAccountTransactions = [
             {
                 descriptor: '0xFA01a39f8Abaeb660c3137f14A310d0b414b2A15',
                 deviceState: '1stTestnetAddress@device_id:0',
-                symbol: 'eth',
+                symbol: asNetworkSymbol('eth'),
                 type: 'recv',
                 txid: '0xcef7e6fbb7f61df35eb6dd5c26f75c15152f83298d060e4c6b6850a835e2d9cd',
                 blockTime: 1493721184,
@@ -1390,7 +1391,7 @@ export const getAccountTransactions = [
         account: mockWalletAccount({
             deviceState: '1stTestnetAddress@device_id:0',
             descriptor: asAccountDescriptor('0xf69619a3dCAA63757A6BA0AF3628f5F6C42c50d2'),
-            symbol: 'eth',
+            symbol: asNetworkSymbol('eth'),
         }),
         result: [],
     },
@@ -1407,7 +1408,7 @@ export const isPending: Record<string, WalletAccountTransaction | AccountTransac
         ),
         deviceState: '1stTestnetAddress@device_id:0',
         fee: '0.00002929',
-        symbol: 'btc',
+        symbol: asNetworkSymbol('btc'),
         targets: [],
         tokens: [
             {
@@ -1461,7 +1462,7 @@ export const isPending: Record<string, WalletAccountTransaction | AccountTransac
             'vpub5YoEd2jJofNDXriAXpt4fyX23uRhrViFG3721C1wRRKUvDS4P6St7tqFfDP4JZsRARVhaVcGvW5jerdWBVc1c3fgqZeAYt29QSTiafKdwck',
         ),
         deviceState: 'mvAmt1x3QTsSmJrR4tbPtMpYnLbi3gDEBu@912734FCB107274D3CC465EC:1',
-        symbol: 'test',
+        symbol: asNetworkSymbol('test'),
         type: 'recv',
         txid: '70ad253c25aa8a76ebcdb7fded56f2f57ec9b40967b7e79937b4f44445968c93',
         blockTime: 1665050077,

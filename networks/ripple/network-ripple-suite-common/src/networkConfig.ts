@@ -11,7 +11,7 @@ const getExplorerUrls = (baseUrl: string): Explorer => ({
     address: `${baseUrl}/account/`,
 });
 
-type NetworkConfig = SuiteCommonNetworkConfig<RippleNetworkSymbol> & {
+type NetworkConfig = SuiteCommonNetworkConfig & {
     readonly networkType: 'ripple';
 };
 

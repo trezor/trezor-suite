@@ -104,7 +104,7 @@ export class OutputEvoluTable implements OutputTable {
                     txTargetId: asTxTargetId(label.outputIndex),
                     label: label.label,
                     accountDescriptor,
-                    networkSymbol: label.networkSymbol as NetworkSymbol,
+                    networkSymbol: label.networkSymbol as unknown as NetworkSymbol,
                 });
             }
 
