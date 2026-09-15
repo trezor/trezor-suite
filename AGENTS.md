@@ -58,13 +58,15 @@ This is a Yarn workspaces monorepo orchestrated by Nx. `package.json` also inclu
 - `suite-common/` (`@suite-common/*`): Shared wallet/domain logic, including `wallet-core`,
   `device`, `message-system`. May use shared peers and reusable `@trezor/*` libraries; must not
   depend on desktop/web or native app code.
-- `suite/` (`@suite/*`): Desktop/web features and application roots; may use peers, shared logic and
-  reusable libraries, never native app code. `suite/e2e` is the Playwright workspace
-  (`@trezor/suite-e2e`). The application roots are `web-app` (web entry point), `desktop-app`
-  (Electron packaging and distribution), `desktop-app-renderer` (desktop React entry point),
-  `desktop-app-main` (Electron main and preload), `desktop-app-api`/`desktop-app-api-electron`
-  (desktop API contract and its Electron implementation), `desktop-app-native-bindings` (compiled
-  OS bindings) and `app-assets` (static assets and their generation).
+- `suite/` (`@suite/*`): Desktop/web features and the applications they compose; may use peers,
+  shared logic and reusable libraries, never native app code. `suite/e2e` is the Playwright
+  workspace (`@trezor/suite-e2e`). Two packages are application roots: `web-app` (web entry point
+  and composition root) and `desktop-app` (Electron packaging, distribution and installers).
+  `desktop-app` is assembled from `desktop-app-renderer` (Electron renderer process, desktop React
+  entry point), `desktop-app-main` (Electron main and preload processes) and
+  `desktop-app-native-bindings` (compiled OS bindings). Both applications use `app-assets` (static
+  assets and their generation) and `desktop-app-api` (desktop API contract), whose Electron
+  implementation is `desktop-app-api-electron`.
 - `suite-native/` (`@suite-native/*`): Mobile features and `app` (Expo/React Native); may use peers,
   shared logic and reusable libraries, never desktop/web app code.
 - `packages/suite*`: Remaining app-layer exception to the `packages/` convention: `suite` contains
