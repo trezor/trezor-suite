@@ -1,9 +1,9 @@
 import { exec } from 'child_process';
 
+import { type InvokeResult } from '@suite/desktop-app-api';
 import { isMacOs } from '@trezor/env-utils';
 import { type IpcProxyHandlerOptions, createIpcProxyHandler } from '@trezor/ipc-proxy';
 import { getFreePort } from '@trezor/node-utils';
-import { type InvokeResult } from '@trezor/suite-desktop-api';
 import {
     BluetoothIpc,
     type BluetoothIpcApi,

@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 
 import { selectDesktopAnalyticsDep } from '@suite/analytics';
+import { selectDesktopApiDep } from '@suite/desktop-app-api';
 import { MODAL_CONTEXT_DEVICE, openModal } from '@suite/modal';
 import { events } from '@suite-common/analytics';
 import {
@@ -24,7 +25,6 @@ import TrezorConnect, {
     UI_REQUESTS,
 } from '@trezor/connect';
 import { isMacOs } from '@trezor/env-utils';
-import { selectDesktopApiDep } from '@trezor/suite-desktop-api';
 import { exhaustive } from '@trezor/type-utils';
 
 import { useSelector } from 'src/hooks/suite';

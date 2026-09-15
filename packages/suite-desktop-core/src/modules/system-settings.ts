@@ -1,7 +1,7 @@
 import { exec } from 'child_process';
 
+import { type InvokeResult } from '@suite/desktop-app-api';
 import { isLinux, isMacOs, isWindows } from '@trezor/env-utils';
-import { type InvokeResult } from '@trezor/suite-desktop-api';
 
 import { ipcMain } from '../ipcMain';
 import type { ModuleInit } from './module';

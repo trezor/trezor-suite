@@ -1,10 +1,10 @@
+import { type DesktopApi } from '@suite/desktop-app-api';
 import {
     type EncryptableBranded,
     type EncryptedHex,
     type PlatformEncryption,
     asEncryptedHex,
 } from '@suite-common/platform-encryption';
-import { type DesktopApi } from '@trezor/suite-desktop-api';
 import { ok } from '@trezor/type-utils';
 
 export type ElectronPlatformEncryptionDeps = {

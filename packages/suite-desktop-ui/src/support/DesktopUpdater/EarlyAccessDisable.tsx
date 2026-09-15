@@ -1,11 +1,11 @@
 import { useCallback, useState } from 'react';
 
 import { events, selectDesktopAnalyticsDep } from '@suite/analytics';
+import { selectDesktopApiDep } from '@suite/desktop-app-api';
 import { Translation } from '@suite/intl';
 import { useServices } from '@suite-common/dependency-injection';
 import { Column, H3, Modal, Paragraph } from '@trezor/components';
 import { StarFourIcon } from '@trezor/icons';
-import { selectDesktopApiDep } from '@trezor/suite-desktop-api';
 import { SUITE_URL } from '@trezor/urls';
 
 interface EarlyAccessDisableProps {

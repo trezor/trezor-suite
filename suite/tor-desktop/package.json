@@ -21,6 +21,7 @@
         "@suite-common/wallet-config": "workspace:*",
         "@suite-common/wallet-core": "workspace:*",
         "@suite/analytics": "workspace:*",
+        "@suite/desktop-app-api": "workspace:*",
         "@suite/external-links": "workspace:*",
         "@suite/intl": "workspace:*",
         "@suite/modal": "workspace:*",
@@ -31,7 +32,6 @@
         "@trezor/env-utils": "workspace:*",
         "@trezor/icons": "workspace:*",
         "@trezor/product-components": "workspace:*",
-        "@trezor/suite-desktop-api": "workspace:*",
         "@trezor/urls": "workspace:*",
         "react": "19.2.3",
         "react-redux": "9.3.0"

@@ -7,7 +7,7 @@ import {
     ipcRenderer as baseIpcRenderer,
 } from 'electron';
 
-import type * as desktopApi from '@trezor/suite-desktop-api';
+import type * as desktopApi from '@suite/desktop-app-api';
 
 export type StrictIpcRenderer = desktopApi.StrictIpcRenderer<
     Omit<IpcRenderer, 'invoke' | 'send'>,

@@ -1,6 +1,6 @@
+import { type RendererChannels } from '@suite/desktop-app-api';
 import { trezorLogo } from '@suite-common/suite-constants';
 import { HttpServer, allowReferers, parseRequestUrl } from '@trezor/node-utils';
-import { type RendererChannels } from '@trezor/suite-desktop-api';
 import { xssFilters } from '@trezor/utils';
 
 import { convertILoggerToLog } from '../utils/IloggerToLog';

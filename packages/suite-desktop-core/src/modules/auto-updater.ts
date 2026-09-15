@@ -8,8 +8,8 @@ import {
 } from 'electron-updater';
 import { unlinkSync } from 'fs';
 
+import { type HandshakeElectron } from '@suite/desktop-app-api';
 import { isDevEnv, isFeatureFlagEnabled } from '@suite-common/suite-utils';
-import { type HandshakeElectron } from '@trezor/suite-desktop-api';
 import { bytesToHumanReadable, serializeError } from '@trezor/utils';
 
 import { type ModuleInit, mainThreadEmitter } from './module';

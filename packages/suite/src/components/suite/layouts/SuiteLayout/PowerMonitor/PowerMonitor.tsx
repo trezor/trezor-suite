@@ -5,11 +5,11 @@ import {
     bluetoothDisconnectDeviceThunk,
     isBluetoothDeviceReachable,
 } from '@suite/bluetooth';
+import { selectDesktopApiDep } from '@suite/desktop-app-api';
 import { bluetoothActions, selectKnownDevices } from '@suite-common/bluetooth';
 import { useServices } from '@suite-common/dependency-injection';
 import { selectDispatch } from '@suite-common/redux-utils';
 import { isMacOs } from '@trezor/env-utils';
-import { selectDesktopApiDep } from '@trezor/suite-desktop-api';
 
 import { useSelector } from 'src/hooks/suite';
 

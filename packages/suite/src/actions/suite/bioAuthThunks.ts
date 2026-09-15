@@ -1,8 +1,8 @@
 import { type Dispatch, type UnknownAction } from '@reduxjs/toolkit';
 
+import { type DesktopApiDep } from '@suite/desktop-app-api';
 import { type WithServices, createThunk } from '@suite-common/redux-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
-import { type DesktopApiDep } from '@trezor/suite-desktop-api';
 
 import { bioAuthActions } from './bioAuthActions';
 

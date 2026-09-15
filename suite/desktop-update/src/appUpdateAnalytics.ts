@@ -1,5 +1,5 @@
 import type { AppUpdateEvent } from '@suite/analytics';
-import { type UpdateInfo } from '@trezor/suite-desktop-api';
+import { type UpdateInfo } from '@suite/desktop-app-api';
 
 export const getAppUpdatePayload = ({
     status,

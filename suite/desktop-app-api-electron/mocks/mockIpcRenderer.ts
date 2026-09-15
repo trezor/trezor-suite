@@ -1,7 +1,7 @@
 import type { IpcRendererEvent } from 'electron';
 import { EventEmitter } from 'events';
 
-import { type StrictIpcRenderer } from '@trezor/suite-desktop-api';
+import { type StrictIpcRenderer } from '@suite/desktop-app-api';
 
 class IpcRendererMock extends EventEmitter implements StrictIpcRenderer<any, IpcRendererEvent> {
     send(..._args: any[]) {}

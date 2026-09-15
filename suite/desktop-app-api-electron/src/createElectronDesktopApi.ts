@@ -1,4 +1,4 @@
-import { type DesktopApi } from '@trezor/suite-desktop-api';
+import { type DesktopApi } from '@suite/desktop-app-api';
 
 export const createElectronDesktopApi = (): DesktopApi => {
     const { desktopApi } = window as unknown as { desktopApi?: DesktopApi };

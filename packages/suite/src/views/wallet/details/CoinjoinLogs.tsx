@@ -1,9 +1,9 @@
 import { selectIsDebugModeActive } from '@suite/debug';
+import { selectDesktopApiDep } from '@suite/desktop-app-api';
 import { Translation } from '@suite/intl';
 import { useServices } from '@suite-common/dependency-injection';
 import { Card, Column } from '@trezor/components';
 import { ActionButton, ActionColumn, TextColumn } from '@trezor/product-components';
-import { selectDesktopApiDep } from '@trezor/suite-desktop-api';
 
 import { useSelector } from 'src/hooks/suite';
 

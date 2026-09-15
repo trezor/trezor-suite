@@ -3,9 +3,9 @@ import { BrowserWindow, app, nativeTheme } from 'electron';
 import debounce from 'lodash/debounce';
 import path from 'path';
 
+import type { HandshakeClient } from '@suite/desktop-app-api';
 import { isDevEnv } from '@suite-common/suite-utils';
 import { isMacOs } from '@trezor/env-utils';
-import type { HandshakeClient } from '@trezor/suite-desktop-api';
 import { colorVariants } from '@trezor/theme';
 import { createDeferred, resolveAfter } from '@trezor/utils';
 

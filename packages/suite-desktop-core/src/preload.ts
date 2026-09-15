@@ -1,7 +1,7 @@
 import { contextBridge, ipcRenderer } from 'electron';
 
+import { createDesktopApiBridge } from '@suite/desktop-app-api-electron';
 import { exposeIpcProxy } from '@trezor/ipc-proxy';
-import { createDesktopApiBridge } from '@trezor/suite-desktop-api-electron';
 
 import '@sentry/electron/preload'; // With this only IPCMode.Classic is ever taken into account
 import { hasSwitch } from './libs/process-switches';

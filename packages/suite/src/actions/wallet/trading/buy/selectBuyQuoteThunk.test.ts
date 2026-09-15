@@ -1,5 +1,6 @@
 import { type BuyTrade, type BuyTradeQuoteRequest, type CryptoId } from 'invity-api';
 
+import { mockGetHttpReceiverAddress } from '@suite/desktop-app-api/mocks';
 import { createTestStore } from '@suite-common/test-utils';
 import { initialState as tradingInitialState } from '@suite-common/trading';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
@@ -7,7 +8,6 @@ import { type Account, asAccountDescriptor } from '@suite-common/wallet-types';
 import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
 import { mockAnalytics } from '@trezor/analytics-uploader/mocks';
 import type { StaticSessionId } from '@trezor/connect';
-import { mockGetHttpReceiverAddress } from '@trezor/suite-desktop-api/mocks';
 
 import { type SelectBuyQuoteThunkDeps, selectBuyQuoteThunk } from './selectBuyQuoteThunk';
 

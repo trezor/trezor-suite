@@ -1,6 +1,6 @@
+import { type DesktopApiDep } from '@suite/desktop-app-api';
+import { mockGetHttpReceiverAddress } from '@suite/desktop-app-api/mocks';
 import { type Account } from '@suite-common/wallet-types';
-import { type DesktopApiDep } from '@trezor/suite-desktop-api';
-import { mockGetHttpReceiverAddress } from '@trezor/suite-desktop-api/mocks';
 
 import { createQuoteLink, createTxLink, getStatusMessage } from 'src/utils/wallet/trading/buyUtils';
 
