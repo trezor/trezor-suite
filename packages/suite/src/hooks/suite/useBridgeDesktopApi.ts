@@ -48,7 +48,7 @@ export const useBridgeDesktopApi = () => {
         };
     }, [desktopApi]);
 
-    const changeBridgeSettings = (settings: BridgeSettings) => {
+    const changeBridgeSettings = (settings: Partial<BridgeSettings>) => {
         desktopApi.changeBridgeSettings(settings);
     };
 
