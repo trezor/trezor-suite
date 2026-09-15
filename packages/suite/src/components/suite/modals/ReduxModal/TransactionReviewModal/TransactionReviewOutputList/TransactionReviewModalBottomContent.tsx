@@ -143,8 +143,14 @@ export const TransactionReviewModalBottomContent = ({
         }
     };
 
+    // Both handlers guard `serializedTx` instead of asserting it: the React Compiler hoists the
+    // dependencies of a memoised closure into a guard that runs on every render, above every early
+    // return below, so `serializedTx!.tx` would be read while the transaction is still unsigned and
+    // throw. The buttons are disabled until it exists, so neither guard is reachable in practice.
     const handleCopy = async () => {
-        const result = await copyToClipboard(serializedTx!.tx);
+        if (!serializedTx) return;
+
+        const result = await copyToClipboard(serializedTx.tx);
 
         if (typeof result !== 'string') {
             dispatch(notificationsActions.addToast({ type: 'copy-to-clipboard' }));
@@ -154,7 +160,9 @@ export const TransactionReviewModalBottomContent = ({
     };
 
     const handleDownload = () => {
-        download(serializedTx!.tx, 'signed-transaction.txt');
+        if (!serializedTx) return;
+
+        download(serializedTx.tx, 'signed-transaction.txt');
         reportTransactionCreatedEvent('downloaded');
     };
 

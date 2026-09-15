@@ -1,8 +1,9 @@
 import { useMemo, useState } from 'react';
-import { FormProvider, useForm, useWatch } from 'react-hook-form';
+import { useForm, useWatch } from 'react-hook-form';
 
 import { selectSelectedAccount } from '@suite/account';
 import { events, injectDesktopAnalytics } from '@suite/analytics';
+import { Form } from '@suite/form';
 import { Translation, useTranslation } from '@suite/intl';
 import { useServices } from '@suite-common/dependency-injection';
 import { injectDispatch } from '@suite-common/redux-utils';
@@ -75,8 +76,14 @@ export const StellarManageTokenModal = (props: StellarManageTokenModalProps) => 
         },
     });
 
+    // Keep `formState` as its own binding: the spread object is a react-hook-form ref that
+    // never changes identity, so without it the React Compiler caches the `useFees` argument
+    // once and `useFees` reads validation errors frozen at their first-render value.
+    const { formState } = methods;
+
     const { changeFeeLevel } = useFees({
         ...methods,
+        formState,
         defaultValue: 'normal',
         feeInfo,
         composeRequest: () => {},
@@ -263,7 +270,7 @@ export const StellarManageTokenModal = (props: StellarManageTokenModalProps) => 
                 </Row>
             }
         >
-            <FormProvider {...methods}>
+            <Form form={methods} formState={formState}>
                 <Column gap={20}>
                     <Text typographyStyle="body-md" intent="neutral" priority="secondary">
                         {mode === 'activate' ? (
@@ -323,7 +330,7 @@ export const StellarManageTokenModal = (props: StellarManageTokenModalProps) => 
                         />
                     )}
                 </Column>
-            </FormProvider>
+            </Form>
         </Modal>
     );
 };

@@ -24,11 +24,12 @@ when in doubt and treat the list below as a summary that can lag it by a commit.
   [`app.config.ts`](../../suite-native/app/app.config.ts) auto-memoizes every component and hook in its
   bundle, including the `suite-common/*` and `packages/*` sources it pulls in — so those already have to
   satisfy the compiled rules whichever web wave they are in.
-- **Web and desktop are compiled tree by tree. Compiled today: `suite-common/` and
-  `packages/suite/src/views/`** (waves 1a and 1b). The rest of `packages/suite/src`, `suite/*`,
-  `packages/components`, `packages/product-components`, `packages/react-utils`, `packages/icons`,
-  `packages/suite-web` and `packages/suite-desktop-ui` still ship uncompiled, so manual memoization
-  stays its only runtime mechanism there. The compiler's lint rules below apply everywhere regardless.
+- **Web and desktop are compiled tree by tree. Compiled today: `suite-common/`,
+  `packages/suite/src/views/` and `packages/suite/src/components/`** (waves 1a and 1b). The rest of
+  `packages/suite/src`, `suite/*`, `packages/components`, `packages/product-components`,
+  `packages/react-utils`, `packages/icons`, `packages/suite-web` and `packages/suite-desktop-ui`
+  still ship uncompiled, so manual memoization stays its only runtime mechanism there. The
+  compiler's lint rules below apply everywhere regardless.
 - **In a compiled tree, stop adding manual memoization — and don't mass-delete what is already there.**
   The compiler prunes the memo blocks it can prove redundant; a sweep of the ~600 existing
   `useMemo`/`useCallback` sites is a large unreviewable diff for a modest win. A hand-written memo whose
