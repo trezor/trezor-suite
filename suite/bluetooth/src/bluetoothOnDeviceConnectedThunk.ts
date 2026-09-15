@@ -1,9 +1,12 @@
-import { type DesktopBluetoothDevice } from '@suite/bluetooth';
-import { BLUETOOTH_PREFIX, type WithBluetoothState } from '@suite-common/bluetooth';
-import { selectKnownDeviceByDeviceId } from '@suite-common/bluetooth/src/bluetoothSelectors';
+import {
+    BLUETOOTH_PREFIX,
+    type WithBluetoothState,
+    selectKnownDeviceByDeviceId,
+} from '@suite-common/bluetooth';
 import { createThunk } from '@suite-common/redux-utils';
 import { type Device } from '@trezor/connect';
 
+import { type DesktopBluetoothDevice } from './DesktopBluetoothDevice';
 import { bluetoothDisconnectDeviceThunk } from './bluetoothDisconnectDeviceThunk';
 
 type BluetoothOnDeviceConnectedThunkState = WithBluetoothState<DesktopBluetoothDevice>;

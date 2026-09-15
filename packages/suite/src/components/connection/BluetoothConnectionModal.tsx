@@ -1,10 +1,10 @@
 import { selectDesktopAnalyticsDep } from '@suite/analytics';
+import { selectConnectingDevices } from '@suite/bluetooth';
 import { Translation } from '@suite/intl';
 import { events } from '@suite-common/analytics';
 import { useServices } from '@suite-common/dependency-injection';
 import { Modal } from '@trezor/components';
 
-import { selectConnectingDevices } from 'src/actions/bluetooth/desktopBluetoothSelectors';
 import { BluetoothPairingPin } from 'src/components/suite/bluetooth/BluetoothPairingPin';
 import { BluetoothScanningList } from 'src/components/suite/bluetooth/BluetoothScanningList';
 import { BluetoothSelectedDevice } from 'src/components/suite/bluetooth/BluetoothSelectedDevice';

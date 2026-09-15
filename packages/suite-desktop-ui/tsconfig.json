@@ -13,6 +13,7 @@
             "path": "../../suite-common/redux-utils"
         },
         { "path": "../../suite/analytics" },
+        { "path": "../../suite/bluetooth" },
         { "path": "../../suite/debug" },
         { "path": "../../suite/desktop-update" },
         { "path": "../../suite/flags" },

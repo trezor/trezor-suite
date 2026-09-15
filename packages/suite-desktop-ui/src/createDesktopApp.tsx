@@ -2,11 +2,11 @@ import { Provider as ReduxProvider } from 'react-redux';
 
 import { createRoot } from 'react-dom/client';
 
+import { initBluetoothThunk } from '@suite/bluetooth';
 import { ServicesProvider } from '@suite-common/dependency-injection';
 import TrezorConnect from '@trezor/connect-electron';
 import { type DesktopApiDep } from '@trezor/suite-desktop-api';
 
-import { initBluetoothThunk } from 'src/actions/bluetooth/initBluetoothThunk';
 import * as STORAGE from 'src/actions/suite/constants/storageConstants';
 import { desktopHandshake } from 'src/actions/suite/suiteActions';
 import { type HydrateReduxStoreDep } from 'src/reducers/createHydrateReduxStore';

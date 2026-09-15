@@ -1,5 +1,6 @@
 import type { PayloadAction } from '@reduxjs/toolkit';
 
+import { forgetBluetoothDeviceThunk } from '@suite/bluetooth';
 import { fixLoadedCoinjoinAccount } from '@suite/coinjoin';
 import type { FlagsState } from '@suite/flags';
 import { lockDevice } from '@suite/locks';
@@ -35,7 +36,6 @@ import { type StaticSessionId } from '@trezor/connect';
 import { type StorageLoadAction } from 'src/actions/suite/storageLifecycleActions';
 
 import { type SuiteServices } from './createSuiteCompositionRoot';
-import { forgetBluetoothDeviceThunk } from '../actions/bluetooth/bluetoothEraseBondsThunk';
 import type { BioAuthState } from '../reducers/bioAuth';
 import { type TrezorDevice } from '../types/suite';
 

@@ -1,10 +1,10 @@
+import { bluetoothOnDeviceConnectedThunk } from '@suite/bluetooth';
 import { openModal, preserveModal } from '@suite/modal';
 import { recoveryActions, selectRecoveryStatus } from '@suite/recovery';
 import { type Dispatch } from '@suite-common/redux-utils';
 import { type ConnectInitHooks } from '@suite-common/suite-types';
 import { DEVICE, UI_EVENTS, UI_REQUESTS } from '@trezor/connect';
 
-import { bluetoothOnDeviceConnectedThunk } from '../actions/bluetooth/bluetoothOnDeviceConnectedThunk';
 import { markDeviceAsRecentlyConnectedThunk } from '../actions/wallet/markDeviceAsRecentlyConnectedThunk';
 
 type ConnectInitHooksDeps = {

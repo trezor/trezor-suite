@@ -1,8 +1,7 @@
 import { useState } from 'react';
 
+import { unpairCurrentBondThunk } from '@suite/bluetooth';
 import { gotoThunk } from '@suite/router';
-
-import { unpairCurrentBondThunk } from 'src/actions/bluetooth/bluetoothEraseBondsThunk';
 
 import { ConfirmationModal } from './ConfirmationModal';
 import { OsAndTrezorCleanupModal } from './OsAndTrezorCleanupModal';

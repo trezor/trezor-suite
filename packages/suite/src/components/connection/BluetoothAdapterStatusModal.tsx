@@ -1,5 +1,6 @@
 import { useState } from 'react';
 
+import { openSystemSettingsThunk } from '@suite/bluetooth';
 import { Translation, type TranslationKey } from '@suite/intl';
 import { selectAdapterStatus } from '@suite-common/bluetooth';
 import { type BluetoothAdapterStatus } from '@suite-common/bluetooth/src/types';
@@ -7,7 +8,6 @@ import { useServices } from '@suite-common/dependency-injection';
 import { selectDispatch } from '@suite-common/redux-utils';
 import { Banner, Modal, Paragraph } from '@trezor/components';
 
-import { openSystemSettingsThunk } from 'src/actions/bluetooth/openSystemSettingsThunk';
 import { useSelector } from 'src/hooks/suite';
 
 type BluetoothAdapterStatusModalProps = {

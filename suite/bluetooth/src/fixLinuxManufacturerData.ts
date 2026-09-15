@@ -1,5 +1,6 @@
-import { type DesktopBluetoothDevice } from '@suite/bluetooth';
 import { DeviceModelInternal } from '@trezor/device-utils';
+
+import { type DesktopBluetoothDevice } from './DesktopBluetoothDevice';
 
 /**
  * Fixes manufacturer data on Linux where adapter reconnection
