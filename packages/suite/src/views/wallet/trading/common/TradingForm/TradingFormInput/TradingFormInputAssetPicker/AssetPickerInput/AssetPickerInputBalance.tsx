@@ -23,6 +23,11 @@ export const AssetPickerInputBalance = memo(function AssetPickerInputBalance({
     name,
     showOnlyAmount,
 }: AssetPickerInputBalanceProps) {
+    // React Compiler: `getValues` and `watch` keep one identity for the form's whole life, so a
+    // compiled render-time read of them freezes on the first render. Remove once these reads move
+    // to `useWatch` or out of render.
+    'use no memo';
+
     const { watch, getValues } = useFormContext<TradingSellFormProps | TradingExchangeFormProps>();
     const value = watch(name);
     const findAccountOrToken = useTradingFindAccountOrToken();
