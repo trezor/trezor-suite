@@ -22,7 +22,6 @@ export * from './Switch';
 export * from './DiscreetText/DiscreetText';
 export * from './DiscreetText/DiscreetTextTrigger';
 export * from './DiscreetText/DiscreetCanvas';
-export * from './BottomSheetListItem';
 export * from './Sheet/BottomSheetFlashList';
 export * from './Sheet/BottomSheetGrabber';
 export * from './Sheet/useAlertAnimation';
