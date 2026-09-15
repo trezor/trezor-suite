@@ -84,7 +84,7 @@ Electron-builder uses the `extraResources` configuration to copy the native modu
 // From electron-builder-config.js
 extraResources: [
     {
-        from: '../suite-desktop-native/',
+        from: '../desktop-app-native-bindings/',
         to: 'app.asar.unpacked/@suite/desktop-app-native-bindings',
     },
 ],

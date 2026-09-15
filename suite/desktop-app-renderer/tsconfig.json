@@ -2,9 +2,16 @@
     "extends": "../../tsconfig.base.json",
     "compilerOptions": {
         "outDir": "libDev",
-        "paths": { "src/*": ["../suite/src/*"] }
+        "paths": {
+            "src/*": [
+                "../../packages/suite/src/*"
+            ]
+        }
     },
-    "include": [".", "../suite/global.d.ts"],
+    "include": [
+        ".",
+        "../../packages/suite/global.d.ts"
+    ],
     "references": [
         {
             "path": "../../suite-common/dependency-injection"
