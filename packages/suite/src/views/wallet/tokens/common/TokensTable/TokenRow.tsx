@@ -113,6 +113,8 @@ export const TokenRow = ({
                                 value={token.balance}
                                 symbol={token.symbol}
                                 contractAddress={token.contract}
+                                isCompact
+                                tokenDecimals={token.decimals}
                             />
                         </Text>
                     </Column>

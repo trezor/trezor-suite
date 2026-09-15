@@ -11,6 +11,8 @@ export type AssetAmountProps = {
     symbol: string;
     amount: string;
     contractAddress?: string | null;
+    /** The token's decimals, so a stablecoin balance is shown the way money is. */
+    decimals?: number;
     fiatAmount?: BaseCurrencyAmount;
     showNoTradingPairText?: boolean;
     isFiatPrimary?: boolean;
@@ -22,6 +24,7 @@ export function AssetAmount({
     symbol,
     fiatAmount,
     contractAddress,
+    decimals,
     showNoTradingPairText = false,
     isFiatPrimary = false,
     isDisabled = false,
@@ -40,7 +43,8 @@ export function AssetAmount({
                 value={amount}
                 symbol={symbol}
                 contractAddress={contractAddress}
-                isBalance
+                isCompact
+                tokenDecimals={decimals}
             />
         </Text>
     );
