@@ -1,5 +1,5 @@
 import { existsSync } from 'node:fs';
-import { join } from 'node:path';
+import { dirname, join } from 'node:path';
 import { pathToFileURL } from 'node:url';
 
 import { type PackageJson, readPackageJson } from '@trezor/node-utils';
@@ -89,6 +89,24 @@ const loadForbiddenDepsConfig: ForbiddenDepsConfigLoader = async workspaceDir =>
     return configModule.forbiddenDepsConfig ?? configModule.default;
 };
 
+/**
+ * A config also covers the workspaces beneath its directory, so a tree can state its boundary once
+ * instead of repeating it in every package, and a package added later inherits it.
+ */
+const loadInheritedForbiddenDeps = async (repoRoot: string, workspaceDir: string) => {
+    const configs: Array<ForbiddenDepsConfig | undefined> = [];
+
+    for (
+        let directory = dirname(workspaceDir);
+        directory.startsWith(repoRoot) && directory !== dirname(directory);
+        directory = dirname(directory)
+    ) {
+        configs.push(await loadForbiddenDepsConfig(directory));
+    }
+
+    return configs.flatMap(config => config?.['forbidden-deps'] ?? []);
+};
+
 const getWorkspaceDirectoryResolver = (repoRoot: string): WorkspaceDirectories =>
     getWorkspaceDirectoryMap(repoRoot);
 
@@ -173,8 +191,10 @@ export const getForbiddenDependencyErrors = ({
     return dependencyOccurrences.flatMap(dependencyOccurrence => {
         const forbiddenDependency =
             forbiddenDepsMap.get(dependencyOccurrence.name) ??
-            forbiddenDependencyPrefixes.find(({ packageNamePrefix }) =>
-                dependencyOccurrence.name.startsWith(packageNamePrefix),
+            forbiddenDependencyPrefixes.find(
+                ({ packageNamePrefix, except }) =>
+                    dependencyOccurrence.name.startsWith(packageNamePrefix) &&
+                    !(except ?? []).includes(dependencyOccurrence.name),
             );
 
         if (forbiddenDependency === undefined) {
@@ -267,7 +287,16 @@ export const requireForbiddenDeps: Requirement<'workspace'> = {
             }),
             ...getForbiddenDependencyErrors({
                 dependencyOccurrences,
-                dependencyRule: localRule,
+                dependencyRule: {
+                    ...localRule,
+                    'forbidden-deps': [
+                        ...(localRule?.['forbidden-deps'] ?? []),
+                        ...(await loadInheritedForbiddenDeps(
+                            context.repoRoot,
+                            context.workspaceDir,
+                        )),
+                    ],
+                },
                 workspaceName: context.workspaceName,
             }),
             ...(await getDependencyConsumerErrors({
