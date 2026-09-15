@@ -6,7 +6,7 @@ import { convertILoggerToLog } from '../utils/IloggerToLog';
 
 interface TrezordNodeSettings {
     port: number;
-    api: 'usb' | 'udp';
+    api: 'legacy' | 'nusb' | 'udp';
 }
 
 const init = (settings: TrezordNodeSettings) =>

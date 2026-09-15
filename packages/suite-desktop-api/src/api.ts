@@ -128,7 +128,7 @@ export interface InvokeChannels {
     'tor/get-settings': () => InvokeResult<TorSettings>;
     'bridge/toggle': () => InvokeResult;
     'bridge/get-status': () => InvokeResult<Status>;
-    'bridge/change-settings': (payload: BridgeSettings) => InvokeResult;
+    'bridge/change-settings': (payload: Partial<BridgeSettings>) => InvokeResult;
     'bridge/get-settings': () => InvokeResult<BridgeSettings>;
     'user-data/clear': () => InvokeResult;
     'user-data/open': (directory?: string) => InvokeResult;
