@@ -17,7 +17,7 @@ export const getTxType = (
     precomposedForm: FormState,
     isYieldTransaction: boolean,
 ) => {
-    if (isStakeState(txInfoState)) {
+    if (isStakeState(txInfoState) || precomposedForm.tronStaking) {
         return 'stake';
     }
 

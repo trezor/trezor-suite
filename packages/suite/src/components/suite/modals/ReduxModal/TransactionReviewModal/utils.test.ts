@@ -14,8 +14,18 @@ describe('getTxType', () => {
         expect(getTxType(sendState, formState(), false)).toBeUndefined();
     });
 
-    it('reports staking transactions as stake', () => {
+    it('reports Ethereum, Solana and Cardano staking as stake', () => {
         expect(getTxType(stakeState, formState(), false)).toBe('stake');
+    });
+
+    it.each([
+        { kind: 'freeze', resource: 'bandwidth' },
+        { kind: 'unstake', resource: 'bandwidth' },
+        { kind: 'vote', votes: '1' },
+        { kind: 'withdraw' },
+        { kind: 'claim' },
+    ] as const)('reports Tron $kind as stake', tronStaking => {
+        expect(getTxType(sendState, formState({ tronStaking }), false)).toBe('stake');
     });
 
     it('reports trading transactions as trade', () => {

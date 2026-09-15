@@ -36,6 +36,7 @@ export const transactionCreatedEvent: EventDef<Attributes, EventType.Transaction
         { version: '1.9.0', notes: 'added' },
         { version: '25.4.0', notes: 'txType added' },
         { version: '26.11.0', notes: 'txType extended with `yield`' },
+        { version: '26.11.0', notes: 'txType `stake` now also covers Tron' },
     ],
     possibleImprovements: 'rename to `accounts/transaction-created`',
 
@@ -94,9 +95,13 @@ export const transactionCreatedEvent: EventDef<Attributes, EventType.Transaction
             changelog: [
                 { version: '25.4.0', notes: 'added' },
                 { version: '26.11.0', notes: 'added the `yield` value' },
+                {
+                    version: '26.11.0',
+                    notes: '`stake` now also covers Tron, which previously reported no type',
+                },
             ],
             description:
-                'The type of transaction: `trade` for trading flows, `stake` for staking-related transactions and `yield` for every transaction of a stablecoin yield flow (the deposit, withdraw, redeem or claim itself, and also its approve, revoke, wrap and unwrap steps). Absent for a plain send. One yield action can emit several `yield` events, so this must not be used to count transactions.',
+                'The type of transaction: `trade` for trading flows, `stake` for staking-related transactions on every network that supports it (Ethereum, Solana, Cardano and Tron) and `yield` for every transaction of a stablecoin yield flow (the deposit, withdraw, redeem or claim itself, and also its approve, revoke, wrap and unwrap steps). Absent for a plain send. One yield action can emit several `yield` events, so this must not be used to count transactions.',
         },
     },
 };
