@@ -102,8 +102,3 @@ export type FirmwareChannel =
     | 'test-signed'
     | 'localhost-unsigned'
     | 'localhost-signed';
-
-export type CurrentVersion = {
-    bootloaderVersion: VersionArray | null;
-    firmwareVersion: VersionArray | null;
-};
