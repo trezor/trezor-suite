@@ -57,15 +57,19 @@ export const clearAppCache = () =>
  * Default (codesigned builds): @trezor/suite-desktop,
  * Dev (non-production builds): @trezor/suite-desktop-dev
  * Local development: @trezor/suite-desktop-local
+ *
+ * These directory names are the on-disk identity of existing installations, so they keep
+ * the original package name and are spelled out rather than derived from it.
  */
+const LOCAL_USER_DATA_DIR = '@trezor/suite-desktop-local';
+
 export const initUserData = () => {
     if (isDevEnv) {
-        const userDataDirDefault = app.getPath('userData');
-        const userDataDir = `${userDataDirDefault}-local`;
+        const userDataDir = path.join(app.getPath('appData'), LOCAL_USER_DATA_DIR);
         try {
             fs.accessSync(userDataDir, fs.constants.R_OK);
         } catch {
-            fs.mkdirSync(userDataDir);
+            fs.mkdirSync(userDataDir, { recursive: true });
         }
         app.setPath('userData', userDataDir);
     }

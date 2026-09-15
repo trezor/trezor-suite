@@ -8,9 +8,9 @@ import TerserPlugin from 'minimizer-webpack-plugin';
 import path from 'path';
 import webpack from 'webpack';
 
-import { suiteVersion } from '../../suite/package.json';
-import pkg from '../../suite-desktop/package.json';
-import uriSchemes from '../../suite-desktop/uriSchemes.json';
+import { suiteVersion } from '../../../packages/suite/package.json';
+import pkg from '../../desktop-app/package.json';
+import uriSchemes from '../../desktop-app/uriSchemes.json';
 
 const { NODE_ENV, IS_CODESIGN_BUILD, SENTRY_AUTH_TOKEN } = process.env;
 
@@ -40,7 +40,7 @@ const sentryRelease = `${suiteVersion}.${PROJECT}${
 /* **** ENTRY POINTS **** */
 
 const source = path.join(__dirname, '..', 'src');
-const dist = path.join(__dirname, '../../suite-desktop/dist');
+const dist = path.join(__dirname, '../../desktop-app/dist');
 
 const threadPath = path.join(source, 'threads');
 const threads = sync(`${threadPath}/**/*.ts`).map(globMatch => {
@@ -56,16 +56,16 @@ const threads = sync(`${threadPath}/**/*.ts`).map(globMatch => {
 const winHelloChildProcessKey = 'winHelloChildProcess'; // must match the expected /dist filename that WinHelloProcessManager requires
 const winHelloChildProcessPath = path.join(
     __dirname,
-    '../../suite-desktop-native/src/winHelloChildProcess.ts',
+    '../../desktop-app-native-bindings/src/winHelloChildProcess.ts',
 );
 
 /* **** RUNTIME REQUIRE DEPENDENCIES ****
  a.k.a. externals
  Any package that needs a runtime require() call in electron-main or electron-preload
- must be listed in suite-desktop/package.json "dependencies"
+ must be listed in desktop-app/package.json "dependencies"
 
  But how do I tell?
- 1. Run `yarn workspace @trezor/suite-desktop build:app`
+ 1. Run `yarn workspace @suite/desktop-app build:app`
  2. find any occurrences of your local trezor-suite repo path in dist/**.js
     (if any, Suite will likely crash when executed on another computer).
 */

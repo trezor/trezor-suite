@@ -15,20 +15,26 @@
         {
             "path": "../../suite-common/suite-utils"
         },
-        { "path": "../../suite/debug" },
-        { "path": "../../suite/desktop-app-api" },
+        { "path": "../debug" },
+        { "path": "../desktop-app-api" },
         {
-            "path": "../../suite/platform-encryption-webauthn"
+            "path": "../platform-encryption-webauthn"
         },
-        { "path": "../../suite/router" },
-        { "path": "../connect" },
-        { "path": "../connect-common" },
-        { "path": "../env-utils" },
-        { "path": "../suite" },
-        { "path": "../transport-common" },
-        { "path": "../transport-web" },
-        { "path": "../utils" },
-        { "path": "../../suite/sentry" },
-        { "path": "../eslint" }
+        { "path": "../router" },
+        { "path": "../../packages/connect" },
+        {
+            "path": "../../packages/connect-common"
+        },
+        { "path": "../../packages/env-utils" },
+        { "path": "../../packages/suite" },
+        {
+            "path": "../../packages/transport-common"
+        },
+        {
+            "path": "../../packages/transport-web"
+        },
+        { "path": "../../packages/utils" },
+        { "path": "../sentry" },
+        { "path": "../../packages/eslint" }
     ]
 }

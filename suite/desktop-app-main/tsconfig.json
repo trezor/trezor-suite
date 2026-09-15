@@ -28,29 +28,39 @@
         {
             "path": "../../suite-common/wallet-utils"
         },
-        { "path": "../../suite/desktop-app-api" },
+        { "path": "../desktop-app-api" },
+        { "path": "../desktop-app-api-electron" },
         {
-            "path": "../../suite/desktop-app-api-electron"
+            "path": "../desktop-app-native-bindings"
         },
-        { "path": "../../suite/sentry" },
-        { "path": "../../suite/tor-types" },
-        { "path": "../coinjoin" },
-        { "path": "../connect" },
-        { "path": "../connect-common" },
-        { "path": "../connect-core" },
-        { "path": "../env-utils" },
-        { "path": "../eslint" },
-        { "path": "../ipc-proxy" },
-        { "path": "../node-utils" },
-        { "path": "../request-manager" },
-        { "path": "../suite-desktop-native" },
-        { "path": "../theme" },
-        { "path": "../transport" },
-        { "path": "../transport-bluetooth" },
-        { "path": "../transport-bridge" },
-        { "path": "../transport-common" },
-        { "path": "../urls" },
-        { "path": "../utils" },
-        { "path": "../type-utils" }
+        { "path": "../sentry" },
+        { "path": "../tor-types" },
+        { "path": "../../packages/coinjoin" },
+        { "path": "../../packages/connect" },
+        {
+            "path": "../../packages/connect-common"
+        },
+        { "path": "../../packages/connect-core" },
+        { "path": "../../packages/env-utils" },
+        { "path": "../../packages/eslint" },
+        { "path": "../../packages/ipc-proxy" },
+        { "path": "../../packages/node-utils" },
+        {
+            "path": "../../packages/request-manager"
+        },
+        { "path": "../../packages/theme" },
+        { "path": "../../packages/transport" },
+        {
+            "path": "../../packages/transport-bluetooth"
+        },
+        {
+            "path": "../../packages/transport-bridge"
+        },
+        {
+            "path": "../../packages/transport-common"
+        },
+        { "path": "../../packages/urls" },
+        { "path": "../../packages/utils" },
+        { "path": "../../packages/type-utils" }
     ]
 }

@@ -47,25 +47,25 @@ failure is not yours to fix (see Step 2, "Bail when it is not yours to fix").
 
 ## Environment
 
-**Web build:** `packages/suite-web/build` is pre-built and served as a static bundle via vite
+**Web build:** `suite/web-app/build` is pre-built and served as a static bundle via vite
 preview on `http://localhost:8000`. There is no hot reload — if an iteration changed a product
 source file (e.g. you added a `data-testid`), kill the server, rebuild, and restart before
 running web tests.
 
 ```bash
 pkill -f "vite preview" || true
-yarn workspace @trezor/suite-web build
-nohup yarn workspace @trezor/suite-web preview > /tmp/web-preview.log 2>&1 &
+yarn workspace @suite/web-app build
+nohup yarn workspace @suite/web-app preview > /tmp/web-preview.log 2>&1 &
 curl -sf --retry 30 --retry-delay 2 --retry-connrefused --max-time 5 http://localhost:8000 -o /dev/null
 ```
 
-**Desktop build:** `packages/suite-desktop/dist` and `packages/suite-desktop/build` are present.
+**Desktop build:** `suite/desktop-app/dist` and `suite/desktop-app/build` are present.
 If an iteration changed a product source file (e.g. you added a `data-testid`), remove them and
 rebuild before running desktop tests. A test-only change needs no rebuild.
 
 ```bash
-TEST_BUILD=true yarn workspace @trezor/suite-desktop build:ui
-yarn workspace @trezor/suite-desktop build:app
+TEST_BUILD=true yarn workspace @suite/desktop-app build:ui
+yarn workspace @suite/desktop-app build:app
 ```
 
 ---

@@ -45,9 +45,9 @@ jobs:
         with:
           version: v0.19.1
       - name: Install deps and build libs
-        # not installing @trezor/suite-desktop and @trezor/suite-desktop-core, because this is only the renderer process
+        # not installing @suite/desktop-app and @suite/desktop-app-main, because this is only the renderer process
         run: |
-          yarn workspaces focus trezor-suite @trezor/suite-desktop-ui @trezor/suite-build @suite/app-assets @trezor/transport-bridge @suite-common/message-system
+          yarn workspaces focus trezor-suite @suite/desktop-app-renderer @trezor/suite-build @suite/app-assets @trezor/transport-bridge @suite-common/message-system
           yarn message-system-sign-config
           yarn workspace @suite/app-assets build:lib
           yarn workspace @trezor/transport-bridge build:lib
@@ -56,7 +56,7 @@ jobs:
       - name: Cache Electron renderer bundle
         uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v5
         with:
-          path: packages/suite-desktop/build
+          path: suite/desktop-app/build
           key: renderer-bundle-${{ github.sha }}
 
   suite-desktop:
@@ -87,14 +87,14 @@ jobs:
       - name: Restore Electron renderer bundle
         uses: actions/cache/restore@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v5
         with:
-          path: packages/suite-desktop/build
+          path: suite/desktop-app/build
           key: renderer-bundle-${{ github.sha }}
           fail-on-cache-miss: true
 
       # safedep/pmg not available on macOS (that's ok, it already guards the `build-and-cache-renderer` job)
       - name: Install deps and build libs
         run: |
-          yarn workspaces focus trezor-suite @trezor/suite-desktop @trezor/suite-desktop-ui @trezor/suite-desktop-core @trezor/suite-build @suite/app-assets @trezor/transport-bridge @suite-common/message-system
+          yarn workspaces focus trezor-suite @suite/desktop-app @suite/desktop-app-renderer @suite/desktop-app-main @trezor/suite-build @suite/app-assets @trezor/transport-bridge @suite-common/message-system
           yarn message-system-sign-config
           yarn workspace @suite/app-assets build:lib
           yarn workspace @trezor/transport-bridge build:lib
@@ -104,10 +104,10 @@ jobs:
           CSC_FOR_PULL_REQUEST: ${{ matrix.platform == 'mac' && 'true' || 'false' }}
           SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
         run: |
-          yarn workspace @trezor/suite-desktop build:app
-          yarn workspace @trezor/suite-desktop build:app:electron:${{ matrix.platform }}
-          bash packages/suite-desktop-core/scripts/gnupg-sign.sh
-          mv packages/suite-desktop/build-electron/* .
+          yarn workspace @suite/desktop-app build:app
+          yarn workspace @suite/desktop-app build:app:electron:${{ matrix.platform }}
+          bash suite/desktop-app-main/scripts/gnupg-sign.sh
+          mv suite/desktop-app/build-electron/* .
 
       - name: Upload suite-desktop production artifacts
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
@@ -154,7 +154,7 @@ jobs:
           version: v0.19.1
       - name: Install deps and build libs
         run: |
-          yarn workspaces focus trezor-suite @trezor/suite-desktop @trezor/suite-desktop-ui @trezor/suite-desktop-core @trezor/suite-build @suite/app-assets @trezor/transport-bridge @suite-common/message-system
+          yarn workspaces focus trezor-suite @suite/desktop-app @suite/desktop-app-renderer @suite/desktop-app-main @trezor/suite-build @suite/app-assets @trezor/transport-bridge @suite-common/message-system
           yarn message-system-sign-config
 
       - name: Build libs
@@ -167,9 +167,9 @@ jobs:
           SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
         # Caching would be beneficial here as well, maybe not possible: the container interferes actions/cache (even in docker root mode).
         run: |
-          yarn workspace @trezor/suite-desktop build:${{env.platform}}
-          bash packages/suite-desktop-core/scripts/gnupg-sign.sh
-          mv packages/suite-desktop/build-electron/* .
+          yarn workspace @suite/desktop-app build:${{env.platform}}
+          bash suite/desktop-app-main/scripts/gnupg-sign.sh
+          mv suite/desktop-app/build-electron/* .
 
       - name: Upload suite-desktop production artifacts
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7

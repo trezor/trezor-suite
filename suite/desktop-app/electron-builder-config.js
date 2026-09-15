@@ -9,7 +9,9 @@ module.exports = {
     appId: `io.trezor.TrezorSuite${isCodesignBuild ? '' : '.dev'}`,
     extraMetadata: {
         version: suiteVersion,
-        // distinguish between dev and prod builds so different userDataDir is used
+        // Distinguishes dev and prod builds so a different userDataDir is used.
+        // This is the on-disk identity of existing installations, so it keeps the
+        // original package name and must not follow package renames.
         name: `@trezor/suite-desktop${isCodesignBuild ? '' : '-dev'}`,
     },
     productName: 'Trezor Suite',
@@ -28,7 +30,7 @@ module.exports = {
         'build/release-notes.md', // this one is dynamically loaded in runtime
         '!build/static/**/{favicon,icons,bin,browsers}', // copied as extraResources instead, some are platform-specific
         '!node_modules/usb/**/{libusb,libusb_config,src}', // exclude files unnecessary for runtime
-        '!node_modules/@trezor/**', // exclude @trezor/suite-desktop, which would recurse. Other @trezor packages are bundled by bundler.
+        '!node_modules/@trezor/**', // no @trezor package is a runtime dependency of this app; webpack bundles them.
     ],
     extraResources: [
         {

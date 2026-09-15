@@ -15,4 +15,4 @@ export const GITHUB_FW_COMMIT_URL: Url = 'https://github.com/trezor/trezor-firmw
 export const GITHUB_FW_BINARIES_URL: Url =
     'https://github.com/trezor/webwallet-data/tree/master/firmware';
 export const GITHUB_MCP_DOCS_URL: Url =
-    `${GITHUB_REPO_URL}/blob/develop/docs/packages/suite-desktop/mcp.md` as const;
+    `${GITHUB_REPO_URL}/blob/develop/docs/suite/desktop-app/mcp.md` as const;

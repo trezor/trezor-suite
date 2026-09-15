@@ -45,7 +45,7 @@ export class WebExtensionPopup extends Popup {
         return new ServiceWorkerWindowExtConnectableChannel<CoreEventMessage>({
             channel: {
                 here: '@trezor/connect-webextension-externally-connectable',
-                peer: '@trezor/suite-web',
+                peer: '@suite/web-app',
             },
             currentId: () => this.popupWindowPromise?.promise.then(tab => tab.id),
             logger: this.logger,

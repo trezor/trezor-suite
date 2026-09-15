@@ -9,6 +9,6 @@ gpg --batch --import "$GPG_CSC_LINK"
 
 shopt -s extglob
 
-for f in packages/suite-desktop/build-electron/*.@(AppImage|zip|dmg|exe) ; do
+for f in suite/desktop-app/build-electron/*.@(AppImage|zip|dmg|exe) ; do
   gpg --batch --local-user "$GPG_CSC_USERID" --armor --detach-sig --passphrase "$GPG_CSC_KEY_PASSWORD" --pinentry-mode loopback "$f"
 done

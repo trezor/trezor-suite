@@ -10,7 +10,7 @@ In "Devices" tab make sure that "Discover network targets" is enabled and "local
 
 ## dev mode
 
-modify packages/suite-desktop/package.json
+modify suite/desktop-app/package.json
 
 ```
 "dev:run": "electron ."
