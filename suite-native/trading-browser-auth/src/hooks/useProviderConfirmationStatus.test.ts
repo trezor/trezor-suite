@@ -24,6 +24,7 @@ import { prepareSendFormReducer } from '@suite-native/transaction-management';
 import { useProviderConfirmationStatus } from './useProviderConfirmationStatus';
 
 type State = TradingRootState & SendRootState;
+const FAIL_CONFIRMATION_TIMEOUT_MS = 85_000;
 
 describe('useProviderConfirmationStatus', () => {
     let store: Store<State>;
@@ -71,7 +72,7 @@ describe('useProviderConfirmationStatus', () => {
         expect(selectTradingProviderConfirmationStatus(store.getState())).toBe('inactive');
     });
 
-    it('should set tradingProviderConfirmationStatus to "confirmation_failed" after 30 "window_closed_incomplete" is set', async () => {
+    it('should set tradingProviderConfirmationStatus to "confirmation_failed" after the timeout when "window_closed_incomplete" is set', async () => {
         await renderUseProviderConfirmationStatus();
         jest.useFakeTimers();
 
@@ -83,7 +84,7 @@ describe('useProviderConfirmationStatus', () => {
         });
 
         await act(() => {
-            jest.advanceTimersByTime(30_000);
+            jest.advanceTimersByTime(FAIL_CONFIRMATION_TIMEOUT_MS);
         });
 
         expect(selectTradingProviderConfirmationStatus(store.getState())).toBe(
@@ -91,7 +92,7 @@ describe('useProviderConfirmationStatus', () => {
         );
     });
 
-    it('should set tradingProviderConfirmationStatus to "confirmation_failed" after 30 "window_closed_with_success" is set', async () => {
+    it('should set tradingProviderConfirmationStatus to "confirmation_failed" after the timeout when "window_closed_with_success" is set', async () => {
         await renderUseProviderConfirmationStatus();
         jest.useFakeTimers();
 
@@ -103,7 +104,7 @@ describe('useProviderConfirmationStatus', () => {
         });
 
         await act(() => {
-            jest.advanceTimersByTime(30_000);
+            jest.advanceTimersByTime(FAIL_CONFIRMATION_TIMEOUT_MS);
         });
 
         expect(selectTradingProviderConfirmationStatus(store.getState())).toBe(
@@ -131,7 +132,7 @@ describe('useProviderConfirmationStatus', () => {
         });
 
         await act(() => {
-            jest.advanceTimersByTime(30_000);
+            jest.advanceTimersByTime(FAIL_CONFIRMATION_TIMEOUT_MS);
         });
 
         expect(selectTradingProviderConfirmationStatus(store.getState())).toBe(
