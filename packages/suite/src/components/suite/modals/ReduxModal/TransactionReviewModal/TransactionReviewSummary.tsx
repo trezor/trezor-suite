@@ -14,10 +14,11 @@ import {
 import { asAmountUnit, getFee, unitsToSubunits } from '@suite-common/wallet-utils';
 import { Box, IconButton, Note, Row, Text } from '@trezor/components';
 import { BroadcastIcon, ClockIcon, ComputerTowerIcon, InfoIcon, ReceiptIcon } from '@trezor/icons';
-import { FeeRate, TokenIcon } from '@trezor/product-components';
+import { TokenIcon } from '@trezor/product-components';
 import { BigNumber } from '@trezor/utils';
 
 import { ConnectCallSource } from 'src/components/suite/ConnectCallSource';
+import { FeeRate } from 'src/components/wallet/Fees/FeeRate';
 import { useLocales, useSelector } from 'src/hooks/suite';
 import { type AppState } from 'src/types/suite';
 import { type Account } from 'src/types/wallet';
