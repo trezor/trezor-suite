@@ -9,3 +9,5 @@ export * from './sortDevices';
 export * from './usePinHook';
 export { getIsIgnoredEntropyCheckError } from './services/getIsIgnoredEntropyCheckError';
 export { getIsDeviceIdValid } from './services/getIsDeviceIdValid';
+export { getIsDeviceReadyForAuthenticityCheck } from './services/getIsDeviceReadyForAuthenticityCheck';
+export { getIsDeviceAuthenticityCheckSupportedAndEnabled } from './services/getIsDeviceAuthenticityCheckSupportedAndEnabled';

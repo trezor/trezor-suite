@@ -171,6 +171,15 @@ export const isDeviceAcquired = (device?: TrezorDevice): device is AcquiredDevic
 // Is a Connect device known (corresponds to Suite "acquired")
 export const isDeviceKnown = (device?: Device): device is KnownDevice => !!device?.features;
 
+export const getIsFactoryResetDevice = (device?: TrezorDevice): boolean => {
+    if (!device) return false;
+    // Cannot be determined for unacquired device
+    if (!isDeviceAcquired(device)) return false;
+
+    // Note: if firmware_present is false, then mode can be nothing else than bootloader, but not vice versa.
+    return device.mode === 'bootloader' && device.features.firmware_present === false;
+};
+
 export const isSelectedInstance = (selected?: TrezorDevice, device?: TrezorDevice) =>
     !!(
         selected &&
