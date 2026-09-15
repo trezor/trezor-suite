@@ -74,7 +74,7 @@ export const InteractiveDeviceChecksFlow = () => {
         return (
             <Box padding={{ top: 40 }} width="100%">
                 <DeviceAuthenticityCheck
-                    goToNext={() => goToSuiteOrNextDevice(() => setIsAuthenticityCheckStep(false))}
+                    onSuccess={() => goToSuiteOrNextDevice(() => setIsAuthenticityCheckStep(false))}
                 />
             </Box>
         );
