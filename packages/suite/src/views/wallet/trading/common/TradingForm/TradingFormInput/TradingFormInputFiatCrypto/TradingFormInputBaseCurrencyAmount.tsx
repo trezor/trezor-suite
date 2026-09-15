@@ -64,6 +64,12 @@ export const TradingFormInputBaseCurrencyAmount = ({
     decimals = getNetworkDecimalsWithFallback(symbol),
     isInSats = false,
 }: TradingFormInputBaseCurrencyAmountProps) => {
+    // React Compiler: `getFieldState` keeps one identity for the form's whole life, so
+    // `yarn react-compiler:check` flags its render-time reads below as frozen. Their `formState`
+    // argument comes from `useFormState`, whose identity changes on every update, but the check
+    // cannot see that. Remove once these reads move out of render or the check models it.
+    'use no memo';
+
     const theme = useTheme();
     const locale = useSelector(selectLanguage);
     const baseCurrency = useSelector(selectBaseCurrency);
