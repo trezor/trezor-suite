@@ -1,0 +1,21 @@
+{
+    "name": "@trezor/network-ripple-assets",
+    "version": "1.0.0",
+    "private": true,
+    "license": "See LICENSE.md in repo root",
+    "sideEffects": false,
+    "exports": {
+        ".": "./src/index.ts",
+        "./assets/*": "./assets/*"
+    },
+    "main": "src/index",
+    "scripts": {
+        "depcheck": "yarn g:depcheck",
+        "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'",
+        "type-check": "yarn g:tsc --build"
+    },
+    "dependencies": {
+        "@trezor/network-assets": "workspace:*",
+        "@trezor/utils": "workspace:*"
+    }
+}

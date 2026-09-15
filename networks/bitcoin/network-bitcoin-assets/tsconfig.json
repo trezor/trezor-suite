@@ -1,0 +1,14 @@
+{
+    "extends": "../../../tsconfig.base.json",
+    "compilerOptions": {
+        "outDir": "libDev"
+    },
+    "references": [
+        {
+            "path": "../../network-module/network-assets"
+        },
+        {
+            "path": "../../../packages/utils"
+        }
+    ]
+}

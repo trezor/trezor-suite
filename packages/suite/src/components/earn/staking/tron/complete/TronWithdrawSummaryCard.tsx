@@ -1,7 +1,7 @@
+import { TokenIcon } from '@suite/asset-icon';
 import { Translation } from '@suite/intl';
 import { Card, Column, Divider, Icon, Row, Text } from '@trezor/components';
 import { CheckCircleFilledIcon } from '@trezor/icons';
-import { TokenIcon } from '@trezor/product-components';
 
 import { BaseCurrencyValue } from 'src/components/suite/BaseCurrencyValue';
 import { FormattedCryptoAmount } from 'src/components/suite/FormattedCryptoAmount';

@@ -1,7 +1,7 @@
+import { AssetIcon } from '@suite/asset-icon';
 import { HiddenPlaceholder } from '@suite/discreet-mode';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { Row, Text } from '@trezor/components';
-import { TokenIcon } from '@trezor/product-components';
 
 type YieldRewardItemProps = {
     formattedAmount: string;
@@ -25,7 +25,7 @@ export const YieldRewardItem = ({
         data-testid={`@yield/rewards/item/${tokenSymbol.toLowerCase()}`}
     >
         <Row gap={12} alignItems="center" flex="1" overflow="hidden">
-            <TokenIcon
+            <AssetIcon
                 symbol={networkSymbol}
                 contractAddress={tokenAddress}
                 placeholder={tokenSymbol}

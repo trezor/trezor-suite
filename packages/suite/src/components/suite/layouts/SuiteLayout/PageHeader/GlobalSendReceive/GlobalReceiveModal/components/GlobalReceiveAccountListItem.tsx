@@ -1,9 +1,9 @@
 import { AccountLabel } from '@suite/account';
+import { TokenIcon } from '@suite/asset-icon';
 import { Translation } from '@suite/intl';
 import { getNetworkFeatures } from '@suite-common/wallet-config';
 import { type Account } from '@suite-common/wallet-types';
 import { CardList, Column, Row, Text } from '@trezor/components';
-import { TokenIcon } from '@trezor/product-components';
 
 type GlobalReceiveAccountListItemProps = {
     account: Account;

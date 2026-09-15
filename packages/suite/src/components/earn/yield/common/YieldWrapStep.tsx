@@ -1,12 +1,12 @@
 import { type ReactNode } from 'react';
 
+import { AssetIcon } from '@suite/asset-icon';
 import { Translation } from '@suite/intl';
 import type {
     YieldFlowDisplayToken,
     YieldPendingTransactionState,
 } from '@suite-common/wallet-core';
 import { Box, Button, Card, Column, Row, Text } from '@trezor/components';
-import { TokenIcon } from '@trezor/product-components';
 
 import { FormattedCryptoAmount } from 'src/components/suite/FormattedCryptoAmount';
 
@@ -79,7 +79,7 @@ export const YieldWrapStep = ({
                         <Translation id="TR_EARN_YIELD_WRAP_RECEIVING" />
                     </Text>
                     <Row alignItems="center" gap={8} minWidth={0}>
-                        <TokenIcon
+                        <AssetIcon
                             size={20}
                             symbol={token.networkSymbol}
                             contractAddress={token.contractAddress ?? null}

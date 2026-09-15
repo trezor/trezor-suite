@@ -5,12 +5,14 @@ import {
     supportedSolanaNetworks,
 } from '@trezor/network-solana/constants';
 
+import { solanaIcon } from '../icons';
 import { solanaValidator } from './addressValidator/solanaAddressValidator';
 import { getNetworkConfig } from './networkConfig';
 
 export type SolanaNetworkSuiteCommonNetworkModule = SuiteCommonNetworkModule<SolanaNetworkSymbol>;
 
 export const createSolanaSuiteCommonNetworkModule = (): SolanaNetworkSuiteCommonNetworkModule => ({
+    icon: solanaIcon,
     addressValidator: solanaValidator,
     getSupportedNetworks: () => supportedSolanaNetworks,
     isSupportedNetwork: isSupportedSolanaNetwork,

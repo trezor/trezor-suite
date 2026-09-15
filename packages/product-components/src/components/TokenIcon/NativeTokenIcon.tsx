@@ -2,8 +2,6 @@ import { ReactSVG } from 'react-svg';
 
 import styled from 'styled-components';
 
-import { cryptoIcons } from '@suite-common/icons';
-
 import { type TokenIconProps, type TokenIconSize } from './tokenIconTypes';
 
 const SvgContainer = styled.div<{ $size: TokenIconSize }>`
@@ -31,25 +29,21 @@ const StyledReactSVG = styled(ReactSVG)`
     }
 ` as typeof ReactSVG;
 
-type NativeTokenIconProps = TokenIconProps;
+type NativeTokenIconProps = TokenIconProps & { src: string };
 
 export const NativeTokenIcon = ({
-    symbol,
+    src,
     size = 32,
     'data-testid': dataTestId,
-}: NativeTokenIconProps) => {
-    const src = cryptoIcons[symbol];
-
-    return (
-        <SvgContainer $size={size} data-testid={dataTestId}>
-            <StyledReactSVG
-                src={src}
-                beforeInjection={svg => {
-                    svg.setAttribute('width', `${size}px`);
-                    svg.setAttribute('height', `${size}px`);
-                }}
-                loading={() => <span className="loading" />}
-            />
-        </SvgContainer>
-    );
-};
+}: NativeTokenIconProps) => (
+    <SvgContainer $size={size} data-testid={dataTestId}>
+        <StyledReactSVG
+            src={src}
+            beforeInjection={svg => {
+                svg.setAttribute('width', `${size}px`);
+                svg.setAttribute('height', `${size}px`);
+            }}
+            loading={() => <span className="loading" />}
+        />
+    </SvgContainer>
+);

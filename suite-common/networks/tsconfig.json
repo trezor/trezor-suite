@@ -4,6 +4,7 @@
     "references": [
         { "path": "../earn-stablecoin-defs" },
         { "path": "../legacy-network-config" },
+        { "path": "../../networks/network-module/network-assets" },
         {
             "path": "../../networks/bitcoin/network-bitcoin-suite-common"
         },

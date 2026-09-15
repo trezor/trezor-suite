@@ -2,12 +2,12 @@ import { Fragment } from 'react';
 
 import styled from 'styled-components';
 
+import { AssetIconSet } from '@suite/asset-icon';
 import { Translation } from '@suite/intl';
 import { useFormatters } from '@suite-common/formatters';
 import { asBaseCurrencyAmount } from '@suite-common/wallet-types';
 import { type BaseCurrencyCode } from '@trezor/blockchain-link-types';
 import { Grid, Row, Text, Tooltip } from '@trezor/components';
-import { TokenIconSet } from '@trezor/product-components';
 
 import { FormattedCryptoAmount, HiddenPlaceholder } from 'src/components/suite';
 
@@ -66,7 +66,7 @@ export const EarnYieldClaimRewardsBannerTokensTooltip = ({
             cursor={rewards.length === 1 ? 'default' : 'help'}
         >
             <TokenIconStack>
-                <TokenIconSet
+                <AssetIconSet
                     symbol={firstReward.networkSymbol}
                     tokens={rewards.map(({ symbol, networkSymbol, contractAddress }) => ({
                         symbol,

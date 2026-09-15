@@ -1,10 +1,10 @@
+import { TokenIcon } from '@suite/asset-icon';
 import { Translation } from '@suite/intl';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { selectAccountIsStakingActive, selectBaseCurrency } from '@suite-common/wallet-core';
 import { isTestnet } from '@suite-common/wallet-utils';
 import { Column, Icon, Paragraph, Row, Skeleton, Text } from '@trezor/components';
 import { InfoIcon } from '@trezor/icons';
-import { TokenIcon } from '@trezor/product-components';
 
 import { AmountUnitSwitchWrapper, FormattedCryptoAmount } from 'src/components/suite';
 import { FiatHeader } from 'src/components/wallet/FiatHeader';

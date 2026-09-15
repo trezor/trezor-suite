@@ -1,5 +1,6 @@
 import { AccountLabel } from '@suite/account';
 import { selectDesktopAnalyticsDep } from '@suite/analytics';
+import { AssetIcon } from '@suite/asset-icon';
 import { Translation, type TranslationKey } from '@suite/intl';
 import { events } from '@suite-common/analytics';
 import { useServices } from '@suite-common/dependency-injection';
@@ -7,7 +8,6 @@ import { type WrappedNativeFlowType } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
 import { Column, IconButton, Row, Text } from '@trezor/components';
 import { CaretLeftIcon } from '@trezor/icons';
-import { TokenIcon } from '@trezor/product-components';
 
 import { FormattedCryptoAmount } from 'src/components/suite/FormattedCryptoAmount';
 import { PageHeader } from 'src/components/suite/layouts/SuiteLayout';
@@ -64,7 +64,7 @@ export const WrappedNativePageHeader = ({
 
                 <Row alignItems="center" gap={12} overflow="hidden">
                     {account && (
-                        <TokenIcon
+                        <AssetIcon
                             symbol={account.symbol}
                             contractAddress={contractAddress}
                             showNetworkIcon

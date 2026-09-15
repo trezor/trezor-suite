@@ -2,6 +2,7 @@ import styled from 'styled-components';
 
 import { AccountLabel } from '@suite/account';
 import { selectDesktopAnalyticsDep } from '@suite/analytics';
+import { TokenIcon } from '@suite/asset-icon';
 import { DebugOnlyBadge, selectIsDebugModeActive } from '@suite/debug';
 import { HiddenPlaceholder } from '@suite/discreet-mode';
 import { Translation } from '@suite/intl';
@@ -22,7 +23,6 @@ import {
 } from '@suite-common/wallet-utils';
 import { CardList, Column, Icon, Modal, Row, Text, Tooltip } from '@trezor/components';
 import { CaretRightIcon } from '@trezor/icons';
-import { TokenIcon } from '@trezor/product-components';
 import { typography } from '@trezor/theme';
 import { BigNumber } from '@trezor/utils';
 

@@ -13,8 +13,10 @@
     },
     "dependencies": {
         "@scure/base": "^2.0.0",
+        "@trezor/blockchain-link-utils": "workspace:*",
         "@trezor/device-utils": "workspace:*",
         "@trezor/network-cardano": "workspace:*",
+        "@trezor/network-cardano-assets": "workspace:*",
         "@trezor/network-module-suite-common-types": "workspace:*",
         "cbor": "^10.0.12",
         "crc": "^4.3.2"

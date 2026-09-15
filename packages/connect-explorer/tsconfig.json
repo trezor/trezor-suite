@@ -5,11 +5,6 @@
         "lib": ["dom", "dom.iterable", "esnext"],
         "emitDeclarationOnly": false,
         "noEmit": true,
-        "paths": {
-            "@suite-common/icons/src/icons": [
-                "./src/icons/minimalIcons.ts"
-            ]
-        },
         "plugins": [
             { "name": "typescript-styled-plugin" }
         ]
@@ -29,6 +24,36 @@
         { "path": "../connect-webextension" },
         { "path": "../device-authenticity" },
         { "path": "../icons" },
+        {
+            "path": "../../networks/network-module/network-assets"
+        },
+        {
+            "path": "../../networks/bitcoin/network-bitcoin-assets"
+        },
+        {
+            "path": "../../networks/cardano/network-cardano-assets"
+        },
+        {
+            "path": "../../networks/ethereum/network-ethereum-assets"
+        },
+        {
+            "path": "../../networks/monero/network-monero-assets"
+        },
+        {
+            "path": "../../networks/ripple/network-ripple-assets"
+        },
+        {
+            "path": "../../networks/solana/network-solana-assets"
+        },
+        {
+            "path": "../../networks/stellar/network-stellar-assets"
+        },
+        {
+            "path": "../../networks/tezos/network-tezos-assets"
+        },
+        {
+            "path": "../../networks/tron/network-tron-assets"
+        },
         { "path": "../protobuf" },
         { "path": "../schema-utils" },
         { "path": "../theme" },

@@ -1,10 +1,10 @@
+import { AssetIcon } from '@suite/asset-icon';
 import { useDevice } from '@suite/device';
 import { Translation } from '@suite/intl';
 import { getNetworkDisplaySymbol, getNetworkDisplaySymbolName } from '@suite-common/wallet-config';
 import { useDisplayBaseCurrency } from '@suite-common/wallet-core';
 import { Card, Flex, InfoItem, Row, Text } from '@trezor/components';
 import { hasBitcoinOnlyFirmware } from '@trezor/device-utils';
-import { TokenIcon } from '@trezor/product-components';
 
 import { DashboardSection } from 'src/components/dashboard';
 import { YieldBadge } from 'src/components/earn/YieldBadge/YieldBadge';
@@ -40,7 +40,7 @@ export const TradeBox = ({ account }: TradeBoxProps) => {
                         gap={isBelowMobile ? 16 : 40}
                     >
                         <Row gap={12}>
-                            <TokenIcon size={40} symbol={account.symbol} showNetworkIcon />
+                            <AssetIcon size={40} symbol={account.symbol} showNetworkIcon />
                             <InfoItem
                                 label={getNetworkDisplaySymbolName(account.symbol)}
                                 typographyStyle="body-md-strong"

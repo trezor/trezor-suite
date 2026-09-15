@@ -1,8 +1,10 @@
 import { type RefObject, memo } from 'react';
 
+import { NetworkIcon } from '@suite/asset-icon';
 import { type TranslationKey, useTranslation } from '@suite/intl';
+import { useServices } from '@suite-common/dependency-injection';
 import { selectHasBitcoinOnlyFirmware } from '@suite-common/device';
-import { selectNetworkSymbolForProtocol } from '@suite-common/networks';
+import { selectNetworkIconRegistry, selectNetworkSymbolForProtocol } from '@suite-common/networks';
 import { selectEnabledNetworks } from '@suite-common/wallet-core';
 import { type GlobalSendReceiveType } from '@suite-common/wallet-types';
 import { SearchAsset } from '@trezor/product-components';
@@ -25,6 +27,7 @@ export const AssetSearchWithNetworkFilter = memo(function AssetSearchWithNetwork
     listRef,
     modal,
 }: AssetSearchWithNetworkFilterProps) {
+    const { networkIconRegistry } = useServices(selectNetworkIconRegistry);
     const isBitcoinOnlyFirmware = useSelector(selectHasBitcoinOnlyFirmware);
 
     const [search, setSearch] = useSearchFilter();
@@ -49,7 +52,11 @@ export const AssetSearchWithNetworkFilter = memo(function AssetSearchWithNetwork
     const selectConfig = isBitcoinOnlyFirmware
         ? undefined
         : {
-              networks,
+              networks: networks.map(symbol => ({
+                  symbol,
+                  name: networkIconRegistry.getNetworkIcon(symbol)?.name ?? symbol,
+                  icon: <NetworkIcon networkSymbol={symbol} size={20} />,
+              })),
               selectedNetwork: networkFilter,
               onChange: setNetworkFilter,
               includeAllOption: !protocolSymbol,

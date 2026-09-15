@@ -2,8 +2,6 @@ import { type ReactNode } from 'react';
 
 import styled from 'styled-components';
 
-import { type NetworkIconSymbol } from '@suite-common/icons/src/iconSymbols';
-
 import { NetworkIcon, type NetworkIconSize } from './NetworkIcon';
 
 const NETWORK_ICON_BADGE_CUTOUT_SPACING = 2;
@@ -80,14 +78,20 @@ const BadgeWrapper = styled.div<{ $iconSize: NetworkIconSize }>`
 `;
 
 type NetworkIconBadgeProps = {
-    networkSymbol: NetworkIconSymbol;
+    iconSrc: string;
+    iconColor: string;
+    iconBackgroundColor: string;
+    iconDataTestId?: string;
     parentSize: NetworkIconSize;
     children: ReactNode;
     'data-testid'?: string;
 };
 
 export const NetworkIconBadge = ({
-    networkSymbol,
+    iconSrc,
+    iconColor,
+    iconBackgroundColor,
+    iconDataTestId,
     parentSize,
     children,
     'data-testid': dataTestId,
@@ -104,7 +108,13 @@ export const NetworkIconBadge = ({
                 {children}
             </MaskedContent>
             <BadgeWrapper $iconSize={size}>
-                <NetworkIcon networkSymbol={networkSymbol} size={size} />
+                <NetworkIcon
+                    src={iconSrc}
+                    color={iconColor}
+                    backgroundColor={iconBackgroundColor}
+                    data-testid={iconDataTestId}
+                    size={size}
+                />
             </BadgeWrapper>
         </Wrapper>
     );

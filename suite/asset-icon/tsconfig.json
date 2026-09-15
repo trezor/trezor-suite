@@ -1,0 +1,16 @@
+{
+    "extends": "../../tsconfig.base.json",
+    "compilerOptions": { "outDir": "libDev" },
+    "references": [
+        {
+            "path": "../../suite-common/dependency-injection"
+        },
+        { "path": "../../suite-common/networks" },
+        { "path": "../../packages/asset-utils" },
+        {
+            "path": "../../packages/product-components"
+        },
+        { "path": "../../packages/react-utils" },
+        { "path": "../../packages/components" }
+    ]
+}

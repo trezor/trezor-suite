@@ -1,18 +1,18 @@
 import { type Meta, type StoryObj } from '@storybook/react';
 
-import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { spacingValues } from '@trezor/theme';
 
 import {
     NetworkIconSet as NetworkIconSetComponent,
     type NetworkIconSetProps,
 } from './NetworkIconSet';
+import { exampleIcon } from '../TokenIcon/storyFixtures';
 import { allowedTokenIconSizes } from '../TokenIcon/tokenIconTypes';
 
-const NETWORK_1: NetworkSymbol = 'btc';
-const NETWORK_2: NetworkSymbol = 'eth';
-const NETWORK_3: NetworkSymbol = 'ltc';
-const NETWORK_4: NetworkSymbol = 'ada';
+const NETWORK_1 = { symbol: 'btc', name: 'Bitcoin', src: exampleIcon } as const;
+const NETWORK_2 = { symbol: 'eth', name: 'Ethereum', src: exampleIcon } as const;
+const NETWORK_3 = { symbol: 'ltc', name: 'Litecoin', src: exampleIcon } as const;
+const NETWORK_4 = { symbol: 'ada', name: 'Cardano', src: exampleIcon } as const;
 
 const meta: Meta<typeof NetworkIconSetComponent> = {
     title: 'NetworkIconSet',

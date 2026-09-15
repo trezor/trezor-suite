@@ -7,19 +7,17 @@ import { type CryptoIconName, cryptoIcons, genericTokenIcon } from '@suite-commo
 import {
     type NetworkDisplaySymbol,
     type NetworkSymbol,
-    getCoingeckoId,
     getNetworkDisplaySymbol,
     isNetworkSymbol,
 } from '@suite-common/wallet-config';
-import { getAssetLogoContractAddresses } from '@suite-common/wallet-utils';
 import { useTranslate } from '@suite-native/intl';
 import { getAssetLogoUrl } from '@trezor/asset-utils';
-import { isWrappedNativeToken } from '@trezor/network-ethereum-suite-common';
 import { useAsyncMemo } from '@trezor/react-utils';
 import { type NativeStyleObject, prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
 import { MAX_FONT_SIZE_MULTIPLIER } from './Icon';
 import { NetworkIcon, networkIconSizes } from './NetworkIcon';
+import { useNetworkIcon } from './useNetworkIcon';
 
 export const tokenIconSizes = {
     tiny: 16,
@@ -108,6 +106,10 @@ interface TokenIconProps {
 const TokenIconComponent = ({ symbol, contractAddress, size = 'small' }: TokenIconProps) => {
     const { applyStyle } = useNativeStyles();
     const { translate } = useTranslate();
+    const network = useNetworkIcon(symbol);
+    const icon = network?.icon;
+    const networkSymbol = network?.symbol;
+    const coingeckoId = network?.config.coingeckoId;
 
     const sizeNumber = typeof size === 'number' ? size : tokenIconSizes[size];
     const iconContainerStyle = useMemo(
@@ -130,18 +132,23 @@ const TokenIconComponent = ({ symbol, contractAddress, size = 'small' }: TokenIc
     // resolves synchronously for everything except the first XLM token after a cold start
     // so most icons render in the first frame without a placeholder flash
     const resolvedUrls = useAsyncMemo((): (string | number)[] | Promise<(string | number)[]> => {
-        const fallbackIcon = [cryptoIcons[symbol.toLowerCase() as CryptoIconName]];
+        const fallbackIcon = [
+            icon && networkSymbol
+                ? icon.getIcons(networkSymbol).coin
+                : cryptoIcons[symbol.toLowerCase() as CryptoIconName],
+        ];
 
-        if (!isNetworkSymbol(symbol)) {
+        if (
+            !isNetworkSymbol(symbol) ||
+            !icon ||
+            !networkSymbol ||
+            !coingeckoId ||
+            !contractAddress
+        ) {
             return fallbackIcon;
         }
 
-        const coingeckoId = getCoingeckoId(symbol);
-        if (!coingeckoId || !contractAddress) {
-            return fallbackIcon;
-        }
-
-        const toLogoUrls = (logoAddresses: string[] | undefined) =>
+        const toLogoUrls = (logoAddresses: readonly string[] | undefined) =>
             logoAddresses?.length
                 ? logoAddresses.map(address =>
                       getAssetLogoUrl({
@@ -153,12 +160,12 @@ const TokenIconComponent = ({ symbol, contractAddress, size = 'small' }: TokenIc
                   )
                 : fallbackIcon;
 
-        const logoAddresses = getAssetLogoContractAddresses(symbol, contractAddress);
+        const logoAddresses = icon.getTokenLogoIdentifiers(networkSymbol, contractAddress);
 
         return logoAddresses instanceof Promise
             ? logoAddresses.then(toLogoUrls)
             : toLogoUrls(logoAddresses);
-    }, [contractAddress, sizeNumber, symbol]);
+    }, [contractAddress, sizeNumber, symbol, icon, networkSymbol, coingeckoId]);
 
     const sourceUrls = resolvedUrls ?? [];
     const sourceKey = resolvedUrls ? `${asyncKey}#resolved` : `${asyncKey}#fallback`;
@@ -215,11 +222,13 @@ export const TokenIcon = ({
     wrappedTokenIcon = 'token',
 }: TokenIconProps) => {
     const { applyStyle } = useNativeStyles();
+    const network = useNetworkIcon(symbol);
 
     if (
         wrappedTokenIcon === 'network' &&
         isNetworkSymbol(symbol) &&
-        isWrappedNativeToken(symbol, contractAddress)
+        contractAddress &&
+        network?.icon.isWrappedNativeToken?.(network.symbol, contractAddress)
     ) {
         contractAddress = undefined;
     }

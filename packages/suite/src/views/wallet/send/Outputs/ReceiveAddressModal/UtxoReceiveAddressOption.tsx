@@ -1,4 +1,5 @@
 import { Address } from '@suite/address';
+import { TokenIcon } from '@suite/asset-icon';
 import { useFormatters } from '@suite-common/formatters';
 import { getNetwork } from '@suite-common/wallet-config';
 import { selectBaseCurrency } from '@suite-common/wallet-core';
@@ -6,7 +7,6 @@ import { type Account } from '@suite-common/wallet-types';
 import { BASE_CURRENCY_ZERO, asAmountSubunit, subunitsToUnits } from '@suite-common/wallet-utils';
 import { type Address as AddressType } from '@trezor/blockchain-link-types';
 import { CardList, Column, Row, Text } from '@trezor/components';
-import { TokenIcon } from '@trezor/product-components';
 import { BigNumber } from '@trezor/utils';
 
 import { CoinBalance } from 'src/components/suite';

@@ -1,4 +1,5 @@
 import { selectDesktopAnalyticsDep } from '@suite/analytics';
+import { AssetIcon } from '@suite/asset-icon';
 import { HiddenPlaceholder } from '@suite/discreet-mode';
 import { Translation } from '@suite/intl';
 import { events } from '@suite-common/analytics';
@@ -14,7 +15,15 @@ type WrapInfoRendererProps = Omit<NotificationViewProps, 'messageValues'> &
     (NotificationRendererProps<'tx-wrap'> | NotificationRendererProps<'tx-unwrap'>);
 
 const withFormattedAmount = (asset: WrapTransactionAsset) => ({
-    ...asset,
+    displaySymbol: asset.displaySymbol,
+    icon: (
+        <AssetIcon
+            symbol={asset.symbol}
+            contractAddress={asset.contractAddress}
+            placeholder={asset.displaySymbol}
+            size={20}
+        />
+    ),
     amount: <FormattedCryptoAmount value={asset.amount} isBalance disableHiddenPlaceholder />,
 });
 

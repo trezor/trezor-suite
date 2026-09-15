@@ -21,12 +21,11 @@ import {
     getFiatRateKey,
     getNftTokenId,
     isNftTokenTransfer,
-    localizeNumber,
     roundTimestampToNearestPastHour,
 } from '@suite-common/wallet-utils';
 import type { BaseCurrencyCode } from '@trezor/blockchain-link-types';
 import { type TransactionTarget } from '@trezor/connect';
-import { BigNumber, isNotNull } from '@trezor/utils';
+import { BigNumber, isNotNull, localizeNumber } from '@trezor/utils';
 
 type AccountTransactionForExports = Omit<WalletAccountTransaction, 'targets'> & {
     targets: (TransactionTarget & { outputLabel?: string })[];

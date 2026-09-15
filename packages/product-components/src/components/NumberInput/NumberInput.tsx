@@ -15,10 +15,8 @@ import {
 } from 'react-hook-form';
 
 import { type Locale } from '@suite-common/suite-types';
-// todo: scope packages should not import from scope suite-common
-import { localizeNumber } from '@suite-common/wallet-utils/src/localizeNumberUtils';
 import { Input, type InputProps } from '@trezor/components';
-import { BigNumber, getLocaleSeparators } from '@trezor/utils';
+import { BigNumber, getLocaleSeparators, localizeNumber } from '@trezor/utils';
 
 const isValidDecimalString = (value: string) => /^([^.]*)\.[^.]+$/.test(value);
 const hasLeadingZeroes = (value: string) => /^0+(\d+\.\d*|\d+)$/.test(value);

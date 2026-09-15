@@ -1,5 +1,6 @@
 import { AccountLabel } from '@suite/account';
 import { events, selectDesktopAnalyticsDep } from '@suite/analytics';
+import { TokenIcon } from '@suite/asset-icon';
 import { Translation, useTranslation } from '@suite/intl';
 import { openModal } from '@suite/modal';
 import { gotoThunk, selectRouteName, selectSettingsBackRoute } from '@suite/router';
@@ -9,7 +10,6 @@ import { selectTronStakeSession } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
 import { Box, Button, Column, IconButton, Row, Text } from '@trezor/components';
 import { CaretLeftIcon, InfoIcon } from '@trezor/icons';
-import { TokenIcon } from '@trezor/product-components';
 import { exhaustive } from '@trezor/type-utils';
 
 import { PageHeader } from 'src/components/suite/layouts/SuiteLayout';

@@ -1,5 +1,6 @@
 import { memo, useCallback, useMemo, useRef } from 'react';
 
+import { NetworkIcon, TokenIcon } from '@suite/asset-icon';
 import { Translation, type TranslationKey, useTranslation } from '@suite/intl';
 import { isNetworkIconSymbol } from '@suite-common/icons';
 import { type NetworkSymbol, getNetwork } from '@suite-common/wallet-config';
@@ -15,7 +16,6 @@ import {
     Text,
 } from '@trezor/components';
 import { CaretDownIcon, MagnifyingGlassIcon } from '@trezor/icons';
-import { NetworkIcon, TokenIcon } from '@trezor/product-components';
 import { zIndices } from '@trezor/theme';
 
 const DATA_TESTID_BASE = '@asset-picker/search';
