@@ -1,6 +1,6 @@
 import { messages } from '@suite/intl';
-import { localizeNumber } from '@suite-common/wallet-utils';
 import { TestStream } from '@trezor/e2e-utils';
+import { localizeNumber } from '@trezor/utils';
 
 import { formatAddressWithNewlines, replaceTemplatesInTranslation } from '../../support/common';
 import { expect, test } from '../../support/fixtures';

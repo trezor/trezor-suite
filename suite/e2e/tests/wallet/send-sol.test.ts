@@ -1,8 +1,7 @@
 import { asNetworkSymbol, getNetwork } from '@suite-common/wallet-config';
-import { localizeNumber } from '@suite-common/wallet-utils';
 import { TestCategory, TestPriority, TestStream } from '@trezor/e2e-utils';
 import { Model } from '@trezor/trezor-user-env-link';
-import { BigNumber } from '@trezor/utils';
+import { BigNumber, localizeNumber } from '@trezor/utils';
 
 import { formatAddressWithNewlines } from '../../support/common';
 import { expect, test } from '../../support/fixtures';

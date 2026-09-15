@@ -1,6 +1,5 @@
-import { localizeNumber } from '@suite-common/wallet-utils';
 import { TestStream } from '@trezor/e2e-utils';
-import { capitalizeFirstLetter } from '@trezor/utils';
+import { capitalizeFirstLetter, localizeNumber } from '@trezor/utils';
 
 import {
     getCompanyNameFromList,

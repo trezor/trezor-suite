@@ -1,6 +1,6 @@
 import { getCryptoId } from '@suite-common/trading';
-import { localizeNumber } from '@suite-common/wallet-utils';
 import { TestStream } from '@trezor/e2e-utils';
+import { localizeNumber } from '@trezor/utils';
 
 import { swapStatusFlow } from '../../fixtures/trading/statusFlow';
 import { formatAddressWithNewlines } from '../../support/common';
