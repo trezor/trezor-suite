@@ -4,28 +4,11 @@ import { Marquee } from '@animatereactnative/marquee';
 import { LinearGradient } from 'expo-linear-gradient';
 
 import { HStack, VStack } from '@suite-native/atoms';
-import { getScreenWidth } from '@trezor/env-utils';
-import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
+import { useNativeStyles } from '@trezor/styles-native';
 import { hexToRgba } from '@trezor/utils';
 
+import { animationStyle, linearGradientStyle } from './BackupRiskCardsAnimation.styles';
 import { MarqueeTile } from './MarqueeTile';
-
-const ANIMATION_WIDTH = getScreenWidth();
-const ANIMATION_HEIGHT = ANIMATION_WIDTH * 0.33; // the animation dimensions are 1:3 (H:W);
-
-const animationStyle = prepareNativeStyle(() => ({
-    width: ANIMATION_WIDTH,
-    height: ANIMATION_HEIGHT,
-}));
-
-const linearGradientStyle = prepareNativeStyle(() => ({
-    position: 'absolute',
-    width: '100%',
-    height: ANIMATION_HEIGHT,
-    top: 0,
-    left: 0,
-    pointerEvents: 'none',
-}));
 
 export const BackupRiskCardsAnimation = () => {
     const {
