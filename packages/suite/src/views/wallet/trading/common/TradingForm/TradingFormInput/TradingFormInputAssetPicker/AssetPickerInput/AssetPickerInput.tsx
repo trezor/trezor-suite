@@ -43,6 +43,11 @@ export const AssetPickerInput = memo(function AssetPickerInputInner({
     onClick,
     bottomText,
 }: AssetPickerInputProps) {
+    // React Compiler: `watch` keeps one identity for the form's whole life, so a compiled
+    // render-time read of it freezes on the first render. Remove once these reads move to
+    // `useWatch` or out of render.
+    'use no memo';
+
     const { watch } = useFormContext<TradingFormValues>();
     const value = watch(name);
     const { translationString } = useTranslation();
