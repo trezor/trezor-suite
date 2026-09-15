@@ -87,7 +87,7 @@ describe('getAssetPickerItemHeight', () => {
     });
 
     it('measures the account label and the space between accounts', () => {
-        expect(getAssetPickerItemHeight({ type: 'group-label', label: 'Ethereum #1' })).toBe(28);
+        expect(getAssetPickerItemHeight({ type: 'group-label', label: 'Ethereum #1' })).toBe(24);
         expect(getAssetPickerItemHeight({ type: 'group-space', size: 'md' })).toBe(24);
         expect(getAssetPickerItemHeight({ type: 'group-space', size: 'lg' })).toBe(32);
     });

@@ -3,6 +3,7 @@ import { type RefObject, memo } from 'react';
 import { type TranslationKey, useTranslation } from '@suite/intl';
 import { selectHasBitcoinOnlyFirmware } from '@suite-common/device';
 import { selectNetworkSymbolForProtocol } from '@suite-common/networks';
+import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { selectEnabledNetworks } from '@suite-common/wallet-core';
 import { type GlobalSendReceiveType } from '@suite-common/wallet-types';
 import { SearchAsset } from '@trezor/product-components';
@@ -18,12 +19,20 @@ export type AssetSearchWithNetworkFilterProps = {
     placeholder: TranslationKey;
     listRef: RefObject<HTMLDivElement | null>;
     modal?: NonNullable<GlobalSendReceiveType>;
+    networks?: readonly NetworkSymbol[];
+    onNetworkFilterChange?: (networkSymbol: NetworkSymbol | undefined) => void;
+    onNetworkFilterOpen?: () => void;
+    shouldResetSearchOnNetworkChange?: boolean;
 };
 
 export const AssetSearchWithNetworkFilter = memo(function AssetSearchWithNetworkFilterInner({
     placeholder,
     listRef,
     modal,
+    networks: providedNetworks,
+    onNetworkFilterChange,
+    onNetworkFilterOpen,
+    shouldResetSearchOnNetworkChange = true,
 }: AssetSearchWithNetworkFilterProps) {
     const isBitcoinOnlyFirmware = useSelector(selectHasBitcoinOnlyFirmware);
 
@@ -32,6 +41,8 @@ export const AssetSearchWithNetworkFilter = memo(function AssetSearchWithNetwork
         modal,
         listRef,
         resetSearch: () => setSearch(''),
+        availableNetworks: providedNetworks,
+        shouldResetSearchOnNetworkChange,
     });
     const enabledNetworks = useSelector(selectEnabledNetworks);
     const protocolScheme = useSelector(selectProtocolSendFormScheme);
@@ -40,7 +51,7 @@ export const AssetSearchWithNetworkFilter = memo(function AssetSearchWithNetwork
         selectNetworkSymbolForProtocol(state, protocolScheme),
     );
 
-    const networks = protocolSymbol ? [protocolSymbol] : enabledNetworks;
+    const networks = protocolSymbol ? [protocolSymbol] : (providedNetworks ?? enabledNetworks);
 
     const { translationString } = useTranslation();
 
@@ -51,7 +62,11 @@ export const AssetSearchWithNetworkFilter = memo(function AssetSearchWithNetwork
         : {
               networks,
               selectedNetwork: networkFilter,
-              onChange: setNetworkFilter,
+              onChange: (networkSymbol: NetworkSymbol | undefined) => {
+                  setNetworkFilter(networkSymbol);
+                  onNetworkFilterChange?.(networkSymbol);
+              },
+              onMenuOpen: onNetworkFilterOpen,
               includeAllOption: !protocolSymbol,
               allLabel: translationString('TR_ALL_NETWORKS'),
           };

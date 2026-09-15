@@ -1,4 +1,5 @@
 import { useMemo } from 'react';
+import { useSelector } from 'react-redux';
 import { useThrottle } from 'react-use';
 
 import { selectAccountsWithSuiteSyncLabel } from '@suite-common/suite-sync';
@@ -21,7 +22,7 @@ import {
     createHiddenTokensOption,
     createTokenOption,
 } from 'src/components/suite/asset-picker/utils';
-import { useSelector } from 'src/hooks/suite';
+import { type AppState } from 'src/types/suite';
 import {
     enhanceTokensWithRates,
     getTokens,
@@ -45,7 +46,7 @@ export function useAccountWithTokensOptions({
 }: UseAccountWithTokensOptionsProps): AccountWithTokensOption[] {
     const baseAccounts = useSelector(selectVisibleDeviceAccounts);
 
-    const accounts = useSelector(state =>
+    const accounts = useSelector((state: AppState) =>
         selectAccountsWithSuiteSyncLabel(state, baseAccounts, staticSessionId),
     );
 

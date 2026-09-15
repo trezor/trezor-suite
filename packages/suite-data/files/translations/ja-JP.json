@@ -2162,7 +2162,6 @@
   "TR_RECEIVE_ADDRESS_CONFIRMATION_ITEM_3_HEADING": "Trezorでアドレスを確認してください",
   "TR_RECEIVE_ADDRESS_FAILED_BACKUP": "ウォレット・バックアップに失敗しました。このウォレットに資金を送るのは安全ではありません。",
   "TR_RECEIVE_ADDRESS_SECURITY_CHECK_FAILED": "デバイスが侵害された可能性があります。資金を送らないでください。",
-  "TR_RECEIVE_DESCRIPTION": "トークンを受け取るために<a>適切なネットワークを選択する</a>方法を学びましょう。",
   "TR_RECEIVE_NETWORK": "{networkDisplaySymbol} を受信",
   "TR_RECEIVE_SEARCH": "アカウントを検索",
   "TR_RECEIVING_SYMBOL": "{multiple, select, true {複数のトークン} false {{symbol}} other {{symbol}}}を受信中",
