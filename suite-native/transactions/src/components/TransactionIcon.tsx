@@ -70,7 +70,7 @@ export const TransactionIcon = ({
     if (contractAddress) {
         iconSymbol = symbol;
     } else if (symbol) {
-        iconSymbol = getNetworkDisplaySymbol(symbol) as NetworkDisplaySymbol;
+        iconSymbol = getNetworkDisplaySymbol(symbol);
     }
 
     const iconName = stakeOperationType

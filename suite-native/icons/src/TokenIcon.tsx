@@ -228,7 +228,7 @@ export const TokenIcon = ({
         return <TokenIconComponent symbol={symbol} contractAddress={contractAddress} size={size} />;
     }
 
-    const displaySymbol = getNetworkDisplaySymbol(symbol) as NetworkDisplaySymbol;
+    const displaySymbol = getNetworkDisplaySymbol(symbol);
     const showForNativeToken = displaySymbol === 'ETH' && symbol !== 'eth';
     const shouldShowNetwork =
         showForNativeToken || contractAddress || wrappedTokenIcon === 'network';
