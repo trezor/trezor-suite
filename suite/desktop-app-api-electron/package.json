@@ -1,5 +1,5 @@
 {
-    "name": "@trezor/suite-desktop-api-electron",
+    "name": "@suite/desktop-app-api-electron",
     "version": "1.0.0",
     "private": true,
     "license": "See LICENSE.md in repo root",
@@ -13,7 +13,7 @@
         "type-check": "yarn g:tsc --build"
     },
     "dependencies": {
-        "@trezor/suite-desktop-api": "workspace:*",
+        "@suite/desktop-app-api": "workspace:*",
         "electron": "43.2.0"
     }
 }

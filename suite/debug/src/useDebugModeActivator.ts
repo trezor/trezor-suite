@@ -1,9 +1,9 @@
 import { useCallback, useState } from 'react';
 import { useSelector } from 'react-redux';
 
+import { selectDesktopApiDep } from '@suite/desktop-app-api';
 import { useServices } from '@suite-common/dependency-injection';
 import { selectDispatch } from '@suite-common/redux-utils';
-import { selectDesktopApiDep } from '@trezor/suite-desktop-api';
 
 import { selectIsDebugModeActive } from './debugSelectors';
 import { debugActions } from './debugSlice';

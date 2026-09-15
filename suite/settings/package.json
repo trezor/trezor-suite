@@ -19,9 +19,9 @@
         "@suite-common/redux-utils": "workspace:*",
         "@suite-common/suite-types": "workspace:*",
         "@suite-common/trading": "workspace:*",
+        "@suite/desktop-app-api": "workspace:*",
         "@suite/experimental": "workspace:*",
         "@trezor/connect-common": "workspace:*",
-        "@trezor/env-utils": "workspace:*",
-        "@trezor/suite-desktop-api": "workspace:*"
+        "@trezor/env-utils": "workspace:*"
     }
 }

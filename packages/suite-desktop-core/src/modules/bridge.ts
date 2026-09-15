@@ -1,7 +1,7 @@
 /**
  * Bridge runner
  */
-import { type InvokeResult } from '@trezor/suite-desktop-api';
+import { type InvokeResult } from '@suite/desktop-app-api';
 import { type TrezordNode } from '@trezor/transport-bridge';
 import { scheduleAction } from '@trezor/utils';
 

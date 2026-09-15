@@ -1,5 +1,6 @@
 import { type SellFiatTrade } from 'invity-api';
 
+import { type DesktopApiDep } from '@suite/desktop-app-api';
 import { type WithServices, createThunk } from '@suite-common/redux-utils';
 import {
     type TradingFormAccountRootState,
@@ -9,7 +10,6 @@ import {
     selectTradingSendAccount,
     sellThunks,
 } from '@suite-common/trading';
-import { type DesktopApiDep } from '@trezor/suite-desktop-api';
 
 import { buildSellReturnUrl } from 'src/utils/wallet/trading/buildSellReturnUrl';
 

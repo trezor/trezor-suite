@@ -1,4 +1,4 @@
-# @trezor/suite-desktop-api
+# @suite/desktop-app-api
 
 Private package holding the strongly typed `DesktopApi` contract: the
 [inter-process communication](https://www.electronjs.org/docs/latest/tutorial/ipc) surface between
@@ -9,10 +9,10 @@ implementation around. It has no runtime API construction and no environment det
 
 ## Packages
 
-| Package                              | Contains                                                                                     |
-| ------------------------------------ | -------------------------------------------------------------------------------------------- |
-| `@trezor/suite-desktop-api`          | The `DesktopApi` contract, channel/message types and `DesktopApiDep` / `selectDesktopApiDep` |
-| `@trezor/suite-desktop-api-electron` | `createDesktopApiBridge` (preload side) and `createElectronDesktopApi` (renderer side)       |
+| Package                           | Contains                                                                                     |
+| --------------------------------- | -------------------------------------------------------------------------------------------- |
+| `@suite/desktop-app-api`          | The `DesktopApi` contract, channel/message types and `DesktopApiDep` / `selectDesktopApiDep` |
+| `@suite/desktop-app-api-electron` | `createDesktopApiBridge` (preload side) and `createElectronDesktopApi` (renderer side)       |
 
 Each app's composition root picks one implementation:
 
@@ -44,9 +44,9 @@ const { desktopApi } = useServices(selectDesktopApiDep);
 To invoke a method on the `main` process and return an asynchronous result to the `renderer`
 
 - add a channel to `./src/api.ts InvokeChannels`
-- add a channel to validChannels in `../suite-desktop-api-electron/src/validation.ts`
+- add a channel to validChannels in `../desktop-app-api-electron/src/validation.ts`
 - add a method to `./src/api.ts DesktopApi` as `DesktopApiInvoke<'your-new-channel'>`
-- implement it in `../suite-desktop-api-electron/src/createDesktopApiBridge.ts`
+- implement it in `../desktop-app-api-electron/src/createDesktopApiBridge.ts`
 - decide the web behaviour in `../suite-web/src/support/createWebDesktopApi.ts`; that file lists
   every member explicitly, so it will not compile until you do
 - process incoming requests in `@trezor/suite-desktop-core/src/modules/*` using `ipcMain.handle(...)`
@@ -55,13 +55,13 @@ To invoke a method on the `main` process and return an asynchronous result to th
 To receive an asynchronous event in the `renderer` process
 
 - add a channel to `./src/api.ts RendererChannels`
-- add a channel to validChannels in `../suite-desktop-api-electron/src/validation.ts`
+- add a channel to validChannels in `../desktop-app-api-electron/src/validation.ts`
 - listen through an injected `desktopApi.on('your-new-channel', payload => {})`
 - emit it from `@trezor/suite-desktop-core/src/modules/*` using `mainWindow.webContents.send(...)`
 
 To receive an asynchronous event in the `main` process
 
 - add a channel to `./src/api.ts MainChannels`
-- add a channel to validChannels in `../suite-desktop-api-electron/src/validation.ts`
+- add a channel to validChannels in `../desktop-app-api-electron/src/validation.ts`
 - add a method to `./src/api.ts DesktopApi` as `DesktopApiSend<'your-new-channel'>`
 - set a listener in `@trezor/suite-desktop-core/src/modules/*` using `ipcMain.on(...)`

@@ -2,6 +2,8 @@ import type { BuyTrade, CryptoId, FiatCurrencyCode } from 'invity-api';
 
 import { type DesktopAnalyticsDep } from '@suite/analytics';
 import { mockDesktopAnalytics } from '@suite/analytics/mocks';
+import { type DesktopApiDep } from '@suite/desktop-app-api';
+import { mockGetHttpReceiverAddress } from '@suite/desktop-app-api/mocks';
 import { locksReducer } from '@suite/locks';
 import { modalReducer } from '@suite/modal';
 import { type SuiteRouterHistoryDep, routerReducer } from '@suite/router';
@@ -10,8 +12,6 @@ import { createTestCompositionRoot, renderHookWithStoreProvider } from '@suite-c
 import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { type Account, type AccountKey } from '@suite-common/wallet-types';
 import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
-import { type DesktopApiDep } from '@trezor/suite-desktop-api';
-import { mockGetHttpReceiverAddress } from '@trezor/suite-desktop-api/mocks';
 
 import { useTradingBuyConfirm } from './useTradingBuyConfirm';
 

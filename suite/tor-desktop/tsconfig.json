@@ -22,6 +22,7 @@
             "path": "../../suite-common/wallet-core"
         },
         { "path": "../analytics" },
+        { "path": "../desktop-app-api" },
         { "path": "../external-links" },
         { "path": "../intl" },
         { "path": "../modal" },
@@ -33,9 +34,6 @@
         { "path": "../../packages/icons" },
         {
             "path": "../../packages/product-components"
-        },
-        {
-            "path": "../../packages/suite-desktop-api"
         },
         { "path": "../../packages/urls" }
     ]

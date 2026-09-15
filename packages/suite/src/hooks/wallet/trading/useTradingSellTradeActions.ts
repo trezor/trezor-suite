@@ -1,6 +1,7 @@
 import type { BankAccount } from 'invity-api';
 
 import { events, selectDesktopAnalyticsDep } from '@suite/analytics';
+import { selectDesktopApiDep } from '@suite/desktop-app-api';
 import { type TranslationKey, useTranslation } from '@suite/intl';
 import { gotoThunk } from '@suite/router';
 import { selectHasExperimentalFeature } from '@suite/settings';
@@ -21,7 +22,6 @@ import {
     sellThunks,
 } from '@suite-common/trading';
 import { selectAccountByKey } from '@suite-common/wallet-core';
-import { selectDesktopApiDep } from '@trezor/suite-desktop-api';
 
 import { signAndPushSendFormTransactionThunk } from 'src/actions/wallet/send/sendFormThunks';
 import { requestSellTradeThunk } from 'src/actions/wallet/trading/sell/requestSellTradeThunk';

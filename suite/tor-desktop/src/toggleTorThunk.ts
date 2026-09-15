@@ -1,6 +1,7 @@
 import { type ThunkDispatch, type UnknownAction } from '@reduxjs/toolkit';
 
 import { type DesktopAnalyticsDep, events } from '@suite/analytics';
+import { type DesktopApiDep } from '@suite/desktop-app-api';
 import { type ModalRootState, openDeferredModal, selectModalType } from '@suite/modal';
 import { type RouterRootState, selectRouterUrl } from '@suite/router';
 import { type TorRootState, isOnionUrl, selectTorBootstrap, torActions } from '@suite/tor';
@@ -9,7 +10,6 @@ import { type NetworksRootState } from '@suite-common/networks';
 import { type WithServices } from '@suite-common/redux-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { type BlockchainRootState, selectCustomBackends } from '@suite-common/wallet-core';
-import { type DesktopApiDep } from '@trezor/suite-desktop-api';
 
 type ToggleTorThunkState = TorRootState &
     ModalRootState &

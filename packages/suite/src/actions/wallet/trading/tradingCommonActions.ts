@@ -1,5 +1,6 @@
 import { type Dispatch, type UnknownAction } from '@reduxjs/toolkit';
 
+import { type DesktopApiDep } from '@suite/desktop-app-api';
 import { type WithServices } from '@suite-common/redux-utils';
 import {
     type AccountsRootState,
@@ -20,7 +21,6 @@ import {
     parseFormDraftKey,
 } from '@suite-common/wallet-utils';
 import { PROTO } from '@trezor/connect';
-import { type DesktopApiDep } from '@trezor/suite-desktop-api';
 
 import { submitRequestForm as envSubmitRequestForm } from 'src/utils/suite/env';
 

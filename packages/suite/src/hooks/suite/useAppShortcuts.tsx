@@ -2,6 +2,7 @@ import { useEffect, useRef } from 'react';
 
 import { selectSelectedAccount } from '@suite/account';
 import { useToggleDebugMode } from '@suite/debug';
+import { selectDesktopApiDep } from '@suite/desktop-app-api';
 import { openModal } from '@suite/modal';
 import { SettingsAnchor, closeModalAppThunk, gotoThunk } from '@suite/router';
 import { selectAutodetectTheme, selectTheme, suiteSettingsActions } from '@suite/settings';
@@ -12,7 +13,6 @@ import { selectDispatch } from '@suite-common/redux-utils';
 import { selectAllAccountsToList, startDiscoveryThunk } from '@suite-common/wallet-core';
 import { KEYBOARD_CODE } from '@trezor/components';
 import { isDesktop } from '@trezor/env-utils';
-import { selectDesktopApiDep } from '@trezor/suite-desktop-api';
 
 import { bioAuthActions } from 'src/actions/suite/bioAuthActions';
 import { toggleViewThunk as toggleGuideView } from 'src/actions/suite/guideActions';

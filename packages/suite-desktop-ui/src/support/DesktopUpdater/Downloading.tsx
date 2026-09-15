@@ -1,9 +1,9 @@
 import { useEffect, useState } from 'react';
 
+import { type UpdateProgress } from '@suite/desktop-app-api';
 import { Translation } from '@suite/intl';
 import { Column, H3, Modal, Paragraph, ProgressBar, Text } from '@trezor/components';
 import { DownloadIcon } from '@trezor/icons';
-import { type UpdateProgress } from '@trezor/suite-desktop-api';
 import { bytesToHumanReadable } from '@trezor/utils';
 
 interface DownloadingProps {

@@ -1,10 +1,10 @@
 import { type CryptoId, type SellFiatTrade } from 'invity-api';
 
+import { mockGetHttpReceiverAddress } from '@suite/desktop-app-api/mocks';
 import { type TradingSellInfoSelector } from '@suite-common/trading';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { type Account, asAccountDescriptor } from '@suite-common/wallet-types';
 import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
-import { mockGetHttpReceiverAddress } from '@trezor/suite-desktop-api/mocks';
 
 import { type BuildSellReturnUrlParams, buildSellReturnUrl } from './buildSellReturnUrl';
 

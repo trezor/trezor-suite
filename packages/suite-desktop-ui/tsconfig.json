@@ -15,6 +15,10 @@
         { "path": "../../suite/analytics" },
         { "path": "../../suite/bluetooth" },
         { "path": "../../suite/debug" },
+        { "path": "../../suite/desktop-app-api" },
+        {
+            "path": "../../suite/desktop-app-api-electron"
+        },
         { "path": "../../suite/desktop-update" },
         { "path": "../../suite/flags" },
         { "path": "../../suite/github" },
@@ -29,10 +33,6 @@
         { "path": "../connect-electron" },
         { "path": "../icons" },
         { "path": "../suite" },
-        { "path": "../suite-desktop-api" },
-        {
-            "path": "../suite-desktop-api-electron"
-        },
         { "path": "../theme" },
         { "path": "../urls" },
         { "path": "../utils" }

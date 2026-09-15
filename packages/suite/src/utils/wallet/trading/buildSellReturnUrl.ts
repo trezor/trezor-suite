@@ -1,11 +1,11 @@
 import { type SellFiatTrade, type SellFiatTradeQuoteRequest } from 'invity-api';
 
+import { type DesktopApiDep } from '@suite/desktop-app-api';
 import {
     type TradingComposedTransactionInfo,
     type TradingSellInfoSelector,
 } from '@suite-common/trading';
 import { type Account } from '@suite-common/wallet-types';
-import { type DesktopApiDep } from '@trezor/suite-desktop-api';
 
 import { createQuoteLink } from 'src/utils/wallet/trading/sellUtils';
 

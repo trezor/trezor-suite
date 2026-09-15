@@ -1,9 +1,9 @@
 import { createMemoryHistory } from 'history';
 
+import { createElectronDesktopApi } from '@suite/desktop-app-api-electron';
 import { createElectronPlatformEncryption } from '@suite/platform-encryption-electron';
 import { toGetter } from '@suite-common/dependency-injection';
 import TrezorConnect from '@trezor/connect-electron';
-import { createElectronDesktopApi } from '@trezor/suite-desktop-api-electron';
 
 import { createHydrateReduxStore } from 'src/reducers/createHydrateReduxStore';
 import { createReduxStore } from 'src/reducers/createReduxStore';
