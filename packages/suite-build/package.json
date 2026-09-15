@@ -21,14 +21,17 @@
         "build:desktop": "NODE_ENV=production yarn run desktop",
         "type-check": "yarn g:tsc --build tsconfig.json",
         "type-check:watch": "yarn type-check -- --watch",
-        "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'"
+        "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'",
+        "test:unit": "yarn g:jest"
     },
     "dependencies": {
+        "@babel/core": "7.29.7",
         "@suite-common/flags": "workspace:*",
         "@suite-common/suite-config": "workspace:*",
         "@suite/router-config": "workspace:*",
         "@trezor/bundler-security": "workspace:*",
         "babel-loader": "^10.1.1",
+        "babel-plugin-react-compiler": "^1.0.0",
         "babel-plugin-styled-components": "^2.1.4",
         "buffer": "^6.0.3",
         "copy-webpack-plugin": "^14.0.0",
