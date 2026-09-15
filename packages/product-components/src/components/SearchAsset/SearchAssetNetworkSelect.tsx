@@ -2,15 +2,15 @@ import { Row, Select, Text } from '@trezor/components';
 
 import { type SearchAssetSelectConfig, useNetworkSelect } from './hooks/useNetworkSelect';
 
-type SearchAssetNetworkSelectProps = {
-    selectConfig: SearchAssetSelectConfig;
+type SearchAssetNetworkSelectProps<TSymbol extends string> = {
+    selectConfig: SearchAssetSelectConfig<TSymbol>;
     onMenuOpen?: () => void;
 };
 
-export const SearchAssetNetworkSelect = ({
+export const SearchAssetNetworkSelect = <TSymbol extends string>({
     selectConfig,
     onMenuOpen,
-}: SearchAssetNetworkSelectProps) => {
+}: SearchAssetNetworkSelectProps<TSymbol>) => {
     const { options, selectedOption } = useNetworkSelect(selectConfig);
     const dataTestIdBase = '@asset-picker/search';
 

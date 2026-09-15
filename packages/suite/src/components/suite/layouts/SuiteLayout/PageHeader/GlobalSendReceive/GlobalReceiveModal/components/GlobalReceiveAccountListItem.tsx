@@ -1,6 +1,7 @@
 import { useSelector } from 'react-redux';
 
 import { AccountLabel } from '@suite/account';
+import { TokenIcon } from '@suite/asset-icon';
 import { Address } from '@suite/address';
 import { useFormatters } from '@suite-common/formatters';
 import { getUnusedAddressFromAccount } from '@suite-common/trading';
@@ -8,7 +9,6 @@ import { selectBaseCurrency, selectCurrentFiatRates } from '@suite-common/wallet
 import { type Account } from '@suite-common/wallet-types';
 import { BASE_CURRENCY_ZERO, getAccountFiatBalance } from '@suite-common/wallet-utils';
 import { CardList, Column, Row, Text } from '@trezor/components';
-import { TokenIcon } from '@trezor/product-components';
 
 import { HiddenPlaceholder } from 'src/components/suite';
 import { ItemClickableContainer } from 'src/components/suite/asset-picker/components/AssetRow/ItemClickableContainer';

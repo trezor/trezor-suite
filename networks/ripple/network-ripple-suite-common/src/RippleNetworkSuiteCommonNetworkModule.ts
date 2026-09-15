@@ -4,11 +4,13 @@ import {
 } from '@trezor/network-module-suite-common-types';
 import { supportedRippleNetworks } from '@trezor/network-ripple/constants';
 
+import { rippleIcon } from '../icons';
 import { rippleValidator } from './addressValidator/rippleAddressValidator';
 import { getAccountSyncInterval, getNetworkConfig } from './networkConfig';
 
 export const createRippleSuiteCommonNetworkModule = (): SuiteCommonNetworkModule =>
     createNetworkModule(supportedRippleNetworks, {
+        icon: rippleIcon,
         addressValidator: rippleValidator,
         getNetworkConfig,
         getAccountSyncInterval,

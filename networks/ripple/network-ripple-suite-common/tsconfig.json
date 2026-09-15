@@ -5,6 +5,7 @@
         {
             "path": "../../network-module/network-module-suite-common-types"
         },
-        { "path": "../network-ripple" }
+        { "path": "../network-ripple" },
+        { "path": "../network-ripple-assets" }
     ]
 }

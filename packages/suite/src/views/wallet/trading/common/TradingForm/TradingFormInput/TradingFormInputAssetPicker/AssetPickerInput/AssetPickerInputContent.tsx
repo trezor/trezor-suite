@@ -1,3 +1,4 @@
+import { AssetIcon } from '@suite/asset-icon';
 import {
     type TRADING_FORM_CRYPTO_CURRENCY_SELECT,
     type TRADING_FORM_RECEIVE_CRYPTO_CURRENCY_SELECT,
@@ -5,8 +6,7 @@ import {
     type TradingAssetOption,
     type TradingAssetSellOption,
 } from '@suite-common/trading';
-import { Row } from '@trezor/components';
-import { TokenIcon } from '@trezor/product-components';
+import { Column, Row, Text } from '@trezor/components';
 
 export type AssetPickerInputContentProps = {} & (
     | {
@@ -28,9 +28,9 @@ export function AssetPickerInputContent({ value }: AssetPickerInputContentProps)
     return (
         <Row gap={8} alignItems="center">
             {isNativeToken ? (
-                <TokenIcon size={24} symbol={symbol} showNetworkIcon />
+                <AssetIcon size={24} symbol={symbol} showNetworkIcon />
             ) : (
-                <TokenIcon
+                <AssetIcon
                     size={24}
                     symbol={networkSymbol}
                     contractAddress={contractAddress}

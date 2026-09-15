@@ -11,7 +11,7 @@ import {
 import { LOW_BALANCE_THRESHOLD } from '@suite-common/wallet-constants';
 import { type AmountUnit } from '@suite-common/wallet-utils';
 import { Text } from '@trezor/components';
-import { BigNumber } from '@trezor/utils';
+import { BigNumber, localizeNumber } from '@trezor/utils';
 
 import { Sign } from 'src/components/suite/Sign';
 import { useBitcoinAmountUnit } from 'src/hooks/wallet/useBitcoinAmountUnit';

@@ -1,22 +1,16 @@
 import { useMemo } from 'react';
 
 import { Tooltip } from '@trezor/components';
-import type { NetworkSymbol } from '@trezor/network-module-types';
-
-import { useNetworkDisplaySelector } from '../../network-display/NetworkDisplayProvider';
-import { selectNetworkOptions } from '../../network-display/networkDisplaySelectors';
-import { getNetworkIcons } from '../../utils/getNetworkIcons';
+import { TokenIcon } from '../TokenIcon/TokenIcon';
 import { type CommonIconSetProps, IconSetBase, IconWrapper } from '../IconSet/IconSetBase';
 
 export type NetworkIconSetProps = CommonIconSetProps & {
-    networks?: readonly NetworkSymbol[];
-    isToken?: boolean;
+    networks: { symbol: string; name: string; src: string }[];
     hasTooltip?: boolean;
 };
 
 export const NetworkIconSet = ({
     networks,
-    isToken = true,
     size,
     gap,
     maxVisibleIcons = 3,
@@ -25,27 +19,20 @@ export const NetworkIconSet = ({
     isReversed = true,
     hasTooltip = false,
 }: NetworkIconSetProps) => {
-    const networkOptions = useNetworkDisplaySelector(state =>
-        selectNetworkOptions(state, networks),
-    );
-    const { length } = networkOptions;
+    const { length } = networks;
 
     const visibleContent = useMemo(() => {
         const visibleNetworks =
-            maxVisibleIcons !== null ? networkOptions.slice(0, maxVisibleIcons) : networkOptions;
+            maxVisibleIcons !== null ? networks.slice(0, maxVisibleIcons) : networks;
 
-        return getNetworkIcons({
-            networks: visibleNetworks,
-            iconSize: size,
-            isToken,
-        }).map(({ symbol, name, icon }) => (
+        return visibleNetworks.map(({ symbol, name, src }) => (
             <IconWrapper key={symbol} $size={size} $gap={gap} $length={length}>
                 <Tooltip content={name} isActive={hasTooltip}>
-                    {icon}
+                    <TokenIcon size={size} src={src} />
                 </Tooltip>
             </IconWrapper>
         ));
-    }, [networkOptions, isToken, maxVisibleIcons, size, gap, length, hasTooltip]);
+    }, [networks, maxVisibleIcons, size, gap, length, hasTooltip]);
 
     return (
         <IconSetBase

@@ -1,11 +1,12 @@
 {
     "extends": "../../../tsconfig.lib.json",
     "compilerOptions": { "outDir": "./lib" },
-    "include": ["./src"],
+    "include": ["./src", "./icons.ts"],
     "references": [
         {
             "path": "../../network-module/network-module-suite-common-types"
         },
-        { "path": "../network-ripple" }
+        { "path": "../network-ripple" },
+        { "path": "../network-ripple-assets" }
     ]
 }

@@ -1,7 +1,7 @@
 {
     "extends": "../../../tsconfig.lib.json",
     "compilerOptions": { "outDir": "./lib" },
-    "include": ["./src"],
+    "include": ["./src", "./icons.ts"],
     "references": [
         {
             "path": "../../../suite-common/calldata"
@@ -10,6 +10,7 @@
             "path": "../../../packages/connect-common"
         },
         { "path": "../network-ethereum" },
+        { "path": "../network-ethereum-assets" },
         {
             "path": "../../network-module/network-module-suite-common-types"
         },

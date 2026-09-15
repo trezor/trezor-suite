@@ -25,3 +25,4 @@ export {
     type Explorer,
     type NetworkAccount,
 } from './SuiteCommonNetworkConfig';
+export type { NetworkIcon } from './NetworkIcon';

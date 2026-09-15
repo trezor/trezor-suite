@@ -1,5 +1,6 @@
 import { useState } from 'react';
 
+import { AssetIcon } from '@suite/asset-icon';
 import { selectSelectedDevice } from '@suite-common/device';
 import { type YieldDtoV2 } from '@suite-common/earn-stablecoin-api';
 import {
@@ -11,7 +12,6 @@ import { getUnusedAddressFromAccount } from '@suite-common/trading';
 import { type Network } from '@suite-common/wallet-config';
 import { type Account, type TokenAddress } from '@suite-common/wallet-types';
 import { Column, Row, Table, Text } from '@trezor/components';
-import { TokenIcon } from '@trezor/product-components';
 
 import { YieldBadge } from 'src/components/earn/YieldBadge/YieldBadge';
 import {
@@ -74,7 +74,7 @@ export const TokenRow = ({
             <Table.Row isCollapsed={isCollapsed} data-testid={`@token-row/${token.symbol}`}>
                 <Table.Cell>
                     <Row gap={8}>
-                        <TokenIcon
+                        <AssetIcon
                             placeholder={token.name || token.symbol || 'token'}
                             symbol={account.symbol}
                             contractAddress={token.contract}

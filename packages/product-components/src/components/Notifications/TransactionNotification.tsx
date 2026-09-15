@@ -1,23 +1,16 @@
 import { type ReactNode } from 'react';
 
-import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { Column, Row, Text } from '@trezor/components';
 
 import { TransactionAmount } from './TransactionAmount';
-import { TransactionIcon } from './TransactionIcon';
-import {
-    type TransactionNotificationToken,
-    type TransactionNotificationType,
-} from './notificationsTypes';
+import { type TransactionNotificationType } from './notificationsTypes';
 
 export type TransactionNotificationProps = {
     message: ReactNode;
     amount?: ReactNode;
     notificationType: TransactionNotificationType;
-    symbol: NetworkSymbol;
-    token?: TransactionNotificationToken;
-    icon?: ReactNode;
-    tokenSymbol?: string;
+    icon: ReactNode;
+    displaySymbol: string;
     isInfiniteApproval?: boolean;
     unlimitedApprovalLabel?: ReactNode;
     renderAmount?: (amount: ReactNode) => ReactNode;
@@ -28,10 +21,8 @@ export const TransactionNotification = ({
     message,
     amount,
     notificationType,
-    symbol,
-    token,
     icon,
-    tokenSymbol,
+    displaySymbol,
     isInfiniteApproval,
     unlimitedApprovalLabel,
     renderAmount,
@@ -43,18 +34,11 @@ export const TransactionNotification = ({
         </Text>
         {amount && (
             <Row gap={8} alignItems="center">
-                <TransactionIcon
-                    icon={icon}
-                    notificationType={notificationType}
-                    symbol={symbol}
-                    token={token}
-                />
+                {icon}
                 <TransactionAmount
                     amount={amount}
                     notificationType={notificationType}
-                    symbol={symbol}
-                    token={token}
-                    tokenSymbol={tokenSymbol}
+                    displaySymbol={displaySymbol}
                     isInfiniteApproval={isInfiniteApproval}
                     unlimitedApprovalLabel={unlimitedApprovalLabel}
                     renderAmount={renderAmount}

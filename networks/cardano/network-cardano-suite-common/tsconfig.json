@@ -3,9 +3,13 @@
     "compilerOptions": { "outDir": "libDev" },
     "references": [
         {
+            "path": "../../../packages/blockchain-link-utils"
+        },
+        {
             "path": "../../../packages/device-utils"
         },
         { "path": "../network-cardano" },
+        { "path": "../network-cardano-assets" },
         {
             "path": "../../network-module/network-module-suite-common-types"
         }

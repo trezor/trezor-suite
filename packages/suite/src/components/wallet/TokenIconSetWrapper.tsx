@@ -1,8 +1,8 @@
+import { AssetIconSet } from '@suite/asset-icon';
 import { selectCoinDefinitions } from '@suite-common/token-definitions';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { selectBaseCurrency, selectCurrentFiatRates } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
-import { TokenIconSet } from '@trezor/product-components';
 import { BigNumber } from '@trezor/utils';
 
 import { useSelector } from 'src/hooks/suite';
@@ -61,7 +61,7 @@ export const TokenIconSetWrapper = ({ accounts, symbol }: TokenIconSetWrapperPro
     const size = sortedAggregatedTokens.length === 1 ? 24 : 20;
 
     return (
-        <TokenIconSet
+        <AssetIconSet
             size={size}
             gap={6}
             symbol={symbol}

@@ -1,53 +1,27 @@
 import { type Meta, type StoryObj } from '@storybook/react';
 
-import {
-    type NetworkConfigState,
-    type NetworkConfigStore,
-    asNetworkSymbol,
-} from '@trezor/network-module-types';
 import { spacingValues } from '@trezor/theme';
 
 import {
     NetworkIconSet as NetworkIconSetComponent,
     type NetworkIconSetProps,
 } from './NetworkIconSet';
-import { NetworkDisplayProvider } from '../../network-display/NetworkDisplayProvider';
+import { exampleIcon } from '../TokenIcon/storyFixtures';
 import { allowedTokenIconSizes } from '../TokenIcon/tokenIconTypes';
 
-const NETWORK_1 = asNetworkSymbol('btc');
-const NETWORK_2 = asNetworkSymbol('eth');
-const NETWORK_3 = asNetworkSymbol('ltc');
-const NETWORK_4 = asNetworkSymbol('ada');
-
-const networkConfigState: NetworkConfigState = {
-    networks: {
-        [NETWORK_1]: { name: 'Bitcoin' },
-        [NETWORK_2]: { name: 'Ethereum' },
-        [NETWORK_3]: { name: 'Litecoin' },
-        [NETWORK_4]: { name: 'Cardano' },
-    },
-};
-const networkDisplayStore: NetworkConfigStore = {
-    getState: () => networkConfigState,
-    subscribe: () => () => {},
-};
+const NETWORK_1 = { symbol: 'btc', name: 'Bitcoin', src: exampleIcon } as const;
+const NETWORK_2 = { symbol: 'eth', name: 'Ethereum', src: exampleIcon } as const;
+const NETWORK_3 = { symbol: 'ltc', name: 'Litecoin', src: exampleIcon } as const;
+const NETWORK_4 = { symbol: 'ada', name: 'Cardano', src: exampleIcon } as const;
 
 const meta: Meta<typeof NetworkIconSetComponent> = {
     title: 'NetworkIconSet',
     component: NetworkIconSetComponent,
-    decorators: [
-        Story => (
-            <NetworkDisplayProvider store={networkDisplayStore}>
-                <Story />
-            </NetworkDisplayProvider>
-        ),
-    ],
 };
 export default meta;
 
 export const NetworkIconSet: StoryObj<NetworkIconSetProps> = {
     args: {
-        isToken: true,
         size: 24,
         gap: 16,
         maxVisibleIcons: 3,
@@ -56,13 +30,10 @@ export const NetworkIconSet: StoryObj<NetworkIconSetProps> = {
         isReversed: true,
     },
     argTypes: {
-        isToken: {
-            control: 'boolean',
-        },
         networks: {
             options: ['default', '1', '2', '3', '4'],
             mapping: {
-                default: undefined,
+                default: [NETWORK_1, NETWORK_2, NETWORK_3, NETWORK_4],
                 '1': [NETWORK_1],
                 '2': [NETWORK_1, NETWORK_2],
                 '3': [NETWORK_1, NETWORK_2, NETWORK_3],
@@ -71,7 +42,7 @@ export const NetworkIconSet: StoryObj<NetworkIconSetProps> = {
             control: {
                 type: 'select',
                 labels: {
-                    default: 'Available networks from provider',
+                    default: 'Example networks',
                     1: '1 network',
                     2: '2 networks',
                     3: '3 networks',

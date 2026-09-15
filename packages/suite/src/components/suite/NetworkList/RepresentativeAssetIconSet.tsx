@@ -1,9 +1,9 @@
 import styled from 'styled-components';
 
+import { AssetIconSet } from '@suite/asset-icon';
 import { Translation } from '@suite/intl';
 import { type NetworkSymbol, getRepresentativeAssets } from '@suite-common/wallet-config';
 import { Row, Text, Tooltip } from '@trezor/components';
-import { TokenIconSet } from '@trezor/product-components';
 
 const ICON_SIZE = 24;
 
@@ -35,7 +35,7 @@ export const RepresentativeAssetIconSet = ({ symbol }: RepresentativeAssetIconSe
     return (
         <Tooltip content={<Translation id="TR_REPRESENTATIVE_ASSETS_ON_NETWORK" />}>
             <Row alignItems="center">
-                <TokenIconSet
+                <AssetIconSet
                     size={ICON_SIZE}
                     gap={20}
                     maxVisibleIcons={5}

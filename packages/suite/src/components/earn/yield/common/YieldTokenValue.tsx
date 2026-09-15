@@ -1,6 +1,6 @@
+import { AssetIcon } from '@suite/asset-icon';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { Row, Text } from '@trezor/components';
-import { TokenIcon } from '@trezor/product-components';
 
 import { FormattedCryptoAmount } from 'src/components/suite/FormattedCryptoAmount';
 
@@ -23,7 +23,7 @@ export const YieldTokenValue = ({
     'data-testid': dataTestId,
 }: YieldTokenValueProps) => (
     <Row alignItems="center" gap={8}>
-        <TokenIcon
+        <AssetIcon
             size={24}
             symbol={token.networkSymbol}
             contractAddress={token.contractAddress}

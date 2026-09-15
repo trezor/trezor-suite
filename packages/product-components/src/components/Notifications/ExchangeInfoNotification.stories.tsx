@@ -1,10 +1,11 @@
 import { type Meta, type StoryObj } from '@storybook/react';
 
-import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { type IconComponent, Toast, type ToastProps } from '@trezor/components';
 import * as generatedIcons from '@trezor/icons';
 
 import { ExchangeInfoNotification } from './ExchangeInfoNotification';
+import { TokenIcon } from '../TokenIcon/TokenIcon';
+import { exampleIcon } from '../TokenIcon/storyFixtures';
 
 const meta: Meta<typeof ExchangeInfoNotification> = {
     title: 'Notifications/ExchangeInfoNotification',
@@ -42,12 +43,12 @@ const exchangeInfoContent = (
     <ExchangeInfoNotification
         message="Swap transaction from Solana #1 to Ethereum #1 was broadcast"
         send={{
-            symbol: asNetworkSymbol('sol'),
+            icon: <TokenIcon src={exampleIcon} size={20} />,
             amount: 3,
             displaySymbol: 'SOL',
         }}
         receive={{
-            symbol: asNetworkSymbol('eth'),
+            icon: <TokenIcon src={exampleIcon} size={20} />,
             amount: 0.0051663,
             displaySymbol: 'ETH',
         }}

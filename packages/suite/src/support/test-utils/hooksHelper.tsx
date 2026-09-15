@@ -1,4 +1,4 @@
-import { type ReactNode } from 'react';
+import { type ReactNode, useState } from 'react';
 import { IntlProvider } from 'react-intl';
 import { Provider } from 'react-redux';
 
@@ -15,8 +15,13 @@ import {
 } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 
-import { ServicesProvider } from '@suite-common/dependency-injection';
+import { ServicesProvider, mock } from '@suite-common/dependency-injection';
 import { MockedFormatterProvider } from '@suite-common/formatters/mocks';
+import {
+    createNetworkIconRegistry,
+    createNetworkModuleRepository,
+    createNetworkModulesCompositionRoot,
+} from '@suite-common/networks';
 
 import { ConnectedThemeProvider } from 'src/support/suite/ConnectedThemeProvider';
 
@@ -34,21 +39,31 @@ type SuiteProvidersProps<Services extends { store: Store }> = {
 const SuiteProviders = <Services extends { store: Store }>({
     services,
     children,
-}: SuiteProvidersProps<Services>) => (
-    <QueryClientProvider client={testQueryClient}>
-        <Provider store={services.store}>
-            <ServicesProvider services={services}>
-                <ConnectedThemeProvider>
-                    <ResponsiveContextProvider>
-                        <IntlProvider locale="en">
-                            <MockedFormatterProvider>{children}</MockedFormatterProvider>
-                        </IntlProvider>
-                    </ResponsiveContextProvider>
-                </ConnectedThemeProvider>
-            </ServicesProvider>
-        </Provider>
-    </QueryClientProvider>
-);
+}: SuiteProvidersProps<Services>) => {
+    const [networkIconRegistry] = useState(() =>
+        createNetworkIconRegistry({
+            networkModuleRepository: createNetworkModuleRepository({
+                networkModules: createNetworkModulesCompositionRoot({ getTrezorConnect: mock() }),
+            }),
+        }),
+    );
+
+    return (
+        <QueryClientProvider client={testQueryClient}>
+            <Provider store={services.store}>
+                <ServicesProvider services={{ networkIconRegistry, ...services }}>
+                    <ConnectedThemeProvider>
+                        <ResponsiveContextProvider>
+                            <IntlProvider locale="en">
+                                <MockedFormatterProvider>{children}</MockedFormatterProvider>
+                            </IntlProvider>
+                        </ResponsiveContextProvider>
+                    </ConnectedThemeProvider>
+                </ServicesProvider>
+            </Provider>
+        </QueryClientProvider>
+    );
+};
 
 // used in hooks tests
 export const renderWithProviders = <Services extends { store: Store }>(

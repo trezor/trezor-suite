@@ -247,6 +247,7 @@ export default function Layout({ children, ...context }: NextraThemeLayoutProps)
 }
 
 export { useConfig, type PartialDocsThemeConfig as DocsThemeConfig };
+export { CoinIconsProvider, type CoinIcons } from './contexts/coin-icons';
 export { useMDXComponents } from 'nextra/mdx';
 export { Callout, Steps, Tabs, Tab, Cards, Card, FileTree } from 'nextra/components';
 export { useTheme } from 'next-themes';

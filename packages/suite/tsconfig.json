@@ -178,6 +178,7 @@
         {
             "path": "../../suite/apps-embedding-demo"
         },
+        { "path": "../../suite/asset-icon" },
         {
             "path": "../../suite/authenticity-checks"
         },
