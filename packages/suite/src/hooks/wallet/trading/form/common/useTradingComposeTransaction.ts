@@ -134,12 +134,18 @@ export const useTradingComposeTransaction = <T extends TradingSellExchangeFormPr
     });
 
     // sub-hook, FeeLevels handler
+    // Keep `formState` as its own binding: the spread object is a react-hook-form ref that
+    // never changes identity, so without it the React Compiler caches this argument once and
+    // `useFees` reads validation errors frozen at their first-render value.
+    const { formState } = methods;
+
     const { changeFeeLevel, selectedFee } = useFees({
         defaultValue: 'normal',
         feeInfo,
         onChange: onFeeLevelChange,
         composeRequest,
         ...methods,
+        formState,
     });
 
     useEffect(() => {
