@@ -59,7 +59,7 @@ jobs:
 
       - name: Install dependencies
         shell: bash
-        run: yarn workspaces focus @trezor/suite-web @suite/app-assets @trezor/suite-build @suite-common/message-system
+        run: yarn workspaces focus @suite/web-app @suite/app-assets @trezor/suite-build @suite-common/message-system
 
       - name: Build Suite Web
         shell: bash
@@ -70,11 +70,11 @@ jobs:
         run: |
           yarn message-system-sign-config
           yarn workspace @suite/app-assets build:lib
-          yarn workspace @trezor/suite-web build
+          yarn workspace @suite/web-app build
 
       - name: Upload Suite Web to S3
         shell: bash
         env:
           DEPLOY_PATH: s3://dev.suite.sldev.cz/suite-web/${{ env.branch }}
         run: |
-          aws s3 sync --delete ./packages/suite-web/build ${DEPLOY_PATH}/web
+          aws s3 sync --delete ./suite/web-app/build ${DEPLOY_PATH}/web

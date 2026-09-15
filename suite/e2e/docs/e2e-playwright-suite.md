@@ -1,4 +1,4 @@
-# @trezor/suite-desktop and @trezor/suite-web e2e tests
+# @suite/desktop-app and @suite/web-app e2e tests
 
 @suite/e2e uses [Playwright](https://playwright.dev/) to run e2e tests. It also uses [trezor-user-env](https://github.com/trezor/trezor-user-env) which is [daily built](https://ghcr.io/trezor/trezor-user-env) into a docker image providing all the necessary instrumentation required to run tests (bridge and emulators).
 
@@ -26,16 +26,16 @@ _Note: All paths below are relative to the root of trezor-suite repository, if n
 
 ### Desktop
 
-1. `TEST_BUILD=true yarn workspace @trezor/suite-desktop build:ui`
+1. `TEST_BUILD=true yarn workspace @suite/desktop-app build:ui`
 
-    Produces `suite-desktop/build` directory with javascript bundles & assets in production mode for the electron-renderer process.
+    Produces `desktop-app/build` directory with javascript bundles & assets in production mode for the electron-renderer process.
     TEST_BUILD env variable serves to mock bundled message-system config .
 
     _Note: This step needs to be repeated on each change in `suite` or `suite-desktop-ui` package._
 
-1. `yarn workspace @trezor/suite-desktop build:app`
+1. `yarn workspace @suite/desktop-app build:app`
 
-    Produces `suite-desktop/dist` directory with javascript bundles & assets in production mode for the electron-main process.
+    Produces `desktop-app/dist` directory with javascript bundles & assets in production mode for the electron-main process.
 
     _Note: This step needs to be repeated on each change in `connect` or `suite-desktop-core` package._
 
@@ -67,7 +67,7 @@ _Note: All paths below are relative to the root of trezor-suite repository, if n
 
 1. **To increase test timeouts** when your local run exceed 1m limit, you can specify test timeout override in `packages/suite/.env`. (UI runner --ui needs to be restarted to reflect the change in `.env`)
 
-1. **To find a breaking commit in develop** you can checkout latest develop and run `yarn workspace @trezor/suite-desktop git:bisect <last_good_commit> <desktop|web> <test_file>`
+1. **To find a breaking commit in develop** you can checkout latest develop and run `yarn workspace @suite/desktop-app git:bisect <last_good_commit> <desktop|web> <test_file>`
 
 ## Contribution
 

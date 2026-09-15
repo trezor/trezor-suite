@@ -48,10 +48,10 @@ export const initSentry = ({ mainThreadEmitter, store }: InitSentryParams) => {
 
     const transportOptions = {
         // If Tor is enabled but not running, don't send the event but put it in a queue.
-        // Queue can be inspected in @trezor/suite-desktop/sentry/queue folder.
+        // Queue can be inspected in @suite/desktop-app/sentry/queue folder.
         shouldSend: () => !(store.getTorSettings().running && torStatus !== TorStatus.Enabled),
     };
 
-    // Sentry ignore userPath change by environment so even in local build it uses @trezor/suite-desktop/sentry folder.
+    // Sentry ignore userPath change by environment so even in local build it uses @suite/desktop-app/sentry folder.
     init({ ...ELECTRON_MAIN_SENTRY_CONFIG, transportOptions });
 };

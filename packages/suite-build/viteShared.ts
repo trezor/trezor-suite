@@ -26,14 +26,15 @@ const createWorkspaceAliases = () => {
         }));
 
     const trezorPackagesAliases = readdirSync(resolve(packageDir, '../'), { withFileTypes: true })
-        .filter(dirent => dirent.isDirectory() && dirent.name !== 'suite-web')
+        .filter(dirent => dirent.isDirectory())
         .map(dirent => ({
             find: `@trezor/${dirent.name}`,
             replacement: resolve(packageDir, '../', dirent.name),
         }));
 
     const suiteAliases = readdirSync(resolve(packageDir, '../../suite'), { withFileTypes: true })
-        .filter(dirent => dirent.isDirectory())
+        // web-app is the application root itself, aliasing it to @suite/web-app would be circular
+        .filter(dirent => dirent.isDirectory() && dirent.name !== 'web-app')
         .map(dirent => ({
             find: `@suite/${dirent.name}`,
             replacement: resolve(packageDir, '../../suite', dirent.name),

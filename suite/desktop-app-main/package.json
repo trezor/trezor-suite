@@ -1,5 +1,5 @@
 {
-    "name": "@trezor/suite-desktop-core",
+    "name": "@suite/desktop-app-main",
     "description": "Trezor Suite desktop application",
     "version": "1.0.0",
     "private": true,
@@ -26,6 +26,7 @@
         "@suite-common/wallet-utils": "workspace:*",
         "@suite/desktop-app-api": "workspace:*",
         "@suite/desktop-app-api-electron": "workspace:*",
+        "@suite/desktop-app-native-bindings": "workspace:*",
         "@suite/sentry": "workspace:*",
         "@suite/tor-types": "workspace:*",
         "@trezor/coinjoin": "workspace:*",
@@ -37,7 +38,6 @@
         "@trezor/ipc-proxy": "workspace:*",
         "@trezor/node-utils": "workspace:*",
         "@trezor/request-manager": "workspace:*",
-        "@trezor/suite-desktop-native": "workspace:*",
         "@trezor/theme": "workspace:*",
         "@trezor/transport": "workspace:*",
         "@trezor/transport-bluetooth": "workspace:*",

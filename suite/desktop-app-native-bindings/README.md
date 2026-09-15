@@ -4,7 +4,7 @@ This package contains native modules for Trezor Suite desktop application, speci
 
 ## Overview
 
-The `@trezor/suite-desktop-native` package provides native functionality for the Trezor Suite desktop application. Currently, it includes:
+The `@suite/desktop-app-native-bindings` package provides native functionality for the Trezor Suite desktop application. Currently, it includes:
 
 - Windows Hello authentication integration (`win_hello.node`)
 
@@ -38,7 +38,7 @@ The Windows Hello module can **only be built on Windows** and requires:
 1. Run the build command:
 
     ```
-    yarn workspace @trezor/suite-desktop-native build:native
+    yarn workspace @suite/desktop-app-native-bindings build:native
     ```
 
 This will:
@@ -74,18 +74,18 @@ If you make changes to the C++ source code (`win_hello.cpp`), you must rebuild t
 
 ## Integration with Trezor Suite
 
-The Windows Hello module is automatically packaged with the Windows build of Trezor Suite. The electron-builder configuration in `packages/suite-desktop/electron-builder-config.js` includes this package in the final application bundle.
+The Windows Hello module is automatically packaged with the Windows build of Trezor Suite. The electron-builder configuration in `suite/desktop-app/electron-builder-config.js` includes this package in the final application bundle.
 
 ### Packaging and Loading the Native Module
 
-Electron-builder uses the `extraResources` configuration to copy the native module to the `app.asar.unpacked/@trezor/suite-desktop-native` directory in the packaged application. This approach is used because native modules cannot be packed inside the `app.asar` archive.
+Electron-builder uses the `extraResources` configuration to copy the native module to the `app.asar.unpacked/@suite/desktop-app-native-bindings` directory in the packaged application. This approach is used because native modules cannot be packed inside the `app.asar` archive.
 
 ```javascript
 // From electron-builder-config.js
 extraResources: [
     {
         from: '../suite-desktop-native/',
-        to: 'app.asar.unpacked/@trezor/suite-desktop-native',
+        to: 'app.asar.unpacked/@suite/desktop-app-native-bindings',
     },
 ],
 ```

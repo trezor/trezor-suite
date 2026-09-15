@@ -17,10 +17,10 @@ implementation around. It has no runtime API construction and no environment det
 Each app's composition root picks one implementation:
 
 ```ts
-// packages/suite-desktop-ui/src/createSuiteDesktopCompositionRoot.ts
+// suite/desktop-app-renderer/src/createSuiteDesktopCompositionRoot.ts
 const desktopApi = createElectronDesktopApi();
 
-// packages/suite-web/src/createSuiteWebCompositionRoot.ts
+// suite/web-app/src/createSuiteWebCompositionRoot.ts
 const desktopApi = createWebDesktopApi();
 ```
 
@@ -49,7 +49,7 @@ To invoke a method on the `main` process and return an asynchronous result to th
 - implement it in `../desktop-app-api-electron/src/createDesktopApiBridge.ts`
 - decide the web behaviour in `../suite-web/src/support/createWebDesktopApi.ts`; that file lists
   every member explicitly, so it will not compile until you do
-- process incoming requests in `@trezor/suite-desktop-core/src/modules/*` using `ipcMain.handle(...)`
+- process incoming requests in `@suite/desktop-app-main/src/modules/*` using `ipcMain.handle(...)`
 - call it through an injected `desktopApi`, never through a module-level import
 
 To receive an asynchronous event in the `renderer` process
@@ -57,11 +57,11 @@ To receive an asynchronous event in the `renderer` process
 - add a channel to `./src/api.ts RendererChannels`
 - add a channel to validChannels in `../desktop-app-api-electron/src/validation.ts`
 - listen through an injected `desktopApi.on('your-new-channel', payload => {})`
-- emit it from `@trezor/suite-desktop-core/src/modules/*` using `mainWindow.webContents.send(...)`
+- emit it from `@suite/desktop-app-main/src/modules/*` using `mainWindow.webContents.send(...)`
 
 To receive an asynchronous event in the `main` process
 
 - add a channel to `./src/api.ts MainChannels`
 - add a channel to validChannels in `../desktop-app-api-electron/src/validation.ts`
 - add a method to `./src/api.ts DesktopApi` as `DesktopApiSend<'your-new-channel'>`
-- set a listener in `@trezor/suite-desktop-core/src/modules/*` using `ipcMain.on(...)`
+- set a listener in `@suite/desktop-app-main/src/modules/*` using `ipcMain.on(...)`

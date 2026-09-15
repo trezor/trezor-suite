@@ -5,6 +5,6 @@
         "@playwright/browser-chromium",
         "@playwright/browser-firefox",
         "@playwright/browser-webkit",
-        "@trezor/suite-desktop"
+        "@suite/desktop-app"
     ]
 }

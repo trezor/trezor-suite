@@ -126,7 +126,7 @@ const htmlTemplatePlugin = (): Plugin => ({
 
 // Plugin to serve sessions-background-sharedworker.js as a complete bundle to be used directly as a web worker
 const sessionsSharedWorkerPlugin = () => {
-    const workerOutDir = resolve(__dirname, '../suite-web/dist/workers');
+    const workerOutDir = resolve(__dirname, '../../suite/web-app/dist/workers');
     const workerEntryPath = resolve(
         __dirname,
         '../transport-web/src/sessions/background-sharedworker.ts',
@@ -437,7 +437,7 @@ return await response.text();
 });
 
 export default defineConfig({
-    root: '../suite-web/src/static',
+    root: '../../suite/web-app/src/static',
     cacheDir: resolve(__dirname, '../../node_modules/.vite'),
     base: assetPrefix,
     // Use app-assets/files as the public directory

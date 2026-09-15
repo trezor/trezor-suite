@@ -148,7 +148,7 @@ jobs:
 
       - name: Extract build artifact (desktop)
         if: inputs.download-artifact-name != '' && !contains(inputs.download-artifact-name, 'webextension')
-        run: tar -xzf ${{ github.workspace }}/artifact-download/app-build.tar.gz -C ${{ github.workspace }}/packages/suite-desktop
+        run: tar -xzf ${{ github.workspace }}/artifact-download/app-build.tar.gz -C ${{ github.workspace }}/suite/desktop-app
 
       - name: Extract build artifact (webextension)
         if: inputs.download-artifact-name != '' && contains(inputs.download-artifact-name, 'webextension')

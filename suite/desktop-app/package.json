@@ -1,5 +1,5 @@
 {
-    "name": "@trezor/suite-desktop",
+    "name": "@suite/desktop-app",
     "description": "Trezor Suite desktop application",
     "version": "1.0.0",
     "private": true,
@@ -14,7 +14,7 @@
         "dev:local": "yarn workspace @trezor/suite-build run dev:desktop",
         "clean": "yarn g:rimraf ./build-electron && yarn g:rimraf ./build && yarn g:rimraf ./dist",
         "build:ui": "yarn workspace @trezor/suite-build run build:desktop",
-        "build:core": "yarn workspace @trezor/suite-desktop-core run build:core",
+        "build:core": "yarn workspace @suite/desktop-app-main run build:core",
         "build:app": "NODE_ENV=production yarn build:core",
         "build:app:dev": "NODE_ENV=development yarn build:core",
         "build:app:electron": "yarn electron-builder --config electron-builder-config.js",

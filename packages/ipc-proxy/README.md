@@ -14,7 +14,7 @@ Each proxy method is async.
 
 When you want to have different implementations of the same interface in electron and web builds, where electron implementation is working in main (nodejs) context and web implementation is working in default DOM context.
 
-Usage examples: @trezor/connect and @trezor/coinjoin in @trezor/suite-desktop
+Usage examples: @trezor/connect and @trezor/coinjoin in @suite/desktop-app
 
 <strike>`ipcRenderer.on` listener callback function contains additional param at position 0. (Electron.IpcRendererEvent)
 web callback implementations are not expecting this param therefore `real listener function` needs to be wrapped by another function to strip this param.

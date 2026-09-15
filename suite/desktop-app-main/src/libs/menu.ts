@@ -17,7 +17,7 @@ type MenuItem = Omit<MenuItemConstructorOptions, 'submenu'> & {
     submenu: MenuItemConstructorOptions[];
 };
 
-// for those wondering why is this a function, it is because otherwise app.name used in the template has incorrect value @trezor/suite-desktop instead of "Trezor Suite"
+// for those wondering why is this a function, it is because otherwise app.name used in the template has incorrect value @suite/desktop-app instead of "Trezor Suite"
 export const buildMainMenu = (mainWindowProxy: MainWindowProxy) => {
     // { role: 'fileMenu' }
     const fileMenu: MenuItem = {

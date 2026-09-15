@@ -1,6 +1,6 @@
 packages/**/node_modules
 packages/blockchain-link
-packages/suite-desktop
+suite/desktop-app
 suite-native/app
 suite-native/**/node_modules
 node_modules
