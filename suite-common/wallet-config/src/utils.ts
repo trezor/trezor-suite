@@ -1,5 +1,6 @@
 import { type TokenDtoV2 } from '@suite-common/earn-stablecoin-defs';
 import { exhaustive } from '@trezor/type-utils';
+import { typedObjectValues } from '@trezor/utils';
 
 import { networks } from './legacyNetworks';
 import {
@@ -9,7 +10,6 @@ import {
     type NetworkSymbol,
     type NetworkSymbolExtended,
     type NetworkType,
-    asNetworkSymbol,
 } from './networkTypes';
 
 export const NORMAL_ACCOUNT_TYPE = 'normal' satisfies AccountType;
@@ -17,10 +17,9 @@ export const NORMAL_ACCOUNT_TYPE = 'normal' satisfies AccountType;
 /**
  * array from `networks` as a `Network[]` type instead of inferred type
  */
-export const networksCollection: Network[] = Object.values(networks).map(network => ({
-    ...network,
-    symbol: asNetworkSymbol(network.symbol),
-}));
+// The legacy configs carry literal symbols; `Network` takes the branded one. Same objects,
+// only the symbol's type differs, so this stays a cast rather than rebuilding the array.
+export const networksCollection = typedObjectValues(networks) as unknown as Network[];
 
 /**
  * array of network symbols

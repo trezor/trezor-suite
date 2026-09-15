@@ -136,8 +136,9 @@ export const selectNetworkFeeStatus = createMemoizedSelector(
     [selectFees, (_state: FeesRootState, symbol?: NetworkSymbol) => symbol],
     (fees, symbol): FeesStatus | null => {
         const fee = symbol === undefined ? undefined : fees[symbol as LegacyNetworkSymbol];
+        if (!fee) return null;
 
-        return fee?.status ?? null;
+        return fee.status;
     },
 );
 

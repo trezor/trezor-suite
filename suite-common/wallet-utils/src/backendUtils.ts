@@ -8,6 +8,7 @@ import {
 import type {
     Account,
     BackendSettings,
+    Blockchain,
     BlockchainNetworks,
     CustomBackend,
 } from '@suite-common/wallet-types';
@@ -46,12 +47,12 @@ export const getCustomBackends = (
     supportedNetworks: readonly NetworkSymbol[],
 ): CustomBackend[] =>
     supportedNetworks
-        .flatMap(symbol => {
-            const blockchain = blockchains[symbol as LegacyNetworkSymbol];
-
-            return blockchain ? [{ symbol, backends: blockchain.backends }] : [];
-        })
-        .map(({ symbol, backends }) => ({
+        .map(symbol => ({ symbol, blockchain: blockchains[symbol as LegacyNetworkSymbol] }))
+        .filter(
+            (entry): entry is { symbol: NetworkSymbol; blockchain: Blockchain } =>
+                !!entry.blockchain,
+        )
+        .map(({ symbol, blockchain: { backends } }) => ({
             symbol,
             type: backends.selected,
             urls: backends.selected && backends.urls?.[backends.selected],

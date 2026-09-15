@@ -17,7 +17,7 @@ import {
     createSuiteSyncOutputId,
     createSuiteSyncUpdateError,
 } from '@suite-common/suite-sync-storage';
-import { asNetworkSymbol } from '@suite-common/wallet-config';
+import type { NetworkSymbol } from '@suite-common/wallet-config';
 import { asAccountDescriptor, asTxTargetId } from '@suite-common/wallet-types';
 import { err, ok } from '@trezor/type-utils';
 
@@ -91,8 +91,7 @@ export class OutputEvoluTable implements OutputTable {
                 if (
                     label.txId === null ||
                     label.outputIndex === null ||
-                    label.accountDescriptor === null ||
-                    label.networkSymbol === null
+                    label.accountDescriptor === null
                 ) {
                     continue;
                 }
@@ -105,7 +104,7 @@ export class OutputEvoluTable implements OutputTable {
                     txTargetId: asTxTargetId(label.outputIndex),
                     label: label.label,
                     accountDescriptor,
-                    networkSymbol: asNetworkSymbol(label.networkSymbol),
+                    networkSymbol: label.networkSymbol as unknown as NetworkSymbol,
                 });
             }
 
