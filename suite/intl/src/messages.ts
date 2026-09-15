@@ -1741,6 +1741,10 @@ export const messages = defineMessages({
             'Add spaces to addresses for easier reading. When off, addresses are shown as a continuous string.',
         id: 'TR_ADDRESS_DISPLAY_DESCRIPTION',
     },
+    TR_ASSET: {
+        defaultMessage: 'Asset',
+        id: 'TR_ASSET',
+    },
     TR_ASSETS: {
         defaultMessage: 'Network',
         id: 'TR_ASSETS',
@@ -5991,6 +5995,15 @@ export const messages = defineMessages({
     TR_TRON_TX_UNDELEGATE_RESOURCE: {
         id: 'TR_TRON_TX_UNDELEGATE_RESOURCE',
         defaultMessage: 'Undelegate resource',
+    },
+    TR_EXPERIMENTAL_ASSET_FIRST_HOME_TABLE: {
+        id: 'TR_EXPERIMENTAL_ASSET_FIRST_HOME_TABLE',
+        defaultMessage: 'Asset first table on home tab',
+    },
+    TR_EXPERIMENTAL_ASSET_FIRST_HOME_TABLE_DESCRIPTION: {
+        id: 'TR_EXPERIMENTAL_ASSET_FIRST_HOME_TABLE_DESCRIPTION',
+        defaultMessage:
+            'Show one row per asset and network on the home tab — Ether on Ethereum and Ether on Arbitrum are separate lines — instead of one row per network.',
     },
     TR_EXPERIMENTAL_GAP_LIMIT: {
         id: 'TR_EXPERIMENTAL_GAP_LIMIT',

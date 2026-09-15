@@ -90,6 +90,10 @@ export const EXPERIMENTAL_FEATURES: Record<ExperimentalFeature, ExperimentalFeat
             await desktopApi.mcpSetEnabled(newValue);
         },
     },
+    'asset-first-home-table': {
+        title: { id: 'TR_EXPERIMENTAL_ASSET_FIRST_HOME_TABLE' },
+        description: { id: 'TR_EXPERIMENTAL_ASSET_FIRST_HOME_TABLE_DESCRIPTION' },
+    },
     'gap-limit': {
         title: { id: 'TR_EXPERIMENTAL_GAP_LIMIT' },
         description: { id: 'TR_EXPERIMENTAL_GAP_LIMIT_DESCRIPTION' },
