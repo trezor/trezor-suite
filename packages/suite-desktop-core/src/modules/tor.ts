@@ -5,11 +5,11 @@ import { captureException } from '@sentry/electron/main';
 import { session } from 'electron';
 import path from 'path';
 
+import { type BootstrapTorEvent, type HandshakeTorModule } from '@suite/desktop-app-api';
 import { TorStatus } from '@suite/tor-types';
 import TrezorConnect from '@trezor/connect';
 import { getFreePort } from '@trezor/node-utils';
 import { type BootstrapEvent } from '@trezor/request-manager';
-import { type BootstrapTorEvent, type HandshakeTorModule } from '@trezor/suite-desktop-api';
 
 import { ipcMain } from '../ipcMain';
 import { hasSwitch } from '../libs/process-switches';

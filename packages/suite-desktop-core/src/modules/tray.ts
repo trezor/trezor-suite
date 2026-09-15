@@ -4,8 +4,8 @@
 import { Menu, Tray } from 'electron';
 import path from 'path';
 
+import { type Status, type TraySettings } from '@suite/desktop-app-api';
 import { DEVICE, type DeviceEvent } from '@trezor/connect';
-import { type Status, type TraySettings } from '@trezor/suite-desktop-api';
 
 import { ipcMain } from '../ipcMain';
 import { app } from '../typed-electron';

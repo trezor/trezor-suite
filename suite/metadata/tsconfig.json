@@ -54,6 +54,7 @@
             "path": "../../suite-common/wallet-types"
         },
         { "path": "../analytics" },
+        { "path": "../desktop-app-api" },
         { "path": "../device" },
         { "path": "../intl" },
         { "path": "../settings" },
@@ -63,9 +64,6 @@
         { "path": "../../packages/env-utils" },
         { "path": "../../packages/eslint" },
         { "path": "../../packages/icons" },
-        {
-            "path": "../../packages/suite-desktop-api"
-        },
         { "path": "../../packages/type-utils" },
         { "path": "../../packages/utils" },
         { "path": "../../packages/requirements" }

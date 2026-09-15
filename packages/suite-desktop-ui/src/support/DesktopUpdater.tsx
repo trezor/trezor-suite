@@ -2,6 +2,7 @@ import { type JSX, useCallback, useEffect } from 'react';
 import { useSelector } from 'react-redux';
 
 import { AppUpdateEventStatus, events, selectDesktopAnalyticsDep } from '@suite/analytics';
+import { selectDesktopApiDep } from '@suite/desktop-app-api';
 import {
     UpdateState,
     availableThunk,
@@ -14,7 +15,6 @@ import {
 } from '@suite/desktop-update';
 import { useServices } from '@suite-common/dependency-injection';
 import { selectDispatch } from '@suite-common/redux-utils';
-import { selectDesktopApiDep } from '@trezor/suite-desktop-api';
 import { isArrayMember } from '@trezor/utils';
 
 import { Available } from './DesktopUpdater/Available';

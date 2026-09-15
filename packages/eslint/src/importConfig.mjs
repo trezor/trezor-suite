@@ -28,7 +28,7 @@ const desktopApiImplementationMessage =
     'Only a composition root may choose a DesktopApi implementation. Declare DesktopApiDep and take the API as an injected dependency, or use selectDesktopApiDep in React.';
 
 export const desktopApiRestrictedImports = [
-    { name: '@trezor/suite-desktop-api-electron', message: desktopApiImplementationMessage },
+    { name: '@suite/desktop-app-api-electron', message: desktopApiImplementationMessage },
 ];
 
 /**

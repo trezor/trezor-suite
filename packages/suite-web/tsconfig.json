@@ -16,6 +16,7 @@
             "path": "../../suite-common/suite-utils"
         },
         { "path": "../../suite/debug" },
+        { "path": "../../suite/desktop-app-api" },
         {
             "path": "../../suite/platform-encryption-webauthn"
         },
@@ -24,7 +25,6 @@
         { "path": "../connect-common" },
         { "path": "../env-utils" },
         { "path": "../suite" },
-        { "path": "../suite-desktop-api" },
         { "path": "../transport-common" },
         { "path": "../transport-web" },
         { "path": "../utils" },

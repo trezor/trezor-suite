@@ -1,4 +1,4 @@
-import { type RendererChannels, type SuiteThemeVariant } from '@trezor/suite-desktop-api';
+import { type RendererChannels, type SuiteThemeVariant } from '@suite/desktop-app-api';
 
 type Primitive = 'boolean' | 'string' | 'number';
 type OptionalPrimitive = Primitive | [Primitive, boolean];

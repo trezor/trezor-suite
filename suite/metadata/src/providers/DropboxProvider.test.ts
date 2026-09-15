@@ -1,5 +1,5 @@
+import { mockGetHttpReceiverAddress } from '@suite/desktop-app-api/mocks';
 import { mock } from '@suite-common/dependency-injection';
-import { mockGetHttpReceiverAddress } from '@trezor/suite-desktop-api/mocks';
 import { createDeferred } from '@trezor/utils';
 
 import { DropboxProvider } from './DropboxProvider';

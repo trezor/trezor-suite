@@ -1,6 +1,7 @@
 import { type BuyTrade } from 'invity-api';
 
 import { type DesktopAnalyticsDep, events } from '@suite/analytics';
+import { type DesktopApiDep } from '@suite/desktop-app-api';
 import { type GotoThunkDeps, type GotoThunkState, gotoThunk } from '@suite/router';
 import { type WithServices, createThunk } from '@suite-common/redux-utils';
 import {
@@ -14,7 +15,6 @@ import {
     selectTradingCoinInfoByCryptoId,
     selectTradingFormAccount,
 } from '@suite-common/trading';
-import { type DesktopApiDep } from '@trezor/suite-desktop-api';
 
 import { createQuoteLink } from 'src/utils/wallet/trading/buyUtils';
 

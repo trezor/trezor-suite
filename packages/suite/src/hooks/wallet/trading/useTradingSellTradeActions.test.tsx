@@ -2,14 +2,14 @@ import type { BankAccount, CryptoId, FiatCurrencyCode, SellFiatTrade } from 'inv
 
 import { type DesktopAnalyticsDep } from '@suite/analytics';
 import { mockDesktopAnalytics } from '@suite/analytics/mocks';
+import { type DesktopApiDep } from '@suite/desktop-app-api';
+import { mockGetHttpReceiverAddress } from '@suite/desktop-app-api/mocks';
 import { type SuiteRouterHistoryDep } from '@suite/router';
 import { mockSuiteRouterHistory } from '@suite/router/mocks';
 import { createTestCompositionRoot, renderHookWithStoreProvider } from '@suite-common/test-utils';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { type Account, type AccountKey } from '@suite-common/wallet-types';
 import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
-import { type DesktopApiDep } from '@trezor/suite-desktop-api';
-import { mockGetHttpReceiverAddress } from '@trezor/suite-desktop-api/mocks';
 
 import { useTradingSellTradeActions } from './useTradingSellTradeActions';
 

@@ -1,4 +1,4 @@
-import { type DesktopApi } from '@trezor/suite-desktop-api';
+import { type DesktopApi } from '@suite/desktop-app-api';
 
 const unavailable =
     (method: string) =>

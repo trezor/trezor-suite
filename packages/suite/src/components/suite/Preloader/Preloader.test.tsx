@@ -4,6 +4,7 @@ import { fireEvent } from '@testing-library/react';
 
 import { type DesktopAnalyticsDep } from '@suite/analytics';
 import { mockDesktopAnalytics } from '@suite/analytics/mocks';
+import { type DesktopApiDep } from '@suite/desktop-app-api';
 import { type DesktopDeviceState } from '@suite/device';
 import { type RouterState, type SuiteRouterHistoryDep } from '@suite/router';
 import { mockSuiteRouterHistory } from '@suite/router/mocks';
@@ -26,7 +27,6 @@ import { isDeviceAcquired } from '@suite-common/suite-utils';
 import { createTestCompositionRoot } from '@suite-common/test-utils';
 import { type TransportInfo } from '@trezor/connect';
 import { isLinux } from '@trezor/env-utils';
-import { type DesktopApiDep } from '@trezor/suite-desktop-api';
 import { type DeepPartial } from '@trezor/type-utils';
 
 import { type AppState } from 'src/reducers/store';

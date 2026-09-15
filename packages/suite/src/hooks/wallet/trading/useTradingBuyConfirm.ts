@@ -3,6 +3,7 @@ import { useEffect } from 'react';
 import type { BuyTrade, BuyTradeResponse } from 'invity-api';
 
 import { events, selectDesktopAnalyticsDep } from '@suite/analytics';
+import { selectDesktopApiDep } from '@suite/desktop-app-api';
 import { gotoThunk } from '@suite/router';
 import { useServices } from '@suite-common/dependency-injection';
 import { selectDispatch } from '@suite-common/redux-utils';
@@ -17,7 +18,6 @@ import {
 } from '@suite-common/trading';
 import { selectAccountByKey } from '@suite-common/wallet-core';
 import { isDesktop } from '@trezor/env-utils';
-import { selectDesktopApiDep } from '@trezor/suite-desktop-api';
 
 import { submitRequestFormThunk } from 'src/actions/wallet/trading/tradingCommonActions';
 import { useSelector } from 'src/hooks/suite';

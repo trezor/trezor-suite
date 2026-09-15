@@ -11,12 +11,10 @@
         {
             "path": "../../suite-common/suite-types"
         },
+        { "path": "../desktop-app-api" },
         { "path": "../intl" },
         { "path": "../settings" },
         { "path": "../../packages/components" },
-        {
-            "path": "../../packages/suite-desktop-api"
-        },
         { "path": "../../packages/theme" }
     ]
 }

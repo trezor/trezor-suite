@@ -1,8 +1,8 @@
 import { type SellFiatTradeQuoteRequest } from 'invity-api';
 
+import { type DesktopApiDep } from '@suite/desktop-app-api';
 import { type TradingComposedTransactionInfo } from '@suite-common/trading';
 import { getLocationOrigin, isDesktop } from '@trezor/env-utils';
-import { type DesktopApiDep } from '@trezor/suite-desktop-api';
 
 import { type Account } from 'src/types/wallet';
 

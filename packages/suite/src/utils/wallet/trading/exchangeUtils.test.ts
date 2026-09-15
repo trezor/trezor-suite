@@ -1,9 +1,9 @@
 import { type CryptoId, type ExchangeTradeQuoteRequest } from 'invity-api';
 
+import { type DesktopApiDep } from '@suite/desktop-app-api';
+import { mockGetHttpReceiverAddress } from '@suite/desktop-app-api/mocks';
 import { type TradingComposedTransactionInfo } from '@suite-common/trading';
 import { type Account } from '@suite-common/wallet-types';
-import { type DesktopApiDep } from '@trezor/suite-desktop-api';
-import { mockGetHttpReceiverAddress } from '@trezor/suite-desktop-api/mocks';
 
 import { createQuoteLink } from './exchangeUtils';
 

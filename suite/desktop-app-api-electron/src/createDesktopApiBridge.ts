@@ -4,7 +4,7 @@ import {
     type DesktopApi,
     type RendererChannels,
     type StrictIpcRenderer,
-} from '@trezor/suite-desktop-api';
+} from '@suite/desktop-app-api';
 
 import * as validation from './validation';
 
