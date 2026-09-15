@@ -17418,6 +17418,7 @@ __metadata:
     "@trezor/device-utils": "workspace:*"
     "@trezor/network-module": "workspace:*"
     "@trezor/type-utils": "workspace:*"
+    "@trezor/utils": "workspace:*"
   languageName: unknown
   linkType: soft
 

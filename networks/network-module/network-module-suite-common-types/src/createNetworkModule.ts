@@ -1,4 +1,5 @@
 import { type NetworkSymbol, asNetworkSymbols } from '@trezor/network-module/constants';
+import { isArrayMember } from '@trezor/utils';
 
 import type { AddressValidator } from './AddressValidator';
 import type { NamedAddressResolver } from './NamedAddressResolver';
@@ -12,8 +13,6 @@ import type { SuiteCommonNetworkModule } from './SuiteCommonNetworkModule';
  * `createNetworkModule` narrows once at the boundary, so a module never restates the check.
  */
 export type NetworkModuleDefinition<TSymbol extends string> = {
-    supportedNetworks: readonly TSymbol[];
-
     addressValidator: AddressValidator<TSymbol>;
 
     /** Only for networks with a name system; see `NamedAddressResolver`. */
@@ -25,19 +24,23 @@ export type NetworkModuleDefinition<TSymbol extends string> = {
 /**
  * Builds the module a shared layer sees from the capabilities a network actually implements.
  *
- * The open `NetworkSymbol` that shared layers pass is narrowed here, by the module's own
- * `isSupportedNetwork`, before any capability is reached. A symbol the module does not support
- * is therefore rejected at its edge, and the capabilities themselves are written against the
- * closed symbol type with no per-call conversion.
+ * The module's closed symbol type is inferred from the list of networks it supports, which is
+ * also the only check it needs: the open `NetworkSymbol` that shared layers pass is narrowed
+ * against that list before any capability is reached. A symbol the module does not support is
+ * therefore rejected at its edge, and the capabilities themselves are written against the closed
+ * symbol type with no per-call conversion.
  */
 export const createNetworkModule = <TSymbol extends string>(
-    isSupportedNetwork: (symbol: string) => symbol is TSymbol,
+    supportedNetworks: readonly TSymbol[],
     definition: NetworkModuleDefinition<TSymbol>,
 ): SuiteCommonNetworkModule => {
+    const isSupportedNetwork = (symbol: string): symbol is TSymbol =>
+        isArrayMember(symbol, supportedNetworks);
+
     const narrow = (symbol: NetworkSymbol): TSymbol => {
         if (!isSupportedNetwork(symbol)) {
             throw new Error(
-                `Unsupported network symbol: ${symbol}. Supported: ${definition.supportedNetworks.join(', ')}.`,
+                `Unsupported network symbol: ${symbol}. Supported: ${supportedNetworks.join(', ')}.`,
             );
         }
 
@@ -64,7 +67,7 @@ export const createNetworkModule = <TSymbol extends string>(
     return {
         addressValidator,
         namedAddressResolver,
-        getSupportedNetworks: () => asNetworkSymbols(definition.supportedNetworks),
+        getSupportedNetworks: () => asNetworkSymbols(supportedNetworks),
         isSupportedNetwork,
         getNetworkConfig: symbol => definition.getNetworkConfig(narrow(symbol)),
     };
