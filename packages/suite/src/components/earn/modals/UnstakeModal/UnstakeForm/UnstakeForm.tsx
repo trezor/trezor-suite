@@ -1,5 +1,4 @@
-import { FormProvider } from 'react-hook-form';
-
+import { Form } from '@suite/form';
 import { Translation } from '@suite/intl';
 import { getDisplaySymbol, getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import {
@@ -69,134 +68,130 @@ export const UnstakeForm = () => {
     const shouldShowInstantWithdrawalEthAmount =
         approximatedInstantEthAmount && BigNumber(approximatedInstantEthAmount).gt(0);
 
+    const { formState } = methods;
+
     return (
-        <FormProvider {...methods}>
-            <form onSubmit={handleSubmit(signTx)}>
-                <Column gap={32} margin={{ bottom: 20 }}>
-                    <Column gap={16}>
-                        {canClaim && (
-                            <Banner
-                                intent="info"
-                                description={
-                                    <Translation
-                                        id="TR_STAKE_CAN_CLAIM_WARNING"
-                                        values={{
-                                            amount: claimableAmount,
-                                            symbol: getDisplaySymbol(account.symbol),
-                                            br: <br />,
-                                        }}
-                                    />
-                                }
-                            />
-                        )}
-                        <SolanaStakingLimitBanner
-                            account={account}
-                            composedLevels={composedLevels}
-                            type="unstake"
-                        />
-                    </Column>
-                    {!isCardanoNetwork && (
-                        <>
-                            <EarnAvailableBalance
-                                formattedBalance={autocompoundBalance}
-                                symbol={symbol}
-                            />
-
-                            <Column gap={20}>
-                                <UnstakeInputs />
-                                {showError && (
-                                    <Banner
-                                        intent="critical"
-                                        description={
-                                            unstakeAmountBounds ? (
-                                                <Translation
-                                                    id={
-                                                        unstakeAmountBounds.closestLower
-                                                            ? 'TR_STAKE_SOL_INVALID_UNSTAKE_AMOUNT'
-                                                            : 'TR_STAKE_SOL_INVALID_UNSTAKE_AMOUNT_HIGHER_ONLY'
-                                                    }
-                                                    values={{
-                                                        symbol: getNetworkDisplaySymbol(
-                                                            account.symbol,
-                                                        ),
-                                                        higher: renderClickableUnstakeAmount(
-                                                            unstakeAmountBounds.closestHigher,
-                                                        ),
-                                                        higherFiat: renderUnstakeAmountFiat(
-                                                            unstakeAmountBounds.closestHigher,
-                                                        ),
-                                                        lower: unstakeAmountBounds.closestLower
-                                                            ? renderClickableUnstakeAmount(
-                                                                  unstakeAmountBounds.closestLower,
-                                                              )
-                                                            : undefined,
-                                                        lowerFiat: unstakeAmountBounds.closestLower
-                                                            ? renderUnstakeAmountFiat(
-                                                                  unstakeAmountBounds.closestLower,
-                                                              )
-                                                            : undefined,
-                                                    }}
-                                                />
-                                            ) : (
-                                                inputError?.message
-                                            )
-                                        }
-                                        rightContent={
-                                            inputError?.type === 'solanaUnstakeAmount' ? (
-                                                <Banner.Button
-                                                    href={getStakingHelpCenterLink(
-                                                        account.networkType,
-                                                    )}
-                                                >
-                                                    <Translation id="TR_STAKE_FIND_OUT_MORE" />
-                                                </Banner.Button>
-                                            ) : undefined
-                                        }
-                                    />
-                                )}
-                            </Column>
-                        </>
-                    )}
-
-                    <Card type="raised" paddingType="small">
-                        <Fees
-                            feeInfo={feeInfo}
-                            account={account}
-                            composedLevels={composedLevels}
-                            changeFeeLevel={changeFeeLevel}
-                            headerTypographyStyle="body-sm"
-                        />
-                    </Card>
-
-                    {shouldShowInstantWithdrawalEthAmount && (
-                        <InfoItem
-                            label={
-                                <Tooltip
-                                    maxWidth={328}
-                                    content={
-                                        <Translation id="TR_STAKE_UNSTAKING_APPROXIMATE_DESCRIPTION" />
-                                    }
-                                    hasIcon
-                                >
-                                    <Translation
-                                        id="TR_STAKE_UNSTAKING_APPROXIMATE"
-                                        values={{
-                                            symbol: getDisplaySymbol(account.symbol),
-                                        }}
-                                    />
-                                </Tooltip>
+        <Form form={methods} formState={formState} onSubmit={handleSubmit(signTx)}>
+            <Column gap={32} margin={{ bottom: 20 }}>
+                <Column gap={16}>
+                    {canClaim && (
+                        <Banner
+                            intent="info"
+                            description={
+                                <Translation
+                                    id="TR_STAKE_CAN_CLAIM_WARNING"
+                                    values={{
+                                        amount: claimableAmount,
+                                        symbol: getDisplaySymbol(account.symbol),
+                                        br: <br />,
+                                    }}
+                                />
                             }
-                            typographyStyle="body-md"
-                            direction="row"
-                        >
-                            <ApproximateInstantEthAmount
-                                value={approximatedInstantEthAmount}
-                                symbol={account.symbol}
-                            />
-                        </InfoItem>
+                        />
                     )}
+                    <SolanaStakingLimitBanner
+                        account={account}
+                        composedLevels={composedLevels}
+                        type="unstake"
+                    />
                 </Column>
-            </form>
-        </FormProvider>
+                {!isCardanoNetwork && (
+                    <>
+                        <EarnAvailableBalance
+                            formattedBalance={autocompoundBalance}
+                            symbol={symbol}
+                        />
+
+                        <Column gap={20}>
+                            <UnstakeInputs />
+                            {showError && (
+                                <Banner
+                                    intent="critical"
+                                    description={
+                                        unstakeAmountBounds ? (
+                                            <Translation
+                                                id={
+                                                    unstakeAmountBounds.closestLower
+                                                        ? 'TR_STAKE_SOL_INVALID_UNSTAKE_AMOUNT'
+                                                        : 'TR_STAKE_SOL_INVALID_UNSTAKE_AMOUNT_HIGHER_ONLY'
+                                                }
+                                                values={{
+                                                    symbol: getNetworkDisplaySymbol(account.symbol),
+                                                    higher: renderClickableUnstakeAmount(
+                                                        unstakeAmountBounds.closestHigher,
+                                                    ),
+                                                    higherFiat: renderUnstakeAmountFiat(
+                                                        unstakeAmountBounds.closestHigher,
+                                                    ),
+                                                    lower: unstakeAmountBounds.closestLower
+                                                        ? renderClickableUnstakeAmount(
+                                                              unstakeAmountBounds.closestLower,
+                                                          )
+                                                        : undefined,
+                                                    lowerFiat: unstakeAmountBounds.closestLower
+                                                        ? renderUnstakeAmountFiat(
+                                                              unstakeAmountBounds.closestLower,
+                                                          )
+                                                        : undefined,
+                                                }}
+                                            />
+                                        ) : (
+                                            inputError?.message
+                                        )
+                                    }
+                                    rightContent={
+                                        inputError?.type === 'solanaUnstakeAmount' ? (
+                                            <Banner.Button
+                                                href={getStakingHelpCenterLink(account.networkType)}
+                                            >
+                                                <Translation id="TR_STAKE_FIND_OUT_MORE" />
+                                            </Banner.Button>
+                                        ) : undefined
+                                    }
+                                />
+                            )}
+                        </Column>
+                    </>
+                )}
+
+                <Card type="raised" paddingType="small">
+                    <Fees
+                        feeInfo={feeInfo}
+                        account={account}
+                        composedLevels={composedLevels}
+                        changeFeeLevel={changeFeeLevel}
+                        headerTypographyStyle="body-sm"
+                    />
+                </Card>
+
+                {shouldShowInstantWithdrawalEthAmount && (
+                    <InfoItem
+                        label={
+                            <Tooltip
+                                maxWidth={328}
+                                content={
+                                    <Translation id="TR_STAKE_UNSTAKING_APPROXIMATE_DESCRIPTION" />
+                                }
+                                hasIcon
+                            >
+                                <Translation
+                                    id="TR_STAKE_UNSTAKING_APPROXIMATE"
+                                    values={{
+                                        symbol: getDisplaySymbol(account.symbol),
+                                    }}
+                                />
+                            </Tooltip>
+                        }
+                        typographyStyle="body-md"
+                        direction="row"
+                    >
+                        <ApproximateInstantEthAmount
+                            value={approximatedInstantEthAmount}
+                            symbol={account.symbol}
+                        />
+                    </InfoItem>
+                )}
+            </Column>
+        </Form>
     );
 };
