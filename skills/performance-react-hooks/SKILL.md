@@ -40,7 +40,10 @@ when in doubt and treat the list below as a summary that can lag it by a commit.
   `finally`, or one wrapping `?.`, `&&`, `||`, `??` or a ternary, anywhere in the function or its
   callbacks: move that logic into a thunk or a module-level helper.
 - **Green lint is not a correctness gate for the compiler rollout.** None of these rules — nor jest —
-  can see the failure mode in the next section.
+  can see the failure mode in the next section. `yarn react-compiler:check` is the gate that does:
+  it compiles every enabled tree and fails on a render-time `react-hook-form` read
+  ([`reactCompilerFrozenReads.ts`](../../packages/suite/webpack/reactCompilerFrozenReads.ts), run by
+  the `other-checks` CI job). Run it locally before pushing anything that changes any React code.
 
 ## Compiled paths: three review rules no linter enforces
 
