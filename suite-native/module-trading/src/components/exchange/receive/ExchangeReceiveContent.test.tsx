@@ -81,9 +81,6 @@ describe('ExchangeReceiveContent', () => {
         expect(
             getByLabelText(getTranslation('moduleTrading.selectCoin.buttonTitle')),
         ).toHaveTextContent(/USDC/);
-        expect(getByLabelText(getTranslation('moduleTrading.networkName'))).toHaveTextContent(
-            'Ethereum',
-        );
         expect(
             getByLabelText(getTranslation('moduleTrading.selectCoin.amountLabel')),
         ).toHaveDisplayValue('0.00083554');

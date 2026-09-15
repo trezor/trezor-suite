@@ -12,12 +12,12 @@ import {
 
 import { SellFormFieldErrorBadge } from './SellFormFieldErrorBadge';
 import { useSellFormContext } from '../../hooks/sell/useSellFormContext';
-import { TradeableAssetNetworkInfo } from '../general/TradeableAssetNetworkInfo';
 import { TradingCard } from '../general/TradingCard';
 import { TradingCardSection } from '../general/TradingCardSection';
 import { SellFiatCurrencyPicker } from './fiat/SellFiatCurrencyPicker';
 import { SellSendAccountCryptoBalance } from './send/SellSendAccountCryptoBalance';
 import { SellSendAssetPicker } from './send/SellSendAssetPicker';
+import { SellSendFiatAmountBadge } from './send/SellSendFiatAmountBadge';
 
 type SellCardProps = {
     isAmountInputActive: boolean;
@@ -54,15 +54,11 @@ export const SellCard = ({ isAmountInputActive, shouldAnimateEntering }: SellCar
                 bottomBorder
                 testID={`${SELL_CARD_TEST_ID}/cryptoSection`}
                 title={<Translation id="moduleTrading.selectCoinToSell.title" />}
-                titleAction={
-                    <Box alignItems="flex-end">
-                        <SellFormFieldErrorBadge fieldName="cryptoStringAmount" />
-                    </Box>
-                }
+                titleAction={<SellFormFieldErrorBadge fieldName="cryptoStringAmount" />}
             >
                 <SellSendAssetPicker />
                 <HStack justifyContent="space-between" alignItems="center" spacing="sp4">
-                    <TradeableAssetNetworkInfo asset={asset} />
+                    <SellSendFiatAmountBadge />
                     <SellSendAccountCryptoBalance />
                 </HStack>
                 {symbol && shouldShowBanner && (

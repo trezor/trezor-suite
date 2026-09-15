@@ -1,4 +1,4 @@
-import { Box, HStack } from '@suite-native/atoms';
+import { HStack } from '@suite-native/atoms';
 import { useWatch } from '@suite-native/forms';
 import { Translation } from '@suite-native/intl';
 import { getSymbolFromTradeableAsset } from '@suite-native/trading-atoms';
@@ -10,7 +10,6 @@ import { BuyReceiveAccountCryptoBalance } from './BuyReceiveAccountCryptoBalance
 import { BuyTradeableAssetPicker } from './BuyTradeableAssetPicker';
 import { useBuyFormContext } from '../../hooks/buy/useBuyFormContext';
 import { useConvertFormValueToBaseUnit } from '../../hooks/general/useConvertFormValueToBaseUnit';
-import { TradeableAssetNetworkInfo } from '../general/TradeableAssetNetworkInfo';
 import { TradingCard } from '../general/TradingCard';
 import { TradingCardSection } from '../general/TradingCardSection';
 
@@ -37,29 +36,21 @@ export const BuyCard = ({ isAmountInputActive, shouldAnimateEntering }: BuyCardP
                 bottomBorder
                 testID={`${BUY_CARD_TEST_ID}/fiatSection`}
                 title={<Translation id="moduleTrading.selectFiat.buy.title" />}
-                titleAction={
-                    <Box alignItems="flex-end">
-                        <BuyFormFieldErrorBadge fieldName="fiatValue" />
-                    </Box>
-                }
+                titleAction={<BuyFormFieldErrorBadge fieldName="fiatValue" />}
             >
                 <BuyFiatCurrencyPicker />
             </TradingCardSection>
             <TradingCardSection
                 testID={`${BUY_CARD_TEST_ID}/cryptoSection`}
                 title={<Translation id="moduleTrading.selectCoin.title" />}
-                titleAction={
-                    <BuyFormFieldErrorBadge fieldName="cryptoValue">
-                        <CryptoToFiatValueBadge
-                            amount={cryptoValueInBaseUnit}
-                            cryptoId={asset?.cryptoId}
-                        />
-                    </BuyFormFieldErrorBadge>
-                }
+                titleAction={<BuyFormFieldErrorBadge fieldName="cryptoValue" />}
             >
                 <BuyTradeableAssetPicker />
                 <HStack justifyContent="space-between" alignItems="center" spacing="sp4">
-                    <TradeableAssetNetworkInfo asset={asset} />
+                    <CryptoToFiatValueBadge
+                        amount={cryptoValueInBaseUnit}
+                        cryptoId={asset?.cryptoId}
+                    />
                     <BuyReceiveAccountCryptoBalance />
                 </HStack>
             </TradingCardSection>

@@ -7,7 +7,7 @@ export type CardTitleProps = {
 };
 
 export const CardTitle = ({ children }: CardTitleProps) => (
-    <Box paddingHorizontal="sp8" flex={1}>
+    <Box flex={1}>
         <Text variant="body-sm" color="contentSecondary" numberOfLines={1}>
             {children}
         </Text>

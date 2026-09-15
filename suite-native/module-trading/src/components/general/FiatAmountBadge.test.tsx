@@ -9,9 +9,9 @@ describe('FiatAmountBadge', () => {
         await renderWithBasicProvider(<FiatAmountBadge {...props} />);
 
     it('should display nothing when amount is not provided', async () => {
-        const { toJSON } = await renderFiatAmountBadge({ amount: undefined });
+        const { root } = await renderFiatAmountBadge({ amount: undefined });
 
-        expect(toJSON()).toBeNull();
+        expect(root).toBeEmptyElement();
     });
 
     it('should display formatted value in app currency', async () => {
@@ -31,10 +31,10 @@ describe('FiatAmountBadge', () => {
     });
 
     it('should display nothing for empty string value', async () => {
-        const { toJSON } = await renderFiatAmountBadge({
+        const { root } = await renderFiatAmountBadge({
             amount: asBaseCurrencyAmount(new BigNumber('')),
         });
 
-        expect(toJSON()).toBeNull();
+        expect(root).toBeEmptyElement();
     });
 });
