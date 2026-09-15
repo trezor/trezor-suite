@@ -12,7 +12,8 @@ type Attributes = {
     symbol: AttributeDef<NetworkSymbol>;
     outputsCount: AttributeDef<number>;
     selectedFee: AttributeDef<FeeLevelLabel>;
-    wasAppLeftDuringReview: AttributeDef<boolean>;
+    wasAppLeftDuringReview?: AttributeDef<boolean>;
+    txType?: AttributeDef<'yield'>;
     tokenSymbols?: AttributeDef<TokenSymbol[]>;
     tokenAddresses?: AttributeDef<TokenAddress[]>;
     hasEthereumData?: AttributeDef<boolean>;
@@ -26,8 +27,14 @@ export const sendTransactionDispatchedEvent: EventDef<
     EventType.SendTransactionDispatched
 > = {
     name: EventType.SendTransactionDispatched,
-    descriptionTrigger: 'User successfully sends a transaction',
-    changelog: [{ version: '24.10.1', notes: 'added' }],
+    descriptionTrigger: 'User successfully broadcasts a transaction',
+    changelog: [
+        { version: '24.10.1', notes: 'added' },
+        {
+            version: '26.11.0',
+            notes: 'reported for stablecoin yield transactions as well, with `txType`',
+        },
+    ],
     attributes: {
         symbol: {
             description:
@@ -44,9 +51,17 @@ export const sendTransactionDispatchedEvent: EventDef<
             changelog: [{ version: '24.10.1', notes: 'added' }],
         },
         wasAppLeftDuringReview: {
-            changelog: [{ version: '24.10.1', notes: 'added' }],
+            changelog: [
+                { version: '24.10.1', notes: 'added' },
+                { version: '26.11.0', notes: 'reported only by the send flow' },
+            ],
             description:
-                'Whether the user left the app during transaction review. Note: false does not mean the user confirmed the address with the source (e.g., can be done face to face or on desktop). Leaving the app does not imply address verification was skipped.',
+                'Whether the user left the app during transaction review. Note: false does not mean the user confirmed the address with the source (e.g., can be done face to face or on desktop). Leaving the app does not imply address verification was skipped. Only the send flow has an address review step, so this is absent for yield transactions.',
+        },
+        txType: {
+            changelog: [{ version: '26.11.0', notes: 'added' }],
+            description:
+                'The type of transaction: `yield` for every transaction of a stablecoin yield flow (the deposit, withdraw, redeem or claim itself, and also its approve, revoke, wrap and unwrap steps). Absent for a plain send. One yield action can emit several `yield` events, so this must not be used to count transactions.',
         },
         tokenSymbols: {
             description:

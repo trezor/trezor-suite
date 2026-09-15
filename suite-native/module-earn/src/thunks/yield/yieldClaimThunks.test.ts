@@ -1,5 +1,6 @@
 import { combineReducers, isFulfilled, isRejected } from '@reduxjs/toolkit';
 
+import { asGetter } from '@suite-common/dependency-injection';
 import { createTestStore } from '@suite-common/test-utils';
 import {
     type YieldClaimUnsignedTransaction,
@@ -17,10 +18,11 @@ import {
     type PrecomposedTransactionFinal,
 } from '@suite-common/wallet-types';
 import { mockAccountKey } from '@suite-common/wallet-types/mocks';
+import { mockNativeAnalytics } from '@suite-native/analytics/mocks';
 import TrezorConnect from '@trezor/connect';
 import { type StaticSessionId } from '@trezor/device-utils';
 
-import { pushYieldClaimReviewThunk } from './yieldClaimThunks';
+import { type PushYieldClaimReviewThunkDeps, pushYieldClaimReviewThunk } from './yieldClaimThunks';
 
 jest.mock('@trezor/connect', () => ({
     __esModule: true,
@@ -107,12 +109,20 @@ const precomposedTransaction = {
     outputsPermutation: [0],
 } satisfies PrecomposedTransactionFinal;
 
+const extra: PushYieldClaimReviewThunkDeps = {
+    services: {
+        analytics: mockNativeAnalytics(),
+        getIsWindowVisible: asGetter(() => true),
+        getTradedAccountKeys: asGetter(() => []),
+    },
+};
+
 const pushTransactionMock = TrezorConnect.pushTransaction as jest.Mock;
 const synchronizeSentTransactionThunkMock = synchronizeSentTransactionThunk as unknown as jest.Mock;
 
 const buildStore = () =>
     createTestStore({
-        extra: undefined,
+        extra,
         reducer: combineReducers({
             wallet: combineReducers({
                 stablecoinYield: yieldReducer,

@@ -25,7 +25,7 @@ type Attributes = {
     isCoinControlEnabled: AttributeDef<boolean>;
     hasCoinControlBeenOpened: AttributeDef<boolean>;
 
-    txType?: AttributeDef<'trade' | 'stake'>;
+    txType?: AttributeDef<'trade' | 'stake' | 'yield'>;
 };
 
 export const transactionCreatedEvent: EventDef<Attributes, EventType.TransactionCreated> = {
@@ -35,6 +35,7 @@ export const transactionCreatedEvent: EventDef<Attributes, EventType.Transaction
     changelog: [
         { version: '1.9.0', notes: 'added' },
         { version: '25.4.0', notes: 'txType added' },
+        { version: '26.11.0', notes: 'txType extended with `yield`' },
     ],
     possibleImprovements: 'rename to `accounts/transaction-created`',
 
@@ -90,9 +91,12 @@ export const transactionCreatedEvent: EventDef<Attributes, EventType.Transaction
             description: 'Whether the user opened coin control interface during this transaction',
         },
         txType: {
-            changelog: [{ version: '25.4.0', notes: 'added' }],
+            changelog: [
+                { version: '25.4.0', notes: 'added' },
+                { version: '26.11.0', notes: 'added the `yield` value' },
+            ],
             description:
-                'The type of transaction: `trade` for trading flows, `stake` for staking-related transactions',
+                'The type of transaction: `trade` for trading flows, `stake` for staking-related transactions and `yield` for every transaction of a stablecoin yield flow (the deposit, withdraw, redeem or claim itself, and also its approve, revoke, wrap and unwrap steps). Absent for a plain send. One yield action can emit several `yield` events, so this must not be used to count transactions.',
         },
     },
 };

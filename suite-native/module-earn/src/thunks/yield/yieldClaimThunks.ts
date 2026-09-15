@@ -4,7 +4,7 @@ import {
     type MevProtectionRootState,
     selectIsMevProtectionFeatureEnabled,
 } from '@suite-common/mev';
-import { createThunk } from '@suite-common/redux-utils';
+import { type WithServices, createThunk } from '@suite-common/redux-utils';
 import {
     type FormDraftRootState,
     type SynchronizeSentTransactionThunkDeps,
@@ -22,6 +22,7 @@ import {
     yieldActions,
 } from '@suite-common/wallet-core';
 import { type Account, type FormState } from '@suite-common/wallet-types';
+import { type NativeAnalyticsDep } from '@suite-native/analytics';
 import { type UpdateSelectedFeeLevelThunkParams } from '@suite-native/transaction-management';
 
 import { getPushErrorType } from './yieldTransactionThunks';
@@ -31,6 +32,7 @@ import {
     pushYieldTransaction,
     signYieldTransactionOnDevice,
 } from '../../utils/earn/deviceTransactionUtils';
+import { reportYieldTransactionDispatched } from '../../utils/yield/yieldAnalyticsUtils';
 import { getSelectedFeeFromUnsignedClaimTransaction } from '../../utils/yield/yieldClaimFeeUtils';
 import { buildYieldClaimRewards } from '../../utils/yield/yieldClaimReviewUtils';
 
@@ -195,7 +197,8 @@ export type PushYieldClaimReviewThunkState = MevProtectionRootState &
     SynchronizeSentTransactionThunkState &
     WalletSettingsRootState;
 
-export type PushYieldClaimReviewThunkDeps = SynchronizeSentTransactionThunkDeps;
+export type PushYieldClaimReviewThunkDeps = SynchronizeSentTransactionThunkDeps &
+    WithServices<NativeAnalyticsDep>;
 
 export const pushYieldClaimReviewThunk = createThunk<
     { txid: string },
@@ -207,7 +210,7 @@ export const pushYieldClaimReviewThunk = createThunk<
     }
 >(
     `${EARN_MODULE_PREFIX}/pushYieldClaimReviewThunk`,
-    async ({ account, flowKey }, { dispatch, getState, rejectWithValue }) => {
+    async ({ account, flowKey }, { dispatch, getState, rejectWithValue, extra }) => {
         const session = selectYieldSession(getState(), 'claim', flowKey);
         const txReview = selectYieldTxReview(getState());
         const { precomposedForm, precomposedTx, serializedTx } = txReview;
@@ -248,6 +251,13 @@ export const pushYieldClaimReviewThunk = createThunk<
                 message: pushResponse.error.message,
             });
         }
+
+        reportYieldTransactionDispatched({
+            analytics: extra.services.analytics,
+            account,
+            precomposedTransaction: precomposedTx,
+            precomposedForm,
+        });
 
         dispatch(
             synchronizeSentTransactionThunk({

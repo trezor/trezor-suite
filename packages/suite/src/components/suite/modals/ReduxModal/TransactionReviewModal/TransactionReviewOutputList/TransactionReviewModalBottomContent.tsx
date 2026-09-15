@@ -8,6 +8,7 @@ import { selectConnectPopupCall } from '@suite-common/connect-popup';
 import { useServices } from '@suite-common/dependency-injection';
 import { selectDispatch } from '@suite-common/redux-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
+import { selectIsYieldTransactionInReview } from '@suite-common/wallet-core';
 import {
     type Account,
     type FormState,
@@ -78,13 +79,14 @@ export const TransactionReviewModalBottomContent = ({
 }: TransactionReviewModalBottomContentProps) => {
     const { analytics, dispatch } = useServices(selectDesktopAnalyticsDep, selectDispatch);
     const connectPopupCall = useSelector(selectConnectPopupCall);
+    const isYieldTransaction = useSelector(selectIsYieldTransactionInReview);
     const { precomposedTx, serializedTx } = txInfoState;
 
     const { symbol, networkType } = account;
     const { options, selectedFee } = precomposedForm;
 
     const isBroadcastEnabled = options.includes('broadcast');
-    const txType = getTxType(txInfoState, precomposedForm);
+    const txType = getTxType(txInfoState, precomposedForm, isYieldTransaction);
 
     const isCancelRbfAction = precomposedTx ? isRbfCancelTransaction(precomposedTx) : false;
 

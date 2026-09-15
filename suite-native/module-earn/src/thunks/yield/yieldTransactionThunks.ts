@@ -4,7 +4,7 @@ import {
     type MevProtectionRootState,
     selectIsMevProtectionFeatureEnabled,
 } from '@suite-common/mev';
-import { createThunk } from '@suite-common/redux-utils';
+import { type WithServices, createThunk } from '@suite-common/redux-utils';
 import {
     type SynchronizeSentTransactionThunkDeps,
     type SynchronizeSentTransactionThunkState,
@@ -24,12 +24,14 @@ import {
     yieldActions,
 } from '@suite-common/wallet-core';
 import { type EvmSelectedFee } from '@suite-common/wallet-types';
+import { type NativeAnalyticsDep } from '@suite-native/analytics';
 
 import { EARN_MODULE_PREFIX } from '../../constants';
 import {
     pushYieldTransaction,
     signYieldTransactionOnDevice,
 } from '../../utils/earn/deviceTransactionUtils';
+import { reportYieldTransactionDispatched } from '../../utils/yield/yieldAnalyticsUtils';
 
 const YIELD_TRANSACTION_THUNK_PREFIX = `${EARN_MODULE_PREFIX}/yield-transaction`;
 
@@ -181,7 +183,8 @@ export type PushYieldActionReviewThunkState = MevProtectionRootState &
     SynchronizeSentTransactionThunkState &
     WalletSettingsRootState;
 
-export type PushYieldActionReviewThunkDeps = SynchronizeSentTransactionThunkDeps;
+export type PushYieldActionReviewThunkDeps = SynchronizeSentTransactionThunkDeps &
+    WithServices<NativeAnalyticsDep>;
 
 export const pushYieldActionReviewThunk = createThunk<
     { txid: string },
@@ -193,7 +196,7 @@ export const pushYieldActionReviewThunk = createThunk<
     }
 >(
     `${YIELD_TRANSACTION_THUNK_PREFIX}/pushActionReview`,
-    async ({ flowData, flowKey, flowType }, { dispatch, getState, rejectWithValue }) => {
+    async ({ flowData, flowKey, flowType }, { dispatch, getState, rejectWithValue, extra }) => {
         const session = selectYieldSession(getState(), flowType, flowKey);
         const txReview = selectYieldTxReview(getState());
         const { precomposedForm, precomposedTx, serializedTx } = txReview;
@@ -234,6 +237,13 @@ export const pushYieldActionReviewThunk = createThunk<
                 message: pushResponse.error.message,
             });
         }
+
+        reportYieldTransactionDispatched({
+            analytics: extra.services.analytics,
+            account: flowData.account,
+            precomposedTransaction: precomposedTx,
+            precomposedForm,
+        });
 
         dispatch(
             synchronizeSentTransactionThunk({
