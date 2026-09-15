@@ -1,6 +1,5 @@
-import { FormProvider } from 'react-hook-form';
-
 import { selectIsDeviceCompromised } from '@suite/authenticity-checks';
+import { Form } from '@suite/form';
 import { ContextMessage } from '@suite/message-system';
 import { Context } from '@suite-common/message-system';
 import { type TradingType } from '@suite-common/trading';
@@ -19,15 +18,17 @@ import { TradingSellFormInputs } from '../common/TradingForm/TradingSellFormInpu
 const TradingSellFormWrapper = () => {
     const tradingSellContextValues = useTradingSellForm();
 
+    const { formState } = tradingSellContextValues.methods;
+
     return (
         <TradingFormContext.Provider value={tradingSellContextValues}>
-            <FormProvider {...tradingSellContextValues.methods}>
+            <Form form={tradingSellContextValues.methods} formState={formState}>
                 <TradingContainer>
                     <TradingFormLayout>
                         <TradingSellFormInputs />
                     </TradingFormLayout>
                 </TradingContainer>
-            </FormProvider>
+            </Form>
         </TradingFormContext.Provider>
     );
 };

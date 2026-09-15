@@ -115,6 +115,7 @@
         "@suite/finprom": "workspace:*",
         "@suite/firmware-upgrade": "workspace:*",
         "@suite/flags": "workspace:*",
+        "@suite/form": "workspace:*",
         "@suite/forms": "workspace:*",
         "@suite/github": "workspace:*",
         "@suite/idb-migration-utils": "workspace:*",
