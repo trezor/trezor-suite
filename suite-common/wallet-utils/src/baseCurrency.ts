@@ -4,7 +4,7 @@ import {
     getNetwork,
     getNetworks,
 } from '@suite-common/wallet-config';
-import { asBaseCurrencyAmount } from '@suite-common/wallet-types';
+import { type BaseCurrencyAmount, asBaseCurrencyAmount } from '@suite-common/wallet-types';
 import type { BaseCurrencyCode } from '@trezor/blockchain-link-types';
 import { BigNumber } from '@trezor/utils';
 
@@ -15,6 +15,33 @@ import { fromBaseCurrencyToCryptoUnit, toFiatCurrency } from './fiatConverterUti
 export const BASE_CURRENCY_ZERO = asBaseCurrencyAmount(new BigNumber(0));
 
 export const isBaseCurrencyWithSats = (baseCurrency: BaseCurrencyCode) => baseCurrency === 'btc';
+
+// Mirrors the display defaults: BaseCurrencyAmountFormatter renders 2 fraction digits for fiat,
+// while BTC needs the full 8 so the whole-sats display mode (1 sat = 1e-8 BTC) never loses a digit.
+const getBaseCurrencyDisplayDecimals = (baseCurrencyCode: BaseCurrencyCode) =>
+    isBaseCurrencyWithSats(baseCurrencyCode) ? 8 : 2;
+
+const displayAmountCache = new Map<string, BaseCurrencyAmount>();
+
+type ToBaseCurrencyDisplayAmountParams = {
+    value: BigNumber;
+    baseCurrencyCode: BaseCurrencyCode;
+};
+
+export const toBaseCurrencyDisplayAmount = ({
+    value,
+    baseCurrencyCode,
+}: ToBaseCurrencyDisplayAmountParams): BaseCurrencyAmount => {
+    const displayValue = value.toFixed(getBaseCurrencyDisplayDecimals(baseCurrencyCode));
+
+    const cachedAmount = displayAmountCache.get(displayValue);
+    if (cachedAmount) return cachedAmount;
+
+    const displayAmount = asBaseCurrencyAmount(new BigNumber(displayValue));
+    displayAmountCache.set(displayValue, displayAmount);
+
+    return displayAmount;
+};
 
 type GetDecimalsForBaseCurrencyParams = {
     code: BaseCurrencyCode | '';
