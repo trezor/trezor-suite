@@ -14,6 +14,7 @@
 babel-jest
 babel-loader
 babel-plugin-inline-import
+babel-plugin-react-compiler
 babel-plugin-styled-components
 babel-plugin-transform-remove-console
 orval

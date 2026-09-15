@@ -18892,6 +18892,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@trezor/suite@workspace:packages/suite"
   dependencies:
+    "@babel/core": "npm:7.29.7"
     "@floating-ui/react": "npm:^0.27.17"
     "@formatjs/intl": "npm:4.1.2"
     "@hookform/resolvers": "npm:^5.4.0"
@@ -19061,6 +19062,7 @@ __metadata:
     "@types/webpack-plugin-serve": "npm:^1.4.7"
     "@zxing/library": "npm:^0.21.3"
     babel-loader: "npm:^10.1.1"
+    babel-plugin-react-compiler: "npm:^1.0.0"
     babel-plugin-styled-components: "npm:^2.3.0"
     buffer: "npm:^6.0.3"
     core-js: "npm:^3.49.0"
