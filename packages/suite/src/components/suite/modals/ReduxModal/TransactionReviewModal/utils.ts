@@ -12,9 +12,18 @@ export const isStakeState = (state: TxInfoState): state is StakeState => 'data' 
 
 export const hasTxValidityExpired = (deadline: number) => deadline <= Date.now();
 
-export const getTxType = (txInfoState: TxInfoState, precomposedForm: FormState) => {
-    const stakeType = isStakeState(txInfoState) ? 'stake' : undefined;
-    const tradeType = precomposedForm.trading?.activeSection ? 'trade' : undefined;
+export const getTxType = (
+    txInfoState: TxInfoState,
+    precomposedForm: FormState,
+    isYieldTransaction: boolean,
+) => {
+    if (isStakeState(txInfoState) || precomposedForm.tronStaking) {
+        return 'stake';
+    }
 
-    return stakeType ?? tradeType;
+    if (precomposedForm.trading?.activeSection) {
+        return 'trade';
+    }
+
+    return isYieldTransaction ? 'yield' : undefined;
 };

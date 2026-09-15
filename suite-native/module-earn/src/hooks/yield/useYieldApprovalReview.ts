@@ -38,7 +38,10 @@ import {
     type YieldReviewSigningResult,
 } from '../../types';
 import { isUserCancelledSignError } from '../../utils/earn/utils';
-import { getYieldApprovalAnalyticsType } from '../../utils/yield/yieldAnalyticsUtils';
+import {
+    getYieldApprovalAnalyticsType,
+    reportYieldTransactionDispatched,
+} from '../../utils/yield/yieldAnalyticsUtils';
 import { useHandleEarnReviewError } from '../earn/useHandleEarnReviewError';
 
 type UseYieldApprovalReviewParams = {
@@ -236,6 +239,15 @@ export const useYieldApprovalReview = ({
 
         const { txid } = pushResponse.payload.payload;
 
+        if (reviewTransaction) {
+            reportYieldTransactionDispatched({
+                analytics,
+                account: flowData.account,
+                precomposedTransaction: reviewTransaction.precomposedTransaction,
+                precomposedForm: reviewTransaction.formState,
+            });
+        }
+
         const submittedAt = Date.now();
 
         await dispatch(
@@ -255,6 +267,7 @@ export const useYieldApprovalReview = ({
         markReviewNavigationSuccess();
         navigation.dispatch(StackActions.pop(1));
     }, [
+        analytics,
         approvalLimitType,
         dispatch,
         flowData.account,
@@ -268,7 +281,7 @@ export const useYieldApprovalReview = ({
         markReviewNavigationSuccess,
         navigation,
         reportApprovalReviewEvent,
-        reviewTransaction?.precomposedTransaction.fee,
+        reviewTransaction,
         transactionType,
     ]);
 
