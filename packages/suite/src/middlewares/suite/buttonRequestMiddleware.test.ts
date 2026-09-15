@@ -10,6 +10,7 @@ import {
     mockCreateTransports,
     mockGetDebugSettings,
     mockGetThpSettings,
+    mockGetTrezorConnect,
 } from '@suite-common/connect-init/mocks';
 import { deviceActions } from '@suite-common/device';
 import { messageSystemInitialState } from '@suite-common/message-system';
@@ -68,6 +69,7 @@ const connectInitThunkDeps: ConnectInitThunkDeps = {
         getBinFilesBaseUrl: mockGetBinFilesBaseUrl(),
         getDebugSettings: mockGetDebugSettings(),
         getThpSettings: mockGetThpSettings(),
+        getTrezorConnect: mockGetTrezorConnect,
     },
 };
 

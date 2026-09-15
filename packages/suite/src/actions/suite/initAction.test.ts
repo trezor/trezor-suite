@@ -32,6 +32,7 @@ import {
     mockCreateTransports,
     mockGetDebugSettings,
     mockGetThpSettings,
+    mockGetTrezorConnect,
 } from '@suite-common/connect-init/mocks';
 import { asGetter } from '@suite-common/dependency-injection';
 import { prepareDeviceReducer } from '@suite-common/device';
@@ -360,6 +361,7 @@ const initStore = (state: State) => {
                 getDebugSettings: mockGetDebugSettings(),
                 getIsWindowVisible: asGetter(() => true),
                 getThpSettings: mockGetThpSettings(),
+                getTrezorConnect: mockGetTrezorConnect,
                 getTokenDefinitionsEnabledNetworks: asGetter(
                     () => state.wallet.settings.enabledNetworks,
                 ),
