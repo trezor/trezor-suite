@@ -17,7 +17,11 @@ import {
     selectVisibleDeviceAccountsByNetworkSymbol,
 } from '@suite-common/wallet-core';
 import { type AccountKey, asBaseCurrencyAmount } from '@suite-common/wallet-types';
-import { getAccountFiatBalance, isStakingSymbol } from '@suite-common/wallet-utils';
+import {
+    getAccountFiatBalance,
+    isStakingSymbol,
+    toBaseCurrencyDisplayAmount,
+} from '@suite-common/wallet-utils';
 import { BigNumber } from '@trezor/utils';
 
 import { type AssetFiatPercentage, type AssetType, type AssetsRootState } from './types';
@@ -121,11 +125,18 @@ export const selectSingleDeviceAccountKeyForNetworkSymbol = (
 };
 
 export const selectAssetFiatValue = createMemoizedSelector(
-    [selectDeviceAssetsWithBalances, (_state, symbol: NetworkSymbol) => symbol],
-    (assets, symbol) => {
+    [selectDeviceAssetsWithBalances, selectBaseCurrency, (_state, symbol: NetworkSymbol) => symbol],
+    (assets, baseCurrencyCode, symbol) => {
         const asset = assets.find(a => a.symbol === symbol);
 
-        return asset?.fiatBalance?.toString() ?? null;
+        if (!asset?.fiatBalance) {
+            return null;
+        }
+
+        return toBaseCurrencyDisplayAmount({
+            value: asset.fiatBalance,
+            baseCurrencyCode,
+        });
     },
 );
 
