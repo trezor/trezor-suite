@@ -47,26 +47,24 @@ export const createNetworkModule = <TSymbol extends string>(
         return symbol;
     };
 
-    const addressValidator: AddressValidator<NetworkSymbol> = {
-        isAddressValid: (address, symbol) =>
-            definition.addressValidator.isAddressValid(address, narrow(symbol)),
-        getAddressType: (address, symbol) =>
-            definition.addressValidator.getAddressType(address, narrow(symbol)),
-    };
-
     const resolver = definition.namedAddressResolver;
-    const namedAddressResolver: NamedAddressResolver<NetworkSymbol> | undefined = resolver && {
-        supportsNamedAddress: symbol => resolver.supportsNamedAddress(narrow(symbol)),
-        isNameLike: resolver.isNameLike,
-        isAddressLike: resolver.isAddressLike,
-        resolveNamedAddress: (value, symbol) => resolver.resolveNamedAddress(value, narrow(symbol)),
-        reverseResolveAddress: (address, symbol) =>
-            resolver.reverseResolveAddress(address, narrow(symbol)),
-    };
 
     return {
-        addressValidator,
-        namedAddressResolver,
+        addressValidator: {
+            isAddressValid: (address, symbol) =>
+                definition.addressValidator.isAddressValid(address, narrow(symbol)),
+            getAddressType: (address, symbol) =>
+                definition.addressValidator.getAddressType(address, narrow(symbol)),
+        },
+        namedAddressResolver: resolver && {
+            supportsNamedAddress: symbol => resolver.supportsNamedAddress(narrow(symbol)),
+            isNameLike: resolver.isNameLike,
+            isAddressLike: resolver.isAddressLike,
+            resolveNamedAddress: (value, symbol) =>
+                resolver.resolveNamedAddress(value, narrow(symbol)),
+            reverseResolveAddress: (address, symbol) =>
+                resolver.reverseResolveAddress(address, narrow(symbol)),
+        },
         getSupportedNetworks: () => asNetworkSymbols(supportedNetworks),
         getNetworkConfig: symbol => definition.getNetworkConfig(narrow(symbol)),
     };
