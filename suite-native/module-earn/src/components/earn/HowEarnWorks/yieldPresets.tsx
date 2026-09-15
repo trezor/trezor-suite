@@ -77,13 +77,13 @@ export const useHowYieldWorksPreset = ({
                               id: 'yield-benefit-bonus-reward',
                               icon: 'coins' as const,
                               title: (
-                                  <Translation
-                                      id="earn.howYieldWorksScreen.benefits.wrappedNativeVault.fourth.title"
-                                      values={{ bonusRewardTokenSymbol }}
-                                  />
+                                  <Translation id="earn.howYieldWorksScreen.benefits.wrappedNativeVault.fourth.title" />
                               ),
                               description: (
-                                  <Translation id="earn.howYieldWorksScreen.benefits.wrappedNativeVault.fourth.description" />
+                                  <Translation
+                                      id="earn.howYieldWorksScreen.benefits.wrappedNativeVault.fourth.description"
+                                      values={{ bonusRewardTokenSymbol }}
+                                  />
                               ),
                           },
                       ]
