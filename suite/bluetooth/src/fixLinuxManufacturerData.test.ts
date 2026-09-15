@@ -3,7 +3,7 @@ import { asBluetoothDeviceId } from '@trezor/connect';
 import { DeviceModelInternal } from '@trezor/device-utils';
 
 import { fixLinuxManufacturerData } from './fixLinuxManufacturerData';
-import { mockDesktopBluetoothDevice } from '../../../mocks/mockDesktopBluetoothDevice';
+import { mockDesktopBluetoothDevice } from '../mocks/mockDesktopBluetoothDevice';
 
 const mockedFilterPolicy: BluetoothFilterPolicy = {
     pairing: true,

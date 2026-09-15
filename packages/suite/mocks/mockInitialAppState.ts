@@ -1,4 +1,5 @@
 import type { BackupState } from '@suite/backup';
+import { initialDesktopBluetoothState } from '@suite/bluetooth';
 import { debugInitialState } from '@suite/debug';
 import { desktopUpdateInitialState } from '@suite/desktop-update';
 import { initialState } from '@suite/device';
@@ -17,7 +18,6 @@ import { receiveInitialState } from '@suite-common/receive';
 import { quotaManagerInitialState } from '@suite-common/suite-sync-quota-manager';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 
-import { initialDesktopBluetoothState } from 'src/actions/bluetooth/desktopBluetoothReducer';
 import { type OnboardingState } from 'src/reducers/onboarding/onboardingReducer';
 import { type AppState } from 'src/reducers/store';
 import { type ProtocolState } from 'src/reducers/suite/protocolReducer';

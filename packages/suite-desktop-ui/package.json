@@ -17,6 +17,7 @@
         "@suite-common/dependency-injection": "workspace:*",
         "@suite-common/redux-utils": "workspace:*",
         "@suite/analytics": "workspace:*",
+        "@suite/bluetooth": "workspace:*",
         "@suite/debug": "workspace:*",
         "@suite/desktop-update": "workspace:*",
         "@suite/flags": "workspace:*",

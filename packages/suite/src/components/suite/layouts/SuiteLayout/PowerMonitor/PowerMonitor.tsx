@@ -1,14 +1,16 @@
 import { useEffect } from 'react';
 
-import { type DesktopBluetoothDevice } from '@suite/bluetooth';
+import {
+    type DesktopBluetoothDevice,
+    bluetoothDisconnectDeviceThunk,
+    isBluetoothDeviceReachable,
+} from '@suite/bluetooth';
 import { bluetoothActions, selectKnownDevices } from '@suite-common/bluetooth';
 import { useServices } from '@suite-common/dependency-injection';
 import { selectDispatch } from '@suite-common/redux-utils';
 import { isMacOs } from '@trezor/env-utils';
 import { selectDesktopApiDep } from '@trezor/suite-desktop-api';
 
-import { bluetoothDisconnectDeviceThunk } from 'src/actions/bluetooth/bluetoothDisconnectDeviceThunk';
-import { isBluetoothDeviceReachable } from 'src/actions/bluetooth/isBluetoothDeviceReachable';
 import { useSelector } from 'src/hooks/suite';
 
 export const PowerMonitorManager = () => {

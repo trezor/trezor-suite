@@ -5,12 +5,27 @@
         {
             "path": "../../suite-common/bluetooth"
         },
+        { "path": "../../suite-common/device" },
+        { "path": "../../suite-common/firmware" },
         {
             "path": "../../suite-common/redux-utils"
         },
+        {
+            "path": "../../suite-common/toast-notifications"
+        },
+        { "path": "../device" },
         { "path": "../../packages/connect" },
+        { "path": "../../packages/device-utils" },
+        { "path": "../../packages/env-utils" },
+        {
+            "path": "../../packages/suite-desktop-api"
+        },
         {
             "path": "../../packages/transport-bluetooth"
+        },
+        { "path": "../../packages/utils" },
+        {
+            "path": "../../suite-common/test-utils"
         }
     ]
 }

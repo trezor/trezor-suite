@@ -1,4 +1,3 @@
-import { type DesktopBluetoothDevice } from '@suite/bluetooth';
 import {
     BLUETOOTH_PREFIX,
     type WithBluetoothState,
@@ -7,6 +6,7 @@ import {
 } from '@suite-common/bluetooth';
 import { createThunk } from '@suite-common/redux-utils';
 
+import { type DesktopBluetoothDevice } from './DesktopBluetoothDevice';
 import { filterOutNonResponsiveDevices } from './filterOutNonResponsiveDevices';
 
 type RemoveNonResponsiveNearbyDevicesThunkState = WithBluetoothState<DesktopBluetoothDevice>;

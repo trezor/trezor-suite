@@ -1,6 +1,7 @@
-import { type DesktopBluetoothDevice } from '@suite/bluetooth';
-import type { DeviceBluetoothConnectionStatusType } from '@suite-common/bluetooth/src/types';
+import { type DeviceBluetoothConnectionStatusType } from '@suite-common/bluetooth';
 import { isLinux } from '@trezor/env-utils';
+
+import { type DesktopBluetoothDevice } from './DesktopBluetoothDevice';
 
 export const NEARBY_DEVICES_LAST_UPDATED_LIMIT = 3_000;
 export const NEARBY_DEVICES_LAST_UPDATED_LIMIT_LINUX = 5_000;

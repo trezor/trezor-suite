@@ -1,9 +1,4 @@
 import {
-    type DesktopBluetoothDevice,
-    fromBluetoothDevice,
-    toBluetoothDevice,
-} from '@suite/bluetooth';
-import {
     BLUETOOTH_PREFIX,
     bluetoothActions,
     selectAdapterStatus,
@@ -19,6 +14,11 @@ import { type DesktopApiDep } from '@trezor/suite-desktop-api';
 import { type BluetoothDevice, bluetoothIpc } from '@trezor/transport-bluetooth';
 import { resolveAfter } from '@trezor/utils';
 
+import {
+    type DesktopBluetoothDevice,
+    fromBluetoothDevice,
+    toBluetoothDevice,
+} from './DesktopBluetoothDevice';
 import { bluetoothConnectDeviceThunk } from './bluetoothConnectDeviceThunk';
 import { bluetoothStartScanningThunk } from './bluetoothStartScanningThunk';
 import { type WithBluetoothRootState } from './desktopBluetoothReducer';
@@ -138,10 +138,8 @@ export const initBluetoothThunk = createThunk<
     bluetoothIpc.on('device-list-update', nearbyDevicesIpc => {
         const nearbyDevices = nearbyDevicesIpc.map(fromBluetoothDevice);
 
-        const knownDevices = selectKnownDevices<DesktopBluetoothDevice>(getState());
-
         const remappedKnownDevices = remapKnownDevicesForLinuxAndWindows({
-            knownDevices,
+            knownDevices: selectKnownDevices<DesktopBluetoothDevice>(getState()),
             nearbyDevices,
         });
 
@@ -169,8 +167,8 @@ export const initBluetoothThunk = createThunk<
     });
 
     bluetoothIpc.on('open-bluetooth-settings', async ({ id }) => {
-        const result = await extra.services.desktopApi.openSystemSettings('bluetooth');
-        if (!result.success) {
+        const settingsOpened = await extra.services.desktopApi.openSystemSettings('bluetooth');
+        if (!settingsOpened.success) {
             // stop here and disconnect the device (abort pairing before it starts)
             // this should throw BluetoothSettingsMissing error in current connection process
             // device needs to be paired manually via system settings
