@@ -3,6 +3,7 @@ import type http from 'http';
 import { getWeakRandomId, isWhitelistedHost } from '@trezor/utils';
 
 import { type InterceptorContext } from './interceptorTypes';
+import { type ValidateRequestCallback } from '../types';
 
 const PROXY_AUTH_KEY = 'proxy-authorization';
 
@@ -51,7 +52,7 @@ type OverloadHttpRequestParams = {
     url: string | URL | http.RequestOptions;
     options?: http.RequestOptions | RequestCallback;
     callback?: unknown;
-    validateRequest: (params: { hostname: string }) => void;
+    validateRequest: ValidateRequestCallback;
 };
 
 const resolveHostname = (url: string | URL | http.RequestOptions) => {
@@ -171,8 +172,9 @@ export const overloadHttpRequest = ({
     validateRequest,
 }: OverloadHttpRequestParams) => {
     const hostname = resolveHostname(url);
+    const fullUrl = typeof url === 'string' ? url : url.toString();
 
-    validateRequest({ hostname });
+    validateRequest({ hostname, fullUrl, interceptType: protocol });
 
     if (isWhitelistedHost(hostname, context.notRequiredTorDomainsList)) {
         return;
