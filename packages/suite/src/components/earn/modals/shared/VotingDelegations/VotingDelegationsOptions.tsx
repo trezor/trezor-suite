@@ -1,16 +1,18 @@
-import React from 'react';
+import React, { useState } from 'react';
 
 import { Translation, type TranslationKey, useTranslation } from '@suite/intl';
 import { useServices } from '@suite-common/dependency-injection';
 import { selectDispatch } from '@suite-common/redux-utils';
 import {
     type VotingDelegationOption,
+    normalizeCardanoDrepId,
     selectVotingDelegationOption,
     stakeActions,
     validateCardanoDrep,
 } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
-import { Column, Input, Radio, Text } from '@trezor/components';
+import { Column, Icon, Input, Radio, Text } from '@trezor/components';
+import { CheckIcon } from '@trezor/icons';
 
 import { useSelector } from 'src/hooks/suite';
 
@@ -35,6 +37,7 @@ export const VotingDelegationsOptions = ({
     hasTitle = false,
     hasKeepCurrentOption = false,
 }: VotingDelegationsOptionsProps) => {
+    const [hasDrepIdConverted, setHasDrepIdConverted] = useState(false);
     const { dispatch } = useServices(selectDispatch);
     const { translationString } = useTranslation();
     const selectedVotingDelegation = useSelector(state =>
@@ -50,7 +53,14 @@ export const VotingDelegationsOptions = ({
         selectedVotingDelegation.drepId !== '' &&
         !validateCardanoDrep(selectedVotingDelegation.drepId);
 
+    const isDrepIdConverted =
+        hasDrepIdConverted &&
+        selectedVotingDelegation.type === 'another_drep' &&
+        selectedVotingDelegation.drepId !== '';
+
     const handleOptionSelect = (type: VotingDelegationOption['type']) => {
+        setHasDrepIdConverted(false);
+
         switch (type) {
             case 'everstake':
                 dispatch(
@@ -82,12 +92,28 @@ export const VotingDelegationsOptions = ({
     };
 
     const handleDrepIdChange = (value: string) => {
+        const normalizedDrepId = normalizeCardanoDrepId(value);
+
+        setHasDrepIdConverted(normalizedDrepId !== null && normalizedDrepId !== value);
+
         dispatch(
             stakeActions.setAccountVotingDelegation({
                 accountKey: account.key,
-                option: { type: 'another_drep', drepId: value },
+                option: { type: 'another_drep', drepId: normalizedDrepId ?? value },
             }),
         );
+    };
+
+    const getDrepIdBottomText = () => {
+        if (hasError) {
+            return <Translation id="TR_STAKING_INVALID_DREP_ID" />;
+        }
+
+        if (isDrepIdConverted) {
+            return <Translation id="TR_STAKING_DREP_ID_CONVERTED" />;
+        }
+
+        return null;
     };
 
     const optionKeys = hasKeepCurrentOption ? VOTING_OPTION_KEYS_WITH_CURRENT : VOTING_OPTION_KEYS;
@@ -115,10 +141,11 @@ export const VotingDelegationsOptions = ({
                                     value={selectedVotingDelegation.drepId}
                                     inputMode="text"
                                     hasError={hasError}
-                                    bottomText={
-                                        hasError ? (
-                                            <Translation id="TR_STAKING_INVALID_DREP_ID" />
-                                        ) : null
+                                    bottomText={getDrepIdBottomText()}
+                                    bottomTextIconComponent={
+                                        isDrepIdConverted ? (
+                                            <Icon as={CheckIcon} size={16} isDisabled={true} />
+                                        ) : undefined
                                     }
                                     onChange={e => handleDrepIdChange(e.target.value)}
                                 />

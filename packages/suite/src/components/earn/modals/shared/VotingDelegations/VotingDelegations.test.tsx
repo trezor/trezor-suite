@@ -15,7 +15,7 @@ import { renderWithProviders } from 'src/support/test-utils/hooksHelper';
 import { VotingDelegations } from './VotingDelegations';
 import { mockInitialAppState } from '../../../../../../mocks/mockInitialAppState';
 
-const CUSTOM_DREP_ID = 'drep1ectemlv45xsnvenfgkhwsxncfvxev4qllj7x5w6vlfc7kmd9zcs';
+const CUSTOM_DREP_ID = 'drep1g2d3y3skgr806wj2ryhhc5ca3akx6vmppde87jq7kgknjmv589e';
 const PREDEFINED_DREP_ID = 'drep_always_abstain';
 const ACCOUNT_KEY = 'ada-account-key' as AccountKey;
 
