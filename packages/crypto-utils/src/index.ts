@@ -8,3 +8,4 @@ export {
     toHardenedPathPart,
 } from './bipPath/hardened';
 export { bip39EnglishWordlist } from './bip39/bip39EnglishWordlist';
+export { verifyJWS } from './jws/verifyJWS';
