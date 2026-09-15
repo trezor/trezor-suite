@@ -65,9 +65,9 @@ jobs:
       - name: Install deps and build libs
         run: |
           # Must be the same list of workspaces as in .github/workflows/build-desktop-apps.yml
-          yarn workspaces focus trezor-suite @trezor/suite-desktop @trezor/suite-desktop-ui @trezor/suite-desktop-core @trezor/suite-build @trezor/suite-data @trezor/transport-bridge @suite-common/message-system
+          yarn workspaces focus trezor-suite @trezor/suite-desktop @trezor/suite-desktop-ui @trezor/suite-desktop-core @trezor/suite-build @suite/app-assets @trezor/transport-bridge @suite-common/message-system
           yarn message-system-sign-config
-          yarn workspace @trezor/suite-data build:lib
+          yarn workspace @suite/app-assets build:lib
           yarn workspace @trezor/transport-bridge build:lib
       - name: Build ${{ matrix.platform }} suite-desktop
         env:
@@ -190,7 +190,7 @@ jobs:
         run: |
           echo -e "\nenableHardenedMode: false" >> .yarnrc.yml
           # Must be the same list of workspaces as in .github/workflows/build-suite-web.yml
-          yarn workspaces focus @trezor/suite-web @trezor/suite-data @trezor/suite-build @suite-common/message-system
+          yarn workspaces focus @trezor/suite-web @suite/app-assets @trezor/suite-build @suite-common/message-system
 
       - name: Build suite-web
         env:
@@ -199,7 +199,7 @@ jobs:
           SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
         run: |
           yarn message-system-sign-config
-          yarn workspace @trezor/suite-data build:lib
+          yarn workspace @suite/app-assets build:lib
           yarn workspace @trezor/suite-web build
 
       # this step should upload build result to s3 bucket staging-suite.trezor.io using awscli
@@ -243,9 +243,9 @@ jobs:
       - name: Install deps and build libs
         run: |
           # Must be the same list of workspaces as in .github/workflows/build-desktop-apps.yml
-          yarn workspaces focus trezor-suite @trezor/suite-desktop @trezor/suite-desktop-ui @trezor/suite-desktop-core @trezor/suite-build @trezor/suite-data @trezor/transport-bridge @suite-common/message-system
+          yarn workspaces focus trezor-suite @trezor/suite-desktop @trezor/suite-desktop-ui @trezor/suite-desktop-core @trezor/suite-build @suite/app-assets @trezor/transport-bridge @suite-common/message-system
           yarn message-system-sign-config
-          yarn workspace @trezor/suite-data build:lib
+          yarn workspace @suite/app-assets build:lib
           yarn workspace @trezor/transport-bridge build:lib
 
       - name: Prepare versions for autoupdate

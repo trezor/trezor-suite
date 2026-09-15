@@ -1,8 +1,8 @@
 import type { UnknownAction } from '@reduxjs/toolkit';
 
+import * as indexNodeJSON from '@suite/app-assets/files/guide/index.json';
 import type { ActiveView, GuideCategory, GuideNode } from '@suite-common/suite-types';
 import { variables } from '@trezor/components';
-import * as indexNodeJSON from '@trezor/suite-data/files/guide/index.json';
 
 import {
     close,

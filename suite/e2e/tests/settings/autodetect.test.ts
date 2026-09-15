@@ -1,6 +1,6 @@
+import { TR_ONBOARDING_DATA_COLLECTION_HEADING as SPANISH_TR_ONBOARDING_DATA_COLLECTION_HEADING } from '@suite/app-assets/files/translations/es-ES.json';
 import { messages } from '@suite/intl';
 import { TestStream } from '@trezor/e2e-utils';
-import { TR_ONBOARDING_DATA_COLLECTION_HEADING as SPANISH_TR_ONBOARDING_DATA_COLLECTION_HEADING } from '@trezor/suite-data/files/translations/es-ES.json';
 import { colorVariants } from '@trezor/theme';
 
 import { expect, test } from '../../support/fixtures';

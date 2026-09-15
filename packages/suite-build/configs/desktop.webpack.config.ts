@@ -51,7 +51,16 @@ const config: webpack.Configuration = {
         new CopyWebpackPlugin({
             patterns: [
                 ...['bin', 'fonts', 'images', 'videos', 'guide/assets'].map(dir => ({
-                    from: path.join(__dirname, '..', '..', 'suite-data', 'files', dir),
+                    from: path.join(
+                        __dirname,
+                        '..',
+                        '..',
+                        '..',
+                        'suite',
+                        'app-assets',
+                        'files',
+                        dir,
+                    ),
                     to: path.join(baseDir, 'build', 'static', dir),
                 })),
                 {
@@ -80,7 +89,11 @@ const config: webpack.Configuration = {
                     to: path.join(baseDir, 'build/node-bridge/ui'),
                 },
                 {
-                    from: path.join(__dirname, '../../', 'suite-data/files/release-notes.md'),
+                    from: path.join(
+                        __dirname,
+                        '../../../',
+                        'suite/app-assets/files/release-notes.md',
+                    ),
                     to: path.join(baseDir, 'build'),
                 },
                 {

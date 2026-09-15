@@ -15223,6 +15223,32 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"@suite/app-assets@workspace:*, @suite/app-assets@workspace:suite/app-assets":
+  version: 0.0.0-use.local
+  resolution: "@suite/app-assets@workspace:suite/app-assets"
+  dependencies:
+    "@babel/preset-env": "npm:7.29.7"
+    "@babel/preset-typescript": "npm:^7.29.7"
+    "@mobily/ts-belt": "npm:^3.13.1"
+    "@suite-common/suite-types": "workspace:*"
+    "@suite-common/suite-utils": "workspace:*"
+    "@trezor/eslint": "workspace:*"
+    "@types/fs-extra": "npm:^11.0.4"
+    autoprefixer: "npm:^10.4.24"
+    babel-loader: "npm:^10.1.1"
+    css-loader: "npm:^7.1.3"
+    fs-extra: "npm:^11.3.1"
+    postcss-loader: "npm:^8.2.0"
+    semver: "npm:^7.7.1"
+    simple-git: "npm:^3.36.0"
+    style-loader: "npm:^4.0.0"
+    ts-node: "npm:^10.9.2"
+    tsx: "npm:^4.21.0"
+    webpack: "npm:5.109.0"
+    webpack-cli: "npm:^7.2.1"
+  languageName: unknown
+  linkType: soft
+
 "@suite/authenticity-checks@workspace:*, @suite/authenticity-checks@workspace:suite/authenticity-checks":
   version: 0.0.0-use.local
   resolution: "@suite/authenticity-checks@workspace:suite/authenticity-checks"
@@ -17802,32 +17828,6 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@trezor/suite-data@workspace:*, @trezor/suite-data@workspace:packages/suite-data":
-  version: 0.0.0-use.local
-  resolution: "@trezor/suite-data@workspace:packages/suite-data"
-  dependencies:
-    "@babel/preset-env": "npm:7.29.7"
-    "@babel/preset-typescript": "npm:^7.29.7"
-    "@mobily/ts-belt": "npm:^3.13.1"
-    "@suite-common/suite-types": "workspace:*"
-    "@suite-common/suite-utils": "workspace:*"
-    "@trezor/eslint": "workspace:*"
-    "@types/fs-extra": "npm:^11.0.4"
-    autoprefixer: "npm:^10.4.24"
-    babel-loader: "npm:^10.1.1"
-    css-loader: "npm:^7.1.3"
-    fs-extra: "npm:^11.3.1"
-    postcss-loader: "npm:^8.2.0"
-    semver: "npm:^7.7.1"
-    simple-git: "npm:^3.36.0"
-    style-loader: "npm:^4.0.0"
-    ts-node: "npm:^10.9.2"
-    tsx: "npm:^4.21.0"
-    webpack: "npm:5.109.0"
-    webpack-cli: "npm:^7.2.1"
-  languageName: unknown
-  linkType: soft
-
 "@trezor/suite-desktop-api-electron@workspace:*, @trezor/suite-desktop-api-electron@workspace:packages/suite-desktop-api-electron":
   version: 0.0.0-use.local
   resolution: "@trezor/suite-desktop-api-electron@workspace:packages/suite-desktop-api-electron"
@@ -17996,6 +17996,7 @@ __metadata:
     "@suite-common/wallet-types": "workspace:*"
     "@suite-common/wallet-utils": "workspace:*"
     "@suite/analytics": "workspace:*"
+    "@suite/app-assets": "workspace:*"
     "@suite/debug": "workspace:*"
     "@suite/flags": "workspace:*"
     "@suite/intl": "workspace:^"
@@ -18012,7 +18013,6 @@ __metadata:
     "@trezor/network-solana": "workspace:*"
     "@trezor/perf-e2e": "workspace:*"
     "@trezor/protobuf": "workspace:*"
-    "@trezor/suite-data": "workspace:*"
     "@trezor/suite-desktop": "workspace:*"
     "@trezor/theme": "workspace:*"
     "@trezor/transport-common": "workspace:*"
@@ -18162,6 +18162,7 @@ __metadata:
     "@suite/account": "workspace:*"
     "@suite/address": "workspace:*"
     "@suite/analytics": "workspace:*"
+    "@suite/app-assets": "workspace:*"
     "@suite/authenticity-checks": "workspace:*"
     "@suite/backup": "workspace:*"
     "@suite/bluetooth": "workspace:*"
@@ -18230,7 +18231,6 @@ __metadata:
     "@trezor/product-components": "workspace:*"
     "@trezor/react-utils": "workspace:*"
     "@trezor/styles": "workspace:*"
-    "@trezor/suite-data": "workspace:*"
     "@trezor/suite-desktop-api": "workspace:*"
     "@trezor/suite-storage": "workspace:*"
     "@trezor/theme": "workspace:*"

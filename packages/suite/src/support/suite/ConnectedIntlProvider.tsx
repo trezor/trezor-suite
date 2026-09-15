@@ -1,11 +1,11 @@
 import { type ReactNode, useEffect, useMemo, useState } from 'react';
 import { IntlProvider } from 'react-intl';
 
+import enMessages from '@suite/app-assets/files/translations/en-US.json';
 import { messages as definedMessages } from '@suite/intl';
 import { selectLanguage, selectShowTranslationKeys } from '@suite/settings';
 import type { Locale } from '@suite-common/suite-types';
 import { isDevEnv } from '@suite-common/suite-utils';
-import enMessages from '@trezor/suite-data/files/translations/en-US.json';
 
 import { useSelector } from 'src/hooks/suite';
 
@@ -23,7 +23,7 @@ const useFetchMessages = (locale: Locale) => {
                 locale === 'en-US'
                     ? {}
                     : await import(
-                          /* webpackChunkName: "translations/[request]" */ `@trezor/suite-data/files/translations/${locale}.json`
+                          /* webpackChunkName: "translations/[request]" */ `@suite/app-assets/files/translations/${locale}.json`
                       )
                           .then(res => res.default)
                           .catch(() => ({}));

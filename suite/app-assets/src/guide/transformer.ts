@@ -27,7 +27,7 @@ export const transformImagesMarkdown = (markdown: string) =>
  *
  * The ASSET_PREFIX/static prefix is intentionally applied at runtime
  * (see GuideImage) — the build-time and runtime ASSET_PREFIX can differ
- * (e.g. CI desktop builds run suite-data without ASSET_PREFIX, but the
+ * (e.g. CI desktop builds run app-assets without ASSET_PREFIX, but the
  * renderer bundle is built with ASSET_PREFIX=.), and baking it here
  * would produce paths that don't resolve under file:// in the packaged app.
  */

@@ -12,6 +12,6 @@
         {
             "path": "../../suite-common/suite-utils"
         },
-        { "path": "../eslint" }
+        { "path": "../../packages/eslint" }
     ]
 }

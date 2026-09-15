@@ -8,7 +8,17 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 const source = path.join(__dirname, '..', 'src', 'build', 'Release', 'win_hello.node');
-const dest = path.join(__dirname, '..', '..', 'suite-data', 'files', 'bin', 'win_hello.node');
+const dest = path.join(
+    __dirname,
+    '..',
+    '..',
+    '..',
+    'suite',
+    'app-assets',
+    'files',
+    'bin',
+    'win_hello.node',
+);
 
 try {
     // Ensure src directory exists

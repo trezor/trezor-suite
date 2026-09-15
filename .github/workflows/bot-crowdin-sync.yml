@@ -74,7 +74,7 @@ jobs:
           fi
           yarn workspace @suite/intl translations:format
           yarn workspace @suite/intl translations:extract
-          cat packages/suite-data/files/translations/master.json
+          cat suite/app-assets/files/translations/master.json
           yarn workspace @suite/intl translations:upload --token=${{ secrets.CROWDIN_PERSONAL_TOKEN }}
 
       - name: Run crowdin sync [mobile]
