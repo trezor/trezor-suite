@@ -6,7 +6,6 @@ export const REPO_ROOT = execFileSync('git', ['rev-parse', '--show-toplevel'], {
     encoding: 'utf-8',
 }).trim();
 
-// Matches the literals in runOpencode.ts, hooks/sandboxGate.mjs and AGENT.md.
 export const BOT_DIR = join(REPO_ROOT, 'packages/e2e-utils/src/llmExploratoryTester');
 const REPORTS_DIR = join(BOT_DIR, 'reports');
 
@@ -15,6 +14,7 @@ export const TEST_RESULT_FILE = join(REPORTS_DIR, 'test-result.json');
 export const BROWSER_STATE_FILE = join(REPORTS_DIR, 'browser-state.json');
 export const SETUP_READY_FILE = join(REPORTS_DIR, 'setup-ready');
 export const BROWSER_DIR = join(REPORTS_DIR, 'browser');
+export const BROWSER_RELATIVE_DIR = relative(REPO_ROOT, BROWSER_DIR);
 export const CONTEXT_IMAGES_DIR = join(REPORTS_DIR, 'context-images');
 export const CONTEXT_IMAGES_RELATIVE_DIR = relative(REPO_ROOT, CONTEXT_IMAGES_DIR);
 // Scratch config home for the spawned OpenCode server, so it cannot merge the

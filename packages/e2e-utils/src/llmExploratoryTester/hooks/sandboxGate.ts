@@ -1,7 +1,6 @@
 import { resolve } from 'node:path';
 
-const CONTEXT_IMAGES_DIR = 'packages/e2e-utils/src/llmExploratoryTester/reports/context-images';
-const BROWSER_DIR = 'packages/e2e-utils/src/llmExploratoryTester/reports/browser';
+import { BROWSER_DIR, CONTEXT_IMAGES_DIR } from '../paths';
 
 // The opencode `tools` config map does not gate MCP tools (1.18) — denied MCP
 // tools stay callable — so enforcement lives here, and it is an allowlist:
@@ -81,28 +80,41 @@ const ALLOWED_TOOLS = new Set([
     'trezor-emulator_emulator_ping',
 ]);
 
+type ToolExecuteBeforeInput = {
+    tool?: unknown;
+};
+
+type ToolExecuteBeforeOutput = {
+    args?: Record<string, unknown>;
+};
+
+type SandboxGateHooks = {
+    'tool.execute.before': (input: ToolExecuteBeforeInput, output: ToolExecuteBeforeOutput) => void;
+};
+
 // The gate runs in the OpenCode server process, whose cwd is the repo root
 // (runOpencode chdirs before spawning). resolve() collapses `..` and accepts
 // both relative and absolute paths, so a lookalike prefix or an escape
 // segment cannot pass.
-function isInside(filePath, dir) {
-    const resolvedPath = resolve(String(filePath));
+function isInside(filePath: string, dir: string): boolean {
+    const resolvedPath = resolve(filePath);
     const resolvedDir = resolve(dir);
 
     return resolvedPath.startsWith(`${resolvedDir}/`);
 }
 
-function arg(args, ...keys) {
+function arg(args: Record<string, unknown>, ...keys: string[]): string {
     for (const key of keys) {
-        if (args[key] !== undefined) {
-            return args[key];
+        const value = args[key];
+        if (value !== undefined) {
+            return String(value);
         }
     }
 
     return '';
 }
 
-export const sandboxGate = () => ({
+export const sandboxGate = (): SandboxGateHooks => ({
     'tool.execute.before': (input, output) => {
         const toolName = String(input.tool ?? '');
         const args = output.args ?? {};

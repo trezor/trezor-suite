@@ -1,7 +1,7 @@
 import { type Config } from '@opencode-ai/sdk/v2';
 import { join } from 'node:path';
 
-import { BOT_DIR, REPO_ROOT } from './paths';
+import { BOT_DIR, BROWSER_RELATIVE_DIR, REPO_ROOT } from './paths';
 
 export const MODEL = {
     providerID: 'openrouter',
@@ -43,7 +43,7 @@ export const OPENCODE_CONFIG: Config = {
     instructions: [],
     lsp: false,
     formatter: false,
-    plugin: [join(BOT_DIR, 'hooks/sandboxGate.mjs')],
+    plugin: [join(BOT_DIR, 'hooks/sandboxGate.ts')],
     mcp: {
         playwright: {
             type: 'local',
@@ -53,7 +53,7 @@ export const OPENCODE_CONFIG: Config = {
                 join(REPO_ROOT, 'node_modules/.bin/playwright'),
                 'mcp',
                 '--cdp-endpoint=http://127.0.0.1:9222',
-                '--output-dir=packages/e2e-utils/src/llmExploratoryTester/reports/browser',
+                `--output-dir=${BROWSER_RELATIVE_DIR}`,
                 '--timeout-action=12000',
                 // Coordinate mouse tools (mouse_move_xy) are gated behind
                 // vision; unlabeled tooltip icons never appear as snapshot
@@ -81,7 +81,7 @@ export const OPENCODE_CONFIG: Config = {
         // around the sandbox and carry on.
         continue_loop_on_deny: true,
     },
-    // MCP tool denies live in hooks/sandboxGate.mjs — this map does not gate
+    // MCP tool denies live in hooks/sandboxGate.ts — this map does not gate
     // MCP tools in OpenCode 1.18 (denied MCP tools stay callable).
     tools: {
         bash: false,
