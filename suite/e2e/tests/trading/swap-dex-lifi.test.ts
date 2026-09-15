@@ -77,14 +77,17 @@ test.describe('Trading - DEX swap (LI.FI)', { tag: ['@T3T1', '@T3W1'] }, () => {
                 await expect(tradingPage.quotes.selectedProviderName).toHaveText(dexProvider);
                 await tradingPage.quotes.waitForSync();
 
+                await page.expectReduxObjectNotToBeEmpty('wallet.trading.composedTransactionInfo');
+                await tradingPage.swapBestOfferButton.click();
+            });
+
+            await test.step('Read the standard fee on the review step', async () => {
                 let maxFeePerGasRounded: string;
                 let maxPriorityFeePerGasRounded: string;
                 ({ maxFeePerGas, maxFeePerGasRounded, maxPriorityFeePerGasRounded } =
-                    await tradingPage.fees.getStandardFeeWorkaround());
+                    await tradingPage.fees.getStandardFeeWorkaroundInNetworkFeeModal());
                 feeRate = `${maxFeePerGasRounded} Gwei`;
                 priorityFeeRate = `${maxPriorityFeePerGasRounded} Gwei`;
-
-                await tradingPage.swapBestOfferButton.click();
             });
 
             // The DEX re-quotes on trade creation, so amounts come from the trade, not the offer.

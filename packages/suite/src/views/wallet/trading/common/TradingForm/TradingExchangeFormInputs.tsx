@@ -8,10 +8,7 @@ import {
     TRADING_FORM_SEND_CRYPTO_CURRENCY_SELECT,
     type TradingExchangeFormProps,
     type TradingExchangeType,
-    getDisplayComposedLevels,
     selectTradingExchangeBuyCryptoIds,
-    selectTradingExchangeQuotes,
-    selectTradingExchangeSelectedQuote,
     selectTradingExchangeSellCryptoIds,
     selectTradingLoadingAndTimestamp,
     selectTradingSendAccount,
@@ -21,6 +18,7 @@ import { asAmountSubunit, subunitsToUnits } from '@suite-common/wallet-utils';
 import { Column, Row } from '@trezor/components';
 import { BigNumber } from '@trezor/utils';
 
+import { useFetchFees } from 'src/components/wallet/Fees/CollapsibleFees/hooks/useFetchFees';
 import { useSelector } from 'src/hooks/suite';
 import { useSelectedTradingAsset } from 'src/hooks/wallet/trading/form/common/useSelectedTradingAsset';
 import { useTradingAssetDecimals } from 'src/hooks/wallet/trading/form/common/useTradingAssetDecimals';
@@ -29,7 +27,6 @@ import { TradingBalance } from 'src/views/wallet/trading/common/TradingBalance';
 import { TradingFormInputFiatCrypto } from 'src/views/wallet/trading/common/TradingForm/TradingFormInput/TradingFormInputFiatCrypto/TradingFormInputFiatCrypto';
 
 import { TradingFormCard } from './TradingFormCard';
-import { TradingFormFees } from './TradingFormFees';
 import { TradingReceiveAddress } from '../TradingSelectedOffer/TradingReceiveAddress/TradingReceiveAddress';
 import { TradingSelectedOfferProvider } from '../TradingSelectedOffer/TradingSelectedOfferProvider';
 import { AssetPickerInputBalance } from './TradingFormInput/TradingFormInputAssetPicker';
@@ -44,15 +41,10 @@ export const TradingExchangeFormInputs = () => {
     const context = useTradingFormContext<TradingExchangeType>();
 
     const { isLoading } = useSelector(selectTradingLoadingAndTimestamp);
-    const quotes = useSelector(selectTradingExchangeQuotes);
-    const selectedQuote = useSelector(selectTradingExchangeSelectedQuote);
 
     const {
         type,
-        feeInfo,
-        composedLevels,
         form: { helpers },
-        changeFeeLevel,
         shouldSendInSats,
         showReserveBanner,
         setAmountLimits,
@@ -60,10 +52,8 @@ export const TradingExchangeFormInputs = () => {
     const asset = useSelectedTradingAsset(type);
     const account = useSelector(state => selectTradingSendAccount(state, type));
 
-    const displayComposedLevels = useMemo(
-        () => getDisplayComposedLevels(selectedQuote, composedLevels),
-        [selectedQuote, composedLevels],
-    );
+    useFetchFees({ networkSymbol: account?.symbol });
+
     const methods = useFormContext<TradingExchangeFormProps>();
     const { getValues } = methods;
     const {
@@ -163,14 +153,6 @@ export const TradingExchangeFormInputs = () => {
             {receiveCryptoSelect && (
                 <TradingFormCard>
                     {!isLoading && <TradingReceiveAddress />}
-                    {!!quotes.length && account && (
-                        <TradingFormFees
-                            feeInfo={feeInfo}
-                            account={account}
-                            composedLevels={displayComposedLevels}
-                            changeFeeLevel={changeFeeLevel}
-                        />
-                    )}
                     <TradingSelectedOfferProvider />
                 </TradingFormCard>
             )}
