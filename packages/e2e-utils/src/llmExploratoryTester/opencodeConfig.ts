@@ -1,0 +1,96 @@
+import { type Config } from '@opencode-ai/sdk/v2';
+import { join } from 'node:path';
+
+import { BOT_DIR, BROWSER_RELATIVE_DIR, REPO_ROOT } from './paths';
+
+export const MODEL = {
+    providerID: 'openrouter',
+    // Overridable for A/B testing, like REASONING_EFFORT below.
+    modelID: process.env.LLM_EXPLORATORY_TESTER_MODEL ?? 'openai/gpt-5.6-luna',
+};
+
+// Reasoning effort, applied per request as the opencode variant (see
+// runOpencode.ts) — the only path that reaches the model. The provider
+// `options` path is silently ignored for OpenRouter (verified by probe:
+// identical reasoning tokens with/without). Override with
+// LLM_EXPLORATORY_TESTER_EFFORT; low/high are the safe variant names.
+export const REASONING_EFFORT = process.env.LLM_EXPLORATORY_TESTER_EFFORT ?? 'high';
+
+// Merged over the user's global opencode.json; enabled_providers must be set
+// here or a global allowlist silently disables OpenRouter.
+export const OPENCODE_CONFIG: Config = {
+    model: `${MODEL.providerID}/${MODEL.modelID}`,
+    enabled_providers: [MODEL.providerID],
+    // Sends the opencode session ID as OpenRouter's prompt_cache_key, so the
+    // OpenRouter console groups the run's requests under the ID we log.
+    // OpenCode drops screenshot images unless the model is declared
+    // image-capable.
+    provider: {
+        [MODEL.providerID]: {
+            options: { setCacheKey: true },
+            models: {
+                [MODEL.modelID]: {
+                    attachment: true,
+                    modalities: { input: ['text', 'image'], output: ['text'] },
+                },
+            },
+        },
+    },
+    share: 'disabled',
+    autoupdate: false,
+    // No external instruction files (AGENTS.md etc.) — the prompt is the only
+    // brief, so local and CI runs see the same instructions.
+    instructions: [],
+    lsp: false,
+    formatter: false,
+    plugin: [join(BOT_DIR, 'hooks/sandboxGate.ts')],
+    mcp: {
+        playwright: {
+            type: 'local',
+            command: [
+                // The workspace binary directly — npx would pay package
+                // resolution on every server spawn.
+                join(REPO_ROOT, 'node_modules/.bin/playwright'),
+                'mcp',
+                '--cdp-endpoint=http://127.0.0.1:9222',
+                `--output-dir=${BROWSER_RELATIVE_DIR}`,
+                '--timeout-action=12000',
+                // Coordinate mouse tools (mouse_move_xy) are gated behind
+                // vision; unlabeled tooltip icons never appear as snapshot
+                // refs, so hover-on-heading misses them.
+                '--caps=vision',
+            ],
+        },
+        'trezor-emulator': {
+            type: 'remote',
+            url: 'http://127.0.0.1:9003/sse',
+            oauth: false,
+        },
+    },
+    permission: {
+        bash: 'deny',
+        edit: 'deny',
+        webfetch: 'deny',
+        external_directory: 'deny',
+        // Nobody answers the agent's questions in a headless run — an
+        // unanswered one would hang the session until the kill timer.
+        question: 'deny',
+    },
+    experimental: {
+        // A denied tool call must not kill the turn; the agent should route
+        // around the sandbox and carry on.
+        continue_loop_on_deny: true,
+    },
+    // MCP tool denies live in hooks/sandboxGate.ts — this map does not gate
+    // MCP tools in OpenCode 1.18 (denied MCP tools stay callable).
+    tools: {
+        bash: false,
+        edit: false,
+        write: false,
+        glob: false,
+        grep: false,
+        webfetch: false,
+        websearch: false,
+        read: true,
+    },
+};
