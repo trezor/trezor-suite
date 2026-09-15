@@ -134,7 +134,7 @@ suite-native/storybook/.rnstorybook/storybook.requires.ts
 !.yarn/sdks
 !.yarn/versions
 
-# @trezor/suite-data
+# @suite/app-assets
 suite/app-assets/files/browser-detection
 suite/app-assets/files/guide
 suite/app-assets/files/translations/master.json

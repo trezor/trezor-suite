@@ -47,7 +47,7 @@ class WinHelloChildProcess {
         const binaryPath = path.join(resourcesPath, 'bin', 'win_hello.node');
 
         try {
-            const localRequiredBinary = require('../../suite-data/files/bin/win_hello.node');
+            const localRequiredBinary = require('../../../suite/app-assets/files/bin/win_hello.node');
             this.winHello = localRequiredBinary as typeof WinHelloTypes | null;
         } catch (err) {
             console.warn(

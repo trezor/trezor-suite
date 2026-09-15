@@ -5,7 +5,7 @@ import path from 'path';
 
 import { IMAGES } from '../src/components/Image/images';
 
-const imageDir = path.join(__dirname, '../../suite-data/files/images/images');
+const imageDir = path.join(__dirname, '../../../suite/app-assets/files/images/images');
 
 const notFound: string[] = [];
 const caseMismatch: string[] = [];

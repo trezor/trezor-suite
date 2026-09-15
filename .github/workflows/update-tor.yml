@@ -10,7 +10,7 @@ jobs:
     if: github.repository == 'trezor/trezor-suite'
     runs-on: macos-latest
     env:
-      UPDATE_FILE: packages/suite-data/files/bin/tor/update.sh
+      UPDATE_FILE: suite/app-assets/files/bin/tor/update.sh
     steps:
       - name: Checkout repo
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v6
@@ -94,8 +94,8 @@ jobs:
           body+="git fetch origin chore/update-tor-binaries\n"
           body+="git checkout chore/update-tor-binaries\n"
           body+="git checkout HEAD~1\n"
-          body+="git restore --source origin/chore/update-tor-binaries packages/suite-data/files/bin/tor/update.sh\n"
-          body+="./packages/suite-data/files/bin/tor/update.sh\n"
+          body+="git restore --source origin/chore/update-tor-binaries suite/app-assets/files/bin/tor/update.sh\n"
+          body+="./suite/app-assets/files/bin/tor/update.sh\n"
           body+="git reset --soft chore/update-tor-binaries\n"
           body+="git add .\n"
           body+="git status -s\n"
@@ -117,7 +117,7 @@ jobs:
         uses: peter-evans/create-pull-request@5f6978faf089d4d20b00c7766989d076bb2fc7f1 # v8
         with:
           token: ${{ steps.trezor-bot-token.outputs.token }}
-          commit-message: "chore(suite-data): update TOR binaries"
+          commit-message: "chore(app-assets): update TOR binaries"
           branch: chore/update-tor-binaries
           title: "Update TOR binaries"
           body: ${{ steps.pr_body.outputs.body }}

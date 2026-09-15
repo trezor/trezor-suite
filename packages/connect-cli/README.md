@@ -25,5 +25,5 @@ tsx ./packages/transport-bridge/src/bin.js
 Run
 
 ```
-./packages/suite-data/files/bin/bluetooth/[your-arch]/trezor-bluetooth
+./suite/app-assets/files/bin/bluetooth/[your-arch]/trezor-bluetooth
 ```

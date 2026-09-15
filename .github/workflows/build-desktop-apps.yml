@@ -47,9 +47,9 @@ jobs:
       - name: Install deps and build libs
         # not installing @trezor/suite-desktop and @trezor/suite-desktop-core, because this is only the renderer process
         run: |
-          yarn workspaces focus trezor-suite @trezor/suite-desktop-ui @trezor/suite-build @trezor/suite-data @trezor/transport-bridge @suite-common/message-system
+          yarn workspaces focus trezor-suite @trezor/suite-desktop-ui @trezor/suite-build @suite/app-assets @trezor/transport-bridge @suite-common/message-system
           yarn message-system-sign-config
-          yarn workspace @trezor/suite-data build:lib
+          yarn workspace @suite/app-assets build:lib
           yarn workspace @trezor/transport-bridge build:lib
       - name: Build Electron Renderer bundle
         run: yarn workspace @trezor/suite-build build:desktop
@@ -94,9 +94,9 @@ jobs:
       # safedep/pmg not available on macOS (that's ok, it already guards the `build-and-cache-renderer` job)
       - name: Install deps and build libs
         run: |
-          yarn workspaces focus trezor-suite @trezor/suite-desktop @trezor/suite-desktop-ui @trezor/suite-desktop-core @trezor/suite-build @trezor/suite-data @trezor/transport-bridge @suite-common/message-system
+          yarn workspaces focus trezor-suite @trezor/suite-desktop @trezor/suite-desktop-ui @trezor/suite-desktop-core @trezor/suite-build @suite/app-assets @trezor/transport-bridge @suite-common/message-system
           yarn message-system-sign-config
-          yarn workspace @trezor/suite-data build:lib
+          yarn workspace @suite/app-assets build:lib
           yarn workspace @trezor/transport-bridge build:lib
 
       - name: Build ${{ matrix.platform }} suite-desktop
@@ -154,12 +154,12 @@ jobs:
           version: v0.19.1
       - name: Install deps and build libs
         run: |
-          yarn workspaces focus trezor-suite @trezor/suite-desktop @trezor/suite-desktop-ui @trezor/suite-desktop-core @trezor/suite-build @trezor/suite-data @trezor/transport-bridge @suite-common/message-system
+          yarn workspaces focus trezor-suite @trezor/suite-desktop @trezor/suite-desktop-ui @trezor/suite-desktop-core @trezor/suite-build @suite/app-assets @trezor/transport-bridge @suite-common/message-system
           yarn message-system-sign-config
 
       - name: Build libs
         run: |
-          yarn workspace @trezor/suite-data build:lib
+          yarn workspace @suite/app-assets build:lib
           yarn workspace @trezor/transport-bridge build:lib
 
       - name: Build ${{env.platform}} suite-desktop

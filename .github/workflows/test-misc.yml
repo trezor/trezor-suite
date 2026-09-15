@@ -25,7 +25,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v6
 
-      - run: ./scripts/ci/find_duplicates.sh ./packages/suite-data/files ${{ matrix.extension }}
+      - run: ./scripts/ci/find_duplicates.sh ./suite/app-assets/files ${{ matrix.extension }}
 
   test-madge-circular-imports:
     runs-on: ubuntu-latest

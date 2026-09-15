@@ -68,7 +68,7 @@ jobs:
       - name: Install dependencies
         run: |
           echo -e "\nenableHardenedMode: false" >> .yarnrc.yml
-          yarn workspaces focus @trezor/suite-web @trezor/suite-data @trezor/suite-build @suite-common/message-system
+          yarn workspaces focus @trezor/suite-web @suite/app-assets @trezor/suite-build @suite-common/message-system
 
       - name: Build suite-web
         env:
@@ -77,7 +77,7 @@ jobs:
           SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
         run: |
           yarn message-system-sign-config
-          yarn workspace @trezor/suite-data build:lib
+          yarn workspace @suite/app-assets build:lib
           yarn workspace @trezor/suite-web build
       # this step should upload build result to s3 bucket dev.suite.sldev.cz using awscli
       - name: Upload suite-web to dev.suite.sldev.cz

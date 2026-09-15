@@ -1,4 +1,4 @@
-# @trezor/suite-data
+# @suite/app-assets
 
 Collection of static assets and scripts for `@trezor/suite-*` packages.
 
