@@ -10,3 +10,4 @@ export type {
     TxId,
     Address,
 } from './searchLabels';
+export * from './transactionSearchIndex';

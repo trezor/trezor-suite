@@ -53,3 +53,58 @@ describe(advancedSearchTransactions.name, () => {
         });
     });
 });
+
+describe('the order an advanced search hands transactions back in', () => {
+    // The list paginates by index and renders by date, so a result in the order the search terms
+    // happened to match in would shuffle the pages. Worth pinning: the resolution from txids back
+    // to transactions is a lookup now, and a lookup has no order of its own.
+    const mockTransaction = (txid: string, address: string): WalletAccountTransaction =>
+        ({
+            txid,
+            symbol: 'btc',
+            tokens: [],
+            targets: [{ addresses: [address] }],
+            details: { vin: [], vout: [{ addresses: [address] }] },
+        }) as unknown as WalletAccountTransaction;
+
+    const noLabels: SearchAccountLabels = {
+        accountLabel: null,
+        outputLabels: new Map(),
+        addressLabels: new Map(),
+    };
+
+    const first = mockTransaction('tx1', 'bc1qfirst');
+    const second = mockTransaction('tx2', 'bc1qsecond');
+    const third = mockTransaction('tx3', 'bc1qthird');
+    const ordered = [first, second, third];
+
+    it('keeps the array’s order when the terms matched in another', () => {
+        expect(advancedSearchTransactions(ordered, noLabels, 'bc1qthird|bc1qfirst')).toEqual([
+            first,
+            third,
+        ]);
+    });
+
+    it('keeps the array’s order for an AND query', () => {
+        expect(advancedSearchTransactions(ordered, noLabels, 'bc1q|second')).toEqual([
+            first,
+            second,
+            third,
+        ]);
+    });
+
+    it('returns only what every AND term matched', () => {
+        expect(advancedSearchTransactions(ordered, noLabels, 'bc1q&second')).toEqual([second]);
+    });
+
+    it('leaves out the holes a not-yet-fetched page left', () => {
+        const sparse: WalletAccountTransaction[] = [];
+        sparse[0] = first;
+        sparse[3] = third;
+
+        expect(advancedSearchTransactions(sparse, noLabels, 'bc1qthird|bc1qfirst')).toEqual([
+            first,
+            third,
+        ]);
+    });
+});

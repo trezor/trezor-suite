@@ -2,6 +2,7 @@ import { type WalletAccountTransaction } from '@suite-common/wallet-types';
 
 import { type SearchAccountLabels } from './searchLabels';
 import { simpleSearchTransactions } from './simpleSearchTransactions';
+import { getTransactionSearchLookups } from './transactionSearchIndex';
 
 export const advancedSearchTransactions = (
     transactions: WalletAccountTransaction[],
@@ -50,5 +51,17 @@ export const advancedSearchTransactions = (
         }),
     ]);
 
-    return transactions.filter(t => filteredTxIDs.has(t.txid));
+    // The terms above worked in txids, so getting back to the transactions is a lookup per match
+    // rather than a pass over every transaction — which, after each term already made one pass of
+    // its own, is the difference between one scan and four for `alice&rent|bob`.
+    //
+    // Sorted by position because that is the array's own order, and the list paginates by index
+    // and renders by date: handing back the order the search terms happened to match in would
+    // shuffle the pages.
+    const { positionByTxid, transactionsByTxid } = getTransactionSearchLookups(transactions);
+
+    return [...filteredTxIDs]
+        .filter(txid => positionByTxid.has(txid))
+        .sort((left, right) => (positionByTxid.get(left) ?? 0) - (positionByTxid.get(right) ?? 0))
+        .map(txid => transactionsByTxid.get(txid) as WalletAccountTransaction);
 };
