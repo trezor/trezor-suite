@@ -13,7 +13,6 @@ implementation around. It has no runtime API construction and no environment det
 | ------------------------------------ | -------------------------------------------------------------------------------------------- |
 | `@trezor/suite-desktop-api`          | The `DesktopApi` contract, channel/message types and `DesktopApiDep` / `selectDesktopApiDep` |
 | `@trezor/suite-desktop-api-electron` | `createDesktopApiBridge` (preload side) and `createElectronDesktopApi` (renderer side)       |
-| `@trezor/suite-desktop-api-web`      | `createWebDesktopApi`, where every call is unavailable                                       |
 
 Each app's composition root picks one implementation:
 
@@ -48,7 +47,7 @@ To invoke a method on the `main` process and return an asynchronous result to th
 - add a channel to validChannels in `../suite-desktop-api-electron/src/validation.ts`
 - add a method to `./src/api.ts DesktopApi` as `DesktopApiInvoke<'your-new-channel'>`
 - implement it in `../suite-desktop-api-electron/src/createDesktopApiBridge.ts`
-- decide the web behaviour in `../suite-desktop-api-web/src/createWebDesktopApi.ts`; that file lists
+- decide the web behaviour in `../suite-web/src/support/createWebDesktopApi.ts`; that file lists
   every member explicitly, so it will not compile until you do
 - process incoming requests in `@trezor/suite-desktop-core/src/modules/*` using `ipcMain.handle(...)`
 - call it through an injected `desktopApi`, never through a module-level import

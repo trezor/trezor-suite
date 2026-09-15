@@ -5,7 +5,7 @@ import { type Account } from '@suite-common/wallet-types';
 import { type DesktopApiDep } from '@trezor/suite-desktop-api';
 import { mockGetHttpReceiverAddress } from '@trezor/suite-desktop-api/mocks';
 
-import { buildQuoteLink } from './exchangeUtils';
+import { createQuoteLink } from './exchangeUtils';
 
 describe('exchangeUtils', () => {
     const deps: DesktopApiDep<'getHttpReceiverAddress'> = {
@@ -37,10 +37,10 @@ describe('exchangeUtils', () => {
     } as TradingComposedTransactionInfo;
     const mockQuoteId = 'quoteId';
 
-    describe('buildQuoteLink', () => {
+    describe('createQuoteLink', () => {
         it('should create link for quote', async () => {
             expect(
-                await buildQuoteLink(
+                await createQuoteLink(
                     deps,
                     mockQuotesRequest,
                     mockAccount,
@@ -54,7 +54,7 @@ describe('exchangeUtils', () => {
 
         it('should create link for quote when selectedFee is high', async () => {
             expect(
-                await buildQuoteLink(
+                await createQuoteLink(
                     deps,
                     mockQuotesRequest,
                     mockAccount,
@@ -68,7 +68,7 @@ describe('exchangeUtils', () => {
 
         it('should create link for quote when selectedFee is custom', async () => {
             expect(
-                await buildQuoteLink(
+                await createQuoteLink(
                     deps,
                     mockQuotesRequest,
                     mockAccount,
@@ -82,7 +82,7 @@ describe('exchangeUtils', () => {
 
         it('should create link for quote when account network type is solana', async () => {
             expect(
-                await buildQuoteLink(
+                await createQuoteLink(
                     deps,
                     mockQuotesRequest,
                     {

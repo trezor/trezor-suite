@@ -7,7 +7,7 @@ import {
 import { type Account } from '@suite-common/wallet-types';
 import { type DesktopApiDep } from '@trezor/suite-desktop-api';
 
-import { buildQuoteLink } from 'src/utils/wallet/trading/sellUtils';
+import { createQuoteLink } from 'src/utils/wallet/trading/sellUtils';
 
 export type BuildSellReturnUrlParams = DesktopApiDep<'getHttpReceiverAddress'> & {
     quote: SellFiatTrade;
@@ -36,7 +36,7 @@ export const buildSellReturnUrl = async ({
 
     const orderId = provider.flow === 'PAYMENT_GATE' ? quote.orderId : undefined;
 
-    return await buildQuoteLink(
+    return await createQuoteLink(
         { desktopApi },
         {
             ...quotesRequest,

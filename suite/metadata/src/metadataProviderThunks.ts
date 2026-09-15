@@ -42,15 +42,15 @@ export const providerInstance: Record<DataType, ProviderInstance | undefined> = 
 
 export const fetchIntervals: { [id: FetchIntervalTrackingId]: any } = {}; // any because of native at the moment, otherwise number | undefined
 
-type MetadataProvidersDep = OauthDesktopApiDep & FileSystemProviderDep;
+type ProviderInstanceDeps = OauthDesktopApiDep & FileSystemProviderDep;
 
-const buildProviderInstance = (
-    deps: MetadataProvidersDep,
+const createProviderInstance = (
+    deps: ProviderInstanceDeps,
     type: MetadataProvider['type'],
     tokens: Tokens = {},
     environment: OAuthServerEnvironment = 'production',
     clientId?: string,
-) => {
+): ProviderInstance => {
     switch (type) {
         case 'dropbox':
             return new DropboxProvider({
@@ -77,7 +77,7 @@ type GetProviderInstanceThunkState = MetadataRootState;
 /**
  * Return already existing instance of AbstractProvider or recreate it from token;
  */
-type GetProviderInstanceThunkDeps = WithServices<MetadataProvidersDep>;
+type GetProviderInstanceThunkDeps = WithServices<ProviderInstanceDeps>;
 
 export const getProviderInstanceThunk =
     ({ clientId, dataType = 'labels' }: GetProviderInstanceParams) =>
@@ -99,7 +99,7 @@ export const getProviderInstanceThunk =
 
         if (providerInstance[dataType]) return providerInstance[dataType];
 
-        providerInstance[dataType] = buildProviderInstance(
+        providerInstance[dataType] = createProviderInstance(
             extra.services,
             provider.type,
             provider.tokens,
@@ -260,7 +260,7 @@ type ConnectProviderParams = {
     clientId?: string;
 };
 
-export type ConnectProviderDeps = WithServices<DesktopAnalyticsDep & MetadataProvidersDep>;
+export type ConnectProviderDeps = WithServices<DesktopAnalyticsDep & ProviderInstanceDeps>;
 
 type ConnectProviderThunkState = MetadataRootState;
 
@@ -273,7 +273,7 @@ export const connectProviderThunk =
         getState: () => ConnectProviderThunkState,
         extra: ConnectProviderThunkDeps,
     ) => {
-        const providerInstance = buildProviderInstance(
+        const providerInstance = createProviderInstance(
             extra.services,
             type,
             {},

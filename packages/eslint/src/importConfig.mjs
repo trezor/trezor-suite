@@ -29,23 +29,17 @@ const desktopApiImplementationMessage =
 
 export const desktopApiRestrictedImports = [
     { name: '@trezor/suite-desktop-api-electron', message: desktopApiImplementationMessage },
-    { name: '@trezor/suite-desktop-api-web', message: desktopApiImplementationMessage },
 ];
 
-export const libDevRestrictedImportPattern = {
-    regex: '/libDev/src',
-    message: 'Importing from "*/libDev/src" path is not allowed.',
-};
-
+/**
+ * Build-artifact imports stay blocked for these files through
+ * `@typescript-eslint/no-restricted-imports`, which this does not touch.
+ */
 /** @type {Config} */
 export const desktopApiCompositionRootAllowance = {
-    files: [
-        '**/preload.ts',
-        '**/createSuiteDesktopCompositionRoot.ts',
-        '**/createSuiteWebCompositionRoot.ts',
-    ],
+    files: ['**/preload.ts', '**/createSuiteDesktopCompositionRoot.ts'],
     rules: {
-        'no-restricted-imports': ['error', { patterns: [libDevRestrictedImportPattern] }],
+        'no-restricted-imports': 'off',
     },
 };
 
@@ -63,8 +57,6 @@ export const importConfig = [
             },
         },
         rules: {
-            'no-restricted-imports': ['error', { paths: [...desktopApiRestrictedImports] }],
-
             // Additional
             'import/no-default-export': 'error', // We don't want to use default exports, always use named exports
             'import/no-anonymous-default-export': [
