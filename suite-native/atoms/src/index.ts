@@ -68,7 +68,6 @@ export * from './List/BulletList';
 export * from './List/BulletListItem';
 export * from './List/IconList';
 export * from './List/IconListItem';
-export * from './NumberedListItem';
 export * from './SelectableItem';
 export * from './constants';
 export * from './useBannerAwareSafeAreaInsets';
