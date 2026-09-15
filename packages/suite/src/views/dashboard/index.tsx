@@ -7,7 +7,7 @@ import { OutOfQuotaBanner } from 'src/components/suite/banners/SuiteBanners/OutO
 import { PageHeader } from 'src/components/suite/layouts/SuiteLayout';
 import { useLayout, useSelector } from 'src/hooks/suite';
 
-import { AssetFirstTable } from './AssetFirstTable/AssetFirstTable';
+import { AssetFirstDashboard } from './AssetFirstTable/AssetFirstDashboard';
 import { AssetsView } from './AssetsView/AssetsView';
 import { DashboardFooter } from './DashboardFooter';
 import { DashboardPromoBanner } from './DashboardPromoBanner/DashboardPromoBanner';
@@ -23,6 +23,15 @@ export const Dashboard = () => {
     useLayout('Home', <PageHeader />, <DashboardFooter />);
     useNotificationForDisconnectedDevice();
 
+    // The asset-first home tab is the whole page, not another section of it.
+    if (isAssetFirstTableEnabled) {
+        return (
+            <Column gap={48} data-testid="@dashboard/index">
+                <AssetFirstDashboard />
+            </Column>
+        );
+    }
+
     return (
         <Column gap={48} data-testid="@dashboard/index">
             <Column gap={24}>
@@ -32,7 +41,7 @@ export const Dashboard = () => {
                 <OnboardingFeedbackBanner />
             </Column>
             <DashboardPromoBanner />
-            {isAssetFirstTableEnabled ? <AssetFirstTable /> : <AssetsView />}
+            <AssetsView />
         </Column>
     );
 };
