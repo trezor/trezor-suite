@@ -1,5 +1,5 @@
 const schemes = require('./uriSchemes.json');
-const { suiteVersion } = require('../suite/package.json');
+const { suiteVersion } = require('../../packages/suite/package.json');
 
 const isCodesignBuild = process.env.IS_CODESIGN_BUILD === 'true';
 
@@ -139,7 +139,7 @@ module.exports = {
         signtoolOptions: {
             publisherName: ['SatoshiLabs, s.r.o.', 'Trezor Company s.r.o.'],
             // TODO #14482: when Electron-main is migrated to ESM, and we declare whole suite-desktop package as ESM, rename .mjs files to .js
-            sign: '../suite-desktop-core/scripts/sign-windows.mjs',
+            sign: '../desktop-app-main/scripts/sign-windows.mjs',
         },
     },
     linux: {
@@ -168,6 +168,6 @@ module.exports = {
         target: ['AppImage'],
     },
     // TODO #14482: when Electron-main is migrated to ESM, and we declare whole suite-desktop package as ESM, rename .mjs files to .js
-    afterPack: '../suite-desktop-core/scripts/setElectronFuses.mjs',
-    afterSign: '../suite-desktop-core/scripts/notarize.mjs',
+    afterPack: '../desktop-app-main/scripts/setElectronFuses.mjs',
+    afterSign: '../desktop-app-main/scripts/notarize.mjs',
 };
