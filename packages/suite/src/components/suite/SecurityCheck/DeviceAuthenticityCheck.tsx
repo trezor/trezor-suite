@@ -26,6 +26,9 @@ type DeviceAuthenticityCheckProps = {
     goToNext: () => void;
 };
 
+/**
+ * Reusable component encapsulating the entire Device Authenticity Check flow.
+ */
 export const DeviceAuthenticityCheck = ({ goToNext }: DeviceAuthenticityCheckProps) => {
     const device = useSelector(selectSelectedDevice);
     const selectedDeviceAuthenticity = useSelector(state =>

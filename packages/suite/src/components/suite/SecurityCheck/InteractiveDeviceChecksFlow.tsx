@@ -17,6 +17,13 @@ import { useOnboarding, useSelector } from 'src/hooks/suite';
 import { DeviceAuthenticityCheck } from './DeviceAuthenticityCheck';
 import { ManualDeviceCheck } from './ManualDeviceCheck';
 
+/**
+ * Orchestrator component for the two interactive device checks, i.e. the checks that need to
+ * prompt the user for confirmation. They run in this sequence:
+ * 1. Manual Device check (all devices)
+ * 2. Device Authenticity check (only Trezor Safe devices)
+ * The non-interactive checks' failure case, meanwhile, is handled by `DeviceCompromisedScreen`.
+ */
 export const InteractiveDeviceChecksFlow = () => {
     const selectedDevice = useSelector(selectSelectedDevice);
     const devices = useSelector(selectDevices);
