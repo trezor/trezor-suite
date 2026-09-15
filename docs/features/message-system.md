@@ -70,6 +70,13 @@ Types are generated from JSON-schema during the `build:libs` process or can be g
 
 To ensure the authenticity of a configuration file, JSON Web Signatures are used. The configuration file is signed by a private key using elliptic curves (ES256) and the data specified in the config are used. The authenticity is verified on client side using corresponding public key.
 
+#### Key type and verification
+
+- The signing keys are **secp256k1**, although the JWS header declares `ES256`, which RFC 7518 defines as ECDSA over P-256. This deviation is known and accepted, as it has no security implications.
+- Because of this, the config cannot be verified by WebCrypto (`SubtleCrypto`) or by most JWS libraries, which only accept P-256 keys for `ES256`. The client verifies it with the `jws` package (`suite-common/suite-utils/src/jws.ts`), which delegates to Node `crypto` and on React Native to `crypto-browserify`. This is slow on mobile (hundreds of milliseconds).
+- The firmware release config in `@trezor/connect` is signed with real P-256 keys and is verified natively by `verifyJWS` from `@trezor/crypto-utils` via `SubtleCrypto`. The message system cannot reuse it until its keys are rotated to P-256.
+- Key rotation to P-256 requires a transition period, as app versions that only trust the current secp256k1 key would reject a config signed with a new key and stop receiving messages, including the killswitch.
+
 ### CI job
 
 #### Validation
@@ -87,7 +94,7 @@ To ensure the authenticity of a configuration file, JSON Web Signatures are used
     - `config.v1.ts` to be bundled with application
 - Development private key is baked into project structure together with public keys for both development and production.
 - Production private key is available only on `codesign` branch in Github CI.
-- Development private key can be found in `suite-common/message-system/scripts/sign-config.ts` file, the public keys can be found in `packages/suite-build/utils/jws.ts` file.
+- Development private key can be found in `suite-common/message-system/scripts/sign-config.ts` file, the public keys can be found in `packages/env-utils/src/jws.ts` file.
 
 ### Versioning of implementation
 

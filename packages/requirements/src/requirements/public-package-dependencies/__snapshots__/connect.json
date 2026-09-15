@@ -49,7 +49,6 @@
         "cashaddrjs",
         "cbor",
         "cross-fetch",
-        "jws",
         "socks-proxy-agent",
         "ts-mixer",
         "tslib",

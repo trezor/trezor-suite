@@ -1,8 +1,5 @@
-// Public keys for message-system JWS verification
-//
-// Warning: Keys are secp256k1 instead of P-256, which is a deviation from the ES256 specification (RFC 7518). This issue is known and it has been accepted,
-// as it has no security implications.
-// Impact: It is not possible to easily replace `jws` library, as most alternatives verify that the used keys are P-256.
+// Public keys for message-system JWS verification.
+// Keys are secp256k1, not P-256 as ES256 requires. See docs/features/message-system.md, "Key type and verification".
 
 export const publicKey = {
     dev: `-----BEGIN PUBLIC KEY-----

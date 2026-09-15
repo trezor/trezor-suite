@@ -17185,14 +17185,12 @@ __metadata:
     "@trezor/type-utils": "workspace:*"
     "@trezor/utils": "workspace:*"
     "@trezor/utxo-lib": "workspace:*"
-    "@types/jws": "npm:^3.2.11"
     "@types/node": "npm:22.13.10"
     "@types/w3c-web-usb": "npm:^1.0.14"
     "@vitest/browser-playwright": "npm:^4.1.10"
     cross-fetch: "npm:^4.1.0"
     crypto-browserify: "npm:3.12.1"
     jest: "npm:29.7.0"
-    jws: "npm:^4.0.1"
     process: "npm:^0.11.10"
     stream-browserify: "npm:^3.0.0"
     tsx: "npm:^4.21.0"
@@ -17441,6 +17439,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@trezor/crypto-utils@workspace:packages/crypto-utils"
   dependencies:
+    "@scure/base": "npm:^2.0.0"
     "@trezor/type-utils": "workspace:*"
   peerDependencies:
     tslib: ^2.6.2
@@ -19275,15 +19274,6 @@ __metadata:
   dependencies:
     "@types/node": "npm:*"
   checksum: 10/0f8fe0a9221a00e8413cffba723dfe16553868724b830237256fb0052ecd5cac96498189d1235a001cfa815f352008261c9ceb373f0aa58227f891e0c7a12c4d
-  languageName: node
-  linkType: hard
-
-"@types/jws@npm:^3.2.11":
-  version: 3.2.11
-  resolution: "@types/jws@npm:3.2.11"
-  dependencies:
-    "@types/node": "npm:*"
-  checksum: 10/968b9069eed4ea09292c8a75692c1319220e29c990a9f952cd61751c0fb0f0062ee44c40e02f05dc4fb709c19d8d612f97ff3e48eed7adc20c605e07d285da1d
   languageName: node
   linkType: hard
 

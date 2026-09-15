@@ -1,7 +1,6 @@
-import { decode, verify } from 'jws';
-
 import type { FirmwareChannel } from '@trezor/connect-common/src/types/firmware';
 import { getFirmwareReleaseJwsPublicKey } from '@trezor/connect-data';
+import { decodeJWS, verifyJWS } from '@trezor/crypto-utils';
 import type { FirmwareReleaseConfig } from '@trezor/device-utils';
 
 import { firmwareReleaseConfigAssets } from './assetUtils';
@@ -142,28 +141,31 @@ const fetchRemoteJws = async (firmwareChannel?: FirmwareChannel): Promise<JwsInf
     };
 };
 
-const verifyAndDecodeJws = (jws: string, publicKey: string): FirmwareReleaseConfig => {
-    const decoded = decode(jws);
+const verifyAndDecodeJws = async (
+    jws: string,
+    publicKey: string,
+): Promise<FirmwareReleaseConfig> => {
+    const decoded = decodeJWS(jws);
 
-    if (!decoded?.payload || !decoded.header) {
+    if (!decoded) {
         throw new Error('Invalid JWS structure.');
     }
-
-    const parsedPayload = JSON.parse(decoded.payload);
 
     if (decoded.header.alg !== JWS_CONFIG.SIGN_ALGORITHM) {
         throw new Error('Invalid JWS algorithm');
     }
 
-    if (parsedPayload.version !== JWS_CONFIG.VERSION) {
+    const payload = decoded.payload as FirmwareReleaseConfig;
+
+    if (payload?.version !== JWS_CONFIG.VERSION) {
         throw new Error('Config version mismatch.');
     }
 
-    if (!verify(jws, JWS_CONFIG.SIGN_ALGORITHM, publicKey)) {
+    if (!(await verifyJWS({ jws, publicKeyPEM: publicKey }))) {
         throw new Error('JWS signature is invalid.');
     }
 
-    return parsedPayload;
+    return payload;
 };
 
 export const getFirmwareReleaseConfig = async (firmwareChannel?: FirmwareChannel) => {
@@ -181,7 +183,7 @@ export const getFirmwareReleaseConfig = async (firmwareChannel?: FirmwareChannel
             resolvedChannel,
         );
         const publicKey = getFirmwareReleaseJwsPublicKey(useProductionKey);
-        const remoteConfig = verifyAndDecodeJws(jws, publicKey);
+        const remoteConfig = await verifyAndDecodeJws(jws, publicKey);
 
         if (remoteConfig.sequence > firmwareReleaseConfigAssets.sequence) {
             return {
