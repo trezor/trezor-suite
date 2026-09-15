@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { type ReactNode, useState } from 'react';
 
 import { selectIsDebugModeActive } from '@suite/debug';
 import { Translation, type TranslationKey } from '@suite/intl';
@@ -23,13 +23,13 @@ const items: { id: string; icon: IconComponent; text: TranslationKey }[] = [
 ];
 
 type DeviceAuthenticityCheckProps = {
-    goToNext: () => void;
+    onSuccess: () => void;
 };
 
 /**
  * Reusable component encapsulating the entire Device Authenticity Check flow.
  */
-export const DeviceAuthenticityCheck = ({ goToNext }: DeviceAuthenticityCheckProps) => {
+export const DeviceAuthenticityCheck = ({ onSuccess }: DeviceAuthenticityCheckProps) => {
     const device = useSelector(selectSelectedDevice);
     const selectedDeviceAuthenticity = useSelector(state =>
         selectDeviceAuthenticityByDeviceId(state, device?.id),
@@ -50,14 +50,14 @@ export const DeviceAuthenticityCheck = ({ goToNext }: DeviceAuthenticityCheckPro
     const isCheckFailed = isSubmitted && selectedDeviceAuthenticity?.valid === false;
     const isCheckSuccessful = isSubmitted && selectedDeviceAuthenticity?.valid === true;
 
-    const getHeadingText = () => {
-        if (isCheckSuccessful) {
-            return 'TR_CONGRATS';
-        }
+    const getHeading = (): ReactNode => {
+        if (isCheckSuccessful) return <Translation id="TR_CONGRATS" />;
+        if (isWaitingForConfirmation) return <Translation id="TR_CHECKING_YOUR_DEVICE" />;
 
-        return isWaitingForConfirmation ? 'TR_CHECKING_YOUR_DEVICE' : 'TR_LETS_CHECK_YOUR_DEVICE';
+        return <Translation id="TR_LETS_CHECK_YOUR_DEVICE" />;
     };
-    const getDescription = () => {
+
+    const getDescription = (): ReactNode => {
         if (isCheckSuccessful) {
             return (
                 <Translation
@@ -69,11 +69,12 @@ export const DeviceAuthenticityCheck = ({ goToNext }: DeviceAuthenticityCheckPro
         if (!isWaitingForConfirmation) {
             return <Translation id="TR_AUTHENTICATE_DEVICE_DESCRIPTION" />;
         }
+
+        return null;
     };
-    const getInnerActions = () => {
-        if (isWaitingForConfirmation) {
-            return;
-        }
+
+    const getInnerActions = (): ReactNode => {
+        if (isWaitingForConfirmation) return null;
 
         const authenticateDevice = async () => {
             setIsLoading(true);
@@ -87,28 +88,23 @@ export const DeviceAuthenticityCheck = ({ goToNext }: DeviceAuthenticityCheckPro
             setIsSubmitted(true);
         };
 
-        const handleClick = () => {
-            if (isCheckSuccessful) {
-                goToNext();
-            } else {
-                authenticateDevice();
-            }
-        };
-
-        const buttonText = isCheckSuccessful ? 'TR_CONTINUE' : 'TR_START_CHECK';
-
-        return (
+        return isCheckSuccessful ? (
             <OnboardingCard.Button
-                onClick={handleClick}
+                onClick={onSuccess}
                 isDisabled={isLoading}
                 isLoading={isLoading}
-                data-testid={
-                    isCheckSuccessful
-                        ? '@authenticity-check/continue-button'
-                        : `@authenticity-check/start-button`
-                }
+                data-testid="@authenticity-check/continue-button"
             >
-                <Translation id={buttonText} />
+                <Translation id="TR_CONTINUE" />
+            </OnboardingCard.Button>
+        ) : (
+            <OnboardingCard.Button
+                onClick={authenticateDevice}
+                isDisabled={isLoading}
+                isLoading={isLoading}
+                data-testid="@authenticity-check/start-button"
+            >
+                <Translation id="TR_START_CHECK" />
             </OnboardingCard.Button>
         );
     };
@@ -127,7 +123,7 @@ export const DeviceAuthenticityCheck = ({ goToNext }: DeviceAuthenticityCheckPro
     return (
         <OnboardingCard
             icon={ShieldCheckIcon}
-            heading={<Translation id={getHeadingText()} />}
+            heading={getHeading()}
             description={getDescription()}
             innerActions={getInnerActions()}
             device={device}
