@@ -219,6 +219,7 @@ export const useSendForm = (props: UseSendFormProps): SendContextValues => {
         composedLevels,
         composeRequest,
         ...useFormMethods,
+        formState,
     });
 
     // sub-hook
