@@ -1,19 +1,28 @@
 import { useSelector } from 'react-redux';
 
-import { convertCryptoToFiatAmount } from '@suite-common/formatters';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import {
     type FiatRatesRootState,
+    type WalletSettingsRootState,
     selectBaseCurrency,
     selectFiatRatesByFiatRateKey,
 } from '@suite-common/wallet-core';
-import { type TokenAddress } from '@suite-common/wallet-types';
-import { getFiatRateKey, isTestnet, toFiatCurrency } from '@suite-common/wallet-utils';
+import { type BaseCurrencyAmount, type TokenAddress } from '@suite-common/wallet-types';
+import {
+    asAmountSubunit,
+    getFiatRateKey,
+    isTestnet,
+    subunitsToUnits,
+    toBaseCurrencyDisplayAmount,
+    toFiatCurrency,
+} from '@suite-common/wallet-utils';
 import { BigNumber } from '@trezor/utils';
 
 import { convertTokenValueToDecimal } from '../utils';
 
-type useFiatFromCryptoValueParams = {
+type FiatFromCryptoValueRootState = FiatRatesRootState & WalletSettingsRootState;
+
+type UseFiatFromCryptoValueParams = {
     cryptoValue: string | null;
     symbol: NetworkSymbol;
     tokenAddress?: TokenAddress;
@@ -23,26 +32,24 @@ type useFiatFromCryptoValueParams = {
     isBalance?: boolean;
 };
 
-export const useFiatFromCryptoValue = ({
-    cryptoValue,
-    symbol,
-    tokenAddress,
-    historicRate,
-    useHistoricRate,
-    isBalance = false,
-    tokenDecimals = 0,
-}: useFiatFromCryptoValueParams) => {
-    const fiatCurrencyCode = useSelector(selectBaseCurrency);
+const selectFiatFromCryptoValue = (
+    state: FiatFromCryptoValueRootState,
+    {
+        cryptoValue,
+        symbol,
+        tokenAddress,
+        historicRate,
+        useHistoricRate,
+        isBalance = false,
+        tokenDecimals = 0,
+    }: UseFiatFromCryptoValueParams,
+): BaseCurrencyAmount | null => {
+    if (!cryptoValue || isTestnet(symbol)) return null;
+
+    const fiatCurrencyCode = selectBaseCurrency(state);
     const fiatRateKey = getFiatRateKey(symbol, fiatCurrencyCode, tokenAddress);
-    const currentRate = useSelector((state: FiatRatesRootState) =>
-        selectFiatRatesByFiatRateKey(state, fiatRateKey),
-    );
-
+    const currentRate = selectFiatRatesByFiatRateKey(state, fiatRateKey);
     const rate = useHistoricRate ? historicRate : currentRate?.rate;
-
-    const isTestnetCoin = isTestnet(symbol);
-
-    if (!cryptoValue || isTestnetCoin) return null;
 
     if (tokenAddress) {
         const decimalValue = convertTokenValueToDecimal(cryptoValue, tokenDecimals);
@@ -56,10 +63,35 @@ export const useFiatFromCryptoValue = ({
 
     if (!rate || currentRate?.error) return null;
 
-    return convertCryptoToFiatAmount({
-        amount: cryptoValue,
-        symbol,
-        isAmountInSats: !isBalance,
-        rate,
-    });
+    // A balance is already in network units; other values come in sats and must be converted.
+    const networkAmount = isBalance
+        ? cryptoValue
+        : subunitsToUnits({ value: asAmountSubunit(new BigNumber(cryptoValue)), symbol });
+
+    return toFiatCurrency({ amount: networkAmount, rate });
 };
+
+const areFiatAmountsEqual = (a: BaseCurrencyAmount | null, b: BaseCurrencyAmount | null) =>
+    a === b || (a !== null && b !== null && a.eq(b));
+
+export const useFiatFromCryptoValue = (
+    params: UseFiatFromCryptoValueParams,
+): BaseCurrencyAmount | null =>
+    useSelector((state: FiatFromCryptoValueRootState) => {
+        const fiatAmount = selectFiatFromCryptoValue(state, params);
+
+        return fiatAmount === null
+            ? null
+            : toBaseCurrencyDisplayAmount({
+                  value: fiatAmount,
+                  baseCurrencyCode: selectBaseCurrency(state),
+              });
+    });
+
+export const useExactFiatFromCryptoValue = (
+    params: UseFiatFromCryptoValueParams,
+): BaseCurrencyAmount | null =>
+    useSelector(
+        (state: FiatFromCryptoValueRootState) => selectFiatFromCryptoValue(state, params),
+        areFiatAmountsEqual,
+    );
