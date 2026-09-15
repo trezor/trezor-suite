@@ -19,7 +19,7 @@ import { isApyAvailable } from '@suite-common/wallet-utils';
 import { selectNativeAnalyticsDep } from '@suite-native/analytics';
 import { Box, Button, Card, HStack, Text, VStack } from '@suite-native/atoms';
 import {
-    CompactTokenAmountFormatter,
+    CryptoAmountFormatter,
     TokenToFiatAmountFormatter,
     asDecimalTokenAmount,
 } from '@suite-native/formatters';
@@ -285,7 +285,8 @@ export const YieldVaultDetailScreenContent = ({
                                 <Translation id="earn.tokenBalance" />
                             </Text>
 
-                            <CompactTokenAmountFormatter
+                            <CryptoAmountFormatter
+                                formatStyle="compact-balance"
                                 value={asDecimalTokenAmount(yieldToken.balance ?? '0')}
                                 tokenSymbol={yieldToken.symbol}
                                 tokenDecimals={yieldToken.decimals}
@@ -309,7 +310,8 @@ export const YieldVaultDetailScreenContent = ({
                                 <Translation id="earn.yearlyRewards" />
                             </Text>
 
-                            <CompactTokenAmountFormatter
+                            <CryptoAmountFormatter
+                                formatStyle="compact-balance"
                                 value={asDecimalTokenAmount(yearlyRewards.yearlyRewards)}
                                 tokenSymbol={
                                     wrappedNativeSymbol
@@ -338,7 +340,8 @@ export const YieldVaultDetailScreenContent = ({
                                 <Translation id="earn.potentialRewards" />
                             </Text>
 
-                            <CompactTokenAmountFormatter
+                            <CryptoAmountFormatter
+                                formatStyle="compact-balance"
                                 value={asDecimalTokenAmount(potentialRewards.potentialRewards)}
                                 tokenSymbol={
                                     wrappedNativeSymbol

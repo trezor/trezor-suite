@@ -4,8 +4,7 @@ import { type Account } from '@suite-common/wallet-types';
 import { AccountLabel } from '@suite-native/accounts';
 import { Box, Card, PressableOpacity, VStack } from '@suite-native/atoms';
 import {
-    CompactCryptoAmountFormatter,
-    CompactTokenAmountFormatter,
+    CryptoAmountFormatter,
     CryptoToFiatAmountFormatter,
     TokenToFiatAmountFormatter,
     asDecimalTokenAmount,
@@ -70,7 +69,8 @@ export const ChooseAccountItem = ({ account, balanceData, onPress }: ChooseAccou
                 <VStack spacing="sp2" style={applyStyle(valuesStyle)}>
                     {balanceData.type === 'account' ? (
                         <>
-                            <CompactCryptoAmountFormatter
+                            <CryptoAmountFormatter
+                                formatStyle="compact-balance"
                                 value={balanceData.value}
                                 symbol={account.symbol}
                                 variant="body-md"
@@ -89,7 +89,8 @@ export const ChooseAccountItem = ({ account, balanceData, onPress }: ChooseAccou
                         </>
                     ) : (
                         <>
-                            <CompactTokenAmountFormatter
+                            <CryptoAmountFormatter
+                                formatStyle="compact-balance"
                                 value={asDecimalTokenAmount(balanceData.value)}
                                 tokenSymbol={balanceData.tokenSymbol}
                                 tokenDecimals={balanceData.tokenDecimals}

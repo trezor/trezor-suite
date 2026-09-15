@@ -1,8 +1,4 @@
-import {
-    CompactCryptoAmountFormatter,
-    CompactTokenAmountFormatter,
-    asDecimalTokenAmount,
-} from '@suite-native/formatters';
+import { CryptoAmountFormatter, asDecimalTokenAmount } from '@suite-native/formatters';
 import { isWrappedNativeToken } from '@trezor/network-ethereum-suite-common';
 
 import { type EarnDepositsCardActiveItem } from '../../types';
@@ -14,7 +10,8 @@ type EarnAccountCardValueProps = {
 export const EarnAccountCardValue = ({ item }: EarnAccountCardValueProps) => {
     if (item.type === 'staking') {
         return (
-            <CompactCryptoAmountFormatter
+            <CryptoAmountFormatter
+                formatStyle="compact-balance"
                 value={item.balance}
                 symbol={item.symbol}
                 isBalance={true}
@@ -28,7 +25,8 @@ export const EarnAccountCardValue = ({ item }: EarnAccountCardValueProps) => {
 
     if (isWrappedNativeToken(item.networkSymbol, item.tokenContractAddress)) {
         return (
-            <CompactCryptoAmountFormatter
+            <CryptoAmountFormatter
+                formatStyle="compact-balance"
                 value={item.balance}
                 symbol={item.networkSymbol}
                 isBalance={true}
@@ -41,7 +39,8 @@ export const EarnAccountCardValue = ({ item }: EarnAccountCardValueProps) => {
     }
 
     return (
-        <CompactTokenAmountFormatter
+        <CryptoAmountFormatter
+            formatStyle="compact-balance"
             value={asDecimalTokenAmount(item.balance)}
             tokenSymbol={item.tokenSymbol}
             tokenDecimals={item.tokenDecimals}

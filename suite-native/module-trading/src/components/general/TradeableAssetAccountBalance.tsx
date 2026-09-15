@@ -2,13 +2,9 @@ import { useSelector } from 'react-redux';
 
 import { isSendingEvmNativeToken } from '@suite-common/trading';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
-import { type Account, type TokenAddress, type TokenSymbol } from '@suite-common/wallet-types';
+import { type Account, type TokenAddress } from '@suite-common/wallet-types';
 import { DiscreetTextTrigger, HStack, Text } from '@suite-native/atoms';
-import {
-    CompactCryptoAmountFormatter,
-    CompactTokenAmountFormatter,
-    asDecimalTokenAmount,
-} from '@suite-native/formatters';
+import { CryptoAmountFormatter, asDecimalTokenAmount } from '@suite-native/formatters';
 import { Translation } from '@suite-native/intl';
 import { type TokensRootState, selectAccountTokenBalance } from '@suite-native/tokens';
 import { type TradeableAsset } from '@suite-native/trading-types';
@@ -46,9 +42,10 @@ const TokenBalance = ({
     );
 
     return (
-        <CompactTokenAmountFormatter
+        <CryptoAmountFormatter
+            formatStyle="compact-balance"
             value={asDecimalTokenAmount(balance)}
-            tokenSymbol={symbol as TokenSymbol}
+            tokenSymbol={symbol}
             tokenDecimals={tokenDecimals}
             testID={testID}
         />
@@ -72,7 +69,8 @@ const AssetBalance = ({ account, asset, testID }: AssetBalanceProps) => {
                     testID={testID}
                 />
             ) : (
-                <CompactCryptoAmountFormatter
+                <CryptoAmountFormatter
+                    formatStyle="compact-balance"
                     value={formattedBalance}
                     symbol={symbol as NetworkSymbol}
                     testID={testID}

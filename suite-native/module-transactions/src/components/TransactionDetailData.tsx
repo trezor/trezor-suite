@@ -21,7 +21,7 @@ import {
 import { type AccountKey, type Timestamp } from '@suite-common/wallet-types';
 import { getFiatRateKey } from '@suite-common/wallet-utils';
 import { BannerFull, Box, Card, Text, VStack, useBottomSheetModal } from '@suite-native/atoms';
-import { CryptoToFiatAmountFormatter, ExactCryptoAmountFormatter } from '@suite-native/formatters';
+import { CryptoAmountFormatter, CryptoToFiatAmountFormatter } from '@suite-native/formatters';
 import { Translation, useTranslate } from '@suite-native/intl';
 import { useOpenLink } from '@suite-native/link';
 import { type TypedTokenTransfer, type WalletAccountTransaction } from '@suite-native/tokens';
@@ -161,7 +161,7 @@ export const TransactionDetailData = ({
                 <VStack spacing="sp24">
                     <TransactionDetailRow title={translate('transactions.detail.feeLabel')}>
                         <Box alignItems="flex-end">
-                            <ExactCryptoAmountFormatter
+                            <CryptoAmountFormatter
                                 value={transaction.fee}
                                 symbol={transaction.symbol}
                                 variant="body-sm"

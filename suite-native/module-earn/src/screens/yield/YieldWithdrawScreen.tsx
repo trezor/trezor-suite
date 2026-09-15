@@ -33,7 +33,11 @@ import {
     VStack,
     useBottomSheetModal,
 } from '@suite-native/atoms';
-import { useCryptoFiatConverters } from '@suite-native/formatters';
+import {
+    CryptoAmountFormatter,
+    asDecimalTokenAmount,
+    useCryptoFiatConverters,
+} from '@suite-native/formatters';
 import { decimalTransformer } from '@suite-native/helpers';
 import { Translation, useTranslate } from '@suite-native/intl';
 import { ContextMessage } from '@suite-native/message-system';
@@ -52,7 +56,6 @@ import { EarnMaxSwitch } from '../../components/earn/EarnMaxSwitch';
 import { YieldDepositFlowScreenHeader } from '../../components/yield/YieldDepositFlowScreenHeader';
 import { YieldDisabledAlert } from '../../components/yield/YieldDisabledAlert';
 import { YieldFeeEstimationErrorAlert } from '../../components/yield/YieldFeeEstimationErrorAlert';
-import { YieldFormattedAmount } from '../../components/yield/YieldFormattedAmount';
 import { YieldPendingTransactionModal } from '../../components/yield/YieldPendingTransactionModal';
 import { YieldWithdrawStepCard } from '../../components/yield/YieldWithdrawStepCard';
 import { YieldWithdrawWarning } from '../../components/yield/YieldWithdrawWarning';
@@ -664,12 +667,14 @@ export const YieldWithdrawScreen = () => {
                                             <Translation id="earn.yieldWithdrawFlowScreen.deposited" />
                                         </Text>
                                         <Box flexShrink={1}>
-                                            <YieldFormattedAmount
-                                                value={maxAmount}
-                                                networkSymbol={account.symbol}
+                                            <CryptoAmountFormatter
+                                                value={asDecimalTokenAmount(maxAmount)}
+                                                symbol={account.symbol}
+                                                formatStyle="compact-balance"
                                                 tokenContract={activeUnitTokenContract}
                                                 tokenDecimals={activeInputToken.decimals}
                                                 tokenSymbol={activeUnitSymbol}
+                                                isDiscreetText={false}
                                                 variant="body-sm"
                                                 color="contentSecondary"
                                                 numberOfLines={1}

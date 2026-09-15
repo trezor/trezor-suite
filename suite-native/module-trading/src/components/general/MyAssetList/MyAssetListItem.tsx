@@ -2,8 +2,7 @@ import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import { AnimatedPressable, Box, VStack } from '@suite-native/atoms';
 import {
     BaseCurrencyAmountFormatter,
-    CompactCryptoAmountFormatter,
-    CompactTokenAmountFormatter,
+    CryptoAmountFormatter,
     asDecimalTokenAmount,
 } from '@suite-native/formatters';
 import { TradingAsset } from '@suite-native/trading-atoms';
@@ -34,7 +33,8 @@ export const MyAssetListItem = ({ asset, onPress }: MyAssetListItemProps) => {
 
     const cryptoBalanceValue =
         tokenSymbol != null ? (
-            <CompactTokenAmountFormatter
+            <CryptoAmountFormatter
+                formatStyle="compact-balance"
                 value={asDecimalTokenAmount(balance)}
                 tokenSymbol={tokenSymbol}
                 tokenDecimals={decimals}
@@ -44,7 +44,8 @@ export const MyAssetListItem = ({ asset, onPress }: MyAssetListItemProps) => {
                 variant="body-sm"
             />
         ) : (
-            <CompactCryptoAmountFormatter
+            <CryptoAmountFormatter
+                formatStyle="compact-balance"
                 value={balance}
                 symbol={symbol}
                 numberOfLines={1}

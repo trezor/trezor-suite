@@ -7,7 +7,7 @@ import {
 import { Box, HStack, Text } from '@suite-native/atoms';
 import {
     BaseCurrencyAmountFormatter,
-    ExactTokenAmountFormatter,
+    CryptoAmountFormatter,
     asDecimalTokenAmount,
 } from '@suite-native/formatters';
 import { TokenIcon } from '@suite-native/icons';
@@ -57,7 +57,7 @@ export const YieldClaimRewardRow = ({
                     size={20}
                 />
                 <Box flexShrink={1}>
-                    <ExactTokenAmountFormatter
+                    <CryptoAmountFormatter
                         value={asDecimalTokenAmount(amount)}
                         tokenSymbol={toTokenSymbol(tokenSymbol)}
                         maxDisplayedDecimals={tokenDecimals}

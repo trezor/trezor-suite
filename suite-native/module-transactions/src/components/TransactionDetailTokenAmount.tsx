@@ -2,7 +2,7 @@ import { useSelector } from 'react-redux';
 
 import { type FiatRatesRootState, type WalletSettingsRootState } from '@suite-common/wallet-core';
 import {
-    ExactTokenAmountFormatter,
+    CryptoAmountFormatter,
     SignValueFormatter,
     TokenToFiatAmountFormatter,
     convertTokenValueToDecimal,
@@ -43,7 +43,7 @@ export const TransactionDetailTokenAmount = ({
                 />
             )}
 
-            <ExactTokenAmountFormatter
+            <CryptoAmountFormatter
                 value={convertTokenValueToDecimal(tokenTransfer.amount, tokenTransfer.decimals)}
                 tokenSymbol={tokenTransfer.symbol ?? null}
                 maxDisplayedDecimals={tokenTransfer.decimals}
