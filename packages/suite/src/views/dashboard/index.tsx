@@ -1,11 +1,13 @@
 import { ContextMessage } from '@suite/message-system';
+import { selectHasExperimentalFeature } from '@suite/settings';
 import { Context } from '@suite-common/message-system';
 import { Column } from '@trezor/components';
 
 import { OutOfQuotaBanner } from 'src/components/suite/banners/SuiteBanners/OutOfQuotaBanner';
 import { PageHeader } from 'src/components/suite/layouts/SuiteLayout';
-import { useLayout } from 'src/hooks/suite';
+import { useLayout, useSelector } from 'src/hooks/suite';
 
+import { AssetFirstDashboard } from './AssetFirstTable/AssetFirstDashboard';
 import { AssetsView } from './AssetsView/AssetsView';
 import { DashboardFooter } from './DashboardFooter';
 import { DashboardPromoBanner } from './DashboardPromoBanner/DashboardPromoBanner';
@@ -14,8 +16,23 @@ import { PortfolioCard } from './PortfolioCard/PortfolioCard';
 import { useNotificationForDisconnectedDevice } from './useNotificationForDisconnectedDevice';
 
 export const Dashboard = () => {
-    useLayout('Home', <PageHeader />, <DashboardFooter />);
+    const isAssetFirstTableEnabled = useSelector(
+        selectHasExperimentalFeature('asset-first-home-table'),
+    );
+
+    // The asset-first page carries its own balance and actions, so the app's page header would
+    // only repeat them.
+    useLayout('Home', isAssetFirstTableEnabled ? undefined : <PageHeader />, <DashboardFooter />);
     useNotificationForDisconnectedDevice();
+
+    // The asset-first home tab is the whole page, not another section of it.
+    if (isAssetFirstTableEnabled) {
+        return (
+            <Column gap={48} data-testid="@dashboard/index">
+                <AssetFirstDashboard />
+            </Column>
+        );
+    }
 
     return (
         <Column gap={48} data-testid="@dashboard/index">
