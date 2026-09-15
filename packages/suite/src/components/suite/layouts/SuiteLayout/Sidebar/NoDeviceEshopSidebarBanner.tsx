@@ -37,8 +37,7 @@ type NoDeviceEshopSidebarBannerRootState = DeviceRootState & FlagsRootState & Ro
 const isNoDeviceEshopSidebarBannerRoute = (state: RouterRootState) => {
     const routerApp = selectRouterApp(state);
 
-    // After reset, users land on the start screen (`initialRun`) rather than the dashboard.
-    return routerApp === 'dashboard' || routerApp === 'start';
+    return routerApp === 'dashboard';
 };
 
 export const selectShouldShowNoDeviceEshopSidebarBanner = (

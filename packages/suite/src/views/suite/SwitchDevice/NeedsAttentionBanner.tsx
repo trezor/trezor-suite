@@ -119,7 +119,8 @@ export const NeedsAttentionBanner = ({
                 // but we cannot tell (device.features.initialized is null)
                 return () => {
                     selectDevice();
-                    dispatch(gotoThunk({ routeName: 'suite-start' }));
+                    // ensure that Manual Device Check is not obscured by a route which overrides it (see SHOULD_ROUTER_APP_SKIP_INTERACTIVE_DEVICE_CHECKS)
+                    dispatch(gotoThunk({ routeName: 'suite-index' }));
                 };
 
             case 'seedless':

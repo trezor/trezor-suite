@@ -104,7 +104,6 @@ describe('usePreferredModal', () => {
     });
 
     it('ignores an app that is both foreground and fullscreen', () => {
-        expect(renderPreferredModal({ pathname: '/start' })).toEqual({ type: 'none' });
         expect(renderPreferredModal({ pathname: '/onboarding', modal: USER_MODAL })).toEqual({
             type: 'redux-modal',
             payload: USER_MODAL,

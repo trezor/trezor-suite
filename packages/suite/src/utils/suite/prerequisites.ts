@@ -118,7 +118,7 @@ type IsPrerequisiteExcluded = {
 
 /**
  * Check if the prerequisite should be ignored in whole suite.
- * Note that fullscreen apps may ignore another prerequisites, e.g. 'start'.
+ * Note that fullscreen apps may ignore another prerequisites, e.g. 'onboarding'.
  * TODO: remove the fullscreenApp logic, see Preloader
  */
 export const isPrerequisiteGloballyExcluded = ({

@@ -97,18 +97,6 @@ const initStore = (state: State) =>
 
 describe('redirectMiddleware', () => {
     describe('redirects on DEVICE.CONNECT event', () => {
-        it('DEVICE.CONNECT mode=initialize', () => {
-            const store = initStore(getInitialState());
-
-            const connectDevice = mockConnectDevice({ mode: 'initialize' });
-            store.dispatch({ type: DEVICE.CONNECT, payload: { device: connectDevice } });
-
-            const device = store.getState().device.devices.find(d => d.id === connectDevice.id);
-            store.dispatch({ type: deviceActions.selectDevice.type, payload: device });
-
-            expect(store.getState().router.route?.name).toBe('suite-start');
-        });
-
         it('DEVICE.CONNECT firmware=required', () => {
             const store = initStore(getInitialState());
 

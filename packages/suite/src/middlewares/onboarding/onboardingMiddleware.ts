@@ -4,12 +4,14 @@ import { type MiddlewareAPI, type Dispatch as ReduxDispatch } from 'redux';
 import { isRecoveryInProgress, recoveryActions, selectRecoveryStatus } from '@suite/recovery';
 import { routerAppChanged } from '@suite/router';
 import { deviceActions } from '@suite-common/device';
-import { firmwareActions } from '@suite-common/firmware';
+import { firmwareActions, selectFirmware } from '@suite-common/firmware';
+import { persistentDeviceDataActions } from '@suite-common/persistent-device-data';
 import { type Dispatch } from '@suite-common/redux-utils';
 import { forgetDisconnectedDevicesThunk } from '@suite-common/wallet-core';
 import { UI_EVENTS, isUiEventOfType } from '@trezor/connect';
 
 import * as onboardingActions from 'src/actions/onboarding/onboardingActions';
+import { selectOnboarding } from 'src/selectors/onboarding/onboardingSelectors';
 import { type AppState } from 'src/types/suite';
 
 const onboardingMiddleware =
@@ -19,7 +21,15 @@ const onboardingMiddleware =
         const isFwInstallationDone =
             firmwareActions.setStatus.match(action) && action.payload === 'done';
 
-        const { firmware, onboarding } = api.getState();
+        const firmware = selectFirmware(api.getState());
+        const onboarding = selectOnboarding(api.getState());
+
+        // Having just installed FW, we can mark the device as known, so that Manual Device Check is not seen again.
+        // In case of fresh/factory-reset device, it would be duplicate.
+        const deviceId = firmware.cachedDevice?.id;
+        if (isFwInstallationDone) {
+            api.dispatch(persistentDeviceDataActions.setManualDeviceCheckSuccess({ deviceId }));
+        }
 
         if (isFwInstallationDone && onboarding.isActive && firmware.status === 'thp-pairing') {
             // After the THP pairing is finished we want to jump to the next step automatically.
