@@ -82,6 +82,7 @@ export const useClaimForm = ({ account }: UseClaimFormsProps): ClaimContextValue
         onFeeLevelChange,
     } = useStakeCompose({
         ...methods,
+        formState,
         state,
     });
 
@@ -121,6 +122,7 @@ export const useClaimForm = ({ account }: UseClaimFormsProps): ClaimContextValue
         onChange: onFeeLevelChange,
         composeRequest,
         ...methods,
+        formState,
     });
     const selectedFee = _selectedFee ?? 'normal';
 

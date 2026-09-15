@@ -288,6 +288,7 @@ export const useRbf = (props: UseRbfProps): RbfContextValues => {
     const { isLoading, composeRequest, composedLevels, onFeeLevelChange, signTransaction } =
         useCompose({
             ...useFormMethods,
+            formState,
             state,
             defaultField: 'selectedFee',
         });
@@ -300,6 +301,7 @@ export const useRbf = (props: UseRbfProps): RbfContextValues => {
         composeRequest,
         composedLevels,
         ...useFormMethods,
+        formState,
     });
 
     // If automatically composed transaction throws NOT-ENOUGH-FUNDS error

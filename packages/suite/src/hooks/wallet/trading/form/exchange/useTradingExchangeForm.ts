@@ -47,6 +47,14 @@ import { useTradingFormAccount } from '../useTradingFormAccount';
 import { useTradingReceiveAddress } from '../useTradingReceiveAddress';
 
 export const useTradingExchangeForm = (): TradingExchangeFormContextProps => {
+    // React Compiler: react-hook-form edits `formState.errors` in place, so the object keeps one
+    // identity until the next `reset` and a compiled `Object.keys` of it -- this form's or the
+    // receive-address form's -- is never recomputed. A swap amount above the balance would keep the
+    // previous offer and leave Approve enabled. Naming `formState`, as the return value below does,
+    // cannot help: the guard compares the errors object itself. Remove once form validity derives
+    // from a value that changes identity when an error is added or cleared.
+    'use no memo';
+
     const type = 'exchange';
     const { dispatch } = useServices(injectDispatch);
     const savedFormValues = useSelector(selectTradingExchangeFormValues);
@@ -223,6 +231,10 @@ export const useTradingExchangeForm = (): TradingExchangeFormContextProps => {
     return {
         type,
         ...methods,
+        // The spread copies react-hook-form's ref object, whose `formState` is replaced by a
+        // new proxy on every update. Naming it puts a moving dependency in the compiler's guard,
+        // so this context value is rebuilt when validation state changes.
+        formState,
 
         form: {
             state: {

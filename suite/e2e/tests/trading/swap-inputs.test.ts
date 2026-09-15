@@ -189,9 +189,16 @@ test.describe('Trading - Swap inputs', { tag: ['@webOnly', '@noDevice', '@option
                 });
 
                 await test.step('Verify amount limits', async () => {
-                    await tradingPage.inputs.verifyCryptoAmountExceedsBalance(
-                        insufficientCryptoAmount,
+                    await tradingPage.inputs.cryptoAmount.fill(insufficientCryptoAmount);
+                    await expect(tradingPage.inputs.youPayError).toHaveTranslation(
+                        'AMOUNT_IS_NOT_ENOUGH',
+                        { timeout: 15_000 },
                     );
+                    // The offer quoted for the previous amount must not stay under "You get".
+                    await expect(tradingPage.inputs.receiveAmount).toHaveText('0.0');
+
+                    await tradingPage.inputs.cryptoAmount.clear();
+                    await expect(tradingPage.inputs.youPayError).toBeHidden();
                 });
             }
         },

@@ -38,6 +38,14 @@ import { useTradingFormAccount } from '../useTradingFormAccount';
 import { useTradingReceiveAddress } from '../useTradingReceiveAddress';
 
 export const useTradingBuyForm = (): TradingBuyFormContextProps => {
+    // React Compiler: react-hook-form edits `formState.errors` in place, so the object keeps one
+    // identity until the next `reset` and a compiled `Object.keys` of it -- this form's or the
+    // receive-address form's -- is never recomputed, the freeze the exchange and sell forms opt out
+    // of. This hook was skipped only as a side effect of the `react-hooks/exhaustive-deps`
+    // suppression below, so tidying that away would have shipped it. Remove once form validity
+    // derives from a value that changes identity when an error is added or cleared.
+    'use no memo';
+
     const type = 'buy';
     const { dispatch } = useServices(injectDispatch);
 
@@ -146,6 +154,10 @@ export const useTradingBuyForm = (): TradingBuyFormContextProps => {
             },
         },
         ...methods,
+        // The spread copies react-hook-form's ref object, whose `formState` is replaced by a
+        // new proxy on every update. Naming it puts a moving dependency in the compiler's guard,
+        // so this context value is rebuilt when validation state changes.
+        formState,
         methods,
         amountLimits,
         network,
