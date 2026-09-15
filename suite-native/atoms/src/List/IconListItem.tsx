@@ -10,7 +10,7 @@ import { Text } from '../Text';
 import { IconListContext } from './IconList';
 
 export type IconListItemProps = {
-    icon: IconName;
+    icon: IconName | number;
     intent?: IconSquareIntent;
     children: ReactNode;
 };

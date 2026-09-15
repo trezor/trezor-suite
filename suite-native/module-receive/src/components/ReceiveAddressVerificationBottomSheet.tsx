@@ -1,8 +1,9 @@
 import {
-    BottomSheetListItem,
     BottomSheetModal,
     type BottomSheetModalRef,
     Button,
+    IconList,
+    IconListTextItem,
     Text,
     VStack,
 } from '@suite-native/atoms';
@@ -48,16 +49,14 @@ export const ReceiveAddressVerificationBottomSheet = ({
                     </Text>
                 </VStack>
                 {!isSharedAddress && (
-                    <VStack spacing="sp20">
-                        <BottomSheetListItem
-                            icon={1}
-                            translationKey="moduleReceive.addressCopiedBottomSheet.steps.pasteAddress"
-                        />
-                        <BottomSheetListItem
-                            icon={2}
-                            translationKey="moduleReceive.addressCopiedBottomSheet.steps.verifyAddress"
-                        />
-                    </VStack>
+                    <IconList textVariant="body-md">
+                        <IconListTextItem icon={1}>
+                            <Translation id="moduleReceive.addressCopiedBottomSheet.steps.pasteAddress" />
+                        </IconListTextItem>
+                        <IconListTextItem icon={2}>
+                            <Translation id="moduleReceive.addressCopiedBottomSheet.steps.verifyAddress" />
+                        </IconListTextItem>
+                    </IconList>
                 )}
                 <VStack spacing="sp12">
                     <Button
