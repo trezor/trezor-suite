@@ -18,8 +18,8 @@ import { hardFailureChecklistItems, softFailureChecklistItems } from './componen
 import {
     DismissFwAuthenticityCheckButton,
     EntropyCheckSupportButton,
-    FwAuthencityChecksCtas,
     FwAuthenticityCheckSupportButton,
+    FwAuthenticityChecksCtas,
 } from './components/ctas';
 import { WelcomeLayout } from '../layouts/WelcomeLayout/WelcomeLayout';
 
@@ -55,7 +55,7 @@ const DeviceCompromisedContent = () => {
     if (isInvariabilityCheckFailure) {
         return (
             <SecurityCheckFail
-                ctaSection={<FwAuthencityChecksCtas />}
+                ctaSection={<FwAuthenticityChecksCtas />}
                 heading="TR_DEVICE_COMPROMISED_HEADING"
                 text="TR_DEVICE_COMPROMISED_INVARIABILITY_CHECK_FAILED_TEXT"
                 checklistItems={hardFailureChecklistItems}
@@ -76,7 +76,7 @@ const DeviceCompromisedContent = () => {
     if (revisionCheckError !== null) {
         return (
             <SecurityCheckFail
-                ctaSection={<FwAuthencityChecksCtas />}
+                ctaSection={<FwAuthenticityChecksCtas />}
                 heading="TR_DEVICE_COMPROMISED_HEADING"
                 text="TR_DEVICE_COMPROMISED_FW_REVISION_CHECK_TEXT"
                 checklistItems={hardFailureChecklistItems}
@@ -88,7 +88,7 @@ const DeviceCompromisedContent = () => {
         if (wasHashCheckOtherErrorLastTime) {
             return (
                 <SecurityCheckFail
-                    ctaSection={<FwAuthencityChecksCtas />}
+                    ctaSection={<FwAuthenticityChecksCtas />}
                     heading="TR_FAILED_VERIFY_DEVICE_HEADING"
                     text="TR_FAILED_VERIFY_DEVICE_AGAIN_TEXT"
                     checklistItems={hardFailureChecklistItems}
@@ -110,7 +110,7 @@ const DeviceCompromisedContent = () => {
     if (hashCheckError !== null) {
         return (
             <SecurityCheckFail
-                ctaSection={<FwAuthencityChecksCtas />}
+                ctaSection={<FwAuthenticityChecksCtas />}
                 heading="TR_DEVICE_COMPROMISED_HEADING"
                 text={hashCheckSubtitleMap[hashCheckError]}
                 checklistItems={hardFailureChecklistItems}
@@ -119,7 +119,7 @@ const DeviceCompromisedContent = () => {
     }
 
     // should not happen, but default props will be used with no problem
-    return <SecurityCheckFail ctaSection={<FwAuthencityChecksCtas />} />;
+    return <SecurityCheckFail ctaSection={<FwAuthenticityChecksCtas />} />;
 };
 
 /**
