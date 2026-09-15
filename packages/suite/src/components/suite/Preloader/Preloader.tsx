@@ -39,7 +39,7 @@ import { DatabaseCorruptedModal } from './DatabaseCorruptedModal';
 import { DatabaseUpgradeModal } from './DatabaseUpgradeModal';
 import { InitialLoading } from './InitialLoading';
 import { PrerequisitesGuide } from '../PrerequisitesGuide/PrerequisitesGuide';
-import { DeviceCompromised } from '../SecurityCheck/DeviceCompromised';
+import { DeviceCompromisedScreen } from '../SecurityCheck/DeviceCompromisedScreen';
 import { useDeviceCompromisedNotification } from '../SecurityCheck/useDeviceCompromisedNotification';
 import { SuiteLayout } from '../layouts/SuiteLayout/SuiteLayout';
 import { WelcomeLayout } from '../layouts/WelcomeLayout/WelcomeLayout';
@@ -132,7 +132,7 @@ export const Preloader = memo(function Preloader({ children }: PropsWithChildren
     }
 
     if (shouldDisplayDeviceCompromisedOnRoute) {
-        return <DeviceCompromised />;
+        return <DeviceCompromisedScreen />;
     }
 
     // TODO: murder the fullscreen app logic, there must be a better way

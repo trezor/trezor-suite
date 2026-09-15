@@ -13,7 +13,7 @@ import { DeviceModelInternal } from '@trezor/device-utils';
 import { type AppState } from 'src/reducers/store';
 import { renderWithProviders } from 'src/support/test-utils/hooksHelper';
 
-import { DeviceCompromised } from './DeviceCompromised';
+import { DeviceCompromisedScreen } from './DeviceCompromisedScreen';
 import { mockInitialAppState } from '../../../../mocks/mockInitialAppState';
 
 jest.mock('@suite-common/tx-simulation', () => ({}));
@@ -186,14 +186,14 @@ const deviceCompromisedFixtures: Array<{
     },
 ];
 
-describe(`${DeviceCompromised.name} component`, () => {
+describe(`${DeviceCompromisedScreen.name} component`, () => {
     deviceCompromisedFixtures.forEach(({ description, device, persistentDeviceData, result }) => {
         it(description, () => {
             const root = createTestCompositionRoot({
                 extra: { services },
                 preloadedState: getInitialState(device, persistentDeviceData),
             });
-            const { getByText, unmount } = renderWithProviders(root, <DeviceCompromised />);
+            const { getByText, unmount } = renderWithProviders(root, <DeviceCompromisedScreen />);
             expect(getByText(result)).not.toBeNull();
             unmount();
         });

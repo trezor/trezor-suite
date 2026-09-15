@@ -13,14 +13,14 @@ import { type FirmwareHashCheckError } from '@trezor/connect';
 
 import { useSelector } from 'src/hooks/suite';
 
-import { SecurityCheckFail } from './SecurityCheckFail';
-import { hardFailureChecklistItems, softFailureChecklistItems } from './checklistItems';
+import { SecurityCheckFail } from './components/SecurityCheckFail';
+import { hardFailureChecklistItems, softFailureChecklistItems } from './components/checklistItems';
 import {
     DismissFwAuthenticityCheckButton,
     EntropyCheckSupportButton,
-    FwAuthencityChecksCtas,
     FwAuthenticityCheckSupportButton,
-} from './deviceCompromisedCtas';
+    FwAuthenticityChecksCtas,
+} from './components/ctas';
 import { WelcomeLayout } from '../layouts/WelcomeLayout/WelcomeLayout';
 
 const hashCheckSubtitleMap: Record<
@@ -55,7 +55,7 @@ const DeviceCompromisedContent = () => {
     if (isInvariabilityCheckFailure) {
         return (
             <SecurityCheckFail
-                ctaSection={<FwAuthencityChecksCtas />}
+                ctaSection={<FwAuthenticityChecksCtas />}
                 heading="TR_DEVICE_COMPROMISED_HEADING"
                 text="TR_DEVICE_COMPROMISED_INVARIABILITY_CHECK_FAILED_TEXT"
                 checklistItems={hardFailureChecklistItems}
@@ -76,7 +76,7 @@ const DeviceCompromisedContent = () => {
     if (revisionCheckError !== null) {
         return (
             <SecurityCheckFail
-                ctaSection={<FwAuthencityChecksCtas />}
+                ctaSection={<FwAuthenticityChecksCtas />}
                 heading="TR_DEVICE_COMPROMISED_HEADING"
                 text="TR_DEVICE_COMPROMISED_FW_REVISION_CHECK_TEXT"
                 checklistItems={hardFailureChecklistItems}
@@ -88,7 +88,7 @@ const DeviceCompromisedContent = () => {
         if (wasHashCheckOtherErrorLastTime) {
             return (
                 <SecurityCheckFail
-                    ctaSection={<FwAuthencityChecksCtas />}
+                    ctaSection={<FwAuthenticityChecksCtas />}
                     heading="TR_FAILED_VERIFY_DEVICE_HEADING"
                     text="TR_FAILED_VERIFY_DEVICE_AGAIN_TEXT"
                     checklistItems={hardFailureChecklistItems}
@@ -110,7 +110,7 @@ const DeviceCompromisedContent = () => {
     if (hashCheckError !== null) {
         return (
             <SecurityCheckFail
-                ctaSection={<FwAuthencityChecksCtas />}
+                ctaSection={<FwAuthenticityChecksCtas />}
                 heading="TR_DEVICE_COMPROMISED_HEADING"
                 text={hashCheckSubtitleMap[hashCheckError]}
                 checklistItems={hardFailureChecklistItems}
@@ -119,10 +119,16 @@ const DeviceCompromisedContent = () => {
     }
 
     // should not happen, but default props will be used with no problem
-    return <SecurityCheckFail ctaSection={<FwAuthencityChecksCtas />} />;
+    return <SecurityCheckFail ctaSection={<FwAuthenticityChecksCtas />} />;
 };
 
-export const DeviceCompromised = () => (
+/**
+ * Screen displayed when one of the non-interactive security checks has failed, i.e. checks that
+ * run automatically, without prompting the user, as part of certain flows.
+ * In the happy-case scenario, these checks have no visible UX at all.
+ * The interactive checks, meanwhile, are handled by `InteractiveDeviceChecksFlow`.
+ */
+export const DeviceCompromisedScreen = () => (
     <WelcomeLayout showAccounts={false}>
         <Card data-testid="@device-compromised" paddingType="large">
             <DeviceCompromisedContent />

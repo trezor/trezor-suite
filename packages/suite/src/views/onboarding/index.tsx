@@ -27,7 +27,7 @@ import { SecurityStep } from 'src/views/onboarding/steps/SecurityStep';
 export const Onboarding = () => {
     const { analytics, dispatch } = useServices(selectDesktopAnalyticsDep, selectDispatch);
 
-    const { activeStepId, goToNextStep } = useOnboarding();
+    const { activeStepId } = useOnboarding();
     const device = useSelector(selectSelectedDevice);
     const thpStep = useSelector(selectThpStep);
 
@@ -60,7 +60,7 @@ export const Onboarding = () => {
                 return FirmwareStep;
             case STEP.ID_AUTHENTICATE_DEVICE_STEP:
                 // Device authenticity check
-                return () => <DeviceAuthenticityStep goToNext={() => goToNextStep()} />;
+                return DeviceAuthenticityStep;
             case STEP.ID_TUTORIAL_STEP:
                 // Device tutorial
                 return DeviceTutorialStep;
@@ -85,7 +85,7 @@ export const Onboarding = () => {
             default:
                 return exhaustive(activeStepId);
         }
-    }, [activeStepId, goToNextStep]);
+    }, [activeStepId]);
 
     return (
         <OnboardingLayout>

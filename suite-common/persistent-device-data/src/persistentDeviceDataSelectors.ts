@@ -24,14 +24,8 @@ export const selectEntropyCheckResultByDeviceId = createMemoizedSelector(
 );
 
 export const selectDeviceAuthenticityByDeviceId = createMemoizedSelector(
-    [
-        (_state: PersistentDeviceDataRootState, deviceId: TrezorDevice['id']) => deviceId,
-        selectPersistentDeviceData,
-    ],
-    (deviceId, persistentDeviceData) =>
-        deviceId
-            ? persistentDeviceData.find(data => data.device_id === deviceId)?.authenticityResult
-            : undefined,
+    [selectPersistentDeviceDataById],
+    persistentDeviceData => persistentDeviceData?.authenticityResult,
 );
 
 export const selectIsEntropyCheckFailed = createMemoizedSelector(
@@ -52,7 +46,6 @@ export const selectIsDeviceInvariabilityCheckSuccess = createMemoizedSelector(
 );
 
 export const selectDelegatedIdentityKeyByDeviceId = createMemoizedSelector(
-    [selectPersistentDeviceData, (_state, deviceId: string) => deviceId],
-    (persistentDeviceData, deviceId) =>
-        persistentDeviceData.find(d => d.device_id === deviceId)?.delegatedIdentityKey ?? null,
+    [selectPersistentDeviceDataById],
+    persistentDeviceData => persistentDeviceData?.delegatedIdentityKey ?? null,
 );

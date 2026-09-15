@@ -2,23 +2,14 @@ import { useEffect, useMemo, useState } from 'react';
 
 import { events, selectDesktopAnalyticsDep } from '@suite/analytics';
 import { TrezorLink } from '@suite/external-links';
-import { selectFlags } from '@suite/flags';
 import { Translation } from '@suite/intl';
 import { selectRecoveryStatus } from '@suite/recovery';
 import { gotoThunk } from '@suite/router';
-import {
-    selectIsDeviceAuthenticityCheckEnabled,
-    selectIsUnlockedBootloaderAllowed,
-} from '@suite/settings';
 import { useServices } from '@suite-common/dependency-injection';
-import { deviceActions, selectDevices, selectSelectedDevice } from '@suite-common/device';
+import { selectSelectedDevice } from '@suite-common/device';
 import { persistentDeviceDataActions } from '@suite-common/persistent-device-data';
 import { selectDispatch } from '@suite-common/redux-utils';
-import { SUPPORTS_DEVICE_AUTHENTICITY_CHECK } from '@suite-common/suite-constants';
-import { type AcquiredDevice } from '@suite-common/suite-types';
 import {
-    Box,
-    Card,
     Column,
     Divider,
     H3,
@@ -40,18 +31,16 @@ import {
 } from '@trezor/urls';
 
 import { Hologram } from 'src/components/onboarding/Hologram';
-import { SecurityCheckButton } from 'src/components/suite/SecurityCheck/SecurityCheckButton';
-import { SecurityCheckFail } from 'src/components/suite/SecurityCheck/SecurityCheckFail';
-import { SecurityCheckLayout } from 'src/components/suite/SecurityCheck/SecurityCheckLayout';
-import { ContactSupport } from 'src/components/suite/SecurityCheck/deviceCompromisedCtas';
 import { useLayoutSize, useOnboarding, useSelector } from 'src/hooks/suite';
 import { selectIsOnboardingActive } from 'src/reducers/onboarding/onboardingReducer';
 import { ContentFlex, useIsContentBelowBreakpoint } from 'src/support/suite/ContentFlex';
 
-import { SecurityChecklist } from './SecurityChecklist';
+import { SecurityCheckButton } from './components/SecurityCheckButton';
+import { SecurityCheckFail } from './components/SecurityCheckFail';
+import { SecurityCheckLayout } from './components/SecurityCheckLayout';
+import { SecurityChecklist } from './components/SecurityChecklist';
+import { ContactSupport } from './components/ctas';
 import { type SecurityChecklistItem } from './types';
-
-import { DeviceAuthenticityStep } from './index';
 
 const firmwareInstalledChecklist = [
     {
@@ -108,17 +97,17 @@ const getNoFirmwareChecklist = (isBelowTablet: boolean) =>
         },
     ] as const satisfies SecurityChecklistItem[];
 
-type SecurityCheckContentProps = {
+type ManualDeviceCheckProps = {
     goToDeviceAuthentication: () => void;
     goToSuiteOrNextDevice: () => void;
     shouldAuthenticateSelectedDevice: boolean;
 };
 
-const SecurityCheckContent = ({
+export const ManualDeviceCheck = ({
     goToDeviceAuthentication,
     goToSuiteOrNextDevice,
     shouldAuthenticateSelectedDevice,
-}: SecurityCheckContentProps) => {
+}: ManualDeviceCheckProps) => {
     const { analytics, dispatch } = useServices(selectDesktopAnalyticsDep, selectDispatch);
     const { isBelowTablet } = useLayoutSize();
     const recoveryStatus = useSelector(selectRecoveryStatus);
@@ -285,74 +274,5 @@ const SecurityCheckContent = ({
                 )}
             </ContentFlex>
         </SecurityCheckLayout>
-    );
-};
-
-export const SecurityCheck = () => {
-    const selectedDevice = useSelector(selectSelectedDevice);
-    const devices = useSelector(selectDevices);
-    const { initialRun } = useSelector(selectFlags);
-    const isDeviceAuthenticityCheckEnabled = useSelector(selectIsDeviceAuthenticityCheckEnabled);
-    const isUnlockedBootloaderAllowed = useSelector(selectIsUnlockedBootloaderAllowed);
-    const { dispatch } = useServices(selectDispatch);
-    const { goToSuite } = useOnboarding();
-    const [isAuthenticityCheckStep, setIsAuthenticityCheckStep] = useState(false);
-    const [checkedDevices, setCheckedDevices] = useState<string[]>([]);
-
-    const isDebugDevice = (device: AcquiredDevice) =>
-        isUnlockedBootloaderAllowed && device.features.bootloader_locked === false;
-
-    const shouldAuthenticateSelectedDevice =
-        !!selectedDevice?.features?.internal_model &&
-        SUPPORTS_DEVICE_AUTHENTICITY_CHECK[selectedDevice.features.internal_model] &&
-        initialRun &&
-        isDeviceAuthenticityCheckEnabled &&
-        !isDebugDevice(selectedDevice);
-
-    // If there are multiple devices connected, check all of them before continuing to Suite.
-    const goToSuiteOrNextDevice = (onSelectNext?: () => void) => {
-        const nextDeviceToCheck = devices
-            .filter(device => device.id !== selectedDevice?.id)
-            .find(device => device.id && !checkedDevices.includes(device.id));
-
-        if (nextDeviceToCheck !== undefined) {
-            onSelectNext?.();
-            setCheckedDevices(prev => [...prev, selectedDevice?.id ?? '']); // Device ID must be available as firmware is already installed.
-            dispatch(deviceActions.selectDevice(nextDeviceToCheck));
-        } else {
-            // "Yes, I have used it before" only enters Suite, nothing is set up here.
-            goToSuite({ skipDeviceSetupCompletedEvent: true });
-        }
-    };
-
-    // Edge case:
-    // Devices A and B are connected, only device A supports authenticity check.
-    // Device A disconnects while on the first screen of the check.
-    useEffect(() => {
-        if (isAuthenticityCheckStep && !shouldAuthenticateSelectedDevice) {
-            setIsAuthenticityCheckStep(false);
-        }
-    }, [isAuthenticityCheckStep, shouldAuthenticateSelectedDevice]);
-
-    if (isAuthenticityCheckStep) {
-        return (
-            <Box padding={{ top: 40 }} width="100%">
-                <DeviceAuthenticityStep
-                    goToNext={() => goToSuiteOrNextDevice(() => setIsAuthenticityCheckStep(false))}
-                />
-            </Box>
-        );
-    }
-
-    const goToDeviceAuthentication = () => setIsAuthenticityCheckStep(true);
-
-    return (
-        <Card paddingType="large">
-            <SecurityCheckContent
-                goToDeviceAuthentication={goToDeviceAuthentication}
-                goToSuiteOrNextDevice={goToSuiteOrNextDevice}
-                shouldAuthenticateSelectedDevice={shouldAuthenticateSelectedDevice}
-            />
-        </Card>
     );
 };
