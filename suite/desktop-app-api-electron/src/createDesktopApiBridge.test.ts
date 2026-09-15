@@ -286,5 +286,31 @@ describe(createDesktopApiBridge.name, () => {
             // @ts-expect-error param expected
             api.loadModules();
         });
+
+        // Each Debug control sends only its OWN field as a Partial<BridgeSettings> (the USB toggle
+        // sends { usbImplementation }, run-on-startup sends { doNotStartOnStartup }); both partials
+        // must be forwarded. Requiring one field would silently drop the other's payload as
+        // 'invalid params' (regression guard for the USB-toggle-does-nothing bug).
+        it('DesktopApi.changeBridgeSettings forwards single-field partials and rejects invalid ones', () => {
+            const spy = jest.spyOn(ipcRenderer, 'invoke');
+
+            api.changeBridgeSettings({ usbImplementation: 'nusb' });
+            expect(spy).toHaveBeenCalledWith('bridge/change-settings', {
+                usbImplementation: 'nusb',
+            });
+
+            api.changeBridgeSettings({ doNotStartOnStartup: true });
+            expect(spy).toHaveBeenCalledWith('bridge/change-settings', {
+                doNotStartOnStartup: true,
+            });
+
+            expect(spy).toHaveBeenCalledTimes(2);
+
+            // @ts-expect-error wrong field type
+            api.changeBridgeSettings({ usbImplementation: 5 });
+            // @ts-expect-error not an object
+            api.changeBridgeSettings(null);
+            expect(spy).toHaveBeenCalledTimes(2); // invalid params not processed
+        });
     });
 });
