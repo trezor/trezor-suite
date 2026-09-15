@@ -105,9 +105,19 @@ export type FrozenReadReport = {
     findings: FrozenReadFinding[];
     /** Advisory only: impure globals cached behind a first-render sentinel. */
     impureCaches: ImpureCacheFinding[];
+    /** Advisory only: files the compiler skips only because of an ESLint suppression. */
+    suppressedFiles: SuppressedFile[];
     /** Guards touching `$` in a shape this module does not model — a compiler-upgrade tripwire. */
     unknownGuardShapes: SourceLocation[];
     transformErrors: TransformError[];
+};
+
+export type SuppressedFile = {
+    file: string;
+    /** Memo caches the compiler emits today. */
+    caches: number;
+    /** What it would emit with the suppressions removed. */
+    cachesWithoutSuppressions: number;
 };
 
 export type CompileResult = { ast: t.File } | { error: string };
@@ -549,6 +559,58 @@ const listSourceFiles = (directory: string): string[] => {
 };
 
 /**
+ * `react-hooks/exhaustive-deps` and `react-hooks/rules-of-hooks` are the compiler's
+ * `DEFAULT_ESLINT_SUPPRESSIONS`, so suppressing either drops the enclosing function — or, at file
+ * scope, the whole file — from compilation. Nothing reports it, which makes a suppression added for
+ * an unrelated reason an invisible opt-out, and its later removal an invisible opt-in.
+ */
+const ESLINT_SUPPRESSION =
+    /eslint-disable(-next-line)?\s[^\n]*react-hooks\/(exhaustive-deps|rules-of-hooks)/;
+
+const countMemoCaches = (ast: t.File): number => {
+    let caches = 0;
+
+    traverse(ast, {
+        CallExpression(callPath) {
+            if (t.isIdentifier(callPath.node.callee, { name: '_c' })) {
+                caches += 1;
+            }
+        },
+    });
+
+    return caches;
+};
+
+/**
+ * `null` unless removing the file's suppressions would make the compiler emit more memo caches —
+ * that is, unless a lint suppression is the only thing keeping this file out of the compiled set.
+ * A deliberate `'use no memo'` is not reported: that opt-out is already visible to the next reader.
+ */
+export const findSuppressedFile = (
+    source: string,
+    filename: string,
+    file: string,
+    ast: t.File,
+): SuppressedFile | null => {
+    // A deliberate `'use no memo'` is not reported — that opt-out is already visible.
+    if (!ESLINT_SUPPRESSION.test(source) || /^\s*'use no memo'/m.test(source)) return null;
+
+    const withoutSuppressions = compileForAnalysis(
+        source
+            .split('\n')
+            .filter(line => !ESLINT_SUPPRESSION.test(line))
+            .join('\n'),
+        filename,
+    );
+    if ('error' in withoutSuppressions) return null;
+
+    const caches = countMemoCaches(ast);
+    const cachesWithoutSuppressions = countMemoCaches(withoutSuppressions.ast);
+
+    return cachesWithoutSuppressions > caches ? { file, caches, cachesWithoutSuppressions } : null;
+};
+
+/**
  * Compiles and analyses every source file under the given repo-root-relative directories. Tests are
  * skipped on purpose: production never compiles them, so a read in one cannot freeze anything.
  */
@@ -562,6 +624,7 @@ export const scanDirectories = (
         guards: 0,
         findings: [],
         impureCaches: [],
+        suppressedFiles: [],
         unknownGuardShapes: [],
         transformErrors: [],
     };
@@ -569,13 +632,19 @@ export const scanDirectories = (
     directories.forEach(directory => {
         listSourceFiles(path.join(root, directory)).forEach(filename => {
             const file = path.relative(root, filename).split(path.sep).join('/');
+            const source = readFileSync(filename, 'utf-8');
             report.files += 1;
 
-            const compiled = compileForAnalysis(readFileSync(filename, 'utf-8'), filename);
+            const compiled = compileForAnalysis(source, filename);
             if ('error' in compiled) {
                 report.transformErrors.push({ file, error: compiled.error });
 
                 return;
+            }
+
+            const suppressed = findSuppressedFile(source, filename, file, compiled.ast);
+            if (suppressed !== null) {
+                report.suppressedFiles.push(suppressed);
             }
 
             const analysis = analyseCompiledModule(compiled.ast, file);
