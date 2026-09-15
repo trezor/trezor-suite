@@ -83,6 +83,7 @@ const ModalBase = ({
     });
 
     const hasHeader = onBackClick || onCancel || heading || description;
+    const hasHeadingAndDescription = Boolean(heading && description);
     const isIconPushedTop = onCancel !== undefined && !heading && !description && !onBackClick;
 
     useEvent('keydown', (e: KeyboardEvent) => {
@@ -105,7 +106,7 @@ const ModalBase = ({
                         {hasHeader && (
                             <Row
                                 padding={{ horizontal: 16, top: 16 }}
-                                alignItems={description ? 'flex-start' : 'center'}
+                                alignItems={hasHeadingAndDescription ? 'flex-start' : 'center'}
                                 gap={16}
                                 as="header"
                             >
@@ -125,7 +126,11 @@ const ModalBase = ({
                                 )}
 
                                 {(heading || description) && (
-                                    <Column flex="1" overflow="hidden">
+                                    <Column
+                                        flex="1"
+                                        overflow="hidden"
+                                        margin={{ top: hasHeadingAndDescription ? -8 : 0 }}
+                                    >
                                         {heading && <H3 data-testid="@modal/header">{heading}</H3>}
                                         {description && (
                                             <Text
