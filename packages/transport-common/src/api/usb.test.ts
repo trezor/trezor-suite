@@ -759,4 +759,311 @@ describe('api/usb', () => {
 
         expect(getTrackedDevice(api, 'bootloader1')).toBe(bootA);
     });
+
+    // Dual-distribution (usbVersion:'legacy' = usb 2.x): loadSerialNumber must read the serial via
+    // the low-level getStringDescriptor (some drivers withhold it from the plain getter).
+    it('legacy mode: loadSerialNumber reads the serial via getStringDescriptor', async () => {
+        let serial = '';
+        const getStringDescriptor = jest.fn(() => {
+            serial = 'CAFE';
+
+            return Promise.resolve('CAFE');
+        });
+        const device = createMockedDevice({
+            getStringDescriptor,
+            device: { deviceDescriptor: { iSerialNumber: 3 } },
+        });
+        Object.defineProperty(device, 'serialNumber', { get: () => serial, configurable: true });
+        const api = new UsbApi({
+            usbInterface: createUsbMock({ getDevices: () => Promise.resolve([device]) }),
+            forceReadSerialOnConnect: true,
+            usbVersion: 'legacy',
+        });
+
+        await api.enumerate();
+
+        expect(getStringDescriptor).toHaveBeenCalledTimes(1);
+        expect(getStringDescriptor).toHaveBeenCalledWith(3);
+        expect(getTrackedDevice(api, 'CAFE')).toBe(device);
+    });
+
+    // nusb mode (default) must NOT use the legacy getStringDescriptor path even if present.
+    it('nusb mode: loadSerialNumber does not call getStringDescriptor', async () => {
+        let serial = '';
+        const getStringDescriptor = jest.fn(() => Promise.resolve('X'));
+        const device = createMockedDevice({
+            getStringDescriptor,
+            device: { deviceDescriptor: { iSerialNumber: 3 } },
+            open: () => {
+                serial = 'NUSB';
+
+                return Promise.resolve();
+            },
+        });
+        Object.defineProperty(device, 'serialNumber', { get: () => serial, configurable: true });
+        const api = new UsbApi({
+            usbInterface: createUsbMock({ getDevices: () => Promise.resolve([device]) }),
+            forceReadSerialOnConnect: true,
+        });
+
+        await api.enumerate();
+
+        expect(getStringDescriptor).not.toHaveBeenCalled();
+        expect(getTrackedDevice(api, 'NUSB')).toBe(device);
+    });
+
+    // Regression (#2): in usb 3.x serialNumber is a fallible getter (opens the device on access).
+    // A single unreadable device whose getter throws inside createDevices' Promise.all must NOT
+    // reject the whole enumeration and drop the readable devices - it is isolated to a positional
+    // path instead.
+    it('enumerate() isolates a device whose serialNumber getter throws from the readable ones', async () => {
+        const readable = createMockedDevice({ serialNumber: 'GOOD' });
+        const unreadable = createMockedDevice();
+        Object.defineProperty(unreadable, 'serialNumber', {
+            get() {
+                throw new Error('open error: permission denied (os error 13)');
+            },
+            configurable: true,
+        });
+        const api = new UsbApi({
+            usbInterface: createUsbMock({
+                getDevices: () => Promise.resolve([readable, unreadable]),
+            }),
+        });
+
+        const result = await api.enumerate();
+
+        expect(result.success).toBe(true);
+        expect(getTrackedDevice(api, 'GOOD')).toBe(readable);
+        if (result.success) {
+            // both devices surface: the readable one under its serial, the unreadable one under a
+            // positional path rather than blocking the whole enumeration
+            expect(result.payload.map(d => d.path).sort()).toEqual(['GOOD', 'bootloader1']);
+        }
+    });
+
+    // Regression (#2): with forceReadSerialOnConnect, loadSerialNumber opens the device to read the
+    // serial. If open() fails for ONE device (permission denied, gone), it must not reject the whole
+    // Promise.all - the readable devices must still enumerate. An abort (dispose) still cancels.
+    it('enumerate() isolates a device whose forced serial read fails from the readable ones', async () => {
+        const readable = createMockedDevice({ serialNumber: 'GOOD' });
+        const unreadable = createMockedDevice({
+            serialNumber: '', // empty -> triggers the forced serial read
+            open: () => Promise.reject(new Error('open error: permission denied (os error 13)')),
+        });
+        const api = new UsbApi({
+            usbInterface: createUsbMock({
+                getDevices: () => Promise.resolve([readable, unreadable]),
+            }),
+            forceReadSerialOnConnect: true,
+        });
+
+        const result = await api.enumerate();
+
+        expect(result.success).toBe(true);
+        expect(getTrackedDevice(api, 'GOOD')).toBe(readable);
+    });
+
+    // Regression (#3): after a fast unplug/replug usb 3.x assigns a NEW per-device handle. A tracked
+    // in-use object with a stale handle must be DROPPED (not silently swapped for the fresh unopened
+    // object), so the sessions layer sees the path disappear and invalidates the stale session. The
+    // fresh device is then re-added on the next enumerate for a clean re-acquire.
+    it('enumerate() drops a replugged device (changed nusb handle) then re-adds it fresh', async () => {
+        const deviceA = createStatefulDevice('123', { handle: 'H1' });
+        let devicesToReturn: UsbDeviceLike[] = [deviceA];
+        const api = new UsbApi({
+            usbInterface: createUsbMock({ getDevices: () => Promise.resolve(devicesToReturn) }),
+        });
+        await api.enumerate();
+        await api.openDevice(devicePath, { reset: false });
+        expect(deviceA.opened).toBe(true);
+
+        // same serial, but replugged: a brand-new object carrying a DIFFERENT handle
+        const deviceAReplugged = createStatefulDevice('123', { handle: 'H2' });
+        devicesToReturn = [deviceAReplugged];
+        const first = await api.enumerate();
+
+        // dropped from this enumeration so the sessions layer invalidates the stale session
+        expect(getTrackedDevice(api, '123')).toBeUndefined();
+        if (first.success) expect(first.payload.some(d => d.path === '123')).toBe(false);
+
+        // re-added as the fresh live-handle object on the next enumerate, ready for re-acquire
+        const second = await api.enumerate();
+        expect(getTrackedDevice(api, '123')).toBe(deviceAReplugged);
+        if (second.success) expect(second.payload.some(d => d.path === '123')).toBe(true);
+    });
+
+    // Companion to the replug case: a re-enumeration of the SAME physical device (unchanged handle,
+    // as real nusb keeps a stable handle while connected) must still preserve the live opened object.
+    it('enumerate() preserves the opened object when the nusb handle is unchanged', async () => {
+        const deviceA = createStatefulDevice('123', { handle: 'H1' });
+        let devicesToReturn: UsbDeviceLike[] = [deviceA];
+        const api = new UsbApi({
+            usbInterface: createUsbMock({ getDevices: () => Promise.resolve(devicesToReturn) }),
+        });
+        await api.enumerate();
+        await api.openDevice(devicePath, { reset: false });
+
+        const deviceAFresh = createStatefulDevice('123', { handle: 'H1' });
+        devicesToReturn = [deviceAFresh];
+        await api.enumerate();
+
+        expect(getTrackedDevice(api, '123')).toBe(deviceA);
+    });
+
+    // Regression (#3, onconnect): a reconnect event for an already-tracked opened device that
+    // carries a DIFFERENT nusb handle (fast replug, connect-before-disconnect) must first DROP the
+    // dead tracked object (first emit -> sessions layer invalidates the stale session) and then
+    // RE-ADD the fresh object (second emit) so the physically-present device is not lost.
+    it('onconnect on a changed nusb handle (replug) drops then re-adds the fresh object (two emits)', async () => {
+        const deviceA = createStatefulDevice('123', { handle: 'H1' });
+        const usbInterface = createUsbMock({ getDevices: () => Promise.resolve([deviceA]) });
+        const api = new UsbApi({ usbInterface });
+        await api.enumerate();
+        await api.openDevice(devicePath, { reset: false });
+        expect(deviceA.opened).toBe(true);
+
+        const listener = jest.fn();
+        api.on('transport-interface-change', listener);
+        api.listen();
+
+        const deviceAReplugged = createStatefulDevice('123', { handle: 'H2' });
+        await usbInterface.onconnect?.({ device: deviceAReplugged });
+
+        // the live replugged device stays visible as the fresh live-handle object (not lost)
+        expect(getTrackedDevice(api, '123')).toBe(deviceAReplugged);
+        // two emits: first WITHOUT '123' (invalidates the stale session), then WITH the fresh '123'
+        expect(listener).toHaveBeenCalledTimes(2);
+        const firstEmit = listener.mock.calls[0]?.[0] as { path: string }[];
+        const secondEmit = listener.mock.calls[1]?.[0] as { path: string }[];
+        expect(firstEmit.some(d => d.path === '123')).toBe(false);
+        expect(secondEmit.some(d => d.path === '123')).toBe(true);
+    });
+
+    // Regression (#3, ondisconnect): after a connect-before-disconnect replug the tracked entry
+    // already holds the NEWER handle; a late disconnect for the OLD handle must NOT remove the live
+    // newer instance (it is a different physical connection).
+    it('ondisconnect ignores a late disconnect for a superseded (replugged) handle', async () => {
+        const deviceA = createStatefulDevice('123', { handle: 'H1' });
+        const usbInterface = createUsbMock({ getDevices: () => Promise.resolve([deviceA]) });
+        const api = new UsbApi({ usbInterface });
+        await api.enumerate();
+        await api.openDevice(devicePath, { reset: false });
+        api.listen();
+
+        // replug arrives connect-first: '123' now tracks the newer handle H2
+        const deviceAReplugged = createStatefulDevice('123', { handle: 'H2' });
+        await usbInterface.onconnect?.({ device: deviceAReplugged });
+        expect(getTrackedDevice(api, '123')).toBe(deviceAReplugged);
+
+        // the late disconnect for the OLD handle H1 must NOT remove the live newer instance
+        await usbInterface.ondisconnect?.({
+            device: createStatefulDevice('123', { handle: 'H1' }),
+        });
+        expect(getTrackedDevice(api, '123')).toBe(deviceAReplugged);
+    });
+
+    // Regression (#B): loadSerialNumber opens the device to force-read the serial. In usb 3.x the
+    // serialNumber getter (also read for the debug log) can throw AFTER open() and BEFORE close();
+    // the close must still run in finally, otherwise the device stays opened and reconcileDevices
+    // (which keys on .opened) treats this mere probe as an in-use device.
+    it('loadSerialNumber closes the device even when the serial read throws after open', async () => {
+        let opened = false;
+        const open = jest.fn(() => {
+            opened = true;
+
+            return Promise.resolve();
+        });
+        const close = jest.fn(() => {
+            opened = false;
+
+            return Promise.resolve();
+        });
+        const device = createMockedDevice({ open, close });
+        Object.defineProperty(device, 'opened', { get: () => opened, configurable: true });
+        Object.defineProperty(device, 'serialNumber', {
+            // empty while closed (so the forced read triggers), throws once opened (during the log)
+            get() {
+                if (opened) throw new Error('open error: device not found');
+
+                return '';
+            },
+            configurable: true,
+        });
+
+        const api = new UsbApi({
+            usbInterface: createUsbMock({ getDevices: () => Promise.resolve([device]) }),
+            forceReadSerialOnConnect: true,
+        });
+
+        const result = await api.enumerate();
+
+        expect(result.success).toBe(true);
+        expect(open).toHaveBeenCalledTimes(1);
+        expect(close).toHaveBeenCalledTimes(1); // closed despite the getter throwing
+        expect(device.opened).toBe(false);
+        // a subsequent enumerate must be free to refresh it - proving it is NOT treated as in-use
+        expect(getTrackedDevice(api, 'bootloader1')).toBe(device);
+    });
+
+    // Companion (#B, legacy): a getStringDescriptor failure after open() must also still close.
+    it('legacy mode: loadSerialNumber closes the device even when getStringDescriptor rejects', async () => {
+        let opened = false;
+        const open = jest.fn(() => {
+            opened = true;
+
+            return Promise.resolve();
+        });
+        const close = jest.fn(() => {
+            opened = false;
+
+            return Promise.resolve();
+        });
+        const getStringDescriptor = jest.fn(() =>
+            Promise.reject(new Error('control transfer failed')),
+        );
+        const device = createMockedDevice({
+            open,
+            close,
+            getStringDescriptor,
+            device: { deviceDescriptor: { iSerialNumber: 3 } },
+        });
+        Object.defineProperty(device, 'opened', { get: () => opened, configurable: true });
+        Object.defineProperty(device, 'serialNumber', { get: () => '', configurable: true });
+
+        const api = new UsbApi({
+            usbInterface: createUsbMock({ getDevices: () => Promise.resolve([device]) }),
+            forceReadSerialOnConnect: true,
+            usbVersion: 'legacy',
+        });
+
+        const result = await api.enumerate();
+
+        expect(result.success).toBe(true);
+        expect(close).toHaveBeenCalledTimes(1);
+        expect(device.opened).toBe(false);
+    });
+
+    // Superset error strings: a usb 2.x libusb disconnect must still map to a disconnect.
+    it('legacy mode: LIBUSB_ERROR_NO_DEVICE is classified as DEVICE_DISCONNECTED_DURING_ACTION', async () => {
+        const api = new UsbApi({
+            usbInterface: createUsbMock({
+                getDevices: () =>
+                    Promise.resolve([
+                        createMockedDevice({
+                            transferIn: () =>
+                                Promise.reject(
+                                    new Error('transferIn error: LIBUSB_ERROR_NO_DEVICE'),
+                                ),
+                        }),
+                    ]),
+            }),
+            usbVersion: 'legacy',
+        });
+        await api.enumerate();
+
+        const result = await api.read(devicePath, {});
+        if (result.success) throw new Error('Unexpected success');
+        expect(result.error.code).toBe(ERRORS.DEVICE_DISCONNECTED_DURING_ACTION);
+    });
 });

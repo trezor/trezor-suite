@@ -56,6 +56,15 @@ export interface UsbDeviceLike {
     opened: boolean;
     configuration: UsbConfigurationLike | null;
 
+    /**
+     * usb 2.x (legacy, libusb) only: low-level handle used to read the serial number string
+     * descriptor on drivers that withhold it (see UsbApi.loadSerialNumber). Absent on usb 3.x
+     * (node-usb-rs), navigator.usb and react-native-usb.
+     */
+    device?: { deviceDescriptor: { iSerialNumber: number } };
+    /** usb 2.x (legacy) only companion to `device`; reads a string descriptor by index. */
+    getStringDescriptor?(index: number): Promise<string>;
+
     open(): Promise<void>;
     close(): Promise<void>;
     selectConfiguration(configurationValue: number): Promise<void>;
