@@ -176,4 +176,42 @@ describe(simpleSearchTransactions.name, () => {
 
         expect(result).toEqual([transaction]);
     });
+
+    describe('telling a number apart from a word', () => {
+        // `Number.isNaN(search)` does not coerce, so for a string it is always false. Both guards
+        // that asked it were therefore always true: every query ran the amount comparison, and the
+        // amount search never rejected a query that was not a number.
+        //
+        // No targets, so the amount searched is the transaction's own, formatted — 100000 satoshis
+        // is 0.001 BTC.
+        const received = (txid: string, amount: string): WalletAccountTransaction => ({
+            ...getWalletTransaction({ txid }),
+            type: 'recv',
+            amount,
+            targets: [],
+        });
+
+        const cheap = received('amount0', '100000'); // 0.001
+        const dear = received('amount1', '1200000000'); // 12
+
+        it('matches an amount when the query is a number', () => {
+            expect(simpleSearchTransactions([cheap, dear], emptyLabels, '0.001')).toEqual([cheap]);
+        });
+
+        it('matches an amount when the query is a number with an operator', () => {
+            expect(simpleSearchTransactions([cheap, dear], emptyLabels, '>1')).toEqual([dear]);
+        });
+
+        it('matches nothing for an operator query that is not a number', () => {
+            // Was comparing every amount against `BigNumber(NaN)`, because the `return []` below
+            // the number branch could not be reached.
+            expect(simpleSearchTransactions([cheap, dear], emptyLabels, '>abc')).toEqual([]);
+        });
+
+        it('does not look at amounts for a query that is not a number', () => {
+            const transaction = getTransactionForAddress('aaa1', sharedAddress);
+
+            expect(simpleSearchTransactions([transaction], emptyLabels, 'zzz')).toEqual([]);
+        });
+    });
 });
