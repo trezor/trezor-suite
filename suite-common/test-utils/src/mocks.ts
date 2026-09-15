@@ -1,5 +1,6 @@
 /* WARNING! This file should be imported ONLY in tests! */
 
+import { type LegacyNetworkSymbol } from '@suite-common/legacy-network-config';
 import { type Action, type GuideNode, type MessageSystem } from '@suite-common/suite-types';
 import { asNetworkSymbol, networksCollection } from '@suite-common/wallet-config';
 import {
@@ -463,7 +464,7 @@ const intlMock = {
 };
 
 const mockedBlockchainNetworks = networksCollection.reduce((result, network) => {
-    result[network.symbol] = {
+    result[network.symbol as LegacyNetworkSymbol] = {
         connected: false,
         blockHash: '0',
         blockHeight: 0,

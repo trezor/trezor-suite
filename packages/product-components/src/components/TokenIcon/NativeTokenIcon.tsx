@@ -3,6 +3,7 @@ import { ReactSVG } from 'react-svg';
 import styled from 'styled-components';
 
 import { cryptoIcons } from '@suite-common/icons';
+import { type LegacyNetworkSymbol } from '@suite-common/legacy-network-config';
 
 import { type TokenIconProps, type TokenIconSize } from './tokenIconTypes';
 
@@ -38,7 +39,7 @@ export const NativeTokenIcon = ({
     size = 32,
     'data-testid': dataTestId,
 }: NativeTokenIconProps) => {
-    const src = cryptoIcons[symbol];
+    const src = cryptoIcons[symbol as LegacyNetworkSymbol];
 
     return (
         <SvgContainer $size={size} data-testid={dataTestId}>

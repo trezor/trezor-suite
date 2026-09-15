@@ -1,4 +1,5 @@
 import { type YieldDtoV2 } from '@suite-common/earn-stablecoin-api';
+import { asNetworkSymbol } from '@suite-common/wallet-config';
 
 import { getWrappedNativeYieldVaults } from './getWrappedNativeYieldVaults';
 
@@ -41,16 +42,22 @@ describe('getWrappedNativeYieldVaults', () => {
         const usdcVault = createVaultFixture({ tokenAddress: USDC_ADDRESS, tokenSymbol: 'USDC' });
 
         expect(
-            getWrappedNativeYieldVaults({ vaults: [wethVault, usdcVault], networkSymbol: 'eth' }),
+            getWrappedNativeYieldVaults({
+                vaults: [wethVault, usdcVault],
+                networkSymbol: asNetworkSymbol('eth'),
+            }),
         ).toEqual([wethVault]);
     });
 
     it('filters out vaults on other networks', () => {
         const baseVault = createVaultFixture({ network: 'base' });
 
-        expect(getWrappedNativeYieldVaults({ vaults: [baseVault], networkSymbol: 'eth' })).toEqual(
-            [],
-        );
+        expect(
+            getWrappedNativeYieldVaults({
+                vaults: [baseVault],
+                networkSymbol: asNetworkSymbol('eth'),
+            }),
+        ).toEqual([]);
     });
 
     it('filters out vaults under maintenance or deprecated', () => {
@@ -60,7 +67,7 @@ describe('getWrappedNativeYieldVaults', () => {
         expect(
             getWrappedNativeYieldVaults({
                 vaults: [maintainedVault, deprecatedVault],
-                networkSymbol: 'eth',
+                networkSymbol: asNetworkSymbol('eth'),
             }),
         ).toEqual([]);
     });
@@ -69,13 +76,19 @@ describe('getWrappedNativeYieldVaults', () => {
         const closedVault = createVaultFixture({ enter: false });
 
         expect(
-            getWrappedNativeYieldVaults({ vaults: [closedVault], networkSymbol: 'eth' }),
+            getWrappedNativeYieldVaults({
+                vaults: [closedVault],
+                networkSymbol: asNetworkSymbol('eth'),
+            }),
         ).toEqual([]);
     });
 
     it('returns an empty array when vaults are not loaded', () => {
-        expect(getWrappedNativeYieldVaults({ vaults: undefined, networkSymbol: 'eth' })).toEqual(
-            [],
-        );
+        expect(
+            getWrappedNativeYieldVaults({
+                vaults: undefined,
+                networkSymbol: asNetworkSymbol('eth'),
+            }),
+        ).toEqual([]);
     });
 });

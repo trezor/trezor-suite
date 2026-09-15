@@ -1,3 +1,4 @@
+import { type LegacyNetworkSymbol } from '@suite-common/legacy-network-config';
 import {
     type BackendType,
     type NetworkSymbol,
@@ -46,7 +47,7 @@ export const getCustomBackends = (
 ): CustomBackend[] =>
     supportedNetworks
         .flatMap(symbol => {
-            const blockchain = blockchains[symbol];
+            const blockchain = blockchains[symbol as LegacyNetworkSymbol];
 
             return blockchain ? [{ symbol, backends: blockchain.backends }] : [];
         })

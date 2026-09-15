@@ -1,3 +1,4 @@
+import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { type TokenAddress } from '@suite-common/wallet-types';
 
 import { btcAccountBalanceHistoryResult, btcAccountTransactions } from './__fixtures__/btc';
@@ -17,7 +18,7 @@ describe('Account balance movement history', () => {
     it('should getAccoutBalanceHistory for bitcoin', async () => {
         const balanceHistory = await getAccountHistoryMovementFromTransactions({
             transactions: btcAccountTransactions,
-            symbol: 'btc',
+            symbol: asNetworkSymbol('btc'),
         });
 
         expect(balanceHistory.main).toMatchObject(btcAccountBalanceHistoryResult);
@@ -28,7 +29,7 @@ describe('Account balance movement history', () => {
         const to = 1711445680;
         const balanceHistory = await getAccountHistoryMovementFromTransactions({
             transactions: btcAccountTransactions,
-            symbol: 'btc',
+            symbol: asNetworkSymbol('btc'),
             from,
             to,
         });
@@ -43,7 +44,7 @@ describe('Account balance movement history', () => {
     it('should getAccoutBalanceHistory for ripple', async () => {
         const balanceHistory = await getAccountHistoryMovementFromTransactions({
             transactions: xrpAccountTransactions,
-            symbol: 'xrp',
+            symbol: asNetworkSymbol('xrp'),
         });
 
         expect(balanceHistory.main).toMatchObject(xrpBalanceHistoryResult);
@@ -54,7 +55,7 @@ describe('Account balance movement history', () => {
         const to = 1690884611;
         const balanceHistory = await getAccountHistoryMovementFromTransactions({
             transactions: xrpAccountTransactions,
-            symbol: 'xrp',
+            symbol: asNetworkSymbol('xrp'),
             from,
             to,
         });
@@ -69,7 +70,7 @@ describe('Account balance movement history', () => {
     it('should getAccoutBalanceHistory for ethereum', async () => {
         const balanceHistory = await getAccountHistoryMovementFromTransactions({
             transactions: ethAccountTransactions,
-            symbol: 'eth',
+            symbol: asNetworkSymbol('eth'),
         });
 
         expect(balanceHistory.main).toMatchObject(ethAccountBalanceHistoryResult);
@@ -78,7 +79,7 @@ describe('Account balance movement history', () => {
     it('should count only the fee for reverted txs and the full value for unknown-status txs', async () => {
         const balanceHistory = await getAccountHistoryMovementFromTransactions({
             transactions: ethRevertedAndUnknownStatusTransactions,
-            symbol: 'eth',
+            symbol: asNetworkSymbol('eth'),
         });
 
         expect(balanceHistory.main).toMatchObject(ethRevertedAndUnknownStatusBalanceHistoryResult);
@@ -87,7 +88,7 @@ describe('Account balance movement history', () => {
     it('should use effectiveGasPrice and add l1Fee for L2 fees, falling back to gasPrice', async () => {
         const balanceHistory = await getAccountHistoryMovementFromTransactions({
             transactions: l2AccountTransactions,
-            symbol: 'op',
+            symbol: asNetworkSymbol('op'),
         });
 
         expect(balanceHistory.main).toMatchObject(l2AccountBalanceHistoryResult);
@@ -98,7 +99,7 @@ describe('Account balance movement history', () => {
         const to = 1716201815;
         const balanceHistory = await getAccountHistoryMovementFromTransactions({
             transactions: ethAccountTransactions,
-            symbol: 'eth',
+            symbol: asNetworkSymbol('eth'),
             from,
             to,
         });
@@ -113,7 +114,7 @@ describe('Account balance movement history', () => {
     it('should getAccoutBalanceHistory for ethereum with token', async () => {
         const balanceHistory = await getAccountHistoryMovementFromTransactions({
             transactions: ethAccountTransactions,
-            symbol: 'eth',
+            symbol: asNetworkSymbol('eth'),
         });
 
         expect(balanceHistory.tokens).toMatchObject(ethTokenBalanceHistoryResult);
@@ -124,7 +125,7 @@ describe('Account balance movement history', () => {
         const to = 1716201815;
         const balanceHistory = await getAccountHistoryMovementFromTransactions({
             transactions: ethAccountTransactions,
-            symbol: 'eth',
+            symbol: asNetworkSymbol('eth'),
             from,
             to,
         });

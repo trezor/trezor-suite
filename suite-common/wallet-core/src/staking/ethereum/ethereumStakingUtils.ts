@@ -27,8 +27,8 @@ export const getEthereumCryptoBalanceWithStaking = (account: Account) => {
 
 export function isSupportedEthStakingNetworkSymbol(
     symbol: NetworkSymbol,
-): symbol is SupportedEthereumNetworkSymbol {
-    return isArrayMember(symbol, supportedNetworkSymbols);
+): symbol is NetworkSymbol & SupportedEthereumNetworkSymbol {
+    return isArrayMember(symbol as string, supportedNetworkSymbols);
 }
 
 export const getUnstakeAmountByEthereumDataHex = (dataHex?: string) => {

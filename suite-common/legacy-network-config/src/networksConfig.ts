@@ -7,7 +7,7 @@ import { networkConfigBySymbol as solanaConfigs } from '@trezor/network-solana-s
 import { networkConfigBySymbol as stellarConfigs } from '@trezor/network-stellar-suite-common';
 import { networkConfigBySymbol as tronConfigs } from '@trezor/network-tron-suite-common';
 
-import type { Network, Networks } from './types';
+import type { Network, NetworkSymbol, Networks } from './types';
 
 type LegacyNetworkConfig<TSymbol extends string, TConfig extends SuiteCommonNetworkConfig> = Omit<
     Network,
@@ -67,3 +67,5 @@ export const networks: LegacyNetworkConfigs = {
     txlm: withSymbol('txlm', stellarConfigs.txlm),
     ttrx: withSymbol('ttrx', tronConfigs.ttrx),
 } satisfies Networks;
+
+export type LegacyNetworkSymbol = keyof typeof networks & NetworkSymbol;

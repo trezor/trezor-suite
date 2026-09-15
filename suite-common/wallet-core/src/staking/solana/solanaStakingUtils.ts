@@ -18,7 +18,7 @@ import { BigNumber } from '@trezor/utils';
 
 export function isSupportedSolStakingNetworkSymbol(
     symbol: NetworkSymbol,
-): symbol is SolanaNetworkSymbol {
+): symbol is NetworkSymbol & SolanaNetworkSymbol {
     return isSupportedSolanaNetwork(symbol);
 }
 

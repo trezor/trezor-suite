@@ -12,7 +12,7 @@ export const findAnchorTransactionPage = [
                 symbol: asNetworkSymbol('btc'),
             }),
             getWalletTransaction({
-                txid: asNetworkSymbol('txid2'),
+                txid: 'txid2',
                 symbol: asNetworkSymbol('btc'),
             }),
         ],
@@ -23,11 +23,11 @@ export const findAnchorTransactionPage = [
         testName: 'tx on page 2',
         transactions: [
             getWalletTransaction({
-                txid: asNetworkSymbol('txid1'),
+                txid: 'txid1',
                 symbol: asNetworkSymbol('btc'),
             }),
             getWalletTransaction({
-                txid: asNetworkSymbol('txid2'),
+                txid: 'txid2',
                 symbol: asNetworkSymbol('btc'),
             }),
         ],
@@ -39,11 +39,11 @@ export const findAnchorTransactionPage = [
         testName: 'tx not found',
         transactions: [
             getWalletTransaction({
-                txid: asNetworkSymbol('txid1'),
+                txid: 'txid1',
                 symbol: asNetworkSymbol('btc'),
             }),
             getWalletTransaction({
-                txid: asNetworkSymbol('txid2'),
+                txid: 'txid2',
                 symbol: asNetworkSymbol('btc'),
             }),
         ],

@@ -1,3 +1,4 @@
+import { type MockNetworkSymbol } from '@suite-common/networks/mocks';
 import { mockNetworksState } from '@suite-common/networks/mocks';
 import { type TrezorDevice } from '@suite-common/suite-types';
 import { mockSuiteDevice } from '@suite-common/suite-types/mocks';
@@ -57,7 +58,7 @@ const getState = ({
     discovery,
     enabledNetworks = [solSymbol],
 }: GetStateOptions = {}): WalletCoreCompoundRootState => ({
-    networks: mockNetworksState([solSymbol]),
+    networks: mockNetworksState([solSymbol as MockNetworkSymbol]),
     wallet: {
         accounts,
         settings: { ...initialWalletSettingsState, enabledNetworks },

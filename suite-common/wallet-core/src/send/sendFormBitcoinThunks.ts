@@ -335,7 +335,7 @@ export const signBitcoinSendFormTransactionThunk = createThunk<
             signEnhancement.unlockPath = selectedAccount.unlockPath;
         }
 
-        if (isArrayMember(selectedAccount.symbol, BITCOIN_ONLY_SYMBOLS)) {
+        if (isArrayMember(selectedAccount.symbol as string, BITCOIN_ONLY_SYMBOLS)) {
             // nVersion, use 2 as it enables BIP68 + seems to be the most commonly used (= harder to fingerprint the Trezor)
             signEnhancement.version = 2;
         }

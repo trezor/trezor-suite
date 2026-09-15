@@ -1,5 +1,6 @@
 import { createReducer } from '@reduxjs/toolkit';
 
+import { type LegacyNetworkSymbol } from '@suite-common/legacy-network-config';
 import { createWeakMapSelector } from '@suite-common/redux-utils';
 import { formatDurationStrict } from '@suite-common/suite-utils';
 import { type NetworkSymbol, getNetworkType } from '@suite-common/wallet-config';
@@ -28,16 +29,26 @@ export const feesReducer = createReducer<FeesState>(feesInitialState, builder =>
     builder.addCase(updateFeeInfoThunk.pending, (state, action) => {
         const { networkSymbol } = action.meta.arg;
         // at this point, the object may not exist yet (if this is the first call of the thunk)
-        state[networkSymbol] = { ...state[networkSymbol], status: 'loading' };
+        state[networkSymbol as LegacyNetworkSymbol] = {
+            ...state[networkSymbol as LegacyNetworkSymbol],
+            status: 'loading',
+        };
     });
     builder.addCase(updateFeeInfoThunk.fulfilled, (state, action) => {
         const { networkSymbol } = action.meta.arg;
         const data = action.payload;
-        state[networkSymbol] = { ...state[networkSymbol], status: 'loaded', data };
+        state[networkSymbol as LegacyNetworkSymbol] = {
+            ...state[networkSymbol as LegacyNetworkSymbol],
+            status: 'loaded',
+            data,
+        };
     });
     builder.addCase(updateFeeInfoThunk.rejected, (state, action) => {
         const { networkSymbol } = action.meta.arg;
-        state[networkSymbol] = { ...state[networkSymbol], status: 'error' };
+        state[networkSymbol as LegacyNetworkSymbol] = {
+            ...state[networkSymbol as LegacyNetworkSymbol],
+            status: 'error',
+        };
     });
 });
 
@@ -55,7 +66,7 @@ export const selectConvertedNetworkFeeInfo = createMemoizedSelector(
     [
         selectRawNetworkFeeInfo,
         (state: FeesRootState, symbol?: NetworkSymbol) =>
-            symbol !== undefined && selectFees(state)[symbol] !== undefined,
+            symbol !== undefined && selectFees(state)[symbol as LegacyNetworkSymbol] !== undefined,
         (_state: FeesRootState, symbol?: NetworkSymbol) => symbol,
     ],
     (rawFeeInfo, hasFeeEntry, symbol): FeeInfo | null => {
@@ -124,9 +135,9 @@ export const selectConvertedNetworkFeeLevelFeePerUnit = createMemoizedSelector(
 export const selectNetworkFeeStatus = createMemoizedSelector(
     [selectFees, (_state: FeesRootState, symbol?: NetworkSymbol) => symbol],
     (fees, symbol): FeesStatus | null => {
-        if (symbol === undefined || !fees[symbol]) return null;
+        const fee = symbol === undefined ? undefined : fees[symbol as LegacyNetworkSymbol];
 
-        return fees[symbol].status;
+        return fee?.status ?? null;
     },
 );
 
