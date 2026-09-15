@@ -15,6 +15,23 @@ const networksPackagePattern = {
     message: 'Import from /constants, /runtime or /types subpath.',
 };
 
+// Network packages are a reusable layer: the apps are built on top of them, never the other way
+// round. Of the workspace scopes only `@trezor/*` is below them, so it is the only one they may
+// depend on. Anything an app owns reaches a network module through dependency injection instead.
+const networksAppScopePattern = {
+    group: [
+        '@suite/**',
+        '@suite-common/**',
+        '@suite-native/**',
+        // TODO(#32493): the last two app-scoped dependencies left under networks/. `calldata` is a
+        // `@trezor/*`-level library sitting in the wrong folder; the `mock` helper is test-only.
+        '!@suite-common/calldata',
+        '!@suite-common/dependency-injection',
+    ],
+    message:
+        'Network packages may only depend on @trezor/* workspace packages. Take anything an app owns as an injected dependency instead.',
+};
+
 // Deep-path imports that bypass the public barrels of the connect-tier packages.
 // Tracked in https://github.com/trezor/trezor-suite/issues/27376.
 // External consumers must import from the package root (e.g. `@trezor/connect`).
@@ -132,6 +149,7 @@ export const typescriptConfig = [
                     ],
                     patterns: [
                         buildArtifactPatterns,
+                        networksAppScopePattern,
                         networksPackagePattern,
                         ...connectDeepImportPatterns,
                         {

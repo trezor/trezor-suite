@@ -10,6 +10,8 @@ type ExactForbiddenDependency = ForbiddenDependencyBase & {
 type PrefixForbiddenDependency = ForbiddenDependencyBase & {
     readonly packageName?: never;
     readonly packageNamePrefix: string;
+    /** Packages matching the prefix that are allowed anyway. */
+    readonly except?: ReadonlyArray<string>;
 };
 
 export type ForbiddenDependency = ExactForbiddenDependency | PrefixForbiddenDependency;
