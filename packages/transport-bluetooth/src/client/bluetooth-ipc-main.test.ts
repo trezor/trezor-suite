@@ -84,4 +84,50 @@ describe('BluetoothIpc scan ownership', () => {
         await expect(ipc.stopScan('ui')).resolves.toEqual({ success: true });
         expect(sendMock).toHaveBeenCalledWith({ method: 'stop_scan', params: undefined });
     });
+
+    it('does not send stop_scan if a new startScan starts while stopScan is connecting', async () => {
+        await ipc.startScan('ui');
+        sendMock.mockClear();
+
+        const connectDeferred = createDeferred<void>();
+        isConnectedMock.mockReturnValue(false);
+        const connectSpy = jest
+            .spyOn(TrezorBluetooth.prototype, 'connect')
+            .mockImplementationOnce(() => connectDeferred.promise);
+
+        const stop = ipc.stopScan('ui');
+        const start = ipc.startScan('background');
+
+        connectDeferred.resolve();
+        await Promise.all([stop, start]);
+
+        expect(sendMock.mock.calls.map(([request]) => request.method)).toEqual(['start_scan']);
+        connectSpy.mockRestore();
+    });
+
+    it('serializes startScan after in-flight stop_scan so scanning is not lost', async () => {
+        await ipc.startScan('ui');
+        sendMock.mockClear();
+
+        const stopDeferred = createDeferred<{ success: true }>();
+        const stopStarted = createDeferred<void>();
+        sendMock.mockImplementationOnce(() => {
+            stopStarted.resolve();
+
+            return stopDeferred.promise;
+        });
+
+        const stop = ipc.stopScan('ui');
+        await stopStarted.promise;
+
+        const start = ipc.startScan('background');
+        stopDeferred.resolve({ success: true });
+
+        await Promise.all([stop, start]);
+
+        expect(sendMock.mock.calls.map(([request]) => request.method)).toEqual([
+            'stop_scan',
+            'start_scan',
+        ]);
+    });
 });
