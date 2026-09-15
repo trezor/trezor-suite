@@ -1,0 +1,38 @@
+{
+    "name": "@suite/desktop-app",
+    "description": "Trezor Suite desktop application",
+    "version": "1.0.0",
+    "private": true,
+    "author": "SatoshiLabs <info@satoshilabs.com>",
+    "homepage": "https://trezor.io/",
+    "main": "dist/app.js",
+    "scripts": {
+        "depcheck": "yarn g:depcheck",
+        "dev": "yarn clean && LAUNCH_ELECTRON=true yarn run dev:local",
+        "dev:run": "yarn electron .",
+        "dev:prepare": "yarn build:app:dev",
+        "dev:local": "yarn workspace @trezor/suite-build run dev:desktop",
+        "clean": "yarn g:rimraf ./build-electron && yarn g:rimraf ./build && yarn g:rimraf ./dist",
+        "build:ui": "yarn workspace @trezor/suite-build run build:desktop",
+        "build:core": "yarn workspace @suite/desktop-app-main run build:core",
+        "build:app": "NODE_ENV=production yarn build:core",
+        "build:app:dev": "NODE_ENV=development yarn build:core",
+        "build:app:electron": "yarn electron-builder --config electron-builder-config.js",
+        "build:app:electron:linux": "yarn build:app:electron --publish never --linux --x64 --arm64",
+        "build:app:electron:mac": "yarn build:app:electron --publish never --mac --x64 --arm64",
+        "build:app:electron:win": "yarn build:app:electron --publish never --win --x64",
+        "build:linux": "yarn clean && yarn build:ui && yarn build:app && yarn build:app:electron:linux",
+        "build:mac": "yarn clean && yarn build:ui && yarn build:app && yarn build:app:electron:mac",
+        "build:win": "yarn clean && yarn build:ui && yarn build:app && yarn build:app:electron:win",
+        "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'",
+        "_______ DO NOT REMOVE DEPENDENCIES unless you are sure of consequences! _______": "In this package they have special meaning, see core.webpack.config"
+    },
+    "dependencies": {
+        "openpgp": "^6.3.1",
+        "usb": "^2.17.0"
+    },
+    "devDependencies": {
+        "electron": "43.2.0",
+        "electron-builder": "26.15.7"
+    }
+}

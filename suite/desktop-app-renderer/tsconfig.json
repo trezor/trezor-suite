@@ -1,0 +1,47 @@
+{
+    "extends": "../../tsconfig.base.json",
+    "compilerOptions": {
+        "outDir": "libDev",
+        "paths": {
+            "src/*": [
+                "../../packages/suite/src/*"
+            ]
+        }
+    },
+    "include": [
+        ".",
+        "../../packages/suite/global.d.ts"
+    ],
+    "references": [
+        {
+            "path": "../../suite-common/dependency-injection"
+        },
+        {
+            "path": "../../suite-common/redux-utils"
+        },
+        { "path": "../analytics" },
+        { "path": "../bluetooth" },
+        { "path": "../debug" },
+        { "path": "../desktop-app-api" },
+        { "path": "../desktop-app-api-electron" },
+        { "path": "../desktop-update" },
+        { "path": "../flags" },
+        { "path": "../github" },
+        { "path": "../intl" },
+        {
+            "path": "../platform-encryption-electron"
+        },
+        { "path": "../router" },
+        { "path": "../sentry" },
+        { "path": "../tor-desktop" },
+        { "path": "../../packages/components" },
+        {
+            "path": "../../packages/connect-electron"
+        },
+        { "path": "../../packages/icons" },
+        { "path": "../../packages/suite" },
+        { "path": "../../packages/theme" },
+        { "path": "../../packages/urls" },
+        { "path": "../../packages/utils" }
+    ]
+}

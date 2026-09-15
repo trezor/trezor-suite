@@ -1,0 +1,44 @@
+{
+    "extends": "../../tsconfig.base.json",
+    "compilerOptions": {
+        "outDir": "./libDev",
+        "paths": {
+            "src/*": [
+                "../../packages/suite/src/*"
+            ]
+        }
+    },
+    "include": ["."],
+    "references": [
+        {
+            "path": "../../suite-common/dependency-injection"
+        },
+        {
+            "path": "../../suite-common/redux-utils"
+        },
+        {
+            "path": "../../suite-common/suite-utils"
+        },
+        { "path": "../debug" },
+        { "path": "../desktop-app-api" },
+        {
+            "path": "../platform-encryption-webauthn"
+        },
+        { "path": "../router" },
+        { "path": "../../packages/connect" },
+        {
+            "path": "../../packages/connect-common"
+        },
+        { "path": "../../packages/env-utils" },
+        { "path": "../../packages/suite" },
+        {
+            "path": "../../packages/transport-common"
+        },
+        {
+            "path": "../../packages/transport-web"
+        },
+        { "path": "../../packages/utils" },
+        { "path": "../sentry" },
+        { "path": "../../packages/eslint" }
+    ]
+}

@@ -9,12 +9,12 @@ packages/suite/
 packages/suite-analytics/
 packages/suite-build/
 suite/app-assets/
-packages/suite-desktop/
+suite/desktop-app/
 suite/desktop-app-api/
-packages/suite-desktop-core/
-packages/suite-desktop-ui/
+suite/desktop-app-main/
+suite/desktop-app-renderer/
 packages/suite-storage/
-packages/suite-web/
+suite/web-app/
 packages/transport-bluetooth/
 suite/
 

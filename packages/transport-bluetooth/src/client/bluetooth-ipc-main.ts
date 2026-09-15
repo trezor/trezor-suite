@@ -12,7 +12,7 @@ import type {
 } from './types';
 
 /*
- * used in @trezor/suite-desktop-core nodejs (main) context
+ * used in @suite/desktop-app-main nodejs (main) context
  * unavailable in browser (renderer) context
  */
 export class BluetoothIpc extends TypedEmitter<BluetoothIpcEvents> implements BluetoothIpcApi {

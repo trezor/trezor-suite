@@ -139,7 +139,7 @@ export const webSetup = async (
 
     const page = await browserContext.newPage();
 
-    // Tells the app to attach Redux Store to window object. packages/suite-web/src/support/usePlaywright.ts
+    // Tells the app to attach Redux Store to window object. suite/web-app/src/support/usePlaywright.ts
     // Which is needed for methods manupalating Redux store like onboardingPage.disableFirmwareHashCheck
     await page.context().addInitScript(() => {
         window.Playwright = true;

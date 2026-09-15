@@ -1,0 +1,173 @@
+const schemes = require('./uriSchemes.json');
+const { suiteVersion } = require('../../packages/suite/package.json');
+
+const isCodesignBuild = process.env.IS_CODESIGN_BUILD === 'true';
+
+// to be able to use patterns like ${author} and ${arch}
+module.exports = {
+    // distinguish between dev and prod builds
+    appId: `io.trezor.TrezorSuite${isCodesignBuild ? '' : '.dev'}`,
+    extraMetadata: {
+        version: suiteVersion,
+        // Distinguishes dev and prod builds so a different userDataDir is used.
+        // This is the on-disk identity of existing installations, so it keeps the
+        // original package name and must not follow package renames.
+        name: `@trezor/suite-desktop${isCodesignBuild ? '' : '-dev'}`,
+    },
+    productName: 'Trezor Suite',
+    copyright: 'Copyright © ${author}',
+    asar: true,
+    asarUnpack: ['**/*.node'],
+    directories: {
+        output: 'build-electron',
+    },
+    npmRebuild: false,
+    files: [
+        // defaults are https://www.electron.build/configuration#files
+        'build/**/*', // Electron renderer process
+        'dist/**/*.{js,wasm}', // Electron main+preload process
+        '!**/*.{md,js.map}', // exclude files unnecessary for runtime
+        'build/release-notes.md', // this one is dynamically loaded in runtime
+        '!build/static/**/{favicon,icons,bin,browsers}', // copied as extraResources instead, some are platform-specific
+        '!node_modules/usb/**/{libusb,libusb_config,src}', // exclude files unnecessary for runtime
+        '!node_modules/@trezor/**', // no @trezor package is a runtime dependency of this app; webpack bundles them.
+    ],
+    extraResources: [
+        {
+            from: 'build/static/images/desktop/512x512.png',
+            to: 'images/desktop/512x512.png',
+        },
+        {
+            from: 'build/static/images/favicons',
+            to: 'images/favicons',
+        },
+        {
+            from: 'build/static/bin/firmware',
+            to: 'bin/firmware',
+        },
+        {
+            from: 'build/static/bin/devkit',
+            to: 'bin/devkit',
+        },
+    ],
+    protocols: {
+        name: 'Trezor Suite',
+        schemes,
+    },
+    publish: {
+        provider: 'generic',
+        url: 'https://data.trezor.io/suite/releases/desktop/latest',
+    },
+    dmg: {
+        sign: false,
+        contents: [
+            {
+                x: 410,
+                y: 150,
+                type: 'link',
+                path: '/Applications',
+            },
+            {
+                x: 130,
+                y: 150,
+                type: 'file',
+            },
+        ],
+        background: 'build/static/images/desktop/background.tiff',
+    },
+    nsis: {
+        oneClick: false,
+    },
+    mac: {
+        files: ['entitlements.mac.inherit.plist'],
+        extraResources: [
+            {
+                from: 'build/static/bin/tor/mac-${arch}',
+                to: 'bin/tor',
+            },
+            {
+                from: 'build/static/bin/coinjoin/mac-${arch}',
+                to: 'bin/coinjoin',
+            },
+            {
+                from: 'build/static/bin/bluetooth/mac-${arch}',
+                to: 'bin/bluetooth',
+            },
+        ],
+        icon: 'build/static/images/desktop/512x512.icns',
+        artifactName: 'Trezor-Suite-${version}-mac-${arch}.${ext}',
+        identity: isCodesignBuild ? undefined : '-',
+        hardenedRuntime: isCodesignBuild,
+        gatekeeperAssess: false,
+        darkModeSupport: true,
+        entitlements: 'entitlements.mac.inherit.plist',
+        entitlementsInherit: 'entitlements.mac.inherit.plist',
+        extendInfo: {
+            NSBluetoothAlwaysUsageDescription:
+                'Allow Trezor Suite to use Bluetooth to securely connect and communicate with your Trezor device.',
+            // Delete those keys from Info.plist, Electron adds them by default but Trezor Suite does not need these permissions
+            NSMicrophoneUsageDescription: undefined,
+            // Replace default "This app needs access to the camera" message with our own
+            NSCameraUsageDescription:
+                'Allow Trezor Suite to access the camera to scan QR codes? Or enter the address manually.',
+        },
+        target: ['dmg', 'zip'],
+    },
+    win: {
+        extraResources: [
+            {
+                from: 'build/static/bin/tor/win-${arch}',
+                to: 'bin/tor',
+            },
+            {
+                from: 'build/static/bin/coinjoin/win-${arch}',
+                to: 'bin/coinjoin',
+            },
+            {
+                from: 'build/static/bin/win_hello.node',
+                to: 'bin/win_hello.node',
+            },
+            {
+                from: 'build/static/bin/bluetooth/win-${arch}',
+                to: 'bin/bluetooth',
+            },
+        ],
+        icon: 'build/static/images/desktop/512x512.png',
+        artifactName: 'Trezor-Suite-${version}-win-${arch}.${ext}',
+        target: ['nsis'],
+        signExts: ['.exe', '.dll'],
+        signtoolOptions: {
+            publisherName: ['SatoshiLabs, s.r.o.', 'Trezor Company s.r.o.'],
+            // TODO #14482: when Electron-main is migrated to ESM, and we declare whole suite-desktop package as ESM, rename .mjs files to .js
+            sign: '../desktop-app-main/scripts/sign-windows.mjs',
+        },
+    },
+    linux: {
+        extraResources: [
+            {
+                from: 'build/static/bin/tor/linux-${arch}',
+                to: 'bin/tor',
+            },
+            {
+                from: 'build/static/bin/udev',
+                to: 'bin/udev',
+            },
+            {
+                from: 'build/static/bin/coinjoin/linux-${arch}',
+                to: 'bin/coinjoin',
+            },
+            {
+                from: 'build/static/bin/bluetooth/linux-${arch}',
+                to: 'bin/bluetooth',
+            },
+        ],
+        icon: 'build/static/images/desktop/512x512.png',
+        artifactName: 'Trezor-Suite-${version}-linux-${arch}.${ext}',
+        executableName: 'trezor-suite',
+        category: 'Utility',
+        target: ['AppImage'],
+    },
+    // TODO #14482: when Electron-main is migrated to ESM, and we declare whole suite-desktop package as ESM, rename .mjs files to .js
+    afterPack: '../desktop-app-main/scripts/setElectronFuses.mjs',
+    afterSign: '../desktop-app-main/scripts/notarize.mjs',
+};

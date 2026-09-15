@@ -68,7 +68,7 @@ jobs:
       - name: Install dependencies
         run: |
           echo -e "\nenableHardenedMode: false" >> .yarnrc.yml
-          yarn workspaces focus @trezor/suite-web @suite/app-assets @trezor/suite-build @suite-common/message-system
+          yarn workspaces focus @suite/web-app @suite/app-assets @trezor/suite-build @suite-common/message-system
 
       - name: Build suite-web
         env:
@@ -78,10 +78,10 @@ jobs:
         run: |
           yarn message-system-sign-config
           yarn workspace @suite/app-assets build:lib
-          yarn workspace @trezor/suite-web build
+          yarn workspace @suite/web-app build
       # this step should upload build result to s3 bucket dev.suite.sldev.cz using awscli
       - name: Upload suite-web to dev.suite.sldev.cz
         env:
           DEPLOY_PATH: s3://dev.suite.sldev.cz/suite-web/${{ steps.extract_branch.outputs.branch }}
         run: |
-          aws s3 sync --delete ./packages/suite-web/build ${DEPLOY_PATH}/web
+          aws s3 sync --delete ./suite/web-app/build ${DEPLOY_PATH}/web

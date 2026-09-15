@@ -1,0 +1,66 @@
+{
+    "extends": "../../tsconfig.base.json",
+    "compilerOptions": { "outDir": "libDev" },
+    "include": ["src", "e2e", "**/*.json"],
+    "references": [
+        {
+            "path": "../../suite-common/connect-popup"
+        },
+        {
+            "path": "../../suite-common/delegated-identity-key"
+        },
+        {
+            "path": "../../suite-common/platform-encryption"
+        },
+        { "path": "../../suite-common/sentry" },
+        {
+            "path": "../../suite-common/suite-constants"
+        },
+        {
+            "path": "../../suite-common/suite-sync-storage"
+        },
+        {
+            "path": "../../suite-common/suite-utils"
+        },
+        {
+            "path": "../../suite-common/wallet-config"
+        },
+        {
+            "path": "../../suite-common/wallet-utils"
+        },
+        { "path": "../desktop-app-api" },
+        { "path": "../desktop-app-api-electron" },
+        {
+            "path": "../desktop-app-native-bindings"
+        },
+        { "path": "../sentry" },
+        { "path": "../tor-types" },
+        { "path": "../../packages/coinjoin" },
+        { "path": "../../packages/connect" },
+        {
+            "path": "../../packages/connect-common"
+        },
+        { "path": "../../packages/connect-core" },
+        { "path": "../../packages/env-utils" },
+        { "path": "../../packages/eslint" },
+        { "path": "../../packages/ipc-proxy" },
+        { "path": "../../packages/node-utils" },
+        {
+            "path": "../../packages/request-manager"
+        },
+        { "path": "../../packages/theme" },
+        { "path": "../../packages/transport" },
+        {
+            "path": "../../packages/transport-bluetooth"
+        },
+        {
+            "path": "../../packages/transport-bridge"
+        },
+        {
+            "path": "../../packages/transport-common"
+        },
+        { "path": "../../packages/urls" },
+        { "path": "../../packages/utils" },
+        { "path": "../../packages/type-utils" }
+    ]
+}
