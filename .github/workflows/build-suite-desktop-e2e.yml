@@ -33,7 +33,7 @@ jobs:
           version: v0.19.1
       - name: Install dependencies
         shell: bash
-        run: yarn workspaces focus @trezor/suite-desktop @trezor/suite-desktop-core @trezor/suite-build @trezor/suite @suite/app-assets @trezor/transport-bridge @suite-common/message-system @trezor/suite-desktop-ui
+        run: yarn workspaces focus @suite/desktop-app @suite/desktop-app-main @trezor/suite-build @trezor/suite @suite/app-assets @trezor/transport-bridge @suite-common/message-system @suite/desktop-app-renderer
 
       - name: Build libs
         shell: bash
@@ -47,12 +47,12 @@ jobs:
         env:
           TEST_BUILD: "true"
         run: |
-          yarn workspace @trezor/suite-desktop build:app
-          yarn workspace @trezor/suite-desktop build:ui
+          yarn workspace @suite/desktop-app build:app
+          yarn workspace @suite/desktop-app build:ui
 
       - name: Compress build artifacts
         shell: bash
-        run: tar -czf app-build.tar.gz -C ${{ github.workspace }}/packages/suite-desktop build dist
+        run: tar -czf app-build.tar.gz -C ${{ github.workspace }}/suite/desktop-app build dist
 
       - name: Upload build artifacts
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7

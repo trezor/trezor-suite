@@ -57,6 +57,7 @@
         { "path": "../analytics" },
         { "path": "../app-assets" },
         { "path": "../debug" },
+        { "path": "../desktop-app" },
         { "path": "../flags" },
         { "path": "../intl" },
         { "path": "../labeling" },
@@ -78,9 +79,6 @@
         },
         { "path": "../../packages/perf-e2e" },
         { "path": "../../packages/protobuf" },
-        {
-            "path": "../../packages/suite-desktop"
-        },
         { "path": "../../packages/theme" },
         {
             "path": "../../packages/transport-common"

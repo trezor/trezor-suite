@@ -58,14 +58,19 @@ This is a Yarn workspaces monorepo orchestrated by Nx. `package.json` also inclu
 - `suite-common/` (`@suite-common/*`): Shared wallet/domain logic, including `wallet-core`,
   `device`, `message-system`. May use shared peers and reusable `@trezor/*` libraries; must not
   depend on desktop/web or native app code.
-- `suite/` (`@suite/*`): Desktop/web features; may use peers, shared logic and reusable libraries,
-  never native app code. `suite/e2e` is the Playwright workspace (`@trezor/suite-e2e`).
+- `suite/` (`@suite/*`): Desktop/web features and application roots; may use peers, shared logic and
+  reusable libraries, never native app code. `suite/e2e` is the Playwright workspace
+  (`@trezor/suite-e2e`). The application roots are `web-app` (web entry point), `desktop-app`
+  (Electron packaging and distribution), `desktop-app-renderer` (desktop React entry point),
+  `desktop-app-main` (Electron main and preload), `desktop-app-api`/`desktop-app-api-electron`
+  (desktop API contract and its Electron implementation), `desktop-app-native-bindings` (compiled
+  OS bindings) and `app-assets` (static assets and their generation).
 - `suite-native/` (`@suite-native/*`): Mobile features and `app` (Expo/React Native); may use peers,
   shared logic and reusable libraries, never desktop/web app code.
-- `packages/suite*`: Existing app-layer exception to the `packages/` convention: `suite` contains
-  the web/desktop React app; `suite-web` and `suite-build` host/build it; `suite-desktop` and
-  `suite-desktop-core` contain Electron code. Existing app composition depends on `@suite/*` and
-  `@suite-common/*`; this is not permission to introduce app dependencies into reusable libraries.
+- `packages/suite*`: Remaining app-layer exception to the `packages/` convention: `suite` contains
+  the web/desktop React app shared by both application roots, and `suite-build` still holds their
+  Webpack configuration. Existing app composition depends on `@suite/*` and `@suite-common/*`; this
+  is not permission to introduce app dependencies into reusable libraries.
 
 Keep dependencies acyclic. Web/desktop Redux assembly is in `packages/suite/src/reducers/store.ts`;
 native assembly is in `suite-native/state/src/createReduxStore.ts`. Shared slices live in
@@ -103,7 +108,7 @@ is not a substitute for runtime prerequisites.
   `ESLINT_RUN_EXPENSIVE_CHECKS=true yarn lint:js --no-tui`, `yarn lint:styles --no-tui`, `yarn format:verify`. Styles also runs local Stylelint rule tests.
 - Library build validation: `yarn build:libs:verify --no-tui` builds affected libraries; `yarn build:libs` rebuilds all libraries without Nx cache, so reserve it for a demonstrated need.
 - Production web behavior: `yarn suite:build:web`; `yarn suite:build:web:preview` builds and serves
-  with production security headers. For an existing build: `yarn workspace @trezor/suite-web preview`.
+  with production security headers. For an existing build: `yarn workspace @suite/web-app preview`.
 - Web/desktop E2E: `yarn workspace @trezor/suite-e2e test:e2e:web <test-file> --project=<project>`
   or `test:e2e:desktop`; inspect `suite/e2e/playwright-config` for projects. Requires Playwright
   browsers/system dependencies, a running web app or built Electron app, and scenario

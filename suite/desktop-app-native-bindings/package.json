@@ -1,5 +1,5 @@
 {
-    "name": "@trezor/suite-desktop-native",
+    "name": "@suite/desktop-app-native-bindings",
     "version": "1.0.0",
     "private": true,
     "license": "See LICENSE.md in repo root",

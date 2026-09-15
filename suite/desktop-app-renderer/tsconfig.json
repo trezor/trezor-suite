@@ -12,29 +12,29 @@
         {
             "path": "../../suite-common/redux-utils"
         },
-        { "path": "../../suite/analytics" },
-        { "path": "../../suite/bluetooth" },
-        { "path": "../../suite/debug" },
-        { "path": "../../suite/desktop-app-api" },
+        { "path": "../analytics" },
+        { "path": "../bluetooth" },
+        { "path": "../debug" },
+        { "path": "../desktop-app-api" },
+        { "path": "../desktop-app-api-electron" },
+        { "path": "../desktop-update" },
+        { "path": "../flags" },
+        { "path": "../github" },
+        { "path": "../intl" },
         {
-            "path": "../../suite/desktop-app-api-electron"
+            "path": "../platform-encryption-electron"
         },
-        { "path": "../../suite/desktop-update" },
-        { "path": "../../suite/flags" },
-        { "path": "../../suite/github" },
-        { "path": "../../suite/intl" },
+        { "path": "../router" },
+        { "path": "../sentry" },
+        { "path": "../tor-desktop" },
+        { "path": "../../packages/components" },
         {
-            "path": "../../suite/platform-encryption-electron"
+            "path": "../../packages/connect-electron"
         },
-        { "path": "../../suite/router" },
-        { "path": "../../suite/sentry" },
-        { "path": "../../suite/tor-desktop" },
-        { "path": "../components" },
-        { "path": "../connect-electron" },
-        { "path": "../icons" },
-        { "path": "../suite" },
-        { "path": "../theme" },
-        { "path": "../urls" },
-        { "path": "../utils" }
+        { "path": "../../packages/icons" },
+        { "path": "../../packages/suite" },
+        { "path": "../../packages/theme" },
+        { "path": "../../packages/urls" },
+        { "path": "../../packages/utils" }
     ]
 }

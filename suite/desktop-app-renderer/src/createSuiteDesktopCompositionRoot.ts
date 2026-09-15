@@ -24,7 +24,7 @@ export const createSuiteDesktopCompositionRoot = (): SuiteDesktopCompositionRoot
     const reloadApp = desktopApi.appRestart;
 
     // The desktop renderer can't construct node-only transports (`usb`/`dgram`), so each factory
-    // yields the identifier string; the main process (`@trezor/suite-desktop-core`'s
+    // yields the identifier string; the main process (`@suite/desktop-app-main`'s
     // trezor-connect.ts) maps it to a real Transport instance below the IPC boundary. This also
     // keeps `@trezor/transport` out of the renderer bundle.
     const getTransportsFactories = () => ({
