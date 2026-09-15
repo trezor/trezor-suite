@@ -1,13 +1,11 @@
 import { type RouterRootState, selectRouterApp } from '@suite/router';
 import {
-    type SuiteSettingsRootState,
     selectAreDeviceMetaChecksEnabled,
     selectIsEntropyCheckEnabled,
     selectIsFirmwareHashCheckEnabled,
     selectIsFirmwareRevisionCheckEnabled,
 } from '@suite/settings';
 import {
-    type DeviceRootState,
     getIsDeviceIdValid,
     selectIsFirmwareAuthenticityCheckDismissed,
     selectSelectedDevice,
@@ -20,24 +18,14 @@ import {
     getIsSkippedHashCheckError,
     getIsSkippedRevisionCheckError,
 } from '@suite-common/firmware-authenticity';
+import { Feature, selectIsFeatureDisabled } from '@suite-common/message-system';
 import {
-    Feature,
-    type MessageSystemRootState,
-    selectIsFeatureDisabled,
-} from '@suite-common/message-system';
-import {
-    type PersistentDeviceDataRootState,
     selectIsDeviceInvariabilityCheckSuccess,
     selectIsEntropyCheckFailed,
 } from '@suite-common/persistent-device-data';
 
 import { SHOULD_ROUTER_APP_SKIP_AUTHENTICITY_CHECKS } from './config';
-
-export type AuthenticityChecksRootState = SuiteSettingsRootState &
-    DeviceRootState &
-    PersistentDeviceDataRootState &
-    MessageSystemRootState &
-    RouterRootState;
+import type { AuthenticityChecksRootState } from './types';
 
 export const selectFirmwareRevisionCheckErrorIfEnabled = (state: AuthenticityChecksRootState) => {
     const device = selectSelectedDevice(state);
