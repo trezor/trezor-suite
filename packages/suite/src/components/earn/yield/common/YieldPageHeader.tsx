@@ -2,6 +2,7 @@ import styled from 'styled-components';
 
 import { AccountLabel } from '@suite/account';
 import { selectDesktopAnalyticsDep } from '@suite/analytics';
+import { AssetIcon } from '@suite/asset-icon';
 import { Translation, type TranslationKey, useTranslation } from '@suite/intl';
 import { openModal } from '@suite/modal';
 import { type EarnParams, gotoThunk } from '@suite/router';
@@ -18,7 +19,6 @@ import { getYieldVaultContractAddress } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
 import { Button, IconButton, Row, Text } from '@trezor/components';
 import { CaretLeftIcon, InfoIcon } from '@trezor/icons';
-import { TokenIcon } from '@trezor/product-components';
 import { belowBreakpoint, breakpoints } from '@trezor/theme';
 
 import { FormattedCryptoAmount } from 'src/components/suite/FormattedCryptoAmount';
@@ -172,7 +172,7 @@ export const YieldPageHeader = ({
         if (hasVaultIdentity && networkSymbol) {
             return (
                 <IdentityIcon>
-                    <TokenIcon
+                    <AssetIcon
                         placeholder={vault?.token?.symbol || vault?.token?.name || ''}
                         symbol={networkSymbol}
                         contractAddress={vault?.token?.address}
@@ -188,7 +188,7 @@ export const YieldPageHeader = ({
         if (!hasVaultIdentity && routeParams?.symbol) {
             return (
                 <IdentityIcon>
-                    <TokenIcon symbol={routeParams.symbol} size={32} isBordered={false} />
+                    <AssetIcon symbol={routeParams.symbol} size={32} isBordered={false} />
                 </IdentityIcon>
             );
         }

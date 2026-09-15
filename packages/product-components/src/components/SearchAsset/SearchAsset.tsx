@@ -1,26 +1,23 @@
-import { isNetworkIconSymbol } from '@suite-common/icons';
 import { Icon, Input, Row, Select, Text } from '@trezor/components';
 import { MagnifyingGlassIcon } from '@trezor/icons';
 
-import { NetworkIcon } from '../NetworkIcon/NetworkIcon';
-import { TokenIcon } from '../TokenIcon/TokenIcon';
 import { type SearchAssetSelectConfig, useNetworkSelect } from './hooks/useNetworkSelect';
 
-export type SearchAssetProps = {
+export type SearchAssetProps<TSymbol extends string = string> = {
     searchPlaceholder: string;
     search: string;
     setSearch: (value: string) => void;
-    selectConfig?: SearchAssetSelectConfig;
+    selectConfig?: SearchAssetSelectConfig<TSymbol>;
     autoFocus?: boolean;
 };
 
-export const SearchAsset = ({
+export const SearchAsset = <TSymbol extends string>({
     searchPlaceholder,
     search,
     setSearch,
     selectConfig,
     autoFocus = false,
-}: SearchAssetProps) => {
+}: SearchAssetProps<TSymbol>) => {
     const { options, selectedOption } = useNetworkSelect(selectConfig);
     const dataTestIdBase = '@asset-picker/search';
 
@@ -40,15 +37,7 @@ export const SearchAsset = ({
                             : `${dataTestIdBase}/filter/select-option-value/${option.value ?? 'all-networks'}`
                     }
                 >
-                    {option.value && (
-                        <>
-                            {isNetworkIconSymbol(option.value) ? (
-                                <NetworkIcon size={20} networkSymbol={option.value} />
-                            ) : (
-                                <TokenIcon size={20} symbol={option.value} />
-                            )}
-                        </>
-                    )}
+                    {option.icon}
                     <Text typographyStyle="body-sm" textWrap="nowrap">
                         {option.label}
                     </Text>

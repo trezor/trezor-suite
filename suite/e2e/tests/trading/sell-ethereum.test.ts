@@ -26,7 +26,7 @@ const gasLimit = '26000';
 const maxFeePerGas = '2.67674454';
 const maxPriorityFeePerGas = '1.375641927';
 /*TODO: Uncomment once bug #19186 is resolved 
-+ import BigNumber from '@trezor/utils' and localizeNumber from '@suite-common/wallet-utils'
++ import BigNumber and localizeNumber from '@trezor/utils'
 const maxFeePerGasRounded = new BigNumber(maxFeePerGas).decimalPlaces(2, BigNumber.ROUND_UP);
 const maxPriorityFeePerGasRounded = new BigNumber(maxPriorityFeePerGas).decimalPlaces(
     2,

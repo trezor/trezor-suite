@@ -1,3 +1,4 @@
+import { AssetIcon } from '@suite/asset-icon';
 import { HiddenPlaceholder } from '@suite/discreet-mode';
 import { Translation } from '@suite/intl';
 import { selectTradingCoinSymbolByCryptoId } from '@suite-common/trading';
@@ -68,11 +69,27 @@ export const ExchangeInfoRenderer = ({ render: View, ...props }: ExchangeInfoRen
                             />
                         }
                         send={{
-                            ...send,
+                            amount: send.amount,
+                            icon: (
+                                <AssetIcon
+                                    symbol={send.symbol}
+                                    contractAddress={send.contractAddress}
+                                    placeholder={sendSymbol || send.symbol}
+                                    size={20}
+                                />
+                            ),
                             displaySymbol: sendSymbol || send.symbol,
                         }}
                         receive={{
-                            ...receive,
+                            amount: receive.amount,
+                            icon: (
+                                <AssetIcon
+                                    symbol={receive.symbol}
+                                    contractAddress={receive.contractAddress}
+                                    placeholder={receiveSymbol || receive.symbol}
+                                    size={20}
+                                />
+                            ),
                             displaySymbol: receiveSymbol || receive.symbol,
                         }}
                         renderAmount={(amount, side) => (

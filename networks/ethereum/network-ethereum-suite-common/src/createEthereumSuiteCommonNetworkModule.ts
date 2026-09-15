@@ -5,6 +5,7 @@ import {
 } from '@trezor/network-ethereum/constants';
 import type { SuiteCommonNetworkModule } from '@trezor/network-module-suite-common-types';
 
+import { ethereumIcon } from '../icons';
 import { ethereumValidator } from './addressValidator/ethereumAddressValidator';
 import {
     type EthereumNamedAddressResolverCompositionRootDeps,
@@ -26,6 +27,7 @@ export const createEthereumSuiteCommonNetworkModule = (
         createEthereumNamedAddressResolverCompositionRoot(deps);
 
     return {
+        icon: ethereumIcon,
         addressValidator: ethereumValidator,
         namedAddressResolver: ethereumNamedAddressResolver,
         getSupportedNetworks: () => supportedEthereumNetworks,

@@ -1,3 +1,4 @@
+import { TokenIcon } from '@suite/asset-icon';
 import { Translation } from '@suite/intl';
 import { closeModal as closeModalAction } from '@suite/modal';
 import { gotoThunk } from '@suite/router';
@@ -7,7 +8,6 @@ import { type TrezorDevice } from '@suite-common/suite-types';
 import { selectEnabledNetworks } from '@suite-common/wallet-core';
 import { Button, Card, Column, H3, Paragraph, Row } from '@trezor/components';
 import { PlusIcon } from '@trezor/icons';
-import { TokenIcon } from '@trezor/product-components';
 
 import { useNetworkSupport } from 'src/hooks/settings/useNetworkSupport';
 import { useSelector } from 'src/hooks/suite';

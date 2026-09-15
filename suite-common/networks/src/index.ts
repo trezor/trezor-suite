@@ -72,3 +72,14 @@ export { createNetworkModulesCompositionRoot } from './createNetworkModulesCompo
 export type { NetworksServices, NetworksDep } from './NetworksServices';
 
 export type { Network, Networks } from './Network';
+export {
+    createNetworkIconRegistry,
+    selectNetworkIconRegistry,
+    type NetworkIconRegistry,
+    type NetworkIconRegistryDep,
+    type NetworkIconRegistryDeps,
+    type NetworkIconData,
+    type NetworkBadgeData,
+    type TokenIconData,
+    type GetTokenIconParams,
+} from './createNetworkIconRegistry';

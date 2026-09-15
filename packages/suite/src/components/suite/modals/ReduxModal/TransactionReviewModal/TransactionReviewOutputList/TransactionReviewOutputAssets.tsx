@@ -3,6 +3,7 @@ import { type ReactNode } from 'react';
 import { type CryptoId } from 'invity-api';
 
 import { Address } from '@suite/address';
+import { AssetIcon, useShouldShowNetworkIcon } from '@suite/asset-icon';
 import { Translation } from '@suite/intl';
 import { selectTradingCoinSymbolByCryptoId, toTokenCryptoId } from '@suite-common/trading';
 import { getCoingeckoId, getNetwork } from '@suite-common/wallet-config';
@@ -11,9 +12,8 @@ import {
     type FormStateTradingFiatCurrency,
     type TokenAddress,
 } from '@suite-common/wallet-types';
-import { localizeNumber } from '@suite-common/wallet-utils';
 import { Card, Column, Divider, H4, InfoItem, Row, Text } from '@trezor/components';
-import { TokenIcon, isCoinSymbol, shouldShowNetworkIcon } from '@trezor/product-components';
+import { localizeNumber } from '@trezor/utils';
 
 import { BaseCurrencyValue } from 'src/components/suite/BaseCurrencyValue';
 import { TransactionReviewOutputStatus } from 'src/components/suite/modals/ReduxModal/TransactionReviewModal/TransactionReviewOutputList/TransactionReviewOutputStatus';
@@ -54,10 +54,11 @@ const TransactionReviewOutputAssetsCryptoCurrency = ({
             : network.displaySymbol,
     );
 
+    const shouldShowNetworkIcon = useShouldShowNetworkIcon();
     const renderAssetLogo = () => {
         if (contractAddress) {
             return (
-                <TokenIcon
+                <AssetIcon
                     size={24}
                     symbol={symbol}
                     contractAddress={contractAddress}
@@ -67,11 +68,7 @@ const TransactionReviewOutputAssetsCryptoCurrency = ({
             );
         }
 
-        if (isCoinSymbol(symbol)) {
-            return <TokenIcon size={24} symbol={symbol} showNetworkIcon />;
-        }
-
-        return null;
+        return <AssetIcon size={24} symbol={symbol} showNetworkIcon />;
     };
 
     return (

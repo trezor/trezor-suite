@@ -1,8 +1,8 @@
 import { messages } from '@suite/intl';
 import { cryptoIdToNetworkSymbol } from '@suite-common/trading';
 import { type NetworkSymbol, getNetwork } from '@suite-common/wallet-config';
-import { localizeNumber } from '@suite-common/wallet-utils';
 import { TestStream } from '@trezor/e2e-utils';
+import { localizeNumber } from '@trezor/utils';
 
 import { tradeEndpoint } from '../../fixtures/trading';
 import { PENDING_TRADE, SEEDED_TRADES } from '../../fixtures/trading/swap/swap-history';

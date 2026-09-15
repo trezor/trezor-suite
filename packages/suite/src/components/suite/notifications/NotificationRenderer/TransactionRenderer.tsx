@@ -5,6 +5,7 @@ import { getTxAnchor, gotoThunk, selectRouteName, selectRouterApp } from '@suite
 import { useServices } from '@suite-common/dependency-injection';
 import { selectDeviceThunk, selectDevices, selectSelectedDevice } from '@suite-common/device';
 import { selectDispatch } from '@suite-common/redux-utils';
+import { getDisplaySymbol } from '@suite-common/wallet-config';
 import {
     selectAccounts,
     selectBlockchainState,
@@ -29,6 +30,8 @@ import { AccountLabeling } from 'src/components/suite/labeling/AccountLabeling';
 import type { NotificationRendererProps } from 'src/components/suite/notifications/NotificationRenderer/NotificationRenderer';
 import type { NotificationViewProps } from 'src/components/suite/notifications/Notifications/NotificationGroup/NotificationList/NotificationView';
 import { useSelector } from 'src/hooks/suite';
+
+import { TransactionIcon } from './TransactionIcon';
 
 type TransactionRendererProps = NotificationViewProps &
     NotificationRendererProps<TransactionNotificationType>;
@@ -128,8 +131,14 @@ export const TransactionRenderer = ({ render: View, ...props }: TransactionRende
                             />
                         }
                         notificationType={props.notification.type}
-                        symbol={props.notification.symbol}
-                        token={transactionToken}
+                        displaySymbol={getDisplaySymbol(transactionToken?.symbol ?? symbol)}
+                        icon={
+                            <TransactionIcon
+                                notificationType={props.notification.type}
+                                symbol={symbol}
+                                token={transactionToken}
+                            />
+                        }
                         amount={
                             'formattedAmount' in props.notification
                                 ? props.notification.formattedAmount

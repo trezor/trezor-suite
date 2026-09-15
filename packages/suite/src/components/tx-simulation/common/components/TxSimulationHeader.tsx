@@ -1,9 +1,9 @@
 import { type ReactNode } from 'react';
 
 import { AccountLabel } from '@suite/account';
+import { TokenIcon } from '@suite/asset-icon';
 import { type Account } from '@suite-common/wallet-types';
 import { Row } from '@trezor/components';
-import { TokenIcon } from '@trezor/product-components';
 
 interface TxSimulationHeaderProps {
     account: Account | null;

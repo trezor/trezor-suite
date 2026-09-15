@@ -1,5 +1,6 @@
 import styled from 'styled-components';
 
+import { AssetIcon } from '@suite/asset-icon';
 import { useExternalLink } from '@suite/external-links';
 import { Translation } from '@suite/intl';
 import { useServices } from '@suite-common/dependency-injection';
@@ -40,10 +41,10 @@ import {
     TagIcon,
     WarningIcon,
 } from '@trezor/icons';
-import { FeeRate, TokenIcon } from '@trezor/product-components';
 import { BigNumber } from '@trezor/utils';
 
 import { FormattedDateWithBullet } from 'src/components/suite/FormattedDateWithBullet';
+import { FeeRate } from 'src/components/wallet/Fees/FeeRate';
 import { TransactionHeader } from 'src/components/wallet/TransactionItem/TransactionHeader';
 import { useLayoutSize } from 'src/hooks/suite/useLayoutSize';
 import { type WalletAccountTransaction } from 'src/types/wallet';
@@ -118,7 +119,7 @@ export const BasicTxDetails = ({
         <Card>
             <Row gap={12}>
                 <IconWrapper>
-                    <TokenIcon symbol={tx.symbol} size={48} showNetworkIcon />
+                    <AssetIcon symbol={tx.symbol} size={48} showNetworkIcon />
                     <NestedIconWrapper>
                         <Icon
                             size={14}

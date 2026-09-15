@@ -16,6 +16,7 @@
         "@scure/base": "^2.0.0",
         "@trezor/network-module-suite-common-types": "workspace:*",
         "@trezor/network-stellar": "workspace:*",
+        "@trezor/network-stellar-assets": "workspace:*",
         "crc": "^4.3.2"
     }
 }

@@ -1,6 +1,7 @@
 import styled from 'styled-components';
 
 import { selectSelectedAccount } from '@suite/account';
+import { TokenIcon } from '@suite/asset-icon';
 import { Translation } from '@suite/intl';
 import { gotoThunk, selectRouteName } from '@suite/router';
 import { isBech32AddressUppercase } from '@suite-common/address';
@@ -15,7 +16,6 @@ import {
 } from '@suite-common/wallet-config';
 import { selectDeviceAccountsByNetworkSymbol } from '@suite-common/wallet-core';
 import { Text } from '@trezor/components';
-import { TokenIcon } from '@trezor/product-components';
 import { BigNumber } from '@trezor/utils';
 
 import { fillSendForm, resetProtocol } from 'src/actions/suite/protocolActions';

@@ -3,6 +3,7 @@
     "compilerOptions": { "outDir": "libDev" },
     "references": [
         { "path": "../network-bitcoin" },
+        { "path": "../network-bitcoin-assets" },
         {
             "path": "../../network-module/network-module-suite-common-types"
         },

@@ -1,10 +1,12 @@
+import { getIconUrl } from '@suite/asset-icon';
 import { selectLanguage } from '@suite/settings';
 import {
     type AssetFiatBalance,
     type AssetFiatBalanceWithPercentage,
     calculateAssetsPercentage,
 } from '@suite-common/assets';
-import { selectNetworkColor } from '@suite-common/networks';
+import { useServices } from '@suite-common/dependency-injection';
+import { selectNetworkColor, selectNetworkIconRegistry } from '@suite-common/networks';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { localizePercentage } from '@suite-common/wallet-utils';
 import { Row, Skeleton, Tooltip } from '@trezor/components';
@@ -19,6 +21,7 @@ type AssetCoinLogoProps = {
 };
 
 export const AssetCoinLogo = ({ symbol, assetsFiatBalances, index }: AssetCoinLogoProps) => {
+    const { networkIconRegistry } = useServices(selectNetworkIconRegistry);
     const locale = useSelector(selectLanguage);
     const networkColor = useSelector(state => selectNetworkColor(state, symbol));
 
@@ -39,7 +42,7 @@ export const AssetCoinLogo = ({ symbol, assetsFiatBalances, index }: AssetCoinLo
                 cursor="pointer"
             >
                 <AssetShareIndicator
-                    symbol={symbol}
+                    src={getIconUrl(networkIconRegistry.getNetworkIcon(symbol)?.src)}
                     networkColor={networkColor ?? 'transparent'}
                     size={24}
                     percentageShare={assetPercentage}

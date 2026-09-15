@@ -3,6 +3,8 @@ import { type Meta, type StoryObj } from '@storybook/react';
 import { spacingValues } from '@trezor/theme';
 
 import { TokenIconSet as TokenIconSetComponent, type TokenIconSetProps } from './TokenIconSet';
+import { TokenIcon } from '../TokenIcon/TokenIcon';
+import { exampleIcon } from '../TokenIcon/storyFixtures';
 import { allowedTokenIconSizes } from '../TokenIcon/tokenIconTypes';
 
 const getToken = (contract: string, symbol: string, decimals: number) => ({
@@ -26,6 +28,9 @@ export const TokenIconSet: StoryObj<TokenIconSetProps> = {
     args: {
         symbol: 'eth',
         tokens: [TOKEN_1, TOKEN_2, TOKEN_3, TOKEN_4],
+        renderIcon: (token, size) => (
+            <TokenIcon src={exampleIcon} placeholder={token.symbol} size={size} />
+        ),
         size: 24,
         gap: 16,
         isCountVisible: false,

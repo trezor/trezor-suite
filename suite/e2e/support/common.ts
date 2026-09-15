@@ -7,8 +7,8 @@ import path from 'node:path';
 
 import { validJws } from '@suite-common/message-system/src/__fixtures__/messageSystemActions';
 import { type TradingCountryCode, regional } from '@suite-common/trading';
-import { getAccountDecimals, localizeNumber } from '@suite-common/wallet-utils';
-import { BigNumber, splitStringEveryNCharacters } from '@trezor/utils';
+import { getAccountDecimals } from '@suite-common/wallet-utils';
+import { BigNumber, localizeNumber, splitStringEveryNCharacters } from '@trezor/utils';
 
 import { PlaywrightTarget } from './testExtends/suiteTestOptions';
 import { PercentageOfBalanceParams } from './types';

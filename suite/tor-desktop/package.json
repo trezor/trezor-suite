@@ -21,6 +21,7 @@
         "@suite-common/wallet-config": "workspace:*",
         "@suite-common/wallet-core": "workspace:*",
         "@suite/analytics": "workspace:*",
+        "@suite/asset-icon": "workspace:*",
         "@suite/external-links": "workspace:*",
         "@suite/intl": "workspace:*",
         "@suite/modal": "workspace:*",

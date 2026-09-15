@@ -25,6 +25,15 @@
     },
     "dependencies": {
         "@suite-common/http-client": "workspace:^",
+        "@trezor/network-bitcoin-assets": "workspace:*",
+        "@trezor/network-cardano-assets": "workspace:*",
+        "@trezor/network-ethereum-assets": "workspace:*",
+        "@trezor/network-monero-assets": "workspace:*",
+        "@trezor/network-ripple-assets": "workspace:*",
+        "@trezor/network-solana-assets": "workspace:*",
+        "@trezor/network-stellar-assets": "workspace:*",
+        "@trezor/network-tezos-assets": "workspace:*",
+        "@trezor/network-tron-assets": "workspace:*",
         "zod": "4.3.6"
     }
 }

@@ -3,6 +3,7 @@ import { type ReactNode, useEffect, useState } from 'react';
 import { AccountLabel } from '@suite/account';
 import { Address, selectAddressLabel } from '@suite/address';
 import { events, selectDesktopAnalyticsDep } from '@suite/analytics';
+import { TokenIcon } from '@suite/asset-icon';
 import { useDevice } from '@suite/device';
 import { Translation, useTranslation } from '@suite/intl';
 import { Labeling } from '@suite/labeling';
@@ -44,7 +45,7 @@ import {
     WarningFilledIcon,
     WarningIcon,
 } from '@trezor/icons';
-import { ConfirmOnDevicePill, QrCode, TokenIcon } from '@trezor/product-components';
+import { ConfirmOnDevicePill, QrCode } from '@trezor/product-components';
 
 import { useGuideOpenNode } from 'src/hooks/guide';
 import { useSelector } from 'src/hooks/suite';

@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 
 import { events, selectDesktopAnalyticsDep } from '@suite/analytics';
+import { TokenIcon } from '@suite/asset-icon';
 import { selectIsDebugModeActive } from '@suite/debug';
 import { useDevice } from '@suite/device';
 import { Translation, type TranslationKey, useTranslation } from '@suite/intl';
@@ -42,7 +43,6 @@ import { Icon, IconButton, Input, Link, Row, Text } from '@trezor/components';
 import TrezorConnect from '@trezor/connect';
 import { asCoinSymbol } from '@trezor/connect-common';
 import { CheckIcon, InfoIcon, QrCodeIcon, WarningCircleIcon, XIcon } from '@trezor/icons';
-import { TokenIcon } from '@trezor/product-components';
 import { type TimerId } from '@trezor/type-utils';
 import {
     ALL_URLS,

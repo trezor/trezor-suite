@@ -5,6 +5,7 @@ import {
     type SellFiatTrade,
 } from 'invity-api';
 
+import { type AssetIconProps } from '@suite/asset-icon';
 import { type ExtendedMessageDescriptor } from '@suite/intl';
 import type {
     TradingBuyInfoSelector,
@@ -20,7 +21,6 @@ import type {
     TradingType,
 } from '@suite-common/trading';
 import { type Account } from '@suite-common/wallet-types';
-import { type TokenIconProps } from '@trezor/product-components';
 
 export type TradingTradeBuySellType = Exclude<TradingType, TradingExchangeType>;
 export type TradingTradeSellExchangeType = Exclude<TradingType, TradingBuyType>;
@@ -48,8 +48,8 @@ export interface TradingUseWatchTradeProps<T extends TradingType> {
 export type TradingCoinLogoProps = {
     cryptoId: CryptoId;
     className?: string;
-    size?: TokenIconProps['size'];
-} & Pick<TokenIconProps, 'showNetworkIcon' | 'margin'>;
+    size?: AssetIconProps['size'];
+} & Pick<AssetIconProps, 'showNetworkIcon' | 'margin'>;
 
 export interface TradingGetAmountLabelsProps {
     type: TradingType;
