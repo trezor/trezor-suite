@@ -1,4 +1,4 @@
-import type { NetworkSymbol } from '@suite-common/wallet-config';
+import { type NetworkSymbol, type NetworkType, getNetworkType } from '@suite-common/wallet-config';
 import type { StaticSessionId } from '@trezor/connect';
 
 import {
@@ -81,47 +81,15 @@ type NetworkSpecificDefault =
     | typeof networkSpecificDefaultCardano
     | typeof networkSpecificDefaultStellar;
 
-const networkTypeMap: Record<NetworkSymbol, NetworkSpecificDefault> = {
-    // Bitcoin-like
-    btc: networkSpecificDefaultBitcoin,
-    regtest: networkSpecificDefaultBitcoin,
-    test: networkSpecificDefaultBitcoin,
-    ltc: networkSpecificDefaultBitcoin,
-    bch: networkSpecificDefaultBitcoin,
-    doge: networkSpecificDefaultBitcoin,
-
-    // Eth
-    eth: networkSpecificDefaultEthereum,
-    etc: networkSpecificDefaultEthereum,
-    hype: networkSpecificDefaultEthereum,
-
-    // Testnet Eth
-    tsep: networkSpecificDefaultEthereum,
-    thod: networkSpecificDefaultEthereum,
-
-    // Solana
-    sol: networkSpecificDefaultSolana,
-    dsol: networkSpecificDefaultSolana,
-
-    // Stellar
-    xlm: networkSpecificDefaultBitcoin,
-
-    // Todo: fix map for remaining networks
-    xrp: networkSpecificDefaultBitcoin,
-    zec: networkSpecificDefaultBitcoin,
-    ada: networkSpecificDefaultBitcoin,
-    pol: networkSpecificDefaultBitcoin,
-    bsc: networkSpecificDefaultBitcoin,
-    arb: networkSpecificDefaultBitcoin,
-    base: networkSpecificDefaultBitcoin,
-    op: networkSpecificDefaultBitcoin,
-    rhc: networkSpecificDefaultEthereum,
-    avax: networkSpecificDefaultBitcoin,
-    trx: networkSpecificDefaultTron,
-    ttrx: networkSpecificDefaultTron,
-    txrp: networkSpecificDefaultBitcoin,
-    txlm: networkSpecificDefaultBitcoin,
-};
+const DEFAULTS_BY_NETWORK_TYPE = {
+    bitcoin: networkSpecificDefaultBitcoin,
+    ethereum: networkSpecificDefaultEthereum,
+    tron: networkSpecificDefaultTron,
+    solana: networkSpecificDefaultSolana,
+    ripple: networkSpecificDefaultRipple,
+    cardano: networkSpecificDefaultCardano,
+    stellar: networkSpecificDefaultStellar,
+} as const satisfies Record<NetworkType, NetworkSpecificDefault>;
 
 type MandatoryAccountData = {
     symbol: NetworkSymbol;
@@ -175,6 +143,6 @@ export const mockWalletAccount = (
     return {
         ...accountBase,
         ...accountFailure,
-        ...(networkSpecific ?? networkTypeMap[account.symbol]),
+        ...(networkSpecific ?? DEFAULTS_BY_NETWORK_TYPE[getNetworkType(account.symbol)]),
     };
 };

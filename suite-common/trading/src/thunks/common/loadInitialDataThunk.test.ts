@@ -31,7 +31,11 @@ const otherAccount = mockWalletAccount({
     symbol: 'btc',
     descriptor: asAccountDescriptor('secondAccount'),
 });
-const info = { coins: {}, platforms: {}, config: {} };
+const info = {
+    coins: {},
+    platforms: {},
+    config: { btcSwapComposeTemplate: { extraOutputs: [] } },
+};
 const tradingReducer = prepareTradingReducer({
     actionTypes: { storageLoad: mockActionType('storageLoad') },
 });

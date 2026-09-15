@@ -344,7 +344,7 @@ export const getBitcoinComposeOutputs = (
     isSatoshis?: boolean,
 ) => {
     const result: ComposeOutput[] = [];
-    if (!values || !Array.isArray(values.outputs)) return result;
+    if (!values || !Array.isArray(values.outputs) || values.transactionData) return result;
 
     const { setMaxOutputId } = values;
 
