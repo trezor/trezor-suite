@@ -49,6 +49,31 @@ describe(getForbiddenDependencyErrors.name, () => {
     });
 });
 
+describe('forbidden package-name prefix exceptions', () => {
+    it('lets a listed package through while still rejecting the rest of the prefix', () => {
+        expect(
+            getForbiddenDependencyErrors({
+                dependencyOccurrences: [
+                    { field: 'dependencies', name: '@suite-common/calldata' },
+                    { field: 'dependencies', name: '@suite-common/wallet-core' },
+                ],
+                dependencyRule: {
+                    'forbidden-deps': [
+                        {
+                            packageNamePrefix: '@suite-common/',
+                            except: ['@suite-common/calldata'],
+                            reason: 'Below the apps.',
+                        },
+                    ],
+                },
+                workspaceName: '@trezor/network-bitcoin-suite-common',
+            }),
+        ).toEqual([
+            '@trezor/network-bitcoin-suite-common: "@suite-common/wallet-core" is forbidden in dependencies. Reason: Below the apps.',
+        ]);
+    });
+});
+
 describe(getDependencyConsumerErrors.name, () => {
     const connectConfig: ForbiddenDepsConfig = {
         'forbidden-in': {
