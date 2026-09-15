@@ -17884,6 +17884,7 @@ __metadata:
     electron-builder: "npm:26.15.7"
     openpgp: "npm:^6.3.1"
     usb: "npm:^3.1.0"
+    usb-legacy: "npm:usb@2.17.0"
   languageName: unknown
   linkType: soft
 
@@ -18253,6 +18254,7 @@ __metadata:
     rimraf: "npm:^6.1.2"
     styled-components: "npm:^6.3.9"
     usb: "npm:^3.1.0"
+    usb-legacy: "npm:usb@2.17.0"
     webpack: "npm:5.109.0"
     webpack-cli: "npm:^7.2.1"
   languageName: unknown
@@ -19474,7 +19476,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/w3c-web-usb@npm:^1.0.14":
+"@types/w3c-web-usb@npm:^1.0.14, @types/w3c-web-usb@npm:^1.0.6":
   version: 1.0.14
   resolution: "@types/w3c-web-usb@npm:1.0.14"
   checksum: 10/53f04db6969fd859a3f7cf62b699060e97f39f6da30fe292c9c5e74ed3f3a8acf50c7574dcadfc1a1a6860558905e78f0de11eaf26b1905edf822e44c6dfef26
@@ -38117,6 +38119,17 @@ __metadata:
   languageName: node
   linkType: hard
 
+"node-gyp-build@npm:^4.5.0":
+  version: 4.8.4
+  resolution: "node-gyp-build@npm:4.8.4"
+  bin:
+    node-gyp-build: bin.js
+    node-gyp-build-optional: optional.js
+    node-gyp-build-test: build-test.js
+  checksum: 10/6a7d62289d1afc419fc8fc9bd00aa4e554369e50ca0acbc215cb91446148b75ff7e2a3b53c2c5b2c09a39d416d69f3d3237937860373104b5fe429bf30ad9ac5
+  languageName: node
+  linkType: hard
+
 "node-gyp@npm:12.2.0":
   version: 12.2.0
   resolution: "node-gyp@npm:12.2.0"
@@ -47095,6 +47108,18 @@ __metadata:
     punycode: "npm:^1.4.1"
     qs: "npm:^6.12.3"
   checksum: 10/e787d070f0756518b982a4653ef6cdf4d9030d8691eee2d483344faf2b530b71d302287fa63b292299455fea5075c502a5ad5f920cb790e95605847f957a65e4
+  languageName: node
+  linkType: hard
+
+"usb-legacy@npm:usb@2.17.0":
+  version: 2.17.0
+  resolution: "usb@npm:2.17.0"
+  dependencies:
+    "@types/w3c-web-usb": "npm:^1.0.6"
+    node-addon-api: "npm:^8.0.0"
+    node-gyp: "npm:latest"
+    node-gyp-build: "npm:^4.5.0"
+  checksum: 10/464585012a384fc0a199d0401e1f4966256afb807c1dd09b0f30b829f46516a9529cf0724961193cf4f13f2e9622f349544503e7e830340c8234eb67524a7e21
   languageName: node
   linkType: hard
 
