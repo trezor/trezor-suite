@@ -238,9 +238,7 @@
         { "path": "../connect" },
         { "path": "../connect-common" },
         { "path": "../crypto-utils" },
-        {
-            "path": "../dependency-injection"
-        },
+        { "path": "../dependency-injection" },
         { "path": "../device" },
         { "path": "../device-utils" },
         { "path": "../dom-utils" },

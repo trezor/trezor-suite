@@ -34,9 +34,12 @@ export const fixtures: OnboardingActionsFixture[] = [
         description: 'goToNextStepThunk (without param)',
         initialState: {
             device: {
-                selectedDevice: mockSuiteDevice(undefined, {
-                    internal_model: DeviceModelInternal.T3T1,
-                }),
+                selectedDevice: mockSuiteDevice(
+                    { connected: true, available: true },
+                    {
+                        internal_model: DeviceModelInternal.T3T1,
+                    },
+                ),
             },
         },
         action: () => onboardingActions.goToNextStepThunk(),

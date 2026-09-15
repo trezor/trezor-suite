@@ -11477,6 +11477,7 @@ __metadata:
     "@suite-common/persistent-device-data": "workspace:*"
     "@suite-common/redux-utils": "workspace:*"
     "@suite-common/suite-types": "workspace:*"
+    "@suite-common/suite-utils": "workspace:*"
     "@suite-common/test-utils": "workspace:*"
     "@suite-common/toast-notifications": "workspace:*"
     "@trezor/connect": "workspace:*"
@@ -16173,6 +16174,7 @@ __metadata:
   resolution: "@suite/authenticity-checks@workspace:suite/authenticity-checks"
   dependencies:
     "@suite-common/device": "workspace:*"
+    "@suite-common/device-authenticity": "workspace:*"
     "@suite-common/firmware-authenticity": "workspace:*"
     "@suite-common/message-system": "workspace:*"
     "@suite-common/persistent-device-data": "workspace:*"
