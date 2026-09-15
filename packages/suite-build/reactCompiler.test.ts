@@ -208,19 +208,19 @@ describe('REACT_COMPILER_PATHS', () => {
 });
 
 describe('shouldCompileWithReactCompiler', () => {
-    const originalFlag = process.env.REACT_COMPILER;
-
-    afterEach(() => {
-        if (originalFlag === undefined) {
-            delete process.env.REACT_COMPILER;
-        } else {
-            process.env.REACT_COMPILER = originalFlag;
-        }
+    it('compiles a file under every enabled wave', () => {
+        REACT_COMPILER_PATHS.forEach(directory => {
+            expect(shouldCompileWithReactCompiler(repoFile(directory, 'Component.tsx'))).toBe(true);
+        });
     });
 
-    it('compiles nothing while no wave is enabled', () => {
-        expect(REACT_COMPILER_PATHS).toEqual([]);
-        expect(shouldCompileWithReactCompiler(repoFile('packages/suite/src/index.ts'))).toBe(false);
+    it('compiles nothing outside the enabled waves', () => {
+        // `suite-native` is the one tree this rollout excludes outright, and `packages/connect` is
+        // the reusable-library side of the repo. Neither is ever a wave.
+        expect(shouldCompileWithReactCompiler(repoFile('suite-native/app/App.tsx'))).toBe(false);
+        expect(shouldCompileWithReactCompiler(repoFile('packages/connect/src/index.ts'))).toBe(
+            false,
+        );
     });
 });
 

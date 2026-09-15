@@ -15,7 +15,11 @@ const repoRoot = path.resolve(__dirname, '../..');
  * - An entry must be reachable from BOTH the web and the desktop entry graph, which are disjoint
  * (`suite/web-app/src/index.ts` vs `suite/desktop-app-renderer/src/index.tsx`).
  */
-export const REACT_COMPILER_PATHS: readonly string[] = [];
+export const REACT_COMPILER_PATHS: readonly string[] = [
+    // Wave 1a. Already compiled in production on mobile, where `experiments.reactCompiler` covers
+    // every `suite-common/*` source the Expo bundle pulls in.
+    'suite-common',
+];
 
 /**
  * Options passed to `babel-plugin-react-compiler`
