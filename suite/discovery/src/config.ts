@@ -13,7 +13,6 @@ export const SHOULD_ROUTER_APP_START_DISCOVERY: Record<RouterApp, boolean> = {
     'earn-staking': true,
 
     'apps-embedding': false,
-    start: false,
     version: false,
     'bridge-requested': false,
     bridge: false,

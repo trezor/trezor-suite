@@ -178,9 +178,10 @@ describe('tradingMiddleware', () => {
             { accountKey: undefined, cryptoId: undefined },
             {
                 ...tradingMiddlewareFixtures.DEFAULT_ROUTE,
-                pathname: '/start',
-                app: 'start',
-                route: getRequiredRoute('suite-start'),
+                pathname: '/',
+                app: 'dashboard',
+                route: getRequiredRoute('suite-index'),
+                params: { modal: undefined, networkSymbol: undefined },
             },
         ],
     ])('%s', (_, result, routeChange) => {

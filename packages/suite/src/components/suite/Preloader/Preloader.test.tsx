@@ -9,6 +9,10 @@ import { type DesktopDeviceState } from '@suite/device';
 import { type RouterState, type SuiteRouterHistoryDep } from '@suite/router';
 import { mockSuiteRouterHistory } from '@suite/router/mocks';
 import { type AnalyticsState } from '@suite-common/analytics-redux';
+import {
+    type PersistentDeviceDataState,
+    persistentDeviceDataInitialState,
+} from '@suite-common/persistent-device-data';
 import { type WithServices } from '@suite-common/redux-utils';
 import {
     type AcquiredDevice,
@@ -18,6 +22,7 @@ import {
     type ShouldRetryFirmwareRevisionCheckErrorDep,
 } from '@suite-common/suite-types';
 import {
+    defaultDevicePersistentData,
     mockGetAllowPrerelease,
     mockReportSecurityCheck,
     mockRerunFwAuthenticityChecksCall,
@@ -80,6 +85,13 @@ const defaultDevice = mockSuiteDevice();
 if (!isDeviceAcquired(defaultDevice)) {
     throw `${mockSuiteDevice.name}() must return an AcquiredDevice here.`;
 }
+// Derived from defaultDevice, so that it passes the invariability check
+const matchingDevicePersistentData = {
+    ...defaultDevicePersistentData,
+    device_id: defaultDevice.features.device_id,
+    unit_color: defaultDevice.features.unit_color,
+    internal_model: defaultDevice.features.internal_model,
+};
 const compromisedDevice: AcquiredDevice = {
     ...defaultDevice,
     authenticityChecks: {
@@ -94,6 +106,7 @@ type GetInitialStateProps = {
     // I am not happy about `DeepPartial` here, but it would be hell to fix all the fixtures
     device?: DeepPartial<DesktopDeviceState>;
     analytics?: Partial<AnalyticsState>;
+    persistentDeviceData?: PersistentDeviceDataState;
 };
 
 const getInitialState = ({
@@ -101,11 +114,14 @@ const getInitialState = ({
     router,
     device,
     analytics,
+    // Manual Device Check already passed by default, so that InteractiveDeviceChecksFlow is not displayed
+    persistentDeviceData = { devices: [matchingDevicePersistentData] },
 }: GetInitialStateProps = {}): AppState => ({
     ...mockInitialAppState,
     router: { ...mockInitialAppState.router, ...router } as unknown as RouterState,
     device: { ...mockInitialAppState.device, ...device } as DesktopDeviceState,
     analytics: { ...mockInitialAppState.analytics, ...analytics },
+    persistentDeviceData,
     suite: {
         ...mockInitialAppState.suite,
         lifecycle: {
@@ -598,6 +614,7 @@ describe(`${Preloader.name} component`, () => {
         unmount();
     });
 
+    // Fresh or factory-reset device always needs Manual Device Check, regardless of persistent device data
     it('Bootloader device without firmware', () => {
         const { services } = createTestCompositionRoot<PreloaderTestDeps, AppState>({
             preloadedState: getInitialState({
@@ -607,7 +624,7 @@ describe(`${Preloader.name} component`, () => {
                 device: {
                     selectedDevice: mockSuiteDevice(
                         { mode: 'bootloader' },
-                        { firmware_present: false, bootloader_mode: true },
+                        { firmware_present: false, bootloader_mode: true, initialized: false },
                     ),
                 },
             }),
@@ -618,9 +635,51 @@ describe(`${Preloader.name} component`, () => {
             <Index app={services.store.getState().router.app} />,
         );
 
-        expect(findByTestId('@connect-device-prompt')).not.toBeNull();
-        expect(findByTestId(/TR_NO_FIRMWARE/)).not.toBeNull();
-        expect(findByTestId('TR_GO_TO_ONBOARDING')).not.toBeNull();
+        expect(findByTestId('@onboarding/device-check/setup-button')).not.toBeNull();
+
+        unmount();
+    });
+
+    it('Initialized device missing in persistent device data', () => {
+        const { services } = createTestCompositionRoot<PreloaderTestDeps, AppState>({
+            preloadedState: getInitialState({
+                suite: {
+                    transport: { transports: [createTransportInfo({ type: 'BridgeTransport' })] },
+                },
+                device: { selectedDevice: mockSuiteDevice() },
+                persistentDeviceData: persistentDeviceDataInitialState,
+            }),
+            services: createServices,
+        });
+        const { unmount } = renderWithProviders(
+            services,
+            <Index app={services.store.getState().router.app} />,
+        );
+
+        expect(findByTestId('@onboarding/complete-onboarding')).not.toBeNull();
+
+        unmount();
+    });
+
+    it('Not initialized device missing in persistent device data', () => {
+        const { services } = createTestCompositionRoot<PreloaderTestDeps, AppState>({
+            preloadedState: getInitialState({
+                suite: {
+                    transport: { transports: [createTransportInfo({ type: 'BridgeTransport' })] },
+                },
+                device: {
+                    selectedDevice: mockSuiteDevice({ mode: 'initialize' }, { initialized: false }),
+                },
+                persistentDeviceData: persistentDeviceDataInitialState,
+            }),
+            services: createServices,
+        });
+        const { unmount } = renderWithProviders(
+            services,
+            <Index app={services.store.getState().router.app} />,
+        );
+
+        expect(findByTestId('@onboarding/device-check/setup-button')).not.toBeNull();
 
         unmount();
     });

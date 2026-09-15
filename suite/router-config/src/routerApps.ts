@@ -1,5 +1,4 @@
 export type RouterApp =
-    | 'start'
     | 'dashboard'
     | 'earn'
     | 'earn-yield'

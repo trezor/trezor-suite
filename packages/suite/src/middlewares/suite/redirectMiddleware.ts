@@ -28,16 +28,8 @@ const handleDeviceRedirect = (dispatch: Dispatch, state: AppState, device?: Trez
         return;
     }
 
-    // device is not initialized, redirect to onboarding
-    if (device.mode === 'initialize') {
-        dispatch(gotoThunk({ routeName: 'suite-start' }));
-    }
-    // firmware none (T2T1) or unknown (T1B1) indicates freshly unpacked device
-    if (device.mode === 'bootloader' && device.features?.firmware_present === false) {
-        dispatch(gotoThunk({ routeName: 'suite-start' }));
-    }
     // device firmware update required, redirect to "firmware update"
-    else if (device.firmware === 'required') {
+    if (device.firmware === 'required') {
         dispatch(gotoThunk({ routeName: 'firmware-index' }));
     }
 
