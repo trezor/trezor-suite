@@ -34,22 +34,39 @@ const getInitialState = (): AppState => ({
         fiat: {
             ...mockInitialAppState.wallet.fiat,
             current: { [getFiatRateKey('btc', 'usd')]: { rate: 100000 } as Rate },
+            lastWeek: { [getFiatRateKey('btc', 'usd')]: { rate: 90000 } as Rate },
         },
     },
 });
 
 describe('AssetFirstDashboard', () => {
-    it('is the balance and the assets, and nothing else', () => {
+    const render = () => {
         const root = createTestCompositionRoot({
             extra: { services: {} },
             preloadedState: getInitialState(),
         });
 
         renderWithProviders(root, <AssetFirstDashboard />);
+    };
 
-        expect(screen.getByTestId('@dashboard/portfolio/fiat-amount')).toBeInTheDocument();
+    it('is the balance, the actions and the assets, and nothing else', () => {
+        render();
+
+        expect(screen.getByTestId('@dashboard/asset-first/fiat-amount')).toBeInTheDocument();
+        expect(screen.getByTestId('@dashboard/asset-first/swap')).toBeInTheDocument();
+        expect(screen.getByTestId('@dashboard/asset-first/receive')).toBeInTheDocument();
+        expect(screen.getByTestId('@dashboard/asset-first/send')).toBeInTheDocument();
         expect(screen.getByTestId('@dashboard/asset-first-item/btc/coin')).toBeInTheDocument();
         // The graph and its controls belong to the card this view replaces.
         expect(screen.queryByTestId('@dashboard/loading')).not.toBeInTheDocument();
+    });
+
+    it('says what the wallet gained against its rate a week ago', () => {
+        // 0.5 BTC at 100 000 is 50 000 today and 45 000 a week ago.
+        render();
+
+        expect(screen.getByTestId('@dashboard/asset-first/week-change')).toHaveTextContent(
+            'over 7d',
+        );
     });
 });
