@@ -24,9 +24,10 @@ when in doubt and treat the list below as a summary that can lag it by a commit.
   [`app.config.ts`](../../suite-native/app/app.config.ts) auto-memoizes every component and hook in its
   bundle, including the `suite-common/*` and `packages/*` sources it pulls in — so those already have to
   satisfy the compiled rules whichever web wave they are in.
-- **Web and desktop are compiled tree by tree. Compiled today: `suite-common/`,
-  `packages/suite/src/views/` and `packages/suite/src/components/`** (waves 1a and 1b). The rest of
-  `packages/suite/src`, `suite/*`, `packages/components`, `packages/product-components`,
+- **Web and desktop are compiled tree by tree. Compiled today: `suite-common/` and
+  `packages/suite/src/{views,components,hooks}/`** (waves 1a and 1b). The rest of
+  `packages/suite/src` — `actions`, `reducers`, `selectors`, `support`, `utils` and the other
+  non-UI directories — plus `suite/*`, `packages/components`, `packages/product-components`,
   `packages/react-utils`, `packages/icons`, `packages/suite-web` and `packages/suite-desktop-ui`
   still ship uncompiled, so manual memoization stays its only runtime mechanism there. The
   compiler's lint rules below apply everywhere regardless.
