@@ -14,6 +14,11 @@ import { FormattedCryptoAmount } from 'src/components/suite';
 import { useSendFormContext } from 'src/hooks/wallet';
 
 export const CardanoMinAmountInfo = () => {
+    // React Compiler: `getValues` keeps one identity for the form's whole life, so a compiled
+    // render-time read of it freezes on the first render. Remove once these reads move to
+    // `useWatch` or out of render.
+    'use no memo';
+
     const {
         account: { symbol, networkType, balance },
         composedLevels,
