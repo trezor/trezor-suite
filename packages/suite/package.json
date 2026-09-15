@@ -207,6 +207,7 @@
         "styled-components": "^6.5.3"
     },
     "devDependencies": {
+        "@babel/core": "7.29.7",
         "@pmmmwh/react-refresh-webpack-plugin": "^0.6.2",
         "@sentry/webpack-plugin": "^5.4.0",
         "@testing-library/jest-dom": "7.0.1",
@@ -225,6 +226,7 @@
         "@types/webpack-bundle-analyzer": "^4.7.0",
         "@types/webpack-plugin-serve": "^1.4.7",
         "babel-loader": "^10.1.1",
+        "babel-plugin-react-compiler": "^1.0.0",
         "babel-plugin-styled-components": "^2.3.0",
         "buffer": "^6.0.3",
         "core-js": "^3.49.0",
