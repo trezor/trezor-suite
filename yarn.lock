@@ -17813,9 +17813,9 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@trezor/suite-data@workspace:*, @trezor/suite-data@workspace:packages/suite-data":
+"@trezor/suite-data@workspace:*, @trezor/suite-data@workspace:suite/app-assets":
   version: 0.0.0-use.local
-  resolution: "@trezor/suite-data@workspace:packages/suite-data"
+  resolution: "@trezor/suite-data@workspace:suite/app-assets"
   dependencies:
     "@babel/preset-env": "npm:7.29.7"
     "@babel/preset-typescript": "npm:^7.29.7"
