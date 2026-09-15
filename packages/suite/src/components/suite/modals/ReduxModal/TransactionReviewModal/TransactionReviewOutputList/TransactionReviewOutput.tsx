@@ -25,12 +25,11 @@ import {
     isAllowanceUnlimited,
     isEvmApprovalTxByTextSignature,
     isTestnet,
-    localizeNumber,
 } from '@suite-common/wallet-utils';
 import type { TokenInfo } from '@trezor/blockchain-link-types';
 import { getWrappedNativeSymbol } from '@trezor/network-ethereum-suite-common';
 import { exhaustive } from '@trezor/type-utils';
-import { BigNumber } from '@trezor/utils';
+import { BigNumber, localizeNumber } from '@trezor/utils';
 
 import { TransactionReviewOutputAssets } from 'src/components/suite/modals/ReduxModal/TransactionReviewModal/TransactionReviewOutputList/TransactionReviewOutputAssets';
 import { useSelector } from 'src/hooks/suite';

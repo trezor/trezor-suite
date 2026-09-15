@@ -13,11 +13,10 @@ import { LOW_BALANCE_THRESHOLD } from '@suite-common/wallet-constants';
 import {
     type AmountUnit,
     formatCoinBalance,
-    localizeNumber,
     networkAmountToSmallestUnit,
 } from '@suite-common/wallet-utils';
 import { Text } from '@trezor/components';
-import { BigNumber } from '@trezor/utils';
+import { BigNumber, localizeNumber } from '@trezor/utils';
 
 import { Sign } from 'src/components/suite/Sign';
 import { useSelector } from 'src/hooks/suite';

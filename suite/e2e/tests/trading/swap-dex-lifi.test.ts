@@ -1,7 +1,7 @@
 import { getCryptoId } from '@suite-common/trading';
-import { fromGwei, localizeNumber } from '@suite-common/wallet-utils';
+import { fromGwei } from '@suite-common/wallet-utils';
 import { TestStream } from '@trezor/e2e-utils';
-import { BigNumber } from '@trezor/utils';
+import { BigNumber, localizeNumber } from '@trezor/utils';
 
 import { dexSwapStatusFlow } from '../../fixtures/trading/statusFlow';
 import { expect, test } from '../../support/fixtures';

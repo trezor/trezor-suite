@@ -1,9 +1,9 @@
-import { type Locale } from '@suite-common/suite-types';
-import { BigNumber, getLocaleSeparators } from '@trezor/utils';
+import { BigNumber } from './bigNumber';
+import { getLocaleSeparators } from './getLocaleSeparators';
 
 export const localizeNumber = (
     value: number | string | BigNumber,
-    locale: Locale = 'en-US',
+    locale: string = 'en-US',
     minDecimals = 0,
     maxDecimals?: number,
 ) => {

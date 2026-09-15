@@ -11,9 +11,9 @@ import {
     type FormStateTradingFiatCurrency,
     type TokenAddress,
 } from '@suite-common/wallet-types';
-import { localizeNumber } from '@suite-common/wallet-utils';
 import { Card, Column, Divider, H4, InfoItem, Row, Text } from '@trezor/components';
 import { TokenIcon, isCoinSymbol, shouldShowNetworkIcon } from '@trezor/product-components';
+import { localizeNumber } from '@trezor/utils';
 
 import { BaseCurrencyValue } from 'src/components/suite/BaseCurrencyValue';
 import { TransactionReviewOutputStatus } from 'src/components/suite/modals/ReduxModal/TransactionReviewModal/TransactionReviewOutputList/TransactionReviewOutputStatus';
