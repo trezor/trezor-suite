@@ -85,6 +85,7 @@ export enum Enum_Capability {
     Capability_N1W1 = 25,
     Capability_TouchWakeup = 26,
     Capability_Ethereum_EIP7702 = 28,
+    Capability_Miniscript = 29,
 }
 
 export type EnumEnum_Capability = Static<typeof EnumEnum_Capability>;
