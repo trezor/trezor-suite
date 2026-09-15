@@ -35,7 +35,7 @@ const staticAliasPlugin = (): Plugin => ({
 });
 
 // Plugin to serve flag SVGs from `@suite-common/flags` at `/static/flags/*.svg`
-// (flags moved out of `suite-data/files` so they need an explicit middleware +
+// (flags moved out of `app-assets/files` so they need an explicit middleware +
 // build-time copy).
 const flagsPlugin = (): Plugin => {
     const flagsAssetsDir = resolve(
@@ -235,10 +235,10 @@ const sessionsSharedWorkerPlugin = () => {
     };
 };
 
-// Plugin to build favicon.js from suite-data for /static/favicon.js usage
+// Plugin to build favicon.js from app-assets for /static/favicon.js usage
 const faviconPlugin = (): Plugin => {
-    const faviconOutDir = resolve(__dirname, '../suite-data/files');
-    const faviconEntryPath = resolve(__dirname, '../suite-data/src/favicon.ts');
+    const faviconOutDir = resolve(__dirname, '../../suite/app-assets/files');
+    const faviconEntryPath = resolve(__dirname, '../../suite/app-assets/src/favicon.ts');
     const faviconFileName = 'favicon.js';
     const faviconOutputPath = resolve(faviconOutDir, faviconFileName);
 
@@ -421,7 +421,7 @@ const guideMarkdownPlugin = (): Plugin => ({
         // This transform the hook logic to use fetch so that
         // with Vite build md guides are displayed properly
         const transformed = code.replace(
-            /const\s+file\s*=\s*await\s*import\([^)]*`@trezor\/suite-data\/files\/guide\/\$\{language\.toLowerCase\(\)\}\$\{id\}`[^)]*\);\s*const\s+md\s*=\s*(?:await\s*)?file\.default;?\s*return\s+md;?/s,
+            /const\s+file\s*=\s*await\s*import\([^)]*`@suite\/app-assets\/files\/guide\/\$\{language\.toLowerCase\(\)\}\$\{id\}`[^)]*\);\s*const\s+md\s*=\s*(?:await\s*)?file\.default;?\s*return\s+md;?/s,
             `
 const response = await fetch(\`/guide/\${language.toLowerCase()}\${id}\`);
 if (!response.ok) throw new Error('Failed to load markdown');
@@ -440,8 +440,8 @@ export default defineConfig({
     root: '../suite-web/src/static',
     cacheDir: resolve(__dirname, '../../node_modules/.vite'),
     base: assetPrefix,
-    // Use suite-data/files as the public directory
-    publicDir: resolve(__dirname, '../suite-data/files'),
+    // Use app-assets/files as the public directory
+    publicDir: resolve(__dirname, '../../suite/app-assets/files'),
     plugins: [
         htmlTemplatePlugin(),
         bufferPolyfillPlugin(),

@@ -59,7 +59,7 @@ jobs:
 
       - name: Install dependencies
         shell: bash
-        run: yarn workspaces focus @trezor/suite-web @trezor/suite-data @trezor/suite-build @suite-common/message-system
+        run: yarn workspaces focus @trezor/suite-web @suite/app-assets @trezor/suite-build @suite-common/message-system
 
       - name: Build Suite Web
         shell: bash
@@ -69,7 +69,7 @@ jobs:
           INSTRUMENT_CODE: ${{ inputs.instrument-code }}
         run: |
           yarn message-system-sign-config
-          yarn workspace @trezor/suite-data build:lib
+          yarn workspace @suite/app-assets build:lib
           yarn workspace @trezor/suite-web build
 
       - name: Upload Suite Web to S3

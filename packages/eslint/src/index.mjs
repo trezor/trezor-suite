@@ -51,7 +51,7 @@ export const eslint = [
             '**/.expo/*',
             '**/.cache/*',
             '**/playwright-report/*',
-            '**/suite-data/files/favicon.js',
+            '**/app-assets/files/favicon.js',
         ],
     },
     { files: ['**/*.{js,mjs,cjs,ts,jsx,tsx}'] },

@@ -1,5 +1,5 @@
 {
-    "name": "@trezor/suite-data",
+    "name": "@suite/app-assets",
     "version": "1.0.0",
     "private": true,
     "author": "Trezor <info@trezor.io>",

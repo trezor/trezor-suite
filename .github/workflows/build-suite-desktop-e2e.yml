@@ -33,13 +33,13 @@ jobs:
           version: v0.19.1
       - name: Install dependencies
         shell: bash
-        run: yarn workspaces focus @trezor/suite-desktop @trezor/suite-desktop-core @trezor/suite-build @trezor/suite @trezor/suite-data @trezor/transport-bridge @suite-common/message-system @trezor/suite-desktop-ui
+        run: yarn workspaces focus @trezor/suite-desktop @trezor/suite-desktop-core @trezor/suite-build @trezor/suite @suite/app-assets @trezor/transport-bridge @suite-common/message-system @trezor/suite-desktop-ui
 
       - name: Build libs
         shell: bash
         run: |
           yarn message-system-sign-config
-          yarn workspace @trezor/suite-data build:lib
+          yarn workspace @suite/app-assets build:lib
           yarn workspace @trezor/transport-bridge build:lib
 
       - name: Build Electron app.js for tests

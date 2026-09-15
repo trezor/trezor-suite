@@ -137,13 +137,13 @@ jobs:
           key: node_modules-suite-web-e2e-${{ hashFiles('yarn.lock') }}
 
       - name: Install dependencies
-        run: yarn workspaces focus @trezor/suite-web @trezor/suite-data @trezor/suite-build
+        run: yarn workspaces focus @trezor/suite-web @suite/app-assets @trezor/suite-build
 
       - name: Build message system config
         run: yarn message-system-sign-config 1>/dev/null
 
-      - name: Build suite-data lib
-        run: yarn workspace @trezor/suite-data build:lib
+      - name: Build app-assets lib
+        run: yarn workspace @suite/app-assets build:lib
 
       - name: Build suite-web
         run: yarn workspace @trezor/suite-web build
@@ -195,7 +195,7 @@ jobs:
 
       - name: Install dependencies
         # Union of test deps and web and desktop build toolchains
-        run: yarn workspaces focus @trezor/suite-e2e @trezor/e2e-utils @trezor/suite-web @trezor/suite-desktop @trezor/suite-desktop-core @trezor/suite-desktop-ui @trezor/suite @trezor/suite-data @trezor/suite-build @trezor/transport-bridge @suite-common/message-system
+        run: yarn workspaces focus @trezor/suite-e2e @trezor/e2e-utils @trezor/suite-web @trezor/suite-desktop @trezor/suite-desktop-core @trezor/suite-desktop-ui @trezor/suite @suite/app-assets @trezor/suite-build @trezor/transport-bridge @suite-common/message-system
 
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@e6de054238d6b7531b4efff3b6587d9aade6a06c # v6
@@ -215,7 +215,7 @@ jobs:
 
       - name: Build libs required for web/desktop rebuilds
         run: |
-          yarn workspace @trezor/suite-data build:lib
+          yarn workspace @suite/app-assets build:lib
           yarn workspace @trezor/transport-bridge build:lib
 
       - name: Download desktop artifact

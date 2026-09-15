@@ -2,16 +2,16 @@
 # this script finds duplicated files in project per provided extension
 #
 # Excluded from duplicate check (intentional duplicates):
-#   - packages/suite-data/files/videos/device/t3t1/connect_bt.webm
-#   - packages/suite-data/files/videos/device/t3t1/connect_bt_loop.webm
+#   - suite/app-assets/files/videos/device/t3t1/connect_bt.webm
+#   - suite/app-assets/files/videos/device/t3t1/connect_bt_loop.webm
 #     BT connect videos are placeholders for older Trezor Suite before TS7 release.
-#   - packages/suite-data/files/**/t3w1/*_color_4*.webm and t3w1-backcolor-4.webp
+#   - suite/app-assets/files/**/t3w1/*_color_4*.webm and t3w1-backcolor-4.webp
 #     The T3W1 color 4 variant intentionally reuses color 1's artwork.
 #     The rotate video path is built dynamically as rotate_color_${color}.webm
 #     (DeviceAnimation.tsx), so a physical color_4 file must exist even though it
 #     is byte-identical to color_1. Remove these once real color-4 assets land.
 #
-# $1 should contain path such as ./packages/suite-data/files
+# $1 should contain path such as ./suite/app-assets/files
 # $2 should contain file extension such as .png
 
 exclude_paths=(
