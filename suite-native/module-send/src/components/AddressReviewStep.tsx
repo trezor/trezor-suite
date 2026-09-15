@@ -14,8 +14,8 @@ type AddressReviewStepProps = {
 
 const getIconProps = (stepNumber: AddressReviewStepProps['stepNumber']): IconSquareProps =>
     stepNumber
-        ? { iconNumber: stepNumber, intent: 'neutral' }
-        : { iconName: 'flagCheckered', intent: 'brand' };
+        ? { icon: stepNumber, intent: 'neutral' }
+        : { icon: 'flagCheckered', intent: 'brand' };
 
 const cardStyle = prepareNativeStyle(utils => ({
     borderWidth: utils.borders.widths.small,

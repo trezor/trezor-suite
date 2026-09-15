@@ -8,15 +8,15 @@ export const UninitializedDeviceModalAppendix = () => (
         </Text>
         <VStack spacing="sp16" paddingTop="sp24">
             <BottomSheetListItem
-                iconNumber={1}
+                icon={1}
                 translationKey="moduleDevice.noSeedModal.appendix.lines.1"
             />
             <BottomSheetListItem
-                iconNumber={2}
+                icon={2}
                 translationKey="moduleDevice.noSeedModal.appendix.lines.2"
             />
             <BottomSheetListItem
-                iconName="checkCircle"
+                icon="checkCircle"
                 intent="brand"
                 translationKey="moduleDevice.noSeedModal.appendix.lines.3"
             />

@@ -67,19 +67,19 @@ export const EmptyWalletInfoSheet = forwardRef<BottomSheetModalMethods, EmptyWal
                 />
                 <VStack alignItems="center" spacing="sp24" padding="sp8">
                     <BottomSheetListItem
-                        iconName="pencilSimpleLine"
+                        icon="pencilSimpleLine"
                         translationKey="modulePassphrase.emptyPassphraseWallet.confirmEmptyWalletSheet.list.backup"
                         intent="neutral"
                         size={36}
                     />
                     <BottomSheetListItem
-                        iconName="copy"
+                        icon="copy"
                         translationKey="modulePassphrase.emptyPassphraseWallet.confirmEmptyWalletSheet.list.store"
                         intent="neutral"
                         size={36}
                     />
                     <BottomSheetListItem
-                        iconName="eyeSlash"
+                        icon="eyeSlash"
                         translationKey="modulePassphrase.emptyPassphraseWallet.confirmEmptyWalletSheet.list.neverShare"
                         intent="neutral"
                         size={36}
