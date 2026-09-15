@@ -23,7 +23,8 @@
         "type-check": "yarn g:tsc --build tsconfig.json",
         "test:unit": "yarn g:jest",
         "test-unit:watch": "yarn g:jest -o --watch",
-        "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'"
+        "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'",
+        "react-compiler:check": "yarn g:tsx ./webpack/checkReactCompilerFrozenReads.ts"
     },
     "dependencies": {
         "@floating-ui/react": "^0.27.17",
