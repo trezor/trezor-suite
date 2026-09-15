@@ -3,6 +3,7 @@ import { saveAs } from 'file-saver';
 
 import { type DesktopAnalyticsDep, createAnalytics } from '@suite/analytics';
 import { selectShouldRetryFirmwareRevisionCheckError } from '@suite/authenticity-checks';
+import { type DesktopApiDep } from '@suite/desktop-app-api';
 import { rerunFwAuthenticityChecksThunk } from '@suite/device';
 import { selectLabelingDataForAccount } from '@suite/metadata';
 import {
@@ -43,7 +44,6 @@ import { selectTradedAccountKeys } from '@suite-common/trading';
 import { selectAccountsByDeviceState } from '@suite-common/wallet-core';
 import { type CreateLoggerDep, type GetTrezorConnectPrivilegedDep } from '@trezor/connect';
 import { isDesktop } from '@trezor/env-utils';
-import { type DesktopApiDep } from '@trezor/suite-desktop-api';
 
 import { selectIsWindowVisible } from 'src/reducers/suite/windowReducer';
 import { type DbDep } from 'src/storage/createDb';

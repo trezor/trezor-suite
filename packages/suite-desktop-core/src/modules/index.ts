@@ -1,6 +1,6 @@
 import path from 'path';
 
-import type { HandshakeClient } from '@trezor/suite-desktop-api';
+import type { HandshakeClient } from '@suite/desktop-app-api';
 import { isNotUndefined } from '@trezor/utils';
 
 import * as autoStart from './auto-start';

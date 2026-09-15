@@ -1,9 +1,9 @@
 import { type Dispatch, type UnknownAction, createAction } from '@reduxjs/toolkit';
 
+import { type HandshakeElectron } from '@suite/desktop-app-api';
 import { suiteSettingsActions } from '@suite/settings';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
-import { type HandshakeElectron } from '@trezor/suite-desktop-api';
 
 import { SUITE } from './constants';
 

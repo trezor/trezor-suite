@@ -2,8 +2,8 @@ import { app, shell } from 'electron';
 import fs from 'fs';
 import path from 'path';
 
+import type { InvokeResult } from '@suite/desktop-app-api';
 import { isDevEnv } from '@suite-common/suite-utils';
-import type { InvokeResult } from '@trezor/suite-desktop-api';
 import type { Result } from '@trezor/type-utils';
 
 import { setAutoStartEnabled } from './auto-start';

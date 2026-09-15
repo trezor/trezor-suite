@@ -3,9 +3,9 @@ import { Provider as ReduxProvider } from 'react-redux';
 import { createRoot } from 'react-dom/client';
 
 import { initBluetoothThunk } from '@suite/bluetooth';
+import { type DesktopApiDep } from '@suite/desktop-app-api';
 import { ServicesProvider } from '@suite-common/dependency-injection';
 import TrezorConnect from '@trezor/connect-electron';
-import { type DesktopApiDep } from '@trezor/suite-desktop-api';
 
 import * as STORAGE from 'src/actions/suite/constants/storageConstants';
 import { desktopHandshake } from 'src/actions/suite/suiteActions';

@@ -1,6 +1,6 @@
 import type { UnknownAction } from '@reduxjs/toolkit';
 
-import type { HandshakeElectron } from '@trezor/suite-desktop-api';
+import type { HandshakeElectron } from '@suite/desktop-app-api';
 
 import { desktopHandshake } from 'src/actions/suite/suiteActions';
 

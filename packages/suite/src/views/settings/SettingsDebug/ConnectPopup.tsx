@@ -1,9 +1,9 @@
 import { useEffect, useState } from 'react';
 
+import { selectDesktopApiDep } from '@suite/desktop-app-api';
 import { useServices } from '@suite-common/dependency-injection';
 import { Switch } from '@trezor/components';
 import { ActionColumn, SectionItem, TextColumn } from '@trezor/product-components';
-import { selectDesktopApiDep } from '@trezor/suite-desktop-api';
 
 export const ConnectPopup = () => {
     const { desktopApi } = useServices(selectDesktopApiDep);

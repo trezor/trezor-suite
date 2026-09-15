@@ -2,12 +2,12 @@ import { useCallback, useEffect, useState } from 'react';
 
 import styled from 'styled-components';
 
+import { selectDesktopApiDep } from '@suite/desktop-app-api';
 import { Translation } from '@suite/intl';
 import { Anchor, SettingsAnchor } from '@suite/router';
 import { useServices } from '@suite-common/dependency-injection';
 import { Switch } from '@trezor/components';
 import { ActionColumn, SectionItem, TextColumn } from '@trezor/product-components';
-import { selectDesktopApiDep } from '@trezor/suite-desktop-api';
 
 const PositionedSwitch = styled.div`
     align-self: center;

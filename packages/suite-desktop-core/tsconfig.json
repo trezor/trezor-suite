@@ -28,6 +28,10 @@
         {
             "path": "../../suite-common/wallet-utils"
         },
+        { "path": "../../suite/desktop-app-api" },
+        {
+            "path": "../../suite/desktop-app-api-electron"
+        },
         { "path": "../../suite/sentry" },
         { "path": "../../suite/tor-types" },
         { "path": "../coinjoin" },
@@ -39,10 +43,6 @@
         { "path": "../ipc-proxy" },
         { "path": "../node-utils" },
         { "path": "../request-manager" },
-        { "path": "../suite-desktop-api" },
-        {
-            "path": "../suite-desktop-api-electron"
-        },
         { "path": "../suite-desktop-native" },
         { "path": "../theme" },
         { "path": "../transport" },

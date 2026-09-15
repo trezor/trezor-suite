@@ -1,7 +1,7 @@
+import { type DesktopApiDep } from '@suite/desktop-app-api';
 import { type GotoThunkDeps, type GotoThunkState, gotoThunk } from '@suite/router';
 import { type WithServices, createThunk } from '@suite-common/redux-utils';
 import { type ReloadAppDep } from '@suite-common/suite-types';
-import { type DesktopApiDep } from '@trezor/suite-desktop-api';
 
 import { type DbDep } from 'src/storage/createDb';
 

@@ -1,6 +1,7 @@
 import { type UnknownAction } from '@reduxjs/toolkit';
 import { type ThunkDispatch } from 'redux-thunk';
 
+import { type DesktopApiDep } from '@suite/desktop-app-api';
 import { type FlagsRootState, selectFlags, setFlag } from '@suite/flags';
 import { type MetadataRootState, metadataLabelingActions } from '@suite/metadata';
 import {
@@ -53,7 +54,6 @@ import {
 } from '@suite-common/walletconnect';
 import * as walletConnectActions from '@suite-common/walletconnect';
 import { isDesktop } from '@trezor/env-utils';
-import { type DesktopApiDep } from '@trezor/suite-desktop-api';
 
 import * as bioAuthThunks from 'src/actions/suite/bioAuthThunks';
 import { type SuiteRootState } from 'src/reducers/suite/suiteReducer';

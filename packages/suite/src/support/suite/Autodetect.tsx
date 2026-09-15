@@ -1,5 +1,6 @@
 import { useCallback, useEffect } from 'react';
 
+import { selectDesktopApiDep } from '@suite/desktop-app-api';
 import {
     selectAutodetectLanguage,
     selectAutodetectTheme,
@@ -10,7 +11,6 @@ import {
 import { useServices } from '@suite-common/dependency-injection';
 import { selectDispatch } from '@suite-common/redux-utils';
 import { type Locale } from '@suite-common/suite-types';
-import { selectDesktopApiDep } from '@trezor/suite-desktop-api';
 
 import { useSelector } from 'src/hooks/suite';
 import { getOsTheme, watchOsTheme } from 'src/utils/suite/env';

@@ -1,5 +1,5 @@
+import { type DesktopApiDep, type SuiteThemeVariant } from '@suite/desktop-app-api';
 import { isDesktop } from '@trezor/env-utils';
-import { type DesktopApiDep, type SuiteThemeVariant } from '@trezor/suite-desktop-api';
 
 export const submitRequestForm = async (
     deps: DesktopApiDep<'getHttpReceiverAddress'>,

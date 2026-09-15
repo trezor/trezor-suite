@@ -104,7 +104,7 @@ export type UpdateProgress = Partial<{
     verifying: boolean;
 }>;
 
-// todo: suite-desktop-api does not have suite-desktop dependency but we could reuse lot of types from there I guess
+// todo: desktop-app-api does not have suite-desktop dependency but we could reuse lot of types from there I guess
 export type Status = {
     service: boolean;
     process: boolean;

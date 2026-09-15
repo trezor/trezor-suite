@@ -45,7 +45,7 @@
 
 /packages/icons @trezor/suite-mobile
 
-/packages/suite-desktop-api @szymonlesisz @marekrjpolak
+/suite/desktop-app-api @szymonlesisz @marekrjpolak
 
 /packages/suite-storage @matejkriz
 

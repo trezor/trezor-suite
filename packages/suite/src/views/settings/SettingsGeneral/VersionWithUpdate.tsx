@@ -1,3 +1,4 @@
+import { selectDesktopApiDep } from '@suite/desktop-app-api';
 import {
     type DesktopUpdateState,
     UpdateState,
@@ -15,7 +16,6 @@ import { isDevEnv } from '@suite-common/suite-utils';
 import { Button, type ButtonProps } from '@trezor/components';
 import { isDesktop } from '@trezor/env-utils';
 import { ActionButton, ActionColumn, SectionItem, TextColumn } from '@trezor/product-components';
-import { selectDesktopApiDep } from '@trezor/suite-desktop-api';
 
 import { useSelector } from 'src/hooks/suite';
 

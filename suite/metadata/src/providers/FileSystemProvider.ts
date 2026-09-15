@@ -1,5 +1,5 @@
+import { type DesktopApiDep } from '@suite/desktop-app-api';
 import { AbstractMetadataProvider } from '@suite-common/metadata-types';
-import { type DesktopApiDep } from '@trezor/suite-desktop-api';
 
 export type FileSystemProviderDep = DesktopApiDep<
     'metadataGetFiles' | 'metadataRead' | 'metadataRenameFile' | 'metadataWrite'

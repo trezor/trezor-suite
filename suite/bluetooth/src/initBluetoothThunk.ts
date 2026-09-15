@@ -1,3 +1,4 @@
+import { type DesktopApiDep } from '@suite/desktop-app-api';
 import {
     BLUETOOTH_PREFIX,
     bluetoothActions,
@@ -10,7 +11,6 @@ import { type FirmwareRootState, selectFirmware } from '@suite-common/firmware';
 import { type WithServices, createThunk } from '@suite-common/redux-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import TrezorConnect from '@trezor/connect';
-import { type DesktopApiDep } from '@trezor/suite-desktop-api';
 import { type BluetoothDevice, bluetoothIpc } from '@trezor/transport-bluetooth';
 import { resolveAfter } from '@trezor/utils';
 

@@ -2,8 +2,8 @@
 // eslint-disable-next-line @typescript-eslint/no-restricted-imports
 import { ipcMain as baseIpcMain } from 'electron';
 
+import type * as desktopApi from '@suite/desktop-app-api';
 import { isSenderFrameDestroyed, validateIpcMessage } from '@trezor/ipc-proxy';
-import type * as desktopApi from '@trezor/suite-desktop-api';
 
 export type StrictIpcMain = desktopApi.StrictIpcMain<
     Omit<Electron.IpcMain, 'handle' | 'handleOnce' | 'removeHandler'>,
@@ -55,7 +55,7 @@ export const looselyTypedIpcMain: Electron.IpcMain = Object.assign(
 );
 
 /**
- * `ipcMain` with listeners wrapped in security validation, and with IPC channels typed to a strict API contract (@trezor/suite-desktop-api).
+ * `ipcMain` with listeners wrapped in security validation, and with IPC channels typed to a strict API contract (@suite/desktop-app-api).
  * This should be used in Electron Main modules.
  */
 export const ipcMain: StrictIpcMain = looselyTypedIpcMain;

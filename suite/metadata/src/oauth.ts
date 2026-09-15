@@ -1,6 +1,6 @@
 import z, { ZodError } from 'zod';
 
-import { type DesktopApiDep } from '@trezor/suite-desktop-api';
+import { type DesktopApiDep } from '@suite/desktop-app-api';
 import { type Deferred, createDeferred } from '@trezor/utils';
 
 import * as METADATA_PROVIDER from './metadataProviderConstants';
