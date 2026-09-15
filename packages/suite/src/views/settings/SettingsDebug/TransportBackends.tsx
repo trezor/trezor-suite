@@ -1,5 +1,6 @@
 import { Checkbox } from '@trezor/components';
-import { ActionColumn, SectionItem, TextColumn } from '@trezor/product-components';
+import { ActionButton, ActionColumn, SectionItem, TextColumn } from '@trezor/product-components';
+import { desktopApi } from '@trezor/suite-desktop-api';
 
 import { useSelector } from 'src/hooks/suite';
 import { useBridgeDesktopApi } from 'src/hooks/suite/useBridgeDesktopApi';
@@ -52,11 +53,40 @@ export const TransportBackends = () => {
                         isChecked={!bridgeSettings.doNotStartOnStartup}
                         onChange={() => {
                             changeBridgeSettings({
-                                ...bridgeSettings,
                                 doNotStartOnStartup: !bridgeSettings.doNotStartOnStartup,
                             });
                         }}
                     />
+                </ActionColumn>
+            </SectionItem>
+            <SectionItem data-testid="@settings/debug/processes/usbImplementation">
+                <TextColumn
+                    title="USB implementation (experimental)"
+                    description="Switch the bundled bridge between the legacy usb 2.x (default, known-good) and the new nusb (usb 3.x). Applies after an app restart."
+                />
+                <ActionColumn>
+                    <Checkbox
+                        isChecked={(bridgeSettings.usbImplementation ?? 'legacy') === 'nusb'}
+                        onChange={() => {
+                            changeBridgeSettings({
+                                usbImplementation:
+                                    (bridgeSettings.usbImplementation ?? 'legacy') === 'nusb'
+                                        ? 'legacy'
+                                        : 'nusb',
+                            });
+                        }}
+                    />
+                </ActionColumn>
+            </SectionItem>
+            <SectionItem data-testid="@settings/debug/processes/usbRestart">
+                <TextColumn
+                    title="Apply USB implementation change"
+                    description="Restarts Trezor Suite so the selected USB implementation takes effect."
+                />
+                <ActionColumn>
+                    <ActionButton intent="brand" onClick={() => desktopApi.appRestart()}>
+                        Restart now
+                    </ActionButton>
                 </ActionColumn>
             </SectionItem>
         </>
