@@ -34,6 +34,15 @@ interface ConstructorParams extends Omit<AbstractApiConstructorParams, 'type'> {
     usbInterface: UsbInterfaceApi;
     forceReadSerialOnConnect?: boolean;
     debugLink?: boolean;
+    /**
+     * Which usb library backs `usbInterface`, so the version-coupled code paths behave correctly:
+     * - 'nusb' (default): usb 3.x (node-usb-rs) - serialNumber is readable after open(); transfer
+     *   errors are the nusb Debug variant names.
+     * - 'legacy': usb 2.x (libusb) - serialNumber needs an explicit getStringDescriptor read on some
+     *   drivers; transfer errors are LIBUSB_ERROR_* codes.
+     * Everything else in this class is identical for both. navigator.usb / react-native use 'nusb'.
+     */
+    usbVersion?: 'legacy' | 'nusb';
 }
 
 interface TransportInterfaceDevice {
@@ -50,6 +59,7 @@ export class UsbApi extends AbstractApi {
     private forceReadSerialOnConnect?: boolean;
     private abortController = new AbortController();
     private debugLink?: boolean;
+    private usbVersion: 'legacy' | 'nusb';
     private synchronizeCreateDevices = getSynchronize();
     private synchronizeGetDevices = getSynchronize();
     /**
@@ -65,12 +75,19 @@ export class UsbApi extends AbstractApi {
      */
     private devicesOpening = new Set<string>();
 
-    constructor({ usbInterface, logger, forceReadSerialOnConnect, debugLink }: ConstructorParams) {
+    constructor({
+        usbInterface,
+        logger,
+        forceReadSerialOnConnect,
+        debugLink,
+        usbVersion,
+    }: ConstructorParams) {
         super({ logger, type: 'usb' });
 
         this.usbInterface = usbInterface;
         this.forceReadSerialOnConnect = forceReadSerialOnConnect;
         this.debugLink = debugLink;
+        this.usbVersion = usbVersion ?? 'nusb';
     }
 
     public listen() {
@@ -668,11 +685,18 @@ export class UsbApi extends AbstractApi {
         try {
             this.logger?.debug(`usb: loadSerialNumber`);
 
-            // usb 3.x (node-usb-rs) exposes serialNumber as a standard WebUSB getter, so
-            // opening the device is enough to make it readable on drivers that withhold it
-            // until the device is opened. The former low-level getStringDescriptor read
-            // (device.device.deviceDescriptor.iSerialNumber) no longer exists in the WebUSB API.
             await this.abortableMethod(() => device.open(), { signal });
+            if (this.usbVersion === 'legacy' && device.getStringDescriptor && device.device) {
+                // usb 2.x (libusb): on some drivers (notably Windows, node-usb issue #546) the
+                // serial number is only readable via an explicit low-level string-descriptor read
+                // after opening. usb 3.x drops this API and exposes serialNumber as a plain WebUSB
+                // getter, so this branch is legacy-only.
+                await this.abortableMethod(
+                    () =>
+                        device.getStringDescriptor!(device.device!.deviceDescriptor.iSerialNumber),
+                    { signal },
+                );
+            }
             this.logger?.debug(`usb: loadSerialNumber done, serialNumber: ${device.serialNumber}`);
             await this.abortableMethod(() => device.close(), { signal });
         } catch (err) {
@@ -755,6 +779,13 @@ export class UsbApi extends AbstractApi {
                 'Stall', // endpoint stalled (~LIBUSB_ERROR_PIPE; Windows ERROR_GEN_FAILURE)
                 'Fault', // I/O or protocol fault (~LIBUSB_ERROR_IO)
                 'Unknown', // OS-specific transfer failure (~LIBUSB_ERROR_OTHER)
+                // node usb 2.x (legacy, libusb) - kept as a superset so the same class serves both
+                // usb versions; these strings never appear in nusb output and vice versa.
+                'LIBUSB_TRANSFER_ERROR',
+                'LIBUSB_ERROR_PIPE',
+                'LIBUSB_ERROR_IO',
+                'LIBUSB_ERROR_NO_DEVICE',
+                'LIBUSB_ERROR_OTHER',
                 // web usb
                 ERRORS.INTERFACE_DATA_TRANSFER,
                 'The device was disconnected.',

@@ -759,4 +759,79 @@ describe('api/usb', () => {
 
         expect(getTrackedDevice(api, 'bootloader1')).toBe(bootA);
     });
+
+    // Dual-distribution (usbVersion:'legacy' = usb 2.x): loadSerialNumber must read the serial via
+    // the low-level getStringDescriptor (some drivers withhold it from the plain getter).
+    it('legacy mode: loadSerialNumber reads the serial via getStringDescriptor', async () => {
+        let serial = '';
+        const getStringDescriptor = jest.fn(() => {
+            serial = 'CAFE';
+
+            return Promise.resolve('CAFE');
+        });
+        const device = createMockedDevice({
+            getStringDescriptor,
+            device: { deviceDescriptor: { iSerialNumber: 3 } },
+        });
+        Object.defineProperty(device, 'serialNumber', { get: () => serial, configurable: true });
+        const api = new UsbApi({
+            usbInterface: createUsbMock({ getDevices: () => Promise.resolve([device]) }),
+            forceReadSerialOnConnect: true,
+            usbVersion: 'legacy',
+        });
+
+        await api.enumerate();
+
+        expect(getStringDescriptor).toHaveBeenCalledTimes(1);
+        expect(getStringDescriptor).toHaveBeenCalledWith(3);
+        expect(getTrackedDevice(api, 'CAFE')).toBe(device);
+    });
+
+    // nusb mode (default) must NOT use the legacy getStringDescriptor path even if present.
+    it('nusb mode: loadSerialNumber does not call getStringDescriptor', async () => {
+        let serial = '';
+        const getStringDescriptor = jest.fn(() => Promise.resolve('X'));
+        const device = createMockedDevice({
+            getStringDescriptor,
+            device: { deviceDescriptor: { iSerialNumber: 3 } },
+            open: () => {
+                serial = 'NUSB';
+
+                return Promise.resolve();
+            },
+        });
+        Object.defineProperty(device, 'serialNumber', { get: () => serial, configurable: true });
+        const api = new UsbApi({
+            usbInterface: createUsbMock({ getDevices: () => Promise.resolve([device]) }),
+            forceReadSerialOnConnect: true,
+        });
+
+        await api.enumerate();
+
+        expect(getStringDescriptor).not.toHaveBeenCalled();
+        expect(getTrackedDevice(api, 'NUSB')).toBe(device);
+    });
+
+    // Superset error strings: a usb 2.x libusb disconnect must still map to a disconnect.
+    it('legacy mode: LIBUSB_ERROR_NO_DEVICE is classified as DEVICE_DISCONNECTED_DURING_ACTION', async () => {
+        const api = new UsbApi({
+            usbInterface: createUsbMock({
+                getDevices: () =>
+                    Promise.resolve([
+                        createMockedDevice({
+                            transferIn: () =>
+                                Promise.reject(
+                                    new Error('transferIn error: LIBUSB_ERROR_NO_DEVICE'),
+                                ),
+                        }),
+                    ]),
+            }),
+            usbVersion: 'legacy',
+        });
+        await api.enumerate();
+
+        const result = await api.read(devicePath, {});
+        if (result.success) throw new Error('Unexpected success');
+        expect(result.error.code).toBe(ERRORS.DEVICE_DISCONNECTED_DURING_ACTION);
+    });
 });
