@@ -41,7 +41,9 @@ export const REACT_COMPILER_PATHS: readonly string[] = [
 ];
 
 /**
- * Options passed to `babel-plugin-react-compiler`
+ * Options passed to `babel-plugin-react-compiler`. Empty today, but shared on purpose: the webpack
+ * build, the Vite dev server and the frozen-reads gate (`reactCompilerFrozenReads.ts`) all compile
+ * with this object, so the gate checks exactly the code the builds ship.
  */
 export const reactCompilerOptions: PluginOptions = {};
 
