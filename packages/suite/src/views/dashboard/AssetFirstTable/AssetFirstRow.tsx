@@ -19,6 +19,7 @@ import {
 } from 'src/components/suite';
 import { useSelector } from 'src/hooks/suite';
 
+import { ASSET_FIRST_CELL_PADDING } from './assetFirstTableLayout';
 import {
     getAssetDisplaySymbol,
     getAssetHolding,
@@ -77,19 +78,19 @@ export const AssetFirstRow = memo(({ assetKey }: AssetFirstRowProps) => {
             onClick={handleRowClick}
             data-testid={`@dashboard/asset-first-item/${symbol}/${contractAddress ?? 'coin'}`}
         >
-            <Table.Cell>
+            <Table.Cell padding={ASSET_FIRST_CELL_PADDING.first}>
                 <Row gap={12}>
                     <TokenIcon
                         symbol={symbol}
                         contractAddress={contractAddress}
-                        size={24}
+                        size={32}
                         showNetworkIcon
                         placeholder={getAssetDisplaySymbol({ symbol, tokenInfo })}
                     />
                     <Column alignItems="flex-start" gap={2}>
-                        <span data-testid="@dashboard/asset-first/name">
+                        <Text typographyStyle="body-md" data-testid="@dashboard/asset-first/name">
                             {getAssetName({ symbol, tokenInfo })}
-                        </span>
+                        </Text>
                         <Text intent="neutral" priority="secondary" typographyStyle="body-sm">
                             {getNetworkName(symbol)}
                         </Text>
@@ -104,7 +105,7 @@ export const AssetFirstRow = memo(({ assetKey }: AssetFirstRowProps) => {
                 </Column>
             </Table.Cell>
 
-            <Table.Cell align="end">
+            <Table.Cell align="end" padding={ASSET_FIRST_CELL_PADDING.last}>
                 <Column alignItems="flex-end" gap={2}>
                     <BaseCurrencyValue
                         amount={cryptoBalance.toFixed()}
