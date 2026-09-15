@@ -1,7 +1,6 @@
 import { asNetworkSymbol } from '@suite-common/wallet-config';
-import { localizeNumber } from '@suite-common/wallet-utils';
 import { TestCategory, TestPriority, TestStream } from '@trezor/e2e-utils';
-import { BigNumber } from '@trezor/utils';
+import { BigNumber, localizeNumber } from '@trezor/utils';
 
 import {
     rewards,

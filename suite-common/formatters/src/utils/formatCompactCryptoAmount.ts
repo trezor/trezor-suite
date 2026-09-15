@@ -1,6 +1,5 @@
 import { type Locale } from '@suite-common/suite-types';
-import { localizeNumber } from '@suite-common/wallet-utils';
-import { BigNumber } from '@trezor/utils';
+import { BigNumber, localizeNumber } from '@trezor/utils';
 
 import { truncateCryptoAmount } from './truncateCryptoAmount';
 
