@@ -122,7 +122,7 @@ export const useGlobalReceiveNetworkSetup = ({
             ) {
                 setCompletedSetup({
                     assetCryptoId: setupTarget.assetCryptoId,
-                    discoveredAccountCount: action.payload.discoveredAccountCount,
+                    discoveredAccountCount: action.payload.payload.discoveredAccountCount,
                 });
             } else {
                 onSetupFailure();

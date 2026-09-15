@@ -79,15 +79,15 @@ export const useNetworkActivationQueue = (device: TrezorDevice) => {
                     dispatch(
                         notificationsActions.addToast({
                             type: 'accounts-discovered',
-                            count: action.payload.discoveredAccountCount,
+                            count: action.payload.payload.discoveredAccountCount,
                             networkName: getNetwork(nextNetworkSymbol).name,
                         }),
                     );
-                } else if (!action.payload.wasCancelled) {
+                } else if (!action.payload.error.wasCancelled) {
                     const { error } = action.payload;
                     setActivationErrors(currentErrors => ({
                         ...currentErrors,
-                        [nextNetworkSymbol]: error,
+                        [nextNetworkSymbol]: error.message,
                     }));
                 }
             } else if (!action.meta.aborted) {

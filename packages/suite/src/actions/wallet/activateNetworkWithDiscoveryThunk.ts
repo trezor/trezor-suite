@@ -17,6 +17,7 @@ import {
 } from '@suite-common/wallet-core';
 import { type AccountKey, type DiscoveryStatus } from '@suite-common/wallet-types';
 import { type DeviceUniquePath, type StaticSessionId } from '@trezor/connect';
+import { type Result, err, ok } from '@trezor/type-utils';
 
 const NETWORK_ACTIVATION_THUNK_PREFIX = '@suite/network-activation';
 
@@ -43,9 +44,15 @@ export type ActivateNetworkWithDiscoveryThunkState = ChangeCoinVisibilityThunkSt
 
 export type ActivateNetworkWithDiscoveryThunkDeps = RunAdditionalDiscoveryThunkDeps;
 
-export type ActivateNetworkWithDiscoveryResult =
-    | { success: true; discoveredAccountCount: number }
-    | { success: false; error: string; wasCancelled: boolean };
+type ActivateNetworkWithDiscoveryError = {
+    message: string;
+    wasCancelled: boolean;
+};
+
+export type ActivateNetworkWithDiscoveryResult = Result<
+    { discoveredAccountCount: number },
+    ActivateNetworkWithDiscoveryError
+>;
 
 export const activateNetworkWithDiscoveryThunk = createThunk<
     ActivateNetworkWithDiscoveryResult,
@@ -104,7 +111,7 @@ export const activateNetworkWithDiscoveryThunk = createThunk<
                     dispatch(notificationsActions.addToast({ type: 'discovery-error', error }));
                 }
 
-                return { success: false, error, wasCancelled };
+                return err({ message: error, wasCancelled });
             }
         }
 
@@ -137,7 +144,7 @@ export const activateNetworkWithDiscoveryThunk = createThunk<
                     account.visible,
             ).length;
 
-            return { success: true, discoveredAccountCount };
+            return ok({ discoveredAccountCount });
         }
 
         const newlyCreatedAccounts = selectAccounts(getState()).filter(
@@ -184,6 +191,6 @@ export const activateNetworkWithDiscoveryThunk = createThunk<
             dispatch(notificationsActions.addToast({ type: 'discovery-error', error }));
         }
 
-        return { success: false, error, wasCancelled };
+        return err({ message: error, wasCancelled });
     },
 );

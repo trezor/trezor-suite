@@ -134,7 +134,7 @@ describe(activateNetworkWithDiscoveryThunk.name, () => {
 
         const { result } = await runThunk(state);
 
-        expect(result).toEqual({ success: true, discoveredAccountCount: 1 });
+        expect(result).toEqual({ success: true, payload: { discoveredAccountCount: 1 } });
         expect(mockChangeCoinVisibility).toHaveBeenCalledTimes(1);
         expect(mockChangeCoinVisibility).toHaveBeenCalledWith({
             symbol: networkSymbol,
@@ -157,8 +157,10 @@ describe(activateNetworkWithDiscoveryThunk.name, () => {
 
         expect(result).toEqual({
             success: false,
-            error: 'Network activation failed',
-            wasCancelled: false,
+            error: {
+                message: 'Network activation failed',
+                wasCancelled: false,
+            },
         });
         expect(mockChangeCoinVisibility.mock.calls).toEqual([
             [{ symbol: networkSymbol, shouldBeVisible: true }],
