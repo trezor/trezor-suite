@@ -621,3 +621,19 @@ export const mockNetworkMetadata: Readonly<Record<MockNetworkSymbol, NetworkMeta
         },
     },
 };
+
+/**
+ * Looks up mock metadata by the open symbol.
+ *
+ * Throws rather than returning `undefined`, so a test asking for a network that is not mocked
+ * fails where it asks instead of further along with an empty config.
+ */
+export const getMockNetworkMetadata = (symbol: string): NetworkMetadata => {
+    const metadata = mockNetworkMetadata[symbol as MockNetworkSymbol];
+
+    if (!metadata) {
+        throw new Error(`No mock network metadata for symbol: ${symbol}.`);
+    }
+
+    return metadata;
+};

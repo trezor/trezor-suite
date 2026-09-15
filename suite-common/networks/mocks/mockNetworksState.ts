@@ -1,12 +1,15 @@
-import { type MockNetworkSymbol, mockNetworkMetadata } from './mockNetworkMetadata';
+import { type NetworkSymbol } from '@trezor/network-module';
+
+import { getMockNetworkMetadata } from './mockNetworkMetadata';
 import {
     type NetworksState,
     networksActions,
     networksReducer,
 } from '../reduxState/networksReducer';
 
-export const mockNetworksState = (symbols: readonly MockNetworkSymbol[]): NetworksState =>
-    networksReducer(
-        null,
-        networksActions.setNetworks(symbols.map(symbol => mockNetworkMetadata[symbol])),
-    );
+/**
+ * Takes the open symbol, so a test does not have to prove its symbols are mocked in the type.
+ * A symbol without mock metadata throws here instead of silently seeding `undefined`.
+ */
+export const mockNetworksState = (symbols: readonly NetworkSymbol[]): NetworksState =>
+    networksReducer(null, networksActions.setNetworks(symbols.map(getMockNetworkMetadata)));

@@ -2,7 +2,7 @@ import { createMockDeps } from '@suite-common/dependency-injection';
 
 import { type NetworkSymbol, asNetworkSymbol } from './NetworkModules';
 import { type GetNetworkConfigsDeps, createGetNetworkConfigs } from './createGetNetworkConfigs';
-import { type MockNetworkSymbol, mockNetworkMetadata } from '../mocks/mockNetworkMetadata';
+import { getMockNetworkMetadata, mockNetworkMetadata } from '../mocks/mockNetworkMetadata';
 
 it('loads only registered networks and takes their metadata from the module', () => {
     const config = { ...mockNetworkMetadata.btc, name: 'Registered Bitcoin' };
@@ -29,7 +29,7 @@ it('preserves display order without mutating registered networks on Hermes', () 
             get: null,
             isSupportedNetwork: null,
         },
-        getNetworkConfig: symbol => mockNetworkMetadata[symbol as MockNetworkSymbol],
+        getNetworkConfig: getMockNetworkMetadata,
     });
 
     expect(createGetNetworkConfigs(deps)().map(network => network.symbol)).toEqual(['btc', 'eth']);

@@ -1,4 +1,3 @@
-import { type LegacyNetworkSymbol } from '@suite-common/legacy-network-config';
 import type { NetworkSymbol } from '@suite-common/wallet-config';
 import type { StaticSessionId } from '@trezor/connect';
 
@@ -82,8 +81,9 @@ type NetworkSpecificDefault =
     | typeof networkSpecificDefaultCardano
     | typeof networkSpecificDefaultStellar;
 
-// Keyed by the networks the legacy config defines, so a typo in a key is still caught.
-const networkTypeMap: Record<LegacyNetworkSymbol, NetworkSpecificDefault> = {
+// Keys stay plain literals: a branded symbol cannot type an object literal's keys. A symbol with
+// no entry is caught by the lookup below rather than by the type.
+const networkTypeMap: Record<string, NetworkSpecificDefault> = {
     // Bitcoin-like
     btc: networkSpecificDefaultBitcoin,
     regtest: networkSpecificDefaultBitcoin,
@@ -171,8 +171,7 @@ export const mockWalletAccount = (
         symbol: account.symbol,
     };
 
-    const networkSpecificDefault =
-        networkSpecific ?? networkTypeMap[account.symbol as LegacyNetworkSymbol];
+    const networkSpecificDefault = networkSpecific ?? networkTypeMap[account.symbol];
 
     if (!networkSpecificDefault) {
         throw new Error(`No mock defaults registered for network symbol: ${account.symbol}.`);

@@ -1,16 +1,12 @@
 import { createTransform } from 'redux-persist';
 
-import { type LegacyNetworkSymbol } from '@suite-common/legacy-network-config';
 import { DefinitionType, type TokenDefinitionsState } from '@suite-common/token-definitions';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 
-type PersistedTokenDefinitions = {
-    coin?: { hide: string[]; show: string[] };
-};
-
-// Mirrors TokenDefinitionsState, whose entries are optional.
 type PersistedTokenDefinitionsState = {
-    [TSymbol in LegacyNetworkSymbol]?: PersistedTokenDefinitions;
+    [symbol: NetworkSymbol]: {
+        coin?: { hide: string[]; show: string[] };
+    };
 };
 
 export const tokenDefinitionsPersistTransform = createTransform<
@@ -22,27 +18,27 @@ export const tokenDefinitionsPersistTransform = createTransform<
 
         for (const [symbol, definitions] of Object.entries(inboundState)) {
             if (!definitions) continue;
-            const persisted: PersistedTokenDefinitions = {};
+            const networkSymbol = symbol as NetworkSymbol;
+            result[networkSymbol] = {};
 
             if (definitions.coin) {
-                persisted.coin = {
+                result[networkSymbol].coin = {
                     hide: definitions.coin.hide ?? [],
                     show: definitions.coin.show ?? [],
                 };
             }
-
-            result[symbol as LegacyNetworkSymbol] = persisted;
         }
 
         return result;
     },
+    // Only hide/show are persisted, so the fetch state is restored here rather than handing the
+    // persisted entry back as if it were a full TokenDefinition.
     outboundState => {
         const result: TokenDefinitionsState = {};
 
         for (const [symbol, persisted] of Object.entries(outboundState)) {
-            if (!persisted?.coin) continue;
+            if (!persisted.coin) continue;
 
-            // Only the user's hide/show lists are persisted; the fetch state starts clean.
             result[symbol as NetworkSymbol] = {
                 [DefinitionType.COIN]: {
                     error: false,
