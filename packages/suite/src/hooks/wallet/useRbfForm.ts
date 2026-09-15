@@ -311,6 +311,7 @@ export const useRbf = (props: UseRbfProps): RbfContextValues => {
         composeRequest,
         composedLevels,
         ...useFormMethods,
+        formState,
     });
 
     // If automatically composed transaction throws NOT-ENOUGH-FUNDS error

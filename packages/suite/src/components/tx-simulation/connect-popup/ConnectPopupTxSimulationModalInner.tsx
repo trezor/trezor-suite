@@ -1,6 +1,6 @@
 import { useState } from 'react';
-import { FormProvider } from 'react-hook-form';
 
+import { Form } from '@suite/form';
 import {
     TxSimulationError,
     TxSimulationFooter,
@@ -124,6 +124,8 @@ export function ConnectPopupTxSimulationModalInner({
         (hasRenderFailure && !renderFailureAccepted),
     );
 
+    const { formState } = form;
+
     return (
         <ConnectModalBackdrop canSwitchDevice>
             <Modal.ModalBase
@@ -173,7 +175,7 @@ export function ConnectPopupTxSimulationModalInner({
                         <TxSimulationProvider />
 
                         {areTxSimulationMethods(TX_METHODS_WITH_FEES, action) && (
-                            <FormProvider {...form}>
+                            <Form form={form} formState={formState}>
                                 <Card>
                                     <Fees
                                         account={account}
@@ -184,7 +186,7 @@ export function ConnectPopupTxSimulationModalInner({
                                         }
                                     />
                                 </Card>
-                            </FormProvider>
+                            </Form>
                         )}
 
                         {areTxSimulationMethods(TX_METHODS_WITH_FEES, action) && (

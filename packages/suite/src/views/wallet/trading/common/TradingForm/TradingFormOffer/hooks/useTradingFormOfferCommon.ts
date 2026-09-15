@@ -23,6 +23,11 @@ import { useTradingQuoteAmounts } from 'src/views/wallet/trading/common/hooks/us
 import { useTradingSelectedQuote } from 'src/views/wallet/trading/common/hooks/useTradingSelectedQuote';
 
 export const useTradingFormOfferCommon = <T extends TradingType>() => {
+    // React Compiler: `watch` keeps one identity for the form's whole life, so a compiled
+    // render-time read of it freezes on the first render. Remove once these reads move to
+    // `useWatch` or out of render.
+    'use no memo';
+
     const context = useTradingFormContext();
     const {
         isAmountEmpty,

@@ -1,4 +1,4 @@
-import { forwardRef, useImperativeHandle, useRef } from 'react';
+import { forwardRef, useCallback, useImperativeHandle, useRef } from 'react';
 
 import { DotsThreeIcon } from '@trezor/icons';
 
@@ -56,6 +56,12 @@ export const Dropdown = forwardRef(
         const popoverRef = useRef<PopoverRef>(null);
         const menuRef = useRef<HTMLUListElement>(null);
 
+        // `Popover` fills `popoverRef` in during commit, and it owns the open state itself, so
+        // opening the menu never re-renders this component. Reading the ref during render would
+        // therefore hand `Menu` an `onClose` of `undefined` for as long as nothing else re-renders
+        // the dropdown, and picking an item would not close the menu.
+        const closeMenu = useCallback(() => popoverRef.current?.close(), []);
+
         useImperativeHandle(ref, () => ({
             close: () => {
                 popoverRef.current?.close();
@@ -75,7 +81,7 @@ export const Dropdown = forwardRef(
                         ref={menuRef}
                         items={items}
                         content={content}
-                        onClose={popoverRef.current?.close}
+                        onClose={closeMenu}
                         minWidth={minWidth}
                         width={width}
                         maxWidth={maxWidth}

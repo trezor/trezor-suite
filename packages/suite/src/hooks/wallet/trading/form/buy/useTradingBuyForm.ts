@@ -153,6 +153,10 @@ export const useTradingBuyForm = (): TradingBuyFormContextProps => {
             },
         },
         ...methods,
+        // The spread copies react-hook-form's ref object, whose `formState` is replaced by a
+        // new proxy on every update. Naming it puts a moving dependency in the compiler's guard,
+        // so this context value is rebuilt when validation state changes.
+        formState,
         methods,
         amountLimits,
         network,

@@ -1,8 +1,8 @@
 import { useEffect, useMemo } from 'react';
-import { FormProvider } from 'react-hook-form';
 
 import { selectFullSelectedAccount } from '@suite/account';
 import { events, selectDesktopAnalyticsDep } from '@suite/analytics';
+import { Form } from '@suite/form';
 import { Translation } from '@suite/intl';
 import { useServices } from '@suite-common/dependency-injection';
 import { selectDispatch } from '@suite-common/redux-utils';
@@ -142,9 +142,11 @@ export const StakeChangeDelegateModalLoaded = ({
         return undefined;
     }, [isVotingDisabled, votingMessageContent, isSelectionInvalid, errorType]);
 
+    const { formState } = methods;
+
     return (
         <ChangeDelegateFormContext.Provider value={changeDelegateContextValues}>
-            <FormProvider {...methods}>
+            <Form form={methods} formState={formState}>
                 <Modal
                     heading={<Translation id="TR_STAKE_CHANGE_DELEGATE" />}
                     onCancel={handleCancel}
@@ -171,7 +173,7 @@ export const StakeChangeDelegateModalLoaded = ({
                         </Column>
                     </Card>
                 </Modal>
-            </FormProvider>
+            </Form>
         </ChangeDelegateFormContext.Provider>
     );
 };

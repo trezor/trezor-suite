@@ -1,6 +1,6 @@
 import { viteCommonjs } from '@originjs/vite-plugin-commonjs';
 import babel from '@rolldown/plugin-babel';
-import react from '@vitejs/plugin-react';
+import react, { reactCompilerPreset } from '@vitejs/plugin-react';
 import { execSync } from 'child_process';
 import fs from 'fs';
 import { createRequire } from 'module';
@@ -8,7 +8,7 @@ import { resolve } from 'path';
 import { Plugin, ViteDevServer, build, defineConfig } from 'vite';
 import wasm from 'vite-plugin-wasm';
 
-import { suiteVersion } from '../suite/package.json';
+import { reactCompilerOptions, shouldCompileWithReactCompiler } from './reactCompiler';
 import {
     assetPrefix,
     isTanstackReactQueryDevTools,
@@ -16,6 +16,7 @@ import {
     transportBrowserPing,
 } from './utils/env';
 import { sharedAliases as alias, noopCoreJsPlugin } from './viteShared';
+import { suiteVersion } from '../suite/package.json';
 
 const require = createRequire(import.meta.url);
 
@@ -466,6 +467,12 @@ export default defineConfig({
                     },
                 ],
             ],
+            overrides: [
+                {
+                    include: shouldCompileWithReactCompiler,
+                    presets: [reactCompilerPreset(reactCompilerOptions)],
+                },
+            ],
         }),
     ],
     resolve: {
@@ -487,7 +494,7 @@ export default defineConfig({
         ENABLE_REDUX_LOGGER: true,
     },
     optimizeDeps: {
-        include: ['@trezor/suite', 'buffer'],
+        include: ['buffer'],
         exclude: [
             // Exclude WebAssembly modules
             '@trezor/crypto-utils',
@@ -495,6 +502,12 @@ export default defineConfig({
             // Exclude connect and transport to prevent pre-bundling issues with bridge URL construction and exports
             '@trezor/connect',
             '@trezor/transport',
+            // packages/suite is app source, not a dependency. A dep pre-bundle is built by a
+            // separate rolldown pass that runs none of the plugins above, so anything reached
+            // through the bare specifier would be served untransformed. Nothing in the app graph
+            // imports it that way today — it reaches packages/suite through the `src` alias — so
+            // this only saves the dev server from building a pre-bundle nobody consumes.
+            '@trezor/suite',
         ],
     },
     server: {
