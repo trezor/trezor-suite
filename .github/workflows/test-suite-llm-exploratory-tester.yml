@@ -1,0 +1,12 @@
+# Placeholder. The runnable workflow is added in a follow-up PR.
+name: "[Test] LLM Exploratory Tester"
+
+on:
+  workflow_dispatch:
+
+jobs:
+  placeholder:
+    if: false
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo placeholder

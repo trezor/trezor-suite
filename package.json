@@ -216,6 +216,9 @@
         "nx": {
             "built": true
         },
+        "opencode-ai": {
+            "built": true
+        },
         "sharp": {
             "built": true
         },
