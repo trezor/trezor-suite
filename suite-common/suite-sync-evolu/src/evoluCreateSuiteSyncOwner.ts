@@ -12,7 +12,7 @@ export const evoluCreateSuiteSyncOwner: CreateSuiteSyncOwner = ({ data }) => {
     const appOwnerResult = createEvoluAppOwnerFromTrezorData({ data });
 
     if (!appOwnerResult.ok) {
-        console.error('Evolu: appOwnerResult error', appOwnerResult);
+        console.error('Evolu: appOwnerResult error', appOwnerResult.error.type);
 
         return err(
             CreateSuiteSyncOwnerError('Catastrophic failure, possible Evolu Breaking Change'),

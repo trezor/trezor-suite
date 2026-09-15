@@ -4,11 +4,15 @@ export type EntityListener<T extends object> = {
     onChange: (payload: T[]) => void;
 };
 
-export type SuiteSyncUpdateError = { type: 'SuiteSyncUpdateError'; caused: any };
+/**
+ * `reason` carries only validation discriminators (type names, reason kinds, column names).
+ * The rejected entity must never be attached, because this error is reported to Sentry.
+ */
+export type SuiteSyncUpdateError = { type: 'SuiteSyncUpdateError'; reason: string };
 
-export const createSuiteSyncUpdateError = (caused: any): SuiteSyncUpdateError => ({
+export const createSuiteSyncUpdateError = (reason: string): SuiteSyncUpdateError => ({
     type: 'SuiteSyncUpdateError',
-    caused,
+    reason,
 });
 
 /**
