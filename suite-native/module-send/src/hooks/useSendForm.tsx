@@ -43,7 +43,7 @@ import {
 } from '@suite-common/wallet-utils';
 import { useAlert } from '@suite-native/alerts';
 import { useForm } from '@suite-native/forms';
-import { Translation } from '@suite-native/intl';
+import { Translation, useTranslate } from '@suite-native/intl';
 import {
     AuthorizeDeviceStackRoutes,
     type RootStackParamList,
@@ -114,6 +114,7 @@ type SendFormNavigationProp = StackToStackCompositeNavigationProps<
 export const useSendForm = (accountKey: AccountKey, tokenContract?: TokenAddress) => {
     const debounce = useDebounce();
     const navigation = useNavigation<SendFormNavigationProp>();
+    const { translate } = useTranslate();
     const { addressValidator, getNamedAddressSupport, dispatch } = useServices(
         injectAddressValidator,
         injectGetNamedAddressSupport,
@@ -245,6 +246,22 @@ export const useSendForm = (accountKey: AccountKey, tokenContract?: TokenAddress
                     });
                 }
 
+                const missingTrustline = Object.values(response.payload).find(
+                    feeLevel =>
+                        feeLevel.type === 'error' &&
+                        feeLevel.error === 'TR_STELLAR_RECIPIENT_MISSING_TRUSTLINE',
+                );
+                if (missingTrustline?.type === 'error') {
+                    setError('outputs.0.amount', {
+                        message: translate(
+                            'moduleSend.outputs.recipients.stellar.missingTrustline',
+                            {
+                                symbol: missingTrustline.errorMessage?.values?.symbol ?? '',
+                            },
+                        ),
+                    });
+                }
+
                 const normalFeeLevel = networkFeeInfo?.levels.find(
                     level => level.label === 'normal',
                 );
@@ -273,6 +290,7 @@ export const useSendForm = (accountKey: AccountKey, tokenContract?: TokenAddress
         }
     }, [
         accountKey,
+        translate,
         dispatch,
         getValues,
         tokenContract,

@@ -37,9 +37,6 @@
             "path": "../../packages/blockchain-link-types"
         },
         {
-            "path": "../../packages/blockchain-link-utils"
-        },
-        {
             "path": "../../networks/stellar/network-stellar"
         },
         {
