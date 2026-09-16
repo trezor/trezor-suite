@@ -13,7 +13,7 @@ import { Anchor, SettingsAnchor } from '@suite/router';
 import { useServices } from '@suite-common/dependency-injection';
 import { selectDispatch } from '@suite-common/redux-utils';
 import { isDevEnv } from '@suite-common/suite-utils';
-import { Button, type ButtonProps } from '@trezor/components';
+import { Button, Row } from '@trezor/components';
 import { isDesktop } from '@trezor/env-utils';
 import { ActionButton, ActionColumn, SectionItem, TextColumn } from '@trezor/product-components';
 
@@ -31,42 +31,34 @@ const getUpdateStateMessage = (state: UpdateState) => {
     }
 };
 
-const Description = ({ desktopUpdateState }: { desktopUpdateState: DesktopUpdateState }) => {
+type DescriptionProps = {
+    desktopUpdateState: DesktopUpdateState;
+    openUpdateModal: () => void;
+};
+
+const Description = ({ desktopUpdateState, openUpdateModal }: DescriptionProps) => {
     const appVersion = process.env.VERSION || '';
     const { dispatch } = useServices(selectDispatch);
     const openChangelog = () => dispatch(desktopUpdateActions.setIsVersionInfoModalVisible(true));
     const url = useExternalLink(getReleaseUrl(appVersion));
-    const commonButtonProps: Partial<ButtonProps> = {
-        'data-testid': '@settings/suite-version',
-        intent: 'neutral',
-        priority: 'secondary',
-        size: 'small',
-    } as const;
-    const buttonLabel = (
-        <>
-            {appVersion}
-            {isDevEnv && '-dev'}
-        </>
-    );
 
     return (
-        <div>
+        <Row columnGap={16} rowGap={4} alignItems="center" flexWrap="wrap">
             <Translation
                 id="TR_YOUR_CURRENT_VERSION"
                 values={{
-                    version: isDesktop() ? (
+                    version: (
                         <Button
-                            onClick={() => {
-                                openChangelog();
-                            }}
+                            data-testid="@settings/suite-version"
+                            intent="neutral"
+                            priority="secondary"
+                            size="small"
                             margin={{ left: 4 }}
-                            {...commonButtonProps}
+                            onClick={isDesktop() ? openChangelog : undefined}
+                            href={isDesktop() ? undefined : url}
                         >
-                            {buttonLabel}
-                        </Button>
-                    ) : (
-                        <Button href={url} margin={{ left: 4 }} {...commonButtonProps}>
-                            {buttonLabel}
+                            {appVersion}
+                            {isDevEnv && '-dev'}
                         </Button>
                     ),
                 }}
@@ -75,25 +67,25 @@ const Description = ({ desktopUpdateState }: { desktopUpdateState: DesktopUpdate
                 desktopUpdateState.state,
             ) &&
                 desktopUpdateState.latest && (
-                    <>
-                        &nbsp;
-                        <Translation
-                            id={getUpdateStateMessage(desktopUpdateState.state)}
-                            values={{
-                                version: (
-                                    <Button
-                                        intent="critical"
-                                        size="small"
-                                        href={getReleaseUrl(desktopUpdateState.latest.version)}
-                                    >
-                                        {desktopUpdateState.latest.version}
-                                    </Button>
-                                ),
-                            }}
-                        />
-                    </>
+                    <Translation
+                        id={getUpdateStateMessage(desktopUpdateState.state)}
+                        values={{
+                            version: (
+                                <Button
+                                    data-testid="@settings/suite-new-version"
+                                    intent="neutral"
+                                    priority="primary"
+                                    size="small"
+                                    margin={{ left: 4 }}
+                                    onClick={openUpdateModal}
+                                >
+                                    {desktopUpdateState.latest.version}
+                                </Button>
+                            ),
+                        }}
+                    />
                 )}
-        </div>
+        </Row>
     );
 };
 
@@ -102,7 +94,7 @@ export const VersionWithUpdate = () => {
     const { desktopApi, dispatch } = useServices(selectDispatch, selectDesktopApiDep);
 
     const checkForUpdates = () => desktopApi.checkForUpdates({ isManual: true });
-    const maximizeUpdateModal = () => dispatch(desktopUpdateActions.setIsUpdateModalVisible(true));
+    const openUpdateModal = () => dispatch(desktopUpdateActions.setIsUpdateModalVisible(true));
     const installAndRestart = () => dispatch(installUpdateThunk({ installNow: true }));
 
     return (
@@ -115,7 +107,12 @@ export const VersionWithUpdate = () => {
                 >
                     <TextColumn
                         title={<Translation id="TR_SUITE_VERSION" />}
-                        description={<Description desktopUpdateState={desktopUpdateState} />}
+                        description={
+                            <Description
+                                desktopUpdateState={desktopUpdateState}
+                                openUpdateModal={openUpdateModal}
+                            />
+                        }
                     />
                     {desktopUpdateState.enabled && (
                         <ActionColumn>
@@ -131,12 +128,12 @@ export const VersionWithUpdate = () => {
                                 </ActionButton>
                             )}
                             {desktopUpdateState.state === UpdateState.Available && (
-                                <ActionButton onClick={maximizeUpdateModal} intent="brand">
+                                <ActionButton onClick={openUpdateModal} intent="brand">
                                     <Translation id="SETTINGS_UPDATE_AVAILABLE" />
                                 </ActionButton>
                             )}
                             {desktopUpdateState.state === UpdateState.Downloading && (
-                                <ActionButton onClick={maximizeUpdateModal} intent="brand">
+                                <ActionButton onClick={openUpdateModal} intent="brand">
                                     <Translation id="SETTINGS_UPDATE_DOWNLOADING" />
                                 </ActionButton>
                             )}
