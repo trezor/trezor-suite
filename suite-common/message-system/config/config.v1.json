@@ -1,7 +1,7 @@
 {
     "version": 1,
-    "timestamp": "2026-08-18T12:00:00+00:00",
-    "sequence": 155,
+    "timestamp": "2026-09-16T12:00:00+00:00",
+    "sequence": 156,
     "actions": [
         {
             "conditions": [
@@ -1874,6 +1874,30 @@
                     {
                         "variant": "B",
                         "percentage": 100
+                    }
+                ]
+            }
+        },
+        {
+            "conditions": [
+                {
+                    "environment": {
+                        "desktop": "*",
+                        "mobile": "!",
+                        "web": "*"
+                    }
+                }
+            ],
+            "experiment": {
+                "id": "090d7443-71a5-4ec3-adf5-8cb6874042f5",
+                "groups": [
+                    {
+                        "variant": "A",
+                        "percentage": 100
+                    },
+                    {
+                        "variant": "B",
+                        "percentage": 0
                     }
                 ]
             }

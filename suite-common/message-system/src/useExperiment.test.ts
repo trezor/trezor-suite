@@ -97,6 +97,42 @@ describe('useExperiment', () => {
         },
     );
 
+    it('assigns a variant override even when its group has no share of the traffic', () => {
+        const root = createRoot({
+            messageSystem: createMessageSystemState({
+                groups: [
+                    { variant: 'A', percentage: 100 },
+                    { variant: 'B', percentage: 0 },
+                ],
+                variantOverride: 'B',
+            }),
+        });
+        const { result } = renderUseExperiment(root);
+
+        expect(result.current.activeExperimentVariant?.variant).toBe('B');
+    });
+
+    it('returns undefined variant when the variant override names no group', () => {
+        const root = createRoot({
+            messageSystem: createMessageSystemState({ variantOverride: 'Z' }),
+        });
+        const { result } = renderUseExperiment(root);
+
+        expect(result.current.activeExperimentVariant).toBeUndefined();
+    });
+
+    it('prefers the variant override over the inclusion override', () => {
+        const root = createRoot({
+            messageSystem: createMessageSystemState({
+                inclusionOverride: 99,
+                variantOverride: 'A',
+            }),
+        });
+        const { result } = renderUseExperiment(root);
+
+        expect(result.current.activeExperimentVariant?.variant).toBe('A');
+    });
+
     it.each([
         { inclusionOverride: 0, expectedVariant: 'A' },
         { inclusionOverride: 49, expectedVariant: 'A' },

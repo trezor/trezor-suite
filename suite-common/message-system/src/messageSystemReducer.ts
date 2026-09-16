@@ -175,6 +175,20 @@ export const prepareMessageSystemReducer = createReducerWithExtraDeps(
                     }
                 },
             )
+            .addCase(messageSystemActions.setExperimentVariantOverride, (state, { payload }) => {
+                if (!state.experimentVariantOverrides) {
+                    state.experimentVariantOverrides = {};
+                }
+                state.experimentVariantOverrides[payload.id] = payload.variant;
+            })
+            .addCase(messageSystemActions.clearExperimentVariantOverride, (state, { payload }) => {
+                if (state.experimentVariantOverrides) {
+                    delete state.experimentVariantOverrides[payload];
+                    if (Object.keys(state.experimentVariantOverrides).length === 0) {
+                        delete state.experimentVariantOverrides;
+                    }
+                }
+            })
             .addMatcher(
                 (action: UnknownAction): action is StorageLoadMessageSystemAction =>
                     action.type === extra.actionTypes.storageLoad,

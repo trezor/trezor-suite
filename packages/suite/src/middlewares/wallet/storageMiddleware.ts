@@ -415,6 +415,8 @@ export const prepareStorageMiddleware = createMiddlewareWithExtraDeps<
             messageSystemActions.removeExperiment,
             messageSystemActions.setExperimentInclusionOverride,
             messageSystemActions.clearExperimentInclusionOverride,
+            messageSystemActions.setExperimentVariantOverride,
+            messageSystemActions.clearExperimentVariantOverride,
         )(action)
     ) {
         api.dispatch(storageActions.saveMessageSystemThunk());
