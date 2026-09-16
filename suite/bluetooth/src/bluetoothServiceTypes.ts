@@ -31,3 +31,13 @@ export type BluetoothServiceDeps = {
 export type BluetoothService = {
     init: () => Promise<void>;
 };
+
+export type BackgroundScan = {
+    start: () => void;
+    stop: () => void;
+    restartIfNeeded: () => void;
+};
+
+export type BluetoothServiceInternalDeps = {
+    backgroundScan: BackgroundScan;
+};
