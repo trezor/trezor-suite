@@ -27,9 +27,11 @@ export const createSuiteDesktopCompositionRoot = (): SuiteDesktopCompositionRoot
     // yields the identifier string; the main process (`@suite/desktop-app-main`'s
     // trezor-connect.ts) maps it to a real Transport instance below the IPC boundary. This also
     // keeps `@trezor/transport` out of the renderer bundle.
+    // NodeUsbTransport is intentionally not offered on the desktop: the main process no longer
+    // instantiates it (it would eagerly load the usb/nusb native addon at startup), so a factory
+    // here would only advertise a transport the main process drops. See trezor-connect.ts.
     const getTransportsFactories = () => ({
         BridgeTransport: () => 'BridgeTransport' as const,
-        NodeUsbTransport: () => 'NodeUsbTransport' as const,
         UdpTransport: () => 'UdpTransport' as const,
     });
 
