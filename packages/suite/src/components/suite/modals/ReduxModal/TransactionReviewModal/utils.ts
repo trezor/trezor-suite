@@ -19,7 +19,7 @@ export const selectTxType = (
     txInfoState: TxInfoState,
     precomposedForm: FormState,
 ) => {
-    if (isStakeState(txInfoState)) {
+    if (isStakeState(txInfoState) || precomposedForm.tronStaking) {
         return 'stake';
     }
 
