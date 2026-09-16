@@ -2,6 +2,7 @@ import '@suite-common/test-utils/globalOverrides';
 
 import { screen } from '@testing-library/react';
 
+import { initialState as selectedAccountInitialState } from '@suite/account';
 import { mockSuiteDevice } from '@suite-common/suite-types/mocks';
 import { createTestCompositionRoot } from '@suite-common/test-utils';
 import { type Rate } from '@suite-common/wallet-types';
@@ -25,6 +26,8 @@ const getInitialState = (): AppState => ({
     },
     wallet: {
         ...mockInitialAppState.wallet,
+        // `GlobalSendReceive`, which the header renders, reads it.
+        selectedAccount: selectedAccountInitialState,
         accounts: [mockWalletAccount({ symbol: 'btc', formattedBalance: '0.5' })],
         settings: {
             ...mockInitialAppState.wallet.settings,
@@ -54,8 +57,9 @@ describe('AssetFirstDashboard', () => {
 
         expect(screen.getByTestId('@dashboard/asset-first/fiat-amount')).toBeInTheDocument();
         expect(screen.getByTestId('@dashboard/asset-first/swap')).toBeInTheDocument();
-        expect(screen.getByTestId('@dashboard/asset-first/receive')).toBeInTheDocument();
-        expect(screen.getByTestId('@dashboard/asset-first/send')).toBeInTheDocument();
+        // Receive and send are the app's own buttons, with the account picker behind them.
+        expect(screen.getAllByTestId('@wallet/menu/wallet-global-receive')).not.toHaveLength(0);
+        expect(screen.getAllByTestId('@wallet/menu/wallet-global-send')).not.toHaveLength(0);
         expect(screen.getByTestId('@dashboard/asset-first-item/btc/coin')).toBeInTheDocument();
         // The graph and its controls belong to the card this view replaces.
         expect(screen.queryByTestId('@dashboard/loading')).not.toBeInTheDocument();

@@ -2,6 +2,7 @@ import '@suite-common/test-utils/globalOverrides';
 
 import { screen } from '@testing-library/react';
 
+import { initialState as selectedAccountInitialState } from '@suite/account';
 import { mockSuiteDevice } from '@suite-common/suite-types/mocks';
 import { createTestCompositionRoot } from '@suite-common/test-utils';
 import { type Rate, type TokenAddress } from '@suite-common/wallet-types';
@@ -49,6 +50,8 @@ const getInitialState = (): AppState => ({
     },
     wallet: {
         ...mockInitialAppState.wallet,
+        // `GlobalSendReceive`, which the header renders, reads it.
+        selectedAccount: selectedAccountInitialState,
         accounts: [ethereumAccount, bitcoinAccount],
         settings: {
             ...mockInitialAppState.wallet.settings,

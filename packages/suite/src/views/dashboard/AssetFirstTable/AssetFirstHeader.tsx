@@ -1,17 +1,17 @@
 import { useMemo } from 'react';
 
 import { Translation } from '@suite/intl';
-import { type Route, gotoThunk } from '@suite/router';
+import { gotoThunk } from '@suite/router';
 import { useServices } from '@suite-common/dependency-injection';
 import { useFormatters } from '@suite-common/formatters';
 import { selectDispatch } from '@suite-common/redux-utils';
-import { getTradingPrefilledFromAccountData, tradingActions } from '@suite-common/trading';
-import { selectAccountByKey, selectBaseCurrency } from '@suite-common/wallet-core';
-import { type Account, asBaseCurrencyAmount } from '@suite-common/wallet-types';
+import { selectBaseCurrency } from '@suite-common/wallet-core';
+import { asBaseCurrencyAmount } from '@suite-common/wallet-types';
 import { Button, Column, Row, Skeleton, Text } from '@trezor/components';
-import { ArrowDownIcon, ArrowUpIcon, ArrowsLeftRightIcon } from '@trezor/icons';
+import { ArrowsLeftRightIcon } from '@trezor/icons';
 import { type BigNumber } from '@trezor/utils';
 
+import { GlobalSendReceive } from 'src/components/suite/layouts/SuiteLayout/PageHeader/GlobalSendReceive/GlobalSendReceive';
 import { FiatHeader } from 'src/components/wallet/FiatHeader';
 import { useDiscovery, useSelector } from 'src/hooks/suite';
 
@@ -43,45 +43,14 @@ const WeekChange = ({ weekChange }: WeekChangeProps) => {
     );
 };
 
-type AssetFirstActionProps = {
-    account: Account | null;
-};
-
 /**
  * Swap, receive and send for the wallet rather than for an account.
  *
- * The routes behind them are account-scoped, so they open on the wallet's largest holding — the
- * account someone is most likely to have meant. A prototype's answer to a question the design
- * leaves open.
+ * Receive and send are the app's own — they open the account picker every other page opens, rather
+ * than guessing which account was meant. Swap opens the exchange form, which picks its own.
  */
-const AssetFirstActions = ({ account }: AssetFirstActionProps) => {
+const AssetFirstActions = () => {
     const { dispatch } = useServices(selectDispatch);
-
-    const goToAccountRoute = (
-        routeName: Extract<Route['name'], 'wallet-receive' | 'wallet-send'>,
-    ) =>
-        account &&
-        dispatch(
-            gotoThunk({
-                routeName,
-                params: {
-                    symbol: account.symbol,
-                    accountIndex: account.index,
-                    accountType: account.accountType,
-                },
-            }),
-        );
-
-    const handleSwapClick = () => {
-        if (account) {
-            dispatch(
-                tradingActions.setTradingFromPrefilledAccount(
-                    getTradingPrefilledFromAccountData(account),
-                ),
-            );
-        }
-        dispatch(gotoThunk({ routeName: 'wallet-trading-exchange' }));
-    };
 
     return (
         <Row gap={8}>
@@ -89,31 +58,12 @@ const AssetFirstActions = ({ account }: AssetFirstActionProps) => {
                 intent="brand"
                 priority="primary"
                 iconRight={ArrowsLeftRightIcon}
-                onClick={handleSwapClick}
+                onClick={() => dispatch(gotoThunk({ routeName: 'wallet-trading-exchange' }))}
                 data-testid="@dashboard/asset-first/swap"
             >
                 <Translation id="TR_TRADING_SWAP" />
             </Button>
-            <Button
-                intent="brand"
-                priority="secondary"
-                iconRight={ArrowDownIcon}
-                isDisabled={!account}
-                onClick={() => goToAccountRoute('wallet-receive')}
-                data-testid="@dashboard/asset-first/receive"
-            >
-                <Translation id="TR_NAV_RECEIVE" />
-            </Button>
-            <Button
-                intent="brand"
-                priority="secondary"
-                iconRight={ArrowUpIcon}
-                isDisabled={!account}
-                onClick={() => goToAccountRoute('wallet-send')}
-                data-testid="@dashboard/asset-first/send"
-            >
-                <Translation id="TR_NAV_SEND" />
-            </Button>
+            <GlobalSendReceive />
         </Row>
     );
 };
@@ -125,10 +75,6 @@ type AssetFirstHeaderProps = {
 
 export const AssetFirstHeader = ({ rows }: AssetFirstHeaderProps) => {
     const baseCurrencyCode = useSelector(selectBaseCurrency);
-    // The actions are account-scoped, so they open on the wallet's largest holding — the first row.
-    const largestHoldingAccount = useSelector(state =>
-        selectAccountByKey(state, rows[0]?.accountKey ?? null),
-    );
     const { isDiscoveryRunning } = useDiscovery();
 
     const { fiatValue, weekChange } = useMemo(() => getAssetFirstTotals(rows), [rows]);
@@ -153,7 +99,7 @@ export const AssetFirstHeader = ({ rows }: AssetFirstHeaderProps) => {
                     </Row>
                 )}
             </Column>
-            <AssetFirstActions account={largestHoldingAccount} />
+            <AssetFirstActions />
         </Row>
     );
 };
