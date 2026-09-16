@@ -38,6 +38,12 @@ export type BackgroundScan = {
     restartIfNeeded: () => void;
 };
 
+export type FirmwareUpdateScan = {
+    start: (id: string) => void;
+    stop: () => void;
+};
+
 export type BluetoothServiceInternalDeps = {
     backgroundScan: BackgroundScan;
+    firmwareUpdateScan: FirmwareUpdateScan;
 };
