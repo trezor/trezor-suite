@@ -1,7 +1,7 @@
 {
     "version": 1,
     "timestamp": "2026-09-16T12:00:00+00:00",
-    "sequence": 156,
+    "sequence": 158,
     "actions": [
         {
             "conditions": [
@@ -1897,6 +1897,65 @@
                         "pt": "Atualizar Firmware",
                         "uk": "Оновити прошивку"
                     }
+                }
+            }
+        },
+        {
+            "conditions": [
+                {
+                    "settings": [
+                        {
+                            "sol": true
+                        }
+                    ],
+                    "environment": {
+                        "desktop": "<26.9.2",
+                        "mobile": "<26.9.2",
+                        "web": "!"
+                    }
+                }
+            ],
+            "message": {
+                "id": "7a4676a0-4553-42d9-a7f5-460ce3686d2d",
+                "priority": 92,
+                "dismissible": true,
+                "variant": "warning",
+                "category": ["context"],
+                "content": {
+                    "en": "This version of Trezor Suite doesn't support the new Solana transaction type. If you receive or send such a transaction, your balance and history will stop updating. Update to version 26.9.2 or newer.",
+                    "es": "Esta versión de Trezor Suite no admite el nuevo tipo de transacción de Solana. Si recibes o envías una transacción de ese tipo, el saldo y el historial dejarán de actualizarse. Actualiza a la versión 26.9.2 o posterior.",
+                    "cs": "Tato verze Trezor Suite nepodporuje nový typ transakcí Solana. Pokud takovou transakci přijmete nebo odešlete, přestane se aktualizovat zůstatek i historie. Aktualizujte na verzi 26.9.2 nebo novější.",
+                    "ru": "Эта версия Trezor Suite не поддерживает новый тип транзакций Solana. Если вы получите или отправите такую транзакцию, баланс и история перестанут обновляться. Обновитесь до версии 26.9.2 или новее.",
+                    "ja": "このバージョンの Trezor Suite は、Solana の新しいトランザクションタイプに対応していません。そのようなトランザクションを受信または送信すると、残高と履歴が更新されなくなります。バージョン 26.9.2 以降にアップデートしてください。",
+                    "hu": "A Trezor Suite ezen verziója nem támogatja az új Solana tranzakciótípust. Ha ilyen tranzakciót fogad vagy küld, az egyenleg és az előzmények frissítése leáll. Frissítsen a 26.9.2-es vagy újabb verzióra.",
+                    "it": "Questa versione di Trezor Suite non supporta il nuovo tipo di transazione Solana. Se ricevi o invii una transazione di questo tipo, il saldo e la cronologia smetteranno di aggiornarsi. Aggiorna alla versione 26.9.2 o successiva.",
+                    "fr": "Cette version de Trezor Suite ne prend pas en charge le nouveau type de transaction Solana. Si vous recevez ou envoyez une telle transaction, le solde et l'historique cesseront d'être mis à jour. Mettez à jour vers la version 26.9.2 ou une version ultérieure.",
+                    "de": "Diese Version von Trezor Suite unterstützt den neuen Solana-Transaktionstyp nicht. Wenn Sie eine solche Transaktion empfangen oder senden, werden Kontostand und Verlauf nicht mehr aktualisiert. Aktualisieren Sie auf Version 26.9.2 oder neuer.",
+                    "tr": "Trezor Suite'in bu sürümü yeni Solana işlem türünü desteklemiyor. Böyle bir işlem alır veya gönderirseniz bakiyeniz ve işlem geçmişiniz güncellenmeyi durdurur. 26.9.2 veya daha yeni bir sürüme güncelleyin.",
+                    "pt": "Esta versão do Trezor Suite não suporta o novo tipo de transação Solana. Se receber ou enviar uma transação desse tipo, o saldo e o histórico deixarão de ser atualizados. Atualize para a versão 26.9.2 ou posterior.",
+                    "uk": "Ця версія Trezor Suite не підтримує новий тип транзакцій Solana. Якщо ви отримаєте або надішлете таку транзакцію, баланс та історія припинять оновлюватися. Оновіть до версії 26.9.2 або новішої."
+                },
+                "cta": {
+                    "action": "internal-link",
+                    "link": "settings-index",
+                    "anchor": "@general-settings/version-with-update",
+                    "label": {
+                        "en": "Update Trezor Suite",
+                        "es": "Actualizar Trezor Suite",
+                        "cs": "Aktualizovat Trezor Suite",
+                        "ru": "Обновить Trezor Suite",
+                        "ja": "Trezor Suiteのアップデート",
+                        "hu": "Frissítés Trezor Suite",
+                        "it": "Aggiorna Trezor Suite",
+                        "fr": "Mettre à jour Trezor Suite",
+                        "de": "Trezor Suite aktualisieren",
+                        "tr": "Trezor Suite'i Güncelle",
+                        "pt": "Atualizar Trezor Suite",
+                        "uk": "Оновити Trezor Suite"
+                    }
+                },
+                "context": {
+                    "domain": ["accounts.sol.normal", "accounts.sol.ledger", "accounts.sol.root"]
                 }
             }
         }
