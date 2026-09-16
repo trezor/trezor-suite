@@ -110,7 +110,7 @@ describe('transactions', () => {
                     destination: input.destination,
                     amount: input.amount,
                     asset: input.asset,
-                    destinationTag: input.destinationTag,
+                    memo: input.memo,
                     isTestnet: input.isTestnet,
                 });
                 expect(result).toEqual(expectedOutput);
@@ -187,7 +187,7 @@ describe('transactions', () => {
                     sequence: input.sequence,
                     fee: input.fee,
                     asset: input.asset,
-                    destinationTag: input.destinationTag,
+                    memo: input.memo,
                     isTestnet: input.isTestnet,
                 });
                 expect(result).toEqual(expectedOutput);
@@ -204,7 +204,7 @@ describe('transactions', () => {
                         sequence: input.sequence,
                         fee: input.fee,
                         asset: input.asset,
-                        destinationTag: input.destinationTag,
+                        memo: input.memo,
                         isTestnet: input.isTestnet,
                     });
                     expect(result).toEqual(expectedOutput);
