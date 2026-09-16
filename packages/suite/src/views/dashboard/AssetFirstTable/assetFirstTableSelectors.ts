@@ -1,39 +1,34 @@
 import { type DeviceRootState, selectDeviceStaticSessionId } from '@suite-common/device';
 import { createWeakMapSelector, returnStableArrayIfEmpty } from '@suite-common/redux-utils';
-import {
-    type TokenDefinitionsRootState,
-    selectTokenDefinitions,
-} from '@suite-common/token-definitions';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import {
-    type AccountAssetKey,
-    type AccountsRootState,
+    type AssetHolding,
+    type AssetHoldingsRootState,
+    type AssetKey,
     type FiatRatesRootState,
     type WalletSettingsRootState,
-    accountsIndex,
-    getTokens,
-    parseAccountAssetKey,
+    assetHoldingsIndex,
+    parseAssetKey,
     selectBaseCurrency,
     selectCurrentFiatRates,
     selectEnabledNetworks,
     selectLastWeekFiatRates,
 } from '@suite-common/wallet-core';
-import { type Account, type AccountKey, type TokenAddress } from '@suite-common/wallet-types';
-import { getFiatRateKey } from '@suite-common/wallet-utils';
+import { type TokenAddress } from '@suite-common/wallet-types';
+import { getFiatRateKey, toFiatCurrency } from '@suite-common/wallet-utils';
 import { BigNumber } from '@trezor/utils';
 
-import { getAssetDisplaySymbol, getAssetFiatValue, getAssetHolding } from './assetFirstTableUtils';
+import { getAssetDisplaySymbol, sumAssetHoldings } from './assetFirstTableUtils';
 
-export type AssetFirstTableState = AccountsRootState &
+export type AssetFirstTableState = AssetHoldingsRootState &
     DeviceRootState &
     FiatRatesRootState &
-    TokenDefinitionsRootState &
     WalletSettingsRootState;
 
 const createMemoizedSelector = createWeakMapSelector.withTypes<AssetFirstTableState>();
 
 type AssetRow = {
-    assetKey: AccountAssetKey;
+    assetKey: AssetKey;
     symbol: NetworkSymbol;
     contractAddress: TokenAddress | undefined;
     displaySymbol: string;
@@ -75,13 +70,12 @@ const compareRows = (
  */
 const selectAssetFirstRows = createMemoizedSelector(
     [
-        (state: AssetFirstTableState) => accountsIndex.read(state).groups.byAsset,
+        (state: AssetFirstTableState) => assetHoldingsIndex.read(state).groups.byAsset,
         selectDeviceStaticSessionId,
         selectEnabledNetworks,
         selectCurrentFiatRates,
         selectLastWeekFiatRates,
         selectBaseCurrency,
-        selectTokenDefinitions,
     ],
     (
         assetGroups,
@@ -90,7 +84,6 @@ const selectAssetFirstRows = createMemoizedSelector(
         currentFiatRates,
         lastWeekFiatRates,
         baseCurrencyCode,
-        tokenDefinitions,
     ): readonly AssetRow[] => {
         if (deviceStaticSessionId === null) {
             return returnStableArrayIfEmpty([]);
@@ -98,32 +91,9 @@ const selectAssetFirstRows = createMemoizedSelector(
 
         const rows: AssetRow[] = [];
         const fiatValueByDisplaySymbol = new Map<string, BigNumber>();
-        // Which tokens an account contributes is `getTokens`' decision — it resolves the user's
-        // own hidden and shown lists against the network's definitions, and a network without
-        // definitions shows what it holds. Cached per account because an account appears in as
-        // many groups as it holds assets.
-        const shownContractsByAccountKey = new Map<AccountKey, ReadonlySet<string>>();
-
-        const getShownContracts = (account: Account) => {
-            const cached = shownContractsByAccountKey.get(account.key);
-
-            if (cached) {
-                return cached;
-            }
-
-            const { shownWithBalance } = getTokens({
-                tokens: account.tokens ?? [],
-                symbol: account.symbol,
-                tokenDefinitions: tokenDefinitions?.[account.symbol]?.coin,
-            });
-            const contracts = new Set(shownWithBalance.map(token => token.contract));
-            shownContractsByAccountKey.set(account.key, contracts);
-
-            return contracts;
-        };
 
         assetGroups.forEach((group, assetKey) => {
-            const parts = parseAccountAssetKey(assetKey);
+            const parts = parseAssetKey(assetKey);
 
             if (
                 parts?.deviceState !== deviceStaticSessionId ||
@@ -134,22 +104,21 @@ const selectAssetFirstRows = createMemoizedSelector(
 
             const { symbol, contractAddress } = parts;
 
-            const visibleAccounts = group.entities.filter(
-                (account: Account) =>
-                    account.visible &&
-                    (contractAddress === undefined ||
-                        getShownContracts(account).has(contractAddress)),
+            const visibleHoldings = group.entities.filter(
+                (holding: AssetHolding) => holding.isAccountVisible,
             );
 
-            if (visibleAccounts.length === 0) {
+            if (visibleHoldings.length === 0) {
                 return;
             }
 
-            const { cryptoBalance, tokenInfo } = getAssetHolding(visibleAccounts, contractAddress);
+            const { cryptoBalance, tokenInfo } = sumAssetHoldings(visibleHoldings);
             const fiatRateKey = getFiatRateKey(symbol, baseCurrencyCode, contractAddress);
             const fiatValue =
-                getAssetFiatValue(cryptoBalance, currentFiatRates?.[fiatRateKey]?.rate) ??
-                ZERO_FIAT_VALUE;
+                toFiatCurrency({
+                    amount: cryptoBalance.toFixed(),
+                    rate: currentFiatRates?.[fiatRateKey]?.rate,
+                }) ?? ZERO_FIAT_VALUE;
             const displaySymbol = getAssetDisplaySymbol({ symbol, tokenInfo });
 
             rows.push({
@@ -159,8 +128,10 @@ const selectAssetFirstRows = createMemoizedSelector(
                 displaySymbol,
                 fiatValue,
                 weekAgoFiatValue:
-                    getAssetFiatValue(cryptoBalance, lastWeekFiatRates?.[fiatRateKey]?.rate) ??
-                    ZERO_FIAT_VALUE,
+                    toFiatCurrency({
+                        amount: cryptoBalance.toFixed(),
+                        rate: lastWeekFiatRates?.[fiatRateKey]?.rate,
+                    }) ?? ZERO_FIAT_VALUE,
             });
             fiatValueByDisplaySymbol.set(
                 displaySymbol,
@@ -176,19 +147,19 @@ const selectAssetFirstRows = createMemoizedSelector(
 
 export const selectAssetFirstTableKeys = createMemoizedSelector(
     [selectAssetFirstRows],
-    (rows): readonly AccountAssetKey[] => returnStableArrayIfEmpty(rows.map(row => row.assetKey)),
+    (rows): readonly AssetKey[] => returnStableArrayIfEmpty(rows.map(row => row.assetKey)),
 );
 
 /**
  * The account behind the wallet's largest holding — what the page's Swap, Receive and Send open on,
  * since those routes are account-scoped and the header is not.
  */
-export const selectAssetFirstLargestHoldingAccount = createMemoizedSelector(
+export const selectAssetFirstLargestHoldingAccountKey = createMemoizedSelector(
     [
         selectAssetFirstRows,
-        (state: AssetFirstTableState) => accountsIndex.read(state).groups.byAsset,
+        (state: AssetFirstTableState) => assetHoldingsIndex.read(state).groups.byAsset,
     ],
-    (rows, assetGroups): Account | undefined => {
+    (rows, assetGroups) => {
         const [largestHolding] = rows;
 
         if (largestHolding === undefined) {
@@ -197,7 +168,7 @@ export const selectAssetFirstLargestHoldingAccount = createMemoizedSelector(
 
         return assetGroups
             .get(largestHolding.assetKey)
-            ?.entities.find((account: Account) => account.visible);
+            ?.entities.find((holding: AssetHolding) => holding.isAccountVisible)?.accountKey;
     },
 );
 

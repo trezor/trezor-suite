@@ -4,9 +4,10 @@ import { gotoThunk } from '@suite/router';
 import { useServices } from '@suite-common/dependency-injection';
 import { selectDispatch } from '@suite-common/redux-utils';
 import {
-    type AccountAssetKey,
-    parseAccountAssetKey,
-    selectAccountsByAssetKey,
+    type AssetKey,
+    parseAssetKey,
+    selectAccountByKey,
+    selectAssetHoldings,
 } from '@suite-common/wallet-core';
 import { Column, Row, Table, Text } from '@trezor/components';
 import { TokenIcon } from '@trezor/product-components';
@@ -22,39 +23,37 @@ import { useSelector } from 'src/hooks/suite';
 import {
     ASSET_FIRST_CELL_PADDING,
     getAssetDisplaySymbol,
-    getAssetHolding,
     getAssetName,
     getNetworkName,
+    sumAssetHoldings,
 } from './assetFirstTableUtils';
 
 type AssetFirstRowProps = {
-    assetKey: AccountAssetKey;
+    assetKey: AssetKey;
 };
 
 /**
  * One asset on one network: what the wallet holds of it, what it costs and where it lives.
  *
- * The row reads its own accounts out of the index, so a balance arriving for another asset does not
- * re-render it — see `accountsIndex`.
+ * The row reads its own holdings out of the index, so a balance arriving for another asset does not
+ * re-render it — see `assetHoldingsIndex`.
  */
 export const AssetFirstRow = memo(({ assetKey }: AssetFirstRowProps) => {
-    const accounts = useSelector(state => selectAccountsByAssetKey(state, assetKey));
+    const holdings = useSelector(state => selectAssetHoldings(state, assetKey));
     const { dispatch } = useServices(selectDispatch);
 
-    const parts = parseAccountAssetKey(assetKey);
-    const contractAddress = parts?.contractAddress;
+    const parts = parseAssetKey(assetKey);
 
-    const { cryptoBalance, tokenInfo } = useMemo(
-        () => getAssetHolding(accounts, contractAddress),
-        [accounts, contractAddress],
+    const { cryptoBalance, tokenInfo } = useMemo(() => sumAssetHoldings(holdings), [holdings]);
+    const firstAccount = useSelector(state =>
+        selectAccountByKey(state, holdings[0]?.accountKey ?? null),
     );
 
     if (parts === undefined) {
         return null;
     }
 
-    const { symbol } = parts;
-    const [firstAccount] = accounts;
+    const { symbol, contractAddress } = parts;
 
     const handleRowClick = () => {
         if (!firstAccount) {

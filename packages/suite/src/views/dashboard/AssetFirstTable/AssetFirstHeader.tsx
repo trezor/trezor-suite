@@ -4,7 +4,7 @@ import { useServices } from '@suite-common/dependency-injection';
 import { useFormatters } from '@suite-common/formatters';
 import { selectDispatch } from '@suite-common/redux-utils';
 import { getTradingPrefilledFromAccountData, tradingActions } from '@suite-common/trading';
-import { selectBaseCurrency } from '@suite-common/wallet-core';
+import { selectAccountByKey, selectBaseCurrency } from '@suite-common/wallet-core';
 import { type Account, asBaseCurrencyAmount } from '@suite-common/wallet-types';
 import { Button, Column, Row, Skeleton, Text } from '@trezor/components';
 import { ArrowDownIcon, ArrowUpIcon, ArrowsLeftRightIcon } from '@trezor/icons';
@@ -14,7 +14,7 @@ import { FiatHeader } from 'src/components/wallet/FiatHeader';
 import { useDiscovery, useSelector } from 'src/hooks/suite';
 
 import {
-    selectAssetFirstLargestHoldingAccount,
+    selectAssetFirstLargestHoldingAccountKey,
     selectAssetFirstTotals,
 } from './assetFirstTableSelectors';
 
@@ -45,7 +45,7 @@ const WeekChange = ({ weekChange }: WeekChangeProps) => {
 };
 
 type AssetFirstActionProps = {
-    account: Account | undefined;
+    account: Account | null;
 };
 
 /**
@@ -122,7 +122,10 @@ const AssetFirstActions = ({ account }: AssetFirstActionProps) => {
 export const AssetFirstHeader = () => {
     const baseCurrencyCode = useSelector(selectBaseCurrency);
     const { fiatValue, weekChange } = useSelector(selectAssetFirstTotals);
-    const largestHoldingAccount = useSelector(selectAssetFirstLargestHoldingAccount);
+    const largestHoldingAccountKey = useSelector(selectAssetFirstLargestHoldingAccountKey);
+    const largestHoldingAccount = useSelector(state =>
+        selectAccountByKey(state, largestHoldingAccountKey ?? null),
+    );
     const { isDiscoveryRunning } = useDiscovery();
 
     return (
