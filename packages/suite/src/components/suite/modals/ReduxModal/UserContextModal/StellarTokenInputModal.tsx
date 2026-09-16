@@ -1,10 +1,17 @@
+import { useEffect, useRef, useState } from 'react';
 import { useForm, useWatch } from 'react-hook-form';
 
 import { Translation, type TranslationKey, useTranslation } from '@suite/intl';
+import { resolveStellarContractId } from '@suite-common/wallet-utils';
 import { Button, Column, Input, Modal, Row, Text } from '@trezor/components';
 import stellar from '@trezor/network-stellar/runtime';
+
+export type StellarTokenInput =
+    | { standard: 'STELLAR-CLASSIC'; assetCode: string; assetIssuer: string }
+    | { standard: 'STELLAR-CONTRACT'; contract: string };
+
 type StellarTokenInputModalProps = {
-    onSubmit: (assetCode: string, assetIssuer: string) => void;
+    onSubmit: (token: StellarTokenInput) => void;
     onCancel: () => void;
 };
 
@@ -14,26 +21,41 @@ type FormData = {
 };
 
 const validateAssetCode = (translate: (id: TranslationKey) => string) => async (value: string) => {
-    const { isValidAssetCode } = await stellar();
+    const { isValidAssetCode, isValidContractId } = await stellar();
 
-    return !value || isValidAssetCode(value) || translate('TR_ASSET_CODE_INVALID');
+    return (
+        !value ||
+        isValidAssetCode(value) ||
+        isValidContractId(value) ||
+        translate('TR_ASSET_CODE_INVALID')
+    );
 };
 
 const validateAssetIssuer =
-    (translate: (id: TranslationKey) => string) => async (value: string) => {
+    (translate: (id: TranslationKey) => string, isContractToken: boolean) =>
+    async (value: string) => {
+        if (isContractToken) return true;
+        if (!value) return false;
+
         const { isValidAddress } = await stellar();
 
-        return !value || isValidAddress(value) || translate('TR_ISSUER_ADDRESS_INVALID');
+        return isValidAddress(value) || translate('TR_ISSUER_ADDRESS_INVALID');
     };
+
+type ContractIdState = 'none' | 'resolving' | 'contract-token';
 
 export const StellarTokenInputModal = ({ onSubmit, onCancel }: StellarTokenInputModalProps) => {
     const { translationString } = useTranslation();
+    const [contractIdState, setContractIdState] = useState<ContractIdState>('none');
+    const isContractToken = contractIdState !== 'none';
 
     const {
         register,
         handleSubmit,
         formState: { errors, isValid },
         control,
+        setValue,
+        trigger,
     } = useForm<FormData>({
         mode: 'onChange',
         defaultValues: {
@@ -56,13 +78,69 @@ export const StellarTokenInputModal = ({ onSubmit, onCancel }: StellarTokenInput
     });
 
     const { ref: assetIssuerRef, ...assetIssuerField } = register('assetIssuer', {
-        required: true,
-        validate: validateAssetIssuer(translationString),
+        validate: validateAssetIssuer(translationString, isContractToken),
     });
 
-    const handleContinue = handleSubmit((data: FormData) => {
-        onSubmit(data.assetCode, data.assetIssuer);
-    });
+    // A SAC id resolves to its classic asset; any other valid contract id is a Soroban token.
+    useEffect(() => {
+        let isStale = false;
+
+        const classifyContractId = async () => {
+            const { isValidContractId } = await stellar();
+            if (!isValidContractId(assetCode)) {
+                if (!isStale) setContractIdState('none');
+
+                return;
+            }
+
+            // A slow or failed definitions fetch must not leave a contract id filed as an asset.
+            if (!isStale) setContractIdState('resolving');
+
+            const resolved = await resolveStellarContractId(assetCode).catch(() => undefined);
+            if (isStale) return;
+
+            if (!resolved) {
+                setContractIdState('contract-token');
+
+                return;
+            }
+
+            setContractIdState('none');
+            setValue('assetCode', resolved.assetCode, { shouldValidate: true });
+            setValue('assetIssuer', resolved.assetIssuer, { shouldValidate: true });
+        };
+
+        classifyContractId();
+
+        return () => {
+            isStale = true;
+        };
+    }, [assetCode, setValue]);
+
+    // Revalidate the issuer when the rule changes; on mount it would paint the empty field red.
+    const hasClassifiedContractId = useRef(false);
+    useEffect(() => {
+        if (!hasClassifiedContractId.current) {
+            hasClassifiedContractId.current = true;
+
+            return;
+        }
+
+        trigger('assetIssuer');
+    }, [isContractToken, trigger]);
+
+    const handleContinue = handleSubmit(
+        async ({ assetCode: code, assetIssuer: issuer }: FormData) => {
+            // Derived from the submitted value, so a racing classification cannot misfile it.
+            const { isValidContractId } = await stellar();
+
+            onSubmit(
+                isValidContractId(code)
+                    ? { standard: 'STELLAR-CONTRACT', contract: code }
+                    : { standard: 'STELLAR-CLASSIC', assetCode: code, assetIssuer: issuer },
+            );
+        },
+    );
 
     return (
         <Modal
@@ -71,7 +149,13 @@ export const StellarTokenInputModal = ({ onSubmit, onCancel }: StellarTokenInput
             heading={<Translation id="TR_ACTIVATE_TOKEN_MANUALLY" />}
             bottomContent={
                 <Row gap={8}>
-                    <Button onClick={handleContinue} isDisabled={!isValid} intent="brand">
+                    <Button
+                        onClick={handleContinue}
+                        // The issuer is optional for a contract id, so the form turns valid
+                        // before the id is classified.
+                        isDisabled={!isValid || contractIdState === 'resolving'}
+                        intent="brand"
+                    >
                         <Translation id="TR_CONTINUE" />
                     </Button>
                     <Button onClick={onCancel} intent="neutral" priority="secondary">
@@ -87,7 +171,7 @@ export const StellarTokenInputModal = ({ onSubmit, onCancel }: StellarTokenInput
 
                 <Column gap={16}>
                     <Input
-                        label={<Translation id="TR_ASSET_CODE" />}
+                        label={<Translation id="TR_ASSET_CODE_OR_CONTRACT_ID" />}
                         value={assetCode}
                         innerRef={assetCodeRef}
                         {...assetCodeField}
@@ -95,14 +179,20 @@ export const StellarTokenInputModal = ({ onSubmit, onCancel }: StellarTokenInput
                         bottomText={errors.assetCode?.message || null}
                     />
 
-                    <Input
-                        label={<Translation id="TR_ISSUER_ADDRESS" />}
-                        value={assetIssuer}
-                        innerRef={assetIssuerRef}
-                        {...assetIssuerField}
-                        hasError={!!errors.assetIssuer}
-                        bottomText={errors.assetIssuer?.message || null}
-                    />
+                    {isContractToken ? (
+                        <Text typographyStyle="body-sm" intent="neutral" priority="secondary">
+                            <Translation id="TR_STELLAR_CONTRACT_TOKEN_DETECTED" />
+                        </Text>
+                    ) : (
+                        <Input
+                            label={<Translation id="TR_ISSUER_ADDRESS" />}
+                            value={assetIssuer}
+                            innerRef={assetIssuerRef}
+                            {...assetIssuerField}
+                            hasError={!!errors.assetIssuer}
+                            bottomText={errors.assetIssuer?.message || null}
+                        />
+                    )}
                 </Column>
             </Column>
         </Modal>

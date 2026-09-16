@@ -55,6 +55,8 @@ export default class GetAccountInfo extends AbstractMethod<'getAccountInfo', Req
                 { name: 'gap', type: 'number' },
                 { name: 'marker', type: 'object' },
                 { name: 'protocols', type: 'array' },
+                // An empty list is meaningful: the account watches no contract tokens yet.
+                { name: 'stellarContractTokens', type: 'array', allowEmpty: true },
                 { name: 'confirmedNonce', type: 'boolean' },
                 { name: 'privatePending', type: 'object' },
                 { name: 'defaultAccountType', type: 'string' },
@@ -254,6 +256,7 @@ export default class GetAccountInfo extends AbstractMethod<'getAccountInfo', Req
                     gap: request.gap,
                     marker: request.marker,
                     tokenAccountsPubKeys: request.tokenAccountsPubKeys,
+                    stellarContractTokens: request.stellarContractTokens,
                     protocols: request.protocols,
                     confirmedNonce: request.confirmedNonce,
                     privatePending: request.privatePending,
