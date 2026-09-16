@@ -4,7 +4,7 @@ import {
     type MevProtectionRootState,
     selectIsMevProtectionFeatureEnabled,
 } from '@suite-common/mev';
-import { createThunk } from '@suite-common/redux-utils';
+import { type WithServices, createThunk } from '@suite-common/redux-utils';
 import {
     type SynchronizeSentTransactionThunkDeps,
     type SynchronizeSentTransactionThunkState,
@@ -22,12 +22,14 @@ import {
     type FormState,
     type PrecomposedTransactionFinal,
 } from '@suite-common/wallet-types';
+import { type NativeAnalyticsDep } from '@suite-native/analytics';
 
 import { EARN_MODULE_PREFIX } from '../../constants';
 import {
     pushYieldTransaction,
     signYieldTransactionOnDevice,
 } from '../../utils/earn/deviceTransactionUtils';
+import { reportTransactionCreated } from '../../utils/earn/earnAnalyticsUtils';
 import { getPushErrorType } from '../yield/yieldTransactionThunks';
 
 const WRAPPED_NATIVE_TOKEN_THUNK_PREFIX = `${EARN_MODULE_PREFIX}/wrapped-native-token`;
@@ -145,7 +147,8 @@ export type PushWrappedNativeTokenThunkState = MevProtectionRootState &
     SynchronizeSentTransactionThunkState &
     WalletSettingsRootState;
 
-export type PushWrappedNativeTokenThunkDeps = SynchronizeSentTransactionThunkDeps;
+export type PushWrappedNativeTokenThunkDeps = SynchronizeSentTransactionThunkDeps &
+    WithServices<NativeAnalyticsDep>;
 
 export const pushWrappedNativeTokenThunk = createThunk<
     { txid: string },
@@ -157,7 +160,18 @@ export const pushWrappedNativeTokenThunk = createThunk<
     }
 >(
     `${WRAPPED_NATIVE_TOKEN_THUNK_PREFIX}/push`,
-    async ({ account, flowType, signedTransaction }, { dispatch, getState, rejectWithValue }) => {
+    async (
+        { account, flowType, signedTransaction },
+        { dispatch, getState, rejectWithValue, extra },
+    ) => {
+        reportTransactionCreated({
+            analytics: extra.services.analytics,
+            symbol: account.symbol,
+            precomposedTransaction: signedTransaction.precomposedTransaction,
+            selectedFee: signedTransaction.formState.selectedFee,
+            txType: 'yield',
+        });
+
         const pushResponse = await pushYieldTransaction({
             tx: signedTransaction.serializedTx,
             account,

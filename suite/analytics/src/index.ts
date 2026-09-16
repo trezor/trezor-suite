@@ -27,4 +27,4 @@ export { type DashboardSendModalOptionsEventOption } from './events/dashboardSen
 export { type SendEnsResolutionDirection } from './events/sendEnsResolutionEvent';
 export { type TradeExchangeAction } from './events/tradeExchangeEvent';
 export { type TradingExchangeIssue } from './events/tradingExchangeIssueEvent';
-export { type TransactionCreatedEventAction } from './events/transactionCreatedEvent';
+export { type TransactionCreatedEventAction } from '@suite-common/analytics';

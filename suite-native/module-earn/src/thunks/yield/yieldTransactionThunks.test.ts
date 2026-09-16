@@ -1,6 +1,8 @@
 import { combineReducers, isFulfilled, isRejected } from '@reduxjs/toolkit';
 
+import { asGetter } from '@suite-common/dependency-injection';
 import { selectSelectedDevice } from '@suite-common/device';
+import { mockGetAccountSyncInterval } from '@suite-common/networks/mocks';
 import { mockSuiteDevice } from '@suite-common/suite-types/mocks';
 import { type TestCompositionStore, createTestCompositionRoot } from '@suite-common/test-utils';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
@@ -21,10 +23,15 @@ import {
     type PrecomposedTransactionFinal,
 } from '@suite-common/wallet-types';
 import { mockAccountKey } from '@suite-common/wallet-types/mocks';
+import { mockNativeAnalytics } from '@suite-native/analytics/mocks';
 import TrezorConnect from '@trezor/connect';
 import { type StaticSessionId } from '@trezor/device-utils';
 
-import { pushYieldActionReviewThunk, signYieldActionReviewThunk } from './yieldTransactionThunks';
+import {
+    type PushYieldActionReviewThunkDeps,
+    pushYieldActionReviewThunk,
+    signYieldActionReviewThunk,
+} from './yieldTransactionThunks';
 
 jest.mock('@trezor/connect', () => ({
     __esModule: true,
@@ -121,16 +128,22 @@ const selectSelectedDeviceMock = selectSelectedDevice as jest.Mock;
 
 // Other thunk dependencies are mocked; only the yield reducer is needed for review-state assertions.
 const buildStore = () =>
-    createTestCompositionRoot<void, YieldRootState>({
+    createTestCompositionRoot<PushYieldActionReviewThunkDeps, YieldRootState>({
         reducer: combineReducers({
             wallet: combineReducers({
                 stablecoinYield: yieldReducer,
             }),
         }),
+        services: () => ({
+            analytics: mockNativeAnalytics(),
+            networks: { getAccountSyncInterval: mockGetAccountSyncInterval() },
+            getIsWindowVisible: asGetter(() => true),
+            getTradedAccountKeys: asGetter(() => []),
+        }),
     }).services.store;
 
 type PrepareParams = {
-    store: TestCompositionStore<YieldRootState, void>;
+    store: TestCompositionStore<YieldRootState, PushYieldActionReviewThunkDeps>;
     flowType: YieldPositionFlowType;
     flowKey: string;
 };
@@ -169,7 +182,7 @@ const storeSignedTransaction = ({ flowType, flowKey, store }: PrepareParams) => 
 };
 
 type DispatchPushParams = {
-    store: TestCompositionStore<YieldRootState, void>;
+    store: TestCompositionStore<YieldRootState, PushYieldActionReviewThunkDeps>;
     flowType: YieldPositionFlowType;
     flowKey: string;
     flowAccount?: Account;
