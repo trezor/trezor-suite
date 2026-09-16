@@ -60,4 +60,14 @@ describe('migration 26.10.0.1', () => {
 
         expect(suiteSettings).toBeUndefined();
     });
+
+    test('keeps a stored record without flags untouched', async () => {
+        await createDBWithSuiteSettings({ theme: { variant: 'dark' } });
+
+        const db = await runMigration();
+        const suiteSettings = await db.get('suiteSettings', 'suite');
+        db.close();
+
+        expect(suiteSettings).toEqual({ theme: { variant: 'dark' } });
+    });
 });
