@@ -2,7 +2,7 @@ import { useCallback, useEffect, useState } from 'react';
 
 import { getReleaseUrl } from '@suite/github';
 import { Translation } from '@suite/intl';
-import { Badge, Banner, Card, Paragraph, Row, TextButton } from '@trezor/components';
+import { Badge, Card, Paragraph, Row, TextButton } from '@trezor/components';
 
 import { MarkdownWithComponents } from 'src/components/suite';
 
@@ -59,7 +59,7 @@ export const ReleaseNotes = () => {
     }, [loadLocalChangelog]);
 
     if (state.status === 'loading') {
-        return <Banner isLoading description={<Translation id="TR_RELEASE_NOTES_LOADING" />} />;
+        return null;
     }
 
     if (state.status === 'error') {
