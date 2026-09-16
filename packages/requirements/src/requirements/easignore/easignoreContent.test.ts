@@ -55,7 +55,11 @@ describe('collectMobileWorkspaceClosure', () => {
 
     it('does not follow registry ranges that shadow a workspace name', () => {
         const packages = createPackages([
-            ['@suite-native/app', 'suite-native/app', { dependencies: { '@trezor/utils': '^1.0.0' } }],
+            [
+                '@suite-native/app',
+                'suite-native/app',
+                { dependencies: { '@trezor/utils': '^1.0.0' } },
+            ],
             ['@trezor/utils', 'packages/utils', {}],
         ]);
 
