@@ -1,6 +1,5 @@
-import type { AttributeDef, EventDef } from '@suite-common/analytics';
-
 import { EventType } from '../constants';
+import type { AttributeDef, EventDef } from '../eventDefinition';
 
 export type TransactionCreatedEventAction =
     'sent' | 'copied' | 'downloaded' | 'replaced' | 'canceled';
@@ -25,22 +24,27 @@ type Attributes = {
     isCoinControlEnabled: AttributeDef<boolean>;
     hasCoinControlBeenOpened: AttributeDef<boolean>;
 
-    txType?: AttributeDef<'trade' | 'stake'>;
+    txType?: AttributeDef<'trade' | 'stake' | 'yield'>;
 };
 
 export const transactionCreatedEvent: EventDef<Attributes, EventType.TransactionCreated> = {
     name: EventType.TransactionCreated,
     descriptionTrigger:
-        'When transaction is sent (Review & Send), replaced (Bump fee), copied (Broadcast option in send form is off), downloaded (Broadcast option in send form is off), or canceled (Cancelling TX and sending back to the users wallet)',
+        'When transaction is sent (Review & Send), replaced (Bump fee), copied (Broadcast option in send form is off), downloaded (Broadcast option in send form is off), or canceled (Cancelling TX and sending back to the users wallet). Mobile reports it only for staking and yield transactions, when the send is confirmed; a plain mobile send reports `send/transaction_dispatched`',
     changelog: [
         { version: '1.9.0', notes: 'added' },
         { version: '25.4.0', notes: 'txType added' },
+        {
+            version: '26.10.0',
+            notes: 'moved to suite-common and reported from mobile for staking and yield; txType gets `yield` and `stake` now also covers Tron and Cardano',
+        },
     ],
     possibleImprovements: 'rename to `accounts/transaction-created`',
 
     attributes: {
         action: {
-            description: '`sent`, `copied`, `downloaded`, `replaced`, `canceled`',
+            description:
+                '`sent`, `copied`, `downloaded`, `replaced`, `canceled`; mobile only `sent`',
             changelog: [{ version: '1.9.0', notes: 'added' }],
         },
         symbol: {
@@ -58,7 +62,7 @@ export const transactionCreatedEvent: EventDef<Attributes, EventType.Transaction
         broadcast: {
             changelog: [{ version: '1.9.0', notes: 'added' }],
             description:
-                'Whether the transaction is broadcast directly to the network (`true`) or saved for later broadcast (`false`)',
+                'Whether the transaction is broadcast directly to the network. `false` only for a desktop send with the broadcast option off (`action` is then `copied` or `downloaded`); staking, yield and every mobile transaction are always `true`',
         },
         bitcoinLocktime: {
             changelog: [{ version: '1.9.0', notes: 'added' }],
@@ -90,9 +94,15 @@ export const transactionCreatedEvent: EventDef<Attributes, EventType.Transaction
             description: 'Whether the user opened coin control interface during this transaction',
         },
         txType: {
-            changelog: [{ version: '25.4.0', notes: 'added' }],
+            changelog: [
+                { version: '25.4.0', notes: 'added' },
+                {
+                    version: '26.10.0',
+                    notes: 'added `yield`; `stake` now also covers Tron and Cardano',
+                },
+            ],
             description:
-                'The type of transaction: `trade` for trading flows, `stake` for staking-related transactions',
+                '`trade` for trading, `stake` for staking on any network, `yield` for every transaction of a yield flow including its approve, revoke, wrap and unwrap steps, so one yield action can emit several events',
         },
     },
 };

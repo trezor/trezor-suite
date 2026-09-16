@@ -29,6 +29,10 @@ export {
 } from './onboardingFeedbackBannerClickedEvent';
 export { onboardingRecoveryWarningCreateNewWalletEvent } from './onboardingRecoveryWarningCreateNewWalletEvent';
 export { suiteSyncLabelCreatedEvent } from './suiteSyncLabelCreatedEvent';
+export {
+    type TransactionCreatedEventAction,
+    transactionCreatedEvent,
+} from './transactionCreatedEvent';
 export { walletBalanceEvent } from './walletBalanceEvent';
 export {
     promoNoDeviceEshopCtaEvent,

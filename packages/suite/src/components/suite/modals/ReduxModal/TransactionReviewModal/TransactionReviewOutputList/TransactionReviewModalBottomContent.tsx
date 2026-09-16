@@ -27,7 +27,7 @@ import { type Deferred } from '@trezor/utils';
 
 import { useSelector } from 'src/hooks/suite';
 
-import { type TxInfoState, getTxType, hasTxValidityExpired } from '../utils';
+import { type TxInfoState, hasTxValidityExpired, selectTxType } from '../utils';
 
 const mapRbfTypeToReporting: Record<RbfTransactionType, TransactionCreatedEventAction> = {
     'bump-fee': 'replaced',
@@ -84,7 +84,7 @@ export const TransactionReviewModalBottomContent = ({
     const { options, selectedFee } = precomposedForm;
 
     const isBroadcastEnabled = options.includes('broadcast');
-    const txType = getTxType(txInfoState, precomposedForm);
+    const txType = useSelector(state => selectTxType(state, txInfoState, precomposedForm));
 
     const isCancelRbfAction = precomposedTx ? isRbfCancelTransaction(precomposedTx) : false;
 
