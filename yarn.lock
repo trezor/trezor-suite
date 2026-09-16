@@ -18974,6 +18974,7 @@ __metadata:
     "@types/w3c-web-usb": "npm:^1.0.14"
     jest: "npm:29.7.0"
     usb: "npm:^3.1.0"
+    usb-legacy: "npm:usb@2.17.0"
   peerDependencies:
     tslib: ^2.6.2
   languageName: unknown

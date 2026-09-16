@@ -55,6 +55,7 @@
         "ts-mixer",
         "tslib",
         "usb",
+        "usb-legacy",
         "varuint-bitcoin",
         "viem",
         "wif",
