@@ -100,6 +100,8 @@ const networkTypeMap: Record<string, NetworkSpecificDefault> = {
     // Testnet Eth
     tsep: networkSpecificDefaultEthereum,
     thod: networkSpecificDefaultEthereum,
+    arc: networkSpecificDefaultEthereum,
+    tarc: networkSpecificDefaultEthereum,
 
     // Solana
     sol: networkSpecificDefaultSolana,
