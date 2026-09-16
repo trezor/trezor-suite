@@ -38,7 +38,7 @@ export type AssetRow = {
     assetKey: AssetKey;
     symbol: NetworkSymbol;
     contractAddress: TokenAddress | undefined;
-    /** What the asset is across networks — ETH, USDC — for grouping the order by asset. */
+    /** What the asset is across networks — ETH, USDC — which orders holdings worth the same. */
     displaySymbol: string;
     cryptoBalance: BigNumber;
     tokenInfo: TokenInfo | undefined;
@@ -68,25 +68,16 @@ const settleRow = (next: AssetRow): AssetRow => {
 };
 
 /**
- * Orders the rows the way the design reads: the assets a wallet holds most of first, and every
- * network holding the same asset together underneath it — Ether on Ethereum next to Ether on
- * Arbitrum, however little of it is on either.
+ * Orders the rows by what each holding is worth, most valuable first — each line on its own, so a
+ * little Ether on Arbitrum ranks where its own value puts it and not behind the Ether on Ethereum.
+ *
+ * Holdings worth the same, and the rows with no rate to price them, keep a settled order by asset
+ * and network rather than whichever order the accounts happened to arrive in.
  */
-const compareRows = (
-    left: AssetRow,
-    right: AssetRow,
-    fiatValueByDisplaySymbol: Map<string, BigNumber>,
-) => {
-    const leftAssetValue = fiatValueByDisplaySymbol.get(left.displaySymbol) ?? ZERO_FIAT_VALUE;
-    const rightAssetValue = fiatValueByDisplaySymbol.get(right.displaySymbol) ?? ZERO_FIAT_VALUE;
-
-    return (
-        rightAssetValue.comparedTo(leftAssetValue) ||
-        left.displaySymbol.localeCompare(right.displaySymbol) ||
-        right.fiatValue.comparedTo(left.fiatValue) ||
-        left.symbol.localeCompare(right.symbol)
-    );
-};
+const compareRows = (left: AssetRow, right: AssetRow) =>
+    right.fiatValue.comparedTo(left.fiatValue) ||
+    left.displaySymbol.localeCompare(right.displaySymbol) ||
+    left.symbol.localeCompare(right.symbol);
 
 /**
  * Every asset the selected wallet holds, as one row per asset and network, ordered for display.
@@ -118,7 +109,6 @@ export const selectAssetFirstRows = createMemoizedSelector(
         }
 
         const rows: AssetRow[] = [];
-        const fiatValueByDisplaySymbol = new Map<string, BigNumber>();
 
         assetGroups.forEach((group, assetKey) => {
             const parts = parseAssetKey(assetKey);
@@ -165,15 +155,9 @@ export const selectAssetFirstRows = createMemoizedSelector(
                         }) ?? ZERO_FIAT_VALUE,
                 }),
             );
-            fiatValueByDisplaySymbol.set(
-                displaySymbol,
-                (fiatValueByDisplaySymbol.get(displaySymbol) ?? ZERO_FIAT_VALUE).plus(fiatValue),
-            );
         });
 
-        return returnStableArrayIfEmpty(
-            rows.sort((left, right) => compareRows(left, right, fiatValueByDisplaySymbol)),
-        );
+        return returnStableArrayIfEmpty(rows.sort(compareRows));
     },
 );
 

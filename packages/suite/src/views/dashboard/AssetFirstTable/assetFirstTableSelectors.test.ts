@@ -21,7 +21,7 @@ type MockAccountParams = {
     index?: number;
     balance?: string;
     isVisible?: boolean;
-    tokens?: { contract: TokenAddress; balance: string }[];
+    tokens?: { contract: TokenAddress; balance: string; symbol?: string }[];
 };
 
 const mockAccount = ({
@@ -87,7 +87,10 @@ describe('the rows the table is given', () => {
     it('lists one key per asset and network', () => {
         const state = createState({
             accounts: [
-                mockAccount({ symbol: 'eth', tokens: [{ contract: USDC_ON_ETH, balance: '10' }] }),
+                mockAccount({
+                    symbol: 'eth',
+                    tokens: [{ symbol: 'usdc', contract: USDC_ON_ETH, balance: '10' }],
+                }),
                 mockAccount({ symbol: 'btc', index: 1 }),
             ],
         });
@@ -101,21 +104,19 @@ describe('the rows the table is given', () => {
         );
     });
 
-    it('keeps the networks holding one asset together, most valuable asset first', () => {
-        // What the design reads like: the asset a wallet holds most of at the top, and every
-        // network it is held on directly underneath — not interleaved with the next asset.
+    it('puts the most valuable holding first, each network on its own', () => {
         const state = createState({
             accounts: [
                 mockAccount({
                     symbol: 'eth',
                     balance: '2',
-                    tokens: [{ contract: USDC_ON_ETH, balance: '2400' }],
+                    tokens: [{ symbol: 'usdc', contract: USDC_ON_ETH, balance: '2400' }],
                 }),
                 mockAccount({
                     symbol: 'pol',
                     index: 1,
                     balance: '10',
-                    tokens: [{ contract: USDC_ON_POL, balance: '720' }],
+                    tokens: [{ symbol: 'usdc', contract: USDC_ON_POL, balance: '720' }],
                 }),
             ],
             rates: {
@@ -127,12 +128,65 @@ describe('the rows the table is given', () => {
         });
 
         expect(selectAssetFirstRowKeys(state)).toEqual([
-            // ETH, 6000
+            // ETH on Ethereum, 6000
             `${ALICE}/eth/`,
-            // USDC, 2400 + 720, with the bigger holding first
+            // USDC on Ethereum, 2400
             `${ALICE}/eth/${USDC_ON_ETH}`,
+            // USDC on Polygon, 720
             `${ALICE}/pol/${USDC_ON_POL}`,
-            // POL, 5
+            // POL on Polygon, 5
+            `${ALICE}/pol/`,
+        ]);
+    });
+
+    it('ranks a small holding by its own value, not by what the asset is worth in total', () => {
+        const state = createState({
+            accounts: [
+                mockAccount({
+                    symbol: 'eth',
+                    balance: '1',
+                    tokens: [{ symbol: 'usdc', contract: USDC_ON_ETH, balance: '5000' }],
+                }),
+                mockAccount({
+                    symbol: 'pol',
+                    index: 1,
+                    balance: '0',
+                    tokens: [{ symbol: 'usdc', contract: USDC_ON_POL, balance: '1' }],
+                }),
+            ],
+            rates: {
+                ...mockRate('eth', 2000),
+                ...mockRate('pol', 0.5),
+                ...mockRate('eth', 1, USDC_ON_ETH),
+                ...mockRate('pol', 1, USDC_ON_POL),
+            },
+        });
+
+        expect(selectAssetFirstRowKeys(state)).toEqual([
+            // USDC on Ethereum, 5000
+            `${ALICE}/eth/${USDC_ON_ETH}`,
+            // ETH on Ethereum, 2000 — above the dollar of USDC, though USDC is worth more in total
+            `${ALICE}/eth/`,
+            // USDC on Polygon, 1
+            `${ALICE}/pol/${USDC_ON_POL}`,
+            // POL on Polygon, nothing
+            `${ALICE}/pol/`,
+        ]);
+    });
+
+    it('settles holdings worth the same by asset and network', () => {
+        const state = createState({
+            accounts: [
+                mockAccount({ symbol: 'pol', balance: '2' }),
+                mockAccount({ symbol: 'eth', index: 1, balance: '2' }),
+                mockAccount({ symbol: 'btc', index: 2, balance: '2' }),
+            ],
+            rates: { ...mockRate('eth', 1), ...mockRate('pol', 1), ...mockRate('btc', 1) },
+        });
+
+        expect(selectAssetFirstRowKeys(state)).toEqual([
+            `${ALICE}/btc/`,
+            `${ALICE}/eth/`,
             `${ALICE}/pol/`,
         ]);
     });
@@ -151,7 +205,7 @@ describe('the rows the table is given', () => {
             accounts: [
                 mockAccount({
                     tokens: [
-                        { contract: USDC_ON_ETH, balance: '10' },
+                        { symbol: 'usdc', contract: USDC_ON_ETH, balance: '10' },
                         { contract: UNKNOWN_TOKEN, balance: '999999' },
                     ],
                 }),
@@ -163,7 +217,9 @@ describe('the rows the table is given', () => {
 
     it('leaves out a token the user hid', () => {
         const state = createState({
-            accounts: [mockAccount({ tokens: [{ contract: USDC_ON_ETH, balance: '10' }] })],
+            accounts: [
+                mockAccount({ tokens: [{ symbol: 'usdc', contract: USDC_ON_ETH, balance: '10' }] }),
+            ],
             hiddenTokens: [USDC_ON_ETH],
         });
 
