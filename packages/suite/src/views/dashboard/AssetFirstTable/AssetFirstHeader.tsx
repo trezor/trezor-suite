@@ -4,7 +4,7 @@ import { useServices } from '@suite-common/dependency-injection';
 import { useFormatters } from '@suite-common/formatters';
 import { selectDispatch } from '@suite-common/redux-utils';
 import { getTradingPrefilledFromAccountData, tradingActions } from '@suite-common/trading';
-import { selectAccountByKey, selectBaseCurrency } from '@suite-common/wallet-core';
+import { type AssetKey, selectAccountByKey, selectBaseCurrency } from '@suite-common/wallet-core';
 import { type Account, asBaseCurrencyAmount } from '@suite-common/wallet-types';
 import { Button, Column, Row, Skeleton, Text } from '@trezor/components';
 import { ArrowDownIcon, ArrowUpIcon, ArrowsLeftRightIcon } from '@trezor/icons';
@@ -13,10 +13,7 @@ import { type BigNumber } from '@trezor/utils';
 import { FiatHeader } from 'src/components/wallet/FiatHeader';
 import { useDiscovery, useSelector } from 'src/hooks/suite';
 
-import {
-    selectAssetFirstLargestHoldingAccountKey,
-    selectAssetFirstTotals,
-} from './assetFirstTableSelectors';
+import { selectAssetFirstAccountKey, selectAssetFirstTotals } from './assetFirstTableSelectors';
 
 type WeekChangeProps = {
     weekChange: BigNumber;
@@ -119,10 +116,20 @@ const AssetFirstActions = ({ account }: AssetFirstActionProps) => {
     );
 };
 
-export const AssetFirstHeader = () => {
+type AssetFirstHeaderProps = {
+    /** The assets the total is over — the same list the table below is given. */
+    assetKeys: readonly AssetKey[];
+};
+
+export const AssetFirstHeader = ({ assetKeys }: AssetFirstHeaderProps) => {
     const baseCurrencyCode = useSelector(selectBaseCurrency);
-    const { fiatValue, weekChange } = useSelector(selectAssetFirstTotals);
-    const largestHoldingAccountKey = useSelector(selectAssetFirstLargestHoldingAccountKey);
+    const { fiatValue, weekChange } = useSelector(state =>
+        selectAssetFirstTotals(state, assetKeys),
+    );
+    // The actions are account-scoped, so they open on the wallet's largest holding — the first row.
+    const largestHoldingAccountKey = useSelector(state =>
+        selectAssetFirstAccountKey(state, assetKeys[0]),
+    );
     const largestHoldingAccount = useSelector(state =>
         selectAccountByKey(state, largestHoldingAccountKey ?? null),
     );

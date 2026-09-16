@@ -2,7 +2,11 @@ import { type Account, type TokenAddress } from '@suite-common/wallet-types';
 import { getFiatRateKey } from '@suite-common/wallet-utils';
 import { type StaticSessionId } from '@trezor/device-utils';
 
-import { type AssetFirstTableState, selectAssetFirstTableKeys } from './assetFirstTableSelectors';
+import {
+    type AssetFirstTableState,
+    selectAssetFirstTableKeys,
+    selectAssetFirstTotals,
+} from './assetFirstTableSelectors';
 
 const ALICE = 'aliceWallet@device:0' as StaticSessionId;
 const BOB = 'bobWallet@device:1' as StaticSessionId;
@@ -209,5 +213,33 @@ describe('selectAssetFirstTableKeys', () => {
         const state = createState({ accounts: [mockAccount()] });
 
         expect(selectAssetFirstTableKeys(state)).toBe(selectAssetFirstTableKeys(state));
+    });
+});
+
+describe('selectAssetFirstTotals', () => {
+    const state = createState({
+        accounts: [
+            mockAccount({ symbol: 'eth', balance: '2' }),
+            mockAccount({ symbol: 'btc', index: 1, balance: '0.5' }),
+        ],
+        rates: { ...mockRate('eth', 3000), ...mockRate('btc', 100000) },
+    });
+
+    it('adds up the assets it is given', () => {
+        expect(
+            selectAssetFirstTotals(state, selectAssetFirstTableKeys(state)).fiatValue.toFixed(),
+        ).toBe('56000');
+    });
+
+    it('follows a shorter list, so a filtered table and its total cannot disagree', () => {
+        const largestHoldingOnly = selectAssetFirstTableKeys(state).slice(0, 1);
+
+        expect(selectAssetFirstTotals(state, largestHoldingOnly).fiatValue.toFixed()).toBe('50000');
+    });
+
+    it('says nothing about a week ago when no rate for it is known', () => {
+        expect(
+            selectAssetFirstTotals(state, selectAssetFirstTableKeys(state)).weekChange,
+        ).toBeUndefined();
     });
 });

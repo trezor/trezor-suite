@@ -12,7 +12,7 @@ import { type StaticSessionId } from '@trezor/device-utils';
 import { type AppState } from 'src/reducers/store';
 import { renderWithProviders } from 'src/support/test-utils/hooksHelper';
 
-import { AssetFirstTable } from './AssetFirstTable';
+import { AssetFirstDashboard } from './AssetFirstDashboard';
 import { mockInitialAppState } from '../../../../mocks/mockInitialAppState';
 
 const DEVICE_STATE = '1stTestnetAddress@device_id:0' as StaticSessionId;
@@ -66,14 +66,14 @@ const getInitialState = (): AppState => ({
     },
 });
 
-describe('AssetFirstTable', () => {
+describe('the asset-first table', () => {
     it('shows one row per asset and network, with the network it is held on', () => {
         const root = createTestCompositionRoot({
             extra: { services: {} },
             preloadedState: getInitialState(),
         });
 
-        renderWithProviders(root, <AssetFirstTable />);
+        renderWithProviders(root, <AssetFirstDashboard />);
 
         expect(screen.getByText('USD Coin')).toBeInTheDocument();
         // The coin's own row, named after the asset rather than after the network it sits on.
@@ -90,7 +90,7 @@ describe('AssetFirstTable', () => {
             preloadedState: getInitialState(),
         });
 
-        renderWithProviders(root, <AssetFirstTable />);
+        renderWithProviders(root, <AssetFirstDashboard />);
 
         const assetNames = screen
             .getAllByTestId('@dashboard/asset-first/name')

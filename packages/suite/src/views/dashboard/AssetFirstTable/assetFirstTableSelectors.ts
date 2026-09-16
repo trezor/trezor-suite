@@ -16,7 +16,7 @@ import {
 } from '@suite-common/wallet-core';
 import { type TokenAddress } from '@suite-common/wallet-types';
 import { getFiatRateKey, toFiatCurrency } from '@suite-common/wallet-utils';
-import { BigNumber } from '@trezor/utils';
+import { BigNumber, isNotNullOrUndefined } from '@trezor/utils';
 
 import { getAssetDisplaySymbol, sumAssetHoldings } from './assetFirstTableUtils';
 
@@ -154,22 +154,21 @@ export const selectAssetFirstTableKeys = createMemoizedSelector(
  * The account behind the wallet's largest holding — what the page's Swap, Receive and Send open on,
  * since those routes are account-scoped and the header is not.
  */
-export const selectAssetFirstLargestHoldingAccountKey = createMemoizedSelector(
+/**
+ * The account behind one asset — what a page's Swap, Receive and Send open on, since those routes
+ * are account-scoped and an asset is not.
+ */
+export const selectAssetFirstAccountKey = createMemoizedSelector(
     [
-        selectAssetFirstRows,
         (state: AssetFirstTableState) => assetHoldingsIndex.read(state).groups.byAsset,
+        (_state: AssetFirstTableState, assetKey: AssetKey | undefined) => assetKey,
     ],
-    (rows, assetGroups) => {
-        const [largestHolding] = rows;
-
-        if (largestHolding === undefined) {
-            return undefined;
-        }
-
-        return assetGroups
-            .get(largestHolding.assetKey)
-            ?.entities.find((holding: AssetHolding) => holding.isAccountVisible)?.accountKey;
-    },
+    (assetGroups, assetKey) =>
+        assetKey === undefined
+            ? undefined
+            : assetGroups
+                  .get(assetKey)
+                  ?.entities.find((holding: AssetHolding) => holding.isAccountVisible)?.accountKey,
 );
 
 export type AssetFirstTotals = {
@@ -181,19 +180,33 @@ export type AssetFirstTotals = {
     weekChange: BigNumber | undefined;
 };
 
+const selectAssetFirstRowsByKey = createMemoizedSelector(
+    [selectAssetFirstRows],
+    (rows): ReadonlyMap<AssetKey, AssetRow> => new Map(rows.map(row => [row.assetKey, row])),
+);
+
 /**
- * What the wallet is worth, added up from the rows the table shows.
+ * What the assets in `assetKeys` are worth, together.
  *
- * Deliberately the same arithmetic as the rows rather than `useTotalFiatBalance`, so the number at
- * the top of the page is the sum of the numbers underneath it.
+ * Takes the keys rather than deciding for itself which assets count, so the total is over exactly
+ * the rows the table was given — one list, one answer. A filter applied to that list moves the
+ * total with it, and the two cannot drift apart.
+ *
+ * Pass the filtered list rather than what is mounted: a table that paginates or virtualizes still
+ * holds the assets it is not showing right now.
  */
 export const selectAssetFirstTotals = createMemoizedSelector(
-    [selectAssetFirstRows],
-    (rows): AssetFirstTotals => {
+    [
+        selectAssetFirstRowsByKey,
+        (_state: AssetFirstTableState, assetKeys: readonly AssetKey[]) => assetKeys,
+    ],
+    (rowsByKey, assetKeys): AssetFirstTotals => {
+        const rows = assetKeys
+            .map(assetKey => rowsByKey.get(assetKey))
+            .filter(isNotNullOrUndefined);
         const fiatValue = rows.reduce((total, row) => total.plus(row.fiatValue), ZERO_FIAT_VALUE);
-        const hasWeekAgoRates = rows.some(row => row.weekAgoFiatValue.gt(0));
 
-        if (!hasWeekAgoRates) {
+        if (!rows.some(row => row.weekAgoFiatValue.gt(0))) {
             return { fiatValue, weekChange: undefined };
         }
 

@@ -1,13 +1,12 @@
 import styled from 'styled-components';
 
 import { Translation } from '@suite/intl';
+import { type AssetKey } from '@suite-common/wallet-core';
 import { Table } from '@trezor/components';
 
 import { HORIZONTAL_LAYOUT_PADDINGS } from 'src/constants/suite/layout';
-import { useSelector } from 'src/hooks/suite';
 
 import { AssetFirstRow } from './AssetFirstRow';
-import { selectAssetFirstTableKeys } from './assetFirstTableSelectors';
 import { ASSET_FIRST_CELL_PADDING } from './assetFirstTableUtils';
 
 /**
@@ -30,9 +29,11 @@ const FullWidthTable = styled.div`
  *
  * Behind the `asset-first-home-table` experimental feature.
  */
-export const AssetFirstTable = () => {
-    const assetKeys = useSelector(selectAssetFirstTableKeys);
+type AssetFirstTableProps = {
+    assetKeys: readonly AssetKey[];
+};
 
+export const AssetFirstTable = ({ assetKeys }: AssetFirstTableProps) => {
     if (assetKeys.length === 0) {
         return null;
     }
