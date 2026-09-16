@@ -1,5 +1,9 @@
 # Storage changelog
 
+## 26.10.0.2
+
+- recreate the `tokenManagement` store when an earlier failed upgrade left it missing
+
 ## 26.10.0
 
 - add `earnOnboarding` store (confirmed earn opportunities per account key)
