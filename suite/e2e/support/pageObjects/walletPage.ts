@@ -1,6 +1,6 @@
 import { Locator, Page, expect } from '@playwright/test';
 
-import type { NetworkSymbol } from '@suite-common/wallet-config';
+import { type NetworkSymbol, asNetworkSymbol } from '@suite-common/wallet-config';
 import { isTestnet } from '@suite-common/wallet-utils';
 
 import { step } from '../common';
@@ -180,7 +180,7 @@ export class WalletPage {
     }
 
     accountButton = ({
-        symbol = 'btc',
+        symbol = asNetworkSymbol('btc'),
         type = 'normal',
         atIndex = 0,
         subAccount,
@@ -189,7 +189,11 @@ export class WalletPage {
             `@account-menu/${symbol}/${type}/${atIndex}${subAccount ? `/${subAccount}` : ''}`,
         );
 
-    accountLabel = ({ symbol = 'btc', type = 'normal', atIndex = 0 }: WalletParams = {}): Locator =>
+    accountLabel = ({
+        symbol = asNetworkSymbol('btc'),
+        type = 'normal',
+        atIndex = 0,
+    }: WalletParams = {}): Locator =>
         this.page.getByTestId(`@account-menu/${symbol}/${type}/${atIndex}/label`);
 
     @step()

@@ -2,6 +2,7 @@ import { type NetworksRootState } from '@suite-common/networks';
 import { mockNetworksState } from '@suite-common/networks/mocks';
 import { type SuiteSyncAccount, createSuiteSyncAccountId } from '@suite-common/suite-sync-storage';
 import { mockSuiteDevice } from '@suite-common/suite-types/mocks';
+import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { mockGetSupportedNetworks } from '@suite-common/wallet-config/mocks';
 import { initialWalletSettingsState } from '@suite-common/wallet-core';
 import { type Account, asAccountDescriptor } from '@suite-common/wallet-types';
@@ -30,7 +31,7 @@ const selectedDevice = mockSuiteDevice({
 });
 
 const btcDefaultAccount = mockWalletAccount({
-    symbol: 'btc',
+    symbol: asNetworkSymbol('btc'),
     descriptor: asAccountDescriptor('btcdefault'),
     deviceState: SELECTED_DEVICE_STATIC_SESSION_ID,
     accountType: 'normal',
@@ -39,7 +40,7 @@ const btcDefaultAccount = mockWalletAccount({
 });
 
 const btcTaprootAccount = mockWalletAccount({
-    symbol: 'btc',
+    symbol: asNetworkSymbol('btc'),
     descriptor: asAccountDescriptor('btctaproot'),
     deviceState: SELECTED_DEVICE_STATIC_SESSION_ID,
     accountType: 'taproot',
@@ -48,7 +49,7 @@ const btcTaprootAccount = mockWalletAccount({
 });
 
 const btcSecondDefaultAccount = mockWalletAccount({
-    symbol: 'btc',
+    symbol: asNetworkSymbol('btc'),
     descriptor: asAccountDescriptor('btcseconddefault'),
     deviceState: SELECTED_DEVICE_STATIC_SESSION_ID,
     accountType: 'normal',
@@ -57,7 +58,7 @@ const btcSecondDefaultAccount = mockWalletAccount({
 });
 
 const ethAccount = mockWalletAccount({
-    symbol: 'eth',
+    symbol: asNetworkSymbol('eth'),
     descriptor: asAccountDescriptor('ethdefault'),
     deviceState: SELECTED_DEVICE_STATIC_SESSION_ID,
     accountType: 'normal',
@@ -67,7 +68,7 @@ const ethAccount = mockWalletAccount({
 
 const adaAccount = mockWalletAccount(
     {
-        symbol: 'ada',
+        symbol: asNetworkSymbol('ada'),
         descriptor: asAccountDescriptor('adadefault'),
         deviceState: SELECTED_DEVICE_STATIC_SESSION_ID,
         accountType: 'normal',
@@ -78,7 +79,7 @@ const adaAccount = mockWalletAccount(
 );
 
 const hiddenLtcAccount = mockWalletAccount({
-    symbol: 'ltc',
+    symbol: asNetworkSymbol('ltc'),
     descriptor: asAccountDescriptor('ltchidden'),
     deviceState: SELECTED_DEVICE_STATIC_SESSION_ID,
     accountType: 'normal',
@@ -88,7 +89,7 @@ const hiddenLtcAccount = mockWalletAccount({
 });
 
 const otherDeviceBtcAccount = mockWalletAccount({
-    symbol: 'btc',
+    symbol: asNetworkSymbol('btc'),
     descriptor: asAccountDescriptor('btcotherdevice'),
     deviceState: OTHER_DEVICE_STATIC_SESSION_ID,
     accountType: 'normal',
@@ -120,7 +121,12 @@ const createState = (accounts: Account[]): NativeAccountsRootState & NetworksRoo
         accounts,
         settings: {
             ...initialWalletSettingsState,
-            enabledNetworks: ['btc', 'eth', 'ada', 'ltc'],
+            enabledNetworks: [
+                asNetworkSymbol('btc'),
+                asNetworkSymbol('eth'),
+                asNetworkSymbol('ada'),
+                asNetworkSymbol('ltc'),
+            ],
         },
         fiat: {
             current: {},
@@ -218,14 +224,18 @@ describe('selectFilteredDeviceAccountListRows', () => {
     });
 
     it('combines network symbol filtering with text search', () => {
-        expect(selectFilteredDeviceAccountListRows(state, 'daily', false, ['btc'])).toEqual([
-            { accountKey: btcDefaultAccount.key, isFirst: true, isLast: true },
-        ]);
-        expect(selectFilteredDeviceAccountListRows(state, 'daily', false, ['eth'])).toEqual([]);
+        expect(
+            selectFilteredDeviceAccountListRows(state, 'daily', false, [asNetworkSymbol('btc')]),
+        ).toEqual([{ accountKey: btcDefaultAccount.key, isFirst: true, isLast: true }]);
+        expect(
+            selectFilteredDeviceAccountListRows(state, 'daily', false, [asNetworkSymbol('eth')]),
+        ).toEqual([]);
     });
 
     it('excludes hidden accounts and accounts of other devices', () => {
-        expect(selectFilteredDeviceAccountListRows(state, '', false, ['ltc'])).toEqual([]);
+        expect(
+            selectFilteredDeviceAccountListRows(state, '', false, [asNetworkSymbol('ltc')]),
+        ).toEqual([]);
     });
 
     it('keeps the complete data array stable when account content changes without structural changes', () => {

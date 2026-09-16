@@ -1,9 +1,12 @@
+import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { TestStream } from '@trezor/e2e-utils';
 
 import { AccountLabelId } from '../../../support/enums/accountLabelId';
 import { expect, test } from '../../../support/fixtures';
 import { MetadataProvider } from '../../../support/mocks/metadataMock';
 import { createTestAnnotation } from '../../../support/reporters/annotations';
+
+const btcSymbol = asNetworkSymbol('btc');
 
 // Metadata is by default disabled, this means, that application does not try to generate master key and connect to cloud.
 // Hovering over fields that may be labeled shows "add label" button upon which is clicked, Suite initiates metadata flow
@@ -19,15 +22,15 @@ test.describe('Account metadata', { tag: ['@webOnly', '@T3W1', '@T3T1'] }, () =>
         { annotation: createTestAnnotation({ stream: TestStream.Wallet }) },
         async ({ page, onboardingPage, dashboardPage, metadataPage, settingsPage, walletPage }) => {
             await onboardingPage.completeOnboarding();
-            await settingsPage.changeNetworks({ enableNetworks: ['btc'] });
+            await settingsPage.changeNetworks({ enableNetworks: [btcSymbol] });
             await metadataPage.enableLegacyLabeling(MetadataProvider.DROPBOX);
 
             await test.step('Open account and initialize metadata flow', async () => {
                 await walletPage
-                    .accountLabel({ symbol: 'btc', type: 'normal', atIndex: 0 })
+                    .accountLabel({ symbol: btcSymbol, type: 'normal', atIndex: 0 })
                     .click();
                 await expect(
-                    walletPage.accountLabel({ symbol: 'btc', type: 'normal', atIndex: 0 }),
+                    walletPage.accountLabel({ symbol: btcSymbol, type: 'normal', atIndex: 0 }),
                 ).toHaveText('Bitcoin #1');
 
                 // wait until account page is fully loaded
@@ -39,7 +42,7 @@ test.describe('Account metadata', { tag: ['@webOnly', '@T3W1', '@T3T1'] }, () =>
                 await metadataPage.account.metadataInput.fill('cool new label');
                 await page.keyboard.press('Enter');
                 await expect(
-                    walletPage.accountLabel({ symbol: 'btc', type: 'normal', atIndex: 0 }),
+                    walletPage.accountLabel({ symbol: btcSymbol, type: 'normal', atIndex: 0 }),
                 ).toHaveText('cool new label');
                 await metadataPage.account.successIconIsVisible(AccountLabelId.BitcoinDefault1);
             });
@@ -50,7 +53,7 @@ test.describe('Account metadata', { tag: ['@webOnly', '@T3W1', '@T3T1'] }, () =>
                     label: 'even cooler',
                 });
                 await expect(
-                    walletPage.accountLabel({ symbol: 'btc', type: 'normal', atIndex: 0 }),
+                    walletPage.accountLabel({ symbol: btcSymbol, type: 'normal', atIndex: 0 }),
                 ).toHaveText('even cooler');
             });
 
@@ -59,7 +62,7 @@ test.describe('Account metadata', { tag: ['@webOnly', '@T3W1', '@T3T1'] }, () =>
                 await metadataPage.account.metadataInput.fill('bcash is true bitcoin');
                 await page.keyboard.press('Escape');
                 await expect(
-                    walletPage.accountLabel({ symbol: 'btc', type: 'normal', atIndex: 0 }),
+                    walletPage.accountLabel({ symbol: btcSymbol, type: 'normal', atIndex: 0 }),
                 ).toHaveText('even cooler');
             });
 
@@ -68,11 +71,11 @@ test.describe('Account metadata', { tag: ['@webOnly', '@T3W1', '@T3T1'] }, () =>
                 await searchInput.click();
                 await searchInput.fill('even cooler');
                 await expect(
-                    walletPage.accountButton({ symbol: 'btc', type: 'normal', atIndex: 0 }),
+                    walletPage.accountButton({ symbol: btcSymbol, type: 'normal', atIndex: 0 }),
                 ).toBeVisible();
                 await searchInput.fill('non matching query');
                 await expect(
-                    walletPage.accountButton({ symbol: 'btc', type: 'normal', atIndex: 0 }),
+                    walletPage.accountButton({ symbol: btcSymbol, type: 'normal', atIndex: 0 }),
                 ).toBeHidden();
                 await searchInput.clear();
             });
@@ -82,7 +85,7 @@ test.describe('Account metadata', { tag: ['@webOnly', '@T3W1', '@T3T1'] }, () =>
                 await metadataPage.account.metadataInput.clear();
                 await page.keyboard.press('Enter');
                 await expect(
-                    walletPage.accountLabel({ symbol: 'btc', type: 'normal', atIndex: 0 }),
+                    walletPage.accountLabel({ symbol: btcSymbol, type: 'normal', atIndex: 0 }),
                 ).toHaveText('Bitcoin #1');
             });
 
@@ -102,12 +105,14 @@ test.describe('Account metadata', { tag: ['@webOnly', '@T3W1', '@T3T1'] }, () =>
                 await walletPage.addAccountButton.click();
                 await expect(walletPage.addAccountNetworkSearchInput).toBeVisible();
                 await walletPage.addAccountNetworkSearchInput.fill('btc');
-                await expect(walletPage.addAccountNetworkButton('eth')).toBeHidden();
-                await walletPage.addAccountNetworkButton('btc').click();
+                await expect(
+                    walletPage.addAccountNetworkButton(asNetworkSymbol('eth')),
+                ).toBeHidden();
+                await walletPage.addAccountNetworkButton(btcSymbol).click();
                 await walletPage.addAccountConfirmButton.click();
                 await walletPage.closeAddAccountModal();
                 await walletPage.openAccount({
-                    symbol: 'btc',
+                    symbol: btcSymbol,
                     type: 'normal',
                     atIndex: newAccountIndex,
                 });
@@ -117,7 +122,7 @@ test.describe('Account metadata', { tag: ['@webOnly', '@T3W1', '@T3T1'] }, () =>
                 });
                 await expect(
                     walletPage.accountLabel({
-                        symbol: 'btc',
+                        symbol: btcSymbol,
                         type: 'normal',
                         atIndex: newAccountIndex,
                     }),

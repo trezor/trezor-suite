@@ -21,7 +21,7 @@ import { type AccountsRootState } from '../../accounts/accountsReducer';
 import { selectAccountByKey } from '../../accounts/accountsSelectors';
 import {
     type BlockchainRootState,
-    selectNetworkBlockchainInfo,
+    selectBlockchainUrlBySymbol,
 } from '../../blockchain/blockchainReducer';
 import { selectConvertedNetworkFeeInfo } from '../../fees/feesReducer';
 import { type FeesRootState } from '../../fees/feesSelectors';
@@ -77,7 +77,7 @@ const resolveSolanaBlockchainUrl = async (
     state: BlockchainRootState,
     symbol: NetworkSymbol,
 ): Promise<string | undefined> => {
-    const connectedUrl = selectNetworkBlockchainInfo(state, symbol)?.url;
+    const connectedUrl = selectBlockchainUrlBySymbol(state, symbol);
     if (connectedUrl) return connectedUrl;
 
     const info = await TrezorConnect.blockchainGetInfo({ coin: asCoinSymbol(symbol) });

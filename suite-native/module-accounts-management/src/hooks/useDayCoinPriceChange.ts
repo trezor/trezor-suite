@@ -7,7 +7,7 @@ import {
     getFiatRatesForTimestamps,
 } from '@suite-common/fiat-services';
 import { useQuery } from '@suite-common/react-query';
-import { type NetworkSymbol } from '@suite-common/wallet-config';
+import { type NetworkSymbol, asNetworkSymbol } from '@suite-common/wallet-config';
 import {
     type BlockchainRootState,
     selectBaseCurrency,
@@ -49,7 +49,7 @@ export const useDayCoinPriceChange = ({
 }: UseDayCoinPriceChangeProps) => {
     const fiatCurrencyCode = useSelector(selectBaseCurrency);
     const isElectrumBackend = useSelector((state: BlockchainRootState) =>
-        selectIsElectrumBackendSelected(state, symbol ?? 'btc'),
+        selectIsElectrumBackendSelected(state, symbol ?? asNetworkSymbol('btc')),
     );
 
     // Block book does not have historical data for tokens of other networks than ETH.

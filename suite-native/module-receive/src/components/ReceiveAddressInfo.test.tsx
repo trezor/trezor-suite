@@ -1,3 +1,4 @@
+import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { getTranslation } from '@suite-native/intl';
 import { renderWithBasicProvider } from '@suite-native/test-utils';
 
@@ -6,7 +7,7 @@ import { ReceiveAddressInfo } from './ReceiveAddressInfo';
 describe('ReceiveAddressInfo', () => {
     it('shows the shared assets and tokens information for an Ethereum account', async () => {
         const { getByText } = await renderWithBasicProvider(
-            <ReceiveAddressInfo networkSymbol="eth" isTokenAddress={false} />,
+            <ReceiveAddressInfo networkSymbol={asNetworkSymbol('eth')} isTokenAddress={false} />,
         );
 
         expect(
@@ -18,7 +19,7 @@ describe('ReceiveAddressInfo', () => {
 
     it('shows the shared assets and tokens information for an Ethereum token', async () => {
         const { getByText } = await renderWithBasicProvider(
-            <ReceiveAddressInfo networkSymbol="eth" isTokenAddress />,
+            <ReceiveAddressInfo networkSymbol={asNetworkSymbol('eth')} isTokenAddress />,
         );
 
         expect(
@@ -30,7 +31,7 @@ describe('ReceiveAddressInfo', () => {
 
     it('does not show the shared assets and tokens information for a Bitcoin account', async () => {
         const { queryByText } = await renderWithBasicProvider(
-            <ReceiveAddressInfo networkSymbol="btc" isTokenAddress={false} />,
+            <ReceiveAddressInfo networkSymbol={asNetworkSymbol('btc')} isTokenAddress={false} />,
         );
 
         expect(
@@ -42,7 +43,7 @@ describe('ReceiveAddressInfo', () => {
 
     it('keeps the network-address information for tokens on other networks', async () => {
         const { getByText } = await renderWithBasicProvider(
-            <ReceiveAddressInfo networkSymbol="sol" isTokenAddress />,
+            <ReceiveAddressInfo networkSymbol={asNetworkSymbol('sol')} isTokenAddress />,
         );
 
         expect(
@@ -56,7 +57,7 @@ describe('ReceiveAddressInfo', () => {
 
     it('keeps the long-address information for Cardano', async () => {
         const { getByText } = await renderWithBasicProvider(
-            <ReceiveAddressInfo networkSymbol="ada" isTokenAddress={false} />,
+            <ReceiveAddressInfo networkSymbol={asNetworkSymbol('ada')} isTokenAddress={false} />,
         );
 
         expect(

@@ -3,7 +3,7 @@ import { type StateFromReducersMapObject } from '@reduxjs/toolkit';
 import { deviceInitialState } from '@suite-common/device';
 import { mockNetworksState } from '@suite-common/networks/mocks';
 import { type TrezorDevice } from '@suite-common/suite-types';
-import { type NetworkSymbol, getNetwork } from '@suite-common/wallet-config';
+import { type NetworkSymbol, asNetworkSymbol, getNetwork } from '@suite-common/wallet-config';
 import { mockGetSupportedNetworks } from '@suite-common/wallet-config/mocks';
 import { accountsInitialState, initialWalletSettingsState } from '@suite-common/wallet-core';
 import { featureFlagsInitialState } from '@suite-native/feature-flags';
@@ -74,8 +74,8 @@ const createTestStore = (
 describe('selectDiscoverySupportedNetworks', () => {
     it('uses the loaded network symbols as a memoization input', () => {
         const store = createTestStore();
-        const bitcoinSymbols: NetworkSymbol[] = ['btc'];
-        const ethereumSymbols: NetworkSymbol[] = ['eth'];
+        const bitcoinSymbols: NetworkSymbol[] = [asNetworkSymbol('btc')];
+        const ethereumSymbols: NetworkSymbol[] = [asNetworkSymbol('eth')];
 
         const bitcoinNetworks = selectDiscoverySupportedNetworks({
             ...store.getState(),

@@ -17,7 +17,7 @@ const BackendRow = ({
     blockchain: BlockchainState;
 }) => {
     const { dispatch } = useServices(selectDispatch);
-    const chain = blockchain[symbol];
+    const chain = blockchain[symbol as keyof typeof blockchain];
 
     return (
         <Box

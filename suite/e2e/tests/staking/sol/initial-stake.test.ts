@@ -1,3 +1,4 @@
+import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { TestCategory, TestPriority, TestStream } from '@trezor/e2e-utils';
 
 import { solStakingAccountFirst } from '../../../fixtures/staking/sol-staking-accounts';
@@ -19,7 +20,10 @@ test.describe('sol staking', { tag: ['@T3W1', '@T3T1'] }, () => {
         await onboardingPage.completeOnboarding();
         await settingsPage.changeNetworks({
             enableNetworks: [
-                { symbol: 'sol', backend: { type: 'solana', url: solanaStakingMock.url } },
+                {
+                    symbol: asNetworkSymbol('sol'),
+                    backend: { type: 'solana', url: solanaStakingMock.url },
+                },
             ],
         });
     });
@@ -37,7 +41,11 @@ test.describe('sol staking', { tag: ['@T3W1', '@T3T1'] }, () => {
         async ({ page, device, walletPage, stakingSection, devicePrompt, solanaStakingMock }) => {
             await test.step('Check staking dashboard', async () => {
                 await page.clock.install();
-                await walletPage.openAccount({ symbol: 'sol', type: 'normal', atIndex: 0 });
+                await walletPage.openAccount({
+                    symbol: asNetworkSymbol('sol'),
+                    type: 'normal',
+                    atIndex: 0,
+                });
                 await stakingSection.stakingTabButton.click();
                 await expect(stakingSection.startStakingButton).toBeVisible();
                 await expect(stakingSection.stakingDashboardCard).toBeHidden();

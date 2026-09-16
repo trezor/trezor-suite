@@ -17,6 +17,7 @@ import {
     type TradingRootStateWithDeviceAndAccounts,
     selectTradingProviderMetadata,
 } from '@suite-common/trading';
+import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { mockGetSupportedNetworks } from '@suite-common/wallet-config/mocks';
 import { type AccountsRootState } from '@suite-common/wallet-core';
 import { type Account, type AccountKey, asAccountDescriptor } from '@suite-common/wallet-types';
@@ -1477,7 +1478,7 @@ describe('commonSelectors', () => {
         it('should sort accounts by type', () => {
             const result = selectVisibleDeviceAccountsByNetworkSymbolSorted(
                 getStateWithAccounts(),
-                'btc',
+                asNetworkSymbol('btc'),
             );
 
             expect(result).toEqual([
@@ -1490,8 +1491,16 @@ describe('commonSelectors', () => {
         it('should be stable', () => {
             const preloadedState = getStateWithAccounts();
 
-            expect(selectVisibleDeviceAccountsByNetworkSymbolSorted(preloadedState, 'btc')).toBe(
-                selectVisibleDeviceAccountsByNetworkSymbolSorted(preloadedState, 'btc'),
+            expect(
+                selectVisibleDeviceAccountsByNetworkSymbolSorted(
+                    preloadedState,
+                    asNetworkSymbol('btc'),
+                ),
+            ).toBe(
+                selectVisibleDeviceAccountsByNetworkSymbolSorted(
+                    preloadedState,
+                    asNetworkSymbol('btc'),
+                ),
             );
         });
 
@@ -1499,8 +1508,16 @@ describe('commonSelectors', () => {
             const preloadedState = getStateWithAccounts();
             preloadedState.wallet.accounts = [];
 
-            expect(selectVisibleDeviceAccountsByNetworkSymbolSorted(preloadedState, 'btc')).toBe(
-                selectVisibleDeviceAccountsByNetworkSymbolSorted(preloadedState, 'btc'),
+            expect(
+                selectVisibleDeviceAccountsByNetworkSymbolSorted(
+                    preloadedState,
+                    asNetworkSymbol('btc'),
+                ),
+            ).toBe(
+                selectVisibleDeviceAccountsByNetworkSymbolSorted(
+                    preloadedState,
+                    asNetworkSymbol('btc'),
+                ),
             );
         });
     });

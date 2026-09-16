@@ -1,5 +1,6 @@
 import { useQuery } from '@suite-common/react-query';
 import { createTestCompositionRoot, renderHookWithStoreProvider } from '@suite-common/test-utils';
+import { asNetworkSymbol } from '@suite-common/wallet-config';
 import {
     type Account,
     type FeeInfo,
@@ -17,8 +18,8 @@ jest.mock('@suite-common/react-query', () => ({
 
 const mockUseQuery = useQuery as unknown as jest.Mock;
 
-const ethAccount = mockWalletAccount({ symbol: 'eth' }) as Account;
-const btcAccount = mockWalletAccount({ symbol: 'btc' }) as Account;
+const ethAccount = mockWalletAccount({ symbol: asNetworkSymbol('eth') }) as Account;
+const btcAccount = mockWalletAccount({ symbol: asNetworkSymbol('btc') }) as Account;
 const ethTx = {
     rbfParams: { type: 'ethereum' },
 } as unknown as WalletAccountTransactionWithRequiredRbfParams;

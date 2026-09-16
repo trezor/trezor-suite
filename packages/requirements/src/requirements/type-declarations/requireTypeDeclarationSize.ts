@@ -49,7 +49,6 @@ const KNOWN_DECLARATION_SIZE_VIOLATIONS = new Set<string>([
     'packages/connect-common/libDev/src/types/api/cardano/common.d.ts',
     'suite-common/calldata/libDev/src/calldata.d.ts',
     'suite-common/calldata/libDev/src/verifier.d.ts',
-    'suite-common/receive/libDev/src/receiveSlice.d.ts',
 ]);
 
 const isDeclarationFile = (fileName: string) => /\.d\.[cm]?ts$/.test(fileName);

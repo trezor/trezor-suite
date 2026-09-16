@@ -7,7 +7,7 @@ import { selectDeviceThunk, selectDevices, selectSelectedDevice } from '@suite-c
 import { selectDispatch } from '@suite-common/redux-utils';
 import {
     selectAccounts,
-    selectBlockchainState,
+    selectNetworkBlockchainInfo,
     selectTransactions,
 } from '@suite-common/wallet-core';
 import {
@@ -37,7 +37,7 @@ export const TransactionRenderer = ({ render: View, ...props }: TransactionRende
     const { symbol, descriptor, txid, device } = props.notification;
     const accounts = useSelector(selectAccounts);
     const transactions = useSelector(selectTransactions);
-    const blockchain = useSelector(selectBlockchainState);
+    const blockchain = useSelector(state => selectNetworkBlockchainInfo(state, symbol));
     const devices = useSelector(selectDevices);
     const currentDevice = useSelector(selectSelectedDevice);
     const routeName = useSelector(selectRouteName);
@@ -53,7 +53,7 @@ export const TransactionRenderer = ({ render: View, ...props }: TransactionRende
     const accountTxs = getAccountTransactions(account.key, transactions);
     const tx = findTransaction(txid, accountTxs);
     const accountDevice = findAccountDevice(account, devices);
-    const confirmations = tx ? getConfirmations(tx, blockchain[account.symbol].blockHeight) : 0;
+    const confirmations = tx ? getConfirmations(tx, blockchain.blockHeight) : 0;
     const destinationRoute = isStakeTypeTx(tx?.ethereumSpecific?.parsedData?.methodId)
         ? 'wallet-staking'
         : 'wallet-index';

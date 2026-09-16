@@ -1,6 +1,7 @@
 import { type Store } from '@reduxjs/toolkit';
 
 import { tradingExchangeActions } from '@suite-common/trading';
+import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { type AccountsRootState } from '@suite-common/wallet-core';
 import { mockAccountKey } from '@suite-common/wallet-types/mocks';
 import { events } from '@suite-native/analytics';
@@ -25,7 +26,7 @@ jest.mock('@react-navigation/native', () => ({
 }));
 
 const mockAnalyticsReport = jest.fn();
-const ethAccountKey = mockAccountKey({ symbol: 'eth', descriptor: 'eth1normal' });
+const ethAccountKey = mockAccountKey({ symbol: asNetworkSymbol('eth'), descriptor: 'eth1normal' });
 
 describe('ApprovalButton', () => {
     let store: Store<State>;

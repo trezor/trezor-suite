@@ -1,4 +1,5 @@
 import { mockSuiteDevice } from '@suite-common/suite-types/mocks';
+import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { asAccountDescriptor } from '@suite-common/wallet-types';
 import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
 
@@ -106,7 +107,7 @@ const setAccountMetadataKey: Fixture<
         },
         params: [
             mockWalletAccount({
-                symbol: 'btc',
+                symbol: asNetworkSymbol('btc'),
                 descriptor: asAccountDescriptor('btc1'),
                 metadata: {
                     key: 'xpub6CVKsQYXc9awxgV1tWbG4foDvdcnieK2JkbpPEBKB5WwAPKBZ1mstLbKVB4ov7QzxzjaxNK6EfmNY5Jsk2cG26EVcEkycGW4tchT2dyUhrx',

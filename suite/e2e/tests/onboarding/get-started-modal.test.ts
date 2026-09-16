@@ -1,10 +1,16 @@
-import { NetworkSymbol } from '@suite-common/wallet-config';
+import { NetworkSymbol, asNetworkSymbol } from '@suite-common/wallet-config';
 import { TestStream } from '@trezor/e2e-utils';
 
 import { expect, test } from '../../support/fixtures';
 import { createTestAnnotation } from '../../support/reporters/annotations';
 
-const networks: NetworkSymbol[] = ['btc', 'eth', 'pol', 'bsc', 'arb'];
+const networks: NetworkSymbol[] = [
+    asNetworkSymbol('btc'),
+    asNetworkSymbol('eth'),
+    asNetworkSymbol('pol'),
+    asNetworkSymbol('bsc'),
+    asNetworkSymbol('arb'),
+];
 
 test.describe('Onboarding', { tag: ['@T3W1', '@T3T1'] }, () => {
     test.beforeEach(async ({ onboardingPage }) => {

@@ -9,7 +9,7 @@ import type { IndexedDbDump } from '../../support/indexedDb';
 import type { TradingPage } from '../../support/pageObjects/trading/tradingPage';
 import { createTestAnnotation } from '../../support/reporters/annotations';
 
-const fundedSymbol = 'eth' as const;
+const fundedSymbol = asNetworkSymbol('eth');
 const insufficientCryptoAmount = '1000';
 const insufficientFiatAmount = '1000000';
 
@@ -26,8 +26,8 @@ const buyAssets: {
 }[] = [
     {
         label: 'ETH@ETH',
-        buy: { searchFilter: 'Ethereum', assetCryptoId: getCryptoId(asNetworkSymbol('eth')) },
-        receiveNetwork: 'eth',
+        buy: { searchFilter: 'Ethereum', assetCryptoId: getCryptoId(fundedSymbol) },
+        receiveNetwork: fundedSymbol,
         accountIndex: 0,
     },
     {
@@ -40,7 +40,7 @@ const buyAssets: {
                 'EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v',
             ),
         },
-        receiveNetwork: 'sol',
+        receiveNetwork: asNetworkSymbol('sol'),
         accountIndex: 1,
     },
     {
@@ -48,12 +48,9 @@ const buyAssets: {
         buy: {
             searchFilter: 'USDT',
             networkFilter: 'eth',
-            assetCryptoId: getCryptoId(
-                asNetworkSymbol('eth'),
-                '0xdac17f958d2ee523a2206206994597c13d831ec7',
-            ),
+            assetCryptoId: getCryptoId(fundedSymbol, '0xdac17f958d2ee523a2206206994597c13d831ec7'),
         },
-        receiveNetwork: 'eth',
+        receiveNetwork: fundedSymbol,
         accountIndex: 0,
     },
     {
@@ -61,9 +58,9 @@ const buyAssets: {
         buy: {
             searchFilter: 'ETH',
             networkFilter: 'eth',
-            assetCryptoId: getCryptoId(asNetworkSymbol('eth')),
+            assetCryptoId: getCryptoId(fundedSymbol),
         },
-        receiveNetwork: 'eth',
+        receiveNetwork: fundedSymbol,
         accountIndex: 0,
     },
 ];
@@ -111,7 +108,7 @@ test.describe('Trading - Swap inputs', { tag: ['@webOnly', '@noDevice'] }, () =>
             await test.step('Select sell asset USDC@ETH)', async () => {
                 await tradingPage.assetPicker.selectSellAsset({
                     searchFilter: 'USDC',
-                    networkSymbol: 'eth',
+                    networkSymbol: fundedSymbol,
                     tokenSymbol: 'USDC',
                 });
             });

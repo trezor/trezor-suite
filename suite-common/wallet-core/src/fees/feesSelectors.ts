@@ -1,3 +1,4 @@
+import { type LegacyNetworkSymbol } from '@suite-common/legacy-network-config';
 import { createWeakMapSelector } from '@suite-common/redux-utils';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { type FeeInfo, type FeesState } from '@suite-common/wallet-types';
@@ -14,5 +15,6 @@ export const selectFees = (state: FeesRootState) => state.wallet.fees;
  */
 export const selectRawNetworkFeeInfo = createMemoizedSelector(
     [selectFees, (_state: FeesRootState, symbol?: NetworkSymbol) => symbol],
-    (fees, symbol): FeeInfo | undefined => (symbol !== undefined ? fees[symbol]?.data : undefined),
+    (fees, symbol): FeeInfo | undefined =>
+        symbol !== undefined ? fees[symbol as LegacyNetworkSymbol]?.data : undefined,
 );

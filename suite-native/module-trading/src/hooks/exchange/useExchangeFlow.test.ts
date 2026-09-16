@@ -1,6 +1,7 @@
 import { type Store } from '@reduxjs/toolkit';
 
 import { type DeviceRootState } from '@suite-common/device';
+import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { type AccountsRootState } from '@suite-common/wallet-core';
 import { asAccountDescriptor } from '@suite-common/wallet-types';
 import { mockAccountKey } from '@suite-common/wallet-types/mocks';
@@ -214,7 +215,7 @@ describe('useExchangeFlow', () => {
 
             const tradingState = getInitializedTradingStateWithQuotes();
             tradingState.exchange.tradingAccountKey = mockAccountKey({
-                symbol: 'btc',
+                symbol: asNetworkSymbol('btc'),
                 descriptor: 'unknownAccount',
             });
             tradingState.exchange.receiveAccountKey = btc2Account.key;

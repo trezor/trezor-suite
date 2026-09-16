@@ -14,6 +14,7 @@ import {
     type Network,
     type NetworkConfigWithoutTestnets,
     type NetworkSymbol,
+    asNetworkSymbol,
     getDisplaySymbol,
     getMainnets,
     getNetwork,
@@ -100,19 +101,19 @@ export function createAssetOption({
     );
 
     if (isNativeToken) {
-        const networkConfig = network as NetworkConfigWithoutTestnets;
+        const networkConfig = network as unknown as NetworkConfigWithoutTestnets;
 
         return {
             isNativeToken: true,
             id: networkConfig.tradeCryptoId as CryptoId,
             name: networkConfig.name,
             coingeckoId: networkConfig.coingeckoId,
-            symbol: networkConfig.symbol,
+            symbol: asNetworkSymbol(networkConfig.symbol),
             displaySymbol: networkConfig.displaySymbol,
             contractAddress: contractAddress as TradingAssetOptionNativeToken['contractAddress'],
             networkName: networkConfig.name,
-            networkSymbol: networkConfig.symbol,
-            displaySymbolName: getNetworkDisplaySymbolName(networkConfig.symbol),
+            networkSymbol: asNetworkSymbol(networkConfig.symbol),
+            displaySymbolName: getNetworkDisplaySymbolName(asNetworkSymbol(networkConfig.symbol)),
         } satisfies TradingAssetOptionNativeToken;
     }
 
@@ -123,7 +124,7 @@ export function createAssetOption({
         return null;
     }
 
-    const networkConfig = getNetwork(networkSymbol) as NetworkConfigWithoutTestnets;
+    const networkConfig = getNetwork(networkSymbol) as unknown as NetworkConfigWithoutTestnets;
 
     const coinInfoSymbol = coinInfo.symbol;
 
@@ -136,7 +137,7 @@ export function createAssetOption({
         displaySymbol: getDisplaySymbol(coinInfoSymbol.toUpperCase(), contractAddress),
         contractAddress: contractAddress!,
         networkName: networkConfig.name,
-        networkSymbol: networkConfig.symbol,
+        networkSymbol: asNetworkSymbol(networkConfig.symbol),
         displaySymbolName: coinInfo.name,
     } satisfies TradingAssetOptionWithContractAddress;
 }
@@ -194,29 +195,29 @@ export function createAssetOption({
 export function createAssetNativeTokenOption(
     networkSymbol: NetworkConfigWithoutTestnets['symbol'],
 ): TradingAssetOptionNativeToken {
-    const network = getNetwork(networkSymbol) as NetworkConfigWithoutTestnets;
+    const network = getNetwork(networkSymbol) as unknown as NetworkConfigWithoutTestnets;
 
     return {
         isNativeToken: true,
-        id: getCryptoId(networkSymbol),
+        id: getCryptoId(asNetworkSymbol(networkSymbol)),
         name: network.name,
         coingeckoId: network.coingeckoId,
-        symbol: networkSymbol,
+        symbol: asNetworkSymbol(networkSymbol),
         displaySymbol: network.displaySymbol,
         contractAddress: null,
         networkName: network.name,
-        networkSymbol: network.symbol,
-        displaySymbolName: getNetworkDisplaySymbolName(network.symbol),
+        networkSymbol: asNetworkSymbol(network.symbol),
+        displaySymbolName: getNetworkDisplaySymbolName(asNetworkSymbol(network.symbol)),
     };
 }
 
 export function createAssetTokenOption<
     Token extends Pick<TokenInfo, 'contract' | 'symbol' | 'name'>,
 >(networkSymbol: NetworkSymbol, token: Token): TradingAssetOptionWithContractAddress {
-    const network = getNetwork(networkSymbol) as NetworkConfigWithoutTestnets;
+    const network = getNetwork(networkSymbol) as unknown as NetworkConfigWithoutTestnets;
 
     return {
-        id: getCryptoId(networkSymbol, token.contract),
+        id: getCryptoId(asNetworkSymbol(networkSymbol), token.contract),
         coingeckoId: network.coingeckoId,
 
         isNativeToken: false,

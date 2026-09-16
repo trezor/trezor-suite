@@ -1,5 +1,6 @@
 // Hack: direct import to prevent some nasty import cascade resulting in error while importing icons
 import * as METADATA_LABELING from '@suite/metadata/src/metadataLabelingConstants';
+import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { TestStream } from '@trezor/e2e-utils';
 
 import { expect, test } from '../../../support/fixtures';
@@ -34,7 +35,7 @@ test.describe('Account metadata', { tag: ['@webOnly', '@T3W1', '@T3T1'] }, () =>
                 );
 
                 await onboardingPage.completeOnboarding();
-                await settingsPage.changeNetworks({ enableNetworks: ['btc'] });
+                await settingsPage.changeNetworks({ enableNetworks: [asNetworkSymbol('btc')] });
                 await metadataPage.enableLegacyLabeling(p.provider);
                 await page.getByTestId('@account-menu/btc/normal/0/label').click();
                 await expect(page.getByTestId('@account-menu/btc/normal/0/label')).toHaveText(

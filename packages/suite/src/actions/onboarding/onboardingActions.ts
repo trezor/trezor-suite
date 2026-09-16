@@ -24,6 +24,7 @@ import {
 } from '@suite-common/device';
 import { type WithServices } from '@suite-common/redux-utils';
 import { type BackupType } from '@suite-common/suite-types';
+import { asNetworkSymbol } from '@suite-common/wallet-config';
 import {
     type StartDiscoveryThunkDeps,
     type StartDiscoveryThunkState,
@@ -144,7 +145,12 @@ const goToSuiteThunk =
         const isBitcoinOnlyFirmware = selectHasBitcoinOnlyFirmware(getState());
         const enabledNetworks = selectEnabledNetworks(getState());
         if (isBitcoinOnlyFirmware && enabledNetworks.length === 0) {
-            dispatch(changeCoinVisibilityThunk({ symbol: 'btc', shouldBeVisible: true }));
+            dispatch(
+                changeCoinVisibilityThunk({
+                    symbol: asNetworkSymbol('btc'),
+                    shouldBeVisible: true,
+                }),
+            );
         }
 
         // there must be a device to progress with onboarding

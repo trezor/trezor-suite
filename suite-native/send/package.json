@@ -29,6 +29,7 @@
     },
     "devDependencies": {
         "@suite-common/dependency-injection": "workspace:*",
-        "@suite-common/test-utils": "workspace:*"
+        "@suite-common/test-utils": "workspace:*",
+        "@suite-common/wallet-config": "workspace:*"
     }
 }

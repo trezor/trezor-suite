@@ -72,7 +72,7 @@ const GridWrapper = styled.div`
 
 const useAssetsFiatBalances = (
     assetsData: AssetData[],
-    accounts: { [key: string]: Account[] },
+    accounts: Partial<Record<NetworkSymbol, Account[]>>,
     localCurrency: BaseCurrencyCode,
     currentFiatRates?: RatesByKey,
 ) =>

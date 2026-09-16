@@ -1,3 +1,4 @@
+import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { asAccountDescriptor } from '@suite-common/wallet-types';
 import { mockAccountKey } from '@suite-common/wallet-types/mocks';
 
@@ -5,14 +6,14 @@ import { type Account } from 'src/types/wallet';
 
 export const BTC_ACCOUNT: Account = {
     networkType: 'bitcoin',
-    symbol: 'btc',
+    symbol: asNetworkSymbol('btc'),
     descriptor: asAccountDescriptor('btcDescriptor'),
     deviceState: '1stTestnetAddress@device_id:0',
     index: 0,
     path: "m/84'/0'/0'",
     key: mockAccountKey({
         descriptor: 'btcDescriptor',
-        symbol: 'btc',
+        symbol: asNetworkSymbol('btc'),
         deviceStaticSessionId: '1stTestnetAddress@device_id:0',
     }),
     accountType: 'normal',
@@ -55,13 +56,13 @@ export const BTC_ACCOUNT: Account = {
 };
 
 export const ETH_ACCOUNT: Account = {
-    symbol: 'eth',
+    symbol: asNetworkSymbol('eth'),
     networkType: 'ethereum',
     descriptor: asAccountDescriptor('0xdB09b793984B862C430b64B9ed53AcF867cC041F'),
     deviceState: '1stTestnetAddress@device_id:0',
     key: mockAccountKey({
         descriptor: '0xdB09b793984B862C430b64B9ed53AcF867cC041F',
-        symbol: 'eth',
+        symbol: asNetworkSymbol('eth'),
         deviceStaticSessionId: '1stTestnetAddress@device_id:0',
     }),
     accountType: 'normal',
@@ -97,13 +98,13 @@ export const ETH_ACCOUNT: Account = {
 };
 
 export const XRP_ACCOUNT: Account = {
-    symbol: 'xrp',
+    symbol: asNetworkSymbol('xrp'),
     networkType: 'ripple',
     descriptor: asAccountDescriptor('rAPERVgXZavGgiGv6xBgtiZurirW2yAmY'),
     deviceState: '1stTestnetAddress@device_id:0',
     key: mockAccountKey({
         descriptor: 'rAPERVgXZavGgiGv6xBgtiZurirW2yAmY',
-        symbol: 'xrp',
+        symbol: asNetworkSymbol('xrp'),
         deviceStaticSessionId: '1stTestnetAddress@device_id:0',
     }),
     availableBalance: '100000000000',

@@ -8,7 +8,7 @@ import {
     estimateSolanaStakingLimit,
     getSolanaDeactivatedRentReserves,
     selectAccountByKey,
-    selectNetworkBlockchainInfo,
+    selectBlockchainUrlBySymbol,
 } from '@suite-common/wallet-core';
 import { type AccountKey } from '@suite-common/wallet-types';
 import { asAmountUnit, formatNetworkAmount, unitsToSubunits } from '@suite-common/wallet-utils';
@@ -32,7 +32,7 @@ export const useSolanaStakingLimit = ({
         selectAccountByKey(state, accountKey),
     );
     const blockchainUrl = useSelector((state: BlockchainRootState) =>
-        account ? selectNetworkBlockchainInfo(state, account.symbol)?.url : undefined,
+        account ? selectBlockchainUrlBySymbol(state, account.symbol) : undefined,
     );
     const isSolanaAccount = account?.networkType === 'solana';
     const descriptor = account?.descriptor;

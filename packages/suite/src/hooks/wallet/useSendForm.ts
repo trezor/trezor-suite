@@ -114,7 +114,7 @@ export const useSendForm = (props: UseSendFormProps): SendContextValues => {
     const { localCurrencyOption } = state;
 
     const { symbol, networkType } = state.account;
-    const rawFeeInfo = props.fees[symbol]?.data;
+    const rawFeeInfo = props.fees[symbol as keyof typeof props.fees]?.data;
     const feeInfo = useMemo(
         () =>
             getConvertedOrDefaultFeeInfo({

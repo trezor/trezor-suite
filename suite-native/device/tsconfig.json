@@ -41,6 +41,9 @@
         },
         { "path": "../../suite-common/thp" },
         {
+            "path": "../../suite-common/wallet-config"
+        },
+        {
             "path": "../../suite-common/wallet-core"
         },
         {

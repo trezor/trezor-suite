@@ -1,3 +1,4 @@
+import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { DEFAULT_PAYMENT, DEFAULT_VALUES } from '@suite-common/wallet-constants';
 import { type FormState } from '@suite-common/wallet-types';
 import { buildApprovalTransactionData } from '@suite-common/wallet-utils';
@@ -35,7 +36,7 @@ const getTranslation = ({
     isBumpFeeRbfAction?: boolean;
 }) =>
     getTransactionReviewModalActionTranslation({
-        symbol: 'eth',
+        symbol: asNetworkSymbol('eth'),
         stakeType: null,
         precomposedForm,
         approvalToken,

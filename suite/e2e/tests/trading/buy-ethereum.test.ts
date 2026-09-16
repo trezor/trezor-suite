@@ -19,7 +19,7 @@ test.describe('Trading - Buy Ethereum', { tag: ['@T3W1', '@T3T1'] }, () => {
         await tradingMock.setStatus('SUBMITTED');
 
         await onboardingPage.completeOnboarding();
-        await settingsPage.changeNetworks({ enableNetworks: ['btc'] });
+        await settingsPage.changeNetworks({ enableNetworks: [asNetworkSymbol('btc')] });
         await dashboardPage.navigateTo();
     });
 
@@ -41,7 +41,10 @@ test.describe('Trading - Buy Ethereum', { tag: ['@T3W1', '@T3T1'] }, () => {
                 await tradingPage.fillBuyForm({
                     amount: fiatAmount,
                     selectReceiveAddress: async () => {
-                        await tradingPage.receiveAccount.selectAddSuiteReceiveAccount(0, 'eth');
+                        await tradingPage.receiveAccount.selectAddSuiteReceiveAccount(
+                            0,
+                            asNetworkSymbol('eth'),
+                        );
                     },
                 });
             });

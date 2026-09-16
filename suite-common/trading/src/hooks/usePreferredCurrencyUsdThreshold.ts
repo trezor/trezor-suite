@@ -1,6 +1,7 @@
 import { useMemo } from 'react';
 import { useSelector } from 'react-redux';
 
+import { asNetworkSymbol } from '@suite-common/wallet-config';
 import {
     type FiatRatesRootState,
     selectBaseCurrency,
@@ -17,7 +18,7 @@ import { type BaseCurrencyCode } from '@trezor/blockchain-link-types';
 import { BigNumber } from '@trezor/utils';
 
 const USD_ASSET_THRESHOLD = new BigNumber('0.1');
-const BTC_TICKERS: TickerId[] = [{ symbol: 'btc' }];
+const BTC_TICKERS: TickerId[] = [{ symbol: asNetworkSymbol('btc') }];
 const NO_MISSING_TICKERS: TickerId[] = [];
 
 type PreferredCurrencyUsdThresholdRootState = FiatRatesRootState;
@@ -48,10 +49,10 @@ export const calculatePreferredCurrencyUsdThreshold = ({
 export const usePreferredCurrencyUsdThreshold = () => {
     const baseCurrency = useSelector(selectBaseCurrency);
     const btcUsdRate = useSelector((state: PreferredCurrencyUsdThresholdRootState) =>
-        selectFiatRatesByFiatRateKey(state, getFiatRateKey('btc', 'usd')),
+        selectFiatRatesByFiatRateKey(state, getFiatRateKey(asNetworkSymbol('btc'), 'usd')),
     )?.rate;
     const btcBaseCurrencyRate = useSelector((state: PreferredCurrencyUsdThresholdRootState) =>
-        selectFiatRatesByFiatRateKey(state, getFiatRateKey('btc', baseCurrency)),
+        selectFiatRatesByFiatRateKey(state, getFiatRateKey(asNetworkSymbol('btc'), baseCurrency)),
     )?.rate;
 
     const isBtcUsdRateMissing = baseCurrency !== 'usd' && btcUsdRate === undefined;

@@ -1,3 +1,4 @@
+import { asNetworkSymbol } from '@suite-common/wallet-config';
 import {
     type Account as CommonAccount,
     type WalletAccountTransaction,
@@ -16,11 +17,11 @@ export const accounts: CommonAccount[] = [
         key: mockAccountKey({
             descriptor:
                 'zpub6rszzdAK6RuafeRwyN8z1cgWcXCuKbLmjjfnrW4fWKtcoXQ8787214pNJjnBG5UATyghuNzjn6Lfp5k5xymrLFJnCy46bMYJPyZsbpFGagT',
-            symbol: 'btc',
+            symbol: asNetworkSymbol('btc'),
             deviceStaticSessionId: 'mvbu1Gdy8SUjTenqerxUaZyYjmveZvt33q@C906E19794613145E3DF45F4:0',
         }),
         accountType: 'normal',
-        symbol: 'btc',
+        symbol: asNetworkSymbol('btc'),
         empty: false,
         visible: true,
         balance: '0',
@@ -115,11 +116,11 @@ export const accounts: CommonAccount[] = [
         key: mockAccountKey({
             descriptor:
                 "tr([5c9e228d/86'/0'/0']xpub6Bw885JisRbcKmowfBvMmCxaFHodKn1VpmRmctmJJoM8D4DzyP4qJv8ZdD9V9r3SSGjmK2KJEDnvLH6f1Q4HrobEvnCeKydNvf1eir3RHZk/<0;1>/*)",
-            symbol: 'btc',
+            symbol: asNetworkSymbol('btc'),
             deviceStaticSessionId: 'mvbu1Gdy8SUjTenqerxUaZyYjmveZvt33q@C906E19794613145E3DF45F4:0',
         }),
         accountType: 'taproot',
-        symbol: 'btc',
+        symbol: asNetworkSymbol('btc'),
         empty: false,
         visible: true,
         balance: '0',
@@ -206,7 +207,7 @@ export const transactions: { [key: string]: WalletAccountTransaction[] } = {
                     'zpub6rszzdAK6RuafeRwyN8z1cgWcXCuKbLmjjfnrW4fWKtcoXQ8787214pNJjnBG5UATyghuNzjn6Lfp5k5xymrLFJnCy46bMYJPyZsbpFGagT',
                 ),
                 deviceState: 'mvbu1Gdy8SUjTenqerxUaZyYjmveZvt33q@C906E19794613145E3DF45F4:0',
-                symbol: 'btc',
+                symbol: asNetworkSymbol('btc'),
                 type: 'sent',
                 txid: '81d00a47d55b4df0b7a0793533c337493775ceb7f9ae20789325e25051f3374c',
                 blockTime: 1639725042,
@@ -257,7 +258,7 @@ export const transactions: { [key: string]: WalletAccountTransaction[] } = {
                     'zpub6rszzdAK6RuafeRwyN8z1cgWcXCuKbLmjjfnrW4fWKtcoXQ8787214pNJjnBG5UATyghuNzjn6Lfp5k5xymrLFJnCy46bMYJPyZsbpFGagT',
                 ),
                 deviceState: 'mvbu1Gdy8SUjTenqerxUaZyYjmveZvt33q@C906E19794613145E3DF45F4:0',
-                symbol: 'btc',
+                symbol: asNetworkSymbol('btc'),
                 type: 'recv',
                 txid: 'd6c42e965f9e9a69b9eb1d48d09e787cae8020d86ed952548058c857f7bcfb7e',
                 blockTime: 1639707387,
@@ -317,7 +318,7 @@ export const transactions: { [key: string]: WalletAccountTransaction[] } = {
                     "tr([5c9e228d/86'/0'/0']xpub6Bw885JisRbcKmowfBvMmCxaFHodKn1VpmRmctmJJoM8D4DzyP4qJv8ZdD9V9r3SSGjmK2KJEDnvLH6f1Q4HrobEvnCeKydNvf1eir3RHZk/<0;1>/*)",
                 ),
                 deviceState: 'mvbu1Gdy8SUjTenqerxUaZyYjmveZvt33q@C906E19794613145E3DF45F4:0',
-                symbol: 'btc',
+                symbol: asNetworkSymbol('btc'),
                 type: 'sent',
                 txid: '350bb4ff380240fee0d2b7e1f7b90e719086de263cd02aedca105aec0c0bccc1',
                 blockTime: 1636907730,
@@ -389,7 +390,7 @@ export const transactions: { [key: string]: WalletAccountTransaction[] } = {
                     "tr([5c9e228d/86'/0'/0']xpub6Bw885JisRbcKmowfBvMmCxaFHodKn1VpmRmctmJJoM8D4DzyP4qJv8ZdD9V9r3SSGjmK2KJEDnvLH6f1Q4HrobEvnCeKydNvf1eir3RHZk/<0;1>/*)",
                 ),
                 deviceState: 'mvbu1Gdy8SUjTenqerxUaZyYjmveZvt33q@C906E19794613145E3DF45F4:0',
-                symbol: 'btc',
+                symbol: asNetworkSymbol('btc'),
                 type: 'recv',
                 txid: '9de9d10b829b4de8cba707a2b165de05e75db9863785ad9e344f9ff7b0426f7e',
                 blockTime: 1636907730,

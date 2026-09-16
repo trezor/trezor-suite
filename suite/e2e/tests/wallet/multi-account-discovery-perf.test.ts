@@ -1,3 +1,4 @@
+import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { TestStream } from '@trezor/e2e-utils';
 
 import { expect, test } from '../../support/fixtures';
@@ -18,7 +19,13 @@ test.describe('Performance', { tag: ['@T3W1', '@T3T1', '@perf'] }, () => {
 
     test.beforeEach(async ({ onboardingPage, settingsPage }) => {
         await onboardingPage.completeOnboarding();
-        await settingsPage.changeNetworks({ enableNetworks: ['btc', 'eth', 'ltc'] });
+        await settingsPage.changeNetworks({
+            enableNetworks: [
+                asNetworkSymbol('btc'),
+                asNetworkSymbol('eth'),
+                asNetworkSymbol('ltc'),
+            ],
+        });
     });
 
     test(
@@ -32,7 +39,9 @@ test.describe('Performance', { tag: ['@T3W1', '@T3T1', '@perf'] }, () => {
                 await dashboardPage.addStandardWallet();
             });
 
-            await expect(walletPage.balanceOfAccount({ symbol: 'btc', atIndex: 0 })).toBeVisible();
+            await expect(
+                walletPage.balanceOfAccount({ symbol: asNetworkSymbol('btc'), atIndex: 0 }),
+            ).toBeVisible();
         },
     );
 });

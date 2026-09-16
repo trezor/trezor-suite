@@ -67,3 +67,5 @@ export const networks: LegacyNetworkConfigs = {
     txlm: withSymbol('txlm', stellarConfigs.txlm),
     ttrx: withSymbol('ttrx', tronConfigs.ttrx),
 } satisfies Networks;
+
+export type LegacyNetworkSymbol = keyof typeof networks;

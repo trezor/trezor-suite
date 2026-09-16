@@ -40,7 +40,7 @@ export type YieldBroadcastTransaction = {
 export type StakingEarnItem = {
     id: string;
     type: 'staking';
-    symbol: StakingNetworkSymbol;
+    symbol: StakingNetworkSymbol & NetworkSymbol;
     accountKey: AccountKey | null;
     accountLabel?: Account['accountLabel'];
     balance: string | null;
@@ -147,7 +147,7 @@ export type EarnDepositsCardActiveItem =
           id: string;
           type: 'staking';
           title: string;
-          symbol: StakingNetworkSymbol;
+          symbol: StakingNetworkSymbol & NetworkSymbol;
           accountKey: AccountKey;
           accountLabel?: string;
           balance: string;

@@ -1,3 +1,4 @@
+import { type LegacyNetworkSymbol } from '@suite-common/legacy-network-config';
 import { mockActionType, mockReducer } from '@suite-common/redux-utils/mocks';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { type BackendSettings } from '@suite-common/wallet-types';
@@ -51,13 +52,13 @@ describe('blockchain reducer', () => {
                     blockchainReducer(
                         {
                             ...blockchainInitialState,
-                            [payload.symbol]: {
-                                ...blockchainInitialState[payload.symbol],
+                            [payload.symbol as LegacyNetworkSymbol]: {
+                                ...blockchainInitialState[payload.symbol as LegacyNetworkSymbol],
                                 backends,
                             },
                         },
                         { type: blockchainActions.setBackend.type, payload },
-                    )[payload.symbol].backends,
+                    )[payload.symbol as LegacyNetworkSymbol].backends,
                 ).toEqual(next);
             });
         });

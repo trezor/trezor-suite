@@ -1,4 +1,5 @@
 import { messages } from '@suite/intl';
+import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { TestStream } from '@trezor/e2e-utils';
 
 import { replaceTemplatesInTranslation } from '../../support/common';
@@ -43,7 +44,7 @@ test.describe('Passphrase with cardano', { tag: ['@nightlyOnly', '@T3W1', '@T3T1
             }
 
             await test.step('Starting discovery triggers passphrase dialogue', async () => {
-                await settingsPage.changeNetworks({ enableNetworks: ['ada'] });
+                await settingsPage.changeNetworks({ enableNetworks: [asNetworkSymbol('ada')] });
                 await dashboardPage.openDeviceSwitcher();
                 await dashboardPage.addUnusedHiddenWallet(passphrase);
             });
@@ -51,7 +52,11 @@ test.describe('Passphrase with cardano', { tag: ['@nightlyOnly', '@T3W1', '@T3T1
             await restartDevice();
 
             await test.step('Reveal cardano address', async () => {
-                await walletPage.openAccount({ symbol: 'ada', type: 'normal', atIndex: 0 });
+                await walletPage.openAccount({
+                    symbol: asNetworkSymbol('ada'),
+                    type: 'normal',
+                    atIndex: 0,
+                });
                 await walletPage.receiveButton.click();
                 await walletPage.verifyAddressButton.click();
             });

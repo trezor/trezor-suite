@@ -1,4 +1,4 @@
-import type { NetworkSymbol } from '@suite-common/wallet-config';
+import { type NetworkSymbol, asNetworkSymbol } from '@suite-common/wallet-config';
 import { TestStream } from '@trezor/e2e-utils';
 import { getRandomInt } from '@trezor/utils';
 
@@ -9,16 +9,16 @@ import { createTestAnnotation } from '../../support/reporters/annotations';
 const DISCOVERY_LIMIT = 1000 * 60 * 2;
 
 const coinsToActivate: NetworkSymbol[] = [
-    'btc',
-    'eth',
-    'ltc',
-    'etc',
-    'bch',
-    'doge',
+    asNetworkSymbol('btc'),
+    asNetworkSymbol('eth'),
+    asNetworkSymbol('ltc'),
+    asNetworkSymbol('etc'),
+    asNetworkSymbol('bch'),
+    asNetworkSymbol('doge'),
     //'ada', skipped because Cardano backends are sometimes unreachable.
     // We want this important test to be trustworthy and stable.
-    'xrp',
-    'zec',
+    asNetworkSymbol('xrp'),
+    asNetworkSymbol('zec'),
 ];
 
 test.describe('Discovery', { tag: ['@T3W1', '@T3T1'] }, () => {

@@ -1,3 +1,4 @@
+import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { type Account, type TokenAddress } from '@suite-common/wallet-types';
 import { mockAccountKey } from '@suite-common/wallet-types/mocks';
 import { featureFlagsInitialState } from '@suite-native/feature-flags';
@@ -186,13 +187,16 @@ describe('ExchangeSendAmountInput', () => {
     });
 
     it('should limit value to decimals based on useAmountInputDecimals return value', async () => {
-        const accountKey = mockAccountKey({ symbol: 'eth', descriptor: 'accountKey' });
+        const accountKey = mockAccountKey({
+            symbol: asNetworkSymbol('eth'),
+            descriptor: 'accountKey',
+        });
         const form = await renderUseTradingExchangeForm();
         await act(() => {
             form.setValue('sendAsset', usdcAsset);
             form.setValue('sendAccount', {
                 key: accountKey,
-                symbol: 'eth',
+                symbol: asNetworkSymbol('eth'),
             } as Account);
         });
         const { getByLabelText } = await renderCryptoAmountInput({}, form);

@@ -1,3 +1,4 @@
+import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { mockAccountKey } from '@suite-common/wallet-types/mocks';
 import { renderWithStoreProvider } from '@suite-native/test-utils-store';
 
@@ -8,7 +9,7 @@ const mockReviewOutputItemValues = jest.fn();
 
 let mockAccountNetworkSymbol: string | null;
 
-const accountKey = mockAccountKey({ symbol: 'eth', descriptor: 'ethAccount' });
+const accountKey = mockAccountKey({ symbol: asNetworkSymbol('eth'), descriptor: 'ethAccount' });
 
 const AMOUNT_TRANSLATION_KEY = 'transactionManagement.review.outputs.summary.amount';
 const FEE_TRANSLATION_KEY = 'transactionManagement.review.outputs.summary.maxFee';

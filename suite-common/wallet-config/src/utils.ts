@@ -1,5 +1,6 @@
 import { type TokenDtoV2 } from '@suite-common/earn-stablecoin-defs';
 import { exhaustive } from '@trezor/type-utils';
+import { typedObjectValues } from '@trezor/utils';
 
 import { networks } from './legacyNetworks';
 import {
@@ -16,7 +17,9 @@ export const NORMAL_ACCOUNT_TYPE = 'normal' satisfies AccountType;
 /**
  * array from `networks` as a `Network[]` type instead of inferred type
  */
-export const networksCollection: Network[] = Object.values(networks);
+// The legacy configs carry literal symbols; `Network` takes the branded one. Same objects,
+// only the symbol's type differs, so this stays a cast rather than rebuilding the array.
+export const networksCollection = typedObjectValues(networks) as unknown as Network[];
 
 /**
  * array of network symbols
@@ -42,9 +45,13 @@ export const getNetworks = () => networks;
  * @deprecated TODO: Replace with a networks store selector or inject via
  * deps.getNetwork() when network configurations are modularized.
  */
-export const getNetwork = <TSymbol extends NetworkSymbol>(
+// Accepts both a branded NetworkSymbol and a plain literal: the symbol is open, while the legacy
+// config is still keyed by literals, and a literal caller keeps that config's precise type.
+export const getNetwork = <TSymbol extends string>(
     symbol: TSymbol,
-): Network & (typeof networks)[TSymbol] => networks[symbol];
+): Network & (typeof networks)[TSymbol & keyof typeof networks] =>
+    networks[symbol as keyof typeof networks] as Network &
+        (typeof networks)[TSymbol & keyof typeof networks];
 
 interface GetMainnetsProps {
     debug?: boolean;

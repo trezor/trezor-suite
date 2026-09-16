@@ -1,7 +1,11 @@
+import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { TestCategory, TestPriority, TestStream } from '@trezor/e2e-utils';
 
 import { expect, test } from '../../support/fixtures';
 import { createTestAnnotation } from '../../support/reporters/annotations';
+
+const btcSymbol = asNetworkSymbol('btc');
+const ltcSymbol = asNetworkSymbol('ltc');
 
 test.describe('Look up a BTC account', { tag: ['@T3W1', '@T3T1'] }, () => {
     test.use({
@@ -12,7 +16,7 @@ test.describe('Look up a BTC account', { tag: ['@T3W1', '@T3T1'] }, () => {
 
     test.beforeEach(async ({ onboardingPage, settingsPage }) => {
         await onboardingPage.completeOnboarding();
-        await settingsPage.changeNetworks({ enableNetworks: ['btc', 'ltc'] });
+        await settingsPage.changeNetworks({ enableNetworks: [btcSymbol, ltcSymbol] });
     });
 
     test(
@@ -28,11 +32,11 @@ test.describe('Look up a BTC account', { tag: ['@T3W1', '@T3T1'] }, () => {
         async ({ dashboardPage, walletPage }) => {
             await dashboardPage.navigateTo();
             await walletPage.accountSearch.fill('bitcoin');
-            await expect(walletPage.accountButton({ symbol: 'ltc' })).toBeHidden();
-            await expect(walletPage.accountButton({ symbol: 'btc' })).toBeVisible();
+            await expect(walletPage.accountButton({ symbol: ltcSymbol })).toBeHidden();
+            await expect(walletPage.accountButton({ symbol: btcSymbol })).toBeVisible();
             await walletPage.accountSearch.clear();
-            await expect(walletPage.accountButton({ symbol: 'ltc' })).toBeVisible();
-            await expect(walletPage.accountButton({ symbol: 'btc' })).toBeVisible();
+            await expect(walletPage.accountButton({ symbol: ltcSymbol })).toBeVisible();
+            await expect(walletPage.accountButton({ symbol: btcSymbol })).toBeVisible();
         },
     );
 });

@@ -1,4 +1,4 @@
-import { type NetworkSymbol } from '@suite-common/wallet-config';
+import { type NetworkSymbol, asNetworkSymbol } from '@suite-common/wallet-config';
 import {
     MOCK_ACCOUNT_DEVICE_SESSION_ID,
     accounts,
@@ -36,7 +36,7 @@ describe('useReceiveAccountsListData', () => {
         );
 
     it('returns all visible accounts for the selected network', async () => {
-        const { result } = await renderUseReceiveAccountsListData('btc');
+        const { result } = await renderUseReceiveAccountsListData(asNetworkSymbol('btc'));
 
         expect(result.current).toEqual([
             {
@@ -52,9 +52,9 @@ describe('useReceiveAccountsListData', () => {
     });
 
     it('reacts to a network change', async () => {
-        const { result, rerender } = await renderUseReceiveAccountsListData('btc');
+        const { result, rerender } = await renderUseReceiveAccountsListData(asNetworkSymbol('btc'));
 
-        await rerender({ networkSymbol: 'eth' });
+        await rerender({ networkSymbol: asNetworkSymbol('eth') });
 
         expect(result.current[0]?.data).toEqual([
             { account: expect.objectContaining({ key: eth1NormalAccount.key }) },
@@ -63,7 +63,7 @@ describe('useReceiveAccountsListData', () => {
     });
 
     it('returns an empty array when no matching account exists', async () => {
-        const { result } = await renderUseReceiveAccountsListData('btc', {
+        const { result } = await renderUseReceiveAccountsListData(asNetworkSymbol('btc'), {
             ...defaultOverrides,
             wallet: { accounts: [] },
         });

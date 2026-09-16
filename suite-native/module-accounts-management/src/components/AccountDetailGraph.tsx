@@ -6,6 +6,7 @@ import { useAtomValue, useSetAtom } from 'jotai';
 import { useServices } from '@suite-common/dependency-injection';
 import { type FiatGraphPointWithCryptoBalance } from '@suite-common/graph';
 import { selectDispatch } from '@suite-common/redux-utils';
+import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { type AccountsRootState } from '@suite-common/wallet-core';
 import { type AccountKey, type TokenAddress } from '@suite-common/wallet-types';
 import {
@@ -51,7 +52,7 @@ export const AccountDetailGraph = ({ accountKey, tokenContract }: AccountDetailG
         accounts,
         eventsAccount: accountItem,
         timeframeHours: accountGraphTimeframe,
-        backendSymbol: accountItem?.symbol ?? 'btc',
+        backendSymbol: accountItem?.symbol ?? asNetworkSymbol('btc'),
     });
 
     const graphPoints = useAtomValue(accountDetailGraphAtoms.graphPointsAtom);

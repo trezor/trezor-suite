@@ -6,6 +6,8 @@ import { TestStream } from '@trezor/e2e-utils';
 import { expect, test } from '../../support/fixtures';
 import { createTestAnnotation } from '../../support/reporters/annotations';
 
+const solSymbol = asNetworkSymbol('sol');
+
 const tenMinutes = 10 * 60 * 1000;
 const sendAmount = '7.77';
 const sendTokenSymbol = 'USDT';
@@ -31,17 +33,17 @@ test.describe(
 
         test.beforeEach(async ({ onboardingPage, dashboardPage, walletPage, settingsPage }) => {
             await onboardingPage.completeOnboarding();
-            await settingsPage.changeNetworks({ enableNetworks: ['sol'] });
+            await settingsPage.changeNetworks({ enableNetworks: [solSymbol] });
             await dashboardPage.deviceSwitchingOpenButton.click();
             await dashboardPage.addHiddenWallet(process.env.PASSPHRASE_LIVE!);
 
-            await walletPage.openSwapTrading({ symbol: 'sol', atIndex: 1 });
+            await walletPage.openSwapTrading({ symbol: solSymbol, atIndex: 1 });
         });
 
         test.afterEach(async ({ tradingPage, devicePrompt, walletPage }) => {
             // Only top up when USDT on Solana #2 has run low; otherwise leave the account as is.
             const usdtBalance = await walletPage.getTokenBalance({
-                symbol: 'sol',
+                symbol: solSymbol,
                 atIndex: 1,
                 tokenName: sendAssetName,
             });
@@ -49,7 +51,7 @@ test.describe(
                 return;
             }
 
-            await walletPage.openAccount({ symbol: 'sol', atIndex: 1 });
+            await walletPage.openAccount({ symbol: solSymbol, atIndex: 1 });
             const balanceText = await walletPage.topPanelBalance.innerText();
             const solBalance = parseFloat(balanceText);
 
@@ -61,26 +63,26 @@ test.describe(
 
             const swapBackAmount = sellableSol.toFixed(6);
 
-            await walletPage.openSwapTrading({ symbol: 'sol', atIndex: 1 });
+            await walletPage.openSwapTrading({ symbol: solSymbol, atIndex: 1 });
 
             await test.step('Fill in a Swap form', async () => {
                 await tradingPage.fillSwapForm({
                     amount: swapBackAmount,
                     sellAsset: {
                         searchFilter: 'Solana #2',
-                        networkSymbol: 'sol',
+                        networkSymbol: solSymbol,
                         accountIndex: 1,
                     },
                     buyAsset: {
                         searchFilter: sendTokenSymbol,
                         networkFilter: 'sol',
                         assetCryptoId: getCryptoId(
-                            asNetworkSymbol('sol'),
+                            solSymbol,
                             'Es9vMFrzaCERmJfrF4H2FYD4KCoNkY11McCe8BenwNYB',
                         ),
                     },
                     selectReceiveAddress: async () => {
-                        await tradingPage.receiveAccount.selectSuiteReceiveAccount(1, 'sol');
+                        await tradingPage.receiveAccount.selectSuiteReceiveAccount(1, solSymbol);
                     },
                 });
             });
@@ -107,16 +109,19 @@ test.describe(
                     await tradingPage.fillSwapForm({
                         amount: sendAmount,
                         sellAsset: {
-                            networkSymbol: 'sol',
+                            networkSymbol: solSymbol,
                             tokenSymbol: sendTokenSymbol,
                             accountIndex: 1,
                         },
                         buyAsset: {
                             searchFilter: receiveAssetName,
-                            assetCryptoId: getCryptoId(asNetworkSymbol('sol')),
+                            assetCryptoId: getCryptoId(solSymbol),
                         },
                         selectReceiveAddress: async () => {
-                            await tradingPage.receiveAccount.selectSuiteReceiveAccount(1, 'sol');
+                            await tradingPage.receiveAccount.selectSuiteReceiveAccount(
+                                1,
+                                solSymbol,
+                            );
                         },
                     });
                 });
@@ -136,7 +141,9 @@ test.describe(
                         confirmAlsoToken: true,
                     });
                     await expect(devicePrompt.header.accountLabel).toHaveText(accountLabel);
-                    await expect(devicePrompt.outputValueOf('address')).toHaveValidAddress('sol');
+                    await expect(devicePrompt.outputValueOf('address')).toHaveValidAddress(
+                        solSymbol,
+                    );
                     await expect(devicePrompt.cryptoAmountWithSymbolOf('total')).toHaveText(
                         formattedSendAmount,
                     );

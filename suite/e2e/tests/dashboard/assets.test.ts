@@ -1,12 +1,15 @@
+import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { TestStream } from '@trezor/e2e-utils';
 
 import { expect, test } from '../../support/fixtures';
 import { createTestAnnotation } from '../../support/reporters/annotations';
 
+const btcSymbol = asNetworkSymbol('btc');
+
 test.describe('Assets', { tag: ['@T3W1', '@T3T1'] }, () => {
     test.beforeEach(async ({ onboardingPage, settingsPage, dashboardPage }) => {
         await onboardingPage.completeOnboarding();
-        await settingsPage.changeNetworks({ enableNetworks: ['btc'] });
+        await settingsPage.changeNetworks({ enableNetworks: [btcSymbol] });
         await dashboardPage.navigateTo();
     });
 
@@ -15,7 +18,7 @@ test.describe('Assets', { tag: ['@T3W1', '@T3T1'] }, () => {
         { annotation: createTestAnnotation({ stream: TestStream.Trade }) },
         async ({ assetsSection, tradingPage }) => {
             await assetsSection.tableIcon.click();
-            await assetsSection.buyAssetButton('btc').click();
+            await assetsSection.buyAssetButton(btcSymbol).click();
             await expect(tradingPage.section).toBeVisible();
         },
     );
@@ -25,7 +28,7 @@ test.describe('Assets', { tag: ['@T3W1', '@T3T1'] }, () => {
         { annotation: createTestAnnotation({ stream: TestStream.Trade }) },
         async ({ assetsSection, tradingPage }) => {
             await assetsSection.gridIcon.click();
-            await assetsSection.buyAssetButton('btc').click();
+            await assetsSection.buyAssetButton(btcSymbol).click();
             await expect(tradingPage.section).toBeVisible();
         },
     );
@@ -35,7 +38,7 @@ test.describe('Assets', { tag: ['@T3W1', '@T3T1'] }, () => {
         { annotation: createTestAnnotation({ stream: TestStream.Wallet }) },
         async ({ page, assetsSection }) => {
             await assetsSection.enableMoreCoins.click();
-            await assetsSection.enableNetworkViaActivateAssetsModal('eth');
+            await assetsSection.enableNetworkViaActivateAssetsModal(asNetworkSymbol('eth'));
             await page.discoveryShouldFinish();
             await assetsSection.verifyAssetContents();
             await assetsSection.tableIcon.click();

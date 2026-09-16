@@ -5,6 +5,8 @@ import { TestStream } from '@trezor/e2e-utils';
 import { expect, test } from '../../support/fixtures';
 import { createTestAnnotation } from '../../support/reporters/annotations';
 
+const solSymbol = asNetworkSymbol('sol');
+
 const sendAmount = '9';
 const accountLabel = 'Stellar #1';
 
@@ -20,10 +22,10 @@ test.describe(
 
         test.beforeEach(async ({ onboardingPage, dashboardPage, walletPage, settingsPage }) => {
             await onboardingPage.completeOnboarding();
-            await settingsPage.changeNetworks({ enableNetworks: ['sol'] });
+            await settingsPage.changeNetworks({ enableNetworks: [solSymbol] });
             await dashboardPage.openDeviceSwitcher();
             await dashboardPage.addHiddenWallet(process.env.PASSPHRASE!);
-            await walletPage.openSwapTrading({ symbol: 'sol' });
+            await walletPage.openSwapTrading({ symbol: solSymbol });
         });
 
         test(
@@ -34,7 +36,7 @@ test.describe(
                     await tradingPage.fillSwapForm({
                         amount: sendAmount,
                         sellAsset: {
-                            networkSymbol: 'sol',
+                            networkSymbol: solSymbol,
                             tokenSymbol: 'USDT',
                         },
                         buyAsset: {
@@ -50,7 +52,10 @@ test.describe(
                 });
 
                 await test.step('Enable the Stellar network from the receive account picker', async () => {
-                    await tradingPage.receiveAccount.selectAddSuiteReceiveAccount(0, 'xlm');
+                    await tradingPage.receiveAccount.selectAddSuiteReceiveAccount(
+                        0,
+                        asNetworkSymbol('xlm'),
+                    );
                     await expect(tradingPage.receiveAccount.selectedReceiveAccount).toContainText(
                         accountLabel,
                     );

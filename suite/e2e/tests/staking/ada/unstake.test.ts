@@ -1,8 +1,11 @@
+import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { CARDANO_STAKING_REGISTRATION_DEPOSIT } from '@suite-common/wallet-constants';
 import { TestCategory, TestPriority, TestStream, createTestAnnotation } from '@trezor/e2e-utils';
 
 import { toADA } from '../../../support/common';
 import { expect, test } from '../../../support/fixtures';
+
+const adaSymbol = asNetworkSymbol('ada');
 
 // mocked and expected values
 const startingBalance = 86858306;
@@ -49,7 +52,7 @@ test.describe('Staking - Cardano', { tag: ['@T3W1', '@T3T1'] }, () => {
 
             await settingsPage.changeNetworks({
                 enableNetworks: [
-                    { symbol: 'ada', backend: { type: 'blockfrost', url: blockbookMock.url } },
+                    { symbol: adaSymbol, backend: { type: 'blockfrost', url: blockbookMock.url } },
                 ],
             });
         });
@@ -75,14 +78,14 @@ test.describe('Staking - Cardano', { tag: ['@T3W1', '@T3T1'] }, () => {
             blockbookMock,
         }) => {
             const stakingAccountItemInLeftSection = walletPage.accountButton({
-                symbol: 'ada',
+                symbol: adaSymbol,
                 type: 'normal',
                 atIndex: 0,
                 subAccount: 'staking',
             });
 
             await test.step('Verify staked account', async () => {
-                await walletPage.openAccount({ symbol: 'ada', type: 'normal', atIndex: 0 });
+                await walletPage.openAccount({ symbol: adaSymbol, type: 'normal', atIndex: 0 });
                 await stakingSection.stakingTabButton.click();
                 await expect(stakingSection.claimRewardsButton).toBeDisabled();
                 await expect(stakingSection.unstakeToClaimButton).toBeEnabled();

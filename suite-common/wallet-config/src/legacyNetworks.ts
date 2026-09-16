@@ -1,7 +1,7 @@
 import { getLegacyNetworkConfigs } from '@suite-common/networks';
 import { typedObjectEntries } from '@trezor/utils';
 
-import { type NetworkFeature } from './networkTypes';
+import { type NetworkFeature, type NetworkSymbol } from './networkTypes';
 
 /**
  * @deprecated TODO: Replace with a networks store selector or a DI service
@@ -15,8 +15,10 @@ export type NetworkConfig = NetworksConfigs[keyof NetworksConfigs];
 
 export type NetworkConfigWithoutTestnets = Exclude<NetworkConfig, { testnet: true }>;
 
-export const toNetworkSymbolNonTestnet = (symbol: string): NetworkConfigWithoutTestnets['symbol'] =>
-    symbol as NetworkConfigWithoutTestnets['symbol'];
+export const toNetworkSymbolNonTestnet = (
+    symbol: string,
+): NetworkConfigWithoutTestnets['symbol'] & NetworkSymbol =>
+    symbol as NetworkConfigWithoutTestnets['symbol'] & NetworkSymbol;
 
 export type NetworkDisplaySymbol = NetworkConfig['displaySymbol'];
 

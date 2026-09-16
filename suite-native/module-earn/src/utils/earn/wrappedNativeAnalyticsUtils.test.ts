@@ -1,4 +1,5 @@
 import { events } from '@suite-common/analytics';
+import { asNetworkSymbol } from '@suite-common/wallet-config';
 
 import {
     type WrappedNativeFlowPayload,
@@ -52,7 +53,7 @@ describe('getWrappedNativeResolutionPayload', () => {
     it('returns a success payload when the transaction confirmed', () => {
         const payload = getWrappedNativeResolutionPayload({
             durationMs: 5000,
-            networkSymbol: 'eth',
+            networkSymbol: asNetworkSymbol('eth'),
             status: 'confirmed',
         });
 
@@ -68,7 +69,7 @@ describe('getWrappedNativeResolutionPayload', () => {
     it('returns an on-chain-failure error payload when the transaction failed', () => {
         const payload = getWrappedNativeResolutionPayload({
             durationMs: 5000,
-            networkSymbol: 'eth',
+            networkSymbol: asNetworkSymbol('eth'),
             status: 'failed',
         });
 
@@ -86,7 +87,7 @@ describe('getWrappedNativeResolutionPayload', () => {
         expect(
             getWrappedNativeResolutionPayload({
                 durationMs: 5000,
-                networkSymbol: 'eth',
+                networkSymbol: asNetworkSymbol('eth'),
                 status: 'pending',
             }),
         ).toBeNull();
@@ -96,7 +97,7 @@ describe('getWrappedNativeResolutionPayload', () => {
         expect(
             getWrappedNativeResolutionPayload({
                 durationMs: 5000,
-                networkSymbol: 'eth',
+                networkSymbol: asNetworkSymbol('eth'),
                 status: null,
             }),
         ).toBeNull();
@@ -105,7 +106,7 @@ describe('getWrappedNativeResolutionPayload', () => {
     it('preserves an undefined durationMs', () => {
         const payload = getWrappedNativeResolutionPayload({
             durationMs: undefined,
-            networkSymbol: 'eth',
+            networkSymbol: asNetworkSymbol('eth'),
             status: 'confirmed',
         });
 

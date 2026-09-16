@@ -348,7 +348,8 @@ export const getAccountHistoryMovementFromTransactions = ({
             return getAccountHistoryMovementItemETH({ transactions, from, to });
 
         default:
-            symbol satisfies never;
-            throw new Error(`getAccountHistoryMovementItem: Unsupported network ${symbol}`);
+            throw new Error(
+                `getAccountHistoryMovementItem: Unsupported network ${symbol satisfies never}`,
+            );
     }
 };

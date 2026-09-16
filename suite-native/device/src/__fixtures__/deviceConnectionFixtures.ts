@@ -6,6 +6,7 @@ import { preparePersistentDeviceDataReducer } from '@suite-common/persistent-dev
 import { mockActionType, mockReducer } from '@suite-common/redux-utils/mocks';
 import { defaultDevicePersistentData, mockSuiteDevice } from '@suite-common/suite-types/mocks';
 import { prepareThpReducer } from '@suite-common/thp';
+import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { prepareWalletSettingsReducer } from '@suite-common/wallet-core';
 import { deviceOnboardingSlice } from '@suite-native/device-onboarding';
 import { featureFlagsSlice } from '@suite-native/feature-flags';
@@ -353,7 +354,7 @@ export const deviceConnectBlockedFixtures: NoNavigationFixture[] = [
                 devices: [mockSuiteDevice()],
             },
             walletSettings: {
-                enabledNetworks: ['btc'],
+                enabledNetworks: [asNetworkSymbol('btc')],
             },
         }),
         action: {
@@ -386,7 +387,7 @@ export const deviceConnectCompromisedFixtures: NavigationFixture[] = [
                 isDeviceAuthenticityCheckEnabled: true,
             },
             walletSettings: {
-                enabledNetworks: ['btc'],
+                enabledNetworks: [asNetworkSymbol('btc')],
             },
             device: {
                 selectedDevice: mockSuiteDevice(),
@@ -475,7 +476,7 @@ export const deviceConnectAuthorizedFixtures: NavigationFixture[] = [
             'navigates to ConnectingDevice when connected new device and network is enabled',
         initialState: buildInitialState({
             walletSettings: {
-                enabledNetworks: ['btc'],
+                enabledNetworks: [asNetworkSymbol('btc')],
             },
         }),
         action: {

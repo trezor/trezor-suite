@@ -1,3 +1,4 @@
+import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { type FormState, type TokenAddress } from '@suite-common/wallet-types';
 import { mockAccountKey } from '@suite-common/wallet-types/mocks';
 import { type NativeSendRootState } from '@suite-native/transaction-management';
@@ -17,8 +18,8 @@ const createMockState = (
     },
 });
 
-const btcAccountKey = mockAccountKey({ symbol: 'btc', descriptor: 'btc0' });
-const ethAccountKey = mockAccountKey({ symbol: 'eth', descriptor: 'eth0' });
+const btcAccountKey = mockAccountKey({ symbol: asNetworkSymbol('btc'), descriptor: 'btc0' });
+const ethAccountKey = mockAccountKey({ symbol: asNetworkSymbol('eth'), descriptor: 'eth0' });
 
 describe('send selectors', () => {
     describe('selectDestinationTagFromDraft', () => {

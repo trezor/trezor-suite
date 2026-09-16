@@ -1,5 +1,6 @@
 import type { FiatCurrencyCode } from 'invity-api';
 
+import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { Text } from '@suite-native/atoms';
 import { renderWithBasicProvider } from '@suite-native/test-utils';
 
@@ -12,7 +13,7 @@ describe('TradingAsset', () => {
                 assetType="crypto"
                 contractAddress="0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48"
                 name="USD Coin"
-                networkSymbol="eth"
+                networkSymbol={asNetworkSymbol('eth')}
                 symbol="USDC"
                 testID="@test/trading-asset"
             />,
@@ -29,7 +30,7 @@ describe('TradingAsset', () => {
                 assetType="crypto"
                 name="USD Coin"
                 networkDisplay="text"
-                networkSymbol="eth"
+                networkSymbol={asNetworkSymbol('eth')}
                 primaryLabel="symbol"
                 symbol="USDC"
                 testID="@test/trading-asset"

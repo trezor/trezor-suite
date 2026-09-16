@@ -13,7 +13,9 @@
     },
     "dependencies": {
         "@suite-common/earn-stablecoin-defs": "workspace:*",
+        "@suite-common/legacy-network-config": "workspace:*",
         "@suite-common/networks": "workspace:*",
+        "@trezor/network-module": "workspace:*",
         "@trezor/network-solana": "workspace:*",
         "@trezor/type-utils": "workspace:*",
         "@trezor/utils": "workspace:*"

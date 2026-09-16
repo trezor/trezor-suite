@@ -1,8 +1,4 @@
-export {
-    isSupportedTronNetwork,
-    supportedTronNetworks,
-    toTronNetworkSymbol,
-} from './networkSymbol';
+export { isSupportedTronNetwork, supportedTronNetworks } from './networkSymbol';
 export type { TronNetworkSymbol } from './networkSymbol';
 
 export const TRON_DECIMALS = 6;

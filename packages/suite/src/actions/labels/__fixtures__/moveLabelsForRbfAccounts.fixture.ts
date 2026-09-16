@@ -1,3 +1,4 @@
+import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { type AccountsRootState } from '@suite-common/wallet-core';
 import { type Account, asAccountDescriptor } from '@suite-common/wallet-types';
 import { mockAccountKey } from '@suite-common/wallet-types/mocks';
@@ -12,11 +13,11 @@ export const accountSpendingCoins: Account = {
     key: mockAccountKey({
         descriptor:
             '(accountSpendingCoins:descriptor)vpub5YX1yJFY8E236pH3iNvCpThsXLxoQoC4nwraaS5h4TZwaSp1Gg9SQoxCsrumxjh7nZRQQkNfH29TEDeMvAZVmD3rpmsDnFc5Sj4JgJG6m4b',
-        symbol: 'regtest',
+        symbol: asNetworkSymbol('regtest'),
         deviceStaticSessionId: 'mvbu1Gdy8SUjTenqerxUaZyYjmveZvt33q@AC94BB9C1B08FE73BE1E3322:0',
     }),
     accountType: 'normal',
-    symbol: 'regtest',
+    symbol: asNetworkSymbol('regtest'),
     empty: false,
     visible: true,
     balance: '199993110',
@@ -411,11 +412,11 @@ export const accountReceivingCoins: Account = {
     key: mockAccountKey({
         descriptor:
             '(accountReceivingCoins:descriptor)vpub5YX1yJFY8E238aESifzcpXQHLzNDYJC22yLWqCwJ5pN85E27ku5wUXdhnh3HSMs3HibDQzeWmVeH52bAAa9LvkK4L1V9XfZbmHxGDuZSJks',
-        symbol: 'regtest',
+        symbol: asNetworkSymbol('regtest'),
         deviceStaticSessionId: 'mvbu1Gdy8SUjTenqerxUaZyYjmveZvt33q@AC94BB9C1B08FE73BE1E3322:0',
     }),
     accountType: 'normal',
-    symbol: 'regtest',
+    symbol: asNetworkSymbol('regtest'),
     empty: false,
     visible: true,
     balance: '1799997910',

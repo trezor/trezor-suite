@@ -1,4 +1,4 @@
-import { type NetworkSymbol } from '@suite-common/wallet-config';
+import { type NetworkSymbol, asNetworkSymbol } from '@suite-common/wallet-config';
 import { renderHookWithStoreProvider } from '@suite-native/test-utils-store';
 import { PROTO } from '@trezor/connect';
 
@@ -21,8 +21,8 @@ describe('useConvertFormValueToBaseUnit', () => {
         });
 
         it.each<[NetworkSymbol, string, string]>([
-            ['btc', '1', '1'],
-            ['eth', '1', '1'],
+            [asNetworkSymbol('btc'), '1', '1'],
+            [asNetworkSymbol('eth'), '1', '1'],
         ])(
             'should correctly convert %s with BTC as app unit',
             async (symbol, amountFromApi, expectedAmount) => {
@@ -35,8 +35,8 @@ describe('useConvertFormValueToBaseUnit', () => {
         );
 
         it.each<[NetworkSymbol, string, string]>([
-            ['btc', '1', '0.00000001'],
-            ['eth', '1', '1'],
+            [asNetworkSymbol('btc'), '1', '0.00000001'],
+            [asNetworkSymbol('eth'), '1', '1'],
         ])(
             'should correctly convert %s with SAT as app unit',
             async (symbol, amountFromApi, expectedAmount) => {
@@ -57,8 +57,8 @@ describe('useConvertFormValueToBaseUnit', () => {
         });
 
         it.each<[NetworkSymbol, number, number]>([
-            ['btc', 1, 1],
-            ['eth', 1, 1],
+            [asNetworkSymbol('btc'), 1, 1],
+            [asNetworkSymbol('eth'), 1, 1],
         ])(
             'should correctly convert %s with BTC as app unit',
             async (symbol, amountFromApi, expectedAmount) => {
@@ -71,8 +71,8 @@ describe('useConvertFormValueToBaseUnit', () => {
         );
 
         it.each<[NetworkSymbol, number, number]>([
-            ['btc', 1, 0.00000001],
-            ['eth', 1, 1],
+            [asNetworkSymbol('btc'), 1, 0.00000001],
+            [asNetworkSymbol('eth'), 1, 1],
         ])(
             'should correctly convert %s with SAT as app unit',
             async (symbol, amountFromApi, expectedAmount) => {

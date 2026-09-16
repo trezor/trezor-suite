@@ -1,5 +1,5 @@
 import { EventType } from '@suite/analytics/src/constants';
-import type { NetworkSymbol } from '@suite-common/wallet-config';
+import { type NetworkSymbol, asNetworkSymbol } from '@suite-common/wallet-config';
 import { TestCategory, TestPriority, TestStream, createTestAnnotation } from '@trezor/e2e-utils';
 
 import { expect, test } from '../../support/fixtures';
@@ -8,12 +8,12 @@ test.describe('Analytics Events - Staking Navigate', { tag: ['@T3W1', '@nightlyO
     test.beforeEach(async ({ onboardingPage, settingsPage }) => {
         await onboardingPage.completeOnboarding();
         await settingsPage.changeNetworks({
-            enableNetworks: ['eth', 'ada'],
+            enableNetworks: [asNetworkSymbol('eth'), asNetworkSymbol('ada')],
         });
     });
 
     // --- Staking Navigation Events ---
-    const coins: NetworkSymbol[] = ['eth', 'ada'];
+    const coins: NetworkSymbol[] = [asNetworkSymbol('eth'), asNetworkSymbol('ada')];
 
     for (const coin of coins) {
         test(

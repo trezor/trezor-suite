@@ -3,6 +3,7 @@ import { combineReducers, isFulfilled, isRejected } from '@reduxjs/toolkit';
 import { selectSelectedDevice } from '@suite-common/device';
 import { mockSuiteDevice } from '@suite-common/suite-types/mocks';
 import { createTestStore } from '@suite-common/test-utils';
+import { asNetworkSymbol } from '@suite-common/wallet-config';
 import {
     type YieldFlowResolvedData,
     type YieldFlowToken,
@@ -59,7 +60,7 @@ const OTHER_FLOW_KEY = 'other-flow-key';
 
 const buildAccount = (descriptor: string) => {
     const accountKey = mockAccountKey({
-        symbol: 'eth',
+        symbol: asNetworkSymbol('eth'),
         descriptor,
         deviceStaticSessionId: STATIC_SESSION_ID,
     });

@@ -6,6 +6,7 @@
         { "path": "../address" },
         { "path": "../calldata" },
         { "path": "../fiat-services" },
+        { "path": "../legacy-network-config" },
         { "path": "../suite-constants" },
         { "path": "../suite-types" },
         { "path": "../suite-utils" },

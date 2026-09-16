@@ -1,3 +1,4 @@
+import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { useMissingRateTickersQuery } from '@suite-common/wallet-core';
 import { type TokenAddress, toTokenAddress, toTokenSymbol } from '@suite-common/wallet-types';
 import { mockAccountKey } from '@suite-common/wallet-types/mocks';
@@ -33,12 +34,12 @@ const USDC_CONTRACT_LOWERCASE = toTokenAddress('0xa0b86991c6218b36c1d19d4a2e9eb0
 const DAI_CONTRACT_LOWERCASE = toTokenAddress('0x0000000000000000000000000000000000000004');
 const RECEIPT_TOKEN_CONTRACT = toTokenAddress('0x0000000000000000000000000000000000000003');
 
-const ethAccountKey = mockAccountKey({ symbol: 'eth' });
+const ethAccountKey = mockAccountKey({ symbol: asNetworkSymbol('eth') });
 
 const stakingItem: StakingEarnItem = {
     id: 'staking-eth-account-1',
     type: 'staking',
-    symbol: 'eth',
+    symbol: asNetworkSymbol('eth'),
     accountKey: ethAccountKey,
     balance: '2',
 };
@@ -49,7 +50,7 @@ const createYieldItem = (underlyingContract: TokenAddress): YieldEarnItem => ({
     yieldId: 'vault-1',
     vaultName: 'Steakhouse USDC',
     tokenSymbol: toTokenSymbol('USDC'),
-    networkSymbol: 'eth',
+    networkSymbol: asNetworkSymbol('eth'),
     underlyingTokenContract: underlyingContract,
     receiptTokenContract: RECEIPT_TOKEN_CONTRACT,
     contractAddress: RECEIPT_TOKEN_CONTRACT,
@@ -95,7 +96,9 @@ describe('useEarnDepositsCardData', () => {
         const { result } = await renderDepositsCardData({
             items: [createYieldItem(USDC_CONTRACT_LOWERCASE)],
             currentRates: {
-                [getFiatRateKey('eth', 'usd', USDC_CONTRACT_LOWERCASE)]: { rate: 1 },
+                [getFiatRateKey(asNetworkSymbol('eth'), 'usd', USDC_CONTRACT_LOWERCASE)]: {
+                    rate: 1,
+                },
             },
         });
 
@@ -109,7 +112,9 @@ describe('useEarnDepositsCardData', () => {
         const { result } = await renderDepositsCardData({
             items: [createYieldItem(USDC_CONTRACT_LOWERCASE)],
             currentRates: {
-                [getFiatRateKey('eth', 'usd', USDC_CONTRACT_CHECKSUMMED)]: { rate: 1 },
+                [getFiatRateKey(asNetworkSymbol('eth'), 'usd', USDC_CONTRACT_CHECKSUMMED)]: {
+                    rate: 1,
+                },
             },
         });
 
@@ -128,7 +133,7 @@ describe('useEarnDepositsCardData', () => {
         const { result } = await renderDepositsCardData({
             items: [createYieldItem(USDC_CONTRACT_CHECKSUMMED)],
             currentRates: {
-                [getFiatRateKey('eth', 'usd')]: { rate: 3000 },
+                [getFiatRateKey(asNetworkSymbol('eth'), 'usd')]: { rate: 3000 },
             },
         });
 
@@ -165,7 +170,9 @@ describe('useEarnDepositsCardData', () => {
                 createYieldItem(DAI_CONTRACT_LOWERCASE),
             ],
             currentRates: {
-                [getFiatRateKey('eth', 'usd', USDC_CONTRACT_LOWERCASE)]: { rate: 1 },
+                [getFiatRateKey(asNetworkSymbol('eth'), 'usd', USDC_CONTRACT_LOWERCASE)]: {
+                    rate: 1,
+                },
             },
         });
 
@@ -194,8 +201,10 @@ describe('useEarnDepositsCardData', () => {
             items: [createYieldItem(USDC_CONTRACT_LOWERCASE)],
             stakingItems: [stakingItem],
             currentRates: {
-                [getFiatRateKey('eth', 'usd')]: { rate: 3_000 },
-                [getFiatRateKey('eth', 'usd', USDC_CONTRACT_LOWERCASE)]: { rate: 1 },
+                [getFiatRateKey(asNetworkSymbol('eth'), 'usd')]: { rate: 3_000 },
+                [getFiatRateKey(asNetworkSymbol('eth'), 'usd', USDC_CONTRACT_LOWERCASE)]: {
+                    rate: 1,
+                },
             },
         });
 

@@ -1,3 +1,4 @@
+import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { type Account } from '@suite-common/wallet-types';
 import { mockAccountKey } from '@suite-common/wallet-types/mocks';
 
@@ -20,18 +21,23 @@ const createDelegatedCardanoAccount = (balance: string): Account =>
 
 describe('resolveStakingPromoAccounts', () => {
     it('marks a network without a mobile staking flow as desktop only', () => {
-        const accounts = [createMockAccount({ symbol: 'trx', networkType: 'tron' })];
+        const accounts = [
+            createMockAccount({ symbol: asNetworkSymbol('trx'), networkType: 'tron' }),
+        ];
 
-        expect(resolveStakingPromoAccounts({ symbol: 'trx', accounts })).toEqual({
+        expect(resolveStakingPromoAccounts({ symbol: asNetworkSymbol('trx'), accounts })).toEqual({
             isDesktopOnly: true,
         });
     });
 
     it('returns every account of a network with a mobile staking flow', () => {
-        const ethAccount = createMockAccount({ symbol: 'eth', networkType: 'ethereum' });
+        const ethAccount = createMockAccount({
+            symbol: asNetworkSymbol('eth'),
+            networkType: 'ethereum',
+        });
         const accounts = [ethAccount, createMockAccount()];
 
-        expect(resolveStakingPromoAccounts({ symbol: 'eth', accounts })).toEqual({
+        expect(resolveStakingPromoAccounts({ symbol: asNetworkSymbol('eth'), accounts })).toEqual({
             isDesktopOnly: false,
             navigableAccounts: [ethAccount],
         });
@@ -41,7 +47,7 @@ describe('resolveStakingPromoAccounts', () => {
         const delegatedAccount = createDelegatedCardanoAccount('10000000');
         const accounts = [createMockAccount(), delegatedAccount];
 
-        expect(resolveStakingPromoAccounts({ symbol: 'ada', accounts })).toEqual({
+        expect(resolveStakingPromoAccounts({ symbol: asNetworkSymbol('ada'), accounts })).toEqual({
             isDesktopOnly: false,
             navigableAccounts: [delegatedAccount],
         });
@@ -50,7 +56,12 @@ describe('resolveStakingPromoAccounts', () => {
     it('returns a Cardano account that is delegated but emptied', () => {
         const emptiedAccount = createDelegatedCardanoAccount('0');
 
-        expect(resolveStakingPromoAccounts({ symbol: 'ada', accounts: [emptiedAccount] })).toEqual({
+        expect(
+            resolveStakingPromoAccounts({
+                symbol: asNetworkSymbol('ada'),
+                accounts: [emptiedAccount],
+            }),
+        ).toEqual({
             isDesktopOnly: false,
             navigableAccounts: [emptiedAccount],
         });
@@ -58,7 +69,10 @@ describe('resolveStakingPromoAccounts', () => {
 
     it('marks Cardano as desktop only when no account is delegated', () => {
         expect(
-            resolveStakingPromoAccounts({ symbol: 'ada', accounts: [createMockAccount()] }),
+            resolveStakingPromoAccounts({
+                symbol: asNetworkSymbol('ada'),
+                accounts: [createMockAccount()],
+            }),
         ).toEqual({ isDesktopOnly: true });
     });
 });

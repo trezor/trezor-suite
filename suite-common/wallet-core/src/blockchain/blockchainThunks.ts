@@ -1,5 +1,6 @@
 import { type AnalyticsDep } from '@suite-common/analytics';
 import { type DeviceRootState, selectDevices } from '@suite-common/device';
+import { type LegacyNetworkSymbol } from '@suite-common/legacy-network-config';
 import { type NetworksRootState } from '@suite-common/networks';
 import { type WithServices, createThunk } from '@suite-common/redux-utils';
 import { type GetIsWindowVisibleDep } from '@suite-common/suite-types';
@@ -61,7 +62,7 @@ import {
 
 export const DEFAULT_NETWORK_SYNC_INTERVAL = 60 * 1000; // 1 minute
 
-const NETWORK_SYNC_INTERVALS: Partial<Record<NetworkSymbol, number>> = {
+const NETWORK_SYNC_INTERVALS: Partial<Record<LegacyNetworkSymbol, number>> = {
     bsc: DEFAULT_NETWORK_SYNC_INTERVAL / 1.5,
     pol: DEFAULT_NETWORK_SYNC_INTERVAL / 1.5,
     op: DEFAULT_NETWORK_SYNC_INTERVAL / 1.5,
@@ -77,7 +78,7 @@ const NETWORK_SYNC_INTERVALS: Partial<Record<NetworkSymbol, number>> = {
 const getNetworkSyncInterval = (
     symbol: NetworkSymbol,
     defaultInterval: number = DEFAULT_NETWORK_SYNC_INTERVAL,
-) => NETWORK_SYNC_INTERVALS[symbol] ?? defaultInterval;
+) => NETWORK_SYNC_INTERVALS[symbol as LegacyNetworkSymbol] ?? defaultInterval;
 
 type ReconnectBlockchainThunkParams = {
     symbol: NetworkSymbol;
@@ -115,7 +116,9 @@ export const setCustomBackendThunk = createThunk<
     { state: SetCustomBackendThunkState }
 >(`${BLOCKCHAIN_MODULE_PREFIX}/setCustomBackendThunk`, async (symbol, { dispatch, getState }) => {
     const blockchain = selectBlockchainState(getState());
-    const backends = [getBackendFromSettings(symbol, blockchain[symbol].backends)];
+    const backends = [
+        getBackendFromSettings(symbol, blockchain[symbol as LegacyNetworkSymbol].backends),
+    ];
     const result = await setBackendsToConnect(backends);
 
     // a disabled network has nothing to sync, so do not open a connection to its backend
@@ -306,7 +309,7 @@ export const syncAccountsWithBlockchainThunk = createThunk<
         const isWindowVisible = getIsWindowVisible();
 
         // First clear, to cancel last planned sync
-        tryClearTimeout(blockchain[symbol].syncTimeout);
+        tryClearTimeout(blockchain[symbol as LegacyNetworkSymbol].syncTimeout);
 
         // Sync only when the app window is active
         const shouldSync = isWindowVisible;
@@ -494,7 +497,7 @@ export const onBlockchainDisconnectThunk = createThunk<
     if (!network) return;
 
     const { symbol } = network;
-    const blockchain = selectBlockchainState(getState())[symbol];
+    const blockchain = selectBlockchainState(getState())[symbol as LegacyNetworkSymbol];
     const hasAccounts = findAccountsByNetwork(symbol, selectAccounts(getState())).length > 0;
 
     /**

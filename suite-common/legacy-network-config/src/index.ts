@@ -1,5 +1,5 @@
 export { networkDisplayOrder } from './networkDisplayOrder';
-export { networks } from './networksConfig';
+export { networks, type LegacyNetworkSymbol } from './networksConfig';
 export {
     TREZOR_CONNECT_BACKENDS,
     type AccountType,

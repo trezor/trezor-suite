@@ -1,3 +1,4 @@
+import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { TestStream } from '@trezor/e2e-utils';
 
 import { AccountLabelId } from '../../../support/enums/accountLabelId';
@@ -28,8 +29,12 @@ test.describe('Remembered device', { tag: ['@webOnly', '@T3W1', '@T3T1'] }, () =
         async ({ page, device, onboardingPage, settingsPage, metadataPage, walletPage }) => {
             await test.step('Complete onboarding and open BTC account', async () => {
                 await onboardingPage.completeOnboarding();
-                await settingsPage.changeNetworks({ enableNetworks: ['btc'] });
-                await walletPage.openAccount({ symbol: 'btc', type: 'normal', atIndex: 0 });
+                await settingsPage.changeNetworks({ enableNetworks: [asNetworkSymbol('btc')] });
+                await walletPage.openAccount({
+                    symbol: asNetworkSymbol('btc'),
+                    type: 'normal',
+                    atIndex: 0,
+                });
             });
 
             await test.step('Enable metadata (legacy) and initialize with Google provider', async () => {

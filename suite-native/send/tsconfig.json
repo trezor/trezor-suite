@@ -30,6 +30,9 @@
         },
         {
             "path": "../../suite-common/test-utils"
+        },
+        {
+            "path": "../../suite-common/wallet-config"
         }
     ]
 }

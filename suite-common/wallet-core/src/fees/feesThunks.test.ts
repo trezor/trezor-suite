@@ -1,6 +1,7 @@
 import { combineReducers } from '@reduxjs/toolkit';
 
 import { deviceInitialState, prepareDeviceReducer } from '@suite-common/device';
+import { type LegacyNetworkSymbol } from '@suite-common/legacy-network-config';
 import { mockActionType, mockReducer } from '@suite-common/redux-utils/mocks';
 import { createTestStore } from '@suite-common/test-utils';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
@@ -85,7 +86,7 @@ describe(updateFeeInfoThunk.name, () => {
 
         expect(response.meta.requestStatus).toBe('fulfilled');
         expect(response.payload).toEqual(tronFeeInfo);
-        expect(store.getState().wallet.fees[trxSymbol]).toEqual({
+        expect(store.getState().wallet.fees[trxSymbol as LegacyNetworkSymbol]).toEqual({
             status: 'loaded',
             data: tronFeeInfo,
         });
@@ -137,7 +138,9 @@ describe(getOrFetchRawFeeInfoThunk.name, () => {
         expect(response.payload).toMatchObject({
             levels: [expect.objectContaining({ label: 'normal', feePerUnit: '3000000000' })],
         });
-        expect(store.getState().wallet.fees[ethSymbol]?.status).toBe('loaded');
+        expect(store.getState().wallet.fees[ethSymbol as LegacyNetworkSymbol]?.status).toBe(
+            'loaded',
+        );
     });
 
     it('returns undefined when fee info is missing and the fetch fails', async () => {
@@ -153,6 +156,8 @@ describe(getOrFetchRawFeeInfoThunk.name, () => {
 
         expect(response.meta.requestStatus).toBe('fulfilled');
         expect(response.payload).toBeUndefined();
-        expect(store.getState().wallet.fees[ethSymbol]?.status).toBe('error');
+        expect(store.getState().wallet.fees[ethSymbol as LegacyNetworkSymbol]?.status).toBe(
+            'error',
+        );
     });
 });

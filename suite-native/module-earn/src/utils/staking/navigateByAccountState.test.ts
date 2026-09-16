@@ -1,3 +1,4 @@
+import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { type Account } from '@suite-common/wallet-types';
 import { mockAccountKey } from '@suite-common/wallet-types/mocks';
 import { getAccountTotalStakingBalance } from '@suite-common/wallet-utils';
@@ -40,7 +41,7 @@ describe('navigateByAccountState', () => {
     });
 
     it('navigates to StakingManagement when a Solana account has staked balance', () => {
-        const account = createMockAccount({ symbol: 'sol' });
+        const account = createMockAccount({ symbol: asNetworkSymbol('sol') });
         mockGetAccountTotalStakingBalance.mockReturnValue('1000000000');
 
         navigateByAccountState(account, mockNavigate);
@@ -51,7 +52,7 @@ describe('navigateByAccountState', () => {
     });
 
     it('navigates to HowStakeWorksScreen when a Solana account has a balance but no stake', () => {
-        const account = createMockAccount({ symbol: 'sol' });
+        const account = createMockAccount({ symbol: asNetworkSymbol('sol') });
         mockGetAccountTotalStakingBalance.mockReturnValue('0');
 
         navigateByAccountState(account, mockNavigate);
@@ -64,7 +65,10 @@ describe('navigateByAccountState', () => {
     });
 
     it('navigates to HowStakeWorksScreen when a Solana account has insufficient balance and no stake', () => {
-        const account = createMockAccount({ symbol: 'sol', availableBalance: '100' });
+        const account = createMockAccount({
+            symbol: asNetworkSymbol('sol'),
+            availableBalance: '100',
+        });
         mockGetAccountTotalStakingBalance.mockReturnValue(null);
 
         navigateByAccountState(account, mockNavigate);
@@ -76,7 +80,7 @@ describe('navigateByAccountState', () => {
     });
 
     it('navigates to StakingManagement when a Cardano account has staked balance', () => {
-        const account = createMockAccount({ symbol: 'ada' });
+        const account = createMockAccount({ symbol: asNetworkSymbol('ada') });
         mockGetAccountTotalStakingBalance.mockReturnValue('1000000');
 
         navigateByAccountState(account, mockNavigate);
@@ -87,7 +91,7 @@ describe('navigateByAccountState', () => {
     });
 
     it('navigates a Cardano account without a staked balance to HowStakeWorks', () => {
-        const account = createMockAccount({ symbol: 'ada' });
+        const account = createMockAccount({ symbol: asNetworkSymbol('ada') });
         mockGetAccountTotalStakingBalance.mockReturnValue('0');
 
         navigateByAccountState(account, mockNavigate);
@@ -151,7 +155,7 @@ describe('navigateByAccountState', () => {
     });
 
     it('does not navigate when the account is not on a staking network', () => {
-        const account = createMockAccount({ symbol: 'btc' });
+        const account = createMockAccount({ symbol: asNetworkSymbol('btc') });
         mockGetAccountTotalStakingBalance.mockReturnValue('0');
 
         navigateByAccountState(account, mockNavigate);

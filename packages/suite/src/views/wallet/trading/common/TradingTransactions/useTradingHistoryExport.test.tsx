@@ -10,6 +10,7 @@ import {
     type TradingTransactionExchange,
     initialState as tradingInitialState,
 } from '@suite-common/trading';
+import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { asAccountDescriptor } from '@suite-common/wallet-types';
 import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
 import { type StaticSessionId } from '@trezor/device-utils';
@@ -75,7 +76,7 @@ const selectedDevice = mockSuiteDevice({
 });
 
 const ethAccount = mockWalletAccount({
-    symbol: 'eth',
+    symbol: asNetworkSymbol('eth'),
     descriptor: asAccountDescriptor('ethDescriptor'),
     deviceState: DEVICE_STATIC_SESSION_ID,
 });

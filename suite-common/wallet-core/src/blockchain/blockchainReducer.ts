@@ -1,5 +1,6 @@
 import { type PayloadAction } from '@reduxjs/toolkit';
 
+import { type LegacyNetworkSymbol } from '@suite-common/legacy-network-config';
 import { type NetworksRootState, selectSupportedNetworkSymbols } from '@suite-common/networks';
 import {
     type ActionTypesDep,
@@ -37,7 +38,7 @@ export type BlockchainRootState = { wallet: { blockchain: BlockchainState } };
 // fill initial state, those values will be changed by BLOCKCHAIN.UPDATE_FEE action
 export const blockchainInitialState: BlockchainNetworks = networksCollection.reduce(
     (state, network) => {
-        state[network.symbol] = {
+        state[network.symbol as LegacyNetworkSymbol] = {
             connected: false,
             blockHash: '0',
             blockHeight: 0,
@@ -64,7 +65,7 @@ const writeIdentityConnection = (
     identity: string,
     data: Partial<NonNullable<Blockchain['identityConnections']>[string]>,
 ) => {
-    const blockchain = state[symbol];
+    const blockchain = state[symbol as LegacyNetworkSymbol];
     const connections = blockchain.identityConnections ?? (blockchain.identityConnections = {});
     connections[identity] = {
         ...(connections[identity] ?? { connected: false }),
@@ -86,14 +87,14 @@ const connect = (draft: BlockchainState, info: BlockchainInfo) => {
         return;
     }
 
-    draft[network.symbol] = {
+    draft[network.symbol as LegacyNetworkSymbol] = {
         url: info.url,
         connected: true,
         blockHash: info.blockHash,
         blockHeight: info.blockHeight,
         version: info.version,
-        backends: draft[network.symbol].backends,
-        identityConnections: draft[network.symbol].identityConnections,
+        backends: draft[network.symbol as LegacyNetworkSymbol].backends,
+        identityConnections: draft[network.symbol as LegacyNetworkSymbol].identityConnections,
     };
 };
 
@@ -109,12 +110,12 @@ const error = (draft: BlockchainState, payload: BlockchainError) => {
     if (identity) {
         writeIdentityConnection(draft, network.symbol, identity, { connected: false, error });
     } else {
-        draft[network.symbol] = {
-            ...draft[network.symbol],
+        draft[network.symbol as LegacyNetworkSymbol] = {
+            ...draft[network.symbol as LegacyNetworkSymbol],
             connected: false,
             error,
         };
-        delete draft[network.symbol].url;
+        delete draft[network.symbol as LegacyNetworkSymbol].url;
     }
 };
 
@@ -122,8 +123,8 @@ const update = (draft: BlockchainState, block: BlockchainBlock) => {
     const network = getNetworkOptional(block.coin.shortcut.toLowerCase());
     if (!network) return;
 
-    draft[network.symbol] = {
-        ...draft[network.symbol],
+    draft[network.symbol as LegacyNetworkSymbol] = {
+        ...draft[network.symbol as LegacyNetworkSymbol],
         blockHash: block.blockHash,
         blockHeight: block.blockHeight,
     };
@@ -138,8 +139,8 @@ const reconnecting = (draft: BlockchainState, payload: BlockchainReconnecting) =
             reconnectionTime: payload.time,
         });
     } else {
-        draft[network.symbol] = {
-            ...draft[network.symbol],
+        draft[network.symbol as LegacyNetworkSymbol] = {
+            ...draft[network.symbol as LegacyNetworkSymbol],
             reconnectionTime: payload.time,
         };
     }
@@ -153,19 +154,20 @@ export const prepareBlockchainReducer = createReducerWithExtraDeps(
     (builder, extra: BlockchainReducerDeps) => {
         builder
             .addCase(blockchainActions.synced, (state, action) => {
-                state[action.payload.symbol].syncTimeout = action.payload.timeout;
+                state[action.payload.symbol as LegacyNetworkSymbol].syncTimeout =
+                    action.payload.timeout;
             })
             .addCase(blockchainActions.setBackend, (state, action) => {
                 const { symbol, type } = action.payload;
                 if (type === 'default') {
-                    delete state[symbol].backends.selected;
+                    delete state[symbol as LegacyNetworkSymbol].backends.selected;
                 } else if (!action.payload.urls.length) {
-                    delete state[symbol].backends.selected;
-                    delete state[symbol].backends.urls?.[type];
+                    delete state[symbol as LegacyNetworkSymbol].backends.selected;
+                    delete state[symbol as LegacyNetworkSymbol].backends.urls?.[type];
                 } else {
-                    state[symbol].backends.selected = type;
-                    state[symbol].backends.urls = {
-                        ...state[symbol].backends.urls,
+                    state[symbol as LegacyNetworkSymbol].backends.selected = type;
+                    state[symbol as LegacyNetworkSymbol].backends.urls = {
+                        ...state[symbol as LegacyNetworkSymbol].backends.urls,
                         [type]: action.payload.urls,
                     };
                 }
@@ -173,9 +175,9 @@ export const prepareBlockchainReducer = createReducerWithExtraDeps(
             .addCase(blockchainActions.setBackendGapLimit, (state, action) => {
                 const { symbol, gapLimit } = action.payload;
                 if (gapLimit === undefined) {
-                    delete state[symbol].backends.gapLimit;
+                    delete state[symbol as LegacyNetworkSymbol].backends.gapLimit;
                 } else {
-                    state[symbol].backends.gapLimit = gapLimit;
+                    state[symbol as LegacyNetworkSymbol].backends.gapLimit = gapLimit;
                 }
             })
             .addCase(extra.actionTypes.storageLoad, extra.reducers.storageLoadBlockchain)
@@ -213,7 +215,10 @@ const createMemoizedSelector = createWeakMapSelector.withTypes<
 export const selectBlockchainState = (state: BlockchainRootState) => state.wallet.blockchain;
 
 export const selectNetworkBlockchainInfo = (state: BlockchainRootState, symbol: NetworkSymbol) =>
-    state.wallet.blockchain[symbol];
+    state.wallet.blockchain[symbol as LegacyNetworkSymbol];
+
+export const selectBlockchainUrlBySymbol = (state: BlockchainRootState, symbol: NetworkSymbol) =>
+    selectNetworkBlockchainInfo(state, symbol)?.url;
 
 export const selectBlockchainHeightBySymbol = createMemoizedSelector(
     [selectNetworkBlockchainInfo],
@@ -239,7 +244,7 @@ export const selectIsCustomBackendConfigured = createMemoizedSelector(
 );
 
 export const selectGapLimit = (state: BlockchainRootState, symbol: NetworkSymbol) =>
-    state.wallet.blockchain[symbol]?.backends.gapLimit;
+    state.wallet.blockchain[symbol as LegacyNetworkSymbol]?.backends.gapLimit;
 
 const createNetworkMemoizedSelector = createWeakMapSelector.withTypes<
     BlockchainRootState & WalletSettingsRootState & NetworksRootState

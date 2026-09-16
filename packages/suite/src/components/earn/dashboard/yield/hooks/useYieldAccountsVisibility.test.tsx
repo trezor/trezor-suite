@@ -8,7 +8,9 @@ import { type YieldAccountOpportunity } from '../types';
 
 const createRoot = () =>
     createTestCompositionRoot({
-        preloadedState: { networks: mockNetworksState(['eth', 'base']) },
+        preloadedState: {
+            networks: mockNetworksState([asNetworkSymbol('eth'), asNetworkSymbol('base')]),
+        },
     });
 
 const ethSymbol = asNetworkSymbol('eth');

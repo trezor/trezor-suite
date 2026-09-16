@@ -1,3 +1,4 @@
+import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { getTranslation } from '@suite-native/intl';
 import { renderWithStoreProvider } from '@suite-native/test-utils-store';
 
@@ -10,7 +11,11 @@ jest.mock('../../hooks/useUtxoSelection', () => ({
 describe('SendUtxosScreenFooter', () => {
     it('should render footer with selected total and continue button', async () => {
         const { getByText } = await renderWithStoreProvider(
-            <SendUtxoScreenFooter symbol="btc" selectedTotal="800000000" onSubmit={jest.fn()} />,
+            <SendUtxoScreenFooter
+                symbol={asNetworkSymbol('btc')}
+                selectedTotal="800000000"
+                onSubmit={jest.fn()}
+            />,
         );
 
         expect(getByText(getTranslation('moduleSend.coinControl.utxos.selected'))).toBeTruthy();
@@ -21,7 +26,7 @@ describe('SendUtxosScreenFooter', () => {
     it('should show remaining amount when amount is provided and selected total is less than amount', async () => {
         const { getByText } = await renderWithStoreProvider(
             <SendUtxoScreenFooter
-                symbol="btc"
+                symbol={asNetworkSymbol('btc')}
                 selectedTotal="500000000"
                 onSubmit={jest.fn()}
                 amount="800000000"
@@ -35,7 +40,7 @@ describe('SendUtxosScreenFooter', () => {
     it('should not show remaining amount when selected total is equal to or greater than amount', async () => {
         const { queryByText } = await renderWithStoreProvider(
             <SendUtxoScreenFooter
-                symbol="btc"
+                symbol={asNetworkSymbol('btc')}
                 selectedTotal="800000000"
                 onSubmit={jest.fn()}
                 amount="800000000"

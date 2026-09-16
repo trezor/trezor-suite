@@ -1,8 +1,11 @@
+import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { localizeNumber } from '@suite-common/wallet-utils';
 import { TestStream } from '@trezor/e2e-utils';
 
 import { expect, test } from '../../support/fixtures';
 import { createTestAnnotation } from '../../support/reporters/annotations';
+
+const btcSymbol = asNetworkSymbol('btc');
 
 const fiatAmount = '1000';
 const fiatCurrency = 'CZK';
@@ -17,7 +20,7 @@ test.describe('Trading - Buy BTC', { tag: ['@T3W1', '@T3T1'] }, () => {
         await tradingMock.setStatus('SUBMITTED');
 
         await onboardingPage.completeOnboarding();
-        await settingsPage.changeNetworks({ enableNetworks: ['btc'] });
+        await settingsPage.changeNetworks({ enableNetworks: [btcSymbol] });
         await walletPage.openTrading();
     });
 
@@ -29,7 +32,7 @@ test.describe('Trading - Buy BTC', { tag: ['@T3W1', '@T3T1'] }, () => {
                 await tradingPage.fillBuyForm({
                     amount: fiatAmount,
                     selectReceiveAddress: async () => {
-                        await tradingPage.receiveAccount.selectSuiteReceiveAccount(0, 'btc');
+                        await tradingPage.receiveAccount.selectSuiteReceiveAccount(0, btcSymbol);
                     },
                 });
             });
@@ -59,7 +62,7 @@ test.describe('Trading - Buy BTC', { tag: ['@T3W1', '@T3T1'] }, () => {
                 await tradingPage.fillBuyForm({
                     amount: fiatAmount,
                     selectReceiveAddress: async () => {
-                        await tradingPage.receiveAccount.selectSuiteReceiveAccount(0, 'btc');
+                        await tradingPage.receiveAccount.selectSuiteReceiveAccount(0, btcSymbol);
                     },
                 });
             });

@@ -1,3 +1,4 @@
+import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { type FiatRatesState } from '@suite-common/wallet-core';
 import {
     type Account,
@@ -16,15 +17,15 @@ const BTC_ACCOUNT_DESCRIPTOR =
 const SOL_ACCOUNT_DESCRIPTOR = 'ETxHeBBcuw9Yu4dGuP3oXrD12V5RECvmi8ogQ9PkjyVF';
 
 export const ETH_ACCOUNT_KEY = mockAccountKey({
-    symbol: 'eth',
+    symbol: asNetworkSymbol('eth'),
     descriptor: ETH_ACCOUNT_DESCRIPTOR,
 });
 export const BTC_ACCOUNT_KEY = mockAccountKey({
-    symbol: 'btc',
+    symbol: asNetworkSymbol('btc'),
     descriptor: BTC_ACCOUNT_DESCRIPTOR,
 });
 export const SOL_ACCOUNT_KEY = mockAccountKey({
-    symbol: 'sol',
+    symbol: asNetworkSymbol('sol'),
     descriptor: SOL_ACCOUNT_DESCRIPTOR,
 });
 

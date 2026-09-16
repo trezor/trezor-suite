@@ -1,9 +1,12 @@
 import { mnemonic12Fixtures } from '@suite-common/e2e-evolu-client';
+import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { TestStream } from '@trezor/e2e-utils';
 
 import { isWebProject } from '../../../support/common';
 import { expect, test } from '../../../support/fixtures';
 import { createTestAnnotation } from '../../../support/reporters/annotations';
+
+const btcSymbol = asNetworkSymbol('btc');
 
 const { accountSeed, createAddressSeed, createOutputSeed, ownerSecret, walletSeed } =
     mnemonic12Fixtures;
@@ -29,7 +32,7 @@ test.describe('Suite Sync - Labelling', { tag: ['@T3W1', '@T3T1'] }, () => {
         await onboardingPage.completeOnboarding();
         await settingsPage.navigateTo('application');
         await settingsPage.toggleDebugModeInSettings();
-        await settingsPage.changeNetworks({ enableNetworks: ['btc'] });
+        await settingsPage.changeNetworks({ enableNetworks: [btcSymbol] });
     });
 
     test(
@@ -75,10 +78,12 @@ test.describe('Suite Sync - Labelling', { tag: ['@T3W1', '@T3T1'] }, () => {
 
             await test.step('Verify BTC account label is synced', async () => {
                 await walletPage
-                    .accountLabel({ symbol: 'btc', type: 'normal', atIndex: 0 })
+                    .accountLabel({ symbol: btcSymbol, type: 'normal', atIndex: 0 })
                     .click();
                 await expect
-                    .soft(walletPage.accountLabel({ symbol: 'btc', type: 'normal', atIndex: 0 }))
+                    .soft(
+                        walletPage.accountLabel({ symbol: btcSymbol, type: 'normal', atIndex: 0 }),
+                    )
                     .toHaveText(accountSeed.label, { timeout: 30_000 });
             });
 
@@ -91,7 +96,7 @@ test.describe('Suite Sync - Labelling', { tag: ['@T3W1', '@T3T1'] }, () => {
             });
 
             await test.step('Verify address label is synced', async () => {
-                await walletPage.openAccount({ symbol: 'btc', type: 'normal', atIndex: 0 });
+                await walletPage.openAccount({ symbol: btcSymbol, type: 'normal', atIndex: 0 });
                 await walletPage.receiveButton.click();
                 await expect
                     .soft(metadataPage.address.label(addressSeed.address))
@@ -99,7 +104,7 @@ test.describe('Suite Sync - Labelling', { tag: ['@T3W1', '@T3T1'] }, () => {
             });
 
             await test.step('Verify output label is synced', async () => {
-                await walletPage.openAccount({ symbol: 'btc', type: 'normal', atIndex: 0 });
+                await walletPage.openAccount({ symbol: btcSymbol, type: 'normal', atIndex: 0 });
                 await expect
                     .soft(
                         metadataPage.output.outputLabel(

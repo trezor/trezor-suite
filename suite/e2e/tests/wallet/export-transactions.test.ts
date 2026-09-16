@@ -1,6 +1,6 @@
 import fs from 'fs';
 
-import type { NetworkSymbol } from '@suite-common/wallet-config';
+import { type NetworkSymbol, asNetworkSymbol } from '@suite-common/wallet-config';
 import { TestCategory, TestPriority, TestStream } from '@trezor/e2e-utils';
 
 import { expect, test } from '../../support/fixtures';
@@ -63,12 +63,15 @@ test.describe('Export transactions', { tag: ['@webOnly', '@T3W1', '@T3T1'] }, ()
             }),
         },
         async ({ page, settingsPage, walletPage, onboardingPage }) => {
-            await runExport(['btc', 'ltc', 'eth'], {
-                page,
-                settingsPage,
-                walletPage,
-                onboardingPage,
-            });
+            await runExport(
+                [asNetworkSymbol('btc'), asNetworkSymbol('ltc'), asNetworkSymbol('eth')],
+                {
+                    page,
+                    settingsPage,
+                    walletPage,
+                    onboardingPage,
+                },
+            );
         },
     );
 
@@ -84,7 +87,12 @@ test.describe('Export transactions', { tag: ['@webOnly', '@T3W1', '@T3T1'] }, ()
             }),
         },
         async ({ page, settingsPage, walletPage, onboardingPage }) => {
-            await runExport(['ada'], { page, settingsPage, walletPage, onboardingPage });
+            await runExport([asNetworkSymbol('ada')], {
+                page,
+                settingsPage,
+                walletPage,
+                onboardingPage,
+            });
         },
     );
 });

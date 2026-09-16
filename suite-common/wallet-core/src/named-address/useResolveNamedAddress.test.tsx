@@ -10,6 +10,7 @@ import {
     type SymbolNamedAddressResolver,
 } from '@suite-common/networks';
 import { renderHookWithQueryClient, waitFor } from '@suite-common/test-utils';
+import { asNetworkSymbol } from '@suite-common/wallet-config';
 
 import { useResolveNamedAddress } from './useResolveNamedAddress';
 
@@ -65,7 +66,7 @@ describe('useResolveNamedAddress', () => {
 
     describe('idle mode (no fetch)', () => {
         it('is idle for an unsupported symbol', () => {
-            const { result } = renderResolveHook('vitalik.eth', 'btc');
+            const { result } = renderResolveHook('vitalik.eth', asNetworkSymbol('btc'));
 
             expect(result.current.mode).toBe('idle');
             expect(result.current.isResolving).toBe(false);
@@ -81,14 +82,14 @@ describe('useResolveNamedAddress', () => {
         });
 
         it('is idle for a bare identifier without a dot', () => {
-            const { result } = renderResolveHook('vitalik', 'eth');
+            const { result } = renderResolveHook('vitalik', asNetworkSymbol('eth'));
 
             expect(result.current.mode).toBe('idle');
             expectNoResolution();
         });
 
         it('is idle for a hex address on an unsupported symbol', () => {
-            const { result } = renderResolveHook(RESOLVED_HEX, 'btc');
+            const { result } = renderResolveHook(RESOLVED_HEX, asNetworkSymbol('btc'));
 
             expect(result.current.mode).toBe('idle');
             expectNoResolution();
@@ -99,7 +100,7 @@ describe('useResolveNamedAddress', () => {
         it('resolves a named input on eth mainnet', async () => {
             mockResolveNamedAddress.mockResolvedValue(RESOLVED_HEX);
 
-            const { result } = renderResolveHook('vitalik.eth', 'eth');
+            const { result } = renderResolveHook('vitalik.eth', asNetworkSymbol('eth'));
 
             expect(result.current.mode).toBe('forward');
 
@@ -115,7 +116,7 @@ describe('useResolveNamedAddress', () => {
         it('resolves a named input on tsep', async () => {
             mockResolveNamedAddress.mockResolvedValue(RESOLVED_HEX);
 
-            const { result } = renderResolveHook('vitalik.eth', 'tsep');
+            const { result } = renderResolveHook('vitalik.eth', asNetworkSymbol('tsep'));
 
             await waitFor(() => expect(result.current.isSuccess).toBe(true));
             expect(result.current.resolvedAddress).toBe(RESOLVED_HEX);
@@ -125,7 +126,7 @@ describe('useResolveNamedAddress', () => {
         it('trims whitespace before resolving', async () => {
             mockResolveNamedAddress.mockResolvedValue(RESOLVED_HEX);
 
-            const { result } = renderResolveHook('  vitalik.eth  ', 'eth');
+            const { result } = renderResolveHook('  vitalik.eth  ', asNetworkSymbol('eth'));
 
             await waitFor(() => expect(result.current.isSuccess).toBe(true));
             expect(mockResolveNamedAddress).toHaveBeenCalledWith('vitalik.eth', 'eth');
@@ -136,7 +137,7 @@ describe('useResolveNamedAddress', () => {
         it('reverse-resolves a hex address to its primary name', async () => {
             mockReverseResolveAddress.mockResolvedValue('vitalik.eth');
 
-            const { result } = renderResolveHook(RESOLVED_HEX, 'eth');
+            const { result } = renderResolveHook(RESOLVED_HEX, asNetworkSymbol('eth'));
 
             expect(result.current.mode).toBe('reverse');
 
@@ -151,7 +152,10 @@ describe('useResolveNamedAddress', () => {
         it('reverse-resolves an address that is not checksummed', async () => {
             mockReverseResolveAddress.mockResolvedValue('vitalik.eth');
 
-            const { result } = renderResolveHook(RESOLVED_HEX.toLowerCase(), 'eth');
+            const { result } = renderResolveHook(
+                RESOLVED_HEX.toLowerCase(),
+                asNetworkSymbol('eth'),
+            );
 
             expect(result.current.mode).toBe('reverse');
             await waitFor(() => expect(result.current.reverseResolvedName).toBe('vitalik.eth'));
@@ -160,7 +164,7 @@ describe('useResolveNamedAddress', () => {
         it('an address with no primary name is not an error', async () => {
             mockReverseResolveAddress.mockResolvedValue(null);
 
-            const { result } = renderResolveHook(RESOLVED_HEX, 'eth');
+            const { result } = renderResolveHook(RESOLVED_HEX, asNetworkSymbol('eth'));
 
             await waitFor(() => expect(result.current.isSuccess).toBe(true));
 
@@ -173,7 +177,7 @@ describe('useResolveNamedAddress', () => {
         it('surfaces a query error when resolution fails', async () => {
             mockResolveNamedAddress.mockRejectedValue(new Error('not found'));
 
-            const { result } = renderResolveHook('nope.eth', 'eth');
+            const { result } = renderResolveHook('nope.eth', asNetworkSymbol('eth'));
 
             await waitFor(() => expect(result.current.isError).toBe(true));
             expect(result.current.error).toBeInstanceOf(Error);
@@ -185,7 +189,7 @@ describe('useResolveNamedAddress', () => {
         it('treats a name with no record as a resolve error', async () => {
             mockResolveNamedAddress.mockResolvedValue(null);
 
-            const { result } = renderResolveHook('nope.eth', 'eth');
+            const { result } = renderResolveHook('nope.eth', asNetworkSymbol('eth'));
 
             await waitFor(() => expect(result.current.isSuccess).toBe(true));
 

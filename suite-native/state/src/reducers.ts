@@ -7,6 +7,7 @@ import { prepareDeviceReducer } from '@suite-common/device';
 import { discreetModeReducer } from '@suite-common/discreet-mode';
 import { prepareFirmwareReducer } from '@suite-common/firmware';
 import { geolocationReducer } from '@suite-common/geolocation';
+import { type LegacyNetworkSymbol } from '@suite-common/legacy-network-config';
 import { logsSlice } from '@suite-common/logger';
 import {
     messageSystemPersistedWhitelist,
@@ -134,7 +135,7 @@ export const prepareRootReducers = (deps: PrepareRootReducersDeps) => {
         // TODO(#32215): BLOCKER FOR DYNAMIC MODULE LOADING: this whitelist is captured at store
         // initialization. Rework persistence to hydrate newly activated networks before saving
         // and preserve data for inactive networks before modules can change at runtime.
-        persistedKeys: deps.getSupportedNetworks(),
+        persistedKeys: deps.getSupportedNetworks() as readonly LegacyNetworkSymbol[],
         key: 'blockchain',
         version: 1,
         transforms: [blockchainPersistTransform],
@@ -146,7 +147,7 @@ export const prepareRootReducers = (deps: PrepareRootReducersDeps) => {
         // TODO(#32215): BLOCKER FOR DYNAMIC MODULE LOADING: this whitelist is captured at store
         // initialization. Rework persistence to hydrate newly activated networks before saving
         // and preserve data for inactive networks before modules can change at runtime.
-        persistedKeys: deps.getSupportedNetworks(),
+        persistedKeys: deps.getSupportedNetworks() as readonly LegacyNetworkSymbol[],
         key: 'explorer',
         version: 1,
         transforms: [explorerPersistTransform],

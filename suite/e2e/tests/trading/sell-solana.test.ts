@@ -1,3 +1,4 @@
+import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { localizeNumber } from '@suite-common/wallet-utils';
 import { TestStream } from '@trezor/e2e-utils';
 
@@ -6,6 +7,8 @@ import { formatAddressWithNewlines } from '../../support/common';
 import { expect, test } from '../../support/fixtures';
 import { createTestAnnotation } from '../../support/reporters/annotations';
 import { transformAddress } from '../../support/testExtends/customMatchers';
+
+const solSymbol = asNetworkSymbol('sol');
 
 const sendAmount = '1.5';
 const formattedSendAmount = `${localizeNumber(sendAmount)} SOL`;
@@ -32,15 +35,15 @@ test.describe('Trading - Sell Solana', { tag: ['@T3W1', '@T3T1'] }, () => {
             await tradingMock.rewriteProviderRedirect();
             await tradingMock.setWatchFields({ destinationAddress: depositAddress });
             await tradingMock.setStatus('SEND_CRYPTO');
-            const solBackend = await tradingMock.startBackend('sol');
+            const solBackend = await tradingMock.startBackend(solSymbol);
 
             await onboardingPage.completeOnboarding();
             await settingsPage.changeNetworks({
-                enableNetworks: [{ symbol: 'sol', backend: solBackend }],
+                enableNetworks: [{ symbol: solSymbol, backend: solBackend }],
             });
             await dashboardPage.deviceSwitchingOpenButton.click();
             await dashboardPage.addHiddenWallet(process.env.PASSPHRASE!);
-            await walletPage.openTrading({ symbol: 'sol' });
+            await walletPage.openTrading({ symbol: solSymbol });
             await tradingPage.sellTabButton.click();
         },
     );

@@ -1,8 +1,11 @@
+import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { TestStream } from '@trezor/e2e-utils';
 
 import { DEVICE_RENDERED_EVM_INDENT } from '../../support/common';
 import { expect, test } from '../../support/fixtures';
 import { createTestAnnotation } from '../../support/reporters/annotations';
+
+const regtestSymbol = asNetworkSymbol('regtest');
 
 const ETHEREUM_ADDRESS_3 = '0x574BbB36871bA6b78E27f4B4dCFb76eA0091880B';
 const DEVICE_ETHEREUM_ADDRESS_3 = `${DEVICE_RENDERED_EVM_INDENT}${ETHEREUM_ADDRESS_3}`;
@@ -13,7 +16,7 @@ test.describe('Global receive and send', { tag: ['@T3T1', '@T3W1'] }, () => {
 
     test.beforeEach(async ({ onboardingPage, settingsPage, dashboardPage }) => {
         await onboardingPage.completeOnboarding();
-        await settingsPage.changeNetworks({ enableNetworks: ['btc'] });
+        await settingsPage.changeNetworks({ enableNetworks: [asNetworkSymbol('btc')] });
         await dashboardPage.navigateTo();
     });
 
@@ -30,7 +33,9 @@ test.describe('Global receive and send', { tag: ['@T3T1', '@T3W1'] }, () => {
                 await tradingPage.assetPicker.globalAddAccountButton.click();
                 await expect(walletPage.addAccountNetworkSearchInput).toBeVisible();
                 await walletPage.addAccountNetworkSearchInput.fill('eth');
-                await tradingPage.receiveAccount.addAccountModalNetworkButton('eth').click();
+                await tradingPage.receiveAccount
+                    .addAccountModalNetworkButton(asNetworkSymbol('eth'))
+                    .click();
                 await page.discoveryShouldFinish();
                 await walletPage.closeAddAccountModal();
             });
@@ -40,7 +45,7 @@ test.describe('Global receive and send', { tag: ['@T3T1', '@T3W1'] }, () => {
                 await tradingPage.assetPicker
                     .receiveOption({
                         accountType: 'normal',
-                        accountSymbol: 'eth',
+                        accountSymbol: asNetworkSymbol('eth'),
                         index: 2,
                     })
                     .click();
@@ -82,7 +87,7 @@ test.describe('Global receive and send', { tag: ['@T3T1', '@T3W1'] }, () => {
                 await settingsPage.navigateTo('application');
                 await settingsPage.toggleDebugModeInSettings();
                 await settingsPage.toggleTestnetNetworks();
-                await settingsPage.changeNetworks({ enableNetworks: ['regtest'] });
+                await settingsPage.changeNetworks({ enableNetworks: [regtestSymbol] });
                 await dashboardPage.navigateTo();
             });
 
@@ -92,11 +97,11 @@ test.describe('Global receive and send', { tag: ['@T3T1', '@T3W1'] }, () => {
             });
 
             await test.step('Bitcoin Regtest account selection', async () => {
-                await tradingPage.assetPicker.filterSendReceiveByNetwork('regtest');
+                await tradingPage.assetPicker.filterSendReceiveByNetwork(regtestSymbol);
                 await tradingPage.assetPicker
                     .sendOption({
                         accountType: 'normal',
-                        accountSymbol: 'regtest',
+                        accountSymbol: regtestSymbol,
                         index: 0,
                     })
                     .click();

@@ -5,6 +5,7 @@ import { type TxSimulationEVMResult } from '@suite-common/tx-simulation';
 import {
     type NetworkSymbol,
     type NetworkType,
+    asNetworkSymbol,
     getNetworkDisplaySymbol,
 } from '@suite-common/wallet-config';
 import { ETH_CONTRACT_CALL_BACKUP_GAS_LIMIT } from '@suite-common/wallet-constants';
@@ -37,7 +38,7 @@ interface UseTxFeesFormProps {
 export function useEvmTxSimulationFeesForm({
     accountBalance,
     networkType = 'ethereum',
-    networkSymbol = 'eth',
+    networkSymbol = asNetworkSymbol('eth'),
     defaultGasLimit = ETH_CONTRACT_CALL_BACKUP_GAS_LIMIT,
     txValue = '0',
 }: UseTxFeesFormProps) {

@@ -18,6 +18,7 @@ import {
     type TransactionsRootState,
     accountsActions,
     selectAccountByKey,
+    selectNetworkBlockchainInfo,
     transactionsActions,
 } from '@suite-common/wallet-core';
 import { type Account, type AccountKey } from '@suite-common/wallet-types';
@@ -382,7 +383,7 @@ export const createPendingTransactionThunk =
 
         // deadline = pending tx not found in mempool after two mined blocks
         const pending = await backend.createPendingTransaction(account, payload);
-        const deadline = state.wallet.blockchain[account.symbol].blockHeight + 2;
+        const deadline = selectNetworkBlockchainInfo(state, account.symbol).blockHeight + 2;
         dispatch(
             coinjoinAccountAddTransactions({
                 account,
@@ -400,11 +401,9 @@ const cleanPendingTransactionsThunk =
         const {
             wallet: {
                 transactions: { transactions },
-                blockchain: {
-                    [account.symbol]: { blockHeight },
-                },
             },
         } = getState();
+        const { blockHeight } = selectNetworkBlockchainInfo(getState(), account.symbol);
         const pendingTxids = pending.map(({ txid }) => txid);
         const txs = getAccountTransactions(account.key, transactions).filter(tx =>
             tx.deadline

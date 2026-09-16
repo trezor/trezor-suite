@@ -6,6 +6,7 @@ import {
 } from 'invity-api';
 
 import { toChecksumAddress } from '@suite-common/address';
+import { asNetworkSymbol } from '@suite-common/wallet-config';
 import type { Network } from '@suite-common/wallet-config';
 import { asAmountUnit, unitsToSubunits } from '@suite-common/wallet-utils';
 import { type PROTO } from '@trezor/connect';
@@ -117,7 +118,7 @@ export const tradingExchangeCreatePaymentRequest = ({
     }
 
     const sendNetworkData = cryptoIdToNetworkAndContractAddress(trade.send);
-    const sendNetworkSymbol = sendNetworkData.network?.symbol ?? 'btc';
+    const sendNetworkSymbol = sendNetworkData.network?.symbol ?? asNetworkSymbol('btc');
     if (!sendNetworkData.network) {
         return undefined;
     }
@@ -192,7 +193,7 @@ export const tradingSellCreatePaymentRequest = ({
     }
 
     const sendNetworkData = cryptoIdToNetworkAndContractAddress(trade.cryptoCurrency);
-    const sendNetworkSymbol = sendNetworkData.network?.symbol ?? 'btc';
+    const sendNetworkSymbol = sendNetworkData.network?.symbol ?? asNetworkSymbol('btc');
     if (!sendNetworkData.network) {
         return undefined;
     }

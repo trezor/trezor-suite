@@ -10,6 +10,7 @@ import {
     type TradingTransactionSell,
     initialState as tradingInitialState,
 } from '@suite-common/trading';
+import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { type AccountKey, asAccountDescriptor } from '@suite-common/wallet-types';
 import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
 import { type StaticSessionId } from '@trezor/device-utils';
@@ -27,17 +28,17 @@ const selectedDevice = mockSuiteDevice({
 });
 
 const btcAccount = mockWalletAccount({
-    symbol: 'btc',
+    symbol: asNetworkSymbol('btc'),
     descriptor: asAccountDescriptor('btcDescriptor'),
     deviceState: DEVICE_STATIC_SESSION_ID,
 });
 const ethAccount = mockWalletAccount({
-    symbol: 'eth',
+    symbol: asNetworkSymbol('eth'),
     descriptor: asAccountDescriptor('ethDescriptor'),
     deviceState: DEVICE_STATIC_SESSION_ID,
 });
 const otherDeviceAccount = mockWalletAccount({
-    symbol: 'btc',
+    symbol: asNetworkSymbol('btc'),
     descriptor: asAccountDescriptor('otherDeviceBtcDescriptor'),
     deviceState: OTHER_DEVICE_STATIC_SESSION_ID,
 });

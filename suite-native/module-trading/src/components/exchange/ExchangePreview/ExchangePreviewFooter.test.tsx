@@ -1,4 +1,5 @@
 import { type ExchangeIssue } from '@suite-common/trading';
+import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { mockAccountKey } from '@suite-common/wallet-types/mocks';
 import { type NativeAnalyticsDep } from '@suite-native/analytics';
 import { mockNativeAnalytics } from '@suite-native/analytics/mocks';
@@ -48,8 +49,8 @@ const setIssue = (issue: ExchangeIssue | null) => {
     });
 };
 
-const btcAccountKey = mockAccountKey({ symbol: 'btc', descriptor: 'btc1normal' });
-const ethAccountKey = mockAccountKey({ symbol: 'eth', descriptor: 'eth1normal' });
+const btcAccountKey = mockAccountKey({ symbol: asNetworkSymbol('btc'), descriptor: 'btc1normal' });
+const ethAccountKey = mockAccountKey({ symbol: asNetworkSymbol('eth'), descriptor: 'eth1normal' });
 
 describe('ExchangePreviewFooter', () => {
     const baseOverrides: PreloadedStatePartial<TradingTestPreloadedState> = {

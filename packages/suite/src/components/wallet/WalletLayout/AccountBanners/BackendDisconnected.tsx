@@ -65,8 +65,9 @@ export const BackendDisconnected = () => {
 
     const identity = tryGetAccountIdentity(account);
 
+    const networkBlockchain = blockchain[symbol as keyof typeof blockchain];
     const chain =
-        (identity && blockchain[symbol]?.identityConnections?.[identity]) ?? blockchain[symbol];
+        (identity && networkBlockchain?.identityConnections?.[identity]) ?? networkBlockchain;
 
     if (!chain || chain.connected) return null;
 

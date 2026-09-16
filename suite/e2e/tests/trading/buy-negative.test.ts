@@ -1,3 +1,4 @@
+import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { TestStream } from '@trezor/e2e-utils';
 
 import { buyQuotesNegativeMax, buyQuotesNegativeMin, tradeEndpoint } from '../../fixtures/trading';
@@ -7,7 +8,7 @@ import { createTestAnnotation } from '../../support/reporters/annotations';
 test.describe('Trading - Buy Negative scenarios', { tag: ['@webOnly', '@T3W1', '@T3T1'] }, () => {
     test.beforeEach(async ({ onboardingPage, settingsPage, dashboardPage }) => {
         await onboardingPage.completeOnboarding();
-        await settingsPage.changeNetworks({ enableNetworks: ['btc'] });
+        await settingsPage.changeNetworks({ enableNetworks: [asNetworkSymbol('btc')] });
         await dashboardPage.navigateTo();
     });
 

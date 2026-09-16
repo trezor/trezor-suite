@@ -1,3 +1,4 @@
+import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { type NativeAnalyticsDep } from '@suite-native/analytics';
 import { mockNativeAnalytics } from '@suite-native/analytics/mocks';
 import { act, renderHookWithStoreProvider } from '@suite-native/test-utils-store';
@@ -21,7 +22,7 @@ const renderResolutionAnalytics = async (
 
 const pendingWrap = {
     flowType: 'wrap',
-    networkSymbol: 'eth',
+    networkSymbol: asNetworkSymbol('eth'),
     status: 'pending',
     txid: 'tx-1',
 } as const satisfies Parameters<typeof useWrappedNativeFlowResolutionAnalytics>[0];

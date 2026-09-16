@@ -7,7 +7,7 @@ import {
     estimateSolanaStakingLimit,
     getOutputTxAmount,
     getSolanaDeactivatedRentReserves,
-    selectBlockchainState,
+    selectBlockchainUrlBySymbol,
 } from '@suite-common/wallet-core';
 import { type Account, type PrecomposedLevels } from '@suite-common/wallet-types';
 import { formatNetworkAmount } from '@suite-common/wallet-utils';
@@ -30,11 +30,9 @@ export const SolanaStakingLimitBanner = ({
     composedLevels,
     type,
 }: SolanaStakingLimitBannerProps) => {
-    const blockchain = useSelector(selectBlockchainState);
+    const blockchainUrl = useSelector(state => selectBlockchainUrlBySymbol(state, account.symbol));
 
     const [limit, setLimit] = useState<SolanaStakingLimit>(NO_LIMIT);
-
-    const selectedBlockchain = blockchain[account.symbol];
 
     useEffect(() => {
         if (account.networkType !== 'solana') {
@@ -42,14 +40,14 @@ export const SolanaStakingLimitBanner = ({
         }
 
         const outputTxAmount = getOutputTxAmount(composedLevels);
-        if (!outputTxAmount || !selectedBlockchain?.url) return;
+        if (!outputTxAmount || !blockchainUrl) return;
 
         let isActive = true;
 
         estimateSolanaStakingLimit({
             descriptor: account.descriptor,
             deactivatedRentReserves: getSolanaDeactivatedRentReserves(account),
-            blockchainUrl: selectedBlockchain.url,
+            blockchainUrl,
             userAgent: `Trezor Suite ${getSuiteVersion()}`,
             type,
             outputAmount: outputTxAmount.toString(),
@@ -68,7 +66,7 @@ export const SolanaStakingLimitBanner = ({
         return () => {
             isActive = false;
         };
-    }, [account, composedLevels, selectedBlockchain?.url, type]);
+    }, [account, composedLevels, blockchainUrl, type]);
 
     if (!limit.isLimitExceeded) return null;
 

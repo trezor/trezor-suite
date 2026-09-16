@@ -11,6 +11,7 @@
         { "path": "../earn-staking-api" },
         { "path": "../fiat-services" },
         { "path": "../firmware" },
+        { "path": "../legacy-network-config" },
         { "path": "../metadata-types" },
         { "path": "../networks" },
         { "path": "../persistent-device-data" },

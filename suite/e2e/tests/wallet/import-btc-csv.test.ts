@@ -1,6 +1,7 @@
 import fs from 'fs';
 import path from 'path';
 
+import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { TestCategory, TestPriority, TestStream } from '@trezor/e2e-utils';
 
 import { csvToJson } from '../../support/csvToJson';
@@ -12,7 +13,7 @@ test.describe('Import a BTC csv file', { tag: ['@webOnly', '@T3W1', '@T3T1'] }, 
     test.beforeEach(async ({ metadataMock, onboardingPage, settingsPage, metadataPage }) => {
         await metadataMock.start(MetadataProvider.DROPBOX);
         await onboardingPage.completeOnboarding();
-        await settingsPage.changeNetworks({ enableNetworks: ['btc'] });
+        await settingsPage.changeNetworks({ enableNetworks: [asNetworkSymbol('btc')] });
         await metadataPage.enableLegacyLabeling(MetadataProvider.DROPBOX);
     });
 

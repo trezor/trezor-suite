@@ -1,11 +1,14 @@
 import fs from 'fs';
 
 import { mnemonic12Fixtures } from '@suite-common/e2e-evolu-client';
+import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { TestStream } from '@trezor/e2e-utils';
 
 import { AccountLabelId } from '../../../support/enums/accountLabelId';
 import { expect, test } from '../../../support/fixtures';
 import { createTestAnnotation } from '../../../support/reporters/annotations';
+
+const btcSymbol = asNetworkSymbol('btc');
 
 const { buildExpectedAccount, buildExpectedAddress, buildExpectedOutput, buildExpectedWallet } =
     mnemonic12Fixtures;
@@ -31,7 +34,7 @@ test.describe('Suite Sync - Labelling', { tag: ['@T3W1', '@T3T1'] }, () => {
         await onboardingPage.completeOnboarding();
         await settingsPage.navigateTo('application');
         await settingsPage.toggleDebugModeInSettings();
-        await settingsPage.changeNetworks({ enableNetworks: ['btc'] });
+        await settingsPage.changeNetworks({ enableNetworks: [btcSymbol] });
         await metadataPage.enableSuiteSync();
     });
 
@@ -40,14 +43,16 @@ test.describe('Suite Sync - Labelling', { tag: ['@T3W1', '@T3T1'] }, () => {
         { annotation: createTestAnnotation({ stream: TestStream.Wallet }) },
         async ({ evoluClient, dashboardPage, walletPage, metadataPage }) => {
             await test.step('Change account label', async () => {
-                await walletPage.openAccount({ symbol: 'btc', type: 'normal', atIndex: 0 });
+                await walletPage.openAccount({ symbol: btcSymbol, type: 'normal', atIndex: 0 });
                 await metadataPage.account.changeLabel({
                     accountId: AccountLabelId.BitcoinDefault1,
                     label: expectedAccount.label,
                     confirmSuiteSync: true,
                 });
                 await expect
-                    .soft(walletPage.accountLabel({ symbol: 'btc', type: 'normal', atIndex: 0 }))
+                    .soft(
+                        walletPage.accountLabel({ symbol: btcSymbol, type: 'normal', atIndex: 0 }),
+                    )
                     .toHaveText(expectedAccount.label, { timeout: 30_000 });
             });
 
@@ -64,7 +69,7 @@ test.describe('Suite Sync - Labelling', { tag: ['@T3W1', '@T3T1'] }, () => {
             });
 
             await test.step('Change address label', async () => {
-                await walletPage.openAccount({ symbol: 'btc', type: 'normal', atIndex: 0 });
+                await walletPage.openAccount({ symbol: btcSymbol, type: 'normal', atIndex: 0 });
                 await walletPage.receiveButton.click();
                 await metadataPage.address.changeLabel({
                     address: expectedAddress.address,
@@ -76,7 +81,7 @@ test.describe('Suite Sync - Labelling', { tag: ['@T3W1', '@T3T1'] }, () => {
             });
 
             await test.step('Change output label', async () => {
-                await walletPage.openAccount({ symbol: 'btc', type: 'normal', atIndex: 0 });
+                await walletPage.openAccount({ symbol: btcSymbol, type: 'normal', atIndex: 0 });
                 await metadataPage.output.changeLabel({
                     outputId: expectedOutput.txId,
                     txNumber: Number(expectedOutput.outputIndex),
@@ -105,7 +110,7 @@ test.describe('Suite Sync - Labelling', { tag: ['@T3W1', '@T3T1'] }, () => {
         { tag: ['@webOnly'], annotation: createTestAnnotation({ stream: TestStream.Wallet }) },
         async ({ walletPage, metadataPage, page }) => {
             await test.step('Create labels to export', async () => {
-                await walletPage.openAccount({ symbol: 'btc', type: 'normal', atIndex: 0 });
+                await walletPage.openAccount({ symbol: btcSymbol, type: 'normal', atIndex: 0 });
                 await metadataPage.account.changeLabel({
                     accountId: AccountLabelId.BitcoinDefault1,
                     label: expectedAccount.label,

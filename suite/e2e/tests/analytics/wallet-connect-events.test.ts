@@ -1,4 +1,5 @@
 import { EventType } from '@suite-common/analytics/src/constants';
+import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { TestCategory, TestPriority, TestStream, createTestAnnotation } from '@trezor/e2e-utils';
 
 import { expect, test } from '../../support/walletConnectFixtures';
@@ -18,7 +19,7 @@ test.describe('Analytics Events - WalletConnect', { tag: ['@T3W1', '@nightlyOnly
         await test.step('Onboarding', async () => {
             await onboardingPage.completeOnboarding();
             await settingsPage.changeNetworks({
-                enableNetworks: ['eth', 'ada'],
+                enableNetworks: [asNetworkSymbol('eth'), asNetworkSymbol('ada')],
             });
         });
     });

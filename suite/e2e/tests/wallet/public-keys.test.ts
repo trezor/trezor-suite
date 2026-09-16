@@ -1,4 +1,4 @@
-import type { NetworkSymbol } from '@suite-common/wallet-config';
+import { type NetworkSymbol, asNetworkSymbol } from '@suite-common/wallet-config';
 import { TestStream } from '@trezor/e2e-utils';
 
 import { expect, test } from '../../support/fixtures';
@@ -6,15 +6,15 @@ import { createTestAnnotation } from '../../support/reporters/annotations';
 
 const testCases: { symbol: NetworkSymbol; xpub: string }[] = [
     {
-        symbol: 'btc',
+        symbol: asNetworkSymbol('btc'),
         xpub: 'zpub6qg8ncjmySnBmRKsVc6TE3ojd89P9Ss3r7j3K121p4QJ9YAfSgy6yM1ikhxPdLxdCQvoFU73gwPDjxcGNVFo1hBUGTJZvgfrGQZ4WXDo5PF',
     },
     {
-        symbol: 'ltc',
+        symbol: asNetworkSymbol('ltc'),
         xpub: 'zpub6rCPNJ3Fm3ZLoj34ZRaYRFTWugZERyvZhuXYX6bdHqn94aFofL6R5W3iSQa2Ayagd8WKWVMsZvNH4AcXhYgiQmm2SnjqRZibGEZDtazWoWf',
     },
     {
-        symbol: 'ada',
+        symbol: asNetworkSymbol('ada'),
         xpub: '255eb541a4c62cb774a2a74b4309001060708d31124c481c2fd67f7c0005ce2cc8a57c0bc10b630d30874620547c4e9f908b0ab239e75ee8eb38769b8163710c',
     },
 ];

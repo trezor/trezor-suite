@@ -1,7 +1,10 @@
+import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { TestCategory, TestPriority, TestStream } from '@trezor/e2e-utils';
 
 import { expect, test } from '../../support/fixtures';
 import { createTestAnnotation } from '../../support/reporters/annotations';
+
+const regtestSymbol = asNetworkSymbol('regtest');
 
 test.use({ deviceSetup: { mnemonic: 'mnemonic_all' } });
 
@@ -36,15 +39,15 @@ test.describe(
                 await settingsPage.toggleTestnetNetworks();
                 await settingsPage.changeNetworks({
                     enableNetworks: [
-                        { symbol: 'regtest', backend: { type: 'electrum', url: electrumUrl } },
+                        { symbol: regtestSymbol, backend: { type: 'electrum', url: electrumUrl } },
                     ],
                 });
 
                 await dashboardPage.navigateTo();
                 await expect(
-                    walletPage.balanceOfAccount({ symbol: 'regtest', atIndex: 0 }),
+                    walletPage.balanceOfAccount({ symbol: regtestSymbol, atIndex: 0 }),
                 ).toBeVisible();
-                await expect(assetsSection.assetFiatAmount('regtest')).toBeVisible();
+                await expect(assetsSection.assetFiatAmount(regtestSymbol)).toBeVisible();
             },
         );
     },

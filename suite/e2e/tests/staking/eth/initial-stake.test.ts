@@ -1,3 +1,4 @@
+import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { TestCategory, TestPriority, TestStream } from '@trezor/e2e-utils';
 
 import ETH_BASE_TX from '../../../fixtures/staking/eth-base-tx.json';
@@ -41,7 +42,10 @@ test.describe('ETH staking', { tag: ['@T3W1', '@T3T1'] }, () => {
 
         await settingsPage.changeNetworks({
             enableNetworks: [
-                { symbol: 'eth', backend: { type: 'blockbook', url: blockbookMock.url } },
+                {
+                    symbol: asNetworkSymbol('eth'),
+                    backend: { type: 'blockbook', url: blockbookMock.url },
+                },
             ],
         });
     });
@@ -60,7 +64,11 @@ test.describe('ETH staking', { tag: ['@T3W1', '@T3T1'] }, () => {
         async ({ page, device, walletPage, stakingSection, devicePrompt, blockbookMock }) => {
             await test.step('Check staking dashboard', async () => {
                 await page.clock.install();
-                await walletPage.openAccount({ symbol: 'eth', type: 'normal', atIndex: 0 });
+                await walletPage.openAccount({
+                    symbol: asNetworkSymbol('eth'),
+                    type: 'normal',
+                    atIndex: 0,
+                });
                 await stakingSection.stakingTabButton.click();
                 await expect(stakingSection.stakingEmptyCard).toBeVisible();
                 await expect(stakingSection.stakingDashboardCard).toBeHidden();

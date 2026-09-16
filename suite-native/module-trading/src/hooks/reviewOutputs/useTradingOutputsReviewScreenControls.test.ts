@@ -1,6 +1,7 @@
 import { type Store, combineReducers } from '@reduxjs/toolkit';
 
 import { mockActionType, mockReducer } from '@suite-common/redux-utils/mocks';
+import { asNetworkSymbol } from '@suite-common/wallet-config';
 import {
     type AccountsRootState,
     type SendRootState,
@@ -351,7 +352,7 @@ describe('useTradingOutputsReviewScreenControls', () => {
                 store.dispatch(
                     sendFormActions.storeSignedTransaction({
                         serializedTx: {
-                            symbol: 'btc',
+                            symbol: asNetworkSymbol('btc'),
                             tx: 'txid',
                         },
                     }),
@@ -375,7 +376,7 @@ describe('useTradingOutputsReviewScreenControls', () => {
     describe('Solana transaction validity', () => {
         const createSolanaReviewStore = (isSigned = true) => {
             const serializedTx = isSigned
-                ? { symbol: 'sol' as const, tx: 'signed-solana-tx' }
+                ? { symbol: asNetworkSymbol('sol'), tx: 'signed-solana-tx' }
                 : undefined;
 
             store = createTestStore('exchange', {

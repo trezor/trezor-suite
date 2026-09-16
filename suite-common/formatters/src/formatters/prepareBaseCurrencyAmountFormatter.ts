@@ -3,6 +3,7 @@ import { type IntlShape } from 'react-intl';
 import { type FormatNumberOptions } from '@formatjs/intl';
 
 import { redactNumericalSubstring } from '@suite-common/discreet-mode';
+import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { type BaseCurrencyAmount, asBaseCurrencyAmount } from '@suite-common/wallet-types';
 import { asAmountUnit, isBaseCurrencyWithSats, unitsToSubunits } from '@suite-common/wallet-utils';
 import { type BaseCurrencyCode } from '@trezor/blockchain-link-types';
@@ -28,7 +29,10 @@ type FormatParams = {
 
 const formatSats = ({ intl, dataContext, value }: FormatParams) => {
     const currencyForDisplay = BITCOIN_SATS_PLACEHOLDER;
-    const baseCurrencyValue = unitsToSubunits({ value: asAmountUnit(value), symbol: 'btc' });
+    const baseCurrencyValue = unitsToSubunits({
+        value: asAmountUnit(value),
+        symbol: asNetworkSymbol('btc'),
+    });
 
     if (baseCurrencyValue.gt(Number.MAX_VALUE)) {
         // backup when number is too big, the formatting is different from what should be for currencies

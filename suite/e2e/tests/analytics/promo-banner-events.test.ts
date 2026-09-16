@@ -1,4 +1,5 @@
 import { EventType } from '@suite/analytics/src/constants';
+import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { TestCategory, TestPriority, TestStream, createTestAnnotation } from '@trezor/e2e-utils';
 
 import { isDesktopProject } from '../../support/common';
@@ -10,7 +11,7 @@ test.describe('Analytics Events - Promo Banner', { tag: ['@T3T1', '@nightlyOnly'
         await onboardingPage.completeOnboarding();
         await settingsPage.navigateTo('application');
         await settingsPage.toggleDebugModeInSettings();
-        await settingsPage.changeNetworks({ enableNetworks: ['btc'] });
+        await settingsPage.changeNetworks({ enableNetworks: [asNetworkSymbol('btc')] });
         await settingsPage.navigateTo('debug');
     });
 

@@ -1,3 +1,4 @@
+import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { type NativeAnalyticsDep } from '@suite-native/analytics';
 import { mockNativeAnalytics } from '@suite-native/analytics/mocks';
 import { act, renderHookWithBasicProvider } from '@suite-native/test-utils';
@@ -20,7 +21,7 @@ const renderReportingHook = async (props: ReportingHookProps) => {
 };
 
 const settledNameLookup = {
-    symbol: 'eth',
+    symbol: asNetworkSymbol('eth'),
     mode: 'forward',
     isFetching: false,
     isSuccess: true,

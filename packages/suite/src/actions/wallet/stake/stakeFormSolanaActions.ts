@@ -14,7 +14,7 @@ import {
     isSupportedSolStakingNetworkSymbol,
     prepareSolanaStakeTxData,
     selectAddressDisplayType,
-    selectBlockchainState,
+    selectBlockchainUrlBySymbol,
 } from '@suite-common/wallet-core';
 import {
     AddressDisplayOptions,
@@ -30,14 +30,13 @@ export const composeTransactionThunk =
     (formValues: StakeFormState, formState: ComposeActionContext) =>
     async (_: Dispatch<UnknownAction>, getState: () => ComposeTransactionThunkState) => {
         const selectedAccount = selectFullSelectedAccount(getState());
-        const blockchain = selectBlockchainState(getState());
 
         if (selectedAccount.status !== 'loaded') return;
 
         const { account } = selectedAccount;
         if (account.networkType !== 'solana') return;
 
-        const blockchainUrl = blockchain[account.symbol]?.url;
+        const blockchainUrl = selectBlockchainUrlBySymbol(getState(), account.symbol);
         if (!blockchainUrl) return;
 
         return await composeSolanaStakingTransaction({
@@ -63,7 +62,6 @@ export const signTransactionThunk =
         extra: SignTransactionThunkDeps,
     ) => {
         const selectedAccount = selectFullSelectedAccount(getState());
-        const blockchain = selectBlockchainState(getState());
 
         const device = selectSelectedDevice(getState());
         if (selectedAccount.status !== 'loaded' || !device || transactionInfo?.type !== 'final') {
@@ -78,7 +76,7 @@ export const signTransactionThunk =
             return;
         }
 
-        const blockchainUrl = blockchain[account.symbol]?.url;
+        const blockchainUrl = selectBlockchainUrlBySymbol(getState(), account.symbol);
         if (!blockchainUrl) {
             dispatch(
                 notificationsActions.addToast({

@@ -1,6 +1,7 @@
 import { type Store, combineReducers } from '@reduxjs/toolkit';
 
 import { type YieldDtoV2 } from '@suite-common/earn-stablecoin-api';
+import { asNetworkSymbol } from '@suite-common/wallet-config';
 import {
     type AccountsRootState,
     type YieldFlowResolvedData,
@@ -85,13 +86,13 @@ const flowData = {
         balance: '25',
         contractAddress: tokenContract,
         decimals: 6,
-        networkSymbol: 'eth',
+        networkSymbol: asNetworkSymbol('eth'),
         symbol: 'USDC',
     },
     receiptToken: {
         contractAddress: receiptTokenContract,
         decimals: 18,
-        networkSymbol: 'eth',
+        networkSymbol: asNetworkSymbol('eth'),
         symbol: 'trSHUSDCp',
     },
 } satisfies YieldFlowResolvedData;
@@ -110,7 +111,7 @@ const wethFlowData = {
         balance: '0',
         contractAddress: wethTokenContract,
         decimals: 18,
-        networkSymbol: 'eth',
+        networkSymbol: asNetworkSymbol('eth'),
         symbol: 'WETH',
     },
 } satisfies YieldFlowResolvedData;

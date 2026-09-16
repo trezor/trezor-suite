@@ -1,8 +1,4 @@
-export {
-    isSupportedRippleNetwork,
-    supportedRippleNetworks,
-    toRippleNetworkSymbol,
-} from './networkSymbol';
+export { isSupportedRippleNetwork, supportedRippleNetworks } from './networkSymbol';
 export type { RippleNetworkSymbol } from './networkSymbol';
 
 export const RIPPLE_DECIMALS = 6;

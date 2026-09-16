@@ -7,7 +7,7 @@ import { events } from '@suite-common/analytics';
 import { useServices } from '@suite-common/dependency-injection';
 import { Context } from '@suite-common/message-system';
 import { selectDispatch } from '@suite-common/redux-utils';
-import { getNetwork } from '@suite-common/wallet-config';
+import { asNetworkSymbol, getNetwork } from '@suite-common/wallet-config';
 import {
     type AccountsRootState,
     getYieldClaimRewardsSnapshot,
@@ -120,7 +120,7 @@ export const YieldClaimScreen = () => {
     });
     const feeFiatAmount = useFiatFromCryptoValue({
         cryptoValue: claimFee.feePreview?.fee ?? null,
-        symbol: account?.symbol ?? 'eth',
+        symbol: account?.symbol ?? asNetworkSymbol('eth'),
         isBalance: false,
     });
     const totalFiatClaimableAmount = accountRewards?.totalFiatClaimableAmount ?? null;
