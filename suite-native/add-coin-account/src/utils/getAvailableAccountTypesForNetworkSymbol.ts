@@ -1,21 +1,24 @@
 import {
     type AccountType,
     NORMAL_ACCOUNT_TYPE,
-    type NetworkConfig,
     type NetworkSymbol,
+    asNetworkSymbol,
     getNetwork,
 } from '@suite-common/wallet-config';
 import { isEvmNetwork } from '@suite-common/wallet-utils';
 import { typedObjectKeys } from '@trezor/utils';
 
-const normalOnlyNonEvmNetworkSymbols: NetworkSymbol[] = ['ada', 'sol'];
+const normalOnlyNonEvmNetworkSymbols: NetworkSymbol[] = [
+    asNetworkSymbol('ada'),
+    asNetworkSymbol('sol'),
+];
 
 export const getAvailableAccountTypesForNetworkSymbol = ({
     symbol,
 }: {
     symbol: NetworkSymbol;
 }): [AccountType, ...AccountType[]] => {
-    const networkConfig = getNetwork(symbol) as NetworkConfig | undefined;
+    const networkConfig = getNetwork(symbol);
     if (!networkConfig) {
         return [NORMAL_ACCOUNT_TYPE];
     }

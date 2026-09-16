@@ -1,3 +1,4 @@
+import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { TestStream } from '@trezor/e2e-utils';
 
 import { test } from '../../support/fixtures';
@@ -18,7 +19,10 @@ test.describe('LTC send form with mocked blockbook', { tag: ['@T3W1', '@T3T1'] }
 
         await settingsPage.changeNetworks({
             enableNetworks: [
-                { symbol: 'ltc', backend: { type: 'blockbook', url: blockbookMock.url } },
+                {
+                    symbol: asNetworkSymbol('ltc'),
+                    backend: { type: 'blockbook', url: blockbookMock.url },
+                },
             ],
         });
     });
@@ -27,7 +31,11 @@ test.describe('LTC send form with mocked blockbook', { tag: ['@T3W1', '@T3T1'] }
         'spend output originating from mimble-wimble peg out tx',
         { annotation: createTestAnnotation({ stream: TestStream.Network }) },
         async ({ page, devicePrompt, walletPage, tradingPage }) => {
-            await walletPage.openAccount({ symbol: 'ltc', type: 'normal', atIndex: 0 });
+            await walletPage.openAccount({
+                symbol: asNetworkSymbol('ltc'),
+                type: 'normal',
+                atIndex: 0,
+            });
             await walletPage.openSendFormButton.click();
             await page.getByTestId('@send/header-dropdown').click();
             await page.getByTestId('@send/header-dropdown/broadcast').click();

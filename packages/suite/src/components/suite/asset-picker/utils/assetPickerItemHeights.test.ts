@@ -1,3 +1,4 @@
+import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { type Account, asAccountDescriptor, toTokenAddress } from '@suite-common/wallet-types';
 import { mockAccountToken, mockWalletAccount } from '@suite-common/wallet-types/mocks';
 import { BigNumber } from '@trezor/utils';
@@ -10,7 +11,7 @@ import { type AssetGroupOption, type AssetGroupsOption, type AssetRowOption } fr
 import { createAccountOption, createHiddenTokensOption, createTokenOption } from './index';
 
 const account: Account = mockWalletAccount({
-    symbol: 'eth',
+    symbol: asNetworkSymbol('eth'),
     descriptor: asAccountDescriptor('ethAccount'),
     balance: '1',
     formattedBalance: '1',

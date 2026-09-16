@@ -3,7 +3,7 @@ import '@suite-common/test-utils/globalOverrides';
 import { screen } from '@testing-library/react';
 
 import { createTestCompositionRoot } from '@suite-common/test-utils';
-import { getNetwork } from '@suite-common/wallet-config';
+import { asNetworkSymbol, getNetwork } from '@suite-common/wallet-config';
 import { getExplorerUrl } from '@suite-common/wallet-config/src/getExplorerUrls';
 import { explorerInitialState } from '@suite-common/wallet-core';
 import { type WalletAccountTransaction, asAccountDescriptor } from '@suite-common/wallet-types';
@@ -17,11 +17,11 @@ import { IOGroup } from './IOGroup';
 import { mockInitialAppState } from '../../../../../../../../../../mocks/mockInitialAppState';
 
 const bitcoinAccount = mockWalletAccount({
-    symbol: 'btc',
+    symbol: asNetworkSymbol('btc'),
     descriptor: asAccountDescriptor('btcDescriptor'),
 });
 const ethereumAccount = mockWalletAccount({
-    symbol: 'eth',
+    symbol: asNetworkSymbol('eth'),
     descriptor: asAccountDescriptor('ethDescriptor'),
 });
 

@@ -8,12 +8,15 @@
     "scripts": {
         "depcheck": "yarn g:depcheck",
         "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'",
+        "test:unit": "yarn g:jest",
         "type-check": "yarn g:tsc --build"
     },
     "dependencies": {
         "@trezor/connect-common": "workspace:*",
         "@trezor/crypto-utils": "workspace:*",
         "@trezor/device-utils": "workspace:*",
-        "@trezor/type-utils": "workspace:*"
+        "@trezor/network-module": "workspace:*",
+        "@trezor/type-utils": "workspace:*",
+        "@trezor/utils": "workspace:*"
     }
 }

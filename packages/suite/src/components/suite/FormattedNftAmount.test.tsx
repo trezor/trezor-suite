@@ -3,7 +3,7 @@ import '@suite-common/test-utils/globalOverrides';
 import { screen } from '@testing-library/react';
 
 import { createTestCompositionRoot } from '@suite-common/test-utils';
-import { getNetwork } from '@suite-common/wallet-config';
+import { asNetworkSymbol, getNetwork } from '@suite-common/wallet-config';
 import { getExplorerUrl } from '@suite-common/wallet-config/src/getExplorerUrls';
 import { explorerInitialState } from '@suite-common/wallet-core';
 import { asAccountDescriptor } from '@suite-common/wallet-types';
@@ -17,7 +17,7 @@ import { FormattedNftAmount } from './FormattedNftAmount';
 import { mockInitialAppState } from '../../../mocks/mockInitialAppState';
 
 const ethereumAccount = mockWalletAccount({
-    symbol: 'eth',
+    symbol: asNetworkSymbol('eth'),
     descriptor: asAccountDescriptor('ethDescriptor'),
 });
 
@@ -55,7 +55,11 @@ describe('FormattedNftAmount', () => {
 
         renderWithProviders(
             root,
-            <FormattedNftAmount transfer={nftTransfer} networkSymbol="pol" isWithLink />,
+            <FormattedNftAmount
+                transfer={nftTransfer}
+                networkSymbol={asNetworkSymbol('pol')}
+                isWithLink
+            />,
         );
 
         const polygonNftUrl = getExplorerUrl(explorerInitialState.pol.default, 'nft');

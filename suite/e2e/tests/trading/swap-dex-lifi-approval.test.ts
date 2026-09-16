@@ -6,6 +6,8 @@ import { countDecimalPlaces } from '../../support/common';
 import { expect, test } from '../../support/fixtures';
 import { createTestAnnotation } from '../../support/reporters/annotations';
 
+const ethSymbol = asNetworkSymbol('eth');
+
 const approvalAmount = '10';
 const accountLabel = 'Ethereum #2';
 const providerName = 'LiFI Diamond';
@@ -22,15 +24,15 @@ test.describe('Trading - DEX swap approval (LI.FI)', { tag: ['@T3T1', '@T3W1'] }
     test.beforeEach(
         async ({ onboardingPage, dashboardPage, settingsPage, walletPage, tradingMock }) => {
             tradingMock.setTradeFlow('swap');
-            const ethBackend = await tradingMock.startBackend('eth');
+            const ethBackend = await tradingMock.startBackend(ethSymbol);
 
             await onboardingPage.completeOnboarding();
             await settingsPage.changeNetworks({
-                enableNetworks: [{ symbol: 'eth', backend: ethBackend }],
+                enableNetworks: [{ symbol: ethSymbol, backend: ethBackend }],
             });
             await dashboardPage.deviceSwitchingOpenButton.click();
             await dashboardPage.addHiddenWallet(process.env.PASSPHRASE!);
-            await walletPage.openSwapTrading({ symbol: 'eth', atIndex: 1 });
+            await walletPage.openSwapTrading({ symbol: ethSymbol, atIndex: 1 });
         },
     );
 
@@ -51,17 +53,17 @@ test.describe('Trading - DEX swap approval (LI.FI)', { tag: ['@T3T1', '@T3W1'] }
                 await tradingPage.fillSwapForm({
                     amount: approvalAmount,
                     sellAsset: {
-                        networkSymbol: 'eth',
+                        networkSymbol: ethSymbol,
                         tokenSymbol: 'USDC',
                         searchFilter: 'USDC',
                         networkFilter: 'eth',
                         accountIndex: 1,
                     },
                     buyAsset: {
-                        assetCryptoId: getCryptoId(asNetworkSymbol('eth')),
+                        assetCryptoId: getCryptoId(ethSymbol),
                     },
                     selectReceiveAddress: async () => {
-                        await tradingPage.receiveAccount.selectSuiteReceiveAccount(1, 'eth');
+                        await tradingPage.receiveAccount.selectSuiteReceiveAccount(1, ethSymbol);
                     },
                 });
                 await tradingPage.quotes.chooseDifferentOfferIfAvailable(dexProvider);

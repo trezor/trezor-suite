@@ -14,7 +14,7 @@ const getExplorerUrls = (baseUrl: string): Explorer => ({
     token: `${baseUrl}/contract/`, // Should be trc10, trc20 instead of contract.
 });
 
-type NetworkConfig = SuiteCommonNetworkConfig<TronNetworkSymbol> & { readonly networkType: 'tron' };
+type NetworkConfig = SuiteCommonNetworkConfig & { readonly networkType: 'tron' };
 
 export const networkConfigBySymbol = {
     trx: {

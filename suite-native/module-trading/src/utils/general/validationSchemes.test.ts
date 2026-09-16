@@ -1,6 +1,6 @@
 import { useFormatters } from '@suite-common/formatters';
 import { type yup } from '@suite-common/validators';
-import { type NetworkSymbol } from '@suite-common/wallet-config';
+import { type NetworkSymbol, asNetworkSymbol } from '@suite-common/wallet-config';
 import { asBaseCurrencyAmount } from '@suite-common/wallet-types';
 import { getTranslation } from '@suite-native/intl';
 import { renderHookWithBasicProvider } from '@suite-native/test-utils';
@@ -25,7 +25,7 @@ const createContext = (overrides: Partial<TradingFormContext> = {}): TradingForm
         FiatAmountFormatter: formatters.BaseCurrencyAmountFormatter,
         CryptoAmountFormatter: formatters.CryptoAmountFormatter,
         convertNumberToBaseUnit: (amount: number | undefined) => amount,
-        sendNetworkSymbol: 'btc',
+        sendNetworkSymbol: asNetworkSymbol('btc'),
         sendAssetSymbol: 'BTC',
         currency: 'usd',
         balance: undefined,
@@ -199,7 +199,11 @@ describe('validationSchemes', () => {
 
         describe('token on a network with a different symbol', () => {
             const buildContext = (overrides: Partial<TradingFormContext> = {}) =>
-                createContext({ sendNetworkSymbol: 'trx', sendAssetSymbol: 'USDT', ...overrides });
+                createContext({
+                    sendNetworkSymbol: asNetworkSymbol('trx'),
+                    sendAssetSymbol: 'USDT',
+                    ...overrides,
+                });
 
             it('converts the amount using the network symbol', async () => {
                 const convertNumberToBaseUnit = jest.fn((amount: number | undefined) => amount);
@@ -245,7 +249,7 @@ describe('validationSchemes', () => {
                 } as unknown as TradingFormContext['CryptoAmountFormatter'];
                 const context = {
                     ...createContext({
-                        sendNetworkSymbol: 'eth',
+                        sendNetworkSymbol: asNetworkSymbol('eth'),
                         sendAssetSymbol: 'BTC',
                         minCrypto: '10',
                         CryptoAmountFormatter,
@@ -288,7 +292,7 @@ describe('validationSchemes', () => {
             it('rejects with network-reserve when value exceeds maxSpendableAmount but is within balance', async () => {
                 const context = createContext({
                     sendAssetSymbol: 'ETH',
-                    sendNetworkSymbol: 'arb',
+                    sendNetworkSymbol: asNetworkSymbol('arb'),
                     balance: '100',
                     maxSpendableAmount: '90',
                 });
@@ -305,7 +309,7 @@ describe('validationSchemes', () => {
             it('accepts when value is within maxSpendableAmount', async () => {
                 const context = createContext({
                     sendAssetSymbol: 'BTC',
-                    sendNetworkSymbol: 'btc',
+                    sendNetworkSymbol: asNetworkSymbol('btc'),
                     balance: '100',
                     maxSpendableAmount: '90',
                 });
@@ -318,7 +322,7 @@ describe('validationSchemes', () => {
             it('passes when maxSpendableAmount is undefined and value is within balance', async () => {
                 const context = createContext({
                     sendAssetSymbol: 'BTC',
-                    sendNetworkSymbol: 'btc',
+                    sendNetworkSymbol: asNetworkSymbol('btc'),
                     balance: '100',
                     maxSpendableAmount: undefined,
                 });

@@ -1,7 +1,10 @@
+import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { TestStream } from '@trezor/e2e-utils';
 
 import { expect, test } from '../../support/fixtures';
 import { createTestAnnotation } from '../../support/reporters/annotations';
+
+const regtestSymbol = asNetworkSymbol('regtest');
 const accounts = {
     account1: {
         address: 'bcrt1qkvwu9g3k2pdxewfqr7syz89r3gj557l374sg5v',
@@ -46,7 +49,7 @@ test.describe(
             await settingsPage.navigateTo('application');
             await settingsPage.toggleDebugModeInSettings();
             await settingsPage.toggleTestnetNetworks();
-            await settingsPage.changeNetworks({ enableNetworks: ['regtest'] });
+            await settingsPage.changeNetworks({ enableNetworks: [regtestSymbol] });
         });
 
         test(
@@ -54,7 +57,7 @@ test.describe(
             { annotation: createTestAnnotation({ stream: TestStream.Wallet }) },
             async ({ page, device, walletPage, devicePrompt, tradingPage, trezorUserEnv }) => {
                 await walletPage
-                    .accountLabel({ symbol: 'regtest', type: 'normal', atIndex: 0 })
+                    .accountLabel({ symbol: regtestSymbol, type: 'normal', atIndex: 0 })
                     .click();
 
                 await test.step('Create 2 transactions (first to fund another account of mine, second to self)', async () => {
@@ -128,7 +131,7 @@ test.describe(
 
                 await test.step('Verify account #2 has 1 pending transaction (receive)', async () => {
                     await walletPage
-                        .accountLabel({ symbol: 'regtest', type: 'normal', atIndex: 1 })
+                        .accountLabel({ symbol: regtestSymbol, type: 'normal', atIndex: 1 })
                         .click();
                     const pendingTransactionsAccount2 = page.getByTestId(
                         '@wallet/accounts/transaction-list/pending/group/0',
@@ -147,7 +150,7 @@ test.describe(
                     });
                     await page.waitForTimeout(2000); // wait for block to be processed
                     await walletPage
-                        .accountLabel({ symbol: 'regtest', type: 'normal', atIndex: 0 })
+                        .accountLabel({ symbol: regtestSymbol, type: 'normal', atIndex: 0 })
                         .click();
                     const pendingTransactionsAccount1AfterMine = page.getByTestId(
                         '@wallet/accounts/transaction-list/pending/group/0',
@@ -204,7 +207,7 @@ test.describe(
 
                 await test.step('Verify receive pending transaction on account #2 is now mined as well', async () => {
                     await walletPage
-                        .accountLabel({ symbol: 'regtest', type: 'normal', atIndex: 1 })
+                        .accountLabel({ symbol: regtestSymbol, type: 'normal', atIndex: 1 })
                         .click();
                     const confirmedTransactionsAccount2 = page.getByTestId(
                         '@wallet/accounts/transaction-list/confirmed/group/0',

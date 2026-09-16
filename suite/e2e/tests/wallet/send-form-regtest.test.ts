@@ -1,3 +1,4 @@
+import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { TestStream } from '@trezor/e2e-utils';
 
 import { expect, test } from '../../support/fixtures';
@@ -27,7 +28,7 @@ test.describe('Send form for bitcoin', { tag: ['@T3W1', '@T3T1'] }, () => {
 
             await settingsPage.toggleTestnetNetworks();
             await settingsPage.changeNetworks({
-                enableNetworks: ['regtest'],
+                enableNetworks: [asNetworkSymbol('regtest')],
                 skipActivation: true,
             });
             await trezorUserEnv.sendToAddressAndMineBlock({
@@ -37,7 +38,7 @@ test.describe('Send form for bitcoin', { tag: ['@T3W1', '@T3T1'] }, () => {
             await trezorUserEnv.mineBlocks({ block_amount: 1 });
             await dashboardPage.dashboardMenuButton.click();
             await page.discoveryShouldFinish();
-            await walletPage.openAccount({ symbol: 'regtest' });
+            await walletPage.openAccount({ symbol: asNetworkSymbol('regtest') });
             await walletPage.openSendFormButton.click();
         },
     );

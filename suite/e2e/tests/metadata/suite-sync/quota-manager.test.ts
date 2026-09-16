@@ -4,11 +4,14 @@ import {
     DEFAULT_ACCOUNT_INCREMENT_SIZE_QUOTA,
     DEFAULT_DEVICE_SIZE_QUOTA,
 } from '@suite-common/suite-sync-quota-manager';
+import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { TestStream } from '@trezor/e2e-utils';
 
 import { AccountLabelId } from '../../../support/enums/accountLabelId';
 import { expect, test } from '../../../support/fixtures';
 import { createTestAnnotation } from '../../../support/reporters/annotations';
+
+const btcSymbol = asNetworkSymbol('btc');
 
 const { buildExpectedAccount, buildExpectedWallet, ownerId, ownerSecret } = mnemonic12Fixtures;
 
@@ -35,7 +38,7 @@ test.describe('Suite Sync - Quota Manager out of quota', { tag: ['@T3W1', '@T3T1
         await onboardingPage.completeOnboarding();
         await settingsPage.navigateTo('application');
         await settingsPage.toggleDebugModeInSettings();
-        await settingsPage.changeNetworks({ enableNetworks: ['btc'] });
+        await settingsPage.changeNetworks({ enableNetworks: [btcSymbol] });
         await metadataPage.enableSuiteSync();
     });
 
@@ -112,7 +115,7 @@ test.describe('Suite Sync - Quota Manager top-up', { tag: ['@T3W1', '@T3T1'] }, 
         await onboardingPage.completeOnboarding();
         await settingsPage.navigateTo('application');
         await settingsPage.toggleDebugModeInSettings();
-        await settingsPage.changeNetworks({ enableNetworks: ['btc'] });
+        await settingsPage.changeNetworks({ enableNetworks: [btcSymbol] });
         await metadataPage.enableSuiteSync();
     });
 
@@ -121,7 +124,7 @@ test.describe('Suite Sync - Quota Manager top-up', { tag: ['@T3W1', '@T3T1'] }, 
         { annotation: createTestAnnotation({ stream: TestStream.Wallet }) },
         async ({ evoluClient, dashboardPage, devicePrompt, metadataPage, walletPage }) => {
             await test.step('Create account label to trigger the first allocation', async () => {
-                await walletPage.openAccount({ symbol: 'btc', type: 'normal', atIndex: 0 });
+                await walletPage.openAccount({ symbol: btcSymbol, type: 'normal', atIndex: 0 });
                 await metadataPage.account.changeLabel({
                     accountId: AccountLabelId.BitcoinDefault1,
                     label: expectedAccount.label,

@@ -1,6 +1,7 @@
 import { Page, TestInfo } from '@playwright/test';
 
 import { routes } from '@suite/router-config';
+import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { TestCategory, TestPriority, TestStream } from '@trezor/e2e-utils';
 import { typedObjectEntries } from '@trezor/utils';
 
@@ -224,7 +225,7 @@ test.describe('Check Links', { tag: ['@webOnly', '@nightlyOnly', '@T3T1'] }, () 
                 test.slow();
 
                 await onboardingPage.completeOnboarding();
-                await settingsPage.changeNetworks({ enableNetworks: ['btc'] });
+                await settingsPage.changeNetworks({ enableNetworks: [asNetworkSymbol('btc')] });
                 const links = await getAllLinksFromAllPages(page, testInfo, paths, () => true);
 
                 await checkLinks(page, links);

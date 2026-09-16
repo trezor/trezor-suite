@@ -1,6 +1,7 @@
 import { type Store } from '@reduxjs/toolkit';
 
 import { type DeviceRootState } from '@suite-common/device';
+import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { type AccountsRootState } from '@suite-common/wallet-core';
 import { type AccountKey } from '@suite-common/wallet-types';
 import { mockAccountKey } from '@suite-common/wallet-types/mocks';
@@ -41,7 +42,7 @@ describe('useTradingOutputsReviewErrorAlert', () => {
         const mockOnRetry = jest.fn();
         const mockOnCancel = jest.fn();
         const { result } = await renderUseTradingOutputsReviewErrorAlert(
-            mockAccountKey({ symbol: 'btc', descriptor: 'btc1normal' }),
+            mockAccountKey({ symbol: asNetworkSymbol('btc'), descriptor: 'btc1normal' }),
         );
 
         await act(() => {
@@ -67,7 +68,7 @@ describe('useTradingOutputsReviewErrorAlert', () => {
         const mockOnCancel = jest.fn();
         const { result } = await renderUseTradingOutputsReviewErrorAlert(
             mockAccountKey({
-                symbol: 'sol',
+                symbol: asNetworkSymbol('sol'),
                 descriptor: 'ETxHeBBcuw9Yu4dGuP3oXrD12V5RECvmi8ogQ9PkjyVF',
             }),
         );

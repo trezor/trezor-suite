@@ -1,6 +1,7 @@
 import { type Store } from '@reduxjs/toolkit';
 
 import { type DeviceRootState, deviceInitialState } from '@suite-common/device';
+import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { type AccountsRootState, type FormDraftRootState } from '@suite-common/wallet-core';
 import { type AccountKey, type TokenAddress } from '@suite-common/wallet-types';
 import { mockAccountKey } from '@suite-common/wallet-types/mocks';
@@ -42,7 +43,7 @@ const triggerFocusEffect = () => {
     focusEffectCallback?.();
 };
 
-const accountKey = mockAccountKey({ symbol: 'xlm', descriptor: 'stellar1' });
+const accountKey = mockAccountKey({ symbol: asNetworkSymbol('xlm'), descriptor: 'stellar1' });
 
 const mockAccount = {
     key: accountKey,

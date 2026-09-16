@@ -1,6 +1,2 @@
-export {
-    isSupportedBitcoinNetwork,
-    supportedBitcoinNetworks,
-    toBitcoinNetworkSymbol,
-} from './networkSymbol';
+export { isSupportedBitcoinNetwork, supportedBitcoinNetworks } from './networkSymbol';
 export type { BitcoinNetworkSymbol } from './networkSymbol';

@@ -1,6 +1,7 @@
 import { type Store } from '@reduxjs/toolkit';
 
 import { tradingSellActions } from '@suite-common/trading';
+import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { type AccountsRootState } from '@suite-common/wallet-core';
 import { mockAccountKey } from '@suite-common/wallet-types/mocks';
 import { act, renderHookWithStoreProvider, waitFor } from '@suite-native/test-utils-store';
@@ -63,7 +64,10 @@ describe('useSellSelectQuote', () => {
             await act(() => {
                 store.dispatch(
                     tradingSellActions.setTradingAccountKey(
-                        mockAccountKey({ symbol: 'btc', descriptor: 'btc1normal' }),
+                        mockAccountKey({
+                            symbol: asNetworkSymbol('btc'),
+                            descriptor: 'btc1normal',
+                        }),
                     ),
                 );
                 form.setValue('quote', banxaCreditCardSellQuote);
@@ -85,7 +89,10 @@ describe('useSellSelectQuote', () => {
                 result.current.form.setValue('quote', banxaCreditCardSellQuote);
                 store.dispatch(
                     tradingSellActions.setTradingAccountKey(
-                        mockAccountKey({ symbol: 'btc', descriptor: 'btc1normal' }),
+                        mockAccountKey({
+                            symbol: asNetworkSymbol('btc'),
+                            descriptor: 'btc1normal',
+                        }),
                     ),
                 );
             });

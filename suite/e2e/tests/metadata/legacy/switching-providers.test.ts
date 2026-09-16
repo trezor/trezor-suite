@@ -1,3 +1,4 @@
+import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { TestStream } from '@trezor/e2e-utils';
 
 import { AccountLabelId } from '../../../support/enums/accountLabelId';
@@ -31,7 +32,7 @@ test.describe(
             }) => {
                 await test.step('Navigate to account and verify initial state', async () => {
                     await onboardingPage.completeOnboarding();
-                    await settingsPage.changeNetworks({ enableNetworks: ['btc'] });
+                    await settingsPage.changeNetworks({ enableNetworks: [asNetworkSymbol('btc')] });
                     await metadataMock.start(MetadataProvider.DROPBOX);
                     await metadataPage.enableLegacyLabeling(MetadataProvider.DROPBOX);
                     await walletPage.openAccount();

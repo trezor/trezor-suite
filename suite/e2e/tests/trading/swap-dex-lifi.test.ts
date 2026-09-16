@@ -1,4 +1,5 @@
 import { getCryptoId } from '@suite-common/trading';
+import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { fromGwei, localizeNumber } from '@suite-common/wallet-utils';
 import { TestStream } from '@trezor/e2e-utils';
 import { BigNumber } from '@trezor/utils';
@@ -7,10 +8,12 @@ import { dexSwapStatusFlow } from '../../fixtures/trading/statusFlow';
 import { expect, test } from '../../support/fixtures';
 import { createTestAnnotation } from '../../support/reporters/annotations';
 
+const ethSymbol = asNetworkSymbol('eth');
+
 const sendAmount = '0.03';
 const formattedSendAmount = `${localizeNumber(sendAmount)} ETH`;
 const accountLabel = 'Ethereum #1';
-const usdcCryptoId = getCryptoId('eth', '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48');
+const usdcCryptoId = getCryptoId(ethSymbol, '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48');
 const usdcDecimals = 6;
 
 // Firmware strings on the DEX review pages.
@@ -36,16 +39,16 @@ test.describe('Trading - DEX swap (LI.FI)', { tag: ['@T3T1', '@T3W1'] }, () => {
     test.beforeEach(
         async ({ onboardingPage, dashboardPage, settingsPage, walletPage, tradingMock }) => {
             tradingMock.setTradeFlow('swap');
-            const ethBackend = await tradingMock.startBackend('eth');
+            const ethBackend = await tradingMock.startBackend(ethSymbol);
             await tradingMock.captureTxSimulation();
 
             await onboardingPage.completeOnboarding();
             await settingsPage.changeNetworks({
-                enableNetworks: [{ symbol: 'eth', backend: ethBackend }],
+                enableNetworks: [{ symbol: ethSymbol, backend: ethBackend }],
             });
             await dashboardPage.deviceSwitchingOpenButton.click();
             await dashboardPage.addHiddenWallet(process.env.PASSPHRASE!);
-            await walletPage.openSwapTrading({ symbol: 'eth' });
+            await walletPage.openSwapTrading({ symbol: ethSymbol });
         },
     );
 
@@ -58,7 +61,7 @@ test.describe('Trading - DEX swap (LI.FI)', { tag: ['@T3T1', '@T3W1'] }, () => {
             await test.step('Fill in the Swap form (ETH -> USDC)', async () => {
                 await tradingPage.fillSwapForm({
                     amount: sendAmount,
-                    sellAsset: { networkSymbol: 'eth' },
+                    sellAsset: { networkSymbol: ethSymbol },
                     buyAsset: {
                         searchFilter: 'USDC',
                         networkFilter: 'eth',

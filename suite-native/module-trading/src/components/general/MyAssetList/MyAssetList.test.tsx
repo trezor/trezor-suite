@@ -1,5 +1,6 @@
 import type { CryptoId } from 'invity-api';
 
+import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { asBaseCurrencyAmount } from '@suite-common/wallet-types';
 import { getTranslation } from '@suite-native/intl';
 import { fireEvent } from '@suite-native/test-utils-store';
@@ -13,7 +14,7 @@ import { renderWithTradingProvider } from '../../../test-utils/tradingTestUtils'
 
 const createAsset = (name: string, isEnabled = true): MyAsset => ({
     name,
-    symbol: 'eth',
+    symbol: asNetworkSymbol('eth'),
     cryptoId: `ethereum--${name.toLowerCase()}` as CryptoId,
     balance: '1',
     fiatBalance: asBaseCurrencyAmount(new BigNumber('0.01')),

@@ -11,6 +11,7 @@ import {
     type SellTradeFinalStatus,
 } from 'invity-api';
 
+import { asNetworkSymbol } from '@suite-common/wallet-config';
 import {
     type Network,
     type NetworkSymbol,
@@ -208,14 +209,12 @@ export const getUnusedAddressFromAccount = (account: Account) => {
     }
 };
 
-export const mapTestnetSymbol = (
-    symbol: NetworkSymbol,
-): Exclude<NetworkSymbol, 'test' | 'tsep' | 'thod' | 'txrp' | 'txlm'> => {
-    if (symbol === 'test') return 'btc';
-    if (symbol === 'tsep') return 'eth';
-    if (symbol === 'thod') return 'eth';
-    if (symbol === 'txrp') return 'xrp';
-    if (symbol === 'txlm') return 'xlm';
+export const mapTestnetSymbol = (symbol: NetworkSymbol): NetworkSymbol => {
+    if (symbol === 'test') return asNetworkSymbol('btc');
+    if (symbol === 'tsep') return asNetworkSymbol('eth');
+    if (symbol === 'thod') return asNetworkSymbol('eth');
+    if (symbol === 'txrp') return asNetworkSymbol('xrp');
+    if (symbol === 'txlm') return asNetworkSymbol('xlm');
 
     return symbol;
 };

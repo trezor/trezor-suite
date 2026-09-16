@@ -3,6 +3,7 @@ import React from 'react';
 import { type Store } from '@reduxjs/toolkit';
 
 import { useServices } from '@suite-common/dependency-injection';
+import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { type AccountsRootState } from '@suite-common/wallet-core';
 import { type AccountKey } from '@suite-common/wallet-types';
 import { mockAccountKey } from '@suite-common/wallet-types/mocks';
@@ -61,7 +62,7 @@ const useWatchTradeWithReportSpy = (props: {
     return spyRef.current!;
 };
 
-const btc1AccountKey = mockAccountKey({ symbol: 'btc', descriptor: 'btc1' });
+const btc1AccountKey = mockAccountKey({ symbol: asNetworkSymbol('btc'), descriptor: 'btc1' });
 const services: NativeAnalyticsDep = {
     analytics: mockNativeAnalytics(),
 };
@@ -93,7 +94,7 @@ describe('useWatchTrade', () => {
                             : [
                                   {
                                       key: btc1AccountKey,
-                                      symbol: 'btc',
+                                      symbol: asNetworkSymbol('btc'),
                                       deviceState:
                                           'mvbu1Gdy8SUjTenqerxUaZyYjmveZvt33q@448CCE89D32A733A1632F345:0',
                                       descriptor: 'btc1',

@@ -1,3 +1,4 @@
+import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { type AccountKey } from '@suite-common/wallet-types';
 import { RootStackRoutes } from '@suite-native/navigation';
 import { renderHook } from '@suite-native/test-utils';
@@ -20,7 +21,7 @@ describe('useStakingDetailNavigation', () => {
 
     it('navigates a Solana account to staking management', async () => {
         const { result } = await renderHook(() => useStakingDetailNavigation());
-        result.current.navigateToStakingDetail({ accountKey, symbol: 'sol' });
+        result.current.navigateToStakingDetail({ accountKey, symbol: asNetworkSymbol('sol') });
 
         expect(mockNavigate).toHaveBeenCalledWith(RootStackRoutes.StakingManagement, {
             accountKey,
@@ -29,7 +30,7 @@ describe('useStakingDetailNavigation', () => {
 
     it('navigates an Ethereum account to staking management', async () => {
         const { result } = await renderHook(() => useStakingDetailNavigation());
-        result.current.navigateToStakingDetail({ accountKey, symbol: 'eth' });
+        result.current.navigateToStakingDetail({ accountKey, symbol: asNetworkSymbol('eth') });
 
         expect(mockNavigate).toHaveBeenCalledWith(RootStackRoutes.StakingManagement, {
             accountKey,

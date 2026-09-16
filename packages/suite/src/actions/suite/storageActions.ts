@@ -61,10 +61,10 @@ import {
     type TransactionsRootState,
     type WalletSettingsRootState,
     selectAccounts,
-    selectBlockchainState,
     selectConfirmedEarnOpportunities,
     selectFormDraft,
     selectHistoricFiatRates,
+    selectNetworkBlockchainInfo,
     selectPhishing,
     selectPhishingTransactions,
     selectSendFormDrafts,
@@ -704,7 +704,7 @@ export const saveBackendThunk =
         if (!extra.services.db.isAccessible()) return;
         await extra.services.db.addItem(
             'backendSettings',
-            selectBlockchainState(getState())[symbol].backends,
+            selectNetworkBlockchainInfo(getState(), symbol).backends,
             symbol,
             true,
         );

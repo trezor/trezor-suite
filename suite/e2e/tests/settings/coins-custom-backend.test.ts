@@ -1,8 +1,10 @@
-import type { NetworkSymbol, ServerType } from '@suite-common/wallet-config';
+import { type NetworkSymbol, type ServerType, asNetworkSymbol } from '@suite-common/wallet-config';
 import { BlockbookProxyMock, TestCategory, TestPriority, TestStream } from '@trezor/e2e-utils';
 
 import { expect, test } from '../../support/fixtures';
 import { createTestAnnotation } from '../../support/reporters/annotations';
+
+const btcSymbol = asNetworkSymbol('btc');
 
 const BTC_BACKEND_WS_URL = 'wss://btc1.trezor.io/websocket';
 
@@ -28,13 +30,13 @@ test.describe('Coin Settings', { tag: ['@T3W1', '@T3T1'] }, () => {
 
     const coins: Coin[] = [
         {
-            coin: 'btc',
+            coin: btcSymbol,
             backendType: 'blockbook',
             customBackendUrlRight: `https://btc1.trezor.io`,
             customBackendUrlWrong: `https://btc1-wrong.trezor.io`,
         },
         {
-            coin: 'eth',
+            coin: asNetworkSymbol('eth'),
             backendType: 'blockbook',
             customBackendUrlRight: `https://eth1.trezor.io`,
             customBackendUrlWrong: `https://eth1-wrong.trezor.io`,
@@ -141,16 +143,16 @@ test.describe('Coin Settings', { tag: ['@T3W1', '@T3T1'] }, () => {
 
             try {
                 await test.step('BTC starts disabled', async () => {
-                    await settingsPage.coinsTab.expectNetworkDisabled('btc');
+                    await settingsPage.coinsTab.expectNetworkDisabled(btcSymbol);
                 });
 
                 await test.step('Set a custom backend without enabling the network', async () => {
-                    await settingsPage.coinsTab.openNetworkAdvanceSettings('btc', {
+                    await settingsPage.coinsTab.openNetworkAdvanceSettings(btcSymbol, {
                         autoEnable: false,
                     });
                     await settingsPage.coinsTab.changeBackend(backendType, backendProxy.url);
-                    await settingsPage.coinsTab.expectCustomBackendIndicator('btc');
-                    await settingsPage.coinsTab.expectNetworkDisabled('btc');
+                    await settingsPage.coinsTab.expectCustomBackendIndicator(btcSymbol);
+                    await settingsPage.coinsTab.expectNetworkDisabled(btcSymbol);
                     await expect(dashboardPage.customBackendButton).toBeHidden();
                     expect(
                         backendProxy.connectedClients,
@@ -159,8 +161,8 @@ test.describe('Coin Settings', { tag: ['@T3W1', '@T3T1'] }, () => {
                 });
 
                 await test.step('Enable BTC & run discovery against the custom backend', async () => {
-                    await settingsPage.coinsTab.enableNetwork('btc');
-                    await settingsPage.coinsTab.expectCustomBackendIndicator('btc');
+                    await settingsPage.coinsTab.enableNetwork(btcSymbol);
+                    await settingsPage.coinsTab.expectCustomBackendIndicator(btcSymbol);
                     await settingsPage.coinsTab.activateCoinsButton.click();
                     await Promise.all([
                         settingsPage.verifyDiscoveryLoaderFinishes(),
@@ -174,7 +176,7 @@ test.describe('Coin Settings', { tag: ['@T3W1', '@T3T1'] }, () => {
                 });
 
                 await test.step('Open BTC account & verify it is loaded successfully', async () => {
-                    await walletPage.openAccount({ symbol: 'btc' });
+                    await walletPage.openAccount({ symbol: btcSymbol });
                     await expect(walletPage.emptyAccount).toContainTranslation(
                         'TR_ACCOUNT_IS_EMPTY_TITLE',
                     );
@@ -183,16 +185,16 @@ test.describe('Coin Settings', { tag: ['@T3W1', '@T3T1'] }, () => {
 
                 await test.step('Revert to the default backend and reconnect', async () => {
                     await settingsPage.navigateTo('coins');
-                    await settingsPage.coinsTab.openNetworkAdvanceSettings('btc');
+                    await settingsPage.coinsTab.openNetworkAdvanceSettings(btcSymbol);
                     await settingsPage.coinsTab.revertToDefaultBackend();
-                    await settingsPage.coinsTab.expectNoCustomBackendIndicator('btc');
+                    await settingsPage.coinsTab.expectNoCustomBackendIndicator(btcSymbol);
                     await expect(dashboardPage.customBackendButton).toBeHidden();
                     await expect
                         .poll(() => backendProxy.connectedClients, {
                             message: 'Expected Suite to disconnect from the custom backend',
                         })
                         .toBe(0);
-                    await walletPage.openAccount({ symbol: 'btc' });
+                    await walletPage.openAccount({ symbol: btcSymbol });
                     await expect(walletPage.emptyAccount).toContainTranslation(
                         'TR_ACCOUNT_IS_EMPTY_TITLE',
                     );

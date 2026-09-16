@@ -63,7 +63,7 @@ export const extraDependencies: ExtraDependenciesStatic & TokenDefinitionsMiddle
     reducers: {
         storageLoadBlockchain: (state: BlockchainState, { payload }: StorageLoadAction) => {
             payload.backendSettings.forEach(backend => {
-                const blockchain = state[backend.key];
+                const blockchain = state[backend.key as keyof typeof state];
 
                 if (blockchain) {
                     blockchain.backends = backend.value;
@@ -72,8 +72,8 @@ export const extraDependencies: ExtraDependenciesStatic & TokenDefinitionsMiddle
         },
         storageLoadExplorer: (state: ExplorerConfig, { payload }: StorageLoadAction) => {
             payload.explorer.forEach(({ symbol, explorer }) => {
-                state[symbol] = {
-                    ...state[symbol],
+                state[symbol as keyof typeof state] = {
+                    ...state[symbol as keyof typeof state],
                     custom: explorer,
                 };
             });

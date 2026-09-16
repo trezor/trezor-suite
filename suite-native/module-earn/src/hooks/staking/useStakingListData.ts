@@ -2,7 +2,11 @@ import { useMemo } from 'react';
 import { useSelector } from 'react-redux';
 
 import { selectSupportedNetworkSymbols } from '@suite-common/networks';
-import { PROD_STAKING_SYMBOLS, STAKING_SYMBOLS } from '@suite-common/wallet-config';
+import {
+    PROD_STAKING_SYMBOLS,
+    STAKING_SYMBOLS,
+    asNetworkSymbol,
+} from '@suite-common/wallet-config';
 import {
     isCardanoStakedWithFiveBinaries,
     selectVisibleDeviceAccounts,
@@ -43,7 +47,9 @@ export const useStakingListData = () => {
             accounts.filter(acc => isStakingSymbol(acc.symbol)),
             supportedNetworks,
         );
-        const stakingSymbols = areTestnetsEnabled ? STAKING_SYMBOLS : PROD_STAKING_SYMBOLS;
+        const stakingSymbols = (areTestnetsEnabled ? STAKING_SYMBOLS : PROD_STAKING_SYMBOLS).map(
+            asNetworkSymbol,
+        );
 
         const accountStakedWithFiveBinaries = stakingAccounts.find(
             account => account.visible && isCardanoStakedWithFiveBinaries(account),

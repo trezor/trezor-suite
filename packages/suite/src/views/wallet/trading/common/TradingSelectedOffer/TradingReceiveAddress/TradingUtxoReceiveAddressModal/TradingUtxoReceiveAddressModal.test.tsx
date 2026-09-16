@@ -7,6 +7,7 @@ import { mockAddressValidator } from '@suite-common/address/mocks';
 import { createSuiteSyncAddressId } from '@suite-common/suite-sync-storage';
 import { mockSuiteDevice } from '@suite-common/suite-types/mocks';
 import { createTestCompositionRoot } from '@suite-common/test-utils';
+import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { initialWalletSettingsState } from '@suite-common/wallet-core';
 import { type Account, asAccountDescriptor, createAccountKey } from '@suite-common/wallet-types';
 import { type Address } from '@trezor/blockchain-link-types';
@@ -53,7 +54,7 @@ const ACCOUNT_DESCRIPTOR = asAccountDescriptor('btcDescriptor');
 
 const ACCOUNT_KEY = createAccountKey({
     accountDescriptor: ACCOUNT_DESCRIPTOR,
-    networkSymbol: 'btc',
+    networkSymbol: asNetworkSymbol('btc'),
     deviceStaticSessionId: DEVICE_SSID,
 });
 
@@ -91,7 +92,7 @@ const btcAccount = {
 } as unknown as Account;
 
 const mockSuiteSyncAddress = (address: string, label: string | null) => ({
-    id: createSuiteSyncAddressId(address, 'btc'),
+    id: createSuiteSyncAddressId(address, asNetworkSymbol('btc')),
     address,
     label,
     accountDescriptor: ACCOUNT_DESCRIPTOR,

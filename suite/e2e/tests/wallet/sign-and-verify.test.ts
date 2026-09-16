@@ -1,3 +1,4 @@
+import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { TestStream } from '@trezor/e2e-utils';
 
 import { expect, test } from '../../support/fixtures';
@@ -19,7 +20,7 @@ test.describe('Sign and verify', { tag: ['@T3W1', '@T3T1'] }, () => {
 
     test.beforeEach(async ({ page, walletPage, onboardingPage, settingsPage }) => {
         await onboardingPage.completeOnboarding();
-        await settingsPage.changeNetworks({ enableNetworks: ['btc'] });
+        await settingsPage.changeNetworks({ enableNetworks: [asNetworkSymbol('btc')] });
         await walletPage.openAccount();
         await page.waitForTimeout(500); // wait until is the dropdown loaded
         await walletPage.walletExtraDropDown.click();

@@ -1,5 +1,6 @@
 import { type Store } from '@reduxjs/toolkit';
 
+import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { getTranslation } from '@suite-native/intl';
 import { type CombinedLabelingState } from '@suite-native/labeling';
 import {
@@ -48,7 +49,7 @@ describe('ReceiveAccountPicker', () => {
 
         return await renderWithStoreProvider(
             <ReceiveAccountPicker
-                symbol="btc"
+                symbol={asNetworkSymbol('btc')}
                 tradingType="buy"
                 receiveAccount={{
                     account: btc1NormalAccount,
@@ -80,7 +81,7 @@ describe('ReceiveAccountPicker', () => {
 
     it('should call navigate to account picker when symbol is specified and picker pressed', async () => {
         const { getByText } = await renderReceiveAccountPicker({
-            symbol: 'btc',
+            symbol: asNetworkSymbol('btc'),
             receiveAccount: undefined,
         });
 
@@ -97,7 +98,7 @@ describe('ReceiveAccountPicker', () => {
 
     it('should call navigate to account picker when tradingType is exchange, symbol is specified and picker pressed', async () => {
         const { getByText } = await renderReceiveAccountPicker({
-            symbol: 'btc',
+            symbol: asNetworkSymbol('btc'),
             receiveAccount: undefined,
             tradingType: 'exchange',
         });

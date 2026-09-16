@@ -1,5 +1,6 @@
 import type { CryptoId } from 'invity-api';
 
+import { asNetworkSymbol } from '@suite-common/wallet-config';
 import {
     type BaseCurrencyAmount,
     type TokenSymbol,
@@ -26,7 +27,7 @@ jest.mock('./useTradingMyAssets', () => ({
 
 const createAsset = (overrides: Partial<MyAsset> = {}): MyAsset => ({
     name: 'Ethereum',
-    symbol: 'eth',
+    symbol: asNetworkSymbol('eth'),
     cryptoId: 'ethereum' as CryptoId,
     balance: '2',
     fiatBalance: asBaseCurrencyAmount(new BigNumber('5000')),
@@ -36,7 +37,7 @@ const createAsset = (overrides: Partial<MyAsset> = {}): MyAsset => ({
 
 const btcAsset = createAsset({
     name: 'Bitcoin',
-    symbol: 'btc',
+    symbol: asNetworkSymbol('btc'),
     cryptoId: 'bitcoin' as CryptoId,
 });
 const lowBalanceAsset = createAsset({
@@ -143,7 +144,7 @@ describe('useMyAssetsFilteredData', () => {
         const { result } = await renderFilter();
 
         await act(() => {
-            result.current.setFilterSymbol('eth');
+            result.current.setFilterSymbol(asNetworkSymbol('eth'));
             result.current.setFilterValue('LOW USDC');
         });
 
@@ -157,7 +158,7 @@ describe('useMyAssetsFilteredData', () => {
         expect(result.current.scrollResetKey).toBe('Network:all;Search:');
 
         await act(() => {
-            result.current.setFilterSymbol('eth');
+            result.current.setFilterSymbol(asNetworkSymbol('eth'));
             result.current.setFilterValue('usd');
         });
 

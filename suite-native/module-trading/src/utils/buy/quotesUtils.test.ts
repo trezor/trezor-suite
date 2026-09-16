@@ -3,6 +3,7 @@ import type { BuyTrade, CryptoId } from 'invity-api';
 import { deviceInitialState } from '@suite-common/device';
 import { mockNetworksState } from '@suite-common/networks/mocks';
 import { type TradingAssetOption } from '@suite-common/trading';
+import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { mockGetSupportedNetworks } from '@suite-common/wallet-config/mocks';
 import { act, renderHookWithStoreProvider } from '@suite-native/test-utils-store';
 import {
@@ -102,10 +103,10 @@ describe('quotesUtils', () => {
                         coingeckoId: 'bitcoin',
                         contractAddress: null,
                         name: 'Bitcoin',
-                        symbol: 'btc',
+                        symbol: asNetworkSymbol('btc'),
                         displaySymbol: 'BTC',
                         networkName: 'Bitcoin',
-                        networkSymbol: 'btc',
+                        networkSymbol: asNetworkSymbol('btc'),
                     } satisfies TradingAssetOption,
                     countrySelect: {
                         label: '🇺🇸 United States',

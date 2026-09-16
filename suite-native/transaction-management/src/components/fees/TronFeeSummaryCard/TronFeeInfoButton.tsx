@@ -1,4 +1,4 @@
-import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
+import { asNetworkSymbol, getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import { useAlert } from '@suite-native/alerts';
 import { PressableOpacity, Text } from '@suite-native/atoms';
 import { Icon } from '@suite-native/icons';
@@ -19,7 +19,11 @@ export const TronFeeInfoButton = ({ isAccountActivation }: TronFeeInfoButtonProp
                     {isAccountActivation ? (
                         <Translation
                             id="transactionManagement.fees.description.bodyTronAccountActivation"
-                            values={{ networkDisplaySymbol: getNetworkDisplaySymbol('trx') }}
+                            values={{
+                                networkDisplaySymbol: getNetworkDisplaySymbol(
+                                    asNetworkSymbol('trx'),
+                                ),
+                            }}
                         />
                     ) : (
                         <Translation id="transactionManagement.fees.description.bodyTron" />

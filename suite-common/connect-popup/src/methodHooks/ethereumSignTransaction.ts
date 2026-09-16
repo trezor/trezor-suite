@@ -1,6 +1,6 @@
 import { selectSelectedDevice } from '@suite-common/device';
 import { selectSupportedNetworkSymbols } from '@suite-common/networks';
-import { getNetworkByEvmChainId } from '@suite-common/wallet-config';
+import { asNetworkSymbol, getNetworkByEvmChainId } from '@suite-common/wallet-config';
 import {
     accountsActions,
     selectAccountForNetworkSymbolAndPath,
@@ -87,7 +87,7 @@ const preCallHook = async <M extends CallMethodKeys>({
         const network = getNetworkByEvmChainId(chainId) || {
             // Placeholder for chains not supported in Suite
             networkType: 'ethereum',
-            symbol: 'eth',
+            symbol: asNetworkSymbol('eth'),
             name: 'Chain ID: ' + chainId,
             isHidden: true,
         };

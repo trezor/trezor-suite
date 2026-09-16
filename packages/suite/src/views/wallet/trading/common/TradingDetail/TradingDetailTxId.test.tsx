@@ -5,6 +5,7 @@ import userEvent from '@testing-library/user-event';
 import { mockDesktopAnalytics } from '@suite/analytics/mocks';
 import { openModal } from '@suite/modal';
 import { createTestCompositionRoot } from '@suite-common/test-utils';
+import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { transactionsInitialState } from '@suite-common/wallet-core';
 import { type WalletAccountTransaction, asAccountDescriptor } from '@suite-common/wallet-types';
 import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
@@ -16,11 +17,11 @@ import { TradingDetailTxId } from './TradingDetailTxId';
 import { mockInitialAppState } from '../../../../../../mocks/mockInitialAppState';
 
 const sendAccount = mockWalletAccount({
-    symbol: 'btc',
+    symbol: asNetworkSymbol('btc'),
     descriptor: asAccountDescriptor('btcDescriptor'),
 });
 const receiveAccount = mockWalletAccount({
-    symbol: 'eth',
+    symbol: asNetworkSymbol('eth'),
     descriptor: asAccountDescriptor('ethDescriptor'),
 });
 

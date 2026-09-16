@@ -7,6 +7,7 @@ import { mockNetworksState } from '@suite-common/networks/mocks';
 import { mockActionType, mockReducer } from '@suite-common/redux-utils/mocks';
 import { mockSuiteDevice } from '@suite-common/suite-types/mocks';
 import { createTestStore, initPreloadedState, testMocks } from '@suite-common/test-utils';
+import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { prepareAccountsReducer } from '@suite-common/wallet-core';
 import { mockSetAccountAddMetadata } from '@suite-common/wallet-core/mocks';
 
@@ -27,7 +28,11 @@ const DEVICE = mockSuiteDevice({
     connected: true,
 });
 
-const networks = mockNetworksState(['btc', 'test', 'regtest']);
+const networks = mockNetworksState([
+    asNetworkSymbol('btc'),
+    asNetworkSymbol('test'),
+    asNetworkSymbol('regtest'),
+]);
 
 const rootReducer = combineReducers({
     networks: () => networks,
@@ -79,7 +84,7 @@ describe('coinjoinAccountActions', () => {
     beforeEach(() => {
         jest.clearAllMocks();
         CoinjoinService.getInstances().forEach(({ client }) => {
-            CoinjoinService.removeInstance(client.settings.network);
+            CoinjoinService.removeInstance(asNetworkSymbol(client.settings.network));
         });
     });
 

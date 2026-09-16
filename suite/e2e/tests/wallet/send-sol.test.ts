@@ -9,10 +9,12 @@ import { expect, test } from '../../support/fixtures';
 import { createTestAnnotation } from '../../support/reporters/annotations';
 import { transformAddress } from '../../support/testExtends/customMatchers';
 
+const solSymbol = asNetworkSymbol('sol');
+
 const RECIPIENT_ADDRESS = 'ENk2eeP4umP6cjAGRsVG4NEVKEVQmRn6JEpN8hubv2Hf';
 const FORMATTED_ADDRESS = formatAddressWithNewlines(RECIPIENT_ADDRESS);
 const TRANSFORMED_ADDRESS = transformAddress(RECIPIENT_ADDRESS, 'fourTetragrams');
-const SOL_DECIMALS = getNetwork(asNetworkSymbol('sol')).decimals;
+const SOL_DECIMALS = getNetwork(solSymbol).decimals;
 
 test.describe('Send - Solana', { tag: ['@webOnly', '@T3T1', '@T3W1'] }, () => {
     test.use({
@@ -24,10 +26,10 @@ test.describe('Send - Solana', { tag: ['@webOnly', '@T3T1', '@T3W1'] }, () => {
 
     test.beforeEach(async ({ settingsPage, onboardingPage, dashboardPage, walletPage }) => {
         await onboardingPage.completeOnboarding();
-        await settingsPage.changeNetworks({ enableNetworks: ['sol'] });
+        await settingsPage.changeNetworks({ enableNetworks: [solSymbol] });
         await dashboardPage.deviceSwitchingOpenButton.click();
         await dashboardPage.addHiddenWallet(process.env.PASSPHRASE!);
-        await walletPage.openAccount({ symbol: 'sol', type: 'normal', atIndex: 0 });
+        await walletPage.openAccount({ symbol: solSymbol, type: 'normal', atIndex: 0 });
     });
 
     test(

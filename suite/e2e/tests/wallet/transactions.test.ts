@@ -1,4 +1,5 @@
 import { messages } from '@suite/intl';
+import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { TestStream } from '@trezor/e2e-utils';
 
 import { expect, test } from '../../support/fixtures';
@@ -18,7 +19,7 @@ test.describe('Account transactions overview', { tag: ['@T3W1', '@T3T1'] }, () =
 
     test.beforeEach(async ({ onboardingPage, settingsPage }) => {
         await onboardingPage.completeOnboarding();
-        await settingsPage.changeNetworks({ enableNetworks: ['btc'] });
+        await settingsPage.changeNetworks({ enableNetworks: [asNetworkSymbol('btc')] });
     });
 
     test(
@@ -26,7 +27,7 @@ test.describe('Account transactions overview', { tag: ['@T3W1', '@T3T1'] }, () =
         { annotation: createTestAnnotation({ stream: TestStream.Wallet }) },
         async ({ walletPage, dashboardPage }) => {
             await test.step('Cycle thru all time range filters', async () => {
-                await walletPage.openAccount({ symbol: 'btc' });
+                await walletPage.openAccount({ symbol: asNetworkSymbol('btc') });
                 for (const { range, label } of rangeData) {
                     await dashboardPage.graphRangeSelector(range).click();
                     const labelElement = walletPage.transactionSummaryTitle.getByText(label);

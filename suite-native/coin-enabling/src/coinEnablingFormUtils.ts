@@ -1,8 +1,10 @@
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 
-export type EnabledCoins = Partial<Record<NetworkSymbol, boolean>>;
+// React Hook Form cannot resolve nested values through branded keys, so form keys use strings.
+// Helpers still accept NetworkSymbol and filter selected symbols against supported networks.
+export type EnabledCoins = Partial<Record<string, boolean>>;
 
-export type EnabledCoinFieldName = `enabledCoins.${NetworkSymbol}`;
+export type EnabledCoinFieldName = `enabledCoins.${string}`;
 
 export type CoinEnablingFormValues = {
     enabledCoins: EnabledCoins;

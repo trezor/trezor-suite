@@ -1,11 +1,14 @@
 import fs from 'fs';
 
+import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { TestCategory, TestPriority, TestStream } from '@trezor/e2e-utils';
 
 import { OutputLabelId } from '../../../support/enums/outputLabelId';
 import { expect, test } from '../../../support/fixtures';
 import { MetadataProvider } from '../../../support/mocks/metadataMock';
 import { createTestAnnotation } from '../../../support/reporters/annotations';
+
+const btcSymbol = asNetworkSymbol('btc');
 
 test.describe('Metadata - Output labeling', { tag: ['@webOnly', '@T3W1', '@T3T1'] }, () => {
     test.use({ deviceSetup: { mnemonic: 'mnemonic_all' } });
@@ -26,7 +29,7 @@ test.describe('Metadata - Output labeling', { tag: ['@webOnly', '@T3W1', '@T3T1'
         },
         async ({ page, onboardingPage, metadataPage, settingsPage, walletPage }) => {
             await onboardingPage.completeOnboarding();
-            await settingsPage.changeNetworks({ enableNetworks: ['btc'] });
+            await settingsPage.changeNetworks({ enableNetworks: [btcSymbol] });
             await metadataPage.enableLegacyLabeling(MetadataProvider.DROPBOX);
             await walletPage.openAccount();
             await metadataPage.output.clickAddLabelButton(OutputLabelId.BitcoinDefault1, 0);
@@ -38,7 +41,7 @@ test.describe('Metadata - Output labeling', { tag: ['@webOnly', '@T3W1', '@T3T1'
             await test.step('Go to legacy account 6, it has txs with multiple outputs', async () => {
                 // Close "Turn on Suite Sync" notification
                 await metadataPage.closeLegacyNotificationButton.click();
-                await walletPage.openAccount({ symbol: 'btc', type: 'legacy', atIndex: 5 });
+                await walletPage.openAccount({ symbol: btcSymbol, type: 'legacy', atIndex: 5 });
             });
 
             await test.step('Add label to output 3 and verify', async () => {
@@ -53,7 +56,7 @@ test.describe('Metadata - Output labeling', { tag: ['@webOnly', '@T3W1', '@T3T1'
             });
 
             await test.step('Label "send to myself tx"', async () => {
-                await walletPage.openAccount({ symbol: 'btc', type: 'legacy', atIndex: 9 });
+                await walletPage.openAccount({ symbol: btcSymbol, type: 'legacy', atIndex: 9 });
                 await metadataPage.output.changeLabel({
                     outputId: OutputLabelId.BitcoinLegacy10,
                     txNumber: 0,

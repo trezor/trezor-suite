@@ -1,4 +1,5 @@
 import { createTestStore } from '@suite-common/test-utils';
+import { asNetworkSymbol } from '@suite-common/wallet-config';
 import {
     type FeeInfo,
     type RbfTransactionParamsBitcoin,
@@ -15,7 +16,7 @@ import { type EthAccount, evmTx } from '../__fixtures__/evmFixtures';
 const ONE_ETH = '1000000000000000000';
 
 const account = mockWalletAccount({
-    symbol: 'eth',
+    symbol: asNetworkSymbol('eth'),
     balance: ONE_ETH,
     availableBalance: ONE_ETH,
     formattedBalance: '1',
@@ -159,7 +160,7 @@ describe(composeEthereumCancelTransactionThunk.name, () => {
 
     it('rejects when the composed level is not final', async () => {
         const emptyAccount = mockWalletAccount({
-            symbol: 'eth',
+            symbol: asNetworkSymbol('eth'),
             balance: '0',
             availableBalance: '0',
             formattedBalance: '0',

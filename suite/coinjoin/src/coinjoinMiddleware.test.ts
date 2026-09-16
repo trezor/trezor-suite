@@ -7,6 +7,7 @@ import { torReducer } from '@suite/tor';
 import { prepareMessageSystemReducer } from '@suite-common/message-system';
 import { mockActionType, mockReducer } from '@suite-common/redux-utils/mocks';
 import { createTestStore, testMocks } from '@suite-common/test-utils';
+import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { prepareAccountsReducer } from '@suite-common/wallet-core';
 import { mockSetAccountAddMetadata } from '@suite-common/wallet-core/mocks';
 import '@suite-common/test-utils/globalOverrides';
@@ -95,7 +96,7 @@ const initStore = ({ device, router, suite, tor, wallet }: Partial<State> = {}) 
 describe('coinjoinMiddleware', () => {
     beforeEach(() => {
         CoinjoinService.getInstances().forEach(({ client }) => {
-            CoinjoinService.removeInstance(client.settings.network);
+            CoinjoinService.removeInstance(asNetworkSymbol(client.settings.network));
         });
     });
 
@@ -112,7 +113,7 @@ describe('coinjoinMiddleware', () => {
             }
 
             if (f.client) {
-                await CoinjoinService.createInstance({ symbol: f.client });
+                await CoinjoinService.createInstance({ symbol: asNetworkSymbol(f.client) });
             }
 
             store.dispatch(f.action);

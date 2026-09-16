@@ -1,8 +1,10 @@
-import type { NetworkSymbol } from '@suite-common/wallet-config';
+import { type NetworkSymbol, asNetworkSymbol } from '@suite-common/wallet-config';
 import { TestCategory, TestPriority, TestStream } from '@trezor/e2e-utils';
 
 import { expect, test } from '../../support/fixtures';
 import { createTestAnnotation } from '../../support/reporters/annotations';
+
+const ethSymbol = asNetworkSymbol('eth');
 
 test.describe('Coin Settings', { tag: ['@T3W1', '@T3T1'] }, () => {
     test.beforeEach(async ({ onboardingPage, settingsPage }) => {
@@ -23,26 +25,26 @@ test.describe('Coin Settings', { tag: ['@T3W1', '@T3T1'] }, () => {
         },
         async ({ page, dashboardPage, settingsPage, assetsSection }) => {
             const defaultUncheckedMainnet: NetworkSymbol[] = [
-                'btc',
-                'ltc',
-                'eth',
-                'etc',
-                'xrp',
+                asNetworkSymbol('btc'),
+                asNetworkSymbol('ltc'),
+                ethSymbol,
+                asNetworkSymbol('etc'),
+                asNetworkSymbol('xrp'),
                 // 'xlm', add when removed from experimental features
-                'bch',
-                'doge',
-                'zec',
-                'ada',
-                'sol',
+                asNetworkSymbol('bch'),
+                asNetworkSymbol('doge'),
+                asNetworkSymbol('zec'),
+                asNetworkSymbol('ada'),
+                asNetworkSymbol('sol'),
             ];
             // Testnets are not shown in ActivateAssetsModal, must be enabled via coins settings
             const defaultUncheckedTestnet: NetworkSymbol[] = [
-                'test',
-                'tsep',
-                'thod',
-                'txrp',
+                asNetworkSymbol('test'),
+                asNetworkSymbol('tsep'),
+                asNetworkSymbol('thod'),
+                asNetworkSymbol('txrp'),
                 // 'txlm', add when removed from experimental features
-                'dsol',
+                asNetworkSymbol('dsol'),
             ];
             const defaultUnchecked: NetworkSymbol[] = [
                 ...defaultUncheckedMainnet,
@@ -86,10 +88,10 @@ test.describe('Coin Settings', { tag: ['@T3W1', '@T3T1'] }, () => {
                 const backendType = 'blockbook';
                 const customServer = 'https://eth.marek.pl/';
 
-                await settingsPage.coinsTab.expectNetworkEnabled('eth');
-                await settingsPage.coinsTab.openNetworkAdvanceSettings('eth');
+                await settingsPage.coinsTab.expectNetworkEnabled(ethSymbol);
+                await settingsPage.coinsTab.openNetworkAdvanceSettings(ethSymbol);
                 await settingsPage.coinsTab.changeBackend(backendType, customServer);
-                await settingsPage.coinsTab.expectCustomBackendIndicator('eth');
+                await settingsPage.coinsTab.expectCustomBackendIndicator(ethSymbol);
             });
         },
     );

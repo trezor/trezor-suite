@@ -1,3 +1,4 @@
+import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { TestCategory, TestPriority, TestStream } from '@trezor/e2e-utils';
 
 import { expect, test } from '../../support/fixtures';
@@ -31,8 +32,12 @@ test.describe('Pagination', { tag: ['@T3W1', '@T3T1'] }, () => {
         async ({ onboardingPage, walletPage, paginationControl, settingsPage }) => {
             await test.step('Complete onboarding', async () => {
                 await onboardingPage.completeOnboarding();
-                await settingsPage.changeNetworks({ enableNetworks: ['btc'] });
-                await walletPage.openAccount({ symbol: 'btc', type: 'legacy', atIndex: 0 });
+                await settingsPage.changeNetworks({ enableNetworks: [asNetworkSymbol('btc')] });
+                await walletPage.openAccount({
+                    symbol: asNetworkSymbol('btc'),
+                    type: 'legacy',
+                    atIndex: 0,
+                });
             });
 
             await test.step('Go to page with pagination button', async () => {

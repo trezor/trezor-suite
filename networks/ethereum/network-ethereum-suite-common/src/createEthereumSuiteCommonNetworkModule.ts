@@ -1,9 +1,8 @@
+import { supportedEthereumNetworks } from '@trezor/network-ethereum/constants';
 import {
-    type EthereumNetworkSymbol,
-    isSupportedEthereumNetwork,
-    supportedEthereumNetworks,
-} from '@trezor/network-ethereum/constants';
-import type { SuiteCommonNetworkModule } from '@trezor/network-module-suite-common-types';
+    type SuiteCommonNetworkModule,
+    createNetworkModule,
+} from '@trezor/network-module-suite-common-types';
 
 import { ethereumValidator } from './addressValidator/ethereumAddressValidator';
 import {
@@ -14,10 +13,7 @@ import { getNetworkConfig } from './networkConfig';
 
 type EthereumSuiteCommonNetworkModuleDeps = EthereumNamedAddressResolverCompositionRootDeps;
 
-export type EthereumNetworkSuiteCommonNetworkModule =
-    SuiteCommonNetworkModule<EthereumNetworkSymbol>;
-
-type EthereumSuiteCommonNetworkModule = EthereumNetworkSuiteCommonNetworkModule;
+type EthereumSuiteCommonNetworkModule = SuiteCommonNetworkModule;
 
 export const createEthereumSuiteCommonNetworkModule = (
     deps: EthereumSuiteCommonNetworkModuleDeps,
@@ -25,11 +21,9 @@ export const createEthereumSuiteCommonNetworkModule = (
     const { ethereumNamedAddressResolver } =
         createEthereumNamedAddressResolverCompositionRoot(deps);
 
-    return {
+    return createNetworkModule(supportedEthereumNetworks, {
         addressValidator: ethereumValidator,
         namedAddressResolver: ethereumNamedAddressResolver,
-        getSupportedNetworks: () => supportedEthereumNetworks,
-        isSupportedNetwork: isSupportedEthereumNetwork,
         getNetworkConfig,
-    };
+    });
 };

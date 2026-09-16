@@ -1,4 +1,5 @@
 import { routerLocationChange } from '@suite/router';
+import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { type SelectedAccountStatus, type WalletParams } from '@suite-common/wallet-types';
 import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
 import { type StaticSessionId } from '@trezor/connect';
@@ -13,19 +14,19 @@ const device = {
 };
 
 const walletParams: WalletParams = {
-    symbol: 'btc',
+    symbol: asNetworkSymbol('btc'),
     accountIndex: 0,
     accountType: 'normal',
 };
 
 const btcAccount = mockWalletAccount({
-    symbol: 'btc',
+    symbol: asNetworkSymbol('btc'),
     visible: false,
     deviceState: DEVICE_STATE,
 });
 
 const btcFailedAccount = {
-    ...mockWalletAccount({ symbol: 'btc', deviceState: DEVICE_STATE }),
+    ...mockWalletAccount({ symbol: asNetworkSymbol('btc'), deviceState: DEVICE_STATE }),
     failed: true,
     error: 'discovery error',
 };
@@ -106,7 +107,7 @@ const selectedAccountFixtures: SelectedAccountFixture[] = [
             wallet: {
                 accounts: [
                     mockWalletAccount({
-                        symbol: 'ltc',
+                        symbol: asNetworkSymbol('ltc'),
                         deviceState: DEVICE_STATE,
                     }),
                 ],

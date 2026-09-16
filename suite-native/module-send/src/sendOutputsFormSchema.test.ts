@@ -1,5 +1,6 @@
 import { mockGetNamedAddressSupport } from '@suite-common/address/mocks';
 import { type AddressValidator, type SymbolNamedAddressResolver } from '@suite-common/networks';
+import { asNetworkSymbol } from '@suite-common/wallet-config';
 
 import { type SendFormFormContext, sendOutputsFormValidationSchema } from './sendOutputsFormSchema';
 
@@ -22,7 +23,7 @@ const resolvedAddress = '0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045';
 const validateAddress = ({
     address,
     resolvedAddress: outputResolvedAddress,
-    symbol = 'eth',
+    symbol = asNetworkSymbol('eth'),
 }: {
     address: string;
     resolvedAddress?: string;
@@ -71,7 +72,11 @@ describe('sendOutputsFormValidationSchema address', () => {
 
     it('rejects a name on a network without named address support', async () => {
         await expect(
-            validateAddress({ address: 'vitalik.eth', resolvedAddress, symbol: 'btc' }),
+            validateAddress({
+                address: 'vitalik.eth',
+                resolvedAddress,
+                symbol: asNetworkSymbol('btc'),
+            }),
         ).rejects.toMatchObject({
             message: 'The address format is incorrect.',
         });

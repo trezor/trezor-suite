@@ -1,10 +1,13 @@
 import type { StakingBatch } from '@suite-common/earn-staking-api';
+import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { CARDANO_STAKING_REGISTRATION_DEPOSIT } from '@suite-common/wallet-constants';
 import { TestCategory, TestPriority, TestStream, createTestAnnotation } from '@trezor/e2e-utils';
 
 import { toADA } from '../../../support/common';
 import { expect, test } from '../../../support/fixtures';
 import { ADA_MOCKED_ACCOUNT } from '../../../support/mocks/ada-endpoints';
+
+const adaSymbol = asNetworkSymbol('ada');
 
 // mocked and expected values
 const startingBalance = Number(ADA_MOCKED_ACCOUNT.balance);
@@ -43,7 +46,7 @@ test.describe('Staking - Cardano', { tag: ['@T3W1', '@T3T1'] }, () => {
 
             await settingsPage.changeNetworks({
                 enableNetworks: [
-                    { symbol: 'ada', backend: { type: 'blockfrost', url: blockbookMock.url } },
+                    { symbol: adaSymbol, backend: { type: 'blockfrost', url: blockbookMock.url } },
                 ],
             });
         });
@@ -70,7 +73,7 @@ test.describe('Staking - Cardano', { tag: ['@T3W1', '@T3T1'] }, () => {
             blockbookMock,
         }) => {
             const stakingAccountItemInLeftSection = walletPage.accountButton({
-                symbol: 'ada',
+                symbol: adaSymbol,
                 type: 'normal',
                 atIndex: 0,
                 subAccount: 'staking',
@@ -78,7 +81,7 @@ test.describe('Staking - Cardano', { tag: ['@T3W1', '@T3T1'] }, () => {
 
             await test.step('Verify inactive staking account', async () => {
                 await page.clock.install();
-                await walletPage.openAccount({ symbol: 'ada', type: 'normal', atIndex: 0 });
+                await walletPage.openAccount({ symbol: adaSymbol, type: 'normal', atIndex: 0 });
                 await stakingSection.stakingTabButton.click();
                 await expect(stakingSection.startStakingButton).toBeVisible();
                 await expect(walletPage.topPanelBalanceWithSymbol).toHaveText(

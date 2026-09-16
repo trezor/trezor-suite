@@ -1,3 +1,4 @@
+import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { TestStream } from '@trezor/e2e-utils';
 
 import { test } from '../../support/fixtures';
@@ -11,7 +12,7 @@ test.describe('Passphrase cancel', { tag: ['@T3W1', '@T3T1'] }, () => {
         { annotation: createTestAnnotation({ stream: TestStream.Wallet }) },
         async ({ devicePrompt, onboardingPage, settingsPage, dashboardPage }) => {
             await onboardingPage.completeOnboarding();
-            await settingsPage.changeNetworks({ enableNetworks: ['btc'] });
+            await settingsPage.changeNetworks({ enableNetworks: [asNetworkSymbol('btc')] });
 
             await dashboardPage.deviceSwitchingOpenButton.click();
             await dashboardPage.addHiddenWalletButton.click();

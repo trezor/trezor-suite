@@ -1,3 +1,4 @@
+import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { localizeNumber } from '@suite-common/wallet-utils';
 import { TestCategory, TestPriority, TestStream } from '@trezor/e2e-utils';
 import { BigNumber } from '@trezor/utils';
@@ -5,6 +6,8 @@ import { BigNumber } from '@trezor/utils';
 import { calculatePercentageOfBalance } from '../../support/common';
 import { expect, test } from '../../support/fixtures';
 import { createTestAnnotation } from '../../support/reporters/annotations';
+
+const ethSymbol = asNetworkSymbol('eth');
 
 let ethereumStakingBalance: string;
 const WITHDRAWAL_BUFFER = 0.005;
@@ -24,7 +27,7 @@ test.describe('ETH staking form', { tag: ['@T3W1', '@T3T1'] }, () => {
 
         await settingsPage.changeNetworks({
             enableNetworks: [
-                { symbol: 'eth', backend: { type: 'blockbook', url: blockbookMock.url } },
+                { symbol: ethSymbol, backend: { type: 'blockbook', url: blockbookMock.url } },
             ],
         });
     });
@@ -41,7 +44,7 @@ test.describe('ETH staking form', { tag: ['@T3W1', '@T3T1'] }, () => {
         },
         async ({ page, walletPage, stakingSection }) => {
             await test.step('Identify possible staking balance', async () => {
-                await walletPage.openAccount({ symbol: 'eth', type: 'normal', atIndex: 0 });
+                await walletPage.openAccount({ symbol: ethSymbol, type: 'normal', atIndex: 0 });
                 await expect(walletPage.topPanelBalance).toHaveText(/\d/);
                 ethereumStakingBalance = (await walletPage.topPanelBalance.innerText()).replace(
                     /,/g,
@@ -113,7 +116,7 @@ test.describe('ETH staking form', { tag: ['@T3W1', '@T3T1'] }, () => {
                         const expectedValue = calculatePercentageOfBalance({
                             percentage,
                             balance: ethereumStakingBalance,
-                            symbol: 'eth',
+                            symbol: ethSymbol,
                         });
                         await expect.soft(stakingSection.cryptoInput).toHaveValue(expectedValue);
                     });

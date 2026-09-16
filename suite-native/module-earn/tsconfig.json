@@ -96,6 +96,9 @@
             "path": "../../packages/blockchain-link-types"
         },
         { "path": "../../packages/connect" },
+        {
+            "path": "../../packages/connect-common"
+        },
         { "path": "../../packages/device-utils" },
         {
             "path": "../../networks/ethereum/network-ethereum-suite-common"

@@ -1,3 +1,4 @@
+import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { TestStream } from '@trezor/e2e-utils';
 
 import { expect, test } from '../../support/fixtures';
@@ -16,7 +17,7 @@ test.describe('Without device', { tag: ['@T3W1', '@T3T1'] }, () => {
 
                 await settingsPage.toggleTestnetNetworks();
                 await settingsPage.changeNetworks({
-                    enableNetworks: ['regtest'],
+                    enableNetworks: [asNetworkSymbol('regtest')],
                     skipActivation: true,
                 });
 
@@ -42,7 +43,7 @@ test.describe('Without device', { tag: ['@T3W1', '@T3T1'] }, () => {
         { annotation: createTestAnnotation({ stream: TestStream.Wallet }) },
         async ({ page, device, walletPage, settingsPage, tradingPage }) => {
             await test.step('Go to send form and verify prompt to connect Trezor', async () => {
-                await walletPage.openAccount({ symbol: 'regtest' });
+                await walletPage.openAccount({ symbol: asNetworkSymbol('regtest') });
                 await walletPage.openSendFormButton.click();
 
                 await device.powerOff();

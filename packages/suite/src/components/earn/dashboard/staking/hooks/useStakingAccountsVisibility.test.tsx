@@ -9,7 +9,13 @@ import { useStakingAccountsVisibility } from './useStakingAccountsVisibility';
 
 const createRoot = () =>
     createTestCompositionRoot({
-        preloadedState: { networks: mockNetworksState(['eth', 'sol', 'ada']) },
+        preloadedState: {
+            networks: mockNetworksState([
+                asNetworkSymbol('eth'),
+                asNetworkSymbol('sol'),
+                asNetworkSymbol('ada'),
+            ]),
+        },
     });
 
 const mockGetAccountTotalStakingBalance = jest.fn<string | null, [Account]>();

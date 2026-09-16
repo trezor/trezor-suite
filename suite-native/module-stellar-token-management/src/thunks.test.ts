@@ -1,3 +1,4 @@
+import { asNetworkSymbol } from '@suite-common/wallet-config';
 import {
     composeSendFormTransactionFeeLevelsThunk,
     selectAccountByKey,
@@ -18,7 +19,7 @@ jest.mock('@suite-common/wallet-core', () => ({
     composeSendFormTransactionFeeLevelsThunk: jest.fn(),
 }));
 
-const accountKey = mockAccountKey({ symbol: 'xlm', descriptor: 'stellar1' });
+const accountKey = mockAccountKey({ symbol: asNetworkSymbol('xlm'), descriptor: 'stellar1' });
 const tokenContract =
     'USDC-GA5ZSEJYB37JRC5AVCIA5MOP4RHTM335X2KGX3IHOJAPP5RE34K4KZVN' as TokenAddress;
 

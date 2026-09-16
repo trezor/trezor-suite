@@ -1,3 +1,4 @@
+import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { TestCategory, TestPriority, TestStream } from '@trezor/e2e-utils';
 
 import { expect, test } from '../../support/fixtures';
@@ -12,7 +13,7 @@ const receiveAddress =
 test.describe('Cardano', { tag: ['@nightlyOnly', '@T3W1', '@T3T1'] }, () => {
     test.beforeEach(async ({ onboardingPage, settingsPage }) => {
         await onboardingPage.completeOnboarding();
-        await settingsPage.changeNetworks({ enableNetworks: ['ada'] });
+        await settingsPage.changeNetworks({ enableNetworks: [asNetworkSymbol('ada')] });
     });
 
     test(
@@ -28,7 +29,7 @@ test.describe('Cardano', { tag: ['@nightlyOnly', '@T3W1', '@T3T1'] }, () => {
         async ({ page, device, dashboardPage, devicePrompt, settingsPage, walletPage }) => {
             await test.step('Verify Cardano account details', async () => {
                 await dashboardPage.navigateTo();
-                await walletPage.openAccount({ symbol: 'ada' });
+                await walletPage.openAccount({ symbol: asNetworkSymbol('ada') });
                 await walletPage.accountDetailsTabButton.click();
                 await expect(walletPage.accountDetails).toContainTranslation(
                     'TR_ACCOUNT_TYPE_NORMAL_CARDANO_DESC',

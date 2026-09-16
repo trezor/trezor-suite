@@ -1,4 +1,5 @@
 import { type TradingAmountLimitProps } from '@suite-common/trading';
+import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { type TokenAddress } from '@suite-common/wallet-types';
 import { act } from '@suite-native/test-utils-store';
 
@@ -48,7 +49,7 @@ describe('useContextForTradingForm', () => {
 
         await act(() => {
             result.current.setBalance('0.5');
-            result.current.setSendNetworkSymbol('eth');
+            result.current.setSendNetworkSymbol(asNetworkSymbol('eth'));
             result.current.setSendAssetSymbol('USDT');
             result.current.setContractAddress('0x123' as TokenAddress);
         });

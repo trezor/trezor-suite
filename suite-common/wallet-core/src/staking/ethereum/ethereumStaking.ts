@@ -2,6 +2,7 @@ import { decodeFunctionResult } from 'viem';
 
 import { Calldata, EVM_ABI, Verifier, type VerifyIssue } from '@suite-common/calldata';
 import { type EthValidatorsQueue } from '@suite-common/earn-staking-api';
+import { type LegacyNetworkSymbol } from '@suite-common/legacy-network-config';
 import { type NetworkSymbol, getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import { DEFAULT_PAYMENT } from '@suite-common/wallet-constants';
 import {
@@ -285,12 +286,14 @@ export const verifyEthereumStakingLiveState = async ({
 export const getEthNetworkForWalletSdk = (
     symbol: NetworkSymbol | 'unknown' | undefined,
 ): EthNetwork | null => {
-    const ethNetworks: PartialRecord<NetworkSymbol, EthNetwork> = {
+    const ethNetworks: PartialRecord<LegacyNetworkSymbol, EthNetwork> = {
         thod: 'hoodi',
         eth: 'mainnet',
     };
 
-    return (symbol && symbol !== 'unknown' ? ethNetworks[symbol] : null) ?? null;
+    return (
+        (symbol && symbol !== 'unknown' ? ethNetworks[symbol as LegacyNetworkSymbol] : null) ?? null
+    );
 };
 
 const getEthNetworkAddresses = (symbol: NetworkSymbol): EthNetworkAddresses | null => {

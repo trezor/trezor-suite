@@ -9,6 +9,9 @@ import { expect, test } from '../../support/fixtures';
 import { createTestAnnotation } from '../../support/reporters/annotations';
 import { transformAddress } from '../../support/testExtends/customMatchers';
 
+const solSymbol = asNetworkSymbol('sol');
+const ethSymbol = asNetworkSymbol('eth');
+
 const sendAmount = '5';
 const tokenSymbol = 'USDT';
 const formattedSendAmount = `${localizeNumber(sendAmount)} ${tokenSymbol}`;
@@ -21,15 +24,15 @@ test.describe('Trading - Swap', { tag: ['@T3W1', '@T3T1'] }, () => {
     test.beforeEach(
         async ({ onboardingPage, dashboardPage, settingsPage, walletPage, tradingMock }) => {
             tradingMock.setTradeFlow('swap');
-            const solBackend = await tradingMock.startBackend('sol');
+            const solBackend = await tradingMock.startBackend(solSymbol);
 
             await onboardingPage.completeOnboarding();
             await settingsPage.changeNetworks({
-                enableNetworks: ['eth', { symbol: 'sol', backend: solBackend }],
+                enableNetworks: [ethSymbol, { symbol: solSymbol, backend: solBackend }],
             });
             await dashboardPage.deviceSwitchingOpenButton.click();
             await dashboardPage.addHiddenWallet(process.env.PASSPHRASE!);
-            await walletPage.openSwapTrading({ symbol: 'sol' });
+            await walletPage.openSwapTrading({ symbol: solSymbol });
         },
     );
 
@@ -41,16 +44,16 @@ test.describe('Trading - Swap', { tag: ['@T3W1', '@T3T1'] }, () => {
                 await tradingPage.fillSwapForm({
                     amount: sendAmount,
                     sellAsset: {
-                        networkSymbol: 'sol',
+                        networkSymbol: solSymbol,
                         tokenSymbol,
                     },
                     buyAsset: {
                         searchFilter: 'Ethereum',
                         networkFilter: 'eth',
-                        assetCryptoId: getCryptoId(asNetworkSymbol('eth')),
+                        assetCryptoId: getCryptoId(ethSymbol),
                     },
                     selectReceiveAddress: async () => {
-                        await tradingPage.receiveAccount.selectSuiteReceiveAccount(0, 'eth');
+                        await tradingPage.receiveAccount.selectSuiteReceiveAccount(0, ethSymbol);
                     },
                 });
             });

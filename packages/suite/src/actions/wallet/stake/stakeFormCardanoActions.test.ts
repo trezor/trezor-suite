@@ -109,7 +109,7 @@ const getVoteDelegationCertificate = () => {
 const createStakeReadyAccount = () =>
     mockWalletAccount(
         {
-            symbol: 'ada',
+            symbol: asNetworkSymbol('ada'),
             index: 0,
             balance: '10000000',
             availableBalance: '10000000',

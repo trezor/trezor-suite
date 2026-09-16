@@ -1,6 +1,2 @@
-export {
-    isSupportedEthereumNetwork,
-    supportedEthereumNetworks,
-    toEthereumNetworkSymbol,
-} from './constants';
+export { isSupportedEthereumNetwork, supportedEthereumNetworks } from './constants';
 export type { EthereumNetworkSymbol } from './constants';

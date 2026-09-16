@@ -2,7 +2,7 @@ import { combineReducers } from '@reduxjs/toolkit';
 
 import { mockActionType } from '@suite-common/redux-utils/mocks';
 import { createTestCompositionRoot } from '@suite-common/test-utils';
-import { getNetwork } from '@suite-common/wallet-config';
+import { asNetworkSymbol, getNetwork } from '@suite-common/wallet-config';
 import { type SelectedAccountStatus, asAccountDescriptor } from '@suite-common/wallet-types';
 import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
 import { createDeferred } from '@trezor/utils';
@@ -24,11 +24,11 @@ import { tradeApi } from '../../tradeApi';
 jest.mock('../../tradeApi');
 
 const account = mockWalletAccount({
-    symbol: 'btc',
+    symbol: asNetworkSymbol('btc'),
     descriptor: asAccountDescriptor('firstAccount'),
 });
 const otherAccount = mockWalletAccount({
-    symbol: 'btc',
+    symbol: asNetworkSymbol('btc'),
     descriptor: asAccountDescriptor('secondAccount'),
 });
 const info = { coins: {}, platforms: {}, config: {} };

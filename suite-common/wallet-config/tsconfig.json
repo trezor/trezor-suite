@@ -3,7 +3,11 @@
     "compilerOptions": { "outDir": "libDev" },
     "references": [
         { "path": "../earn-stablecoin-defs" },
+        { "path": "../legacy-network-config" },
         { "path": "../networks" },
+        {
+            "path": "../../networks/network-module/network-module"
+        },
         {
             "path": "../../networks/solana/network-solana"
         },

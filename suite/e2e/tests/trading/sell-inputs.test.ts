@@ -1,9 +1,13 @@
 import { messages } from '@suite/intl';
+import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { localizeNumber } from '@suite-common/wallet-utils';
 import { TestStream } from '@trezor/e2e-utils';
 
 import { expect, test } from '../../support/fixtures';
 import { createTestAnnotation } from '../../support/reporters/annotations';
+
+const btcSymbol = asNetworkSymbol('btc');
+const solSymbol = asNetworkSymbol('sol');
 
 const solanaBalanceAddress = '41baq3croaLZEj8dPWZnXn8e6xdAtvtWu2h941vm3Ngw';
 const customFeeRate = 1;
@@ -23,8 +27,8 @@ test.describe('Trading - Sell inputs', { tag: ['@T3W1', '@T3T1'] }, () => {
         await test.step('Enable Bitcoin and Solana', async () => {
             await settingsPage.changeNetworks({
                 enableNetworks: [
-                    'btc',
-                    { symbol: 'sol', backend: { type: 'solana', url: solanaStakingMock.url } },
+                    btcSymbol,
+                    { symbol: solSymbol, backend: { type: 'solana', url: solanaStakingMock.url } },
                 ],
             });
             await dashboardPage.deviceSwitchingOpenButton.click();
@@ -37,10 +41,10 @@ test.describe('Trading - Sell inputs', { tag: ['@T3W1', '@T3T1'] }, () => {
         { annotation: createTestAnnotation({ stream: TestStream.Trade }) },
         async ({ page, walletPage, tradingPage }) => {
             await test.step('Find out btc and sol balances', async () => {
-                await walletPage.openAccount({ symbol: 'btc' });
+                await walletPage.openAccount({ symbol: btcSymbol });
                 await expect(walletPage.topPanelBalance).toHaveText(/\d/);
                 bitcoinBalance = await walletPage.topPanelBalance.innerText();
-                await walletPage.openAccount({ symbol: 'sol' });
+                await walletPage.openAccount({ symbol: solSymbol });
                 await expect(walletPage.topPanelBalance).toHaveText(/\d/);
                 solanaBalance = await walletPage.topPanelBalance.innerText();
                 await walletPage.openTrading();
@@ -81,7 +85,7 @@ test.describe('Trading - Sell inputs', { tag: ['@T3W1', '@T3T1'] }, () => {
                         await tradingPage.inputs.expectInputToBe({
                             percentage,
                             balance: bitcoinBalance,
-                            symbol: 'btc',
+                            symbol: btcSymbol,
                         });
                     });
                 }
@@ -108,7 +112,7 @@ test.describe('Trading - Sell inputs', { tag: ['@T3W1', '@T3T1'] }, () => {
             });
 
             await test.step('Try all % inputs on Solana', async () => {
-                await walletPage.openAccount({ symbol: 'sol', atIndex: 0 });
+                await walletPage.openAccount({ symbol: solSymbol, atIndex: 0 });
                 await tradingPage.sellTabButton.click();
                 await expect(tradingPage.inputs.cryptoAmountTicker).toHaveText('SOL');
                 await tradingPage.inputs.selectFiatCurrency('eur');
@@ -119,7 +123,7 @@ test.describe('Trading - Sell inputs', { tag: ['@T3W1', '@T3T1'] }, () => {
                         await tradingPage.inputs.expectInputToBe({
                             percentage,
                             balance: solanaBalance,
-                            symbol: 'sol',
+                            symbol: solSymbol,
                         });
                     });
                 }

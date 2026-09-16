@@ -1,6 +1,6 @@
 import { type CryptoId } from 'invity-api';
 
-import { type NetworkSymbol } from '@suite-common/wallet-config';
+import { type NetworkSymbol, asNetworkSymbol } from '@suite-common/wallet-config';
 import {
     type Account,
     type Rate,
@@ -29,7 +29,7 @@ const createRate = (rate: number, symbol: NetworkSymbol): Rate => ({
 
 const createEthAccount = (descriptor: string, account: Partial<Account> = {}): Account =>
     mockWalletAccount({
-        symbol: 'eth',
+        symbol: asNetworkSymbol('eth'),
         descriptor: asAccountDescriptor(descriptor),
         formattedBalance: '0',
         tokens: [],
@@ -37,8 +37,11 @@ const createEthAccount = (descriptor: string, account: Partial<Account> = {}): A
     });
 
 const ratesInUsd: RatesByKey = {
-    [getFiatRateKey('eth', 'usd')]: createRate(2_000, 'eth'),
-    [getFiatRateKey('eth', 'usd', USDC_CONTRACT)]: createRate(1, 'eth'),
+    [getFiatRateKey(asNetworkSymbol('eth'), 'usd')]: createRate(2_000, asNetworkSymbol('eth')),
+    [getFiatRateKey(asNetworkSymbol('eth'), 'usd', USDC_CONTRACT)]: createRate(
+        1,
+        asNetworkSymbol('eth'),
+    ),
 };
 
 describe('aggregateTradeableAssetBalances', () => {

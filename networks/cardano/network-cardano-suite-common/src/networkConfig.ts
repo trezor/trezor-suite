@@ -13,7 +13,7 @@ const getExplorerUrls = (baseUrl: string): Explorer => ({
     token: `${baseUrl}/asset/`,
 });
 
-type NetworkConfig = SuiteCommonNetworkConfig<CardanoNetworkSymbol> & {
+type NetworkConfig = SuiteCommonNetworkConfig & {
     readonly networkType: 'cardano';
 };
 

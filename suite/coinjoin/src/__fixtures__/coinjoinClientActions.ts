@@ -1,6 +1,7 @@
 import { MODAL_CLOSE, MODAL_OPEN_USER_CONTEXT } from '@suite/modal';
 import { type TrezorDevice } from '@suite-common/suite-types';
 import { mockSuiteDevice } from '@suite-common/suite-types/mocks';
+import { asNetworkSymbol } from '@suite-common/wallet-config';
 import {
     type CoinjoinClientEvents,
     type CoinjoinRequestOwnershipEvent,
@@ -1127,7 +1128,7 @@ export const clientEvents: ClientEventFixture[] = [
         },
         result: {
             clients: {
-                btc: {
+                [asNetworkSymbol('btc')]: {
                     status: 'loaded',
                     coordinationFeeRate: {
                         rate: 0.003,

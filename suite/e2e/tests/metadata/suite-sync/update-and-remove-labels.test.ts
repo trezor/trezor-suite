@@ -1,9 +1,12 @@
 import { mnemonic12Fixtures } from '@suite-common/e2e-evolu-client';
+import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { TestStream } from '@trezor/e2e-utils';
 
 import { AccountLabelId } from '../../../support/enums/accountLabelId';
 import { expect, test } from '../../../support/fixtures';
 import { createTestAnnotation } from '../../../support/reporters/annotations';
+
+const btcSymbol = asNetworkSymbol('btc');
 
 const {
     accountSeed,
@@ -62,7 +65,7 @@ test.describe('Suite Sync - Update and Remove Labels', { tag: ['@T3W1', '@T3T1']
         await onboardingPage.completeOnboarding();
         await settingsPage.navigateTo('application');
         await settingsPage.toggleDebugModeInSettings();
-        await settingsPage.changeNetworks({ enableNetworks: ['btc'] });
+        await settingsPage.changeNetworks({ enableNetworks: [btcSymbol] });
     });
 
     test(
@@ -72,18 +75,22 @@ test.describe('Suite Sync - Update and Remove Labels', { tag: ['@T3W1', '@T3T1']
             await test.step('Enable Suite Sync and sync labels from relay', async () => {
                 await metadataPage.enableSuiteSync();
                 await expect
-                    .soft(walletPage.accountLabel({ symbol: 'btc', type: 'normal', atIndex: 0 }))
+                    .soft(
+                        walletPage.accountLabel({ symbol: btcSymbol, type: 'normal', atIndex: 0 }),
+                    )
                     .toHaveText(accountSeed.label, { timeout: 30_000 });
             });
 
             await test.step('Update account label', async () => {
-                await walletPage.openAccount({ symbol: 'btc', type: 'normal', atIndex: 0 });
+                await walletPage.openAccount({ symbol: btcSymbol, type: 'normal', atIndex: 0 });
                 await metadataPage.account.changeLabel({
                     accountId: AccountLabelId.BitcoinDefault1,
                     label: updatedAccountLabel,
                 });
                 await expect
-                    .soft(walletPage.accountLabel({ symbol: 'btc', type: 'normal', atIndex: 0 }))
+                    .soft(
+                        walletPage.accountLabel({ symbol: btcSymbol, type: 'normal', atIndex: 0 }),
+                    )
                     .toHaveText(updatedAccountLabel);
             });
 
@@ -100,7 +107,7 @@ test.describe('Suite Sync - Update and Remove Labels', { tag: ['@T3W1', '@T3T1']
             });
 
             await test.step('Update address label', async () => {
-                await walletPage.openAccount({ symbol: 'btc', type: 'normal', atIndex: 0 });
+                await walletPage.openAccount({ symbol: btcSymbol, type: 'normal', atIndex: 0 });
                 await walletPage.receiveButton.click();
                 await metadataPage.address.changeLabel({
                     address: addressSeed.address,
@@ -112,7 +119,7 @@ test.describe('Suite Sync - Update and Remove Labels', { tag: ['@T3W1', '@T3T1']
             });
 
             await test.step('Update output label', async () => {
-                await walletPage.openAccount({ symbol: 'btc', type: 'normal', atIndex: 0 });
+                await walletPage.openAccount({ symbol: btcSymbol, type: 'normal', atIndex: 0 });
                 await metadataPage.output.changeLabel({
                     outputId: outputSeed.txId,
                     txNumber: Number(outputSeed.outputIndex),
@@ -143,12 +150,14 @@ test.describe('Suite Sync - Update and Remove Labels', { tag: ['@T3W1', '@T3T1']
             });
 
             await test.step('Remove account label', async () => {
-                await walletPage.openAccount({ symbol: 'btc', type: 'normal', atIndex: 0 });
+                await walletPage.openAccount({ symbol: btcSymbol, type: 'normal', atIndex: 0 });
                 await metadataPage.account.removeLabel({
                     accountId: AccountLabelId.BitcoinDefault1,
                 });
                 await expect
-                    .soft(walletPage.accountLabel({ symbol: 'btc', type: 'normal', atIndex: 0 }))
+                    .soft(
+                        walletPage.accountLabel({ symbol: btcSymbol, type: 'normal', atIndex: 0 }),
+                    )
                     .toHaveText('Bitcoin #1');
             });
 
@@ -162,7 +171,7 @@ test.describe('Suite Sync - Update and Remove Labels', { tag: ['@T3W1', '@T3T1']
             });
 
             await test.step('Remove address label', async () => {
-                await walletPage.openAccount({ symbol: 'btc', type: 'normal', atIndex: 0 });
+                await walletPage.openAccount({ symbol: btcSymbol, type: 'normal', atIndex: 0 });
                 await walletPage.receiveButton.click();
                 await metadataPage.address.removeLabel({ address: addressSeed.address });
                 await expect
@@ -171,7 +180,7 @@ test.describe('Suite Sync - Update and Remove Labels', { tag: ['@T3W1', '@T3T1']
             });
 
             await test.step('Remove output label', async () => {
-                await walletPage.openAccount({ symbol: 'btc', type: 'normal', atIndex: 0 });
+                await walletPage.openAccount({ symbol: btcSymbol, type: 'normal', atIndex: 0 });
                 await metadataPage.output.removeLabel({
                     outputId: outputSeed.txId,
                     txNumber: Number(outputSeed.outputIndex),

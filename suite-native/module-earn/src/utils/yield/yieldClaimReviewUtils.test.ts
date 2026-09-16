@@ -1,3 +1,4 @@
+import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { type YieldActionReviewState } from '@suite-common/wallet-core';
 
 import { buildYieldClaimRewards } from './yieldClaimReviewUtils';
@@ -30,7 +31,7 @@ describe('buildYieldClaimRewards', () => {
     it('maps every reward to its token address and symbol', () => {
         const review = createClaimReview([
             {
-                networkSymbol: 'eth',
+                networkSymbol: asNetworkSymbol('eth'),
                 symbol: 'USDC',
                 decimals: 6,
                 contractAddress: TOKEN_ADDRESS,
@@ -45,13 +46,13 @@ describe('buildYieldClaimRewards', () => {
     it('throws when a reward is missing a token contract address', () => {
         const review = createClaimReview([
             {
-                networkSymbol: 'eth',
+                networkSymbol: asNetworkSymbol('eth'),
                 symbol: 'USDC',
                 decimals: 6,
                 contractAddress: TOKEN_ADDRESS,
             },
             {
-                networkSymbol: 'eth',
+                networkSymbol: asNetworkSymbol('eth'),
                 symbol: 'MORPHO',
                 decimals: 18,
                 contractAddress: null,

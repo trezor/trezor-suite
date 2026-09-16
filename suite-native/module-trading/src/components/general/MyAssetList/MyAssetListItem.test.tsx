@@ -1,5 +1,6 @@
 import type { CryptoId } from 'invity-api';
 
+import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { type TokenSymbol, asBaseCurrencyAmount } from '@suite-common/wallet-types';
 import { type MyAsset } from '@suite-native/trading-types';
 import { BigNumber } from '@trezor/utils';
@@ -9,7 +10,7 @@ import { renderWithTradingProvider } from '../../../test-utils/tradingTestUtils'
 
 const createAsset = (overrides: Partial<MyAsset> = {}): MyAsset => ({
     name: 'Ethereum',
-    symbol: 'eth',
+    symbol: asNetworkSymbol('eth'),
     cryptoId: 'ethereum' as CryptoId,
     balance: '0.00000081',
     fiatBalance: asBaseCurrencyAmount(new BigNumber('0.01')),

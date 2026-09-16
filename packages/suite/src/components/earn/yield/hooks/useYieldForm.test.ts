@@ -2,6 +2,7 @@ import { act } from '@testing-library/react';
 
 import { type YieldDtoV2 } from '@suite-common/earn-stablecoin-api';
 import { createTestCompositionRoot, renderHookWithStoreProvider } from '@suite-common/test-utils';
+import { asNetworkSymbol } from '@suite-common/wallet-config';
 import {
     type ResolvedYieldFlowData,
     type YieldPositionFlowType,
@@ -19,7 +20,7 @@ const RECEIPT_TOKEN_ADDRESS = '0x0000000000000000000000000000000000000002';
 const ETH_RATE = 2;
 
 const account = mockWalletAccount({
-    symbol: 'eth',
+    symbol: asNetworkSymbol('eth'),
     formattedBalance: '0.2',
 });
 const vault = {

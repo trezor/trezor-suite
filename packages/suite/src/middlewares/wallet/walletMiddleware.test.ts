@@ -4,6 +4,7 @@ import { type RouterState } from '@suite/router';
 import { mockActionType, mockReducer } from '@suite-common/redux-utils/mocks';
 import { mockGetIsWindowVisible } from '@suite-common/suite-types/mocks';
 import { createTestStore, testMocks } from '@suite-common/test-utils';
+import { asNetworkSymbol } from '@suite-common/wallet-config';
 import {
     type SendState,
     accountsRefreshTimeReducer,
@@ -171,7 +172,7 @@ describe('walletMiddleware', () => {
     });
 
     describe('window visibility regain', () => {
-        const account = mockWalletAccount({ symbol: 'eth' });
+        const account = mockWalletAccount({ symbol: asNetworkSymbol('eth') });
         const pendingTx = { txid: 'abcd', blockHeight: -1, symbol: 'eth' };
         const confirmedTx = { txid: 'abcd', blockHeight: 100, symbol: 'eth' };
 
@@ -233,7 +234,7 @@ describe('walletMiddleware', () => {
 
         it('re-checks sibling accounts of the network, so a receiver balance updates too', () => {
             const receiver = mockWalletAccount({
-                symbol: 'eth',
+                symbol: asNetworkSymbol('eth'),
                 descriptor: asAccountDescriptor('receiver'),
             });
             const store = mockStore(
@@ -251,7 +252,7 @@ describe('walletMiddleware', () => {
 
         it('kicks one sync per network even with multiple pending accounts', () => {
             const secondAccount = mockWalletAccount({
-                symbol: 'eth',
+                symbol: asNetworkSymbol('eth'),
                 descriptor: asAccountDescriptor('second'),
             });
             const store = mockStore(
@@ -273,7 +274,10 @@ describe('walletMiddleware', () => {
         });
 
         it('skips accounts that are not visible', () => {
-            const hiddenAccount = mockWalletAccount({ symbol: 'eth', visible: false });
+            const hiddenAccount = mockWalletAccount({
+                symbol: asNetworkSymbol('eth'),
+                visible: false,
+            });
             const store = mockStore(
                 getInitialState({
                     accounts: [hiddenAccount],

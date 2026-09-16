@@ -1,3 +1,4 @@
+import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { TestStream } from '@trezor/e2e-utils';
 
 import ETH_BASE_TX from '../../fixtures/staking/eth-base-tx.json';
@@ -45,7 +46,10 @@ test.describe('stablecoin yield claim', { tag: ['@webOnly', '@T3W1', '@T3T1'] },
         await yieldMock.mockMerklRewards();
         await settingsPage.changeNetworks({
             enableNetworks: [
-                { symbol: 'eth', backend: { type: 'blockbook', url: blockbookMock.url } },
+                {
+                    symbol: asNetworkSymbol('eth'),
+                    backend: { type: 'blockbook', url: blockbookMock.url },
+                },
             ],
         });
     });
@@ -111,7 +115,7 @@ test.describe('stablecoin yield claim', { tag: ['@webOnly', '@T3W1', '@T3T1'] },
                 await devicePrompt.confirmOnDevicePromptIsShown();
 
                 const ethAccountName = await walletPage
-                    .accountLabel({ symbol: 'eth', type: 'normal', atIndex: 0 })
+                    .accountLabel({ symbol: asNetworkSymbol('eth'), type: 'normal', atIndex: 0 })
                     .innerText();
                 await expect(devicePrompt.header.accountLabel).toHaveText(ethAccountName);
 

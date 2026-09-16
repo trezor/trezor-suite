@@ -1,3 +1,4 @@
+import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { localizeNumber } from '@suite-common/wallet-utils';
 import { TestStream } from '@trezor/e2e-utils';
 import { BigNumber } from '@trezor/utils';
@@ -7,6 +8,8 @@ import { formatAddressWithNewlines } from '../../support/common';
 import { expect, test } from '../../support/fixtures';
 import { createTestAnnotation } from '../../support/reporters/annotations';
 import { transformAddress } from '../../support/testExtends/customMatchers';
+
+const btcSymbol = asNetworkSymbol('btc');
 
 const sendAmount = '0.0015';
 const formattedSendAmount = `${localizeNumber(sendAmount)} BTC`;
@@ -38,15 +41,15 @@ test.describe('Trading - Sell BTC', { tag: ['@T3W1', '@T3T1'] }, () => {
                 destinationPaymentExtraId: depositPaymentExtraId,
             });
             await tradingMock.setStatus('SEND_CRYPTO');
-            const btcBackend = await tradingMock.startBackend('btc');
+            const btcBackend = await tradingMock.startBackend(btcSymbol);
 
             await onboardingPage.completeOnboarding();
             await settingsPage.changeNetworks({
-                enableNetworks: [{ symbol: 'btc', backend: btcBackend }],
+                enableNetworks: [{ symbol: btcSymbol, backend: btcBackend }],
             });
             await dashboardPage.deviceSwitchingOpenButton.click();
             await dashboardPage.addHiddenWallet(process.env.PASSPHRASE!);
-            await walletPage.openTrading({ symbol: 'btc' });
+            await walletPage.openTrading({ symbol: btcSymbol });
             await tradingPage.sellTabButton.click();
             await tradingResponses.sell.list();
         },

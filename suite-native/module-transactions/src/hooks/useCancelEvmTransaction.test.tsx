@@ -2,6 +2,7 @@ import {
     selectDeviceButtonRequestsCodes,
     selectIsDeviceConnectedAndAuthorized,
 } from '@suite-common/device';
+import { asNetworkSymbol } from '@suite-common/wallet-config';
 import {
     selectAccountByKey,
     selectIsTransactionPending,
@@ -45,8 +46,8 @@ jest.mock('@suite-native/send', () => ({
     signAndPushEvmCancelTransactionThunk: jest.fn(() => ({ type: 'mock/signAndPush' })),
 }));
 
-const ethAccount = mockWalletAccount({ symbol: 'eth' });
-const btcAccount = mockWalletAccount({ symbol: 'btc' });
+const ethAccount = mockWalletAccount({ symbol: asNetworkSymbol('eth') });
+const btcAccount = mockWalletAccount({ symbol: asNetworkSymbol('btc') });
 
 const ethRbfParams = {
     type: 'ethereum',

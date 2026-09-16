@@ -1,14 +1,17 @@
+import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { TestStream } from '@trezor/e2e-utils';
 
 import { expect, test } from '../../support/fixtures';
 import { createTestAnnotation } from '../../support/reporters/annotations';
+
+const ethSymbol = asNetworkSymbol('eth');
 
 test.describe('Sign and verify ETH', { tag: ['@T3W1', '@T3T1'] }, () => {
     test.use({ deviceSetup: { mnemonic: 'mnemonic_all' } });
 
     test.beforeEach(async ({ onboardingPage, settingsPage }) => {
         await onboardingPage.completeOnboarding();
-        await settingsPage.changeNetworks({ enableNetworks: ['eth'] });
+        await settingsPage.changeNetworks({ enableNetworks: [ethSymbol] });
     });
 
     const MESSAGE_SIGN = 'hello world';
@@ -28,7 +31,7 @@ test.describe('Sign and verify ETH', { tag: ['@T3W1', '@T3T1'] }, () => {
         'Signs message with Ethereum',
         { annotation: createTestAnnotation({ stream: TestStream.Network }) },
         async ({ page, devicePrompt, walletPage }) => {
-            await walletPage.openAccount({ symbol: 'eth', type: 'normal', atIndex: 0 });
+            await walletPage.openAccount({ symbol: ethSymbol, type: 'normal', atIndex: 0 });
             await walletPage.walletExtraDropDown.click();
             await walletPage.signAndVerifyButton.click();
             await page.getByTestId('@sign-verify/message').fill(MESSAGE_SIGN);
@@ -54,7 +57,7 @@ test.describe('Sign and verify ETH', { tag: ['@T3W1', '@T3T1'] }, () => {
         'Verify message signed with Ethereum',
         { annotation: createTestAnnotation({ stream: TestStream.Network }) },
         async ({ page, devicePrompt, walletPage }) => {
-            await walletPage.openAccount({ symbol: 'eth', type: 'normal', atIndex: 0 });
+            await walletPage.openAccount({ symbol: ethSymbol, type: 'normal', atIndex: 0 });
             await walletPage.walletExtraDropDown.click();
             await walletPage.signAndVerifyButton.click();
 

@@ -1,4 +1,5 @@
 import { getCryptoId } from '@suite-common/trading';
+import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { localizeNumber } from '@suite-common/wallet-utils';
 import { TestStream } from '@trezor/e2e-utils';
 
@@ -7,6 +8,9 @@ import { formatAddressWithNewlines } from '../../support/common';
 import { expect, test } from '../../support/fixtures';
 import { createTestAnnotation } from '../../support/reporters/annotations';
 import { transformAddress } from '../../support/testExtends/customMatchers';
+
+const ethSymbol = asNetworkSymbol('eth');
+const solSymbol = asNetworkSymbol('sol');
 
 const sendAmount = '0.01';
 const formattedSendAmount = `${localizeNumber(sendAmount)} ETH`;
@@ -19,15 +23,15 @@ test.describe('Trading - Swap', { tag: ['@T3W1', '@T3T1'] }, () => {
     test.beforeEach(
         async ({ onboardingPage, dashboardPage, settingsPage, walletPage, tradingMock }) => {
             tradingMock.setTradeFlow('swap');
-            const ethBackend = await tradingMock.startBackend('eth');
+            const ethBackend = await tradingMock.startBackend(ethSymbol);
 
             await onboardingPage.completeOnboarding();
             await settingsPage.changeNetworks({
-                enableNetworks: [{ symbol: 'eth', backend: ethBackend }, 'sol'],
+                enableNetworks: [{ symbol: ethSymbol, backend: ethBackend }, solSymbol],
             });
             await dashboardPage.deviceSwitchingOpenButton.click();
             await dashboardPage.addHiddenWallet(process.env.PASSPHRASE!);
-            await walletPage.openSwapTrading({ symbol: 'eth' });
+            await walletPage.openSwapTrading({ symbol: ethSymbol });
         },
     );
 
@@ -39,14 +43,14 @@ test.describe('Trading - Swap', { tag: ['@T3W1', '@T3T1'] }, () => {
                 await tradingPage.fillSwapForm({
                     amount: sendAmount,
                     sellAsset: {
-                        networkSymbol: 'eth',
+                        networkSymbol: ethSymbol,
                     },
                     buyAsset: {
                         searchFilter: 'Solana',
-                        assetCryptoId: getCryptoId('sol'),
+                        assetCryptoId: getCryptoId(solSymbol),
                     },
                     selectReceiveAddress: async () => {
-                        await tradingPage.receiveAccount.selectSuiteReceiveAccount(0, 'sol');
+                        await tradingPage.receiveAccount.selectSuiteReceiveAccount(0, solSymbol);
                     },
                 });
             });

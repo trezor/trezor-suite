@@ -1,3 +1,4 @@
+import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { TestCategory, TestPriority, TestStream } from '@trezor/e2e-utils';
 
 import { expect, test } from '../../support/fixtures';
@@ -24,7 +25,10 @@ test.describe('Custom-blockbook-discovery', { tag: ['@T3W1', '@T3T1'] }, () => {
             const btcBlockbook = 'https://btc.trezor.io';
             await settingsPage.changeNetworks({
                 enableNetworks: [
-                    { symbol: 'btc', backend: { type: 'blockbook', url: btcBlockbook } },
+                    {
+                        symbol: asNetworkSymbol('btc'),
+                        backend: { type: 'blockbook', url: btcBlockbook },
+                    },
                 ],
                 skipActivation: true,
             });
@@ -42,7 +46,10 @@ test.describe('Custom-blockbook-discovery', { tag: ['@T3W1', '@T3T1'] }, () => {
             const ltcBlockbook = 'https://ltc.trezor.io';
             await settingsPage.changeNetworks({
                 enableNetworks: [
-                    { symbol: 'ltc', backend: { type: 'blockbook', url: ltcBlockbook } },
+                    {
+                        symbol: asNetworkSymbol('ltc'),
+                        backend: { type: 'blockbook', url: ltcBlockbook },
+                    },
                 ],
             });
             await dashboardPage.navigateTo();

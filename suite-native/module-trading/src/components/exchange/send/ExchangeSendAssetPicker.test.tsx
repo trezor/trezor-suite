@@ -7,6 +7,7 @@ import { type NetworkModuleRepositoryDep } from '@suite-common/networks';
 import { mockNetworkModuleRepository, mockNetworksState } from '@suite-common/networks/mocks';
 import { mockActionType } from '@suite-common/redux-utils/mocks';
 import { initialSuiteSyncDataState, initialSuiteSyncState } from '@suite-common/suite-sync';
+import { asNetworkSymbol } from '@suite-common/wallet-config';
 import {
     type AccountsRootState,
     type WalletSettingsRootState,
@@ -87,7 +88,7 @@ describe('ExchangeSendAssetPicker', () => {
     const defaultAssets: MyAsset[] = [
         {
             name: 'Bitcoin',
-            symbol: 'btc',
+            symbol: asNetworkSymbol('btc'),
             cryptoId: 'bitcoin' as CryptoId,
             balance: '1.23',
             fiatBalance: asBaseCurrencyAmount(new BigNumber(45.6)),
@@ -133,7 +134,9 @@ describe('ExchangeSendAssetPicker', () => {
         const walletState = getWalletState({ tradeType: 'exchange' });
         store = createLightStore({
             reducer: {
-                networks: createStaticReducer(mockNetworksState(['btc', 'eth'])),
+                networks: createStaticReducer(
+                    mockNetworksState([asNetworkSymbol('btc'), asNetworkSymbol('eth')]),
+                ),
                 discreetMode: createStaticReducer({ isActive: false }),
                 locale: localeReducer,
                 device: createStaticReducer(deviceInitialState),

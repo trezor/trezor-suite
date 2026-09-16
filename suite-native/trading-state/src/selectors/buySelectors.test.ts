@@ -4,6 +4,7 @@ import type { BuyTrade } from 'invity-api';
 
 import { type NetworkSymbol, type NetworksRootState } from '@suite-common/networks';
 import { mockNetworksState } from '@suite-common/networks/mocks';
+import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { type AccountsRootState } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
 import { mockAccountKey } from '@suite-common/wallet-types/mocks';
@@ -29,7 +30,11 @@ import {
     selectValidTradingBuyQuotesNative,
 } from './buySelectors';
 
-const supportedCoins: readonly NetworkSymbol[] = ['btc', 'eth', 'base'];
+const supportedCoins: readonly NetworkSymbol[] = [
+    asNetworkSymbol('btc'),
+    asNetworkSymbol('eth'),
+    asNetworkSymbol('base'),
+];
 
 describe('buySelectors', () => {
     let state: TradingRootState & AccountsRootState & FeatureFlagsRootState & NetworksRootState;

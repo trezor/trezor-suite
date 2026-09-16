@@ -1,10 +1,12 @@
 import { events } from '@suite/analytics';
-import type { NetworkSymbol } from '@suite-common/wallet-config';
+import { type NetworkSymbol, asNetworkSymbol } from '@suite-common/wallet-config';
 import { TestCategory, TestPriority, TestStream } from '@trezor/e2e-utils';
 
 import { expect, test } from '../../support/fixtures';
 import { createTestAnnotation } from '../../support/reporters/annotations';
 import { ExtractByEventType } from '../../support/types';
+
+const ethSymbol = asNetworkSymbol('eth');
 
 test.describe('Account types suite', { tag: ['@T3W1', '@T3T1'] }, () => {
     test.use({
@@ -31,7 +33,7 @@ test.describe('Account types suite', { tag: ['@T3W1', '@T3T1'] }, () => {
         async ({ dashboardPage, settingsPage, walletPage }) => {
             const accountTypes: { coin: NetworkSymbol; accounts: { type: string }[] }[] = [
                 {
-                    coin: 'btc',
+                    coin: asNetworkSymbol('btc'),
                     accounts: [
                         { type: 'normal' },
                         { type: 'taproot' },
@@ -40,13 +42,13 @@ test.describe('Account types suite', { tag: ['@T3W1', '@T3T1'] }, () => {
                     ],
                 },
                 {
-                    coin: 'ltc',
+                    coin: asNetworkSymbol('ltc'),
                     accounts: [{ type: 'normal' }, { type: 'segwit' }, { type: 'legacy' }],
                 },
             ];
 
             await settingsPage.changeNetworks({
-                enableNetworks: accountTypes.map(account => account.coin) as NetworkSymbol[],
+                enableNetworks: accountTypes.map(account => account.coin),
             });
             await dashboardPage.navigateTo();
 
@@ -65,7 +67,7 @@ test.describe('Account types suite', { tag: ['@T3W1', '@T3T1'] }, () => {
                         await walletPage.addAccountButton.click();
                         await expect(walletPage.addAccountNetworkSearchInput).toBeVisible();
                         await walletPage.addAccountNetworkSearchInput.fill(coin);
-                        await expect(walletPage.addAccountNetworkButton('eth')).toBeHidden();
+                        await expect(walletPage.addAccountNetworkButton(ethSymbol)).toBeHidden();
                         await walletPage.addAccountNetworkButton(coin).click();
                         await walletPage.addAccountTypeSelectInput.click();
                         await walletPage.addAccountTypeSelectOption(type).click();
@@ -96,11 +98,11 @@ test.describe('Account types suite', { tag: ['@T3W1', '@T3T1'] }, () => {
             'dashboardPage' | 'settingsPage' | 'walletPage' | 'analytics'
         >,
     ) => {
-        const symbolsToEnable = [...new Set(['eth' as NetworkSymbol, ...coins.map(c => c.symbol)])];
+        const symbolsToEnable = [...new Set([ethSymbol, ...coins.map(c => c.symbol)])];
         await settingsPage.changeNetworks({ enableNetworks: symbolsToEnable });
 
         await dashboardPage.dashboardMenuButton.click();
-        await walletPage.openAccount({ symbol: 'eth', type: 'normal', atIndex: 0 });
+        await walletPage.openAccount({ symbol: ethSymbol, type: 'normal', atIndex: 0 });
 
         analytics.interceptAnalytics();
         await walletPage.filterAccountsButton.click();
@@ -116,7 +118,9 @@ test.describe('Account types suite', { tag: ['@T3W1', '@T3T1'] }, () => {
                 await walletPage.addAccountButton.click();
                 await expect(walletPage.addAccountNetworkSearchInput).toBeVisible();
                 await walletPage.addAccountNetworkSearchInput.fill(coin.symbol);
-                await expect(walletPage.addAccountNetworkButton('btc')).toBeHidden();
+                await expect(
+                    walletPage.addAccountNetworkButton(asNetworkSymbol('btc')),
+                ).toBeHidden();
                 await walletPage.addAccountNetworkButton(coin.symbol).click();
                 await walletPage.closeAddAccountModal();
 
@@ -149,8 +153,8 @@ test.describe('Account types suite', { tag: ['@T3W1', '@T3T1'] }, () => {
         async ({ dashboardPage, settingsPage, walletPage, analytics }) => {
             await runNonBtcCoinsTest(
                 [
-                    { symbol: 'eth', path: `m/44'/60'/0'/0/1` },
-                    { symbol: 'base', path: `m/44'/60'/0'/0/1` },
+                    { symbol: ethSymbol, path: `m/44'/60'/0'/0/1` },
+                    { symbol: asNetworkSymbol('base'), path: `m/44'/60'/0'/0/1` },
                 ],
                 { dashboardPage, settingsPage, walletPage, analytics },
             );
@@ -169,12 +173,15 @@ test.describe('Account types suite', { tag: ['@T3W1', '@T3T1'] }, () => {
             }),
         },
         async ({ dashboardPage, settingsPage, walletPage, analytics }) => {
-            await runNonBtcCoinsTest([{ symbol: 'ada', path: `m/1852'/1815'/1'` }], {
-                dashboardPage,
-                settingsPage,
-                walletPage,
-                analytics,
-            });
+            await runNonBtcCoinsTest(
+                [{ symbol: asNetworkSymbol('ada'), path: `m/1852'/1815'/1'` }],
+                {
+                    dashboardPage,
+                    settingsPage,
+                    walletPage,
+                    analytics,
+                },
+            );
         },
     );
 });

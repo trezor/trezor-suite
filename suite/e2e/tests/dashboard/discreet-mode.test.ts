@@ -1,11 +1,14 @@
 import { Locator } from '@playwright/test';
 
 import { events } from '@suite/analytics';
+import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { TestCategory, TestPriority, TestStream } from '@trezor/e2e-utils';
 
 import { expect, test } from '../../support/fixtures';
 import { createTestAnnotation } from '../../support/reporters/annotations';
 import { ExtractByEventType } from '../../support/types';
+
+const btcSymbol = asNetworkSymbol('btc');
 
 const verifyHiddenAndRevealedValue = async ({
     locator,
@@ -27,7 +30,7 @@ test.describe('Discreet Mode', { tag: ['@T3W1', '@T3T1'] }, () => {
     test.beforeEach(async ({ analytics, onboardingPage, settingsPage, dashboardPage }) => {
         await analytics.interceptAnalytics();
         await onboardingPage.completeOnboarding();
-        await settingsPage.changeNetworks({ enableNetworks: ['btc'] });
+        await settingsPage.changeNetworks({ enableNetworks: [btcSymbol] });
         await dashboardPage.navigateTo();
     });
 
@@ -47,7 +50,7 @@ test.describe('Discreet Mode', { tag: ['@T3W1', '@T3T1'] }, () => {
 
             await test.step('Verify account value is hidden', async () => {
                 await verifyHiddenAndRevealedValue({
-                    locator: walletPage.balanceOfAccount({ symbol: 'btc' }),
+                    locator: walletPage.balanceOfAccount({ symbol: btcSymbol }),
                     hiddenValue: '###',
                     revealedValue: '0',
                 });
@@ -55,14 +58,14 @@ test.describe('Discreet Mode', { tag: ['@T3W1', '@T3T1'] }, () => {
 
             await test.step('Verify asset card value is hidden', async () => {
                 await verifyHiddenAndRevealedValue({
-                    locator: assetsSection.assetFiatAmount('btc'),
+                    locator: assetsSection.assetFiatAmount(btcSymbol),
                 });
             });
 
             await test.step('Verify asset row value is hidden', async () => {
                 await assetsSection.tableIcon.click();
                 await verifyHiddenAndRevealedValue({
-                    locator: assetsSection.assetFiatAmount('btc'),
+                    locator: assetsSection.assetFiatAmount(btcSymbol),
                 });
             });
 

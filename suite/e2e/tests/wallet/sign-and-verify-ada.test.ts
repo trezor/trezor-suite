@@ -1,3 +1,4 @@
+import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { TestStream } from '@trezor/e2e-utils';
 
 import { expect, test } from '../../support/fixtures';
@@ -15,14 +16,14 @@ test.describe('Sign and verify ADA', { tag: ['@T3W1', '@T3T1', '@nightlyOnly'] }
 
     test.beforeEach(async ({ onboardingPage, settingsPage }) => {
         await onboardingPage.completeOnboarding();
-        await settingsPage.changeNetworks({ enableNetworks: ['ada'] });
+        await settingsPage.changeNetworks({ enableNetworks: [asNetworkSymbol('ada')] });
     });
 
     test(
         'Signs message and shows Cardano COSE public key',
         { annotation: createTestAnnotation({ stream: TestStream.Network }) },
         async ({ page, walletPage, devicePrompt, device }) => {
-            await walletPage.openAccount({ symbol: 'ada' });
+            await walletPage.openAccount({ symbol: asNetworkSymbol('ada') });
             await walletPage.walletExtraDropDown.click();
             await walletPage.signAndVerifyButton.click();
             await page.getByTestId('@sign-verify/message').fill(MESSAGE);

@@ -1,3 +1,4 @@
+import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { getMaxStakeAmount } from '@suite-common/wallet-core';
 import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
 import { networkAmountToSmallestUnit } from '@suite-common/wallet-utils';
@@ -29,8 +30,8 @@ const renderBanner = async ({
     isMaxSelected: boolean;
 }) => {
     const account = mockWalletAccount({
-        symbol: 'sol',
-        availableBalance: networkAmountToSmallestUnit(balance, 'sol'),
+        symbol: asNetworkSymbol('sol'),
+        availableBalance: networkAmountToSmallestUnit(balance, asNetworkSymbol('sol')),
     });
 
     const { result } = await renderHookWithStoreProvider(() =>
@@ -46,7 +47,7 @@ const renderBanner = async ({
     return await renderWithStoreProvider(
         <EarnWithdrawalFeesBanner
             accountKey={account.key}
-            symbol="sol"
+            symbol={asNetworkSymbol('sol')}
             isMaxSelected={isMaxSelected}
         />,
         {
@@ -84,7 +85,7 @@ describe('EarnWithdrawalFeesBanner', () => {
         const balance = '5';
         const { getByText } = await renderBanner({
             balance,
-            amount: getMaxStakeAmount({ balance, symbol: 'sol' }),
+            amount: getMaxStakeAmount({ balance, symbol: asNetworkSymbol('sol') }),
             isMaxSelected: true,
         });
 
@@ -103,7 +104,7 @@ describe('EarnWithdrawalFeesBanner', () => {
         const balance = '1.01';
         const { getByText } = await renderBanner({
             balance,
-            amount: getMaxStakeAmount({ balance, symbol: 'sol' }),
+            amount: getMaxStakeAmount({ balance, symbol: asNetworkSymbol('sol') }),
             isMaxSelected: true,
         });
 

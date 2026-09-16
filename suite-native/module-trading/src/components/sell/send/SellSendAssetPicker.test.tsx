@@ -3,6 +3,7 @@ import type { CryptoId } from 'invity-api';
 
 import { type NetworkModuleRepositoryDep } from '@suite-common/networks';
 import { mockNetworkModuleRepository } from '@suite-common/networks/mocks';
+import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { type AccountsRootState, type WalletSettingsRootState } from '@suite-common/wallet-core';
 import { asBaseCurrencyAmount } from '@suite-common/wallet-types';
 import { type NativeAnalyticsDep, events } from '@suite-native/analytics';
@@ -71,7 +72,7 @@ describe('SellSendAssetPicker', () => {
     const defaultAssets: MyAsset[] = [
         {
             name: 'Bitcoin',
-            symbol: 'btc',
+            symbol: asNetworkSymbol('btc'),
             cryptoId: 'bitcoin' as CryptoId,
             balance: '1.23',
             fiatBalance: asBaseCurrencyAmount(new BigNumber(45.6)),

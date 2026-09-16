@@ -154,7 +154,8 @@ type PartialState = Pick<
 };
 
 const getInitialState = (prevState?: Partial<PartialState>, action?: any) => ({
-    networks: prevState?.networks ?? mockNetworksState(['btc', 'ltc']),
+    networks:
+        prevState?.networks ?? mockNetworksState([asNetworkSymbol('btc'), asNetworkSymbol('ltc')]),
     suite: suiteReducer(
         prevState ? prevState.suite : undefined,
         action || ({ type: 'foo' } as any),

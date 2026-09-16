@@ -1,6 +1,7 @@
 import { useSelector } from 'react-redux';
 
 import { useSolanaRewardsTotal } from '@suite-common/earn-staking-api';
+import { asNetworkSymbol } from '@suite-common/wallet-config';
 import {
     type AccountsRootState,
     type StakeRootState,
@@ -12,7 +13,7 @@ import { asAmountSubunit, subunitsToUnits } from '@suite-common/wallet-utils';
 import { BigNumber } from '@trezor/utils';
 
 const NON_SOLANA_PLACEHOLDER_ACCOUNT = {
-    symbol: 'btc',
+    symbol: asNetworkSymbol('btc'),
     descriptor: '' as AccountDescriptor,
 } as const;
 

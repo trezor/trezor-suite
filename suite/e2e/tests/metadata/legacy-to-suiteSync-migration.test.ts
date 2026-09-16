@@ -1,10 +1,13 @@
 import { mnemonic12Fixtures } from '@suite-common/e2e-evolu-client';
+import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { TestStream } from '@trezor/e2e-utils';
 
 import { AccountLabelId } from '../../support/enums/accountLabelId';
 import { expect, test } from '../../support/fixtures';
 import { MetadataProvider } from '../../support/mocks/metadataMock';
 import { createTestAnnotation } from '../../support/reporters/annotations';
+
+const btcSymbol = asNetworkSymbol('btc');
 
 const localLabel = 'local account label';
 const expectedAccount = mnemonic12Fixtures.buildExpectedAccount({ label: localLabel });
@@ -25,7 +28,7 @@ test.describe('Labeling migration', { tag: ['@T3W1', '@T3T1', '@desktopOnly'] },
         await onboardingPage.completeOnboarding();
         await settingsPage.navigateTo('application');
         await settingsPage.toggleDebugModeInSettings();
-        await settingsPage.changeNetworks({ enableNetworks: ['btc'] });
+        await settingsPage.changeNetworks({ enableNetworks: [btcSymbol] });
         await metadataPage.enableLegacyLabeling(MetadataProvider.LOCAL);
     });
 
@@ -35,10 +38,10 @@ test.describe('Labeling migration', { tag: ['@T3W1', '@T3T1', '@desktopOnly'] },
         async ({ page, dashboardPage, walletPage, metadataPage, evoluClient }) => {
             await test.step('Set up local file labeling', async () => {
                 await walletPage
-                    .accountLabel({ symbol: 'btc', type: 'normal', atIndex: 0 })
+                    .accountLabel({ symbol: btcSymbol, type: 'normal', atIndex: 0 })
                     .click();
                 await expect(
-                    walletPage.accountLabel({ symbol: 'btc', type: 'normal', atIndex: 0 }),
+                    walletPage.accountLabel({ symbol: btcSymbol, type: 'normal', atIndex: 0 }),
                 ).toHaveText('Bitcoin #1');
 
                 // wait until account page is fully loaded
@@ -50,13 +53,13 @@ test.describe('Labeling migration', { tag: ['@T3W1', '@T3T1', '@desktopOnly'] },
                 await metadataPage.account.metadataInput.fill(localLabel);
                 await page.keyboard.press('Enter');
                 await expect(
-                    walletPage.accountLabel({ symbol: 'btc', type: 'normal', atIndex: 0 }),
+                    walletPage.accountLabel({ symbol: btcSymbol, type: 'normal', atIndex: 0 }),
                 ).toHaveText(localLabel);
                 await metadataPage.account.successIconIsVisible(AccountLabelId.BitcoinDefault1);
             });
 
             await test.step('Change output label', async () => {
-                await walletPage.openAccount({ symbol: 'btc', type: 'normal', atIndex: 0 });
+                await walletPage.openAccount({ symbol: btcSymbol, type: 'normal', atIndex: 0 });
                 await metadataPage.output.changeLabel({
                     outputId: expectedOutput.txId,
                     txNumber: Number(expectedOutput.outputIndex),
@@ -71,7 +74,7 @@ test.describe('Labeling migration', { tag: ['@T3W1', '@T3T1', '@desktopOnly'] },
             });
 
             await test.step('Change address label', async () => {
-                await walletPage.openAccount({ symbol: 'btc', type: 'normal', atIndex: 0 });
+                await walletPage.openAccount({ symbol: btcSymbol, type: 'normal', atIndex: 0 });
                 await walletPage.receiveButton.click();
                 await metadataPage.address.changeLabel({
                     address: expectedAddress.address,
@@ -92,7 +95,7 @@ test.describe('Labeling migration', { tag: ['@T3W1', '@T3T1', '@desktopOnly'] },
                 });
 
                 await expect(
-                    walletPage.accountLabel({ symbol: 'btc', type: 'normal', atIndex: 0 }),
+                    walletPage.accountLabel({ symbol: btcSymbol, type: 'normal', atIndex: 0 }),
                 ).toHaveText(localLabel);
             });
 
@@ -108,7 +111,7 @@ test.describe('Labeling migration', { tag: ['@T3W1', '@T3T1', '@desktopOnly'] },
             });
 
             await test.step('Verify output label is synced', async () => {
-                await walletPage.openAccount({ symbol: 'btc', type: 'normal', atIndex: 0 });
+                await walletPage.openAccount({ symbol: btcSymbol, type: 'normal', atIndex: 0 });
                 await expect
                     .soft(
                         metadataPage.output.outputLabel(
@@ -120,7 +123,7 @@ test.describe('Labeling migration', { tag: ['@T3W1', '@T3T1', '@desktopOnly'] },
             });
 
             await test.step('Verify receive address label is synced', async () => {
-                await walletPage.openAccount({ symbol: 'btc', type: 'normal', atIndex: 0 });
+                await walletPage.openAccount({ symbol: btcSymbol, type: 'normal', atIndex: 0 });
                 await walletPage.receiveButton.click();
                 await expect
                     .soft(metadataPage.address.label(expectedAddress.address))

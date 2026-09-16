@@ -77,7 +77,7 @@ export const NetworkList = ({
         <Column gap={12} width="100%">
             {networks.map(network => {
                 const { symbol, name, support } = network;
-                const blockchainInfo = blockchain[symbol];
+                const blockchainInfo = blockchain[symbol as keyof typeof blockchain];
                 const hasCustomBackend = !!blockchainInfo.backends.selected;
                 const backendStatus = getBackendStatus(blockchainInfo);
 

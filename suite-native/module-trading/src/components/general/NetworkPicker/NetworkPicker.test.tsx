@@ -1,4 +1,4 @@
-import { type Network } from '@suite-common/wallet-config';
+import { type Network, asNetworkSymbol } from '@suite-common/wallet-config';
 import { fireEvent, screen } from '@suite-native/test-utils-store';
 
 import { NetworkPicker } from './NetworkPicker';
@@ -7,11 +7,11 @@ import { renderWithTradingProvider } from '../../../test-utils/tradingTestUtils'
 const mockNetworks: Network[] = [
     {
         name: 'Bitcoin',
-        symbol: 'btc',
+        symbol: asNetworkSymbol('btc'),
     } as Network,
     {
         name: 'Ethereum',
-        symbol: 'eth',
+        symbol: asNetworkSymbol('eth'),
     } as Network,
 ];
 
@@ -79,7 +79,7 @@ describe('NetworkPicker', () => {
     it('selects all networks', async () => {
         const onSelectNetwork = jest.fn();
         const { getByTestId } = await renderNetworkPicker({
-            selectedNetwork: 'eth',
+            selectedNetwork: asNetworkSymbol('eth'),
             onSelectNetwork,
         });
         await fireEvent.press(getByTestId(testID));

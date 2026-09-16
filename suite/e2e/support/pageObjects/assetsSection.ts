@@ -1,6 +1,6 @@
 import { Locator, Page, expect } from '@playwright/test';
 
-import type { NetworkSymbol } from '@suite-common/wallet-config';
+import { type NetworkSymbol, asNetworkSymbol } from '@suite-common/wallet-config';
 
 import { step } from '../common';
 
@@ -56,9 +56,9 @@ export class AssetsSection {
 
     @step()
     async verifyAssetContents() {
-        await expect(this.assetName('btc')).toHaveText('Bitcoin');
-        await expect(this.assetName('eth')).toHaveText('Ethereum');
-        await expect(this.assetFiatAmount('btc')).toHaveText('$0.00');
-        await expect(this.assetFiatAmount('eth')).toContainText('$0.00');
+        await expect(this.assetName(asNetworkSymbol('btc'))).toHaveText('Bitcoin');
+        await expect(this.assetName(asNetworkSymbol('eth'))).toHaveText('Ethereum');
+        await expect(this.assetFiatAmount(asNetworkSymbol('btc'))).toHaveText('$0.00');
+        await expect(this.assetFiatAmount(asNetworkSymbol('eth'))).toContainText('$0.00');
     }
 }

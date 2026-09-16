@@ -15,6 +15,8 @@ import { AccountLabelId } from '../../../support/enums/accountLabelId';
 import { expect, test } from '../../../support/fixtures';
 import { createTestAnnotation } from '../../../support/reporters/annotations';
 
+const btcSymbol = asNetworkSymbol('btc');
+
 const defaultWalletOwnerSecret = mnemonic12Fixtures.ownerSecret;
 const walletOneOwnerSecret = asSuiteSyncOwnerSecretHex(
     'a42c516df49ec13ef4df8d2edfd33a893ddb3c5bb5423fb55e5f33a1852e2bc2d2fc70db8b35db609c730763f81c2d2bb491abf4f07505b0449386d54285b267',
@@ -54,7 +56,7 @@ const expectedAccountLabelWalletOne = {
         asAccountDescriptor(
             'zpub6r4imip23CwVmWTfqudEXK2PKZaw2bn8PEC1tju3d4oxQMfLK1QME9aN2o8t7potfCfz6f8T4jNafTyBVfEnqfXVUT8y4PWZ1JSc2HR8pRB',
         ),
-        asNetworkSymbol('btc'),
+        btcSymbol,
     ),
     updatedAt: null,
     isDeleted: null,
@@ -87,7 +89,7 @@ test.describe('Suite Sync - Passphrase wallets', { tag: ['@T3W1', '@T3T1'] }, ()
         await onboardingPage.completeOnboarding();
         await settingsPage.navigateTo('application');
         await settingsPage.toggleDebugModeInSettings();
-        await settingsPage.changeNetworks({ enableNetworks: ['btc'] });
+        await settingsPage.changeNetworks({ enableNetworks: [btcSymbol] });
         await metadataPage.enableSuiteSync();
     });
 
@@ -134,7 +136,7 @@ test.describe('Suite Sync - Passphrase wallets', { tag: ['@T3W1', '@T3T1'] }, ()
                 await dashboardPage.openDeviceSwitcher();
                 await dashboardPage.openDevice(walletOne.index);
                 await expect(metadataPage.suiteSyncBanner).toBeHidden();
-                await walletPage.openAccount({ symbol: 'btc', type: 'normal', atIndex: 0 });
+                await walletPage.openAccount({ symbol: btcSymbol, type: 'normal', atIndex: 0 });
                 await metadataPage.account.changeLabel({
                     accountId: AccountLabelId.BitcoinDefault1,
                     label: expectedAccountLabelWalletOne.label,

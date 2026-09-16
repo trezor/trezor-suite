@@ -1,5 +1,6 @@
 import type { CryptoId } from 'invity-api';
 
+import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { asBaseCurrencyAmount } from '@suite-common/wallet-types';
 import { renderWithStoreProvider } from '@suite-native/test-utils-store';
 import { type MyAsset } from '@suite-native/trading-types';
@@ -9,7 +10,7 @@ import { TokenIconGroup } from './TokenIconGroup';
 
 const createAsset = (index: number): MyAsset => ({
     name: `Token ${index}`,
-    symbol: 'eth',
+    symbol: asNetworkSymbol('eth'),
     cryptoId: `ethereum--token-${index}` as CryptoId,
     balance: `${index}`,
     fiatBalance: asBaseCurrencyAmount(new BigNumber(index)),

@@ -1,3 +1,4 @@
+import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { TestCategory, TestPriority, TestStream } from '@trezor/e2e-utils';
 
 import ETH_BASE_TX from '../../../fixtures/staking/eth-base-tx.json';
@@ -6,6 +7,8 @@ import ETH_UNSTAKE_PENDING_TX from '../../../fixtures/staking/eth-unstake-pendin
 import { skipFixture } from '../../../support/common';
 import { expect, test } from '../../../support/fixtures';
 import { createTestAnnotation } from '../../../support/reporters/annotations';
+
+const ethSymbol = asNetworkSymbol('eth');
 
 test.describe('ETH unstaking and claim', { tag: ['@T3W1', '@T3T1'] }, () => {
     test.use({
@@ -23,7 +26,7 @@ test.describe('ETH unstaking and claim', { tag: ['@T3W1', '@T3T1'] }, () => {
 
         await settingsPage.changeNetworks({
             enableNetworks: [
-                { symbol: 'eth', backend: { type: 'blockbook', url: blockbookMock.url } },
+                { symbol: ethSymbol, backend: { type: 'blockbook', url: blockbookMock.url } },
             ],
         });
     });
@@ -41,7 +44,7 @@ test.describe('ETH unstaking and claim', { tag: ['@T3W1', '@T3T1'] }, () => {
         async ({ page, device, walletPage, stakingSection, devicePrompt, blockbookMock }) => {
             await test.step('Check staking dashboard', async () => {
                 await page.clock.install();
-                await walletPage.openAccount({ symbol: 'eth', type: 'normal', atIndex: 0 });
+                await walletPage.openAccount({ symbol: ethSymbol, type: 'normal', atIndex: 0 });
                 await stakingSection.stakingTabButton.click();
                 await stakingSection.expectStakingAmounts({
                     expected: {
@@ -244,9 +247,9 @@ test.describe('ETH unstaking and claim', { tag: ['@T3W1', '@T3T1'] }, () => {
                     amount: '3234 ETH',
                 });
                 await expect(stakingSection.claimCard).toBeHidden();
-                await expect(walletPage.balanceOfAccount({ symbol: 'eth', atIndex: 0 })).toHaveText(
-                    '4,468',
-                );
+                await expect(
+                    walletPage.balanceOfAccount({ symbol: ethSymbol, atIndex: 0 }),
+                ).toHaveText('4,468');
             });
         },
     );

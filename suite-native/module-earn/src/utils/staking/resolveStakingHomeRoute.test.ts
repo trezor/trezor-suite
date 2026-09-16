@@ -1,3 +1,4 @@
+import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { type Account } from '@suite-common/wallet-types';
 import { mockAccountKey } from '@suite-common/wallet-types/mocks';
 import { getAccountTotalStakingBalance } from '@suite-common/wallet-utils';
@@ -35,7 +36,7 @@ describe('resolveStakingHomeRoute', () => {
     });
 
     it('returns StakingManagement for a Cardano account with a staked balance', () => {
-        const account = createMockAccount({ symbol: 'ada' });
+        const account = createMockAccount({ symbol: asNetworkSymbol('ada') });
         mockGetAccountTotalStakingBalance.mockReturnValue('1000000');
 
         expect(resolveStakingHomeRoute(account)).toEqual({
@@ -45,7 +46,7 @@ describe('resolveStakingHomeRoute', () => {
     });
 
     it('returns HowStakeWorks for a Cardano account without a staked balance', () => {
-        const account = createMockAccount({ symbol: 'ada' });
+        const account = createMockAccount({ symbol: asNetworkSymbol('ada') });
         mockGetAccountTotalStakingBalance.mockReturnValue('0');
 
         expect(resolveStakingHomeRoute(account)).toEqual({
@@ -55,7 +56,7 @@ describe('resolveStakingHomeRoute', () => {
     });
 
     it('returns the "How staking works" intro for a first-time Solana staker', () => {
-        const account = createMockAccount({ symbol: 'sol' });
+        const account = createMockAccount({ symbol: asNetworkSymbol('sol') });
         mockGetAccountTotalStakingBalance.mockReturnValue('0');
 
         expect(resolveStakingHomeRoute(account)).toEqual({
@@ -65,7 +66,7 @@ describe('resolveStakingHomeRoute', () => {
     });
 
     it('returns the "How staking works" intro when the staked balance is null', () => {
-        const account = createMockAccount({ symbol: 'eth' });
+        const account = createMockAccount({ symbol: asNetworkSymbol('eth') });
         mockGetAccountTotalStakingBalance.mockReturnValue(null);
 
         expect(resolveStakingHomeRoute(account)).toEqual({

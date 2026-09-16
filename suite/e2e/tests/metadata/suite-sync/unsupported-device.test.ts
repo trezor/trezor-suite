@@ -1,14 +1,17 @@
+import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { TestStream } from '@trezor/e2e-utils';
 
 import { expect, test } from '../../../support/fixtures';
 import { createTestAnnotation } from '../../../support/reporters/annotations';
+
+const btcSymbol = asNetworkSymbol('btc');
 
 test.describe('Suite Sync - Unsupported device banner', { tag: ['@T1B1', '@T2T1'] }, () => {
     test.beforeEach(async ({ onboardingPage, metadataPage, settingsPage }) => {
         await onboardingPage.completeOnboarding();
         await settingsPage.navigateTo('application');
         await settingsPage.toggleDebugModeInSettings();
-        await settingsPage.changeNetworks({ enableNetworks: ['btc'] });
+        await settingsPage.changeNetworks({ enableNetworks: [btcSymbol] });
         await metadataPage.setupQuotaManager();
         await metadataPage.initiateSuiteSyncSetup();
     });
@@ -32,7 +35,7 @@ test.describe('Suite Sync - Unsupported device banner', { tag: ['@T1B1', '@T2T1'
             });
 
             await test.step('Banner stays visible when navigating to Send', async () => {
-                await walletPage.openAccount({ symbol: 'btc', type: 'normal', atIndex: 0 });
+                await walletPage.openAccount({ symbol: btcSymbol, type: 'normal', atIndex: 0 });
                 await walletPage.openSendFormButton.click();
                 await expect(metadataPage.unsupportedBanner).toHaveTranslation(
                     'TR_SUITE_SYNC_UNSUPPORTED_DEVICE_BANNER',
@@ -40,7 +43,7 @@ test.describe('Suite Sync - Unsupported device banner', { tag: ['@T1B1', '@T2T1'
             });
 
             await test.step('Banner stays visible when navigating to Receive', async () => {
-                await walletPage.openAccount({ symbol: 'btc', type: 'normal', atIndex: 0 });
+                await walletPage.openAccount({ symbol: btcSymbol, type: 'normal', atIndex: 0 });
                 await walletPage.receiveButton.click();
                 await expect(metadataPage.unsupportedBanner).toHaveTranslation(
                     'TR_SUITE_SYNC_UNSUPPORTED_DEVICE_BANNER',
@@ -59,13 +62,13 @@ test.describe('Suite Sync - Unsupported device banner', { tag: ['@T1B1', '@T2T1'
             });
 
             await test.step('Banner does not reappear when navigating to Send', async () => {
-                await walletPage.openAccount({ symbol: 'btc', type: 'normal', atIndex: 0 });
+                await walletPage.openAccount({ symbol: btcSymbol, type: 'normal', atIndex: 0 });
                 await walletPage.openSendFormButton.click();
                 await expect(metadataPage.unsupportedBanner).toBeHidden();
             });
 
             await test.step('Banner does not reappear when navigating to Receive', async () => {
-                await walletPage.openAccount({ symbol: 'btc', type: 'normal', atIndex: 0 });
+                await walletPage.openAccount({ symbol: btcSymbol, type: 'normal', atIndex: 0 });
                 await walletPage.receiveButton.click();
                 await expect(metadataPage.unsupportedBanner).toBeHidden();
             });

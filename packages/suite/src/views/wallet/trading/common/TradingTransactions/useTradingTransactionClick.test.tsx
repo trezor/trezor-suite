@@ -14,6 +14,7 @@ import {
     initialState as tradingInitialState,
     tradingSellActions,
 } from '@suite-common/trading';
+import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { asAccountDescriptor } from '@suite-common/wallet-types';
 import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
 
@@ -25,7 +26,7 @@ import { mockInitialAppState } from '../../../../../../mocks/mockInitialAppState
 const BITCOIN = 'bitcoin' as CryptoId;
 
 const btcAccount = mockWalletAccount({
-    symbol: 'btc',
+    symbol: asNetworkSymbol('btc'),
     descriptor: asAccountDescriptor('btcDescriptor'),
 });
 

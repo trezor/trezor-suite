@@ -1,6 +1,7 @@
 import { chromium } from '@playwright/test';
 import { writeFileSync } from 'node:fs';
 
+import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { TrezorUserEnvLink } from '@trezor/trezor-user-env-link';
 
 import { BRIDGE_VERSION } from '../support/bridge';
@@ -70,16 +71,16 @@ test.describe(
             await test.step('Enable networks', async () => {
                 await settingsPage.changeNetworks({
                     enableNetworks: [
-                        'eth',
-                        'btc',
-                        'sol',
-                        'doge',
-                        'ada',
-                        'xlm',
-                        'xrp',
-                        'trx',
-                        'rhc',
-                        'base',
+                        asNetworkSymbol('eth'),
+                        asNetworkSymbol('btc'),
+                        asNetworkSymbol('sol'),
+                        asNetworkSymbol('doge'),
+                        asNetworkSymbol('ada'),
+                        asNetworkSymbol('xlm'),
+                        asNetworkSymbol('xrp'),
+                        asNetworkSymbol('trx'),
+                        asNetworkSymbol('rhc'),
+                        asNetworkSymbol('base'),
                     ],
                 });
             });

@@ -1,3 +1,4 @@
+import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { type Account, asAccountDescriptor } from '@suite-common/wallet-types';
 import { mockAccountKey } from '@suite-common/wallet-types/mocks';
 import { getTranslation } from '@suite-native/intl';
@@ -70,8 +71,8 @@ describe('AccountListAddressItem', () => {
     it('should call onPress callback when pressed', async () => {
         const receiveAccount: ReceiveAccount = {
             account: createAccount({
-                key: mockAccountKey({ symbol: 'btc', descriptor: 'btc1' }),
-                symbol: 'btc',
+                key: mockAccountKey({ symbol: asNetworkSymbol('btc'), descriptor: 'btc1' }),
+                symbol: asNetworkSymbol('btc'),
                 accountLabel: 'My BTC account',
                 availableBalance: '10000000',
             }),
@@ -94,8 +95,8 @@ describe('AccountListAddressItem', () => {
     it('should not display caret for address addresses', async () => {
         const receiveAccount: ReceiveAccount = {
             account: createAccount({
-                key: mockAccountKey({ symbol: 'btc', descriptor: 'btc1' }),
-                symbol: 'btc',
+                key: mockAccountKey({ symbol: asNetworkSymbol('btc'), descriptor: 'btc1' }),
+                symbol: asNetworkSymbol('btc'),
                 accountLabel: 'My BTC account',
                 availableBalance: '10000000',
             }),
@@ -120,8 +121,8 @@ describe('AccountListAddressItem', () => {
     it('should display address', async () => {
         const receiveAccount: ReceiveAccount = {
             account: createAccount({
-                key: mockAccountKey({ symbol: 'btc', descriptor: 'btc1' }),
-                symbol: 'btc',
+                key: mockAccountKey({ symbol: asNetworkSymbol('btc'), descriptor: 'btc1' }),
+                symbol: asNetworkSymbol('btc'),
                 accountLabel: 'My BTC account',
                 availableBalance: '10000000',
             }),
@@ -157,8 +158,8 @@ describe('AccountListAddressItem', () => {
     it('should display zero balance', async () => {
         const receiveAccount: ReceiveAccount = {
             account: createAccount({
-                key: mockAccountKey({ symbol: 'btc', descriptor: 'btc1' }),
-                symbol: 'btc',
+                key: mockAccountKey({ symbol: asNetworkSymbol('btc'), descriptor: 'btc1' }),
+                symbol: asNetworkSymbol('btc'),
                 accountLabel: 'My BTC account',
                 availableBalance: '10000000',
             }),
@@ -188,8 +189,8 @@ describe('AccountListAddressItem', () => {
     it('should hide balance for a fresh address', async () => {
         const receiveAccount: ReceiveAccount = {
             account: createAccount({
-                key: mockAccountKey({ symbol: 'btc', descriptor: 'btc1' }),
-                symbol: 'btc',
+                key: mockAccountKey({ symbol: asNetworkSymbol('btc'), descriptor: 'btc1' }),
+                symbol: asNetworkSymbol('btc'),
                 accountLabel: 'My BTC account',
                 availableBalance: '10000000',
             }),
@@ -219,8 +220,8 @@ describe('AccountListAddressItem', () => {
     it('should render nothing when no address is specified', async () => {
         const receiveAccount: ReceiveAccount = {
             account: createAccount({
-                key: mockAccountKey({ symbol: 'btc', descriptor: 'btc1' }),
-                symbol: 'btc',
+                key: mockAccountKey({ symbol: asNetworkSymbol('btc'), descriptor: 'btc1' }),
+                symbol: asNetworkSymbol('btc'),
                 accountLabel: 'My BTC account',
                 availableBalance: '10000000',
             }),

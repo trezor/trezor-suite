@@ -1,5 +1,6 @@
 import { type CryptoId } from 'invity-api';
 
+import { asNetworkSymbol } from '@suite-common/wallet-config';
 import {
     type Account,
     type RatesByKey,
@@ -24,7 +25,7 @@ const USDT_CRYPTO_ID = `ethereum--${USDT_CONTRACT}` as CryptoId;
 
 const createEthAccount = (descriptor: string, formattedBalance: string): Account =>
     mockWalletAccount({
-        symbol: 'eth',
+        symbol: asNetworkSymbol('eth'),
         descriptor: asAccountDescriptor(descriptor),
         balance: formattedBalance,
         formattedBalance,
@@ -44,19 +45,19 @@ const createToken = (token: Partial<TokensWithRates> = {}): TokensWithRates => (
         lastSuccessfulFetchTimestamp: asTimestamp(1_000_000),
         isLoading: false,
         error: null,
-        ticker: { symbol: 'eth' },
+        ticker: { symbol: asNetworkSymbol('eth') },
     },
     ...token,
 });
 
 const ethRates: RatesByKey = {
-    [getFiatRateKey('eth', 'usd')]: {
+    [getFiatRateKey(asNetworkSymbol('eth'), 'usd')]: {
         rate: 2_000,
         lastTickerTimestamp: asTimestamp(1_000_000),
         lastSuccessfulFetchTimestamp: asTimestamp(1_000_000),
         isLoading: false,
         error: null,
-        ticker: { symbol: 'eth' },
+        ticker: { symbol: asNetworkSymbol('eth') },
     },
 };
 

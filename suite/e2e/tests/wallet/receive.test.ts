@@ -1,4 +1,4 @@
-import type { NetworkSymbol } from '@suite-common/wallet-config';
+import { type NetworkSymbol, asNetworkSymbol } from '@suite-common/wallet-config';
 import { TestCategory, TestPriority, TestStream } from '@trezor/e2e-utils';
 
 import { DEVICE_RENDERED_EVM_INDENT } from '../../support/common';
@@ -19,25 +19,25 @@ test.describe('Receive transaction', { tag: ['@T3W1', '@T3T1'] }, () => {
         deviceDisplayPrefix: string;
     }> = [
         {
-            coin: 'btc',
+            coin: asNetworkSymbol('btc'),
             category: TestCategory.BTC,
             addressFormat: /^(bc1[a-z0-9]{39,59}|[13][a-km-zA-HJ-NP-Z1-9]{25,34})$/,
             deviceDisplayPrefix: '',
         },
         {
-            coin: 'eth',
+            coin: asNetworkSymbol('eth'),
             category: TestCategory.ETH,
             addressFormat: /^ {2}0x[a-fA-F0-9]{40}$/,
             deviceDisplayPrefix: DEVICE_RENDERED_EVM_INDENT,
         },
         {
-            coin: 'sol',
+            coin: asNetworkSymbol('sol'),
             category: TestCategory.Solana,
             addressFormat: /^[1-9A-HJ-NP-Za-km-z]{32,44}$/,
             deviceDisplayPrefix: '',
         },
         {
-            coin: 'trx',
+            coin: asNetworkSymbol('trx'),
             category: TestCategory.Coins,
             addressFormat: /^T[1-9A-HJ-NP-Za-km-z]{33}$/,
             deviceDisplayPrefix: '',

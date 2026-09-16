@@ -1,5 +1,6 @@
 import type { CryptoId } from 'invity-api';
 
+import { asNetworkSymbol } from '@suite-common/wallet-config';
 import type { WalletSettings } from '@suite-common/wallet-types';
 import { getFiatRateKey } from '@suite-common/wallet-utils';
 import { act } from '@suite-native/test-utils-store';
@@ -29,7 +30,8 @@ const getOverrides = (
 ): PreloadedStatePartial<TradingTestPreloadedState> => ({
     wallet: {
         ...mockWalletFiatRatesAndSettings({
-            [getFiatRateKey('eth', 'usd', usdcAsset.contractAddress!)]: createMockRate(1, 'eth'),
+            [getFiatRateKey(asNetworkSymbol('eth'), 'usd', usdcAsset.contractAddress!)]:
+                createMockRate(1, asNetworkSymbol('eth')),
         }),
         ...walletOverrides,
     },

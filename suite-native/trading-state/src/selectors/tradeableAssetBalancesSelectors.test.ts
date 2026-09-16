@@ -1,5 +1,6 @@
 import { type DeviceRootState, deviceInitialState } from '@suite-common/device';
 import { mockSuiteDevice } from '@suite-common/suite-types/mocks';
+import { asNetworkSymbol } from '@suite-common/wallet-config';
 import {
     type AccountsRootState,
     type FiatRatesRootState,
@@ -57,14 +58,14 @@ const createState = (accounts: Account[], rates: Record<string, Rate> = {}): Tes
 describe('selectTradeableAssetBalances', () => {
     it('aggregates native and token balances across visible accounts', () => {
         const firstAccount = mockWalletAccount({
-            symbol: 'eth',
+            symbol: asNetworkSymbol('eth'),
             descriptor: asAccountDescriptor('firstEthAccount'),
             deviceState: DEVICE_STATIC_SESSION_ID,
             formattedBalance: '1',
             tokens: [createUsdcToken(USDC_CONTRACT, '1.5')],
         });
         const secondAccount = mockWalletAccount({
-            symbol: 'eth',
+            symbol: asNetworkSymbol('eth'),
             descriptor: asAccountDescriptor('secondEthAccount'),
             deviceState: DEVICE_STATIC_SESSION_ID,
             index: 1,
@@ -72,8 +73,14 @@ describe('selectTradeableAssetBalances', () => {
             tokens: [createUsdcToken(toTokenAddress(USDC_CONTRACT.toUpperCase()), '2.5')],
         });
         const state = createState([firstAccount, secondAccount], {
-            [getFiatRateKey('eth', 'usd')]: createMockRate(2_000, 'eth'),
-            [getFiatRateKey('eth', 'usd', USDC_CONTRACT)]: createMockRate(1, 'eth'),
+            [getFiatRateKey(asNetworkSymbol('eth'), 'usd')]: createMockRate(
+                2_000,
+                asNetworkSymbol('eth'),
+            ),
+            [getFiatRateKey(asNetworkSymbol('eth'), 'usd', USDC_CONTRACT)]: createMockRate(
+                1,
+                asNetworkSymbol('eth'),
+            ),
         });
 
         const balances = selectTradeableAssetBalances(state);
@@ -86,14 +93,14 @@ describe('selectTradeableAssetBalances', () => {
 
     it('does not include hidden accounts or zero balances', () => {
         const visibleAccount = mockWalletAccount({
-            symbol: 'eth',
+            symbol: asNetworkSymbol('eth'),
             descriptor: asAccountDescriptor('visibleEthAccount'),
             deviceState: DEVICE_STATIC_SESSION_ID,
             formattedBalance: '0',
             tokens: [],
         });
         const hiddenAccount = mockWalletAccount({
-            symbol: 'eth',
+            symbol: asNetworkSymbol('eth'),
             descriptor: asAccountDescriptor('hiddenEthAccount'),
             deviceState: DEVICE_STATIC_SESSION_ID,
             formattedBalance: '5',

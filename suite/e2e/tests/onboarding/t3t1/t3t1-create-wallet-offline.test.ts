@@ -1,4 +1,5 @@
 import { messages } from '@suite/intl';
+import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { TestCategory, TestPriority, TestStream } from '@trezor/e2e-utils';
 
 import { expect, test } from '../../../support/fixtures';
@@ -78,7 +79,7 @@ test.describe('Onboarding - create wallet', { tag: ['@desktopOnly', '@T3T1'] }, 
 
             await test.step('Enable Bitcoin so discovery can be attempted', async () => {
                 await settingsPage.changeNetworks({
-                    enableNetworks: ['btc'],
+                    enableNetworks: [asNetworkSymbol('btc')],
                     skipDiscovery: true,
                 });
                 await dashboardPage.navigateTo();

@@ -1,6 +1,6 @@
 import { messages } from '@suite/intl';
 import { cryptoIdToNetworkSymbol } from '@suite-common/trading';
-import { type NetworkSymbol, getNetwork } from '@suite-common/wallet-config';
+import { type NetworkSymbol, asNetworkSymbol, getNetwork } from '@suite-common/wallet-config';
 import { localizeNumber } from '@suite-common/wallet-utils';
 import { TestStream } from '@trezor/e2e-utils';
 
@@ -8,6 +8,8 @@ import { tradeEndpoint } from '../../fixtures/trading';
 import { PENDING_TRADE, SEEDED_TRADES } from '../../fixtures/trading/swap/swap-history';
 import { expect, test } from '../../support/fixtures';
 import { createTestAnnotation } from '../../support/reporters/annotations';
+
+const btcSymbol = asNetworkSymbol('btc');
 
 const listStatusTranslationKeys = {
     SUCCESS: 'TR_EXCHANGE_STATUS_SUCCESS',
@@ -46,7 +48,9 @@ test.describe('Trading - Swap history', { tag: ['@webOnly', '@T3T1', '@T3W1'] },
         });
 
         await onboardingPage.completeOnboarding();
-        await settingsPage.changeNetworks({ enableNetworks: ['btc', 'eth', 'ltc'] });
+        await settingsPage.changeNetworks({
+            enableNetworks: [btcSymbol, asNetworkSymbol('eth'), asNetworkSymbol('ltc')],
+        });
         await tradingStore.insertSwapHistory(SEEDED_TRADES);
     });
 
@@ -55,7 +59,7 @@ test.describe('Trading - Swap history', { tag: ['@webOnly', '@T3T1', '@T3W1'] },
         { annotation: createTestAnnotation({ stream: TestStream.Trade }) },
         async ({ walletPage, tradingPage }) => {
             await test.step('Navigate to swap/exchange trading section', async () => {
-                await walletPage.openSwapTrading({ symbol: 'btc' });
+                await walletPage.openSwapTrading({ symbol: btcSymbol });
             });
 
             await test.step('Open trading transactions history', async () => {
@@ -184,7 +188,7 @@ test.describe('Trading - Swap history', { tag: ['@webOnly', '@T3T1', '@T3W1'] },
         { annotation: createTestAnnotation({ stream: TestStream.Trade }) },
         async ({ walletPage, tradingPage }) => {
             await test.step('Navigate to swap/exchange trading section', async () => {
-                await walletPage.openSwapTrading({ symbol: 'btc' });
+                await walletPage.openSwapTrading({ symbol: btcSymbol });
             });
 
             await test.step('Open trading transactions history', async () => {
@@ -213,7 +217,7 @@ test.describe('Trading - Swap history', { tag: ['@webOnly', '@T3T1', '@T3W1'] },
         { annotation: createTestAnnotation({ stream: TestStream.Trade }) },
         async ({ walletPage, tradingPage }) => {
             await test.step('Navigate to swap/exchange trading section', async () => {
-                await walletPage.openSwapTrading({ symbol: 'btc' });
+                await walletPage.openSwapTrading({ symbol: btcSymbol });
             });
 
             await test.step('Open trading transactions history', async () => {

@@ -1,4 +1,5 @@
 import type { BackupType } from '@suite-common/suite-types';
+import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { TestCategory, TestPriority, TestStream } from '@trezor/e2e-utils';
 
 import { expect, test } from '../../../support/fixtures';
@@ -93,7 +94,10 @@ test.describe('Onboarding - create wallet', { tag: ['@T3W1'] }, () => {
                     await onboardingPage.onboardingFeedbackBannerCTAButton.click();
 
                     await dashboardPage.discoveryEmptyPrimaryButton.click();
-                    await assetsSection.enableNetworkViaActivateAssetsModal(['btc', 'eth']);
+                    await assetsSection.enableNetworkViaActivateAssetsModal([
+                        asNetworkSymbol('btc'),
+                        asNetworkSymbol('eth'),
+                    ]);
 
                     await expect(onboardingPage.suiteLoadedIndicator).toBeVisible({
                         timeout: 30_000,

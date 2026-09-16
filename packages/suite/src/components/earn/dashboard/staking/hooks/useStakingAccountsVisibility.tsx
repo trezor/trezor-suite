@@ -42,7 +42,9 @@ export const useStakingAccountsVisibility = ({
         (account: Account) =>
             toFiatCurrency({
                 amount: getAccountTotalStakingBalance(account) ?? '0',
-                rate: isStakingSymbol(account.symbol) ? currentRates[account.symbol] : undefined,
+                rate: isStakingSymbol(account.symbol)
+                    ? currentRates[account.symbol as StakingNetworkSymbol]
+                    : undefined,
             }) ?? '0',
         [currentRates],
     );
@@ -51,7 +53,9 @@ export const useStakingAccountsVisibility = ({
         (account: Account) =>
             toFiatCurrency({
                 amount: account.formattedBalance,
-                rate: isStakingSymbol(account.symbol) ? currentRates[account.symbol] : undefined,
+                rate: isStakingSymbol(account.symbol)
+                    ? currentRates[account.symbol as StakingNetworkSymbol]
+                    : undefined,
             }) ?? '0',
         [currentRates],
     );

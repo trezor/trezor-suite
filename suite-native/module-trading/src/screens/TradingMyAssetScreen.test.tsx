@@ -1,6 +1,7 @@
 import { type RouteProp } from '@react-navigation/native';
 import type { CryptoId } from 'invity-api';
 
+import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { asBaseCurrencyAmount } from '@suite-common/wallet-types';
 import {
     AppTabsRoutes,
@@ -19,7 +20,7 @@ import { renderWithTradingProvider } from '../test-utils/tradingTestUtils';
 
 const bitcoinAsset: MyAsset = {
     name: 'Bitcoin',
-    symbol: 'btc',
+    symbol: asNetworkSymbol('btc'),
     cryptoId: 'bitcoin' as CryptoId,
     balance: '1.23',
     fiatBalance: asBaseCurrencyAmount(new BigNumber('45000')),

@@ -1,3 +1,4 @@
+import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { TestStream } from '@trezor/e2e-utils';
 
 import { expect, test } from '../../support/fixtures';
@@ -37,10 +38,17 @@ test.describe('ENS in the send form', { tag: ['@T3W1', '@T3T1'] }, () => {
         await blockbookMock.start('eth');
         await settingsPage.changeNetworks({
             enableNetworks: [
-                { symbol: 'eth', backend: { type: 'blockbook', url: blockbookMock.url } },
+                {
+                    symbol: asNetworkSymbol('eth'),
+                    backend: { type: 'blockbook', url: blockbookMock.url },
+                },
             ],
         });
-        await walletPage.openAccount({ symbol: 'eth', type: 'normal', atIndex: 0 });
+        await walletPage.openAccount({
+            symbol: asNetworkSymbol('eth'),
+            type: 'normal',
+            atIndex: 0,
+        });
         await walletPage.openSendFormButton.click();
     });
 

@@ -1,3 +1,4 @@
+import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { TestStream } from '@trezor/e2e-utils';
 
 import { expect, test } from '../../../support/fixtures';
@@ -11,7 +12,7 @@ test.describe('Metadata - wallet labeling', { tag: ['@webOnly', '@T3W1', '@T3T1'
     test.beforeEach(async ({ onboardingPage, metadataMock, metadataPage, settingsPage }) => {
         await metadataMock.start(MetadataProvider.DROPBOX);
         await onboardingPage.completeOnboarding();
-        await settingsPage.changeNetworks({ enableNetworks: ['btc'] });
+        await settingsPage.changeNetworks({ enableNetworks: [asNetworkSymbol('btc')] });
         await metadataPage.enableLegacyLabeling(MetadataProvider.DROPBOX);
     });
 
