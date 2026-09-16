@@ -2,6 +2,7 @@ import type { Horizon, Transaction } from '@stellar/stellar-sdk';
 
 import type { StellarRpcServer } from './rpc';
 import type { describeTransaction } from '../runtime/transactions/describe';
+import type { identifyTransaction } from '../runtime/transactions/identify';
 
 export type * from './account';
 export type * from './rpc';
@@ -28,3 +29,10 @@ export type StellarTransaction = Transaction;
 export type StellarLedgerRecord = Horizon.ServerApi.LedgerRecord;
 
 export type DescribedTransaction = ReturnType<typeof describeTransaction>;
+
+// Horizon-only API of the current blockchain-link worker; goes away once it reads through StellarConnection.
+export type StellarAPI = Horizon.Server;
+
+export type RawStellarTransaction = Horizon.ServerApi.TransactionRecord;
+
+export type IdentifiedTransaction = ReturnType<typeof identifyTransaction>;
