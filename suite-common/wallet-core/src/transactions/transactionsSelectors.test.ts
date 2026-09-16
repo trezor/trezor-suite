@@ -165,7 +165,7 @@ describe('selectNonPhishingTransactionNotifications', () => {
         descriptor: DESCRIPTOR,
         symbol: 'eth',
         txid: 'received-tx',
-        formattedAmount: '0.0000005 ETH',
+        amount: '0.0000005',
     } as TransactionNotification;
 
     type PhishingState = NotificationsRootState &

@@ -14,6 +14,7 @@ export type YieldAccountOpportunity = {
     additionalDepositAmount: string;
     depositedSymbol: TokenSymbol;
     depositedContractAddress: string | null;
+    depositedDecimals: number;
     apyPercentage: number | null;
 };
 
@@ -31,4 +32,5 @@ export type YieldOpportunityData = Pick<
     | 'additionalDepositAmount'
     | 'depositedSymbol'
     | 'depositedContractAddress'
+    | 'depositedDecimals'
 >;

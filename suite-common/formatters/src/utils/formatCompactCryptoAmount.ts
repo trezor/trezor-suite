@@ -4,6 +4,14 @@ import { BigNumber } from '@trezor/utils';
 
 import { truncateCryptoAmount } from './truncateCryptoAmount';
 
+// Tokens with this many decimals (e.g. stablecoins like USDC/USDT) are rendered money-like
+// (two decimals) in the compact format.
+const MONEY_LIKE_TOKEN_DECIMALS = 6;
+
+/** Whether a token's stated decimals make it read as money rather than as crypto. */
+export const isMoneyLikeToken = (tokenDecimals: number | undefined) =>
+    tokenDecimals === MONEY_LIKE_TOKEN_DECIMALS;
+
 const COMPACT_CRYPTO_DUST_LIMIT = new BigNumber('0.00001');
 const COMPACT_CRYPTO_MONEY_DUST_LIMIT = new BigNumber('0.01');
 const COMPACT_CRYPTO_MILLION_LIMIT = new BigNumber(1_000_000);

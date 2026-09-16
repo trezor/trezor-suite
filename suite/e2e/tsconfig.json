@@ -26,6 +26,9 @@
         },
         { "path": "../../suite-common/feedback" },
         {
+            "path": "../../suite-common/formatters"
+        },
+        {
             "path": "../../suite-common/message-system"
         },
         { "path": "../../suite-common/networks" },

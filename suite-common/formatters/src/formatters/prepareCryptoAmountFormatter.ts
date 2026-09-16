@@ -21,16 +21,12 @@ import { BigNumber } from '@trezor/utils';
 import { makeFormatter } from '../makeFormatter';
 import { type FormatterConfig } from '../types';
 import { prepareDisplaySymbolFormatter } from './prepareDisplaySymbolFormatter';
-import { formatCompactCryptoAmount } from '../utils/formatCompactCryptoAmount';
+import { formatCompactCryptoAmount, isMoneyLikeToken } from '../utils/formatCompactCryptoAmount';
 import { truncateCryptoAmount } from '../utils/truncateCryptoAmount';
 
 export type CryptoAmountFormatterInputValue = string;
 
 export type CryptoAmountFormatterFormatStyle = 'exact' | 'compact-balance';
-
-// Tokens with this many decimals (e.g. stablecoins like USDC/USDT) are rendered money-like
-// (two decimals) in the compact format.
-const MONEY_LIKE_TOKEN_DECIMALS = 6;
 
 export type CryptoAmountFormatterDataContext = {
     symbol: NetworkSymbol | TokenSymbol;
@@ -165,7 +161,7 @@ const formatCryptoAmountForDisplay = ({
             return formatCompactCryptoAmount({
                 value,
                 locale,
-                isMoneyLike: tokenDecimals === MONEY_LIKE_TOKEN_DECIMALS,
+                isMoneyLike: isMoneyLikeToken(tokenDecimals),
                 areSubunitsDisplayed,
             });
         case 'exact':

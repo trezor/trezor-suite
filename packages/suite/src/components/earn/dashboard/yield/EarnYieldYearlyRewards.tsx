@@ -9,6 +9,7 @@ type EarnYieldYearlyRewardsProps = {
     symbol: TokenSymbol;
     rewards: string;
     apy: number | null;
+    tokenDecimals: number;
     hasDisplayableDepositedAmount: boolean;
     formattedDepositedAmount: string;
     displaySymbol: string;
@@ -18,6 +19,7 @@ export const EarnYieldYearlyRewards = ({
     symbol,
     rewards,
     apy,
+    tokenDecimals,
     hasDisplayableDepositedAmount,
     formattedDepositedAmount,
     displaySymbol,
@@ -28,6 +30,7 @@ export const EarnYieldYearlyRewards = ({
             symbol={symbol}
             rewards={rewards}
             apy={apy}
+            tokenDecimals={tokenDecimals}
         />
 
         {hasDisplayableDepositedAmount && (
