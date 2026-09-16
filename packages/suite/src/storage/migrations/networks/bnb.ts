@@ -57,17 +57,22 @@ export const migrationOfBnbNetwork: OnUpgradeFunc<SuiteDBSchema> = async (
         backendSettings.delete('bnb');
     }
 
-    const tokenManagement = transaction.objectStore('tokenManagement');
-    const bnbTokenManagementShow = await tokenManagement.get('bnb-coin-show');
-    if (bnbTokenManagementShow) {
-        tokenManagement.add(bnbTokenManagementShow, 'bsc-coin-show');
-        tokenManagement.delete('bnb-coin-show');
-    }
+    // `tokenManagement` is created by the version 46 migration, so it is always present on a
+    // consistently migrated database. It can be missing on one left half-migrated by an upgrade
+    // that failed before this fix, and there is nothing to rename in that case anyway.
+    if (transaction.objectStoreNames.contains('tokenManagement')) {
+        const tokenManagement = transaction.objectStore('tokenManagement');
+        const bnbTokenManagementShow = await tokenManagement.get('bnb-coin-show');
+        if (bnbTokenManagementShow) {
+            tokenManagement.add(bnbTokenManagementShow, 'bsc-coin-show');
+            tokenManagement.delete('bnb-coin-show');
+        }
 
-    const bnbTokenManagementHide = await tokenManagement.get('bnb-coin-hide');
-    if (bnbTokenManagementHide) {
-        tokenManagement.add(bnbTokenManagementHide, 'bsc-coin-hide');
-        tokenManagement.delete('bnb-coin-hide');
+        const bnbTokenManagementHide = await tokenManagement.get('bnb-coin-hide');
+        if (bnbTokenManagementHide) {
+            tokenManagement.add(bnbTokenManagementHide, 'bsc-coin-hide');
+            tokenManagement.delete('bnb-coin-hide');
+        }
     }
 
     const accounts = transaction.objectStore('accounts');
