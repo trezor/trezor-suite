@@ -4908,6 +4908,10 @@ export const messages = defineMessages({
         id: 'TR_DEACTIVATE_TOKEN',
         defaultMessage: 'Deactivate token',
     },
+    TR_REMOVE_TOKEN: {
+        id: 'TR_REMOVE_TOKEN',
+        defaultMessage: 'Remove token',
+    },
     TR_DEACTIVATE_TOKEN_HEADING: {
         id: 'TR_DEACTIVATE_TOKEN_HEADING',
         defaultMessage: 'Deactivate {token}',
@@ -4930,13 +4934,32 @@ export const messages = defineMessages({
         defaultMessage:
             'Insufficient funds. You need {required} to cover the reserve and network fee, but only {available} is available.',
     },
-    TR_ASSET_CODE: {
-        id: 'TR_ASSET_CODE',
-        defaultMessage: 'Asset code',
-    },
     TR_ASSET_CODE_INVALID: {
         id: 'TR_ASSET_CODE_INVALID',
         defaultMessage: 'Invalid asset code. Enter a valid asset code.',
+    },
+    TR_ASSET_CODE_OR_CONTRACT_ID: {
+        id: 'TR_ASSET_CODE_OR_CONTRACT_ID',
+        defaultMessage: 'Asset code or contract ID',
+    },
+    TR_STELLAR_CONTRACT_TOKEN_DETECTED: {
+        id: 'TR_STELLAR_CONTRACT_TOKEN_DETECTED',
+        defaultMessage:
+            'Soroban contract token. It has no issuer and needs no trustline — its balance is read from the contract.',
+    },
+    TR_STELLAR_CONTRACT_TOKEN_MEMO_UNAVAILABLE: {
+        id: 'TR_STELLAR_CONTRACT_TOKEN_MEMO_UNAVAILABLE',
+        defaultMessage:
+            'A contract token moves in a Soroban transaction, and the network does not allow a memo on it.',
+    },
+    TR_STELLAR_SIMULATION_FAILED: {
+        id: 'TR_STELLAR_SIMULATION_FAILED',
+        defaultMessage: 'The network could not simulate this transfer: {reason}',
+    },
+    TR_STELLAR_RECIPIENT_MISSING_TRUSTLINE: {
+        id: 'TR_STELLAR_RECIPIENT_MISSING_TRUSTLINE',
+        defaultMessage:
+            'The recipient has not added {symbol}. The receiving account has to add this asset before it can receive it.',
     },
     TR_INACTIVE_TOKENS_EMPTY: {
         id: 'TR_INACTIVE_TOKENS_EMPTY',
@@ -5580,7 +5603,8 @@ export const messages = defineMessages({
     },
     TR_MANUAL_TOKEN_ACTIVATION_DESCRIPTION: {
         id: 'TR_MANUAL_TOKEN_ACTIVATION_DESCRIPTION',
-        defaultMessage: 'To activate a token, enter its asset code and issuer address.',
+        defaultMessage:
+            'To activate a token, enter its contract ID, or its asset code and issuer address.',
     },
     TR_MAKE_SURE_NO_ONE_CAN_PEEK: {
         id: 'TR_MAKE_SURE_NO_ONE_CAN_PEEK',
@@ -7765,6 +7789,10 @@ export const messages = defineMessages({
     TR_EXPLORER_TOKEN: {
         id: 'TR_EXPLORER_TOKEN',
         defaultMessage: 'Token',
+    },
+    TR_EXPLORER_CONTRACT: {
+        id: 'TR_EXPLORER_CONTRACT',
+        defaultMessage: 'Contract',
     },
     TR_EXPLORER_SET_DEFAULT: {
         id: 'TR_EXPLORER_SET_DEFAULT',
@@ -9973,6 +10001,11 @@ export const messages = defineMessages({
         id: 'TR_PHISHING_TOOLTIP_TRC10_TRANSFER',
         defaultMessage: 'This TRC10 token transfer may be a scam. <a>Learn more</a>',
     },
+    TR_PHISHING_TOOLTIP_UNSOLICITED_ASSET_OFFER: {
+        id: 'TR_PHISHING_TOOLTIP_UNSOLICITED_ASSET_OFFER',
+        defaultMessage:
+            'Someone offered this balance to your account. Nothing has been received, and claiming it costs a reserve. <a>Learn more</a>',
+    },
     TR_ZERO_PHISHING_BANNER: {
         id: 'TR_ZERO_PHISHING_BANNER',
         defaultMessage:
@@ -10002,6 +10035,11 @@ export const messages = defineMessages({
         id: 'TR_PHISHING_BANNER_TRC10_TRANSFER',
         defaultMessage:
             'Proceed with caution. This transaction is a TRC10 transfer and may be suspicious. <a>Learn more</a>',
+    },
+    TR_PHISHING_BANNER_UNSOLICITED_ASSET_OFFER: {
+        id: 'TR_PHISHING_BANNER_UNSOLICITED_ASSET_OFFER',
+        defaultMessage:
+            'Proceed with caution. Someone offered this balance to your account without being asked. Nothing has been received unless you claim it, and claiming locks up a reserve. <a>Learn more</a>',
     },
     TR_HIDE_TRANSACTION: {
         id: 'TR_HIDE_TRANSACTION',
@@ -10336,6 +10374,14 @@ export const messages = defineMessages({
     TR_TX_DATA_INPUT_DATA: {
         id: 'TR_TX_DATA_INPUT_DATA',
         defaultMessage: 'Input data',
+    },
+    TR_TX_DATA_CONTRACT: {
+        id: 'TR_TX_DATA_CONTRACT',
+        defaultMessage: 'Contract',
+    },
+    TR_TX_DATA_AUTHORIZED_CALLS: {
+        id: 'TR_TX_DATA_AUTHORIZED_CALLS',
+        defaultMessage: 'Authorized calls',
     },
     TR_FROM: {
         id: 'TR_FROM',
@@ -11677,6 +11723,58 @@ export const messages = defineMessages({
     TR_STELLAR_TRUSTLINE_REMOVED: {
         id: 'TR_STELLAR_TRUSTLINE_REMOVED',
         defaultMessage: 'Removed trustline to {assetCode}',
+    },
+    TR_STELLAR_TX_ACCOUNT_MERGE: {
+        id: 'TR_STELLAR_TX_ACCOUNT_MERGE',
+        defaultMessage: 'Merged account',
+    },
+    TR_STELLAR_TX_CLAIMABLE_BALANCE_CLAIMED: {
+        id: 'TR_STELLAR_TX_CLAIMABLE_BALANCE_CLAIMED',
+        defaultMessage: 'Claimed balance',
+    },
+    TR_STELLAR_TX_CLAIMABLE_BALANCE_OFFERED: {
+        id: 'TR_STELLAR_TX_CLAIMABLE_BALANCE_OFFERED',
+        defaultMessage: 'Balance offered to claim',
+    },
+    TR_STELLAR_TX_CLAIMABLE_BALANCE_CREATED: {
+        id: 'TR_STELLAR_TX_CLAIMABLE_BALANCE_CREATED',
+        defaultMessage: 'Offered balance to claim',
+    },
+    TR_STELLAR_TX_DATA_ENTRY: {
+        id: 'TR_STELLAR_TX_DATA_ENTRY',
+        defaultMessage: 'Updated account data',
+    },
+    TR_STELLAR_TX_FOOTPRINT: {
+        id: 'TR_STELLAR_TX_FOOTPRINT',
+        defaultMessage: 'Extended contract data rent',
+    },
+    TR_STELLAR_TX_LIQUIDITY_POOL: {
+        id: 'TR_STELLAR_TX_LIQUIDITY_POOL',
+        defaultMessage: 'Liquidity pool operation',
+    },
+    TR_STELLAR_TX_OFFER: {
+        id: 'TR_STELLAR_TX_OFFER',
+        defaultMessage: 'Managed an offer',
+    },
+    TR_STELLAR_TX_TRUSTLINE_UPDATED: {
+        id: 'TR_STELLAR_TX_TRUSTLINE_UPDATED',
+        defaultMessage: 'Updated trustline',
+    },
+    TR_STELLAR_TX_SEQUENCE_BUMPED: {
+        id: 'TR_STELLAR_TX_SEQUENCE_BUMPED',
+        defaultMessage: 'Bumped account sequence',
+    },
+    TR_STELLAR_TX_SET_OPTIONS: {
+        id: 'TR_STELLAR_TX_SET_OPTIONS',
+        defaultMessage: 'Changed account settings',
+    },
+    TR_STELLAR_TX_SPONSORSHIP: {
+        id: 'TR_STELLAR_TX_SPONSORSHIP',
+        defaultMessage: 'Changed reserve sponsorship',
+    },
+    TR_STELLAR_TX_TRUSTLINE_FLAGS: {
+        id: 'TR_STELLAR_TX_TRUSTLINE_FLAGS',
+        defaultMessage: 'Changed trustline authorization',
     },
     TR_TRANSACTION_FEE_DESC: {
         id: 'TR_TRANSACTION_FEE_DESC',

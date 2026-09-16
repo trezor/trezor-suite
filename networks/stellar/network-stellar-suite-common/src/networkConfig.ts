@@ -10,6 +10,7 @@ const getExplorerUrls = (baseUrl: string): Explorer => ({
     tx: `${baseUrl}/tx/`,
     address: `${baseUrl}/account/`,
     token: `${baseUrl}/asset/`,
+    contract: `${baseUrl}/contract/`,
 });
 
 type NetworkConfig = SuiteCommonNetworkConfig & {

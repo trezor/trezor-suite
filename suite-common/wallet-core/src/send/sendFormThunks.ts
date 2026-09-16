@@ -107,6 +107,7 @@ import { type TransactionsRootState } from '../transactions/transactionsReducerT
 import {
     addFakePendingCardanoTxThunk,
     addFakePendingEvmTxThunk,
+    addFakePendingStellarTxThunk,
     addFakePendingTronSendTxThunk,
     addFakePendingTxThunk,
 } from '../transactions/transactionsThunks';
@@ -416,9 +417,20 @@ export const synchronizeSentTransactionThunk = createThunk<
             case 'cardano':
             case 'ripple':
             case 'solana':
-            case 'stellar':
                 // there is no point in fetching account data right after tx submit
                 //  as the account will update only after the tx is confirmed
+                dispatch(syncAccountsWithBlockchainThunk(selectedAccount.symbol));
+                break;
+            case 'stellar':
+                // RPC has applied the transaction before the submit resolves; Horizon lists it later.
+                dispatch(
+                    addFakePendingStellarTxThunk({
+                        precomposedTransaction,
+                        memo: precomposedForm?.destinationTag,
+                        txid,
+                        account: selectedAccount,
+                    }),
+                );
                 dispatch(syncAccountsWithBlockchainThunk(selectedAccount.symbol));
                 break;
             default:

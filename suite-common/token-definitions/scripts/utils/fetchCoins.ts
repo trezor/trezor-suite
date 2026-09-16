@@ -30,7 +30,12 @@ type StellarExpertContractData = {
     asset?: string;
 };
 
-const fetchSorobanContractAsset = async (contractAddress: string): Promise<string | undefined> => {
+// `undefined` means the lookup itself failed, not a contract that wraps nothing.
+type SorobanContractLookup = { type: 'classic'; address: string } | { type: 'native' } | undefined;
+
+const fetchSorobanContractAsset = async (
+    contractAddress: string,
+): Promise<SorobanContractLookup> => {
     try {
         const response = await fetch(`${STELLAR_EXPERT_URL}/contract/${contractAddress}`);
         if (!response.ok) {
@@ -42,10 +47,9 @@ const fetchSorobanContractAsset = async (contractAddress: string): Promise<strin
         }
 
         const data = (await response.json()) as StellarExpertContractData;
-        if (typeof data.asset !== 'string') {
-            console.warn(`StellarExpert contract ${contractAddress} does not contain an asset.`);
 
-            return undefined;
+        if (typeof data.asset !== 'string') {
+            return { type: 'native' };
         }
 
         const normalizedAssetAddress = normalizeStellarAssetAddress(data.asset);
@@ -57,7 +61,7 @@ const fetchSorobanContractAsset = async (contractAddress: string): Promise<strin
             return undefined;
         }
 
-        return normalizedAssetAddress;
+        return { type: 'classic', address: normalizedAssetAddress };
     } catch (error) {
         console.warn(`Error fetching Stellar contract asset for ${contractAddress}:`, error);
 
@@ -66,10 +70,8 @@ const fetchSorobanContractAsset = async (contractAddress: string): Promise<strin
 };
 
 /**
- * Resolve a Stellar address to the normalized CODE-ISSUER format.
- * Handles both classic Stellar asset addresses (CODE-ISSUER, CODE:ISSUER)
- * and Soroban contract addresses (C...) by looking up the underlying asset
- * via the StellarExpert API.
+ * Resolves a Stellar address to its definitions key: classic assets and the SACs wrapping them
+ * normalize to `CODE-ISSUER`, a native contract token keeps its `C…` address.
  */
 const resolveStellarAddress = async (address: string): Promise<string | undefined> => {
     const normalizedAssetAddress = normalizeStellarAssetAddress(address);
@@ -81,7 +83,18 @@ const resolveStellarAddress = async (address: string): Promise<string | undefine
         return undefined;
     }
 
-    return await fetchSorobanContractAsset(address);
+    const lookup = await fetchSorobanContractAsset(address);
+
+    if (lookup?.type === 'classic') {
+        return lookup.address;
+    }
+
+    if (lookup?.type === 'native') {
+        return address;
+    }
+
+    // A failed lookup is skipped rather than kept as an unverified address.
+    return undefined;
 };
 
 export const getContractAddress = async (
