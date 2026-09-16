@@ -1,4 +1,5 @@
 import { mockDesktopAnalytics } from '@suite/analytics/mocks';
+import { mockGetTrezorConnect } from '@suite-common/connect-init/mocks';
 import { mockLockDevice } from '@suite-common/device/mocks';
 import { networksActions, networksReducer } from '@suite-common/networks';
 import { mockNetworkMetadata } from '@suite-common/networks/mocks';
@@ -26,6 +27,7 @@ const createHandleProtocolRequestDeps = () => {
         actions: { lockDevice: mockLockDevice() },
         services: {
             analytics: mockDesktopAnalytics(),
+            getTrezorConnect: mockGetTrezorConnect,
             suiteRouterHistory: {
                 getLocation: jest.fn(),
                 navigate: jest.fn(),
