@@ -1,10 +1,12 @@
+import { useMemo } from 'react';
+
 import { Translation } from '@suite/intl';
 import { type Route, gotoThunk } from '@suite/router';
 import { useServices } from '@suite-common/dependency-injection';
 import { useFormatters } from '@suite-common/formatters';
 import { selectDispatch } from '@suite-common/redux-utils';
 import { getTradingPrefilledFromAccountData, tradingActions } from '@suite-common/trading';
-import { type AssetKey, selectAccountByKey, selectBaseCurrency } from '@suite-common/wallet-core';
+import { selectAccountByKey, selectBaseCurrency } from '@suite-common/wallet-core';
 import { type Account, asBaseCurrencyAmount } from '@suite-common/wallet-types';
 import { Button, Column, Row, Skeleton, Text } from '@trezor/components';
 import { ArrowDownIcon, ArrowUpIcon, ArrowsLeftRightIcon } from '@trezor/icons';
@@ -13,7 +15,7 @@ import { type BigNumber } from '@trezor/utils';
 import { FiatHeader } from 'src/components/wallet/FiatHeader';
 import { useDiscovery, useSelector } from 'src/hooks/suite';
 
-import { selectAssetFirstAccountKey, selectAssetFirstTotals } from './assetFirstTableSelectors';
+import { type AssetRow, getAssetFirstTotals } from './assetFirstTableSelectors';
 
 type WeekChangeProps = {
     weekChange: BigNumber;
@@ -117,23 +119,19 @@ const AssetFirstActions = ({ account }: AssetFirstActionProps) => {
 };
 
 type AssetFirstHeaderProps = {
-    /** The assets the total is over — the same list the table below is given. */
-    assetKeys: readonly AssetKey[];
+    /** The rows the total is over — the same ones the table below is given. */
+    rows: readonly AssetRow[];
 };
 
-export const AssetFirstHeader = ({ assetKeys }: AssetFirstHeaderProps) => {
+export const AssetFirstHeader = ({ rows }: AssetFirstHeaderProps) => {
     const baseCurrencyCode = useSelector(selectBaseCurrency);
-    const { fiatValue, weekChange } = useSelector(state =>
-        selectAssetFirstTotals(state, assetKeys),
-    );
     // The actions are account-scoped, so they open on the wallet's largest holding — the first row.
-    const largestHoldingAccountKey = useSelector(state =>
-        selectAssetFirstAccountKey(state, assetKeys[0]),
-    );
     const largestHoldingAccount = useSelector(state =>
-        selectAccountByKey(state, largestHoldingAccountKey ?? null),
+        selectAccountByKey(state, rows[0]?.accountKey ?? null),
     );
     const { isDiscoveryRunning } = useDiscovery();
+
+    const { fiatValue, weekChange } = useMemo(() => getAssetFirstTotals(rows), [rows]);
 
     return (
         <Row justifyContent="space-between" alignItems="center" gap={16}>

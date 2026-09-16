@@ -14,9 +14,10 @@ import {
     selectEnabledNetworks,
     selectLastWeekFiatRates,
 } from '@suite-common/wallet-core';
-import { type TokenAddress } from '@suite-common/wallet-types';
+import { type AccountKey, type TokenAddress } from '@suite-common/wallet-types';
 import { getFiatRateKey, toFiatCurrency } from '@suite-common/wallet-utils';
-import { BigNumber, isNotNullOrUndefined } from '@trezor/utils';
+import { type TokenInfo } from '@trezor/blockchain-link-types';
+import { BigNumber } from '@trezor/utils';
 
 import { getAssetDisplaySymbol, sumAssetHoldings } from './assetFirstTableUtils';
 
@@ -27,17 +28,47 @@ export type AssetFirstTableState = AssetHoldingsRootState &
 
 const createMemoizedSelector = createWeakMapSelector.withTypes<AssetFirstTableState>();
 
-type AssetRow = {
+/**
+ * One line of the table: what the wallet holds of one asset on one network, and what it is worth.
+ *
+ * Everything the row renders and everything the total adds up is in here, computed once, so the
+ * two cannot say different things about the same asset.
+ */
+export type AssetRow = {
     assetKey: AssetKey;
     symbol: NetworkSymbol;
     contractAddress: TokenAddress | undefined;
+    /** What the asset is across networks — ETH, USDC — for grouping the order by asset. */
     displaySymbol: string;
+    cryptoBalance: BigNumber;
+    tokenInfo: TokenInfo | undefined;
+    /** The account a row's actions open on. */
+    accountKey: AccountKey | undefined;
     fiatValue: BigNumber;
     /** The same holding priced a week ago, for the change shown beside the total. */
     weekAgoFiatValue: BigNumber;
 };
 
 const ZERO_FIAT_VALUE = new BigNumber(0);
+
+// A row is handed to a memoized component, so a row that did not change has to be the same object.
+const builtRows = new Map<AssetKey, AssetRow>();
+
+const isSameRow = (previous: AssetRow, next: AssetRow) =>
+    previous.cryptoBalance.eq(next.cryptoBalance) &&
+    previous.fiatValue.eq(next.fiatValue) &&
+    previous.weekAgoFiatValue.eq(next.weekAgoFiatValue) &&
+    previous.tokenInfo === next.tokenInfo &&
+    previous.accountKey === next.accountKey &&
+    previous.displaySymbol === next.displaySymbol;
+
+const settleRow = (next: AssetRow): AssetRow => {
+    const previous = builtRows.get(next.assetKey);
+    const row = previous && isSameRow(previous, next) ? previous : next;
+    builtRows.set(next.assetKey, row);
+
+    return row;
+};
 
 /**
  * Orders the rows the way the design reads: the assets a wallet holds most of first, and every
@@ -68,7 +99,7 @@ const compareRows = (
  * which tokens have a definition. Memoized on the index's snapshot, so the walk is done once per
  * write to the accounts rather than once per render.
  */
-const selectAssetFirstRows = createMemoizedSelector(
+export const selectAssetFirstRows = createMemoizedSelector(
     [
         (state: AssetFirstTableState) => assetHoldingsIndex.read(state).groups.byAsset,
         selectDeviceStaticSessionId,
@@ -121,18 +152,23 @@ const selectAssetFirstRows = createMemoizedSelector(
                 }) ?? ZERO_FIAT_VALUE;
             const displaySymbol = getAssetDisplaySymbol({ symbol, tokenInfo });
 
-            rows.push({
-                assetKey,
-                symbol,
-                contractAddress,
-                displaySymbol,
-                fiatValue,
-                weekAgoFiatValue:
-                    toFiatCurrency({
-                        amount: cryptoBalance.toFixed(),
-                        rate: lastWeekFiatRates?.[fiatRateKey]?.rate,
-                    }) ?? ZERO_FIAT_VALUE,
-            });
+            rows.push(
+                settleRow({
+                    assetKey,
+                    symbol,
+                    contractAddress,
+                    displaySymbol,
+                    cryptoBalance,
+                    tokenInfo,
+                    accountKey: visibleHoldings[0]?.accountKey,
+                    fiatValue,
+                    weekAgoFiatValue:
+                        toFiatCurrency({
+                            amount: cryptoBalance.toFixed(),
+                            rate: lastWeekFiatRates?.[fiatRateKey]?.rate,
+                        }) ?? ZERO_FIAT_VALUE,
+                }),
+            );
             fiatValueByDisplaySymbol.set(
                 displaySymbol,
                 (fiatValueByDisplaySymbol.get(displaySymbol) ?? ZERO_FIAT_VALUE).plus(fiatValue),
@@ -145,32 +181,6 @@ const selectAssetFirstRows = createMemoizedSelector(
     },
 );
 
-export const selectAssetFirstTableKeys = createMemoizedSelector(
-    [selectAssetFirstRows],
-    (rows): readonly AssetKey[] => returnStableArrayIfEmpty(rows.map(row => row.assetKey)),
-);
-
-/**
- * The account behind the wallet's largest holding — what the page's Swap, Receive and Send open on,
- * since those routes are account-scoped and the header is not.
- */
-/**
- * The account behind one asset — what a page's Swap, Receive and Send open on, since those routes
- * are account-scoped and an asset is not.
- */
-export const selectAssetFirstAccountKey = createMemoizedSelector(
-    [
-        (state: AssetFirstTableState) => assetHoldingsIndex.read(state).groups.byAsset,
-        (_state: AssetFirstTableState, assetKey: AssetKey | undefined) => assetKey,
-    ],
-    (assetGroups, assetKey) =>
-        assetKey === undefined
-            ? undefined
-            : assetGroups
-                  .get(assetKey)
-                  ?.entities.find((holding: AssetHolding) => holding.isAccountVisible)?.accountKey,
-);
-
 export type AssetFirstTotals = {
     fiatValue: BigNumber;
     /**
@@ -180,41 +190,27 @@ export type AssetFirstTotals = {
     weekChange: BigNumber | undefined;
 };
 
-const selectAssetFirstRowsByKey = createMemoizedSelector(
-    [selectAssetFirstRows],
-    (rows): ReadonlyMap<AssetKey, AssetRow> => new Map(rows.map(row => [row.assetKey, row])),
-);
-
 /**
- * What the assets in `assetKeys` are worth, together.
+ * What the given rows are worth, together.
  *
- * Takes the keys rather than deciding for itself which assets count, so the total is over exactly
- * the rows the table was given — one list, one answer. A filter applied to that list moves the
- * total with it, and the two cannot drift apart.
+ * Takes the rows rather than deciding for itself which assets count, so the total is over exactly
+ * what the table was given — one list, one answer, and a filter applied to that list moves the
+ * total with it.
  *
- * Pass the filtered list rather than what is mounted: a table that paginates or virtualizes still
+ * Pass the filtered rows rather than the mounted ones: a table that paginates or virtualizes still
  * holds the assets it is not showing right now.
  */
-export const selectAssetFirstTotals = createMemoizedSelector(
-    [
-        selectAssetFirstRowsByKey,
-        (_state: AssetFirstTableState, assetKeys: readonly AssetKey[]) => assetKeys,
-    ],
-    (rowsByKey, assetKeys): AssetFirstTotals => {
-        const rows = assetKeys
-            .map(assetKey => rowsByKey.get(assetKey))
-            .filter(isNotNullOrUndefined);
-        const fiatValue = rows.reduce((total, row) => total.plus(row.fiatValue), ZERO_FIAT_VALUE);
+export const getAssetFirstTotals = (rows: readonly AssetRow[]): AssetFirstTotals => {
+    const fiatValue = rows.reduce((total, row) => total.plus(row.fiatValue), ZERO_FIAT_VALUE);
 
-        if (!rows.some(row => row.weekAgoFiatValue.gt(0))) {
-            return { fiatValue, weekChange: undefined };
-        }
+    if (!rows.some(row => row.weekAgoFiatValue.gt(0))) {
+        return { fiatValue, weekChange: undefined };
+    }
 
-        const weekAgoFiatValue = rows.reduce(
-            (total, row) => total.plus(row.weekAgoFiatValue),
-            ZERO_FIAT_VALUE,
-        );
+    const weekAgoFiatValue = rows.reduce(
+        (total, row) => total.plus(row.weekAgoFiatValue),
+        ZERO_FIAT_VALUE,
+    );
 
-        return { fiatValue, weekChange: fiatValue.minus(weekAgoFiatValue) };
-    },
-);
+    return { fiatValue, weekChange: fiatValue.minus(weekAgoFiatValue) };
+};

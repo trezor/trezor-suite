@@ -4,8 +4,8 @@ import { type StaticSessionId } from '@trezor/device-utils';
 
 import {
     type AssetFirstTableState,
-    selectAssetFirstTableKeys,
-    selectAssetFirstTotals,
+    getAssetFirstTotals,
+    selectAssetFirstRows,
 } from './assetFirstTableSelectors';
 
 const ALICE = 'aliceWallet@device:0' as StaticSessionId;
@@ -80,7 +80,10 @@ const createState = ({
     } as unknown as AssetFirstTableState;
 };
 
-describe('selectAssetFirstTableKeys', () => {
+const selectAssetFirstRowKeys = (state: AssetFirstTableState) =>
+    selectAssetFirstRows(state).map(row => row.assetKey);
+
+describe('the rows the table is given', () => {
     it('lists one key per asset and network', () => {
         const state = createState({
             accounts: [
@@ -89,7 +92,7 @@ describe('selectAssetFirstTableKeys', () => {
             ],
         });
 
-        expect(selectAssetFirstTableKeys(state)).toEqual(
+        expect(selectAssetFirstRowKeys(state)).toEqual(
             expect.arrayContaining([
                 `${ALICE}/eth/`,
                 `${ALICE}/eth/${USDC_ON_ETH}`,
@@ -123,7 +126,7 @@ describe('selectAssetFirstTableKeys', () => {
             },
         });
 
-        expect(selectAssetFirstTableKeys(state)).toEqual([
+        expect(selectAssetFirstRowKeys(state)).toEqual([
             // ETH, 6000
             `${ALICE}/eth/`,
             // USDC, 2400 + 720, with the bigger holding first
@@ -140,7 +143,7 @@ describe('selectAssetFirstTableKeys', () => {
             enabledNetworks: ['eth'],
         });
 
-        expect(selectAssetFirstTableKeys(state)).toEqual([]);
+        expect(selectAssetFirstRowKeys(state)).toEqual([]);
     });
 
     it('leaves out a token nothing vouches for', () => {
@@ -155,7 +158,7 @@ describe('selectAssetFirstTableKeys', () => {
             ],
         });
 
-        expect(selectAssetFirstTableKeys(state)).not.toContain(`${ALICE}/eth/${UNKNOWN_TOKEN}`);
+        expect(selectAssetFirstRowKeys(state)).not.toContain(`${ALICE}/eth/${UNKNOWN_TOKEN}`);
     });
 
     it('leaves out a token the user hid', () => {
@@ -164,7 +167,7 @@ describe('selectAssetFirstTableKeys', () => {
             hiddenTokens: [USDC_ON_ETH],
         });
 
-        expect(selectAssetFirstTableKeys(state)).not.toContain(`${ALICE}/eth/${USDC_ON_ETH}`);
+        expect(selectAssetFirstRowKeys(state)).not.toContain(`${ALICE}/eth/${USDC_ON_ETH}`);
     });
 
     it('keeps a token the user asked to see, definition or not', () => {
@@ -173,7 +176,7 @@ describe('selectAssetFirstTableKeys', () => {
             shownTokens: [UNKNOWN_TOKEN],
         });
 
-        expect(selectAssetFirstTableKeys(state)).toContain(`${ALICE}/eth/${UNKNOWN_TOKEN}`);
+        expect(selectAssetFirstRowKeys(state)).toContain(`${ALICE}/eth/${UNKNOWN_TOKEN}`);
     });
 
     it('keeps the tokens of a network that has no definitions at all', () => {
@@ -190,7 +193,7 @@ describe('selectAssetFirstTableKeys', () => {
             knownTokens: [],
         });
 
-        expect(selectAssetFirstTableKeys(state)).toContain(`${ALICE}/dsol/${UNKNOWN_TOKEN}`);
+        expect(selectAssetFirstRowKeys(state)).toContain(`${ALICE}/dsol/${UNKNOWN_TOKEN}`);
     });
 
     it('leaves out an account the user hid', () => {
@@ -198,7 +201,7 @@ describe('selectAssetFirstTableKeys', () => {
             accounts: [mockAccount({ symbol: 'btc', isVisible: false })],
         });
 
-        expect(selectAssetFirstTableKeys(state)).toEqual([]);
+        expect(selectAssetFirstRowKeys(state)).toEqual([]);
     });
 
     it('leaves out another wallet’s assets', () => {
@@ -206,17 +209,33 @@ describe('selectAssetFirstTableKeys', () => {
             accounts: [mockAccount({ deviceState: BOB, symbol: 'btc' })],
         });
 
-        expect(selectAssetFirstTableKeys(state)).toEqual([]);
+        expect(selectAssetFirstRowKeys(state)).toEqual([]);
     });
 
     it('hands back the same list while nothing it reads has changed', () => {
         const state = createState({ accounts: [mockAccount()] });
 
-        expect(selectAssetFirstTableKeys(state)).toBe(selectAssetFirstTableKeys(state));
+        expect(selectAssetFirstRows(state)).toBe(selectAssetFirstRows(state));
+    });
+
+    it('hands back the same row for an asset a write did not touch', () => {
+        // What keeps a memoized row from re-rendering: one account's balance arriving must leave
+        // every other row the object it was.
+        const untouched = mockAccount({ symbol: 'btc', index: 0 });
+        const written = mockAccount({ symbol: 'eth', index: 1, balance: '1' });
+
+        const [bitcoinBefore] = selectAssetFirstRows(
+            createState({ accounts: [untouched, written] }),
+        ).filter(row => row.symbol === 'btc');
+        const [bitcoinAfter] = selectAssetFirstRows(
+            createState({ accounts: [untouched, { ...written, formattedBalance: '2' }] }),
+        ).filter(row => row.symbol === 'btc');
+
+        expect(bitcoinAfter).toBe(bitcoinBefore);
     });
 });
 
-describe('selectAssetFirstTotals', () => {
+describe('the total over those rows', () => {
     const state = createState({
         accounts: [
             mockAccount({ symbol: 'eth', balance: '2' }),
@@ -225,21 +244,17 @@ describe('selectAssetFirstTotals', () => {
         rates: { ...mockRate('eth', 3000), ...mockRate('btc', 100000) },
     });
 
-    it('adds up the assets it is given', () => {
-        expect(
-            selectAssetFirstTotals(state, selectAssetFirstTableKeys(state)).fiatValue.toFixed(),
-        ).toBe('56000');
+    it('adds up the rows it is given', () => {
+        expect(getAssetFirstTotals(selectAssetFirstRows(state)).fiatValue.toFixed()).toBe('56000');
     });
 
     it('follows a shorter list, so a filtered table and its total cannot disagree', () => {
-        const largestHoldingOnly = selectAssetFirstTableKeys(state).slice(0, 1);
+        const largestHoldingOnly = selectAssetFirstRows(state).slice(0, 1);
 
-        expect(selectAssetFirstTotals(state, largestHoldingOnly).fiatValue.toFixed()).toBe('50000');
+        expect(getAssetFirstTotals(largestHoldingOnly).fiatValue.toFixed()).toBe('50000');
     });
 
     it('says nothing about a week ago when no rate for it is known', () => {
-        expect(
-            selectAssetFirstTotals(state, selectAssetFirstTableKeys(state)).weekChange,
-        ).toBeUndefined();
+        expect(getAssetFirstTotals(selectAssetFirstRows(state)).weekChange).toBeUndefined();
     });
 });

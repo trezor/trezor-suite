@@ -1,12 +1,12 @@
 import styled from 'styled-components';
 
 import { Translation } from '@suite/intl';
-import { type AssetKey } from '@suite-common/wallet-core';
 import { Table } from '@trezor/components';
 
 import { HORIZONTAL_LAYOUT_PADDINGS } from 'src/constants/suite/layout';
 
 import { AssetFirstRow } from './AssetFirstRow';
+import { type AssetRow } from './assetFirstTableSelectors';
 import { ASSET_FIRST_CELL_PADDING } from './assetFirstTableUtils';
 
 /**
@@ -30,11 +30,11 @@ const FullWidthTable = styled.div`
  * Behind the `asset-first-home-table` experimental feature.
  */
 type AssetFirstTableProps = {
-    assetKeys: readonly AssetKey[];
+    rows: readonly AssetRow[];
 };
 
-export const AssetFirstTable = ({ assetKeys }: AssetFirstTableProps) => {
-    if (assetKeys.length === 0) {
+export const AssetFirstTable = ({ rows }: AssetFirstTableProps) => {
+    if (rows.length === 0) {
         return null;
     }
 
@@ -55,8 +55,8 @@ export const AssetFirstTable = ({ assetKeys }: AssetFirstTableProps) => {
                     </Table.Row>
                 </Table.Header>
                 <Table.Body>
-                    {assetKeys.map(assetKey => (
-                        <AssetFirstRow key={assetKey} assetKey={assetKey} />
+                    {rows.map(row => (
+                        <AssetFirstRow key={row.assetKey} row={row} />
                     ))}
                 </Table.Body>
             </Table>

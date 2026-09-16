@@ -1,9 +1,9 @@
-import { memo, useMemo } from 'react';
+import { memo } from 'react';
 
 import { gotoThunk } from '@suite/router';
 import { useServices } from '@suite-common/dependency-injection';
 import { selectDispatch } from '@suite-common/redux-utils';
-import { type AssetKey, selectAccountByKey, selectAssetHoldings } from '@suite-common/wallet-core';
+import { selectAccountByKey } from '@suite-common/wallet-core';
 import { Column, Row, Table, Text } from '@trezor/components';
 import { TokenIcon } from '@trezor/product-components';
 
@@ -15,44 +15,32 @@ import {
 } from 'src/components/suite';
 import { useSelector } from 'src/hooks/suite';
 
+import { type AssetRow } from './assetFirstTableSelectors';
 import {
     ASSET_FIRST_CELL_PADDING,
     getAssetDisplaySymbol,
     getAssetName,
     getNetworkName,
-    sumAssetHoldings,
 } from './assetFirstTableUtils';
 
 type AssetFirstRowProps = {
-    assetKey: AssetKey;
+    row: AssetRow;
 };
 
 /**
  * One asset on one network: what the wallet holds of it, what it costs and where it lives.
  *
- * The row reads its own holdings out of the index, so a balance arriving for another asset does not
- * re-render it — see `assetHoldingsIndex`.
+ * Renders the row it is given and works nothing out for itself, so these numbers and the total
+ * above the table are the same numbers. A row that did not change is the same object, so a balance
+ * arriving for another asset does not re-render it — see `selectAssetFirstRows`.
  */
-export const AssetFirstRow = memo(({ assetKey }: AssetFirstRowProps) => {
-    const holdings = useSelector(state => selectAssetHoldings(state, assetKey));
+export const AssetFirstRow = memo(({ row }: AssetFirstRowProps) => {
+    const { symbol, contractAddress, cryptoBalance, tokenInfo, accountKey } = row;
     const { dispatch } = useServices(selectDispatch);
-
-    const { cryptoBalance, tokenInfo } = useMemo(() => sumAssetHoldings(holdings), [holdings]);
-    const [firstHolding] = holdings;
-    const firstAccount = useSelector(state =>
-        selectAccountByKey(state, firstHolding?.accountKey ?? null),
-    );
-
-    // Only while the store is between writes: the list this row came from was read from the same
-    // index a moment ago. Rendering nothing for one frame beats rendering a row with no numbers.
-    if (firstHolding === undefined) {
-        return null;
-    }
-
-    const { symbol, contractAddress } = firstHolding;
+    const account = useSelector(state => selectAccountByKey(state, accountKey ?? null));
 
     const handleRowClick = () => {
-        if (!firstAccount) {
+        if (!account) {
             return;
         }
 
@@ -61,8 +49,8 @@ export const AssetFirstRow = memo(({ assetKey }: AssetFirstRowProps) => {
                 routeName: contractAddress === undefined ? 'wallet-index' : 'wallet-tokens',
                 params: {
                     symbol,
-                    accountIndex: firstAccount.index,
-                    accountType: firstAccount.accountType,
+                    accountIndex: account.index,
+                    accountType: account.accountType,
                 },
             }),
         );
