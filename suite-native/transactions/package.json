@@ -41,6 +41,7 @@
         "@trezor/blockchain-link-types": "workspace:*",
         "@trezor/connect": "workspace:*",
         "@trezor/network-ethereum-suite-common": "workspace:*",
+        "@trezor/network-stellar": "workspace:*",
         "@trezor/styles-native": "workspace:*",
         "@trezor/type-utils": "workspace:*",
         "@trezor/utils": "workspace:*",

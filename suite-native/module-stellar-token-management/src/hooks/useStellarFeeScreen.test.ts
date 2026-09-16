@@ -178,7 +178,7 @@ const createDeferred = () => {
     return { promise, resolve };
 };
 
-describe('useStellarFeeScreen', () => {
+describe(useStellarFeeScreen.name, () => {
     let store: TestStore;
 
     const mockThunkAction = jest.fn();
