@@ -6336,10 +6336,6 @@ export const messages = defineMessages({
         id: 'TR_RELEASE_NOTES',
         defaultMessage: 'Release notes',
     },
-    TR_RELEASE_NOTES_LOADING: {
-        id: 'TR_RELEASE_NOTES_LOADING',
-        defaultMessage: 'Loading release notes…',
-    },
     TR_RELEASE_NOTES_VERSION: {
         id: 'TR_RELEASE_NOTES_VERSION',
         defaultMessage: 'Version',
