@@ -1,11 +1,10 @@
 import { ContextMessage } from '@suite/message-system';
-import { selectIsAssetFirstHomeTableEnabled } from '@suite/settings';
-import { Context } from '@suite-common/message-system';
+import { Context, ExperimentId, useExperiment } from '@suite-common/message-system';
 import { Column } from '@trezor/components';
 
 import { OutOfQuotaBanner } from 'src/components/suite/banners/SuiteBanners/OutOfQuotaBanner';
 import { PageHeader } from 'src/components/suite/layouts/SuiteLayout';
-import { useLayout, useSelector } from 'src/hooks/suite';
+import { useLayout } from 'src/hooks/suite';
 
 import { AssetFirstDashboard } from './AssetFirstTable/AssetFirstDashboard';
 import { AssetsView } from './AssetsView/AssetsView';
@@ -16,7 +15,8 @@ import { PortfolioCard } from './PortfolioCard/PortfolioCard';
 import { useNotificationForDisconnectedDevice } from './useNotificationForDisconnectedDevice';
 
 export const Dashboard = () => {
-    const isAssetFirstTableEnabled = useSelector(selectIsAssetFirstHomeTableEnabled);
+    const { activeExperimentVariant } = useExperiment(ExperimentId.assetFirstHomeTable);
+    const isAssetFirstTableEnabled = activeExperimentVariant?.variant === 'B';
 
     // The asset-first page carries its own balance and actions, so the app's page header would
     // only repeat them.

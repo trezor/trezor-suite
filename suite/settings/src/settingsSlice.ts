@@ -31,7 +31,6 @@ export interface DebugModeOptions {
     showConnectLogs: boolean;
     definitionsChannel?: DefinitionsChannel;
     isN4w1BackupEnabled: boolean;
-    isAssetFirstHomeTableEnabled: boolean;
     showTranslationKeys: boolean;
 }
 
@@ -95,7 +94,6 @@ export const suiteSettingsInitialState: SuiteSettingsState = {
         isUnlockedBootloaderAllowed: false,
         showConnectLogs: false,
         isN4w1BackupEnabled: false,
-        isAssetFirstHomeTableEnabled: false,
         showTranslationKeys: false,
     },
     autodetect: {
