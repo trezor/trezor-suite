@@ -13,7 +13,7 @@ import { type BluetoothDep } from './bluetoothServiceTypes';
 import { type WithBluetoothRootState } from './desktopBluetoothReducer';
 import { fixLinuxManufacturerData } from './fixLinuxManufacturerData';
 import { isBluetoothDeviceReachable } from './isBluetoothDeviceReachable';
-import { remapKnownDevicesForLinuxAndWindows } from './remapKnownDevicesForLinuxAndWindows';
+import { remapKnownDevices } from './remapKnownDevices';
 
 type InitBluetoothThunkState = WithBluetoothRootState;
 
@@ -65,7 +65,7 @@ export const initBluetoothThunk = createThunk<
     bluetoothIpc.on('device-list-update', nearbyDevicesIpc => {
         const nearbyDevices = nearbyDevicesIpc.map(fromBluetoothDevice);
 
-        const remappedKnownDevices = remapKnownDevicesForLinuxAndWindows({
+        const remappedKnownDevices = remapKnownDevices({
             knownDevices: selectKnownDevices<DesktopBluetoothDevice>(getState()),
             nearbyDevices,
         });
