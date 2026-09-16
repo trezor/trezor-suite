@@ -193,6 +193,15 @@ class CommonDB<TDBStructure> {
         primaryKey: TKey,
     ): Promise<StoreValue<TDBStructure, TStoreName> | undefined> => {
         const db = await this.getDB();
+
+        // Same reasoning as in `getItemsExtended` below: a store left uncreated by a failed
+        // migration must not crash Suite on startup. Absent reads as "nothing stored".
+        if (!Object.values(db.objectStoreNames).includes(store)) {
+            console.error(`IDB store ${store} not found!`);
+
+            return undefined;
+        }
+
         const tx = db.transaction(store);
         const item = await tx.store.get(primaryKey);
 
@@ -312,6 +321,15 @@ class CommonDB<TDBStructure> {
 
     getItemsWithKeys = async <TStoreName extends StoreNames<TDBStructure>>(store: TStoreName) => {
         const db = await this.getDB();
+
+        // Same reasoning as in `getItemsExtended` below: a store left uncreated by a failed
+        // migration must not crash Suite on startup. Absent reads as "nothing stored".
+        if (!Object.values(db.objectStoreNames).includes(store)) {
+            console.error(`IDB store ${store} not found!`);
+
+            return [];
+        }
+
         let cursor = await db.transaction(store).store.openCursor();
         const resp = [];
         while (cursor) {
