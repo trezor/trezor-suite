@@ -1,7 +1,7 @@
 import { systemPreferences } from 'electron';
 
-import { isLinux, isMacOs, isWindows } from '@trezor/env-utils';
 import { createWinHelloManager } from '@suite/desktop-app-native-bindings';
+import { isLinux, isMacOs, isWindows } from '@trezor/env-utils';
 import { TypedEmitter, serializeError } from '@trezor/utils';
 
 import { ipcMain } from '../ipcMain';
