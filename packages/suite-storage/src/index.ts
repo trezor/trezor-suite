@@ -88,7 +88,31 @@ class CommonDB<TDBStructure> {
         return openDB<TDBStructure>(this.dbName, this.version, {
             upgrade: (db, oldVersion, newVersion, transaction) => {
                 // Called if this version of the database has never been opened before. Use it to specify the schema for the database.
-                this.onUpgrade(db, oldVersion, newVersion, transaction);
+                // `onUpgrade` is async and IndexedDB commits the new version as soon as the
+                // upgrade transaction finishes, so an unhandled rejection would leave the database
+                // on the new version with the migrations only partially applied — and never
+                // retried, because the next start sees nothing left to migrate. Aborting rolls the
+                // whole upgrade back, so it runs again instead of failing silently.
+                this.onUpgrade(db, oldVersion, newVersion, transaction).catch(error => {
+                    console.error(
+                        `Storage: migration from version ${oldVersion} to ${newVersion} failed, aborting the upgrade`,
+                        error,
+                    );
+                    // Aborting rejects `transaction.done`; that is the intended outcome here, so it
+                    // must not surface as a second, unhandled failure. `openDB` still rejects.
+                    transaction.done.catch(() => null);
+                    try {
+                        transaction.abort();
+                    } catch (abortError) {
+                        // The transaction had already finished, so this upgrade cannot be rolled
+                        // back. Reported separately because it means the database is left on the
+                        // new version with the migrations only partially applied.
+                        console.error(
+                            'Storage: the failed upgrade could no longer be aborted',
+                            abortError,
+                        );
+                    }
+                });
             },
             blocked: () => {
                 this.blocked = true;
