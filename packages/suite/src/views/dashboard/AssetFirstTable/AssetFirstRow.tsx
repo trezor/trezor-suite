@@ -3,12 +3,7 @@ import { memo, useMemo } from 'react';
 import { gotoThunk } from '@suite/router';
 import { useServices } from '@suite-common/dependency-injection';
 import { selectDispatch } from '@suite-common/redux-utils';
-import {
-    type AssetKey,
-    parseAssetKey,
-    selectAccountByKey,
-    selectAssetHoldings,
-} from '@suite-common/wallet-core';
+import { type AssetKey, selectAccountByKey, selectAssetHoldings } from '@suite-common/wallet-core';
 import { Column, Row, Table, Text } from '@trezor/components';
 import { TokenIcon } from '@trezor/product-components';
 
@@ -42,18 +37,19 @@ export const AssetFirstRow = memo(({ assetKey }: AssetFirstRowProps) => {
     const holdings = useSelector(state => selectAssetHoldings(state, assetKey));
     const { dispatch } = useServices(selectDispatch);
 
-    const parts = parseAssetKey(assetKey);
-
     const { cryptoBalance, tokenInfo } = useMemo(() => sumAssetHoldings(holdings), [holdings]);
+    const [firstHolding] = holdings;
     const firstAccount = useSelector(state =>
-        selectAccountByKey(state, holdings[0]?.accountKey ?? null),
+        selectAccountByKey(state, firstHolding?.accountKey ?? null),
     );
 
-    if (parts === undefined) {
+    // Only while the store is between writes: the list this row came from was read from the same
+    // index a moment ago. Rendering nothing for one frame beats rendering a row with no numbers.
+    if (firstHolding === undefined) {
         return null;
     }
 
-    const { symbol, contractAddress } = parts;
+    const { symbol, contractAddress } = firstHolding;
 
     const handleRowClick = () => {
         if (!firstAccount) {
