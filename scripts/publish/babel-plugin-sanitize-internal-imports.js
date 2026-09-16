@@ -81,6 +81,16 @@ const sanitizeInternalImportsPlugin = ({ types }) => {
                     modifyCJSRequireArg(path);
                 }
             },
+            // handle the bundler worker idiom: new Worker(new URL('<specifier>', import.meta.url)).
+            // e.g. new URL('@trezor/blockchain-link/src/workers/blockbook', import.meta.url)
+            //   → new URL('@trezor/blockchain-link/lib/workers/blockbook', import.meta.url)
+            // Published packages ship lib/ only, so a /src specifier cannot resolve for consumers.
+            NewExpression(path) {
+                if (!types.isIdentifier(path.node.callee, { name: 'URL' })) return;
+                const [first] = path.node.arguments;
+                if (!types.isStringLiteral(first)) return;
+                first.value = sanitizeInternalImports(first.value, 'esm');
+            },
             // handle template literals (for dynamic imports with template strings)
             TemplateLiteral(path) {
                 modifyTemplateLiteral(path);
