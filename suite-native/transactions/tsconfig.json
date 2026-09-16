@@ -62,6 +62,9 @@
             "path": "../../networks/ethereum/network-ethereum-suite-common"
         },
         {
+            "path": "../../networks/stellar/network-stellar"
+        },
+        {
             "path": "../../packages/styles-native"
         },
         { "path": "../../packages/type-utils" },
