@@ -153,14 +153,24 @@ export const createSuiteServicesCompositionRoot = (deps: SuiteAppDeps): SuiteSer
     const createTransports: CreateTransports = transports => {
         const factories = deps.getTransportsFactories();
 
-        return transports.map(name => {
-            const factory = factories[name];
-            if (!factory) {
-                throw new Error(`Transport factory for ${name} not found`);
-            }
+        return transports
+            .map(name => {
+                const factory = factories[name];
+                if (!factory) {
+                    // A persisted debug transport whose factory is not available on this host - e.g.
+                    // the desktop-only NodeUsbTransport, which was removed to avoid eagerly loading
+                    // the usb/nusb native addon at startup - is skipped rather than crashing init.
+                    // The remaining (or default) transports still apply.
+                    console.warn(`Transport factory for ${name} not found, skipping`);
 
-            return factory(deps.createLogger);
-        }) as ReturnType<CreateTransports>;
+                    return undefined;
+                }
+
+                return factory(deps.createLogger);
+            })
+            .filter(
+                (transport): transport is NonNullable<typeof transport> => transport !== undefined,
+            ) as ReturnType<CreateTransports>;
     };
 
     return {
