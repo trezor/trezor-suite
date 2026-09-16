@@ -10,8 +10,7 @@ export type ExperimentalFeature =
     | 'slip24'
     | 'experimental-networks'
     | 'mcp-server'
-    | 'gap-limit'
-    | 'asset-first-home-table';
+    | 'gap-limit';
 
 /**
  * Set of features that are truly experimental (as opposed to regular features
@@ -35,7 +34,6 @@ export const translatedExperimentalFeatures: ExperimentalFeatureTranslation = {
     slip24: 'TR_EXPERIMENTAL_SLIP24',
     'mcp-server': 'TR_EXPERIMENTAL_MCP_SERVER',
     'gap-limit': 'TR_EXPERIMENTAL_GAP_LIMIT',
-    'asset-first-home-table': 'TR_EXPERIMENTAL_ASSET_FIRST_HOME_TABLE',
 };
 
 export type FeedbackFeatureName = ExperimentalFeature | 'suite-sync' | 'stablecoin-yield';

@@ -27,7 +27,7 @@ const FullWidthTable = styled.div`
  * holds and says which network each holding is on — so Ether on Ethereum and Ether on Arbitrum are
  * two lines, and a stablecoin held on three networks is three.
  *
- * Behind the `asset-first-home-table` experimental feature.
+ * Behind the asset-first home table debug setting.
  */
 type AssetFirstTableProps = {
     rows: readonly AssetRow[];

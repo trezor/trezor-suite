@@ -6004,15 +6004,6 @@ export const messages = defineMessages({
         id: 'TR_TRON_TX_UNDELEGATE_RESOURCE',
         defaultMessage: 'Undelegate resource',
     },
-    TR_EXPERIMENTAL_ASSET_FIRST_HOME_TABLE: {
-        id: 'TR_EXPERIMENTAL_ASSET_FIRST_HOME_TABLE',
-        defaultMessage: 'Asset first table on home tab',
-    },
-    TR_EXPERIMENTAL_ASSET_FIRST_HOME_TABLE_DESCRIPTION: {
-        id: 'TR_EXPERIMENTAL_ASSET_FIRST_HOME_TABLE_DESCRIPTION',
-        defaultMessage:
-            'Show one row per asset and network on the home tab — Ether on Ethereum and Ether on Arbitrum are separate lines — instead of one row per network.',
-    },
     TR_EXPERIMENTAL_GAP_LIMIT: {
         id: 'TR_EXPERIMENTAL_GAP_LIMIT',
         defaultMessage: 'Gap limit',

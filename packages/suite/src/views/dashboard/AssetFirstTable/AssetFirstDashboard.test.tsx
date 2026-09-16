@@ -56,8 +56,8 @@ describe('AssetFirstDashboard', () => {
         render();
 
         expect(screen.getByTestId('@dashboard/asset-first/fiat-amount')).toBeInTheDocument();
-        expect(screen.getByTestId('@dashboard/asset-first/swap')).toBeInTheDocument();
-        // Receive and send are the app's own buttons, with the account picker behind them.
+        // The app's own global actions, brought here because the page suppresses its header.
+        expect(screen.getAllByTestId('@wallet/menu/wallet-trading-buy')).not.toHaveLength(0);
         expect(screen.getAllByTestId('@wallet/menu/wallet-global-receive')).not.toHaveLength(0);
         expect(screen.getAllByTestId('@wallet/menu/wallet-global-send')).not.toHaveLength(0);
         expect(screen.getByTestId('@dashboard/asset-first-item/btc/coin')).toBeInTheDocument();

@@ -15,7 +15,7 @@ import { selectAssetFirstRows } from './assetFirstTableSelectors';
  * The rows are chosen here and handed to both halves, so the total at the top is the sum of the
  * rows in the table below it by construction — not a second answer to the same question.
  *
- * Behind the `asset-first-home-table` experimental feature; without it the dashboard is unchanged.
+ * Behind the asset-first home table debug setting; without it the dashboard is unchanged.
  */
 export const AssetFirstDashboard = () => {
     const rows = useSelector(selectAssetFirstRows);

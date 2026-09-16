@@ -1,9 +1,5 @@
 import { memo } from 'react';
 
-import { gotoThunk } from '@suite/router';
-import { useServices } from '@suite-common/dependency-injection';
-import { selectDispatch } from '@suite-common/redux-utils';
-import { selectAccountByKey } from '@suite-common/wallet-core';
 import { Column, Row, Table, Text } from '@trezor/components';
 import { TokenIcon } from '@trezor/product-components';
 
@@ -13,7 +9,6 @@ import {
     PriceTicker,
     TrendTicker,
 } from 'src/components/suite';
-import { useSelector } from 'src/hooks/suite';
 
 import { type AssetRow } from './assetFirstTableSelectors';
 import {
@@ -35,30 +30,10 @@ type AssetFirstRowProps = {
  * arriving for another asset does not re-render it — see `selectAssetFirstRows`.
  */
 export const AssetFirstRow = memo(({ row }: AssetFirstRowProps) => {
-    const { symbol, contractAddress, cryptoBalance, tokenInfo, accountKey } = row;
-    const { dispatch } = useServices(selectDispatch);
-    const account = useSelector(state => selectAccountByKey(state, accountKey ?? null));
-
-    const handleRowClick = () => {
-        if (!account) {
-            return;
-        }
-
-        dispatch(
-            gotoThunk({
-                routeName: contractAddress === undefined ? 'wallet-index' : 'wallet-tokens',
-                params: {
-                    symbol,
-                    accountIndex: account.index,
-                    accountType: account.accountType,
-                },
-            }),
-        );
-    };
+    const { symbol, contractAddress, cryptoBalance, tokenInfo } = row;
 
     return (
         <Table.Row
-            onClick={handleRowClick}
             data-testid={`@dashboard/asset-first-item/${symbol}/${contractAddress ?? 'coin'}`}
         >
             <Table.Cell padding={ASSET_FIRST_CELL_PADDING.first}>

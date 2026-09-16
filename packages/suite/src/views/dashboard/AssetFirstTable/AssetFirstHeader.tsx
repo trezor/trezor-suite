@@ -1,17 +1,14 @@
 import { useMemo } from 'react';
 
 import { Translation } from '@suite/intl';
-import { gotoThunk } from '@suite/router';
-import { useServices } from '@suite-common/dependency-injection';
 import { useFormatters } from '@suite-common/formatters';
-import { selectDispatch } from '@suite-common/redux-utils';
 import { selectBaseCurrency } from '@suite-common/wallet-core';
 import { asBaseCurrencyAmount } from '@suite-common/wallet-types';
-import { Button, Column, Row, Skeleton, Text } from '@trezor/components';
-import { ArrowsLeftRightIcon } from '@trezor/icons';
+import { Column, Row, Skeleton, Text } from '@trezor/components';
 import { type BigNumber } from '@trezor/utils';
 
 import { GlobalSendReceive } from 'src/components/suite/layouts/SuiteLayout/PageHeader/GlobalSendReceive/GlobalSendReceive';
+import { TradeActions } from 'src/components/suite/layouts/SuiteLayout/PageHeader/TradeActions';
 import { FiatHeader } from 'src/components/wallet/FiatHeader';
 import { useDiscovery, useSelector } from 'src/hooks/suite';
 
@@ -44,29 +41,16 @@ const WeekChange = ({ weekChange }: WeekChangeProps) => {
 };
 
 /**
- * Swap, receive and send for the wallet rather than for an account.
- *
- * Receive and send are the app's own — they open the account picker every other page opens, rather
- * than guessing which account was meant. Swap opens the exchange form, which picks its own.
+ * The app's own global actions, the ones the page header carries everywhere else — buying,
+ * selling, receiving and sending for the wallet, each with the account picker behind it. The page
+ * suppresses that header, so it brings them here rather than inventing its own.
  */
-const AssetFirstActions = () => {
-    const { dispatch } = useServices(selectDispatch);
-
-    return (
-        <Row gap={8}>
-            <Button
-                intent="brand"
-                priority="primary"
-                iconRight={ArrowsLeftRightIcon}
-                onClick={() => dispatch(gotoThunk({ routeName: 'wallet-trading-exchange' }))}
-                data-testid="@dashboard/asset-first/swap"
-            >
-                <Translation id="TR_TRADING_SWAP" />
-            </Button>
-            <GlobalSendReceive />
-        </Row>
-    );
-};
+const AssetFirstActions = () => (
+    <Row gap={8}>
+        <TradeActions />
+        <GlobalSendReceive />
+    </Row>
+);
 
 type AssetFirstHeaderProps = {
     /** The rows the total is over — the same ones the table below is given. */

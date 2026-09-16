@@ -14,7 +14,7 @@ import {
     selectEnabledNetworks,
     selectLastWeekFiatRates,
 } from '@suite-common/wallet-core';
-import { type AccountKey, type TokenAddress } from '@suite-common/wallet-types';
+import { type TokenAddress } from '@suite-common/wallet-types';
 import { getFiatRateKey, toFiatCurrency } from '@suite-common/wallet-utils';
 import { type TokenInfo } from '@trezor/blockchain-link-types';
 import { BigNumber } from '@trezor/utils';
@@ -42,8 +42,6 @@ export type AssetRow = {
     displaySymbol: string;
     cryptoBalance: BigNumber;
     tokenInfo: TokenInfo | undefined;
-    /** The account a row's actions open on. */
-    accountKey: AccountKey | undefined;
     fiatValue: BigNumber;
     /** The same holding priced a week ago, for the change shown beside the total. */
     weekAgoFiatValue: BigNumber;
@@ -59,7 +57,6 @@ const isSameRow = (previous: AssetRow, next: AssetRow) =>
     previous.fiatValue.eq(next.fiatValue) &&
     previous.weekAgoFiatValue.eq(next.weekAgoFiatValue) &&
     previous.tokenInfo === next.tokenInfo &&
-    previous.accountKey === next.accountKey &&
     previous.displaySymbol === next.displaySymbol;
 
 const settleRow = (next: AssetRow): AssetRow => {
@@ -160,7 +157,6 @@ export const selectAssetFirstRows = createMemoizedSelector(
                     displaySymbol,
                     cryptoBalance,
                     tokenInfo,
-                    accountKey: visibleHoldings[0]?.accountKey,
                     fiatValue,
                     weekAgoFiatValue:
                         toFiatCurrency({

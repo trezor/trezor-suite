@@ -1,5 +1,5 @@
 import { ContextMessage } from '@suite/message-system';
-import { selectHasExperimentalFeature } from '@suite/settings';
+import { selectIsAssetFirstHomeTableEnabled } from '@suite/settings';
 import { Context } from '@suite-common/message-system';
 import { Column } from '@trezor/components';
 
@@ -16,9 +16,7 @@ import { PortfolioCard } from './PortfolioCard/PortfolioCard';
 import { useNotificationForDisconnectedDevice } from './useNotificationForDisconnectedDevice';
 
 export const Dashboard = () => {
-    const isAssetFirstTableEnabled = useSelector(
-        selectHasExperimentalFeature('asset-first-home-table'),
-    );
+    const isAssetFirstTableEnabled = useSelector(selectIsAssetFirstHomeTableEnabled);
 
     // The asset-first page carries its own balance and actions, so the app's page header would
     // only repeat them.
