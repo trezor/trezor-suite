@@ -198,7 +198,7 @@ export const submitWrapNativeTokenThunk = createThunk<
                     descriptor: account.descriptor,
                     symbol: account.symbol,
                     txid: sendResult.txid,
-                    formattedAmount: wrapAmount,
+                    amount: wrapAmount,
                     metadata: {
                         send: {
                             symbol: account.symbol,

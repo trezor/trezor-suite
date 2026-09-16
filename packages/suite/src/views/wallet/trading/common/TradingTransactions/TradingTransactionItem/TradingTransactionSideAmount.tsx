@@ -41,6 +41,7 @@ export const TradingTransactionSideAmount = ({
                         symbol={coinSymbol}
                         contractAddress={contractAddress}
                         data-testid={dataTestId}
+                        isCompact
                     />
                 </Row>
             );

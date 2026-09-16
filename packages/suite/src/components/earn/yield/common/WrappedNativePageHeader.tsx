@@ -98,7 +98,6 @@ export const WrappedNativePageHeader = ({
                                     <FormattedCryptoAmount
                                         value={account.formattedBalance}
                                         symbol={account.symbol}
-                                        isBalance
                                         data-testid="@yield/page-header/balance"
                                     />
                                 </Text>

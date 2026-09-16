@@ -10,7 +10,13 @@ import {
     type AccountsRootState,
     selectDeviceAccountByDescriptorAndNetworkSymbol,
 } from '@suite-common/wallet-core';
+import { toTokenSymbol } from '@suite-common/wallet-types';
 import { Divider, HStack, IconButton, Text, VStack } from '@suite-native/atoms';
+import {
+    CompactCryptoAmountFormatter,
+    CompactTokenAmountFormatter,
+    asDecimalTokenAmount,
+} from '@suite-native/formatters';
 import { Icon, type IconName, TokenIcon } from '@suite-native/icons';
 import { Translation } from '@suite-native/intl';
 import { useNavigateToTransactionDetail } from '@suite-native/navigation';
@@ -69,8 +75,7 @@ export const TransactionNotificationItem = ({ notification, seen, index }: Props
     const { DateFormatter, TimeFormatter } = useFormatters();
     const navigateToTransactionDetail = useNavigateToTransactionDetail();
 
-    const { type, descriptor, symbol, txid, formattedAmount, tokenContract } =
-        getTxNotificationFields(notification);
+    const { type, descriptor, symbol, txid, amount, token } = getTxNotificationFields(notification);
 
     const account = useSelector((state: AccountsRootState & DeviceRootState) =>
         selectDeviceAccountByDescriptorAndNetworkSymbol(state, descriptor, symbol),
@@ -105,16 +110,29 @@ export const TransactionNotificationItem = ({ notification, seen, index }: Props
                             values={accountLabel ? { account: accountLabel } : undefined}
                         />
                     </Text>
-                    {formattedAmount !== undefined && (
+                    {amount !== undefined && (
                         <HStack spacing="sp8" alignItems="center">
                             <TokenIcon
                                 symbol={symbol}
-                                contractAddress={tokenContract}
+                                contractAddress={token?.contract}
                                 size="tiny"
                             />
-                            <Text variant="body-xs" color={contentColor}>
-                                {formattedAmount}
-                            </Text>
+                            {token?.symbol === undefined ? (
+                                <CompactCryptoAmountFormatter
+                                    value={amount}
+                                    symbol={symbol}
+                                    variant="body-xs"
+                                    color={contentColor}
+                                />
+                            ) : (
+                                <CompactTokenAmountFormatter
+                                    value={asDecimalTokenAmount(amount)}
+                                    tokenSymbol={toTokenSymbol(token.symbol)}
+                                    tokenDecimals={token.decimals}
+                                    variant="body-xs"
+                                    color={contentColor}
+                                />
+                            )}
                         </HStack>
                     )}
                     <Text variant="body-xs" color={contentColor}>

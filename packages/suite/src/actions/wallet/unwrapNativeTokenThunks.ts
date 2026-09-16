@@ -162,7 +162,7 @@ export const submitUnwrapNativeTokenThunk = createThunk<
                     descriptor: account.descriptor,
                     symbol: account.symbol,
                     txid: sendResult.txid,
-                    formattedAmount: unwrapAmount,
+                    amount: unwrapAmount,
                     metadata: {
                         send: {
                             symbol: account.symbol,

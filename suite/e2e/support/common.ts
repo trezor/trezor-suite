@@ -5,6 +5,7 @@ import { isEqual, omit } from 'lodash';
 import { readdirSync } from 'node:fs';
 import path from 'node:path';
 
+import { formatCompactCryptoAmount, isMoneyLikeToken } from '@suite-common/formatters';
 import { validJws } from '@suite-common/message-system/src/__fixtures__/messageSystemActions';
 import { type TradingCountryCode, regional } from '@suite-common/trading';
 import { getAccountDecimals, localizeNumber } from '@suite-common/wallet-utils';
@@ -112,9 +113,61 @@ export const getCountryLabel = (country: TradingCountryCode) => {
     return countryOption.label.substring(countryOption.label.indexOf(' ') + 1);
 };
 
+type CompactAmountOptions = {
+    /**
+     * The `decimals` the token states, as the app passes to `FormattedCryptoAmount`. Omit for a
+     * network coin. Six of them (USDC, USDT) make a token read as money: two decimals and a
+     * `<0.01` dust limit, rather than five and `<0.00001`.
+     */
+    tokenDecimals?: number;
+};
+
+/**
+ * The amount as a compact surface shows it, by way of the formatter the app itself uses, so that
+ * dust, millions, zero and stablecoins are covered rather than approximated here.
+ *
+ * Accepts a grouped value (`1,234.5`), which is what the rest of this file produces and what
+ * `BigNumber` would otherwise read as NaN.
+ */
+export const toCompactAmount = (value: string, { tokenDecimals }: CompactAmountOptions = {}) => {
+    const ungroupedValue = value.replace(/,/g, '');
+
+    if (!new BigNumber(ungroupedValue).isFinite()) {
+        throw new Error(`Cannot compact "${value}": not a finite number.`);
+    }
+
+    return formatCompactCryptoAmount({
+        value: ungroupedValue,
+        locale: 'en-US',
+        isMoneyLike: isMoneyLikeToken(tokenDecimals),
+    });
+};
+
+/**
+ * As {@link toCompactAmount}, for a value that arrives with its symbol attached: `"1.2009 SOL"`.
+ */
+export const toCompactAmountWithSymbol = (
+    amountWithSymbol: string,
+    options?: CompactAmountOptions,
+) => {
+    const [value, ...symbol] = amountWithSymbol.split(' ');
+
+    if (value === undefined) {
+        throw new Error(`Cannot compact an empty amount: "${amountWithSymbol}"`);
+    }
+
+    return [toCompactAmount(value, options), ...symbol].join(' ');
+};
+
 export const calculatePercentageOfBalance = (params: PercentageOfBalanceParams) => {
-    const fraction = (parseFloat(params.balance) * params.percentage) / 100;
     const maxDecimals = getAccountDecimals(params.symbol);
+    const exactFraction = BigNumber(params.balance).times(params.percentage).div(100);
+    // The form rounds a fraction of the balance to the coin's precision, while `localizeNumber`
+    // truncates, so round before handing it over.
+    const fraction =
+        maxDecimals === undefined
+            ? exactFraction
+            : exactFraction.decimalPlaces(maxDecimals, BigNumber.ROUND_HALF_UP);
 
     return localizeNumber(fraction, 'en-US', 0, maxDecimals);
 };
@@ -135,7 +188,8 @@ export const getBigNumberFromBalance = async (locator: Locator) => {
         originalBalanceText = originalBalanceText.slice(0, -1);
     }
 
-    const originalBalance = BigNumber(originalBalanceText);
+    // Grouped past a thousand (`1,000.99`), which BigNumber reads as NaN.
+    const originalBalance = BigNumber(originalBalanceText.replace(/,/g, ''));
 
     return { originalBalance, hasEllipsis };
 };
@@ -212,8 +266,16 @@ export const sanitizeAndStringifyLogFields = (fields: Record<string, unknown>) =
         2,
     );
 
-export const toADA = (lovelace: number, options?: { maxDecimals?: number }) =>
-    `${localizeNumber(lovelace / 1000000, 'en-US', 0, options?.maxDecimals ?? 6)} ADA`;
+export const toADA = (lovelace: number, options?: { maxDecimals?: number }) => {
+    const maxDecimals = options?.maxDecimals ?? 6;
+    // A fee is rounded up, never truncated, so it is not understated. `localizeNumber`
+    // truncates, so round first.
+    const ada = BigNumber(lovelace)
+        .div(1_000_000)
+        .decimalPlaces(maxDecimals, BigNumber.ROUND_HALF_UP);
+
+    return `${localizeNumber(ada, 'en-US', 0, maxDecimals)} ADA`;
+};
 
 export const replaceTemplatesInTranslation = (
     template: string,

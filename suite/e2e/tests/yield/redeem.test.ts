@@ -3,6 +3,7 @@ import { TestStream } from '@trezor/e2e-utils';
 
 import ETH_BASE_TX from '../../fixtures/staking/eth-base-tx.json';
 import ETH_STAKE_CONFIRMED_TX from '../../fixtures/staking/eth-stake-confirmed-tx.json';
+import { toCompactAmount } from '../../support/common';
 import { expect, test } from '../../support/fixtures';
 import { ETH_MOCKED_ACCOUNT } from '../../support/mocks/eth-endpoints';
 import {
@@ -20,6 +21,8 @@ const REDEEM_PAYOUT_AMOUNT = '3.016822';
 // YIELD_USDC_VAULT_SHARE_TOKEN.balance (18 decimals) converted to units
 const REDEEM_MAX_SHARES_AMOUNT = '9.944238455556494216';
 const REDEEM_MAX_FEE = '0.00010840280031 ETH';
+// USDC in ETH_MOCKED_ACCOUNT.tokens; six decimals make the dashboard render it money-like.
+const USDC_DECIMALS = 6;
 
 const buildEthAccountTokens = ({
     usdcBalance,
@@ -175,7 +178,12 @@ test.describe('stablecoin yield redeem', { tag: ['@webOnly', '@T3W1', '@T3T1'] }
 
                 await expect(yieldSection.depositedAmount(usdcPrime.id)).toHaveTranslation(
                     'TR_EARN_YIELD_DASHBOARD_DEPOSITED',
-                    { values: { amount: '6.983177', displaySymbol: 'USDC' } },
+                    {
+                        values: {
+                            amount: toCompactAmount('6.983177', { tokenDecimals: USDC_DECIMALS }),
+                            displaySymbol: 'USDC',
+                        },
+                    },
                 );
                 await expect(yieldSection.withdrawButton(usdcPrime.id)).toBeVisible();
             });

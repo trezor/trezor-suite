@@ -4,4 +4,5 @@ export type EarnTokenBalance = {
     value: string;
     symbol: TokenSymbol;
     contractAddress?: string | null;
+    decimals?: number;
 };

@@ -10,4 +10,5 @@ export {
     type CryptoAmountFormatterFormatStyle,
 } from './formatters/prepareCryptoAmountFormatter';
 export { getCompactAmount } from './utils/getCompactAmount';
+export { formatCompactCryptoAmount, isMoneyLikeToken } from './utils/formatCompactCryptoAmount';
 export { AddressFormatter, type AddressFormat } from './formatters/AddressFormatter';

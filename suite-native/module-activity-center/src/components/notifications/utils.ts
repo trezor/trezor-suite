@@ -5,6 +5,6 @@ export const getTxNotificationFields = (notification: TransactionNotification) =
     descriptor: notification.descriptor,
     symbol: notification.symbol,
     txid: notification.txid,
-    formattedAmount: 'formattedAmount' in notification ? notification.formattedAmount : undefined,
-    tokenContract: 'token' in notification ? notification.token?.contract : undefined,
+    amount: 'amount' in notification ? notification.amount : undefined,
+    token: 'token' in notification ? notification.token : undefined,
 });
