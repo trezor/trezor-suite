@@ -2,12 +2,20 @@ import type { PublicClient } from 'viem';
 
 import { getChainId } from '../utils/client';
 
+const ARC_TESTNET_CHAIN_ID = 5042002;
+
 /**
- * Contracts worth checking a balance on without being asked, per chain id. A plain RPC node cannot
- * enumerate an address's tokens, so this list is what makes a token show up on an account nobody
- * has added it to by hand. Reading a handful of balances is a single batched call.
+ * Contracts worth checking a balance on without being asked, per chain id. Enumerating an address's
+ * tokens needs a log scan, which is expensive enough that a token listing reads this handful of
+ * balances in one batched call instead. A token outside this list still shows up once transactions
+ * are loaded, or when added by hand.
  */
-const KNOWN_TOKENS: Record<number, readonly `0x${string}`[]> = {};
+const KNOWN_TOKENS: Record<number, readonly `0x${string}`[]> = {
+    [ARC_TESTNET_CHAIN_ID]: [
+        '0x89B50855Aa3bE2F677cD6303Cec089B5F319D72a', // EURC
+        '0xf0C4a4CE82A5746AbAAd9425360Ab04fbBA432BF', // Circle wrapped BTC
+    ],
+};
 
 const NONE: readonly `0x${string}`[] = [];
 

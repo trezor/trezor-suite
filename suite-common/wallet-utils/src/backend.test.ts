@@ -7,6 +7,8 @@ describe('backend utils', () => {
         expect(getDefaultBackendType(asNetworkSymbol('btc'))).toBe('blockbook');
         expect(getDefaultBackendType(asNetworkSymbol('ltc'))).toBe('blockbook');
         expect(getDefaultBackendType(asNetworkSymbol('ada'))).toBe('blockfrost');
+        expect(getDefaultBackendType(asNetworkSymbol('arc'))).toBe('evm-rpc');
+        expect(getDefaultBackendType(asNetworkSymbol('tarc'))).toBe('evm-rpc');
     });
 
     test('isTrezorConnectBackendType', () => {
