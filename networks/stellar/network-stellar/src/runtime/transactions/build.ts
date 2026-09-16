@@ -1,10 +1,13 @@
 import {
     Account,
+    Address,
     Asset,
+    Contract,
     Memo,
     Networks,
     Operation,
     TransactionBuilder,
+    nativeToScVal,
 } from '@stellar/stellar-sdk';
 
 type StellarAsset = {
@@ -17,6 +20,7 @@ type CreateTransactionBuilderParams = {
     descriptor: string;
     sequence: string;
     fee: string;
+    destinationTag?: string;
     isTestnet?: boolean;
 };
 
@@ -24,14 +28,21 @@ const createTransactionBuilder = ({
     descriptor,
     sequence,
     fee,
+    destinationTag,
     isTestnet = false,
 }: CreateTransactionBuilderParams) => {
     const source = new Account(descriptor, sequence);
 
-    return new TransactionBuilder(source, {
+    const txBuilder = new TransactionBuilder(source, {
         fee,
         networkPassphrase: isTestnet ? Networks.TESTNET : Networks.PUBLIC,
     }).setTimebounds(0, 0);
+
+    if (destinationTag) {
+        txBuilder.addMemo(Memo.text(destinationTag));
+    }
+
+    return txBuilder;
 };
 
 type BuildSendTransactionParams = CreateTransactionBuilderParams & {
@@ -39,7 +50,6 @@ type BuildSendTransactionParams = CreateTransactionBuilderParams & {
     destination: string;
     amount: string;
     asset: StellarAsset;
-    destinationTag?: string;
 };
 
 export const buildSendTransaction = ({
@@ -53,11 +63,13 @@ export const buildSendTransaction = ({
     destinationTag,
     isTestnet,
 }: BuildSendTransactionParams) => {
-    const txBuilder = createTransactionBuilder({ descriptor, sequence, fee, isTestnet });
-
-    if (destinationTag) {
-        txBuilder.addMemo(Memo.text(destinationTag));
-    }
+    const txBuilder = createTransactionBuilder({
+        descriptor,
+        sequence,
+        fee,
+        destinationTag,
+        isTestnet,
+    });
 
     if (destinationActivated) {
         txBuilder.addOperation(
@@ -90,9 +102,16 @@ const buildTrustlineTransaction = ({
     fee,
     asset,
     limit,
+    destinationTag,
     isTestnet,
 }: BuildTrustlineTransactionParams) => {
-    const txBuilder = createTransactionBuilder({ descriptor, sequence, fee, isTestnet });
+    const txBuilder = createTransactionBuilder({
+        descriptor,
+        sequence,
+        fee,
+        destinationTag,
+        isTestnet,
+    });
 
     txBuilder.addOperation(
         Operation.changeTrust({
@@ -106,20 +125,51 @@ const buildTrustlineTransaction = ({
 
 type BuildTrustlineParams = Omit<BuildTrustlineTransactionParams, 'limit'>;
 
-export const buildAddTrustlineTransaction = ({
-    descriptor,
-    sequence,
-    fee,
-    asset,
-    isTestnet,
-}: BuildTrustlineParams) =>
-    buildTrustlineTransaction({ descriptor, sequence, fee, asset, isTestnet });
+export const buildAddTrustlineTransaction = (params: BuildTrustlineParams) =>
+    buildTrustlineTransaction(params);
 
-export const buildRemoveTrustlineTransaction = ({
+export const buildRemoveTrustlineTransaction = (params: BuildTrustlineParams) =>
+    buildTrustlineTransaction({ ...params, limit: '0' });
+
+export type BuildContractTokenTransferParams = CreateTransactionBuilderParams & {
+    /** The `C…` id of the SEP-41 token being sent. */
+    contract: string;
+    destination: string;
+    /** In the token's own base units, already scaled by its `decimals`. */
+    amount: string;
+};
+
+/**
+ * A SEP-41 `transfer(from, to, amount)`, necessarily the sole operation. Not yet submittable:
+ * `prepareContractTransaction` adds the footprint and resource fee only a simulation can determine.
+ */
+export const buildContractTokenTransferTransaction = ({
     descriptor,
     sequence,
     fee,
-    asset,
+    contract,
+    destination,
+    amount,
+    destinationTag,
     isTestnet,
-}: BuildTrustlineParams) =>
-    buildTrustlineTransaction({ descriptor, sequence, fee, asset, limit: '0', isTestnet });
+}: BuildContractTokenTransferParams) => {
+    const txBuilder = createTransactionBuilder({
+        descriptor,
+        sequence,
+        fee,
+        destinationTag,
+        isTestnet,
+    });
+
+    txBuilder.addOperation(
+        new Contract(contract).call(
+            'transfer',
+            Address.fromString(descriptor).toScVal(),
+            Address.fromString(destination).toScVal(),
+            // SEP-41 amounts are i128; an 18-decimal token overflows a double long before that.
+            nativeToScVal(BigInt(amount), { type: 'i128' }),
+        ),
+    );
+
+    return txBuilder.build();
+};
