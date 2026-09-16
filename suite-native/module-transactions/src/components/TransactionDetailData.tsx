@@ -44,6 +44,8 @@ const getPhishingWarningTranslationId = (detectorId?: PhishingDetectorId) => {
             return 'transactions.phishing.warningZeroAmount';
         case 'TRC10_TRANSFER':
             return 'transactions.phishing.warningTrc10Transfer';
+        case 'UNSOLICITED_ASSET_OFFER':
+            return 'transactions.phishing.warningUnsolicitedAssetOffer';
         default:
             return 'transactions.phishing.warning';
     }
