@@ -1,12 +1,7 @@
 /* WARNING! This file should be imported ONLY in tests! */
 
-import type { Features } from '@trezor/connect-common';
 import { parseConnectSettings } from '@trezor/connect-common/src/data/connectSettings';
-import { firmwareAssets } from '@trezor/connect-data';
-import { DeviceModelInternal } from '@trezor/device-utils';
-import type { FirmwareRelease } from '@trezor/device-utils';
 import { AbstractApiTransport, type UsbApi } from '@trezor/transport-common';
-import { versionUtils } from '@trezor/utils';
 
 import * as settingsStore from './src/data/settingsStore';
 
@@ -51,54 +46,9 @@ const createTestTransportClass = (apiMethods = {}): any =>
 export const createTestTransport = (apiMethods = {}): any =>
     new (createTestTransportClass(apiMethods))({ id: 'foo-bar-id', messages: {} });
 
-export const getDeviceFeatures = (feat?: Partial<Features>): Features => ({
-    vendor: 'trezor.io',
-    major_version: 2,
-    minor_version: 1,
-    patch_version: 1,
-    bootloader_mode: null,
-    device_id: 'device-id',
-    pin_protection: false,
-    passphrase_protection: false,
-    language: 'en-US',
-    label: 'My Trezor',
-    initialized: true,
-    revision: 'df0963ec',
-    bootloader_hash: '7447a41717022e3eb32011b00b2a68ebb9c7f603cdc730e7307850a3f4d62a5c',
-    imported: null,
-    unlocked: true,
-    firmware_present: null,
-    backup_availability: 'NotAvailable',
-    flags: 0,
-    model: 'T',
-    internal_model: DeviceModelInternal.T2T1,
-    fw_major: null,
-    fw_minor: null,
-    fw_patch: null,
-    fw_vendor: null,
-    unfinished_backup: false,
-    no_backup: false,
-    recovery_status: 'Nothing',
-    capabilities: [],
-    backup_type: 'Bip39',
-    sd_card_present: false,
-    sd_protection: false,
-    wipe_code_protection: false,
-    session_id: 'session-id',
-    passphrase_always_on_device: false,
-    safety_checks: 'Strict',
-    auto_lock_delay_ms: 60000,
-    display_rotation: 'North',
-    experimental_features: false,
-    ...feat,
-});
-
 declare global {
     var JestMocks: {
-        getDeviceFeatures: typeof getDeviceFeatures;
         createTestTransport: typeof createTestTransport;
-        releasesT1B1: FirmwareRelease[];
-        releasesT2T1: FirmwareRelease[];
     };
 
     type TestFixtures<TestedMethod extends (...args: any) => any> = {
@@ -108,23 +58,6 @@ declare global {
     }[];
 }
 
-// T1B1
-// @ts-expect-error: indexing with noUncheckedIndexedAccess
-const t1b1Assets: { [file: string]: FirmwareRelease } = firmwareAssets.t1b1.universal;
-const releasesT1B1 = Object.values(t1b1Assets).sort((a, b) =>
-    versionUtils.isNewer(b.version, a.version) ? 1 : -1,
-);
-
-// T2T1
-// @ts-expect-error: indexing with noUncheckedIndexedAccess
-const t2t1Assets: { [file: string]: FirmwareRelease } = firmwareAssets.t2t1.universal;
-const releasesT2T1 = Object.values(t2t1Assets).sort((a, b) =>
-    versionUtils.isNewer(b.version, a.version) ? 1 : -1,
-);
-
 global.JestMocks = {
-    getDeviceFeatures,
     createTestTransport,
-    releasesT1B1,
-    releasesT2T1,
 };
