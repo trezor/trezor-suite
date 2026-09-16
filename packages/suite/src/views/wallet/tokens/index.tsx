@@ -1,12 +1,16 @@
 import { useEffect, useState } from 'react';
 
 import { goto, selectRouteName } from '@suite/router';
+import { addStellarContractTokenThunk } from '@suite-common/wallet-core';
 import { hasNetworkFeatures } from '@suite-common/wallet-utils';
 import { Column } from '@trezor/components';
 
 import { Route } from 'src/components/suite/Route';
 import { StellarManageTokenModal } from 'src/components/suite/modals/ReduxModal/UserContextModal/StellarManageTokenModal';
-import { StellarTokenInputModal } from 'src/components/suite/modals/ReduxModal/UserContextModal/StellarTokenInputModal';
+import {
+    type StellarTokenInput,
+    StellarTokenInputModal,
+} from 'src/components/suite/modals/ReduxModal/UserContextModal/StellarTokenInputModal';
 import { WalletLayout } from 'src/components/wallet';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 
@@ -43,10 +47,21 @@ export const Tokens = () => {
         setShowManualInput(true);
     };
 
-    const handleManualTokenSubmit = (assetCode: string, assetIssuer: string) => {
-        const contractAddress = `${assetCode}-${assetIssuer}`;
-        setManualTokenContract(contractAddress);
+    const handleManualTokenSubmit = (token: StellarTokenInput) => {
         setShowManualInput(false);
+
+        if (token.standard === 'STELLAR-CONTRACT') {
+            dispatch(
+                addStellarContractTokenThunk({
+                    accountKey: selectedAccount.account.key,
+                    contract: token.contract,
+                }),
+            );
+
+            return;
+        }
+
+        setManualTokenContract(`${token.assetCode}-${token.assetIssuer}`);
     };
 
     const closeManualInput = () => {

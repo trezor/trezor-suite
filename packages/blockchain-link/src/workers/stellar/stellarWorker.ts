@@ -3,7 +3,7 @@ import { CustomError, MESSAGES } from '@trezor/blockchain-link-types';
 import * as utils from '@trezor/blockchain-link-utils/src/stellar';
 import { getSuiteVersion, isDesktop, isNative } from '@trezor/env-utils';
 import stellar from '@trezor/network-stellar/runtime';
-import type { StellarAPI } from '@trezor/network-stellar/types';
+import type { StellarConnection } from '@trezor/network-stellar/types';
 import { createLazy } from '@trezor/utils';
 
 import { BaseWorker } from '../baseWorker';
@@ -21,7 +21,7 @@ const onRequest = (request: Request<MessageTypes.Message>, isTestnet: boolean) =
         case MESSAGES.GET_INFO:
             return getInfo(request, isTestnet);
         case MESSAGES.GET_ACCOUNT_INFO:
-            return getAccountInfo(request);
+            return getAccountInfo(request, isTestnet);
         case MESSAGES.ESTIMATE_FEE:
             return estimateFee(request);
         case MESSAGES.PUSH_TRANSACTION:
@@ -35,22 +35,29 @@ const onRequest = (request: Request<MessageTypes.Message>, isTestnet: boolean) =
     }
 };
 
-export class StellarWorker extends BaseWorker<StellarAPI> {
+export class StellarWorker extends BaseWorker<StellarConnection> {
     private lazyTokens = createLazy(() => utils.getTokenMetadata());
+    // The base reserve has changed once in the network's history; one read per worker is enough.
+    private lazyBaseReserve = createLazy(async () => {
+        const api = await this.connect();
+        const { createStellarDataSource } = await stellar();
+
+        return (await createStellarDataSource(api).readLatestLedger()).baseReserve;
+    });
     private isTestnet = false;
 
-    protected isConnected(api: StellarAPI | undefined): api is StellarAPI {
+    protected isConnected(api: StellarConnection | undefined): api is StellarConnection {
         return !!api;
     }
 
-    async tryConnect(url: string): Promise<StellarAPI> {
-        const { getStellarConnection } = await stellar();
-        const { api, isTestnet } = await getStellarConnection(
+    async tryConnect(url: string): Promise<StellarConnection> {
+        const { createStellarConnection } = await stellar();
+        const api = await createStellarConnection(
             url,
             isDesktop() || isNative() ? `Trezor Suite ${getSuiteVersion()}` : undefined,
         );
 
-        this.isTestnet = isTestnet;
+        this.isTestnet = api.isTestnet;
 
         return api;
     }
@@ -65,6 +72,7 @@ export class StellarWorker extends BaseWorker<StellarAPI> {
             connect: () => this.connect(),
             post: (data: Response) => this.post(data),
             getTokenMetadata: this.lazyTokens.getOrInit,
+            getBaseReserve: this.lazyBaseReserve.getOrInit,
         });
 
         this.api = undefined;
@@ -81,6 +89,7 @@ export class StellarWorker extends BaseWorker<StellarAPI> {
                 post: (data: Response) => this.post(data),
                 state: this.state,
                 getTokenMetadata: this.lazyTokens.getOrInit,
+                getBaseReserve: this.lazyBaseReserve.getOrInit,
             };
 
             const response = await onRequest(request, this.isTestnet);
