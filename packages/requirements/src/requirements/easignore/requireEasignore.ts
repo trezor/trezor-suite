@@ -2,8 +2,8 @@ import { existsSync, readFileSync, writeFileSync } from 'node:fs';
 import { join, relative } from 'node:path';
 
 import { normalizePath } from '../../fileSystem';
-import { collectWorkspacePackages } from '../connectClosure';
 import type { Requirement } from '../Requirement';
+import { collectWorkspacePackages } from '../connectClosure';
 import {
     EASIGNORE_FILE,
     buildEasignoreContent,
