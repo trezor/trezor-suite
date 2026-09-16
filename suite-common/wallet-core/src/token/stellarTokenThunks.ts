@@ -2,9 +2,15 @@ import { G } from '@mobily/ts-belt';
 
 import { type DeviceRootState, selectSelectedDevice } from '@suite-common/device';
 import { createThunk } from '@suite-common/redux-utils';
-import { type Account } from '@suite-common/wallet-types';
+import {
+    DefinitionType,
+    TokenManagementAction,
+    tokenDefinitionsActions,
+} from '@suite-common/token-definitions';
+import { type Account, type AccountKey } from '@suite-common/wallet-types';
 import {
     getConvertedOrDefaultFeeInfo,
+    getStellarTrustlineMemo,
     isTestnet,
     tryGetAccountIdentity,
 } from '@suite-common/wallet-utils';
@@ -13,6 +19,10 @@ import { asCoinSymbol } from '@trezor/connect-common';
 import stellar from '@trezor/network-stellar/runtime';
 import { StellarAssetType } from '@trezor/protobuf/src/definitions';
 
+import { stellarContractTokensActions } from './stellarContractTokensSlice';
+import { type AccountsRootState } from '../accounts/accountsReducer';
+import { selectAccountByKey } from '../accounts/accountsSelectors';
+import { fetchAndUpdateAccountThunk } from '../accounts/accountsThunks';
 import { type FeesRootState, selectRawNetworkFeeInfo } from '../fees/feesReducer';
 
 export interface TokenThunkPayload {
@@ -78,11 +88,13 @@ const manageTrustline = async (
         operation === 'activate' ? buildAddTrustlineTransaction : buildRemoveTrustlineTransaction;
 
     const testnet = isTestnet(account.symbol);
+    const memo = await getStellarTrustlineMemo(contractAddress);
     const transaction = transactionBuilder({
         descriptor: account.descriptor,
         sequence: misc.stellarSequence,
         fee: feePerUnit,
         asset,
+        memo,
         isTestnet: testnet,
     });
     const xdrBase64 = transaction.toXdr();
@@ -153,4 +165,45 @@ export const deactivateStellarTokenThunk = createThunk<
     `${STELLAR_TOKEN_MODULE_PREFIX}/deactivateStellarTokenThunk`,
     (payload, { getState, rejectWithValue }) =>
         manageTrustline(payload, 'deactivate', getState, rejectWithValue),
+);
+
+type StellarContractTokenThunkPayload = { accountKey: AccountKey; contract: string };
+
+type AddStellarContractTokenThunkState = AccountsRootState;
+
+// A contract token has no trustline: the account reads whatever is on its watch list.
+export const addStellarContractTokenThunk = createThunk<
+    void,
+    StellarContractTokenThunkPayload,
+    { state: AddStellarContractTokenThunkState }
+>(
+    `${STELLAR_TOKEN_MODULE_PREFIX}/addStellarContractTokenThunk`,
+    ({ accountKey, contract }, { dispatch, getState }) => {
+        const account = selectAccountByKey(getState(), accountKey);
+        if (!account) return;
+
+        dispatch(stellarContractTokensActions.addContractToken({ accountKey, contract }));
+        // Absent from the coin definitions, it would otherwise be filed as unverified.
+        dispatch(
+            tokenDefinitionsActions.setTokenStatus({
+                symbol: account.symbol,
+                contractAddress: contract,
+                status: TokenManagementAction.SHOW,
+                type: DefinitionType.COIN,
+            }),
+        );
+        dispatch(fetchAndUpdateAccountThunk({ accountKey }));
+    },
+);
+
+export const removeStellarContractTokenThunk = createThunk<
+    void,
+    StellarContractTokenThunkPayload,
+    void
+>(
+    `${STELLAR_TOKEN_MODULE_PREFIX}/removeStellarContractTokenThunk`,
+    ({ accountKey, contract }, { dispatch }) => {
+        dispatch(stellarContractTokensActions.removeContractToken({ accountKey, contract }));
+        dispatch(fetchAndUpdateAccountThunk({ accountKey }));
+    },
 );

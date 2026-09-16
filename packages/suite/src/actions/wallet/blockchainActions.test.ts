@@ -28,6 +28,7 @@ import {
     type BlockchainRootState,
     type BlockchainState,
     type FeesRootState,
+    type StellarContractTokensRootState,
     type SyncAccountsWithBlockchainThunkDeps,
     type TransactionsRootState,
     type TransactionsState,
@@ -42,6 +43,7 @@ import {
     onBlockchainNotificationThunk,
     preloadFeeInfoThunk,
     setCustomBackendThunk,
+    stellarContractTokensInitialState,
 } from '@suite-common/wallet-core';
 import { type FeesState } from '@suite-common/wallet-types';
 import { mockAnalytics } from '@trezor/analytics-uploader/mocks';
@@ -76,6 +78,7 @@ type State = AccountsRootState &
     DeviceRootState &
     FeesRootState &
     NetworksRootState &
+    StellarContractTokensRootState &
     TokenDefinitionsRootState &
     TradingRootState &
     TransactionsRootState &
@@ -116,6 +119,7 @@ const getInitialState = (
             ...initialWalletSettingsState,
             bitcoinAmountUnit: PROTO.AmountUnit.BITCOIN,
         },
+        stellarContractTokens: stellarContractTokensInitialState,
     },
     notifications: notificationsReducer([], action),
     tokenDefinitions: tokenDefinitionsInitialState,

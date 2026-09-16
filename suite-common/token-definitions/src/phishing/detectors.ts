@@ -143,6 +143,16 @@ const isUnknownTxPhishing: PhishingDetectorFn = ({ transaction }) => {
     return createResult(transaction.type === 'unknown', transaction);
 };
 
+/**
+ * A claimable balance someone else created naming the account as claimant: nothing has moved, and
+ * paying the reserve to claim it is the point of the scam.
+ */
+const isUnsolicitedAssetOfferPhishing: PhishingDetectorFn = ({ transaction }) => {
+    const offer = transaction.stellarSpecific?.claimableBalanceOffer;
+
+    return createResult(!!offer?.isClaimant, transaction);
+};
+
 const isTrc10TransferPhishing: PhishingDetectorFn = ({ transaction }) => {
     const isTrc10Transfer = transaction.tronSpecific?.contractType === 'TransferAssetContract';
 
@@ -169,5 +179,9 @@ export const detectors = {
     trc10: {
         id: 'TRC10_TRANSFER',
         validator: isTrc10TransferPhishing,
+    },
+    unsolicitedAssetOffer: {
+        id: 'UNSOLICITED_ASSET_OFFER',
+        validator: isUnsolicitedAssetOfferPhishing,
     },
 } as const satisfies Record<string, PhishingDetector>;
