@@ -111,6 +111,6 @@ export { tradeSellEvent } from './tradeSellEvent';
 export { tradeStatusEvent } from './tradeStatusEvent';
 export { tradingExchangeIssueEvent } from './tradingExchangeIssueEvent';
 export { transactionCancelEvent } from './transactionCancelEvent';
-export { transactionCreatedEvent } from './transactionCreatedEvent';
+export { transactionCreatedEvent } from '@suite-common/analytics';
 export { transactionTimeoutRetryEvent } from './transactionTimeoutRetryEvent';
 export { transportTypeEvent } from './transportTypeEvent';

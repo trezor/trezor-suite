@@ -143,8 +143,6 @@ export enum EventType {
     TradeStatus = 'trade/status',
     TradingExchangeIssue = 'trading/exchange-issue',
     TransactionCancel = 'transaction/cancel',
-    // eslint-disable-next-line local-rules/analytics-event-name
-    TransactionCreated = 'transaction-created',
     TransactionTimeoutRetry = 'transaction/timeout-retry',
     // eslint-disable-next-line local-rules/analytics-event-name
     TransportType = 'transport-type',
