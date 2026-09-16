@@ -276,27 +276,25 @@ export const requireForbiddenDeps: Requirement<'workspace'> = {
         }
 
         const localRule = await loadForbiddenDepsConfig(context.workspaceDir);
+        const dependencyRule: ForbiddenDepsConfig = {
+            ...localRule,
+            'forbidden-deps': [
+                ...(localRule?.['forbidden-deps'] ?? []),
+                ...(await loadInheritedForbiddenDeps(context.repoRoot, context.workspaceDir)),
+            ],
+        };
         const workspaceDirectories = getWorkspaceDirectoryResolver(context.repoRoot);
 
         const dependencyOccurrences = collectDependencyOccurrences(packageJson);
         const errors = new Set<string>([
             ...getInvalidConfiguredPackagesErrors({
-                dependencyRule: localRule,
+                dependencyRule,
                 workspaceDirectories,
                 workspaceName: context.workspaceName,
             }),
             ...getForbiddenDependencyErrors({
                 dependencyOccurrences,
-                dependencyRule: {
-                    ...localRule,
-                    'forbidden-deps': [
-                        ...(localRule?.['forbidden-deps'] ?? []),
-                        ...(await loadInheritedForbiddenDeps(
-                            context.repoRoot,
-                            context.workspaceDir,
-                        )),
-                    ],
-                },
+                dependencyRule,
                 workspaceName: context.workspaceName,
             }),
             ...(await getDependencyConsumerErrors({
