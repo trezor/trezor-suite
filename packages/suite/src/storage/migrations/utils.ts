@@ -16,6 +16,10 @@ export const updateAll = async <
     store: T,
     update: (old: OldValueType) => StoreValue<SuiteDBSchema, T> | null | void,
 ): Promise<void> => {
+    // A store that a failed upgrade never created has nothing to transform, and opening it would
+    // throw NotFoundError and take the whole upgrade down with it.
+    if (!transaction.objectStoreNames.contains(store)) return;
+
     let cursor = await transaction.objectStore(store).openCursor();
     while (cursor) {
         const oldObj = cursor.value as OldValueType;
