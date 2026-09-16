@@ -10451,10 +10451,10 @@ export const messages = defineMessages({
         defaultMessage:
             'Make sure you send your assets only through the {network} network. If coins or tokens are sent outside the {network} network, the recipient may not be able to access them.',
     },
-    TR_EVM_EXPLANATION_RECEIVE_DESCRIPTION: {
-        id: 'TR_EVM_EXPLANATION_RECEIVE_DESCRIPTION',
+    TR_EVM_EXPLANATION_RECEIVE_FEE_DESCRIPTION: {
+        id: 'TR_EVM_EXPLANATION_RECEIVE_FEE_DESCRIPTION',
         defaultMessage:
-            "The network uses the same address format as Ethereum. You'll need {network} ETH to pay transaction fees on this network.",
+            "The network uses the same address format as Ethereum. You'll need {networkDisplaySymbol} on the {network} network to pay transaction fees.",
     },
     TR_TX_DATA_METHOD_NAME: {
         id: 'TR_TX_DATA_METHOD_NAME',

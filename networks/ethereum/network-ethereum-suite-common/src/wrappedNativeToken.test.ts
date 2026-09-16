@@ -4,8 +4,20 @@ import {
     getWrappedNativeAddress,
     getWrappedNativeSymbol,
     getWrappedNativeToken,
+    isNativeTokenWrappable,
     isWrappedNativeToken,
 } from './wrappedNativeToken';
+
+describe(isNativeTokenWrappable.name, () => {
+    it('follows the Ethereum module for a supported network', () => {
+        expect(isNativeTokenWrappable(asNetworkSymbol('eth'))).toBe(true);
+        expect(isNativeTokenWrappable(asNetworkSymbol('arc'))).toBe(false);
+    });
+
+    it('is false for an unsupported network', () => {
+        expect(isNativeTokenWrappable(asNetworkSymbol('btc'))).toBe(false);
+    });
+});
 
 describe(getWrappedNativeToken.name, () => {
     it('returns the wrapped native token for a supported network', () => {
