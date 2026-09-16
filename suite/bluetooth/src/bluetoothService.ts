@@ -11,9 +11,24 @@ import { resolveAfter } from '@trezor/utils';
 
 import { type DesktopBluetoothDevice, fromBluetoothDevice } from './DesktopBluetoothDevice';
 import { bluetoothConnectDeviceThunk } from './bluetoothConnectDeviceThunk';
-import { type BluetoothService, type BluetoothServiceDeps } from './bluetoothServiceTypes';
-import { bluetoothStartScanningThunk } from './bluetoothStartScanningThunk';
+import {
+    type BluetoothService,
+    type BluetoothServiceDeps,
+    type BluetoothServiceInternalDeps,
+} from './bluetoothServiceTypes';
 import { selectConnectingDevices } from './desktopBluetoothSelectors';
+
+const bluetoothServiceInternal: Partial<BluetoothServiceInternalDeps> = {};
+
+export const getBluetoothServiceInternal = <N extends keyof BluetoothServiceInternalDeps>(
+    name: N,
+): BluetoothServiceInternalDeps[N] => {
+    if (!bluetoothServiceInternal[name]) {
+        throw new Error(`Bluetooth service ${name} not initialized`);
+    }
+
+    return bluetoothServiceInternal[name];
+};
 
 const attemptDeviceConnect = async (deps: BluetoothServiceDeps, device: DesktopBluetoothDevice) => {
     const { getState, dispatch } = deps;
@@ -80,7 +95,7 @@ const attemptDeviceConnect = async (deps: BluetoothServiceDeps, device: DesktopB
 };
 
 const setupAutoReconnect = (deps: BluetoothServiceDeps) => {
-    const { getState, dispatch } = deps;
+    const { getState } = deps;
     // Wait for 3 seconds or earlier if a connected device is detected.
     // The delay shouldn't be too perceptible, since other things are also loading at app start.
     // If user connects a device via USB, we don't start the BT connection,
@@ -105,13 +120,18 @@ const setupAutoReconnect = (deps: BluetoothServiceDeps) => {
         // and therefore we start looking for it.
         const knownDevices = selectKnownDevices<DesktopBluetoothDevice>(getState());
         if (knownDevices.length > 0) {
-            dispatch(bluetoothStartScanningThunk());
+            getBluetoothServiceInternal('backgroundScan').start();
         }
     });
 };
 
-export const createBluetoothService = (deps: BluetoothServiceDeps): BluetoothService => {
+export const createBluetoothService = (
+    deps: BluetoothServiceDeps,
+    internalDeps: BluetoothServiceInternalDeps,
+): BluetoothService => {
     let inited = false;
+
+    Object.assign(bluetoothServiceInternal, internalDeps);
 
     return {
         init: () => {
