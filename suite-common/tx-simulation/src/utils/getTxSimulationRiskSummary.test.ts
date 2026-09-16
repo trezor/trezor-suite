@@ -9,6 +9,7 @@ import type {
     TransactionSimulation,
     TransactionSimulationError,
     TransactionValidation,
+    TxSimulationEVMResult,
 } from '../types';
 import { getTxSimulationRiskSummary } from './getTxSimulationRiskSummary';
 
@@ -43,8 +44,11 @@ const createEvmResult = (
     payload: Pick<TransactionScanResponse, 'validation' | 'simulation'>,
 ): NetworkTxSimulationResult => ({
     method: 'ethereumSignTransaction',
-    payload: { ...payload, needsDisclaimer: false } as NetworkTxSimulationResult['payload'] &
-        TransactionScanResponse,
+    payload: {
+        ...payload,
+        needsDisclaimer: false,
+        isChainSupported: true,
+    } as TxSimulationEVMResult,
 });
 
 const createSolanaResult = (
