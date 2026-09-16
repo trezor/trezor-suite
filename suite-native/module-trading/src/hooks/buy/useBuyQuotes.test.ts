@@ -352,7 +352,7 @@ describe('useBuyQuotes', () => {
                 tradingActions.saveInfo({
                     coins: {},
                     platforms: {},
-                    config: {},
+                    config: { btcSwapComposeTemplate: { extraOutputs: [] } },
                 }),
             );
         });

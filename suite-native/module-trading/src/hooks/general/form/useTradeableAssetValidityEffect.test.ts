@@ -69,7 +69,7 @@ describe('useTradeableAssetValidityEffect', () => {
                         bitcoin: coins!.bitcoin!,
                     },
                     platforms: platforms!,
-                    config: {},
+                    config: { btcSwapComposeTemplate: { extraOutputs: [] } },
                 }),
             );
         });
