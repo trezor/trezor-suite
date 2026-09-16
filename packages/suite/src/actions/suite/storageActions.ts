@@ -58,6 +58,7 @@ import {
     type PhishingRootState,
     type PhishingState,
     type SendRootState,
+    type StellarContractTokensRootState,
     type TransactionsRootState,
     type WalletSettingsRootState,
     selectAccounts,
@@ -68,6 +69,7 @@ import {
     selectPhishing,
     selectPhishingTransactions,
     selectSendFormDrafts,
+    selectStellarContractTokens,
     selectTransactions,
     selectWalletSettings,
 } from '@suite-common/wallet-core';
@@ -403,6 +405,12 @@ export const removeAccountPhishing = (deps: DbDep, accountKey: AccountKey) => {
     return deps.db.removeItemByPK('phishing', accountKey);
 };
 
+export const removeAccountStellarContractTokens = (deps: DbDep, accountKey: AccountKey) => {
+    if (!deps.db.isAccessible()) return;
+
+    return deps.db.removeItemByPK('stellarContractTokens', accountKey);
+};
+
 type RemoveAccountWithDependenciesState = FlagsRootState &
     SuiteSettingsRootState & {
         suite: Pick<SuiteState, 'evmSettings' | 'seenDisconnectNotificationForDeviceIds'>;
@@ -427,6 +435,7 @@ export const removeAccountWithDependencies =
             removeAccountHistoricRates(deps, account.key),
             removeAccountPhishing(deps, account.key),
             removeEarnOnboarding(deps, account.key),
+            removeAccountStellarContractTokens(deps, account.key),
         ]);
 
 export type ForgetDeviceThunkState = AccountsRootState &
@@ -759,6 +768,26 @@ export const saveDebugSettingsThunk =
     ) => {
         if (!extra.services.db.isAccessible()) return;
         await extra.services.db.addItem('debug', selectDebug(getState()), 'debug', true);
+    };
+
+type SaveStellarContractTokensThunkState = StellarContractTokensRootState;
+
+type SaveStellarContractTokensThunkDeps = WithServices<DbDep>;
+
+export const saveStellarContractTokensThunk =
+    (accountKey: AccountKey) =>
+    (
+        _dispatch: Dispatch<UnknownAction>,
+        getState: () => SaveStellarContractTokensThunkState,
+        extra: SaveStellarContractTokensThunkDeps,
+    ) => {
+        if (!extra.services.db.isAccessible()) return;
+
+        const contracts = selectStellarContractTokens(getState(), accountKey);
+
+        return contracts.length > 0
+            ? extra.services.db.addItem('stellarContractTokens', contracts, accountKey, true)
+            : extra.services.db.removeItemByPK('stellarContractTokens', accountKey);
     };
 
 type SaveTokenManagementThunkState = TokenDefinitionsRootState;
