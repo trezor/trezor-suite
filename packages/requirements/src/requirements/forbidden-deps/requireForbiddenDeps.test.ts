@@ -1,5 +1,113 @@
+import { mkdirSync, mkdtempSync, rmSync, writeFileSync } from 'node:fs';
+import { tmpdir } from 'node:os';
+import { join } from 'node:path';
+
 import type { ForbiddenDepsConfig } from './forbiddenDepsTypes';
-import { getDependencyConsumerErrors, getForbiddenDependencyErrors } from './requireForbiddenDeps';
+import {
+    getDependencyConsumerErrors,
+    getForbiddenDependencyErrors,
+    requireForbiddenDeps,
+} from './requireForbiddenDeps';
+import { getWorkspaceDirectoryMap } from '../../workspaces';
+import type { WorkspaceContext } from '../Requirement';
+
+jest.mock('../../workspaces');
+
+const writeConfig = (directory: string, config: ForbiddenDepsConfig) => {
+    writeFileSync(
+        join(directory, 'forbiddenDeps.config.ts'),
+        `export const forbiddenDepsConfig = ${JSON.stringify(config)};`,
+    );
+};
+
+describe(requireForbiddenDeps.name, () => {
+    let context: WorkspaceContext;
+
+    beforeEach(() => {
+        const repoRoot = mkdtempSync(join(tmpdir(), 'forbidden-deps-'));
+        const workspaceDir = join(repoRoot, 'networks', 'ethereum', 'example');
+        context = { repoRoot, workspaceDir, workspaceName: '@trezor/network-example' };
+
+        mkdirSync(workspaceDir, { recursive: true });
+        writeFileSync(
+            join(workspaceDir, 'package.json'),
+            JSON.stringify({
+                name: context.workspaceName,
+                dependencies: {
+                    '@suite-common/wallet-core': 'workspace:*',
+                    '@suite-common/calldata': 'workspace:*',
+                    '@trezor/utils': 'workspace:*',
+                },
+            }),
+        );
+        jest.mocked(getWorkspaceDirectoryMap).mockReturnValue(
+            new Map([
+                [context.workspaceName, workspaceDir],
+                ['@suite-common/wallet-core', join(repoRoot, 'suite-common', 'wallet-core')],
+                ['@suite-common/calldata', join(repoRoot, 'suite-common', 'calldata')],
+                ['@trezor/utils', join(repoRoot, 'packages', 'utils')],
+            ]),
+        );
+    });
+
+    afterEach(() => {
+        rmSync(context.repoRoot, { recursive: true, force: true });
+    });
+
+    it('inherits a parent policy without a workspace config and preserves exceptions', async () => {
+        writeConfig(join(context.repoRoot, 'networks'), {
+            'forbidden-deps': [
+                {
+                    packageNamePrefix: '@suite-common/',
+                    except: ['@suite-common/calldata'],
+                    reason: 'Below the apps.',
+                },
+            ],
+        });
+
+        expect(await requireForbiddenDeps.verify(context)).toEqual([
+            '@trezor/network-example: "@suite-common/wallet-core" is forbidden in dependencies. Reason: Below the apps.',
+        ]);
+    });
+
+    it('enforces local and inherited rules together', async () => {
+        writeConfig(join(context.repoRoot, 'networks'), {
+            'forbidden-deps': [
+                { packageName: '@suite-common/wallet-core', reason: 'Parent policy.' },
+            ],
+        });
+        writeConfig(context.workspaceDir, {
+            'forbidden-deps': [{ packageName: '@suite-common/calldata', reason: 'Local policy.' }],
+        });
+
+        expect(await requireForbiddenDeps.verify(context)).toEqual([
+            '@trezor/network-example: "@suite-common/wallet-core" is forbidden in dependencies. Reason: Parent policy.',
+            '@trezor/network-example: "@suite-common/calldata" is forbidden in dependencies. Reason: Local policy.',
+        ]);
+    });
+
+    it('reports an unknown package in an inherited policy', async () => {
+        writeConfig(join(context.repoRoot, 'networks'), {
+            'forbidden-deps': [
+                { packageName: '@suite-common/wallet-cor', reason: 'Misspelled package.' },
+            ],
+        });
+
+        expect(await requireForbiddenDeps.verify(context)).toEqual([
+            '@trezor/network-example: "@suite-common/wallet-cor" in "forbidden-deps" is not an existing workspace package.',
+        ]);
+    });
+
+    it('does not inherit policies outside the workspace ancestors', async () => {
+        const siblingDirectory = join(context.repoRoot, 'suite-common');
+        mkdirSync(siblingDirectory);
+        writeConfig(siblingDirectory, {
+            'forbidden-deps': [{ packageNamePrefix: '@suite-common/', reason: 'Another subtree.' }],
+        });
+
+        expect(await requireForbiddenDeps.verify(context)).toEqual([]);
+    });
+});
 
 describe(getForbiddenDependencyErrors.name, () => {
     it('rejects an exact forbidden dependency', () => {
