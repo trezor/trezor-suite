@@ -47,8 +47,8 @@ export type NftData = z.infer<typeof nftDataSchema>;
 
 export const nftListSchema = z.array(nftDataSchema);
 
-// A contract that wraps no asset is a valid answer, so `asset` is read rather than required: an
-// absent one leaves the token out on purpose, while a rejected response would fail the build.
+// A native contract token wraps no asset, so `asset` is read rather than required: an absent one
+// keys the token by its contract address, while a rejected response would fail the build.
 // It has to be spelled optional, because zod rejects a missing key even for `unknown`.
 export const stellarExpertContractSchema = z.object({
     asset: z.unknown().optional(),

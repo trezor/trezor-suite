@@ -224,9 +224,7 @@ describe('getContractAddress', () => {
             );
         });
 
-        it('should treat a contract that wraps no asset as an answer, not a failure', async () => {
-            // StellarExpert answers about these contracts, it just leaves `asset` out. Reading
-            // that as a failed lookup stops the whole release over a dozen valid answers.
+        it('should key a native contract token, which wraps no asset, by its own address', async () => {
             mockStellarExpert(
                 new Response(JSON.stringify({ contract: sorobanAddress, created: 1708482513 }), {
                     status: 200,
@@ -235,7 +233,7 @@ describe('getContractAddress', () => {
             );
 
             expect(await getContractAddress('stellar', { stellar: sorobanAddress })).toEqual(
-                err({ type: 'CONTRACT_HAS_NO_ASSET', contractAddress: sorobanAddress }),
+                ok(sorobanAddress),
             );
         });
     });

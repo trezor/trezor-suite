@@ -14,3 +14,9 @@ export const selectActiveBackendType = (
     symbol: NetworkSymbol,
 ): BackendType | undefined =>
     state.wallet.blockchain[symbol as LegacyNetworkSymbol].backends.selected;
+
+/** The backend URL the worker reported; `undefined` before the first connection. */
+export const selectBlockchainUrl = (
+    state: BlockchainRootState,
+    symbol: NetworkSymbol,
+): string | undefined => state.wallet.blockchain[symbol as LegacyNetworkSymbol].url;

@@ -1766,7 +1766,7 @@
   "TR_LOOKING_FOR_COINJOIN_ROUND": "Waiting for a round",
   "TR_LOW_ANONYMITY_WARNING": "<red>Very low privacy.</red> We recommend using at least 1 in 5, as anything below this threshold isn't private.",
   "TR_MAKE_SURE_NO_ONE_CAN_PEEK": "Ensure no one can see your screen over your shoulder, and no cameras can capture it. Your wallet backup should remain confidential and seen only by you.",
-  "TR_MANUAL_TOKEN_ACTIVATION_DESCRIPTION": "To activate a token, enter its asset code and issuer address.",
+  "TR_MANUAL_TOKEN_ACTIVATION_DESCRIPTION": "To activate a token, enter its contract ID, or its asset code and issuer address.",
   "TR_MARKED_AS_RECOGNIZED_BANNER": "You've confirmed this transaction is safe.",
   "TR_MAXIMUM_PIN_LENGTH": "Enter up to 50 digits.",
   "TR_MAX_FEE_PER_GAS": "Max fee per gas",
