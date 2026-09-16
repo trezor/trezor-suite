@@ -22,18 +22,20 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 # Transform .js files using Babel
 yarn run -T babel "$1" --out-dir "$1" --extensions ".js" --config-file "$SCRIPT_DIR/babel.config.json"
 
-# Transform .d.ts files using Babel.
-# TODO maybe it'd be better to get rid of babel-plugin-sanitize-internal-imports.js and use only the regex to unify it? Then we can unify the babel configs too.
-yarn run -T babel "$1" --out-dir "$1" --extensions ".ts" --keep-file-extension --config-file "$SCRIPT_DIR/babel.config.ts.json"
-
-# Determine the operating system
-OS="$(uname)"
-
-# Transform .d.ts files using sed
+# Rewrite internal @trezor/<pkg>/src imports to /lib in .d.ts files using sed.
 # It should be possible to solve this using babel but babel needs @babel/preset-typescript to parse .d.ts files
 # and that preset there is the risk of stripping type declarations, which would break .d.ts files.
 # Using sed is faster and it just works.
-# Execute the appropriate command based on the OS:
+#
+# IMPORTANT: this src->lib rewrite MUST run BEFORE the .d.ts Babel pass below.
+# babel-plugin-add-js-extension only appends the runtime .js / /index.js extension to specifiers
+# that are already under /lib/, so if the src->lib rewrite ran afterwards the cross-package type
+# re-exports would ship extensionless (e.g. `export * from '@trezor/connect-core/lib/exports'`) and
+# fail to resolve under a consumer's NodeNext moduleResolution — the named exports silently vanish.
+# The .js pipeline above already gets this right because babel-plugin-sanitize-internal-imports does
+# the src->lib rewrite in the same pass, ahead of add-js-extension.
+# Determine the operating system, then execute the appropriate command based on the OS:
+OS="$(uname)"
 if [[ "$OS" == "Darwin" ]]; then
     # macOS command with -i '' for in-place editing without backup and -E for extended regex.
     find "$1" -name "*.d.ts" -type f -exec sed -i '' "s|@trezor/\([^/]*\)/src|@trezor/\1/lib|g" {} +
@@ -41,3 +43,8 @@ else
     # Linux command with -i and -E for in-place editing without backup (GNU sed syntax) and extended regex.
     find "$1" -name "*.d.ts" -type f -exec sed -i "s|@trezor/\([^/]*\)/src|@trezor/\1/lib|g" {} +
 fi
+
+# Transform .d.ts files using Babel (adds runtime .js / /index.js extensions to relative and, thanks
+# to the src->lib sed rewrite above, cross-package @trezor/<pkg>/lib imports for Node ESM/NodeNext).
+# TODO maybe it'd be better to get rid of babel-plugin-sanitize-internal-imports.js and use only the regex to unify it? Then we can unify the babel configs too.
+yarn run -T babel "$1" --out-dir "$1" --extensions ".ts" --keep-file-extension --config-file "$SCRIPT_DIR/babel.config.ts.json"
