@@ -160,6 +160,7 @@ export const coinSymbols = [
     'thod',
     'arb',
     'tsep',
+    'tarc',
     // misc coins (cardano, solana, ripple, stellar, tron, monero, tezos, ...)
     'ada',
     'dsol',

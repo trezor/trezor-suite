@@ -20,6 +20,9 @@ export const getDefaultBackendType = (symbol: NetworkSymbol) => {
     if (symbol === 'sol' || symbol === 'dsol') {
         return 'solana';
     }
+    if (symbol === 'tarc') {
+        return 'evm-rpc';
+    }
 
     return 'blockbook';
 };

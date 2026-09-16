@@ -18,6 +18,7 @@ export const networkSymbols = [
     'regtest',
     'rhc',
     'sol',
+    'tarc',
     'test',
     'thod',
     'trx',

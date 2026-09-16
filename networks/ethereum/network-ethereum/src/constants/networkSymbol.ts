@@ -13,6 +13,7 @@ export const supportedEthereumNetworks = [
     'etc',
     'tsep',
     'thod',
+    'tarc',
 ] as const;
 
 export type EthereumNetworkSymbol = (typeof supportedEthereumNetworks)[number];

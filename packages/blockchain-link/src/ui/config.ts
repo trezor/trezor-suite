@@ -23,6 +23,28 @@ export default [
     },
     {
         blockchain: {
+            name: 'Arc Testnet',
+            worker: 'js/evm-rpc-worker.js',
+            server: ['https://rpc.testnet.arc.network'],
+            debug: true,
+        },
+        data: {
+            address: '0xcAe32Cd53A96209fA02C0c0cfE165a5c97d456dF',
+            accountInfoOptions: {
+                page: 0,
+                pageSize: 25,
+                contractFilter: '0x89B50855Aa3bE2F677cD6303Cec089B5F319D72a', // EURC
+            },
+            estimateFeeOptions: {
+                blocks: [1, 2, 10],
+            },
+            txid: '',
+            tx: '',
+            subscribe: '0xcAe32Cd53A96209fA02C0c0cfE165a5c97d456dF',
+        },
+    },
+    {
+        blockchain: {
             name: 'HyperEVM',
             worker: 'js/blockbook-worker.js',
             server: ['https://hype.trezor.io'],

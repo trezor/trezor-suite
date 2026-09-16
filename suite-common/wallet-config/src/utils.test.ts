@@ -121,7 +121,7 @@ describe('isAccountBasedNetwork', () => {
 });
 
 describe(isNetworkUsingExternalBackend.name, () => {
-    it.each(['bsc', 'pol', 'op', 'arb', 'base', 'rhc', 'hype', 'avax', 'sol', 'dsol'])(
+    it.each(['bsc', 'pol', 'op', 'arb', 'base', 'rhc', 'hype', 'avax', 'sol', 'dsol', 'tarc'])(
         'returns true for %s',
         symbol => {
             expect(isNetworkUsingExternalBackend(asNetworkSymbol(symbol))).toBe(true);

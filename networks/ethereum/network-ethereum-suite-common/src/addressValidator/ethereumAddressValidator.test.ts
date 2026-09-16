@@ -41,6 +41,11 @@ const ethereumIsAddressValidCases: EthereumIsAddressValidCase[] = [
     },
     {
         address: '0xE37c0D48d68da5c5b14E5c1a9f1CFE802776D9FF',
+        symbol: 'tarc',
+        expected: true,
+    },
+    {
+        address: '0xE37c0D48d68da5c5b14E5c1a9f1CFE802776D9FF',
         symbol: 'rhc',
         expected: true,
     },
@@ -67,6 +72,11 @@ const ethereumIsAddressValidCases: EthereumIsAddressValidCase[] = [
     {
         address: '0xE37c0D48d68da5c5b14E5c1a9f1CFE802776D9FF0',
         symbol: 'thod',
+        expected: false,
+    },
+    {
+        address: '0xE37c0D48d68da5c5b14E5c1a9f1CFE802776D9FF0',
+        symbol: 'tarc',
         expected: false,
     },
     {
@@ -257,6 +267,10 @@ const ethereumAddressTypeCases: EthereumAddressTypeCase[] = [
 describe('ethereum validator', () => {
     it('supports HyperEVM', () => {
         expect(supportedEthereumNetworks).toContain('hype');
+    });
+
+    it('supports Arc', () => {
+        expect(supportedEthereumNetworks).toContain('tarc');
     });
 
     it.each(ethereumIsAddressValidCases)('validates $symbol address $address', testCase => {

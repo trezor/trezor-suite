@@ -37,6 +37,7 @@ const networkConfigBySymbol: Readonly<Record<EthereumNetworkSymbol, SuiteCommonN
     etc: { color: '#60c67e', protocols: [asProtocol('ethclassic'), asProtocol('etc')] },
     tsep: { color: '#454a75', protocols: [asProtocol('tsep')] },
     thod: { color: '#454a75', protocols: [asProtocol('thod')] },
+    tarc: { color: '#2775ca', protocols: [asProtocol('tarc')] },
 };
 
 export const getNetworkConfig = (symbol: EthereumNetworkSymbol): SuiteCommonNetworkConfig =>
