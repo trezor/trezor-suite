@@ -11,6 +11,8 @@ import {
 import type { AccountUtxo, Device, Features, TrezorConnectPrivilegedAPI } from '@trezor/connect';
 import { DeviceModelInternal, FirmwareType } from '@trezor/device-utils';
 
+import { type MockTrezorConnect } from './createMockTrezorConnect';
+
 /**
  * device.firmwareReleaseConfigInfo property
  * note that values don't make much sense.
@@ -482,12 +484,7 @@ const mockedBlockchainNetworks = networksCollection.reduce((result, network) => 
     return result;
 }, {} as BlockchainNetworks);
 
-// use mock from @suite-common/test-utils/__mocks__
-type MockTrezorConnect = jest.Mocked<TrezorConnectPrivilegedAPI> & {
-    setTestFixtures: (...args: any[]) => void;
-    emitTestEvent: (event: string, data: any) => void;
-};
-
+// The mocked Connect instance is built by createMockTrezorConnect; see @trezor/connect manual mock.
 const getTrezorConnectMock = () => {
     const pkg = require('@trezor/connect');
 

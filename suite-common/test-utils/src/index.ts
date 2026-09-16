@@ -1,4 +1,5 @@
 export * from './mocks';
+export { createMockTrezorConnect, type MockTrezorConnect } from './createMockTrezorConnect';
 export * from './createTestStore';
 export { createTestCompositionRoot, type TestAppRoot } from './createTestCompositionRoot';
 export * from './wireEnabledNetworksMock';
