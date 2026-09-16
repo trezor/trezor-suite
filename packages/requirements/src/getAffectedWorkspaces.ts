@@ -1,4 +1,5 @@
-import { join, resolve } from 'node:path';
+import { existsSync } from 'node:fs';
+import { dirname, join, resolve } from 'node:path';
 
 import { type ExecCliCommandDep } from './execCliCommand';
 
@@ -23,6 +24,20 @@ type GetAffectedWorkspacesResult = {
 export type GetAffectedWorkspacesDeps = ExecCliCommandDep & { requirementsWorkspaceName: string };
 
 export type GetAffectedWorkspaces = (cwd: string) => Promise<GetAffectedWorkspacesResult>;
+
+const hasInheritedForbiddenDepsConfig = (repoRoot: string, workspaceDir: string): boolean => {
+    for (
+        let directory = dirname(workspaceDir);
+        directory.startsWith(repoRoot) && directory !== dirname(directory);
+        directory = dirname(directory)
+    ) {
+        if (existsSync(join(directory, 'forbiddenDeps.config.ts'))) {
+            return true;
+        }
+    }
+
+    return false;
+};
 
 export const createGetAffectedWorkspaces =
     (deps: GetAffectedWorkspacesDeps): GetAffectedWorkspaces =>
@@ -66,14 +81,7 @@ export const createGetAffectedWorkspaces =
 
         const trimmedOutput = nxAffectedResult.stdout.trim();
 
-        if (trimmedOutput.length === 0) {
-            return {
-                repoRoot,
-                workspaces: [],
-            };
-        }
-
-        const affectedWorkspaceNames = JSON.parse(trimmedOutput);
+        const affectedWorkspaceNames = trimmedOutput.length === 0 ? [] : JSON.parse(trimmedOutput);
 
         if (
             !Array.isArray(affectedWorkspaceNames) ||
@@ -90,9 +98,12 @@ export const createGetAffectedWorkspaces =
             };
         }
 
-        // run only affected workspaces
-        const workspaces = allWorkspaces.filter(workspace =>
-            affectedWorkspaceNames.includes(workspace.name),
+        // Ancestor policies live outside the child projects tracked by Nx, so always check
+        // their descendants even when Nx reports no affected workspaces.
+        const workspaces = allWorkspaces.filter(
+            workspace =>
+                affectedWorkspaceNames.includes(workspace.name) ||
+                hasInheritedForbiddenDepsConfig(repoRoot, workspace.dir),
         );
 
         return {

@@ -21,15 +21,5 @@
     },
     "devDependencies": {
         "tsx": "^4.21.0"
-    },
-    "nx": {
-        "targets": {
-            "requirements:verify": {
-                "inputs": [
-                    "default",
-                    "{workspaceRoot}/**/forbiddenDeps.config.ts"
-                ]
-            }
-        }
     }
 }

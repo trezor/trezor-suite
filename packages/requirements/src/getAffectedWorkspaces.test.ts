@@ -1,3 +1,7 @@
+import { mkdirSync, mkdtempSync, rmSync, writeFileSync } from 'node:fs';
+import { tmpdir } from 'node:os';
+import { join } from 'node:path';
+
 import { type ExecResult } from './execCliCommand';
 import { createGetAffectedWorkspaces } from './getAffectedWorkspaces';
 
@@ -193,5 +197,79 @@ describe(createGetAffectedWorkspaces.name, () => {
             repoRoot: '/repo',
             workspaces: [{ name: '@trezor/connect', dir: '/repo/packages/connect' }],
         });
+    });
+});
+
+describe('workspaces covered by inherited dependency policies', () => {
+    let repoRoot: string;
+
+    beforeEach(() => {
+        repoRoot = mkdtempSync(join(tmpdir(), 'affected-workspaces-'));
+        mkdirSync(join(repoRoot, 'networks', 'ethereum'), { recursive: true });
+        mkdirSync(join(repoRoot, 'packages', 'requirements'), { recursive: true });
+    });
+
+    afterEach(() => {
+        rmSync(repoRoot, { recursive: true, force: true });
+    });
+
+    const createGetWorkspaces = (affectedProjects: ReadonlyArray<string>) =>
+        createTestGetAffectedWorkspaces({
+            workspaceListResult: {
+                exitCode: 0,
+                stderr: '',
+                stdout: [
+                    { name: 'trezor-suite', location: '.' },
+                    { name: '@trezor/network-example', location: 'networks/ethereum/example' },
+                    { name: '@trezor/network-other', location: 'networks/bitcoin/other' },
+                    { name: '@trezor/unrelated', location: 'networks-extra/example' },
+                    { name: '@trezor/utils', location: 'packages/utils' },
+                ]
+                    .map(workspace => JSON.stringify(workspace))
+                    .join('\n'),
+            },
+            affectedResult: {
+                exitCode: 0,
+                stderr: '',
+                stdout: JSON.stringify(affectedProjects),
+            },
+        });
+
+    it('checks descendants after a policy-only edit when Nx selects no projects', async () => {
+        writeFileSync(join(repoRoot, 'networks', 'forbiddenDeps.config.ts'), '');
+
+        const getWorkspaces = createGetWorkspaces([]);
+        const result = await getWorkspaces(join(repoRoot, 'packages', 'requirements'));
+
+        expect(result.workspaces.map(workspace => workspace.name)).toEqual([
+            '@trezor/network-example',
+            '@trezor/network-other',
+        ]);
+    });
+
+    it('includes nested policy descendants alongside Nx-affected workspaces', async () => {
+        writeFileSync(join(repoRoot, 'networks', 'ethereum', 'forbiddenDeps.config.ts'), '');
+
+        const getWorkspaces = createGetWorkspaces(['@trezor/utils']);
+        const result = await getWorkspaces(join(repoRoot, 'packages', 'requirements'));
+
+        expect(result.workspaces.map(workspace => workspace.name)).toEqual([
+            '@trezor/network-example',
+            '@trezor/utils',
+        ]);
+    });
+
+    it('checks every workspace covered by a repository-root policy', async () => {
+        writeFileSync(join(repoRoot, 'forbiddenDeps.config.ts'), '');
+
+        const getWorkspaces = createGetWorkspaces([]);
+        const result = await getWorkspaces(join(repoRoot, 'packages', 'requirements'));
+
+        expect(result.workspaces.map(workspace => workspace.name)).toEqual([
+            '@trezor/network-example',
+            '@trezor/network-other',
+            '@trezor/unrelated',
+            '@trezor/utils',
+        ]);
     });
 });
