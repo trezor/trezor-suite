@@ -77,6 +77,8 @@ describe('with registered network modules', () => {
             'regtest',
             'tsep',
             'thod',
+            'arc',
+            'tarc',
             'dsol',
             'txrp',
             'txlm',

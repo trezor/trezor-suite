@@ -4,6 +4,7 @@
 export const networkIcons = {
     ada: require('../cryptoAssets/networkIcons/ada.svg'),
     arb: require('../cryptoAssets/networkIcons/arb.svg'),
+    arc: require('../cryptoAssets/networkIcons/arc.svg'),
     avax: require('../cryptoAssets/networkIcons/avax.svg'),
     base: require('../cryptoAssets/networkIcons/base.svg'),
     bch: require('../cryptoAssets/networkIcons/bch.svg'),

@@ -62,6 +62,8 @@ export const networks: LegacyNetworkConfigs = {
     regtest: withSymbol('regtest', bitcoinConfigs.regtest),
     tsep: withSymbol('tsep', ethereumConfigs.tsep),
     thod: withSymbol('thod', ethereumConfigs.thod),
+    arc: withSymbol('arc', ethereumConfigs.arc),
+    tarc: withSymbol('tarc', ethereumConfigs.tarc),
     dsol: withSymbol('dsol', solanaConfigs.dsol),
     txrp: withSymbol('txrp', rippleConfigs.txrp),
     txlm: withSymbol('txlm', stellarConfigs.txlm),

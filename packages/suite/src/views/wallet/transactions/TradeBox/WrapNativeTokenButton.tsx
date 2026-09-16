@@ -15,6 +15,7 @@ import { Button, Tooltip } from '@trezor/components';
 import {
     getWrappedNativeAddress,
     getWrappedNativeSymbol,
+    isNativeTokenWrappable,
 } from '@trezor/network-ethereum-suite-common';
 
 import { useSelector } from 'src/hooks/suite';
@@ -50,7 +51,8 @@ export const WrapNativeTokenButton = ({ account }: WrapNativeTokenButtonProps) =
         !isDebugModeActive ||
         getNetworkType(symbol) !== 'ethereum' ||
         !wrappedAddress ||
-        !wrappedSymbol
+        !wrappedSymbol ||
+        !isNativeTokenWrappable(symbol)
     ) {
         return null;
     }

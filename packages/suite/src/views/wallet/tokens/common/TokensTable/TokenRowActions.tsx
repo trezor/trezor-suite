@@ -70,7 +70,10 @@ import {
     RepeatIcon,
     XIcon,
 } from '@trezor/icons';
-import { isWrappedNativeToken } from '@trezor/network-ethereum-suite-common';
+import {
+    isNativeTokenWrappable,
+    isWrappedNativeToken,
+} from '@trezor/network-ethereum-suite-common';
 
 import { setSendFormPrefill, setTransactionHistoryPrefill } from 'src/actions/suite/suiteActions';
 import { getEarnRouteParams } from 'src/components/earn/utils/getEarnRouteParams';
@@ -474,7 +477,9 @@ const TokenRowBasicActions = ({
                         icon: ArrowUUpLeftIcon,
                         onClick: onUnwrapButtonClick,
                         isDisabled: token.balance === '0' || isUnwrapDisabled,
-                        isHidden: !isWrappedNativeToken(account.symbol, token.contract),
+                        isHidden:
+                            !isWrappedNativeToken(account.symbol, token.contract) ||
+                            !isNativeTokenWrappable(account.symbol),
                     },
                     {
                         label: <Translation id="TR_EARN_YIELD_DEPOSIT_BUTTON" />,

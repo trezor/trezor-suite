@@ -4,8 +4,20 @@ import {
     WRAPPED_NATIVE,
     getWrappedNativeAddress,
     getWrappedNativeSymbol,
+    isNativeTokenWrappable,
     isWrappedNativeToken,
 } from './wrappedNativeToken';
+
+describe(isNativeTokenWrappable.name, () => {
+    it('is true where a contract wraps the native coin', () => {
+        expect(isNativeTokenWrappable('eth')).toBe(true);
+    });
+
+    it('is false on Arc, whose native USDC already is its ERC-20', () => {
+        expect(isNativeTokenWrappable('arc')).toBe(false);
+        expect(isNativeTokenWrappable('tarc')).toBe(false);
+    });
+});
 
 describe(getWrappedNativeAddress.name, () => {
     it('returns the wrapped native address for a supported network', () => {

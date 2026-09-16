@@ -287,7 +287,11 @@ describe('Storage actions', () => {
             'walletSettings',
             {
                 ...store.getState().wallet.settings,
-                enabledNetworks: [btcSymbol, asNetworkSymbol('arc'), asNetworkSymbol('tarc')],
+                enabledNetworks: [
+                    btcSymbol,
+                    asNetworkSymbol('unknown-network'),
+                    asNetworkSymbol('unknown-testnet'),
+                ],
             },
             'wallet',
             true,
@@ -550,7 +554,7 @@ describe('Storage actions', () => {
     });
 
     it('should ignore stored accounts of networks unknown to this build', async () => {
-        const unknownNetworkAccounts = ['arc', 'tarc'].map(symbol => ({
+        const unknownNetworkAccounts = ['unknown-network', 'unknown-testnet'].map(symbol => ({
             ...acc1,
             symbol: asNetworkSymbol(symbol),
         }));

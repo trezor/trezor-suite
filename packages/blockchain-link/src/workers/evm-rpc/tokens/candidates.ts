@@ -6,8 +6,9 @@ import { toHex } from '../utils/hex';
 
 export type TokenCandidates = {
     /**
-     * Contracts this account is known to hold or to have held, reported even at a zero balance so
-     * a token stays listed after being spent, the way a blockbook-backed account behaves.
+     * Contracts this account is known to hold or to have held — added by hand or seen by a history
+     * scan — reported even at a zero balance so a token stays listed after being spent, the way a
+     * blockbook-backed account behaves.
      */
     tracked: readonly `0x${string}`[];
     /** Chain-wide list, only worth reporting when the account actually holds something. */
@@ -18,6 +19,8 @@ export type GetTokenCandidatesParams = {
     client: PublicClient;
     state: WorkerState;
     descriptor: string;
+    /** Lowercased contracts a history scan saw transferring to or from this descriptor. */
+    scanned?: Iterable<string>;
 };
 
 // Keyed by the worker's state so two chains served by the same module never share contracts, and
@@ -53,8 +56,14 @@ export const getTokenCandidates = async ({
     client,
     state,
     descriptor,
+    scanned,
 }: GetTokenCandidatesParams): Promise<TokenCandidates> => {
-    const tracked = [...getTrackedContracts(state, descriptor)];
+    const tracked = [
+        ...new Set([
+            ...getTrackedContracts(state, descriptor),
+            ...[...(scanned ?? [])].map(contract => contract.toLowerCase()),
+        ]),
+    ];
     const known = (await getKnownTokens(client)).filter(
         contract => !tracked.includes(contract.toLowerCase()),
     );

@@ -77,8 +77,8 @@ export const ReceiveContent = ({ account, locked, AmountComponent }: ReceiveCont
                     }
                     description={
                         <Translation
-                            id="TR_EVM_EXPLANATION_RECEIVE_DESCRIPTION"
-                            values={{ network: networkName }}
+                            id="TR_EVM_EXPLANATION_RECEIVE_FEE_DESCRIPTION"
+                            values={{ network: networkName, networkDisplaySymbol }}
                         />
                     }
                 />
