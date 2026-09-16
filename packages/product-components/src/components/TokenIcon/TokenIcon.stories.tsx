@@ -21,6 +21,7 @@ const NETWORK_SYMBOLS = [
     'avax',
     'rhc',
     'hype',
+    'arc',
     'sol',
     'trx',
     'ada',

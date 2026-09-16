@@ -2,7 +2,12 @@ import { type PublicClient, erc20Abi } from 'viem';
 
 import type { TokenInfo, TokenStandard } from '@trezor/blockchain-link-types';
 
-import { ERC1155_INTERFACE_ID, ERC165_ABI, ERC721_INTERFACE_ID } from './constants';
+import {
+    ERC1155_INTERFACE_ID,
+    ERC165_ABI,
+    ERC721_INTERFACE_ID,
+    UNKNOWN_TOKEN_METADATA,
+} from './constants';
 import { type BatchCall, batchRead } from '../utils/multicall';
 
 export type TokenMetadata = {
@@ -67,8 +72,8 @@ const assembleMetadata = (results: unknown[]): { metadata: TokenMetadata; cachea
 
     return {
         metadata: {
-            name: typeof name === 'string' ? name : 'unknown',
-            symbol: typeof symbol === 'string' ? symbol : 'unknown',
+            name: typeof name === 'string' ? name : UNKNOWN_TOKEN_METADATA,
+            symbol: typeof symbol === 'string' ? symbol : UNKNOWN_TOKEN_METADATA,
             decimals: typeof decimals === 'number' ? decimals : 0,
             standard,
         },
@@ -172,8 +177,53 @@ export const getTokenInfos = async (
 
         return toTokenInfo(
             contract,
-            metadata ?? { name: 'unknown', symbol: 'unknown', decimals: 0, standard: 'ERC20' },
+            metadata ?? {
+                name: UNKNOWN_TOKEN_METADATA,
+                symbol: UNKNOWN_TOKEN_METADATA,
+                decimals: 0,
+                standard: 'ERC20',
+            },
             toBalance(results[balanceIndex]),
         );
     });
+};
+
+/** Metadata only, for labelling transfers of tokens whose balance is irrelevant. */
+export const getTokenMetadataMap = async (
+    client: PublicClient,
+    contractAddresses: readonly `0x${string}`[],
+): Promise<Map<string, TokenMetadata>> => {
+    const cache = getMetadataCache(client);
+    const map = new Map<string, TokenMetadata>();
+
+    const missing: `0x${string}`[] = [];
+    contractAddresses.forEach(contract => {
+        const key = contract.toLowerCase();
+        const cached = cache.get(key);
+        if (cached) {
+            map.set(key, cached);
+        } else if (!missing.some(pending => pending.toLowerCase() === key)) {
+            missing.push(contract);
+        }
+    });
+
+    if (!missing.length) return map;
+
+    const results = await batchRead(client, missing.flatMap(metadataCalls));
+
+    missing.forEach((contract, index) => {
+        const slots = results.slice(index * METADATA_CALL_COUNT, (index + 1) * METADATA_CALL_COUNT);
+        // Answering nothing at all looks the same as not having been read (e.g. rate limited), so
+        // such a contract is left out rather than labelled with 0 decimals; callers may retry.
+        if (slots.every(slot => slot === undefined)) return;
+
+        const assembled = assembleMetadata(slots);
+        const key = contract.toLowerCase();
+        map.set(key, assembled.metadata);
+        if (assembled.cacheable) {
+            cache.set(key, assembled.metadata);
+        }
+    });
+
+    return map;
 };

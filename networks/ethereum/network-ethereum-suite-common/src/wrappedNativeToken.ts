@@ -2,6 +2,7 @@ import {
     getWrappedNativeAddress as getEthereumWrappedNativeAddress,
     getWrappedNativeSymbol as getEthereumWrappedNativeSymbol,
     getWrappedNativeToken as getEthereumWrappedNativeToken,
+    isNativeTokenWrappable as isEthereumNativeTokenWrappable,
     isWrappedNativeToken as isEthereumWrappedNativeToken,
 } from '@trezor/network-ethereum/constants';
 import { isSupportedEthereumNetwork } from '@trezor/network-ethereum-types';
@@ -47,6 +48,20 @@ export const getWrappedNativeSymbol = (networkSymbol: NetworkSymbol) => {
     }
 
     return getEthereumWrappedNativeSymbol(networkSymbol);
+};
+
+/**
+ * TODO: Migrate callers to keep wrapped-native-token logic inside the Ethereum module.
+ * @deprecated This helper must NEVER be called from outside the Ethereum module.
+ * Inside the module, use isNativeTokenWrappable from
+ * `@trezor/network-ethereum/constants` directly.
+ */
+export const isNativeTokenWrappable = (networkSymbol: NetworkSymbol): boolean => {
+    if (!isSupportedEthereumNetwork(networkSymbol)) {
+        return false;
+    }
+
+    return isEthereumNativeTokenWrappable(networkSymbol);
 };
 
 /**

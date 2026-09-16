@@ -16,7 +16,7 @@ import { rpcCall } from './handlers/rpcCall';
 import { cleanupSubscriptions, subscribe, unsubscribe } from './handlers/subscribe';
 import type { Request } from './types';
 import { getChainId } from './utils/client';
-import { getTransportType } from './utils/transportType';
+import { getTransport } from './utils/transportType';
 
 const onRequest = (request: Request<MessageTypes.Message>) => {
     switch (request.type) {
@@ -49,7 +49,7 @@ const onRequest = (request: Request<MessageTypes.Message>) => {
 
 export class EvmRpcWorker extends BaseWorker<PublicClient> {
     cleanup() {
-        cleanupSubscriptions();
+        cleanupSubscriptions(this.state);
         super.cleanup();
     }
 
@@ -58,16 +58,14 @@ export class EvmRpcWorker extends BaseWorker<PublicClient> {
     }
 
     protected async tryConnect(url: string): Promise<PublicClient> {
-        const transportType = getTransportType(url);
+        const transport = getTransport(url);
 
-        if (!transportType) {
+        if (!transport) {
             throw new CustomError('invalid_param', 'Invalid URL');
         }
 
         this.state.url = url;
-        const client = createPublicClient({
-            transport: transportType(url),
-        });
+        const client = createPublicClient({ transport });
 
         // Doubles as the connectivity probe, and primes the cache the handlers read from.
         await getChainId(client);

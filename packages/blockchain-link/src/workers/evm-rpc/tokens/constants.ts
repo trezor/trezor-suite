@@ -1,3 +1,6 @@
+// Stands in for a name or symbol the contract read did not return.
+export const UNKNOWN_TOKEN_METADATA = 'unknown';
+
 export const ERC721_INTERFACE_ID = '0x80ac58cd';
 export const ERC1155_INTERFACE_ID = '0xd9b67a26';
 

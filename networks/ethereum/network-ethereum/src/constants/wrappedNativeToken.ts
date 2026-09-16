@@ -4,6 +4,8 @@ type WrappedNativeToken = {
     readonly address: `0x${string}`;
     readonly symbol: string;
     readonly decimals: number;
+    /** False where the native asset already is this ERC-20, so there is nothing to wrap. */
+    readonly isWrappable?: false;
 };
 
 // Complete record over supported Ethereum networks, so adding one without its wrapped native token fails type-check.
@@ -20,9 +22,24 @@ export const WRAPPED_NATIVE: Readonly<Record<EthereumNetworkSymbol, WrappedNativ
     hype: { address: '0x5555555555555555555555555555555555555555', symbol: 'WHYPE', decimals: 18 },
     avax: { address: '0xB31f66AA3C1e785363F0875A1B74E27b85FD66c7', symbol: 'WAVAX', decimals: 18 },
 
+    arc: {
+        address: '0x3600000000000000000000000000000000000000',
+        symbol: 'USDC',
+        decimals: 6,
+        isWrappable: false,
+    },
+
     // --- testnets ---
     tsep: { address: '0x7b79995e5f793A07Bc00c21412e50Ecae098E7f9', symbol: 'WETH', decimals: 18 },
     thod: { address: '0xE0decAa66aED871ac9eb924443D1Bf333Fdb062E', symbol: 'WETH', decimals: 18 },
+    // Arc's native asset is USDC and this precompile is its own ERC-20 face, which makes it the
+    // network's wrapped native token.
+    tarc: {
+        address: '0x3600000000000000000000000000000000000000',
+        symbol: 'USDC',
+        decimals: 6,
+        isWrappable: false,
+    },
 };
 
 export const getWrappedNativeToken = (networkSymbol: EthereumNetworkSymbol) =>
@@ -33,6 +50,9 @@ export const getWrappedNativeAddress = (networkSymbol: EthereumNetworkSymbol) =>
 
 export const getWrappedNativeSymbol = (networkSymbol: EthereumNetworkSymbol) =>
     getWrappedNativeToken(networkSymbol).symbol;
+
+export const isNativeTokenWrappable = (networkSymbol: EthereumNetworkSymbol) =>
+    getWrappedNativeToken(networkSymbol).isWrappable !== false;
 
 export const isWrappedNativeToken = (
     networkSymbol: EthereumNetworkSymbol,
