@@ -9,6 +9,10 @@ import {
 } from '@suite-common/token-definitions';
 import { getUnusedAddressFromAccount } from '@suite-common/trading';
 import { type Network } from '@suite-common/wallet-config';
+import {
+    removeStellarContractTokenThunk,
+    selectIsStellarContractTokenWatched,
+} from '@suite-common/wallet-core';
 import { type Account, type TokenAddress } from '@suite-common/wallet-types';
 import { Column, Row, Table, Text } from '@trezor/components';
 import { TokenIcon } from '@trezor/product-components';
@@ -21,7 +25,7 @@ import {
     TrendTicker,
 } from 'src/components/suite';
 import { StellarManageTokenModal } from 'src/components/suite/modals/ReduxModal/UserContextModal/StellarManageTokenModal';
-import { useSelector } from 'src/hooks/suite';
+import { useDispatch, useSelector } from 'src/hooks/suite';
 
 import { BlurUrls } from '../BlurUrls';
 import { TokenRowActions } from './TokenRowActions';
@@ -51,6 +55,7 @@ export const TokenRow = ({
     isCollapsed,
     yieldOpportunities,
 }: TokenRowProps) => {
+    const dispatch = useDispatch();
     const device = useSelector(selectSelectedDevice);
     const isTokenKnown = useSelector(state =>
         selectIsSpecificCoinDefinitionKnown(state, account.symbol, token.contract as TokenAddress),
@@ -64,6 +69,30 @@ export const TokenRow = ({
     });
 
     const [showDeactivateModal, setShowDeactivateModal] = useState(false);
+
+    const isWatchedContractToken = useSelector(state =>
+        selectIsStellarContractTokenWatched(state, account.key, token.contract),
+    );
+    // A curated token was never added by the user; the worker would surface it again.
+    const isRemovableContractToken =
+        token.standard === 'STELLAR-CONTRACT' && isWatchedContractToken;
+
+    const handleDeactivateToken = () => {
+        if (token.standard !== 'STELLAR-CONTRACT') {
+            setShowDeactivateModal(true);
+
+            return;
+        }
+
+        if (isRemovableContractToken) {
+            dispatch(
+                removeStellarContractTokenThunk({
+                    accountKey: account.key,
+                    contract: token.contract,
+                }),
+            );
+        }
+    };
 
     const { address: unusedAddress } = getUnusedAddressFromAccount(account);
 
@@ -148,7 +177,8 @@ export const TokenRow = ({
                         network={network}
                         yieldOpportunities={yieldOpportunities}
                         isUnverifiedTable={isUnverifiedTable}
-                        setShowDeactivateModal={setShowDeactivateModal}
+                        isRemovableContractToken={isRemovableContractToken}
+                        onDeactivateToken={handleDeactivateToken}
                     />
                 </Table.Cell>
             </Table.Row>

@@ -1,5 +1,11 @@
 import type { SocksProxyAgentOptions } from 'socks-proxy-agent';
 
+import type {
+    StellarClaimableBalanceOffer,
+    StellarContractCallData,
+    StellarOperationType,
+} from '@trezor/network-stellar/types';
+
 import type { BaseCurrencyCode } from './baseCurrency';
 import type { TokenProtocols, TronAccountExtraData, TronChainExtraData } from './blockbook-api';
 
@@ -26,7 +32,8 @@ export type TokenStandard =
     | 'SPL'
     | 'SPL-2022'
     | 'BLOCKFROST'
-    | 'STELLAR-CLASSIC';
+    | 'STELLAR-CLASSIC'
+    | 'STELLAR-CONTRACT';
 
 export type FiatRatesBySymbol = {
     [K in BaseCurrencyCode]?: number | undefined;
@@ -259,11 +266,13 @@ export interface Transaction {
     stellarSpecific?: {
         memo?: string;
         feeSource: string; // who paid the fee for the transaction
-        operationType?: 'changeTrust';
+        operationType?: StellarOperationType;
         changeTrust?: {
             assetCode: string;
             isRemoval: boolean;
         };
+        claimableBalanceOffer?: StellarClaimableBalanceOffer;
+        contractCall?: StellarContractCallData;
     };
     tronSpecific?: TronChainExtraData;
 }
