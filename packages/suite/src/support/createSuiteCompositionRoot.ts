@@ -1,4 +1,3 @@
-import { type ThunkDispatch, type UnknownAction } from '@reduxjs/toolkit';
 import { saveAs } from 'file-saver';
 
 import { type DesktopAnalyticsDep, createAnalytics } from '@suite/analytics';
@@ -31,7 +30,6 @@ import { type CommonServices } from '@suite-common/extra-dependencies';
 import { FW_HASH_CHECK_DEFAULT_TIMEOUTS } from '@suite-common/firmware-authenticity';
 import { createNetworksCompositionRoot } from '@suite-common/networks';
 import { type PlatformEncryptionDep } from '@suite-common/platform-encryption';
-import { type WithServices } from '@suite-common/redux-utils';
 import { createMigrateSuiteSyncLabelsForRbfTransactionCompositionRoot } from '@suite-common/suite-rbf-labels-migrations';
 import {
     createSuiteSyncWriteLabels,
@@ -47,6 +45,7 @@ import { type CreateLoggerDep, type GetTrezorConnectPrivilegedDep } from '@trezo
 import { isDesktop } from '@trezor/env-utils';
 import { type DesktopApiDep } from '@trezor/suite-desktop-api';
 
+import { type SuiteReduxStore } from 'src/reducers/createReduxStore';
 import { selectIsWindowVisible } from 'src/reducers/suite/windowReducer';
 import { type DbDep } from 'src/storage/createDb';
 import { reportSecurityCheck } from 'src/utils/suite/sentry';
@@ -75,10 +74,7 @@ export type SuiteServices = CommonServices &
     TransportsDep &
     BluetoothDep;
 
-export type StoreAPIDep = {
-    getState: () => AppState;
-    dispatch: ThunkDispatch<AppState, WithServices<SuiteServices>, UnknownAction>;
-};
+export type StoreAPIDep = Pick<SuiteReduxStore, 'getState' | 'dispatch'>;
 
 export type SuiteAppDeps = StoreAPIDep &
     DbDep &
