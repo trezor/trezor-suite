@@ -1,18 +1,17 @@
-/**
- * Runs the unit tests against the asm.js build of Cardano Serialization Lib, the build the
- * mobile app uses instead of WASM. The SWC transformer is required because Babel cannot
- * transform the ~37 MB asm.js source within a default Node heap.
- */
+// Runs the Cardano coin-selection tests against the generated asm.js build of Cardano
+// Serialization Lib (generated/csl-asmjs, see scripts/csl-asmjs/generate.js), the build the
+// mobile app ships instead of WASM. The SWC transformer is required because Babel cannot
+// transform the multi-megabyte asm.js source within a default Node heap.
 const baseConfig = require('../../../jest.config.base.swc');
 
 module.exports = {
     ...baseConfig,
-    testMatch: ['**/coinSelectionParity.test.ts'],
-    globals: { ...baseConfig.globals, CARDANO_SERIALIZATION_LIB_BUILD: 'asmjs' },
-    transformIgnorePatterns: ['node_modules/(?!@emurgo/cardano-serialization-lib-asmjs/)'],
+    displayName: 'asmjs',
+    testMatch: ['**/coinSelectionParity.test.ts', '**/coinSelectionScenarios.test.ts'],
+    globals: { ...baseConfig.globals, CARDANO_SERIALIZATION_LIB_BUILD: 'generated/csl-asmjs' },
     moduleNameMapper: {
         ...baseConfig.moduleNameMapper,
         '^@emurgo/cardano-serialization-lib-(nodejs|browser)$':
-            '@emurgo/cardano-serialization-lib-asmjs/cardano_serialization_lib.js',
+            '<rootDir>/generated/csl-asmjs/cardano_serialization_lib.js',
     },
 };

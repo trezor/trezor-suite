@@ -2903,7 +2903,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@emurgo/cardano-serialization-lib-browser@npm:^13.2.0":
+"@emurgo/cardano-serialization-lib-browser@npm:13.2.0, @emurgo/cardano-serialization-lib-browser@npm:^13.2.0":
   version: 13.2.0
   resolution: "@emurgo/cardano-serialization-lib-browser@npm:13.2.0"
   checksum: 10/f60f47b7df9e1e783302921d9f225696d09e01b124a75dd8672effae17acdd42779da66a068c923261aabead52ac7aae9426ef13c875f48b5ef7b9d629b8b993
@@ -12010,7 +12010,6 @@ __metadata:
     "@babel/core": "npm:7.29.7"
     "@config-plugins/detox": "npm:^11.0.0"
     "@currents/cmd": "npm:1.9.7"
-    "@emurgo/cardano-serialization-lib-asmjs": "npm:13.2.0"
     "@evolu/common": "npm:8.0.0-next.5"
     "@evolu/react-native": "npm:15.0.0-next.2"
     "@exodus/patch-broken-hermes-typed-arrays": "npm:^1.0.0-alpha.1"
@@ -17291,8 +17290,10 @@ __metadata:
   resolution: "@trezor/network-cardano@workspace:networks/cardano/network-cardano"
   dependencies:
     "@emurgo/cardano-serialization-lib-asmjs": "npm:13.2.0"
+    "@emurgo/cardano-serialization-lib-browser": "npm:13.2.0"
     "@fivebinaries/coin-selection": "npm:3.0.0"
     "@trezor/utils": "workspace:*"
+    binaryen: "npm:132.0.0"
     cbor: "npm:^10.0.12"
   languageName: unknown
   linkType: soft
@@ -22423,6 +22424,23 @@ __metadata:
   version: 2.2.0
   resolution: "binary-extensions@npm:2.2.0"
   checksum: 10/ccd267956c58d2315f5d3ea6757cf09863c5fc703e50fbeb13a7dc849b812ef76e3cf9ca8f35a0c48498776a7478d7b4a0418e1e2b8cb9cb9731f2922aaad7f8
+  languageName: node
+  linkType: hard
+
+"binaryen@npm:132.0.0":
+  version: 132.0.0
+  resolution: "binaryen@npm:132.0.0"
+  bin:
+    wasm-as: bin/wasm-as
+    wasm-ctor-eval: bin/wasm-ctor-eval
+    wasm-dis: bin/wasm-dis
+    wasm-merge: bin/wasm-merge
+    wasm-metadce: bin/wasm-metadce
+    wasm-opt: bin/wasm-opt
+    wasm-reduce: bin/wasm-reduce
+    wasm-shell: bin/wasm-shell
+    wasm2js: bin/wasm2js
+  checksum: 10/aba089c4431265653b7acd67c54b2fcb6db95a1cf6841a25c1c027152b0195b03527bed206fac24f5fe642f27d70a5361bfeb8e93a7e6441c1307d5e093bff3c
   languageName: node
   linkType: hard
 

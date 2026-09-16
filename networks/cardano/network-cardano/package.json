@@ -44,8 +44,9 @@
     "scripts": {
         "depcheck": "yarn g:depcheck",
         "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'",
-        "test:unit": "yarn g:jest --passWithNoTests && yarn test:unit:asmjs",
-        "test:unit:asmjs": "yarn g:jest -c jest.config.asmjs.cjs --passWithNoTests",
+        "generate:csl-asmjs": "node ./scripts/csl-asmjs/generate.js",
+        "trace:csl-asmjs": "node ./scripts/csl-asmjs/trace.js",
+        "test:unit": "yarn g:jest --passWithNoTests",
         "type-check": "yarn g:tsc --build tsconfig.json",
         "build:lib": "yarn g:rimraf ./lib && yarn g:tsc --build tsconfig.lib.json && ../../../scripts/publish/replace-imports.sh ./lib"
     },
@@ -55,6 +56,8 @@
         "cbor": "^10.0.12"
     },
     "devDependencies": {
-        "@emurgo/cardano-serialization-lib-asmjs": "13.2.0"
+        "@emurgo/cardano-serialization-lib-asmjs": "13.2.0",
+        "@emurgo/cardano-serialization-lib-browser": "13.2.0",
+        "binaryen": "132.0.0"
     }
 }

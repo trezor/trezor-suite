@@ -6,6 +6,9 @@
  */
 const baseConfig = require('../../../jest.config.base');
 
+// The coin-selection tests run twice: against the WASM build of Cardano Serialization Lib used
+// by desktop/web and against the generated asm.js build used by the mobile app.
 module.exports = {
     ...baseConfig,
+    projects: ['<rootDir>/jest.config.wasm.cjs', '<rootDir>/jest.config.asmjs.cjs'],
 };

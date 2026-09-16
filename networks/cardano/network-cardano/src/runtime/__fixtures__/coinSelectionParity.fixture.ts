@@ -16,7 +16,7 @@ const POLICY_B = 'd894897411707efa755a76deb66d26dfd50593f2e70863e1661e98a0';
 const TOKEN_B = `${POLICY_B}746f6b656e`;
 const TTL = 150_000_000;
 
-const hex = (value: number, length: number) => value.toString(16).padStart(length, '0');
+const toHex = (value: number, length: number) => value.toString(16).padStart(length, '0');
 
 const buildUtxos = (count: number): types.Utxo[] =>
     Array.from({ length: count }, (_, index) => {
@@ -24,7 +24,7 @@ const buildUtxos = (count: number): types.Utxo[] =>
             { unit: 'lovelace', quantity: String(1_500_000 + index * 731_000) },
         ];
         if (index % 5 === 0) {
-            amount.push({ unit: `${POLICY_A}${hex(index, 4)}`, quantity: String(10 + index) });
+            amount.push({ unit: `${POLICY_A}${toHex(index, 4)}`, quantity: String(10 + index) });
         }
         if (index % 7 === 0) {
             amount.push({ unit: TOKEN_B, quantity: String(1_000 * (index + 1)) });
@@ -32,7 +32,7 @@ const buildUtxos = (count: number): types.Utxo[] =>
 
         return {
             address: BASE_ADDRESS,
-            txHash: hex(index + 1, 8).repeat(8),
+            txHash: toHex(index + 1, 8).repeat(8),
             outputIndex: index % 3,
             amount,
         };
@@ -47,7 +47,7 @@ const baseParams = {
     ttl: TTL,
 } satisfies Partial<types.CoinSelectionParams>;
 
-export interface ParityCase {
+export type ParityCase = {
     params: types.CoinSelectionParams;
     options: types.Options;
     expected: {
@@ -57,7 +57,7 @@ export interface ParityCase {
         size: number;
         serializedTxHash: string;
     };
-}
+};
 
 export const witnesses = [
     {
@@ -68,7 +68,7 @@ export const witnesses = [
     },
 ];
 
-export const parityCases: Record<string, ParityCase> = {
+export const parityCases = {
     delegationWithTokensAndWithdrawal: {
         params: {
             ...baseParams,
@@ -119,4 +119,118 @@ export const parityCases: Record<string, ParityCase> = {
             serializedTxHash: '6da4f1422969629ea4306dce5818da30db8220f41a830cab68888d283a233170',
         },
     },
-};
+} satisfies Record<string, ParityCase>;
+
+const BYRON_RECIPIENT = 'Ae2tdPwUPEZFRbyhz3cpfC2CumGzNkFBN2L42rcUc2yjQpEkxDbkPodpMAi';
+const plainSendParams = parityCases.plainSend.params;
+
+export type SmokeScenario = {
+    name: string;
+    params: types.CoinSelectionParams;
+    options?: types.Options;
+} & ({ expectedResultType: 'final' | 'nonfinal' } | { expectedErrorCode: string });
+
+// Code paths through coin selection that the parity cases do not reach. They have no expected
+// output; they must run without an unexpected error on every Cardano Serialization Lib build.
+// The keep list of the generated asm.js build (scripts/csl-asmjs/keep-list.json) was traced on
+// these scenarios together with the parity cases.
+export const smokeScenarios: SmokeScenario[] = [
+    {
+        name: 'random-improve selection',
+        expectedResultType: 'final',
+        params: {
+            ...plainSendParams,
+            outputs: [{ address: RECIPIENT, amount: '12345678', assets: [] }],
+        },
+    },
+    {
+        name: 'Byron recipient',
+        expectedResultType: 'final',
+        params: {
+            ...plainSendParams,
+            outputs: [{ address: BYRON_RECIPIENT, amount: '12345678', assets: [] }],
+        },
+        options: { forceLargestFirstSelection: true },
+    },
+    {
+        name: 'draft without recipient address',
+        expectedResultType: 'nonfinal',
+        params: {
+            ...plainSendParams,
+            outputs: [{ address: undefined, amount: '12345678', assets: [], setMax: false }],
+        },
+    },
+    {
+        name: 'send max of a token',
+        expectedResultType: 'final',
+        params: {
+            ...plainSendParams,
+            outputs: [
+                {
+                    address: RECIPIENT,
+                    amount: undefined,
+                    assets: [{ unit: TOKEN_B, quantity: '0' }],
+                    setMax: true,
+                },
+            ],
+        },
+    },
+    {
+        name: 'output below minimum ADA',
+        params: { ...plainSendParams, outputs: [{ address: RECIPIENT, amount: '1', assets: [] }] },
+        options: { forceLargestFirstSelection: true },
+        expectedErrorCode: 'UTXO_VALUE_TOO_SMALL',
+    },
+    {
+        name: 'change split across many tokens',
+        expectedResultType: 'final',
+        params: {
+            ...plainSendParams,
+            utxos: Array.from({ length: 3 }, (_, utxoIndex) => ({
+                address: BASE_ADDRESS,
+                txHash: toHex(utxoIndex + 9, 8).repeat(8),
+                outputIndex: 0,
+                amount: [
+                    { unit: 'lovelace', quantity: '900000000' },
+                    ...Array.from({ length: 60 }, (_, tokenIndex) => ({
+                        unit: `${POLICY_A}${toHex(tokenIndex + 1000 * utxoIndex, 4)}`,
+                        quantity: '5',
+                    })),
+                ],
+            })),
+            outputs: [{ address: RECIPIENT, amount: '2000000', assets: [] }],
+        },
+        options: { forceLargestFirstSelection: true },
+    },
+    {
+        name: 'deregistration with key-hash, script-hash and no-confidence DRep',
+        expectedResultType: 'final',
+        params: {
+            ...plainSendParams,
+            certificates: [
+                { type: 1 },
+                { type: 9, dRep: { type: 0, keyHash: POOL } },
+                { type: 9, dRep: { type: 1, scriptHash: POOL } },
+                { type: 9, dRep: { type: 3 } },
+            ],
+            outputs: [{ address: RECIPIENT, amount: '2000000', assets: [] }],
+        },
+    },
+    {
+        name: 'insufficient balance',
+        params: {
+            ...plainSendParams,
+            outputs: [{ address: RECIPIENT, amount: '999999999999', assets: [] }],
+        },
+        expectedErrorCode: 'UTXO_BALANCE_INSUFFICIENT',
+    },
+    {
+        name: 'custom fee coefficient',
+        expectedResultType: 'final',
+        params: {
+            ...plainSendParams,
+            outputs: [{ address: RECIPIENT, amount: '2000000', assets: [] }],
+        },
+        options: { feeParams: { a: '50' } },
+    },
+];

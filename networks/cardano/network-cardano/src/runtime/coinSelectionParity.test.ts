@@ -13,11 +13,11 @@ describe('coin selection parity across Cardano Serialization Lib builds', () => 
     it('runs against the Cardano Serialization Lib build selected by the Jest config', () => {
         const expectedBuild =
             typeof CARDANO_SERIALIZATION_LIB_BUILD === 'undefined'
-                ? 'nodejs'
+                ? 'cardano-serialization-lib-nodejs'
                 : CARDANO_SERIALIZATION_LIB_BUILD;
 
         expect(require.resolve('@emurgo/cardano-serialization-lib-nodejs')).toContain(
-            `cardano-serialization-lib-${expectedBuild}`,
+            expectedBuild,
         );
     });
 

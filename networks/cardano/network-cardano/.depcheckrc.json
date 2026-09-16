@@ -1,3 +1,9 @@
 {
-    "ignores": ["@emurgo/cardano-serialization-lib-asmjs"]
+    "ignores": [
+        "@emurgo/cardano-serialization-lib-asmjs",
+        "@emurgo/cardano-serialization-lib-browser",
+        "@emurgo/cardano-serialization-lib-nodejs",
+        "binaryen"
+    ],
+    "ignore-patterns": ["generated"]
 }

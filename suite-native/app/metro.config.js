@@ -3,7 +3,9 @@
 const { withRozenite } = require('@rozenite/metro');
 const { getSentryExpoConfig } = require('@sentry/react-native/metro');
 const { withStorybook } = require('@storybook/react-native/metro/withStorybook');
+const fs = require('fs');
 const { mergeConfig } = require('metro-config');
+const path = require('path');
 
 const { metroSecureResolver } = require('@trezor/bundler-security/src/metroSecureResolver');
 
@@ -53,24 +55,28 @@ const isModuleFrom = (packageNames, moduleName) =>
         packageName => moduleName === packageName || moduleName.startsWith(`${packageName}/`),
     );
 
+// Hermes cannot run WebAssembly, so Cardano Serialization Lib is used through a generated pure-JS
+// (asm.js) build reduced to what coin selection needs; see
+// networks/cardano/network-cardano/scripts/csl-asmjs/generate.js (runs on postinstall of this app).
+const cardanoSerializationLibPath = path.resolve(
+    __dirname,
+    '../../networks/cardano/network-cardano/generated/csl-asmjs/cardano_serialization_lib.js',
+);
+
+// The generated file is a multi-megabyte single module. Metro transforms it in one worker, which
+// runs out of the default V8 heap (about 4.5 GB; the transform peaks above 5 GB). Worker threads
+// created after this call inherit the raised limit; the main process keeps its default. It is a
+// cap, not an allocation.
+require('v8').setFlagsFromString('--max-old-space-size=12288');
+
 /**
  * Metro configuration
  * https://facebook.github.io/metro/docs/configuration
  *
  * @type {import('metro-config').MetroConfig}
  */
-// The asm.js build of Cardano Serialization Lib is a single ~37 MB source file. Transforming it
-// exceeds the default V8 heap of a Metro worker (release bundling peaked at ~8.5 GB), so workers
-// run as child processes (instead of worker threads, which cannot get their own heap limit) with
-// a larger heap. The value is a cap, not an allocation; only the worker handling that file uses it.
-const METRO_WORKER_NODE_OPTIONS = '--max-old-space-size=12288';
-process.env.NODE_OPTIONS = [process.env.NODE_OPTIONS, METRO_WORKER_NODE_OPTIONS]
-    .filter(Boolean)
-    .join(' ');
-
 const config = {
     transformer: {
-        unstable_workerThreads: false,
         getTransformOptions: async () => ({
             transform: {
                 experimentalImportSupport: false,
@@ -120,15 +126,21 @@ const config = {
                 type: 'sourceFile',
             });
 
-            if (moduleName.startsWith('@emurgo/cardano-serialization-lib')) {
-                // Cardano coin selection (`@fivebinaries/coin-selection`) imports the WASM build of
-                // Cardano Serialization Lib, which Hermes cannot execute. Route every variant
-                // (nodejs/browser) to the pure-JS asm.js build of the same CSL version instead.
-                // The asm.js package has no `main` field, so the entry file is resolved explicitly.
-                // It needs a global `TextDecoder`, which the Expo runtime polyfills.
-                return getSourceFile(
-                    '@emurgo/cardano-serialization-lib-asmjs/cardano_serialization_lib.js',
-                );
+            if (
+                moduleName === '@emurgo/cardano-serialization-lib-nodejs' ||
+                moduleName === '@emurgo/cardano-serialization-lib-browser'
+            ) {
+                // `@fivebinaries/coin-selection` imports the WASM build of Cardano Serialization
+                // Lib. Route both variants it references to the generated asm.js build. The glue
+                // needs a global `TextDecoder`, which the Expo runtime polyfills.
+                if (!fs.existsSync(cardanoSerializationLibPath)) {
+                    throw new Error(
+                        'Generated Cardano Serialization Lib build is missing. Run `yarn install` ' +
+                            'or `yarn workspace @trezor/network-cardano generate:csl-asmjs`.',
+                    );
+                }
+
+                return { filePath: cardanoSerializationLibPath, type: 'sourceFile' };
             }
 
             if (process.env.EXPO_PUBLIC_IS_DETOX_BUILD && moduleName === '@trezor/connect') {
