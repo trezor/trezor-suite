@@ -1,7 +1,7 @@
 {
     "version": 1,
-    "timestamp": "2026-08-18T12:00:00+00:00",
-    "sequence": 155,
+    "timestamp": "2026-09-16T12:00:00+00:00",
+    "sequence": 156,
     "actions": [
         {
             "conditions": [
@@ -1820,6 +1820,82 @@
                         "tr": "Trezor Suite'i Güncelle",
                         "pt": "Atualizar Trezor Suite",
                         "uk": "Оновити Trezor Suite"
+                    }
+                }
+            }
+        },
+        {
+            "conditions": [
+                {
+                    "environment": {
+                        "desktop": "*",
+                        "mobile": "*",
+                        "web": "*"
+                    },
+                    "devices": [
+                        {
+                            "model": "1",
+                            "firmware": "<1.12.1",
+                            "bootloader": "*",
+                            "variant": "*",
+                            "firmwareRevision": "*",
+                            "vendor": "*"
+                        },
+                        {
+                            "model": "T1B1",
+                            "firmware": "<1.12.1",
+                            "bootloader": "*",
+                            "variant": "*",
+                            "firmwareRevision": "*",
+                            "vendor": "*"
+                        },
+                        {
+                            "model": "T2T1",
+                            "firmware": "<2.5.3",
+                            "bootloader": "*",
+                            "variant": "*",
+                            "firmwareRevision": "*",
+                            "vendor": "*"
+                        }
+                    ]
+                }
+            ],
+            "message": {
+                "id": "d290558e-aa28-4f37-9785-2c476b077986",
+                "priority": 92,
+                "dismissible": false,
+                "variant": "warning",
+                "category": ["banner"],
+                "content": {
+                    "en": "Update your Trezor's firmware now. Your Trezor won't be recognized or usable in new versions of Trezor Suite.",
+                    "es": "Actualiza el firmware de tu Trezor ahora. Tu Trezor no será reconocido ni podrá utilizarse en las nuevas versiones de Trezor Suite.",
+                    "cs": "Aktualizujte firmware svého Trezoru. Váš Trezor nebude v nových verzích Trezor Suite rozpoznán.",
+                    "ru": "Обновите прошивку своего Trezor прямо сейчас. Ваш Trezor не будет распознаваться и использоваться в новых версиях Trezor Suite.",
+                    "ja": "今すぐTrezorのファームウェアをアップデートしてください。アップデートしないと、新しいバージョンのTrezor SuiteでTrezorが認識されず使用できなくなります。",
+                    "hu": "Frissítse Trezor eszköze firmware-jét most. A Trezor eszközét a Trezor Suite új verziói nem fogják felismerni vagy használni tudni.",
+                    "it": "Aggiorna subito il firmware del tuo Trezor. Il tuo Trezor non verrà riconosciuto né sarà utilizzabile nelle nuove versioni di Trezor Suite.",
+                    "fr": "Mettez à jour dès maintenant le firmware de votre Trezor. Votre Trezor ne sera plus reconnu ni utilisable dans les nouvelles versions de Trezor Suite.",
+                    "de": "Aktualisieren Sie jetzt die Firmware Ihres Trezor. Ihr Trezor wird in neuen Versionen von Trezor Suite nicht mehr erkannt oder nutzbar sein.",
+                    "tr": "Trezor cihazınızın donanım yazılımını hemen güncelleyin. Trezor cihazınız, Trezor Suite'in yeni sürümlerinde tanınmayacak veya kullanılamayacaktır.",
+                    "pt": "Atualize o firmware do seu Trezor agora. O seu Trezor não será reconhecido nem poderá ser utilizado nas novas versões do Trezor Suite.",
+                    "uk": "Оновіть прошивку свого Trezor зараз. Ваш Trezor не розпізнаватиметься і не буде придатний для використання в нових версіях Trezor Suite."
+                },
+                "cta": {
+                    "action": "internal-link",
+                    "link": "firmware-index",
+                    "label": {
+                        "en": "Update firmware",
+                        "es": "Actualizar firmware",
+                        "cs": "Aktualizovat Firmware",
+                        "ru": "Обновить прошивку",
+                        "ja": "ファームウェアのアップデート",
+                        "hu": "Firmware frissítése",
+                        "it": "Aggiorna Firmware",
+                        "fr": "Mettre à jour le micrologiciel",
+                        "de": "Firmware aktualisieren",
+                        "tr": "Firmware Güncelle",
+                        "pt": "Atualizar Firmware",
+                        "uk": "Оновити прошивку"
                     }
                 }
             }
