@@ -42,6 +42,9 @@ test.describe('Global receive and send', { tag: ['@T3T1', '@T3W1'] }, () => {
 
             await test.step('Filter and select account', async () => {
                 await tradingPage.assetPicker.filterSendReceiveByNetwork('eth');
+                await expect(
+                    tradingPage.assetPicker.selectedNetworkFilterIcon('eth'),
+                ).toBeVisible();
                 await tradingPage.assetPicker
                     .receiveOption({
                         accountType: 'normal',
@@ -98,6 +101,9 @@ test.describe('Global receive and send', { tag: ['@T3T1', '@T3W1'] }, () => {
 
             await test.step('Bitcoin Regtest account selection', async () => {
                 await tradingPage.assetPicker.filterSendReceiveByNetwork(regtestSymbol);
+                await expect(
+                    tradingPage.assetPicker.selectedNetworkFilterIcon(regtestSymbol),
+                ).toBeVisible();
                 await tradingPage.assetPicker
                     .sendOption({
                         accountType: 'normal',

@@ -1,7 +1,7 @@
 import { createSelector } from '@reduxjs/toolkit';
 
 import type { Protocol } from '@trezor/network-module-suite-common-types';
-import { typedObjectValues } from '@trezor/utils';
+import { typedObjectFromEntries, typedObjectValues } from '@trezor/utils';
 
 import type { NetworksRootState } from './networksReducer';
 import type { NetworkSymbol } from '../src/NetworkModules';
@@ -10,6 +10,16 @@ export const selectSupportedNetworkSymbols = createSelector(
     [(state: NetworksRootState) => state.networks],
     (networks): readonly NetworkSymbol[] =>
         networks === null ? [] : typedObjectValues(networks).map(network => network.symbol),
+);
+
+export const selectNetworkNamesMap = createSelector(
+    [(state: NetworksRootState) => state.networks],
+    (networks): Record<NetworkSymbol, string> | null =>
+        networks === null
+            ? null
+            : typedObjectFromEntries(
+                  typedObjectValues(networks).map(({ symbol, name }) => [symbol, name] as const),
+              ),
 );
 
 // Keep this helper private: consumers should select only the concrete values they need,

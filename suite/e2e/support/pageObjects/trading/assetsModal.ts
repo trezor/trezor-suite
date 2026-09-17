@@ -24,6 +24,10 @@ export class TradingAssetPicker {
     readonly sendReceiveNetworkFilterSelect: Locator;
     readonly networkFilterOption = (tab: AssetPickerNetworkFilter | NetworkSymbol) =>
         this.page.getByTestId(`@asset-picker/search/filter/select-option/${tab}`);
+    readonly selectedNetworkFilterIcon = (network: AssetPickerNetworkFilter | NetworkSymbol) =>
+        this.page
+            .getByTestId(`@asset-picker/search/filter/select-option-value/${network}`)
+            .locator('svg');
     readonly globalAddAccountButton: Locator;
 
     // buy and sell options
