@@ -94,6 +94,12 @@ export interface BluetoothIpcState {
     knownDevices: BluetoothDevice[];
 }
 
+/**
+ * Consumer of the scanning process. `stop_scan` is sent to the server only once the last owner
+ * calls `stopScan`. Calls without an owner are fire-and-forget: an owned `stopScan` clears them,
+ * and an ownerless `stopScan` keeps scanning while there are known devices, so their background
+ * discovery is not lost.
+ */
 export type ScanOwner = 'ui' | 'background' | 'firmware-update';
 
 export type BluetoothIpcApi = {
