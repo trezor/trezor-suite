@@ -11,6 +11,8 @@ import {
     selectAssetHoldings,
     selectAssetHoldingsByAccountKey,
     selectAssetKeysByDeviceState,
+    selectHiddenAssetHoldingIds,
+    selectShownAssetHoldings,
 } from './assetHoldingsIndex';
 
 const ALICE = 'aliceWallet@device:0' as StaticSessionId;
@@ -81,6 +83,85 @@ const aliceUsdc = getAssetKey({
     contractAddress: USDC_ON_ETH,
 });
 
+describe('which holdings the user is shown', () => {
+    const contractsOf = (holdings: readonly { contractAddress?: TokenAddress | undefined }[]) =>
+        holdings.map(holding => holding.contractAddress);
+
+    it('leaves out a token the user hid', () => {
+        const state = createState({
+            accounts: [mockAccount({ tokens: [{ contract: USDC_ON_ETH, balance: '100' }] })],
+            hiddenTokens: [USDC_ON_ETH],
+        });
+
+        expect(contractsOf(selectShownAssetHoldings(state))).toEqual([undefined]);
+    });
+
+    it('leaves out a token nothing vouches for', () => {
+        const state = createState({
+            accounts: [mockAccount({ tokens: [{ contract: UNKNOWN_TOKEN, balance: '7' }] })],
+        });
+
+        expect(contractsOf(selectShownAssetHoldings(state))).toEqual([undefined]);
+    });
+
+    it('keeps a token the user asked to see, definition or not', () => {
+        const state = createState({
+            accounts: [mockAccount({ tokens: [{ contract: UNKNOWN_TOKEN, balance: '7' }] })],
+            shownTokens: [UNKNOWN_TOKEN],
+        });
+
+        expect(contractsOf(selectShownAssetHoldings(state))).toEqual([undefined, UNKNOWN_TOKEN]);
+    });
+
+    it('keeps a token the user hid even when it is also on the shown list', () => {
+        const state = createState({
+            accounts: [mockAccount({ tokens: [{ contract: USDC_ON_ETH, balance: '100' }] })],
+            hiddenTokens: [USDC_ON_ETH],
+            shownTokens: [USDC_ON_ETH],
+        });
+
+        expect(contractsOf(selectShownAssetHoldings(state))).toEqual([undefined]);
+    });
+
+    it('keeps every token on a network with no definitions to go by', () => {
+        const state = createState({
+            accounts: [
+                mockAccount({ symbol: DSOL, tokens: [{ contract: UNKNOWN_TOKEN, balance: '3' }] }),
+            ],
+        });
+
+        expect(contractsOf(selectShownAssetHoldings(state))).toEqual([undefined, UNKNOWN_TOKEN]);
+    });
+
+    it('names the hidden holdings of every account that holds one', () => {
+        const state = createState({
+            accounts: [
+                mockAccount({ index: 0, tokens: [{ contract: USDC_ON_ETH, balance: '1' }] }),
+                mockAccount({ index: 1, tokens: [{ contract: USDC_ON_ETH, balance: '2' }] }),
+            ],
+            hiddenTokens: [USDC_ON_ETH],
+        });
+
+        expect(selectHiddenAssetHoldingIds(state)).toHaveLength(2);
+    });
+
+    it('names nothing when the user hid nothing', () => {
+        const state = createState({
+            accounts: [mockAccount({ tokens: [{ contract: USDC_ON_ETH, balance: '1' }] })],
+        });
+
+        expect(selectHiddenAssetHoldingIds(state)).toEqual([]);
+    });
+
+    it('hands back the same holdings while the accounts and the hiding are unchanged', () => {
+        const state = createState({
+            accounts: [mockAccount({ tokens: [{ contract: USDC_ON_ETH, balance: '1' }] })],
+        });
+
+        expect(selectShownAssetHoldings(state)).toBe(selectShownAssetHoldings(state));
+    });
+});
+
 describe('getAssetKey', () => {
     it('is the wallet, the network and the contract', () => {
         expect(aliceUsdc).toBe(`${ALICE}/eth/${USDC_ON_ETH}`);
@@ -134,15 +215,6 @@ describe('what becomes a holding', () => {
         expect(selectAssetHoldings(state, aliceUsdc)).toEqual([]);
     });
 
-    it('is not a token the user hid', () => {
-        const state = createState({
-            accounts: [mockAccount({ tokens: [{ contract: USDC_ON_ETH, balance: '100' }] })],
-            hiddenTokens: [USDC_ON_ETH],
-        });
-
-        expect(selectAssetHoldings(state, aliceUsdc)).toEqual([]);
-    });
-
     it('is a token the user asked to see, definition or not', () => {
         const state = createState({
             accounts: [mockAccount({ tokens: [{ contract: UNKNOWN_TOKEN, balance: '7' }] })],
@@ -155,19 +227,6 @@ describe('what becomes a holding', () => {
                 getAssetKey({ deviceState: ALICE, symbol: ETH, contractAddress: UNKNOWN_TOKEN }),
             ),
         ).toHaveLength(1);
-    });
-
-    it('is not a token nothing vouches for', () => {
-        const state = createState({
-            accounts: [mockAccount({ tokens: [{ contract: UNKNOWN_TOKEN, balance: '7' }] })],
-        });
-
-        expect(
-            selectAssetHoldings(
-                state,
-                getAssetKey({ deviceState: ALICE, symbol: ETH, contractAddress: UNKNOWN_TOKEN }),
-            ),
-        ).toEqual([]);
     });
 
     it('is any token on a network that has no definitions at all', () => {

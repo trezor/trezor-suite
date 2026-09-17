@@ -7,12 +7,12 @@ import {
     type AssetKey,
     type FiatRatesRootState,
     type WalletSettingsRootState,
-    assetHoldingsIndex,
     parseAssetKey,
     selectBaseCurrency,
     selectCurrentFiatRates,
     selectEnabledNetworks,
     selectLastWeekFiatRates,
+    selectShownAssetHoldings,
 } from '@suite-common/wallet-core';
 import { type TokenAddress } from '@suite-common/wallet-types';
 import { getFiatRateKey, toFiatCurrency } from '@suite-common/wallet-utils';
@@ -70,7 +70,7 @@ const compareRows = (left: AssetRow, right: AssetRow) =>
 
 export const selectAssetFirstRows = createMemoizedSelector(
     [
-        (state: AssetFirstTableState) => assetHoldingsIndex.read(state).groups.byAsset,
+        selectShownAssetHoldings,
         selectDeviceStaticSessionId,
         selectEnabledNetworks,
         selectCurrentFiatRates,
@@ -78,7 +78,7 @@ export const selectAssetFirstRows = createMemoizedSelector(
         selectBaseCurrency,
     ],
     (
-        assetGroups,
+        shownHoldings,
         deviceStaticSessionId,
         enabledNetworks,
         currentFiatRates,
@@ -90,28 +90,37 @@ export const selectAssetFirstRows = createMemoizedSelector(
         }
 
         const rows: AssetRow[] = [];
+        const holdingsByAsset = new Map<AssetKey, AssetHolding[]>();
 
-        assetGroups.forEach((group, assetKey) => {
-            const parts = parseAssetKey(assetKey);
-
+        shownHoldings.forEach(holding => {
             if (
-                parts?.deviceState !== deviceStaticSessionId ||
-                !enabledNetworks.includes(parts.symbol)
+                !holding.isAccountVisible ||
+                holding.deviceState !== deviceStaticSessionId ||
+                !enabledNetworks.includes(holding.symbol)
             ) {
                 return;
             }
 
-            const { symbol, contractAddress } = parts;
+            const held = holdingsByAsset.get(holding.assetKey);
 
-            const visibleHoldings = group.entities.filter(
-                (holding: AssetHolding) => holding.isAccountVisible,
-            );
+            if (held === undefined) {
+                holdingsByAsset.set(holding.assetKey, [holding]);
 
-            if (visibleHoldings.length === 0) {
                 return;
             }
 
-            const { cryptoBalance, tokenInfo } = sumAssetHoldings(visibleHoldings);
+            held.push(holding);
+        });
+
+        holdingsByAsset.forEach((holdings, assetKey) => {
+            const parts = parseAssetKey(assetKey);
+
+            if (parts === undefined) {
+                return;
+            }
+
+            const { symbol, contractAddress } = parts;
+            const { cryptoBalance, tokenInfo } = sumAssetHoldings(holdings);
             const fiatRateKey = getFiatRateKey(symbol, baseCurrencyCode, contractAddress);
             const fiatValue =
                 toFiatCurrency({

@@ -5,16 +5,22 @@ import {
 } from '@suite-common/redux-utils';
 import {
     type TokenDefinitionsRootState,
+    isTokenDefinitionKnown,
     selectTokenDefinitions,
 } from '@suite-common/token-definitions';
-import { type NetworkSymbol, isNetworkSymbol } from '@suite-common/wallet-config';
+import {
+    type NetworkSymbol,
+    getNetworkFeatures,
+    isNetworkSymbol,
+} from '@suite-common/wallet-config';
 import { type Account, type AccountKey, type TokenAddress } from '@suite-common/wallet-types';
+import { isNftToken } from '@suite-common/wallet-utils';
 import { type TokenInfo } from '@trezor/blockchain-link-types';
 import { type StaticSessionId } from '@trezor/device-utils';
+import { BigNumber } from '@trezor/utils';
 
 import { type AccountsRootState } from './accountsReducer';
 import { selectAccounts } from './accountsSelectors';
-import { getTokens } from '../tokens/tokenUtils';
 
 export type AssetKey = `${StaticSessionId}/${NetworkSymbol}/${string}`;
 
@@ -80,7 +86,6 @@ const isSameHolding = (previous: AssetHolding, next: AssetHolding) =>
 
 const buildAccountHoldings = (
     account: Account,
-    shownContracts: ReadonlySet<string>,
     previous: readonly AssetHolding[] | undefined,
 ): readonly AssetHolding[] => {
     const previousByAssetKey = new Map(previous?.map(holding => [holding.assetKey, holding]));
@@ -110,12 +115,19 @@ const buildAccountHoldings = (
         return built && isSameHolding(built, next) ? built : next;
     };
 
+    // Which tokens the user is shown is settled by selectHiddenAssetHoldingIds, so that hiding one
+    // does not rebuild every account's holdings. What is left out here cannot be shown by any
+    // setting: an NFT is not a holding, and nothing holds none of a token.
     const tokenHoldings = (account.tokens ?? [])
-        .filter(token => shownContracts.has(token.contract))
+        .filter(token => !isNftToken(token) && new BigNumber(token.balance ?? '0').gt(0))
         .map(token => toHolding(token.contract as TokenAddress, token.balance ?? '0', token));
 
     return [toHolding(undefined, account.formattedBalance, undefined), ...tokenHoldings];
 };
+
+/** A token as the definitions name it: the same token on two networks is two of them. */
+const getTokenKey = (symbol: NetworkSymbol, contractAddress: TokenAddress) =>
+    `${symbol}${ASSET_KEY_SEPARATOR}${contractAddress}`;
 
 export type AssetHoldingsRootState = AccountsRootState & TokenDefinitionsRootState;
 
@@ -124,19 +136,13 @@ const createMemoizedSelector = createWeakMapSelector.withTypes<AssetHoldingsRoot
 const holdingsByAccountKey = new Map<AccountKey, readonly AssetHolding[]>();
 
 export const selectAssetHoldingsByAccountKey = createMemoizedSelector(
-    [selectAccounts, selectTokenDefinitions],
-    (accounts, tokenDefinitions): AssetHoldingsByAccountKey => {
+    [selectAccounts],
+    (accounts): AssetHoldingsByAccountKey => {
         const byAccountKey = new Map<AccountKey, readonly AssetHolding[]>();
 
         accounts.forEach(account => {
-            const { shownWithBalance } = getTokens({
-                tokens: account.tokens ?? [],
-                symbol: account.symbol,
-                tokenDefinitions: tokenDefinitions?.[account.symbol]?.coin,
-            });
-            const shownContracts = new Set(shownWithBalance.map(token => token.contract));
             const previous = holdingsByAccountKey.get(account.key);
-            const built = buildAccountHoldings(account, shownContracts, previous);
+            const built = buildAccountHoldings(account, previous);
             const holdings = previous && areSameHoldings(previous, built) ? previous : built;
 
             holdingsByAccountKey.set(account.key, holdings);
@@ -153,17 +159,72 @@ export const selectAssetHoldingsByAccountKey = createMemoizedSelector(
     },
 );
 
+/** How a holding is named in the index: one account's balance of one asset. */
+export type AssetHoldingId = `${AccountKey}/${TokenAddress | ''}`;
+
+const getAssetHoldingId = (holding: AssetHolding): AssetHoldingId =>
+    `${holding.accountKey}${ASSET_KEY_SEPARATOR}${holding.contractAddress ?? ''}`;
+
 export const assetHoldingsIndex = createEntityIndex({
     name: 'assetHoldings',
     selectSource: selectAssetHoldingsByAccountKey,
     getParts: (byAccountKey: AssetHoldingsByAccountKey) => byAccountKey,
     getEntities: (holdings: readonly AssetHolding[]) => holdings,
-    getId: (holding: AssetHolding) => `${holding.accountKey}/${holding.contractAddress ?? ''}`,
+    getId: getAssetHoldingId,
     groupBy: {
         byAsset: (holding: AssetHolding) => holding.assetKey,
         byAccountKey: (holding: AssetHolding) => holding.accountKey,
+        byTokenKey: (holding: AssetHolding) =>
+            holding.contractAddress === undefined
+                ? undefined
+                : getTokenKey(holding.symbol, holding.contractAddress),
     },
 });
+
+/**
+ * The holdings of the tokens the user is not shown: the ones hidden by hand, and the ones nothing
+ * vouches for that were not asked for anyway.
+ *
+ * A list of ids for `getInverseOfIds`, so what is shown is everything else. Keyed per token rather
+ * than per holding, so the question is asked once for a token however many accounts hold it, and
+ * hiding one leaves every other holding in the index exactly as it was.
+ */
+export const selectHiddenAssetHoldingIds = createMemoizedSelector(
+    [
+        (state: AssetHoldingsRootState) => assetHoldingsIndex.read(state).groups.byTokenKey,
+        selectTokenDefinitions,
+    ],
+    (tokenGroups, tokenDefinitions) => {
+        const hidden: AssetHoldingId[] = [];
+
+        tokenGroups.forEach((group, tokenKey) => {
+            const separator = tokenKey.indexOf(ASSET_KEY_SEPARATOR);
+            const symbol = tokenKey.slice(0, separator);
+            const contractAddress = tokenKey.slice(separator + 1);
+
+            if (!isNetworkSymbol(symbol)) {
+                return;
+            }
+
+            const definitions = tokenDefinitions?.[symbol]?.coin;
+            // A network with no definitions to go by shows what it holds — the testnets.
+            const hasDefinitions = getNetworkFeatures(symbol).includes('coin-definitions');
+            const isHiddenByUser = definitions?.hide?.includes(contractAddress) ?? false;
+            const isShownByUser = definitions?.show?.includes(contractAddress) ?? false;
+            const isKnown = isTokenDefinitionKnown(definitions?.data, symbol, contractAddress);
+
+            if (isHiddenByUser || (hasDefinitions && !isKnown && !isShownByUser)) {
+                group.ids.forEach(id => hidden.push(id));
+            }
+        });
+
+        return returnStableArrayIfEmpty(hidden);
+    },
+);
+
+/** What the wallet holds of every asset the user is shown, in the index's order. */
+export const selectShownAssetHoldings = (state: AssetHoldingsRootState) =>
+    assetHoldingsIndex.getInverseOfIds(state, selectHiddenAssetHoldingIds(state));
 
 export const selectAssetHoldings = (state: AssetHoldingsRootState, assetKey: AssetKey) =>
     assetHoldingsIndex.getBy(state, 'byAsset', assetKey);
