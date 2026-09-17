@@ -10,30 +10,35 @@ import { useSelector } from 'src/hooks/suite';
 
 import { AssetFirstRow } from './AssetFirstRow';
 import { AssetFirstTableFilterHeader } from './AssetFirstTableFilter';
-import { type AssetFirstGrouping, type AssetFirstNetworkGroup } from './assetFirstTableGrouping';
-import { type AssetRow, selectAssetFirstTableView } from './assetFirstTableSelectors';
+import { type AssetFirstGrouping } from './assetFirstTableGrouping';
+import {
+    type AssetFirstSection,
+    type AssetRow,
+    selectAssetFirstSections,
+} from './assetFirstTableSelectors';
 import { ASSET_FIRST_CELL_PADDING } from './assetFirstTableUtils';
 
-type NetworkGroupHeaderProps = {
-    group: AssetFirstNetworkGroup;
+type SectionHeadingProps = {
+    sectionKey: string;
+    heading: NonNullable<AssetFirstSection['heading']>;
 };
 
-const NetworkGroupHeader = ({ group }: NetworkGroupHeaderProps) => {
+const SectionHeading = ({ sectionKey, heading }: SectionHeadingProps) => {
     const { BaseCurrencyAmountFormatter } = useFormatters();
 
     return (
         <Table.Row
             isHighlightedOnHover={false}
-            data-testid={`@dashboard/asset-first-group/${group.symbol}`}
+            data-testid={`@dashboard/asset-first-group/${sectionKey}`}
         >
             <Table.Cell colSpan={2} padding={ASSET_FIRST_CELL_PADDING.first}>
                 <Text typographyStyle="body-sm" intent="neutral" priority="secondary">
-                    {group.name}
+                    {heading.name}
                 </Text>
             </Table.Cell>
             <Table.Cell align="end" padding={ASSET_FIRST_CELL_PADDING.last}>
                 <Text typographyStyle="body-sm" intent="neutral" priority="secondary">
-                    {BaseCurrencyAmountFormatter.format(asBaseCurrencyAmount(group.fiatValue))}
+                    {BaseCurrencyAmountFormatter.format(asBaseCurrencyAmount(heading.fiatValue))}
                 </Text>
             </Table.Cell>
         </Table.Row>
@@ -50,12 +55,9 @@ type AssetFirstTableProps = {
 
 export const AssetFirstTable = ({ deviceState }: AssetFirstTableProps) => {
     const [grouping, setGrouping] = useState<AssetFirstGrouping>('default');
-    const view = useSelector(state => selectAssetFirstTableView(grouping)(state, deviceState));
+    const sections = useSelector(state => selectAssetFirstSections(grouping)(state, deviceState));
 
-    const isEmpty =
-        view.grouping === 'networks' ? view.groups.length === 0 : view.rows.length === 0;
-
-    if (isEmpty) {
+    if (sections.every(section => section.rows.length === 0)) {
         return null;
     }
 
@@ -79,12 +81,19 @@ export const AssetFirstTable = ({ deviceState }: AssetFirstTableProps) => {
                     </Table.Row>
                 </Table.Header>
                 <Table.Body>
-                    {view.grouping === 'networks'
-                        ? view.groups.flatMap(group => [
-                              <NetworkGroupHeader key={group.symbol} group={group} />,
-                              ...renderRows(group.rows, false),
-                          ])
-                        : renderRows(view.rows)}
+                    {sections.flatMap(section =>
+                        section.heading === undefined
+                            ? renderRows(section.rows)
+                            : [
+                                  <SectionHeading
+                                      key={section.key}
+                                      sectionKey={section.key}
+                                      heading={section.heading}
+                                  />,
+                                  // The line belongs between sections, not inside one.
+                                  ...renderRows(section.rows, false),
+                              ],
+                    )}
                 </Table.Body>
             </Table>
         </Card>

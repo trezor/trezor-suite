@@ -21,11 +21,7 @@ import { type TokenInfo } from '@trezor/blockchain-link-types';
 import { type StaticSessionId } from '@trezor/device-utils';
 import { BigNumber } from '@trezor/utils';
 
-import {
-    type AssetFirstGrouping,
-    type AssetFirstNetworkGroup,
-    groupAssetRowsByNetwork,
-} from './assetFirstTableGrouping';
+import { type AssetFirstGrouping, groupAssetRowsByNetwork } from './assetFirstTableGrouping';
 import { getAssetDisplaySymbol, sumAssetHoldings } from './assetFirstTableUtils';
 
 export type AssetFirstTableState = AssetHoldingsRootState &
@@ -135,7 +131,7 @@ export const selectAssetFirstAssets = createMemoizedSelector(
         (_state: AssetFirstTableState, deviceState: StaticSessionId) => deviceState,
     ],
     (assetGroups, hidden, enabledNetworks, deviceState): readonly AssetTotal[] => {
-        const assets = [...assetGroups.values()].flatMap(group => {
+        const assets = Array.from(assetGroups.values()).flatMap(group => {
             const [holding] = group.entities;
 
             if (holding?.deviceState !== deviceState || !enabledNetworks.includes(holding.symbol)) {
@@ -202,22 +198,32 @@ export const getAssetFirstTotals = (rows: readonly AssetRow[]): AssetFirstTotals
     };
 };
 
-export type AssetFirstTableView =
-    | { grouping: 'default'; rows: readonly AssetRow[] }
-    | { grouping: 'networks'; groups: readonly AssetFirstNetworkGroup[] };
+/**
+ * What the table renders: sections of rows, each with the heading it belongs under.
+ *
+ * The default arrangement is one section with no heading, so there is one way to render a table
+ * and an arrangement is only a way of cutting the rows into sections.
+ */
+export type AssetFirstSection = {
+    key: string;
+    heading: { name: string; fiatValue: BigNumber } | undefined;
+    rows: readonly AssetRow[];
+};
 
-const selectDefaultView = createMemoizedSelector(
+const selectDefaultSections = createMemoizedSelector(
     [selectAssetFirstRows],
-    (rows): AssetFirstTableView => ({ grouping: 'default', rows }),
+    (rows): readonly AssetFirstSection[] => [{ key: 'all', heading: undefined, rows }],
 );
 
-const selectNetworksView = createMemoizedSelector(
+const selectNetworkSections = createMemoizedSelector(
     [selectAssetFirstRows],
-    (rows): AssetFirstTableView => ({
-        grouping: 'networks',
-        groups: groupAssetRowsByNetwork(rows),
-    }),
+    (rows): readonly AssetFirstSection[] =>
+        groupAssetRowsByNetwork(rows).map(group => ({
+            key: group.symbol,
+            heading: { name: group.name, fiatValue: group.fiatValue },
+            rows: group.rows,
+        })),
 );
 
-export const selectAssetFirstTableView = (grouping: AssetFirstGrouping) =>
-    grouping === 'networks' ? selectNetworksView : selectDefaultView;
+export const selectAssetFirstSections = (grouping: AssetFirstGrouping) =>
+    grouping === 'networks' ? selectNetworkSections : selectDefaultSections;
