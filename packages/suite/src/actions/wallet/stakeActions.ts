@@ -54,6 +54,8 @@ import { type SerializedError } from '@trezor/connect-common/src/constants/error
 import { type Err } from '@trezor/type-utils';
 import { BigNumber } from '@trezor/utils';
 
+import { getTransactionCreatedEventPayload } from 'src/utils/suite/analytics';
+
 import * as stakeFormCardanoActions from './stake/stakeFormCardanoActions';
 import * as stakeFormEthereumActions from './stake/stakeFormEthereumActions';
 import * as stakeFormSolanaActions from './stake/stakeFormSolanaActions';
@@ -295,6 +297,7 @@ export const signTransactionThunk =
     async (
         dispatch: ThunkDispatch<SignTransactionThunkState, SignTransactionThunkDeps, UnknownAction>,
         getState: () => SignTransactionThunkState,
+        extra: SignTransactionThunkDeps,
     ) => {
         const device = selectSelectedDevice(getState());
         const account = selectSelectedAccount(getState());
@@ -377,6 +380,17 @@ export const signTransactionThunk =
         );
 
         if (account?.networkType === 'cardano') {
+            extra.services.analytics.report({
+                type: events.transactionCreatedEvent.name,
+                payload: getTransactionCreatedEventPayload({
+                    action: 'sent',
+                    symbol: account.symbol,
+                    precomposedForm: formValues,
+                    tokens: '',
+                    txType: 'stake',
+                }),
+            });
+
             return dispatch(pushTransactionThunk(formValues.stakeType, cardanoPoolDelegation));
         }
 
