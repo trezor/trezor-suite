@@ -8,7 +8,7 @@ type ReportTransactionCreatedParams = {
     symbol: NetworkSymbol;
     precomposedTransaction: PrecomposedTransactionFinal;
     selectedFee: FeeLevelLabel | undefined;
-    txType: 'yield';
+    txType: 'stake' | 'yield';
 };
 
 export const reportTransactionCreated = ({
