@@ -18,15 +18,13 @@ export const Dashboard = () => {
     const { activeExperimentVariant } = useExperiment(ExperimentId.assetFirstHomeTable);
     const isAssetFirstTableEnabled = activeExperimentVariant?.variant === 'B';
 
-    // The asset-first page carries its own balance and actions, so the app's page header would
-    // only repeat them.
-    useLayout('Home', isAssetFirstTableEnabled ? undefined : <PageHeader />, <DashboardFooter />);
+    useLayout('Home', <PageHeader />, <DashboardFooter />);
     useNotificationForDisconnectedDevice();
 
     // The asset-first home tab is the whole page, not another section of it.
     if (isAssetFirstTableEnabled) {
         return (
-            <Column gap={48} data-testid="@dashboard/index">
+            <Column data-testid="@dashboard/index">
                 <AssetFirstDashboard />
             </Column>
         );

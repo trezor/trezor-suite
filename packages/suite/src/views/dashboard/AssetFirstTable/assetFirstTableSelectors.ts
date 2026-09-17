@@ -168,6 +168,8 @@ export type AssetFirstTotals = {
      * rate for a week ago is known — "no data" and "no change" are not the same claim to make.
      */
     weekChange: BigNumber | undefined;
+    /** The same change as a share of what the holdings were worth then. */
+    weekChangePercent: BigNumber | undefined;
 };
 
 /**
@@ -184,13 +186,18 @@ export const getAssetFirstTotals = (rows: readonly AssetRow[]): AssetFirstTotals
     const fiatValue = rows.reduce((total, row) => total.plus(row.fiatValue), ZERO_FIAT_VALUE);
 
     if (!rows.some(row => row.weekAgoFiatValue.gt(0))) {
-        return { fiatValue, weekChange: undefined };
+        return { fiatValue, weekChange: undefined, weekChangePercent: undefined };
     }
 
     const weekAgoFiatValue = rows.reduce(
         (total, row) => total.plus(row.weekAgoFiatValue),
         ZERO_FIAT_VALUE,
     );
+    const weekChange = fiatValue.minus(weekAgoFiatValue);
 
-    return { fiatValue, weekChange: fiatValue.minus(weekAgoFiatValue) };
+    return {
+        fiatValue,
+        weekChange,
+        weekChangePercent: weekChange.div(weekAgoFiatValue).times(100),
+    };
 };

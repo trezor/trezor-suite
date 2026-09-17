@@ -11,13 +11,12 @@ import { type Padding } from '@trezor/components';
 import { BigNumber } from '@trezor/utils';
 
 /**
- * The outer cells carry the page's own horizontal padding, because the table is wider than the
- * content around it: the lines between assets run to the edge of the page while the text under
- * "Asset" stays aligned with the balance above it.
+ * The table sits in a card, so the outer cells carry the card's own inset: the lines between
+ * assets run the full width of the card while the text keeps clear of its rounded corners.
  */
 export const ASSET_FIRST_CELL_PADDING = {
-    first: { vertical: 12, left: 16, right: 20 },
-    last: { vertical: 12, left: 20, right: 16 },
+    first: { vertical: 12, left: 20, right: 20 },
+    last: { vertical: 12, left: 20, right: 20 },
 } satisfies Record<string, Padding>;
 
 /**

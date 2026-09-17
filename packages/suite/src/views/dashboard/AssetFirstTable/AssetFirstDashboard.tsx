@@ -2,27 +2,30 @@ import { Column } from '@trezor/components';
 
 import { useSelector } from 'src/hooks/suite';
 
-import { AssetFirstHeader } from './AssetFirstHeader';
+import { AssetFirstBalanceCard } from './AssetFirstBalanceCard';
 import { AssetFirstTable } from './AssetFirstTable';
 import { selectAssetFirstRows } from './assetFirstTableSelectors';
+import { DashboardPromoBanner } from '../DashboardPromoBanner/DashboardPromoBanner';
 
 /**
  * The whole home tab, asset first: what the wallet is worth, and what it holds.
  *
- * It replaces the dashboard rather than sitting inside it — no graph, no promotions, no onboarding
- * banner — so the page is the balance, the actions and the assets, and nothing else.
+ * It replaces the dashboard rather than sitting inside it — no graph card and no onboarding
+ * banner — so the page is the balance, what is being promoted, and the assets, under the app's own
+ * page header.
  *
  * The rows are chosen here and handed to both halves, so the total at the top is the sum of the
  * rows in the table below it by construction — not a second answer to the same question.
  *
- * Behind the asset-first home table debug setting; without it the dashboard is unchanged.
+ * Behind the asset-first home table experiment; without it the dashboard is unchanged.
  */
 export const AssetFirstDashboard = () => {
     const rows = useSelector(selectAssetFirstRows);
 
     return (
-        <Column gap={24} data-testid="@dashboard/asset-first">
-            <AssetFirstHeader rows={rows} />
+        <Column gap={16} data-testid="@dashboard/asset-first">
+            <AssetFirstBalanceCard rows={rows} />
+            <DashboardPromoBanner />
             <AssetFirstTable rows={rows} />
         </Column>
     );

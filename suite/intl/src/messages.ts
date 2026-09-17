@@ -1745,9 +1745,9 @@ export const messages = defineMessages({
         defaultMessage: 'Total balance',
         id: 'TR_ASSET_FIRST_TOTAL_BALANCE',
     },
-    TR_ASSET_FIRST_WEEK_CHANGE: {
-        defaultMessage: '{value} over 7d',
-        id: 'TR_ASSET_FIRST_WEEK_CHANGE',
+    TR_ASSET_FIRST_WEEK_PERIOD: {
+        defaultMessage: '7d',
+        id: 'TR_ASSET_FIRST_WEEK_PERIOD',
     },
     TR_ASSET: {
         defaultMessage: 'Asset',
@@ -5307,7 +5307,7 @@ export const messages = defineMessages({
     },
     TR_DASHBOARD: {
         id: 'TR_DASHBOARD',
-        defaultMessage: 'Dashboard',
+        defaultMessage: 'Home',
     },
     TR_EARN: {
         id: 'TR_EARN',

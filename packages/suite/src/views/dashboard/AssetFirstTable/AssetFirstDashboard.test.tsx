@@ -26,7 +26,6 @@ const getInitialState = (): AppState => ({
     },
     wallet: {
         ...mockInitialAppState.wallet,
-        // `GlobalSendReceive`, which the header renders, reads it.
         selectedAccount: selectedAccountInitialState,
         accounts: [mockWalletAccount({ symbol: 'btc', formattedBalance: '0.5' })],
         settings: {
@@ -52,25 +51,24 @@ describe('AssetFirstDashboard', () => {
         renderWithProviders(root, <AssetFirstDashboard />);
     };
 
-    it('is the balance, the actions and the assets, and nothing else', () => {
+    it('is the balance and the assets, and nothing else', () => {
         render();
 
         expect(screen.getByTestId('@dashboard/asset-first/fiat-amount')).toBeInTheDocument();
-        // The app's own global actions, brought here because the page suppresses its header.
-        expect(screen.getAllByTestId('@wallet/menu/wallet-trading-buy')).not.toHaveLength(0);
-        expect(screen.getAllByTestId('@wallet/menu/wallet-global-receive')).not.toHaveLength(0);
-        expect(screen.getAllByTestId('@wallet/menu/wallet-global-send')).not.toHaveLength(0);
         expect(screen.getByTestId('@dashboard/asset-first-item/btc/coin')).toBeInTheDocument();
-        // The graph and its controls belong to the card this view replaces.
+        // The actions belong to the app's page header, and the promotions to the card this view
+        // replaces.
+        expect(screen.queryByTestId('@wallet/menu/wallet-global-send')).not.toBeInTheDocument();
         expect(screen.queryByTestId('@dashboard/loading')).not.toBeInTheDocument();
     });
 
     it('says what the wallet gained against its rate a week ago', () => {
-        // 0.5 BTC at 100 000 is 50 000 today and 45 000 a week ago.
+        // 0.5 BTC at 100 000 is 50 000 today and 45 000 a week ago: 5 000 more, a ninth of it.
         render();
 
-        expect(screen.getByTestId('@dashboard/asset-first/week-change')).toHaveTextContent(
-            'over 7d',
-        );
+        const weekChange = screen.getByTestId('@dashboard/asset-first/week-change');
+
+        expect(weekChange).toHaveTextContent('7d');
+        expect(weekChange).toHaveTextContent('11.1%');
     });
 });
