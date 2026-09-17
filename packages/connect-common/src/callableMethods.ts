@@ -25,6 +25,11 @@ const connectManagementMethods = [
     'pingDevice',
     'getNonce',
     'getSettings',
+    // Evolu identity operations export secret key material, so they are privileged and must not be
+    // reachable by 3rd-party hosts through the public API.
+    'evoluGetNode',
+    'evoluSignRegistrationRequest',
+    'evoluGetDelegatedIdentityKey',
 ] as const;
 
 type ManagementKey = keyof TrezorConnectManagement;
@@ -113,7 +118,6 @@ const connectPublicCallableMethodGroups = {
     stellar: ['stellarGetAddress', 'stellarSignTransaction'],
     tezos: ['tezosGetAddress', 'tezosGetPublicKey', 'tezosSignTransaction'],
     tron: ['tronGetAddress', 'tronSignTransaction', 'tronComposeTransaction'],
-    evolu: ['evoluGetNode', 'evoluSignRegistrationRequest', 'evoluGetDelegatedIdentityKey'],
     nostr: ['nostrGetPublicKey', 'nostrSignEvent'],
 } as const;
 

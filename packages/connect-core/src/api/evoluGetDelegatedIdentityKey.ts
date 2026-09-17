@@ -16,7 +16,7 @@ export default class EvoluGetDelegatedIdentityKey extends AbstractMethod<
         this.useUi = true;
     }
     get requiredPermissions(): PermissionRequest[] {
-        return [{ permission: 'read_xpub' }];
+        return [{ permission: 'management' }];
     }
 
     get info() {

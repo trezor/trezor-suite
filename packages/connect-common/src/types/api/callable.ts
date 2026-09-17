@@ -4,7 +4,6 @@ import type { TrezorConnectBlockchain } from './blockchain';
 import type { TrezorConnectCardano } from './cardano';
 import type { TrezorConnectDevice } from './device';
 import type { TrezorConnectEthereum } from './ethereum';
-import type { TrezorConnectEvolu } from './evolu';
 import type { TrezorConnectManagement } from './management';
 import type { TrezorConnectMonero } from './monero';
 import type { TrezorConnectNostr } from './nostr';
@@ -15,7 +14,7 @@ import type { TrezorConnectTezos } from './tezos';
 import type { TrezorConnectTron } from './tron';
 
 // The explicit intersection prevents TypeScript from expanding the entire callable API in the
-// generated declaration.
+// generated declaration. Evolu operations are part of `TrezorConnectManagement` (privileged tier).
 export type TrezorConnectCallable = TrezorConnectManagement &
     TrezorConnectDevice &
     TrezorConnectBlockchain &
@@ -29,5 +28,4 @@ export type TrezorConnectCallable = TrezorConnectManagement &
     TrezorConnectStellar &
     TrezorConnectTezos &
     TrezorConnectTron &
-    TrezorConnectEvolu &
     TrezorConnectNostr;
