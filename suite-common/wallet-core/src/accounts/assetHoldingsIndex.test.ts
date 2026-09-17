@@ -9,11 +9,13 @@ import {
     getAssetKey,
     parseAssetKey,
     selectHiddenAssetHoldingKeys,
-    selectShownAssetHoldings,
 } from './assetHoldingsIndex';
 
 const holdingsOfAsset = (state: AssetHoldingsRootState, assetKey: AssetKey) =>
     assetHoldingsIndex.getBy(state, 'byAsset', assetKey);
+
+const shownHoldings = (state: AssetHoldingsRootState) =>
+    assetHoldingsIndex.getInverseOfIds(state, selectHiddenAssetHoldingKeys(state));
 
 const ALICE = 'aliceWallet@device:0' as StaticSessionId;
 const BOB = 'bobWallet@device:1' as StaticSessionId;
@@ -93,7 +95,7 @@ describe('which holdings the user is shown', () => {
             hiddenTokens: [USDC_ON_ETH],
         });
 
-        expect(contractsOf(selectShownAssetHoldings(state))).toEqual([undefined]);
+        expect(contractsOf(shownHoldings(state))).toEqual([undefined]);
     });
 
     it('leaves out a token nothing vouches for', () => {
@@ -101,7 +103,7 @@ describe('which holdings the user is shown', () => {
             accounts: [mockAccount({ tokens: [{ contract: UNKNOWN_TOKEN, balance: '7' }] })],
         });
 
-        expect(contractsOf(selectShownAssetHoldings(state))).toEqual([undefined]);
+        expect(contractsOf(shownHoldings(state))).toEqual([undefined]);
     });
 
     it('keeps a token the user asked to see, definition or not', () => {
@@ -110,7 +112,7 @@ describe('which holdings the user is shown', () => {
             shownTokens: [UNKNOWN_TOKEN],
         });
 
-        expect(contractsOf(selectShownAssetHoldings(state))).toEqual([undefined, UNKNOWN_TOKEN]);
+        expect(contractsOf(shownHoldings(state))).toEqual([undefined, UNKNOWN_TOKEN]);
     });
 
     it('keeps a token the user hid even when it is also on the shown list', () => {
@@ -120,7 +122,7 @@ describe('which holdings the user is shown', () => {
             shownTokens: [USDC_ON_ETH],
         });
 
-        expect(contractsOf(selectShownAssetHoldings(state))).toEqual([undefined]);
+        expect(contractsOf(shownHoldings(state))).toEqual([undefined]);
     });
 
     it('keeps every token on a network with no definitions to go by', () => {
@@ -130,7 +132,7 @@ describe('which holdings the user is shown', () => {
             ],
         });
 
-        expect(contractsOf(selectShownAssetHoldings(state))).toEqual([undefined, UNKNOWN_TOKEN]);
+        expect(contractsOf(shownHoldings(state))).toEqual([undefined, UNKNOWN_TOKEN]);
     });
 
     it('names the hidden holdings of every account that holds one', () => {
@@ -158,7 +160,7 @@ describe('which holdings the user is shown', () => {
             accounts: [mockAccount({ tokens: [{ contract: USDC_ON_ETH, balance: '1' }] })],
         });
 
-        expect(selectShownAssetHoldings(state)).toBe(selectShownAssetHoldings(state));
+        expect(shownHoldings(state)).toBe(shownHoldings(state));
     });
 });
 

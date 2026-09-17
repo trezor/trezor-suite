@@ -181,6 +181,8 @@ export const selectHiddenAssetHoldingKeys = createMemoizedSelector(
     },
 );
 
-/** What the wallet holds of every asset the user is shown, in the index's order. */
-export const selectShownAssetHoldings = (state: AssetHoldingsRootState) =>
-    assetHoldingsIndex.getInverseOfIds(state, selectHiddenAssetHoldingKeys(state));
+/** The same, as a set, for a consumer deciding it holding by holding. */
+export const selectHiddenAssetHoldingKeySet = createMemoizedSelector(
+    [selectHiddenAssetHoldingKeys],
+    (keys): ReadonlySet<AssetHoldingKey> => new Set(keys),
+);

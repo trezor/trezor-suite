@@ -3,16 +3,19 @@ import { createWeakMapSelector, returnStableArrayIfEmpty } from '@suite-common/r
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import {
     type AssetHolding,
+    type AssetHoldingKey,
     type AssetHoldingsRootState,
     type AssetKey,
+    type AssetKeyParts,
     type FiatRatesRootState,
     type WalletSettingsRootState,
+    assetHoldingsIndex,
     parseAssetKey,
     selectBaseCurrency,
     selectCurrentFiatRates,
     selectEnabledNetworks,
+    selectHiddenAssetHoldingKeySet,
     selectLastWeekFiatRates,
-    selectShownAssetHoldings,
 } from '@suite-common/wallet-core';
 import { type TokenAddress } from '@suite-common/wallet-types';
 import { getFiatRateKey, toFiatCurrency } from '@suite-common/wallet-utils';
@@ -78,66 +81,76 @@ export type AssetTotal = {
     tokenInfo: TokenInfo | undefined;
 };
 
-/** What the given wallet holds and the user is shown, on the networks they have enabled. */
-export const selectAssetFirstHoldings = createMemoizedSelector(
+// An asset whose holdings and hiding are unchanged is summed once: the index hands back the same
+// array for a group it did not touch, so the sum can hang off it.
+const summedAssets = new WeakMap<object, WeakMap<object, AssetTotal>>();
+
+const sumAsset = (
+    assetKey: AssetKey,
+    parts: AssetKeyParts,
+    holdings: readonly AssetHolding[],
+    hidden: ReadonlySet<AssetHoldingKey>,
+): AssetTotal | undefined => {
+    const known = summedAssets.get(holdings)?.get(hidden);
+
+    if (known !== undefined) {
+        return known;
+    }
+
+    const shown = holdings.filter(
+        holding => holding.isAccountVisible && !hidden.has(holding.holdingKey),
+    );
+
+    if (shown.length === 0) {
+        return undefined;
+    }
+
+    const { cryptoBalance, tokenInfo } = sumAssetHoldings(shown);
+    const asset: AssetTotal = {
+        assetKey,
+        symbol: parts.symbol,
+        contractAddress: parts.contractAddress,
+        displaySymbol: getAssetDisplaySymbol({ symbol: parts.symbol, tokenInfo }),
+        cryptoBalance,
+        tokenInfo,
+    };
+
+    const forHoldings = summedAssets.get(holdings) ?? new WeakMap<object, AssetTotal>();
+    forHoldings.set(hidden, asset);
+    summedAssets.set(holdings, forHoldings);
+
+    return asset;
+};
+
+/**
+ * One entry per asset the given wallet holds, over however many accounts hold it.
+ *
+ * The index has already gathered the holdings of an asset, so this adds them up rather than
+ * gathering them again. What an asset is worth is not here: the rates tick far more often than
+ * the holdings change, and pricing them is `selectAssetFirstRows`.
+ */
+export const selectAssetFirstAssets = createMemoizedSelector(
     [
-        selectShownAssetHoldings,
+        (state: AssetFirstTableState) => assetHoldingsIndex.read(state).groups.byAsset,
+        selectHiddenAssetHoldingKeySet,
         selectEnabledNetworks,
         (_state: AssetFirstTableState, deviceState: StaticSessionId) => deviceState,
     ],
-    (shownHoldings, enabledNetworks, deviceState) =>
-        returnStableArrayIfEmpty(
-            shownHoldings.filter(
-                holding =>
-                    holding.isAccountVisible &&
-                    holding.deviceState === deviceState &&
-                    enabledNetworks.includes(holding.symbol),
-            ),
-        ),
-);
-
-/**
- * One entry per asset the wallet holds, over however many accounts hold it.
- *
- * What an asset is worth is not here: the rates tick far more often than the holdings change, and
- * pricing them is `selectAssetFirstRows`.
- */
-export const selectAssetFirstAssets = createMemoizedSelector(
-    [selectAssetFirstHoldings],
-    (holdings): readonly AssetTotal[] => {
-        const holdingsByAsset = new Map<AssetKey, AssetHolding[]>();
-
-        holdings.forEach(holding => {
-            const held = holdingsByAsset.get(holding.assetKey);
-
-            if (held === undefined) {
-                holdingsByAsset.set(holding.assetKey, [holding]);
-
-                return;
-            }
-
-            held.push(holding);
-        });
-
+    (assetGroups, hidden, enabledNetworks, deviceState): readonly AssetTotal[] => {
         const assets: AssetTotal[] = [];
 
-        holdingsByAsset.forEach((assetHoldings, assetKey) => {
-            const parts = parseAssetKey(assetKey);
+        assetGroups.forEach((group, key) => {
+            const parts = parseAssetKey(key);
 
-            if (parts === undefined) {
+            if (parts?.deviceState !== deviceState || !enabledNetworks.includes(parts.symbol)) {
                 return;
             }
 
-            const { cryptoBalance, tokenInfo } = sumAssetHoldings(assetHoldings);
+            const asset = sumAsset(key, parts, group.entities, hidden);
 
-            assets.push({
-                assetKey,
-                symbol: parts.symbol,
-                contractAddress: parts.contractAddress,
-                displaySymbol: getAssetDisplaySymbol({ symbol: parts.symbol, tokenInfo }),
-                cryptoBalance,
-                tokenInfo,
-            });
+            if (asset !== undefined) {
+                assets.push(asset);
+            }
         });
 
         return returnStableArrayIfEmpty(assets);
