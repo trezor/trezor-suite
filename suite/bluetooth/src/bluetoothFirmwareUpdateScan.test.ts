@@ -24,7 +24,7 @@ const getDeviceConnectListener = () => {
     return registration[1];
 };
 
-describe('startFirmwareUpdateScan via createFirmwareUpdateScan', () => {
+describe('startFirmwareUpdateScan', () => {
     let scan: FirmwareUpdateScan;
 
     beforeEach(() => {
@@ -153,24 +153,38 @@ describe('startFirmwareUpdateScan via createFirmwareUpdateScan', () => {
         expect(TrezorConnect.off).toHaveBeenCalledTimes(1);
     });
 
-    it('cleans up when disconnecting fails without starting a scan', async () => {
-        jest.mocked(bluetoothIpc.disconnectDevice).mockRejectedValueOnce(new Error('test-error'));
+    it.each(['response', 'rejection'])('cleans up a failed disconnect (%s)', async failure => {
+        if (failure === 'response') {
+            jest.mocked(bluetoothIpc.disconnectDevice).mockResolvedValueOnce({
+                success: false,
+                error: 'test-error',
+            });
+        } else {
+            jest.mocked(bluetoothIpc.disconnectDevice).mockRejectedValueOnce(
+                new Error('test-error'),
+            );
+        }
 
         scan.start('test-device');
         await jest.advanceTimersByTimeAsync(0);
-        scan.stop();
 
         expect(TrezorConnect.off).toHaveBeenCalledTimes(1);
         expect(bluetoothIpc.startScan).not.toHaveBeenCalled();
         expect(bluetoothIpc.stopScan).not.toHaveBeenCalled();
     });
 
-    it('releases the scan owner and listener when starting the scan fails', async () => {
-        jest.mocked(bluetoothIpc.startScan).mockRejectedValueOnce(new Error('test-error'));
+    it.each(['response', 'rejection'])('cleans up a failed scan start (%s)', async failure => {
+        if (failure === 'response') {
+            jest.mocked(bluetoothIpc.startScan).mockResolvedValueOnce({
+                success: false,
+                error: 'test-error',
+            });
+        } else {
+            jest.mocked(bluetoothIpc.startScan).mockRejectedValueOnce(new Error('test-error'));
+        }
 
         scan.start('test-device');
         await jest.advanceTimersByTimeAsync(0);
-        scan.stop();
 
         expect(TrezorConnect.off).toHaveBeenCalledTimes(1);
         expect(bluetoothIpc.stopScan).toHaveBeenCalledTimes(1);
@@ -190,8 +204,15 @@ describe('startFirmwareUpdateScan via createFirmwareUpdateScan', () => {
         expect(bluetoothIpc.stopScan).toHaveBeenCalledTimes(1);
     });
 
-    it('handles a rejected stop request without leaking the connection listener', async () => {
-        jest.mocked(bluetoothIpc.stopScan).mockRejectedValueOnce(new Error('test-error'));
+    it.each(['response', 'rejection'])('reports a failed stop request (%s)', async failure => {
+        if (failure === 'response') {
+            jest.mocked(bluetoothIpc.stopScan).mockResolvedValueOnce({
+                success: false,
+                error: 'test-error',
+            });
+        } else {
+            jest.mocked(bluetoothIpc.stopScan).mockRejectedValueOnce(new Error('test-error'));
+        }
         scan.start('test-device');
         await jest.advanceTimersByTimeAsync(0);
 
