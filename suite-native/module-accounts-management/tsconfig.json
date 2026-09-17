@@ -68,6 +68,7 @@
             "path": "../module-stellar-token-management"
         },
         { "path": "../navigation" },
+        { "path": "../performance-metrics" },
         { "path": "../qr-code" },
         { "path": "../suite-sync" },
         { "path": "../tokens" },

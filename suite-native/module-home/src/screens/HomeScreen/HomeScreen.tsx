@@ -10,6 +10,7 @@ import {
 } from '@suite-native/bluetooth';
 import { DeviceManagerScreenHeader } from '@suite-native/device-manager';
 import { Screen } from '@suite-native/navigation';
+import { ScreenPerformanceRoot, useScreenPerformance } from '@suite-native/performance-metrics';
 import { exhaustive } from '@trezor/type-utils';
 
 import { DiscoveryNotFinished } from './components/DiscoveryNotFinished';
@@ -52,6 +53,7 @@ const HomeScreenContent = ({
 export const HomeScreen = () => {
     const { showSystemUnpairingAlert } = useBluetoothAlerts();
     const portfolioGraphRef = useRef<PortfolioGraphRef>(null);
+    const { panHandlers } = useScreenPerformance('home');
 
     const homeScreenState = useSelector(selectHomeScreenState);
     const isDiscoveredDeviceAccountless = useSelector(selectIsDiscoveredDeviceAccountless);
@@ -78,15 +80,17 @@ export const HomeScreen = () => {
     const isFullWidthScreenState = homeScreenState === 'portfolioContent';
 
     return (
-        <Screen
-            header={<DeviceManagerScreenHeader />}
-            refreshControl={refreshControl}
-            noHorizontalPadding={isFullWidthScreenState}
-        >
-            <HomeScreenContent
-                homeScreenState={homeScreenState}
-                portfolioGraphRef={portfolioGraphRef}
-            />
-        </Screen>
+        <ScreenPerformanceRoot panHandlers={panHandlers}>
+            <Screen
+                header={<DeviceManagerScreenHeader />}
+                refreshControl={refreshControl}
+                noHorizontalPadding={isFullWidthScreenState}
+            >
+                <HomeScreenContent
+                    homeScreenState={homeScreenState}
+                    portfolioGraphRef={portfolioGraphRef}
+                />
+            </Screen>
+        </ScreenPerformanceRoot>
     );
 };

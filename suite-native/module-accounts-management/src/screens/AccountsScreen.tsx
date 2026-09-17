@@ -13,6 +13,7 @@ import {
     Screen,
     type StackToStackCompositeScreenProps,
 } from '@suite-native/navigation';
+import { ScreenPerformanceRoot, useScreenPerformance } from '@suite-native/performance-metrics';
 import { isNetworkWithTokens } from '@suite-native/tokens';
 
 type ScreenNavigationProps = StackToStackCompositeScreenProps<
@@ -22,6 +23,7 @@ type ScreenNavigationProps = StackToStackCompositeScreenProps<
 >;
 
 export const AccountsScreen = ({ navigation, route }: ScreenNavigationProps) => {
+    const { panHandlers } = useScreenPerformance('accounts');
     const networksFilter = useMemo(
         () => route.params?.networksFilter ?? [],
         [route.params?.networksFilter],
@@ -42,17 +44,21 @@ export const AccountsScreen = ({ navigation, route }: ScreenNavigationProps) => 
     };
 
     return (
-        // noBottomPadding: SearchableAccountsListHeader owns the top spacing to accommodate filter badge overflow.
-        <Screen header={<DeviceManagerScreenHeader noBottomPadding />} isScrollable={false}>
-            <AccountsListWithFilter
-                title={<Translation id="moduleAccountManagement.accountsScreen.accountsTitle" />}
-                onSelectAccount={handleSelectAccount}
-                flowType="accounts"
-                networksFilter={networksFilter}
-                isScrollDividerEnabled
-            >
-                <AccountsRediscoveryNeededWarning />
-            </AccountsListWithFilter>
-        </Screen>
+        <ScreenPerformanceRoot panHandlers={panHandlers}>
+            {/* noBottomPadding: SearchableAccountsListHeader owns the top spacing to accommodate filter badge overflow. */}
+            <Screen header={<DeviceManagerScreenHeader noBottomPadding />} isScrollable={false}>
+                <AccountsListWithFilter
+                    title={
+                        <Translation id="moduleAccountManagement.accountsScreen.accountsTitle" />
+                    }
+                    onSelectAccount={handleSelectAccount}
+                    flowType="accounts"
+                    networksFilter={networksFilter}
+                    isScrollDividerEnabled
+                >
+                    <AccountsRediscoveryNeededWarning />
+                </AccountsListWithFilter>
+            </Screen>
+        </ScreenPerformanceRoot>
     );
 };
