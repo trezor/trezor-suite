@@ -50,11 +50,17 @@ test.describe('Account types suite', { tag: ['@T3W1', '@T3T1'] }, () => {
             });
             await dashboardPage.navigateTo();
 
+            // The account menu is virtualized, so only rows inside the rendered window are
+            // counted. Filtering to the coin under test keeps every one of its rows rendered.
+            await walletPage.filterAccountsButton.click();
+
             for (const { coin, accounts } of accountTypes) {
+                await walletPage.walletFilter(coin).click();
+
                 for (const { type } of accounts) {
                     await test.step(`Add and verify ${type} account for ${coin}`, async () => {
                         const numberOfAccountsBefore =
-                            await walletPage.getAccountsInTypeCount(type);
+                            await walletPage.getAccountsForCoinInTypeCount(type, coin);
 
                         await walletPage.addAccountButton.click();
                         await expect(walletPage.addAccountNetworkSearchInput).toBeVisible();
@@ -66,11 +72,14 @@ test.describe('Account types suite', { tag: ['@T3W1', '@T3T1'] }, () => {
                         await walletPage.addAccountConfirmButton.click();
                         await walletPage.closeAddAccountModal();
 
-                        const numberOfAccountsAfter = await walletPage.getAccountsInTypeCount(type);
+                        const numberOfAccountsAfter =
+                            await walletPage.getAccountsForCoinInTypeCount(type, coin);
 
                         expect(numberOfAccountsAfter).toEqual(numberOfAccountsBefore + 1);
                     });
                 }
+
+                await walletPage.walletFilter(coin).click();
             }
         },
     );
