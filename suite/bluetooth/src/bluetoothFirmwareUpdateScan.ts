@@ -23,7 +23,8 @@ const startFirmwareUpdateScan = (id: string) => {
         }
     };
 
-    const cleanup = () => {
+    const stop = () => {
+        abortController.abort();
         abortController.signal.removeEventListener('abort', onAbort);
     };
 
@@ -33,22 +34,24 @@ const startFirmwareUpdateScan = (id: string) => {
 
     bluetoothIpc
         .disconnectDevice(id)
-        .then(() => {
-            if (abortController.signal.aborted) return;
+        .then(result => {
+            if (!result.success || abortController.signal.aborted) {
+                return stop();
+            }
 
             isScanning = true;
 
-            return bluetoothIpc.startScan('firmware-update');
+            return bluetoothIpc.startScan('firmware-update').then(scanResult => {
+                if (!scanResult.success) {
+                    stop();
+                }
+            });
         })
         .catch(() => {
-            abortController.abort();
-            cleanup();
+            stop();
         });
 
-    return () => {
-        abortController.abort();
-        cleanup();
-    };
+    return stop;
 };
 
 export const createFirmwareUpdateScan = (): FirmwareUpdateScan => {

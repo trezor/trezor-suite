@@ -19,6 +19,8 @@ export const prepareBluetoothMiddleware = createMiddlewareWithExtraDeps<void, Un
             getBluetoothServiceInternal('firmwareUpdateScan').start(id);
         }
 
+        const result = next(action);
+
         if (
             bluetoothActions.knownDevicesUpdateAction.match(action) ||
             bluetoothActions.deviceUpdateAction.match(action) ||
@@ -40,6 +42,6 @@ export const prepareBluetoothMiddleware = createMiddlewareWithExtraDeps<void, Un
             getBluetoothServiceInternal('firmwareUpdateScan').stop();
         }
 
-        return next(action);
+        return result;
     },
 );
