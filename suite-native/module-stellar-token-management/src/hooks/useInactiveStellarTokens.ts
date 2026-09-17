@@ -1,23 +1,15 @@
-import { useEffect, useMemo, useState } from 'react';
 import { useSelector } from 'react-redux';
 
+import { useStellarInactiveTokens } from '@suite-common/stellar-queries';
 import {
     type TokenDefinitionsRootState,
     selectCoinDefinitions,
 } from '@suite-common/token-definitions';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { type AccountsRootState, selectAccountByKey } from '@suite-common/wallet-core';
-import { type AccountKey, type StellarTokenInfo } from '@suite-common/wallet-types';
-import { lazyStellarTokenMetadata as lazyTokenMetadata } from '@suite-common/wallet-utils';
-import { type TokenDetailByMint } from '@trezor/blockchain-link-types';
-import { STELLAR_DECIMALS, isStellarClassicAssetKey } from '@trezor/network-stellar/constants';
+import { type AccountKey } from '@suite-common/wallet-types';
 
 export const useInactiveStellarTokens = (accountKey?: AccountKey) => {
-    const [tokenMetadata, setTokenMetadata] = useState<TokenDetailByMint | null>(
-        lazyTokenMetadata.get() ?? null,
-    );
-    const [isMetadataLoading, setIsMetadataLoading] = useState(!lazyTokenMetadata.get());
-
     const account = useSelector((state: AccountsRootState) =>
         selectAccountByKey(state, accountKey),
     );
@@ -26,65 +18,15 @@ export const useInactiveStellarTokens = (accountKey?: AccountKey) => {
         selectCoinDefinitions(state, account?.symbol ?? asNetworkSymbol('xlm')),
     );
 
-    const isCoinDefinitionsLoading = coinDefinitions?.isLoading ?? false;
-
-    useEffect(() => {
-        if (!tokenMetadata) {
-            setIsMetadataLoading(true);
-            lazyTokenMetadata
-                .getOrInit()
-                .then(setTokenMetadata)
-                .catch(() => setTokenMetadata(null))
-                .finally(() => setIsMetadataLoading(false));
-        }
-    }, [tokenMetadata]);
-
-    const tokens = account?.tokens;
-    const activatedTokenContracts = useMemo(() => {
-        if (!tokens) return new Set<string>();
-
-        return new Set(tokens.map(token => token.contract));
-    }, [tokens]);
-
-    const inactiveTokens = useMemo(() => {
-        const tokenAddresses = coinDefinitions?.data ?? [];
-
-        return (
-            tokenAddresses
-                // A native SEP-41 token has no trustline to activate; it is watched by contract id.
-                .filter(
-                    contract =>
-                        isStellarClassicAssetKey(contract) &&
-                        !activatedTokenContracts.has(contract),
-                )
-                .map((contract): StellarTokenInfo => {
-                    const metadata = tokenMetadata?.[contract];
-                    const symbol = contract.split('-')[0];
-
-                    return {
-                        standard: 'STELLAR-CLASSIC',
-                        contract,
-                        name: metadata?.name,
-                        symbol,
-                        decimals: STELLAR_DECIMALS,
-                        homeDomain: metadata?.home_domain,
-                        rating: metadata?.rating,
-                    };
-                })
-                .sort((a, b) => {
-                    if (a.rating == null && b.rating == null) return 0;
-                    if (a.rating == null) return 1;
-                    if (b.rating == null) return -1;
-
-                    return b.rating - a.rating;
-                })
-        );
-    }, [coinDefinitions?.data, activatedTokenContracts, tokenMetadata]);
-
-    const isLoading = isCoinDefinitionsLoading || isMetadataLoading;
+    // Mobile offers the tokens the coin definitions in the store already list; the published
+    // metadata only says what each of them is called.
+    const { inactiveTokens, isLoading: isMetadataLoading } = useStellarInactiveTokens({
+        account,
+        contracts: coinDefinitions?.data,
+    });
 
     return {
         inactiveTokens,
-        isLoading,
+        isLoading: (coinDefinitions?.isLoading ?? false) || isMetadataLoading,
     };
 };

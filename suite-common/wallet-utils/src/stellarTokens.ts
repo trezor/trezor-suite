@@ -44,41 +44,54 @@ export const getStellarTrustlineMemo = async (contract: string) => {
     }
 };
 
-/** Get the list of inactive Stellar tokens for the user account */
-export const getStellarInactiveTokens = async (account: Account): Promise<StellarTokenInfo[]> => {
-    if (account.symbol !== 'xlm') return [];
+/** The token as the definitions describe it; absent definitions still give a usable asset code. */
+export const buildStellarTokenInfo = (
+    contract: string,
+    tokenMetadata?: TokenDetailByMint,
+): StellarTokenInfo => {
+    const metadata = tokenMetadata?.[contract];
 
-    const allTokens: TokenDetailByMint = await getTokenMetadata();
-
-    // Get the currently active token contract addresses for the user
-    const activeTokenContracts = new Set(account.tokens?.map(token => token.contract) || []);
-
-    // Return tokens that the user has not activated yet
-    const inactiveTokens = Object.entries(allTokens)
-        // A native SEP-41 token has no trustline to activate; it is watched by contract id instead.
-        .filter(
-            ([contractAddress]) =>
-                isStellarClassicAssetKey(contractAddress) &&
-                !activeTokenContracts.has(contractAddress),
-        )
-        .map(([contract]) => ({
-            type: 'STELLAR-CLASSIC' as const,
-            standard: 'STELLAR-CLASSIC' as const,
-            contract,
-            name: allTokens[contract]?.name,
-            symbol: contract.split('-')[0],
-            decimals: STELLAR_DECIMALS,
-            homeDomain: allTokens[contract]?.home_domain,
-            rating: allTokens[contract]?.rating,
-        }))
-        .sort((a, b) => {
-            // Place tokens without ratings last, otherwise sort high to low
-            if (a.rating == null && b.rating == null) return 0;
-            if (a.rating == null) return 1;
-            if (b.rating == null) return -1;
-
-            return b.rating - a.rating;
-        });
-
-    return inactiveTokens;
+    return {
+        standard: 'STELLAR-CLASSIC',
+        contract,
+        name: metadata?.name,
+        symbol: contract.split('-')[0],
+        decimals: STELLAR_DECIMALS,
+        homeDomain: metadata?.home_domain,
+        rating: metadata?.rating,
+    };
 };
+
+/** Best-rated first; a token the definitions do not rate goes last. */
+const byDescendingRating = (a: StellarTokenInfo, b: StellarTokenInfo) => {
+    if (a.rating == null && b.rating == null) return 0;
+    if (a.rating == null) return 1;
+    if (b.rating == null) return -1;
+
+    return b.rating - a.rating;
+};
+
+/**
+ * The tokens the account could still activate, out of `contracts`.
+ *
+ * Pure: the caller decides where the candidates come from (the published definitions on desktop,
+ * the coin definitions already in the store on mobile) and holds the fetched metadata.
+ */
+export const getStellarInactiveTokens = ({
+    contracts,
+    activeContracts,
+    tokenMetadata,
+}: {
+    contracts: readonly string[];
+    activeContracts: ReadonlySet<string>;
+    tokenMetadata?: TokenDetailByMint;
+}): StellarTokenInfo[] =>
+    contracts
+        // A native SEP-41 token has no trustline to activate; it is watched by contract id instead.
+        .filter(contract => isStellarClassicAssetKey(contract) && !activeContracts.has(contract))
+        .map(contract => buildStellarTokenInfo(contract, tokenMetadata))
+        .sort(byDescendingRating);
+
+/** The contracts the account already holds a trustline for. */
+export const getStellarActiveTokenContracts = (account?: Pick<Account, 'tokens'>) =>
+    new Set(account?.tokens?.map(token => token.contract) ?? []);

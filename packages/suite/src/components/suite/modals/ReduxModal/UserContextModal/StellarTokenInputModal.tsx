@@ -1,10 +1,9 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef } from 'react';
 import { useForm, useWatch } from 'react-hook-form';
 
 import { Translation, type TranslationKey, useTranslation } from '@suite/intl';
-import { resolveStellarContractId } from '@suite-common/wallet-utils';
+import { type StellarAssetValidators, useStellarAssetInput } from '@suite-common/stellar-queries';
 import { Button, Column, Input, Modal, Row, Text } from '@trezor/components';
-import stellar from '@trezor/network-stellar/runtime';
 
 export type StellarTokenInput =
     | { standard: 'STELLAR-CLASSIC'; assetCode: string; assetIssuer: string }
@@ -20,40 +19,38 @@ type FormData = {
     assetIssuer: string;
 };
 
-const validateAssetCode = (translate: (id: TranslationKey) => string) => async (value: string) => {
-    const { isValidAssetCode, isValidContractId } = await stellar();
-
-    return (
+const validateAssetCode =
+    (translate: (id: TranslationKey) => string, validators?: StellarAssetValidators) =>
+    (value: string) =>
         !value ||
-        isValidAssetCode(value) ||
-        isValidContractId(value) ||
-        translate('TR_ASSET_CODE_INVALID')
-    );
-};
+        !validators ||
+        validators.isValidAssetCode(value) ||
+        validators.isValidContractId(value) ||
+        translate('TR_ASSET_CODE_INVALID');
 
 const validateAssetIssuer =
-    (translate: (id: TranslationKey) => string, isContractToken: boolean) =>
-    async (value: string) => {
+    (
+        translate: (id: TranslationKey) => string,
+        isContractToken: boolean,
+        validators?: StellarAssetValidators,
+    ) =>
+    (value: string) => {
         if (isContractToken) return true;
         if (!value) return false;
+        if (!validators) return true;
 
-        const { isValidAddress } = await stellar();
-
-        return isValidAddress(value) || translate('TR_ISSUER_ADDRESS_INVALID');
+        return validators.isValidAddress(value) || translate('TR_ISSUER_ADDRESS_INVALID');
     };
-
-type ContractIdState = 'none' | 'resolving' | 'contract-token';
 
 export const StellarTokenInputModal = ({ onSubmit, onCancel }: StellarTokenInputModalProps) => {
     const { translationString } = useTranslation();
-    const [contractIdState, setContractIdState] = useState<ContractIdState>('none');
-    const isContractToken = contractIdState !== 'none';
 
     const {
         register,
         handleSubmit,
         formState: { errors, isValid },
         control,
+        getValues,
         setValue,
         trigger,
     } = useForm<FormData>({
@@ -72,50 +69,39 @@ export const StellarTokenInputModal = ({ onSubmit, onCancel }: StellarTokenInput
     // when using react-hook-form's uncontrolled mode.
     const [assetCode, assetIssuer] = useWatch({ control, name: ['assetCode', 'assetIssuer'] });
 
+    const { validators, isContractId, isLoading, isResolvingContractId, resolvedAsset } =
+        useStellarAssetInput(assetCode);
+
+    // A Stellar Asset Contract id is swapped for the classic asset it wraps; a contract id that
+    // wraps nothing is a native Soroban token, which has an id but no issuer to ask for.
+    const isContractToken = isContractId && !resolvedAsset;
+
     const { ref: assetCodeRef, ...assetCodeField } = register('assetCode', {
         required: true,
-        validate: validateAssetCode(translationString),
+        validate: validateAssetCode(translationString, validators),
     });
 
     const { ref: assetIssuerRef, ...assetIssuerField } = register('assetIssuer', {
-        validate: validateAssetIssuer(translationString, isContractToken),
+        validate: validateAssetIssuer(translationString, isContractToken, validators),
     });
 
-    // A SAC id resolves to its classic asset; any other valid contract id is a Soroban token.
     useEffect(() => {
-        let isStale = false;
+        if (!resolvedAsset) return;
 
-        const classifyContractId = async () => {
-            const { isValidContractId } = await stellar();
-            if (!isValidContractId(assetCode)) {
-                if (!isStale) setContractIdState('none');
+        setValue('assetCode', resolvedAsset.assetCode, { shouldValidate: true });
+        setValue('assetIssuer', resolvedAsset.assetIssuer, { shouldValidate: true });
+    }, [resolvedAsset, setValue]);
 
-                return;
-            }
+    // Anything typed before the runtime arrived was accepted on trust; judge it once it is in.
+    const hasJudgedWithValidators = useRef(false);
+    useEffect(() => {
+        if (!validators || hasJudgedWithValidators.current) return;
 
-            // A slow or failed definitions fetch must not leave a contract id filed as an asset.
-            if (!isStale) setContractIdState('resolving');
-
-            const resolved = await resolveStellarContractId(assetCode).catch(() => undefined);
-            if (isStale) return;
-
-            if (!resolved) {
-                setContractIdState('contract-token');
-
-                return;
-            }
-
-            setContractIdState('none');
-            setValue('assetCode', resolved.assetCode, { shouldValidate: true });
-            setValue('assetIssuer', resolved.assetIssuer, { shouldValidate: true });
-        };
-
-        classifyContractId();
-
-        return () => {
-            isStale = true;
-        };
-    }, [assetCode, setValue]);
+        hasJudgedWithValidators.current = true;
+        if (getValues('assetCode') || getValues('assetIssuer')) {
+            trigger();
+        }
+    }, [getValues, trigger, validators]);
 
     // Revalidate the issuer when the rule changes; on mount it would paint the empty field red.
     const hasClassifiedContractId = useRef(false);
@@ -129,18 +115,14 @@ export const StellarTokenInputModal = ({ onSubmit, onCancel }: StellarTokenInput
         trigger('assetIssuer');
     }, [isContractToken, trigger]);
 
-    const handleContinue = handleSubmit(
-        async ({ assetCode: code, assetIssuer: issuer }: FormData) => {
-            // Derived from the submitted value, so a racing classification cannot misfile it.
-            const { isValidContractId } = await stellar();
-
-            onSubmit(
-                isValidContractId(code)
-                    ? { standard: 'STELLAR-CONTRACT', contract: code }
-                    : { standard: 'STELLAR-CLASSIC', assetCode: code, assetIssuer: issuer },
-            );
-        },
-    );
+    const handleContinue = handleSubmit(({ assetCode: code, assetIssuer: issuer }: FormData) => {
+        // Derived from the submitted value, so a racing resolution cannot misfile it.
+        onSubmit(
+            validators?.isValidContractId(code)
+                ? { standard: 'STELLAR-CONTRACT', contract: code }
+                : { standard: 'STELLAR-CLASSIC', assetCode: code, assetIssuer: issuer },
+        );
+    });
 
     return (
         <Modal
@@ -153,7 +135,7 @@ export const StellarTokenInputModal = ({ onSubmit, onCancel }: StellarTokenInput
                         onClick={handleContinue}
                         // The issuer is optional for a contract id, so the form turns valid
                         // before the id is classified.
-                        isDisabled={!isValid || contractIdState === 'resolving'}
+                        isDisabled={!isValid || isLoading || isResolvingContractId}
                         intent="brand"
                     >
                         <Translation id="TR_CONTINUE" />

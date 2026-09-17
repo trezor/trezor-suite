@@ -1,0 +1,26 @@
+{
+    "name": "@suite-common/stellar-queries",
+    "version": "1.0.0",
+    "private": true,
+    "license": "See LICENSE.md in repo root",
+    "sideEffects": false,
+    "main": "src/index",
+    "scripts": {
+        "depcheck": "yarn g:depcheck",
+        "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'",
+        "test:unit": "yarn g:jest",
+        "type-check": "yarn g:tsc --build"
+    },
+    "dependencies": {
+        "@suite-common/react-query": "workspace:^",
+        "@suite-common/wallet-types": "workspace:*",
+        "@suite-common/wallet-utils": "workspace:*",
+        "@trezor/blockchain-link-types": "workspace:*",
+        "@trezor/network-stellar": "workspace:*",
+        "react": "19.2.3"
+    },
+    "devDependencies": {
+        "@suite-common/test-utils": "workspace:*",
+        "@trezor/blockchain-link-utils": "workspace:*"
+    }
+}

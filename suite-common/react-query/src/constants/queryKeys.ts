@@ -41,6 +41,13 @@ export const commonQueryKeys = {
         descriptor,
         lastKnownNonce,
     ],
+    // The Stellar runtime is a lazily imported chunk; the metadata is the published token
+    // definitions. Both are the same for every account, so they share one cache entry each and
+    // every per-token key below is served from them.
+    stellarRuntime: () => ['stellar', 'runtime'],
+    stellarTokenMetadata: () => ['stellar', 'token-metadata'],
+    stellarTokenInfo: (contract: string) => ['stellar', 'token-info', contract],
+    stellarContractAsset: (contractId: string) => ['stellar', 'contract-asset', contractId],
 } as const satisfies Record<string, AllowedQueryKey>;
 
 export const desktopQueryKeys = {
@@ -59,8 +66,6 @@ export const desktopQueryKeys = {
     ],
     defaultUrls: (symbol: string) => ['default-urls', symbol],
     proxyImage: (src?: string) => ['proxy-image', src],
-    inactiveTokens: (symbol: string, accountKey?: string) =>
-        accountKey ? ['inactive-tokens', symbol, accountKey] : ['inactive-tokens', symbol],
 } as const satisfies Record<string, AllowedQueryKey>;
 
 export const tradingQueryKeys = {
