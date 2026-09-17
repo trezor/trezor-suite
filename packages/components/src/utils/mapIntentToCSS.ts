@@ -2,10 +2,12 @@ import { type DefaultTheme } from 'styled-components';
 
 import { type CSSColor, type Color } from '@trezor/theme';
 
-import { type TextIntent, type TextPriority } from './types';
-import { addAlphaToHex } from '../../../utils/utils';
+import { addAlphaToHex } from './utils';
+import { type UIIntent, type UIPriority } from '../config/types';
 
-const colorMap: Record<TextIntent, Color> = {
+type IntentColorPriority = Extract<UIPriority, 'primary' | 'secondary'>;
+
+const colorMap: Record<UIIntent, Color> = {
     brand: 'contentBrand',
     neutral: 'contentPrimary',
     info: 'contentInfo',
@@ -14,7 +16,7 @@ const colorMap: Record<TextIntent, Color> = {
     accentViolet: 'contentAccentViolet',
 };
 
-const inverseColorMap: Record<TextIntent, Color> = {
+const inverseColorMap: Record<UIIntent, Color> = {
     brand: 'contentOnDarkBrand',
     neutral: 'contentOnDarkPrimary',
     info: 'contentOnDarkInfo',
@@ -24,8 +26,8 @@ const inverseColorMap: Record<TextIntent, Color> = {
 };
 
 export const mapIntentToCSS = (
-    intent: TextIntent,
-    priority: TextPriority,
+    intent: UIIntent,
+    priority: IntentColorPriority,
     isInverse: boolean,
     theme: DefaultTheme,
 ): CSSColor => {
