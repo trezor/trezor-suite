@@ -19,6 +19,28 @@ manifest_field() {
     ' "$1" "$2"
 }
 
+# Ops to run for a registry install-smoke, keyed on the published version line.
+#
+# Only `beta` — the v10 line `develop` tracks — is type-checked. Its published
+# .d.ts is expected to match the fixtures' v10 API surface, and the type-check is
+# the ONLY check in this suite that catches a broken published .d.ts: e.g.
+# 10.0.0-beta.2's extensionless cross-package re-export dropped every
+# @trezor/connect-core member (DEVICE, DEVICE_EVENT, ...) from @trezor/connect's
+# types under a consumer's NodeNext moduleResolution — invisible to both the
+# runtime smoke (loads the .js) and `attw` (checks the entry point, not the deep
+# re-export chain). `latest` (v9) has a genuinely different API surface, so it
+# stays runtime-only.
+#
+# TODO: once v10 ships as `latest`, type-check `latest` too and delete this
+# branch — every registry line then runs `type-check runtime`.
+registry_ops() {
+    if [ "${PACKAGE_VERSION:-}" = "beta" ]; then
+        echo "type-check runtime"
+    else
+        echo "runtime"
+    fi
+}
+
 # Run one fixture-scenario combination end-to-end.
 #
 # Usage:

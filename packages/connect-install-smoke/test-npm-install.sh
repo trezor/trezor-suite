@@ -19,9 +19,11 @@ cd "$TEST_ROOT"
 npm --version
 node --version
 
-run_install_smoke connect registry-npm runtime
-run_install_smoke connect-web registry-npm runtime
-run_install_smoke connect-mobile registry-npm runtime
+# `beta` also type-checks the published .d.ts; see registry_ops in helpers.sh.
+read -ra REGISTRY_OPS <<< "$(registry_ops)"
+run_install_smoke connect registry-npm "${REGISTRY_OPS[@]}"
+run_install_smoke connect-web registry-npm "${REGISTRY_OPS[@]}"
+run_install_smoke connect-mobile registry-npm "${REGISTRY_OPS[@]}"
 # @trezor/connect-webextension is skipped for registry scenarios: the published
 # v9 line ships a browser webpack bundle that references `self` at module top,
 # which throws ReferenceError under plain Node. The package is still smoke-tested

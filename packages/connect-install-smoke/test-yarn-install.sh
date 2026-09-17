@@ -20,14 +20,11 @@ npm --version
 node --version
 yarn --version
 
-# Registry scenarios test the latest published connect from npm, which is
-# a different version line than `develop`. Skip the per-fixture type-check
-# pass — it asserts on current-develop API surface that the published
-# package may not yet expose. Runtime smoke is enough here: if the package
-# is corrupt or its exports map is broken, node will fail to load it.
-run_install_smoke connect registry-yarn runtime
-run_install_smoke connect-web registry-yarn runtime
-run_install_smoke connect-mobile registry-yarn runtime
+# `beta` also type-checks the published .d.ts; see registry_ops in helpers.sh.
+read -ra REGISTRY_OPS <<< "$(registry_ops)"
+run_install_smoke connect registry-yarn "${REGISTRY_OPS[@]}"
+run_install_smoke connect-web registry-yarn "${REGISTRY_OPS[@]}"
+run_install_smoke connect-mobile registry-yarn "${REGISTRY_OPS[@]}"
 # @trezor/connect-webextension is skipped for registry scenarios: the published
 # v9 line ships a browser webpack bundle that references `self` at module top,
 # which throws ReferenceError under plain Node. The package is still smoke-tested
