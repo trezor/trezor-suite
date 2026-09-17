@@ -1,0 +1,167 @@
+appId: io.trezor.suite.develop
+---
+# Toggle every mainnet coin on the CoinEnablingInit screen.
+# Coins start disabled, so one tap each enables them. Order follows the
+# networksConfig mainnet order so DOWN scrolling reaches each in turn.
+- scrollUntilVisible:
+      element:
+          id: '@coin-enabling/toggle-btc'
+      direction: DOWN
+      timeout: 10000
+      visibilityPercentage: 60
+- tapOn:
+      id: '@coin-enabling/toggle-btc'
+      retryTapIfNoChange: true
+- scrollUntilVisible:
+      element:
+          id: '@coin-enabling/toggle-eth'
+      direction: DOWN
+      timeout: 10000
+      visibilityPercentage: 60
+- tapOn:
+      id: '@coin-enabling/toggle-eth'
+      retryTapIfNoChange: true
+- scrollUntilVisible:
+      element:
+          id: '@coin-enabling/toggle-pol'
+      direction: DOWN
+      timeout: 10000
+      visibilityPercentage: 60
+- tapOn:
+      id: '@coin-enabling/toggle-pol'
+      retryTapIfNoChange: true
+- scrollUntilVisible:
+      element:
+          id: '@coin-enabling/toggle-bsc'
+      direction: DOWN
+      timeout: 10000
+      visibilityPercentage: 60
+- tapOn:
+      id: '@coin-enabling/toggle-bsc'
+      retryTapIfNoChange: true
+- scrollUntilVisible:
+      element:
+          id: '@coin-enabling/toggle-arb'
+      direction: DOWN
+      timeout: 10000
+      visibilityPercentage: 60
+- tapOn:
+      id: '@coin-enabling/toggle-arb'
+      retryTapIfNoChange: true
+- scrollUntilVisible:
+      element:
+          id: '@coin-enabling/toggle-base'
+      direction: DOWN
+      timeout: 10000
+      visibilityPercentage: 60
+- tapOn:
+      id: '@coin-enabling/toggle-base'
+      retryTapIfNoChange: true
+- scrollUntilVisible:
+      element:
+          id: '@coin-enabling/toggle-op'
+      direction: DOWN
+      timeout: 10000
+      visibilityPercentage: 60
+- tapOn:
+      id: '@coin-enabling/toggle-op'
+      retryTapIfNoChange: true
+- scrollUntilVisible:
+      element:
+          id: '@coin-enabling/toggle-avax'
+      direction: DOWN
+      timeout: 10000
+      visibilityPercentage: 60
+- tapOn:
+      id: '@coin-enabling/toggle-avax'
+      retryTapIfNoChange: true
+- scrollUntilVisible:
+      element:
+          id: '@coin-enabling/toggle-sol'
+      direction: DOWN
+      timeout: 10000
+      visibilityPercentage: 60
+- tapOn:
+      id: '@coin-enabling/toggle-sol'
+      retryTapIfNoChange: true
+- scrollUntilVisible:
+      element:
+          id: '@coin-enabling/toggle-trx'
+      direction: DOWN
+      timeout: 10000
+      visibilityPercentage: 60
+- tapOn:
+      id: '@coin-enabling/toggle-trx'
+      retryTapIfNoChange: true
+- scrollUntilVisible:
+      element:
+          id: '@coin-enabling/toggle-ada'
+      direction: DOWN
+      timeout: 10000
+      visibilityPercentage: 60
+- tapOn:
+      id: '@coin-enabling/toggle-ada'
+      retryTapIfNoChange: true
+- scrollUntilVisible:
+      element:
+          id: '@coin-enabling/toggle-etc'
+      direction: DOWN
+      timeout: 10000
+      visibilityPercentage: 60
+- tapOn:
+      id: '@coin-enabling/toggle-etc'
+      retryTapIfNoChange: true
+- scrollUntilVisible:
+      element:
+          id: '@coin-enabling/toggle-xrp'
+      direction: DOWN
+      timeout: 10000
+      visibilityPercentage: 60
+- tapOn:
+      id: '@coin-enabling/toggle-xrp'
+      retryTapIfNoChange: true
+- scrollUntilVisible:
+      element:
+          id: '@coin-enabling/toggle-xlm'
+      direction: DOWN
+      timeout: 10000
+      visibilityPercentage: 60
+- tapOn:
+      id: '@coin-enabling/toggle-xlm'
+      retryTapIfNoChange: true
+- scrollUntilVisible:
+      element:
+          id: '@coin-enabling/toggle-ltc'
+      direction: DOWN
+      timeout: 10000
+      visibilityPercentage: 60
+- tapOn:
+      id: '@coin-enabling/toggle-ltc'
+      retryTapIfNoChange: true
+- scrollUntilVisible:
+      element:
+          id: '@coin-enabling/toggle-bch'
+      direction: DOWN
+      timeout: 10000
+      visibilityPercentage: 60
+- tapOn:
+      id: '@coin-enabling/toggle-bch'
+      retryTapIfNoChange: true
+- scrollUntilVisible:
+      element:
+          id: '@coin-enabling/toggle-doge'
+      direction: DOWN
+      timeout: 10000
+      visibilityPercentage: 60
+- tapOn:
+      id: '@coin-enabling/toggle-doge'
+      retryTapIfNoChange: true
+- scrollUntilVisible:
+      element:
+          id: '@coin-enabling/toggle-zec'
+      direction: DOWN
+      timeout: 10000
+      visibilityPercentage: 60
+- tapOn:
+      id: '@coin-enabling/toggle-zec'
+      retryTapIfNoChange: true
