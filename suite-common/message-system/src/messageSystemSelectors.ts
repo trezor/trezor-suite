@@ -287,12 +287,3 @@ export const selectExperimentInclusionOverrideById = (id: ExperimentId) =>
         [selectAllExperimentInclusionOverrides],
         inclusionOverrides => inclusionOverrides?.[id] ?? null,
     );
-
-export const selectAllExperimentVariantOverrides = (state: MessageSystemRootState) =>
-    state.messageSystem.experimentVariantOverrides;
-
-export const selectExperimentVariantOverrideById = (id: ExperimentId) =>
-    createMemoizedSelector(
-        [selectAllExperimentVariantOverrides],
-        variantOverrides => variantOverrides?.[id] ?? null,
-    );

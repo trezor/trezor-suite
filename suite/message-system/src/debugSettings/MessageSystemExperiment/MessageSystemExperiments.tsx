@@ -11,7 +11,6 @@ import {
     getExperimentGroupByInclusion,
     messageSystemActions,
     selectAllExperimentInclusionOverrides,
-    selectAllExperimentVariantOverrides,
     selectAllManuallyAddedExperimentIds,
     selectAllValidExperiments,
 } from '@suite-common/message-system';
@@ -48,7 +47,6 @@ export const MessageSystemExperiments = ({
     const allValidExperiments = useSelector(selectAllValidExperiments);
     const allManuallyAddedExperimentIds = useSelector(selectAllManuallyAddedExperimentIds);
     const allExperimentInclusionOverrides = useSelector(selectAllExperimentInclusionOverrides);
-    const allExperimentVariantOverrides = useSelector(selectAllExperimentVariantOverrides);
     const instanceId = useSelector(selectAnalyticsInstanceId);
     const { dispatch } = useServices(selectDispatch);
 
@@ -90,20 +88,14 @@ export const MessageSystemExperiments = ({
                     const isActive = validExperimentIdSet.has(experiment.id);
 
                     const inclusionOverride = allExperimentInclusionOverrides?.[experiment.id];
-                    const variantOverride = allExperimentVariantOverrides?.[experiment.id];
 
-                    const assignedGroupByInclusion =
+                    const assignedGroup =
                         inclusionOverride != undefined
                             ? getExperimentGroupByInclusion({
                                   groups: experiment.groups,
                                   inclusion: inclusionOverride,
                               })
                             : getActiveExperimentGroup({ experiment, instanceId });
-
-                    const assignedGroup =
-                        variantOverride != undefined
-                            ? experiment.groups.find(group => group.variant === variantOverride)
-                            : assignedGroupByInclusion;
 
                     return (
                         <MessageContainer key={`${experiment.id}-${index}`} $active={isActive}>
@@ -123,7 +115,6 @@ export const MessageSystemExperiments = ({
                                     instanceId={instanceId}
                                     experiment={experiment}
                                     inclusionOverride={inclusionOverride}
-                                    variantOverride={variantOverride}
                                 />
                                 <Column alignItems="flex-end" gap={8}>
                                     <Button

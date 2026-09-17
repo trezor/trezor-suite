@@ -8,7 +8,7 @@ import {
     messageSystemActions,
 } from '@suite-common/message-system';
 import { selectDispatch } from '@suite-common/redux-utils';
-import { Button, Column, Icon, InfoItem, Range, SelectBar } from '@trezor/components';
+import { Button, Column, Icon, InfoItem, Range } from '@trezor/components';
 import {
     ArrowCounterClockwiseIcon,
     CircleFilledIcon,
@@ -23,10 +23,7 @@ type MessageSystemExperimentInfoProps = {
     instanceId?: string;
     isActive: boolean;
     inclusionOverride?: number;
-    variantOverride?: string;
 };
-
-const NO_VARIANT_OVERRIDE = 'auto';
 
 export const MessageSystemExperimentInfo = ({
     experiment,
@@ -34,7 +31,6 @@ export const MessageSystemExperimentInfo = ({
     isActive,
     instanceId,
     inclusionOverride,
-    variantOverride,
 }: MessageSystemExperimentInfoProps) => {
     const { dispatch } = useServices(selectDispatch);
     const debounce = useDebounce();
@@ -66,17 +62,6 @@ export const MessageSystemExperimentInfo = ({
         dispatch(messageSystemActions.clearExperimentInclusionOverride(experiment.id));
     };
 
-    const onVariantChange = (value: string) => {
-        dispatch(
-            value === NO_VARIANT_OVERRIDE
-                ? messageSystemActions.clearExperimentVariantOverride(experiment.id)
-                : messageSystemActions.setExperimentVariantOverride({
-                      id: experiment.id,
-                      variant: value,
-                  }),
-        );
-    };
-
     return (
         <Column gap={8}>
             <InfoItem label="Active" icon={InfoIcon} direction="row">
@@ -89,21 +74,6 @@ export const MessageSystemExperimentInfo = ({
 
             <InfoItem label="Inclusion" icon={CrosshairIcon} direction="row">
                 {localInclusion !== null ? localInclusion : 'N/A'}
-            </InfoItem>
-
-            <InfoItem label="Force variant" icon={UsersIcon} direction="row">
-                <SelectBar
-                    size="small"
-                    selectedOption={variantOverride ?? NO_VARIANT_OVERRIDE}
-                    options={[
-                        { label: 'Auto', value: NO_VARIANT_OVERRIDE },
-                        ...experiment.groups.map(group => ({
-                            label: group.variant,
-                            value: group.variant,
-                        })),
-                    ]}
-                    onChange={onVariantChange}
-                />
             </InfoItem>
 
             <Range

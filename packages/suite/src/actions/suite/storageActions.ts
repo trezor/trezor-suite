@@ -986,8 +986,6 @@ export const saveMessageSystemThunk =
             configSource,
             manuallyAddedMessageIds,
             manuallyAddedExperimentIds,
-            experimentInclusionOverrides,
-            experimentVariantOverrides,
         } = selectMessageSystem(getState());
 
         extra.services.db.addItem(
@@ -999,8 +997,6 @@ export const saveMessageSystemThunk =
                 configSource,
                 manuallyAddedMessageIds,
                 manuallyAddedExperimentIds,
-                experimentInclusionOverrides,
-                experimentVariantOverrides,
             },
             'suite',
             true,

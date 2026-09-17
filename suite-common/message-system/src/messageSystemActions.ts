@@ -18,11 +18,6 @@ export type InclusionOverridePayload = {
     inclusion: number;
 };
 
-export type VariantOverridePayload = {
-    id: string;
-    variant: string;
-};
-
 export const ACTION_PREFIX = '@message-system';
 
 const fetchSuccess = createAction(
@@ -93,16 +88,6 @@ export const clearExperimentInclusionOverride = createAction(
     (payload: string) => ({ payload }),
 );
 
-export const setExperimentVariantOverride = createAction(
-    `${ACTION_PREFIX}/setExperimentsVariantOverride`,
-    (payload: VariantOverridePayload) => ({ payload }),
-);
-
-export const clearExperimentVariantOverride = createAction(
-    `${ACTION_PREFIX}/clearExperimentsVariantOverride`,
-    (payload: string) => ({ payload }),
-);
-
 export const messageSystemActions = {
     updateValidMessages,
     updateValidExperiments,
@@ -117,6 +102,4 @@ export const messageSystemActions = {
     removeExperiment,
     setExperimentInclusionOverride,
     clearExperimentInclusionOverride,
-    setExperimentVariantOverride,
-    clearExperimentVariantOverride,
 } as const;
