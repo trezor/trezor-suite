@@ -1073,7 +1073,7 @@ describe('recomposeAndSignTxThunk', () => {
             },
             {
                 minor_version: 12,
-                patch_version: 1,
+                patch_version: 5,
             },
         );
 

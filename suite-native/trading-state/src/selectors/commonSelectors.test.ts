@@ -319,7 +319,7 @@ describe('commonSelectors', () => {
             features: object | undefined = {
                 major_version: 2,
                 minor_version: 12,
-                patch_version: 1,
+                patch_version: 5,
             },
         ) =>
             ({
@@ -340,7 +340,7 @@ describe('commonSelectors', () => {
             const state = getSlip24State(true, {
                 major_version: 2,
                 minor_version: 12,
-                patch_version: 0,
+                patch_version: 4,
             });
 
             expect(selectIsTradingSlip24Enabled(state, getBtcAccount())).toBe(false);

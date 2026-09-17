@@ -26,7 +26,7 @@ export const TRADING_SLIP24_SUPPORTED_NETWORK_TYPES: NetworkType[] = [
     'ripple',
 ];
 
-export const TRADING_SLIP24_MIN_FIRMWARE_VERSION = '2.12.1';
+export const TRADING_SLIP24_MIN_FIRMWARE_VERSION = '2.12.5';
 
 export const TRADING_EXCHANGE_RATE = 'rateType';
 export const TRADING_EXCHANGE_RATE_FIXED = 'fixed';
