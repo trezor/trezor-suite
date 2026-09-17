@@ -1,8 +1,5 @@
-import {
-    type BitcoinNetworkSymbol,
-    isSupportedBitcoinNetwork,
-    supportedBitcoinNetworks,
-} from '@trezor/network-bitcoin/constants';
+import { supportedBitcoinNetworks } from '@trezor/network-bitcoin/constants';
+import { asNetworkSymbols } from '@trezor/network-module';
 import type { SuiteNetworkModule } from '@trezor/network-module-suite-types';
 
 import { BitcoinSignVerify } from './BitcoinSignVerify';
@@ -13,11 +10,9 @@ import {
 
 export type BitcoinSuiteNetworkModuleDeps = BitcoinSignVerifyConnectDep;
 
-export type BitcoinSuiteNetworkModule = SuiteNetworkModule<BitcoinNetworkSymbol>;
-
 export const createBitcoinSuiteNetworkModule = (
     deps: BitcoinSuiteNetworkModuleDeps,
-): BitcoinSuiteNetworkModule => {
+): SuiteNetworkModule => {
     const actions = createBitcoinSignVerifyActions(deps);
 
     return {
@@ -25,7 +20,6 @@ export const createBitcoinSuiteNetworkModule = (
             Component: props => <BitcoinSignVerify {...props} actions={actions} />,
             title: 'TR_NAV_SIGN_VERIFY',
         },
-        getSupportedNetworks: () => supportedBitcoinNetworks,
-        isSupportedNetwork: isSupportedBitcoinNetwork,
+        getSupportedNetworks: () => asNetworkSymbols(supportedBitcoinNetworks),
     };
 };

@@ -1,4 +1,1 @@
-export {
-    type RippleSuiteNetworkModule,
-    createRippleSuiteNetworkModule,
-} from './RippleSuiteNetworkModule';
+export { createRippleSuiteNetworkModule } from './RippleSuiteNetworkModule';

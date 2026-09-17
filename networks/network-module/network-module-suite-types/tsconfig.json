@@ -5,6 +5,7 @@
         {
             "path": "../../../suite-common/wallet-types"
         },
-        { "path": "../../../suite/intl" }
+        { "path": "../../../suite/intl" },
+        { "path": "../network-module" }
     ]
 }
