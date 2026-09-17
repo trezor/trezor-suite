@@ -1,4 +1,4 @@
-import { type DeviceRootState, selectDeviceStaticSessionId } from '@suite-common/device';
+import { type DeviceRootState } from '@suite-common/device';
 import { createWeakMapSelector, returnStableArrayIfEmpty } from '@suite-common/redux-utils';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import {
@@ -17,6 +17,7 @@ import {
 import { type TokenAddress } from '@suite-common/wallet-types';
 import { getFiatRateKey, toFiatCurrency } from '@suite-common/wallet-utils';
 import { type TokenInfo } from '@trezor/blockchain-link-types';
+import { type StaticSessionId } from '@trezor/device-utils';
 import { BigNumber } from '@trezor/utils';
 
 import {
@@ -68,39 +69,45 @@ const compareRows = (left: AssetRow, right: AssetRow) =>
     left.displaySymbol.localeCompare(right.displaySymbol) ||
     left.symbol.localeCompare(right.symbol);
 
-export const selectAssetFirstRows = createMemoizedSelector(
+export type AssetTotal = {
+    assetKey: AssetKey;
+    symbol: NetworkSymbol;
+    contractAddress: TokenAddress | undefined;
+    displaySymbol: string;
+    cryptoBalance: BigNumber;
+    tokenInfo: TokenInfo | undefined;
+};
+
+/** What the given wallet holds and the user is shown, on the networks they have enabled. */
+export const selectAssetFirstHoldings = createMemoizedSelector(
     [
         selectShownAssetHoldings,
-        selectDeviceStaticSessionId,
         selectEnabledNetworks,
-        selectCurrentFiatRates,
-        selectLastWeekFiatRates,
-        selectBaseCurrency,
+        (_state: AssetFirstTableState, deviceState: StaticSessionId) => deviceState,
     ],
-    (
-        shownHoldings,
-        deviceStaticSessionId,
-        enabledNetworks,
-        currentFiatRates,
-        lastWeekFiatRates,
-        baseCurrencyCode,
-    ): readonly AssetRow[] => {
-        if (deviceStaticSessionId === null) {
-            return returnStableArrayIfEmpty([]);
-        }
+    (shownHoldings, enabledNetworks, deviceState) =>
+        returnStableArrayIfEmpty(
+            shownHoldings.filter(
+                holding =>
+                    holding.isAccountVisible &&
+                    holding.deviceState === deviceState &&
+                    enabledNetworks.includes(holding.symbol),
+            ),
+        ),
+);
 
-        const rows: AssetRow[] = [];
+/**
+ * One entry per asset the wallet holds, over however many accounts hold it.
+ *
+ * What an asset is worth is not here: the rates tick far more often than the holdings change, and
+ * pricing them is `selectAssetFirstRows`.
+ */
+export const selectAssetFirstAssets = createMemoizedSelector(
+    [selectAssetFirstHoldings],
+    (holdings): readonly AssetTotal[] => {
         const holdingsByAsset = new Map<AssetKey, AssetHolding[]>();
 
-        shownHoldings.forEach(holding => {
-            if (
-                !holding.isAccountVisible ||
-                holding.deviceState !== deviceStaticSessionId ||
-                !enabledNetworks.includes(holding.symbol)
-            ) {
-                return;
-            }
-
+        holdings.forEach(holding => {
             const held = holdingsByAsset.get(holding.assetKey);
 
             if (held === undefined) {
@@ -112,42 +119,55 @@ export const selectAssetFirstRows = createMemoizedSelector(
             held.push(holding);
         });
 
-        holdingsByAsset.forEach((holdings, assetKey) => {
+        const assets: AssetTotal[] = [];
+
+        holdingsByAsset.forEach((assetHoldings, assetKey) => {
             const parts = parseAssetKey(assetKey);
 
             if (parts === undefined) {
                 return;
             }
 
-            const { symbol, contractAddress } = parts;
-            const { cryptoBalance, tokenInfo } = sumAssetHoldings(holdings);
-            const fiatRateKey = getFiatRateKey(symbol, baseCurrencyCode, contractAddress);
-            const fiatValue =
-                toFiatCurrency({
-                    amount: cryptoBalance.toFixed(),
-                    rate: currentFiatRates?.[fiatRateKey]?.rate,
-                }) ?? ZERO_FIAT_VALUE;
-            const displaySymbol = getAssetDisplaySymbol({ symbol, tokenInfo });
+            const { cryptoBalance, tokenInfo } = sumAssetHoldings(assetHoldings);
 
-            rows.push(
-                settleRow({
-                    assetKey,
-                    symbol,
-                    contractAddress,
-                    displaySymbol,
-                    cryptoBalance,
-                    tokenInfo,
-                    fiatValue,
-                    weekAgoFiatValue:
-                        toFiatCurrency({
-                            amount: cryptoBalance.toFixed(),
-                            rate: lastWeekFiatRates?.[fiatRateKey]?.rate,
-                        }) ?? ZERO_FIAT_VALUE,
-                }),
-            );
+            assets.push({
+                assetKey,
+                symbol: parts.symbol,
+                contractAddress: parts.contractAddress,
+                displaySymbol: getAssetDisplaySymbol({ symbol: parts.symbol, tokenInfo }),
+                cryptoBalance,
+                tokenInfo,
+            });
         });
 
-        return returnStableArrayIfEmpty(rows.sort(compareRows));
+        return returnStableArrayIfEmpty(assets);
+    },
+);
+
+/** The assets priced in the user's currency, most valuable first. */
+export const selectAssetFirstRows = createMemoizedSelector(
+    [selectAssetFirstAssets, selectCurrentFiatRates, selectLastWeekFiatRates, selectBaseCurrency],
+    (assets, currentFiatRates, lastWeekFiatRates, baseCurrencyCode): readonly AssetRow[] => {
+        const priced = assets.map(asset => {
+            const fiatRateKey = getFiatRateKey(
+                asset.symbol,
+                baseCurrencyCode,
+                asset.contractAddress,
+            );
+            const amount = asset.cryptoBalance.toFixed();
+
+            return settleRow({
+                ...asset,
+                fiatValue:
+                    toFiatCurrency({ amount, rate: currentFiatRates?.[fiatRateKey]?.rate }) ??
+                    ZERO_FIAT_VALUE,
+                weekAgoFiatValue:
+                    toFiatCurrency({ amount, rate: lastWeekFiatRates?.[fiatRateKey]?.rate }) ??
+                    ZERO_FIAT_VALUE,
+            });
+        });
+
+        return returnStableArrayIfEmpty(priced.sort(compareRows));
     },
 );
 

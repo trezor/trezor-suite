@@ -4,6 +4,7 @@ import { Translation } from '@suite/intl';
 import { useFormatters } from '@suite-common/formatters';
 import { asBaseCurrencyAmount } from '@suite-common/wallet-types';
 import { Card, Table, Text } from '@trezor/components';
+import { type StaticSessionId } from '@trezor/device-utils';
 
 import { useSelector } from 'src/hooks/suite';
 
@@ -42,9 +43,14 @@ const NetworkGroupHeader = ({ group }: NetworkGroupHeaderProps) => {
 const renderRows = (rows: readonly AssetRow[], hasBorderTop?: boolean) =>
     rows.map(row => <AssetFirstRow key={row.assetKey} row={row} hasBorderTop={hasBorderTop} />);
 
-export const AssetFirstTable = () => {
+type AssetFirstTableProps = {
+    /** Whose assets: the page knows, so the table does not go looking. */
+    deviceState: StaticSessionId;
+};
+
+export const AssetFirstTable = ({ deviceState }: AssetFirstTableProps) => {
     const [grouping, setGrouping] = useState<AssetFirstGrouping>('default');
-    const view = useSelector(selectAssetFirstTableView(grouping));
+    const view = useSelector(state => selectAssetFirstTableView(grouping)(state, deviceState));
 
     const isEmpty =
         view.grouping === 'networks' ? view.groups.length === 0 : view.rows.length === 0;

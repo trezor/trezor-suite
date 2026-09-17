@@ -86,7 +86,7 @@ const createState = ({
 };
 
 const selectAssetFirstRowKeys = (state: AssetFirstTableState) =>
-    selectAssetFirstRows(state).map(row => row.assetKey);
+    selectAssetFirstRows(state, ALICE).map(row => row.assetKey);
 
 describe('the rows the table is given', () => {
     it('lists one key per asset and network', () => {
@@ -266,7 +266,7 @@ describe('the rows the table is given', () => {
     it('hands back the same list while nothing it reads has changed', () => {
         const state = createState({ accounts: [mockAccount()] });
 
-        expect(selectAssetFirstRows(state)).toBe(selectAssetFirstRows(state));
+        expect(selectAssetFirstRows(state, ALICE)).toBe(selectAssetFirstRows(state, ALICE));
     });
 
     it('hands back the same row for an asset a write did not touch', () => {
@@ -275,9 +275,11 @@ describe('the rows the table is given', () => {
 
         const [bitcoinBefore] = selectAssetFirstRows(
             createState({ accounts: [untouched, written] }),
+            ALICE,
         ).filter(row => row.symbol === BTC);
         const [bitcoinAfter] = selectAssetFirstRows(
             createState({ accounts: [untouched, { ...written, formattedBalance: '2' }] }),
+            ALICE,
         ).filter(row => row.symbol === BTC);
 
         expect(bitcoinAfter).toBe(bitcoinBefore);
@@ -294,16 +296,18 @@ describe('the total over those rows', () => {
     });
 
     it('adds up the rows it is given', () => {
-        expect(getAssetFirstTotals(selectAssetFirstRows(state)).fiatValue.toFixed()).toBe('56000');
+        expect(getAssetFirstTotals(selectAssetFirstRows(state, ALICE)).fiatValue.toFixed()).toBe(
+            '56000',
+        );
     });
 
     it('follows a shorter list, so a filtered table and its total cannot disagree', () => {
-        const largestHoldingOnly = selectAssetFirstRows(state).slice(0, 1);
+        const largestHoldingOnly = selectAssetFirstRows(state, ALICE).slice(0, 1);
 
         expect(getAssetFirstTotals(largestHoldingOnly).fiatValue.toFixed()).toBe('50000');
     });
 
     it('says nothing about a week ago when no rate for it is known', () => {
-        expect(getAssetFirstTotals(selectAssetFirstRows(state)).weekChange).toBeUndefined();
+        expect(getAssetFirstTotals(selectAssetFirstRows(state, ALICE)).weekChange).toBeUndefined();
     });
 });
