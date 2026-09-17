@@ -77,7 +77,6 @@ const getLines = ({
                 return 'TR_INCLUDING_FEE';
         }
     })(networkType);
-    const feeOnlyLabelId = isEthereum || networkType === 'stellar' ? 'MAX_FEE' : 'TR_TX_FEE';
     const tokenInfo = precomposedTx?.token;
     const amountWithoutFee = new BigNumber(precomposedTx.totalSpent)
         .minus(precomposedTx.fee)
@@ -101,6 +100,8 @@ const getLines = ({
     }
 
     if (precomposedForm.trading?.isSlip24Active || isClearSignedTradingSwap) {
+        const feeOnlyLabelId = isEthereum || networkType === 'stellar' ? 'MAX_FEE' : 'TR_TX_FEE';
+
         return [
             {
                 id: 'fee',
