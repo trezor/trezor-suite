@@ -48,6 +48,14 @@ export const commonQueryKeys = {
     stellarTokenMetadata: () => ['stellar', 'token-metadata'],
     stellarTokenInfo: (contract: string) => ['stellar', 'token-info', contract],
     stellarContractAsset: (contractId: string) => ['stellar', 'contract-asset', contractId],
+    // The balances of a whole contract list in one entry, because the runtime reads them as one
+    // batch of ledger keys: an entry per contract would turn that batch into a request per token.
+    stellarContractBalances: (descriptor: string, contracts: readonly string[]) => [
+        'stellar',
+        'contract-balances',
+        descriptor,
+        contracts.join(','),
+    ],
 } as const satisfies Record<string, AllowedQueryKey>;
 
 export const desktopQueryKeys = {

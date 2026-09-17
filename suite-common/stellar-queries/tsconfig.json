@@ -3,11 +3,13 @@
     "compilerOptions": { "outDir": "libDev" },
     "references": [
         { "path": "../react-query" },
+        { "path": "../wallet-core" },
         { "path": "../wallet-types" },
         { "path": "../wallet-utils" },
         {
             "path": "../../packages/blockchain-link-types"
         },
+        { "path": "../../packages/env-utils" },
         {
             "path": "../../networks/stellar/network-stellar"
         },

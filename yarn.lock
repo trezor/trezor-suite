@@ -11410,12 +11410,15 @@ __metadata:
   dependencies:
     "@suite-common/react-query": "workspace:^"
     "@suite-common/test-utils": "workspace:*"
+    "@suite-common/wallet-core": "workspace:*"
     "@suite-common/wallet-types": "workspace:*"
     "@suite-common/wallet-utils": "workspace:*"
     "@trezor/blockchain-link-types": "workspace:*"
     "@trezor/blockchain-link-utils": "workspace:*"
+    "@trezor/env-utils": "workspace:*"
     "@trezor/network-stellar": "workspace:*"
     react: "npm:19.2.3"
+    react-redux: "npm:9.3.0"
   languageName: unknown
   linkType: soft
 

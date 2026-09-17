@@ -2,6 +2,7 @@ import { useMemo } from 'react';
 
 import { Translation } from '@suite/intl';
 import { useAllYieldOpportunities } from '@suite-common/earn-stablecoin-api';
+import { useStellarAccountTokens } from '@suite-common/stellar-queries';
 import { TokenManagementAction, selectCoinDefinitions } from '@suite-common/token-definitions';
 import { selectBaseCurrency, selectCurrentFiatRates } from '@suite-common/wallet-core';
 import { type SelectedAccountLoaded } from '@suite-common/wallet-types';
@@ -40,8 +41,10 @@ export const CoinsTable = ({ selectedAccount, searchQuery }: CoinsTableProps) =>
         enabled: isYieldBadgeRelevant,
     });
 
+    const allTokens = useStellarAccountTokens(account);
+
     const enhancedTokens = useMemo(() => {
-        const accountTokens = account.tokens?.filter(token => !isErc4626(token));
+        const accountTokens = allTokens?.filter(token => !isErc4626(token));
 
         const tokensWithRates = enhanceTokensWithRates(
             accountTokens,
@@ -51,7 +54,7 @@ export const CoinsTable = ({ selectedAccount, searchQuery }: CoinsTableProps) =>
         );
 
         return tokensWithRates.sort(sortTokensWithRates);
-    }, [account.tokens, account.symbol, baseCurrencyCode, fiatRates]);
+    }, [allTokens, account.symbol, baseCurrencyCode, fiatRates]);
 
     const tokens = useMemo(() => {
         const groupedTokens = getTokens({

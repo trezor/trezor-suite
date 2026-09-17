@@ -13,11 +13,14 @@
     },
     "dependencies": {
         "@suite-common/react-query": "workspace:^",
+        "@suite-common/wallet-core": "workspace:*",
         "@suite-common/wallet-types": "workspace:*",
         "@suite-common/wallet-utils": "workspace:*",
         "@trezor/blockchain-link-types": "workspace:*",
+        "@trezor/env-utils": "workspace:*",
         "@trezor/network-stellar": "workspace:*",
-        "react": "19.2.3"
+        "react": "19.2.3",
+        "react-redux": "9.3.0"
     },
     "devDependencies": {
         "@suite-common/test-utils": "workspace:*",
