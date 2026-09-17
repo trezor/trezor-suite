@@ -44,6 +44,10 @@ export class WalletPage {
     readonly openSendFormButton: Locator;
     readonly sendForm: Locator;
     readonly sendFormHeader: Locator;
+    readonly sendHeaderDropdown: Locator;
+    readonly sendBroadcastOption: Locator;
+    readonly addTransactionDataButton: Locator;
+    readonly transactionDataInput: Locator;
     readonly totalSent: Locator;
     readonly receiveButton: Locator;
     readonly verifyAddressButton: Locator;
@@ -112,6 +116,10 @@ export class WalletPage {
         this.openSendFormButton = this.page.getByTestId('@wallet/menu/wallet-send');
         this.sendForm = this.page.getByTestId('@wallet/send/outputs-and-options');
         this.sendFormHeader = this.page.getByTestId('@wallet/send-header');
+        this.sendHeaderDropdown = this.page.getByTestId('@send/header-dropdown');
+        this.sendBroadcastOption = this.page.getByTestId('@send/header-dropdown/broadcast');
+        this.addTransactionDataButton = this.page.getByTestId('@send/header-dropdown/data');
+        this.transactionDataInput = this.page.getByTestId('transactionData');
         this.totalSent = this.page.getByTestId('@wallet/send/total-sent');
         this.receiveButton = this.page.getByTestId('@wallet/menu/wallet-receive');
         this.verifyAddressButton = this.page.getByTestId('@wallet/receive/verify-address-button');
