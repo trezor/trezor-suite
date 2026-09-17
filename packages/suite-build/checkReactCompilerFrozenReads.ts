@@ -1,10 +1,31 @@
+import { readFileSync, writeFileSync } from 'fs';
+import path from 'path';
+
 import { REACT_COMPILER_PATHS } from './reactCompiler';
-import { evaluateFrozenReadReport, scanDirectories } from './reactCompilerFrozenReads';
+import {
+    OPT_OUT_SNAPSHOT_FILE,
+    evaluateFrozenReadReport,
+    evaluateOptOutSnapshot,
+    formatOptOutSnapshot,
+    scanDirectories,
+} from './reactCompilerFrozenReads';
+
+const snapshotPath = path.resolve(__dirname, '../..', OPT_OUT_SNAPSHOT_FILE);
+
+const readSnapshot = () => {
+    try {
+        return readFileSync(snapshotPath, 'utf-8');
+    } catch {
+        return '';
+    }
+};
 
 /**
- * Fails the build when a tree the React Compiler compiles reads `react-hook-form` imperatively
- * during render. See `reactCompilerFrozenReads.ts` for why nothing else in the repository can catch
- * that, and `plans/react-compiler-rollout.md` for the rollout this gate belongs to.
+ * Fails the build on the two things the React Compiler has actually got wrong here — a
+ * `react-hook-form` accessor read during render, and an impure render-scoped value captured by a
+ * cached closure — and on any drift in the set of files it refuses to compile. See
+ * `reactCompilerFrozenReads.ts` for why nothing else in the repository can catch any of them, and
+ * `plans/react-compiler-rollout.md` for the rollout this gate belongs to.
  *
  * Deliberately not a jest test: `@trezor/suite-build` does not depend on `@trezor/suite`, so Nx
  * would serve a cached pass for the very tree this exists to protect.
@@ -13,13 +34,25 @@ import { evaluateFrozenReadReport, scanDirectories } from './reactCompilerFrozen
     const logLabel = 'React Compiler frozen form reads checked in';
     console.time(logLabel);
 
+    const isUpdatingSnapshot = process.argv.includes('--update-snapshot');
+
     const report = scanDirectories();
     const failures = evaluateFrozenReadReport(report);
+
+    const snapshot = formatOptOutSnapshot(report.optOuts);
+
+    if (isUpdatingSnapshot) {
+        writeFileSync(snapshotPath, `${snapshot}\n`, 'utf-8');
+        console.log(`Wrote ${report.optOuts.length} line(s) to ${OPT_OUT_SNAPSHOT_FILE}.`);
+    } else {
+        failures.push(...evaluateOptOutSnapshot(readSnapshot(), snapshot));
+    }
 
     console.log(
         `Compiled ${report.compiled} of ${report.files} file(s) under ` +
             `${REACT_COMPILER_PATHS.join(', ') || '<no wave enabled>'} and examined ` +
-            `${report.guards} memo-cache guard(s).`,
+            `${report.guards} memo-cache guard(s). ${report.optOuts.length} file(s) are not fully ` +
+            `compiled; ${OPT_OUT_SNAPSHOT_FILE} lists them.`,
     );
 
     // Advisory: caching one of these freezes a value that should differ per render. Nothing in scope

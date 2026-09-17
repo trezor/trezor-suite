@@ -5,9 +5,12 @@ import {
     type FrozenReadFinding,
     type FrozenReadReport,
     analyseCompiledModule,
+    classifyCompilerOptOut,
     compileForAnalysis,
     evaluateFrozenReadReport,
+    evaluateOptOutSnapshot,
     findSuppressedFile,
+    formatOptOutSnapshot,
     scanDirectories,
 } from './reactCompilerFrozenReads';
 
@@ -257,6 +260,205 @@ export const Amount = () => {
     });
 });
 
+/**
+ * The second channel: an impure value the compiler leaves at render level, captured by a closure it
+ * caches. `ConnectionGlobalModalContext.tsx` shipped this — a Bluetooth liveness cut-off that stopped
+ * advancing after the first render, so a device that went silent never dropped off the list.
+ */
+describe('analyseCompiledModule — frozen captures', () => {
+    const NEARBY = `const LIMIT = 3000;
+
+export const Nearby = ({ allDevices }) => {
+    const boundary = Date.now() - LIMIT;
+
+    const devices = allDevices.filter(it => it.updatedAt < boundary);
+
+    return <span>{devices.length}</span>;
+};
+`;
+
+    it('reports a render-level impure value captured by a cached closure', () => {
+        const { frozenCaptures } = analyse(NEARBY);
+
+        expect(frozenCaptures).toEqual([
+            {
+                file: 'fixture.tsx',
+                line: 6,
+                column: 38,
+                global: 'Date.now()',
+                binding: 'boundary',
+                readLine: 4,
+                owner: 'Nearby',
+                // A sentinel guard: the predicate is built on the first render and never again.
+                depCount: 0,
+            },
+        ]);
+    });
+
+    it('says nothing once the impure read moves inside the closure', () => {
+        // The fix. The compiler outlines the now-capture-free predicate to module scope, so there is
+        // no cache slot left to freeze and the read happens on every call.
+        const { frozenCaptures } = analyse(`const LIMIT = 3000;
+
+export const Nearby = ({ allDevices }) => {
+    const devices = allDevices.filter(it => it.updatedAt < Date.now() - LIMIT);
+
+    return <span>{devices.length}</span>;
+};
+`);
+
+        expect(frozenCaptures).toEqual([]);
+    });
+
+    it('follows impurity into a value derived from it', () => {
+        const { frozenCaptures } = analyse(`const LIMIT = 3000;
+
+export const Nearby = ({ allDevices }) => {
+    const now = Date.now();
+    const boundary = now - LIMIT;
+
+    const devices = allDevices.filter(it => it.updatedAt < boundary);
+
+    return <span>{devices.length}</span>;
+};
+`);
+
+        // One finding, not two: `now` itself is never captured, only the value derived from it.
+        expect(frozenCaptures.map(({ binding, readLine }) => `${binding} ${readLine}`)).toEqual([
+            'boundary 4',
+        ]);
+    });
+
+    it('reports the outermost cached closure once when closures nest', () => {
+        const { frozenCaptures } = analyse(`const LIMIT = 3000;
+
+export const Nearby = ({ groups }) => {
+    const boundary = Date.now() - LIMIT;
+
+    const live = groups.map(group => group.devices.filter(it => it.updatedAt < boundary));
+
+    return <span>{live.length}</span>;
+};
+`);
+
+        expect(frozenCaptures.map(({ line }) => line)).toEqual([6]);
+    });
+
+    it('ignores a name inside the closure that shadows the impure binding', () => {
+        const { frozenCaptures } = analyse(`const LIMIT = 3000;
+
+export const Nearby = ({ allDevices }) => {
+    const boundary = Date.now() - LIMIT;
+
+    const devices = allDevices.filter(it => {
+        const boundary = it.updatedAt;
+
+        return boundary > LIMIT;
+    });
+
+    return <span>{devices.length + boundary}</span>;
+};
+`);
+
+        expect(frozenCaptures).toEqual([]);
+    });
+
+    it('says nothing about an impure read no cached closure captures', () => {
+        // `RotatingFacts.tsx` does exactly this on purpose: a suppressed `Math.random()` seeding
+        // `useState`. This channel is `impure ∩ frozen`, not a second `react-hooks/purity`.
+        const { frozenCaptures } = analyse(`import { useState } from 'react';
+
+export const RotatingFacts = ({ facts }) => {
+    const start = Math.floor(Math.random() * facts.length);
+    const [index, setIndex] = useState(start);
+
+    return <button onClick={() => setIndex(index + 1)}>{facts[index]}</button>;
+};
+`);
+
+        expect(frozenCaptures).toEqual([]);
+    });
+
+    it('says nothing when the impure read lives in a helper the closure calls', () => {
+        // The existing assumption `collectImpureCaches` gets right — there is no render-scoped
+        // binding to go stale, because the helper reads the clock when it runs.
+        const { frozenCaptures } =
+            analyse(`const isExpired = (deadline: number) => deadline < Date.now();
+
+export const Session = ({ deadline, onPing }) => {
+    const onClick = () => onPing(isExpired(deadline));
+
+    return <button onClick={onClick} />;
+};
+`);
+
+        expect(frozenCaptures).toEqual([]);
+    });
+
+    it('says nothing about an impure read inside an effect', () => {
+        const { frozenCaptures } = analyse(`import { useEffect } from 'react';
+
+export const Timed = ({ onDone }) => {
+    useEffect(() => {
+        const startedAt = Date.now();
+
+        return () => onDone(Date.now() - startedAt);
+    }, [onDone]);
+
+    return <span />;
+};
+`);
+
+        expect(frozenCaptures).toEqual([]);
+    });
+
+    it('leaves a cached `new Date()` to the impure-cache channel, so no site is reported twice', () => {
+        // `Date.now()` returns a primitive and stays at render level; `new Date()` allocates, so the
+        // compiler hoists it into a sentinel of its own. That makes the binding non-constant, which
+        // is what keeps the two channels disjoint.
+        const { frozenCaptures, impureCaches } = analyse(`export const Clock = ({ stamps }) => {
+    const openedAt = new Date();
+
+    const fresh = stamps.filter(it => it > openedAt);
+
+    return <span>{fresh.length}</span>;
+};
+`);
+
+        expect(frozenCaptures).toEqual([]);
+        expect(impureCaches.map(({ global: name }) => name)).toEqual(['new Date()']);
+    });
+
+    it('does not report a closure whose guard already depends on the impure value', () => {
+        // `babel-plugin-react-compiler@1.0.0` never emits this — it treats `Date.now()` as
+        // non-reactive and always sentinel-caches the closure — so the shape is hand-written. It is
+        // here because a compiler that started tracking the read would otherwise turn every such
+        // site into a false positive on the day of the upgrade.
+        const ast = parseSync(
+            `const Component = ({ items }) => {
+    const $ = _c(2);
+    const now = Date.now();
+    let t0;
+    if ($[0] !== now) {
+        t0 = items.filter(it => it.at > now);
+        $[0] = now;
+        $[1] = t0;
+    } else {
+        t0 = $[1];
+    }
+
+    return t0;
+};
+`,
+            { babelrc: false, configFile: false, sourceType: 'module' },
+        );
+
+        expect(t.isFile(ast)).toBe(true);
+
+        expect(analyseCompiledModule(ast as t.File, 'hand.js').frozenCaptures).toEqual([]);
+    });
+});
+
 describe('findSuppressedFile', () => {
     const inspect = (source: string, filename = 'fixture.tsx') => {
         const compiled = compileForAnalysis(source, filename);
@@ -307,6 +509,135 @@ export const Thing = ({ items, other }: ThingProps) => {
     });
 });
 
+/**
+ * 53 files in the enabled trees are silently not compiled because the compiler refuses them, and
+ * three of those bails are load-bearing — `views/wallet/send/Outputs/Address.tsx` most of all, where
+ * lifting the bail makes `analyseCompiledModule` produce five findings the gate would fail on. The
+ * snapshot is what turns "the compiler quietly changed its mind about a file" into a red build.
+ */
+describe('classifyCompilerOptOut', () => {
+    const classify = (source: string, filename = 'fixture.tsx') => {
+        const compiled = compileForAnalysis(source, filename);
+
+        if ('error' in compiled) {
+            throw new Error(`fixture failed to compile: ${compiled.error}`);
+        }
+
+        return classifyCompilerOptOut(source, filename, compiled.ast, compiled.events);
+    };
+
+    const COMPONENT = `export const Amount = ({ items }) => {
+    const total = items.reduce((sum, it) => sum + it.value, 0);
+
+    return <span>{total}</span>;
+};
+`;
+
+    it('says nothing about a file the compiler fully compiles', () => {
+        expect(classify(COMPONENT)).toBeNull();
+    });
+
+    it('says nothing about a file the compiler never had an opinion on', () => {
+        // Most of `suite-common`: types, selectors, reducers. Not a bail, and not worth a line.
+        expect(
+            classify(`export const add = (a: number, b: number) => a + b;\n`, 'add.ts'),
+        ).toBeNull();
+    });
+
+    it('records a deliberate file-level opt-out', () => {
+        expect(classify(`'use no memo';\n\n${COMPONENT}`)).toEqual({
+            file: 'fixture.tsx',
+            status: 'opt-out',
+            reasons: ["'use no memo'"],
+        });
+    });
+
+    it('separates a file the compiler refused outright from one it refused in part', () => {
+        // A ref read during render is the most common refusal in this repository (12 files).
+        const REF_READ = `import { useRef } from 'react';
+
+export const Amount = ({ items }) => {
+    const ref = useRef(0);
+    const total = items.length + ref.current;
+
+    return <span>{total}</span>;
+};
+`;
+
+        expect(classify(REF_READ)).toEqual({
+            file: 'fixture.tsx',
+            status: 'bail',
+            reasons: ['Cannot access refs during render'],
+        });
+
+        // The same refusal beside a component the compiler does optimise is `partial`, not `bail`:
+        // the file ships half-compiled, and the difference is what the snapshot has to preserve.
+        const partial = classify(`${REF_READ}\n${COMPONENT.replace('Amount', 'Total')}`);
+
+        expect(partial?.status).toBe('partial');
+        expect(partial?.reasons).toEqual(['Cannot access refs during render']);
+    });
+});
+
+describe('evaluateOptOutSnapshot', () => {
+    const LINE = 'a.tsx\tbail\tCannot access refs during render';
+    const OTHER = "b.tsx\topt-out\t'use no memo'";
+
+    it('passes when the inventory matches the snapshot', () => {
+        expect(evaluateOptOutSnapshot(`${LINE}\n${OTHER}\n`, `${LINE}\n${OTHER}`)).toEqual([]);
+    });
+
+    it('fails on a file that entered the set, because it now ships unoptimized', () => {
+        const failures = evaluateOptOutSnapshot(`${LINE}\n`, `${LINE}\n${OTHER}`);
+
+        expect(failures).toHaveLength(1);
+        expect(failures[0]).toContain('b.tsx');
+        expect(failures[0]).toContain('ships unoptimized');
+    });
+
+    it('fails on a file that left the set, and says why a green gate is not evidence', () => {
+        // The dangerous direction. Code nobody reviewed for the hazard classes is memoized for the
+        // first time, and the trigger is usually a change elsewhere.
+        const failures = evaluateOptOutSnapshot(`${LINE}\n${OTHER}\n`, LINE);
+
+        expect(failures).toHaveLength(1);
+        expect(failures[0]).toContain('b.tsx');
+        expect(failures[0]).toContain('is not evidence');
+    });
+
+    it('fails when the same file is refused for a different reason', () => {
+        const failures = evaluateOptOutSnapshot(
+            `${LINE}\n`,
+            'a.tsx\tbail\tsomething else entirely',
+        );
+
+        expect(failures).toHaveLength(1);
+        expect(failures[0]).toContain('babel-plugin-react-compiler has most likely changed');
+    });
+
+    it('fails on an empty inventory while a wave is enabled, rather than calling it clean', () => {
+        const failures = evaluateOptOutSnapshot('', '', ['suite-common']);
+
+        expect(failures).toHaveLength(1);
+        expect(failures[0]).toContain('stopped being collected');
+    });
+
+    it('passes on an empty inventory once every wave is rolled back', () => {
+        expect(evaluateOptOutSnapshot('', '', [])).toEqual([]);
+    });
+});
+
+describe('formatOptOutSnapshot', () => {
+    it('emits tab-separated rows in ASCII order, whatever order they were found in', () => {
+        expect(
+            formatOptOutSnapshot([
+                { file: 'b.tsx', status: 'opt-out', reasons: ["'use no memo'"] },
+                { file: 'a.tsx', status: 'partial', reasons: ['second', 'first'] },
+            ]),
+        ).toBe("a.tsx\tpartial\tsecond; first\nb.tsx\topt-out\t'use no memo'");
+    });
+});
+
 describe('scanDirectories', () => {
     it('finds nothing when asked to scan nothing', () => {
         const report = scanDirectories([]);
@@ -317,7 +648,9 @@ describe('scanDirectories', () => {
             guards: 0,
             findings: [],
             impureCaches: [],
+            frozenCaptures: [],
             suppressedFiles: [],
+            optOuts: [],
             unknownGuardShapes: [],
             transformErrors: [],
         });
@@ -351,7 +684,9 @@ describe('evaluateFrozenReadReport', () => {
         guards: 20,
         findings: [],
         impureCaches: [],
+        frozenCaptures: [],
         suppressedFiles: [],
+        optOuts: [],
         unknownGuardShapes: [],
         transformErrors: [],
     };
@@ -430,6 +765,33 @@ describe('evaluateFrozenReadReport', () => {
         );
 
         expect(failures).toEqual([]);
+    });
+
+    it('fails on a frozen capture and points at the closure and the read', () => {
+        const failures = evaluateFrozenReadReport(
+            {
+                ...cleanReport,
+                frozenCaptures: [
+                    {
+                        file: 'ConnectionGlobalModalContext.tsx',
+                        line: 109,
+                        column: 38,
+                        global: 'Date.now()',
+                        binding: 'lastUpdatedBoundaryTimestamp',
+                        readLine: 107,
+                        owner: 'useConnectionGlobalModal',
+                        depCount: 0,
+                    },
+                ],
+            },
+            ['packages/suite/src/components'],
+        );
+
+        expect(failures).toHaveLength(1);
+        expect(failures[0]).toContain('ConnectionGlobalModalContext.tsx:109:38');
+        expect(failures[0]).toContain('lastUpdatedBoundaryTimestamp');
+        expect(failures[0]).toContain('ConnectionGlobalModalContext.tsx:107');
+        expect(failures[0]).toContain('built once on the first render');
     });
 
     it('does not fail on the advisory impure-cache channel', () => {
