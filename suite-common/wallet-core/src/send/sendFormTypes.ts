@@ -2,7 +2,7 @@ import { type TrezorDevice } from '@suite-common/suite-types';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import {
     type Account,
-    type ComposeActionContext,
+    type ComposeActionContextWithAccount,
     type FormState,
     type PrecomposedTransactionFinal,
     type WalletAccountTransaction,
@@ -29,7 +29,7 @@ export type TransactionType = WalletAccountTransaction['type'];
 
 export type ComposeTransactionThunkArguments = {
     formState: FormState;
-    composeContext: ComposeActionContext;
+    composeContext: ComposeActionContextWithAccount;
     isNetworkReserveEnabled?: boolean;
 };
 

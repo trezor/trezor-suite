@@ -76,6 +76,7 @@ describe('composeStellarTrustlineFeesThunk', () => {
         const result = await dispatchThunk();
 
         expect(updateFeeInfoThunk).not.toHaveBeenCalled();
+        expect(getComposeContext()?.accountKey).toBe(accountKey);
         expect(getComposeContext()?.feeInfo).toBe(backendFeeInfo);
         expect(result.payload).toEqual(composedLevels);
     });
@@ -88,6 +89,7 @@ describe('composeStellarTrustlineFeesThunk', () => {
         const result = await dispatchThunk();
 
         expect(updateFeeInfoThunk).toHaveBeenCalledWith({ networkSymbol: 'xlm' });
+        expect(getComposeContext()?.accountKey).toBe(accountKey);
         expect(getComposeContext()?.feeInfo).toBe(backendFeeInfo);
         expect(result.payload).toEqual(composedLevels);
     });

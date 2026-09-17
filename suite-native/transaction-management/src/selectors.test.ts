@@ -3,9 +3,11 @@ import {
     type FeeLevelLabel,
     type FormState,
     type GeneralPrecomposedLevels,
+    toTokenAddress,
 } from '@suite-common/wallet-types';
 import { isClearSignedEvmTradingSwapTransaction } from '@suite-common/wallet-utils';
 
+import { createFeeLevelsMaxAmount } from './__fixtures__/feeLevels';
 import {
     BTC_ACCOUNT_KEY,
     ETH_ACCOUNT_KEY,
@@ -17,6 +19,7 @@ import {
     selectCustomFeeLevel,
     selectFeeLevelTransactionBytes,
     selectFeeLevels,
+    selectFeeLevelsMaxAmountBySendKey,
     selectFormDraftByPrefix,
     selectIsClearSignedTradingSwap,
     selectIsTransactionAlreadySigned,
@@ -25,6 +28,7 @@ import {
 import { type NativeSendRootState } from './sendFormSlice';
 
 const btcSymbol = asNetworkSymbol('btc');
+const tokenContract = toTokenAddress('0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48');
 
 const mockConstructTransactionReviewOutputs = jest.fn();
 const mockGetTransactionReviewOutputState = jest.fn();
@@ -45,6 +49,7 @@ const createMockState = (
     wallet: {
         send: {
             feeLevels: {},
+            feeLevelsMaxAmount: {},
             error: null,
             drafts: {},
             ...overrides,
@@ -76,6 +81,37 @@ describe('transaction-management selectors', () => {
             const result = selectFeeLevels(state);
 
             expect(result).toEqual({});
+        });
+    });
+
+    describe('selectFeeLevelsMaxAmountBySendKey', () => {
+        it('should return maximum amounts for the requested send form', () => {
+            const feeLevelsMaxAmount = createFeeLevelsMaxAmount({ normal: '90' });
+            const state = createMockState({
+                feeLevelsMaxAmount: {
+                    [BTC_ACCOUNT_KEY]: feeLevelsMaxAmount,
+                    [`${BTC_ACCOUNT_KEY}-${tokenContract}`]: createFeeLevelsMaxAmount({
+                        normal: '190',
+                    }),
+                },
+            });
+
+            expect(selectFeeLevelsMaxAmountBySendKey(state, BTC_ACCOUNT_KEY)).toEqual(
+                feeLevelsMaxAmount,
+            );
+            expect(
+                selectFeeLevelsMaxAmountBySendKey(state, BTC_ACCOUNT_KEY, tokenContract),
+            ).toEqual(createFeeLevelsMaxAmount({ normal: '190' }));
+        });
+
+        it('should return undefined when the requested send form has no maximum amounts', () => {
+            const state = createMockState({
+                feeLevelsMaxAmount: {
+                    [BTC_ACCOUNT_KEY]: createFeeLevelsMaxAmount({ normal: '90' }),
+                },
+            });
+
+            expect(selectFeeLevelsMaxAmountBySendKey(state, ETH_ACCOUNT_KEY)).toBeUndefined();
         });
     });
 

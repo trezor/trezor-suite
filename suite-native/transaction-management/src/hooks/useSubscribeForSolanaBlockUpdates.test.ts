@@ -1,4 +1,3 @@
-import { type Account } from '@suite-common/wallet-types';
 import { renderHook } from '@suite-native/test-utils';
 import TrezorConnect from '@trezor/connect';
 
@@ -17,13 +16,9 @@ describe('useSubscribeForSolanaBlockUpdates', () => {
     });
 
     it('should subscribe to Solana block updates when Solana account is provided', async () => {
-        const solanaAccount = {
-            key: 'sol-account-1',
-            symbol: 'sol',
-            networkType: 'solana',
-        } as unknown as Account;
-
-        await renderHook(() => useSubscribeForSolanaBlockUpdates(solanaAccount));
+        await renderHook(() =>
+            useSubscribeForSolanaBlockUpdates({ symbol: 'sol', networkType: 'solana' }),
+        );
 
         const mockBlockchainSubscribe = TrezorConnect.blockchainSubscribe;
 
@@ -34,34 +29,26 @@ describe('useSubscribeForSolanaBlockUpdates', () => {
     });
 
     it('should not subscribe when non-Solana account is provided', async () => {
-        const btcAccount = {
-            key: 'btc-account-1',
-            symbol: 'btc',
-            networkType: 'bitcoin',
-        } as unknown as Account;
-
-        await renderHook(() => useSubscribeForSolanaBlockUpdates(btcAccount));
+        await renderHook(() =>
+            useSubscribeForSolanaBlockUpdates({ symbol: 'btc', networkType: 'bitcoin' }),
+        );
         const mockBlockchainSubscribe = TrezorConnect.blockchainSubscribe;
 
         expect(mockBlockchainSubscribe).not.toHaveBeenCalled();
     });
 
     it('should not subscribe when account is null', async () => {
-        await renderHook(() => useSubscribeForSolanaBlockUpdates(null));
+        await renderHook(() =>
+            useSubscribeForSolanaBlockUpdates({ symbol: null, networkType: null }),
+        );
         const mockBlockchainSubscribe = TrezorConnect.blockchainSubscribe;
 
         expect(mockBlockchainSubscribe).not.toHaveBeenCalled();
     });
 
     it('should unsubscribe when component unmounts with Solana account', async () => {
-        const solanaAccount = {
-            key: 'sol-account-1',
-            symbol: 'sol',
-            networkType: 'solana',
-        } as unknown as Account;
-
         const { unmount } = await renderHook(() =>
-            useSubscribeForSolanaBlockUpdates(solanaAccount),
+            useSubscribeForSolanaBlockUpdates({ symbol: 'sol', networkType: 'solana' }),
         );
 
         const mockBlockchainSubscribe = TrezorConnect.blockchainSubscribe;

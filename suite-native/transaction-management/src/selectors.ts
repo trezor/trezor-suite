@@ -26,6 +26,7 @@ import {
     getDecreaseOutputId,
     getFormDraftKey,
     getIsUpdatedSendFlow,
+    getSendFormDraftKey,
     getTransactionReviewOutputState,
     isClearSignedEvmTradingSwapTransaction,
 } from '@suite-common/wallet-utils';
@@ -47,6 +48,12 @@ const createMemoizedSelector = createWeakMapSelector.withTypes<NativeSendRootSta
 const createSendMemoizedSelector = createWeakMapSelector.withTypes<TransactionReviewOutputsState>();
 
 export const selectFeeLevels = (state: NativeSendRootState) => state.wallet.send.feeLevels;
+
+export const selectFeeLevelsMaxAmountBySendKey = (
+    state: NativeSendRootState,
+    accountKey: AccountKey,
+    tokenContract?: TokenAddress,
+) => state.wallet.send.feeLevelsMaxAmount[getSendFormDraftKey(accountKey, tokenContract)];
 
 export const selectCustomFeeLevel = (
     state: NativeSendRootState,

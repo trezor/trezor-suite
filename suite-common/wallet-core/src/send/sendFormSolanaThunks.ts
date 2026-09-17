@@ -3,7 +3,7 @@ import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import {
     type Account,
     AddressDisplayOptions,
-    type ComposeActionContext,
+    type ComposeActionContextWithAccount,
     type ExternalOutput,
     type PrecomposedLevels,
     type PrecomposedTransaction,
@@ -51,7 +51,7 @@ const calculate = (
     decimals: number,
     rent: number,
     token?: TokenInfo,
-    composeContext?: ComposeActionContext,
+    composeContext?: ComposeActionContextWithAccount,
     isNetworkReserveEnabled = false,
 ): PrecomposedTransaction => {
     const feeInLamports = feeLevel.feePerTx;

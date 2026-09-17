@@ -280,6 +280,14 @@ export const useRbf = (props: UseRbfProps): RbfContextValues => {
     // local state
     const state = useRbfState(props);
     const { formValues, feeInfo, account } = state;
+    const composeContext = useMemo(
+        () => ({
+            accountKey: account.key,
+            network: state.network,
+            feeInfo,
+        }),
+        [account.key, state.network, feeInfo],
+    );
 
     const [isReduceChangePossible, setIsReduceChangePossible] = useState(false);
     const [showDecreasedOutputs, setShowDecreasedOutputs] = useState(false);
@@ -299,7 +307,7 @@ export const useRbf = (props: UseRbfProps): RbfContextValues => {
     const { isLoading, composeRequest, composedLevels, onFeeLevelChange, signTransaction } =
         useCompose({
             ...useFormMethods,
-            state,
+            state: composeContext,
             defaultField: 'selectedFee',
         });
 

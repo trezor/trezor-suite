@@ -56,12 +56,12 @@ export const useClaimForm = ({ account }: UseClaimFormsProps): ClaimContextValue
         });
 
         return {
-            account,
+            accountKey: account.key,
             network,
             feeInfo,
             formValues: defaultValues,
         };
-    }, [account, defaultValues, networkFees, network]);
+    }, [account.key, account.networkType, defaultValues, networkFees, network]);
 
     const methods = useForm<ClaimFormState>({
         mode: 'onChange',

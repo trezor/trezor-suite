@@ -103,12 +103,12 @@ export const useWithdrawalForm = ({ account }: UseWithdrawalFormProps): Withdraw
 
     const state = useMemo(
         () => ({
-            account,
+            accountKey: account.key,
             network,
             feeInfo,
             formValues: defaultValues,
         }),
-        [account, network, feeInfo, defaultValues],
+        [account.key, network, feeInfo, defaultValues],
     );
 
     const methods = useForm<WithdrawalFormState>({

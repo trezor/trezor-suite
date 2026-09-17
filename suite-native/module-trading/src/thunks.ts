@@ -218,7 +218,7 @@ export const composeTradingTransactionThunk = createThunk<
                 composeSendFormTransactionFeeLevelsThunk({
                     formState,
                     composeContext: {
-                        account,
+                        accountKey: account.key,
                         network,
                         feeInfo,
                     },

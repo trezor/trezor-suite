@@ -1,6 +1,6 @@
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import {
-    type ComposeActionContext,
+    type ComposeActionContextWithAccount,
     type ExternalOutput,
     type PrecomposedLevels,
     type PrecomposedTransaction,
@@ -193,7 +193,7 @@ export const prepareSolanaStakeTxData = async ({
 
 type ComposeSolanaStakingTransactionParams = {
     formValues: StakeFormState;
-    composeContext: ComposeActionContext;
+    composeContext: ComposeActionContextWithAccount;
     blockchainUrl: string;
     userAgent: string;
     source?: string;

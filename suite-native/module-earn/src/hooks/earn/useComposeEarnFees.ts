@@ -163,7 +163,7 @@ export const useComposeEarnFees = ({
                               composeSendFormTransactionFeeLevelsThunk({
                                   formState: mergedFormState,
                                   composeContext: {
-                                      account,
+                                      accountKey,
                                       feeInfo,
                                       network: getNetwork(account.symbol),
                                   },

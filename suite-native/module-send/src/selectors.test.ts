@@ -10,6 +10,7 @@ const createMockState = (
     wallet: {
         send: {
             feeLevels: {},
+            feeLevelsMaxAmount: {},
             error: null,
             drafts: {},
             ...overrides,

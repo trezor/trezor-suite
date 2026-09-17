@@ -16,6 +16,7 @@ import {
     type Account,
     type AccountKey,
     type ComposeActionContext,
+    type ComposeActionContextWithAccount,
     type FormState,
     type GeneralPrecomposedTransactionFinal,
     type GetTradedAccountKeysDep,
@@ -188,12 +189,18 @@ type CoinSpecificComposeResponse = ActionsFromAsyncThunk<
 >;
 
 export type ComposeSendFormTransactionFeeLevelsThunkState = BlockchainRootState &
+    AccountsRootState &
     DeviceRootState &
     WalletSettingsRootState;
 
+type ComposeSendFormTransactionFeeLevelsThunkParams = {
+    formState: FormState;
+    composeContext: ComposeActionContext;
+};
+
 export const composeSendFormTransactionFeeLevelsThunk = createThunk<
     PrecomposedLevels | PrecomposedLevelsCardano,
-    { formState: FormState; composeContext: ComposeActionContext },
+    ComposeSendFormTransactionFeeLevelsThunkParams,
     {
         rejectValue: ComposeFeeLevelsError;
         state: ComposeSendFormTransactionFeeLevelsThunkState;
@@ -201,7 +208,20 @@ export const composeSendFormTransactionFeeLevelsThunk = createThunk<
 >(
     `${SEND_MODULE_PREFIX}/composeSendFormTransactionThunk`,
     async ({ formState, composeContext }, { getState, dispatch, rejectWithValue }) => {
-        const { account } = composeContext;
+        const { accountKey, ...composeContextWithoutAccount } = composeContext;
+        const account = selectAccountByKey(getState(), accountKey);
+
+        if (!account) {
+            return rejectWithValue({
+                error: 'fee-levels-compose-failed',
+                message: 'Account not found.',
+            });
+        }
+
+        const composeActionContext: ComposeActionContextWithAccount = {
+            ...composeContextWithoutAccount,
+            account,
+        };
         let response: CoinSpecificComposeResponse | undefined;
         const isNetworkReserveEnabled = selectIsNetworkReserveEnabled(getState());
 
@@ -211,14 +231,14 @@ export const composeSendFormTransactionFeeLevelsThunk = createThunk<
             response = await dispatch(
                 composeBitcoinTransactionFeeLevelsThunk({
                     formState,
-                    composeContext,
+                    composeContext: composeActionContext,
                 }),
             );
         } else if (networkType === 'ethereum') {
             response = await dispatch(
                 composeEthereumTransactionFeeLevelsThunk({
                     formState,
-                    composeContext,
+                    composeContext: composeActionContext,
                     isNetworkReserveEnabled,
                 }),
             );
@@ -226,24 +246,30 @@ export const composeSendFormTransactionFeeLevelsThunk = createThunk<
             response = await dispatch(
                 composeRippleStellarTransactionFeeLevelsThunk({
                     formState,
-                    composeContext,
+                    composeContext: composeActionContext,
                 }),
             );
         } else if (networkType === 'cardano') {
             response = await dispatch(
-                composeCardanoTransactionFeeLevelsThunk({ formState, composeContext }),
+                composeCardanoTransactionFeeLevelsThunk({
+                    formState,
+                    composeContext: composeActionContext,
+                }),
             );
         } else if (networkType === 'solana') {
             response = await dispatch(
                 composeSolanaTransactionFeeLevelsThunk({
                     formState,
-                    composeContext,
+                    composeContext: composeActionContext,
                     isNetworkReserveEnabled,
                 }),
             );
         } else if (networkType === 'tron') {
             response = await dispatch(
-                composeTronTransactionFeeLevelsThunk({ formState, composeContext }),
+                composeTronTransactionFeeLevelsThunk({
+                    formState,
+                    composeContext: composeActionContext,
+                }),
             );
         } else {
             return exhaustive(networkType);

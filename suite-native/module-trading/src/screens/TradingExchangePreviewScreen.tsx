@@ -68,7 +68,10 @@ const TradingExchangePreviewScreenContent = ({
         reportVisit();
     }, []);
 
-    useSubscribeForSolanaBlockUpdates(fromAccount ?? null);
+    useSubscribeForSolanaBlockUpdates({
+        symbol: fromAccount?.symbol ?? null,
+        networkType: fromAccount?.networkType ?? null,
+    });
 
     const { txnErrorString, confirmTrade, abortConfirmTrade, composeTradingTransaction } =
         useExchangeFlow();

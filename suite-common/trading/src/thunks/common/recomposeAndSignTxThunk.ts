@@ -167,7 +167,7 @@ export const recomposeAndSignTxThunk = createThunk<
         };
 
         // prepare form state for composeAction
-        const composeContext = { account, network, feeInfo };
+        const composeContext = { accountKey: account.key, network, feeInfo };
 
         // recalculateCustomLimit is used in case of custom fee level, when we want to keep the feePerUnit defined by the user
         // but recompute the feeLimit based on a different transaction data (for example from transactionData)
