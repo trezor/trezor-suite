@@ -5,6 +5,12 @@ import { useDevice } from '@suite/device';
 import { Translation, type TranslationKey, useTranslation } from '@suite/intl';
 import { useServices } from '@suite-common/dependency-injection';
 import { selectDispatch } from '@suite-common/redux-utils';
+import {
+    getHasSelectableSignatureFormat,
+    isVerifySupported,
+    signThunk,
+    verifyThunk,
+} from '@suite-common/sign-verify';
 import { type Network } from '@suite-common/wallet-config';
 import { type Account } from '@suite-common/wallet-types';
 import { Button, Card, Column } from '@trezor/components';
@@ -15,8 +21,6 @@ import { SignVerifyMessageField } from './SignVerifyMessageField';
 import { SignVerifyPubKeyField } from './SignVerifyPubKeyField';
 import { SignVerifySignatureField } from './SignVerifySignatureField';
 import { SignVerifyTabs } from './SignVerifyTabs';
-import { isVerifySupported, signThunk, verifyThunk } from './signVerifyActions';
-import { getHasSelectableSignatureFormat } from './signVerifyUtils';
 import { type SignVerifyOutcome, type SignVerifyPage } from './types';
 import { useSignVerifyCopyValue } from './useSignVerifyCopyValue';
 import { type SignVerifyFields, useSignVerifyForm } from './useSignVerifyForm';

@@ -1,11 +1,11 @@
 import { type ReactNode, useState } from 'react';
 
 import { useDevice } from '@suite/device';
+import { isVerifySupported } from '@suite-common/sign-verify';
 import { type Network } from '@suite-common/wallet-config';
 import { type Account } from '@suite-common/wallet-types';
 
 import { SignVerifyForm } from './SignVerifyForm';
-import { isVerifySupported } from './signVerifyActions';
 import { type SignVerifyPage } from './types';
 
 type SignVerifyShellProps = {
