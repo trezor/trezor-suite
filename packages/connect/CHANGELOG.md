@@ -16,7 +16,7 @@
 
 Connect 10 has no stable release yet — use [connect.trezor.io/10.0.0-beta.3](https://connect.trezor.io/10.0.0-beta.3/) to access the prerelease version of Connect Explorer. Once Connect 10 is released, the persistent link [connect.trezor.io/10](https://connect.trezor.io/10/) will point to the latest stable version.
 
-# 10.0.0-beta.2
+# 10.0.0-beta.3
 
 An incremental prerelease on top of beta.1. It adds a handful of new methods (`sendTransaction`, `composePsbt`, `solanaSignMessage`), EIP-7702 and Stellar Soroban signing, and a Node entry point for `@trezor/connect` built on `@trezor/connect-core`, plus a batch of coin/backend fixes. It also carries several breaking changes — mostly to the UI-event and fee-selection channels used by custom-UI / host integrations, and to a couple of public method/result shapes — so read **Breaking since beta.1** before upgrading.
 

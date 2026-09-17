@@ -11,7 +11,7 @@ import TrezorConnect, { DEVICE, DEVICE_EVENT } from '@trezor/connect';
 //      consumer's NodeNext moduleResolution (e.g. the producer shipping it
 //      extensionless), the whole star-export silently contributes zero names and
 //      these imports fail with TS2614 — exactly the regression that shipped in
-//      10.0.0-beta.2. Neither the runtime smoke (the default import resolves fine
+//      10.0.0-beta.3. Neither the runtime smoke (the default import resolves fine
 //      at runtime) nor `attw --profile esm-only` (which validates the package's
 //      own entry point, not the deep cross-package re-export chain) detects this
 //      class, so it must be asserted here. skipLibCheck:true (like real
