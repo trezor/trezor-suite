@@ -137,9 +137,13 @@ export default class SendTransaction extends AbstractMethod<'sendTransaction', P
         const feeLevels = getOrInitFeeLevels(coinInfo);
         await feeLevels.load(blockchain);
 
+        // find unused change address or fallback to the last in the list
+        const changeAddress =
+            account.addresses?.change.find(a => !a.transfers) ?? account.addresses?.change.at(-1);
+
         const compose = createComposer({
             txType: account.type,
-            addresses: account.addresses,
+            changeAddress,
             utxos,
             coinInfo,
             outputs,
