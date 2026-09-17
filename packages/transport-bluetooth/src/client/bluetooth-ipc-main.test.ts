@@ -16,6 +16,9 @@ const mockBluetoothDevice = (device: Partial<BluetoothDevice> = {}): BluetoothDe
     ...device,
 });
 
+// Lets every already scheduled scan action run before the assertions look at the requests.
+const flushEventLoop = () => new Promise<void>(resolve => setImmediate(resolve));
+
 describe('BluetoothIpc scan ownership', () => {
     const sendMock = jest.spyOn(TrezorBluetooth.prototype, 'sendMessage');
     const isConnectedMock = jest.spyOn(TrezorBluetooth.prototype, 'isConnected');
@@ -165,30 +168,34 @@ describe('BluetoothIpc scan ownership', () => {
         ]);
     });
 
-    // Lets every already scheduled scan action run before the assertions look at the requests.
-    const flushEventLoop = () => {}; //new Promise<void>(resolve => setImmediate(resolve));
-
-    it('guard initialScan stop_scan', async () => {
+    it('sends a startScan requested during the initial stop_scan after the stop completes', async () => {
         const knownDevice = mockBluetoothDevice();
-        const scanStopStarted = createDeferred<void>();
+        const stopStarted = createDeferred<void>();
+        const stopDeferred = createDeferred<{ success: true }>();
+        sendMock.mockImplementation(request => {
+            if (request.method === 'stop_scan') {
+                stopStarted.resolve();
 
-        sendMock.mockImplementation(message => {
-            if (message.method === 'stop_scan') {
-                scanStopStarted.resolve();
+                return stopDeferred.promise;
             }
 
             return Promise.resolve({ devices: [knownDevice], success: true });
         });
 
-        const pr = ipc.init({ knownDevices: [knownDevice] });
-        await scanStopStarted.promise;
-        await ipc.startScan('ui');
-        await pr;
+        const init = ipc.init({ knownDevices: [knownDevice] });
+        await stopStarted.promise;
 
-        // await flushEventLoop();
-
+        const start = ipc.startScan('ui');
+        await flushEventLoop();
         expect(sendMock.mock.calls.map(([request]) => request.method)).toEqual([
-            // 'start_scan',
+            'set_state',
+            'start_scan',
+            'stop_scan',
+        ]);
+
+        stopDeferred.resolve({ success: true });
+        await Promise.all([init, start]);
+        expect(sendMock.mock.calls.map(([request]) => request.method)).toEqual([
             'set_state',
             'start_scan',
             'stop_scan',
@@ -210,28 +217,41 @@ describe('BluetoothIpc scan ownership', () => {
         connectSpy.mockRestore();
     });
 
-    it('restarts scanning when the adapter becomes enabled while a scan is wanted', async () => {
-        await ipc.startScan('ui');
-        ipc['api'].emit('adapter_state_changed', { state: 'enabled' });
-        await flushEventLoop();
+    describe('adapter state', () => {
+        beforeEach(async () => {
+            // Server events are subscribed while connecting, so the first scan must connect.
+            isConnectedMock.mockReturnValue(false);
+            jest.spyOn(TrezorBluetooth.prototype, 'connect').mockImplementationOnce(() => {
+                isConnectedMock.mockReturnValue(true);
 
-        expect(sendMock.mock.calls.map(([request]) => request.method)).toEqual(['start_scan']);
-    });
+                return Promise.resolve();
+            });
+            await ipc.startScan('ui');
+            sendMock.mockClear();
+        });
 
-    it('does not restart scanning when the adapter becomes enabled after the last owner stopped', async () => {
-        await ipc.stopScan('ui');
-        sendMock.mockClear();
+        it('restarts scanning when the adapter becomes enabled while a scan is wanted', async () => {
+            ipc['api'].emit('adapter_state_changed', { state: 'enabled' });
+            await flushEventLoop();
 
-        ipc['api'].emit('adapter_state_changed', { state: 'enabled' });
-        await flushEventLoop();
+            expect(sendMock.mock.calls.map(([request]) => request.method)).toEqual(['start_scan']);
+        });
 
-        expect(sendMock).not.toHaveBeenCalled();
-    });
+        it('does not restart scanning when the adapter becomes enabled after the last owner stopped', async () => {
+            await ipc.stopScan('ui');
+            sendMock.mockClear();
 
-    it('does not restart scanning when the last owner stops before the restart runs', async () => {
-        ipc['api'].emit('adapter_state_changed', { state: 'enabled' });
-        await ipc.stopScan('ui');
+            ipc['api'].emit('adapter_state_changed', { state: 'enabled' });
+            await flushEventLoop();
 
-        expect(sendMock.mock.calls.map(([request]) => request.method)).toEqual(['stop_scan']);
+            expect(sendMock).not.toHaveBeenCalled();
+        });
+
+        it('does not restart scanning when the last owner stops before the restart runs', async () => {
+            ipc['api'].emit('adapter_state_changed', { state: 'enabled' });
+            await ipc.stopScan('ui');
+
+            expect(sendMock.mock.calls.map(([request]) => request.method)).toEqual(['stop_scan']);
+        });
     });
 });
