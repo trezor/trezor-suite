@@ -78,8 +78,12 @@ export const MessageSystemExperimentDetail = ({
     activeGroup,
 }: MessageSystemExperimentDetailProps) => {
     const ranges = buildExperimentGroupRanges(experiment.groups);
+    // What the config says it is, else what the app calls the id it knows.
     const experimentName =
-        experiment.id in EXPERIMENT_MAP ? EXPERIMENT_MAP[experiment.id as ExperimentId] : undefined;
+        experiment.name ??
+        (experiment.id in EXPERIMENT_MAP
+            ? EXPERIMENT_MAP[experiment.id as ExperimentId]
+            : undefined);
 
     return (
         <>

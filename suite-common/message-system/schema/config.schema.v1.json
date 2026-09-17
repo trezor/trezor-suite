@@ -229,6 +229,11 @@
                                 "type": "string",
                                 "minLength": 1
                             },
+                            "name": {
+                                "type": "string",
+                                "minLength": 1,
+                                "description": "What the experiment is, for whoever reads the config. The app knows an experiment by its id; this only describes it."
+                            },
                             "groups": {
                                 "type": "array",
                                 "items": {
