@@ -22,7 +22,10 @@ const NetworkGroupHeader = ({ group }: NetworkGroupHeaderProps) => {
     const { BaseCurrencyAmountFormatter } = useFormatters();
 
     return (
-        <Table.Row data-testid={`@dashboard/asset-first-group/${group.symbol}`}>
+        <Table.Row
+            isHighlightedOnHover={false}
+            data-testid={`@dashboard/asset-first-group/${group.symbol}`}
+        >
             <Table.Cell colSpan={2} padding={ASSET_FIRST_CELL_PADDING.first}>
                 <Text typographyStyle="body-sm" intent="neutral" priority="secondary">
                     {group.name}
