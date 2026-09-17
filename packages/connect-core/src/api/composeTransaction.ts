@@ -71,9 +71,13 @@ export default class ComposeTransaction extends AbstractMethod<'composeTransacti
         const { coinInfo, outputs, baseFee, sortingStrategy, account, feeLevels } = this.params;
         const address_n = pathUtils.validatePath(account.path);
 
+        // find unused change address or fallback to the last in the list
+        const changeAddress =
+            account.addresses?.change.find(a => !a.transfers) ?? account.addresses?.change.at(-1);
+
         const compose = createComposer({
             txType: pathUtils.getAccountType(address_n),
-            addresses: account.addresses,
+            changeAddress,
             utxos: account.utxo,
             coinInfo,
             outputs,
