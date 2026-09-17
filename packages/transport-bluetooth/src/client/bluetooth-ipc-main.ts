@@ -108,7 +108,7 @@ export class BluetoothIpc extends TypedEmitter<BluetoothIpcEvents> implements Bl
                     devices: this.state.knownDevices,
                 });
 
-                const { devices: scanResult } = await this.api
+                const initialScan = await this.api
                     .send('start_scan')
                     // todo: bluetooth-ipc-main.init is called in inInitBluetoothThunk. If it returns an error there, thunk does not proceed and listeners are not registered.
                     // This is a hotfix, I believe, that initBluetoothThunks call to bluetoothIpc.init should only check that ipc channel is established, nothing more.
@@ -120,20 +120,28 @@ export class BluetoothIpc extends TypedEmitter<BluetoothIpcEvents> implements Bl
                         ) {
                             this.emit('adapter-event', 'disabled');
 
-                            return { devices: [] };
+                            return undefined;
                         }
                         throw error;
                     });
-                if (scanResult.length === 0) {
+
+                if (!initialScan) {
+                    // Nothing is scanning, so there is nothing to wait for.
+                    return this.result();
+                }
+
+                if (initialScan.devices.length === 0) {
                     // wait. devices may not be returned immediately
                     await resolveAfter(1000);
                 }
 
-                if (!this.shouldScan) {
-                    await this.api.send('stop_scan').catch(error => {
-                        console.warn('Initial stop_scan error', error);
-                    });
-                }
+                // Block start_scan before this stop.
+                await this.serializeScan(async () => {
+                    if (this.shouldScan) return;
+                    await this.api.send('stop_scan');
+                }).catch(error => {
+                    console.warn('Initial stop_scan error', error);
+                });
             } catch (error) {
                 return this.result(error.message);
             }
@@ -165,7 +173,10 @@ export class BluetoothIpc extends TypedEmitter<BluetoothIpcEvents> implements Bl
 
         return this.serializeScan(async () => {
             try {
-                await this.connectApi();
+                const connection = await this.connectApi();
+                if (connection && !connection.success) {
+                    return connection;
+                }
 
                 const { devices } = await this.api.send('start_scan');
 
