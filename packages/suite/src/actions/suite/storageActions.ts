@@ -49,8 +49,10 @@ import {
     type PhishingRootState,
     type PhishingState,
     type SendRootState,
+    type StellarContractTokensRootState,
     type TransactionsRootState,
     type WalletSettingsRootState,
+    selectStellarContractTokens,
 } from '@suite-common/wallet-core';
 import type {
     AccountKey,
@@ -324,6 +326,12 @@ export const removeAccountPhishing = (accountKey: AccountKey) => {
     return db.removeItemByPK('phishing', accountKey);
 };
 
+export const removeAccountStellarContractTokens = (accountKey: AccountKey) => {
+    if (!db.isAccessible()) return;
+
+    return db.removeItemByPK('stellarContractTokens', accountKey);
+};
+
 type RemoveAccountWithDependenciesState = FlagsRootState &
     SuiteSettingsRootState & {
         suite: Pick<SuiteState, 'evmSettings' | 'seenDisconnectNotificationForDeviceIds'>;
@@ -341,6 +349,7 @@ export const removeAccountWithDependencies =
             removeAccount(account),
             removeAccountHistoricRates(account.key),
             removeAccountPhishing(account.key),
+            removeAccountStellarContractTokens(account.key),
         ]);
 
 type ForgetDeviceThunkState = AccountsRootState &
@@ -609,6 +618,20 @@ export const saveDebugSettings =
     async (_dispatch: Dispatch<UnknownAction>, getState: () => SaveDebugSettingsThunkState) => {
         if (!db.isAccessible()) return;
         await db.addItem('debug', getState().debug, 'debug', true);
+    };
+
+type SaveStellarContractTokensThunkState = StellarContractTokensRootState;
+
+export const saveStellarContractTokens =
+    (accountKey: AccountKey) =>
+    (_dispatch: Dispatch<UnknownAction>, getState: () => SaveStellarContractTokensThunkState) => {
+        if (!db.isAccessible()) return;
+
+        const contracts = selectStellarContractTokens(getState(), accountKey);
+
+        return contracts.length > 0
+            ? db.addItem('stellarContractTokens', contracts, accountKey, true)
+            : db.removeItemByPK('stellarContractTokens', accountKey);
     };
 
 type SaveTokenManagementThunkState = TokenDefinitionsRootState;

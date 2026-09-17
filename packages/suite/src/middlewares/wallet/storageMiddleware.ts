@@ -66,6 +66,7 @@ import {
     setMevProtection,
     setNetworkReserve,
     setSuspiciousTransactionsFilter,
+    stellarContractTokensActions,
     transactionsActions,
     updateTxsFiatRatesThunk,
 } from '@suite-common/wallet-core';
@@ -192,6 +193,16 @@ const rememberedDeviceHandlers: RememberedDeviceHandler[] = [
         getDevice: (action, state) => getDeviceByAccountKey(action.payload.accountKey, state),
         save: ({ action }, { dispatch }) => {
             dispatch(storageActions.saveAccountReceive(action.payload.accountKey));
+        },
+    }),
+    defineRememberedDeviceHandler({
+        match: [
+            stellarContractTokensActions.addContractToken.match,
+            stellarContractTokensActions.removeContractToken.match,
+        ],
+        getDevice: (action, state) => getDeviceByAccountKey(action.payload.accountKey, state),
+        save: ({ action }, { dispatch }) => {
+            dispatch(storageActions.saveStellarContractTokens(action.payload.accountKey));
         },
     }),
     defineRememberedDeviceHandler({
