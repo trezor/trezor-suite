@@ -12234,6 +12234,7 @@ __metadata:
     "@suite-native/module-trading": "workspace:*"
     "@suite-native/module-transactions": "workspace:*"
     "@suite-native/navigation": "workspace:*"
+    "@suite-native/performance-metrics": "workspace:*"
     "@suite-native/sentry": "workspace:*"
     "@suite-native/services": "workspace:*"
     "@suite-native/settings": "workspace:*"
@@ -13304,6 +13305,7 @@ __metadata:
     "@suite-native/module-earn": "workspace:*"
     "@suite-native/module-stellar-token-management": "workspace:*"
     "@suite-native/navigation": "workspace:*"
+    "@suite-native/performance-metrics": "workspace:*"
     "@suite-native/qr-code": "workspace:*"
     "@suite-native/suite-sync": "workspace:*"
     "@suite-native/test-utils-store": "workspace:*"
@@ -13821,6 +13823,7 @@ __metadata:
     "@suite-native/intl": "workspace:*"
     "@suite-native/link": "workspace:*"
     "@suite-native/navigation": "workspace:*"
+    "@suite-native/performance-metrics": "workspace:*"
     "@suite-native/settings": "workspace:*"
     "@suite-native/suite-sync": "workspace:*"
     "@suite-native/test-utils-store": "workspace:*"
@@ -13939,6 +13942,7 @@ __metadata:
     "@suite-native/intl": "workspace:*"
     "@suite-native/link": "workspace:*"
     "@suite-native/navigation": "workspace:*"
+    "@suite-native/performance-metrics": "workspace:*"
     "@suite-native/qr-code": "workspace:*"
     "@suite-native/test-utils": "workspace:*"
     "@suite-native/toasts": "workspace:*"
@@ -14000,6 +14004,7 @@ __metadata:
     "@suite-native/labeling": "workspace:*"
     "@suite-native/link": "workspace:*"
     "@suite-native/navigation": "workspace:*"
+    "@suite-native/performance-metrics": "workspace:*"
     "@suite-native/qr-code": "workspace:*"
     "@suite-native/scrollview": "workspace:*"
     "@suite-native/send": "workspace:*"
@@ -14346,6 +14351,24 @@ __metadata:
     react: "npm:19.2.3"
     react-native: "npm:0.86.0"
     react-native-reanimated: "npm:4.5.0"
+    react-redux: "npm:9.3.0"
+  languageName: unknown
+  linkType: soft
+
+"@suite-native/performance-metrics@workspace:*, @suite-native/performance-metrics@workspace:suite-native/performance-metrics":
+  version: 0.0.0-use.local
+  resolution: "@suite-native/performance-metrics@workspace:suite-native/performance-metrics"
+  dependencies:
+    "@react-navigation/native": "npm:7.1.31"
+    "@suite-common/device": "workspace:*"
+    "@suite-common/receive": "workspace:*"
+    "@suite-common/wallet-core": "workspace:*"
+    "@suite-common/wallet-types": "workspace:*"
+    "@suite-native/config": "workspace:*"
+    "@trezor/type-utils": "workspace:*"
+    react: "npm:19.2.3"
+    react-native: "npm:0.86.0"
+    react-native-lighthouse: "npm:1.0.0"
     react-redux: "npm:9.3.0"
   languageName: unknown
   linkType: soft
@@ -41772,6 +41795,16 @@ __metadata:
     react: ">=16.8.1"
     react-native: ">=0.60.0-rc.0 <1.0.x"
   checksum: 10/16ffa8de8f8e56553bc9f3ed6dcdd16cda88db9cc98f4ab27ba3938b7ec02079669a7128f8f1dc566e6071d99cf4d837e83bada96573f4f6f1a7bd4ce0de6ecb
+  languageName: node
+  linkType: hard
+
+"react-native-lighthouse@npm:1.0.0":
+  version: 1.0.0
+  resolution: "react-native-lighthouse@npm:1.0.0"
+  peerDependencies:
+    react: ">=17.0.0"
+    react-native: ">=0.64.0"
+  checksum: 10/b047e03a3c4473f49c27f724f55f6f94f5d501bdc641836ce12698861d0bfdb8a195bfd4e736a8b041874191355f919d2ddb5596ba18935f365168c21175c5d4
   languageName: node
   linkType: hard
 

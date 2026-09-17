@@ -7,6 +7,7 @@ import { type NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { type AccountsRootState, selectAccountByKey } from '@suite-common/wallet-core';
 import { useResolvedAccountKey } from '@suite-native/accounts';
 import { type RootStackParamList, type RootStackRoutes } from '@suite-native/navigation';
+import { ScreenPerformanceRoot, useScreenPerformance } from '@suite-native/performance-metrics';
 
 import { AccountDetailContentScreen } from './AccountDetailContentScreen';
 import { AccountDetailLoadingScreen } from './AccountDetailLoadingScreen';
@@ -37,9 +38,15 @@ export const AccountDetailScreen = memo(() => {
         selectAccountByKey(state, accountKey),
     );
 
-    return account ? (
-        <AccountDetailContentScreen account={account} tokenContract={tokenContract} />
-    ) : (
-        <AccountDetailLoadingScreen />
+    const { panHandlers } = useScreenPerformance('account-detail', !!account);
+
+    return (
+        <ScreenPerformanceRoot panHandlers={panHandlers}>
+            {account ? (
+                <AccountDetailContentScreen account={account} tokenContract={tokenContract} />
+            ) : (
+                <AccountDetailLoadingScreen />
+            )}
+        </ScreenPerformanceRoot>
     );
 });
