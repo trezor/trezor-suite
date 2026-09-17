@@ -1,8 +1,25 @@
+import { useRef } from 'react';
+
+import styled from 'styled-components';
+
 import { Translation, useTranslation } from '@suite/intl';
-import { Button, Dropdown, Row } from '@trezor/components';
+import { Button, Icon, Menu, Popover, type PopoverRef, Row } from '@trezor/components';
 import { CheckIcon, FunnelSimpleIcon, XIcon } from '@trezor/icons';
 
 import { type AssetFirstGrouping } from './assetFirstTableGrouping';
+
+/**
+ * The funnel is a mark in the heading rather than a button sitting in it, so it carries no shape
+ * of its own — `Dropdown` would bring an `IconButton` and its filled background.
+ */
+const FunnelTrigger = styled.button`
+    display: flex;
+    align-items: center;
+    border: none;
+    background: none;
+    padding: 0;
+    cursor: pointer;
+`;
 
 type AssetFirstTableFilterProps = {
     grouping: AssetFirstGrouping;
@@ -16,6 +33,7 @@ type AssetFirstTableFilterProps = {
  * itself, so the table says what it is doing without the menu having to be opened again.
  */
 export const AssetFirstTableFilter = ({ grouping, onChange }: AssetFirstTableFilterProps) => {
+    const popoverRef = useRef<PopoverRef>(null);
     const { translationString } = useTranslation();
 
     if (grouping === 'networks') {
@@ -33,26 +51,42 @@ export const AssetFirstTableFilter = ({ grouping, onChange }: AssetFirstTableFil
         );
     }
 
+    const choose = (chosen: AssetFirstGrouping) => {
+        onChange(chosen);
+        popoverRef.current?.close();
+    };
+
     return (
-        <Dropdown
-            icon={FunnelSimpleIcon}
-            iconSize="small"
-            data-testid="@dashboard/asset-first/grouping"
-            tooltip={{ isActive: true, content: translationString('TR_ASSET_FIRST_GROUPING') }}
-            items={[
-                {
-                    label: <Translation id="TR_ASSET_FIRST_GROUPING_DEFAULT" />,
-                    iconRight: CheckIcon,
-                    onClick: () => onChange('default'),
-                    'data-testid': '@dashboard/asset-first/grouping/default',
-                },
-                {
-                    label: <Translation id="TR_ASSET_FIRST_GROUPING_NETWORKS" />,
-                    onClick: () => onChange('networks'),
-                    'data-testid': '@dashboard/asset-first/grouping/networks',
-                },
-            ]}
-        />
+        <Popover
+            ref={popoverRef}
+            placement={{ position: 'bottom', alignment: 'start' }}
+            content={
+                <Menu
+                    onClose={() => popoverRef.current?.close()}
+                    items={[
+                        {
+                            label: <Translation id="TR_ASSET_FIRST_GROUPING_DEFAULT" />,
+                            iconRight: CheckIcon,
+                            onClick: () => choose('default'),
+                            'data-testid': '@dashboard/asset-first/grouping/default',
+                        },
+                        {
+                            label: <Translation id="TR_ASSET_FIRST_GROUPING_NETWORKS" />,
+                            onClick: () => choose('networks'),
+                            'data-testid': '@dashboard/asset-first/grouping/networks',
+                        },
+                    ]}
+                />
+            }
+        >
+            <FunnelTrigger
+                type="button"
+                aria-label={translationString('TR_ASSET_FIRST_GROUPING')}
+                data-testid="@dashboard/asset-first/grouping"
+            >
+                <Icon as={FunnelSimpleIcon} size={16} intent="neutral" priority="secondary" />
+            </FunnelTrigger>
+        </Popover>
     );
 };
 
