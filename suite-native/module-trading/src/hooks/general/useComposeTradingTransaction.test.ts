@@ -66,7 +66,7 @@ describe('useComposeTradingTransaction', () => {
                 featureFlags: { [FeatureFlag.IsTradingSlip24Enabled]: true },
                 device: {
                     selectedDevice: {
-                        features: { major_version: 2, minor_version: 12, patch_version: 1 },
+                        features: { major_version: 2, minor_version: 12, patch_version: 5 },
                     },
                 },
                 wallet: {
