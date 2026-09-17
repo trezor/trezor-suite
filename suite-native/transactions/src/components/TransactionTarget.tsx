@@ -76,6 +76,7 @@ export const TransactionListItemValues = ({
                         useHistoricRate={!!historicRate}
                         isForcedDiscreetMode={isPhishingTransaction}
                         style={applyStyle(failedTxStyle, { isFailedTx })}
+                        testID={`@transactions/item/${transaction.txid}/fiatAmount`}
                     />
                 </Box>
             )}
