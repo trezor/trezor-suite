@@ -1,18 +1,21 @@
+import { asNetworkSymbols } from '@trezor/network-module';
 import type { SuiteNetworkModule } from '@trezor/network-module-suite-types';
 
 import { createSuiteNetworkModuleRepository } from './SuiteNetworkModuleRepository';
 import type { SuiteNetworkModules } from './SuiteNetworkModules';
 
-const createModule = (symbols: string[], signVerify: SuiteNetworkModule<string>['signVerify']) =>
-    ({
-        signVerify,
-        getSupportedNetworks: () => symbols,
-        isSupportedNetwork: (symbol: string): symbol is string => symbols.includes(symbol),
-    }) as unknown as SuiteNetworkModules[keyof SuiteNetworkModules];
+const signVerify = {
+    Component: () => null,
+    title: 'TR_NAV_SIGN_VERIFY',
+} as NonNullable<SuiteNetworkModule['signVerify']>;
 
-const signVerify = { Component: () => null, title: 'TR_NAV_SIGN_VERIFY' } as NonNullable<
-    SuiteNetworkModule<string>['signVerify']
->;
+const createModule = (
+    symbols: string[],
+    module: SuiteNetworkModule['signVerify'],
+): SuiteNetworkModule => ({
+    signVerify: module,
+    getSupportedNetworks: () => asNetworkSymbols(symbols),
+});
 
 const suiteNetworkModules = {
     bitcoin: createModule(['btc', 'ltc'], signVerify),
@@ -23,12 +26,12 @@ describe('createSuiteNetworkModuleRepository', () => {
     const repository = createSuiteNetworkModuleRepository({ suiteNetworkModules });
 
     it('finds the module registered for every symbol it supports', () => {
-        expect(repository.get('btc' as never).signVerify).toBe(signVerify);
-        expect(repository.get('ltc' as never).signVerify).toBe(signVerify);
+        expect(repository.get(asNetworkSymbols(['btc'])[0]!).signVerify).toBe(signVerify);
+        expect(repository.get(asNetworkSymbols(['ltc'])[0]!).signVerify).toBe(signVerify);
     });
 
     it('hands back a module that neither signs nor verifies as such', () => {
-        expect(repository.get('sol' as never).signVerify).toBeNull();
+        expect(repository.get(asNetworkSymbols(['sol'])[0]!).signVerify).toBeNull();
     });
 
     it('collects the supported networks of every registered module', () => {
@@ -38,7 +41,7 @@ describe('createSuiteNetworkModuleRepository', () => {
     });
 
     it('says which symbol has no module rather than handing back nothing', () => {
-        expect(() => repository.get('xrp' as never)).toThrow(
+        expect(() => repository.get(asNetworkSymbols(['xrp'])[0]!)).toThrow(
             'Suite network module for xrp is not registered.',
         );
     });

@@ -1,14 +1,15 @@
+import type { NetworkSymbol } from '@trezor/network-module';
 import type { SuiteNetworkModule } from '@trezor/network-module-suite-types';
 import { isArrayMember, typedObjectValues } from '@trezor/utils';
 
-import type { StaticSuiteNetworkModulesDep, SuiteNetworkSymbol } from './SuiteNetworkModules';
+import type { StaticSuiteNetworkModulesDep } from './SuiteNetworkModules';
 
 export type SuiteNetworkModuleRepositoryDeps = StaticSuiteNetworkModulesDep;
 
 export type SuiteNetworkModuleRepository = {
-    get: <T extends SuiteNetworkSymbol>(symbol: T) => SuiteNetworkModule<T>;
-    getSupportedNetworks: () => readonly SuiteNetworkSymbol[];
-    isSupportedNetwork: (symbol: string) => symbol is SuiteNetworkSymbol;
+    get: (symbol: NetworkSymbol) => SuiteNetworkModule;
+    getSupportedNetworks: () => readonly NetworkSymbol[];
+    isSupportedNetwork: (symbol: string) => symbol is NetworkSymbol;
 };
 
 export type SuiteNetworkModuleRepositoryDep = {
@@ -18,13 +19,10 @@ export type SuiteNetworkModuleRepositoryDep = {
 export const createSuiteNetworkModuleRepository = (
     deps: SuiteNetworkModuleRepositoryDeps,
 ): SuiteNetworkModuleRepository => {
-    const networkModuleByNetworkSymbol = new Map<
-        SuiteNetworkSymbol,
-        SuiteNetworkModule<SuiteNetworkSymbol>
-    >();
+    const networkModuleByNetworkSymbol = new Map<NetworkSymbol, SuiteNetworkModule>();
 
     typedObjectValues(deps.suiteNetworkModules).forEach(networkModule => {
-        networkModule.getSupportedNetworks().forEach((networkSymbol: SuiteNetworkSymbol) => {
+        networkModule.getSupportedNetworks().forEach(networkSymbol => {
             networkModuleByNetworkSymbol.set(networkSymbol, networkModule);
         });
     });
@@ -32,17 +30,17 @@ export const createSuiteNetworkModuleRepository = (
     const supportedNetworks = Array.from(networkModuleByNetworkSymbol.keys());
 
     return {
-        get: <T extends SuiteNetworkSymbol>(symbol: T): SuiteNetworkModule<T> => {
+        get: (symbol: NetworkSymbol): SuiteNetworkModule => {
             const networkModule = networkModuleByNetworkSymbol.get(symbol);
 
             if (!networkModule) {
                 throw new Error(`Suite network module for ${symbol} is not registered.`);
             }
 
-            return networkModule as SuiteNetworkModule<T>;
+            return networkModule;
         },
-        getSupportedNetworks: (): readonly SuiteNetworkSymbol[] => supportedNetworks,
-        isSupportedNetwork: (symbol: string): symbol is SuiteNetworkSymbol =>
+        getSupportedNetworks: (): readonly NetworkSymbol[] => supportedNetworks,
+        isSupportedNetwork: (symbol: string): symbol is NetworkSymbol =>
             isArrayMember(symbol, supportedNetworks),
     };
 };

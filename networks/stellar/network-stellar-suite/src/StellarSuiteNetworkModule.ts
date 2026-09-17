@@ -1,14 +1,8 @@
+import { asNetworkSymbols } from '@trezor/network-module';
 import type { SuiteNetworkModule } from '@trezor/network-module-suite-types';
-import {
-    type StellarNetworkSymbol,
-    isSupportedStellarNetwork,
-    supportedStellarNetworks,
-} from '@trezor/network-stellar/constants';
+import { supportedStellarNetworks } from '@trezor/network-stellar/constants';
 
-export type StellarSuiteNetworkModule = SuiteNetworkModule<StellarNetworkSymbol>;
-
-export const createStellarSuiteNetworkModule = (): StellarSuiteNetworkModule => ({
+export const createStellarSuiteNetworkModule = (): SuiteNetworkModule => ({
     signVerify: null,
-    getSupportedNetworks: () => supportedStellarNetworks,
-    isSupportedNetwork: isSupportedStellarNetwork,
+    getSupportedNetworks: () => asNetworkSymbols(supportedStellarNetworks),
 });

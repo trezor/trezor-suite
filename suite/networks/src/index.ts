@@ -7,5 +7,4 @@ export {
 export {
     type StaticSuiteNetworkModulesDep,
     type SuiteNetworkModules,
-    type SuiteNetworkSymbol,
 } from './SuiteNetworkModules';
