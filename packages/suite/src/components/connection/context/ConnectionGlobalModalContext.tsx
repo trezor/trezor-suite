@@ -102,13 +102,12 @@ const useConnectionGlobalModal = () => {
 
     const allDevices = useSelector(selectAllDevices);
 
-    // TODO shall be refactored, now it isn't reactive on Date.now() → can render outdated result. Maybe a setInterval?
-    // eslint-disable-next-line react-hooks/purity
-    const lastUpdatedBoundaryTimestamp = Date.now() - NEARBY_DEVICES_LAST_UPDATED_LIMIT;
-
     const devices = allDevices.filter(it => {
+        // Can't be defined at render scope because it would be memoized by React compiler as const across renders
+        // eslint-disable-next-line react-hooks/purity
+        const now = Date.now();
         const isDeviceUnresponsiveForTooLong =
-            it.lastUpdatedTimestamp < lastUpdatedBoundaryTimestamp;
+            it.lastUpdatedTimestamp < now - NEARBY_DEVICES_LAST_UPDATED_LIMIT;
 
         if (isDeviceUnresponsiveForTooLong) {
             // If the device is connected or paired (it may have been paired in the OS system directly)
