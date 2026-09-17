@@ -95,6 +95,7 @@ jobs:
         id: matrix
         uses: ./.github/actions/resolve-test-matrix
         with:
+          spec-list: "suite/e2e/tests/trading/swap-dex-lifi.test.ts"
           max-desktop: ${{ steps.mode.outputs.max-desktop }}
           max-web: ${{ steps.mode.outputs.max-web }}
 
@@ -117,6 +118,7 @@ jobs:
     uses: ./.github/workflows/template-suite-run-e2e.yml
     with:
       target: "desktop"
+      spec-list: "suite/e2e/tests/trading/swap-dex-lifi.test.ts"
       pw-config: "./playwright-config/playwright-desktop.config.ts"
       test-group: ${{ matrix.TEST_GROUP }}
       fail-fast: "false"
@@ -173,6 +175,7 @@ jobs:
     uses: ./.github/workflows/template-suite-run-e2e.yml
     with:
       target: "web"
+      spec-list: "suite/e2e/tests/trading/swap-dex-lifi.test.ts"
       pw-config: "./playwright-config/playwright-web.config.ts"
       test-group: ${{ matrix.TEST_GROUP }}
       fail-fast: "false"
