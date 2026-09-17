@@ -1,18 +1,16 @@
-import { useMemo, useState } from 'react';
+import { useState } from 'react';
 
 import { Translation } from '@suite/intl';
 import { useFormatters } from '@suite-common/formatters';
 import { asBaseCurrencyAmount } from '@suite-common/wallet-types';
 import { Card, Table, Text } from '@trezor/components';
 
+import { useSelector } from 'src/hooks/suite';
+
 import { AssetFirstRow } from './AssetFirstRow';
 import { AssetFirstTableFilterHeader } from './AssetFirstTableFilter';
-import {
-    type AssetFirstGrouping,
-    type AssetFirstNetworkGroup,
-    groupAssetRowsByNetwork,
-} from './assetFirstTableGrouping';
-import { type AssetRow } from './assetFirstTableSelectors';
+import { type AssetFirstGrouping, type AssetFirstNetworkGroup } from './assetFirstTableGrouping';
+import { type AssetRow, selectAssetFirstTableView } from './assetFirstTableSelectors';
 import { ASSET_FIRST_CELL_PADDING } from './assetFirstTableUtils';
 
 type NetworkGroupHeaderProps = {
@@ -39,6 +37,9 @@ const NetworkGroupHeader = ({ group }: NetworkGroupHeaderProps) => {
     );
 };
 
+const renderRows = (rows: readonly AssetRow[]) =>
+    rows.map(row => <AssetFirstRow key={row.assetKey} row={row} />);
+
 /**
  * The dashboard's assets, one row per asset and network.
  *
@@ -47,21 +48,19 @@ const NetworkGroupHeader = ({ group }: NetworkGroupHeaderProps) => {
  * two lines, and a stablecoin held on three networks is three. Grouping by network gathers those
  * same lines under a heading again, without changing which lines there are.
  *
+ * What to render is chosen by `selectAssetFirstTableView`: the mode picks the arrangement and the
+ * table renders the shape it is handed.
+ *
  * Behind the asset-first home table experiment.
  */
-type AssetFirstTableProps = {
-    rows: readonly AssetRow[];
-};
-
-export const AssetFirstTable = ({ rows }: AssetFirstTableProps) => {
+export const AssetFirstTable = () => {
     const [grouping, setGrouping] = useState<AssetFirstGrouping>('default');
+    const view = useSelector(selectAssetFirstTableView(grouping));
 
-    const groups = useMemo(
-        () => (grouping === 'networks' ? groupAssetRowsByNetwork(rows) : undefined),
-        [grouping, rows],
-    );
+    const isEmpty =
+        view.grouping === 'networks' ? view.groups.length === 0 : view.rows.length === 0;
 
-    if (rows.length === 0) {
+    if (isEmpty) {
         return null;
     }
 
@@ -85,14 +84,12 @@ export const AssetFirstTable = ({ rows }: AssetFirstTableProps) => {
                     </Table.Row>
                 </Table.Header>
                 <Table.Body>
-                    {groups === undefined
-                        ? rows.map(row => <AssetFirstRow key={row.assetKey} row={row} />)
-                        : groups.flatMap(group => [
+                    {view.grouping === 'networks'
+                        ? view.groups.flatMap(group => [
                               <NetworkGroupHeader key={group.symbol} group={group} />,
-                              ...group.rows.map(row => (
-                                  <AssetFirstRow key={row.assetKey} row={row} />
-                              )),
-                          ])}
+                              ...renderRows(group.rows),
+                          ])
+                        : renderRows(view.rows)}
                 </Table.Body>
             </Table>
         </Card>

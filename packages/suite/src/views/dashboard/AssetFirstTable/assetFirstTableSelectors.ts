@@ -19,6 +19,11 @@ import { getFiatRateKey, toFiatCurrency } from '@suite-common/wallet-utils';
 import { type TokenInfo } from '@trezor/blockchain-link-types';
 import { BigNumber } from '@trezor/utils';
 
+import {
+    type AssetFirstGrouping,
+    type AssetFirstNetworkGroup,
+    groupAssetRowsByNetwork,
+} from './assetFirstTableGrouping';
 import { getAssetDisplaySymbol, sumAssetHoldings } from './assetFirstTableUtils';
 
 export type AssetFirstTableState = AssetHoldingsRootState &
@@ -201,3 +206,33 @@ export const getAssetFirstTotals = (rows: readonly AssetRow[]): AssetFirstTotals
         weekChangePercent: weekChange.div(weekAgoFiatValue).times(100),
     };
 };
+
+/**
+ * The rows arranged the way the table was asked to arrange them.
+ *
+ * One selector per arrangement, chosen by the mode, rather than a selector built per render: the
+ * table renders whichever shape it is handed, and a mode that did not change hands back the same
+ * groups, so the rows keep their identities and a memoized row is not re-rendered.
+ *
+ * Both arrangements read `selectAssetFirstRows`, so grouping cannot disagree with the total above
+ * the table about which assets there are — a group is a slice of that one list.
+ */
+export type AssetFirstTableView =
+    | { grouping: 'default'; rows: readonly AssetRow[] }
+    | { grouping: 'networks'; groups: readonly AssetFirstNetworkGroup[] };
+
+const selectDefaultView = createMemoizedSelector(
+    [selectAssetFirstRows],
+    (rows): AssetFirstTableView => ({ grouping: 'default', rows }),
+);
+
+const selectNetworksView = createMemoizedSelector(
+    [selectAssetFirstRows],
+    (rows): AssetFirstTableView => ({
+        grouping: 'networks',
+        groups: groupAssetRowsByNetwork(rows),
+    }),
+);
+
+export const selectAssetFirstTableView = (grouping: AssetFirstGrouping) =>
+    grouping === 'networks' ? selectNetworksView : selectDefaultView;

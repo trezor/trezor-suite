@@ -14,8 +14,9 @@ import { DashboardPromoBanner } from '../DashboardPromoBanner/DashboardPromoBann
  * banner — so the page is the balance, what is being promoted, and the assets, under the app's own
  * page header.
  *
- * The rows are chosen here and handed to both halves, so the total at the top is the sum of the
- * rows in the table below it by construction — not a second answer to the same question.
+ * The total at the top and the table below read the same rows, from `selectAssetFirstRows`, so the
+ * total is the sum of what the table shows by construction — not a second answer to the same
+ * question.
  *
  * Behind the asset-first home table experiment; without it the dashboard is unchanged.
  */
@@ -26,7 +27,7 @@ export const AssetFirstDashboard = () => {
         <Column gap={16} data-testid="@dashboard/asset-first">
             <AssetFirstBalanceCard rows={rows} />
             <DashboardPromoBanner />
-            <AssetFirstTable rows={rows} />
+            <AssetFirstTable />
         </Column>
     );
 };
