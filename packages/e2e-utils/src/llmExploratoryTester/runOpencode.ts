@@ -136,6 +136,8 @@ async function openrouterUsageUsd(): Promise<number> {
     return json.data.usage;
 }
 
+class StructuredOutputSchemaError extends Error {}
+
 function parseVerdict(messages: Message[]): TestResult {
     for (const info of messages.toReversed()) {
         if (info.role !== 'assistant') continue;
@@ -145,7 +147,9 @@ function parseVerdict(messages: Message[]): TestResult {
 
         const parsed = TestResultSchema.safeParse(structured);
         if (!parsed.success) {
-            throw new Error(`structured output failed TestResultSchema: ${parsed.error.message}`);
+            throw new StructuredOutputSchemaError(
+                `structured output failed TestResultSchema: ${parsed.error.message}\nRaw: ${JSON.stringify(structured, null, 2)}`,
+            );
         }
 
         return parsed.data;
@@ -243,10 +247,18 @@ async function runRound({
     prompt,
     budget,
 }: RunRoundParams): Promise<RoundOutcome> {
-    const { stream } = await client.event.subscribe();
-    await sendPrompt({ client, sessionId, prompt });
-
-    return watchRound({ client, sessionId, events: stream, budget });
+    let text = prompt;
+    for (let attempt = 0; ; attempt++) {
+        const { stream } = await client.event.subscribe();
+        await sendPrompt({ client, sessionId, prompt: text });
+        try {
+            return await watchRound({ client, sessionId, events: stream, budget });
+        } catch (e) {
+            if (attempt > 0 || !(e instanceof StructuredOutputSchemaError)) throw e;
+            log(`Structured output rejected — retrying\n${e.message}`);
+            text = `${e.message} Call StructuredOutput again for the WHOLE run.`;
+        }
+    }
 }
 
 function continuationPrompt(unfinished: string[]): string {
