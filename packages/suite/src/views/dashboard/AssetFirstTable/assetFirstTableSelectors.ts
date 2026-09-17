@@ -135,20 +135,14 @@ export const selectAssetFirstAssets = createMemoizedSelector(
         (_state: AssetFirstTableState, deviceState: StaticSessionId) => deviceState,
     ],
     (assetGroups, hidden, enabledNetworks, deviceState): readonly AssetTotal[] => {
-        const assets: AssetTotal[] = [];
-
-        assetGroups.forEach(group => {
+        const assets = [...assetGroups.values()].flatMap(group => {
             const [holding] = group.entities;
 
             if (holding?.deviceState !== deviceState || !enabledNetworks.includes(holding.symbol)) {
-                return;
+                return [];
             }
 
-            const asset = sumAsset(group.entities, hidden);
-
-            if (asset !== undefined) {
-                assets.push(asset);
-            }
+            return sumAsset(group.entities, hidden) ?? [];
         });
 
         return returnStableArrayIfEmpty(assets);
