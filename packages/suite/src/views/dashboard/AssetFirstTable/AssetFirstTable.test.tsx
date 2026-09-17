@@ -5,6 +5,7 @@ import { screen } from '@testing-library/react';
 import { initialState as selectedAccountInitialState } from '@suite/account';
 import { mockSuiteDevice } from '@suite-common/suite-types/mocks';
 import { createTestCompositionRoot } from '@suite-common/test-utils';
+import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { type Rate, type TokenAddress } from '@suite-common/wallet-types';
 import { mockAccountToken, mockWalletAccount } from '@suite-common/wallet-types/mocks';
 import { getFiatRateKey } from '@suite-common/wallet-utils';
@@ -18,12 +19,15 @@ import { mockInitialAppState } from '../../../../mocks/mockInitialAppState';
 
 const DEVICE_STATE = '1stTestnetAddress@device_id:0' as StaticSessionId;
 
+const BTC = asNetworkSymbol('btc');
+const ETH = asNetworkSymbol('eth');
+
 const USDC_ON_ETH = '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48' as TokenAddress;
 
 const mockRate = (rate: number) => ({ rate }) as Rate;
 
 const ethereumAccount = mockWalletAccount({
-    symbol: 'eth',
+    symbol: ETH,
     formattedBalance: '2',
     tokens: [
         mockAccountToken({
@@ -35,7 +39,7 @@ const ethereumAccount = mockWalletAccount({
     ],
 });
 
-const bitcoinAccount = mockWalletAccount({ symbol: 'btc', formattedBalance: '0.1' });
+const bitcoinAccount = mockWalletAccount({ symbol: BTC, formattedBalance: '0.1' });
 
 const getInitialState = (): AppState => ({
     ...mockInitialAppState,
@@ -44,7 +48,7 @@ const getInitialState = (): AppState => ({
         selectedDevice: mockSuiteDevice({ state: { staticSessionId: DEVICE_STATE } }),
     },
     tokenDefinitions: {
-        eth: {
+        [ETH]: {
             coin: { data: [USDC_ON_ETH], error: false, isLoading: false, hide: [], show: [] },
         },
     },
@@ -55,15 +59,15 @@ const getInitialState = (): AppState => ({
         accounts: [ethereumAccount, bitcoinAccount],
         settings: {
             ...mockInitialAppState.wallet.settings,
-            enabledNetworks: ['btc', 'eth'],
+            enabledNetworks: [BTC, ETH],
             localCurrency: 'usd',
         },
         fiat: {
             ...mockInitialAppState.wallet.fiat,
             current: {
-                [getFiatRateKey('eth', 'usd')]: mockRate(3000),
-                [getFiatRateKey('btc', 'usd')]: mockRate(100000),
-                [getFiatRateKey('eth', 'usd', USDC_ON_ETH)]: mockRate(1),
+                [getFiatRateKey(ETH, 'usd')]: mockRate(3000),
+                [getFiatRateKey(BTC, 'usd')]: mockRate(100000),
+                [getFiatRateKey(ETH, 'usd', USDC_ON_ETH)]: mockRate(1),
             },
         },
     },

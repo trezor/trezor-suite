@@ -1,3 +1,4 @@
+import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { type Account, type TokenAddress } from '@suite-common/wallet-types';
 import { getFiatRateKey } from '@suite-common/wallet-utils';
 import { type StaticSessionId } from '@trezor/device-utils';
@@ -10,6 +11,11 @@ import {
 
 const ALICE = 'aliceWallet@device:0' as StaticSessionId;
 const BOB = 'bobWallet@device:1' as StaticSessionId;
+
+const BTC = asNetworkSymbol('btc');
+const ETH = asNetworkSymbol('eth');
+const POL = asNetworkSymbol('pol');
+const DSOL = asNetworkSymbol('dsol');
 
 const USDC_ON_ETH = '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48' as TokenAddress;
 const USDC_ON_POL = '0x3c499c542cef5e3811e1192ce70d8cc03d5c3359' as TokenAddress;
@@ -26,7 +32,7 @@ type MockAccountParams = {
 
 const mockAccount = ({
     deviceState = ALICE,
-    symbol = 'eth',
+    symbol = ETH,
     index = 0,
     balance = '1',
     isVisible = true,
@@ -58,7 +64,7 @@ type MockStateParams = {
 
 const createState = ({
     accounts,
-    enabledNetworks = ['btc', 'eth', 'pol'],
+    enabledNetworks = [BTC, ETH, POL],
     rates = {},
     knownTokens = [USDC_ON_ETH, USDC_ON_POL],
     hiddenTokens = [],
@@ -76,7 +82,7 @@ const createState = ({
             fiat: { current: rates, lastWeek: {}, historic: {} },
         },
         // `dsol` has no `coin-definitions` feature, which is what makes it the testnet case below.
-        tokenDefinitions: { eth: definitions, pol: definitions, dsol: definitions },
+        tokenDefinitions: { [ETH]: definitions, [POL]: definitions, [DSOL]: definitions },
     } as unknown as AssetFirstTableState;
 };
 
@@ -88,10 +94,10 @@ describe('the rows the table is given', () => {
         const state = createState({
             accounts: [
                 mockAccount({
-                    symbol: 'eth',
+                    symbol: ETH,
                     tokens: [{ symbol: 'usdc', contract: USDC_ON_ETH, balance: '10' }],
                 }),
-                mockAccount({ symbol: 'btc', index: 1 }),
+                mockAccount({ symbol: BTC, index: 1 }),
             ],
         });
 
@@ -108,22 +114,22 @@ describe('the rows the table is given', () => {
         const state = createState({
             accounts: [
                 mockAccount({
-                    symbol: 'eth',
+                    symbol: ETH,
                     balance: '2',
                     tokens: [{ symbol: 'usdc', contract: USDC_ON_ETH, balance: '2400' }],
                 }),
                 mockAccount({
-                    symbol: 'pol',
+                    symbol: POL,
                     index: 1,
                     balance: '10',
                     tokens: [{ symbol: 'usdc', contract: USDC_ON_POL, balance: '720' }],
                 }),
             ],
             rates: {
-                ...mockRate('eth', 3000),
-                ...mockRate('pol', 0.5),
-                ...mockRate('eth', 1, USDC_ON_ETH),
-                ...mockRate('pol', 1, USDC_ON_POL),
+                ...mockRate(ETH, 3000),
+                ...mockRate(POL, 0.5),
+                ...mockRate(ETH, 1, USDC_ON_ETH),
+                ...mockRate(POL, 1, USDC_ON_POL),
             },
         });
 
@@ -143,22 +149,22 @@ describe('the rows the table is given', () => {
         const state = createState({
             accounts: [
                 mockAccount({
-                    symbol: 'eth',
+                    symbol: ETH,
                     balance: '1',
                     tokens: [{ symbol: 'usdc', contract: USDC_ON_ETH, balance: '5000' }],
                 }),
                 mockAccount({
-                    symbol: 'pol',
+                    symbol: POL,
                     index: 1,
                     balance: '0',
                     tokens: [{ symbol: 'usdc', contract: USDC_ON_POL, balance: '1' }],
                 }),
             ],
             rates: {
-                ...mockRate('eth', 2000),
-                ...mockRate('pol', 0.5),
-                ...mockRate('eth', 1, USDC_ON_ETH),
-                ...mockRate('pol', 1, USDC_ON_POL),
+                ...mockRate(ETH, 2000),
+                ...mockRate(POL, 0.5),
+                ...mockRate(ETH, 1, USDC_ON_ETH),
+                ...mockRate(POL, 1, USDC_ON_POL),
             },
         });
 
@@ -177,11 +183,11 @@ describe('the rows the table is given', () => {
     it('settles holdings worth the same by asset and network', () => {
         const state = createState({
             accounts: [
-                mockAccount({ symbol: 'pol', balance: '2' }),
-                mockAccount({ symbol: 'eth', index: 1, balance: '2' }),
-                mockAccount({ symbol: 'btc', index: 2, balance: '2' }),
+                mockAccount({ symbol: POL, balance: '2' }),
+                mockAccount({ symbol: ETH, index: 1, balance: '2' }),
+                mockAccount({ symbol: BTC, index: 2, balance: '2' }),
             ],
-            rates: { ...mockRate('eth', 1), ...mockRate('pol', 1), ...mockRate('btc', 1) },
+            rates: { ...mockRate(ETH, 1), ...mockRate(POL, 1), ...mockRate(BTC, 1) },
         });
 
         expect(selectAssetFirstRowKeys(state)).toEqual([
@@ -193,8 +199,8 @@ describe('the rows the table is given', () => {
 
     it('leaves out a network the user has not enabled', () => {
         const state = createState({
-            accounts: [mockAccount({ symbol: 'btc' })],
-            enabledNetworks: ['eth'],
+            accounts: [mockAccount({ symbol: BTC })],
+            enabledNetworks: [ETH],
         });
 
         expect(selectAssetFirstRowKeys(state)).toEqual([]);
@@ -241,11 +247,11 @@ describe('the rows the table is given', () => {
         const state = createState({
             accounts: [
                 mockAccount({
-                    symbol: 'dsol',
+                    symbol: DSOL,
                     tokens: [{ contract: UNKNOWN_TOKEN, balance: '3' }],
                 }),
             ],
-            enabledNetworks: ['dsol'],
+            enabledNetworks: [DSOL],
             knownTokens: [],
         });
 
@@ -254,7 +260,7 @@ describe('the rows the table is given', () => {
 
     it('leaves out an account the user hid', () => {
         const state = createState({
-            accounts: [mockAccount({ symbol: 'btc', isVisible: false })],
+            accounts: [mockAccount({ symbol: BTC, isVisible: false })],
         });
 
         expect(selectAssetFirstRowKeys(state)).toEqual([]);
@@ -262,7 +268,7 @@ describe('the rows the table is given', () => {
 
     it('leaves out another wallet’s assets', () => {
         const state = createState({
-            accounts: [mockAccount({ deviceState: BOB, symbol: 'btc' })],
+            accounts: [mockAccount({ deviceState: BOB, symbol: BTC })],
         });
 
         expect(selectAssetFirstRowKeys(state)).toEqual([]);
@@ -277,15 +283,15 @@ describe('the rows the table is given', () => {
     it('hands back the same row for an asset a write did not touch', () => {
         // What keeps a memoized row from re-rendering: one account's balance arriving must leave
         // every other row the object it was.
-        const untouched = mockAccount({ symbol: 'btc', index: 0 });
-        const written = mockAccount({ symbol: 'eth', index: 1, balance: '1' });
+        const untouched = mockAccount({ symbol: BTC, index: 0 });
+        const written = mockAccount({ symbol: ETH, index: 1, balance: '1' });
 
         const [bitcoinBefore] = selectAssetFirstRows(
             createState({ accounts: [untouched, written] }),
-        ).filter(row => row.symbol === 'btc');
+        ).filter(row => row.symbol === BTC);
         const [bitcoinAfter] = selectAssetFirstRows(
             createState({ accounts: [untouched, { ...written, formattedBalance: '2' }] }),
-        ).filter(row => row.symbol === 'btc');
+        ).filter(row => row.symbol === BTC);
 
         expect(bitcoinAfter).toBe(bitcoinBefore);
     });
@@ -294,10 +300,10 @@ describe('the rows the table is given', () => {
 describe('the total over those rows', () => {
     const state = createState({
         accounts: [
-            mockAccount({ symbol: 'eth', balance: '2' }),
-            mockAccount({ symbol: 'btc', index: 1, balance: '0.5' }),
+            mockAccount({ symbol: ETH, balance: '2' }),
+            mockAccount({ symbol: BTC, index: 1, balance: '0.5' }),
         ],
-        rates: { ...mockRate('eth', 3000), ...mockRate('btc', 100000) },
+        rates: { ...mockRate(ETH, 3000), ...mockRate(BTC, 100000) },
     });
 
     it('adds up the rows it is given', () => {

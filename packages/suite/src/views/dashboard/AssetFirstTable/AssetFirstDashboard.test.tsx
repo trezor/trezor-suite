@@ -5,6 +5,7 @@ import { screen } from '@testing-library/react';
 import { initialState as selectedAccountInitialState } from '@suite/account';
 import { mockSuiteDevice } from '@suite-common/suite-types/mocks';
 import { createTestCompositionRoot } from '@suite-common/test-utils';
+import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { type Rate } from '@suite-common/wallet-types';
 import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
 import { getFiatRateKey } from '@suite-common/wallet-utils';
@@ -18,6 +19,8 @@ import { mockInitialAppState } from '../../../../mocks/mockInitialAppState';
 
 const DEVICE_STATE = '1stTestnetAddress@device_id:0' as StaticSessionId;
 
+const BTC = asNetworkSymbol('btc');
+
 const getInitialState = (): AppState => ({
     ...mockInitialAppState,
     device: {
@@ -27,16 +30,16 @@ const getInitialState = (): AppState => ({
     wallet: {
         ...mockInitialAppState.wallet,
         selectedAccount: selectedAccountInitialState,
-        accounts: [mockWalletAccount({ symbol: 'btc', formattedBalance: '0.5' })],
+        accounts: [mockWalletAccount({ symbol: BTC, formattedBalance: '0.5' })],
         settings: {
             ...mockInitialAppState.wallet.settings,
-            enabledNetworks: ['btc'],
+            enabledNetworks: [BTC],
             localCurrency: 'usd',
         },
         fiat: {
             ...mockInitialAppState.wallet.fiat,
-            current: { [getFiatRateKey('btc', 'usd')]: { rate: 100000 } as Rate },
-            lastWeek: { [getFiatRateKey('btc', 'usd')]: { rate: 90000 } as Rate },
+            current: { [getFiatRateKey(BTC, 'usd')]: { rate: 100000 } as Rate },
+            lastWeek: { [getFiatRateKey(BTC, 'usd')]: { rate: 90000 } as Rate },
         },
     },
 });

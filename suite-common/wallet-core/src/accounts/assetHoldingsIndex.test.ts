@@ -1,3 +1,4 @@
+import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { type Account, type TokenAddress } from '@suite-common/wallet-types';
 import { type StaticSessionId } from '@trezor/device-utils';
 
@@ -15,6 +16,10 @@ import {
 const ALICE = 'aliceWallet@device:0' as StaticSessionId;
 const BOB = 'bobWallet@device:1' as StaticSessionId;
 
+const ETH = asNetworkSymbol('eth');
+const BTC = asNetworkSymbol('btc');
+const DSOL = asNetworkSymbol('dsol');
+
 const USDC_ON_ETH = '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48' as TokenAddress;
 const USDT_ON_ETH = '0xdac17f958d2ee523a2206206994597c13d831ec7' as TokenAddress;
 const UNKNOWN_TOKEN = '0x0000000000000000000000000000000000000bad' as TokenAddress;
@@ -30,7 +35,7 @@ type MockAccountParams = {
 
 const mockAccount = ({
     deviceState = ALICE,
-    symbol = 'eth',
+    symbol = ETH,
     index = 0,
     balance = '1',
     isVisible = true,
@@ -70,10 +75,10 @@ const createState = ({
     } as unknown as AssetHoldingsRootState;
 };
 
-const aliceCoin = getAssetKey({ deviceState: ALICE, symbol: 'eth' });
+const aliceCoin = getAssetKey({ deviceState: ALICE, symbol: ETH });
 const aliceUsdc = getAssetKey({
     deviceState: ALICE,
-    symbol: 'eth',
+    symbol: ETH,
     contractAddress: USDC_ON_ETH,
 });
 
@@ -85,7 +90,7 @@ describe('getAssetKey', () => {
     it('reads back what it wrote', () => {
         expect(parseAssetKey(aliceUsdc)).toEqual({
             deviceState: ALICE,
-            symbol: 'eth',
+            symbol: ETH,
             contractAddress: USDC_ON_ETH,
         });
     });
@@ -93,7 +98,7 @@ describe('getAssetKey', () => {
     it('reads a coin back as having no contract', () => {
         expect(parseAssetKey(aliceCoin)).toEqual({
             deviceState: ALICE,
-            symbol: 'eth',
+            symbol: ETH,
             contractAddress: undefined,
         });
     });
@@ -148,7 +153,7 @@ describe('what becomes a holding', () => {
         expect(
             selectAssetHoldings(
                 state,
-                getAssetKey({ deviceState: ALICE, symbol: 'eth', contractAddress: UNKNOWN_TOKEN }),
+                getAssetKey({ deviceState: ALICE, symbol: ETH, contractAddress: UNKNOWN_TOKEN }),
             ),
         ).toHaveLength(1);
     });
@@ -161,7 +166,7 @@ describe('what becomes a holding', () => {
         expect(
             selectAssetHoldings(
                 state,
-                getAssetKey({ deviceState: ALICE, symbol: 'eth', contractAddress: UNKNOWN_TOKEN }),
+                getAssetKey({ deviceState: ALICE, symbol: ETH, contractAddress: UNKNOWN_TOKEN }),
             ),
         ).toEqual([]);
     });
@@ -170,7 +175,7 @@ describe('what becomes a holding', () => {
         const state = createState({
             accounts: [
                 mockAccount({
-                    symbol: 'dsol',
+                    symbol: DSOL,
                     tokens: [{ contract: UNKNOWN_TOKEN, balance: '3' }],
                 }),
             ],
@@ -180,7 +185,7 @@ describe('what becomes a holding', () => {
         expect(
             selectAssetHoldings(
                 state,
-                getAssetKey({ deviceState: ALICE, symbol: 'dsol', contractAddress: UNKNOWN_TOKEN }),
+                getAssetKey({ deviceState: ALICE, symbol: DSOL, contractAddress: UNKNOWN_TOKEN }),
             ),
         ).toHaveLength(1);
     });
@@ -217,7 +222,7 @@ describe('the groups a holding is in', () => {
         expect(
             selectAssetHoldings(
                 state,
-                getAssetKey({ deviceState: BOB, symbol: 'eth', contractAddress: USDC_ON_ETH }),
+                getAssetKey({ deviceState: BOB, symbol: ETH, contractAddress: USDC_ON_ETH }),
             ).map(holding => holding.cryptoBalance),
         ).toEqual(['9']);
     });
@@ -232,7 +237,7 @@ describe('the groups a holding is in', () => {
     it('lists every asset one wallet holds', () => {
         const state = createState({
             accounts: [
-                mockAccount({ symbol: 'eth', tokens: [{ contract: USDC_ON_ETH, balance: '100' }] }),
+                mockAccount({ symbol: ETH, tokens: [{ contract: USDC_ON_ETH, balance: '100' }] }),
                 mockAccount({ deviceState: BOB, index: 1 }),
             ],
         });
@@ -245,9 +250,9 @@ describe('what a write leaves alone', () => {
     it('hands back the same holdings for an account nothing touched', () => {
         // The property the rows rely on: a balance arriving for one account must leave every other
         // account's holdings — and the groups they are in — the same objects.
-        const untouched = mockAccount({ symbol: 'btc', index: 0 });
-        const before = mockAccount({ symbol: 'eth', index: 1, balance: '1' });
-        const bitcoinKey = getAssetKey({ deviceState: ALICE, symbol: 'btc' });
+        const untouched = mockAccount({ symbol: BTC, index: 0 });
+        const before = mockAccount({ symbol: ETH, index: 1, balance: '1' });
+        const bitcoinKey = getAssetKey({ deviceState: ALICE, symbol: BTC });
 
         const firstHoldings = selectAssetHoldings(
             createState({ accounts: [untouched, before] }),
