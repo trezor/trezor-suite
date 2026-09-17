@@ -25,6 +25,7 @@
         "@trezor/components": "workspace:*",
         "@trezor/connect-common": "workspace:*",
         "@trezor/network-bitcoin": "workspace:*",
+        "@trezor/network-module": "workspace:*",
         "@trezor/network-module-suite-types": "workspace:*",
         "react": "19.2.3",
         "react-hook-form": "^7.77.0",

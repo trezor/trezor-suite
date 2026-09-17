@@ -1,8 +1,5 @@
-import {
-    type EthereumNetworkSymbol,
-    isSupportedEthereumNetwork,
-    supportedEthereumNetworks,
-} from '@trezor/network-ethereum/constants';
+import { supportedEthereumNetworks } from '@trezor/network-ethereum/constants';
+import { asNetworkSymbols } from '@trezor/network-module';
 import type { SuiteNetworkModule } from '@trezor/network-module-suite-types';
 
 import { EthereumSignVerify } from './EthereumSignVerify';
@@ -13,11 +10,9 @@ import {
 
 export type EthereumSuiteNetworkModuleDeps = EthereumSignVerifyConnectDep;
 
-export type EthereumSuiteNetworkModule = SuiteNetworkModule<EthereumNetworkSymbol>;
-
 export const createEthereumSuiteNetworkModule = (
     deps: EthereumSuiteNetworkModuleDeps,
-): EthereumSuiteNetworkModule => {
+): SuiteNetworkModule => {
     const actions = createEthereumSignVerifyActions(deps);
 
     return {
@@ -25,7 +20,6 @@ export const createEthereumSuiteNetworkModule = (
             Component: props => <EthereumSignVerify {...props} actions={actions} />,
             title: 'TR_NAV_SIGN_VERIFY',
         },
-        getSupportedNetworks: () => supportedEthereumNetworks,
-        isSupportedNetwork: isSupportedEthereumNetwork,
+        getSupportedNetworks: () => asNetworkSymbols(supportedEthereumNetworks),
     };
 };
