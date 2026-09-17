@@ -69,6 +69,7 @@
         "@suite-common/receive": "workspace:*",
         "@suite-common/redux-utils": "workspace:*",
         "@suite-common/sentry": "workspace:*",
+        "@suite-common/stellar-queries": "workspace:*",
         "@suite-common/suite-config": "workspace:*",
         "@suite-common/suite-constants": "workspace:*",
         "@suite-common/suite-rbf-labels-migrations": "workspace:*",

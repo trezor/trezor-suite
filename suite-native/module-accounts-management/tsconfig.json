@@ -24,6 +24,9 @@
             "path": "../../suite-common/redux-utils"
         },
         {
+            "path": "../../suite-common/stellar-queries"
+        },
+        {
             "path": "../../suite-common/suite-sync"
         },
         {

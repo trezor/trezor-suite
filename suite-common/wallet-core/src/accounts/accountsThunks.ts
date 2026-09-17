@@ -47,7 +47,7 @@ import {
 import { type WalletSettingsRootState } from '../settings/walletSettingsReducer';
 import {
     type StellarContractTokensRootState,
-    selectStellarContractTokens,
+    selectStellarContractTokensToRead,
 } from '../token/stellarContractTokensSlice';
 import { transactionsActions } from '../transactions/transactionsActions';
 import { type TransactionsRootState } from '../transactions/transactionsReducerTypes';
@@ -185,7 +185,7 @@ export const fetchAndUpdateAccountThunk = createThunk<
                 : undefined;
         const stellarContractTokens =
             account.networkType === 'stellar'
-                ? selectStellarContractTokens(getState(), account.key)
+                ? selectStellarContractTokensToRead(getState(), account.key)
                 : undefined;
         const gap =
             account.networkType === 'bitcoin'

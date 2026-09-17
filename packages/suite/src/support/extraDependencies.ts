@@ -26,6 +26,7 @@ import {
     type PhishingState,
     type SendState,
     type StellarContractTokensState,
+    type StellarDiscoveredContractTokensState,
     type TransactionsState,
     type WalletSettingsState,
     changeNetworks,
@@ -139,6 +140,14 @@ export const extraDependencies: ExtraDependenciesStatic & TokenDefinitionsMiddle
             { payload }: StorageLoadAction,
         ) => {
             payload.stellarContractTokens.forEach(({ key, value }) => {
+                state[key as AccountKey] = value;
+            });
+        },
+        storageLoadStellarDiscoveredContractTokens: (
+            state: StellarDiscoveredContractTokensState,
+            { payload }: StorageLoadAction,
+        ) => {
+            payload.stellarDiscoveredContractTokens.forEach(({ key, value }) => {
                 state[key as AccountKey] = value;
             });
         },

@@ -118,15 +118,13 @@ export const getAccountInfo = async (
             }
         }),
     );
-    // The hosted definitions are the allow-list; the curated constants are the fallback.
+    // Only what the caller says this account holds. Sweeping every defined contract to find that
+    // out is Suite's job now (`stellarContractBalancesQuery`), and its answer arrives here as
+    // `stellarContractTokens`; repeating the sweep would run it again on every account fetch.
     const definedContracts = Object.keys(tokenMetadata).filter(isValidContractId);
-    const contractsToRead = [
-        ...new Set([
-            ...definedContracts,
-            ...STELLAR_CONTRACT_TOKENS.map(token => token.contract),
-            ...watchedContracts,
-        ]),
-    ].filter(contract => !classicSacIds.has(contract));
+    const contractsToRead = [...new Set(watchedContracts)].filter(
+        contract => !classicSacIds.has(contract),
+    );
 
     const readContractTokens = async (): Promise<TokenInfo[]> => {
         if (isTestnet || contractsToRead.length === 0) return [];

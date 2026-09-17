@@ -7,6 +7,7 @@ import { openModal } from '@suite/modal';
 import { type Route, gotoThunk, selectRouteName } from '@suite/router';
 import { useServices } from '@suite-common/dependency-injection';
 import { selectDispatch } from '@suite-common/redux-utils';
+import { useStellarAccountTokens } from '@suite-common/stellar-queries';
 import { selectCoinDefinitions, selectNftDefinitions } from '@suite-common/token-definitions';
 import { type NetworkType } from '@suite-common/wallet-config';
 import { type SelectedAccountLoaded } from '@suite-common/wallet-types';
@@ -121,10 +122,11 @@ export const TokensNavigation = ({
             : selectCoinDefinitions(state, selectedAccount.account.symbol),
     );
     const isDebug = useSelector(selectIsDebugModeActive);
+    const allTokens = useStellarAccountTokens(account);
     const { translationString } = useTranslation();
 
     const tokens = getTokens({
-        tokens: selectedAccount.account.tokens || [],
+        tokens: allTokens || [],
         symbol: selectedAccount.account.symbol,
         tokenDefinitions,
         isNft,

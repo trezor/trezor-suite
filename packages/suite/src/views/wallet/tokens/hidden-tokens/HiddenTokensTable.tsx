@@ -1,4 +1,5 @@
 import { Translation } from '@suite/intl';
+import { useStellarAccountTokens } from '@suite-common/stellar-queries';
 import { TokenManagementAction, selectCoinDefinitions } from '@suite-common/token-definitions';
 import { type SelectedAccountLoaded } from '@suite-common/wallet-types';
 import { isTestnet, sortTokensByName } from '@suite-common/wallet-utils';
@@ -20,7 +21,8 @@ export const HiddenTokensTable = ({ selectedAccount, searchQuery }: HiddenTokens
 
     const coinDefinitions = useSelector(state => selectCoinDefinitions(state, account.symbol));
 
-    const sortedTokens = account.tokens?.toSorted(sortTokensByName) ?? [];
+    const allTokens = useStellarAccountTokens(account);
+    const sortedTokens = allTokens?.toSorted(sortTokensByName) ?? [];
 
     const filteredTokens = getTokens({
         tokens: sortedTokens,

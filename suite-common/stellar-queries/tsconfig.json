@@ -1,0 +1,24 @@
+{
+    "extends": "../../tsconfig.base.json",
+    "compilerOptions": { "outDir": "libDev" },
+    "references": [
+        { "path": "../dependency-injection" },
+        { "path": "../react-query" },
+        { "path": "../redux-utils" },
+        { "path": "../wallet-core" },
+        { "path": "../wallet-types" },
+        { "path": "../wallet-utils" },
+        {
+            "path": "../../packages/blockchain-link-types"
+        },
+        { "path": "../../packages/env-utils" },
+        {
+            "path": "../../networks/stellar/network-stellar"
+        },
+        { "path": "../test-utils" },
+        {
+            "path": "../../packages/blockchain-link-utils"
+        }
+    ],
+    "include": [".", "**/*.json"]
+}

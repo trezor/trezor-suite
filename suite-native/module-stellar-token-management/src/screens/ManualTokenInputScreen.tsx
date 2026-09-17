@@ -6,9 +6,9 @@ import { isFulfilled } from '@reduxjs/toolkit';
 
 import { useServices } from '@suite-common/dependency-injection';
 import { selectDispatch } from '@suite-common/redux-utils';
+import { useStellarAssetInput } from '@suite-common/stellar-queries';
 import { type AccountsRootState, selectAccountByKey } from '@suite-common/wallet-core';
 import { type TokenAddress } from '@suite-common/wallet-types';
-import { resolveStellarContractId } from '@suite-common/wallet-utils';
 import { useAlert } from '@suite-native/alerts';
 import { Box, Button, Card, Input, Text, VStack } from '@suite-native/atoms';
 import { Translation, useTranslate } from '@suite-native/intl';
@@ -20,7 +20,6 @@ import {
     type StellarManageTokenStackParamList,
     StellarManageTokenStackRoutes,
 } from '@suite-native/navigation';
-import stellar from '@trezor/network-stellar/runtime';
 
 import { composeStellarTrustlineFeesThunk } from '../thunks';
 
@@ -55,56 +54,18 @@ export const ManualTokenInputScreen = () => {
     const [issuerAddressTouched, setIssuerAddressTouched] = useState(false);
     const [isComposingFees, setIsComposingFees] = useState(false);
 
-    // Validation
-    const [isAssetCodeValid, setIsAssetCodeValid] = useState(false);
-    const [isContractId, setIsContractId] = useState(false);
-    const [isIssuerAddressValid, setIsIssuerAddressValid] = useState(false);
-    const [isContractIdUnknown, setIsContractIdUnknown] = useState(false);
+    const { validators, isAssetCodeValid, isContractId, isUnknownContractId, resolvedAsset } =
+        useStellarAssetInput(assetCode);
 
-    useEffect(() => {
-        stellar().then(({ isValidAssetCode, isValidContractId }) => {
-            setIsAssetCodeValid(isValidAssetCode(assetCode));
-            setIsContractId(isValidContractId(assetCode));
-        });
-    }, [assetCode]);
+    const isIssuerAddressValid = validators?.isValidAddress(issuerAddress) ?? false;
 
     // A pasted Stellar Asset Contract id is swapped for the classic asset it wraps.
     useEffect(() => {
-        let isStale = false;
+        if (!resolvedAsset) return;
 
-        const fillFromContractId = async () => {
-            const { isValidContractId } = await stellar();
-            if (!isValidContractId(assetCode)) {
-                if (!isStale) setIsContractIdUnknown(false);
-
-                return;
-            }
-
-            const resolved = await resolveStellarContractId(assetCode);
-            if (isStale) return;
-
-            setIsContractIdUnknown(!resolved);
-            if (resolved) {
-                setAssetCode(resolved.assetCode);
-                setIssuerAddress(resolved.assetIssuer);
-            }
-        };
-
-        // A failed fetch surfaces as an unknown contract rather than a silently disabled button.
-        fillFromContractId().catch(() => {
-            if (!isStale) setIsContractIdUnknown(true);
-        });
-
-        return () => {
-            isStale = true;
-        };
-    }, [assetCode]);
-
-    useEffect(() => {
-        stellar()
-            .then(({ isValidAddress }) => isValidAddress(issuerAddress))
-            .then(setIsIssuerAddressValid);
-    }, [issuerAddress]);
+        setAssetCode(resolvedAsset.assetCode);
+        setIssuerAddress(resolvedAsset.assetIssuer);
+    }, [resolvedAsset]);
 
     // A contract id is not an asset code; the contract path reports its own outcome.
     const hasAssetCodeError = assetCodeTouched && !!assetCode && !isContractId && !isAssetCodeValid;
@@ -210,7 +171,7 @@ export const ManualTokenInputScreen = () => {
                                 )}
                                 autoCapitalize="characters"
                                 maxLength={ASSET_CODE_INPUT_MAX_LENGTH}
-                                hasError={hasAssetCodeError || isContractIdUnknown}
+                                hasError={hasAssetCodeError || isUnknownContractId}
                                 testID="@stellar-token/asset-code-input"
                             />
                             {hasAssetCodeError && (
@@ -218,7 +179,7 @@ export const ManualTokenInputScreen = () => {
                                     <Translation id="moduleStellarToken.manualInput.assetCodeError" />
                                 </Text>
                             )}
-                            {isContractIdUnknown && (
+                            {isUnknownContractId && (
                                 <Text variant="body-sm" color="contentCritical">
                                     <Translation id="moduleStellarToken.manualInput.contractIdUnknown" />
                                 </Text>

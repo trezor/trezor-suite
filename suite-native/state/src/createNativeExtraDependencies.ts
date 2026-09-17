@@ -57,6 +57,9 @@ export const extraDependencies: ExtraDependenciesStatic = {
         storageLoadFormDrafts: notImplementedReducer('storageLoadFormDrafts'),
         storageLoadTokenManagement: notImplementedReducer('storageLoadTokenManagement'),
         storageLoadStellarContractTokens: notImplementedReducer('storageLoadStellarContractTokens'),
+        storageLoadStellarDiscoveredContractTokens: notImplementedReducer(
+            'storageLoadStellarDiscoveredContractTokens',
+        ),
         storageLoadWalletSettings: notImplementedReducer('storageLoadWalletSettings'),
         storageLoadBioAuth: notImplementedReducer('storageLoadBioAuth'),
         storageLoadFlags: notImplementedReducer('storageLoadFlags'),
