@@ -184,22 +184,3 @@ export const selectHiddenAssetHoldingKeys = createMemoizedSelector(
 /** What the wallet holds of every asset the user is shown, in the index's order. */
 export const selectShownAssetHoldings = (state: AssetHoldingsRootState) =>
     assetHoldingsIndex.getInverseOfIds(state, selectHiddenAssetHoldingKeys(state));
-
-export const selectAssetHoldings = (state: AssetHoldingsRootState, assetKey: AssetKey) =>
-    assetHoldingsIndex.getBy(state, 'byAsset', assetKey);
-
-export const selectAccountAssetHoldings = (state: AssetHoldingsRootState, accountKey: AccountKey) =>
-    assetHoldingsIndex.getBy(state, 'byAccountKey', accountKey);
-
-export const selectAssetKeysByDeviceState = createMemoizedSelector(
-    [
-        (state: AssetHoldingsRootState) => assetHoldingsIndex.read(state).groups.byAsset,
-        (_state: AssetHoldingsRootState, deviceState: StaticSessionId) => deviceState,
-    ],
-    (assetGroups, deviceState) =>
-        returnStableArrayIfEmpty(
-            [...assetGroups.keys()].filter(
-                assetKey => parseAssetKey(assetKey)?.deviceState === deviceState,
-            ),
-        ),
-);

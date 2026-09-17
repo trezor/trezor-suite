@@ -4,15 +4,16 @@ import { type StaticSessionId } from '@trezor/device-utils';
 
 import {
     type AssetHoldingsRootState,
+    type AssetKey,
     assetHoldingsIndex,
     getAssetKey,
     parseAssetKey,
-    selectAccountAssetHoldings,
-    selectAssetHoldings,
-    selectAssetKeysByDeviceState,
     selectHiddenAssetHoldingKeys,
     selectShownAssetHoldings,
 } from './assetHoldingsIndex';
+
+const holdingsOfAsset = (state: AssetHoldingsRootState, assetKey: AssetKey) =>
+    assetHoldingsIndex.getBy(state, 'byAsset', assetKey);
 
 const ALICE = 'aliceWallet@device:0' as StaticSessionId;
 const BOB = 'bobWallet@device:1' as StaticSessionId;
@@ -191,7 +192,7 @@ describe('what becomes a holding', () => {
     it('is the account’s own coin, always', () => {
         const state = createState({ accounts: [mockAccount({ balance: '2.5' })] });
 
-        expect(selectAssetHoldings(state, aliceCoin)).toEqual([
+        expect(holdingsOfAsset(state, aliceCoin)).toEqual([
             expect.objectContaining({ cryptoBalance: '2.5', contractAddress: undefined }),
         ]);
     });
@@ -201,7 +202,7 @@ describe('what becomes a holding', () => {
             accounts: [mockAccount({ tokens: [{ contract: USDC_ON_ETH, balance: '100' }] })],
         });
 
-        expect(selectAssetHoldings(state, aliceUsdc)).toEqual([
+        expect(holdingsOfAsset(state, aliceUsdc)).toEqual([
             expect.objectContaining({ cryptoBalance: '100', contractAddress: USDC_ON_ETH }),
         ]);
     });
@@ -211,7 +212,7 @@ describe('what becomes a holding', () => {
             accounts: [mockAccount({ tokens: [{ contract: USDC_ON_ETH, balance: '0' }] })],
         });
 
-        expect(selectAssetHoldings(state, aliceUsdc)).toEqual([]);
+        expect(holdingsOfAsset(state, aliceUsdc)).toEqual([]);
     });
 
     it('is a token the user asked to see, definition or not', () => {
@@ -221,7 +222,7 @@ describe('what becomes a holding', () => {
         });
 
         expect(
-            selectAssetHoldings(
+            holdingsOfAsset(
                 state,
                 getAssetKey({ deviceState: ALICE, symbol: ETH, contractAddress: UNKNOWN_TOKEN }),
             ),
@@ -240,7 +241,7 @@ describe('what becomes a holding', () => {
         });
 
         expect(
-            selectAssetHoldings(
+            holdingsOfAsset(
                 state,
                 getAssetKey({ deviceState: ALICE, symbol: DSOL, contractAddress: UNKNOWN_TOKEN }),
             ),
@@ -257,9 +258,10 @@ describe('the groups a holding is in', () => {
             ],
         });
 
-        expect(selectAssetHoldings(state, aliceUsdc).map(holding => holding.cryptoBalance)).toEqual(
-            ['100', '40'],
-        );
+        expect(holdingsOfAsset(state, aliceUsdc).map(holding => holding.cryptoBalance)).toEqual([
+            '100',
+            '40',
+        ]);
     });
 
     it('keeps the same token in two wallets apart', () => {
@@ -277,7 +279,7 @@ describe('the groups a holding is in', () => {
         });
 
         expect(
-            selectAssetHoldings(
+            holdingsOfAsset(
                 state,
                 getAssetKey({ deviceState: BOB, symbol: ETH, contractAddress: USDC_ON_ETH }),
             ).map(holding => holding.cryptoBalance),
@@ -288,10 +290,10 @@ describe('the groups a holding is in', () => {
         const account = mockAccount({ tokens: [{ contract: USDC_ON_ETH, balance: '100' }] });
         const state = createState({ accounts: [account] });
 
-        expect(selectAccountAssetHoldings(state, account.key)).toHaveLength(2);
+        expect(assetHoldingsIndex.getBy(state, 'byAccountKey', account.key)).toHaveLength(2);
     });
 
-    it('lists every asset one wallet holds', () => {
+    it("keeps one wallet's assets apart from another's", () => {
         const state = createState({
             accounts: [
                 mockAccount({ symbol: ETH, tokens: [{ contract: USDC_ON_ETH, balance: '100' }] }),
@@ -299,7 +301,11 @@ describe('the groups a holding is in', () => {
             ],
         });
 
-        expect(selectAssetKeysByDeviceState(state, ALICE)).toEqual([aliceCoin, aliceUsdc]);
+        const assetKeys = [...assetHoldingsIndex.read(state).groups.byAsset.keys()].filter(
+            assetKey => parseAssetKey(assetKey)?.deviceState === ALICE,
+        );
+
+        expect(assetKeys).toEqual([aliceCoin, aliceUsdc]);
     });
 });
 
@@ -309,11 +315,11 @@ describe('what a write leaves alone', () => {
         const before = mockAccount({ symbol: ETH, index: 1, balance: '1' });
         const bitcoinKey = getAssetKey({ deviceState: ALICE, symbol: BTC });
 
-        const firstHoldings = selectAssetHoldings(
+        const firstHoldings = holdingsOfAsset(
             createState({ accounts: [untouched, before] }),
             bitcoinKey,
         );
-        const afterWrite = selectAssetHoldings(
+        const afterWrite = holdingsOfAsset(
             createState({ accounts: [untouched, { ...before, formattedBalance: '2' }] }),
             bitcoinKey,
         );
@@ -325,9 +331,9 @@ describe('what a write leaves alone', () => {
         const before = mockAccount({ balance: '1' });
         const state = createState({ accounts: [before] });
 
-        expect(selectAssetHoldings(state, aliceCoin)[0]?.cryptoBalance).toBe('1');
+        expect(holdingsOfAsset(state, aliceCoin)[0]?.cryptoBalance).toBe('1');
         expect(
-            selectAssetHoldings(
+            holdingsOfAsset(
                 createState({ accounts: [{ ...before, formattedBalance: '3' }] }),
                 aliceCoin,
             )[0]?.cryptoBalance,
@@ -336,12 +342,12 @@ describe('what a write leaves alone', () => {
 
     it('keeps the holdings of an account nothing wrote to', () => {
         const untouched = mockAccount({ index: 0 });
-        const before = selectAssetHoldings(
+        const before = holdingsOfAsset(
             createState({ accounts: [untouched, mockAccount({ index: 1, balance: '1' })] }),
             aliceCoin,
         );
 
-        const after = selectAssetHoldings(
+        const after = holdingsOfAsset(
             createState({ accounts: [untouched, mockAccount({ index: 1, balance: '2' })] }),
             aliceCoin,
         );
