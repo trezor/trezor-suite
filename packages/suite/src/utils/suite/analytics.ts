@@ -1,4 +1,4 @@
-import type { SuiteReadyPayload } from '@suite/analytics';
+import type { SuiteReadyPayload, TransactionCreatedEventAction } from '@suite/analytics';
 import { type DesktopUpdateRootState } from '@suite/desktop-update';
 import {
     type LegacyLabelingVisibleRootState,
@@ -33,11 +33,13 @@ import {
     getCpuArch,
     getOsVersion,
 } from '@suite-common/suite-utils';
+import { type NetworkSymbol } from '@suite-common/wallet-config';
 import {
     type BlockchainRootState,
     type WalletSettingsRootState,
     selectCustomBackends,
 } from '@suite-common/wallet-core';
+import { type FormState } from '@suite-common/wallet-types';
 import {
     getOsName,
     getPlatformLanguages,
@@ -135,5 +137,39 @@ export const getSuiteReadyPayload = async (
 
         mevProtection: state.wallet.settings.mevProtection,
         networkReserve: state.wallet.settings.networkReserve,
+    };
+};
+
+type TransactionCreatedEventPayloadParams = {
+    action: TransactionCreatedEventAction;
+    symbol: NetworkSymbol;
+    precomposedForm: FormState;
+    tokens: string;
+    txType: 'trade' | 'stake' | 'yield' | undefined;
+};
+
+export const getTransactionCreatedEventPayload = ({
+    action,
+    symbol,
+    precomposedForm,
+    tokens,
+    txType,
+}: TransactionCreatedEventPayloadParams) => {
+    const { options, selectedFee } = precomposedForm;
+
+    return {
+        action,
+        symbol,
+        tokens,
+        outputsCount: precomposedForm.outputs.length,
+        broadcast: options.includes('broadcast'),
+        bitcoinLocktime: options.includes('bitcoinLocktime'),
+        transactionData: options.includes('transactionData'),
+        ethereumNonce: options.includes('ethereumNonce'),
+        destinationTag: options.includes('destinationTag'),
+        selectedFee: selectedFee || 'normal',
+        isCoinControlEnabled: precomposedForm.isCoinControlEnabled,
+        hasCoinControlBeenOpened: precomposedForm.hasCoinControlBeenOpened,
+        txType,
     };
 };
