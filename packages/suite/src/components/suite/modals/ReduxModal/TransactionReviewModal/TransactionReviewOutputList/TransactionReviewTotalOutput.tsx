@@ -100,10 +100,12 @@ const getLines = ({
     }
 
     if (precomposedForm.trading?.isSlip24Active || isClearSignedTradingSwap) {
+        const feeOnlyLabelId = isEthereum || networkType === 'stellar' ? 'MAX_FEE' : 'TR_TX_FEE';
+
         return [
             {
                 id: 'fee',
-                label: <Translation id={feeLabelId} />,
+                label: <Translation id={feeOnlyLabelId} />,
                 value: precomposedTx.fee,
                 type: 'amount',
             },
