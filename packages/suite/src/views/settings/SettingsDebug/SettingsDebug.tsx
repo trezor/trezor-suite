@@ -20,6 +20,7 @@ import { TriggerActivityNotification } from 'src/components/suite/notifications/
 import { useIsContentBelowBreakpoint } from 'src/support/suite/ContentFlex';
 
 import { AnalyticsLogging } from './AnalyticsLogging';
+import { AssetFirstHomeTable } from './AssetFirstHomeTable';
 import { Backends } from './Backends';
 import { CheckFirmwareAuthenticity } from './CheckFirmwareAuthenticity';
 import { ClearDevicePersistentData } from './ClearDevicePersistentData';
@@ -104,6 +105,7 @@ export const SettingsDebug = () => {
                 <PingDevice />
             </SettingsSection>
             <SettingsSection hasVerticalLayout={hasContentBelowTabletWidth} title="Testing">
+                <AssetFirstHomeTable />
                 <ThrowTestingError />
             </SettingsSection>
             {isDesktop() && (
