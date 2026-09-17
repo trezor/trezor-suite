@@ -59,14 +59,11 @@ describe('AssetFirstDashboard', () => {
 
         expect(screen.getByTestId('@dashboard/asset-first/fiat-amount')).toBeInTheDocument();
         expect(screen.getByTestId('@dashboard/asset-first-item/btc/coin')).toBeInTheDocument();
-        // The actions belong to the app's page header, and the promotions to the card this view
-        // replaces.
         expect(screen.queryByTestId('@wallet/menu/wallet-global-send')).not.toBeInTheDocument();
         expect(screen.queryByTestId('@dashboard/loading')).not.toBeInTheDocument();
     });
 
     it('says what the wallet gained against its rate a week ago', () => {
-        // 0.5 BTC at 100 000 is 50 000 today and 45 000 a week ago: 5 000 more, a ninth of it.
         render();
 
         const weekChange = screen.getByTestId('@dashboard/asset-first/week-change');

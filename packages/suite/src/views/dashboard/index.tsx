@@ -1,11 +1,10 @@
 import { ContextMessage } from '@suite/message-system';
-import { selectIsAssetFirstHomeTableEnabled } from '@suite/settings';
 import { Context, ExperimentId, useExperiment } from '@suite-common/message-system';
 import { Column } from '@trezor/components';
 
 import { OutOfQuotaBanner } from 'src/components/suite/banners/SuiteBanners/OutOfQuotaBanner';
 import { PageHeader } from 'src/components/suite/layouts/SuiteLayout';
-import { useLayout, useSelector } from 'src/hooks/suite';
+import { useLayout } from 'src/hooks/suite';
 
 import { AssetFirstDashboard } from './AssetFirstTable/AssetFirstDashboard';
 import { AssetsView } from './AssetsView/AssetsView';
@@ -17,16 +16,11 @@ import { useNotificationForDisconnectedDevice } from './useNotificationForDiscon
 
 export const Dashboard = () => {
     const { activeExperimentVariant } = useExperiment(ExperimentId.assetFirstHomeTable);
-    // The experiment decides for everyone else; the debug setting is how the page is worked on,
-    // because the arm it lives in is deliberately 0 % and nobody is assigned it yet.
-    const isAssetFirstHomeTableForced = useSelector(selectIsAssetFirstHomeTableEnabled);
-    const isAssetFirstTableEnabled =
-        isAssetFirstHomeTableForced || activeExperimentVariant?.variant === 'B';
+    const isAssetFirstTableEnabled = activeExperimentVariant?.variant === 'B';
 
     useLayout('Home', <PageHeader />, <DashboardFooter />);
     useNotificationForDisconnectedDevice();
 
-    // The asset-first home tab is the whole page, not another section of it.
     if (isAssetFirstTableEnabled) {
         return (
             <Column data-testid="@dashboard/index">

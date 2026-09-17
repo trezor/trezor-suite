@@ -332,7 +332,6 @@ const experimentGroupSchema = yup.object({
 const experimentItemSchema = yup
     .object({
         id: yup.string().required(),
-        name: yup.string(),
         groups: yup
             .array()
             .of(experimentGroupSchema)

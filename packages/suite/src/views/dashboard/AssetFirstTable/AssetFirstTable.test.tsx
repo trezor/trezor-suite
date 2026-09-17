@@ -54,7 +54,6 @@ const getInitialState = (): AppState => ({
     },
     wallet: {
         ...mockInitialAppState.wallet,
-        // `GlobalSendReceive`, which the header renders, reads it.
         selectedAccount: selectedAccountInitialState,
         accounts: [ethereumAccount, bitcoinAccount],
         settings: {
@@ -83,7 +82,6 @@ describe('the asset-first table', () => {
         renderWithProviders(root, <AssetFirstDashboard />);
 
         expect(screen.getByText('USD Coin')).toBeInTheDocument();
-        // The coin's own row, named after the asset rather than after the network it sits on.
         expect(screen.getByTestId('@dashboard/asset-first-item/eth/coin')).toBeInTheDocument();
         expect(
             screen.getByTestId(`@dashboard/asset-first-item/eth/${USDC_ON_ETH}`),
@@ -103,7 +101,6 @@ describe('the asset-first table', () => {
             .getAllByTestId('@dashboard/asset-first/name')
             .map(element => element.textContent);
 
-        // Bitcoin 10 000, Ethereum 6 000, USD Coin 2 400.
         expect(assetNames).toEqual(['Bitcoin', 'Ethereum', 'USD Coin']);
     });
 });

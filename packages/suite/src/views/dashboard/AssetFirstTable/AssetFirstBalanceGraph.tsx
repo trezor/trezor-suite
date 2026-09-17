@@ -19,13 +19,6 @@ type BalancePoint = {
     value: number;
 };
 
-/**
- * What the wallet has been worth, beside what it is worth now.
- *
- * Reads the history the dashboard graph already keeps — the middleware fills it when discovery
- * completes — and draws the line alone: no axes, ticks or tooltip, because at this size they would
- * be unreadable and the number beside it is the one being read.
- */
 export const AssetFirstBalanceGraph = () => {
     const theme = useTheme();
     const graph = useSelector(selectGraph);
@@ -67,7 +60,6 @@ export const AssetFirstBalanceGraph = () => {
     const first = points[0];
     const last = points[points.length - 1];
 
-    // A single point is not a line, and an empty graph says less than no graph at all.
     if (first === undefined || last === undefined || points.length < 2) {
         return null;
     }

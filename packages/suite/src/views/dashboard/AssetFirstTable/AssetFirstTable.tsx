@@ -17,7 +17,6 @@ type NetworkGroupHeaderProps = {
     group: AssetFirstNetworkGroup;
 };
 
-/** Which network the rows under it are held on, and what is held there. */
 const NetworkGroupHeader = ({ group }: NetworkGroupHeaderProps) => {
     const { BaseCurrencyAmountFormatter } = useFormatters();
 
@@ -43,19 +42,6 @@ const NetworkGroupHeader = ({ group }: NetworkGroupHeaderProps) => {
 const renderRows = (rows: readonly AssetRow[], hasBorderTop?: boolean) =>
     rows.map(row => <AssetFirstRow key={row.assetKey} row={row} hasBorderTop={hasBorderTop} />);
 
-/**
- * The dashboard's assets, one row per asset and network.
- *
- * Where `AssetsView` shows a network and folds what it holds into it, this shows what the wallet
- * holds and says which network each holding is on — so Ether on Ethereum and Ether on Arbitrum are
- * two lines, and a stablecoin held on three networks is three. Grouping by network gathers those
- * same lines under a heading again, without changing which lines there are.
- *
- * What to render is chosen by `selectAssetFirstTableView`: the mode picks the arrangement and the
- * table renders the shape it is handed.
- *
- * Behind the asset-first home table experiment.
- */
 export const AssetFirstTable = () => {
     const [grouping, setGrouping] = useState<AssetFirstGrouping>('default');
     const view = useSelector(selectAssetFirstTableView(grouping));

@@ -20,17 +20,10 @@ import {
 
 type AssetFirstRowProps = {
     row: AssetRow;
-    /** Off for the rows under a group heading: the line belongs between groups, not inside one. */
+    /** Off under a group heading: the line belongs between groups, not inside one. */
     hasBorderTop?: boolean;
 };
 
-/**
- * One asset on one network: what the wallet holds of it, what it costs and where it lives.
- *
- * Renders the row it is given and works nothing out for itself, so these numbers and the total
- * above the table are the same numbers. A row that did not change is the same object, so a balance
- * arriving for another asset does not re-render it — see `selectAssetFirstRows`.
- */
 export const AssetFirstRow = memo(({ row, hasBorderTop }: AssetFirstRowProps) => {
     const { symbol, contractAddress, cryptoBalance, tokenInfo } = row;
 

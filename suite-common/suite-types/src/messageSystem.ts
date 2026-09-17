@@ -517,10 +517,6 @@ export interface Experiments {
  */
 export interface ExperimentsItem {
     id: string;
-    /**
-     * What the experiment is, for whoever reads the config. The app knows an experiment by its id; this only describes it.
-     */
-    name?: string;
     groups: {
         /**
          * The name of the variant, e.g., 'A' or 'B'

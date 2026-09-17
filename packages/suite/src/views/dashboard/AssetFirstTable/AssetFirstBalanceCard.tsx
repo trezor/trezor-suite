@@ -49,14 +49,9 @@ const WeekChange = ({ weekChange, weekChangePercent }: WeekChangeProps) => {
 };
 
 type AssetFirstBalanceCardProps = {
-    /** The rows the total is over — the same ones the table below is given. */
     rows: readonly AssetRow[];
 };
 
-/**
- * What the wallet is worth: the total over the rows below, what it has done over the week, and the
- * line it has taken to get there.
- */
 export const AssetFirstBalanceCard = ({ rows }: AssetFirstBalanceCardProps) => {
     const baseCurrencyCode = useSelector(selectBaseCurrency);
     const { isDiscoveryRunning } = useDiscovery();

@@ -81,7 +81,6 @@ const createState = ({
             settings: { enabledNetworks, localCurrency: 'usd' },
             fiat: { current: rates, lastWeek: {}, historic: {} },
         },
-        // `dsol` has no `coin-definitions` feature, which is what makes it the testnet case below.
         tokenDefinitions: { [ETH]: definitions, [POL]: definitions, [DSOL]: definitions },
     } as unknown as AssetFirstTableState;
 };
@@ -134,13 +133,9 @@ describe('the rows the table is given', () => {
         });
 
         expect(selectAssetFirstRowKeys(state)).toEqual([
-            // ETH on Ethereum, 6000
             `${ALICE}/eth/`,
-            // USDC on Ethereum, 2400
             `${ALICE}/eth/${USDC_ON_ETH}`,
-            // USDC on Polygon, 720
             `${ALICE}/pol/${USDC_ON_POL}`,
-            // POL on Polygon, 5
             `${ALICE}/pol/`,
         ]);
     });
@@ -169,13 +164,9 @@ describe('the rows the table is given', () => {
         });
 
         expect(selectAssetFirstRowKeys(state)).toEqual([
-            // USDC on Ethereum, 5000
             `${ALICE}/eth/${USDC_ON_ETH}`,
-            // ETH on Ethereum, 2000 — above the dollar of USDC, though USDC is worth more in total
             `${ALICE}/eth/`,
-            // USDC on Polygon, 1
             `${ALICE}/pol/${USDC_ON_POL}`,
-            // POL on Polygon, nothing
             `${ALICE}/pol/`,
         ]);
     });
@@ -242,8 +233,6 @@ describe('the rows the table is given', () => {
     });
 
     it('keeps the tokens of a network that has no definitions at all', () => {
-        // `dsol` and the other testnets have no `coin-definitions` feature, so nothing can vouch
-        // for their tokens and nothing needs to.
         const state = createState({
             accounts: [
                 mockAccount({
@@ -281,8 +270,6 @@ describe('the rows the table is given', () => {
     });
 
     it('hands back the same row for an asset a write did not touch', () => {
-        // What keeps a memoized row from re-rendering: one account's balance arriving must leave
-        // every other row the object it was.
         const untouched = mockAccount({ symbol: BTC, index: 0 });
         const written = mockAccount({ symbol: ETH, index: 1, balance: '1' });
 
