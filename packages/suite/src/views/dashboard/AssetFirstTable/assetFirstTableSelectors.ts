@@ -6,11 +6,9 @@ import {
     type AssetHoldingKey,
     type AssetHoldingsRootState,
     type AssetKey,
-    type AssetKeyParts,
     type FiatRatesRootState,
     type WalletSettingsRootState,
     assetHoldingsIndex,
-    parseAssetKey,
     selectBaseCurrency,
     selectCurrentFiatRates,
     selectEnabledNetworks,
@@ -86,8 +84,6 @@ export type AssetTotal = {
 const summedAssets = new WeakMap<object, WeakMap<object, AssetTotal>>();
 
 const sumAsset = (
-    assetKey: AssetKey,
-    parts: AssetKeyParts,
     holdings: readonly AssetHolding[],
     hidden: ReadonlySet<AssetHoldingKey>,
 ): AssetTotal | undefined => {
@@ -106,11 +102,13 @@ const sumAsset = (
     }
 
     const { cryptoBalance, tokenInfo } = sumAssetHoldings(shown);
+    // Every holding of one asset says the same about which asset it is.
+    const [{ assetKey, symbol, contractAddress }] = shown as [AssetHolding];
     const asset: AssetTotal = {
         assetKey,
-        symbol: parts.symbol,
-        contractAddress: parts.contractAddress,
-        displaySymbol: getAssetDisplaySymbol({ symbol: parts.symbol, tokenInfo }),
+        symbol,
+        contractAddress,
+        displaySymbol: getAssetDisplaySymbol({ symbol, tokenInfo }),
         cryptoBalance,
         tokenInfo,
     };
@@ -139,14 +137,14 @@ export const selectAssetFirstAssets = createMemoizedSelector(
     (assetGroups, hidden, enabledNetworks, deviceState): readonly AssetTotal[] => {
         const assets: AssetTotal[] = [];
 
-        assetGroups.forEach((group, key) => {
-            const parts = parseAssetKey(key);
+        assetGroups.forEach(group => {
+            const [holding] = group.entities;
 
-            if (parts?.deviceState !== deviceState || !enabledNetworks.includes(parts.symbol)) {
+            if (holding?.deviceState !== deviceState || !enabledNetworks.includes(holding.symbol)) {
                 return;
             }
 
-            const asset = sumAsset(key, parts, group.entities, hidden);
+            const asset = sumAsset(group.entities, hidden);
 
             if (asset !== undefined) {
                 assets.push(asset);
