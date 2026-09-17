@@ -109,7 +109,11 @@ export const createMockTrezorConnect = (): MockTrezorConnect => {
         setTestFixtures: (f?: Fixtures) => {
             fixtures = f;
         },
-    } as MockTrezorConnect;
+        // Route through `unknown`: the callable methods are `jest.fn()`s widened to `TrezorConnectCallable`,
+        // so this literal is a plain-function shape that does not structurally overlap with the
+        // `jest.Mocked` MockInstance members `MockTrezorConnect` declares. At runtime each method is a real
+        // `jest.fn()`, which is what consumers spy on (`.mock.calls`), so the double assertion is sound.
+    } as unknown as MockTrezorConnect;
 
     return instance;
 };
