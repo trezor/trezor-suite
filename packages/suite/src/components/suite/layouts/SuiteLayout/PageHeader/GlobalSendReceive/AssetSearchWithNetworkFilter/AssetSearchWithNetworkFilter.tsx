@@ -2,10 +2,11 @@ import { type RefObject, memo } from 'react';
 
 import { type TranslationKey, useTranslation } from '@suite/intl';
 import { selectHasBitcoinOnlyFirmware } from '@suite-common/device';
-import { selectNetworkSymbolForProtocol } from '@suite-common/networks';
+import { isNetworkIconSymbol } from '@suite-common/icons';
+import { selectNetworkNamesMap, selectNetworkSymbolForProtocol } from '@suite-common/networks';
 import { selectEnabledNetworks } from '@suite-common/wallet-core';
 import { type GlobalSendReceiveType } from '@suite-common/wallet-types';
-import { SearchAsset } from '@trezor/product-components';
+import { NetworkIcon, SearchAsset, TokenIcon } from '@trezor/product-components';
 
 import { useListScrollReset } from 'src/components/suite/asset-picker/hooks';
 import { useSelector } from 'src/hooks/suite';
@@ -34,6 +35,7 @@ export const AssetSearchWithNetworkFilter = memo(function AssetSearchWithNetwork
         resetSearch: () => setSearch(''),
     });
     const enabledNetworks = useSelector(selectEnabledNetworks);
+    const networkNamesMap = useSelector(selectNetworkNamesMap);
     const protocolScheme = useSelector(selectProtocolSendFormScheme);
 
     const protocolSymbol = useSelector(state =>
@@ -49,7 +51,15 @@ export const AssetSearchWithNetworkFilter = memo(function AssetSearchWithNetwork
     const selectConfig = isBitcoinOnlyFirmware
         ? undefined
         : {
-              networks,
+              networks: networks.map(symbol => ({
+                  symbol,
+                  name: networkNamesMap?.[symbol] ?? symbol,
+                  icon: isNetworkIconSymbol(symbol) ? (
+                      <NetworkIcon size={20} networkSymbol={symbol} />
+                  ) : (
+                      <TokenIcon size={20} symbol={symbol} />
+                  ),
+              })),
               selectedNetwork: networkFilter,
               onChange: setNetworkFilter,
               includeAllOption: !protocolSymbol,
