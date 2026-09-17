@@ -1,9 +1,38 @@
 import { mockGetNamedAddressSupport } from '@suite-common/address/mocks';
 import { type AddressValidator, type SymbolNamedAddressResolver } from '@suite-common/networks';
+import { asNetworkSymbol } from '@suite-common/wallet-config';
+import { type FeeInfo } from '@suite-common/wallet-types';
 
-import { type SendFormFormContext, sendOutputsFormValidationSchema } from './sendOutputsFormSchema';
+import {
+    type SendFormFormContext,
+    type SendOutputsFormValues,
+    sendOutputsFormValidationSchema,
+} from './sendOutputsFormSchema';
 
 const EVM_ADDRESS_REGEX = /^0x[a-fA-F0-9]{40}$/;
+const btcSymbol = asNetworkSymbol('btc');
+const insufficientBalanceMessage = 'You don’t have enough balance to send this amount.';
+const feeInformationUnavailableMessage = 'Network fee information is unavailable.';
+
+const networkFeeInfo: FeeInfo = {
+    blockHeight: 0,
+    blockTime: 0,
+    minFee: 1,
+    maxFee: 100,
+    minPriorityFee: 0,
+    levels: [],
+};
+
+const formValues = {
+    outputs: [
+        {
+            address: '',
+            amount: '',
+            fiat: '',
+            token: null,
+        },
+    ],
+} satisfies SendOutputsFormValues;
 
 const addressValidator = {
     isAddressValid: (address: string) => EVM_ADDRESS_REGEX.test(address),
@@ -38,6 +67,29 @@ const validateAddress = ({
                 namedAddress: getNamedAddressSupport(symbol),
             } satisfies SendFormFormContext,
         },
+    );
+
+const createAmountValidationContext = (
+    overrides: Partial<SendFormFormContext> = {},
+): SendFormFormContext => ({
+    symbol: btcSymbol,
+    availableBalanceBeforeFees: '2000000',
+    networkFeeInfo,
+    isValueInSats: false,
+    isTokenFlow: false,
+    networkFeeStatus: 'loaded',
+    decimals: 8,
+    ...overrides,
+});
+
+const validateEnteredAmount = (enteredAmount: string, context: SendFormFormContext) =>
+    sendOutputsFormValidationSchema.validateAt(
+        'outputs[0].amount',
+        {
+            ...formValues,
+            outputs: [{ ...formValues.outputs[0], amount: enteredAmount }],
+        },
+        { context },
     );
 
 describe('sendOutputsFormValidationSchema address', () => {
@@ -75,5 +127,94 @@ describe('sendOutputsFormValidationSchema address', () => {
         ).rejects.toMatchObject({
             message: 'The address format is incorrect.',
         });
+    });
+});
+
+describe('sendOutputsFormValidationSchema amount', () => {
+    it('reports unavailable fee information when fee-adjusted max send amount is missing and entered amount fits balance', async () => {
+        await expect(
+            validateEnteredAmount(
+                '0.00001',
+                createAmountValidationContext({ networkFeeStatus: 'error' }),
+            ),
+        ).rejects.toThrow(feeInformationUnavailableMessage);
+    });
+
+    it('reports unavailable fee information when fee-adjusted max send amount is missing in sats mode', async () => {
+        await expect(
+            validateEnteredAmount(
+                '1000',
+                createAmountValidationContext({
+                    networkFeeStatus: 'error',
+                    isValueInSats: true,
+                }),
+            ),
+        ).rejects.toThrow(feeInformationUnavailableMessage);
+    });
+
+    it('does not report unavailable fee information while fees are loading', async () => {
+        await expect(
+            validateEnteredAmount(
+                '0.00001',
+                createAmountValidationContext({ networkFeeStatus: 'loading' }),
+            ),
+        ).resolves.toBe('0.00001');
+    });
+
+    it('reports unavailable fee information for a token send when fee fetching failed', async () => {
+        await expect(
+            validateEnteredAmount(
+                '1',
+                createAmountValidationContext({
+                    availableBalanceBeforeFees: '2',
+                    nativeCurrencyBalanceAvailableForFees: '2000000',
+                    networkFeeStatus: 'error',
+                    isTokenFlow: true,
+                }),
+            ),
+        ).rejects.toThrow(feeInformationUnavailableMessage);
+    });
+
+    it('accepts an entered amount below the normal fee-adjusted max send amount', async () => {
+        await expect(
+            validateEnteredAmount(
+                '0.017',
+                createAmountValidationContext({
+                    feeAdjustedMaxSendAmountByLevel: {
+                        custom: undefined,
+                        economy: '0.018',
+                        high: '0.017',
+                        low: '0.018',
+                        normal: '0.018',
+                    },
+                }),
+            ),
+        ).resolves.toBe('0.017');
+    });
+
+    it('reports insufficient balance when entered amount exceeds the normal fee-adjusted max send amount', async () => {
+        await expect(
+            validateEnteredAmount(
+                '0.019',
+                createAmountValidationContext({
+                    feeAdjustedMaxSendAmountByLevel: {
+                        custom: undefined,
+                        economy: '0.018',
+                        high: '0.017',
+                        low: '0.018',
+                        normal: '0.018',
+                    },
+                }),
+            ),
+        ).rejects.toThrow(insufficientBalanceMessage);
+    });
+
+    it('reports insufficient balance when fee-adjusted max send amount is missing but entered amount exceeds balance', async () => {
+        await expect(
+            validateEnteredAmount(
+                '0.021',
+                createAmountValidationContext({ networkFeeStatus: 'error' }),
+            ),
+        ).rejects.toThrow(insufficientBalanceMessage);
     });
 });
