@@ -452,25 +452,22 @@ impl AdapterManager {
     }
 
     pub async fn update_serviceless_device(&self, id: &PeripheralId) -> Result<(), AdapterError> {
-        let device = self.serviceless_peripherals.get(&id.to_string());
-        if device.is_none() {
-            return Ok(());
-        }
+        let id_clone = id.clone();
+        let id_string = id.to_string();
 
-        let update_count = device.unwrap().update_count;
-        self.serviceless_peripherals.remove(&id.to_string());
-        if self.is_discovered(id) {
-            return Ok(());
-        }
+        let update_count = match self.serviceless_peripherals.remove(&id_string) {
+            Some((_, device)) => device.update_count,
+            None => return Ok(()),
+        };
 
-        let peripheral = self.get_peripheral_or_die(&id.to_string()).await?;
-        if peripheral.services().is_empty() {
-            let _ = peripheral.discover_services().await;
+        if self.is_discovered(&id_clone) {
+            return Ok(());
         }
 
         let adapter = self.get_adapter_or_die().await?;
-        if let Some(_device) = utils::scan_filter(&adapter, id).await {
-            if let Ok(_device) = self.add_device(id).await {
+        let peripheral = self.get_peripheral_or_die(&id_string).await?;
+        if let Some(_device) = utils::scan_filter(&adapter, &id_clone).await {
+            if let Ok(_device) = self.add_device(&id_clone).await {
                 let devices = self.get_devices().await;
                 self.dispatch_notification(NotificationEvent::DeviceDiscovered {
                     id: id.to_string(),
@@ -479,7 +476,9 @@ impl AdapterManager {
                 .await;
             }
         } else if update_count < 1000 && peripheral.services().is_empty() {
-            let _ = self.add_serviceless_device(id, update_count + 1).await;
+            let _ = self
+                .add_serviceless_device(&id_clone, update_count + 1)
+                .await;
         }
 
         // prune outdated data
