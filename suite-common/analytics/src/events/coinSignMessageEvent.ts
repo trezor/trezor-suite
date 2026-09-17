@@ -1,6 +1,5 @@
-import type { AttributeDef, EventDef } from '@suite-common/analytics';
-
 import { EventType } from '../constants';
+import type { AttributeDef, EventDef } from '../eventDefinition';
 
 type Attributes = {
     status: AttributeDef<'success' | 'error' | 'cancelled'>;
