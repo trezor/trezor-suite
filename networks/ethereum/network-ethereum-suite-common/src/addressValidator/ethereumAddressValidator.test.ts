@@ -41,6 +41,11 @@ const ethereumIsAddressValidCases: EthereumIsAddressValidCase[] = [
     },
     {
         address: '0xE37c0D48d68da5c5b14E5c1a9f1CFE802776D9FF',
+        symbol: 'arc',
+        expected: true,
+    },
+    {
+        address: '0xE37c0D48d68da5c5b14E5c1a9f1CFE802776D9FF',
         symbol: 'tarc',
         expected: true,
     },
@@ -72,6 +77,11 @@ const ethereumIsAddressValidCases: EthereumIsAddressValidCase[] = [
     {
         address: '0xE37c0D48d68da5c5b14E5c1a9f1CFE802776D9FF0',
         symbol: 'thod',
+        expected: false,
+    },
+    {
+        address: '0xE37c0D48d68da5c5b14E5c1a9f1CFE802776D9FF0',
+        symbol: 'arc',
         expected: false,
     },
     {
@@ -270,6 +280,7 @@ describe('ethereum validator', () => {
     });
 
     it('supports Arc', () => {
+        expect(supportedEthereumNetworks).toContain('arc');
         expect(supportedEthereumNetworks).toContain('tarc');
     });
 

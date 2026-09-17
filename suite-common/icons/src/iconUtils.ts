@@ -25,6 +25,7 @@ export const networkIconSymbolMap = {
     rhc: 'rhc',
     sol: 'sol',
     tada: 'ada',
+    arc: 'eth',
     tarc: 'eth',
     test: 'btc',
     thod: 'eth',

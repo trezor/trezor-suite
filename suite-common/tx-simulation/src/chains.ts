@@ -29,6 +29,7 @@ const BLOCKAID_EVM_CHAIN_BY_CHAIN_ID = {
     // Blockaid has no Ethereum Classic chain; the old 'ethereumClassic' value is rejected.
     [networks.etc.chainId]: null,
     [networks.thod.chainId]: null, // Hoodi is not a supported testnet
+    [networks.arc.chainId]: null, // Blockaid has no Arc chain
     [networks.tarc.chainId]: null, // Blockaid has no Arc chain
 } as const satisfies Readonly<Record<EvmChainId, TransactionScanSupportedChain | null>>;
 

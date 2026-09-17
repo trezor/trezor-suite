@@ -730,6 +730,27 @@ export const networks = {
         tradeCryptoId: 'hoodi-test-ethereum', // fake, coingecko does not have testnets
         yieldXyzId: 'ethereum-hoodi',
     },
+    arc: {
+        symbol: 'arc',
+        displaySymbol: 'USDC',
+        displaySymbolName: 'USDC',
+        name: 'Arc',
+        networkType: 'ethereum',
+        bip43Path: "m/44'/60'/0'/0/i",
+        chainId: 5042,
+        decimals: 18,
+        testnet: false,
+        explorer: getExplorerUrls('https://explorer.arc.io', 'ethereum'),
+        features: ['rbf', 'sign-verify', 'tokens', 'eip1559'],
+        backendOptions: [{ type: 'evm-rpc', isExternalBackend: true }],
+        accountTypes: {},
+        // Arc's native asset is USDC, so the balance prices against the USDC market; the platform
+        // id only matters for tokens, which are not verified against a definitions list here.
+        coingeckoId: 'arc',
+        tradeCryptoId: 'usd-coin',
+        caipId: 'eip155:5042',
+        yieldXyzId: null,
+    },
     tarc: {
         symbol: 'tarc',
         displaySymbol: 'tUSDC',

@@ -43,6 +43,9 @@ const EVM_GAS_PRICE_PER_CHAIN_IN_GWEI: Record<
     op: { min: 0.000000001, max: 1000, defaultGas: 0.01, minPriorityFee: 0 },
     rhc: { min: 0.001, max: 1000, defaultGas: 0.1, minPriorityFee: 0 },
     hype: { min: 0.001, max: 1000, defaultGas: 0.1, minPriorityFee: 0 },
+    // Arc pins baseFeePerGas at exactly 20 Gwei, so nothing below that is payable. Unlike the
+    // testnet it enforces no tip floor - a sampled block had a 10th-percentile tip of zero.
+    arc: { min: 20, max: 10000, defaultGas: 21, minPriorityFee: 0 },
     // Arc testnet pins baseFeePerGas at exactly 20 Gwei and enforces a 1 Gwei tip floor,
     // so anything below min: 20 / minPriorityFee: 1 is unreachable.
     tarc: { min: 20, max: 10000, defaultGas: 25, minPriorityFee: 1 },

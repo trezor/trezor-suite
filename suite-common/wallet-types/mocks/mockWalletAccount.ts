@@ -98,6 +98,7 @@ const networkTypeMap: Record<NetworkSymbol, NetworkSpecificDefault> = {
     // Testnet Eth
     tsep: networkSpecificDefaultEthereum,
     thod: networkSpecificDefaultEthereum,
+    arc: networkSpecificDefaultEthereum,
     tarc: networkSpecificDefaultEthereum,
 
     // Solana

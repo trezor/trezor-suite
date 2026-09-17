@@ -11,6 +11,7 @@ export const supportedEthereumNetworks = [
     'hype',
     'avax',
     'etc',
+    'arc',
     'tsep',
     'thod',
     'tarc',

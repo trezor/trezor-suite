@@ -20,6 +20,8 @@ export const WRAPPED_NATIVE: Readonly<Record<EthereumNetworkSymbol, WrappedNativ
     hype: { address: '0x5555555555555555555555555555555555555555', symbol: 'WHYPE', decimals: 18 },
     avax: { address: '0xB31f66AA3C1e785363F0875A1B74E27b85FD66c7', symbol: 'WAVAX', decimals: 18 },
 
+    arc: { address: '0x3600000000000000000000000000000000000000', symbol: 'USDC', decimals: 6 },
+
     // --- testnets ---
     tsep: { address: '0x7b79995e5f793A07Bc00c21412e50Ecae098E7f9', symbol: 'WETH', decimals: 18 },
     thod: { address: '0xE0decAa66aED871ac9eb924443D1Bf333Fdb062E', symbol: 'WETH', decimals: 18 },

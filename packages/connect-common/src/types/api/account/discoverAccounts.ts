@@ -25,6 +25,7 @@ export const ACCOUNT_TYPES = [
     { symbol: 'thod', type: 'legacy', path: "m/44'/1'/0'/0/i" },
     { symbol: 'tsep', type: 'normal', path: "m/44'/60'/0'/0/i" },
     { symbol: 'thod', type: 'normal', path: "m/44'/60'/0'/0/i" },
+    { symbol: 'arc', type: 'normal', path: "m/44'/60'/0'/0/i" },
     { symbol: 'tarc', type: 'normal', path: "m/44'/60'/0'/0/i" },
     { symbol: 'pol', type: 'normal', path: "m/44'/60'/0'/0/i" },
     { symbol: 'pol', type: 'ledger', path: "m/44'/60'/i'/0/0" },

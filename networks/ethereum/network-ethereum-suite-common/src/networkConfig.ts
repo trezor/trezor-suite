@@ -35,6 +35,7 @@ const networkConfigBySymbol: Readonly<Record<EthereumNetworkSymbol, SuiteCommonN
     },
     avax: { color: '#e84142', protocols: [asProtocol('avalanche'), asProtocol('avax')] },
     etc: { color: '#60c67e', protocols: [asProtocol('ethclassic'), asProtocol('etc')] },
+    arc: { color: '#2775ca', protocols: [asProtocol('arc')] },
     tsep: { color: '#454a75', protocols: [asProtocol('tsep')] },
     thod: { color: '#454a75', protocols: [asProtocol('thod')] },
     tarc: { color: '#2775ca', protocols: [asProtocol('tarc')] },

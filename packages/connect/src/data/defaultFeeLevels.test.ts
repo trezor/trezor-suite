@@ -122,6 +122,30 @@ describe('getEthereumFeeLevels', () => {
                 dustLimit: -1,
             },
         },
+        arc: {
+            defaultGas: 21,
+            minFee: 20,
+            maxFee: 10000,
+            coinInfo: {
+                chain: 'arc',
+                blocktime_seconds: 1,
+            },
+            expected: {
+                blockTime: 1,
+                defaultFees: [
+                    {
+                        label: 'normal',
+                        feePerUnit: '21000000000', // 21 Gwei * 1e9 = 21000000000 Wei
+                        feeLimit: '21000',
+                        blocks: -1,
+                    },
+                ],
+                minFee: 20,
+                maxFee: 10000,
+                minPriorityFee: 0,
+                dustLimit: -1,
+            },
+        },
         tarc: {
             defaultGas: 25,
             minFee: 20,

@@ -23,6 +23,28 @@ export default [
     },
     {
         blockchain: {
+            name: 'Arc',
+            worker: 'js/evm-rpc-worker.js',
+            server: ['https://rpc.mainnet.arc.io'],
+            debug: true,
+        },
+        data: {
+            address: '',
+            accountInfoOptions: {
+                page: 0,
+                pageSize: 25,
+                contractFilter: undefined,
+            },
+            estimateFeeOptions: {
+                blocks: [1, 2, 10],
+            },
+            txid: '',
+            tx: '',
+            subscribe: '',
+        },
+    },
+    {
+        blockchain: {
             name: 'Arc Testnet',
             worker: 'js/evm-rpc-worker.js',
             server: ['https://rpc.testnet.arc.network'],
