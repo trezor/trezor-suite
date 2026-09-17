@@ -5307,6 +5307,10 @@ export const messages = defineMessages({
     },
     TR_DASHBOARD: {
         id: 'TR_DASHBOARD',
+        defaultMessage: 'Dashboard',
+    },
+    TR_HOME: {
+        id: 'TR_HOME',
         defaultMessage: 'Home',
     },
     TR_EARN: {

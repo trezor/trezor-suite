@@ -58,7 +58,7 @@ export const PageName = () => {
 
     return (
         <BasicName>
-            <Translation id="TR_DASHBOARD" />
+            <Translation id="TR_HOME" />
         </BasicName>
     );
 };
