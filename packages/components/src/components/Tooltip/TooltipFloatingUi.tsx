@@ -21,6 +21,7 @@ import {
     flip,
     offset,
     shift as shiftFloatingUI,
+    size,
     useDismiss,
     useFloating,
     useFocus,
@@ -39,6 +40,26 @@ import { throwError } from '@trezor/utils';
  */
 
 const TRANSITION_DURATION_MS = 250;
+const TOOLTIP_VIEWPORT_PADDING = 8;
+
+type ApplyTooltipSizeParams = {
+    availableWidth: number;
+    availableHeight: number;
+    elements: {
+        floating: HTMLElement;
+    };
+};
+
+const applyTooltipSize = ({
+    availableWidth,
+    availableHeight,
+    elements,
+}: ApplyTooltipSizeParams): void => {
+    Object.assign(elements.floating.style, {
+        maxWidth: `${Math.max(0, availableWidth)}px`,
+        maxHeight: `${Math.max(0, availableHeight)}px`,
+    });
+};
 
 type ArrowRef = RefObject<SVGSVGElement | null>;
 
@@ -84,14 +105,18 @@ export const useTooltip = ({
     const setOpen = setControlledOpen ?? setIsUncontrolledTooltipOpen;
 
     const middleware = useMemo(() => {
-        const middlewareArray = [
+        const shiftOptions = shift || { padding: TOOLTIP_VIEWPORT_PADDING };
+
+        return [
             offset(offsetValue),
             ...(!disableFlip ? [flip()] : []),
-            shiftFloatingUI(shift || { padding: 8 }),
+            shiftFloatingUI(shiftOptions),
+            size({
+                apply: applyTooltipSize,
+                padding: shiftOptions.padding,
+            }),
             arrow({ element: arrowRef }),
         ];
-
-        return middlewareArray;
     }, [offsetValue, shift, disableFlip, arrowRef]);
 
     const data = useFloating({
@@ -208,6 +233,9 @@ export const TooltipContent = forwardRef<HTMLDivElement, TooltipContentProps>((p
                     ...state.floatingStyles,
                     ...(style as CSSProperties),
                     ...styles,
+                    boxSizing: 'border-box',
+                    display: 'flex',
+                    flexDirection: 'column',
                 }}
                 {...restOfFloatingProps}
             >
