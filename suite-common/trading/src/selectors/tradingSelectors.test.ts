@@ -372,7 +372,7 @@ describe('tradingSelectors', () => {
                     features: {
                         major_version: 2,
                         minor_version: 12,
-                        patch_version: 1,
+                        patch_version: 5,
                     },
                 },
             },
@@ -2669,7 +2669,7 @@ describe('tradingSelectors', () => {
         it('should return false when firmware version is older than the minimum', () => {
             if (state.device.selectedDevice?.features) {
                 state.device.selectedDevice.features.minor_version = 12;
-                state.device.selectedDevice.features.patch_version = 0;
+                state.device.selectedDevice.features.patch_version = 4;
             }
             expect(selectTradingIsSlip24Allowed(state, accountBtc as any, true)).toBe(false);
         });

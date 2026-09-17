@@ -11,14 +11,17 @@ import {
     type FormStateTradingCryptoCurrency,
     type FormStateTradingFiatCurrency,
     type TokenAddress,
+    asBaseCurrencyAmount,
 } from '@suite-common/wallet-types';
 import { localizeNumber } from '@suite-common/wallet-utils';
 import { Card, Column, Divider, Flag, H4, InfoItem, Row, Text } from '@trezor/components';
 import { TokenIcon, isCoinSymbol, shouldShowNetworkIcon } from '@trezor/product-components';
+import { BigNumber } from '@trezor/utils';
 
 import { BaseCurrencyValue } from 'src/components/suite/BaseCurrencyValue';
 import { TransactionReviewOutputStatus } from 'src/components/suite/modals/ReduxModal/TransactionReviewModal/TransactionReviewOutputList/TransactionReviewOutputStatus';
 import { useSelector } from 'src/hooks/suite';
+import { TradingFiatAmount } from 'src/views/wallet/trading/common/TradingFiatAmount';
 
 export type TransactionReviewOutputAssetsProps = {
     title: ReactNode;
@@ -121,7 +124,12 @@ const TransactionReviewOutputAssetsTo = ({ receive }: TransactionReviewOutputAss
                     <Row alignItems="center" gap={12} margin={{ left: 32 }}>
                         {!!fiatCurrencyFlag && <Flag country={fiatCurrencyFlag} size={24} />}
                         <Text intent="brand" data-testid="@modal/assets/receive/label">
-                            + {localizeNumber(receive.amount, 'en-US')} {receive.fiatCurrency}
+                            +{' '}
+                            <TradingFiatAmount
+                                amount={asBaseCurrencyAmount(new BigNumber(receive.amount))}
+                                currency={receive.fiatCurrency}
+                                disableHiddenPlaceholder
+                            />
                         </Text>
                     </Row>
                 }
