@@ -37,8 +37,8 @@ const NetworkGroupHeader = ({ group }: NetworkGroupHeaderProps) => {
     );
 };
 
-const renderRows = (rows: readonly AssetRow[]) =>
-    rows.map(row => <AssetFirstRow key={row.assetKey} row={row} />);
+const renderRows = (rows: readonly AssetRow[], hasBorderTop?: boolean) =>
+    rows.map(row => <AssetFirstRow key={row.assetKey} row={row} hasBorderTop={hasBorderTop} />);
 
 /**
  * The dashboard's assets, one row per asset and network.
@@ -87,7 +87,7 @@ export const AssetFirstTable = () => {
                     {view.grouping === 'networks'
                         ? view.groups.flatMap(group => [
                               <NetworkGroupHeader key={group.symbol} group={group} />,
-                              ...renderRows(group.rows),
+                              ...renderRows(group.rows, false),
                           ])
                         : renderRows(view.rows)}
                 </Table.Body>

@@ -22,7 +22,7 @@ export const AssetFirstTableFilter = ({ grouping, onChange }: AssetFirstTableFil
         return (
             <Button
                 size="small"
-                intent="brand"
+                intent="info"
                 priority="secondary"
                 iconRight={XIcon}
                 onClick={() => onChange('default')}

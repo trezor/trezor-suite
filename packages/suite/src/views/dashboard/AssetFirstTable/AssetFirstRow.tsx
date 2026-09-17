@@ -20,6 +20,8 @@ import {
 
 type AssetFirstRowProps = {
     row: AssetRow;
+    /** Off for the rows under a group heading: the line belongs between groups, not inside one. */
+    hasBorderTop?: boolean;
 };
 
 /**
@@ -29,11 +31,12 @@ type AssetFirstRowProps = {
  * above the table are the same numbers. A row that did not change is the same object, so a balance
  * arriving for another asset does not re-render it — see `selectAssetFirstRows`.
  */
-export const AssetFirstRow = memo(({ row }: AssetFirstRowProps) => {
+export const AssetFirstRow = memo(({ row, hasBorderTop }: AssetFirstRowProps) => {
     const { symbol, contractAddress, cryptoBalance, tokenInfo } = row;
 
     return (
         <Table.Row
+            hasBorderTop={hasBorderTop}
             data-testid={`@dashboard/asset-first-item/${symbol}/${contractAddress ?? 'coin'}`}
         >
             <Table.Cell padding={ASSET_FIRST_CELL_PADDING.first}>
