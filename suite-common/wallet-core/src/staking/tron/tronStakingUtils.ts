@@ -70,13 +70,6 @@ export const getTronRewardClaimCooldownEndsAt = (account: Account): number | nul
     return stakingInfo.latestWithdrawTime + TRON_REWARD_CLAIM_COOLDOWN_SECONDS;
 };
 
-export const isTronRewardClaimOnCooldown = (account: Account): boolean => {
-    const cooldownEndsAt = getTronRewardClaimCooldownEndsAt(account);
-    if (cooldownEndsAt === null) return false;
-
-    return Date.now() / 1000 < cooldownEndsAt;
-};
-
 const sumUnstakingBatchesSun = (
     account: Account,
     predicate: (batch: TronUnstakingBatch) => boolean,
