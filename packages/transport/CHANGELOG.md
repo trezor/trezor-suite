@@ -1,4 +1,4 @@
-# 10.0.0-beta.2
+# 10.0.0-beta.3
 
 Part of the Connect 10 ecosystem release.
 
