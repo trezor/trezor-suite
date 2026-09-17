@@ -117,6 +117,7 @@
         {
             "path": "../../suite-common/message-system"
         },
+        { "path": "../performance-metrics" },
         { "path": "../storybook" },
         { "path": "../test-utils-store" },
         { "path": "../../packages/connect-core" },

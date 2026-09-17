@@ -125,6 +125,21 @@ export type LaunchArguments = {
 
 To make the tests as much standalone and independent on third party services as possible, we are mocking some parts of the app. The mocks are located in the `/mocks` folder.
 
+## Performance metrics
+
+Screens instrumented with `@suite-native/performance-metrics` log one `__TREZOR_PERF__` line per
+measurement. Those lines end up in the Detox device log artifacts
+(`artifacts/<configuration>.<timestamp>/<test name>/device.log`), and at the end of a run the custom
+runner reduces them to one report in `artifacts/performance/perf-report.json` and prints a table.
+
+- Multiple visits of one screen are reduced to a median per metric; the report records how many
+  samples each screen had.
+- Thresholds live in [performance/budgets.ts](./performance/budgets.ts), keyed by screen. They start
+  from react-native-lighthouse's own "poor" boundaries, not from numbers measured on our emulators.
+  The printed table ends with a block to paste into `BASELINES` once a run has recorded real numbers.
+- Going over a limit is printed loudly and recorded in the report. It never fails a test or the run,
+  and neither does a failure anywhere in the collection itself.
+
 ## GitHub CI
 
 Android E2E test run on GitHub CI on every PR that is labeled with a `mobile-app` tag. The workflow is described in the [.github/workflows/native-test-e2e-android.yml](../../../.github/workflows/native-test-e2e-android.yml) file.
