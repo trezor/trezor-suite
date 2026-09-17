@@ -198,6 +198,13 @@ export class BluetoothIpc extends TypedEmitter<BluetoothIpcEvents> implements Bl
             return Promise.resolve(this.result());
         }
 
+        // Ownerless callers cannot express that known devices still need background discovery
+        // for auto-reconnect, so they keep the pre-ownership behaviour: stop only when nothing
+        // is known. Owned callers manage that lifecycle explicitly.
+        if (!owner && this.state.knownDevices.length > 0) {
+            return Promise.resolve(this.result());
+        }
+
         this.shouldScan = false;
 
         return this.serializeScan(async () => {

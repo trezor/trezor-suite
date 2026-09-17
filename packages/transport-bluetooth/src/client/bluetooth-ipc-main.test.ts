@@ -82,6 +82,20 @@ describe('BluetoothIpc scan ownership', () => {
         ]);
     });
 
+    it('keeps scanning on an ownerless stopScan while there are known devices', async () => {
+        const knownDevice = mockBluetoothDevice();
+        sendMock.mockResolvedValue({ devices: [knownDevice], success: true });
+        await ipc.init({ knownDevices: [knownDevice] });
+        await ipc.startScan();
+        sendMock.mockClear();
+
+        await expect(ipc.stopScan()).resolves.toEqual({ success: true });
+        expect(sendMock).not.toHaveBeenCalled();
+
+        await expect(ipc.stopScan('ui')).resolves.toEqual({ success: true });
+        expect(sendMock).toHaveBeenCalledWith({ method: 'stop_scan', params: undefined });
+    });
+
     it('keeps failed scan intent until its owner stops', async () => {
         sendMock.mockRejectedValueOnce(new Error('Adapter disabled'));
         await expect(ipc.startScan('ui')).resolves.toEqual({
