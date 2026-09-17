@@ -2,7 +2,7 @@ import { createDeferred } from '@trezor/utils';
 
 import { BluetoothIpc } from './bluetooth-ipc-main';
 import { TrezorBluetooth } from './trezor-bluetooth';
-import { type BluetoothDevice } from './types';
+import { type BluetoothAdapterState, type BluetoothDevice } from './types';
 
 const mockBluetoothDevice = (device: Partial<BluetoothDevice> = {}): BluetoothDevice => ({
     id: 'mock-bluetooth-device',
@@ -201,6 +201,65 @@ describe('BluetoothIpc scan ownership', () => {
             'stop_scan',
             'start_scan',
         ]);
+    });
+
+    it('does not touch the server on init without known devices', async () => {
+        await expect(ipc.init({ knownDevices: [] })).resolves.toEqual({ success: true });
+
+        expect(sendMock).not.toHaveBeenCalled();
+    });
+
+    it('stops the initial scan once known devices were collected and no scan is wanted', async () => {
+        const knownDevice = mockBluetoothDevice();
+        sendMock.mockResolvedValue({ devices: [knownDevice], success: true });
+
+        await expect(ipc.init({ knownDevices: [knownDevice] })).resolves.toEqual({
+            success: true,
+        });
+
+        expect(sendMock.mock.calls.map(([request]) => request.method)).toEqual([
+            'set_state',
+            'start_scan',
+            'stop_scan',
+        ]);
+    });
+
+    it('keeps scanning after the initial scan while a scan owner is active', async () => {
+        const knownDevice = mockBluetoothDevice();
+        sendMock.mockResolvedValue({ devices: [knownDevice], success: true });
+        await ipc.startScan('ui');
+
+        await ipc.init({ knownDevices: [knownDevice] });
+
+        expect(sendMock.mock.calls.map(([request]) => request.method)).toEqual([
+            'start_scan',
+            'set_state',
+            'start_scan',
+        ]);
+    });
+
+    it('does not send the initial stop_scan when the adapter is disabled', async () => {
+        const warnMock = jest.spyOn(console, 'warn').mockImplementation(() => {});
+        sendMock.mockImplementation(request =>
+            request.method === 'start_scan'
+                ? Promise.reject(new Error('Adapter disabled'))
+                : Promise.resolve({ devices: [], success: true }),
+        );
+        const adapterStates: BluetoothAdapterState[] = [];
+        ipc.on('adapter-event', state => {
+            adapterStates.push(state);
+        });
+
+        await expect(ipc.init({ knownDevices: [mockBluetoothDevice()] })).resolves.toEqual({
+            success: true,
+        });
+
+        expect(sendMock.mock.calls.map(([request]) => request.method)).toEqual([
+            'set_state',
+            'start_scan',
+        ]);
+        expect(adapterStates).toEqual(['disabled']);
+        warnMock.mockRestore();
     });
 
     it('reports the connection error when startScan cannot reach the server', async () => {
