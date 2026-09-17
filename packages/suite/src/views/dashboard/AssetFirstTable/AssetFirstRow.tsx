@@ -20,7 +20,6 @@ import {
 
 type AssetFirstRowProps = {
     row: AssetRow;
-    /** Off under a group heading: the line belongs between groups, not inside one. */
     hasBorderTop?: boolean;
 };
 

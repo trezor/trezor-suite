@@ -46,7 +46,6 @@ export type AssetRow = {
 
 const ZERO_FIAT_VALUE = new BigNumber(0);
 
-// A row that did not change has to stay the same object, or the memoized row re-renders.
 const builtRows = new Map<AssetKey, AssetRow>();
 
 const isSameRow = (previous: AssetRow, next: AssetRow) =>
@@ -152,7 +151,6 @@ export type AssetFirstTotals = {
 export const getAssetFirstTotals = (rows: readonly AssetRow[]): AssetFirstTotals => {
     const fiatValue = rows.reduce((total, row) => total.plus(row.fiatValue), ZERO_FIAT_VALUE);
 
-    // No rate for a week ago is not the same claim as no change.
     if (!rows.some(row => row.weekAgoFiatValue.gt(0))) {
         return { fiatValue, weekChange: undefined, weekChangePercent: undefined };
     }

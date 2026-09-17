@@ -8,7 +8,6 @@ import { CheckIcon, FunnelSimpleIcon, XIcon } from '@trezor/icons';
 
 import { type AssetFirstGrouping } from './assetFirstTableGrouping';
 
-// Not a Dropdown: its trigger is an IconButton, which the funnel must not be filled like.
 const FunnelTrigger = styled.button`
     display: flex;
     align-items: center;

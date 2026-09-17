@@ -39,8 +39,6 @@ export type AssetKeyParts = {
     contractAddress: TokenAddress | undefined;
 };
 
-// Read from the right: a static session id contains separators of its own, a symbol and a
-// contract do not.
 export const parseAssetKey = (key: string): AssetKeyParts | undefined => {
     const segments = key.split(ASSET_KEY_SEPARATOR);
     const contract = segments.pop();
