@@ -134,7 +134,13 @@ describe('sendOutputsFormValidationSchema address', () => {
 describe('sendOutputsFormValidationSchema amount', () => {
     it('accepts an amount within the raw balance when fee-adjusted balance is unavailable', async () => {
         await expect(
-            validateEnteredAmount('0.00001', createAmountValidationContext()),
+            validateEnteredAmount(
+                '0.00001',
+                createAmountValidationContext({
+                    networkFeeInfo: undefined,
+                    feeAdjustedMaxSendAmountByLevel: undefined,
+                }),
+            ),
         ).resolves.toBe('0.00001');
     });
 
