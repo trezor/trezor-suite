@@ -229,11 +229,6 @@ export class WalletPage {
     }
 
     @step()
-    getAccountsInTypeCount(type: string) {
-        return this.page.getByTestId(new RegExp(`^@account-menu/[^/]+/${type}/\\d+$`)).count();
-    }
-
-    @step()
     getAccountsForCoinInTypeCount(type: string, symbol: NetworkSymbol) {
         return this.page.getByTestId(new RegExp(`^@account-menu/${symbol}/${type}/\\d+$`)).count();
     }
