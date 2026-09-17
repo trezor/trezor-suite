@@ -9,9 +9,8 @@ import {
     parseAssetKey,
     selectAccountAssetHoldings,
     selectAssetHoldings,
-    selectAssetHoldingsByAccountKey,
     selectAssetKeysByDeviceState,
-    selectHiddenAssetHoldingIds,
+    selectHiddenAssetHoldingKeys,
     selectShownAssetHoldings,
 } from './assetHoldingsIndex';
 
@@ -142,7 +141,7 @@ describe('which holdings the user is shown', () => {
             hiddenTokens: [USDC_ON_ETH],
         });
 
-        expect(selectHiddenAssetHoldingIds(state)).toHaveLength(2);
+        expect(selectHiddenAssetHoldingKeys(state)).toHaveLength(2);
     });
 
     it('names nothing when the user hid nothing', () => {
@@ -150,7 +149,7 @@ describe('which holdings the user is shown', () => {
             accounts: [mockAccount({ tokens: [{ contract: USDC_ON_ETH, balance: '1' }] })],
         });
 
-        expect(selectHiddenAssetHoldingIds(state)).toEqual([]);
+        expect(selectHiddenAssetHoldingKeys(state)).toEqual([]);
     });
 
     it('hands back the same holdings while the accounts and the hiding are unchanged', () => {
@@ -335,10 +334,19 @@ describe('what a write leaves alone', () => {
         ).toBe('3');
     });
 
-    it('hands back the same map while the accounts and definitions are unchanged', () => {
-        const state = createState({ accounts: [mockAccount()] });
+    it('keeps the holdings of an account nothing wrote to', () => {
+        const untouched = mockAccount({ index: 0 });
+        const before = selectAssetHoldings(
+            createState({ accounts: [untouched, mockAccount({ index: 1, balance: '1' })] }),
+            aliceCoin,
+        );
 
-        expect(selectAssetHoldingsByAccountKey(state)).toBe(selectAssetHoldingsByAccountKey(state));
+        const after = selectAssetHoldings(
+            createState({ accounts: [untouched, mockAccount({ index: 1, balance: '2' })] }),
+            aliceCoin,
+        );
+
+        expect(after[0]).toBe(before[0]);
     });
 
     it('builds an account’s holdings once for repeated reads', () => {

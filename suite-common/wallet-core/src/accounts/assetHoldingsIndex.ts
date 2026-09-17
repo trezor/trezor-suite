@@ -63,6 +63,8 @@ export const parseAssetKey = (key: string): AssetKeyParts | undefined => {
 };
 
 export type AssetHolding = {
+    /** What the index knows it by: one account's balance of one asset. */
+    holdingKey: AssetHoldingKey;
     accountKey: AccountKey;
     assetKey: AssetKey;
     deviceState: StaticSessionId;
@@ -73,49 +75,30 @@ export type AssetHolding = {
     isAccountVisible: boolean;
 };
 
-export type AssetHoldingsByAccountKey = ReadonlyMap<AccountKey, readonly AssetHolding[]>;
+export type AssetHoldingKey = `${AccountKey}/${TokenAddress | ''}`;
 
-const areSameHoldings = (previous: readonly AssetHolding[], next: readonly AssetHolding[]) =>
-    previous.length === next.length &&
-    previous.every((holding, position) => holding === next[position]);
-
-const isSameHolding = (previous: AssetHolding, next: AssetHolding) =>
-    previous.cryptoBalance === next.cryptoBalance &&
-    previous.tokenInfo === next.tokenInfo &&
-    previous.isAccountVisible === next.isAccountVisible;
-
-const buildAccountHoldings = (
-    account: Account,
-    previous: readonly AssetHolding[] | undefined,
-): readonly AssetHolding[] => {
-    const previousByAssetKey = new Map(previous?.map(holding => [holding.assetKey, holding]));
-
+const toAccountHoldings = (account: Account): readonly AssetHolding[] => {
     const toHolding = (
         contractAddress: TokenAddress | undefined,
         cryptoBalance: string,
         tokenInfo: TokenInfo | undefined,
-    ): AssetHolding => {
-        const assetKey = getAssetKey({
+    ): AssetHolding => ({
+        holdingKey: `${account.key}${ASSET_KEY_SEPARATOR}${contractAddress ?? ''}`,
+        accountKey: account.key,
+        assetKey: getAssetKey({
             deviceState: account.deviceState,
             symbol: account.symbol,
             contractAddress,
-        });
-        const next: AssetHolding = {
-            accountKey: account.key,
-            assetKey,
-            deviceState: account.deviceState,
-            symbol: account.symbol,
-            contractAddress,
-            cryptoBalance,
-            tokenInfo,
-            isAccountVisible: account.visible,
-        };
-        const built = previousByAssetKey.get(assetKey);
+        }),
+        deviceState: account.deviceState,
+        symbol: account.symbol,
+        contractAddress,
+        cryptoBalance,
+        tokenInfo,
+        isAccountVisible: account.visible,
+    });
 
-        return built && isSameHolding(built, next) ? built : next;
-    };
-
-    // Which tokens the user is shown is settled by selectHiddenAssetHoldingIds, so that hiding one
+    // Which tokens the user is shown is settled by selectHiddenAssetHoldingKeys, so that hiding one
     // does not rebuild every account's holdings. What is left out here cannot be shown by any
     // setting: an NFT is not a holding, and nothing holds none of a token.
     const tokenHoldings = (account.tokens ?? [])
@@ -133,44 +116,20 @@ export type AssetHoldingsRootState = AccountsRootState & TokenDefinitionsRootSta
 
 const createMemoizedSelector = createWeakMapSelector.withTypes<AssetHoldingsRootState>();
 
-const holdingsByAccountKey = new Map<AccountKey, readonly AssetHolding[]>();
-
-export const selectAssetHoldingsByAccountKey = createMemoizedSelector(
-    [selectAccounts],
-    (accounts): AssetHoldingsByAccountKey => {
-        const byAccountKey = new Map<AccountKey, readonly AssetHolding[]>();
-
-        accounts.forEach(account => {
-            const previous = holdingsByAccountKey.get(account.key);
-            const built = buildAccountHoldings(account, previous);
-            const holdings = previous && areSameHoldings(previous, built) ? previous : built;
-
-            holdingsByAccountKey.set(account.key, holdings);
-            byAccountKey.set(account.key, holdings);
-        });
-
-        holdingsByAccountKey.forEach((_holdings, accountKey) => {
-            if (!byAccountKey.has(accountKey)) {
-                holdingsByAccountKey.delete(accountKey);
-            }
-        });
-
-        return byAccountKey;
-    },
-);
-
-/** How a holding is named in the index: one account's balance of one asset. */
-export type AssetHoldingId = `${AccountKey}/${TokenAddress | ''}`;
-
-const getAssetHoldingId = (holding: AssetHolding): AssetHoldingId =>
-    `${holding.accountKey}${ASSET_KEY_SEPARATOR}${holding.contractAddress ?? ''}`;
-
+/**
+ * Every holding of every account, by asset and by account.
+ *
+ * An account is a part, so what it holds is worked out when that account is written and not again:
+ * flattening a coin and its tokens into holdings is the index's own `getEntities`, which an
+ * untouched part never reaches.
+ */
 export const assetHoldingsIndex = createEntityIndex({
     name: 'assetHoldings',
-    selectSource: selectAssetHoldingsByAccountKey,
-    getParts: (byAccountKey: AssetHoldingsByAccountKey) => byAccountKey,
-    getEntities: (holdings: readonly AssetHolding[]) => holdings,
-    getId: getAssetHoldingId,
+    selectSource: selectAccounts,
+    getParts: (accounts: readonly Account[]) =>
+        accounts.map(account => [account.key, account] as const),
+    getEntities: toAccountHoldings,
+    getId: (holding: AssetHolding) => holding.holdingKey,
     groupBy: {
         byAsset: (holding: AssetHolding) => holding.assetKey,
         byAccountKey: (holding: AssetHolding) => holding.accountKey,
@@ -189,13 +148,13 @@ export const assetHoldingsIndex = createEntityIndex({
  * than per holding, so the question is asked once for a token however many accounts hold it, and
  * hiding one leaves every other holding in the index exactly as it was.
  */
-export const selectHiddenAssetHoldingIds = createMemoizedSelector(
+export const selectHiddenAssetHoldingKeys = createMemoizedSelector(
     [
         (state: AssetHoldingsRootState) => assetHoldingsIndex.read(state).groups.byTokenKey,
         selectTokenDefinitions,
     ],
     (tokenGroups, tokenDefinitions) => {
-        const hidden: AssetHoldingId[] = [];
+        const hidden: AssetHoldingKey[] = [];
 
         tokenGroups.forEach((group, tokenKey) => {
             const separator = tokenKey.indexOf(ASSET_KEY_SEPARATOR);
@@ -224,7 +183,7 @@ export const selectHiddenAssetHoldingIds = createMemoizedSelector(
 
 /** What the wallet holds of every asset the user is shown, in the index's order. */
 export const selectShownAssetHoldings = (state: AssetHoldingsRootState) =>
-    assetHoldingsIndex.getInverseOfIds(state, selectHiddenAssetHoldingIds(state));
+    assetHoldingsIndex.getInverseOfIds(state, selectHiddenAssetHoldingKeys(state));
 
 export const selectAssetHoldings = (state: AssetHoldingsRootState, assetKey: AssetKey) =>
     assetHoldingsIndex.getBy(state, 'byAsset', assetKey);
