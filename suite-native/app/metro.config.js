@@ -4,6 +4,7 @@ const { withRozenite } = require('@rozenite/metro');
 const { getSentryExpoConfig } = require('@sentry/react-native/metro');
 const { withStorybook } = require('@storybook/react-native/metro/withStorybook');
 const { mergeConfig } = require('metro-config');
+const path = require('path');
 
 const { metroSecureResolver } = require('@trezor/bundler-security/src/metroSecureResolver');
 
@@ -52,6 +53,15 @@ const isModuleFrom = (packageNames, moduleName) =>
     packageNames.some(
         packageName => moduleName === packageName || moduleName.startsWith(`${packageName}/`),
     );
+
+// `jwa` is the signing backend of `jws`, which verifies the firmware release config and the
+// message-system config during app startup. Hermes has no JIT, so the elliptic-curve math in
+// crypto-browserify takes hundreds of milliseconds per verification, while
+// react-native-quick-crypto runs it in native OpenSSL. Scoped to `jwa` instead of aliasing
+// `crypto` globally, because the rest of the bundle is only tested against crypto-browserify.
+const jwaPackagePath = path.join(path.sep, 'node_modules', 'jwa', path.sep);
+
+const isRequestedByJwa = context => context.originModulePath.includes(jwaPackagePath);
 
 /**
  * Metro configuration
@@ -103,6 +113,10 @@ const config = {
                     moduleName,
                     platform,
                 );
+            }
+
+            if (moduleName === 'crypto' && isRequestedByJwa(context)) {
+                return context.resolveRequest(context, 'react-native-quick-crypto', platform);
             }
 
             const getSourceFile = filePath => ({
