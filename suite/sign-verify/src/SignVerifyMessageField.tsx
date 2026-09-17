@@ -1,10 +1,11 @@
 import { type UseFormRegisterReturn } from 'react-hook-form';
 
 import { Translation } from '@suite/intl';
+import { MAX_LENGTH_MESSAGE } from '@suite-common/sign-verify';
 import { Box, Switch, Textarea } from '@trezor/components';
 
 import { CopyFieldButton } from './CopyFieldButton';
-import { MAX_LENGTH_MESSAGE, type SignVerifyFormFields } from './useSignVerifyForm';
+import { type SignVerifyFormFields } from './useSignVerifyForm';
 
 const FIELD_PADDING = 16;
 

@@ -5,14 +5,12 @@ import { yupResolver } from '@hookform/resolvers/yup';
 
 import { useServices } from '@suite-common/dependency-injection';
 import { type AddressValidator, injectAddressValidator } from '@suite-common/networks';
+import { MAX_LENGTH_MESSAGE } from '@suite-common/sign-verify';
 import { yup } from '@suite-common/validators';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { type Account } from '@suite-common/wallet-types';
 
 export type SignVerifyFormFields = ReturnType<typeof useSignVerifyForm>;
-
-export const MAX_LENGTH_MESSAGE = 1024;
-export const MAX_LENGTH_SIGNATURE = 255;
 
 type SignVerifyContext = {
     addressValidator: AddressValidator;

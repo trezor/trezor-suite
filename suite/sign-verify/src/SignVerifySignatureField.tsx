@@ -1,10 +1,10 @@
 import { type UseFormRegisterReturn } from 'react-hook-form';
 
 import { useTranslation } from '@suite/intl';
+import { MAX_LENGTH_SIGNATURE } from '@suite-common/sign-verify';
 import { Input } from '@trezor/components';
 
 import { CopyFieldButton } from './CopyFieldButton';
-import { MAX_LENGTH_SIGNATURE } from './useSignVerifyForm';
 
 type SignVerifySignatureFieldProps = {
     signature?: string;
