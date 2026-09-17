@@ -474,6 +474,70 @@ describe('createPaymentRequestsThunk', () => {
             expect(result.payload).toEqual([mockSellPaymentRequest]);
         });
 
+        it('signs the whole-balance amount in the memo text', async () => {
+            tradeApi.getSignedTrade = jest.fn().mockResolvedValue(mockSignedSellTrade);
+
+            const store = createMockStore({
+                sell: {
+                    selectedQuote: mockSellQuote,
+                    sellInfo: mockSellProviders,
+                },
+                info: mockInfoCoins,
+            });
+
+            const result = await store.dispatch(
+                createPaymentRequestsThunk({
+                    type: 'sell',
+                    account: mockAccount,
+                    composedLevels: mockComposedTransaction,
+                    formattedMaxAmount: '0.00099',
+                }),
+            );
+
+            expect(result.type).toBe(createPaymentRequestsThunk.fulfilled.type);
+            expect(tradeApi.getSignedTrade).toHaveBeenCalledWith(
+                expect.objectContaining({
+                    type: 'sell',
+                    memoText: 'Selling 0.00099 BTC for 50 USD',
+                }),
+            );
+            expect(result.payload).toEqual([
+                expect.objectContaining({
+                    memos: [
+                        { text_memo: { text: 'Selling 0.00099 BTC for 50 USD' } },
+                        expect.anything(),
+                    ],
+                }),
+            ]);
+        });
+
+        it('rejects when the sold asset has no display symbol', async () => {
+            tradeApi.getSignedTrade = jest.fn();
+
+            const store = createMockStore({
+                sell: {
+                    selectedQuote: mockSellQuote,
+                    sellInfo: mockSellProviders,
+                },
+            });
+
+            const result = await store.dispatch(
+                createPaymentRequestsThunk({
+                    type: 'sell',
+                    account: mockAccount,
+                    composedLevels: mockComposedTransaction,
+                    formattedMaxAmount: mockSellQuote.cryptoStringAmount,
+                }),
+            );
+
+            expect(result.type).toBe(createPaymentRequestsThunk.rejected.type);
+            expect(result.payload).toEqual({
+                type: 'sign-tx-error',
+                error: { id: 'TR_PAYMENT_REQUESTS_ERROR' },
+            });
+            expect(tradeApi.getSignedTrade).not.toHaveBeenCalled();
+        });
+
         it('should reject when sell quote is missing paymentId', async () => {
             const store = createMockStore({
                 sell: {
