@@ -165,11 +165,9 @@ export class BluetoothIpc extends TypedEmitter<BluetoothIpcEvents> implements Bl
         return Promise.resolve(this.result());
     }
 
-    startScan(owner?: ScanOwner) {
+    startScan(owner: ScanOwner) {
         this.shouldScan = true;
-        if (owner) {
-            this.scanOwners.add(owner);
-        }
+        this.scanOwners.add(owner);
 
         return this.serializeScan(async () => {
             try {
@@ -189,10 +187,8 @@ export class BluetoothIpc extends TypedEmitter<BluetoothIpcEvents> implements Bl
         });
     }
 
-    stopScan(owner?: ScanOwner) {
-        if (owner) {
-            this.scanOwners.delete(owner);
-        }
+    stopScan(owner: ScanOwner) {
+        this.scanOwners.delete(owner);
 
         if (this.scanOwners.size > 0) {
             return Promise.resolve(this.result());
