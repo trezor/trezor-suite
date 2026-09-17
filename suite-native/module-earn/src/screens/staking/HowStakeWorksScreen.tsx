@@ -32,7 +32,7 @@ import { EarnLoadingScreen } from '../../components/earn/EarnLoadingScreen';
 import { HowEarnWorksBenefitsSection } from '../../components/earn/HowEarnWorks/HowEarnWorksBenefitsSection';
 import { HowEarnWorksHeaderSection } from '../../components/earn/HowEarnWorks/HowEarnWorksHeaderSection';
 import { HowEarnWorksTimelineCard } from '../../components/earn/HowEarnWorks/HowEarnWorksTimelineCard';
-import { createHowStakeWorksPreset } from '../../components/earn/HowEarnWorks/stakePresets';
+import { useHowStakeWorksPreset } from '../../components/earn/HowEarnWorks/stakePresets';
 import { useNavigateBackAnalytics } from '../../hooks/earn/useNavigateBackAnalytics';
 import { useMessageSystemStaking } from '../../hooks/staking/useMessageSystemStaking';
 
@@ -124,7 +124,7 @@ export const HowStakeWorksScreen = () => {
 
     const displaySymbol = getNetworkDisplaySymbol(symbol);
 
-    const { benefitItems, timelineSections } = createHowStakeWorksPreset({
+    const { benefitItems, timelineSections } = useHowStakeWorksPreset({
         symbol,
         entryPeriodInDays,
         unstakingPeriodInDays,
