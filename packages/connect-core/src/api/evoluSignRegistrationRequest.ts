@@ -26,7 +26,7 @@ export default class EvoluSignRegistrationRequest extends AbstractMethod<
         this.useEmptyPassphrase = true;
     }
     get requiredPermissions(): PermissionRequest[] {
-        return [{ permission: 'sign' }];
+        return [{ permission: 'management' }];
     }
 
     init() {}

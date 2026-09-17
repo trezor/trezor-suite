@@ -20,7 +20,7 @@ export default class EvoluGetNode extends AbstractMethod<'evoluGetNode', PROTO.E
         super(message, params);
     }
     get requiredPermissions(): PermissionRequest[] {
-        return [{ permission: 'read_xpub' }];
+        return [{ permission: 'management' }];
     }
 
     get info() {
