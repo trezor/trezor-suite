@@ -9,10 +9,13 @@ import { selectIsMevProtectionFeatureEnabled } from '@suite-common/mev';
 import { injectDispatch } from '@suite-common/redux-utils';
 import {
     type AccountsRootState,
+    type FormDraftRootState,
     pushStakeTransactionThunk,
     selectAccountNetworkSymbol,
+    selectFormDraft,
 } from '@suite-common/wallet-core';
-import { type AccountKey } from '@suite-common/wallet-types';
+import { type AccountKey, type FormState } from '@suite-common/wallet-types';
+import { getFormDraftKey } from '@suite-common/wallet-utils';
 import { events, injectNativeAnalytics } from '@suite-native/analytics';
 import {
     type RootStackParamList,
@@ -25,6 +28,7 @@ import { useEarnSelectedPrecomposedTransaction } from './useEarnSelectedPrecompo
 import { useHandleEarnReviewError } from './useHandleEarnReviewError';
 import { signStakeTransactionThunk } from '../../thunks/staking/stakingThunks';
 import { type EarnFormDraftPrefix } from '../../types';
+import { reportTransactionCreated } from '../../utils/earn/earnAnalyticsUtils';
 
 type NavigationProps = StackNavigationProps<RootStackParamList, RootStackRoutes>;
 
@@ -47,6 +51,11 @@ export const useHandleOnEarnTransactionReview = ({
     const precomposedTransaction = useEarnSelectedPrecomposedTransaction(stakeType, accountKey);
     const networkSymbol = useSelector((state: AccountsRootState) =>
         selectAccountNetworkSymbol(state, accountKey),
+    );
+    const selectedFee = useSelector(
+        (state: FormDraftRootState) =>
+            selectFormDraft<FormState>(state, getFormDraftKey(stakeType, accountKey))
+                ?.selectedFee ?? 'normal',
     );
     const isMevProtectionFeatureEnabled = useSelector(selectIsMevProtectionFeatureEnabled);
 
@@ -73,6 +82,16 @@ export const useHandleOnEarnTransactionReview = ({
     }, [accountKey, dispatch, handleReviewError, precomposedTransaction, stakeType]);
 
     const handlePush = useCallback(async (): Promise<string | undefined> => {
+        if (networkSymbol && precomposedTransaction) {
+            reportTransactionCreated({
+                analytics,
+                symbol: networkSymbol,
+                precomposedTransaction,
+                selectedFee,
+                txType: 'stake',
+            });
+        }
+
         const response = await dispatch(
             pushStakeTransactionThunk({ accountKey, isMevProtectionFeatureEnabled }),
         );
@@ -101,6 +120,8 @@ export const useHandleOnEarnTransactionReview = ({
         handleReviewError,
         isMevProtectionFeatureEnabled,
         networkSymbol,
+        precomposedTransaction,
+        selectedFee,
         stakeType,
     ]);
 
