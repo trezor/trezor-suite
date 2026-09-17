@@ -508,7 +508,7 @@ describe('Stellar worker account history', () => {
         );
     });
 
-    it('reads the contracts the account watches on top of the curated ones', async () => {
+    it('reads the contracts it is named and no others', async () => {
         await blockchain.getAccountInfo({
             descriptor: DESCRIPTOR,
             details: 'txs',
@@ -516,9 +516,17 @@ describe('Stellar worker account history', () => {
         });
 
         expect(mockState.readContractIds).toEqual([
-            ...STELLAR_CONTRACT_TOKENS.map(token => token.contract),
             WATCHED_CONTRACT,
+            STELLAR_CONTRACT_TOKENS[0]!.contract,
         ]);
+    });
+
+    it('reads nothing when it is named no contracts, leaving the sweep to Suite', async () => {
+        const result = await blockchain.getAccountInfo({ descriptor: DESCRIPTOR, details: 'txs' });
+
+        // Not "asked for nothing" but never asked at all: no ledger read goes out.
+        expect(mockState.readContractIds).toBeUndefined();
+        expect(result.tokens).toEqual([]);
     });
 
     it('keeps a watched contract token with no balance, the way an opted-in trustline is kept', async () => {
@@ -544,20 +552,15 @@ describe('Stellar worker account history', () => {
         ]);
     });
 
-    it('drops a curated contract token the account does not hold', async () => {
-        const curated = STELLAR_CONTRACT_TOKENS[0]!;
-        mockState.sep41Tokens = [{ contract: curated.contract, balance: '0' }];
-
-        const result = await blockchain.getAccountInfo({ descriptor: DESCRIPTOR, details: 'txs' });
-
-        expect(result.tokens).toEqual([]);
-    });
-
     it('falls back to the curated metadata when the contract does not report its own', async () => {
         const curated = STELLAR_CONTRACT_TOKENS[0]!;
         mockState.sep41Tokens = [{ contract: curated.contract, balance: '42' }];
 
-        const result = await blockchain.getAccountInfo({ descriptor: DESCRIPTOR, details: 'txs' });
+        const result = await blockchain.getAccountInfo({
+            descriptor: DESCRIPTOR,
+            details: 'txs',
+            stellarContractTokens: [curated.contract],
+        });
 
         expect(result.tokens).toEqual([
             {

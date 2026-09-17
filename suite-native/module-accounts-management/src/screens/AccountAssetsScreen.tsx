@@ -3,6 +3,7 @@ import { useSelector } from 'react-redux';
 
 import { type NativeStackScreenProps } from '@react-navigation/native-stack';
 
+import { useStellarContractTokens } from '@suite-common/stellar-queries';
 import {
     type AccountsRootState,
     type TokensRootState,
@@ -68,6 +69,10 @@ export const AccountAssetsScreen = ({
     const manuallyHiddenTokens = useSelector((state: TokensRootState) =>
         selectAccountManuallyHiddenTokensCount(state, accountKey),
     );
+
+    // Finding the account's SEP-41 holdings is Suite's job; the account fetch is told what they
+    // are and reports them like any other token, which is what the list below reads.
+    useStellarContractTokens(account);
 
     const tokenCount = sections.filter(item => item.type === 'token').length;
     const isFailed = !!account && isAccountFailed(account);

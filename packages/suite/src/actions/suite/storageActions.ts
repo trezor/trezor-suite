@@ -70,6 +70,7 @@ import {
     selectPhishingTransactions,
     selectSendFormDrafts,
     selectStellarContractTokens,
+    selectStellarDiscoveredContractTokens,
     selectTransactions,
     selectWalletSettings,
 } from '@suite-common/wallet-core';
@@ -412,7 +413,10 @@ export const removeAccountPhishing = (deps: DbDep, accountKey: AccountKey) => {
 export const removeAccountStellarContractTokens = (deps: DbDep, accountKey: AccountKey) => {
     if (!deps.db.isAccessible()) return;
 
-    return deps.db.removeItemByPK('stellarContractTokens', accountKey);
+    return Promise.all([
+        deps.db.removeItemByPK('stellarContractTokens', accountKey),
+        deps.db.removeItemByPK('stellarDiscoveredContractTokens', accountKey),
+    ]);
 };
 
 type RemoveAccountWithDependenciesState = FlagsRootState &
@@ -792,6 +796,31 @@ export const saveStellarContractTokensThunk =
         return contracts.length > 0
             ? extra.services.db.addItem('stellarContractTokens', contracts, accountKey, true)
             : extra.services.db.removeItemByPK('stellarContractTokens', accountKey);
+    };
+
+type SaveStellarDiscoveredContractTokensThunkState = StellarContractTokensRootState;
+
+type SaveStellarDiscoveredContractTokensThunkDeps = WithServices<DbDep>;
+
+export const saveStellarDiscoveredContractTokensThunk =
+    (accountKey: AccountKey) =>
+    (
+        _dispatch: Dispatch<UnknownAction>,
+        getState: () => SaveStellarDiscoveredContractTokensThunkState,
+        extra: SaveStellarDiscoveredContractTokensThunkDeps,
+    ) => {
+        if (!extra.services.db.isAccessible()) return;
+
+        const contracts = selectStellarDiscoveredContractTokens(getState(), accountKey);
+
+        return contracts.length > 0
+            ? extra.services.db.addItem(
+                  'stellarDiscoveredContractTokens',
+                  contracts,
+                  accountKey,
+                  true,
+              )
+            : extra.services.db.removeItemByPK('stellarDiscoveredContractTokens', accountKey);
     };
 
 type SaveTokenManagementThunkState = TokenDefinitionsRootState;

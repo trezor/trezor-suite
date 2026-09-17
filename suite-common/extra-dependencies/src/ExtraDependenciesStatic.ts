@@ -52,6 +52,7 @@ export type ExtraDependenciesStatic = {
         storageLoadFormDrafts: StorageLoadReducer;
         storageLoadTokenManagement: StorageLoadReducer;
         storageLoadStellarContractTokens: StorageLoadReducer;
+        storageLoadStellarDiscoveredContractTokens: StorageLoadReducer;
         storageLoadWalletSettings: StorageLoadReducer;
         storageLoadBioAuth: StorageLoadReducer;
         storageLoadFlags: StorageLoadReducer;

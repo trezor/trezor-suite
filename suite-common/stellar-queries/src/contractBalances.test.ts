@@ -14,9 +14,8 @@ jest.mock('@trezor/network-stellar/runtime', () => ({
     __esModule: true,
     default: () =>
         Promise.resolve({
-            readSep41Tokens: (...args: unknown[]) => readSep41Tokens(...args),
-            computeSorobanAssetContractId: (...args: unknown[]) =>
-                computeSorobanAssetContractId(...args),
+            readSep41Tokens,
+            computeSorobanAssetContractId,
             // Every id in this file that is not a classic `CODE-ISSUER` key is a contract id.
             isValidContractId: (value: string) => value.startsWith('C'),
         }),

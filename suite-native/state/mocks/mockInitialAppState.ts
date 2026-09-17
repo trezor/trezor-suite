@@ -27,6 +27,7 @@ import {
     phishingInitialState,
     stakeInitialState,
     stellarContractTokensInitialState,
+    stellarDiscoveredContractTokensInitialState,
     transactionsInitialState,
 } from '@suite-common/wallet-core';
 import { walletConnectInitialState } from '@suite-common/walletconnect';
@@ -103,6 +104,7 @@ export const mockInitialAppState = (partialState?: Partial<FullAppState>): FullA
         settings: initialWalletSettingsState,
         formDrafts: formDraftInitialState,
         stellarContractTokens: stellarContractTokensInitialState,
+        stellarDiscoveredContractTokens: stellarDiscoveredContractTokensInitialState,
     },
 
     ...partialState,

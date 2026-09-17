@@ -13,15 +13,30 @@ export interface StellarContractTokensState {
     [accountKey: AccountKey]: string[];
 }
 
+/**
+ * Contract tokens the account turned out to hold, per account.
+ *
+ * Nothing on-chain lists these either: they are what `stellarContractBalancesQuery` found by asking
+ * every contract the published definitions describe. Kept apart from the list above so that
+ * "remove" still means "undo what I added by hand", and remembered across restarts so the first
+ * account fetch after one already knows which contracts are worth reading.
+ */
+export interface StellarDiscoveredContractTokensState {
+    [accountKey: AccountKey]: string[];
+}
+
 export type StellarContractTokensRootState = {
     wallet: {
         stellarContractTokens: StellarContractTokensState;
+        stellarDiscoveredContractTokens: StellarDiscoveredContractTokensState;
     };
 };
 
 export const stellarContractTokensInitialState: StellarContractTokensState = {};
+export const stellarDiscoveredContractTokensInitialState: StellarDiscoveredContractTokensState = {};
 
 const STELLAR_CONTRACT_TOKENS = '@common/wallet-core/stellar-contract-tokens';
+const STELLAR_DISCOVERED_CONTRACT_TOKENS = '@common/wallet-core/stellar-discovered-contract-tokens';
 
 type ContractTokenPayload = { accountKey: AccountKey; contract: string };
 
@@ -63,6 +78,28 @@ const stellarContractTokensSlice = createSliceWithExtraDeps({
     },
 });
 
+type StellarDiscoveredContractTokensDeps = ActionTypesDep<'storageLoad'> &
+    ReducersDep<'storageLoadStellarDiscoveredContractTokens'>;
+
+const stellarDiscoveredContractTokensSlice = createSliceWithExtraDeps({
+    name: STELLAR_DISCOVERED_CONTRACT_TOKENS,
+    initialState: stellarDiscoveredContractTokensInitialState,
+    reducers: {
+        setDiscoveredContractTokens(
+            state: StellarDiscoveredContractTokensState,
+            { payload }: PayloadAction<{ accountKey: AccountKey; contracts: readonly string[] }>,
+        ) {
+            state[payload.accountKey] = [...payload.contracts];
+        },
+    },
+    extraReducers: (builder, extra: StellarDiscoveredContractTokensDeps) => {
+        builder.addCase(
+            extra.actionTypes.storageLoad,
+            extra.reducers.storageLoadStellarDiscoveredContractTokens,
+        );
+    },
+});
+
 // Read straight from a component, so a fresh array per call would re-render every token row.
 export const selectStellarContractTokens = (
     { wallet }: StellarContractTokensRootState,
@@ -75,5 +112,30 @@ export const selectIsStellarContractTokenWatched = (
     contract: string,
 ): boolean => wallet.stellarContractTokens[accountKey]?.includes(contract) ?? false;
 
+export const selectStellarDiscoveredContractTokens = (
+    { wallet }: StellarContractTokensRootState,
+    accountKey: AccountKey,
+): string[] => returnStableArrayIfEmpty(wallet.stellarDiscoveredContractTokens[accountKey]);
+
+/**
+ * Every contract the backend should read for this account: the ones the user added by hand and the
+ * ones it was found to hold. Sweeping the rest to find more of them is the query's job.
+ */
+export const selectStellarContractTokensToRead = (
+    state: StellarContractTokensRootState,
+    accountKey: AccountKey,
+): string[] => {
+    const added = selectStellarContractTokens(state, accountKey);
+    const discovered = selectStellarDiscoveredContractTokens(state, accountKey);
+
+    if (discovered.length === 0) return added;
+    if (added.length === 0) return discovered;
+
+    return [...new Set([...added, ...discovered])];
+};
+
 export const stellarContractTokensActions = stellarContractTokensSlice.actions;
 export const prepareStellarContractTokensReducer = stellarContractTokensSlice.prepareReducer;
+export const stellarDiscoveredContractTokensActions = stellarDiscoveredContractTokensSlice.actions;
+export const prepareStellarDiscoveredContractTokensReducer =
+    stellarDiscoveredContractTokensSlice.prepareReducer;

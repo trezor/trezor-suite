@@ -14,6 +14,7 @@ import {
     type SendState,
     type StakeState,
     type StellarContractTokensState,
+    type StellarDiscoveredContractTokensState,
     type TransactionsState,
     type TronStakeReducerState,
     type YieldState,
@@ -29,6 +30,7 @@ import {
     prepareSendFormReducer,
     prepareStakeReducer,
     prepareStellarContractTokensReducer,
+    prepareStellarDiscoveredContractTokensReducer,
     prepareTransactionsReducer,
     prepareWalletSettingsReducer,
     tronStakeReducer,
@@ -50,6 +52,8 @@ import graphReducer, { type GraphState } from './graphReducer';
 
 export const transactionsReducer = prepareTransactionsReducer(extraDependencies);
 export const stellarContractTokensReducer = prepareStellarContractTokensReducer(extraDependencies);
+export const stellarDiscoveredContractTokensReducer =
+    prepareStellarDiscoveredContractTokensReducer(extraDependencies);
 export const phishingReducer = preparePhishingReducer(extraDependencies);
 export const accountsReducer = prepareAccountsReducer(extraDependencies);
 export const earnOnboardingReducer = prepareEarnOnboardingReducer(extraDependencies);
@@ -83,6 +87,7 @@ export type WalletState = {
     settings: WalletSettings;
     stablecoinYield: YieldState;
     stellarContractTokens: StellarContractTokensState;
+    stellarDiscoveredContractTokens: StellarDiscoveredContractTokensState;
     tronStake: TronStakeReducerState;
     earnOnboarding: EarnOnboardingState;
 };
@@ -112,6 +117,7 @@ export const walletReducers: Reducer<
     settings: walletSettingsReducer,
     stablecoinYield: yieldReducer,
     stellarContractTokens: stellarContractTokensReducer,
+    stellarDiscoveredContractTokens: stellarDiscoveredContractTokensReducer,
     tronStake: tronStakeReducer,
     earnOnboarding: earnOnboardingReducer,
 });

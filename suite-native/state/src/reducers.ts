@@ -36,6 +36,7 @@ import {
     preparePhishingReducer,
     prepareStakeReducer,
     prepareStellarContractTokensReducer,
+    prepareStellarDiscoveredContractTokensReducer,
     prepareTransactionsReducer,
     prepareWalletSettingsReducer,
     walletSettingsPersistedWhitelist,
@@ -105,6 +106,8 @@ const discoveryReducer = prepareDiscoveryReducer(extraDependencies);
 const tokenDefinitionsReducer = prepareTokenDefinitionsReducer(extraDependencies);
 const sendFormReducer = prepareSendFormReducer(extraDependencies);
 const stellarContractTokensReducer = prepareStellarContractTokensReducer(extraDependencies);
+const stellarDiscoveredContractTokensReducer =
+    prepareStellarDiscoveredContractTokensReducer(extraDependencies);
 const tradingReducer = tradingSlice.prepareReducer(extraDependencies);
 const stakeReducer = prepareStakeReducer(extraDependencies);
 const firmwareReducer = prepareFirmwareReducer(extraDependencies);
@@ -299,11 +302,17 @@ export const prepareRootReducers = (deps: PrepareRootReducersDeps) => {
         settings: walletSettingsPersistedReducer,
         formDrafts: formDraftReducer,
         stellarContractTokens: stellarContractTokensReducer,
+        stellarDiscoveredContractTokens: stellarDiscoveredContractTokensReducer,
     });
 
     const walletPersistedReducer = preparePersistReducer({
         reducer: walletReducers,
-        persistedKeys: ['accounts', 'transactions', 'stellarContractTokens'],
+        persistedKeys: [
+            'accounts',
+            'transactions',
+            'stellarContractTokens',
+            'stellarDiscoveredContractTokens',
+        ],
         key: 'wallet',
         version: 4,
         migrations: {

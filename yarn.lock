@@ -11408,7 +11408,9 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@suite-common/stellar-queries@workspace:suite-common/stellar-queries"
   dependencies:
+    "@suite-common/dependency-injection": "workspace:*"
     "@suite-common/react-query": "workspace:^"
+    "@suite-common/redux-utils": "workspace:*"
     "@suite-common/test-utils": "workspace:*"
     "@suite-common/wallet-core": "workspace:*"
     "@suite-common/wallet-types": "workspace:*"
@@ -13298,6 +13300,7 @@ __metadata:
     "@suite-common/graph": "workspace:*"
     "@suite-common/react-query": "workspace:*"
     "@suite-common/redux-utils": "workspace:*"
+    "@suite-common/stellar-queries": "workspace:*"
     "@suite-common/suite-sync": "workspace:*"
     "@suite-common/suite-sync-types": "workspace:*"
     "@suite-common/token-definitions": "workspace:*"

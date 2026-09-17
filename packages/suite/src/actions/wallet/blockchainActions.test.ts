@@ -32,6 +32,7 @@ import {
     preloadFeeInfoThunk,
     setCustomBackendThunk,
     stellarContractTokensInitialState,
+    stellarDiscoveredContractTokensInitialState,
 } from '@suite-common/wallet-core';
 import { type FeesState, type GetTradedAccountKeysDep } from '@suite-common/wallet-types';
 import { mockAnalytics } from '@trezor/analytics-uploader/mocks';
@@ -88,6 +89,7 @@ const getInitialState = (
             bitcoinAmountUnit: PROTO.AmountUnit.BITCOIN,
         },
         stellarContractTokens: stellarContractTokensInitialState,
+        stellarDiscoveredContractTokens: stellarDiscoveredContractTokensInitialState,
     },
     notifications: notificationsReducer([], action),
     tokenDefinitions: tokenDefinitionsInitialState,

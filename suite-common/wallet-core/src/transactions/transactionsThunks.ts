@@ -63,7 +63,7 @@ import { type SendRootState } from '../send/sendFormReducer';
 import { selectSendSignedTx } from '../send/sendFormSelectors';
 import {
     type StellarContractTokensRootState,
-    selectStellarContractTokens,
+    selectStellarContractTokensToRead,
 } from '../token/stellarContractTokensSlice';
 
 // How long a locally added fake pending tx is kept in the UI.
@@ -779,7 +779,7 @@ export const fetchTransactionsPageThunk = createThunk<
             // The response replaces `account.tokens` wholesale, which would wipe the watch list.
             stellarContractTokens:
                 account.networkType === 'stellar'
-                    ? selectStellarContractTokens(getState(), account.key)
+                    ? selectStellarContractTokensToRead(getState(), account.key)
                     : undefined,
             protocols: account.networkType === 'ethereum' ? ['erc4626'] : undefined,
             gap:

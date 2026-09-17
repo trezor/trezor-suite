@@ -29,6 +29,7 @@
         "@suite-common/graph": "workspace:*",
         "@suite-common/react-query": "workspace:*",
         "@suite-common/redux-utils": "workspace:*",
+        "@suite-common/stellar-queries": "workspace:*",
         "@suite-common/suite-sync": "workspace:*",
         "@suite-common/suite-sync-types": "workspace:*",
         "@suite-common/token-definitions": "workspace:*",

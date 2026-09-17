@@ -151,6 +151,10 @@ export interface SuiteDBSchema extends DBSchema {
         key: string; // accountKey
         value: string[]; // Soroban contract ids the user added
     };
+    stellarDiscoveredContractTokens: {
+        key: string; // accountKey
+        value: string[]; // Soroban contract ids the account was found to hold
+    };
     coinjoinAccounts: {
         key: string; // accountKey
         value: CoinjoinAccount;
