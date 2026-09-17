@@ -1,0 +1,12 @@
+{
+    "inputsHash": "0505ab2e0fff19c38b4b87bf6f6372c539d3eaaa494324f7138fcaad2b4b1a5b",
+    "binaryenVersion": "132.0.0",
+    "exportsKept": 842,
+    "exportsTotal": 2426,
+    "functions": 3659,
+    "wasmBytes": {
+        "original": 2709067,
+        "pruned": 1959089
+    },
+    "asmJsBytes": 16457681
+}

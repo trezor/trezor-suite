@@ -3,15 +3,15 @@
 // and regenerates the pruned build. Run it whenever coin-selection or its use of the library changes.
 import { execFileSync } from 'node:child_process';
 import fs from 'node:fs';
+import os from 'node:os';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 const scriptDir = path.dirname(fileURLToPath(import.meta.url));
 const packageDir = path.resolve(scriptDir, '../..');
-const traceFilePath = path.resolve(packageDir, 'generated/csl-asmjs/trace.txt');
+const traceFilePath = path.join(os.tmpdir(), 'csl-asmjs-trace.txt');
 const keepListPath = path.join(scriptDir, 'keep-list.json');
 
-fs.mkdirSync(path.dirname(traceFilePath), { recursive: true });
 fs.rmSync(traceFilePath, { force: true });
 
 execFileSync('yarn', ['g:jest', '-c', 'jest.config.csl-trace.cjs', '--coverage=0'], {

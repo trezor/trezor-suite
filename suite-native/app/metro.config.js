@@ -56,8 +56,20 @@ const isModuleFrom = (packageNames, moduleName) =>
     );
 
 // Hermes cannot run WebAssembly, so Cardano Serialization Lib is used through a generated pure-JS
-// (asm.js) build reduced to what coin selection needs; see
-// networks/cardano/network-cardano/scripts/csl-asmjs/generate.js (runs on postinstall of this app).
+// (asm.js) build reduced to what coin selection needs, committed in Git LFS; see
+// networks/cardano/network-cardano/scripts/csl-asmjs/generate.js.
+const readFileHead = filePath => {
+    const head = Buffer.alloc(64);
+    const fd = fs.openSync(filePath, 'r');
+    try {
+        fs.readSync(fd, head, 0, head.length, 0);
+    } finally {
+        fs.closeSync(fd);
+    }
+
+    return head.toString('utf8');
+};
+
 const cardanoSerializationLibPath = path.resolve(
     __dirname,
     '../../networks/cardano/network-cardano/generated/csl-asmjs/cardano_serialization_lib.js',
@@ -133,10 +145,19 @@ const config = {
                 // `@fivebinaries/coin-selection` imports the WASM build of Cardano Serialization
                 // Lib. Route both variants it references to the generated asm.js build. The glue
                 // needs a global `TextDecoder`, which the Expo runtime polyfills.
-                if (!fs.existsSync(cardanoSerializationLibPath)) {
+                const asmJsPath = path.join(
+                    path.dirname(cardanoSerializationLibPath),
+                    'cardano_serialization_lib.asm.js',
+                );
+                if (!fs.existsSync(asmJsPath)) {
                     throw new Error(
-                        'Generated Cardano Serialization Lib build is missing. Run `yarn install` ' +
-                            'or `yarn workspace @trezor/network-cardano generate:csl-asmjs`.',
+                        'Generated Cardano Serialization Lib build is missing. Run ' +
+                            '`yarn workspace @trezor/network-cardano generate:csl-asmjs`.',
+                    );
+                }
+                if (readFileHead(asmJsPath).startsWith('version https://git-lfs')) {
+                    throw new Error(
+                        'Generated Cardano Serialization Lib build is a Git LFS pointer. Run `git lfs pull`.',
                     );
                 }
 

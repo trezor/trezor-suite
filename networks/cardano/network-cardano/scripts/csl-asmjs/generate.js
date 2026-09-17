@@ -2,8 +2,10 @@
 // (Hermes on mobile), reduced to the parts @fivebinaries/coin-selection uses.
 //
 // Input: the WASM binary published by Emurgo, the JS glue from Emurgo's own asm.js package, and
-// keep-list.json (produced by trace.js). Output: generated/csl-asmjs/ (gitignored). Runs on
-// postinstall of the mobile app and is skipped when the manifest shows that none of the inputs changed.
+// keep-list.json (produced by trace.js). Output: generated/csl-asmjs/, committed with the large files
+// in Git LFS so that installs and builds do not run Binaryen. Run it after changing any input; the
+// run is skipped when the manifest shows that none of the inputs changed, and generate.test.ts fails
+// when the committed output is stale.
 /* eslint-disable import/no-extraneous-dependencies -- Build tooling of this script, not runtime dependencies of the package. */
 import { createHash } from 'node:crypto';
 import fs from 'node:fs';
@@ -13,7 +15,8 @@ import { fileURLToPath } from 'node:url';
 
 const require = createRequire(import.meta.url);
 const scriptDir = path.dirname(fileURLToPath(import.meta.url));
-const outputDir = path.resolve(scriptDir, '../../generated/csl-asmjs');
+const outputDir =
+    process.env.CSL_ASMJS_OUTPUT_DIR ?? path.resolve(scriptDir, '../../generated/csl-asmjs');
 const keepListPath = path.join(scriptDir, 'keep-list.json');
 
 const wasmPath =
