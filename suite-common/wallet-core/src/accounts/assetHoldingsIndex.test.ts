@@ -70,7 +70,6 @@ const createState = ({
 
     return {
         wallet: { accounts },
-        // `dsol` has no `coin-definitions` feature, which is what makes it the testnet case below.
         tokenDefinitions: { eth: definitions, dsol: definitions },
     } as unknown as AssetHoldingsRootState;
 };
@@ -248,8 +247,6 @@ describe('the groups a holding is in', () => {
 
 describe('what a write leaves alone', () => {
     it('hands back the same holdings for an account nothing touched', () => {
-        // The property the rows rely on: a balance arriving for one account must leave every other
-        // account's holdings — and the groups they are in — the same objects.
         const untouched = mockAccount({ symbol: BTC, index: 0 });
         const before = mockAccount({ symbol: ETH, index: 1, balance: '1' });
         const bitcoinKey = getAssetKey({ deviceState: ALICE, symbol: BTC });

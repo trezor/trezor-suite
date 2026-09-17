@@ -16,22 +16,10 @@ import { type AccountsRootState } from './accountsReducer';
 import { selectAccounts } from './accountsSelectors';
 import { getTokens } from '../tokens/tokenUtils';
 
-/**
- * One holding of one asset, by the wallet it belongs to, the network it lives on and — for a token
- * — its contract.
- *
- * This is the identity the asset-first views are keyed on: "USD Coin on Polygon in this wallet" is
- * a different line from "USD Coin on Ethereum", and from the same token in another wallet, while
- * the several accounts a wallet has on one network are the same line added together.
- *
- * The wallet is part of it because an index spans the whole store, and two wallets' balances must
- * never be summed into one row.
- */
 export type AssetKey = `${StaticSessionId}/${NetworkSymbol}/${string}`;
 
 const ASSET_KEY_SEPARATOR = '/';
 
-/** The token's contract, or this for the network's own coin, which has none. */
 const NATIVE_COIN_CONTRACT = '';
 
 export const getAssetKey = ({
@@ -48,16 +36,11 @@ export const getAssetKey = ({
 export type AssetKeyParts = {
     deviceState: StaticSessionId;
     symbol: NetworkSymbol;
-    /** Undefined for the network's own coin. */
     contractAddress: TokenAddress | undefined;
 };
 
-/**
- * Reads the key's parts back, or nothing if it is not one of ours.
- *
- * Taken from the right, because a static session id is itself made of parts and is the only
- * segment that could hold a separator; a symbol and a contract cannot.
- */
+// Read from the right: a static session id contains separators of its own, a symbol and a
+// contract do not.
 export const parseAssetKey = (key: string): AssetKeyParts | undefined => {
     const segments = key.split(ASSET_KEY_SEPARATOR);
     const contract = segments.pop();
@@ -75,22 +58,13 @@ export const parseAssetKey = (key: string): AssetKeyParts | undefined => {
     };
 };
 
-/**
- * What one account holds of one asset: its own coin, or one of its tokens.
- *
- * The reducer has no such thing — a coin balance is a field on the account and a token balance is
- * an entry in its `tokens` array — so these are built, and then indexed like any other entity.
- */
 export type AssetHolding = {
     accountKey: AccountKey;
     assetKey: AssetKey;
     deviceState: StaticSessionId;
     symbol: NetworkSymbol;
-    /** Undefined for the network's own coin. */
     contractAddress: TokenAddress | undefined;
-    /** In whole units, the way the account states it. */
     cryptoBalance: string;
-    /** The token as the account reported it: its name, symbol and decimals. */
     tokenInfo: TokenInfo | undefined;
     isAccountVisible: boolean;
 };
@@ -106,14 +80,6 @@ const isSameHolding = (previous: AssetHolding, next: AssetHolding) =>
     previous.tokenInfo === next.tokenInfo &&
     previous.isAccountVisible === next.isAccountVisible;
 
-/**
- * The holdings of one account, reusing the ones built last time wherever nothing about them
- * changed.
- *
- * Identity is the whole point: the index compares entities by reference to decide what a rebuild
- * changed, so a holding that is the same holding has to be the same object. Without this every
- * write would look like every holding changed, and every row watching one would re-render.
- */
 const buildAccountHoldings = (
     account: Account,
     shownContracts: ReadonlySet<string>,
@@ -159,16 +125,6 @@ const createMemoizedSelector = createWeakMapSelector.withTypes<AssetHoldingsRoot
 
 const holdingsByAccountKey = new Map<AccountKey, readonly AssetHolding[]>();
 
-/**
- * Every holding in the store, by the account it belongs to.
- *
- * A `Map` rather than a flat list because the index takes it as its parts: one entry per account is
- * exactly what the reducer writes, so a write to one account rebuilds one account's holdings.
- *
- * Which of an account's tokens count is `getTokens`' decision, made once here rather than at every
- * place that reads a balance: a token the user hid does not become a holding, one the user asked to
- * see does, and a network with no definitions shows what it holds.
- */
 export const selectAssetHoldingsByAccountKey = createMemoizedSelector(
     [selectAccounts, selectTokenDefinitions],
     (accounts, tokenDefinitions): AssetHoldingsByAccountKey => {
@@ -183,8 +139,6 @@ export const selectAssetHoldingsByAccountKey = createMemoizedSelector(
             const shownContracts = new Set(shownWithBalance.map(token => token.contract));
             const previous = holdingsByAccountKey.get(account.key);
             const built = buildAccountHoldings(account, shownContracts, previous);
-            // The array's own identity matters too: the index carries an untouched part over
-            // instead of walking it, and an account nobody wrote to must look untouched.
             const holdings = previous && areSameHoldings(previous, built) ? previous : built;
 
             holdingsByAccountKey.set(account.key, holdings);
@@ -201,16 +155,6 @@ export const selectAssetHoldingsByAccountKey = createMemoizedSelector(
     },
 );
 
-/**
- * Every holding, by asset and by account.
- *
- * The lookup the asset-first views need — "what does this wallet hold of USD Coin on Polygon" — is
- * `byAsset`, and it answers with the holdings themselves, so adding them up is a pass over what was
- * asked for rather than a search through accounts and their token arrays.
- *
- * It is lazy and shared, and a rebuild only visits the account that was written: see
- * `createEntityIndex`.
- */
 export const assetHoldingsIndex = createEntityIndex({
     name: 'assetHoldings',
     selectSource: selectAssetHoldingsByAccountKey,
@@ -223,19 +167,12 @@ export const assetHoldingsIndex = createEntityIndex({
     },
 });
 
-/** What a wallet holds of one asset, one entry per account holding it. */
 export const selectAssetHoldings = (state: AssetHoldingsRootState, assetKey: AssetKey) =>
     assetHoldingsIndex.getBy(state, 'byAsset', assetKey);
 
 export const selectAccountAssetHoldings = (state: AssetHoldingsRootState, accountKey: AccountKey) =>
     assetHoldingsIndex.getBy(state, 'byAccountKey', accountKey);
 
-/**
- * Every asset one wallet holds, as keys for the lookup above.
- *
- * Memoized on the index's snapshot, so this is walked once per write to the accounts, not once per
- * consumer and not once per render.
- */
 export const selectAssetKeysByDeviceState = createMemoizedSelector(
     [
         (state: AssetHoldingsRootState) => assetHoldingsIndex.read(state).groups.byAsset,
