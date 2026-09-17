@@ -1,14 +1,8 @@
+import { asNetworkSymbols } from '@trezor/network-module';
 import type { SuiteNetworkModule } from '@trezor/network-module-suite-types';
-import {
-    type TronNetworkSymbol,
-    isSupportedTronNetwork,
-    supportedTronNetworks,
-} from '@trezor/network-tron/constants';
+import { supportedTronNetworks } from '@trezor/network-tron/constants';
 
-export type TronSuiteNetworkModule = SuiteNetworkModule<TronNetworkSymbol>;
-
-export const createTronSuiteNetworkModule = (): TronSuiteNetworkModule => ({
+export const createTronSuiteNetworkModule = (): SuiteNetworkModule => ({
     signVerify: null,
-    getSupportedNetworks: () => supportedTronNetworks,
-    isSupportedNetwork: isSupportedTronNetwork,
+    getSupportedNetworks: () => asNetworkSymbols(supportedTronNetworks),
 });

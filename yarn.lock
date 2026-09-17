@@ -15909,6 +15909,7 @@ __metadata:
     "@trezor/network-bitcoin-suite": "workspace:*"
     "@trezor/network-cardano-suite": "workspace:*"
     "@trezor/network-ethereum-suite": "workspace:*"
+    "@trezor/network-module": "workspace:*"
     "@trezor/network-module-suite-types": "workspace:*"
     "@trezor/network-ripple-suite": "workspace:*"
     "@trezor/network-solana-suite": "workspace:*"
@@ -17591,6 +17592,7 @@ __metadata:
     "@trezor/components": "workspace:*"
     "@trezor/connect-common": "workspace:*"
     "@trezor/network-bitcoin": "workspace:*"
+    "@trezor/network-module": "workspace:*"
     "@trezor/network-module-suite-types": "workspace:*"
     "@types/react": "npm:19.2.14"
     jest-canvas-mock: "npm:^2.5.8"
@@ -17644,6 +17646,7 @@ __metadata:
     "@trezor/components": "workspace:*"
     "@trezor/connect-common": "workspace:*"
     "@trezor/network-cardano": "workspace:*"
+    "@trezor/network-module": "workspace:*"
     "@trezor/network-module-suite-types": "workspace:*"
     "@trezor/protobuf": "workspace:*"
     "@types/react": "npm:19.2.14"
@@ -17701,6 +17704,7 @@ __metadata:
     "@trezor/components": "workspace:*"
     "@trezor/connect-common": "workspace:*"
     "@trezor/network-ethereum": "workspace:*"
+    "@trezor/network-module": "workspace:*"
     "@trezor/network-module-suite-types": "workspace:*"
     "@types/react": "npm:19.2.14"
     jest-canvas-mock: "npm:^2.5.8"
@@ -17732,22 +17736,23 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@trezor/network-module@workspace:*, @trezor/network-module@workspace:networks/network-module/network-module":
-  version: 0.0.0-use.local
-  resolution: "@trezor/network-module@workspace:networks/network-module/network-module"
-  dependencies:
-    "@trezor/type-utils": "workspace:*"
-  languageName: unknown
-  linkType: soft
-
 "@trezor/network-module-suite-types@workspace:*, @trezor/network-module-suite-types@workspace:networks/network-module/network-module-suite-types":
   version: 0.0.0-use.local
   resolution: "@trezor/network-module-suite-types@workspace:networks/network-module/network-module-suite-types"
   dependencies:
     "@suite-common/wallet-types": "workspace:*"
     "@suite/intl": "workspace:*"
+    "@trezor/network-module": "workspace:*"
     "@types/react": "npm:19.2.14"
     react: "npm:19.2.3"
+  languageName: unknown
+  linkType: soft
+
+"@trezor/network-module@workspace:*, @trezor/network-module@workspace:networks/network-module/network-module":
+  version: 0.0.0-use.local
+  resolution: "@trezor/network-module@workspace:networks/network-module/network-module"
+  dependencies:
+    "@trezor/type-utils": "workspace:*"
   languageName: unknown
   linkType: soft
 
@@ -17766,6 +17771,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@trezor/network-ripple-suite@workspace:networks/ripple/network-ripple-suite"
   dependencies:
+    "@trezor/network-module": "workspace:*"
     "@trezor/network-module-suite-types": "workspace:*"
     "@trezor/network-ripple": "workspace:*"
   languageName: unknown
@@ -17795,6 +17801,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@trezor/network-solana-suite@workspace:networks/solana/network-solana-suite"
   dependencies:
+    "@trezor/network-module": "workspace:*"
     "@trezor/network-module-suite-types": "workspace:*"
     "@trezor/network-solana": "workspace:*"
   languageName: unknown
@@ -17834,6 +17841,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@trezor/network-stellar-suite@workspace:networks/stellar/network-stellar-suite"
   dependencies:
+    "@trezor/network-module": "workspace:*"
     "@trezor/network-module-suite-types": "workspace:*"
     "@trezor/network-stellar": "workspace:*"
   languageName: unknown
@@ -17864,6 +17872,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@trezor/network-tron-suite@workspace:networks/tron/network-tron-suite"
   dependencies:
+    "@trezor/network-module": "workspace:*"
     "@trezor/network-module-suite-types": "workspace:*"
     "@trezor/network-tron": "workspace:*"
   languageName: unknown

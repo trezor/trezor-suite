@@ -1,14 +1,8 @@
+import { asNetworkSymbols } from '@trezor/network-module';
 import type { SuiteNetworkModule } from '@trezor/network-module-suite-types';
-import {
-    type RippleNetworkSymbol,
-    isSupportedRippleNetwork,
-    supportedRippleNetworks,
-} from '@trezor/network-ripple/constants';
+import { supportedRippleNetworks } from '@trezor/network-ripple/constants';
 
-export type RippleSuiteNetworkModule = SuiteNetworkModule<RippleNetworkSymbol>;
-
-export const createRippleSuiteNetworkModule = (): RippleSuiteNetworkModule => ({
+export const createRippleSuiteNetworkModule = (): SuiteNetworkModule => ({
     signVerify: null,
-    getSupportedNetworks: () => supportedRippleNetworks,
-    isSupportedNetwork: isSupportedRippleNetwork,
+    getSupportedNetworks: () => asNetworkSymbols(supportedRippleNetworks),
 });
