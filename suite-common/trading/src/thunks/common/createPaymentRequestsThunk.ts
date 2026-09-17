@@ -19,7 +19,6 @@ import { type GetRefundAddressThunkState, getRefundAddressThunk } from './getRef
 import { TRADING_THUNK_PREFIX } from '../../constants';
 import { type TradingRootState } from '../../reducers/tradingCommonReducer';
 import {
-    selectTradingCoinInfoByCryptoId,
     selectTradingCoinSymbolByCryptoId,
     selectTradingExchangeProviders,
     selectTradingExchangeReceiveAccountKey,
@@ -204,13 +203,22 @@ export const createPaymentRequestsThunk = createThunk<
                     });
                 }
 
-                const cryptoSymbol = selectTradingCoinInfoByCryptoId(
+                const sendDisplaySymbol = selectTradingCoinSymbolByCryptoId(
                     getState(),
                     quote.cryptoCurrency,
                 );
 
-                // TODO: slip24 - will be changed soon
-                const memoText = `Selling ${quote.cryptoStringAmount} ${cryptoSymbol?.symbol} for ${quote.fiatStringAmount} ${quote.fiatCurrency}`;
+                if (!sendDisplaySymbol) {
+                    return rejectWithValue({
+                        type: 'sign-tx-error',
+                        error: {
+                            id: 'TR_PAYMENT_REQUESTS_ERROR',
+                        },
+                    });
+                }
+
+                const memoAmount = formattedMaxAmount ?? quote.cryptoStringAmount;
+                const memoText = `Selling ${memoAmount} ${sendDisplaySymbol} for ${quote.fiatStringAmount} ${quote.fiatCurrency}`;
 
                 const outputs = await dispatch(
                     getPaymentRequestOutputsThunk({
