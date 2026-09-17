@@ -5,16 +5,18 @@ import { type CryptoId } from 'invity-api';
 import { Address } from '@suite/address';
 import { Translation } from '@suite/intl';
 import { getFiatCurrencyFlag } from '@suite-common/flags';
+import { useFormatters } from '@suite-common/formatters';
 import { selectTradingCoinSymbolByCryptoId, toTokenCryptoId } from '@suite-common/trading';
 import { getCoingeckoId, getNetwork } from '@suite-common/wallet-config';
 import {
     type FormStateTradingCryptoCurrency,
     type FormStateTradingFiatCurrency,
     type TokenAddress,
+    asBaseCurrencyAmount,
 } from '@suite-common/wallet-types';
 import { Card, Column, Divider, Flag, H4, InfoItem, Row, Text } from '@trezor/components';
 import { TokenIcon, isCoinSymbol, shouldShowNetworkIcon } from '@trezor/product-components';
-import { localizeNumber } from '@trezor/utils';
+import { BigNumber, localizeNumber } from '@trezor/utils';
 
 import { BaseCurrencyValue } from 'src/components/suite/BaseCurrencyValue';
 import { TransactionReviewOutputStatus } from 'src/components/suite/modals/ReduxModal/TransactionReviewModal/TransactionReviewOutputList/TransactionReviewOutputStatus';
@@ -112,8 +114,14 @@ const TransactionReviewOutputAssetsCryptoCurrency = ({
 };
 
 const TransactionReviewOutputAssetsTo = ({ receive }: TransactionReviewOutputAssetsToProps) => {
+    const { BaseCurrencyAmountFormatter } = useFormatters();
+
     if ('fiatCurrency' in receive) {
         const fiatCurrencyFlag = getFiatCurrencyFlag(receive.fiatCurrency);
+        const formattedAmount = BaseCurrencyAmountFormatter.format(
+            asBaseCurrencyAmount(new BigNumber(receive.amount)),
+            { currency: receive.fiatCurrency, style: 'decimal' },
+        );
 
         return (
             <InfoItem
@@ -121,7 +129,7 @@ const TransactionReviewOutputAssetsTo = ({ receive }: TransactionReviewOutputAss
                     <Row alignItems="center" gap={12} margin={{ left: 32 }}>
                         {!!fiatCurrencyFlag && <Flag country={fiatCurrencyFlag} size={24} />}
                         <Text intent="brand" data-testid="@modal/assets/receive/label">
-                            + {localizeNumber(receive.amount, 'en-US')} {receive.fiatCurrency}
+                            + {formattedAmount} {receive.fiatCurrency}
                         </Text>
                     </Row>
                 }
