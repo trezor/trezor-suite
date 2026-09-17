@@ -127,7 +127,17 @@ export const debugLinkDecision = async () => {
 export const getTransport = async (): Promise<ConnectSettingsTransport> => {
     const transportName = getCurrentTransport();
 
-    const bluetoothApi = new TrezorBluetooth({ url: `ws://localhost:21327/`, logger: getLogger() });
+    // TREZOR_BLUETOOTH_AUTH_TOKEN=abcd ./trezor-bluetooth
+    const headers = {
+        Authorization: `Bearer abcd`,
+    };
+
+    const bluetoothApi = new TrezorBluetooth({
+        url: `ws://localhost:21327/`,
+        headers,
+        logger: getLogger(),
+    });
+
     if (transportName === 'bluetooth') {
         await bluetoothApi.connect();
         const enumerate = await bluetoothApi.send('start_scan');
@@ -142,6 +152,7 @@ export const getTransport = async (): Promise<ConnectSettingsTransport> => {
 
         return new BluetoothTransport({
             url: 'ws://127.0.0.1:21327',
+            headers,
             id: 'ble',
             logger: getLogger(),
         });
