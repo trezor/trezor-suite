@@ -1,4 +1,6 @@
 export enum EventType {
+    CoinSignMessage = 'coin/sign-message',
+    CoinVerifyMessage = 'coin/verify-message',
     // eslint-disable-next-line local-rules/analytics-event-name
     ConnectPopupCall = 'connect-popup/call',
     // eslint-disable-next-line local-rules/analytics-event-name

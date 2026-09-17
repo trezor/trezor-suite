@@ -1,6 +1,6 @@
 import { type Dispatch } from 'redux';
 
-import { type DesktopAnalyticsDep, events } from '@suite/analytics';
+import { type AnalyticsDep, events } from '@suite-common/analytics';
 import { type DeviceRootState, selectSelectedDevice } from '@suite-common/device';
 import { type WithServices } from '@suite-common/redux-utils';
 import { type TrezorDevice } from '@suite-common/suite-types';
@@ -231,7 +231,7 @@ export const showAddressThunk =
 
 type SignThunkState = SignVerifyRootState;
 
-type SignThunkDeps = WithServices<DesktopAnalyticsDep>;
+type SignThunkDeps = WithServices<AnalyticsDep>;
 
 export const signThunk =
     (
@@ -298,7 +298,7 @@ export const signThunk =
 
 type VerifyThunkState = SignVerifyRootState;
 
-type VerifyThunkDeps = WithServices<DesktopAnalyticsDep>;
+type VerifyThunkDeps = WithServices<AnalyticsDep>;
 
 export const verifyThunk =
     (account: Account, address: string, message: string, signature: string, hex = false) =>

@@ -1,3 +1,5 @@
+export { coinSignMessageEvent } from './coinSignMessageEvent';
+export { coinVerifyMessageEvent } from './coinVerifyMessageEvent';
 export { connectPopupCallEvent } from './connectPopupCallEvent';
 export { connectPopupErrorEvent } from './connectPopupErrorEvent';
 export { connectPopupInitEvent } from './connectPopupInitEvent';

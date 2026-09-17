@@ -12,8 +12,6 @@ export { appNewContentBadgeEvent } from './appNewContentBadgeEvent';
 export { appUpdateEvent } from './appUpdateEvent';
 export { appUriHandlerEvent } from './appUriHandlerEvent';
 export { autostartModalEvent } from './autostartModalEvent';
-export { coinSignMessageEvent } from './coinSignMessageEvent';
-export { coinVerifyMessageEvent } from './coinVerifyMessageEvent';
 export { coinjoinAnonymityGainEvent } from './coinjoinAnonymityGainEvent';
 export { createBackupEvent } from './createBackupEvent';
 export { createReceiveAddressConfirmOnTrezorEvent } from './createReceiveAddressConfirmOnTrezorEvent';
