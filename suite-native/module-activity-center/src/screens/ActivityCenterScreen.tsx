@@ -14,7 +14,7 @@ import { DynamicScreenHeader, Screen } from '@suite-native/navigation';
 
 import { ActivityCenterTabContent } from '../components/ActivityCenterTabContent';
 
-type ActivityCenterTab = 'notifications' | 'system' | 'releaseNotes';
+type ActivityCenterTab = 'notifications' | 'releaseNotes' | 'system';
 
 export const ActivityCenterScreen = () => {
     const { dispatch } = useServices(selectDispatch);
@@ -38,6 +38,10 @@ export const ActivityCenterScreen = () => {
         {
             value: 'releaseNotes',
             label: <Translation id="moduleActivityCenter.tabs.releaseNotes" />,
+        },
+        {
+            value: 'system',
+            label: <Translation id="moduleActivityCenter.tabs.system" />,
         },
     ];
 
