@@ -3,20 +3,23 @@ import { Translation } from '@suite-native/intl';
 import { SOLANA_EPOCH_DAYS } from '@trezor/network-solana/constants';
 
 import { type HowEarnWorksScreenPreset } from './types';
+import { useFormattedEarnRate } from '../../../hooks/earn/useFormattedEarnRate';
 
-type CreateHowStakeWorksPresetProps = {
+interface UseHowStakeWorksPresetProps {
     symbol: NetworkSymbol;
     entryPeriodInDays: number | undefined;
     unstakingPeriodInDays: number | undefined;
     apy: number | null | undefined;
-};
+}
 
-export const createHowStakeWorksPreset = ({
+export const useHowStakeWorksPreset = ({
     symbol,
     entryPeriodInDays,
     unstakingPeriodInDays,
     apy,
-}: CreateHowStakeWorksPresetProps): HowEarnWorksScreenPreset => {
+}: UseHowStakeWorksPresetProps): HowEarnWorksScreenPreset => {
+    const apyFormatted = useFormattedEarnRate(apy);
+
     const displaySymbol = getNetworkDisplaySymbol(symbol);
     const isSolana = symbol === 'sol';
 
@@ -50,7 +53,7 @@ export const createHowStakeWorksPreset = ({
                 title: (
                     <Translation
                         id="earn.howStakeWorksScreen.benefits.first.title"
-                        values={{ apy }}
+                        values={{ apy: apyFormatted }}
                     />
                 ),
                 description: (

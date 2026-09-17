@@ -3,6 +3,7 @@ import { useSelector } from 'react-redux';
 
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { type StakeRootState, selectApy } from '@suite-common/wallet-core';
+import { isApyAvailable } from '@suite-common/wallet-utils';
 import { AnimatedBox, Box, Button, ScreenFooterGradient } from '@suite-native/atoms';
 import { Translation, useTranslate } from '@suite-native/intl';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
@@ -51,7 +52,7 @@ export const EarnFormScreenFooter = ({
 
     const buttonIntent = isDisabled ? 'neutral' : 'brand';
     const buttonPriority = isDisabled ? 'secondary' : 'primary';
-    const isRewardsBoxVisible = !!amountValue && !isDisabled;
+    const isRewardsBoxVisible = isApyAvailable(apy) && !!amountValue && !isDisabled;
 
     return (
         <AnimatedBox entering={SlideInDown}>
