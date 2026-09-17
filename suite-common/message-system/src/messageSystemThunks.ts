@@ -96,7 +96,7 @@ export const fetchConfigThunk = createThunk<void, void, { state: FetchConfigThun
                     throw Error(`Wrong algorithm in JWS config header: ${algorithmInHeader}`);
                 }
 
-                const isAuthenticityValid = await verifyJws(configJws, JWS_SIGN_ALGORITHM);
+                const isAuthenticityValid = verifyJws(configJws, JWS_SIGN_ALGORITHM);
 
                 if (!isAuthenticityValid) {
                     throw Error('Config authenticity is invalid');

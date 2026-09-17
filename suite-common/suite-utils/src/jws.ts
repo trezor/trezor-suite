@@ -1,26 +1,15 @@
-import { type Algorithm, createVerify, decode } from 'jws';
+import { type Algorithm, decode, verify } from 'jws';
 
 import { getJWSPublicKey } from '@trezor/env-utils';
 
 const authenticityPublicKey = getJWSPublicKey();
 
-export const verifyJws = (jws: string, algorithm: Algorithm) =>
-    new Promise<boolean>((resolve, reject) => {
-        if (!authenticityPublicKey) {
-            throw Error('JWS public key is not defined!');
-        }
+export const verifyJws = (jws: string, algorithm: Algorithm) => {
+    if (!authenticityPublicKey) {
+        throw Error('JWS public key is not defined!');
+    }
 
-        try {
-            const verifier = createVerify({
-                algorithm,
-                publicKey: authenticityPublicKey,
-                signature: jws,
-            });
-            verifier.on('done', (valid: boolean) => resolve(valid));
-            verifier.on('error', reject);
-        } catch (e) {
-            reject(e);
-        }
-    });
+    return verify(jws, algorithm, authenticityPublicKey);
+};
 
 export const decodeJws = decode;
