@@ -14,8 +14,6 @@ import {
     type TokenSymbol,
 } from '@suite-common/wallet-types';
 
-type YieldPricePerShareState = NonNullable<YieldDtoV2['state']>['pricePerShareState'];
-
 export type EarnFormDraftPrefix = 'stake' | 'unstake' | 'claim';
 
 export type SignStakeTransactionRejectValue =
@@ -62,8 +60,6 @@ export type YieldEarnItem = {
     tokenBalance: string | null;
     apy: number | null;
     token?: YieldDtoV2['token'];
-    outputToken?: YieldDtoV2['outputToken'];
-    pricePerShareState?: YieldPricePerShareState;
 };
 
 export type YieldClaimSummary = {
