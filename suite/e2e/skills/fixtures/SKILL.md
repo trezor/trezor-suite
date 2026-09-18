@@ -1,7 +1,12 @@
+---
+name: fixtures
+description: Playwright fixture architecture in Suite E2E tests: scope, dependency injection, mocks lifecycle. Use whenever tests need shared setup, teardown or reusable resources.
+---
+
 # Fixtures in Trezor Suite E2E Tests
 
 > **When to use**: Whenever tests need shared setup, teardown, reusable resources, or configurable context. Fixtures are Playwright's killer feature — prefer them over hooks in every situation where both could work.
-> **Prerequisites**: [./locators.md](locators.md) for locator strategies and Understanding of Playwright test framework basics.
+> **Prerequisites**: [locators](../locators/SKILL.md) for locator strategies and Understanding of Playwright test framework basics.
 
 ## Decision Guide for New Fixtures
 

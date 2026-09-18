@@ -1,7 +1,12 @@
+---
+name: page-objects
+description: Page object structure and patterns for Suite E2E tests: naming suffixes, composition, @step decorators, fixture registration. Use when building locators or actions for test scenarios.
+---
+
 # Page Objects: Structure and Patterns
 
 > **When to use**: When building locators or actions for test scenarios. Page objects organize UI interactions into reusable, maintainable classes—avoid scattering `page.getByTestId()` calls throughout tests.
-> **Prerequisites**: [./fixtures.md](fixtures.md) for fixture dependency injection patterns.
+> **Prerequisites**: [fixtures](../fixtures/SKILL.md) for fixture dependency injection patterns.
 
 ## Naming Suffixes (Critical)
 
