@@ -22,6 +22,7 @@ class AttemptsReporter implements Pick<Reporter, 'onRunComplete'> {
             testFile.testResults.map(test => ({
                 fullName: test.fullName,
                 status: test.status,
+                testFilePath: path.relative(process.cwd(), testFile.testFilePath),
                 invocations: test.invocations ?? 1,
                 retryReasons: test.retryReasons ?? [],
             })),

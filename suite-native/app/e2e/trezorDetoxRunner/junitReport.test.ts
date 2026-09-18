@@ -93,6 +93,7 @@ describe('processJUnitReport', () => {
         writeReport([{ name: TEST_NAME, failures: ['Error: third attempt'] }]);
         const attempts: TestAttempts = {
             fullName: TEST_NAME,
+            testFilePath: 'e2e/tests/sendFlow.test.ts',
             status: 'failed',
             invocations: 3,
             retryReasons: ['Error: first [31mattempt[39m', 'Error: second attempt'],
@@ -151,6 +152,7 @@ describe('processJUnitReport', () => {
         writeReport([{ name: TEST_NAME, failures: ['Error: second attempt', 'Error: afterEach'] }]);
         const attempts: TestAttempts = {
             fullName: TEST_NAME,
+            testFilePath: 'e2e/tests/sendFlow.test.ts',
             status: 'failed',
             invocations: 2,
             retryReasons: ['Error: first attempt', 'Error: afterEach'],
@@ -185,6 +187,7 @@ describe('processJUnitReport', () => {
         writeReport([{ name: TEST_NAME, failures: ['Error: third attempt'] }]);
         const attempts: TestAttempts = {
             fullName: TEST_NAME,
+            testFilePath: 'e2e/tests/sendFlow.test.ts',
             status: 'failed',
             invocations: 3,
             retryReasons: [],
@@ -213,6 +216,7 @@ describe('processJUnitReport', () => {
         writeReport([{ name: TEST_NAME }]);
         const attempts: TestAttempts = {
             fullName: TEST_NAME,
+            testFilePath: 'e2e/tests/sendFlow.test.ts',
             status: 'passed',
             invocations: 2,
             retryReasons: ['Error: first attempt'],
@@ -252,6 +256,7 @@ describe('processJUnitReport', () => {
         writeReport([{ name: TEST_NAME, failures: ['Error: second attempt'] }]);
         const attempts: TestAttempts = {
             fullName: TEST_NAME,
+            testFilePath: 'e2e/tests/sendFlow.test.ts',
             status: 'failed',
             invocations: 2,
             retryReasons: ['Error: first attempt'],

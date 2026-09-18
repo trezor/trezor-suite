@@ -30,12 +30,14 @@ describe('readTestAttempts', () => {
             {
                 fullName: 'Send flow sends BTC @T3T1',
                 status: 'failed',
+                testFilePath: 'e2e/tests/sendFlow.test.ts',
                 invocations: 3,
                 retryReasons: ['Error: first attempt', 'Error: second attempt'],
             },
             {
                 fullName: 'Send flow shows fee @T3T1',
                 status: 'passed',
+                testFilePath: 'e2e/tests/sendFlow.test.ts',
                 invocations: 1,
                 retryReasons: [],
             },
@@ -43,6 +45,34 @@ describe('readTestAttempts', () => {
 
         expect(readTestAttempts(createTempFile(JSON.stringify(attempts)))).toEqual(
             new Map(attempts.map(attempt => [attempt.fullName, attempt])),
+        );
+    });
+
+    it('leaves out the tests whose full name is not unique', () => {
+        const unique: TestAttempts = {
+            fullName: 'Send flow shows fee @T3T1',
+            status: 'passed',
+            testFilePath: 'e2e/tests/sendFlow.test.ts',
+            invocations: 1,
+            retryReasons: [],
+        };
+        const attempts: TestAttempts[] = [
+            { ...unique, fullName: 'Send flow sends BTC @T3T1' },
+            unique,
+            {
+                ...unique,
+                fullName: 'Send flow sends BTC @T3T1',
+                testFilePath: 'e2e/tests/sendFlowLegacy.test.ts',
+            },
+        ];
+
+        expect(readTestAttempts(createTempFile(JSON.stringify(attempts)))).toEqual(
+            new Map([[unique.fullName, unique]]),
+        );
+        expect(console.warn).toHaveBeenCalledWith(
+            expect.stringContaining(
+                '"Send flow sends BTC @T3T1" is not unique (e2e/tests/sendFlow.test.ts, e2e/tests/sendFlowLegacy.test.ts)',
+            ),
         );
     });
 
