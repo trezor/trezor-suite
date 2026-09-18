@@ -25,6 +25,7 @@ export type SelectProps<TItemValue extends SelectItemValue> = {
     onSelectItem: (value: TItemValue) => void;
     isConfirmable?: boolean;
     isLabelShown?: boolean;
+    hasError?: boolean;
     testID?: string;
 };
 
@@ -35,6 +36,7 @@ export const Select = <TItemValue extends SelectItemValue>({
     onSelectItem,
     isConfirmable = false,
     isLabelShown = false,
+    hasError,
     testID,
 }: SelectProps<TItemValue>) => {
     const { bottomSheetRef, openModal, closeModal } = useBottomSheetModal();
@@ -105,6 +107,7 @@ export const Select = <TItemValue extends SelectItemValue>({
                 value={selectTriggerItem?.label ?? null}
                 icon={selectTriggerItem?.icon}
                 handlePress={openBottomSheet}
+                hasError={hasError}
                 testID={testID}
             />
         </>

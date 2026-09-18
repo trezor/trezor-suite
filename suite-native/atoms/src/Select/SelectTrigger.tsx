@@ -13,12 +13,15 @@ type SelectTriggerProps = {
     value: string | null;
     icon?: ReactNode;
     handlePress: () => void;
+    hasError?: boolean;
     testID?: string;
 };
 
-const SELECT_HEIGHT = 58 * ACCESSIBILITY_FONTSIZE_MULTIPLIER;
+type StyleProps = {
+    hasError: boolean;
+};
 
-const selectStyle = prepareNativeStyle(utils => ({
+const selectStyle = prepareNativeStyle<StyleProps>((utils, { hasError }) => ({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
@@ -29,14 +32,33 @@ const selectStyle = prepareNativeStyle(utils => ({
     color: utils.colors.contentSecondary,
     paddingLeft: utils.spacings.sp12,
     paddingRight: 23.25,
-    height: SELECT_HEIGHT,
+    height: 58 * ACCESSIBILITY_FONTSIZE_MULTIPLIER,
+    extend: [
+        {
+            condition: hasError,
+            style: {
+                borderColor: utils.colors.elementBorderFieldError,
+            },
+        },
+    ],
 }));
 
-export const SelectTrigger = ({ label, value, icon, handlePress, testID }: SelectTriggerProps) => {
+export const SelectTrigger = ({
+    label,
+    value,
+    icon,
+    handlePress,
+    hasError = false,
+    testID,
+}: SelectTriggerProps) => {
     const { applyStyle } = useNativeStyles();
 
     return (
-        <PressableOpacity onPress={handlePress} style={applyStyle(selectStyle)} testID={testID}>
+        <PressableOpacity
+            onPress={handlePress}
+            style={applyStyle(selectStyle, { hasError })}
+            testID={testID}
+        >
             <Box>
                 {label && (
                     <Text variant="body-xs" color="contentSecondary">
