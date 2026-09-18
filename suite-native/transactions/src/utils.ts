@@ -101,12 +101,19 @@ export const getUnstakeTxAmount = (tx: WalletAccountTransaction) => {
     return getUnstakeAmountByEthereumDataHex(tx.ethereumSpecific?.data) ?? undefined;
 };
 
+type GetNextRequestedTransactionCountParams = {
+    requestedCount: number;
+    visibleCount: number;
+    pageSize: number;
+};
+
+/**
+ * Load more must add a full visible page even while earlier requests are still filling the list.
+ * Preserve the outstanding target, but start from the visible count when cached transfers or
+ * the last fetched account page have already exceeded it.
+ */
 export const getNextRequestedTransactionCount = ({
     requestedCount,
     visibleCount,
     pageSize,
-}: {
-    requestedCount: number;
-    visibleCount: number;
-    pageSize: number;
-}) => Math.max(requestedCount, visibleCount) + pageSize;
+}: GetNextRequestedTransactionCountParams) => Math.max(requestedCount, visibleCount) + pageSize;
