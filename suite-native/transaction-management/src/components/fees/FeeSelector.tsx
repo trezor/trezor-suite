@@ -1,6 +1,4 @@
-import { BannerInline } from '@suite-native/atoms';
-import { Translation } from '@suite-native/intl';
-
+import { FeeSelectorErrorBanner } from './FeeSelectorErrorBanner';
 import { FeeSummaryCard } from './FeeSummaryCard';
 import { FeesBottomSheet } from './FeesBottomSheet';
 import { TronFeeSummaryCard } from './TronFeeSummaryCard/TronFeeSummaryCard';
@@ -19,35 +17,21 @@ export const FeeSelector = (props: FeeSelectorProps) => {
         networkType,
         isTrc20,
         feeLimitSunOverride,
-        isNetworkFeeFetchUnavailable,
-        shouldShowFeeUnavailableAlert,
-        feeUnavailableErrorTitle,
+        feeSelectorError,
         bottomSheetRef,
         closeModal,
         snapshotRef,
         confirmedRef,
         handleOpen,
         handleConfirm,
-        handleRetryNetworkFeeFetch,
     } = useFeeSelector(props);
 
     const { accountKey, tokenContract, formDraft } = props;
 
     if (!symbol || !networkType) return null;
 
-    if (isNetworkFeeFetchUnavailable) {
-        return (
-            <BannerInline
-                intent="critical"
-                title={<Translation id="transactionManagement.fees.unavailable" />}
-                buttonLabel={<Translation id="generic.buttons.retry" />}
-                onButtonPress={handleRetryNetworkFeeFetch}
-            />
-        );
-    }
-
-    if (shouldShowFeeUnavailableAlert && feeUnavailableErrorTitle) {
-        return <BannerInline intent="critical" title={feeUnavailableErrorTitle} />;
+    if (feeSelectorError) {
+        return <FeeSelectorErrorBanner error={feeSelectorError} />;
     }
 
     return (

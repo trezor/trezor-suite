@@ -1,4 +1,4 @@
-import { useCallback, useRef } from 'react';
+import { type ReactNode, useCallback, useRef } from 'react';
 import { useSelector } from 'react-redux';
 
 import { useServices } from '@suite-common/dependency-injection';
@@ -37,6 +37,16 @@ export type UseFeeSelectorParams = {
     formDraftKey?: string;
     onFeeConfirmed?: () => void | Promise<void>;
 };
+
+export type FeeSelectorError =
+    | {
+          type: 'network-fee-fetch-error';
+          retryNetworkFeeFetch: () => void;
+      }
+    | {
+          type: 'fee-composition-error';
+          title: ReactNode;
+      };
 
 export const useFeeSelector = ({
     accountKey,
@@ -97,14 +107,25 @@ export const useFeeSelector = ({
         error: feeError,
         networkSymbol: symbol,
     });
-    const shouldShowFeeUnavailableAlert =
-        formDraft != null && isFeeUnavailable && !!feeUnavailableErrorTitle;
-
     const handleRetryNetworkFeeFetch = useCallback(() => {
         if (symbol) {
             dispatch(updateFeeInfoThunk({ networkSymbol: symbol }));
         }
     }, [dispatch, symbol]);
+
+    let feeSelectorError: FeeSelectorError | undefined;
+
+    if (isNetworkFeeFetchUnavailable) {
+        feeSelectorError = {
+            type: 'network-fee-fetch-error',
+            retryNetworkFeeFetch: handleRetryNetworkFeeFetch,
+        };
+    } else if (formDraft != null && isFeeUnavailable && feeUnavailableErrorTitle) {
+        feeSelectorError = {
+            type: 'fee-composition-error',
+            title: feeUnavailableErrorTitle,
+        };
+    }
 
     const handleOpen = useCallback(() => {
         confirmedRef.current = false;
@@ -162,15 +183,12 @@ export const useFeeSelector = ({
         networkType,
         isTrc20,
         feeLimitSunOverride,
-        isNetworkFeeFetchUnavailable,
-        shouldShowFeeUnavailableAlert,
-        feeUnavailableErrorTitle,
+        feeSelectorError,
         bottomSheetRef,
         closeModal,
         snapshotRef,
         confirmedRef,
         handleOpen,
         handleConfirm,
-        handleRetryNetworkFeeFetch,
     };
 };
