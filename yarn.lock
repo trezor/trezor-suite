@@ -12980,6 +12980,7 @@ __metadata:
     "@suite-native/test-utils": "workspace:*"
     "@suite-native/test-utils-store": "workspace:*"
     "@suite-native/tokens": "workspace:*"
+    "@trezor/blockchain-link-types": "workspace:*"
     "@trezor/env-utils": "workspace:*"
     "@trezor/protobuf": "workspace:*"
     "@trezor/styles-native": "workspace:*"
