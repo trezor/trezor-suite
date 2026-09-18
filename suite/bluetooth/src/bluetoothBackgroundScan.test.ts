@@ -36,7 +36,6 @@ describe('createBackgroundScan', () => {
         jest.spyOn(bluetoothIpc, 'startScan').mockResolvedValue({ success: true });
         jest.spyOn(bluetoothIpc, 'stopScan').mockResolvedValue({ success: true });
         jest.spyOn(console, 'warn').mockImplementation(() => {});
-        jest.spyOn(document, 'addEventListener');
         state = {
             bluetooth: {
                 ...initialDesktopBluetoothState,
@@ -52,11 +51,6 @@ describe('createBackgroundScan', () => {
     afterEach(async () => {
         scan.stop();
         await jest.advanceTimersByTimeAsync(0);
-        for (const [event, listener] of jest.mocked(document.addEventListener).mock.calls) {
-            if (event === 'visibilitychange') {
-                document.removeEventListener(event, listener);
-            }
-        }
         jest.restoreAllMocks();
         jest.useRealTimers();
     });
@@ -199,6 +193,16 @@ describe('createBackgroundScan', () => {
         document.dispatchEvent(new Event('visibilitychange'));
         await jest.advanceTimersByTimeAsync(6000);
         expect(bluetoothIpc.startScan).toHaveBeenCalledTimes(1);
+    });
+
+    it('skips cycles when the window was already hidden before the scan was created', async () => {
+        jest.spyOn(document, 'visibilityState', 'get').mockReturnValue('hidden');
+        scan = createBackgroundScan({ getState: () => state });
+
+        scan.start();
+        await jest.advanceTimersByTimeAsync(12000);
+
+        expect(bluetoothIpc.startScan).not.toHaveBeenCalled();
     });
 
     it.each([

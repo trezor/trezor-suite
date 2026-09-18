@@ -20,10 +20,10 @@ export const createBackgroundScan = (deps: BackgroundScanDeps): BackgroundScan =
     let abortController: AbortController | undefined;
     let currentRun: Promise<void> | undefined;
 
-    let isWindowVisible = true;
-    document?.addEventListener('visibilitychange', () => {
-        isWindowVisible = document.visibilityState === 'visible';
-    });
+    // Read on every cycle instead of tracking `visibilitychange`: the event reports only changes,
+    // so a window that is already hidden when the scan is created would count as visible until
+    // its next transition.
+    const isWindowVisible = () => document.visibilityState === 'visible';
 
     const hasDisconnectedKnownDevice = () =>
         selectKnownDevices<DesktopBluetoothDevice>(getState()).some(
@@ -34,7 +34,7 @@ export const createBackgroundScan = (deps: BackgroundScanDeps): BackgroundScan =
         while (!signal.aborted && hasDisconnectedKnownDevice()) {
             const startedAt = Date.now();
 
-            if (isWindowVisible) {
+            if (isWindowVisible()) {
                 try {
                     const result = await bluetoothIpc.startScan('background');
                     if (!result.success) {

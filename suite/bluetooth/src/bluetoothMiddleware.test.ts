@@ -35,7 +35,6 @@ describe('prepareBluetoothMiddleware', () => {
         jest.useFakeTimers();
         jest.spyOn(bluetoothIpc, 'startScan').mockResolvedValue({ success: true });
         jest.spyOn(bluetoothIpc, 'stopScan').mockResolvedValue({ success: true });
-        jest.spyOn(document, 'addEventListener');
 
         state = {
             bluetooth: { ...initialDesktopBluetoothState, knownDevices: [device] },
@@ -67,11 +66,6 @@ describe('prepareBluetoothMiddleware', () => {
     afterEach(async () => {
         scan.stop();
         await jest.advanceTimersByTimeAsync(0);
-        for (const [event, listener] of jest.mocked(document.addEventListener).mock.calls) {
-            if (event === 'visibilitychange') {
-                document.removeEventListener(event, listener);
-            }
-        }
         jest.restoreAllMocks();
         jest.useRealTimers();
     });
