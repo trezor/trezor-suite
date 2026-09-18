@@ -111,15 +111,30 @@ export type PerfUploadFile = {
 };
 
 /**
+ * Linear, unlike a `/^-+|-+$/` trim: that one rescans from every position, so a long run of dashes
+ * followed by anything else costs quadratic time (CodeQL rates it a ReDoS, and it is right — the
+ * value here comes from a branch name, which nothing in this package controls).
+ */
+const trimDashes = (value: string): string => {
+    let start = 0;
+    let end = value.length;
+
+    while (start < end && value[start] === '-') {
+        start += 1;
+    }
+    while (end > start && value[end - 1] === '-') {
+        end -= 1;
+    }
+
+    return value.slice(start, end);
+};
+
+/**
  * Branch and scenario names carry slashes and anything else a human types; keys stay flat,
  * printable and stable. Collisions do not matter — sha, run id and shard keep runs distinct.
  */
 export const slugify = (value: string): string =>
-    value
-        .replace(/[^\w.\-/]+/g, '-')
-        .replace(/\//g, '__')
-        .replace(/^-+|-+$/g, '')
-        .slice(0, 80) || 'unknown';
+    trimDashes(value.replace(/[^\w.\-/]+/g, '-').replace(/\//g, '__')).slice(0, 80) || 'unknown';
 
 /** How a measurement is named in the baseline document and in a report. */
 export const measurementLabel = ({ scenario, variant }: PerfMeasurement): string =>
