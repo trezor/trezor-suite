@@ -3,8 +3,10 @@ import { execSync } from 'child_process';
 import * as fs from 'fs';
 import * as path from 'path';
 
+import { getJUnitReportPath } from './junitReport';
+
 export const uploadToCurrents = (projectName: string): void => {
-    const reportPath = path.resolve(process.cwd(), 'reports', `${projectName}-junit-report.xml`);
+    const reportPath = getJUnitReportPath(projectName);
     const currentsDir = path.resolve(process.cwd(), 'currents', projectName);
 
     if (!fs.existsSync(reportPath)) {
