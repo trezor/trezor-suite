@@ -277,11 +277,7 @@ const getTransactionData = (
     }
 };
 
-export const calculateOutputAmount = (
-    account: Account,
-    stakeType: StakeType,
-    totalSpent?: string,
-) => {
+const calculateOutputAmount = (account: Account, stakeType: StakeType, totalSpent?: string) => {
     let amount;
 
     switch (stakeType) {
