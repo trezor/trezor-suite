@@ -26,6 +26,8 @@ export class MetadataPage {
         this.page.getByTestId(`@modal/metadata-provider/${provider}-button`);
     readonly legacyNotification: Locator;
     readonly closeLegacyNotificationButton: Locator;
+    readonly updateNotificationBanner: Locator;
+    readonly closeUpdateNotificationButton: Locator;
     readonly suiteSyncNotification: Locator;
     readonly closeSuiteSyncNotificationButton: Locator;
     readonly migrateLabelsButton: Locator;
@@ -54,6 +56,12 @@ export class MetadataPage {
         this.closeLegacyNotificationButton = this.page.getByTestId(
             '@notification/legacy-labeling-upgrade/close-button',
         );
+        this.updateNotificationBanner = this.page.getByTestId(
+            '@notification/update-notification-banner',
+        );
+        this.closeUpdateNotificationButton = this.page.getByTestId(
+            '@notification/update-notification-banner/close-button',
+        );
         this.suiteSyncNotification = this.page.getByTestId('@notification/feedback-banner');
         this.closeSuiteSyncNotificationButton = this.page.getByTestId(
             '@notification/feedback-banner/close-button',
@@ -70,6 +78,15 @@ export class MetadataPage {
         this.outOfQuotaBannerDismissButton = page.getByTestId(
             '@notification/suite-sync-out-of-quota/dismiss',
         );
+    }
+
+    @step()
+    async closeLegacyNotification() {
+        await expect(this.legacyNotification.or(this.updateNotificationBanner)).toBeVisible();
+        if (await this.updateNotificationBanner.isVisible()) {
+            await this.closeUpdateNotificationButton.click();
+        }
+        await this.closeLegacyNotificationButton.click();
     }
 
     @step()
