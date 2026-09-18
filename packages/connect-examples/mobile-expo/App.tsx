@@ -79,6 +79,24 @@ export const App = () => {
         }
     };
 
+    const selectAccount = async () => {
+        try {
+            const response = await TrezorConnect.selectAccount({
+                coin: 'eth',
+            });
+            if (!response.success) {
+                setSuccessData(null);
+                setErrorData({ success: response.success });
+
+                return;
+            }
+            setErrorData(null);
+            setSuccessData(response);
+        } catch (error) {
+            console.error('error', error);
+        }
+    };
+
     useEffect(() => {
         const subscription = Linking.addEventListener('url', event => {
             TrezorConnect.handleDeeplink(event.url);
@@ -93,10 +111,18 @@ export const App = () => {
             <Button onPress={initialize} title="Initialize TrezorConnect" />
             <Button onPress={getAddress} title="Get Address" />
             <Button onPress={signMessage} title="Sign Message" />
+            <Button onPress={selectAccount} title="Select Account" />
 
             {successData && (
                 <View style={styles.dataContainer}>
                     <Text>Success: {successData.success ? 'Yes' : 'No'}</Text>
+                    {Array.isArray(successData.payload) &&
+                        successData.payload.map((account: any, index: number) => (
+                            <Text key={index}>
+                                Selected: {account.symbol} {account.path}{' '}
+                                {account.address ?? account.xpub}
+                            </Text>
+                        ))}
                     {successData.payload?.address && (
                         <Text>Address: {successData.payload?.address}</Text>
                     )}
