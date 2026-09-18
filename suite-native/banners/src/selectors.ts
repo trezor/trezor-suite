@@ -1,20 +1,20 @@
 import { Platform } from 'react-native';
 
 import { createSelector } from '@reduxjs/toolkit';
+
 import {
     selectHasBitcoinOnlyFirmware,
     selectHasOnlyPortfolioDevice,
     selectSelectedDevice,
-    type DeviceRootState,
 } from '@suite-common/device';
 import {
     Feature,
+    type MessageSystemRootState,
     parsePromoBannerMessages,
     selectEligiblePromoBanners,
     selectFeaturesConfig,
-    type MessageSystemRootState,
 } from '@suite-common/message-system';
-import { type Discovery, type Account } from '@suite-common/wallet-types';
+import { type Account, type Discovery } from '@suite-common/wallet-types';
 
 import {
     selectIsDefiYieldPromoBannerClosed,
@@ -22,13 +22,12 @@ import {
     selectIsTs7PromoBannerClosed,
 } from './bannerFlagsSlice';
 
-type PromoBannersRootState = MessageSystemRootState &
-    DeviceRootState & {
-        wallet: {
-            accounts: Account[];
-            discovery: Discovery;
-        };
+type PromoBannersRootState = MessageSystemRootState & {
+    wallet: {
+        accounts: Account[];
+        discovery: Discovery;
     };
+};
 
 export type VisiblePromoBannerKey = 'ts7' | 'defi-yield' | 'eth-vault';
 
@@ -145,6 +144,8 @@ export const selectVisiblePromoBanners = createSelector(
             isPortfolioTrackerOnly,
             selectedDevice,
         }).filter((bannerId): bannerId is VisiblePromoBannerKey =>
-            localEligibleBannerIds.includes(bannerId as VisiblePromoBannerKey),
+            localEligibleBannerIds.some(
+                localEligibleBannerId => localEligibleBannerId === bannerId,
+            ),
         ),
 );

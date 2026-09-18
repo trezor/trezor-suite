@@ -1,16 +1,15 @@
+import { type Feature, type Message } from '@suite-common/suite-types';
+import { mockSuiteDevice } from '@suite-common/suite-types/mocks';
+import { asNetworkSymbol } from '@suite-common/wallet-config';
+import { mockAccountToken, mockWalletAccount } from '@suite-common/wallet-types/mocks';
 import { DeviceModelInternal } from '@trezor/device-utils';
 
-import { type Feature, type Message } from '@suite-common/suite-types';
-import { asNetworkSymbol } from '@suite-common/wallet-config';
-import { mockSuiteDevice } from '@suite-common/suite-types/mocks';
-import { mockAccountToken, mockWalletAccount } from '@suite-common/wallet-types/mocks';
-
+import { Feature as MessageSystemFeature } from './messageSystemTypes';
 import {
+    type PromoBannerFeatureConfig,
     parsePromoBannerMessages,
     selectEligiblePromoBanners,
-    type PromoBannerFeatureConfig,
 } from './promoBannerUtils';
-import { Feature as MessageSystemFeature } from './messageSystemTypes';
 
 const localization = {
     en: 'Placeholder',

@@ -289,7 +289,7 @@ const getPromoBannerCondition = (
         condition: {
             type,
             value,
-        } as PromoBannerCondition,
+        },
     };
 };
 

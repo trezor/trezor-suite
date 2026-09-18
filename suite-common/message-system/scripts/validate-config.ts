@@ -1,8 +1,8 @@
 /* eslint-disable no-console */
 import fs from 'fs';
 
-import { validateJsonSchema } from '@trezor/node-utils';
 import { type MessageSystem } from '@suite-common/suite-types';
+import { validateJsonSchema } from '@trezor/node-utils';
 
 import { CONFIG_PATH, SCHEMA_PATH } from './constants';
 import { parsePromoBannerMessages } from '../src/promoBannerUtils';

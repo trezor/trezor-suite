@@ -105,6 +105,60 @@ export const validateTradingSurvey = (parsed: unknown) =>
         strict: true,
     });
 
+const promoBannerConditionSchema = yup
+    .object({
+        type: yup
+            .mixed<(typeof promoBannerConditionTypes)[number]>()
+            .oneOf(promoBannerConditionTypes)
+            .required(),
+        value: yup.lazy((_value, { parent }) => {
+            if (parent.type === 'physical-trezor-connected') {
+                return yup.mixed().test({
+                    name: 'forbidden-value',
+                    message:
+                        'Promo banner condition "physical-trezor-connected" must not define a value.',
+                    test: value => value === undefined,
+                });
+            }
+
+            if (parent.type === 'portfolio-tracker-only') {
+                return yup.boolean().required();
+            }
+
+            return yup.string().required();
+        }),
+    })
+    .noUnknown(true);
+
+const promoBannerEligibilitySchema = yup
+    .object({
+        required: yup.array(promoBannerConditionSchema).optional(),
+        alternatives: yup.array(yup.array(promoBannerConditionSchema).min(1)).optional(),
+    })
+    .noUnknown(true);
+
+const promoBannerCarouselOrderSchema = yup
+    .object({
+        platform: yup
+            .mixed<(typeof promoBannerPlatforms)[number]>()
+            .oneOf(promoBannerPlatforms)
+            .required(),
+        placement: yup
+            .mixed<(typeof promoBannerPlacements)[number]>()
+            .oneOf(promoBannerPlacements)
+            .required(),
+        value: yup.number().integer().min(0).required(),
+    })
+    .noUnknown(true);
+
+const promoBannerPayloadSchema = yup
+    .object({
+        bannerId: yup.mixed<(typeof promoBannerIds)[number]>().oneOf(promoBannerIds).required(),
+        carouselOrder: yup.array(promoBannerCarouselOrderSchema).min(1).required(),
+        eligibility: promoBannerEligibilitySchema.optional(),
+    })
+    .noUnknown(true);
+
 const featureItemSchema = yup
     .object({
         domain: yup
@@ -173,7 +227,7 @@ const featureItemSchema = yup
             return error[0] ?? 'Invalid promo banner payload.';
         },
         test: value => {
-            if (!value || value.domain !== 'dashboard.promoBanner') {
+            if (value?.domain !== 'dashboard.promoBanner') {
                 return true;
             }
 
@@ -320,60 +374,6 @@ const countryCodesSchema = yup
 
         return new Set(arr).size === arr.length;
     });
-
-const promoBannerConditionSchema = yup
-    .object({
-        type: yup
-            .mixed<(typeof promoBannerConditionTypes)[number]>()
-            .oneOf(promoBannerConditionTypes)
-            .required(),
-        value: yup.lazy((_value, { parent }) => {
-            if (parent.type === 'physical-trezor-connected') {
-                return yup.mixed().test({
-                    name: 'forbidden-value',
-                    message:
-                        'Promo banner condition "physical-trezor-connected" must not define a value.',
-                    test: value => value === undefined,
-                });
-            }
-
-            if (parent.type === 'portfolio-tracker-only') {
-                return yup.boolean().required();
-            }
-
-            return yup.string().required();
-        }),
-    })
-    .noUnknown(true);
-
-const promoBannerEligibilitySchema = yup
-    .object({
-        required: yup.array(promoBannerConditionSchema).optional(),
-        alternatives: yup.array(yup.array(promoBannerConditionSchema).min(1)).optional(),
-    })
-    .noUnknown(true);
-
-const promoBannerCarouselOrderSchema = yup
-    .object({
-        platform: yup
-            .mixed<(typeof promoBannerPlatforms)[number]>()
-            .oneOf(promoBannerPlatforms)
-            .required(),
-        placement: yup
-            .mixed<(typeof promoBannerPlacements)[number]>()
-            .oneOf(promoBannerPlacements)
-            .required(),
-        value: yup.number().integer().min(0).required(),
-    })
-    .noUnknown(true);
-
-const promoBannerPayloadSchema = yup
-    .object({
-        bannerId: yup.mixed<(typeof promoBannerIds)[number]>().oneOf(promoBannerIds).required(),
-        carouselOrder: yup.array(promoBannerCarouselOrderSchema).min(1).required(),
-        eligibility: promoBannerEligibilitySchema.optional(),
-    })
-    .noUnknown(true);
 
 const conditionItemSchema = yup
     .object({

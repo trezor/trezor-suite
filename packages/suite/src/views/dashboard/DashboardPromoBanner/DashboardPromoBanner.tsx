@@ -4,7 +4,6 @@ import { AnimatePresence, motion } from 'framer-motion';
 
 import { events, injectDesktopAnalytics } from '@suite/analytics';
 import { selectFlags, setFlag } from '@suite/flags';
-import { isDesktop } from '@trezor/env-utils';
 import { useServices } from '@suite-common/dependency-injection';
 import { selectHasOnlyPortfolioDevice, selectSelectedDevice } from '@suite-common/device';
 import {
@@ -16,6 +15,7 @@ import {
 import { injectDispatch } from '@suite-common/redux-utils';
 import { isDevEnv } from '@suite-common/suite-utils';
 import { selectVisibleDeviceAccounts } from '@suite-common/wallet-core';
+import { isDesktop } from '@trezor/env-utils';
 
 import { useSelector } from 'src/hooks/suite';
 import { selectDiscoveryOverallStatus } from 'src/utils/wallet/selectDiscoveryOverallStatus';
