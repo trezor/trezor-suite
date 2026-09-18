@@ -1,3 +1,4 @@
+import { useMemo } from 'react';
 import styled from 'styled-components';
 
 import { events, injectDesktopAnalytics } from '@suite/analytics';
@@ -6,6 +7,7 @@ import { Translation } from '@suite/intl';
 import { gotoThunk } from '@suite/router';
 import { useServices } from '@suite-common/dependency-injection';
 import { selectHasBitcoinOnlyFirmware } from '@suite-common/device';
+import { selectNetworkNamesMap } from '@suite-common/networks/reduxState/networksSelectors';
 import { injectDispatch } from '@suite-common/redux-utils';
 import { selectEnabledNetworks } from '@suite-common/wallet-core';
 import { Box, Button, Column, H3, Illustration, Paragraph, Row } from '@trezor/components';
@@ -13,7 +15,7 @@ import { ArrowDownIcon, CurrencyCircleDollarIcon } from '@trezor/icons';
 import { NetworkIconSet } from '@trezor/product-components/src/components/NetworkIconSet/NetworkIconSet';
 
 import { useSelector } from 'src/hooks/suite';
-import { useNetworkParams } from 'src/hooks/suite/useNetworkParams';
+import { getNetworkParams } from 'src/utils/suite/getNetworkParams';
 
 const RoundedBorder = styled.div`
     padding: 4px 6px 4px 12px;
@@ -24,14 +26,20 @@ const RoundedBorder = styled.div`
 export const EmptyWallet = () => {
     const { analytics, dispatch } = useServices(injectDesktopAnalytics, injectDispatch);
     const enabledNetworks = useSelector(selectEnabledNetworks);
+    const networkNamesMap = useSelector(selectNetworkNamesMap);
     const isBitcoinOnlyFirmware = useSelector(selectHasBitcoinOnlyFirmware);
     const isOnboardingFeedbackBannerShown = useSelector(selectIsOnboardingFeedbackBannerShown);
 
-    const networks = useNetworkParams({
-        symbols: enabledNetworks,
-        iconSize: 20,
-        iconType: 'token',
-    });
+    const networks = useMemo(
+        () =>
+            getNetworkParams({
+                symbols: enabledNetworks,
+                networkNamesMap,
+                iconSize: 20,
+                iconType: 'token',
+            }),
+        [enabledNetworks, networkNamesMap],
+    );
 
     const clearOnboardingFeedbackBanner = () => {
         if (isOnboardingFeedbackBannerShown) {

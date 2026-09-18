@@ -2,15 +2,18 @@ import { type RefObject, memo, useMemo } from 'react';
 
 import { type TranslationKey, useTranslation } from '@suite/intl';
 import { selectHasBitcoinOnlyFirmware } from '@suite-common/device';
-import { selectNetworkSymbolForProtocol } from '@suite-common/networks';
+import {
+    selectNetworkNamesMap,
+    selectNetworkSymbolForProtocol,
+} from '@suite-common/networks/reduxState/networksSelectors';
 import { selectEnabledNetworks } from '@suite-common/wallet-core';
 import { type GlobalSendReceiveType } from '@suite-common/wallet-types';
 import { SearchAsset } from '@trezor/product-components';
 
 import { useListScrollReset } from 'src/components/suite/asset-picker/hooks';
 import { useSelector } from 'src/hooks/suite';
-import { useNetworkParams } from 'src/hooks/suite/useNetworkParams';
 import { selectProtocolSendFormScheme } from 'src/selectors/suite/protocolSelectors';
+import { getNetworkParams } from 'src/utils/suite/getNetworkParams';
 
 import { useNetworkFilter } from './hooks/useNetworkFilter';
 import { useSearchFilter } from './hooks/useSearchFilter';
@@ -35,21 +38,23 @@ export const AssetSearchWithNetworkFilter = memo(function AssetSearchWithNetwork
         resetSearch: () => setSearch(''),
     });
     const enabledNetworks = useSelector(selectEnabledNetworks);
+    const networkNamesMap = useSelector(selectNetworkNamesMap);
     const protocolScheme = useSelector(selectProtocolSendFormScheme);
 
     const protocolSymbol = useSelector(state =>
         selectNetworkSymbolForProtocol(state, protocolScheme),
     );
 
-    const networkSymbols = useMemo(
-        () => (protocolSymbol ? [protocolSymbol] : enabledNetworks),
-        [protocolSymbol, enabledNetworks],
+    const networks = useMemo(
+        () =>
+            getNetworkParams({
+                symbols: protocolSymbol ? [protocolSymbol] : enabledNetworks,
+                networkNamesMap,
+                iconSize: 20,
+                iconType: 'network',
+            }),
+        [protocolSymbol, enabledNetworks, networkNamesMap],
     );
-    const networks = useNetworkParams({
-        symbols: networkSymbols,
-        iconSize: 20,
-        iconType: 'network',
-    });
 
     const { translationString } = useTranslation();
 
