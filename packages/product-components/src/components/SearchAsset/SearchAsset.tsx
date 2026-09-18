@@ -29,6 +29,7 @@ export const SearchAsset = ({
             options={options}
             value={selectedOption}
             onChange={option => selectConfig.onChange(option.value)}
+            onMenuOpen={selectConfig.onMenuOpen}
             size="small"
             isClean
             formatOptionLabel={(option, meta) => (
@@ -56,6 +57,7 @@ export const SearchAsset = ({
             )}
             data-testid={`${dataTestIdBase}/filter`}
             openMenuOnFocus={false}
+            menuAlign="end"
         />
     ) : undefined;
 

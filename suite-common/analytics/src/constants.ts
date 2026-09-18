@@ -36,6 +36,7 @@ export enum EventType {
     PromoNoDeviceEshopCta = 'promo/no-device-eshop-cta',
     PromoDashboardBanner = 'promo/dashboard-banner',
     GuideSupportChatOpened = 'guide/support-chat-opened',
+    ReceiveEntryInteraction = 'receive/entry-interaction',
     YieldEarnDashboardReady = 'yield/earn-dashboard-ready',
     YieldInteraction = 'yield/interaction',
     YieldNavigate = 'yield/navigate',

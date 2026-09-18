@@ -4,9 +4,10 @@ import { type NetworkSymbol, getNetwork } from '@suite-common/wallet-config';
 import { isNotNull } from '@trezor/utils';
 
 export interface SearchAssetSelectConfig {
-    networks: NetworkSymbol[];
+    networks: readonly NetworkSymbol[];
     selectedNetwork: NetworkSymbol | undefined;
     onChange: (network?: NetworkSymbol) => void;
+    onMenuOpen?: () => void;
     includeAllOption?: boolean;
     allLabel?: string;
 }
