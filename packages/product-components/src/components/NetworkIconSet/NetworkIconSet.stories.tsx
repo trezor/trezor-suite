@@ -1,5 +1,6 @@
 import { type Meta, type StoryObj } from '@storybook/react';
 
+import { asNetworkSymbol } from '@trezor/network-module-types';
 import { spacingValues } from '@trezor/theme';
 
 import {
@@ -8,10 +9,10 @@ import {
 } from './NetworkIconSet';
 import { allowedTokenIconSizes } from '../TokenIcon/tokenIconTypes';
 
-const NETWORK_1 = 'btc';
-const NETWORK_2 = 'eth';
-const NETWORK_3 = 'ltc';
-const NETWORK_4 = 'ada';
+const NETWORK_1 = asNetworkSymbol('btc');
+const NETWORK_2 = asNetworkSymbol('eth');
+const NETWORK_3 = asNetworkSymbol('ltc');
+const NETWORK_4 = asNetworkSymbol('ada');
 
 const meta: Meta<typeof NetworkIconSetComponent> = {
     title: 'NetworkIconSet',

@@ -5,16 +5,16 @@ import { NetworkIcon } from '../components/NetworkIcon/NetworkIcon';
 import { NativeTokenIcon } from '../components/TokenIcon/NativeTokenIcon';
 import type { TokenIconSize } from '../components/TokenIcon/tokenIconTypes';
 
-type GetNetworkOptionsParams<TSymbol extends string> = NetworkParams<TSymbol> & {
+type GetNetworkOptionsParams = NetworkParams & {
     iconSize: TokenIconSize;
 };
 
-export const getNetworkOptions = <TSymbol extends string>({
+export const getNetworkOptions = ({
     networks,
     networkNamesMap,
     iconSize,
     isToken = false,
-}: GetNetworkOptionsParams<TSymbol>) =>
+}: GetNetworkOptionsParams) =>
     networks.map(symbol => ({
         symbol,
         name: networkNamesMap?.[symbol] ?? symbol,

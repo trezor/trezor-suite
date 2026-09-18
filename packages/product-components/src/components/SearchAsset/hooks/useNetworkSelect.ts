@@ -1,20 +1,20 @@
 import { useMemo } from 'react';
 
+import type { NetworkSymbol } from '@trezor/network-module-types';
+
 import type { NetworkParams } from '../../../NetworkParams';
 import { getNetworkOptions } from '../../../utils/getNetworkOptions';
 
-export type SearchAssetSelectConfig<TSymbol extends string = string> = NetworkParams<TSymbol> & {
-    selectedNetwork: TSymbol | undefined;
-    onChange: (network?: TSymbol) => void;
+export type SearchAssetSelectConfig = NetworkParams & {
+    selectedNetwork: NetworkSymbol | undefined;
+    onChange: (network?: NetworkSymbol) => void;
     includeAllOption?: boolean;
     allLabel?: string;
 };
 
 const EMPTY_NETWORKS: [] = [];
 
-export const useNetworkSelect = <TSymbol extends string>(
-    config?: SearchAssetSelectConfig<TSymbol>,
-) => {
+export const useNetworkSelect = (config?: SearchAssetSelectConfig) => {
     const {
         networks = EMPTY_NETWORKS,
         networkNamesMap = null,
