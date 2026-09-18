@@ -53,6 +53,9 @@ export class TradingActions {
     }
 
     async viewHowTradingWorks() {
+        // The continue button is rendered only once quotes are loaded. Waiting for it prevents
+        // the footer from shifting under the tap while the quotes are being (re)fetched.
+        await waitFor(this.getElementById('continue-button')).toExist().withTimeout(30_000);
         // Scroll to bottom of the page and view how trading works sheet.
         // `scrollScreenToBottom` is not used because it accidentally clicks on links at the bottom on iOS.
         const howTradingWorksButton = element(by.text('How trading works'));
