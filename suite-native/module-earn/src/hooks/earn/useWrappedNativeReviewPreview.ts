@@ -5,7 +5,7 @@ import { selectSelectedDevice } from '@suite-common/device';
 import { getNetwork, getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import { type WrappedNativeFlowType, type YieldFlowDisplayToken } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
-import { getWrappedNativeToken } from '@trezor/network-ethereum-suite-common/wrapped-native-token';
+import { getWrappedNativeToken } from '@trezor/network-ethereum-suite-common';
 
 import { buildYieldReviewPreview } from '../../utils/yield/yieldReviewOutputUtils';
 

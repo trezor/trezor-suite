@@ -23,7 +23,7 @@ import {
     type WrappedNativeTokenStackParamList,
     type WrappedNativeTokenStackRoutes,
 } from '@suite-native/navigation';
-import { getWrappedNativeToken } from '@trezor/network-ethereum-suite-common/wrapped-native-token';
+import { getWrappedNativeToken } from '@trezor/network-ethereum-suite-common';
 
 import { WrappedNativeTokenAmountInputCard } from './WrappedNativeTokenAmountInputCard';
 import { useMessageSystemWrappedNative } from '../../hooks/earn/useMessageSystemWrappedNative';

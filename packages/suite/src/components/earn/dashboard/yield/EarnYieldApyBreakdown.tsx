@@ -10,7 +10,7 @@ import { type NetworkSymbol, getNetworkDisplaySymbol } from '@suite-common/walle
 import { getApyPercent } from '@suite-common/wallet-utils';
 import { Column, Divider, Icon, Row, Text } from '@trezor/components';
 import { ChartLineIcon } from '@trezor/icons';
-import { isWrappedNativeToken } from '@trezor/network-ethereum-suite-common/wrapped-native-token';
+import { isWrappedNativeToken } from '@trezor/network-ethereum-suite-common';
 import { TokenIcon } from '@trezor/product-components';
 import { belowBreakpoint, breakpoints } from '@trezor/theme';
 

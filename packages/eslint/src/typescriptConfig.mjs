@@ -10,11 +10,11 @@ const buildArtifactPatterns = {
         'Import from the package root instead. Deep paths into "lib/" or "libDev/" target build artifacts that may not exist or may diverge from the workspace source.',
 };
 
-// Network packages require subpath imports. Only packages ending in -types may use root imports.
+// Bare network packages expose sectioned entry points. Type contracts and Suite layer packages
+// keep root imports; a dash in a network name alone does not exempt a bare package.
 const networksPackagePattern = {
-    regex: '^@trezor/(?![^/]*-types$)network-[^/]+$',
-    message:
-        'Import from a public subpath. Only network packages ending in -types allow root imports.',
+    regex: '^@trezor/(?![^/]*-(?:types|suite(?:-common|-native)?)$)network-[^/]+$',
+    message: 'Import from /constants, /runtime or /types subpath.',
 };
 
 // Network packages are a reusable layer: the apps are built on top of them, never the other way

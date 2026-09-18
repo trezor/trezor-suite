@@ -8,7 +8,7 @@ import { Box, HStack, Text, VStack } from '@suite-native/atoms';
 import { AddressFormatter } from '@suite-native/formatters';
 import { Translation, type TxKeyPath } from '@suite-native/intl';
 import { ReviewOutputHexData, ReviewOutputItemValues } from '@suite-native/transaction-management';
-import { getWrappedNativeSymbol } from '@trezor/network-ethereum-suite-common/wrapped-native-token';
+import { getWrappedNativeSymbol } from '@trezor/network-ethereum-suite-common';
 import { exhaustive } from '@trezor/type-utils';
 
 import {

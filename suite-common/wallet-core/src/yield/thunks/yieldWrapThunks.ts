@@ -7,7 +7,7 @@ import {
     getWrappedNativeAddress,
     getWrappedNativeToken,
     isWrappedNativeToken,
-} from '@trezor/network-ethereum-suite-common/wrapped-native-token';
+} from '@trezor/network-ethereum-suite-common';
 import { BigNumber } from '@trezor/utils';
 
 import {

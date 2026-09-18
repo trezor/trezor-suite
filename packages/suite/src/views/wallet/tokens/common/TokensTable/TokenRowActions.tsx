@@ -69,7 +69,7 @@ import {
     RepeatIcon,
     XIcon,
 } from '@trezor/icons';
-import { isWrappedNativeToken } from '@trezor/network-ethereum-suite-common/wrapped-native-token';
+import { isWrappedNativeToken } from '@trezor/network-ethereum-suite-common';
 
 import { setSendFormPrefill, setTransactionHistoryPrefill } from 'src/actions/suite/suiteActions';
 import { getEarnRouteParams } from 'src/components/earn/utils/getEarnRouteParams';

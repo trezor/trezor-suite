@@ -3,7 +3,7 @@ import { useEffect, useState } from 'react';
 import { gotoThunk } from '@suite/router';
 import { useServices } from '@suite-common/dependency-injection';
 import { injectDispatch } from '@suite-common/redux-utils';
-import { getWrappedNativeToken } from '@trezor/network-ethereum-suite-common/wrapped-native-token';
+import { getWrappedNativeToken } from '@trezor/network-ethereum-suite-common';
 
 import { useEarnRouteAccount } from 'src/components/earn/utils/useEarnRouteAccount';
 import { WrappedNativePageHeader } from 'src/components/earn/yield/common/WrappedNativePageHeader';

@@ -1,6 +1,6 @@
 import { type NetworkSymbol, getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import { Translation } from '@suite-native/intl';
-import { getWrappedNativeSymbol } from '@trezor/network-ethereum-suite-common/wrapped-native-token';
+import { getWrappedNativeSymbol } from '@trezor/network-ethereum-suite-common';
 
 import { type YieldFlowStep, YieldFlowStepCard } from './YieldFlowStepCard';
 
