@@ -175,37 +175,67 @@ the first thing to fix if that stops being true.
 ## Performance history
 
 A report tells you what this run measured; it cannot tell you whether that is worse than last week.
-The history lives as plain objects in the bucket CI already writes to — no server, no database:
+The history lives as plain objects in the bucket CI already writes to — no server, no database — and
+it is **shared with the web and desktop Lighthouse pipelines**: the store lives in
+`@trezor/perf-e2e`, mobile is one adapter onto it.
 
 ```
-s3://dev.suite.sldev.cz/e2e/perf/native/v1/
-├── runs/<branch>/<sha>/<run>-<attempt>/shard-<n>/report.json   ← the whole report, for drill-down
-├── index/<branch>/index.ndjson                                 ← one line per screen per run
-├── index/pr/<number>/<run>-<attempt>.ndjson                    ← the same, for a pull request
-└── baseline/<branch>/latest.json                               ← what later runs compare against
+s3://dev.suite.sldev.cz/e2e/perf/v1/
+├── runs/<surface>/<branch>/<sha>/<run>-<attempt>/shard-<n>/<artifact>.json
+├── index/<surface>/<branch>/index.ndjson        ← one line per measurement per run
+├── index/<surface>/pr/<number>/<run>-<attempt>-<shard>.ndjson
+└── baseline/<surface>/<branch>/latest.json      ← what later runs compare against
 ```
 
-Every object is world-readable over `https://dev.suite.sldev.cz/<key>`, so **reading the history
-needs no credentials**: fetch the index, and only download a report when you want the detail behind
-a point. Writing needs the `gh_actions_trezor_suite_dev_deploy` role CI already assumes.
+`<surface>` is `android`, `ios`, `web` or `desktop`. It sits high in the key so retention can differ
+per surface — a Lighthouse flow result is hundreds of kilobytes, a native report is two — and so a
+merged view is just a concatenation of index files.
 
-The `publish_performance_history` job of `test-suite-native-e2e-android.yml` does the writing. It
-runs once after the shards, downloads their `android-perf-report-<shard>` artifacts, and builds the
-tree of objects with `yarn workspace @suite-native/app perf:publish` before one `aws s3 cp
---recursive` uploads it.
+What is unified is the envelope; what stays surface-specific is the artifact. A row carries the
+identity, the sample count, a metric map and a pointer to the artifact it was reduced from:
 
-Two properties keep this correct without a database:
+```jsonc
+{
+    "ts": "…",
+    "surface": "android",
+    "branch": "develop",
+    "sha": "…",
+    "run": "1842",
+    "attempt": "1",
+    "shard": "3",
+    "scenario": "home",
+    "samples": 3,
+    "metrics": { "rn:ttffMs": 412, "rn:ttiMs": 980 },
+    "env": { "device": "Pixel_7_API_34", "appVersion": "25.9.1" },
+    "blob": { "kind": "native-report", "key": "runs/android/develop/…/shard-3/report.json" },
+}
+```
+
+Metric keys are namespaced — `rn:` for the React Native numbers, `lh:` for Lighthouse audits — so a
+mobile time-to-interactive can never be compared against a web total blocking time, while one
+renderer, one trend query and one delta implementation serve both. `blob.kind` tells a reader how to
+open the artifact: a `native-report` renders as our own table, an `lhr` or `flow-result` renders as a
+standalone Lighthouse HTML report through Lighthouse's own `generateReport`, offline.
+
+The `publish_performance_history` job does the writing. It runs once after the shards, downloads
+their `android-perf-report-<shard>` artifacts, and builds the tree of objects with `yarn workspace
+@suite-native/app perf:publish` before two `aws s3 cp` passes upload it.
+
+Three properties keep this correct without a database:
 
 - **One writer per run.** The shards only upload artifacts; a single job publishes the whole run, so
   no two shards touch the same object. Branch runs, which append to one rolling index, are
   additionally serialized by the job's concurrency group.
-- **A re-run replaces its own lines.** Index lines are keyed by run, attempt, shard and screen, so
-  re-running a workflow corrects a point on the trend instead of doubling it.
+- **A re-run replaces its own lines.** Index lines are keyed by surface, run, attempt, shard and
+  measurement, so re-running a workflow corrects a point on the trend instead of doubling it.
+- **Artifacts are uploaded before the lines that reference them**, in two passes, so a reader never
+  meets an index line pointing at an object that is not there yet.
 
-Only a run on the base branch seals `baseline/<branch>/latest.json` (`PERF_SEAL_BASELINE`), which is
-the document `mergeBaselines` lets win over the numbers committed in `budgets.ts`. Until the first
-baseline is sealed, `fetchBaselineDocument` reports `absent` and the committed values stand — as
-they do whenever the object cannot be read, which never fails a run.
+Only a run on the base branch seals `baseline/<surface>/<branch>/latest.json`
+(`PERF_SEAL_BASELINE`), which is the document `mergeStoredBaseline` lets win over the numbers
+committed in `budgets.ts`. Until the first baseline is sealed, `fetchBaselineDocument` reports
+`absent` and the committed values stand — as they do whenever the object cannot be read, which never
+fails a run.
 
 ## Where things live
 
@@ -216,8 +246,8 @@ they do whenever the object cannot be read, which never fails a run.
 | `suite-native/app/e2e/performance/budgets.ts`             | the checked-in thresholds                                                                  |
 | `suite-native/app/artifacts/performance/perf-report.json` | the report a run produces                                                                  |
 | `.github/workflows/template-suite-native-e2e-android.yml` | the job summary and the `android-perf-report-<shard>` upload                               |
-| `suite-native/app/e2e/performance/store.ts`               | the key scheme and the index rows — pure, so the layout is tested without a bucket         |
-| `suite-native/app/e2e/performance/baseline.ts`            | reading the served baseline back, credential-free and never throwing                       |
-| `suite-native/app/e2e/performance/publishPerformance.ts`  | the publish step: shard artifacts in, upload bundle out                                    |
+| `packages/perf-e2e/src/store.ts`                          | the shared store: key scheme, index rows, baseline document, upload bundle — pure          |
+| `packages/perf-e2e/src/storeReader.ts`                    | reading the history back, credential-free and never throwing                               |
+| `suite-native/app/e2e/performance/publishPerformance.ts`  | the mobile adapter: shard reports in, upload bundle out                                    |
 | `.github/workflows/test-suite-native-e2e-android.yml`     | the `publish_performance_history` job                                                      |
 | `packages/perf-e2e/`, `suite/e2e/performance/`            | the desktop counterpart the format mirrors                                                 |

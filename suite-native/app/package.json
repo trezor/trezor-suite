@@ -204,6 +204,7 @@
         "@trezor/connect-core": "workspace:*",
         "@trezor/connect-mobile": "workspace:^",
         "@trezor/eslint": "workspace:*",
+        "@trezor/perf-e2e": "workspace:*",
         "@types/lodash": "^4.17.16",
         "@types/minimist": "^1.2.5",
         "@types/node": "22.13.10",

@@ -77,10 +77,11 @@ jobs:
       CURRENTS_API_KEY: ${{ secrets.CURRENTS_API_KEY }}
       E2E_TEST_PASSPHRASE: ${{ secrets.E2E_TEST_PASSPHRASE }}
 
-  # Publishes the performance history: every shard's report as a plain object in the bucket CI
-  # already writes to, plus one index line per screen. There is no server and no database — the
-  # objects are world-readable, so reading them back locally needs no credentials at all. See
-  # docs/tests/suite-native-e2e-performance.md.
+  # Publishes the performance history through the shared store in @trezor/perf-e2e: every shard's
+  # report as a plain object in the bucket CI already writes to, plus one index line per screen.
+  # The web and desktop Lighthouse pipelines write the same envelope under their own surface. There
+  # is no server and no database — the objects are world-readable, so reading them back locally
+  # needs no credentials at all. See docs/tests/suite-native-e2e-performance.md.
   #
   # One job publishes a whole run, so nothing races: the shards only upload their artifacts. The
   # step is informative — it never fails, and a broken upload costs the history, not the tests.
@@ -140,9 +141,17 @@ jobs:
           role-to-assume: arn:aws:iam::538326561891:role/gh_actions_trezor_suite_dev_deploy
           aws-region: eu-central-1
 
+      # Two passes, and the order is the point: the artifacts go up first, then the index lines and
+      # the baseline that reference them. A reader therefore never meets a line pointing at an
+      # object that is not there yet — the guarantee a Lighthouse server gives by sealing a build.
       - name: Upload the bundle
         if: ${{ hashFiles('perf-upload/**') != '' }}
+        env:
+          BUNDLE: ${{ github.workspace }}/perf-upload
+          DESTINATION: s3://dev.suite.sldev.cz/e2e/perf/v1
         run: |
-          aws s3 cp --recursive --no-progress \
-            "${{ github.workspace }}/perf-upload/" \
-            "s3://dev.suite.sldev.cz/e2e/perf/native/v1/"
+          set -euo pipefail
+          if [ -d "$BUNDLE/runs" ]; then
+            aws s3 cp --recursive --no-progress "$BUNDLE/runs/" "$DESTINATION/runs/"
+          fi
+          aws s3 cp --recursive --no-progress --exclude "runs/*" "$BUNDLE/" "$DESTINATION/"

@@ -124,7 +124,8 @@
         {
             "path": "../../packages/connect-mobile"
         },
-        { "path": "../../packages/eslint" }
+        { "path": "../../packages/eslint" },
+        { "path": "../../packages/perf-e2e" }
     ],
     "include": [".", "**/*.json"]
 }
