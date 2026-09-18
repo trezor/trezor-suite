@@ -235,6 +235,58 @@ export const getEvmNonceInfoFromConfirmedNonce = (
 };
 
 /**
+ * How many nonces at or above `fromNonce` the account holds that the backend may not have mined
+ * and indexed yet — its own pending sends, plus ones the local tx list already records as
+ * confirmed while the backend's mined-only count still lags (see
+ * `getEvmNonceInfoFromConfirmedNonce` for why that window exists).
+ */
+export const countOwnEvmNoncesFrom = (
+    fromNonce: number,
+    transactions: WalletAccountTransaction[],
+): number => {
+    const { pendingNonceSet, confirmedNonces } = getOwnEvmNonceSets(transactions);
+
+    return [...new Set([...pendingNonceSet, ...confirmedNonces])].filter(
+        nonce => nonce >= fromNonce,
+    ).length;
+};
+
+/**
+ * The highest nonce blockbook's pending count (`eth_getTransactionCount(addr, "pending")`) can
+ * account for: that count already covers every mempool tx the node can see, and the account's own
+ * txs at or above it cover the ones it can't — a private-relay broadcast, one already dropped from
+ * its mempool cache (trezor/blockbook#1562), or one it has mined but not yet indexed.
+ *
+ * A resolved nonce above this ceiling is backed by nothing either side knows about. That is the
+ * signature of the incident #30910 fixed, where a third party's nonce reached `pendingNonceSet` and
+ * pushed a send one slot too high; the cross-check is free, since both nonces arrive in one call.
+ *
+ * Deliberately the same contiguous walk `getEvmNonceInfoFromConfirmedNonce` uses to produce the
+ * nonce being checked, only started from the backend's pending nonce rather than its confirmed one.
+ * Anything else would compare two differently-derived numbers and warn on the ordinary window while
+ * a tx is confirming.
+ */
+export const getEvmPendingNonceCeiling = (
+    pendingNonce: number,
+    transactions: WalletAccountTransaction[],
+): number => getEvmNonceInfoFromConfirmedNonce(pendingNonce, transactions).nextNonce;
+
+/**
+ * Whether the backend sees more in-flight txs than the account knows about — someone broadcast from
+ * another wallet after the last sync. Those txs are invisible to both nonce inputs, so a new send
+ * can collide with one: an underpriced-replacement rejection, or an unintended replacement.
+ *
+ * The opposite failure from `getEvmPendingNonceCeiling` — that one catches signing too high, this
+ * one too low. Own nonces are counted from `confirmedNonce` without requiring them to be
+ * contiguous: a gapped one does not advance the node's pending count, so counting it can only
+ * suppress a detection, never invent one.
+ */
+export const hasUnknownPendingEvmTxs = (
+    { pendingNonce, confirmedNonce }: { pendingNonce: number; confirmedNonce: number },
+    transactions: WalletAccountTransaction[],
+): boolean => pendingNonce > confirmedNonce + countOwnEvmNoncesFrom(confirmedNonce, transactions);
+
+/**
  * Builds the blockbook `privatePending` hint (trezor/blockbook#1639) for an EVM account from the
  * wallet's own pending sends, which blockbook's public provider may not see (private-relay
  * broadcast, or lag — trezor/blockbook#1562). The nonces raise its reported pending nonce to max+1;

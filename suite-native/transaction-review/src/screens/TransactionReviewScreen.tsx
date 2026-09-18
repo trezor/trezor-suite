@@ -53,6 +53,9 @@ export type TransactionReviewTxValidityFlow = {
 
 interface TransactionReviewScreenContentProps {
     children?: ReactNode;
+    // Rendered above the outputs list, for flow-specific warnings the review
+    // itself knows nothing about.
+    banners?: ReactNode;
     sheetController?: TransactionReviewSheetController;
     isManualSheetControlEnabled?: boolean;
     isBackInterceptorEnabled?: boolean;
@@ -64,6 +67,7 @@ interface TransactionReviewScreenContentProps {
 
 const TransactionReviewScreenContent = ({
     children,
+    banners,
     sheetController,
     isManualSheetControlEnabled = false,
     isBackInterceptorEnabled = true,
@@ -119,6 +123,8 @@ const TransactionReviewScreenContent = ({
                         />
                     )}
 
+                    {banners}
+
                     {review.renderOutputsList ? (
                         review.renderOutputsList()
                     ) : (
@@ -143,6 +149,7 @@ type TransactionReviewScreenProps = Omit<TransactionReviewProviderProps, 'childr
 
 export const TransactionReviewScreen = ({
     children,
+    banners,
     sheetController,
     isManualSheetControlEnabled,
     isBackInterceptorEnabled,
@@ -154,6 +161,7 @@ export const TransactionReviewScreen = ({
 }: TransactionReviewScreenProps) => (
     <TransactionReviewProvider {...providerProps}>
         <TransactionReviewScreenContent
+            banners={banners}
             sheetController={sheetController}
             isManualSheetControlEnabled={isManualSheetControlEnabled}
             isBackInterceptorEnabled={isBackInterceptorEnabled}

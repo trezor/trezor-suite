@@ -7,8 +7,14 @@ import { useAtomValue } from 'jotai';
 
 import { useServices } from '@suite-common/dependency-injection';
 import { injectDispatch } from '@suite-common/redux-utils';
-import { type AccountsRootState, selectAccountByKey } from '@suite-common/wallet-core';
+import {
+    type AccountsRootState,
+    selectAccountByKey,
+    selectIsEthereumNonceAbovePending,
+} from '@suite-common/wallet-core';
+import { BannerInline } from '@suite-native/atoms';
 import { useConfirmOnTrezorController } from '@suite-native/confirm-on-trezor';
+import { Translation } from '@suite-native/intl';
 import {
     type SendStackParamList,
     type SendStackRoutes,
@@ -50,6 +56,7 @@ export const SendOutputsReviewScreen = ({ route }: SendOutputsReviewScreenProps)
     );
 
     const isTransactionAlreadySigned = useSelector(selectIsTransactionAlreadySigned);
+    const isNonceAbovePending = useSelector(selectIsEthereumNonceAbovePending);
 
     const [isSendInProgress, setIsSendInProgress] = useState(false);
 
@@ -127,6 +134,14 @@ export const SendOutputsReviewScreen = ({ route }: SendOutputsReviewScreenProps)
             tokenContract={tokenContract}
             reviewOutputs={reviewOutputs}
             summaryOutput={summaryOutput}
+            banners={
+                isNonceAbovePending && (
+                    <BannerInline
+                        intent="warning"
+                        title={<Translation id="moduleSend.review.nonceAbovePendingWarning" />}
+                    />
+                )
+            }
             onSendTransaction={onSendTransaction}
             onSendTransactionConfirmed={onSendTransactionConfirmed}
             isTransactionAlreadySigned={isTransactionAlreadySigned}
