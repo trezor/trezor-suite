@@ -69,10 +69,11 @@ This is a Yarn workspaces monorepo orchestrated by Nx. `package.json` also inclu
   implementation is `desktop-app-api-electron`.
 - `suite-native/` (`@suite-native/*`): Mobile features and `app` (Expo/React Native); may use peers,
   shared logic and reusable libraries, never desktop/web app code.
-- `packages/suite*`: Remaining app-layer exception to the `packages/` convention: `suite` contains
-  the web/desktop React app shared by both application roots, and `suite-build` still holds their
-  Webpack configuration. Existing app composition depends on `@suite/*` and `@suite-common/*`; this
-  is not permission to introduce app dependencies into reusable libraries.
+- `packages/suite`: Remaining app-layer exception to the `packages/` convention. It contains the
+  web/desktop React app shared by both application roots, and `packages/suite/webpack` holds the
+  Webpack pieces they share; each application owns its own `webpack.config.ts`. Existing app
+  composition depends on `@suite/*` and `@suite-common/*`; this is not permission to introduce
+  app dependencies into reusable libraries.
 
 Keep dependencies acyclic. Web/desktop Redux assembly is in `packages/suite/src/reducers/store.ts`;
 native assembly is in `suite-native/state/src/createReduxStore.ts`. Shared slices live in

@@ -38,6 +38,11 @@
             "path": "../../packages/transport-web"
         },
         { "path": "../../packages/utils" },
+        { "path": "../../suite-common/flags" },
+        {
+            "path": "../../suite-common/suite-config"
+        },
+        { "path": "../router-config" },
         { "path": "../sentry" },
         { "path": "../../packages/eslint" }
     ]

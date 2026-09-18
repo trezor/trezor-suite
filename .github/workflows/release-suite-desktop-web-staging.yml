@@ -65,7 +65,7 @@ jobs:
       - name: Install deps and build libs
         run: |
           # Must be the same list of workspaces as in .github/workflows/build-desktop-apps.yml
-          yarn workspaces focus trezor-suite @suite/desktop-app @suite/desktop-app-renderer @suite/desktop-app-main @trezor/suite-build @suite/app-assets @trezor/transport-bridge @suite-common/message-system
+          yarn workspaces focus trezor-suite @suite/desktop-app @suite/desktop-app-renderer @suite/desktop-app-main @trezor/suite @suite/app-assets @trezor/transport-bridge @suite-common/message-system
           yarn message-system-sign-config
           yarn workspace @suite/app-assets build:lib
           yarn workspace @trezor/transport-bridge build:lib
@@ -190,7 +190,7 @@ jobs:
         run: |
           echo -e "\nenableHardenedMode: false" >> .yarnrc.yml
           # Must be the same list of workspaces as in .github/workflows/build-suite-web.yml
-          yarn workspaces focus @suite/web-app @suite/app-assets @trezor/suite-build @suite-common/message-system
+          yarn workspaces focus @suite/web-app @trezor/suite @suite/app-assets @suite-common/message-system
 
       - name: Build suite-web
         env:
@@ -243,7 +243,7 @@ jobs:
       - name: Install deps and build libs
         run: |
           # Must be the same list of workspaces as in .github/workflows/build-desktop-apps.yml
-          yarn workspaces focus trezor-suite @suite/desktop-app @suite/desktop-app-renderer @suite/desktop-app-main @trezor/suite-build @suite/app-assets @trezor/transport-bridge @suite-common/message-system
+          yarn workspaces focus trezor-suite @suite/desktop-app @suite/desktop-app-renderer @suite/desktop-app-main @trezor/suite @suite/app-assets @trezor/transport-bridge @suite-common/message-system
           yarn message-system-sign-config
           yarn workspace @suite/app-assets build:lib
           yarn workspace @trezor/transport-bridge build:lib

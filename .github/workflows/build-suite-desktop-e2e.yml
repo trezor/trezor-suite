@@ -33,7 +33,7 @@ jobs:
           version: v0.19.1
       - name: Install dependencies
         shell: bash
-        run: yarn workspaces focus @suite/desktop-app @suite/desktop-app-main @trezor/suite-build @trezor/suite @suite/app-assets @trezor/transport-bridge @suite-common/message-system @suite/desktop-app-renderer
+        run: yarn workspaces focus @suite/desktop-app @suite/desktop-app-main @trezor/suite @suite/app-assets @trezor/transport-bridge @suite-common/message-system @suite/desktop-app-renderer
 
       - name: Build libs
         shell: bash

@@ -264,6 +264,7 @@
         { "path": "../type-utils" },
         { "path": "../urls" },
         { "path": "../utils" },
+        { "path": "../bundler-security" },
         { "path": "../eslint" }
     ]
 }
