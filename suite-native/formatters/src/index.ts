@@ -6,10 +6,10 @@ export { BaseCurrencyAmountLargeFormatter } from './components/BaseCurrencyAmoun
 export { TransactionIdFormatter } from './components/TransactionIdFormatter';
 export { PercentageDifferenceFormatter } from './components/PercentageDifferenceFormatter';
 export { BaseCurrencyAmountFormatter } from './components/BaseCurrencyAmountFormatter';
-export { CompactCryptoAmountFormatter } from './components/CompactCryptoAmountFormatter';
-export { CompactTokenAmountFormatter } from './components/CompactTokenAmountFormatter';
-export { ExactCryptoAmountFormatter } from './components/ExactCryptoAmountFormatter';
-export { ExactTokenAmountFormatter } from './components/ExactTokenAmountFormatter';
+export { CryptoAmountFormatter } from './components/CryptoAmountFormatter';
+export type { CryptoAmountFormatterProps } from './components/CryptoAmountFormatter';
+export { TokenAmountFormatter } from './components/TokenAmountFormatter';
+export type { TokenAmountFormatterProps } from './components/TokenAmountFormatter';
 export { NetworkDisplaySymbolNameFormatter } from './components/NetworkDisplaySymbolNameFormatter';
 export { TokenToFiatAmountFormatter } from './components/TokenToFiatAmountFormatter';
 export { SignValueFormatter } from './components/SignValueFormatter';

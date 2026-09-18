@@ -26,8 +26,8 @@ import {
 } from '@suite-native/atoms';
 import { useCopyToClipboard } from '@suite-native/clipboard';
 import {
+    CryptoAmountFormatter,
     CryptoToFiatAmountFormatter,
-    ExactCryptoAmountFormatter,
     TransactionIdFormatter,
 } from '@suite-native/formatters';
 import { Icon, NetworkIcon, TokenIcon } from '@suite-native/icons';
@@ -291,11 +291,11 @@ export const YieldPendingTransactionModal = ({
                     >
                         {fee ? (
                             <VStack alignItems="flex-end" spacing="sp2">
-                                <ExactCryptoAmountFormatter
+                                <CryptoAmountFormatter
                                     value={fee}
                                     symbol={accountSymbol}
                                     color="contentPrimary"
-                                    isBalance={false}
+                                    valueUnit="smallest"
                                     isDiscreetText={false}
                                 />
                                 <CryptoToFiatAmountFormatter

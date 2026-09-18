@@ -7,7 +7,7 @@ import {
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { type TokenAddress, type TokenSymbol } from '@suite-common/wallet-types';
 import {
-    ExactTokenAmountFormatter,
+    TokenAmountFormatter,
     TokenToFiatAmountFormatter,
     convertTokenValueToDecimal,
 } from '@suite-native/formatters';
@@ -42,9 +42,9 @@ export const TokenInfoCard = ({
         <AccountImportOverviewCard
             coinName={name}
             cryptoAmount={
-                <ExactTokenAmountFormatter
+                <TokenAmountFormatter
                     value={convertTokenValueToDecimal(balance, decimals ?? 0)}
-                    tokenSymbol={tokenSymbol}
+                    symbol={tokenSymbol}
                     maxDisplayedDecimals={decimals}
                     variant="body-xs"
                 />

@@ -1,10 +1,10 @@
 import { getDisplaySymbol, getNetworkDisplaySymbolName } from '@suite-common/wallet-config';
-import { type Account, type TokenInfoBranded, type TokenSymbol } from '@suite-common/wallet-types';
+import { type Account, type TokenInfoBranded, toTokenSymbol } from '@suite-common/wallet-types';
 import { Box, Card, HStack, Text } from '@suite-native/atoms';
 import {
-    CompactCryptoAmountFormatter,
-    CompactTokenAmountFormatter,
+    CryptoAmountFormatter,
     CryptoToFiatAmountFormatter,
+    TokenAmountFormatter,
     TokenToFiatAmountFormatter,
     asDecimalTokenAmount,
 } from '@suite-native/formatters';
@@ -52,8 +52,8 @@ export const YourPositionCard = ({ account, token }: YourPositionCardProps) => {
     const tokenName = token?.name ?? getNetworkDisplaySymbolName(symbol);
     const balance = token?.balance ?? account?.formattedBalance ?? '0';
     const tokenAmountSymbol = token?.symbol
-        ? (getDisplaySymbol(token.symbol) as TokenSymbol)
-        : null;
+        ? toTokenSymbol(getDisplaySymbol(token.symbol))
+        : undefined;
 
     return (
         <Card style={applyStyle(cardStyle)} noShadow>
@@ -112,20 +112,21 @@ export const YourPositionCard = ({ account, token }: YourPositionCardProps) => {
                         )}
 
                         {token ? (
-                            <CompactTokenAmountFormatter
+                            <TokenAmountFormatter
+                                formatStyle="compact-balance"
                                 value={asDecimalTokenAmount(token.balance ?? '0')}
-                                tokenSymbol={tokenAmountSymbol}
-                                tokenDecimals={token.decimals}
+                                symbol={tokenAmountSymbol}
+                                decimals={token.decimals}
                                 numberOfLines={1}
                                 adjustsFontSizeToFit
                                 variant="body-sm"
                                 color="contentSecondary"
                             />
                         ) : (
-                            <CompactCryptoAmountFormatter
+                            <CryptoAmountFormatter
+                                formatStyle="compact-balance"
                                 value={balance}
                                 symbol={symbol}
-                                isBalance={true}
                                 numberOfLines={1}
                                 adjustsFontSizeToFit
                                 variant="body-sm"

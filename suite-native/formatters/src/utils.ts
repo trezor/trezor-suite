@@ -4,7 +4,6 @@ import { BigNumber } from '@trezor/utils';
 // A token amount guaranteed to be in decimal units, not base units. Token formatters accept only this.
 export type DecimalTokenAmount = string & Branded<'DecimalTokenAmount'>;
 
-// Base units → decimal.
 export const convertTokenValueToDecimal = (
     value: string | number,
     decimals: number,
