@@ -3,8 +3,8 @@ import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { type Account, type AccountKey } from '@suite-common/wallet-types';
 import { mockAccountKey } from '@suite-common/wallet-types/mocks';
 
-import { type AccountVotingDelegation } from './stakingActions';
-import { DEFAULT_VOTING_OPTION } from './stakingConstants';
+import { DEFAULT_VOTING_OPTION } from './cardano/cardanoStakingConstants';
+import { type AccountVotingDelegation } from './cardano/cardanoStakingTypes';
 import { stakeInitialState } from './stakingReducer';
 import type { StakeRootState } from './stakingReducerTypes';
 import {

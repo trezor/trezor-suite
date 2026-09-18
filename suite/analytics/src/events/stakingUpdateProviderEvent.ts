@@ -62,9 +62,13 @@ export const stakingUpdateProviderEvent: EventDef<Attributes, EventType.StakingU
                     version: '26.9.0',
                     notes: 'added `current` for Cardano, reported when the delegation already registered on-chain is kept',
                 },
+                {
+                    version: '26.10.0',
+                    notes: 'added `abstain` for Cardano; reported from the `stake-form-modal` step instead of `funds-maintained-modal`, where the selection moved',
+                },
             ],
             description:
-                'Voting delegation provider: `everstake` for Everstake provider, `another_drep` for other delegation providers, `current` to keep the delegation the account is already registered with (Cardano only, covers the predefined DReps that have no bech32 form); for Tron, the Super Representative address or `custom`',
+                'Voting delegation provider: `abstain` for the default abstain vote, `everstake` for Everstake provider, `another_drep` for other delegation providers, `current` to keep the delegation the account is already registered with (Cardano only, covers the predefined DReps that have no bech32 form); for Tron, the Super Representative address or `custom`',
         },
     },
 };

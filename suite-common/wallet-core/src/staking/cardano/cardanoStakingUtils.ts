@@ -6,7 +6,10 @@ import {
     FIVE_BINARIES_POOLS,
     type NetworkSymbol,
 } from '@suite-common/wallet-config';
-import { CARDANO_EVERSTAKE_STAKING_POOL } from '@suite-common/wallet-constants';
+import {
+    CARDANO_EVERSTAKE_DREP,
+    CARDANO_EVERSTAKE_STAKING_POOL,
+} from '@suite-common/wallet-constants';
 import {
     type Account,
     type StakeType,
@@ -16,6 +19,9 @@ import {
 } from '@suite-common/wallet-types';
 import { PROTO } from '@trezor/connect';
 import { BigNumber, isArrayMember } from '@trezor/utils';
+
+import { CARDANO_ALWAYS_ABSTAIN_DREP_ID } from './cardanoStakingConstants';
+import { type VotingDelegationOption } from './cardanoStakingTypes';
 
 export function isSupportedAdaStakingNetworkSymbol(
     symbol: NetworkSymbol,
@@ -56,6 +62,23 @@ export const isCardanoWithdrawalBlockedByMissingDrep = (account?: Account) => {
     const rewards = account.misc?.staking?.rewards ?? '0';
 
     return new BigNumber(rewards).gt(0) && !hasCardanoLiveVoteDelegation(account);
+};
+
+export const getCardanoCurrentVotingOption = (
+    account?: Account,
+): VotingDelegationOption | undefined => {
+    const drepId = getCardanoAccountDrepId(account);
+
+    switch (drepId) {
+        case null:
+            return undefined;
+        case CARDANO_ALWAYS_ABSTAIN_DREP_ID:
+            return { type: 'abstain' };
+        case CARDANO_EVERSTAKE_DREP.bech32:
+            return { type: 'everstake' };
+        default:
+            return { type: 'another_drep', drepId };
+    }
 };
 
 export const isCardanoStakedWithEverstake = (

@@ -9,11 +9,16 @@ import {
     selectAdaAccountHasStaked,
     selectSolAccountHasStaked,
 } from '../accounts/accountsSelectors';
+import { DEFAULT_VOTING_OPTION } from './cardano/cardanoStakingConstants';
 import {
     selectCardanoRewardsBalanceByAccountKey,
     selectCardanoStakedBalanceByAccountKey,
     selectVisibleDeviceCardanoAccountsWithStakingByNetworkSymbol,
 } from './cardano/cardanoStakingSelectors';
+import type {
+    AccountVotingDelegation,
+    VotingDelegationOption,
+} from './cardano/cardanoStakingTypes';
 import {
     selectEthereumAccountHasStaking,
     selectEthereumCanClaimByAccountKey,
@@ -42,8 +47,6 @@ import {
     selectVisibleDeviceSolanaAccountsWithStakingByNetworkSymbol,
 } from './solana/solanaStakingSelectors';
 import { getSolanaCryptoBalanceWithStaking } from './solana/solanaStakingUtils';
-import type { AccountVotingDelegation, VotingDelegationOption } from './stakingActions';
-import { DEFAULT_VOTING_OPTION } from './stakingConstants';
 import type { StakeRootState } from './stakingReducerTypes';
 import {
     selectTronAccountHasStaked,
