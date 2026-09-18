@@ -8,6 +8,11 @@ export const webComponents: Record<PageName, LazyExoticComponent<ComponentType>>
             ({ Dashboard }) => ({ default: Dashboard }),
         ),
     ),
+    'suite-hidden-tokens': lazy(() =>
+        import(/* webpackChunkName: "dashboard" */ 'src/views/dashboard/HiddenTokens/index').then(
+            ({ HiddenTokens }) => ({ default: HiddenTokens }),
+        ),
+    ),
     'suite-earn': lazy(() =>
         import(/* webpackChunkName: "earn" */ 'src/views/earn/index').then(({ Earn }) => ({
             default: Earn,

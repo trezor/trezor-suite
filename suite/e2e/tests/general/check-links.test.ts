@@ -116,6 +116,7 @@ async function checkLinks(page: Page, urls: string[]) {
 const SECTIONS = {
     general: [
         '/',
+        '/hidden-tokens',
         '/notifications',
         '/version',
         '/bridge',
