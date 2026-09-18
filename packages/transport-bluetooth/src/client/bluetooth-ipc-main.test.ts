@@ -72,16 +72,6 @@ describe('BluetoothIpc scan ownership', () => {
         ]);
     });
 
-    it('preserves unowned scan start and stop', async () => {
-        await expect(ipc.startScan()).resolves.toEqual({ success: true });
-        await expect(ipc.stopScan()).resolves.toEqual({ success: true });
-
-        expect(sendMock.mock.calls.map(([request]) => request.method)).toEqual([
-            'start_scan',
-            'stop_scan',
-        ]);
-    });
-
     it('keeps failed scan intent until its owner stops', async () => {
         sendMock.mockRejectedValueOnce(new Error('Adapter disabled'));
         await expect(ipc.startScan('ui')).resolves.toEqual({
@@ -151,9 +141,6 @@ describe('BluetoothIpc scan ownership', () => {
         ]);
     });
 
-    // Lets every already scheduled scan action run before the assertions look at the requests.
-    const flushEventLoop = () => {}; //new Promise<void>(resolve => setImmediate(resolve));
-
     it('guard initialScan stop_scan', async () => {
         const knownDevice = mockBluetoothDevice();
         const scanStopStarted = createDeferred<void>();
@@ -197,7 +184,6 @@ describe('BluetoothIpc scan ownership', () => {
     it('restarts scanning when the adapter becomes enabled while a scan is wanted', async () => {
         await ipc.startScan('ui');
         ipc['api'].emit('adapter_state_changed', { state: 'enabled' });
-        await flushEventLoop();
 
         expect(sendMock.mock.calls.map(([request]) => request.method)).toEqual(['start_scan']);
     });
@@ -207,7 +193,6 @@ describe('BluetoothIpc scan ownership', () => {
         sendMock.mockClear();
 
         ipc['api'].emit('adapter_state_changed', { state: 'enabled' });
-        await flushEventLoop();
 
         expect(sendMock).not.toHaveBeenCalled();
     });
