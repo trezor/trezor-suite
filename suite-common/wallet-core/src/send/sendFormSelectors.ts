@@ -28,6 +28,8 @@ export const selectPrecomposedSendForm = (state: SendRootState) =>
     state.wallet.send.precomposedForm;
 export const selectResolvedEthereumNonce = (state: SendRootState) =>
     state.wallet.send.resolvedEthereumNonce;
+export const selectIsEthereumNonceAbovePending = (state: SendRootState) =>
+    state.wallet.send.isEthereumNonceAbovePending === true;
 
 export const selectSendFormDraftByKey = (
     state: SendRootState,
