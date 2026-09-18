@@ -1,3 +1,4 @@
+export * from './fields/SelectField';
 export * from './fields/TextInputField';
 export * from './fields/SecureTextInputField';
 export * from './Form';
