@@ -58,6 +58,17 @@ describe('slugify', () => {
         expect(slugify('release/2026-09 (rc1)')).toBe('release__2026-09-rc1');
         expect(slugify('')).toBe('unknown');
     });
+
+    it('trims dashes off both ends', () => {
+        expect(slugify('---feat--thing---')).toBe('feat--thing');
+    });
+
+    it('stays linear on a long run of dashes, which a backtracking trim would not', () => {
+        const started = Date.now();
+
+        expect(slugify(`${'-'.repeat(200_000)}x`)).toBe('x');
+        expect(Date.now() - started).toBeLessThan(1000);
+    });
 });
 
 describe('keys', () => {
