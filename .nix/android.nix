@@ -56,7 +56,37 @@ rec {
     ln -sfn "${androidComposition.androidsdk}/libexec/android-sdk/ndk" "$ANDROID_HOME/ndk"
     ln -sfn "${androidComposition.androidsdk}/libexec/android-sdk/cmake" "$ANDROID_HOME/cmake"
     ln -sfn "${androidComposition.androidsdk}/libexec/android-sdk/licenses" "$ANDROID_HOME/licenses"
-    
+
+    # Entering a shell roots the SDK only for the lifetime of that process, so the
+    # weekly nix-collect-garbage deletes this 13.9 GiB closure between sessions and
+    # the next entry refetches it from Google. Register a persistent indirect root
+    # so the symlinks above keep resolving. Rooting the SDK rather than the whole
+    # shell also keeps the emulator and both system images, which are inside its
+    # closure, without retaining every development tool.
+    #
+    # The root is per-user and shared by every checkout, matching the ~/.android
+    # arrangement above, so it protects whichever SDK a shell selected last. A
+    # checkout on a different Android revision repoints it and the previously
+    # pinned closure becomes collectable again.
+    #
+    #   inspect: nix-store --gc --print-roots | grep trezor-suite-android-shell
+    #   remove:  rm ~/.local/state/nix/gcroots/trezor-suite-android-shell
+    trezorAndroidSdkRoot="''${XDG_STATE_HOME:-$HOME/.local/state}/nix/gcroots/trezor-suite-android-shell"
+    if [ "$(readlink "$trezorAndroidSdkRoot" 2>/dev/null)" != "${androidComposition.androidsdk}" ]; then
+      mkdir -p "$(dirname "$trezorAndroidSdkRoot")"
+      # Concurrent shell entries would otherwise race on the same link.
+      (
+        ${pkgs.util-linux}/bin/flock 9
+        if [ "$(readlink "$trezorAndroidSdkRoot" 2>/dev/null)" != "${androidComposition.androidsdk}" ]; then
+          # nix-store writes the link only once realisation succeeds, so a failure
+          # leaves an existing pin in place rather than dropping protection.
+          nix-store --realise "${androidComposition.androidsdk}" \
+            --add-root "$trezorAndroidSdkRoot" --indirect >/dev/null \
+            && echo "✓ Pinned Android SDK against garbage collection"
+        fi
+      ) 9>"$trezorAndroidSdkRoot.lock"
+    fi
+
     # Add Android tools to PATH
     export PATH="${androidComposition.androidsdk}/bin:$PATH"
     export PATH="$ANDROID_HOME/platform-tools:$PATH"
