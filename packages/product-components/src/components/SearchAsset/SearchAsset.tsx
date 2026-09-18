@@ -1,9 +1,10 @@
+import type { NetworkSymbol } from '@suite-common/wallet-config';
 import { Icon, Input, Row, Select, Text } from '@trezor/components';
 import { MagnifyingGlassIcon } from '@trezor/icons';
 
 import { type SearchAssetSelectConfig, useNetworkSelect } from './hooks/useNetworkSelect';
 
-export type SearchAssetProps<TSymbol extends string = string> = {
+export type SearchAssetProps<TSymbol extends NetworkSymbol = NetworkSymbol> = {
     searchPlaceholder: string;
     search: string;
     setSearch: (value: string) => void;
@@ -11,7 +12,7 @@ export type SearchAssetProps<TSymbol extends string = string> = {
     autoFocus?: boolean;
 };
 
-export const SearchAsset = <TSymbol extends string>({
+export const SearchAsset = <TSymbol extends NetworkSymbol>({
     searchPlaceholder,
     search,
     setSearch,

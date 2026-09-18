@@ -1,4 +1,3 @@
-import { useMemo } from 'react';
 import styled from 'styled-components';
 
 import { events, injectDesktopAnalytics } from '@suite/analytics';
@@ -12,10 +11,9 @@ import { injectDispatch } from '@suite-common/redux-utils';
 import { selectEnabledNetworks } from '@suite-common/wallet-core';
 import { Box, Button, Column, H3, Illustration, Paragraph, Row } from '@trezor/components';
 import { ArrowDownIcon, CurrencyCircleDollarIcon } from '@trezor/icons';
-import { NetworkIconSet } from '@trezor/product-components/src/components/NetworkIconSet/NetworkIconSet';
+import { NetworkIconSet } from '@trezor/product-components';
 
 import { useSelector } from 'src/hooks/suite';
-import { getNetworkParams } from 'src/utils/suite/getNetworkParams';
 
 const RoundedBorder = styled.div`
     padding: 4px 6px 4px 12px;
@@ -29,17 +27,6 @@ export const EmptyWallet = () => {
     const networkNamesMap = useSelector(selectNetworkNamesMap);
     const isBitcoinOnlyFirmware = useSelector(selectHasBitcoinOnlyFirmware);
     const isOnboardingFeedbackBannerShown = useSelector(selectIsOnboardingFeedbackBannerShown);
-
-    const networks = useMemo(
-        () =>
-            getNetworkParams({
-                symbols: enabledNetworks,
-                networkNamesMap,
-                iconSize: 20,
-                iconType: 'token',
-            }),
-        [enabledNetworks, networkNamesMap],
-    );
 
     const clearOnboardingFeedbackBanner = () => {
         if (isOnboardingFeedbackBannerShown) {
@@ -92,7 +79,9 @@ export const EmptyWallet = () => {
                         </Paragraph>
                         <Box height={20}>
                             <NetworkIconSet
-                                networks={networks}
+                                networks={enabledNetworks}
+                                networkNamesMap={networkNamesMap}
+                                isToken
                                 size={20}
                                 gap={16}
                                 maxVisibleIcons={null}

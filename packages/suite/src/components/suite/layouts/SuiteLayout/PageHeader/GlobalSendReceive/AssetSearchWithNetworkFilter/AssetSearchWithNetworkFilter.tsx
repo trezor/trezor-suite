@@ -13,7 +13,6 @@ import { SearchAsset } from '@trezor/product-components';
 import { useListScrollReset } from 'src/components/suite/asset-picker/hooks';
 import { useSelector } from 'src/hooks/suite';
 import { selectProtocolSendFormScheme } from 'src/selectors/suite/protocolSelectors';
-import { getNetworkParams } from 'src/utils/suite/getNetworkParams';
 
 import { useNetworkFilter } from './hooks/useNetworkFilter';
 import { useSearchFilter } from './hooks/useSearchFilter';
@@ -46,14 +45,8 @@ export const AssetSearchWithNetworkFilter = memo(function AssetSearchWithNetwork
     );
 
     const networks = useMemo(
-        () =>
-            getNetworkParams({
-                symbols: protocolSymbol ? [protocolSymbol] : enabledNetworks,
-                networkNamesMap,
-                iconSize: 20,
-                iconType: 'network',
-            }),
-        [protocolSymbol, enabledNetworks, networkNamesMap],
+        () => (protocolSymbol ? [protocolSymbol] : enabledNetworks),
+        [protocolSymbol, enabledNetworks],
     );
 
     const { translationString } = useTranslation();
@@ -64,6 +57,7 @@ export const AssetSearchWithNetworkFilter = memo(function AssetSearchWithNetwork
         ? undefined
         : {
               networks,
+              networkNamesMap,
               selectedNetwork: networkFilter,
               onChange: setNetworkFilter,
               includeAllOption: !protocolSymbol,

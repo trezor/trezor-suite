@@ -7,24 +7,12 @@ import {
     NetworkIconSet as NetworkIconSetComponent,
     type NetworkIconSetProps,
 } from './NetworkIconSet';
-import type { NetworkParams } from '../../NetworkParams';
-import { TokenIcon } from '../TokenIcon/TokenIcon';
 import { allowedTokenIconSizes } from '../TokenIcon/tokenIconTypes';
 
-type NetworkIconSetStoryProps = Omit<NetworkIconSetProps, 'networks'> & {
-    networks: Omit<NetworkParams<NetworkSymbol>, 'icon'>[];
-};
-
-const NETWORK_1: NetworkParams<NetworkSymbol> = { symbol: asNetworkSymbol('btc'), name: 'Bitcoin' };
-const NETWORK_2: NetworkParams<NetworkSymbol> = {
-    symbol: asNetworkSymbol('eth'),
-    name: 'Ethereum',
-};
-const NETWORK_3: NetworkParams<NetworkSymbol> = {
-    symbol: asNetworkSymbol('ltc'),
-    name: 'Litecoin',
-};
-const NETWORK_4: NetworkParams<NetworkSymbol> = { symbol: asNetworkSymbol('ada'), name: 'Cardano' };
+const NETWORK_1: NetworkSymbol = asNetworkSymbol('btc');
+const NETWORK_2: NetworkSymbol = asNetworkSymbol('eth');
+const NETWORK_3: NetworkSymbol = asNetworkSymbol('ltc');
+const NETWORK_4: NetworkSymbol = asNetworkSymbol('ada');
 
 const meta: Meta<typeof NetworkIconSetComponent> = {
     title: 'NetworkIconSet',
@@ -32,18 +20,16 @@ const meta: Meta<typeof NetworkIconSetComponent> = {
 };
 export default meta;
 
-export const NetworkIconSet: StoryObj<NetworkIconSetStoryProps> = {
-    render: ({ networks, ...props }) => (
-        <NetworkIconSetComponent
-            {...props}
-            networks={networks.map(network => ({
-                ...network,
-                icon: <TokenIcon symbol={network.symbol} size={props.size} />,
-            }))}
-        />
-    ),
+export const NetworkIconSet: StoryObj<NetworkIconSetProps> = {
     args: {
         networks: [NETWORK_1, NETWORK_2, NETWORK_3, NETWORK_4],
+        networkNamesMap: {
+            [NETWORK_1]: 'Bitcoin',
+            [NETWORK_2]: 'Ethereum',
+            [NETWORK_3]: 'Litecoin',
+            [NETWORK_4]: 'Cardano',
+        },
+        isToken: true,
         size: 24,
         gap: 16,
         maxVisibleIcons: 3,
@@ -52,6 +38,9 @@ export const NetworkIconSet: StoryObj<NetworkIconSetStoryProps> = {
         isReversed: true,
     },
     argTypes: {
+        isToken: {
+            control: 'boolean',
+        },
         networks: {
             options: ['1', '2', '3', '4'],
             mapping: {
