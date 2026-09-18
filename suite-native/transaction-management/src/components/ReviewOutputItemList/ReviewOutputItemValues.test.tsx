@@ -43,4 +43,14 @@ describe('ReviewOutputItemValues', () => {
         expect(getByText('1 usdc')).toBeOnTheScreen();
         expect(getByText('$0.99')).toBeOnTheScreen();
     });
+
+    it('renders zero ETH when the transaction has no token', async () => {
+        const { getByText, queryByText } = await renderReviewOutputItemValues(
+            { value: '0' },
+            { wallet: getWalletState() },
+        );
+
+        expect(getByText('0 ETH')).toBeOnTheScreen();
+        expect(queryByText(/usdc/)).toBeNull();
+    });
 });
