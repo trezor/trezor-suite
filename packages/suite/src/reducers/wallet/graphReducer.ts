@@ -32,7 +32,7 @@ export type GraphRootState = {
 export const selectGraph = (state: GraphRootState) => state.wallet.graph;
 export const selectGraphSelectedRange = (state: GraphRootState) => state.wallet.graph.selectedRange;
 
-const initialState: GraphState = {
+export const graphInitialState: GraphState = {
     data: [],
     selectedRange: SETTINGS.DEFAULT_GRAPH_RANGE,
     error: null,
@@ -120,7 +120,7 @@ const remove = (draft: GraphState, accounts: Account[]) => {
     updateError(draft);
 };
 
-const graphReducer = (state: GraphState = initialState, action: UnknownAction): GraphState =>
+const graphReducer = (state: GraphState = graphInitialState, action: UnknownAction): GraphState =>
     produce(state, draft => {
         if (storageLoad.match(action)) {
             loadFromStorage(draft, action.payload.graph);

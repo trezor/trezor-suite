@@ -23,6 +23,7 @@ import { type AppState } from 'src/reducers/store';
 import { type ProtocolState } from 'src/reducers/suite/protocolReducer';
 import { suiteInitialState } from 'src/reducers/suite/suiteReducer';
 import { type WalletState } from 'src/reducers/wallet';
+import { graphInitialState } from 'src/reducers/wallet/graphReducer';
 
 export const mockInitialAppState: AppState = {
     networks: null,
@@ -83,6 +84,7 @@ export const mockInitialAppState: AppState = {
             enabledNetworks: [] as NetworkSymbol[],
         },
         blockchain: {},
+        graph: graphInitialState,
     } as WalletState, // Todo: maybe one day, fix types
     desktopUpdate: desktopUpdateInitialState,
     router: {

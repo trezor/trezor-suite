@@ -470,6 +470,7 @@ export const getDefaultActionByCategory = (category: Category): Action => {
 export const getDefaultExperiment = (): Experiments => ({
     experiment: {
         id: crypto.randomUUID(),
+        name: 'New experiment',
         groups: [
             {
                 variant: 'A',

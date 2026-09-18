@@ -13,6 +13,7 @@ import { useSelector } from 'src/hooks/suite';
 import { AccountName } from './AccountName/AccountName';
 import { AccountSubpageName } from './AccountName/AccountSubpageName';
 import { BasicName } from './BasicName';
+import { HiddenTokensName } from './HiddenTokensName';
 import { SettingsName } from './SettingsName';
 
 export const PageName = () => {
@@ -28,6 +29,10 @@ export const PageName = () => {
     // TODO: does not work properly with foreground apps, e.g. FW update,
     // as the `route` does not indicate the current page
     // (however location.pathname does)
+    if (currentRoute === 'suite-hidden-tokens') {
+        return <HiddenTokensName />;
+    }
+
     if (currentRoute?.includes('settings')) {
         return <SettingsName />;
     }
@@ -58,7 +63,7 @@ export const PageName = () => {
 
     return (
         <BasicName>
-            <Translation id="TR_DASHBOARD" />
+            <Translation id="TR_HOME" />
         </BasicName>
     );
 };

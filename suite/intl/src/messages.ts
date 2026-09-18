@@ -1741,6 +1741,43 @@ export const messages = defineMessages({
             'Add spaces to addresses for easier reading. When off, addresses are shown as a continuous string.',
         id: 'TR_ADDRESS_DISPLAY_DESCRIPTION',
     },
+    TR_ASSET_FIRST_TOTAL_BALANCE: {
+        defaultMessage: 'Total balance',
+        id: 'TR_ASSET_FIRST_TOTAL_BALANCE',
+    },
+    TR_ASSET_FIRST_WEEK_PERIOD: {
+        defaultMessage: '7d',
+        id: 'TR_ASSET_FIRST_WEEK_PERIOD',
+    },
+    TR_ASSET_FIRST_GROUPING: {
+        defaultMessage: 'Group assets',
+        id: 'TR_ASSET_FIRST_GROUPING',
+    },
+    TR_ASSET_FIRST_GROUPING_DEFAULT: {
+        defaultMessage: 'Default',
+        id: 'TR_ASSET_FIRST_GROUPING_DEFAULT',
+    },
+    TR_ASSET_FIRST_GROUPING_NETWORKS: {
+        defaultMessage: 'By networks',
+        id: 'TR_ASSET_FIRST_GROUPING_NETWORKS',
+    },
+    TR_ASSET_FIRST_UNHIDE: {
+        defaultMessage: 'Unhide',
+        id: 'TR_ASSET_FIRST_UNHIDE',
+    },
+    TR_ASSET_FIRST_UNHIDE_TITLE: {
+        defaultMessage: 'Unhide {asset}?',
+        id: 'TR_ASSET_FIRST_UNHIDE_TITLE',
+    },
+    TR_ASSET_FIRST_UNHIDE_TEXT: {
+        defaultMessage:
+            'This token appears to be suspicious and may be a scam. Unhiding will show it in your asset list again.',
+        id: 'TR_ASSET_FIRST_UNHIDE_TEXT',
+    },
+    TR_ASSET: {
+        defaultMessage: 'Asset',
+        id: 'TR_ASSET',
+    },
     TR_ASSETS: {
         defaultMessage: 'Network',
         id: 'TR_ASSETS',
@@ -5296,6 +5333,10 @@ export const messages = defineMessages({
     TR_DASHBOARD: {
         id: 'TR_DASHBOARD',
         defaultMessage: 'Dashboard',
+    },
+    TR_HOME: {
+        id: 'TR_HOME',
+        defaultMessage: 'Home',
     },
     TR_EARN: {
         id: 'TR_EARN',

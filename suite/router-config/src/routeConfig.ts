@@ -49,6 +49,11 @@ export const routes = [
         params: dashboardParams,
     },
     {
+        name: 'suite-hidden-tokens',
+        pattern: '/hidden-tokens',
+        app: 'dashboard',
+    },
+    {
         name: 'suite-earn',
         pattern: '/earn',
         app: 'earn',
