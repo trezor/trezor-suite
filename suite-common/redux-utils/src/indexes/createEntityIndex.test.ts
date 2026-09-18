@@ -22,6 +22,41 @@ const createIndex = () => {
     return { index, getEntities };
 };
 
+describe('an index over a source that is already its entities', () => {
+    const createBareIndex = () =>
+        createEntityIndex({
+            name: 'bareThings',
+            selectSource: (state: State) => state.things,
+            getId: (thing: Thing) => thing.id,
+            groupBy: { byValue: (thing: Thing) => thing.value },
+        });
+
+    it('takes the source for the entities when it is not told how to read them', () => {
+        const index = createBareIndex();
+
+        expect(index.getById(createState([a, b]), 'b')).toBe(b);
+    });
+
+    it('lists them in the order the source holds them', () => {
+        const index = createBareIndex();
+
+        expect(index.getIds(createState([b, a]))).toEqual(['b', 'a']);
+    });
+
+    it('groups them', () => {
+        const index = createBareIndex();
+
+        expect(index.getBy(createState([a, b]), 'byValue', 'second')).toEqual([b]);
+    });
+
+    it('rebuilds when the source is replaced', () => {
+        const index = createBareIndex();
+        index.getIds(createState([a]));
+
+        expect(index.getIds(createState([a, b]))).toEqual(['a', 'b']);
+    });
+});
+
 describe('createEntityIndex', () => {
     it('builds nothing until it is read', () => {
         const { getEntities } = createIndex();
