@@ -73,13 +73,18 @@ export const selectBannerMessage = createMemoizedSelector(
 export const selectContextMessageContent = createMemoizedSelector(
     [
         selectActiveContextMessages,
-        (_state, domain: ContextDomain) => domain,
+        (_state, domain: ContextDomain | readonly ContextDomain[]) => domain,
         (_state, _domain, language: string) => language,
     ],
     (activeContextMessages, domain, language) => {
-        const message = activeContextMessages.find(({ context }) =>
-            [context?.domain].flat().includes(domain),
-        );
+        const requestedDomains = [domain].flat();
+        const message = activeContextMessages.find(({ context }) => {
+            const messageDomains = [context?.domain].flat();
+
+            return requestedDomains.some(requestedDomain =>
+                messageDomains.includes(requestedDomain),
+            );
+        });
         if (!message) return undefined;
 
         return {

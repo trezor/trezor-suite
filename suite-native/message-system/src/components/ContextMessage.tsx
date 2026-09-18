@@ -13,7 +13,7 @@ export type ContextMessageProps = Omit<
     BannerInlineProps,
     'intent' | 'title' | 'buttonLabel' | 'onButtonPress' | 'isCloseButtonDisplayed'
 > & {
-    context: ContextDomain;
+    context: ContextDomain | readonly ContextDomain[];
 };
 
 export const ContextMessage = ({ context, ...rest }: ContextMessageProps) => {

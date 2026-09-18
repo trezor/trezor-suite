@@ -52,8 +52,8 @@ export const CONTEXT_PATTERNS = {
         regex: /^dashboard$/,
     },
     getAccount: {
-        pattern: 'accounts.{networkSymbol}',
-        regex: /^accounts\.[a-z0-9-]+$/,
+        pattern: 'accounts.{networkSymbol}[.{accountType}]',
+        regex: /^accounts\.[a-z0-9-]+(\.[a-z]+)?$/,
     },
     getStaking: {
         pattern: 'accounts.{networkSymbol}.staking',

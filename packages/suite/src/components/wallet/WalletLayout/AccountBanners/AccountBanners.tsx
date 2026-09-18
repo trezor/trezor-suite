@@ -65,7 +65,12 @@ export const AccountBanners = ({ account }: AccountBannersProps) => {
             {account?.networkType === 'stellar' && <StellarLimitedHistoryBanner />}
             {account?.symbol && <StakingBanner account={account} />}
             {account?.symbol && account?.accountType && (
-                <ContextMessage context={Context.getAccount(account.symbol, account.accountType)} />
+                <ContextMessage
+                    context={[
+                        Context.getAccount(account.symbol),
+                        Context.getAccount(account.symbol, account.accountType),
+                    ]}
+                />
             )}
         </Column>
     );
