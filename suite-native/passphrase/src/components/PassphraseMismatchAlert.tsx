@@ -5,14 +5,14 @@ import { useNavigation } from '@react-navigation/native';
 
 import { useServices } from '@suite-common/dependency-injection';
 import { selectSelectedDevice } from '@suite-common/device';
-import { selectDispatch } from '@suite-common/redux-utils';
+import { injectDispatch } from '@suite-common/redux-utils';
 import {
     cancelDiscoveryThunk,
     runDiscoveryThunk,
     startDiscoveryThunk,
 } from '@suite-common/wallet-core';
 import { useAlert } from '@suite-native/alerts';
-import { events, selectNativeAnalyticsDep } from '@suite-native/analytics';
+import { events, injectNativeAnalytics } from '@suite-native/analytics';
 import { Translation } from '@suite-native/intl';
 import {
     type AuthorizeDeviceStackParamList,
@@ -32,7 +32,7 @@ type NavigationProp = StackToStackCompositeNavigationProps<
 >;
 
 export const PassphraseMismatchAlert = ({ children }: { children?: React.ReactNode }) => {
-    const { analytics, dispatch } = useServices(selectNativeAnalyticsDep, selectDispatch);
+    const { analytics, dispatch } = useServices(injectNativeAnalytics, injectDispatch);
     const navigation = useNavigation<NavigationProp>();
     const device = useSelector(selectSelectedDevice);
     const navigateToInitialScreen = useNavigateToInitialScreen();

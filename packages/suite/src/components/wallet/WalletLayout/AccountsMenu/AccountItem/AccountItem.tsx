@@ -1,6 +1,6 @@
 import { memo } from 'react';
 
-import { events, selectDesktopAnalyticsDep } from '@suite/analytics';
+import { events, injectDesktopAnalytics } from '@suite/analytics';
 import { useServices } from '@suite-common/dependency-injection';
 import { type BaseCurrencyAmount } from '@suite-common/wallet-types';
 import { Box, Column, TOOLTIP_DELAY_NORMAL, Tooltip } from '@trezor/components';
@@ -53,7 +53,7 @@ export const AccountItem = memo(
         isFiatLoading,
         onClick,
     }: AccountItemProps) => {
-        const { analytics } = useServices(selectDesktopAnalyticsDep);
+        const { analytics } = useServices(injectDesktopAnalytics);
         const { accountType, index, symbol } = account;
 
         const goToWithAnalytics = useGoToWithAnalytics(account);

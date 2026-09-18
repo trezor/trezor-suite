@@ -4,7 +4,7 @@ import { useSelector } from 'react-redux';
 import type { SellFiatTrade } from 'invity-api';
 
 import { useServices } from '@suite-common/dependency-injection';
-import { selectDispatch } from '@suite-common/redux-utils';
+import { injectDispatch } from '@suite-common/redux-utils';
 import {
     type TradingAmountLimitProps,
     selectTradingSellQuotesRequest,
@@ -162,7 +162,7 @@ export const useSellForm = (): SellFormType => {
     });
 
     const { control } = form;
-    const { dispatch } = useServices(selectDispatch);
+    const { dispatch } = useServices(injectDispatch);
 
     const onSendAssetCleared = useCallback(() => {
         form.setValue('cryptoStringAmount', undefined, { shouldValidate: true });

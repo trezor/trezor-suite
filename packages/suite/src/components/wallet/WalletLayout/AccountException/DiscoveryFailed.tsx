@@ -1,6 +1,6 @@
 import { Translation } from '@suite/intl';
 import { useServices } from '@suite-common/dependency-injection';
-import { selectDispatch } from '@suite-common/redux-utils';
+import { injectDispatch } from '@suite-common/redux-utils';
 import { startOrRestartDiscoveryThunk } from '@suite-common/wallet-core';
 import { RepeatIcon, WarningIcon } from '@trezor/icons';
 
@@ -12,7 +12,7 @@ import { useDiscovery } from 'src/hooks/suite';
  * see: @wallet-actions/selectedAccountActions
  */
 export const DiscoveryFailed = () => {
-    const { dispatch } = useServices(selectDispatch);
+    const { dispatch } = useServices(injectDispatch);
     const { discovery } = useDiscovery();
     const description = discovery?.status === 'failed' ? discovery.error : undefined;
 

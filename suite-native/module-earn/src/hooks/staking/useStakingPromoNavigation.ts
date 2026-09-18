@@ -9,7 +9,7 @@ import { type NetworkSymbol, getNetwork } from '@suite-common/wallet-config';
 import { selectVisibleDeviceAccounts } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
 import { useAlert } from '@suite-native/alerts';
-import { events, selectNativeAnalyticsDep } from '@suite-native/analytics';
+import { events, injectNativeAnalytics } from '@suite-native/analytics';
 import { useBottomSheetModal, useBottomSheetModalControls } from '@suite-native/atoms';
 import { useTranslate } from '@suite-native/intl';
 import {
@@ -35,7 +35,7 @@ export const useStakingPromoNavigation = () => {
     const { showAlert, hideAlert } = useAlert();
     const { translate } = useTranslate();
     const { isPortfolioTrackerDevice, openPortfolioTrackerSheet } = useEarnPortfolioTrackerGuard();
-    const { analytics } = useServices(selectNativeAnalyticsDep);
+    const { analytics } = useServices(injectNativeAnalytics);
 
     const reportStakingNavigate = useStakingNavigateAnalytics();
 

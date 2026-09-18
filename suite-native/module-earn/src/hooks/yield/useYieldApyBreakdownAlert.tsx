@@ -5,7 +5,7 @@ import { useServices } from '@suite-common/dependency-injection';
 import { type YieldDtoV2 } from '@suite-common/earn-stablecoin-api';
 import { type Account } from '@suite-common/wallet-types';
 import { useAlert } from '@suite-native/alerts';
-import { selectNativeAnalyticsDep } from '@suite-native/analytics';
+import { injectNativeAnalytics } from '@suite-native/analytics';
 import { Translation } from '@suite-native/intl';
 
 import { YieldApyBreakdown } from '../../components/yield/YieldApyBreakdown';
@@ -17,7 +17,7 @@ interface UseYieldApyBreakdownAlertProps {
 
 export const useYieldApyBreakdownAlert = ({ account, vault }: UseYieldApyBreakdownAlertProps) => {
     const { showAlert } = useAlert();
-    const { analytics } = useServices(selectNativeAnalyticsDep);
+    const { analytics } = useServices(injectNativeAnalytics);
 
     const show = useCallback(() => {
         if (!account || !vault?.outputToken?.name) return;

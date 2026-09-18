@@ -6,7 +6,7 @@ import {
 } from '@suite/metadata';
 import { Anchor, SettingsAnchor } from '@suite/router';
 import { useServices } from '@suite-common/dependency-injection';
-import { selectDispatch } from '@suite-common/redux-utils';
+import { injectDispatch } from '@suite-common/redux-utils';
 import { ActionButton, ActionColumn, SectionItem, TextColumn } from '@trezor/product-components';
 import { capitalizeFirstLetter } from '@trezor/utils';
 
@@ -16,7 +16,7 @@ export const DisconnectLabelingProvider = () => {
     const metadata = useSelector(selectMetadata);
     const selectedProvider = useSelector(selectSelectedProviderForLabels);
 
-    const { dispatch } = useServices(selectDispatch);
+    const { dispatch } = useServices(injectDispatch);
 
     if (!metadata.enabled || !selectedProvider) return null;
 

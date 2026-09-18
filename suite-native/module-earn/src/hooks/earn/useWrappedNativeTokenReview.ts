@@ -3,7 +3,7 @@ import { useCallback, useState } from 'react';
 import { useNavigation } from '@react-navigation/native';
 
 import { useServices } from '@suite-common/dependency-injection';
-import { selectDispatch } from '@suite-common/redux-utils';
+import { injectDispatch } from '@suite-common/redux-utils';
 import { type WrappedNativeFlowType, type YieldFlowDisplayToken } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
 import {
@@ -61,7 +61,7 @@ export const useWrappedNativeTokenReview = ({
     onBroadcast,
     onReviewLeave,
 }: UseWrappedNativeTokenReviewParams): UseWrappedNativeTokenReviewResult => {
-    const { dispatch } = useServices(selectDispatch);
+    const { dispatch } = useServices(injectDispatch);
     const navigation = useNavigation<NavigationProps>();
     const [signedTransaction, setSignedTransaction] =
         useState<SignedWrappedNativeTokenTransaction | null>(null);

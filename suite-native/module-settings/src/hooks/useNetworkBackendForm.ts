@@ -5,7 +5,7 @@ import { useSelector } from 'react-redux';
 import { useFocusEffect } from '@react-navigation/native';
 
 import { useServices } from '@suite-common/dependency-injection';
-import { selectDispatch } from '@suite-common/redux-utils';
+import { injectDispatch } from '@suite-common/redux-utils';
 import { yup } from '@suite-common/validators';
 import {
     type BackendType,
@@ -19,7 +19,7 @@ import {
     blockchainActions,
     selectNetworkBlockchainInfo,
 } from '@suite-common/wallet-core';
-import { events, selectNativeAnalyticsDep } from '@suite-native/analytics';
+import { events, injectNativeAnalytics } from '@suite-native/analytics';
 import { type SelectItemType } from '@suite-native/atoms';
 import { useForm, useWatch } from '@suite-native/forms';
 import { useTranslate } from '@suite-native/intl';
@@ -32,7 +32,7 @@ type FormValues = {
 
 export const useNetworkBackendForm = ({ symbol, backendOptions }: Network) => {
     const { translate } = useTranslate();
-    const { analytics, dispatch } = useServices(selectNativeAnalyticsDep, selectDispatch);
+    const { analytics, dispatch } = useServices(injectNativeAnalytics, injectDispatch);
 
     const {
         connected,

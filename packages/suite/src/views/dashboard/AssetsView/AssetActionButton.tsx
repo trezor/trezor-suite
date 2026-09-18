@@ -2,7 +2,7 @@ import { type MouseEvent, type ReactNode } from 'react';
 
 import { type Route, gotoThunk } from '@suite/router';
 import { useServices } from '@suite-common/dependency-injection';
-import { selectDispatch } from '@suite-common/redux-utils';
+import { injectDispatch } from '@suite-common/redux-utils';
 import { getTradingPrefilledFromAccountData, tradingActions } from '@suite-common/trading';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { selectVisibleDeviceAccounts } from '@suite-common/wallet-core';
@@ -28,7 +28,7 @@ export const AssetActionButton = ({
     routeName,
     'data-testid': dataTest,
 }: AssetActionButtonProps) => {
-    const { dispatch } = useServices(selectDispatch);
+    const { dispatch } = useServices(injectDispatch);
     const { toggleCoinFilter, setSearchString } = useAccountSearch();
     const accounts = useSelector(selectVisibleDeviceAccounts);
 

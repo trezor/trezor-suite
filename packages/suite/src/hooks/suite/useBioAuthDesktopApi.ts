@@ -2,7 +2,7 @@ import { useCallback, useState } from 'react';
 
 import { useTranslation } from '@suite/intl';
 import { useServices } from '@suite-common/dependency-injection';
-import { selectDispatch } from '@suite-common/redux-utils';
+import { injectDispatch } from '@suite-common/redux-utils';
 import { isMacOs } from '@trezor/env-utils';
 
 import {
@@ -21,7 +21,7 @@ export const useBioAuthDesktopApi = () => {
     } = useSelector(selectBioAuth);
 
     const { translationString } = useTranslation();
-    const { dispatch } = useServices(selectDispatch);
+    const { dispatch } = useServices(injectDispatch);
     const messageSuccess = translationString(
         isMacOs() ? 'TR_BIO_AUTH_SYSTEM_MESSAGE_MAC' : 'TR_BIO_AUTH_SYSTEM_MESSAGE_WIN',
     );

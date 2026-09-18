@@ -18,7 +18,7 @@ import {
     selectCurrentFreshAddress,
     selectTouchedAddresses,
 } from '@suite-common/receive';
-import { selectDispatch } from '@suite-common/redux-utils';
+import { injectDispatch } from '@suite-common/redux-utils';
 import {
     type AccountsRootState,
     type TransactionsRootState,
@@ -60,7 +60,7 @@ export const NewestAddressCard = ({
     onCopied,
     onVerify,
 }: NewestAddressCardProps) => {
-    const { dispatch } = useServices(selectDispatch);
+    const { dispatch } = useServices(injectDispatch);
 
     const account = useSelector((state: NewestAddressCardRootState) =>
         selectAccountByKey(state, accountKey),

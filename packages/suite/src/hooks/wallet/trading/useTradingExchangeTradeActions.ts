@@ -5,7 +5,7 @@ import { type TranslationKey, useTranslation } from '@suite/intl';
 import { selectHasExperimentalFeature } from '@suite/settings';
 import { useServices } from '@suite-common/dependency-injection';
 import { Feature, selectIsFeatureEnabled } from '@suite-common/message-system';
-import { selectDispatch } from '@suite-common/redux-utils';
+import { injectDispatch } from '@suite-common/redux-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import {
     type TradingSignAndPushSendFormTransactionProps,
@@ -28,7 +28,7 @@ import { useBitcoinAmountUnit } from 'src/hooks/wallet/useBitcoinAmountUnit';
 import { type TradingExchangeConfirmTradeProps } from 'src/types/trading/tradingForm';
 
 export const useTradingExchangeTradeActions = () => {
-    const { dispatch } = useServices(selectDispatch);
+    const { dispatch } = useServices(injectDispatch);
     const { translationString } = useTranslation();
     const { device } = useDevice();
 

@@ -4,7 +4,7 @@ import { Translation } from '@suite/intl';
 import { Anchor, SettingsAnchor, gotoThunk } from '@suite/router';
 import { useServices } from '@suite-common/dependency-injection';
 import { firmwareActions } from '@suite-common/firmware';
-import { selectDispatch } from '@suite-common/redux-utils';
+import { injectDispatch } from '@suite-common/redux-utils';
 import { Button } from '@trezor/components';
 import {
     getFirmwareVersion,
@@ -19,7 +19,7 @@ interface FirmwareTypeProps {
 }
 
 export const FirmwareTypeChange = ({ isDeviceLocked }: FirmwareTypeProps) => {
-    const { dispatch } = useServices(selectDispatch);
+    const { dispatch } = useServices(injectDispatch);
     const { device } = useDevice();
 
     if (!device?.features) {

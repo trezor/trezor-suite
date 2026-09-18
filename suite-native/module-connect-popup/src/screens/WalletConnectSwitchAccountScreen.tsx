@@ -4,7 +4,7 @@ import { useSelector } from 'react-redux';
 import { useNavigation } from '@react-navigation/native';
 
 import { useServices } from '@suite-common/dependency-injection';
-import { selectDispatch } from '@suite-common/redux-utils';
+import { injectDispatch } from '@suite-common/redux-utils';
 import { selectAllAccountsToList } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
 import {
@@ -28,7 +28,7 @@ type NavigationProps = StackProps<RootStackParamList, RootStackRoutes.WalletConn
 
 export const WalletConnectSwitchAccountScreen = ({ route }: NavigationProps) => {
     const navigation = useNavigation();
-    const { dispatch } = useServices(selectDispatch);
+    const { dispatch } = useServices(injectDispatch);
 
     const { sessionTopic } = route.params;
     const sessions = useSelector(selectSessions);

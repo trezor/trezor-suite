@@ -8,7 +8,7 @@ export type DesktopAnalyticsDep = {
     analytics: DesktopAnalytics;
 };
 
-export const selectDesktopAnalyticsDep = (services: any): DesktopAnalyticsDep => ({
+export const injectDesktopAnalytics = (services: any): DesktopAnalyticsDep => ({
     analytics: services.analytics,
 });
 

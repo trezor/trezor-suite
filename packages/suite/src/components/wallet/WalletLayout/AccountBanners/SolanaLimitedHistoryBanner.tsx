@@ -1,7 +1,7 @@
 import { selectFlags, setFlag } from '@suite/flags';
 import { Translation } from '@suite/intl';
 import { useServices } from '@suite-common/dependency-injection';
-import { selectDispatch } from '@suite-common/redux-utils';
+import { injectDispatch } from '@suite-common/redux-utils';
 import { type Account } from '@suite-common/wallet-types';
 
 import { useSelector } from 'src/hooks/suite';
@@ -16,7 +16,7 @@ interface SolanaLimitedHistoryBannerProps {
 const SOLANA_TX_HISTORY_LIMIT = 100;
 
 export const SolanaLimitedHistoryBanner = ({ account }: SolanaLimitedHistoryBannerProps) => {
-    const { dispatch } = useServices(selectDispatch);
+    const { dispatch } = useServices(injectDispatch);
     const { solanaLimitedHistoryBannerClosed } = useSelector(selectFlags);
 
     const isSolanaAccount = account.networkType === 'solana';

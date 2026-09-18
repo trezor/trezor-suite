@@ -7,7 +7,7 @@ import {
 } from '@suite/settings';
 import { useServices } from '@suite-common/dependency-injection';
 import { deviceActions, selectDevices, selectSelectedDevice } from '@suite-common/device';
-import { selectDispatch } from '@suite-common/redux-utils';
+import { injectDispatch } from '@suite-common/redux-utils';
 import { SUPPORTS_DEVICE_AUTHENTICITY_CHECK } from '@suite-common/suite-constants';
 import { type AcquiredDevice } from '@suite-common/suite-types';
 import { Box, Card } from '@trezor/components';
@@ -30,7 +30,7 @@ export const InteractiveDeviceChecksFlow = () => {
     const { initialRun } = useSelector(selectFlags);
     const isDeviceAuthenticityCheckEnabled = useSelector(selectIsDeviceAuthenticityCheckEnabled);
     const isUnlockedBootloaderAllowed = useSelector(selectIsUnlockedBootloaderAllowed);
-    const { dispatch } = useServices(selectDispatch);
+    const { dispatch } = useServices(injectDispatch);
     const { goToSuite } = useOnboarding();
     const [isAuthenticityCheckStep, setIsAuthenticityCheckStep] = useState(false);
     const [checkedDevices, setCheckedDevices] = useState<string[]>([]);

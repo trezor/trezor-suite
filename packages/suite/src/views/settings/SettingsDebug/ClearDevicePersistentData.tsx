@@ -1,11 +1,11 @@
 import { useServices } from '@suite-common/dependency-injection';
 import { persistentDeviceDataActions } from '@suite-common/persistent-device-data';
-import { selectDispatch } from '@suite-common/redux-utils';
+import { injectDispatch } from '@suite-common/redux-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { ActionButton, ActionColumn, SectionItem, TextColumn } from '@trezor/product-components';
 
 export const ClearDevicePersistentData = () => {
-    const { dispatch } = useServices(selectDispatch);
+    const { dispatch } = useServices(injectDispatch);
 
     const handleClick = () => {
         dispatch(persistentDeviceDataActions.clearDevicePersistentData());

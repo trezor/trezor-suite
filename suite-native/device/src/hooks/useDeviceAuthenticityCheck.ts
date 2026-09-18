@@ -12,12 +12,12 @@ import {
     selectIsFeatureDisabled,
 } from '@suite-common/message-system';
 import { persistentDeviceDataActions } from '@suite-common/persistent-device-data';
-import { selectDispatch } from '@suite-common/redux-utils';
+import { injectDispatch } from '@suite-common/redux-utils';
 import { type StoredAuthenticateDeviceResult } from '@suite-common/suite-types';
 import {
     type DeviceAuthenticityCheckResult,
     events,
-    selectNativeAnalyticsDep,
+    injectNativeAnalytics,
 } from '@suite-native/analytics';
 import { requestPrioritizedDeviceAccess } from '@suite-native/device-mutex';
 import { FeatureFlag, useFeatureFlag } from '@suite-native/feature-flags';
@@ -48,7 +48,7 @@ export const useDeviceAuthenticityCheck = () => {
     const isMCURemotelyDisabled = useSelector((state: MessageSystemRootState) =>
         selectIsFeatureDisabled(state, Feature.deviceAuthenticityCheckMCU),
     );
-    const { analytics, dispatch } = useServices(selectNativeAnalyticsDep, selectDispatch);
+    const { analytics, dispatch } = useServices(injectNativeAnalytics, injectDispatch);
     const device = useSelector(selectSelectedDevice);
     const isDeviceBootloaderUnlocked = !!device && !device?.features?.bootloader_locked;
     const reportCheckResult = useCallback(

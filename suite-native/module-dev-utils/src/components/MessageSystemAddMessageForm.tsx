@@ -7,12 +7,12 @@ import {
     useConditionControls,
     useMessageSystemMessageForm,
 } from '@suite-common/message-system';
-import { selectDispatch } from '@suite-common/redux-utils';
+import { injectDispatch } from '@suite-common/redux-utils';
 import { type Category, type Condition } from '@suite-common/suite-types';
 import { Button, Input, Select, Text, VStack } from '@suite-native/atoms';
 
 export const MessageSystemAddMessageForm = () => {
-    const { dispatch } = useServices(selectDispatch);
+    const { dispatch } = useServices(injectDispatch);
     const [presetCategory, setPresetCategory] = useState<Category>('banner');
 
     const {

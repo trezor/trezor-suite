@@ -1,14 +1,14 @@
 import styled from 'styled-components';
 
 import { AccountLabel } from '@suite/account';
-import { selectDesktopAnalyticsDep } from '@suite/analytics';
+import { injectDesktopAnalytics } from '@suite/analytics';
 import { Translation, type TranslationKey, useTranslation } from '@suite/intl';
 import { openModal } from '@suite/modal';
 import { type EarnParams, gotoThunk } from '@suite/router';
 import { events } from '@suite-common/analytics';
 import { useServices } from '@suite-common/dependency-injection';
 import { type YieldDtoV2 } from '@suite-common/earn-stablecoin-api';
-import { selectDispatch } from '@suite-common/redux-utils';
+import { injectDispatch } from '@suite-common/redux-utils';
 import {
     type EarnAnalyticsStep,
     EarnFlow,
@@ -106,7 +106,7 @@ export const YieldPageHeader = ({
     vault,
     isInvalid,
 }: YieldPageHeaderProps) => {
-    const { analytics, dispatch } = useServices(selectDesktopAnalyticsDep, selectDispatch);
+    const { analytics, dispatch } = useServices(injectDesktopAnalytics, injectDispatch);
     const { translationString } = useTranslation();
     const { isBelowMobile } = useLayoutSize();
     const vaultName = vault?.metadata.name;

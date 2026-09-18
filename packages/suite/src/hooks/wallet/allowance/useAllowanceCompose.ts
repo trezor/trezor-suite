@@ -5,7 +5,7 @@ import { isFulfilled } from '@reduxjs/toolkit';
 import { useMutation } from '@tanstack/react-query';
 
 import { useServices } from '@suite-common/dependency-injection';
-import { selectDispatch } from '@suite-common/redux-utils';
+import { injectDispatch } from '@suite-common/redux-utils';
 import { DEFAULT_PAYMENT, DEFAULT_VALUES } from '@suite-common/wallet-constants';
 import {
     type ComposeAllowanceTransactionThunkParams,
@@ -43,7 +43,7 @@ export const useAllowanceCompose = ({
     amount,
     token,
 }: UseAllowanceComposeParams) => {
-    const { dispatch } = useServices(selectDispatch);
+    const { dispatch } = useServices(injectDispatch);
     const debounce = useDebounce();
 
     const { networkType, symbol } = account;

@@ -1,9 +1,9 @@
-import { events, selectDesktopAnalyticsDep } from '@suite/analytics';
+import { events, injectDesktopAnalytics } from '@suite/analytics';
 import { Translation } from '@suite/intl';
 import { openModal } from '@suite/modal';
 import { useServices } from '@suite-common/dependency-injection';
 import { useSolanaRewardsTotal } from '@suite-common/earn-staking-api/src/staking';
-import { selectDispatch } from '@suite-common/redux-utils';
+import { injectDispatch } from '@suite-common/redux-utils';
 import { EarnFlow, EarnProvider } from '@suite-common/suite-types/src/staking';
 import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import {
@@ -94,7 +94,7 @@ export const StakingCard = ({
     daysToUnstake,
     account,
 }: StakingCardProps) => {
-    const { analytics, dispatch } = useServices(selectDesktopAnalyticsDep, selectDispatch);
+    const { analytics, dispatch } = useServices(injectDesktopAnalytics, injectDispatch);
     const { isBelowLaptop } = useLayoutSize();
 
     const cardanoStakingPools = useSelector(selectCardanoPoolsInfo);

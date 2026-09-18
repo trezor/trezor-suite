@@ -5,7 +5,7 @@ import styled, { type RuleSet, css } from 'styled-components';
 import { useServices } from '@suite-common/dependency-injection';
 import { selectSelectedDevice } from '@suite-common/device';
 import { AddressFormatter, clearAddressPrefix } from '@suite-common/formatters';
-import { selectDispatch } from '@suite-common/redux-utils';
+import { injectDispatch } from '@suite-common/redux-utils';
 import { DEFAULT_FLAGSHIP_MODEL } from '@suite-common/suite-constants';
 import { selectAddressDisplayType } from '@suite-common/wallet-core';
 import { IconButton, Row, Text, type TextProps, Tooltip } from '@trezor/components';
@@ -85,7 +85,7 @@ export const Address = ({
     isCopyAllowed = false,
     onCopy,
 }: AddressProps) => {
-    const { dispatch } = useServices(selectDispatch);
+    const { dispatch } = useServices(injectDispatch);
     const selectedDevice = useSelector(selectSelectedDevice);
     const deviceModelInternal = selectedDevice?.features?.internal_model || DEFAULT_FLAGSHIP_MODEL;
     const isChunkedSettings = useSelector(selectAddressDisplayType);

@@ -1,7 +1,7 @@
 import { useCallback, useState } from 'react';
 
-import { events, selectDesktopAnalyticsDep } from '@suite/analytics';
-import { selectDesktopApiDep } from '@suite/desktop-app-api';
+import { events, injectDesktopAnalytics } from '@suite/analytics';
+import { injectDesktopApi } from '@suite/desktop-app-api';
 import { Translation } from '@suite/intl';
 import { useServices } from '@suite-common/dependency-injection';
 import { Column, H3, Modal, Paragraph } from '@trezor/components';
@@ -14,7 +14,7 @@ interface EarlyAccessDisableProps {
 
 export const EarlyAccessDisable = ({ hideWindow }: EarlyAccessDisableProps) => {
     const [enabled, setEnabled] = useState(true);
-    const { desktopApi, analytics } = useServices(selectDesktopAnalyticsDep, selectDesktopApiDep);
+    const { desktopApi, analytics } = useServices(injectDesktopAnalytics, injectDesktopApi);
 
     const allowPrerelease = useCallback(() => {
         analytics.report({

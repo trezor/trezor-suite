@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useRef } from 'react';
 
-import { selectDesktopAnalyticsDep } from '@suite/analytics';
+import { injectDesktopAnalytics } from '@suite/analytics';
 import { type EventInstance, events } from '@suite-common/analytics';
 import { useServices } from '@suite-common/dependency-injection';
 import { type EvmPendingTxStatus, type WrappedNativeFlowType } from '@suite-common/wallet-core';
@@ -27,7 +27,7 @@ export const useWrappedNativeFlowAnalytics = ({
     txid,
     networkSymbol,
 }: UseWrappedNativeFlowAnalyticsParams) => {
-    const { analytics } = useServices(selectDesktopAnalyticsDep);
+    const { analytics } = useServices(injectDesktopAnalytics);
     const hasReportedResolutionRef = useRef(false);
     const startRef = useRef<{ txid: string; startedAt: number } | null>(null);
 

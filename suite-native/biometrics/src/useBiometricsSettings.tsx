@@ -1,7 +1,7 @@
 import { useCallback } from 'react';
 
 import { useServices } from '@suite-common/dependency-injection';
-import { selectDispatch } from '@suite-common/redux-utils';
+import { injectDispatch } from '@suite-common/redux-utils';
 import { useAlert } from '@suite-native/alerts';
 import { Translation } from '@suite-native/intl';
 
@@ -10,7 +10,7 @@ import { BiometricsToggleResult, toggleBiometricsSettingsThunk } from './biometr
 export const useBiometricsSettings = () => {
     const { showAlert } = useAlert();
 
-    const { dispatch } = useServices(selectDispatch);
+    const { dispatch } = useServices(injectDispatch);
 
     const toggleBiometricsOption = useCallback(async () => {
         const authResult = await dispatch(toggleBiometricsSettingsThunk());

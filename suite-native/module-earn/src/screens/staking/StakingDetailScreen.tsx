@@ -5,7 +5,7 @@ import { type RouteProp, useRoute } from '@react-navigation/native';
 
 import { useServices } from '@suite-common/dependency-injection';
 import { Context } from '@suite-common/message-system';
-import { selectDispatch } from '@suite-common/redux-utils';
+import { injectDispatch } from '@suite-common/redux-utils';
 import { initStakeDataThunk } from '@suite-common/wallet-core';
 import { isStakingSymbol, parseAccountKey } from '@suite-common/wallet-utils';
 import { ContextMessage } from '@suite-native/message-system';
@@ -23,7 +23,7 @@ export const StakingDetailScreen = () => {
     const [isRefreshing, setIsRefreshing] = useState(false);
     const { utils } = useNativeStyles();
 
-    const { dispatch } = useServices(selectDispatch);
+    const { dispatch } = useServices(injectDispatch);
 
     useEffect(() => {
         dispatch(initStakeDataThunk());

@@ -13,7 +13,7 @@ import {
 } from '@suite/recovery';
 import { useServices } from '@suite-common/dependency-injection';
 import { selectSelectedDevice } from '@suite-common/device';
-import { selectDispatch } from '@suite-common/redux-utils';
+import { injectDispatch } from '@suite-common/redux-utils';
 import { isDeviceWithButtonOnlyNoTouchscreen } from '@suite-common/suite-utils';
 import { Badge, Banner, Column } from '@trezor/components';
 import { DeviceModelInternal } from '@trezor/device-utils';
@@ -31,7 +31,7 @@ export const RecoveryStep = () => {
     const error = useSelector(selectRecoveryError);
     const wordsCount = useSelector(selectWordsCount);
     const recoveryWordRequestInputType = useSelector(selectRecoveryWordRequestInputType);
-    const { dispatch } = useServices(selectDispatch);
+    const { dispatch } = useServices(injectDispatch);
 
     if (!device?.features) {
         return null;

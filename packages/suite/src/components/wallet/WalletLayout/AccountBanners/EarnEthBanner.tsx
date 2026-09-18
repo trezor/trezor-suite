@@ -1,10 +1,10 @@
-import { selectDesktopAnalyticsDep } from '@suite/analytics';
+import { injectDesktopAnalytics } from '@suite/analytics';
 import { selectFlags, setFlag } from '@suite/flags';
 import { Translation } from '@suite/intl';
 import { gotoThunk } from '@suite/router';
 import { events as sharedEvents } from '@suite-common/analytics';
 import { useServices } from '@suite-common/dependency-injection';
-import { selectDispatch } from '@suite-common/redux-utils';
+import { injectDispatch } from '@suite-common/redux-utils';
 import { type NetworkSymbol, getDisplaySymbol } from '@suite-common/wallet-config';
 import { Banner } from '@trezor/components';
 import { PiggyBankIcon, XIcon } from '@trezor/icons';
@@ -18,7 +18,7 @@ type EarnEthBannerProps = {
 };
 
 export const EarnEthBanner = ({ networkSymbol, apy }: EarnEthBannerProps) => {
-    const { analytics, dispatch } = useServices(selectDesktopAnalyticsDep, selectDispatch);
+    const { analytics, dispatch } = useServices(injectDesktopAnalytics, injectDispatch);
     const { earnEthBannerClosed } = useSelector(selectFlags);
 
     const displaySymbol = getDisplaySymbol(networkSymbol);

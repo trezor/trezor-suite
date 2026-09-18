@@ -1,7 +1,7 @@
 import { useDevice } from '@suite/device';
 import { Translation } from '@suite/intl';
 import { useServices } from '@suite-common/dependency-injection';
-import { selectDispatch } from '@suite-common/redux-utils';
+import { injectDispatch } from '@suite-common/redux-utils';
 import {
     cancelDiscoveryThunk,
     startAddWalletDiscoveryThunk,
@@ -24,7 +24,7 @@ export const PassphraseDuplicateModal = ({
     device, // <- currently selected device
 }: PassphraseDuplicateModalProps) => {
     const { isLocked } = useDevice();
-    const { dispatch } = useServices(selectDispatch);
+    const { dispatch } = useServices(injectDispatch);
 
     const isDeviceLocked = isLocked();
 

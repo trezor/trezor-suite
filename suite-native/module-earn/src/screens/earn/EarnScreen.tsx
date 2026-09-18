@@ -6,7 +6,7 @@ import { FlashList } from '@shopify/flash-list';
 import { events as sharedEvents } from '@suite-common/analytics';
 import { useServices } from '@suite-common/dependency-injection';
 import { Context } from '@suite-common/message-system';
-import { events, selectNativeAnalyticsDep } from '@suite-native/analytics';
+import { events, injectNativeAnalytics } from '@suite-native/analytics';
 import { VStack } from '@suite-native/atoms';
 import { DeviceManagerScreenHeader } from '@suite-native/device-manager';
 import { ContextMessage } from '@suite-native/message-system';
@@ -63,7 +63,7 @@ const isSectionBoundaryItem = (item: EarnPromoListDataItem | undefined) =>
     item.type === 'staking-providers-info';
 
 const EarnScreenContent = () => {
-    const { analytics } = useServices(selectNativeAnalyticsDep);
+    const { analytics } = useServices(injectNativeAnalytics);
 
     const {
         promoListData: stakingPromoItems,

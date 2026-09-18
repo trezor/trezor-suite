@@ -2,7 +2,7 @@ import { createContext, useCallback, useContext, useEffect, useMemo } from 'reac
 import { useForm } from 'react-hook-form';
 
 import { useServices } from '@suite-common/dependency-injection';
-import { selectDispatch } from '@suite-common/redux-utils';
+import { injectDispatch } from '@suite-common/redux-utils';
 import { getNetwork } from '@suite-common/wallet-config';
 import {
     getStakeFormsDefaultValues,
@@ -31,7 +31,7 @@ type UseClaimFormsProps = {
 };
 
 export const useClaimForm = ({ account }: UseClaimFormsProps): ClaimContextValues => {
-    const { dispatch } = useServices(selectDispatch);
+    const { dispatch } = useServices(injectDispatch);
 
     const baseCurrencyCode = useSelector(selectBaseCurrency);
 

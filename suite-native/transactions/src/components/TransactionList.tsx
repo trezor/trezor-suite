@@ -5,7 +5,7 @@ import { useSelector } from 'react-redux';
 import { FlashList } from '@shopify/flash-list';
 
 import { useServices } from '@suite-common/dependency-injection';
-import { selectDispatch } from '@suite-common/redux-utils';
+import { injectDispatch } from '@suite-common/redux-utils';
 import { getTxsPerPage } from '@suite-common/suite-utils';
 import {
     type AccountsRootState,
@@ -139,7 +139,7 @@ export const TransactionList = ({
     filter = 'all',
 }: AccountTransactionProps) => {
     const accountKey = account.key;
-    const { dispatch } = useServices(selectDispatch);
+    const { dispatch } = useServices(injectDispatch);
     const [isRefreshing, setIsRefreshing] = useState(false);
 
     const {

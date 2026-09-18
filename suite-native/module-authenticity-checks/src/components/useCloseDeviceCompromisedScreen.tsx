@@ -8,7 +8,7 @@ import {
     selectIsDeviceInitialized,
     selectSelectedDevice,
 } from '@suite-common/device';
-import { selectDispatch } from '@suite-common/redux-utils';
+import { injectDispatch } from '@suite-common/redux-utils';
 import { getDeviceInternalModel } from '@suite-common/suite-utils';
 import { selectIsAnyNetworkEnabled } from '@suite-common/wallet-core';
 import { selectIsDeviceSetupSupported } from '@suite-native/device';
@@ -32,7 +32,7 @@ type NavigationProps = StackToStackCompositeNavigationProps<
  * to the Device Compromised screen can occur inbetween different flows.
  */
 export const useCloseDeviceCompromisedScreen = () => {
-    const { dispatch } = useServices(selectDispatch);
+    const { dispatch } = useServices(injectDispatch);
 
     const navigation = useNavigation<NavigationProps>();
     const navigateToInitialScreen = useNavigateToInitialScreen();

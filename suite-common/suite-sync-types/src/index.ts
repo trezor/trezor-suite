@@ -22,29 +22,29 @@ export type {
 export {
     type TurnOffSuiteSyncDep,
     type TurnOffSuiteSync,
-    selectTurnOffSuiteSyncDep,
+    injectTurnOffSuiteSync,
 } from './turnOffSuiteSync';
 export {
     type TurnOnSuiteSyncDep,
     type TurnOnSuiteSync,
-    selectTurnOnSuiteSyncDep,
+    injectTurnOnSuiteSync,
 } from './turnOnSuiteSync';
 export type { SuiteSyncUnavailableOnDeviceErrorType } from './ensureSuiteSyncKeys';
 export {
     type ChangeRelayUrl,
     type ChangeRelayUrlDep,
-    selectChangeRelayUrlDep,
+    injectChangeRelayUrl,
 } from './relay/changeRelayUrl';
 export {
     type DisconnectAllRelays,
     type DisconnectAllRelaysDep,
-    selectDisconnectAllRelaysDep,
+    injectDisconnectAllRelays,
 } from './relay/disconnectAllRelays';
 export {
     type ReconnectAllRelays,
     type ReconnectAllRelaysDep,
     type ReconnectAllRelaysParams,
-    selectReconnectAllRelaysDep,
+    injectReconnectAllRelays,
 } from './relay/reconnectAllRelays';
 
 export type {
@@ -62,7 +62,7 @@ export {
     type DangerouslyWipeAllLabelsFromWallet,
     type DangerouslyWipeAllLabelsFromWalletDep,
     type DangerouslyWipeAllLabelsFromWalletParams,
-    selectDangerouslyWipeAllLabelsFromWalletDep,
+    injectDangerouslyWipeAllLabelsFromWallet,
 } from './data/dangerouslyWipeAllLabelsFromWallet';
 export {
     type TurnOffSuiteSyncForWallet,
@@ -80,7 +80,7 @@ export {
     type OnStorageEnsured,
     type OnStorageEnsuredDep,
     type OnStorageEnsuredParams,
-    selectEnsureWalletSuiteSyncOnDep,
+    injectEnsureWalletSuiteSyncOn,
 } from './storage/ensureWalletSuiteSyncOn';
 
 export type {
@@ -100,7 +100,7 @@ export {
     type WriteAccountLabel,
     type WriteAccountLabelDep,
     type WriteAccountLabelParams,
-    selectUpdateAccountLabelDep,
+    injectUpdateAccountLabel,
 } from './data/updateAccountLabel';
 export {
     type UpdateAddressLabel,
@@ -109,7 +109,7 @@ export {
     type WriteAddressLabel,
     type WriteAddressLabelDep,
     type WriteAddressLabelParams,
-    selectUpdateAddressLabelDep,
+    injectUpdateAddressLabel,
 } from './data/updateAddressLabel';
 export {
     type UpdateOutputLabelDep,
@@ -118,7 +118,7 @@ export {
     type WriteOutputLabel,
     type WriteOutputLabelDep,
     type WriteOutputLabelParams,
-    selectUpdateOutputLabelDep,
+    injectUpdateOutputLabel,
 } from './data/updateOutputLabel';
 export {
     type UpdateWalletLabel,
@@ -127,7 +127,7 @@ export {
     type WriteWalletLabel,
     type WriteWalletLabelDep,
     type WriteWalletLabelParams,
-    selectUpdateWalletLabelDep,
+    injectUpdateWalletLabel,
 } from './data/updateWalletLabel';
 
 export type {

@@ -12,7 +12,7 @@ import {
     useConditionControls,
     validateExperimentForm,
 } from '@suite-common/message-system';
-import { selectDispatch } from '@suite-common/redux-utils';
+import { injectDispatch } from '@suite-common/redux-utils';
 import { type Experiments } from '@suite-common/suite-types';
 import { yup } from '@suite-common/validators';
 import { Button, Column, Row } from '@trezor/components';
@@ -32,7 +32,7 @@ export const MessageSystemFormExperiment = () => {
         setFormData,
     );
     const { translationString } = useTranslation();
-    const { dispatch } = useServices(selectDispatch);
+    const { dispatch } = useServices(injectDispatch);
 
     const isValid = validationErrors.length === 0;
 

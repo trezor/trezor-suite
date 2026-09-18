@@ -4,7 +4,7 @@ import { Address } from '@suite/address';
 import { Translation } from '@suite/intl';
 import { openModal } from '@suite/modal';
 import { useServices } from '@suite-common/dependency-injection';
-import { selectDispatch } from '@suite-common/redux-utils';
+import { injectDispatch } from '@suite-common/redux-utils';
 import {
     PENDING_TRANSACTION_TIME_ESTIMATE_SECONDS,
     PendingTransactionInfo,
@@ -17,7 +17,7 @@ interface TronStakePendingTransactionProps {
 }
 
 export const TronStakePendingTransaction = ({ title }: TronStakePendingTransactionProps) => {
-    const { dispatch } = useServices(selectDispatch);
+    const { dispatch } = useServices(injectDispatch);
     const { account, actions } = useTronStakeContext();
     const { pendingTxid } = actions;
 

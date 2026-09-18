@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 
-import { selectDesktopAnalyticsDep } from '@suite/analytics';
+import { injectDesktopAnalytics } from '@suite/analytics';
 import { useExternalLink } from '@suite/external-links';
 import { type FlagsRootState, selectAreNoDeviceEshopBannersDisabled } from '@suite/flags';
 import { Translation, type TranslationKey } from '@suite/intl';
@@ -61,7 +61,7 @@ export const selectShouldShowNoDeviceEshopSettingsBanner = (
     selectPhysicalDeviceWallets(state).length === 0;
 
 export const NoDeviceEshopSettingsBanner = () => {
-    const { analytics } = useServices(selectDesktopAnalyticsDep);
+    const { analytics } = useServices(injectDesktopAnalytics);
     const isContentBelowBreakpoint = useIsContentBelowBreakpoint(breakpoints.tablet);
     const href = useExternalLink(withGetTrezorCtaUtm(ESHOP_STORE_URL, 'settings'));
 

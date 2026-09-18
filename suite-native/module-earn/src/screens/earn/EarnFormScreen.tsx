@@ -11,7 +11,7 @@ import {
     selectAccountNetworkSymbol,
     selectIsEarnOnboardingConfirmed,
 } from '@suite-common/wallet-core';
-import { events, selectNativeAnalyticsDep } from '@suite-native/analytics';
+import { events, injectNativeAnalytics } from '@suite-native/analytics';
 import { type ActiveView, Box } from '@suite-native/atoms';
 import { Form } from '@suite-native/forms';
 import {
@@ -47,7 +47,7 @@ export const EarnFormScreen = () => {
     const networkSymbol = useSelector((state: AccountsRootState) =>
         selectAccountNetworkSymbol(state, accountKey),
     );
-    const { analytics } = useServices(selectNativeAnalyticsDep);
+    const { analytics } = useServices(injectNativeAnalytics);
     const currencyRef = useRef<'crypto' | 'fiat' | undefined>(undefined);
     const handleCurrencyChange = useCallback((activeView: ActiveView) => {
         currencyRef.current = activeView === 'primary' ? 'crypto' : 'fiat';

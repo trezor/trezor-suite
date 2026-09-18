@@ -2,10 +2,10 @@ import { useMemo, useState } from 'react';
 import { FormProvider, useForm, useWatch } from 'react-hook-form';
 
 import { selectSelectedAccount } from '@suite/account';
-import { events, selectDesktopAnalyticsDep } from '@suite/analytics';
+import { events, injectDesktopAnalytics } from '@suite/analytics';
 import { Translation, useTranslation } from '@suite/intl';
 import { useServices } from '@suite-common/dependency-injection';
-import { selectDispatch } from '@suite-common/redux-utils';
+import { injectDispatch } from '@suite-common/redux-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import {
     DefinitionType,
@@ -49,7 +49,7 @@ type StellarManageTokenModalProps =
       };
 
 export const StellarManageTokenModal = (props: StellarManageTokenModalProps) => {
-    const { analytics, dispatch } = useServices(selectDesktopAnalyticsDep, selectDispatch);
+    const { analytics, dispatch } = useServices(injectDesktopAnalytics, injectDispatch);
     const { mode, symbol, contractAddress, onCancel } = props;
     const tokenBalance = mode === 'deactivate' ? props.tokenBalance : undefined;
     const selectedAccount = useSelector(selectSelectedAccount);

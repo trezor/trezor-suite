@@ -1,6 +1,6 @@
 import { useCallback, useEffect } from 'react';
 
-import { selectDesktopApiDep } from '@suite/desktop-app-api';
+import { injectDesktopApi } from '@suite/desktop-app-api';
 import {
     selectAutodetectLanguage,
     selectAutodetectTheme,
@@ -9,7 +9,7 @@ import {
     suiteSettingsActions,
 } from '@suite/settings';
 import { useServices } from '@suite-common/dependency-injection';
-import { selectDispatch } from '@suite-common/redux-utils';
+import { injectDispatch } from '@suite-common/redux-utils';
 import { type Locale } from '@suite-common/suite-types';
 
 import { useSelector } from 'src/hooks/suite';
@@ -22,7 +22,7 @@ const Autodetect = () => {
     const currentTheme = useSelector(selectTheme);
     const currentLanguage = useSelector(selectLanguage);
 
-    const { desktopApi, dispatch } = useServices(selectDispatch, selectDesktopApiDep);
+    const { desktopApi, dispatch } = useServices(injectDispatch, injectDesktopApi);
 
     const setLanguage = useCallback(
         (language: Locale) => {

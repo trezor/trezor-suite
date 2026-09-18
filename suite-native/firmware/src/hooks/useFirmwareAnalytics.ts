@@ -8,7 +8,7 @@ import {
     type FirmwareUpdatePayload,
     type FirmwareUpdateStartType,
     events,
-    selectNativeAnalyticsDep,
+    injectNativeAnalytics,
 } from '@suite-native/analytics';
 import { type FirmwareType } from '@trezor/connect';
 import {
@@ -27,7 +27,7 @@ export const useFirmwareAnalytics = ({
     navigationLocation?: 'settings' | 'onboarding';
 }) => {
     const toFwVersion = useSelector(selectDeviceUpdateFirmwareVersion);
-    const { analytics } = useServices(selectNativeAnalyticsDep);
+    const { analytics } = useServices(injectNativeAnalytics);
     const prepareAnalyticsPayload = useCallback(
         (): FirmwareUpdatePayload => ({
             model: device?.features?.internal_model ?? DeviceModelInternal.UNKNOWN,

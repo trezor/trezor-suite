@@ -6,7 +6,7 @@ import { isFulfilled, isRejected } from '@reduxjs/toolkit';
 
 import { useServices } from '@suite-common/dependency-injection';
 import { useMutation } from '@suite-common/react-query';
-import { selectDispatch } from '@suite-common/redux-utils';
+import { injectDispatch } from '@suite-common/redux-utils';
 import {
     type AccountsRootState,
     type TransactionsRootState,
@@ -84,7 +84,7 @@ export const useCancelEvmTransaction = ({
     transaction,
     onClose,
 }: UseCancelEvmTransactionParams) => {
-    const { dispatch } = useServices(selectDispatch);
+    const { dispatch } = useServices(injectDispatch);
     const navigation = useNavigation<NavigationProp>();
     const { translate } = useTranslate();
     const { showToast } = useToast();

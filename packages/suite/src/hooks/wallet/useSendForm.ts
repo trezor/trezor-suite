@@ -12,7 +12,7 @@ import { useFieldArray, useForm } from 'react-hook-form';
 import { gotoThunk } from '@suite/router';
 import { useServices } from '@suite-common/dependency-injection';
 import { selectNetworkSymbolForProtocol } from '@suite-common/networks';
-import { selectDispatch } from '@suite-common/redux-utils';
+import { injectDispatch } from '@suite-common/redux-utils';
 import { useExcludedUtxos } from '@suite-common/transaction-search';
 import { selectCurrentFiatRates } from '@suite-common/wallet-core';
 import { type FormState } from '@suite-common/wallet-types';
@@ -109,7 +109,7 @@ export const useSendForm = (props: UseSendFormProps): SendContextValues => {
     // private variables, used inside sendForm hook
     const draft = useRef<FormState | undefined>(undefined);
 
-    const { dispatch } = useServices(selectDispatch);
+    const { dispatch } = useServices(injectDispatch);
 
     const { localCurrencyOption } = state;
 

@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 
-import { events, selectDesktopAnalyticsDep } from '@suite/analytics';
+import { events, injectDesktopAnalytics } from '@suite/analytics';
 import { Translation } from '@suite/intl';
 import { Anchor, SettingsAnchor } from '@suite/router';
 import { useServices } from '@suite-common/dependency-injection';
@@ -14,7 +14,7 @@ const PositionedSwitch = styled.div`
 `;
 
 export const BioAuthSettings = () => {
-    const { analytics } = useServices(selectDesktopAnalyticsDep);
+    const { analytics } = useServices(injectDesktopAnalytics);
     const {
         isBioAuthEnabled,
         isBioAuthAvailable,

@@ -3,8 +3,8 @@ import { useWatch } from 'react-hook-form';
 import { useSelector } from 'react-redux';
 
 import { useServices } from '@suite-common/dependency-injection';
-import { selectDispatch } from '@suite-common/redux-utils';
-import { selectUpdateAccountLabelDep } from '@suite-common/suite-sync-types';
+import { injectDispatch } from '@suite-common/redux-utils';
+import { injectUpdateAccountLabel } from '@suite-common/suite-sync-types';
 import {
     type AccountsRootState,
     accountsActions,
@@ -36,10 +36,7 @@ type AccountRenameFormProps = {
 export const AccountRenameForm = ({ accountKey, onSubmit }: AccountRenameFormProps) => {
     const { translate } = useTranslate();
 
-    const { updateAccountLabel, dispatch } = useServices(
-        selectUpdateAccountLabelDep,
-        selectDispatch,
-    );
+    const { updateAccountLabel, dispatch } = useServices(injectUpdateAccountLabel, injectDispatch);
 
     const { handleSuiteSyncError } = useSuiteSyncErrorHandler();
     const account = useSelector((state: AccountsRootState) =>

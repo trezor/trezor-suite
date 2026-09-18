@@ -1,6 +1,6 @@
 import { useFormState, useWatch } from 'react-hook-form';
 
-import { events, selectDesktopAnalyticsDep } from '@suite/analytics';
+import { events, injectDesktopAnalytics } from '@suite/analytics';
 import { useDevice } from '@suite/device';
 import { Translation } from '@suite/intl';
 import { useServices } from '@suite-common/dependency-injection';
@@ -15,7 +15,7 @@ import { CUSTOM_REPRESENTATIVE } from './constants';
 
 export const TronVoteSubmitButton = () => {
     const { device, isLocked } = useDevice();
-    const { analytics } = useServices(selectDesktopAnalyticsDep);
+    const { analytics } = useServices(injectDesktopAnalytics);
     const isDiscoveryRunning = useSelector(selectHasRunningDiscovery);
     const { account, form, actions, fees } = useTronStakeContext();
     const { isSubmitting, pendingTxid, submitAction } = actions;

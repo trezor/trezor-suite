@@ -7,9 +7,9 @@ import { useNavigation } from '@react-navigation/native';
 import { events as commonEvents } from '@suite-common/analytics';
 import { useServices } from '@suite-common/dependency-injection';
 import { selectSupportedNetworkSymbols } from '@suite-common/networks';
-import { selectDispatch } from '@suite-common/redux-utils';
+import { injectDispatch } from '@suite-common/redux-utils';
 import { changeCoinVisibilityThunk } from '@suite-common/wallet-core';
-import { events, selectNativeAnalyticsDep } from '@suite-native/analytics';
+import { events, injectNativeAnalytics } from '@suite-native/analytics';
 import { AnimatedBox } from '@suite-native/atoms';
 import { Form, useForm } from '@suite-native/forms';
 import { Translation } from '@suite-native/intl';
@@ -40,7 +40,7 @@ type NavigationProps = StackToStackCompositeNavigationProps<
 >;
 
 export const CoinEnablingInitScreen = () => {
-    const { analytics, dispatch } = useServices(selectNativeAnalyticsDep, selectDispatch);
+    const { analytics, dispatch } = useServices(injectNativeAnalytics, injectDispatch);
     const supportedNetworks = useSelector(selectSupportedNetworkSymbols);
     const navigation = useNavigation<NavigationProps>();
     useInterceptNativeNavigation();

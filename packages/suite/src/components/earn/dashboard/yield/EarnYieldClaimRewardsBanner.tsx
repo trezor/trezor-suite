@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 
-import { selectDesktopAnalyticsDep } from '@suite/analytics';
+import { injectDesktopAnalytics } from '@suite/analytics';
 import { HiddenPlaceholder } from '@suite/discreet-mode';
 import { Translation } from '@suite/intl';
 import { events } from '@suite-common/analytics';
@@ -43,7 +43,7 @@ export const EarnYieldClaimRewardsBanner = ({
     claimDisabledTooltip,
     onClaim,
 }: EarnYieldClaimRewardsBannerProps) => {
-    const { analytics } = useServices(selectDesktopAnalyticsDep);
+    const { analytics } = useServices(injectDesktopAnalytics);
     const { BaseCurrencyAmountFormatter } = useFormatters();
 
     const isDiscoveryRunning = useSelector(selectHasRunningDiscovery);

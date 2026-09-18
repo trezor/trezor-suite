@@ -2,7 +2,7 @@ import { useSelector } from 'react-redux';
 
 import { useServices } from '@suite-common/dependency-injection';
 import { selectDeviceModel } from '@suite-common/device';
-import { events, selectNativeAnalyticsDep } from '@suite-native/analytics';
+import { events, injectNativeAnalytics } from '@suite-native/analytics';
 import {
     BottomSheetModal,
     Box,
@@ -35,7 +35,7 @@ const securitySealUrlMap = {
 
 export const SecuritySealDescription = () => {
     const openLink = useOpenLink();
-    const { analytics } = useServices(selectNativeAnalyticsDep);
+    const { analytics } = useServices(injectNativeAnalytics);
     const { bottomSheetRef, openModal, closeModal } = useBottomSheetModal();
 
     const handleLinkPress = () => {

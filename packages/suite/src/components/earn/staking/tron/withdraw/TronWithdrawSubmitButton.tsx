@@ -1,4 +1,4 @@
-import { events, selectDesktopAnalyticsDep } from '@suite/analytics';
+import { events, injectDesktopAnalytics } from '@suite/analytics';
 import { useDevice } from '@suite/device';
 import { Translation } from '@suite/intl';
 import { useServices } from '@suite-common/dependency-injection';
@@ -13,7 +13,7 @@ import { useTronStakeContext } from '../TronStakeContext';
 
 export const TronWithdrawSubmitButton = () => {
     const { device, isLocked } = useDevice();
-    const { analytics } = useServices(selectDesktopAnalyticsDep);
+    const { analytics } = useServices(injectDesktopAnalytics);
     const isDiscoveryRunning = useSelector(selectHasRunningDiscovery);
     const { account, actions } = useTronStakeContext();
     const { isSubmitting, pendingTxid, submitAction } = actions;

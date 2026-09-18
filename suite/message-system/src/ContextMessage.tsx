@@ -12,7 +12,7 @@ import {
     messageSystemActions,
     selectContextMessageContent,
 } from '@suite-common/message-system';
-import { selectDispatch } from '@suite-common/redux-utils';
+import { injectDispatch } from '@suite-common/redux-utils';
 import { Banner } from '@trezor/components';
 import { XIcon } from '@trezor/icons';
 
@@ -29,7 +29,7 @@ export const ContextMessage = ({ context }: ContextMessageProps) => {
     );
     const isTorEnabled = useSelector(selectIsTorEnabled);
     const torOnionLinks = useSelector(selectTorOnionLinks);
-    const { dispatch } = useServices(selectDispatch);
+    const { dispatch } = useServices(injectDispatch);
 
     const dismissalConfig = useMemo(() => {
         if (!message?.dismissible) return undefined;

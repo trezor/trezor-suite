@@ -2,7 +2,7 @@ import { useForm } from 'react-hook-form';
 
 import { useTranslation } from '@suite/intl';
 import { useServices } from '@suite-common/dependency-injection';
-import { selectAddressValidatorDep } from '@suite-common/networks';
+import { injectAddressValidator } from '@suite-common/networks';
 import { type TronFlow } from '@suite-common/wallet-core';
 import { type Account, type TronResourceType } from '@suite-common/wallet-types';
 import { type FeeLevel } from '@trezor/connect';
@@ -41,7 +41,7 @@ interface UseTronStakeFormProps {
 
 export const useTronStakeForm = ({ account, flow }: UseTronStakeFormProps) => {
     const { translationString } = useTranslation();
-    const { addressValidator } = useServices(selectAddressValidatorDep);
+    const { addressValidator } = useServices(injectAddressValidator);
 
     const methods = useForm<TronStakeFormValues>({
         mode: 'onChange',

@@ -9,7 +9,7 @@ import {
     selectNearbyDevices,
 } from '@suite-common/bluetooth';
 import { useServices } from '@suite-common/dependency-injection';
-import { selectDispatch } from '@suite-common/redux-utils';
+import { injectDispatch } from '@suite-common/redux-utils';
 import { isDesktop } from '@trezor/env-utils';
 
 import { useSelector } from 'src/hooks/suite';
@@ -66,7 +66,7 @@ const ConnectionGlobalModalReactContext = createContext<ConnectionGlobalModalCon
 const selectAllDevices = prepareSelectAllDevices<DesktopBluetoothDevice>();
 
 const useConnectionGlobalModal = () => {
-    const { dispatch } = useServices(selectDispatch);
+    const { dispatch } = useServices(injectDispatch);
     const [showHints, setShowHints] = useState(false);
     const [shouldPairAgain, setShouldPairAgain] = useState(false);
     const [showRemoveFromOsBluetooth, setShowRemoveFromOsBluetooth] = useState(false);

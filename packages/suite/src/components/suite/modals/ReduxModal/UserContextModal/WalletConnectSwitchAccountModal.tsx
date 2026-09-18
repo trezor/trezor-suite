@@ -4,7 +4,7 @@ import { Translation } from '@suite/intl';
 import { closeModal } from '@suite/modal';
 import { useServices } from '@suite-common/dependency-injection';
 import { selectSupportedNetworkSymbols } from '@suite-common/networks';
-import { selectDispatch } from '@suite-common/redux-utils';
+import { injectDispatch } from '@suite-common/redux-utils';
 import { selectAllAccountsToList } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
 import { sortByCoin } from '@suite-common/wallet-utils';
@@ -27,7 +27,7 @@ interface WalletConnectSwitchAccountModalProps {
 export const WalletConnectSwitchAccountModal = ({
     sessionTopic,
 }: WalletConnectSwitchAccountModalProps) => {
-    const { dispatch } = useServices(selectDispatch);
+    const { dispatch } = useServices(injectDispatch);
     const supportedNetworks = useSelector(selectSupportedNetworkSymbols);
     const sessions = useSelector(selectSessions);
     const session = sessions.find(s => s.topic === sessionTopic);

@@ -2,7 +2,7 @@ import { useCallback, useEffect, useEffectEvent } from 'react';
 import { useSelector } from 'react-redux';
 
 import { useServices } from '@suite-common/dependency-injection';
-import { selectDispatch } from '@suite-common/redux-utils';
+import { injectDispatch } from '@suite-common/redux-utils';
 import {
     SLIPPAGE_PRESETS,
     type SlippageFormValues,
@@ -42,7 +42,7 @@ export const SlippageBottomSheet = ({
     onClose,
     onSlippageConfirmed,
 }: SlippageBottomSheetProps) => {
-    const { dispatch } = useServices(selectDispatch);
+    const { dispatch } = useServices(injectDispatch);
     const { translate } = useTranslate();
     const openLink = useOpenLink();
 

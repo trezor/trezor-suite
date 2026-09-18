@@ -4,12 +4,12 @@ import { selectIsConnectionModalOpen, setConnectionModal, setConnectionMode } fr
 import { gotoThunk } from '@suite/router';
 import { useServices } from '@suite-common/dependency-injection';
 import { selectSelectedDevice } from '@suite-common/device';
-import { selectDispatch } from '@suite-common/redux-utils';
+import { injectDispatch } from '@suite-common/redux-utils';
 
 import { useSelector } from 'src/hooks/suite';
 
 export const useFirmwareUpgradeModal = () => {
-    const { dispatch } = useServices(selectDispatch);
+    const { dispatch } = useServices(injectDispatch);
     const device = useSelector(selectSelectedDevice);
     const isConnectionModalOpen = useSelector(selectIsConnectionModalOpen);
     const [isFirmwareModalOpen, setIsFirmwareModalOpen] = useState(false);

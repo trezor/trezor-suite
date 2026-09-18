@@ -8,7 +8,7 @@ import { OnboardingCard } from '@suite/onboarding-components';
 import { gotoThunk } from '@suite/router';
 import { useServices } from '@suite-common/dependency-injection';
 import { selectIsDeviceBackupRequired, selectSelectedDevice } from '@suite-common/device';
-import { selectDispatch } from '@suite-common/redux-utils';
+import { injectDispatch } from '@suite-common/redux-utils';
 import { Badge, Column } from '@trezor/components';
 import { CheckIcon, TrezorBackupIcon, WalletIcon, WarningIcon } from '@trezor/icons';
 import { exhaustive } from '@trezor/type-utils';
@@ -36,7 +36,7 @@ export const SecurityStep = () => {
     } = useOnboarding();
     const { isLocked } = useDevice();
     const device = useSelector(selectSelectedDevice);
-    const { dispatch } = useServices(selectDispatch);
+    const { dispatch } = useServices(injectDispatch);
     const backup = useSelector(selectBackup);
     const isDeviceLocked = isLocked();
     const isBackupRequired = useSelector(selectIsDeviceBackupRequired);

@@ -2,7 +2,7 @@ import Animated, { FadeIn, FadeOut } from 'react-native-reanimated';
 
 import { useServices } from '@suite-common/dependency-injection';
 import { messageSystemActions } from '@suite-common/message-system';
-import { selectDispatch } from '@suite-common/redux-utils';
+import { injectDispatch } from '@suite-common/redux-utils';
 import { type Message, type Variant } from '@suite-common/suite-types';
 import {
     Box,
@@ -86,7 +86,7 @@ const MessageCloseButton = ({
 );
 
 export const MessageBanner = ({ message }: MessageBannerProps) => {
-    const { dispatch } = useServices(selectDispatch);
+    const { dispatch } = useServices(injectDispatch);
     const { applyStyle } = useNativeStyles();
 
     // TODO: We use only English locale in suite-native so far. When the localization to other

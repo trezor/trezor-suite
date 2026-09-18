@@ -18,7 +18,7 @@ export type SuiteRouterHistoryDep = {
     suiteRouterHistory: SuiteRouterHistory;
 };
 
-export const selectSuiteRouterHistoryDep = (services: any): SuiteRouterHistoryDep => ({
+export const injectSuiteRouterHistory = (services: any): SuiteRouterHistoryDep => ({
     suiteRouterHistory: services.suiteRouterHistory,
 });
 

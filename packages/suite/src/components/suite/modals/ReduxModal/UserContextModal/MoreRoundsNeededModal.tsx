@@ -1,12 +1,12 @@
 import { Translation } from '@suite/intl';
 import { closeModal } from '@suite/modal';
 import { useServices } from '@suite-common/dependency-injection';
-import { selectDispatch } from '@suite-common/redux-utils';
+import { injectDispatch } from '@suite-common/redux-utils';
 import { Column, H3, Modal, Paragraph } from '@trezor/components';
 import { ArrowsInIcon } from '@trezor/icons';
 
 export const MoreRoundsNeededModal = () => {
-    const { dispatch } = useServices(selectDispatch);
+    const { dispatch } = useServices(injectDispatch);
 
     const close = () => dispatch(closeModal());
 

@@ -3,12 +3,12 @@ import { useSelector } from 'react-redux';
 import styled, { css } from 'styled-components';
 
 import { AddressLabeling, copyAddressToClipboard } from '@suite/address';
-import { events, selectDesktopAnalyticsDep } from '@suite/analytics';
+import { events, injectDesktopAnalytics } from '@suite/analytics';
 import { Translation } from '@suite/intl';
 import { type SelectIsLabelActionEnabledState, selectIsLabelActionEnabled } from '@suite/labeling';
 import { useServices } from '@suite-common/dependency-injection';
 import { type ReceiveRootState, selectCurrentFreshAddress } from '@suite-common/receive';
-import { selectDispatch } from '@suite-common/redux-utils';
+import { injectDispatch } from '@suite-common/redux-utils';
 import { type AccountsRootState, selectAccountByKey } from '@suite-common/wallet-core';
 import { type AccountKey } from '@suite-common/wallet-types';
 import { IconButton, Row, Text } from '@trezor/components';
@@ -102,7 +102,7 @@ export const AddressHistoryRow = ({
     const currentFreshAddress = useSelector((state: ReceiveRootState) =>
         selectCurrentFreshAddress(state, accountKey),
     );
-    const { analytics, dispatch } = useServices(selectDesktopAnalyticsDep, selectDispatch);
+    const { analytics, dispatch } = useServices(injectDesktopAnalytics, injectDispatch);
 
     const handleCopy = () => {
         dispatch(copyAddressToClipboard(item.address));

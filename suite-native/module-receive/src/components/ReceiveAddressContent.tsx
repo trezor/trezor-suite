@@ -6,7 +6,7 @@ import { useFocusEffect } from '@react-navigation/native';
 import { useServices } from '@suite-common/dependency-injection';
 import { selectIsPortfolioTrackerDevice } from '@suite-common/device';
 import { selectCurrentFreshAddress } from '@suite-common/receive';
-import { selectDispatch } from '@suite-common/redux-utils';
+import { injectDispatch } from '@suite-common/redux-utils';
 import { type AccountKey, type TokenAddress } from '@suite-common/wallet-types';
 import { ErrorMessage, ScreenFooterGradient, VStack } from '@suite-native/atoms';
 import { selectHasFirmwareAuthenticityCheckHardFailedForSelectedDevice } from '@suite-native/device';
@@ -34,7 +34,7 @@ export const ReceiveAddressContent = ({
     tokenContract,
     closeActionType,
 }: ReceiveAddressContentProps) => {
-    const { dispatch } = useServices(selectDispatch);
+    const { dispatch } = useServices(injectDispatch);
     const [initializedAccountKey, setInitializedAccountKey] = useState<AccountKey | null>(null);
 
     const currentFreshAddress = useSelector((state: ReceiveAddressListRootState) =>

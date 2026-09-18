@@ -6,13 +6,13 @@ import type { ExchangeTrade } from 'invity-api';
 
 import { useServices } from '@suite-common/dependency-injection';
 import { selectSelectedDevice } from '@suite-common/device';
-import { selectDispatch } from '@suite-common/redux-utils';
+import { injectDispatch } from '@suite-common/redux-utils';
 import {
     type TradingSendRejectedProps,
     exchangeThunks,
     selectTradingExchangeSelectedQuote,
 } from '@suite-common/trading';
-import { events, selectNativeAnalyticsDep } from '@suite-native/analytics';
+import { events, injectNativeAnalytics } from '@suite-native/analytics';
 import { type TxKeyPath } from '@suite-native/intl';
 import {
     type ExchangeFlowType,
@@ -54,7 +54,7 @@ export const useExchangeFlow = ({ flowType }: UseExchangeFlowProps = {}) => {
                 | RootStackRoutes.TradingExchangeOutputsReview
             >
         >();
-    const { analytics, dispatch } = useServices(selectNativeAnalyticsDep, selectDispatch);
+    const { analytics, dispatch } = useServices(injectNativeAnalytics, injectDispatch);
     const quote = useSelector(selectTradingExchangeSelectedQuote);
     const device = useSelector(selectSelectedDevice);
     const sendAccount = useSelector(selectExchangeSelectedSendAccount);

@@ -10,7 +10,7 @@ import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { selectVisibleDeviceAccounts } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
 import { useAccountAlerts } from '@suite-native/accounts';
-import { selectNativeAnalyticsDep } from '@suite-native/analytics';
+import { injectNativeAnalytics } from '@suite-native/analytics';
 import { type BottomSheetModalRef, useBottomSheetModalControls } from '@suite-native/atoms';
 import {
     AddCoinAccountStackRoutes,
@@ -44,7 +44,7 @@ type UseStablecoinYieldPromoNavigationReturn = {
 export const useStablecoinYieldPromoNavigation = (): UseStablecoinYieldPromoNavigationReturn => {
     const navigation =
         useNavigation<StackNavigationProps<RootStackParamList, RootStackRoutes.YieldNavigator>>();
-    const { analytics } = useServices(selectNativeAnalyticsDep);
+    const { analytics } = useServices(injectNativeAnalytics);
     const accounts = useSelector(selectVisibleDeviceAccounts);
     const isDeviceInViewOnlyMode = useSelector(selectIsDeviceInViewOnlyMode);
     const { showViewOnlyAddAccountAlert } = useAccountAlerts();

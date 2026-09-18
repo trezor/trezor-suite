@@ -2,7 +2,7 @@ import { useCallback } from 'react';
 
 import { useServices } from '@suite-common/dependency-injection';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
-import { events, selectNativeAnalyticsDep } from '@suite-native/analytics';
+import { events, injectNativeAnalytics } from '@suite-native/analytics';
 import { PressableOpacity } from '@suite-native/atoms';
 import { type AccountAddress, type StaticSessionId } from '@trezor/connect';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
@@ -62,7 +62,7 @@ export const ReceiveAddressListItemRow = ({
     onPress,
     symbol,
 }: ReceiveAddressListItemRowProps) => {
-    const { analytics } = useServices(selectNativeAnalyticsDep);
+    const { analytics } = useServices(injectNativeAnalytics);
     const { applyStyle } = useNativeStyles();
 
     const handlePress = useCallback(() => {

@@ -3,7 +3,7 @@ import { useSelector } from 'react-redux';
 import { useNavigation } from '@react-navigation/native';
 
 import { useServices } from '@suite-common/dependency-injection';
-import { selectDispatch } from '@suite-common/redux-utils';
+import { injectDispatch } from '@suite-common/redux-utils';
 import { invariant } from '@suite-common/suite-utils';
 import {
     type TradingRootState,
@@ -11,7 +11,7 @@ import {
     selectTradingBuyIsLoading,
     selectTradingCoinInfoByCryptoId,
 } from '@suite-common/trading';
-import { events, selectNativeAnalyticsDep } from '@suite-native/analytics';
+import { events, injectNativeAnalytics } from '@suite-native/analytics';
 import { useWatch } from '@suite-native/forms';
 import {
     type RootStackParamList,
@@ -38,7 +38,7 @@ type NavigationProps = StackToStackCompositeNavigationProps<
 >;
 
 export const useBuyFlow = (form: BuyFormType) => {
-    const { analytics, dispatch } = useServices(selectNativeAnalyticsDep, selectDispatch);
+    const { analytics, dispatch } = useServices(injectNativeAnalytics, injectDispatch);
     const isLoading = useSelector(selectTradingBuyIsLoading);
     const [asset, candidateQuote, receiveAccount] = useWatch({
         control: form.control,

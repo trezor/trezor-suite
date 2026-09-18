@@ -12,7 +12,7 @@ import {
 } from '@suite-common/wallet-core';
 import { type AccountKey } from '@suite-common/wallet-types';
 import { isPositiveBalance } from '@suite-common/wallet-utils';
-import { events, selectNativeAnalyticsDep } from '@suite-native/analytics';
+import { events, injectNativeAnalytics } from '@suite-native/analytics';
 import { BannerInline, Box, Button, HStack, Text, VStack } from '@suite-native/atoms';
 import { Icon } from '@suite-native/icons';
 import { Translation } from '@suite-native/intl';
@@ -45,7 +45,7 @@ export const StakingManagementReadyToClaimCard = ({
     const { isPortfolioTrackerDevice, openPortfolioTrackerSheet } = useEarnPortfolioTrackerGuard();
     const navigation = useNavigation<NavigationProp>();
     const { CryptoAmountFormatter: amountFormatter } = useFormatters();
-    const { analytics } = useServices(selectNativeAnalyticsDep);
+    const { analytics } = useServices(injectNativeAnalytics);
 
     const symbol = useSelector((state: StakeRootState) =>
         selectAccountNetworkSymbol(state, accountKey),

@@ -11,7 +11,7 @@ import {
     selectTradingSellIsLoading,
     selectTradingSellProviders,
 } from '@suite-common/trading';
-import { events, selectNativeAnalyticsDep } from '@suite-native/analytics';
+import { events, injectNativeAnalytics } from '@suite-native/analytics';
 import { AnimatedBox } from '@suite-native/atoms';
 import { useTranslate } from '@suite-native/intl';
 import { OverviewRow, OverviewValueSkeleton, ProviderDisplay } from '@suite-native/trading-atoms';
@@ -58,7 +58,7 @@ const SellProviderPickerRight = ({ isLoading, selectedValue }: SellProviderPicke
 
 export const SellProviderPicker = () => {
     const { translate } = useTranslate();
-    const { analytics } = useServices(selectNativeAnalyticsDep);
+    const { analytics } = useServices(injectNativeAnalytics);
     const form = useSellFormContext();
     const providers = useSelector(selectTradingSellProviders);
     const isLoading = useSelector(selectTradingSellIsLoading);

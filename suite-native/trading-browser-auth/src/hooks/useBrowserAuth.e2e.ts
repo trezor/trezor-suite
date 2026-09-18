@@ -1,7 +1,7 @@
 import { useCallback } from 'react';
 
 import { useServices } from '@suite-common/dependency-injection';
-import { selectDispatch } from '@suite-common/redux-utils';
+import { injectDispatch } from '@suite-common/redux-utils';
 import { invariant } from '@suite-common/suite-utils';
 import { type TradingType, tradingThunks } from '@suite-common/trading';
 
@@ -13,7 +13,7 @@ import { useBrowserStateChangeCallbacks } from './useBrowserStateChangeCallbacks
 // We do this because Detox does not support interaction with a Web browser.
 
 export const useBrowserAuth = (tradingType: TradingType | undefined): BrowserAuthRet => {
-    const { dispatch } = useServices(selectDispatch);
+    const { dispatch } = useServices(injectDispatch);
     const { handleBrowserClosed, handleBrowserOpened } =
         useBrowserStateChangeCallbacks(tradingType);
 

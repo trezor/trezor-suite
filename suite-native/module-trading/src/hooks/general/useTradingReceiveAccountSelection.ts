@@ -1,11 +1,11 @@
 import { useServices } from '@suite-common/dependency-injection';
-import { selectDispatch } from '@suite-common/redux-utils';
+import { injectDispatch } from '@suite-common/redux-utils';
 import { type TradingType } from '@suite-common/trading';
 import { tradingActions } from '@suite-native/trading-state';
 import { type ReceiveAccount } from '@suite-native/trading-types';
 
 export const useTradingReceiveAccountSelection = (tradingType: Exclude<TradingType, 'sell'>) => {
-    const { dispatch } = useServices(selectDispatch);
+    const { dispatch } = useServices(injectDispatch);
 
     return (receiveAccount: ReceiveAccount) => {
         const { account, address } = receiveAccount;

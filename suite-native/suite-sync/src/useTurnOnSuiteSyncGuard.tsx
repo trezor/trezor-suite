@@ -11,8 +11,8 @@ import {
     selectSuiteSyncInteraction,
 } from '@suite-common/suite-sync';
 import {
-    selectEnsureWalletSuiteSyncOnDep,
-    selectTurnOnSuiteSyncDep,
+    injectEnsureWalletSuiteSyncOn,
+    injectTurnOnSuiteSync,
 } from '@suite-common/suite-sync-types';
 import { useAlert, useShowAlertResult } from '@suite-native/alerts';
 import { Translation } from '@suite-native/intl';
@@ -37,8 +37,8 @@ export const useTurnOnSuiteSyncGuard = () => {
     const [isInProgress, setIsInProgress] = useState(false);
 
     const { ensureWalletSuiteSyncOn, turnOnSuiteSync } = useServices(
-        selectEnsureWalletSuiteSyncOnDep,
-        selectTurnOnSuiteSyncDep,
+        injectEnsureWalletSuiteSyncOn,
+        injectTurnOnSuiteSync,
     );
 
     const { showSuiteSyncEnabledToast } = useShowSuiteSyncEnabledToast();

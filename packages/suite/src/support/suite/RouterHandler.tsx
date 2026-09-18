@@ -3,22 +3,19 @@ import { useEffect } from 'react';
 import { Action } from 'history';
 
 import {
+    injectSuiteRouterHistory,
     onLocationChangeThunk,
     selectCanNavigate,
     selectRouterLoaded,
-    selectSuiteRouterHistoryDep,
 } from '@suite/router';
 import { useServices } from '@suite-common/dependency-injection';
-import { selectDispatch } from '@suite-common/redux-utils';
+import { injectDispatch } from '@suite-common/redux-utils';
 
 import { useSelector } from 'src/hooks/suite';
 
 export const RouterHandler = () => {
     const routerLoaded = useSelector(selectRouterLoaded);
-    const { suiteRouterHistory, dispatch } = useServices(
-        selectSuiteRouterHistoryDep,
-        selectDispatch,
-    );
+    const { suiteRouterHistory, dispatch } = useServices(injectSuiteRouterHistory, injectDispatch);
     const canGoBack = useSelector(selectCanNavigate);
 
     useEffect(() => {

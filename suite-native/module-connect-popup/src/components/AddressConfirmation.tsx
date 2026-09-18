@@ -8,13 +8,13 @@ import {
 } from '@suite-common/connect-popup';
 import { useServices } from '@suite-common/dependency-injection';
 import { selectSelectedDevice, selectSelectedDeviceLabelOrName } from '@suite-common/device';
-import { selectDispatch } from '@suite-common/redux-utils';
+import { injectDispatch } from '@suite-common/redux-utils';
 import { Button, Card, HStack, IconButton, Text, TitleHeader, VStack } from '@suite-native/atoms';
 import { AddressFormatter } from '@suite-native/formatters';
 import { Translation } from '@suite-native/intl';
 
 export const AddressConfirmation = () => {
-    const { dispatch } = useServices(selectDispatch);
+    const { dispatch } = useServices(injectDispatch);
     const popupCall = useSelector(selectConnectPopupCall);
     const device = useSelector(selectSelectedDevice);
     const deviceLabel = useSelector(selectSelectedDeviceLabelOrName);

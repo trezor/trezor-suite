@@ -1,10 +1,10 @@
 import { useEffect, useRef } from 'react';
 
-import { selectDesktopAnalyticsDep } from '@suite/analytics';
+import { injectDesktopAnalytics } from '@suite/analytics';
 import { type EventInstance, events } from '@suite-common/analytics';
 import { useServices } from '@suite-common/dependency-injection';
 import { type YieldDtoV2 } from '@suite-common/earn-stablecoin-api';
-import { selectDispatch } from '@suite-common/redux-utils';
+import { injectDispatch } from '@suite-common/redux-utils';
 import {
     type YieldFlowType,
     type YieldPendingTransactionState,
@@ -188,7 +188,7 @@ export const useYieldPendingTransactionTracking = ({
     waitForMerklToResolveClaim = stablePlaceholderPromise,
     vault,
 }: UseYieldPendingTransactionTrackingProps) => {
-    const { analytics, dispatch } = useServices(selectDesktopAnalyticsDep, selectDispatch);
+    const { analytics, dispatch } = useServices(injectDesktopAnalytics, injectDispatch);
     const pendingTransaction = useSelector(
         state => selectYieldSession(state, flowType, flowKey).action.pendingTransaction,
     );

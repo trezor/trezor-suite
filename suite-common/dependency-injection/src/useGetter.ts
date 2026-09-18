@@ -39,7 +39,7 @@ type GetterReturn<TSelected> =
  * Subscribing through `useSelector` is what re-evaluates the getter on every store change.
  *
  * ```ts
- * const allowPrerelease = useGetter(selectGetAllowPrereleaseDep);
+ * const allowPrerelease = useGetter(injectGetAllowPrerelease);
  * ```
  *
  * The value is compared shallowly, so a getter returning a fresh object holding the same values on
@@ -47,16 +47,16 @@ type GetterReturn<TSelected> =
  * usually means building the getter on a memoized selector.
  */
 export function useGetter<const TSelector extends ServiceSelector<any>>(
-    selectGetterDep: TSelector,
+    injectGetter: TSelector,
     ...params: GetterParams<SelectorResult<TSelector>>
 ): GetterReturn<SelectorResult<TSelector>>;
 
-export function useGetter(selectGetterDep: ServiceSelector<any>, ...params: unknown[]) {
+export function useGetter(injectGetter: ServiceSelector<any>, ...params: unknown[]) {
     const services = useServicesContext();
 
     const getter = React.useMemo(() => {
         const [onlyGetter, ...rest] = typedObjectValues<Record<string, Getter<unknown[], unknown>>>(
-            selectGetterDep(services),
+            injectGetter(services),
         );
 
         if (onlyGetter === undefined || rest.length > 0) {
@@ -66,7 +66,7 @@ export function useGetter(selectGetterDep: ServiceSelector<any>, ...params: unkn
         }
 
         return onlyGetter;
-    }, [services, selectGetterDep]);
+    }, [services, injectGetter]);
 
     return useSelector(() => getter(...params), shallowEqual);
 }

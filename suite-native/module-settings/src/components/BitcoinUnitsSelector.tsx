@@ -1,10 +1,10 @@
 import { useSelector } from 'react-redux';
 
 import { useServices } from '@suite-common/dependency-injection';
-import { selectDispatch } from '@suite-common/redux-utils';
+import { injectDispatch } from '@suite-common/redux-utils';
 import { UNIT_ABBREVIATIONS } from '@suite-common/suite-constants';
 import { selectBitcoinAmountUnit, setBitcoinAmountUnits } from '@suite-common/wallet-core';
-import { events, selectNativeAnalyticsDep } from '@suite-native/analytics';
+import { events, injectNativeAnalytics } from '@suite-native/analytics';
 import { Select } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 import { PROTO } from '@trezor/connect';
@@ -18,7 +18,7 @@ const bitcoinUnitsItems = [
 
 export const BitcoinUnitsSelector = () => {
     const bitcoinUnit = useSelector(selectBitcoinAmountUnit);
-    const { analytics, dispatch } = useServices(selectNativeAnalyticsDep, selectDispatch);
+    const { analytics, dispatch } = useServices(injectNativeAnalytics, injectDispatch);
     const handleSelectUnit = (value: PROTO.AmountUnit) => {
         dispatch(setBitcoinAmountUnits(value));
         analytics.report({

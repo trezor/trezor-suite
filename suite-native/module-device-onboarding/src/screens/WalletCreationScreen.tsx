@@ -11,7 +11,7 @@ import {
     type MessageSystemRootState,
     selectIsFeatureEnabled,
 } from '@suite-common/message-system';
-import { selectDispatch } from '@suite-common/redux-utils';
+import { injectDispatch } from '@suite-common/redux-utils';
 import { ContinueOnTrezorScreenContent, createAndBackupWalletThunk } from '@suite-native/device';
 import {
     type DeviceOnboardingStackParamList,
@@ -47,7 +47,7 @@ type RouteProps = RouteProp<
 export const WalletCreationScreen = () => {
     const route = useRoute<RouteProps>();
     const { walletBackupType } = route.params;
-    const { dispatch } = useServices(selectDispatch);
+    const { dispatch } = useServices(injectDispatch);
     const navigation = useNavigation<NavigationProp>();
     const navigateToInitialScreen = useNavigateToInitialScreen();
     const { showToast } = useToast();

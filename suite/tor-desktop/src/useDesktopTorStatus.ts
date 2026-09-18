@@ -4,11 +4,11 @@ import { useSelector } from 'react-redux';
 import {
     type BootstrapTorEvent,
     type TorStatusEvent,
-    selectDesktopApiDep,
+    injectDesktopApi,
 } from '@suite/desktop-app-api';
 import { TorStatus, selectIsTorEnabling, selectTorBootstrap, torActions } from '@suite/tor';
 import { useServices } from '@suite-common/dependency-injection';
-import { selectDispatch } from '@suite-common/redux-utils';
+import { injectDispatch } from '@suite-common/redux-utils';
 import { addToastOnceThunk } from '@suite-common/toast-notifications';
 import { isDesktop } from '@trezor/env-utils';
 
@@ -22,7 +22,7 @@ type UseDesktopTorStatusParams = {
 // On desktop the Tor daemon is controlled locally; status and bootstrap progress
 // arrive as events from the desktop process via `desktopApi`.
 export const useDesktopTorStatus = ({ onStatusChange }: UseDesktopTorStatusParams) => {
-    const { desktopApi, dispatch } = useServices(selectDispatch, selectDesktopApiDep);
+    const { desktopApi, dispatch } = useServices(injectDispatch, injectDesktopApi);
     const torBootstrap = useSelector(selectTorBootstrap);
     const isTorEnabling = useSelector(selectIsTorEnabling);
 

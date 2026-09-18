@@ -5,7 +5,7 @@ import styled, { css } from 'styled-components';
 import { type ExtendedMessageDescriptor, Translation, type TranslationKey } from '@suite/intl';
 import { type Route, gotoThunk, selectRouteName } from '@suite/router';
 import { useServices } from '@suite-common/dependency-injection';
-import { selectDispatch } from '@suite-common/redux-utils';
+import { injectDispatch } from '@suite-common/redux-utils';
 import {
     Badge,
     Icon,
@@ -94,7 +94,7 @@ const NavItem = ({
     shortcut,
 }: NavigationItemProps) => {
     const activeRoute = useSelector(selectRouteName);
-    const { dispatch } = useServices(selectDispatch);
+    const { dispatch } = useServices(injectDispatch);
 
     const handleClick = (e: MouseEvent) => {
         e.stopPropagation();

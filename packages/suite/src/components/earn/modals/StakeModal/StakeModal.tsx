@@ -1,4 +1,4 @@
-import { selectDesktopAnalyticsDep } from '@suite/analytics';
+import { injectDesktopAnalytics } from '@suite/analytics';
 import { Translation } from '@suite/intl';
 import { useServices } from '@suite-common/dependency-injection';
 import { type StakeModalFlow } from '@suite-common/suite-types/src/staking';
@@ -22,7 +22,7 @@ type StakeModalProps = {
 };
 
 export const StakeModal = ({ onCancel, account, flow }: StakeModalProps) => {
-    const { analytics } = useServices(selectDesktopAnalyticsDep);
+    const { analytics } = useServices(injectDesktopAnalytics);
     const stakeContextValues = useStakeForm({ account });
     const { isBelowTablet } = useLayoutSize();
 

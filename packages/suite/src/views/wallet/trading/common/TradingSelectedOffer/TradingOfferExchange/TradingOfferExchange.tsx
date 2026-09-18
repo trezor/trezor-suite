@@ -1,10 +1,10 @@
-import { type TradeExchangeAction, events, selectDesktopAnalyticsDep } from '@suite/analytics';
+import { type TradeExchangeAction, events, injectDesktopAnalytics } from '@suite/analytics';
 import { useDevice } from '@suite/device';
 import { Translation } from '@suite/intl';
 import { gotoThunk } from '@suite/router';
 import { useServices } from '@suite-common/dependency-injection';
 import { Feature, selectIsFeatureEnabled } from '@suite-common/message-system';
-import { selectDispatch } from '@suite-common/redux-utils';
+import { injectDispatch } from '@suite-common/redux-utils';
 import {
     getSimulatedReceiveAmount,
     selectTradingExchangeActiveTrade,
@@ -34,7 +34,7 @@ import { TradingInfoItem } from '../TradingInfo/TradingInfoItem';
 
 export const TradingOfferExchange = () => {
     const { handleClick, disabled } = useAsyncClickHandler();
-    const { analytics, dispatch } = useServices(selectDesktopAnalyticsDep, selectDispatch);
+    const { analytics, dispatch } = useServices(injectDesktopAnalytics, injectDispatch);
     const { device } = useDevice();
     const formStep = useSelector(selectTradingExchangeFormStep);
     const exchangeInfo = useSelector(selectTradingExchangeInfo);

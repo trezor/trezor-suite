@@ -6,7 +6,7 @@ import { selectIsDebugModeActive } from '@suite/debug';
 import { Translation } from '@suite/intl';
 import { gotoThunk } from '@suite/router';
 import { useServices } from '@suite-common/dependency-injection';
-import { selectDispatch } from '@suite-common/redux-utils';
+import { injectDispatch } from '@suite-common/redux-utils';
 import { Box, Column, motionEasing } from '@trezor/components';
 
 import {
@@ -27,7 +27,7 @@ type SettingsLayoutProps = {
 const SettingsHeader = () => {
     const isDebugModeActive = useSelector(selectIsDebugModeActive);
 
-    const { dispatch } = useServices(selectDispatch);
+    const { dispatch } = useServices(injectDispatch);
 
     const settingsSubpages = useMemo<Array<NavigationItem>>(
         () => [

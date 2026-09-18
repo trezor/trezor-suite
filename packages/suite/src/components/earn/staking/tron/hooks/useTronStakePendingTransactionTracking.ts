@@ -1,7 +1,7 @@
 import { useEffect } from 'react';
 
 import { useServices } from '@suite-common/dependency-injection';
-import { selectDispatch } from '@suite-common/redux-utils';
+import { injectDispatch } from '@suite-common/redux-utils';
 import {
     type TronFlow,
     fetchAndUpdateAccountThunk,
@@ -34,7 +34,7 @@ export const useTronStakePendingTransactionTracking = ({
     account,
     flow,
 }: UseTronStakePendingTransactionTrackingProps) => {
-    const { dispatch } = useServices(selectDispatch);
+    const { dispatch } = useServices(injectDispatch);
     const { pendingTxid } = useSelector(state => selectTronStakeSession(state, account.key, flow));
     const trackedTransaction = useSelector(state =>
         pendingTxid ? selectTransactionByAccountKeyAndTxid(state, account.key, pendingTxid) : null,

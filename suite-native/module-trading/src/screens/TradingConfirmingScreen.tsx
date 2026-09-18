@@ -2,7 +2,7 @@ import { useCallback, useEffect, useEffectEvent, useRef } from 'react';
 import { useSelector } from 'react-redux';
 
 import { useServices } from '@suite-common/dependency-injection';
-import { selectDispatch } from '@suite-common/redux-utils';
+import { injectDispatch } from '@suite-common/redux-utils';
 import {
     selectTradingExchangeSelectedQuote,
     tradingExchangeActions,
@@ -44,7 +44,7 @@ export const TradingConfirmingScreen = ({
 }: TradingConfirmingScreenProps) => {
     const { flowType } = params;
 
-    const { dispatch } = useServices(selectDispatch);
+    const { dispatch } = useServices(injectDispatch);
     const sendAccount = useSelector(selectExchangeSelectedSendAccount);
     const activeQuote = useSelector(selectTradingExchangeSelectedQuote);
     const accountKey = sendAccount?.key ?? null;

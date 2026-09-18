@@ -13,7 +13,7 @@ import {
     selectConnectAppPermissions,
 } from '@suite-common/connect-popup';
 import { useServices } from '@suite-common/dependency-injection';
-import { selectDispatch } from '@suite-common/redux-utils';
+import { injectDispatch } from '@suite-common/redux-utils';
 import {
     Box,
     Card,
@@ -261,7 +261,7 @@ export const GroupedPermissionsList = ({
 );
 
 export const ConnectPermissions = () => {
-    const { dispatch } = useServices(selectDispatch);
+    const { dispatch } = useServices(injectDispatch);
     const apps = useSelector(selectConnectAppPermissions);
     const isDebugModeActive = useSelector(selectIsDebugModeActive);
 

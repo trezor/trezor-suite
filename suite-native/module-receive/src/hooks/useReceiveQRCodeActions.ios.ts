@@ -7,7 +7,7 @@ import * as Clipboard from 'expo-clipboard';
 
 import { useServices } from '@suite-common/dependency-injection';
 import { useAlert } from '@suite-native/alerts';
-import { events, selectNativeAnalyticsDep } from '@suite-native/analytics';
+import { events, injectNativeAnalytics } from '@suite-native/analytics';
 import { useTranslate } from '@suite-native/intl';
 import { useToast } from '@suite-native/toasts';
 import { exhaustive } from '@trezor/type-utils';
@@ -32,7 +32,7 @@ const captureQRCodeImageBase64 = (qrCodeView: ViewShotRef): Promise<string> =>
 
 export const useReceiveQRCodeActions = () => {
     const qrCodeViewRef = useRef<ViewShotRef>(null);
-    const { analytics } = useServices(selectNativeAnalyticsDep);
+    const { analytics } = useServices(injectNativeAnalytics);
     const { translate } = useTranslate();
     const { showToast } = useToast();
     const { showAlert } = useAlert();

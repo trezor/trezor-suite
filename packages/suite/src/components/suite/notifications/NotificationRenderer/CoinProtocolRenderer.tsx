@@ -6,7 +6,7 @@ import { gotoThunk, selectRouteName } from '@suite/router';
 import { isBech32AddressUppercase } from '@suite-common/address';
 import { useServices } from '@suite-common/dependency-injection';
 import { selectNetworkSymbolForProtocol } from '@suite-common/networks';
-import { selectDispatch } from '@suite-common/redux-utils';
+import { injectDispatch } from '@suite-common/redux-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import {
     type NetworkSymbol,
@@ -35,7 +35,7 @@ export const CoinProtocolRenderer = ({
     render,
     notification,
 }: NotificationRendererProps<'coin-scheme-protocol'>) => {
-    const { dispatch } = useServices(selectDispatch);
+    const { dispatch } = useServices(injectDispatch);
     const selectedAccount = useSelector(selectSelectedAccount);
     const routeName = useSelector(selectRouteName);
 

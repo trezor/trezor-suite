@@ -1,8 +1,8 @@
-import { events, selectDesktopAnalyticsDep } from '@suite/analytics';
+import { events, injectDesktopAnalytics } from '@suite/analytics';
 import { Translation } from '@suite/intl';
 import { gotoThunk, selectIsAccountTabPage, selectRouteName } from '@suite/router';
 import { useServices } from '@suite-common/dependency-injection';
-import { selectDispatch } from '@suite-common/redux-utils';
+import { injectDispatch } from '@suite-common/redux-utils';
 import { getTradingPrefilledFromAccountData, tradingActions } from '@suite-common/trading';
 import { type SelectedAccountStatus } from '@suite-common/wallet-types';
 import { ButtonGroup, Row } from '@trezor/components';
@@ -17,7 +17,7 @@ interface TradeActionsProps {
 }
 
 export const TradeActions = ({ selectedAccount }: TradeActionsProps) => {
-    const { analytics, dispatch } = useServices(selectDesktopAnalyticsDep, selectDispatch);
+    const { analytics, dispatch } = useServices(injectDesktopAnalytics, injectDispatch);
     const account = selectedAccount?.account;
     const isAccountTabPage = useSelector(selectIsAccountTabPage);
     const currentRouteName = useSelector(selectRouteName);

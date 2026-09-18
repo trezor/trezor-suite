@@ -6,7 +6,7 @@ import { selectIsActivateAssetsBannerClosed, setFlag } from '@suite/flags';
 import { Translation } from '@suite/intl';
 import { preserveModal, removePreserveModal } from '@suite/modal';
 import { useServices } from '@suite-common/dependency-injection';
-import { selectDispatch } from '@suite-common/redux-utils';
+import { injectDispatch } from '@suite-common/redux-utils';
 import type { NetworkSymbol } from '@suite-common/wallet-config';
 import {
     changeCoinVisibilityThunk,
@@ -44,7 +44,7 @@ type ActivateAssetsModalProps = {
 };
 
 export const ActivateAssetsModal = ({ onCancel }: ActivateAssetsModalProps) => {
-    const { dispatch } = useServices(selectDispatch);
+    const { dispatch } = useServices(injectDispatch);
     const enabledNetworks = useSelector(selectEnabledNetworks);
     const isActivateAssetsBannerClosed = useSelector(selectIsActivateAssetsBannerClosed);
     const { supportedMainnets } = useNetworkSupport();

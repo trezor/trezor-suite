@@ -4,7 +4,7 @@ import { useSelector } from 'react-redux';
 import { type RouteProp, useNavigation, useRoute } from '@react-navigation/native';
 
 import { useServices } from '@suite-common/dependency-injection';
-import { selectDispatch } from '@suite-common/redux-utils';
+import { injectDispatch } from '@suite-common/redux-utils';
 import {
     type YieldRootState,
     selectYieldSessionByFlowKey,
@@ -31,7 +31,7 @@ type NavigationProps = StackNavigationProps<
 export const YieldDepositWrapReviewScreen = () => {
     const route = useRoute<RouteProps>();
     const navigation = useNavigation<NavigationProps>();
-    const { dispatch } = useServices(selectDispatch);
+    const { dispatch } = useServices(injectDispatch);
 
     const yieldFlowData = useYieldFlowData(route.params);
     const { account, flowKey, resolutionStatus } = yieldFlowData;

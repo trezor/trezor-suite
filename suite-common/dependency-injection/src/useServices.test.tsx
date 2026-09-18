@@ -15,15 +15,15 @@ const appServices: ADep & BDep & GetterDep = {
     getSomething: asGetter(() => true),
 };
 
-const selectADep = (services: any): ADep => ({
+const injectA = (services: any): ADep => ({
     a: services.a,
 });
 
-const selectBDep = (services: any): BDep => ({
+const injectB = (services: any): BDep => ({
     b: services.b,
 });
 
-const selectGetterDep = (services: any): GetterDep => ({
+const injectGetter = (services: any): GetterDep => ({
     getSomething: services.getSomething,
 });
 
@@ -33,7 +33,7 @@ const wrapper = ({ children }: PropsWithChildren) => (
 
 describe(useServices.name, () => {
     it('returns the same selected services reference across rerenders', () => {
-        const { result, rerender } = renderHook(() => useServices(selectADep, selectBDep), {
+        const { result, rerender } = renderHook(() => useServices(injectA, injectB), {
             wrapper,
         });
 
@@ -47,7 +47,7 @@ describe(useServices.name, () => {
 
 describe(useImperativeServices.name, () => {
     it('hands out a dependency containing a getter', () => {
-        const { result } = renderHook(() => useImperativeServices(selectGetterDep), { wrapper });
+        const { result } = renderHook(() => useImperativeServices(injectGetter), { wrapper });
 
         expect(result.current.getSomething).toBe(appServices.getSomething);
     });

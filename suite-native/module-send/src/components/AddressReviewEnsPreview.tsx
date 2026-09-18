@@ -1,7 +1,7 @@
 import { useSelector } from 'react-redux';
 
 import { useServices } from '@suite-common/dependency-injection';
-import { selectGetNamedAddressSupportDep } from '@suite-common/networks';
+import { injectGetNamedAddressSupport } from '@suite-common/networks';
 import {
     type AccountsRootState,
     type SendRootState,
@@ -26,7 +26,7 @@ export const AddressReviewEnsPreview = ({
     accountKey,
     tokenContract,
 }: AddressReviewEnsPreviewProps) => {
-    const { getNamedAddressSupport } = useServices(selectGetNamedAddressSupportDep);
+    const { getNamedAddressSupport } = useServices(injectGetNamedAddressSupport);
     const symbol = useSelector((state: AccountsRootState) =>
         selectAccountNetworkSymbol(state, accountKey),
     );

@@ -1,7 +1,7 @@
 import { useEffect, useMemo } from 'react';
 
 import { useServices } from '@suite-common/dependency-injection';
-import { selectDispatch } from '@suite-common/redux-utils';
+import { injectDispatch } from '@suite-common/redux-utils';
 import {
     DEFAULT_VOTING_OPTION,
     type VotingDelegationOption,
@@ -27,7 +27,7 @@ export const useCardanoAccountVotingDelegation = (
 export const useSeededCardanoVotingDelegation = (
     account: Account,
 ): VotingDelegationOption | undefined => {
-    const { dispatch } = useServices(selectDispatch);
+    const { dispatch } = useServices(injectDispatch);
     const accountVotingDelegation = useCardanoAccountVotingDelegation(account);
     const isCardanoAccount = account.networkType === 'cardano';
     // Seeding is driven by the store rather than by a mount-once ref, so that a selection cleared

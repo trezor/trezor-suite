@@ -1,9 +1,9 @@
-import { events, selectDesktopAnalyticsDep } from '@suite/analytics';
+import { events, injectDesktopAnalytics } from '@suite/analytics';
 import { setConnectionModal, setConnectionMode, useDevice } from '@suite/device';
 import { closeModal, openDeferredModal, preserveModal } from '@suite/modal';
 import { useServices } from '@suite-common/dependency-injection';
 import { useTronStakingStats } from '@suite-common/earn-staking-api';
-import { selectDispatch } from '@suite-common/redux-utils';
+import { injectDispatch } from '@suite-common/redux-utils';
 import {
     TRON_REPRESENTATIVE_TERMS_OF_SERVICE_URLS,
     type TronFlow,
@@ -49,7 +49,7 @@ export const useTronStakeActions = ({
     flow,
 }: UseTronStakeActionsProps): TronStakeActions => {
     const { device } = useDevice();
-    const { analytics, dispatch } = useServices(selectDesktopAnalyticsDep, selectDispatch);
+    const { analytics, dispatch } = useServices(injectDesktopAnalytics, injectDispatch);
     const { stats } = useTronStakingStats();
     const { step, isSubmitting, error, pendingTxid } = useSelector(state =>
         selectTronStakeSession(state, account.key, flow),

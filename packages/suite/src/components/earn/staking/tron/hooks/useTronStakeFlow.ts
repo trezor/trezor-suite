@@ -3,7 +3,7 @@ import { useEffect } from 'react';
 import { useServices } from '@suite-common/dependency-injection';
 import { type TrxStats, useTronStakingStats } from '@suite-common/earn-staking-api';
 import { type UseQueryResult } from '@suite-common/react-query';
-import { selectDispatch } from '@suite-common/redux-utils';
+import { injectDispatch } from '@suite-common/redux-utils';
 import { type TronFlow, tronStakeActions } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
 
@@ -31,7 +31,7 @@ export const useTronStakeFlow = ({
     account,
     flow,
 }: UseTronStakeFlowProps): TronStakeContextValues => {
-    const { dispatch } = useServices(selectDispatch);
+    const { dispatch } = useServices(injectDispatch);
     const { stats } = useTronStakingStats();
 
     const form = useTronStakeForm({ account, flow });

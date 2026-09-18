@@ -1,6 +1,6 @@
 import { type ReactNode, useState } from 'react';
 
-import { selectDesktopAnalyticsDep } from '@suite/analytics';
+import { injectDesktopAnalytics } from '@suite/analytics';
 import { Translation } from '@suite/intl';
 import { events } from '@suite-common/analytics';
 import { selectIsAnalyticsEnabled } from '@suite-common/analytics-redux';
@@ -22,7 +22,7 @@ export const SupportConsentPopover = ({ children }: SupportConsentPopoverProps) 
     const isAnalyticsEnabled = useSelector(selectIsAnalyticsEnabled);
     const [isSystemInfoShared, setIsSystemInfoShared] = useState(isAnalyticsEnabled);
     const supportChatUrl = useSelector(state => selectSupportChatUrl(state, isSystemInfoShared));
-    const { analytics } = useServices(selectDesktopAnalyticsDep);
+    const { analytics } = useServices(injectDesktopAnalytics);
 
     const handleOpenSupportChat = () => {
         analytics.report({

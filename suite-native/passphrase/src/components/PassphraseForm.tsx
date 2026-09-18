@@ -8,14 +8,14 @@ import {
     selectHasDevicePassphraseEntryCapability,
     selectSelectedDevice,
 } from '@suite-common/device';
-import { selectDispatch } from '@suite-common/redux-utils';
+import { injectDispatch } from '@suite-common/redux-utils';
 import {
     type PassphraseFormValues,
     formInputsMaxLength,
     passphraseFormSchema,
 } from '@suite-common/validators';
 import { submitPassphraseThunk } from '@suite-common/wallet-core';
-import { events, selectNativeAnalyticsDep } from '@suite-native/analytics';
+import { events, injectNativeAnalytics } from '@suite-native/analytics';
 import { Button, Card, TextDivider, VStack } from '@suite-native/atoms';
 import { selectPassphraseRequestId } from '@suite-native/device-authorization';
 import { Form, SecureTextInputField, useForm } from '@suite-native/forms';
@@ -44,7 +44,7 @@ export const PassphraseForm = ({
     noPassphraseEnabled,
     onAfterSubmit,
 }: PassphraseFormProps) => {
-    const { analytics, dispatch } = useServices(selectNativeAnalyticsDep, selectDispatch);
+    const { analytics, dispatch } = useServices(injectNativeAnalytics, injectDispatch);
     const formWrapperView = useRef<View>(null);
 
     const [isInputFocused, setIsInputFocused] = useState(false);

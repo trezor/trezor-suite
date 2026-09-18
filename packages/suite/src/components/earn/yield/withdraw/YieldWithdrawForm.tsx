@@ -1,6 +1,6 @@
 import { useEffect, useRef } from 'react';
 
-import { selectDesktopAnalyticsDep } from '@suite/analytics';
+import { injectDesktopAnalytics } from '@suite/analytics';
 import { Translation } from '@suite/intl';
 import { events } from '@suite-common/analytics';
 import { useServices } from '@suite-common/dependency-injection';
@@ -26,7 +26,7 @@ import { YieldFlowStepList } from '../common/YieldFlowStepList';
 import { YieldUnwrapStep } from '../common/YieldUnwrapStep';
 
 export const YieldWithdrawForm = () => {
-    const { analytics } = useServices(selectDesktopAnalyticsDep);
+    const { analytics } = useServices(injectDesktopAnalytics);
 
     const {
         account,

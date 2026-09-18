@@ -8,7 +8,7 @@ import { Translation, type TranslationKey } from '@suite/intl';
 import { closeModal } from '@suite/modal';
 import { useServices } from '@suite-common/dependency-injection';
 import { selectSelectedDeviceLabelOrName } from '@suite-common/device';
-import { selectDispatch } from '@suite-common/redux-utils';
+import { injectDispatch } from '@suite-common/redux-utils';
 import { H3, Modal, Paragraph, Tooltip } from '@trezor/components';
 import { ShieldWarningIcon } from '@trezor/icons';
 
@@ -36,7 +36,7 @@ export const ConfirmUnverifiedModal = ({
 }: ConfirmUnverifiedModalProps) => {
     const deviceLabel = useSelector(selectSelectedDeviceLabelOrName);
     const { device } = useDevice();
-    const { dispatch } = useServices(selectDispatch);
+    const { dispatch } = useServices(injectDispatch);
     const { isLocked } = useDevice();
 
     const isDeviceLocked = isLocked();

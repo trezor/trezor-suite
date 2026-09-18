@@ -1,7 +1,7 @@
 import { useEffect } from 'react';
 import { usePrevious } from 'react-use';
 
-import { events, selectDesktopAnalyticsDep } from '@suite/analytics';
+import { events, injectDesktopAnalytics } from '@suite/analytics';
 import { useServices } from '@suite-common/dependency-injection';
 import { type TradingTransactionStatus, type TradingType } from '@suite-common/trading';
 
@@ -18,7 +18,7 @@ export const useTradingDetailStatusAnalytics = ({
     tradeStatus,
     statusStep,
 }: UseTradingDetailStatusAnalyticsProps) => {
-    const { analytics } = useServices(selectDesktopAnalyticsDep);
+    const { analytics } = useServices(injectDesktopAnalytics);
     const previousTradeStatus = usePrevious(tradeStatus);
 
     useEffect(() => {

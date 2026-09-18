@@ -1,6 +1,6 @@
-import { events, selectDesktopAnalyticsDep } from '@suite/analytics';
+import { events, injectDesktopAnalytics } from '@suite/analytics';
 import { useServices } from '@suite-common/dependency-injection';
-import { selectDispatch } from '@suite-common/redux-utils';
+import { injectDispatch } from '@suite-common/redux-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
 
 import { suiteForgetDeviceThunk } from 'src/actions/suite/suiteForgetDeviceThunk';
@@ -11,7 +11,7 @@ import { suiteForgetDeviceThunk } from 'src/actions/suite/suiteForgetDeviceThunk
  * is no longer available (e.g. after disconnect).
  */
 export const useForgetDevice = () => {
-    const { analytics, dispatch } = useServices(selectDesktopAnalyticsDep, selectDispatch);
+    const { analytics, dispatch } = useServices(injectDesktopAnalytics, injectDispatch);
 
     const forgetDevice = async ({
         skipToggleModalConnection,

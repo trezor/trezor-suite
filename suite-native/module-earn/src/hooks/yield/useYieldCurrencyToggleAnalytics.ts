@@ -3,7 +3,7 @@ import { useCallback } from 'react';
 import { events } from '@suite-common/analytics';
 import { useServices } from '@suite-common/dependency-injection';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
-import { selectNativeAnalyticsDep } from '@suite-native/analytics';
+import { injectNativeAnalytics } from '@suite-native/analytics';
 import { type ActiveView } from '@suite-native/atoms';
 
 type UseYieldCurrencyToggleAnalyticsParams = {
@@ -19,7 +19,7 @@ export const useYieldCurrencyToggleAnalytics = ({
     networkSymbol,
     vaultId,
 }: UseYieldCurrencyToggleAnalyticsParams) => {
-    const { analytics } = useServices(selectNativeAnalyticsDep);
+    const { analytics } = useServices(injectNativeAnalytics);
 
     return useCallback(
         (activeView: ActiveView) => {

@@ -4,7 +4,7 @@ import { useSelector } from 'react-redux';
 import type { ExchangeTrade } from 'invity-api';
 
 import { useServices } from '@suite-common/dependency-injection';
-import { selectDispatch } from '@suite-common/redux-utils';
+import { injectDispatch } from '@suite-common/redux-utils';
 import {
     type TradingExchangeAmountLimitProps,
     exchangeThunks,
@@ -128,7 +128,7 @@ const useDexQuoteApprovalInfoChangeEffect = ({
     getValues,
     setValue,
 }: ExchangeFormType) => {
-    const { dispatch } = useServices(selectDispatch);
+    const { dispatch } = useServices(injectDispatch);
     const sendAccount = useSelector(selectExchangeSelectedSendAccount);
     const quote = useWatch({ control, name: 'quote' });
 
@@ -234,7 +234,7 @@ export const useExchangeForm = () => {
         context,
     });
     const { control, setValue } = form;
-    const { dispatch } = useServices(selectDispatch);
+    const { dispatch } = useServices(injectDispatch);
     const receiveAsset = useWatch({ control, name: 'receiveAsset' });
 
     const onSendAssetCleared = useCallback(() => {

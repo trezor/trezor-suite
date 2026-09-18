@@ -4,7 +4,7 @@ import { useSelector } from 'react-redux';
 import { type DexApprovalType } from 'invity-api';
 
 import { useServices } from '@suite-common/dependency-injection';
-import { selectDispatch } from '@suite-common/redux-utils';
+import { injectDispatch } from '@suite-common/redux-utils';
 import {
     selectTradingComposedTransactionInfo,
     selectTradingExchangeSelectedQuote,
@@ -27,7 +27,7 @@ interface UseEvmApprovalFeesParams {
 }
 
 export const useEvmApprovalFees = ({ approvalTypeOverride }: UseEvmApprovalFeesParams = {}) => {
-    const { dispatch } = useServices(selectDispatch);
+    const { dispatch } = useServices(injectDispatch);
     const { translate } = useTranslate();
     const [isComposing, setIsComposing] = useState(false);
     const [error, setError] = useState<string | null>(null);

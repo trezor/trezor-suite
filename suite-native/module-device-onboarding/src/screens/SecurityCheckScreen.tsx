@@ -1,9 +1,5 @@
 import { useServices } from '@suite-common/dependency-injection';
-import {
-    type AnalyticsNativeEvents,
-    events,
-    selectNativeAnalyticsDep,
-} from '@suite-native/analytics';
+import { type AnalyticsNativeEvents, events, injectNativeAnalytics } from '@suite-native/analytics';
 import { CardStepper, type CardStepperMap, VStack } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 import { Link } from '@suite-native/link';
@@ -69,7 +65,7 @@ const cardStepperContentMap = (analytics: Analytics<AnalyticsNativeEvents>) =>
 export const SecurityCheckScreen = ({
     navigation,
 }: StackProps<DeviceOnboardingStackParamList, DeviceOnboardingStackRoutes.SecurityCheck>) => {
-    const { analytics } = useServices(selectNativeAnalyticsDep);
+    const { analytics } = useServices(injectNativeAnalytics);
     const handleFinishStepper = () => {
         navigation.navigate(DeviceOnboardingStackRoutes.FirmwareInfo);
     };

@@ -1,7 +1,7 @@
 import { events as commonAnalyticsEvents } from '@suite-common/analytics';
 import { useServices } from '@suite-common/dependency-injection';
-import { selectDispatch } from '@suite-common/redux-utils';
-import { selectNativeAnalyticsDep } from '@suite-native/analytics';
+import { injectDispatch } from '@suite-common/redux-utils';
+import { injectNativeAnalytics } from '@suite-native/analytics';
 import { Translation } from '@suite-native/intl';
 import { useOpenLink } from '@suite-native/link';
 import { DASHBOARD_BANNER_TS7_URL } from '@trezor/urls';
@@ -11,7 +11,7 @@ import { Banner } from './Banner';
 import { TS7_PROMO_BANNER_IMAGE } from '../imageSources';
 
 export const TrezorSafe7PromoBanner = () => {
-    const { analytics, dispatch } = useServices(selectNativeAnalyticsDep, selectDispatch);
+    const { analytics, dispatch } = useServices(injectNativeAnalytics, injectDispatch);
     const openLink = useOpenLink();
 
     const handlePress = () => {

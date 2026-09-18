@@ -1,9 +1,9 @@
 import { type RouteProp, useNavigation, useRoute } from '@react-navigation/native';
 
 import { useServices } from '@suite-common/dependency-injection';
-import { selectDispatch } from '@suite-common/redux-utils';
+import { injectDispatch } from '@suite-common/redux-utils';
 import { earnOnboardingActions, getEarnOpportunityKey } from '@suite-common/wallet-core';
-import { events, selectNativeAnalyticsDep } from '@suite-native/analytics';
+import { events, injectNativeAnalytics } from '@suite-native/analytics';
 import { Text, VStack } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 import {
@@ -30,7 +30,7 @@ export const EarnConsentsScreen = () => {
     const { accountKey, amount, account } = route.params;
     const networkSymbol = account.symbol;
 
-    const { analytics, dispatch } = useServices(selectNativeAnalyticsDep, selectDispatch);
+    const { analytics, dispatch } = useServices(injectNativeAnalytics, injectDispatch);
     const registerNavigateBackAnalytics = useNavigateBackAnalytics({
         type: events.stakingStakeEvent.name,
         payload: {

@@ -5,7 +5,7 @@ import { type NativeStackNavigationProp } from '@react-navigation/native-stack';
 
 import { useServices } from '@suite-common/dependency-injection';
 import { acquireDeviceThunk, selectSelectedDevice } from '@suite-common/device';
-import { selectDispatch } from '@suite-common/redux-utils';
+import { injectDispatch } from '@suite-common/redux-utils';
 import {
     type AuthorizeDeviceStackParamList,
     AuthorizeDeviceStackRoutes,
@@ -15,7 +15,7 @@ type NavigationProp = NativeStackNavigationProp<AuthorizeDeviceStackParamList>;
 
 export const useInitiateThpConnection = () => {
     const navigation = useNavigation<NavigationProp>();
-    const { dispatch } = useServices(selectDispatch);
+    const { dispatch } = useServices(injectDispatch);
 
     const device = useSelector(selectSelectedDevice);
 

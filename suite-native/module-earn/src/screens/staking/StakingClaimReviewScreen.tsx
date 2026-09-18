@@ -18,7 +18,7 @@ import {
     selectClaimableAmountByAccountKey,
 } from '@suite-common/wallet-core';
 import { asAmountSubunit, subunitsToUnits } from '@suite-common/wallet-utils';
-import { events, selectNativeAnalyticsDep } from '@suite-native/analytics';
+import { events, injectNativeAnalytics } from '@suite-native/analytics';
 import { BannerFull, BannerInline, Box, Button, Text, VStack } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 import {
@@ -93,7 +93,7 @@ export const StakingClaimReviewScreen = () => {
     const { isLimitExceeded: isAccountLimitExceeded, formattedAmount: claimableLimitAmount } =
         useSolanaStakingLimit({ accountKey, type: 'claim', amount: claimableAmount });
 
-    const { analytics } = useServices(selectNativeAnalyticsDep);
+    const { analytics } = useServices(injectNativeAnalytics);
     const registerNavigateBackAnalytics = useNavigateBackAnalytics({
         type: events.stakingClaimEvent.name,
         payload: {

@@ -15,7 +15,7 @@ import {
 } from '@suite/recovery';
 import { useServices } from '@suite-common/dependency-injection';
 import { usePin } from '@suite-common/device';
-import { selectDispatch } from '@suite-common/redux-utils';
+import { injectDispatch } from '@suite-common/redux-utils';
 import { isDeviceAcquired } from '@suite-common/suite-utils';
 import { Box, H2, Image, Modal, Paragraph } from '@trezor/components';
 import TrezorConnect, { UI_REQUESTS } from '@trezor/connect';
@@ -37,7 +37,7 @@ import { WordInputStep } from './steps/WordInputStep';
 export const Recovery = ({ onCancel }: ForegroundAppProps) => {
     const recovery = useSelector(selectRecovery);
     const modal = useSelector(selectModal);
-    const { dispatch } = useServices(selectDispatch);
+    const { dispatch } = useServices(injectDispatch);
     const { device, isLocked } = useDevice();
     const [isUnderstood, setIsUnderstood] = useState(false);
     const [wordCount, setWordCount] = useState<WordCount | undefined>();

@@ -5,7 +5,7 @@ import type { SellFiatTrade } from 'invity-api';
 
 import { useServices } from '@suite-common/dependency-injection';
 import { selectTradingSellIsLoading } from '@suite-common/trading';
-import { events, selectNativeAnalyticsDep } from '@suite-native/analytics';
+import { events, injectNativeAnalytics } from '@suite-native/analytics';
 import { AnimatedBox, Text } from '@suite-native/atoms';
 import { Translation, useTranslate } from '@suite-native/intl';
 import {
@@ -61,7 +61,7 @@ const SellReceiveMethodPickerRight = ({
 
 export const SellReceiveMethodPicker = () => {
     const { translate } = useTranslate();
-    const { analytics } = useServices(selectNativeAnalyticsDep);
+    const { analytics } = useServices(injectNativeAnalytics);
     const form = useSellFormContext();
     const quotes = useSelector(selectSellBestQuotesForAvailablePaymentMethods);
     const isLoading = useSelector(selectTradingSellIsLoading);

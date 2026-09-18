@@ -5,7 +5,7 @@ import { type EarnParams, gotoThunk } from '@suite/router';
 import { useServices } from '@suite-common/dependency-injection';
 import { selectSelectedDevice } from '@suite-common/device';
 import { type YieldDtoV2, useGetVaultByAddress } from '@suite-common/earn-stablecoin-api';
-import { selectDispatch } from '@suite-common/redux-utils';
+import { injectDispatch } from '@suite-common/redux-utils';
 import { type TrezorDevice } from '@suite-common/suite-types';
 import { type EarnAnalyticsStep } from '@suite-common/suite-types/src/staking';
 import { getNetworkByYieldXyzId, getNetworkOptional } from '@suite-common/wallet-config';
@@ -149,7 +149,7 @@ const getEarnLayoutResult = ({
 
 export const useEarnLayout = ({ type, fallbackTitleId }: UseEarnLayoutParams): EarnLayoutState => {
     const analyticsStep = getAnalyticsStep(type);
-    const { dispatch } = useServices(selectDispatch);
+    const { dispatch } = useServices(injectDispatch);
     const { account, routeParams } = useEarnRouteAccount();
     const selectedDevice = useSelector(selectSelectedDevice);
     // Normalized so a hand-written URL resolves the same vault as one the app produced.

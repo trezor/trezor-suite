@@ -6,14 +6,14 @@ import { isFulfilled, isRejected } from '@reduxjs/toolkit';
 
 import { useServices } from '@suite-common/dependency-injection';
 import { selectIsMevProtectionFeatureEnabled } from '@suite-common/mev';
-import { selectDispatch } from '@suite-common/redux-utils';
+import { injectDispatch } from '@suite-common/redux-utils';
 import {
     type AccountsRootState,
     pushStakeTransactionThunk,
     selectAccountNetworkSymbol,
 } from '@suite-common/wallet-core';
 import { type AccountKey } from '@suite-common/wallet-types';
-import { events, selectNativeAnalyticsDep } from '@suite-native/analytics';
+import { events, injectNativeAnalytics } from '@suite-native/analytics';
 import {
     type RootStackParamList,
     type RootStackRoutes,
@@ -50,7 +50,7 @@ export const useHandleOnEarnTransactionReview = ({
     );
     const isMevProtectionFeatureEnabled = useSelector(selectIsMevProtectionFeatureEnabled);
 
-    const { analytics, dispatch } = useServices(selectNativeAnalyticsDep, selectDispatch);
+    const { analytics, dispatch } = useServices(injectNativeAnalytics, injectDispatch);
 
     const handleSign = useCallback(async (): Promise<boolean> => {
         if (!precomposedTransaction) return false;

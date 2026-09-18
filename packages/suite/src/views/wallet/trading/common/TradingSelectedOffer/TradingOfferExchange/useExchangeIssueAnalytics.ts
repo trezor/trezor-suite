@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
 
-import { type TradingExchangeIssue, events, selectDesktopAnalyticsDep } from '@suite/analytics';
+import { type TradingExchangeIssue, events, injectDesktopAnalytics } from '@suite/analytics';
 import { useServices } from '@suite-common/dependency-injection';
 import { type ExchangeIssue } from '@suite-common/trading';
 import { exhaustive } from '@trezor/type-utils';
@@ -35,7 +35,7 @@ export const useExchangeIssueAnalytics = ({
     isSimulationLoading,
     isSimulation,
 }: UseExchangeIssueAnalyticsParams) => {
-    const { analytics } = useServices(selectDesktopAnalyticsDep);
+    const { analytics } = useServices(injectDesktopAnalytics);
     const issueForAnalytics = getTradingExchangeIssue(issue);
 
     useEffect(() => {

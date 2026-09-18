@@ -2,7 +2,7 @@ import { useState } from 'react';
 
 import styled from 'styled-components';
 
-import { selectDesktopAnalyticsDep } from '@suite/analytics';
+import { injectDesktopAnalytics } from '@suite/analytics';
 import { Translation } from '@suite/intl';
 import { events } from '@suite-common/analytics';
 import { useServices } from '@suite-common/dependency-injection';
@@ -47,7 +47,7 @@ const LogWrapper = styled.pre`
 type ApplicationLogModalProps = { onCancel: () => void };
 
 export const ApplicationLogModal = ({ onCancel }: ApplicationLogModalProps) => {
-    const { analytics } = useServices(selectDesktopAnalyticsDep);
+    const { analytics } = useServices(injectDesktopAnalytics);
     const [hideSensitiveInfo, setHideSensitiveInfo] = useState(false);
     const applicationLogs = useApplicationLogs({ hideSensitiveInfo });
     const { ShadowTop, ShadowBottom, ShadowContainer, ScrollSentinels, scrollElementRef } =

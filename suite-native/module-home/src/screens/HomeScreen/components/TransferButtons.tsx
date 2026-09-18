@@ -6,7 +6,7 @@ import { useServices } from '@suite-common/dependency-injection';
 import { selectIsDeviceAuthorized } from '@suite-common/device';
 import { selectHasRunningDiscovery } from '@suite-common/wallet-core';
 import { selectHasDeviceAnySendAvailableAccount } from '@suite-native/accounts';
-import { events, selectNativeAnalyticsDep } from '@suite-native/analytics';
+import { events, injectNativeAnalytics } from '@suite-native/analytics';
 import { Button, HStack } from '@suite-native/atoms';
 import { selectHasFirmwareAuthenticityCheckHardFailedForSelectedDevice } from '@suite-native/device';
 import { Translation } from '@suite-native/intl';
@@ -19,7 +19,7 @@ import {
 } from '@suite-native/navigation';
 
 const ReceiveButton = () => {
-    const { analytics } = useServices(selectNativeAnalyticsDep);
+    const { analytics } = useServices(injectNativeAnalytics);
     const navigation = useNavigation<StackNavigationProps<RootStackParamList, RootStackRoutes>>();
     const hasFirmwareAuthenticityCheckHardFailed = useSelector(
         selectHasFirmwareAuthenticityCheckHardFailedForSelectedDevice,
@@ -52,7 +52,7 @@ const ReceiveButton = () => {
 };
 
 export const SendButton = () => {
-    const { analytics } = useServices(selectNativeAnalyticsDep);
+    const { analytics } = useServices(injectNativeAnalytics);
     const navigation = useNavigation<StackNavigationProps<RootStackParamList, RootStackRoutes>>();
     const hasDeviceAnySendAvailableAccount = useSelector(selectHasDeviceAnySendAvailableAccount);
     const showSendButton = hasDeviceAnySendAvailableAccount;

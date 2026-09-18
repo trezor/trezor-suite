@@ -2,7 +2,7 @@ import { type ChangeEvent, type ReactNode, useCallback, useState } from 'react';
 
 import styled from 'styled-components';
 
-import { events, selectDesktopAnalyticsDep } from '@suite/analytics';
+import { events, injectDesktopAnalytics } from '@suite/analytics';
 import { useDevice } from '@suite/device';
 import { Translation } from '@suite/intl';
 import { selectRouter } from '@suite/router';
@@ -14,7 +14,7 @@ import {
     buildUserFeedbackData,
     sendFeedbackThunk,
 } from '@suite-common/feedback';
-import { selectDispatch } from '@suite-common/redux-utils';
+import { injectDispatch } from '@suite-common/redux-utils';
 import { Box, Button, CollapsibleBox, Select, Textarea } from '@trezor/components';
 import { EmojiRatingSelector } from '@trezor/product-components';
 import { typography } from '@trezor/theme';
@@ -52,7 +52,7 @@ type FeedbackProps = {
 
 export const Feedback = ({ type }: FeedbackProps) => {
     const { device } = useDevice();
-    const { analytics, dispatch } = useServices(selectDesktopAnalyticsDep, selectDispatch);
+    const { analytics, dispatch } = useServices(injectDesktopAnalytics, injectDispatch);
     const router = useSelector(selectRouter);
     const [description, setDescription] = useState('');
     const [rating, setRating] = useState<Rating | undefined>();

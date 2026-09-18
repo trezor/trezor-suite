@@ -6,7 +6,7 @@ import { FadeIn } from 'react-native-reanimated';
 import { useFocusEffect } from '@react-navigation/native';
 
 import { useServices } from '@suite-common/dependency-injection';
-import { selectAddressValidatorDep } from '@suite-common/networks';
+import { injectAddressValidator } from '@suite-common/networks';
 import {
     type XpubFormContext,
     type XpubFormValues,
@@ -77,7 +77,7 @@ export const XpubScanScreen = ({
     } = useBottomSheetModal();
 
     const { showAlert } = useAlert();
-    const { addressValidator } = useServices(selectAddressValidatorDep);
+    const { addressValidator } = useServices(injectAddressValidator);
 
     const { networkSymbol } = route.params;
     const networkType = getNetworkType(networkSymbol);

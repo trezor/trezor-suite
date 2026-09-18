@@ -9,7 +9,7 @@ import {
     createTargets,
     selectAccountByKey,
 } from '@suite-common/wallet-core';
-import { events, selectNativeAnalyticsDep } from '@suite-native/analytics';
+import { events, injectNativeAnalytics } from '@suite-native/analytics';
 import { Button, HStack, VStack } from '@suite-native/atoms';
 import { useInAppRating } from '@suite-native/in-app-rating';
 import { Translation } from '@suite-native/intl';
@@ -37,7 +37,7 @@ export const TransactionDetailScreen = ({
 }: StackProps<TransactionDetailStackParamList, TransactionDetailStackRoutes.TransactionDetail>) => {
     const { askForRating } = useInAppRating();
     const navigation = useNavigation();
-    const { analytics } = useServices(selectNativeAnalyticsDep);
+    const { analytics } = useServices(injectNativeAnalytics);
     const { txid, accountKey, tokenContract, closeActionType = 'back', source } = route.params;
 
     const { transaction, isPending, tokenTransfer, openInBlockchain } = useTransactionDetails({

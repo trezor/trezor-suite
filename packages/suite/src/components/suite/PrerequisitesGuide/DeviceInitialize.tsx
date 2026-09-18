@@ -1,11 +1,11 @@
 import { type MouseEvent } from 'react';
 
-import { events, selectDesktopAnalyticsDep } from '@suite/analytics';
+import { events, injectDesktopAnalytics } from '@suite/analytics';
 import { Translation } from '@suite/intl';
 import { gotoThunk } from '@suite/router';
 import { useServices } from '@suite-common/dependency-injection';
 import { selectSelectedDevice } from '@suite-common/device';
-import { selectDispatch, selectGetState } from '@suite-common/redux-utils';
+import { injectDispatch, injectGetState } from '@suite-common/redux-utils';
 import { Banner } from '@trezor/components';
 import { DeviceModelInternal } from '@trezor/device-utils';
 import { TrezorBodyIcon } from '@trezor/icons';
@@ -19,9 +19,9 @@ import { TroubleshootingTips } from 'src/components/suite/troubleshooting/Troubl
 
 export const DeviceInitialize = () => {
     const { analytics, dispatch, getState } = useServices(
-        selectDesktopAnalyticsDep,
-        selectDispatch,
-        selectGetState,
+        injectDesktopAnalytics,
+        injectDispatch,
+        injectGetState,
     );
 
     const handleCtaClick = (e: MouseEvent) => {

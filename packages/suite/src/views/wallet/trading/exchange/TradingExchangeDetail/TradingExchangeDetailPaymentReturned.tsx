@@ -3,7 +3,7 @@ import { type ExchangeProviderInfo, type ExchangeTrade } from 'invity-api';
 import { Translation } from '@suite/intl';
 import { gotoThunk } from '@suite/router';
 import { useServices } from '@suite-common/dependency-injection';
-import { selectDispatch } from '@suite-common/redux-utils';
+import { injectDispatch } from '@suite-common/redux-utils';
 import { type AccountKey } from '@suite-common/wallet-types';
 import { Button } from '@trezor/components';
 
@@ -25,7 +25,7 @@ export const TradingExchangeDetailPaymentReturned = ({
     receiveAccountKey,
     provider,
 }: TradingExchangeDetailPaymentReturnedProps) => {
-    const { dispatch } = useServices(selectDispatch);
+    const { dispatch } = useServices(injectDispatch);
 
     const handleClick = () => dispatch(gotoThunk({ routeName: 'wallet-trading-exchange' }));
 

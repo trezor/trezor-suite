@@ -1,11 +1,11 @@
 import { useEffect, useMemo } from 'react';
 
-import { selectDesktopAnalyticsDep } from '@suite/analytics';
+import { injectDesktopAnalytics } from '@suite/analytics';
 import { gotoThunk } from '@suite/router';
 import { events } from '@suite-common/analytics';
 import { useServices } from '@suite-common/dependency-injection';
 import { selectSelectedDevice } from '@suite-common/device';
-import { selectDispatch } from '@suite-common/redux-utils';
+import { injectDispatch } from '@suite-common/redux-utils';
 import { selectThpStep } from '@suite-common/thp';
 import { exhaustive } from '@trezor/type-utils';
 
@@ -25,7 +25,7 @@ import { RecoveryStep } from 'src/views/onboarding/steps/RecoveryStep';
 import { SecurityStep } from 'src/views/onboarding/steps/SecurityStep';
 
 export const Onboarding = () => {
-    const { analytics, dispatch } = useServices(selectDesktopAnalyticsDep, selectDispatch);
+    const { analytics, dispatch } = useServices(injectDesktopAnalytics, injectDispatch);
 
     const { activeStepId } = useOnboarding();
     const device = useSelector(selectSelectedDevice);

@@ -2,7 +2,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 
 import { connectPopupActions } from '@suite-common/connect-popup';
 import { useServices } from '@suite-common/dependency-injection';
-import { selectDispatch } from '@suite-common/redux-utils';
+import { injectDispatch } from '@suite-common/redux-utils';
 import { CORE_CALL, CORE_CALL_CANCEL, POPUP } from '@trezor/connect';
 
 import {
@@ -18,7 +18,7 @@ const webChannel = {
 };
 
 export const useConnectPopupWeb = () => {
-    const { dispatch } = useServices(selectDispatch);
+    const { dispatch } = useServices(injectDispatch);
     const [incomingMessages, setIncomingMessages] = useState<ConnectPopupMessage[]>([]);
     // Start with '*' because we don't know the opener's origin yet.
     // Protocol messages sent before the first incoming message (e.g.

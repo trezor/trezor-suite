@@ -4,7 +4,7 @@ import { useDevice } from '@suite/device';
 import { Translation } from '@suite/intl';
 import { selectRecoveryStatus } from '@suite/recovery';
 import { useServices } from '@suite-common/dependency-injection';
-import { selectDispatch } from '@suite-common/redux-utils';
+import { injectDispatch } from '@suite-common/redux-utils';
 import { Banner } from '@trezor/components';
 import { TrezorBodyIcon } from '@trezor/icons';
 
@@ -14,7 +14,7 @@ import { useSelector } from 'src/hooks/suite';
 
 export const DeviceRecoveryMode = () => {
     const recoveryStatus = useSelector(selectRecoveryStatus);
-    const { dispatch } = useServices(selectDispatch);
+    const { dispatch } = useServices(injectDispatch);
 
     const { isLocked } = useDevice();
 

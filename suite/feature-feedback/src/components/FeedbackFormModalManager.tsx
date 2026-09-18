@@ -15,7 +15,7 @@ import {
     selectPendingFeedbackFeature,
     sendFeedbackThunk,
 } from '@suite-common/feedback';
-import { selectDispatch } from '@suite-common/redux-utils';
+import { injectDispatch } from '@suite-common/redux-utils';
 import { SmileyIcon } from '@trezor/icons';
 import { SidebarBanner } from '@trezor/product-components';
 
@@ -30,7 +30,7 @@ export const selectShouldShowFeedbackSidebarBanner = (state: FeedbackSidebarBann
 export const FeedbackFormManager = () => {
     const [isModalOpen, setIsModalOpen] = useState(false);
 
-    const { dispatch } = useServices(selectDispatch);
+    const { dispatch } = useServices(injectDispatch);
 
     const { translationString } = useTranslation();
     const pendingFeature = useSelector((state: FeedbackSidebarBannerRootState) =>

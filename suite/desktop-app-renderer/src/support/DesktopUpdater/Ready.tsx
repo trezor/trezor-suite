@@ -1,7 +1,7 @@
 import { installUpdateThunk } from '@suite/desktop-update';
 import { Translation } from '@suite/intl';
 import { useServices } from '@suite-common/dependency-injection';
-import { selectDispatch } from '@suite-common/redux-utils';
+import { injectDispatch } from '@suite-common/redux-utils';
 import { Column, H3, Modal, Paragraph } from '@trezor/components';
 import { DownloadIcon } from '@trezor/icons';
 
@@ -10,7 +10,7 @@ interface ReadyProps {
 }
 
 export const Ready = ({ hideWindow }: ReadyProps) => {
-    const { dispatch } = useServices(selectDispatch);
+    const { dispatch } = useServices(injectDispatch);
 
     const install = () => dispatch(installUpdateThunk({ installNow: true }));
     const installOnQuit = () => {

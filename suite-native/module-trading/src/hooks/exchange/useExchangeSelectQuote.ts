@@ -4,7 +4,7 @@ import { useNavigation } from '@react-navigation/native';
 import type { ExchangeTrade } from 'invity-api';
 
 import { useServices } from '@suite-common/dependency-injection';
-import { selectDispatch } from '@suite-common/redux-utils';
+import { injectDispatch } from '@suite-common/redux-utils';
 import {
     type ApprovalStatus,
     type TradingRootState,
@@ -42,7 +42,7 @@ type NavigationProps = StackToStackCompositeNavigationProps<
 >;
 
 export const useExchangeSelectQuote = (form: ExchangeFormType) => {
-    const { dispatch } = useServices(selectDispatch);
+    const { dispatch } = useServices(injectDispatch);
     const candidateQuote = useWatch({ name: 'quote', control: form.control });
     const receiveAsset = useWatch({ name: 'receiveAsset', control: form.control });
 

@@ -5,7 +5,7 @@ import { type RouteProp, useNavigation, useRoute } from '@react-navigation/nativ
 
 import { useServices } from '@suite-common/dependency-injection';
 import { selectSelectedDevice } from '@suite-common/device';
-import { selectDispatch } from '@suite-common/redux-utils';
+import { injectDispatch } from '@suite-common/redux-utils';
 import {
     type AccountsRootState,
     type YieldRootState,
@@ -29,7 +29,7 @@ type NavigationProps = StackNavigationProps<YieldStackParamList, YieldStackRoute
 export const YieldClaimReviewScreen = () => {
     const route = useRoute<RouteProps>();
     const navigation = useNavigation<NavigationProps>();
-    const { dispatch } = useServices(selectDispatch);
+    const { dispatch } = useServices(injectDispatch);
     const { accountKey } = route.params;
     const device = useSelector(selectSelectedDevice);
     const account = useSelector((state: AccountsRootState) =>

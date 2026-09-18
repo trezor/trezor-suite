@@ -1,12 +1,12 @@
 import styled from 'styled-components';
 
-import { events, selectDesktopAnalyticsDep } from '@suite/analytics';
+import { events, injectDesktopAnalytics } from '@suite/analytics';
 import { selectFlags, setFlag } from '@suite/flags';
 import { Translation } from '@suite/intl';
 import { openModal } from '@suite/modal';
 import { type AssetFiatBalance } from '@suite-common/assets';
 import { useServices } from '@suite-common/dependency-injection';
-import { selectDispatch } from '@suite-common/redux-utils';
+import { injectDispatch } from '@suite-common/redux-utils';
 import {
     type NetworkSymbol,
     getNetwork,
@@ -94,7 +94,7 @@ export const AssetsView = () => {
     const { dashboardAssetsGridMode } = useSelector(selectFlags);
     const enabledNetworks = useSelector(selectEnabledNetworks);
 
-    const { analytics, dispatch } = useServices(selectDesktopAnalyticsDep, selectDispatch);
+    const { analytics, dispatch } = useServices(injectDesktopAnalytics, injectDispatch);
     const { isDiscoveryRunning } = useDiscovery();
     const discoveryStatus = useSelector(selectDiscoveryOverallStatus);
     const accounts = useSelector(selectAllAccountsToList);

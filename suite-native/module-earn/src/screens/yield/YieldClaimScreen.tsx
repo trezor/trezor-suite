@@ -6,7 +6,7 @@ import { type RouteProp, useIsFocused, useNavigation, useRoute } from '@react-na
 import { events } from '@suite-common/analytics';
 import { useServices } from '@suite-common/dependency-injection';
 import { Context } from '@suite-common/message-system';
-import { selectDispatch } from '@suite-common/redux-utils';
+import { injectDispatch } from '@suite-common/redux-utils';
 import { asNetworkSymbol, getNetwork } from '@suite-common/wallet-config';
 import {
     type AccountsRootState,
@@ -15,7 +15,7 @@ import {
     yieldActions,
 } from '@suite-common/wallet-core';
 import { selectAccountLabel } from '@suite-native/accounts';
-import { selectNativeAnalyticsDep } from '@suite-native/analytics';
+import { injectNativeAnalytics } from '@suite-native/analytics';
 import { BannerFull, Box, HStack, Text, VStack, useBottomSheetModal } from '@suite-native/atoms';
 import { useFiatFromCryptoValue } from '@suite-native/formatters';
 import { TokenIcon } from '@suite-native/icons';
@@ -57,7 +57,7 @@ export const YieldClaimScreen = () => {
     const navigation = useNavigation<NavigationProps>();
     const { accountKey, vault } = route.params;
     const isFocused = useIsFocused();
-    const { analytics, dispatch } = useServices(selectNativeAnalyticsDep, selectDispatch);
+    const { analytics, dispatch } = useServices(injectNativeAnalytics, injectDispatch);
     const {
         bottomSheetRef: simulationBottomSheetRef,
         closeModal: closeSimulationBottomSheet,

@@ -8,7 +8,7 @@ import {
     selectIsPortfolioTrackerDevice,
     selectSelectedDevice,
 } from '@suite-common/device';
-import { selectDispatch } from '@suite-common/redux-utils';
+import { injectDispatch } from '@suite-common/redux-utils';
 import { type TrezorDevice } from '@suite-common/suite-types';
 import { startDiscoveryThunk } from '@suite-common/wallet-core';
 import { VStack } from '@suite-native/atoms';
@@ -23,7 +23,7 @@ type WalletListProps = {
 };
 
 export const WalletList = ({ onSelectDevice }: WalletListProps) => {
-    const { dispatch } = useServices(selectDispatch);
+    const { dispatch } = useServices(injectDispatch);
     const devices = useSelector(selectDeviceInstances);
     const selectedDevice = useSelector(selectSelectedDevice);
     const hasNoDeviceWithEmptyPassphrase = useSelector(selectHasNoDeviceWithEmptyPassphrase);

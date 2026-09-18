@@ -3,7 +3,7 @@ import { useEffect, useState } from 'react';
 import { selectFullSelectedAccount } from '@suite/account';
 import { gotoThunk, selectRouteName } from '@suite/router';
 import { useServices } from '@suite-common/dependency-injection';
-import { selectDispatch } from '@suite-common/redux-utils';
+import { injectDispatch } from '@suite-common/redux-utils';
 import { hasNetworkFeatures } from '@suite-common/wallet-utils';
 import { Column } from '@trezor/components';
 
@@ -25,7 +25,7 @@ export const Tokens = () => {
     const [manualTokenContract, setManualTokenContract] = useState<string | null>(null);
 
     const selectedAccount = useSelector(selectFullSelectedAccount);
-    const { dispatch } = useServices(selectDispatch);
+    const { dispatch } = useServices(injectDispatch);
     const routeName = useSelector(selectRouteName);
 
     useEffect(() => {

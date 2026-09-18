@@ -1,10 +1,10 @@
 import { AccountLabel } from '@suite/account';
-import { selectDesktopAnalyticsDep } from '@suite/analytics';
+import { injectDesktopAnalytics } from '@suite/analytics';
 import { Translation } from '@suite/intl';
 import { gotoThunk } from '@suite/router';
 import { events } from '@suite-common/analytics';
 import { useServices } from '@suite-common/dependency-injection';
-import { selectDispatch } from '@suite-common/redux-utils';
+import { injectDispatch } from '@suite-common/redux-utils';
 import { type Account } from '@suite-common/wallet-types';
 import { IconButton, Row } from '@trezor/components';
 import { CaretLeftIcon } from '@trezor/icons';
@@ -19,7 +19,7 @@ type YieldClaimPageHeaderProps = {
 };
 
 export const YieldClaimPageHeader = ({ account }: YieldClaimPageHeaderProps) => {
-    const { analytics, dispatch } = useServices(selectDesktopAnalyticsDep, selectDispatch);
+    const { analytics, dispatch } = useServices(injectDesktopAnalytics, injectDispatch);
     const { isBelowMobile } = useLayoutSize();
 
     const onBackClick = () => {

@@ -11,7 +11,7 @@ import {
 import { EvmInsufficientGasWarning } from '@suite/tx-simulation/src/evm';
 import { connectPopupActions } from '@suite-common/connect-popup';
 import { useServices } from '@suite-common/dependency-injection';
-import { selectDispatch } from '@suite-common/redux-utils';
+import { injectDispatch } from '@suite-common/redux-utils';
 import {
     TX_METHODS_WITH_FEES,
     areTxSimulationMethods,
@@ -42,7 +42,7 @@ export function ConnectPopupTxSimulationModalInner({
     action,
     account,
 }: ConnectPopupTxSimulationModalInnerProps) {
-    const { dispatch } = useServices(selectDispatch);
+    const { dispatch } = useServices(injectDispatch);
     const [acceptedDisclaimerKey, setAcceptedDisclaimerKey] = useState<string | null>(null);
     const [hasRenderFailure, setHasRenderFailure] = useState(false);
     const [renderFailureAccepted, setRenderFailureAccepted] = useState(false);

@@ -4,7 +4,7 @@ import { type FieldError } from 'react-hook-form';
 import { useDevice } from '@suite/device';
 import { Translation, type TranslationKey, useTranslation } from '@suite/intl';
 import { useServices } from '@suite-common/dependency-injection';
-import { selectDispatch } from '@suite-common/redux-utils';
+import { injectDispatch } from '@suite-common/redux-utils';
 import { type Network } from '@suite-common/wallet-config';
 import { type Account } from '@suite-common/wallet-types';
 import { Button, Card, Column } from '@trezor/components';
@@ -31,7 +31,7 @@ type SignVerifyFormProps = {
 export const SignVerifyForm = ({ account, network, page, onPageChange }: SignVerifyFormProps) => {
     const [outcome, setOutcome] = useState<SignVerifyOutcome>('idle');
 
-    const { dispatch } = useServices(selectDispatch);
+    const { dispatch } = useServices(injectDispatch);
 
     const isSignPage = page === 'sign';
 

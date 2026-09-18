@@ -1,12 +1,12 @@
 import { openSystemSettingsThunk } from '@suite/bluetooth';
 import { bluetoothActions } from '@suite-common/bluetooth';
 import { useServices } from '@suite-common/dependency-injection';
-import { selectDispatch } from '@suite-common/redux-utils';
+import { injectDispatch } from '@suite-common/redux-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { ActionButton, ActionColumn, SectionItem, TextColumn } from '@trezor/product-components';
 
 export const ForgetAllDevicesButton = () => {
-    const { dispatch } = useServices(selectDispatch);
+    const { dispatch } = useServices(injectDispatch);
 
     const handleForgetButtonClick = () => {
         dispatch(bluetoothActions.knownDevicesUpdateAction({ knownDevices: [] }));

@@ -3,7 +3,7 @@ import { Translation, type TranslationKey } from '@suite/intl';
 import { gotoThunk } from '@suite/router';
 import { useServices } from '@suite-common/dependency-injection';
 import { acquireDeviceThunk, selectDeviceThunk } from '@suite-common/device';
-import { selectDispatch } from '@suite-common/redux-utils';
+import { injectDispatch } from '@suite-common/redux-utils';
 import {
     type DeviceStatus as ConnectedDeviceStatus,
     type getStatus,
@@ -97,7 +97,7 @@ export const NeedsAttentionBanner = ({
     const deviceStatusBannerIntent = getDeviceStatusWarningIntent(deviceStatus);
     const deviceStatusMessage = getDeviceNeedsAttentionMessage(deviceStatus);
     const isLocked = useDevice().isLocked(true);
-    const { dispatch } = useServices(selectDispatch);
+    const { dispatch } = useServices(injectDispatch);
 
     const selectDevice = () => {
         dispatch(selectDeviceThunk({ device }));

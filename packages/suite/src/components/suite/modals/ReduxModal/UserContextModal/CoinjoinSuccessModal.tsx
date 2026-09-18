@@ -2,7 +2,7 @@ import { Translation } from '@suite/intl';
 import { closeModal } from '@suite/modal';
 import { gotoThunk, selectRouterParams } from '@suite/router';
 import { useServices } from '@suite-common/dependency-injection';
-import { selectDispatch } from '@suite-common/redux-utils';
+import { injectDispatch } from '@suite-common/redux-utils';
 import { selectAccountByKey } from '@suite-common/wallet-core';
 import { type AccountKey, type WalletParams } from '@suite-common/wallet-types';
 import { Column, H3, Modal, Paragraph } from '@trezor/components';
@@ -18,7 +18,7 @@ export const CoinjoinSuccessModal = ({ relatedAccountKey }: CoinjoinSuccessModal
     const routerParams = useSelector(selectRouterParams);
     const relatedAccount = useSelector(state => selectAccountByKey(state, relatedAccountKey));
 
-    const { dispatch } = useServices(selectDispatch);
+    const { dispatch } = useServices(injectDispatch);
 
     if (!relatedAccount) {
         return null;

@@ -6,7 +6,7 @@ import { isRejected } from '@reduxjs/toolkit';
 
 import { useServices } from '@suite-common/dependency-injection';
 import { selectSelectedDevice } from '@suite-common/device';
-import { selectDispatch } from '@suite-common/redux-utils';
+import { injectDispatch } from '@suite-common/redux-utils';
 import { removeThpCredentialsThunk } from '@suite-common/thp';
 import { useTranslate } from '@suite-native/intl';
 import {
@@ -26,7 +26,7 @@ type NavigationProp = StackNavigationProps<
 >;
 
 export const useDeviceAutoConnect = () => {
-    const { dispatch } = useServices(selectDispatch);
+    const { dispatch } = useServices(injectDispatch);
     const navigation = useNavigation<NavigationProp>();
 
     const { showToast } = useToast();

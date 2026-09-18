@@ -9,9 +9,9 @@ import {
     buildUserFeedbackData,
     sendFeedbackThunk,
 } from '@suite-common/feedback';
-import { selectDispatch } from '@suite-common/redux-utils';
+import { injectDispatch } from '@suite-common/redux-utils';
 import { type WrappedNativeFlowType, type YieldFlowType } from '@suite-common/wallet-core';
-import { events, selectNativeAnalyticsDep } from '@suite-native/analytics';
+import { events, injectNativeAnalytics } from '@suite-native/analytics';
 import {
     Box,
     Button,
@@ -96,7 +96,7 @@ export const EarnCompleteScreenContent = ({
     vaultId,
 }: EarnCompleteScreenContentProps) => {
     const { applyStyle } = useNativeStyles();
-    const { analytics, dispatch } = useServices(selectNativeAnalyticsDep, selectDispatch);
+    const { analytics, dispatch } = useServices(injectNativeAnalytics, injectDispatch);
     const device = useSelector(selectSelectedDevice);
 
     const onFeedbackRatingSelect = (rating: Rating) => {

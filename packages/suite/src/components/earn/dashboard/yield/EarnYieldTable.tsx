@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 
-import { selectDesktopAnalyticsDep } from '@suite/analytics';
+import { injectDesktopAnalytics } from '@suite/analytics';
 import { Translation } from '@suite/intl';
 import { ContextMessage } from '@suite/message-system';
 import {
@@ -18,7 +18,7 @@ import {
     useAllYieldOpportunities,
 } from '@suite-common/earn-stablecoin-api';
 import { Context } from '@suite-common/message-system';
-import { selectDispatch } from '@suite-common/redux-utils';
+import { injectDispatch } from '@suite-common/redux-utils';
 import { NORMAL_ACCOUNT_TYPE } from '@suite-common/wallet-config';
 import { selectVisibleDeviceAccounts } from '@suite-common/wallet-core';
 import { Button, Card, Column, Table } from '@trezor/components';
@@ -43,7 +43,7 @@ const emptyVaults: YieldDtoV2[] = [];
 export const EarnYieldTable = () => {
     const { isBelowLaptop } = useLayoutSize();
     const isCardLayout = isBelowLaptop;
-    const { analytics, dispatch } = useServices(selectDesktopAnalyticsDep, selectDispatch);
+    const { analytics, dispatch } = useServices(injectDesktopAnalytics, injectDispatch);
     const [isClaimModalOpen, setIsClaimModalOpen] = useState(false);
     const claimMessageSystem = useMessageSystemYield('claim');
 

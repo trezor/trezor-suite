@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from 'react';
 
-import { events, selectDesktopAnalyticsDep } from '@suite/analytics';
+import { events, injectDesktopAnalytics } from '@suite/analytics';
 import { TrezorLink } from '@suite/external-links';
 import { Translation } from '@suite/intl';
 import { selectRecoveryStatus } from '@suite/recovery';
@@ -8,7 +8,7 @@ import { gotoThunk } from '@suite/router';
 import { useServices } from '@suite-common/dependency-injection';
 import { selectSelectedDevice } from '@suite-common/device';
 import { persistentDeviceDataActions } from '@suite-common/persistent-device-data';
-import { selectDispatch } from '@suite-common/redux-utils';
+import { injectDispatch } from '@suite-common/redux-utils';
 import {
     Column,
     Divider,
@@ -108,7 +108,7 @@ export const ManualDeviceCheck = ({
     goToSuiteOrNextDevice,
     shouldAuthenticateSelectedDevice,
 }: ManualDeviceCheckProps) => {
-    const { analytics, dispatch } = useServices(selectDesktopAnalyticsDep, selectDispatch);
+    const { analytics, dispatch } = useServices(injectDesktopAnalytics, injectDispatch);
     const { isBelowTablet } = useLayoutSize();
     const recoveryStatus = useSelector(selectRecoveryStatus);
     const device = useSelector(selectSelectedDevice);

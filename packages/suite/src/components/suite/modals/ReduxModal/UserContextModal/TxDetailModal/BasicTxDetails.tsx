@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import { useExternalLink } from '@suite/external-links';
 import { Translation } from '@suite/intl';
 import { useServices } from '@suite-common/dependency-injection';
-import { selectDispatch } from '@suite-common/redux-utils';
+import { injectDispatch } from '@suite-common/redux-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { type Network } from '@suite-common/wallet-config';
 import {
@@ -103,7 +103,7 @@ export const BasicTxDetails = ({
     nonceStatus,
     nextNonce,
 }: BasicTxDetailsProps) => {
-    const { dispatch } = useServices(selectDispatch);
+    const { dispatch } = useServices(injectDispatch);
 
     const { isBelowTablet } = useLayoutSize();
     const explorerLink = useExternalLink(`${explorerUrl}${tx.txid}${explorerUrlQueryString ?? ''}`);

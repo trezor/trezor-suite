@@ -4,7 +4,7 @@ import { useNavigation } from '@react-navigation/native';
 
 import { useServices } from '@suite-common/dependency-injection';
 import { AccountsListWithFilter, type OnSelectAccount } from '@suite-native/accounts';
-import { events, selectNativeAnalyticsDep } from '@suite-native/analytics';
+import { events, injectNativeAnalytics } from '@suite-native/analytics';
 import { selectHasFirmwareAuthenticityCheckHardFailedForSelectedDevice } from '@suite-native/device';
 import { Translation } from '@suite-native/intl';
 import {
@@ -24,7 +24,7 @@ type NavigationProp = StackNavigationProps<
 
 export const ReceiveAccountsScreen = () => {
     const navigateToInitialScreen = useNavigateToInitialScreen();
-    const { analytics } = useServices(selectNativeAnalyticsDep);
+    const { analytics } = useServices(injectNativeAnalytics);
     const navigation = useNavigation<NavigationProp>();
     const hasFirmwareAuthenticityCheckHardFailed = useSelector(
         selectHasFirmwareAuthenticityCheckHardFailedForSelectedDevice,

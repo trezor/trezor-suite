@@ -2,7 +2,7 @@ import { useMemo } from 'react';
 
 import { useServices } from '@suite-common/dependency-injection';
 import { type TradingTypeWithConcierge } from '@suite-common/trading';
-import { events, selectNativeAnalyticsDep } from '@suite-native/analytics';
+import { events, injectNativeAnalytics } from '@suite-native/analytics';
 import { EdgeFades, type SubTabItem, SubTabs } from '@suite-native/atoms';
 import { useTranslate } from '@suite-native/intl';
 import { useNativeStyles } from '@trezor/styles-native';
@@ -48,7 +48,7 @@ export const HeaderTabs = () => {
     const { utils } = useNativeStyles();
     const { activeTab, setActiveTab } = useTradingTabs();
     const data = useTabsData();
-    const { analytics } = useServices(selectNativeAnalyticsDep);
+    const { analytics } = useServices(injectNativeAnalytics);
 
     const onTabPress = (tab: TradingTypeWithConcierge) => {
         if (tab === activeTab) {

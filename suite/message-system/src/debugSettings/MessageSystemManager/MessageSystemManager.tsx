@@ -7,7 +7,7 @@ import {
     selectAllManuallyAddedMessageIds,
     selectAllValidMessages,
 } from '@suite-common/message-system';
-import { selectDispatch } from '@suite-common/redux-utils';
+import { injectDispatch } from '@suite-common/redux-utils';
 import { type Action } from '@suite-common/suite-types';
 import { Banner, Button, Column, Divider, Modal, Row, Text } from '@trezor/components';
 import { copyToClipboard } from '@trezor/dom-utils';
@@ -30,7 +30,7 @@ type MessageSystemManagerProps = {
 export const MessageSystemManager = ({ actions, onCloseModal }: MessageSystemManagerProps) => {
     const allValidMessages = useSelector(selectAllValidMessages);
     const allManuallyAddedMessageIds = useSelector(selectAllManuallyAddedMessageIds);
-    const { dispatch } = useServices(selectDispatch);
+    const { dispatch } = useServices(injectDispatch);
 
     const [showActive, setIsActive] = useState<boolean>(true);
     const [selectedCategory, setSelectedCategory] = useState<CategoryFilterOption>('all');

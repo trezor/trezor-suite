@@ -5,7 +5,7 @@ import {
 } from '@suite/coinjoin';
 import { Translation } from '@suite/intl';
 import { useServices } from '@suite-common/dependency-injection';
-import { selectDispatch } from '@suite-common/redux-utils';
+import { injectDispatch } from '@suite-common/redux-utils';
 import { type AccountKey } from '@suite-common/wallet-types';
 
 import { useSelector } from 'src/hooks/suite';
@@ -40,7 +40,7 @@ export const MaxMiningFeeSetup = ({ accountKey, maxMiningFee }: MaxMiningFeeSetu
         selectDefaultMaxMiningFeeByAccountKey(state, accountKey),
     );
 
-    const { dispatch } = useServices(selectDispatch);
+    const { dispatch } = useServices(injectDispatch);
 
     const updateMaxMiningFee = (value: number) => {
         dispatch(coinjoinAccountUpdateMaxMiningFee(accountKey, value));

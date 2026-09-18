@@ -8,7 +8,7 @@ import { useServices } from '@suite-common/dependency-injection';
 import { selectIsPortfolioTrackerDevice } from '@suite-common/device';
 import { type AccountsRootState, selectAccountByKey } from '@suite-common/wallet-core';
 import { type BaseCurrencyAmount } from '@suite-common/wallet-types';
-import { selectNativeAnalyticsDep } from '@suite-native/analytics';
+import { injectNativeAnalytics } from '@suite-native/analytics';
 import { Card, Divider, ListItemSkeleton, VStack, useBottomSheetModal } from '@suite-native/atoms';
 import {
     type RootStackParamList,
@@ -91,7 +91,7 @@ export const EarnDepositsCard = ({
         closeModal: closeYieldClaimRewardsSheet,
     } = useBottomSheetModal();
 
-    const { analytics } = useServices(selectNativeAnalyticsDep);
+    const { analytics } = useServices(injectNativeAnalytics);
 
     const shouldShowClaimRewardsSection =
         !isPortfolioTrackerDevice &&

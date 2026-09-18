@@ -1,7 +1,7 @@
 import { useEffect } from 'react';
 
 import { useServices } from '@suite-common/dependency-injection';
-import { selectDispatch } from '@suite-common/redux-utils';
+import { injectDispatch } from '@suite-common/redux-utils';
 import {
     type ResolvedYieldFlowData,
     type YieldAllowanceStatus,
@@ -17,7 +17,7 @@ export const useRefreshYieldDepositAllowanceOnIdle = ({
     allowanceStatus,
     yieldFlowData,
 }: UseRefreshYieldDepositAllowanceOnIdleParams) => {
-    const { dispatch } = useServices(selectDispatch);
+    const { dispatch } = useServices(injectDispatch);
 
     useEffect(() => {
         if (yieldFlowData.resolutionStatus !== 'resolved' || allowanceStatus !== 'idle') {

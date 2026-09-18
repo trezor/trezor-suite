@@ -4,7 +4,7 @@ import { type RouteProp, useIsFocused, useNavigation, useRoute } from '@react-na
 import { isFulfilled } from '@reduxjs/toolkit';
 
 import { useServices } from '@suite-common/dependency-injection';
-import { selectDispatch } from '@suite-common/redux-utils';
+import { injectDispatch } from '@suite-common/redux-utils';
 import { getNetwork } from '@suite-common/wallet-config';
 import {
     REVOKE_ALLOWANCE_AMOUNT,
@@ -38,7 +38,7 @@ type NavigationProps = StackNavigationProps<
 export const useYieldDepositRevokeScreen = () => {
     const route = useRoute<RouteProps>();
     const navigation = useNavigation<NavigationProps>();
-    const { dispatch } = useServices(selectDispatch);
+    const { dispatch } = useServices(injectDispatch);
     const isFocused = useIsFocused();
     const showYieldAlert = useShowYieldAlert();
     const yieldFlowData = useYieldFlowData(route.params);

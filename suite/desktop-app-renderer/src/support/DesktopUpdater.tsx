@@ -1,8 +1,8 @@
 import { type JSX, useCallback, useEffect } from 'react';
 import { useSelector } from 'react-redux';
 
-import { AppUpdateEventStatus, events, selectDesktopAnalyticsDep } from '@suite/analytics';
-import { selectDesktopApiDep } from '@suite/desktop-app-api';
+import { AppUpdateEventStatus, events, injectDesktopAnalytics } from '@suite/analytics';
+import { injectDesktopApi } from '@suite/desktop-app-api';
 import {
     UpdateState,
     availableThunk,
@@ -14,7 +14,7 @@ import {
     selectDesktopUpdate,
 } from '@suite/desktop-update';
 import { useServices } from '@suite-common/dependency-injection';
-import { selectDispatch } from '@suite-common/redux-utils';
+import { injectDispatch } from '@suite-common/redux-utils';
 import { isArrayMember } from '@trezor/utils';
 
 import { Available } from './DesktopUpdater/Available';
@@ -38,9 +38,9 @@ const alwaysOpenStates = [
 export const DesktopUpdater = () => {
     const desktopUpdate = useSelector(selectDesktopUpdate);
     const { desktopApi, analytics, dispatch } = useServices(
-        selectDesktopAnalyticsDep,
-        selectDispatch,
-        selectDesktopApiDep,
+        injectDesktopAnalytics,
+        injectDispatch,
+        injectDesktopApi,
     );
     const desktopUpdateState = desktopUpdate.state;
 

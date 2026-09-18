@@ -5,13 +5,13 @@ import { gotoThunk } from '@suite/router';
 import { useServices } from '@suite-common/dependency-injection';
 import { selectIsDeviceConnected } from '@suite-common/device';
 import { type MessageSystemRootState } from '@suite-common/message-system';
-import { selectDispatch } from '@suite-common/redux-utils';
+import { injectDispatch } from '@suite-common/redux-utils';
 import {
     type WithSuiteSyncAndDeviceState,
     selectHasDeviceSuiteSyncError,
     selectSuiteSyncInteraction,
 } from '@suite-common/suite-sync';
-import { selectEnsureWalletSuiteSyncOnDep } from '@suite-common/suite-sync-types';
+import { injectEnsureWalletSuiteSyncOn } from '@suite-common/suite-sync-types';
 import { Banner } from '@trezor/components';
 import { type StaticSessionId } from '@trezor/connect';
 import { XIcon } from '@trezor/icons';
@@ -29,8 +29,8 @@ type SuiteSyncBannerProps = {
 
 export const SuiteSyncBanner = ({ deviceStaticSessionId }: SuiteSyncBannerProps) => {
     const { ensureWalletSuiteSyncOn, dispatch } = useServices(
-        selectEnsureWalletSuiteSyncOnDep,
-        selectDispatch,
+        injectEnsureWalletSuiteSyncOn,
+        injectDispatch,
     );
 
     const hasSuiteSyncError = useSelector((state: WithSuiteSyncAndDeviceState) =>

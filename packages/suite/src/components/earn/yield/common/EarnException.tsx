@@ -3,7 +3,7 @@ import { type ReactNode } from 'react';
 import { Translation } from '@suite/intl';
 import { gotoThunk } from '@suite/router';
 import { useServices } from '@suite-common/dependency-injection';
-import { selectDispatch } from '@suite-common/redux-utils';
+import { injectDispatch } from '@suite-common/redux-utils';
 import { type IconCircleIntent, type IconComponent } from '@trezor/components';
 import { WarningIcon } from '@trezor/icons';
 
@@ -20,7 +20,7 @@ export const EarnException = ({
     icon = WarningIcon,
     iconVariant = 'neutral',
 }: EarnExceptionProps) => {
-    const { dispatch } = useServices(selectDispatch);
+    const { dispatch } = useServices(injectDispatch);
 
     return (
         <AccountExceptionLayout

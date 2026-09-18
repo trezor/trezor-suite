@@ -1,10 +1,10 @@
 import { useMemo } from 'react';
 
-import { events, selectDesktopAnalyticsDep } from '@suite/analytics';
+import { events, injectDesktopAnalytics } from '@suite/analytics';
 import { Translation, useTranslation } from '@suite/intl';
 import { Anchor, SettingsAnchor } from '@suite/router';
 import { useServices } from '@suite-common/dependency-injection';
-import { selectDispatch } from '@suite-common/redux-utils';
+import { injectDispatch } from '@suite-common/redux-utils';
 import { selectBaseCurrency, setBaseCurrency } from '@suite-common/wallet-core';
 import { buildCurrencyLongOption, buildCurrencyShortOption } from '@suite-common/wallet-utils';
 import {
@@ -18,7 +18,7 @@ import { typedObjectKeys } from '@trezor/utils';
 import { useSelector } from 'src/hooks/suite';
 
 export const BaseCurrency = () => {
-    const { analytics, dispatch } = useServices(selectDesktopAnalyticsDep, selectDispatch);
+    const { analytics, dispatch } = useServices(injectDesktopAnalytics, injectDispatch);
     const { translationString } = useTranslation();
     const baseCurrencyCode = useSelector(selectBaseCurrency);
 

@@ -1,7 +1,7 @@
 import { useEffect, useRef } from 'react';
 
 import { useServices } from '@suite-common/dependency-injection';
-import { selectDispatch } from '@suite-common/redux-utils';
+import { injectDispatch } from '@suite-common/redux-utils';
 import {
     type TradingCountryOption,
     type TradingCountrySubdivisionOption,
@@ -12,7 +12,7 @@ import { residenceActions } from '@suite-native/trading-state';
 export const useCountryChangeEffect = <TFieldValues extends FieldValues>(
     control: Control<TFieldValues>,
 ) => {
-    const { dispatch } = useServices(selectDispatch);
+    const { dispatch } = useServices(injectDispatch);
 
     const [countryOption, countrySubdivisionOption] = useWatch({
         control,

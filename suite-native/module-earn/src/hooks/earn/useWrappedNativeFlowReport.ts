@@ -2,7 +2,7 @@ import { useCallback } from 'react';
 
 import { useServices } from '@suite-common/dependency-injection';
 import { type WrappedNativeFlowType } from '@suite-common/wallet-core';
-import { selectNativeAnalyticsDep } from '@suite-native/analytics';
+import { injectNativeAnalytics } from '@suite-native/analytics';
 
 import {
     type WrappedNativeFlowPayload,
@@ -10,7 +10,7 @@ import {
 } from '../../utils/earn/wrappedNativeAnalyticsUtils';
 
 export const useWrappedNativeFlowReport = (flowType: WrappedNativeFlowType) => {
-    const { analytics } = useServices(selectNativeAnalyticsDep);
+    const { analytics } = useServices(injectNativeAnalytics);
 
     return useCallback(
         (payload: WrappedNativeFlowPayload) =>

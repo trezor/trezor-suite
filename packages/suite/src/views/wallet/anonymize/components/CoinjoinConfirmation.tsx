@@ -9,7 +9,7 @@ import {
 } from '@suite/coinjoin';
 import { Translation } from '@suite/intl';
 import { useServices } from '@suite-common/dependency-injection';
-import { selectDispatch } from '@suite-common/redux-utils';
+import { injectDispatch } from '@suite-common/redux-utils';
 import { type Account } from '@suite-common/wallet-types';
 import { Button, Card, H3, Note, Paragraph, Tooltip, variables } from '@trezor/components';
 import { CircuitryIcon, ClockIcon, LockKeyIcon } from '@trezor/icons';
@@ -84,7 +84,7 @@ export const CoinjoinConfirmation = ({ account }: CoinjoinConfirmationProps) => 
         selectStartCoinjoinSessionArguments(state, account.key),
     );
 
-    const { dispatch } = useServices(selectDispatch);
+    const { dispatch } = useServices(injectDispatch);
 
     const { coinjoinSessionBlockedMessage, isCoinjoinSessionBlocked } = useCoinjoinSessionBlockers(
         account.key,

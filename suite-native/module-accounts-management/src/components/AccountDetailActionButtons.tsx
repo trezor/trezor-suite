@@ -6,7 +6,7 @@ import { useServices } from '@suite-common/dependency-injection';
 import { selectIsPortfolioTrackerDevice } from '@suite-common/device';
 import { type AccountsRootState, selectAccountByKey } from '@suite-common/wallet-core';
 import { type AccountKey, type TokenAddress } from '@suite-common/wallet-types';
-import { events, selectNativeAnalyticsDep } from '@suite-native/analytics';
+import { events, injectNativeAnalytics } from '@suite-native/analytics';
 import { Box, Button, HStack } from '@suite-native/atoms';
 import { selectHasFirmwareAuthenticityCheckHardFailedForSelectedDevice } from '@suite-native/device';
 import { type FeatureFlagsRootState } from '@suite-native/feature-flags';
@@ -36,7 +36,7 @@ export const AccountDetailActionButtons = ({
     accountKey,
     tokenContract,
 }: AccountDetailActionButtonsProps) => {
-    const { analytics } = useServices(selectNativeAnalyticsDep);
+    const { analytics } = useServices(injectNativeAnalytics);
     const navigation = useNavigation<NavigationProp>();
 
     const account = useSelector((state: AccountsRootState) =>

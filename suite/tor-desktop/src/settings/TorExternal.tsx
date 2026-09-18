@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 
-import { type TorSettings, selectDesktopApiDep } from '@suite/desktop-app-api';
+import { type TorSettings, injectDesktopApi } from '@suite/desktop-app-api';
 import { Translation } from '@suite/intl';
 import { Anchor, SettingsAnchor } from '@suite/router';
 import { selectIsTorEnabled } from '@suite/tor';
@@ -20,7 +20,7 @@ const options = [
 ];
 
 export const TorExternal = () => {
-    const { desktopApi } = useServices(selectDesktopApiDep);
+    const { desktopApi } = useServices(injectDesktopApi);
     const isTorEnabled = useSelector(selectIsTorEnabled);
 
     const [torSettings, setTorSettings] = useState<TorSettings | null>(null);

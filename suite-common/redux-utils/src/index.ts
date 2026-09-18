@@ -6,6 +6,6 @@ export * from './createReducerWithExtraDeps';
 export * from './createSingleInstanceThunk';
 export * from './hooks/useSelectorDeepComparison';
 export * from './selectorsUtils';
-export * from './storeSelectors';
+export * from './storeInjectors';
 export * from './extraWithStoreThunkMiddleware';
 export { createReduxExtra, type ReduxStoreWithThunk } from './createReduxExtra';

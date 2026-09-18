@@ -4,6 +4,6 @@ export type ReloadAppDep = {
     reloadApp: ReloadApp;
 };
 
-export const selectReloadAppDep = (services: any): ReloadAppDep => ({
+export const injectReloadApp = (services: any): ReloadAppDep => ({
     reloadApp: services.reloadApp,
 });

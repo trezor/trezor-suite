@@ -20,9 +20,9 @@ import {
 import { useServices } from '@suite-common/dependency-injection';
 import { type MessageSystemRootState } from '@suite-common/message-system';
 import { type MetadataAddPayload } from '@suite-common/metadata-types';
-import { selectDispatch } from '@suite-common/redux-utils';
+import { injectDispatch } from '@suite-common/redux-utils';
 import { selectIsSuiteSyncEnabled } from '@suite-common/suite-sync';
-import { selectEnsureWalletSuiteSyncOnDep } from '@suite-common/suite-sync-types';
+import { injectEnsureWalletSuiteSyncOn } from '@suite-common/suite-sync-types';
 import { selectHasRunningDiscovery } from '@suite-common/wallet-core';
 import { type StaticSessionId } from '@trezor/connect';
 import { EditableText, type EditableTextProps } from '@trezor/product-components';
@@ -50,8 +50,8 @@ export const Labeling = ({
     ...rest
 }: LabelingProps) => {
     const { ensureWalletSuiteSyncOn, dispatch } = useServices(
-        selectEnsureWalletSuiteSyncOnDep,
-        selectDispatch,
+        injectEnsureWalletSuiteSyncOn,
+        injectDispatch,
     );
     const [showEnableSuiteSyncModal, setShowEnableSuiteSyncModal] = useState(false);
     const suiteSyncTurnOnEditResolveRef = useRef<((value: boolean) => void) | null>(null);

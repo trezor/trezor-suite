@@ -2,7 +2,7 @@ import { useCallback, useEffect, useState } from 'react';
 
 import styled from 'styled-components';
 
-import { selectDesktopApiDep } from '@suite/desktop-app-api';
+import { injectDesktopApi } from '@suite/desktop-app-api';
 import { Translation } from '@suite/intl';
 import { Anchor, SettingsAnchor } from '@suite/router';
 import { useServices } from '@suite-common/dependency-injection';
@@ -14,7 +14,7 @@ const PositionedSwitch = styled.div`
 `;
 
 export const ShowOnTray = () => {
-    const { desktopApi } = useServices(selectDesktopApiDep);
+    const { desktopApi } = useServices(injectDesktopApi);
     const [showOnTrayEnabled, setShowOnTrayEnabled] = useState(false);
 
     const updateStatus = useCallback(() => {

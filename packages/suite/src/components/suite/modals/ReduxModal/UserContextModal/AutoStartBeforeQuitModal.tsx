@@ -1,18 +1,18 @@
 import { useEffect, useState } from 'react';
 
-import { events, selectDesktopAnalyticsDep } from '@suite/analytics';
-import { selectDesktopApiDep } from '@suite/desktop-app-api';
+import { events, injectDesktopAnalytics } from '@suite/analytics';
+import { injectDesktopApi } from '@suite/desktop-app-api';
 import { Translation } from '@suite/intl';
 import { closeModal } from '@suite/modal';
 import { useServices } from '@suite-common/dependency-injection';
-import { selectDispatch } from '@suite-common/redux-utils';
+import { injectDispatch } from '@suite-common/redux-utils';
 import { Card, Checkbox, Column, Modal, Paragraph } from '@trezor/components';
 
 export const AutoStartBeforeQuitModal = () => {
     const { desktopApi, analytics, dispatch } = useServices(
-        selectDesktopAnalyticsDep,
-        selectDispatch,
-        selectDesktopApiDep,
+        injectDesktopAnalytics,
+        injectDispatch,
+        injectDesktopApi,
     );
     const [dontAskAgain, setDontAskAgain] = useState(false);
     useEffect(() => {

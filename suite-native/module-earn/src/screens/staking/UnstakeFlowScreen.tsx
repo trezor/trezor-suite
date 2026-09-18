@@ -6,7 +6,7 @@ import { type RouteProp, useNavigation, useRoute } from '@react-navigation/nativ
 import { useServices } from '@suite-common/dependency-injection';
 import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import { type AccountsRootState, selectAccountNetworkSymbol } from '@suite-common/wallet-core';
-import { events, selectNativeAnalyticsDep } from '@suite-native/analytics';
+import { events, injectNativeAnalytics } from '@suite-native/analytics';
 import {
     type ActiveView,
     BannerInline,
@@ -45,7 +45,7 @@ export const UnstakeFlowScreen = () => {
     const networkSymbol = useSelector((state: AccountsRootState) =>
         selectAccountNetworkSymbol(state, accountKey),
     );
-    const { analytics } = useServices(selectNativeAnalyticsDep);
+    const { analytics } = useServices(injectNativeAnalytics);
     const currencyRef = useRef<'crypto' | 'fiat' | undefined>(undefined);
     const handleCurrencyChange = useCallback((activeView: ActiveView) => {
         currencyRef.current = activeView === 'primary' ? 'crypto' : 'fiat';

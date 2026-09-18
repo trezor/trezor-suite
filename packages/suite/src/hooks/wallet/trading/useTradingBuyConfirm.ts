@@ -2,11 +2,11 @@ import { useEffect } from 'react';
 
 import type { BuyTrade, BuyTradeResponse } from 'invity-api';
 
-import { events, selectDesktopAnalyticsDep } from '@suite/analytics';
-import { selectDesktopApiDep } from '@suite/desktop-app-api';
+import { events, injectDesktopAnalytics } from '@suite/analytics';
+import { injectDesktopApi } from '@suite/desktop-app-api';
 import { gotoThunk } from '@suite/router';
 import { useServices } from '@suite-common/dependency-injection';
-import { selectDispatch } from '@suite-common/redux-utils';
+import { injectDispatch } from '@suite-common/redux-utils';
 import {
     buyThunks,
     selectTradingAccountKeyByTradeType,
@@ -25,9 +25,9 @@ import { createTxLink } from 'src/utils/wallet/trading/buyUtils';
 
 export const useTradingBuyConfirm = () => {
     const { desktopApi, analytics, dispatch } = useServices(
-        selectDesktopApiDep,
-        selectDesktopAnalyticsDep,
-        selectDispatch,
+        injectDesktopApi,
+        injectDesktopAnalytics,
+        injectDispatch,
     );
 
     const selectedQuote = useSelector(selectTradingBuySelectedQuote);

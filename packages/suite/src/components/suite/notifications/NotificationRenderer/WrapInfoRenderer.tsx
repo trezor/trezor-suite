@@ -1,4 +1,4 @@
-import { selectDesktopAnalyticsDep } from '@suite/analytics';
+import { injectDesktopAnalytics } from '@suite/analytics';
 import { HiddenPlaceholder } from '@suite/discreet-mode';
 import { Translation } from '@suite/intl';
 import { events } from '@suite-common/analytics';
@@ -19,7 +19,7 @@ const withFormattedAmount = (asset: WrapTransactionAsset) => ({
 });
 
 export const WrapInfoRenderer = ({ render: View, ...props }: WrapInfoRendererProps) => {
-    const { analytics } = useServices(selectDesktopAnalyticsDep);
+    const { analytics } = useServices(injectDesktopAnalytics);
     const { notification } = props;
     const { send, receive } = notification.metadata;
 

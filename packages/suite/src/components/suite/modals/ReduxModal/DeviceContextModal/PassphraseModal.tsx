@@ -4,7 +4,7 @@ import { selectIsDeviceInteractionModalActive, selectModalRequestId } from '@sui
 import { gotoThunk } from '@suite/router';
 import { useServices } from '@suite-common/dependency-injection';
 import { selectHasDevicePassphraseEntryCapability } from '@suite-common/device';
-import { selectDispatch } from '@suite-common/redux-utils';
+import { injectDispatch } from '@suite-common/redux-utils';
 import { type TrezorDevice } from '@suite-common/suite-types';
 import {
     cancelDiscoveryThunk,
@@ -25,7 +25,7 @@ import { PassphraseMismatchModal } from '../UserContextModal/PassphraseMismatchM
 export const PassphraseModal = ({ device }: { device: TrezorDevice }) => {
     const discovery = useSelector(state => selectDiscoveryByDevicePath(state, device?.path));
     const requestId = useSelector(selectModalRequestId);
-    const { dispatch } = useServices(selectDispatch);
+    const { dispatch } = useServices(injectDispatch);
     const isDeviceInteractionModalActive = useSelector(selectIsDeviceInteractionModalActive);
     const onPassphraseConfirm = useCallback(
         (value: string, passphraseOnDevice?: boolean) => {

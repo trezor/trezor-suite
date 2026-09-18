@@ -10,7 +10,7 @@ import {
     getConvertedOutputTokenBalanceToInputTokenAmount,
 } from '@suite-common/wallet-core';
 import { toTokenAddress, toTokenSymbol } from '@suite-common/wallet-types';
-import { selectNativeAnalyticsDep } from '@suite-native/analytics';
+import { injectNativeAnalytics } from '@suite-native/analytics';
 import { BannerFull, Box, Text, VStack } from '@suite-native/atoms';
 import { Form } from '@suite-native/forms';
 import { Translation } from '@suite-native/intl';
@@ -46,7 +46,7 @@ export const YieldWithdrawUnwrapScreen = () => {
     const route = useRoute<RouteProps>();
     const navigation = useNavigation<NavigationProps>();
     const isFocused = useIsFocused();
-    const { analytics } = useServices(selectNativeAnalyticsDep);
+    const { analytics } = useServices(injectNativeAnalytics);
 
     const flowType: YieldWithdrawFlowType = route.params.withdrawFlowType ?? 'withdraw';
 

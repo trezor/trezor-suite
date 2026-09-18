@@ -1,7 +1,7 @@
 import { useEffect } from 'react';
 
 import { useServices } from '@suite-common/dependency-injection';
-import { selectDispatch } from '@suite-common/redux-utils';
+import { injectDispatch } from '@suite-common/redux-utils';
 import {
     type TradingTransactionSell,
     tradingSellActions,
@@ -23,7 +23,7 @@ export const useSellFlow = ({
     transactionId,
     isAmountEmpty,
 }: UseSellFlowProps) => {
-    const { dispatch } = useServices(selectDispatch);
+    const { dispatch } = useServices(injectDispatch);
 
     useEffect(() => {
         dispatch(tradingThunks.loadInitialDataThunk({ activeSection: 'sell' }));

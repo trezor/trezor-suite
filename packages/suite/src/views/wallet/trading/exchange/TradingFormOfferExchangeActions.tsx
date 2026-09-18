@@ -4,7 +4,7 @@ import type { CryptoId } from 'invity-api';
 
 import { Translation } from '@suite/intl';
 import { useServices } from '@suite-common/dependency-injection';
-import { selectDispatch } from '@suite-common/redux-utils';
+import { injectDispatch } from '@suite-common/redux-utils';
 import {
     requiresTokenApproval,
     selectIsTradingNetworkFeeMissing,
@@ -27,7 +27,7 @@ import { TradingRevokeModal } from 'src/views/wallet/trading/common/TradingForm/
 import { useReceiveAddressModalControls } from 'src/views/wallet/trading/common/TradingSelectedOffer/TradingReceiveAddress/useReceiveAddressModalControls';
 
 export const TradingFormOfferExchangeActions = () => {
-    const { dispatch } = useServices(selectDispatch);
+    const { dispatch } = useServices(injectDispatch);
     const context = useTradingFormContext<'exchange'>();
     const {
         watch,

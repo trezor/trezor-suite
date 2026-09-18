@@ -3,7 +3,7 @@ import { useEffect, useState } from 'react';
 import { Translation } from '@suite/intl';
 import { useServices } from '@suite-common/dependency-injection';
 import { type YieldDtoV2 } from '@suite-common/earn-stablecoin-api';
-import { selectDispatch } from '@suite-common/redux-utils';
+import { injectDispatch } from '@suite-common/redux-utils';
 import { type TokenInfo, type TokenManagementAction } from '@suite-common/token-definitions';
 import { tradingThunks } from '@suite-common/trading';
 import { type Network } from '@suite-common/wallet-config';
@@ -51,7 +51,7 @@ export const TokensTable = ({
     isUnverifiedTable,
     yieldOpportunities,
 }: TokensTableProps) => {
-    const { dispatch } = useServices(selectDispatch);
+    const { dispatch } = useServices(injectDispatch);
     const [isZeroBalanceOpen, setIsZeroBalanceOpen] = useState(false);
 
     useEffect(() => {

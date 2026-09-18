@@ -2,7 +2,7 @@ import { useEffect } from 'react';
 
 import { gotoThunk } from '@suite/router';
 import { useServices } from '@suite-common/dependency-injection';
-import { selectDispatch } from '@suite-common/redux-utils';
+import { injectDispatch } from '@suite-common/redux-utils';
 import {
     selectTradingExchangeActiveTrade,
     selectTradingExchangeIsFromRedirect,
@@ -15,7 +15,7 @@ import {
 import { useSelector } from 'src/hooks/suite';
 
 export const useTradingExchangeConfirm = () => {
-    const { dispatch } = useServices(selectDispatch);
+    const { dispatch } = useServices(injectDispatch);
 
     const trade = useSelector(selectTradingExchangeActiveTrade);
     const quotesRequest = useSelector(selectTradingExchangeQuotesRequest);

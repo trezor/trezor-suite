@@ -14,7 +14,7 @@ import {
     selectStakedBalanceByAccountKey,
 } from '@suite-common/wallet-core';
 import { type AccountKey } from '@suite-common/wallet-types';
-import { events, selectNativeAnalyticsDep } from '@suite-native/analytics';
+import { events, injectNativeAnalytics } from '@suite-native/analytics';
 import {
     Badge,
     BannerInline,
@@ -82,7 +82,7 @@ export const StakingManagementStakedCard = ({
     const { applyStyle } = useNativeStyles();
     const { isPortfolioTrackerDevice, openPortfolioTrackerSheet } = useEarnPortfolioTrackerGuard();
     const navigation = useNavigation<NavigationProp>();
-    const { analytics } = useServices(selectNativeAnalyticsDep);
+    const { analytics } = useServices(injectNativeAnalytics);
     const { bottomSheetRef: autoStakedModalRef, openModal: openAutoStakedModal } =
         useBottomSheetModal();
 

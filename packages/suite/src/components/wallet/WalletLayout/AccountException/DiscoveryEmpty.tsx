@@ -1,7 +1,7 @@
 import { Translation } from '@suite/intl';
 import { gotoThunk } from '@suite/router';
 import { useServices } from '@suite-common/dependency-injection';
-import { selectDispatch } from '@suite-common/redux-utils';
+import { injectDispatch } from '@suite-common/redux-utils';
 import { CloudIcon, GearIcon } from '@trezor/icons';
 
 import { AccountExceptionLayout } from 'src/components/wallet';
@@ -11,7 +11,7 @@ import { AccountExceptionLayout } from 'src/components/wallet';
  * see: @wallet-actions/selectedAccountActions
  */
 export const DiscoveryEmpty = () => {
-    const { dispatch } = useServices(selectDispatch);
+    const { dispatch } = useServices(injectDispatch);
 
     const goToCoinsSettings = () => dispatch(gotoThunk({ routeName: 'settings-coins' }));
 

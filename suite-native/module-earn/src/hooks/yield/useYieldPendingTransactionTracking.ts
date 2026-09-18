@@ -3,7 +3,7 @@ import { useEffect, useRef } from 'react';
 import { events } from '@suite-common/analytics';
 import { useServices } from '@suite-common/dependency-injection';
 import { type YieldDtoV2 } from '@suite-common/earn-stablecoin-api';
-import { selectDispatch } from '@suite-common/redux-utils';
+import { injectDispatch } from '@suite-common/redux-utils';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import {
     type YieldFlowType,
@@ -14,7 +14,7 @@ import {
 } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
 import { getApyBreakdown } from '@suite-common/wallet-utils';
-import { type NativeAnalyticsDep, selectNativeAnalyticsDep } from '@suite-native/analytics';
+import { type NativeAnalyticsDep, injectNativeAnalytics } from '@suite-native/analytics';
 import { isWrappedNativeToken } from '@trezor/network-ethereum-suite-common';
 import { exhaustive } from '@trezor/type-utils';
 
@@ -159,7 +159,7 @@ export const useYieldPendingTransactionTracking = ({
     vault,
     waitForMerklToResolveClaim,
 }: UseYieldPendingTransactionTrackingParams) => {
-    const { analytics, dispatch } = useServices(selectNativeAnalyticsDep, selectDispatch);
+    const { analytics, dispatch } = useServices(injectNativeAnalytics, injectDispatch);
     const pendingTxidRef = useRef(pendingTransaction?.txid);
     const claimCompletionTxidRef = useRef<string | null>(null);
     const accountSymbol = account?.symbol;

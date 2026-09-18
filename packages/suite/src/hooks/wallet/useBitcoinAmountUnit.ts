@@ -1,5 +1,5 @@
 import { useServices } from '@suite-common/dependency-injection';
-import { selectDispatch } from '@suite-common/redux-utils';
+import { injectDispatch } from '@suite-common/redux-utils';
 import { type NetworkSymbol, getNetworkOptional } from '@suite-common/wallet-config';
 import {
     selectBitcoinAmountUnit,
@@ -12,7 +12,7 @@ import { useSelector } from 'src/hooks/suite';
 
 export const useBitcoinAmountUnit = (symbol?: NetworkSymbol) => {
     const bitcoinAmountUnit = useSelector(selectBitcoinAmountUnit);
-    const { dispatch } = useServices(selectDispatch);
+    const { dispatch } = useServices(injectDispatch);
 
     const toggleBitcoinAmountUnitsAction = () => {
         dispatch(toggleBitcoinAmountUnitsThunk());

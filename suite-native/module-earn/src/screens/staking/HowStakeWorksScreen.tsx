@@ -17,7 +17,7 @@ import {
     selectIsEarnOnboardingConfirmed,
     selectUnstakingPeriodInDaysBySymbol,
 } from '@suite-common/wallet-core';
-import { events, selectNativeAnalyticsDep } from '@suite-native/analytics';
+import { events, injectNativeAnalytics } from '@suite-native/analytics';
 import { BannerInline, Button, TimelineDetailsCard, VStack } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 import {
@@ -79,7 +79,7 @@ export const HowStakeWorksScreen = () => {
         }
     }, [isFocused, shouldSkipToEarnForm, resolvedAccountKey, navigation]);
 
-    const { analytics } = useServices(selectNativeAnalyticsDep);
+    const { analytics } = useServices(injectNativeAnalytics);
     const registerNavigateBackAnalytics = useNavigateBackAnalytics({
         type: events.stakingStakeEvent.name,
         payload: {

@@ -2,8 +2,8 @@ import { useNavigation } from '@react-navigation/native';
 
 import { events as commonAnalyticsEvents } from '@suite-common/analytics';
 import { useServices } from '@suite-common/dependency-injection';
-import { selectDispatch } from '@suite-common/redux-utils';
-import { selectNativeAnalyticsDep } from '@suite-native/analytics';
+import { injectDispatch } from '@suite-common/redux-utils';
+import { injectNativeAnalytics } from '@suite-native/analytics';
 import { Translation } from '@suite-native/intl';
 import {
     type AppTabsParamList,
@@ -19,7 +19,7 @@ import { Banner } from './Banner';
 type NavigationProps = TabNavigationProp<AppTabsParamList, AppTabsRoutes>;
 
 export const DefiYieldPromoBanner = () => {
-    const { analytics, dispatch } = useServices(selectNativeAnalyticsDep, selectDispatch);
+    const { analytics, dispatch } = useServices(injectNativeAnalytics, injectDispatch);
     const navigation = useNavigation<NavigationProps>();
 
     const handlePress = () => {

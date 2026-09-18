@@ -1,7 +1,7 @@
 import { useDevice } from '@suite/device';
 import { Translation } from '@suite/intl';
 import { useServices } from '@suite-common/dependency-injection';
-import { selectDispatch } from '@suite-common/redux-utils';
+import { injectDispatch } from '@suite-common/redux-utils';
 import { type TrezorDevice } from '@suite-common/suite-types';
 import { cancelDiscoveryThunk, startAddWalletDiscoveryThunk } from '@suite-common/wallet-core';
 import { type DiscoveryStatus } from '@suite-common/wallet-types';
@@ -21,7 +21,7 @@ export const PassphraseMismatchModal = ({
 
     const isDeviceLocked = isLocked();
 
-    const { dispatch } = useServices(selectDispatch);
+    const { dispatch } = useServices(injectDispatch);
 
     const onStartOver = () => {
         dispatch(cancelDiscoveryThunk(device));

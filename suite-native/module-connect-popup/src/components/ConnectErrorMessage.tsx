@@ -5,12 +5,12 @@ import { useNavigation } from '@react-navigation/native';
 import { connectPopupCallInnerThunk, selectConnectPopupCall } from '@suite-common/connect-popup';
 import { useServices } from '@suite-common/dependency-injection';
 import { selectSelectedDevice } from '@suite-common/device';
-import { selectDispatch } from '@suite-common/redux-utils';
+import { injectDispatch } from '@suite-common/redux-utils';
 import { Box, Button, Card, PictogramTitleHeader, VStack } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 
 export const ConnectErrorMessage = () => {
-    const { dispatch } = useServices(selectDispatch);
+    const { dispatch } = useServices(injectDispatch);
     const navigation = useNavigation();
     const popupCall = useSelector(selectConnectPopupCall);
     const selectedDevice = useSelector(selectSelectedDevice);

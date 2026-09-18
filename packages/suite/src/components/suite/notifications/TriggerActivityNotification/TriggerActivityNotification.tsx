@@ -2,7 +2,7 @@ import { useState } from 'react';
 
 import { useDevice } from '@suite/device';
 import { useServices } from '@suite-common/dependency-injection';
-import { selectDispatch } from '@suite-common/redux-utils';
+import { injectDispatch } from '@suite-common/redux-utils';
 import { type TrezorDevice } from '@suite-common/suite-types';
 import { AUTH_DEVICE, notificationsActions } from '@suite-common/toast-notifications';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
@@ -158,7 +158,7 @@ const PRESETS: Preset[] = [
 const options = PRESETS.map(({ value, label }) => ({ value, label }));
 
 export const TriggerActivityNotification = () => {
-    const { dispatch } = useServices(selectDispatch);
+    const { dispatch } = useServices(injectDispatch);
     const { device } = useDevice();
     const [selectedValue, setSelectedValue] = useState<string>(PRESETS[0]?.value ?? '');
     const [addAsUnseen, setAddAsUnseen] = useState(true);

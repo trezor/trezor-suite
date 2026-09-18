@@ -9,8 +9,8 @@ import {
     deviceInvariabilityCheck,
     selectPersistentDeviceDataById,
 } from '@suite-common/persistent-device-data';
-import { selectDispatch } from '@suite-common/redux-utils';
-import { type TrezorDevice, selectGetAllowPrereleaseDep } from '@suite-common/suite-types';
+import { injectDispatch } from '@suite-common/redux-utils';
+import { type TrezorDevice, injectGetAllowPrerelease } from '@suite-common/suite-types';
 import { isDeviceKnown as getIsDeviceKnown, isDeviceAcquired } from '@suite-common/suite-utils';
 import { FIRMWARE } from '@trezor/connect';
 import { getFirmwareVersion } from '@trezor/device-utils';
@@ -36,7 +36,7 @@ const useCommonData = ({ device }: DeviceProps) => {
 };
 
 const useIsProductionFirmwareChannel = () => {
-    const allowPrerelease = useGetter(selectGetAllowPrereleaseDep);
+    const allowPrerelease = useGetter(injectGetAllowPrerelease);
 
     return useSelector((state: FirmwareRootState) =>
         selectIsProductionFirmwareChannel(state, allowPrerelease),
@@ -44,7 +44,7 @@ const useIsProductionFirmwareChannel = () => {
 };
 
 const useReportRevisionCheck = ({ device }: DeviceProps) => {
-    const { dispatch } = useServices(selectDispatch);
+    const { dispatch } = useServices(injectDispatch);
     const commonData = useCommonData({ device });
     const isProductionFirmwareChannel = useIsProductionFirmwareChannel();
 
@@ -76,7 +76,7 @@ const useReportRevisionCheck = ({ device }: DeviceProps) => {
 };
 
 const useReportHashCheck = ({ device }: DeviceProps) => {
-    const { dispatch } = useServices(selectDispatch);
+    const { dispatch } = useServices(injectDispatch);
     const commonData = useCommonData({ device });
     const isProductionFirmwareChannel = useIsProductionFirmwareChannel();
 
@@ -129,7 +129,7 @@ const useReportHashCheck = ({ device }: DeviceProps) => {
 
 // Report meta check results (Id check & device invariability checks ) to Sentry
 const useReportDeviceMetaChecks = ({ device }: DeviceProps) => {
-    const { dispatch } = useServices(selectDispatch);
+    const { dispatch } = useServices(injectDispatch);
     const commonData = useCommonData({ device });
     const previousData = useSelector((state: DeviceRootState & PersistentDeviceDataRootState) =>
         selectPersistentDeviceDataById(state, device?.id),

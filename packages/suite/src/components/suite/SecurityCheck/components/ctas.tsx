@@ -2,7 +2,7 @@ import { useDevice } from '@suite/device';
 import { Translation } from '@suite/intl';
 import { useServices } from '@suite-common/dependency-injection';
 import { deviceActions } from '@suite-common/device';
-import { selectDispatch } from '@suite-common/redux-utils';
+import { injectDispatch } from '@suite-common/redux-utils';
 import {
     HELP_CENTER_ENTROPY_CHECK_URL,
     TREZOR_SUPPORT_DEVICE_AUTHENTICATION_FAILED_URL,
@@ -53,7 +53,7 @@ const DismissButton = ({ onClick }: DismissButtonProps) => (
 
 export const DismissFwAuthenticityCheckButton = () => {
     const { device } = useDevice();
-    const { dispatch } = useServices(selectDispatch);
+    const { dispatch } = useServices(injectDispatch);
 
     const goToSuite = () => {
         if (!device?.id) return; // device.id is always defined at this point

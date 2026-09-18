@@ -7,7 +7,7 @@ import {
 import { SuiteSyncSettings, suiteSyncErrorHandler } from '@suite/suite-sync';
 import { useServices } from '@suite-common/dependency-injection';
 import { Context } from '@suite-common/message-system';
-import { selectDispatch } from '@suite-common/redux-utils';
+import { injectDispatch } from '@suite-common/redux-utils';
 import { type SuiteSyncUpdateError } from '@suite-common/suite-sync-storage';
 import { type EnsureWalletSuiteSyncOnErrors } from '@suite-common/suite-sync-types';
 import { type StaticSessionId } from '@trezor/connect';
@@ -52,7 +52,7 @@ import { TriggerToast } from './TriggerToast';
 import { WipeData } from './WipeData';
 
 export const SettingsDebug = () => {
-    const { dispatch } = useServices(selectDispatch);
+    const { dispatch } = useServices(injectDispatch);
     const hasContentBelowTabletWidth = useIsContentBelowBreakpoint(breakpoints.laptop);
 
     const handleWipeSuiteSyncLabelsError = ({

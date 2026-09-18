@@ -1,9 +1,9 @@
-import { events, selectDesktopAnalyticsDep } from '@suite/analytics';
+import { events, injectDesktopAnalytics } from '@suite/analytics';
 import { UpdateState, selectDesktopUpdate } from '@suite/desktop-update';
 import { Translation, type TranslationKey } from '@suite/intl';
 import { useServices } from '@suite-common/dependency-injection';
 import { selectSelectedDevice } from '@suite-common/device';
-import { selectDispatch } from '@suite-common/redux-utils';
+import { injectDispatch } from '@suite-common/redux-utils';
 import { isDevEnv } from '@suite-common/suite-utils';
 import { Box, CardList, Column, Icon, IconCircle, Row, Text } from '@trezor/components';
 import { getFirmwareVersion } from '@trezor/device-utils';
@@ -35,7 +35,7 @@ const StatusText = ({ id }: { id: TranslationKey }) => (
 );
 
 export const SupportFeedbackSelection = () => {
-    const { analytics, dispatch } = useServices(selectDesktopAnalyticsDep, selectDispatch);
+    const { analytics, dispatch } = useServices(injectDesktopAnalytics, injectDispatch);
     const desktopUpdate = useSelector(selectDesktopUpdate);
     const device = useSelector(selectSelectedDevice);
 

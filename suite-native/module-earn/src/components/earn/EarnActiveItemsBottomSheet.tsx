@@ -6,7 +6,7 @@ import { FlashList } from '@shopify/flash-list';
 import { events } from '@suite-common/analytics';
 import { useServices } from '@suite-common/dependency-injection';
 import { type AccountsRootState, selectAccountByKey } from '@suite-common/wallet-core';
-import { selectNativeAnalyticsDep } from '@suite-native/analytics';
+import { injectNativeAnalytics } from '@suite-native/analytics';
 import { BottomSheetModal, type BottomSheetModalRef, Box } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 
@@ -31,7 +31,7 @@ export const EarnActiveItemsBottomSheet = ({
 }: EarnActiveItemsBottomSheetProps) => {
     const reportStakingNavigate = useStakingNavigateAnalytics();
     const store = useStore<AccountsRootState>();
-    const { analytics } = useServices(selectNativeAnalyticsDep);
+    const { analytics } = useServices(injectNativeAnalytics);
 
     const { navigateToStakingDetail } = useStakingDetailNavigation();
     const { navigateToYieldDetail } = useYieldDetailNavigation();

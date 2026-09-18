@@ -5,7 +5,7 @@ import { reloadAppAsync } from 'expo';
 
 import { useServices } from '@suite-common/dependency-injection';
 import { firmwareActions, selectFirmwareChannel } from '@suite-common/firmware';
-import { selectDispatch } from '@suite-common/redux-utils';
+import { injectDispatch } from '@suite-common/redux-utils';
 import { useAlert } from '@suite-native/alerts';
 import { Select, type SelectItemType } from '@suite-native/atoms';
 import { type FirmwareChannel } from '@trezor/connect-common/src/types/firmware';
@@ -20,7 +20,7 @@ const options: SelectItemType<FirmwareChannel>[] = [
 ];
 
 export const FirmwareUpdateChannelSelect = () => {
-    const { dispatch } = useServices(selectDispatch);
+    const { dispatch } = useServices(injectDispatch);
     const { showAlert } = useAlert();
 
     const selectedFirmwareChannel = useSelector(selectFirmwareChannel);

@@ -1,13 +1,13 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 
 import { selectAccountIncludingChosenInTrading } from '@suite/account';
-import { events, selectDesktopAnalyticsDep } from '@suite/analytics';
+import { events, injectDesktopAnalytics } from '@suite/analytics';
 import { closeModal, preserveModalOnTxTimeout } from '@suite/modal';
 import { selectRouterUrl } from '@suite/router';
 import { useServices } from '@suite-common/dependency-injection';
 import { selectSelectedDevice } from '@suite-common/device';
 import { useYieldVaultName } from '@suite-common/earn-stablecoin';
-import { selectDispatch } from '@suite-common/redux-utils';
+import { injectDispatch } from '@suite-common/redux-utils';
 import { selectTradingExchangeSelectedQuote } from '@suite-common/trading';
 import { selectYieldTxReview } from '@suite-common/wallet-core';
 import { type FormState } from '@suite-common/wallet-types';
@@ -44,7 +44,7 @@ export const TransactionReviewModalBody = ({
     precomposedForm,
     isRbfConfirmedError,
 }: TransactionReviewModalBodyProps) => {
-    const { analytics, dispatch } = useServices(selectDesktopAnalyticsDep, selectDispatch);
+    const { analytics, dispatch } = useServices(injectDesktopAnalytics, injectDispatch);
     const account = useSelector(selectAccountIncludingChosenInTrading);
     const device = useSelector(selectSelectedDevice);
     const yieldTxReview = useSelector(selectYieldTxReview);

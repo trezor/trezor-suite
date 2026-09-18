@@ -4,7 +4,7 @@ import { TrezorLink } from '@suite/external-links';
 import { Translation } from '@suite/intl';
 import { useServices } from '@suite-common/dependency-injection';
 import { selectIsDeviceRemembered } from '@suite-common/device';
-import { selectDispatch } from '@suite-common/redux-utils';
+import { injectDispatch } from '@suite-common/redux-utils';
 import { type PhishingDetectorId } from '@suite-common/token-definitions';
 import { type Explorer, getNetwork } from '@suite-common/wallet-config';
 import { getExplorerUrl } from '@suite-common/wallet-config/src/getExplorerUrls';
@@ -87,7 +87,7 @@ export const TxDetailModalBase = ({
         selectTransactionIsMarkedAsNotScam(state, tx.txid, accountKey),
     );
 
-    const { dispatch } = useServices(selectDispatch);
+    const { dispatch } = useServices(injectDispatch);
 
     const onMarkTxAsNotScamClick = () => {
         dispatch(

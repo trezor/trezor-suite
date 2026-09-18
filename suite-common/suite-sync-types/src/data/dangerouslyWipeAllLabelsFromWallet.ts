@@ -25,7 +25,7 @@ export type DangerouslyWipeAllLabelsFromWalletDep = {
     dangerouslyWipeAllLabelsFromWallet: DangerouslyWipeAllLabelsFromWallet;
 };
 
-export const selectDangerouslyWipeAllLabelsFromWalletDep = (
+export const injectDangerouslyWipeAllLabelsFromWallet = (
     services: any,
 ): DangerouslyWipeAllLabelsFromWalletDep => ({
     dangerouslyWipeAllLabelsFromWallet: services.suiteSync.dangerouslyWipeAllLabelsFromWallet,

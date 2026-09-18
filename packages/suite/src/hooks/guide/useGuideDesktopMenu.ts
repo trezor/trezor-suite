@@ -1,15 +1,15 @@
 import { useEffect } from 'react';
 
-import { selectDesktopApiDep } from '@suite/desktop-app-api';
+import { injectDesktopApi } from '@suite/desktop-app-api';
 import { useServices } from '@suite-common/dependency-injection';
-import { selectDispatch } from '@suite-common/redux-utils';
+import { injectDispatch } from '@suite-common/redux-utils';
 
 import { open, setView } from 'src/actions/suite/guideActions';
 
 // Opens the in-app guide on the right view when triggered from the desktop application
 // menu (Help → Support & feedback / Keyboard shortcuts).
 export const useGuideDesktopMenu = () => {
-    const { desktopApi, dispatch } = useServices(selectDispatch, selectDesktopApiDep);
+    const { desktopApi, dispatch } = useServices(injectDispatch, injectDesktopApi);
 
     useEffect(() => {
         if (!desktopApi.available) return;

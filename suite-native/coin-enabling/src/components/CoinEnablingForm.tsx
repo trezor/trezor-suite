@@ -5,10 +5,10 @@ import { useNavigation } from '@react-navigation/native';
 
 import { useServices } from '@suite-common/dependency-injection';
 import { selectSupportedNetworkSymbols } from '@suite-common/networks';
-import { selectDispatch } from '@suite-common/redux-utils';
+import { injectDispatch } from '@suite-common/redux-utils';
 import { changeCoinVisibilityThunk } from '@suite-common/wallet-core';
 import { useAlert } from '@suite-native/alerts';
-import { events, selectNativeAnalyticsDep } from '@suite-native/analytics';
+import { events, injectNativeAnalytics } from '@suite-native/analytics';
 import { selectDeviceEnabledDiscoveryNetworkSymbols } from '@suite-native/discovery';
 import { Form, useForm } from '@suite-native/forms';
 import { Translation } from '@suite-native/intl';
@@ -30,7 +30,7 @@ export const CoinEnablingForm = ({ searchQuery }: CoinEnablingFormProps) => {
 
     const navigation = useNavigation();
     const enabledNetworkSymbols = useSelector(selectDeviceEnabledDiscoveryNetworkSymbols);
-    const { analytics, dispatch } = useServices(selectNativeAnalyticsDep, selectDispatch);
+    const { analytics, dispatch } = useServices(injectNativeAnalytics, injectDispatch);
 
     const { showAlert } = useAlert();
 

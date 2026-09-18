@@ -1,11 +1,11 @@
 import { Translation, useTranslation } from '@suite/intl';
 import { gotoThunk } from '@suite/router';
 import { useServices } from '@suite-common/dependency-injection';
-import { selectDispatch } from '@suite-common/redux-utils';
+import { injectDispatch } from '@suite-common/redux-utils';
 import { Banner } from '@trezor/components';
 
 export const NoBackup = () => {
-    const { dispatch } = useServices(selectDispatch);
+    const { dispatch } = useServices(injectDispatch);
     const { translationString } = useTranslation();
 
     const translation = `${translationString(

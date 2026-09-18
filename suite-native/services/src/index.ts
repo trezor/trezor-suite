@@ -1,1 +1,1 @@
-export { type MMKVStorageDep, selectMMKVStorageDep } from './nativeServices';
+export { type MMKVStorageDep, injectMMKVStorage } from './nativeServices';

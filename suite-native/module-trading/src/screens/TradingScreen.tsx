@@ -4,7 +4,7 @@ import { useSelector } from 'react-redux';
 import { useNavigation } from '@react-navigation/native';
 
 import { useServices } from '@suite-common/dependency-injection';
-import { events, selectNativeAnalyticsDep } from '@suite-native/analytics';
+import { events, injectNativeAnalytics } from '@suite-native/analytics';
 import { VStack } from '@suite-native/atoms';
 import { DeviceManagerScreenHeader } from '@suite-native/device-manager';
 import { RootStackRoutes, Screen } from '@suite-native/navigation';
@@ -28,7 +28,7 @@ const TradingScreenContent = () => {
     const hasActiveTradingType = useSelector(selectHasActiveTradingType);
     const navigation = useNavigation<NavigationProps>();
     useActiveTradingTypeReaction();
-    const { analytics } = useServices(selectNativeAnalyticsDep);
+    const { analytics } = useServices(injectNativeAnalytics);
 
     useEffect(() => {
         if (tradeToBeOpened) {

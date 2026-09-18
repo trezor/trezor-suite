@@ -1,4 +1,4 @@
-import { events, selectDesktopAnalyticsDep } from '@suite/analytics';
+import { events, injectDesktopAnalytics } from '@suite/analytics';
 import { Translation } from '@suite/intl';
 import { useServices } from '@suite-common/dependency-injection';
 import { useTronStakingStats } from '@suite-common/earn-staking-api';
@@ -29,7 +29,7 @@ export const TronStakeInANutshellModal = ({
     onCancel,
     actionType = 'close',
 }: TronStakeInANutshellModalProps) => {
-    const { analytics } = useServices(selectDesktopAnalyticsDep);
+    const { analytics } = useServices(injectDesktopAnalytics);
     const { maxApr } = useTronStakingStats();
 
     const handleCancel = () => {

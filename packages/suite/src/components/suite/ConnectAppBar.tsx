@@ -9,7 +9,7 @@ import {
 } from '@suite-common/connect-popup';
 import { useServices } from '@suite-common/dependency-injection';
 import { selectSelectedDevice } from '@suite-common/device';
-import { selectDispatch } from '@suite-common/redux-utils';
+import { injectDispatch } from '@suite-common/redux-utils';
 import { Box, Icon, Row, Text } from '@trezor/components';
 import { CaretCircleDownIcon, PlugsIcon, WalletConnectIcon } from '@trezor/icons';
 
@@ -33,7 +33,7 @@ interface ConnectAppBarProps {
 
 export const ConnectAppBar = ({ canSwitchDevice }: ConnectAppBarProps) => {
     const connectPopupCall = useSelector(selectConnectPopupCall);
-    const { dispatch } = useServices(selectDispatch);
+    const { dispatch } = useServices(injectDispatch);
     const device = useSelector(selectSelectedDevice);
 
     if (!connectPopupCall || connectPopupCall.state === 'finished') return null;

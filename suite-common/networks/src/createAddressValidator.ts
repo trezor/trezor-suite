@@ -11,7 +11,7 @@ export type AddressValidatorDep = {
     addressValidator: AddressValidator;
 };
 
-export const selectAddressValidatorDep = (services: any): AddressValidatorDep => ({
+export const injectAddressValidator = (services: any): AddressValidatorDep => ({
     addressValidator: services.networks.addressValidator,
 });
 

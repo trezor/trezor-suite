@@ -1,5 +1,5 @@
 import { AccountLabel } from '@suite/account';
-import { selectDesktopAnalyticsDep } from '@suite/analytics';
+import { injectDesktopAnalytics } from '@suite/analytics';
 import { Translation, type TranslationKey } from '@suite/intl';
 import { events } from '@suite-common/analytics';
 import { useServices } from '@suite-common/dependency-injection';
@@ -31,7 +31,7 @@ export const WrappedNativePageHeader = ({
     contractAddress,
     isFlowComplete = false,
 }: WrappedNativePageHeaderProps) => {
-    const { analytics } = useServices(selectDesktopAnalyticsDep);
+    const { analytics } = useServices(injectDesktopAnalytics);
     const navigateToTokenOverview = useNavigateToAccountRoute(account, 'wallet-tokens');
     const { isBelowMobile } = useLayoutSize();
 

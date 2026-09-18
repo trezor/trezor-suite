@@ -1,12 +1,12 @@
 import {
     type TransactionCreatedEventAction,
     events,
-    selectDesktopAnalyticsDep,
+    injectDesktopAnalytics,
 } from '@suite/analytics';
 import { type ExtendedMessageDescriptor, Translation } from '@suite/intl';
 import { selectConnectPopupCall } from '@suite-common/connect-popup';
 import { useServices } from '@suite-common/dependency-injection';
-import { selectDispatch } from '@suite-common/redux-utils';
+import { injectDispatch } from '@suite-common/redux-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import {
     type Account,
@@ -76,7 +76,7 @@ export const TransactionReviewModalBottomContent = ({
     precomposedForm,
     outputs,
 }: TransactionReviewModalBottomContentProps) => {
-    const { analytics, dispatch } = useServices(selectDesktopAnalyticsDep, selectDispatch);
+    const { analytics, dispatch } = useServices(injectDesktopAnalytics, injectDispatch);
     const connectPopupCall = useSelector(selectConnectPopupCall);
     const { precomposedTx, serializedTx } = txInfoState;
 

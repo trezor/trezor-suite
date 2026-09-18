@@ -2,7 +2,7 @@ import { useEffect, useRef } from 'react';
 import { useSelector } from 'react-redux';
 
 import { useServices } from '@suite-common/dependency-injection';
-import { selectDispatch } from '@suite-common/redux-utils';
+import { injectDispatch } from '@suite-common/redux-utils';
 import { tradingThunks } from '@suite-common/trading';
 import { useFreshRef } from '@trezor/react-utils';
 
@@ -12,7 +12,7 @@ export const TRADING_TRANSACTIONS_REFRESH_INTERVAL_MS = 30_000;
 
 export const useTradingTransactionsWatcher = () => {
     const tradesByAccount = useSelector(selectDeviceTradesToWatchByAccount);
-    const { dispatch } = useServices(selectDispatch);
+    const { dispatch } = useServices(injectDispatch);
     const tradesByAccountRef = useFreshRef(tradesByAccount);
     const isRefreshingRef = useRef(false);
     const refreshCountRef = useRef(0);

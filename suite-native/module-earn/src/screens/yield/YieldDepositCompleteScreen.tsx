@@ -5,13 +5,13 @@ import { type RouteProp, useNavigation, useRoute } from '@react-navigation/nativ
 
 import { events } from '@suite-common/analytics';
 import { useServices } from '@suite-common/dependency-injection';
-import { selectDispatch } from '@suite-common/redux-utils';
+import { injectDispatch } from '@suite-common/redux-utils';
 import {
     type YieldRootState,
     selectYieldSessionByFlowKey,
     yieldActions,
 } from '@suite-common/wallet-core';
-import { selectNativeAnalyticsDep } from '@suite-native/analytics';
+import { injectNativeAnalytics } from '@suite-native/analytics';
 import { Text } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 import {
@@ -48,7 +48,7 @@ export const YieldDepositCompleteScreen = () => {
     );
 
     const { show: showYieldApyBreakdownAlert } = useYieldApyBreakdownAlert({ account, vault });
-    const { analytics, dispatch } = useServices(selectNativeAnalyticsDep, selectDispatch);
+    const { analytics, dispatch } = useServices(injectNativeAnalytics, injectDispatch);
 
     const handleExit = useCallback(() => {
         analytics.report({

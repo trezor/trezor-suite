@@ -7,8 +7,8 @@ import { selectFullSelectedAccount } from '@suite/account';
 import { selectIsDebugModeActive } from '@suite/debug';
 import { useServices } from '@suite-common/dependency-injection';
 import { selectSelectedDevice } from '@suite-common/device';
-import { selectAddressValidatorDep, selectSupportedNetworkSymbols } from '@suite-common/networks';
-import { selectDispatch } from '@suite-common/redux-utils';
+import { injectAddressValidator, selectSupportedNetworkSymbols } from '@suite-common/networks';
+import { injectDispatch } from '@suite-common/redux-utils';
 import {
     type TradingType,
     cryptoIdToNetworkSymbol,
@@ -61,7 +61,7 @@ export const useTradingReceiveAddress = ({
     cryptoId,
     nonSuiteAccount,
 }: UseTradingReceiveAddressProps) => {
-    const { addressValidator, dispatch } = useServices(selectAddressValidatorDep, selectDispatch);
+    const { addressValidator, dispatch } = useServices(injectAddressValidator, injectDispatch);
     const accounts = useSelector(selectAccounts);
     const walletSelectedAccount = useSelector(selectFullSelectedAccount);
     const device = useSelector(selectSelectedDevice);

@@ -1,5 +1,5 @@
 import { selectIsDebugModeActive } from '@suite/debug';
-import { selectDesktopApiDep } from '@suite/desktop-app-api';
+import { injectDesktopApi } from '@suite/desktop-app-api';
 import { Translation } from '@suite/intl';
 import { useServices } from '@suite-common/dependency-injection';
 import { Card, Column } from '@trezor/components';
@@ -8,7 +8,7 @@ import { ActionButton, ActionColumn, TextColumn } from '@trezor/product-componen
 import { useSelector } from 'src/hooks/suite';
 
 export const CoinjoinLogs = () => {
-    const { desktopApi } = useServices(selectDesktopApiDep);
+    const { desktopApi } = useServices(injectDesktopApi);
     const isDebug = useSelector(selectIsDebugModeActive);
 
     if (!isDebug) return null;

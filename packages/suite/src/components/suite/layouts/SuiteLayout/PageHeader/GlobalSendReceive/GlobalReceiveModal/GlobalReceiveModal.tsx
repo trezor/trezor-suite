@@ -1,11 +1,11 @@
 import { useRef } from 'react';
 
-import { events, selectDesktopAnalyticsDep } from '@suite/analytics';
+import { events, injectDesktopAnalytics } from '@suite/analytics';
 import { useDevice } from '@suite/device';
 import { Translation } from '@suite/intl';
 import { openModal } from '@suite/modal';
 import { useServices } from '@suite-common/dependency-injection';
-import { selectDispatch } from '@suite-common/redux-utils';
+import { injectDispatch } from '@suite-common/redux-utils';
 import { CardList, Column, IconCircle, Link, Modal, Paragraph, Row } from '@trezor/components';
 import { PlusIcon } from '@trezor/icons';
 import { HOW_TO_CHOOSE_RIGHT_NETWORK_URL } from '@trezor/urls';
@@ -27,7 +27,7 @@ type GlobalReceiveModalProps = {
 };
 
 export const GlobalReceiveModal = ({ onCancel, onSubmit }: GlobalReceiveModalProps) => {
-    const { analytics, dispatch } = useServices(selectDesktopAnalyticsDep, selectDispatch);
+    const { analytics, dispatch } = useServices(injectDesktopAnalytics, injectDispatch);
     const { device } = useDevice();
     const { isDiscoveryRunning } = useDiscovery();
     const isAddAccountDisabled = isDiscoveryRunning || !device?.connected;

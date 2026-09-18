@@ -1,11 +1,11 @@
 import { useEffect } from 'react';
 import { FormProvider } from 'react-hook-form';
 
-import { events, selectDesktopAnalyticsDep } from '@suite/analytics';
+import { events, injectDesktopAnalytics } from '@suite/analytics';
 import { setConnectionModal, setConnectionMode, useDevice } from '@suite/device';
 import { Translation } from '@suite/intl';
 import { useServices } from '@suite-common/dependency-injection';
-import { selectDispatch } from '@suite-common/redux-utils';
+import { injectDispatch } from '@suite-common/redux-utils';
 import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import {
     getStakingDataForNetwork,
@@ -34,7 +34,7 @@ type EarnClaimModalProps = {
 
 export const EarnClaimModal = ({ onCancel, account }: EarnClaimModalProps) => {
     const { device, isLocked } = useDevice();
-    const { analytics, dispatch } = useServices(selectDesktopAnalyticsDep, selectDispatch);
+    const { analytics, dispatch } = useServices(injectDesktopAnalytics, injectDispatch);
     const { isClaimingDisabled, claimingMessageContent } = useMessageSystemStaking(account.symbol);
 
     const {

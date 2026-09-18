@@ -2,7 +2,7 @@ import { useEffect } from 'react';
 import { useSelector } from 'react-redux';
 
 import { useServices } from '@suite-common/dependency-injection';
-import { selectDispatch } from '@suite-common/redux-utils';
+import { injectDispatch } from '@suite-common/redux-utils';
 
 import { type TradingRootState } from '../reducers/tradingCommonReducer';
 import { selectTradingDetailData } from '../selectors/tradingSelectors';
@@ -25,7 +25,7 @@ export const useTradingDetailData = <T extends TradingType>(
         transactionId: string | undefined;
         trade: TradingTradeTransactionMapProps[T] | undefined;
     };
-    const { dispatch } = useServices(selectDispatch);
+    const { dispatch } = useServices(injectDispatch);
 
     useEffect(() => {
         dispatch(tradingThunks.loadInitialDataThunk({ activeSection: tradeType }));

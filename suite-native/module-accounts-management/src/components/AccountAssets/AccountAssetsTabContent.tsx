@@ -6,7 +6,7 @@ import { useNavigation } from '@react-navigation/native';
 import { useServices } from '@suite-common/dependency-injection';
 import { type AccountsRootState, selectAccountByKey } from '@suite-common/wallet-core';
 import { type AccountKey } from '@suite-common/wallet-types';
-import { events, selectNativeAnalyticsDep } from '@suite-native/analytics';
+import { events, injectNativeAnalytics } from '@suite-native/analytics';
 import {
     type RootStackParamList,
     RootStackRoutes,
@@ -34,7 +34,7 @@ export const AccountAssetsTabContent = ({
 }: AccountAssetsTabContentProps) => {
     const navigation =
         useNavigation<StackNavigationProps<RootStackParamList, RootStackRoutes.AccountAssets>>();
-    const { analytics } = useServices(selectNativeAnalyticsDep);
+    const { analytics } = useServices(injectNativeAnalytics);
     const account = useSelector((state: AccountsRootState) =>
         selectAccountByKey(state, accountKey),
     );

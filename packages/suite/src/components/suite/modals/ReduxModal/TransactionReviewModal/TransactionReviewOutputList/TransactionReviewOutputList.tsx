@@ -5,7 +5,7 @@ import styled from 'styled-components';
 import { Translation } from '@suite/intl';
 import { useServices } from '@suite-common/dependency-injection';
 import type { DeviceRootState } from '@suite-common/device';
-import { selectGetNamedAddressSupportDep } from '@suite-common/networks';
+import { injectGetNamedAddressSupport } from '@suite-common/networks';
 import { selectAccounts, selectSendFormReviewLastButtonCode } from '@suite-common/wallet-core';
 import type {
     FormState,
@@ -81,7 +81,7 @@ export const TransactionReviewOutputList = ({
     const outputRefs = useRef<(HTMLDivElement | null)[]>([]);
     const totalOutputRef = useRef<HTMLDivElement | null>(null);
     const accounts = useSelector(selectAccounts);
-    const { getNamedAddressSupport } = useServices(selectGetNamedAddressSupportDep);
+    const { getNamedAddressSupport } = useServices(injectGetNamedAddressSupport);
     const { networkType, symbol } = account;
     const namedAddress = getNamedAddressSupport(symbol);
     const isMultirecipient = outputs.filter(({ type }) => type === 'address').length > 1;

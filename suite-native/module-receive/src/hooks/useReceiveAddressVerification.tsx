@@ -3,11 +3,11 @@ import { useCallback } from 'react';
 import { useNavigation } from '@react-navigation/native';
 
 import { useServices } from '@suite-common/dependency-injection';
-import { selectDispatch } from '@suite-common/redux-utils';
+import { injectDispatch } from '@suite-common/redux-utils';
 import { confirmAddressOnDeviceThunk } from '@suite-common/wallet-core';
 import { type AccountKey } from '@suite-common/wallet-types';
 import { useAlert } from '@suite-native/alerts';
-import { events, selectNativeAnalyticsDep } from '@suite-native/analytics';
+import { events, injectNativeAnalytics } from '@suite-native/analytics';
 import { Translation } from '@suite-native/intl';
 import type {
     ReceiveAddressVerificationStackParamList,
@@ -30,7 +30,7 @@ export const useReceiveAddressVerification = (
     addressPath: string | undefined,
 ) => {
     const navigation = useNavigation<NavigationProp>();
-    const { analytics, dispatch } = useServices(selectNativeAnalyticsDep, selectDispatch);
+    const { analytics, dispatch } = useServices(injectNativeAnalytics, injectDispatch);
     const { showToast } = useToast();
 
     const { showAlert } = useAlert();

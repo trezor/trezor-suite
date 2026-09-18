@@ -19,4 +19,4 @@ export type {
     TraySettings,
 } from './messages';
 
-export { type DesktopApiDep, selectDesktopApiDep } from './desktopApiDependency';
+export { type DesktopApiDep, injectDesktopApi } from './desktopApiDependency';

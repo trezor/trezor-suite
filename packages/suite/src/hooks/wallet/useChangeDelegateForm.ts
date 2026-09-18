@@ -2,7 +2,7 @@ import { createContext, useCallback, useContext, useEffect, useMemo } from 'reac
 import { useForm } from 'react-hook-form';
 
 import { useServices } from '@suite-common/dependency-injection';
-import { selectDispatch } from '@suite-common/redux-utils';
+import { injectDispatch } from '@suite-common/redux-utils';
 import {
     getStakeFormsDefaultValues,
     getStakingContractAddress,
@@ -36,7 +36,7 @@ type UseChangeDelegateFormsProps = {
 export const useChangeDelegateForm = ({
     selectedAccount,
 }: UseChangeDelegateFormsProps): ChangeDelegateContextValues => {
-    const { dispatch } = useServices(selectDispatch);
+    const { dispatch } = useServices(injectDispatch);
 
     const { account, network } = selectedAccount;
 

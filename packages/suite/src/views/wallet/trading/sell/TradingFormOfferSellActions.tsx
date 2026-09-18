@@ -1,5 +1,5 @@
 import { useServices } from '@suite-common/dependency-injection';
-import { selectDispatch } from '@suite-common/redux-utils';
+import { injectDispatch } from '@suite-common/redux-utils';
 import {
     selectIsTradingNetworkFeeMissing,
     selectTradingSellProviders,
@@ -18,7 +18,7 @@ import { useTradingFormOfferCommon } from 'src/views/wallet/trading/common/Tradi
 import { TradingKYCWarning } from 'src/views/wallet/trading/common/TradingKYCWarning';
 
 export const TradingFormOfferSellActions = () => {
-    const { dispatch } = useServices(selectDispatch);
+    const { dispatch } = useServices(injectDispatch);
     const context = useTradingFormContext<'sell'>();
     const {
         watch,

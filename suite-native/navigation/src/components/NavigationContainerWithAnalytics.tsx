@@ -9,7 +9,7 @@ import {
 import { useReactNavigationDevTools } from '@rozenite/react-navigation-plugin';
 
 import { useServices } from '@suite-common/dependency-injection';
-import { events, selectNativeAnalyticsDep } from '@suite-native/analytics';
+import { events, injectNativeAnalytics } from '@suite-native/analytics';
 import {
     addSentryBreadcrumb,
     registerSentryNavigationContainer,
@@ -27,7 +27,7 @@ export const navigationContainerRef = createNavigationContainerRef<RootStackPara
 export const NavigationContainerWithAnalytics = ({ children }: { children: ReactNode }) => {
     const [isNavigationReady, setIsNavigationReady] = useState(false);
     const routeNameRef = useRef<string | undefined>(undefined);
-    const { analytics } = useServices(selectNativeAnalyticsDep);
+    const { analytics } = useServices(injectNativeAnalytics);
     const {
         utils: { colors, isDarkColor },
     } = useNativeStyles();

@@ -2,9 +2,9 @@ import { useSelector } from 'react-redux';
 
 import { useServices } from '@suite-common/dependency-injection';
 import { selectDeviceInternalModel, selectSelectedDevice } from '@suite-common/device';
-import { selectDispatch } from '@suite-common/redux-utils';
+import { injectDispatch } from '@suite-common/redux-utils';
 import { submitPassphraseThunk } from '@suite-common/wallet-core';
-import { events, selectNativeAnalyticsDep } from '@suite-native/analytics';
+import { events, injectNativeAnalytics } from '@suite-native/analytics';
 import { Button } from '@suite-native/atoms';
 import { selectPassphraseRequestId } from '@suite-native/device-authorization';
 import { deviceModelToIconName } from '@suite-native/icons';
@@ -12,7 +12,7 @@ import { Translation } from '@suite-native/intl';
 
 export const EnterPassphraseOnTrezorButton = () => {
     const device = useSelector(selectSelectedDevice);
-    const { analytics, dispatch } = useServices(selectNativeAnalyticsDep, selectDispatch);
+    const { analytics, dispatch } = useServices(injectNativeAnalytics, injectDispatch);
     const deviceModel = useSelector(selectDeviceInternalModel);
     const requestId = useSelector(selectPassphraseRequestId);
 

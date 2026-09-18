@@ -1,6 +1,6 @@
 import { type MouseEvent } from 'react';
 
-import { selectDesktopAnalyticsDep } from '@suite/analytics';
+import { injectDesktopAnalytics } from '@suite/analytics';
 import { selectIsDebugModeActive } from '@suite/debug';
 import { FirmwareUpgradeNeededModal } from '@suite/firmware-upgrade';
 import { Translation, useTranslation } from '@suite/intl';
@@ -8,7 +8,7 @@ import { gotoThunk } from '@suite/router';
 import { events } from '@suite-common/analytics';
 import { useServices } from '@suite-common/dependency-injection';
 import { selectSelectedDevice } from '@suite-common/device';
-import { selectDispatch } from '@suite-common/redux-utils';
+import { injectDispatch } from '@suite-common/redux-utils';
 import { getNetworkType } from '@suite-common/wallet-config';
 import { isWrappedNativeFlowSupported } from '@suite-common/wallet-core';
 import { Button, Tooltip } from '@trezor/components';
@@ -33,7 +33,7 @@ type WrapNativeTokenButtonProps = {
  */
 export const WrapNativeTokenButton = ({ account }: WrapNativeTokenButtonProps) => {
     const { translationString } = useTranslation();
-    const { analytics, dispatch } = useServices(selectDesktopAnalyticsDep, selectDispatch);
+    const { analytics, dispatch } = useServices(injectDesktopAnalytics, injectDispatch);
     const isDebugModeActive = useSelector(selectIsDebugModeActive);
     const device = useSelector(selectSelectedDevice);
     const isFirmwareOutdated = !isWrappedNativeFlowSupported(device);

@@ -9,7 +9,7 @@ import {
 } from '@suite/metadata';
 import { openModal } from '@suite/modal';
 import { useServices } from '@suite-common/dependency-injection';
-import { returnStableArrayIfEmpty, selectDispatch } from '@suite-common/redux-utils';
+import { injectDispatch, returnStableArrayIfEmpty } from '@suite-common/redux-utils';
 import { selectIsSuiteSyncEnabled, selectSuiteSyncOutputLabels } from '@suite-common/suite-sync';
 import { type SuiteSyncOutput } from '@suite-common/suite-sync-storage';
 import { useDisplayBaseCurrency } from '@suite-common/wallet-core';
@@ -97,7 +97,7 @@ export const UtxoSelection = ({ transaction, utxo }: UtxoSelectionProps) => {
     );
     const { translationString } = useTranslation();
 
-    const { dispatch } = useServices(selectDispatch);
+    const { dispatch } = useServices(injectDispatch);
     const addressLabel = useSelector(state =>
         selectAddressLabel(state, {
             address: utxo.address,

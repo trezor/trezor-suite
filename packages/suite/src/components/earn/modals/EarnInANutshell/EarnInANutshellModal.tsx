@@ -1,10 +1,10 @@
 import { useEffect, useRef } from 'react';
 
-import { selectDesktopAnalyticsDep } from '@suite/analytics';
+import { injectDesktopAnalytics } from '@suite/analytics';
 import { openModal } from '@suite/modal';
 import { gotoThunk } from '@suite/router';
 import { useServices } from '@suite-common/dependency-injection';
-import { selectDispatch } from '@suite-common/redux-utils';
+import { injectDispatch } from '@suite-common/redux-utils';
 import {
     type EarnAnalyticsStep,
     EarnFlow,
@@ -60,7 +60,7 @@ export const EarnInANutshellModal = ({
     yieldContext,
     onCancel,
 }: EarnInANutshellModalProps) => {
-    const { analytics, dispatch } = useServices(selectDesktopAnalyticsDep, selectDispatch);
+    const { analytics, dispatch } = useServices(injectDesktopAnalytics, injectDispatch);
 
     const opportunity =
         flow === EarnFlow.Yield

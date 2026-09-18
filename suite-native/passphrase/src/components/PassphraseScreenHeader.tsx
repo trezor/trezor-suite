@@ -5,13 +5,13 @@ import { useNavigation, useRoute } from '@react-navigation/native';
 
 import { useServices } from '@suite-common/dependency-injection';
 import { selectSelectedDevice } from '@suite-common/device';
-import { selectDispatch } from '@suite-common/redux-utils';
+import { injectDispatch } from '@suite-common/redux-utils';
 import {
     cancelDiscoveryThunk,
     selectIsCreatingNewPassphraseWallet,
 } from '@suite-common/wallet-core';
 import { useAlert } from '@suite-native/alerts';
-import { events, selectNativeAnalyticsDep } from '@suite-native/analytics';
+import { events, injectNativeAnalytics } from '@suite-native/analytics';
 import { IconButton, ScreenHeaderWrapper } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 import {
@@ -37,7 +37,7 @@ export const PassphraseScreenHeader = () => {
     const navigation = useNavigation<NavigationProp>();
     const route = useRoute();
     const device = useSelector(selectSelectedDevice);
-    const { analytics, dispatch } = useServices(selectNativeAnalyticsDep, selectDispatch);
+    const { analytics, dispatch } = useServices(injectNativeAnalytics, injectDispatch);
 
     const { showAlert } = useAlert();
 

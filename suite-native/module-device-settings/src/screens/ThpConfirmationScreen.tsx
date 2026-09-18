@@ -5,7 +5,7 @@ import { useFocusEffect, useNavigation } from '@react-navigation/native';
 
 import { useServices } from '@suite-common/dependency-injection';
 import { selectIsDeviceThpLocked } from '@suite-common/device';
-import { selectDispatch } from '@suite-common/redux-utils';
+import { injectDispatch } from '@suite-common/redux-utils';
 import { selectThpAutoconnectStep, selectThpStep } from '@suite-common/thp';
 import { Box } from '@suite-native/atoms';
 import { ContinueOnTrezorScreenContent } from '@suite-native/device';
@@ -29,7 +29,7 @@ export const ThpConfirmationScreen = () => {
     const { showEnableThpAutoconnectAlert } = useThpAutoconnectAlert();
     const navigateToInitialScreen = useNavigateToInitialScreen();
     const navigation = useNavigation<NavigationProp>();
-    const { dispatch } = useServices(selectDispatch);
+    const { dispatch } = useServices(injectDispatch);
 
     const thpStep = useSelector(selectThpStep);
     const thpAutoconnectStep = useSelector(selectThpAutoconnectStep);

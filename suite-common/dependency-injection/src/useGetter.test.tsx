@@ -37,14 +37,14 @@ type TorDep = { getIsTorEnabled: Getter<[], boolean> };
 type SelectedWalletDep = { getIsSelectedWallet: Getter<[walletDescriptor: string], boolean> };
 type ConnectionDep = { getConnection: Getter<[], { relayUrl: string; isTorEnabled: boolean }> };
 
-const selectRelayUrlDep = (services: any): RelayUrlDep => ({ getRelayUrl: services.getRelayUrl });
-const selectConnectionDep = (services: any): ConnectionDep => ({
+const injectRelayUrl = (services: any): RelayUrlDep => ({ getRelayUrl: services.getRelayUrl });
+const injectConnection = (services: any): ConnectionDep => ({
     getConnection: services.getConnection,
 });
-const selectSelectedWalletDep = (services: any): SelectedWalletDep => ({
+const injectSelectedWallet = (services: any): SelectedWalletDep => ({
     getIsSelectedWallet: services.getIsSelectedWallet,
 });
-const selectTwoGettersDep = (services: any): RelayUrlDep & TorDep => ({
+const injectTwoGetters = (services: any): RelayUrlDep & TorDep => ({
     getRelayUrl: services.getRelayUrl,
     getIsTorEnabled: services.getIsTorEnabled,
 });
@@ -91,13 +91,13 @@ const renderUseGetter = <TResult, TProps>(
 
 describe(useGetter.name, () => {
     it('returns the current value of the getter', () => {
-        const { result } = renderUseGetter(() => useGetter(selectRelayUrlDep));
+        const { result } = renderUseGetter(() => useGetter(injectRelayUrl));
 
         expect(result.current).toBe('wss://relay.example.com');
     });
 
     it('re-renders with the new value when the store changes', () => {
-        const { store, result } = renderUseGetter(() => useGetter(selectRelayUrlDep));
+        const { store, result } = renderUseGetter(() => useGetter(injectRelayUrl));
 
         act(() => {
             store.dispatch(setTestState({ relayUrl: 'wss://other.example.com' }));
@@ -107,7 +107,7 @@ describe(useGetter.name, () => {
     });
 
     it('does not re-render when an unrelated part of the state changes', () => {
-        const { store, renderSpy } = renderUseGetter(() => useGetter(selectRelayUrlDep));
+        const { store, renderSpy } = renderUseGetter(() => useGetter(injectRelayUrl));
         const rendersBefore = renderSpy.mock.calls.length;
 
         act(() => {
@@ -118,7 +118,7 @@ describe(useGetter.name, () => {
     });
 
     it('does not re-render when a getter returns a shallowly equal object', () => {
-        const { store, renderSpy } = renderUseGetter(() => useGetter(selectConnectionDep));
+        const { store, renderSpy } = renderUseGetter(() => useGetter(injectConnection));
         const rendersBefore = renderSpy.mock.calls.length;
 
         act(() => {
@@ -129,7 +129,7 @@ describe(useGetter.name, () => {
     });
 
     it('re-renders when a field of the returned object changes', () => {
-        const { store, result } = renderUseGetter(() => useGetter(selectConnectionDep));
+        const { store, result } = renderUseGetter(() => useGetter(injectConnection));
 
         act(() => {
             store.dispatch(setTestState({ isTorEnabled: true }));
@@ -140,7 +140,7 @@ describe(useGetter.name, () => {
 
     it('forwards params to the getter', () => {
         const { result } = renderUseGetter(() =>
-            useGetter(selectSelectedWalletDep, 'wallet-2' as string),
+            useGetter(injectSelectedWallet, 'wallet-2' as string),
         );
 
         expect(result.current).toBe(false);
@@ -148,7 +148,7 @@ describe(useGetter.name, () => {
 
     it('reads the value for the new params when they change', () => {
         const { result, rerender } = renderUseGetter(
-            (walletDescriptor: string) => useGetter(selectSelectedWalletDep, walletDescriptor),
+            (walletDescriptor: string) => useGetter(injectSelectedWallet, walletDescriptor),
             'wallet-2' as string,
         );
 
@@ -161,7 +161,7 @@ describe(useGetter.name, () => {
 
     it('keeps watching the value for the params that were last passed', () => {
         const { store, result, rerender } = renderUseGetter(
-            (walletDescriptor: string) => useGetter(selectSelectedWalletDep, walletDescriptor),
+            (walletDescriptor: string) => useGetter(injectSelectedWallet, walletDescriptor),
             'wallet-2' as string,
         );
 
@@ -177,7 +177,7 @@ describe(useGetter.name, () => {
     it('rejects a dependency holding more than one getter', () => {
         jest.spyOn(console, 'error').mockImplementation(() => {});
 
-        expect(() => renderUseGetter(() => useGetter(selectTwoGettersDep as any))).toThrow(
+        expect(() => renderUseGetter(() => useGetter(injectTwoGetters as any))).toThrow(
             'useGetter expects a dependency with exactly one getter, got 2',
         );
     });

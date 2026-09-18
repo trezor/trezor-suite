@@ -4,7 +4,7 @@ import { AccountLabel } from '@suite/account';
 import { Translation } from '@suite/intl';
 import { onReceiveAccount } from '@suite/modal';
 import { useServices } from '@suite-common/dependency-injection';
-import { selectDispatch } from '@suite-common/redux-utils';
+import { injectDispatch } from '@suite-common/redux-utils';
 import { selectAccounts } from '@suite-common/wallet-core';
 import { Card, Column, Icon, Modal, Row, Skeleton, SubTabs, Table } from '@trezor/components';
 import { type UiRequestSelectAccount } from '@trezor/connect';
@@ -20,7 +20,7 @@ interface SelectAccountModalProps {
 }
 
 export const SelectAccountModal = ({ data }: SelectAccountModalProps) => {
-    const { dispatch } = useServices(selectDispatch);
+    const { dispatch } = useServices(injectDispatch);
     const suiteAccounts = useSelector(selectAccounts);
 
     const [accounts, setAccounts] = useState(data.accounts);

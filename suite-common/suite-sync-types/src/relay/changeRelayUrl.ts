@@ -4,6 +4,6 @@ export type ChangeRelayUrlDep = {
     changeRelayUrl: ChangeRelayUrl;
 };
 
-export const selectChangeRelayUrlDep = (services: any): ChangeRelayUrlDep => ({
+export const injectChangeRelayUrl = (services: any): ChangeRelayUrlDep => ({
     changeRelayUrl: services.suiteSync.changeRelayUrl,
 });

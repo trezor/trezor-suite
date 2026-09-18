@@ -8,7 +8,7 @@ import {
     useConditionControls,
     useMessageSystemMessageForm,
 } from '@suite-common/message-system';
-import { selectDispatch } from '@suite-common/redux-utils';
+import { injectDispatch } from '@suite-common/redux-utils';
 import { Column, Modal, Row } from '@trezor/components';
 
 import { MessageSystemJsonEditor } from './MessageSystemJsonEditor';
@@ -17,7 +17,7 @@ import { MessageSystemManagerToolbar } from '../MessageSystemManager/MessageSyst
 export const MessageSystemFormMessage = () => {
     const [showForm, setShowForm] = useState(false);
     const { translationString } = useTranslation();
-    const { dispatch } = useServices(selectDispatch);
+    const { dispatch } = useServices(injectDispatch);
 
     const formatFieldError = useCallback(
         (message: string) =>

@@ -7,7 +7,7 @@ import { useServices } from '@suite-common/dependency-injection';
 import { tradingExchangeActions } from '@suite-common/trading';
 import { type AccountsRootState } from '@suite-common/wallet-core';
 import { asAccountDescriptor } from '@suite-common/wallet-types';
-import { type NativeAnalyticsDep, events, selectNativeAnalyticsDep } from '@suite-native/analytics';
+import { type NativeAnalyticsDep, events, injectNativeAnalytics } from '@suite-native/analytics';
 import { mockNativeAnalytics } from '@suite-native/analytics/mocks';
 import { act, renderHookWithStoreProvider } from '@suite-native/test-utils-store';
 import {
@@ -56,7 +56,7 @@ const services: NativeAnalyticsDep = {
 };
 
 const useExchangeSelectQuoteWithReportSpy = (exchangeForm: ExchangeFormType) => {
-    const { analytics } = useServices(selectNativeAnalyticsDep);
+    const { analytics } = useServices(injectNativeAnalytics);
 
     const spyRef = React.useRef<ReportSpy | null>(null);
     if (!spyRef.current) {

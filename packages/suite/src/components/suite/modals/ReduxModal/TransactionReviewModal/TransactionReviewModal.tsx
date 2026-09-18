@@ -1,7 +1,7 @@
 import { selectFullSelectedAccount } from '@suite/account';
 import { gotoThunk } from '@suite/router';
 import { useServices } from '@suite-common/dependency-injection';
-import { selectDispatch } from '@suite-common/redux-utils';
+import { injectDispatch } from '@suite-common/redux-utils';
 import {
     cancelSignSendFormTransactionThunk,
     selectPrecomposedSendForm,
@@ -43,7 +43,7 @@ export const TransactionReviewModal = ({ type, decision }: TransactionReviewModa
     const sendPrecomposedForm = useSelector(selectPrecomposedSendForm);
     const stakePrecomposedForm = useSelector(selectStakePrecomposedForm);
     const selectedAccount = useSelector(selectFullSelectedAccount);
-    const { dispatch } = useServices(selectDispatch);
+    const { dispatch } = useServices(injectDispatch);
 
     const getReviewSource = (): {
         txInfoState: TxInfoState;

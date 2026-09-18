@@ -16,7 +16,7 @@ import {
     selectBitcoinAmountUnit,
     selectEnabledNetworks,
 } from '@suite-common/wallet-core';
-import { events, selectNativeAnalyticsDep } from '@suite-native/analytics';
+import { events, injectNativeAnalytics } from '@suite-native/analytics';
 import { selectIsBiometricsEnabled } from '@suite-native/biometrics';
 import { selectSupportedLanguageLocale } from '@suite-native/intl';
 import { selectIsOnboardingFinished } from '@suite-native/settings';
@@ -25,7 +25,7 @@ import { useUserColorScheme } from '@suite-native/theme';
 
 export const useReportAppInitToAnalytics = () => {
     const [initWasReported, setInitWasReported] = useState(false);
-    const { analytics } = useServices(selectNativeAnalyticsDep);
+    const { analytics } = useServices(injectNativeAnalytics);
     const isAppReady = useSelector(selectIsAppReady);
     const isOnboardingFinished = useSelector(selectIsOnboardingFinished);
     const { userColorScheme } = useUserColorScheme();

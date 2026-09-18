@@ -6,7 +6,7 @@ import { useFocusEffect, useNavigation } from '@react-navigation/native';
 import { useServices } from '@suite-common/dependency-injection';
 import { selectSelectedDevice } from '@suite-common/device';
 import { useAlert } from '@suite-native/alerts';
-import { events, selectNativeAnalyticsDep } from '@suite-native/analytics';
+import { events, injectNativeAnalytics } from '@suite-native/analytics';
 import { requestPrioritizedDeviceAccess } from '@suite-native/device-mutex';
 import { Translation, type TxKeyPath } from '@suite-native/intl';
 import { type PinActionType } from '@suite-native/navigation';
@@ -52,7 +52,7 @@ export const usePinAction = ({ type, onSuccess, onError }: PinActionProps) => {
     const navigation = useNavigation();
     const { showToast } = useToast();
     const { showAlert } = useAlert();
-    const { analytics } = useServices(selectNativeAnalyticsDep);
+    const { analytics } = useServices(injectNativeAnalytics);
     const showSuccess = useCallback(
         (messageKey: TxKeyPath) => {
             showToast({

@@ -19,6 +19,6 @@ export type TurnOnSuiteSync = (
 
 export type TurnOnSuiteSyncDep = { turnOnSuiteSync: TurnOnSuiteSync };
 
-export const selectTurnOnSuiteSyncDep = (services: any): TurnOnSuiteSyncDep => ({
+export const injectTurnOnSuiteSync = (services: any): TurnOnSuiteSyncDep => ({
     turnOnSuiteSync: services.suiteSync.turnOnSuiteSync,
 });

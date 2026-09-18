@@ -5,7 +5,7 @@ import styled from 'styled-components';
 
 import { Translation } from '@suite/intl';
 import { useServices } from '@suite-common/dependency-injection';
-import { selectDispatch } from '@suite-common/redux-utils';
+import { injectDispatch } from '@suite-common/redux-utils';
 import { type NetworkType } from '@suite-common/wallet-config';
 import { sendFormActions } from '@suite-common/wallet-core';
 import { Button, Dropdown, type DropdownMenuItemProps, Switch, Text } from '@trezor/components';
@@ -27,7 +27,7 @@ const ClearButtonWrapper = styled.div`
 `;
 
 export const SendHeader = () => {
-    const { dispatch } = useServices(selectDispatch);
+    const { dispatch } = useServices(injectDispatch);
     const {
         outputs,
         control,

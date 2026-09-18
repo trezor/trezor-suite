@@ -1,11 +1,11 @@
 import { useState } from 'react';
 
-import { events, selectDesktopAnalyticsDep } from '@suite/analytics';
+import { events, injectDesktopAnalytics } from '@suite/analytics';
 import { Translation } from '@suite/intl';
 import { gotoThunk } from '@suite/router';
 import { useServices } from '@suite-common/dependency-injection';
 import { getTronVotedApr, useTronStakingStats } from '@suite-common/earn-staking-api';
-import { selectDispatch } from '@suite-common/redux-utils';
+import { injectDispatch } from '@suite-common/redux-utils';
 import {
     getTronAvailableVotingPower,
     getTronTotalVotingPower,
@@ -37,7 +37,7 @@ interface TronStakedCardProps {
 }
 
 export const TronStakedCard = ({ account }: TronStakedCardProps) => {
-    const { analytics, dispatch } = useServices(selectDesktopAnalyticsDep, selectDispatch);
+    const { analytics, dispatch } = useServices(injectDesktopAnalytics, injectDispatch);
     const [isVoteAllocationOpen, setIsVoteAllocationOpen] = useState(false);
     const { stats, maxApr } = useTronStakingStats();
 

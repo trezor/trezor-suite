@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from 'react';
 
 import { useServices } from '@suite-common/dependency-injection';
-import { selectDispatch } from '@suite-common/redux-utils';
+import { injectDispatch } from '@suite-common/redux-utils';
 import {
     type TronStakeStepId,
     composeTronClaimFeeLevelsThunk,
@@ -32,7 +32,7 @@ interface UseTronStakeFeesProps {
 }
 
 export const useTronStakeFees = ({ account, form, step }: UseTronStakeFeesProps): TronStakeFees => {
-    const { dispatch } = useServices(selectDispatch);
+    const { dispatch } = useServices(injectDispatch);
 
     const amount = form.methods.watch('amount');
     const resourceType = form.methods.watch('resourceType');

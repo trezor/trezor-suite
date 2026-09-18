@@ -1,7 +1,7 @@
 import { Translation } from '@suite/intl';
 import { gotoThunk } from '@suite/router';
 import { useServices } from '@suite-common/dependency-injection';
-import { selectDispatch } from '@suite-common/redux-utils';
+import { injectDispatch } from '@suite-common/redux-utils';
 import { Box, Image } from '@trezor/components';
 
 import { Banner } from './Banner';
@@ -12,7 +12,7 @@ type ETHVaultBannerProps = {
 };
 
 export const ETHVaultBanner = ({ onClose, onCTAClick }: ETHVaultBannerProps) => {
-    const { dispatch } = useServices(selectDispatch);
+    const { dispatch } = useServices(injectDispatch);
 
     const handleCTAClick = () => {
         onCTAClick();

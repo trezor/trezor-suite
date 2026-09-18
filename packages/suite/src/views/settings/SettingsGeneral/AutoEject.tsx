@@ -1,11 +1,11 @@
 import { useState } from 'react';
 
-import { events, selectDesktopAnalyticsDep } from '@suite/analytics';
+import { events, injectDesktopAnalytics } from '@suite/analytics';
 import { Translation } from '@suite/intl';
 import { Anchor, SettingsAnchor } from '@suite/router';
 import { useServices } from '@suite-common/dependency-injection';
 import { selectDevices } from '@suite-common/device';
-import { selectDispatch } from '@suite-common/redux-utils';
+import { injectDispatch } from '@suite-common/redux-utils';
 import { selectIsDeviceAutoEjectEnabled } from '@suite-common/wallet-core';
 import { Modal, Switch } from '@trezor/components';
 import { ActionColumn, SectionItem, TextColumn } from '@trezor/product-components';
@@ -47,7 +47,7 @@ const AutoEjectConfirmationModal = ({
 };
 
 export const AutoEject = () => {
-    const { analytics, dispatch } = useServices(selectDesktopAnalyticsDep, selectDispatch);
+    const { analytics, dispatch } = useServices(injectDesktopAnalytics, injectDispatch);
     const isAutoEjectEnabled = useSelector(selectIsDeviceAutoEjectEnabled);
     const [isConfirmationModalOpen, setIsConfirmationModalOpen] = useState(false);
 

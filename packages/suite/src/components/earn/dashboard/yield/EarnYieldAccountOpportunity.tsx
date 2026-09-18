@@ -1,4 +1,4 @@
-import { events, selectDesktopAnalyticsDep } from '@suite/analytics';
+import { events, injectDesktopAnalytics } from '@suite/analytics';
 import { FirmwareUpgradeNeededModal } from '@suite/firmware-upgrade';
 import { useTranslation } from '@suite/intl';
 import { openModal } from '@suite/modal';
@@ -7,7 +7,7 @@ import { events as sharedEvents } from '@suite-common/analytics';
 import { useServices } from '@suite-common/dependency-injection';
 import { selectSelectedDevice } from '@suite-common/device';
 import { useFormatters } from '@suite-common/formatters';
-import { selectDispatch } from '@suite-common/redux-utils';
+import { injectDispatch } from '@suite-common/redux-utils';
 import { EarnFlow, EarnProvider } from '@suite-common/suite-types/src/staking';
 import {
     getTradingPrefilledFromAccountData,
@@ -44,7 +44,7 @@ export const EarnYieldAccountOpportunity = ({
     opportunity,
     isCardLayout,
 }: EarnYieldAccountOpportunityProps) => {
-    const { analytics, dispatch } = useServices(selectDesktopAnalyticsDep, selectDispatch);
+    const { analytics, dispatch } = useServices(injectDesktopAnalytics, injectDispatch);
     const { CryptoAmountFormatter } = useFormatters();
     const { translationString } = useTranslation();
     const { isBelowMobile } = useLayoutSize();

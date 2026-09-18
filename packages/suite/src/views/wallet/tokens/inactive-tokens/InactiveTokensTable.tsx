@@ -5,7 +5,7 @@ import styled from 'styled-components';
 import { Translation } from '@suite/intl';
 import { useServices } from '@suite-common/dependency-injection';
 import { desktopQueryKeys, useQuery } from '@suite-common/react-query';
-import { selectDispatch } from '@suite-common/redux-utils';
+import { injectDispatch } from '@suite-common/redux-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { type SelectedAccountLoaded, type StellarTokenInfo } from '@suite-common/wallet-types';
 import { getStellarInactiveTokens } from '@suite-common/wallet-utils';
@@ -37,7 +37,7 @@ interface InactiveTokensTableProps {
 }
 
 export const InactiveTokensTable = ({ selectedAccount, searchQuery }: InactiveTokensTableProps) => {
-    const { dispatch } = useServices(selectDispatch);
+    const { dispatch } = useServices(injectDispatch);
     const { account } = selectedAccount;
     const [tokenToActivate, setTokenToActivate] = useState<StellarTokenInfo | null>(null);
 
