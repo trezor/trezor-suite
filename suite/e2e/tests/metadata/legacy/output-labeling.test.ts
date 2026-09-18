@@ -39,8 +39,7 @@ test.describe('Metadata - Output labeling', { tag: ['@webOnly', '@T3W1', '@T3T1'
             await page.keyboard.press('Enter');
 
             await test.step('Go to legacy account 6, it has txs with multiple outputs', async () => {
-                // Close "Turn on Suite Sync" notification
-                await metadataPage.closeLegacyNotificationButton.click();
+                await metadataPage.closeLegacyNotification();
                 await walletPage.openAccount({ symbol: btcSymbol, type: 'legacy', atIndex: 5 });
             });
 
