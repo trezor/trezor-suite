@@ -1,6 +1,6 @@
 import { useCallback, useEffect } from 'react';
 
-import { selectDesktopAnalyticsDep } from '@suite/analytics';
+import { injectDesktopAnalytics } from '@suite/analytics';
 import { setConnectionModal, setConnectionMode, useDevice } from '@suite/device';
 import { FirmwareUpgradeNeededModal } from '@suite/firmware-upgrade';
 import { Translation, useTranslation } from '@suite/intl';
@@ -10,7 +10,7 @@ import { events } from '@suite-common/analytics';
 import { useServices } from '@suite-common/dependency-injection';
 import { type YieldAccountRewards } from '@suite-common/earn-stablecoin-api';
 import { Context } from '@suite-common/message-system';
-import { selectDispatch } from '@suite-common/redux-utils';
+import { injectDispatch } from '@suite-common/redux-utils';
 import {
     YIELD_FLOW_AVAILABLE_STEPS,
     isYieldSupported,
@@ -41,7 +41,7 @@ type YieldClaimProps = {
 };
 
 export const YieldClaim = ({ account }: YieldClaimProps) => {
-    const { analytics, dispatch } = useServices(selectDesktopAnalyticsDep, selectDispatch);
+    const { analytics, dispatch } = useServices(injectDesktopAnalytics, injectDispatch);
     const { device } = useDevice();
     const { translationString } = useTranslation();
     const flowKey = account.key;

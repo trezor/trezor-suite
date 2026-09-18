@@ -3,7 +3,7 @@ import { useSelector } from 'react-redux';
 
 import { useServices } from '@suite-common/dependency-injection';
 import { persistentDeviceDataActions } from '@suite-common/persistent-device-data';
-import { selectDispatch } from '@suite-common/redux-utils';
+import { injectDispatch } from '@suite-common/redux-utils';
 import {
     type WithSuiteSyncAndDeviceState,
     isSuiteSyncSupportedByDevice,
@@ -25,7 +25,7 @@ export const SuiteSyncWalletDebug = ({
     device,
     isLegacyLabelingVisible,
 }: SuiteSyncWalletDebugProps) => {
-    const { dispatch } = useServices(selectDispatch);
+    const { dispatch } = useServices(injectDispatch);
 
     const isSuiteSyncDebugEnabled = useSelector(selectIsSuiteSyncDebugEnabled);
     const isSuiteSyncEnabled = useSelector(selectIsSuiteSyncEnabled);

@@ -2,11 +2,7 @@ import { useState } from 'react';
 
 import { type AnalyticsSharedEvents } from '@suite-common/analytics';
 import { useServices } from '@suite-common/dependency-injection';
-import {
-    type AnalyticsNativeEvents,
-    events,
-    selectNativeAnalyticsDep,
-} from '@suite-native/analytics';
+import { type AnalyticsNativeEvents, events, injectNativeAnalytics } from '@suite-native/analytics';
 import {
     Box,
     Button,
@@ -59,7 +55,7 @@ const reportAnalyticsOnboardingCompleted = (
 export const AnalyticsConsentScreen = ({
     navigation,
 }: StackProps<OnboardingStackParamList, OnboardingStackRoutes.AnalyticsConsent>) => {
-    const { analytics } = useServices(selectNativeAnalyticsDep);
+    const { analytics } = useServices(injectNativeAnalytics);
     const [isEnabled, setIsEnabled] = useState(true);
 
     const { applyStyle } = useNativeStyles();

@@ -8,7 +8,7 @@ import {
     messageSystemActions,
     selectMessageSystemConfigSource,
 } from '@suite-common/message-system';
-import { selectDispatch } from '@suite-common/redux-utils';
+import { injectDispatch } from '@suite-common/redux-utils';
 import { Select, type SelectItemType } from '@suite-native/atoms';
 
 const options: SelectItemType<MessageSystemConfigSource>[] = [
@@ -17,7 +17,7 @@ const options: SelectItemType<MessageSystemConfigSource>[] = [
 ];
 
 export const MessageSystemConfigSourceSelect = () => {
-    const { dispatch } = useServices(selectDispatch);
+    const { dispatch } = useServices(injectDispatch);
 
     const messageSystemConfigSource = useSelector(selectMessageSystemConfigSource);
 

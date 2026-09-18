@@ -7,7 +7,7 @@ import {
     RequestEnableTorModal,
 } from '@suite/tor-desktop';
 import { useServices } from '@suite-common/dependency-injection';
-import { selectDispatch } from '@suite-common/redux-utils';
+import { injectDispatch } from '@suite-common/redux-utils';
 import { blockchainActions, selectCustomBackends } from '@suite-common/wallet-core';
 import { type AccountKey } from '@suite-common/wallet-types';
 import { UI_EVENTS } from '@trezor/connect';
@@ -67,7 +67,7 @@ import { WipeDeviceSuccessModal } from './WipeDeviceSuccessModal';
 /** Modals opened as a result of user action */
 export const UserContextModal = ({ payload }: ReduxModalProps<typeof MODAL_CONTEXT_USER>) => {
     const customBackends = useSelector(selectCustomBackends);
-    const { dispatch } = useServices(selectDispatch);
+    const { dispatch } = useServices(injectDispatch);
 
     const onCancel = () => dispatch(closeModalAction());
 

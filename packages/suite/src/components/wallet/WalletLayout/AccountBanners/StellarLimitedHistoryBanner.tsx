@@ -1,7 +1,7 @@
 import { selectFlags, setFlag } from '@suite/flags';
 import { Translation } from '@suite/intl';
 import { useServices } from '@suite-common/dependency-injection';
-import { selectDispatch } from '@suite-common/redux-utils';
+import { injectDispatch } from '@suite-common/redux-utils';
 
 import { useSelector } from 'src/hooks/suite';
 
@@ -9,7 +9,7 @@ import { BannerPoints } from './BannerPoints';
 import { CloseableBanner } from './CloseableBanner';
 
 export const StellarLimitedHistoryBanner = () => {
-    const { dispatch } = useServices(selectDispatch);
+    const { dispatch } = useServices(injectDispatch);
     const { stellarLimitedHistoryBannerClosed } = useSelector(selectFlags);
 
     if (stellarLimitedHistoryBannerClosed) {

@@ -3,7 +3,7 @@ import { useState } from 'react';
 import * as Clipboard from 'expo-clipboard';
 
 import { useServices } from '@suite-common/dependency-injection';
-import { selectDispatch } from '@suite-common/redux-utils';
+import { injectDispatch } from '@suite-common/redux-utils';
 import { walletConnectPairThunk } from '@suite-common/walletconnect';
 import { type BottomSheetModalRef, Button, Loader, TextDivider } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
@@ -19,7 +19,7 @@ export const WalletConnectPairBottomSheet = ({
     ref,
     onClose,
 }: WalletConnectPairBottomSheetProps) => {
-    const { dispatch } = useServices(selectDispatch);
+    const { dispatch } = useServices(injectDispatch);
 
     const { showToast } = useToast();
     const [isPairing, setIsPairing] = useState(false);

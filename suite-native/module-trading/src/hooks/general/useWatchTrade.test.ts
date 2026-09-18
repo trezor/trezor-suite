@@ -7,7 +7,7 @@ import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { type AccountsRootState } from '@suite-common/wallet-core';
 import { type AccountKey } from '@suite-common/wallet-types';
 import { mockAccountKey } from '@suite-common/wallet-types/mocks';
-import { type NativeAnalyticsDep, selectNativeAnalyticsDep } from '@suite-native/analytics';
+import { type NativeAnalyticsDep, injectNativeAnalytics } from '@suite-native/analytics';
 import { mockNativeAnalytics } from '@suite-native/analytics/mocks';
 import { getBuyTrade } from '@suite-native/trading-fixtures';
 import { type TradingRootState } from '@suite-native/trading-state';
@@ -44,7 +44,7 @@ const useWatchTradeWithReportSpy = (props: {
     isEnabled?: boolean;
     shouldReportAnalytics?: boolean;
 }) => {
-    const { analytics } = useServices(selectNativeAnalyticsDep);
+    const { analytics } = useServices(injectNativeAnalytics);
     const spyRef = React.useRef<ReportSpy | null>(null);
 
     if (!spyRef.current) {

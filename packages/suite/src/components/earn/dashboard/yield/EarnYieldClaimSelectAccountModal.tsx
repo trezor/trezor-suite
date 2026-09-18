@@ -1,7 +1,7 @@
 import styled from 'styled-components';
 
 import { AccountLabel } from '@suite/account';
-import { selectDesktopAnalyticsDep } from '@suite/analytics';
+import { injectDesktopAnalytics } from '@suite/analytics';
 import { DebugOnlyBadge, selectIsDebugModeActive } from '@suite/debug';
 import { HiddenPlaceholder } from '@suite/discreet-mode';
 import { Translation } from '@suite/intl';
@@ -133,7 +133,7 @@ export const EarnYieldClaimSelectAccountModal = ({
     onSelect,
     onClose,
 }: EarnYieldClaimSelectAccountModalProps) => {
-    const { analytics } = useServices(selectDesktopAnalyticsDep);
+    const { analytics } = useServices(injectDesktopAnalytics);
     const { BaseCurrencyAmountFormatter } = useFormatters();
     const isDebugModeActive = useSelector(selectIsDebugModeActive);
     const baseCurrency = useSelector(selectBaseCurrency);

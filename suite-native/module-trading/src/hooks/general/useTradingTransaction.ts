@@ -6,7 +6,7 @@ import type { ExchangeTrade, SellFiatTrade } from 'invity-api';
 
 import { useServices } from '@suite-common/dependency-injection';
 import { type MessageSystemRootState } from '@suite-common/message-system';
-import { selectDispatch } from '@suite-common/redux-utils';
+import { injectDispatch } from '@suite-common/redux-utils';
 import {
     type TradingFulfillValue,
     type TradingRootStateWithDeviceAndAccounts,
@@ -84,7 +84,7 @@ export const useTradingTransaction = ({
     processResponseData,
     triggerAnalyticsTradeConfirmation,
 }: UseTradingTransactionProps): UseTradingTransactionReturnProps => {
-    const { dispatch } = useServices(selectDispatch);
+    const { dispatch } = useServices(injectDispatch);
 
     const sendAccountKey = useSelector((state: TradingRootState) =>
         selectTradingAccountKeyByTradeType(state, tradeType),

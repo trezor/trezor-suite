@@ -5,7 +5,7 @@ import { useNavigation } from '@react-navigation/native';
 import { isFulfilled } from '@reduxjs/toolkit';
 
 import { useServices } from '@suite-common/dependency-injection';
-import { selectDispatch } from '@suite-common/redux-utils';
+import { injectDispatch } from '@suite-common/redux-utils';
 import {
     type YIELD_FLOW_AVAILABLE_STEPS,
     type YieldFlowResolvedData,
@@ -54,7 +54,7 @@ export const useStartYieldDepositFlow = ({
     routeParams,
     shouldReplaceRoute = false,
 }: UseStartYieldDepositFlowParams) => {
-    const { dispatch } = useServices(selectDispatch);
+    const { dispatch } = useServices(injectDispatch);
     const navigation = useNavigation<NavigationProps>();
     const store = useStore<YieldRootState>();
     const isStartingDepositFlowRef = useRef(false);

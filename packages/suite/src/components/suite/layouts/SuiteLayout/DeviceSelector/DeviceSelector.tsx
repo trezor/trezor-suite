@@ -5,7 +5,7 @@ import styled, { css } from 'styled-components';
 import { Translation } from '@suite/intl';
 import { useServices } from '@suite-common/dependency-injection';
 import { selectSelectedDevice } from '@suite-common/device';
-import { selectDispatch } from '@suite-common/redux-utils';
+import { injectDispatch } from '@suite-common/redux-utils';
 import { Box, Icon, Row, ShortcutBadge, TOOLTIP_DELAY_LONG, Tooltip } from '@trezor/components';
 import { commonFocusStyles, focusStyleTransition } from '@trezor/components/src/utils/utils';
 import { CaretCircleDownIcon } from '@trezor/icons';
@@ -66,7 +66,7 @@ const InnerContainer = styled.div<{ $isDisabled?: boolean }>`
 `;
 
 const RecentlyConnectedDeviceTooltipContent = () => {
-    const { dispatch } = useServices(selectDispatch);
+    const { dispatch } = useServices(injectDispatch);
 
     const recentlyConnectedDevice = useSelector(selectRecentlyConnectedDevice);
     // deviceName must stay at initial value to prevent flickering, because the tooltip disappearing animation takes some time.
@@ -88,7 +88,7 @@ const RecentlyConnectedDeviceTooltipContent = () => {
 export const DeviceSelector = () => {
     const selectedDevice = useSelector(selectSelectedDevice);
     const recentlyConnectedDevice = useSelector(selectRecentlyConnectedDevice);
-    const { dispatch } = useServices(selectDispatch);
+    const { dispatch } = useServices(injectDispatch);
 
     const handleSwitchDeviceClick = () => {
         dispatch(openSwitchDeviceDialogThunk());

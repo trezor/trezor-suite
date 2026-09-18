@@ -13,12 +13,12 @@ export type GetStateDep = {
     getState: () => any;
 };
 
-export const selectStore = (services: StoreDep): StoreDep => ({ store: services.store });
+export const injectStore = (services: StoreDep): StoreDep => ({ store: services.store });
 
-export const selectDispatch = (services: { store: DispatchDep }): DispatchDep => ({
+export const injectDispatch = (services: { store: DispatchDep }): DispatchDep => ({
     dispatch: services.store.dispatch,
 });
 
-export const selectGetState = (services: { store: GetStateDep }): GetStateDep => ({
+export const injectGetState = (services: { store: GetStateDep }): GetStateDep => ({
     getState: services.store.getState,
 });

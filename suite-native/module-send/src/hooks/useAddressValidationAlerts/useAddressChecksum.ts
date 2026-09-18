@@ -5,7 +5,7 @@ import { type RouteProp, useRoute } from '@react-navigation/native';
 
 import { checkAddressChecksum, toChecksumAddress } from '@suite-common/address';
 import { useServices } from '@suite-common/dependency-injection';
-import { selectAddressValidatorDep } from '@suite-common/networks';
+import { injectAddressValidator } from '@suite-common/networks';
 import { type AccountsRootState, selectAccountNetworkSymbol } from '@suite-common/wallet-core';
 import { useAlert } from '@suite-native/alerts';
 import { useFormContext, useWatch } from '@suite-native/forms';
@@ -17,7 +17,7 @@ import { createChecksumAlert } from './alertBuilders';
 
 export const useAddressChecksum = (addressFieldName: string) => {
     const { showAlert } = useAlert();
-    const { addressValidator } = useServices(selectAddressValidatorDep);
+    const { addressValidator } = useServices(injectAddressValidator);
     const { setValue, control } = useFormContext();
     const {
         params: { accountKey },

@@ -2,14 +2,14 @@ import { useEffect, useRef } from 'react';
 
 import { selectSelectedAccount } from '@suite/account';
 import { useToggleDebugMode } from '@suite/debug';
-import { selectDesktopApiDep } from '@suite/desktop-app-api';
+import { injectDesktopApi } from '@suite/desktop-app-api';
 import { openModal } from '@suite/modal';
 import { SettingsAnchor, closeModalAppThunk, gotoThunk } from '@suite/router';
 import { selectAutodetectTheme, selectTheme, suiteSettingsActions } from '@suite/settings';
 import { useServices } from '@suite-common/dependency-injection';
 import { selectSelectedDevice } from '@suite-common/device';
 import { useDiscreetMode } from '@suite-common/discreet-mode';
-import { selectDispatch } from '@suite-common/redux-utils';
+import { injectDispatch } from '@suite-common/redux-utils';
 import { selectAllAccountsToList, startDiscoveryThunk } from '@suite-common/wallet-core';
 import { KEYBOARD_CODE } from '@trezor/components';
 import { isDesktop } from '@trezor/env-utils';
@@ -33,7 +33,7 @@ const isTypingTarget = (target: EventTarget | null): boolean => {
 
 export const useAppShortcuts = () => {
     const selectedDevice = useSelector(selectSelectedDevice);
-    const { desktopApi, dispatch } = useServices(selectDispatch, selectDesktopApiDep);
+    const { desktopApi, dispatch } = useServices(injectDispatch, injectDesktopApi);
 
     const discoveryStatus = useSelector(selectDiscoveryOverallStatus);
     const discoveryInProgress = discoveryStatus?.status === 'loading';

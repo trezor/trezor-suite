@@ -47,6 +47,6 @@ export type CreateTransports = (transports: TransportName[]) => ConnectSettings[
 
 export type TransportsDep = { createTransports: CreateTransports };
 
-export const selectTransportsDep = (services: TransportsDep): TransportsDep => ({
+export const injectTransports = (services: TransportsDep): TransportsDep => ({
     createTransports: services.createTransports,
 });

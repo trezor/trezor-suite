@@ -8,7 +8,7 @@ import {
     suiteSettingsActions,
 } from '@suite/settings';
 import { useServices } from '@suite-common/dependency-injection';
-import { selectDispatch } from '@suite-common/redux-utils';
+import { injectDispatch } from '@suite-common/redux-utils';
 import { LANGUAGES, type Locale } from '@suite-common/suite-types';
 import { KEYBOARD_CODE } from '@trezor/components';
 
@@ -19,7 +19,7 @@ const languages: { value: Locale; label: string }[] = Object.entries(LANGUAGES)
     .map(([value, { name }]) => ({ value: value as Locale, label: name }));
 
 export const useDebugLanguageShortcut = () => {
-    const { dispatch } = useServices(selectDispatch);
+    const { dispatch } = useServices(injectDispatch);
 
     const isDebug = useSelector(selectIsDebugModeActive);
     const language = useSelector(selectLanguage);

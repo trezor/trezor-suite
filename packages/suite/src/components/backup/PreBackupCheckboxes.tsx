@@ -1,7 +1,7 @@
 import { type ConfirmKey, backupActions, selectBackup } from '@suite/backup';
 import { Translation } from '@suite/intl';
 import { useServices } from '@suite-common/dependency-injection';
-import { selectDispatch } from '@suite-common/redux-utils';
+import { injectDispatch } from '@suite-common/redux-utils';
 import { Card, Column } from '@trezor/components';
 
 import { CheckItem } from 'src/components/suite';
@@ -9,7 +9,7 @@ import { useSelector } from 'src/hooks/suite';
 
 export const PreBackupCheckboxes = () => {
     const backup = useSelector(selectBackup);
-    const { dispatch } = useServices(selectDispatch);
+    const { dispatch } = useServices(injectDispatch);
 
     const isChecked = (key: ConfirmKey) => backup.userConfirmed.includes(key);
 

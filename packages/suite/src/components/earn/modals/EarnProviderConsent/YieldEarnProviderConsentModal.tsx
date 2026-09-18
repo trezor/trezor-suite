@@ -1,4 +1,4 @@
-import { selectDesktopAnalyticsDep } from '@suite/analytics';
+import { injectDesktopAnalytics } from '@suite/analytics';
 import { TrezorLink } from '@suite/external-links';
 import { Translation } from '@suite/intl';
 import { events } from '@suite-common/analytics';
@@ -36,7 +36,7 @@ export const YieldEarnProviderConsentModal = ({
     provider,
     yieldContext,
 }: YieldEarnProviderConsentModalProps) => {
-    const { analytics } = useServices(selectDesktopAnalyticsDep);
+    const { analytics } = useServices(injectDesktopAnalytics);
 
     const tokenContractAddress = yieldContext?.tokenContractAddress;
     const normalizedTokenContractAddress = tokenContractAddress

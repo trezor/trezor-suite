@@ -1,6 +1,6 @@
 import { gotoThunk } from '@suite/router';
 import { useServices } from '@suite-common/dependency-injection';
-import { selectDispatch } from '@suite-common/redux-utils';
+import { injectDispatch } from '@suite-common/redux-utils';
 import { CheckIcon, DatabaseIcon } from '@trezor/icons';
 import { QuickActionButton } from '@trezor/product-components';
 
@@ -8,7 +8,7 @@ import { NavBackends } from './NavBackends';
 import { useEnabledBackends } from '../../utils';
 
 export const CustomBackend = () => {
-    const { dispatch } = useServices(selectDispatch);
+    const { dispatch } = useServices(injectDispatch);
     const enabledBackends = useEnabledBackends();
     const isCustomBackendIconVisible = enabledBackends.length > 0;
 

@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 
-import { selectDesktopAnalyticsDep } from '@suite/analytics';
+import { injectDesktopAnalytics } from '@suite/analytics';
 import { Translation } from '@suite/intl';
 import { Anchor, SettingsAnchor } from '@suite/router';
 import { selectIsAnalyticsEnabled } from '@suite-common/analytics-redux';
@@ -16,7 +16,7 @@ const PositionedSwitch = styled.div`
 
 export const Analytics = () => {
     const isAnalyticsEnabled = useSelector(selectIsAnalyticsEnabled);
-    const { analytics } = useServices(selectDesktopAnalyticsDep);
+    const { analytics } = useServices(injectDesktopAnalytics);
 
     return (
         <Anchor anchorId={SettingsAnchor.Analytics}>

@@ -2,7 +2,7 @@ import { useMemo } from 'react';
 
 import { AnimatePresence, type MotionProps, motion } from 'framer-motion';
 
-import { events, selectDesktopAnalyticsDep } from '@suite/analytics';
+import { events, injectDesktopAnalytics } from '@suite/analytics';
 import { isCoinjoinSupportedSymbol } from '@suite/coinjoin';
 import { useDevice } from '@suite/device';
 import { selectFlags } from '@suite/flags';
@@ -12,7 +12,7 @@ import { openModal } from '@suite/modal';
 import { selectIsTestnetNetworksEnabled } from '@suite/settings';
 import { useServices } from '@suite-common/dependency-injection';
 import { Context } from '@suite-common/message-system';
-import { selectDispatch } from '@suite-common/redux-utils';
+import { injectDispatch } from '@suite-common/redux-utils';
 import { type Network, type NetworkSymbol } from '@suite-common/wallet-config';
 import {
     changeCoinVisibilityThunk,
@@ -51,7 +51,7 @@ const discoveryButtonAnimationConfig: MotionProps = {
 
 export const SettingsCoins = () => {
     const hasContentBelowTabletWidth = useIsContentBelowBreakpoint(breakpoints.tablet);
-    const { analytics, dispatch } = useServices(selectDesktopAnalyticsDep, selectDispatch);
+    const { analytics, dispatch } = useServices(injectDesktopAnalytics, injectDispatch);
     const { firmwareTypeBannerClosed } = useSelector(selectFlags);
     const enabledNetworks = useSelector(selectEnabledNetworks);
     const {

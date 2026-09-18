@@ -4,7 +4,7 @@ import { useSelector } from 'react-redux';
 import { type RouteProp, useRoute } from '@react-navigation/native';
 
 import { useServices } from '@suite-common/dependency-injection';
-import { selectDispatch } from '@suite-common/redux-utils';
+import { injectDispatch } from '@suite-common/redux-utils';
 import {
     type AccountsRootState,
     fetchAllTransactionsForAccountThunk,
@@ -21,7 +21,7 @@ import { YieldVaultDetailScreenHeader } from '../../components/yield/YieldVaultD
 export const YieldVaultDetailScreen = () => {
     const route = useRoute<RouteProp<RootStackParamList, RootStackRoutes.YieldVaultDetail>>();
     const { accountKey, tokenContract } = route.params;
-    const { dispatch } = useServices(selectDispatch);
+    const { dispatch } = useServices(injectDispatch);
 
     const account = useSelector((state: AccountsRootState) =>
         selectAccountByKey(state, accountKey),

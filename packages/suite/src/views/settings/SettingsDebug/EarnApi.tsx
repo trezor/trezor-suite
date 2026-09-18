@@ -7,13 +7,13 @@ import {
     earnYieldWorkerBaseUrl,
     earnYieldWorkerBaseUrls,
 } from '@suite-common/earn-stablecoin-api';
-import { selectDispatch } from '@suite-common/redux-utils';
+import { injectDispatch } from '@suite-common/redux-utils';
 import { ActionColumn, ActionSelect, SectionItem, TextColumn } from '@trezor/product-components';
 
 import { useSelector } from 'src/hooks/suite';
 
 export const EarnApi = () => {
-    const { dispatch } = useServices(selectDispatch);
+    const { dispatch } = useServices(injectDispatch);
     const storedValue = useSelector(selectEarnYieldWorkerBaseUrl);
     const options = useMemo(
         () =>

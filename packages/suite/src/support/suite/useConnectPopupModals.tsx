@@ -20,14 +20,14 @@ import {
     selectConnectPopupCall,
 } from '@suite-common/connect-popup';
 import { useServices } from '@suite-common/dependency-injection';
-import { selectDispatch } from '@suite-common/redux-utils';
+import { injectDispatch } from '@suite-common/redux-utils';
 import { isDiscoveryInProgress, selectDiscoveryForSelectedDevice } from '@suite-common/wallet-core';
 import TrezorConnect from '@trezor/connect';
 
 import { useSelector } from 'src/hooks/suite';
 
 export const useConnectPopupModals = () => {
-    const { dispatch } = useServices(selectDispatch);
+    const { dispatch } = useServices(injectDispatch);
     const popupCall = useSelector(selectConnectPopupCall);
     const discovery = useSelector(selectDiscoveryForSelectedDevice);
     const isInDiscoveryFlow = isDiscoveryInProgress(discovery);

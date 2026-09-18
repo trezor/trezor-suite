@@ -11,7 +11,7 @@ import {
     selectSelectedDevice,
 } from '@suite-common/device';
 import { selectSupportedNetworkSymbols } from '@suite-common/networks';
-import { selectDispatch } from '@suite-common/redux-utils';
+import { injectDispatch } from '@suite-common/redux-utils';
 import {
     type AccountType,
     NORMAL_ACCOUNT_TYPE,
@@ -102,7 +102,7 @@ const LIMIT = 10; // Maximum number of manually added accounts per non-EVM netwo
 export const useAddCoinAccount = (networksSearchQuery?: string) => {
     const allNetworkSymbols = useSelector(selectSupportedNetworkSymbols);
 
-    const { dispatch } = useServices(selectDispatch);
+    const { dispatch } = useServices(injectDispatch);
     const { translate } = useTranslate();
     const { name: routeName } = useRoute();
     const { bottomSheetRef, openModal, closeModal } = useBottomSheetModal();

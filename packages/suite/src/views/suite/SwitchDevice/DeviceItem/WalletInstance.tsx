@@ -8,7 +8,7 @@ import { SuiteSyncWalletDebug } from '@suite/suite-sync';
 import { useWalletLabel } from '@suite/wallet';
 import { useServices } from '@suite-common/dependency-injection';
 import { selectDeviceThunk } from '@suite-common/device';
-import { selectDispatch, selectGetState } from '@suite-common/redux-utils';
+import { injectDispatch, injectGetState } from '@suite-common/redux-utils';
 import {
     getAccountsByDeviceState,
     selectAccounts,
@@ -61,7 +61,7 @@ export const WalletInstance = ({
     const currentFiatRates = useSelector(selectCurrentFiatRates);
     const baseCurrencyCode = useSelector(selectBaseCurrency);
     const editing = useSelector(selectLabelingValueBeingEdited);
-    const { dispatch, getState } = useServices(selectDispatch, selectGetState);
+    const { dispatch, getState } = useServices(injectDispatch, injectGetState);
     const { translationString } = useTranslation();
     const isLegacyLabelingVisible = useSelector(selectIsLegacyLabelingVisible);
     const { defaultLabel, label } = useWalletLabel({ device: instance });

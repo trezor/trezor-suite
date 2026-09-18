@@ -7,7 +7,7 @@ import {
     type RevisionCheckErrorWithNotification,
     getIsRevisionCheckErrorWithNotification,
 } from '@suite-common/firmware-authenticity';
-import { selectDispatch } from '@suite-common/redux-utils';
+import { injectDispatch } from '@suite-common/redux-utils';
 import { isDeviceAcquired } from '@suite-common/suite-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
 
@@ -22,7 +22,7 @@ const revisionCheckNotifications: Record<RevisionCheckErrorWithNotification, Tra
  */
 export const useDeviceCompromisedNotification = () => {
     const { device } = useDevice();
-    const { dispatch } = useServices(selectDispatch);
+    const { dispatch } = useServices(injectDispatch);
 
     const revCheck = isDeviceAcquired(device) ? device.authenticityChecks?.firmwareRevision : null;
     const isError = revCheck && !revCheck.success;

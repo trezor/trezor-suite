@@ -3,7 +3,7 @@ import { useCallback } from 'react';
 import { events } from '@suite-common/analytics';
 import { useServices } from '@suite-common/dependency-injection';
 import { type BaseCurrencyAmount } from '@suite-common/wallet-types';
-import { selectNativeAnalyticsDep } from '@suite-native/analytics';
+import { injectNativeAnalytics } from '@suite-native/analytics';
 import { BannerInline, Box, Button, HStack, Text, VStack } from '@suite-native/atoms';
 import { BaseCurrencyAmountFormatter } from '@suite-native/formatters';
 import { Icon } from '@suite-native/icons';
@@ -27,7 +27,7 @@ export const YieldClaimRewardsCardSection = ({
     isLoading,
     onPress,
 }: YieldClaimRewardsCardSectionProps) => {
-    const { analytics } = useServices(selectNativeAnalyticsDep);
+    const { analytics } = useServices(injectNativeAnalytics);
 
     const {
         isDisabled: isClaimFeatureDisabled,

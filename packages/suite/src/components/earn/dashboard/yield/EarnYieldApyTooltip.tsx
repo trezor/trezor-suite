@@ -2,7 +2,7 @@ import { type ReactNode, useEffect, useRef } from 'react';
 
 import styled from 'styled-components';
 
-import { selectDesktopAnalyticsDep } from '@suite/analytics';
+import { injectDesktopAnalytics } from '@suite/analytics';
 import { events } from '@suite-common/analytics';
 import { useServices } from '@suite-common/dependency-injection';
 import { type YieldDtoV2 } from '@suite-common/earn-stablecoin-api';
@@ -35,7 +35,7 @@ export const EarnYieldApyTooltip = ({
     networkSymbol,
     children,
 }: EarnYieldApyTooltipProps) => {
-    const { analytics } = useServices(selectDesktopAnalyticsDep);
+    const { analytics } = useServices(injectDesktopAnalytics);
     const reportTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
     useEffect(

@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import { Translation } from '@suite/intl';
 import { selectLanguage } from '@suite/settings';
 import { useServices } from '@suite-common/dependency-injection';
-import { selectDispatch } from '@suite-common/redux-utils';
+import { injectDispatch } from '@suite-common/redux-utils';
 
 import { openNode, setView } from 'src/actions/suite/guideActions';
 import { GuideContent, GuideHeader, GuideMarkdown, GuideViewWrapper } from 'src/components/guide';
@@ -20,7 +20,7 @@ export const GuideArticle = () => {
     const currentNode = useSelector(selectGuideCurrentNode);
     const indexNode = useSelector(selectGuideIndexNode);
     const language = useSelector(selectLanguage);
-    const { dispatch } = useServices(selectDispatch);
+    const { dispatch } = useServices(injectDispatch);
 
     const { markdown, hasError } = useGuideLoadArticle(currentNode, language);
 

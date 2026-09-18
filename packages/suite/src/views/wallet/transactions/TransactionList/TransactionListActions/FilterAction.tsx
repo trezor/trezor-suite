@@ -4,7 +4,7 @@ import { selectFlags, setFlag } from '@suite/flags';
 import { Translation } from '@suite/intl';
 import { selectHasActiveModal } from '@suite/modal';
 import { useServices } from '@suite-common/dependency-injection';
-import { selectDispatch } from '@suite-common/redux-utils';
+import { injectDispatch } from '@suite-common/redux-utils';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import {
     selectSuspiciousTransactionsFilter,
@@ -77,7 +77,7 @@ export const FilterAction = ({ symbol }: FilterActionProps) => {
         selectSuspiciousTransactionsFilter(state, symbol),
     );
     const hasActiveModal = useSelector(selectHasActiveModal);
-    const { dispatch } = useServices(selectDispatch);
+    const { dispatch } = useServices(injectDispatch);
 
     const isOpen = !suspiciousTransactionsTooltipClosed && !hasActiveModal;
 

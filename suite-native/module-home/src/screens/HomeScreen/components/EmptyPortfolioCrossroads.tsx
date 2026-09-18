@@ -10,7 +10,7 @@ import {
     type MessageSystemRootState,
     selectIsFeatureEnabled,
 } from '@suite-common/message-system';
-import { events, selectNativeAnalyticsDep } from '@suite-native/analytics';
+import { events, injectNativeAnalytics } from '@suite-native/analytics';
 import {
     AnimatedVStack,
     Button,
@@ -73,7 +73,7 @@ type SecondaryCardConfig = {
 };
 
 export const EmptyPortfolioCrossroads = () => {
-    const { analytics } = useServices(selectNativeAnalyticsDep);
+    const { analytics } = useServices(injectNativeAnalytics);
     const navigation = useNavigation<NavigationProps>();
     const { applyStyle } = useNativeStyles();
 

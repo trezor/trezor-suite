@@ -12,13 +12,13 @@ import {
 import { useServices } from '@suite-common/dependency-injection';
 import { selectSelectedDevice } from '@suite-common/device';
 import { type MetadataProviderType } from '@suite-common/metadata-types';
-import { selectDispatch } from '@suite-common/redux-utils';
-import { selectEnsureWalletSuiteSyncOnDep } from '@suite-common/suite-sync-types';
+import { injectDispatch } from '@suite-common/redux-utils';
+import { injectEnsureWalletSuiteSyncOn } from '@suite-common/suite-sync-types';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { type StaticSessionId } from '@trezor/connect';
 import { parseStaticSessionId } from '@trezor/device-utils';
 
-import { selectMetadataMigrationDep } from './createMetadataMigrationCompositionRoot';
+import { injectMetadataMigration } from './createMetadataMigrationCompositionRoot';
 import type { MigrationError } from './legacyLabelsMigration';
 import { isMigratableDevice } from './migrationUtils';
 
@@ -37,10 +37,10 @@ export const LegacyLabelingMigrationModal = ({
     onSuiteSyncError,
 }: LegacyLabelingMigrationModalProps) => {
     const { migrateLegacyLabelsToSuiteSync, dispatch } = useServices(
-        selectMetadataMigrationDep,
-        selectDispatch,
+        injectMetadataMigration,
+        injectDispatch,
     );
-    const { ensureWalletSuiteSyncOn } = useServices(selectEnsureWalletSuiteSyncOnDep);
+    const { ensureWalletSuiteSyncOn } = useServices(injectEnsureWalletSuiteSyncOn);
     const selectedProvider = useSelector(selectSelectedProviderForLabels);
     const selectedDevice = useSelector(selectSelectedDevice);
     const [providerLoading, setProviderLoading] = useState<MetadataProviderType | null>(null);

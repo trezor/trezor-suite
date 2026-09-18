@@ -7,7 +7,7 @@ import { useServices } from '@suite-common/dependency-injection';
 import { selectSelectedDevice } from '@suite-common/device';
 import { checkDeviceAuthenticityThunk } from '@suite-common/device-authenticity';
 import { selectDeviceAuthenticityByDeviceId } from '@suite-common/persistent-device-data';
-import { selectDispatch } from '@suite-common/redux-utils';
+import { injectDispatch } from '@suite-common/redux-utils';
 import { Card, Column, Grid, Icon, type IconComponent, Paragraph } from '@trezor/components';
 import { CpuIcon, ListChecksIcon, ShieldCheckIcon } from '@trezor/icons';
 
@@ -35,7 +35,7 @@ export const DeviceAuthenticityCheck = ({ goToNext }: DeviceAuthenticityCheckPro
         selectDeviceAuthenticityByDeviceId(state, device?.id),
     );
     const isDebugModeActive = useSelector(selectIsDebugModeActive);
-    const { dispatch } = useServices(selectDispatch);
+    const { dispatch } = useServices(injectDispatch);
     const [isLoading, setIsLoading] = useState(false);
     const [isSubmitted, setIsSubmitted] = useState(false);
     const { isBelowTablet } = useLayoutSize();

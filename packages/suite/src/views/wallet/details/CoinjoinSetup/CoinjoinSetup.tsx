@@ -4,7 +4,7 @@ import styled from 'styled-components';
 import { coinjoinAccountUpdateSetupOption, selectCoinjoinAccountByKey } from '@suite/coinjoin';
 import { Translation } from '@suite/intl';
 import { useServices } from '@suite-common/dependency-injection';
-import { selectDispatch } from '@suite-common/redux-utils';
+import { injectDispatch } from '@suite-common/redux-utils';
 import { type AccountKey } from '@suite-common/wallet-types';
 import { Banner, Card, Radio, motionAnimation, motionEasing } from '@trezor/components';
 
@@ -40,7 +40,7 @@ interface CoinjoinSetupProps {
 export const CoinjoinSetup = ({ accountKey }: CoinjoinSetupProps) => {
     const coinjoinAccount = useSelector(state => selectCoinjoinAccountByKey(state, accountKey));
 
-    const { dispatch } = useServices(selectDispatch);
+    const { dispatch } = useServices(injectDispatch);
 
     if (!coinjoinAccount) {
         return null;

@@ -38,14 +38,14 @@ export type GetBinFilesBaseUrlDep = {
 };
 
 // A getter: called directly from non-React code, and subscribed to in components with
-// `useGetter(selectGetAllowPrereleaseDep)`.
+// `useGetter(injectGetAllowPrerelease)`.
 export type GetAllowPrerelease = Getter<[], boolean>;
 
 export type GetAllowPrereleaseDep = {
     getAllowPrerelease: GetAllowPrerelease;
 };
 
-export const selectGetAllowPrereleaseDep = (services: any): GetAllowPrereleaseDep => ({
+export const injectGetAllowPrerelease = (services: any): GetAllowPrereleaseDep => ({
     getAllowPrerelease: services.getAllowPrerelease,
 });
 
@@ -55,7 +55,7 @@ export type ShouldRetryFirmwareRevisionCheckErrorDep = {
     shouldRetryFirmwareRevisionCheckError: ShouldRetryFirmwareRevisionCheckError;
 };
 
-export const selectShouldRetryFirmwareRevisionCheckErrorDep = (
+export const injectShouldRetryFirmwareRevisionCheckError = (
     services: any,
 ): ShouldRetryFirmwareRevisionCheckErrorDep => ({
     shouldRetryFirmwareRevisionCheckError: services.shouldRetryFirmwareRevisionCheckError,
@@ -67,7 +67,7 @@ export type RerunFwAuthenticityChecksCallDep = {
     rerunFwAuthenticityChecksCall: RerunFwAuthenticityChecksCall;
 };
 
-export const selectRerunFwAuthenticityChecksCallDep = (
+export const injectRerunFwAuthenticityChecksCall = (
     services: any,
 ): RerunFwAuthenticityChecksCallDep => ({
     rerunFwAuthenticityChecksCall: services.rerunFwAuthenticityChecksCall,

@@ -4,7 +4,7 @@ import { useSelector } from 'react-redux';
 import { useNavigation } from '@react-navigation/native';
 
 import { useServices } from '@suite-common/dependency-injection';
-import { selectDispatch } from '@suite-common/redux-utils';
+import { injectDispatch } from '@suite-common/redux-utils';
 import { selectSessions, walletConnectDisconnectThunk } from '@suite-common/walletconnect';
 // TODO fix deep import
 // eslint-disable-next-line local-rules/no-package-deep-imports
@@ -40,7 +40,7 @@ import { WalletConnectPairBottomSheet } from '../components/WalletConnectPairBot
 type NavigationProps = StackNavigationProps<RootStackParamList, RootStackRoutes.WalletConnectPair>;
 
 export const SessionDetailCard = ({ session }: { session: WalletConnectSession }) => {
-    const { dispatch } = useServices(selectDispatch);
+    const { dispatch } = useServices(injectDispatch);
     const navigation = useNavigation<NavigationProps>();
     const handleDisconnect = () => {
         dispatch(walletConnectDisconnectThunk({ topic: session.topic }));

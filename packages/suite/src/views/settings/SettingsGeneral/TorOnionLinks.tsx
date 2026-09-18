@@ -1,10 +1,10 @@
-import { events, selectDesktopAnalyticsDep } from '@suite/analytics';
+import { events, injectDesktopAnalytics } from '@suite/analytics';
 import { Translation } from '@suite/intl';
 import { Anchor, SettingsAnchor } from '@suite/router';
 import { selectTorOnionLinks, suiteSettingsActions } from '@suite/settings';
 import { selectIsTorEnabled, selectIsTorEnabling } from '@suite/tor';
 import { useServices } from '@suite-common/dependency-injection';
-import { selectDispatch } from '@suite-common/redux-utils';
+import { injectDispatch } from '@suite-common/redux-utils';
 import { Switch } from '@trezor/components';
 import { ActionColumn, SectionItem, TextColumn } from '@trezor/product-components';
 
@@ -15,7 +15,7 @@ export const TorOnionLinks = () => {
     const torOnionLinks = useSelector(selectTorOnionLinks);
     const isTorEnabled = useSelector(selectIsTorEnabled);
     const isTorEnabling = useSelector(selectIsTorEnabling);
-    const { analytics, dispatch } = useServices(selectDesktopAnalyticsDep, selectDispatch);
+    const { analytics, dispatch } = useServices(injectDesktopAnalytics, injectDispatch);
     const handleChange = () => {
         dispatch(suiteSettingsActions.setOnionLinks(!torOnionLinks));
         analytics.report({

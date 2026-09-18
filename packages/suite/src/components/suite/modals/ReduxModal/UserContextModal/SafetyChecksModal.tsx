@@ -3,7 +3,7 @@ import { useState } from 'react';
 import { useDevice } from '@suite/device';
 import { Translation } from '@suite/intl';
 import { useServices } from '@suite-common/dependency-injection';
-import { selectDispatch } from '@suite-common/redux-utils';
+import { injectDispatch } from '@suite-common/redux-utils';
 import {
     Banner,
     Card,
@@ -26,7 +26,7 @@ import { applySettingsThunk } from 'src/actions/settings/deviceSettingsActions';
 export const SafetyChecksModal = ({ onCancel }: ModalProps) => {
     const { device, isLocked } = useDevice();
     const [level, setLevel] = useState(device?.features?.safety_checks || undefined);
-    const { dispatch } = useServices(selectDispatch);
+    const { dispatch } = useServices(injectDispatch);
 
     const confirm = () => dispatch(applySettingsThunk({ safety_checks: level }));
 

@@ -5,7 +5,7 @@ import { selectIsDeviceOrUiLocked } from '@suite/locks';
 import { closeModalAppThunk, gotoThunk } from '@suite/router';
 import { useServices } from '@suite-common/dependency-injection';
 import { selectDeviceThunk } from '@suite-common/device';
-import { selectDispatch } from '@suite-common/redux-utils';
+import { injectDispatch } from '@suite-common/redux-utils';
 import { selectIsAnyNetworkEnabled, startAddWalletDiscoveryThunk } from '@suite-common/wallet-core';
 import { WalletType } from '@suite-common/wallet-types';
 import { Button, Card, Column, IconButton, Row, Text, Tooltip } from '@trezor/components';
@@ -30,7 +30,7 @@ export const AddWalletButton = ({ device, instances, onCancel }: AddWalletButton
     const isDeviceOrUiLocked = useSelector(selectIsDeviceOrUiLocked);
     const isAnyNetworkEnabled = useSelector(selectIsAnyNetworkEnabled);
     const isPassphraseProtectionEnabled = Boolean(device?.features?.passphrase_protection);
-    const { dispatch } = useServices(selectDispatch);
+    const { dispatch } = useServices(injectDispatch);
     const isLocked = !device || !device.connected || isDeviceOrUiLocked;
     const isPassphraseAddDisabled = isLocked || !isAnyNetworkEnabled;
     const showNoNetworksTooltip = !isLocked && !isAnyNetworkEnabled;

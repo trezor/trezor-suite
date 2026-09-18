@@ -9,7 +9,7 @@ import {
 
 import { gotoThunk } from '@suite/router';
 import { useServices } from '@suite-common/dependency-injection';
-import { selectDispatch } from '@suite-common/redux-utils';
+import { injectDispatch } from '@suite-common/redux-utils';
 import {
     parseCryptoId,
     tradingActions,
@@ -101,7 +101,7 @@ const findAccountKey = (
     )?.key;
 
 export const useTradingRedirect = () => {
-    const { dispatch } = useServices(selectDispatch);
+    const { dispatch } = useServices(injectDispatch);
     const accounts = useSelector(selectAccounts);
 
     const prefilledAccountFromRedirect = (

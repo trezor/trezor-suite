@@ -1,7 +1,7 @@
 import { useSelector } from 'react-redux';
 
 import { useServices } from '@suite-common/dependency-injection';
-import { selectDispatch } from '@suite-common/redux-utils';
+import { injectDispatch } from '@suite-common/redux-utils';
 import { Select, type SelectItemType } from '@suite-native/atoms';
 import {
     type AppLocaleOption,
@@ -27,7 +27,7 @@ languageItems.unshift({
 });
 
 export const LanguageSelector = () => {
-    const { dispatch } = useServices(selectDispatch);
+    const { dispatch } = useServices(injectDispatch);
     const userSelectedLocaleCode = useSelector(selectAppLocaleCode);
 
     const handleSelectLanguage = (localeCode: AppLocaleOption) => {

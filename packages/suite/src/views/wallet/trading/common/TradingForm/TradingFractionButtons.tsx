@@ -1,6 +1,6 @@
 import { useMemo } from 'react';
 
-import { events, selectDesktopAnalyticsDep } from '@suite/analytics';
+import { events, injectDesktopAnalytics } from '@suite/analytics';
 import { useServices } from '@suite-common/dependency-injection';
 import { FractionButton, Row } from '@trezor/components';
 
@@ -11,7 +11,7 @@ import { generateFractionButtons } from './tradingFormInputsUtils';
 
 export const TradingFractionButtons = () => {
     const context = useTradingFormContext<'sell' | 'exchange'>();
-    const { analytics } = useServices(selectDesktopAnalyticsDep);
+    const { analytics } = useServices(injectDesktopAnalytics);
 
     const analyticsType = isTradingSellContext(context) ? 'sell' : 'swap';
     const fractionButtons = useMemo(

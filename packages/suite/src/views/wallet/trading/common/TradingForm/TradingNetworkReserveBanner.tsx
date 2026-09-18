@@ -1,7 +1,7 @@
 import { Translation } from '@suite/intl';
 import { SettingsAnchor, gotoThunk } from '@suite/router';
 import { useServices } from '@suite-common/dependency-injection';
-import { selectDispatch } from '@suite-common/redux-utils';
+import { injectDispatch } from '@suite-common/redux-utils';
 import { type NetworkSymbol, getNetwork } from '@suite-common/wallet-config';
 import { selectIsNetworkReserveEnabled } from '@suite-common/wallet-core';
 import { getNetworkReserve } from '@suite-common/wallet-utils';
@@ -18,7 +18,7 @@ export const TradingNetworkReserveBanner = ({
     symbol,
     contractAddress,
 }: TradingNetworkReserveBannerProps) => {
-    const { dispatch } = useServices(selectDispatch);
+    const { dispatch } = useServices(injectDispatch);
     const isNetworkReserveEnabled = useSelector(selectIsNetworkReserveEnabled);
 
     const onManageClick = () => {

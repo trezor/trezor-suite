@@ -3,7 +3,7 @@ import { Keyboard } from 'react-native';
 import { useSelector } from 'react-redux';
 
 import { useServices } from '@suite-common/dependency-injection';
-import { selectDispatch } from '@suite-common/redux-utils';
+import { injectDispatch } from '@suite-common/redux-utils';
 import { yup } from '@suite-common/validators';
 import { type Explorer, type Network } from '@suite-common/wallet-config';
 import {
@@ -21,7 +21,7 @@ type PathInputField = {
 };
 
 export const useNetworkExplorerForm = ({ symbol }: Network) => {
-    const { dispatch } = useServices(selectDispatch);
+    const { dispatch } = useServices(injectDispatch);
     const { translate } = useTranslate();
 
     const networkExplorers = useSelector((state: ExplorerState) =>

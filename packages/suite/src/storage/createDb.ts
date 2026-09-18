@@ -76,7 +76,7 @@ export type Db = SuiteDB<SuiteDBSchema>;
 
 export type DbDep = { db: Db };
 
-export const selectDbDep = (services: any): DbDep => ({ db: services.db });
+export const injectDb = (services: any): DbDep => ({ db: services.db });
 
 export const createDb = (deps: DbDeps): Db => {
     const db = new SuiteDB<SuiteDBSchema>(

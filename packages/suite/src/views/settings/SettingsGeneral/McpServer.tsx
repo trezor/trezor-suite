@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 
 import styled from 'styled-components';
 
-import { selectDesktopApiDep } from '@suite/desktop-app-api';
+import { injectDesktopApi } from '@suite/desktop-app-api';
 import { LearnMoreButton } from '@suite/external-links';
 import { Translation } from '@suite/intl';
 import { useServices } from '@suite-common/dependency-injection';
@@ -101,7 +101,7 @@ const RegenerateTokenModal = ({
 );
 
 export const McpServer = () => {
-    const { desktopApi } = useServices(selectDesktopApiDep);
+    const { desktopApi } = useServices(injectDesktopApi);
     const [settings, setSettings] = useState<{
         enabled: boolean;
         port: number;

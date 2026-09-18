@@ -9,8 +9,8 @@ import { isFulfilled, isRejected } from '@reduxjs/toolkit';
 
 import { useServices } from '@suite-common/dependency-injection';
 import { selectIsDeviceRemembered } from '@suite-common/device';
-import { selectAddressValidatorDep, selectGetNamedAddressSupportDep } from '@suite-common/networks';
-import { selectDispatch } from '@suite-common/redux-utils';
+import { injectAddressValidator, injectGetNamedAddressSupport } from '@suite-common/networks';
+import { injectDispatch } from '@suite-common/redux-utils';
 import { getExcludedUtxos } from '@suite-common/transaction-search';
 import { type NetworkType, getDisplaySymbol, getNetwork } from '@suite-common/wallet-config';
 import {
@@ -115,9 +115,9 @@ export const useSendForm = (accountKey: AccountKey, tokenContract?: TokenAddress
     const debounce = useDebounce();
     const navigation = useNavigation<SendFormNavigationProp>();
     const { addressValidator, getNamedAddressSupport, dispatch } = useServices(
-        selectAddressValidatorDep,
-        selectGetNamedAddressSupportDep,
-        selectDispatch,
+        injectAddressValidator,
+        injectGetNamedAddressSupport,
+        injectDispatch,
     );
 
     const { selectedUtxos } = useUtxoSelection(accountKey);

@@ -5,7 +5,7 @@ import styled from 'styled-components';
 import { selectCurrentTargetAnonymity } from '@suite/coinjoin';
 import { Translation } from '@suite/intl';
 import { useServices } from '@suite-common/dependency-injection';
-import { selectDispatch } from '@suite-common/redux-utils';
+import { injectDispatch } from '@suite-common/redux-utils';
 import { getTxsPerPage } from '@suite-common/suite-utils';
 import { filterAndCategorizeUtxos } from '@suite-common/transaction-search';
 import { COMPOSE_ERROR_TYPES } from '@suite-common/wallet-constants';
@@ -70,7 +70,7 @@ export const CoinControl = ({ close }: CoinControlProps) => {
     } = useSendFormContext();
     const { outputLabels } = useSelector(state => selectAccountLabelsForSearch(state, account));
     const targetAnonymity = useSelector(selectCurrentTargetAnonymity);
-    const { dispatch } = useServices(selectDispatch);
+    const { dispatch } = useServices(injectDispatch);
 
     const { shouldSendInSats } = useBitcoinAmountUnit(account.symbol);
 

@@ -1,6 +1,6 @@
 import { type ReactNode } from 'react';
 
-import { selectDesktopAnalyticsDep } from '@suite/analytics';
+import { injectDesktopAnalytics } from '@suite/analytics';
 import { Translation } from '@suite/intl';
 import { events } from '@suite-common/analytics';
 import { useServices } from '@suite-common/dependency-injection';
@@ -29,7 +29,7 @@ export const WrappedNativeFlowComplete = ({
     children,
 }: WrappedNativeFlowCompleteProps) => {
     const { isBelowMobile } = useLayoutSize();
-    const { analytics } = useServices(selectDesktopAnalyticsDep);
+    const { analytics } = useServices(injectDesktopAnalytics);
     const navigateToOverview = useNavigateToAccountRoute(account, 'wallet-tokens');
 
     const handleBackToOverview = () => {

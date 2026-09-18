@@ -2,7 +2,7 @@ import styled from 'styled-components';
 
 import { selectLanguage } from '@suite/settings';
 import { useServices } from '@suite-common/dependency-injection';
-import { selectDispatch } from '@suite-common/redux-utils';
+import { injectDispatch } from '@suite-common/redux-utils';
 import { CardList } from '@trezor/components';
 
 import { setView } from 'src/actions/suite/guideActions';
@@ -28,7 +28,7 @@ const Section = styled.div`
 export const GuideCategory = () => {
     const currentNode = useSelector(selectGuideCurrentNode);
     const language = useSelector(selectLanguage);
-    const { dispatch } = useServices(selectDispatch);
+    const { dispatch } = useServices(injectDispatch);
 
     if (!currentNode || currentNode.type === 'page') {
         return null;

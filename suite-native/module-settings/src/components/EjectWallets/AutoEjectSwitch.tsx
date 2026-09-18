@@ -2,16 +2,16 @@ import { useSelector } from 'react-redux';
 
 import { useServices } from '@suite-common/dependency-injection';
 import { selectIsNoPhysicalDeviceConnected } from '@suite-common/device';
-import { selectDispatch } from '@suite-common/redux-utils';
+import { injectDispatch } from '@suite-common/redux-utils';
 import { selectIsDeviceAutoEjectEnabled, toggleAutoEjectThunk } from '@suite-common/wallet-core';
 import { useAlert } from '@suite-native/alerts';
-import { events, selectNativeAnalyticsDep } from '@suite-native/analytics';
+import { events, injectNativeAnalytics } from '@suite-native/analytics';
 import { TouchableSwitchRow } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 import { useToast } from '@suite-native/toasts';
 
 export const AutoEjectSwitch = () => {
-    const { analytics, dispatch } = useServices(selectNativeAnalyticsDep, selectDispatch);
+    const { analytics, dispatch } = useServices(injectNativeAnalytics, injectDispatch);
     const { showAlert, hideAlert } = useAlert();
 
     const { showToast } = useToast();

@@ -2,7 +2,7 @@ import { useState } from 'react';
 
 import { type ConnectCallSource, connectPopupActions } from '@suite-common/connect-popup';
 import { useServices } from '@suite-common/dependency-injection';
-import { selectDispatch } from '@suite-common/redux-utils';
+import { injectDispatch } from '@suite-common/redux-utils';
 import { ETH_CONTRACT_CALL_BACKUP_GAS_LIMIT } from '@suite-common/wallet-constants';
 import { type Account, type TxSimulationAction } from '@suite-common/wallet-types';
 import { AccountsListItem } from '@suite-native/accounts';
@@ -20,7 +20,7 @@ interface TxSimulationInnerProps {
 }
 
 export function TxSimulationInner({ action, account, source }: TxSimulationInnerProps) {
-    const { dispatch } = useServices(selectDispatch);
+    const { dispatch } = useServices(injectDispatch);
 
     // Fees
     const defaultGasLimit =

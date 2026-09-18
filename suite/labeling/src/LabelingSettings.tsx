@@ -2,7 +2,7 @@ import { type ReactNode, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { type OptionProps } from 'react-select';
 
-import { selectDesktopAnalyticsDep } from '@suite/analytics';
+import { injectDesktopAnalytics } from '@suite/analytics';
 import { useDevice } from '@suite/device';
 import { LearnMoreButton } from '@suite/external-links';
 import { Translation, type TranslationKey, useTranslation } from '@suite/intl';
@@ -17,17 +17,14 @@ import { SuiteSyncServers, suiteSyncErrorHandler } from '@suite/suite-sync';
 import { events } from '@suite-common/analytics';
 import { useServices } from '@suite-common/dependency-injection';
 import { type MessageSystemRootState } from '@suite-common/message-system';
-import { selectDispatch } from '@suite-common/redux-utils';
+import { injectDispatch } from '@suite-common/redux-utils';
 import {
     type WithSuiteSyncAndDeviceState,
     selectIsSuiteSyncEnabled,
     selectIsSuiteSyncFeatureAvailable,
     selectSuiteSyncInteraction,
 } from '@suite-common/suite-sync';
-import {
-    selectTurnOffSuiteSyncDep,
-    selectTurnOnSuiteSyncDep,
-} from '@suite-common/suite-sync-types';
+import { injectTurnOffSuiteSync, injectTurnOnSuiteSync } from '@suite-common/suite-sync-types';
 import { Box, Column, LoadingContent, SelectOption, Tooltip } from '@trezor/components';
 import {
     ActionColumn,
@@ -91,10 +88,10 @@ export const LabelingSettings = () => {
     const { translationString } = useTranslation();
 
     const { analytics, turnOffSuiteSync, turnOnSuiteSync, dispatch } = useServices(
-        selectDesktopAnalyticsDep,
-        selectTurnOffSuiteSyncDep,
-        selectTurnOnSuiteSyncDep,
-        selectDispatch,
+        injectDesktopAnalytics,
+        injectTurnOffSuiteSync,
+        injectTurnOnSuiteSync,
+        injectDispatch,
     );
 
     const [legacyModalWarningVisible, setLegacyModalWarningVisible] = useState(false);

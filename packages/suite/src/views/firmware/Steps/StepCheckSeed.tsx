@@ -8,7 +8,7 @@ import {
     selectSelectedDevice,
     selectSelectedDeviceLabelOrName,
 } from '@suite-common/device';
-import { selectDispatch } from '@suite-common/redux-utils';
+import { injectDispatch } from '@suite-common/redux-utils';
 import { Banner, Card, Checkbox, Column, H4, Modal, Paragraph } from '@trezor/components';
 import { WarningIcon } from '@trezor/icons';
 
@@ -38,7 +38,7 @@ export const StepCheckSeed = ({
     const deviceLabel = useSelector(selectSelectedDeviceLabelOrName);
     const isDeviceBackedUp = useSelector(selectIsDeviceBackedUp);
 
-    const { dispatch } = useServices(selectDispatch);
+    const { dispatch } = useServices(injectDispatch);
 
     if (!device?.connected || !device?.features) {
         return <PrerequisitesGuide />;

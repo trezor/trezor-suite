@@ -1,9 +1,9 @@
-import { events, selectDesktopAnalyticsDep } from '@suite/analytics';
+import { events, injectDesktopAnalytics } from '@suite/analytics';
 import { Translation } from '@suite/intl';
 import { gotoThunk } from '@suite/router';
 import { useServices } from '@suite-common/dependency-injection';
 import { useTronStakingStats } from '@suite-common/earn-staking-api';
-import { selectDispatch } from '@suite-common/redux-utils';
+import { injectDispatch } from '@suite-common/redux-utils';
 import {
     getTronAvailableVotingPower,
     getTronTotalVotingPower,
@@ -35,7 +35,7 @@ interface TronVoteAllocationModalProps {
 }
 
 export const TronVoteAllocationModal = ({ account, onClose }: TronVoteAllocationModalProps) => {
-    const { analytics, dispatch } = useServices(selectDesktopAnalyticsDep, selectDispatch);
+    const { analytics, dispatch } = useServices(injectDesktopAnalytics, injectDispatch);
     const { stats } = useTronStakingStats();
 
     const { isVotingDisabled, votingMessageContent } = useMessageSystemStaking(account.symbol);

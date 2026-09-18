@@ -3,7 +3,7 @@ import { useCallback } from 'react';
 import { events } from '@suite-common/analytics';
 import { useServices } from '@suite-common/dependency-injection';
 import { type YieldWithdrawFlowType } from '@suite-common/wallet-core';
-import { selectNativeAnalyticsDep } from '@suite-native/analytics';
+import { injectNativeAnalytics } from '@suite-native/analytics';
 import { exhaustive } from '@trezor/type-utils';
 
 type UseYieldReviewAnalyticsParams = {
@@ -21,7 +21,7 @@ export const useYieldReviewAnalytics = ({
     vaultId,
     operation,
 }: UseYieldReviewAnalyticsParams) => {
-    const { analytics } = useServices(selectNativeAnalyticsDep);
+    const { analytics } = useServices(injectNativeAnalytics);
 
     const reportOutcome = useCallback(
         (outcome: YieldReviewOutcome) => {

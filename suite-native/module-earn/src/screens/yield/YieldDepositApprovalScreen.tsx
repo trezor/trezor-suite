@@ -5,7 +5,7 @@ import { type RouteProp, useIsFocused, useNavigation, useRoute } from '@react-na
 import { events } from '@suite-common/analytics';
 import { useServices } from '@suite-common/dependency-injection';
 import { Context } from '@suite-common/message-system';
-import { selectDispatch } from '@suite-common/redux-utils';
+import { injectDispatch } from '@suite-common/redux-utils';
 import { getNetwork } from '@suite-common/wallet-config';
 import {
     getYieldApprovalAction,
@@ -13,7 +13,7 @@ import {
     yieldActions,
 } from '@suite-common/wallet-core';
 import { isPositiveBalance } from '@suite-common/wallet-utils';
-import { selectNativeAnalyticsDep } from '@suite-native/analytics';
+import { injectNativeAnalytics } from '@suite-native/analytics';
 import { BannerFull, Box, VStack, useBottomSheetModal } from '@suite-native/atoms';
 import { Form } from '@suite-native/forms';
 import { Translation } from '@suite-native/intl';
@@ -63,7 +63,7 @@ export const YieldDepositApprovalScreen = () => {
     const navigation = useNavigation<NavigationProps>();
     const isFocused = useIsFocused();
     const navigateToInitialScreen = useNavigateToInitialScreen();
-    const { analytics, dispatch } = useServices(selectNativeAnalyticsDep, selectDispatch);
+    const { analytics, dispatch } = useServices(injectNativeAnalytics, injectDispatch);
     const {
         bottomSheetRef: approvalLimitBottomSheetRef,
         closeModal: closeApprovalLimitBottomSheet,

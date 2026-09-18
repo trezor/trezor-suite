@@ -4,7 +4,7 @@ import { useDevice } from '@suite/device';
 import { selectFlags, setFlag } from '@suite/flags';
 import { Translation } from '@suite/intl';
 import { useServices } from '@suite-common/dependency-injection';
-import { selectDispatch } from '@suite-common/redux-utils';
+import { injectDispatch } from '@suite-common/redux-utils';
 import { networksCollection } from '@suite-common/wallet-config';
 import {
     selectAllAccountsToList,
@@ -52,7 +52,7 @@ export const PortfolioCard = memo(() => {
 
     const accounts = useSelector(selectAllAccountsToList);
     const { dashboardGraphHidden } = useSelector(selectFlags);
-    const { dispatch } = useServices(selectDispatch);
+    const { dispatch } = useServices(injectDispatch);
     const { device } = useDevice();
     const isBelowLaptop = useIsContentBelowBreakpoint(breakpoints.laptop);
     const isDeviceEmpty = useMemo(() => accounts.every(a => a.empty), [accounts]);

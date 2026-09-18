@@ -3,12 +3,12 @@ import { useState } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 import styled from 'styled-components';
 
-import { events, selectDesktopAnalyticsDep } from '@suite/analytics';
+import { events, injectDesktopAnalytics } from '@suite/analytics';
 import { useExternalLink } from '@suite/external-links';
 import { setFlag } from '@suite/flags';
 import { Translation } from '@suite/intl';
 import { useServices } from '@suite-common/dependency-injection';
-import { selectDispatch } from '@suite-common/redux-utils';
+import { injectDispatch } from '@suite-common/redux-utils';
 import { Box, Button, H2, Icon, IconButton, Image, Paragraph, Row } from '@trezor/components';
 import { SCREEN_QUERY } from '@trezor/components/src/config/variables';
 import { AppleLogoIcon, LinuxLogoIcon, WindowsLogoIcon, XIcon } from '@trezor/icons';
@@ -54,7 +54,7 @@ const OSIcons = styled.div`
 `;
 
 export const DesktopSuiteBanner = () => {
-    const { analytics, dispatch } = useServices(selectDesktopAnalyticsDep, selectDispatch);
+    const { analytics, dispatch } = useServices(injectDesktopAnalytics, injectDispatch);
     const [isVisible, setIsVisible] = useState(true);
 
     const href = useExternalLink(SUITE_URL);

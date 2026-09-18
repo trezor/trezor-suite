@@ -3,7 +3,7 @@ import { Share } from 'react-native';
 
 import { useServices } from '@suite-common/dependency-injection';
 import { useAlert } from '@suite-native/alerts';
-import { events, selectNativeAnalyticsDep } from '@suite-native/analytics';
+import { events, injectNativeAnalytics } from '@suite-native/analytics';
 import { useBottomSheetModal } from '@suite-native/atoms';
 import { useTranslate } from '@suite-native/intl';
 import { ReceiveAddressVerificationSource } from '@suite-native/navigation';
@@ -19,7 +19,7 @@ export const useReceiveAddressSharing = ({
     isDeviceVerificationEnabled,
     onVerifyAddress,
 }: UseReceiveAddressSharingParams) => {
-    const { analytics } = useServices(selectNativeAnalyticsDep);
+    const { analytics } = useServices(injectNativeAnalytics);
     const {
         bottomSheetRef: sharedAddressBottomSheetRef,
         openModal: openSharedAddressBottomSheet,

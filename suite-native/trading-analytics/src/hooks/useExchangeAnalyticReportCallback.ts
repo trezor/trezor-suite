@@ -15,7 +15,7 @@ import {
     type TradingExchangeAction,
     type TradingExchangeStep,
     events,
-    selectNativeAnalyticsDep,
+    injectNativeAnalytics,
 } from '@suite-native/analytics';
 import { coinInfoToTradeableAsset } from '@suite-native/trading-atoms';
 
@@ -83,7 +83,7 @@ export const useExchangeAnalyticReportCallback = (
 ): TradingExchangeAnalyticReportCallback => {
     const persistedQuote = useSelector(selectTradingExchangeSelectedQuote);
     const quote = candidateQuote || persistedQuote;
-    const { analytics } = useServices(selectNativeAnalyticsDep);
+    const { analytics } = useServices(injectNativeAnalytics);
     const payload = useExchangeFormAnalyticsPayload(quote);
     const payloadRef = useRef(payload);
     payloadRef.current = payload;

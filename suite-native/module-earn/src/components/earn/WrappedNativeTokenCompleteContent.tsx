@@ -10,7 +10,7 @@ import {
     selectAccountByKey,
 } from '@suite-common/wallet-core';
 import { type AccountKey } from '@suite-common/wallet-types';
-import { selectNativeAnalyticsDep } from '@suite-native/analytics';
+import { injectNativeAnalytics } from '@suite-native/analytics';
 import { Translation } from '@suite-native/intl';
 import { useNavigateToInitialScreen } from '@suite-native/navigation';
 import { getWrappedNativeToken } from '@trezor/network-ethereum-suite-common';
@@ -31,7 +31,7 @@ export const WrappedNativeTokenCompleteContent = ({
     flowType,
 }: WrappedNativeTokenCompleteContentProps) => {
     const navigateToInitialScreen = useNavigateToInitialScreen();
-    const { analytics } = useServices(selectNativeAnalyticsDep);
+    const { analytics } = useServices(injectNativeAnalytics);
 
     const account = useSelector((state: AccountsRootState) =>
         selectAccountByKey(state, accountKey),

@@ -8,7 +8,7 @@ import {
     messageSystemActions,
     selectMessageSystemConfigSource,
 } from '@suite-common/message-system';
-import { selectDispatch } from '@suite-common/redux-utils';
+import { injectDispatch } from '@suite-common/redux-utils';
 import { SelectBar } from '@trezor/components';
 import { ActionColumn, SectionItem, TextColumn } from '@trezor/product-components';
 
@@ -30,7 +30,7 @@ const options: ConfigSourceOption[] = [
 
 export const MessageSystemConfigSourceSelect = () => {
     const selectedConfigSource = useSelector(selectMessageSystemConfigSource);
-    const { dispatch } = useServices(selectDispatch);
+    const { dispatch } = useServices(injectDispatch);
 
     const onChange = useCallback(
         (value: MessageSystemConfigSource) => {

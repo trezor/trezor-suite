@@ -11,8 +11,8 @@ import {
     selectShouldOfferUpdateFirmware,
 } from '@suite-common/device';
 import { persistentDeviceDataActions } from '@suite-common/persistent-device-data';
-import { selectDispatch } from '@suite-common/redux-utils';
-import { events, selectNativeAnalyticsDep } from '@suite-native/analytics';
+import { injectDispatch } from '@suite-common/redux-utils';
+import { events, injectNativeAnalytics } from '@suite-native/analytics';
 import { Box, Button, Text, TextButton, VStack } from '@suite-native/atoms';
 import { type SetupSupportingDeviceModel, useCoinLabel } from '@suite-native/device';
 import { Translation } from '@suite-native/intl';
@@ -68,7 +68,7 @@ export const UninitializedDeviceLandingScreen = ({
     DeviceOnboardingStackRoutes.UninitializedDeviceLanding,
     RootStackParamList
 >) => {
-    const { analytics, dispatch } = useServices(selectNativeAnalyticsDep, selectDispatch);
+    const { analytics, dispatch } = useServices(injectNativeAnalytics, injectDispatch);
     const deviceModel = params.deviceModel as SetupSupportingDeviceModel;
     const hasDeviceFirmwareInstalled = useSelector(selectHasDeviceFirmwareInstalled);
     const shouldOfferUpdateFirmware = useSelector(selectShouldOfferUpdateFirmware);

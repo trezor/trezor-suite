@@ -1,4 +1,4 @@
-import { selectDesktopAnalyticsDep } from '@suite/analytics';
+import { injectDesktopAnalytics } from '@suite/analytics';
 import { selectConnectingDevices } from '@suite/bluetooth';
 import { Translation } from '@suite/intl';
 import { events } from '@suite-common/analytics';
@@ -19,7 +19,7 @@ type BluetoothConnectionModalProps = {
 const selectedDeviceConnectionTypes = ['connecting', 'pairing'];
 
 export const BluetoothConnectionModal = ({ onClose }: BluetoothConnectionModalProps) => {
-    const { analytics } = useServices(selectDesktopAnalyticsDep);
+    const { analytics } = useServices(injectDesktopAnalytics);
     const { handlePairingCancel, onReScanClick, selectedDevice } =
         useConnectionGlobalModalContext();
     const connectingDevices = useSelector(selectConnectingDevices);

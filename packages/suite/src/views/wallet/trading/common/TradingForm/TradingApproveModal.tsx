@@ -2,7 +2,7 @@ import { useCallback, useMemo } from 'react';
 
 import { type CryptoId, type DexApprovalType } from 'invity-api';
 
-import { events, selectDesktopAnalyticsDep } from '@suite/analytics';
+import { events, injectDesktopAnalytics } from '@suite/analytics';
 import { Calldata } from '@suite-common/calldata';
 import { useServices } from '@suite-common/dependency-injection';
 import {
@@ -29,7 +29,7 @@ export const TradingApproveModal = ({ amount, cryptoId }: TradingApproveModalPro
     const { state } = useAllowanceContext();
     const context = useTradingFormContext();
     const account = useSelector(reduxState => selectTradingSendAccount(reduxState, context.type));
-    const { analytics } = useServices(selectDesktopAnalyticsDep);
+    const { analytics } = useServices(injectDesktopAnalytics);
     const getCryptoInfo = useTradingExchangeCryptoAndProviderInfo();
     const selectedQuote = useSelector(selectTradingExchangeSelectedQuote);
     const providersInfo = useSelector(selectTradingExchangeProviders);

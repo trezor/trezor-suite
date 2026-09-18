@@ -4,7 +4,7 @@ import { useSelector } from 'react-redux';
 import type { ExchangeTrade } from 'invity-api';
 
 import { useServices } from '@suite-common/dependency-injection';
-import { selectDispatch } from '@suite-common/redux-utils';
+import { injectDispatch } from '@suite-common/redux-utils';
 import {
     type TradingRootState,
     selectTradingCoinSymbolByCryptoId,
@@ -40,7 +40,7 @@ const TradingExchangeRevokeScreenContent = ({
     navigation,
 }: TradingExchangeRevokeScreenProps) => {
     const { shouldIncreaseLimit } = params;
-    const { dispatch } = useServices(selectDispatch);
+    const { dispatch } = useServices(injectDispatch);
     const reportToAnalytics = useExchangeAnalyticsStepReport('revoke-preview');
 
     const quote = useSelector(selectTradingExchangeSelectedQuote);

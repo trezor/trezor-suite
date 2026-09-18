@@ -9,10 +9,10 @@ implementation around. It has no runtime API construction and no environment det
 
 ## Packages
 
-| Package                           | Contains                                                                                     |
-| --------------------------------- | -------------------------------------------------------------------------------------------- |
-| `@suite/desktop-app-api`          | The `DesktopApi` contract, channel/message types and `DesktopApiDep` / `selectDesktopApiDep` |
-| `@suite/desktop-app-api-electron` | `createDesktopApiBridge` (preload side) and `createElectronDesktopApi` (renderer side)       |
+| Package                           | Contains                                                                                  |
+| --------------------------------- | ----------------------------------------------------------------------------------------- |
+| `@suite/desktop-app-api`          | The `DesktopApi` contract, channel/message types and `DesktopApiDep` / `injectDesktopApi` |
+| `@suite/desktop-app-api-electron` | `createDesktopApiBridge` (preload side) and `createElectronDesktopApi` (renderer side)    |
 
 Each app's composition root picks one implementation:
 
@@ -36,7 +36,7 @@ type MyThunkDeps = WithServices<DesktopApiDep<'appFocus'>>;
 extra.services.desktopApi.appFocus();
 
 // React
-const { desktopApi } = useServices(selectDesktopApiDep);
+const { desktopApi } = useServices(injectDesktopApi);
 ```
 
 ## How to add a new method/channel

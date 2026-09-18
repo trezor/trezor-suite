@@ -2,7 +2,7 @@ export {
     createAnalytics,
     type DesktopAnalytics,
     type DesktopAnalyticsDep,
-    selectDesktopAnalyticsDep,
+    injectDesktopAnalytics,
 } from './createAnalytics';
 export {
     type OnboardingAnalytics,

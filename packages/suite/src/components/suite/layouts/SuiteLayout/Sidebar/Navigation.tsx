@@ -1,6 +1,6 @@
 import { type FC, useCallback, useEffect, useMemo, useState } from 'react';
 
-import { events, selectDesktopAnalyticsDep } from '@suite/analytics';
+import { events, injectDesktopAnalytics } from '@suite/analytics';
 import {
     NewContentIndicatorId,
     markNewContentIndicatorAsSeen,
@@ -10,7 +10,7 @@ import {
 import { type Route, selectRouteName } from '@suite/router';
 import { useServices } from '@suite-common/dependency-injection';
 import { selectHasBitcoinOnlyFirmware } from '@suite-common/device';
-import { selectDispatch } from '@suite-common/redux-utils';
+import { injectDispatch } from '@suite-common/redux-utils';
 import { selectHasUnseenTransactionNotifications } from '@suite-common/toast-notifications';
 import { Column } from '@trezor/components';
 import { BellIcon, GearSixIcon, HouseIcon, PiggyBankIcon, RepeatIcon } from '@trezor/icons';
@@ -36,7 +36,7 @@ const newContentIndicatorIntro = { hasPlayed: false };
 
 export const Navigation = ({ children }: NavigationProps) => {
     const { isSidebarCollapsed } = useResponsiveContext();
-    const { analytics, dispatch } = useServices(selectDesktopAnalyticsDep, selectDispatch);
+    const { analytics, dispatch } = useServices(injectDesktopAnalytics, injectDispatch);
 
     const isInitialRun = useSelector(selectIsInitialRun);
     const startRoute: Route['name'] = isInitialRun ? 'suite-start' : 'suite-index';

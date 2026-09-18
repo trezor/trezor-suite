@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import { Translation } from '@suite/intl';
 import { openModal } from '@suite/modal';
 import { useServices } from '@suite-common/dependency-injection';
-import { selectDispatch } from '@suite-common/redux-utils';
+import { injectDispatch } from '@suite-common/redux-utils';
 import { type NetworkSymbol, getNetwork } from '@suite-common/wallet-config';
 import { selectEnabledNetworks, selectNetworkBlockchainInfo } from '@suite-common/wallet-core';
 import { type ConnectionStatus } from '@suite-common/wallet-types';
@@ -125,7 +125,7 @@ const CoinItem = ({ symbol }: CoinItemProps) => {
         selectNetworkBlockchainInfo(state, symbol),
     );
 
-    const { dispatch } = useServices(selectDispatch);
+    const { dispatch } = useServices(injectDispatch);
 
     const onSettings = () => {
         dispatch(

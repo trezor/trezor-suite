@@ -4,7 +4,7 @@ import { useSelector } from 'react-redux';
 import type { BankAccount, SellFiatTrade, SellFiatTradeResponse } from 'invity-api';
 
 import { useServices } from '@suite-common/dependency-injection';
-import { selectDispatch } from '@suite-common/redux-utils';
+import { injectDispatch } from '@suite-common/redux-utils';
 import {
     selectTradingSellInfo,
     selectTradingSellSelectedQuote,
@@ -17,7 +17,7 @@ import { selectSellSelectedSendAccount } from '@suite-native/trading-state';
 import { useTradingTransaction } from '../general/useTradingTransaction';
 
 export const useSellFlow = () => {
-    const { dispatch } = useServices(selectDispatch);
+    const { dispatch } = useServices(injectDispatch);
     const sellInfo = useSelector(selectTradingSellInfo);
 
     const selectedQuote = useSelector(selectTradingSellSelectedQuote);

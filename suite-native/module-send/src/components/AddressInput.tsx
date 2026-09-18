@@ -7,11 +7,11 @@ import { type AddressCorrection, autocorrectAddress } from '@suite-common/addres
 import { useServices } from '@suite-common/dependency-injection';
 import { type DeviceRootState } from '@suite-common/device';
 import {
-    selectAddressValidatorDep,
-    selectGetNamedAddressSupportDep,
+    injectAddressValidator,
+    injectGetNamedAddressSupport,
     selectNetworkSymbolForProtocol,
 } from '@suite-common/networks';
-import { selectGetState } from '@suite-common/redux-utils';
+import { injectGetState } from '@suite-common/redux-utils';
 import { parseTransferUri } from '@suite-common/transfer-uri';
 import { formInputsMaxLength } from '@suite-common/validators';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
@@ -24,7 +24,7 @@ import {
 import { type AccountKey, toTokenAddress } from '@suite-common/wallet-types';
 import { convertAmountSubunitsToUnits } from '@suite-common/wallet-utils';
 import { type NativeAccountsRootState, selectFreshAccountAddress } from '@suite-native/accounts';
-import { events, selectNativeAnalyticsDep } from '@suite-native/analytics';
+import { events, injectNativeAnalytics } from '@suite-native/analytics';
 import { Button, HStack, Text, VStack } from '@suite-native/atoms';
 import { isDebugEnv } from '@suite-native/config';
 import { TextInputField, useFormContext, useWatch } from '@suite-native/forms';
@@ -73,10 +73,10 @@ export const AddressInput = ({ index, accountKey, onQrNetworkMismatch }: Address
     const tokenFieldName = getOutputFieldName(index, 'token');
     const { setValue, control } = useFormContext<SendOutputsFormValues>();
     const { getState, analytics, addressValidator, getNamedAddressSupport } = useServices(
-        selectGetState,
-        selectNativeAnalyticsDep,
-        selectAddressValidatorDep,
-        selectGetNamedAddressSupportDep,
+        injectGetState,
+        injectNativeAnalytics,
+        injectAddressValidator,
+        injectGetNamedAddressSupport,
     );
     const symbol = useSelector((state: AccountsRootState) =>
         selectAccountNetworkSymbol(state, accountKey),

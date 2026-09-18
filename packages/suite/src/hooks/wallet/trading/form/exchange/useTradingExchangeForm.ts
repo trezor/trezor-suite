@@ -2,7 +2,7 @@ import { useCallback, useEffect, useState } from 'react';
 import { useForm, useWatch } from 'react-hook-form';
 
 import { useServices } from '@suite-common/dependency-injection';
-import { selectDispatch } from '@suite-common/redux-utils';
+import { injectDispatch } from '@suite-common/redux-utils';
 import {
     TRADING_EXCHANGE_FORM,
     TRADING_FORM_OUTPUT_AMOUNT,
@@ -50,7 +50,7 @@ import { useTradingReceiveAddress } from '../useTradingReceiveAddress';
 
 export const useTradingExchangeForm = (): TradingExchangeFormContextProps => {
     const type = 'exchange';
-    const { dispatch } = useServices(selectDispatch);
+    const { dispatch } = useServices(injectDispatch);
     const isFromRedirect = useSelector(selectTradingExchangeIsFromRedirect);
     const transactionId = useSelector(selectTradingExchangeTransactionId);
     const selectedQuote = useSelector(selectTradingExchangeSelectedQuote);

@@ -1,7 +1,7 @@
 import { useSelector } from 'react-redux';
 
 import { useServices } from '@suite-common/dependency-injection';
-import { selectDispatch } from '@suite-common/redux-utils';
+import { injectDispatch } from '@suite-common/redux-utils';
 import {
     type AccountsRootState,
     accountsActions,
@@ -20,7 +20,7 @@ type AccountSettingsRemoveCoinButtonProps = {
 export const AccountSettingsRemoveCoinButton = ({
     accountKey,
 }: AccountSettingsRemoveCoinButtonProps) => {
-    const { dispatch } = useServices(selectDispatch);
+    const { dispatch } = useServices(injectDispatch);
     const navigateToInitialScreen = useNavigateToInitialScreen();
     const { showAlert, hideAlert } = useAlert();
 

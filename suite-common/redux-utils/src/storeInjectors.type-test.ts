@@ -1,8 +1,8 @@
 import { createThunk } from './createThunk';
-import { type StoreDep, selectDispatch } from './storeSelectors';
+import { type StoreDep, injectDispatch } from './storeInjectors';
 
 const dispatchTypeTest = (services: StoreDep) => {
-    const { dispatch } = selectDispatch(services);
+    const { dispatch } = injectDispatch(services);
 
     const plainAction = {
         type: 'test/plainAction',

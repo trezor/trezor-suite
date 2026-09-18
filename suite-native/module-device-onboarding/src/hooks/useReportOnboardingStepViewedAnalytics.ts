@@ -2,7 +2,7 @@ import { useCallback, useRef } from 'react';
 
 import { type DeviceOnboardingStepName, events } from '@suite-common/analytics';
 import { useServices } from '@suite-common/dependency-injection';
-import { selectNativeAnalyticsDep } from '@suite-native/analytics';
+import { injectNativeAnalytics } from '@suite-native/analytics';
 import { type DeviceOnboardingStackRoutes } from '@suite-native/navigation';
 
 import {
@@ -11,7 +11,7 @@ import {
 } from '../onboardingAnalyticsSteps';
 
 export const useReportOnboardingStepViewedAnalytics = () => {
-    const { analytics } = useServices(selectNativeAnalyticsDep);
+    const { analytics } = useServices(injectNativeAnalytics);
     const lastReportedStep = useRef<DeviceOnboardingStepName | null>(null);
 
     return useCallback(

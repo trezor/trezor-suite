@@ -2,7 +2,7 @@ import { useState } from 'react';
 
 import { AnimatePresence, motion } from 'framer-motion';
 
-import { events, selectDesktopAnalyticsDep } from '@suite/analytics';
+import { events, injectDesktopAnalytics } from '@suite/analytics';
 import { selectIsManualPairingRequired, selectIsUnpairingDevice } from '@suite/bluetooth';
 import { Translation } from '@suite/intl';
 import { selectAdapterStatus, selectIsDeviceOsUnpairingRequired } from '@suite-common/bluetooth';
@@ -200,7 +200,7 @@ const ViaCableCard = ({ onClick }: ConnectionModeCardProps) => (
 );
 
 export const ConnectDeviceGlobalModal = ({ onCancel }: { onCancel: () => void }) => {
-    const { analytics } = useServices(selectDesktopAnalyticsDep);
+    const { analytics } = useServices(injectDesktopAnalytics);
     const [isModeSelected, setIsModeSelected] = useState(false);
     const isWebUsbTransport = useSelector(selectHasTransportOfType('WebUsbTransport'));
     const {

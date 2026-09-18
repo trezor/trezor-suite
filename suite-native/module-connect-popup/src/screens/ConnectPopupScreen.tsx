@@ -12,7 +12,7 @@ import {
     selectIsDeviceConnectedAndAuthorized,
     selectIsPortfolioTrackerDevice,
 } from '@suite-common/device';
-import { selectDispatch } from '@suite-common/redux-utils';
+import { injectDispatch } from '@suite-common/redux-utils';
 import { selectHasRunningDiscovery } from '@suite-common/wallet-core';
 import { Box, Loader } from '@suite-native/atoms';
 import { DeviceManager } from '@suite-native/device-manager';
@@ -28,7 +28,7 @@ import { TxSimulation } from '../components/TxSimulation';
 export const ConnectPopupScreen = () => {
     const navigation = useNavigation();
 
-    const { dispatch } = useServices(selectDispatch);
+    const { dispatch } = useServices(injectDispatch);
     const deviceConnectedAndAuthorized = useSelector(selectIsDeviceConnectedAndAuthorized);
     const isPortfolioTrackerDevice = useSelector(selectIsPortfolioTrackerDevice);
     const validDevice = deviceConnectedAndAuthorized && !isPortfolioTrackerDevice;

@@ -3,7 +3,7 @@ import { useState } from 'react';
 import { Translation } from '@suite/intl';
 import { openModal } from '@suite/modal';
 import { useServices } from '@suite-common/dependency-injection';
-import { selectDispatch } from '@suite-common/redux-utils';
+import { injectDispatch } from '@suite-common/redux-utils';
 import { Box, Icon, Row, ShortcutBadge, TOOLTIP_DELAY_NORMAL, Tooltip } from '@trezor/components';
 import { PlusIcon } from '@trezor/icons';
 
@@ -26,7 +26,7 @@ export const AddAccountButton = ({ device }: AddAccountButtonProps) => {
     const { isDiscoveryRunning } = useDiscovery();
     const [isHovered, setIsHovered] = useState(false);
 
-    const { dispatch } = useServices(selectDispatch);
+    const { dispatch } = useServices(injectDispatch);
 
     // TODO: add more cases when adding account is not possible
     const addAccountDisabled = isDiscoveryRunning || !device?.connected;

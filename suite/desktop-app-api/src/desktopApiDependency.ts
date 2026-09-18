@@ -9,6 +9,6 @@ export type DesktopApiDep<K extends keyof DesktopApi = keyof DesktopApi> = {
     desktopApi: Pick<DesktopApi, K>;
 };
 
-export const selectDesktopApiDep = (services: DesktopApiDep): DesktopApiDep => ({
+export const injectDesktopApi = (services: DesktopApiDep): DesktopApiDep => ({
     desktopApi: services.desktopApi,
 });

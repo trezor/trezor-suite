@@ -1,7 +1,7 @@
 import { type ReactNode, useMemo } from 'react';
 
 import { Address, copyAddressToClipboard, showCopyAddressModal } from '@suite/address';
-import { events, selectDesktopAnalyticsDep } from '@suite/analytics';
+import { events, injectDesktopAnalytics } from '@suite/analytics';
 import { selectIsDeviceCompromised } from '@suite/authenticity-checks';
 import { useDevice } from '@suite/device';
 import { useExternalLink } from '@suite/external-links';
@@ -14,7 +14,7 @@ import { events as sharedEvents } from '@suite-common/analytics';
 import { useServices } from '@suite-common/dependency-injection';
 import { selectSelectedDevice } from '@suite-common/device';
 import { type YieldDtoV2 } from '@suite-common/earn-stablecoin-api';
-import { selectDispatch } from '@suite-common/redux-utils';
+import { injectDispatch } from '@suite-common/redux-utils';
 import { EarnFlow, EarnProvider } from '@suite-common/suite-types/src/staking';
 import {
     DefinitionType,
@@ -101,7 +101,7 @@ const TokenRowBasicActions = ({
     yieldOpportunities,
     setShowDeactivateModal,
 }: TokenRowBasicActionsProps) => {
-    const { analytics, dispatch } = useServices(selectDesktopAnalyticsDep, selectDispatch);
+    const { analytics, dispatch } = useServices(injectDesktopAnalytics, injectDispatch);
     const device = useSelector(selectSelectedDevice);
     const { isLocked } = useDevice();
     const { isBelowTablet } = useLayoutSize();

@@ -14,7 +14,7 @@ import {
     selectAllManuallyAddedExperimentIds,
     selectAllValidExperiments,
 } from '@suite-common/message-system';
-import { selectDispatch } from '@suite-common/redux-utils';
+import { injectDispatch } from '@suite-common/redux-utils';
 import { type Experiments } from '@suite-common/suite-types';
 import { Banner, Button, Column, Divider, Modal } from '@trezor/components';
 import { copyToClipboard } from '@trezor/dom-utils';
@@ -48,7 +48,7 @@ export const MessageSystemExperiments = ({
     const allManuallyAddedExperimentIds = useSelector(selectAllManuallyAddedExperimentIds);
     const allExperimentInclusionOverrides = useSelector(selectAllExperimentInclusionOverrides);
     const instanceId = useSelector(selectAnalyticsInstanceId);
-    const { dispatch } = useServices(selectDispatch);
+    const { dispatch } = useServices(injectDispatch);
 
     const [showActive, setShowActive] = useState<boolean>(true);
 

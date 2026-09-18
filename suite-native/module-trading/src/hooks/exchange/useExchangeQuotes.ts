@@ -5,7 +5,7 @@ import { isFulfilled } from '@reduxjs/toolkit';
 import type { ExchangeTrade } from 'invity-api';
 
 import { useServices } from '@suite-common/dependency-injection';
-import { selectDispatch } from '@suite-common/redux-utils';
+import { injectDispatch } from '@suite-common/redux-utils';
 import { invariant } from '@suite-common/suite-utils';
 import {
     type HandleExchangeRequestThunkProps,
@@ -15,11 +15,7 @@ import {
     useTradingRefetchScheduler,
 } from '@suite-common/trading';
 import { type WalletSettingsRootState, selectIsAmountInSats } from '@suite-common/wallet-core';
-import {
-    type AnalyticsNativeEvents,
-    events,
-    selectNativeAnalyticsDep,
-} from '@suite-native/analytics';
+import { type AnalyticsNativeEvents, events, injectNativeAnalytics } from '@suite-native/analytics';
 import { useFormState, useWatch } from '@suite-native/forms';
 import { getSymbolFromTradeableAsset } from '@suite-native/trading-atoms';
 import { exchangeActions, selectExchangeQuotes } from '@suite-native/trading-state';
@@ -94,7 +90,7 @@ const useExchangeQuotesThunk = (
     quotesPromiseRef: RefObject<AbortablePromise | undefined>,
     debounce: ReturnType<typeof useDebounce>,
 ) => {
-    const { analytics, dispatch } = useServices(selectNativeAnalyticsDep, selectDispatch);
+    const { analytics, dispatch } = useServices(injectNativeAnalytics, injectDispatch);
     const asset = useWatch({ control, name: 'sendAsset' });
     const symbol = getSymbolFromTradeableAsset(asset);
     const shouldSendInSats = useSelector((state: WalletSettingsRootState) =>

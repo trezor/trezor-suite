@@ -16,10 +16,10 @@ import {
     selectIsDeviceProtectedByPassphrase,
     selectIsPortfolioTrackerDevice,
 } from '@suite-common/device';
-import { selectDispatch } from '@suite-common/redux-utils';
+import { injectDispatch } from '@suite-common/redux-utils';
 import { type TrezorDevice } from '@suite-common/suite-types';
 import { selectHasRunningDiscovery } from '@suite-common/wallet-core';
-import { events, selectNativeAnalyticsDep } from '@suite-native/analytics';
+import { events, injectNativeAnalytics } from '@suite-native/analytics';
 import { AnimatedVStack, VStack } from '@suite-native/atoms';
 import { selectShouldFactoryResetBeVisible } from '@suite-native/device';
 import {
@@ -58,7 +58,7 @@ type NavigationProp = TabNavigationProp<AppTabsParamList, AppTabsRoutes.HomeStac
 export const DeviceManagerContent = () => {
     const { applyStyle, utils } = useNativeStyles();
     const [isChangeDeviceRequested, setIsChangeDeviceRequested] = useState(false);
-    const { analytics, dispatch } = useServices(selectNativeAnalyticsDep, selectDispatch);
+    const { analytics, dispatch } = useServices(injectNativeAnalytics, injectDispatch);
     const isPortfolioTrackerDevice = useSelector(selectIsPortfolioTrackerDevice);
     const isPassphraseEnabledOnDevice = useSelector(selectIsDeviceProtectedByPassphrase);
     const shouldFactoryResetBeVisible = useSelector(selectShouldFactoryResetBeVisible);

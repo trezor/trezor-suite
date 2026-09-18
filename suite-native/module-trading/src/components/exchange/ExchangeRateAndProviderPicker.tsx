@@ -4,7 +4,7 @@ import type { ExchangeTrade } from 'invity-api';
 
 import { useServices } from '@suite-common/dependency-injection';
 import { selectTradingExchangeIsLoading } from '@suite-common/trading';
-import { events, selectNativeAnalyticsDep } from '@suite-native/analytics';
+import { events, injectNativeAnalytics } from '@suite-native/analytics';
 import { selectGroupedExchangeQuotes } from '@suite-native/trading-state';
 
 import { ExchangeProviderPicker } from './ExchangeProviderPicker';
@@ -15,7 +15,7 @@ import { ProviderSheet } from '../general/ProviderSheet/ProviderSheet';
 export const ExchangeRateAndProviderPicker = () => {
     const isLoading = useSelector(selectTradingExchangeIsLoading);
     const quotes = useSelector(selectGroupedExchangeQuotes);
-    const { analytics } = useServices(selectNativeAnalyticsDep);
+    const { analytics } = useServices(injectNativeAnalytics);
     const form = useExchangeFormContext();
 
     const { isSheetVisible, hideSheet, showSheet, setSelectedValue, selectedValue } =

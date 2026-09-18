@@ -2,7 +2,7 @@ import { useEffect, useMemo, useRef, useState } from 'react';
 import { useSelector } from 'react-redux';
 
 import { useServices } from '@suite-common/dependency-injection';
-import { selectDispatch } from '@suite-common/redux-utils';
+import { injectDispatch } from '@suite-common/redux-utils';
 import {
     type TradingTransaction,
     type TradingTransactionBuy,
@@ -14,7 +14,7 @@ import {
 } from '@suite-common/trading';
 import { type AccountsRootState, selectAccountByKey } from '@suite-common/wallet-core';
 import { type AccountKey } from '@suite-common/wallet-types';
-import { events, selectNativeAnalyticsDep } from '@suite-native/analytics';
+import { events, injectNativeAnalytics } from '@suite-native/analytics';
 import { getTradeStatusStep } from '@suite-native/trading-quote-utils';
 import { type TradingRootState } from '@suite-native/trading-state';
 
@@ -46,7 +46,7 @@ export const useWatchTrade = ({
     isEnabled = true,
     shouldReportAnalytics = true,
 }: TradingUseWatchTradeProps) => {
-    const { analytics, dispatch } = useServices(selectNativeAnalyticsDep, selectDispatch);
+    const { analytics, dispatch } = useServices(injectNativeAnalytics, injectDispatch);
     const account = useSelector((state: AccountsRootState) =>
         selectAccountByKey(state, accountKey),
     );

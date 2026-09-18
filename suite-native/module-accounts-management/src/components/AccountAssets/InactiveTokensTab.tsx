@@ -6,7 +6,7 @@ import { isFulfilled } from '@reduxjs/toolkit';
 import { FlashList } from '@shopify/flash-list';
 
 import { useServices } from '@suite-common/dependency-injection';
-import { selectDispatch } from '@suite-common/redux-utils';
+import { injectDispatch } from '@suite-common/redux-utils';
 import {
     type AccountKey,
     type StellarTokenInfo,
@@ -53,7 +53,7 @@ export const InactiveTokensTab = ({ accountKey }: InactiveTokensTabProps) => {
     const { translate } = useTranslate();
     const { showAlert } = useAlert();
     const { applyStyle } = useNativeStyles();
-    const { dispatch } = useServices(selectDispatch);
+    const { dispatch } = useServices(injectDispatch);
 
     const { inactiveTokens, isLoading } = useInactiveStellarTokens(accountKey);
 

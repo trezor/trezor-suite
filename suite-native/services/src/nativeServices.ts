@@ -4,6 +4,6 @@ export type MMKVStorageDep = {
     getMMKVStorage: () => Promise<MMKV>;
 };
 
-export const selectMMKVStorageDep = (services: any): MMKVStorageDep => ({
+export const injectMMKVStorage = (services: any): MMKVStorageDep => ({
     getMMKVStorage: services.getMMKVStorage,
 });

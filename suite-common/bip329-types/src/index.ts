@@ -76,6 +76,6 @@ export type Bip329Dep = {
     bip329: Bip329;
 };
 
-export const selectBip329Dep = (services: any): Bip329Dep => ({
+export const injectBip329 = (services: any): Bip329Dep => ({
     bip329: services.bip329,
 });

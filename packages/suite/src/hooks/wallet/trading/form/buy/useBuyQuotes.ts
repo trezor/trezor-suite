@@ -1,8 +1,8 @@
 import { type UseFormReturn } from 'react-hook-form';
 
-import { events, selectDesktopAnalyticsDep } from '@suite/analytics';
+import { events, injectDesktopAnalytics } from '@suite/analytics';
 import { useServices } from '@suite-common/dependency-injection';
-import { selectDispatch, selectGetState } from '@suite-common/redux-utils';
+import { injectDispatch, injectGetState } from '@suite-common/redux-utils';
 import {
     TRADING_BUY_RECEIVE_ADDRESS,
     TRADING_FORM_COUNTRY_SELECT,
@@ -41,9 +41,9 @@ const BUY_DEBOUNCED_FIELDS = [TRADING_FORM_FIAT_INPUT, TRADING_FORM_CRYPTO_INPUT
 
 export const useBuyQuotes = ({ methods, network, shouldSendInSats }: UseBuyQuotesProps) => {
     const { analytics, dispatch, getState } = useServices(
-        selectDesktopAnalyticsDep,
-        selectDispatch,
-        selectGetState,
+        injectDesktopAnalytics,
+        injectDispatch,
+        injectGetState,
     );
 
     const { isScheduledQuotesRefresh } = useTradingQuoteRequest({

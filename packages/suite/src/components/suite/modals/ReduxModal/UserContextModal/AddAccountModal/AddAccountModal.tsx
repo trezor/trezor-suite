@@ -1,6 +1,6 @@
 import { useCallback, useMemo, useRef, useState } from 'react';
 
-import { events, selectDesktopAnalyticsDep } from '@suite/analytics';
+import { events, injectDesktopAnalytics } from '@suite/analytics';
 import { selectIsPublic } from '@suite/coinjoin';
 import { selectIsDebugModeActive } from '@suite/debug';
 import { Translation } from '@suite/intl';
@@ -8,7 +8,7 @@ import { preserveModal } from '@suite/modal';
 import { selectIsTestnetNetworksEnabled } from '@suite/settings';
 import { useServices } from '@suite-common/dependency-injection';
 import { selectSupportedNetworkSymbols } from '@suite-common/networks';
-import { selectDispatch } from '@suite-common/redux-utils';
+import { injectDispatch } from '@suite-common/redux-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import {
     type Network,
@@ -77,7 +77,7 @@ export const AddAccountModal = ({
     const { activateNetwork, activatingNetworkSymbols, activationErrors } =
         useNetworkActivationQueue(device);
 
-    const { analytics, dispatch } = useServices(selectDesktopAnalyticsDep, selectDispatch);
+    const { analytics, dispatch } = useServices(injectDesktopAnalytics, injectDispatch);
     const { setCoinFilter, setSearchString, coinFilter } = useAccountSearch();
 
     const closeModalAndNotifyCompletion = useCallback(() => {

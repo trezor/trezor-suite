@@ -3,7 +3,7 @@ import { useCallback } from 'react';
 import { events } from '@suite-common/analytics';
 import { useServices } from '@suite-common/dependency-injection';
 import { AccountTypeDecisionBottomSheet, useAddCoinAccount } from '@suite-native/add-coin-account';
-import { selectNativeAnalyticsDep } from '@suite-native/analytics';
+import { injectNativeAnalytics } from '@suite-native/analytics';
 import { VStack } from '@suite-native/atoms';
 import { NetworkListItem } from '@suite-native/coin-enabling';
 import { Icon } from '@suite-native/icons';
@@ -20,7 +20,7 @@ import { isNotNullOrUndefined } from '@trezor/utils';
 export const AddCoinAccountScreen = ({
     route,
 }: StackProps<AddCoinAccountStackParamList, AddCoinAccountStackRoutes.AddCoinAccount>) => {
-    const { analytics } = useServices(selectNativeAnalyticsDep);
+    const { analytics } = useServices(injectNativeAnalytics);
 
     const reportSearchAnalytics = useCallback(
         () =>

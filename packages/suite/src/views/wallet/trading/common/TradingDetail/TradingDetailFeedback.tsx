@@ -5,7 +5,7 @@ import {
     type SellTradeStatus,
 } from 'invity-api';
 
-import { events, selectDesktopAnalyticsDep } from '@suite/analytics';
+import { events, injectDesktopAnalytics } from '@suite/analytics';
 import { useDevice } from '@suite/device';
 import { Translation } from '@suite/intl';
 import { useServices } from '@suite-common/dependency-injection';
@@ -15,7 +15,7 @@ import {
     formatExperimentVariantsForAnalytics,
     selectActiveExperimentsWithVariants,
 } from '@suite-common/message-system';
-import { selectDispatch } from '@suite-common/redux-utils';
+import { injectDispatch } from '@suite-common/redux-utils';
 import { type TradingType } from '@suite-common/trading';
 import { FeedbackCard } from '@trezor/product-components';
 
@@ -42,7 +42,7 @@ export const TradingDetailFeedback = ({
     const { device } = useDevice();
     const geolocation = useSelector(selectCountryCode);
     const activeExperimentsWithVariants = useSelector(selectActiveExperimentsWithVariants);
-    const { analytics, dispatch } = useServices(selectDesktopAnalyticsDep, selectDispatch);
+    const { analytics, dispatch } = useServices(injectDesktopAnalytics, injectDispatch);
 
     const handleRatingSelect = (rating: Rating) => {
         analytics.report({

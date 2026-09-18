@@ -1,7 +1,7 @@
 import { useCallback, useMemo } from 'react';
 
 import { useServices } from '@suite-common/dependency-injection';
-import { selectDispatch } from '@suite-common/redux-utils';
+import { injectDispatch } from '@suite-common/redux-utils';
 import { getNetwork, getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import {
     type WrappedNativeFlowType,
@@ -37,7 +37,7 @@ export const useWrappedNativeTokenFees = ({
     flowType,
     isEnabled,
 }: UseWrappedNativeTokenFeesParams) => {
-    const { dispatch } = useServices(selectDispatch);
+    const { dispatch } = useServices(injectDispatch);
 
     const formDraftKey = useMemo(
         () => (account ? getWrappedNativeTokenFormDraftKey(flowType, account.key) : ''),

@@ -2,7 +2,7 @@ import React from 'react';
 
 import { useServices } from '@suite-common/dependency-injection';
 import { type TradingTransaction } from '@suite-common/trading';
-import { type NativeAnalyticsDep, events, selectNativeAnalyticsDep } from '@suite-native/analytics';
+import { type NativeAnalyticsDep, events, injectNativeAnalytics } from '@suite-native/analytics';
 import { mockNativeAnalytics } from '@suite-native/analytics/mocks';
 import { renderHook, renderHookWithBasicProvider } from '@suite-native/test-utils';
 import { getBuyTrade, getExchangeTrade } from '@suite-native/trading-fixtures';
@@ -17,7 +17,7 @@ const services: NativeAnalyticsDep = {
 };
 
 const useHookWithReportSpy = (trades: TradingTransaction[]) => {
-    const { analytics } = useServices(selectNativeAnalyticsDep);
+    const { analytics } = useServices(injectNativeAnalytics);
 
     const spyRef = React.useRef<ReportSpy | null>(null);
 

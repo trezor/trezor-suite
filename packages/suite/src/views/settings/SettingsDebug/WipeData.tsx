@@ -1,9 +1,9 @@
 import styled from 'styled-components';
 
-import { selectDesktopApiDep } from '@suite/desktop-app-api';
+import { injectDesktopApi } from '@suite/desktop-app-api';
 import { useServices } from '@suite-common/dependency-injection';
-import { selectDispatch } from '@suite-common/redux-utils';
-import { selectReloadAppDep } from '@suite-common/suite-types';
+import { injectDispatch } from '@suite-common/redux-utils';
+import { injectReloadApp } from '@suite-common/suite-types';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { ActionButton, ActionColumn, SectionItem, TextColumn } from '@trezor/product-components';
 
@@ -21,9 +21,9 @@ const UserDataLink = styled.span`
 export const WipeData = () => {
     const userDataDir = useSelector(selectDesktopUserDataDirectory);
     const { desktopApi, reloadApp, dispatch } = useServices(
-        selectReloadAppDep,
-        selectDispatch,
-        selectDesktopApiDep,
+        injectReloadApp,
+        injectDispatch,
+        injectDesktopApi,
     );
 
     const openUserDataDir = async () => {

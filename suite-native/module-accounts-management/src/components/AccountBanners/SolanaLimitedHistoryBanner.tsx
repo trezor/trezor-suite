@@ -1,7 +1,7 @@
 import { useSelector } from 'react-redux';
 
 import { useServices } from '@suite-common/dependency-injection';
-import { selectDispatch } from '@suite-common/redux-utils';
+import { injectDispatch } from '@suite-common/redux-utils';
 import { BannerFull } from '@suite-native/atoms';
 import {
     selectIsSolanaLimitedHistoryBannerClosed,
@@ -14,7 +14,7 @@ export const SolanaLimitedHistoryBanner = () => {
 
     const isClosed = useSelector(selectIsSolanaLimitedHistoryBannerClosed);
 
-    const { dispatch } = useServices(selectDispatch);
+    const { dispatch } = useServices(injectDispatch);
     const handleClose = () => {
         dispatch(setIsSolanaLimitedHistoryBannerClosed());
     };

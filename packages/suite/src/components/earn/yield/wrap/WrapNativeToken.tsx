@@ -6,7 +6,7 @@ import { useMutation } from '@tanstack/react-query';
 import { Translation } from '@suite/intl';
 import { openModal } from '@suite/modal';
 import { useServices } from '@suite-common/dependency-injection';
-import { selectDispatch } from '@suite-common/redux-utils';
+import { injectDispatch } from '@suite-common/redux-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import { WETH_WRAP_GAS_RESERVE } from '@suite-common/wallet-constants';
@@ -46,7 +46,7 @@ type BroadcastWrap = {
 };
 
 export const WrapNativeToken = ({ account, token, onFlowCompleteChange }: WrapNativeTokenProps) => {
-    const { dispatch } = useServices(selectDispatch);
+    const { dispatch } = useServices(injectDispatch);
     const ensureDeviceReady = useWrappedNativeDeviceGuard();
     const {
         isDisabled,

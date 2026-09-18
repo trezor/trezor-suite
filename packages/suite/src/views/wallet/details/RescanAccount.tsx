@@ -1,7 +1,7 @@
 import { rescanCoinjoinAccountThunk } from '@suite/coinjoin';
 import { Translation } from '@suite/intl';
 import { useServices } from '@suite-common/dependency-injection';
-import { selectDispatch } from '@suite-common/redux-utils';
+import { injectDispatch } from '@suite-common/redux-utils';
 import { Row } from '@trezor/components';
 import { ActionButton, ActionColumn, TextColumn } from '@trezor/product-components';
 
@@ -12,7 +12,7 @@ type RescanAccountProps = {
 };
 
 export const RescanAccount = ({ account }: RescanAccountProps) => {
-    const { dispatch } = useServices(selectDispatch);
+    const { dispatch } = useServices(injectDispatch);
 
     return (
         <Row>

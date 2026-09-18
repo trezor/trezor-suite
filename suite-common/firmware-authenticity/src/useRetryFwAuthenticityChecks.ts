@@ -2,16 +2,16 @@ import { useEffect } from 'react';
 
 import { useGetter, useServices } from '@suite-common/dependency-injection';
 import {
-    selectRerunFwAuthenticityChecksCallDep,
-    selectShouldRetryFirmwareRevisionCheckErrorDep,
+    injectRerunFwAuthenticityChecksCall,
+    injectShouldRetryFirmwareRevisionCheckError,
 } from '@suite-common/suite-types';
 import { type TimerId } from '@trezor/type-utils';
 
 const REFRESH_INTERVAL = 5_000; // [ms]
 
 export const useRetryFwAuthenticityChecks = () => {
-    const shouldRetryFwRevisionCheck = useGetter(selectShouldRetryFirmwareRevisionCheckErrorDep);
-    const { rerunFwAuthenticityChecksCall } = useServices(selectRerunFwAuthenticityChecksCallDep);
+    const shouldRetryFwRevisionCheck = useGetter(injectShouldRetryFirmwareRevisionCheckError);
+    const { rerunFwAuthenticityChecksCall } = useServices(injectRerunFwAuthenticityChecksCall);
 
     useEffect(() => {
         let timeoutHandle: TimerId;

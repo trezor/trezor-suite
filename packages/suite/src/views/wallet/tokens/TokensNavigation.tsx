@@ -1,12 +1,12 @@
 import { type Dispatch, type SetStateAction, useEffect } from 'react';
 
-import { events, selectDesktopAnalyticsDep } from '@suite/analytics';
+import { events, injectDesktopAnalytics } from '@suite/analytics';
 import { selectIsDebugModeActive } from '@suite/debug';
 import { Translation, type TranslationKey, useTranslation } from '@suite/intl';
 import { openModal } from '@suite/modal';
 import { type Route, gotoThunk, selectRouteName } from '@suite/router';
 import { useServices } from '@suite-common/dependency-injection';
-import { selectDispatch } from '@suite-common/redux-utils';
+import { injectDispatch } from '@suite-common/redux-utils';
 import { selectCoinDefinitions, selectNftDefinitions } from '@suite-common/token-definitions';
 import { type NetworkType } from '@suite-common/wallet-config';
 import { type SelectedAccountLoaded } from '@suite-common/wallet-types';
@@ -114,7 +114,7 @@ export const TokensNavigation = ({
 }: TokensNavigationProps) => {
     const { account } = selectedAccount;
     const routeName = useSelector(selectRouteName);
-    const { analytics, dispatch } = useServices(selectDesktopAnalyticsDep, selectDispatch);
+    const { analytics, dispatch } = useServices(injectDesktopAnalytics, injectDispatch);
     const tokenDefinitions = useSelector(state =>
         isNft
             ? selectNftDefinitions(state, selectedAccount.account.symbol)

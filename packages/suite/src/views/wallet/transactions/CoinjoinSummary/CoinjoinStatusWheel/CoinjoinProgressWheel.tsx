@@ -15,7 +15,7 @@ import { Translation } from '@suite/intl';
 import { openModal } from '@suite/modal';
 import { gotoThunk } from '@suite/router';
 import { useServices } from '@suite-common/dependency-injection';
-import { selectDispatch } from '@suite-common/redux-utils';
+import { injectDispatch } from '@suite-common/redux-utils';
 import { type AccountKey } from '@suite-common/wallet-types';
 import { Tooltip } from '@trezor/components';
 
@@ -187,7 +187,7 @@ export const CoinjoinProgressWheel = ({ accountKey }: CoinjoinProgressWheelProps
 
     const [isWheelHovered, setIsWheelHovered] = useState(false);
 
-    const { dispatch } = useServices(selectDispatch);
+    const { dispatch } = useServices(injectDispatch);
     const { isCoinjoinSessionBlocked, coinjoinSessionBlocker, coinjoinSessionBlockedMessage } =
         useCoinjoinSessionBlockers(accountKey);
 

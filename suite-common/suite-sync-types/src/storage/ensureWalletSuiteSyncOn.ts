@@ -59,7 +59,7 @@ export type OnStorageEnsuredDep = {
 
 export type EnsureWalletSuiteSyncOnDep = { ensureWalletSuiteSyncOn: EnsureWalletSuiteSyncOn };
 
-export const selectEnsureWalletSuiteSyncOnDep = (services: any): EnsureWalletSuiteSyncOnDep => ({
+export const injectEnsureWalletSuiteSyncOn = (services: any): EnsureWalletSuiteSyncOnDep => ({
     ensureWalletSuiteSyncOn: services.suiteSync.ensureWalletSuiteSyncOn,
 });
 

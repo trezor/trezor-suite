@@ -2,7 +2,7 @@ import { useExternalLink } from '@suite/external-links';
 import { Translation } from '@suite/intl';
 import { useServices } from '@suite-common/dependency-injection';
 import { selectSelectedDevice } from '@suite-common/device';
-import { selectDispatch } from '@suite-common/redux-utils';
+import { injectDispatch } from '@suite-common/redux-utils';
 import {
     noQuotaLeftWarningDismissed,
     selectShouldDisplayOutOfQuotaAlert,
@@ -14,7 +14,7 @@ import { TREZOR_SUPPORT_URL } from '@trezor/urls';
 import { useSelector } from 'src/hooks/suite';
 
 export const OutOfQuotaBanner = () => {
-    const { dispatch } = useServices(selectDispatch);
+    const { dispatch } = useServices(injectDispatch);
 
     const href = useExternalLink(TREZOR_SUPPORT_URL);
     const device = useSelector(selectSelectedDevice);

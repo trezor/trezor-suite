@@ -1,7 +1,7 @@
 import { useEffect } from 'react';
 
 import { useServices } from '@suite-common/dependency-injection';
-import { selectDispatch } from '@suite-common/redux-utils';
+import { injectDispatch } from '@suite-common/redux-utils';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 
 import { FEES_UPDATE_INTERVAL_MILLISECONDS, FEE_UPDATE_DELAY_MILLISECONDS } from '../feesConstants';
@@ -10,7 +10,7 @@ import { updateFeeInfoThunk } from '../feesThunks';
 type UseRefetchFeesProps = { networkSymbol?: NetworkSymbol; isDisabled?: boolean };
 
 export const useFetchFeesOnce = ({ networkSymbol, isDisabled }: UseRefetchFeesProps) => {
-    const { dispatch } = useServices(selectDispatch);
+    const { dispatch } = useServices(injectDispatch);
 
     useEffect(() => {
         if (isDisabled || networkSymbol === undefined) return;
@@ -20,7 +20,7 @@ export const useFetchFeesOnce = ({ networkSymbol, isDisabled }: UseRefetchFeesPr
 
 // Refetch fees periodically, incl. loading behavior
 export const useRefetchFees = ({ networkSymbol, isDisabled }: UseRefetchFeesProps) => {
-    const { dispatch } = useServices(selectDispatch);
+    const { dispatch } = useServices(injectDispatch);
 
     useEffect(() => {
         if (isDisabled || !networkSymbol) return;

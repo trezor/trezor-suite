@@ -4,7 +4,7 @@ import type { BuyTrade } from 'invity-api';
 
 import { useServices } from '@suite-common/dependency-injection';
 import { selectTradingBuyIsLoading } from '@suite-common/trading';
-import { events, selectNativeAnalyticsDep } from '@suite-native/analytics';
+import { events, injectNativeAnalytics } from '@suite-native/analytics';
 import { Text } from '@suite-native/atoms';
 import { Translation, useTranslate } from '@suite-native/intl';
 import {
@@ -59,7 +59,7 @@ const BuyPaymentMethodPickerRight = ({
 
 export const BuyPaymentMethodPicker = () => {
     const { translate } = useTranslate();
-    const { analytics } = useServices(selectNativeAnalyticsDep);
+    const { analytics } = useServices(injectNativeAnalytics);
     const form = useBuyFormContext();
     const quotes = useSelector(selectBuyBestQuotesForAvailablePaymentMethods);
     const isLoading = useSelector(selectTradingBuyIsLoading);

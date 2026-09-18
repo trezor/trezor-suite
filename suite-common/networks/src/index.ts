@@ -39,7 +39,7 @@ export {
 } from './createGetNetworkConfig';
 export {
     createNetworkModuleRepository,
-    selectNetworkModuleRepositoryDep,
+    injectNetworkModuleRepository,
     type NetworkModuleRepository,
     type NetworkModuleRepositoryDep,
     type NetworkModuleRepositoryDeps,
@@ -53,7 +53,7 @@ export {
 
 export {
     createAddressValidator,
-    selectAddressValidatorDep,
+    injectAddressValidator,
     type AddressValidator,
     type AddressValidatorDep,
     type AddressValidatorDeps,
@@ -61,7 +61,7 @@ export {
 
 export {
     createGetNamedAddressSupport,
-    selectGetNamedAddressSupportDep,
+    injectGetNamedAddressSupport,
     type GetNamedAddressSupport,
     type GetNamedAddressSupportDep,
     type GetNamedAddressSupportDeps,

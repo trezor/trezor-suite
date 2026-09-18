@@ -2,7 +2,7 @@ import { createContext, useContext, useEffect } from 'react';
 
 import { setConnectionModal, useDevice } from '@suite/device';
 import { useServices } from '@suite-common/dependency-injection';
-import { selectDispatch } from '@suite-common/redux-utils';
+import { injectDispatch } from '@suite-common/redux-utils';
 import {
     type TradingType,
     type TradingUseDetailOutputProps,
@@ -27,7 +27,7 @@ export const useTradingDetail = <T extends TradingType>(
     const { tradeType } = props;
     const { account } = useTradingFormAccount(tradeType);
     const { device } = useDevice();
-    const { dispatch } = useServices(selectDispatch);
+    const { dispatch } = useServices(injectDispatch);
 
     const result = useTradingDetailCommon<T>({ tradeType });
 

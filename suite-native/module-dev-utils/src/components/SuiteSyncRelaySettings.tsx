@@ -1,7 +1,7 @@
 import { useSelector } from 'react-redux';
 
 import { useServices } from '@suite-common/dependency-injection';
-import { selectDispatch } from '@suite-common/redux-utils';
+import { injectDispatch } from '@suite-common/redux-utils';
 import {
     type WithSuiteSyncState,
     getSuiteSyncDefaultRelayUrl,
@@ -9,7 +9,7 @@ import {
     selectSuiteSyncRelayUrl,
     updateSuiteSyncDebugEnabled,
 } from '@suite-common/suite-sync';
-import { selectChangeRelayUrlDep } from '@suite-common/suite-sync-types';
+import { injectChangeRelayUrl } from '@suite-common/suite-sync-types';
 import { yup } from '@suite-common/validators';
 import { Button, Card, CheckBox, HStack, Text, VStack } from '@suite-native/atoms';
 import { Form, TextInputField, useForm } from '@suite-native/forms';
@@ -24,7 +24,7 @@ export const SuiteSyncRelaySettings = () => {
     const isSuiteSyncDebugEnabled = useSelector(selectIsSuiteSyncDebugEnabled);
     const defaultSuiteSyncRelayUrl = getSuiteSyncDefaultRelayUrl({ isTorEnabled: false });
 
-    const { changeRelayUrl, dispatch } = useServices(selectChangeRelayUrlDep, selectDispatch);
+    const { changeRelayUrl, dispatch } = useServices(injectChangeRelayUrl, injectDispatch);
 
     const { showToast } = useToast();
 

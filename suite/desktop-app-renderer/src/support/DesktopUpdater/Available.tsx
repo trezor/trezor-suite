@@ -1,11 +1,11 @@
 import { useSelector } from 'react-redux';
 
-import { type UpdateInfo, selectDesktopApiDep } from '@suite/desktop-app-api';
+import { type UpdateInfo, injectDesktopApi } from '@suite/desktop-app-api';
 import { downloadThunk } from '@suite/desktop-update';
 import { selectFlags, setFlag } from '@suite/flags';
 import { Translation } from '@suite/intl';
 import { useServices } from '@suite-common/dependency-injection';
-import { selectDispatch } from '@suite-common/redux-utils';
+import { injectDispatch } from '@suite-common/redux-utils';
 import { Card, Checkbox, Column, H4, Modal, Paragraph } from '@trezor/components';
 
 import { MarkdownWithComponents } from 'src/components/suite';
@@ -18,7 +18,7 @@ interface AvailableProps {
 }
 
 export const Available = ({ onCancel, latest }: AvailableProps) => {
-    const { desktopApi, dispatch } = useServices(selectDispatch, selectDesktopApiDep);
+    const { desktopApi, dispatch } = useServices(injectDispatch, injectDesktopApi);
     const { enableAutoupdateOnNextRun } = useSelector(selectFlags);
 
     const downloadUpdate = () => {

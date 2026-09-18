@@ -3,10 +3,10 @@ import { useCallback, useEffect } from 'react';
 import { useNavigation } from '@react-navigation/native';
 
 import { useServices } from '@suite-common/dependency-injection';
-import { selectDispatch } from '@suite-common/redux-utils';
+import { injectDispatch } from '@suite-common/redux-utils';
 import { switchToDuplicatedWalletThunk } from '@suite-common/wallet-core';
 import { useAlert } from '@suite-native/alerts';
-import { events, selectNativeAnalyticsDep } from '@suite-native/analytics';
+import { events, injectNativeAnalytics } from '@suite-native/analytics';
 import { useTranslate } from '@suite-native/intl';
 import {
     AppTabsRoutes,
@@ -25,7 +25,7 @@ type NavigationProp = StackToStackCompositeNavigationProps<
 >;
 
 export const PassphraseDuplicateAlert = ({ children }: { children: React.ReactNode }) => {
-    const { analytics, dispatch } = useServices(selectNativeAnalyticsDep, selectDispatch);
+    const { analytics, dispatch } = useServices(injectNativeAnalytics, injectDispatch);
     const { translate } = useTranslate();
 
     const navigation = useNavigation<NavigationProp>();

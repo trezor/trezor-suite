@@ -2,7 +2,7 @@ import { type ReactNode } from 'react';
 
 import { type ExtendedMessageDescriptor, Translation, useTranslation } from '@suite/intl';
 import { useServices } from '@suite-common/dependency-injection';
-import { selectDispatch } from '@suite-common/redux-utils';
+import { injectDispatch } from '@suite-common/redux-utils';
 import { type NotificationEntry, notificationsActions } from '@suite-common/toast-notifications';
 import { type IconComponent, Toast } from '@trezor/components';
 
@@ -31,7 +31,7 @@ export const ToastNotificationView = ({
     onCancel,
 }: ToastNotificationViewProps) => {
     const { translationString } = useTranslation();
-    const { dispatch } = useServices(selectDispatch);
+    const { dispatch } = useServices(injectDispatch);
 
     const handleDismiss = () => {
         dispatch(notificationsActions.close(notification.id));

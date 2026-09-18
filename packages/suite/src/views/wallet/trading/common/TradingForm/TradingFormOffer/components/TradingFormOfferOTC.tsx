@@ -1,11 +1,11 @@
 import { type FiatCurrencyCode } from 'invity-api';
 
-import { events, selectDesktopAnalyticsDep } from '@suite/analytics';
+import { events, injectDesktopAnalytics } from '@suite/analytics';
 import { Translation } from '@suite/intl';
 import { gotoThunk } from '@suite/router';
 import { selectLanguage } from '@suite/settings';
 import { useServices } from '@suite-common/dependency-injection';
-import { selectDispatch } from '@suite-common/redux-utils';
+import { injectDispatch } from '@suite-common/redux-utils';
 import {
     type TradingTradeBuySellType,
     cryptoIdToNetworkAndContractAddress,
@@ -26,7 +26,7 @@ import {
 } from 'src/utils/wallet/trading/tradingTypingUtils';
 
 export const TradingFormOfferOTC = () => {
-    const { analytics, dispatch } = useServices(selectDesktopAnalyticsDep, selectDispatch);
+    const { analytics, dispatch } = useServices(injectDesktopAnalytics, injectDispatch);
     const otcQuery = useFetchOtc();
     const { data: otcData, isSuccess } = otcQuery;
     const context = useTradingFormContext<TradingTradeBuySellType>();

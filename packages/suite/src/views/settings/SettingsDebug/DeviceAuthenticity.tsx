@@ -1,13 +1,13 @@
 import { selectIsUnlockedBootloaderAllowed, suiteSettingsActions } from '@suite/settings';
 import { useServices } from '@suite-common/dependency-injection';
-import { selectDispatch } from '@suite-common/redux-utils';
+import { injectDispatch } from '@suite-common/redux-utils';
 import { Switch } from '@trezor/components';
 import { ActionColumn, SectionItem, TextColumn } from '@trezor/product-components';
 
 import { useSelector } from 'src/hooks/suite';
 
 export const DeviceAuthenticity = () => {
-    const { dispatch } = useServices(selectDispatch);
+    const { dispatch } = useServices(injectDispatch);
     const isUnlockedBootloaderAllowed = useSelector(selectIsUnlockedBootloaderAllowed);
 
     const handleChange = (state: boolean) =>

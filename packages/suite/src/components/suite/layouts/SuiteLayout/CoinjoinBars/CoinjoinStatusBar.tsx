@@ -6,7 +6,7 @@ import { Translation } from '@suite/intl';
 import { gotoThunk, selectRouterParams } from '@suite/router';
 import { useServices } from '@suite-common/dependency-injection';
 import { selectDeviceThunk, selectDevices, selectSelectedDevice } from '@suite-common/device';
-import { selectDispatch } from '@suite-common/redux-utils';
+import { injectDispatch } from '@suite-common/redux-utils';
 import { selectAccountByKey } from '@suite-common/wallet-core';
 import { type AccountKey, type WalletParams } from '@suite-common/wallet-types';
 import { ProgressPie } from '@trezor/components';
@@ -78,7 +78,7 @@ export const CoinjoinStatusBar = ({ accountKey, session, isSingle }: CoinjoinSta
     );
     const roundsDurationInHours = useSelector(selectRoundsDurationInHours);
 
-    const { dispatch } = useServices(selectDispatch);
+    const { dispatch } = useServices(injectDispatch);
 
     if (!relatedAccount) {
         return null;

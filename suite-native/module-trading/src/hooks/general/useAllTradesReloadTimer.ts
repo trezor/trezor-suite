@@ -2,7 +2,7 @@ import { useCallback, useRef, useState } from 'react';
 import { useSelector } from 'react-redux';
 
 import { useServices } from '@suite-common/dependency-injection';
-import { selectDispatch } from '@suite-common/redux-utils';
+import { injectDispatch } from '@suite-common/redux-utils';
 import { tradingThunks } from '@suite-common/trading';
 import { selectTradesToWatchByAccount } from '@suite-native/trading-state';
 
@@ -11,7 +11,7 @@ import { useReloadTimer } from './useReloadTimer';
 const REFRESH_SECONDS = 120;
 
 export const useAllTradesReloadTimer = () => {
-    const { dispatch } = useServices(selectDispatch);
+    const { dispatch } = useServices(injectDispatch);
 
     // For initial refresh
     const [hasFetchedInitialTrades, setHasFetchedInitialTrades] = useState(false);

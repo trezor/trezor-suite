@@ -8,7 +8,7 @@ import { useNavigation } from '@react-navigation/native';
 import { events } from '@suite-common/analytics';
 import { useServices } from '@suite-common/dependency-injection';
 import { selectIsPortfolioTrackerDevice } from '@suite-common/device';
-import { selectDispatch } from '@suite-common/redux-utils';
+import { injectDispatch } from '@suite-common/redux-utils';
 import {
     DefinitionType,
     type TokenDefinitionsRootState,
@@ -24,7 +24,7 @@ import {
     selectAccountNetworkSymbol,
 } from '@suite-common/wallet-core';
 import { type AccountKey, type TokenAddress, toTokenSymbol } from '@suite-common/wallet-types';
-import { selectNativeAnalyticsDep } from '@suite-native/analytics';
+import { injectNativeAnalytics } from '@suite-native/analytics';
 import {
     BottomSheetModal,
     Box,
@@ -108,7 +108,7 @@ export const TokenSettingsBottomSheet = forwardRef(
         ref: Ref<BottomSheetModalMethods>,
     ) => {
         const { applyStyle } = useNativeStyles();
-        const { analytics, dispatch } = useServices(selectNativeAnalyticsDep, selectDispatch);
+        const { analytics, dispatch } = useServices(injectNativeAnalytics, injectDispatch);
         const navigation =
             useNavigation<
                 StackNavigationProps<RootStackParamList, RootStackRoutes.AccountDetail>

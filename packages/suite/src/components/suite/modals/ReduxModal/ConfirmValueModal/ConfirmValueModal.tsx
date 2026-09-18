@@ -2,7 +2,7 @@ import { type ReactNode, useEffect, useState } from 'react';
 
 import { AccountLabel } from '@suite/account';
 import { Address, selectAddressLabel } from '@suite/address';
-import { events, selectDesktopAnalyticsDep } from '@suite/analytics';
+import { events, injectDesktopAnalytics } from '@suite/analytics';
 import { useDevice } from '@suite/device';
 import { Translation, useTranslation } from '@suite/intl';
 import { Labeling } from '@suite/labeling';
@@ -11,7 +11,7 @@ import { MODAL_CONTEXT_USER, selectModalContext } from '@suite/modal';
 import { selectDesktopSuiteSyncInteraction } from '@suite/suite-sync';
 import { useServices } from '@suite-common/dependency-injection';
 import { selectSelectedDeviceLabelOrName } from '@suite-common/device';
-import { selectDispatch } from '@suite-common/redux-utils';
+import { injectDispatch } from '@suite-common/redux-utils';
 import { getDeviceInternalModel } from '@suite-common/suite-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { getDisplaySymbol } from '@suite-common/wallet-config';
@@ -81,7 +81,7 @@ export const ConfirmValueModal = ({
     const isMetadataEnabled = useSelector(selectIsMetadataEnabled);
     const { openNodeById } = useGuideOpenNode();
     const { translationString } = useTranslation();
-    const { analytics, dispatch } = useServices(selectDesktopAnalyticsDep, selectDispatch);
+    const { analytics, dispatch } = useServices(injectDesktopAnalytics, injectDispatch);
 
     const suiteSyncInteraction = useSelector(state =>
         account

@@ -1,7 +1,7 @@
 import { useDevice } from '@suite/device';
 import { Translation } from '@suite/intl';
 import { useServices } from '@suite-common/dependency-injection';
-import { selectDispatch } from '@suite-common/redux-utils';
+import { injectDispatch } from '@suite-common/redux-utils';
 import { startOrRestartDiscoveryThunk } from '@suite-common/wallet-core';
 import { RepeatIcon, WarningIcon } from '@trezor/icons';
 
@@ -14,7 +14,7 @@ import { AccountExceptionLayout } from 'src/components/wallet';
  * - Other @trezor/connect runtime error
  */
 export const AccountNotLoaded = () => {
-    const { dispatch } = useServices(selectDispatch);
+    const { dispatch } = useServices(injectDispatch);
     const { isLocked } = useDevice();
 
     const handleClick = () => dispatch(startOrRestartDiscoveryThunk());

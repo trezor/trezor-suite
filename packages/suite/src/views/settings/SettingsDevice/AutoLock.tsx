@@ -1,11 +1,11 @@
 import type { Locale } from 'date-fns';
 
-import { events, selectDesktopAnalyticsDep } from '@suite/analytics';
+import { events, injectDesktopAnalytics } from '@suite/analytics';
 import { useDevice } from '@suite/device';
 import { Translation } from '@suite/intl';
 import { Anchor, SettingsAnchor } from '@suite/router';
 import { useServices } from '@suite-common/dependency-injection';
-import { selectDispatch } from '@suite-common/redux-utils';
+import { injectDispatch } from '@suite-common/redux-utils';
 import { formatDurationStrict } from '@suite-common/suite-utils';
 import { ActionColumn, ActionSelect, SectionItem, TextColumn } from '@trezor/product-components';
 
@@ -33,7 +33,7 @@ interface AutoLockProps {
 export const AutoLock = ({ isDeviceLocked }: AutoLockProps) => {
     const { device } = useDevice();
     const locale = useLocales();
-    const { analytics, dispatch } = useServices(selectDesktopAnalyticsDep, selectDispatch);
+    const { analytics, dispatch } = useServices(injectDesktopAnalytics, injectDispatch);
     const autoLockDelay = device?.features?.auto_lock_delay_ms;
 
     if (typeof autoLockDelay !== 'number') {

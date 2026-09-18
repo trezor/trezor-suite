@@ -3,7 +3,7 @@ import { Translation } from '@suite/intl';
 import { openModal } from '@suite/modal';
 import { selectIsDeviceAuthenticityCheckEnabled } from '@suite/settings';
 import { useServices } from '@suite-common/dependency-injection';
-import { selectDispatch } from '@suite-common/redux-utils';
+import { injectDispatch } from '@suite-common/redux-utils';
 import { Column } from '@trezor/components';
 import {
     ActionButton,
@@ -24,7 +24,7 @@ type DeviceAuthenticityOptOutProps = {
 export const DeviceAuthenticityOptOut = ({
     isDeviceAuthenticityCheckSupported,
 }: DeviceAuthenticityOptOutProps) => {
-    const { dispatch } = useServices(selectDispatch);
+    const { dispatch } = useServices(injectDispatch);
     const isDeviceAuthenticityCheckEnabled = useSelector(selectIsDeviceAuthenticityCheckEnabled);
 
     const handleClick = () => {

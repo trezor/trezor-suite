@@ -1,8 +1,8 @@
-import { selectDesktopAnalyticsDep } from '@suite/analytics';
+import { injectDesktopAnalytics } from '@suite/analytics';
 import { setConnectionModal, setConnectionMode, useDevice } from '@suite/device';
 import { Translation } from '@suite/intl';
 import { useServices } from '@suite-common/dependency-injection';
-import { selectDispatch } from '@suite-common/redux-utils';
+import { injectDispatch } from '@suite-common/redux-utils';
 import { type StakeModalFlow } from '@suite-common/suite-types/src/staking';
 import { selectAreFeesLoading, selectHasRunningDiscovery } from '@suite-common/wallet-core';
 import { Modal, Tooltip } from '@trezor/components';
@@ -31,7 +31,7 @@ export const StakeButton = ({ flow }: StakeButtonProps) => {
         currency,
         isStakingDisabled: isCardanoStakingDisabled,
     } = useStakeFormContext();
-    const { analytics, dispatch } = useServices(selectDesktopAnalyticsDep, selectDispatch);
+    const { analytics, dispatch } = useServices(injectDesktopAnalytics, injectDispatch);
     const { isStakingDisabled, stakingMessageContent } = useMessageSystemStaking(network.symbol);
     const isDiscoveryRunning = useSelector(selectHasRunningDiscovery);
     const areFeesLoading = useSelector(state => selectAreFeesLoading(state, network.symbol));

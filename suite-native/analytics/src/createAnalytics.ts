@@ -7,7 +7,7 @@ export type NativeAnalyticsDep = {
     analytics: Analytics<AnalyticsNativeEvents>;
 };
 
-export const selectNativeAnalyticsDep = (services: any): NativeAnalyticsDep => ({
+export const injectNativeAnalytics = (services: any): NativeAnalyticsDep => ({
     analytics: services.analytics,
 });
 

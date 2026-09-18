@@ -4,7 +4,7 @@ import { useController, useForm, useWatch } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 
 import { useServices } from '@suite-common/dependency-injection';
-import { type AddressValidator, selectAddressValidatorDep } from '@suite-common/networks';
+import { type AddressValidator, injectAddressValidator } from '@suite-common/networks';
 import { yup } from '@suite-common/validators';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { type Account } from '@suite-common/wallet-types';
@@ -78,7 +78,7 @@ const DEFAULT_VALUES: SignVerifyFields = {
 };
 
 export const useSignVerifyForm = (isSignPage: boolean, account: Account) => {
-    const { addressValidator } = useServices(selectAddressValidatorDep);
+    const { addressValidator } = useServices(injectAddressValidator);
     const { register, handleSubmit, formState, reset, setValue, clearErrors, control, trigger } =
         useForm<SignVerifyFields, SignVerifyContext>({
             mode: 'onBlur',

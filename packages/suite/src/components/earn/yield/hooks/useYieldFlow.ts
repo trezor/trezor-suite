@@ -1,14 +1,14 @@
 import { useCallback, useEffect, useMemo, useRef } from 'react';
 import { type UseFormReturn } from 'react-hook-form';
 
-import { selectDesktopAnalyticsDep } from '@suite/analytics';
+import { injectDesktopAnalytics } from '@suite/analytics';
 import { setConnectionModal, setConnectionMode, useDevice } from '@suite/device';
 import { type TranslationKey } from '@suite/intl';
 import { openModal } from '@suite/modal';
 import { events } from '@suite-common/analytics';
 import { useServices } from '@suite-common/dependency-injection';
 import { type YieldDtoV2 } from '@suite-common/earn-stablecoin-api';
-import { selectDispatch } from '@suite-common/redux-utils';
+import { injectDispatch } from '@suite-common/redux-utils';
 import {
     type YieldAllowanceStatus,
     type YieldApproveModalState,
@@ -127,7 +127,7 @@ export const useYieldFlow = ({
     vault,
     flowType,
 }: UseYieldFlowProps): UseYieldFlowResult => {
-    const { analytics, dispatch } = useServices(selectDesktopAnalyticsDep, selectDispatch);
+    const { analytics, dispatch } = useServices(injectDesktopAnalytics, injectDispatch);
     const { device } = useDevice();
     const initAllowancePromiseRef = useRef<{ abort: () => void } | null>(null);
 

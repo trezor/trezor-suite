@@ -4,7 +4,7 @@ import { Translation } from '@suite/intl';
 import { SettingsAnchor, gotoThunk } from '@suite/router';
 import { selectIsExperimentalEnabled } from '@suite/settings';
 import { useServices } from '@suite-common/dependency-injection';
-import { selectDispatch } from '@suite-common/redux-utils';
+import { injectDispatch } from '@suite-common/redux-utils';
 import { Box, Column, Icon } from '@trezor/components';
 import { AtomIcon, CheckIcon, DotOutlineFilledIcon, StarFourIcon } from '@trezor/icons';
 import { QuickActionButton, TooltipRow } from '@trezor/product-components';
@@ -57,7 +57,7 @@ const DebugAndExperimentalTooltip = ({
 );
 
 export const DebugAndExperimental = () => {
-    const { dispatch } = useServices(selectDispatch);
+    const { dispatch } = useServices(injectDispatch);
 
     const isEapEnabled = useSelector(selectDesktopUpdateAllowPrerelease);
     const isExperimental = useSelector(selectIsExperimentalEnabled);

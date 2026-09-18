@@ -6,7 +6,7 @@ import { type PrimitiveAtom, useSetAtom } from 'jotai';
 import { useServices } from '@suite-common/dependency-injection';
 import { selectIsDeviceAuthorized } from '@suite-common/device';
 import { type AccountItem, type FiatGraphPoint } from '@suite-common/graph';
-import { returnStableArrayIfEmpty, selectDispatch } from '@suite-common/redux-utils';
+import { injectDispatch, returnStableArrayIfEmpty } from '@suite-common/redux-utils';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import {
     type BlockchainRootState,
@@ -43,7 +43,7 @@ export const useGraphData = ({
     backendSymbol,
     isEnabled = true,
 }: UseGraphDataParams) => {
-    const { dispatch } = useServices(selectDispatch);
+    const { dispatch } = useServices(injectDispatch);
     const isDeviceAuthorized = useSelector(selectIsDeviceAuthorized);
     const baseCurrencyCode = useSelector(selectBaseCurrency);
     const isElectrumBackend = useSelector((state: BlockchainRootState) =>

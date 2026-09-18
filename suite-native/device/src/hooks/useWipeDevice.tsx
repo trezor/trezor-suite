@@ -7,9 +7,9 @@ import { isFulfilled } from '@reduxjs/toolkit';
 import { events } from '@suite-common/analytics';
 import { useServices } from '@suite-common/dependency-injection';
 import { selectSelectedDevice } from '@suite-common/device';
-import { selectDispatch } from '@suite-common/redux-utils';
+import { injectDispatch } from '@suite-common/redux-utils';
 import { wipeDeviceThunk } from '@suite-common/wallet-core';
-import { selectNativeAnalyticsDep } from '@suite-native/analytics';
+import { injectNativeAnalytics } from '@suite-native/analytics';
 import { requestPrioritizedDeviceAccess } from '@suite-native/device-mutex';
 import { setWasDeviceOnboardingCancelled } from '@suite-native/device-onboarding';
 import {
@@ -25,7 +25,7 @@ type NavigationProps = StackNavigationProps<
 >;
 
 export const useWipeDevice = () => {
-    const { analytics, dispatch } = useServices(selectNativeAnalyticsDep, selectDispatch);
+    const { analytics, dispatch } = useServices(injectNativeAnalytics, injectDispatch);
     const navigation = useNavigation<NavigationProps>();
 
     const device = useSelector(selectSelectedDevice);

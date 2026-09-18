@@ -16,7 +16,7 @@ import {
     toTokenSymbol,
 } from '@suite-common/wallet-types';
 import { isApyAvailable } from '@suite-common/wallet-utils';
-import { selectNativeAnalyticsDep } from '@suite-native/analytics';
+import { injectNativeAnalytics } from '@suite-native/analytics';
 import { Box, Button, Card, HStack, Text, VStack } from '@suite-native/atoms';
 import {
     CompactTokenAmountFormatter,
@@ -61,7 +61,7 @@ export const YieldVaultDetailScreenContent = ({
 }: YieldVaultDetailScreenContentProps) => {
     const { applyStyle } = useNativeStyles();
     const navigation = useNavigation<NavigationProps>();
-    const { analytics } = useServices(selectNativeAnalyticsDep);
+    const { analytics } = useServices(injectNativeAnalytics);
 
     const { CryptoAmountFormatter: cryptoAmountFormatter } = useFormatters();
     const { isFirmwareSupported, showFirmwareUpdateAlert } =

@@ -3,7 +3,7 @@ import { useCallback, useRef } from 'react';
 import { events } from '@suite-common/analytics';
 import { useServices } from '@suite-common/dependency-injection';
 import { useAlert } from '@suite-native/alerts';
-import { selectNativeAnalyticsDep } from '@suite-native/analytics';
+import { injectNativeAnalytics } from '@suite-native/analytics';
 import { Translation } from '@suite-native/intl';
 import { useOpenLink } from '@suite-native/link';
 
@@ -16,7 +16,7 @@ export const useContactSupportAlert = () => {
     const appendixRef = useRef<ContactSupportAlertAppendixRef>(null);
     const { showAlert } = useAlert();
     const openLink = useOpenLink();
-    const { analytics } = useServices(selectNativeAnalyticsDep);
+    const { analytics } = useServices(injectNativeAnalytics);
 
     const showContactSupportAlert = useCallback(() => {
         showAlert({

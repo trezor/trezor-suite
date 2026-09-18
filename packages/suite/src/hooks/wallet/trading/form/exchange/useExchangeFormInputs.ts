@@ -1,7 +1,7 @@
 import { useWatch } from 'react-hook-form';
 
 import { useServices } from '@suite-common/dependency-injection';
-import { selectDispatch } from '@suite-common/redux-utils';
+import { injectDispatch } from '@suite-common/redux-utils';
 import {
     TRADING_FORM_CRYPTO_TOKEN,
     TRADING_FORM_OUTPUT_AMOUNT,
@@ -45,7 +45,7 @@ export const useExchangeFormInputs = ({
     setShowReserveBanner,
     setAccountOnChange,
 }: UseExchangeFormInputsProps): TradingUseFormActionsReturnProps => {
-    const { dispatch } = useServices(selectDispatch);
+    const { dispatch } = useServices(injectDispatch);
     const { isBtcSatsAmountUnit: shouldSendInSats } = useBitcoinAmountUnit(account?.symbol);
     const isNetworkReserveEnabled = useSelector(selectIsNetworkReserveEnabled);
     const accounts = useSelector(selectVisibleDeviceAccounts);

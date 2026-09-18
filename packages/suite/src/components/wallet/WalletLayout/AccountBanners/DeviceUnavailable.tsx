@@ -1,13 +1,13 @@
 import { useDevice } from '@suite/device';
 import { Translation } from '@suite/intl';
 import { useServices } from '@suite-common/dependency-injection';
-import { selectDispatch } from '@suite-common/redux-utils';
+import { injectDispatch } from '@suite-common/redux-utils';
 import { Banner } from '@trezor/components';
 
 import { applySettingsThunk } from 'src/actions/settings/deviceSettingsActions';
 
 export const DeviceUnavailable = () => {
-    const { dispatch } = useServices(selectDispatch);
+    const { dispatch } = useServices(injectDispatch);
     const { device, isLocked } = useDevice();
     const passphraseProtection = !!device?.features?.passphrase_protection;
 

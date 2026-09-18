@@ -4,7 +4,7 @@ import { events } from '@suite-common/analytics';
 import { useServices } from '@suite-common/dependency-injection';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { type WrappedNativeFlowType } from '@suite-common/wallet-core';
-import { selectNativeAnalyticsDep } from '@suite-native/analytics';
+import { injectNativeAnalytics } from '@suite-native/analytics';
 
 import { useWrappedNativeFlowReport } from './useWrappedNativeFlowReport';
 import { getWrappedNativeMaxInteractionElement } from '../../utils/earn/wrappedNativeAnalyticsUtils';
@@ -18,7 +18,7 @@ export const useWrappedNativeFlowAnalytics = ({
     flowType,
     networkSymbol,
 }: UseWrappedNativeFlowAnalyticsParams) => {
-    const { analytics } = useServices(selectNativeAnalyticsDep);
+    const { analytics } = useServices(injectNativeAnalytics);
     const report = useWrappedNativeFlowReport(flowType);
 
     const reportSubmit = useCallback(() => {

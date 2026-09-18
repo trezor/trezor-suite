@@ -3,14 +3,14 @@ import { type ReactNode } from 'react';
 import {
     feedbackRatingSelectedEvent,
     feedbackSentEvent,
-    selectDesktopAnalyticsDep,
+    injectDesktopAnalytics,
 } from '@suite/analytics';
 import { Translation, useTranslation } from '@suite/intl';
 import { gotoThunk } from '@suite/router';
 import { events } from '@suite-common/analytics';
 import { useServices } from '@suite-common/dependency-injection';
 import { type Rating, buildUserFeedbackData, sendFeedbackThunk } from '@suite-common/feedback';
-import { selectDispatch } from '@suite-common/redux-utils';
+import { injectDispatch } from '@suite-common/redux-utils';
 import { Button, Card, Column, Divider, Icon, IconCircle, Row, Text } from '@trezor/components';
 import { CheckCircleFilledIcon, CheckIcon } from '@trezor/icons';
 import { FeedbackCard } from '@trezor/product-components';
@@ -34,7 +34,7 @@ export const YieldFlowComplete = ({
     vaultId,
     children,
 }: YieldFlowCompleteProps) => {
-    const { analytics, dispatch } = useServices(selectDesktopAnalyticsDep, selectDispatch);
+    const { analytics, dispatch } = useServices(injectDesktopAnalytics, injectDispatch);
     const { translationString } = useTranslation();
     const { isBelowMobile } = useLayoutSize();
 

@@ -2,7 +2,7 @@ import { useCallback, useRef, useState } from 'react';
 
 import { useTranslation } from '@suite/intl';
 import { useServices } from '@suite-common/dependency-injection';
-import { selectDispatch } from '@suite-common/redux-utils';
+import { injectDispatch } from '@suite-common/redux-utils';
 import { updateFiatRatesThunk } from '@suite-common/wallet-core';
 import { type Timestamp, type TokenAddress } from '@suite-common/wallet-types';
 import { type BaseCurrencyCode } from '@trezor/blockchain-link-types';
@@ -58,7 +58,7 @@ export function SelectTokenAssetModal({
     } = useSendFormContext();
 
     const { translationString } = useTranslation();
-    const { dispatch } = useServices(selectDispatch);
+    const { dispatch } = useServices(injectDispatch);
 
     const [search, setSearch] = useState('');
     const { expandedGroupKeys, toggleGroup } = useExpandableGroups();

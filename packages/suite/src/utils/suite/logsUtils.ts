@@ -3,7 +3,7 @@ import { useEffect } from 'react';
 import { preserveModal, removePreserveModal } from '@suite/modal';
 import { useServices } from '@suite-common/dependency-injection';
 import { prettifyLog, useCommonApplicationLogs } from '@suite-common/logger';
-import { selectDispatch } from '@suite-common/redux-utils';
+import { injectDispatch } from '@suite-common/redux-utils';
 
 import { useSelector } from 'src/hooks/suite';
 import {
@@ -12,7 +12,7 @@ import {
 } from 'src/selectors/suite/logsSelectors';
 
 export const useApplicationLogs = ({ hideSensitiveInfo }: { hideSensitiveInfo: boolean }) => {
-    const { dispatch } = useServices(selectDispatch);
+    const { dispatch } = useServices(injectDispatch);
     const commonAppLogs = useCommonApplicationLogs(hideSensitiveInfo);
     const desktopApplicationInfo = useSelector((state: SuiteLogsApplicationInfoRootState) =>
         selectRedactedDesktopApplicationInfo(state, hideSensitiveInfo),

@@ -4,7 +4,7 @@ import { useSelector } from 'react-redux';
 import { isFulfilled } from '@reduxjs/toolkit';
 
 import { useServices } from '@suite-common/dependency-injection';
-import { selectDispatch } from '@suite-common/redux-utils';
+import { injectDispatch } from '@suite-common/redux-utils';
 import { invariant } from '@suite-common/suite-utils';
 import {
     type HandleBuyRequestThunkProps,
@@ -17,7 +17,7 @@ import {
     useTradingRefetchScheduler,
 } from '@suite-common/trading';
 import { type WalletSettingsRootState, selectIsAmountInSats } from '@suite-common/wallet-core';
-import { events, selectNativeAnalyticsDep } from '@suite-native/analytics';
+import { events, injectNativeAnalytics } from '@suite-native/analytics';
 import { useWatch } from '@suite-native/forms';
 import { getSymbolFromTradeableAsset } from '@suite-native/trading-atoms';
 import { buyActions, selectValidTradingBuyQuotesNative } from '@suite-native/trading-state';
@@ -103,7 +103,7 @@ const useBuyQuotesThunk = (
     quotesPromiseRef: RefObject<AbortablePromise | undefined>,
     debounce: ReturnType<typeof useDebounce>,
 ) => {
-    const { analytics, dispatch } = useServices(selectNativeAnalyticsDep, selectDispatch);
+    const { analytics, dispatch } = useServices(injectNativeAnalytics, injectDispatch);
     const asset = useWatch({ control: form.control, name: 'asset' });
     const symbol = getSymbolFromTradeableAsset(asset);
     const shouldSendInSats = useSelector((state: WalletSettingsRootState) =>

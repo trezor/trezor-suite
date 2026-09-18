@@ -4,7 +4,7 @@ import { useSelector } from 'react-redux';
 import { useServices } from '@suite-common/dependency-injection';
 import { selectIsDeviceConnectedViaBluetooth } from '@suite-common/device';
 import { type FirmwareUpdateResult, useFirmwareInstallation } from '@suite-common/firmware';
-import { selectDispatch } from '@suite-common/redux-utils';
+import { injectDispatch } from '@suite-common/redux-utils';
 import { type TxKeyPath, useTranslate } from '@suite-native/intl';
 import { setPriorityMode } from '@trezor/react-native-usb';
 
@@ -15,7 +15,7 @@ import { useFirmwareAnalytics } from './useFirmwareAnalytics';
 const MAYBE_STUCK_TIMEOUT = 1 * 60 * 1000; // 1 minute
 
 export const useFirmware = (params?: { navigationLocation: 'settings' | 'onboarding' }) => {
-    const { dispatch } = useServices(selectDispatch);
+    const { dispatch } = useServices(injectDispatch);
     const {
         firmwareUpdate: firmwareUpdateCommon,
         confirmOnDevice: confirmOnDeviceCommon,

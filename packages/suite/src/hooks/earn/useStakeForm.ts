@@ -4,7 +4,7 @@ import { useForm, useWatch } from 'react-hook-form';
 import useDebounce from 'react-use/lib/useDebounce';
 
 import { useServices } from '@suite-common/dependency-injection';
-import { selectDispatch } from '@suite-common/redux-utils';
+import { injectDispatch } from '@suite-common/redux-utils';
 import { getNetwork } from '@suite-common/wallet-config';
 import {
     getMaxStakeAmount,
@@ -45,7 +45,7 @@ type UseStakeFormProps = {
 };
 
 export const useStakeForm = ({ account }: UseStakeFormProps): StakeContextValues => {
-    const { dispatch } = useServices(selectDispatch);
+    const { dispatch } = useServices(injectDispatch);
     const network = getNetwork(account.symbol);
 
     const baseCurrencyCode = useSelector(selectBaseCurrency);

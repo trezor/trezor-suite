@@ -1,13 +1,13 @@
 import { useState } from 'react';
 
-import { selectDesktopAnalyticsDep } from '@suite/analytics';
+import { injectDesktopAnalytics } from '@suite/analytics';
 import { selectIsDebugModeActive } from '@suite/debug';
 import { Translation } from '@suite/intl';
 import { events } from '@suite-common/analytics';
 import { connectPopupActions, selectConnectPopupCall } from '@suite-common/connect-popup';
 import { CALL_SOURCE_WALLETCONNECT } from '@suite-common/connect-popup/src/connectPopupTypes';
 import { useServices } from '@suite-common/dependency-injection';
-import { selectDispatch } from '@suite-common/redux-utils';
+import { injectDispatch } from '@suite-common/redux-utils';
 import { Card, Checkbox, Column, Modal, Row, Text, Tooltip } from '@trezor/components';
 import { ERRORS } from '@trezor/connect-common/src/constants';
 
@@ -18,7 +18,7 @@ import { useSelector } from 'src/hooks/suite';
 import { GroupedPermissionsList } from 'src/views/settings/SettingsConnectedApps/ConnectPermissions';
 
 export const ConnectPermissionsModal = () => {
-    const { analytics, dispatch } = useServices(selectDesktopAnalyticsDep, selectDispatch);
+    const { analytics, dispatch } = useServices(injectDesktopAnalytics, injectDispatch);
     const [isRemembered, setIsRemembered] = useState(false);
     const [isSilentMode, setIsSilentMode] = useState(false);
     const popupCall = useSelector(selectConnectPopupCall);

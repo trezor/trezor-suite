@@ -2,7 +2,7 @@ import { useEffect, useRef } from 'react';
 import { type FieldPath, type UseFormReturn } from 'react-hook-form';
 
 import { useServices } from '@suite-common/dependency-injection';
-import { selectDispatch } from '@suite-common/redux-utils';
+import { injectDispatch } from '@suite-common/redux-utils';
 import {
     type FeeInfo,
     type FormState,
@@ -45,7 +45,7 @@ export const useFees = <TFieldValues extends FeesFormValues>({
     formState: { errors },
     ...props
 }: Props<TFieldValues>) => {
-    const { dispatch } = useServices(selectDispatch);
+    const { dispatch } = useServices(injectDispatch);
 
     // local references
     const selectedFeeRef = useRef(defaultValue);

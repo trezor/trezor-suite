@@ -7,7 +7,7 @@ import { isFulfilled } from '@reduxjs/toolkit';
 import { useAtomValue } from 'jotai';
 
 import { useServices } from '@suite-common/dependency-injection';
-import { selectDispatch } from '@suite-common/redux-utils';
+import { injectDispatch } from '@suite-common/redux-utils';
 import {
     type AccountsRootState,
     type TransactionsRootState,
@@ -108,7 +108,7 @@ export const OutputsReviewFooter = ({
     setIsSendInProgress,
 }: OutputsReviewFooterParams) => {
     const [txid, setTxid] = useState<string>('');
-    const { dispatch } = useServices(selectDispatch);
+    const { dispatch } = useServices(injectDispatch);
     const navigation = useNavigation<NavigationProps>();
     const { showAlert } = useAlert();
     const wasAppLeftDuringReview = useAtomValue(wasAppLeftDuringReviewAtom);

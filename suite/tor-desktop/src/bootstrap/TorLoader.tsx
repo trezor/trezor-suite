@@ -5,7 +5,7 @@ import { Translation } from '@suite/intl';
 import { selectIsTorError, selectTorBootstrap, torActions } from '@suite/tor';
 import { TorStatus } from '@suite/tor-types';
 import { useServices } from '@suite-common/dependency-injection';
-import { selectDispatch } from '@suite-common/redux-utils';
+import { injectDispatch } from '@suite-common/redux-utils';
 import {
     Banner,
     Card,
@@ -33,7 +33,7 @@ export const TorLoader = ({ callback }: TorLoaderProps) => {
     const [isDisabling, setIsDisabling] = useState<boolean>(false);
     const torBootstrap = useSelector(selectTorBootstrap);
     const isTorError = useSelector(selectIsTorError);
-    const { dispatch } = useServices(selectDispatch);
+    const { dispatch } = useServices(injectDispatch);
 
     useEffect(() => {
         // When Tor is disabling there might still be some bootstrap event coming but

@@ -1,11 +1,11 @@
 import { memo } from 'react';
 
-import { events, selectDesktopAnalyticsDep } from '@suite/analytics';
+import { events, injectDesktopAnalytics } from '@suite/analytics';
 import { Translation } from '@suite/intl';
 import { gotoThunk } from '@suite/router';
 import { type AssetFiatBalance } from '@suite-common/assets';
 import { useServices } from '@suite-common/dependency-injection';
-import { selectDispatch } from '@suite-common/redux-utils';
+import { injectDispatch } from '@suite-common/redux-utils';
 import { selectCoinDefinitions } from '@suite-common/token-definitions';
 import { type Network } from '@suite-common/wallet-config';
 import { selectAnyAccountIsStakingActive, useDisplayBaseCurrency } from '@suite-common/wallet-core';
@@ -60,7 +60,7 @@ export const AssetRow = memo(
         isStakeNetwork,
     }: AssetTableRowProps) => {
         const { symbol } = network;
-        const { analytics, dispatch } = useServices(selectDesktopAnalyticsDep, selectDispatch);
+        const { analytics, dispatch } = useServices(injectDesktopAnalytics, injectDispatch);
         const { shallDisplayBaseCurrency } = useDisplayBaseCurrency(symbol);
 
         const handleRowClick = () => {

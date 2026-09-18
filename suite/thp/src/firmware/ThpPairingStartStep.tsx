@@ -2,7 +2,7 @@ import { type ReactNode, useEffect, useState } from 'react';
 
 import { Translation } from '@suite/intl';
 import { useServices } from '@suite-common/dependency-injection';
-import { selectDispatch } from '@suite-common/redux-utils';
+import { injectDispatch } from '@suite-common/redux-utils';
 import { Card, Column, Modal, Text } from '@trezor/components';
 
 import { startThpSessionThunk } from '../startThpSessionThunk';
@@ -15,7 +15,7 @@ type ThpPairingStartStepProps = {
 // reflection of components/onboarding/ThpPairing/ThpPairingStartStep
 export const ThpPairingStartStep = (props: ThpPairingStartStepProps) => {
     const [isLoading, setIsLoading] = useState(props.isLoading);
-    const { dispatch } = useServices(selectDispatch);
+    const { dispatch } = useServices(injectDispatch);
     useEffect(() => {
         setIsLoading(props.isLoading);
     }, [props.isLoading]);

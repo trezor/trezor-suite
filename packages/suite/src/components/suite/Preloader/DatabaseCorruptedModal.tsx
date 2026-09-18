@@ -2,14 +2,14 @@ import React, { useState } from 'react';
 
 import { Translation } from '@suite/intl';
 import { useServices } from '@suite-common/dependency-injection';
-import { selectDispatch } from '@suite-common/redux-utils';
+import { injectDispatch } from '@suite-common/redux-utils';
 import { H3, Modal } from '@trezor/components';
 import { DatabaseIcon } from '@trezor/icons';
 
 import { resetSuiteAppThunk } from 'src/actions/suite/suiteThunks';
 
 export const DatabaseCorruptedModal = () => {
-    const { dispatch } = useServices(selectDispatch);
+    const { dispatch } = useServices(injectDispatch);
     const [isLoading, setIsLoading] = useState(false);
 
     const handleClick = () => {

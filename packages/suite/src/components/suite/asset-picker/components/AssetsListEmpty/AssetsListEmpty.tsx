@@ -5,7 +5,7 @@ import { openModal } from '@suite/modal';
 import { useServices } from '@suite-common/dependency-injection';
 import { selectSelectedDevice } from '@suite-common/device';
 import { selectNetworkSymbolForProtocol } from '@suite-common/networks';
-import { selectDispatch } from '@suite-common/redux-utils';
+import { injectDispatch } from '@suite-common/redux-utils';
 import { getNetworkDisplaySymbolName } from '@suite-common/wallet-config';
 import { selectHasRunningDiscovery } from '@suite-common/wallet-core';
 import { Button, Column, Paragraph } from '@trezor/components';
@@ -28,7 +28,7 @@ export const AssetsListEmpty = ({
     children,
     height,
 }: AssetsListEmptyProps) => {
-    const { dispatch } = useServices(selectDispatch);
+    const { dispatch } = useServices(injectDispatch);
     const protocolScheme = useSelector(selectProtocolSendFormScheme);
     const device = useSelector(selectSelectedDevice);
     const isDiscoveryRunning = useSelector(selectHasRunningDiscovery);

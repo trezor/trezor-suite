@@ -3,7 +3,7 @@ import { useCallback } from 'react';
 import { type NavigationProp, useNavigation } from '@react-navigation/native';
 
 import { useServices } from '@suite-common/dependency-injection';
-import { selectDispatch } from '@suite-common/redux-utils';
+import { injectDispatch } from '@suite-common/redux-utils';
 import { AnimatedBannerFull } from '@suite-native/atoms';
 import { Translation, type TxKeyPath } from '@suite-native/intl';
 import { type RootStackParamList, RootStackRoutes } from '@suite-native/navigation';
@@ -20,7 +20,7 @@ export const FeatureFeedbackAlert = ({
     pendingFeature,
     featureTitleKey,
 }: FeatureFeedbackAlertProps) => {
-    const { dispatch } = useServices(selectDispatch);
+    const { dispatch } = useServices(injectDispatch);
     const navigation = useNavigation<NavigationProp<RootStackParamList>>();
 
     const handleRate = useCallback(() => {

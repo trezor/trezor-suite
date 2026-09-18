@@ -6,7 +6,7 @@ import { connectPopupActions, selectConnectAppPermissions } from '@suite-common/
 // eslint-disable-next-line local-rules/no-package-deep-imports
 import { type AppRememberedPermission } from '@suite-common/connect-popup/src/connectPopupTypes';
 import { useServices } from '@suite-common/dependency-injection';
-import { selectDispatch } from '@suite-common/redux-utils';
+import { injectDispatch } from '@suite-common/redux-utils';
 import {
     AnimatedBox,
     Button,
@@ -28,7 +28,7 @@ import { ConnectAppIcon } from '../components/ConnectAppIcon';
 import { GroupedPermissionsList } from '../components/GroupedPermissionsList';
 
 const PermissionDetailCard = ({ app }: { app: AppRememberedPermission }) => {
-    const { dispatch } = useServices(selectDispatch);
+    const { dispatch } = useServices(injectDispatch);
     const handleDisconnect = () => {
         dispatch(connectPopupActions.forgetAppPermissions(app));
     };

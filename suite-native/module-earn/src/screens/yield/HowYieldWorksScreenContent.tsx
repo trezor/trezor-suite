@@ -6,7 +6,7 @@ import {
     type ResolvedYieldFlowData,
     getYieldVaultContractAddress,
 } from '@suite-common/wallet-core';
-import { selectNativeAnalyticsDep } from '@suite-native/analytics';
+import { injectNativeAnalytics } from '@suite-native/analytics';
 import { Button, TimelineDetailsCard, VStack } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 import {
@@ -48,7 +48,7 @@ export const HowYieldWorksScreenContent = ({ yieldFlowData }: HowYieldWorksScree
     } = yieldFlowData;
 
     const { show: showYieldApyBreakdownAlert } = useYieldApyBreakdownAlert({ account, vault });
-    const { analytics } = useServices(selectNativeAnalyticsDep);
+    const { analytics } = useServices(injectNativeAnalytics);
     const registerNavigateBackAnalytics = useNavigateBackAnalytics({
         type: events.yieldNavigateEvent.name,
         payload: {

@@ -6,7 +6,7 @@ import { useNavigation } from '@react-navigation/native';
 import { FlashList, type FlashListRef } from '@shopify/flash-list';
 
 import { useServices } from '@suite-common/dependency-injection';
-import { selectDispatch } from '@suite-common/redux-utils';
+import { injectDispatch } from '@suite-common/redux-utils';
 import {
     type TradingRootStateWithDeviceAndAccounts,
     type TradingTransaction,
@@ -44,7 +44,7 @@ export type TradingHistoryProps = {
 export const TradingHistory = ({ onOpenTradeDetail }: TradingHistoryProps) => {
     const navigation = useNavigation();
     const { applyStyle, utils } = useNativeStyles();
-    const { dispatch } = useServices(selectDispatch);
+    const { dispatch } = useServices(injectDispatch);
     const { bottom: insetBottom } = useSafeAreaInsets();
     const tradeToBeOpened = useSelector(selectTradeToBeOpened);
     const flashListRef = useRef<FlashListRef<TradingTransaction>>(null);

@@ -6,7 +6,7 @@ import { type RouteProp, useIsFocused, useNavigation, useRoute } from '@react-na
 import { events } from '@suite-common/analytics';
 import { useServices } from '@suite-common/dependency-injection';
 import { Context } from '@suite-common/message-system';
-import { selectDispatch } from '@suite-common/redux-utils';
+import { injectDispatch } from '@suite-common/redux-utils';
 import { getNetwork } from '@suite-common/wallet-config';
 import {
     type YieldWithdrawFlowType,
@@ -19,7 +19,7 @@ import {
 } from '@suite-common/wallet-core';
 import { toTokenAddress, toTokenSymbol } from '@suite-common/wallet-types';
 import { asAmountSubunit, getApyBreakdown, subunitsToUnits } from '@suite-common/wallet-utils';
-import { selectNativeAnalyticsDep } from '@suite-native/analytics';
+import { injectNativeAnalytics } from '@suite-native/analytics';
 import {
     AnimatedDoubleInput,
     Box,
@@ -103,7 +103,7 @@ export const YieldWithdrawScreen = () => {
     const isFocused = useIsFocused();
     const { applyStyle } = useNativeStyles();
     const { translate } = useTranslate();
-    const { analytics, dispatch } = useServices(selectNativeAnalyticsDep, selectDispatch);
+    const { analytics, dispatch } = useServices(injectNativeAnalytics, injectDispatch);
 
     const [assetAmount, setAssetAmount] = useState('');
     const [sharesAmount, setSharesAmount] = useState('');

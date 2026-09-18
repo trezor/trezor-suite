@@ -4,7 +4,7 @@ import { openModal } from '@suite/modal';
 import { getTxAnchor, gotoThunk, selectRouteName, selectRouterApp } from '@suite/router';
 import { useServices } from '@suite-common/dependency-injection';
 import { selectDeviceThunk, selectDevices, selectSelectedDevice } from '@suite-common/device';
-import { selectDispatch } from '@suite-common/redux-utils';
+import { injectDispatch } from '@suite-common/redux-utils';
 import {
     selectAccounts,
     selectNetworkBlockchainInfo,
@@ -43,7 +43,7 @@ export const TransactionRenderer = ({ render: View, ...props }: TransactionRende
     const currentDevice = useSelector(selectSelectedDevice);
     const routeName = useSelector(selectRouteName);
     const routerApp = useSelector(selectRouterApp);
-    const { dispatch } = useServices(selectDispatch);
+    const { dispatch } = useServices(injectDispatch);
 
     const networkAccounts = findAccountsByNetwork(symbol, accounts);
     const account = findAccountsByDescriptor(descriptor, networkAccounts).at(0);

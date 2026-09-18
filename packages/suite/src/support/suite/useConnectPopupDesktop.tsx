@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 
-import { selectDesktopAnalyticsDep } from '@suite/analytics';
-import { selectDesktopApiDep } from '@suite/desktop-app-api';
+import { injectDesktopAnalytics } from '@suite/analytics';
+import { injectDesktopApi } from '@suite/desktop-app-api';
 import { MODAL_CONTEXT_DEVICE, openModal } from '@suite/modal';
 import { events } from '@suite-common/analytics';
 import {
@@ -16,7 +16,7 @@ import {
 } from '@suite-common/connect-popup';
 import { useServices } from '@suite-common/dependency-injection';
 import { selectSelectedDevice } from '@suite-common/device';
-import { selectDispatch } from '@suite-common/redux-utils';
+import { injectDispatch } from '@suite-common/redux-utils';
 import TrezorConnect, {
     type CallMethodKeys,
     type CallMethodPayload,
@@ -32,9 +32,9 @@ import { selectSuiteLifecycle } from 'src/selectors/suite/suiteSelectors';
 
 export const useConnectPopupDesktop = () => {
     const { desktopApi, analytics, dispatch } = useServices(
-        selectDesktopAnalyticsDep,
-        selectDispatch,
-        selectDesktopApiDep,
+        injectDesktopAnalytics,
+        injectDispatch,
+        injectDesktopApi,
     );
     const popupCall = useSelector(selectConnectPopupCall);
     const selectedDevice = useSelector(selectSelectedDevice);

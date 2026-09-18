@@ -4,14 +4,10 @@ import { useSelector } from 'react-redux';
 import { useFocusEffect } from '@react-navigation/native';
 
 import { useServices } from '@suite-common/dependency-injection';
-import { selectDispatch } from '@suite-common/redux-utils';
+import { injectDispatch } from '@suite-common/redux-utils';
 import { toggleAutoEjectThunk } from '@suite-common/wallet-core';
 import { useAlert } from '@suite-native/alerts';
-import {
-    type AutoEjectModalValue,
-    events,
-    selectNativeAnalyticsDep,
-} from '@suite-native/analytics';
+import { type AutoEjectModalValue, events, injectNativeAnalytics } from '@suite-native/analytics';
 import { CenteredTitleHeader, VStack } from '@suite-native/atoms';
 import { selectIsBluetoothDeviceOsUnpairingRequired } from '@suite-native/bluetooth';
 import { Translation } from '@suite-native/intl';
@@ -27,7 +23,7 @@ import { AutoEjectAnimation } from './components/AutoEjectAnimation';
 export const useShowAutoEjectAlert = () => {
     const { showAlert, hideAlert } = useAlert();
     const { showToast } = useToast();
-    const { analytics, dispatch } = useServices(selectNativeAnalyticsDep, selectDispatch);
+    const { analytics, dispatch } = useServices(injectNativeAnalytics, injectDispatch);
     const shouldShowAutoEjectAlert = useSelector(selectShouldShowAutoEjectAlert);
     const isBluetoothDeviceOsUnpairingRequired = useSelector(
         selectIsBluetoothDeviceOsUnpairingRequired,

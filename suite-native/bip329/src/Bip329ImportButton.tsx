@@ -2,7 +2,7 @@ import { useState } from 'react';
 
 import { File } from 'expo-file-system';
 
-import { bip329LabelSchema, selectBip329Dep } from '@suite-common/bip329-types';
+import { bip329LabelSchema, injectBip329 } from '@suite-common/bip329-types';
 import { useServices } from '@suite-common/dependency-injection';
 import { parseJsonl } from '@suite-common/jsonl';
 import { type AccountDescriptor } from '@suite-common/wallet-types';
@@ -23,7 +23,7 @@ export const Bip329ImportButton = ({
 }: Bip329ImportButtonProps) => {
     const [isImporting, setIsImporting] = useState(false);
     const { showToast } = useToast();
-    const { bip329 } = useServices(selectBip329Dep);
+    const { bip329 } = useServices(injectBip329);
     const { handleSuiteSyncError } = useSuiteSyncErrorHandler();
 
     const handleImport = async () => {

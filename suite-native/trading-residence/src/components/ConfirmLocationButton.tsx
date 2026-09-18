@@ -1,5 +1,5 @@
 import { useServices } from '@suite-common/dependency-injection';
-import { selectDispatch } from '@suite-common/redux-utils';
+import { injectDispatch } from '@suite-common/redux-utils';
 import { isCountrySubdivisionRequired } from '@suite-common/trading';
 import { Button } from '@suite-native/atoms';
 import { useFormContext, useWatch } from '@suite-native/forms';
@@ -22,7 +22,7 @@ export const ConfirmLocationButton = ({ afterConfirm, testId }: ConfirmLocationB
     const { control } = useFormContext<TradingLocationFormValues>();
     const countrySubdivision = useWatch({ control, name: 'countrySubdivision' });
     const { showSheet: showCountrySubdivisionPicker } = useCountrySubdivisionPickerControls();
-    const { dispatch } = useServices(selectDispatch);
+    const { dispatch } = useServices(injectDispatch);
     const analyticsReport = useCountrySelectionAnalyticsReport();
     const isSubdivisionMissing =
         isCountrySubdivisionRequired(countryCode) && typeof countrySubdivision === 'undefined';

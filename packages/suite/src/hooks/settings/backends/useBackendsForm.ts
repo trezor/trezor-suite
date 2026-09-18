@@ -1,11 +1,11 @@
 import { useEffect, useState } from 'react';
 import { useForm, useWatch } from 'react-hook-form';
 
-import { events, selectDesktopAnalyticsDep } from '@suite/analytics';
+import { events, injectDesktopAnalytics } from '@suite/analytics';
 import { useTranslation } from '@suite/intl';
 import { isOnionUrl } from '@suite/tor';
 import { useServices } from '@suite-common/dependency-injection';
-import { selectDispatch } from '@suite-common/redux-utils';
+import { injectDispatch } from '@suite-common/redux-utils';
 import {
     type NetworkSymbol,
     type ServerType,
@@ -72,7 +72,7 @@ const getStoredState = (
 });
 
 export const useBackendsForm = (symbol: NetworkSymbol) => {
-    const { analytics, dispatch } = useServices(selectDesktopAnalyticsDep, selectDispatch);
+    const { analytics, dispatch } = useServices(injectDesktopAnalytics, injectDispatch);
     const backends = useSelector(state => selectNetworkBlockchainInfo(state, symbol).backends);
     const { translationString } = useTranslation();
     const [currentValues, setCurrentValues] = useState(() =>

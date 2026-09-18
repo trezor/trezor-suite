@@ -6,7 +6,7 @@ import { selectSelectedDevice } from '@suite-common/device';
 import { type SuiteSyncUpdateError } from '@suite-common/suite-sync-storage';
 import {
     type EnsureWalletSuiteSyncOnErrors,
-    selectDangerouslyWipeAllLabelsFromWalletDep,
+    injectDangerouslyWipeAllLabelsFromWallet,
 } from '@suite-common/suite-sync-types';
 import { Button } from '@trezor/components';
 import { type StaticSessionId } from '@trezor/connect';
@@ -37,7 +37,7 @@ export const WipeSuiteSyncLabels = ({ onError }: WipeSuiteSyncLabelsProps) => {
     const [wipeConfirmationCountdown, setWipeConfirmationCountdown] = useState(0);
 
     const { dangerouslyWipeAllLabelsFromWallet } = useServices(
-        selectDangerouslyWipeAllLabelsFromWalletDep,
+        injectDangerouslyWipeAllLabelsFromWallet,
     );
 
     const wipeConfirmationTimeoutRef = useRef<TimerId | null>(null);

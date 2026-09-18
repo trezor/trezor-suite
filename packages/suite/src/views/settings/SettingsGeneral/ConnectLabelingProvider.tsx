@@ -3,12 +3,12 @@ import { Translation } from '@suite/intl';
 import { metadataLabelingActions } from '@suite/metadata';
 import { Anchor, SettingsAnchor } from '@suite/router';
 import { useServices } from '@suite-common/dependency-injection';
-import { selectDispatch } from '@suite-common/redux-utils';
+import { injectDispatch } from '@suite-common/redux-utils';
 import { Tooltip } from '@trezor/components';
 import { ActionButton, ActionColumn, SectionItem, TextColumn } from '@trezor/product-components';
 
 export const ConnectLabelingProvider = () => {
-    const { dispatch } = useServices(selectDispatch);
+    const { dispatch } = useServices(injectDispatch);
     const { device } = useDevice();
     const isDeviceConnected = device?.connected && device?.available;
     const handleClick = () => dispatch(metadataLabelingActions.initThunk(true));

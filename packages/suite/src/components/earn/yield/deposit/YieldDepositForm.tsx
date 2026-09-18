@@ -1,4 +1,4 @@
-import { selectDesktopAnalyticsDep } from '@suite/analytics';
+import { injectDesktopAnalytics } from '@suite/analytics';
 import { Translation } from '@suite/intl';
 import { events } from '@suite-common/analytics';
 import { useServices } from '@suite-common/dependency-injection';
@@ -28,7 +28,7 @@ import { YieldFlowStepList } from '../common/YieldFlowStepList';
 import { YieldWrapStep } from '../common/YieldWrapStep';
 
 export const YieldDepositForm = () => {
-    const { analytics } = useServices(selectDesktopAnalyticsDep);
+    const { analytics } = useServices(injectDesktopAnalytics);
 
     const {
         account,

@@ -1,12 +1,12 @@
 import { useMemo } from 'react';
 
-import { events, selectDesktopAnalyticsDep } from '@suite/analytics';
+import { events, injectDesktopAnalytics } from '@suite/analytics';
 import { selectFlags, setFlag } from '@suite/flags';
 import { Translation } from '@suite/intl';
 import { gotoThunk, selectRouter } from '@suite/router';
 import { useServices } from '@suite-common/dependency-injection';
 import { useFormatters } from '@suite-common/formatters';
-import { selectDispatch } from '@suite-common/redux-utils';
+import { injectDispatch } from '@suite-common/redux-utils';
 import { type NetworkType, getDisplaySymbol } from '@suite-common/wallet-config';
 import {
     calculateRewards,
@@ -34,7 +34,7 @@ type StakingBannerProps = {
 };
 
 export const StakingBanner = ({ account }: StakingBannerProps) => {
-    const { analytics, dispatch } = useServices(selectDesktopAnalyticsDep, selectDispatch);
+    const { analytics, dispatch } = useServices(injectDesktopAnalytics, injectDispatch);
     const { CryptoAmountFormatter } = useFormatters();
     const {
         stakeEthBannerClosed,

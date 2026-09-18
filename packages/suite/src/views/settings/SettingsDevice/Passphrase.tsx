@@ -1,10 +1,10 @@
-import { events, selectDesktopAnalyticsDep } from '@suite/analytics';
+import { events, injectDesktopAnalytics } from '@suite/analytics';
 import { useDevice } from '@suite/device';
 import { LearnMoreButton } from '@suite/external-links';
 import { Translation } from '@suite/intl';
 import { Anchor, SettingsAnchor } from '@suite/router';
 import { useServices } from '@suite-common/dependency-injection';
-import { selectDispatch } from '@suite-common/redux-utils';
+import { injectDispatch } from '@suite-common/redux-utils';
 import { Switch, Tooltip } from '@trezor/components';
 import { ActionColumn, SectionItem, TextColumn } from '@trezor/product-components';
 import { HELP_CENTER_PASSPHRASE_URL } from '@trezor/urls';
@@ -17,7 +17,7 @@ interface PassphraseProps {
 
 export const Passphrase = ({ isDeviceLocked }: PassphraseProps) => {
     const { device } = useDevice();
-    const { analytics, dispatch } = useServices(selectDesktopAnalyticsDep, selectDispatch);
+    const { analytics, dispatch } = useServices(injectDesktopAnalytics, injectDispatch);
     const passphraseProtection = !!device?.features?.passphrase_protection;
 
     const handleChange = () => {

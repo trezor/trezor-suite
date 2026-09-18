@@ -6,7 +6,7 @@ import { type ResolveMode } from '@suite-common/wallet-core';
 import {
     type SendEnsResolutionDirection,
     events,
-    selectNativeAnalyticsDep,
+    injectNativeAnalytics,
 } from '@suite-native/analytics';
 
 type ResolutionState = {
@@ -50,7 +50,7 @@ export const useReportEnsResolutionToAnalytics = ({
     isSuccess,
     isError,
 }: UseReportEnsResolutionToAnalyticsParams) => {
-    const { analytics } = useServices(selectNativeAnalyticsDep);
+    const { analytics } = useServices(injectNativeAnalytics);
     const reportedDirectionsRef = useRef<SendEnsResolutionDirection[]>([]);
     const direction = getResolutionDirection({ mode, isFetching, isSuccess, isError });
 

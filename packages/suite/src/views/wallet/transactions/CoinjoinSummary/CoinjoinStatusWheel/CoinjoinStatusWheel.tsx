@@ -1,7 +1,7 @@
 import { selectCurrentCoinjoinWheelStates, stopCoinjoinSessionThunk } from '@suite/coinjoin';
 import { Translation } from '@suite/intl';
 import { useServices } from '@suite-common/dependency-injection';
-import { selectDispatch } from '@suite-common/redux-utils';
+import { injectDispatch } from '@suite-common/redux-utils';
 import { type AccountKey } from '@suite-common/wallet-types';
 import { Button, Card, Column } from '@trezor/components';
 import { StopIcon } from '@trezor/icons';
@@ -20,7 +20,7 @@ export const CoinjoinStatusWheel = ({ accountKey }: CoinjoinStatusWheelProps) =>
         selectCurrentCoinjoinWheelStates,
     );
 
-    const { dispatch } = useServices(selectDispatch);
+    const { dispatch } = useServices(injectDispatch);
 
     return (
         <Card paddingType="small" height="100%">

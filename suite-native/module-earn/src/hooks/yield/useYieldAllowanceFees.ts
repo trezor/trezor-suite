@@ -4,7 +4,7 @@ import { useSelector } from 'react-redux';
 import { isFulfilled } from '@reduxjs/toolkit';
 
 import { useServices } from '@suite-common/dependency-injection';
-import { selectDispatch } from '@suite-common/redux-utils';
+import { injectDispatch } from '@suite-common/redux-utils';
 import {
     type FeesRootState,
     type FormDraftRootState,
@@ -67,7 +67,7 @@ export const useYieldAllowanceFees = ({
     isEnabled,
     transaction,
 }: UseYieldAllowanceFeesParams) => {
-    const { dispatch } = useServices(selectDispatch);
+    const { dispatch } = useServices(injectDispatch);
     const debounce = useDebounce();
     const [isComposingAllowanceFee, setIsComposingAllowanceFee] = useState(false);
     const formDraftKey = useMemo(

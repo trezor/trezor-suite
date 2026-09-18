@@ -22,7 +22,7 @@ export type UpdateOutputLabel = (
 
 export type UpdateOutputLabelDep = { updateOutputLabel: UpdateOutputLabel };
 
-export const selectUpdateOutputLabelDep = (services: any): UpdateOutputLabelDep => ({
+export const injectUpdateOutputLabel = (services: any): UpdateOutputLabelDep => ({
     updateOutputLabel: services.suiteSync.labeling.updateOutputLabel,
 });
 

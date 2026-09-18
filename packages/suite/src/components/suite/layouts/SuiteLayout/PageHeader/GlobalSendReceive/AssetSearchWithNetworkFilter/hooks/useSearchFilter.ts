@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { useDebounce } from 'react-use';
 
 import { useServices } from '@suite-common/dependency-injection';
-import { selectDispatch } from '@suite-common/redux-utils';
+import { injectDispatch } from '@suite-common/redux-utils';
 
 import { useSelector } from 'src/hooks/suite';
 import {
@@ -13,7 +13,7 @@ import {
 export function useSearchFilter() {
     const defaultSearch = useSelector(globalSendReceiveFiltersSelectors.selectSearch);
     const [search, setSearch] = useState(defaultSearch);
-    const { dispatch } = useServices(selectDispatch);
+    const { dispatch } = useServices(injectDispatch);
 
     useDebounce(
         () => {

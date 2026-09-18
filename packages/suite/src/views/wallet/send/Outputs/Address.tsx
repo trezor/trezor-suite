@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 
-import { events, selectDesktopAnalyticsDep } from '@suite/analytics';
+import { events, injectDesktopAnalytics } from '@suite/analytics';
 import { selectIsDebugModeActive } from '@suite/debug';
 import { useDevice } from '@suite/device';
 import { Translation, type TranslationKey, useTranslation } from '@suite/intl';
@@ -18,12 +18,12 @@ import {
 } from '@suite-common/address';
 import { useServices } from '@suite-common/dependency-injection';
 import {
-    selectAddressValidatorDep,
-    selectGetNamedAddressSupportDep,
+    injectAddressValidator,
+    injectGetNamedAddressSupport,
     selectNetworkSymbolForProtocol,
 } from '@suite-common/networks';
 import { useQueryClient } from '@suite-common/react-query';
-import { selectDispatch, selectGetState } from '@suite-common/redux-utils';
+import { injectDispatch, injectGetState } from '@suite-common/redux-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { isAmountPresent, parseTransferUri } from '@suite-common/transfer-uri';
 import { formInputsMaxLength } from '@suite-common/validators';
@@ -96,11 +96,11 @@ export const Address = ({ output, outputId, outputsCount }: AddressProps) => {
     } = useSendFormContext();
     const { translationString } = useTranslation();
     const { dispatch, getState, analytics, addressValidator, getNamedAddressSupport } = useServices(
-        selectDispatch,
-        selectGetState,
-        selectDesktopAnalyticsDep,
-        selectAddressValidatorDep,
-        selectGetNamedAddressSupportDep,
+        injectDispatch,
+        injectGetState,
+        injectDesktopAnalytics,
+        injectAddressValidator,
+        injectGetNamedAddressSupport,
     );
     const { descriptor, networkType, symbol } = account;
     const namedAddress = getNamedAddressSupport(symbol);

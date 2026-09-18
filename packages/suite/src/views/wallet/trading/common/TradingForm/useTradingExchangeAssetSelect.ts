@@ -2,7 +2,7 @@ import { useCallback } from 'react';
 import { type UseFormReturn } from 'react-hook-form';
 
 import { useServices } from '@suite-common/dependency-injection';
-import { selectDispatch } from '@suite-common/redux-utils';
+import { injectDispatch } from '@suite-common/redux-utils';
 import {
     TRADING_FORM_CRYPTO_TOKEN,
     TRADING_FORM_OUTPUT_AMOUNT,
@@ -33,7 +33,7 @@ export const useTradingExchangeAssetSelect = ({
     onCryptoCurrencyChange,
     setAmountLimits,
 }: UseTradingExchangeAssetSelectParams) => {
-    const { dispatch } = useServices(selectDispatch);
+    const { dispatch } = useServices(injectDispatch);
 
     const { getValues, setValue, clearErrors } = methods;
 

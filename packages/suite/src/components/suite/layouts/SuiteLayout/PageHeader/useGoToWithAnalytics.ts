@@ -1,14 +1,14 @@
 import { selectSelectedAccountSymbol } from '@suite/account';
-import { events, selectDesktopAnalyticsDep } from '@suite/analytics';
+import { events, injectDesktopAnalytics } from '@suite/analytics';
 import { gotoThunk } from '@suite/router';
 import { useServices } from '@suite-common/dependency-injection';
-import { selectDispatch } from '@suite-common/redux-utils';
+import { injectDispatch } from '@suite-common/redux-utils';
 import { type Account } from '@suite-common/wallet-types';
 
 import { useSelector } from 'src/hooks/suite';
 
 export const useGoToWithAnalytics = (account?: Account) => {
-    const { analytics, dispatch } = useServices(selectDesktopAnalyticsDep, selectDispatch);
+    const { analytics, dispatch } = useServices(injectDesktopAnalytics, injectDispatch);
     const selectedAccountSymbol = useSelector(selectSelectedAccountSymbol);
     const symbol = account?.symbol ?? selectedAccountSymbol;
 

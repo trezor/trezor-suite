@@ -1,10 +1,10 @@
-import { events, selectDesktopAnalyticsDep } from '@suite/analytics';
+import { events, injectDesktopAnalytics } from '@suite/analytics';
 import { useDevice } from '@suite/device';
 import { FirmwareUpgradeNeededModal } from '@suite/firmware-upgrade';
 import { Translation, useTranslation } from '@suite/intl';
 import { gotoThunk } from '@suite/router';
 import { useServices } from '@suite-common/dependency-injection';
-import { selectDispatch } from '@suite-common/redux-utils';
+import { injectDispatch } from '@suite-common/redux-utils';
 import {
     getTronRewardClaimCooldownEndsAt,
     getTronStakingRewards,
@@ -33,7 +33,7 @@ interface TronVotingRewardsCardProps {
 }
 
 export const TronVotingRewardsCard = ({ account }: TronVotingRewardsCardProps) => {
-    const { analytics, dispatch } = useServices(selectDesktopAnalyticsDep, selectDispatch);
+    const { analytics, dispatch } = useServices(injectDesktopAnalytics, injectDispatch);
     const { device } = useDevice();
     const { translationString } = useTranslation();
     const { isFirmwareModalOpen, openFirmwareModal, closeFirmwareModal, updateFirmware } =

@@ -1,7 +1,7 @@
 import { Translation } from '@suite/intl';
 import { gotoThunk } from '@suite/router';
 import { useServices } from '@suite-common/dependency-injection';
-import { selectDispatch } from '@suite-common/redux-utils';
+import { injectDispatch } from '@suite-common/redux-utils';
 import { Image } from '@trezor/components';
 
 import { Banner } from './Banner';
@@ -13,7 +13,7 @@ type DefiYieldBannerProps = {
 };
 
 export const DefiYieldBanner = ({ onClose, onCTAClick }: DefiYieldBannerProps) => {
-    const { dispatch } = useServices(selectDispatch);
+    const { dispatch } = useServices(injectDispatch);
     const getBannerResponsiveValue = useBannerResponsiveValue();
 
     const handleCTAClick = () => {

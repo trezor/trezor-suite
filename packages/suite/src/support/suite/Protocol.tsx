@@ -1,16 +1,16 @@
 import { useCallback, useEffect } from 'react';
 
-import { selectDesktopApiDep } from '@suite/desktop-app-api';
+import { injectDesktopApi } from '@suite/desktop-app-api';
 import { selectURLSearchParams } from '@suite/router';
 import { useServices } from '@suite-common/dependency-injection';
-import { selectDispatch } from '@suite-common/redux-utils';
+import { injectDispatch } from '@suite-common/redux-utils';
 import { isDesktop, isWeb } from '@trezor/env-utils';
 
 import * as protocolActions from 'src/actions/suite/protocolActions';
 import { useSelector } from 'src/hooks/suite';
 
 const Protocol = () => {
-    const { desktopApi, dispatch } = useServices(selectDispatch, selectDesktopApiDep);
+    const { desktopApi, dispatch } = useServices(injectDispatch, injectDesktopApi);
 
     const handleProtocolRequestThunk = useCallback(
         (uri: string) => {

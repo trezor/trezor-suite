@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 
-import { selectDesktopAnalyticsDep } from '@suite/analytics';
+import { injectDesktopAnalytics } from '@suite/analytics';
 import { useExternalLink } from '@suite/external-links';
 import {
     type FlagsRootState,
@@ -13,7 +13,7 @@ import { type RouterRootState, selectRouterApp } from '@suite/router';
 import { events } from '@suite-common/analytics';
 import { useServices } from '@suite-common/dependency-injection';
 import { type DeviceRootState, selectPhysicalDeviceWallets } from '@suite-common/device';
-import { selectDispatch } from '@suite-common/redux-utils';
+import { injectDispatch } from '@suite-common/redux-utils';
 import { Image } from '@trezor/components';
 import { SidebarBanner } from '@trezor/product-components';
 import { palette } from '@trezor/theme';
@@ -50,7 +50,7 @@ export const selectShouldShowNoDeviceEshopSidebarBanner = (
     selectPhysicalDeviceWallets(state).length === 0;
 
 export const NoDeviceEshopSidebarBanner = () => {
-    const { analytics, dispatch } = useServices(selectDesktopAnalyticsDep, selectDispatch);
+    const { analytics, dispatch } = useServices(injectDesktopAnalytics, injectDispatch);
     const href = useExternalLink(withGetTrezorCtaUtm(ESHOP_STORE_URL, 'dashboard'));
 
     const handleClose = () => {

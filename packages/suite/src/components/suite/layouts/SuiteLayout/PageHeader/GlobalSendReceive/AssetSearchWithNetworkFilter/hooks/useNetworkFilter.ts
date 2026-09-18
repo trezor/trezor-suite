@@ -2,7 +2,7 @@ import { type RefObject, useEffect, useMemo, useState } from 'react';
 
 import { gotoThunk, parseDashboardParams, selectRouterParams } from '@suite/router';
 import { useServices } from '@suite-common/dependency-injection';
-import { selectDispatch } from '@suite-common/redux-utils';
+import { injectDispatch } from '@suite-common/redux-utils';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { selectEnabledNetworks } from '@suite-common/wallet-core';
 import { type GlobalSendReceiveType } from '@suite-common/wallet-types';
@@ -30,7 +30,7 @@ export function useNetworkFilter({ listRef, resetSearch, modal }: UseNetworkFilt
     const enabledNetworks = useSelector(selectEnabledNetworks);
     const [networkFilter, setNetworkFilter] = useState<NetworkSymbol | undefined>(defaultNetwork);
 
-    const { dispatch } = useServices(selectDispatch);
+    const { dispatch } = useServices(injectDispatch);
 
     useEffect(() => {
         // Only preselect a network from the URL if it is actually enabled, otherwise the list shows

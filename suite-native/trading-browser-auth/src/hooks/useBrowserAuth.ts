@@ -9,7 +9,7 @@ import {
 } from 'expo-web-browser';
 
 import { useServices } from '@suite-common/dependency-injection';
-import { selectDispatch } from '@suite-common/redux-utils';
+import { injectDispatch } from '@suite-common/redux-utils';
 import { invariant } from '@suite-common/suite-utils';
 import { type TradingType, tradingThunks } from '@suite-common/trading';
 import { useTranslate } from '@suite-native/intl';
@@ -33,7 +33,7 @@ class BrowserAuthError extends Error {
 }
 
 const useLastErrorMessageDispatcher = (tradingType: TradingType | undefined) => {
-    const { dispatch } = useServices(selectDispatch);
+    const { dispatch } = useServices(injectDispatch);
 
     const dispatchLastErrorMessage = useCallback(
         (errorMessage: string) => {

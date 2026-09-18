@@ -1,7 +1,7 @@
 import { useSelector } from 'react-redux';
 
 import { useServices } from '@suite-common/dependency-injection';
-import { events, selectNativeAnalyticsDep } from '@suite-native/analytics';
+import { events, injectNativeAnalytics } from '@suite-native/analytics';
 import { Box, Button, HStack, Text, VStack } from '@suite-native/atoms';
 import {
     BiometricsSvg,
@@ -34,7 +34,7 @@ const titleStyle = prepareNativeStyle(_ => ({
 
 export const BiometricsScreen = ({ navigation }: BiometricsScreenProps) => {
     const { applyStyle } = useNativeStyles();
-    const { analytics } = useServices(selectNativeAnalyticsDep);
+    const { analytics } = useServices(injectNativeAnalytics);
     const { toggleBiometricsOption } = useBiometricsSettings();
     const exitOnboardingFlow = useExitOnboardingFlow();
 

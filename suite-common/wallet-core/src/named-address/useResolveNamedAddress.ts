@@ -1,12 +1,12 @@
 import { useServices } from '@suite-common/dependency-injection';
-import { type NetworkSymbol, selectGetNamedAddressSupportDep } from '@suite-common/networks';
+import { type NetworkSymbol, injectGetNamedAddressSupport } from '@suite-common/networks';
 import { useQuery } from '@suite-common/react-query';
 import { useDebouncedValue } from '@trezor/react-utils';
 
 import { getResolveMode, getResolveNamedAddressQueryOptions } from './namedAddressQuery';
 
 export const useResolveNamedAddress = (value: string, symbol: NetworkSymbol | null | undefined) => {
-    const { getNamedAddressSupport } = useServices(selectGetNamedAddressSupportDep);
+    const { getNamedAddressSupport } = useServices(injectGetNamedAddressSupport);
     // Normalize at the entry so the queryKey, debounce comparison and queryable check
     // all agree on a single canonical form — "test.eth" and "test.eth " must share cache.
     const trimmedValue = value.trim();

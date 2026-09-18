@@ -1,4 +1,4 @@
-import { events, selectDesktopAnalyticsDep } from '@suite/analytics';
+import { events, injectDesktopAnalytics } from '@suite/analytics';
 import { useDevice } from '@suite/device';
 import { Translation } from '@suite/intl';
 import { useServices } from '@suite-common/dependency-injection';
@@ -20,7 +20,7 @@ import { useTradingWatchTrade } from 'src/hooks/wallet/trading/useTradingWatchTr
 const SELL_PROVIDER_CONFIRMATION_POLLING_INTERVAL_SECONDS = 10;
 
 export const TradingSelectedOfferSellTransaction = () => {
-    const { analytics } = useServices(selectDesktopAnalyticsDep);
+    const { analytics } = useServices(injectDesktopAnalytics);
     const { handleClick, disabled } = useAsyncClickHandler();
     const isDiscoveryRunning = useSelector(selectHasRunningDiscovery);
     const { device } = useDevice();

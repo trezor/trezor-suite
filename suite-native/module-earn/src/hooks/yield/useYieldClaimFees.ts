@@ -7,7 +7,7 @@ import {
     buildClaimCalldata,
     buildUnsignedClaimTransaction,
 } from '@suite-common/earn-stablecoin';
-import { selectDispatch } from '@suite-common/redux-utils';
+import { injectDispatch } from '@suite-common/redux-utils';
 import { type EvmHexString } from '@suite-common/schemas/src/evm';
 import { getEarnYieldClaimContractAddress, getNetwork } from '@suite-common/wallet-config';
 import {
@@ -86,7 +86,7 @@ const getClaimFormDraft = ({
 });
 
 export const useYieldClaimFees = ({ accountRewards, isEnabled }: UseYieldClaimFeesParams) => {
-    const { dispatch } = useServices(selectDispatch);
+    const { dispatch } = useServices(injectDispatch);
     const debounce = useDebounce();
     const requestIdRef = useRef(0);
     const [baseContext, setBaseContext] = useState<ClaimFeeBaseContext | null>(null);

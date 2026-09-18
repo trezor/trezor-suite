@@ -1,11 +1,11 @@
 import { AnimatePresence, motion } from 'framer-motion';
 
-import { events, selectDesktopAnalyticsDep } from '@suite/analytics';
+import { events, injectDesktopAnalytics } from '@suite/analytics';
 import { selectFlags, setFlag } from '@suite/flags';
 import { useServices } from '@suite-common/dependency-injection';
 import { selectSelectedDevice } from '@suite-common/device';
 import { Feature, selectFeaturesConfig } from '@suite-common/message-system';
-import { selectDispatch } from '@suite-common/redux-utils';
+import { injectDispatch } from '@suite-common/redux-utils';
 import { type Feature as MessageFeature } from '@suite-common/suite-types';
 
 import { useSelector } from 'src/hooks/suite';
@@ -22,7 +22,7 @@ const isCarouselBannerKey = (key: string): key is DashboardBannerType => isDashb
 
 export const DashboardPromoBanner = () => {
     const discoveryStatus = useSelector(selectDiscoveryOverallStatus);
-    const { analytics, dispatch } = useServices(selectDesktopAnalyticsDep, selectDispatch);
+    const { analytics, dispatch } = useServices(injectDesktopAnalytics, injectDispatch);
     const isDiscoveryEmpty = discoveryStatus?.type === 'discovery-empty';
     const flags = useSelector(selectFlags);
     const selectedDevice = useSelector(selectSelectedDevice);

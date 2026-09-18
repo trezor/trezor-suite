@@ -4,6 +4,6 @@ export type DisconnectAllRelaysDep = {
     disconnectAllRelays: DisconnectAllRelays;
 };
 
-export const selectDisconnectAllRelaysDep = (services: any): DisconnectAllRelaysDep => ({
+export const injectDisconnectAllRelays = (services: any): DisconnectAllRelaysDep => ({
     disconnectAllRelays: services.suiteSync.disconnectAllRelays,
 });

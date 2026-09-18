@@ -2,10 +2,10 @@ import { type JSX } from 'react';
 
 import styled, { css } from 'styled-components';
 
-import { events, selectDesktopAnalyticsDep } from '@suite/analytics';
+import { events, injectDesktopAnalytics } from '@suite/analytics';
 import { Translation } from '@suite/intl';
 import { useServices } from '@suite-common/dependency-injection';
-import { selectDispatch } from '@suite-common/redux-utils';
+import { injectDispatch } from '@suite-common/redux-utils';
 import { H3, IconButton, Paragraph } from '@trezor/components';
 import { ArrowLeftIcon, XIcon } from '@trezor/icons';
 import { zIndices } from '@trezor/theme';
@@ -37,7 +37,7 @@ interface GuideHeaderProps {
 }
 
 export const GuideHeader = ({ back, label }: GuideHeaderProps) => {
-    const { analytics, dispatch } = useServices(selectDesktopAnalyticsDep, selectDispatch);
+    const { analytics, dispatch } = useServices(injectDesktopAnalytics, injectDispatch);
 
     const goBack = () => {
         back?.();

@@ -3,11 +3,11 @@ import { useSelector } from 'react-redux';
 
 import { useServices } from '@suite-common/dependency-injection';
 import { selectSelectedDevice } from '@suite-common/device';
-import { selectDispatch } from '@suite-common/redux-utils';
+import { injectDispatch } from '@suite-common/redux-utils';
 import { startThpAutoconnectThunk, thpActions } from '@suite-common/thp';
 
 export const useThpAutoconnectActions = () => {
-    const { dispatch } = useServices(selectDispatch);
+    const { dispatch } = useServices(injectDispatch);
 
     const device = useSelector(selectSelectedDevice);
 

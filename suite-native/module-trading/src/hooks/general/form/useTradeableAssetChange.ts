@@ -3,10 +3,10 @@ import { useCallback } from 'react';
 import { type UnknownAction } from '@reduxjs/toolkit';
 
 import { useServices } from '@suite-common/dependency-injection';
-import { selectDispatch } from '@suite-common/redux-utils';
+import { injectDispatch } from '@suite-common/redux-utils';
 import { type TradingType, cryptoIdToNetworkSymbol } from '@suite-common/trading';
 import { type Account, type AccountKey } from '@suite-common/wallet-types';
-import { events, selectNativeAnalyticsDep } from '@suite-native/analytics';
+import { events, injectNativeAnalytics } from '@suite-native/analytics';
 import { type FieldValues, type Path, type UseFormReturn } from '@suite-native/forms';
 import { type TradeableAsset } from '@suite-native/trading-types';
 
@@ -46,7 +46,7 @@ export const useTradeableAssetChange = <TFieldValues extends FieldValues>({
     getSetTradingAccountKeyAction,
     collision,
 }: UseTradeableAssetChangeConfig<TFieldValues>) => {
-    const { analytics, dispatch } = useServices(selectNativeAnalyticsDep, selectDispatch);
+    const { analytics, dispatch } = useServices(injectNativeAnalytics, injectDispatch);
     const { setValue, getValues } = form;
 
     const reportParameterChanged = useCallback(

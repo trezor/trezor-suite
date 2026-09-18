@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { type UseFormReturn, useWatch } from 'react-hook-form';
 
-import { selectDesktopAnalyticsDep } from '@suite/analytics';
+import { injectDesktopAnalytics } from '@suite/analytics';
 import { events } from '@suite-common/analytics';
 import { useServices } from '@suite-common/dependency-injection';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
@@ -54,7 +54,7 @@ export const useYieldFiatInput = ({
     decimals,
     vaultId,
 }: UseYieldFiatInputParams): UseYieldFiatInputResult => {
-    const { analytics } = useServices(selectDesktopAnalyticsDep);
+    const { analytics } = useServices(injectDesktopAnalytics);
     const baseCurrencyCode = useSelector(selectBaseCurrency);
     const currentFiatRates = useSelector(selectCurrentFiatRates);
     const [currency, setCurrency] = useState<YieldCurrency>('crypto');

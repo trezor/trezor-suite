@@ -12,7 +12,7 @@ import {
     selectIsDeviceAuthorized,
     selectIsDeviceThpLocked,
 } from '@suite-common/device';
-import { selectDispatch } from '@suite-common/redux-utils';
+import { injectDispatch } from '@suite-common/redux-utils';
 import {
     AuthorizeDeviceStackRoutes,
     type HomeStackParamList,
@@ -29,7 +29,7 @@ type NavigationProps = StackToStackCompositeNavigationProps<
 >;
 
 export const useConnectDeviceHandler = () => {
-    const { dispatch } = useServices(selectDispatch);
+    const { dispatch } = useServices(injectDispatch);
     const navigation = useNavigation<NavigationProps>();
 
     const isDeviceAuthorized = useSelector(selectIsDeviceAuthorized);

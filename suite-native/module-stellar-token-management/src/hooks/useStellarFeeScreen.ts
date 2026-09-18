@@ -10,7 +10,7 @@ import {
     selectDeviceButtonRequestsCodes,
     selectIsDeviceConnectedAndAuthorized,
 } from '@suite-common/device';
-import { selectDispatch } from '@suite-common/redux-utils';
+import { injectDispatch } from '@suite-common/redux-utils';
 import {
     type AccountsRootState,
     type FormDraftRootState,
@@ -76,7 +76,7 @@ export const useStellarFeeScreen = ({
     thunkAction,
     onSuccess,
 }: UseStellarFeeScreenParams) => {
-    const { dispatch } = useServices(selectDispatch);
+    const { dispatch } = useServices(injectDispatch);
     const navigation = useNavigation<StellarFeeNavigationProps>();
     const { showAlert } = useAlert();
     const { translate } = useTranslate();

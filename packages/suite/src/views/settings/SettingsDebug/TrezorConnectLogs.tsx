@@ -1,6 +1,6 @@
 import { selectShowConnectLogs, suiteSettingsActions } from '@suite/settings';
 import { useServices } from '@suite-common/dependency-injection';
-import { selectDispatch } from '@suite-common/redux-utils';
+import { injectDispatch } from '@suite-common/redux-utils';
 import { Switch } from '@trezor/components';
 import { isDesktop } from '@trezor/env-utils';
 import { ActionColumn, SectionItem, TextColumn } from '@trezor/product-components';
@@ -9,7 +9,7 @@ import { useSelector } from 'src/hooks/suite';
 
 export const TrezorConnectLogs = () => {
     const showConnectLogs = useSelector(selectShowConnectLogs);
-    const { dispatch } = useServices(selectDispatch);
+    const { dispatch } = useServices(injectDispatch);
 
     const logsDescription = `Show TrezorConnect logs in ${isDesktop() ? 'terminal' : 'console'}. ${isDesktop() ? 'Restart' : 'Refresh'} the application to apply changes.`;
     const toggleLogs = () =>

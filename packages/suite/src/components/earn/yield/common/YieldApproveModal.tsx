@@ -2,7 +2,7 @@ import { useEffect, useRef } from 'react';
 
 import { type DexApprovalType } from 'invity-api';
 
-import { selectDesktopAnalyticsDep } from '@suite/analytics';
+import { injectDesktopAnalytics } from '@suite/analytics';
 import { events } from '@suite-common/analytics';
 import { useServices } from '@suite-common/dependency-injection';
 import { useYieldOpportunity } from '@suite-common/earn-stablecoin-api';
@@ -41,7 +41,7 @@ export const YieldApproveModal = ({
     onCancel,
     onSuccess,
 }: YieldApproveModalProps) => {
-    const { analytics } = useServices(selectDesktopAnalyticsDep);
+    const { analytics } = useServices(injectDesktopAnalytics);
 
     const {
         state: { isApproveModalOpen, isRevokeModalOpen, openApproveModal, openRevokeModal },

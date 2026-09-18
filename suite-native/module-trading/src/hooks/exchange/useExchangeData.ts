@@ -2,7 +2,7 @@ import { useCallback, useEffect } from 'react';
 import { useSelector } from 'react-redux';
 
 import { useServices } from '@suite-common/dependency-injection';
-import { selectDispatch } from '@suite-common/redux-utils';
+import { injectDispatch } from '@suite-common/redux-utils';
 import {
     selectTradingExchangeLoadingTimestampAndStatus,
     tradingThunks,
@@ -10,7 +10,7 @@ import {
 import { selectExchangeSelectedSendAccount } from '@suite-native/trading-state';
 
 export const useExchangeData = () => {
-    const { dispatch } = useServices(selectDispatch);
+    const { dispatch } = useServices(injectDispatch);
     const account = useSelector(selectExchangeSelectedSendAccount);
 
     const descriptor = account?.descriptor;

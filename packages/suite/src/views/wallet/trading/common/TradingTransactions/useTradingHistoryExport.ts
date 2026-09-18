@@ -2,7 +2,7 @@ import { useStore } from 'react-redux';
 
 import { type TranslationFunction, useTranslation } from '@suite/intl';
 import { useServices } from '@suite-common/dependency-injection';
-import { selectDispatch } from '@suite-common/redux-utils';
+import { injectDispatch } from '@suite-common/redux-utils';
 import { triggerWebDownloadFile } from '@suite-common/suite-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import {
@@ -42,7 +42,7 @@ const getCsvColumnLabels = (
 
 export const useTradingHistoryExport = () => {
     const store = useStore<TradingRootStateWithDeviceAndAccounts>();
-    const { dispatch } = useServices(selectDispatch);
+    const { dispatch } = useServices(injectDispatch);
     const { translationString } = useTranslation();
 
     return () => {

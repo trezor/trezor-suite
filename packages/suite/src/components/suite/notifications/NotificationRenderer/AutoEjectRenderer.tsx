@@ -1,12 +1,12 @@
 import { SettingsAnchor, gotoThunk } from '@suite/router';
 import { useServices } from '@suite-common/dependency-injection';
-import { selectDispatch } from '@suite-common/redux-utils';
+import { injectDispatch } from '@suite-common/redux-utils';
 
 import { resetProtocol } from 'src/actions/suite/protocolActions';
 import type { NotificationRendererProps } from 'src/components/suite';
 
 export const AutoEjectRenderer = ({ render: View, notification }: NotificationRendererProps) => {
-    const { dispatch } = useServices(selectDispatch);
+    const { dispatch } = useServices(injectDispatch);
 
     const onCancel = () => dispatch(resetProtocol());
 

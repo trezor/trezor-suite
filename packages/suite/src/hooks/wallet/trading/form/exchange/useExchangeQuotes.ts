@@ -1,10 +1,10 @@
 import { useEffect, useRef } from 'react';
 import { type UseFormReturn, useWatch } from 'react-hook-form';
 
-import { events, selectDesktopAnalyticsDep } from '@suite/analytics';
+import { events, injectDesktopAnalytics } from '@suite/analytics';
 import { useServices } from '@suite-common/dependency-injection';
-import { selectAddressValidatorDep } from '@suite-common/networks';
-import { selectDispatch } from '@suite-common/redux-utils';
+import { injectAddressValidator } from '@suite-common/networks';
+import { injectDispatch } from '@suite-common/redux-utils';
 import {
     TRADING_EXCHANGE_FORM,
     TRADING_EXCHANGE_FORM_CEX,
@@ -52,9 +52,9 @@ export const useExchangeQuotes = ({
     composeRequestCallback,
 }: UseExchangeQuotesProps) => {
     const { addressValidator, analytics, dispatch } = useServices(
-        selectAddressValidatorDep,
-        selectDesktopAnalyticsDep,
-        selectDispatch,
+        injectAddressValidator,
+        injectDesktopAnalytics,
+        injectDispatch,
     );
 
     const dexQuotes = useSelector(selectTradingExchangeDexQuotes);

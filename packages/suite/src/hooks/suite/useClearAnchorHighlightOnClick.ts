@@ -2,13 +2,13 @@ import { type RefObject, useEffect } from 'react';
 
 import { anchorChange, selectRouterAnchor } from '@suite/router';
 import { useServices } from '@suite-common/dependency-injection';
-import { selectDispatch } from '@suite-common/redux-utils';
+import { injectDispatch } from '@suite-common/redux-utils';
 
 import { useSelector } from 'src/hooks/suite';
 
 export const useClearAnchorHighlightOnClick = (elementRef: RefObject<HTMLElement | null>) => {
     const anchor = useSelector(selectRouterAnchor);
-    const { dispatch } = useServices(selectDispatch);
+    const { dispatch } = useServices(injectDispatch);
 
     // Remove anchor highlight on click.
     useEffect(() => {

@@ -1,7 +1,7 @@
 import { AnimatePresence, motion } from 'framer-motion';
 import styled from 'styled-components';
 
-import { events, selectDesktopAnalyticsDep } from '@suite/analytics';
+import { events, injectDesktopAnalytics } from '@suite/analytics';
 import { Translation } from '@suite/intl';
 import { useServices } from '@suite-common/dependency-injection';
 import {
@@ -40,7 +40,7 @@ type StoreBadgeWithQrProps = {
 
 const StoreBadgeWithQr = ({ url, image, analyticsPayload }: StoreBadgeWithQrProps) => {
     const { isBelowTablet } = useLayoutSize();
-    const { analytics } = useServices(selectDesktopAnalyticsDep);
+    const { analytics } = useServices(injectDesktopAnalytics);
 
     return (
         <Tooltip
@@ -79,7 +79,7 @@ const StoreBadgeWithQr = ({ url, image, analyticsPayload }: StoreBadgeWithQrProp
 };
 
 const ReferralButton = () => {
-    const { analytics } = useServices(selectDesktopAnalyticsDep);
+    const { analytics } = useServices(injectDesktopAnalytics);
     const hasAtLeastOneRememberedWallet = useSelector(
         state =>
             selectRememberedStandardWalletsCount(state) > 0 ||
@@ -106,7 +106,7 @@ const ReferralButton = () => {
 };
 
 const DesktopAppPromoButton = () => {
-    const { analytics } = useServices(selectDesktopAnalyticsDep);
+    const { analytics } = useServices(injectDesktopAnalytics);
     const { isBelowTablet } = useLayoutSize();
 
     if (!isWeb() || isBelowTablet) {

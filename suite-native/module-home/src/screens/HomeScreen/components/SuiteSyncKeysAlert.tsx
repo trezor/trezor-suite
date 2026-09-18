@@ -5,7 +5,7 @@ import { useNavigation } from '@react-navigation/native';
 
 import { useServices } from '@suite-common/dependency-injection';
 import { selectDeviceStaticSessionId, selectIsDeviceConnected } from '@suite-common/device';
-import { selectEnsureWalletSuiteSyncOnDep } from '@suite-common/suite-sync-types';
+import { injectEnsureWalletSuiteSyncOn } from '@suite-common/suite-sync-types';
 import { AnimatedBannerFull } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 import {
@@ -26,7 +26,7 @@ type NavigationProp = StackToStackCompositeNavigationProps<
 >;
 
 export const SuiteSyncKeysAlert = () => {
-    const { ensureWalletSuiteSyncOn } = useServices(selectEnsureWalletSuiteSyncOnDep);
+    const { ensureWalletSuiteSyncOn } = useServices(injectEnsureWalletSuiteSyncOn);
 
     const isDeviceConnected = useSelector(selectIsDeviceConnected);
     const shouldDisplaySuiteSyncAlert = useSelector(selectShouldDisplaySuiteSyncAlert);

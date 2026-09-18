@@ -1,9 +1,9 @@
 import { useEffect } from 'react';
 import { type UseFormReturn } from 'react-hook-form';
 
-import { events, selectDesktopAnalyticsDep } from '@suite/analytics';
+import { events, injectDesktopAnalytics } from '@suite/analytics';
 import { useServices } from '@suite-common/dependency-injection';
-import { selectDispatch, selectGetState } from '@suite-common/redux-utils';
+import { injectDispatch, injectGetState } from '@suite-common/redux-utils';
 import {
     TRADING_FORM_COUNTRY_SELECT,
     TRADING_FORM_COUNTRY_SUBDIVISION_SELECT,
@@ -46,9 +46,9 @@ export const useSellQuotes = ({
     composeRequestCallback,
 }: UseSellQuotesProps) => {
     const { analytics, dispatch, getState } = useServices(
-        selectDesktopAnalyticsDep,
-        selectDispatch,
-        selectGetState,
+        injectDesktopAnalytics,
+        injectDispatch,
+        injectGetState,
     );
 
     const { isScheduledQuotesRefresh } = useTradingQuoteRequest({

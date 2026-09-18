@@ -2,14 +2,14 @@ import { useSelector } from 'react-redux';
 
 import { events } from '@suite-common/analytics';
 import { useServices } from '@suite-common/dependency-injection';
-import { selectDispatch } from '@suite-common/redux-utils';
-import { selectNativeAnalyticsDep } from '@suite-native/analytics';
+import { injectDispatch } from '@suite-common/redux-utils';
+import { injectNativeAnalytics } from '@suite-native/analytics';
 import { TouchableSwitchRow } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 import { selectAreTestnetsEnabled, toggleAreTestnetsEnabled } from '@suite-native/settings';
 
 export const ToggleTestnetsCard = () => {
-    const { analytics, dispatch } = useServices(selectNativeAnalyticsDep, selectDispatch);
+    const { analytics, dispatch } = useServices(injectNativeAnalytics, injectDispatch);
 
     const areTestnetsEnabled = useSelector(selectAreTestnetsEnabled);
 

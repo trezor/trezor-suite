@@ -2,12 +2,12 @@ import { type UseFormReturn, useForm, useWatch } from 'react-hook-form';
 
 import { yupResolver } from '@hookform/resolvers/yup';
 
-import { selectDesktopAnalyticsDep } from '@suite/analytics';
+import { injectDesktopAnalytics } from '@suite/analytics';
 import { type TranslationFunction, useTranslation } from '@suite/intl';
 import { events } from '@suite-common/analytics';
 import { useServices } from '@suite-common/dependency-injection';
 import { selectSelectedDeviceLabelOrName } from '@suite-common/device';
-import { selectDispatch } from '@suite-common/redux-utils';
+import { injectDispatch } from '@suite-common/redux-utils';
 import { yup } from '@suite-common/validators';
 import { isAscii } from '@trezor/utils';
 
@@ -43,7 +43,7 @@ export const useChangeDeviceLabel = (): {
     >;
     handleSubmit: (onSuccess?: () => void) => void;
 } => {
-    const { analytics, dispatch } = useServices(selectDesktopAnalyticsDep, selectDispatch);
+    const { analytics, dispatch } = useServices(injectDesktopAnalytics, injectDispatch);
     const { translationString } = useTranslation();
     const deviceLabel = useSelector(selectSelectedDeviceLabelOrName);
 

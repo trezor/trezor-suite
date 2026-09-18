@@ -1,4 +1,4 @@
-import { selectDesktopAnalyticsDep } from '@suite/analytics';
+import { injectDesktopAnalytics } from '@suite/analytics';
 import { Translation } from '@suite/intl';
 import { events } from '@suite-common/analytics';
 import { useServices } from '@suite-common/dependency-injection';
@@ -42,7 +42,7 @@ export const YieldEarnInANutshellModal = ({
     actionType,
     yieldContext,
 }: YieldEarnInANutshellModalProps) => {
-    const { analytics } = useServices(selectDesktopAnalyticsDep);
+    const { analytics } = useServices(injectDesktopAnalytics);
 
     const { handleAction, onCancelClick } = useEarnInANutshell({
         flow: EarnFlow.Yield,

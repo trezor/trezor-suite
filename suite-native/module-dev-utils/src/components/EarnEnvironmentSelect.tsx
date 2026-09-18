@@ -8,7 +8,7 @@ import {
     earnYieldWorkerBaseUrl,
     earnYieldWorkerBaseUrls,
 } from '@suite-common/earn-stablecoin-api';
-import { selectDispatch } from '@suite-common/redux-utils';
+import { injectDispatch } from '@suite-common/redux-utils';
 import { Select, type SelectItemType } from '@suite-native/atoms';
 import { selectEarnYieldWorkerBaseUrl, setEarnWorkerEnvironment } from '@suite-native/settings';
 
@@ -20,7 +20,7 @@ const earnWorkerBaseUrlItems: SelectItemType<EarnYieldWorkerBaseUrl>[] =
 
 export const EarnEnvironmentSelect = () => {
     const storedValue = useSelector(selectEarnYieldWorkerBaseUrl);
-    const { dispatch } = useServices(selectDispatch);
+    const { dispatch } = useServices(injectDispatch);
 
     const handleSelectEnvironment = (baseUrl: EarnYieldWorkerBaseUrl) => {
         dispatch(setEarnWorkerEnvironment(baseUrl));

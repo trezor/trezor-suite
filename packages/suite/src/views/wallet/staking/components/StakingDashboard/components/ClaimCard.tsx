@@ -1,11 +1,11 @@
 import { useEffect, useMemo, useRef } from 'react';
 
 import { selectSelectedAccount } from '@suite/account';
-import { events, selectDesktopAnalyticsDep } from '@suite/analytics';
+import { events, injectDesktopAnalytics } from '@suite/analytics';
 import { Translation } from '@suite/intl';
 import { openModal } from '@suite/modal';
 import { useServices } from '@suite-common/dependency-injection';
-import { selectDispatch } from '@suite-common/redux-utils';
+import { injectDispatch } from '@suite-common/redux-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import {
     getStakingDataForNetwork,
@@ -20,7 +20,7 @@ import { useSelector } from 'src/hooks/suite';
 import { useMessageSystemStaking } from 'src/hooks/suite/useMessageSystemStaking';
 
 export const ClaimCard = () => {
-    const { analytics, dispatch } = useServices(selectDesktopAnalyticsDep, selectDispatch);
+    const { analytics, dispatch } = useServices(injectDesktopAnalytics, injectDispatch);
     const selectedAccount = useSelector(selectSelectedAccount);
     const claimTxs = useSelector(state =>
         selectAccountClaimTransactions(state, selectedAccount?.key || null),

@@ -1,16 +1,16 @@
 import { useServices } from '@suite-common/dependency-injection';
-import { selectReloadAppDep } from '@suite-common/suite-types';
+import { injectReloadApp } from '@suite-common/suite-types';
 import { Button, Column, Divider, H2, Paragraph, Row } from '@trezor/components';
 import { RepeatIcon } from '@trezor/icons';
 
-import { selectDbDep } from 'src/storage/createDb';
+import { injectDb } from 'src/storage/createDb';
 
 type ErrorProps = {
     error: string;
 };
 
 export const Error = ({ error }: ErrorProps) => {
-    const { reloadApp, db } = useServices(selectReloadAppDep, selectDbDep);
+    const { reloadApp, db } = useServices(injectReloadApp, injectDb);
 
     return (
         <Column

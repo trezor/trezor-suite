@@ -1,6 +1,6 @@
 import { useCallback, useRef, useState } from 'react';
 
-import { selectDesktopAnalyticsDep } from '@suite/analytics';
+import { injectDesktopAnalytics } from '@suite/analytics';
 import { events } from '@suite-common/analytics';
 import { useServices } from '@suite-common/dependency-injection';
 import { type Network, filterNetworksByName } from '@suite-common/wallet-config';
@@ -15,7 +15,7 @@ export const useNetworkSettingsSearch = (
     allNetworks: Network[],
     { origin = 'network-settings' }: UseNetworkSettingsSearchOptions = {},
 ) => {
-    const { analytics } = useServices(selectDesktopAnalyticsDep);
+    const { analytics } = useServices(injectDesktopAnalytics);
     const [searchQuery, setSearchQuery] = useState('');
     const hasReportedSearchUsed = useRef(false);
 

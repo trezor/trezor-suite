@@ -10,7 +10,7 @@ import {
 } from '@suite-common/connect-popup';
 import { useServices } from '@suite-common/dependency-injection';
 import { selectSelectedDeviceLabelOrName } from '@suite-common/device';
-import { selectDispatch } from '@suite-common/redux-utils';
+import { injectDispatch } from '@suite-common/redux-utils';
 import { Badge, Button, Card, Column, H3, Icon, Modal, Paragraph, Row } from '@trezor/components';
 import { TypedError } from '@trezor/connect-common/src/constants/errors';
 import { DeviceModelInternal } from '@trezor/device-utils';
@@ -25,7 +25,7 @@ import { useSelector } from 'src/hooks/suite';
 export const ConnectAddressConfirmation = () => {
     const { device } = useDevice();
     const deviceLabel = useSelector(selectSelectedDeviceLabelOrName);
-    const { dispatch } = useServices(selectDispatch);
+    const { dispatch } = useServices(injectDispatch);
     const popupCall = useSelector(selectConnectPopupCall);
     const onVerify = (index: number) => {
         dispatch(connectPopupVerifyAddressThunk({ index }));

@@ -1,6 +1,6 @@
 import { bluetoothActions } from '@suite-common/bluetooth';
 import { useServices } from '@suite-common/dependency-injection';
-import { selectDispatch } from '@suite-common/redux-utils';
+import { injectDispatch } from '@suite-common/redux-utils';
 import {
     Box,
     Card,
@@ -72,7 +72,7 @@ export const ConnectDeviceCrossroadsScreen = ({
     AuthorizeDeviceStackRoutes.ConnectDeviceCrossroads,
     RootStackParamList
 >) => {
-    const { dispatch } = useServices(selectDispatch);
+    const { dispatch } = useServices(injectDispatch);
 
     const navigateToTurnOnAndUnlockDeviceScreen = () => {
         // Make sure auto-connect is enabled in case some device was manually disconnected.

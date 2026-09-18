@@ -32,7 +32,7 @@ export type MetadataMigrationDep = {
     migrateLegacyLabelsToSuiteSync: MigrateLegacyLabelsToSuiteSync;
 };
 
-export const selectMetadataMigrationDep = (services: any): MetadataMigrationDep => ({
+export const injectMetadataMigration = (services: any): MetadataMigrationDep => ({
     migrateLegacyLabelsToSuiteSync: services.migrateLegacyLabelsToSuiteSync,
 });
 

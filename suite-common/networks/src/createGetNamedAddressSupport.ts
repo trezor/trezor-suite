@@ -25,7 +25,7 @@ export type GetNamedAddressSupportDep = {
     getNamedAddressSupport: GetNamedAddressSupport;
 };
 
-export const selectGetNamedAddressSupportDep = (services: any): GetNamedAddressSupportDep => ({
+export const injectGetNamedAddressSupport = (services: any): GetNamedAddressSupportDep => ({
     getNamedAddressSupport: services.networks.getNamedAddressSupport,
 });
 

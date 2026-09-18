@@ -2,7 +2,7 @@ import { useCallback, useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 
 import { useServices } from '@suite-common/dependency-injection';
-import { selectDispatch } from '@suite-common/redux-utils';
+import { injectDispatch } from '@suite-common/redux-utils';
 import { selectBaseCurrency } from '@suite-common/wallet-core';
 import { type SpinnerLoadingState } from '@suite-native/atoms';
 import {
@@ -29,7 +29,7 @@ export const AccountImportLoadingScreen = ({
     RootStackParamList
 >) => {
     const { xpubAddress, networkSymbol } = route.params;
-    const { dispatch } = useServices(selectDispatch);
+    const { dispatch } = useServices(injectDispatch);
     const showImportError = useShowImportError(networkSymbol, navigation);
     const [accountInfo, setAccountInfo] = useState<AccountInfo | null>(null);
     const baseCurrencyCode = useSelector(selectBaseCurrency);

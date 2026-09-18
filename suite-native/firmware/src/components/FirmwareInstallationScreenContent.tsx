@@ -6,7 +6,7 @@ import { useKeepAwake } from 'expo-keep-awake';
 
 import { useServices } from '@suite-common/dependency-injection';
 import { firmwareActions } from '@suite-common/firmware';
-import { selectDispatch } from '@suite-common/redux-utils';
+import { injectDispatch } from '@suite-common/redux-utils';
 import { Box, Button, VStack, useBottomSheetModal } from '@suite-native/atoms';
 import {
     ConfirmOnTrezorWrapper,
@@ -62,7 +62,7 @@ export const FirmwareInstallationScreenContent = ({
 }: FirmwareInstallationScreenContentProps) => {
     useKeepAwake(); // Prevents screen from sleeping while installing firmware (might take few minutes).
 
-    const { dispatch } = useServices(selectDispatch);
+    const { dispatch } = useServices(injectDispatch);
     const { applyStyle } = useNativeStyles();
     const navigation = useNavigation();
 

@@ -3,7 +3,7 @@ import { useCallback } from 'react';
 import { useNavigation } from '@react-navigation/native';
 
 import { useServices } from '@suite-common/dependency-injection';
-import { selectDispatch } from '@suite-common/redux-utils';
+import { injectDispatch } from '@suite-common/redux-utils';
 import { setIsOnboardingFeedbackBannerEnabled } from '@suite-native/banners';
 import {
     type DeviceOnboardingStackParamList,
@@ -17,7 +17,7 @@ type NavigationProps = StackNavigationProps<
 >;
 
 export const useOnDeviceOnboardingFinishedNavigation = () => {
-    const { dispatch } = useServices(selectDispatch);
+    const { dispatch } = useServices(injectDispatch);
     const navigation = useNavigation<NavigationProps>();
 
     const onDeviceOnboardingFinishedNavigation = useCallback(() => {

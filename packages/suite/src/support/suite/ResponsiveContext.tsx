@@ -2,7 +2,7 @@ import React, { createContext, useContext, useEffect, useMemo, useState } from '
 
 import { selectSidebarWidth, suiteSettingsActions } from '@suite/settings';
 import { useServices } from '@suite-common/dependency-injection';
-import { selectDispatch } from '@suite-common/redux-utils';
+import { injectDispatch } from '@suite-common/redux-utils';
 import { throwError } from '@trezor/utils';
 
 import { useSelector } from 'src/hooks/suite';
@@ -40,7 +40,7 @@ export const ResponsiveContext = createContext<ResponsiveContextType | undefined
 
 export const ResponsiveContextProvider = ({ children }: { children: React.ReactNode }) => {
     const sidebarWidthFromRedux = useSelector(selectSidebarWidth);
-    const { dispatch } = useServices(selectDispatch);
+    const { dispatch } = useServices(injectDispatch);
     const initialSidebarWidth = normalizePersistedSidebarWidth(sidebarWidthFromRedux);
 
     const [sidebarWidthManual, setSidebarWidthManual] = useState<number>(initialSidebarWidth);

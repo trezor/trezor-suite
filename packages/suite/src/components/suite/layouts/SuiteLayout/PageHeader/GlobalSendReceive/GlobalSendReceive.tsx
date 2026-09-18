@@ -2,7 +2,7 @@ import { memo } from 'react';
 
 import { useDevice } from '@suite/device';
 import { useServices } from '@suite-common/dependency-injection';
-import { selectDispatch } from '@suite-common/redux-utils';
+import { injectDispatch } from '@suite-common/redux-utils';
 import { selectAllAccountsToList } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
 
@@ -23,7 +23,7 @@ export const GlobalSendReceive = memo(function GlobalSendReceiveInner() {
     const { device } = useDevice();
     const { activeModal, openModal, closeModal } = useGlobalSendReceiveModal();
     const { sendAnalytics, receiveAnalytics } = useGlobalSendReceiveAnalytics();
-    const { dispatch } = useServices(selectDispatch);
+    const { dispatch } = useServices(injectDispatch);
     const accounts = useSelector(selectAllAccountsToList);
     const discoveryStatus = useSelector(selectDiscoveryOverallStatus);
 

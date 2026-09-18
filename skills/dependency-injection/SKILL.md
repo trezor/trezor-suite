@@ -62,6 +62,17 @@ export const createServiceName =
     };
 ```
 
+### 5. Dependency injector:
+
+Name it `injectServiceName`, after the `ServiceNameDep` it returns. `inject` keeps it apart from
+Redux state selectors, which own the `select` prefix.
+
+```ts
+export const injectServiceName = (services: any): ServiceNameDep => ({
+    serviceName: services.serviceName,
+});
+```
+
 ### Dependency access
 
 Take the dependency object whole and read it as `deps.serviceName`. Never destructure it, neither in
@@ -139,11 +150,11 @@ Tests MUST use the service's declared dependency type: annotate object literals 
 or pass it to `createMockDeps<ServiceDeps>`. Use `createMockDeps` and `mock` wherever possible. See
 [Dependencies in tests](../tests/SKILL.md#dependencies-in-tests).
 
-## React service selection
+## React service injection
 
-`useServices` accepts multiple selectors. Prefer one call with all needed selectors instead of
+`useServices` accepts multiple injectors. Prefer one call with all needed injectors instead of
 multiple `useServices` calls when a component or hook needs several services.
 
 ```ts
-const { serviceName, otherService } = useServices(selectServiceNameDep, selectOtherServiceDep);
+const { serviceName, otherService } = useServices(injectServiceName, injectOtherService);
 ```

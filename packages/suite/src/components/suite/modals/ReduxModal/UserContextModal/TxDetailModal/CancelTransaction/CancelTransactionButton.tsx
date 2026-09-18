@@ -3,7 +3,7 @@ import { useState } from 'react';
 import { useDevice } from '@suite/device';
 import { Translation } from '@suite/intl';
 import { useServices } from '@suite-common/dependency-injection';
-import { selectDispatch } from '@suite-common/redux-utils';
+import { injectDispatch } from '@suite-common/redux-utils';
 import { type Account } from '@suite-common/wallet-types';
 import { Modal } from '@trezor/components';
 
@@ -19,7 +19,7 @@ export const CancelTransactionButton = ({ account, onSuccess }: CancelTransactio
     const { device, isLocked } = useDevice();
     const [isSubmitting, setIsSubmitting] = useState(false);
 
-    const { dispatch } = useServices(selectDispatch);
+    const { dispatch } = useServices(injectDispatch);
     const { composedCancelTx, cancelFormState } = useCancelTxContext();
 
     const handleCancelTx = async () => {
