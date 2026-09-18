@@ -11307,8 +11307,8 @@ __metadata:
     "@trezor/network-bitcoin-suite-common": "workspace:*"
     "@trezor/network-cardano-suite-common": "workspace:*"
     "@trezor/network-ethereum-suite-common": "workspace:*"
-    "@trezor/network-module": "workspace:*"
     "@trezor/network-module-suite-common-types": "workspace:*"
+    "@trezor/network-module-types": "workspace:*"
     "@trezor/network-ripple-suite-common": "workspace:*"
     "@trezor/network-solana-suite-common": "workspace:*"
     "@trezor/network-stellar-suite-common": "workspace:*"
@@ -11801,7 +11801,7 @@ __metadata:
     "@suite-common/earn-stablecoin-defs": "workspace:*"
     "@suite-common/legacy-network-config": "workspace:*"
     "@suite-common/networks": "workspace:*"
-    "@trezor/network-module": "workspace:*"
+    "@trezor/network-module-types": "workspace:*"
     "@trezor/network-solana": "workspace:*"
     "@trezor/type-utils": "workspace:*"
     "@trezor/utils": "workspace:*"
@@ -17765,8 +17765,8 @@ __metadata:
     "@suite-common/dependency-injection": "workspace:*"
     "@trezor/connect-common": "workspace:*"
     "@trezor/network-ethereum": "workspace:*"
-    "@trezor/network-module": "workspace:*"
     "@trezor/network-module-suite-common-types": "workspace:*"
+    "@trezor/network-module-types": "workspace:*"
     "@trezor/utils": "workspace:*"
     viem: "npm:^2.54.1"
   languageName: unknown
@@ -17788,15 +17788,15 @@ __metadata:
     "@trezor/connect-common": "workspace:*"
     "@trezor/crypto-utils": "workspace:*"
     "@trezor/device-utils": "workspace:*"
-    "@trezor/network-module": "workspace:*"
+    "@trezor/network-module-types": "workspace:*"
     "@trezor/type-utils": "workspace:*"
     "@trezor/utils": "workspace:*"
   languageName: unknown
   linkType: soft
 
-"@trezor/network-module@workspace:*, @trezor/network-module@workspace:networks/network-module/network-module":
+"@trezor/network-module-types@workspace:*, @trezor/network-module-types@workspace:networks/network-module/network-module-types":
   version: 0.0.0-use.local
-  resolution: "@trezor/network-module@workspace:networks/network-module/network-module"
+  resolution: "@trezor/network-module-types@workspace:networks/network-module/network-module-types"
   dependencies:
     "@trezor/type-utils": "workspace:*"
   languageName: unknown

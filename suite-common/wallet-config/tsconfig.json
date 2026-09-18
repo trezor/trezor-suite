@@ -6,7 +6,7 @@
         { "path": "../legacy-network-config" },
         { "path": "../networks" },
         {
-            "path": "../../networks/network-module/network-module"
+            "path": "../../networks/network-module/network-module-types"
         },
         {
             "path": "../../networks/solana/network-solana"

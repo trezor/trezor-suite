@@ -1,6 +1,6 @@
 import type { SuiteCommonNetworkModule } from '@trezor/network-module-suite-common-types';
 
-export { type NetworkSymbol, asNetworkSymbol } from '@trezor/network-module';
+export { type NetworkSymbol, asNetworkSymbol } from '@trezor/network-module-types';
 
 // The keys mirror the DI composition root: when adding a Network Module, name it here and create
 // its runtime object in `createNetworkModulesCompositionRoot`.

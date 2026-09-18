@@ -1,10 +1,10 @@
 import type { EthereumNetworkSymbol } from '@trezor/network-ethereum/constants';
-import { asNetworkSymbol } from '@trezor/network-module';
 import {
     type Explorer,
     type SuiteCommonNetworkConfig,
     asProtocol,
 } from '@trezor/network-module-suite-common-types';
+import { asNetworkSymbol } from '@trezor/network-module-types';
 
 const getExplorerUrls = (baseUrl: string): Explorer => ({
     base: baseUrl,

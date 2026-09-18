@@ -1,4 +1,4 @@
-import { type NetworkSymbol, asNetworkSymbols } from '@trezor/network-module';
+import { type NetworkSymbol, asNetworkSymbols } from '@trezor/network-module-types';
 import { isArrayMember } from '@trezor/utils';
 
 import type { AddressValidator } from './AddressValidator';
