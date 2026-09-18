@@ -25,3 +25,7 @@ jobs:
       - name: Synching production bucket with rollback
         run: |
           aws s3 sync --delete s3://rollback-connect.trezor.io/${{ env.LATEST_VERSION }}/ s3://connect.trezor.io/${{ env.LATEST_VERSION }}/
+
+      - name: Invalidate CloudFront cache
+        run: |
+          aws cloudfront create-invalidation --distribution-id E3LVNAOGT94E37 --paths '/*'
