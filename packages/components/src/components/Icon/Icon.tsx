@@ -11,13 +11,13 @@ import {
     iconIntents,
     iconPriorities,
 } from './types';
-import { mapIntentToCSS } from './utils';
 import {
     type FrameProps,
     type FramePropsKeys,
     pickAndPrepareFrameProps,
     withFrameProps,
 } from '../../utils/frameProps';
+import { mapIntentToCSS } from '../../utils/mapIntentToCSS';
 import { type TransientProps } from '../../utils/transientProps';
 
 export { iconIntents, iconPriorities };
@@ -76,11 +76,15 @@ const Container = styled.div<ContainerProps>`
                 return theme[$color];
             }
 
-            if ($intent === undefined && !$isDisabled) {
+            if ($isDisabled) {
+                return theme.contentDisabled;
+            }
+
+            if ($intent === undefined) {
                 return 'currentColor';
             }
 
-            return mapIntentToCSS($intent ?? 'neutral', $priority, $isInverse, $isDisabled, theme);
+            return mapIntentToCSS($intent, $priority, $isInverse, theme);
         }};
         transition: fill 0.14s;
     }

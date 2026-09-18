@@ -5,13 +5,13 @@ import styled, { type DefaultTheme, type RuleSet, css } from 'styled-components'
 import { type Color } from '@trezor/theme';
 
 import { type TextIntent, type TextPriority, textIntents, textPriorities } from './types';
-import { mapIntentToCSS } from './utils';
 import {
     type FrameProps,
     type FramePropsKeys,
     pickAndPrepareFrameProps,
     withFrameProps,
 } from '../../../utils/frameProps';
+import { mapIntentToCSS } from '../../../utils/mapIntentToCSS';
 import { type TransientProps } from '../../../utils/transientProps';
 import {
     type TextProps as TextPropsCommon,
