@@ -1753,6 +1753,30 @@ export const messages = defineMessages({
             'Add spaces to addresses for easier reading. When off, addresses are shown as a continuous string.',
         id: 'TR_ADDRESS_DISPLAY_DESCRIPTION',
     },
+    TR_ASSET_FIRST_TOTAL_BALANCE: {
+        defaultMessage: 'Total balance',
+        id: 'TR_ASSET_FIRST_TOTAL_BALANCE',
+    },
+    TR_ASSET_FIRST_WEEK_PERIOD: {
+        defaultMessage: '7d',
+        id: 'TR_ASSET_FIRST_WEEK_PERIOD',
+    },
+    TR_ASSET_FIRST_GROUPING: {
+        defaultMessage: 'Group assets',
+        id: 'TR_ASSET_FIRST_GROUPING',
+    },
+    TR_ASSET_FIRST_GROUPING_DEFAULT: {
+        defaultMessage: 'Default',
+        id: 'TR_ASSET_FIRST_GROUPING_DEFAULT',
+    },
+    TR_ASSET_FIRST_GROUPING_NETWORKS: {
+        defaultMessage: 'By networks',
+        id: 'TR_ASSET_FIRST_GROUPING_NETWORKS',
+    },
+    TR_ASSET: {
+        defaultMessage: 'Asset',
+        id: 'TR_ASSET',
+    },
     TR_ASSETS: {
         defaultMessage: 'Network',
         id: 'TR_ASSETS',

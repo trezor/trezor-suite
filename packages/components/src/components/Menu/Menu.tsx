@@ -1,4 +1,4 @@
-import React, { forwardRef, useEffect, useState } from 'react';
+import React, { Fragment, forwardRef, useEffect, useState } from 'react';
 
 import styled, { keyframes } from 'styled-components';
 
@@ -12,6 +12,7 @@ import {
 } from '../../utils/frameProps';
 import { type TransientProps } from '../../utils/transientProps';
 import { Box } from '../Box/Box';
+import { Divider } from '../Divider/Divider';
 import { Column, Row } from '../Flex/Flex';
 import { Icon, type IconComponent } from '../Icon/Icon';
 import { Text } from '../typography/Text/Text';
@@ -62,6 +63,10 @@ const MenuList = styled.ul`
     display: block;
 `;
 
+const Separator = styled.li`
+    list-style: none;
+`;
+
 export type DropdownMenuItemProps = {
     label: React.ReactNode;
     onClick?: () => unknown | Promise<unknown>;
@@ -69,6 +74,7 @@ export type DropdownMenuItemProps = {
     iconRight?: IconComponent;
     isDisabled?: boolean;
     isHidden?: boolean;
+    hasSeparatorBefore?: boolean;
     closeOnClick?: boolean;
     'data-testid'?: string;
 };
@@ -207,19 +213,25 @@ export const Menu = forwardRef<HTMLUListElement, MenuProps>(
                     {!!visibleItems?.length && (
                         <MenuList ref={ref}>
                             {visibleItems?.map((item, index) => (
-                                <MenuItem
-                                    isKeyboardSelected={index === focusedItemIndex}
-                                    onMouseEnter={() =>
-                                        !item.isDisabled && setFocusedItemIndex(index)
-                                    }
-                                    data-testid={item['data-testid']}
-                                    {...item}
-                                    onClick={() => {
-                                        if (item.closeOnClick !== false) onClose?.();
-                                        item.onClick?.();
-                                    }}
-                                    key={index}
-                                />
+                                <Fragment key={index}>
+                                    {item.hasSeparatorBefore && (
+                                        <Separator role="separator">
+                                            <Divider margin={{ vertical: 8 }} />
+                                        </Separator>
+                                    )}
+                                    <MenuItem
+                                        isKeyboardSelected={index === focusedItemIndex}
+                                        onMouseEnter={() =>
+                                            !item.isDisabled && setFocusedItemIndex(index)
+                                        }
+                                        data-testid={item['data-testid']}
+                                        {...item}
+                                        onClick={() => {
+                                            if (item.closeOnClick !== false) onClose?.();
+                                            item.onClick?.();
+                                        }}
+                                    />
+                                </Fragment>
                             ))}
                         </MenuList>
                     )}
