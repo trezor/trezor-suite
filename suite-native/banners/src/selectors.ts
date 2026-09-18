@@ -72,7 +72,7 @@ const selectIsWalletDiscoveryFinished = createSelector(
         const discoveryStatus = discovery[selectedDevicePath]?.status;
 
         if (!discoveryStatus) {
-            return true;
+            return false;
         }
 
         return (

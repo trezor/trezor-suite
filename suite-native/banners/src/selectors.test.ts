@@ -213,6 +213,32 @@ describe('native promo banner selectors', () => {
         expect(selectVisiblePromoBanners(state)).toEqual(['eth-vault']);
     });
 
+    it('hides wallet-dependent promo banners until native discovery state exists', () => {
+        const account = mockWalletAccount({
+            symbol: asNetworkSymbol('eth'),
+            balance: '1',
+            deviceState: TEST_SESSION_ID,
+            visible: true,
+        });
+        const state = createState({
+            messages: [
+                createPromoMessage(
+                    createPromoFeature({
+                        bannerId: 'eth-vault',
+                        eligibility: {
+                            required: [{ type: 'asset-balance-positive', value: 'native:eth' }],
+                        },
+                    }),
+                    'eth-vault',
+                ),
+            ],
+            accounts: [account],
+            discovery: {},
+        });
+
+        expect(selectVisiblePromoBanners(state)).toEqual([]);
+    });
+
     it('surfaces promo config validation errors from active native feature messages', () => {
         const state = createState({
             messages: [
