@@ -38,7 +38,7 @@ import {
     isUnwrapNativeTx,
     isWrapNativeTx,
 } from './ethUtils';
-import { isExchangeTradingForm } from './sendFormUtils';
+import { isCompleteTradingForm, isExchangeTradingForm } from './sendFormUtils';
 import { getStakeType } from './stakingUtils';
 import { isRbfBumpFeeTransaction } from './transactionUtils';
 
@@ -671,24 +671,28 @@ const constructNewFlow = ({
         });
     } else if (
         (precomposedForm.trading?.isSlip24Active || isClearSignedTradingSwap) &&
-        isExchangeTradingForm(trading)
+        isCompleteTradingForm(trading)
     ) {
-        const recipientName = isClearSignedTradingSwap
+        const isClearSignedExchangeSwap =
+            isClearSignedTradingSwap && isExchangeTradingForm(trading);
+        const recipientName = isClearSignedExchangeSwap
             ? getClearSignedSwapRecipientName(precomposedTx, trading.recipientName)
             : trading.recipientName;
+        const isSlip24Sell = trading.isSlip24Active && trading.activeSection === 'sell';
 
-        if (recipientName) {
+        if (recipientName && !isSlip24Sell) {
             outputs.push({ type: 'recipient_name', value: recipientName });
         }
-        if (isClearSignedTradingSwap) {
+        if (isClearSignedExchangeSwap) {
             outputs.push({ type: 'swap_intent', value: 'swap' });
         }
 
-        const isPartialClearSignedSwap = clearSignedSwapCoverage === 'partial';
+        const isPartialClearSignedSwap =
+            isClearSignedExchangeSwap && clearSignedSwapCoverage === 'partial';
         // TODO: extract the receive amount directly from the actual transaction data
         // instead of deriving it from the quote and slippage.
         const slippageAdjustedReceive =
-            isClearSignedTradingSwap && swapSlippage
+            isClearSignedExchangeSwap && swapSlippage
                 ? {
                       ...trading.receive,
                       amount: new BigNumber(trading.receive.amount)
@@ -704,8 +708,15 @@ const constructNewFlow = ({
             value2: '',
             send: trading.send,
             receive,
-            receiveAddress: clearSignedSwapCoverage === 'full' ? trading.receiveAddress : undefined,
+            receiveAddress:
+                isClearSignedExchangeSwap && clearSignedSwapCoverage === 'full'
+                    ? trading.receiveAddress
+                    : undefined,
         });
+
+        if (recipientName && isSlip24Sell) {
+            outputs.push({ type: 'recipient_name', value: recipientName });
+        }
     } else {
         precomposedTx.outputs.forEach(o => {
             if (typeof o.address === 'string') {
