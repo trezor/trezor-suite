@@ -2,6 +2,13 @@
     "extends": "../../../tsconfig.base.json",
     "compilerOptions": { "outDir": "libDev" },
     "include": [".", "**/*.json"],
+    "exclude": [
+        "**/node_modules",
+        "**/lib",
+        "**/libDev",
+        "**/jest.config.*js",
+        "generated"
+    ],
     "references": [
         { "path": "../../../packages/utils" }
     ]

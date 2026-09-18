@@ -41,6 +41,7 @@ export const eslint = [
             '**/.nx/*',
             '**/lib/*',
             '**/libDev/*',
+            '**/generated/csl-asmjs/*',
             '**/dist/*',
             '**/coverage/*',
             '**/build/*',
