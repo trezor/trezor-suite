@@ -7,10 +7,6 @@ type CreateConnectLoggerFactoryDeps = {
 
 export type CreateConnectLoggerFactory = (deps: CreateConnectLoggerFactoryDeps) => CreateLogger;
 
-export type CreateConnectLoggerFactoryDep = {
-    createConnectLoggerFactory?: CreateConnectLoggerFactory;
-};
-
 export const createConnectLoggerFactory: CreateConnectLoggerFactory =
     ({ getState }) =>
     prefix =>
