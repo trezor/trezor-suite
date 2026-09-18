@@ -16,7 +16,8 @@ import {
     type EvmTransactionPurpose,
     type FormState,
     type PrecomposedTransactionFinal,
-    type ReviewOutput,
+    type TransactionReviewOutput,
+    type TransactionReviewOutputState,
     type YieldClaimReward,
 } from '@suite-common/wallet-types';
 import {
@@ -53,10 +54,11 @@ type YieldTransactionReviewOutputType =
     | 'recipient_name'
     | 'regular_legacy'
     | 'rewards';
-type YieldTransactionReviewValueOutput = Extract<ReviewOutput, { value: string }> & {
+
+type YieldTransactionReviewValueOutput = Extract<TransactionReviewOutput, { value: string }> & {
     type: Exclude<YieldTransactionReviewOutputType, 'rewards'>;
 };
-type YieldTransactionReviewRewardsOutput = Extract<ReviewOutput, { type: 'rewards' }>;
+type YieldTransactionReviewRewardsOutput = Extract<TransactionReviewOutput, { type: 'rewards' }>;
 
 export type YieldTransactionReviewOutput =
     YieldTransactionReviewRewardsOutput | YieldTransactionReviewValueOutput;
@@ -125,10 +127,78 @@ export type BuildYieldReviewPreviewParams =
 
 export type YieldReviewPreview = {
     evmTransactionPurpose: YieldReviewEvmTransactionPurpose;
-    outputs: ReviewOutput[];
+    outputs: TransactionReviewOutput[];
     summary: {
         fee: string;
     };
+};
+
+interface GetYieldReviewOutputStateProps {
+    activeStep?: number;
+    index: number;
+    isSigned: boolean;
+}
+
+const getYieldReviewOutputState = ({
+    activeStep,
+    index,
+    isSigned,
+}: GetYieldReviewOutputStateProps): TransactionReviewOutputState => {
+    if (isSigned) {
+        return 'success';
+    }
+
+    if (activeStep === undefined) {
+        return undefined;
+    }
+
+    if (index < activeStep) {
+        return 'success';
+    }
+
+    if (index === activeStep) {
+        return 'active';
+    }
+
+    return undefined;
+};
+
+interface GetYieldStatefulReviewOutputsProps {
+    activeStep?: number;
+    isSigned?: boolean;
+    outputs: YieldReviewPreview['outputs'];
+}
+
+export const getYieldStatefulReviewOutputs = ({
+    activeStep,
+    isSigned,
+    outputs,
+}: GetYieldStatefulReviewOutputsProps) =>
+    outputs.map((output: TransactionReviewOutput, index) => ({
+        ...output,
+        state: getYieldReviewOutputState({
+            activeStep,
+            index,
+            isSigned: isSigned ?? false,
+        }),
+    }));
+
+interface GetYieldReviewSummaryStateProps {
+    activeStep?: number;
+    isSigned: boolean;
+    outputsCount: number;
+}
+
+export const getYieldReviewSummaryState = ({
+    activeStep,
+    isSigned,
+    outputsCount,
+}: GetYieldReviewSummaryStateProps): TransactionReviewOutputState => {
+    if (isSigned) {
+        return 'success';
+    }
+
+    return activeStep === outputsCount ? 'active' : undefined;
 };
 
 const yieldTransactionReviewOutputTypes = [
@@ -143,7 +213,7 @@ const yieldTransactionReviewOutputTypes = [
 ] satisfies YieldTransactionReviewOutputType[];
 
 export const isYieldTransactionReviewOutput = (
-    reviewOutput: ReviewOutput,
+    reviewOutput: TransactionReviewOutput,
 ): reviewOutput is YieldTransactionReviewOutput =>
     yieldTransactionReviewOutputTypes.includes(
         reviewOutput.type as YieldTransactionReviewOutputType,

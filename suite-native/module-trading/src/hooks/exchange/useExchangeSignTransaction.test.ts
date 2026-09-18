@@ -116,12 +116,15 @@ describe('useExchangeSignTransaction', () => {
             result.current.handleSignTransaction();
         });
 
-        expect(mockNavigate).toHaveBeenCalledWith(RootStackRoutes.TradingExchangeOutputsReview, {
-            accountKey: btc1NormalAccount.key,
-            tokenContract: '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
-            orderId: mercuryoFixedWorstQuote.orderId,
-            flowType: 'sign-data',
-        });
+        expect(mockNavigate).toHaveBeenCalledWith(
+            RootStackRoutes.TradingExchangeTransactionReview,
+            {
+                accountKey: btc1NormalAccount.key,
+                tokenContract: '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
+                orderId: mercuryoFixedWorstQuote.orderId,
+                flowType: 'sign-data',
+            },
+        );
         expect(onSignTransactionNavigation).toHaveBeenCalledTimes(1);
     });
 

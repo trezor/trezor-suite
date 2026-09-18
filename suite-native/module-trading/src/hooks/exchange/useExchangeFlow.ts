@@ -51,7 +51,7 @@ export const useExchangeFlow = ({ flowType }: UseExchangeFlowProps = {}) => {
             StackNavigationProps<
                 RootStackParamList,
                 | RootStackRoutes.TradingExchangePreview
-                | RootStackRoutes.TradingExchangeOutputsReview
+                | RootStackRoutes.TradingExchangeTransactionReview
             >
         >();
     const { analytics, dispatch } = useServices(selectNativeAnalyticsDep, selectDispatch);

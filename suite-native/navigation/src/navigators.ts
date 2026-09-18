@@ -591,12 +591,12 @@ export type RootStackParamList = {
     };
     [RootStackRoutes.TradingSellPreview]: undefined;
     [RootStackRoutes.TradingSellCompletion]: undefined;
-    [RootStackRoutes.TradingSellOutputsReview]: {
+    [RootStackRoutes.TradingSellTransactionReview]: {
         accountKey: AccountKey;
         tokenContract?: TokenAddress;
         orderId: string;
     };
-    [RootStackRoutes.TradingExchangeOutputsReview]: {
+    [RootStackRoutes.TradingExchangeTransactionReview]: {
         accountKey: AccountKey;
         tokenContract?: TokenAddress;
         orderId: string;
