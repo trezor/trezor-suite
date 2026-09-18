@@ -18,7 +18,7 @@ import { getYieldVaultContractAddress, isYieldSupported } from '@suite-common/wa
 import { getContractAddressForNetworkSymbol } from '@suite-common/wallet-utils';
 import { Card, Column, Icon, Row, Table } from '@trezor/components';
 import { ArrowDownIcon, ArrowRightIcon } from '@trezor/icons';
-import { isWrappedNativeToken } from '@trezor/network-ethereum-suite-common/wrapped-native-token';
+import { isWrappedNativeToken } from '@trezor/network-ethereum-suite-common';
 import { BigNumber } from '@trezor/utils';
 
 import { useSelector } from 'src/hooks/suite';

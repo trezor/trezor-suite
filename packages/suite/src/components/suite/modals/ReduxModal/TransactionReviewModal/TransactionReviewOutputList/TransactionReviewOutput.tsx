@@ -27,7 +27,7 @@ import {
     isTestnet,
 } from '@suite-common/wallet-utils';
 import type { TokenInfo } from '@trezor/blockchain-link-types';
-import { getWrappedNativeSymbol } from '@trezor/network-ethereum-suite-common/wrapped-native-token';
+import { getWrappedNativeSymbol } from '@trezor/network-ethereum-suite-common';
 import { exhaustive } from '@trezor/type-utils';
 import { BigNumber, localizeNumber } from '@trezor/utils';
 

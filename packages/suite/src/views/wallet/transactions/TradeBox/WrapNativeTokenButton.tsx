@@ -15,7 +15,7 @@ import { Button, Tooltip } from '@trezor/components';
 import {
     getWrappedNativeAddress,
     getWrappedNativeSymbol,
-} from '@trezor/network-ethereum-suite-common/wrapped-native-token';
+} from '@trezor/network-ethereum-suite-common';
 
 import { useSelector } from 'src/hooks/suite';
 import { useFirmwareUpgradeModal } from 'src/hooks/suite/useFirmwareUpgradeModal';

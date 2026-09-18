@@ -21,7 +21,7 @@ import {
 } from '@suite-common/wallet-types';
 import type { CardanoOutput } from '@trezor/connect';
 import { getFirmwareVersion, getFirmwareVersionArray } from '@trezor/device-utils';
-import { getWrappedNativeSymbol } from '@trezor/network-ethereum-suite-common/wrapped-native-token';
+import { getWrappedNativeSymbol } from '@trezor/network-ethereum-suite-common';
 import { BigNumber, versionUtils } from '@trezor/utils';
 
 import { datetimeToLocktime } from './bitcoinUtils';

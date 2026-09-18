@@ -7,7 +7,7 @@ import {
     getUnwrapAmountByEthereumDataHex,
     subunitsToUnits,
 } from '@suite-common/wallet-utils';
-import { getWrappedNativeSymbol } from '@trezor/network-ethereum-suite-common/wrapped-native-token';
+import { getWrappedNativeSymbol } from '@trezor/network-ethereum-suite-common';
 import { BigNumber } from '@trezor/utils';
 
 import { FormattedCryptoAmount } from './FormattedCryptoAmount';

@@ -10,7 +10,7 @@ import {
 import { mockAccountToken, mockWalletAccount } from '@suite-common/wallet-types/mocks';
 import { mockNativeAnalytics } from '@suite-native/analytics/mocks';
 import TrezorConnect from '@trezor/connect';
-import { getWrappedNativeToken } from '@trezor/network-ethereum-suite-common/wrapped-native-token';
+import { getWrappedNativeToken } from '@trezor/network-ethereum-suite-common';
 
 import {
     type PushWrappedNativeTokenThunkDeps,

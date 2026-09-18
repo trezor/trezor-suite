@@ -17,7 +17,7 @@ import {
 import { type Account } from '@suite-common/wallet-types';
 import { getApyBreakdown } from '@suite-common/wallet-utils';
 import { type Analytics } from '@trezor/analytics-uploader';
-import { isWrappedNativeToken } from '@trezor/network-ethereum-suite-common/wrapped-native-token';
+import { isWrappedNativeToken } from '@trezor/network-ethereum-suite-common';
 import { useCurrentRef } from '@trezor/react-utils';
 
 import { useSelector } from 'src/hooks/suite';

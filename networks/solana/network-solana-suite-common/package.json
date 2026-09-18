@@ -4,10 +4,7 @@
     "private": true,
     "license": "See LICENSE.md in repo root",
     "sideEffects": false,
-    "exports": {
-        "./constants": "./src/networkConfig.ts",
-        "./runtime": "./src/SolanaNetworkSuiteCommonNetworkModule.ts"
-    },
+    "main": "src/index",
     "scripts": {
         "depcheck": "yarn g:depcheck",
         "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'",

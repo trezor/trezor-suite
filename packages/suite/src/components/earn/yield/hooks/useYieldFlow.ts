@@ -28,7 +28,7 @@ import {
     yieldActions,
 } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
-import { isWrappedNativeToken } from '@trezor/network-ethereum-suite-common/wrapped-native-token';
+import { isWrappedNativeToken } from '@trezor/network-ethereum-suite-common';
 import { useCurrentRef, useFreshRef } from '@trezor/react-utils';
 
 import {

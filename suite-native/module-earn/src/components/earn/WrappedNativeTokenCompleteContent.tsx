@@ -13,7 +13,7 @@ import { type AccountKey } from '@suite-common/wallet-types';
 import { injectNativeAnalytics } from '@suite-native/analytics';
 import { Translation } from '@suite-native/intl';
 import { useNavigateToInitialScreen } from '@suite-native/navigation';
-import { getWrappedNativeToken } from '@trezor/network-ethereum-suite-common/wrapped-native-token';
+import { getWrappedNativeToken } from '@trezor/network-ethereum-suite-common';
 
 import { EarnCompleteScreenContent } from './EarnCompleteScreenContent';
 import { wrappedNativeFlowMessages } from '../../utils/earn/wrappedNativeFlowMessages';
