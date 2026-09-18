@@ -16,6 +16,9 @@ on:
           - canary
           - stable
 
+env:
+  CONNECT_CLOUDFRONT_DISTRIBUTION_ID: E3LVNAOGT94E37
+
 jobs:
   extract-version:
     runs-on: ubuntu-latest
@@ -90,7 +93,7 @@ jobs:
       - name: Synching production bucket with current staging
         run: |
           aws s3 sync --delete --cache-control 'public, max-age=3600' "s3://staging-connect.trezor.io/${{ env.CURRENT_VERSION }}/" "s3://connect.trezor.io/${{ env.CURRENT_VERSION }}/"
-          aws cloudfront create-invalidation --distribution-id E3LVNAOGT94E37 --paths '/*'
+          aws cloudfront create-invalidation --distribution-id ${{ env.CONNECT_CLOUDFRONT_DISTRIBUTION_ID }} --paths '/*'
 
   # From staging move it to production
   deploy-production-v9:
@@ -112,4 +115,4 @@ jobs:
       - name: Synching production bucket with current staging
         run: |
           aws s3 sync --delete --cache-control 'public, max-age=3600' "s3://staging-connect.trezor.io/${{ env.LATEST_VERSION }}/" "s3://connect.trezor.io/${{ env.LATEST_VERSION }}/"
-          aws cloudfront create-invalidation --distribution-id E3LVNAOGT94E37 --paths '/*'
+          aws cloudfront create-invalidation --distribution-id ${{ env.CONNECT_CLOUDFRONT_DISTRIBUTION_ID }} --paths '/*'
