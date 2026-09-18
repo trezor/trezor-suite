@@ -1,0 +1,13 @@
+{
+    "extends": "../../../tsconfig.base.json",
+    "compilerOptions": { "outDir": "libDev" },
+    "references": [
+        {
+            "path": "../../network-module/network-module"
+        },
+        {
+            "path": "../../network-module/network-module-suite-types"
+        },
+        { "path": "../network-solana" }
+    ]
+}

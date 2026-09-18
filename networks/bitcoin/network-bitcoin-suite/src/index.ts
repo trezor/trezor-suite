@@ -1,0 +1,1 @@
+export { createBitcoinSuiteNetworkModule } from './BitcoinSuiteNetworkModule';

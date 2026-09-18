@@ -1,5 +1,6 @@
 import { events } from '@suite/analytics';
 import { mockDesktopAnalytics } from '@suite/analytics/mocks';
+import { type SignVerifyRootState } from '@suite/sign-verify';
 import { deviceInitialState } from '@suite-common/device';
 import { type TrezorDevice } from '@suite-common/suite-types';
 import { mockSuiteDevice } from '@suite-common/suite-types/mocks';
@@ -8,12 +9,7 @@ import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { initialWalletSettingsState } from '@suite-common/wallet-core';
 import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
 
-import {
-    type SignVerifyRootState,
-    showAddressThunk,
-    signThunk,
-    verifyThunk,
-} from './signVerifyActions';
+import { createBitcoinSignVerifyActions } from './bitcoinSignVerifyActions';
 
 const PATH = 'PATH';
 const ADDRESS = 'ADDRESS';
@@ -24,7 +20,9 @@ const LEGACY_ACCOUNT = mockWalletAccount({
     symbol: asNetworkSymbol('btc'),
     accountType: 'legacy',
 });
-const ETHEREUM_ACCOUNT = mockWalletAccount({ symbol: asNetworkSymbol('eth') });
+const { showAddressThunk, signThunk, verifyThunk } = createBitcoinSignVerifyActions({
+    getTrezorConnect: () => testMocks.getTrezorConnectMock(),
+});
 
 const CONNECTED_DEVICE = mockSuiteDevice({ connected: true, available: true });
 
@@ -33,7 +31,7 @@ const createState = (selectedDevice: TrezorDevice | undefined): SignVerifyRootSt
     wallet: { settings: initialWalletSettingsState },
 });
 
-describe('Sign/Verify actions', () => {
+describe('Bitcoin sign/verify actions', () => {
     let dispatch: jest.Mock;
     let deps: { services: { analytics: ReturnType<typeof mockDesktopAnalytics> } };
 
@@ -165,10 +163,9 @@ describe('Sign/Verify actions', () => {
             });
         });
 
-        it.each([
-            ['an account signing in a single format', ETHEREUM_ACCOUNT],
-            ['an account not offered the choice', LEGACY_ACCOUNT],
-        ])('leaves the signature format out for %s', async (_name, account) => {
+        it('leaves the signature format out for an account not offered the choice', async () => {
+            const account = LEGACY_ACCOUNT;
+
             testMocks.setTrezorConnectFixtures({
                 success: true,
                 payload: { address: ADDRESS, signature: SIGNATURE },

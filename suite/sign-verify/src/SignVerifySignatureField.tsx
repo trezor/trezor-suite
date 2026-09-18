@@ -12,7 +12,7 @@ type SignVerifySignatureFieldProps = {
     isCompleted: boolean;
     hasError: boolean;
     errorMessage?: string;
-    registration: UseFormRegisterReturn<'signature'>;
+    registration: UseFormRegisterReturn;
     onCopy: (value: string) => void;
 };
 
