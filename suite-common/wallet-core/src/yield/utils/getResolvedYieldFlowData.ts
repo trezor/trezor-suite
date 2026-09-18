@@ -6,7 +6,7 @@ import {
 import { getNetworkByYieldXyzId, getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import { type Account, type TokenSymbol, toTokenSymbol } from '@suite-common/wallet-types';
 import { getApyPercent, getContractAddressForNetworkSymbol } from '@suite-common/wallet-utils';
-import { isWrappedNativeToken } from '@trezor/network-ethereum-suite-common';
+import { isWrappedNativeToken } from '@trezor/network-ethereum-suite-common/wrapped-native-token';
 import { capitalizeFirstLetter } from '@trezor/utils';
 
 import {

@@ -5,7 +5,7 @@ import { z } from 'zod';
 
 import { createHttpClient, isResponseError } from '@suite-common/http-client';
 import { type Network, getNetwork, getNetworkByCoingeckoId } from '@suite-common/wallet-config';
-import { isWrappedNativeToken } from '@trezor/network-ethereum-suite-common';
+import { isWrappedNativeToken } from '@trezor/network-ethereum-suite-common/wrapped-native-token';
 
 import { rasterizeSvg } from './images';
 import {

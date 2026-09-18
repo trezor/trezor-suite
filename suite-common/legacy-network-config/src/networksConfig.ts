@@ -1,11 +1,11 @@
-import { networkConfigBySymbol as bitcoinConfigs } from '@trezor/network-bitcoin-suite-common';
-import { networkConfigBySymbol as cardanoConfigs } from '@trezor/network-cardano-suite-common';
-import { networkConfigBySymbol as ethereumConfigs } from '@trezor/network-ethereum-suite-common';
+import { networkConfigBySymbol as bitcoinConfigs } from '@trezor/network-bitcoin-suite-common/constants';
+import { networkConfigBySymbol as cardanoConfigs } from '@trezor/network-cardano-suite-common/constants';
+import { networkConfigBySymbol as ethereumConfigs } from '@trezor/network-ethereum-suite-common/constants';
 import type { SuiteCommonNetworkConfig } from '@trezor/network-module-suite-common-types';
-import { networkConfigBySymbol as rippleConfigs } from '@trezor/network-ripple-suite-common';
-import { networkConfigBySymbol as solanaConfigs } from '@trezor/network-solana-suite-common';
-import { networkConfigBySymbol as stellarConfigs } from '@trezor/network-stellar-suite-common';
-import { networkConfigBySymbol as tronConfigs } from '@trezor/network-tron-suite-common';
+import { networkConfigBySymbol as rippleConfigs } from '@trezor/network-ripple-suite-common/constants';
+import { networkConfigBySymbol as solanaConfigs } from '@trezor/network-solana-suite-common/constants';
+import { networkConfigBySymbol as stellarConfigs } from '@trezor/network-stellar-suite-common/constants';
+import { networkConfigBySymbol as tronConfigs } from '@trezor/network-tron-suite-common/constants';
 
 import type { Network, Networks } from './types';
 

@@ -1,5 +1,5 @@
 import { type WalletAccountTransaction } from '@suite-common/wallet-types';
-import { getWrappedNativeAddress } from '@trezor/network-ethereum-suite-common';
+import { getWrappedNativeAddress } from '@trezor/network-ethereum-suite-common/wrapped-native-token';
 
 import { findTrackedEvmTransaction, getEvmPendingTxStatus } from './evmPendingTxUtils';
 

@@ -4,7 +4,7 @@ import { type TokenAddress } from '@suite-common/wallet-types';
 import {
     getWrappedNativeAddress,
     isWrappedNativeToken,
-} from '@trezor/network-ethereum-suite-common';
+} from '@trezor/network-ethereum-suite-common/wrapped-native-token';
 
 type WrappedNativeTokenEntry = {
     isDisabled: boolean;

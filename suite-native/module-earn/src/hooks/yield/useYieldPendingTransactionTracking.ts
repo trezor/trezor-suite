@@ -15,7 +15,7 @@ import {
 import { type Account } from '@suite-common/wallet-types';
 import { getApyBreakdown } from '@suite-common/wallet-utils';
 import { type NativeAnalyticsDep, injectNativeAnalytics } from '@suite-native/analytics';
-import { isWrappedNativeToken } from '@trezor/network-ethereum-suite-common';
+import { isWrappedNativeToken } from '@trezor/network-ethereum-suite-common/wrapped-native-token';
 import { exhaustive } from '@trezor/type-utils';
 
 type UseYieldPendingTransactionTrackingParams = {

@@ -10,7 +10,7 @@ import {
     updateFeeInfoThunk,
 } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
-import { getWrappedNativeToken } from '@trezor/network-ethereum-suite-common';
+import { getWrappedNativeToken } from '@trezor/network-ethereum-suite-common/wrapped-native-token';
 
 import { updateEarnSelectedFeeLevelThunk } from './useComposeEarnFees';
 import { type ComposeTxResult, type ComposedTxBase, usePreparedTxFees } from './usePreparedTxFees';

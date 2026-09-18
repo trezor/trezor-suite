@@ -11,7 +11,7 @@ import {
     unitsToSubunits,
 } from '@suite-common/wallet-utils';
 import { type TokenInfo } from '@trezor/blockchain-link-types';
-import { isWrappedNativeToken } from '@trezor/network-ethereum-suite-common';
+import { isWrappedNativeToken } from '@trezor/network-ethereum-suite-common/wrapped-native-token';
 import { BigNumber } from '@trezor/utils';
 
 import { YIELD_FLOW_AVAILABLE_STEPS } from '../yieldConstants';
