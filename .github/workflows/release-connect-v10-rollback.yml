@@ -7,6 +7,9 @@ permissions:
 on:
   workflow_dispatch:
 
+env:
+  CONNECT_CLOUDFRONT_DISTRIBUTION_ID: E3LVNAOGT94E37
+
 jobs:
   rollback-connect-production:
     if: startsWith(github.ref, 'refs/heads/release/connect/')
@@ -28,4 +31,4 @@ jobs:
 
       - name: Invalidate CloudFront cache
         run: |
-          aws cloudfront create-invalidation --distribution-id E3LVNAOGT94E37 --paths '/*'
+          aws cloudfront create-invalidation --distribution-id ${{ env.CONNECT_CLOUDFRONT_DISTRIBUTION_ID }} --paths '/*'
