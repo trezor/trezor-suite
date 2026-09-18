@@ -30,7 +30,7 @@ const gitRevision = childProcess.execSync('git rev-parse HEAD').toString().trim(
 
 /**
  * Assemble release name for Sentry
- * Same definition is in packages/suite-build/configs/base.webpack.config.ts,
+ * Same definition is in packages/suite/webpack/createBaseConfig.ts,
  * but reusing is not straightforward because this is JS script run by Node during build.
  */
 const sentryRelease = `${suiteVersion}.${PROJECT}${

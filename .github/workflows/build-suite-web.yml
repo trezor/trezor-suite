@@ -68,7 +68,7 @@ jobs:
       - name: Install dependencies
         run: |
           echo -e "\nenableHardenedMode: false" >> .yarnrc.yml
-          yarn workspaces focus @suite/web-app @suite/app-assets @trezor/suite-build @suite-common/message-system
+          yarn workspaces focus @suite/web-app @trezor/suite @suite/app-assets @suite-common/message-system
 
       - name: Build suite-web
         env:

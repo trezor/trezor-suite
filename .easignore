@@ -7,7 +7,6 @@ packages/connect-electron/
 packages/ipc-proxy/
 packages/suite/
 packages/suite-analytics/
-packages/suite-build/
 suite/app-assets/
 suite/desktop-app/
 suite/desktop-app-api/

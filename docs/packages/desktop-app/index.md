@@ -5,7 +5,7 @@
 - @trezor/connect API
     - suite-web
         - `@trezor/connect` is part of the JavaScript bundle as a regular module.
-        - `@trezor/connect` imports from `@trezor/suite` are replaced to `@trezor/connect-web` see [webpack config](https://github.com/trezor/trezor-suite/blob/develop/packages/suite-build/configs/web.webpack.config.ts)
+        - `@trezor/connect` imports from `@trezor/suite` are replaced to `@trezor/connect-web` see [webpack config](https://github.com/trezor/trezor-suite/blob/develop/suite/web-app/webpack.config.ts)
     - suite-desktop
         - `@trezor/connect` is installed as regular node_module and works in nodejs context (electron main process).
         - `@trezor/connect` files are **not** hosted on the electron renderer context.

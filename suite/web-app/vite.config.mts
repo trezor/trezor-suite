@@ -1,3 +1,4 @@
+/* eslint-disable import/no-extraneous-dependencies -- build-time tooling belongs in devDependencies */
 import { viteCommonjs } from '@originjs/vite-plugin-commonjs';
 import babel from '@rolldown/plugin-babel';
 import react from '@vitejs/plugin-react';
@@ -8,13 +9,12 @@ import { resolve } from 'path';
 import { Plugin, ViteDevServer, build, defineConfig } from 'vite';
 import wasm from 'vite-plugin-wasm';
 
-import { suiteVersion } from '../suite/package.json';
+import { suiteVersion } from '../../packages/suite/package.json';
 import {
     assetPrefix,
     isTanstackReactQueryDevTools,
-    project,
     transportBrowserPing,
-} from './utils/env';
+} from '@trezor/suite/webpack/env';
 import { sharedAliases as alias, noopCoreJsPlugin } from './viteShared';
 
 const require = createRequire(import.meta.url);
@@ -129,7 +129,7 @@ const sessionsSharedWorkerPlugin = () => {
     const workerOutDir = resolve(__dirname, '../../suite/web-app/dist/workers');
     const workerEntryPath = resolve(
         __dirname,
-        '../transport-web/src/sessions/background-sharedworker.ts',
+        '../../packages/transport-web/src/sessions/background-sharedworker.ts',
     );
     const workerFileName = 'sessions-background-sharedworker';
     const workerOutputPath = resolve(workerOutDir, `${workerFileName}.js`);
@@ -376,7 +376,7 @@ const bufferPolyfillPlugin = (): Plugin => {
     const resolvedVirtualModuleId = '\0' + virtualModuleId;
 
     const polyfillCode = `
-import { installBrowserPolyfills } from '@trezor/suite-build/browserPolyfills';
+import { installBrowserPolyfills } from '@trezor/suite/webpack/browserPolyfills';
 installBrowserPolyfills();
 `;
 
@@ -477,7 +477,7 @@ export default defineConfig({
         'process.env.VERSION': JSON.stringify(suiteVersion),
         'process.env.COMMIT_HASH': JSON.stringify(commitId),
         'process.env.COMMITHASH': JSON.stringify(commitId),
-        'process.env.SUITE_TYPE': JSON.stringify(project ?? 'web'),
+        'process.env.SUITE_TYPE': JSON.stringify('web'),
         'process.env.NODE_ENV': JSON.stringify('development'),
         'process.env.ASSET_PREFIX': JSON.stringify(assetPrefix),
         'process.env.TANSTACK_REACT_QUERY_DEV_TOOLS': JSON.stringify(isTanstackReactQueryDevTools),
