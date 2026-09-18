@@ -155,6 +155,8 @@ const prepare = (action: CardanoAction, votingDelegation?: AccountVotingDelegati
 
 const CUSTOM_DREP_BECH32 = 'drep14w46h2at4w46h2at4w46h2at4w46h2at4w46h2at4w46kxzm6ac';
 const CUSTOM_DREP_HEX = 'abababababababababababababababababababababababababababab';
+const DREP_HASH = '429b12461640cefd3a4a192f7c531d8f6c6d33610b727f481eb22d39';
+const DREP_UNSUPPORTED_HEADER = 'drep1qfpfkyjxzeqvalf6fgvj7lznrk8kcmfnvy9hyl6gr6ez6wgzsugcp';
 
 describe('prepareTxPlan', () => {
     beforeEach(() => {
@@ -276,7 +278,7 @@ describe('prepareTxPlan', () => {
     });
 
     describe.each(['delegate', 'voteDelegate'] as const)('%s', action => {
-        it.each(['not-a-drep', '', CARDANO_EVERSTAKE_DREP.hex])(
+        it.each(['not-a-drep', '', CARDANO_EVERSTAKE_DREP.hex, DREP_UNSUPPORTED_HEADER])(
             'returns null without composing when the custom drepId %p is invalid',
             async drepId => {
                 await expect(
@@ -300,6 +302,44 @@ describe('prepareTxPlan', () => {
                 keyHash: CUSTOM_DREP_HEX,
                 scriptHash: undefined,
             });
+        });
+
+        it.each([
+            [
+                'an amended CIP-105 key hash',
+                'drep_vkh1g2d3y3skgr806wj2ryhhc5ca3akx6vmppde87jq7kgknjat06vr',
+                { type: PROTO.CardanoDRepType.KEY_HASH, keyHash: DREP_HASH, scriptHash: undefined },
+            ],
+            [
+                'a CIP-129 key hash',
+                'drep1yfpfkyjxzeqvalf6fgvj7lznrk8kcmfnvy9hyl6gr6ez6wgsqdglp',
+                { type: PROTO.CardanoDRepType.KEY_HASH, keyHash: DREP_HASH, scriptHash: undefined },
+            ],
+            [
+                'a CIP-105 script hash',
+                'drep_script1g2d3y3skgr806wj2ryhhc5ca3akx6vmppde87jq7kgknj5wf0ec',
+                {
+                    type: PROTO.CardanoDRepType.SCRIPT_HASH,
+                    keyHash: undefined,
+                    scriptHash: DREP_HASH,
+                },
+            ],
+            [
+                'a CIP-129 script hash',
+                'drep1ydpfkyjxzeqvalf6fgvj7lznrk8kcmfnvy9hyl6gr6ez6wgsjaelx',
+                {
+                    type: PROTO.CardanoDRepType.SCRIPT_HASH,
+                    keyHash: undefined,
+                    scriptHash: DREP_HASH,
+                },
+            ],
+        ])('delegates the vote to a custom DRep given as %s', async (_, drepId, dRep) => {
+            await prepare(action, {
+                accountKey: STAKE_READY_ACCOUNT_KEY,
+                option: { type: 'another_drep', drepId },
+            });
+
+            expect(getVoteDelegationCertificate()?.dRep).toEqual(dRep);
         });
 
         it.each([

@@ -20,7 +20,8 @@ import {
 } from './useCardanoAccountVotingDelegation';
 import { mockInitialAppState } from '../../../mocks/mockInitialAppState';
 
-const CUSTOM_DREP_ID = 'drep1ectemlv45xsnvenfgkhwsxncfvxev4qllj7x5w6vlfc7kmd9zcs';
+// Not the Everstake DRep: its legacy spelling normalises to CARDANO_EVERSTAKE_DREP.
+const CUSTOM_DREP_ID = 'drep1g2d3y3skgr806wj2ryhhc5ca3akx6vmppde87jq7kgknjmv589e';
 const PREDEFINED_DREP_ID = 'drep_always_abstain';
 const ACCOUNT_KEY = 'ada-account-key' as AccountKey;
 const OTHER_ACCOUNT_KEY = 'other-ada-account-key' as AccountKey;

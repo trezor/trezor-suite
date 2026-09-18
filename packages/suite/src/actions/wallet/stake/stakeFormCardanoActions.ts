@@ -20,14 +20,13 @@ import {
     type StakeRootState,
     calculateStakeFormTransaction,
     composeStakingTransaction,
+    decodeCardanoDrepId,
     getCardanoAccountPoolId,
     hasCardanoLiveVoteDelegation,
     isCardanoStakedWithEverstake,
-    parseDrepBech32,
     selectBestCardanoPool,
     selectCardanoPoolsInfo,
     selectStakeVotingDelegation,
-    validateCardanoDrep,
 } from '@suite-common/wallet-core';
 import {
     type Account,
@@ -173,17 +172,17 @@ export const prepareTxPlan = async ({
         confirmedOption?.type === 'current' && hasCardanoLiveVoteDelegation(account);
 
     if ((action === 'delegate' || action === 'voteDelegate') && !isKeepingCurrentVote) {
-        const isVotingToAnotherDrep = confirmedOption?.type === 'another_drep';
+        const drepBech32 =
+            confirmedOption?.type === 'another_drep'
+                ? confirmedOption.drepId
+                : CARDANO_EVERSTAKE_DREP.bech32;
 
-        if (isVotingToAnotherDrep && !validateCardanoDrep(confirmedOption.drepId)) {
+        const dRep = decodeCardanoDrepId(drepBech32);
+
+        if (dRep === null) {
             return null;
         }
 
-        const drepBech32 = isVotingToAnotherDrep
-            ? confirmedOption.drepId
-            : CARDANO_EVERSTAKE_DREP.bech32;
-
-        const dRep = parseDrepBech32(drepBech32);
         certificates.push(...getVotingCertificates(stakingPath, dRep));
     }
 
