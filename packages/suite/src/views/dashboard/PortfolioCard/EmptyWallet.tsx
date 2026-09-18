@@ -6,7 +6,6 @@ import { Translation } from '@suite/intl';
 import { gotoThunk } from '@suite/router';
 import { useServices } from '@suite-common/dependency-injection';
 import { selectHasBitcoinOnlyFirmware } from '@suite-common/device';
-import { selectNetworkNamesMap } from '@suite-common/networks/reduxState/networksSelectors';
 import { injectDispatch } from '@suite-common/redux-utils';
 import { selectEnabledNetworks } from '@suite-common/wallet-core';
 import { Box, Button, Column, H3, Illustration, Paragraph, Row } from '@trezor/components';
@@ -24,7 +23,6 @@ const RoundedBorder = styled.div`
 export const EmptyWallet = () => {
     const { analytics, dispatch } = useServices(injectDesktopAnalytics, injectDispatch);
     const enabledNetworks = useSelector(selectEnabledNetworks);
-    const networkNamesMap = useSelector(selectNetworkNamesMap);
     const isBitcoinOnlyFirmware = useSelector(selectHasBitcoinOnlyFirmware);
     const isOnboardingFeedbackBannerShown = useSelector(selectIsOnboardingFeedbackBannerShown);
 
@@ -79,8 +77,6 @@ export const EmptyWallet = () => {
                         </Paragraph>
                         <Box height={20}>
                             <NetworkIconSet
-                                networks={enabledNetworks}
-                                networkNamesMap={networkNamesMap}
                                 isToken
                                 size={20}
                                 gap={16}

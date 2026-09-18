@@ -1,7 +1,9 @@
 import { HelmetProvider } from 'react-helmet-async';
 
+import { useServices } from '@suite-common/dependency-injection';
 import { ReactQueryProvider } from '@suite-common/react-query/src/components/ReactQueryProvider';
 import { SelectCacheProvider } from '@trezor/components';
+import { NetworkDisplayProvider } from '@trezor/product-components/network-display';
 
 import Autodetect from 'src/support/suite/Autodetect';
 import { ConnectedIntlProvider } from 'src/support/suite/ConnectedIntlProvider';
@@ -15,6 +17,7 @@ import { ResponsiveContextProvider } from 'src/support/suite/ResponsiveContext';
 import { ConnectPopupModals } from './ConnectPopupModals';
 import { ConnectedFormatterProvider } from './ConnectedFormatterProvider';
 import { RouterHandler } from './RouterHandler';
+import { injectNetworkDisplayServices } from '../createSuiteNetworkDisplayServices';
 
 export const Main = ({
     trafficLightOffset,
@@ -22,30 +25,38 @@ export const Main = ({
 }: {
     trafficLightOffset?: React.ReactNode;
     children: React.ReactNode;
-}) => (
-    // Todo: Enable when issues are fixed (ReactTruncate & BumpFee)
-    // <StrictMode>
-    <HelmetProvider>
-        {trafficLightOffset ?? null}
-        <ConnectPopupModals />
-        <ConnectedThemeProvider>
-            <ResponsiveContextProvider>
-                <ErrorBoundary>
-                    <ReactQueryProvider>
-                        <Autodetect />
-                        <Resize />
-                        <Protocol />
-                        <OnlineStatus />
-                        <RouterHandler />
-                        <ConnectedIntlProvider>
-                            <SelectCacheProvider>
-                                <ConnectedFormatterProvider>{children}</ConnectedFormatterProvider>
-                            </SelectCacheProvider>
-                        </ConnectedIntlProvider>
-                    </ReactQueryProvider>
-                </ErrorBoundary>
-            </ResponsiveContextProvider>
-        </ConnectedThemeProvider>
-    </HelmetProvider>
-    // </StrictMode>
-);
+}) => {
+    const { networkDisplayServices } = useServices(injectNetworkDisplayServices);
+
+    return (
+        // Todo: Enable when issues are fixed (ReactTruncate & BumpFee)
+        // <StrictMode>
+        <NetworkDisplayProvider services={networkDisplayServices}>
+            <HelmetProvider>
+                {trafficLightOffset ?? null}
+                <ConnectPopupModals />
+                <ConnectedThemeProvider>
+                    <ResponsiveContextProvider>
+                        <ErrorBoundary>
+                            <ReactQueryProvider>
+                                <Autodetect />
+                                <Resize />
+                                <Protocol />
+                                <OnlineStatus />
+                                <RouterHandler />
+                                <ConnectedIntlProvider>
+                                    <SelectCacheProvider>
+                                        <ConnectedFormatterProvider>
+                                            {children}
+                                        </ConnectedFormatterProvider>
+                                    </SelectCacheProvider>
+                                </ConnectedIntlProvider>
+                            </ReactQueryProvider>
+                        </ErrorBoundary>
+                    </ResponsiveContextProvider>
+                </ConnectedThemeProvider>
+            </HelmetProvider>
+        </NetworkDisplayProvider>
+        // </StrictMode>
+    );
+};

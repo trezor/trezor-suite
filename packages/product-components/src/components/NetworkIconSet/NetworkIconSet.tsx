@@ -3,6 +3,7 @@ import { useMemo } from 'react';
 import { Tooltip } from '@trezor/components';
 
 import type { NetworkParams } from '../../NetworkParams';
+import { useNetworkOptions } from '../../network-display/NetworkDisplayProvider';
 import { getNetworkOptions } from '../../utils/getNetworkOptions';
 import { type CommonIconSetProps, IconSetBase, IconWrapper } from '../IconSet/IconSetBase';
 
@@ -13,7 +14,6 @@ export type NetworkIconSetProps = CommonIconSetProps &
 
 export const NetworkIconSet = ({
     networks,
-    networkNamesMap,
     isToken,
     size,
     gap,
@@ -23,15 +23,15 @@ export const NetworkIconSet = ({
     isReversed = true,
     hasTooltip = false,
 }: NetworkIconSetProps) => {
-    const { length } = networks;
+    const networkOptions = useNetworkOptions(networks);
+    const { length } = networkOptions;
 
     const visibleContent = useMemo(() => {
         const visibleNetworks =
-            maxVisibleIcons !== null ? networks.slice(0, maxVisibleIcons) : networks;
+            maxVisibleIcons !== null ? networkOptions.slice(0, maxVisibleIcons) : networkOptions;
 
         return getNetworkOptions({
             networks: visibleNetworks,
-            networkNamesMap,
             iconSize: size,
             isToken,
         }).map(({ symbol, name, icon }) => (
@@ -41,7 +41,7 @@ export const NetworkIconSet = ({
                 </Tooltip>
             </IconWrapper>
         ));
-    }, [networks, networkNamesMap, isToken, maxVisibleIcons, size, gap, length, hasTooltip]);
+    }, [networkOptions, isToken, maxVisibleIcons, size, gap, length, hasTooltip]);
 
     return (
         <IconSetBase

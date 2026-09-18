@@ -2,11 +2,7 @@ import { type RefObject, memo, useMemo } from 'react';
 
 import { type TranslationKey, useTranslation } from '@suite/intl';
 import { selectHasBitcoinOnlyFirmware } from '@suite-common/device';
-import {
-    selectNetworkNamesMap,
-    selectNetworkSymbolForProtocol,
-} from '@suite-common/networks/reduxState/networksSelectors';
-import { selectEnabledNetworks } from '@suite-common/wallet-core';
+import { selectNetworkSymbolForProtocol } from '@suite-common/networks/reduxState/networksSelectors';
 import { type GlobalSendReceiveType } from '@suite-common/wallet-types';
 import { SearchAsset } from '@trezor/product-components';
 
@@ -36,8 +32,6 @@ export const AssetSearchWithNetworkFilter = memo(function AssetSearchWithNetwork
         listRef,
         resetSearch: () => setSearch(''),
     });
-    const enabledNetworks = useSelector(selectEnabledNetworks);
-    const networkNamesMap = useSelector(selectNetworkNamesMap);
     const protocolScheme = useSelector(selectProtocolSendFormScheme);
 
     const protocolSymbol = useSelector(state =>
@@ -45,8 +39,8 @@ export const AssetSearchWithNetworkFilter = memo(function AssetSearchWithNetwork
     );
 
     const networks = useMemo(
-        () => (protocolSymbol ? [protocolSymbol] : enabledNetworks),
-        [protocolSymbol, enabledNetworks],
+        () => (protocolSymbol ? [protocolSymbol] : undefined),
+        [protocolSymbol],
     );
 
     const { translationString } = useTranslation();
@@ -57,7 +51,6 @@ export const AssetSearchWithNetworkFilter = memo(function AssetSearchWithNetwork
         ? undefined
         : {
               networks,
-              networkNamesMap,
               selectedNetwork: networkFilter,
               onChange: setNetworkFilter,
               includeAllOption: !protocolSymbol,

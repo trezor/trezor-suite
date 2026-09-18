@@ -69,5 +69,11 @@
         "stylelint-config-standard": "^40.0.0",
         "svgo": "^4.0.1",
         "typescript-styled-plugin": "^0.18.3"
+    },
+    "exports": {
+        ".": "./src/index.ts",
+        "./network-display": "./src/network-display/NetworkDisplayProvider.tsx",
+        "./network-display/services": "./src/network-display/NetworkDisplayServices.ts",
+        "./network-display/static": "./src/network-display/createStaticNetworkDisplayServices.ts"
     }
 }

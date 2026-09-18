@@ -1,7 +1,8 @@
-import { Icon, Input, Row, Select, Text } from '@trezor/components';
+import { Icon, Input } from '@trezor/components';
 import { MagnifyingGlassIcon } from '@trezor/icons';
 
-import { type SearchAssetSelectConfig, useNetworkSelect } from './hooks/useNetworkSelect';
+import { SearchAssetNetworkSelect } from './SearchAssetNetworkSelect';
+import type { SearchAssetSelectConfig } from './hooks/useNetworkSelect';
 
 export type SearchAssetProps = {
     searchPlaceholder: string;
@@ -18,35 +19,7 @@ export const SearchAsset = ({
     selectConfig,
     autoFocus = false,
 }: SearchAssetProps) => {
-    const { options, selectedOption } = useNetworkSelect(selectConfig);
     const dataTestIdBase = '@asset-picker/search';
-
-    const networkSelect = selectConfig ? (
-        <Select
-            options={options}
-            value={selectedOption}
-            onChange={option => selectConfig.onChange(option.value)}
-            size="small"
-            isClean
-            formatOptionLabel={(option, meta) => (
-                <Row
-                    gap={8}
-                    data-testid={
-                        meta.context === 'menu'
-                            ? `${dataTestIdBase}/filter/select-option/${option.value ?? 'all-networks'}`
-                            : `${dataTestIdBase}/filter/select-option-value/${option.value ?? 'all-networks'}`
-                    }
-                >
-                    {option.icon}
-                    <Text typographyStyle="body-sm" textWrap="nowrap">
-                        {option.label}
-                    </Text>
-                </Row>
-            )}
-            data-testid={`${dataTestIdBase}/filter`}
-            openMenuOnFocus={false}
-        />
-    ) : undefined;
 
     return (
         <Input
@@ -58,7 +31,9 @@ export const SearchAsset = ({
             leftContent={
                 <Icon as={MagnifyingGlassIcon} intent="neutral" priority="secondary" size={16} />
             }
-            rightContent={networkSelect}
+            rightContent={
+                selectConfig ? <SearchAssetNetworkSelect selectConfig={selectConfig} /> : undefined
+            }
             // eslint-disable-next-line jsx-a11y/no-autofocus
             autoFocus={autoFocus}
             onBlur={() => {

@@ -3,6 +3,7 @@ import { useMemo } from 'react';
 import type { NetworkSymbol } from '@trezor/network-module-types';
 
 import type { NetworkParams } from '../../../NetworkParams';
+import { useNetworkOptions } from '../../../network-display/NetworkDisplayProvider';
 import { getNetworkOptions } from '../../../utils/getNetworkOptions';
 
 export type SearchAssetSelectConfig = NetworkParams & {
@@ -12,22 +13,13 @@ export type SearchAssetSelectConfig = NetworkParams & {
     allLabel?: string;
 };
 
-const EMPTY_NETWORKS: [] = [];
-
-export const useNetworkSelect = (config?: SearchAssetSelectConfig) => {
-    const {
-        networks = EMPTY_NETWORKS,
-        networkNamesMap = null,
-        isToken,
-        includeAllOption,
-        allLabel,
-        selectedNetwork,
-    } = config ?? {};
+export const useNetworkSelect = (config: SearchAssetSelectConfig) => {
+    const { isToken, includeAllOption, allLabel, selectedNetwork } = config;
+    const networks = useNetworkOptions(config.networks);
 
     const allOptions = useMemo(() => {
         const networkOptions = getNetworkOptions({
             networks,
-            networkNamesMap,
             iconSize: 20,
             isToken,
         }).map(({ symbol, name, icon }) => ({
@@ -42,7 +34,7 @@ export const useNetworkSelect = (config?: SearchAssetSelectConfig) => {
                   ...networkOptions,
               ]
             : networkOptions;
-    }, [networks, networkNamesMap, isToken, includeAllOption, allLabel]);
+    }, [networks, isToken, includeAllOption, allLabel]);
 
     const selectedOption = useMemo(
         () => allOptions.find(option => option.value === selectedNetwork),
