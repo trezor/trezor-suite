@@ -1,11 +1,20 @@
-import { createSelector } from '@reduxjs/toolkit';
+import { Platform } from 'react-native';
 
-import { selectHasBitcoinOnlyFirmware, selectHasOnlyPortfolioDevice } from '@suite-common/device';
+import { createSelector } from '@reduxjs/toolkit';
+import {
+    selectHasBitcoinOnlyFirmware,
+    selectHasOnlyPortfolioDevice,
+    selectSelectedDevice,
+    type DeviceRootState,
+} from '@suite-common/device';
 import {
     Feature,
-    type MessageSystemRootState,
+    parsePromoBannerMessages,
+    selectEligiblePromoBanners,
     selectFeaturesConfig,
+    type MessageSystemRootState,
 } from '@suite-common/message-system';
+import { type Discovery, type Account } from '@suite-common/wallet-types';
 
 import {
     selectIsDefiYieldPromoBannerClosed,
@@ -13,73 +22,129 @@ import {
     selectIsTs7PromoBannerClosed,
 } from './bannerFlagsSlice';
 
-type PromoBannersRootState = MessageSystemRootState;
+type PromoBannersRootState = MessageSystemRootState &
+    DeviceRootState & {
+        wallet: {
+            accounts: Account[];
+            discovery: Discovery;
+        };
+    };
 
 export type VisiblePromoBannerKey = 'ts7' | 'defi-yield' | 'eth-vault';
+
+const nativePromoBannerPlatform = Platform.OS === 'ios' ? 'ios' : 'android';
 
 const selectPromoBannerMessages = (state: PromoBannersRootState) =>
     selectFeaturesConfig(state, Feature.banners.dashboard.promo);
 
-const isPromoBannerFeatureEnabled = (
-    bannerMessages: ReturnType<typeof selectPromoBannerMessages>,
-    visibleBanner: VisiblePromoBannerKey,
-) => {
-    const feature = bannerMessages
-        .flatMap(m => m?.feature ?? [])
-        .find(f => f.visibleBanner === visibleBanner);
-
-    return feature?.flag ?? true;
-};
-
-export const selectIsTs7PromoBannerDisplayed = createSelector(
-    [selectPromoBannerMessages, selectIsTs7PromoBannerClosed],
-    (bannerMessages, isClosed) => isPromoBannerFeatureEnabled(bannerMessages, 'ts7') && !isClosed,
+const selectPromoBannerParsingResult = createSelector([selectPromoBannerMessages], bannerMessages =>
+    parsePromoBannerMessages(bannerMessages),
 );
 
-export const selectIsDefiYieldPromoBannerDisplayed = createSelector(
+export const selectPromoBannerConfigErrors = createSelector(
+    [selectPromoBannerParsingResult],
+    parsingResult => parsingResult.errors,
+);
+
+const selectVisibleSelectedWalletAccounts = createSelector(
+    [selectSelectedDevice, (state: PromoBannersRootState) => state.wallet.accounts],
+    (selectedDevice, accounts) => {
+        const selectedDeviceState = selectedDevice?.state?.staticSessionId;
+
+        if (!selectedDeviceState) {
+            return [];
+        }
+
+        return accounts.filter(
+            account => account.deviceState === selectedDeviceState && account.visible,
+        );
+    },
+);
+
+const selectIsWalletDiscoveryFinished = createSelector(
+    [selectSelectedDevice, (state: PromoBannersRootState) => state.wallet.discovery],
+    (selectedDevice, discovery) => {
+        const selectedDevicePath = selectedDevice?.path;
+
+        if (!selectedDevicePath) {
+            return true;
+        }
+
+        const discoveryStatus = discovery[selectedDevicePath]?.status;
+
+        if (!discoveryStatus) {
+            return true;
+        }
+
+        return (
+            discoveryStatus === 'complete' ||
+            discoveryStatus === 'failed' ||
+            discoveryStatus === 'cancelled'
+        );
+    },
+);
+
+const selectLocalEligibleBannerIds = createSelector(
     [
-        selectPromoBannerMessages,
+        selectHasBitcoinOnlyFirmware,
+        selectHasOnlyPortfolioDevice,
+        selectSelectedDevice,
         selectIsDefiYieldPromoBannerClosed,
-        selectHasBitcoinOnlyFirmware,
-        selectHasOnlyPortfolioDevice,
-    ],
-    (bannerMessages, isClosed, hasBitcoinOnlyFirmware, hasOnlyPortfolioDevice) =>
-        isPromoBannerFeatureEnabled(bannerMessages, 'defi-yield') &&
-        !isClosed &&
-        !hasBitcoinOnlyFirmware &&
-        !hasOnlyPortfolioDevice,
-);
-
-export const selectIsEthVaultPromoBannerDisplayed = createSelector(
-    [
-        selectPromoBannerMessages,
         selectIsEthVaultPromoBannerClosed,
-        selectHasBitcoinOnlyFirmware,
-        selectHasOnlyPortfolioDevice,
+        selectIsTs7PromoBannerClosed,
     ],
-    (bannerMessages, isClosed, hasBitcoinOnlyFirmware, hasOnlyPortfolioDevice) =>
-        isPromoBannerFeatureEnabled(bannerMessages, 'eth-vault') &&
-        !isClosed &&
-        !hasBitcoinOnlyFirmware &&
-        !hasOnlyPortfolioDevice,
+    (
+        hasBitcoinOnlyFirmware,
+        isPortfolioTrackerOnly,
+        selectedDevice,
+        isDefiYieldPromoBannerClosed,
+        isEthVaultPromoBannerClosed,
+        isTs7PromoBannerClosed,
+    ): VisiblePromoBannerKey[] => {
+        const visibleBanners: VisiblePromoBannerKey[] = [];
+
+        if (!isTs7PromoBannerClosed && selectedDevice?.features?.internal_model !== 'T3W1') {
+            visibleBanners.push('ts7');
+        }
+
+        if (!isDefiYieldPromoBannerClosed && !hasBitcoinOnlyFirmware && !isPortfolioTrackerOnly) {
+            visibleBanners.push('defi-yield');
+        }
+
+        if (!isEthVaultPromoBannerClosed && !hasBitcoinOnlyFirmware && !isPortfolioTrackerOnly) {
+            visibleBanners.push('eth-vault');
+        }
+
+        return visibleBanners;
+    },
 );
 
 export const selectVisiblePromoBanners = createSelector(
     [
-        selectIsTs7PromoBannerDisplayed,
-        selectIsDefiYieldPromoBannerDisplayed,
-        selectIsEthVaultPromoBannerDisplayed,
+        selectPromoBannerParsingResult,
+        selectVisibleSelectedWalletAccounts,
+        selectIsWalletDiscoveryFinished,
+        selectHasOnlyPortfolioDevice,
+        selectSelectedDevice,
+        selectLocalEligibleBannerIds,
     ],
     (
-        isTs7PromoBannerDisplayed,
-        isDefiYieldPromoBannerDisplayed,
-        isEthVaultPromoBannerDisplayed,
-    ): VisiblePromoBannerKey[] => {
-        const visibleBanners: VisiblePromoBannerKey[] = [];
-        if (isTs7PromoBannerDisplayed) visibleBanners.push('ts7');
-        if (isDefiYieldPromoBannerDisplayed) visibleBanners.push('defi-yield');
-        if (isEthVaultPromoBannerDisplayed) visibleBanners.push('eth-vault');
-
-        return visibleBanners;
-    },
+        parsingResult,
+        accounts,
+        isWalletDiscoveryFinished,
+        isPortfolioTrackerOnly,
+        selectedDevice,
+        localEligibleBannerIds,
+    ): VisiblePromoBannerKey[] =>
+        selectEligiblePromoBanners({
+            promoBanners: parsingResult.promoBanners,
+            platform: nativePromoBannerPlatform,
+            placement: 'home',
+            accounts,
+            isWalletDiscoveryFinished,
+            isPortfolioTrackerOnly,
+            selectedDevice,
+        }).filter((bannerId): bannerId is VisiblePromoBannerKey =>
+            localEligibleBannerIds.includes(bannerId as VisiblePromoBannerKey),
+        ),
 );

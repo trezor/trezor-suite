@@ -24,7 +24,15 @@ export function getPromoBannerJsonContent(messageId: string, bannerType: PromoBa
             feature: [
                 {
                     domain: 'dashboard.promoBanner',
-                    visibleBanner: bannerType,
+                    payload: {
+                        bannerId: bannerType,
+                        carouselOrder: [
+                            { platform: 'desktop', placement: 'dashboard', value: 1 },
+                            { platform: 'web', placement: 'dashboard', value: 1 },
+                            { platform: 'ios', placement: 'home', value: 1 },
+                            { platform: 'android', placement: 'home', value: 1 },
+                        ],
+                    },
                     flag: true,
                 },
             ],

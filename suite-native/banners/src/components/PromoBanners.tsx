@@ -1,9 +1,15 @@
+import { useEffect } from 'react';
 import { View } from 'react-native';
 import { useSelector } from 'react-redux';
 
+import { isDevEnv } from '@suite-common/suite-utils';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
-import { type VisiblePromoBannerKey, selectVisiblePromoBanners } from '../selectors';
+import {
+    type VisiblePromoBannerKey,
+    selectPromoBannerConfigErrors,
+    selectVisiblePromoBanners,
+} from '../selectors';
 import { DefiYieldPromoBanner } from './DefiYieldPromoBanner';
 import { EthVaultPromoBanner } from './EthVaultPromoBanner';
 import { PromoBannerCarousel } from './PromoBannerCarousel';
@@ -22,7 +28,16 @@ const BANNER_COMPONENTS: Record<VisiblePromoBannerKey, React.ReactElement> = {
 
 export const PromoBanners = () => {
     const { applyStyle } = useNativeStyles();
+    const promoBannerConfigErrors = useSelector(selectPromoBannerConfigErrors);
     const visiblePromoBanners = useSelector(selectVisiblePromoBanners);
+
+    useEffect(() => {
+        if (!isDevEnv || promoBannerConfigErrors.length === 0) {
+            return;
+        }
+
+        console.error(promoBannerConfigErrors.join('\n'));
+    }, [promoBannerConfigErrors]);
 
     if (visiblePromoBanners.length === 0) return null;
 
