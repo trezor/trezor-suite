@@ -26,4 +26,4 @@ export { type DashboardSendModalEventSource } from './events/dashboardSendModalE
 export { type DashboardSendModalOptionsEventOption } from './events/dashboardSendModalOptionsEvent';
 export { type TradeExchangeAction } from './events/tradeExchangeEvent';
 export { type TradingExchangeIssue } from './events/tradingExchangeIssueEvent';
-export { type TransactionCreatedEventAction } from './events/transactionCreatedEvent';
+export { type TransactionCreatedEventAction } from '@suite-common/analytics';
