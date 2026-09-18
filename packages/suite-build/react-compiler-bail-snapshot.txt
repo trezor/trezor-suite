@@ -1,0 +1,111 @@
+packages/suite/src/components/earn/dashboard/staking/hooks/useStakingAccountsVisibility.tsx	bail	Unexpected terminal kind `ternary` for logical test block
+packages/suite/src/components/earn/modals/EarnClaimModal/EarnClaimModal.tsx	opt-out	'use no memo'
+packages/suite/src/components/earn/modals/StakeModal/StakeForm/StakeButton.tsx	opt-out	'use no memo'
+packages/suite/src/components/earn/modals/StakeModal/StakeForm/StakeInputs.tsx	opt-out	'use no memo'
+packages/suite/src/components/earn/modals/StakeModal/StakeInfoCards/EstimatedGains.tsx	opt-out	'use no memo'
+packages/suite/src/components/earn/modals/UnstakeModal/UnstakeForm/UnstakeButton.tsx	opt-out	'use no memo'
+packages/suite/src/components/earn/modals/UnstakeModal/UnstakeForm/UnstakeForm.tsx	opt-out	'use no memo'
+packages/suite/src/components/earn/modals/UnstakeModal/UnstakeForm/UnstakeInputs.tsx	opt-out	'use no memo'
+packages/suite/src/components/earn/staking/tron/claim/TronClaimAmount.tsx	opt-out	'use no memo'
+packages/suite/src/components/earn/staking/tron/complete/TronClaimSummaryCard.tsx	opt-out	'use no memo'
+packages/suite/src/components/earn/staking/tron/complete/TronStakeSummaryCard.tsx	opt-out	'use no memo'
+packages/suite/src/components/earn/staking/tron/complete/TronUnstakeSummaryCard.tsx	bail	[Codegen] Internal error: MethodCall::property must be an unpromoted + unmemoized MemberExpression
+packages/suite/src/components/earn/staking/tron/complete/TronVoteSummaryCard.tsx	opt-out	'use no memo'
+packages/suite/src/components/earn/staking/tron/complete/TronWithdrawSummaryCard.tsx	opt-out	'use no memo'
+packages/suite/src/components/earn/staking/tron/freeze/TronFreezeAmount.tsx	bail	useMemo() callbacks may not be async or generator functions
+packages/suite/src/components/earn/staking/tron/hooks/useTronStakeFees.ts	opt-out	'use no memo'
+packages/suite/src/components/earn/staking/tron/unstake/TronUnstakeResourceReduction.tsx	bail	[Codegen] Internal error: MethodCall::property must be an unpromoted + unmemoized MemberExpression
+packages/suite/src/components/earn/yield/hooks/useYieldFlow.ts	bail	(BuildHIR::lowerStatement) Handle TryStatement with a finalizer ('finally') clause
+packages/suite/src/components/onboarding/ThpPairingStep/ThpPairingStep.tsx	bail	Cannot access refs during render
+packages/suite/src/components/suite/FindBar/useFindInPage.ts	bail	(BuildHIR::lowerStatement) Handle TryStatement without a catch clause
+packages/suite/src/components/suite/layouts/SuiteLayout/DeviceSelector/DeviceSelector.tsx	partial	Cannot access refs during render
+packages/suite/src/components/suite/layouts/SuiteLayout/PageHeader/GlobalSendReceive/GlobalReceiveModal/GlobalReceiveModal.tsx	bail	Expected temporaries to be promoted to named identifiers in an earlier pass
+packages/suite/src/components/suite/layouts/SuiteLayout/PageHeader/GlobalSendReceive/GlobalSendModal/hooks/useAccountWithTokensOptions.ts	bail	Cannot access refs during render
+packages/suite/src/components/suite/layouts/SuiteLayout/PageHeader/PageNames/AccountName/AccountName.tsx	bail	React Compiler has skipped optimizing this component because one or more React ESLint rules were disabled
+packages/suite/src/components/suite/modals/ReduxModal/TransactionReviewModal/TransactionReviewModal.tsx	bail	Support value blocks (conditional, logical, optional chaining, etc) within a try/catch statement
+packages/suite/src/components/suite/modals/ReduxModal/UserContextModal/AddAccountModal/AddAccountModal.tsx	bail	(BuildHIR::lowerStatement) Handle TryStatement without a catch clause
+packages/suite/src/components/suite/modals/ReduxModal/UserContextModal/AddAccountModal/useNetworkActivationQueue.ts	bail	(BuildHIR::lowerAssignment) Handle computed properties in ObjectPattern
+packages/suite/src/components/suite/modals/ReduxModal/UserContextModal/QrScannerModal/ImageQRReader.tsx	bail	(BuildHIR::lowerStatement) Handle TryStatement with a finalizer ('finally') clause
+packages/suite/src/components/suite/modals/ReduxModal/UserContextModal/StellarManageTokenModal.tsx	bail	(BuildHIR::lowerStatement) Handle TryStatement without a catch clause
+packages/suite/src/components/suite/modals/ReduxModal/UserContextModal/TxDetailModal/AffectedTransactions/DecreasedOutputs.tsx	opt-out-partial	'use no memo'
+packages/suite/src/components/suite/modals/ReduxModal/UserContextModal/TxDetailModal/CancelTransaction/CancelTransactionButton.tsx	bail	(BuildHIR::lowerStatement) Handle TryStatement with a finalizer ('finally') clause
+packages/suite/src/components/suite/modals/ReduxModal/UserContextModal/TxDetailModal/TxDetailModal.tsx	bail	Cannot access refs during render
+packages/suite/src/components/suite/notifications/NotificationRenderer/NotificationRenderer.tsx	bail	Expected a break target
+packages/suite/src/components/suite/notifications/ReleaseNotes/ReleaseNotes.tsx	partial	Support value blocks (conditional, logical, optional chaining, etc) within a try/catch statement
+packages/suite/src/components/suite/troubleshooting/TroubleshootingTips.tsx	bail	Hooks must be called at the top level in the body of a function component or custom hook, and may not be called within function expressions. See the Rules of Hooks (https://react.dev/warnings/invalid-hook-call-warning)
+packages/suite/src/components/wallet/Fees/CollapsibleFees/CustomFee/CustomFeeEthereum.tsx	opt-out	'use no memo'
+packages/suite/src/components/wallet/Fees/CollapsibleFees/CustomFee/CustomFeeMisc.tsx	opt-out	'use no memo'
+packages/suite/src/components/wallet/Fees/CollapsibleFees/CustomFee/CustomFeeTron.tsx	bail	React Compiler has skipped optimizing this component because one or more React ESLint rules were disabled
+packages/suite/src/hooks/earn/useCardanoStaking.ts	bail	(BuildHIR::lowerStatement) Support ThrowStatement inside of try/catch
+packages/suite/src/hooks/earn/useClaimForm.ts	bail	Support value blocks (conditional, logical, optional chaining, etc) within a try/catch statement
+packages/suite/src/hooks/earn/useStakeForm.ts	bail	(BuildHIR::lowerStatement) Handle TryStatement with a finalizer ('finally') clause
+packages/suite/src/hooks/earn/useWithdrawalForm.ts	bail	Support value blocks (conditional, logical, optional chaining, etc) within a try/catch statement
+packages/suite/src/hooks/settings/backends/useBackendsForm.ts	partial	React Compiler has skipped optimizing this component because one or more React ESLint rules were disabled
+packages/suite/src/hooks/suite/useAppShortcuts.tsx	bail	Cannot access refs during render
+packages/suite/src/hooks/suite/useChangeDeviceLabel.ts	bail	Support value blocks (conditional, logical, optional chaining, etc) within a try/catch statement
+packages/suite/src/hooks/suite/useLocales.ts	bail	(BuildHIR::lowerExpression) Handle Import expressions
+packages/suite/src/hooks/wallet/allowance/useAllowanceModal.ts	bail	(BuildHIR::lowerStatement) Handle TryStatement with a finalizer ('finally') clause; (BuildHIR::node.lowerReorderableExpression) Expression type `CallExpression` cannot be safely reordered
+packages/suite/src/hooks/wallet/form/useCompose.ts	bail	(BuildHIR::node.lowerReorderableExpression) Expression type `MemberExpression` cannot be safely reordered
+packages/suite/src/hooks/wallet/form/useStakeCompose.ts	bail	(BuildHIR::node.lowerReorderableExpression) Expression type `MemberExpression` cannot be safely reordered
+packages/suite/src/hooks/wallet/form/useUtxoSelection.ts	opt-out	'use no memo'
+packages/suite/src/hooks/wallet/trading/form/buy/useTradingBuyForm.ts	bail	React Compiler has skipped optimizing this component because one or more React ESLint rules were disabled
+packages/suite/src/hooks/wallet/trading/form/common/useTradingAssetDecimals.ts	bail	(BuildHIR::node.lowerReorderableExpression) Expression type `MemberExpression` cannot be safely reordered
+packages/suite/src/hooks/wallet/trading/form/common/useTradingComposeTransaction.ts	bail	React Compiler has skipped optimizing this component because one or more React ESLint rules were disabled
+packages/suite/src/hooks/wallet/trading/form/common/useTradingQuoteRequest.ts	bail	Support value blocks (conditional, logical, optional chaining, etc) within a try/catch statement
+packages/suite/src/hooks/wallet/trading/form/sell/useTradingSellFormRedirectValues.ts	bail	Cannot access refs during render
+packages/suite/src/hooks/wallet/trading/form/useModalLastValidParams.ts	bail	Cannot access refs during render
+packages/suite/src/hooks/wallet/trading/useTradingExchangeTradeActions.ts	bail	Support value blocks (conditional, logical, optional chaining, etc) within a try/catch statement
+packages/suite/src/hooks/wallet/trading/useTradingSellTradeActions.ts	bail	Support value blocks (conditional, logical, optional chaining, etc) within a try/catch statement
+packages/suite/src/hooks/wallet/useRbfForm.ts	partial	Unexpected terminal kind `logical` for logical test block
+packages/suite/src/hooks/wallet/useSendForm.ts	opt-out	'use no memo'
+packages/suite/src/hooks/wallet/useSendFormFields.ts	opt-out	'use no memo'
+packages/suite/src/views/onboarding/steps/SelectBackupType/SelectBackupType.tsx	partial	Cannot access refs during render
+packages/suite/src/views/settings/SettingsDevice/ForgetDevice/ForgetDeviceModal.tsx	bail	Cannot access refs during render
+packages/suite/src/views/settings/SettingsGeneral/Experimental.tsx	partial	Support value blocks (conditional, logical, optional chaining, etc) within a try/catch statement
+packages/suite/src/views/wallet/send/Options/BitcoinOptions/BitcoinOptions.tsx	opt-out	'use no memo'
+packages/suite/src/views/wallet/send/Options/BitcoinOptions/CoinControl/CoinControl.tsx	opt-out	'use no memo'
+packages/suite/src/views/wallet/send/Options/BitcoinOptions/Locktime/Locktime.tsx	opt-out	'use no memo'
+packages/suite/src/views/wallet/send/Options/BitcoinOptions/Locktime/LocktimeDatetime.tsx	opt-out	'use no memo'
+packages/suite/src/views/wallet/send/Options/EthereumOptions/EthereumNonce.tsx	opt-out	'use no memo'
+packages/suite/src/views/wallet/send/Options/EthereumOptions/EthereumOptions.tsx	opt-out	'use no memo'
+packages/suite/src/views/wallet/send/Options/MiscNetworkOptions/DestinationTag.tsx	opt-out	'use no memo'
+packages/suite/src/views/wallet/send/Options/SolanaOptions/SolanaMemo.tsx	opt-out	'use no memo'
+packages/suite/src/views/wallet/send/Options/SolanaOptions/SolanaOptions.tsx	opt-out	'use no memo'
+packages/suite/src/views/wallet/send/Options/TronOptions/TronNote.tsx	opt-out	'use no memo'
+packages/suite/src/views/wallet/send/Options/TronOptions/TronOptions.tsx	opt-out	'use no memo'
+packages/suite/src/views/wallet/send/Options/shared/TransactionData.tsx	opt-out	'use no memo'
+packages/suite/src/views/wallet/send/Outputs/Address.tsx	bail	Cannot access refs during render
+packages/suite/src/views/wallet/send/Outputs/Amount/Amount.tsx	opt-out	'use no memo'
+packages/suite/src/views/wallet/send/Outputs/Amount/BaseCurrencyInput.tsx	opt-out	'use no memo'
+packages/suite/src/views/wallet/send/Outputs/CardanoMinAmountInfo.tsx	opt-out	'use no memo'
+packages/suite/src/views/wallet/send/Outputs/OpReturn.tsx	opt-out	'use no memo'
+packages/suite/src/views/wallet/send/Outputs/Outputs.tsx	opt-out	'use no memo'
+packages/suite/src/views/wallet/send/Outputs/ReceiveAddressModal/ReceiveAccountModal.tsx	bail	Unexpected terminal kind `optional` for logical test block
+packages/suite/src/views/wallet/send/Outputs/TokenSelect/SelectTokenAssetModal/SelectTokenAssetModal.tsx	opt-out	'use no memo'
+packages/suite/src/views/wallet/send/Outputs/TokenSelect/TokenSelect.tsx	opt-out	'use no memo'
+packages/suite/src/views/wallet/send/SendHeader.tsx	opt-out	'use no memo'
+packages/suite/src/views/wallet/send/TotalSent/ReviewButton.tsx	opt-out	'use no memo'
+packages/suite/src/views/wallet/trading/common/TradingForm/TradingBuyFormInputs.tsx	bail	(BuildHIR::lowerAssignment) Handle computed properties in ObjectPattern
+packages/suite/src/views/wallet/trading/common/TradingForm/TradingExchangeFormInputs.tsx	bail	(BuildHIR::lowerAssignment) Handle computed properties in ObjectPattern
+packages/suite/src/views/wallet/trading/common/TradingForm/TradingFormApproval.tsx	opt-out	'use no memo'
+packages/suite/src/views/wallet/trading/common/TradingForm/TradingFormInput/TradingFormInputAssetPicker/AssetPickerInput/AssetPickerInput.tsx	opt-out	'use no memo'
+packages/suite/src/views/wallet/trading/common/TradingForm/TradingFormInput/TradingFormInputAssetPicker/AssetPickerInput/AssetPickerInputBalance.tsx	opt-out	'use no memo'
+packages/suite/src/views/wallet/trading/common/TradingForm/TradingFormInput/TradingFormInputFiatCrypto/TradingFormInputCryptoAmount.tsx	opt-out-partial	'use no memo'
+packages/suite/src/views/wallet/trading/common/TradingForm/TradingFormInput/TradingFormInputSellAsset/AssetPickerModal/hooks/useGroupedAssetOptions.ts	bail	Cannot access refs during render
+packages/suite/src/views/wallet/trading/common/TradingForm/TradingFormInput/TradingFormInputSellAsset/AssetPickerModal/hooks/useSellAssetRows.ts	bail	Cannot access refs during render
+packages/suite/src/views/wallet/trading/common/TradingForm/TradingFormOffer/components/TradingFormOfferOTC.tsx	opt-out	'use no memo'
+packages/suite/src/views/wallet/trading/common/TradingForm/TradingFormOffer/components/TradingFormOffersWarnings.tsx	opt-out	'use no memo'
+packages/suite/src/views/wallet/trading/common/TradingForm/TradingFormOffer/hooks/useTradingFormOfferCommon.ts	opt-out	'use no memo'
+packages/suite/src/views/wallet/trading/common/TradingSelectedOffer/TradingReceiveAddress/TradingReceiveAddressModal.tsx	bail	Support value blocks (conditional, logical, optional chaining, etc) within a try/catch statement
+packages/suite/src/views/wallet/trading/common/TradingSelectedOffer/TradingReceiveAddress/useTradingReceiveAddressValues.ts	opt-out	'use no memo'
+packages/suite/src/views/wallet/trading/common/TradingTransactions/useTradingTransactionsWatcher.ts	bail	(BuildHIR::lowerStatement) Handle TryStatement without a catch clause
+packages/suite/src/views/wallet/trading/exchange/TradingFormOfferExchangeActions.tsx	bail	React Compiler has skipped optimizing this component because one or more React ESLint rules were disabled
+packages/suite/src/views/wallet/trading/exchange/TradingOfferExchangeSlippageModal/TradingOfferExchangeSlippageSummary.tsx	opt-out	'use no memo'
+packages/suite/src/views/wallet/trading/sell/TradingFormOfferSellActions.tsx	opt-out	'use no memo'
+packages/suite/src/views/wallet/transactions/TransactionList/NoSearchResults.tsx	bail	Cannot access refs during render
+packages/suite/src/views/wallet/transactions/TransactionList/TransactionListActions/ExportAction.tsx	bail	(BuildHIR::lowerStatement) Handle TryStatement with a finalizer ('finally') clause
+packages/suite/src/views/wallet/transactions/TransactionList/useFetchTransactions.ts	partial	Expected the first argument to be an inline function expression
+suite-common/dependency-injection/src/useServices.ts	bail	React Compiler has skipped optimizing this component because one or more React ESLint rules were disabled
+suite-common/trading/src/hooks/useChangeStringsExtractor.ts	opt-out	'use no memo'
+suite-common/trading/src/hooks/useTradingAssets.ts	bail	(BuildHIR::node.lowerReorderableExpression) Expression type `NewExpression` cannot be safely reordered
+suite-common/trading/src/hooks/useTradingRefetchScheduler.ts	bail	Cannot access refs during render

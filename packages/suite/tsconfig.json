@@ -196,6 +196,7 @@
             "path": "../../suite/firmware-upgrade"
         },
         { "path": "../../suite/flags" },
+        { "path": "../../suite/form" },
         { "path": "../../suite/github" },
         {
             "path": "../../suite/idb-migration-utils"

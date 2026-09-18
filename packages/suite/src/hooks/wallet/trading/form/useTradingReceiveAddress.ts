@@ -328,9 +328,16 @@ export const useTradingReceiveAddress = ({
         }
     }, [receiveAddress, extraField, receiveAccount, type, dispatch]);
 
+    const { formState } = methods;
+
     return {
         form: {
             ...methods,
+            // The spread copies react-hook-form's ref object, whose `formState` is replaced by a
+            // new proxy on every update. Naming it puts a moving dependency in the compiler's guard,
+            // so callers reading `form.formState.errors` see current validation state rather than
+            // whatever the first render held.
+            formState,
         },
         suiteReceiveAccounts,
         selectedAccount: receiveAccount,

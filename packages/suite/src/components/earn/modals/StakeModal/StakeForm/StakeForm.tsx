@@ -1,5 +1,4 @@
-import { FormProvider } from 'react-hook-form';
-
+import { Form } from '@suite/form';
 import { type StakeModalFlow } from '@suite-common/suite-types/src/staking';
 import { Card, Column } from '@trezor/components';
 
@@ -33,8 +32,10 @@ export const StakeForm = ({ flow }: StakeFormProps) => {
     const { formattedBalance, symbol, networkType } = account;
     const isCardanoNetwork = networkType === 'cardano';
 
+    const { formState } = methods;
+
     return (
-        <FormProvider {...methods}>
+        <Form form={methods} formState={formState}>
             {isConfirmModalOpen && (
                 <ConfirmStakeModal
                     account={account}
@@ -72,6 +73,6 @@ export const StakeForm = ({ flow }: StakeFormProps) => {
                     />
                 )}
             </Column>
-        </FormProvider>
+        </Form>
     );
 };

@@ -1,5 +1,3 @@
-import { type JSX } from 'react';
-
 import { selectShouldAnimateLoadingSkeleton } from '@suite/ui-animations';
 import { selectIsDiscreteModeActive } from '@suite-common/discreet-mode';
 import { useFormatters } from '@suite-common/formatters';
@@ -16,13 +14,6 @@ import { isArrayMember } from '@trezor/utils';
 
 import { BaseCurrencyValue, HiddenPlaceholder } from 'src/components/suite';
 import { useSelector } from 'src/hooks/suite';
-
-const FiatValueRenderComponent = ({ value }: { value: JSX.Element | null }) => {
-    const discreetMode = useSelector(selectIsDiscreteModeActive);
-    if (discreetMode || value === null) return value;
-
-    return <TruncateWithTooltip delayShow={TOOLTIP_DELAY_LONG}>{value}</TruncateWithTooltip>;
-};
 
 type BaseCurrencyProps = {
     isLoading?: boolean;
@@ -42,6 +33,7 @@ export const BaseCurrency = ({
     const shouldAnimate = useSelector(selectShouldAnimateLoadingSkeleton);
     const { shallDisplayBaseCurrency } = useDisplayBaseCurrency(symbol);
     const isBtcAmountInSats = useSelector(selectAreSatsAmountUnit);
+    const isDiscreetModeActive = useSelector(selectIsDiscreteModeActive);
 
     // This is special case, here is Account list we have a little space, so we never show
     // decimal places for fiat currencies (fiat always have 2 or 3 decimal places),
@@ -84,7 +76,18 @@ export const BaseCurrency = ({
                     : undefined
             }
         >
-            {FiatValueRenderComponent}
+            {/* Called by `BaseCurrencyValue`, not rendered as an element, so this must not use
+                hooks: the React Compiler caches the call, and a cache hit would drop the hooks
+                from the render, crashing with "Rendered fewer hooks than expected". */}
+            {({ value }) =>
+                isDiscreetModeActive || value === null ? (
+                    value
+                ) : (
+                    <TruncateWithTooltip delayShow={TOOLTIP_DELAY_LONG}>
+                        {value}
+                    </TruncateWithTooltip>
+                )
+            }
         </BaseCurrencyValue>
     );
 };

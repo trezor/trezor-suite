@@ -144,6 +144,7 @@ export const useStakeForm = ({ account }: UseStakeFormProps): StakeContextValues
         onChange: onFeeLevelChange,
         composeRequest,
         ...methods,
+        formState,
     });
     const selectedFee = _selectedFee ?? 'normal';
 

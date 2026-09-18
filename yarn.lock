@@ -15802,6 +15802,17 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"@suite/form@workspace:*, @suite/form@workspace:suite/form":
+  version: 0.0.0-use.local
+  resolution: "@suite/form@workspace:suite/form"
+  dependencies:
+    "@testing-library/dom": "npm:^10.4.1"
+    "@testing-library/react": "npm:^16.3.2"
+    react: "npm:19.2.3"
+    react-hook-form: "npm:^7.77.0"
+  languageName: unknown
+  linkType: soft
+
 "@suite/github@workspace:*, @suite/github@workspace:suite/github":
   version: 0.0.0-use.local
   resolution: "@suite/github@workspace:suite/github"
@@ -18115,6 +18126,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@trezor/suite-build@workspace:packages/suite-build"
   dependencies:
+    "@babel/core": "npm:7.29.7"
     "@originjs/vite-plugin-commonjs": "npm:^1.0.3"
     "@pmmmwh/react-refresh-webpack-plugin": "npm:^0.6.2"
     "@rolldown/plugin-babel": "npm:^0.2.1"
@@ -18128,6 +18140,7 @@ __metadata:
     "@types/webpack-plugin-serve": "npm:^1.4.7"
     "@vitejs/plugin-react": "npm:^6.0.1"
     babel-loader: "npm:^10.1.1"
+    babel-plugin-react-compiler: "npm:^1.0.0"
     babel-plugin-styled-components: "npm:^2.1.4"
     buffer: "npm:^6.0.3"
     copy-webpack-plugin: "npm:^14.0.0"
@@ -18325,6 +18338,7 @@ __metadata:
     "@suite/feature-feedback": "workspace:*"
     "@suite/firmware-upgrade": "workspace:*"
     "@suite/flags": "workspace:*"
+    "@suite/form": "workspace:*"
     "@suite/github": "workspace:*"
     "@suite/idb-migration-utils": "workspace:*"
     "@suite/intl": "workspace:*"
