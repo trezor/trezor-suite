@@ -284,7 +284,7 @@ export const TransactionList = ({
     }, [transactions, tokenContract]);
 
     const visibleTransactionCount = data.filter(item => typeof item !== 'string').length;
-    const [requestedVisibleCount, setRequestedVisibleCount] = useState(txnsPerPage);
+    const [requestedVisibleCount, setRequestedVisibleCount] = useState<number>(txnsPerPage);
     const shouldLoadMoreTokenTransactions =
         !!tokenContract &&
         visibleTransactionCount < requestedVisibleCount &&
