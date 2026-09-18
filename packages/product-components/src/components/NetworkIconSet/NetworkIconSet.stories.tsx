@@ -15,10 +15,16 @@ type NetworkIconSetStoryProps = Omit<NetworkIconSetProps, 'networks'> & {
     networks: Omit<NetworkParams<NetworkSymbol>, 'icon'>[];
 };
 
-const NETWORK_1 = { symbol: asNetworkSymbol('btc'), name: 'Bitcoin' };
-const NETWORK_2 = { symbol: asNetworkSymbol('eth'), name: 'Ethereum' };
-const NETWORK_3 = { symbol: asNetworkSymbol('ltc'), name: 'Litecoin' };
-const NETWORK_4 = { symbol: asNetworkSymbol('ada'), name: 'Cardano' };
+const NETWORK_1: NetworkParams<NetworkSymbol> = { symbol: asNetworkSymbol('btc'), name: 'Bitcoin' };
+const NETWORK_2: NetworkParams<NetworkSymbol> = {
+    symbol: asNetworkSymbol('eth'),
+    name: 'Ethereum',
+};
+const NETWORK_3: NetworkParams<NetworkSymbol> = {
+    symbol: asNetworkSymbol('ltc'),
+    name: 'Litecoin',
+};
+const NETWORK_4: NetworkParams<NetworkSymbol> = { symbol: asNetworkSymbol('ada'), name: 'Cardano' };
 
 const meta: Meta<typeof NetworkIconSetComponent> = {
     title: 'NetworkIconSet',

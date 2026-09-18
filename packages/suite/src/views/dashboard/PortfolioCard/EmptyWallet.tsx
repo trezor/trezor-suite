@@ -17,8 +17,6 @@ import { TokenIcon } from '@trezor/product-components/src/components/TokenIcon/T
 
 import { useSelector } from 'src/hooks/suite';
 
-const NETWORK_ICON_SIZE = 20;
-
 const RoundedBorder = styled.div`
     padding: 4px 6px 4px 12px;
     border: dashed 1px ${({ theme }) => theme.elementBorderField};
@@ -37,7 +35,7 @@ export const EmptyWallet = () => {
             enabledNetworks.map(symbol => ({
                 symbol,
                 name: networkNamesMap?.[symbol] ?? symbol,
-                icon: <TokenIcon symbol={symbol} size={NETWORK_ICON_SIZE} />,
+                icon: <TokenIcon symbol={symbol} size={20} />,
             })),
         [enabledNetworks, networkNamesMap],
     );
@@ -91,10 +89,10 @@ export const EmptyWallet = () => {
                         <Paragraph intent="neutral" priority="secondary" typographyStyle="body-sm">
                             <Translation id="TR_READY_ON" />:
                         </Paragraph>
-                        <Box height={NETWORK_ICON_SIZE}>
+                        <Box height={20}>
                             <NetworkIconSet
                                 networks={networks}
-                                size={NETWORK_ICON_SIZE}
+                                size={20}
                                 gap={16}
                                 maxVisibleIcons={null}
                                 hasTooltip
