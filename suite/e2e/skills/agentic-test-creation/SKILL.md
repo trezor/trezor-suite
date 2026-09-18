@@ -1,3 +1,8 @@
+---
+name: agentic-test-creation
+description: Discovery-first workflow for writing a new Playwright e2e test from a user story, feature description or bug report. Use before writing any new Suite E2E test.
+---
+
 # Agentic E2E Test Creation Workflow
 
 > **When to use**: When writing a new Playwright e2e test from a user story, feature description, or bug report.
@@ -28,11 +33,11 @@ Check for an **existing file** in that folder first — the test may belong ther
 
 Do not write a single line of test code before completing all three of these:
 
-**Page objects** — Read `support/pageObjects/` and map every user action in the story to an existing page object method or locator. Rules for when to extend vs create are in [page-objects.md](page-objects.md).
+**Page objects** — Read `support/pageObjects/` and map every user action in the story to an existing page object method or locator. Rules for when to extend vs create are in [page-objects](../page-objects/SKILL.md).
 
-**Fixtures and mocks** — Check `support/fixtures.ts` and `support/mocks/` for what already exists. Rules for fixture scope and mock lifecycle are in [fixtures.md](fixtures.md).
+**Fixtures and mocks** — Check `support/fixtures.ts` and `support/mocks/` for what already exists. Rules for fixture scope and mock lifecycle are in [fixtures](../fixtures/SKILL.md).
 
-**Tags** — Determine device models, platform constraint, and execution scope before writing the test signature. Rules are in [tagging.md](tagging.md).
+**Tags** — Determine device models, platform constraint, and execution scope before writing the test signature. Rules are in [tagging](../tagging/SKILL.md).
 
 ---
 
@@ -65,9 +70,17 @@ test.describe('<feature> - <scenario>', { tag: ['@T3W1', '@T3T1'] }, () => {
 - [ ] Existing page objects and fixtures were checked before creating new ones
 - [ ] Test is in the correct folder under `tests/`
 - [ ] Imports from `../../support/fixtures`, not `@playwright/test`
-- [ ] Tags cover device models, platform, and execution scope → [tagging.md](tagging.md)
-- [ ] Assertions use web-first assertions and translation keys → [assertions.md](assertions.md)
-- [ ] No hardcoded `waitForTimeout` calls → [retries.md](retries.md)
-- [ ] Locators are in page objects, not scattered in tests → [locators.md](locators.md)
-- [ ] New page objects registered in `fixtures.ts` → [page-objects.md](page-objects.md)
-- [ ] New mocks have `start()`/`stop()` lifecycle and fixture registration → [fixtures.md](fixtures.md)
+- [ ] Tags cover device models, platform, and execution scope → [tagging](../tagging/SKILL.md)
+- [ ] Assertions use web-first assertions and translation keys → [assertions](../assertions/SKILL.md)
+- [ ] No hardcoded `waitForTimeout` calls → [retries](../retries/SKILL.md)
+- [ ] Locators are in page objects, not scattered in tests → [locators](../locators/SKILL.md)
+- [ ] New page objects registered in `fixtures.ts` → [page-objects](../page-objects/SKILL.md)
+- [ ] New mocks have `start()`/`stop()` lifecycle and fixture registration → [fixtures](../fixtures/SKILL.md)
+
+---
+
+## Re-running the CI workflow after a failure
+
+MUST: Re-run the whole workflow ("Re-run all jobs"), never a single failed job.
+
+Tests are distributed across the matrix machines by Currents orchestration under one build id per run attempt. "Re-run failed jobs" starts a new attempt where only the re-run machine joins, so it receives every test of the run and hits the job timeout.

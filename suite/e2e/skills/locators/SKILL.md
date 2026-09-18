@@ -1,3 +1,8 @@
+---
+name: locators
+description: Locator strategy for Suite E2E tests: reuse page objects, getByTestId convention, parameterization, naming rules. Use every time you need to find an element on the page.
+---
+
 # Locators Strategy - AI Instructions
 
 > **When to use**: Every time you need to find an element on the page.

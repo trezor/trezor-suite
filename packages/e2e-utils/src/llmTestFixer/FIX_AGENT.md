@@ -82,7 +82,7 @@ analysis with your own product-code analysis and the preflight results (Step 2)*
 deciding the fix.
 
 Read `suite/e2e/CLAUDE.md` and the skills it lists — they are mandatory for every change under
-`suite/e2e/`. `skills/locators.md` (testid convention and naming) and `skills/page-objects.md`
+`suite/e2e/`. `skills/locators/SKILL.md` (testid convention and naming) and `skills/page-objects/SKILL.md`
 (where locators and methods belong) govern most fixes you will make.
 
 The test name and each `test.step()` label are the specification of intended behavior — read
@@ -151,7 +151,7 @@ it actually exposes — don't guess — then:
 - It already exposes a `data-testid`, possibly renamed from what the test expects → point the
   test/page object at the current one.
 - It exposes none → add one in the product component, following the naming convention in
-  `suite/e2e/skills/locators.md`, and use it.
+  `suite/e2e/skills/locators/SKILL.md`, and use it.
 
 That skill also forbids reaching an element by its position among siblings — `.first()`,
 `.nth(n)`, `.last()`, or a role/text chain that resolves only by DOM order. Narrowing a
