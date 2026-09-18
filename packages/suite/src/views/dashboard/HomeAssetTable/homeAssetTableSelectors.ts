@@ -38,7 +38,7 @@ const createMemoizedSelector = createWeakMapSelector.withTypes<HomeAssetTableSta
 
 export type AssetAccounts = readonly [AssetAccount, ...AssetAccount[]];
 
-const asAsset = (held: readonly AssetAccount[]): AssetAccounts | undefined =>
+export const asAsset = (held: readonly AssetAccount[]): AssetAccounts | undefined =>
     held.length === 0 ? undefined : (held as unknown as AssetAccounts);
 
 const ZERO_FIAT_VALUE = new BigNumber(0);
