@@ -152,6 +152,26 @@ describe(selectEligiblePromoBanners.name, () => {
         expect(selectVisiblePromoBanners({ promoBanners, accounts })).toEqual(['eth-vault']);
     });
 
+    it('requires all discovered accounts to have no positive balance for asset-balance-none', () => {
+        const { promoBanners } = parsePromoBannerMessages([
+            createPromoMessage(
+                createPromoFeature({
+                    bannerId: 'eth-vault',
+                    eligibility: {
+                        required: [{ type: 'asset-balance-none', value: 'native:eth' }],
+                    },
+                }),
+            ),
+        ]);
+
+        const accounts = [
+            mockWalletAccount({ symbol: asNetworkSymbol('eth'), balance: '0' }),
+            mockWalletAccount({ symbol: asNetworkSymbol('eth'), balance: '1' }),
+        ];
+
+        expect(selectVisiblePromoBanners({ promoBanners, accounts })).toEqual([]);
+    });
+
     it('hides wallet-dependent banners before discovery completes', () => {
         const { promoBanners } = parsePromoBannerMessages([
             createPromoMessage(

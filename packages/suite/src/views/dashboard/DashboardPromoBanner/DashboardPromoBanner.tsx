@@ -58,20 +58,24 @@ export const DashboardPromoBanner = () => {
         console.error(promoBannerConfigErrorMessage);
     }, [promoBannerConfigErrorMessage]);
 
-    const configEligibleBannerTypes = selectEligiblePromoBanners({
-        promoBanners,
-        platform: isDesktop() ? 'desktop' : 'web',
-        placement: 'dashboard',
-        accounts,
-        isWalletDiscoveryFinished: discoveryStatus?.status !== 'loading',
-        isPortfolioTrackerOnly,
-        selectedDevice,
-        reportError: error => {
-            if (isDevEnv) {
-                console.error(error);
-            }
-        },
-    });
+    const configEligibleBannerTypes = useMemo(
+        () =>
+            selectEligiblePromoBanners({
+                promoBanners,
+                platform: isDesktop() ? 'desktop' : 'web',
+                placement: 'dashboard',
+                accounts,
+                isWalletDiscoveryFinished: discoveryStatus?.status !== 'loading',
+                isPortfolioTrackerOnly,
+                selectedDevice,
+                reportError: error => {
+                    if (isDevEnv) {
+                        console.error(error);
+                    }
+                },
+            }),
+        [accounts, discoveryStatus?.status, isPortfolioTrackerOnly, promoBanners, selectedDevice],
+    );
 
     const eligibleBannerTypes = configEligibleBannerTypes.filter(
         (bannerType): bannerType is DashboardBannerType => {
