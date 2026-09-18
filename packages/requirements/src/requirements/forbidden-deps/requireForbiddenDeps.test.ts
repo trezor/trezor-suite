@@ -4,6 +4,7 @@ import { join } from 'node:path';
 
 import type { ForbiddenDepsConfig } from './forbiddenDepsTypes';
 import {
+    getAllowedDependencyErrors,
     getDependencyConsumerErrors,
     getForbiddenDependencyErrors,
     requireForbiddenDeps,
@@ -98,6 +99,34 @@ describe(requireForbiddenDeps.name, () => {
         ]);
     });
 
+    it('inherits an allowlist and reports the dependencies outside it', async () => {
+        writeConfig(join(context.repoRoot, 'networks'), {
+            'allowed-deps': {
+                packageNamePrefixes: ['@trezor/'],
+                except: ['@suite-common/calldata'],
+                reason: 'Only the layers below.',
+            },
+        });
+
+        expect(await requireForbiddenDeps.verify(context)).toEqual([
+            '@trezor/network-example: "@suite-common/wallet-core" is not an allowed dependency in dependencies. Reason: Only the layers below.',
+        ]);
+    });
+
+    it('reports an unknown package in an inherited allowlist exception', async () => {
+        writeConfig(join(context.repoRoot, 'networks'), {
+            'allowed-deps': {
+                packageNamePrefixes: ['@trezor/', '@suite-common/'],
+                except: ['@suite-common/calldat'],
+                reason: 'Misspelled package.',
+            },
+        });
+
+        expect(await requireForbiddenDeps.verify(context)).toEqual([
+            '@trezor/network-example: "@suite-common/calldat" in "allowed-deps" is not an existing workspace package.',
+        ]);
+    });
+
     it('does not inherit policies outside the workspace ancestors', async () => {
         const siblingDirectory = join(context.repoRoot, 'suite-common');
         mkdirSync(siblingDirectory);
@@ -179,6 +208,49 @@ describe('forbidden package-name prefix exceptions', () => {
         ).toEqual([
             '@trezor/network-bitcoin-suite-common: "@suite-common/wallet-core" is forbidden in dependencies. Reason: Below the apps.',
         ]);
+    });
+});
+
+describe(getAllowedDependencyErrors.name, () => {
+    const workspaceDirectories = new Map([
+        ['@suite-native/atoms', '/repo/suite-native/atoms'],
+        ['@suite/metadata', '/repo/suite/metadata'],
+        ['@trezor/utils', '/repo/packages/utils'],
+    ]);
+
+    const getErrors = (dependencyNames: ReadonlyArray<string>, except?: ReadonlyArray<string>) =>
+        getAllowedDependencyErrors({
+            allowedDepsRules: [
+                {
+                    packageNamePrefixes: ['@trezor/', '@suite-native/'],
+                    except,
+                    reason: 'Only the layers below the mobile app.',
+                },
+            ],
+            dependencyOccurrences: dependencyNames.map(name => ({
+                field: 'dependencies' as const,
+                name,
+            })),
+            workspaceDirectories,
+            workspaceName: '@suite-native/module-home',
+        });
+
+    it('accepts dependencies matching an allowed prefix', () => {
+        expect(getErrors(['@trezor/utils', '@suite-native/atoms'])).toEqual([]);
+    });
+
+    it('rejects a workspace dependency outside the allowed prefixes', () => {
+        expect(getErrors(['@suite/metadata'])).toEqual([
+            '@suite-native/module-home: "@suite/metadata" is not an allowed dependency in dependencies. Reason: Only the layers below the mobile app.',
+        ]);
+    });
+
+    it('accepts a dependency named as an exception', () => {
+        expect(getErrors(['@suite/metadata'], ['@suite/metadata'])).toEqual([]);
+    });
+
+    it('ignores packages outside the monorepo', () => {
+        expect(getErrors(['react-native'])).toEqual([]);
     });
 });
 

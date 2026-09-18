@@ -16,6 +16,14 @@ type PrefixForbiddenDependency = ForbiddenDependencyBase & {
 
 export type ForbiddenDependency = ExactForbiddenDependency | PrefixForbiddenDependency;
 
+export type AllowedDepsRule = {
+    /** Workspace dependencies have to match one of these prefixes. */
+    readonly packageNamePrefixes: ReadonlyArray<string>;
+    /** Workspace packages allowed despite not matching a prefix. */
+    readonly except?: ReadonlyArray<string>;
+    readonly reason: string;
+};
+
 export type AllowedOnlyInRule = {
     readonly packages: ReadonlyArray<string>;
     readonly reason: string;
@@ -28,6 +36,7 @@ export type ForbiddenInRule = {
 };
 
 export type ForbiddenDepsConfig = {
+    readonly 'allowed-deps'?: AllowedDepsRule;
     readonly 'forbidden-deps'?: ReadonlyArray<ForbiddenDependency>;
     readonly 'allowed-only-in'?: AllowedOnlyInRule;
     readonly 'forbidden-in'?: ForbiddenInRule;
