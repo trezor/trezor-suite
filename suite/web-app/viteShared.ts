@@ -25,11 +25,13 @@ const createWorkspaceAliases = () => {
             replacement: resolve(packageDir, '../../suite-common', dirent.name),
         }));
 
-    const trezorPackagesAliases = readdirSync(resolve(packageDir, '../'), { withFileTypes: true })
+    const trezorPackagesAliases = readdirSync(resolve(packageDir, '../../packages'), {
+        withFileTypes: true,
+    })
         .filter(dirent => dirent.isDirectory())
         .map(dirent => ({
             find: `@trezor/${dirent.name}`,
-            replacement: resolve(packageDir, '../', dirent.name),
+            replacement: resolve(packageDir, '../../packages', dirent.name),
         }));
 
     const suiteAliases = readdirSync(resolve(packageDir, '../../suite'), { withFileTypes: true })
@@ -50,7 +52,7 @@ export const sharedAliases = [
     },
     {
         find: 'src',
-        replacement: resolve(packageDir, '../suite/src'),
+        replacement: resolve(packageDir, '../../packages/suite/src'),
     },
     {
         find: 'crypto',

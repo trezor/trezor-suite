@@ -1,14 +1,16 @@
+/* eslint-disable import/no-extraneous-dependencies -- build-time tooling belongs in devDependencies */
 import ReactRefreshWebpackPlugin from '@pmmmwh/react-refresh-webpack-plugin';
-import path from 'path';
 import webpack from 'webpack';
 import { WebpackPluginServe } from 'webpack-plugin-serve';
 
-import { DEV_PORTS } from '../utils/constants';
-import { project } from '../utils/env';
-import { getPathForProject } from '../utils/path';
+export type DevConfigOptions = {
+    /** Directory the development server serves the built application from. */
+    distPath: string;
+    /** Port the development server listens on. */
+    port: number;
+};
 
-const distPath = path.join(getPathForProject(project), 'build');
-const config: webpack.Configuration = {
+export const createDevConfig = ({ distPath, port }: DevConfigOptions): webpack.Configuration => ({
     parallelism: 3,
     stats: {
         children: true,
@@ -29,7 +31,7 @@ const config: webpack.Configuration = {
     },
     plugins: [
         new WebpackPluginServe({
-            port: DEV_PORTS[project],
+            port,
             hmr: true,
             host: 'localhost',
             static: distPath,
@@ -39,7 +41,7 @@ const config: webpack.Configuration = {
                 rewrites: [],
             },
             client: {
-                address: `localhost:${DEV_PORTS[project]}`,
+                address: `localhost:${port}`,
                 protocol: 'ws',
             },
         }),
@@ -47,6 +49,4 @@ const config: webpack.Configuration = {
             overlay: false,
         }),
     ],
-};
-
-export default config;
+});

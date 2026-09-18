@@ -1,27 +1,43 @@
 # Front-End Build
 
-The front-end build of Suite is handled by Webpack configurations inside the `suite-build` package.
+Each application owns its Webpack configuration. `@suite/web-app` and `@suite/desktop-app-renderer`
+each have a `webpack.config.ts` composing the shared pieces with their own targets, entry points and
+assets.
 
-The folder structure is as follows:
+The shared pieces live in `packages/suite/webpack`, next to the application code both applications
+bundle:
 
-- configs: Contains the Webpack configuration files. `base.webpack.config.ts` serves as a common base for all other configurations. The other files in this folder are project specific such as `web.webpack.config.ts` or `desktop.webpack.config.ts` for `suite-web` and `suite-desktop` respectively.
-- plugins: Contains custom Webpack plugins.
-- utils: Contains various utils for the build scripts.
+- `createBaseConfig.ts`: common compilation, polyfills, chunking, source maps and the security
+  check. Takes the application's `suiteType` and `baseDir` explicitly.
+- `createDevConfig.ts`: development server and refresh setup. Takes the served `distPath` and `port`
+  explicitly.
+- `nixosInterpreterPlugin.ts`, `shellSpawnPlugin.ts`: custom Webpack plugins.
+- `browserPolyfills.ts`, `env.ts`, `git.ts`: build helpers.
 
-These Webpack configurations are using TypeScript and use the `tsconfig.json` file at the root of the package. This is specified via the `TS_NODE_PROJECT` environment variable to avoid any issues regardless of the location where the command is run.
+These configurations are written in TypeScript and load through the `tsconfig.webpack.json` of the
+owning application, specified via `TS_NODE_PROJECT` so the command works regardless of where it runs.
 
-The following commands are available in this package (using `yarn run` at the root of the package or `yarn workspace @trezor/suite-build run` at the root of the project):
+| Command                                            | Description                                                                   |
+| -------------------------------------------------- | ----------------------------------------------------------------------------- |
+| `yarn workspace @suite/web-app dev`                | Watch build of the web application with development settings, and serves it.  |
+| `yarn workspace @suite/web-app build`              | Production build of the web application.                                      |
+| `yarn workspace @suite/desktop-app dev`            | Watch build of the desktop renderer, serves it and runs the Electron wrapper. |
+| `yarn workspace @suite/desktop-app-renderer build` | Production build of the desktop renderer bundle.                              |
 
-| Command          | Description                                                                                               |
-| ---------------- | --------------------------------------------------------------------------------------------------------- |
-| dev:web          | Runs a watch build of `suite-web` with development settings and serves it.                                |
-| build:web        | Builds a production build of `suite-web`.                                                                 |
-| dev:desktop      | Runs a watch build of `suite-desktop` with development settings, serves it and runs the Electron wrapper. |
-| build:desktop    | Builds a production build of `suite-desktop`.                                                             |
-| lint             | Runs the linter on the package.                                                                           |
-| type-check       | Runs the TypeScript checker on the package.                                                               |
-| type-check:watch | Same as `type-check` but in watch mode.                                                                   |
+The root shortcuts `yarn suite:dev`, `yarn suite:build:web` and `yarn suite:dev:desktop` call these.
+
+## Browser targets
+
+Both applications share `packages/suite/webpack/browserslist`, for Babel's `preset-env` and as their
+Webpack target. Electron ships a newer Chromium than the browsers that list covers, so the desktop
+renderer could target it separately, but today it does not.
+
+The file is referenced by absolute path. Babel and Webpack otherwise discover browserslist config by
+walking up from the directory the build runs in, which silently changes the targets when a build
+moves.
 
 ## Aliases
 
-Aliases for imports (for example `@suite-utils/features`) are defined in the `tsconfig.json` file at the root of the project, in the `compilerOptions.paths` property. The values are processed at build time for the webpack configuration in order to properly resolve aliases.
+Aliases for imports (for example `@suite-utils/features`) are defined in the `tsconfig.json` file at
+the root of the project, in the `compilerOptions.paths` property. The values are processed at build
+time for the webpack configuration in order to properly resolve aliases.

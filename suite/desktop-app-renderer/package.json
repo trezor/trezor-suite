@@ -10,7 +10,9 @@
         "type-check": "yarn g:tsc --build tsconfig.json",
         "type-check:watch": "yarn type-check -- --watch",
         "lint:styles": "stylelint './src/**/*{.ts,.tsx}' --cache --config ../../.stylelintrc",
-        "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'"
+        "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'",
+        "dev": "TS_NODE_PROJECT=\"tsconfig.json\" webpack --config ./webpack.config.ts",
+        "build": "NODE_ENV=production TS_NODE_PROJECT=\"tsconfig.json\" webpack --config ./webpack.config.ts"
     },
     "dependencies": {
         "@sentry/electron": "^7.16.0",
@@ -43,10 +45,17 @@
         "styled-components": "^6.3.9"
     },
     "devDependencies": {
+        "@suite-common/flags": "workspace:*",
+        "@suite-common/suite-config": "workspace:*",
         "@types/react": "19.2.14",
         "@types/react-dom": "19.2.3",
+        "copy-webpack-plugin": "^14.0.0",
+        "html-webpack-plugin": "5.6.8",
         "postcss-styled-syntax": "^0.7.1",
         "stylelint": "^17.1.1",
-        "stylelint-config-standard": "^40.0.0"
+        "stylelint-config-standard": "^40.0.0",
+        "webpack": "5.109.0",
+        "webpack-cli": "^7.2.1",
+        "webpack-merge": "^6.0.1"
     }
 }

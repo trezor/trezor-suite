@@ -87,7 +87,7 @@ To ensure the authenticity of a configuration file, JSON Web Signatures are used
     - `config.v1.ts` to be bundled with application
 - Development private key is baked into project structure together with public keys for both development and production.
 - Production private key is available only on `codesign` branch in Github CI.
-- Development private key can be found in `suite-common/message-system/scripts/sign-config.ts` file, the public keys can be found in `packages/suite-build/utils/jws.ts` file.
+- Development private key can be found in `suite-common/message-system/scripts/sign-config.ts` file, the public keys can be found in `packages/env-utils/src/jws.ts` file.
 
 ### Versioning of implementation
 

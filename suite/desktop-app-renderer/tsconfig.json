@@ -42,6 +42,10 @@
         { "path": "../../packages/suite" },
         { "path": "../../packages/theme" },
         { "path": "../../packages/urls" },
-        { "path": "../../packages/utils" }
+        { "path": "../../packages/utils" },
+        { "path": "../../suite-common/flags" },
+        {
+            "path": "../../suite-common/suite-config"
+        }
     ]
 }

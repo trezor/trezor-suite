@@ -1,3 +1,4 @@
+/* eslint-disable import/no-extraneous-dependencies -- build-time tooling belongs in devDependencies */
 import { spawnSync } from 'child_process';
 import webpack from 'webpack';
 
