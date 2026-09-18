@@ -12253,6 +12253,7 @@ __metadata:
     "@trezor/connect-mobile": "workspace:^"
     "@trezor/e2e-utils": "workspace:*"
     "@trezor/eslint": "workspace:*"
+    "@trezor/perf-e2e": "workspace:*"
     "@trezor/react-native-usb": "workspace:*"
     "@trezor/styles-native": "workspace:*"
     "@trezor/theme": "workspace:*"
