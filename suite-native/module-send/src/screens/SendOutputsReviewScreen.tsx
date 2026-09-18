@@ -1,8 +1,12 @@
 import { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 
-import { type AccountsRootState, selectAccountByKey } from '@suite-common/wallet-core';
-import { Box, VStack } from '@suite-native/atoms';
+import {
+    type AccountsRootState,
+    selectAccountByKey,
+    selectIsEthereumNonceAbovePending,
+} from '@suite-common/wallet-core';
+import { BannerInline, Box, VStack } from '@suite-native/atoms';
 import {
     ConfirmOnTrezorWrapper,
     useConfirmOnTrezorController,
@@ -45,6 +49,7 @@ export const SendOutputsReviewScreen = ({
     );
 
     const isTransactionAlreadySigned = useSelector(selectIsTransactionAlreadySigned);
+    const isNonceAbovePending = useSelector(selectIsEthereumNonceAbovePending);
     const showOutputsReviewFooter = isTransactionAlreadySigned && account;
 
     const [isSendInProgress, setIsSendInProgress] = useState(false);
@@ -86,6 +91,12 @@ export const SendOutputsReviewScreen = ({
                             isBroadcasting={isBroadcasting}
                             onRetry={onRetry}
                             isRetryDisabled={isRetryDisabled}
+                        />
+                    )}
+                    {isNonceAbovePending && (
+                        <BannerInline
+                            intent="warning"
+                            title={<Translation id="moduleSend.review.nonceAbovePendingWarning" />}
                         />
                     )}
                     <ReviewOutputItemList

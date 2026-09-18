@@ -4094,6 +4094,11 @@ export const messages = defineMessages({
         id: 'TR_NONCE',
         defaultMessage: 'Nonce',
     },
+    TR_NONCE_ABOVE_PENDING_WARNING: {
+        id: 'TR_NONCE_ABOVE_PENDING_WARNING',
+        defaultMessage:
+            'This nonce is higher than the network expects for this account. Unless you have a transaction in flight from another wallet, this one may stay pending until the gap is filled.',
+    },
     ETHEREUM_NONCE_IS_NOT_INTEGER: {
         id: 'ETHEREUM_NONCE_IS_NOT_INTEGER',
         defaultMessage: 'Nonce must be zero or a positive whole number',
