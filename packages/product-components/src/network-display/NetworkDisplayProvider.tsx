@@ -1,28 +1,54 @@
-import { type ReactNode, createContext, useContext, useMemo, useSyncExternalStore } from 'react';
+import { type ReactNode, createContext, useContext, useMemo } from 'react';
 
 import type { NetworkSymbol } from '@trezor/network-module-types';
 
-import type { NetworkDisplayServices } from './NetworkDisplayServices';
+import type { NetworkDisplayConfig, NetworkOption } from './NetworkDisplayConfig';
+import { type ExternalStore, useExternalStore } from './useExternalStore';
 
-const NetworkDisplayContext = createContext<NetworkDisplayServices | null>(null);
+const NetworkDisplayContext = createContext<NetworkDisplayConfig | null>(null);
 
 type NetworkDisplayProviderProps = {
-    services: NetworkDisplayServices;
+    value: NetworkDisplayConfig;
     children: ReactNode;
 };
 
-export const NetworkDisplayProvider = ({ services, children }: NetworkDisplayProviderProps) => (
-    <NetworkDisplayContext.Provider value={services}>{children}</NetworkDisplayContext.Provider>
+export const NetworkDisplayProvider = ({ value, children }: NetworkDisplayProviderProps) => (
+    <NetworkDisplayContext.Provider value={value}>{children}</NetworkDisplayContext.Provider>
 );
 
-export const useNetworkOptions = (symbols?: readonly NetworkSymbol[]) => {
-    const services = useContext(NetworkDisplayContext);
+type NetworkDisplayStoreProviderProps<TState> = {
+    store: ExternalStore<TState>;
+    selectNetworks: (state: TState) => NetworkDisplayConfig['networks'];
+    selectNetworkNamesMap: (state: TState) => NetworkDisplayConfig['networkNamesMap'];
+    children: ReactNode;
+};
 
-    if (services === null) {
+export const NetworkDisplayStoreProvider = <TState,>({
+    store,
+    selectNetworks,
+    selectNetworkNamesMap,
+    children,
+}: NetworkDisplayStoreProviderProps<TState>) => {
+    const networks = useExternalStore(store, selectNetworks);
+    const networkNamesMap = useExternalStore(store, selectNetworkNamesMap);
+    const value = useMemo(() => ({ networks, networkNamesMap }), [networks, networkNamesMap]);
+
+    return <NetworkDisplayProvider value={value}>{children}</NetworkDisplayProvider>;
+};
+
+export const useNetworkOptions = (symbols?: readonly NetworkSymbol[]): readonly NetworkOption[] => {
+    const config = useContext(NetworkDisplayContext);
+
+    if (config === null) {
         throw new Error('Network display components require a NetworkDisplayProvider.');
     }
 
-    const source = useMemo(() => services.getNetworks(symbols), [services, symbols]);
-
-    return useSyncExternalStore(source.subscribe, source.getSnapshot, source.getServerSnapshot);
+    return useMemo(
+        () =>
+            (symbols ?? config.networks).map(symbol => ({
+                symbol,
+                name: config.networkNamesMap?.[symbol] ?? symbol,
+            })),
+        [config, symbols],
+    );
 };

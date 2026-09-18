@@ -1,10 +1,13 @@
 import { HelmetProvider } from 'react-helmet-async';
+import { useStore } from 'react-redux';
 
-import { useServices } from '@suite-common/dependency-injection';
+import { selectNetworkNamesMap } from '@suite-common/networks/reduxState/networksSelectors';
 import { ReactQueryProvider } from '@suite-common/react-query/src/components/ReactQueryProvider';
+import { selectEnabledNetworks } from '@suite-common/wallet-core/src/settings/walletSettingsReducer';
 import { SelectCacheProvider } from '@trezor/components';
-import { NetworkDisplayProvider } from '@trezor/product-components/network-display';
+import { NetworkDisplayStoreProvider } from '@trezor/product-components/network-display';
 
+import type { AppState } from 'src/reducers/store';
 import Autodetect from 'src/support/suite/Autodetect';
 import { ConnectedIntlProvider } from 'src/support/suite/ConnectedIntlProvider';
 import { ConnectedThemeProvider } from 'src/support/suite/ConnectedThemeProvider';
@@ -17,7 +20,6 @@ import { ResponsiveContextProvider } from 'src/support/suite/ResponsiveContext';
 import { ConnectPopupModals } from './ConnectPopupModals';
 import { ConnectedFormatterProvider } from './ConnectedFormatterProvider';
 import { RouterHandler } from './RouterHandler';
-import { injectNetworkDisplayServices } from '../createSuiteNetworkDisplayServices';
 
 export const Main = ({
     trafficLightOffset,
@@ -26,12 +28,16 @@ export const Main = ({
     trafficLightOffset?: React.ReactNode;
     children: React.ReactNode;
 }) => {
-    const { networkDisplayServices } = useServices(injectNetworkDisplayServices);
+    const store = useStore<AppState>();
 
     return (
         // Todo: Enable when issues are fixed (ReactTruncate & BumpFee)
         // <StrictMode>
-        <NetworkDisplayProvider services={networkDisplayServices}>
+        <NetworkDisplayStoreProvider
+            store={store}
+            selectNetworks={selectEnabledNetworks}
+            selectNetworkNamesMap={selectNetworkNamesMap}
+        >
             <HelmetProvider>
                 {trafficLightOffset ?? null}
                 <ConnectPopupModals />
@@ -56,7 +62,7 @@ export const Main = ({
                     </ResponsiveContextProvider>
                 </ConnectedThemeProvider>
             </HelmetProvider>
-        </NetworkDisplayProvider>
+        </NetworkDisplayStoreProvider>
         // </StrictMode>
     );
 };

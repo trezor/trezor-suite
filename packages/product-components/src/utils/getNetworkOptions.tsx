@@ -3,7 +3,7 @@ import { isNetworkIconSymbol } from '@suite-common/icons/src/iconUtils';
 import { NetworkIcon } from '../components/NetworkIcon/NetworkIcon';
 import { NativeTokenIcon } from '../components/TokenIcon/NativeTokenIcon';
 import type { TokenIconSize } from '../components/TokenIcon/tokenIconTypes';
-import type { NetworkOption } from '../network-display/NetworkDisplayServices';
+import type { NetworkOption } from '../network-display/NetworkDisplayConfig';
 
 type GetNetworkOptionsParams = {
     networks: readonly NetworkOption[];

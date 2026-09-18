@@ -73,7 +73,6 @@
     "exports": {
         ".": "./src/index.ts",
         "./network-display": "./src/network-display/NetworkDisplayProvider.tsx",
-        "./network-display/services": "./src/network-display/NetworkDisplayServices.ts",
-        "./network-display/static": "./src/network-display/createStaticNetworkDisplayServices.ts"
+        "./network-display/config": "./src/network-display/NetworkDisplayConfig.ts"
     }
 }

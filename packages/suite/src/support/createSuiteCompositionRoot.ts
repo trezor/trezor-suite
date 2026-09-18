@@ -44,7 +44,6 @@ import { selectTradedAccountKeys } from '@suite-common/trading';
 import { selectAccountsByDeviceState } from '@suite-common/wallet-core';
 import { type CreateLoggerDep, type GetTrezorConnectPrivilegedDep } from '@trezor/connect';
 import { isDesktop } from '@trezor/env-utils';
-import type { NetworkDisplayServicesDep } from '@trezor/product-components/network-display/services';
 
 import { type SuiteReduxStore } from 'src/reducers/createReduxStore';
 import { selectIsWindowVisible } from 'src/reducers/suite/windowReducer';
@@ -52,7 +51,6 @@ import { type DbDep } from 'src/storage/createDb';
 import { reportSecurityCheck } from 'src/utils/suite/sentry';
 
 import { createConnectInitHooks } from './createConnectInitHooks';
-import { createSuiteNetworkDisplayServices } from './createSuiteNetworkDisplayServices';
 import { type AppState } from '../types/suite';
 
 const connectInitSettings: ConnectInitSettings = {
@@ -74,10 +72,9 @@ export type SuiteServices = CommonServices &
     MetadataMigrationDep &
     SuiteRouterHistoryDep &
     TransportsDep &
-    BluetoothDep &
-    NetworkDisplayServicesDep;
+    BluetoothDep;
 
-export type StoreAPIDep = Pick<SuiteReduxStore, 'getState' | 'dispatch' | 'subscribe'>;
+export type StoreAPIDep = Pick<SuiteReduxStore, 'getState' | 'dispatch'>;
 
 export type SuiteAppDeps = StoreAPIDep &
     DbDep &
@@ -167,7 +164,6 @@ export const createSuiteServicesCompositionRoot = (deps: SuiteAppDeps): SuiteSer
     };
 
     return {
-        networkDisplayServices: createSuiteNetworkDisplayServices(deps),
         db: deps.db,
         desktopApi: deps.desktopApi,
         networks,

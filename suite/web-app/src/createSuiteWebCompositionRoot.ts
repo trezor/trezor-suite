@@ -58,7 +58,6 @@ export const createSuiteWebCompositionRoot = (): SuiteWebCompositionRoot => {
         desktopApi: createWebDesktopApi(),
         dispatch: store.dispatch,
         getState: store.getState,
-        subscribe: store.subscribe,
         history,
         platformEncryption,
         createLogger: createConnectLoggerFactory({ getState: store.getState }),
