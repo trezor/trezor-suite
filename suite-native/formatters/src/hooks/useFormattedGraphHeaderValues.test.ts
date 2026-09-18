@@ -57,6 +57,7 @@ describe(useFormattedGraphHeaderValues.name, () => {
             currencySymbol: '$',
             wholeNumber: '1,234',
             decimalNumber: '.56',
+            isCurrencySymbolFirst: true,
         });
     });
 
@@ -70,6 +71,7 @@ describe(useFormattedGraphHeaderValues.name, () => {
             currencySymbol: 'CZK',
             wholeNumber: '1,234',
             decimalNumber: '.56',
+            isCurrencySymbolFirst: true,
         });
     });
 
@@ -83,6 +85,7 @@ describe(useFormattedGraphHeaderValues.name, () => {
             currencySymbol: 'Kč',
             wholeNumber: '1\u00a0234', // non-breaking space
             decimalNumber: ',56',
+            isCurrencySymbolFirst: false,
         });
     });
 
@@ -96,6 +99,7 @@ describe(useFormattedGraphHeaderValues.name, () => {
             currencySymbol: '€',
             wholeNumber: '2,000',
             decimalNumber: '.00',
+            isCurrencySymbolFirst: true,
         });
     });
 
@@ -109,6 +113,7 @@ describe(useFormattedGraphHeaderValues.name, () => {
             currencySymbol: 'CZK',
             wholeNumber: '0',
             decimalNumber: '.99',
+            isCurrencySymbolFirst: true,
         });
     });
 
@@ -122,6 +127,7 @@ describe(useFormattedGraphHeaderValues.name, () => {
             currencySymbol: 'BTC',
             wholeNumber: '0',
             decimalNumber: '.01',
+            isCurrencySymbolFirst: true,
         });
     });
 
@@ -135,6 +141,7 @@ describe(useFormattedGraphHeaderValues.name, () => {
             currencySymbol: 'BTC',
             wholeNumber: '0',
             decimalNumber: '.00',
+            isCurrencySymbolFirst: true,
         });
     });
 
@@ -148,6 +155,7 @@ describe(useFormattedGraphHeaderValues.name, () => {
             currencySymbol: 'sat',
             wholeNumber: '1,477,571',
             decimalNumber: '',
+            isCurrencySymbolFirst: false,
         });
     });
 
@@ -161,6 +169,7 @@ describe(useFormattedGraphHeaderValues.name, () => {
             currencySymbol: 'sat',
             wholeNumber: '1.477.571',
             decimalNumber: '',
+            isCurrencySymbolFirst: false,
         });
     });
 });

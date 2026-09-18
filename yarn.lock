@@ -11133,7 +11133,11 @@ __metadata:
     "@suite-common/wallet-config": "workspace:*"
     "@suite-common/wallet-core": "workspace:*"
     "@suite-common/wallet-types": "workspace:*"
+    "@suite-common/wallet-utils": "workspace:*"
+    "@trezor/blockchain-link-types": "workspace:*"
+    "@trezor/device-utils": "workspace:*"
     "@trezor/utils": "workspace:*"
+    react-redux: "npm:9.3.0"
   languageName: unknown
   linkType: soft
 
@@ -11535,6 +11539,7 @@ __metadata:
     "@suite-common/suite-constants": "workspace:*"
     "@suite-common/suite-types": "workspace:*"
     "@suite-common/wallet-config": "workspace:*"
+    "@suite-common/wallet-core": "workspace:*"
     "@suite-common/wallet-types": "workspace:*"
     "@suite-common/wallet-utils": "workspace:*"
     "@trezor/blockchain-link-types": "workspace:*"
@@ -11544,6 +11549,7 @@ __metadata:
     date-fns: "npm:^4.1.0"
     react: "npm:19.2.3"
     react-intl: "npm:^8.1.3"
+    react-redux: "npm:9.3.0"
   languageName: unknown
   linkType: soft
 
