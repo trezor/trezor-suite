@@ -19,7 +19,7 @@ import { XIcon } from '@trezor/icons';
 import type { MessageSystemSuiteWithTorRootState } from './messageSystemRootState';
 
 type ContextMessageProps = {
-    context: ContextDomain;
+    context: ContextDomain | readonly ContextDomain[];
 };
 
 export const ContextMessage = ({ context }: ContextMessageProps) => {
