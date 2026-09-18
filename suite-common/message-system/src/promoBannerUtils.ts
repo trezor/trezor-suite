@@ -693,8 +693,14 @@ const evaluateWalletCondition = (
             return null;
         }
 
+         const networkAccounts = getAccountsForNetwork(accounts, assetId.networkSymbol);
+
+         if (condition.type === 'asset-balance-none' && networkAccounts.length === 0) {
+             return null;
+         }
+
         if (assetId.type === 'native') {
-            return accounts.some(account =>
+            return networkAccounts.some(account =>
                 getAccountHasPositiveNativeBalance(account, assetId.networkSymbol),
             );
         }
@@ -712,12 +718,18 @@ const evaluateWalletCondition = (
         return null;
     }
 
+    const networkAccounts = getAccountsForNetwork(accounts, productId.networkSymbol);
+
+    if (condition.type === 'product-position-none' && networkAccounts.length === 0) {
+        return null;
+    }
+
     if (productId.type === 'staking') {
-        return getPositiveStakingProductBalanceResult(accounts, productId.networkSymbol);
+        return getPositiveStakingProductBalanceResult(networkAccounts, productId.networkSymbol);
     }
 
     return getPositiveTokenBalanceResult({
-        accounts,
+        accounts: networkAccounts,
         networkSymbol: productId.networkSymbol,
         tokenId: productId.tokenId,
     });

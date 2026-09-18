@@ -152,6 +152,23 @@ describe(selectEligiblePromoBanners.name, () => {
         expect(selectVisiblePromoBanners({ promoBanners, accounts })).toEqual(['eth-vault']);
     });
 
+    it('hides asset-balance-none banners until a matching account has been discovered', () => {
+        const { promoBanners } = parsePromoBannerMessages([
+            createPromoMessage(
+                createPromoFeature({
+                    bannerId: 'eth-vault',
+                    eligibility: {
+                        required: [{ type: 'asset-balance-none', value: 'native:eth' }],
+                    },
+                }),
+            ),
+        ]);
+
+        const accounts = [mockWalletAccount({ symbol: asNetworkSymbol('btc'), balance: '1' })];
+
+        expect(selectVisiblePromoBanners({ promoBanners, accounts })).toEqual([]);
+    });
+
     it('requires all discovered accounts to have no positive balance for asset-balance-none', () => {
         const { promoBanners } = parsePromoBannerMessages([
             createPromoMessage(
