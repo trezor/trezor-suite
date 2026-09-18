@@ -15,9 +15,9 @@ import {
     selectHiddenAssetHoldingKeySet,
     selectLastWeekFiatRates,
 } from '@suite-common/wallet-core';
-import { type TokenAddress } from '@suite-common/wallet-types';
+import { type RatesByKey, type TokenAddress } from '@suite-common/wallet-types';
 import { getFiatRateKey, toFiatCurrency } from '@suite-common/wallet-utils';
-import { type TokenInfo } from '@trezor/blockchain-link-types';
+import { type BaseCurrencyCode, type TokenInfo } from '@trezor/blockchain-link-types';
 import { type StaticSessionId } from '@trezor/device-utils';
 import { BigNumber } from '@trezor/utils';
 
@@ -75,6 +75,25 @@ export type AssetTotal = {
     tokenInfo: TokenInfo | undefined;
 };
 
+export const toAssetTotal = (shown: readonly AssetHolding[]): AssetTotal | undefined => {
+    if (shown.length === 0) {
+        return undefined;
+    }
+
+    const { cryptoBalance, tokenInfo } = sumAssetHoldings(shown);
+    // Every holding of one asset says the same about which asset it is.
+    const [{ assetKey, symbol, contractAddress }] = shown as [AssetHolding];
+
+    return {
+        assetKey,
+        symbol,
+        contractAddress,
+        displaySymbol: getAssetDisplaySymbol({ symbol, tokenInfo }),
+        cryptoBalance,
+        tokenInfo,
+    };
+};
+
 // An asset whose holdings and hiding are unchanged is summed once: the index hands back the same
 // array for a group it did not touch, so the sum can hang off it.
 const summedAssets = new WeakMap<object, WeakMap<object, AssetTotal>>();
@@ -92,22 +111,11 @@ const sumAsset = (
     const shown = holdings.filter(
         holding => holding.isAccountVisible && !hidden.has(holding.holdingKey),
     );
+    const asset = toAssetTotal(shown);
 
-    if (shown.length === 0) {
+    if (asset === undefined) {
         return undefined;
     }
-
-    const { cryptoBalance, tokenInfo } = sumAssetHoldings(shown);
-    // Every holding of one asset says the same about which asset it is.
-    const [{ assetKey, symbol, contractAddress }] = shown as [AssetHolding];
-    const asset: AssetTotal = {
-        assetKey,
-        symbol,
-        contractAddress,
-        displaySymbol: getAssetDisplaySymbol({ symbol, tokenInfo }),
-        cryptoBalance,
-        tokenInfo,
-    };
 
     const forHoldings = summedAssets.get(holdings) ?? new WeakMap<object, AssetTotal>();
     forHoldings.set(hidden, asset);
@@ -145,31 +153,34 @@ export const selectAssetFirstAssets = createMemoizedSelector(
     },
 );
 
+export const priceAssets = (
+    assets: readonly AssetTotal[],
+    currentFiatRates: RatesByKey | undefined,
+    lastWeekFiatRates: RatesByKey | undefined,
+    baseCurrencyCode: BaseCurrencyCode,
+): readonly AssetRow[] => {
+    const priced = assets.map(asset => {
+        const fiatRateKey = getFiatRateKey(asset.symbol, baseCurrencyCode, asset.contractAddress);
+        const amount = asset.cryptoBalance.toFixed();
+
+        return settleRow({
+            ...asset,
+            fiatValue:
+                toFiatCurrency({ amount, rate: currentFiatRates?.[fiatRateKey]?.rate }) ??
+                ZERO_FIAT_VALUE,
+            weekAgoFiatValue:
+                toFiatCurrency({ amount, rate: lastWeekFiatRates?.[fiatRateKey]?.rate }) ??
+                ZERO_FIAT_VALUE,
+        });
+    });
+
+    return returnStableArrayIfEmpty(priced.sort(compareRows));
+};
+
 /** The assets priced in the user's currency, most valuable first. */
 export const selectAssetFirstRows = createMemoizedSelector(
     [selectAssetFirstAssets, selectCurrentFiatRates, selectLastWeekFiatRates, selectBaseCurrency],
-    (assets, currentFiatRates, lastWeekFiatRates, baseCurrencyCode): readonly AssetRow[] => {
-        const priced = assets.map(asset => {
-            const fiatRateKey = getFiatRateKey(
-                asset.symbol,
-                baseCurrencyCode,
-                asset.contractAddress,
-            );
-            const amount = asset.cryptoBalance.toFixed();
-
-            return settleRow({
-                ...asset,
-                fiatValue:
-                    toFiatCurrency({ amount, rate: currentFiatRates?.[fiatRateKey]?.rate }) ??
-                    ZERO_FIAT_VALUE,
-                weekAgoFiatValue:
-                    toFiatCurrency({ amount, rate: lastWeekFiatRates?.[fiatRateKey]?.rate }) ??
-                    ZERO_FIAT_VALUE,
-            });
-        });
-
-        return returnStableArrayIfEmpty(priced.sort(compareRows));
-    },
+    priceAssets,
 );
 
 export type AssetFirstTotals = {

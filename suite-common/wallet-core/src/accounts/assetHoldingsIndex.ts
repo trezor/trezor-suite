@@ -140,21 +140,26 @@ export const assetHoldingsIndex = createEntityIndex({
     },
 });
 
+/** The holdings of a token the user is not shown, by why they are not shown it. */
+export type HiddenAssetHoldings = {
+    hiddenByUser: readonly (readonly AssetHolding[])[];
+    unrecognized: readonly (readonly AssetHolding[])[];
+};
+
 /**
- * The holdings of the tokens the user is not shown: the ones hidden by hand, and the ones nothing
- * vouches for that were not asked for anyway.
+ * The tokens hidden by hand, and the ones nothing vouches for that were not asked for anyway.
  *
- * A list of ids for `getInverseOfIds`, so what is shown is everything else. Keyed per token rather
- * than per holding, so the question is asked once for a token however many accounts hold it, and
- * hiding one leaves every other holding in the index exactly as it was.
+ * Asked per token rather than per holding, so the question is asked once for a token however many
+ * accounts hold it, and hiding one leaves every other holding in the index exactly as it was.
  */
-export const selectHiddenAssetHoldingKeys = createMemoizedSelector(
+export const selectHiddenAssetHoldings = createMemoizedSelector(
     [
         (state: AssetHoldingsRootState) => assetHoldingsIndex.read(state).groups.byTokenKey,
         selectTokenDefinitions,
     ],
-    (tokenGroups, tokenDefinitions) => {
-        const hidden: AssetHoldingKey[] = [];
+    (tokenGroups, tokenDefinitions): HiddenAssetHoldings => {
+        const hiddenByUser: (readonly AssetHolding[])[] = [];
+        const unrecognized: (readonly AssetHolding[])[] = [];
 
         tokenGroups.forEach((group, tokenKey) => {
             const separator = tokenKey.indexOf(ASSET_KEY_SEPARATOR);
@@ -168,17 +173,32 @@ export const selectHiddenAssetHoldingKeys = createMemoizedSelector(
             const definitions = tokenDefinitions?.[symbol]?.coin;
             // A network with no definitions to go by shows what it holds — the testnets.
             const hasDefinitions = getNetworkFeatures(symbol).includes('coin-definitions');
-            const isHiddenByUser = definitions?.hide?.includes(contractAddress) ?? false;
             const isShownByUser = definitions?.show?.includes(contractAddress) ?? false;
             const isKnown = isTokenDefinitionKnown(definitions?.data, symbol, contractAddress);
 
-            if (isHiddenByUser || (hasDefinitions && !isKnown && !isShownByUser)) {
-                group.ids.forEach(id => hidden.push(id));
+            if (definitions?.hide?.includes(contractAddress) ?? false) {
+                hiddenByUser.push(group.entities);
+            } else if (hasDefinitions && !isKnown && !isShownByUser) {
+                unrecognized.push(group.entities);
             }
         });
 
-        return returnStableArrayIfEmpty(hidden);
+        return {
+            hiddenByUser: returnStableArrayIfEmpty(hiddenByUser),
+            unrecognized: returnStableArrayIfEmpty(unrecognized),
+        };
     },
+);
+
+/** The keys of all of them, for `sumAsset` to leave out what it is not to add up. */
+export const selectHiddenAssetHoldingKeys = createMemoizedSelector(
+    [selectHiddenAssetHoldings],
+    ({ hiddenByUser, unrecognized }) =>
+        returnStableArrayIfEmpty(
+            [...hiddenByUser, ...unrecognized].flatMap(holdings =>
+                holdings.map(holding => holding.holdingKey),
+            ),
+        ),
 );
 
 /** The same, as a set, for a consumer deciding it holding by holding. */
