@@ -16,7 +16,7 @@ import { useNotificationForDisconnectedDevice } from './useNotificationForDiscon
 
 export const Dashboard = () => {
     const { activeExperimentVariant } = useExperiment(ExperimentId.assetFirstHomeTable);
-    const isAssetFirstTableEnabled = activeExperimentVariant?.variant === 'B';
+    const isAssetFirstTableEnabled = activeExperimentVariant?.variant === 'A';
 
     useLayout('Home', <PageHeader />, <DashboardFooter />);
     useNotificationForDisconnectedDevice();
