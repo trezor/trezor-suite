@@ -8,6 +8,7 @@ import {
     type AssetAccount,
     type AssetAccountsRootState,
     type FiatRatesRootState,
+    type HiddenTokenReason,
     type WalletAssetKey,
     type WalletSettingsRootState,
     selectBaseCurrency,
@@ -15,6 +16,7 @@ import {
     selectDeviceAssetAccounts,
     selectEnabledNetworks,
     selectHiddenAssetAccountKeySet,
+    selectHiddenTokenReasons,
     selectLastWeekFiatRates,
 } from '@suite-common/wallet-core';
 import { type RatesByKey, type TokenAddress } from '@suite-common/wallet-types';
@@ -33,6 +35,7 @@ export type HomeAssetTableState = AssetAccountsRootState &
 const createMemoizedSelector = createWeakMapSelector.withTypes<HomeAssetTableState>();
 
 const ZERO_FIAT_VALUE = new BigNumber(0);
+const ZERO_BALANCE = new BigNumber(0);
 
 type WalletAsset = {
     assetKey: WalletAssetKey;
@@ -46,20 +49,17 @@ type WalletAsset = {
     tokenDecimals: number | undefined;
 };
 
-const selectWalletAssets = createMemoizedSelector(
-    [selectDeviceAssetAccounts, selectHiddenAssetAccountKeySet],
-    (assetAccounts, hidden): ReadonlyMap<WalletAssetKey, WalletAsset> => {
-        const shown = new Map<WalletAssetKey, [AssetAccount, ...AssetAccount[]]>();
+/** Every asset the wallet holds, hidden ones included: the hidden tokens page lists what the table leaves out. */
+const selectAllWalletAssets = createMemoizedSelector(
+    [selectDeviceAssetAccounts],
+    (assetAccounts): ReadonlyMap<WalletAssetKey, WalletAsset> => {
+        const byKey = new Map<WalletAssetKey, [AssetAccount, ...AssetAccount[]]>();
 
         assetAccounts.forEach(assetAccount => {
-            if (hidden.has(assetAccount.assetAccountKey)) {
-                return;
-            }
-
-            const held = shown.get(assetAccount.assetKey);
+            const held = byKey.get(assetAccount.assetKey);
 
             if (held === undefined) {
-                shown.set(assetAccount.assetKey, [assetAccount]);
+                byKey.set(assetAccount.assetKey, [assetAccount]);
             } else {
                 held.push(assetAccount);
             }
@@ -67,7 +67,7 @@ const selectWalletAssets = createMemoizedSelector(
 
         const assets = new Map<WalletAssetKey, WalletAsset>();
 
-        shown.forEach((held, assetKey) => {
+        byKey.forEach((held, assetKey) => {
             const [{ symbol, contractAddress }] = held;
             const { cryptoBalance, tokenInfo } = sumAssetAccounts(held);
 
@@ -89,6 +89,54 @@ const selectWalletAssets = createMemoizedSelector(
         });
 
         return assets;
+    },
+);
+
+/** A token is hidden for all the accounts that hold it, so hiding reads the same per asset. */
+const selectHiddenWalletAssetKeySet = createMemoizedSelector(
+    [selectDeviceAssetAccounts, selectHiddenAssetAccountKeySet],
+    (assetAccounts, hiddenAccounts): ReadonlySet<WalletAssetKey> => {
+        const hidden = new Set<WalletAssetKey>();
+
+        assetAccounts.forEach(assetAccount => {
+            if (hiddenAccounts.has(assetAccount.assetAccountKey)) {
+                hidden.add(assetAccount.assetKey);
+            }
+        });
+
+        return hidden;
+    },
+);
+
+const selectWalletAssets = createMemoizedSelector(
+    [selectAllWalletAssets, selectHiddenWalletAssetKeySet],
+    (assets, hidden): ReadonlyMap<WalletAssetKey, WalletAsset> => {
+        const shown = new Map<WalletAssetKey, WalletAsset>();
+
+        assets.forEach((asset, assetKey) => {
+            if (!hidden.has(assetKey)) {
+                shown.set(assetKey, asset);
+            }
+        });
+
+        return shown;
+    },
+);
+
+const selectHiddenWalletAssets = createMemoizedSelector(
+    [selectAllWalletAssets, selectHiddenWalletAssetKeySet],
+    (assets, hidden): ReadonlyMap<WalletAssetKey, WalletAsset> => {
+        const held = new Map<WalletAssetKey, WalletAsset>();
+
+        hidden.forEach(assetKey => {
+            const asset = assets.get(assetKey);
+
+            if (asset !== undefined) {
+                held.set(assetKey, asset);
+            }
+        });
+
+        return held;
     },
 );
 
@@ -132,6 +180,13 @@ const selectWalletAssetWeekAgoValues = createMemoizedSelector(
     pricedOnce,
 );
 
+/** The hidden tokens page sorts by worth too, and the shown values leave the hidden ones out. */
+const selectHiddenWalletAssetValues = createMemoizedSelector(
+    [selectHiddenWalletAssets, selectCurrentFiatRates, selectBaseCurrency],
+    priceAssets,
+    pricedOnce,
+);
+
 const byValue =
     (values: ReadonlyMap<WalletAssetKey, BigNumber>) =>
     (left: WalletAssetKey, right: WalletAssetKey) => {
@@ -155,13 +210,13 @@ export const selectShownWalletAssetKeys = createMemoizedSelector(
 
 export type HomeAssetGrouping = 'default' | 'networks';
 
-const haveSameNetworkGrouping = (
-    left: ReadonlyMap<NetworkSymbol, readonly WalletAssetKey[]>,
-    right: ReadonlyMap<NetworkSymbol, readonly WalletAssetKey[]>,
+const haveSameGrouping = <Group>(
+    left: ReadonlyMap<Group, readonly WalletAssetKey[]>,
+    right: ReadonlyMap<Group, readonly WalletAssetKey[]>,
 ) =>
     left.size === right.size &&
-    [...left].every(([symbol, assetKeys]) => {
-        const held = right.get(symbol);
+    [...left].every(([group, assetKeys]) => {
+        const held = right.get(group);
 
         return (
             held?.length === assetKeys.length &&
@@ -199,7 +254,7 @@ const selectShownAssetKeysByNetwork = createMemoizedSelector(
 
         return byNetwork;
     },
-    { memoizeOptions: { resultEqualityCheck: haveSameNetworkGrouping } },
+    { memoizeOptions: { resultEqualityCheck: haveSameGrouping } },
 );
 
 /**
@@ -266,7 +321,7 @@ export const selectNetworkFiatValue = createMemoizedSelector(
 );
 
 const selectWalletAsset = createMemoizedSelector(
-    [selectWalletAssets, (_state: HomeAssetTableState, assetKey: WalletAssetKey) => assetKey],
+    [selectAllWalletAssets, (_state: HomeAssetTableState, assetKey: WalletAssetKey) => assetKey],
     (assets, assetKey) => assets.get(assetKey),
 );
 
@@ -295,6 +350,87 @@ export const selectWalletAssetTokenDecimals = (
     state: HomeAssetTableState,
     assetKey: WalletAssetKey,
 ) => selectWalletAsset(state, assetKey)?.tokenDecimals;
+
+const byCryptoBalance =
+    (assets: ReadonlyMap<WalletAssetKey, WalletAsset>) =>
+    (left: WalletAssetKey, right: WalletAssetKey) => {
+        const balance = (assetKey: WalletAssetKey) =>
+            assets.get(assetKey)?.cryptoBalance ?? ZERO_BALANCE;
+
+        return balance(right).comparedTo(balance(left)) ?? 0;
+    };
+
+/** What it is worth, and where nothing can price it — a hidden token often cannot be priced — what is held. */
+const byFiatThenCryptoBalance = (
+    assets: ReadonlyMap<WalletAssetKey, WalletAsset>,
+    values: ReadonlyMap<WalletAssetKey, BigNumber>,
+) => {
+    const byFiat = byValue(values);
+    const byCrypto = byCryptoBalance(assets);
+
+    return (left: WalletAssetKey, right: WalletAssetKey) =>
+        byFiat(left, right) || byCrypto(left, right);
+};
+
+const selectHiddenWalletAssetKeysByReason = createMemoizedSelector(
+    [
+        selectAllWalletAssets,
+        selectHiddenWalletAssetKeySet,
+        selectHiddenWalletAssetValues,
+        selectHiddenTokenReasons,
+        selectEnabledNetworks,
+    ],
+    (
+        assets,
+        hiddenKeys,
+        values,
+        reasons,
+        enabledNetworks,
+    ): ReadonlyMap<HiddenTokenReason, readonly WalletAssetKey[]> => {
+        const byReason = new Map<HiddenTokenReason, WalletAssetKey[]>();
+
+        hiddenKeys.forEach(assetKey => {
+            const asset = assets.get(assetKey);
+
+            // Only a token can be hidden, so a hidden key always has a contract: the guard is for the type.
+            if (asset?.contractAddress === undefined || !enabledNetworks.includes(asset.symbol)) {
+                return;
+            }
+
+            const reason = reasons.get(asset.symbol)?.get(asset.contractAddress);
+
+            if (reason === undefined) {
+                return;
+            }
+
+            const grouped = byReason.get(reason) ?? [];
+
+            grouped.push(assetKey);
+            byReason.set(reason, grouped);
+        });
+
+        byReason.forEach(assetKeys => assetKeys.sort(byFiatThenCryptoBalance(assets, values)));
+
+        return byReason;
+    },
+    // Rebuilt on every account write, so a rebuild that lands on the same lists is thrown away and
+    // each group keeps the array it was handed; the per-reason selector below must stay unchecked.
+    { memoizeOptions: { resultEqualityCheck: haveSameGrouping } },
+);
+
+export const selectHiddenWalletAssetKeys = createMemoizedSelector(
+    [
+        selectHiddenWalletAssetKeysByReason,
+        (_state: HomeAssetTableState, reason: HiddenTokenReason) => reason,
+    ],
+    (byReason, reason): readonly WalletAssetKey[] =>
+        returnStableArrayIfEmpty(byReason.get(reason) ?? []),
+);
+
+export const selectHasHiddenWalletAssets = createMemoizedSelector(
+    [selectHiddenWalletAssetKeysByReason],
+    byReason => byReason.size > 0,
+);
 
 export type HomeAssetTotals = {
     /** Undefined while nothing the wallet holds can be priced — a total of zero would be a lie. */

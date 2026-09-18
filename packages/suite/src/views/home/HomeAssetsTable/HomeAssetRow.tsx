@@ -19,9 +19,18 @@ import { HOME_ASSET_CELL_PADDING } from './homeAssetTableLayout';
 type HomeAssetRowProps = {
     assetKey: WalletAssetKey;
     hasBorderTop?: boolean;
+    /** Takes the key so the caller can hand over a stable callback, which `memo` needs to hold. */
+    onSelect?: (assetKey: WalletAssetKey) => void;
+    /** The asset the row stands for is appended to it, so every row has an id of its own. */
+    testIdPrefix?: string;
 };
 
-export const HomeAssetRow = memo(({ assetKey, hasBorderTop }: HomeAssetRowProps) => {
+export const HomeAssetRow = memo(function HomeAssetRow({
+    assetKey,
+    hasBorderTop,
+    onSelect,
+    testIdPrefix = '@dashboard/home-asset-item',
+}: HomeAssetRowProps) {
     const { NetworkNameFormatter } = useFormatters();
     const symbol = useSelector(state => selectWalletAssetSymbol(state, assetKey));
     const contractAddress = useSelector(state => selectWalletAssetContractAddress(state, assetKey));
@@ -34,7 +43,8 @@ export const HomeAssetRow = memo(({ assetKey, hasBorderTop }: HomeAssetRowProps)
     return (
         <Table.Row
             hasBorderTop={hasBorderTop}
-            data-testid={`@dashboard/home-asset-item/${symbol}/${contractAddress ?? 'coin'}`}
+            onClick={onSelect && (() => onSelect(assetKey))}
+            data-testid={`${testIdPrefix}/${symbol}/${contractAddress ?? 'coin'}`}
         >
             <Table.Cell padding={HOME_ASSET_CELL_PADDING.first}>
                 <Row gap={12}>

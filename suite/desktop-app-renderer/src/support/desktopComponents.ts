@@ -5,6 +5,7 @@ import { type PageName } from '@suite/router';
 import { AppsEmbedding } from 'src/views/apps-embedding/AppsEmbedding';
 import { ConnectPopup } from 'src/views/connect-popup';
 import { Dashboard } from 'src/views/dashboard';
+import { HiddenTokens } from 'src/views/dashboard/HiddenTokens';
 import { Earn } from 'src/views/earn';
 import {
     EarnTronClaim,
@@ -59,6 +60,7 @@ import { Transactions } from 'src/views/wallet/transactions/Transactions';
 
 export const desktopComponents: Record<PageName, ComponentType> = {
     'suite-index': Dashboard,
+    'suite-hidden-tokens': HiddenTokens,
     'suite-earn': Earn,
     'earn-yield-deposit': EarnDeposit,
     'earn-yield-withdraw': EarnWithdraw,

@@ -1,9 +1,12 @@
 import { useRef } from 'react';
 
 import { Translation } from '@suite/intl';
+import { gotoThunk } from '@suite/router';
 import { type HomeAssetGrouping } from '@suite-common/assets';
+import { useServices } from '@suite-common/dependency-injection';
+import { injectDispatch } from '@suite-common/redux-utils';
 import { GhostContainer, Icon, Menu, Popover, type PopoverRef, Row } from '@trezor/components';
-import { CheckIcon, FunnelSimpleIcon } from '@trezor/icons';
+import { CaretRightIcon, CheckIcon, FunnelSimpleIcon } from '@trezor/icons';
 
 type HomeAssetTableFilterProps = {
     grouping: HomeAssetGrouping;
@@ -12,6 +15,7 @@ type HomeAssetTableFilterProps = {
 
 const HomeAssetTableFilter = ({ grouping, onChange }: HomeAssetTableFilterProps) => {
     const popoverRef = useRef<PopoverRef>(null);
+    const { dispatch } = useServices(injectDispatch);
 
     const choose = (chosen: HomeAssetGrouping) => {
         onChange(chosen);
@@ -38,6 +42,14 @@ const HomeAssetTableFilter = ({ grouping, onChange }: HomeAssetTableFilterProps)
                             onClick: () => choose('networks'),
                             'data-testid': '@dashboard/home-asset/grouping/networks',
                         },
+                        {
+                            label: <Translation id="TR_HIDDEN_TOKENS" />,
+                            iconRight: CaretRightIcon,
+                            hasSeparatorBefore: true,
+                            onClick: () =>
+                                dispatch(gotoThunk({ routeName: 'suite-hidden-tokens' })),
+                            'data-testid': '@dashboard/home-asset/hidden-tokens',
+                        },
                     ]}
                 />
             }
@@ -50,7 +62,7 @@ const HomeAssetTableFilter = ({ grouping, onChange }: HomeAssetTableFilterProps)
                 <Icon
                     as={FunnelSimpleIcon}
                     size={16}
-                    color={grouping === 'networks' ? 'contentInfo' : 'contentPrimary'}
+                    intent={grouping === 'networks' ? 'info' : 'neutral'}
                 />
             </GhostContainer>
         </Popover>

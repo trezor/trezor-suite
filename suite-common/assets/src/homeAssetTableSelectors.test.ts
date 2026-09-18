@@ -6,6 +6,7 @@ import { type StaticSessionId } from '@trezor/device-utils';
 
 import {
     type HomeAssetTableState,
+    selectHiddenWalletAssetKeys,
     selectHomeAssetTotals,
     selectNetworkFiatValue,
     selectShownNetworkSymbols,
@@ -409,5 +410,88 @@ describe('the networks the table can be grouped by', () => {
 
         expect(selectNetworkFiatValue(state, BTC)).toBe('100000');
         expect(selectNetworkFiatValue(state, ETH)).toBeUndefined();
+    });
+});
+
+describe('the tokens the table leaves out', () => {
+    const stateWithBitcoinBalance = (balance: string) =>
+        createState({
+            accounts: [
+                mockAccount({
+                    symbol: ETH,
+                    tokens: [
+                        { symbol: 'usdc', contract: USDC_ON_ETH, balance: '10' },
+                        { symbol: 'bad', contract: UNKNOWN_TOKEN, balance: '5' },
+                    ],
+                }),
+                mockAccount({ symbol: BTC, index: 1, balance }),
+            ],
+            hiddenTokens: [USDC_ON_ETH],
+        });
+
+    it('tells apart what the user hid from what nothing vouches for', () => {
+        const state = stateWithBitcoinBalance('1');
+
+        expect(selectHiddenWalletAssetKeys(state, 'hiddenByUser')).toEqual([
+            `${ALICE}/eth/${USDC_ON_ETH}`,
+        ]);
+        expect(selectHiddenWalletAssetKeys(state, 'unrecognized')).toEqual([
+            `${ALICE}/eth/${UNKNOWN_TOKEN}`,
+        ]);
+    });
+
+    it('hands back the same lists when a balance elsewhere changes', () => {
+        const before = stateWithBitcoinBalance('1');
+        const after = stateWithBitcoinBalance('2');
+
+        // Both groups ask, as the page does: reselect keeps one previous result per selector,
+        // not one per argument, so asking for a single reason would hide a cross-argument miss.
+        const byUserBefore = selectHiddenWalletAssetKeys(before, 'hiddenByUser');
+        const unrecognizedBefore = selectHiddenWalletAssetKeys(before, 'unrecognized');
+
+        expect(selectHiddenWalletAssetKeys(after, 'hiddenByUser')).toBe(byUserBefore);
+        expect(selectHiddenWalletAssetKeys(after, 'unrecognized')).toBe(unrecognizedBefore);
+    });
+
+    it('puts the most valuable hidden token first, and settles a tie on what is held', () => {
+        const state = createState({
+            accounts: [
+                mockAccount({
+                    symbol: ETH,
+                    tokens: [
+                        { symbol: 'usdc', contract: USDC_ON_ETH, balance: '10' },
+                        { symbol: 'bad', contract: UNKNOWN_TOKEN, balance: '5' },
+                    ],
+                }),
+                mockAccount({
+                    symbol: POL,
+                    index: 1,
+                    tokens: [{ symbol: 'usdc', contract: USDC_ON_POL, balance: '1000' }],
+                }),
+            ],
+            rates: mockRate(ETH, 1, USDC_ON_ETH),
+            hiddenTokens: [USDC_ON_ETH, USDC_ON_POL],
+        });
+
+        // Only the Ethereum one can be priced, so it leads; the other falls back to its balance.
+        expect(selectHiddenWalletAssetKeys(state, 'hiddenByUser')).toEqual([
+            `${ALICE}/eth/${USDC_ON_ETH}`,
+            `${ALICE}/pol/${USDC_ON_POL}`,
+        ]);
+    });
+
+    it('leaves out a hidden token on a network the user has not enabled', () => {
+        const state = createState({
+            accounts: [
+                mockAccount({
+                    symbol: POL,
+                    tokens: [{ symbol: 'usdc', contract: USDC_ON_POL, balance: '10' }],
+                }),
+            ],
+            enabledNetworks: [BTC, ETH],
+            hiddenTokens: [USDC_ON_POL],
+        });
+
+        expect(selectHiddenWalletAssetKeys(state, 'hiddenByUser')).toEqual([]);
     });
 });
