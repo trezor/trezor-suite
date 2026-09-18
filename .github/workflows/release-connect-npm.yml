@@ -82,7 +82,9 @@ jobs:
 
       - name: Determine Deployment Type from version in branch
         id: determine-deployment-type
-        run: echo "deploymentType=$(yarn tsx ./scripts/ci/determine-deployment-type.ts ${{ needs.extract-version.outputs.version }})" >> $GITHUB_OUTPUT
+        run: |
+          DEPLOYMENT_TYPE="$(yarn tsx ./scripts/ci/determine-deployment-type.ts ${{ needs.extract-version.outputs.version }})"
+          echo "deploymentType=$DEPLOYMENT_TYPE" >> "$GITHUB_OUTPUT"
 
       - name: Sanity Check - All Packages Same Deployment Type
         # We do not run this sanity check when no-packages-to-release.
