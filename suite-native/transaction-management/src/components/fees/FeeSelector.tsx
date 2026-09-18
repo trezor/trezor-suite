@@ -1,5 +1,4 @@
-import { BannerInline } from '@suite-native/atoms';
-
+import { FeeSelectorErrorBanner } from './FeeSelectorErrorBanner';
 import { FeeSummaryCard } from './FeeSummaryCard';
 import { FeesBottomSheet } from './FeesBottomSheet';
 import { TronFeeSummaryCard } from './TronFeeSummaryCard/TronFeeSummaryCard';
@@ -18,8 +17,7 @@ export const FeeSelector = (props: FeeSelectorProps) => {
         networkType,
         isTrc20,
         feeLimitSunOverride,
-        shouldShowFeeUnavailableAlert,
-        feeUnavailableErrorTitle,
+        feeSelectorError,
         bottomSheetRef,
         closeModal,
         snapshotRef,
@@ -32,8 +30,8 @@ export const FeeSelector = (props: FeeSelectorProps) => {
 
     if (!symbol || !networkType) return null;
 
-    if (shouldShowFeeUnavailableAlert && feeUnavailableErrorTitle) {
-        return <BannerInline intent="critical" title={feeUnavailableErrorTitle} />;
+    if (feeSelectorError) {
+        return <FeeSelectorErrorBanner error={feeSelectorError} />;
     }
 
     return (

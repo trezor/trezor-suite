@@ -1,7 +1,6 @@
 import { Pressable } from 'react-native';
 
-import { BannerInline } from '@suite-native/atoms';
-
+import { FeeSelectorErrorBanner } from './FeeSelectorErrorBanner';
 import { FeeSummaryRow } from './FeeSummaryRow';
 import { FeesBottomSheet } from './FeesBottomSheet';
 import { TronFeeSummaryRow } from './TronFeeSummaryCard/TronFeeSummaryRow';
@@ -23,8 +22,7 @@ export const FeeSelectorRow = (props: FeeSelectorRowProps) => {
         networkType,
         isTrc20,
         feeLimitSunOverride,
-        shouldShowFeeUnavailableAlert,
-        feeUnavailableErrorTitle,
+        feeSelectorError,
         bottomSheetRef,
         closeModal,
         snapshotRef,
@@ -44,8 +42,8 @@ export const FeeSelectorRow = (props: FeeSelectorRowProps) => {
         return null;
     }
 
-    if (shouldShowFeeUnavailableAlert && feeUnavailableErrorTitle) {
-        return <BannerInline intent="critical" title={feeUnavailableErrorTitle} />;
+    if (feeSelectorError) {
+        return <FeeSelectorErrorBanner error={feeSelectorError} />;
     }
 
     const isTron = networkType === 'tron';

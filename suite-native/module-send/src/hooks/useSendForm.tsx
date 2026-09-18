@@ -122,7 +122,8 @@ export const useSendForm = (accountKey: AccountKey, tokenContract?: TokenAddress
 
     const { selectedUtxos } = useUtxoSelection(accountKey);
 
-    const [feeLevelsMaxAmount, setFeeLevelsMaxAmount] = useState<FeeLevelsMaxAmount>();
+    const [feeAdjustedMaxSendAmountByLevel, setFeeAdjustedMaxSendAmountByLevel] =
+        useState<FeeLevelsMaxAmount>();
 
     const account = useSelector((state: AccountsRootState) =>
         selectAccountByKey(state, accountKey),
@@ -181,12 +182,12 @@ export const useSendForm = (accountKey: AccountKey, tokenContract?: TokenAddress
             networkFeeInfo,
             accountDescriptor: account?.descriptor,
             symbol: account?.symbol,
-            availableBalance: tokenInfo?.balance ?? account?.availableBalance,
+            availableBalanceBeforeFees: tokenInfo?.balance ?? account?.availableBalance,
             isTokenFlow: !!tokenContract,
             isValueInSats: isAmountInSats,
-            feeLevelsMaxAmount,
+            feeAdjustedMaxSendAmountByLevel,
             decimals: tokenInfo?.decimals ?? network?.decimals,
-            accountNativeAvailableBalance: account?.availableBalance,
+            nativeCurrencyBalanceAvailableForFees: account?.availableBalance,
             networkReserve,
             rippleReserve,
             namedAddress,
@@ -211,7 +212,7 @@ export const useSendForm = (accountKey: AccountKey, tokenContract?: TokenAddress
     const isResolvingNamedAddress = namedAddressMode === 'forward' && isResolving;
 
     const updateFormState = useCallback(async () => {
-        if (account && network && networkFeeInfo) {
+        if (account && network && networkFeeInfo?.levels.length) {
             const response = await dispatch(
                 composeSendFormTransactionFeeLevelsThunk({
                     formState: constructFormDraft({
@@ -285,21 +286,12 @@ export const useSendForm = (accountKey: AccountKey, tokenContract?: TokenAddress
         trigger,
     ]);
 
-    const calculateNormalFeeMaxAmount = useCallback(async () => {
-        const response = await dispatch(
-            calculateFeeLevelsMaxAmountThunk({
-                formState: constructFormDraft({ formValues: getValues(), selectedUtxos }),
-                accountKey,
-            }),
-        );
-
-        if (isFulfilled(response)) {
-            setFeeLevelsMaxAmount(response.payload);
-        }
-    }, [getValues, accountKey, dispatch, selectedUtxos]);
+    useEffect(() => {
+        dispatch(transactionManagementActions.clearFeeLevels());
+    }, [accountKey, dispatch, tokenContract]);
 
     useEffect(() => {
-        const prefillValuesFromStoredDraft = async () => {
+        const prefillValuesFromStoredDraft = () => {
             if (sendFormDraft?.outputs) {
                 form.reset({
                     ...getDefaultValues({
@@ -309,9 +301,6 @@ export const useSendForm = (accountKey: AccountKey, tokenContract?: TokenAddress
                     }),
                     ...sendFormDraft,
                 });
-
-                // The max amount is equal to the total token balance for tokens. (fee is paid in mainnet currency)
-                if (!tokenContract) await calculateNormalFeeMaxAmount();
 
                 // We need to wait for the context to hydrate before validating the form with the draft values.
                 setTimeout(() => {
@@ -331,15 +320,51 @@ export const useSendForm = (accountKey: AccountKey, tokenContract?: TokenAddress
     }, [updateFormState, watchedFormValues, debounce, selectedUtxos, isNetworkReserveEnabled]);
 
     useEffect(() => {
+        setFeeAdjustedMaxSendAmountByLevel(undefined);
+
         // The max amount is equal to the total token balance for tokens. (fee is paid in mainnet currency)
-        if (!tokenContract) calculateNormalFeeMaxAmount();
+        if (tokenContract || !networkFeeInfo?.levels.length) return;
+
+        const controller = new AbortController();
+
+        const calculateMaxSendAmountByFeeLevel = async () => {
+            const response = await dispatch(
+                calculateFeeLevelsMaxAmountThunk(
+                    {
+                        formState: constructFormDraft({
+                            formValues: getValues(),
+                            selectedUtxos,
+                        }),
+                        accountKey,
+                    },
+                    { signal: controller.signal },
+                ),
+            );
+
+            if (!controller.signal.aborted && isFulfilled(response)) {
+                setFeeAdjustedMaxSendAmountByLevel(response.payload);
+            }
+        };
+
+        calculateMaxSendAmountByFeeLevel();
+
+        return () => {
+            controller.abort();
+        };
     }, [
-        watchedAddress,
-        calculateNormalFeeMaxAmount,
-        networkFeeInfo,
-        tokenContract,
+        accountKey,
+        dispatch,
+        getValues,
         isNetworkReserveEnabled,
+        networkFeeInfo,
+        selectedUtxos,
+        tokenContract,
+        watchedAddress,
     ]);
+
+    useEffect(() => {
+        if (feeAdjustedMaxSendAmountByLevel) trigger('outputs.0.amount');
+    }, [feeAdjustedMaxSendAmountByLevel, trigger]);
 
     // TODO: Fetch periodically. So if the user stays on the screen for a long time, the fee info is updated in the background.
     useEffect(() => {
@@ -530,7 +555,7 @@ export const useSendForm = (accountKey: AccountKey, tokenContract?: TokenAddress
         form,
         network,
         amount,
-        feeLevelsMaxAmount,
+        feeLevelsMaxAmount: feeAdjustedMaxSendAmountByLevel,
         isResolvingNamedAddress,
     };
 };
