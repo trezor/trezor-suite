@@ -150,6 +150,8 @@ export const config: Config = {
                 T2B1: '0',
                 T3B1: '0',
                 T3T1: '0',
+                // 2.9.3 is the first production release of T3W1, which effectively marks all production Trezor Safe 7 devices as capable.
+                // That means the FW version cannot be spoofed to bypass the Tropic requirement: see checkFirmwareRevision.ts
                 T3W1: '2.9.3',
             },
         },
