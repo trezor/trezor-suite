@@ -9,6 +9,7 @@ import {
     AccountAssetsScreen,
     AccountDetailScreen,
     AccountSettingsScreen,
+    AccountSignAndVerifyScreen,
 } from '@suite-native/module-accounts-management';
 import { ActivityCenterStackNavigator } from '@suite-native/module-activity-center';
 import { AddCoinAccountStackNavigator } from '@suite-native/module-add-accounts';
@@ -328,6 +329,10 @@ export const RootStackNavigator = () => {
                 <RootStack.Screen
                     name={RootStackRoutes.AddCoinAccountStack}
                     component={AddCoinAccountStackNavigator}
+                />
+                <RootStack.Screen
+                    name={RootStackRoutes.AccountSignAndVerify}
+                    component={AccountSignAndVerifyScreen}
                 />
                 <RootStack.Screen
                     name={RootStackRoutes.ReceiveStack}

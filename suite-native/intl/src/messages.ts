@@ -4989,4 +4989,34 @@ export const messages = {
     search: {
         noResults: 'No results',
     },
+    signAndVerify: {
+        format: {
+            label: 'Format',
+            values: {
+                trezor: 'Trezor (BIP-137)',
+                electrum: 'Electrum',
+                rawKey: 'Raw key',
+                cose: 'COSE (CIP-30)',
+            },
+        },
+        address: {
+            label: 'Address',
+            badges: {
+                stake: 'Stake',
+                fresh: 'Fresh',
+                change: 'Change',
+            },
+        },
+        message: {
+            label: 'Message',
+        },
+        signature: {
+            label: 'Signature',
+            placeholder: 'Generated after signing',
+        },
+        buttons: {
+            sign: 'Sign',
+            verify: 'Verify',
+        },
+    },
 };

@@ -515,6 +515,7 @@ export type RootStackParamList = {
     [RootStackRoutes.AccountsImport]: NavigatorScreenParams<AccountsImportStackParamList>;
     [RootStackRoutes.DemoAccountQuestionnaireStack]: NavigatorScreenParams<DemoAccountQuestionnaireStackParamList>;
     [RootStackRoutes.AccountSettings]: { accountKey: AccountKey };
+    [RootStackRoutes.AccountSignAndVerify]: { accountKey: AccountKey };
     [RootStackRoutes.TransactionDetailStack]: NavigatorScreenParams<TransactionDetailStackParamList>;
     [RootStackRoutes.DevUtils]: undefined;
     [RootStackRoutes.MessageSystemManager]: undefined;

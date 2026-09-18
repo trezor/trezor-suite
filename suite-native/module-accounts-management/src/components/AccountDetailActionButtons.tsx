@@ -128,6 +128,19 @@ export const AccountDetailActionButtons = ({
                     </Button>
                 </Box>
             )}
+            <Button
+                intent="neutral"
+                priority="secondary"
+                iconLeft="signature"
+                onPress={() =>
+                    navigation.navigate(RootStackRoutes.AccountSignAndVerify, {
+                        accountKey,
+                    })
+                }
+                testID="@account-detail/send-button"
+            >
+                <Translation id="transactions.send" />
+            </Button>
         </HStack>
     );
 };

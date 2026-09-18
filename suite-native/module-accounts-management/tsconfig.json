@@ -69,6 +69,7 @@
         },
         { "path": "../navigation" },
         { "path": "../qr-code" },
+        { "path": "../sign-verify" },
         { "path": "../suite-sync" },
         { "path": "../tokens" },
         { "path": "../transactions" },

@@ -15,10 +15,6 @@ export type InputWrapperProps = {
     error?: string;
 };
 
-const labelStyle = prepareNativeStyle(utils => ({
-    marginTop: utils.spacings.sp8,
-}));
-
 // Temperorary translation of the error messages used in the native app.
 // Should be later replaced by an implementation of a localization module.
 const errorToMessageMap: Record<string, string> = {
@@ -34,7 +30,7 @@ export const InputWrapper = ({ children, label, hint, error }: InputWrapperProps
     return (
         <VStack flex={1} spacing="sp6">
             {!!label && (
-                <Text variant="body-md" color="contentPrimary" style={applyStyle(labelStyle)}>
+                <Text variant="body-md" color="contentPrimary">
                     {label}
                 </Text>
             )}

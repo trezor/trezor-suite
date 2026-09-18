@@ -13332,6 +13332,7 @@ __metadata:
     "@suite-native/module-stellar-token-management": "workspace:*"
     "@suite-native/navigation": "workspace:*"
     "@suite-native/qr-code": "workspace:*"
+    "@suite-native/sign-verify": "workspace:*"
     "@suite-native/suite-sync": "workspace:*"
     "@suite-native/test-utils-store": "workspace:*"
     "@suite-native/tokens": "workspace:*"
@@ -14492,6 +14493,23 @@ __metadata:
     "@suite-native/config": "workspace:*"
     "@trezor/connect": "workspace:*"
     react: "npm:19.2.3"
+  languageName: unknown
+  linkType: soft
+
+"@suite-native/sign-verify@workspace:*, @suite-native/sign-verify@workspace:suite-native/sign-verify":
+  version: 0.0.0-use.local
+  resolution: "@suite-native/sign-verify@workspace:suite-native/sign-verify"
+  dependencies:
+    "@suite-common/dependency-injection": "workspace:*"
+    "@suite-common/redux-utils": "workspace:*"
+    "@suite-common/validators": "workspace:*"
+    "@suite-common/wallet-config": "workspace:*"
+    "@suite-common/wallet-core": "workspace:*"
+    "@suite-native/forms": "workspace:*"
+    "@suite-native/intl": "workspace:*"
+    react: "npm:19.2.3"
+    react-native: "npm:0.86.0"
+    react-redux: "npm:9.3.0"
   languageName: unknown
   linkType: soft
 

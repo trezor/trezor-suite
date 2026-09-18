@@ -9,14 +9,22 @@ type SelectFieldProps<TItemValue extends SelectItemValue> = SelectProps<TItemVal
 
 export const SelectField = <TItemValue extends SelectItemValue>({
     name,
+    title,
+    isLabelShown,
     ...otherProps
 }: SelectFieldProps<TItemValue>) => {
     const field = useField({ name });
-    const { errorMessage, hasError } = field;
+    const { errorMessage, hasError } = field; // TODO: use value from fieldState
+    const wrapperLabel = !isLabelShown ? title : undefined;
 
     return (
-        <InputWrapper error={errorMessage}>
-            <Select<TItemValue> hasError={hasError} {...otherProps} />
+        <InputWrapper error={errorMessage} label={wrapperLabel}>
+            <Select<TItemValue>
+                title={title}
+                isLabelShown={isLabelShown}
+                hasError={hasError}
+                {...otherProps}
+            />
         </InputWrapper>
     );
 };
