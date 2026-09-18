@@ -9,6 +9,19 @@ export const getOutputFieldName = <TField extends SendOutputFieldName>(
     field: TField,
 ): `outputs.${number}.${TField}` => `outputs.${index}.${field}`;
 
+type GetSendMaxAmountParams = {
+    isTokenFlow: boolean;
+    tokenBalance?: string;
+    normalFeeLevelMaxAmount?: string;
+};
+
+export const getSendMaxAmount = ({
+    isTokenFlow,
+    tokenBalance,
+    normalFeeLevelMaxAmount,
+}: GetSendMaxAmountParams): string | undefined =>
+    isTokenFlow ? tokenBalance : normalFeeLevelMaxAmount;
+
 export const constructFormDraft = ({
     formValues: { outputs, transactionData, ...restFormValues },
     tokenContract,
