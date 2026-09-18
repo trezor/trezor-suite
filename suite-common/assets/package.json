@@ -17,6 +17,10 @@
         "@suite-common/wallet-config": "workspace:*",
         "@suite-common/wallet-core": "workspace:*",
         "@suite-common/wallet-types": "workspace:*",
-        "@trezor/utils": "workspace:*"
+        "@suite-common/wallet-utils": "workspace:*",
+        "@trezor/blockchain-link-types": "workspace:*",
+        "@trezor/device-utils": "workspace:*",
+        "@trezor/utils": "workspace:*",
+        "react-redux": "9.3.0"
     }
 }

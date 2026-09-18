@@ -203,6 +203,23 @@ export const getNetworkDisplaySymbolName = (symbol: NetworkSymbol): string => {
     return network.displaySymbolName || network.name;
 };
 
+interface GetAssetNameProps {
+    symbol: NetworkSymbol;
+    tokenName?: string;
+    tokenSymbol?: string;
+}
+
+export const getAssetName = ({ symbol, tokenName, tokenSymbol }: GetAssetNameProps): string => {
+    if (tokenName !== undefined || tokenSymbol !== undefined) {
+        return tokenName ?? tokenSymbol ?? '';
+    }
+
+    // `arb`'s coin is Ethereum's ETH, so the asset is named after the issuing network.
+    const issuingNetwork = getNetworkOptional(getNetworkDisplaySymbol(symbol).toLowerCase());
+
+    return issuingNetwork?.name ?? getNetworkDisplaySymbolName(symbol);
+};
+
 export const getNetworkDecimals = (symbol: NetworkSymbolExtended): number | undefined => {
     const lowerCasedSymbol = symbol.toLowerCase();
     if (isNetworkSymbol(lowerCasedSymbol)) {

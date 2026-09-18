@@ -1777,6 +1777,18 @@ export const messages = defineMessages({
             'Add spaces to addresses for easier reading. When off, addresses are shown as a continuous string.',
         id: 'TR_ADDRESS_DISPLAY_DESCRIPTION',
     },
+    TR_HOME_ASSET_TOTAL_BALANCE: {
+        defaultMessage: 'Total balance',
+        id: 'TR_HOME_ASSET_TOTAL_BALANCE',
+    },
+    TR_HOME_ASSET_WEEK_PERIOD: {
+        defaultMessage: '7d',
+        id: 'TR_HOME_ASSET_WEEK_PERIOD',
+    },
+    TR_ASSET: {
+        defaultMessage: 'Asset',
+        id: 'TR_ASSET',
+    },
     TR_ASSETS: {
         defaultMessage: 'Network',
         id: 'TR_ASSETS',
