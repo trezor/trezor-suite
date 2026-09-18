@@ -27,7 +27,9 @@ jobs:
 
       - name: Extract connect version
         id: set-version
-        run: echo "version=$(node ./scripts/ci/get-connect-version.js)" >> $GITHUB_OUTPUT
+        run: |
+          VERSION="$(node ./scripts/ci/get-connect-version.js)"
+          echo "version=$VERSION" >> "$GITHUB_OUTPUT"
 
   sanity-check-version-match:
     runs-on: ubuntu-latest
