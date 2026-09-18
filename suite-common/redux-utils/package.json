@@ -21,6 +21,7 @@
         "reselect": "5.2.0"
     },
     "devDependencies": {
+        "@testing-library/react": "^16.3.2",
         "@trezor/requirements": "workspace:*"
     }
 }
