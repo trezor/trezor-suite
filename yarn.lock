@@ -18037,6 +18037,7 @@ __metadata:
     "@trezor/node-utils": "workspace:*"
     "@trezor/utils": "workspace:*"
     chalk: "npm:^6.0.0"
+    ignore: "npm:^7.0.5"
     semver: "npm:^7.7.1"
     tsx: "npm:^4.21.0"
   languageName: unknown
