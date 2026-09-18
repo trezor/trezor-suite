@@ -5,7 +5,7 @@ import { type WalletAccountTransaction } from '@suite-common/wallet-types';
 import { getUnwrapAmountByEthereumDataHex } from '@suite-common/wallet-utils';
 import { Text, type TextProps } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
-import { getWrappedNativeSymbol } from '@trezor/network-ethereum-suite-common';
+import { getWrappedNativeSymbol } from '@trezor/network-ethereum-suite-common/wrapped-native-token';
 
 type WrapTransactionNameProps = TextProps & {
     transaction: WalletAccountTransaction;

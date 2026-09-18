@@ -23,7 +23,7 @@ import {
     type YieldStackParamList,
     YieldStackRoutes,
 } from '@suite-native/navigation';
-import { isWrappedNativeToken } from '@trezor/network-ethereum-suite-common';
+import { isWrappedNativeToken } from '@trezor/network-ethereum-suite-common/wrapped-native-token';
 import { BigNumber } from '@trezor/utils';
 
 type NavigationProps = StackNavigationProps<YieldStackParamList, YieldStackRoutes.YieldConsents>;

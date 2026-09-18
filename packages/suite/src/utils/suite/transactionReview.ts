@@ -7,7 +7,7 @@ import {
 import { type FormState, type StakeFormState } from '@suite-common/wallet-types';
 import { getEvmTransactionPurpose } from '@suite-common/wallet-utils';
 import { type TokenInfo } from '@trezor/blockchain-link-types';
-import { getWrappedNativeSymbol } from '@trezor/network-ethereum-suite-common';
+import { getWrappedNativeSymbol } from '@trezor/network-ethereum-suite-common/wrapped-native-token';
 
 type GetTransactionReviewModalActionTranslationParams = {
     symbol: NetworkSymbol;

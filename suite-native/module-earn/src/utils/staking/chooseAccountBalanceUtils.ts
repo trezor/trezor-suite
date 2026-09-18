@@ -1,5 +1,5 @@
 import { type Account, toTokenAddress } from '@suite-common/wallet-types';
-import { isWrappedNativeToken } from '@trezor/network-ethereum-suite-common';
+import { isWrappedNativeToken } from '@trezor/network-ethereum-suite-common/wrapped-native-token';
 
 import { type ChooseAccountTokenBalance } from '../../types';
 import {

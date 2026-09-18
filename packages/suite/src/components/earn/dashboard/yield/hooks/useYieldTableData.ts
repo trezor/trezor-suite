@@ -21,7 +21,7 @@ import {
     compareEarnByNetworkTokenOrder,
     getApyPercent,
 } from '@suite-common/wallet-utils';
-import { isWrappedNativeToken } from '@trezor/network-ethereum-suite-common';
+import { isWrappedNativeToken } from '@trezor/network-ethereum-suite-common/wrapped-native-token';
 import { BigNumber } from '@trezor/utils';
 
 import { useSelector } from 'src/hooks/suite';

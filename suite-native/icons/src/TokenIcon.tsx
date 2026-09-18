@@ -14,7 +14,7 @@ import {
 import { getAssetLogoContractAddresses } from '@suite-common/wallet-utils';
 import { useTranslate } from '@suite-native/intl';
 import { getAssetLogoUrl } from '@trezor/asset-utils';
-import { isWrappedNativeToken } from '@trezor/network-ethereum-suite-common';
+import { isWrappedNativeToken } from '@trezor/network-ethereum-suite-common/wrapped-native-token';
 import { useAsyncMemo } from '@trezor/react-utils';
 import { type NativeStyleObject, prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 

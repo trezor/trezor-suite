@@ -10,7 +10,7 @@ import { BaseCurrencyAmountFormatter } from '@suite-native/formatters';
 import { TokenIcon } from '@suite-native/icons';
 import { Translation } from '@suite-native/intl';
 import { type TokensRootState, selectAccountTokenInfo } from '@suite-native/tokens';
-import { isWrappedNativeToken } from '@trezor/network-ethereum-suite-common';
+import { isWrappedNativeToken } from '@trezor/network-ethereum-suite-common/wrapped-native-token';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
 import { useDayCoinPriceChange } from '../hooks/useDayCoinPriceChange';
