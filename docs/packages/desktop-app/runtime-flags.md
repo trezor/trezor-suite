@@ -11,7 +11,7 @@ Available flags:
 
 | name                          | description                                                                                                                                                                            |
 | ----------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `--open-devtools`             | Open DevTools on app launch                                                                                                                                                            |
+| `--open-devtools`             | Open DevTools on app launch, enables toggling DevTools on production app.                                                                                                              |
 | `--tor`                       | Start with Tor enabled in settings                                                                                                                                                     |
 | `--pre-release`               | Tells the auto-updater to fetch pre-release updates.                                                                                                                                   |
 | `--enable-updater`            | Enables the auto updater (if disabled in feature flags)                                                                                                                                |

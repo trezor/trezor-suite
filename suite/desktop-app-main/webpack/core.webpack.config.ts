@@ -18,8 +18,11 @@ const PROJECT = 'desktop';
 
 /* **** ENV VARIABLES **** */
 
+// If local dev server, else development or production packaged app.
 const isDev = NODE_ENV !== 'production';
+// If production packaged app, else development or local dev server.
 const isCodesignBuild = IS_CODESIGN_BUILD === 'true';
+// See docs/packages/desktop-app/index.md for more details on the app environments.
 
 // Read signature public key
 const keyPath = path.join(__dirname, '../scripts/app-key.asc');

@@ -35,6 +35,21 @@ Note that locally built Suite is "development (sldev)", while "local dev server"
 
 If you want to run built Suite app with fresh data on every start (similarly to running Suite Web in an anonymous browser window), follow [these instructions](./anon-mode.md).
 
+### Testing the environments
+
+In the codebase, the environment is detected [using these two ENV variables](https://github.com/trezor/trezor-suite/blob/5f77e40c9bd043c34ed84fc5c8b4fb5624b75046/suite/desktop-app-main/webpack/core.webpack.config.ts#L21-L22):
+
+- `NODE_ENV` distinguishes packaged app from local dev server. If set to `production`, it is packaged app:<br />
+  **counterintuitively**, both production **and** development packaged app. Else it is local dev server.
+- `IS_CODESIGN_BUILD` distinguishes production from development. If set to `true`, it is production app, else development or local dev server.
+
+There isn't much point in manually overriding `NODE_ENV` during development,
+but overriding `export IS_CODESIGN_BUILD=true` is particularly useful to simulate behavior specific to production build,
+without having to actually perform the binary codesigning.
+
+ℹ️ You can even use `IS_CODESIGN_BUILD=true yarn suite:dev:desktop` if you know what you're doing.
+Expect quirky behavior though, because the two ENVs are then inconsistent.
+
 ## Debugging
 
 See separate documentation for [debugging](./debugging.md) with debugging instructions.
@@ -47,7 +62,7 @@ More technical information can be found on the [Desktop Logger page](../features
 
 ## Shortcuts
 
-Available shortcuts as provided by Electron:
+Available shortcuts as provided by Electron, or implemented in Electron Main process:
 
 | name            | commands                                             |
 | --------------- | ---------------------------------------------------- |
@@ -55,6 +70,8 @@ Available shortcuts as provided by Electron:
 | Hard Reload app | Shift+F5, Shift+Ctrl+R, Shift+Cmd+R                  |
 | Restart app     | Alt+F5, Option+F5, Alt+Shift+R, Option+Shift+R       |
 | Open DevTools   | F12, Cmd+Shift+I,Ctrl+Shift+I, Cmd+Alt+I, Ctrl+Alt+I |
+
+Note that opening DevTools is restricted on production: works only when Debug settings are enabled, or using the `--open-devtools` runtime flag.
 
 ## Runtime flags
 
