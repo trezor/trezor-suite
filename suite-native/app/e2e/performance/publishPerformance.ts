@@ -49,7 +49,7 @@ const readJson = <T>(filePath: string): T | null => {
  * `GITHUB_HEAD_REF` is set on pull requests only and is the branch under test; `GITHUB_REF_NAME` is
  * the branch on a push or a schedule. Outside CI both are empty and publishing is skipped.
  */
-export const resolveRunIdentity = (env: NodeJS.ProcessEnv) => {
+export const resolveRunIdentity = (env: Record<string, string | undefined>) => {
     const branch = env.GITHUB_HEAD_REF || env.GITHUB_REF_NAME;
     const sha = env.PERF_SHA || env.GITHUB_SHA;
 
@@ -175,8 +175,9 @@ export const publishPerformanceHistory = async (): Promise<void> => {
     }
 
     const runs = shardReports.flatMap(shardReport => toPerfRun(shardReport, identity) ?? []);
+    const [first] = runs;
 
-    if (runs.length === 0) {
+    if (!first) {
         console.log('[performance] No run could be attributed to a platform; nothing to publish.');
 
         return;
@@ -184,7 +185,6 @@ export const publishPerformanceHistory = async (): Promise<void> => {
 
     // A branch appends to one rolling index, so what is already there is read back first — over
     // plain HTTPS, because the objects are public. Absent is the normal state of a first run.
-    const [first] = runs;
     const indexUrl = publicUrl(indexKey(first.context));
     const existing = isRollingIndex(first.context)
         ? await fetchStoreText(indexUrl)
