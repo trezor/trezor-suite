@@ -1,0 +1,4 @@
+interface:
+    display_name: 'PR Review'
+    short_description: 'Review PRs using gh with model attribution'
+    default_prompt: 'Use $pr-review to review this pull request using gh and prefix every comment with the model, version, and reasoning level.'
