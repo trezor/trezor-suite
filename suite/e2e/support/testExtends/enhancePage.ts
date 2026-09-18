@@ -123,13 +123,18 @@ export const enhancePage = (page: Page): Page => {
         objectPath: string,
         options = { timeout: 5000 },
     ) {
-        await test.step('Expect Redux object not to be empty', async () => {
+        await test.step(`Expect Redux "${objectPath}" not to be empty`, async () => {
             await expect(async () => {
                 const testedObject = await page.getReduxObject(objectPath);
-                expect(testedObject).toBeDefined();
-                expect(testedObject).not.toBeNull();
-                expect(testedObject).not.toEqual({});
-                expect(testedObject).not.toEqual([]);
+                const isEmpty =
+                    testedObject === undefined ||
+                    testedObject === null ||
+                    (typeof testedObject === 'object' && Object.keys(testedObject).length === 0);
+                if (isEmpty) {
+                    throw new Error(
+                        `Expected Redux "${objectPath}" not to be empty but has ${JSON.stringify(testedObject)}`,
+                    );
+                }
             }).toPass({ timeout: options.timeout });
         });
     };
@@ -139,10 +144,12 @@ export const enhancePage = (page: Page): Page => {
         expectedValue: any,
         options = { timeout: 5000 },
     ) {
-        await test.step('Expect Redux object to equal', async () => {
+        await test.step(`Expect Redux "${objectPath}" to equal`, async () => {
             await expect(async () => {
                 const testedObject = await page.getReduxObject(objectPath);
-                expect(testedObject).toStrictEqual(expectedValue);
+                expect(testedObject, `Expected Redux "${objectPath}" differs. Diff:`).toStrictEqual(
+                    expectedValue,
+                );
             }).toPass({ timeout: options.timeout });
         });
     };
@@ -153,7 +160,7 @@ export const enhancePage = (page: Page): Page => {
         expectedValue: unknown,
         options = { timeout: 5000 },
     ) {
-        await test.step('Expect Redux subtree to contain', async () => {
+        await test.step(`Expect Redux "${rootPath}" to contain`, async () => {
             await expect(async () => {
                 const root = await page.getReduxObject(rootPath);
                 const needle: Record<string, unknown> = {};
@@ -166,8 +173,11 @@ export const enhancePage = (page: Page): Page => {
                     return Object.values(node as Record<string, unknown>).some(walk);
                 })(root);
 
-                const errorMessage = `Expected Redux subtree "${rootPath}" to contain ${JSON.stringify(needle, null, 2)}`;
-                expect(found, errorMessage).toBe(true);
+                if (!found) {
+                    throw new Error(
+                        `Expected Redux "${rootPath}" to contain ${JSON.stringify(needle)}`,
+                    );
+                }
             }).toPass({ timeout: options.timeout });
         });
     };
