@@ -27,7 +27,10 @@ type TransportMenuItem = {
 };
 
 const TRANSPORTS_WEB = ['BridgeTransport', 'WebUsbTransport'] as const;
-const TRANSPORTS_DESKTOP = ['BridgeTransport', 'NodeUsbTransport', 'UdpTransport'] as const;
+// NodeUsbTransport is intentionally omitted: it eagerly loads the usb (nusb) native addon at
+// desktop startup (see packages/suite-desktop-core/src/modules/trezor-connect.ts), so it is no
+// longer offered here. Direct USB is covered by the bundled BridgeTransport.
+const TRANSPORTS_DESKTOP = ['BridgeTransport', 'UdpTransport'] as const;
 const TRANSPORT_DESCRIPTIONS: Record<Transport, string> = {
     BridgeTransport:
         'Client for bridge http interface. It expects bridge to run on http://127.0.0.1:21328/.\

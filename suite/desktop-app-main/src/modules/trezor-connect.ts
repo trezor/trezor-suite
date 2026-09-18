@@ -7,7 +7,7 @@ import TrezorConnect, {
 } from '@trezor/connect';
 import { initLog } from '@trezor/connect-common';
 import { type IpcProxyHandlerOptions, createIpcProxyHandler } from '@trezor/ipc-proxy';
-import { NodeUsbTransport, UdpTransport } from '@trezor/transport';
+import { UdpTransport } from '@trezor/transport';
 import { BridgeTransport } from '@trezor/transport-common';
 import { parseElectrumUrl } from '@trezor/utils';
 
@@ -40,8 +40,12 @@ export const transportFactory = (
     switch (t) {
         case 'BridgeTransport':
             return new BridgeTransport(createTransportParams(createLogger));
-        case 'NodeUsbTransport':
-            return new NodeUsbTransport(createTransportParams(createLogger));
+        // NodeUsbTransport was intentionally removed from the desktop: it statically imports the usb
+        // (nusb / usb 3.x) native addon, which - because the desktop main bundle is a webpack UMD
+        // build that eagerly requires every external at load - would load nusb at app startup even
+        // when the bundled Bridge runs the legacy usb 2.x implementation, crashing startup if the
+        // nusb binary is unavailable. Direct USB access is covered by the bundled BridgeTransport;
+        // NodeUsbTransport can be reintroduced later behind a dynamic import() code-split.
         case 'UdpTransport':
             return new UdpTransport(createTransportParams(createLogger));
         default:

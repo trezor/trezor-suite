@@ -108,7 +108,7 @@ export class TrezordNode {
         bundledVersion,
         port = 21328,
     }: {
-        api: 'usb' | 'udp' | AbstractApi;
+        api: 'usb' | 'legacy' | 'nusb' | 'udp' | AbstractApi;
         assetPrefix?: string;
         logger: Log;
         bundledVersion?: string;
