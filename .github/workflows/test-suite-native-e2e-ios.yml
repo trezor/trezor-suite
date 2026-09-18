@@ -39,6 +39,7 @@ jobs:
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v6
         with:
           submodules: "true"
+          lfs: true
 
       - name: Install node and yarn
         uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v6
@@ -93,6 +94,10 @@ jobs:
 
       - name: Build a Detox test app
         working-directory: ./suite-native/app
+        # Composing the Hermes source map of the Cardano Serialization Lib asm.js file exceeds the
+        # default Node heap of the macOS runner.
+        env:
+          NODE_OPTIONS: --max-old-space-size=4096
         run: yarn exec detox build --configuration ios.sim.release
 
       - name: Store build artifact

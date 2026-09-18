@@ -15,5 +15,7 @@ suite/app-assets/files/bin/coinjoin/linux-x64/WalletWasabi.WabiSabiClientLibrary
 suite/app-assets/files/bin/coinjoin/osx-arm64/WalletWasabi.WabiSabiClientLibrary filter=lfs diff=lfs merge=lfs -text
 suite/app-assets/files/bin/coinjoin/osx-x64/WalletWasabi.WabiSabiClientLibrary filter=lfs diff=lfs merge=lfs -text
 suite/app-assets/files/bin/coinjoin/win-x64/WalletWasabi.WabiSabiClientLibrary.exe filter=lfs diff=lfs merge=lfs -text
+networks/cardano/network-cardano/generated/csl-asmjs/*.asm.js filter=lfs diff=lfs merge=lfs -text
+networks/cardano/network-cardano/generated/csl-asmjs/*_bg.js filter=lfs diff=lfs merge=lfs -text
 # Changelog to be merged via union always.
 CHANGELOG.md merge=union
