@@ -1,16 +1,15 @@
 import { isNetworkIconSymbol } from '@suite-common/icons/src/iconUtils';
-import type { NetworkSymbol } from '@suite-common/wallet-config';
 
 import type { NetworkParams } from '../NetworkParams';
 import { NetworkIcon } from '../components/NetworkIcon/NetworkIcon';
-import { TokenIcon } from '../components/TokenIcon/TokenIcon';
+import { NativeTokenIcon } from '../components/TokenIcon/NativeTokenIcon';
 import type { TokenIconSize } from '../components/TokenIcon/tokenIconTypes';
 
-type GetNetworkOptionsParams<TSymbol extends NetworkSymbol> = NetworkParams<TSymbol> & {
+type GetNetworkOptionsParams<TSymbol extends string> = NetworkParams<TSymbol> & {
     iconSize: TokenIconSize;
 };
 
-export const getNetworkOptions = <TSymbol extends NetworkSymbol>({
+export const getNetworkOptions = <TSymbol extends string>({
     networks,
     networkNamesMap,
     iconSize,
@@ -23,6 +22,6 @@ export const getNetworkOptions = <TSymbol extends NetworkSymbol>({
             !isToken && isNetworkIconSymbol(symbol) ? (
                 <NetworkIcon size={iconSize} networkSymbol={symbol} />
             ) : (
-                <TokenIcon size={iconSize} symbol={symbol} />
+                <NativeTokenIcon size={iconSize} symbol={symbol} />
             ),
     }));

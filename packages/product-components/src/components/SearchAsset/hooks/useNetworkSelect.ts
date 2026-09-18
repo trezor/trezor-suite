@@ -1,21 +1,18 @@
 import { useMemo } from 'react';
 
-import type { NetworkSymbol } from '@suite-common/wallet-config';
-
 import type { NetworkParams } from '../../../NetworkParams';
 import { getNetworkOptions } from '../../../utils/getNetworkOptions';
 
-export type SearchAssetSelectConfig<TSymbol extends NetworkSymbol = NetworkSymbol> =
-    NetworkParams<TSymbol> & {
-        selectedNetwork: TSymbol | undefined;
-        onChange: (network?: TSymbol) => void;
-        includeAllOption?: boolean;
-        allLabel?: string;
-    };
+export type SearchAssetSelectConfig<TSymbol extends string = string> = NetworkParams<TSymbol> & {
+    selectedNetwork: TSymbol | undefined;
+    onChange: (network?: TSymbol) => void;
+    includeAllOption?: boolean;
+    allLabel?: string;
+};
 
 const EMPTY_NETWORKS: [] = [];
 
-export const useNetworkSelect = <TSymbol extends NetworkSymbol>(
+export const useNetworkSelect = <TSymbol extends string>(
     config?: SearchAssetSelectConfig<TSymbol>,
 ) => {
     const {

@@ -2,14 +2,12 @@ import { ReactSVG } from 'react-svg';
 
 import styled from 'styled-components';
 
-import { type NetworkIconSymbol } from '@suite-common/icons/src/iconSymbols';
 import {
     getNetworkIconName,
     isNetworkIconSymbol,
     isTestnetNetworkIconSymbol,
 } from '@suite-common/icons/src/iconUtils';
 import { networkIcons } from '@suite-common/icons/src/networkIcons';
-import { type NetworkSymbol } from '@suite-common/wallet-config';
 
 export const allowedNetworkIconSizes = [8, 12, 16, 20, 24, 32, 40, 48, 64] as const;
 export type NetworkIconSize = (typeof allowedNetworkIconSizes)[number];
@@ -46,7 +44,7 @@ const StyledReactSVG = styled(ReactSVG)`
 ` as typeof ReactSVG;
 
 export interface NetworkIconProps {
-    networkSymbol: NetworkIconSymbol | NetworkSymbol;
+    networkSymbol: string;
     size?: NetworkIconSize;
     'data-testid'?: string;
 }
