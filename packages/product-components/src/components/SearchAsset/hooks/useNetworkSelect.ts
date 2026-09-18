@@ -1,7 +1,9 @@
-import { type ReactNode, useMemo } from 'react';
+import { useMemo } from 'react';
+
+import type { NetworkParams } from '../../../NetworkParams';
 
 export interface SearchAssetSelectConfig<TSymbol extends string = string> {
-    networks: { symbol: TSymbol; name: string; icon?: ReactNode }[];
+    networks: NetworkParams<TSymbol>[];
     selectedNetwork: TSymbol | undefined;
     onChange: (network?: TSymbol) => void;
     includeAllOption?: boolean;

@@ -7,11 +7,12 @@ import {
     NetworkIconSet as NetworkIconSetComponent,
     type NetworkIconSetProps,
 } from './NetworkIconSet';
+import type { NetworkParams } from '../../NetworkParams';
 import { TokenIcon } from '../TokenIcon/TokenIcon';
 import { allowedTokenIconSizes } from '../TokenIcon/tokenIconTypes';
 
 type NetworkIconSetStoryProps = Omit<NetworkIconSetProps, 'networks'> & {
-    networks: { symbol: NetworkSymbol; name: string }[];
+    networks: Omit<NetworkParams<NetworkSymbol>, 'icon'>[];
 };
 
 const NETWORK_1 = { symbol: asNetworkSymbol('btc'), name: 'Bitcoin' };

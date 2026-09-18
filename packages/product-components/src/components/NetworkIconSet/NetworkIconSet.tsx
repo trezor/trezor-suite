@@ -1,15 +1,12 @@
-import { type ReactNode, useMemo } from 'react';
+import { useMemo } from 'react';
 
 import { Tooltip } from '@trezor/components';
 
+import type { NetworkParams } from '../../NetworkParams';
 import { type CommonIconSetProps, IconSetBase, IconWrapper } from '../IconSet/IconSetBase';
 
 export type NetworkIconSetProps = CommonIconSetProps & {
-    networks: {
-        symbol: string;
-        name: string;
-        icon: ReactNode;
-    }[];
+    networks: Required<NetworkParams>[];
     hasTooltip?: boolean;
 };
 
