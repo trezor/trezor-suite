@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+import { useMemo } from 'react';
 
 import { Translation, useTranslation } from '@suite/intl';
 import { selectDeviceStaticSessionId } from '@suite-common/device';
@@ -8,9 +8,7 @@ import { PageHeader } from 'src/components/suite/layouts/SuiteLayout';
 import { useLayout, useSelector } from 'src/hooks/suite';
 
 import { HiddenTokensCard } from './HiddenTokensCard';
-import { UnhideAssetModal } from './UnhideAssetModal';
 import { selectHiddenByUserAssetRows, selectUnrecognizedAssetRows } from './hiddenTokensSelectors';
-import { type AssetRow } from '../AssetFirstTable/assetFirstTableSelectors';
 
 const EMPTY_ROWS = [] as const;
 
@@ -23,7 +21,6 @@ export const HiddenTokens = () => {
         deviceState === null ? EMPTY_ROWS : selectUnrecognizedAssetRows(state, deviceState),
     );
 
-    const [rowToUnhide, setRowToUnhide] = useState<AssetRow>();
     const { translationString } = useTranslation();
     const pageHeader = useMemo(() => <PageHeader />, []);
 
@@ -42,19 +39,13 @@ export const HiddenTokens = () => {
             <HiddenTokensCard
                 heading={<Translation id="TR_HIDDEN_TOKENS" />}
                 rows={hiddenByUser}
-                onUnhide={setRowToUnhide}
                 data-testid="@hidden-tokens/hidden-by-user"
             />
             <HiddenTokensCard
                 heading={<Translation id="TR_TOKEN_UNRECOGNIZED_BY_TREZOR" />}
                 rows={unrecognized}
-                onUnhide={setRowToUnhide}
                 data-testid="@hidden-tokens/unrecognized"
             />
-
-            {rowToUnhide !== undefined && (
-                <UnhideAssetModal row={rowToUnhide} onCancel={() => setRowToUnhide(undefined)} />
-            )}
         </Column>
     );
 };

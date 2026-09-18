@@ -1,8 +1,9 @@
-import { type ReactNode } from 'react';
+import { type ReactNode, useState } from 'react';
 
 import { Translation } from '@suite/intl';
 import { Card, Column, Table, Text } from '@trezor/components';
 
+import { UnhideAssetModal } from './UnhideAssetModal';
 import { AssetFirstRow } from '../AssetFirstTable/AssetFirstRow';
 import { type AssetRow } from '../AssetFirstTable/assetFirstTableSelectors';
 import { ASSET_FIRST_CELL_PADDING } from '../AssetFirstTable/assetFirstTableUtils';
@@ -10,16 +11,16 @@ import { ASSET_FIRST_CELL_PADDING } from '../AssetFirstTable/assetFirstTableUtil
 type HiddenTokensCardProps = {
     heading: ReactNode;
     rows: readonly AssetRow[];
-    onUnhide: (row: AssetRow) => void;
     'data-testid': string;
 };
 
 export const HiddenTokensCard = ({
     heading,
     rows,
-    onUnhide,
     'data-testid': dataTestId,
 }: HiddenTokensCardProps) => {
+    const [rowToUnhide, setRowToUnhide] = useState<AssetRow>();
+
     if (rows.length === 0) {
         return null;
     }
@@ -55,12 +56,16 @@ export const HiddenTokensCard = ({
                             <AssetFirstRow
                                 key={row.assetKey}
                                 row={row}
-                                onClick={() => onUnhide(row)}
+                                onClick={() => setRowToUnhide(row)}
                             />
                         ))}
                     </Table.Body>
                 </Table>
             </Column>
+
+            {rowToUnhide !== undefined && (
+                <UnhideAssetModal row={rowToUnhide} onCancel={() => setRowToUnhide(undefined)} />
+            )}
         </Card>
     );
 };
