@@ -63,6 +63,17 @@ const jwaPackagePath = path.join(path.sep, 'node_modules', 'jwa', path.sep);
 
 const isRequestedByJwa = context => context.originModulePath.includes(jwaPackagePath);
 
+// Hermes cannot run WASM; see networks/cardano/network-cardano/README.md.
+const cardanoSerializationLibPath = path.resolve(
+    __dirname,
+    '../../networks/cardano/network-cardano/generated/csl-asmjs/cardano_serialization_lib.js',
+);
+
+// Transforming the multi-megabyte Cardano Serialization Lib asm.js file exceeds the default worker
+// heap (4.5 GB). Worker threads created after this call inherit the cap; memory is allocated only
+// as needed, not reserved up front.
+require('v8').setFlagsFromString('--max-old-space-size=12288');
+
 /**
  * Metro configuration
  * https://facebook.github.io/metro/docs/configuration
@@ -124,11 +135,11 @@ const config = {
                 type: 'sourceFile',
             });
 
-            if (moduleName.startsWith('@emurgo/cardano')) {
-                // Cardano libs doesn't have main field in package.json which will cause error in metro
-                // Also they use WASM which doesn't work in RN so we polyfill it with empty file to build errors
-                // In future we will need JS implementation of Cardano libs or C++ implementation
-                return getSourceFile('./cardanoPolyfills.js');
+            if (
+                moduleName === '@emurgo/cardano-serialization-lib-nodejs' ||
+                moduleName === '@emurgo/cardano-serialization-lib-browser'
+            ) {
+                return { filePath: cardanoSerializationLibPath, type: 'sourceFile' };
             }
 
             if (process.env.EXPO_PUBLIC_IS_DETOX_BUILD && moduleName === '@trezor/connect') {
