@@ -7,7 +7,7 @@ import { type TokenAddress, type TokenSymbol } from '@suite-common/wallet-types'
 import { getDecimalsForBaseCurrency } from '@suite-common/wallet-utils';
 import { type ActiveView, BaseAmountInputs, Card, HStack, Text, VStack } from '@suite-native/atoms';
 import {
-    CompactTokenAmountFormatter,
+    TokenAmountFormatter,
     asDecimalTokenAmount,
     useCryptoFiatConverters,
 } from '@suite-native/formatters';
@@ -150,10 +150,11 @@ export const WrappedNativeTokenAmountInputCard = ({
                     <Text variant="body-sm" color="contentSecondary">
                         <Translation id="earn.yieldDepositFlowScreen.balance" />
                     </Text>
-                    <CompactTokenAmountFormatter
+                    <TokenAmountFormatter
+                        formatStyle="compact-balance"
                         value={asDecimalTokenAmount(balance)}
-                        tokenSymbol={tokenSymbol}
-                        tokenDecimals={tokenDecimals}
+                        symbol={tokenSymbol}
+                        decimals={tokenDecimals}
                         variant="body-sm"
                         color="contentSecondary"
                     />

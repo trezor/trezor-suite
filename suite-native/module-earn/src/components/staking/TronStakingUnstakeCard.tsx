@@ -8,10 +8,7 @@ import {
 } from '@suite-common/wallet-core';
 import { type AccountKey } from '@suite-common/wallet-types';
 import { Box, Card, Text } from '@suite-native/atoms';
-import {
-    CompactCryptoAmountFormatter,
-    CryptoToFiatAmountFormatter,
-} from '@suite-native/formatters';
+import { CryptoAmountFormatter, CryptoToFiatAmountFormatter } from '@suite-native/formatters';
 import { Translation } from '@suite-native/intl';
 
 interface TronStakingUnstakeCardProps {
@@ -42,7 +39,8 @@ export const TronStakingUnstakeCard = ({ accountKey }: TronStakingUnstakeCardPro
                 </Text>
 
                 <Box flexDirection="column" alignItems="flex-end">
-                    <CompactCryptoAmountFormatter
+                    <CryptoAmountFormatter
+                        formatStyle="compact-balance"
                         value={pendingUnstakeBalance}
                         symbol={account.symbol}
                         variant="body-sm"

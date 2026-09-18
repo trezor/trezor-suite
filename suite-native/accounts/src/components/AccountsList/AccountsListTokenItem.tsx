@@ -3,7 +3,7 @@ import { useSelector } from 'react-redux';
 
 import { type Account, type TokenInfoBranded } from '@suite-common/wallet-types';
 import {
-    CompactTokenAmountFormatter,
+    TokenAmountFormatter,
     TokenToFiatAmountFormatter,
     asDecimalTokenAmount,
 } from '@suite-native/formatters';
@@ -64,10 +64,11 @@ export const AccountsListTokenItem = ({
                 )
             }
             secondaryValue={
-                <CompactTokenAmountFormatter
+                <TokenAmountFormatter
+                    formatStyle="compact-balance"
                     value={asDecimalTokenAmount(balance)}
-                    tokenSymbol={tokenSymbol}
-                    tokenDecimals={token.decimals}
+                    symbol={tokenSymbol ?? undefined}
+                    decimals={token.decimals}
                     numberOfLines={1}
                     adjustsFontSizeToFit
                     ellipsizeMode="tail"

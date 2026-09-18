@@ -6,8 +6,8 @@ import { calculateRewards } from '@suite-common/wallet-core';
 import { type AccountKey, type TokenAddress } from '@suite-common/wallet-types';
 import { Text, VStack } from '@suite-native/atoms';
 import {
-    CompactCryptoAmountFormatter,
-    CompactTokenAmountFormatter,
+    CryptoAmountFormatter,
+    TokenAmountFormatter,
     asDecimalTokenAmount,
 } from '@suite-native/formatters';
 import { type TokensRootState, selectAccountTokenInfo } from '@suite-native/tokens';
@@ -40,10 +40,11 @@ export const EarnEstimatedRewards = ({
                 {label}
             </Text>
             {tokenContract ? (
-                <CompactTokenAmountFormatter
+                <TokenAmountFormatter
+                    formatStyle="compact-balance"
                     value={asDecimalTokenAmount(rewards)}
-                    tokenSymbol={tokenInfo?.symbol ?? null}
-                    tokenDecimals={tokenInfo?.decimals}
+                    symbol={tokenInfo?.symbol}
+                    decimals={tokenInfo?.decimals}
                     numberOfLines={1}
                     adjustsFontSizeToFit
                     variant="headline-sm"
@@ -51,7 +52,8 @@ export const EarnEstimatedRewards = ({
                     textAlign="center"
                 />
             ) : (
-                <CompactCryptoAmountFormatter
+                <CryptoAmountFormatter
+                    formatStyle="compact-balance"
                     value={rewards}
                     symbol={symbol}
                     numberOfLines={1}

@@ -16,7 +16,7 @@ import {
     useConfirmOnTrezorController,
 } from '@suite-native/confirm-on-trezor';
 import { FollowDeviceScreenContent } from '@suite-native/device';
-import { ExactCryptoAmountFormatter } from '@suite-native/formatters';
+import { CryptoAmountFormatter } from '@suite-native/formatters';
 import { Translation, type TxKeyPath } from '@suite-native/intl';
 import { Screen, ScreenHeader } from '@suite-native/navigation';
 import { ScrollToEndOnMount } from '@suite-native/scrollview';
@@ -234,11 +234,11 @@ export const StakingTransactionDataReviewContent = ({
             accountLabel={accountLabel}
             accountSymbol={account.symbol}
             amount={
-                <ExactCryptoAmountFormatter
+                <CryptoAmountFormatter
                     value={pendingAmountInBaseUnits}
                     symbol={account.symbol}
                     color="contentPrimary"
-                    isBalance={false}
+                    valueUnit="smallest"
                     isDiscreetText={false}
                 />
             }

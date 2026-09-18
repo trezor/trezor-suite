@@ -23,9 +23,9 @@ import {
 import { getFeeUnits, isEip1559 } from '@suite-common/wallet-utils';
 import { Box, HStack, Radio, Text, VStack } from '@suite-native/atoms';
 import {
+    CryptoAmountFormatter,
     CryptoToFiatAmountFormatter,
     EmptyAmountSkeleton,
-    ExactCryptoAmountFormatter,
 } from '@suite-native/formatters';
 import { FormContext, useWatch } from '@suite-native/forms';
 import { Translation, type TxKeyPath } from '@suite-native/intl';
@@ -218,12 +218,12 @@ export const FeeOption = ({
                                 isLoading={isLoading}
                                 isDiscreetText={false}
                             />
-                            <ExactCryptoAmountFormatter
+                            <CryptoAmountFormatter
                                 variant="body-sm"
                                 color="contentSecondary"
                                 value={fee}
                                 symbol={symbol}
-                                isBalance={false}
+                                valueUnit="smallest"
                                 adjustsFontSizeToFit
                                 numberOfLines={1}
                                 isLoading={isLoading}

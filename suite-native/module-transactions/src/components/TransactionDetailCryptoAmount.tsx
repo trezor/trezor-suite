@@ -2,8 +2,8 @@ import { useSelector } from 'react-redux';
 
 import { type FiatRatesRootState, type WalletSettingsRootState } from '@suite-common/wallet-core';
 import {
+    CryptoAmountFormatter,
     CryptoToFiatAmountFormatter,
-    ExactCryptoAmountFormatter,
     SignValueFormatter,
 } from '@suite-native/formatters';
 import { type WalletAccountTransaction } from '@suite-native/tokens';
@@ -47,10 +47,10 @@ export const TransactionDetailCryptoAmount = ({
                 />
             )}
 
-            <ExactCryptoAmountFormatter
+            <CryptoAmountFormatter
                 value={amount}
                 symbol={transaction.symbol}
-                isBalance={false}
+                valueUnit="smallest"
                 variant="headline-md"
                 color="contentPrimary"
                 numberOfLines={1}

@@ -2,17 +2,29 @@ import { type ReactNode } from 'react';
 
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { type YieldFlowCompleteRewardItem } from '@suite-common/wallet-core';
+import { toTokenSymbol } from '@suite-common/wallet-types';
 import { Box, HStack, Text, VStack } from '@suite-native/atoms';
+import {
+    CryptoAmountFormatter,
+    TokenAmountFormatter,
+    asDecimalTokenAmount,
+} from '@suite-native/formatters';
 import { Icon, TokenIcon } from '@suite-native/icons';
 import { Translation } from '@suite-native/intl';
 
 import { YieldClaimRewardRow, getYieldClaimRewardFiatAmount } from './YieldClaimRewardRow';
-import { YieldFormattedAmount, type YieldFormattedAmountValue } from './YieldFormattedAmount';
 import { type EarnCompleteSummaryRow } from '../earn/EarnCompleteScreenContent';
+
+type YieldAmountValue = {
+    value: string;
+    tokenContract?: string | null;
+    tokenDecimals?: number;
+    tokenSymbol?: string | null;
+};
 
 type YieldCompleteAmountValueParams = {
     accountSymbol: NetworkSymbol;
-    amount: YieldFormattedAmountValue;
+    amount: YieldAmountValue;
     numberOfLines?: 1 | 2;
 };
 
@@ -20,31 +32,43 @@ const getYieldCompleteAmountValue = ({
     accountSymbol,
     amount,
     numberOfLines = 2,
-}: YieldCompleteAmountValueParams): ReactNode => (
-    <HStack spacing="sp4" alignItems="center" flexShrink={1}>
-        <TokenIcon
-            symbol={accountSymbol}
-            contractAddress={amount.tokenContract ?? undefined}
-            size="extraSmall"
+}: YieldCompleteAmountValueParams): ReactNode => {
+    const amountTextProps = {
+        formatStyle: 'compact-balance',
+        isDiscreetText: false,
+        variant: 'body-md-strong',
+        color: 'contentPrimary',
+        numberOfLines,
+        textAlign: 'right',
+    } as const;
+    const formattedAmount = amount.tokenContract ? (
+        <TokenAmountFormatter
+            {...amountTextProps}
+            value={asDecimalTokenAmount(amount.value)}
+            symbol={amount.tokenSymbol ? toTokenSymbol(amount.tokenSymbol) : undefined}
+            decimals={amount.tokenDecimals}
         />
-        <Box flexShrink={1}>
-            <YieldFormattedAmount
-                {...amount}
-                networkSymbol={accountSymbol}
-                variant="body-md-strong"
-                color="contentPrimary"
-                numberOfLines={numberOfLines}
-                textAlign="right"
+    ) : (
+        <CryptoAmountFormatter {...amountTextProps} value={amount.value} symbol={accountSymbol} />
+    );
+
+    return (
+        <HStack spacing="sp4" alignItems="center" flexShrink={1}>
+            <TokenIcon
+                symbol={accountSymbol}
+                contractAddress={amount.tokenContract ?? undefined}
+                size="extraSmall"
             />
-        </Box>
-    </HStack>
-);
+            <Box flexShrink={1}>{formattedAmount}</Box>
+        </HStack>
+    );
+};
 
 type GetYieldDepositCompleteRowsParams = {
     accountSymbol: NetworkSymbol;
     apyValue: ReactNode;
-    receivedAmount: YieldFormattedAmountValue;
-    sentAmount: YieldFormattedAmountValue;
+    receivedAmount: YieldAmountValue;
+    sentAmount: YieldAmountValue;
 };
 
 export const getYieldCompleteStatusRow = (): EarnCompleteSummaryRow => ({
@@ -92,8 +116,8 @@ export const getYieldDepositCompleteRows = ({
 
 type GetYieldWithdrawCompleteRowsParams = {
     accountSymbol: NetworkSymbol;
-    receivedAmount: YieldFormattedAmountValue;
-    withdrawalAmount: YieldFormattedAmountValue;
+    receivedAmount: YieldAmountValue;
+    withdrawalAmount: YieldAmountValue;
 };
 
 export const getYieldWithdrawCompleteRows = ({
@@ -123,8 +147,8 @@ export const getYieldWithdrawCompleteRows = ({
 
 type GetWrappedNativeCompleteRowsParams = {
     accountSymbol: NetworkSymbol;
-    receivedAmount: YieldFormattedAmountValue;
-    sentAmount: YieldFormattedAmountValue;
+    receivedAmount: YieldAmountValue;
+    sentAmount: YieldAmountValue;
 };
 
 export const getWrappedNativeCompleteRows = ({

@@ -6,13 +6,13 @@ import {
     type FormStateTradingFiatCurrency,
     type ReviewOutputType,
     type TokenAddress,
-    type TokenSymbol,
+    toTokenSymbol,
 } from '@suite-common/wallet-types';
 import { isAllowanceUnlimited } from '@suite-common/wallet-utils';
 import { Box, HStack, Text, VStack } from '@suite-native/atoms';
 import {
     AddressFormatter,
-    ExactTokenAmountFormatter,
+    TokenAmountFormatter,
     convertTokenValueToDecimal,
 } from '@suite-native/formatters';
 import { Translation } from '@suite-native/intl';
@@ -174,12 +174,13 @@ export const ReviewOutputItemContent = ({
                 }
 
                 return (
-                    <ExactTokenAmountFormatter
+                    <TokenAmountFormatter
                         variant="body-sm"
                         color="contentPrimary"
                         textAlign="right"
                         value={convertTokenValueToDecimal(value, token.decimals)}
-                        tokenSymbol={token.symbol as TokenSymbol}
+                        symbol={token.symbol ? toTokenSymbol(token.symbol) : undefined}
+                        decimals={token.decimals}
                         maxDisplayedDecimals={token.decimals}
                         isDiscreetText={false}
                     />
