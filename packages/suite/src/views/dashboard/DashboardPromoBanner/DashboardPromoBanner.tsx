@@ -1,12 +1,21 @@
+import { useEffect, useMemo } from 'react';
+
 import { AnimatePresence, motion } from 'framer-motion';
 
 import { events, injectDesktopAnalytics } from '@suite/analytics';
 import { selectFlags, setFlag } from '@suite/flags';
 import { useServices } from '@suite-common/dependency-injection';
-import { selectSelectedDevice } from '@suite-common/device';
-import { Feature, selectFeaturesConfig } from '@suite-common/message-system';
+import { selectHasOnlyPortfolioDevice, selectSelectedDevice } from '@suite-common/device';
+import {
+    Feature,
+    parsePromoBannerMessages,
+    selectEligiblePromoBanners,
+    selectFeaturesConfig,
+} from '@suite-common/message-system';
 import { injectDispatch } from '@suite-common/redux-utils';
-import { type Feature as MessageFeature } from '@suite-common/suite-types';
+import { isDevEnv } from '@suite-common/suite-utils';
+import { selectVisibleDeviceAccounts } from '@suite-common/wallet-core';
+import { isDesktop } from '@trezor/env-utils';
 
 import { useSelector } from 'src/hooks/suite';
 import { selectDiscoveryOverallStatus } from 'src/utils/wallet/selectDiscoveryOverallStatus';
@@ -26,48 +35,58 @@ export const DashboardPromoBanner = () => {
     const isDiscoveryEmpty = discoveryStatus?.type === 'discovery-empty';
     const flags = useSelector(selectFlags);
     const selectedDevice = useSelector(selectSelectedDevice);
+    const isPortfolioTrackerOnly = useSelector(selectHasOnlyPortfolioDevice);
+    const accounts = useSelector(selectVisibleDeviceAccounts);
     const isOnboardingFeedbackBannerShown = useSelector(selectShouldShowOnboardingFeedbackBanner);
 
     const allPromoBanners = useSelector(state =>
         selectFeaturesConfig(state, Feature.banners.dashboard.promo),
     );
 
-    const deduplicatedBanners = allPromoBanners
-        .map(message => message?.feature?.[0])
-        .reduce<MessageFeature[]>((acc, feature) => {
-            const isAlreadyPresent = acc?.some(
-                previousFeature => previousFeature?.visibleBanner === feature?.visibleBanner,
-            );
-
-            if (feature?.visibleBanner && !isAlreadyPresent) {
-                return [...acc, feature];
-            }
-
-            return acc;
-        }, []);
-
     const eligibilityContext = { selectedDevice };
+    const { errors: promoBannerConfigErrors, promoBanners } = useMemo(
+        () => parsePromoBannerMessages(allPromoBanners),
+        [allPromoBanners],
+    );
+    const promoBannerConfigErrorMessage = promoBannerConfigErrors.join('\n');
 
-    const eligibleBannerTypes = deduplicatedBanners.reduce<DashboardBannerType[]>(
-        (acc, feature) => {
-            const visibleBanner = feature?.visibleBanner;
+    useEffect(() => {
+        if (!isDevEnv || promoBannerConfigErrorMessage === '') {
+            return;
+        }
 
-            if (
-                !isDashboardBannerType(visibleBanner) ||
-                visibleBanner === null ||
-                feature?.flag !== true ||
-                acc.includes(visibleBanner)
-            ) {
-                return acc;
+        console.error(promoBannerConfigErrorMessage);
+    }, [promoBannerConfigErrorMessage]);
+
+    const configEligibleBannerTypes = useMemo(
+        () =>
+            selectEligiblePromoBanners({
+                promoBanners,
+                platform: isDesktop() ? 'desktop' : 'web',
+                placement: 'dashboard',
+                accounts,
+                isWalletDiscoveryFinished: discoveryStatus?.status !== 'loading',
+                isPortfolioTrackerOnly,
+                selectedDevice,
+                reportError: error => {
+                    if (isDevEnv) {
+                        console.error(error);
+                    }
+                },
+            }),
+        [accounts, discoveryStatus?.status, isPortfolioTrackerOnly, promoBanners, selectedDevice],
+    );
+
+    const eligibleBannerTypes = configEligibleBannerTypes.filter(
+        (bannerType): bannerType is DashboardBannerType => {
+            if (!isDashboardBannerType(bannerType)) {
+                return false;
             }
 
-            const banner = DASHBOARD_BANNERS[visibleBanner];
-            const isEligible =
-                flags[banner.flag] && (banner.isEligible?.(eligibilityContext) ?? true);
+            const banner = DASHBOARD_BANNERS[bannerType];
 
-            return isEligible ? [...acc, visibleBanner] : acc;
+            return flags[banner.flag] && (banner.isEligible?.(eligibilityContext) ?? true);
         },
-        [],
     );
 
     const handleBannerClose = (key: string) => {
