@@ -18,6 +18,7 @@ import {
     MIN_CARDANO_BALANCE_FOR_STAKING,
     MIN_CARDANO_FOR_WITHDRAWALS,
     type StakeRootState,
+    type VotingDelegationOption,
     calculateStakeFormTransaction,
     composeStakingTransaction,
     getCardanoAccountPoolId,
@@ -115,6 +116,21 @@ const calculateTransaction = (
     );
 };
 
+const getConfirmedVoteDrep = (
+    confirmedOption: VotingDelegationOption | undefined,
+): { type: PROTO.CardanoDRepType; hex?: string } => {
+    switch (confirmedOption?.type) {
+        case 'another_drep':
+            return parseDrepBech32(confirmedOption.drepId);
+        case 'everstake':
+            return parseDrepBech32(CARDANO_EVERSTAKE_DREP.bech32);
+        case 'abstain':
+        case 'current':
+        case undefined:
+            return { type: PROTO.CardanoDRepType.ABSTAIN };
+    }
+};
+
 type PrepareTxPlanParams = {
     account: Account;
     action: CardanoAction;
@@ -163,9 +179,6 @@ export const prepareTxPlan = async ({
         );
     }
 
-    // The signing path reads the selection straight from the store, so a selection left over from
-    // another account must never reach the certificates. Everything below derives from the option
-    // confirmed for this very account, falling back to Everstake.
     const confirmedOption =
         votingDelegation?.accountKey === account.key ? votingDelegation.option : undefined;
 
@@ -179,12 +192,9 @@ export const prepareTxPlan = async ({
             return null;
         }
 
-        const drepBech32 = isVotingToAnotherDrep
-            ? confirmedOption.drepId
-            : CARDANO_EVERSTAKE_DREP.bech32;
-
-        const dRep = parseDrepBech32(drepBech32);
-        certificates.push(...getVotingCertificates(stakingPath, dRep));
+        certificates.push(
+            ...getVotingCertificates(stakingPath, getConfirmedVoteDrep(confirmedOption)),
+        );
     }
 
     if (action === 'deregister') {

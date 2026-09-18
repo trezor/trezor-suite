@@ -1,11 +1,9 @@
 import { createAction } from '@reduxjs/toolkit';
 
 import { type NetworkSymbol } from '@suite-common/wallet-config';
-import {
-    type AccountKey,
-    type PrecomposedTransactionFinal,
-    type StakeFormState,
-} from '@suite-common/wallet-types';
+import { type PrecomposedTransactionFinal, type StakeFormState } from '@suite-common/wallet-types';
+
+import { type AccountVotingDelegation } from './cardano/cardanoStakingTypes';
 
 export const STAKE_MODULE_PREFIX = '@common/wallet-core/stake';
 
@@ -17,14 +15,6 @@ type RequestSignTransactionPayload = {
 type RequestPushTransactionPayload = {
     tx: string;
     symbol: NetworkSymbol;
-};
-
-export type VotingDelegationOption =
-    { type: 'everstake' } | { type: 'another_drep'; drepId: string } | { type: 'current' };
-
-export type AccountVotingDelegation = {
-    accountKey: AccountKey;
-    option: VotingDelegationOption;
 };
 
 const setAccountVotingDelegation = createAction(

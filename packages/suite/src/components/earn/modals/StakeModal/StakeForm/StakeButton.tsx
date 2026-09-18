@@ -3,8 +3,13 @@ import { setConnectionModal, setConnectionMode, useDevice } from '@suite/device'
 import { Translation } from '@suite/intl';
 import { useServices } from '@suite-common/dependency-injection';
 import { selectDispatch } from '@suite-common/redux-utils';
-import { type StakeModalFlow } from '@suite-common/suite-types/src/staking';
-import { selectAreFeesLoading, selectHasRunningDiscovery } from '@suite-common/wallet-core';
+import { EarnFlow, type StakeModalFlow } from '@suite-common/suite-types/src/staking';
+import {
+    selectAreFeesLoading,
+    selectHasRunningDiscovery,
+    selectVotingDelegationOption,
+    validateCardanoDrep,
+} from '@suite-common/wallet-core';
 import { Modal, Tooltip } from '@trezor/components';
 import { InfoIcon } from '@trezor/icons';
 
@@ -27,6 +32,8 @@ export const StakeButton = ({ flow }: StakeButtonProps) => {
         handleSubmit,
         formState: { errors, isSubmitting },
         isComposing,
+        composedLevels,
+        selectedFee,
         watch,
         currency,
         isStakingDisabled: isCardanoStakingDisabled,
@@ -35,16 +42,27 @@ export const StakeButton = ({ flow }: StakeButtonProps) => {
     const { isStakingDisabled, stakingMessageContent } = useMessageSystemStaking(network.symbol);
     const isDiscoveryRunning = useSelector(selectHasRunningDiscovery);
     const areFeesLoading = useSelector(state => selectAreFeesLoading(state, network.symbol));
+    const selectedVotingDelegation = useSelector(state =>
+        selectVotingDelegationOption(state, account.key),
+    );
 
     const isDeviceConnected = device?.connected && device?.available;
 
     const isCardano = account.networkType === 'cardano';
 
+    const isDrepValid =
+        selectedVotingDelegation.type !== 'another_drep' ||
+        validateCardanoDrep(selectedVotingDelegation.drepId);
+
     const hasValues = Boolean(watch(FIAT_INPUT) || watch(CRYPTO_INPUT));
     // used instead of formState.isValid, which is sometimes returning false even if there are no errors
     const formIsValid = Object.keys(errors).length === 0;
     // there is no input for cardano. Form validation should always pass
-    const isFormInputsValid = !isCardano ? formIsValid && hasValues : !isCardanoStakingDisabled;
+    const isFormInputsValid = !isCardano
+        ? formIsValid && hasValues
+        : !isCardanoStakingDisabled &&
+          isDrepValid &&
+          composedLevels?.[selectedFee]?.type === 'final';
     const isDisabled = !isFormInputsValid || isSubmitting || (isDeviceConnected && isLocked());
 
     const onStakeClick = () => {
@@ -71,6 +89,9 @@ export const StakeButton = ({ flow }: StakeButtonProps) => {
                 step: 'stake-form-modal',
                 currency,
                 networkSymbol: account.symbol,
+                ...(flow === EarnFlow.UpdateProvider && isCardano
+                    ? { votingDelegation: selectedVotingDelegation.type }
+                    : {}),
             },
         });
     };

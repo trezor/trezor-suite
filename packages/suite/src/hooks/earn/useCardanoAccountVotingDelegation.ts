@@ -32,7 +32,7 @@ export const useSeededCardanoVotingDelegation = (
     const isCardanoAccount = account.networkType === 'cardano';
     // Seeding is driven by the store rather than by a mount-once ref, so that a selection cleared
     // while this stays mounted - after signing, or on an account switch - is seeded again instead
-    // of silently reading as Everstake.
+    // of silently reading as the default.
     const isSelectionConfirmedForAccount = useSelector(
         state => selectStakeVotingDelegation(state)?.accountKey === account.key,
     );

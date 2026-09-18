@@ -1,5 +1,7 @@
 import { BigNumber } from '@trezor/utils';
 
+import { type VotingDelegationOption } from './cardanoStakingTypes';
+
 export const CARDANO_EPOCH_DAYS = 5;
 const CARDANO_APPROXIMATE_EPOCHS = 2;
 export const CARDANO_ACTIVATION_PERIOD_DAYS = CARDANO_APPROXIMATE_EPOCHS * CARDANO_EPOCH_DAYS;
@@ -22,3 +24,7 @@ export const CARDANO_EVERSTAKE_DREP = {
     hex: 'ce179dfd95a1a136666945aee81a784b0d96541ffcbc6a3b4cfa71eb',
     bech32: 'drep1yt8p080ajks6zdnxd9z6a6q60p9sm9j5rl7tc63mfna8r6cnp4wr3',
 };
+
+export const CARDANO_ALWAYS_ABSTAIN_DREP_ID = 'drep_always_abstain';
+
+export const DEFAULT_VOTING_OPTION: VotingDelegationOption = { type: 'abstain' };

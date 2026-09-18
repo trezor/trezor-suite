@@ -21,7 +21,6 @@ import { EarnProviderConsentModalLayout } from './components/EarnProviderConsent
 import { YieldProviderConsentBanners } from './components/YieldProviderConsentBanners';
 import { useEarnProviderConsentActions } from './hooks/useEarnProviderConsentActions';
 import { getEarnProviderName } from '../../utils/getEarnProviderName';
-import { VotingDelegations } from '../shared/VotingDelegations/VotingDelegations';
 
 interface YieldEarnProviderConsentModalProps {
     account: Account;
@@ -127,9 +126,6 @@ export const YieldEarnProviderConsentModal = ({
             }
             onConfirm={handleOnConfirm}
             onCancel={handleOnCancel}
-            account={account}
-        >
-            <VotingDelegations account={account} />
-        </EarnProviderConsentModalLayout>
+        />
     );
 };

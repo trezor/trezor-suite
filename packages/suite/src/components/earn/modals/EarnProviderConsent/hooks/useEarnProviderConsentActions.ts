@@ -14,7 +14,6 @@ import {
     earnOnboardingActions,
     getEarnOpportunityKey,
     getYieldEarnOpportunityKey,
-    selectVotingDelegationOption,
     stakeActions,
 } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
@@ -22,13 +21,11 @@ import { exhaustive } from '@trezor/type-utils';
 
 import { getEarnRouteParams } from 'src/components/earn/utils/getEarnRouteParams';
 import { earnFlowToEventTypeMap } from 'src/constants/suite/staking';
-import { useSelector } from 'src/hooks/suite';
 
 interface UseEarnProviderConsentActionsProps {
     flow: EarnFlow;
     provider: EarnProvider;
     onCancel: () => void;
-    includeVotingDelegation?: boolean;
     account: Account;
     networkSymbol?: NetworkSymbol;
     yieldContext?: EarnYieldContext;
@@ -38,15 +35,11 @@ export const useEarnProviderConsentActions = ({
     flow,
     provider,
     onCancel,
-    includeVotingDelegation = false,
     account,
     networkSymbol,
     yieldContext,
 }: UseEarnProviderConsentActionsProps) => {
     const { analytics, dispatch } = useServices(selectDesktopAnalyticsDep, selectDispatch);
-    const selectedVotingDelegation = useSelector(state =>
-        selectVotingDelegationOption(state, account.key),
-    );
 
     const report = (action: EarnModalAction) => {
         if (flow === EarnFlow.Yield) return;
@@ -57,9 +50,6 @@ export const useEarnProviderConsentActions = ({
                 action,
                 step: 'funds-maintained-modal',
                 networkSymbol,
-                ...(includeVotingDelegation
-                    ? { votingDelegation: selectedVotingDelegation.type }
-                    : {}),
             },
         });
     };
