@@ -17790,6 +17790,7 @@ __metadata:
   dependencies:
     "@emurgo/cardano-serialization-lib-asmjs": "npm:13.2.0"
     "@emurgo/cardano-serialization-lib-browser": "npm:13.2.0"
+    "@emurgo/cardano-serialization-lib-nodejs": "npm:13.2.0"
     "@fivebinaries/coin-selection": "npm:3.0.0"
     "@trezor/utils": "workspace:*"
     binaryen: "npm:132.0.0"
