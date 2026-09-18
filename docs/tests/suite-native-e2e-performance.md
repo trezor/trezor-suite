@@ -172,6 +172,41 @@ samples land in the same median. And because `meta` has no model field, a report
 apart afterwards. Both are fine while the instrumented screens are model-independent, and both are
 the first thing to fix if that stops being true.
 
+## Performance history
+
+A report tells you what this run measured; it cannot tell you whether that is worse than last week.
+The history lives as plain objects in the bucket CI already writes to — no server, no database:
+
+```
+s3://dev.suite.sldev.cz/e2e/perf/native/v1/
+├── runs/<branch>/<sha>/<run>-<attempt>/shard-<n>/report.json   ← the whole report, for drill-down
+├── index/<branch>/index.ndjson                                 ← one line per screen per run
+├── index/pr/<number>/<run>-<attempt>.ndjson                    ← the same, for a pull request
+└── baseline/<branch>/latest.json                               ← what later runs compare against
+```
+
+Every object is world-readable over `https://dev.suite.sldev.cz/<key>`, so **reading the history
+needs no credentials**: fetch the index, and only download a report when you want the detail behind
+a point. Writing needs the `gh_actions_trezor_suite_dev_deploy` role CI already assumes.
+
+The `publish_performance_history` job of `test-suite-native-e2e-android.yml` does the writing. It
+runs once after the shards, downloads their `android-perf-report-<shard>` artifacts, and builds the
+tree of objects with `yarn workspace @suite-native/app perf:publish` before one `aws s3 cp
+--recursive` uploads it.
+
+Two properties keep this correct without a database:
+
+- **One writer per run.** The shards only upload artifacts; a single job publishes the whole run, so
+  no two shards touch the same object. Branch runs, which append to one rolling index, are
+  additionally serialized by the job's concurrency group.
+- **A re-run replaces its own lines.** Index lines are keyed by run, attempt, shard and screen, so
+  re-running a workflow corrects a point on the trend instead of doubling it.
+
+Only a run on the base branch seals `baseline/<branch>/latest.json` (`PERF_SEAL_BASELINE`), which is
+the document `mergeBaselines` lets win over the numbers committed in `budgets.ts`. Until the first
+baseline is sealed, `fetchBaselineDocument` reports `absent` and the committed values stand — as
+they do whenever the object cannot be read, which never fails a run.
+
 ## Where things live
 
 | Path                                                      | What                                                                                       |
@@ -181,4 +216,8 @@ the first thing to fix if that stops being true.
 | `suite-native/app/e2e/performance/budgets.ts`             | the checked-in thresholds                                                                  |
 | `suite-native/app/artifacts/performance/perf-report.json` | the report a run produces                                                                  |
 | `.github/workflows/template-suite-native-e2e-android.yml` | the job summary and the `android-perf-report-<shard>` upload                               |
+| `suite-native/app/e2e/performance/store.ts`               | the key scheme and the index rows — pure, so the layout is tested without a bucket         |
+| `suite-native/app/e2e/performance/baseline.ts`            | reading the served baseline back, credential-free and never throwing                       |
+| `suite-native/app/e2e/performance/publishPerformance.ts`  | the publish step: shard artifacts in, upload bundle out                                    |
+| `.github/workflows/test-suite-native-e2e-android.yml`     | the `publish_performance_history` job                                                      |
 | `packages/perf-e2e/`, `suite/e2e/performance/`            | the desktop counterpart the format mirrors                                                 |
