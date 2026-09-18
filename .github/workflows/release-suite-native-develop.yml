@@ -28,6 +28,7 @@ jobs:
         with:
           ref: ${{ inputs.commit || 'develop' }}
           fetch-depth: 0
+          lfs: true
       - name: Resolve selected commit
         id: selected-commit
         run: |
