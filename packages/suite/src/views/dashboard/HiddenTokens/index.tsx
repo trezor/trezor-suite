@@ -1,6 +1,6 @@
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 
-import { Translation } from '@suite/intl';
+import { Translation, useTranslation } from '@suite/intl';
 import { selectDeviceStaticSessionId } from '@suite-common/device';
 import { Column, Text } from '@trezor/components';
 
@@ -24,8 +24,10 @@ export const HiddenTokens = () => {
     );
 
     const [rowToUnhide, setRowToUnhide] = useState<AssetRow>();
+    const { translationString } = useTranslation();
+    const pageHeader = useMemo(() => <PageHeader />, []);
 
-    useLayout('Hidden tokens', <PageHeader />);
+    useLayout(translationString('TR_HIDDEN_TOKENS'), pageHeader);
 
     if (hiddenByUser.length === 0 && unrecognized.length === 0) {
         return (
