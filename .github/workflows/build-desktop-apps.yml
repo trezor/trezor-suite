@@ -47,12 +47,12 @@ jobs:
       - name: Install deps and build libs
         # not installing @suite/desktop-app and @suite/desktop-app-main, because this is only the renderer process
         run: |
-          yarn workspaces focus trezor-suite @suite/desktop-app-renderer @trezor/suite-build @suite/app-assets @trezor/transport-bridge @suite-common/message-system
+          yarn workspaces focus trezor-suite @suite/desktop-app-renderer @trezor/suite @suite/app-assets @trezor/transport-bridge @suite-common/message-system
           yarn message-system-sign-config
           yarn workspace @suite/app-assets build:lib
           yarn workspace @trezor/transport-bridge build:lib
       - name: Build Electron Renderer bundle
-        run: yarn workspace @trezor/suite-build build:desktop
+        run: yarn workspace @suite/desktop-app-renderer build
       - name: Cache Electron renderer bundle
         uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v5
         with:
@@ -94,7 +94,7 @@ jobs:
       # safedep/pmg not available on macOS (that's ok, it already guards the `build-and-cache-renderer` job)
       - name: Install deps and build libs
         run: |
-          yarn workspaces focus trezor-suite @suite/desktop-app @suite/desktop-app-renderer @suite/desktop-app-main @trezor/suite-build @suite/app-assets @trezor/transport-bridge @suite-common/message-system
+          yarn workspaces focus trezor-suite @suite/desktop-app @suite/desktop-app-renderer @suite/desktop-app-main @trezor/suite @suite/app-assets @trezor/transport-bridge @suite-common/message-system
           yarn message-system-sign-config
           yarn workspace @suite/app-assets build:lib
           yarn workspace @trezor/transport-bridge build:lib
@@ -154,7 +154,7 @@ jobs:
           version: v0.19.1
       - name: Install deps and build libs
         run: |
-          yarn workspaces focus trezor-suite @suite/desktop-app @suite/desktop-app-renderer @suite/desktop-app-main @trezor/suite-build @suite/app-assets @trezor/transport-bridge @suite-common/message-system
+          yarn workspaces focus trezor-suite @suite/desktop-app @suite/desktop-app-renderer @suite/desktop-app-main @trezor/suite @suite/app-assets @trezor/transport-bridge @suite-common/message-system
           yarn message-system-sign-config
 
       - name: Build libs

@@ -1,3 +1,4 @@
+/* eslint-disable import/no-extraneous-dependencies -- build-time tooling belongs in devDependencies */
 import { spawn, spawnSync } from 'child_process';
 import webpack from 'webpack';
 
@@ -16,7 +17,7 @@ const defaultOptions: Options = {
     runAfterBuild: [],
 };
 
-// Keep this local because suite-build webpack configs can be loaded through a CommonJS fallback.
+// Keep this local because the application webpack configs can be loaded through a CommonJS fallback.
 // Importing the ESM-only @trezor/env-utils package there fails before webpack starts.
 const isWindows = () => process.platform === 'win32';
 

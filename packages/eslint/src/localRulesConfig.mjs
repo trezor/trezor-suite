@@ -80,6 +80,9 @@ export const localRulesConfig = [
                         /^@(?:suite-native|suite|suite-common|trezor)\/[^/]+\/mocks$/,
                         // Suite test setup imports global polyfills through this side-effect-only entry point.
                         /^@suite-common\/test-utils\/globalOverrides$/,
+                        // The applications import the Webpack pieces they share from this
+                        // build-only entry point; it is never part of an application bundle.
+                        /^@trezor\/suite\/webpack\/[\w/-]+$/,
                     ],
                 },
             ],

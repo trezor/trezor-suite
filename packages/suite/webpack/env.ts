@@ -1,14 +1,27 @@
+/* eslint-disable import/no-extraneous-dependencies -- build-time tooling belongs in devDependencies */
 import dotenv from 'dotenv';
+import fs from 'fs';
 import path from 'path';
 
-import type { Project } from './constants';
+/**
+ * Webpack loads this through ts-node as CommonJS, Vite loads it as an ES module where `__dirname`
+ * does not exist, so the repository root is found by walking up from the working directory.
+ */
+const findRepoRoot = (from: string) => {
+    let directory = from;
+    while (directory !== path.dirname(directory)) {
+        if (fs.existsSync(path.join(directory, 'yarn.lock'))) {
+            return directory;
+        }
+        directory = path.dirname(directory);
+    }
 
-const repoRoot = path.resolve(__dirname, '../../..');
+    return from;
+};
 
-dotenv.config({ path: path.join(repoRoot, '.env.local'), override: false });
+dotenv.config({ path: path.join(findRepoRoot(process.cwd()), '.env.local'), override: false });
 
 const {
-    PROJECT,
     NODE_ENV,
     ANALYZE,
     LAUNCH_ELECTRON,
@@ -20,7 +33,6 @@ const {
     TRANSPORT_BROWSER_PING,
 } = process.env;
 
-const project = PROJECT as Project;
 const isDev = NODE_ENV !== 'production';
 const isAnalyzing = ANALYZE === 'true';
 const isCodesignBuild = IS_CODESIGN_BUILD === 'true';
@@ -37,7 +49,6 @@ export {
     isDev,
     launchElectron,
     assetPrefix,
-    project,
     sentryAuthToken,
     isTestBuild,
     isTanstackReactQueryDevTools,

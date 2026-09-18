@@ -137,7 +137,7 @@ jobs:
           key: node_modules-suite-web-e2e-${{ hashFiles('yarn.lock') }}
 
       - name: Install dependencies
-        run: yarn workspaces focus @suite/web-app @suite/app-assets @trezor/suite-build
+        run: yarn workspaces focus @suite/web-app @trezor/suite @suite/app-assets
 
       - name: Build message system config
         run: yarn message-system-sign-config 1>/dev/null
@@ -195,7 +195,7 @@ jobs:
 
       - name: Install dependencies
         # Union of test deps and web and desktop build toolchains
-        run: yarn workspaces focus @trezor/suite-e2e @trezor/e2e-utils @suite/web-app @suite/desktop-app @suite/desktop-app-main @suite/desktop-app-renderer @trezor/suite @suite/app-assets @trezor/suite-build @trezor/transport-bridge @suite-common/message-system
+        run: yarn workspaces focus @trezor/suite-e2e @trezor/e2e-utils @suite/web-app @suite/desktop-app @suite/desktop-app-main @suite/desktop-app-renderer @trezor/suite @suite/app-assets @trezor/transport-bridge @suite-common/message-system
 
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@e6de054238d6b7531b4efff3b6587d9aade6a06c # v6
