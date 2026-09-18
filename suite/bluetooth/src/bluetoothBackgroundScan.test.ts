@@ -201,6 +201,16 @@ describe('createBackgroundScan', () => {
         expect(bluetoothIpc.startScan).toHaveBeenCalledTimes(1);
     });
 
+    it('skips cycles when the window was already hidden before the scan was created', async () => {
+        jest.spyOn(document, 'visibilityState', 'get').mockReturnValue('hidden');
+        scan = createBackgroundScan({ getState: () => state });
+
+        scan.start();
+        await jest.advanceTimersByTimeAsync(12000);
+
+        expect(bluetoothIpc.startScan).not.toHaveBeenCalled();
+    });
+
     it.each([
         ['startScan', 'Background Bluetooth start_scan failed'],
         ['stopScan', 'Background Bluetooth stop_scan failed'],
