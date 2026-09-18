@@ -1,7 +1,12 @@
+---
+name: assertions
+description: Assertion rules for Suite E2E tests: custom matchers, translation validation, display assertions. Use every time you write an expect() call or wait for a condition.
+---
+
 # Assertions Strategy - AI Instructions
 
 > **When to use**: Every time you write an `expect()` call, wait for a condition.
-> **Prerequisites**: [./locators.md](locators.md) for locator strategies used in examples.
+> **Prerequisites**: [locators](../locators/SKILL.md) for locator strategies used in examples.
 
 ## Core Rules
 

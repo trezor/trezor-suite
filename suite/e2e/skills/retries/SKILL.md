@@ -1,7 +1,12 @@
+---
+name: retries
+description: Await and retry strategy for Suite E2E tests: Playwright auto-waiting, expect polling, Redux waits, flakiness prevention. Use every time a test is flaky due to timing.
+---
+
 # Await & Retry Strategy
 
 > **When to use**: Every time you wonder why a test is flaky due to timing.
-> **Prerequisites**: [./locators.md](locators.md) for locator strategies used in examples.
+> **Prerequisites**: [locators](../locators/SKILL.md) for locator strategies used in examples.
 
 ## Core Patterns (3 Essentials)
 
