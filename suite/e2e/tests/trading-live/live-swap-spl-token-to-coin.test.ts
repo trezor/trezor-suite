@@ -23,7 +23,7 @@ const solFeeReserve = 0.05;
 
 // limiting number of runs due to fees onchain and nonce issues during teardown - by using specific model and FW tags
 test.describe(
-    'Trading - Swap SPL token to coin via CEX',
+    'Live - Trading - Swap SPL token to coin via CEX',
     { tag: ['@skipOnPR', '@specificFirmware', '@T3W1', '@webOnly'] },
     () => {
         test.setTimeout(tenMinutes);

@@ -5,16 +5,16 @@ import { expect, test } from '../../support/fixtures';
 import { createTestAnnotation } from '../../support/reporters/annotations';
 
 const migrateFromVersion = 'release/25.10/web';
-const migrateToVersion = 'develop/web';
 const suiteDevInstance = 'https://dev.suite.sldev.cz/suite-web';
+const developInstance = `${suiteDevInstance}/develop/web`;
+// Locally the tested build runs on localhost, a different origin than the old instance, so the migration would never happen
+const migrateTo = process.env.CI ? '/' : developInstance;
 
 test.describe(
     'Database migration',
-    // This test is run only on web nightly builds, it works with web instances of 25.10 and develop branch
-    // On PR and release CI run it would provide no value and potentially false failures, same goes for canary firmware runs
     // Note: Trezor user env doesn't support legacy bridge versions on macOs, which is needed to connect the device to the old Suite version. Use linux or only run in CI.
     // Additionally, 25.10 does not support T3W1 yet
-    { tag: ['@webOnly', '@skipOnPR', '@T3T1', '@specificFirmware'] },
+    { tag: ['@webOnly', '@optional', '@T3T1', '@specificFirmware'] },
     () => {
         test.use({
             deviceSetup: { passphrase_protection: true, mnemonic: 'mnemonic_all' },
@@ -22,7 +22,7 @@ test.describe(
         });
 
         test(
-            `Db migration between: ${migrateFromVersion} => ${migrateToVersion}`,
+            `Db migration from ${migrateFromVersion} to current build`,
             {
                 annotation: createTestAnnotation({
                     testCase:
@@ -85,10 +85,10 @@ test.describe(
                     });
                 });
 
-                await test.step(`Navigate to new version ${migrateToVersion} and check wallet status`, async () => {
+                await test.step('Navigate to current build and check wallet status', async () => {
                     await TrezorUserEnvLink.stopBridge();
                     await TrezorUserEnvLink.startBridge();
-                    await page.goto(`${suiteDevInstance}/${migrateToVersion}`);
+                    await page.goto(migrateTo);
                     await indexedDb.expectValue({
                         dbName: 'trezor-suite',
                         storeName: 'walletSettings',
