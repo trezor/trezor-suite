@@ -10974,18 +10974,6 @@ export const messages = defineMessages({
         id: 'TR_STAKING_NEW_PROVIDER',
         defaultMessage: 'New provider',
     },
-    TR_STAKING_DELEGATE_YOUR_VOTING_RIGHTS: {
-        id: 'TR_STAKING_DELEGATE_YOUR_VOTING_RIGHTS',
-        defaultMessage: 'Delegate your voting rights',
-    },
-    TR_STAKING_DELEGATE_TO_EVERSTAKE: {
-        id: 'TR_STAKING_DELEGATE_TO_EVERSTAKE',
-        defaultMessage: 'Delegate to Everstake',
-    },
-    TR_STAKING_DELEGATE_TO_ANOTHER_DREP: {
-        id: 'TR_STAKING_DELEGATE_TO_ANOTHER_DREP',
-        defaultMessage: 'Delegate to a custom DRep',
-    },
     TR_STAKING_KEEP_CURRENT_DELEGATION: {
         id: 'TR_STAKING_KEEP_CURRENT_DELEGATION',
         defaultMessage: 'Keep your current delegation',
@@ -10999,9 +10987,63 @@ export const messages = defineMessages({
         id: 'TR_STAKING_INVALID_DREP_ID',
         defaultMessage: 'Invalid DRep ID',
     },
+    TR_STAKING_DREP_ID_IS_CURRENT_DELEGATE: {
+        id: 'TR_STAKING_DREP_ID_IS_CURRENT_DELEGATE',
+        defaultMessage: 'This DRep is already your current delegate',
+    },
     TR_STAKING_DREP_ID: {
         id: 'TR_STAKING_DREP_ID',
         defaultMessage: 'DRep ID',
+    },
+    TR_STAKING_WHO_VOTES_WITH_YOUR_FUNDS: {
+        id: 'TR_STAKING_WHO_VOTES_WITH_YOUR_FUNDS',
+        defaultMessage: 'Who votes with your {displaySymbol}?',
+    },
+    TR_STAKING_VOTING_PREFERENCE_DESCRIPTION: {
+        id: 'TR_STAKING_VOTING_PREFERENCE_DESCRIPTION',
+        defaultMessage:
+            "Cardano asks every staker to set a voting preference. It doesn't move your funds — change it anytime.",
+    },
+    TR_STAKING_VOTE_ABSTAIN: {
+        id: 'TR_STAKING_VOTE_ABSTAIN',
+        defaultMessage: 'Abstain',
+    },
+    TR_STAKING_VOTE_ABSTAIN_DESCRIPTION: {
+        id: 'TR_STAKING_VOTE_ABSTAIN_DESCRIPTION',
+        defaultMessage: "Stay neutral — your voting power won't count for or against proposals.",
+    },
+    TR_STAKING_VOTE_LET_EVERSTAKE_VOTE: {
+        id: 'TR_STAKING_VOTE_LET_EVERSTAKE_VOTE',
+        defaultMessage: 'Let Everstake vote for you',
+    },
+    TR_STAKING_VOTE_LET_EVERSTAKE_VOTE_DESCRIPTION: {
+        id: 'TR_STAKING_VOTE_LET_EVERSTAKE_VOTE_DESCRIPTION',
+        defaultMessage: 'Your stake pool operator votes on your behalf.',
+    },
+    TR_STAKING_VOTE_CHOOSE_OWN_DREP: {
+        id: 'TR_STAKING_VOTE_CHOOSE_OWN_DREP',
+        defaultMessage: 'Choose your own DRep',
+    },
+    TR_STAKING_VOTE_CHOOSE_OWN_DREP_DESCRIPTION: {
+        id: 'TR_STAKING_VOTE_CHOOSE_OWN_DREP_DESCRIPTION',
+        defaultMessage: 'Delegate to any registered representative by pasting their DRep ID.',
+    },
+    TR_STAKING_CHANGE_VOTING_PREFERENCE: {
+        id: 'TR_STAKING_CHANGE_VOTING_PREFERENCE',
+        defaultMessage: 'Change voting preference',
+    },
+    TR_STAKING_CURRENT_PREFERENCE: {
+        id: 'TR_STAKING_CURRENT_PREFERENCE',
+        defaultMessage: 'Current preference',
+    },
+    TR_STAKING_NEW_PREFERENCE: {
+        id: 'TR_STAKING_NEW_PREFERENCE',
+        defaultMessage: 'New preference',
+    },
+    TR_STAKING_NEW_PREFERENCE_DESCRIPTION: {
+        id: 'TR_STAKING_NEW_PREFERENCE_DESCRIPTION',
+        defaultMessage:
+            "Pick who votes with your {displaySymbol} in Cardano governance. It doesn't move your funds and has no effect on your staking rewards.",
     },
     TR_STAKING_CARD_TEXT_FUNDS_STAY: {
         id: 'TR_STAKING_CARD_TEXT_FUNDS_STAY',
@@ -11954,10 +11996,6 @@ export const messages = defineMessages({
     TR_STAKE_CHANGE_YOUR_DELEGATE: {
         id: 'TR_STAKE_CHANGE_YOUR_DELEGATE',
         defaultMessage: 'Change your stake delegate?',
-    },
-    TR_STAKE_CURRENT_DELEGATE: {
-        id: 'TR_STAKE_CURRENT_DELEGATE',
-        defaultMessage: 'Current delegate',
     },
     TR_STAKE_CHANGE_DELEGATE_DISABLED_TOOLTIP: {
         id: 'TR_STAKE_CHANGE_DELEGATE_DISABLED_TOOLTIP',

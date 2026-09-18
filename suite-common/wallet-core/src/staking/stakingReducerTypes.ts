@@ -1,7 +1,7 @@
 import { type DeviceRootState } from '@suite-common/device';
 import type { PrecomposedTransactionFinal, StakeFormState } from '@suite-common/wallet-types';
 
-import type { AccountVotingDelegation } from './stakingActions';
+import type { AccountVotingDelegation } from './cardano/cardanoStakingTypes';
 import type { StakeDataState } from './stakingDataSlice';
 import { type AccountsRootState } from '../accounts/accountsReducer';
 import type { SerializedTx } from '../send/sendFormTypes';

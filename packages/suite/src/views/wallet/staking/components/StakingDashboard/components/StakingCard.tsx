@@ -13,6 +13,7 @@ import {
     selectAccountIsStakingActive,
     selectAccountStakeTypeTransactions,
     selectCardanoPoolsInfo,
+    stakeActions,
 } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
 import { isPending } from '@suite-common/wallet-utils';
@@ -218,6 +219,12 @@ export const StakingCard = ({
         if (!isCardanoNetworkType || !isStakingActive || isStakeConfirming || isVotingDisabled)
             return;
 
+        dispatch(
+            stakeActions.setAccountVotingDelegation({
+                accountKey: account.key,
+                option: { type: 'current' },
+            }),
+        );
         dispatch(openModal({ type: 'change-delegate' }));
 
         analytics.report({

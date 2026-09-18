@@ -14,7 +14,6 @@ import { EarnProviderConsentModalLayout } from './components/EarnProviderConsent
 import { StakingProviderConsentBanners } from './components/StakingProviderConsentBanners';
 import { useEarnProviderConsentActions } from './hooks/useEarnProviderConsentActions';
 import { getEarnProviderName } from '../../utils/getEarnProviderName';
-import { VotingDelegations } from '../shared/VotingDelegations/VotingDelegations';
 
 interface StakingEarnProviderConsentModalProps {
     account: Account;
@@ -79,9 +78,6 @@ export const StakingEarnProviderConsentModal = ({
             }
             onConfirm={proceedToEarnFlow}
             onCancel={onCancelClick}
-            account={account}
-        >
-            <VotingDelegations account={account} />
-        </EarnProviderConsentModalLayout>
+        />
     );
 };

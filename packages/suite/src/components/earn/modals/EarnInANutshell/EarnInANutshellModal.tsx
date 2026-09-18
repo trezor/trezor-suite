@@ -95,15 +95,9 @@ export const EarnInANutshellModal = ({
                 }),
             );
         } else if (flow === EarnFlow.Stake) {
-            if (account.networkType === 'cardano') {
-                // Cardano still needs the provider consent modal for the voting delegation choice;
-                // its legal content and checkbox are hidden for a confirmed opportunity.
-                dispatch(openModal({ type: 'earn-provider-consent', flow, provider, account }));
-            } else {
-                dispatch(openModal({ type: 'stake', flow, account }));
-            }
+            dispatch(openModal({ type: 'stake', flow, account }));
         }
-    }, [shouldSkip, flow, yieldContext?.vaultAddress, onCancel, account, provider, dispatch]);
+    }, [shouldSkip, flow, yieldContext?.vaultAddress, onCancel, account, dispatch]);
 
     useEffect(() => {
         switch (flow) {

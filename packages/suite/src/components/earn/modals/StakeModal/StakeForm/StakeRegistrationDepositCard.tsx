@@ -1,10 +1,7 @@
 import { Translation } from '@suite/intl';
 import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import { CARDANO_STAKING_REGISTRATION_DEPOSIT } from '@suite-common/wallet-constants';
-import {
-    selectAccountIsStakingActive,
-    selectVotingDelegationOption,
-} from '@suite-common/wallet-core';
+import { selectAccountIsStakingActive } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
 import { Banner, Card, Paragraph, Row } from '@trezor/components';
 import { InfoIcon } from '@trezor/icons';
@@ -18,8 +15,6 @@ type StakeRegistrationDepositCardProps = {
 
 export const StakeRegistrationDepositCard = ({ account }: StakeRegistrationDepositCardProps) => {
     const { symbol, key } = account;
-
-    const selectedVotingDelegation = useSelector(state => selectVotingDelegationOption(state, key));
 
     const isStakingActive = useSelector(state => selectAccountIsStakingActive(state, key ?? ''));
     const isUpdateProviderFlow = isStakingActive && account.networkType === 'cardano';
@@ -65,20 +60,6 @@ export const StakeRegistrationDepositCard = ({ account }: StakeRegistrationDepos
                                 amount={CARDANO_STAKING_REGISTRATION_DEPOSIT}
                                 symbol={symbol}
                             />
-                        </Paragraph>
-                    </Row>
-                </>
-            )}
-            {selectedVotingDelegation.type === 'another_drep' && (
-                <>
-                    <Row gap={20} justifyContent="space-between">
-                        <Paragraph typographyStyle="body-md">
-                            <Translation id="TR_STAKING_DREP_ID" />
-                        </Paragraph>
-                    </Row>
-                    <Row gap={20} justifyContent="space-between">
-                        <Paragraph intent="neutral" priority="secondary" typographyStyle="body-sm">
-                            {selectedVotingDelegation.drepId}
                         </Paragraph>
                     </Row>
                 </>
