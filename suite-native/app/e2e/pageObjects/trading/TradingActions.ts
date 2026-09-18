@@ -56,7 +56,7 @@ export class TradingActions {
         // Scroll to bottom of the page and view how trading works sheet.
         // `scrollScreenToBottom` is not used because it accidentally clicks on links at the bottom on iOS.
         const howTradingWorksButton = element(by.text('How trading works'));
-        await scrollUntilVisible(howTradingWorksButton);
+        await scrollUntilVisible(howTradingWorksButton, undefined, 100);
         await howTradingWorksButton.tap();
         await this.closeBottomSheet();
     }

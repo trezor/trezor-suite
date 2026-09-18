@@ -163,9 +163,10 @@ export const appIsFullyLoaded = async () => {
 export const scrollUntilVisible = async (
     target: Detox.IndexableNativeElement,
     options?: { scrollViewTestId?: string; startPositionX?: number; startPositionY?: number },
+    scrollVisibilityThreshold = SCROLL_VISIBILITY_THRESHOLD,
 ) => {
     await waitFor(target)
-        .toBeVisible(SCROLL_VISIBILITY_THRESHOLD)
+        .toBeVisible(scrollVisibilityThreshold)
         .whileElement(by.id(options?.scrollViewTestId ?? '@screen/mainScrollView'))
         .scroll(300, 'down', options?.startPositionX ?? 0.5, options?.startPositionY ?? 0.5);
 };
