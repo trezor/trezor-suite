@@ -100,3 +100,13 @@ export const getUnstakeTxAmount = (tx: WalletAccountTransaction) => {
 
     return getUnstakeAmountByEthereumDataHex(tx.ethereumSpecific?.data) ?? undefined;
 };
+
+export const getNextRequestedTransactionCount = ({
+    requestedCount,
+    visibleCount,
+    pageSize,
+}: {
+    requestedCount: number;
+    visibleCount: number;
+    pageSize: number;
+}) => Math.max(requestedCount, visibleCount) + pageSize;

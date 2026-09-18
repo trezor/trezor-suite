@@ -37,6 +37,7 @@ import { TransactionListItem } from './TransactionListItem';
 import { TransactionsEmptyState } from './TransactionsEmptyState';
 import { TransactionsListFooter } from './TransactionsListFooter';
 import { useFetchMissingTransactionFiatRates } from '../hooks/useFetchMissingTransactionFiatRates';
+import { getNextRequestedTransactionCount } from '../utils';
 
 type RenderSectionHeaderParams = {
     section: {
@@ -300,7 +301,13 @@ export const TransactionList = ({
 
     const handleOnLoadMorePress = () => {
         if (tokenContract) {
-            setRequestedVisibleCount(visibleTransactionCount + txnsPerPage);
+            setRequestedVisibleCount(requestedCount =>
+                getNextRequestedTransactionCount({
+                    requestedCount,
+                    visibleCount: visibleTransactionCount,
+                    pageSize: txnsPerPage,
+                }),
+            );
         }
         handleOnLoadMore();
     };
