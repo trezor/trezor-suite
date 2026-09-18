@@ -1,4 +1,4 @@
-import type { NetworkSymbol } from '@trezor/network-module';
+import type { NetworkSymbol } from '@trezor/network-module-types';
 
 import type { AddressValidator } from './AddressValidator';
 import type { NamedAddressResolver } from './NamedAddressResolver';

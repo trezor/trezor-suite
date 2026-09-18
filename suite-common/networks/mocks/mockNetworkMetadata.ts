@@ -1,5 +1,5 @@
-import { asNetworkSymbol } from '@trezor/network-module';
 import { asProtocol } from '@trezor/network-module-suite-common-types';
+import { asNetworkSymbol } from '@trezor/network-module-types';
 
 import type { NetworkMetadata } from '../reduxState/NetworkMetadata';
 

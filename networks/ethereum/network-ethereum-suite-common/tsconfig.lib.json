@@ -11,10 +11,10 @@
         },
         { "path": "../network-ethereum" },
         {
-            "path": "../../network-module/network-module"
+            "path": "../../network-module/network-module-suite-common-types"
         },
         {
-            "path": "../../network-module/network-module-suite-common-types"
+            "path": "../../network-module/network-module-types"
         },
         { "path": "../../../packages/utils" },
         {

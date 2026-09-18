@@ -1,4 +1,4 @@
-import { asNetworkSymbol } from '@trezor/network-module';
+import { asNetworkSymbol } from '@trezor/network-module-types';
 
 import type { NetworkMetadata } from './NetworkMetadata';
 import { networksActions, networksReducer } from './networksReducer';

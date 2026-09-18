@@ -1,4 +1,4 @@
-import { asNetworkSymbols } from '@trezor/network-module';
+import { asNetworkSymbols } from '@trezor/network-module-types';
 
 import type { NetworkSymbol } from '../src/networkTypes';
 
