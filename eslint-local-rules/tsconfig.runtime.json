@@ -1,0 +1,11 @@
+{
+    "compilerOptions": {
+        "allowSyntheticDefaultImports": true,
+        "esModuleInterop": true,
+        "module": "Node16",
+        "moduleResolution": "Node16",
+        "rootDir": ".",
+        "target": "ES2023"
+    },
+    "include": ["./**/*.ts"]
+}

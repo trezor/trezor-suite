@@ -1,0 +1,39 @@
+{
+    "name": "@trezor/eslint-local-rules",
+    "version": "1.0.0",
+    "private": true,
+    "main": "index.js",
+    "files": [
+        "README.md",
+        "analytics-event-name/rule.ts",
+        "index.js",
+        "named-contracts/di/rule.ts",
+        "named-contracts/thunks/rule.ts",
+        "named-contracts/utils.ts",
+        "no-override-ds-component/rule.ts",
+        "no-package-deep-imports/rule.ts",
+        "no-suite-imports-in-suite-common/rule.ts",
+        "no-unused-intersection-members/rule.ts",
+        "thunk-names/rule.ts",
+        "thunks/utils.ts",
+        "tsconfig.runtime.json",
+        "utils.ts"
+    ],
+    "scripts": {
+        "depcheck": "yarn g:depcheck",
+        "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'",
+        "test:unit": "yarn g:jest --config jest.config.js --runInBand",
+        "type-check": "yarn g:tsc --build"
+    },
+    "dependencies": {
+        "ts-node": "^10.9.2",
+        "typescript": "npm:@typescript/typescript6@6.0.2"
+    },
+    "devDependencies": {
+        "eslint": "^10.8.1",
+        "typescript-eslint": "^8.67.0"
+    },
+    "peerDependencies": {
+        "eslint": "^10.8.1"
+    }
+}

@@ -53,7 +53,6 @@ export const noPackageDeepImportsRule: Rule.RuleModule = {
         docs: {
             description:
                 'Disallows deep imports from selected package scopes and enforces package entry points.',
-            category: 'Best Practices',
             recommended: false,
         },
         messages: {

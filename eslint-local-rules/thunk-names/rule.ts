@@ -14,7 +14,6 @@ export const enforceThunkNamesRule: Rule.RuleModule = {
         type: 'problem',
         docs: {
             description: 'Enforces the Thunk suffix for Redux thunk declarations.',
-            category: 'Best Practices',
             recommended: false,
         },
         fixable: 'code',
