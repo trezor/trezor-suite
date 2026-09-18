@@ -15,7 +15,7 @@ type JUnitProperties = { property?: JUnitProperty[] };
 
 type JUnitTestCase = {
     $: { name: string };
-    failure?: unknown[];
+    failure?: string[];
     error?: unknown[];
     skipped?: unknown[];
     properties?: JUnitProperties[];
@@ -37,19 +37,35 @@ const filterSuiteByGrep = (suite: any, regex: RegExp): void => {
     });
 };
 
-/**
- * The Currents JUnit converter creates one attempt per <failure> element, so every failed retry
- * gets its own <failure> to keep the artifacts of the individual attempts apart.
- */
-const addRetryFailures = (suite: JUnitTestSuite, testAttempts: Map<string, TestAttempts>): void => {
-    suite.testcase?.forEach(testCase => {
-        const attempts = testAttempts.get(testCase.$.name);
-        if (testCase.failure === undefined || !attempts?.retryReasons.length) return;
+const MISSING_RETRY_REASON =
+    'Jest did not record the reason of this failed attempt (jest.retryTimes without logErrorsBeforeRetry).';
 
-        testCase.failure = [
-            ...attempts.retryReasons.map(reason => stripVTControlCharacters(reason)),
-            ...testCase.failure,
-        ];
+// Jest records one retry reason per error rather than per attempt, so the reasons can only be
+// attributed to the individual retries when their counts match.
+const getRetryFailures = ({ invocations, retryReasons }: TestAttempts): string[] => {
+    const retries = Math.max(invocations - 1, 0);
+    const reasons = retryReasons.map(reason => stripVTControlCharacters(reason));
+    if (reasons.length === retries) return reasons;
+
+    return Array.from({ length: retries }, () => reasons.join('\n\n') || MISSING_RETRY_REASON);
+};
+
+/**
+ * The Currents JUnit converter creates one attempt per <failure> element, while jest-junit writes
+ * one per error (a failing test plus its failing afterEach hook make two). Every failed test gets
+ * exactly one <failure> per invocation to keep the artifacts of the individual attempts apart.
+ */
+const setOneFailurePerAttempt = (
+    suite: JUnitTestSuite,
+    testAttempts: Map<string, TestAttempts>,
+): void => {
+    suite.testcase?.forEach(testCase => {
+        if (testCase.failure === undefined) return;
+
+        const attempts = testAttempts.get(testCase.$.name);
+        const retryFailures = attempts ? getRetryFailures(attempts) : [];
+
+        testCase.failure = [...retryFailures, testCase.failure.join('\n\n')];
     });
 };
 
@@ -146,7 +162,9 @@ const addAttemptArtifacts = ({
 }: AddAttemptArtifactsParams): void => {
     suite.testcase?.forEach(testCase => {
         const attempts = testAttempts.get(testCase.$.name);
-        if (!attempts) return;
+        // The converter attaches only the first attempt's artifacts to a skipped test, which would
+        // show a quarantined test with the video of its first failure but not of its final one.
+        if (!attempts || testCase.skipped !== undefined) return;
 
         const invocations = Array.from({ length: attempts.invocations }, (_, index) => index + 1);
         const properties = invocations.flatMap(invocation =>
@@ -221,7 +239,7 @@ export type ProcessJUnitReportParams = {
 /**
  * Process the JUnit XML report for a project.
  * - Filters out skipped tests that don't match grep.
- * - Adds a <failure> for every failed retry so Currents shows each attempt separately.
+ * - Reshapes the failures into one <failure> per attempt so Currents shows each attempt separately.
  * - When quarantinedActions are provided, converts failing testcases that are
  *   quarantined into skipped ones and adjusts suite-level counters.
  * - Attaches the Detox artifacts of every attempt and the instance attachments as Currents
@@ -276,7 +294,7 @@ export const processJUnitReport = async ({
                 filterSuiteByGrep(suite, regex);
             }
 
-            addRetryFailures(suite, testAttempts);
+            setOneFailurePerAttempt(suite, testAttempts);
 
             if (quarantinedActions.length > 0) {
                 applySuiteQuarantine(suite, projectName, quarantinedActions);

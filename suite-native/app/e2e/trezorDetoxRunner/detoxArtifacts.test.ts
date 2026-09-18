@@ -70,7 +70,7 @@ describe('findNewDetoxArtifactsRootDir', () => {
 });
 
 describe('getAttemptArtifacts', () => {
-    it('finds the video and screenshots in the directory Detox names after a failed test', () => {
+    it('finds the video, screenshots and device log in the directory Detox names after a failed test', () => {
         const rootDir = createTempDir();
         const testDir = path.join(rootDir, '✗ Send flow sends BTC @T3T1');
         createFile(testDir, 'test.mp4');
@@ -86,6 +86,12 @@ describe('getAttemptArtifacts', () => {
                 invocation: 1,
             }),
         ).toEqual([
+            {
+                path: path.join(testDir, 'device.log'),
+                type: 'attachment',
+                contentType: 'text/plain',
+                name: 'attempt 1 device.log',
+            },
             {
                 path: path.join(testDir, 'test.mp4'),
                 type: 'video',

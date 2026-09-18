@@ -18,17 +18,19 @@ const DETOX_RUN_DIR = 'android.emu.release.2026-09-18 10-00-00Z';
 
 type TestCaseFixture = {
     name: string;
-    failure?: string;
+    failures?: string[];
 };
 
 const buildReport = (testCases: TestCaseFixture[]): string => {
-    const failures = testCases.filter(testCase => testCase.failure !== undefined).length;
+    const failures = testCases.filter(testCase => testCase.failures !== undefined).length;
     const testCasesXml = testCases
         .map(
             testCase =>
-                `<testcase classname="${testCase.name}" name="${testCase.name}" time="3">${
-                    testCase.failure === undefined ? '' : `<failure>${testCase.failure}</failure>`
-                }</testcase>`,
+                `<testcase classname="${testCase.name}" name="${testCase.name}" time="3">${(
+                    testCase.failures ?? []
+                )
+                    .map(failure => `<failure>${failure}</failure>`)
+                    .join('')}</testcase>`,
         )
         .join('\n');
 
@@ -88,7 +90,7 @@ describe('processJUnitReport', () => {
     });
 
     it('reports every retry of a failed test as a separate attempt with its own artifacts', async () => {
-        writeReport([{ name: TEST_NAME, failure: 'Error: third attempt' }]);
+        writeReport([{ name: TEST_NAME, failures: ['Error: third attempt'] }]);
         const attempts: TestAttempts = {
             fullName: TEST_NAME,
             status: 'failed',
@@ -145,6 +147,68 @@ describe('processJUnitReport', () => {
         ]);
     });
 
+    it('keeps one failure per attempt when an attempt raised several errors', async () => {
+        writeReport([{ name: TEST_NAME, failures: ['Error: second attempt', 'Error: afterEach'] }]);
+        const attempts: TestAttempts = {
+            fullName: TEST_NAME,
+            status: 'failed',
+            invocations: 2,
+            retryReasons: ['Error: first attempt', 'Error: afterEach'],
+        };
+        const secondVideo = createArtifact(`✗ ${TEST_NAME} (2)`, 'test.mp4');
+
+        await processJUnitReport({
+            projectName: PROJECT_NAME,
+            reportPath,
+            detoxFailed: true,
+            quarantinedActions: [],
+            testAttempts: new Map([[TEST_NAME, attempts]]),
+            artifactsRootDir,
+            instanceAttachments: [],
+        });
+
+        const report = await readReport();
+        const [testCase] = report.testsuites.testsuite[0].testcase;
+        expect(testCase.failure).toEqual([
+            'Error: first attempt\n\nError: afterEach',
+            'Error: second attempt\n\nError: afterEach',
+        ]);
+        expect(getPropertyPairs(testCase)).toEqual([
+            ['currents.artifact.attempt.1.path', secondVideo],
+            ['currents.artifact.attempt.1.type', 'video'],
+            ['currents.artifact.attempt.1.contentType', 'video/mp4'],
+            ['currents.artifact.attempt.1.name', 'attempt 2 test.mp4'],
+        ]);
+    });
+
+    it('fills in the retries whose reason Jest did not record', async () => {
+        writeReport([{ name: TEST_NAME, failures: ['Error: third attempt'] }]);
+        const attempts: TestAttempts = {
+            fullName: TEST_NAME,
+            status: 'failed',
+            invocations: 3,
+            retryReasons: [],
+        };
+
+        await processJUnitReport({
+            projectName: PROJECT_NAME,
+            reportPath,
+            detoxFailed: true,
+            quarantinedActions: [],
+            testAttempts: new Map([[TEST_NAME, attempts]]),
+            artifactsRootDir,
+            instanceAttachments: [],
+        });
+
+        const report = await readReport();
+        const [testCase] = report.testsuites.testsuite[0].testcase;
+        expect(testCase.failure).toEqual([
+            expect.stringContaining('did not record'),
+            expect.stringContaining('did not record'),
+            'Error: third attempt',
+        ]);
+    });
+
     it('keeps a flaky test passed and attaches the artifacts of all its attempts', async () => {
         writeReport([{ name: TEST_NAME }]);
         const attempts: TestAttempts = {
@@ -184,8 +248,8 @@ describe('processJUnitReport', () => {
         expect(suite.properties).toBeUndefined();
     });
 
-    it('drops the retry failures together with the final failure of a quarantined test', async () => {
-        writeReport([{ name: TEST_NAME, failure: 'Error: second attempt' }]);
+    it('drops the failures and artifacts of a quarantined test', async () => {
+        writeReport([{ name: TEST_NAME, failures: ['Error: second attempt'] }]);
         const attempts: TestAttempts = {
             fullName: TEST_NAME,
             status: 'failed',
@@ -210,6 +274,7 @@ describe('processJUnitReport', () => {
         const [testCase] = suite.testcase;
         expect(testCase.failure).toBeUndefined();
         expect(testCase.skipped).toBeDefined();
+        expect(testCase.properties).toBeUndefined();
         expect(suite.$.failures).toBe('0');
         expect(suite.properties).toBeUndefined();
     });

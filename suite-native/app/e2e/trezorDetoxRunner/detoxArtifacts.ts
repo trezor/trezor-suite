@@ -19,6 +19,7 @@ const ARTIFACT_TYPES_BY_EXTENSION: Record<
 > = {
     '.mp4': { type: 'video', contentType: 'video/mp4' },
     '.png': { type: 'screenshot', contentType: 'image/png' },
+    '.log': { type: 'attachment', contentType: 'text/plain' },
 };
 
 type ListDetoxArtifactsRootDirsParams = {
