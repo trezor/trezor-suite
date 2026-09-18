@@ -1814,6 +1814,23 @@ export const messages = defineMessages({
         defaultMessage: 'How do you like the new asset table?',
         id: 'TR_HOME_ASSET_FEEDBACK_TITLE',
     },
+    TR_HOME_ASSET_UNHIDE: {
+        defaultMessage: 'Unhide',
+        id: 'TR_HOME_ASSET_UNHIDE',
+    },
+    TR_HOME_ASSET_UNHIDE_TITLE: {
+        defaultMessage: 'Unhide {asset}?',
+        id: 'TR_HOME_ASSET_UNHIDE_TITLE',
+    },
+    TR_HOME_ASSET_UNHIDE_TEXT: {
+        defaultMessage: 'Unhiding will show this token in your asset list again.',
+        id: 'TR_HOME_ASSET_UNHIDE_TEXT',
+    },
+    TR_HOME_ASSET_UNHIDE_UNRECOGNIZED_TEXT: {
+        defaultMessage:
+            'This token appears to be suspicious and may be a scam. Unhiding will show it in your asset list again.',
+        id: 'TR_HOME_ASSET_UNHIDE_UNRECOGNIZED_TEXT',
+    },
     TR_ASSET: {
         defaultMessage: 'Asset',
         id: 'TR_ASSET',
@@ -5438,6 +5455,10 @@ export const messages = defineMessages({
     TR_DASHBOARD: {
         id: 'TR_DASHBOARD',
         defaultMessage: 'Dashboard',
+    },
+    TR_HOME: {
+        id: 'TR_HOME',
+        defaultMessage: 'Home',
     },
     TR_EARN: {
         id: 'TR_EARN',
