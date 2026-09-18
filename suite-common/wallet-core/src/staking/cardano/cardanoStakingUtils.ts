@@ -16,7 +16,12 @@ import {
 import { PROTO } from '@trezor/connect';
 import { isArrayMember } from '@trezor/utils';
 
-import { CARDANO_EVERSTAKE_STAKING_POOL } from './cardanoStakingConstants';
+import {
+    CARDANO_ALWAYS_ABSTAIN_DREP_ID,
+    CARDANO_EVERSTAKE_DREP,
+    CARDANO_EVERSTAKE_STAKING_POOL,
+} from './cardanoStakingConstants';
+import { type VotingDelegationOption } from './cardanoStakingTypes';
 
 export function isSupportedAdaStakingNetworkSymbol(
     symbol: NetworkSymbol,
@@ -50,6 +55,23 @@ export const getCardanoAccountDrepId = (account?: Account) => {
 
 export const hasCardanoLiveVoteDelegation = (account?: Account) =>
     !!isCardanoStakingActive(account ?? null) && !!getCardanoAccountDrepId(account);
+
+export const getCardanoCurrentVotingOption = (
+    account?: Account,
+): VotingDelegationOption | undefined => {
+    const drepId = getCardanoAccountDrepId(account);
+
+    switch (drepId) {
+        case null:
+            return undefined;
+        case CARDANO_ALWAYS_ABSTAIN_DREP_ID:
+            return { type: 'abstain' };
+        case CARDANO_EVERSTAKE_DREP.bech32:
+            return { type: 'everstake' };
+        default:
+            return { type: 'another_drep', drepId };
+    }
+};
 
 export const isCardanoStakedWithEverstake = (
     account: Account,

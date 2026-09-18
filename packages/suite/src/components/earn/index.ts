@@ -29,8 +29,11 @@ export { YieldWithdraw } from './yield/withdraw/YieldWithdraw';
 export { EarnStakingInfo } from './modals/EarnInANutshell/components/EarnStakingInfo';
 export { EarnWithdrawingInfo } from './modals/EarnInANutshell/components/EarnWithdrawingInfo';
 
-export { VotingDelegations } from './modals/shared/VotingDelegations/VotingDelegations';
-export { VotingDelegationsOptions } from './modals/shared/VotingDelegations/VotingDelegationsOptions';
+export {
+    BASE_VOTING_PREFERENCE_OPTIONS,
+    type VotingPreferenceOption,
+    VotingPreferenceCard,
+} from './modals/shared/VotingDelegations/VotingPreferenceCard';
 
 export { PoweredByBadge } from './providers/PoweredByBadge';
 

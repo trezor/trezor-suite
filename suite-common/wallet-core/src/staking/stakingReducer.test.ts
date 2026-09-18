@@ -1,8 +1,9 @@
 import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { type AccountKey } from '@suite-common/wallet-types';
 
-import { type AccountVotingDelegation, stakeActions } from './stakingActions';
-import { DEFAULT_VOTING_OPTION } from './stakingConstants';
+import { DEFAULT_VOTING_OPTION } from './cardano/cardanoStakingConstants';
+import { type AccountVotingDelegation } from './cardano/cardanoStakingTypes';
+import { stakeActions } from './stakingActions';
 import { prepareStakeReducer, stakeInitialState } from './stakingReducer';
 import type { StakeState } from './stakingReducerTypes';
 

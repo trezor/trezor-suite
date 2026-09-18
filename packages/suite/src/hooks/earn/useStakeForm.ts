@@ -14,6 +14,7 @@ import {
     selectBaseCurrency,
     selectFiatRatesByFiatRateKey,
     selectRawNetworkFeeInfo,
+    selectVotingDelegationOption,
     useFormDraft,
 } from '@suite-common/wallet-core';
 import { type Account, type StakeFormState } from '@suite-common/wallet-types';
@@ -24,6 +25,7 @@ import {
     getFiatRateKey,
     toFiatCurrency,
 } from '@suite-common/wallet-utils';
+import { useCurrentRef } from '@trezor/react-utils';
 import { isChanged, throwError } from '@trezor/utils';
 import { BigNumber } from '@trezor/utils/src/bigNumber';
 
@@ -50,6 +52,9 @@ export const useStakeForm = ({ account }: UseStakeFormProps): StakeContextValues
 
     const baseCurrencyCode = useSelector(selectBaseCurrency);
     const networkFees = useSelector(state => selectRawNetworkFeeInfo(state, account.symbol));
+    const selectedVotingDelegation = useSelector(state =>
+        selectVotingDelegationOption(state, account.key),
+    );
 
     const [currency, setCurrency] = useState<'crypto' | 'fiat' | undefined>(undefined);
 
@@ -146,6 +151,14 @@ export const useStakeForm = ({ account }: UseStakeFormProps): StakeContextValues
         ...methods,
     });
     const selectedFee = _selectedFee ?? 'normal';
+
+    const composeRequestRef = useCurrentRef(composeRequest);
+
+    useEffect(() => {
+        if (account.networkType !== 'cardano') return;
+
+        composeRequestRef.current();
+    }, [account.networkType, composeRequestRef, selectedVotingDelegation]);
 
     useDebounce(
         () => {

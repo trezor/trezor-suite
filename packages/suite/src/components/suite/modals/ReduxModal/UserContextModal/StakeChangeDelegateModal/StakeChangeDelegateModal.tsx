@@ -1,4 +1,4 @@
-import { useEffect, useMemo } from 'react';
+import { useLayoutEffect, useMemo } from 'react';
 import { FormProvider } from 'react-hook-form';
 
 import { selectFullSelectedAccount } from '@suite/account';
@@ -6,10 +6,13 @@ import { events, selectDesktopAnalyticsDep } from '@suite/analytics';
 import { Translation } from '@suite/intl';
 import { useServices } from '@suite-common/dependency-injection';
 import { selectDispatch } from '@suite-common/redux-utils';
+import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import {
+    CARDANO_ALWAYS_ABSTAIN_DREP_ID,
     CARDANO_EVERSTAKE_DREP,
-    DEFAULT_VOTING_OPTION,
     getCardanoAccountDrepId,
+    getCardanoCurrentVotingOption,
+    selectStakeVotingDelegation,
     selectVotingDelegationOption,
     stakeActions,
     validateCardanoDrep,
@@ -17,7 +20,7 @@ import {
 import { type SelectedAccountLoaded } from '@suite-common/wallet-types';
 import { Card, Column, Modal, Tooltip } from '@trezor/components';
 
-import { VotingDelegationsOptions } from 'src/components/earn';
+import { BASE_VOTING_PREFERENCE_OPTIONS, VotingPreferenceCard } from 'src/components/earn';
 import { Fees } from 'src/components/wallet/Fees/Fees';
 import { useSelector } from 'src/hooks/suite';
 import { useMessageSystemStaking } from 'src/hooks/suite/useMessageSystemStaking';
@@ -26,7 +29,7 @@ import {
     useChangeDelegateForm,
 } from 'src/hooks/wallet/useChangeDelegateForm';
 
-import { CurrentDelegate } from './CurrentDelegate';
+import { CurrentVotingPreference } from './CurrentVotingPreference';
 
 interface StakeChangeDelegateModalProps {
     onCancel?: () => void;
@@ -49,24 +52,36 @@ export const StakeChangeDelegateModalLoaded = ({
 
     const changeDelegateContextValues = useChangeDelegateForm({ selectedAccount });
 
-    const { changeFeeLevel, feeInfo, composedLevels, methods, handleSubmit, signTx } =
-        changeDelegateContextValues;
+    const {
+        changeFeeLevel,
+        feeInfo,
+        composedLevels,
+        selectedFee,
+        isComposing,
+        methods,
+        handleSubmit,
+        signTx,
+    } = changeDelegateContextValues;
 
     const currentDrepId = getCardanoAccountDrepId(account);
     const isEverstake = currentDrepId === CARDANO_EVERSTAKE_DREP.bech32;
 
-    // we don't want to show current delegation option in this modal
-    // if it was pre-selected, select the default option instead
-    useEffect(() => {
-        if (selectedVotingDelegation.type !== 'current') return;
+    const currentVotingOption = useMemo(() => getCardanoCurrentVotingOption(account), [account]);
+
+    const isSelectionConfirmedForAccount = useSelector(
+        state => selectStakeVotingDelegation(state)?.accountKey === account.key,
+    );
+
+    useLayoutEffect(() => {
+        if (isSelectionConfirmedForAccount) return;
 
         dispatch(
             stakeActions.setAccountVotingDelegation({
                 accountKey: account.key,
-                option: DEFAULT_VOTING_OPTION,
+                option: { type: 'current' },
             }),
         );
-    }, [dispatch, selectedVotingDelegation, account.key]);
+    }, [dispatch, isSelectionConfirmedForAccount, account.key]);
 
     const handleCancel = () => {
         dispatch(stakeActions.clearAccountVotingDelegation());
@@ -101,8 +116,15 @@ export const StakeChangeDelegateModalLoaded = ({
     const { isDisabled: isSelectionInvalid, errorType } = useMemo(() => {
         switch (selectedVotingDelegation.type) {
             case 'current':
-                return { isDisabled: true, errorType: 'current_delegate' as const };
+                return { isDisabled: true };
 
+            case 'abstain': {
+                if (currentDrepId === CARDANO_ALWAYS_ABSTAIN_DREP_ID) {
+                    return { isDisabled: true, errorType: 'current_delegate' as const };
+                }
+
+                break;
+            }
             case 'everstake': {
                 if (isEverstake) {
                     return { isDisabled: true, errorType: 'current_delegate' as const };
@@ -128,7 +150,8 @@ export const StakeChangeDelegateModalLoaded = ({
         return { isDisabled: false };
     }, [selectedVotingDelegation, currentDrepId, isEverstake]);
 
-    const isDisabled = isSelectionInvalid || isVotingDisabled;
+    const isDisabled =
+        isSelectionInvalid || isVotingDisabled || composedLevels?.[selectedFee]?.type !== 'final';
 
     const tooltipContent = useMemo(() => {
         if (isVotingDisabled) {
@@ -142,25 +165,49 @@ export const StakeChangeDelegateModalLoaded = ({
         return undefined;
     }, [isVotingDisabled, votingMessageContent, isSelectionInvalid, errorType]);
 
+    const options = useMemo(
+        () =>
+            BASE_VOTING_PREFERENCE_OPTIONS.filter(
+                option =>
+                    option.type === 'another_drep' || option.type !== currentVotingOption?.type,
+            ),
+        [currentVotingOption?.type],
+    );
+
     return (
         <ChangeDelegateFormContext.Provider value={changeDelegateContextValues}>
             <FormProvider {...methods}>
                 <Modal
-                    heading={<Translation id="TR_STAKE_CHANGE_DELEGATE" />}
+                    heading={<Translation id="TR_STAKING_CHANGE_VOTING_PREFERENCE" />}
                     onCancel={handleCancel}
                     bottomContent={
                         <Tooltip content={tooltipContent}>
-                            <Modal.Button isDisabled={isDisabled} onClick={handleContinue}>
+                            <Modal.Button
+                                isDisabled={isDisabled}
+                                isLoading={isComposing}
+                                onClick={handleContinue}
+                            >
                                 <Translation id="TR_CONTINUE" />
                             </Modal.Button>
                         </Tooltip>
                     }
                 >
-                    <Card>
-                        <Column gap={20} hasDivider>
-                            <CurrentDelegate account={account} />
-                            <VotingDelegationsOptions account={account} hasTitle />
-
+                    <Column gap={16}>
+                        <CurrentVotingPreference account={account} />
+                        <VotingPreferenceCard
+                            account={account}
+                            heading={<Translation id="TR_STAKING_NEW_PREFERENCE" />}
+                            description={
+                                <Translation
+                                    id="TR_STAKING_NEW_PREFERENCE_DESCRIPTION"
+                                    values={{
+                                        displaySymbol: getNetworkDisplaySymbol(account.symbol),
+                                    }}
+                                />
+                            }
+                            options={options}
+                        />
+                        <Card type="raised" paddingType="small">
                             <Fees
                                 feeInfo={feeInfo}
                                 account={account}
@@ -168,8 +215,8 @@ export const StakeChangeDelegateModalLoaded = ({
                                 changeFeeLevel={changeFeeLevel}
                                 headerTypographyStyle="body-sm"
                             />
-                        </Column>
-                    </Card>
+                        </Card>
+                    </Column>
                 </Modal>
             </FormProvider>
         </ChangeDelegateFormContext.Provider>
