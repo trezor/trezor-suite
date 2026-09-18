@@ -10,6 +10,7 @@ import {
     type YieldFlowResolvedData,
     type YieldWithdrawFlowType,
     composeYieldWithdrawTransactionThunk,
+    getConvertedOutputTokenBalanceToInputTokenAmount,
     isYieldWithdrawFeeError,
     yieldActions,
 } from '@suite-common/wallet-core';
@@ -145,6 +146,17 @@ export const submitYieldWithdrawThunk = createThunk<
                 }),
             );
 
+            const receiptAmount =
+                flowType === 'redeem'
+                    ? getConvertedOutputTokenBalanceToInputTokenAmount({
+                          networkSymbol: account.symbol,
+                          token: flowData.token,
+                          outputToken: flowData.receiptToken,
+                          outputTokenBalance: amount,
+                          pricePerShareState: flowData.vault.state?.pricePerShareState,
+                      })
+                    : amount;
+
             dispatch(
                 yieldActions.setPendingTx({
                     flowType,
@@ -156,6 +168,7 @@ export const submitYieldWithdrawThunk = createThunk<
                         fee: result.fee,
                         submittedAt: Date.now(),
                     },
+                    receiptAmount,
                 }),
             );
         } catch (error) {

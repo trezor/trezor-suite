@@ -95,18 +95,17 @@ type YieldUnwrapDefaultAmountParams = {
     pricePerShareState?: Parameters<
         typeof getConvertedOutputTokenBalanceToInputTokenAmount
     >[0]['pricePerShareState'];
-    /** Fallback used when the withdrawn asset amount can't be resolved (e.g. missing price). */
-    fallbackAmount: string;
+    /** Asset-output amount persisted when the withdraw was submitted. */
+    persistedAssetAmount?: string;
 };
 
 /**
  * Amount to pre-fill in the withdraw flow's unwrap (wrapped-native → native) step.
  *
- * It must default to the asset amount that was just withdrawn — NOT the account's full
- * wrapped-native balance, which would sweep in unrelated WETH the user never meant to unwrap
- * (see trezor/trezor-suite#30559). A `withdraw` yields the asset amount directly; a `redeem`
- * yields shares, so those are converted to their asset (WETH) equivalent via the vault
- * price-per-share. Falls back to the full balance only when the asset amount can't be resolved.
+ * It must default to the asset amount that was just withdrawn — never the account's full
+ * wrapped-native balance, which would sweep in unrelated WETH (trezor/trezor-suite#30559).
+ * When the price can't convert a redeem's shares, the amount persisted at submit is used;
+ * failing that the field stays empty (trezor/trezor-suite#30893).
  */
 export const getYieldUnwrapDefaultAmount = ({
     flowType,
@@ -114,7 +113,7 @@ export const getYieldUnwrapDefaultAmount = ({
     token,
     receiptToken,
     pricePerShareState,
-    fallbackAmount,
+    persistedAssetAmount,
 }: YieldUnwrapDefaultAmountParams): string => {
     const withdrawnAssetAmount =
         flowType === 'redeem'
@@ -127,11 +126,15 @@ export const getYieldUnwrapDefaultAmount = ({
               })
             : withdrawnAmount;
 
-    if (!withdrawnAssetAmount || new BigNumber(withdrawnAssetAmount).lte(0)) {
-        return fallbackAmount;
+    if (withdrawnAssetAmount && new BigNumber(withdrawnAssetAmount).gt(0)) {
+        return withdrawnAssetAmount;
     }
 
-    return withdrawnAssetAmount;
+    if (persistedAssetAmount && new BigNumber(persistedAssetAmount).gt(0)) {
+        return persistedAssetAmount;
+    }
+
+    return '';
 };
 
 type ShouldInitializeYieldAllowanceParams = {
