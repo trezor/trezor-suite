@@ -88,6 +88,9 @@ export const selectCurrentFiatRatesByFiatRateKeys = createMemoizedSelector(
         ),
 );
 
+export const selectLastWeekFiatRates = (state: FiatRatesRootState): RatesByKey | undefined =>
+    state.wallet.fiat?.['lastWeek'];
+
 export const selectHistoricFiatRates = (state: FiatRatesRootState): RatesByTimestamps =>
     state.wallet.fiat.historic;
 
