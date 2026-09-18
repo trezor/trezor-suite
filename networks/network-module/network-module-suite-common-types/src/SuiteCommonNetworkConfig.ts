@@ -69,6 +69,7 @@ export type Explorer = {
     address: string;
     nft?: string;
     token?: string;
+    contract?: string;
     queryString?: string;
 };
 

@@ -35,8 +35,9 @@ export const getParsedExplorerUrls = (explorer: Explorer): Explorer => {
     const address = getExplorerUrlSuffix(explorer, 'address');
     const nft = getExplorerUrlSuffix(explorer, 'nft');
     const token = getExplorerUrlSuffix(explorer, 'token');
+    const contract = getExplorerUrlSuffix(explorer, 'contract');
 
-    return { base, tx, address, nft, token, queryString };
+    return { base, tx, address, nft, token, contract, queryString };
 };
 
 export const getExplorerUrl = (explorer: Explorer | undefined, key: keyof Explorer) => {
