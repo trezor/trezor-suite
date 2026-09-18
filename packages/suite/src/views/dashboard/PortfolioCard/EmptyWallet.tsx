@@ -1,3 +1,4 @@
+import { useMemo } from 'react';
 import styled from 'styled-components';
 
 import { events, injectDesktopAnalytics } from '@suite/analytics';
@@ -6,13 +7,17 @@ import { Translation } from '@suite/intl';
 import { gotoThunk } from '@suite/router';
 import { useServices } from '@suite-common/dependency-injection';
 import { selectHasBitcoinOnlyFirmware } from '@suite-common/device';
+import { selectNetworkNamesMap } from '@suite-common/networks/reduxState/networksSelectors';
 import { injectDispatch } from '@suite-common/redux-utils';
 import { selectEnabledNetworks } from '@suite-common/wallet-core';
 import { Box, Button, Column, H3, Illustration, Paragraph, Row } from '@trezor/components';
 import { ArrowDownIcon, CurrencyCircleDollarIcon } from '@trezor/icons';
-import { NetworkIconSet } from '@trezor/product-components';
+import { NetworkIconSet } from '@trezor/product-components/src/components/NetworkIconSet/NetworkIconSet';
+import { TokenIcon } from '@trezor/product-components/src/components/TokenIcon/TokenIcon';
 
 import { useSelector } from 'src/hooks/suite';
+
+const NETWORK_ICON_SIZE = 20;
 
 const RoundedBorder = styled.div`
     padding: 4px 6px 4px 12px;
@@ -23,8 +28,19 @@ const RoundedBorder = styled.div`
 export const EmptyWallet = () => {
     const { analytics, dispatch } = useServices(injectDesktopAnalytics, injectDispatch);
     const enabledNetworks = useSelector(selectEnabledNetworks);
+    const networkNamesMap = useSelector(selectNetworkNamesMap);
     const isBitcoinOnlyFirmware = useSelector(selectHasBitcoinOnlyFirmware);
     const isOnboardingFeedbackBannerShown = useSelector(selectIsOnboardingFeedbackBannerShown);
+
+    const networks = useMemo(
+        () =>
+            enabledNetworks.map(symbol => ({
+                symbol,
+                name: networkNamesMap?.[symbol] ?? symbol,
+                icon: <TokenIcon symbol={symbol} size={NETWORK_ICON_SIZE} />,
+            })),
+        [enabledNetworks, networkNamesMap],
+    );
 
     const clearOnboardingFeedbackBanner = () => {
         if (isOnboardingFeedbackBannerShown) {
@@ -75,10 +91,10 @@ export const EmptyWallet = () => {
                         <Paragraph intent="neutral" priority="secondary" typographyStyle="body-sm">
                             <Translation id="TR_READY_ON" />:
                         </Paragraph>
-                        <Box height={20}>
+                        <Box height={NETWORK_ICON_SIZE}>
                             <NetworkIconSet
-                                networks={enabledNetworks}
-                                size={20}
+                                networks={networks}
+                                size={NETWORK_ICON_SIZE}
                                 gap={16}
                                 maxVisibleIcons={null}
                                 hasTooltip

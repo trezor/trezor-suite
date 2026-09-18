@@ -7,12 +7,17 @@ import {
     NetworkIconSet as NetworkIconSetComponent,
     type NetworkIconSetProps,
 } from './NetworkIconSet';
+import { TokenIcon } from '../TokenIcon/TokenIcon';
 import { allowedTokenIconSizes } from '../TokenIcon/tokenIconTypes';
 
-const NETWORK_1: NetworkSymbol = asNetworkSymbol('btc');
-const NETWORK_2: NetworkSymbol = asNetworkSymbol('eth');
-const NETWORK_3: NetworkSymbol = asNetworkSymbol('ltc');
-const NETWORK_4: NetworkSymbol = asNetworkSymbol('ada');
+type NetworkIconSetStoryProps = Omit<NetworkIconSetProps, 'networks'> & {
+    networks: { symbol: NetworkSymbol; name: string }[];
+};
+
+const NETWORK_1 = { symbol: asNetworkSymbol('btc'), name: 'Bitcoin' };
+const NETWORK_2 = { symbol: asNetworkSymbol('eth'), name: 'Ethereum' };
+const NETWORK_3 = { symbol: asNetworkSymbol('ltc'), name: 'Litecoin' };
+const NETWORK_4 = { symbol: asNetworkSymbol('ada'), name: 'Cardano' };
 
 const meta: Meta<typeof NetworkIconSetComponent> = {
     title: 'NetworkIconSet',
@@ -20,7 +25,16 @@ const meta: Meta<typeof NetworkIconSetComponent> = {
 };
 export default meta;
 
-export const NetworkIconSet: StoryObj<NetworkIconSetProps> = {
+export const NetworkIconSet: StoryObj<NetworkIconSetStoryProps> = {
+    render: ({ networks, ...props }) => (
+        <NetworkIconSetComponent
+            {...props}
+            networks={networks.map(network => ({
+                ...network,
+                icon: <TokenIcon symbol={network.symbol} size={props.size} />,
+            }))}
+        />
+    ),
     args: {
         networks: [NETWORK_1, NETWORK_2, NETWORK_3, NETWORK_4],
         size: 24,
