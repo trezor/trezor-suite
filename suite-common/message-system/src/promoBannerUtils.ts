@@ -369,17 +369,11 @@ const getPromoBannerEligibility = (
         };
     }
 
-    const alternatives = (rawAlternatives ?? []).reduce<PromoBannerCondition[][]>(
-        (parsedAlternatives, rawAlternative) => {
-            const { conditions } = getPromoBannerConditions(rawAlternative);
-
-            return [...parsedAlternatives, conditions];
-        },
-        [],
+    const parsedAlternatives = (rawAlternatives ?? []).map(rawAlternative =>
+        getPromoBannerConditions(rawAlternative),
     );
-    const alternativeErrors = (rawAlternatives ?? []).flatMap(
-        rawAlternative => getPromoBannerConditions(rawAlternative).errors,
-    );
+    const alternatives = parsedAlternatives.map(({ conditions }) => conditions);
+    const alternativeErrors = parsedAlternatives.flatMap(({ errors }) => errors);
     const hasEmptyAlternative = alternatives.some(alternative => alternative.length === 0);
 
     return {
@@ -693,11 +687,11 @@ const evaluateWalletCondition = (
             return null;
         }
 
-         const networkAccounts = getAccountsForNetwork(accounts, assetId.networkSymbol);
+        const networkAccounts = getAccountsForNetwork(accounts, assetId.networkSymbol);
 
-         if (condition.type === 'asset-balance-none' && networkAccounts.length === 0) {
-             return null;
-         }
+        if (condition.type === 'asset-balance-none' && networkAccounts.length === 0) {
+            return null;
+        }
 
         if (assetId.type === 'native') {
             return networkAccounts.some(account =>
@@ -706,7 +700,7 @@ const evaluateWalletCondition = (
         }
 
         return getPositiveTokenBalanceResult({
-            accounts,
+            accounts: networkAccounts,
             networkSymbol: assetId.networkSymbol,
             tokenId: assetId.tokenId,
         });

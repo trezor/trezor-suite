@@ -169,6 +169,29 @@ describe(selectEligiblePromoBanners.name, () => {
         expect(selectVisiblePromoBanners({ promoBanners, accounts })).toEqual([]);
     });
 
+    it('hides token asset-balance-none banners until a matching network account has been discovered', () => {
+        const tokenContract = '0x1111111111111111111111111111111111111111';
+        const { promoBanners } = parsePromoBannerMessages([
+            createPromoMessage(
+                createPromoFeature({
+                    bannerId: 'defi-yield',
+                    eligibility: {
+                        required: [
+                            {
+                                type: 'asset-balance-none',
+                                value: `token:eth:${tokenContract}`,
+                            },
+                        ],
+                    },
+                }),
+            ),
+        ]);
+
+        const accounts = [mockWalletAccount({ symbol: asNetworkSymbol('btc'), balance: '1' })];
+
+        expect(selectVisiblePromoBanners({ promoBanners, accounts })).toEqual([]);
+    });
+
     it('requires all discovered accounts to have no positive balance for asset-balance-none', () => {
         const { promoBanners } = parsePromoBannerMessages([
             createPromoMessage(
