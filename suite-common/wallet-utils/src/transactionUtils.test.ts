@@ -20,6 +20,7 @@ import {
     getEvmNonceInfo,
     getEvmNonceInfoFromConfirmedNonce,
     getEvmNonceStatus,
+    getEvmPendingNonceCeiling,
     getEvmPrivatePendingHint,
     getPendingEvmNonceStatus,
     getRbfParams,
@@ -28,6 +29,7 @@ import {
     groupJointTransactions,
     groupTokensTransactionsByContractAddress,
     groupTransactionsByDate,
+    hasUnknownPendingEvmTxs,
     isPending,
     isSignedByAccount,
     isTransactionBumpable,
@@ -991,6 +993,96 @@ describe('transaction utils', () => {
                 pendingNonces: [],
                 confirmedNonces: [45],
             });
+        });
+    });
+
+    describe('getEvmPendingNonceCeiling', () => {
+        const pendingSentTx = (nonce: number) => getOwnEvmTransaction({ nonce, blockHeight: -1 });
+
+        it('with nothing pending locally the ceiling is the backend pending nonce itself', () => {
+            expect(getEvmPendingNonceCeiling(48, [])).toBe(48);
+        });
+
+        it('own pending txs the node has not seen raise the ceiling one slot each', () => {
+            const pending = [pendingSentTx(48), pendingSentTx(49)];
+
+            expect(getEvmPendingNonceCeiling(48, pending)).toBe(50);
+        });
+
+        it('own pending txs the node already counted do not raise it twice', () => {
+            // The node's pending nonce is 50 because it saw 48 and 49; both are below it.
+            const pending = [pendingSentTx(48), pendingSentTx(49)];
+
+            expect(getEvmPendingNonceCeiling(50, pending)).toBe(50);
+        });
+
+        it('leaves room for a tx the local list already shows confirmed but the node has not indexed', () => {
+            // The window getEvmNonceInfoFromConfirmedNonce bridges: nextNonce advances over the
+            // just-confirmed slot, so the ceiling has to advance over it too or the ordinary
+            // confirming window would warn.
+            const justConfirmed = getOwnEvmTransaction({ nonce: 48, blockHeight: 100 });
+
+            expect(getEvmPendingNonceCeiling(48, [justConfirmed])).toBe(49);
+        });
+
+        it('stops at a gap, so an isolated outlier cannot inflate it', () => {
+            const outlier = pendingSentTx(335753);
+
+            expect(getEvmPendingNonceCeiling(48, [outlier])).toBe(48);
+        });
+
+        it("a stranger's pending tx does not raise the ceiling", () => {
+            const foreignPending = getForeignEvmTransaction({ nonce: 48, blockHeight: -1 });
+
+            expect(getEvmPendingNonceCeiling(48, [foreignPending])).toBe(48);
+        });
+
+        it('reproduces the #30910 incident: offering 49 against a ceiling of 48', () => {
+            // confirmedNonce 48, pending nonce 48, nothing of ours in flight — the 49 that was
+            // offered came from a third party's nonce leaking into the pending set.
+            expect(getEvmPendingNonceCeiling(48, [])).toBeLessThan(49);
+        });
+    });
+
+    describe('hasUnknownPendingEvmTxs', () => {
+        const pendingSentTx = (nonce: number) => getOwnEvmTransaction({ nonce, blockHeight: -1 });
+
+        it('pending nonce equal to the confirmed nonce means nothing is in flight', () => {
+            expect(hasUnknownPendingEvmTxs({ pendingNonce: 48, confirmedNonce: 48 }, [])).toBe(
+                false,
+            );
+        });
+
+        it('a pending count our own in-flight txs fully explain is not suspicious', () => {
+            const pending = [pendingSentTx(48), pendingSentTx(49)];
+
+            expect(hasUnknownPendingEvmTxs({ pendingNonce: 50, confirmedNonce: 48 }, pending)).toBe(
+                false,
+            );
+        });
+
+        it('a pending count running ahead of what we know means somebody else broadcast', () => {
+            expect(hasUnknownPendingEvmTxs({ pendingNonce: 50, confirmedNonce: 48 }, [])).toBe(
+                true,
+            );
+        });
+
+        it("a stranger's pending tx does not count as our own knowledge", () => {
+            const foreignPending = getForeignEvmTransaction({ nonce: 48, blockHeight: -1 });
+
+            expect(
+                hasUnknownPendingEvmTxs({ pendingNonce: 49, confirmedNonce: 48 }, [foreignPending]),
+            ).toBe(true);
+        });
+
+        it('does not fire while a tx of ours is confirming and the backend count lags', () => {
+            // Local list already records 48 as confirmed; the node has mined it (pending count 49)
+            // but its mined-only count still reads 48.
+            const justConfirmed = getOwnEvmTransaction({ nonce: 48, blockHeight: 100 });
+
+            expect(
+                hasUnknownPendingEvmTxs({ pendingNonce: 49, confirmedNonce: 48 }, [justConfirmed]),
+            ).toBe(false);
         });
     });
 
