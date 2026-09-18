@@ -1,0 +1,236 @@
+import { shallowEqual } from 'react-redux';
+
+import { type DeviceRootState } from '@suite-common/device';
+import { createWeakMapSelector, returnStableArrayIfEmpty } from '@suite-common/redux-utils';
+import { type NetworkSymbol } from '@suite-common/wallet-config';
+import {
+    type AssetAccount,
+    type AssetAccountsRootState,
+    type FiatRatesRootState,
+    type WalletAssetKey,
+    type WalletSettingsRootState,
+    selectAssetAccountsByWallet,
+    selectBaseCurrency,
+    selectCurrentFiatRates,
+    selectEnabledNetworks,
+    selectHiddenAssetAccountKeySet,
+    selectLastWeekFiatRates,
+} from '@suite-common/wallet-core';
+import { type RatesByKey } from '@suite-common/wallet-types';
+import { getFiatRateKey, toFiatCurrency } from '@suite-common/wallet-utils';
+import { type BaseCurrencyCode, type TokenInfo } from '@trezor/blockchain-link-types';
+import { type StaticSessionId } from '@trezor/device-utils';
+import { BigNumber } from '@trezor/utils';
+
+import { getAssetDisplaySymbol, sumAssetAccounts } from './homeAssetTableUtils';
+
+export type HomeAssetTableState = AssetAccountsRootState &
+    DeviceRootState &
+    FiatRatesRootState &
+    WalletSettingsRootState;
+
+const createMemoizedSelector = createWeakMapSelector.withTypes<HomeAssetTableState>();
+
+export type AssetAccounts = readonly [AssetAccount, ...AssetAccount[]];
+
+const asAsset = (held: readonly AssetAccount[]): AssetAccounts | undefined =>
+    held.length === 0 ? undefined : (held as unknown as AssetAccounts);
+
+const ZERO_FIAT_VALUE = new BigNumber(0);
+
+export type AssetBalance = {
+    cryptoBalance: BigNumber;
+    amount: string;
+    tokenInfo: TokenInfo | undefined;
+};
+
+export const selectDeviceAssetGroups = createMemoizedSelector(
+    [
+        selectAssetAccountsByWallet,
+        (_state: AssetAccountsRootState, deviceState: StaticSessionId) => deviceState,
+        (
+            _state: AssetAccountsRootState,
+            _deviceState: StaticSessionId,
+            symbols: readonly NetworkSymbol[],
+        ) => symbols,
+    ],
+    (byWallet, deviceState, symbols): readonly (readonly AssetAccount[])[] => {
+        const groups = new Map<WalletAssetKey, AssetAccount[]>();
+        const byNetwork = byWallet.get(deviceState);
+
+        symbols.forEach(symbol => {
+            const held = byNetwork?.get(symbol);
+
+            held?.forEach(assetAccount => {
+                const group = groups.get(assetAccount.assetKey);
+
+                if (group === undefined) {
+                    groups.set(assetAccount.assetKey, [assetAccount]);
+                } else {
+                    group.push(assetAccount);
+                }
+            });
+        });
+
+        return returnStableArrayIfEmpty([...groups.values()]);
+    },
+);
+
+const selectHomeAssets = createMemoizedSelector(
+    [
+        (state: HomeAssetTableState, deviceState: StaticSessionId) =>
+            selectDeviceAssetGroups(state, deviceState, selectEnabledNetworks(state)),
+        selectHiddenAssetAccountKeySet,
+    ],
+    (assetGroups, hidden): readonly AssetAccounts[] =>
+        returnStableArrayIfEmpty(
+            assetGroups.flatMap(assetAccounts => {
+                const shown = asAsset(
+                    assetAccounts.filter(
+                        held => held.isAccountVisible && !hidden.has(held.assetAccountKey),
+                    ),
+                );
+
+                return shown === undefined ? [] : [shown];
+            }),
+        ),
+);
+
+export const selectAssetBalances = createMemoizedSelector(
+    [selectHomeAssets],
+    (assets): ReadonlyMap<AssetAccounts, AssetBalance> =>
+        new Map(
+            assets.map(assetAccounts => {
+                const { cryptoBalance, tokenInfo } = sumAssetAccounts(assetAccounts);
+
+                return [
+                    assetAccounts,
+                    { cryptoBalance, amount: cryptoBalance.toFixed(), tokenInfo },
+                ];
+            }),
+        ),
+);
+
+export const selectAssetBalance = createMemoizedSelector(
+    [selectAssetBalances, (_state, _deviceState, assetAccounts: AssetAccounts) => assetAccounts],
+    (balances, assetAccounts) => balances.get(assetAccounts),
+);
+
+const priceBalances = (
+    balances: ReadonlyMap<AssetAccounts, AssetBalance>,
+    rates: RatesByKey | undefined,
+    baseCurrencyCode: BaseCurrencyCode,
+): ReadonlyMap<AssetAccounts, BigNumber> => {
+    const priced = new Map<AssetAccounts, BigNumber>();
+
+    balances.forEach(({ cryptoBalance }, assetAccounts) => {
+        const [asset] = assetAccounts;
+
+        if (asset === undefined) {
+            return;
+        }
+
+        const fiatRateKey = getFiatRateKey(asset.symbol, baseCurrencyCode, asset.contractAddress);
+        const fiatValue = toFiatCurrency({
+            amount: cryptoBalance.toFixed(),
+            rate: rates?.[fiatRateKey]?.rate,
+        });
+
+        if (fiatValue !== null) {
+            priced.set(assetAccounts, fiatValue);
+        }
+    });
+
+    return priced;
+};
+
+const haveSameFiatValues = (
+    left: ReadonlyMap<AssetAccounts, BigNumber>,
+    right: ReadonlyMap<AssetAccounts, BigNumber>,
+) =>
+    left.size === right.size &&
+    [...left].every(([assetAccounts, fiatValue]) => right.get(assetAccounts)?.eq(fiatValue));
+
+const pricedOnce = { memoizeOptions: { resultEqualityCheck: haveSameFiatValues } };
+
+export const selectAssetFiatValues = createMemoizedSelector(
+    [selectAssetBalances, selectCurrentFiatRates, selectBaseCurrency],
+    priceBalances,
+    pricedOnce,
+);
+
+const selectAssetWeekAgoFiatValues = createMemoizedSelector(
+    [selectAssetBalances, selectLastWeekFiatRates, selectBaseCurrency],
+    priceBalances,
+    pricedOnce,
+);
+
+export const selectHomeAssetRows = createMemoizedSelector(
+    [selectHomeAssets, selectAssetBalances, selectAssetFiatValues],
+    (assets, balances, fiatValues): readonly AssetAccounts[] => {
+        const worth = (assetAccounts: AssetAccounts) =>
+            fiatValues.get(assetAccounts) ?? ZERO_FIAT_VALUE;
+
+        const names = new Map<AssetAccounts, string>();
+        const nameOf = (assetAccounts: AssetAccounts) => {
+            const named = names.get(assetAccounts);
+
+            if (named !== undefined) {
+                return named;
+            }
+
+            const [{ symbol }] = assetAccounts;
+            const name = getAssetDisplaySymbol({
+                symbol,
+                tokenInfo: balances.get(assetAccounts)?.tokenInfo,
+            });
+
+            names.set(assetAccounts, name);
+
+            return name;
+        };
+
+        return returnStableArrayIfEmpty(
+            [...assets].sort(
+                (left, right) =>
+                    worth(right).comparedTo(worth(left)) ||
+                    nameOf(left).localeCompare(nameOf(right)) ||
+                    left[0].symbol.localeCompare(right[0].symbol),
+            ),
+        );
+    },
+    {
+        memoizeOptions: {
+            resultEqualityCheck: shallowEqual,
+        },
+    },
+);
+
+export type HomeAssetTotals = {
+    fiatValue: BigNumber;
+    weekChange: BigNumber | undefined;
+    weekChangePercent: BigNumber | undefined;
+};
+
+export const selectHomeAssetTotals = createMemoizedSelector(
+    [selectAssetFiatValues, selectAssetWeekAgoFiatValues],
+    (fiatValues, weekAgoFiatValues): HomeAssetTotals => {
+        const addUp = (priced: ReadonlyMap<AssetAccounts, BigNumber>) =>
+            [...priced.values()].reduce((total, value) => total.plus(value), ZERO_FIAT_VALUE);
+
+        const fiatValue = addUp(fiatValues);
+        const weekAgoFiatValue = addUp(weekAgoFiatValues);
+
+        if (weekAgoFiatValue.isZero()) {
+            return { fiatValue, weekChange: undefined, weekChangePercent: undefined };
+        }
+
+        const weekChange = fiatValue.minus(weekAgoFiatValue);
+
+        return {
+            fiatValue,
+            weekChange,
+            weekChangePercent: weekChange.div(weekAgoFiatValue),
+        };
+    },
+);
