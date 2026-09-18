@@ -1,43 +1,34 @@
-import { createWeakMapSelector } from '@suite-common/redux-utils';
+import { createWeakMapSelector, returnStableArrayIfEmpty } from '@suite-common/redux-utils';
 import {
     type AssetHolding,
     type HiddenAssetHoldings,
-    selectBaseCurrency,
-    selectCurrentFiatRates,
     selectEnabledNetworks,
     selectHiddenAssetHoldings,
-    selectLastWeekFiatRates,
 } from '@suite-common/wallet-core';
 import { type StaticSessionId } from '@trezor/device-utils';
 
 import {
     type AssetFirstTableState,
-    priceAssets,
+    type AssetTotal,
     toAssetTotal,
 } from '../AssetFirstTable/assetFirstTableSelectors';
 
 const createMemoizedSelector = createWeakMapSelector.withTypes<AssetFirstTableState>();
 
-const createHiddenRowsSelector = (
+const compareAssets = (left: AssetTotal, right: AssetTotal) =>
+    right.cryptoBalance.comparedTo(left.cryptoBalance) ||
+    left.displaySymbol.localeCompare(right.displaySymbol);
+
+const createHiddenAssetsSelector = (
     pick: (hidden: HiddenAssetHoldings) => readonly (readonly AssetHolding[])[],
 ) =>
     createMemoizedSelector(
         [
             selectHiddenAssetHoldings,
             selectEnabledNetworks,
-            selectCurrentFiatRates,
-            selectLastWeekFiatRates,
-            selectBaseCurrency,
             (_state: AssetFirstTableState, deviceState: StaticSessionId) => deviceState,
         ],
-        (
-            hidden,
-            enabledNetworks,
-            currentFiatRates,
-            lastWeekFiatRates,
-            baseCurrencyCode,
-            deviceState,
-        ) => {
+        (hidden, enabledNetworks, deviceState): readonly AssetTotal[] => {
             const assets = pick(hidden).flatMap(holdings => {
                 const held = holdings.filter(
                     holding =>
@@ -49,10 +40,10 @@ const createHiddenRowsSelector = (
                 return toAssetTotal(held) ?? [];
             });
 
-            return priceAssets(assets, currentFiatRates, lastWeekFiatRates, baseCurrencyCode);
+            return returnStableArrayIfEmpty(assets.sort(compareAssets));
         },
     );
 
-export const selectHiddenByUserAssetRows = createHiddenRowsSelector(hidden => hidden.hiddenByUser);
+export const selectHiddenByUserAssets = createHiddenAssetsSelector(hidden => hidden.hiddenByUser);
 
-export const selectUnrecognizedAssetRows = createHiddenRowsSelector(hidden => hidden.unrecognized);
+export const selectUnrecognizedAssets = createHiddenAssetsSelector(hidden => hidden.unrecognized);

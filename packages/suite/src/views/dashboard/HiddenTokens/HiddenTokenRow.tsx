@@ -1,35 +1,31 @@
 import { memo } from 'react';
 
-import { Column, Row, Table, Text } from '@trezor/components';
+import { Column, Icon, Row, Table, Text } from '@trezor/components';
+import { CaretRightIcon } from '@trezor/icons';
 import { TokenIcon } from '@trezor/product-components';
 
-import {
-    BaseCurrencyValue,
-    FormattedCryptoAmount,
-    PriceTicker,
-    TrendTicker,
-} from 'src/components/suite';
+import { BaseCurrencyValue, FormattedCryptoAmount } from 'src/components/suite';
 
-import { type AssetRow } from './assetFirstTableSelectors';
+import { type AssetTotal } from '../AssetFirstTable/assetFirstTableSelectors';
 import {
     ASSET_FIRST_CELL_PADDING,
     getAssetDisplaySymbol,
     getAssetName,
     getNetworkName,
-} from './assetFirstTableUtils';
+} from '../AssetFirstTable/assetFirstTableUtils';
 
-type AssetFirstRowProps = {
-    row: AssetRow;
-    hasBorderTop?: boolean;
+type HiddenTokenRowProps = {
+    asset: AssetTotal;
+    onClick: () => void;
 };
 
-export const AssetFirstRow = memo(({ row, hasBorderTop }: AssetFirstRowProps) => {
-    const { symbol, contractAddress, cryptoBalance, tokenInfo } = row;
+export const HiddenTokenRow = memo(({ asset, onClick }: HiddenTokenRowProps) => {
+    const { symbol, contractAddress, cryptoBalance, tokenInfo } = asset;
 
     return (
         <Table.Row
-            hasBorderTop={hasBorderTop}
-            data-testid={`@dashboard/asset-first-item/${symbol}/${contractAddress ?? 'coin'}`}
+            onClick={onClick}
+            data-testid={`@hidden-tokens/item/${symbol}/${contractAddress ?? 'coin'}`}
         >
             <Table.Cell padding={ASSET_FIRST_CELL_PADDING.first}>
                 <Row gap={12}>
@@ -41,9 +37,7 @@ export const AssetFirstRow = memo(({ row, hasBorderTop }: AssetFirstRowProps) =>
                         placeholder={getAssetDisplaySymbol({ symbol, tokenInfo })}
                     />
                     <Column alignItems="flex-start" gap={2}>
-                        <Text typographyStyle="body-md" data-testid="@dashboard/asset-first/name">
-                            {getAssetName({ symbol, tokenInfo })}
-                        </Text>
+                        <Text typographyStyle="body-md">{getAssetName({ symbol, tokenInfo })}</Text>
                         <Text intent="neutral" priority="secondary" typographyStyle="body-sm">
                             {getNetworkName(symbol)}
                         </Text>
@@ -52,13 +46,6 @@ export const AssetFirstRow = memo(({ row, hasBorderTop }: AssetFirstRowProps) =>
             </Table.Cell>
 
             <Table.Cell align="end">
-                <Column alignItems="flex-end" gap={2}>
-                    <PriceTicker symbol={symbol} contractAddress={contractAddress} />
-                    <TrendTicker symbol={symbol} contractAddress={contractAddress} />
-                </Column>
-            </Table.Cell>
-
-            <Table.Cell align="end" padding={ASSET_FIRST_CELL_PADDING.last}>
                 <Column alignItems="flex-end" gap={2}>
                     <BaseCurrencyValue
                         amount={cryptoBalance.toFixed()}
@@ -73,6 +60,10 @@ export const AssetFirstRow = memo(({ row, hasBorderTop }: AssetFirstRowProps) =>
                         />
                     </Text>
                 </Column>
+            </Table.Cell>
+
+            <Table.Cell align="end" padding={ASSET_FIRST_CELL_PADDING.last}>
+                <Icon as={CaretRightIcon} size={20} intent="neutral" priority="secondary" />
             </Table.Cell>
         </Table.Row>
     );

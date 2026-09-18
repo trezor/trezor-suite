@@ -3,25 +3,25 @@ import { type ReactNode, useState } from 'react';
 import { Translation } from '@suite/intl';
 import { Card, Column, Table, Text } from '@trezor/components';
 
+import { HiddenTokenRow } from './HiddenTokenRow';
 import { UnhideAssetModal } from './UnhideAssetModal';
-import { AssetFirstRow } from '../AssetFirstTable/AssetFirstRow';
-import { type AssetRow } from '../AssetFirstTable/assetFirstTableSelectors';
+import { type AssetTotal } from '../AssetFirstTable/assetFirstTableSelectors';
 import { ASSET_FIRST_CELL_PADDING } from '../AssetFirstTable/assetFirstTableUtils';
 
 type HiddenTokensCardProps = {
     heading: ReactNode;
-    rows: readonly AssetRow[];
+    assets: readonly AssetTotal[];
     'data-testid': string;
 };
 
 export const HiddenTokensCard = ({
     heading,
-    rows,
+    assets,
     'data-testid': dataTestId,
 }: HiddenTokensCardProps) => {
-    const [rowToUnhide, setRowToUnhide] = useState<AssetRow>();
+    const [assetToUnhide, setAssetToUnhide] = useState<AssetTotal>();
 
-    if (rows.length === 0) {
+    if (assets.length === 0) {
         return null;
     }
 
@@ -36,14 +36,11 @@ export const HiddenTokensCard = ({
                 >
                     {heading}
                 </Text>
-                <Table isRowHighlightedOnHover colWidths={[{ minWidth: '200px' }, {}, {}, {}]}>
+                <Table isRowHighlightedOnHover colWidths={[{ minWidth: '200px' }, {}, {}]}>
                     <Table.Header>
                         <Table.Row>
                             <Table.Cell padding={ASSET_FIRST_CELL_PADDING.first}>
                                 <Translation id="TR_ASSET" />
-                            </Table.Cell>
-                            <Table.Cell align="end">
-                                <Translation id="TR_EXCHANGE_RATE" />
                             </Table.Cell>
                             <Table.Cell align="end">
                                 <Translation id="TR_BALANCE" />
@@ -52,19 +49,22 @@ export const HiddenTokensCard = ({
                         </Table.Row>
                     </Table.Header>
                     <Table.Body>
-                        {rows.map(row => (
-                            <AssetFirstRow
-                                key={row.assetKey}
-                                row={row}
-                                onClick={() => setRowToUnhide(row)}
+                        {assets.map(asset => (
+                            <HiddenTokenRow
+                                key={asset.assetKey}
+                                asset={asset}
+                                onClick={() => setAssetToUnhide(asset)}
                             />
                         ))}
                     </Table.Body>
                 </Table>
             </Column>
 
-            {rowToUnhide !== undefined && (
-                <UnhideAssetModal row={rowToUnhide} onCancel={() => setRowToUnhide(undefined)} />
+            {assetToUnhide !== undefined && (
+                <UnhideAssetModal
+                    asset={assetToUnhide}
+                    onCancel={() => setAssetToUnhide(undefined)}
+                />
             )}
         </Card>
     );

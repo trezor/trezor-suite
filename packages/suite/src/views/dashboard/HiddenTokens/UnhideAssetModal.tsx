@@ -8,17 +8,17 @@ import {
 } from '@suite-common/token-definitions';
 import { H3, Modal, Paragraph } from '@trezor/components';
 
-import { type AssetRow } from '../AssetFirstTable/assetFirstTableSelectors';
+import { type AssetTotal } from '../AssetFirstTable/assetFirstTableSelectors';
 import { getAssetName } from '../AssetFirstTable/assetFirstTableUtils';
 
 type UnhideAssetModalProps = {
-    row: AssetRow;
+    asset: AssetTotal;
     onCancel: () => void;
 };
 
-export const UnhideAssetModal = ({ row, onCancel }: UnhideAssetModalProps) => {
+export const UnhideAssetModal = ({ asset, onCancel }: UnhideAssetModalProps) => {
     const { dispatch } = useServices(selectDispatch);
-    const { symbol, contractAddress, tokenInfo } = row;
+    const { symbol, contractAddress, tokenInfo } = asset;
 
     const handleUnhide = () => {
         if (contractAddress !== undefined) {
