@@ -21,7 +21,7 @@ const feeWrapFormat = {
 // in such case nonce will collide and second transaction will fail
 // To avoid this, we tag this way to unsure it runs only once per night
 test.describe(
-    'Send Base',
+    'Live - Send Base',
     { tag: ['@desktopOnly', '@skipOnPR', '@T3W1', '@specificFirmware'] },
     () => {
         test.use({
