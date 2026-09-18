@@ -27,7 +27,9 @@ jobs:
 
       - name: Extract connect version
         id: set-version
-        run: echo "version=$(node ./scripts/ci/get-connect-version.js)" >> $GITHUB_OUTPUT
+        run: |
+          VERSION="$(node ./scripts/ci/get-connect-version.js)"
+          echo "version=$VERSION" >> "$GITHUB_OUTPUT"
 
   check-version-match:
     runs-on: ubuntu-latest
@@ -70,14 +72,15 @@ jobs:
           uploadArtifacts: "true"
           nodeEnv: "production"
 
-  # This job deploys to staging-connect.trezor.io/9
+  # This job deploys to staging-connect.trezor.io/10
   deploy-staging-v10:
     needs: [extract-version, check-version-match]
     environment: staging-connect
     name: "Deploying to staging-connect.trezor.io/10"
     runs-on: ubuntu-latest
     # Branch should have been created by workflow .github/workflows/release-connect-v10-init.yml
-    if: startsWith(github.ref, 'refs/heads/release/connect/')
+    # Only stable releases update the floating /10 alias; prereleases only publish /<version>.
+    if: ${{ startsWith(github.ref, 'refs/heads/release/connect/') && !contains(needs.extract-version.outputs.version, '-') }}
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v6
         with:

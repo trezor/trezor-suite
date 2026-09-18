@@ -35,7 +35,9 @@ jobs:
 
       - name: Extract connect version
         id: set-version
-        run: echo "version=$(node ./scripts/ci/get-connect-version.js)" >> $GITHUB_OUTPUT
+        run: |
+          VERSION="$(node ./scripts/ci/get-connect-version.js)"
+          echo "version=$VERSION" >> "$GITHUB_OUTPUT"
 
   check-version-match:
     runs-on: ubuntu-latest
@@ -52,7 +54,8 @@ jobs:
   # set the rollback
   sync-rollback-connect-v9:
     needs: [extract-version, check-version-match]
-    if: startsWith(github.ref, 'refs/heads/release/connect/')
+    # Only stable deploys move the /9 alias, so only they should refresh the /9 rollback snapshot.
+    if: startsWith(github.ref, 'refs/heads/release/connect/') && github.event.inputs.deploymentType == 'stable'
     environment: production-connect
     name: "Backing up current production version ${{ needs.extract-version.outputs.version }} to rollback bucket"
     runs-on: ubuntu-latest
@@ -67,7 +70,7 @@ jobs:
 
       - name: Synching rollback bucket with current production
         run: |
-          aws s3 sync "s3://connect.trezor.io/${{ env.LATEST_VERSION }}/" "s3://rollback-connect.trezor.io/${{ env.LATEST_VERSION }}/"
+          aws s3 sync --delete "s3://connect.trezor.io/${{ env.LATEST_VERSION }}/" "s3://rollback-connect.trezor.io/${{ env.LATEST_VERSION }}/"
 
   deploy-production-semantic-version:
     needs: [extract-version, check-version-match]
