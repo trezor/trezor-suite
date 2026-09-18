@@ -32,7 +32,7 @@ export type PerfBaselineOutcome =
  */
 export const fetchStoreText = async (
     url: string,
-    fetchImpl: FetchLike = fetch as unknown as FetchLike,
+    fetchImpl: FetchLike = fetch,
 ): Promise<PerfTextOutcome> => {
     try {
         const response = await fetchImpl(url, { signal: AbortSignal.timeout(REQUEST_TIMEOUT_MS) });
@@ -60,7 +60,7 @@ export const baselineUrl = (surface: PerfSurface, branch: string): string =>
 export const fetchBaselineDocument = async (
     surface: PerfSurface,
     branch: string,
-    fetchImpl: FetchLike = fetch as unknown as FetchLike,
+    fetchImpl: FetchLike = fetch,
 ): Promise<PerfBaselineOutcome> => {
     const url = baselineUrl(surface, branch);
     const fetched = await fetchStoreText(url, fetchImpl);
