@@ -79,7 +79,8 @@ jobs:
     name: "Deploying to staging-connect.trezor.io/9"
     runs-on: ubuntu-latest
     # Branch should have been created by workflow .github/workflows/release-connect-v9-init.yml
-    if: startsWith(github.ref, 'refs/heads/release/connect/')
+    # Only stable releases update the floating /9 alias; prereleases only publish /<version>.
+    if: ${{ startsWith(github.ref, 'refs/heads/release/connect/') && !contains(needs.extract-version.outputs.version, '-') }}
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v6
         with:
