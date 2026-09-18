@@ -177,11 +177,13 @@ export const TransactionList = ({
         selectIsPageAlreadyFetched(state, accountKey, 1, txnsPerPage),
     );
 
+    const [isInitialPageLoaded, setIsInitialPageLoaded] = useState(isFirstPageAlreadyFetched);
+
     // Count only full cached pages so Load more refetches a partially cached next page.
-    // Start at page 1 because the effect below handles the initial page fetch separately.
+    // Page 1 is requested separately until its initial fetch succeeds.
     const initialPageNumber = Math.max(1, Math.floor(transactions.length / txnsPerPage));
     const [page, setPage] = useState(initialPageNumber);
-    const isLoadingMoreRef = useRef(false);
+    const isFetchingPageRef = useRef(false);
     // The loader and footer must agree when history ends, even if cached counts differ.
     const hasMoreTransactions =
         !areAllTransactionsLoaded &&
@@ -191,31 +193,36 @@ export const TransactionList = ({
 
     const { scrollDivider, handleScroll } = useScrollDivider();
 
-    useEffect(() => {
-        // We need to check manually if the first page was already fetched, because fetchTransactionsPageThunk will
-        // always force refetch the first page, but we want to save resources and not do that if it's not necessary.
-        if (!isFirstPageAlreadyFetched) {
-            dispatch(fetchTransactionsPageThunk({ accountKey, page: 1, perPage: txnsPerPage }));
-        }
-    }, [dispatch, accountKey, isFirstPageAlreadyFetched, txnsPerPage]);
-
     const handleOnLoadMore = useCallback(async () => {
-        // The button and auto-fill effect share this lock; loading state updates on the next render.
-        if (isLoadingMoreRef.current) return;
-        isLoadingMoreRef.current = true;
+        // Initial loading, the button, and auto-fill share this lock before React rerenders.
+        if (isFetchingPageRef.current) return;
+        isFetchingPageRef.current = true;
+        const requestedPage = isInitialPageLoaded ? page + 1 : 1;
 
         try {
             await dispatch(
-                fetchTransactionsPageThunk({ accountKey, page: page + 1, perPage: txnsPerPage }),
+                fetchTransactionsPageThunk({
+                    accountKey,
+                    page: requestedPage,
+                    perPage: txnsPerPage,
+                }),
             ).unwrap();
             // Record the page this request fetched, rather than incrementing potentially newer state.
-            setPage(page + 1);
+            setPage(requestedPage);
+            // A successful partial page also unlocks pagination; shared idle status does not.
+            setIsInitialPageLoaded(true);
         } catch {
             // TODO handle error state (show retry button or something
         } finally {
-            isLoadingMoreRef.current = false;
+            isFetchingPageRef.current = false;
         }
-    }, [dispatch, accountKey, page, txnsPerPage]);
+    }, [dispatch, accountKey, page, txnsPerPage, isInitialPageLoaded]);
+
+    useEffect(() => {
+        if (!isInitialPageLoaded) {
+            handleOnLoadMore();
+        }
+    }, [isInitialPageLoaded, handleOnLoadMore]);
 
     const handleOnRefresh = useCallback(async () => {
         try {
@@ -290,7 +297,7 @@ export const TransactionList = ({
         visibleTransactionCount < requestedVisibleCount &&
         shouldDeferEmptyState &&
         fetchStatus !== 'error' &&
-        (isFirstPageAlreadyFetched || fetchStatus === 'idle');
+        isInitialPageLoaded;
 
     useEffect(() => {
         // One visible token page may require several account pages after filtering.
