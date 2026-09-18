@@ -1,6 +1,7 @@
 import { memo } from 'react';
 
-import { Column, Row, Table, Text } from '@trezor/components';
+import { Column, Icon, Row, Table, Text } from '@trezor/components';
+import { CaretRightIcon } from '@trezor/icons';
 import { TokenIcon } from '@trezor/product-components';
 
 import {
@@ -21,14 +22,16 @@ import {
 type AssetFirstRowProps = {
     row: AssetRow;
     hasBorderTop?: boolean;
+    onClick?: () => void;
 };
 
-export const AssetFirstRow = memo(({ row, hasBorderTop }: AssetFirstRowProps) => {
+export const AssetFirstRow = memo(({ row, hasBorderTop, onClick }: AssetFirstRowProps) => {
     const { symbol, contractAddress, cryptoBalance, tokenInfo } = row;
 
     return (
         <Table.Row
             hasBorderTop={hasBorderTop}
+            onClick={onClick}
             data-testid={`@dashboard/asset-first-item/${symbol}/${contractAddress ?? 'coin'}`}
         >
             <Table.Cell padding={ASSET_FIRST_CELL_PADDING.first}>
@@ -58,7 +61,10 @@ export const AssetFirstRow = memo(({ row, hasBorderTop }: AssetFirstRowProps) =>
                 </Column>
             </Table.Cell>
 
-            <Table.Cell align="end" padding={ASSET_FIRST_CELL_PADDING.last}>
+            <Table.Cell
+                align="end"
+                padding={onClick === undefined ? ASSET_FIRST_CELL_PADDING.last : undefined}
+            >
                 <Column alignItems="flex-end" gap={2}>
                     <BaseCurrencyValue
                         amount={cryptoBalance.toFixed()}
@@ -74,6 +80,12 @@ export const AssetFirstRow = memo(({ row, hasBorderTop }: AssetFirstRowProps) =>
                     </Text>
                 </Column>
             </Table.Cell>
+
+            {onClick !== undefined && (
+                <Table.Cell align="end" padding={ASSET_FIRST_CELL_PADDING.last}>
+                    <Icon as={CaretRightIcon} size={20} intent="neutral" priority="secondary" />
+                </Table.Cell>
+            )}
         </Table.Row>
     );
 });

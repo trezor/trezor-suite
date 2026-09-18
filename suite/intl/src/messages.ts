@@ -1761,6 +1761,19 @@ export const messages = defineMessages({
         defaultMessage: 'By networks',
         id: 'TR_ASSET_FIRST_GROUPING_NETWORKS',
     },
+    TR_ASSET_FIRST_UNHIDE: {
+        defaultMessage: 'Unhide',
+        id: 'TR_ASSET_FIRST_UNHIDE',
+    },
+    TR_ASSET_FIRST_UNHIDE_TITLE: {
+        defaultMessage: 'Unhide {asset}?',
+        id: 'TR_ASSET_FIRST_UNHIDE_TITLE',
+    },
+    TR_ASSET_FIRST_UNHIDE_TEXT: {
+        defaultMessage:
+            'This token appears to be suspicious and may be a scam. Unhiding will show it in your asset list again.',
+        id: 'TR_ASSET_FIRST_UNHIDE_TEXT',
+    },
     TR_ASSET: {
         defaultMessage: 'Asset',
         id: 'TR_ASSET',

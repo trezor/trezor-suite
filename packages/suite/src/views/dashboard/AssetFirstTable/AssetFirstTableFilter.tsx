@@ -3,8 +3,11 @@ import { useRef } from 'react';
 import styled from 'styled-components';
 
 import { Translation, useTranslation } from '@suite/intl';
+import { gotoThunk } from '@suite/router';
+import { useServices } from '@suite-common/dependency-injection';
+import { selectDispatch } from '@suite-common/redux-utils';
 import { Button, Icon, Menu, Popover, type PopoverRef, Row } from '@trezor/components';
-import { CheckIcon, FunnelSimpleIcon, XIcon } from '@trezor/icons';
+import { CaretRightIcon, CheckIcon, FunnelSimpleIcon, XIcon } from '@trezor/icons';
 
 import { type AssetFirstGrouping } from './assetFirstTableGrouping';
 
@@ -25,6 +28,7 @@ type AssetFirstTableFilterProps = {
 export const AssetFirstTableFilter = ({ grouping, onChange }: AssetFirstTableFilterProps) => {
     const popoverRef = useRef<PopoverRef>(null);
     const { translationString } = useTranslation();
+    const { dispatch } = useServices(selectDispatch);
 
     if (grouping === 'networks') {
         return (
@@ -64,6 +68,14 @@ export const AssetFirstTableFilter = ({ grouping, onChange }: AssetFirstTableFil
                             label: <Translation id="TR_ASSET_FIRST_GROUPING_NETWORKS" />,
                             onClick: () => choose('networks'),
                             'data-testid': '@dashboard/asset-first/grouping/networks',
+                        },
+                        {
+                            label: <Translation id="TR_HIDDEN_TOKENS" />,
+                            iconRight: CaretRightIcon,
+                            hasSeparatorBefore: true,
+                            onClick: () =>
+                                dispatch(gotoThunk({ routeName: 'suite-hidden-tokens' })),
+                            'data-testid': '@dashboard/asset-first/hidden-tokens',
                         },
                     ]}
                 />
