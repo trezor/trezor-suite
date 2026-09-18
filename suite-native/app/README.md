@@ -40,6 +40,33 @@ nix develop .#use_android
 3. Run native build - `yarn native:android` this takes time (~10min) and it should install and start the app at the end
 4. With emulator running, reverse android emulator ports to enable communication between the app and localhost services - `yarn native:reverse-ports`
 
+### Android build concurrency
+
+Android builds default to two Gradle workers with parallel project execution disabled.
+CMake/Ninja compilation and linking share a pool of the same size in each Android app or library module.
+The Expo plugin restores these defaults during prebuild. For an existing checkout, run
+`yarn native:prebuild:no-clean --platform android` once to apply them without deleting native build outputs.
+
+To override the worker count for all your checkouts, set it in `~/.gradle/gradle.properties`:
+
+```properties
+org.gradle.workers.max=4
+```
+
+This user-level setting takes precedence over the generated project properties. CI can use
+`-Dorg.gradle.workers.max=4` in `GRADLE_OPTS`, preserving any existing options, or pass
+`--max-workers=4` when invoking Gradle directly. The effective Gradle worker count also controls the
+native job pool; changing it does not require another prebuild. Parallel project execution can be
+enabled separately with `org.gradle.parallel=true` when the machine has enough resources.
+
+These settings limit concurrency, not total CPU, memory, or disk I/O. Separate native builds have
+separate pools, and JVM threads and custom build commands can do additional work. Use operating-system
+or scheduler limits when you need a hard resource budget.
+
+After installing the development app, use `yarn native:start` (`yarn s`) for JavaScript/TypeScript-only
+changes. Rebuild when native code, native dependencies, or native configuration changes. Keep the
+checkout's `android/` build directories and `node_modules` to preserve incremental native builds.
+
 ## Running app on iOS
 
 You need a Mac to be able to run the iOS app.
