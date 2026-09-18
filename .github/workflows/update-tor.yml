@@ -90,7 +90,7 @@ jobs:
             body+="\n- Linux ARM: ${{ steps.versions.outputs.arm_next }} (${{ steps.check_arm.outputs.arm_url }})"
           fi
           body+="\n\n### :eyes: Review instructions\n\n"
-          body+="Works fully only on macOS\n\`\`\`\n"
+          body+="Works fully only on macOS. On Linux, remove all mentions of `lipo` and check at least Linux+Windows binaries.\n\`\`\`\n"
           body+="git fetch origin chore/update-tor-binaries\n"
           body+="git checkout chore/update-tor-binaries\n"
           body+="git checkout HEAD~1\n"
@@ -100,6 +100,8 @@ jobs:
           body+="git add .\n"
           body+="git status -s\n"
           body+="# should be no diff if binaries match\n\`\`\`"
+          body+="## Notes for QA\n\n"
+          body+="Verify that Tor works on all platforms; can be tested as part of the RC checks.\n"
           echo "body<<EOF" >> $GITHUB_OUTPUT
           echo -e "$body" >> $GITHUB_OUTPUT
           echo "EOF" >> $GITHUB_OUTPUT
