@@ -1,5 +1,6 @@
 /* eslint-disable import/no-extraneous-dependencies -- build-time tooling belongs in devDependencies */
 import { sentryWebpackPlugin } from '@sentry/webpack-plugin';
+import { version as coreJsVersion } from 'core-js/package.json';
 import TerserPlugin from 'minimizer-webpack-plugin';
 import path, { resolve } from 'path';
 import webpack from 'webpack';
@@ -171,15 +172,29 @@ export const createBaseConfig = ({
                                 [
                                     '@babel/preset-env',
                                     {
-                                        // The minor version decides which core-js modules may be
-                                        // injected below. A bare `3` means 3.0 and would prune the
-                                        // polyfills to 5 instead of the 98 the targets actually lack.
-                                        corejs: '3.49',
+                                        /*
+                                         The coreJS version needs to be specified exactly. If we specified just `3`,
+                                         it would be parsed as 3.0.0, so all the polyfills that coreJS provides between
+                                         3.0.0 and current version would be unavailable to babel → polyfills would not be applied.
+                                        */
+                                        corejs: coreJsVersion,
+                                        /*
+                                         WARNING: node_modules are excluded from babel loader, so the browserslist
+                                         specified here is not applied to node_modules. The code is not transpiled to
+                                         the compatible syntax. There is a danger if we install a dependency with newer
+                                         syntax, that it will break (mainly for old Web browsers, while Desktop uses a
+                                         predictable, fairly new Chromium version).
+                                         This only pertains syntax. Fortunately, all unsupported globals and methods are
+                                         polyfilled by the coreJS static import, see useBuiltIns setting.
+                                         TODO: apply also on node_modules, then we can delete the static coreJS import in MainWeb.tsx
+                                        */
                                         configPath: browserslistConfigPath,
                                         shippedProposals: true,
-                                        // `entry` rewrites the global `import 'core-js/actual'` in
-                                        // suite/web-app to only the polyfills the browserslist targets
-                                        // lack, instead of shipping all ~440 core-js features.
+                                        /*
+                                         `entry` rewrites the global `import 'core-js/actual'`, imported in
+                                         suite/web-app & suite/desktop-app-renderer, to only those polyfills that the
+                                         browserslist targets lack, instead of shipping all the ~440 core-js features.
+                                        */
                                         useBuiltIns: 'entry',
                                     },
                                 ],
