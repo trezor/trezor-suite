@@ -1,56 +1,52 @@
-# Network display injection prototype
+# Network config store prototype
 
-Product-components accept display data through `NetworkDisplayProvider`. Hosts with
-an observable store can instead use `NetworkDisplayStoreProvider`, which reads
-selected values through React's `useSyncExternalStore`.
+`NetworkDisplayProvider` reads network configs from a small external-store contract:
 
-The store contract contains only `getState` and `subscribe`. Redux already satisfies
-it, so Suite passes its existing store and selectors directly:
-
-```tsx
-<NetworkDisplayStoreProvider
-    store={store}
-    selectNetworks={selectEnabledNetworks}
-    selectNetworkNamesMap={selectNetworkNamesMap}
->
-    <NetworkIconSet size={20} gap={8} />
-</NetworkDisplayStoreProvider>
+```ts
+type NetworkDisplayStore = {
+    getState: () => {
+        networks: Readonly<Record<NetworkSymbol, { readonly name: string }>> | null;
+    };
+    subscribe: (onChange: () => void) => () => void;
+};
 ```
 
-Selectors belong to the host. Product-components do not import Redux, Suite's state
-types, or its selectors. There is no Suite adapter, service factory, or composition
-root registration. The generic `useExternalStore` hook can select other domains in
-the same way. Selectors must return immutable values with stable references until
-those values change; unrelated store updates do not rerender consumers.
-
-A static host such as Connect Explorer supplies a plain object:
+Suite's Redux store already satisfies this contract. `Main` obtains it from services:
 
 ```tsx
-const bitcoin = asNetworkSymbol('btc');
-const ethereum = asNetworkSymbol('eth');
-const networkDisplay = {
-    networks: [bitcoin, ethereum],
-    networkNamesMap: { [bitcoin]: 'Bitcoin', [ethereum]: 'Ethereum' },
+const { store } = useServices(injectStore);
+
+<NetworkDisplayProvider store={store}>{children}</NetworkDisplayProvider>;
+```
+
+Product-components import neither Redux nor Suite's state or selectors. The provider
+uses `useSyncExternalStore` directly to observe `store.getState().networks`. Other
+state changes keep the same config snapshot and do not rerender its consumers.
+
+Connect Explorer builds a fixed config map from its existing coin definitions in
+`createConnectExplorerCompositionRoot`. Its separate display store contains only
+that map and a no-op subscription. `createConnectExplorerApp` wraps the app in the
+same provider, and `ConnectInitForm` reads its network names through `useNetworkOptions`.
+It does not use Explorer's Redux state for network configs.
+
+```tsx
+const state = { networks: { [asNetworkSymbol('btc')]: { name: 'Bitcoin' } } };
+const store: NetworkDisplayStore = {
+    getState: () => state,
+    subscribe: () => () => {},
 };
 
-<NetworkDisplayProvider value={networkDisplay}>
-    <NetworkIconSet size={20} gap={8} />
-</NetworkDisplayProvider>;
+<NetworkDisplayProvider store={store}>{children}</NetworkDisplayProvider>;
 ```
 
-Import both providers from `@trezor/product-components/network-display`, and the
-optional `NetworkDisplayConfig` type from `/network-display/config`. Import the icon
-set from `@trezor/product-components` and `asNetworkSymbol` from
-`@trezor/network-module-types`.
+Import the provider and hook from `@trezor/product-components/network-display` and
+store/config types from `@trezor/product-components/network-display/config`.
 
-The separate network list preserves the host's availability and ordering; the names
-map may include disabled networks. Components default to that list. An explicit
-`networks` prop overrides it, including disabled networks for protocol searches.
-Missing names fall back to symbols.
+The store supplies configuration, not user preferences. By default components use
+all keys of the config map. Suite passes its enabled-network list to individual
+components; protocol searches can override it. Explicit lists retain their order,
+and missing configs fall back to the symbol.
 
-The static provider also supports server rendering. The store provider currently
-targets client-rendered hosts; SSR would need a hydration snapshot contract.
-
-The `NetworkIconSet` story demonstrates the plain-object provider. Suite's
-empty-wallet list and global asset search use the Redux store directly. Connect
-Explorer's startup and UI are unchanged by this prototype.
+Store snapshots must be immutable and retain their reference until configs change.
+Server rendering uses the same snapshot getter; server and initial client configs
+must agree. Explorer's fixed config store satisfies this for Next's static rendering.

@@ -3,6 +3,7 @@ import { type RefObject, memo, useMemo } from 'react';
 import { type TranslationKey, useTranslation } from '@suite/intl';
 import { selectHasBitcoinOnlyFirmware } from '@suite-common/device';
 import { selectNetworkSymbolForProtocol } from '@suite-common/networks/reduxState/networksSelectors';
+import { selectEnabledNetworks } from '@suite-common/wallet-core/src/settings/walletSettingsReducer';
 import { type GlobalSendReceiveType } from '@suite-common/wallet-types';
 import { SearchAsset } from '@trezor/product-components';
 
@@ -33,14 +34,15 @@ export const AssetSearchWithNetworkFilter = memo(function AssetSearchWithNetwork
         resetSearch: () => setSearch(''),
     });
     const protocolScheme = useSelector(selectProtocolSendFormScheme);
+    const enabledNetworks = useSelector(selectEnabledNetworks);
 
     const protocolSymbol = useSelector(state =>
         selectNetworkSymbolForProtocol(state, protocolScheme),
     );
 
     const networks = useMemo(
-        () => (protocolSymbol ? [protocolSymbol] : undefined),
-        [protocolSymbol],
+        () => (protocolSymbol ? [protocolSymbol] : enabledNetworks),
+        [protocolSymbol, enabledNetworks],
     );
 
     const { translationString } = useTranslation();

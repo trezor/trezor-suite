@@ -7,7 +7,10 @@ import {
     NetworkIconSet as NetworkIconSetComponent,
     type NetworkIconSetProps,
 } from './NetworkIconSet';
-import type { NetworkDisplayConfig } from '../../network-display/NetworkDisplayConfig';
+import type {
+    NetworkDisplayState,
+    NetworkDisplayStore,
+} from '../../network-display/NetworkDisplayConfig';
 import { NetworkDisplayProvider } from '../../network-display/NetworkDisplayProvider';
 import { allowedTokenIconSizes } from '../TokenIcon/tokenIconTypes';
 
@@ -16,14 +19,17 @@ const NETWORK_2 = asNetworkSymbol('eth');
 const NETWORK_3 = asNetworkSymbol('ltc');
 const NETWORK_4 = asNetworkSymbol('ada');
 
-const networkDisplay: NetworkDisplayConfig = {
-    networks: [NETWORK_1, NETWORK_2, NETWORK_3, NETWORK_4],
-    networkNamesMap: {
-        [NETWORK_1]: 'Bitcoin',
-        [NETWORK_2]: 'Ethereum',
-        [NETWORK_3]: 'Litecoin',
-        [NETWORK_4]: 'Cardano',
+const networkDisplayState: NetworkDisplayState = {
+    networks: {
+        [NETWORK_1]: { name: 'Bitcoin' },
+        [NETWORK_2]: { name: 'Ethereum' },
+        [NETWORK_3]: { name: 'Litecoin' },
+        [NETWORK_4]: { name: 'Cardano' },
     },
+};
+const networkDisplayStore: NetworkDisplayStore = {
+    getState: () => networkDisplayState,
+    subscribe: () => () => {},
 };
 
 const meta: Meta<typeof NetworkIconSetComponent> = {
@@ -31,7 +37,7 @@ const meta: Meta<typeof NetworkIconSetComponent> = {
     component: NetworkIconSetComponent,
     decorators: [
         Story => (
-            <NetworkDisplayProvider value={networkDisplay}>
+            <NetworkDisplayProvider store={networkDisplayStore}>
                 <Story />
             </NetworkDisplayProvider>
         ),

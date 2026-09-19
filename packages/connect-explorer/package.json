@@ -24,6 +24,8 @@
         "@trezor/connect-webextension": "workspace:^",
         "@trezor/device-authenticity": "workspace:^",
         "@trezor/icons": "workspace:*",
+        "@trezor/network-module-types": "workspace:*",
+        "@trezor/product-components": "workspace:*",
         "@trezor/protobuf": "workspace:^",
         "@trezor/schema-utils": "workspace:^",
         "@trezor/theme": "workspace:^",

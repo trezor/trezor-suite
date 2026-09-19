@@ -1,54 +1,50 @@
-import { type ReactNode, createContext, useContext, useMemo } from 'react';
+import {
+    type ReactNode,
+    createContext,
+    useCallback,
+    useContext,
+    useMemo,
+    useSyncExternalStore,
+} from 'react';
 
 import type { NetworkSymbol } from '@trezor/network-module-types';
+import { typedObjectKeys } from '@trezor/utils';
 
-import type { NetworkDisplayConfig, NetworkOption } from './NetworkDisplayConfig';
-import { type ExternalStore, useExternalStore } from './useExternalStore';
+import type {
+    NetworkDisplayState,
+    NetworkDisplayStore,
+    NetworkOption,
+} from './NetworkDisplayConfig';
 
-const NetworkDisplayContext = createContext<NetworkDisplayConfig | null>(null);
+const NetworkDisplayContext = createContext<NetworkDisplayState['networks'] | undefined>(undefined);
 
 type NetworkDisplayProviderProps = {
-    value: NetworkDisplayConfig;
+    store: NetworkDisplayStore;
     children: ReactNode;
 };
 
-export const NetworkDisplayProvider = ({ value, children }: NetworkDisplayProviderProps) => (
-    <NetworkDisplayContext.Provider value={value}>{children}</NetworkDisplayContext.Provider>
-);
+export const NetworkDisplayProvider = ({ store, children }: NetworkDisplayProviderProps) => {
+    const getSnapshot = useCallback(() => store.getState().networks, [store]);
+    const networks = useSyncExternalStore(store.subscribe, getSnapshot, getSnapshot);
 
-type NetworkDisplayStoreProviderProps<TState> = {
-    store: ExternalStore<TState>;
-    selectNetworks: (state: TState) => NetworkDisplayConfig['networks'];
-    selectNetworkNamesMap: (state: TState) => NetworkDisplayConfig['networkNamesMap'];
-    children: ReactNode;
-};
-
-export const NetworkDisplayStoreProvider = <TState,>({
-    store,
-    selectNetworks,
-    selectNetworkNamesMap,
-    children,
-}: NetworkDisplayStoreProviderProps<TState>) => {
-    const networks = useExternalStore(store, selectNetworks);
-    const networkNamesMap = useExternalStore(store, selectNetworkNamesMap);
-    const value = useMemo(() => ({ networks, networkNamesMap }), [networks, networkNamesMap]);
-
-    return <NetworkDisplayProvider value={value}>{children}</NetworkDisplayProvider>;
+    return (
+        <NetworkDisplayContext.Provider value={networks}>{children}</NetworkDisplayContext.Provider>
+    );
 };
 
 export const useNetworkOptions = (symbols?: readonly NetworkSymbol[]): readonly NetworkOption[] => {
-    const config = useContext(NetworkDisplayContext);
+    const networks = useContext(NetworkDisplayContext);
 
-    if (config === null) {
+    if (networks === undefined) {
         throw new Error('Network display components require a NetworkDisplayProvider.');
     }
 
     return useMemo(
         () =>
-            (symbols ?? config.networks).map(symbol => ({
+            (symbols ?? (networks === null ? [] : typedObjectKeys(networks))).map(symbol => ({
                 symbol,
-                name: config.networkNamesMap?.[symbol] ?? symbol,
+                name: networks?.[symbol]?.name ?? symbol,
             })),
-        [config, symbols],
+        [networks, symbols],
     );
 };

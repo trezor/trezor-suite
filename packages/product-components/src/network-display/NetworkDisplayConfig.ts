@@ -1,11 +1,18 @@
 import type { NetworkSymbol } from '@trezor/network-module-types';
 
-export type NetworkOption = {
-    readonly symbol: NetworkSymbol;
+export type NetworkDisplayConfig = {
     readonly name: string;
 };
 
-export type NetworkDisplayConfig = {
-    readonly networks: readonly NetworkSymbol[];
-    readonly networkNamesMap: Readonly<Partial<Record<NetworkSymbol, string>>> | null;
+export type NetworkOption = NetworkDisplayConfig & {
+    readonly symbol: NetworkSymbol;
+};
+
+export type NetworkDisplayState = {
+    readonly networks: Readonly<Record<NetworkSymbol, NetworkDisplayConfig>> | null;
+};
+
+export type NetworkDisplayStore = {
+    getState: () => NetworkDisplayState;
+    subscribe: (onChange: () => void) => () => void;
 };

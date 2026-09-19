@@ -1,13 +1,11 @@
 import { HelmetProvider } from 'react-helmet-async';
-import { useStore } from 'react-redux';
 
-import { selectNetworkNamesMap } from '@suite-common/networks/reduxState/networksSelectors';
+import { useServices } from '@suite-common/dependency-injection';
 import { ReactQueryProvider } from '@suite-common/react-query/src/components/ReactQueryProvider';
-import { selectEnabledNetworks } from '@suite-common/wallet-core/src/settings/walletSettingsReducer';
+import { injectStore } from '@suite-common/redux-utils/src/storeInjectors';
 import { SelectCacheProvider } from '@trezor/components';
-import { NetworkDisplayStoreProvider } from '@trezor/product-components/network-display';
+import { NetworkDisplayProvider } from '@trezor/product-components/network-display';
 
-import type { AppState } from 'src/reducers/store';
 import Autodetect from 'src/support/suite/Autodetect';
 import { ConnectedIntlProvider } from 'src/support/suite/ConnectedIntlProvider';
 import { ConnectedThemeProvider } from 'src/support/suite/ConnectedThemeProvider';
@@ -28,16 +26,12 @@ export const Main = ({
     trafficLightOffset?: React.ReactNode;
     children: React.ReactNode;
 }) => {
-    const store = useStore<AppState>();
+    const { store } = useServices(injectStore);
 
     return (
         // Todo: Enable when issues are fixed (ReactTruncate & BumpFee)
         // <StrictMode>
-        <NetworkDisplayStoreProvider
-            store={store}
-            selectNetworks={selectEnabledNetworks}
-            selectNetworkNamesMap={selectNetworkNamesMap}
-        >
+        <NetworkDisplayProvider store={store}>
             <HelmetProvider>
                 {trafficLightOffset ?? null}
                 <ConnectPopupModals />
@@ -62,7 +56,7 @@ export const Main = ({
                     </ResponsiveContextProvider>
                 </ConnectedThemeProvider>
             </HelmetProvider>
-        </NetworkDisplayStoreProvider>
+        </NetworkDisplayProvider>
         // </StrictMode>
     );
 };

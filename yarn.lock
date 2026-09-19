@@ -17450,6 +17450,8 @@ __metadata:
     "@trezor/device-authenticity": "workspace:^"
     "@trezor/eslint": "workspace:*"
     "@trezor/icons": "workspace:*"
+    "@trezor/network-module-types": "workspace:*"
+    "@trezor/product-components": "workspace:*"
     "@trezor/protobuf": "workspace:^"
     "@trezor/requirements": "workspace:*"
     "@trezor/schema-utils": "workspace:^"
