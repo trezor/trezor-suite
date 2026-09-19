@@ -57,6 +57,7 @@ export const desktopQueryKeys = {
         accountKey,
         txid,
     ],
+    dateFnsLocale: (language: string) => ['date-fns-locale', language],
     defaultUrls: (symbol: string) => ['default-urls', symbol],
     proxyImage: (src?: string) => ['proxy-image', src],
     inactiveTokens: (symbol: string, accountKey?: string) =>
