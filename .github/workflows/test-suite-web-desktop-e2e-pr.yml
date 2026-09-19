@@ -334,3 +334,84 @@ jobs:
       currents-record-key: ${{ secrets.CURRENTS_RECORD_KEY }}
       e2e-passphrase: ${{ secrets.E2E_TEST_PASSPHRASE }}
       e2e-passphrase-live: ${{ secrets.E2E_TEST_PASSPHRASE_LIVE }}
+
+  # Publishes the performance history for the browser surfaces: each shard's measurements as plain
+  # objects in the bucket CI already writes to, plus one index line per measurement. The mobile
+  # pipeline writes the same envelope under its own surface through the same store in
+  # @trezor/perf-e2e. There is no server and no database — the objects are world-readable, so
+  # reading them back locally needs no credentials at all.
+  #
+  # One job publishes a whole run, so nothing races: the shards only upload artifacts. Informative
+  # only — a broken upload costs the history, never the tests.
+  publish_performance_history:
+    name: Publish performance history
+    # Fork pull requests are issued no OIDC token, so they could never assume the role: they are
+    # excluded rather than left to fail the step. head.repo can be null when the fork was deleted,
+    # so the comparison fails closed.
+    if: ${{ !cancelled() && github.repository == 'trezor/trezor-suite' && github.event.pull_request.head.repo.full_name == github.repository }}
+    needs:
+      - run-e2e-suite-desktop-tests
+      - run-e2e-suite-web-tests
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      id-token: write # to assume the dev-deploy role
+      contents: read
+    # Serialize the writers of the rolling branch index: two runs of the same ref would otherwise
+    # read-modify-write the same object at once.
+    concurrency:
+      group: publish-performance-history-web-${{ github.ref }}
+      cancel-in-progress: false
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v6
+        with:
+          persist-credentials: false
+
+      - name: Setup Node.js
+        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v6
+        with:
+          node-version-file: ".nvmrc"
+          cache: yarn
+
+      - name: Install dependencies
+        run: yarn workspaces focus @trezor/suite-e2e
+
+      - name: Download performance artifacts
+        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8
+        with:
+          pattern: perf-history-*
+          path: perf-artifacts
+
+      - name: Build the upload bundle
+        env:
+          PERF_ARTIFACTS_DIR: ${{ github.workspace }}/perf-artifacts
+          PERF_BUNDLE_DIR: ${{ github.workspace }}/perf-upload
+          PERF_PR_NUMBER: ${{ github.event.pull_request.number }}
+          PERF_SHA: ${{ github.event.pull_request.head.sha || github.sha }}
+          PERF_RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+          # Only a run on the base branch seals the baseline later runs are compared against.
+          PERF_SEAL_BASELINE: ${{ github.event_name != 'pull_request' }}
+        run: yarn workspace @trezor/suite-e2e perf:publish
+
+      - name: Configure AWS credentials
+        if: ${{ hashFiles('perf-upload/**') != '' }}
+        uses: aws-actions/configure-aws-credentials@e6de054238d6b7531b4efff3b6587d9aade6a06c # v6
+        with:
+          role-to-assume: arn:aws:iam::538326561891:role/gh_actions_trezor_suite_dev_deploy
+          aws-region: eu-central-1
+
+      # Two passes, and the order is the point: the artifacts go up first, then the index lines and
+      # the baseline that reference them, so a reader never meets a line pointing at an object that
+      # is not there yet.
+      - name: Upload the bundle
+        if: ${{ hashFiles('perf-upload/**') != '' }}
+        env:
+          BUNDLE: ${{ github.workspace }}/perf-upload
+          DESTINATION: s3://dev.suite.sldev.cz/e2e/perf/v1
+        run: |
+          set -euo pipefail
+          if [ -d "$BUNDLE/runs" ]; then
+            aws s3 cp --recursive --no-progress "$BUNDLE/runs/" "$DESTINATION/runs/"
+          fi
+          aws s3 cp --recursive --no-progress --exclude "runs/*" "$BUNDLE/" "$DESTINATION/"

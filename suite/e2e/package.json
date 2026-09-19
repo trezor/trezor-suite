@@ -16,7 +16,8 @@
         "git:bisect": "./scripts/bisect-commits.sh",
         "decode:sol:stake": "tsx ./scripts/decode-sol-staking-account.ts",
         "docker:suite-sync": "./scripts/docker-suite-sync.sh",
-        "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'"
+        "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'",
+        "perf:publish": "tsx performance/publish.ts"
     },
     "devDependencies": {
         "@currents/playwright": "^2.5.0",
