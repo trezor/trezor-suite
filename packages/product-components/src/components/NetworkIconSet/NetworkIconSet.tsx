@@ -3,7 +3,8 @@ import { useMemo } from 'react';
 import { Tooltip } from '@trezor/components';
 
 import type { NetworkParams } from '../../NetworkParams';
-import { useNetworkOptions } from '../../network-display/NetworkDisplayProvider';
+import { useSelector } from '../../network-display/NetworkDisplayProvider';
+import { selectNetworkOptions } from '../../network-display/networkDisplaySelectors';
 import { getNetworkOptions } from '../../utils/getNetworkOptions';
 import { type CommonIconSetProps, IconSetBase, IconWrapper } from '../IconSet/IconSetBase';
 
@@ -23,7 +24,7 @@ export const NetworkIconSet = ({
     isReversed = true,
     hasTooltip = false,
 }: NetworkIconSetProps) => {
-    const networkOptions = useNetworkOptions(networks);
+    const networkOptions = useSelector(state => selectNetworkOptions(state, networks));
     const { length } = networkOptions;
 
     const visibleContent = useMemo(() => {

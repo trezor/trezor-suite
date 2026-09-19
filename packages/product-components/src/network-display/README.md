@@ -1,6 +1,6 @@
 # Network config store prototype
 
-`NetworkDisplayProvider` reads network configs from a small external-store contract:
+`NetworkDisplayProvider` injects a small external-store contract:
 
 ```ts
 type NetworkDisplayStore = {
@@ -11,7 +11,23 @@ type NetworkDisplayStore = {
 };
 ```
 
-Suite's Redux store already satisfies this contract. `Main` obtains it from services:
+Consumers use pure selectors with a generic `useSelector` hook:
+
+```tsx
+import { useSelector } from '@trezor/product-components/network-display';
+import { selectNetworkOptions } from '@trezor/product-components/network-display/selectors';
+
+const networks = useSelector(selectNetworkOptions);
+const filteredNetworks = useSelector(state => selectNetworkOptions(state, symbols));
+```
+
+The hook uses `useSyncExternalStore` directly and subscribes to the selected value.
+There are no hooks for individual queries. `selectNetworkOptions` uses Reselect to
+keep the result stable when unrelated state changes. These same selectors work with
+React Redux's `useSelector`; the hook above reads the injected network store instead
+of requiring a Redux provider.
+
+Suite's Redux store already satisfies the contract. `Main` obtains it from services:
 
 ```tsx
 const { store } = useServices(injectStore);
@@ -20,14 +36,12 @@ const { store } = useServices(injectStore);
 ```
 
 Product-components import neither Redux nor Suite's state or selectors. The provider
-uses `useSyncExternalStore` directly to observe `store.getState().networks`. Other
-state changes keep the same config snapshot and do not rerender its consumers.
+only takes the store; selectors belong at consumer call sites.
 
 Connect Explorer calls `createConnectExplorerNetworkDisplayStore` from its composition
-root to build a fixed config map from its existing coin definitions. This store contains only
-that map and a no-op subscription. `createConnectExplorerApp` wraps the app in the
-same provider, and `ConnectInitForm` reads its network names through `useNetworkOptions`.
-It does not use Explorer's Redux state for network configs.
+root to build a fixed config map from its existing coin definitions. This store contains
+only that map and a no-op subscription. `createConnectExplorerApp` wraps the app in the
+same provider, and `ConnectInitForm` selects its network names through it.
 
 ```tsx
 const state = { networks: { [asNetworkSymbol('btc')]: { name: 'Bitcoin' } } };
@@ -39,14 +53,13 @@ const store: NetworkDisplayStore = {
 <NetworkDisplayProvider store={store}>{children}</NetworkDisplayProvider>;
 ```
 
-Import the provider and hook from `@trezor/product-components/network-display` and
-store/config types from `@trezor/product-components/network-display/config`.
-
-The store supplies configuration, not user preferences. By default components use
-all keys of the config map. Suite passes its enabled-network list to individual
+Import store/config types from `@trezor/product-components/network-display/config`.
+The store supplies configuration, not user preferences. By default the options
+selector uses all config keys. Suite passes its enabled-network list to individual
 components; protocol searches can override it. Explicit lists retain their order,
 and missing configs fall back to the symbol.
 
-Store snapshots must be immutable and retain their reference until configs change.
-Server rendering uses the same snapshot getter; server and initial client configs
-must agree. Explorer's fixed config store satisfies this for Next's static rendering.
+Snapshots and selector results must be immutable and retain their references until
+selected data changes. Memoize selectors that return arrays or objects. Server
+rendering uses the same snapshot getter; server and initial client configs must agree.
+Explorer's fixed config store satisfies this for Next's static rendering.

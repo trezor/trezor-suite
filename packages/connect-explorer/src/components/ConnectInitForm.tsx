@@ -17,10 +17,11 @@ import {
 import type { CoinSymbol, PermissionRequest } from '@trezor/connect-common';
 import { isCoinSymbol } from '@trezor/connect-common/src/types/coinInfo';
 import { CheckIcon, FadersIcon, LightningIcon } from '@trezor/icons';
-import { useNetworkOptions } from '@trezor/product-components/network-display';
+import { useSelector } from '@trezor/product-components/network-display';
+import { selectNetworkOptions } from '@trezor/product-components/network-display/selectors';
 
 import * as trezorConnectActions from '../actions/trezorConnectActions';
-import { useActions, useSelector } from '../hooks';
+import { useActions, useSelector as useAppSelector } from '../hooks';
 import { RequestedPermissions } from './RequestedPermissions';
 import {
     selectConnectInitError,
@@ -163,10 +164,10 @@ const CopyWrapper = styled.div`
 `;
 
 export const ConnectInitForm = () => {
-    const networks = useNetworkOptions();
-    const isInitializing = useSelector(selectIsConnectInitializing);
-    const isInitSuccess = useSelector(selectIsConnectInitSuccess);
-    const initError = useSelector(selectConnectInitError);
+    const networks = useSelector(selectNetworkOptions);
+    const isInitializing = useAppSelector(selectIsConnectInitializing);
+    const isInitSuccess = useAppSelector(selectIsConnectInitSuccess);
+    const initError = useAppSelector(selectConnectInitError);
 
     const actions = useActions({ initWithOptions: trezorConnectActions.initWithOptions });
 

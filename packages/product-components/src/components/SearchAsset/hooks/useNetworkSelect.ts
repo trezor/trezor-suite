@@ -3,7 +3,8 @@ import { useMemo } from 'react';
 import type { NetworkSymbol } from '@trezor/network-module-types';
 
 import type { NetworkParams } from '../../../NetworkParams';
-import { useNetworkOptions } from '../../../network-display/NetworkDisplayProvider';
+import { useSelector } from '../../../network-display/NetworkDisplayProvider';
+import { selectNetworkOptions } from '../../../network-display/networkDisplaySelectors';
 import { getNetworkOptions } from '../../../utils/getNetworkOptions';
 
 export type SearchAssetSelectConfig = NetworkParams & {
@@ -15,7 +16,7 @@ export type SearchAssetSelectConfig = NetworkParams & {
 
 export const useNetworkSelect = (config: SearchAssetSelectConfig) => {
     const { isToken, includeAllOption, allLabel, selectedNetwork } = config;
-    const networks = useNetworkOptions(config.networks);
+    const networks = useSelector(state => selectNetworkOptions(state, config.networks));
 
     const allOptions = useMemo(() => {
         const networkOptions = getNetworkOptions({

@@ -3,48 +3,30 @@ import {
     createContext,
     useCallback,
     useContext,
-    useMemo,
     useSyncExternalStore,
 } from 'react';
 
-import type { NetworkSymbol } from '@trezor/network-module-types';
-import { typedObjectKeys } from '@trezor/utils';
+import type { NetworkDisplayState, NetworkDisplayStore } from './NetworkDisplayConfig';
 
-import type {
-    NetworkDisplayState,
-    NetworkDisplayStore,
-    NetworkOption,
-} from './NetworkDisplayConfig';
-
-const NetworkDisplayContext = createContext<NetworkDisplayState['networks'] | undefined>(undefined);
+const NetworkDisplayContext = createContext<NetworkDisplayStore | null>(null);
 
 type NetworkDisplayProviderProps = {
     store: NetworkDisplayStore;
     children: ReactNode;
 };
 
-export const NetworkDisplayProvider = ({ store, children }: NetworkDisplayProviderProps) => {
-    const getSnapshot = useCallback(() => store.getState().networks, [store]);
-    const networks = useSyncExternalStore(store.subscribe, getSnapshot, getSnapshot);
+export const NetworkDisplayProvider = ({ store, children }: NetworkDisplayProviderProps) => (
+    <NetworkDisplayContext.Provider value={store}>{children}</NetworkDisplayContext.Provider>
+);
 
-    return (
-        <NetworkDisplayContext.Provider value={networks}>{children}</NetworkDisplayContext.Provider>
-    );
-};
+export const useSelector = <TSelected,>(selector: (state: NetworkDisplayState) => TSelected) => {
+    const store = useContext(NetworkDisplayContext);
 
-export const useNetworkOptions = (symbols?: readonly NetworkSymbol[]): readonly NetworkOption[] => {
-    const networks = useContext(NetworkDisplayContext);
-
-    if (networks === undefined) {
+    if (store === null) {
         throw new Error('Network display components require a NetworkDisplayProvider.');
     }
 
-    return useMemo(
-        () =>
-            (symbols ?? (networks === null ? [] : typedObjectKeys(networks))).map(symbol => ({
-                symbol,
-                name: networks?.[symbol]?.name ?? symbol,
-            })),
-        [networks, symbols],
-    );
+    const getSnapshot = useCallback(() => selector(store.getState()), [store, selector]);
+
+    return useSyncExternalStore(store.subscribe, getSnapshot, getSnapshot);
 };

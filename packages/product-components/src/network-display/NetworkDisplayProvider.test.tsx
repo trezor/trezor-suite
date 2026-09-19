@@ -5,7 +5,8 @@ import { act, renderHook } from '@testing-library/react';
 import { asNetworkSymbol } from '@trezor/network-module-types';
 
 import type { NetworkDisplayState, NetworkDisplayStore } from './NetworkDisplayConfig';
-import { NetworkDisplayProvider, useNetworkOptions } from './NetworkDisplayProvider';
+import { NetworkDisplayProvider, useSelector } from './NetworkDisplayProvider';
+import { selectNetworkOptions } from './networkDisplaySelectors';
 
 const bitcoin = { symbol: asNetworkSymbol('btc'), name: 'Bitcoin' };
 const ethereum = { symbol: asNetworkSymbol('eth'), name: 'Ethereum' };
@@ -21,8 +22,8 @@ const staticStore: NetworkDisplayStore = {
 };
 
 describe('NetworkDisplayProvider', () => {
-    it('reads all networks from a fixed config store without Redux or selectors', () => {
-        const { result, rerender } = renderHook(() => useNetworkOptions(), {
+    it('reads all networks from a fixed config store without Redux', () => {
+        const { result, rerender } = renderHook(() => useSelector(selectNetworkOptions), {
             wrapper: ({ children }: { children: ReactNode }) => (
                 <NetworkDisplayProvider store={staticStore}>{children}</NetworkDisplayProvider>
             ),
@@ -36,12 +37,15 @@ describe('NetworkDisplayProvider', () => {
 
     it('preserves explicit filtering and order, including unknown network symbols', () => {
         const unknown = asNetworkSymbol('unknown');
-        const { result, rerender } = renderHook(({ symbols }) => useNetworkOptions(symbols), {
-            initialProps: { symbols: [ethereum.symbol, bitcoin.symbol, unknown] },
-            wrapper: ({ children }: { children: ReactNode }) => (
-                <NetworkDisplayProvider store={staticStore}>{children}</NetworkDisplayProvider>
-            ),
-        });
+        const { result, rerender } = renderHook(
+            ({ symbols }) => useSelector(state => selectNetworkOptions(state, symbols)),
+            {
+                initialProps: { symbols: [ethereum.symbol, bitcoin.symbol, unknown] },
+                wrapper: ({ children }: { children: ReactNode }) => (
+                    <NetworkDisplayProvider store={staticStore}>{children}</NetworkDisplayProvider>
+                ),
+            },
+        );
 
         expect(result.current).toEqual([ethereum, bitcoin, { symbol: unknown, name: unknown }]);
         rerender({ symbols: [bitcoin.symbol] });
@@ -66,7 +70,7 @@ describe('NetworkDisplayProvider', () => {
             () => {
                 render();
 
-                return useNetworkOptions();
+                return useSelector(selectNetworkOptions);
             },
             {
                 wrapper: ({ children }: { children: ReactNode }) => (
@@ -99,5 +103,44 @@ describe('NetworkDisplayProvider', () => {
 
         unmount();
         expect(listeners.size).toBe(0);
+    });
+
+    it('does not rerender when a different network config changes', () => {
+        let state = staticState;
+        const listeners = new Set<() => void>();
+        const store: NetworkDisplayStore = {
+            getState: () => state,
+            subscribe: listener => {
+                listeners.add(listener);
+
+                return () => {
+                    listeners.delete(listener);
+                };
+            },
+        };
+        const render = jest.fn();
+        const { result } = renderHook(
+            () => {
+                render();
+
+                return useSelector(currentState => currentState.networks?.[bitcoin.symbol]?.name);
+            },
+            {
+                wrapper: ({ children }: { children: ReactNode }) => (
+                    <NetworkDisplayProvider store={store}>{children}</NetworkDisplayProvider>
+                ),
+            },
+        );
+
+        expect(result.current).toBe('Bitcoin');
+        render.mockClear();
+        act(() => {
+            state = {
+                networks: { ...state.networks, [ethereum.symbol]: { name: 'ETH' } },
+            };
+            listeners.forEach(listener => listener());
+        });
+        expect(result.current).toBe('Bitcoin');
+        expect(render).not.toHaveBeenCalled();
     });
 });
