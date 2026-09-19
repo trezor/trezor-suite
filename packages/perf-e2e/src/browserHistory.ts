@@ -46,6 +46,38 @@ export const buildHistoryFile = (
     generatedAt = new Date().toISOString(),
 ): PerfHistoryFile => ({ generatedAt, surface, measurements: [...measurements] });
 
+/**
+ * A shard may write more than one document — the run is orchestrated in batches, and each Playwright
+ * process reports its own. They are merged on read: a scenario measured twice keeps the later
+ * numbers, which are the ones that ran last.
+ */
+export const mergeHistories = (files: readonly PerfHistoryFile[]): PerfHistoryFile | null => {
+    const [first] = files;
+
+    if (!first) {
+        return null;
+    }
+
+    const byMeasurement = new Map<string, PerfHistoryMeasurement>();
+
+    for (const file of files) {
+        for (const measurement of file.measurements) {
+            byMeasurement.set(`${measurement.scenario}\u0000${measurement.variant}`, measurement);
+        }
+    }
+
+    return {
+        // The newest stamp: the document describes the run, and the run ended when the last one did.
+        generatedAt:
+            files
+                .map(file => file.generatedAt)
+                .toSorted()
+                .at(-1) ?? first.generatedAt,
+        surface: first.surface,
+        measurements: [...byMeasurement.values()],
+    };
+};
+
 /** A shard that measured nothing contributes no run, rather than an empty one. */
 export const historyToPerfRun = (
     shard: string,

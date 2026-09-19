@@ -2,6 +2,7 @@ import {
     BROWSER_METRIC_PREFIX,
     buildHistoryFile,
     historyToPerfRun,
+    mergeHistories,
     resolveSurface,
 } from './browserHistory';
 import type { PerfHistoryFile } from './browserHistory';
@@ -103,5 +104,65 @@ describe('historyToPerfRun', () => {
 
     it('contributes no run when the shard measured nothing', () => {
         expect(historyToPerfRun('3', { ...history, measurements: [] }, identity)).toBeNull();
+    });
+});
+
+describe('mergeHistories', () => {
+    const second: PerfHistoryFile = {
+        generatedAt: '2026-09-19T09:00:00.000Z',
+        surface: 'web',
+        measurements: [
+            {
+                scenario: 'account-switch',
+                variant: 'T3W1',
+                runs: 2,
+                metrics: { totalBlockingTimeMs: 242 },
+            },
+        ],
+    };
+
+    it('keeps every measurement a shard reported across its batches', () => {
+        const merged = mergeHistories([history, second]);
+
+        expect(merged?.measurements.map(measurement => measurement.scenario)).toEqual([
+            'wallet-discovery',
+            'account-switch',
+        ]);
+    });
+
+    it('stamps the merged document with the last batch to finish', () => {
+        expect(mergeHistories([history, second])?.generatedAt).toBe('2026-09-19T09:00:00.000Z');
+        expect(mergeHistories([second, history])?.generatedAt).toBe('2026-09-19T09:00:00.000Z');
+    });
+
+    it('lets a re-measured scenario keep the numbers that ran last', () => {
+        const remeasured: PerfHistoryFile = {
+            ...second,
+            measurements: [
+                {
+                    scenario: 'wallet-discovery',
+                    variant: 'T3W1',
+                    runs: 1,
+                    metrics: { totalBlockingTimeMs: 999 },
+                },
+            ],
+        };
+
+        expect(mergeHistories([history, remeasured])?.measurements).toEqual(
+            remeasured.measurements,
+        );
+    });
+
+    it('keeps two device models of one scenario apart', () => {
+        const otherModel: PerfHistoryFile = {
+            ...second,
+            measurements: [{ ...history.measurements[0]!, variant: 'T3T1' }],
+        };
+
+        expect(mergeHistories([history, otherModel])?.measurements).toHaveLength(2);
+    });
+
+    it('is null when the shard left nothing', () => {
+        expect(mergeHistories([])).toBeNull();
     });
 });

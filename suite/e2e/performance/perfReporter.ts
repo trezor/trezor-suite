@@ -247,7 +247,7 @@ class PerfReporter implements Reporter {
                         metrics: entry.median,
                     })),
                 ),
-                process.env.PERF_HISTORY_FILE,
+                process.env.PERF_HISTORY_DIR,
                 message => {
                     // eslint-disable-next-line no-console
                     console.log(message);
