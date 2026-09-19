@@ -59,6 +59,7 @@
         { "path": "../labeling" },
         { "path": "../link" },
         { "path": "../navigation" },
+        { "path": "../performance-metrics" },
         { "path": "../qr-code" },
         { "path": "../scrollview" },
         { "path": "../send" },
