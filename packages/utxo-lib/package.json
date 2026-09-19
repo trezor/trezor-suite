@@ -20,6 +20,10 @@
         "utxo",
         "javascript"
     ],
+    "sideEffects": [
+        "./src/types/validation.ts",
+        "./lib/types/validation.js"
+    ],
     "main": "./src/index.ts",
     "files": [
         "lib/",

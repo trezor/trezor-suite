@@ -24,6 +24,9 @@
         "!lib/ui",
         "CHANGELOG.md"
     ],
+    "sideEffects": [
+        "./src/ui/**"
+    ],
     "main": "src/index.ts",
     "browser": {
         "socks-proxy-agent": "./src/utils/socks-proxy-agent.ts"

@@ -2,6 +2,7 @@
     "name": "@trezor/react-native-usb",
     "version": "1.0.0",
     "description": "React Native WebUSB implementation",
+    "sideEffects": false,
     "main": "src/index",
     "scripts": {
         "type-check": "yarn g:tsc --build tsconfig.json",
