@@ -15,6 +15,7 @@
         "depcheck": "yarn g:depcheck",
         "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'"
     },
+    "sideEffects": false,
     "main": "./src/index.ts",
     "browser": "./src/index.ts",
     "dependencies": {
