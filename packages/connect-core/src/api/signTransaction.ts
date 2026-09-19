@@ -9,6 +9,7 @@ import type {
     TransactionOptions,
 } from '@trezor/connect-common';
 import { ERRORS } from '@trezor/connect-common/src/constants';
+import { toCanonicalDescriptor } from '@trezor/utils';
 import { BigNumber } from '@trezor/utils/src/bigNumber';
 import { promiseAllSequence } from '@trezor/utils/src/promiseAllSequence';
 
@@ -255,7 +256,7 @@ export default class SignTransaction extends AbstractMethod<'signTransaction', P
         const address_n = accountPath.address_n.slice(0, 3);
         const node = await device.getCommands().getHDNode({ address_n }, { coinInfo });
         const account = await blockchain.getAccountInfo({
-            descriptor: node.xpubSegwit || node.xpub,
+            descriptor: toCanonicalDescriptor(node.xpubSegwit || node.xpub),
             details: 'tokens',
         });
 
