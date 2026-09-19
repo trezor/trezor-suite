@@ -330,16 +330,7 @@ export { ConnectionGlobalModalManager } from './src/components/connection/Connec
 export { ThpGlobalModalManager } from './src/components/connection/thp/ThpGlobalModalManager';
 export { WipedBleDeviceNeedsManualOsRemovalModalManager } from './src/components/suite/bluetooth/WipedBleDeviceNeedsManualOsRemovalModalManager';
 export { ReduxModal } from './src/components/suite/modals/ReduxModal/ReduxModal';
-export { MultiShareBackupModal } from './src/components/suite/modals/ReduxModal/UserContextModal/MultiShareBackupModal/MultiShareBackupModal';
-export { Backup } from './src/views/backup/Backup';
-export { FirmwareCustom } from './src/views/firmware/FirmwareCustom';
-export { FirmwareUpdate } from './src/views/firmware/FirmwareUpdate';
-export { Recovery } from './src/views/recovery';
-export { BridgeUnavailable } from './src/views/suite/bridge';
-export { BridgeDeprecated } from './src/views/suite/bridge-deprecated';
-export { BridgeRequested } from './src/views/suite/bridge-requested';
-export { UdevRules } from './src/views/suite/udev';
-export { Version } from './src/views/suite/version';
+export { getForegroundApp } from './src/components/suite/modals/ModalSwitcher/lazyForegroundApps';
 export {
     Body,
     Columns,

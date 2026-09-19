@@ -1,3 +1,4 @@
+import { lazy } from 'react';
 import { useIntl } from 'react-intl';
 
 import { selectSelectedAccount } from '@suite/account';
@@ -9,17 +10,60 @@ import TrezorConnect, { UI_EVENTS, UI_REQUESTS } from '@trezor/connect';
 
 import { useSelector } from '#src/hooks/suite';
 
-import { ConfirmActionModal } from './ConfirmActionModal';
-import { ConfirmFingerprintModal } from './ConfirmFingerprintModal';
-import { ConfirmPassphraseBeforeAction } from './ConfirmPassphraseBeforeAction';
-import { PassphraseOnDeviceModal } from './PassphraseOnDeviceModal';
-import { PinModal } from './PinModal';
-import { SignMessageModal } from './SignMessageModal';
-import { ConfirmXpubModal } from '../ConfirmXpubModal';
 import type { ReduxModalProps } from '../ReduxModalProps';
+// Eager on purpose: TransactionReviewModal sets state.modal.preserve from a mount effect, which a
+// lazy boundary would delay past UI_EVENTS.CLOSE_UI_WINDOW (see modalReducer).
 import { TransactionReviewModal } from '../TransactionReviewModal/TransactionReviewModal';
-import { ConnectAddressConfirmation } from '../UserContextModal/ConnectAddressConfirmation';
-import { ConnectSelectAccount } from '../UserContextModal/ConnectSelectAccount/ConnectSelectAccount';
+
+const ConfirmActionModal = lazy(() =>
+    import(/* webpackChunkName: "modals-device" */ './ConfirmActionModal').then(m => ({
+        default: m.ConfirmActionModal,
+    })),
+);
+const ConfirmFingerprintModal = lazy(() =>
+    import(/* webpackChunkName: "modals-device" */ './ConfirmFingerprintModal').then(m => ({
+        default: m.ConfirmFingerprintModal,
+    })),
+);
+const ConfirmPassphraseBeforeAction = lazy(() =>
+    import(/* webpackChunkName: "modals-device" */ './ConfirmPassphraseBeforeAction').then(m => ({
+        default: m.ConfirmPassphraseBeforeAction,
+    })),
+);
+const PassphraseOnDeviceModal = lazy(() =>
+    import(/* webpackChunkName: "modals-device" */ './PassphraseOnDeviceModal').then(m => ({
+        default: m.PassphraseOnDeviceModal,
+    })),
+);
+const PinModal = lazy(() =>
+    import(/* webpackChunkName: "modals-device" */ './PinModal').then(m => ({
+        default: m.PinModal,
+    })),
+);
+const SignMessageModal = lazy(() =>
+    import(/* webpackChunkName: "modals-device" */ './SignMessageModal').then(m => ({
+        default: m.SignMessageModal,
+    })),
+);
+const ConfirmXpubModal = lazy(() =>
+    import(/* webpackChunkName: "modals-device" */ '../ConfirmXpubModal').then(m => ({
+        default: m.ConfirmXpubModal,
+    })),
+);
+const ConnectAddressConfirmation = lazy(() =>
+    import(
+        /* webpackChunkName: "modals-connect-popup" */ '../UserContextModal/ConnectAddressConfirmation'
+    ).then(m => ({
+        default: m.ConnectAddressConfirmation,
+    })),
+);
+const ConnectSelectAccount = lazy(() =>
+    import(
+        /* webpackChunkName: "modals-connect-popup" */ '../UserContextModal/ConnectSelectAccount/ConnectSelectAccount'
+    ).then(m => ({
+        default: m.ConnectSelectAccount,
+    })),
+);
 
 /** Modals requested by Device from `trezor-connect` */
 export const DeviceContextModal = ({
