@@ -12,7 +12,8 @@ import { typography } from '@trezor/theme';
 import { BigNumber } from '@trezor/utils';
 
 import { updateGraphDataThunk } from 'src/actions/wallet/graphActions';
-import { GraphRangeSelector, HiddenPlaceholder, TransactionsGraph } from 'src/components/suite';
+import { GraphRangeSelector, HiddenPlaceholder } from 'src/components/suite';
+import { TransactionsGraphLoader } from 'src/components/suite/graph/TransactionsGraph/TransactionsGraphLoader';
 import { useSelector } from 'src/hooks/suite';
 import { selectGraph, selectGraphSelectedRange } from 'src/reducers/wallet/graphReducer';
 import { type Account } from 'src/types/wallet';
@@ -125,7 +126,7 @@ export const TransactionSummary = ({ account }: TransactionSummaryProps) => {
                     <Card overflow="visible" paddingType="none">
                         <Column alignItems="stretch" padding={24} gap={16}>
                             <Row height={320} overflow="visible" alignItems="stretch">
-                                <TransactionsGraph
+                                <TransactionsGraphLoader
                                     variant="one-asset"
                                     xTicks={xTicks}
                                     account={account}

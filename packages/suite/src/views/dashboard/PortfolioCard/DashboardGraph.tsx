@@ -15,7 +15,8 @@ import { RepeatIcon } from '@trezor/icons';
 import { typography } from '@trezor/theme';
 
 import { updateGraphDataThunk } from 'src/actions/wallet/graphActions';
-import { HiddenPlaceholder, TransactionsGraph } from 'src/components/suite';
+import { HiddenPlaceholder } from 'src/components/suite';
+import { TransactionsGraphLoader } from 'src/components/suite/graph/TransactionsGraph/TransactionsGraphLoader';
 import { useSelector } from 'src/hooks/suite';
 import { selectGraph } from 'src/reducers/wallet/graphReducer';
 import { type Account } from 'src/types/wallet';
@@ -133,7 +134,7 @@ export const DashboardGraph = memo(({ accounts }: DashboardGraphProps) => {
                     </ErrorMessage>
                 ) : (
                     <Box width="100%" height="100%">
-                        <TransactionsGraph
+                        <TransactionsGraphLoader
                             variant="all-assets"
                             onRefresh={onRefresh}
                             isLoading={graph.isLoading || isProcessing}
