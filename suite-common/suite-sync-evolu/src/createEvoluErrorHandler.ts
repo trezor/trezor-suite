@@ -26,7 +26,7 @@ export const createEvoluErrorHandler =
                 return;
 
             default:
-                errorHandler({ type: 'RelayOther', message: JSON.stringify(error) });
+                errorHandler({ type: 'RelayOther', message: error.type });
 
                 return;
         }

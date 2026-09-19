@@ -21,6 +21,7 @@ import { type NetworkSymbol, asNetworkSymbol } from '@suite-common/wallet-config
 import { asAccountDescriptor } from '@suite-common/wallet-types';
 import { err, ok } from '@trezor/type-utils';
 
+import { describeEvoluTypeError } from './describeEvoluTypeError';
 import { normalizeLabel } from './normalizeLabel';
 
 export const AddressEvoluId = id('AddressEvoluId');
@@ -56,7 +57,7 @@ export class AddressEvoluTable implements AddressTable {
         const idResult = createAddressEvoluId(address, networkSymbol);
 
         if (!idResult.ok) {
-            return err(createSuiteSyncUpdateError(idResult.error));
+            return err(createSuiteSyncUpdateError(describeEvoluTypeError(idResult.error)));
         }
 
         const validated = AddressEvoluSchema.from({
@@ -68,7 +69,7 @@ export class AddressEvoluTable implements AddressTable {
         });
 
         if (!validated.ok) {
-            return err(createSuiteSyncUpdateError({ caused: validated.error }));
+            return err(createSuiteSyncUpdateError(describeEvoluTypeError(validated.error)));
         }
 
         this.evolu.upsert('address', validated.value);

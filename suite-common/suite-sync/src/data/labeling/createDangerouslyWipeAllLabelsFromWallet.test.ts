@@ -151,7 +151,7 @@ describe(createDangerouslyWipeAllLabelsFromWallet.name, () => {
     it('stops on first update error and propagates it', async () => {
         const updateError: SuiteSyncUpdateError = {
             type: 'SuiteSyncUpdateError',
-            caused: new Error('update failed'),
+            reason: 'update failed',
         };
         const updateWalletLabel = mock(() => Promise.resolve(ok(undefined)));
         const updateAccountLabel = mock(() => Promise.resolve(err(updateError)));
