@@ -221,6 +221,12 @@ jobs:
           # replacing one. The job name is only the title rendered inside it.
           PERF_REPORT_LABEL: "${{ inputs.target }} / group ${{ inputs.test-group }}"
           PERF_REPORT_JOB: "${{ inputs.caller-job-id && format('{0} ({1})', inputs.caller-job-id, inputs.test-group) || '' }}"
+          # The history this shard leaves for the publish job — written beside the comment, never
+          # instead of it. Without a surface the reporter writes nothing.
+          PERF_SURFACE: "${{ inputs.target }}"
+          # Its own directory: test-results belongs to Playwright, which cleans it before the
+          # upload step can run.
+          PERF_HISTORY_DIR: "${{ github.workspace }}/perf-history"
           COLLECT_COVERAGE_MAP: ${{ inputs.enable-coverage == 'true' && 'true' || '' }}
           COVERAGE_MAP_DIR: ${{ github.workspace }}/coverage-map
         run: |
@@ -319,6 +325,20 @@ jobs:
         with:
           target: ${{ inputs.target }}
           test-group: ${{ inputs.test-group }}
+
+      # Consumed by the caller's publish job, which is the only writer of the shared store. A shard
+      # that measured no @perf scenario simply uploads nothing. Persisting history must never red a
+      # test shard, hence continue-on-error.
+      - name: Upload perf history
+        if: ${{ !cancelled() }}
+        continue-on-error: true
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
+        with:
+          name: perf-history-${{ inputs.target }}-${{ inputs.test-group }}
+          path: perf-history/
+          if-no-files-found: ignore
+          retention-days: 7
+          overwrite: true
 
       - name: Upload per-test coverage map
         if: inputs.enable-coverage == 'true' && !cancelled()

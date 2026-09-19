@@ -7,15 +7,18 @@ import {
     PerfJsonReport,
     PerfMetrics,
     aggregateSamples,
+    buildHistoryFile,
     buildJsonReport,
     compareScenario,
     formatMetricValue,
     measurementKey,
     resolveBudget,
+    resolveSurface,
     suggestLimits,
 } from '@trezor/perf-e2e';
 
 import { BASELINES, LIMITS } from './budgets';
+import { writeHistoryFile } from './perfHistory';
 import { publishPerfReport } from './perfReportPublisher';
 
 const BUDGETS_MODULE_PATH = 'suite/e2e/performance/budgets.ts';
@@ -228,6 +231,29 @@ class PerfReporter implements Reporter {
         console.log(lines.join('\n'));
 
         annotateOverLimit(overLimit.map(entry => measurementKey(entry.scenario, entry.project)));
+
+        // Beside the comment, and independent of it: the numbers this shard measured, for the
+        // publish job to put in the shared store. A surface it cannot name contributes no history.
+        const surface = resolveSurface(process.env.PERF_SURFACE);
+
+        if (surface) {
+            writeHistoryFile(
+                buildHistoryFile(
+                    surface,
+                    measured.map(entry => ({
+                        scenario: entry.scenario,
+                        variant: entry.project,
+                        runs: entry.runs,
+                        metrics: entry.median,
+                    })),
+                ),
+                process.env.PERF_HISTORY_DIR,
+                message => {
+                    // eslint-disable-next-line no-console
+                    console.log(message);
+                },
+            );
+        }
 
         await publishPerfReport({
             measurements: measured.map(entry => ({
