@@ -1,14 +1,9 @@
-import { useMemo, useState } from 'react';
+import styled from 'styled-components';
 
-import Lottie from 'lottie-react';
-import styled, { useTheme } from 'styled-components';
-
-import animationEnd from './animationData/refresh-spinner-end-success.json';
-import animationWarn from './animationData/refresh-spinner-end-warning.json';
-import animationMiddle from './animationData/refresh-spinner-middle.json';
-import animationStart from './animationData/refresh-spinner-start.json';
+import { SpinnerRing } from './SpinnerRing';
+import { SpinnerSettledIcon } from './SpinnerSettledIcon';
+import { useSpinnerStage } from './hooks/useSpinnerStage';
 import type { SpinnerSize, SpinnerVariant } from './types';
-import { getSpinnerColorsReplace } from './utils';
 import {
     type FrameProps,
     type FramePropsKeys,
@@ -16,19 +11,24 @@ import {
     withFrameProps,
 } from '../../../utils/frameProps';
 import { type TransientProps } from '../../../utils/transientProps';
-import { recolorLottieAnimation } from '../../animations/recolorLottieAnimation';
 
 export const allowedSpinnerFrameProps = ['margin', 'opacity'] as const satisfies FramePropsKeys[];
 type AllowedFrameProps = Pick<FrameProps, (typeof allowedSpinnerFrameProps)[number]>;
 
-const StyledLottie = styled(Lottie)<
+const Wrapper = styled.div<
     {
-        size: SpinnerProps['size'];
+        $size: SpinnerSize;
+        $isDisabled: boolean;
     } & TransientProps<AllowedFrameProps>
 >`
-    width: ${({ size }) => `${size}px`};
-    height: ${({ size }) => `${size}px`};
+    position: relative;
     display: flex;
+    width: ${({ $size }) => $size}px;
+    height: ${({ $size }) => $size}px;
+
+    /* The ring paints itself with currentColor, so the whole artwork recolors from here. */
+    color: ${({ theme, $isDisabled }) =>
+        $isDisabled ? theme.contentDisabled : theme.contentBrand};
 
     ${withFrameProps}
 `;
@@ -52,78 +52,30 @@ export const Spinner = ({
     'data-testid': dataTest,
     ...rest
 }: SpinnerProps) => {
-    const theme = useTheme();
-    const defaultBodyColor = isDisabled ? theme.contentDisabled : theme.contentBrand;
-    const defaultWarningColor = isDisabled ? theme.contentDisabled : theme.contentWarning;
-    const defaultWarningForegroundColor = theme.contentPrimaryInverse;
-    const animationKey = `${theme.variant}-${variant}-${isDisabled ? 'disabled' : 'enabled'}`;
+    const { stage, handleIntroEnd, handleRotationEnd } = useSpinnerStage({
+        variant,
+        hasStartAnimation,
+    });
 
     const frameProps = pickAndPrepareFrameProps(rest, allowedSpinnerFrameProps);
 
-    const [hasStarted, setHasStarted] = useState(false);
-    const [hasFinishedRotation, setHasFinishedRotation] = useState(false);
-
-    const onLoopComplete = () => {
-        setHasFinishedRotation(true);
-    };
-
-    const colorsReplace = useMemo(
-        () =>
-            getSpinnerColorsReplace({
-                bodyColor: defaultBodyColor,
-                warningBackgroundColor: defaultWarningColor,
-                warningForegroundColor: defaultWarningForegroundColor,
-            }),
-        [defaultBodyColor, defaultWarningColor, defaultWarningForegroundColor],
-    );
-
-    const memoizedAnimations = useMemo(
-        () => ({
-            start: recolorLottieAnimation(animationStart, colorsReplace),
-            middle: recolorLottieAnimation(animationMiddle, colorsReplace),
-            end: recolorLottieAnimation(animationEnd, colorsReplace),
-            warn: recolorLottieAnimation(animationWarn, colorsReplace),
-        }),
-        [colorsReplace],
-    );
-
-    const lottieProps = useMemo(() => {
-        if (variant === 'success' && hasFinishedRotation) {
-            return {
-                animationData: memoizedAnimations.end,
-                loop: false,
-            };
-        }
-
-        if (variant === 'error' && hasFinishedRotation) {
-            return {
-                animationData: memoizedAnimations.warn,
-                loop: false,
-            };
-        }
-
-        if (hasStarted || !hasStartAnimation) {
-            return {
-                animationData: memoizedAnimations.middle,
-                onLoopComplete,
-            };
-        }
-
-        return {
-            animationData: memoizedAnimations.start,
-            onComplete: () => setHasStarted(true),
-            loop: false,
-        };
-    }, [hasStarted, hasStartAnimation, variant, hasFinishedRotation, memoizedAnimations]);
-
     return (
-        <StyledLottie
-            key={animationKey}
-            size={size}
+        <Wrapper
+            $size={size}
+            $isDisabled={isDisabled}
             data-component="Spinner"
             data-testid={dataTest ?? '@spinner'}
-            {...lottieProps}
             {...frameProps}
-        />
+        >
+            <SpinnerRing
+                stage={stage}
+                onIntroEnd={handleIntroEnd}
+                onRotationEnd={handleRotationEnd}
+            />
+
+            {stage === 'settled' && variant !== 'loading' && (
+                <SpinnerSettledIcon variant={variant} isDisabled={isDisabled} />
+            )}
+        </Wrapper>
     );
 };
