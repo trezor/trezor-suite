@@ -1,3 +1,9 @@
+/*
+ Static import for polyfills. In createBaseConfig.ts, we use the useBuiltIns: 'entry' Babel setting, which determines
+ which polyfills are picked as per the browserslist target.
+*/
+import 'core-js/actual';
+
 import { useDebugLanguageShortcut } from '@suite/debug';
 
 import {

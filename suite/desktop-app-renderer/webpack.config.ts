@@ -7,7 +7,7 @@ import webpack from 'webpack';
 import { merge } from 'webpack-merge';
 
 import { FLAGS } from '@suite-common/suite-config';
-import { browserslistConfigPath, createBaseConfig } from '@trezor/suite/webpack/createBaseConfig';
+import { createBaseConfig } from '@trezor/suite/webpack/createBaseConfig';
 import { createDevConfig } from '@trezor/suite/webpack/createDevConfig';
 import { isCodesignBuild, isDev, isTestBuild, launchElectron } from '@trezor/suite/webpack/env';
 import { NixosInterpreterPlugin } from '@trezor/suite/webpack/nixosInterpreterPlugin';
@@ -37,11 +37,17 @@ const messageSystemMockFile = path.join(
     'suite-common/message-system/build-mock/config.v1.ts',
 );
 
+/**
+ * A browserslist target specific to Suite Desktop, specifying  that Chromium version which is included in the current
+ * version of Electron.
+ * Note that this *has* to be a separate file. Specifying it via string (e.g.`browserslist:Chrome >= 150`) should be
+ * possible, but due to a bug in Webpack, it gets overriden by any browserslist file.
+ *
+ * Electron 43 runs on Chromium 150 https://www.electronjs.org/blog/electron-43-0
+ */
+const browserslistConfigPath = path.resolve(rendererDir, 'browserslist');
+
 const rendererConfig: webpack.Configuration = {
-    // Electron 43 runs on Chromium 150, but this shares the web application's browser targets.
-    // The previous `browserslist:Chrome >= 150` never took effect: when webpack finds a browserslist
-    // file in the build context it treats the rest of the target as an env name of that file, not
-    // as a query, so the renderer has always been built against the shared list.
     target: `browserslist:${browserslistConfigPath}`,
     entry: { main: [path.join(rendererDir, 'src', 'index.tsx')] },
     output: {
@@ -153,7 +159,12 @@ const rendererConfig: webpack.Configuration = {
 };
 
 export default merge([
-    createBaseConfig({ suiteType: 'desktop', baseDir, assetPrefix: DESKTOP_ASSET_PREFIX }),
+    createBaseConfig({
+        suiteType: 'desktop',
+        baseDir,
+        assetPrefix: DESKTOP_ASSET_PREFIX,
+        browserslistConfigPath,
+    }),
     ...(isDev ? [createDevConfig({ distPath: buildDir, port: DEV_PORT })] : []),
     rendererConfig,
 ]);
