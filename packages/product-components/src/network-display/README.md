@@ -11,14 +11,14 @@ type NetworkDisplayStore = {
 };
 ```
 
-Consumers use pure selectors with a generic `useSelector` hook:
+Consumers use pure selectors with a generic `useNetworkDisplaySelector` hook:
 
 ```tsx
-import { useSelector } from '@trezor/product-components/network-display';
+import { useNetworkDisplaySelector } from '@trezor/product-components/network-display';
 import { selectNetworkOptions } from '@trezor/product-components/network-display/selectors';
 
-const networks = useSelector(selectNetworkOptions);
-const filteredNetworks = useSelector(state => selectNetworkOptions(state, symbols));
+const networks = useNetworkDisplaySelector(selectNetworkOptions);
+const filteredNetworks = useNetworkDisplaySelector(state => selectNetworkOptions(state, symbols));
 ```
 
 The hook uses `useSyncExternalStore` directly and subscribes to the selected value.

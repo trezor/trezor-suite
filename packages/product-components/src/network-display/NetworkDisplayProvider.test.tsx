@@ -5,7 +5,7 @@ import { act, renderHook } from '@testing-library/react';
 import { asNetworkSymbol } from '@trezor/network-module-types';
 
 import type { NetworkDisplayState, NetworkDisplayStore } from './NetworkDisplayConfig';
-import { NetworkDisplayProvider, useSelector } from './NetworkDisplayProvider';
+import { NetworkDisplayProvider, useNetworkDisplaySelector } from './NetworkDisplayProvider';
 import { selectNetworkOptions } from './networkDisplaySelectors';
 
 const bitcoin = { symbol: asNetworkSymbol('btc'), name: 'Bitcoin' };
@@ -23,11 +23,14 @@ const staticStore: NetworkDisplayStore = {
 
 describe('NetworkDisplayProvider', () => {
     it('reads all networks from a fixed config store without Redux', () => {
-        const { result, rerender } = renderHook(() => useSelector(selectNetworkOptions), {
-            wrapper: ({ children }: { children: ReactNode }) => (
-                <NetworkDisplayProvider store={staticStore}>{children}</NetworkDisplayProvider>
-            ),
-        });
+        const { result, rerender } = renderHook(
+            () => useNetworkDisplaySelector(selectNetworkOptions),
+            {
+                wrapper: ({ children }: { children: ReactNode }) => (
+                    <NetworkDisplayProvider store={staticStore}>{children}</NetworkDisplayProvider>
+                ),
+            },
+        );
 
         expect(result.current).toEqual([bitcoin, ethereum]);
         const snapshot = result.current;
@@ -38,7 +41,8 @@ describe('NetworkDisplayProvider', () => {
     it('preserves explicit filtering and order, including unknown network symbols', () => {
         const unknown = asNetworkSymbol('unknown');
         const { result, rerender } = renderHook(
-            ({ symbols }) => useSelector(state => selectNetworkOptions(state, symbols)),
+            ({ symbols }) =>
+                useNetworkDisplaySelector(state => selectNetworkOptions(state, symbols)),
             {
                 initialProps: { symbols: [ethereum.symbol, bitcoin.symbol, unknown] },
                 wrapper: ({ children }: { children: ReactNode }) => (
@@ -70,7 +74,7 @@ describe('NetworkDisplayProvider', () => {
             () => {
                 render();
 
-                return useSelector(selectNetworkOptions);
+                return useNetworkDisplaySelector(selectNetworkOptions);
             },
             {
                 wrapper: ({ children }: { children: ReactNode }) => (
@@ -123,7 +127,9 @@ describe('NetworkDisplayProvider', () => {
             () => {
                 render();
 
-                return useSelector(currentState => currentState.networks?.[bitcoin.symbol]?.name);
+                return useNetworkDisplaySelector(
+                    currentState => currentState.networks?.[bitcoin.symbol]?.name,
+                );
             },
             {
                 wrapper: ({ children }: { children: ReactNode }) => (

@@ -19,7 +19,9 @@ export const NetworkDisplayProvider = ({ store, children }: NetworkDisplayProvid
     <NetworkDisplayContext.Provider value={store}>{children}</NetworkDisplayContext.Provider>
 );
 
-export const useSelector = <TSelected,>(selector: (state: NetworkDisplayState) => TSelected) => {
+export const useNetworkDisplaySelector = <TSelected,>(
+    selector: (state: NetworkDisplayState) => TSelected,
+) => {
     const store = useContext(NetworkDisplayContext);
 
     if (store === null) {
