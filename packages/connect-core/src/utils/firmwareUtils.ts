@@ -1,66 +1,12 @@
-import type {
-    CurrentVersion,
-    Features,
-    FirmwareChannel,
-    StrictFeatures,
-} from '@trezor/connect-common';
-import { type DeviceModelInternal, type FirmwareRelease, FirmwareType } from '@trezor/device-utils';
-import { type VersionArray, versionUtils } from '@trezor/utils';
+import type { Features, FirmwareChannel, StrictFeatures } from '@trezor/connect-common';
+import { type DeviceModelInternal, FirmwareType } from '@trezor/device-utils';
+import { type VersionArray } from '@trezor/utils';
 
 export const isStrictFeatures = (extFeatures: Features): extFeatures is StrictFeatures =>
     [1, 2].includes(extFeatures.major_version) &&
     (extFeatures.firmware_present === false ||
         extFeatures.bootloader_mode == null ||
         extFeatures.bootloader_mode === true);
-
-type VersionCheckProperty = 'min_firmware_version' | 'min_bootloader_version';
-//  Finds the best compatible firmware release from a data object.
-//  It sorts available firmwares from newest to oldest and returns the first one
-//  that meets the minimum version requirement for a given device property.
-export const findBestCompatibleRelease = (
-    availableFirmwares: FirmwareRelease[],
-    currentVesion: CurrentVersion,
-    checkProperty: VersionCheckProperty,
-): FirmwareRelease | undefined => {
-    if (!availableFirmwares || availableFirmwares.length === 0) {
-        return;
-    }
-
-    const currentFirmwareVersion = currentVesion.firmwareVersion;
-    const currentBootloaderVersion = currentVesion.bootloaderVersion;
-
-    let versionToCompare = currentFirmwareVersion;
-
-    if (checkProperty === 'min_bootloader_version' && currentBootloaderVersion) {
-        versionToCompare = currentBootloaderVersion;
-    } else if (checkProperty === 'min_bootloader_version' && currentFirmwareVersion) {
-        // If we do not get current bootloader version from Device but ww have current FW version,
-        // we can use the current FW version to get the bootloader version based on releases information.
-        const currentRelease = availableFirmwares.find(fw =>
-            versionUtils.isEqual(currentFirmwareVersion, fw.version),
-        );
-
-        if (!currentRelease?.bootloader_version) {
-            // Not found bootloader version for this release, or no release was found.
-            return;
-        }
-    }
-
-    if (!versionToCompare) {
-        // There is no version to compare.
-        return;
-    }
-
-    const sortedFirmwares = availableFirmwares.sort((a, b) =>
-        versionUtils.isNewer(b.version, a.version) ? 1 : -1,
-    );
-
-    const compatibleFirmware = sortedFirmwares.find(fw =>
-        versionUtils.isNewerOrEqual(versionToCompare, fw[checkProperty]),
-    );
-
-    return compatibleFirmware;
-};
 
 const buildLocalFileBaseName = (
     firmwareType: FirmwareType,

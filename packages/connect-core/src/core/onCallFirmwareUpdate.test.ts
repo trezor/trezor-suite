@@ -8,7 +8,7 @@ import { Log, bufferUtils } from '@trezor/utils';
 
 import { onCallFirmwareUpdate } from './onCallFirmwareUpdate';
 import { calculateFirmwareHash } from '../api/firmware/calculateFirmwareHash';
-import { getBundledRelease, initializeFirmwareConfig } from '../data/firmwareInfo';
+import { getBundledRelease, getLocalFirmwareConfig } from '../data/firmwareInfo';
 import * as firmwareReleaseStore from '../data/firmwareReleaseStore';
 import { loadProtobufModules } from '../data/protobufLoader';
 import * as settingsStore from '../data/settingsStore';
@@ -257,7 +257,7 @@ describe('onCallFirmwareUpdate', () => {
         await loadProtobufModules();
         const settings = parseConnectSettings({});
         settingsStore.set(settings);
-        await firmwareReleaseStore.init(settings.firmwareChannel, true, initializeFirmwareConfig);
+        firmwareReleaseStore.init(getLocalFirmwareConfig());
     });
     beforeEach(() => {
         if (!ASSETS_BASE_URL) {

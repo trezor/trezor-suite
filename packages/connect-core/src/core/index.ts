@@ -47,7 +47,7 @@ import { getMethod } from './method';
 import { onCallFirmwareUpdate } from './onCallFirmwareUpdate';
 import { dispose as disposeBackend } from '../backend/BlockchainLink';
 import * as enabledNetworksStore from '../data/enabledNetworksStore';
-import { initializeFirmwareConfig } from '../data/firmwareInfo';
+import { getLocalFirmwareConfig, getRemoteFirmwareConfig } from '../data/firmwareInfo';
 import * as firmwareReleaseStore from '../data/firmwareReleaseStore';
 import * as localFirmwareStore from '../data/localFirmwareStore';
 import { loadProtobufModules } from '../data/protobufLoader';
@@ -992,11 +992,12 @@ export class Core extends EventEmitter {
             // settingsStore so no reader picks up a stale, unsanitized snapshot.
             settingsStore.set({ ...settings, enabledNetworks: undefined });
             enabledNetworksStore.set(settings.enabledNetworks ?? []);
-            await firmwareReleaseStore.init(
-                settings.firmwareChannel,
-                false,
-                initializeFirmwareConfig,
-            );
+
+            const config =
+                (await getRemoteFirmwareConfig(settings.firmwareChannel ?? 'production')) ??
+                getLocalFirmwareConfig();
+            firmwareReleaseStore.init(config);
+
             const localFirmwares =
                 settings.localFirmwares && parseLocalFirmwares(settings.localFirmwares);
             if (localFirmwares) {
@@ -1004,9 +1005,7 @@ export class Core extends EventEmitter {
             }
             await loadProtobufModules();
 
-            this._deviceList = new DeviceList({
-                createLogger: this.createLogger,
-            });
+            this._deviceList = new DeviceList({ createLogger: this.createLogger });
             initDeviceList(this.getCoreContext());
 
             this.on(CORE_EVENT, onCoreEventThrottled);
