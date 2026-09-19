@@ -14,11 +14,9 @@ import {
     Text,
     variables,
 } from '@trezor/components';
-import type { CoinSymbol, PermissionRequest } from '@trezor/connect-common';
-import { isCoinSymbol } from '@trezor/connect-common/src/types/coinInfo';
+import { type CoinSymbol, type PermissionRequest, isCoinSymbol } from '@trezor/connect-common';
 import { CheckIcon, FadersIcon, LightningIcon } from '@trezor/icons';
-import { useNetworkDisplaySelector } from '@trezor/product-components/network-display';
-import { selectNetworkOptions } from '@trezor/product-components/network-display/selectors';
+import { selectNetworkOptions, useNetworkDisplaySelector } from '@trezor/product-components';
 
 import * as trezorConnectActions from '../actions/trezorConnectActions';
 import { useActions, useSelector } from '../hooks';

@@ -1,8 +1,5 @@
 import { asNetworkSymbol } from '@trezor/network-module-types';
-import type {
-    NetworkDisplayState,
-    NetworkDisplayStore,
-} from '@trezor/product-components/network-display/config';
+import type { NetworkDisplayState, NetworkDisplayStore } from '@trezor/product-components';
 import { typedObjectFromEntries } from '@trezor/utils';
 
 import { allCoinsSelect } from '../constants/coins';

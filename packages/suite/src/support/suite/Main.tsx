@@ -2,9 +2,9 @@ import { HelmetProvider } from 'react-helmet-async';
 
 import { useServices } from '@suite-common/dependency-injection';
 import { ReactQueryProvider } from '@suite-common/react-query/src/components/ReactQueryProvider';
-import { injectStore } from '@suite-common/redux-utils/src/storeInjectors';
+import { injectStore } from '@suite-common/redux-utils';
 import { SelectCacheProvider } from '@trezor/components';
-import { NetworkDisplayProvider } from '@trezor/product-components/network-display';
+import { NetworkDisplayProvider } from '@trezor/product-components';
 
 import Autodetect from 'src/support/suite/Autodetect';
 import { ConnectedIntlProvider } from 'src/support/suite/ConnectedIntlProvider';

@@ -1,4 +1,4 @@
-import { isNetworkIconSymbol } from '@suite-common/icons/src/iconUtils';
+import { isNetworkIconSymbol } from '@suite-common/icons';
 
 import { NetworkIcon } from '../components/NetworkIcon/NetworkIcon';
 import { NativeTokenIcon } from '../components/TokenIcon/NativeTokenIcon';

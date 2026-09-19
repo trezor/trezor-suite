@@ -14,8 +14,7 @@ type NetworkDisplayStore = {
 Consumers use pure selectors with a generic `useNetworkDisplaySelector` hook:
 
 ```tsx
-import { useNetworkDisplaySelector } from '@trezor/product-components/network-display';
-import { selectNetworkOptions } from '@trezor/product-components/network-display/selectors';
+import { selectNetworkOptions, useNetworkDisplaySelector } from '@trezor/product-components';
 
 const networks = useNetworkDisplaySelector(selectNetworkOptions);
 const filteredNetworks = useNetworkDisplaySelector(state => selectNetworkOptions(state, symbols));
@@ -53,7 +52,7 @@ const store: NetworkDisplayStore = {
 <NetworkDisplayProvider store={store}>{children}</NetworkDisplayProvider>;
 ```
 
-Import store/config types from `@trezor/product-components/network-display/config`.
+Import the provider, hooks, selectors, and store/config types from `@trezor/product-components`.
 The store supplies configuration, not user preferences. By default the options
 selector uses all config keys. Suite passes its enabled-network list to individual
 components; protocol searches can override it. Explicit lists retain their order,
