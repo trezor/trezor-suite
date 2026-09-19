@@ -12,6 +12,7 @@ export type NetworkDisplayState = {
     readonly networks: Readonly<Record<NetworkSymbol, NetworkDisplayConfig>> | null;
 };
 
+/** @serviceContract */
 export type NetworkDisplayStore = {
     getState: () => NetworkDisplayState;
     subscribe: (onChange: () => void) => () => void;

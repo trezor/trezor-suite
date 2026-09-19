@@ -23,8 +23,8 @@ Product-components import neither Redux nor Suite's state or selectors. The prov
 uses `useSyncExternalStore` directly to observe `store.getState().networks`. Other
 state changes keep the same config snapshot and do not rerender its consumers.
 
-Connect Explorer builds a fixed config map from its existing coin definitions in
-`createConnectExplorerCompositionRoot`. Its separate display store contains only
+Connect Explorer calls `createConnectExplorerNetworkDisplayStore` from its composition
+root to build a fixed config map from its existing coin definitions. This store contains only
 that map and a no-op subscription. `createConnectExplorerApp` wraps the app in the
 same provider, and `ConnectInitForm` reads its network names through `useNetworkOptions`.
 It does not use Explorer's Redux state for network configs.
