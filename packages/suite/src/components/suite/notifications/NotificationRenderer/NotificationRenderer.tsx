@@ -378,7 +378,7 @@ export const NotificationRenderer = ({
 
         case 'auto-updater-no-new':
             return renderNotificationView(render, notification, {
-                variant: 'info',
+                variant: 'transparent',
                 message: 'TOAST_AUTO_UPDATER_NO_NEW',
             });
 
