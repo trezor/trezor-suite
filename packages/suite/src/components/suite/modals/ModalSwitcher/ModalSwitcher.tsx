@@ -1,3 +1,5 @@
+import { Suspense } from 'react';
+
 import {
     TurnOnSuiteSyncModals,
     selectShowEnableSuiteSyncModal,
@@ -22,7 +24,12 @@ type InnerProps = { modal: ModalParams };
 const Inner = ({ modal }: InnerProps) => {
     switch (modal.type) {
         case 'redux-modal':
-            return <ReduxModal {...modal.payload} />;
+            // ReduxModal's switches load their modals lazily; this is their only render site.
+            return (
+                <Suspense fallback={null}>
+                    <ReduxModal {...modal.payload} />
+                </Suspense>
+            );
         default:
             return null;
     }

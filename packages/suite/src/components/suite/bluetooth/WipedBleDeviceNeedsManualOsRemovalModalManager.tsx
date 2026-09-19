@@ -1,8 +1,16 @@
+import { Suspense, lazy } from 'react';
+
 import { selectIsDeviceOsUnpairingRequired } from '@suite-common/bluetooth';
 
 import { useSelector } from 'src/hooks/suite';
 
-import { UnpairBluetoothDeviceFromOsModal } from './UnpairBluetoothDeviceFromOsModal';
+const UnpairBluetoothDeviceFromOsModal = lazy(() =>
+    import(/* webpackChunkName: "modals-connection" */ './UnpairBluetoothDeviceFromOsModal').then(
+        m => ({
+            default: m.UnpairBluetoothDeviceFromOsModal,
+        }),
+    ),
+);
 
 export const WipedBleDeviceNeedsManualOsRemovalModalManager = () => {
     const wasBluetoothDeviceWiped = useSelector(selectIsDeviceOsUnpairingRequired);
@@ -12,8 +20,10 @@ export const WipedBleDeviceNeedsManualOsRemovalModalManager = () => {
     }
 
     return (
-        <UnpairBluetoothDeviceFromOsModal
-            skipToggleModalConnection={wasBluetoothDeviceWiped.skipToggleModalConnection}
-        />
+        <Suspense fallback={null}>
+            <UnpairBluetoothDeviceFromOsModal
+                skipToggleModalConnection={wasBluetoothDeviceWiped.skipToggleModalConnection}
+            />
+        </Suspense>
     );
 };
