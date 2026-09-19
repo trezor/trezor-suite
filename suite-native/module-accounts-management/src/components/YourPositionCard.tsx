@@ -62,6 +62,7 @@ export const YourPositionCard = ({ account, token }: YourPositionCardProps) => {
                     <TokenIcon
                         symbol={symbol}
                         contractAddress={token?.contract}
+                        placeholder={token?.symbol || token?.name}
                         showNetworkIcon
                         size="medium"
                     />

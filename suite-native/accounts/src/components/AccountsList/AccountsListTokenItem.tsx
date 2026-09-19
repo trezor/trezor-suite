@@ -49,6 +49,7 @@ export const AccountsListTokenItem = ({
                 <TokenIcon
                     symbol={account.symbol}
                     contractAddress={token.contract}
+                    placeholder={token.symbol || token.name}
                     showNetworkIcon
                 />
             }

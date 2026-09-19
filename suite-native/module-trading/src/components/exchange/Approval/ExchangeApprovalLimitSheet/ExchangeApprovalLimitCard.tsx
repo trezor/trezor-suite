@@ -10,6 +10,7 @@ export type ExchangeApprovalLimitCardProps = {
     description: ReactNode;
     symbol?: NetworkSymbol;
     contractAddress?: string;
+    tokenSymbol?: string;
     isChecked?: boolean;
     onChange: () => void;
 } & PropsWithChildren;
@@ -20,6 +21,7 @@ export const ExchangeApprovalLimitCard = memo(
         description,
         symbol,
         contractAddress,
+        tokenSymbol,
         isChecked = false,
         onChange,
         children,
@@ -33,6 +35,7 @@ export const ExchangeApprovalLimitCard = memo(
                                 <TokenIcon
                                     symbol={symbol}
                                     contractAddress={contractAddress}
+                                    placeholder={tokenSymbol}
                                     size="extraSmall"
                                 />
                             )}

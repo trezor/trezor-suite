@@ -55,6 +55,7 @@ export const TxSimulationCrossChainAsset = ({ assetDiff }: TxSimulationCrossChai
                 <TokenIcon
                     symbol={network.symbol}
                     contractAddress={'address' in asset ? asset.address : undefined}
+                    placeholder={asset.symbol || undefined}
                     size="small"
                     showNetworkIcon
                 />

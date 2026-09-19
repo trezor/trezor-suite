@@ -267,6 +267,7 @@ export const YieldClaimScreen = () => {
                                         <TokenIcon
                                             symbol={account.symbol}
                                             contractAddress={vault.tokenContract}
+                                            placeholder={vault.name}
                                             size="tiny"
                                         />
                                         <Box flexShrink={1}>

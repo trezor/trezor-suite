@@ -45,6 +45,7 @@ export const TokenInfoCard = ({
                                 <TokenIcon
                                     symbol="xlm"
                                     contractAddress={iconContractAddress}
+                                    placeholder={tokenName}
                                     size="extraSmall"
                                 />
                                 <Text variant="body-md">{tokenName}</Text>

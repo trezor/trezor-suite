@@ -66,6 +66,7 @@ export const TradingAsset = (props: TradingAssetProps) => {
                 <TokenIcon
                     symbol={props.networkSymbol}
                     contractAddress={props.contractAddress}
+                    placeholder={symbol || name}
                     showNetworkIcon
                     size={iconSize}
                 />

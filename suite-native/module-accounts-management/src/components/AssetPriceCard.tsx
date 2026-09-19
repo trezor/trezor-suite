@@ -104,6 +104,7 @@ export const AssetPriceCard = ({ accountKey, tokenContract }: AssetPriceCardProp
                             <TokenIcon
                                 symbol={symbol}
                                 contractAddress={tokenContract}
+                                placeholder={token?.symbol || token?.name}
                                 showNetworkIcon
                                 size="medium"
                             />

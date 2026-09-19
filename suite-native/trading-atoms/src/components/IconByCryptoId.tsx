@@ -8,9 +8,15 @@ export type IconByCryptoIdProps = {
     cryptoId: CryptoId;
     size?: TokenIconSize;
     withNetwork?: boolean;
+    placeholder?: string;
 };
 
-export const IconByCryptoId = ({ cryptoId, size, withNetwork = false }: IconByCryptoIdProps) => {
+export const IconByCryptoId = ({
+    cryptoId,
+    size,
+    placeholder,
+    withNetwork = false,
+}: IconByCryptoIdProps) => {
     const { symbol, contractAddress } = cryptoIdToNetworkSymbolAndContractAddress(cryptoId);
 
     if (!symbol) {
@@ -25,6 +31,7 @@ export const IconByCryptoId = ({ cryptoId, size, withNetwork = false }: IconByCr
         <TokenIcon
             symbol={withNetwork ? symbol : adjustedSymbol}
             contractAddress={contractAddress}
+            placeholder={placeholder}
             size={size}
             showNetworkIcon={withNetwork}
         />

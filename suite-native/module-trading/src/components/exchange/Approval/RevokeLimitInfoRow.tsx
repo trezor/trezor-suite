@@ -24,7 +24,11 @@ export const RevokeLimitInfoRow = () => {
 
     const { send, preapprovedStringAmount } = quote;
     const { network, contractAddress } = cryptoIdToNetworkAndContractAddress(send);
-    const { decimals } = findToken(sendAccount?.tokens, contractAddress) ?? {};
+    const {
+        decimals,
+        symbol: tokenSymbol,
+        name: tokenName,
+    } = findToken(sendAccount?.tokens, contractAddress) ?? {};
 
     const showUnlimitedAllowanceLabel =
         preapprovedStringAmount &&
@@ -41,6 +45,7 @@ export const RevokeLimitInfoRow = () => {
                     <TokenIcon
                         symbol={network.symbol}
                         contractAddress={contractAddress}
+                        placeholder={tokenSymbol || tokenName}
                         size="extraSmall"
                     />
                 )}

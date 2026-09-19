@@ -66,6 +66,7 @@ const RewardRow = ({ reward, networkSymbol, tokenSymbol }: RewardRowProps) => {
                             <TokenIcon
                                 symbol={networkSymbol}
                                 contractAddress={reward.token.address}
+                                placeholder={rewardSymbol}
                                 size="extraSmall"
                                 showNetworkIcon
                             />

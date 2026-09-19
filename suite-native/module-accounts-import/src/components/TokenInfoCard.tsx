@@ -49,7 +49,13 @@ export const TokenInfoCard = ({
                     variant="body-xs"
                 />
             }
-            icon={<TokenIcon symbol={symbol} contractAddress={contract} />}
+            icon={
+                <TokenIcon
+                    symbol={symbol}
+                    contractAddress={contract}
+                    placeholder={tokenSymbol || name}
+                />
+            }
         >
             <TokenToFiatAmountFormatter
                 symbol={symbol}

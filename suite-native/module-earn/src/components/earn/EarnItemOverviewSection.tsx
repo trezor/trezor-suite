@@ -102,6 +102,7 @@ export const EarnItemOverviewSection = (item: EarnPromoItem) => {
             : {
                   symbol: item.networkSymbol,
                   contractAddress: item.tokenContractAddress,
+                  placeholder: item.tokenSymbol,
                   wrappedTokenIcon: 'network' as const,
               };
 

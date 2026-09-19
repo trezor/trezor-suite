@@ -30,6 +30,7 @@ export const YieldWrappedNativeReceivingCard = ({
                 <TokenIcon
                     symbol={networkSymbol}
                     contractAddress={tokenContract}
+                    placeholder={tokenSymbol}
                     size="extraSmall"
                 />
                 <ExactTokenAmountFormatter

@@ -1,9 +1,9 @@
 import { useMemo, useState } from 'react';
-import { Text, View } from 'react-native';
+import { StyleSheet, Text, View } from 'react-native';
 
 import { Image } from 'expo-image';
 
-import { type CryptoIconName, cryptoIcons, genericTokenIcon } from '@suite-common/icons';
+import { type CryptoIconName, cryptoIcons } from '@suite-common/icons';
 import {
     type NetworkDisplaySymbol,
     type NetworkSymbol,
@@ -67,7 +67,7 @@ const tokenIconPlaceholderTextStyle = prepareNativeStyle(utils => ({
 interface TokenIconPlaceholderProps {
     placeholder: string;
     containerStyle: NativeStyleObject;
-    accessibilityLabel: string;
+    accessibilityLabel?: string;
 }
 
 const TokenIconPlaceholder = ({
@@ -97,6 +97,8 @@ const TokenIconPlaceholder = ({
 interface TokenIconProps {
     symbol: NetworkSymbol | NetworkDisplaySymbol;
     contractAddress?: string;
+    /** Token ticker or name used for initials while its logo is unavailable. */
+    placeholder?: string;
     showNetworkIcon?: boolean;
     size?: TokenIconSize | number;
     /**
@@ -105,7 +107,12 @@ interface TokenIconProps {
     wrappedTokenIcon?: 'token' | 'network';
 }
 
-const TokenIconComponent = ({ symbol, contractAddress, size = 'small' }: TokenIconProps) => {
+const TokenIconComponent = ({
+    symbol,
+    contractAddress,
+    placeholder,
+    size = 'small',
+}: TokenIconProps) => {
     const { applyStyle } = useNativeStyles();
     const { translate } = useTranslate();
 
@@ -127,10 +134,13 @@ const TokenIconComponent = ({ symbol, contractAddress, size = 'small' }: TokenIc
         failed: boolean;
     } | null>(null);
 
-    // resolves synchronously for everything except the first XLM token after a cold start
-    // so most icons render in the first frame without a placeholder flash
+    const [displayedSource, setDisplayedSource] = useState<string>();
+
+    // Native icons resolve synchronously; token logos may need asynchronous address resolution.
     const resolvedUrls = useAsyncMemo((): (string | number)[] | Promise<(string | number)[]> => {
-        const fallbackIcon = [cryptoIcons[symbol.toLowerCase() as CryptoIconName]];
+        const fallbackIcon = contractAddress
+            ? []
+            : [cryptoIcons[symbol.toLowerCase() as CryptoIconName]];
 
         if (!isNetworkSymbol(symbol)) {
             return fallbackIcon;
@@ -163,8 +173,10 @@ const TokenIconComponent = ({ symbol, contractAddress, size = 'small' }: TokenIc
     const sourceUrls = resolvedUrls ?? [];
     const sourceKey = resolvedUrls ? `${asyncKey}#resolved` : `${asyncKey}#fallback`;
     const logoIndex = loadState?.sourceKey === sourceKey ? loadState.logoIndex : 0;
+    const imageKey = `${sourceKey}#${logoIndex}`;
+    const placeholderText = contractAddress ? placeholder?.trim() || 'T' : symbol.toUpperCase();
     const showPlaceholder =
-        !resolvedUrls || (loadState?.sourceKey === sourceKey ? loadState.failed : false);
+        !sourceUrls.length || (loadState?.sourceKey === sourceKey ? loadState.failed : false);
 
     /**
      * Retries loading the icon with the next available address in sourceUrls.
@@ -186,7 +198,7 @@ const TokenIconComponent = ({ symbol, contractAddress, size = 'small' }: TokenIc
     if (showPlaceholder) {
         return (
             <TokenIconPlaceholder
-                placeholder={symbol.toUpperCase()}
+                placeholder={placeholderText}
                 accessibilityLabel={key}
                 containerStyle={iconContainerStyle}
             />
@@ -194,22 +206,35 @@ const TokenIconComponent = ({ symbol, contractAddress, size = 'small' }: TokenIc
     }
 
     return (
-        <Image
-            source={sourceUrls[logoIndex]}
-            accessibilityHint={translate('icons.tokenIconHint')}
-            accessibilityLabel={key}
-            recyclingKey={asyncKey}
-            style={iconContainerStyle}
-            placeholder={genericTokenIcon}
-            onError={handleLoadError}
-            cachePolicy="memory-disk"
-        />
+        <View style={iconContainerStyle}>
+            <Image
+                key={imageKey}
+                source={sourceUrls[logoIndex]}
+                accessibilityHint={translate('icons.tokenIconHint')}
+                accessibilityLabel={key}
+                recyclingKey={imageKey}
+                style={iconContainerStyle}
+                onDisplay={contractAddress ? () => setDisplayedSource(imageKey) : undefined}
+                onError={handleLoadError}
+                cachePolicy="memory-disk"
+            />
+            {/* Keep the image mounted so it can load underneath the token's initials. */}
+            {!!contractAddress && displayedSource !== imageKey && (
+                <View style={StyleSheet.absoluteFill} pointerEvents="none">
+                    <TokenIconPlaceholder
+                        placeholder={placeholderText}
+                        containerStyle={iconContainerStyle}
+                    />
+                </View>
+            )}
+        </View>
     );
 };
 
 export const TokenIcon = ({
     symbol,
     contractAddress,
+    placeholder,
     showNetworkIcon = false,
     size = 'small',
     wrappedTokenIcon = 'token',
@@ -225,7 +250,14 @@ export const TokenIcon = ({
     }
 
     if (!showNetworkIcon || !isNetworkSymbol(symbol)) {
-        return <TokenIconComponent symbol={symbol} contractAddress={contractAddress} size={size} />;
+        return (
+            <TokenIconComponent
+                symbol={symbol}
+                contractAddress={contractAddress}
+                placeholder={placeholder}
+                size={size}
+            />
+        );
     }
 
     const displaySymbol = getNetworkDisplaySymbol(symbol);
@@ -241,6 +273,7 @@ export const TokenIcon = ({
             <TokenIconComponent
                 symbol={iconSymbol}
                 contractAddress={contractAddress}
+                placeholder={placeholder}
                 showNetworkIcon={showNetworkIcon}
                 size={size}
             />
