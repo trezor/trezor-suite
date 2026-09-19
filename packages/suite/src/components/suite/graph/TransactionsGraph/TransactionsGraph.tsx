@@ -48,6 +48,9 @@ const Description = styled.div`
     flex: 1;
 `;
 
+/**
+ * !!! Do not use directly, instead use `TransactionsGraphLoader` to avoid bloating the main JS bundle.
+ */
 export const TransactionsGraph = memo(
     ({
         account,
