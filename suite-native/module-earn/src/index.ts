@@ -4,6 +4,7 @@ export { StakingApyBadge } from './components/staking/StakingApyBadge';
 export { TokenYieldRateBadge } from './components/yield/TokenYieldRateBadge';
 export { YieldBadge } from './components/yield/YieldBadge';
 export { YieldDisabledAlert } from './components/yield/YieldDisabledAlert';
+export { useFormattedEarnRate } from './hooks/earn/useFormattedEarnRate';
 export { useMessageSystemWrappedNative } from './hooks/earn/useMessageSystemWrappedNative';
 export { useWrappedNativeFirmwareUpdateAlert } from './hooks/earn/useWrappedNativeFirmwareUpdateAlert';
 export { useStakingDetailNavigation } from './hooks/staking/useStakingDetailNavigation';
