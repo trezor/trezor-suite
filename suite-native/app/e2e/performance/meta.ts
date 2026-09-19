@@ -73,7 +73,6 @@ const readJsonFile = (filePath: string): Record<string, unknown> | null => {
 
 const readDetoxConfig = (appDir: string): DetoxConfigShape => {
     try {
-        // eslint-disable-next-line @typescript-eslint/no-require-imports
         return require(path.resolve(appDir, '.detoxrc.js')) as DetoxConfigShape;
     } catch {
         return {};
