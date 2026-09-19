@@ -1,9 +1,10 @@
 # Network config store prototype
 
-`NetworkDisplayProvider` injects a small external-store contract:
+`NetworkDisplayProvider` injects the `NetworkConfigStore` contract from
+`@trezor/network-module-types`:
 
 ```ts
-type NetworkDisplayStore = {
+type NetworkConfigStore = {
     getState: () => {
         networks: Readonly<Record<NetworkSymbol, { readonly name: string }>> | null;
     };
@@ -44,7 +45,7 @@ same provider, and `ConnectInitForm` selects its network names through it.
 
 ```tsx
 const state = { networks: { [asNetworkSymbol('btc')]: { name: 'Bitcoin' } } };
-const store: NetworkDisplayStore = {
+const store: NetworkConfigStore = {
     getState: () => state,
     subscribe: () => () => {},
 };
@@ -52,7 +53,10 @@ const store: NetworkDisplayStore = {
 <NetworkDisplayProvider store={store}>{children}</NetworkDisplayProvider>;
 ```
 
-Import the provider, hooks, selectors, and store/config types from `@trezor/product-components`.
+Import `NetworkConfig`, `NetworkConfigState`, and `NetworkConfigStore` from
+`@trezor/network-module-types`. These contracts contain no React or Redux dependencies.
+Import the provider, hook, selectors, and UI-specific `NetworkOption` type from
+`@trezor/product-components`.
 The store supplies configuration, not user preferences. By default the options
 selector uses all config keys. Suite passes its enabled-network list to individual
 components; protocol searches can override it. Explicit lists retain their order,

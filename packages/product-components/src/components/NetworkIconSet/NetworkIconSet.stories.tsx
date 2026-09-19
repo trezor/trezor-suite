@@ -1,16 +1,16 @@
 import { type Meta, type StoryObj } from '@storybook/react';
 
-import { asNetworkSymbol } from '@trezor/network-module-types';
+import {
+    type NetworkConfigState,
+    type NetworkConfigStore,
+    asNetworkSymbol,
+} from '@trezor/network-module-types';
 import { spacingValues } from '@trezor/theme';
 
 import {
     NetworkIconSet as NetworkIconSetComponent,
     type NetworkIconSetProps,
 } from './NetworkIconSet';
-import type {
-    NetworkDisplayState,
-    NetworkDisplayStore,
-} from '../../network-display/NetworkDisplayConfig';
 import { NetworkDisplayProvider } from '../../network-display/NetworkDisplayProvider';
 import { allowedTokenIconSizes } from '../TokenIcon/tokenIconTypes';
 
@@ -19,7 +19,7 @@ const NETWORK_2 = asNetworkSymbol('eth');
 const NETWORK_3 = asNetworkSymbol('ltc');
 const NETWORK_4 = asNetworkSymbol('ada');
 
-const networkDisplayState: NetworkDisplayState = {
+const networkConfigState: NetworkConfigState = {
     networks: {
         [NETWORK_1]: { name: 'Bitcoin' },
         [NETWORK_2]: { name: 'Ethereum' },
@@ -27,8 +27,8 @@ const networkDisplayState: NetworkDisplayState = {
         [NETWORK_4]: { name: 'Cardano' },
     },
 };
-const networkDisplayStore: NetworkDisplayStore = {
-    getState: () => networkDisplayState,
+const networkDisplayStore: NetworkConfigStore = {
+    getState: () => networkConfigState,
     subscribe: () => () => {},
 };
 

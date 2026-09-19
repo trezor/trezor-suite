@@ -1,19 +1,19 @@
 import { createSelector } from 'reselect';
 
-import type { NetworkSymbol } from '@trezor/network-module-types';
+import type { NetworkConfigState, NetworkSymbol } from '@trezor/network-module-types';
 import { typedObjectKeys } from '@trezor/utils';
 
-import type { NetworkDisplayState, NetworkOption } from './NetworkDisplayConfig';
+import type { NetworkOption } from './NetworkOption';
 
-export const selectNetworkConfigs = (state: NetworkDisplayState) => state.networks;
+export const selectNetworkConfigs = (state: NetworkConfigState) => state.networks;
 
 export const selectNetworkOptions: (
-    state: NetworkDisplayState,
+    state: NetworkConfigState,
     symbols?: readonly NetworkSymbol[],
 ) => readonly NetworkOption[] = createSelector(
     [
         selectNetworkConfigs,
-        (_state: NetworkDisplayState, symbols?: readonly NetworkSymbol[]) => symbols,
+        (_state: NetworkConfigState, symbols?: readonly NetworkSymbol[]) => symbols,
     ],
     (networks, symbols): readonly NetworkOption[] =>
         (symbols ?? (networks === null ? [] : typedObjectKeys(networks))).map(symbol => ({

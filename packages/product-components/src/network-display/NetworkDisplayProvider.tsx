@@ -6,12 +6,12 @@ import {
     useSyncExternalStore,
 } from 'react';
 
-import type { NetworkDisplayState, NetworkDisplayStore } from './NetworkDisplayConfig';
+import type { NetworkConfigState, NetworkConfigStore } from '@trezor/network-module-types';
 
-const NetworkDisplayContext = createContext<NetworkDisplayStore | null>(null);
+const NetworkDisplayContext = createContext<NetworkConfigStore | null>(null);
 
 type NetworkDisplayProviderProps = {
-    store: NetworkDisplayStore;
+    store: NetworkConfigStore;
     children: ReactNode;
 };
 
@@ -20,7 +20,7 @@ export const NetworkDisplayProvider = ({ store, children }: NetworkDisplayProvid
 );
 
 export const useNetworkDisplaySelector = <TSelected,>(
-    selector: (state: NetworkDisplayState) => TSelected,
+    selector: (state: NetworkConfigState) => TSelected,
 ) => {
     const store = useContext(NetworkDisplayContext);
 

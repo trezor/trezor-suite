@@ -2,14 +2,15 @@ import { type ComponentType } from 'react';
 
 import { type AppProps } from 'next/app';
 
-import { NetworkDisplayProvider, type NetworkDisplayStore } from '@trezor/product-components';
+import type { NetworkConfigStore } from '@trezor/network-module-types';
+import { NetworkDisplayProvider } from '@trezor/product-components';
 
 import { ConnectExplorerAppRoot } from '../ConnectExplorerAppRoot';
 import { type ConnectExplorerReduxStore } from '../store/createConnectExplorerReduxStore';
 
 export type ConnectExplorerServices = {
     store: ConnectExplorerReduxStore;
-    networkDisplayStore: NetworkDisplayStore;
+    networkDisplayStore: NetworkConfigStore;
 };
 
 type ConnectExplorerAppDeps = {

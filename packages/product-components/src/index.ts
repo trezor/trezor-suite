@@ -66,12 +66,7 @@ export * from './components/TokenIconSet/TokenIconSet';
 export { TooltipRow } from './components/TooltipRow/TooltipRow';
 export * from './components/TopAssets/TopAssets';
 export { TrezorLogo } from './components/TrezorLogo/TrezorLogo';
-export type {
-    NetworkDisplayConfig,
-    NetworkDisplayState,
-    NetworkDisplayStore,
-    NetworkOption,
-} from './network-display/NetworkDisplayConfig';
+export type { NetworkOption } from './network-display/NetworkOption';
 export {
     NetworkDisplayProvider,
     useNetworkDisplaySelector,
