@@ -10,7 +10,7 @@ export class PowerSaveBlocker {
     }
 
     startBlockingPowerSave() {
-        if (this.powerSaveBlockerId && this.isBlocking(this.powerSaveBlockerId)) {
+        if (this.powerSaveBlockerId !== null && this.isBlocking(this.powerSaveBlockerId)) {
             this.logger.info('power-save-blocker', 'Power save is already blocked');
 
             return;
@@ -20,14 +20,14 @@ export class PowerSaveBlocker {
     }
 
     stopBlockingPowerSave() {
-        if (!this.powerSaveBlockerId || !this.isBlocking(this.powerSaveBlockerId)) return;
+        if (this.powerSaveBlockerId === null || !this.isBlocking(this.powerSaveBlockerId)) return;
         this.logger.info('power-save-blocker', 'Stop blocking power save');
         powerSaveBlocker.stop(this.powerSaveBlockerId);
         this.powerSaveBlockerId = null;
     }
 
     private isBlocking(id: number | undefined) {
-        if (!id) return false;
+        if (id === undefined) return false;
 
         return powerSaveBlocker.isStarted(id);
     }
