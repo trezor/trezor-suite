@@ -1,20 +1,26 @@
-import { useCallback, useState } from 'react';
+import { Suspense, lazy, useCallback } from 'react';
 
 import { Translation } from '@suite/intl';
 import { type UserContextPayload } from '@suite-common/suite-types';
-import { Column, Modal, type ModalProps, Row, SubTabs } from '@trezor/components';
+import { Column, Modal, type ModalProps, Row, Spinner, SubTabs } from '@trezor/components';
 import { CameraIcon, ImageIcon } from '@trezor/icons';
 
-import { CameraQRReader } from './CameraQRReader';
-import { ImageQRReader } from './ImageQRReader';
+import { useActiveTab } from './hooks/useActiveTab';
 
-type QRScannerTab = 'camera' | 'image';
+/**
+ * Lazy-loaded components for QR code scanning modals (react-zxing & @zxing/library)
+ * @url https://bundlephobia.com/package/@zxing/library
+ * @url https://bundlephobia.com/package/react-zxing
+ */
+const QrScannerModalContent = lazy(() =>
+    import('./QrScannerModalContent').then(module => ({ default: module.QrScannerModalContent })),
+);
 
 type QrScannerModalProps = Pick<Extract<UserContextPayload, { type: 'qr-reader' }>, 'decision'> &
     Required<Pick<ModalProps, 'onCancel'>>;
 
-export const QrScannerModal = ({ decision, onCancel }: QrScannerModalProps) => {
-    const [activeTab, setActiveTab] = useState<QRScannerTab>('camera');
+export function QrScannerModal({ decision, onCancel }: QrScannerModalProps) {
+    const { activeTab, setActiveTab } = useActiveTab('camera');
 
     const handleResult = useCallback(
         (result: string) => {
@@ -45,10 +51,16 @@ export const QrScannerModal = ({ decision, onCancel }: QrScannerModalProps) => {
                         </SubTabs.Item>
                     </SubTabs>
                 </Row>
-
-                {activeTab === 'camera' && <CameraQRReader onResult={handleResult} />}
-                {activeTab === 'image' && <ImageQRReader onResult={handleResult} />}
+                <Suspense
+                    fallback={
+                        <Column height={360} justifyContent="center" alignItems="center">
+                            <Spinner />
+                        </Column>
+                    }
+                >
+                    <QrScannerModalContent activeTab={activeTab} onResult={handleResult} />
+                </Suspense>
             </Column>
         </Modal>
     );
-};
+}
