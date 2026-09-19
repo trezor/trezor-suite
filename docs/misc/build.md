@@ -28,13 +28,17 @@ The root shortcuts `yarn suite:dev`, `yarn suite:build:web` and `yarn suite:dev:
 
 ## Browser targets
 
-Both applications share `packages/suite/webpack/browserslist`, for Babel's `preset-env` and as their
-Webpack target. Electron ships a newer Chromium than the browsers that list covers, so the desktop
-renderer could target it separately, but today it does not.
+Each application owns its own browserslist file passed to `createBaseConfig` and applied to Babel and Webpack target for
+syntax transpilation and polyfills.
+In case of Web, the list is pinned to actual browser versions that we support.
+Meanwhile, Desktop is shipped with its own browser, so it supports only the exact Chromium version included in the
+current version of Electron.
 
-The file is referenced by absolute path. Babel and Webpack otherwise discover browserslist config by
+Each file is referenced by absolute path. Babel and Webpack otherwise discover browserslist config by
 walking up from the directory the build runs in, which silently changes the targets when a build
-moves.
+moves; a bare `browserslist:<query>` Webpack target is worse still, since a discoverable browserslist
+file in the build context makes Webpack treat the query string as an environment name in that file
+rather than as a query, silently falling back to the file's default list instead of throwing.
 
 ## Aliases
 

@@ -28,12 +28,6 @@ BigInt.prototype.toJSON = function toJSON() {
 
 const gitRevision = getRevision();
 
-/**
- * Browser targets shared by both applications. Referenced by absolute path so neither Babel
- * nor Webpack has to discover it from the directory the build happens to run in.
- */
-export const browserslistConfigPath = resolve(__dirname, 'browserslist');
-
 export type BaseConfigOptions = {
     /** Identifies the application in `process.env.SUITE_TYPE` and in the Sentry release name. */
     suiteType: 'web' | 'desktop';
@@ -44,12 +38,17 @@ export type BaseConfigOptions = {
      * `file://` inside the packaged app, so it must be relative.
      */
     assetPrefix: string;
+    /**
+     * Absolute path to the app's own browserslist file, applied to Webpack's `target` and Babel's `@babel/preset-env`.
+     */
+    browserslistConfigPath: string;
 };
 
 export const createBaseConfig = ({
     suiteType,
     baseDir,
     assetPrefix,
+    browserslistConfigPath,
 }: BaseConfigOptions): webpack.Configuration => {
     /**
      * Assemble release name for Sentry

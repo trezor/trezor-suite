@@ -7,7 +7,7 @@ import { merge } from 'webpack-merge';
 
 import { routes } from '@suite/router-config';
 import { FLAGS } from '@suite-common/suite-config';
-import { browserslistConfigPath, createBaseConfig } from '@trezor/suite/webpack/createBaseConfig';
+import { createBaseConfig } from '@trezor/suite/webpack/createBaseConfig';
 import { createDevConfig } from '@trezor/suite/webpack/createDevConfig';
 import { assetPrefix, isDev } from '@trezor/suite/webpack/env';
 
@@ -15,6 +15,7 @@ const baseDir = __dirname;
 const repoRoot = path.join(baseDir, '..', '..');
 const appAssets = path.join(baseDir, '..', 'app-assets', 'files');
 const buildDir = path.join(baseDir, 'build');
+const browserslistConfigPath = path.resolve(baseDir, 'browserslist');
 
 const DEV_PORT = 8000;
 
@@ -118,7 +119,7 @@ const webConfig: webpack.Configuration = {
 };
 
 export default merge([
-    createBaseConfig({ suiteType: 'web', baseDir, assetPrefix }),
+    createBaseConfig({ suiteType: 'web', baseDir, assetPrefix, browserslistConfigPath }),
     ...(isDev ? [createDevConfig({ distPath: buildDir, port: DEV_PORT })] : []),
     webConfig,
 ]);
