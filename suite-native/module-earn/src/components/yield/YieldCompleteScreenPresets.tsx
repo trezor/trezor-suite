@@ -25,6 +25,7 @@ const getYieldCompleteAmountValue = ({
         <TokenIcon
             symbol={accountSymbol}
             contractAddress={amount.tokenContract ?? undefined}
+            placeholder={amount.tokenSymbol ?? undefined}
             size="extraSmall"
         />
         <Box flexShrink={1}>

@@ -54,6 +54,7 @@ export const YieldClaimRewardRow = ({
                 <TokenIcon
                     symbol={networkSymbol}
                     contractAddress={tokenContractAddress}
+                    placeholder={tokenSymbol}
                     size={20}
                 />
                 <Box flexShrink={1}>

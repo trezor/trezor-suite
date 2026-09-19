@@ -56,6 +56,7 @@ export const TransactionDetailListItem = ({
                     <TokenIcon
                         symbol={transaction.symbol}
                         contractAddress={tokenTransfer?.contract}
+                        placeholder={tokenTransfer?.symbol || tokenTransfer?.name}
                     />
                 </Box>
                 <Box style={applyStyle(CoinNameContainerStyle)}>

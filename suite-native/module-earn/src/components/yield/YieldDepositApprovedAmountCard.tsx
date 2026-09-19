@@ -32,7 +32,12 @@ export const YieldDepositApprovedAmountCard = ({
                 <Translation id="earn.yieldDepositFlowScreen.approvedAmount" />
             </Text>
             <HStack alignItems="center" spacing="sp8">
-                <TokenIcon symbol={networkSymbol} contractAddress={tokenContract} size={20} />
+                <TokenIcon
+                    symbol={networkSymbol}
+                    contractAddress={tokenContract}
+                    placeholder={tokenSymbol}
+                    size={20}
+                />
                 {isApprovedAmountUnlimited ? (
                     <Text variant="body-sm-strong" numberOfLines={1}>
                         <Translation id="earn.yieldDepositFlowScreen.approvalLimitSheet.unlimited.title" />

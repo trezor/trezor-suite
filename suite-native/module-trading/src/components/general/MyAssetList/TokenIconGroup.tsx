@@ -39,6 +39,7 @@ export const TokenIconGroup = ({ assets, testID }: TokenIconGroupProps) => {
                     <TokenIcon
                         symbol={asset.symbol}
                         contractAddress={asset.contract}
+                        placeholder={asset.tokenSymbol || asset.name}
                         size="extraSmall"
                     />
                 </Box>

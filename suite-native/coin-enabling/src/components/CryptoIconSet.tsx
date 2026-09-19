@@ -68,6 +68,7 @@ export const CryptoIconSet = ({ symbol }: CryptoIconSetProps) => {
                     <TokenIcon
                         symbol={asset.contract ? symbol : nativeCoinSymbol}
                         contractAddress={asset.contract}
+                        placeholder={asset.symbol}
                         size={ICON_SIZE}
                     />
                 </Box>

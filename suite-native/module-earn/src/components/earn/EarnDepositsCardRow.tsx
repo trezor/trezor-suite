@@ -79,6 +79,9 @@ export const EarnDepositsCardRow = React.memo(({ row, onPress }: EarnDepositsCar
                                         ? item.tokenContractAddress
                                         : undefined
                                 }
+                                placeholder={
+                                    item.type === 'stablecoin-yield' ? item.tokenSymbol : undefined
+                                }
                                 size="extraSmall"
                                 showNetworkIcon
                                 wrappedTokenIcon={

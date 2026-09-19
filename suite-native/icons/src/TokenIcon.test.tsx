@@ -32,6 +32,12 @@ const getTokenIconUrl = (contractAddress: string, size = 32) =>
     });
 
 describe('TokenIcon', () => {
+    beforeEach(() => {
+        jest.mocked(getAssetLogoContractAddresses).mockImplementation((_symbol, contract) =>
+            contract ? [contract] : [],
+        );
+    });
+
     const renderTokenIcon = async (props: React.ComponentProps<typeof TokenIcon>) =>
         await renderWithBasicProvider(<TokenIcon {...props} />);
 
@@ -51,19 +57,25 @@ describe('TokenIcon', () => {
         expect(getByHintText(tokenIconHint).props.source).toEqual(ethSource);
     });
 
-    it('renders a synchronously resolved token icon without a placeholder frame', async () => {
+    it('shows token initials until the resolved logo is displayed', async () => {
         (getAssetLogoContractAddresses as jest.Mock).mockImplementation(
             (_symbol: string, contract: string) => [contract],
         );
 
-        const { getByHintText } = await renderTokenIcon({
+        const { getByHintText, getByText, queryByText } = await renderTokenIcon({
             symbol: ethSymbol,
             contractAddress: contractA,
+            placeholder: 'USDC',
         });
+
+        expect(getByText('U')).toBeTruthy();
+        expect(getByHintText(tokenIconHint).props.placeholder).toBeUndefined();
 
         expect(JSON.stringify(getByHintText(tokenIconHint).props.source)).toContain(
             getTokenIconUrl(contractA),
         );
+        await fireEvent(getByHintText(tokenIconHint), 'display');
+        expect(queryByText('U')).toBeNull();
     });
 
     it('ignores a stale async url resolution that arrives after the instance was recycled', async () => {
@@ -73,10 +85,13 @@ describe('TokenIcon', () => {
                 contract === contractA ? deferredA.promise : Promise.resolve([contract]),
         );
 
-        const { getByHintText, rerender } = await renderTokenIcon({
+        const { getByHintText, getByText, rerender } = await renderTokenIcon({
             symbol: ethSymbol,
             contractAddress: contractA,
+            placeholder: 'USDC',
         });
+
+        expect(getByText('U')).toBeTruthy();
 
         await rerender(<TokenIcon symbol={ethSymbol} contractAddress={contractB} />);
 
@@ -97,14 +112,76 @@ describe('TokenIcon', () => {
     it('shows a text placeholder when the url resolution rejects', async () => {
         (getAssetLogoContractAddresses as jest.Mock).mockRejectedValue(new Error('failed'));
 
-        const { queryByHintText } = await renderTokenIcon({
+        const { queryByHintText, getByText } = await renderTokenIcon({
             symbol: ethSymbol,
             contractAddress: contractA,
+            placeholder: 'USDC',
         });
 
         await act(async () => {});
 
         expect(queryByHintText(tokenIconHint)).toBeNull();
+        expect(getByText('U')).toBeTruthy();
+    });
+
+    it.each([
+        { placeholder: 'USDC', initial: 'U' },
+        { placeholder: 'Dai Stablecoin', initial: 'D' },
+        { placeholder: undefined, initial: 'T' },
+        { placeholder: '', initial: 'T' },
+    ])(
+        'keeps $initial after all logo candidates fail ($placeholder)',
+        async ({ placeholder, initial }) => {
+            jest.mocked(getAssetLogoContractAddresses).mockReturnValue([contractA, contractB]);
+            const { getByHintText, getByText, queryByHintText } = await renderTokenIcon({
+                symbol: ethSymbol,
+                contractAddress: contractA,
+                placeholder,
+            });
+
+            await fireEvent(getByHintText(tokenIconHint), 'error');
+            expect(JSON.stringify(getByHintText(tokenIconHint).props.source)).toContain(
+                getTokenIconUrl(contractB),
+            );
+            expect(getByText(initial)).toBeTruthy();
+
+            await fireEvent(getByHintText(tokenIconHint), 'error');
+            expect(queryByHintText(tokenIconHint)).toBeNull();
+            expect(getByText(initial)).toBeTruthy();
+        },
+    );
+
+    it.each([{ addresses: undefined }, { addresses: [] }])(
+        'shows initials instead of a network logo when addresses resolve to $addresses',
+        async ({ addresses }) => {
+            jest.mocked(getAssetLogoContractAddresses).mockReturnValue(addresses);
+            const { getByText, queryByHintText } = await renderTokenIcon({
+                symbol: ethSymbol,
+                contractAddress: contractA,
+                placeholder: 'USDC',
+            });
+
+            expect(getByText('U')).toBeTruthy();
+            expect(queryByHintText(tokenIconHint)).toBeNull();
+        },
+    );
+
+    it('resets displayed initials when a loaded list row is recycled for another token', async () => {
+        const { getByHintText, getByText, queryByText, rerender } = await renderTokenIcon({
+            symbol: ethSymbol,
+            contractAddress: contractA,
+            placeholder: 'USDC',
+        });
+        await fireEvent(getByHintText(tokenIconHint), 'display');
+        expect(queryByText('U')).toBeNull();
+
+        await rerender(
+            <TokenIcon symbol={ethSymbol} contractAddress={contractB} placeholder="DAI" />,
+        );
+        expect(getByText('D')).toBeTruthy();
+        expect(queryByText('U')).toBeNull();
+        await fireEvent(getByHintText(tokenIconHint), 'display');
+        expect(queryByText('D')).toBeNull();
     });
 
     it('does not reuse retry failure state after the size changes', async () => {

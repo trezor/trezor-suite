@@ -3,6 +3,7 @@ import { useSelector } from 'react-redux';
 import {
     cryptoIdToNetworkAndContractAddress,
     selectTradingExchangeSelectedQuote,
+    useTradingUtils,
 } from '@suite-common/trading';
 import { HStack, Text } from '@suite-native/atoms';
 import { TokenIcon } from '@suite-native/icons';
@@ -13,6 +14,7 @@ import { hasPreapprovedLimit } from '../../../utils/exchange/quotesUtils';
 import { TradingCoinAmountFormatter } from '../../general/TradingCoinAmountFormatter';
 
 export const OriginalLimit = () => {
+    const { cryptoIdToCoinSymbol, cryptoIdToCoinName } = useTradingUtils();
     const quote = useSelector(selectTradingExchangeSelectedQuote);
 
     if (!quote?.send || !hasPreapprovedLimit(quote)) {
@@ -32,6 +34,7 @@ export const OriginalLimit = () => {
                     <TokenIcon
                         symbol={network.symbol}
                         contractAddress={contractAddress}
+                        placeholder={cryptoIdToCoinSymbol(send) || cryptoIdToCoinName(send)}
                         size="extraSmall"
                     />
                 )}

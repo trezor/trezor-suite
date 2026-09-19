@@ -44,6 +44,7 @@ export const TokenOfNetworkAlertBody = ({
             <TokenIcon
                 symbol={symbol}
                 contractAddress={tokenContract}
+                placeholder={tokenSymbol}
                 size="extraLarge"
                 showNetworkIcon
             />

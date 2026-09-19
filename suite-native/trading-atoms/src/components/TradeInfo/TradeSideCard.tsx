@@ -4,6 +4,7 @@ import type { CryptoId } from 'invity-api';
 
 import { cryptoIdToNetworkSymbolAndContractAddress } from '@suite-common/trading';
 import type { Account } from '@suite-common/wallet-types';
+import { findToken } from '@suite-common/wallet-utils';
 import { HStack } from '@suite-native/atoms';
 import { TokenIcon } from '@suite-native/icons';
 
@@ -26,6 +27,8 @@ export const TradeSideCard = ({
 }: TradeSideCardProps) => {
     const { symbol, contractAddress } = cryptoIdToNetworkSymbolAndContractAddress(cryptoId);
 
+    const token = findToken(account.tokens, contractAddress);
+
     if (!symbol) {
         return null;
     }
@@ -38,6 +41,7 @@ export const TradeSideCard = ({
                         <TokenIcon
                             symbol={symbol}
                             contractAddress={contractAddress}
+                            placeholder={token?.symbol || token?.name}
                             size="extraSmall"
                         />
                         {amount}

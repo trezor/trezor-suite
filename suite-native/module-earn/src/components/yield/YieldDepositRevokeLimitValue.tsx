@@ -42,7 +42,12 @@ export const YieldDepositRevokeLimitValue = ({
             spacing="sp4"
             style={applyStyle(detailsRowValueStyle)}
         >
-            <TokenIcon symbol={networkSymbol} contractAddress={tokenContract} size="extraSmall" />
+            <TokenIcon
+                symbol={networkSymbol}
+                contractAddress={tokenContract}
+                placeholder={tokenSymbol}
+                size="extraSmall"
+            />
             {isApprovedAmountUnlimited ? (
                 <Text
                     color="contentPrimary"

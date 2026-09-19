@@ -22,6 +22,7 @@ export const SolanaTxSimulationAsset = ({ assetDiff, network }: SolanaTxSimulati
             <TokenIcon
                 symbol={network.symbol}
                 contractAddress={'address' in asset ? asset.address : undefined}
+                placeholder={asset.symbol || undefined}
                 size="small"
                 showNetworkIcon={'address' in asset}
             />

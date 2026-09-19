@@ -21,6 +21,7 @@ export const EvmTxSimulationAssetIcon = ({
             <TokenIcon
                 symbol={network.symbol}
                 contractAddress={asset.address.toLowerCase()}
+                placeholder={asset.symbol || undefined}
                 size="small"
                 showNetworkIcon
             />

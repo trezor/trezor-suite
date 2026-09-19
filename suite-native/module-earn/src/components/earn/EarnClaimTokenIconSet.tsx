@@ -43,6 +43,7 @@ export const EarnClaimTokenIconSet = ({ tokens }: EarnClaimTokenIconSetProps) =>
                     <TokenIcon
                         symbol={token.networkSymbol}
                         contractAddress={token.contractAddress}
+                        placeholder={token.symbol}
                         size={ICON_SIZE}
                     />
                 </Box>

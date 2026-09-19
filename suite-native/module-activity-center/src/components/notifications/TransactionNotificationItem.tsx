@@ -115,6 +115,7 @@ export const TransactionNotificationItem = ({ notification, seen, index }: Props
                             <TokenIcon
                                 symbol={symbol}
                                 contractAddress={token?.contract}
+                                placeholder={token?.symbol || token?.name}
                                 size="tiny"
                             />
                             {token?.symbol === undefined ? (

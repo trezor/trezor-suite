@@ -3,7 +3,11 @@ import { memo } from 'react';
 import type { CryptoId, FiatCurrencyCode } from 'invity-api';
 
 import { useFormatters } from '@suite-common/formatters';
-import { type TradingTransaction, useChangeStringsExtractor } from '@suite-common/trading';
+import {
+    type TradingTransaction,
+    useChangeStringsExtractor,
+    useTradingUtils,
+} from '@suite-common/trading';
 import { Card, HStack, PressableOpacity, Text, VStack } from '@suite-native/atoms';
 import { Icon } from '@suite-native/icons';
 import { FiatCurrencyIcon, IconByCryptoId } from '@suite-native/trading-atoms';
@@ -31,6 +35,7 @@ type TradeAmountProps = {
 };
 
 const TradeAmount = ({ formattedValue, currency, isCrypto }: TradeAmountProps) => {
+    const { cryptoIdToCoinSymbol, cryptoIdToCoinName } = useTradingUtils();
     const { applyStyle } = useNativeStyles();
 
     if (!formattedValue || !currency || isCrypto === undefined) {
@@ -40,7 +45,15 @@ const TradeAmount = ({ formattedValue, currency, isCrypto }: TradeAmountProps) =
     return (
         <HStack alignItems="center" spacing="sp8" flexShrink={1}>
             {isCrypto ? (
-                <IconByCryptoId cryptoId={currency as CryptoId} size="small" withNetwork />
+                <IconByCryptoId
+                    placeholder={
+                        cryptoIdToCoinSymbol(currency as CryptoId) ||
+                        cryptoIdToCoinName(currency as CryptoId)
+                    }
+                    cryptoId={currency as CryptoId}
+                    size="small"
+                    withNetwork
+                />
             ) : (
                 <FiatCurrencyIcon size="small" value={currency as FiatCurrencyCode} />
             )}

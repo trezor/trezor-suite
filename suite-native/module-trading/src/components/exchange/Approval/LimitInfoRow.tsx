@@ -4,6 +4,7 @@ import { useSelector } from 'react-redux';
 import {
     cryptoIdToNetworkAndContractAddress,
     selectTradingExchangeSelectedQuote,
+    useTradingUtils,
 } from '@suite-common/trading';
 import { HStack, Text, VStack } from '@suite-native/atoms';
 import { Icon, TokenIcon } from '@suite-native/icons';
@@ -21,6 +22,7 @@ type LimitInfoRowProps = PropsWithChildren<{
 }>;
 
 export const LimitInfoRow = ({ onPress, testID, withCaret, children }: LimitInfoRowProps) => {
+    const { cryptoIdToCoinSymbol, cryptoIdToCoinName } = useTradingUtils();
     const quote = useSelector(selectTradingExchangeSelectedQuote);
 
     if (!quote?.send) {
@@ -46,6 +48,7 @@ export const LimitInfoRow = ({ onPress, testID, withCaret, children }: LimitInfo
                             <TokenIcon
                                 symbol={network.symbol}
                                 contractAddress={contractAddress}
+                                placeholder={cryptoIdToCoinSymbol(send) || cryptoIdToCoinName(send)}
                                 size="extraSmall"
                             />
                         )}

@@ -228,6 +228,7 @@ export const YieldPendingTransactionModal = ({
                                 <TokenIcon
                                     symbol={accountSymbol}
                                     contractAddress={vaultTokenContract}
+                                    placeholder={vaultName}
                                     size="extraSmall"
                                     wrappedTokenIcon="network"
                                 />
@@ -255,6 +256,7 @@ export const YieldPendingTransactionModal = ({
                                     <TokenIcon
                                         symbol={accountSymbol}
                                         contractAddress={amountTokenContract}
+                                        placeholder={amountTokenSymbol}
                                         size="extraSmall"
                                     />
                                     <Text
