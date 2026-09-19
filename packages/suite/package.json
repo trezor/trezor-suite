@@ -222,6 +222,7 @@
         "babel-loader": "^10.1.1",
         "babel-plugin-styled-components": "^2.1.4",
         "buffer": "^6.0.3",
+        "core-js": "^3.49.0",
         "crypto-browserify": "3.12.1",
         "dotenv": "17.4.2",
         "jest-canvas-mock": "^2.5.8",

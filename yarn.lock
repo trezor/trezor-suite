@@ -18390,6 +18390,7 @@ __metadata:
     babel-loader: "npm:^10.1.1"
     babel-plugin-styled-components: "npm:^2.1.4"
     buffer: "npm:^6.0.3"
+    core-js: "npm:^3.49.0"
     crypto-browserify: "npm:3.12.1"
     date-fns: "npm:^4.1.0"
     dotenv: "npm:17.4.2"
