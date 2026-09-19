@@ -1,7 +1,8 @@
 import { type Meta, type StoryObj } from '@storybook/react';
 
 import { shapes } from './AnimationPrimitives';
-import { LottieAnimation as LottieAnimationComponent, type LottieType } from './LottieAnimation';
+import { LottieAnimation as LottieAnimationComponent } from './LottieAnimation';
+import { type LottieType } from './LottieAnimationInner';
 
 const lottieTypes: LottieType[] = ['BLOCK', 'MEMPOOL', 'MASCOT'];
 

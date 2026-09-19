@@ -45,6 +45,14 @@ const config: webpack.Configuration = {
         modules: ['node_modules'],
         alias: {
             src: path.resolve(__dirname, '../../suite/src/'),
+            // lottie-web's entry point is the full player: svg + canvas + html renderers and the
+            // expressions engine. We only ever use the svg renderer, and none of our animations use
+            // expressions or effects, so the light player renders them identically for ~28 kB gzip
+            // less. Adding an animation that needs either would silently break here.
+            'lottie-web$': require.resolve('lottie-web/build/player/lottie_light'),
+            // mainFields prefers "browser", which points lottie-react at its UMD bundle and blocks
+            // tree shaking; go straight to the ESM build instead.
+            'lottie-react$': require.resolve('lottie-react/build/index.es.js'),
         },
         fallback: {
             // Polyfills crypto API for NodeJS libraries in the browser. 'crypto' does not run without 'stream'
