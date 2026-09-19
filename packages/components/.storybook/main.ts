@@ -63,6 +63,14 @@ const config: StorybookConfig = {
             stream: require.resolve('stream-browserify'),
         };
 
+        // Match the app build so LottieAnimation stories exercise the same light player the shipped
+        // bundle uses, instead of the full one lottie-web resolves to by default.
+        webpackConfig.resolve!.alias = {
+            ...webpackConfig.resolve!.alias,
+            'lottie-web$': require.resolve('lottie-web/build/player/lottie_light'),
+            'lottie-react$': require.resolve('lottie-react/build/index.es.js'),
+        };
+
         // NOTE: remove the previous loaders from handling the svgs
         const imageRule = webpackConfig.module!.rules!.find(
             (rule): rule is { test?: RegExp; exclude?: RegExp } =>

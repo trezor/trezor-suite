@@ -75,6 +75,18 @@ export const sharedAliases = [
         find: 'vm',
         replacement: require.resolve('vm-browserify'),
     },
+    // Kept in step with the webpack config so the light lottie player is what dev and the component
+    // gallery render too -- otherwise an animation using expressions or a non-svg renderer would
+    // work here and break only in the shipped build. Anchored, so the deep import below the alias
+    // still resolves.
+    {
+        find: /^lottie-web$/,
+        replacement: require.resolve('lottie-web/build/player/lottie_light'),
+    },
+    {
+        find: /^lottie-react$/,
+        replacement: require.resolve('lottie-react/build/index.es.js'),
+    },
     ...createWorkspaceAliases(),
 ];
 
