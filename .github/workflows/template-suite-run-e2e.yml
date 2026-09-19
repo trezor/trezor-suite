@@ -224,7 +224,9 @@ jobs:
           # The history this shard leaves for the publish job — written beside the comment, never
           # instead of it. Without a surface the reporter writes nothing.
           PERF_SURFACE: "${{ inputs.target }}"
-          PERF_HISTORY_FILE: "${{ github.workspace }}/suite/e2e/test-results/perf-history.json"
+          # Its own directory: test-results belongs to Playwright, which cleans it before the
+          # upload step can run.
+          PERF_HISTORY_DIR: "${{ github.workspace }}/perf-history"
           COLLECT_COVERAGE_MAP: ${{ inputs.enable-coverage == 'true' && 'true' || '' }}
           COVERAGE_MAP_DIR: ${{ github.workspace }}/coverage-map
         run: |
@@ -333,7 +335,7 @@ jobs:
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
         with:
           name: perf-history-${{ inputs.target }}-${{ inputs.test-group }}
-          path: suite/e2e/test-results/perf-history.json
+          path: perf-history/
           if-no-files-found: ignore
           retention-days: 7
           overwrite: true

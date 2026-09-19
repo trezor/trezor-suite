@@ -3,7 +3,12 @@ import * as fs from 'fs';
 import * as path from 'path';
 
 import type { PerfHistoryFile } from '@trezor/perf-e2e';
-import { historyToPerfRun, publishRuns, resolveRunIdentity } from '@trezor/perf-e2e';
+import {
+    historyToPerfRun,
+    mergeHistories,
+    publishRuns,
+    resolveRunIdentity,
+} from '@trezor/perf-e2e';
 
 /**
  * The web and desktop adapter onto the shared performance store (`@trezor/perf-e2e`). The mobile
@@ -13,8 +18,6 @@ import { historyToPerfRun, publishRuns, resolveRunIdentity } from '@trezor/perf-
 
 /** Shards upload `web-perf-history-<target>-<group>`, so the directory name carries the shard. */
 const ARTIFACT_DIR_PATTERN = /^perf-history-(.+)$/;
-
-const HISTORY_FILE = 'perf-history.json';
 
 export type ShardHistory = { shard: string; history: PerfHistoryFile };
 
@@ -26,7 +29,20 @@ const readJson = <T>(filePath: string): T | null => {
     }
 };
 
-/** Every downloaded artifact that holds a readable history; a shard without one contributes none. */
+const readHistories = (directory: string): PerfHistoryFile[] =>
+    fs
+        .readdirSync(directory)
+        .filter(name => name.endsWith('.json'))
+        .flatMap(name => {
+            const history = readJson<PerfHistoryFile>(path.join(directory, name));
+
+            return history?.surface && Array.isArray(history.measurements) ? [history] : [];
+        });
+
+/**
+ * Every downloaded artifact that holds at least one readable history. A shard reports in batches, so
+ * it may have left several documents, and they are merged into the one run that shard measured.
+ */
 export const collectShardHistories = (artifactsDir: string): ShardHistory[] => {
     if (!fs.existsSync(artifactsDir)) {
         return [];
@@ -37,13 +53,11 @@ export const collectShardHistories = (artifactsDir: string): ShardHistory[] => {
         .filter(entry => entry.isDirectory())
         .flatMap(entry => {
             const shard = ARTIFACT_DIR_PATTERN.exec(entry.name)?.[1];
-            const history = readJson<PerfHistoryFile>(
-                path.join(artifactsDir, entry.name, HISTORY_FILE),
-            );
+            const history = shard
+                ? mergeHistories(readHistories(path.join(artifactsDir, entry.name)))
+                : null;
 
-            return shard && history?.surface && Array.isArray(history.measurements)
-                ? [{ shard, history }]
-                : [];
+            return shard && history ? [{ shard, history }] : [];
         })
         .toSorted((a, b) => a.shard.localeCompare(b.shard));
 };
