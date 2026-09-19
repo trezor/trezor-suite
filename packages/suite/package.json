@@ -3,6 +3,7 @@
     "suiteVersion": "26.10.0",
     "version": "1.0.0",
     "private": true,
+    "sideEffects": false,
     "exports": {
         ".": {
             "types": "./libDev/index.d.ts",

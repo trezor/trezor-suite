@@ -17,6 +17,7 @@
     },
     "license": "MIT",
     "description": "Collection of assets and utils used by trezor-connect library.",
+    "sideEffects": false,
     "main": "./src/index.ts",
     "files": [
         "lib/",

@@ -17,6 +17,7 @@
     },
     "license": "SEE LICENSE IN LICENSE.md",
     "description": "Data used by trezor-connect library.",
+    "sideEffects": false,
     "main": "./src/index.ts",
     "files": [
         "lib/",
