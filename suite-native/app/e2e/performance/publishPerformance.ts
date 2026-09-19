@@ -2,15 +2,8 @@
 import * as fs from 'fs';
 import * as path from 'path';
 
-import type { PerfRun, PerfRunContext, PerfSurface, PerfUploadFile } from '@trezor/perf-e2e';
-import {
-    STORE_PREFIX,
-    buildUploadBundle,
-    fetchStoreText,
-    indexKey,
-    isRollingIndex,
-    publicUrl,
-} from '@trezor/perf-e2e';
+import type { PerfRun, PerfRunContext, PerfRunIdentity, PerfSurface } from '@trezor/perf-e2e';
+import { publishRuns, resolveRunIdentity } from '@trezor/perf-e2e';
 
 import type { PerformanceReport } from './types';
 
@@ -43,28 +36,6 @@ const readJson = <T>(filePath: string): T | null => {
     } catch {
         return null;
     }
-};
-
-/**
- * `GITHUB_HEAD_REF` is set on pull requests only and is the branch under test; `GITHUB_REF_NAME` is
- * the branch on a push or a schedule. Outside CI both are empty and publishing is skipped.
- */
-export const resolveRunIdentity = (env: Record<string, string | undefined>) => {
-    const branch = env.GITHUB_HEAD_REF || env.GITHUB_REF_NAME;
-    const sha = env.PERF_SHA || env.GITHUB_SHA;
-
-    if (!branch || !sha) {
-        return null;
-    }
-
-    return {
-        branch,
-        sha,
-        runId: env.GITHUB_RUN_ID ?? 'local',
-        runAttempt: env.GITHUB_RUN_ATTEMPT ?? '1',
-        ...(env.PERF_PR_NUMBER ? { prNumber: env.PERF_PR_NUMBER } : {}),
-        ...(env.PERF_RUN_URL ? { runUrl: env.PERF_RUN_URL } : {}),
-    };
 };
 
 /**
@@ -110,7 +81,7 @@ const toSurface = (report: PerformanceReport): PerfSurface | null => {
 
 export const toPerfRun = (
     { shard, report }: ShardReport,
-    identity: NonNullable<ReturnType<typeof resolveRunIdentity>>,
+    identity: PerfRunIdentity,
 ): PerfRun | null => {
     const surface = toSurface(report);
 
@@ -146,17 +117,6 @@ export const toPerfRun = (
     };
 };
 
-const writeBundle = (root: string, files: readonly PerfUploadFile[]): void => {
-    fs.rmSync(root, { recursive: true, force: true });
-
-    for (const file of files) {
-        const target = path.join(root, file.path);
-
-        fs.mkdirSync(path.dirname(target), { recursive: true });
-        fs.writeFileSync(target, file.body);
-    }
-};
-
 export const publishPerformanceHistory = async (): Promise<void> => {
     const artifactsDir = path.resolve(process.env.PERF_ARTIFACTS_DIR ?? 'perf-artifacts');
     const bundleRoot = path.resolve(process.env.PERF_BUNDLE_DIR ?? 'perf-upload');
@@ -175,40 +135,14 @@ export const publishPerformanceHistory = async (): Promise<void> => {
     }
 
     const runs = shardReports.flatMap(shardReport => toPerfRun(shardReport, identity) ?? []);
-    const [first] = runs;
-
-    if (!first) {
-        console.log('[performance] No run could be attributed to a platform; nothing to publish.');
-
-        return;
-    }
-
-    // A branch appends to one rolling index, so what is already there is read back first — over
-    // plain HTTPS, because the objects are public. Absent is the normal state of a first run.
-    const indexUrl = publicUrl(indexKey(first.context));
-    const existing = isRollingIndex(first.context)
-        ? await fetchStoreText(indexUrl)
-        : ({ status: 'absent' } as const);
-
-    if (existing.status === 'unavailable') {
-        console.log(
-            `[performance] Could not read ${indexUrl} (${existing.reason}); writing a fresh index.`,
-        );
-    }
-
-    const files = buildUploadBundle(runs, {
-        existingIndex: existing.status === 'ok' ? existing.text : '',
+    const outcome = await publishRuns({
+        runs,
+        bundleRoot,
         // Only a run on the base branch seals what later runs are compared against.
         sealBaseline: process.env.PERF_SEAL_BASELINE === 'true',
     });
 
-    writeBundle(bundleRoot, files);
-
-    console.log(
-        `[performance] ${runs.length} shard run(s) → ${files.length} object(s) under ${STORE_PREFIX}:`,
-    );
-    for (const file of files) {
-        console.log(`  ${file.path}`);
+    if (outcome.status === 'skipped') {
+        console.log(`[performance] Nothing published: ${outcome.reason}.`);
     }
-    console.log(`[performance] Index: ${indexUrl}`);
 };

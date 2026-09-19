@@ -31,8 +31,11 @@ const INDEX_LINE_LIMIT = 20000;
 
 export type PerfSurface = 'web' | 'desktop' | 'android' | 'ios';
 
-/** What the stored artifact is, so a reader knows how to open it. */
-export type PerfArtifactKind = 'lhr' | 'flow-result' | 'native-report';
+/**
+ * What the stored artifact is, so a reader knows how to open it: `lhr` and `flow-result` render as
+ * Lighthouse HTML, the two `*-report` kinds are our own comparison documents.
+ */
+export type PerfArtifactKind = 'lhr' | 'flow-result' | 'native-report' | 'browser-report';
 
 export type PerfArtifact = {
     kind: PerfArtifactKind;
