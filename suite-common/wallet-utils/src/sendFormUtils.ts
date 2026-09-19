@@ -299,6 +299,52 @@ export const getLowestFeeFromLevels = (levels: FeeLevel[]): BigNumber =>
             .map(({ feePerUnit }) => BigNumber(feePerUnit)),
     );
 
+export const getLowestMaxFeePerGasFromLevels = (levels: FeeLevel[]): BigNumber =>
+    BigNumber.minimum(
+        ...levels
+            .filter(({ label }) => label !== 'custom')
+            .map(({ maxFeePerGas }) => BigNumber(maxFeePerGas ?? NaN)),
+    );
+
+export type CustomFeeFields = {
+    feePerUnit: string;
+    maxFeePerGas?: string;
+};
+
+// EIP-1559 levels all share one legacy feePerUnit, so only maxFeePerGas tells the tiers apart.
+export const isCustomFeeBelowLowestLevel = (
+    { feePerUnit, maxFeePerGas }: CustomFeeFields,
+    levels: FeeLevel[],
+): boolean =>
+    isEip1559(levels.at(0))
+        ? BigNumber(maxFeePerGas ?? NaN).isLessThan(getLowestMaxFeePerGasFromLevels(levels))
+        : BigNumber(feePerUnit).isLessThan(getLowestFeeFromLevels(levels));
+
+// EIP-1559 block validity requires max_fee_per_gas >= base_fee_per_gas; below it, no inclusion.
+export const isMaxFeePerGasBelowBaseFee = (maxFeePerGas: string, baseFeePerGas: string): boolean =>
+    BigNumber(maxFeePerGas).isLessThan(baseFeePerGas);
+
+export type CustomFeeWarning = 'belowBaseFee' | 'belowLowestLevel';
+
+// Below the base fee nothing can include the transaction, which outranks merely being cheap.
+export const getCustomFeeWarning = (
+    fields: CustomFeeFields,
+    levels: FeeLevel[],
+): CustomFeeWarning | undefined => {
+    const baseFeePerGas = levels.at(0)?.baseFeePerGas;
+    const { maxFeePerGas } = fields;
+
+    if (
+        maxFeePerGas !== undefined &&
+        baseFeePerGas !== undefined &&
+        isMaxFeePerGasBelowBaseFee(maxFeePerGas, baseFeePerGas)
+    ) {
+        return 'belowBaseFee';
+    }
+
+    return isCustomFeeBelowLowestLevel(fields, levels) ? 'belowLowestLevel' : undefined;
+};
+
 // Find all validation errors set while composing a transaction
 export const findComposeErrors = <T extends FieldValues>(
     errors: FieldErrors<T>,
