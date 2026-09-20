@@ -95,7 +95,9 @@ export const createBaseConfig = ({
                 zlib: false,
                 url: false,
             },
-            mainFields: ['browser', 'module', 'main'],
+            // Prefer the ESM 'module' entry over 'browser', which in several packages points at a
+            // UMD or pre-bundled file that cannot be tree-shaken (e.g. lottie-react, dropbox).
+            mainFields: ['module', 'browser', 'main'],
         },
         optimization: {
             splitChunks: {
