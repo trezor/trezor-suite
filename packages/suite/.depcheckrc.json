@@ -9,6 +9,7 @@
         "babel-loader",
         "babel-plugin-styled-components",
         "buffer",
+        "lodash-es",
         "raw-loader"
     ]
 }

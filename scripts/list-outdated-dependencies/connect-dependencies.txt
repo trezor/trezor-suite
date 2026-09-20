@@ -50,6 +50,7 @@ http-server
 intersection-observer
 json5
 lodash
+lodash-es
 match-sorter
 next
 next-seo
