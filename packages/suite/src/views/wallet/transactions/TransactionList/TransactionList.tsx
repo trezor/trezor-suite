@@ -1,6 +1,5 @@
 import { type ReactNode, useEffect, useMemo, useRef, useState } from 'react';
-
-import useDebounce from 'react-use/lib/useDebounce';
+import { useDebounce } from 'react-use';
 
 import { Translation } from '@suite/intl';
 import { findAnchorTransactionPage, selectRouterAnchor } from '@suite/router';
