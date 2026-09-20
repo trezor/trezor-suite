@@ -470,6 +470,9 @@ export default defineConfig({
     ],
     resolve: {
         alias,
+        // Same ordering as the webpack config: prefer the ESM 'module' entry over 'browser',
+        // which in several packages points at a UMD or pre-bundled file that cannot be tree-shaken.
+        mainFields: ['module', 'browser', 'jsnext:main', 'jsnext'],
         preserveSymlinks: true,
     },
     define: {
