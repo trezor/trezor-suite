@@ -20,6 +20,7 @@ import {
     initSharedWorker,
     startDbWorker,
 } from '@evolu/common/local-first';
+import { installPolyfills } from '@evolu/common/polyfills';
 import { createBetterSqliteDriver } from '@evolu/nodejs';
 
 export const testCreateSqliteDeps: CreateSqliteDriverDep = {
@@ -31,6 +32,8 @@ export const testCreateRunWithEvoluDeps = ({
 }: {
     createWebSocket: CreateWebSocket;
 }) => {
+    installPolyfills();
+
     const consoleStoreOutput = createConsoleStoreOutput();
     const lockManager = testCreateLockManager();
 

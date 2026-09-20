@@ -1,7 +1,8 @@
 import {
     type Evolu,
     type InferRow,
-    NonEmptyString1000,
+    NonEmptyTrimmedString1000,
+    type ObjectType,
     type QueryRows,
     createIdFromString,
     createQueryBuilder,
@@ -22,17 +23,17 @@ import { err, ok } from '@trezor/type-utils';
 import { normalizeLabel } from './normalizeLabel';
 
 export const WalletLabelId = id('WalletLabelId');
-export type WalletLabelId = typeof WalletLabelId.Type;
+export type WalletLabelId = typeof WalletLabelId.Output;
 
 const walletTableColumns = {
     // This table will have only 1 record. As every wallet has its own secret, and therefore
     // its own Evolu instance. So the Wallets label will always be just single.
     id: WalletLabelId,
-    walletDescriptor: NonEmptyString1000,
-    label: nullOr(NonEmptyString1000),
+    walletDescriptor: NonEmptyTrimmedString1000,
+    label: nullOr(NonEmptyTrimmedString1000),
 };
 
-export const WalletEvoluSchema = object(walletTableColumns);
+export const WalletEvoluSchema: ObjectType<typeof walletTableColumns> = object(walletTableColumns);
 
 export const WalletTableSchema = {
     wallet: walletTableColumns,
@@ -54,7 +55,7 @@ export class EvoluWalletTable implements WalletTable {
 
         const normalizedLabel = normalizeLabel(label);
 
-        const validated = WalletEvoluSchema.from({
+        const validated = WalletEvoluSchema.fromUnknown({
             id: createIdFromString(walletDescriptor),
             walletDescriptor,
             label: normalizedLabel,
