@@ -15553,7 +15553,7 @@ __metadata:
     electron-updater: "npm:6.8.9"
     glob: "npm:^13.0.1"
     lodash: "npm:^4.18.1"
-    minimizer-webpack-plugin: "npm:^5.6.1"
+    minimizer-webpack-plugin: "npm:5.10.0"
     node-loader: "npm:^2.1.0"
     openpgp: "npm:^6.3.1"
     rimraf: "npm:^6.1.2"
@@ -18380,7 +18380,7 @@ __metadata:
     jest-watch-typeahead: "npm:3.0.1"
     lodash-es: "npm:^4.18.1"
     lottie-react: "npm:2.4.1"
-    minimizer-webpack-plugin: "npm:^5.6.1"
+    minimizer-webpack-plugin: "npm:5.10.0"
     pako: "npm:^2.1.0"
     pdfmake: "npm:^0.3.7"
     polished: "npm:^4.3.1"
@@ -37743,7 +37743,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"minimizer-webpack-plugin@npm:^5.6.1, minimizer-webpack-plugin@npm:^5.7.0":
+"minimizer-webpack-plugin@npm:5.10.0, minimizer-webpack-plugin@npm:^5.7.0":
   version: 5.10.0
   resolution: "minimizer-webpack-plugin@npm:5.10.0"
   dependencies:
