@@ -61,7 +61,7 @@
         "vite": "^8.0.7",
         "vite-plugin-wasm": "^3.6.0",
         "vm-browserify": "^1.1.2",
-        "webpack": "5.109.0",
+        "webpack": "5.110.1",
         "webpack-cli": "^7.2.1",
         "webpack-merge": "^6.0.1"
     }

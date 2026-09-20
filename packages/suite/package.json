@@ -235,7 +235,7 @@
         "stylelint": "^17.1.1",
         "stylelint-config-standard": "^40.0.0",
         "vm-browserify": "^1.1.2",
-        "webpack": "5.109.0",
+        "webpack": "5.110.1",
         "webpack-bundle-analyzer": "^5.3.1",
         "webpack-plugin-serve": "^1.6.0"
     }

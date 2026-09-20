@@ -32,7 +32,7 @@ const webConfig: webpack.Configuration = {
             chunkLoading: 'import-scripts',
         },
         'connect-popup-bootstrap': {
-            filename: 'connect-popup/bootstrap.[hash].js',
+            filename: 'connect-popup/bootstrap.[contenthash:8].js',
             import: path.join(repoRoot, 'packages/connect-web/src/bootstrap/index.ts'),
         },
     },

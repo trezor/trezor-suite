@@ -54,7 +54,7 @@
         "postcss-styled-syntax": "^0.7.1",
         "stylelint": "^17.1.1",
         "stylelint-config-standard": "^40.0.0",
-        "webpack": "5.109.0",
+        "webpack": "5.110.1",
         "webpack-cli": "^7.2.1",
         "webpack-merge": "^6.0.1"
     }

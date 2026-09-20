@@ -75,7 +75,7 @@
         "@types/node": "22.13.10",
         "html-webpack-plugin": "5.6.8",
         "tiny-worker": "^2.3.0",
-        "webpack": "5.109.0",
+        "webpack": "5.110.1",
         "worker-loader": "^3.0.8"
     },
     "dependencies": {
