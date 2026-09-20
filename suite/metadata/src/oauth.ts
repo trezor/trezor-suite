@@ -127,32 +127,6 @@ const handleResponse = (
     }
 };
 
-// keep handler function instance in top level scope
-let desktopHandlerInstance: (message: OAuthResponseMessage) => void;
-
-const getDesktopHandlerInstance = (
-    deps: OauthDesktopApiDep,
-    dfd: Deferred<OAuthCredentials>,
-    originalParams: URLSearchParams,
-) => {
-    desktopHandlerInstance = message => {
-        handleResponse(
-            message,
-            originalParams,
-            credentials => {
-                deps.desktopApi.removeAllListeners('oauth/response');
-                dfd.resolve(credentials);
-            },
-            error => {
-                deps.desktopApi.removeAllListeners('oauth/response');
-                dfd.reject(error);
-            },
-        );
-    };
-
-    return desktopHandlerInstance;
-};
-
 const createWebBroadcastChannel = (
     dfd: Deferred<OAuthCredentials>,
     originalParams: URLSearchParams,
@@ -186,10 +160,20 @@ export const extractCredentialsFromAuthorizationFlow = (deps: OauthDesktopApiDep
         // to make sure that there is always only one listener registered remove all listeners before creating a new one
         deps.desktopApi.removeAllListeners('oauth/response');
         // this listener may never be called in some cases
-        deps.desktopApi.once(
-            'oauth/response',
-            getDesktopHandlerInstance(deps, dfd, url.searchParams),
-        );
+        deps.desktopApi.once('oauth/response', (message: OAuthResponseMessage) => {
+            handleResponse(
+                message,
+                url.searchParams,
+                credentials => {
+                    deps.desktopApi.removeAllListeners('oauth/response');
+                    dfd.resolve(credentials);
+                },
+                error => {
+                    deps.desktopApi.removeAllListeners('oauth/response');
+                    dfd.reject(error);
+                },
+            );
+        });
         window.open(url, METADATA_PROVIDER.AUTH_WINDOW_TITLE, METADATA_PROVIDER.AUTH_WINDOW_PROPS);
     } else {
         const channel = createWebBroadcastChannel(dfd, url.searchParams);

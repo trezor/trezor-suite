@@ -15,6 +15,10 @@ import { notificationsActions } from '@suite-common/toast-notifications';
 import { exhaustive } from '@trezor/type-utils';
 import { createDeferred, createZip, typedObjectKeys } from '@trezor/utils';
 
+import {
+    type MetadataProviderCacheDep,
+    type ProviderInstance,
+} from './createMetadataProviderCache';
 import * as metadataActions from './metadataActions';
 import * as METADATA from './metadataConstants';
 import { disposeMetadataThunk } from './metadataDataThunks';
@@ -30,17 +34,6 @@ import { DropboxProvider } from './providers/DropboxProvider';
 import { FileSystemProvider, type FileSystemProviderDep } from './providers/FileSystemProvider';
 import { GoogleProvider } from './providers/GoogleProvider';
 import { InMemoryTestProvider } from './providers/InMemoryTestProvider';
-
-type ProviderInstance =
-    DropboxProvider | GoogleProvider | FileSystemProvider | InMemoryTestProvider;
-
-// needs to be declared here in top level context because it's not recommended to keep classes instances in redux state (serialization)
-export const providerInstance: Record<DataType, ProviderInstance | undefined> = {
-    labels: undefined,
-    passwords: undefined,
-};
-
-export const fetchIntervals: { [id: FetchIntervalTrackingId]: any } = {}; // any because of native at the moment, otherwise number | undefined
 
 type ProviderInstanceDeps = OauthDesktopApiDep & FileSystemProviderDep;
 
@@ -77,7 +70,7 @@ type GetProviderInstanceThunkState = MetadataRootState;
 /**
  * Return already existing instance of AbstractProvider or recreate it from token;
  */
-type GetProviderInstanceThunkDeps = WithServices<ProviderInstanceDeps>;
+type GetProviderInstanceThunkDeps = WithServices<ProviderInstanceDeps & MetadataProviderCacheDep>;
 
 export const getProviderInstanceThunk =
     ({ clientId, dataType = 'labels' }: GetProviderInstanceParams) =>
@@ -92,14 +85,16 @@ export const getProviderInstanceThunk =
 
         if (!provider) return;
 
+        const { instances } = extra.services.metadataProviderCache;
+
         // instance already exists but user did not finish log in and decided to use another provider;
-        if (providerInstance[dataType] && providerInstance[dataType]?.type !== provider.type) {
-            providerInstance[dataType] = undefined;
+        if (instances[dataType] && instances[dataType]?.type !== provider.type) {
+            instances[dataType] = undefined;
         }
 
-        if (providerInstance[dataType]) return providerInstance[dataType];
+        if (instances[dataType]) return instances[dataType];
 
-        providerInstance[dataType] = createProviderInstance(
+        instances[dataType] = createProviderInstance(
             extra.services,
             provider.type,
             provider.tokens,
@@ -107,7 +102,7 @@ export const getProviderInstanceThunk =
             clientId,
         );
 
-        return providerInstance[dataType];
+        return instances[dataType];
     };
 
 type DisconnectProviderParams = {
@@ -116,7 +111,7 @@ type DisconnectProviderParams = {
     removeMetadata?: boolean;
 };
 
-type DisconnectProviderDeps = WithServices<DesktopAnalyticsDep>;
+type DisconnectProviderDeps = WithServices<DesktopAnalyticsDep & MetadataProviderCacheDep>;
 
 type DisconnectProviderThunkState = MetadataRootState;
 
@@ -129,6 +124,8 @@ export const disconnectProviderThunk =
         _getState: () => DisconnectProviderThunkState,
         extra: DisconnectProviderThunkDeps,
     ) => {
+        const { fetchIntervals, instances } = extra.services.metadataProviderCache;
+
         typedObjectKeys(fetchIntervals).forEach((id: FetchIntervalTrackingId) => {
             const [trackedDataType, trackedClientId] = id.split('-');
             if (trackedDataType === dataType && trackedClientId === clientId) {
@@ -146,7 +143,7 @@ export const disconnectProviderThunk =
 
         if (provider !== undefined) {
             await provider.disconnect();
-            providerInstance[dataType] = undefined;
+            instances[dataType] = undefined;
 
             // flush reducer
             dispatch(metadataActions.removeMetadataProvider({ clientId }));

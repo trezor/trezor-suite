@@ -86,10 +86,12 @@ type MoveLabelsForRbfOldMetadataThunkParams = {
 
 export type MoveLabelsForRbfOldMetadataThunkState = AccountsRootState & MetadataRootState;
 
+export type MoveLabelsForRbfOldMetadataThunkDeps = metadataLabelingActions.AddMetadataThunkDeps;
+
 export const moveLabelsForRbfOldMetadataThunk = createThunk<
     void,
     MoveLabelsForRbfOldMetadataThunkParams,
-    { state: MoveLabelsForRbfOldMetadataThunkState }
+    { state: MoveLabelsForRbfOldMetadataThunkState; extra: MoveLabelsForRbfOldMetadataThunkDeps }
 >(
     `${METADATA.MODULE_PREFIX}/applyMetadataLabelsThunk`,
     async ({ accountKey, data, newTxid }, { dispatch, getState }) => {

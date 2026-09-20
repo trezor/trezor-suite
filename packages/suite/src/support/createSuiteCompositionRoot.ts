@@ -5,7 +5,11 @@ import { selectShouldRetryFirmwareRevisionCheckError } from '@suite/authenticity
 import { type BluetoothDep, createBluetoothCompositionRoot } from '@suite/bluetooth';
 import { type DesktopApiDep } from '@suite/desktop-app-api';
 import { rerunFwAuthenticityChecksThunk } from '@suite/device';
-import { selectLabelingDataForAccount } from '@suite/metadata';
+import {
+    type MetadataProviderCacheDep,
+    createMetadataProviderCache,
+    selectLabelingDataForAccount,
+} from '@suite/metadata';
 import {
     type MetadataMigrationDep,
     createMetadataMigrationCompositionRoot,
@@ -69,6 +73,7 @@ export type SuiteServices = CommonServices &
     DbDep &
     DesktopApiDep &
     DesktopAnalyticsDep &
+    MetadataProviderCacheDep &
     MetadataMigrationDep &
     SuiteRouterHistoryDep &
     TransportsDep &
@@ -166,6 +171,7 @@ export const createSuiteServicesCompositionRoot = (deps: SuiteAppDeps): SuiteSer
     return {
         db: deps.db,
         desktopApi: deps.desktopApi,
+        metadataProviderCache: createMetadataProviderCache(),
         networks,
         suiteSync,
         bip329,

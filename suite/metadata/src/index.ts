@@ -3,11 +3,18 @@ export * from './metadataActions';
 export * as metadataThunks from './metadataThunks';
 export { default as GoogleClient } from './google';
 export * from './metadataProviderThunks';
+export {
+    type MetadataProviderCache,
+    type MetadataProviderCacheDep,
+    createMetadataProviderCache,
+    injectMetadataProviderCache,
+} from './createMetadataProviderCache';
 export * as metadataLabelingActions from './metadataLabelingActions';
 export { type InitMetadataDeps } from './metadataLabelingActions';
 export * as metadataLabelingConstants from './metadataLabelingConstants';
 export * as METADATA from './metadataConstants';
 export {
+    type MoveLabelsForRbfOldMetadataThunkDeps,
     type MoveLabelsForRbfOldMetadataThunkState,
     moveLabelsForRbfOldMetadataThunk,
 } from './moveLabelsForRbfOldMetadataThunk';
