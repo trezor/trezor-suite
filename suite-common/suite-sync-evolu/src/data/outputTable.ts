@@ -1,7 +1,8 @@
 import {
     type Evolu,
     type InferRow,
-    NonEmptyString1000,
+    NonEmptyTrimmedString1000,
+    type ObjectType,
     type QueryRows,
     createIdFromString,
     createQueryBuilder,
@@ -24,18 +25,18 @@ import { err, ok } from '@trezor/type-utils';
 import { normalizeLabel } from './normalizeLabel';
 
 export const OutputEvoluId = id('OutputLabelId');
-export type OutputEvoluId = typeof OutputEvoluId.Type;
+export type OutputEvoluId = typeof OutputEvoluId.Output;
 
 const outputTableColumns = {
     id: OutputEvoluId,
-    label: nullOr(NonEmptyString1000),
-    txId: NonEmptyString1000,
-    outputIndex: NonEmptyString1000, // Todo: rename: txTargetId
-    accountDescriptor: NonEmptyString1000,
-    networkSymbol: NonEmptyString1000,
+    label: nullOr(NonEmptyTrimmedString1000),
+    txId: NonEmptyTrimmedString1000,
+    outputIndex: NonEmptyTrimmedString1000, // Todo: rename: txTargetId
+    accountDescriptor: NonEmptyTrimmedString1000,
+    networkSymbol: NonEmptyTrimmedString1000,
 };
 
-export const EvoluOutput = object(outputTableColumns);
+export const EvoluOutput: ObjectType<typeof outputTableColumns> = object(outputTableColumns);
 
 /**
  * IMPORTANT: Only additive changes allowed. Schema MUST BE always backwards
@@ -61,7 +62,7 @@ export class OutputEvoluTable implements OutputTable {
             return err(createSuiteSyncUpdateError(idResult.error));
         }
 
-        const validated = EvoluOutput.from({
+        const validated = EvoluOutput.fromUnknown({
             id: idResult.value,
             txId,
             outputIndex: `${txTargetId}`,

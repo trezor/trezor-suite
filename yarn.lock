@@ -3362,35 +3362,57 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@evolu/common@npm:8.0.0-next.5":
-  version: 8.0.0-next.5
-  resolution: "@evolu/common@npm:8.0.0-next.5"
+"@evolu/common@npm:8.10.0":
+  version: 8.10.0
+  resolution: "@evolu/common@npm:8.10.0"
   dependencies:
-    "@noble/ciphers": "npm:^2.1.1"
-    "@noble/hashes": "npm:^2.0.1"
-    "@scure/bip39": "npm:^2.0.1"
-    kysely: "npm:^0.28.15"
-    msgpackr: "npm:^1.11.8"
-    random: "npm:^5.4.1"
-  checksum: 10/a4652e066320ac519416cce37d8d54117833cc598ea34232ab5e7678f6d842441721abc7a23ab0037bd4f666e2a4401bd6db37db3fc928add0a91f961af10f3d
+    "@noble/ciphers": "npm:^2.3.0"
+    "@noble/hashes": "npm:^2.3.0"
+    "@scure/bip39": "npm:^2.3.0"
+    "@standard-schema/spec": "npm:^1.1.0"
+    kysely: "npm:^0.29.5"
+    random: "npm:5.5.1"
+  checksum: 10/c7be03fde7960126a54a73b39c0c831551119dd88ba294891c0ae585f31c39db87239d2d25258901b263555338ca89eb84f6f33c5087765f1d5481e79b0cdb33
   languageName: node
   linkType: hard
 
-"@evolu/nodejs@npm:3.0.0-next.3":
-  version: 3.0.0-next.3
-  resolution: "@evolu/nodejs@npm:3.0.0-next.3"
+"@evolu/nodejs@npm:4.0.0":
+  version: 4.0.0
+  resolution: "@evolu/nodejs@npm:4.0.0"
   dependencies:
-    better-sqlite3: "npm:^12.6.2"
-    ws: "npm:^8.19.0"
+    better-sqlite3: "npm:^12.11.1"
+    ws: "npm:^8.21.3"
   peerDependencies:
-    "@evolu/common": ^8.0.0-next.0
-  checksum: 10/9864d7bcb84ed3d608f373726b7aa4c3f17ad48dc49888db2683422a282be0a19ec7ec675f91be2540b3cf54642714292931a3c86877d35d5682676a1a2c4959
+    "@evolu/common": ^8.10.0
+    "@evolu/oxlint-config": ^0.2.0
+    "@evolu/typescript-config": ^0.1.1
+    oxlint: ^1.79.0
+    oxlint-tsgolint: 7.0.2001
+    typescript: ">=7.0.0"
+    vite: ">=8.0.0"
+    webpack: ">=5.108.4"
+  peerDependenciesMeta:
+    "@evolu/oxlint-config":
+      optional: true
+    "@evolu/typescript-config":
+      optional: true
+    oxlint:
+      optional: true
+    oxlint-tsgolint:
+      optional: true
+    typescript:
+      optional: true
+    vite:
+      optional: true
+    webpack:
+      optional: true
+  checksum: 10/eafa06ed1ccbbadc61875918456bf3c4443fe1e8f0186fdfe4715591d751ca843cae30e482cfe16ca9620e906318d36265e29f1af7026f38af6111c9044d61b9
   languageName: node
   linkType: hard
 
-"@evolu/react-native@npm:15.0.0-next.2":
-  version: 15.0.0-next.2
-  resolution: "@evolu/react-native@npm:15.0.0-next.2"
+"@evolu/react-native@npm:16.0.2":
+  version: 16.0.2
+  resolution: "@evolu/react-native@npm:16.0.2"
   dependencies:
     array-from-async: "npm:^3.0.0"
     array.prototype.tosorted: "npm:^1.1.4"
@@ -3404,33 +3426,24 @@ __metadata:
     set.prototype.symmetricdifference: "npm:^1.1.3"
     set.prototype.union: "npm:^1.1.3"
   peerDependencies:
-    "@evolu/common": ^8.0.0-next.0
-    "@evolu/react": ^11.0.0-next.0
-    "@op-engineering/op-sqlite": ">=12"
+    "@evolu/common": ^8.10.0
+    "@evolu/react": ^11.0.3
     expo: ">=55"
-    expo-secure-store: ">=55"
     expo-sqlite: ">=55"
     react: ">=19"
     react-native: ">=0.83"
     react-native-nitro-modules: ">=0.34"
-    react-native-sensitive-info: ">=6"
     react-native-svg: ">=15.15"
   peerDependenciesMeta:
-    "@op-engineering/op-sqlite":
-      optional: true
     expo:
-      optional: true
-    expo-secure-store:
       optional: true
     expo-sqlite:
       optional: true
     react-native-nitro-modules:
       optional: true
-    react-native-sensitive-info:
-      optional: true
     react-native-svg:
       optional: true
-  checksum: 10/f084a1cd8ce5c05e222429532f3ea571f9457a7ad6b974adecb9f3d28fb9ab72b21152589f59f8008b9978b8f58ce789f70fb0b889bff0212a0a13556443743e
+  checksum: 10/deab80578fbc620beb603cbce969a1022da306499c1b313a70df56b1efc8bf43930bf364436b095a2f856cfd199bc37f79214b5558ddad2abfd19254a8f41387
   languageName: node
   linkType: hard
 
@@ -3443,27 +3456,27 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@evolu/web@npm:3.0.0-next.1":
-  version: 3.0.0-next.1
-  resolution: "@evolu/web@npm:3.0.0-next.1"
+"@evolu/web@npm:3.1.2":
+  version: 3.1.2
+  resolution: "@evolu/web@npm:3.1.2"
   dependencies:
     "@evolu/sqlite-wasm": "npm:2.2.4"
     idb-keyval: "npm:^6.2.2"
   peerDependencies:
-    "@evolu/common": ^8.0.0-next.0
-  checksum: 10/766b22819476753426d9c35d1942cd816fccb94ec5142949ba3aee2433c2233c360fd36207d525d700974920e3a666378a2a5a339054ee8d2549d8b6ecc81a78
+    "@evolu/common": ^8.10.0
+  checksum: 10/53d14697a235d287c929cd831a5dc958d7f2d6fc167aef1de16cbf135c1cb34355abb523ef7b97f183e9c57f7eb363a948f5d5c91663966037d987bd0a8221a9
   languageName: node
   linkType: hard
 
-"@evolu/web@patch:@evolu/web@npm%3A3.0.0-next.1#~/.yarn/patches/@evolu-web-npm-3.0.0-next.1-9b296ca288.patch":
-  version: 3.0.0-next.1
-  resolution: "@evolu/web@patch:@evolu/web@npm%3A3.0.0-next.1#~/.yarn/patches/@evolu-web-npm-3.0.0-next.1-9b296ca288.patch::version=3.0.0-next.1&hash=c7a414"
+"@evolu/web@patch:@evolu/web@npm%3A3.1.2#~/.yarn/patches/@evolu-web-npm-3.1.2-b0d061c39c.patch":
+  version: 3.1.2
+  resolution: "@evolu/web@patch:@evolu/web@npm%3A3.1.2#~/.yarn/patches/@evolu-web-npm-3.1.2-b0d061c39c.patch::version=3.1.2&hash=788d40"
   dependencies:
     "@evolu/sqlite-wasm": "npm:2.2.4"
     idb-keyval: "npm:^6.2.2"
   peerDependencies:
-    "@evolu/common": ^8.0.0-next.0
-  checksum: 10/32ffb82939d7d038e1634a4c9f12309df1d0aa96f93661806e0fc098830542995cc133c8f804fb789b8eb0f40e40b693a69d6b3a46a35329e3217a6d9d1176a1
+    "@evolu/common": ^8.10.0
+  checksum: 10/7f29fa4140425759e4cfb7dd815b6b70c01479f3a9088823be0ca7b1becaea38cc147a12af70c0c7c4cf83d6a1987b43ca618ff7f8017f9f383def8a750360f4
   languageName: node
   linkType: hard
 
@@ -5770,48 +5783,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@msgpackr-extract/msgpackr-extract-darwin-arm64@npm:3.0.4":
-  version: 3.0.4
-  resolution: "@msgpackr-extract/msgpackr-extract-darwin-arm64@npm:3.0.4"
-  conditions: os=darwin & cpu=arm64
-  languageName: node
-  linkType: hard
-
-"@msgpackr-extract/msgpackr-extract-darwin-x64@npm:3.0.4":
-  version: 3.0.4
-  resolution: "@msgpackr-extract/msgpackr-extract-darwin-x64@npm:3.0.4"
-  conditions: os=darwin & cpu=x64
-  languageName: node
-  linkType: hard
-
-"@msgpackr-extract/msgpackr-extract-linux-arm64@npm:3.0.4":
-  version: 3.0.4
-  resolution: "@msgpackr-extract/msgpackr-extract-linux-arm64@npm:3.0.4"
-  conditions: os=linux & cpu=arm64
-  languageName: node
-  linkType: hard
-
-"@msgpackr-extract/msgpackr-extract-linux-arm@npm:3.0.4":
-  version: 3.0.4
-  resolution: "@msgpackr-extract/msgpackr-extract-linux-arm@npm:3.0.4"
-  conditions: os=linux & cpu=arm
-  languageName: node
-  linkType: hard
-
-"@msgpackr-extract/msgpackr-extract-linux-x64@npm:3.0.4":
-  version: 3.0.4
-  resolution: "@msgpackr-extract/msgpackr-extract-linux-x64@npm:3.0.4"
-  conditions: os=linux & cpu=x64
-  languageName: node
-  linkType: hard
-
-"@msgpackr-extract/msgpackr-extract-win32-x64@npm:3.0.4":
-  version: 3.0.4
-  resolution: "@msgpackr-extract/msgpackr-extract-win32-x64@npm:3.0.4"
-  conditions: os=win32 & cpu=x64
-  languageName: node
-  linkType: hard
-
 "@napi-rs/lzma-linux-x64-gnu@npm:1.5.1":
   version: 1.5.1
   resolution: "@napi-rs/lzma-linux-x64-gnu@npm:1.5.1"
@@ -6049,7 +6020,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@noble/ciphers@npm:^2.1.1, @noble/ciphers@npm:~2.2.0":
+"@noble/ciphers@npm:^2.3.0":
+  version: 2.4.0
+  resolution: "@noble/ciphers@npm:2.4.0"
+  checksum: 10/7ab9e5d892293d047232b4340956d93b022e6cf8cc2fd547df9cd4be5d286cd962d69947bcc99a2d99db02098225c4627cfd26ae78517f17a7bcfbc077ab1c6d
+  languageName: node
+  linkType: hard
+
+"@noble/ciphers@npm:~2.2.0":
   version: 2.2.0
   resolution: "@noble/ciphers@npm:2.2.0"
   checksum: 10/d75348aa682b41ad3e24cdd0a56c6d9ca033fb629ab93f37d6690be41c4882359b27598a11af0f5439ba82df4f9e3875dea1f875064310f68fef63cf24e3481a
@@ -6120,17 +6098,17 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@noble/hashes@npm:2.0.1":
-  version: 2.0.1
-  resolution: "@noble/hashes@npm:2.0.1"
-  checksum: 10/f4d00e7564eb4ff4e6d16be151dd0e404aede35f91e4372b0a8a6ec888379c1dd1e02c721b480af8e7853bea9637185b5cb9533970c5b77d60c254ead0cfd8f7
-  languageName: node
-  linkType: hard
-
-"@noble/hashes@npm:2.2.0, @noble/hashes@npm:^2.0.1, @noble/hashes@npm:^2.2.0, @noble/hashes@npm:~2.2.0":
+"@noble/hashes@npm:2.2.0, @noble/hashes@npm:~2.2.0":
   version: 2.2.0
   resolution: "@noble/hashes@npm:2.2.0"
   checksum: 10/b1b78bedc2a01394be047429f3d888905015fe8a09f1b7e43e0b5736b54133df62f73dcc73ede43af38e96e86156afb45b86973fdeaa95d9f0880333c3fc0907
+  languageName: node
+  linkType: hard
+
+"@noble/hashes@npm:2.4.0, @noble/hashes@npm:^2.0.1, @noble/hashes@npm:^2.2.0, @noble/hashes@npm:^2.3.0":
+  version: 2.4.0
+  resolution: "@noble/hashes@npm:2.4.0"
+  checksum: 10/88d4cdd6cef00f412a39f65bda1d24cba2264c6cacdd1c6c48d7ed66fd9be865ffb7231024fb81177975c684b8a463879b89c5ae6960370b05a546c0fd8afa2c
   languageName: node
   linkType: hard
 
@@ -8650,7 +8628,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@scure/base@npm:2.0.0, @scure/base@npm:^2.0.0":
+"@scure/base@npm:^2.0.0":
   version: 2.0.0
   resolution: "@scure/base@npm:2.0.0"
   checksum: 10/8fb86024f22e9c532d513b8df8a672252e58bd5695920ce646162287f0accd38e89cab58722a738b3d247b5dcf7760362ae2d82d502be7e62a555f5d98f8a110
@@ -8678,13 +8656,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@scure/bip39@npm:^2.0.1":
-  version: 2.0.1
-  resolution: "@scure/bip39@npm:2.0.1"
+"@scure/bip39@npm:^2.3.0":
+  version: 2.4.0
+  resolution: "@scure/bip39@npm:2.4.0"
   dependencies:
-    "@noble/hashes": "npm:2.0.1"
-    "@scure/base": "npm:2.0.0"
-  checksum: 10/d05271c3a339447802e87c921b3630d5477ce1e137340bb31692c2936dea382f2f73ecb60100e22a96632d70b67d32f7e10b7f36e7395c879f7ff0efadcd1ad0
+    "@noble/hashes": "npm:2.4.0"
+  checksum: 10/6934cc6ac8a205d941e3d49f0cb49352f8d3b1e1188007589f2f4970618a9e4b8f7c4ce537d63f00638063c3a25623508402a16f7a97092d10a4ebac2963b0ae
   languageName: node
   linkType: hard
 
@@ -10926,8 +10903,8 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@suite-common/e2e-evolu-client@workspace:suite-common/e2e-evolu-client"
   dependencies:
-    "@evolu/common": "npm:8.0.0-next.5"
-    "@evolu/nodejs": "npm:3.0.0-next.3"
+    "@evolu/common": "npm:8.10.0"
+    "@evolu/nodejs": "npm:4.0.0"
     "@suite-common/suite-sync-evolu": "workspace:*"
     "@suite-common/suite-sync-storage": "workspace:*"
     "@suite-common/wallet-config": "workspace:*"
@@ -11455,8 +11432,8 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@suite-common/suite-sync-evolu@workspace:suite-common/suite-sync-evolu"
   dependencies:
-    "@evolu/common": "npm:8.0.0-next.5"
-    "@evolu/nodejs": "npm:3.0.0-next.3"
+    "@evolu/common": "npm:8.10.0"
+    "@evolu/nodejs": "npm:4.0.0"
     "@suite-common/suite-sync-storage": "workspace:*"
     "@suite-common/suite-sync-types": "workspace:*"
     "@suite-common/wallet-config": "workspace:*"
@@ -12164,8 +12141,8 @@ __metadata:
     "@babel/core": "npm:7.29.7"
     "@config-plugins/detox": "npm:^11.0.0"
     "@currents/cmd": "npm:1.10.0"
-    "@evolu/common": "npm:8.0.0-next.5"
-    "@evolu/react-native": "npm:15.0.0-next.2"
+    "@evolu/common": "npm:8.10.0"
+    "@evolu/react-native": "npm:16.0.2"
     "@exodus/patch-broken-hermes-typed-arrays": "npm:^1.0.0-alpha.1"
     "@gorhom/bottom-sheet": "npm:5.2.9"
     "@jest/globals": "npm:^29.7.0"
@@ -14619,8 +14596,8 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@suite-native/suite-sync@workspace:suite-native/suite-sync"
   dependencies:
-    "@evolu/common": "npm:8.0.0-next.5"
-    "@evolu/react-native": "npm:15.0.0-next.2"
+    "@evolu/common": "npm:8.10.0"
+    "@evolu/react-native": "npm:16.0.2"
     "@react-navigation/native": "npm:7.1.31"
     "@reduxjs/toolkit": "npm:2.12.0"
     "@suite-common/delegated-identity-key-types": "workspace:*"
@@ -16233,8 +16210,8 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@suite/suite-sync@workspace:suite/suite-sync"
   dependencies:
-    "@evolu/common": "npm:8.0.0-next.5"
-    "@evolu/web": "patch:@evolu/web@npm%3A3.0.0-next.1#~/.yarn/patches/@evolu-web-npm-3.0.0-next.1-9b296ca288.patch"
+    "@evolu/common": "npm:8.10.0"
+    "@evolu/web": "patch:@evolu/web@npm%3A3.1.2#~/.yarn/patches/@evolu-web-npm-3.1.2-b0d061c39c.patch"
     "@hookform/resolvers": "npm:^5.4.0"
     "@reduxjs/toolkit": "npm:2.12.0"
     "@suite-common/delegated-identity-key-types": "workspace:*"
@@ -18139,7 +18116,7 @@ __metadata:
   resolution: "@trezor/suite-e2e@workspace:suite/e2e"
   dependencies:
     "@currents/playwright": "npm:^2.5.0"
-    "@evolu/common": "npm:8.0.0-next.5"
+    "@evolu/common": "npm:8.10.0"
     "@noble/hashes": "npm:^2.0.1"
     "@playwright/browser-chromium": "npm:1.62.1"
     "@playwright/browser-firefox": "npm:1.62.1"
@@ -22706,14 +22683,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"better-sqlite3@npm:^12.6.2":
-  version: 12.8.0
-  resolution: "better-sqlite3@npm:12.8.0"
+"better-sqlite3@npm:^12.11.1":
+  version: 12.11.1
+  resolution: "better-sqlite3@npm:12.11.1"
   dependencies:
     bindings: "npm:^1.5.0"
     node-gyp: "npm:latest"
     prebuild-install: "npm:^7.1.1"
-  checksum: 10/63b943e5431ee2fed02796aa2bb452f19d08340bfcfee555c4865414d89262964b3b3e55324c5c5a0628247808b0ea25a357a62872a5e017455af6938b9a619a
+  checksum: 10/a516421fda128dd25e36dd9c8c8857e6fd94b27ab7da644af939109bd57540c58bad8ed784ef0fdfe03d094deabed5733c33dabed4f91b57a89543deab9b28d6
   languageName: node
   linkType: hard
 
@@ -26058,7 +26035,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"detect-libc@npm:^2.0.0, detect-libc@npm:^2.0.1, detect-libc@npm:^2.0.3, detect-libc@npm:^2.1.2":
+"detect-libc@npm:^2.0.0, detect-libc@npm:^2.0.3, detect-libc@npm:^2.1.2":
   version: 2.1.2
   resolution: "detect-libc@npm:2.1.2"
   checksum: 10/b736c8d97d5d46164c0d1bed53eb4e6a3b1d8530d460211e2d52f1c552875e706c58a5376854e4e54f8b828c9cada58c855288c968522eb93ac7696d65970766
@@ -34964,10 +34941,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"kysely@npm:^0.28.15":
-  version: 0.28.17
-  resolution: "kysely@npm:0.28.17"
-  checksum: 10/50690d745016d25f09574fe58c7e31f84427845497f30c84280131bc1f9f60d118c53640a184e225708a1f54f2b54ac12fdf3a0dfc6405527487ad96ff594f42
+"kysely@npm:^0.29.5":
+  version: 0.29.5
+  resolution: "kysely@npm:0.29.5"
+  checksum: 10/f62218965838cbc1900ad6364757d0fa5537089c5d0627af9f3cff08eb719b8d81840b5f5d22cdd3b41e4255c1b60ec50a602b589b07439d7485f05feceb5f4a
   languageName: node
   linkType: hard
 
@@ -38025,49 +38002,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"msgpackr-extract@npm:^3.0.2":
-  version: 3.0.4
-  resolution: "msgpackr-extract@npm:3.0.4"
-  dependencies:
-    "@msgpackr-extract/msgpackr-extract-darwin-arm64": "npm:3.0.4"
-    "@msgpackr-extract/msgpackr-extract-darwin-x64": "npm:3.0.4"
-    "@msgpackr-extract/msgpackr-extract-linux-arm": "npm:3.0.4"
-    "@msgpackr-extract/msgpackr-extract-linux-arm64": "npm:3.0.4"
-    "@msgpackr-extract/msgpackr-extract-linux-x64": "npm:3.0.4"
-    "@msgpackr-extract/msgpackr-extract-win32-x64": "npm:3.0.4"
-    node-gyp: "npm:latest"
-    node-gyp-build-optional-packages: "npm:5.2.2"
-  dependenciesMeta:
-    "@msgpackr-extract/msgpackr-extract-darwin-arm64":
-      optional: true
-    "@msgpackr-extract/msgpackr-extract-darwin-x64":
-      optional: true
-    "@msgpackr-extract/msgpackr-extract-linux-arm":
-      optional: true
-    "@msgpackr-extract/msgpackr-extract-linux-arm64":
-      optional: true
-    "@msgpackr-extract/msgpackr-extract-linux-x64":
-      optional: true
-    "@msgpackr-extract/msgpackr-extract-win32-x64":
-      optional: true
-  bin:
-    download-msgpackr-prebuilds: bin/download-prebuilds.js
-  checksum: 10/05a66482eca3c7932afef4300abc0cccfbb002185506d85d77fd2cff63870d58ef6903fef879ea09ff76ed0c18c9282a0dceb0d621a58e3c02adc9e0bfb8eb33
-  languageName: node
-  linkType: hard
-
-"msgpackr@npm:^1.11.8":
-  version: 1.11.8
-  resolution: "msgpackr@npm:1.11.8"
-  dependencies:
-    msgpackr-extract: "npm:^3.0.2"
-  dependenciesMeta:
-    msgpackr-extract:
-      optional: true
-  checksum: 10/f37666bddca024958f1dc3fa5f53909f6c0001ef3632e7e86c4e769cf99270c1a35cc6b0818cc5f6c3a493bd4b7920f9e4aff5af2719fea03db9581d43f379b3
-  languageName: node
-  linkType: hard
-
 "multi-sort-stream@npm:^1.0.3, multi-sort-stream@npm:^1.0.4":
   version: 1.0.4
   resolution: "multi-sort-stream@npm:1.0.4"
@@ -38632,19 +38566,6 @@ __metadata:
   version: 1.4.0
   resolution: "node-forge@npm:1.4.0"
   checksum: 10/d70fd769768e646eda73343d4d4105ccb6869315d975905a22117431c04ae5b6df6c488e34ed275b1a66b50195a09b84b5c8aeca3b8605c20605fcb8e9f109d9
-  languageName: node
-  linkType: hard
-
-"node-gyp-build-optional-packages@npm:5.2.2":
-  version: 5.2.2
-  resolution: "node-gyp-build-optional-packages@npm:5.2.2"
-  dependencies:
-    detect-libc: "npm:^2.0.1"
-  bin:
-    node-gyp-build-optional-packages: bin.js
-    node-gyp-build-optional-packages-optional: optional.js
-    node-gyp-build-optional-packages-test: build-test.js
-  checksum: 10/f448a328cf608071dc8cc4426ac5be0daec4788e4e1759e9f7ffcd286822cc799384edce17a8c79e610c4bbfc8e3aff788f3681f1d88290e0ca7aaa5342a090f
   languageName: node
   linkType: hard
 
@@ -41349,10 +41270,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"random@npm:^5.4.1":
-  version: 5.4.1
-  resolution: "random@npm:5.4.1"
-  checksum: 10/95e1deb4721effaaeba0e2657839f58469fd46da72ae88a89cadd9874761860bc87dbb23bb339d92cb4668b9a0c9523e248395cc04faaca429de41a2a012c2d0
+"random@npm:5.5.1":
+  version: 5.5.1
+  resolution: "random@npm:5.5.1"
+  checksum: 10/91a61494f6901f95831c955d410c13da4ace1a44eb46248becb486a25ab254bdd8ee278e246d562d91d7e8d44945f430cf1c54c31b136d194101e1a719209f1d
   languageName: node
   linkType: hard
 
@@ -49134,7 +49055,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"ws@npm:8.21.0, ws@npm:^8.11.0, ws@npm:^8.12.1, ws@npm:^8.13.0, ws@npm:^8.18.0, ws@npm:^8.18.3, ws@npm:^8.19.0, ws@npm:^8.20.0, ws@npm:^8.21.0":
+"ws@npm:8.21.0":
   version: 8.21.0
   resolution: "ws@npm:8.21.0"
   peerDependencies:
@@ -49170,6 +49091,21 @@ __metadata:
     utf-8-validate:
       optional: true
   checksum: 10/486141e4a01bb75883f9ba39317309c2427e24db1cb75e340fad6e5886b65c03d994a34209f0e4ba06dd6cb9ec95dd1b6a09c52c05eed9a34d6376f4fbbf617c
+  languageName: node
+  linkType: hard
+
+"ws@npm:^8.11.0, ws@npm:^8.12.1, ws@npm:^8.13.0, ws@npm:^8.18.0, ws@npm:^8.18.3, ws@npm:^8.19.0, ws@npm:^8.20.0, ws@npm:^8.21.0, ws@npm:^8.21.3":
+  version: 8.21.3
+  resolution: "ws@npm:8.21.3"
+  peerDependencies:
+    bufferutil: ^4.0.1
+    utf-8-validate: ">=5.0.2"
+  peerDependenciesMeta:
+    bufferutil:
+      optional: true
+    utf-8-validate:
+      optional: true
+  checksum: 10/8856922c26fd2d106931c16310d9a0bc2d6d37ed8771352bfa0d2a36df0ab5cb1f6528c6db8213f3333cf4ce93925e56f13604df0454cb0d4289fef922bebcdd
   languageName: node
   linkType: hard
 
