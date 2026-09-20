@@ -51,6 +51,11 @@ export const sharedAliases = [
         replacement: 'noop-core-js-actual',
     },
     {
+        // Mirrors the webpack config: resolve CJS lodash imports (recharts') to the ESM build.
+        find: 'lodash',
+        replacement: 'lodash-es',
+    },
+    {
         find: 'src',
         replacement: resolve(packageDir, '../../packages/suite/src'),
     },

@@ -18378,6 +18378,7 @@ __metadata:
     immer: "npm:11.1.16"
     jest-canvas-mock: "npm:^2.5.8"
     jest-watch-typeahead: "npm:3.0.1"
+    lodash-es: "npm:^4.18.1"
     lottie-react: "npm:2.4.1"
     minimizer-webpack-plugin: "npm:^5.6.1"
     pako: "npm:^2.1.0"
@@ -35345,7 +35346,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"lodash-es@npm:^4.17.21":
+"lodash-es@npm:^4.17.21, lodash-es@npm:^4.18.1":
   version: 4.18.1
   resolution: "lodash-es@npm:4.18.1"
   checksum: 10/8bfad225ef09ef42b04283cdaf7830efcc2ba29ae41b56501c74422155ee1ccaa1f0f6e8319def3451a1fe54dec501c8e4bee622bae2b2d98ac993731e0a5cce

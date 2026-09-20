@@ -73,6 +73,11 @@ export const createBaseConfig = ({
             modules: ['node_modules'],
             alias: {
                 src: path.resolve(__dirname, '../../suite/src/'),
+                // recharts deep-imports 29 lodash functions from the CJS build, which cannot be
+                // tree-shaken or scope-hoisted. lodash-es is the same 4.18.1 code as ESM with
+                // `sideEffects: false`, so the same imports shrink by ~30%. Prefix alias: `lodash/get`
+                // becomes `lodash-es/get`, and `lodash-es/*` is left alone.
+                lodash: 'lodash-es',
             },
             fallback: {
                 // Polyfills crypto API for NodeJS libraries in the browser. 'crypto' does not run without 'stream'
