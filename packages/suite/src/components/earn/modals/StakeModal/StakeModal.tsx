@@ -1,9 +1,10 @@
 import { injectDesktopAnalytics } from '@suite/analytics';
 import { Translation } from '@suite/intl';
 import { useServices } from '@suite-common/dependency-injection';
+import { injectDispatch } from '@suite-common/redux-utils';
 import { type StakeModalFlow } from '@suite-common/suite-types/src/staking';
 import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
-import { selectAccountIsStakingActive } from '@suite-common/wallet-core';
+import { selectAccountIsStakingActive, stakeActions } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
 import { Grid, Modal } from '@trezor/components';
 
@@ -22,7 +23,7 @@ type StakeModalProps = {
 };
 
 export const StakeModal = ({ onCancel, account, flow }: StakeModalProps) => {
-    const { analytics } = useServices(injectDesktopAnalytics);
+    const { analytics, dispatch } = useServices(injectDesktopAnalytics, injectDispatch);
     const stakeContextValues = useStakeForm({ account });
     const { isBelowTablet } = useLayoutSize();
 
@@ -30,6 +31,7 @@ export const StakeModal = ({ onCancel, account, flow }: StakeModalProps) => {
     const isUpdateProviderFlow = isStakingActive && account.networkType === 'cardano';
 
     const onCancelClick = () => {
+        dispatch(stakeActions.clearAccountPoolSelection());
         onCancel?.();
 
         analytics.report({

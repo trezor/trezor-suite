@@ -250,6 +250,7 @@ const pushTransactionThunk =
                 // The confirmed selection is spent by this transaction; keeping it would let it
                 // reach the next plan composed for this account.
                 dispatch(stakeActions.clearAccountVotingDelegation());
+                dispatch(stakeActions.clearAccountPoolSelection());
             }
 
             // notification from the backend may be delayed.

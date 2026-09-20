@@ -10,11 +10,13 @@ export const FIVE_BINARIES_POOLS = [
     'pool1z9m2kxeat06t30yf6ar7sqpert0cjdgxzcv2dv36dcwcqcqtgk4',
 ];
 
+export const EVERSTAKE_EVE9_POOL = 'pool1xflehvzad4wr6rrvf6eea65jst5af0r4k0rh4xvmnqgvkzt3xjt';
+
 export const EVERSTAKE_POOL_NAMES: Record<string, string> = {
     pool1sysgx87cwxnqy0pqn8g97gdhd0dmre9rw3jvpn2k7apuwa7cgkn: 'EVE6',
     pool1n0uxgs5qfk5n9xl7qvq9jt8zuu02cntrsjnjayjlqtejyffnemj: 'EVE7',
     pool13rt3ngkek4l876980ect869cu978d36dcyh22ts4nwuf7ncq02u: 'EVE8',
-    pool1xflehvzad4wr6rrvf6eea65jst5af0r4k0rh4xvmnqgvkzt3xjt: 'EVE9',
+    [EVERSTAKE_EVE9_POOL]: 'EVE9',
 };
 
 export const EVERSTAKE_POOLS = Object.keys(EVERSTAKE_POOL_NAMES);

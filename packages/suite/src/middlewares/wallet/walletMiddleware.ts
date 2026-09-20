@@ -118,6 +118,7 @@ const walletMiddleware =
             api.dispatch(tradingActions.setVerifiedAddress(undefined));
             api.dispatch(stakeActions.dispose());
             api.dispatch(stakeActions.clearAccountVotingDelegation());
+            api.dispatch(stakeActions.clearAccountPoolSelection());
         }
 
         if (action.type === WALLET_SETTINGS.SET_BITCOIN_AMOUNT_UNITS) {
