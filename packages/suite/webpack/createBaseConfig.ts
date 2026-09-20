@@ -171,10 +171,16 @@ export const createBaseConfig = ({
                                 [
                                     '@babel/preset-env',
                                     {
-                                        corejs: 3,
+                                        // The minor version decides which core-js modules may be
+                                        // injected below. A bare `3` means 3.0 and would prune the
+                                        // polyfills to 5 instead of the 98 the targets actually lack.
+                                        corejs: '3.49',
                                         configPath: browserslistConfigPath,
                                         shippedProposals: true,
-                                        useBuiltIns: 'usage',
+                                        // `entry` rewrites the global `import 'core-js/actual'` in
+                                        // suite/web-app to only the polyfills the browserslist targets
+                                        // lack, instead of shipping all ~440 core-js features.
+                                        useBuiltIns: 'entry',
                                     },
                                 ],
                             ],
