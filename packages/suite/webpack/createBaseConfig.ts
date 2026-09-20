@@ -137,7 +137,7 @@ export const createBaseConfig = ({
                 }),
             ],
             emitOnErrors: true,
-            moduleIds: 'named',
+            moduleIds: 'deterministic',
             usedExports: true,
         },
         performance: {
