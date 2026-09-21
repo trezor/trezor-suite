@@ -4,6 +4,7 @@ import { useSelector } from 'react-redux';
 import { type RouteProp, useNavigation, useRoute } from '@react-navigation/native';
 
 import { useServices } from '@suite-common/dependency-injection';
+import { getNetworkDisplaySymbolName } from '@suite-common/wallet-config';
 import {
     type AccountsRootState,
     type EarnOnboardingRootState,
@@ -14,21 +15,23 @@ import {
 import { events, injectNativeAnalytics } from '@suite-native/analytics';
 import { type ActiveView, Box } from '@suite-native/atoms';
 import { Form } from '@suite-native/forms';
+import { Translation } from '@suite-native/intl';
 import {
     type RootStackParamList,
     RootStackRoutes,
     Screen,
+    ScreenHeader,
     type StackNavigationProps,
 } from '@suite-native/navigation';
 import { FeeSelector } from '@suite-native/transaction-management';
 
 import { EarnAmountCard } from '../../components/earn/EarnAmountCard';
-import { EarnInsufficientBalanceBanner } from '../../components/earn/EarnInsufficientBalanceBanner';
 import { EarnOutputFields } from '../../components/earn/EarnOutputFields';
 import { StakingFormScreenFooter } from '../../components/staking/StakingFormScreenFooter';
-import { StakingFormScreenHeader } from '../../components/staking/StakingFormScreenHeader';
+import { StakingNoBalanceContent } from '../../components/staking/StakingNoBalanceContent';
 import { useNavigateBackAnalytics } from '../../hooks/earn/useNavigateBackAnalytics';
 import { useStakingForm } from '../../hooks/staking/useStakingForm';
+import { isBalanceBelowStakingMinimum } from '../../utils/staking/isBalanceBelowStakingMinimum';
 
 export const StakingFormScreen = () => {
     const route = useRoute<RouteProp<RootStackParamList, RootStackRoutes.StakingForm>>();
@@ -80,6 +83,10 @@ export const StakingFormScreen = () => {
         formState: { isValid },
     } = form;
 
+    if (isBalanceBelowStakingMinimum(account)) {
+        return <StakingNoBalanceContent accountKey={accountKey} />;
+    }
+
     const handleSubmit = form.handleSubmit(() => {
         registerNavigateBackAnalytics();
         analytics.report({
@@ -109,7 +116,16 @@ export const StakingFormScreen = () => {
 
     return (
         <Screen
-            header={<StakingFormScreenHeader accountKey={accountKey} />}
+            header={
+                <ScreenHeader
+                    title={
+                        <Translation
+                            id="earn.earnFormScreen.title"
+                            values={{ assetName: getNetworkDisplaySymbolName(account.symbol) }}
+                        />
+                    }
+                />
+            }
             footer={
                 <StakingFormScreenFooter
                     symbol={account.symbol}
@@ -128,7 +144,6 @@ export const StakingFormScreen = () => {
                     />
                 </Form>
             </Box>
-            <EarnInsufficientBalanceBanner accountKey={accountKey} />
             {isValid && (
                 <Box marginTop="sp24">
                     <FeeSelector

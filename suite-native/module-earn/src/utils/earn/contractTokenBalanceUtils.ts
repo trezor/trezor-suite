@@ -1,6 +1,6 @@
 import { getYieldDepositableBalance } from '@suite-common/wallet-core';
 import { type Account, type TokenAddress } from '@suite-common/wallet-types';
-import { getContractAddressForNetworkSymbol } from '@suite-common/wallet-utils';
+import { getContractAddressForNetworkSymbol, isPositiveBalance } from '@suite-common/wallet-utils';
 import { BigNumber } from '@trezor/utils';
 
 type AccountToken = NonNullable<Account['tokens']>[number];
@@ -71,3 +71,25 @@ export const hasPositiveContractTokenBalance = (
         ) ?? false
     );
 };
+
+type HasYieldDepositableBalanceParams = {
+    account: Account;
+    vaultTokenContract?: string | null;
+    tokenBalance?: string | null;
+};
+
+export const hasYieldDepositableBalance = ({
+    account,
+    vaultTokenContract,
+    tokenBalance = vaultTokenContract
+        ? getAccountTokenByContract(account, vaultTokenContract)?.balance
+        : null,
+}: HasYieldDepositableBalanceParams): boolean =>
+    isPositiveBalance(
+        getYieldDepositableBalance({
+            networkSymbol: account.symbol,
+            nativeFormattedBalance: account.formattedBalance,
+            vaultTokenAddress: vaultTokenContract,
+            matchedTokenBalance: tokenBalance,
+        }),
+    );

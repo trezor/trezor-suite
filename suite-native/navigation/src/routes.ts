@@ -260,6 +260,7 @@ export enum YieldStackRoutes {
     YieldDepositWrapReview = 'YieldDepositWrapReview',
     YieldDepositApproval = 'YieldDepositApproval',
     YieldDeposit = 'YieldDeposit',
+    YieldDepositNoBalance = 'YieldDepositNoBalance',
     YieldDepositRevoke = 'YieldDepositRevoke',
     YieldWithdraw = 'YieldWithdraw',
     YieldDepositApprovalReview = 'YieldDepositApprovalReview',

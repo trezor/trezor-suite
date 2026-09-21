@@ -15,6 +15,7 @@ import { YieldConsentsScreen } from '../screens/yield/YieldConsentsScreen';
 import { YieldDepositApprovalScreen } from '../screens/yield/YieldDepositApprovalScreen';
 import { YieldDepositApprovalTransactionDataReviewScreen } from '../screens/yield/YieldDepositApprovalTransactionDataReviewScreen';
 import { YieldDepositCompleteScreen } from '../screens/yield/YieldDepositCompleteScreen';
+import { YieldDepositNoBalanceScreen } from '../screens/yield/YieldDepositNoBalanceScreen';
 import { YieldDepositReviewScreen } from '../screens/yield/YieldDepositReviewScreen';
 import { YieldDepositRevokeScreen } from '../screens/yield/YieldDepositRevokeScreen';
 import { YieldDepositScreen } from '../screens/yield/YieldDepositScreen';
@@ -80,6 +81,11 @@ export const YieldStackNavigator = () => {
                 options={{ title: YieldStackRoutes.YieldDeposit }}
                 name={YieldStackRoutes.YieldDeposit}
                 component={YieldDepositScreen}
+            />
+            <YieldStack.Screen
+                options={{ title: YieldStackRoutes.YieldDepositNoBalance }}
+                name={YieldStackRoutes.YieldDepositNoBalance}
+                component={YieldDepositNoBalanceScreen}
             />
             <YieldStack.Screen
                 options={{ title: YieldStackRoutes.YieldDepositRevoke }}

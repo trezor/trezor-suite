@@ -74,8 +74,8 @@ export const YieldConsentsScreen = () => {
                 opportunity: getEarnOpportunityKey({ type: 'yield', vaultAddress }),
             }),
         );
-        void handleStartYieldDepositFlow().then(hasStartedDepositFlow => {
-            if (!hasStartedDepositFlow) {
+        void handleStartYieldDepositFlow().then(destination => {
+            if (!destination) {
                 return;
             }
 
@@ -84,7 +84,7 @@ export const YieldConsentsScreen = () => {
                 payload: {
                     action: 'continue',
                     from: 'deposit-legal-modal',
-                    to: 'deposit-form',
+                    to: destination,
                     networkSymbol: account?.symbol,
                     vaultId: vault?.id,
                 },

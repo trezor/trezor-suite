@@ -1,27 +1,11 @@
-import { SlideInDown } from 'react-native-reanimated';
-
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { type YieldApprovalAction } from '@suite-common/wallet-core';
 import { type AccountKey, type TokenAddress } from '@suite-common/wallet-types';
-import { AnimatedBox, Box, Button, ScreenFooterGradient, VStack } from '@suite-native/atoms';
+import { Button } from '@suite-native/atoms';
 import { Translation, type TxKeyPath, useTranslate } from '@suite-native/intl';
-import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
 import { EarnEstimatedRewards } from '../earn/EarnEstimatedRewards';
-
-const screenFooterStyle = prepareNativeStyle(utils => ({
-    paddingHorizontal: utils.spacings.sp16,
-    paddingBottom: utils.spacings.sp16,
-    backgroundColor: utils.colors.surfaceFillPage,
-}));
-
-const rewardsBoxStyle = prepareNativeStyle(utils => ({
-    backgroundColor: utils.colors.elementFillBrandSoft,
-    borderTopLeftRadius: utils.borders.radii.r16,
-    borderTopRightRadius: utils.borders.radii.r16,
-    borderBottomLeftRadius: utils.borders.radii.r24,
-    borderBottomRightRadius: utils.borders.radii.r24,
-}));
+import { EarnScreenFooter } from '../earn/EarnScreenFooter';
 
 type YieldDepositFlowFooterProps = {
     accountKey: AccountKey;
@@ -66,7 +50,6 @@ export const YieldDepositFlowFooter = ({
     networkSymbol,
     tokenContract,
 }: YieldDepositFlowFooterProps) => {
-    const { applyStyle } = useNativeStyles();
     const { translate } = useTranslate();
 
     const buttonTranslationId = getSubmitButtonTranslationId(approvalAction);
@@ -77,53 +60,45 @@ export const YieldDepositFlowFooter = ({
         apy !== null;
 
     return (
-        <AnimatedBox entering={SlideInDown}>
-            <ScreenFooterGradient />
-            <Box style={applyStyle(screenFooterStyle)}>
-                <VStack spacing="sp12">
-                    <Box
-                        style={isEstimatedRewardsVisible ? applyStyle(rewardsBoxStyle) : undefined}
+        <EarnScreenFooter
+            estimatedRewards={
+                isEstimatedRewardsVisible && (
+                    <EarnEstimatedRewards
+                        accountKey={accountKey}
+                        amountValue={amountValue}
+                        apy={apy}
+                        label={
+                            <Translation id="earn.yieldDepositFlowScreen.estimatedRewardsLabel" />
+                        }
+                        symbol={networkSymbol}
+                        tokenContract={tokenContract}
+                    />
+                )
+            }
+            secondaryContent={
+                onSkipPress && (
+                    <Button
+                        accessibilityRole="button"
+                        accessibilityLabel={translate('earn.yieldDepositFlowScreen.skipApproval')}
+                        intent="neutral"
+                        priority="secondary"
+                        onPress={onSkipPress}
+                        isDisabled={isSkipDisabled}
                     >
-                        {isEstimatedRewardsVisible && (
-                            <Box paddingVertical="sp12">
-                                <EarnEstimatedRewards
-                                    accountKey={accountKey}
-                                    amountValue={amountValue}
-                                    apy={apy}
-                                    label={
-                                        <Translation id="earn.yieldDepositFlowScreen.estimatedRewardsLabel" />
-                                    }
-                                    symbol={networkSymbol}
-                                    tokenContract={tokenContract}
-                                />
-                            </Box>
-                        )}
-                        <Button
-                            accessibilityRole="button"
-                            accessibilityLabel={translate(buttonTranslationId)}
-                            onPress={onPress}
-                            isDisabled={isDisabled}
-                            isLoading={isLoading}
-                        >
-                            <Translation id={buttonTranslationId} />
-                        </Button>
-                    </Box>
-                    {onSkipPress && (
-                        <Button
-                            accessibilityRole="button"
-                            accessibilityLabel={translate(
-                                'earn.yieldDepositFlowScreen.skipApproval',
-                            )}
-                            intent="neutral"
-                            priority="secondary"
-                            onPress={onSkipPress}
-                            isDisabled={isSkipDisabled}
-                        >
-                            <Translation id="earn.yieldDepositFlowScreen.skipApproval" />
-                        </Button>
-                    )}
-                </VStack>
-            </Box>
-        </AnimatedBox>
+                        <Translation id="earn.yieldDepositFlowScreen.skipApproval" />
+                    </Button>
+                )
+            }
+        >
+            <Button
+                accessibilityRole="button"
+                accessibilityLabel={translate(buttonTranslationId)}
+                onPress={onPress}
+                isDisabled={isDisabled}
+                isLoading={isLoading}
+            >
+                <Translation id={buttonTranslationId} />
+            </Button>
+        </EarnScreenFooter>
     );
 };

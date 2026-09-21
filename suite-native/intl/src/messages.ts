@@ -2797,10 +2797,24 @@ export const messages = {
             },
             solRewardsFrequencyLabel: 'Rewards every ~{value, plural, one {# day} other {# days}}',
         },
-        yieldInsufficientBalance: {
-            title: "You don't have enough {tokenSymbol}",
-            subtitle: 'Get more {tokenSymbol} in this account to start earning yield.',
-            getButton: 'Get more {tokenSymbol}',
+        noBalance: {
+            staking: {
+                title: 'Get {displaySymbol} to start staking',
+                subtitle:
+                    'You need at least {minAmount} {displaySymbol} plus network fees in this account. Once it arrives, you can stake right away.',
+                subtitleWithoutMinimum:
+                    'Get {displaySymbol} in this account. Once it arrives, you can stake right away.',
+            },
+            yield: {
+                title: 'Get {tokenSymbol} to start earning',
+                subtitle:
+                    "There's no {tokenSymbol} in this account yet. Buy some, swap another coin, or receive it from elsewhere — then deposit it here.",
+            },
+            earningApy: 'Earning ~{apy}% APY',
+            buyButton: 'Buy {displaySymbol}',
+            receiveButton: 'Receive {displaySymbol}',
+            swapButton: 'Swap',
+            receiveShortButton: 'Receive',
         },
         wrappedNativeToken: {
             maxButton: 'Max',
@@ -2967,9 +2981,6 @@ export const messages = {
             unstakeMaxButton: 'Unstake max',
             withdrawalFeesRecommendation:
                 "It's recommended to leave {amount} {displaySymbol} so you can pay withdrawal fees.",
-            insufficientBalanceBanner:
-                'Not enough {displaySymbol}. Staking requires at least {minAmount} {displaySymbol} plus network fees.',
-            insufficientBalanceBannerButton: 'Buy {displaySymbol}',
             estimatedRewardsLabel: 'Estimated yearly rewards',
             validation: {
                 amountIsZero: 'Amount must be greater than 0.',
@@ -3734,11 +3745,6 @@ export const messages = {
             title: 'Total including fee',
         },
         stablecoinYield: 'Stablecoin yield',
-        stakingInsufficientBalance: {
-            title: "You don't have enough {displaySymbol}",
-            subtitle: 'Minimum amount to stake is {minAmount} {displaySymbol}.',
-            getButton: 'Get more {displaySymbol}',
-        },
         stakedAutomatically: 'Staked automatically',
         fullBalance: 'Full balance',
         adaStaysFullyAccessuble: 'Your ADA stays fully accessible while earning rewards.',
