@@ -25,8 +25,6 @@ const tabBarItemContainerStyle = prepareNativeStyle(utils => ({
     paddingTop: utils.spacings.sp8,
 }));
 
-const TAB_BAR_ITEM_HORIZONTAL_HIT_SLOP = 15;
-
 export const TabBarItem = ({
     isFocused,
     onPress,
@@ -47,10 +45,6 @@ export const TabBarItem = ({
              see https://github.com/react-navigation/react-navigation/issues/7839#issuecomment-829438793
              */
                 onPress();
-            }}
-            hitSlop={{
-                top: TAB_BAR_ITEM_HORIZONTAL_HIT_SLOP,
-                bottom: TAB_BAR_ITEM_HORIZONTAL_HIT_SLOP,
             }}
             style={applyStyle(tabBarItemStyle)}
             testID={`@tabBar/${testID}`}
