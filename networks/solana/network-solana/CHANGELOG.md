@@ -1,1 +1,27 @@
+# 10.0.0
+
+- npm-prerelease: @trezor/network-solana 10.0.0-beta.3 (eeb4120b4d)
+- refactor(networks): introduce an open branded network symbol (6929e51ad8)
+- npm-prerelease: @trezor/network-solana 10.0.0-beta.2 (4d4fe86c6d)
+- fix(solana): guard v1 transaction type (d24fa8a5d8)
+- fix(solana): bump max supported tx version (e48e6cc309)
+- fix(suite-common): fix false positives in solana rewards out-of-sync report (3a8fa34e59)
+- fix(connect): skip solana precompose for transactions with address lookup tables (467c4002c3)
+- refactor: migrate suite-common/staking to suite-common/wallet-core/stake (673e815c63)
+- refactor: move per-network staking constants to suite-common/staking (9586233164)
+- feat(networks): introduce split instruction unstake transactions (eb9d803857)
+- chore(eslint): adopt remaining v10 recommended rules (e5916c5f13)
+- chore: apply prettier changes (7de6f3e919)
+- refactor(networks): extract family network symbols (de906b89e0)
+- fix(packages): add missing repository field to published packages (fa0cff0ddd)
+- chore(connect): bump version to 10.0.0-beta.1 (aaac2abdea)
+- fix(network-solana): update fixture import after relocation (4bb0d4092b)
+- test: co-locate suite, network, and tooling tests (8bf4e10ac7)
+- fix(network-solana): cap full unstake at the same account limit as split path (7d6829db42)
+- refactor(networks): move XRP flag and Solana memo limit into network packages (48266e3af7)
+- refactor(networks): centralize more chain constants in network packages (6ea67d3809)
+- chore(networks): rename sdk packages (18fa2fa279)
+- chore(networks): adjust relative paths (b0af094307)
+- chore(networks): change networks file structure (edb1450981)
+
 # 1.0.0
