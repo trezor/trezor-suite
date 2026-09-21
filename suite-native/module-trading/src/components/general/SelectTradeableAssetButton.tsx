@@ -1,6 +1,7 @@
 import { Button, type ButtonColorProps } from '@suite-native/atoms';
 import { Translation, useTranslate } from '@suite-native/intl';
 import { type TradeableAsset } from '@suite-native/trading-types';
+import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
 import { TradeableAssetButton } from './TradeableAssetButton';
 
@@ -12,6 +13,10 @@ export type SelectTradeableAssetButtonProps = {
     testID?: string;
 };
 
+const buttonStyle = prepareNativeStyle(({ spacings }) => ({
+    height: spacings.sp40,
+}));
+
 export const SelectTradeableAssetButton = ({
     onPress,
     selectedAsset,
@@ -22,6 +27,7 @@ export const SelectTradeableAssetButton = ({
     },
     testID,
 }: SelectTradeableAssetButtonProps) => {
+    const { applyStyle } = useNativeStyles();
     const { translate } = useTranslate();
 
     if (selectedAsset) {
@@ -32,6 +38,7 @@ export const SelectTradeableAssetButton = ({
                 accessibilityLabel={translate('moduleTrading.selectCoin.buttonTitle')}
                 caret={caret}
                 testID={testID}
+                {...buttonColorProps}
             />
         );
     }
@@ -43,6 +50,7 @@ export const SelectTradeableAssetButton = ({
             accessibilityLabel={translate('moduleTrading.selectCoin.buttonTitle')}
             size="medium"
             testID={testID}
+            style={applyStyle(buttonStyle)}
             {...buttonColorProps}
         >
             <Translation id="moduleTrading.selectCoin.buttonTitle" />
