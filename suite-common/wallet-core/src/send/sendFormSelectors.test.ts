@@ -87,16 +87,19 @@ describe('selectSendFormButtonRequestCodes', () => {
         ).toEqual(['ButtonRequest_Other', 'ButtonRequest_ProtectCall']);
     });
 
-    it('counts every button request on cardano', () => {
+    it('counts Other and SignTx on cardano, ignoring PIN and passphrase entry', () => {
         expect(
             selectSendFormButtonRequestCodes(
                 stateWith([
                     { code: 'ButtonRequest_PinEntry' },
-                    { code: 'ButtonRequest_ConfirmOutput' },
+                    { code: 'ButtonRequest_PassphraseEntry' },
+                    { code: 'ButtonRequest_Other' },
+                    { code: 'ButtonRequest_Other' },
+                    { code: 'ButtonRequest_SignTx' },
                 ]),
                 adaSymbol,
             ),
-        ).toEqual(['ButtonRequest_PinEntry', 'ButtonRequest_ConfirmOutput']);
+        ).toEqual(['ButtonRequest_Other', 'ButtonRequest_Other', 'ButtonRequest_SignTx']);
     });
 
     it('returns a stable reference for unchanged inputs', () => {
@@ -118,16 +121,13 @@ describe('selectSendFormReviewButtonRequestsCount', () => {
         );
     });
 
-    it('subtracts one on cardano', () => {
+    it('counts every button request on cardano', () => {
         const state = stateWith([
-            { code: 'ButtonRequest_ConfirmOutput' },
-            { code: 'ButtonRequest_SignTx' },
+            { code: 'ButtonRequest_Other' },
+            { code: 'ButtonRequest_Other' },
+            { code: 'ButtonRequest_Other' },
         ]);
-        expect(selectSendFormReviewButtonRequestsCount(state, adaSymbol)).toBe(1);
-    });
-
-    it('does not return a negative count for cardano without button requests', () => {
-        expect(selectSendFormReviewButtonRequestsCount(stateWith([]), adaSymbol)).toBe(0);
+        expect(selectSendFormReviewButtonRequestsCount(state, adaSymbol)).toBe(3);
     });
 
     it('drops one ConfirmOutput when decreasing an RBF output, without mutating the cached array', () => {
