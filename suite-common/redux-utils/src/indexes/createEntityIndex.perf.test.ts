@@ -6,8 +6,8 @@ type Source = Record<string, Holding[]>;
 
 type State = { byAccount: Source };
 
-const PARTS = 200;
-const PER_PART = 100;
+const PARTITIONS = 200;
+const PER_PARTITION = 100;
 const REPEATS = 7;
 
 // Wall clock on a developer's machine, so the budgets that matter are the ratios between the
@@ -15,25 +15,25 @@ const REPEATS = 7;
 const BUDGET = {
     coldBuildMs: 4000,
     cachedReadShareOfBuild: 0.02,
-    // A rebuild carries the untouched parts over, so it derives almost nothing — but it still
+    // A rebuild carries the untouched partitions over, so it derives almost nothing — but it still
     // fills the id lookup from scratch, and that fill is most of a build. The ceiling is against
     // the raw fill below, not against the cold build.
     oneWriteShareOfBuild: 0.95,
     oneWriteMultipleOfRawMap: 1.6,
-    groupAfterWriteShareOfCold: 0.9,
-    unreadGroupShareOfBothGroups: 0.8,
-    groupOnlyShareOfGroupAndIds: 0.9,
-    bothGroupsAfterWriteShareOfCold: 1,
+    entryAfterWriteShareOfCold: 0.9,
+    unreadIndexShareOfBothIndexes: 0.8,
+    entryOnlyShareOfEntryAndIds: 0.9,
+    bothIndexesAfterWriteShareOfCold: 1,
     coldBuildMultipleOfRawMap: 3,
 };
 
 const createSource = (): Source =>
     Object.fromEntries(
-        Array.from({ length: PARTS }, (_, part) => [
-            `account-${part}`,
-            Array.from({ length: PER_PART }, (_, position) => ({
-                id: `${part}-${position}`,
-                account: `account-${part}`,
+        Array.from({ length: PARTITIONS }, (_, partition) => [
+            `account-${partition}`,
+            Array.from({ length: PER_PARTITION }, (_, position) => ({
+                id: `${partition}-${position}`,
+                account: `account-${partition}`,
                 label: `label-${position % 20}`,
             })),
         ]),
@@ -62,10 +62,10 @@ const createIndexUnderTest = (): IndexUnderTest =>
     createEntityIndex({
         name: 'perfHoldings',
         selectSource: (state: State) => state.byAccount,
-        getParts: (source: Source) => Object.entries(source),
+        getPartitions: (source: Source) => Object.entries(source),
         getEntities: (holdings: Holding[]) => holdings,
         getId: (holding: Holding) => holding.id,
-        groupBy: {
+        secondaryIndexes: {
             byAccount: (holding: Holding) => holding.account,
             byLabel: (holding: Holding) => holding.label,
         },
@@ -126,7 +126,7 @@ const timeRawFill = () => {
 const isPerfRun = process.env.PERF === '1';
 const describePerf = isPerfRun ? describe : describe.skip;
 
-describePerf(`building an index over ${PARTS * PER_PART} entities`, () => {
+describePerf(`building an index over ${PARTITIONS * PER_PARTITION} entities`, () => {
     const source = createSource();
     const written = writeOnePart(source);
     const state: State = { byAccount: source };
@@ -167,7 +167,7 @@ describePerf(`building an index over ${PARTS * PER_PART} entities`, () => {
         expect(cachedRead).toBeLessThan(coldBuild * BUDGET.cachedReadShareOfBuild);
     });
 
-    it('rebuilds a one-part write for less than a build from nothing', () => {
+    it('rebuilds a one-partition write for less than a build from nothing', () => {
         const coldBuild = report['cold build'] as number;
         const oneWrite = measure('rebuild after one write', index => {
             index.getIds(state);
@@ -181,62 +181,62 @@ describePerf(`building an index over ${PARTS * PER_PART} entities`, () => {
         );
     });
 
-    it('settles a group after a one-part write for less than assembling it', () => {
-        const groupCold = measure(
-            'group, cold',
-            index => () => index.getBy(state, 'byAccount', 'account-7'),
+    it('settles an entry after a one-partition write for less than assembling it', () => {
+        const entryCold = measure(
+            'entry, cold',
+            index => () => index.getBySecondaryKey(state, 'byAccount', 'account-7'),
         );
-        const groupAfterWrite = measure('group, after one write', index => {
-            index.getBy(state, 'byAccount', 'account-7');
+        const entryAfterWrite = measure('entry, after one write', index => {
+            index.getBySecondaryKey(state, 'byAccount', 'account-7');
 
-            return () => index.getBy(writtenState, 'byAccount', 'account-7');
+            return () => index.getBySecondaryKey(writtenState, 'byAccount', 'account-7');
         });
 
-        expect(groupAfterWrite).toBeLessThan(groupCold * BUDGET.groupAfterWriteShareOfCold);
+        expect(entryAfterWrite).toBeLessThan(entryCold * BUDGET.entryAfterWriteShareOfCold);
     });
 
-    it('costs less for one group than for both', () => {
-        const oneGroup = measure('one group read', index => () => {
-            index.getBy(state, 'byAccount', 'account-7');
+    it('costs less for one entry than for both', () => {
+        const oneIndex = measure('one entry read', index => () => {
+            index.getBySecondaryKey(state, 'byAccount', 'account-7');
         });
-        const bothGroups = measure('both groups read', index => () => {
-            index.getBy(state, 'byAccount', 'account-7');
-            index.getBy(state, 'byLabel', 'label-3');
+        const bothIndexes = measure('both secondary indexes read', index => () => {
+            index.getBySecondaryKey(state, 'byAccount', 'account-7');
+            index.getBySecondaryKey(state, 'byLabel', 'label-3');
         });
 
-        expect(oneGroup).toBeLessThan(bothGroups * BUDGET.unreadGroupShareOfBothGroups);
+        expect(oneIndex).toBeLessThan(bothIndexes * BUDGET.unreadIndexShareOfBothIndexes);
     });
 
-    it('does not build the id lookup for a consumer that only reads a group', () => {
-        const groupOnly = measure('group only, after one write', index => {
-            index.getBy(state, 'byAccount', 'account-7');
+    it('does not build the id lookup for a consumer that only reads an entry', () => {
+        const entryOnly = measure('entry only, after one write', index => {
+            index.getBySecondaryKey(state, 'byAccount', 'account-7');
 
-            return () => index.getBy(writtenState, 'byAccount', 'account-7');
+            return () => index.getBySecondaryKey(writtenState, 'byAccount', 'account-7');
         });
-        const groupAndIds = measure('group and ids, after one write', index => {
-            index.getBy(state, 'byAccount', 'account-7');
+        const entryAndIds = measure('entry and ids, after one write', index => {
+            index.getBySecondaryKey(state, 'byAccount', 'account-7');
             index.getIds(state);
 
             return () => {
-                index.getBy(writtenState, 'byAccount', 'account-7');
+                index.getBySecondaryKey(writtenState, 'byAccount', 'account-7');
                 index.getIds(writtenState);
             };
         });
 
-        expect(groupOnly).toBeLessThan(groupAndIds * BUDGET.groupOnlyShareOfGroupAndIds);
+        expect(entryOnly).toBeLessThan(entryAndIds * BUDGET.entryOnlyShareOfEntryAndIds);
     });
 
     it('answers the inverse of a hidden list once per build, not once per read', () => {
         const hidden = ['0-0', '0-1', '7-3'];
         const inverseCold = measure('inverse of a hidden list, cold', index => () => {
-            index.getInverseOfIds(state, hidden);
+            index.getAllExcept(state, hidden);
         });
         const inverseAgain = measure('inverse of a hidden list, read again', index => {
-            index.getInverseOfIds(state, hidden);
+            index.getAllExcept(state, hidden);
 
             return () => {
                 for (let read = 0; read < 100; read++) {
-                    index.getInverseOfIds(state, hidden);
+                    index.getAllExcept(state, hidden);
                 }
             };
         });
@@ -246,19 +246,20 @@ describePerf(`building an index over ${PARTS * PER_PART} entities`, () => {
         expect(inverseAgain).toBeLessThan(inverseCold * BUDGET.cachedReadShareOfBuild);
     });
 
-    it('keeps a group it is asked for again out of the next rebuild', () => {
-        const readBoth = measure('both groups, after one write', index => {
-            index.getBy(state, 'byAccount', 'account-7');
-            index.getBy(state, 'byLabel', 'label-3');
+    it('keeps an entry it is asked for again out of the next rebuild', () => {
+        const readBoth = measure('both secondary indexes, after one write', index => {
+            index.getBySecondaryKey(state, 'byAccount', 'account-7');
+            index.getBySecondaryKey(state, 'byLabel', 'label-3');
 
             return () => {
-                index.getBy(writtenState, 'byAccount', 'account-7');
-                index.getBy(writtenState, 'byLabel', 'label-3');
+                index.getBySecondaryKey(writtenState, 'byAccount', 'account-7');
+                index.getBySecondaryKey(writtenState, 'byLabel', 'label-3');
             };
         });
 
         expect(readBoth).toBeLessThan(
-            (report['both groups read'] as number) * BUDGET.bothGroupsAfterWriteShareOfCold,
+            (report['both secondary indexes read'] as number) *
+                BUDGET.bothIndexesAfterWriteShareOfCold,
         );
     });
 });

@@ -28,7 +28,7 @@ describe('an index over a source that is already its entities', () => {
             name: 'bareThings',
             selectSource: (state: State) => state.things,
             getId: (thing: Thing) => thing.id,
-            groupBy: { byValue: (thing: Thing) => thing.value },
+            secondaryIndexes: { byValue: (thing: Thing) => thing.value },
         });
 
     it('takes the source for the entities when it is not told how to read them', () => {
@@ -43,10 +43,10 @@ describe('an index over a source that is already its entities', () => {
         expect(index.getIds(createState([b, a]))).toEqual(['b', 'a']);
     });
 
-    it('groups them', () => {
+    it('indexes them by a secondary key', () => {
         const index = createBareIndex();
 
-        expect(index.getBy(createState([a, b]), 'byValue', 'second')).toEqual([b]);
+        expect(index.getBySecondaryKey(createState([a, b]), 'byValue', 'second')).toEqual([b]);
     });
 
     it('rebuilds when the source is replaced', () => {
@@ -197,48 +197,48 @@ describe('leaving out the entities a list names', () => {
         const { index } = createIndex();
         const state = createState([a, hidden, b]);
 
-        expect(index.getInverseOfIds(state, ['hidden'])).toEqual([a, b]);
+        expect(index.getAllExcept(state, ['hidden'])).toEqual([a, b]);
     });
 
     it('leaves out every id on the list', () => {
         const { index } = createIndex();
         const state = createState([a, hidden, b, alsoHidden]);
 
-        expect(index.getInverseOfIds(state, ['hidden', 'alsoHidden'])).toEqual([a, b]);
+        expect(index.getAllExcept(state, ['hidden', 'alsoHidden'])).toEqual([a, b]);
     });
 
     it('keeps the order the index lists them in, not the order of the list', () => {
         const { index } = createIndex();
         const state = createState([b, hidden, a]);
 
-        expect(index.getInverseOfIds(state, ['hidden'])).toEqual([b, a]);
+        expect(index.getAllExcept(state, ['hidden'])).toEqual([b, a]);
     });
 
     it('takes the list as a set', () => {
         const { index } = createIndex();
         const state = createState([a, hidden, b]);
 
-        expect(index.getInverseOfIds(state, new Set(['hidden']))).toEqual([a, b]);
+        expect(index.getAllExcept(state, new Set(['hidden']))).toEqual([a, b]);
     });
 
     it('ignores an id on the list that the index does not hold', () => {
         const { index } = createIndex();
 
-        expect(index.getInverseOfIds(createState([a, b]), ['hidden'])).toEqual([a, b]);
+        expect(index.getAllExcept(createState([a, b]), ['hidden'])).toEqual([a, b]);
     });
 
     it('answers with everything for an empty list', () => {
         const { index } = createIndex();
 
-        expect(index.getInverseOfIds(createState([a, b]), [])).toEqual([a, b]);
+        expect(index.getAllExcept(createState([a, b]), [])).toEqual([a, b]);
     });
 
     it('answers with the shared empty array when the list names everything', () => {
         const { index } = createIndex();
         const state = createState([hidden]);
 
-        expect(index.getInverseOfIds(state, ['hidden'])).toBe(
-            index.getInverseOfIds(createState([alsoHidden]), ['alsoHidden']),
+        expect(index.getAllExcept(state, ['hidden'])).toBe(
+            index.getAllExcept(createState([alsoHidden]), ['alsoHidden']),
         );
     });
 
@@ -247,25 +247,23 @@ describe('leaving out the entities a list names', () => {
         const state = createState([a, hidden, b]);
         const hiddenIds = ['hidden'];
 
-        expect(index.getInverseOfIds(state, hiddenIds)).toBe(
-            index.getInverseOfIds(state, hiddenIds),
-        );
+        expect(index.getAllExcept(state, hiddenIds)).toBe(index.getAllExcept(state, hiddenIds));
     });
 
     it('answers a different list separately', () => {
         const { index } = createIndex();
         const state = createState([a, hidden, b]);
 
-        expect(index.getInverseOfIds(state, ['hidden'])).toEqual([a, b]);
-        expect(index.getInverseOfIds(state, ['a'])).toEqual([hidden, b]);
+        expect(index.getAllExcept(state, ['hidden'])).toEqual([a, b]);
+        expect(index.getAllExcept(state, ['a'])).toEqual([hidden, b]);
     });
 
     it('answers again when the source changed', () => {
         const { index } = createIndex();
         const hiddenIds = ['hidden'];
-        const before = index.getInverseOfIds(createState([a, hidden]), hiddenIds);
+        const before = index.getAllExcept(createState([a, hidden]), hiddenIds);
 
-        const after = index.getInverseOfIds(createState([a, hidden, b]), hiddenIds);
+        const after = index.getAllExcept(createState([a, hidden, b]), hiddenIds);
 
         expect(after).not.toBe(before);
         expect(after).toEqual([a, b]);
@@ -273,9 +271,9 @@ describe('leaving out the entities a list names', () => {
 
     it('leaves out a hidden entity that was replaced', () => {
         const { index } = createIndex();
-        index.getInverseOfIds(createState([a, hidden]), ['hidden']);
+        index.getAllExcept(createState([a, hidden]), ['hidden']);
 
-        const afterHiddenChanged = index.getInverseOfIds(
+        const afterHiddenChanged = index.getAllExcept(
             createState([a, { ...hidden, value: 'written' }]),
             ['hidden'],
         );
@@ -284,15 +282,15 @@ describe('leaving out the entities a list names', () => {
     });
 });
 
-type PartitionedState = { byGroup: Record<string, Thing[]> };
+type PartitionedState = { bySide: Record<string, Thing[]> };
 
 const createPartitionedIndex = () => {
     const getEntities = jest.fn((things: Thing[]) => things);
 
     const index = createEntityIndex({
         name: 'partitionedThings',
-        selectSource: (state: PartitionedState) => state.byGroup,
-        getParts: (byGroup: Record<string, Thing[]>) => Object.entries(byGroup),
+        selectSource: (state: PartitionedState) => state.bySide,
+        getPartitions: (bySide: Record<string, Thing[]>) => Object.entries(bySide),
         getEntities,
         getId: (thing: Thing) => thing.id,
     });
@@ -300,54 +298,54 @@ const createPartitionedIndex = () => {
     return { index, getEntities };
 };
 
-describe('an index over a source that is written in parts', () => {
+describe('an index over a source that is written in partitions', () => {
     const c = { id: 'c', value: 'third' };
 
-    it('walks only the part that changed', () => {
+    it('walks only the partition that changed', () => {
         // The whole point: one account receiving a transaction costs one account's worth of work,
-        // however many accounts the user has. Immer leaves the untouched parts identical, so they
+        // however many accounts the user has. Immer leaves the untouched partitions identical, so they
         // are carried over rather than walked.
         const { index, getEntities } = createPartitionedIndex();
         const untouched = [c];
 
-        index.read({ byGroup: { left: [a], right: untouched } });
+        index.read({ bySide: { left: [a], right: untouched } });
         getEntities.mockClear();
-        index.read({ byGroup: { left: [a, b], right: untouched } });
+        index.read({ bySide: { left: [a, b], right: untouched } });
 
         expect(getEntities).toHaveBeenCalledTimes(1);
         expect(getEntities).toHaveBeenCalledWith([a, b]);
     });
 
-    it('still holds the entities of the parts it did not walk', () => {
+    it('still holds the entities of the partitions it did not walk', () => {
         const { index } = createPartitionedIndex();
         const untouched = [c];
 
-        index.read({ byGroup: { left: [a], right: untouched } });
-        const state = { byGroup: { left: [a, b], right: untouched } };
+        index.read({ bySide: { left: [a], right: untouched } });
+        const state = { bySide: { left: [a, b], right: untouched } };
 
         expect(index.getById(state, 'c')).toBe(c);
         expect(index.getById(state, 'b')).toBe(b);
     });
 
-    it('walks a part it has not seen before', () => {
+    it('walks a partition it has not seen before', () => {
         const { index, getEntities } = createPartitionedIndex();
         const untouched = [a];
 
-        index.read({ byGroup: { left: untouched } });
+        index.read({ bySide: { left: untouched } });
         getEntities.mockClear();
-        index.read({ byGroup: { left: untouched, right: [c] } });
+        index.read({ bySide: { left: untouched, right: [c] } });
 
         expect(getEntities).toHaveBeenCalledTimes(1);
         expect(getEntities).toHaveBeenCalledWith([c]);
     });
 
-    it('drops the entities of a part the source no longer has', () => {
+    it('drops the entities of a partition the source no longer has', () => {
         const { index } = createPartitionedIndex();
         const untouched = [a];
 
-        index.read({ byGroup: { left: untouched, right: [c] } });
+        index.read({ bySide: { left: untouched, right: [c] } });
 
-        expect(index.getById({ byGroup: { left: untouched } }, 'c')).toBeUndefined();
+        expect(index.getById({ bySide: { left: untouched } }, 'c')).toBeUndefined();
     });
 });
 
@@ -408,11 +406,11 @@ describe('what a rebuild changed', () => {
         ]);
     });
 
-    it('does not report an entity that only moved between parts as gone', () => {
+    it('does not report an entity that only moved between partitions as gone', () => {
         const { index } = createPartitionedIndex();
-        index.read({ byGroup: { left: [a], right: [] } });
+        index.read({ bySide: { left: [a], right: [] } });
 
-        expect(index.read({ byGroup: { left: [], right: [a] } }).changes).toEqual({
+        expect(index.read({ bySide: { left: [], right: [a] } }).changes).toEqual({
             added: [],
             removed: [],
             updated: [],
@@ -420,140 +418,145 @@ describe('what a rebuild changed', () => {
     });
 });
 
-type Grouped = { id: string; group: string; tags: string[] };
+type Tagged = { id: string; side: string; tags: string[] };
 
-const createGroupedIndex = () => {
-    const byGroup = jest.fn((entity: Grouped) => entity.group);
+const createIndexWithSecondaryIndex = () => {
+    const bySide = jest.fn((entity: Tagged) => entity.side);
 
     const index = createEntityIndex({
-        name: 'grouped',
-        selectSource: (state: { entities: Grouped[] }) => state.entities,
-        getEntities: (entities: Grouped[]) => entities,
-        getId: (entity: Grouped) => entity.id,
-        groupBy: {
-            byGroup,
-            byTag: (entity: Grouped) => entity.tags,
+        name: 'tagged',
+        selectSource: (state: { entities: Tagged[] }) => state.entities,
+        getEntities: (entities: Tagged[]) => entities,
+        getId: (entity: Tagged) => entity.id,
+        secondaryIndexes: {
+            bySide,
+            byTag: (entity: Tagged) => entity.tags,
         },
     });
 
-    return { index, byGroup };
+    return { index, bySide };
 };
 
-const one = { id: '1', group: 'left', tags: ['red', 'blue'] };
-const two = { id: '2', group: 'left', tags: ['red'] };
-const three = { id: '3', group: 'right', tags: [] };
+const one = { id: '1', side: 'left', tags: ['red', 'blue'] };
+const two = { id: '2', side: 'left', tags: ['red'] };
+const three = { id: '3', side: 'right', tags: [] };
 
 describe('looking an entity up by something other than its id', () => {
-    it('gives the ids in a group', () => {
-        const { index } = createGroupedIndex();
+    it('gives the ids in an entry', () => {
+        const { index } = createIndexWithSecondaryIndex();
 
-        expect(index.getIdsBy({ entities: [one, two, three] }, 'byGroup', 'left')).toEqual([
-            '1',
-            '2',
-        ]);
+        expect(
+            index.getIdsBySecondaryKey({ entities: [one, two, three] }, 'bySide', 'left'),
+        ).toEqual(['1', '2']);
     });
 
-    it('gives nothing for a key the group does not hold', () => {
-        const { index } = createGroupedIndex();
+    it('gives nothing for a key the entry does not hold', () => {
+        const { index } = createIndexWithSecondaryIndex();
 
-        expect(index.getIdsBy({ entities: [one] }, 'byGroup', 'nowhere')).toEqual([]);
+        expect(index.getIdsBySecondaryKey({ entities: [one] }, 'bySide', 'nowhere')).toEqual([]);
     });
 
     it('puts an entity in every key it names', () => {
         // A transaction belongs to each of its target addresses, not to one of them.
-        const { index } = createGroupedIndex();
+        const { index } = createIndexWithSecondaryIndex();
         const state = { entities: [one, two] };
 
-        expect(index.getIdsBy(state, 'byTag', 'red')).toEqual(['1', '2']);
-        expect(index.getIdsBy(state, 'byTag', 'blue')).toEqual(['1']);
+        expect(index.getIdsBySecondaryKey(state, 'byTag', 'red')).toEqual(['1', '2']);
+        expect(index.getIdsBySecondaryKey(state, 'byTag', 'blue')).toEqual(['1']);
     });
 
     it('leaves out an entity that names no key', () => {
-        const { index } = createGroupedIndex();
+        const { index } = createIndexWithSecondaryIndex();
 
-        expect(index.getIdsBy({ entities: [three] }, 'byTag', 'red')).toEqual([]);
+        expect(index.getIdsBySecondaryKey({ entities: [three] }, 'byTag', 'red')).toEqual([]);
     });
 
-    it('hands back the same array for a group whose members did not change', () => {
+    it('hands back the same array for an entry whose members did not change', () => {
         // What keeps a component watching one account from re-rendering when another receives a
         // transaction.
-        const { index } = createGroupedIndex();
-        const left = index.getIdsBy({ entities: [one, two, three] }, 'byGroup', 'left');
+        const { index } = createIndexWithSecondaryIndex();
+        const left = index.getIdsBySecondaryKey({ entities: [one, two, three] }, 'bySide', 'left');
 
-        const afterRightChanged = index.getIdsBy(
+        const afterRightChanged = index.getIdsBySecondaryKey(
             { entities: [one, two, { ...three, tags: ['new'] }] },
-            'byGroup',
+            'bySide',
             'left',
         );
 
         expect(afterRightChanged).toBe(left);
     });
 
-    it('hands back a new array for a group that gained a member', () => {
-        const { index } = createGroupedIndex();
-        const left = index.getIdsBy({ entities: [one] }, 'byGroup', 'left');
+    it('hands back a new array for an entry that gained a member', () => {
+        const { index } = createIndexWithSecondaryIndex();
+        const left = index.getIdsBySecondaryKey({ entities: [one] }, 'bySide', 'left');
 
-        expect(index.getIdsBy({ entities: [one, two] }, 'byGroup', 'left')).not.toBe(left);
+        expect(index.getIdsBySecondaryKey({ entities: [one, two] }, 'bySide', 'left')).not.toBe(
+            left,
+        );
     });
 
-    it('does not ask an untouched part for its keys again', () => {
-        const { byGroup } = createGroupedIndex();
+    it('does not ask an untouched partition for its keys again', () => {
+        const { bySide } = createIndexWithSecondaryIndex();
         const untouched = [one];
         const partitioned = createEntityIndex({
-            name: 'groupedParts',
-            selectSource: (state: { byGroup: Record<string, Grouped[]> }) => state.byGroup,
-            getParts: (groups: Record<string, Grouped[]>) => Object.entries(groups),
-            getEntities: (entities: Grouped[]) => entities,
-            getId: (entity: Grouped) => entity.id,
-            groupBy: { byGroup },
+            name: 'taggedPartitions',
+            selectSource: (state: { bySide: Record<string, Tagged[]> }) => state.bySide,
+            getPartitions: (partitions: Record<string, Tagged[]>) => Object.entries(partitions),
+            getEntities: (entities: Tagged[]) => entities,
+            getId: (entity: Tagged) => entity.id,
+            secondaryIndexes: { bySide },
         });
-        partitioned.getIdsBy({ byGroup: { a: untouched, b: [two] } }, 'byGroup', 'left');
-        byGroup.mockClear();
-        partitioned.getIdsBy({ byGroup: { a: untouched, b: [two, three] } }, 'byGroup', 'left');
+        partitioned.getIdsBySecondaryKey({ bySide: { a: untouched, b: [two] } }, 'bySide', 'left');
+        bySide.mockClear();
+        partitioned.getIdsBySecondaryKey(
+            { bySide: { a: untouched, b: [two, three] } },
+            'bySide',
+            'left',
+        );
 
-        // Only the rebuilt part's entities were asked which group they belong to.
-        expect(byGroup).toHaveBeenCalledTimes(2);
-        expect(byGroup).not.toHaveBeenCalledWith(one);
+        // Only the rebuilt partition's entities were asked which entry they belong to.
+        expect(bySide).toHaveBeenCalledTimes(2);
+        expect(bySide).not.toHaveBeenCalledWith(one);
     });
 });
 
-describe('a group nobody reads', () => {
+describe('an entry nobody reads', () => {
     it('is not assembled, and its keys are never derived', () => {
-        const byGroup = jest.fn((entity: Grouped) => entity.group);
-        const byTag = jest.fn((entity: Grouped) => entity.tags);
+        const bySide = jest.fn((entity: Tagged) => entity.side);
+        const byTag = jest.fn((entity: Tagged) => entity.tags);
         const index = createEntityIndex({
-            name: 'lazyGroups',
-            selectSource: (state: { entities: Grouped[] }) => state.entities,
-            getEntities: (entities: Grouped[]) => entities,
-            getId: (entity: Grouped) => entity.id,
-            groupBy: { byGroup, byTag },
+            name: 'lazyIndexes',
+            selectSource: (state: { entities: Tagged[] }) => state.entities,
+            getEntities: (entities: Tagged[]) => entities,
+            getId: (entity: Tagged) => entity.id,
+            secondaryIndexes: { bySide, byTag },
         });
 
-        index.getIdsBy({ entities: [one, two, three] }, 'byGroup', 'left');
+        index.getIdsBySecondaryKey({ entities: [one, two, three] }, 'bySide', 'left');
 
-        expect(byGroup).toHaveBeenCalledTimes(3);
+        expect(bySide).toHaveBeenCalledTimes(3);
         expect(byTag).not.toHaveBeenCalled();
     });
 
     it('derives its keys the first time it is read, and not again', () => {
-        const { index, byGroup } = createGroupedIndex();
+        const { index, bySide } = createIndexWithSecondaryIndex();
         const state = { entities: [one, two] };
 
-        index.getIdsBy(state, 'byGroup', 'left');
-        byGroup.mockClear();
-        index.getIdsBy(state, 'byGroup', 'left');
+        index.getIdsBySecondaryKey(state, 'bySide', 'left');
+        bySide.mockClear();
+        index.getIdsBySecondaryKey(state, 'bySide', 'left');
 
-        expect(byGroup).not.toHaveBeenCalled();
+        expect(bySide).not.toHaveBeenCalled();
     });
 
     it('costs nothing to the reads that do not want it', () => {
-        const byTag = jest.fn((entity: Grouped) => entity.tags);
+        const byTag = jest.fn((entity: Tagged) => entity.tags);
         const index = createEntityIndex({
             name: 'lazyById',
-            selectSource: (state: { entities: Grouped[] }) => state.entities,
-            getEntities: (entities: Grouped[]) => entities,
-            getId: (entity: Grouped) => entity.id,
-            groupBy: { byTag },
+            selectSource: (state: { entities: Tagged[] }) => state.entities,
+            getEntities: (entities: Tagged[]) => entities,
+            getId: (entity: Tagged) => entity.id,
+            secondaryIndexes: { byTag },
         });
 
         index.getById({ entities: [one, two] }, '1');
@@ -562,25 +565,29 @@ describe('a group nobody reads', () => {
     });
 });
 
-describe('a group whose entity changed', () => {
+describe('an entry whose entity changed', () => {
     it('hands back a new array, so a consumer watching it sees the change', () => {
-        const { index } = createGroupedIndex();
-        const left = index.getBy({ entities: [one, two, three] }, 'byGroup', 'left');
+        const { index } = createIndexWithSecondaryIndex();
+        const left = index.getBySecondaryKey({ entities: [one, two, three] }, 'bySide', 'left');
         const changedTwo = { ...two, tags: ['written'] };
 
-        const afterChange = index.getBy({ entities: [one, changedTwo, three] }, 'byGroup', 'left');
+        const afterChange = index.getBySecondaryKey(
+            { entities: [one, changedTwo, three] },
+            'bySide',
+            'left',
+        );
 
         expect(afterChange).not.toBe(left);
         expect(afterChange).toEqual([one, changedTwo]);
     });
 
     it('says the entity was updated, so a listener knows what happened', () => {
-        const { index } = createGroupedIndex();
+        const { index } = createIndexWithSecondaryIndex();
         const listener = jest.fn();
         index.subscribe(listener);
-        index.getBy({ entities: [one, two] }, 'byGroup', 'left');
+        index.getBySecondaryKey({ entities: [one, two] }, 'bySide', 'left');
 
-        index.getBy({ entities: [one, { ...two, group: 'left' }] }, 'byGroup', 'left');
+        index.getBySecondaryKey({ entities: [one, { ...two, side: 'left' }] }, 'bySide', 'left');
 
         expect(listener).toHaveBeenLastCalledWith(
             expect.objectContaining({
@@ -589,13 +596,13 @@ describe('a group whose entity changed', () => {
         );
     });
 
-    it('keeps the array of the group the changed entity is not in', () => {
-        const { index } = createGroupedIndex();
-        const right = index.getBy({ entities: [one, two, three] }, 'byGroup', 'right');
+    it('keeps the array of the entry the changed entity is not in', () => {
+        const { index } = createIndexWithSecondaryIndex();
+        const right = index.getBySecondaryKey({ entities: [one, two, three] }, 'bySide', 'right');
 
-        const afterLeftChanged = index.getBy(
+        const afterLeftChanged = index.getBySecondaryKey(
             { entities: [one, { ...two, tags: ['written'] }, three] },
-            'byGroup',
+            'bySide',
             'right',
         );
 
@@ -603,147 +610,161 @@ describe('a group whose entity changed', () => {
     });
 });
 
-describe('the groups a consumer keeps reading', () => {
-    const createTwoGroupIndex = () => {
-        const byGroup = jest.fn((entity: Grouped) => entity.group);
-        const byTag = jest.fn((entity: Grouped) => entity.tags);
+describe('the secondary indexes a consumer keeps reading', () => {
+    const createTwoIndexEntityIndex = () => {
+        const bySide = jest.fn((entity: Tagged) => entity.side);
+        const byTag = jest.fn((entity: Tagged) => entity.tags);
 
         return {
-            byGroup,
+            bySide,
             byTag,
             index: createEntityIndex({
-                name: 'twoGroups',
-                selectSource: (state: { entities: Grouped[] }) => state.entities,
-                getEntities: (entities: Grouped[]) => entities,
-                getId: (entity: Grouped) => entity.id,
-                groupBy: { byGroup, byTag },
+                name: 'twoIndexes',
+                selectSource: (state: { entities: Tagged[] }) => state.entities,
+                getEntities: (entities: Tagged[]) => entities,
+                getId: (entity: Tagged) => entity.id,
+                secondaryIndexes: { bySide, byTag },
             }),
         };
     };
 
     it('are assembled together, in the walk the next build is doing anyway', () => {
-        const { index, byTag } = createTwoGroupIndex();
-        index.getIdsBy({ entities: [one] }, 'byGroup', 'left');
-        index.getIdsBy({ entities: [one] }, 'byTag', 'red');
+        const { index, byTag } = createTwoIndexEntityIndex();
+        index.getIdsBySecondaryKey({ entities: [one] }, 'bySide', 'left');
+        index.getIdsBySecondaryKey({ entities: [one] }, 'byTag', 'red');
         byTag.mockClear();
 
-        index.getIdsBy({ entities: [one, two] }, 'byGroup', 'left');
+        index.getIdsBySecondaryKey({ entities: [one, two] }, 'bySide', 'left');
 
         expect(byTag).toHaveBeenCalled();
     });
 
     it('stop being assembled once nobody reads them', () => {
-        const { index, byTag } = createTwoGroupIndex();
-        index.getIdsBy({ entities: [one] }, 'byGroup', 'left');
-        index.getIdsBy({ entities: [one] }, 'byTag', 'red');
-        index.getIdsBy({ entities: [one, two] }, 'byGroup', 'left');
+        const { index, byTag } = createTwoIndexEntityIndex();
+        index.getIdsBySecondaryKey({ entities: [one] }, 'bySide', 'left');
+        index.getIdsBySecondaryKey({ entities: [one] }, 'byTag', 'red');
+        index.getIdsBySecondaryKey({ entities: [one, two] }, 'bySide', 'left');
         byTag.mockClear();
 
-        index.getIdsBy({ entities: [one, two, three] }, 'byGroup', 'left');
+        index.getIdsBySecondaryKey({ entities: [one, two, three] }, 'bySide', 'left');
 
         expect(byTag).not.toHaveBeenCalled();
     });
 });
 
-describe('a group settled against the part that was written', () => {
-    type Partitioned = { byPart: Record<string, Grouped[]> };
+describe('an entry settled against the partition that was written', () => {
+    type Partitioned = { byPartition: Record<string, Tagged[]> };
 
-    const createPartitionedGroupIndex = () =>
+    const createSettledIndex = () =>
         createEntityIndex({
-            name: 'settledGroups',
-            selectSource: (state: Partitioned) => state.byPart,
-            getParts: (byPart: Record<string, Grouped[]>) => Object.entries(byPart),
-            getEntities: (entities: Grouped[]) => entities,
-            getId: (entity: Grouped) => entity.id,
-            groupBy: { byGroup: (entity: Grouped) => entity.group },
+            name: 'settledIndexes',
+            selectSource: (state: Partitioned) => state.byPartition,
+            getPartitions: (byPartition: Record<string, Tagged[]>) => Object.entries(byPartition),
+            getEntities: (entities: Tagged[]) => entities,
+            getId: (entity: Tagged) => entity.id,
+            secondaryIndexes: { bySide: (entity: Tagged) => entity.side },
         });
 
-    it('keeps the array of a key no written part had a hand in', () => {
-        const index = createPartitionedGroupIndex();
+    it('keeps the array of a key no written partition had a hand in', () => {
+        const index = createSettledIndex();
         const untouched = [one, two];
-        const left = index.getBy({ byPart: { a: untouched, b: [three] } }, 'byGroup', 'left');
+        const left = index.getBySecondaryKey(
+            { byPartition: { a: untouched, b: [three] } },
+            'bySide',
+            'left',
+        );
 
-        const afterOtherPartWritten = index.getBy(
-            { byPart: { a: untouched, b: [three, { ...three, id: '4' }] } },
-            'byGroup',
+        const afterOtherPartWritten = index.getBySecondaryKey(
+            { byPartition: { a: untouched, b: [three, { ...three, id: '4' }] } },
+            'bySide',
             'left',
         );
 
         expect(afterOtherPartWritten).toBe(left);
     });
 
-    it('keeps the array of a key the written part left alone', () => {
-        const index = createPartitionedGroupIndex();
-        const right = index.getBy({ byPart: { a: [one], b: [three] } }, 'byGroup', 'right');
+    it('keeps the array of a key the written partition left alone', () => {
+        const index = createSettledIndex();
+        const right = index.getBySecondaryKey(
+            { byPartition: { a: [one], b: [three] } },
+            'bySide',
+            'right',
+        );
 
-        const afterWriteToTheSamePart = index.getBy(
-            { byPart: { a: [one, two], b: [three] } },
-            'byGroup',
+        const afterWriteToTheSamePart = index.getBySecondaryKey(
+            { byPartition: { a: [one, two], b: [three] } },
+            'bySide',
             'right',
         );
 
         expect(afterWriteToTheSamePart).toBe(right);
     });
 
-    it('drops a member a vanished part had put in a shared key', () => {
-        const index = createPartitionedGroupIndex();
+    it('drops a member a vanished partition had put in a shared key', () => {
+        const index = createSettledIndex();
 
-        index.getBy({ byPart: { a: [one], b: [two] } }, 'byGroup', 'left');
+        index.getBySecondaryKey({ byPartition: { a: [one], b: [two] } }, 'bySide', 'left');
 
-        expect(index.getBy({ byPart: { a: [one] } }, 'byGroup', 'left')).toEqual([one]);
+        expect(index.getBySecondaryKey({ byPartition: { a: [one] } }, 'bySide', 'left')).toEqual([one]);
     });
 
-    it('drops a key a vanished part held alone', () => {
-        const index = createPartitionedGroupIndex();
+    it('drops a key a vanished partition held alone', () => {
+        const index = createSettledIndex();
 
-        index.getBy({ byPart: { a: [one], b: [three] } }, 'byGroup', 'right');
+        index.getBySecondaryKey({ byPartition: { a: [one], b: [three] } }, 'bySide', 'right');
 
-        expect(index.getBy({ byPart: { a: [one] } }, 'byGroup', 'right')).toEqual([]);
+        expect(index.getBySecondaryKey({ byPartition: { a: [one] } }, 'bySide', 'right')).toEqual([]);
     });
 
-    it('orders a group by the parts, however they are reordered', () => {
-        const index = createPartitionedGroupIndex();
+    it('orders an entry by the partitions, however they are reordered', () => {
+        const index = createSettledIndex();
 
-        index.getBy({ byPart: { a: [one], b: [two] } }, 'byGroup', 'left');
+        index.getBySecondaryKey({ byPartition: { a: [one], b: [two] } }, 'bySide', 'left');
 
-        expect(index.getBy({ byPart: { b: [two], a: [one] } }, 'byGroup', 'left')).toEqual([
-            two,
-            one,
-        ]);
+        expect(
+            index.getBySecondaryKey({ byPartition: { b: [two], a: [one] } }, 'bySide', 'left'),
+        ).toEqual([two, one]);
     });
 });
 
-describe('reading a group as entities', () => {
-    it('gives the entities in a group', () => {
-        const { index } = createGroupedIndex();
+describe('reading an entry as entities', () => {
+    it('gives the entities in an entry', () => {
+        const { index } = createIndexWithSecondaryIndex();
 
-        expect(index.getBy({ entities: [one, two, three] }, 'byGroup', 'left')).toEqual([one, two]);
+        expect(index.getBySecondaryKey({ entities: [one, two, three] }, 'bySide', 'left')).toEqual([
+            one,
+            two,
+        ]);
     });
 
-    it('gives nothing for a key the group does not hold', () => {
-        const { index } = createGroupedIndex();
+    it('gives nothing for a key the entry does not hold', () => {
+        const { index } = createIndexWithSecondaryIndex();
 
-        expect(index.getBy({ entities: [one] }, 'byGroup', 'nowhere')).toEqual([]);
+        expect(index.getBySecondaryKey({ entities: [one] }, 'bySide', 'nowhere')).toEqual([]);
     });
 
-    it('hands back the same array for a group whose members did not change', () => {
-        const { index } = createGroupedIndex();
-        const left = index.getBy({ entities: [one, two, three] }, 'byGroup', 'left');
+    it('hands back the same array for an entry whose members did not change', () => {
+        const { index } = createIndexWithSecondaryIndex();
+        const left = index.getBySecondaryKey({ entities: [one, two, three] }, 'bySide', 'left');
 
         expect(
-            index.getBy({ entities: [one, two, { ...three, tags: ['new'] }] }, 'byGroup', 'left'),
+            index.getBySecondaryKey(
+                { entities: [one, two, { ...three, tags: ['new'] }] },
+                'bySide',
+                'left',
+            ),
         ).toBe(left);
     });
 
-    it('hands back a new array when a member of the group was replaced', () => {
+    it('hands back a new array when a member of the entry was replaced', () => {
         // The ids did not change, but the entities did — which a consumer reading entities has to
         // see, and a consumer reading ids has no reason to be woken by.
-        const { index } = createGroupedIndex();
-        const left = index.getBy({ entities: [one, two] }, 'byGroup', 'left');
+        const { index } = createIndexWithSecondaryIndex();
+        const left = index.getBySecondaryKey({ entities: [one, two] }, 'bySide', 'left');
         const state = { entities: [{ ...one, tags: ['changed'] }, two] };
 
-        expect(index.getBy(state, 'byGroup', 'left')).not.toBe(left);
-        expect(index.getIdsBy(state, 'byGroup', 'left')).toEqual(['1', '2']);
+        expect(index.getBySecondaryKey(state, 'bySide', 'left')).not.toBe(left);
+        expect(index.getIdsBySecondaryKey(state, 'bySide', 'left')).toEqual(['1', '2']);
     });
 });
 
@@ -828,97 +849,102 @@ describe('being told when the index changes', () => {
     });
 });
 
-describe('a group keeping up with what happened to its entities', () => {
-    it('takes an entity out of the group it left and puts it in the one it joined', () => {
-        // The generic case transactions cannot reach: an entity whose group key changed.
-        const { index } = createGroupedIndex();
+describe('an entry keeping up with what happened to its entities', () => {
+    it('takes an entity out of the entry it left and puts it in the one it joined', () => {
+        // The generic case transactions cannot reach: an entity whose entry key changed.
+        const { index } = createIndexWithSecondaryIndex();
         index.read({ entities: [one, two] });
-        const moved = { ...one, group: 'right' };
+        const moved = { ...one, side: 'right' };
 
         const state = { entities: [moved, two] };
 
-        expect(index.getIdsBy(state, 'byGroup', 'left')).toEqual(['2']);
-        expect(index.getIdsBy(state, 'byGroup', 'right')).toEqual(['1']);
-        expect(index.getBy(state, 'byGroup', 'right')).toEqual([moved]);
+        expect(index.getIdsBySecondaryKey(state, 'bySide', 'left')).toEqual(['2']);
+        expect(index.getIdsBySecondaryKey(state, 'bySide', 'right')).toEqual(['1']);
+        expect(index.getBySecondaryKey(state, 'bySide', 'right')).toEqual([moved]);
     });
 
-    it('empties a group whose last member left it', () => {
-        const { index } = createGroupedIndex();
+    it('empties an entry whose last member left it', () => {
+        const { index } = createIndexWithSecondaryIndex();
         index.read({ entities: [one] });
 
         expect(
-            index.getIdsBy({ entities: [{ ...one, group: 'right' }] }, 'byGroup', 'left'),
+            index.getIdsBySecondaryKey({ entities: [{ ...one, side: 'right' }] }, 'bySide', 'left'),
         ).toEqual([]);
     });
 
-    it('empties a group whose last member was removed', () => {
-        const { index } = createGroupedIndex();
+    it('empties an entry whose last member was removed', () => {
+        const { index } = createIndexWithSecondaryIndex();
         index.read({ entities: [one, three] });
 
-        expect(index.getIdsBy({ entities: [three] }, 'byGroup', 'left')).toEqual([]);
+        expect(index.getIdsBySecondaryKey({ entities: [three] }, 'bySide', 'left')).toEqual([]);
     });
 
-    it('opens a group for a key nothing had before', () => {
-        const { index } = createGroupedIndex();
+    it('opens an entry for a key nothing had before', () => {
+        const { index } = createIndexWithSecondaryIndex();
         index.read({ entities: [one] });
-        const arrived = { id: '9', group: 'elsewhere', tags: [] };
+        const arrived = { id: '9', side: 'elsewhere', tags: [] };
 
-        expect(index.getIdsBy({ entities: [one, arrived] }, 'byGroup', 'elsewhere')).toEqual(['9']);
+        expect(
+            index.getIdsBySecondaryKey({ entities: [one, arrived] }, 'bySide', 'elsewhere'),
+        ).toEqual(['9']);
     });
 
     it('follows an entity that changed which keys it names', () => {
-        // Multi-key groups: the entity has to leave every key it no longer names.
-        const { index } = createGroupedIndex();
+        // Multi-key entries: the entity has to leave every key it no longer names.
+        const { index } = createIndexWithSecondaryIndex();
         index.read({ entities: [one] });
         const retagged = { ...one, tags: ['green'] };
 
         const state = { entities: [retagged] };
 
-        expect(index.getIdsBy(state, 'byTag', 'red')).toEqual([]);
-        expect(index.getIdsBy(state, 'byTag', 'blue')).toEqual([]);
-        expect(index.getIdsBy(state, 'byTag', 'green')).toEqual(['1']);
+        expect(index.getIdsBySecondaryKey(state, 'byTag', 'red')).toEqual([]);
+        expect(index.getIdsBySecondaryKey(state, 'byTag', 'blue')).toEqual([]);
+        expect(index.getIdsBySecondaryKey(state, 'byTag', 'green')).toEqual(['1']);
     });
 
-    it('empties every group when the last entity goes', () => {
-        const { index } = createGroupedIndex();
+    it('empties every entry when the last entity goes', () => {
+        const { index } = createIndexWithSecondaryIndex();
         index.read({ entities: [one, two, three] });
 
         const state = { entities: [] };
 
-        expect(index.getIdsBy(state, 'byGroup', 'left')).toEqual([]);
-        expect(index.getIdsBy(state, 'byTag', 'red')).toEqual([]);
+        expect(index.getIdsBySecondaryKey(state, 'bySide', 'left')).toEqual([]);
+        expect(index.getIdsBySecondaryKey(state, 'byTag', 'red')).toEqual([]);
         expect(index.getIds(state)).toEqual([]);
     });
 
     it('keeps the ids array and replaces the entities array when a member was updated', () => {
-        const { index } = createGroupedIndex();
+        const { index } = createIndexWithSecondaryIndex();
         const before = { entities: [one, two] };
-        const previousIds = index.getIdsBy(before, 'byGroup', 'left');
-        const previousEntities = index.getBy(before, 'byGroup', 'left');
+        const previousIds = index.getIdsBySecondaryKey(before, 'bySide', 'left');
+        const previousEntities = index.getBySecondaryKey(before, 'bySide', 'left');
 
         const state = { entities: [{ ...one, tags: ['changed'] }, two] };
 
-        expect(index.getIdsBy(state, 'byGroup', 'left')).toEqual(previousIds);
-        expect(index.getBy(state, 'byGroup', 'left')).not.toBe(previousEntities);
+        expect(index.getIdsBySecondaryKey(state, 'bySide', 'left')).toEqual(previousIds);
+        expect(index.getBySecondaryKey(state, 'bySide', 'left')).not.toBe(previousEntities);
     });
 });
 
-describe('an entity that names the same group key more than once', () => {
-    it('is in that group once', () => {
+describe('an entity that names the same entry key more than once', () => {
+    it('is in that entry once', () => {
         // A transaction paying an address both from an input and to a target names it twice, and
         // belongs to the address once.
-        const { index } = createGroupedIndex();
-        const twice = { id: '1', group: 'left', tags: ['red', 'red'] };
+        const { index } = createIndexWithSecondaryIndex();
+        const twice = { id: '1', side: 'left', tags: ['red', 'red'] };
 
-        expect(index.getIdsBy({ entities: [twice] }, 'byTag', 'red')).toEqual(['1']);
-        expect(index.getBy({ entities: [twice] }, 'byTag', 'red')).toEqual([twice]);
+        expect(index.getIdsBySecondaryKey({ entities: [twice] }, 'byTag', 'red')).toEqual(['1']);
+        expect(index.getBySecondaryKey({ entities: [twice] }, 'byTag', 'red')).toEqual([twice]);
     });
 
     it('does not swallow a different entity that names the same key', () => {
-        const { index } = createGroupedIndex();
-        const first = { id: '1', group: 'left', tags: ['red', 'red'] };
-        const second = { id: '2', group: 'left', tags: ['red'] };
+        const { index } = createIndexWithSecondaryIndex();
+        const first = { id: '1', side: 'left', tags: ['red', 'red'] };
+        const second = { id: '2', side: 'left', tags: ['red'] };
 
-        expect(index.getIdsBy({ entities: [first, second] }, 'byTag', 'red')).toEqual(['1', '2']);
+        expect(index.getIdsBySecondaryKey({ entities: [first, second] }, 'byTag', 'red')).toEqual([
+            '1',
+            '2',
+        ]);
     });
 });

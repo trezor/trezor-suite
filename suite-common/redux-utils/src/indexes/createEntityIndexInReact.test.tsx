@@ -237,49 +237,53 @@ describe('the index a component is reading', () => {
     });
 });
 
-const createGroupedIndex = () =>
+const createIndexWithSecondaryIndex = () =>
     createEntityIndex({
-        name: 'groupedThings',
+        name: 'thingsByValue',
         selectSource: (state: State) => state.things,
         getEntities: (things: Thing[]) => things,
         getId: (thing: Thing) => thing.id,
-        // `value` stands in for whatever a real index groups by — the account a transaction
+        // `value` stands in for whatever a real index keys entries by — the account a transaction
         // belongs to, say.
-        groupBy: { byValue: (thing: Thing) => thing.value },
+        secondaryIndexes: { byValue: (thing: Thing) => thing.value },
     });
 
-describe('reading one group through useSelector', () => {
+describe('reading one entry through useSelector', () => {
     const left = { id: 'a', value: 'left' };
     const right = { id: 'b', value: 'right' };
 
-    it('reads the ids in one group', () => {
-        const index = createGroupedIndex();
+    it('reads the ids in one entry', () => {
+        const index = createIndexWithSecondaryIndex();
         const store = createTestStore([left, right]);
 
         const { result } = renderHook(
-            () => useSelector((state: State) => index.getIdsBy(state, 'byValue', 'left')),
+            () =>
+                useSelector((state: State) => index.getIdsBySecondaryKey(state, 'byValue', 'left')),
             { wrapper: createWrapper(store) },
         );
 
         expect(result.current).toEqual(['a']);
     });
 
-    it('reads nothing for a key the group does not hold', () => {
-        const index = createGroupedIndex();
+    it('reads nothing for a key the entry does not hold', () => {
+        const index = createIndexWithSecondaryIndex();
         const store = createTestStore([left]);
 
         const { result } = renderHook(
-            () => useSelector((state: State) => index.getIdsBy(state, 'byValue', 'nowhere')),
+            () =>
+                useSelector((state: State) =>
+                    index.getIdsBySecondaryKey(state, 'byValue', 'nowhere'),
+                ),
             { wrapper: createWrapper(store) },
         );
 
         expect(result.current).toEqual([]);
     });
 
-    it('does not re-render when another group changes', () => {
-        // The point of grouping: a screen showing one account's history is not woken because
+    it('does not re-render when another entry changes', () => {
+        // The point of a secondary index: a screen showing one account's history is not woken because
         // another account received a transaction.
-        const index = createGroupedIndex();
+        const index = createIndexWithSecondaryIndex();
         const store = createTestStore([left, right]);
         const renders = jest.fn();
 
@@ -287,7 +291,9 @@ describe('reading one group through useSelector', () => {
             () => {
                 renders();
 
-                return useSelector((state: State) => index.getIdsBy(state, 'byValue', 'left'));
+                return useSelector((state: State) =>
+                    index.getIdsBySecondaryKey(state, 'byValue', 'left'),
+                );
             },
             { wrapper: createWrapper(store) },
         );
@@ -300,12 +306,13 @@ describe('reading one group through useSelector', () => {
         expect(renders).not.toHaveBeenCalled();
     });
 
-    it('re-renders when its own group changes', () => {
-        const index = createGroupedIndex();
+    it('re-renders when its own entry changes', () => {
+        const index = createIndexWithSecondaryIndex();
         const store = createTestStore([left, right]);
 
         const { result } = renderHook(
-            () => useSelector((state: State) => index.getIdsBy(state, 'byValue', 'left')),
+            () =>
+                useSelector((state: State) => index.getIdsBySecondaryKey(state, 'byValue', 'left')),
             { wrapper: createWrapper(store) },
         );
 

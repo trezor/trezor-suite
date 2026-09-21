@@ -1,3 +1,10 @@
+/**
+ * Lazily maintained derived indexes over store entities.
+ *
+ * A primary index and any number of secondary indexes computed from a Redux slice on first read,
+ * rebuilt only for the partitions that changed, with stable array identities for unchanged keys.
+ */
+
 export type EntityId = string;
 
 export type EntityIndexChanges<TId extends EntityId> = {
@@ -6,16 +13,16 @@ export type EntityIndexChanges<TId extends EntityId> = {
     readonly updated: readonly TId[];
 };
 
-export type EntityGroupKeySelector<TEntity, TKey extends EntityId = EntityId> = (
+export type SecondaryKeyExtractor<TEntity, TKey extends EntityId = EntityId> = (
     entity: TEntity,
 ) => TKey | readonly TKey[] | undefined;
 
-export type EntityGroupKeySelectors<TEntity> = Record<string, EntityGroupKeySelector<TEntity>>;
+export type SecondaryKeyExtractors<TEntity> = Record<string, SecondaryKeyExtractor<TEntity>>;
 
-export type EntityGroupKey<TSelector> =
-    TSelector extends EntityGroupKeySelector<never, infer TKey> ? TKey : never;
+export type SecondaryKey<TSelector> =
+    TSelector extends SecondaryKeyExtractor<never, infer TKey> ? TKey : never;
 
-export type EntityGroup<TEntity, TId extends EntityId> = {
+export type SecondaryIndexEntry<TEntity, TId extends EntityId> = {
     readonly ids: readonly TId[];
     readonly entities: readonly TEntity[];
 };
@@ -23,72 +30,72 @@ export type EntityGroup<TEntity, TId extends EntityId> = {
 export type EntityIndexSnapshot<
     TEntity,
     TId extends EntityId,
-    TGroups extends EntityGroupKeySelectors<TEntity>,
+    TSecondaryIndexes extends SecondaryKeyExtractors<TEntity>,
 > = {
     readonly ids: readonly TId[];
     readonly byId: ReadonlyMap<TId, TEntity>;
-    readonly groups: {
-        readonly [TName in keyof TGroups]: ReadonlyMap<
-            EntityGroupKey<TGroups[TName]>,
-            EntityGroup<TEntity, TId>
+    readonly secondaryIndexes: {
+        readonly [TName in keyof TSecondaryIndexes]: ReadonlyMap<
+            SecondaryKey<TSecondaryIndexes[TName]>,
+            SecondaryIndexEntry<TEntity, TId>
         >;
     };
     readonly changes: EntityIndexChanges<TId>;
 };
 
-export type EntityIndexPart<TPart> = readonly [key: string, part: TPart];
+export type EntityIndexPartition<TPartition> = readonly [key: string, partition: TPartition];
 
-/** `getParts` makes a rebuild cost the write, not the store; without it the source is one part. */
+/** `getPartitions` makes a rebuild cost the write, not the store; without it the source is one partition. */
 export type EntityIndexDefinition<
     TState,
     TSource,
-    TPart,
+    TPartition,
     TEntity,
     TId extends EntityId,
-    TGroups extends EntityGroupKeySelectors<TEntity>,
+    TSecondaryIndexes extends SecondaryKeyExtractors<TEntity>,
 > = {
     name: string;
     selectSource: (state: TState) => TSource;
-    getParts?: (source: TSource) => Iterable<EntityIndexPart<TPart>>;
-    /** Without it a part is taken to be its entities. */
-    getEntities?: (part: TPart) => Iterable<TEntity>;
+    getPartitions?: (source: TSource) => Iterable<EntityIndexPartition<TPartition>>;
+    /** Without it a partition is taken to be its entities. */
+    getEntities?: (partition: TPartition) => Iterable<TEntity>;
     getId: (entity: TEntity) => TId;
-    groupBy?: TGroups;
+    secondaryIndexes?: TSecondaryIndexes;
 };
 
 export type EntityIndexListener<
     TEntity,
     TId extends EntityId,
-    TGroups extends EntityGroupKeySelectors<TEntity>,
-> = (snapshot: EntityIndexSnapshot<TEntity, TId, TGroups>) => void;
+    TSecondaryIndexes extends SecondaryKeyExtractors<TEntity>,
+> = (snapshot: EntityIndexSnapshot<TEntity, TId, TSecondaryIndexes>) => void;
 
 export type EntityIndex<
     TState,
     TEntity,
     TId extends EntityId,
-    TGroups extends EntityGroupKeySelectors<TEntity> = Record<string, never>,
+    TSecondaryIndexes extends SecondaryKeyExtractors<TEntity> = Record<string, never>,
 > = {
     readonly name: string;
     /** Called from inside the read that found the change, so a listener must not dispatch. */
-    subscribe: (listener: EntityIndexListener<TEntity, TId, TGroups>) => () => void;
+    subscribe: (listener: EntityIndexListener<TEntity, TId, TSecondaryIndexes>) => () => void;
     getListenerCount: () => number;
-    read: (state: TState) => EntityIndexSnapshot<TEntity, TId, TGroups>;
+    read: (state: TState) => EntityIndexSnapshot<TEntity, TId, TSecondaryIndexes>;
     getById: (state: TState, id: TId) => TEntity | undefined;
     getByIds: (state: TState, ids: Iterable<TId>) => readonly TEntity[];
-    getInverseOfIds: (
+    getAllExcept: (
         state: TState,
         excluded: readonly TId[] | ReadonlySet<TId>,
     ) => readonly TEntity[];
     getIds: (state: TState) => readonly TId[];
-    getBy: <TName extends keyof TGroups>(
+    getBySecondaryKey: <TName extends keyof TSecondaryIndexes>(
         state: TState,
-        groupName: TName,
-        key: EntityGroupKey<TGroups[TName]>,
+        indexName: TName,
+        key: SecondaryKey<TSecondaryIndexes[TName]>,
     ) => readonly TEntity[];
-    getIdsBy: <TName extends keyof TGroups>(
+    getIdsBySecondaryKey: <TName extends keyof TSecondaryIndexes>(
         state: TState,
-        groupName: TName,
-        key: EntityGroupKey<TGroups[TName]>,
+        indexName: TName,
+        key: SecondaryKey<TSecondaryIndexes[TName]>,
     ) => readonly TId[];
 };
 
@@ -115,13 +122,13 @@ const toIdSet = <TId extends EntityId>(ids: readonly TId[]): ReadonlySet<TId> =>
     return set;
 };
 
-type PartGroupKeys = readonly (EntityId | readonly EntityId[] | undefined)[];
+type PartitionSecondaryKeys = readonly (EntityId | readonly EntityId[] | undefined)[];
 
-type BuiltPart<TEntity, TId extends EntityId> = {
-    part: unknown;
+type BuiltPartition<TEntity, TId extends EntityId> = {
+    partition: unknown;
     ids: readonly TId[];
     entities: readonly TEntity[];
-    groupKeys: Map<string, PartGroupKeys>;
+    secondaryKeys: Map<string, PartitionSecondaryKeys>;
 };
 
 const forEachKey = (
@@ -151,61 +158,64 @@ export const createEntityIndex = <
     TSource,
     TEntity,
     TId extends EntityId,
-    TGroups extends EntityGroupKeySelectors<TEntity> = Record<string, never>,
-    TPart = TSource,
+    TSecondaryIndexes extends SecondaryKeyExtractors<TEntity> = Record<string, never>,
+    TPartition = TSource,
 >({
     name,
     selectSource,
-    getParts,
+    getPartitions,
     getEntities,
     getId,
-    groupBy,
-}: EntityIndexDefinition<TState, TSource, TPart, TEntity, TId, TGroups>): EntityIndex<
+    secondaryIndexes: secondaryKeyExtractors,
+}: EntityIndexDefinition<
     TState,
+    TSource,
+    TPartition,
     TEntity,
     TId,
-    TGroups
-> => {
-    const groupNames = Object.keys(groupBy ?? {});
+    TSecondaryIndexes
+>): EntityIndex<TState, TEntity, TId, TSecondaryIndexes> => {
+    const indexNames = Object.keys(secondaryKeyExtractors ?? {});
 
-    const toEntities = getEntities ?? ((part: TPart) => part as unknown as Iterable<TEntity>);
+    const toEntities =
+        getEntities ?? ((partition: TPartition) => partition as unknown as Iterable<TEntity>);
 
-    const emptyGroups = () =>
+    const emptySecondaryIndexes = () =>
         Object.fromEntries(
-            groupNames.map(groupName => [groupName, new Map()]),
-        ) as unknown as EntityIndexSnapshot<TEntity, TId, TGroups>['groups'];
+            indexNames.map(indexName => [indexName, new Map()]),
+        ) as unknown as EntityIndexSnapshot<TEntity, TId, TSecondaryIndexes>['secondaryIndexes'];
 
-    const emptySnapshot: EntityIndexSnapshot<TEntity, TId, TGroups> = {
+    const emptySnapshot: EntityIndexSnapshot<TEntity, TId, TSecondaryIndexes> = {
         ids: [],
         byId: new Map(),
-        groups: emptyGroups(),
+        secondaryIndexes: emptySecondaryIndexes(),
         changes: NO_CHANGES,
     };
 
-    const toParts =
-        getParts ??
-        ((source: TSource) => [[WHOLE_SOURCE_KEY, source as unknown as TPart]] as const);
+    const toPartitions =
+        getPartitions ??
+        ((source: TSource) => [[WHOLE_SOURCE_KEY, source as unknown as TPartition]] as const);
 
-    let demandedGroups = new Set<string>();
+    let demandedIndexes = new Set<string>();
 
-    const inverseEntities = new WeakMap<object, WeakMap<object, readonly unknown[]>>();
+    const entitiesExcept = new WeakMap<object, WeakMap<object, readonly unknown[]>>();
 
-    const listeners = new Set<EntityIndexListener<TEntity, TId, TGroups>>();
-    let notifiedSnapshot: EntityIndexSnapshot<TEntity, TId, TGroups> | undefined;
+    const listeners = new Set<EntityIndexListener<TEntity, TId, TSecondaryIndexes>>();
+    let notifiedSnapshot: EntityIndexSnapshot<TEntity, TId, TSecondaryIndexes> | undefined;
     let cached:
         | {
               source: TSource;
-              snapshot: EntityIndexSnapshot<TEntity, TId, TGroups>;
-              parts: ReadonlyMap<string, BuiltPart<TEntity, TId>>;
-              materialisedGroups: Map<string, ReadonlyMap<EntityId, EntityGroup<TEntity, TId>>>;
+              snapshot: EntityIndexSnapshot<TEntity, TId, TSecondaryIndexes>;
+              partitions: ReadonlyMap<string, BuiltPartition<TEntity, TId>>;
+              builtIndexes: Map<string, ReadonlyMap<EntityId, SecondaryIndexEntry<TEntity, TId>>>;
               identities: () => { ids: readonly TId[]; byId: ReadonlyMap<TId, TEntity> };
           }
         | undefined;
 
-    const buildPart = (part: TPart): BuiltPart<TEntity, TId> => {
+    const buildPartition = (partition: TPartition): BuiltPartition<TEntity, TId> => {
         const ids: TId[] = [];
         const entities: TEntity[] = [];
-        const source = toEntities(part);
+        const source = toEntities(partition);
 
         if (Array.isArray(source)) {
             for (let position = 0; position < source.length; position++) {
@@ -220,37 +230,43 @@ export const createEntityIndex = <
             }
         }
 
-        return { part, ids, entities, groupKeys: new Map() };
+        return { partition, ids, entities, secondaryKeys: new Map() };
     };
 
-    const keysOfPart = (built: BuiltPart<TEntity, TId>, groupName: string): PartGroupKeys => {
-        const known = built.groupKeys.get(groupName);
+    const keysOfPartition = (
+        built: BuiltPartition<TEntity, TId>,
+        indexName: string,
+    ): PartitionSecondaryKeys => {
+        const known = built.secondaryKeys.get(indexName);
 
         if (known !== undefined) {
             return known;
         }
 
-        const selectKey = groupBy?.[groupName];
+        const selectKey = secondaryKeyExtractors?.[indexName];
         const keys = built.entities.map(entity => selectKey?.(entity));
-        built.groupKeys.set(groupName, keys);
+        built.secondaryKeys.set(indexName, keys);
 
         return keys;
     };
 
-    type WalkedPart = { key: string; built: BuiltPart<TEntity, TId>; isDirty: boolean };
+    type WalkedPartition = { key: string; built: BuiltPartition<TEntity, TId>; isDirty: boolean };
 
-    const assembleGroups = (
-        groupsToBuild: readonly string[],
-        walked: readonly WalkedPart[],
-        previousParts: ReadonlyMap<string, BuiltPart<TEntity, TId>> | undefined,
-        goneParts: readonly BuiltPart<TEntity, TId>[],
-        previousGroups: ReadonlyMap<string, ReadonlyMap<EntityId, EntityGroup<TEntity, TId>>>,
-        isPartOrderKept: boolean,
-    ): Map<string, ReadonlyMap<EntityId, EntityGroup<TEntity, TId>>> => {
-        const assembled = groupsToBuild.map(
+    const assembleSecondaryIndexes = (
+        indexesToBuild: readonly string[],
+        walked: readonly WalkedPartition[],
+        previousPartitions: ReadonlyMap<string, BuiltPartition<TEntity, TId>> | undefined,
+        gonePartitions: readonly BuiltPartition<TEntity, TId>[],
+        previousSecondaryIndexes: ReadonlyMap<
+            string,
+            ReadonlyMap<EntityId, SecondaryIndexEntry<TEntity, TId>>
+        >,
+        isPartitionOrderKept: boolean,
+    ): Map<string, ReadonlyMap<EntityId, SecondaryIndexEntry<TEntity, TId>>> => {
+        const assembled = indexesToBuild.map(
             () => new Map<EntityId, { ids: TId[]; entities: TEntity[] }>(),
         );
-        const dirtyKeys = groupsToBuild.map(() => new Set<EntityId>());
+        const dirtyKeys = indexesToBuild.map(() => new Set<EntityId>());
 
         const fileUnder = (
             members: Map<EntityId, { ids: TId[]; entities: TEntity[] }>,
@@ -277,13 +293,13 @@ export const createEntityIndex = <
         for (const { built, isDirty } of walked) {
             const { ids, entities } = built;
 
-            for (let groupIndex = 0; groupIndex < groupsToBuild.length; groupIndex++) {
-                const keys = keysOfPart(built, groupsToBuild[groupIndex] as string);
-                const members = assembled[groupIndex] as Map<
+            for (let indexPosition = 0; indexPosition < indexesToBuild.length; indexPosition++) {
+                const keys = keysOfPartition(built, indexesToBuild[indexPosition] as string);
+                const members = assembled[indexPosition] as Map<
                     EntityId,
                     { ids: TId[]; entities: TEntity[] }
                 >;
-                const dirty = dirtyKeys[groupIndex] as Set<EntityId>;
+                const dirty = dirtyKeys[indexPosition] as Set<EntityId>;
 
                 for (let position = 0; position < ids.length; position++) {
                     const keysAt = keys[position];
@@ -317,40 +333,42 @@ export const createEntityIndex = <
         }
 
         const goneWithWalked = [
-            ...walked.flatMap(({ key, isDirty }) => (isDirty ? [previousParts?.get(key)] : [])),
-            ...goneParts,
+            ...walked.flatMap(({ key, isDirty }) =>
+                isDirty ? [previousPartitions?.get(key)] : [],
+            ),
+            ...gonePartitions,
         ];
 
-        groupsToBuild.forEach((group, groupIndex) => {
-            const dirty = dirtyKeys[groupIndex] as Set<EntityId>;
+        indexesToBuild.forEach((indexName, indexPosition) => {
+            const dirty = dirtyKeys[indexPosition] as Set<EntityId>;
 
             goneWithWalked.forEach(gone => {
                 if (gone === undefined) {
                     return;
                 }
 
-                keysOfPart(gone, group).forEach(keys =>
-                    forEachKey(keys, gonekey => dirty.add(gonekey)),
+                keysOfPartition(gone, indexName).forEach(keys =>
+                    forEachKey(keys, goneKey => dirty.add(goneKey)),
                 );
             });
         });
 
         return new Map(
-            groupsToBuild.map((group, groupIndex) => {
-                const previousGroup = previousGroups.get(group);
-                const built = assembled[groupIndex] as Map<
+            indexesToBuild.map((indexName, indexPosition) => {
+                const previousEntries = previousSecondaryIndexes.get(indexName);
+                const built = assembled[indexPosition] as Map<
                     EntityId,
                     { ids: TId[]; entities: TEntity[] }
                 >;
-                const dirty = dirtyKeys[groupIndex] as Set<EntityId>;
-                const settled = new Map<EntityId, EntityGroup<TEntity, TId>>();
-                let isUnchanged = previousGroup?.size === built.size;
+                const dirty = dirtyKeys[indexPosition] as Set<EntityId>;
+                const settled = new Map<EntityId, SecondaryIndexEntry<TEntity, TId>>();
+                let isUnchanged = previousEntries?.size === built.size;
 
                 built.forEach((members, key) => {
-                    const previousMembers = previousGroup?.get(key);
+                    const previousMembers = previousEntries?.get(key);
                     const isKept =
                         previousMembers !== undefined &&
-                        ((isPartOrderKept && !dirty.has(key)) ||
+                        ((isPartitionOrderKept && !dirty.has(key)) ||
                             areSame(previousMembers.entities, members.entities));
 
                     if (isKept) {
@@ -361,22 +379,22 @@ export const createEntityIndex = <
                     }
                 });
 
-                return [group, isUnchanged && previousGroup ? previousGroup : settled];
+                return [indexName, isUnchanged && previousEntries ? previousEntries : settled];
             }),
         );
     };
 
     type Identities = { ids: readonly TId[]; byId: ReadonlyMap<TId, TEntity> };
 
-    const identitiesOf = (walked: readonly WalkedPart[]): Identities => {
+    const identitiesOf = (walked: readonly WalkedPartition[]): Identities => {
         const byId = new Map<TId, TEntity>();
         const ids: TId[] = [];
 
         for (const { built } of walked) {
-            const { ids: partIds, entities } = built;
+            const { ids: partitionIds, entities } = built;
 
-            for (let position = 0; position < partIds.length; position++) {
-                const id = partIds[position] as TId;
+            for (let position = 0; position < partitionIds.length; position++) {
+                const id = partitionIds[position] as TId;
 
                 if (!byId.has(id)) {
                     ids.push(id);
@@ -388,83 +406,88 @@ export const createEntityIndex = <
         return { ids, byId };
     };
 
-    const build = (source: TSource): EntityIndexSnapshot<TEntity, TId, TGroups> => {
+    const build = (source: TSource): EntityIndexSnapshot<TEntity, TId, TSecondaryIndexes> => {
         const previous = cached;
-        const parts = new Map<string, BuiltPart<TEntity, TId>>();
-        const walked: WalkedPart[] = [];
+        const partitions = new Map<string, BuiltPartition<TEntity, TId>>();
+        const walked: WalkedPartition[] = [];
         let entityCount = 0;
 
         const possiblyRemoved: TId[] = [];
 
-        for (const [partKey, part] of toParts(source)) {
-            const previousPart = previous?.parts.get(partKey);
-            const isUntouched = previousPart?.part === part;
-            const builtPart = isUntouched && previousPart ? previousPart : buildPart(part);
+        for (const [partitionKey, partition] of toPartitions(source)) {
+            const previousPartition = previous?.partitions.get(partitionKey);
+            const isUntouched = previousPartition?.partition === partition;
+            const builtPartition =
+                isUntouched && previousPartition ? previousPartition : buildPartition(partition);
 
-            parts.set(partKey, builtPart);
-            walked.push({ key: partKey, built: builtPart, isDirty: !isUntouched });
-            entityCount += builtPart.ids.length;
+            partitions.set(partitionKey, builtPartition);
+            walked.push({ key: partitionKey, built: builtPartition, isDirty: !isUntouched });
+            entityCount += builtPartition.ids.length;
 
-            if (!isUntouched && previousPart) {
-                previousPart.ids.forEach(id => possiblyRemoved.push(id));
+            if (!isUntouched && previousPartition) {
+                previousPartition.ids.forEach(id => possiblyRemoved.push(id));
             }
         }
 
-        const goneParts: BuiltPart<TEntity, TId>[] = [];
+        const gonePartitions: BuiltPartition<TEntity, TId>[] = [];
 
-        previous?.parts.forEach((previousPart, partKey) => {
-            if (!parts.has(partKey)) {
-                goneParts.push(previousPart);
-                previousPart.ids.forEach(id => possiblyRemoved.push(id));
+        previous?.partitions.forEach((previousPartition, partitionKey) => {
+            if (!partitions.has(partitionKey)) {
+                gonePartitions.push(previousPartition);
+                previousPartition.ids.forEach(id => possiblyRemoved.push(id));
             }
         });
 
-        const isPartOrderKept =
+        const isPartitionOrderKept =
             previous !== undefined &&
-            goneParts.length === 0 &&
-            areSame([...parts.keys()], [...previous.parts.keys()]);
+            gonePartitions.length === 0 &&
+            areSame([...partitions.keys()], [...previous.partitions.keys()]);
 
-        const materialisedGroups = new Map<
+        const builtIndexes = new Map<
             string,
-            ReadonlyMap<EntityId, EntityGroup<TEntity, TId>>
+            ReadonlyMap<EntityId, SecondaryIndexEntry<TEntity, TId>>
         >();
-        const groups = {} as EntityIndexSnapshot<TEntity, TId, TGroups>['groups'];
+        const secondaryIndexes = {} as EntityIndexSnapshot<
+            TEntity,
+            TId,
+            TSecondaryIndexes
+        >['secondaryIndexes'];
 
-        const wantedGroups = demandedGroups;
-        demandedGroups = new Set<string>();
+        const wantedIndexes = demandedIndexes;
+        demandedIndexes = new Set<string>();
 
-        groupNames.forEach(groupName => {
-            Object.defineProperty(groups, groupName, {
+        indexNames.forEach(indexName => {
+            Object.defineProperty(secondaryIndexes, indexName, {
                 enumerable: true,
                 get: () => {
-                    demandedGroups.add(groupName);
+                    demandedIndexes.add(indexName);
 
-                    const known = materialisedGroups.get(groupName);
+                    const known = builtIndexes.get(indexName);
 
                     if (known !== undefined) {
                         return known;
                     }
 
-                    assembleGroups(
+                    assembleSecondaryIndexes(
                         [
-                            groupName,
-                            ...groupNames.filter(
+                            indexName,
+                            ...indexNames.filter(
                                 wanted =>
-                                    wanted !== groupName &&
-                                    wantedGroups.has(wanted) &&
-                                    !materialisedGroups.has(wanted),
+                                    wanted !== indexName &&
+                                    wantedIndexes.has(wanted) &&
+                                    !builtIndexes.has(wanted),
                             ),
                         ],
                         walked,
-                        previous?.parts,
-                        goneParts,
-                        previous?.materialisedGroups ?? new Map(),
-                        isPartOrderKept,
-                    ).forEach((group, built) => materialisedGroups.set(built, group));
+                        previous?.partitions,
+                        gonePartitions,
+                        previous?.builtIndexes ?? new Map(),
+                        isPartitionOrderKept,
+                    ).forEach((entries, builtName) => builtIndexes.set(builtName, entries));
 
-                    return materialisedGroups.get(groupName) as ReadonlyMap<
+                    return builtIndexes.get(indexName) as ReadonlyMap<
                         EntityId,
-                        EntityGroup<TEntity, TId>
+                        SecondaryIndexEntry<TEntity, TId>
                     >;
                 },
             });
@@ -490,17 +513,17 @@ export const createEntityIndex = <
             const added: TId[] = [];
             const updated: TId[] = [];
 
-            for (const { built: part, isDirty } of walked) {
+            for (const { built: partition, isDirty } of walked) {
                 if (!isDirty) {
                     continue;
                 }
 
-                part.ids.forEach((id, position) => {
+                partition.ids.forEach((id, position) => {
                     const previousEntity = previousById.get(id);
 
                     if (previousEntity === undefined) {
                         added.push(id);
-                    } else if (previousEntity !== part.entities[position]) {
+                    } else if (previousEntity !== partition.entities[position]) {
                         updated.push(id);
                     }
                 });
@@ -513,7 +536,7 @@ export const createEntityIndex = <
 
         const isEmpty =
             entityCount === 0 && (previous === undefined || previous.snapshot === emptySnapshot);
-        const snapshot: EntityIndexSnapshot<TEntity, TId, TGroups> = isEmpty
+        const snapshot: EntityIndexSnapshot<TEntity, TId, TSecondaryIndexes> = isEmpty
             ? emptySnapshot
             : {
                   get ids() {
@@ -522,7 +545,7 @@ export const createEntityIndex = <
                   get byId() {
                       return identities().byId;
                   },
-                  groups,
+                  secondaryIndexes,
                   get changes() {
                       if (changes === undefined) {
                           changes = changesOf();
@@ -532,12 +555,12 @@ export const createEntityIndex = <
                   },
               };
 
-        cached = { source, parts, materialisedGroups, identities, snapshot };
+        cached = { source, partitions, builtIndexes, identities, snapshot };
 
         return cached.snapshot;
     };
 
-    const notify = (snapshot: EntityIndexSnapshot<TEntity, TId, TGroups>) => {
+    const notify = (snapshot: EntityIndexSnapshot<TEntity, TId, TSecondaryIndexes>) => {
         if (listeners.size === 0 || snapshot === notifiedSnapshot) {
             return;
         }
@@ -552,7 +575,7 @@ export const createEntityIndex = <
         });
     };
 
-    const read = (state: TState): EntityIndexSnapshot<TEntity, TId, TGroups> => {
+    const read = (state: TState): EntityIndexSnapshot<TEntity, TId, TSecondaryIndexes> => {
         const source = selectSource(state);
 
         if (cached?.source === source) {
@@ -582,11 +605,11 @@ export const createEntityIndex = <
 
         getById: (state, id) => read(state).byId.get(id),
 
-        getInverseOfIds: (state, excluded) => {
+        getAllExcept: (state, excluded) => {
             const { byId } = read(state);
             const excludedSet =
                 excluded instanceof Set ? excluded : toIdSet(excluded as readonly TId[]);
-            const known = inverseEntities.get(byId)?.get(excludedSet);
+            const known = entitiesExcept.get(byId)?.get(excludedSet);
 
             if (known !== undefined) {
                 return known as readonly TEntity[];
@@ -600,12 +623,12 @@ export const createEntityIndex = <
                 }
             }
 
-            const inverse = entities.length === 0 ? EMPTY_ENTITIES : entities;
-            const forMap = inverseEntities.get(byId) ?? new WeakMap<object, readonly unknown[]>();
-            forMap.set(excludedSet, inverse);
-            inverseEntities.set(byId, forMap);
+            const remaining = entities.length === 0 ? EMPTY_ENTITIES : entities;
+            const forMap = entitiesExcept.get(byId) ?? new WeakMap<object, readonly unknown[]>();
+            forMap.set(excludedSet, remaining);
+            entitiesExcept.set(byId, forMap);
 
-            return inverse;
+            return remaining;
         },
 
         getByIds: (state, ids) => {
@@ -625,10 +648,10 @@ export const createEntityIndex = <
 
         getIds: state => read(state).ids,
 
-        getBy: (state, groupName, key) =>
-            read(state).groups[groupName].get(key)?.entities ?? EMPTY_ENTITIES,
+        getBySecondaryKey: (state, indexName, key) =>
+            read(state).secondaryIndexes[indexName].get(key)?.entities ?? EMPTY_ENTITIES,
 
-        getIdsBy: (state, groupName, key) =>
-            read(state).groups[groupName].get(key)?.ids ?? EMPTY_ENTITY_IDS,
+        getIdsBySecondaryKey: (state, indexName, key) =>
+            read(state).secondaryIndexes[indexName].get(key)?.ids ?? EMPTY_ENTITY_IDS,
     };
 };
