@@ -18,10 +18,10 @@ const TooltipText = styled.span`
     text-decoration: underline dotted;
 `;
 
-interface TradingUtilsKycProps {
+type TradingUtilsKycProps = {
     kycType?: ExchangeKYCType;
     isForComparator?: boolean;
-}
+};
 
 const getKycPolicyTranslation = (kycType: ExchangeKYCType) => {
     switch (kycType) {
@@ -46,19 +46,32 @@ export const TradingUtilsKyc = ({ kycType, isForComparator }: TradingUtilsKycPro
     }
 
     if (isForComparator) {
-        if (kycType === KYC_DEX) {
+        if (kycType === KYC_DEX || kycType === KYC_NO_KYC) {
             return (
-                <Row alignItems="center" gap={4}>
-                    <Icon
-                        as={DetectiveIcon}
-                        color="contentBrand"
-                        size={12}
-                        data-testid="@trading/kyc/dex"
-                    />
-                    <Text typographyStyle="body-sm" color="contentBrand">
-                        <Translation id="TR_TRADING_KYC_ANONYMOUS" />
-                    </Text>
-                </Row>
+                <Tooltip
+                    content={
+                        kycType === KYC_DEX ? (
+                            <Translation id="TR_TRADING_KYC_NO_IDENTITY_VERIFICATION" />
+                        ) : (
+                            <Translation id="TR_TRADING_KYC_NO_KYC" />
+                        )
+                    }
+                    placement="bottom"
+                >
+                    <TooltipText>
+                        <Text typographyStyle="body-sm" color="contentBrand">
+                            <Row alignItems="center" gap={4}>
+                                <Icon
+                                    as={DetectiveIcon}
+                                    color="contentBrand"
+                                    size={12}
+                                    data-testid="@trading/kyc/no-kyc"
+                                />
+                                <Translation id="TR_TRADING_KYC_NO_KYC_LABEL" />
+                            </Row>
+                        </Text>
+                    </TooltipText>
+                </Tooltip>
             );
         }
 
@@ -68,18 +81,13 @@ export const TradingUtilsKyc = ({ kycType, isForComparator }: TradingUtilsKycPro
             return null;
         }
 
-        const kycTitle =
-            kycType === KYC_NO_KYC
-                ? 'TR_TRADING_KYC_POLICY_NEVER_REQUIRED'
-                : 'TR_TRADING_KYC_POLICY';
-
         return (
             <Tooltip content={kycPolicyTranslation} placement="bottom">
                 <TooltipText>
                     <Text color="contentWarning" typographyStyle="body-sm">
                         <Row gap={4}>
                             <Icon as={IdentificationCardIcon} color="contentWarning" size={12} />
-                            <Translation id={kycTitle} />
+                            <Translation id="TR_TRADING_KYC_POLICY" />
                         </Row>
                     </Text>
                 </TooltipText>
