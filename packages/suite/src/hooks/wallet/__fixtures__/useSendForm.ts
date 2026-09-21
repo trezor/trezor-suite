@@ -1399,48 +1399,6 @@ export const setMax: any[] = [
     },
 ];
 
-export const amountChange = [
-    {
-        description: 'Amount to Fiat calculation',
-        // input amount
-        // input amount with error
-        // change currency
-    },
-    {
-        description: 'Amount with error',
-        // input amount
-        // input amount with error
-        // change currency
-    },
-    {
-        description: 'Amount to Fiat calculation then Amount with error',
-        // input amount
-        // input amount with error
-        // change currency
-    },
-    {
-        description: 'Fiat to Amount calculation',
-        // input fiat
-        // input fiat with error
-        // change currency
-    },
-    {
-        description: 'Fiat with error',
-        // input fiat
-        // input fiat with error
-        // change currency
-    },
-    {
-        description: 'Fiat to Amount calculation then Fiat with error',
-        // input fiat
-        // input fiat with error
-        // change currency
-    },
-    {
-        description: 'Eth transaction with data (default amount set to 0)',
-    },
-];
-
 const getComposeResponse = (resp?: any) => ({
     success: true,
     payload: [
