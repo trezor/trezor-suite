@@ -67,8 +67,6 @@ interface TradingFormStateProps {
     isFormLoading: boolean;
     isFormInvalid: boolean;
     isLoadingOrInvalid: boolean;
-
-    toggleAmountInCrypto: () => void;
 }
 
 interface TradingCommonFormProps {

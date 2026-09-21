@@ -1,6 +1,6 @@
 import { useForm } from 'react-hook-form';
 
-import { act, waitFor } from '@testing-library/react';
+import { act } from '@testing-library/react';
 import { type CryptoId } from 'invity-api';
 
 import { createTestCompositionRoot, renderHookWithStoreProvider } from '@suite-common/test-utils';
@@ -172,18 +172,5 @@ describe('useSellFormInputs', () => {
 
         expect(result.current.methods.getValues('setMaxOutputId')).toBeUndefined();
         expect(result.current.inputs.fractionButton).toBe(4);
-    });
-
-    it('recalculates the crypto amount from the typed fiat amount after the debounce', async () => {
-        const { result } = renderSellFormInputs();
-
-        act(() => {
-            result.current.methods.setValue('outputs.0.fiat', '100');
-        });
-
-        await waitFor(
-            () => expect(result.current.methods.getValues('outputs.0.amount')).toBe('0.00200000'),
-            { timeout: 1500 },
-        );
     });
 });

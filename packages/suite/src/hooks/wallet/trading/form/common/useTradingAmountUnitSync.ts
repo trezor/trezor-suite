@@ -2,9 +2,7 @@ import { type UseFormReturn, useWatch } from 'react-hook-form';
 
 import {
     type TRADING_FORM_CRYPTO_INPUT,
-    type TRADING_FORM_FIAT_INPUT,
-    TRADING_FORM_OUTPUT_AMOUNT,
-    type TRADING_FORM_OUTPUT_FIAT,
+    type TRADING_FORM_OUTPUT_AMOUNT,
     TRADING_FORM_SEND_CRYPTO_CURRENCY_SELECT,
 } from '@suite-common/trading';
 import { type Account } from '@suite-common/wallet-types';
@@ -15,52 +13,34 @@ import {
 import { useDidUpdate } from '@trezor/react-utils';
 
 import { useBitcoinAmountUnit } from 'src/hooks/wallet/useBitcoinAmountUnit';
-import {
-    type TradingAllFormProps,
-    type TradingSellExchangeFormProps,
-} from 'src/types/trading/tradingForm';
-import { type SendContextValues } from 'src/types/wallet/sendForm';
+import { type TradingAllFormProps } from 'src/types/trading/tradingForm';
 
 import { useTradingAssetDecimals } from './useTradingAssetDecimals';
 
-interface TradingUseCurrencySwitcherProps<T extends TradingAllFormProps> {
+type UseTradingAmountUnitSyncProps<T extends TradingAllFormProps> = {
     account: Account | undefined;
     methods: UseFormReturn<T>;
-    inputNames: {
-        cryptoInput: typeof TRADING_FORM_CRYPTO_INPUT | typeof TRADING_FORM_OUTPUT_AMOUNT;
-        fiatInput: typeof TRADING_FORM_FIAT_INPUT | typeof TRADING_FORM_OUTPUT_FIAT;
-    };
-    composeRequest?: SendContextValues<TradingSellExchangeFormProps>['composeTransaction'];
-}
+    cryptoInputName: typeof TRADING_FORM_CRYPTO_INPUT | typeof TRADING_FORM_OUTPUT_AMOUNT;
+};
 
 /**
- * Hook for switching between crypto and fiat amount in trading Sell and Buy form
+ * Keeps the crypto amount in the bitcoin unit chosen in settings (BTC / sats).
  */
-export const useTradingCurrencySwitcher = <T extends TradingAllFormProps>({
+export const useTradingAmountUnitSync = <T extends TradingAllFormProps>({
     account,
     methods,
-    inputNames,
-    composeRequest,
-}: TradingUseCurrencySwitcherProps<T>) => {
+    cryptoInputName,
+}: UseTradingAmountUnitSyncProps<T>) => {
     const { setValue, getValues, control } =
         methods as unknown as UseFormReturn<TradingAllFormProps>;
     const { isBtcSatsAmountUnit: shouldSendInSats } = useBitcoinAmountUnit(account?.symbol);
-    const cryptoInputValue = useWatch({ control, name: inputNames.cryptoInput });
+    const cryptoInputValue = useWatch({ control, name: cryptoInputName });
     const sendCryptoSelect = getValues(TRADING_FORM_SEND_CRYPTO_CURRENCY_SELECT);
     const { getAssetDecimals } = useTradingAssetDecimals();
     const networkDecimals = getAssetDecimals({
         accountKey: sendCryptoSelect?.accountKey,
         cryptoId: sendCryptoSelect?.id,
     });
-
-    const toggleAmountInCrypto = () => {
-        const { amountInCrypto } = getValues();
-
-        setValue('amountInCrypto', !amountInCrypto);
-
-        // should be allowed only in sell/exchange
-        composeRequest?.(TRADING_FORM_OUTPUT_AMOUNT);
-    };
 
     useDidUpdate(() => {
         const conversion = shouldSendInSats
@@ -71,13 +51,9 @@ export const useTradingCurrencySwitcher = <T extends TradingAllFormProps>({
             return;
         }
 
-        setValue(inputNames.cryptoInput, conversion(cryptoInputValue, networkDecimals), {
+        setValue(cryptoInputName, conversion(cryptoInputValue, networkDecimals), {
             shouldValidate: true,
             shouldDirty: true,
         });
     }, [shouldSendInSats]);
-
-    return {
-        toggleAmountInCrypto,
-    };
 };
