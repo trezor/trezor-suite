@@ -142,7 +142,6 @@ export const useTradingSellTradeActions = () => {
                     trade: trade?.data,
                     shouldSendInSats,
                     decimals,
-                    // TODO: slip24 - exclude from debug mode
                     isSlip24Active,
                     nextStep,
                     signAndPushSendFormTransaction,

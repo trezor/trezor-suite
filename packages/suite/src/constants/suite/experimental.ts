@@ -25,7 +25,7 @@ export type ExperimentalFeatureConfig = {
     description: ExtendedMessageDescriptor;
     knowledgeBaseUrl?: Url;
     routeName?: Route['name'];
-    isDisabled?: (context: { isDebug: boolean }) => boolean;
+    isDisabled?: () => boolean;
     onToggle?: ({
         newValue,
         services,
@@ -62,7 +62,6 @@ export const EXPERIMENTAL_FEATURES: Record<ExperimentalFeature, ExperimentalFeat
     slip24: {
         title: { id: 'TR_EXPERIMENTAL_SLIP24' },
         description: { id: 'TR_EXPERIMENTAL_SLIP24_DESCRIPTION' },
-        isDisabled: ({ isDebug }) => !isDebug,
     },
     'experimental-networks': {
         title: {
