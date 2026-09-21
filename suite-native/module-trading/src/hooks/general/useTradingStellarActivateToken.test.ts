@@ -2,7 +2,7 @@ import type { BuyTrade, CryptoId, ExchangeTrade } from 'invity-api';
 
 import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { type Account } from '@suite-common/wallet-types';
-import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
+import { mockWalletAccount, networkSpecificDefaultStellar } from '@suite-common/wallet-types/mocks';
 import {
     act,
     createStoreFromPreloadedState,
@@ -15,8 +15,6 @@ import { useTradingStellarActivateToken } from './useTradingStellarActivateToken
 const mockDispatch = jest.fn();
 const mockNavigate = jest.fn();
 const mockShowAlert = jest.fn();
-const mockCryptoIdToNetworkAndContractAddress = jest.fn();
-const mockUseInactiveStellarTokens = jest.fn();
 const mockComposeStellarTrustlineFeesThunk = jest.fn();
 
 jest.mock('@reduxjs/toolkit', () => ({
@@ -39,11 +37,6 @@ jest.mock('@suite-native/intl', () => ({
     useTranslate: () => ({ translate: jest.fn(id => id) }),
 }));
 
-jest.mock('@suite-common/trading', () => ({
-    cryptoIdToNetworkAndContractAddress: (cryptoId?: string) =>
-        mockCryptoIdToNetworkAndContractAddress(cryptoId),
-}));
-
 jest.mock('@suite-native/trading-state', () => ({
     selectExchangeSelectedReceiveAccount: (state: {
         wallet: {
@@ -55,24 +48,34 @@ jest.mock('@suite-native/trading-state', () => ({
 jest.mock('@suite-native/module-stellar-token-management', () => ({
     composeStellarTrustlineFeesThunk: (payload: unknown) =>
         mockComposeStellarTrustlineFeesThunk(payload),
-    useInactiveStellarTokens: (accountKey?: string) => mockUseInactiveStellarTokens(accountKey),
 }));
 
-const RECEIVE_CRYPTO_ID = 'stellar:USDC' as CryptoId;
-const TOKEN_CONTRACT = 'USDC-GA123';
-const stellarAccount = mockWalletAccount({ symbol: asNetworkSymbol('xlm') });
+const TOKEN_CONTRACT = 'USDC-GA5ZSEJYB37JRC5AVCIA5MOP4RHTM335X2KGX3IHOJAPP5RE34K4KZVN';
+const RECEIVE_CRYPTO_ID = `stellar--${TOKEN_CONTRACT}` as CryptoId;
+const stellarAccount = mockWalletAccount(
+    { symbol: asNetworkSymbol('xlm') },
+    networkSpecificDefaultStellar,
+);
+const stellarAccountWithToken = mockWalletAccount(
+    {
+        symbol: asNetworkSymbol('xlm'),
+        tokens: [{ standard: 'STELLAR-CLASSIC', contract: TOKEN_CONTRACT, decimals: 7 }],
+    },
+    networkSpecificDefaultStellar,
+);
 const ACCOUNT_KEY = stellarAccount.key;
 
 const renderUseTradingStellarActivateToken = async (options?: {
     quote?: ExchangeTrade | BuyTrade;
     receiveCryptoId?: CryptoId;
     buttonTestId?: string;
+    account?: Account;
 }) => {
     const store = createStoreFromPreloadedState({
         wallet: {
             trading: {
                 exchange: {
-                    selectedReceiveAccount: { account: stellarAccount },
+                    selectedReceiveAccount: { account: options?.account ?? stellarAccount },
                 },
             },
         },
@@ -113,15 +116,6 @@ describe('useTradingStellarActivateToken', () => {
     beforeEach(() => {
         jest.clearAllMocks();
 
-        mockCryptoIdToNetworkAndContractAddress.mockReturnValue({
-            network: { networkType: 'stellar' },
-            contractAddress: TOKEN_CONTRACT,
-        });
-
-        mockUseInactiveStellarTokens.mockReturnValue({
-            inactiveTokens: [{ contract: TOKEN_CONTRACT }],
-        });
-
         mockComposeStellarTrustlineFeesThunk.mockImplementation(payload => ({
             type: 'composeStellarTrustlineFeesThunkMock',
             payload,
@@ -141,13 +135,20 @@ describe('useTradingStellarActivateToken', () => {
     });
 
     it('does not return activate button when token is already active', async () => {
-        mockUseInactiveStellarTokens.mockReturnValue({
-            inactiveTokens: [{ contract: 'AQUA-GB456' }],
-        });
-
         const { result } = await renderUseTradingStellarActivateToken({
             quote: { receive: 'USDC' } as ExchangeTrade,
             receiveCryptoId: RECEIVE_CRYPTO_ID,
+            account: stellarAccountWithToken,
+        });
+
+        expect(result.current.isReceivingInactiveStellarToken).toBe(false);
+        expect(result.current.activateButtonElement).toBeNull();
+    });
+
+    it('does not return activate button when receiving native XLM', async () => {
+        const { result } = await renderUseTradingStellarActivateToken({
+            quote: { receive: 'XLM' } as ExchangeTrade,
+            receiveCryptoId: 'stellar' as CryptoId,
         });
 
         expect(result.current.isReceivingInactiveStellarToken).toBe(false);

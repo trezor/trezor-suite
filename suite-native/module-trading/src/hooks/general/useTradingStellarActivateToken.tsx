@@ -8,14 +8,11 @@ import { type BuyTrade, type CryptoId, type ExchangeTrade } from 'invity-api';
 
 import { useServices } from '@suite-common/dependency-injection';
 import { injectDispatch } from '@suite-common/redux-utils';
-import { cryptoIdToNetworkAndContractAddress } from '@suite-common/trading';
+import { getInactiveStellarReceiveToken } from '@suite-common/trading';
 import { useAlert } from '@suite-native/alerts';
 import { AnimatedBox, Button } from '@suite-native/atoms';
 import { Translation, useTranslate } from '@suite-native/intl';
-import {
-    composeStellarTrustlineFeesThunk,
-    useInactiveStellarTokens,
-} from '@suite-native/module-stellar-token-management';
+import { composeStellarTrustlineFeesThunk } from '@suite-native/module-stellar-token-management';
 import {
     type RootStackParamList,
     RootStackRoutes,
@@ -26,17 +23,17 @@ import { selectExchangeSelectedReceiveAccount } from '@suite-native/trading-stat
 
 type NavigationProps = StackNavigationProps<RootStackParamList, RootStackRoutes.AppTabs>;
 
-interface UseTradingStellarActivateTokenProps {
+type UseTradingStellarActivateTokenParams = {
     quote?: ExchangeTrade | BuyTrade | undefined;
     receiveCryptoId?: CryptoId;
     buttonTestId?: string;
-}
+};
 
 export const useTradingStellarActivateToken = ({
     quote,
     receiveCryptoId,
     buttonTestId,
-}: UseTradingStellarActivateTokenProps) => {
+}: UseTradingStellarActivateTokenParams) => {
     const { dispatch } = useServices(injectDispatch);
     const { translate } = useTranslate();
     const { showAlert } = useAlert();
@@ -45,17 +42,12 @@ export const useTradingStellarActivateToken = ({
 
     const selectedReceiveAccount = useSelector(selectExchangeSelectedReceiveAccount);
 
-    const { network: receiveNetwork, contractAddress: receiveContractAddress } =
-        cryptoIdToNetworkAndContractAddress(receiveCryptoId);
+    const receiveContractAddress = getInactiveStellarReceiveToken({
+        account: selectedReceiveAccount?.account,
+        receiveCryptoId,
+    })?.contract;
 
-    const { inactiveTokens } = useInactiveStellarTokens(selectedReceiveAccount?.account.key);
-
-    const isReceivingInactiveStellarToken =
-        receiveNetwork?.networkType === 'stellar' &&
-        !!quote &&
-        !!selectedReceiveAccount &&
-        !!receiveContractAddress &&
-        inactiveTokens.some(token => token.contract === receiveContractAddress);
+    const isReceivingInactiveStellarToken = !!quote && !!receiveContractAddress;
 
     const [isComposingFees, setIsComposingFees] = useState(false);
 
