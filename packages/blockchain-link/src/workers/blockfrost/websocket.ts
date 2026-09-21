@@ -47,6 +47,10 @@ export class BlockfrostAPI extends BaseWebsocket<BlockfrostEvents> {
         return this.send('ESTIMATE_FEE', payload);
     }
 
+    getProtocolParameters() {
+        return this.send('GET_PROTOCOL_PARAMETERS');
+    }
+
     getAccountInfo(payload: AccountInfoParams) {
         return this.send('GET_ACCOUNT_INFO', payload);
     }

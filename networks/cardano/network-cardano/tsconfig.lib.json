@@ -6,7 +6,8 @@
     },
     "include": ["./src"],
     "references": [
-        { "path": "../coin-selection" },
-        { "path": "../../../packages/utils" }
+        {
+            "path": "../network-cardano-coin-selection"
+        }
     ]
 }

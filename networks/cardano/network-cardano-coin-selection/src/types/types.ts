@@ -144,8 +144,32 @@ export type Certificate =
     | CertificateStakePoolRegistration
     | CertificateVoteDelegation;
 
+/**
+ * Cardano protocol parameters the coin selection depends on. All lovelace amounts are decimal
+ * strings, matching the Blockfrost `epochs/latest/parameters` representation.
+ */
+export type ProtocolParams = {
+    /** Linear fee coefficient, lovelace per transaction byte (`min_fee_a`). */
+    minFeeA: string;
+    /** Linear fee constant in lovelace (`min_fee_b`). */
+    minFeeB: string;
+    /** Stake key registration deposit in lovelace (`key_deposit`). */
+    keyDeposit: string;
+    /** Stake pool registration deposit in lovelace (`pool_deposit`). */
+    poolDeposit: string;
+    /** Cost of one UTXO byte in lovelace, drives the minimum ADA per output (`coins_per_utxo_size`). */
+    coinsPerUtxoByte: string;
+    /** Maximum serialized size of an output value in bytes (`max_val_size`). */
+    maxValueSize: number;
+    /** Maximum transaction size in bytes (`max_tx_size`). */
+    maxTxSize: number;
+};
+
 export interface Options {
+    /** Per-fee-level override of `protocolParams.minFeeA`. */
     feeParams?: { a: string };
+    /** Live protocol parameters; `DEFAULT_PROTOCOL_PARAMS` is used when omitted. */
+    protocolParams?: ProtocolParams;
     debug?: boolean;
     forceLargestFirstSelection?: boolean;
     _maxTokensPerOutput?: number;

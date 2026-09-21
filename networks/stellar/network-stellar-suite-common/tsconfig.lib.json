@@ -1,21 +1,13 @@
 {
     "extends": "../../../tsconfig.lib.json",
-    "compilerOptions": {
-        "outDir": "./lib"
-    },
+    "compilerOptions": { "outDir": "./lib" },
     "include": ["./src"],
     "references": [
         {
             "path": "../../network-module/suite-common/suite-common-types"
         },
-        {
-            "path": "../network-stellar"
-        },
-        {
-            "path": "../network-stellar-assets"
-        },
-        {
-            "path": "../network-stellar-types"
-        }
+        { "path": "../network-stellar" },
+        { "path": "../network-stellar-assets" },
+        { "path": "../network-stellar-types" }
     ]
 }
