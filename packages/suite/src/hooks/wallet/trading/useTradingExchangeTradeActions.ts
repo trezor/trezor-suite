@@ -136,7 +136,6 @@ export const useTradingExchangeTradeActions = () => {
                     setMaxOutputId: undefined,
                     decimals,
                     shouldSendInSats,
-                    // TODO: slip24 - exclude from debug mode
                     isSlip24Active,
                     nextStep,
                     processResponseData,

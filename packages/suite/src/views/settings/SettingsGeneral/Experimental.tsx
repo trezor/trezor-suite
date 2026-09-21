@@ -1,8 +1,5 @@
-import { useMemo } from 'react';
-
 import { AnimatePresence, motion } from 'framer-motion';
 
-import { selectIsDebugModeActive } from '@suite/debug';
 import { type ExperimentalFeature } from '@suite/experimental';
 import { LearnMoreButton } from '@suite/external-links';
 import { feedbackRequested } from '@suite/feature-feedback';
@@ -20,6 +17,10 @@ import { typedObjectKeys } from '@trezor/utils';
 import { EXPERIMENTAL_FEATURES } from 'src/constants/suite/experimental';
 import { useSelector } from 'src/hooks/suite';
 import { selectSuiteServices } from 'src/support/createSuiteCompositionRoot';
+
+const experimentalFeatures = typedObjectKeys(EXPERIMENTAL_FEATURES).filter(
+    feature => !EXPERIMENTAL_FEATURES[feature]?.isDisabled?.(),
+);
 
 type FeatureLineProps = {
     feature: ExperimentalFeature;
@@ -119,7 +120,6 @@ const bannerMotionDivProps = {
 export const Experimental = () => {
     const enabledFeatures = useSelector(selectExperimentalFeatures);
     const isExperimentalEnabled = enabledFeatures !== undefined;
-    const isDebug = useSelector(selectIsDebugModeActive);
 
     const { dispatch } = useServices(injectDispatch);
     const services = useImperativeServices(selectSuiteServices);
@@ -139,17 +139,6 @@ export const Experimental = () => {
             ),
         );
     };
-
-    const experimentalFeatures = useMemo(
-        () =>
-            typedObjectKeys(EXPERIMENTAL_FEATURES).filter(
-                feature =>
-                    !EXPERIMENTAL_FEATURES[feature]?.isDisabled?.({
-                        isDebug,
-                    }),
-            ),
-        [isDebug],
-    );
 
     return (
         <>
