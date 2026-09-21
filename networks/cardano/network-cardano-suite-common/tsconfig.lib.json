@@ -1,8 +1,6 @@
 {
     "extends": "../../../tsconfig.lib.json",
-    "compilerOptions": {
-        "outDir": "./lib"
-    },
+    "compilerOptions": { "outDir": "./lib" },
     "include": ["./src"],
     "references": [
         {
@@ -11,15 +9,9 @@
         {
             "path": "../../../packages/device-utils"
         },
-        {
-            "path": "../network-cardano"
-        },
-        {
-            "path": "../network-cardano-assets"
-        },
-        {
-            "path": "../network-cardano-types"
-        },
+        { "path": "../network-cardano" },
+        { "path": "../network-cardano-assets" },
+        { "path": "../network-cardano-types" },
         {
             "path": "../../network-module/network-module-suite-common-types"
         }

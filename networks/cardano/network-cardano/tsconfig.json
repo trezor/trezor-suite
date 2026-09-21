@@ -3,7 +3,8 @@
     "compilerOptions": { "outDir": "libDev" },
     "include": ["src", "scripts", "**/*.json"],
     "references": [
-        { "path": "../coin-selection" },
-        { "path": "../../../packages/utils" }
+        {
+            "path": "../network-cardano-coin-selection"
+        }
     ]
 }

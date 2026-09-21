@@ -230,6 +230,13 @@ export class BlockchainLink extends TypedEmitter<Events> {
         });
     }
 
+    /** Get current Cardano protocol parameters (fees, deposits, size limits). Blockfrost backend only. */
+    getCardanoProtocolParameters(): Promise<ResponseTypes.GetCardanoProtocolParameters['payload']> {
+        return this.sendMessage({
+            type: MESSAGES.GET_CARDANO_PROTOCOL_PARAMETERS,
+        });
+    }
+
     rpcCall(payload: MessageTypes.RpcCall['payload']): Promise<ResponseTypes.RpcCall['payload']> {
         return this.sendMessage({
             type: MESSAGES.RPC_CALL,
