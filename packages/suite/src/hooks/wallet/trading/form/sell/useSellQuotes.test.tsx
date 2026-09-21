@@ -1,4 +1,4 @@
-import { useForm, useWatch } from 'react-hook-form';
+import { type RegisterOptions, type Resolver, useForm, useWatch } from 'react-hook-form';
 
 import { act, waitFor } from '@testing-library/react';
 import { type CryptoId, type SellFiatTrade } from 'invity-api';
@@ -8,6 +8,7 @@ import { mockDesktopAnalytics } from '@suite/analytics/mocks';
 import { type WithServices } from '@suite-common/redux-utils';
 import { createTestCompositionRoot, renderHookWithStoreProvider } from '@suite-common/test-utils';
 import {
+    TRADING_FORM_OUTPUT_AMOUNT,
     type TradingAssetSellOption,
     type TradingSellFormProps,
     sellInitialState,
@@ -127,13 +128,16 @@ const wait = (ms: number) =>
             }),
     );
 
+type RenderSellQuotesOptions = {
+    resolver?: Resolver<TradingSellFormProps>;
+    amountRules?: RegisterOptions<TradingSellFormProps, typeof TRADING_FORM_OUTPUT_AMOUNT>;
+    validateAmount?: (sendCryptoSelect: TradingAssetSellOption | undefined) => true | string;
+};
+
 const renderSellQuotes = (
     defaultValues: TradingSellFormProps,
-    options: {
-        validateAmount?: (sendCryptoSelect: TradingAssetSellOption | undefined) => true | string;
-    } = {},
+    { resolver, amountRules, validateAmount }: RenderSellQuotesOptions = {},
 ) => {
-    const { validateAmount } = options;
     const initialProps: { currentNetwork: Network | undefined } = {
         currentNetwork: getNetwork(btcSymbol),
     };
@@ -155,6 +159,7 @@ const renderSellQuotes = (
             const methods = useForm<TradingSellFormProps>({
                 mode: 'onChange',
                 defaultValues,
+                resolver,
             });
             const sendCryptoSelect = useWatch({
                 control: methods.control,
@@ -167,6 +172,9 @@ const renderSellQuotes = (
                 });
             }
 
+            if (amountRules) {
+                methods.register(TRADING_FORM_OUTPUT_AMOUNT, amountRules);
+            }
             useSellQuotes({
                 methods,
                 network: currentNetwork,
@@ -298,6 +306,19 @@ describe('useSellQuotes', () => {
         );
     });
 
+    it('does not fetch while the active amount is invalid', async () => {
+        const { result } = renderSellQuotes(VALID_DEFAULTS, {
+            amountRules: { validate: () => 'invalid' },
+        });
+
+        await act(async () => {
+            await result.current.trigger();
+        });
+        await wait(NO_REFETCH_WAIT_MS);
+
+        expect(mockHandleRequest).not.toHaveBeenCalled();
+    });
+
     it('aborts and stops requesting when the active amount is cleared', async () => {
         const { result } = renderSellQuotes(VALID_DEFAULTS);
 
@@ -333,6 +354,20 @@ describe('useSellQuotes', () => {
                 payload: { type: 'sell', count: QUOTES.length, input: 'base-currency' },
             }),
         );
+    });
+
+    it('fetches despite an invalid field outside the active amount (custom fee)', async () => {
+        const invalidFeeResolver: Resolver<TradingSellFormProps> = () => ({
+            values: {},
+            errors: { feePerUnit: { type: 'manual', message: 'invalid' } },
+        });
+        const { result } = renderSellQuotes(VALID_DEFAULTS, { resolver: invalidFeeResolver });
+
+        await act(async () => {
+            await result.current.trigger();
+        });
+
+        await waitFor(() => expect(mockHandleRequest).toHaveBeenCalledTimes(1), { timeout: 1500 });
     });
 
     it('clears quotes eagerly when the network becomes undefined', async () => {
