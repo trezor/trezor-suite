@@ -5,9 +5,10 @@
 import { type UnknownAction, isAction } from '@reduxjs/toolkit';
 
 import { type BluetoothReducerDeps, bluetoothActions } from '@suite-common/bluetooth';
-import { deviceInitialState } from '@suite-common/device';
+import { deviceActions, deviceInitialState } from '@suite-common/device';
 import { firmwareInitialState } from '@suite-common/firmware';
 import { mockActionType } from '@suite-common/redux-utils/mocks';
+import { asDeviceUniquePath } from '@trezor/connect';
 import { bluetoothIpc } from '@trezor/transport-bluetooth';
 
 import { createBackgroundScan } from './bluetoothBackgroundScan';
@@ -25,6 +26,24 @@ import {
 import { mockDesktopBluetoothDevice } from '../mocks/mockDesktopBluetoothDevice';
 
 const device = mockDesktopBluetoothDevice({});
+const disconnectedDevice = mockDesktopBluetoothDevice({
+    connectionStatus: { type: 'disconnected' },
+});
+
+const suiteDevice: Parameters<typeof deviceActions.deviceDisconnect>[0] = {
+    type: 'unacquired',
+    path: asDeviceUniquePath('test-path'),
+    name: 'Test device',
+    label: 'Unacquired device',
+    descriptor: { apiType: 'bluetooth', id: device.id },
+    connected: false,
+    available: false,
+    ts: 0,
+    firstConnectedTimestamp: 0,
+    buttonRequests: [],
+    metadata: {},
+    passwords: {},
+};
 
 describe('prepareBluetoothMiddleware', () => {
     let state: BluetoothServiceRootState;
@@ -85,6 +104,24 @@ describe('prepareBluetoothMiddleware', () => {
         await jest.advanceTimersByTimeAsync(0);
 
         expect(bluetoothIpc.startScan).toHaveBeenCalledWith('background');
+    });
+
+    it('starts scanning when a Connect device disconnects while a known device is unreachable', async () => {
+        state.bluetooth.knownDevices = [disconnectedDevice];
+
+        dispatch(deviceActions.deviceDisconnect(suiteDevice));
+        await jest.advanceTimersByTimeAsync(0);
+
+        expect(bluetoothIpc.startScan).toHaveBeenCalledWith('background');
+    });
+
+    it('does not start scanning on an action that cannot change device reachability', async () => {
+        state.bluetooth.knownDevices = [disconnectedDevice];
+
+        dispatch(bluetoothActions.scanStatusAction({ status: 'running' }));
+        await jest.advanceTimersByTimeAsync(0);
+
+        expect(bluetoothIpc.startScan).not.toHaveBeenCalled();
     });
 
     it('stops scanning as soon as the last disconnected device becomes connected', async () => {
