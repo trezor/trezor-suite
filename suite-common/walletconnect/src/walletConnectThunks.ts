@@ -1,12 +1,5 @@
 import { unwrapResult } from '@reduxjs/toolkit';
 import { type IWalletKit, type WalletKitTypes } from '@reown/walletkit';
-import { Core } from '@walletconnect/core';
-import {
-    buildApprovedNamespaces,
-    buildAuthObject,
-    getSdkError,
-    populateAuthPayload,
-} from '@walletconnect/utils';
 
 import { type AnalyticsDep, events } from '@suite-common/analytics';
 import * as trezorConnectPopupActions from '@suite-common/connect-popup';
@@ -56,6 +49,9 @@ const sessionAuthenticateThunk = createThunk<
     },
     { state: SessionAuthenticateThunkState; extra: SessionAuthenticateThunkDeps }
 >(`${WALLETCONNECT_MODULE}/sessionAuthenticateThunk`, async ({ event }, { getState, dispatch }) => {
+    const { buildAuthObject, getSdkError, populateAuthPayload } =
+        await import('@walletconnect/utils');
+
     // Support for Sign-In with Ethereum (SIWE) message, enhanced by ReCaps (ReCap Capabilities)
     try {
         const accounts = selectAllSuccessfulAccountsToList(getState());
@@ -244,6 +240,8 @@ export const switchSelectedAccountThunk = createThunk<
         if (!session) {
             return console.warn(`Session with topic ${sessionTopic} not found`);
         }
+
+        const { buildApprovedNamespaces } = await import('@walletconnect/utils');
         const approvedNamespaces = buildApprovedNamespaces({
             // @ts-expect-error originally only takes proposal, but this works
             proposal: {
@@ -312,6 +310,7 @@ export const sessionProposalApproveThunk = createThunk<
 >(
     `${WALLETCONNECT_MODULE}/sessionProposalApproveThunk`,
     async ({ eventId, selectedDefaultAccount }, { dispatch, getState, extra }) => {
+        const { getSdkError, buildApprovedNamespaces } = await import('@walletconnect/utils');
         try {
             const pendingProposal = selectPendingProposal(getState());
             if (pendingProposal?.eventId !== eventId || pendingProposal.expired) {
@@ -394,6 +393,7 @@ export const sessionProposalRejectThunk = createThunk<
 >(
     `${WALLETCONNECT_MODULE}/sessionProposalRejectThunk`,
     async ({ eventId }, { getState, dispatch, extra }) => {
+        const { getSdkError } = await import('@walletconnect/utils');
         await walletKit.rejectSession({
             id: eventId,
             reason: getSdkError('USER_REJECTED'),
@@ -426,13 +426,16 @@ export const walletConnectInitThunk = createThunk<
 >(`${WALLETCONNECT_MODULE}/walletConnectInitThunk`, async (_, { dispatch, extra }) => {
     if (walletKit) return;
 
+    const [{ Core }, { WalletKit }] = await Promise.all([
+        import('@walletconnect/core'),
+        import('@reown/walletkit'),
+    ] as const);
+
     const core = new Core({
         projectId: PROJECT_ID,
         telemetryEnabled: false,
         logger: isDevEnv ? 'warn' : 'silent',
     });
-
-    const { WalletKit } = await import('@reown/walletkit');
 
     walletKit = await WalletKit.init({
         core,
@@ -507,6 +510,8 @@ export const walletConnectPairThunk = createThunk<
 export const walletConnectDisconnectThunk = createThunk<void, { topic: string }, void>(
     `${WALLETCONNECT_MODULE}/walletConnectDisconnectThunk`,
     async ({ topic }, { dispatch }) => {
+        const { getSdkError } = await import('@walletconnect/utils');
+
         await dispatch(walletConnectActions.removeSession({ topic }));
         await walletKit.disconnectSession({ topic, reason: getSdkError('USER_DISCONNECTED') });
     },
