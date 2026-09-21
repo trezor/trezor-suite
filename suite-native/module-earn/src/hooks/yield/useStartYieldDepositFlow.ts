@@ -26,6 +26,8 @@ import {
 import { isWrappedNativeToken } from '@trezor/network-ethereum-suite-common';
 import { BigNumber } from '@trezor/utils';
 
+import { hasYieldDepositableBalance } from '../../utils/earn/contractTokenBalanceUtils';
+
 type NavigationProps = StackNavigationProps<YieldStackParamList, YieldStackRoutes.YieldConsents>;
 
 type UseStartYieldDepositFlowParams = {
@@ -37,6 +39,8 @@ type UseStartYieldDepositFlowParams = {
 
 type YieldDepositStepId = (typeof YIELD_FLOW_AVAILABLE_STEPS)['deposit'][number];
 
+export type YieldDepositFlowStartDestination = 'deposit-form' | 'insufficient-balance-screen';
+
 // Keyed by the deposit sequence, so adding a step to it stops compiling until it is mapped here.
 const DEPOSIT_STEP_ROUTES = {
     wrap: YieldStackRoutes.YieldDepositWrap,
@@ -47,6 +51,9 @@ const DEPOSIT_STEP_ROUTES = {
 
 const isYieldDepositStep = (step: YieldFlowStepId): step is YieldDepositStepId =>
     step in DEPOSIT_STEP_ROUTES;
+
+type YieldDepositFlowRoute =
+    (typeof DEPOSIT_STEP_ROUTES)[YieldDepositStepId] | YieldStackRoutes.YieldDepositNoBalance;
 
 export const useStartYieldDepositFlow = ({
     flowData,
@@ -60,66 +67,87 @@ export const useStartYieldDepositFlow = ({
     const isStartingDepositFlowRef = useRef(false);
     const [isStartingDepositFlow, setIsStartingDepositFlow] = useState(false);
 
-    const handleStartYieldDepositFlow = useCallback(async (): Promise<boolean> => {
-        if (isStartingDepositFlowRef.current || !flowData || !flowKey) {
-            return false;
-        }
-
-        const sessionParams = { flowType: 'deposit' as const, flowKey };
-        const isWrappedNativeVault = isWrappedNativeToken(
-            flowData.account.symbol,
-            flowData.token.contractAddress,
-        );
-
-        isStartingDepositFlowRef.current = true;
-        setIsStartingDepositFlow(true);
-
-        const navigateToDepositStep = (step: YieldFlowStepId) => {
-            // 'unwrap' belongs to the withdraw sequence only, so a deposit session never reports
-            // it; staying put beats navigating to an unrelated step.
-            if (!isYieldDepositStep(step)) {
-                return;
+    const handleStartYieldDepositFlow =
+        useCallback(async (): Promise<YieldDepositFlowStartDestination | null> => {
+            if (isStartingDepositFlowRef.current || !flowData || !flowKey) {
+                return null;
             }
 
-            if (shouldReplaceRoute) {
-                navigation.replace(DEPOSIT_STEP_ROUTES[step], routeParams);
-            } else {
-                navigation.navigate(DEPOSIT_STEP_ROUTES[step], routeParams);
-            }
-        };
-
-        const navigateBySessionStep = () => {
-            const session = selectYieldSession(store.getState(), 'deposit', flowKey);
-
-            navigateToDepositStep(session.step);
-        };
-
-        try {
-            const existingSession = selectYieldSessionByFlowKey(
-                store.getState(),
-                'deposit',
-                flowKey,
+            const sessionParams = { flowType: 'deposit' as const, flowKey };
+            const isWrappedNativeVault = isWrappedNativeToken(
+                flowData.account.symbol,
+                flowData.token.contractAddress,
             );
 
-            if (existingSession?.action.pendingTransaction) {
-                navigateToDepositStep(existingSession.step);
+            isStartingDepositFlowRef.current = true;
+            setIsStartingDepositFlow(true);
 
-                return true;
-            }
+            const navigateToRoute = (route: YieldDepositFlowRoute) => {
+                if (shouldReplaceRoute) {
+                    navigation.replace(route, routeParams);
+                } else {
+                    navigation.navigate(route, routeParams);
+                }
+            };
 
-            dispatch(yieldActions.resetSession({ ...sessionParams, isWrappedNativeVault }));
+            const navigateToDepositStep = (step: YieldFlowStepId) => {
+                // 'unwrap' belongs to the withdraw sequence only, so a deposit session never reports
+                // it; staying put beats navigating to an unrelated step.
+                if (!isYieldDepositStep(step)) {
+                    return;
+                }
 
-            if (isWrappedNativeVault) {
-                const trackResponse = await dispatch(
-                    trackWrappedNativeTokenThunk({ accountKey: flowData.account.key }),
+                navigateToRoute(DEPOSIT_STEP_ROUTES[step]);
+            };
+
+            const navigateBySessionStep = () => {
+                const session = selectYieldSession(store.getState(), 'deposit', flowKey);
+
+                navigateToDepositStep(session.step);
+            };
+
+            try {
+                const existingSession = selectYieldSessionByFlowKey(
+                    store.getState(),
+                    'deposit',
+                    flowKey,
                 );
-                const wrappedTokenBalance = isFulfilled(trackResponse)
-                    ? (trackResponse.payload ?? flowData.token.balance)
-                    : flowData.token.balance;
+
+                if (existingSession?.action.pendingTransaction) {
+                    navigateToDepositStep(existingSession.step);
+
+                    return 'deposit-form';
+                }
+
+                let vaultTokenBalance = flowData.token.balance;
+
+                if (isWrappedNativeVault) {
+                    const trackResponse = await dispatch(
+                        trackWrappedNativeTokenThunk({ accountKey: flowData.account.key }),
+                    );
+
+                    if (isFulfilled(trackResponse) && trackResponse.payload !== null) {
+                        vaultTokenBalance = trackResponse.payload;
+                    }
+                }
+
+                if (
+                    !hasYieldDepositableBalance({
+                        account: flowData.account,
+                        vaultTokenContract: flowData.token.contractAddress,
+                        tokenBalance: vaultTokenBalance,
+                    })
+                ) {
+                    navigateToRoute(YieldStackRoutes.YieldDepositNoBalance);
+
+                    return 'insufficient-balance-screen';
+                }
+
+                dispatch(yieldActions.resetSession({ ...sessionParams, isWrappedNativeVault }));
 
                 // Mirrors desktop: holding any wrapped token skips the wrap step up front; the
                 // user can still come back to it from the approve step.
-                if (new BigNumber(wrappedTokenBalance).gt(0)) {
+                if (isWrappedNativeVault && new BigNumber(vaultTokenBalance).gt(0)) {
                     dispatch(
                         yieldActions.resolveWrappedNativeStep({
                             ...sessionParams,
@@ -127,31 +155,30 @@ export const useStartYieldDepositFlow = ({
                         }),
                     );
                 }
-            }
 
-            const response = await dispatch(
-                initYieldAllowanceThunk({
-                    ...sessionParams,
-                    flowData,
-                }),
-            );
+                const response = await dispatch(
+                    initYieldAllowanceThunk({
+                        ...sessionParams,
+                        flowData,
+                    }),
+                );
 
-            if (!isFulfilled(response)) {
+                if (!isFulfilled(response)) {
+                    navigateBySessionStep();
+
+                    return 'deposit-form';
+                }
+
                 navigateBySessionStep();
-
-                return true;
+            } catch {
+                navigateBySessionStep();
+            } finally {
+                isStartingDepositFlowRef.current = false;
+                setIsStartingDepositFlow(false);
             }
 
-            navigateBySessionStep();
-        } catch {
-            navigateBySessionStep();
-        } finally {
-            isStartingDepositFlowRef.current = false;
-            setIsStartingDepositFlow(false);
-        }
-
-        return true;
-    }, [dispatch, flowData, flowKey, navigation, routeParams, store, shouldReplaceRoute]);
+            return 'deposit-form';
+        }, [dispatch, flowData, flowKey, navigation, routeParams, store, shouldReplaceRoute]);
 
     return {
         handleStartYieldDepositFlow,

@@ -1,36 +1,13 @@
-import { SlideInDown } from 'react-native-reanimated';
 import { useSelector } from 'react-redux';
 
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { type StakeRootState, selectApy } from '@suite-common/wallet-core';
 import { isApyAvailable } from '@suite-common/wallet-utils';
-import { AnimatedBox, Box, Button, ScreenFooterGradient } from '@suite-native/atoms';
+import { Button } from '@suite-native/atoms';
 import { Translation, useTranslate } from '@suite-native/intl';
-import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
 import { EarnEstimatedRewards } from '../earn/EarnEstimatedRewards';
-
-const screenFooterStyle = prepareNativeStyle(utils => ({
-    paddingHorizontal: utils.spacings.sp16,
-    paddingBottom: utils.spacings.sp16,
-    backgroundColor: utils.colors.surfaceFillPage,
-}));
-
-const rewardsBoxStyle = prepareNativeStyle(utils => ({
-    backgroundColor: utils.colors.elementFillBrandSoft,
-    borderTopLeftRadius: utils.borders.radii.r16,
-    borderTopRightRadius: utils.borders.radii.r16,
-    borderBottomLeftRadius: utils.borders.radii.r24,
-    borderBottomRightRadius: utils.borders.radii.r24,
-    paddingBottom: utils.spacings.sp48,
-}));
-
-const continueButtonStyle = prepareNativeStyle<{ isRewardsBoxVisible: boolean }>(
-    (utils, { isRewardsBoxVisible }) => ({
-        borderRadius: utils.borders.radii.round,
-        marginTop: isRewardsBoxVisible ? -utils.spacings.sp32 : 0,
-    }),
-);
+import { EarnScreenFooter } from '../earn/EarnScreenFooter';
 
 type StakingFormScreenFooterProps = {
     symbol: NetworkSymbol;
@@ -45,45 +22,33 @@ export const StakingFormScreenFooter = ({
     isDisabled,
     onPress,
 }: StakingFormScreenFooterProps) => {
-    const { applyStyle } = useNativeStyles();
     const { translate } = useTranslate();
 
     const apy = useSelector((state: StakeRootState) => selectApy(state, { networkSymbol: symbol }));
 
-    const buttonIntent = isDisabled ? 'neutral' : 'brand';
-    const buttonPriority = isDisabled ? 'secondary' : 'primary';
     const isRewardsBoxVisible = isApyAvailable(apy) && !!amountValue && !isDisabled;
 
     return (
-        <AnimatedBox entering={SlideInDown}>
-            <ScreenFooterGradient />
-            <Box style={applyStyle(screenFooterStyle)}>
-                {isRewardsBoxVisible && (
-                    <Box style={applyStyle(rewardsBoxStyle)}>
-                        <Box paddingTop="sp12">
-                            <EarnEstimatedRewards
-                                amountValue={amountValue}
-                                apy={apy}
-                                label={
-                                    <Translation id="earn.earnFormScreen.estimatedRewardsLabel" />
-                                }
-                                symbol={symbol}
-                            />
-                        </Box>
-                    </Box>
-                )}
-                <Button
-                    accessibilityRole="button"
-                    accessibilityLabel={translate('generic.validateForm')}
-                    intent={buttonIntent}
-                    priority={buttonPriority}
-                    onPress={onPress}
-                    isDisabled={isDisabled}
-                    style={applyStyle(continueButtonStyle, { isRewardsBoxVisible })}
-                >
-                    <Translation id="generic.buttons.continue" />
-                </Button>
-            </Box>
-        </AnimatedBox>
+        <EarnScreenFooter
+            estimatedRewards={
+                isRewardsBoxVisible && (
+                    <EarnEstimatedRewards
+                        amountValue={amountValue}
+                        apy={apy}
+                        label={<Translation id="earn.earnFormScreen.estimatedRewardsLabel" />}
+                        symbol={symbol}
+                    />
+                )
+            }
+        >
+            <Button
+                accessibilityRole="button"
+                accessibilityLabel={translate('generic.validateForm')}
+                onPress={onPress}
+                isDisabled={isDisabled}
+            >
+                <Translation id="generic.buttons.continue" />
+            </Button>
+        </EarnScreenFooter>
     );
 };

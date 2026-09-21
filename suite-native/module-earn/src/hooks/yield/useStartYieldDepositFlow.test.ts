@@ -9,6 +9,7 @@ import {
     fetchAllowance,
     fetchWrappedNativeTokenInfo,
     selectYieldSession,
+    selectYieldSessionByFlowKey,
     yieldActions,
     yieldReducer,
 } from '@suite-common/wallet-core';
@@ -23,7 +24,10 @@ import {
 } from '@suite-native/test-utils-store';
 import { BigNumber } from '@trezor/utils';
 
-import { useStartYieldDepositFlow } from './useStartYieldDepositFlow';
+import {
+    type YieldDepositFlowStartDestination,
+    useStartYieldDepositFlow,
+} from './useStartYieldDepositFlow';
 
 type State = YieldRootState & AccountsRootState;
 
@@ -65,8 +69,11 @@ const account = {
     symbol: 'eth',
     networkType: 'ethereum',
     descriptor: ownerAddress,
+    formattedBalance: '0',
     tokens: [],
 } as unknown as Account;
+
+const accountWithNativeBalance = { ...account, formattedBalance: '1' } as Account;
 
 const vault = {
     id: yieldId,
@@ -107,6 +114,7 @@ const wethRouteParams = {
 
 const wethFlowData = {
     ...flowData,
+    account: accountWithNativeBalance,
     token: {
         balance: '0',
         contractAddress: wethTokenContract,
@@ -297,6 +305,77 @@ describe('useStartYieldDepositFlow', () => {
         );
     });
 
+    it('navigates to the no-balance screen when the vault token balance is zero', async () => {
+        const store = buildStore(accountWithNativeBalance);
+        const { result } = await renderUseStartYieldDepositFlow(store, {
+            ...defaultHookParams,
+            flowData: {
+                ...flowData,
+                account: accountWithNativeBalance,
+                token: { ...flowData.token, balance: '0' },
+            },
+        });
+
+        let destination: YieldDepositFlowStartDestination | null = null;
+        await act(async () => {
+            destination = await result.current.handleStartYieldDepositFlow();
+        });
+
+        expect(destination).toBe('insufficient-balance-screen');
+        expect(mockNavigate).toHaveBeenCalledWith(
+            YieldStackRoutes.YieldDepositNoBalance,
+            routeParams,
+        );
+        expect(fetchAllowanceMock).not.toHaveBeenCalled();
+        expect(
+            selectYieldSessionByFlowKey(store.getState() as YieldRootState, 'deposit', flowKey),
+        ).toBeNull();
+    });
+
+    it('navigates to the no-balance screen when a wrapped-native vault has no native nor wrapped balance', async () => {
+        const store = buildStore();
+        const { result } = await renderUseStartYieldDepositFlow(store, {
+            ...wethHookParams,
+            flowData: { ...wethFlowData, account },
+        });
+
+        await act(async () => {
+            await result.current.handleStartYieldDepositFlow();
+        });
+
+        expect(fetchWrappedNativeTokenInfoMock).toHaveBeenCalled();
+        expect(mockNavigate).toHaveBeenCalledWith(
+            YieldStackRoutes.YieldDepositNoBalance,
+            wethRouteParams,
+        );
+        expect(fetchAllowanceMock).not.toHaveBeenCalled();
+    });
+
+    it('starts the flow when a wrapped-native vault has only an untracked wrapped balance', async () => {
+        const store = buildStore();
+        fetchWrappedNativeTokenInfoMock.mockResolvedValue({
+            standard: 'ERC20',
+            contract: wethTokenContract,
+            symbol: 'WETH',
+            name: 'Wrapped Ether',
+            decimals: 18,
+            balance: '2500000000000000000',
+        });
+        const { result } = await renderUseStartYieldDepositFlow(store, {
+            ...wethHookParams,
+            flowData: { ...wethFlowData, account },
+        });
+
+        await act(async () => {
+            await result.current.handleStartYieldDepositFlow();
+        });
+
+        expect(mockNavigate).toHaveBeenCalledWith(
+            YieldStackRoutes.YieldDepositApproval,
+            wethRouteParams,
+        );
+    });
+
     it('guards duplicate starts while allowance initialization is pending', async () => {
         const store = buildStore();
         let resolveAllowance: (value: ReturnType<typeof allowanceSubunits>) => void = () => {};
@@ -306,8 +385,9 @@ describe('useStartYieldDepositFlow', () => {
             }),
         );
         const { result } = await renderUseStartYieldDepositFlow(store);
-        let startPromise: Promise<boolean> = Promise.resolve(false);
-        let duplicateStartPromise: Promise<boolean> = Promise.resolve(false);
+        let startPromise: Promise<YieldDepositFlowStartDestination | null> = Promise.resolve(null);
+        let duplicateStartPromise: Promise<YieldDepositFlowStartDestination | null> =
+            Promise.resolve(null);
 
         await act(() => {
             startPromise = result.current.handleStartYieldDepositFlow();
@@ -319,8 +399,8 @@ describe('useStartYieldDepositFlow', () => {
 
         await act(async () => {
             resolveAllowance(allowanceSubunits('1000000'));
-            await expect(startPromise).resolves.toBe(true);
-            await expect(duplicateStartPromise).resolves.toBe(false);
+            await expect(startPromise).resolves.toBe('deposit-form');
+            await expect(duplicateStartPromise).resolves.toBe(null);
         });
 
         expect(fetchAllowanceMock).toHaveBeenCalledTimes(1);
