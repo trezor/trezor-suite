@@ -139,6 +139,18 @@ import {
     EvoluSignRegistrationRequest,
 } from './messages-evolu';
 import {
+    ExtAppDataChunkAck,
+    ExtAppDataChunkRequest,
+    ExtAppHeaderAck,
+    ExtAppHeaderRequest,
+    ExtAppLoad,
+    ExtAppLoaded,
+    ExtAppMessage,
+    ExtAppResponse,
+    ExtAppRootPacketAck,
+    ExtAppRootPacketRequest,
+} from './messages-extapp';
+import {
     ApplyFlags,
     ApplySettings,
     AuthenticateDevice,
@@ -337,6 +349,7 @@ export * from './messages-stellar';
 export * from './messages-telemetry';
 export * from './messages-tezos';
 export * from './messages-thp';
+export * from './messages-extapp';
 export * from './messages-tron';
 export type * from './messages';
 
@@ -619,6 +632,16 @@ export const MessageType = Type.Object(
         ThpCredentialResponse,
         ThpEndRequest,
         ThpEndResponse,
+        ExtAppLoad,
+        ExtAppLoaded,
+        ExtAppHeaderRequest,
+        ExtAppHeaderAck,
+        ExtAppRootPacketRequest,
+        ExtAppRootPacketAck,
+        ExtAppDataChunkRequest,
+        ExtAppDataChunkAck,
+        ExtAppMessage,
+        ExtAppResponse,
         TronGetAddress,
         TronAddress,
         TronSignTx,
@@ -803,6 +826,11 @@ export type WireInMessage =
     | 'ThpNfcTagHost'
     | 'ThpCredentialRequest'
     | 'ThpEndRequest'
+    | 'ExtAppLoad'
+    | 'ExtAppHeaderAck'
+    | 'ExtAppRootPacketAck'
+    | 'ExtAppDataChunkAck'
+    | 'ExtAppMessage'
     | 'TronGetAddress'
     | 'TronSignTx'
     | 'TronTransferContract'
@@ -915,6 +943,11 @@ export type WireOutMessage =
     | 'ThpNfcTagTrezor'
     | 'ThpCredentialResponse'
     | 'ThpEndResponse'
+    | 'ExtAppLoaded'
+    | 'ExtAppHeaderRequest'
+    | 'ExtAppRootPacketRequest'
+    | 'ExtAppDataChunkRequest'
+    | 'ExtAppResponse'
     | 'TronAddress'
     | 'TronContractRequest'
     | 'TronSignature';
