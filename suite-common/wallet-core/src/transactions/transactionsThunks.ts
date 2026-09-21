@@ -62,9 +62,15 @@ import { type FeesRootState, selectRawNetworkFeeInfo } from '../fees/feesReducer
 import { ethereumGetCurrentNonceThunk } from '../send/sendFormEthereumThunks';
 import { type SendRootState } from '../send/sendFormReducer';
 import { selectSendSignedTx } from '../send/sendFormSelectors';
+import {
+    type StellarContractTokensRootState,
+    selectStellarContractTokens,
+} from '../token/stellarContractTokensSlice';
 
 // How long a locally added fake pending tx is kept in the UI.
 const FAKE_TX_TTL_SECONDS = 15 * 60;
+// A Stellar ledger closes about every five seconds.
+const STELLAR_LEDGER_CLOSE_SECONDS = 5;
 // Cardano's average block interval, not reported by @trezor/connect.
 const CARDANO_BLOCK_TIME_SECONDS = 20;
 
@@ -573,6 +579,13 @@ interface AddFakePendingTronSendTxThunkParams {
     account: Account;
 }
 
+interface AddFakePendingStellarTxThunkParams {
+    precomposedTransaction: PrecomposedTransactionFinal;
+    memo?: string;
+    txid: string;
+    account: Account;
+}
+
 type AddFakePendingTronSendTxThunkState = AddFakePendingTronTxThunkState;
 
 export const addFakePendingTronSendTxThunk = createThunk<
@@ -630,6 +643,81 @@ export const addFakePendingTronSendTxThunk = createThunk<
     },
 );
 
+type AddFakePendingStellarTxThunkState = BlockchainRootState;
+
+/** Horizon lists a transaction only once it has ingested the ledger; until then this stands in. */
+export const addFakePendingStellarTxThunk = createThunk<
+    void,
+    AddFakePendingStellarTxThunkParams,
+    { state: AddFakePendingStellarTxThunkState }
+>(
+    `${TRANSACTIONS_MODULE_PREFIX}/addFakePendingTransaction`,
+    ({ precomposedTransaction, memo, txid, account }, { dispatch, getState }) => {
+        if (account.networkType !== 'stellar') return;
+
+        const [output] = precomposedTransaction.outputs;
+        const recipient = output?.address;
+        if (!recipient) return;
+
+        const { token, fee } = precomposedTransaction;
+        const amount = String(output.amount);
+        const blockHeight = selectBlockchainHeightBySymbol(getState(), account.symbol) ?? 0;
+
+        const tokenTransfer: TokenTransfer | undefined = token
+            ? {
+                  type: 'sent',
+                  standard: token.standard,
+                  amount,
+                  from: account.descriptor,
+                  to: recipient,
+                  contract: token.contract,
+                  name: token.name,
+                  symbol: token.symbol,
+                  decimals: token.decimals,
+              }
+            : undefined;
+
+        const fakeTx = {
+            type: 'sent' as const,
+            txid,
+            blockTime: Math.floor(Date.now() / 1000),
+            blockHash: undefined,
+            amount: token ? '0' : amount,
+            fee,
+            feeRate: undefined,
+            targets: token ? [] : [{ n: 0, addresses: [recipient], isAddress: true, amount }],
+            tokens: tokenTransfer ? [tokenTransfer] : [],
+            internalTransfers: [],
+            stellarSpecific: {
+                memo: memo || undefined,
+                feeSource: account.descriptor,
+                operationType:
+                    token?.standard === 'STELLAR-CONTRACT'
+                        ? ('invokeHostFunction' as const)
+                        : ('payment' as const),
+            },
+            details: {
+                vin: [
+                    {
+                        n: 0,
+                        addresses: [account.descriptor],
+                        isAddress: true,
+                        isOwn: true,
+                        isAccountOwned: true,
+                    },
+                ],
+                vout: [{ value: amount, n: 0, addresses: [recipient], isAddress: true }],
+                size: 0,
+                totalInput: '0',
+                totalOutput: amount,
+            },
+            deadline: blockHeight + Math.ceil(FAKE_TX_TTL_SECONDS / STELLAR_LEDGER_CLOSE_SECONDS),
+        };
+
+        dispatch(transactionsActions.addTransaction({ transactions: [fakeTx], account }));
+    },
+);
+
 /**
  * @param noLoading - disable loading indicator
  * @param forceRefetch - force refetch of transactions even if this page is already fetched
@@ -644,6 +732,7 @@ type FetchTransactionsPageThunkParams = {
 
 type FetchTransactionsPageThunkState = AccountsRootState &
     BlockchainRootState &
+    StellarContractTokensRootState &
     TransactionsRootState;
 
 export const fetchTransactionsPageThunk = createThunk<
@@ -688,6 +777,11 @@ export const fetchTransactionsPageThunk = createThunk<
             // if back on first page, the marker is reset
             ...(marker && !isFirstPage ? { marker } : {}),
             suppressBackupWarning: true,
+            // The response replaces `account.tokens` wholesale, which would wipe the watch list.
+            stellarContractTokens:
+                account.networkType === 'stellar'
+                    ? selectStellarContractTokens(getState(), account.key)
+                    : undefined,
             protocols: account.networkType === 'ethereum' ? ['erc4626'] : undefined,
             gap:
                 account.networkType === 'bitcoin'
