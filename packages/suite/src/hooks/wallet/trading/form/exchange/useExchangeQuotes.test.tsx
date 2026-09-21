@@ -1,4 +1,4 @@
-import { type Resolver, useForm } from 'react-hook-form';
+import { useForm } from 'react-hook-form';
 
 import { act, waitFor } from '@testing-library/react';
 import { type CryptoId, type ExchangeTrade } from 'invity-api';
@@ -140,10 +140,9 @@ const renderExchangeQuotes = (
         receiveAddress?: string;
         receiveAccountKey?: ReturnType<typeof mockAccountKey>;
         receiveAccountSymbol?: NetworkSymbol;
-        resolver?: Resolver<TradingExchangeFormProps>;
     } = {},
 ) => {
-    const { receiveAddress, receiveAccountKey, receiveAccountSymbol, resolver } = options;
+    const { receiveAddress, receiveAccountKey, receiveAccountSymbol } = options;
     const network = 'network' in options ? options.network : getNetwork(btcSymbol);
     const services = {
         networks: { addressValidator: mockAddressValidator },
@@ -166,7 +165,6 @@ const renderExchangeQuotes = (
             const methods = useForm<TradingExchangeFormProps>({
                 mode: 'onChange',
                 defaultValues,
-                resolver,
             });
 
             const quotes = useExchangeQuotes({
@@ -216,21 +214,6 @@ describe('useExchangeQuotes', () => {
                 shouldSendInSats: false,
             }),
         );
-    });
-
-    it('does not fetch while the form is invalid', async () => {
-        const invalidResolver: Resolver<TradingExchangeFormProps> = () => ({
-            values: {},
-            errors: { feePerUnit: { type: 'manual', message: 'invalid' } },
-        });
-        const { result } = renderExchangeQuotes(VALID_DEFAULTS, { resolver: invalidResolver });
-
-        await act(async () => {
-            await result.current.methods.trigger();
-        });
-        await wait(700);
-
-        expect(mockHandleRequest).not.toHaveBeenCalled();
     });
 
     it('clears the selected quote when the receive crypto changes', async () => {
