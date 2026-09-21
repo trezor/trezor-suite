@@ -1,5 +1,8 @@
+import { Asset, Keypair, xdr } from '@stellar/stellar-sdk';
+
 // eslint-disable-next-line @typescript-eslint/no-restricted-imports
 import { NotFoundError } from '@trezor/network-stellar';
+import { STELLAR_CONTRACT_TOKENS } from '@trezor/network-stellar/constants';
 
 import { BlockchainLink } from '../../index';
 
@@ -10,20 +13,153 @@ jest.mock('@trezor/blockchain-link-utils/src/stellar', () => ({
     getTokenMetadata: () => Promise.resolve({}),
 }));
 
+const DESCRIPTOR = 'GCEEMZKTHUH44YRZWQLJK6HDHKYIM5K4UYFQJSUCODVLLL7SJEYAEOET';
+const ASSET_ISSUER = 'GBDVX4VELCDSQ54KQJYTNHXAHFLBCA77ZY2USQBM4CSHTTV7DME7KALE';
+const OTHER_ACCOUNT = 'GA5ZSEJYB37JRC5AVCIA5MOP4RHTM335X2KGX3IHOJAPP5RE34K4KZVN';
+const TX_HASH = '3a44b5d0159890a1e2b3e7ef30ff90e014ee68ac64f23a24a6cbe4c366c088a0';
+
+const WATCHED_CONTRACT = 'CBI7UCH5KGSVQRO5H4SUCZUTZABCITZLRHQQZTWL2TK4RZ72TAR6IHRW';
+
+type Sep41TokenMock = {
+    contract: string;
+    balance: string;
+    decimals?: number;
+    symbol?: string;
+    name?: string;
+};
+
 const mockState: {
     accountError?: unknown;
-    transactionsError?: unknown;
-} = {};
+    ledgerEntriesError?: unknown;
+    operationsError?: unknown;
+    operationRecords: unknown[];
+    effectsError?: unknown;
+    ledgerHeadError?: unknown;
+    effectRecords: unknown[];
+    effectsCursor?: string;
+    joinedApplied?: boolean;
+    sep41Tokens: Sep41TokenMock[];
+    readContractIds?: string[];
+    contractReceipts: unknown[];
+    receiptContractIds?: string[];
+    ledgerEntries: { val: xdr.LedgerEntryData }[];
+    horizonBalances: unknown[];
+    horizonAccount?: Record<string, unknown>;
+} = {
+    operationRecords: [],
+    effectRecords: [],
+    sep41Tokens: [],
+    contractReceipts: [],
+    ledgerEntries: [],
+    horizonBalances: [],
+};
 
 const mockNotFoundError = () => new NotFoundError('Not Found', { status: 404 });
 
-const mockAccount = {
-    sequence: '123456',
-    subentry_count: 0,
-    num_sponsoring: 0,
-    num_sponsored: 0,
-    balances: [{ asset_type: 'native', balance: '3.3580137', selling_liabilities: '0' }],
+const accountId = () => Keypair.fromPublicKey(DESCRIPTOR).xdrAccountId();
+
+const accountEntry = ({ balance = '33580137', sequence = '123456', numSubEntries = 0 } = {}) =>
+    xdr.LedgerEntryData.account(
+        new xdr.AccountEntry({
+            accountId: accountId(),
+            balance: xdr.Int64.fromString(balance),
+            seqNum: xdr.Int64.fromString(sequence),
+            numSubEntries,
+            inflationDest: null,
+            flags: 0,
+            homeDomain: '',
+            thresholds: Buffer.alloc(4),
+            signers: [],
+            ext: xdr.AccountEntryExt.v0(),
+        }),
+    );
+
+const trustlineEntry = (assetCode: string, assetIssuer: string, balance: string) =>
+    xdr.LedgerEntryData.trustline(
+        new xdr.TrustLineEntry({
+            accountId: accountId(),
+            asset: new Asset(assetCode, assetIssuer).toTrustLineXdrObject(),
+            balance: xdr.Int64.fromString(balance),
+            limit: xdr.Int64.fromString('9223372036854775807'),
+            flags: 1,
+            ext: xdr.TrustLineEntryExt.v0(),
+        }),
+    );
+
+const horizonBalance = (assetCode: string, assetIssuer: string) => ({
+    asset_type: assetCode.length > 4 ? 'credit_alphanum12' : 'credit_alphanum4',
+    asset_code: assetCode,
+    asset_issuer: assetIssuer,
+});
+
+const mockTransaction = {
+    hash: TX_HASH,
+    successful: true,
+    created_at: '2026-08-24T10:00:00Z',
+    fee_charged: '35602',
+    fee_account: 'GA2JRQOF6EA3HQWDCEDBPPMLYPJCFLDDGYZLEQGMS5SOBQIB3BAFHVAW',
+    source_account: 'GBUV66LXXULKASZ5FSDJEY42HUWIBDF4MWSVDBUJLZKCFYSWT5SDPOQB',
+    ledger_attr: 56802294,
+    memo_type: 'none',
 };
+
+const sacOperation = (assetBalanceChanges: unknown[]) => ({
+    id: '275308962747973633',
+    paging_token: '275308962747973633',
+    type: 'invoke_host_function',
+    transaction_hash: TX_HASH,
+    source_account: mockTransaction.source_account,
+    asset_balance_changes: assetBalanceChanges,
+    transaction: () => Promise.resolve(mockTransaction),
+});
+
+const pathPaymentOperation = () => ({
+    id: '275308962747973633',
+    paging_token: '275308962747973633',
+    type: 'path_payment_strict_send',
+    transaction_hash: TX_HASH,
+    source_account: DESCRIPTOR,
+    from: DESCRIPTOR,
+    to: DESCRIPTOR,
+    source_asset_type: 'native',
+    source_amount: '1.0000000',
+    asset_type: 'credit_alphanum4',
+    asset_code: 'KALE',
+    asset_issuer: ASSET_ISSUER,
+    amount: '257.5853446',
+    destination_min: '255.0000000',
+    path: [],
+    transaction: () => Promise.resolve(mockTransaction),
+});
+
+const accountMergeOperation = () => ({
+    id: '275308962747973633',
+    paging_token: '275308962747973633',
+    type: 'account_merge',
+    transaction_hash: TX_HASH,
+    source_account: DESCRIPTOR,
+    account: DESCRIPTOR,
+    into: OTHER_ACCOUNT,
+    transaction: () => Promise.resolve(mockTransaction),
+});
+
+const accountDebitedEffect = (amount: string) => ({
+    id: '275308962747973633-1',
+    paging_token: '275308962747973633-1',
+    account: DESCRIPTOR,
+    type: 'account_debited',
+    asset_type: 'native',
+    amount,
+});
+
+const mint = (amount: string) => ({
+    asset_type: 'credit_alphanum4',
+    asset_code: 'KALE',
+    asset_issuer: ASSET_ISSUER,
+    type: 'mint',
+    to: DESCRIPTOR,
+    amount,
+});
 
 jest.mock('@trezor/network-stellar/runtime', () => ({
     __esModule: true,
@@ -32,49 +168,127 @@ jest.mock('@trezor/network-stellar/runtime', () => ({
 
         return Promise.resolve({
             ...actual,
-            getStellarConnection: () =>
+            readSep41Tokens: (_server: unknown, _holder: string, contractIds: string[]) => {
+                mockState.readContractIds = contractIds;
+
+                return Promise.resolve(mockState.sep41Tokens);
+            },
+            readContractTokenTransfers: ({ contractIds }: { contractIds: string[] }) => {
+                mockState.receiptContractIds = contractIds;
+
+                return Promise.resolve(mockState.contractReceipts);
+            },
+            createStellarConnection: () =>
                 Promise.resolve({
-                    api: {
+                    url: 'https://stellar.mock',
+                    passphrase: 'Public Global Stellar Network ; September 2015',
+                    isTestnet: false,
+                    rpc: {
+                        _getLatestLedger: () => {
+                            if (mockState.ledgerHeadError) throw mockState.ledgerHeadError;
+
+                            return Promise.resolve({
+                                id: 'ledgerhash',
+                                sequence: 56802294,
+                                protocolVersion: '23',
+                                closeTime: '1756900000',
+                                headerXdr: '',
+                                metadataXdr: '',
+                            });
+                        },
+                        getLedgerEntries: () => {
+                            if (mockState.ledgerEntriesError) throw mockState.ledgerEntriesError;
+
+                            return Promise.resolve({
+                                entries: mockState.ledgerEntries,
+                                latestLedger: 56802294,
+                            });
+                        },
+                    },
+                    horizon: {
                         accounts: () => ({
                             accountId: () => ({
                                 call: () => {
                                     if (mockState.accountError) throw mockState.accountError;
 
-                                    return Promise.resolve(mockAccount);
+                                    return Promise.resolve({
+                                        balances: mockState.horizonBalances,
+                                        ...mockState.horizonAccount,
+                                    });
                                 },
                             }),
                         }),
-                        transactions: () => {
+                        operations: () => {
                             const builder = {
                                 forAccount: () => builder,
                                 includeFailed: () => builder,
+                                join: () => {
+                                    mockState.joinedApplied = true;
+
+                                    return builder;
+                                },
                                 limit: () => builder,
                                 order: () => builder,
                                 cursor: () => builder,
                                 call: () => {
-                                    if (mockState.transactionsError) {
-                                        throw mockState.transactionsError;
+                                    if (mockState.operationsError) {
+                                        throw mockState.operationsError;
                                     }
 
-                                    return Promise.resolve({ records: [] });
+                                    return Promise.resolve({
+                                        records: mockState.operationRecords,
+                                    });
+                                },
+                            };
+
+                            return builder;
+                        },
+                        effects: () => {
+                            const builder = {
+                                forAccount: () => builder,
+                                limit: () => builder,
+                                order: () => builder,
+                                cursor: (cursor: string) => {
+                                    mockState.effectsCursor = cursor;
+
+                                    return builder;
+                                },
+                                call: () => {
+                                    if (mockState.effectsError) {
+                                        throw mockState.effectsError;
+                                    }
+
+                                    return Promise.resolve({ records: mockState.effectRecords });
                                 },
                             };
 
                             return builder;
                         },
                     },
-                    isTestnet: false,
                 }),
         });
     },
 }));
 
-describe('Stellar worker error handling', () => {
+describe('Stellar worker account history', () => {
     let blockchain: BlockchainLink;
 
     beforeEach(() => {
         mockState.accountError = undefined;
-        mockState.transactionsError = undefined;
+        mockState.ledgerEntriesError = undefined;
+        mockState.operationsError = undefined;
+        mockState.effectsError = undefined;
+        mockState.ledgerHeadError = undefined;
+        mockState.effectRecords = [];
+        mockState.effectsCursor = undefined;
+        mockState.ledgerEntries = [{ val: accountEntry() }];
+        mockState.horizonBalances = [];
+        mockState.operationRecords = [];
+        mockState.joinedApplied = false;
+        mockState.sep41Tokens = [];
+        mockState.contractReceipts = [];
+        mockState.receiptContractIds = undefined;
+        mockState.readContractIds = undefined;
         blockchain = new BlockchainLink({
             name: 'Stellar',
             worker: StellarWorker,
@@ -88,8 +302,8 @@ describe('Stellar worker error handling', () => {
     });
 
     it('history not found is returned as an empty transaction list', async () => {
-        mockState.transactionsError = mockNotFoundError();
-        const result = await blockchain.getAccountInfo({ descriptor: 'A', details: 'txs' });
+        mockState.operationsError = mockNotFoundError();
+        const result = await blockchain.getAccountInfo({ descriptor: DESCRIPTOR, details: 'txs' });
         expect(result.empty).toBe(false);
         expect(result.balance).toBe('33580137');
         expect(result.history.transactions).toEqual([]);
@@ -97,23 +311,524 @@ describe('Stellar worker error handling', () => {
     });
 
     it('history fetch failure is rethrown', async () => {
-        mockState.transactionsError = new Error('Internal Server Error');
+        mockState.operationsError = new Error('Internal Server Error');
         await expect(
-            blockchain.getAccountInfo({ descriptor: 'A', details: 'txs' }),
+            blockchain.getAccountInfo({ descriptor: DESCRIPTOR, details: 'txs' }),
         ).rejects.toThrow('Internal Server Error');
     });
 
-    it('account not found is returned as an empty account', async () => {
+    it('a missing account ledger entry is returned as an empty account', async () => {
         mockState.accountError = mockNotFoundError();
-        const result = await blockchain.getAccountInfo({ descriptor: 'A', details: 'txs' });
+        mockState.ledgerEntries = [];
+        const result = await blockchain.getAccountInfo({ descriptor: DESCRIPTOR, details: 'txs' });
         expect(result.empty).toBe(true);
         expect(result.balance).toBe('0');
     });
 
-    it('account fetch failure is rethrown', async () => {
+    it('trustline discovery failure is rethrown', async () => {
         mockState.accountError = new Error('Too Many Requests');
         await expect(
-            blockchain.getAccountInfo({ descriptor: 'A', details: 'txs' }),
+            blockchain.getAccountInfo({ descriptor: DESCRIPTOR, details: 'txs' }),
         ).rejects.toThrow('Too Many Requests');
+    });
+
+    it('account state failure is rethrown when Horizon cannot stand in either', async () => {
+        mockState.ledgerEntriesError = new Error('Internal Server Error');
+        await expect(
+            blockchain.getAccountInfo({ descriptor: DESCRIPTOR, details: 'txs' }),
+        ).rejects.toThrow('Internal Server Error');
+    });
+
+    it('degrades to Horizon when the RPC account read is unavailable', async () => {
+        mockState.ledgerEntriesError = new Error('Internal Server Error');
+        mockState.horizonBalances = [
+            { asset_type: 'native', balance: '10.0000000' },
+            {
+                asset_type: 'credit_alphanum4',
+                asset_code: 'USDC',
+                asset_issuer: ASSET_ISSUER,
+                balance: '2.5000000',
+            },
+        ];
+        mockState.horizonAccount = { sequence: '99', subentry_count: 1 };
+
+        const account = await blockchain.getAccountInfo({
+            descriptor: DESCRIPTOR,
+            details: 'txs',
+        });
+
+        expect(account.balance).toBe('100000000');
+        expect(account.tokens?.map(token => token.symbol)).toEqual(['USDC']);
+    });
+
+    it('reads trustline balances as stroops, without a decimal round-trip', async () => {
+        mockState.horizonBalances = [horizonBalance('KALE', ASSET_ISSUER)];
+        mockState.ledgerEntries = [
+            { val: accountEntry({ numSubEntries: 1 }) },
+            { val: trustlineEntry('KALE', ASSET_ISSUER, '1447280') },
+        ];
+
+        const result = await blockchain.getAccountInfo({ descriptor: DESCRIPTOR });
+
+        expect(result.tokens).toEqual([
+            {
+                standard: 'STELLAR-CLASSIC',
+                contract: `KALE-${ASSET_ISSUER}`,
+                balance: '1447280',
+                name: 'KALE',
+                symbol: 'KALE',
+                decimals: 7,
+            },
+        ]);
+        expect(result.misc?.reserve).toBe('15000000');
+    });
+
+    it('joins the transaction into the operations request', async () => {
+        mockState.operationRecords = [sacOperation([mint('0.1447280')])];
+        await blockchain.getAccountInfo({ descriptor: DESCRIPTOR, details: 'txs' });
+        expect(mockState.joinedApplied).toBe(true);
+    });
+
+    it('loads the account with the protocol reserve when the ledger head is unreadable', async () => {
+        mockState.ledgerHeadError = new Error('both sources are down');
+        mockState.operationRecords = [];
+
+        const result = await blockchain.getAccountInfo({ descriptor: DESCRIPTOR, details: 'txs' });
+
+        expect(result.misc?.baseReserve).toBe('5000000');
+    });
+
+    it('reads the account effects alongside the operations', async () => {
+        mockState.operationRecords = [accountMergeOperation()];
+        mockState.effectRecords = [accountDebitedEffect('5.0000000')];
+
+        const result = await blockchain.getAccountInfo({ descriptor: DESCRIPTOR, details: 'txs' });
+
+        const [transaction] = result.history.transactions!;
+        expect(transaction!.type).toBe('sent');
+        expect(transaction!.amount).toBe('50000000');
+        expect(transaction!.stellarSpecific?.operationType).toBe('accountMerge');
+    });
+
+    it('reports a path payment with both legs of the conversion', async () => {
+        mockState.operationRecords = [pathPaymentOperation()];
+
+        const result = await blockchain.getAccountInfo({ descriptor: DESCRIPTOR, details: 'txs' });
+
+        const [transaction] = result.history.transactions!;
+        expect(transaction!.type).toBe('self');
+        expect(transaction!.amount).toBe('10000000');
+        expect(transaction!.tokens).toEqual([
+            expect.objectContaining({ type: 'recv', amount: '2575853446' }),
+        ]);
+        expect(transaction!.stellarSpecific?.operationType).toBe('pathPayment');
+    });
+
+    it('keeps the history when the effects request fails', async () => {
+        mockState.operationRecords = [pathPaymentOperation()];
+        mockState.effectsError = new Error('Horizon is having a moment');
+
+        const result = await blockchain.getAccountInfo({ descriptor: DESCRIPTOR, details: 'txs' });
+
+        expect(result.history.transactions).toHaveLength(1);
+        expect(result.history.transactions![0]!.type).toBe('self');
+    });
+
+    it('asks for the effects below the operation the page starts from', async () => {
+        mockState.operationRecords = [pathPaymentOperation()];
+
+        await blockchain.getAccountInfo({
+            descriptor: DESCRIPTOR,
+            details: 'txs',
+            page: 2,
+            pageCursor: '275308962747973699',
+        });
+
+        expect(mockState.effectsCursor).toBe('275308962747973699-0');
+    });
+
+    it('maps every balance change of a Stellar Asset Contract transfer', async () => {
+        mockState.operationRecords = [
+            sacOperation([mint('0.1447280'), mint('0.1723958'), mint('0.1355544')]),
+        ];
+
+        const result = await blockchain.getAccountInfo({
+            descriptor: DESCRIPTOR,
+            details: 'txs',
+        });
+
+        expect(result.stellarCursor).toBe('275308962747973633');
+        expect(result.history.transactions).toHaveLength(1);
+
+        const [transaction] = result.history.transactions!;
+        expect(transaction!.txid).toBe(TX_HASH);
+        expect(transaction!.type).toBe('recv');
+        expect(transaction!.fee).toBe('35602');
+        expect(transaction!.stellarSpecific?.feeSource).toBe(mockTransaction.fee_account);
+        expect(transaction!.tokens).toEqual([
+            expect.objectContaining({
+                type: 'recv',
+                standard: 'STELLAR-CLASSIC',
+                contract: `KALE-${ASSET_ISSUER}`,
+                symbol: 'KALE',
+                decimals: 7,
+                from: ASSET_ISSUER,
+                to: DESCRIPTOR,
+                amount: '1447280',
+            }),
+            expect.objectContaining({ amount: '1723958' }),
+            expect.objectContaining({ amount: '1355544' }),
+        ]);
+    });
+
+    it('keeps a contract counterparty of a balance change without failing the account load', async () => {
+        const POOL_CONTRACT = 'CAS3FL6TLZKDGGSISDBWGGPXT3NRR4DYTZD7YOD3HMYO6LTJUVGRVEAM';
+        mockState.operationRecords = [
+            sacOperation([
+                {
+                    asset_type: 'credit_alphanum4',
+                    asset_code: 'KALE',
+                    asset_issuer: ASSET_ISSUER,
+                    type: 'transfer',
+                    from: DESCRIPTOR,
+                    to: POOL_CONTRACT,
+                    amount: '0.1447280',
+                },
+            ]),
+        ];
+
+        const result = await blockchain.getAccountInfo({
+            descriptor: DESCRIPTOR,
+            details: 'txs',
+        });
+
+        expect(result.history.transactions).toHaveLength(1);
+        expect(result.history.transactions![0]!.tokens[0]).toEqual(
+            expect.objectContaining({ from: DESCRIPTOR, to: POOL_CONTRACT }),
+        );
+    });
+
+    it('reads the contracts the account watches on top of the curated ones', async () => {
+        await blockchain.getAccountInfo({
+            descriptor: DESCRIPTOR,
+            details: 'txs',
+            stellarContractTokens: [WATCHED_CONTRACT, STELLAR_CONTRACT_TOKENS[0]!.contract],
+        });
+
+        expect(mockState.readContractIds).toEqual([
+            ...STELLAR_CONTRACT_TOKENS.map(token => token.contract),
+            WATCHED_CONTRACT,
+        ]);
+    });
+
+    it('keeps a watched contract token with no balance, the way an opted-in trustline is kept', async () => {
+        mockState.sep41Tokens = [
+            { contract: WATCHED_CONTRACT, balance: '0', decimals: 18, symbol: 'dejtrsy' },
+        ];
+
+        const result = await blockchain.getAccountInfo({
+            descriptor: DESCRIPTOR,
+            details: 'txs',
+            stellarContractTokens: [WATCHED_CONTRACT],
+        });
+
+        expect(result.tokens).toEqual([
+            {
+                standard: 'STELLAR-CONTRACT',
+                contract: WATCHED_CONTRACT,
+                balance: '0',
+                name: undefined,
+                symbol: 'DEJTRSY',
+                decimals: 18,
+            },
+        ]);
+    });
+
+    it('drops a curated contract token the account does not hold', async () => {
+        const curated = STELLAR_CONTRACT_TOKENS[0]!;
+        mockState.sep41Tokens = [{ contract: curated.contract, balance: '0' }];
+
+        const result = await blockchain.getAccountInfo({ descriptor: DESCRIPTOR, details: 'txs' });
+
+        expect(result.tokens).toEqual([]);
+    });
+
+    it('falls back to the curated metadata when the contract does not report its own', async () => {
+        const curated = STELLAR_CONTRACT_TOKENS[0]!;
+        mockState.sep41Tokens = [{ contract: curated.contract, balance: '42' }];
+
+        const result = await blockchain.getAccountInfo({ descriptor: DESCRIPTOR, details: 'txs' });
+
+        expect(result.tokens).toEqual([
+            {
+                standard: 'STELLAR-CONTRACT',
+                contract: curated.contract,
+                balance: '42',
+                name: curated.name,
+                symbol: curated.symbol!.toUpperCase(),
+                decimals: curated.decimals,
+            },
+        ]);
+    });
+
+    it('lists a contract-token receipt Horizon never attributes to the recipient', async () => {
+        mockState.sep41Tokens = [
+            { contract: WATCHED_CONTRACT, balance: '4200000', decimals: 7, symbol: 'usdc' },
+        ];
+        mockState.contractReceipts = [
+            {
+                contract: WATCHED_CONTRACT,
+                txHash: 'receipthash',
+                ledger: 56802300,
+                closedAt: 1789560000,
+                from: OTHER_ACCOUNT,
+                to: DESCRIPTOR,
+                amount: '4200000',
+            },
+            {
+                contract: 'CDEMRSGIZDEMRSGIZDEMRSGIZDEMRSGIZDEMRSGIZDEMRSGIZDEMQUNJ',
+                txHash: 'unwatched',
+                ledger: 56802301,
+                closedAt: 1789560005,
+                from: OTHER_ACCOUNT,
+                to: DESCRIPTOR,
+                amount: '1',
+            },
+        ];
+
+        const result = await blockchain.getAccountInfo({
+            descriptor: DESCRIPTOR,
+            details: 'txs',
+            stellarContractTokens: [WATCHED_CONTRACT],
+        });
+
+        expect(mockState.receiptContractIds).toEqual([WATCHED_CONTRACT]);
+        const receipt = result.history.transactions?.find(tx => tx.txid === 'receipthash');
+        expect(receipt).toMatchObject({
+            type: 'recv',
+            amount: '0',
+            fee: '0',
+            blockHeight: 56802300,
+            blockTime: 1789560000,
+            tokens: [
+                {
+                    type: 'recv',
+                    standard: 'STELLAR-CONTRACT',
+                    contract: WATCHED_CONTRACT,
+                    symbol: 'USDC',
+                    decimals: 7,
+                    // Base units, as every other transfer of this history carries them.
+                    amount: '4200000',
+                    from: OTHER_ACCOUNT,
+                    to: DESCRIPTOR,
+                },
+            ],
+            stellarSpecific: { feeSource: OTHER_ACCOUNT, operationType: 'invokeHostFunction' },
+        });
+        expect(result.history.transactions?.some(tx => tx.txid === 'unwatched')).toBe(false);
+    });
+
+    it('fills in the amount of a transfer Horizon reports as a call that moved nothing', async () => {
+        mockState.sep41Tokens = [
+            { contract: WATCHED_CONTRACT, balance: '0', decimals: 7, symbol: 'usdc' },
+        ];
+        mockState.operationRecords = [sacOperation([])];
+        mockState.contractReceipts = [
+            {
+                contract: WATCHED_CONTRACT,
+                txHash: TX_HASH,
+                ledger: 56802294,
+                closedAt: 1789560000,
+                from: DESCRIPTOR,
+                to: OTHER_ACCOUNT,
+                amount: '4200000',
+            },
+        ];
+
+        const result = await blockchain.getAccountInfo({
+            descriptor: DESCRIPTOR,
+            details: 'txs',
+            stellarContractTokens: [WATCHED_CONTRACT],
+        });
+
+        expect(result.history.transactions).toHaveLength(1);
+        expect(result.history.transactions?.[0]).toMatchObject({
+            txid: TX_HASH,
+            type: 'sent',
+            tokens: [
+                expect.objectContaining({
+                    type: 'sent',
+                    amount: '4200000',
+                    from: DESCRIPTOR,
+                    to: OTHER_ACCOUNT,
+                }),
+            ],
+        });
+    });
+
+    const receipt = (txHash: string, ledger: number) => ({
+        contract: WATCHED_CONTRACT,
+        txHash,
+        ledger,
+        closedAt: 1789560000,
+        from: OTHER_ACCOUNT,
+        to: DESCRIPTOR,
+        amount: '1',
+    });
+    const olderOperation = () => ({
+        ...sacOperation([mint('0.1447280')]),
+        id: '275308962747973600',
+        paging_token: '275308962747973600',
+        transaction_hash: 'olderhash',
+        transaction: () =>
+            Promise.resolve({ ...mockTransaction, hash: 'olderhash', ledger_attr: 56802290 }),
+    });
+    const listReceiptsPage = async (pageSize: number, pageCursor?: string) => {
+        const result = await blockchain.getAccountInfo({
+            descriptor: DESCRIPTOR,
+            details: 'txs',
+            pageSize,
+            ...(pageCursor ? { page: 2, pageCursor } : {}),
+            stellarContractTokens: [WATCHED_CONTRACT],
+        });
+
+        return {
+            txids: result.history.transactions?.map(tx => tx.txid),
+            cursor: result.stellarCursor,
+        };
+    };
+
+    it('keeps every transfer of one transaction on the single record that carries them', async () => {
+        mockState.sep41Tokens = [
+            { contract: WATCHED_CONTRACT, balance: '3', decimals: 7, symbol: 'usdc' },
+        ];
+        mockState.contractReceipts = [
+            { ...receipt('receipthash', 56802300), amount: '1' },
+            { ...receipt('receipthash', 56802300), amount: '2' },
+        ];
+
+        const result = await blockchain.getAccountInfo({
+            descriptor: DESCRIPTOR,
+            details: 'txs',
+            stellarContractTokens: [WATCHED_CONTRACT],
+        });
+
+        expect(result.history.transactions).toHaveLength(1);
+        expect(result.history.transactions?.[0]?.tokens.map(({ amount }) => amount)).toEqual([
+            '1',
+            '2',
+        ]);
+    });
+
+    it('places a receipt among the Horizon rows by ledger and hands a displaced row to the next page', async () => {
+        mockState.sep41Tokens = [
+            { contract: WATCHED_CONTRACT, balance: '1', decimals: 7, symbol: 'usdc' },
+        ];
+        mockState.operationRecords = [sacOperation([mint('0.1447280')]), olderOperation()];
+        mockState.contractReceipts = [receipt('receipthash', 56802300)];
+
+        expect(await listReceiptsPage(3)).toEqual({
+            txids: ['receipthash', TX_HASH, 'olderhash'],
+            cursor: '275308962747973600|56802300:receipthash',
+        });
+        expect(await listReceiptsPage(2)).toEqual({
+            txids: ['receipthash', TX_HASH],
+            cursor: '275308962747973633|56802300:receipthash',
+        });
+    });
+
+    it('hands a receipt the page could not fit to the next page, and lists it only once', async () => {
+        mockState.sep41Tokens = [
+            { contract: WATCHED_CONTRACT, balance: '2', decimals: 7, symbol: 'usdc' },
+        ];
+        mockState.operationRecords = [sacOperation([mint('0.1447280')])];
+        mockState.contractReceipts = [receipt('newest', 56802300), receipt('older', 56802285)];
+
+        const first = await listReceiptsPage(2);
+        expect(first).toEqual({
+            txids: ['newest', TX_HASH],
+            cursor: '275308962747973633|56802300:newest',
+        });
+
+        // Horizon has nothing left after the first page; the transfer it displaced is still owed.
+        mockState.operationRecords = [];
+        expect(await listReceiptsPage(2, first.cursor)).toEqual({
+            txids: ['older'],
+            cursor: '275308962747973633|56802285:older',
+        });
+    });
+
+    it('leaves a receipt older than the page to the page that reaches its ledger', async () => {
+        mockState.sep41Tokens = [
+            { contract: WATCHED_CONTRACT, balance: '1', decimals: 7, symbol: 'usdc' },
+        ];
+        mockState.operationRecords = [sacOperation([mint('0.1447280')]), olderOperation()];
+        mockState.contractReceipts = [receipt('older', 56802290)];
+
+        expect(await listReceiptsPage(1)).toEqual({
+            txids: [TX_HASH],
+            cursor: '275308962747973633',
+        });
+    });
+
+    it('drops a contract token whose decimals no source can supply', async () => {
+        mockState.sep41Tokens = [{ contract: WATCHED_CONTRACT, balance: '42', symbol: 'dejtrsy' }];
+
+        const result = await blockchain.getAccountInfo({
+            descriptor: DESCRIPTOR,
+            details: 'txs',
+            stellarContractTokens: [WATCHED_CONTRACT],
+        });
+
+        expect(result.tokens).toEqual([]);
+    });
+
+    it('keeps the page length when a record cannot be described', async () => {
+        const broken = {
+            ...sacOperation([mint('0.1447280')]),
+            transaction: () => Promise.reject(new Error('malformed record')),
+        };
+        mockState.operationRecords = [broken];
+
+        const result = await blockchain.getAccountInfo({ descriptor: DESCRIPTOR, details: 'txs' });
+
+        expect(result.history.transactions).toEqual([
+            expect.objectContaining({
+                type: 'unknown',
+                txid: TX_HASH,
+                blockHeight: 64100363,
+            }),
+        ]);
+    });
+
+    it('still fills the slot when the record has no id or timestamp to describe it by', async () => {
+        const broken = {
+            ...sacOperation([mint('0.1447280')]),
+            id: undefined,
+            created_at: undefined,
+            transaction: () => Promise.reject(new Error('malformed record')),
+        };
+        mockState.operationRecords = [broken];
+
+        const result = await blockchain.getAccountInfo({ descriptor: DESCRIPTOR, details: 'txs' });
+
+        expect(result.history.transactions).toEqual([
+            expect.objectContaining({ type: 'unknown', txid: TX_HASH }),
+        ]);
+    });
+
+    it('ignores balance changes between other participants of the same call', async () => {
+        mockState.operationRecords = [
+            sacOperation([{ ...mint('0.5000000'), to: OTHER_ACCOUNT }, mint('0.1447280')]),
+        ];
+
+        const result = await blockchain.getAccountInfo({
+            descriptor: DESCRIPTOR,
+            details: 'txs',
+        });
+
+        expect(result.history.transactions![0]!.tokens).toEqual([
+            expect.objectContaining({ amount: '1447280', to: DESCRIPTOR }),
+        ]);
     });
 });
