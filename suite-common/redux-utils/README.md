@@ -178,3 +178,36 @@ const middleware = [
     ...otherMiddlewares,
 ];
 ```
+
+## createEntityIndex
+
+Lazily maintained derived indexes over store entities: a primary index and any number of secondary
+indexes computed from a Redux slice on first read, rebuilt only for the partitions that changed,
+with stable array identities for unchanged keys.
+
+Nothing is stored in Redux and no reducer changes — the index derives itself from the slice it
+selects, so it cannot drift from the data it mirrors.
+
+```typescript
+export const accountsIndex = createEntityIndex({
+    name: 'accounts',
+    selectSource: (state: AccountsRootState) => state.wallet.accounts,
+    getId: (account: Account) => account.key,
+    secondaryIndexes: { byNetwork: account => account.symbol },
+});
+
+accountsIndex.getBySecondaryKey(state, 'byNetwork', symbol); // in a selector or useSelector
+accountsIndex.getById(getState(), accountKey); //               in a thunk
+accountsIndex.getAllExcept(state, hiddenAccountKeys); //        everything but those
+```
+
+| Term                | What it means here                                                                                                                                                                  |
+| ------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **primary index**   | `ids` and `byId` — every entity by the id `getId` gives it.                                                                                                                         |
+| **secondary index** | One `Map` per entry in `secondaryIndexes`, from a key the extractor returns to the entities under it. An extractor may return several keys, or `undefined` to leave the entity out. |
+| **partition**       | A slice of the source that is written as a unit, declared by `getPartitions`. A write to one partition re-walks that partition only; without it the whole source is one partition.  |
+| **entities**        | What a partition holds. `getEntities` flattens a partition into them; without it a partition is taken to be its entities.                                                           |
+
+A secondary index is built on the first read that asks for it and not before, and the array under a
+key keeps its identity for as long as its members do — which is what keeps a component watching one
+key from re-rendering when another key changes.
