@@ -33,6 +33,7 @@ export const TextInputField = forwardRef<InputType, FieldProps>(
             name,
             hint,
             label,
+            readOnly,
             placeholder,
             onBlur,
             valueTransformer,
@@ -69,9 +70,12 @@ export const TextInputField = forwardRef<InputType, FieldProps>(
                 <Input
                     {...otherProps}
                     {...innerLabelOrPlaceholderProps}
+                    // Forces a native layout reset of multiline read-only inputs after form is cleared.
+                    key={readOnly && !value ? 'read-only-empty' : null}
                     onBlur={handleOnBlur}
                     onChangeText={handleOnChange}
                     value={value}
+                    readOnly={readOnly}
                     hasError={hasError}
                     ref={ref}
                 />
