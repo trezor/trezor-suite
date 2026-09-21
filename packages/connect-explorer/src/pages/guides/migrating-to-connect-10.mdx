@@ -12,23 +12,22 @@ import InteractiveChecklist from '../../components/InteractiveChecklist';
 
 Connect 10 moves the Connect core out of the self-hosted iframe + popup and into **Trezor Suite**. Your app stays a thin client and keeps calling the same `TrezorConnect` methods — but a handful of parameters, return shapes and packaging details change, and a few methods move out of the public API.
 
-The guide follows the order of an actual upgrade: install the beta, fix your `init()` call, fix your method calls, then verify. The first three are required; [`selectAccount`](#the-new-way-to-ask-for-an-account-selectaccount) and the [other improvements](#other-improvements-worth-adopting) are optional but recommended. For the architecture behind the change, see [New Connect flow in Trezor Suite](/guides/new-connect-flow-in-trezor-suite); for the release-by-release list, see the [changelog](/changelog).
+The guide follows the order of an actual upgrade: install Connect 10, fix your `init()` call, fix your method calls, then verify. The first three are required; [`selectAccount`](#the-new-way-to-ask-for-an-account-selectaccount) and the [other improvements](#other-improvements-worth-adopting) are optional but recommended. For the architecture behind the change, see [New Connect flow in Trezor Suite](/guides/new-connect-flow-in-trezor-suite); for the release-by-release list, see the [changelog](/changelog).
 
 <Callout type="info">
-    **v9 keeps working.** Connect 10 is in beta: we would like third parties to test their
-    integrations against it and report what breaks, and to move production integrations over once it
-    reaches stable. There is no cliff edge — v9 stays supported, so you can take the time you need.
+    **v9 keeps working.** There is no cliff edge — v9 stays supported, so you can move your
+    production integrations to Connect 10 whenever it suits you.
 </Callout>
 
-## Installing the beta
+## Installing Connect 10
 
 ```bash
-npm install @trezor/connect-web@10.0.0-beta.1
+npm install @trezor/connect-web@10
 ```
 
 The Suite-hosted flow needs **Trezor Suite 26.7.2 or newer** to host the Connect core. Older Suite versions do not expose the local Connect server, so requests will not be handled.
 
-Found a bug, or have feedback on the beta? Open an issue at [github.com/trezor/trezor-suite](https://github.com/trezor/trezor-suite/issues/new/choose).
+Found a bug, or have feedback? Open an issue at [github.com/trezor/trezor-suite](https://github.com/trezor/trezor-suite/issues/new/choose).
 
 ## Update your setup
 

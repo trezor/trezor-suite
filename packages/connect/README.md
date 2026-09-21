@@ -42,7 +42,7 @@ For more instructions [refer to this document](https://github.com/trezor/trezor-
 
 ## Versioning
 
-Version 10 is the current major version and is currently in beta. New major versions are released when there are breaking API changes.
+Version 10 is the current major version. New major versions are released when there are breaking API changes.
 
 ## Docs
 
