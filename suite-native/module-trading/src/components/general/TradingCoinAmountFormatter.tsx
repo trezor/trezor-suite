@@ -4,11 +4,11 @@ import type { CryptoId } from 'invity-api';
 
 import { type TradingRootState, selectTradingCoinSymbolByCryptoId } from '@suite-common/trading';
 import { isNetworkSymbol } from '@suite-common/wallet-config';
-import type { TokenSymbol } from '@suite-common/wallet-types';
+import { toTokenSymbol } from '@suite-common/wallet-types';
 import type { TextProps } from '@suite-native/atoms';
 import {
-    ExactCryptoAmountFormatter,
-    ExactTokenAmountFormatter,
+    CryptoAmountFormatter,
+    TokenAmountFormatter,
     asDecimalTokenAmount,
 } from '@suite-native/formatters';
 
@@ -32,10 +32,10 @@ export const TradingCoinAmountFormatter = ({
 
     if (isNetworkSymbol(coinSymbol)) {
         return (
-            <ExactCryptoAmountFormatter
+            <CryptoAmountFormatter
                 value={amount ?? '0'}
                 symbol={coinSymbol}
-                isBalance={false}
+                valueUnit="smallest"
                 isDiscreetText={false}
                 {...textProps}
             />
@@ -43,9 +43,9 @@ export const TradingCoinAmountFormatter = ({
     }
 
     return (
-        <ExactTokenAmountFormatter
+        <TokenAmountFormatter
             value={asDecimalTokenAmount(amount ?? '0')}
-            tokenSymbol={coinSymbol as TokenSymbol}
+            symbol={toTokenSymbol(coinSymbol)}
             isDiscreetText={false}
             {...textProps}
         />

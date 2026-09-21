@@ -2,11 +2,16 @@ import { useSelector } from 'react-redux';
 
 import { isSendingEvmNativeToken } from '@suite-common/trading';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
-import { type Account, type TokenAddress, type TokenSymbol } from '@suite-common/wallet-types';
+import {
+    type Account,
+    type TokenAddress,
+    type TokenSymbol,
+    toTokenSymbol,
+} from '@suite-common/wallet-types';
 import { DiscreetTextTrigger, HStack, Text } from '@suite-native/atoms';
 import {
-    CompactCryptoAmountFormatter,
-    CompactTokenAmountFormatter,
+    CryptoAmountFormatter,
+    TokenAmountFormatter,
     asDecimalTokenAmount,
 } from '@suite-native/formatters';
 import { Translation } from '@suite-native/intl';
@@ -23,7 +28,7 @@ type TokenBalanceProps = {
     accountKey: Account['key'];
     tokenAddress: TokenAddress;
     tokenDecimals?: number;
-    symbol: string;
+    tokenSymbol: TokenSymbol;
     testID?: string;
 };
 
@@ -37,7 +42,7 @@ const TokenBalance = ({
     accountKey,
     tokenAddress,
     tokenDecimals,
-    symbol,
+    tokenSymbol,
     testID,
 }: TokenBalanceProps) => {
     const balance = useSelector(
@@ -46,10 +51,11 @@ const TokenBalance = ({
     );
 
     return (
-        <CompactTokenAmountFormatter
+        <TokenAmountFormatter
+            formatStyle="compact-balance"
             value={asDecimalTokenAmount(balance)}
-            tokenSymbol={symbol as TokenSymbol}
-            tokenDecimals={tokenDecimals}
+            symbol={tokenSymbol}
+            decimals={tokenDecimals}
             testID={testID}
         />
     );
@@ -65,14 +71,15 @@ const AssetBalance = ({ account, asset, testID }: AssetBalanceProps) => {
         <DiscreetTextTrigger>
             {tokenAddress ? (
                 <TokenBalance
-                    symbol={symbol}
                     accountKey={accountKey}
                     tokenAddress={tokenAddress}
                     tokenDecimals={asset.decimals}
+                    tokenSymbol={toTokenSymbol(symbol)}
                     testID={testID}
                 />
             ) : (
-                <CompactCryptoAmountFormatter
+                <CryptoAmountFormatter
+                    formatStyle="compact-balance"
                     value={formattedBalance}
                     symbol={symbol as NetworkSymbol}
                     testID={testID}

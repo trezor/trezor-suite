@@ -13,8 +13,8 @@ import {
 import { toTokenSymbol } from '@suite-common/wallet-types';
 import { Divider, HStack, IconButton, Text, VStack } from '@suite-native/atoms';
 import {
-    CompactCryptoAmountFormatter,
-    CompactTokenAmountFormatter,
+    CryptoAmountFormatter,
+    TokenAmountFormatter,
     asDecimalTokenAmount,
 } from '@suite-native/formatters';
 import { Icon, type IconName, TokenIcon } from '@suite-native/icons';
@@ -118,17 +118,19 @@ export const TransactionNotificationItem = ({ notification, seen, index }: Props
                                 size="tiny"
                             />
                             {token?.symbol === undefined ? (
-                                <CompactCryptoAmountFormatter
+                                <CryptoAmountFormatter
+                                    formatStyle="compact-balance"
                                     value={amount}
                                     symbol={symbol}
                                     variant="body-xs"
                                     color={contentColor}
                                 />
                             ) : (
-                                <CompactTokenAmountFormatter
+                                <TokenAmountFormatter
+                                    formatStyle="compact-balance"
                                     value={asDecimalTokenAmount(amount)}
-                                    tokenSymbol={toTokenSymbol(token.symbol)}
-                                    tokenDecimals={token.decimals}
+                                    symbol={toTokenSymbol(token.symbol)}
+                                    decimals={token.decimals}
                                     variant="body-xs"
                                     color={contentColor}
                                 />

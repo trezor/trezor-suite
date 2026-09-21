@@ -1,10 +1,9 @@
 import { type Account, type TokenAddress, type TokenSymbol } from '@suite-common/wallet-types';
 import { HStack, Text } from '@suite-native/atoms';
+import { TokenAmountFormatter, asDecimalTokenAmount } from '@suite-native/formatters';
 import { Icon, TokenIcon } from '@suite-native/icons';
 import { Translation } from '@suite-native/intl';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
-
-import { YieldFormattedAmount } from './YieldFormattedAmount';
 
 const detailsRowValueStyle = prepareNativeStyle(() => ({
     flexShrink: 1,
@@ -58,12 +57,12 @@ export const YieldDepositRevokeLimitValue = ({
                 </Text>
             ) : null}
             {!isApprovedAmountUnlimited && approvedAmount ? (
-                <YieldFormattedAmount
-                    value={approvedAmount}
-                    networkSymbol={networkSymbol}
-                    tokenContract={tokenContract}
-                    tokenDecimals={tokenDecimals}
-                    tokenSymbol={tokenSymbol}
+                <TokenAmountFormatter
+                    value={asDecimalTokenAmount(approvedAmount)}
+                    formatStyle="compact-balance"
+                    symbol={tokenSymbol}
+                    decimals={tokenDecimals}
+                    isDiscreetText={false}
                     variant="body-sm-strong"
                     color="contentPrimary"
                     numberOfLines={1}
@@ -72,12 +71,12 @@ export const YieldDepositRevokeLimitValue = ({
                 />
             ) : null}
             <Icon name="arrowRight" size="medium" color="contentSecondary" />
-            <YieldFormattedAmount
-                value="0"
-                networkSymbol={networkSymbol}
-                tokenContract={tokenContract}
-                tokenDecimals={tokenDecimals}
-                tokenSymbol={tokenSymbol}
+            <TokenAmountFormatter
+                value={asDecimalTokenAmount('0')}
+                formatStyle="compact-balance"
+                symbol={tokenSymbol}
+                decimals={tokenDecimals}
+                isDiscreetText={false}
                 variant="body-sm-strong"
                 color="contentPrimary"
             />

@@ -12,7 +12,7 @@ import {
 import { type AccountKey, toTokenSymbol } from '@suite-common/wallet-types';
 import { isErc4626 } from '@suite-common/wallet-utils';
 import {
-    CompactTokenAmountFormatter,
+    TokenAmountFormatter,
     TokenToFiatAmountFormatter,
     convertTokenValueToDecimal,
 } from '@suite-native/formatters';
@@ -89,14 +89,15 @@ export const TokenTransferListItemValues = ({
                     style={applyStyle(failedTxStyle, { isFailedTx })}
                 />
             )}
-            <CompactTokenAmountFormatter
+            <TokenAmountFormatter
+                formatStyle="compact-balance"
                 value={convertTokenValueToDecimal(tokenTransfer.amount, tokenTransfer.decimals)}
-                tokenSymbol={
+                symbol={
                     tokenTransfer.symbol
                         ? toTokenSymbol(getDisplaySymbol(tokenTransfer.symbol))
-                        : null
+                        : undefined
                 }
-                tokenDecimals={tokenTransfer.decimals}
+                decimals={tokenTransfer.decimals}
                 numberOfLines={1}
                 ellipsizeMode="tail"
                 isPhishingTransaction={isPhishingTransaction}

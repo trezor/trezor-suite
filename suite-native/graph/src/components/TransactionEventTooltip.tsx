@@ -10,9 +10,9 @@ import { type NetworkSymbol, getNetworkType } from '@suite-common/wallet-config'
 import { type AccountKey, type TokenAddress } from '@suite-common/wallet-types';
 import { Box, Card, Text } from '@suite-native/atoms';
 import {
-    ExactCryptoAmountFormatter,
-    ExactTokenAmountFormatter,
+    CryptoAmountFormatter,
     SignValueFormatter,
+    TokenAmountFormatter,
     asDecimalTokenAmount,
 } from '@suite-native/formatters';
 import { type EventTooltipComponentProps } from '@suite-native/react-native-graph';
@@ -79,11 +79,11 @@ const TokenAmountTooltipFormatter = ({
     // We might want to add support for other networks in the future.
     if (getNetworkType(symbol) === 'ethereum') {
         return (
-            <ExactTokenAmountFormatter
+            <TokenAmountFormatter
                 color="contentPrimary"
                 variant="body-xs"
                 value={asDecimalTokenAmount(value)}
-                tokenSymbol={token.symbol}
+                symbol={token.symbol}
             />
         );
     }
@@ -106,12 +106,12 @@ const EventTooltipRow = ({
         <Box flexDirection="row">
             <SignValueFormatter value={signValue} variant="body-xs" />
             {!tokenAddress ? (
-                <ExactCryptoAmountFormatter
+                <CryptoAmountFormatter
                     color="contentPrimary"
                     variant="body-xs"
                     value={value}
                     symbol={symbol}
-                    isBalance={false}
+                    valueUnit="smallest"
                 />
             ) : (
                 <TokenAmountTooltipFormatter

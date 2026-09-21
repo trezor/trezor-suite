@@ -10,8 +10,8 @@ import {
 import { Box, HStack, Text, VStack } from '@suite-native/atoms';
 import {
     CoinToFiatAmountFormatter,
-    ExactCryptoAmountFormatter,
-    ExactTokenAmountFormatter,
+    CryptoAmountFormatter,
+    TokenAmountFormatter,
     convertTokenValueToDecimal,
 } from '@suite-native/formatters';
 import { Translation, type TxKeyPath } from '@suite-native/intl';
@@ -33,11 +33,11 @@ type ReviewOutputCryptoAmountProps = {
 const ReviewOutputCryptoAmount = ({ symbol, tokenInfo, value }: ReviewOutputCryptoAmountProps) => {
     if (tokenInfo !== null && value !== '') {
         return (
-            <ExactTokenAmountFormatter
+            <TokenAmountFormatter
                 variant="body-sm"
                 color="contentSecondary"
                 value={convertTokenValueToDecimal(value, tokenInfo.decimals)}
-                tokenSymbol={tokenInfo.symbol}
+                symbol={tokenInfo.symbol}
                 maxDisplayedDecimals={tokenInfo.decimals}
                 adjustsFontSizeToFit
                 numberOfLines={1}
@@ -51,12 +51,12 @@ const ReviewOutputCryptoAmount = ({ symbol, tokenInfo, value }: ReviewOutputCryp
     }
 
     return (
-        <ExactCryptoAmountFormatter
+        <CryptoAmountFormatter
             variant="body-sm"
             color="contentSecondary"
             value={value}
             symbol={symbol}
-            isBalance={false}
+            valueUnit="smallest"
             adjustsFontSizeToFit
             numberOfLines={1}
             isDiscreetText={false}

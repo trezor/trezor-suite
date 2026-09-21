@@ -19,7 +19,7 @@ import { isApyAvailable } from '@suite-common/wallet-utils';
 import { injectNativeAnalytics } from '@suite-native/analytics';
 import { Box, Button, Card, HStack, Text, VStack } from '@suite-native/atoms';
 import {
-    CompactTokenAmountFormatter,
+    TokenAmountFormatter,
     TokenToFiatAmountFormatter,
     asDecimalTokenAmount,
 } from '@suite-native/formatters';
@@ -285,10 +285,11 @@ export const YieldVaultDetailScreenContent = ({
                                 <Translation id="earn.tokenBalance" />
                             </Text>
 
-                            <CompactTokenAmountFormatter
+                            <TokenAmountFormatter
+                                formatStyle="compact-balance"
                                 value={asDecimalTokenAmount(yieldToken.balance ?? '0')}
-                                tokenSymbol={yieldToken.symbol}
-                                tokenDecimals={yieldToken.decimals}
+                                symbol={yieldToken.symbol}
+                                decimals={yieldToken.decimals}
                                 color="contentPrimary"
                                 variant="headline-sm"
                             />
@@ -309,14 +310,15 @@ export const YieldVaultDetailScreenContent = ({
                                 <Translation id="earn.yearlyRewards" />
                             </Text>
 
-                            <CompactTokenAmountFormatter
+                            <TokenAmountFormatter
+                                formatStyle="compact-balance"
                                 value={asDecimalTokenAmount(yearlyRewards.yearlyRewards)}
-                                tokenSymbol={
+                                symbol={
                                     wrappedNativeSymbol
                                         ? toTokenSymbol(wrappedNativeSymbol)
                                         : depositedPosition.tokenSymbol
                                 }
-                                tokenDecimals={depositedPosition.decimals}
+                                decimals={depositedPosition.decimals}
                                 color="contentPrimary"
                                 variant="headline-sm"
                             />
@@ -338,14 +340,15 @@ export const YieldVaultDetailScreenContent = ({
                                 <Translation id="earn.potentialRewards" />
                             </Text>
 
-                            <CompactTokenAmountFormatter
+                            <TokenAmountFormatter
+                                formatStyle="compact-balance"
                                 value={asDecimalTokenAmount(potentialRewards.potentialRewards)}
-                                tokenSymbol={
+                                symbol={
                                     wrappedNativeSymbol
                                         ? toTokenSymbol(wrappedNativeSymbol)
                                         : depositedPosition.tokenSymbol
                                 }
-                                tokenDecimals={depositedPosition.decimals}
+                                decimals={depositedPosition.decimals}
                                 color="contentBrand"
                                 variant="headline-sm"
                             />
