@@ -14,11 +14,13 @@
         "@hookform/resolvers": "^5.4.0",
         "@mobily/ts-belt": "^3.13.1",
         "@suite-native/atoms": "workspace:*",
+        "@suite-native/clipboard": "workspace:*",
         "@suite-native/icons": "workspace:*",
         "@trezor/styles-native": "workspace:*",
         "react": "19.2.3",
         "react-hook-form": "^7.77.0",
         "react-native": "0.86.0",
-        "react-native-reanimated": "4.5.0"
+        "react-native-reanimated": "4.5.0",
+        "type-fest": "5.5.0"
     }
 }

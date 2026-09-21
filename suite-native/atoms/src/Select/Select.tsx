@@ -23,6 +23,7 @@ export type SelectProps<TItemValue extends SelectItemValue> = {
     items: SelectItemType<TItemValue>[];
     value: TItemValue;
     onSelectItem: (value: TItemValue) => void;
+    rightIcon?: ReactNode;
     isConfirmable?: boolean;
     isLabelShown?: boolean;
     isReadOnly?: boolean;
@@ -35,6 +36,7 @@ export const Select = <TItemValue extends SelectItemValue>({
     items,
     value,
     onSelectItem,
+    rightIcon,
     isConfirmable = false,
     isLabelShown = false,
     isReadOnly = false,
@@ -109,6 +111,7 @@ export const Select = <TItemValue extends SelectItemValue>({
                 value={selectTriggerItem?.label ?? null}
                 icon={selectTriggerItem?.icon}
                 handlePress={!isReadOnly ? openBottomSheet : undefined}
+                rightIcon={rightIcon}
                 hasError={hasError}
                 testID={testID}
             />

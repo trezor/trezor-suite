@@ -7,6 +7,8 @@ import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
 import { type FieldProps, TextInputField } from './TextInputField';
 
+type SecureTextInputFieldProps = Omit<FieldProps, 'showCopyButton'>;
+
 type ToggleSecureTextIconProps = {
     onPress: () => void;
     isTextHidden: boolean;
@@ -27,7 +29,7 @@ const ToggleSecureTextIcon = ({ onPress, isTextHidden }: ToggleSecureTextIconPro
     );
 };
 
-export const SecureTextInputField = forwardRef<InputType, FieldProps>(
+export const SecureTextInputField = forwardRef<InputType, SecureTextInputFieldProps>(
     ({ ...textInputFieldProps }, ref) => {
         const [isTextHidden, setIsTextHidden] = useState(true);
         const { applyStyle } = useNativeStyles();
