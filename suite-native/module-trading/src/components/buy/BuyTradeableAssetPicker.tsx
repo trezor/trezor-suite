@@ -13,7 +13,7 @@ import { BuyCryptoAmountInput } from './BuyCryptoAmountInput';
 import { useBuyFormContext } from '../../hooks/buy/useBuyFormContext';
 import { useTradeableAssetChange } from '../../hooks/general/form/useTradeableAssetChange';
 import { useTradeableAssetPickerNavigation } from '../../hooks/general/useTradeableAssetPickerNavigation';
-import { SelectTradeableAssetButton } from '../general/SelectTradeableAssetButton';
+import { TradeableAssetButton } from '../general/TradeableAssetButton';
 
 const ASSET_PICKER_TEST_ID = '@trading/buy/asset-receive-button';
 
@@ -76,7 +76,7 @@ export const BuyTradeableAssetPicker = () => {
         return (
             <HStack justifyContent="space-between" alignItems="center">
                 <BuyCryptoAmountInput showAssetsSheet={noop} />
-                <SelectTradeableAssetButton onPress={noop} selectedAsset={btcAsset} />
+                <TradeableAssetButton onPress={noop} selectedAsset={btcAsset} />
             </HStack>
         );
     }
@@ -84,7 +84,7 @@ export const BuyTradeableAssetPicker = () => {
     return (
         <HStack justifyContent="space-between" alignItems="center">
             <BuyCryptoAmountInput ref={inputRef} showAssetsSheet={showAssetsScreenAndFocusInput} />
-            <SelectTradeableAssetButton
+            <TradeableAssetButton
                 onPress={showAssetsScreen}
                 selectedAsset={selectedValue}
                 caret

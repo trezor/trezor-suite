@@ -17,7 +17,7 @@ import { SellSendAmountInput } from './SellSendAmountInput';
 import { useTradeableAssetChange } from '../../../hooks/general/form/useTradeableAssetChange';
 import { useMyAssetPickerNavigation } from '../../../hooks/general/useMyAssetPickerNavigation';
 import { useSellFormContext } from '../../../hooks/sell/useSellFormContext';
-import { SelectTradeableAssetButton } from '../../general/SelectTradeableAssetButton';
+import { TradeableAssetButton } from '../../general/TradeableAssetButton';
 
 const ASSET_PICKER_TEST_ID = '@trading/sell/asset-send-button';
 
@@ -74,7 +74,7 @@ export const SellSendAssetPicker = () => {
     return (
         <HStack justifyContent="space-between" alignItems="center">
             <SellSendAmountInput ref={inputRef} showAssetsScreen={showAssetsScreenAndFocusInput} />
-            <SelectTradeableAssetButton
+            <TradeableAssetButton
                 onPress={showAssetsScreen}
                 selectedAsset={selectedValue}
                 testID={ASSET_PICKER_TEST_ID}
