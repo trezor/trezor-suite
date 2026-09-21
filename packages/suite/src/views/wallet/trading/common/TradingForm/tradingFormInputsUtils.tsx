@@ -13,13 +13,6 @@ export const generateFractionButtons = (
     helpers: TradingUseFormActionsReturnProps,
 ): FractionButtonWithPercentValue[] => [
     {
-        id: 'TR_FRACTION_BUTTONS_10_PERCENT',
-        children: <Translation id="TR_FRACTION_BUTTONS_10_PERCENT" />,
-        isDisabled: helpers.isBalanceZero,
-        percentValue: '10%',
-        onClick: () => helpers.setRatioAmount(10),
-    },
-    {
         id: 'TR_FRACTION_BUTTONS_25_PERCENT',
         children: <Translation id="TR_FRACTION_BUTTONS_25_PERCENT" />,
         isDisabled: helpers.isBalanceZero,

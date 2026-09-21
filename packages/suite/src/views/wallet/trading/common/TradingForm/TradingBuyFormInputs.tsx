@@ -4,12 +4,14 @@ import { useDevice } from '@suite/device';
 import { useServices } from '@suite-common/dependency-injection';
 import { injectDispatch } from '@suite-common/redux-utils';
 import {
+    TRADING_FORM_AMOUNT_IN_CRYPTO,
     TRADING_FORM_COUNTRY_SELECT,
     TRADING_FORM_CRYPTO_CURRENCY_SELECT,
     TRADING_FORM_CRYPTO_INPUT,
     TRADING_FORM_FIAT_INPUT,
     TRADING_FORM_INPUT_AMOUNT_FIELDS,
     type TradingBuyType,
+    getNetworkDecimalsWithFallback,
     isCountrySubdivisionRequired,
     selectTradingBuyQuotes,
     selectTradingBuySupportedCryptoIds,
@@ -19,6 +21,7 @@ import { type TokenAddress } from '@suite-common/wallet-types';
 import { Column, Row } from '@trezor/components';
 import { hasBitcoinOnlyFirmware } from '@trezor/device-utils/src/firmwareUtils';
 import { useCurrentRef } from '@trezor/react-utils';
+import { BigNumber } from '@trezor/utils';
 
 import { useSelector } from 'src/hooks/suite';
 import { useTradingFormContext } from 'src/hooks/wallet/trading/form/useTradingCommonForm';
@@ -54,19 +57,42 @@ export const TradingBuyFormInputs = () => {
 
     // `useTradingBuyForm` has many re-rendering issues, use refs to avoid them
     const setAmountLimitsRef = useCurrentRef(setAmountLimits);
+    const getValuesRef = useCurrentRef(getValues);
     const setValueRef = useCurrentRef(setValue);
     const clearErrorsRef = useCurrentRef(clearErrors);
 
     const handleCryptoSelect = useCallback<TradingFormInputBuyAssetProps['onAssetSelect']>(
         asset => {
-            setValueRef.current(TRADING_FORM_CRYPTO_INPUT, '', { shouldDirty: true });
-            setValueRef.current(TRADING_FORM_FIAT_INPUT, '', { shouldDirty: true });
+            const isAmountInCrypto = getValuesRef.current(TRADING_FORM_AMOUNT_IN_CRYPTO);
+            const cryptoAmount = new BigNumber(
+                getValuesRef.current(TRADING_FORM_CRYPTO_INPUT) ?? '',
+            );
+
+            setValueRef.current(
+                isAmountInCrypto ? TRADING_FORM_FIAT_INPUT : TRADING_FORM_CRYPTO_INPUT,
+                '',
+                { shouldDirty: true },
+            );
+
+            if (isAmountInCrypto && !cryptoAmount.isNaN()) {
+                setValueRef.current(
+                    TRADING_FORM_CRYPTO_INPUT,
+                    cryptoAmount
+                        .decimalPlaces(
+                            getNetworkDecimalsWithFallback(asset.networkSymbol),
+                            BigNumber.ROUND_DOWN,
+                        )
+                        .toFixed(),
+                    { shouldDirty: true },
+                );
+            }
+
             setValueRef.current(TRADING_FORM_CRYPTO_CURRENCY_SELECT, asset, { shouldDirty: true });
             clearErrorsRef.current(TRADING_FORM_INPUT_AMOUNT_FIELDS);
             setAmountLimitsRef.current(undefined);
             dispatch(tradingActions.setModalCryptoCurrency(asset.id));
         },
-        [dispatch, setAmountLimitsRef, setValueRef, clearErrorsRef],
+        [dispatch, setAmountLimitsRef, getValuesRef, setValueRef, clearErrorsRef],
     );
     const buySupportedCryptoIds = useSelector(selectTradingBuySupportedCryptoIds);
 
