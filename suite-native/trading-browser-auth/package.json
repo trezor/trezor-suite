@@ -29,6 +29,7 @@
         "@suite-native/trading-atoms": "workspace:*",
         "@suite-native/trading-debug": "workspace:*",
         "@suite-native/trading-state": "workspace:*",
+        "@suite-native/trading-types": "workspace:*",
         "@trezor/type-utils": "workspace:*",
         "@trezor/utils": "workspace:*",
         "expo-linking": "~57.0.3",
@@ -44,7 +45,6 @@
         "@suite-native/test-utils": "workspace:*",
         "@suite-native/test-utils-store": "workspace:*",
         "@suite-native/trading-fixtures": "workspace:*",
-        "@suite-native/trading-types": "workspace:*",
         "@suite-native/transaction-management": "workspace:*",
         "@types/invity-api": "^1.1.20"
     }

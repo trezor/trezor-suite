@@ -12,6 +12,7 @@
     },
     "dependencies": {
         "@mobily/ts-belt": "^3.13.1",
+        "@storybook/react-native": "^10.2.1",
         "@suite-native/atoms": "workspace:*",
         "@suite-native/icons": "workspace:*",
         "@trezor/styles-native": "workspace:*",

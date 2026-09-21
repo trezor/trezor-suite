@@ -23,14 +23,14 @@
         "@suite/authenticity-checks": "workspace:*",
         "@suite/locks": "workspace:*",
         "@suite/router": "workspace:*",
-        "@suite/router-config": "workspace:*"
+        "@suite/router-config": "workspace:*",
+        "redux": "^5.0.1"
     },
     "devDependencies": {
         "@suite-common/message-system": "workspace:*",
         "@suite-common/test-utils": "workspace:*",
         "@suite-common/wallet-types": "workspace:*",
         "@suite/settings": "workspace:*",
-        "@trezor/connect-common": "workspace:*",
-        "redux": "^5.0.1"
+        "@trezor/connect-common": "workspace:*"
     }
 }

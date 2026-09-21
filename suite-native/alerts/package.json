@@ -11,6 +11,7 @@
         "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'"
     },
     "dependencies": {
+        "@storybook/react-native": "^10.2.1",
         "@suite-native/atoms": "workspace:*",
         "@suite-native/icons": "workspace:*",
         "@trezor/env-utils": "workspace:*",

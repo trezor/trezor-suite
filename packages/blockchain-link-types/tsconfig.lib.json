@@ -6,8 +6,8 @@
         "rootDir": "./src"
     },
     "references": [
+        { "path": "../type-utils" },
         { "path": "../utils" },
-        { "path": "../utxo-lib" },
-        { "path": "../type-utils" }
+        { "path": "../utxo-lib" }
     ]
 }

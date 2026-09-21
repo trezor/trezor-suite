@@ -7,8 +7,8 @@
         {
             "path": "../../packages/styles-native"
         },
+        { "path": "../../packages/theme" },
         { "path": "../intl" },
-        { "path": "../test-utils" },
-        { "path": "../../packages/theme" }
+        { "path": "../test-utils" }
     ]
 }

@@ -23,6 +23,7 @@
         { "path": "../trading-atoms" },
         { "path": "../trading-debug" },
         { "path": "../trading-state" },
+        { "path": "../trading-types" },
         { "path": "../../packages/type-utils" },
         { "path": "../../packages/utils" },
         {
@@ -32,7 +33,6 @@
         { "path": "../test-utils" },
         { "path": "../test-utils-store" },
         { "path": "../trading-fixtures" },
-        { "path": "../trading-types" },
         { "path": "../transaction-management" }
     ]
 }

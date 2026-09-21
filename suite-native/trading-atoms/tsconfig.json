@@ -11,6 +11,9 @@
             "path": "../../suite-common/wallet-config"
         },
         {
+            "path": "../../suite-common/wallet-types"
+        },
+        {
             "path": "../../suite-common/wallet-utils"
         },
         { "path": "../accounts" },
@@ -19,6 +22,7 @@
         { "path": "../icons" },
         { "path": "../intl" },
         { "path": "../link" },
+        { "path": "../trading-types" },
         {
             "path": "../../packages/styles-native"
         },
@@ -35,12 +39,8 @@
         {
             "path": "../../suite-common/wallet-core"
         },
-        {
-            "path": "../../suite-common/wallet-types"
-        },
         { "path": "../test-utils" },
         { "path": "../test-utils-store" },
-        { "path": "../trading-fixtures" },
-        { "path": "../trading-types" }
+        { "path": "../trading-fixtures" }
     ]
 }
