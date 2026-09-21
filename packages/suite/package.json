@@ -145,7 +145,6 @@
         "@suite/ui-animations": "workspace:*",
         "@suite/wallet": "workspace:*",
         "@tanstack/react-query": "5.101.4",
-        "@testing-library/jest-dom": "7.0.1",
         "@trezor/analytics-uploader": "workspace:*",
         "@trezor/asset-utils": "workspace:*",
         "@trezor/blockchain-link-types": "workspace:*",
@@ -204,6 +203,7 @@
     "devDependencies": {
         "@pmmmwh/react-refresh-webpack-plugin": "^0.6.2",
         "@sentry/webpack-plugin": "^5.4.0",
+        "@testing-library/jest-dom": "7.0.1",
         "@testing-library/react": "^16.3.2",
         "@testing-library/user-event": "^14.6.4",
         "@trezor/bundler-security": "workspace:*",
