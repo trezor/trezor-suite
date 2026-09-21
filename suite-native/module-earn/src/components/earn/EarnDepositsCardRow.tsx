@@ -73,11 +73,18 @@ export const EarnDepositsCardRow = React.memo(({ row, onPress }: EarnDepositsCar
                             style={applyStyle(rowIconWrapperStyle, { index })}
                         >
                             <TokenIcon
-                                symbol={item.type === 'staking' ? item.symbol : item.networkSymbol}
+                                networkSymbol={
+                                    item.type === 'staking' ? item.symbol : item.networkSymbol
+                                }
                                 contractAddress={
                                     item.type === 'stablecoin-yield'
                                         ? item.tokenContractAddress
                                         : undefined
+                                }
+                                tokenSymbol={
+                                    item.type === 'stablecoin-yield'
+                                        ? item.tokenSymbol
+                                        : item.symbol
                                 }
                                 size="extraSmall"
                                 showNetworkIcon

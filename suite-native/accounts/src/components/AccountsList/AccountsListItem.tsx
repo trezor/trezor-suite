@@ -129,7 +129,13 @@ const AccountsListItemComponent = ({
             showDivider={showDivider}
             onPress={handleOnPress}
             disabled={disabled}
-            icon={<TokenIcon symbol={account.symbol} showNetworkIcon={isNativeCoinOnly} />}
+            icon={
+                <TokenIcon
+                    tokenSymbol={account.symbol}
+                    networkSymbol={account.symbol}
+                    showNetworkIcon={isNativeCoinOnly}
+                />
+            }
             title={title}
             titleBadge={
                 !isNativeCoinOnly && formattedAccountType ? (

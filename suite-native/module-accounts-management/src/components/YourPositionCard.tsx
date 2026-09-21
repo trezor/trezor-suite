@@ -60,8 +60,9 @@ export const YourPositionCard = ({ account, token }: YourPositionCardProps) => {
             <HStack alignItems="center" flex={1}>
                 <Box marginRight="sp6">
                     <TokenIcon
-                        symbol={symbol}
+                        networkSymbol={symbol}
                         contractAddress={token?.contract}
+                        tokenSymbol={token?.symbol || token?.name}
                         showNetworkIcon
                         size="medium"
                     />

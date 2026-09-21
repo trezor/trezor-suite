@@ -52,8 +52,9 @@ export const YieldClaimRewardRow = ({
         <HStack spacing="sp16" justifyContent="space-between" alignItems="center">
             <HStack spacing="sp4" alignItems="center" flex={1}>
                 <TokenIcon
-                    symbol={networkSymbol}
+                    networkSymbol={networkSymbol}
                     contractAddress={tokenContractAddress}
+                    tokenSymbol={tokenSymbol}
                     size={20}
                 />
                 <Box flexShrink={1}>

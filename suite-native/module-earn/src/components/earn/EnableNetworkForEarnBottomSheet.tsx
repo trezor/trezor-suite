@@ -62,7 +62,7 @@ export const EnableNetworkForEarnBottomSheet = ({
             {symbol ? (
                 <Box alignItems="center" paddingHorizontal="sp16">
                     <StakingPromoRingIcon networkColor={networkColor}>
-                        <TokenIcon symbol={symbol} size="large" />
+                        <TokenIcon tokenSymbol={symbol} networkSymbol={symbol} size="large" />
                     </StakingPromoRingIcon>
                     <TitleHeader
                         titleVariant="headline-sm"

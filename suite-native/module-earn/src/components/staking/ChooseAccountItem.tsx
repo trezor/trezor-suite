@@ -55,7 +55,7 @@ export const ChooseAccountItem = ({ account, balanceData, onPress }: ChooseAccou
         <Card borderColor="borderNeutral" noPadding style={applyStyle(itemCardStyle)}>
             <PressableOpacity onPress={handlePress} style={applyStyle(rowStyle)}>
                 <Box marginRight="sp12">
-                    <TokenIcon symbol={account.symbol} />
+                    <TokenIcon tokenSymbol={account.symbol} networkSymbol={account.symbol} />
                 </Box>
 
                 <Box style={applyStyle(labelStyle)}>

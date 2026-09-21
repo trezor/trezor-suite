@@ -54,8 +54,9 @@ export const TransactionDetailListItem = ({
             <Box flexDirection="row" alignItems="center" flex={1}>
                 <Box marginRight="sp16">
                     <TokenIcon
-                        symbol={transaction.symbol}
+                        networkSymbol={transaction.symbol}
                         contractAddress={tokenTransfer?.contract}
+                        tokenSymbol={tokenTransfer?.symbol || tokenTransfer?.name}
                     />
                 </Box>
                 <Box style={applyStyle(CoinNameContainerStyle)}>

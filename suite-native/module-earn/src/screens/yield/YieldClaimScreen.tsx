@@ -265,8 +265,9 @@ export const YieldClaimScreen = () => {
                                 <>
                                     <HStack spacing="sp4" alignItems="center">
                                         <TokenIcon
-                                            symbol={account.symbol}
+                                            networkSymbol={account.symbol}
                                             contractAddress={vault.tokenContract}
+                                            tokenSymbol={vault.name}
                                             size="tiny"
                                         />
                                         <Box flexShrink={1}>

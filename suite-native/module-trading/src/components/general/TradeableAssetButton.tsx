@@ -45,7 +45,12 @@ export const TradeableAssetButton = ({
             accessibilityLabel={accessibilityLabel}
             testID={testID}
         >
-            <IconByCryptoId cryptoId={cryptoId} size="extraSmall" withNetwork />
+            <IconByCryptoId
+                tokenSymbol={symbol}
+                cryptoId={cryptoId}
+                size="extraSmall"
+                withNetwork
+            />
             <NetworkSymbolExtendedFormatter
                 symbol={symbol}
                 variant="body-sm-strong"

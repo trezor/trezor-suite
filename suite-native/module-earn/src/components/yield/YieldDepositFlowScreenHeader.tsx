@@ -2,6 +2,7 @@ import { type ReactNode } from 'react';
 
 import { getNetwork } from '@suite-common/wallet-config';
 import { type Account, type TokenAddress } from '@suite-common/wallet-types';
+import { findToken } from '@suite-common/wallet-utils';
 import { Box, HStack, Text, VStack } from '@suite-native/atoms';
 import { CompactCryptoAmountFormatter } from '@suite-native/formatters';
 import { TokenIcon } from '@suite-native/icons';
@@ -22,6 +23,7 @@ export const YieldDepositFlowScreenHeader = ({
     title,
     tokenContract,
 }: YieldDepositFlowScreenHeaderProps) => {
+    const token = findToken(account.tokens, tokenContract);
     const accountLabel = account.accountLabel ?? getNetwork(account.symbol).name;
 
     return (
@@ -31,8 +33,9 @@ export const YieldDepositFlowScreenHeader = ({
             customContent={
                 <HStack spacing="sp8" alignItems="center" flexShrink={1}>
                     <TokenIcon
-                        symbol={account.symbol}
+                        networkSymbol={account.symbol}
                         contractAddress={tokenContract}
+                        tokenSymbol={token?.symbol || token?.name}
                         size="small"
                         showNetworkIcon
                         wrappedTokenIcon="network"

@@ -226,8 +226,9 @@ export const YieldPendingTransactionModal = ({
                                 style={applyStyle(valueStyle)}
                             >
                                 <TokenIcon
-                                    symbol={accountSymbol}
+                                    networkSymbol={accountSymbol}
                                     contractAddress={vaultTokenContract}
+                                    tokenSymbol={vaultName}
                                     size="extraSmall"
                                     wrappedTokenIcon="network"
                                 />
@@ -253,8 +254,9 @@ export const YieldPendingTransactionModal = ({
                                     style={applyStyle(valueStyle)}
                                 >
                                     <TokenIcon
-                                        symbol={accountSymbol}
+                                        networkSymbol={accountSymbol}
                                         contractAddress={amountTokenContract}
+                                        tokenSymbol={amountTokenSymbol}
                                         size="extraSmall"
                                     />
                                     <Text

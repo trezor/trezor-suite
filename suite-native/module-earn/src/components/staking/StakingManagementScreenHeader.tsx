@@ -42,7 +42,11 @@ export const StakingManagementScreenHeader = () => {
         <ScreenHeader
             customContent={
                 <HStack spacing="sp12" style={applyStyle(headerStyle)}>
-                    <TokenIcon symbol={networkSymbol} size="small" />
+                    <TokenIcon
+                        tokenSymbol={networkSymbol}
+                        networkSymbol={networkSymbol}
+                        size="small"
+                    />
                     <Box style={applyStyle(textColumnStyle)}>
                         <Text variant="body-md-strong" ellipsizeMode="tail" numberOfLines={1}>
                             <Translation id="earn.stakingDetailScreen.title" />

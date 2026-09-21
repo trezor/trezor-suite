@@ -47,7 +47,7 @@ export const EarnAmountCard = ({ accountKey, label, cryptoAmount }: EarnAmountCa
     return (
         <Card noPadding noShadow style={applyStyle(cardStyle)}>
             <AccountsListItemBase
-                icon={<TokenIcon symbol={account.symbol} />}
+                icon={<TokenIcon tokenSymbol={account.symbol} networkSymbol={account.symbol} />}
                 title={label ?? <AccountLabel account={account} />}
                 titleBadge={<AccountTypeBadge accountKey={accountKey} />}
                 mainValue={

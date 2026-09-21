@@ -29,7 +29,12 @@ type AccountDetailNavigationProps = StackToStackCompositeNavigationProps<
 
 export const AccountDetailScreenHeaderContent = ({ account }: AccountDetailScreenHeaderProps) => (
     <HStack alignItems="center" flexShrink={1}>
-        <TokenIcon symbol={account.symbol} size="small" showNetworkIcon />
+        <TokenIcon
+            tokenSymbol={account.symbol}
+            networkSymbol={account.symbol}
+            size="small"
+            showNetworkIcon
+        />
         <VStack spacing={0} flexShrink={1}>
             <Text variant="body-md-strong" numberOfLines={1} ellipsizeMode="tail">
                 {getNetworkDisplaySymbolName(account.symbol)}

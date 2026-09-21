@@ -95,7 +95,7 @@ export const NetworkFilterBottomSheet = forwardRef(
                         <PressableOpacity key={symbol} onPress={() => handleSelectNetwork(symbol)}>
                             <Card noShadow>
                                 <HStack alignItems="center" spacing="sp16">
-                                    <TokenIcon symbol={symbol} />
+                                    <TokenIcon tokenSymbol={symbol} networkSymbol={symbol} />
                                     <VStack flex={1} spacing={0}>
                                         <Text variant="body-md-strong">
                                             {getNetwork(symbol).name}

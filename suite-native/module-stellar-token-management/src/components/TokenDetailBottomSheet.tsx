@@ -29,7 +29,12 @@ export const TokenDetailBottomSheet = ({
     <BottomSheetModal ref={bottomSheetRef} onDismiss={onClose}>
         <VStack spacing="sp16" paddingHorizontal="sp16">
             <HStack alignItems="center" spacing="sp12">
-                <TokenIcon symbol="xlm" contractAddress={iconContractAddress} size="large" />
+                <TokenIcon
+                    networkSymbol="xlm"
+                    contractAddress={iconContractAddress}
+                    tokenSymbol={assetCode || tokenName}
+                    size="large"
+                />
                 <VStack>
                     <Text variant="body-md">{tokenName}</Text>
                     <Text variant="body-sm" color="contentSecondary">

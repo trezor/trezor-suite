@@ -63,7 +63,11 @@ export const YieldVaultDetailScreenHeader = ({
             <ScreenHeader
                 customContent={
                     <HStack spacing="sp12" style={applyStyle(headerStyle)}>
-                        <TokenIcon symbol={networkSymbol} size="small" />
+                        <TokenIcon
+                            tokenSymbol={networkSymbol}
+                            networkSymbol={networkSymbol}
+                            size="small"
+                        />
                         <Box style={applyStyle(textColumnStyle)}>
                             <AccountLabel
                                 accountDescriptor={account.descriptor}

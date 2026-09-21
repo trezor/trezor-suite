@@ -66,7 +66,7 @@ interface AssetPriceCardProps {
 export const AssetPriceCard = ({ accountKey, tokenContract }: AssetPriceCardProps) => {
     const { applyStyle } = useNativeStyles();
 
-    const symbol = useSelector((state: AccountsRootState) =>
+    const networkSymbol = useSelector((state: AccountsRootState) =>
         selectAccountNetworkSymbol(state, accountKey),
     );
     const token = useSelector((state: TokensRootState) =>
@@ -77,18 +77,18 @@ export const AssetPriceCard = ({ accountKey, tokenContract }: AssetPriceCardProp
 
     const { currentValue, valuePercentageChange, isLoading, underlyingAssetContract } =
         useDayCoinPriceChange({
-            symbol,
+            symbol: networkSymbol,
             tokenContract,
             isErc4626Token,
         });
 
-    if (!symbol) return null;
+    if (!networkSymbol) return null;
     if (!isLoading && currentValue === null) return null;
 
-    const tokenName = token?.name ?? token?.symbol ?? getNetworkDisplaySymbol(symbol);
+    const tokenName = token?.name ?? token?.symbol ?? getNetworkDisplaySymbol(networkSymbol);
 
     const priceContract = isErc4626Token ? underlyingAssetContract : tokenContract;
-    const isCoinPrice = !priceContract || isWrappedNativeToken(symbol, priceContract);
+    const isCoinPrice = !priceContract || isWrappedNativeToken(networkSymbol, priceContract);
     const isUnderlyingAssetResolving = isErc4626Token && underlyingAssetContract === null;
 
     return (
@@ -102,8 +102,9 @@ export const AssetPriceCard = ({ accountKey, tokenContract }: AssetPriceCardProp
                     <HStack alignItems="center" flex={1}>
                         <Box marginRight="sp6">
                             <TokenIcon
-                                symbol={symbol}
+                                networkSymbol={networkSymbol}
                                 contractAddress={tokenContract}
+                                tokenSymbol={token?.symbol || token?.name}
                                 showNetworkIcon
                                 size="medium"
                             />
@@ -115,14 +116,14 @@ export const AssetPriceCard = ({ accountKey, tokenContract }: AssetPriceCardProp
                             </Text>
 
                             <Text variant="body-sm" color="contentSecondary">
-                                {getNetworkDisplaySymbolName(symbol)}
+                                {getNetworkDisplaySymbolName(networkSymbol)}
                             </Text>
                         </Box>
                     </HStack>
 
                     <Box alignItems="flex-end">
                         <BaseCurrencyAmountFormatter
-                            symbol={symbol}
+                            symbol={networkSymbol}
                             value={currentValue}
                             variant="body-sm-strong"
                             isDiscreetText={false}

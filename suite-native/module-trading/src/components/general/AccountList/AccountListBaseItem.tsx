@@ -107,7 +107,11 @@ export const AccountListBaseItem = ({
             >
                 {!isAddressDetail && (
                     <Box justifyContent="center">
-                        <TokenIcon symbol={account.symbol} size="extraSmall" />
+                        <TokenIcon
+                            tokenSymbol={account.symbol}
+                            networkSymbol={account.symbol}
+                            size="extraSmall"
+                        />
                     </Box>
                 )}
                 {!info && (

@@ -79,7 +79,13 @@ export const CompoundRoundedIcon = ({
                         key={`${name}-${color ?? 'default'}-${size ?? 'default'}`}
                     />
                 ) : (
-                    symbol && <TokenIcon symbol={symbol} contractAddress={contractAddress} />
+                    symbol && (
+                        <TokenIcon
+                            tokenSymbol={contractAddress ? undefined : symbol}
+                            networkSymbol={symbol}
+                            contractAddress={contractAddress}
+                        />
+                    )
                 ),
             )}
         </Box>

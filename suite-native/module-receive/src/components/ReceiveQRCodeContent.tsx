@@ -8,6 +8,7 @@ export const ReceiveQRCodeContent = ({
     address,
     networkSymbol,
     tokenContract,
+    tokenSymbol,
     qrCodeSize,
 }: ReceiveQRCodeContentProps) => (
     <QRCode
@@ -17,8 +18,9 @@ export const ReceiveQRCodeContent = ({
         paddingVertical={RECEIVE_QR_CODE_PADDING}
         centerIcon={
             <TokenIcon
-                symbol={networkSymbol}
+                networkSymbol={networkSymbol}
                 contractAddress={tokenContract}
+                tokenSymbol={tokenSymbol}
                 showNetworkIcon={tokenContract !== undefined}
                 size="large"
             />

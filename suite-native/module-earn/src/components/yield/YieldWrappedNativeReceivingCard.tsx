@@ -28,8 +28,9 @@ export const YieldWrappedNativeReceivingCard = ({
             </Text>
             <HStack spacing="sp4" alignItems="center" flexShrink={1}>
                 <TokenIcon
-                    symbol={networkSymbol}
+                    networkSymbol={networkSymbol}
                     contractAddress={tokenContract}
+                    tokenSymbol={tokenSymbol}
                     size="extraSmall"
                 />
                 <ExactTokenAmountFormatter

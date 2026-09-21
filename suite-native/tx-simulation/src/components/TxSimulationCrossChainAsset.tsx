@@ -53,8 +53,9 @@ export const TxSimulationCrossChainAsset = ({ assetDiff }: TxSimulationCrossChai
         <HStack spacing="sp12" padding="sp16" alignItems="center">
             {network && asset.symbol ? (
                 <TokenIcon
-                    symbol={network.symbol}
+                    networkSymbol={network.symbol}
                     contractAddress={'address' in asset ? asset.address : undefined}
+                    tokenSymbol={asset.symbol}
                     size="small"
                     showNetworkIcon
                 />
