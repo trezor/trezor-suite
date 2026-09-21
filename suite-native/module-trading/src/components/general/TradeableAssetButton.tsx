@@ -1,4 +1,5 @@
 import { Button, type ButtonColorProps, HStack } from '@suite-native/atoms';
+import { Translation, useTranslate } from '@suite-native/intl';
 import { IconByCryptoId } from '@suite-native/trading-atoms';
 import { type TradeableAsset } from '@suite-native/trading-types';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
@@ -6,53 +7,63 @@ import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 import { NetworkSymbolExtendedFormatter } from './NetworkSymbolExtendedFormatter';
 
 export type TradeableAssetButtonProps = {
-    asset: TradeableAsset;
-    caret?: boolean;
     onPress: () => void;
-    accessibilityLabel: string;
+    selectedAsset: TradeableAsset | undefined;
+    caret?: boolean;
+    buttonColorProps?: ButtonColorProps;
     testID?: string;
-} & ButtonColorProps;
+};
 
 const buttonStyle = prepareNativeStyle(({ spacings }) => ({
     height: spacings.sp40,
 }));
 
 export const TradeableAssetButton = ({
-    asset: { symbol, cryptoId },
-    caret,
     onPress,
-    accessibilityLabel,
+    selectedAsset,
+    caret,
+    buttonColorProps = {
+        intent: 'neutral',
+        priority: 'secondary',
+    },
     testID,
-    intent = 'neutral',
-    priority = 'secondary',
-    isInverse,
 }: TradeableAssetButtonProps) => {
     const { applyStyle } = useNativeStyles();
+    const { translate } = useTranslate();
+
+    const accessibilityLabel = translate('moduleTrading.selectCoin.buttonTitle');
     const symbolTestID = testID ? `${testID}/symbol` : undefined;
+    const iconRight = caret || !selectedAsset ? 'caretDown' : undefined;
 
     return (
         <Button
             onPress={onPress}
             size="medium"
-            intent={intent}
-            priority={priority}
-            isInverse={isInverse}
-            iconRight={caret ? 'caretDown' : undefined}
-            shouldWrapChildrenInText={false}
+            iconRight={iconRight}
+            shouldWrapChildrenInText={!selectedAsset}
             accessibilityRole="button"
             accessibilityLabel={accessibilityLabel}
             testID={testID}
             style={applyStyle(buttonStyle)}
+            {...buttonColorProps}
         >
-            <HStack alignItems="center" spacing="sp8">
-                <IconByCryptoId cryptoId={cryptoId} size="extraSmall" withNetwork />
-                <NetworkSymbolExtendedFormatter
-                    symbol={symbol}
-                    variant="body-sm-strong"
-                    color="contentPrimary"
-                    testID={symbolTestID}
-                />
-            </HStack>
+            {selectedAsset ? (
+                <HStack alignItems="center" spacing="sp8">
+                    <IconByCryptoId
+                        cryptoId={selectedAsset.cryptoId}
+                        size="extraSmall"
+                        withNetwork
+                    />
+                    <NetworkSymbolExtendedFormatter
+                        symbol={selectedAsset.symbol}
+                        variant="body-sm-strong"
+                        color="contentPrimary"
+                        testID={symbolTestID}
+                    />
+                </HStack>
+            ) : (
+                <Translation id="moduleTrading.selectCoin.buttonTitle" />
+            )}
         </Button>
     );
 };

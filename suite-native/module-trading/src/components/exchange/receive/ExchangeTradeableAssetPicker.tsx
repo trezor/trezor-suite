@@ -10,7 +10,7 @@ import { ExchangeReceiveAmountInput } from './ExchangeReceiveAmountInput';
 import { useExchangeFormContext } from '../../../hooks/exchange/useExchangeFormContext';
 import { useTradeableAssetChange } from '../../../hooks/general/form/useTradeableAssetChange';
 import { useTradeableAssetPickerNavigation } from '../../../hooks/general/useTradeableAssetPickerNavigation';
-import { SelectTradeableAssetButton } from '../../general/SelectTradeableAssetButton';
+import { TradeableAssetButton } from '../../general/TradeableAssetButton';
 
 const ASSET_PICKER_TEST_ID = '@trading/exchange/asset-receive-button';
 
@@ -52,7 +52,7 @@ export const ExchangeTradeableAssetPicker = () => {
     return (
         <HStack justifyContent="space-between" alignItems="center">
             <ExchangeReceiveAmountInput showAssetsSheet={showAssetsScreen} />
-            <SelectTradeableAssetButton
+            <TradeableAssetButton
                 onPress={showAssetsScreen}
                 selectedAsset={selectedValue}
                 caret
