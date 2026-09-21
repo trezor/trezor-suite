@@ -1,15 +1,5 @@
-import semver from 'semver';
-
+import { getReleaseType } from './get-release-type';
 import { getLocalVersion } from './helpers';
-
-const getReleaseType = (version: string): string => {
-    const prerelease = semver.prerelease(version);
-    if (!prerelease) {
-        return 'stable';
-    }
-
-    return prerelease[0] === 'alpha' ? 'alpha' : 'canary';
-};
 
 const checkVersions = (packages: string[], deploymentType: string): void => {
     const versions = packages.map(packageName => getLocalVersion(packageName));
