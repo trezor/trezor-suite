@@ -15,6 +15,8 @@ type UseTradingQuoteRequestProps<TFormProps extends FieldValues, TResult> = {
     methods: UseFormReturn<TFormProps>;
     immediateFields: readonly FieldPath<TFormProps>[];
     debouncedFields: readonly FieldPath<TFormProps>[];
+    getActiveAmountField: (values: TFormProps) => FieldPath<TFormProps>;
+    getActiveAmount: (values: TFormProps) => string | undefined;
     isFetchAllowed: (values: TFormProps) => boolean;
     requestQuotes: (values: TFormProps) => AbortableRequest<TResult> | null;
     stopScheduler: () => void;
@@ -30,10 +32,20 @@ export const useTradingQuoteRequest = <TFormProps extends FieldValues, TResult>(
     const controllerRef = useRef<AbortController | null>(null);
     const debounceTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
     const isQuoteLifecycleActive = useRef(false);
+    const lastActiveAmountKeyRef = useRef<string | undefined>(undefined);
 
     const [isScheduledQuotesRefresh, setIsScheduledQuotesRefresh] = useState(false);
 
     const configRef = useCurrentRef(config);
+
+    const getActiveAmountKey = useCallback(
+        (values: TFormProps) => {
+            const { getActiveAmountField, getActiveAmount } = configRef.current;
+
+            return `${getActiveAmountField(values)}=${getActiveAmount(values) ?? ''}`;
+        },
+        [configRef],
+    );
 
     const abortActiveRequest = useCallback(() => {
         controllerRef.current?.abort();
@@ -63,6 +75,7 @@ export const useTradingQuoteRequest = <TFormProps extends FieldValues, TResult>(
 
     const refreshQuotes = useCallback(async () => {
         const values = methods.getValues();
+        lastActiveAmountKeyRef.current = getActiveAmountKey(values);
 
         if (!configRef.current.isFetchAllowed(values)) {
             stopQuoteRequests();
@@ -75,7 +88,7 @@ export const useTradingQuoteRequest = <TFormProps extends FieldValues, TResult>(
         controllerRef.current = controller;
         const { signal } = controller;
 
-        const isValid = await methods.trigger();
+        const isValid = await methods.trigger(configRef.current.getActiveAmountField(values));
 
         if (signal.aborted) {
             return;
@@ -116,7 +129,7 @@ export const useTradingQuoteRequest = <TFormProps extends FieldValues, TResult>(
                 setIsScheduledQuotesRefresh(false);
             }
         }
-    }, [methods, configRef, stopQuoteRequests]);
+    }, [methods, configRef, getActiveAmountKey, stopQuoteRequests]);
 
     useTradingRefetchScheduler({
         onRefetch: () => {
@@ -129,6 +142,8 @@ export const useTradingQuoteRequest = <TFormProps extends FieldValues, TResult>(
     useEffect(() => {
         const subscription = methods.watch((_, { name }) => {
             if (!name) {
+                lastActiveAmountKeyRef.current = undefined;
+
                 return;
             }
 
@@ -139,9 +154,17 @@ export const useTradingQuoteRequest = <TFormProps extends FieldValues, TResult>(
                 return;
             }
 
+            const values = methods.getValues();
+            const activeAmountKey = getActiveAmountKey(values);
+
+            if (!isImmediate && activeAmountKey === lastActiveAmountKeyRef.current) {
+                return;
+            }
+
+            lastActiveAmountKeyRef.current = activeAmountKey;
             abortActiveRequest();
 
-            if (!isFetchAllowed(methods.getValues())) {
+            if (!isFetchAllowed(values)) {
                 stopQuoteRequests();
 
                 return;
@@ -163,6 +186,7 @@ export const useTradingQuoteRequest = <TFormProps extends FieldValues, TResult>(
     }, [
         methods,
         configRef,
+        getActiveAmountKey,
         abortActiveRequest,
         clearDebounceTimer,
         stopQuoteRequests,
