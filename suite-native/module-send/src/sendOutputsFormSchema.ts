@@ -17,6 +17,8 @@ export type SendFormFormContext = {
     symbol?: NetworkSymbol;
     availableBalance?: string;
     networkFeeInfo?: FeeInfo;
+    hasNetworkFeesFetchFailed?: boolean;
+    hasFeeCompositionFailed?: boolean;
     isValueInSats?: boolean;
     isTokenFlow?: boolean;
     feeLevelsMaxAmount?: FeeLevelsMaxAmount;
@@ -28,6 +30,9 @@ export type SendFormFormContext = {
     /** What the recipient network can do with names, owned by its network module. */
     namedAddress?: NamedAddressSupport;
 };
+
+const hasNormalFeeLevel = (networkFeeInfo?: FeeInfo) =>
+    networkFeeInfo?.levels.some(level => level.label === 'normal') ?? false;
 
 const isAmountDust = (amount: string, context?: SendFormFormContext) => {
     if (!amount || !context) {
@@ -51,6 +56,22 @@ const isAmountDust = (amount: string, context?: SendFormFormContext) => {
     }
 
     return amountBigNumber.lt(dustThreshold);
+};
+
+const getFeeAvailabilityError = (amount: string, context?: SendFormFormContext) => {
+    if (!amount || !context) {
+        return undefined;
+    }
+
+    if (context.hasNetworkFeesFetchFailed && !hasNormalFeeLevel(context.networkFeeInfo)) {
+        return 'Couldn’t load network fees. Check your connection and try again.';
+    }
+
+    if (context.hasFeeCompositionFailed) {
+        return 'Insufficient balance to cover the transaction fees.';
+    }
+
+    return undefined;
 };
 
 const isAmountHigherThanBalance = (
@@ -182,6 +203,14 @@ const outputSchema = yup.object({
         .string()
         .required('Amount is required.')
         .matches(/^\d*\.?\d+$/, 'Invalid decimal value.')
+        .test(
+            'are-fees-available',
+            function (value, { options: { context } }: yup.TestContext<SendFormFormContext>) {
+                const error = getFeeAvailabilityError(value, context);
+
+                return error ? this.createError({ message: error }) : true;
+            },
+        )
         .test(
             'is-dust-amount',
             'The value is lower than the dust limit.',

@@ -23,6 +23,7 @@ import {
     selectConvertedNetworkFeeInfo,
     selectIsAmountInSats,
     selectIsNetworkReserveEnabled,
+    selectNetworkFeeStatus,
     selectSendFormDraftByKey,
     sendFormActions,
     updateFeeInfoThunk,
@@ -141,9 +142,14 @@ export const useSendForm = (accountKey: AccountKey, tokenContract?: TokenAddress
     const networkFeeInfo = useSelector((state: FeesRootState) =>
         selectConvertedNetworkFeeInfo(state, account?.symbol),
     );
+    const networkFeeStatus = useSelector((state: FeesRootState) =>
+        selectNetworkFeeStatus(state, account?.symbol),
+    );
     const sendFormDraft = useSelector((state: SendRootState) =>
         selectSendFormDraftByKey(state, accountKey, tokenContract),
     );
+    const feeLevels = useSelector(selectFeeLevels);
+    const normalPrecomposedFeeLevel = feeLevels.normal;
 
     const excludedUtxos = useMemo(
         () =>
@@ -179,6 +185,8 @@ export const useSendForm = (accountKey: AccountKey, tokenContract?: TokenAddress
         context: {
             addressValidator,
             networkFeeInfo,
+            hasNetworkFeesFetchFailed: networkFeeStatus === 'error',
+            hasFeeCompositionFailed: normalPrecomposedFeeLevel?.type === 'error',
             accountDescriptor: account?.descriptor,
             symbol: account?.symbol,
             availableBalance: tokenInfo?.balance ?? account?.availableBalance,
@@ -209,6 +217,10 @@ export const useSendForm = (accountKey: AccountKey, tokenContract?: TokenAddress
     // Submitting before a name resolves would compose against the name itself. Reverse lookups
     // run on an already-valid address, so they do not block.
     const isResolvingNamedAddress = namedAddressMode === 'forward' && isResolving;
+
+    useEffect(() => {
+        if (normalPrecomposedFeeLevel) trigger();
+    }, [normalPrecomposedFeeLevel, trigger]);
 
     const updateFormState = useCallback(async () => {
         if (account && network && networkFeeInfo) {
@@ -267,8 +279,6 @@ export const useSendForm = (accountKey: AccountKey, tokenContract?: TokenAddress
                         feeLevels: response.payload,
                     }),
                 );
-
-                trigger();
             }
         }
     }, [
@@ -282,7 +292,6 @@ export const useSendForm = (accountKey: AccountKey, tokenContract?: TokenAddress
         setError,
         excludedUtxos,
         selectedUtxos,
-        trigger,
     ]);
 
     const calculateNormalFeeMaxAmount = useCallback(async () => {
@@ -357,8 +366,6 @@ export const useSendForm = (accountKey: AccountKey, tokenContract?: TokenAddress
         accountKey,
         tokenContract,
     });
-
-    const feeLevels = useSelector(selectFeeLevels);
 
     const navigateToAddressReview = useCallback(
         ({ transaction }: { transaction: GeneralPrecomposedTransactionFinal }) => {
