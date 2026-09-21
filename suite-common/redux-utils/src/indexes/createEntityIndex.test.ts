@@ -104,6 +104,22 @@ describe('createEntityIndex', () => {
         expect(index.getByIds(state, ['b'])).toBe(index.getByIds(state, []));
     });
 
+    it('hands back the same entities while the index and the list are unchanged', () => {
+        const { index } = createIndex();
+        const state = createState([a, b]);
+        const ids = ['a', 'b'];
+
+        expect(index.getByIds(state, ids)).toBe(index.getByIds(state, ids));
+    });
+
+    it('maps the list again when the source changed', () => {
+        const { index } = createIndex();
+        const ids = ['a', 'b'];
+        const found = index.getByIds(createState([a, b]), ids);
+
+        expect(index.getByIds(createState([a, { ...b, value: 'changed' }]), ids)).not.toBe(found);
+    });
+
     it('lists ids in the order the source yields them', () => {
         const { index } = createIndex();
 
@@ -186,6 +202,14 @@ describe('createEntityIndex', () => {
         const { index } = createIndex();
 
         expect(index.read(createState([]))).toBe(index.read(createState([])));
+    });
+
+    it('shares one empty list of ids once everything is gone', () => {
+        // A source that empties out is built again, but nothing it holds should look new.
+        const { index } = createIndex();
+        index.read(createState([a]));
+
+        expect(index.getIds(createState([]))).toBe(index.getIds(createState([])));
     });
 });
 
@@ -705,7 +729,9 @@ describe('an entry settled against the partition that was written', () => {
 
         index.getBySecondaryKey({ byPartition: { a: [one], b: [two] } }, 'bySide', 'left');
 
-        expect(index.getBySecondaryKey({ byPartition: { a: [one] } }, 'bySide', 'left')).toEqual([one]);
+        expect(index.getBySecondaryKey({ byPartition: { a: [one] } }, 'bySide', 'left')).toEqual([
+            one,
+        ]);
     });
 
     it('drops a key a vanished partition held alone', () => {
@@ -713,7 +739,9 @@ describe('an entry settled against the partition that was written', () => {
 
         index.getBySecondaryKey({ byPartition: { a: [one], b: [three] } }, 'bySide', 'right');
 
-        expect(index.getBySecondaryKey({ byPartition: { a: [one] } }, 'bySide', 'right')).toEqual([]);
+        expect(index.getBySecondaryKey({ byPartition: { a: [one] } }, 'bySide', 'right')).toEqual(
+            [],
+        );
     });
 
     it('orders an entry by the partitions, however they are reordered', () => {
