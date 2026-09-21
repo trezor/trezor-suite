@@ -558,7 +558,7 @@ export const messages = defineMessages({
         id: 'TR_TRADING_DISABLE_TOR',
     },
     TR_NO_OFFERS_AVAILABLE: {
-        defaultMessage: 'No offers available',
+        defaultMessage: 'No offers available.',
         id: 'TR_NO_OFFERS_AVAILABLE',
     },
     TR_READY_ON: {
@@ -842,12 +842,12 @@ export const messages = defineMessages({
         id: 'TR_EXCHANGE_CENTRALIZED_EXCHANGE',
     },
     TR_TRADING_EXCHANGE_FIXED_OFFERS_HEADING: {
-        defaultMessage: 'Fixed-rate CEX',
+        defaultMessage: 'Fixed-rate offers',
         id: 'TR_TRADING_EXCHANGE_FIXED_OFFERS_HEADING',
         dynamic: true,
     },
     TR_TRADING_EXCHANGE_FLOAT_OFFERS_HEADING: {
-        defaultMessage: 'Floating-rate CEX',
+        defaultMessage: 'Floating-rate offers',
         id: 'TR_TRADING_EXCHANGE_FLOAT_OFFERS_HEADING',
         dynamic: true,
     },
@@ -1157,6 +1157,18 @@ export const messages = defineMessages({
     TR_TRADING_SHOW_OFFERS: {
         defaultMessage: 'Compare offers',
         id: 'TR_TRADING_SHOW_OFFERS',
+    },
+    TR_TRADING_PROVIDER_FILTER_ALL: {
+        defaultMessage: 'All providers',
+        id: 'TR_TRADING_PROVIDER_FILTER_ALL',
+    },
+    TR_TRADING_PROVIDER_FILTER_CENTRALIZED: {
+        defaultMessage: 'Centralized',
+        id: 'TR_TRADING_PROVIDER_FILTER_CENTRALIZED',
+    },
+    TR_TRADING_PROVIDER_FILTER_DECENTRALIZED: {
+        defaultMessage: 'Decentralized',
+        id: 'TR_TRADING_PROVIDER_FILTER_DECENTRALIZED',
     },
     TR_TRADING_LAST_TRANSACTIONS: {
         defaultMessage: 'Trade history',
@@ -1480,21 +1492,19 @@ export const messages = defineMessages({
     },
     TR_TRADING_FIX_RATE_DESCRIPTION: {
         id: 'TR_TRADING_FIX_RATE_DESCRIPTION',
-        defaultMessage: 'Lock in your rate for 15 minutes by paying a higher fee.',
+        defaultMessage: 'Your rate is locked for 15 minutes. Costs slightly more.',
     },
     TR_TRADING_FLOATING_RATE_DESCRIPTION: {
         id: 'TR_TRADING_FLOATING_RATE_DESCRIPTION',
-        defaultMessage: 'Get an estimated rate that may adjust with real-time market changes.',
+        defaultMessage: 'The final amount can change as the market moves.',
     },
     TR_TRADING_CEX_TOOLTIP: {
         id: 'TR_TRADING_CEX_TOOLTIP',
         defaultMessage: 'Centralized exchange',
-        dynamic: true,
     },
     TR_TRADING_DEX_TOOLTIP: {
         id: 'TR_TRADING_DEX_TOOLTIP',
         defaultMessage: 'Decentralized exchange',
-        dynamic: true,
     },
     TR_TRADING_NO_METHODS_AVAILABLE: {
         defaultMessage: 'No payout methods',
@@ -1508,29 +1518,29 @@ export const messages = defineMessages({
         defaultMessage: 'KYC policy',
         id: 'TR_TRADING_KYC_POLICY',
     },
-    TR_TRADING_KYC_POLICY_NEVER_REQUIRED: {
-        defaultMessage: 'KYC is never required',
-        id: 'TR_TRADING_KYC_POLICY_NEVER_REQUIRED',
-    },
     TR_TRADING_KYC_REQUIRED: {
         defaultMessage: 'KYC is required',
         id: 'TR_TRADING_KYC_REQUIRED',
     },
     TR_TRADING_KYC_NO_REFUND: {
-        defaultMessage: 'KYC is only required in exceptional cases. It may be needed for refunds.',
+        defaultMessage: 'KYC is only required in exceptional cases.',
         id: 'TR_TRADING_KYC_NO_REFUND',
     },
     TR_TRADING_KYC_YES_REFUND: {
-        defaultMessage: "KYC is only required in exceptional cases. It's not needed for refunds.",
+        defaultMessage: 'KYC is only required in exceptional cases.',
         id: 'TR_TRADING_KYC_YES_REFUND',
     },
     TR_TRADING_KYC_NO_KYC: {
         defaultMessage: 'KYC is never required. Exceptional cases are automatically refunded.',
         id: 'TR_TRADING_KYC_NO_KYC',
     },
-    TR_TRADING_KYC_ANONYMOUS: {
-        defaultMessage: 'Anonymous',
-        id: 'TR_TRADING_KYC_ANONYMOUS',
+    TR_TRADING_KYC_NO_KYC_LABEL: {
+        defaultMessage: 'No KYC',
+        id: 'TR_TRADING_KYC_NO_KYC_LABEL',
+    },
+    TR_TRADING_KYC_NO_IDENTITY_VERIFICATION: {
+        defaultMessage: 'No identity verification (KYC).',
+        id: 'TR_TRADING_KYC_NO_IDENTITY_VERIFICATION',
     },
     TR_TRADING_SWAP: {
         defaultMessage: 'Swap',

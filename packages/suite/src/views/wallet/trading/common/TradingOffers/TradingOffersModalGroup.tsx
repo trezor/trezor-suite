@@ -2,6 +2,7 @@ import { Translation, type TranslationKey } from '@suite/intl';
 import { type TradingTradeType } from '@suite-common/trading';
 import { CardList, Column, H3, Paragraph } from '@trezor/components';
 
+import { TradingOffersModalGroupEmpty } from './TradingOffersModalGroupEmpty';
 import { TradingOffersModalItem } from './TradingOffersModalItem';
 
 type TradingOffersModalGroupProps = {
@@ -32,13 +33,17 @@ export const TradingOffersModalGroup = ({
             </div>
         )}
         <CardList>
-            {quotes.map(quote => (
-                <TradingOffersModalItem
-                    key={quote.id ?? `quote-${quote.exchange}`}
-                    quote={quote}
-                    onSelect={onSelect}
-                />
-            ))}
+            {quotes.length === 0 ? (
+                <TradingOffersModalGroupEmpty />
+            ) : (
+                quotes.map(quote => (
+                    <TradingOffersModalItem
+                        key={quote.id ?? `quote-${quote.exchange}`}
+                        quote={quote}
+                        onSelect={onSelect}
+                    />
+                ))
+            )}
         </CardList>
     </Column>
 );
