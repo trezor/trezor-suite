@@ -356,7 +356,6 @@
   "TR_APPROVE_TITLE": "Схвалення токена",
   "TR_ASCII_ONLY": "Допускаються тільки символи ASCII",
   "TR_ASSETS": "Монета",
-  "TR_ASSET_CODE": "Код активу",
   "TR_ASSET_CODE_INVALID": "Некоректний код активу. Введіть дійсний код активу.",
   "TR_ASSET_PICKER_SEARCH_NO_RESULTS": "Монету або токен не знайдено",
   "TR_ASSET_PICKER_SEARCH_NO_RESULTS_DESCRIPTION": "Перевірте написання або перегляньте список, щоб вибрати актив.",

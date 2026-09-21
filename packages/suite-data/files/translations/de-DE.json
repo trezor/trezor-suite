@@ -407,7 +407,6 @@
   "TR_APPROVE_TITLE": "Token-Genehmigung",
   "TR_ASCII_ONLY": "Nur ASCII-Zeichen sind erlaubt",
   "TR_ASSETS": "Netzwerk",
-  "TR_ASSET_CODE": "Asset-Code",
   "TR_ASSET_CODE_INVALID": "Ungültiger Asset-Code. Gib einen gültigen Asset-Code ein.",
   "TR_ASSET_PICKER_LOW_BALANCE": "Niedriges Guthaben",
   "TR_ASSET_PICKER_NETWORK_FILTER": "Netzwerk",

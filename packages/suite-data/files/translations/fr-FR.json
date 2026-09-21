@@ -407,7 +407,6 @@
   "TR_APPROVE_TITLE": "Approbation de jeton",
   "TR_ASCII_ONLY": "Seuls les caractères ASCII sont autorisés",
   "TR_ASSETS": "Réseau",
-  "TR_ASSET_CODE": "Code de l'actif",
   "TR_ASSET_CODE_INVALID": "Code de l'actif invalide. Entrez un code d'actif valide.",
   "TR_ASSET_PICKER_LOW_BALANCE": "Solde faible",
   "TR_ASSET_PICKER_NETWORK_FILTER": "Réseau",

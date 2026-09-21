@@ -407,7 +407,6 @@
   "TR_APPROVE_TITLE": "Persetujuan token",
   "TR_ASCII_ONLY": "Hanya karakter ASCII yang diperbolehkan",
   "TR_ASSETS": "Jaringan",
-  "TR_ASSET_CODE": "Kode aset",
   "TR_ASSET_CODE_INVALID": "Kode aset tidak valid. Masukkan kode aset yang valid.",
   "TR_ASSET_PICKER_LOW_BALANCE": "Saldo rendah",
   "TR_ASSET_PICKER_NETWORK_FILTER": "Jaringan",

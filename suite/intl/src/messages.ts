@@ -3877,19 +3877,19 @@ export const messages = defineMessages({
         id: 'TR_YOUR_CURRENT_FIRMWARE_UNKNOWN',
     },
     TR_YOUR_CURRENT_VERSION: {
-        defaultMessage: 'Current version {version}',
+        defaultMessage: 'Current version: {version}',
         id: 'TR_YOUR_CURRENT_VERSION',
     },
     TR_YOUR_NEW_VERSION: {
-        defaultMessage: 'Version {version} is available.',
+        defaultMessage: 'New version: {version}',
         id: 'TR_YOUR_NEW_VERSION',
     },
     TR_YOUR_NEW_VERSION_IS_DOWNLOADING: {
-        defaultMessage: 'Version {version} is downloading...',
+        defaultMessage: 'Downloading: {version}',
         id: 'TR_YOUR_NEW_VERSION_IS_DOWNLOADING',
     },
     TR_YOUR_NEW_VERSION_IS_READY: {
-        defaultMessage: 'Version {version} has been downloaded and is ready to be installed.',
+        defaultMessage: 'Ready to install: {version}',
         id: 'TR_YOUR_NEW_VERSION_IS_READY',
     },
     TR_YOUR_TREZOR_IS_NOT_BACKED_UP: {
@@ -5495,8 +5495,7 @@ export const messages = defineMessages({
     },
     TR_MANUAL_TOKEN_ACTIVATION_DESCRIPTION: {
         id: 'TR_MANUAL_TOKEN_ACTIVATION_DESCRIPTION',
-        defaultMessage:
-            'To activate a token, enter its contract ID, or its asset code and issuer address.',
+        defaultMessage: 'To activate a token, enter its asset code and issuer address.',
     },
     TR_MAKE_SURE_NO_ONE_CAN_PEEK: {
         id: 'TR_MAKE_SURE_NO_ONE_CAN_PEEK',
@@ -7519,7 +7518,7 @@ export const messages = defineMessages({
     },
     SETTINGS_UPDATE_AVAILABLE: {
         id: 'SETTINGS_UPDATE_AVAILABLE',
-        defaultMessage: 'Get the latest version',
+        defaultMessage: 'Download update',
     },
     SETTINGS_UPDATE_DOWNLOADING: {
         id: 'SETTINGS_UPDATE_DOWNLOADING',

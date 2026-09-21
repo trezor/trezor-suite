@@ -407,7 +407,6 @@
   "TR_APPROVE_TITLE": "Aprovação de token",
   "TR_ASCII_ONLY": "Somente caracteres ASCII são permitidos",
   "TR_ASSETS": "Rede",
-  "TR_ASSET_CODE": "Código de ativo",
   "TR_ASSET_CODE_INVALID": "Código de ativo inválido. Introduza um código de ativo válido.",
   "TR_ASSET_PICKER_LOW_BALANCE": "Saldo baixo",
   "TR_ASSET_PICKER_NETWORK_FILTER": "Rede",

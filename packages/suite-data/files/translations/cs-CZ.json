@@ -407,7 +407,6 @@
   "TR_APPROVE_TITLE": "Schválení limitu tokenu",
   "TR_ASCII_ONLY": "Povoleny jsou pouze znaky ASCII",
   "TR_ASSETS": "Síť",
-  "TR_ASSET_CODE": "Kód aktiva",
   "TR_ASSET_CODE_INVALID": "Neplatný kód aktiva. Zadejte platný kód.",
   "TR_ASSET_PICKER_LOW_BALANCE": "Nízký zůstatek",
   "TR_ASSET_PICKER_NETWORK_FILTER": "Síť",
