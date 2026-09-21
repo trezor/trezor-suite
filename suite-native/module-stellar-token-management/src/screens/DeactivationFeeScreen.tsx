@@ -99,7 +99,11 @@ export const DeactivationFeeScreen = () => {
                     />
                 }
             >
-                <Box flex={1} justifyContent="space-between">
+                <Box
+                    flex={1}
+                    justifyContent="space-between"
+                    pointerEvents={isSubmitting ? 'none' : 'auto'}
+                >
                     <VStack spacing="sp16">
                         <TokenInfoCard
                             tokenName={tokenName}
