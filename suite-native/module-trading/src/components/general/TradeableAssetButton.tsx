@@ -1,4 +1,4 @@
-import { Button, type ButtonColorProps, HStack } from '@suite-native/atoms';
+import { Button, type ButtonProps, HStack } from '@suite-native/atoms';
 import { Translation, useTranslate } from '@suite-native/intl';
 import { IconByCryptoId } from '@suite-native/trading-atoms';
 import { type TradeableAsset } from '@suite-native/trading-types';
@@ -6,11 +6,13 @@ import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
 import { NetworkSymbolExtendedFormatter } from './NetworkSymbolExtendedFormatter';
 
-export type TradeableAssetButtonProps = {
-    onPress: () => void;
+export type TradeableAssetButtonProps = Omit<ButtonProps, 'children' | 'style'> & {
     selectedAsset: TradeableAsset | undefined;
     caret?: boolean;
-    buttonColorProps?: ButtonColorProps;
+};
+
+type SelectedTradeableAssetLabelProps = {
+    selectedAsset: TradeableAsset;
     testID?: string;
 };
 
@@ -18,26 +20,45 @@ const buttonStyle = prepareNativeStyle(({ spacings }) => ({
     height: spacings.sp40,
 }));
 
+const SelectedTradeableAssetLabel = ({
+    selectedAsset,
+    testID,
+}: SelectedTradeableAssetLabelProps) => {
+    const { symbol, cryptoId } = selectedAsset;
+    const symbolTestID = testID ? `${testID}/symbol` : undefined;
+
+    return (
+        <HStack alignItems="center" spacing="sp8">
+            <IconByCryptoId
+                tokenSymbol={symbol}
+                cryptoId={cryptoId}
+                size="extraSmall"
+                withNetwork
+            />
+            <NetworkSymbolExtendedFormatter
+                symbol={symbol}
+                variant="body-sm-strong"
+                color="contentPrimary"
+                testID={symbolTestID}
+            />
+        </HStack>
+    );
+};
+
 export const TradeableAssetButton = ({
-    onPress,
     selectedAsset,
     caret,
-    buttonColorProps = {
-        intent: 'neutral',
-        priority: 'secondary',
-    },
     testID,
+    ...buttonProps
 }: TradeableAssetButtonProps) => {
     const { applyStyle } = useNativeStyles();
     const { translate } = useTranslate();
 
     const accessibilityLabel = translate('moduleTrading.selectCoin.buttonTitle');
-    const symbolTestID = testID ? `${testID}/symbol` : undefined;
     const iconRight = caret || !selectedAsset ? 'caretDown' : undefined;
 
     return (
         <Button
-            onPress={onPress}
             size="medium"
             iconRight={iconRight}
             shouldWrapChildrenInText={!selectedAsset}
@@ -45,22 +66,12 @@ export const TradeableAssetButton = ({
             accessibilityLabel={accessibilityLabel}
             testID={testID}
             style={applyStyle(buttonStyle)}
-            {...buttonColorProps}
+            intent="neutral"
+            priority="secondary"
+            {...buttonProps}
         >
             {selectedAsset ? (
-                <HStack alignItems="center" spacing="sp8">
-                    <IconByCryptoId
-                        cryptoId={selectedAsset.cryptoId}
-                        size="extraSmall"
-                        withNetwork
-                    />
-                    <NetworkSymbolExtendedFormatter
-                        symbol={selectedAsset.symbol}
-                        variant="body-sm-strong"
-                        color="contentPrimary"
-                        testID={symbolTestID}
-                    />
-                </HStack>
+                <SelectedTradeableAssetLabel selectedAsset={selectedAsset} testID={testID} />
             ) : (
                 <Translation id="moduleTrading.selectCoin.buttonTitle" />
             )}
