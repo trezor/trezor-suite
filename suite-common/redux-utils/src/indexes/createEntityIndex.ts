@@ -76,7 +76,11 @@ export type EntityIndex<
     TSecondaryIndexes extends SecondaryKeyExtractors<TEntity> = Record<string, never>,
 > = {
     readonly name: string;
-    /** Called from inside the read that found the change, so a listener must not dispatch. */
+    /**
+     * Called from inside the `read` that found the change — nothing is noticed until something
+     * reads the index. A listener therefore runs during that read, which for a `useSelector`
+     * consumer is during render: it must neither dispatch nor set React state.
+     */
     subscribe: (listener: EntityIndexListener<TEntity, TId, TSecondaryIndexes>) => () => void;
     getListenerCount: () => number;
     read: (state: TState) => EntityIndexSnapshot<TEntity, TId, TSecondaryIndexes>;
@@ -150,6 +154,48 @@ const forEachKey = (
     visit(keys as EntityId);
 };
 
+type WalkedPartition<TEntity, TId extends EntityId> = {
+    key: string;
+    built: BuiltPartition<TEntity, TId>;
+    isDirty: boolean;
+};
+
+type Identities<TEntity, TId extends EntityId> = {
+    ids: readonly TId[];
+    byId: ReadonlyMap<TId, TEntity>;
+};
+
+const identitiesOf = <TEntity, TId extends EntityId>(
+    walked: readonly WalkedPartition<TEntity, TId>[],
+): Identities<TEntity, TId> => {
+    const byId = new Map<TId, TEntity>();
+    const ids: TId[] = [];
+
+    for (const { built } of walked) {
+        const { ids: partitionIds, entities } = built;
+
+        for (let position = 0; position < partitionIds.length; position++) {
+            const id = partitionIds[position] as TId;
+
+            if (!byId.has(id)) {
+                ids.push(id);
+            }
+            byId.set(id, entities[position] as TEntity);
+        }
+    }
+
+    return { ids: ids.length === 0 ? EMPTY_ENTITY_IDS : ids, byId };
+};
+
+/** Holds the partitions it was walked with and nothing else, so a build cannot keep the one before it alive. */
+const lazyIdentitiesOf = <TEntity, TId extends EntityId>(
+    walked: readonly WalkedPartition<TEntity, TId>[],
+) => {
+    let built: Identities<TEntity, TId> | undefined;
+
+    return () => (built ??= identitiesOf(walked));
+};
+
 const areSame = <TItem>(left: readonly TItem[], right: readonly TItem[]) =>
     left.length === right.length && left.every((item, index) => item === right[index]);
 
@@ -199,6 +245,8 @@ export const createEntityIndex = <
     let demandedIndexes = new Set<string>();
 
     const entitiesExcept = new WeakMap<object, WeakMap<object, readonly unknown[]>>();
+
+    const entitiesByIds = new WeakMap<object, WeakMap<object, readonly unknown[]>>();
 
     const listeners = new Set<EntityIndexListener<TEntity, TId, TSecondaryIndexes>>();
     let notifiedSnapshot: EntityIndexSnapshot<TEntity, TId, TSecondaryIndexes> | undefined;
@@ -250,11 +298,9 @@ export const createEntityIndex = <
         return keys;
     };
 
-    type WalkedPartition = { key: string; built: BuiltPartition<TEntity, TId>; isDirty: boolean };
-
     const assembleSecondaryIndexes = (
         indexesToBuild: readonly string[],
-        walked: readonly WalkedPartition[],
+        walked: readonly WalkedPartition<TEntity, TId>[],
         previousPartitions: ReadonlyMap<string, BuiltPartition<TEntity, TId>> | undefined,
         gonePartitions: readonly BuiltPartition<TEntity, TId>[],
         previousSecondaryIndexes: ReadonlyMap<
@@ -384,38 +430,22 @@ export const createEntityIndex = <
         );
     };
 
-    type Identities = { ids: readonly TId[]; byId: ReadonlyMap<TId, TEntity> };
-
-    const identitiesOf = (walked: readonly WalkedPartition[]): Identities => {
-        const byId = new Map<TId, TEntity>();
-        const ids: TId[] = [];
-
-        for (const { built } of walked) {
-            const { ids: partitionIds, entities } = built;
-
-            for (let position = 0; position < partitionIds.length; position++) {
-                const id = partitionIds[position] as TId;
-
-                if (!byId.has(id)) {
-                    ids.push(id);
-                }
-                byId.set(id, entities[position] as TEntity);
-            }
-        }
-
-        return { ids, byId };
-    };
-
     const build = (source: TSource): EntityIndexSnapshot<TEntity, TId, TSecondaryIndexes> => {
-        const previous = cached;
+        // Only what this build needs, never `cached` itself: a closure over it would keep every
+        // build before this one alive for as long as the index lives.
+        const previousPartitions = cached?.partitions;
+        const previousBuiltIndexes = cached?.builtIndexes;
+        const previousIdentities = cached?.identities;
+        const wasEmpty = cached === undefined || cached.snapshot === emptySnapshot;
+
         const partitions = new Map<string, BuiltPartition<TEntity, TId>>();
-        const walked: WalkedPartition[] = [];
+        const walked: WalkedPartition<TEntity, TId>[] = [];
         let entityCount = 0;
 
         const possiblyRemoved: TId[] = [];
 
         for (const [partitionKey, partition] of toPartitions(source)) {
-            const previousPartition = previous?.partitions.get(partitionKey);
+            const previousPartition = previousPartitions?.get(partitionKey);
             const isUntouched = previousPartition?.partition === partition;
             const builtPartition =
                 isUntouched && previousPartition ? previousPartition : buildPartition(partition);
@@ -431,7 +461,7 @@ export const createEntityIndex = <
 
         const gonePartitions: BuiltPartition<TEntity, TId>[] = [];
 
-        previous?.partitions.forEach((previousPartition, partitionKey) => {
+        previousPartitions?.forEach((previousPartition, partitionKey) => {
             if (!partitions.has(partitionKey)) {
                 gonePartitions.push(previousPartition);
                 previousPartition.ids.forEach(id => possiblyRemoved.push(id));
@@ -439,9 +469,9 @@ export const createEntityIndex = <
         });
 
         const isPartitionOrderKept =
-            previous !== undefined &&
+            previousPartitions !== undefined &&
             gonePartitions.length === 0 &&
-            areSame([...partitions.keys()], [...previous.partitions.keys()]);
+            areSame([...partitions.keys()], [...previousPartitions.keys()]);
 
         const builtIndexes = new Map<
             string,
@@ -479,9 +509,9 @@ export const createEntityIndex = <
                             ),
                         ],
                         walked,
-                        previous?.partitions,
+                        previousPartitions,
                         gonePartitions,
-                        previous?.builtIndexes ?? new Map(),
+                        previousBuiltIndexes ?? new Map(),
                         isPartitionOrderKept,
                     ).forEach((entries, builtName) => builtIndexes.set(builtName, entries));
 
@@ -493,23 +523,15 @@ export const createEntityIndex = <
             });
         });
 
-        let builtIdentities: Identities | undefined;
-
-        const identities = () => {
-            if (builtIdentities === undefined) {
-                builtIdentities = identitiesOf(walked);
-            }
-
-            return builtIdentities;
-        };
+        const identities = lazyIdentitiesOf(walked);
 
         const changesOf = (): EntityIndexChanges<TId> => {
-            if (previous === undefined) {
+            if (previousIdentities === undefined) {
                 return NO_CHANGES;
             }
 
             const { byId } = identities();
-            const previousById = previous.identities().byId;
+            const previousById = previousIdentities().byId;
             const added: TId[] = [];
             const updated: TId[] = [];
 
@@ -534,8 +556,7 @@ export const createEntityIndex = <
 
         let changes: EntityIndexChanges<TId> | undefined;
 
-        const isEmpty =
-            entityCount === 0 && (previous === undefined || previous.snapshot === emptySnapshot);
+        const isEmpty = entityCount === 0 && wasEmpty;
         const snapshot: EntityIndexSnapshot<TEntity, TId, TSecondaryIndexes> = isEmpty
             ? emptySnapshot
             : {
@@ -633,17 +654,31 @@ export const createEntityIndex = <
 
         getByIds: (state, ids) => {
             const { byId } = read(state);
-            const entities: TEntity[] = [];
+            const known = typeof ids === 'object' ? entitiesByIds.get(byId)?.get(ids) : undefined;
+
+            if (known !== undefined) {
+                return known as readonly TEntity[];
+            }
+
+            const found: TEntity[] = [];
 
             for (const id of ids) {
                 const entity = byId.get(id);
 
                 if (entity !== undefined) {
-                    entities.push(entity);
+                    found.push(entity);
                 }
             }
 
-            return entities.length === 0 ? EMPTY_ENTITIES : entities;
+            const entities = found.length === 0 ? EMPTY_ENTITIES : found;
+
+            if (typeof ids === 'object') {
+                const forMap = entitiesByIds.get(byId) ?? new WeakMap<object, readonly unknown[]>();
+                forMap.set(ids, entities);
+                entitiesByIds.set(byId, forMap);
+            }
+
+            return entities;
         },
 
         getIds: state => read(state).ids,
