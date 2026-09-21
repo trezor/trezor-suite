@@ -4076,16 +4076,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@fivebinaries/coin-selection@npm:3.0.0":
-  version: 3.0.0
-  resolution: "@fivebinaries/coin-selection@npm:3.0.0"
-  dependencies:
-    "@emurgo/cardano-serialization-lib-browser": "npm:^13.2.0"
-    "@emurgo/cardano-serialization-lib-nodejs": "npm:13.2.0"
-  checksum: 10/06440dcc86a2171a627333d34b9f2192c24f30d7b5d80b0e6d2a791745a01fccffc42f4a84abe5315cb3e52b96fb9cbbbe1696ede8531d18a4bf6a2c2adc2565
-  languageName: node
-  linkType: hard
-
 "@flatten-js/interval-tree@npm:^1.1.2":
   version: 1.1.2
   resolution: "@flatten-js/interval-tree@npm:1.1.2"
@@ -18709,6 +18699,15 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"@trezor/network-cardano-coin-selection@workspace:*, @trezor/network-cardano-coin-selection@workspace:networks/cardano/coin-selection":
+  version: 0.0.0-use.local
+  resolution: "@trezor/network-cardano-coin-selection@workspace:networks/cardano/coin-selection"
+  dependencies:
+    "@emurgo/cardano-serialization-lib-browser": "npm:^13.2.0"
+    "@emurgo/cardano-serialization-lib-nodejs": "npm:13.2.0"
+  languageName: unknown
+  linkType: soft
+
 "@trezor/network-cardano-assets@workspace:*, @trezor/network-cardano-assets@workspace:networks/cardano/network-cardano-assets":
   version: 0.0.0-use.local
   resolution: "@trezor/network-cardano-assets@workspace:networks/cardano/network-cardano-assets"
@@ -18749,7 +18748,7 @@ __metadata:
     "@emurgo/cardano-serialization-lib-asmjs": "npm:13.2.0"
     "@emurgo/cardano-serialization-lib-browser": "npm:13.2.0"
     "@emurgo/cardano-serialization-lib-nodejs": "npm:13.2.0"
-    "@fivebinaries/coin-selection": "npm:3.0.0"
+    "@trezor/network-cardano-coin-selection": "workspace:*"
     binaryen: "npm:132.0.0"
     cbor: "npm:^10.0.12"
   languageName: unknown
