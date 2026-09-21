@@ -94,7 +94,7 @@ export interface BluetoothIpcState {
     knownDevices: BluetoothDevice[];
 }
 
-export type ScanOwner = 'ui' | 'background' | 'firmware-update';
+export type ScanOwner = 'ui' | 'background';
 
 export type BluetoothIpcApi = {
     init(state?: BluetoothIpcState): Promise<IpcResponse>;
