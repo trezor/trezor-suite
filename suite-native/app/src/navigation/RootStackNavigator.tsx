@@ -30,10 +30,10 @@ import {
 import { DeviceSettingsStackNavigator } from '@suite-native/module-device-settings';
 import {
     EarnConsentsScreen,
-    EarnFormScreen,
     HowStakeWorksScreen,
     StakingClaimReviewScreen,
     StakingDetailScreen,
+    StakingFormScreen,
     StakingManagementScreen,
     StakingTransactionCompleteScreen,
     StakingTransactionDataReviewScreen,
@@ -166,9 +166,9 @@ export const RootStackNavigator = () => {
                 component={WrappedNativeTokenStackNavigator}
             />
             <RootStack.Screen
-                options={{ title: RootStackRoutes.EarnForm }}
-                name={RootStackRoutes.EarnForm}
-                component={EarnFormScreen}
+                options={{ title: RootStackRoutes.StakingForm }}
+                name={RootStackRoutes.StakingForm}
+                component={StakingFormScreen}
             />
             <RootStack.Screen
                 options={{ title: RootStackRoutes.EarnConsents }}

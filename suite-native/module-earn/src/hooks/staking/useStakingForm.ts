@@ -14,11 +14,11 @@ import { formatNetworkAmount } from '@suite-common/wallet-utils';
 import { useForm, useWatch } from '@suite-native/forms';
 import { useTranslate } from '@suite-native/intl';
 
-import { useComposeEarnFees } from './useComposeEarnFees';
 import { type EarnFormValues, earnFormValidationSchema } from '../../utils/earn/earnFormSchema';
 import { buildEarnComposeFormState } from '../../utils/earn/utils';
+import { useComposeEarnFees } from '../earn/useComposeEarnFees';
 
-export const useEarnForm = (accountKey: AccountKey) => {
+export const useStakingForm = (accountKey: AccountKey) => {
     const { translate } = useTranslate();
     const account = useSelector((state: AccountsRootState) =>
         selectAccountByKey(state, accountKey),

@@ -23,20 +23,20 @@ import {
 import { FeeSelector } from '@suite-native/transaction-management';
 
 import { EarnAmountCard } from '../../components/earn/EarnAmountCard';
-import { EarnFormScreenFooter } from '../../components/earn/EarnFormScreenFooter';
-import { EarnFormScreenHeader } from '../../components/earn/EarnFormScreenHeader';
 import { EarnInsufficientBalanceBanner } from '../../components/earn/EarnInsufficientBalanceBanner';
 import { EarnOutputFields } from '../../components/earn/EarnOutputFields';
-import { useEarnForm } from '../../hooks/earn/useEarnForm';
+import { StakingFormScreenFooter } from '../../components/staking/StakingFormScreenFooter';
+import { StakingFormScreenHeader } from '../../components/staking/StakingFormScreenHeader';
 import { useNavigateBackAnalytics } from '../../hooks/earn/useNavigateBackAnalytics';
+import { useStakingForm } from '../../hooks/staking/useStakingForm';
 
-export const EarnFormScreen = () => {
-    const route = useRoute<RouteProp<RootStackParamList, RootStackRoutes.EarnForm>>();
+export const StakingFormScreen = () => {
+    const route = useRoute<RouteProp<RootStackParamList, RootStackRoutes.StakingForm>>();
     const { accountKey } = route.params;
     const navigation =
-        useNavigation<StackNavigationProps<RootStackParamList, RootStackRoutes.EarnForm>>();
+        useNavigation<StackNavigationProps<RootStackParamList, RootStackRoutes.StakingForm>>();
 
-    const earnForm = useEarnForm(accountKey);
+    const stakingForm = useStakingForm(accountKey);
     const isOnboardingConfirmed = useSelector((state: EarnOnboardingRootState) =>
         selectIsEarnOnboardingConfirmed(
             state,
@@ -62,7 +62,7 @@ export const EarnFormScreen = () => {
         },
     });
 
-    if (!earnForm) {
+    if (!stakingForm) {
         return null;
     }
 
@@ -75,7 +75,7 @@ export const EarnFormScreen = () => {
         isFeeUnavailable,
         isPrecomposeError,
         updateFeeLevelThunk,
-    } = earnForm;
+    } = stakingForm;
     const {
         formState: { isValid },
     } = form;
@@ -109,9 +109,9 @@ export const EarnFormScreen = () => {
 
     return (
         <Screen
-            header={<EarnFormScreenHeader accountKey={accountKey} />}
+            header={<StakingFormScreenHeader accountKey={accountKey} />}
             footer={
-                <EarnFormScreenFooter
+                <StakingFormScreenFooter
                     symbol={account.symbol}
                     amountValue={amountValue}
                     isDisabled={!isValid || isFeeUnavailable || isPrecomposeError}

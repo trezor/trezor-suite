@@ -8,7 +8,7 @@ import { AnimatedBox, Box, Button, ScreenFooterGradient } from '@suite-native/at
 import { Translation, useTranslate } from '@suite-native/intl';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
-import { EarnEstimatedRewards } from './EarnEstimatedRewards';
+import { EarnEstimatedRewards } from '../earn/EarnEstimatedRewards';
 
 const screenFooterStyle = prepareNativeStyle(utils => ({
     paddingHorizontal: utils.spacings.sp16,
@@ -32,19 +32,19 @@ const continueButtonStyle = prepareNativeStyle<{ isRewardsBoxVisible: boolean }>
     }),
 );
 
-type EarnFormScreenFooterProps = {
+type StakingFormScreenFooterProps = {
     symbol: NetworkSymbol;
     amountValue: string;
     isDisabled: boolean;
     onPress: () => void;
 };
 
-export const EarnFormScreenFooter = ({
+export const StakingFormScreenFooter = ({
     symbol,
     amountValue,
     isDisabled,
     onPress,
-}: EarnFormScreenFooterProps) => {
+}: StakingFormScreenFooterProps) => {
     const { applyStyle } = useNativeStyles();
     const { translate } = useTranslate();
 

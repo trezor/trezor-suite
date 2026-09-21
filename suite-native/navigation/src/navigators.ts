@@ -534,7 +534,7 @@ export type RootStackParamList = {
     };
     [RootStackRoutes.YieldNavigator]: NavigatorScreenParams<YieldStackParamList>;
     [RootStackRoutes.WrappedNativeTokenNavigator]: NavigatorScreenParams<WrappedNativeTokenStackParamList>;
-    [RootStackRoutes.EarnForm]: {
+    [RootStackRoutes.StakingForm]: {
         accountKey: AccountKey;
     };
     [RootStackRoutes.EarnConsents]: {

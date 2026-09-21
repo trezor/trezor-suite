@@ -19,7 +19,7 @@ export { EarnStackNavigator } from './navigation/EarnStackNavigator';
 export { WrappedNativeTokenStackNavigator } from './navigation/WrappedNativeTokenStackNavigator';
 export { YieldStackNavigator } from './navigation/YieldStackNavigator';
 export { EarnConsentsScreen } from './screens/earn/EarnConsentsScreen';
-export { EarnFormScreen } from './screens/earn/EarnFormScreen';
+export { StakingFormScreen } from './screens/staking/StakingFormScreen';
 export { HowStakeWorksScreen } from './screens/staking/HowStakeWorksScreen';
 export { StakingClaimReviewScreen } from './screens/staking/StakingClaimReviewScreen';
 export { StakingDetailScreen } from './screens/staking/StakingDetailScreen';

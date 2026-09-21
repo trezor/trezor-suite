@@ -7,11 +7,11 @@ import { Text } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 import { ScreenHeader } from '@suite-native/navigation';
 
-type EarnFormScreenHeaderProps = {
+type StakingFormScreenHeaderProps = {
     accountKey: AccountKey;
 };
 
-export const EarnFormScreenHeader = ({ accountKey }: EarnFormScreenHeaderProps) => {
+export const StakingFormScreenHeader = ({ accountKey }: StakingFormScreenHeaderProps) => {
     const account = useSelector((state: AccountsRootState) =>
         selectAccountByKey(state, accountKey),
     );

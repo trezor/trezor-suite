@@ -12,7 +12,7 @@ export enum RootStackRoutes {
     HowStakeWorksScreen = 'HowStakeWorksScreen',
     YieldNavigator = 'YieldNavigator',
     WrappedNativeTokenNavigator = 'WrappedNativeTokenNavigator',
-    EarnForm = 'EarnForm',
+    StakingForm = 'StakingForm',
     EarnConsents = 'EarnConsents',
     StakingTransactionDataReview = 'StakingTransactionDataReview',
     StakingTransactionComplete = 'StakingTransactionComplete',
