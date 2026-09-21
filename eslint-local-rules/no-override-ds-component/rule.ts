@@ -60,7 +60,6 @@ export const noOverrideDsComponentRule: Rule.RuleModule = {
             description:
                 'Disallows overriding components imported from a specific package using styled-components',
 
-            category: 'Best Practices',
             recommended: false,
         },
         messages: {
