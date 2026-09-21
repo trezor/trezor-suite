@@ -8,11 +8,6 @@ import {
 
 export type BuyDetailStatusStep = 'waiting' | 'processing' | 'success' | 'error' | undefined;
 
-export type BuyDetailTerminalStep = Exclude<
-    BuyDetailStatusStep,
-    'waiting' | 'processing' | undefined
->;
-
 export const getBuyDetailHeaderMessages = (tradeStatus?: BuyTradeStatus): DetailHeaderMessages =>
     tradeStatus === 'APPROVAL_PENDING'
         ? processingHeaderMessages

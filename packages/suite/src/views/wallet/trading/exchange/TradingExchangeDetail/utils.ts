@@ -7,11 +7,6 @@ import { type TradingDetailProgress } from 'src/views/wallet/trading/common/Trad
 export type ExchangeDetailStatusStep =
     'sending' | 'converting' | 'kyc' | 'success' | 'error' | undefined;
 
-export type ExchangeDetailTerminalStep = Exclude<
-    ExchangeDetailStatusStep,
-    'sending' | 'converting' | undefined
->;
-
 export const getExchangeDetailStatusStep = (
     tradeStatus: ExchangeTradeStatus,
 ): ExchangeDetailStatusStep => {
