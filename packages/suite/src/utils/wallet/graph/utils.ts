@@ -14,7 +14,6 @@ import type { BaseCurrencyCode } from '@trezor/blockchain-link-types';
 import type { BlockchainAccountBalanceHistory, StaticSessionId } from '@trezor/connect';
 import { BigNumber, arrayToDictionary } from '@trezor/utils';
 
-import { type AppState } from 'src/reducers/store';
 import { type GraphState } from 'src/reducers/wallet/graphReducer';
 import {
     type AccountHistoryWithBalance,
@@ -64,13 +63,6 @@ export const accountGraphDataFilterFn = (d: GraphData, account: Account) =>
     d.account.descriptor === account.descriptor &&
     d.account.symbol === account.symbol &&
     d.account.deviceState === account.deviceState;
-
-/**
- * Extract only accounts for which we don't have any data for given interval
- */
-export function getPristineAccounts(graph: AppState['wallet']['graph'], accounts: Account[]) {
-    return accounts.filter(account => !graph.data.find(d => accountGraphDataFilterFn(d, account)));
-}
 
 /**
  * Does given network has backend type with support for retrieving transactions history, e.g. for showing graph?
