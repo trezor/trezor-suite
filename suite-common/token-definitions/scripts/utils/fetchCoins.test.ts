@@ -1,6 +1,7 @@
 import { blockfrostUtils } from '@trezor/blockchain-link-utils';
 
 import { getContractAddress } from './fetchCoins';
+import { RateLimitError } from './fetchWithRateLimitRetry';
 
 jest.mock('@trezor/blockchain-link-utils', () => ({
     ...jest.requireActual('@trezor/blockchain-link-utils'),
@@ -14,6 +15,7 @@ jest.mock('@trezor/blockchain-link-utils', () => ({
 
 describe('getContractAddress', () => {
     afterEach(() => {
+        jest.useRealTimers();
         jest.restoreAllMocks();
     });
 
@@ -127,6 +129,48 @@ describe('getContractAddress', () => {
             expect(fetchSpy).toHaveBeenCalledWith(
                 `https://api.stellar.expert/explorer/public/contract/${sorobanAddress}`,
             );
+        });
+
+        it('should retry Soroban contract resolution after a 429 response', async () => {
+            const sorobanAddress = 'CCW67TSZV3SSS2HXMBQ5JFGCKJNXKZM7UQUWUZPUTHXSTZLEO7SJMI75';
+            const platforms = { stellar: sorobanAddress };
+
+            jest.useFakeTimers();
+            jest.spyOn(console, 'warn').mockImplementation(() => undefined);
+            const fetchSpy = jest
+                .spyOn(global, 'fetch')
+                .mockResolvedValueOnce(new Response(null, { status: 429 }))
+                .mockResolvedValueOnce(
+                    new Response(
+                        JSON.stringify({
+                            asset: 'USDC-GA5ZSEJYB37JRC5AVCIA5MOP4RHTM335X2KGX3IHOJAPP5RE34K4KZVN-1',
+                        }),
+                        { status: 200, headers: { 'Content-Type': 'application/json' } },
+                    ),
+                );
+
+            const promise = getContractAddress('stellar', platforms);
+            await jest.runAllTimersAsync();
+
+            expect(await promise).toBe(
+                'USDC-GA5ZSEJYB37JRC5AVCIA5MOP4RHTM335X2KGX3IHOJAPP5RE34K4KZVN',
+            );
+            expect(fetchSpy).toHaveBeenCalledTimes(2);
+        });
+
+        it('should fail instead of dropping the asset when rate limiting persists', async () => {
+            const sorobanAddress = 'CCW67TSZV3SSS2HXMBQ5JFGCKJNXKZM7UQUWUZPUTHXSTZLEO7SJMI75';
+            const platforms = { stellar: sorobanAddress };
+
+            jest.useFakeTimers();
+            jest.spyOn(console, 'warn').mockImplementation(() => undefined);
+            jest.spyOn(global, 'fetch').mockResolvedValue(new Response(null, { status: 429 }));
+
+            const promise = getContractAddress('stellar', platforms);
+            promise.catch(() => undefined);
+            await jest.runAllTimersAsync();
+
+            await expect(promise).rejects.toThrow(RateLimitError);
         });
 
         it('should return undefined for Soroban contract with invalid asset from API', async () => {

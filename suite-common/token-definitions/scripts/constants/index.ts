@@ -19,3 +19,7 @@ export const STELLAR_EXPERT_URL = 'https://api.stellar.expert/explorer/public';
 export const NFTS_PER_PAGE = 250;
 
 export const YIELD_VAULTS_URL = 'https://earn.trezor.io/yield/vaults/v1';
+
+export const RATE_LIMIT_MAX_RETRIES = 5;
+export const RATE_LIMIT_BASE_DELAY_MS = 1000;
+export const RATE_LIMIT_MAX_DELAY_MS = 60_000;

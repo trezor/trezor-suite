@@ -6,6 +6,7 @@ import { blockfrostUtils } from '@trezor/blockchain-link-utils';
 import { AdvancedTokenStructure, TokenStructureType } from '../../src/tokenDefinitionsTypes';
 import { COIN_LIST_URL, STELLAR_EXPERT_URL, STELLAR_HORIZON_URL } from '../constants';
 import { CoinData } from '../types';
+import { RateLimitError, fetchWithRateLimitRetry } from './fetchWithRateLimitRetry';
 
 const normalizeStellarAssetAddress = (address: string): string | undefined => {
     // Stellar address format: CODE-ISSUER, CODE:ISSUER, or CODE-ISSUER-NUMBER
@@ -32,7 +33,9 @@ type StellarExpertContractData = {
 
 const fetchSorobanContractAsset = async (contractAddress: string): Promise<string | undefined> => {
     try {
-        const response = await fetch(`${STELLAR_EXPERT_URL}/contract/${contractAddress}`);
+        const response = await fetchWithRateLimitRetry(
+            `${STELLAR_EXPERT_URL}/contract/${contractAddress}`,
+        );
         if (!response.ok) {
             console.warn(
                 `StellarExpert API returned ${response.status} for contract ${contractAddress}`,
@@ -59,6 +62,10 @@ const fetchSorobanContractAsset = async (contractAddress: string): Promise<strin
 
         return normalizedAssetAddress;
     } catch (error) {
+        if (error instanceof RateLimitError) {
+            throw error;
+        }
+
         console.warn(`Error fetching Stellar contract asset for ${contractAddress}:`, error);
 
         return undefined;
@@ -118,7 +125,7 @@ interface StellarToml {
  */
 const fetchStellarHomeDomain = async (issuer: string): Promise<string | null> => {
     try {
-        const response = await fetch(`${STELLAR_HORIZON_URL}/accounts/${issuer}`);
+        const response = await fetchWithRateLimitRetry(`${STELLAR_HORIZON_URL}/accounts/${issuer}`);
         if (!response.ok) {
             console.warn(`Stellar Horizon API returned ${response.status} for issuer ${issuer}`);
 
@@ -128,6 +135,10 @@ const fetchStellarHomeDomain = async (issuer: string): Promise<string | null> =>
 
         return data.home_domain || null;
     } catch (error) {
+        if (error instanceof RateLimitError) {
+            throw error;
+        }
+
         console.warn(`Error fetching Stellar home_domain for ${issuer}:`, error);
 
         return null;
@@ -201,7 +212,9 @@ const getStellarHomeDomain = async (contractAddress: string): Promise<string | u
  */
 const fetchStellarTokenRating = async (contractAddress: string): Promise<number | undefined> => {
     try {
-        const response = await fetch(`${STELLAR_EXPERT_URL}/asset/${contractAddress}/rating`);
+        const response = await fetchWithRateLimitRetry(
+            `${STELLAR_EXPERT_URL}/asset/${contractAddress}/rating`,
+        );
         if (!response.ok) {
             console.warn(
                 `StellarExpert API returned ${response.status} for asset ${contractAddress}`,
@@ -213,6 +226,10 @@ const fetchStellarTokenRating = async (contractAddress: string): Promise<number 
 
         return data.rating?.average || undefined;
     } catch (error) {
+        if (error instanceof RateLimitError) {
+            throw error;
+        }
+
         console.warn(`Error fetching Stellar token rating for ${contractAddress}:`, error);
 
         return undefined;
