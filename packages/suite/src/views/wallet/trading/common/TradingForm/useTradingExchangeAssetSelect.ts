@@ -5,7 +5,6 @@ import { useServices } from '@suite-common/dependency-injection';
 import { injectDispatch } from '@suite-common/redux-utils';
 import {
     TRADING_FORM_CRYPTO_TOKEN,
-    TRADING_FORM_OUTPUT_AMOUNT,
     TRADING_FORM_OUTPUT_AMOUNT_FIELDS,
     TRADING_FORM_OUTPUT_FIAT,
     TRADING_FORM_OUTPUT_MAX,
@@ -72,7 +71,6 @@ export const useTradingExchangeAssetSelect = ({
                     shouldDirty: true,
                 });
                 setValueRef.current(TRADING_FORM_CRYPTO_TOKEN, null, { shouldDirty: true });
-                setValueRef.current(TRADING_FORM_OUTPUT_AMOUNT, '', { shouldDirty: true });
                 setValueRef.current(TRADING_FORM_OUTPUT_FIAT, '', { shouldDirty: true });
                 setValueRef.current(TRADING_FORM_OUTPUT_MAX, undefined, { shouldDirty: true });
             }

@@ -142,10 +142,17 @@ describe('useSellFormInputs', () => {
         const { result } = renderSellFormInputs();
 
         act(() => {
+            result.current.methods.setValue('amountInCrypto', false);
+            result.current.methods.setValue('outputs.0.fiat', '100');
+        });
+
+        act(() => {
             result.current.inputs.setRatioAmount(2);
         });
 
         expect(result.current.methods.getValues('outputs.0.amount')).toBe('1');
+        expect(result.current.methods.getValues('amountInCrypto')).toBe(true);
+        expect(result.current.methods.getValues('outputs.0.fiat')).toBe('');
         expect(result.current.inputs.fractionButton).toBe(2);
     });
 
@@ -153,10 +160,16 @@ describe('useSellFormInputs', () => {
         const { result } = renderSellFormInputs();
 
         act(() => {
+            result.current.methods.setValue('amountInCrypto', false);
+            result.current.methods.setValue('outputs.0.fiat', '100');
+        });
+
+        act(() => {
             result.current.inputs.setAllAmount();
         });
 
         expect(result.current.methods.getValues('setMaxOutputId')).toBe(0);
+        expect(result.current.methods.getValues('amountInCrypto')).toBe(true);
         expect(result.current.methods.getValues('outputs.0.fiat')).toBe('');
         expect(result.current.inputs.fractionButton).toBe(1);
         expect(mockComposeRequest).toHaveBeenCalledWith('outputs.0.amount');

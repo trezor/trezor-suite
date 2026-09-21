@@ -1,6 +1,7 @@
 import { useWatch } from 'react-hook-form';
 
 import {
+    TRADING_FORM_AMOUNT_IN_CRYPTO,
     TRADING_FORM_CRYPTO_TOKEN,
     TRADING_FORM_OUTPUT_AMOUNT,
     TRADING_FORM_OUTPUT_CURRENCY,
@@ -45,7 +46,7 @@ export const useSellFormInputs = ({
     const isNetworkReserveEnabled = useSelector(selectIsNetworkReserveEnabled);
     const accounts = useSelector(selectVisibleDeviceAccounts);
 
-    const { setValue, clearErrors, control } = methods;
+    const { setValue, getValues, clearErrors, control } = methods;
 
     const [sendCryptoSelect, tokenAddress, outputCurrency] = useWatch({
         control,
@@ -85,6 +86,16 @@ export const useSellFormInputs = ({
         setAccountOnChange,
     });
 
+    const switchToCryptoAmount = () => {
+        if (!getValues(TRADING_FORM_AMOUNT_IN_CRYPTO)) {
+            setValue(TRADING_FORM_AMOUNT_IN_CRYPTO, true, { shouldDirty: true });
+        }
+
+        if (getValues(TRADING_FORM_OUTPUT_FIAT)) {
+            setValue(TRADING_FORM_OUTPUT_FIAT, '', { shouldDirty: true });
+        }
+    };
+
     const setRatioAmount = (divisor: number) => {
         if (!account) {
             return;
@@ -108,6 +119,7 @@ export const useSellFormInputs = ({
         setShowReserveBanner(cryptoAmountWithReserve !== cryptoInputValue);
 
         setValue(TRADING_FORM_OUTPUT_AMOUNT, cryptoAmountWithReserve, { shouldDirty: true });
+        switchToCryptoAmount();
         setFractionButton(divisor);
     };
 
@@ -127,9 +139,9 @@ export const useSellFormInputs = ({
         clearErrors([TRADING_FORM_OUTPUT_FIAT, TRADING_FORM_OUTPUT_AMOUNT]);
 
         setFractionButton(1);
+        switchToCryptoAmount();
 
         composeRequest(TRADING_FORM_OUTPUT_AMOUNT);
-        setValue(TRADING_FORM_OUTPUT_FIAT, '', { shouldDirty: true });
     };
 
     return {
