@@ -1,8 +1,6 @@
 {
     "extends": "../../../tsconfig.lib.json",
-    "compilerOptions": {
-        "outDir": "./lib"
-    },
+    "compilerOptions": { "outDir": "./lib" },
     "include": ["./src"],
     "references": [
         {
@@ -11,11 +9,7 @@
         {
             "path": "../../network-module/suite-common/suite-common-types"
         },
-        {
-            "path": "../network-solana-assets"
-        },
-        {
-            "path": "../network-solana-types"
-        }
+        { "path": "../network-solana-assets" },
+        { "path": "../network-solana-types" }
     ]
 }

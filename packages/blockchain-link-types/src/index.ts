@@ -58,6 +58,7 @@ export type {
     AssetBalance,
     BlockfrostAccountInfo,
     BlockContent as BlockfrostBlockContent,
+    EpochParameters as BlockfrostEpochParameters,
     Send as BlockfrostSend,
     BlockfrostTransaction,
     BlockfrostUtxos,

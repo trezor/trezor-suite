@@ -1,11 +1,7 @@
 {
     "extends": "../../../tsconfig.base.json",
-    "compilerOptions": {
-        "outDir": "libDev"
-    },
+    "compilerOptions": { "outDir": "libDev" },
     "references": [
-        {
-            "path": "../network-module-types"
-        }
+        { "path": "../network-module-types" }
     ]
 }

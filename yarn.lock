@@ -19088,21 +19088,21 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@trezor/network-cardano-coin-selection@workspace:*, @trezor/network-cardano-coin-selection@workspace:networks/cardano/coin-selection":
-  version: 0.0.0-use.local
-  resolution: "@trezor/network-cardano-coin-selection@workspace:networks/cardano/coin-selection"
-  dependencies:
-    "@emurgo/cardano-serialization-lib-browser": "npm:^13.2.0"
-    "@emurgo/cardano-serialization-lib-nodejs": "npm:13.2.0"
-  languageName: unknown
-  linkType: soft
-
 "@trezor/network-cardano-assets@workspace:*, @trezor/network-cardano-assets@workspace:networks/cardano/network-cardano-assets":
   version: 0.0.0-use.local
   resolution: "@trezor/network-cardano-assets@workspace:networks/cardano/network-cardano-assets"
   dependencies:
     "@trezor/network-assets-types": "workspace:*"
     "@trezor/network-cardano-types": "workspace:*"
+  languageName: unknown
+  linkType: soft
+
+"@trezor/network-cardano-coin-selection@workspace:*, @trezor/network-cardano-coin-selection@workspace:networks/cardano/network-cardano-coin-selection":
+  version: 0.0.0-use.local
+  resolution: "@trezor/network-cardano-coin-selection@workspace:networks/cardano/network-cardano-coin-selection"
+  dependencies:
+    "@emurgo/cardano-serialization-lib-browser": "npm:^13.2.0"
+    "@emurgo/cardano-serialization-lib-nodejs": "npm:13.2.0"
   languageName: unknown
   linkType: soft
 
