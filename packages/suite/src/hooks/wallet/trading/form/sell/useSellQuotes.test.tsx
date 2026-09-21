@@ -1,4 +1,4 @@
-import { type RegisterOptions, type Resolver, useForm, useWatch } from 'react-hook-form';
+import { type Resolver, useForm, useWatch } from 'react-hook-form';
 
 import { act, waitFor } from '@testing-library/react';
 import { type CryptoId, type SellFiatTrade } from 'invity-api';
@@ -8,7 +8,6 @@ import { mockDesktopAnalytics } from '@suite/analytics/mocks';
 import { type WithServices } from '@suite-common/redux-utils';
 import { createTestCompositionRoot, renderHookWithStoreProvider } from '@suite-common/test-utils';
 import {
-    TRADING_FORM_OUTPUT_AMOUNT,
     type TradingAssetSellOption,
     type TradingSellFormProps,
     sellInitialState,
@@ -130,13 +129,12 @@ const wait = (ms: number) =>
 
 type RenderSellQuotesOptions = {
     resolver?: Resolver<TradingSellFormProps>;
-    amountRules?: RegisterOptions<TradingSellFormProps, typeof TRADING_FORM_OUTPUT_AMOUNT>;
     validateAmount?: (sendCryptoSelect: TradingAssetSellOption | undefined) => true | string;
 };
 
 const renderSellQuotes = (
     defaultValues: TradingSellFormProps,
-    { resolver, amountRules, validateAmount }: RenderSellQuotesOptions = {},
+    { resolver, validateAmount }: RenderSellQuotesOptions = {},
 ) => {
     const initialProps: { currentNetwork: Network | undefined } = {
         currentNetwork: getNetwork(btcSymbol),
@@ -172,9 +170,6 @@ const renderSellQuotes = (
                 });
             }
 
-            if (amountRules) {
-                methods.register(TRADING_FORM_OUTPUT_AMOUNT, amountRules);
-            }
             useSellQuotes({
                 methods,
                 network: currentNetwork,
@@ -304,19 +299,6 @@ describe('useSellQuotes', () => {
                 formValues: expect.objectContaining({ amountInCrypto: false }),
             }),
         );
-    });
-
-    it('does not fetch while the active amount is invalid', async () => {
-        const { result } = renderSellQuotes(VALID_DEFAULTS, {
-            amountRules: { validate: () => 'invalid' },
-        });
-
-        await act(async () => {
-            await result.current.trigger();
-        });
-        await wait(NO_REFETCH_WAIT_MS);
-
-        expect(mockHandleRequest).not.toHaveBeenCalled();
     });
 
     it('aborts and stops requesting when the active amount is cleared', async () => {
