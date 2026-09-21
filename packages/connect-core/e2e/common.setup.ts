@@ -2,7 +2,7 @@ import { UI_EVENTS, UI_REQUESTS, UI_RESPONSE } from '@trezor/connect-common';
 import type { ApplySettings } from '@trezor/protobuf/src/definitions';
 import { BridgeTransport } from '@trezor/transport-common';
 import type { EmuStartOptsType, TrezorUserEnvLinkClass } from '@trezor/trezor-user-env-link';
-import { MNEMONICS, TrezorUserEnvLink } from '@trezor/trezor-user-env-link';
+import { MNEMONICS, Model, TrezorUserEnvLink } from '@trezor/trezor-user-env-link';
 import { versionUtils } from '@trezor/utils';
 
 import TrezorConnect from '../src';
@@ -94,6 +94,18 @@ export const setup = async (
     await TrezorUserEnvLink.stopBridge();
 
     if (!options?.mnemonic && !options.wiped) return true; // skip setup if test is not using the device (composeTransaction)
+
+    // trezor-user-env auto-starts the Tropic model server only for the plain
+    // `emulator-start` path. The url/branch paths skip it, and T3W1 firmware
+    // aborts on boot without it ("Failed to initialize Tropic driver"), so
+    // start it explicitly for those paths.
+    if (
+        deviceModel === Model.T3W1 &&
+        (emuStartType === 'emulator-start-from-url' ||
+            emuStartType === 'emulator-start-from-branch')
+    ) {
+        await TrezorUserEnvLink.send({ type: 'tropic-start' });
+    }
 
     switch (emuStartType) {
         case 'emulator-start':
