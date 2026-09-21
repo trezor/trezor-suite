@@ -26,7 +26,7 @@ type EarnInsufficientBalanceBannerProps = {
     accountKey: AccountKey;
 };
 
-type NavigationProp = StackNavigationProps<RootStackParamList, RootStackRoutes.EarnForm>;
+type NavigationProp = StackNavigationProps<RootStackParamList, RootStackRoutes.StakingForm>;
 
 export const EarnInsufficientBalanceBanner = ({
     accountKey,

@@ -75,7 +75,7 @@ export const HowStakeWorksScreen = () => {
 
     useEffect(() => {
         if (isFocused && shouldSkipToEarnForm && resolvedAccountKey) {
-            navigation.replace(RootStackRoutes.EarnForm, { accountKey: resolvedAccountKey });
+            navigation.replace(RootStackRoutes.StakingForm, { accountKey: resolvedAccountKey });
         }
     }, [isFocused, shouldSkipToEarnForm, resolvedAccountKey, navigation]);
 
@@ -109,7 +109,7 @@ export const HowStakeWorksScreen = () => {
                 networkSymbol: symbol,
             },
         });
-        navigation.navigate(RootStackRoutes.EarnForm, { accountKey: resolvedAccountKey });
+        navigation.navigate(RootStackRoutes.StakingForm, { accountKey: resolvedAccountKey });
     };
 
     const unstakingPeriodInDays = useSelector((state: StakeRootState) =>
