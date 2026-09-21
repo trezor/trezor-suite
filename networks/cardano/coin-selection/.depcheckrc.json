@@ -1,0 +1,7 @@
+{
+    "ignore-patterns": ["libDev", "lib"],
+    "ignores": [
+        "// browser-only counterpart of the nodejs lib, referenced via the package.json browser field",
+        "@emurgo/cardano-serialization-lib-browser"
+    ]
+}

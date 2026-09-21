@@ -1,28 +1,27 @@
 {
-    "name": "@trezor/network-cardano",
-    "version": "10.0.0-beta.3",
+    "name": "@trezor/network-cardano-coin-selection",
+    "version": "1.0.0",
+    "description": "Cardano coin selection algorithms (vendored fork of @fivebinaries/coin-selection)",
     "repository": {
         "type": "git",
         "url": "git://github.com/trezor/trezor-suite.git"
     },
-    "license": "MIT",
+    "license": "Apache-2.0",
     "sideEffects": false,
     "main": "./src/index.ts",
     "type": "module",
     "exports": {
-        "./constants": "./src/constants/index.ts",
         "./runtime": "./src/runtime/index.ts",
         "./types": "./src/types/index.ts",
         ".": "./src/index.ts"
+    },
+    "browser": {
+        "@emurgo/cardano-serialization-lib-nodejs": "@emurgo/cardano-serialization-lib-browser"
     },
     "publishConfig": {
         "main": "./lib/index.js",
         "types": "./lib/index.d.ts",
         "exports": {
-            "./constants": {
-                "types": "./lib/constants/index.d.ts",
-                "default": "./lib/constants/index.js"
-            },
             "./runtime": {
                 "types": "./lib/runtime/index.d.ts",
                 "default": "./lib/runtime/index.js"
@@ -34,7 +33,8 @@
             ".": {
                 "types": "./lib/index.d.ts",
                 "default": "./lib/index.js"
-            }
+            },
+            "./lib/*": "./lib/*"
         }
     },
     "files": [
@@ -44,13 +44,12 @@
     "scripts": {
         "depcheck": "yarn g:depcheck",
         "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'",
-        "test:unit": "yarn g:jest --passWithNoTests",
+        "test:unit": "yarn g:jest",
         "type-check": "yarn g:tsc --build tsconfig.json",
         "build:lib": "yarn g:rimraf ./lib && yarn g:tsc --build tsconfig.lib.json && ../../../scripts/publish/replace-imports.sh ./lib"
     },
     "dependencies": {
-        "@trezor/network-cardano-coin-selection": "workspace:*",
-        "@trezor/utils": "workspace:*",
-        "cbor": "^10.0.12"
+        "@emurgo/cardano-serialization-lib-browser": "^13.2.0",
+        "@emurgo/cardano-serialization-lib-nodejs": "13.2.0"
     }
 }

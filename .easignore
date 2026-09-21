@@ -259,6 +259,7 @@
 !/networks/bitcoin/network-bitcoin
 !/networks/bitcoin/network-bitcoin-suite-common
 /networks/cardano/*
+!/networks/cardano/coin-selection
 !/networks/cardano/network-cardano
 !/networks/cardano/network-cardano-suite-common
 /networks/ethereum/*

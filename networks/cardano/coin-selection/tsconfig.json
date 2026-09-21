@@ -2,8 +2,5 @@
     "extends": "../../../tsconfig.base.json",
     "compilerOptions": { "outDir": "libDev" },
     "include": [".", "**/*.json"],
-    "references": [
-        { "path": "../coin-selection" },
-        { "path": "../../../packages/utils" }
-    ]
+    "references": []
 }
