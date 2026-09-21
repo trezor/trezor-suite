@@ -4,7 +4,6 @@ import { useSelector } from 'react-redux';
 
 import { useFocusEffect } from '@react-navigation/native';
 
-import { type SendRootState, selectSendFormDraftByKey } from '@suite-common/wallet-core';
 import { isFinalPrecomposedTransaction } from '@suite-common/wallet-types';
 import { AccountDetailsCard } from '@suite-native/accounts';
 import { BannerInline, Box } from '@suite-native/atoms';
@@ -16,11 +15,11 @@ import {
     type SendStackRoutes,
     type StackProps,
 } from '@suite-native/navigation';
-import { updateSelectedFeeLevelThunk } from '@suite-native/send';
-import { FeeSelector, selectFeeLevels } from '@suite-native/transaction-management';
+import { selectFeeLevels } from '@suite-native/transaction-management';
 
 import { AccountBalanceScreenHeader } from '../components/AccountBalanceScreenHeader';
 import { SwitchCoinControlButton } from '../components/CoinControl/SwitchCoinControlButton';
+import { SendFeeSection } from '../components/SendFeeSection';
 import { SendOutputFields } from '../components/SendOutputFields';
 import { SendOutputsScreenFooter } from '../components/SendOutputsScreenFooter';
 import { useSendForm } from '../hooks/useSendForm';
@@ -36,10 +35,8 @@ export const SendOutputsScreen = ({
         params;
     const sendForm = useSendForm(accountKey, tokenContract);
     const { totalSelectedAmount, selectedUtxos } = useUtxoSelection(accountKey);
-    const formDraft = useSelector((state: SendRootState) =>
-        selectSendFormDraftByKey(state, accountKey, tokenContract),
-    );
     const feeLevels = useSelector(selectFeeLevels);
+
     const isFeeReady = isFinalPrecomposedTransaction(feeLevels.normal);
     const showDeviceDisconnectedAlert = useShowDeviceDisconnectedAlert();
 
@@ -109,19 +106,11 @@ export const SendOutputsScreen = ({
                         )}
                     </Form>
                 </Box>
-                {isValid && network && (
-                    <Box marginTop="sp16">
-                        <FeeSelector
-                            accountKey={accountKey}
-                            tokenContract={tokenContract}
-                            updateThunk={updateSelectedFeeLevelThunk}
-                            selectedFee={formDraft?.selectedFee ?? 'normal'}
-                            selectedFeePerUnit={formDraft?.feePerUnit}
-                            selectedSetMaxOutputId={formDraft?.setMaxOutputId}
-                            formDraft={formDraft}
-                        />
-                    </Box>
-                )}
+                <SendFeeSection
+                    accountKey={accountKey}
+                    tokenContract={tokenContract}
+                    isFormValid={isValid}
+                />
                 {isMissingUtxos ? (
                     <Animated.View entering={FadeInDown} exiting={FadeOutDown}>
                         <Box padding="sp16">
