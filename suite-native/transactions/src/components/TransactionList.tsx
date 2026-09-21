@@ -1,4 +1,4 @@
-import { type JSX, useCallback, useEffect, useMemo, useState } from 'react';
+import { type JSX, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { RefreshControl } from 'react-native';
 import { useSelector } from 'react-redux';
 
@@ -12,8 +12,8 @@ import {
     type TransactionsRootState,
     fetchAndUpdateAccountThunk,
     fetchTransactionsPageThunk,
+    selectAccountTransactionsFetchStatus,
     selectAreAllAccountTransactionsLoaded,
-    selectIsLoadingAccountTransactions,
     selectIsPageAlreadyFetched,
 } from '@suite-common/wallet-core';
 import { type Account, type AccountKey, type TokenAddress } from '@suite-common/wallet-types';
@@ -37,6 +37,7 @@ import { TransactionListItem } from './TransactionListItem';
 import { TransactionsEmptyState } from './TransactionsEmptyState';
 import { TransactionsListFooter } from './TransactionsListFooter';
 import { useFetchMissingTransactionFiatRates } from '../hooks/useFetchMissingTransactionFiatRates';
+import { getNextRequestedTransactionCount } from '../utils';
 
 type RenderSectionHeaderParams = {
     section: {
@@ -147,13 +148,14 @@ export const TransactionList = ({
         utils: { colors },
     } = useNativeStyles();
 
-    const isLoadingTransactions = useSelector((state: TransactionsRootState) =>
-        selectIsLoadingAccountTransactions(state, accountKey),
+    const fetchStatus = useSelector(
+        (state: TransactionsRootState) =>
+            selectAccountTransactionsFetchStatus(state, accountKey)?.status,
     );
-    const shouldDeferEmptyState = useSelector(
+    const isLoadingTransactions = fetchStatus === 'loading';
+    const areAllTransactionsLoaded = useSelector(
         (state: TransactionsRootState & AccountsRootState) =>
-            (filter === 'staking' || filter === 'yield') &&
-            !selectAreAllAccountTransactionsLoaded(state, accountKey),
+            selectAreAllAccountTransactionsLoaded(state, accountKey),
     );
 
     const transactions = useSelector((state: TransactionsRootState & TokensRootState) => {
@@ -175,29 +177,52 @@ export const TransactionList = ({
         selectIsPageAlreadyFetched(state, accountKey, 1, txnsPerPage),
     );
 
-    const initialPageNumber = Math.ceil((transactions.length || 1) / txnsPerPage);
+    const [isInitialPageLoaded, setIsInitialPageLoaded] = useState(isFirstPageAlreadyFetched);
+
+    // Count only full cached pages so Load more refetches a partially cached next page.
+    // Page 1 is requested separately until its initial fetch succeeds.
+    const initialPageNumber = Math.max(1, Math.floor(transactions.length / txnsPerPage));
     const [page, setPage] = useState(initialPageNumber);
+    const isFetchingPageRef = useRef(false);
+    // The loader and footer must agree when history ends, even if cached counts differ.
+    const hasMoreTransactions =
+        !areAllTransactionsLoaded &&
+        (!tokenContract || page < Math.ceil(account.history.total / txnsPerPage));
+    const shouldDeferEmptyState =
+        (!!tokenContract || filter === 'staking' || filter === 'yield') && hasMoreTransactions;
 
     const { scrollDivider, handleScroll } = useScrollDivider();
 
-    useEffect(() => {
-        // We need to check manually if the first page was already fetched, because fetchTransactionsPageThunk will
-        // always force refetch the first page, but we want to save resources and not do that if it's not necessary.
-        if (!isFirstPageAlreadyFetched) {
-            dispatch(fetchTransactionsPageThunk({ accountKey, page: 1, perPage: txnsPerPage }));
-        }
-    }, [dispatch, accountKey, isFirstPageAlreadyFetched, txnsPerPage]);
-
     const handleOnLoadMore = useCallback(async () => {
+        // Initial loading, the button, and auto-fill share this lock before React rerenders.
+        if (isFetchingPageRef.current) return;
+        isFetchingPageRef.current = true;
+        const requestedPage = isInitialPageLoaded ? page + 1 : 1;
+
         try {
             await dispatch(
-                fetchTransactionsPageThunk({ accountKey, page: page + 1, perPage: txnsPerPage }),
-            );
-            setPage((currentPage: number) => currentPage + 1);
+                fetchTransactionsPageThunk({
+                    accountKey,
+                    page: requestedPage,
+                    perPage: txnsPerPage,
+                }),
+            ).unwrap();
+            // Record the page this request fetched, rather than incrementing potentially newer state.
+            setPage(requestedPage);
+            // A successful partial page also unlocks pagination; shared idle status does not.
+            setIsInitialPageLoaded(true);
         } catch {
             // TODO handle error state (show retry button or something
+        } finally {
+            isFetchingPageRef.current = false;
         }
-    }, [dispatch, accountKey, page, txnsPerPage]);
+    }, [dispatch, accountKey, page, txnsPerPage, isInitialPageLoaded]);
+
+    useEffect(() => {
+        if (!isInitialPageLoaded) {
+            handleOnLoadMore();
+        }
+    }, [isInitialPageLoaded, handleOnLoadMore]);
 
     const handleOnRefresh = useCallback(async () => {
         try {
@@ -265,6 +290,35 @@ export const TransactionList = ({
         ]) as TransactionListItem[];
     }, [transactions, tokenContract]);
 
+    const visibleTransactionCount = data.filter(item => typeof item !== 'string').length;
+    const [requestedVisibleCount, setRequestedVisibleCount] = useState<number>(txnsPerPage);
+    const shouldLoadMoreTokenTransactions =
+        !!tokenContract &&
+        visibleTransactionCount < requestedVisibleCount &&
+        shouldDeferEmptyState &&
+        fetchStatus !== 'error' &&
+        isInitialPageLoaded;
+
+    useEffect(() => {
+        // One visible token page may require several account pages after filtering.
+        if (shouldLoadMoreTokenTransactions && !isLoadingTransactions) {
+            handleOnLoadMore();
+        }
+    }, [shouldLoadMoreTokenTransactions, isLoadingTransactions, handleOnLoadMore]);
+
+    const handleOnLoadMorePress = () => {
+        if (tokenContract) {
+            setRequestedVisibleCount(requestedCount =>
+                getNextRequestedTransactionCount({
+                    requestedCount,
+                    visibleCount: visibleTransactionCount,
+                    pageSize: txnsPerPage,
+                }),
+            );
+        }
+        handleOnLoadMore();
+    };
+
     useFetchMissingTransactionFiatRates({ accountKey, isEnabled: data.length > 0 });
 
     const renderItem = useCallback(
@@ -316,9 +370,9 @@ export const TransactionList = ({
                 ListHeaderComponent={listHeaderComponent}
                 ListFooterComponent={
                     <TransactionsListFooter
-                        accountKey={accountKey}
-                        isLoading={isLoadingTransactions}
-                        onButtonPress={handleOnLoadMore}
+                        hasMoreTransactions={hasMoreTransactions}
+                        isLoading={isLoadingTransactions || shouldLoadMoreTokenTransactions}
+                        onButtonPress={handleOnLoadMorePress}
                     />
                 }
                 ListFooterComponentStyle={applyStyle(listFooterStyle)}
