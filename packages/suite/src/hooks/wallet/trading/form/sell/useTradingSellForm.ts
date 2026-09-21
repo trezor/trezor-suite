@@ -4,6 +4,7 @@ import { useForm, useWatch } from 'react-hook-form';
 import { useServices } from '@suite-common/dependency-injection';
 import { injectDispatch } from '@suite-common/redux-utils';
 import {
+    TRADING_FORM_AMOUNT_IN_CRYPTO,
     TRADING_FORM_OUTPUT_AMOUNT,
     TRADING_FORM_OUTPUT_FIAT,
     type TradingAmountLimitProps,
@@ -72,16 +73,17 @@ export const useTradingSellForm = (): TradingSellFormContextProps => {
         mode: 'onChange',
         defaultValues: redirectValues ?? defaultValues,
     });
-    const { register, reset, control, formState } = methods;
+    const { register, reset, control, formState, getValues } = methods;
     // Watch only those values that are relevant in the render function
-    const [outputAmount] = useWatch({
+    const [outputAmount, outputFiat, amountInCrypto] = useWatch({
         control,
-        name: [TRADING_FORM_OUTPUT_AMOUNT],
+        name: [TRADING_FORM_OUTPUT_AMOUNT, TRADING_FORM_OUTPUT_FIAT, TRADING_FORM_AMOUNT_IN_CRYPTO],
     });
+    const activeAmount = amountInCrypto ? outputAmount : outputFiat;
 
     const formIsValid = Object.keys(formState.errors).length === 0;
-    const hasValues = !!outputAmount;
-    const isAmountEmpty = outputAmount === '';
+    const hasValues = !!activeAmount;
+    const isAmountEmpty = activeAmount === '';
     const noProviders = Object.keys(sellInfo?.providerInfos ?? {}).length === 0;
     const isInitialDataLoading = !sellInfo?.providerInfos;
 
@@ -122,6 +124,10 @@ export const useTradingSellForm = (): TradingSellFormContextProps => {
         network,
         shouldSendInSats,
         composeRequestCallback: () => {
+            if (!getValues(TRADING_FORM_AMOUNT_IN_CRYPTO)) {
+                return;
+            }
+
             composeRequest(TRADING_FORM_OUTPUT_AMOUNT);
         },
     });

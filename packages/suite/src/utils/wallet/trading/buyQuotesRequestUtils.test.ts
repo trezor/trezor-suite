@@ -1,12 +1,18 @@
 import { type CryptoId } from 'invity-api';
 
 import {
+    TRADING_FORM_CRYPTO_INPUT,
+    TRADING_FORM_FIAT_INPUT,
     type TradingAssetOption,
     type TradingBuyFormProps,
     type TradingCountryOption,
 } from '@suite-common/trading';
 
-import { isBuyQuotesFetchAllowed } from './buyQuotesRequestUtils';
+import {
+    getBuyActiveAmount,
+    getBuyActiveAmountField,
+    isBuyQuotesFetchAllowed,
+} from './buyQuotesRequestUtils';
 
 const baseValues: TradingBuyFormProps = {
     cryptoSelect: { id: 'bitcoin' as CryptoId, networkSymbol: 'btc' } as TradingAssetOption,
@@ -21,19 +27,54 @@ const baseValues: TradingBuyFormProps = {
     amountInCrypto: false,
 };
 
+describe('getBuyActiveAmountField', () => {
+    it('points to the fiat input while the amount is entered in fiat', () => {
+        expect(getBuyActiveAmountField(baseValues)).toBe(TRADING_FORM_FIAT_INPUT);
+    });
+
+    it('points to the crypto input while the amount is entered in crypto', () => {
+        expect(getBuyActiveAmountField({ ...baseValues, amountInCrypto: true })).toBe(
+            TRADING_FORM_CRYPTO_INPUT,
+        );
+    });
+});
+
+describe('getBuyActiveAmount', () => {
+    it('reads the fiat side while the amount is entered in fiat', () => {
+        expect(getBuyActiveAmount({ ...baseValues, cryptoInput: '0.5' })).toBe('100');
+    });
+
+    it('reads the crypto side while the amount is entered in crypto', () => {
+        expect(
+            getBuyActiveAmount({ ...baseValues, cryptoInput: '0.5', amountInCrypto: true }),
+        ).toBe('0.5');
+    });
+});
+
 describe('isBuyQuotesFetchAllowed', () => {
     it('allows fetch when required selects and a positive amount are present', () => {
         expect(isBuyQuotesFetchAllowed(baseValues)).toBe(true);
     });
 
-    it('allows fetch using the crypto input when fiat input is empty', () => {
+    it('allows fetch using the crypto input while the amount is entered in crypto', () => {
+        const values: TradingBuyFormProps = {
+            ...baseValues,
+            fiatInput: undefined,
+            cryptoInput: '0.5',
+            amountInCrypto: true,
+        };
+
+        expect(isBuyQuotesFetchAllowed(values)).toBe(true);
+    });
+
+    it('ignores the inactive side', () => {
         const values: TradingBuyFormProps = {
             ...baseValues,
             fiatInput: undefined,
             cryptoInput: '0.5',
         };
 
-        expect(isBuyQuotesFetchAllowed(values)).toBe(true);
+        expect(isBuyQuotesFetchAllowed(values)).toBe(false);
     });
 
     it.each(['cryptoSelect', 'countrySelect', 'currencySelect'] as const)(

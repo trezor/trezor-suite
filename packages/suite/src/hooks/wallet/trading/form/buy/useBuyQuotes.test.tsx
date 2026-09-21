@@ -184,6 +184,46 @@ describe('useBuyQuotes', () => {
         await waitFor(() => expect(mockHandleRequest).toHaveBeenCalledTimes(2), { timeout: 1500 });
     });
 
+    it('ignores the derived crypto input while fiat is the active side', async () => {
+        const { result } = renderBuyQuotes(VALID_DEFAULTS);
+
+        await waitFor(() => expect(mockHandleRequest).toHaveBeenCalledTimes(1), { timeout: 1500 });
+
+        act(() => {
+            result.current.setValue('cryptoInput', '0.5');
+        });
+        await wait(NO_REFETCH_WAIT_MS);
+
+        expect(mockHandleRequest).toHaveBeenCalledTimes(1);
+        expect(mockAbort).not.toHaveBeenCalled();
+    });
+
+    it('refetches once when the crypto input is written and the amount side flips', async () => {
+        const { result } = renderBuyQuotes(VALID_DEFAULTS);
+
+        await waitFor(() => expect(mockHandleRequest).toHaveBeenCalledTimes(1), { timeout: 1500 });
+
+        act(() => {
+            result.current.setValue('cryptoInput', '0.5');
+            result.current.setValue('amountInCrypto', true);
+            result.current.setValue('fiatInput', '');
+        });
+
+        await waitFor(() => expect(mockHandleRequest).toHaveBeenCalledTimes(2), { timeout: 1500 });
+        await wait(NO_REFETCH_WAIT_MS);
+
+        expect(mockHandleRequest).toHaveBeenCalledTimes(2);
+        expect(mockHandleRequest).toHaveBeenLastCalledWith(
+            expect.objectContaining({
+                formValues: expect.objectContaining({
+                    cryptoInput: '0.5',
+                    fiatInput: '',
+                    amountInCrypto: true,
+                }),
+            }),
+        );
+    });
+
     it('does not refetch when only a non-key field (provider) changes', async () => {
         const { result } = renderBuyQuotes(VALID_DEFAULTS);
 

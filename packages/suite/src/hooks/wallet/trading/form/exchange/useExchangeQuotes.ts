@@ -24,7 +24,11 @@ import { type Network, type NetworkSymbol } from '@suite-common/wallet-config';
 import { type AccountKey } from '@suite-common/wallet-types';
 
 import { useSelector } from 'src/hooks/suite';
-import { isExchangeQuotesFetchAllowed } from 'src/utils/wallet/trading/exchangeQuotesRequestUtils';
+import {
+    getExchangeActiveAmount,
+    getExchangeActiveAmountField,
+    isExchangeQuotesFetchAllowed,
+} from 'src/utils/wallet/trading/exchangeQuotesRequestUtils';
 
 import { useTradingQuoteRequest } from '../common/useTradingQuoteRequest';
 
@@ -76,6 +80,8 @@ export const useExchangeQuotes = ({
         methods,
         immediateFields: EXCHANGE_IMMEDIATE_FIELDS,
         debouncedFields: EXCHANGE_DEBOUNCED_FIELDS,
+        getActiveAmountField: getExchangeActiveAmountField,
+        getActiveAmount: getExchangeActiveAmount,
         isFetchAllowed: values => !!network && isExchangeQuotesFetchAllowed(values),
         requestQuotes: values =>
             dispatch(
