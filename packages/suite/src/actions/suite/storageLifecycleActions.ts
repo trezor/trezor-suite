@@ -1,4 +1,4 @@
-import { createAction } from '@reduxjs/toolkit';
+import { type ActionCreatorWithPayload, createAction } from '@reduxjs/toolkit';
 
 import { type PreloadStoreAction } from 'src/support/suite/preloadStore';
 
@@ -12,6 +12,13 @@ type StorageCorruptedPayload = Extract<
     { type: typeof STORAGE.CORRUPTED }
 >['payload'];
 
-export const storageLoad = createAction<StorageLoadPayload>(STORAGE.LOAD);
-export const storageError = createAction<StorageErrorPayload>(STORAGE.ERROR);
-export const storageCorrupted = createAction<StorageCorruptedPayload>(STORAGE.CORRUPTED);
+// The annotations keep tsc from expanding the whole preloaded-store payload into the emitted
+// declaration, which trips the type-declaration-size requirement.
+export const storageLoad: ActionCreatorWithPayload<StorageLoadPayload, typeof STORAGE.LOAD> =
+    createAction(STORAGE.LOAD);
+export const storageError: ActionCreatorWithPayload<StorageErrorPayload, typeof STORAGE.ERROR> =
+    createAction(STORAGE.ERROR);
+export const storageCorrupted: ActionCreatorWithPayload<
+    StorageCorruptedPayload,
+    typeof STORAGE.CORRUPTED
+> = createAction(STORAGE.CORRUPTED);
