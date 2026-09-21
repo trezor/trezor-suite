@@ -20,8 +20,6 @@ export const selectEvmSettings = (state: { suite: Pick<SuiteState, 'evmSettings'
     state.suite.evmSettings;
 export const selectConfirmExplanationModalClosed = (state: SuiteRootState) =>
     state.suite.evmSettings.confirmExplanationModalClosed;
-export const selectExplanationBannerClosed = (state: SuiteRootState) =>
-    state.suite.evmSettings.explanationBannerClosed;
 export const selectSendFormPrefill = (state: SuiteRootState) => state.suite.prefillFields.sendForm;
 export const selectTransactionHistoryPrefill = (state: SuiteRootState) =>
     state.suite.prefillFields.transactionHistory;
