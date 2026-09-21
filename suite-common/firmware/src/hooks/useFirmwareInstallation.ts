@@ -140,8 +140,8 @@ export const useFirmwareInstallation = () => {
     // Until then, access device as normal.
     const originalDevice = firmware.cachedDevice || device;
 
-    // To instruct user to reboot to bootloader manually, UI_EVENTS.FIRMWARE_DISCONNECT event is emitted first,
-    // and UI_EVENTS.FIRMWARE_RECONNECT is emitted after the device disconnects.
+    // To instruct user to reboot to bootloader manually,
+    // UI_EVENTS.FIRMWARE_RECONNECT is emitted after the device disconnects.
     const showManualReconnectPrompt = reconnectEvent?.method === 'manual';
     const deviceIsWaitingForConfirmationToInitiateConnection =
         reconnectEvent?.method === 'auto' && reconnectEvent.target === 'bootloader';
