@@ -174,6 +174,21 @@ export interface ServerInfo {
     network: string;
 }
 
+/**
+ * Cardano protocol parameters needed to compose a transaction. Lovelace amounts are decimal
+ * strings; nullable fields are not reported by the backend for pre-Babbage eras.
+ */
+export interface CardanoProtocolParameters {
+    epoch: number;
+    minFeeA: string;
+    minFeeB: string;
+    maxTxSize: number;
+    maxValueSize: number | null;
+    keyDeposit: string;
+    poolDeposit: string;
+    coinsPerUtxoByte: string | null;
+}
+
 export type TransferType = 'sent' | 'recv' | 'self' | 'unknown';
 
 /* Transaction */

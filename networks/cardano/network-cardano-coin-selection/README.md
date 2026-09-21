@@ -1,4 +1,4 @@
-# coin-selection
+# @trezor/network-cardano-coin-selection
 
 Minimal implementation of Cardano coin selection algorithms (see [CIP-2](https://cips.cardano.org/cips/cip2/)) developed solely for Trezor Suite.
 Under the hood it leverages Cardano Serialization Lib via WASM module.
@@ -24,6 +24,7 @@ const txPlan = coinSelection(
     },
 	options: {
         feeParams?: { a: string };
+        protocolParams?: ProtocolParams;
         debug?: boolean;
         forceLargestFirstSelection?: boolean;
 	}
@@ -44,6 +45,8 @@ const txPlan = coinSelection(
 
 #### `Options`
 
+- `protocolParams`: Cardano protocol parameters used for fee, deposit and minimum-ADA calculations (`minFeeA`, `minFeeB`, `keyDeposit`, `poolDeposit`, `coinsPerUtxoByte`, `maxValueSize`, `maxTxSize`). Pass live values fetched from a backend; `DEFAULT_PROTOCOL_PARAMS` (compiled-in mainnet values) is used when omitted
+- `feeParams.a`: Overrides `protocolParams.minFeeA` for a single fee level
 - `forceLargestFirstSelection`: Always use largest-first algorithm
 - `debug`: print debug information about coin-selection (selected utxos, outputs including change output,...)
 

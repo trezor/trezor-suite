@@ -1,4 +1,5 @@
 import { changeAddress, utxo1, utxo2, utxo3, utxo4, utxo5, utxo6, utxo7 } from './mockConstants';
+import { mockProtocolParams } from './mockProtocolParams';
 
 const UTXO_REAL_SAME_POLICY = [
     {
@@ -338,6 +339,47 @@ export const coinSelection = [
                             unit: '769c4c6e9bc3ba5406b9b89fb7beb6819e638ff2e2de63f008d5bcff744e45574d',
                         },
                     ],
+                },
+            ],
+        },
+    },
+    {
+        description: '1 ADA only utxo, 1 output + change (custom protocol params: minFeeA=0)',
+        utxos: [utxo1],
+        outputs: [
+            {
+                address:
+                    'addr1qya0nkzrf04gmcpu66vdt7sudwptnyg5df6475y7jhtt2wc44vzmgrfy6wwf69xlaszdslksw8evveyykw4c82eavq7sx29tlc',
+                amount: '3000000',
+                assets: [],
+                setMax: false,
+            },
+        ],
+        changeAddress,
+        certificates: [],
+        withdrawals: [],
+        accountPubKey:
+            'ec8fdf616242f430855ad7477acda53395eb30c295f5a7ef038712578877375b5a2f00353c9c5cc88c7ff18e71dc08724d90fc238213b789c0b02438e336be07',
+        ttl: undefined,
+        options: { protocolParams: mockProtocolParams({ minFeeA: '0', minFeeB: '200000' }) },
+        result: {
+            totalSpent: '3200000',
+            fee: '200000', // with minFeeA=0 the fee equals the custom minFeeB
+            inputs: [utxo1],
+            ttl: undefined,
+            outputs: [
+                {
+                    address:
+                        'addr1qya0nkzrf04gmcpu66vdt7sudwptnyg5df6475y7jhtt2wc44vzmgrfy6wwf69xlaszdslksw8evveyykw4c82eavq7sx29tlc',
+                    amount: '3000000',
+                    assets: [],
+                    setMax: false,
+                },
+                {
+                    isChange: true,
+                    address: changeAddress,
+                    amount: '1800000',
+                    assets: [],
                 },
             ],
         },

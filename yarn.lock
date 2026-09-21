@@ -17751,9 +17751,9 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@trezor/network-cardano-coin-selection@workspace:*, @trezor/network-cardano-coin-selection@workspace:networks/cardano/coin-selection":
+"@trezor/network-cardano-coin-selection@workspace:*, @trezor/network-cardano-coin-selection@workspace:networks/cardano/network-cardano-coin-selection":
   version: 0.0.0-use.local
-  resolution: "@trezor/network-cardano-coin-selection@workspace:networks/cardano/coin-selection"
+  resolution: "@trezor/network-cardano-coin-selection@workspace:networks/cardano/network-cardano-coin-selection"
   dependencies:
     "@emurgo/cardano-serialization-lib-browser": "npm:^13.2.0"
     "@emurgo/cardano-serialization-lib-nodejs": "npm:13.2.0"

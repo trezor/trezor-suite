@@ -55,6 +55,20 @@ backends.forEach(b => {
             });
         });
 
+        it('Get Cardano protocol parameters', async () => {
+            const result = await blockchain.getCardanoProtocolParameters();
+            expect(result).toEqual({
+                epoch: 656,
+                minFeeA: '44',
+                minFeeB: '155381',
+                maxTxSize: 16384,
+                maxValueSize: 5000,
+                keyDeposit: '2000000',
+                poolDeposit: '500000000',
+                coinsPerUtxoByte: '4310',
+            });
+        });
+
         it('Get info error', async () => {
             try {
                 await blockchain.getInfo();

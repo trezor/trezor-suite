@@ -10,6 +10,7 @@ import {
     utxo7,
     utxo8,
 } from './mockConstants';
+import { mockProtocolParams } from './mockProtocolParams';
 import { CardanoDRepType, Certificate, CertificateVoteDelegation } from '../src/types/types';
 
 export const nonFinalCompose = [
@@ -1348,6 +1349,132 @@ export const coinSelection = [
                     amount: '1546015',
                     assets: [],
                     isChange: true,
+                },
+            ],
+        },
+    },
+    {
+        description: '1 ADA only utxo, 1 output + change (custom protocol params: minFeeA=0)',
+        utxos: [utxo1],
+        outputs: [
+            {
+                address:
+                    'addr1qya0nkzrf04gmcpu66vdt7sudwptnyg5df6475y7jhtt2wc44vzmgrfy6wwf69xlaszdslksw8evveyykw4c82eavq7sx29tlc',
+                amount: '3000000',
+                assets: [],
+                setMax: false,
+            },
+        ],
+        changeAddress,
+        certificates: [],
+        withdrawals: [],
+        accountPubKey:
+            'ec8fdf616242f430855ad7477acda53395eb30c295f5a7ef038712578877375b5a2f00353c9c5cc88c7ff18e71dc08724d90fc238213b789c0b02438e336be07',
+        options: { protocolParams: mockProtocolParams({ minFeeA: '0', minFeeB: '200000' }) },
+        result: {
+            totalSpent: '3200000',
+            fee: '200000', // with minFeeA=0 the fee equals the custom minFeeB
+            deposit: '0',
+            inputs: [utxo1],
+            outputs: [
+                {
+                    address:
+                        'addr1qya0nkzrf04gmcpu66vdt7sudwptnyg5df6475y7jhtt2wc44vzmgrfy6wwf69xlaszdslksw8evveyykw4c82eavq7sx29tlc',
+                    amount: '3000000',
+                    assets: [],
+                    setMax: false,
+                },
+                {
+                    isChange: true,
+                    address: changeAddress,
+                    amount: '1800000',
+                    assets: [],
+                },
+            ],
+        },
+    },
+    {
+        description: 'feeParams.a overrides protocolParams.minFeeA',
+        utxos: [utxo1],
+        outputs: [
+            {
+                address:
+                    'addr1qya0nkzrf04gmcpu66vdt7sudwptnyg5df6475y7jhtt2wc44vzmgrfy6wwf69xlaszdslksw8evveyykw4c82eavq7sx29tlc',
+                amount: '3000000',
+                assets: [],
+                setMax: false,
+            },
+        ],
+        changeAddress,
+        certificates: [],
+        withdrawals: [],
+        accountPubKey:
+            'ec8fdf616242f430855ad7477acda53395eb30c295f5a7ef038712578877375b5a2f00353c9c5cc88c7ff18e71dc08724d90fc238213b789c0b02438e336be07',
+        options: {
+            feeParams: { a: '0' },
+            protocolParams: mockProtocolParams({ minFeeA: '1000', minFeeB: '200000' }),
+        },
+        result: {
+            totalSpent: '3200000',
+            fee: '200000',
+            deposit: '0',
+            inputs: [utxo1],
+        },
+    },
+    {
+        description: 'stake registration (custom protocol params: keyDeposit=3 ADA)',
+        utxos: [utxo1],
+        outputs: [],
+        changeAddress,
+        certificates: [
+            {
+                type: 0,
+            },
+        ] as Certificate[],
+        withdrawals: [],
+        accountPubKey:
+            'ec8fdf616242f430855ad7477acda53395eb30c295f5a7ef038712578877375b5a2f00353c9c5cc88c7ff18e71dc08724d90fc238213b789c0b02438e336be07',
+        options: { protocolParams: mockProtocolParams({ keyDeposit: '3000000' }) },
+        result: {
+            totalSpent: '3167173',
+            fee: '167173',
+            deposit: '3000000',
+            inputs: [utxo1],
+            outputs: [
+                {
+                    isChange: true,
+                    address: changeAddress,
+                    amount: '1832827',
+                    assets: [],
+                },
+            ],
+        },
+    },
+    {
+        description: 'stake deregistration (custom protocol params: keyDeposit=3 ADA)',
+        utxos: [utxo1],
+        outputs: [],
+        changeAddress,
+        certificates: [
+            {
+                type: 1,
+            },
+        ] as Certificate[],
+        withdrawals: [],
+        accountPubKey:
+            'ec8fdf616242f430855ad7477acda53395eb30c295f5a7ef038712578877375b5a2f00353c9c5cc88c7ff18e71dc08724d90fc238213b789c0b02438e336be07',
+        options: { protocolParams: mockProtocolParams({ keyDeposit: '3000000' }) },
+        result: {
+            totalSpent: '171617',
+            fee: '171617',
+            deposit: '-3000000',
+            inputs: [utxo1],
+            outputs: [
+                {
+                    isChange: true,
+                    address: changeAddress,
+                    amount: '7828383',
+                    assets: [],
                 },
             ],
         },
