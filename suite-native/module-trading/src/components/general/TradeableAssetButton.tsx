@@ -1,7 +1,4 @@
-import { Pressable } from 'react-native';
-
-import { Box, buttonSizeToDimensionsMap } from '@suite-native/atoms';
-import { Icon } from '@suite-native/icons';
+import { Button, type ButtonColorProps, HStack } from '@suite-native/atoms';
 import { IconByCryptoId } from '@suite-native/trading-atoms';
 import { type TradeableAsset } from '@suite-native/trading-types';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
@@ -14,15 +11,10 @@ export type TradeableAssetButtonProps = {
     onPress: () => void;
     accessibilityLabel: string;
     testID?: string;
-};
+} & ButtonColorProps;
 
-const buttonStyle = prepareNativeStyle(({ colors, spacings }) => ({
-    ...buttonSizeToDimensionsMap.medium,
-    gap: spacings.sp8,
-    flexDirection: 'row',
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: colors.elementFillNeutralSoft,
+const buttonStyle = prepareNativeStyle(({ spacings }) => ({
+    height: spacings.sp40,
 }));
 
 export const TradeableAssetButton = ({
@@ -31,33 +23,36 @@ export const TradeableAssetButton = ({
     onPress,
     accessibilityLabel,
     testID,
+    intent = 'neutral',
+    priority = 'secondary',
+    isInverse,
 }: TradeableAssetButtonProps) => {
     const { applyStyle } = useNativeStyles();
-
     const symbolTestID = testID ? `${testID}/symbol` : undefined;
 
     return (
-        <Pressable
+        <Button
             onPress={onPress}
-            style={applyStyle(buttonStyle)}
-            accessible
+            size="medium"
+            intent={intent}
+            priority={priority}
+            isInverse={isInverse}
+            iconRight={caret ? 'caretDown' : undefined}
+            shouldWrapChildrenInText={false}
             accessibilityRole="button"
             accessibilityLabel={accessibilityLabel}
             testID={testID}
+            style={applyStyle(buttonStyle)}
         >
-            <IconByCryptoId
-                tokenSymbol={symbol}
-                cryptoId={cryptoId}
-                size="extraSmall"
-                withNetwork
-            />
-            <NetworkSymbolExtendedFormatter
-                symbol={symbol}
-                variant="body-sm-strong"
-                color="contentPrimary"
-                testID={symbolTestID}
-            />
-            {caret ? <Icon name="caretDown" color="contentPrimary" size="medium" /> : <Box />}
-        </Pressable>
+            <HStack alignItems="center" spacing="sp8">
+                <IconByCryptoId cryptoId={cryptoId} size="extraSmall" withNetwork />
+                <NetworkSymbolExtendedFormatter
+                    symbol={symbol}
+                    variant="body-sm-strong"
+                    color="contentPrimary"
+                    testID={symbolTestID}
+                />
+            </HStack>
+        </Button>
     );
 };
