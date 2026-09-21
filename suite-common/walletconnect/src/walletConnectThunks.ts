@@ -1,5 +1,5 @@
 import { unwrapResult } from '@reduxjs/toolkit';
-import { type IWalletKit, WalletKit, type WalletKitTypes } from '@reown/walletkit';
+import { type IWalletKit, type WalletKitTypes } from '@reown/walletkit';
 import { Core } from '@walletconnect/core';
 import {
     buildApprovedNamespaces,
@@ -431,6 +431,8 @@ export const walletConnectInitThunk = createThunk<
         telemetryEnabled: false,
         logger: isDevEnv ? 'warn' : 'silent',
     });
+
+    const { WalletKit } = await import('@reown/walletkit');
 
     walletKit = await WalletKit.init({
         core,
