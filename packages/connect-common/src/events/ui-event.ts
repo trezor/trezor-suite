@@ -53,8 +53,6 @@ export const UI_EVENTS = {
     FIRMWARE_TYPE_CHANGED: 'ui-event_firmware_type_changed',
     /** Waiting for device to reconnect during firmware installation */
     FIRMWARE_RECONNECT: 'ui-event_firmware_reconnect',
-    /** Device disconnected during firmware installation */
-    FIRMWARE_DISCONNECT: 'ui-event_firmware_disconnect',
     /**
      * Firmware binary was downloaded. The host may store it locally
      * and respond with RECEIVE_FIRMWARE, but the response is not awaited —
@@ -205,13 +203,6 @@ export interface UiEventFirmwareReconnect {
     };
 }
 
-export interface UiEventFirmwareDisconnect {
-    type: typeof UI_EVENTS.FIRMWARE_DISCONNECT;
-    payload: {
-        device: Device;
-    };
-}
-
 export type FirmwareStoreEvent = {
     binary: ArrayBuffer;
     binaryVersion: VersionArray;
@@ -237,7 +228,6 @@ export type UiEvent =
     | UiEventFirmwareTypeChanged
     | UiEventFirmwareException
     | UiEventFirmwareReconnect
-    | UiEventFirmwareDisconnect
     | UiEventFirmwareDownloaded;
 
 export type UiEventMessage = UiEvent & {
