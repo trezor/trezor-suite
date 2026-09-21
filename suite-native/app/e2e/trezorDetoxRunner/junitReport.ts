@@ -70,24 +70,6 @@ const applySuiteQuarantine = (
     );
 };
 
-/** Recompute root <testsuites> aggregate counters from the (now-updated) <testsuite> children. */
-const recomputeAggregates = (testsuites: any): void => {
-    if (!testsuites.$) return;
-
-    const totals = testsuites.testsuite.reduce(
-        (acc: { failures: number; errors: number; skipped: number }, suite: any) => ({
-            failures: acc.failures + parseInt(suite.$?.failures ?? '0', 10),
-            errors: acc.errors + parseInt(suite.$?.errors ?? '0', 10),
-            skipped: acc.skipped + parseInt(suite.$?.skipped ?? '0', 10),
-        }),
-        { failures: 0, errors: 0, skipped: 0 },
-    );
-
-    testsuites.$.failures = String(totals.failures);
-    testsuites.$.errors = String(totals.errors);
-    testsuites.$.skipped = String(totals.skipped);
-};
-
 const hasAnyFailures = (testsuites: any): boolean =>
     testsuites.testsuite.some(
         (suite: any) =>
@@ -97,8 +79,8 @@ const hasAnyFailures = (testsuites: any): boolean =>
 /**
  * Process the JUnit XML report for a project.
  * - Filters out skipped tests that don't match grep.
- * - When quarantinedActions are provided, converts failing testcases that are
- *   quarantined into skipped ones and adjusts suite-level counters.
+ * - Persists the filtered report with the original outcomes for the Currents upload.
+ * - Applies quarantine in memory when deciding whether the runner should fail.
  *
  * Returns true when there are still genuine (non-quarantined) failures remaining,
  * false when every failure was quarantined (or there were no failures).
@@ -148,17 +130,20 @@ export const processJUnitReport = async (
             if (regex) {
                 filterSuiteByGrep(suite, regex);
             }
+        });
+
+        const reportForCurrents = new xml2js.Builder().buildObject(result);
+        fs.writeFileSync(reportPath, reportForCurrents);
+
+        result.testsuites.testsuite.forEach((suite: any) => {
+            if (!suite.testcase) return;
 
             if (quarantinedActions.length > 0) {
                 applySuiteQuarantine(suite, projectName, quarantinedActions);
             }
         });
 
-        recomputeAggregates(result.testsuites);
-
-        const newXml = new xml2js.Builder().buildObject(result);
-        fs.writeFileSync(reportPath, newXml);
-        console.log(`Processed and updated JUnit report for ${projectName}`);
+        console.log(`Processed JUnit report for ${projectName}`);
 
         return hasAnyFailures(result.testsuites);
     } catch (error) {
