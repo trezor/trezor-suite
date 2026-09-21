@@ -65,13 +65,17 @@ export const FiatAmountInput = ({
         const transformedValue = fiatAmountTransformer(newValue);
         onChange(transformedValue);
 
-        const cryptoValue = converters?.convertFiatToCrypto?.(
-            asBaseCurrencyAmount(new BigNumber(transformedValue)),
-        );
-        if (cryptoValue) {
-            setValue(cryptoFieldName, cryptoValue.toFixed(cryptoDecimals), {
-                shouldValidate: true,
-            });
+        if (transformedValue) {
+            const cryptoValue = converters?.convertFiatToCrypto?.(
+                asBaseCurrencyAmount(new BigNumber(transformedValue)),
+            );
+            if (cryptoValue) {
+                setValue(cryptoFieldName, cryptoValue.toFixed(cryptoDecimals), {
+                    shouldValidate: true,
+                });
+            }
+        } else {
+            setValue(cryptoFieldName, '', { shouldValidate: true });
         }
 
         setValue('setMaxOutputId', undefined);
