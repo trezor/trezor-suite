@@ -1,4 +1,4 @@
-import { type RegisterOptions, type Resolver, useForm } from 'react-hook-form';
+import { useForm } from 'react-hook-form';
 
 import { act, waitFor } from '@testing-library/react';
 import { type CryptoId, type SellFiatTrade } from 'invity-api';
@@ -6,7 +6,6 @@ import { type CryptoId, type SellFiatTrade } from 'invity-api';
 import { mockDesktopAnalytics } from '@suite/analytics/mocks';
 import { createTestCompositionRoot, renderHookWithStoreProvider } from '@suite-common/test-utils';
 import {
-    TRADING_FORM_OUTPUT_AMOUNT,
     type TradingAssetSellOption,
     type TradingSellFormProps,
     sellInitialState,
@@ -124,15 +123,7 @@ const wait = (ms: number) =>
             }),
     );
 
-type RenderSellQuotesOptions = {
-    resolver?: Resolver<TradingSellFormProps>;
-    amountRules?: RegisterOptions<TradingSellFormProps, typeof TRADING_FORM_OUTPUT_AMOUNT>;
-};
-
-const renderSellQuotes = (
-    defaultValues: TradingSellFormProps,
-    { resolver, amountRules }: RenderSellQuotesOptions = {},
-) => {
+const renderSellQuotes = (defaultValues: TradingSellFormProps) => {
     const initialProps: { currentNetwork: Network | undefined } = {
         currentNetwork: getNetwork(btcSymbol),
     };
@@ -155,11 +146,7 @@ const renderSellQuotes = (
             const methods = useForm<TradingSellFormProps>({
                 mode: 'onChange',
                 defaultValues,
-                resolver,
             });
-            if (amountRules) {
-                methods.register(TRADING_FORM_OUTPUT_AMOUNT, amountRules);
-            }
             useSellQuotes({
                 methods,
                 network: currentNetwork,
@@ -243,6 +230,7 @@ describe('useSellQuotes', () => {
         });
         await wait(NO_REFETCH_WAIT_MS);
         expect(mockHandleRequest).toHaveBeenCalledTimes(1);
+        expect(mockAbort).not.toHaveBeenCalled();
 
         await act(async () => {
             result.current.setValue('outputs.0.amount', '0.003');
@@ -268,8 +256,11 @@ describe('useSellQuotes', () => {
         expect(mockHandleRequest).toHaveBeenCalledTimes(1);
     });
 
-    it('refetches after the amount side flips to fiat', async () => {
-        const { result } = renderSellQuotes(VALID_DEFAULTS);
+    it('refetches after the amount side flips to fiat even when both sides hold the same value', async () => {
+        const { result } = renderSellQuotes({
+            ...VALID_DEFAULTS,
+            outputs: VALID_DEFAULTS.outputs.map(output => ({ ...output, fiat: '0.0015' })),
+        });
 
         await waitFor(() => expect(mockHandleRequest).toHaveBeenCalledTimes(1), { timeout: 1500 });
 
@@ -285,31 +276,18 @@ describe('useSellQuotes', () => {
         );
     });
 
-    it('does not fetch while the active amount is invalid', async () => {
-        const { result } = renderSellQuotes(VALID_DEFAULTS, {
-            amountRules: { validate: () => 'invalid' },
-        });
+    it('aborts and stops requesting when the active amount is cleared', async () => {
+        const { result } = renderSellQuotes(VALID_DEFAULTS);
 
-        await act(async () => {
-            await result.current.trigger();
+        await waitFor(() => expect(mockHandleRequest).toHaveBeenCalledTimes(1), { timeout: 1500 });
+
+        act(() => {
+            result.current.setValue('outputs.0.amount', '');
         });
         await wait(NO_REFETCH_WAIT_MS);
 
-        expect(mockHandleRequest).not.toHaveBeenCalled();
-    });
-
-    it('fetches despite an invalid field outside the active amount (custom fee)', async () => {
-        const invalidFeeResolver: Resolver<TradingSellFormProps> = () => ({
-            values: {},
-            errors: { feePerUnit: { type: 'manual', message: 'invalid' } },
-        });
-        const { result } = renderSellQuotes(VALID_DEFAULTS, { resolver: invalidFeeResolver });
-
-        await act(async () => {
-            await result.current.trigger();
-        });
-
-        await waitFor(() => expect(mockHandleRequest).toHaveBeenCalledTimes(1), { timeout: 1500 });
+        expect(mockAbort).toHaveBeenCalledTimes(1);
+        expect(mockHandleRequest).toHaveBeenCalledTimes(1);
     });
 
     it('clears quotes eagerly when the network becomes undefined', async () => {

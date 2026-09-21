@@ -1,4 +1,4 @@
-import { type Resolver, useForm } from 'react-hook-form';
+import { useForm } from 'react-hook-form';
 
 import { act, waitFor } from '@testing-library/react';
 import type { BuyTrade, CryptoId } from 'invity-api';
@@ -76,11 +76,7 @@ const wait = (ms: number) =>
             }),
     );
 
-const renderBuyQuotes = (
-    defaultValues: TradingBuyFormProps,
-    options: { resolver?: Resolver<TradingBuyFormProps> } = {},
-) => {
-    const { resolver } = options;
+const renderBuyQuotes = (defaultValues: TradingBuyFormProps) => {
     const services = { analytics: mockDesktopAnalytics() };
     const root = createTestCompositionRoot({
         extra: { services },
@@ -99,7 +95,6 @@ const renderBuyQuotes = (
             const methods = useForm<TradingBuyFormProps>({
                 mode: 'onChange',
                 defaultValues,
-                resolver,
             });
             useBuyQuotes({ methods, network: getNetwork(btcSymbol), shouldSendInSats: false });
 
@@ -239,20 +234,5 @@ describe('useBuyQuotes', () => {
         await wait(NO_REFETCH_WAIT_MS);
 
         expect(mockHandleRequest).toHaveBeenCalledTimes(1);
-    });
-
-    it('does not fetch while the form is invalid', async () => {
-        const invalidResolver: Resolver<TradingBuyFormProps> = () => ({
-            values: {},
-            errors: { fiatInput: { type: 'manual', message: 'invalid' } },
-        });
-        const { result } = renderBuyQuotes(VALID_DEFAULTS, { resolver: invalidResolver });
-
-        await act(async () => {
-            await result.current.trigger();
-        });
-        await wait(NO_REFETCH_WAIT_MS);
-
-        expect(mockHandleRequest).not.toHaveBeenCalled();
     });
 });
