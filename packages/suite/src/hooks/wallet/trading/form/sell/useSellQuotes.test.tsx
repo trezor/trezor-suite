@@ -1,4 +1,4 @@
-import { useForm } from 'react-hook-form';
+import { useForm, useWatch } from 'react-hook-form';
 
 import { act, waitFor } from '@testing-library/react';
 import { type CryptoId, type SellFiatTrade } from 'invity-api';
@@ -123,7 +123,13 @@ const wait = (ms: number) =>
             }),
     );
 
-const renderSellQuotes = (defaultValues: TradingSellFormProps) => {
+const renderSellQuotes = (
+    defaultValues: TradingSellFormProps,
+    options: {
+        validateAmount?: (sendCryptoSelect: TradingAssetSellOption | undefined) => true | string;
+    } = {},
+) => {
+    const { validateAmount } = options;
     const initialProps: { currentNetwork: Network | undefined } = {
         currentNetwork: getNetwork(btcSymbol),
     };
@@ -147,6 +153,17 @@ const renderSellQuotes = (defaultValues: TradingSellFormProps) => {
                 mode: 'onChange',
                 defaultValues,
             });
+            const sendCryptoSelect = useWatch({
+                control: methods.control,
+                name: 'sendCryptoSelect',
+            });
+
+            if (validateAmount) {
+                methods.register('outputs.0.amount', {
+                    validate: () => validateAmount(sendCryptoSelect),
+                });
+            }
+
             useSellQuotes({
                 methods,
                 network: currentNetwork,
@@ -299,5 +316,24 @@ describe('useSellQuotes', () => {
         rerender({ currentNetwork: undefined });
 
         await waitFor(() => expect(mockClearQuotes).toHaveBeenCalled());
+    });
+
+    it('refetches with the rules of the newly selected send asset', async () => {
+        const { result } = renderSellQuotes(VALID_DEFAULTS, {
+            validateAmount: sendCryptoSelect =>
+                sendCryptoSelect?.id !== SEND_CRYPTO_SELECT.id || 'insufficient',
+        });
+
+        await wait(NO_REFETCH_WAIT_MS);
+        expect(mockHandleRequest).not.toHaveBeenCalled();
+
+        act(() => {
+            result.current.setValue('sendCryptoSelect', {
+                ...SEND_CRYPTO_SELECT,
+                id: 'litecoin' as CryptoId,
+            });
+        });
+
+        await waitFor(() => expect(mockHandleRequest).toHaveBeenCalledTimes(1), { timeout: 1500 });
     });
 });
