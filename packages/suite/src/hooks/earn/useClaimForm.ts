@@ -1,4 +1,4 @@
-import { createContext, useCallback, useContext, useEffect, useMemo } from 'react';
+import { createContext, useCallback, useEffect, useMemo } from 'react';
 import { useForm } from 'react-hook-form';
 
 import { useServices } from '@suite-common/dependency-injection';
@@ -12,7 +12,6 @@ import {
 } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
 import { getConvertedOrDefaultFeeInfo } from '@suite-common/wallet-utils';
-import { throwError } from '@trezor/utils';
 
 import { signTransactionThunk } from 'src/actions/wallet/stakeActions';
 import { useSelector } from 'src/hooks/suite';
@@ -173,6 +172,3 @@ export const useClaimForm = ({ account }: UseClaimFormsProps): ClaimContextValue
         isClaimingDisabled,
     };
 };
-
-export const useClaimFormContext = () =>
-    useContext(ClaimFormContext) ?? throwError('useClaimFormContext used without Context');
