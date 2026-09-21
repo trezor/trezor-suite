@@ -178,6 +178,11 @@ const inner = async (context: CoreContext, method: AbstractMethod<any>, device: 
         });
     }
 
+    // load a required firmware modular app before running (no-op without a bundled binary)
+    if (method.requiredApp) {
+        await device.ensureModularAppLoaded(method.requiredApp);
+    }
+
     // run method
     try {
         const response = await method.run({ sendCoreMessage, createUiPromise: uiPromises.create });

@@ -11,6 +11,7 @@ import * as eosProto from '@trezor/protobuf/src/definitions/messages-eos_pb';
 import * as ethereumEip712Proto from '@trezor/protobuf/src/definitions/messages-ethereum-eip712_pb';
 import * as ethereumProto from '@trezor/protobuf/src/definitions/messages-ethereum_pb';
 import * as evoluProto from '@trezor/protobuf/src/definitions/messages-evolu_pb';
+import * as extappProto from '@trezor/protobuf/src/definitions/messages-extapp_pb';
 import * as managementProto from '@trezor/protobuf/src/definitions/messages-management_pb';
 import * as moneroProto from '@trezor/protobuf/src/definitions/messages-monero_pb';
 import * as nostrProto from '@trezor/protobuf/src/definitions/messages-nostr_pb';
@@ -47,6 +48,7 @@ export const loadProtobufModules = () => {
         telemetryProto,
         tezosProto,
         thpProto,
+        extappProto,
         tronProto,
         messagesProto,
         optionsProto,
