@@ -13,7 +13,7 @@ on:
         type: string
 
 jobs:
-  # Version should have been bumped by now thanks to ./scripts/ci/connect-release-init-npm.js
+  # Version should have been bumped by now by the release-connect-bump-versions workflow.
   extract-version:
     runs-on: ubuntu-latest
     outputs:
@@ -42,8 +42,6 @@ jobs:
     needs: [extract-version]
     name: "Create release branch for version ${{ needs.extract-version.outputs.version }}"
     runs-on: ubuntu-latest
-    outputs:
-      branch_name: ${{ steps.push-branch.outputs.branch_name }}
     steps:
       - name: Generate GitHub App token
         id: trezor-bot-token
