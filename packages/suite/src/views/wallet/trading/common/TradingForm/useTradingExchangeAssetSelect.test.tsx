@@ -206,7 +206,7 @@ describe('useTradingExchangeAssetSelect', () => {
         expect(result.current.methods.getValues('receiveCryptoSelect')).toEqual(ETH_ASSET);
     });
 
-    it('clears the send asset and its amounts when the picked receive asset collides with it', () => {
+    it('clears the send asset but keeps the typed amount when the picked receive asset collides with it', () => {
         const { result, setAmountLimits } = renderAssetSelect(
             buildDefaults({
                 sendCryptoSelect: asSellOption(BTC_ASSET, BTC_ACCOUNT_KEY),
@@ -219,7 +219,7 @@ describe('useTradingExchangeAssetSelect', () => {
         });
 
         expect(result.current.methods.getValues('sendCryptoSelect')).toBeUndefined();
-        expect(result.current.methods.getValues('outputs.0.amount')).toBe('');
+        expect(result.current.methods.getValues('outputs.0.amount')).toBe('1');
         expect(result.current.methods.getValues('outputs.0.fiat')).toBe('');
         expect(result.current.methods.getValues('outputs.0.token')).toBeNull();
         expect(result.current.methods.getValues('setMaxOutputId')).toBeUndefined();

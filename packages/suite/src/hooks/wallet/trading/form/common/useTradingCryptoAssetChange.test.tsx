@@ -14,6 +14,10 @@ import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
 
 import { useTradingCryptoAssetChange } from './useTradingCryptoAssetChange';
 
+jest.mock('src/hooks/wallet/trading/form/common/useTradingAssetDecimals', () => ({
+    useTradingAssetDecimals: () => ({ getAssetDecimals: () => 8 }),
+}));
+
 const btcSymbol = toNetworkSymbolNonTestnet('btc');
 const ethSymbol = toNetworkSymbolNonTestnet('eth');
 const ACCOUNT = mockWalletAccount({ symbol: btcSymbol, formattedBalance: '2' });
@@ -110,11 +114,33 @@ const renderCryptoAssetChange = (sendCryptoSelect: TradingAssetSellOption) => {
 };
 
 describe('useTradingCryptoAssetChange', () => {
-    it('onCryptoCurrencyChange resets amount fields and switches the send account', async () => {
+    it('onCryptoCurrencyChange keeps the typed crypto amount truncated to the new asset decimals', async () => {
         const { result, setAccountOnChange, setAmountLimits, setComposedLevels, changeFeeLevel } =
             renderCryptoAssetChange(buildSelect(ACCOUNT.key));
 
         act(() => {
+            result.current.methods.setValue('outputs.0.amount', '1.1234567891');
+            result.current.methods.setValue('outputs.0.fiat', '50000');
+        });
+
+        await act(async () => {
+            await result.current.change.onCryptoCurrencyChange(buildSelect(OTHER_ACCOUNT.key));
+        });
+
+        expect(result.current.methods.getValues('outputs.0.amount')).toBe('1.12345678');
+        expect(result.current.methods.getValues('outputs.0.fiat')).toBe('');
+        expect(result.current.methods.getValues('setMaxOutputId')).toBeUndefined();
+        expect(setAmountLimits).toHaveBeenCalledWith(undefined);
+        expect(setComposedLevels).toHaveBeenCalledWith(undefined);
+        expect(changeFeeLevel).toHaveBeenCalledWith('normal');
+        expect(setAccountOnChange).toHaveBeenCalledWith(OTHER_ACCOUNT);
+    });
+
+    it('onCryptoCurrencyChange keeps the typed fiat amount and clears the crypto one', async () => {
+        const { result } = renderCryptoAssetChange(buildSelect(ACCOUNT.key));
+
+        act(() => {
+            result.current.methods.setValue('amountInCrypto', false);
             result.current.methods.setValue('outputs.0.amount', '1');
             result.current.methods.setValue('outputs.0.fiat', '50000');
         });
@@ -124,12 +150,7 @@ describe('useTradingCryptoAssetChange', () => {
         });
 
         expect(result.current.methods.getValues('outputs.0.amount')).toBe('');
-        expect(result.current.methods.getValues('outputs.0.fiat')).toBe('');
-        expect(result.current.methods.getValues('setMaxOutputId')).toBeUndefined();
-        expect(setAmountLimits).toHaveBeenCalledWith(undefined);
-        expect(setComposedLevels).toHaveBeenCalledWith(undefined);
-        expect(changeFeeLevel).toHaveBeenCalledWith('normal');
-        expect(setAccountOnChange).toHaveBeenCalledWith(OTHER_ACCOUNT);
+        expect(result.current.methods.getValues('outputs.0.fiat')).toBe('50000');
     });
 
     it('onCryptoCurrencyChange clears the stale amount validation errors', async () => {

@@ -3,19 +3,22 @@ import { type UseFormReturn, useWatch } from 'react-hook-form';
 import {
     type TRADING_FORM_CRYPTO_INPUT,
     type TRADING_FORM_OUTPUT_AMOUNT,
-    TRADING_FORM_SEND_CRYPTO_CURRENCY_SELECT,
 } from '@suite-common/trading';
+import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { type Account } from '@suite-common/wallet-types';
 import {
-    convertAmountSubunitsToUnits,
-    convertAmountUnitsToSubunits,
+    asAmountSubunit,
+    asAmountUnit,
+    subunitsToUnits,
+    unitsToSubunits,
 } from '@suite-common/wallet-utils';
 import { useDidUpdate } from '@trezor/react-utils';
+import { BigNumber } from '@trezor/utils';
 
 import { useBitcoinAmountUnit } from 'src/hooks/wallet/useBitcoinAmountUnit';
 import { type TradingAllFormProps } from 'src/types/trading/tradingForm';
 
-import { useTradingAssetDecimals } from './useTradingAssetDecimals';
+const bitcoinSymbol = asNetworkSymbol('btc');
 
 type UseTradingAmountUnitSyncProps<T extends TradingAllFormProps> = {
     account: Account | undefined;
@@ -31,27 +34,22 @@ export const useTradingAmountUnitSync = <T extends TradingAllFormProps>({
     methods,
     cryptoInputName,
 }: UseTradingAmountUnitSyncProps<T>) => {
-    const { setValue, getValues, control } =
-        methods as unknown as UseFormReturn<TradingAllFormProps>;
+    const { setValue, control } = methods as unknown as UseFormReturn<TradingAllFormProps>;
     const { isBtcSatsAmountUnit: shouldSendInSats } = useBitcoinAmountUnit(account?.symbol);
     const cryptoInputValue = useWatch({ control, name: cryptoInputName });
-    const sendCryptoSelect = getValues(TRADING_FORM_SEND_CRYPTO_CURRENCY_SELECT);
-    const { getAssetDecimals } = useTradingAssetDecimals();
-    const networkDecimals = getAssetDecimals({
-        accountKey: sendCryptoSelect?.accountKey,
-        cryptoId: sendCryptoSelect?.id,
-    });
 
     useDidUpdate(() => {
-        const conversion = shouldSendInSats
-            ? convertAmountUnitsToSubunits
-            : convertAmountSubunitsToUnits;
+        const amount = new BigNumber(cryptoInputValue ?? '');
 
-        if (!cryptoInputValue) {
+        if (amount.isNaN()) {
             return;
         }
 
-        setValue(cryptoInputName, conversion(cryptoInputValue, networkDecimals), {
+        const convertedAmount = shouldSendInSats
+            ? unitsToSubunits({ value: asAmountUnit(amount), symbol: bitcoinSymbol })
+            : subunitsToUnits({ value: asAmountSubunit(amount), symbol: bitcoinSymbol });
+
+        setValue(cryptoInputName, convertedAmount.toFixed(), {
             shouldValidate: true,
             shouldDirty: true,
         });
