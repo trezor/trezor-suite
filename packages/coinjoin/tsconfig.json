@@ -9,9 +9,9 @@
         { "path": "../blockchain-link-types" },
         { "path": "../blockchain-link-utils" },
         { "path": "../eslint" },
+        { "path": "../type-utils" },
         { "path": "../utils" },
         { "path": "../utxo-lib" },
-        { "path": "../node-utils" },
-        { "path": "../type-utils" }
+        { "path": "../node-utils" }
     ]
 }

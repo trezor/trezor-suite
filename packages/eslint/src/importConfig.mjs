@@ -10,20 +10,39 @@ import { fileURLToPath } from 'url';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-export const globalNoExtraneousDependenciesDevDependencies = [
-    // ----------------------------------------------------------------
-    // !!! DO NOT PUT STUFF THAT BELONGS TO THE PACKAGE ITSELF HERE !!!
-    // Only shared stuff (like tests.*.ts(x) or fixtures shall be here)
-    // ----------------------------------------------------------------
-    '**/*fixtures*/**',
-    '**/mocks/**',
-    '**/*.test.{tsx,ts,js}',
-    '**/jest.setup.{js,ts}',
-    '**/eslint.config.mjs', // for CJS packages, those files should eventually be renamed to .js and this line deleted
-    '**/eslint.config.js',
+/**
+ * Grants the listed files permission to import devDependencies. Flat config replaces rule options
+ * instead of merging them, so exemptions are scoped by `files` rather than collected into one
+ * shared glob list that every package would have to spread back in.
+ *
+ * @type {(files: string[]) => Config}
+ */
+export const allowDevDependenciesIn = files => ({
+    files,
+    rules: {
+        'import/no-extraneous-dependencies': [
+            'error',
+            { devDependencies: true, includeTypes: true },
+        ],
+    },
+});
 
-    '**/*e2e/**', // Todo: This shall be only in packages that has e2e tests
-];
+/**
+ * Allows type-only imports to resolve to devDependencies in the listed files, while value imports
+ * must still come from `dependencies`. Use this where promoting the package to `dependencies` would
+ * enlarge a published dependency closure that the repository deliberately keeps small.
+ *
+ * @type {(files: string[]) => Config}
+ */
+export const allowTypeOnlyDevDependenciesIn = files => ({
+    files,
+    rules: {
+        'import/no-extraneous-dependencies': [
+            'error',
+            { devDependencies: false, includeTypes: false },
+        ],
+    },
+});
 
 const desktopApiImplementationMessage =
     'Only a composition root may choose a DesktopApi implementation. Declare DesktopApiDep and take the API as an injected dependency, or use selectDesktopApiDep in React.';
@@ -101,10 +120,7 @@ export const importConfig = [
             ],
             'import/no-extraneous-dependencies': [
                 'error',
-                {
-                    devDependencies: globalNoExtraneousDependenciesDevDependencies,
-                    includeTypes: true,
-                },
+                { devDependencies: false, includeTypes: true },
             ],
 
             // Offs
@@ -112,4 +128,15 @@ export const importConfig = [
         },
     },
     desktopApiCompositionRootAllowance,
+    allowDevDependenciesIn([
+        '**/*fixtures*/**',
+        '**/mocks/**',
+        '**/test-utils/**',
+        '**/*.test.{tsx,ts,js}',
+        '**/jest.setup.{js,ts}',
+        '**/eslint.config.mjs', // for CJS packages, those files should eventually be renamed to .js and this line deleted
+        '**/eslint.config.js',
+        '**/forbiddenDeps.config.ts',
+        '**/*e2e/**', // Todo: This shall be only in packages that has e2e tests
+    ]),
 ];

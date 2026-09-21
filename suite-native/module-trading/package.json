@@ -75,6 +75,7 @@
         "@suite-native/trading-residence": "workspace:*",
         "@suite-native/trading-slippage": "workspace:*",
         "@suite-native/trading-state": "workspace:*",
+        "@suite-native/trading-types": "workspace:*",
         "@suite-native/transaction-management": "workspace:*",
         "@trezor/analytics-uploader": "workspace:*",
         "@trezor/blockchain-link-types": "workspace:*",
@@ -105,7 +106,6 @@
         "@suite-native/test-utils": "workspace:*",
         "@suite-native/test-utils-store": "workspace:*",
         "@suite-native/trading-fixtures": "workspace:*",
-        "@suite-native/trading-types": "workspace:*",
         "@trezor/requirements": "workspace:*",
         "@types/invity-api": "^1.1.20"
     }

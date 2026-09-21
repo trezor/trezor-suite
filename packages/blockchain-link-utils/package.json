@@ -32,6 +32,7 @@
         "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'"
     },
     "dependencies": {
+        "@trezor/blockchain-link-types": "workspace:*",
         "@trezor/env-utils": "workspace:*",
         "@trezor/network-ripple": "workspace:*",
         "@trezor/network-solana": "workspace:*",
@@ -39,7 +40,6 @@
         "@trezor/utils": "workspace:*"
     },
     "devDependencies": {
-        "@trezor/blockchain-link-types": "workspace:*",
         "@trezor/eslint": "workspace:*",
         "@trezor/type-utils": "workspace:*"
     },

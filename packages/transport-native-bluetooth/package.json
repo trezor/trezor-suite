@@ -13,9 +13,7 @@
     },
     "dependencies": {
         "@trezor/transport-common": "workspace:*",
+        "@trezor/type-utils": "workspace:*",
         "react-native-ble-plx": "3.5.1"
-    },
-    "devDependencies": {
-        "@trezor/type-utils": "workspace:*"
     }
 }

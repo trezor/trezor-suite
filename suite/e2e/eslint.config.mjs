@@ -1,4 +1,9 @@
-import { eslint, noRestrictedSyntax, playwrightEslintFlat } from '@trezor/eslint';
+import {
+    allowDevDependenciesIn,
+    eslint,
+    noRestrictedSyntax,
+    playwrightEslintFlat,
+} from '@trezor/eslint';
 
 export default [
     ...eslint,
@@ -39,4 +44,6 @@ export default [
             'playwright/no-skipped-test': 'off',
         },
     },
+    // The whole package is a private test suite, so every file may use devDependencies.
+    allowDevDependenciesIn(['**']),
 ];

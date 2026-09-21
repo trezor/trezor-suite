@@ -11,7 +11,7 @@
         "lint:js:fix": "yarn lint:js --fix",
         "type-check": "yarn g:tsc --build"
     },
-    "devDependencies": {
+    "dependencies": {
         "@suite-common/formatters": "workspace:*",
         "@suite-common/trading": "workspace:*",
         "@suite-common/wallet-config": "workspace:*",
@@ -19,7 +19,9 @@
         "@suite-native/forms": "workspace:*",
         "@suite-native/intl": "workspace:*",
         "@suite-native/navigation": "workspace:*",
-        "@trezor/blockchain-link-types": "workspace:*",
+        "@trezor/blockchain-link-types": "workspace:*"
+    },
+    "devDependencies": {
         "@types/invity-api": "^1.1.20"
     }
 }

@@ -36,6 +36,7 @@
         "@suite-native/tokens": "workspace:*",
         "@suite-native/trading-atoms": "workspace:*",
         "@suite-native/trading-consts": "workspace:*",
+        "@suite-native/trading-types": "workspace:*",
         "@trezor/device-utils": "workspace:*",
         "@trezor/type-utils": "workspace:*",
         "@trezor/utils": "workspace:*",
@@ -43,7 +44,6 @@
     },
     "devDependencies": {
         "@suite-native/trading-fixtures": "workspace:*",
-        "@suite-native/trading-types": "workspace:*",
         "@types/invity-api": "^1.1.20"
     }
 }

@@ -30,6 +30,7 @@
         "@trezor/blockchain-link-types": "workspace:*",
         "@trezor/blockchain-link-utils": "workspace:*",
         "@trezor/eslint": "workspace:*",
+        "@trezor/type-utils": "workspace:*",
         "@trezor/utils": "workspace:*",
         "@trezor/utxo-lib": "workspace:*",
         "golomb": "1.2.0",
@@ -37,7 +38,6 @@
     },
     "devDependencies": {
         "@trezor/node-utils": "workspace:*",
-        "@trezor/type-utils": "workspace:*",
         "node-fetch": "^3.3.2",
         "socks-proxy-agent": "8.0.5",
         "ws": "^8.20.0"

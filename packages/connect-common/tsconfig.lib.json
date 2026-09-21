@@ -16,6 +16,7 @@
         { "path": "../blockchain-link" },
         { "path": "../blockchain-link-types" },
         { "path": "../device-authenticity" },
+        { "path": "../eslint" },
         {
             "path": "../../networks/cardano/network-cardano"
         },

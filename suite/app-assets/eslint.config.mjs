@@ -1,4 +1,4 @@
-import { eslint, globalNoExtraneousDependenciesDevDependencies } from '@trezor/eslint';
+import { allowDevDependenciesIn, eslint } from '@trezor/eslint';
 
 export default [
     ...eslint,
@@ -8,16 +8,10 @@ export default [
     {
         rules: {
             'no-console': 'off',
-            'import/no-extraneous-dependencies': [
-                'error',
-                {
-                    devDependencies: [
-                        ...globalNoExtraneousDependenciesDevDependencies,
-                        '**/postcss.config.js',
-                        '**/src/**', // Todo: reconsider, this whole package is probably just "dev"
-                    ],
-                },
-            ],
         },
     },
+    allowDevDependenciesIn([
+        '**/postcss.config.js',
+        '**/src/**', // Todo: reconsider, this whole package is probably just "dev"
+    ]),
 ];
