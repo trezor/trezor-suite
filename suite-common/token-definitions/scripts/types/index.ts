@@ -12,3 +12,8 @@ export interface CoinData {
     name: string;
     platforms: { [key: string]: string };
 }
+
+export interface CoinMarketData {
+    id: string;
+    market_cap: number | null;
+}

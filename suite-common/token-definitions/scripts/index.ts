@@ -2,27 +2,35 @@
 import fs from 'fs';
 import { join } from 'path';
 
-import { DEFINITIONS_FILENAME_SUFFIX, FILES_PATH } from './constants';
+import {
+    DEFINITIONS_FILENAME_SUFFIX,
+    FILES_PATH,
+    RANKED_STRUCTURE,
+    UNKNOWN_MARKET_CAP,
+} from './constants';
+import { buildRankedDefinitions } from './utils/buildRankedDefinitions';
 import { buildCoinDataForPlatform, fetchAllCoins } from './utils/fetchCoins';
+import { fetchMarketCaps } from './utils/fetchMarketCaps';
 import { fetchNftData } from './utils/fetchNft';
 import { fetchVaultDefinitions } from './utils/fetchVaultDefinitions';
 import { signData } from './utils/sign';
 import { validateStructure } from './utils/validate';
 import { DefinitionType, TokenStructure, TokenStructureType } from '../src/tokenDefinitionsTypes';
 
-const writeDefinitionFiles = (
-    assetPlatformId: string,
-    type: DefinitionType,
-    structure: TokenStructureType,
-    data: TokenStructure,
-) => {
-    const fileName = `${assetPlatformId}.${structure}.${type}.${DEFINITIONS_FILENAME_SUFFIX}`;
+const writeFiles = (fileName: string, data: TokenStructure) => {
     fs.mkdirSync(FILES_PATH, { recursive: true });
     const signedData = signData(data);
     fs.writeFileSync(join(FILES_PATH, `${fileName}.jws`), signedData);
     fs.writeFileSync(join(FILES_PATH, `${fileName}.json`), JSON.stringify(data));
     console.log('JSON definitions saved to ', join(FILES_PATH, fileName, '.[jws,json]'));
 };
+
+const writeDefinitionFiles = (
+    assetPlatformId: string,
+    type: DefinitionType,
+    structure: TokenStructureType,
+    data: TokenStructure,
+) => writeFiles(`${assetPlatformId}.${structure}.${type}.${DEFINITIONS_FILENAME_SUFFIX}`, data);
 
 const countRecords = (data: TokenStructure, structure: TokenStructureType) =>
     structure === TokenStructureType.SIMPLE
@@ -80,25 +88,41 @@ const main = async () => {
     const counts: Record<string, number> = {};
 
     if (type === DefinitionType.COIN) {
-        const allCoins = await fetchAllCoins();
+        const isSimpleStructure = structure === TokenStructureType.SIMPLE;
 
-        const vaultDefinitions =
-            structure === TokenStructureType.SIMPLE ? await fetchVaultDefinitions() : null;
+        const allCoins = await fetchAllCoins();
+        // Only the simple run builds the ranked definitions, so an advanced run does not pay for
+        // paging the whole market data list.
+        const marketCaps = isSimpleStructure ? await fetchMarketCaps() : new Map<string, number>();
+
+        const vaultDefinitions = isSimpleStructure ? await fetchVaultDefinitions() : null;
+        const marketCapsByPlatform = new Map<string, Map<string, number>>();
 
         for (const assetPlatformId of assetPlatformIds) {
             console.log('Building coin data for:', assetPlatformId);
-            const coinData = await buildCoinDataForPlatform(allCoins, assetPlatformId, structure);
+            const coinData = await buildCoinDataForPlatform({
+                allCoins,
+                assetPlatformId,
+                structure,
+                marketCaps,
+            });
 
             const vaults = vaultDefinitions?.[assetPlatformId];
-            if (Array.isArray(vaults) && coinData instanceof Set) {
-                vaults.forEach(vault => coinData.add(vault.address));
+            if (Array.isArray(vaults) && coinData instanceof Map) {
+                // The earn-yield worker only knows the vault addresses, never a market cap.
+                vaults.forEach(vault => {
+                    if (!coinData.has(vault.address)) {
+                        coinData.set(vault.address, UNKNOWN_MARKET_CAP);
+                    }
+                });
 
                 console.log(
                     `Merged vault address(es) from the earn-yield worker for ${assetPlatformId}`,
                 );
             }
 
-            const data: TokenStructure = coinData instanceof Set ? Array.from(coinData) : coinData;
+            const data: TokenStructure =
+                coinData instanceof Map ? Array.from(coinData.keys()) : coinData;
 
             const length = countRecords(data, structure);
             console.log('Records for specific platform:', length);
@@ -108,6 +132,18 @@ const main = async () => {
             validateStructure(data, structure);
             writeDefinitionFiles(assetPlatformId, type, structure, data);
             counts[assetPlatformId] = length;
+
+            if (coinData instanceof Map) {
+                marketCapsByPlatform.set(assetPlatformId, coinData);
+            }
+        }
+
+        if (marketCapsByPlatform.size) {
+            const ranked = buildRankedDefinitions(marketCapsByPlatform);
+            console.log('Records ranked by market cap:', ranked.length);
+
+            validateStructure(ranked, RANKED_STRUCTURE);
+            writeFiles(`${RANKED_STRUCTURE}.${type}.${DEFINITIONS_FILENAME_SUFFIX}`, ranked);
         }
     }
 

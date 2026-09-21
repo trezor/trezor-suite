@@ -5,6 +5,17 @@ import type { PartialRecord } from '@trezor/type-utils';
 
 export type SimpleTokenStructure = string[];
 
+/**
+ * Every known token that has a market cap, from every platform, ranked by market cap in USD.
+ * Published as one file next to the per-platform definitions, which stay the complete list of
+ * known tokens.
+ */
+export type RankedTokenStructure = {
+    assetPlatformId: string;
+    address: string;
+    marketCap: number;
+}[];
+
 export interface AdvancedTokenStructure {
     [contractAddress: string]: {
         symbol: string;
@@ -14,7 +25,7 @@ export interface AdvancedTokenStructure {
     };
 }
 
-export type TokenStructure = SimpleTokenStructure | AdvancedTokenStructure;
+export type TokenStructure = SimpleTokenStructure | RankedTokenStructure | AdvancedTokenStructure;
 
 export enum TokenStructureType {
     SIMPLE = 'simple',

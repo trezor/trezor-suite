@@ -1,6 +1,8 @@
 import { blockfrostUtils } from '@trezor/blockchain-link-utils';
 
-import { getContractAddress } from './fetchCoins';
+import { TokenStructureType } from '../../src/tokenDefinitionsTypes';
+import { CoinData } from '../types';
+import { buildCoinDataForPlatform, getContractAddress } from './fetchCoins';
 
 jest.mock('@trezor/blockchain-link-utils', () => ({
     ...jest.requireActual('@trezor/blockchain-link-utils'),
@@ -183,6 +185,66 @@ describe('getContractAddress', () => {
                 ethereum: '',
             };
             expect(await getContractAddress('ethereum', platforms)).toBeUndefined();
+        });
+    });
+});
+
+describe('buildCoinDataForPlatform', () => {
+    const usdCoin: CoinData = {
+        id: 'usd-coin',
+        symbol: 'usdc',
+        name: 'USD Coin',
+        platforms: { ethereum: '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48' },
+    };
+    const obscureCoin: CoinData = {
+        id: 'obscure-coin',
+        symbol: 'obs',
+        name: 'Obscure Coin',
+        platforms: { ethereum: '0x0000000000000000000000000000000000000001' },
+    };
+    const coinOnAnotherPlatform: CoinData = {
+        id: 'solana-coin',
+        symbol: 'sol',
+        name: 'Solana Coin',
+        platforms: { solana: 'So11111111111111111111111111111111111111112' },
+    };
+
+    describe('simple structure', () => {
+        it('should map every contract address to its market cap', async () => {
+            const result = await buildCoinDataForPlatform({
+                allCoins: [usdCoin, coinOnAnotherPlatform],
+                assetPlatformId: 'ethereum',
+                structure: TokenStructureType.SIMPLE,
+                marketCaps: new Map([['usd-coin', 43_000_000_000]]),
+            });
+
+            expect(result).toEqual(
+                new Map([['0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48', 43_000_000_000]]),
+            );
+        });
+
+        it('should use a zero market cap for a coin CoinGecko reports no market cap for', async () => {
+            const result = await buildCoinDataForPlatform({
+                allCoins: [obscureCoin],
+                assetPlatformId: 'ethereum',
+                structure: TokenStructureType.SIMPLE,
+                marketCaps: new Map(),
+            });
+
+            expect(result).toEqual(new Map([['0x0000000000000000000000000000000000000001', 0]]));
+        });
+
+        it('should keep the highest market cap when several coins share a contract address', async () => {
+            const duplicate: CoinData = { ...obscureCoin, id: 'duplicate-coin' };
+
+            const result = await buildCoinDataForPlatform({
+                allCoins: [duplicate, obscureCoin],
+                assetPlatformId: 'ethereum',
+                structure: TokenStructureType.SIMPLE,
+                marketCaps: new Map([['duplicate-coin', 500]]),
+            });
+
+            expect(result).toEqual(new Map([['0x0000000000000000000000000000000000000001', 500]]));
         });
     });
 });
