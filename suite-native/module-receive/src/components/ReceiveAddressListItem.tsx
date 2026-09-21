@@ -7,6 +7,13 @@ import { Icon } from '@suite-native/icons';
 import { Translation } from '@suite-native/intl';
 import { type AccountAddress, type StaticSessionId } from '@trezor/connect';
 import { getAddressPathIndex } from '@trezor/crypto-utils';
+import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
+
+const addressIndexStyle = prepareNativeStyle(({ spacings }) => ({
+    width: spacings.sp32,
+    textAlign: 'center',
+    fontVariant: ['tabular-nums'],
+}));
 
 type ReceiveAddressListItemProps = {
     address: AccountAddress;
@@ -19,6 +26,7 @@ export const ReceiveAddressListItem = ({
     symbol,
     deviceStaticSessionId,
 }: ReceiveAddressListItemProps) => {
+    const { applyStyle } = useNativeStyles();
     const addressIndex = getAddressPathIndex(address.path);
     const isUsed = !!address.transfers;
 
@@ -26,7 +34,11 @@ export const ReceiveAddressListItem = ({
         <HStack justifyContent="space-between" alignItems="center" spacing="sp12">
             <HStack spacing="sp8" alignItems="center" flex={1}>
                 {addressIndex !== undefined && (
-                    <Text variant="body-md" color="contentSecondary">
+                    <Text
+                        variant="body-md"
+                        color="contentSecondary"
+                        style={applyStyle(addressIndexStyle)}
+                    >
                         {addressIndex}
                     </Text>
                 )}
