@@ -20,13 +20,17 @@ describe('IconByCryptoId', () => {
     };
 
     it('should render display symbol icon for native L1 asset', async () => {
-        const { getByLabelText } = await renderIcon({ cryptoId: btcAsset.cryptoId });
+        const { getByLabelText } = await renderIcon({
+            tokenSymbol: btcAsset.symbol,
+            cryptoId: btcAsset.cryptoId,
+        });
 
         expect(getByLabelText('BTC')).toBeTruthy();
     });
 
     it('should render ETH icon for native asset on L2 EVM network', async () => {
         const { getByLabelText, queryByHintText } = await renderIcon({
+            tokenSymbol: ethOnBaseAsset.symbol,
             cryptoId: ethOnBaseAsset.cryptoId,
         });
 
@@ -36,6 +40,7 @@ describe('IconByCryptoId', () => {
 
     it('should render token icon with contract address for ERC-20 token', async () => {
         const { getByLabelText, queryByHintText } = await renderIcon({
+            tokenSymbol: usdcAsset.symbol,
             cryptoId: usdcAsset.cryptoId,
         });
 
@@ -45,6 +50,7 @@ describe('IconByCryptoId', () => {
 
     it('should render token icon with contract address for token on L2 EVM network', async () => {
         const { getByLabelText, queryByHintText } = await renderIcon({
+            tokenSymbol: rethOnBaseAsset.symbol,
             cryptoId: rethOnBaseAsset.cryptoId,
         });
 
@@ -53,7 +59,7 @@ describe('IconByCryptoId', () => {
     });
 
     it('should render nothing for unknown cryptoId', async () => {
-        const { toJSON } = await renderIcon({ cryptoId: 'unknown' as any });
+        const { toJSON } = await renderIcon({ tokenSymbol: 'Unknown', cryptoId: 'unknown' as any });
 
         expect(toJSON()).toBeNull();
     });
@@ -61,6 +67,7 @@ describe('IconByCryptoId', () => {
     describe('withNetwork', () => {
         it('should render L1 asset icon without network badge', async () => {
             const { getByLabelText, getByHintText, queryByHintText } = await renderIcon({
+                tokenSymbol: btcAsset.symbol,
                 cryptoId: btcAsset.cryptoId,
                 withNetwork: true,
             });
@@ -72,6 +79,7 @@ describe('IconByCryptoId', () => {
 
         it('should render ETH icon with network badge for native asset on L2 EVM network', async () => {
             const { getByLabelText, getByHintText } = await renderIcon({
+                tokenSymbol: ethOnBaseAsset.symbol,
                 cryptoId: ethOnBaseAsset.cryptoId,
                 withNetwork: true,
             });
@@ -83,6 +91,7 @@ describe('IconByCryptoId', () => {
 
         it('should render ERC-20 token icon with network badge', async () => {
             const { getByLabelText, getByHintText } = await renderIcon({
+                tokenSymbol: usdcAsset.symbol,
                 cryptoId: usdcAsset.cryptoId,
                 withNetwork: true,
             });
@@ -94,6 +103,7 @@ describe('IconByCryptoId', () => {
 
         it('should render L2 EVM token icon with network badge', async () => {
             const { getByLabelText, getByHintText } = await renderIcon({
+                tokenSymbol: rethOnBaseAsset.symbol,
                 cryptoId: rethOnBaseAsset.cryptoId,
                 withNetwork: true,
             });

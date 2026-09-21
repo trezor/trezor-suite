@@ -43,7 +43,7 @@ export const SelectableNetworkItem = ({ symbol, onPress, rightIcon }: Selectable
             testID={`@onboarding/select-coin/${symbol}`}
         >
             <HStack alignItems="center" spacing="sp16">
-                <TokenIcon symbol={symbol} />
+                <TokenIcon tokenSymbol={symbol} networkSymbol={symbol} />
                 <Box style={applyStyle(selectableAssetContentStyle)}>
                     <Box flex={1} justifyContent="space-between" alignItems="flex-start">
                         <Text variant="body-md">{networkName}</Text>

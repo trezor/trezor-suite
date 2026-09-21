@@ -41,8 +41,9 @@ export const EarnClaimTokenIconSet = ({ tokens }: EarnClaimTokenIconSetProps) =>
                     style={applyStyle(iconWrapperStyle, { index })}
                 >
                     <TokenIcon
-                        symbol={token.networkSymbol}
+                        networkSymbol={token.networkSymbol}
                         contractAddress={token.contractAddress}
+                        tokenSymbol={token.symbol}
                         size={ICON_SIZE}
                     />
                 </Box>

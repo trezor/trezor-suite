@@ -64,8 +64,9 @@ const RewardRow = ({ reward, networkSymbol, tokenSymbol }: RewardRowProps) => {
                     <HStack justifyContent="space-between">
                         <HStack alignItems="center">
                             <TokenIcon
-                                symbol={networkSymbol}
+                                networkSymbol={networkSymbol}
                                 contractAddress={reward.token.address}
+                                tokenSymbol={rewardSymbol}
                                 size="extraSmall"
                                 showNetworkIcon
                             />

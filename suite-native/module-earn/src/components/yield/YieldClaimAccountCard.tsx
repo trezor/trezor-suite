@@ -72,7 +72,11 @@ export const YieldClaimAccountCard = ({ summary, onPress }: YieldClaimAccountCar
     return (
         <PressableOpacity onPress={onPress} style={applyStyle(rowStyle)}>
             <Box marginRight="sp12">
-                <TokenIcon symbol={summary.networkSymbol} size="small" />
+                <TokenIcon
+                    tokenSymbol={summary.networkSymbol}
+                    networkSymbol={summary.networkSymbol}
+                    size="small"
+                />
             </Box>
 
             <VStack spacing="sp4" style={applyStyle(contentStyle)}>

@@ -64,8 +64,9 @@ export const TradingAsset = (props: TradingAssetProps) => {
         <HStack alignItems="center" spacing={spacing} testID={testID}>
             {assetType === 'crypto' ? (
                 <TokenIcon
-                    symbol={props.networkSymbol}
+                    networkSymbol={props.networkSymbol}
                     contractAddress={props.contractAddress}
+                    tokenSymbol={symbol || name}
                     showNetworkIcon
                     size={iconSize}
                 />

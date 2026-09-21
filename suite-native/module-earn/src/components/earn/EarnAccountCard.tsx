@@ -88,8 +88,9 @@ export const EarnAccountCard = ({ item, onPress }: EarnAccountCardProps) => {
             accountKey={item.accountKey}
             icon={
                 <TokenIcon
-                    symbol={symbol}
+                    networkSymbol={symbol}
                     contractAddress={contractAddress}
+                    tokenSymbol={item.type === 'stablecoin-yield' ? item.tokenSymbol : item.symbol}
                     size="extraSmall"
                     showNetworkIcon
                     wrappedTokenIcon={isDefiYieldItem ? 'network' : 'token'}

@@ -23,6 +23,7 @@ type TransactionIconProps = {
     stakeOperationType?: StakeType;
     symbol?: NetworkSymbol;
     contractAddress?: TokenAddress;
+    tokenSymbol?: string;
     isAnimated?: boolean;
     intent?: IconCircleIntent;
     size?: IconCircleSize;
@@ -57,6 +58,7 @@ const cryptoIconStyle = prepareNativeStyle(utils => ({
 export const TransactionIcon = ({
     symbol,
     contractAddress,
+    tokenSymbol,
     transactionType,
     stakeOperationType,
     intent,
@@ -83,7 +85,12 @@ export const TransactionIcon = ({
             {isAnimated && <CircularSpinner size={size} color="elementFillWarningBold" width={3} />}
             {iconSymbol && (
                 <Box style={applyStyle(cryptoIconStyle)}>
-                    <TokenIcon symbol={iconSymbol} contractAddress={contractAddress} size="tiny" />
+                    <TokenIcon
+                        networkSymbol={iconSymbol}
+                        contractAddress={contractAddress}
+                        tokenSymbol={tokenSymbol}
+                        size="tiny"
+                    />
                 </Box>
             )}
         </Box>

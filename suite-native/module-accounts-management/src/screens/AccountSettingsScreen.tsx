@@ -50,7 +50,7 @@ const AccountDetailSettingsRow = ({ title, children }: AccountDetailSettingsRowP
 const CryptoNameWithIcon = ({ symbol }: { symbol: NetworkSymbol }) => (
     <HStack spacing="sp8" flexDirection="row" alignItems="center" justifyContent="flex-end">
         <Text variant="body-sm">{getNetwork(symbol).name}</Text>
-        <TokenIcon symbol={symbol} size="extraSmall" />
+        <TokenIcon tokenSymbol={symbol} networkSymbol={symbol} size="extraSmall" />
     </HStack>
 );
 

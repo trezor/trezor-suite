@@ -98,10 +98,11 @@ export const EarnItemOverviewSection = (item: EarnPromoItem) => {
 
     const iconProps =
         item.type === 'staking'
-            ? { symbol: item.symbol }
+            ? { networkSymbol: item.symbol, tokenSymbol: item.symbol }
             : {
-                  symbol: item.networkSymbol,
+                  networkSymbol: item.networkSymbol,
                   contractAddress: item.tokenContractAddress,
+                  tokenSymbol: item.tokenSymbol,
                   wrappedTokenIcon: 'network' as const,
               };
 

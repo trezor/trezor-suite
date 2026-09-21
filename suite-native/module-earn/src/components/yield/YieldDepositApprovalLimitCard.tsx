@@ -7,6 +7,7 @@ import { TokenIcon } from '@suite-native/icons';
 
 type YieldDepositApprovalLimitCardProps = {
     contractAddress?: string;
+    tokenSymbol?: string;
     description: ReactNode;
     isChecked: boolean;
     onChange: () => void;
@@ -17,6 +18,7 @@ type YieldDepositApprovalLimitCardProps = {
 export const YieldDepositApprovalLimitCard = ({
     children,
     contractAddress,
+    tokenSymbol,
     description,
     isChecked,
     onChange,
@@ -29,8 +31,9 @@ export const YieldDepositApprovalLimitCard = ({
                 <HStack alignItems="center" justifyContent="space-between">
                     <HStack alignItems="center">
                         <TokenIcon
-                            symbol={symbol}
+                            networkSymbol={symbol}
                             contractAddress={contractAddress}
+                            tokenSymbol={tokenSymbol}
                             size="extraSmall"
                         />
                         {title}

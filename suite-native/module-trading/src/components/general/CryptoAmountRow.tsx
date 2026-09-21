@@ -1,6 +1,6 @@
 import type { CryptoId } from 'invity-api';
 
-import { useFormatCryptoValue } from '@suite-common/trading';
+import { useFormatCryptoValue, useTradingUtils } from '@suite-common/trading';
 import { type BoxProps, HStack, Text } from '@suite-native/atoms';
 import { IconByCryptoId } from '@suite-native/trading-atoms';
 import { CryptoToFiatValueBadge } from '@suite-native/trading-quote-utils';
@@ -20,6 +20,7 @@ export const CryptoAmountRow = ({
     style,
     withNetworkIcon,
 }: CryptoAmountRowProps) => {
+    const { cryptoIdToCoinSymbol, cryptoIdToCoinName } = useTradingUtils();
     const formatCryptoValue = useFormatCryptoValue();
     if (!cryptoId || !amount) {
         return null;
@@ -34,6 +35,7 @@ export const CryptoAmountRow = ({
             <HStack alignItems="center">
                 <IconByCryptoId
                     cryptoId={cryptoId}
+                    tokenSymbol={cryptoIdToCoinSymbol(cryptoId) || cryptoIdToCoinName(cryptoId)}
                     size="extraSmall"
                     withNetwork={withNetworkIcon}
                 />

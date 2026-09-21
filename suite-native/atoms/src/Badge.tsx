@@ -81,7 +81,11 @@ export const Badge = ({
 
     const getCryptoIcon = (iconInput: IconType) =>
         isNetworkSymbol(iconInput) ? (
-            <TokenIcon symbol={iconInput} size={size === 'small' ? 'extraSmall' : 'small'} />
+            <TokenIcon
+                tokenSymbol={iconInput}
+                networkSymbol={iconInput}
+                size={size === 'small' ? 'extraSmall' : 'small'}
+            />
         ) : null;
 
     const getBadgeIcon = (iconInput: IconType) =>

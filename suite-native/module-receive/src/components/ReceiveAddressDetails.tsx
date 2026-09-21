@@ -19,6 +19,7 @@ type ReceiveAddressDetailsProps = {
     accountDescriptor: AccountDescriptor;
     networkSymbol: NetworkSymbol;
     tokenContract?: TokenAddress;
+    tokenSymbol?: string;
     showLabelEdit?: boolean;
 };
 
@@ -35,6 +36,7 @@ export const ReceiveAddressDetails = ({
     accountDescriptor,
     networkSymbol,
     tokenContract,
+    tokenSymbol,
     showLabelEdit = true,
 }: ReceiveAddressDetailsProps) => {
     const {
@@ -57,6 +59,7 @@ export const ReceiveAddressDetails = ({
                     address={address}
                     networkSymbol={networkSymbol}
                     tokenContract={tokenContract}
+                    tokenSymbol={tokenSymbol}
                     qrCodeSize={qrCodeSize}
                     onCopyAddress={handleCopyAddress}
                 />

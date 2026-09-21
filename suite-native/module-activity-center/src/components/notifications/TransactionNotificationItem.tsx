@@ -113,8 +113,9 @@ export const TransactionNotificationItem = ({ notification, seen, index }: Props
                     {amount !== undefined && (
                         <HStack spacing="sp8" alignItems="center">
                             <TokenIcon
-                                symbol={symbol}
+                                networkSymbol={symbol}
                                 contractAddress={token?.contract}
+                                tokenSymbol={token?.symbol || token?.name}
                                 size="tiny"
                             />
                             {token?.symbol === undefined ? (

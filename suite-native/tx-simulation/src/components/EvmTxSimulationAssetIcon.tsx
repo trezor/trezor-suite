@@ -13,14 +13,15 @@ export const EvmTxSimulationAssetIcon = ({
     const coinSymbol = asset?.symbol?.toLowerCase();
 
     if (assetType === 'NATIVE' && coinSymbol && isNetworkSymbol(coinSymbol)) {
-        return <TokenIcon symbol={coinSymbol} size="small" />;
+        return <TokenIcon tokenSymbol={coinSymbol} networkSymbol={coinSymbol} size="small" />;
     }
 
     if (asset?.symbol && 'address' in asset && network.coingeckoId) {
         return (
             <TokenIcon
-                symbol={network.symbol}
+                networkSymbol={network.symbol}
                 contractAddress={asset.address.toLowerCase()}
+                tokenSymbol={asset.symbol}
                 size="small"
                 showNetworkIcon
             />

@@ -20,8 +20,9 @@ export const SolanaTxSimulationAsset = ({ assetDiff, network }: SolanaTxSimulati
     return (
         <HStack spacing="sp12" padding="sp16" alignItems="center">
             <TokenIcon
-                symbol={network.symbol}
+                networkSymbol={network.symbol}
                 contractAddress={'address' in asset ? asset.address : undefined}
+                tokenSymbol={'symbol' in asset ? asset.symbol : undefined}
                 size="small"
                 showNetworkIcon={'address' in asset}
             />

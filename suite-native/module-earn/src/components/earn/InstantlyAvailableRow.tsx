@@ -46,7 +46,11 @@ export const InstantlyAvailableRow = ({
                     <Icon name="info" color="contentTertiary" size="medium" />
                 </HStack>
                 <HStack alignItems="center" spacing="sp4">
-                    <TokenIcon symbol={account.symbol} size="extraSmall" />
+                    <TokenIcon
+                        tokenSymbol={account.symbol}
+                        networkSymbol={account.symbol}
+                        size="extraSmall"
+                    />
                     <HStack alignItems="center" spacing={0}>
                         <Text variant="body-sm" color="contentPrimary">
                             ~

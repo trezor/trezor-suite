@@ -47,8 +47,9 @@ export const AccountsListTokenItem = ({
             onPress={onSelectAccount}
             icon={
                 <TokenIcon
-                    symbol={account.symbol}
+                    networkSymbol={account.symbol}
                     contractAddress={token.contract}
+                    tokenSymbol={token.symbol || token.name}
                     showNetworkIcon
                 />
             }

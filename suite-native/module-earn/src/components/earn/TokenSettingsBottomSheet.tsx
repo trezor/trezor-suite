@@ -259,7 +259,11 @@ export const TokenSettingsBottomSheet = forwardRef(
                                 }
                             >
                                 <HStack alignItems="center" spacing="sp8">
-                                    <TokenIcon symbol={symbol} size="tiny" />
+                                    <TokenIcon
+                                        tokenSymbol={symbol}
+                                        networkSymbol={symbol}
+                                        size="tiny"
+                                    />
                                     <Text variant="body-sm">{networkName}</Text>
                                 </HStack>
                             </DetailRow>

@@ -5,6 +5,7 @@ export type ReceiveQRCodeCardProps = {
     address: string;
     networkSymbol: NetworkSymbol;
     tokenContract?: TokenAddress;
+    tokenSymbol?: string;
     qrCodeSize: number;
     onCopyAddress: () => Promise<void>;
 };

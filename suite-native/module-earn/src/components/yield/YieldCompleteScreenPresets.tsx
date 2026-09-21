@@ -23,8 +23,9 @@ const getYieldCompleteAmountValue = ({
 }: YieldCompleteAmountValueParams): ReactNode => (
     <HStack spacing="sp4" alignItems="center" flexShrink={1}>
         <TokenIcon
-            symbol={accountSymbol}
+            networkSymbol={accountSymbol}
             contractAddress={amount.tokenContract ?? undefined}
+            tokenSymbol={amount.tokenSymbol}
             size="extraSmall"
         />
         <Box flexShrink={1}>

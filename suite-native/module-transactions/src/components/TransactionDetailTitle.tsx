@@ -55,8 +55,9 @@ export const TransactionDetailTitle = ({
     return (
         <>
             <TokenIcon
-                symbol={transaction.symbol}
+                networkSymbol={transaction.symbol}
                 contractAddress={tokenTransfer?.contract}
+                tokenSymbol={tokenTransfer?.symbol || tokenTransfer?.name}
                 showNetworkIcon
             />
             <Text variant="body-md-strong" numberOfLines={2} style={applyStyle(titleTextStyle)}>

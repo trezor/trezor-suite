@@ -42,8 +42,9 @@ export const TokenOfNetworkAlertBody = ({
     return (
         <VStack spacing="sp24">
             <TokenIcon
-                symbol={symbol}
+                networkSymbol={symbol}
                 contractAddress={tokenContract}
+                tokenSymbol={tokenSymbol}
                 size="extraLarge"
                 showNetworkIcon
             />

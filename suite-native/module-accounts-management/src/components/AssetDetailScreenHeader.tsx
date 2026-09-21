@@ -43,7 +43,7 @@ const AssetDetailScreenHeaderContent = ({ account }: AssetDetailScreenHeaderCont
 
     return (
         <HStack alignItems="center" spacing="sp8">
-            <TokenIcon symbol={account.symbol} size="small" />
+            <TokenIcon tokenSymbol={account.symbol} networkSymbol={account.symbol} size="small" />
 
             <VStack spacing={0} alignItems="flex-start">
                 <AccountLabel
