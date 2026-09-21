@@ -17,6 +17,7 @@ export type SendFormFormContext = {
     symbol?: NetworkSymbol;
     availableBalance?: string;
     networkFeeInfo?: FeeInfo;
+    hasNetworkFeesFetchFailed?: boolean;
     isValueInSats?: boolean;
     isTokenFlow?: boolean;
     feeLevelsMaxAmount?: FeeLevelsMaxAmount;
@@ -27,6 +28,17 @@ export type SendFormFormContext = {
     rippleReserve?: string;
     /** What the recipient network can do with names, owned by its network module. */
     namedAddress?: NamedAddressSupport;
+};
+
+const hasNormalFeeLevel = (networkFeeInfo?: FeeInfo) =>
+    networkFeeInfo?.levels.some(level => level.label === 'normal') ?? false;
+
+const areNetworkFeesUnavailable = (context?: SendFormFormContext) => {
+    if (!context?.hasNetworkFeesFetchFailed) {
+        return false;
+    }
+
+    return !hasNormalFeeLevel(context.networkFeeInfo);
 };
 
 const isAmountDust = (amount: string, context?: SendFormFormContext) => {
@@ -71,6 +83,11 @@ const isAmountHigherThanBalance = (
     const amountBigNumber = new BigNumber(amount);
     if (isTokenFlow) {
         return amountBigNumber.gt(availableBalance);
+    }
+
+    // Without fee levels the max amount cannot be composed, which says nothing about the balance.
+    if (!hasNormalFeeLevel(networkFeeInfo)) {
+        return false;
     }
 
     const normalMaxAmount = feeLevelsMaxAmount?.normal;
@@ -182,6 +199,12 @@ const outputSchema = yup.object({
         .string()
         .required('Amount is required.')
         .matches(/^\d*\.?\d+$/, 'Invalid decimal value.')
+        .test(
+            'are-network-fees-unavailable',
+            'Couldn’t load network fees. Check your connection and try again.',
+            (_, { options: { context } }: yup.TestContext<SendFormFormContext>) =>
+                !areNetworkFeesUnavailable(context),
+        )
         .test(
             'is-dust-amount',
             'The value is lower than the dust limit.',

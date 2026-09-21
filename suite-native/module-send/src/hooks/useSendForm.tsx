@@ -23,6 +23,7 @@ import {
     selectConvertedNetworkFeeInfo,
     selectIsAmountInSats,
     selectIsNetworkReserveEnabled,
+    selectNetworkFeeStatus,
     selectSendFormDraftByKey,
     sendFormActions,
     updateFeeInfoThunk,
@@ -141,6 +142,9 @@ export const useSendForm = (accountKey: AccountKey, tokenContract?: TokenAddress
     const networkFeeInfo = useSelector((state: FeesRootState) =>
         selectConvertedNetworkFeeInfo(state, account?.symbol),
     );
+    const networkFeeStatus = useSelector((state: FeesRootState) =>
+        selectNetworkFeeStatus(state, account?.symbol),
+    );
     const sendFormDraft = useSelector((state: SendRootState) =>
         selectSendFormDraftByKey(state, accountKey, tokenContract),
     );
@@ -179,6 +183,7 @@ export const useSendForm = (accountKey: AccountKey, tokenContract?: TokenAddress
         context: {
             addressValidator,
             networkFeeInfo,
+            hasNetworkFeesFetchFailed: networkFeeStatus === 'error',
             accountDescriptor: account?.descriptor,
             symbol: account?.symbol,
             availableBalance: tokenInfo?.balance ?? account?.availableBalance,
