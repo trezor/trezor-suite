@@ -187,7 +187,7 @@ test.describe('Trading - DEX swap approval (LI.FI)', { tag: ['@T3T1', '@T3W1'] }
 
             await test.step('Submit the USDC approval with broadcast blocked by mock', async () => {
                 await devicePrompt.sendButton.click();
-                await expect(toastSection.approved).toBeVisible();
+                await expect(toastSection.approvedMessage).toHaveTranslation('TOAST_TX_APPROVED');
                 await expect(toastSection.approvedAmount).toHaveText(
                     `${compactApprovalAmount}USDC`,
                 );

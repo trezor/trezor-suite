@@ -177,8 +177,9 @@ test.describe('Trading - Sell BTC', { tag: ['@T3W1', '@T3T1'] }, () => {
                 );
                 // Unlike the swap toast, this one carries the composed amount rather than the
                 // provider's own formatting of it, so it matches the amount the test typed.
-                await expect(toastSection.txSent).toContainTranslation('TOAST_TX_SENT', {
-                    values: { amount: formattedSendAmount, account: accountLabel },
+                await toastSection.verifyTxSentToast({
+                    account: accountLabel,
+                    amount: formattedSendAmount,
                 });
 
                 // The row truncates the text, so the full txid is only in the id attribute.

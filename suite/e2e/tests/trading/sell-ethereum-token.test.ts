@@ -12,6 +12,7 @@ const ethSymbol = asNetworkSymbol('eth');
 
 const sendAmount = '50';
 const tokenSymbol = 'USDC';
+const tokenDecimals = 6;
 const tokenId = 'eth-0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48';
 const formattedSendAmount = `${localizeNumber(sendAmount)} ${tokenSymbol}`;
 const accountLabel = 'Ethereum #1';
@@ -152,8 +153,10 @@ test.describe('Trading - Sell ETH token', { tag: ['@T3W1', '@T3T1'] }, () => {
                 );
                 // Unlike the swap toast, this one carries the composed amount rather than the
                 // provider's own formatting of it, so it matches the amount the test typed.
-                await expect(toastSection.txSent).toContainTranslation('TOAST_TX_SENT', {
-                    values: { amount: formattedSendAmount, account: accountLabel },
+                await toastSection.verifyTxSentToast({
+                    account: accountLabel,
+                    amount: formattedSendAmount,
+                    tokenDecimals,
                 });
 
                 // The row truncates the text, so the full txid is only in the id attribute.

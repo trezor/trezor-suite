@@ -181,7 +181,7 @@ test.describe('stablecoin yield', { tag: ['@webOnly', '@T3W1', '@T3T1'] }, () =>
                 });
                 await devicePrompt.waitForFinalPromptAndConfirm();
                 await devicePrompt.sendButton.click();
-                await expect(toastSection.approved).toBeVisible();
+                await expect(toastSection.approvedMessage).toHaveTranslation('TOAST_TX_APPROVED');
                 await expect(toastSection.approvedAmount).toHaveText(
                     `${COMPACT_APPROVED_AMOUNT}USDC`,
                 );
