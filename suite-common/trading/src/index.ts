@@ -46,6 +46,7 @@ export * from './utils/apiKeyUtils';
 export * from './utils/tradingAccountUtils';
 export * from './utils/buy/buyUtils';
 export * from './utils/receiveAccountUtils';
+export * from './utils/stellarActivationUtils';
 export * from './utils/tradeableAssetBalanceUtils';
 export * from './utils/tradeableAssetGroupUtils';
 export * from './utils/tradeableAssetListUtils';
