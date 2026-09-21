@@ -7,7 +7,6 @@ import { Card, Cards, Steps, Tabs } from 'nextra/components';
 
 import { Button, CollapsibleBox, Row } from '@trezor/components';
 
-import { BetaOnly } from '../components/BetaOnly';
 import {
     ExampleHeading,
     ExamplesAside,
@@ -28,34 +27,32 @@ import IconWeb from '../components/icons/IconWeb';
 
 # Integrate Trezor devices with your project
 
-<BetaOnly>
-    <SectionCard>
-        ### Connect 10 is here
+<SectionCard>
+    ### Connect 10 is here
 
-        A new major version. The integration is now built around **Trezor
-        Suite**: Suite hosts the Connect core and runs the device flow, so users get a better
-        experience and you get a cleaner API. Parts of your integration change — the migration
-        checklist covers them.
+    A new major version. The integration is now built around **Trezor
+    Suite**: Suite hosts the Connect core and runs the device flow, so users get a better
+    experience and you get a cleaner API. Parts of your integration change — the migration
+    checklist covers them.
 
-        Already integrated with v9? It keeps working: v9 stays supported and its docs stay online,
-        so you can move over whenever it suits you.
+    Already integrated with v9? It keeps working: v9 stays supported and its docs stay online,
+    so you can move over whenever it suits you.
 
-        <Row gap={12} flexWrap="wrap" margin={{ top: 16 }}>
-            <LinkButton intent="brand" size="small" href="/guides/migrating-to-connect-10">
-                Migration checklist
-            </LinkButton>
-            <Button
-                intent="neutral"
-                priority="secondary"
-                size="small"
-                href="https://connect.trezor.io/9/"
-                target="_blank">
-                Connect 9 docs
-            </Button>
-        </Row>
-    </SectionCard>
+    <Row gap={12} flexWrap="wrap" margin={{ top: 16 }}>
+        <LinkButton intent="brand" size="small" href="/guides/migrating-to-connect-10">
+            Migration checklist
+        </LinkButton>
+        <Button
+            intent="neutral"
+            priority="secondary"
+            size="small"
+            href="https://connect.trezor.io/9/"
+            target="_blank">
+            Connect 9 docs
+        </Button>
+    </Row>
 
-</BetaOnly>
+</SectionCard>
 
 <SectionCard>
     ### Explore Trezor Connect SDKs
@@ -80,9 +77,7 @@ import IconWeb from '../components/icons/IconWeb';
         <Card icon={<IconNode />} title="Node.js" href="#nodejs" />
         <Card icon={<IconWeb />} title="Web" href="#web" />
         <Card icon={<IconExtension />} title="Web extension" href="#web-extension" />
-        <BetaOnly>
-            <Card icon={<IconMobile />} title="Mobile" href="#mobile" />
-        </BetaOnly>
+        <Card icon={<IconMobile />} title="Mobile" href="#mobile" />
     </Cards>
 
     <CollapsibleBox heading="Still unsure?" margin={{ top: 16 }}>
@@ -426,8 +421,6 @@ import IconWeb from '../components/icons/IconWeb';
 
 </SectionCard>
 
-<BetaOnly>
-
 <HiddenNextraHeading>
 
 ### Mobile
@@ -555,5 +548,3 @@ import IconWeb from '../components/icons/IconWeb';
         </CollapsibleBox>
 
 </SectionCard>
-
-</BetaOnly>
