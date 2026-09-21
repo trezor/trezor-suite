@@ -24,8 +24,8 @@ import { getNetwork } from '@suite-common/wallet-config';
 
 import { useSelector } from 'src/hooks/suite';
 import { useSolanaSubscribeBlocks } from 'src/hooks/wallet/form/useSolanaSubscribeBlocks';
+import { useTradingAmountUnitSync } from 'src/hooks/wallet/trading/form/common/useTradingAmountUnitSync';
 import { useTradingComposeTransaction } from 'src/hooks/wallet/trading/form/common/useTradingComposeTransaction';
-import { useTradingCurrencySwitcher } from 'src/hooks/wallet/trading/form/common/useTradingCurrencySwitcher';
 import { useServerEnvironment } from 'src/hooks/wallet/trading/useServerEnviroment';
 import { useBitcoinAmountUnit } from 'src/hooks/wallet/useBitcoinAmountUnit';
 import { type TradingSellFormContextProps } from 'src/types/trading/tradingForm';
@@ -110,14 +110,7 @@ export const useTradingSellForm = (): TradingSellFormContextProps => {
         isInitialDataLoading || formState.isSubmitting || isLoading || isComposing;
     const isFormInvalid = !(formIsValid && hasValues);
 
-    const { toggleAmountInCrypto } = useTradingCurrencySwitcher<TradingSellFormProps>({
-        account,
-        methods,
-        inputNames: {
-            cryptoInput: TRADING_FORM_OUTPUT_AMOUNT,
-            fiatInput: TRADING_FORM_OUTPUT_FIAT,
-        },
-    });
+    useTradingAmountUnitSync({ account, methods, cryptoInputName: TRADING_FORM_OUTPUT_AMOUNT });
 
     const { isScheduledQuotesRefresh } = useSellQuotes({
         methods,
@@ -175,8 +168,6 @@ export const useTradingSellForm = (): TradingSellFormContextProps => {
                 isFormLoading,
                 isFormInvalid,
                 isLoadingOrInvalid,
-
-                toggleAmountInCrypto,
             },
             helpers,
         },

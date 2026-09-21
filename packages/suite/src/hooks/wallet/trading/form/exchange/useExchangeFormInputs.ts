@@ -73,9 +73,6 @@ export const useExchangeFormInputs = ({
 
     const { fractionButton, setFractionButton, onFiatCurrencyChange } = useTradingFiatCryptoAmount({
         methods,
-        tradingFiatValues,
-        networkDecimals,
-        shouldSendInSats,
     });
 
     const { onCryptoCurrencyChange } = useTradingCryptoAssetChange({
