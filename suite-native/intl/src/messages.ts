@@ -1607,6 +1607,11 @@ export const messages = {
         experimental: {
             title: 'Experimental',
             subtitle: 'For experienced users only. Use at your own risk.',
+            slip24: {
+                title: 'SLIP-24 (clear signing)',
+                description:
+                    'View transaction details on your Trezor in a human-readable format before confirming.',
+            },
             noneAvailable: {
                 title: 'None available',
                 subtitle: 'No experimental features currently available.',

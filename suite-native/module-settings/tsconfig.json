@@ -54,6 +54,8 @@
         { "path": "../config" },
         { "path": "../device" },
         { "path": "../device-manager" },
+        { "path": "../experimental-features" },
+        { "path": "../feature-feedback" },
         { "path": "../forms" },
         { "path": "../helpers" },
         { "path": "../icons" },
