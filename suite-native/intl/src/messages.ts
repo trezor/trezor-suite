@@ -2565,6 +2565,7 @@ export const messages = {
                 'New {networkName} accounts require a one-time 1 {networkDisplaySymbol} network fee to activate.',
         },
         fees: {
+            unavailable: 'Network fee information is unavailable.',
             recipient: {
                 singular: 'Recipient',
             },
