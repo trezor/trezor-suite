@@ -70,6 +70,12 @@ export const messages = {
         },
         tokens: '+ Tokens',
         warning: 'Warning',
+        formValidation: {
+            required: 'Required',
+            exceedsMax: 'Exceeds max length',
+            asciiOnly: 'Only ASCII characters are allowed',
+            notValidHex: 'Not a valid hex',
+        },
     },
     icons: {
         networkIconHint: 'Network Icon',

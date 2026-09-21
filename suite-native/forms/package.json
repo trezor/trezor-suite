@@ -8,6 +8,7 @@
     "scripts": {
         "depcheck": "yarn g:depcheck",
         "type-check": "yarn g:tsc --build",
+        "test:unit": "yarn g:jest:native",
         "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'"
     },
     "dependencies": {
@@ -15,10 +16,15 @@
         "@mobily/ts-belt": "^3.13.1",
         "@suite-native/atoms": "workspace:*",
         "@suite-native/icons": "workspace:*",
+        "@suite-native/intl": "workspace:*",
         "@trezor/styles-native": "workspace:*",
         "react": "19.2.3",
         "react-hook-form": "^7.77.0",
         "react-native": "0.86.0",
         "react-native-reanimated": "4.5.0"
+    },
+    "devDependencies": {
+        "@suite-common/validators": "workspace:*",
+        "@suite-native/test-utils": "workspace:*"
     }
 }
