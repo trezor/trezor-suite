@@ -13,6 +13,7 @@ type SelectTriggerProps = {
     value: string | null;
     icon?: ReactNode;
     handlePress?: () => void;
+    rightIcon?: ReactNode;
     hasError?: boolean;
     testID?: string;
 };
@@ -31,7 +32,7 @@ const selectStyle = prepareNativeStyle<StyleProps>((utils, { hasError }) => ({
     borderColor: utils.colors.elementBorderField,
     color: utils.colors.contentSecondary,
     paddingLeft: utils.spacings.sp12,
-    paddingRight: 23.25,
+    paddingRight: utils.spacings.sp16,
     height: 58 * ACCESSIBILITY_FONTSIZE_MULTIPLIER,
     extend: [
         {
@@ -48,6 +49,7 @@ export const SelectTrigger = ({
     value,
     icon,
     handlePress,
+    rightIcon,
     hasError = false,
     testID,
 }: SelectTriggerProps) => {
@@ -74,7 +76,11 @@ export const SelectTrigger = ({
                     </Text>
                 </HStack>
             </Box>
-            {!!handlePress && <Icon size="large" color="contentSecondary" name="caretDown" />}
+            {handlePress ? (
+                <Icon size="large" color="contentSecondary" name="caretDown" />
+            ) : (
+                rightIcon
+            )}
         </Wrapper>
     );
 };
