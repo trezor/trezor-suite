@@ -18,7 +18,7 @@ import {
     updateFeeInfoThunk,
 } from '@suite-common/wallet-core';
 import { type FeeLevelLabel } from '@suite-common/wallet-types';
-import { type FeatureFlagsRootState } from '@suite-native/feature-flags';
+import { type SettingsSliceRootState } from '@suite-native/settings';
 import {
     getFormDraftKeyByTradeType,
     selectIsTradingSlip24Enabled,
@@ -30,7 +30,7 @@ type TradingTransactionRootState = TradingRootStateWithDeviceAndAccounts &
     FeesRootState &
     FormDraftRootState &
     MessageSystemRootState &
-    FeatureFlagsRootState;
+    SettingsSliceRootState;
 
 type UseComposeTradingTransactionProps = {
     tradeType: 'exchange' | 'sell';

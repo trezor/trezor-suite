@@ -4,7 +4,7 @@ import { type EarnYieldWorkerBaseUrl } from '@suite-common/earn-stablecoin-defs'
 import { isDetoxTestBuild } from '@suite-native/config';
 import { DEVICE } from '@trezor/connect';
 
-export type ExperimentalFeature = 'suite-sync';
+export type ExperimentalFeature = 'suite-sync' | 'slip24';
 
 export interface AppSettingsState {
     isOnboardingFinished: boolean;
@@ -13,6 +13,7 @@ export interface AppSettingsState {
     isFirmwareHashCheckEnabled: boolean;
     areDeviceMetaChecksEnabled: boolean;
     areTestnetsEnabled: boolean;
+    experimentalFeatures: ExperimentalFeature[];
     shouldShowAutoEjectAlert: boolean;
     hasAutoEjectAlertBeenDisplayed: boolean;
     earnYieldWorkerBaseUrl?: EarnYieldWorkerBaseUrl;
@@ -31,6 +32,7 @@ export const appSettingsInitialState: AppSettingsState = {
     isFirmwareHashCheckEnabled: process.env.EXPO_PUBLIC_IS_FIRMWARE_HASH_CHECK_ENABLED !== 'false',
     areDeviceMetaChecksEnabled: process.env.EXPO_PUBLIC_ARE_DEVICE_META_CHECKS_ENABLED !== 'false',
     areTestnetsEnabled: isDetoxTestBuild(),
+    experimentalFeatures: [],
     shouldShowAutoEjectAlert: false,
     hasAutoEjectAlertBeenDisplayed: false,
     earnYieldWorkerBaseUrl: undefined,
@@ -43,6 +45,7 @@ export const appSettingsPersistWhitelist: Array<keyof AppSettingsState> = [
     'isFirmwareHashCheckEnabled',
     'areDeviceMetaChecksEnabled',
     'areTestnetsEnabled',
+    'experimentalFeatures',
     'hasAutoEjectAlertBeenDisplayed',
     'earnYieldWorkerBaseUrl',
 ];
@@ -64,6 +67,15 @@ const appSettingsSlice = createSlice({
         },
         toggleAreTestnetsEnabled: state => {
             state.areTestnetsEnabled = !state.areTestnetsEnabled;
+        },
+        toggleExperimentalFeature: (state, { payload }: PayloadAction<ExperimentalFeature>) => {
+            if (state.experimentalFeatures.includes(payload)) {
+                state.experimentalFeatures = state.experimentalFeatures.filter(
+                    feature => feature !== payload,
+                );
+            } else {
+                state.experimentalFeatures.push(payload);
+            }
         },
         setShouldShowAutoEjectAlert: (state, { payload }: PayloadAction<boolean>) => {
             state.shouldShowAutoEjectAlert = payload;
@@ -93,6 +105,11 @@ export const selectShouldShowAutoEjectAlert = (state: SettingsSliceRootState) =>
 export const selectAreTestnetsEnabled = (state: SettingsSliceRootState) =>
     state.appSettings.areTestnetsEnabled;
 
+export const selectIsExperimentalFeatureEnabled = (
+    state: SettingsSliceRootState,
+    feature: ExperimentalFeature,
+) => state.appSettings.experimentalFeatures.includes(feature);
+
 export const selectHasAutoEjectAlertBeenDisplayed = (state: SettingsSliceRootState) =>
     state.appSettings.hasAutoEjectAlertBeenDisplayed;
 
@@ -120,6 +137,7 @@ export const {
     setDeviceAuthenticityCheckEnabled,
     setCheckFirmwareAuthenticityEnabled,
     toggleAreTestnetsEnabled,
+    toggleExperimentalFeature,
     setShouldShowAutoEjectAlert,
     setHasAutoEjectAlertBeenDisplayed,
     setEarnWorkerEnvironment,

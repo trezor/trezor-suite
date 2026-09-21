@@ -315,7 +315,7 @@ describe('commonSelectors', () => {
 
     describe('selectIsTradingSlip24Enabled', () => {
         const getSlip24State = (
-            isFeatureFlagEnabled: boolean,
+            isExperimentalFeatureEnabled: boolean,
             features: object | undefined = {
                 major_version: 2,
                 minor_version: 12,
@@ -324,15 +324,15 @@ describe('commonSelectors', () => {
         ) =>
             ({
                 messageSystem: messageSystemState,
-                featureFlags: {
-                    ...featureFlagsInitialState,
-                    [FeatureFlag.IsTradingSlip24Enabled]: isFeatureFlagEnabled,
+                appSettings: {
+                    ...appSettingsInitialState,
+                    experimentalFeatures: isExperimentalFeatureEnabled ? ['slip24'] : [],
                 },
                 device: { selectedDevice: { features } },
                 wallet: { trading: tradingInitialState },
             }) as any;
 
-        it('should be enabled when the feature flag is on for a supported network and firmware', () => {
+        it('should be enabled when the experimental feature is on for a supported network and firmware', () => {
             expect(selectIsTradingSlip24Enabled(getSlip24State(true), getBtcAccount())).toBe(true);
         });
 
@@ -346,7 +346,7 @@ describe('commonSelectors', () => {
             expect(selectIsTradingSlip24Enabled(state, getBtcAccount())).toBe(false);
         });
 
-        it('should be disabled when the feature flag is off', () => {
+        it('should be disabled when the experimental feature is off', () => {
             expect(selectIsTradingSlip24Enabled(getSlip24State(false), getBtcAccount())).toBe(
                 false,
             );

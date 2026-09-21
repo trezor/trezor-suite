@@ -9,7 +9,7 @@ import {
     type WalletSettingsRootState,
 } from '@suite-common/wallet-core';
 import { asAccountDescriptor } from '@suite-common/wallet-types';
-import { FeatureFlag, type FeatureFlagsRootState } from '@suite-native/feature-flags';
+import { type SettingsSliceRootState } from '@suite-native/settings';
 import { act } from '@suite-native/test-utils-store';
 import { type TokensRootState } from '@suite-native/tokens';
 import {
@@ -34,7 +34,7 @@ type State = TradingRootState &
     TokensRootState &
     NativeSendRootState &
     MessageSystemRootState &
-    FeatureFlagsRootState;
+    SettingsSliceRootState;
 
 const mockComposeTradingTransaction = jest.fn();
 
@@ -88,7 +88,7 @@ const btc2Account = getBtcAccount({ descriptor: asAccountDescriptor('btc2') });
 describe('useTradingTransaction', () => {
     const getMockAccounts = () => [btc1Account, btc2Account];
 
-    const getInitializedStore = (featureFlags?: Partial<Record<FeatureFlag, boolean>>) => {
+    const getInitializedStore = ({ isSlip24Enabled = false } = {}) => {
         const tradingState = getInitializedTradingStateWithQuotes();
 
         // Add the required account keys to the exchange state
@@ -104,9 +104,9 @@ describe('useTradingTransaction', () => {
                     trading: tradingState,
                     accounts: getMockAccounts(),
                 },
-                ...(featureFlags
+                ...(isSlip24Enabled
                     ? {
-                          featureFlags,
+                          appSettings: { experimentalFeatures: ['slip24' as const] },
                           device: {
                               selectedDevice: {
                                   features: {
@@ -208,8 +208,8 @@ describe('useTradingTransaction', () => {
             });
         });
 
-        it('should pass isSlip24Active: true to sendTransactionThunk when the feature flag is on', async () => {
-            const store = getInitializedStore({ [FeatureFlag.IsTradingSlip24Enabled]: true });
+        it('should pass isSlip24Active: true to sendTransactionThunk when the experimental feature is on', async () => {
+            const store = getInitializedStore({ isSlip24Enabled: true });
             const dispatchSpy = jest.spyOn(store, 'dispatch');
             const mockNextStep = jest.fn();
 

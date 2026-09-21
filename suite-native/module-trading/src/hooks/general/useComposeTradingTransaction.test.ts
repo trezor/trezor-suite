@@ -10,7 +10,7 @@ import {
     formDraftActions,
 } from '@suite-common/wallet-core';
 import { asAccountDescriptor } from '@suite-common/wallet-types';
-import { FeatureFlag, type FeatureFlagsRootState } from '@suite-native/feature-flags';
+import { type SettingsSliceRootState } from '@suite-native/settings';
 import { act, renderHookWithStoreProvider } from '@suite-native/test-utils-store';
 import {
     getBtcAccount,
@@ -28,7 +28,7 @@ type State = TradingRootState &
     FeesRootState &
     FormDraftRootState &
     MessageSystemRootState &
-    FeatureFlagsRootState;
+    SettingsSliceRootState;
 
 const mockComposeTradingTransactionThunk = jest.fn(
     (payload: unknown) => () =>
@@ -63,7 +63,7 @@ describe('useComposeTradingTransaction', () => {
         return createTradingTestStore({
             tradeType: 'exchange',
             overrides: {
-                featureFlags: { [FeatureFlag.IsTradingSlip24Enabled]: true },
+                appSettings: { experimentalFeatures: ['slip24'] },
                 device: {
                     selectedDevice: {
                         features: { major_version: 2, minor_version: 12, patch_version: 5 },

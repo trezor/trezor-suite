@@ -72,6 +72,7 @@
         },
         { "path": "../navigation" },
         { "path": "../scrollview" },
+        { "path": "../settings" },
         { "path": "../tokens" },
         { "path": "../trading-analytics" },
         { "path": "../trading-atoms" },
@@ -120,7 +121,6 @@
             "path": "../../suite-common/tx-simulation"
         },
         { "path": "../bluetooth" },
-        { "path": "../settings" },
         { "path": "../test-utils" },
         { "path": "../test-utils-store" },
         { "path": "../trading-fixtures" },

@@ -61,6 +61,10 @@ import {
     selectIsFeatureFlagEnabled,
 } from '@suite-native/feature-flags';
 import { type CombinedLabelingState } from '@suite-native/labeling';
+import {
+    type SettingsSliceRootState,
+    selectIsExperimentalFeatureEnabled,
+} from '@suite-native/settings';
 import { type TokensRootState } from '@suite-native/tokens';
 import {
     type SectionListData,
@@ -140,14 +144,14 @@ export const selectIsTradingTxSimulationEnabled = (state: MessageSystemRootState
     selectIsFeatureEnabled(state, Feature.trading.txSimulation, true);
 
 export const selectIsTradingSlip24Enabled = (
-    state: MessageSystemRootState & FeatureFlagsRootState & TradingRootStateWithDeviceAndAccounts,
+    state: MessageSystemRootState & SettingsSliceRootState & TradingRootStateWithDeviceAndAccounts,
     account: Account | undefined | null,
 ) =>
     selectTradingIsSlip24Allowed(
         state,
         account,
         selectIsFeatureEnabled(state, Feature.trading.slip24, true) &&
-            selectIsFeatureFlagEnabled(state, FeatureFlag.IsTradingSlip24Enabled),
+            selectIsExperimentalFeatureEnabled(state, 'slip24'),
     );
 
 export const selectIsTradingEnabled = (
