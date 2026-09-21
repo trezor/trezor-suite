@@ -5,5 +5,8 @@
         "rootDir": "./src"
     },
     "include": ["./src"],
-    "references": []
+    "references": [
+        { "path": "../coin-selection" },
+        { "path": "../../../packages/utils" }
+    ]
 }
