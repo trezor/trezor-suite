@@ -2,5 +2,5 @@ import { allowDevDependenciesIn, eslint } from '@trezor/eslint';
 
 export default [
     ...eslint,
-    allowDevDependenciesIn(['**/metro.config.js', '**/useRozenitePlugins.ts']),
+    allowDevDependenciesIn(['**/metro.config.js', '**/InitRoseniteDevTools.tsx']),
 ];

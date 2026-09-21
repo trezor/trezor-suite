@@ -28,7 +28,7 @@ const cjsOnlyPackages = [
     // `require()` there.
     'kysely',
     // Its ESM and CJS entry points load disjoint chunks (`*.require.js` vs `*.require.cjs`), so
-    // the `require()` in `./rozeniteBootRecording` and the `import` in `useRozenitePlugins` would
+    // the `require()` in `./rozeniteBootRecording` and the `import` in `InitRoseniteDevTools` would
     // each get their own copy of the plugin's module state. Boot recording would then patch
     // `globalThis.fetch` in one copy while the DevTools hook reads the other one's empty event
     // queue.
@@ -178,9 +178,20 @@ if (
     process.env.EXPO_PUBLIC_IS_DETOX_BUILD !== 'true' &&
     process.env.EXPO_PUBLIC_ENVIRONMENT === 'debug'
 ) {
+    const excludedPlugins = [];
+
+    if (process.env.EXPO_PUBLIC_IS_ROZENITE_REDUX_DEVTOOLS_ENABLED !== 'true') {
+        excludedPlugins.push('@rozenite/redux-devtools-plugin');
+    }
+
+    if (process.env.EXPO_PUBLIC_IS_ROZENITE_MMKV_DEVTOOLS_ENABLED !== 'true') {
+        excludedPlugins.push('@rozenite/mmkv-plugin');
+    }
+
     // enable Rozenite plugins only in debug build
     exportedConfig = withRozenite(configWithStorybook, {
         enabled: true,
+        exclude: excludedPlugins,
     });
 }
 
