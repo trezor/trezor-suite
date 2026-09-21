@@ -18,6 +18,7 @@ export const globalNoExtraneousDependenciesDevDependencies = [
     '**/*fixtures*/**',
     '**/mocks/**',
     '**/*.test.{tsx,ts,js}',
+    '**/jest.setup.{js,ts}',
     '**/eslint.config.mjs', // for CJS packages, those files should eventually be renamed to .js and this line deleted
     '**/eslint.config.js',
 
