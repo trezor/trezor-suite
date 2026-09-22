@@ -78,6 +78,15 @@ on:
         description: "Name of the artifact to download (e.g. desktop app build)"
         required: false
         type: string
+      lighthouse:
+        description: >
+          Record a Lighthouse timespan around each @perf measurement and store the flow result.
+          Off by default and deliberately not enabled on pull requests: Lighthouse's tracing
+          inflates the very numbers budgets.ts limits are compared against, so a profiled run is
+          not baseline material.
+        required: false
+        default: "false"
+        type: string
     secrets:
       currents-record-key:
         description: "Currents record key for reporting"
@@ -227,6 +236,7 @@ jobs:
           # Its own directory: test-results belongs to Playwright, which cleans it before the
           # upload step can run.
           PERF_HISTORY_DIR: "${{ github.workspace }}/perf-history"
+          LIGHTHOUSE: ${{ inputs.lighthouse == 'true' && '1' || '' }}
           COLLECT_COVERAGE_MAP: ${{ inputs.enable-coverage == 'true' && 'true' || '' }}
           COVERAGE_MAP_DIR: ${{ github.workspace }}/coverage-map
         run: |

@@ -1,3 +1,5 @@
+import type { FlowDocument } from './lighthouseFlow';
+import { flowArtifactName } from './lighthouseFlow';
 import type { PerfRunIdentity } from './publishRuns';
 import type { PerfRun, PerfSurface } from './store';
 import type { PerfMetrics } from './types';
@@ -78,15 +80,96 @@ export const mergeHistories = (files: readonly PerfHistoryFile[]): PerfHistoryFi
     };
 };
 
-/** A shard that measured nothing contributes no run, rather than an empty one. */
+const measurementKey = (scenario: string, variant: string | undefined) =>
+    `${scenario}\u0000${variant ?? ''}`;
+
+/**
+ * Where a Lighthouse step is filed. A profiled run records a timespan under the same name the
+ * scenario was measured under, so the two line up on (scenario, model) and land in one row carrying
+ * both instruments' numbers. A later retry of the same test wins, being the attempt that counted.
+ */
+type IndexedStep = {
+    scenario: string;
+    variant: string;
+    artifact: string;
+    metrics: Record<string, number | null>;
+};
+
+const indexFlowSteps = (flows: readonly FlowDocument[]) => {
+    const steps = new Map<string, IndexedStep>();
+
+    for (const flow of [...flows].toSorted((a, b) => a.retry - b.retry)) {
+        for (const step of flow.steps) {
+            steps.set(measurementKey(step.scenario, flow.model), {
+                scenario: step.scenario,
+                variant: flow.model,
+                artifact: flowArtifactName(flow),
+                metrics: step.metrics,
+            });
+        }
+    }
+
+    return steps;
+};
+
+/**
+ * A shard that measured nothing contributes no run, rather than an empty one.
+ *
+ * Flow documents are optional and additive: without them this returns exactly what it always did.
+ * With them, a measurement that has a matching timespan carries the `lh:` numbers beside its
+ * `browser:` ones and points at the flow result rather than the history document, so drilling into
+ * that row opens a Lighthouse report. A timespan with no measurement of its own — Lighthouse
+ * recorded it but our instrumentation produced no median, which is every web scenario today —
+ * becomes a row in its own right instead of being dropped.
+ */
 export const historyToPerfRun = (
     shard: string,
     history: PerfHistoryFile,
     identity: PerfRunIdentity,
+    flows: readonly FlowDocument[] = [],
 ): PerfRun | null => {
-    if (history.measurements.length === 0) {
+    if (history.measurements.length === 0 && flows.length === 0) {
         return null;
     }
+
+    const flowSteps = indexFlowSteps(flows);
+    const claimed = new Set<string>();
+
+    const measured = history.measurements.map(measurement => {
+        const key = measurementKey(measurement.scenario, measurement.variant);
+        const flowStep = flowSteps.get(key);
+
+        claimed.add(key);
+
+        return {
+            scenario: measurement.scenario,
+            variant: measurement.variant,
+            samples: measurement.runs,
+            metrics: {
+                ...Object.fromEntries(
+                    Object.entries(measurement.metrics).map(([metric, value]) => [
+                        `${BROWSER_METRIC_PREFIX}:${metric}`,
+                        value ?? null,
+                    ]),
+                ),
+                ...(flowStep?.metrics ?? {}),
+            },
+            artifact: flowStep?.artifact ?? ARTIFACT_NAME,
+        };
+    });
+
+    // The key is only an identity; the parts travel in the value, so nothing has to be parsed back
+    // out of it and a scenario name may contain anything it likes.
+    const profiledOnly = [...flowSteps.entries()]
+        .filter(([key]) => !claimed.has(key))
+        .map(([, step]) => ({
+            scenario: step.scenario,
+            variant: step.variant,
+            // One flow is one recording of the scenario; there is no median over retries here.
+            samples: 1,
+            metrics: step.metrics,
+            artifact: step.artifact,
+        }));
 
     return {
         context: {
@@ -96,23 +179,21 @@ export const historyToPerfRun = (
             generatedAt: history.generatedAt,
         },
         artifacts: [
-            {
-                kind: 'browser-report',
-                name: ARTIFACT_NAME,
-                body: `${JSON.stringify(history, null, 2)}\n`,
-            },
+            ...(history.measurements.length > 0
+                ? [
+                      {
+                          kind: 'browser-report' as const,
+                          name: ARTIFACT_NAME,
+                          body: `${JSON.stringify(history, null, 2)}\n`,
+                      },
+                  ]
+                : []),
+            ...flows.map(flow => ({
+                kind: 'flow-result' as const,
+                name: flowArtifactName(flow),
+                body: `${JSON.stringify(flow.flow)}\n`,
+            })),
         ],
-        measurements: history.measurements.map(measurement => ({
-            scenario: measurement.scenario,
-            variant: measurement.variant,
-            samples: measurement.runs,
-            metrics: Object.fromEntries(
-                Object.entries(measurement.metrics).map(([key, value]) => [
-                    `${BROWSER_METRIC_PREFIX}:${key}`,
-                    value ?? null,
-                ]),
-            ),
-            artifact: ARTIFACT_NAME,
-        })),
+        measurements: [...measured, ...profiledOnly],
     };
 };
