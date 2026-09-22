@@ -29,6 +29,12 @@ const describeAsset = (assetAccounts: AssetAccounts) => {
     };
 };
 
+const isDust = (assetAccounts: AssetAccounts) => {
+    const { cryptoBalance, tokenInfo } = sumAssetAccounts(assetAccounts);
+
+    return isCryptoDustAmount({ cryptoBalance, decimals: tokenInfo?.decimals });
+};
+
 const createHiddenAssetsSelector = (reason: HiddenTokenReason) =>
     createMemoizedSelector(
         [
@@ -48,19 +54,8 @@ const createHiddenAssetsSelector = (reason: HiddenTokenReason) =>
                 }
 
                 const shown = asAsset(assetAccounts.filter(held => held.isAccountVisible));
-                const asset = shown === undefined ? undefined : describeAsset(shown);
 
-                if (
-                    asset === undefined ||
-                    isCryptoDustAmount({
-                        cryptoBalance: asset.cryptoBalance,
-                        decimals: asset.tokenInfo?.decimals,
-                    })
-                ) {
-                    return [];
-                }
-
-                return [asset];
+                return shown === undefined ? [] : [describeAsset(shown)];
             });
 
             assets.sort(
@@ -73,6 +68,25 @@ const createHiddenAssetsSelector = (reason: HiddenTokenReason) =>
         },
     );
 
-export const selectHiddenByUserAssets = createHiddenAssetsSelector('hiddenByUser');
+const createHiddenTokensSelectors = (reason: HiddenTokenReason) => {
+    const selectAssets = createHiddenAssetsSelector(reason);
 
-export const selectUnrecognizedAssets = createHiddenAssetsSelector('unrecognized');
+    return {
+        selectAssets: createMemoizedSelector([selectAssets], assets =>
+            returnStableArrayIfEmpty(assets.filter(assetAccounts => !isDust(assetAccounts))),
+        ),
+        selectDustRows: createMemoizedSelector([selectAssets], assets =>
+            returnStableArrayIfEmpty(assets.filter(assetAccounts => isDust(assetAccounts))),
+        ),
+    };
+};
+
+export const {
+    selectAssets: selectHiddenByUserAssets,
+    selectDustRows: selectHiddenByUserDustRows,
+} = createHiddenTokensSelectors('hiddenByUser');
+
+export const {
+    selectAssets: selectUnrecognizedAssets,
+    selectDustRows: selectUnrecognizedDustRows,
+} = createHiddenTokensSelectors('unrecognized');
