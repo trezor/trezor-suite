@@ -94,12 +94,15 @@ const toAccountHoldings = (account: Account): readonly AssetHolding[] => {
 
     // Which tokens the user is shown is settled by selectHiddenAssetHoldingKeys, so that hiding one
     // does not rebuild every account's holdings. What is left out here cannot be shown by any
-    // setting: an NFT is not a holding, and nothing holds none of a token.
+    // setting: an NFT is not a holding, and nothing holds none of a token. An account of a network
+    // the user enabled is its own answer, however empty it is.
+    const coinHoldings = [toHolding(undefined, account.formattedBalance, undefined)];
+
     const tokenHoldings = (account.tokens ?? [])
         .filter(token => !isNftToken(token) && new BigNumber(token.balance ?? '0').gt(0))
         .map(token => toHolding(token.contract as TokenAddress, token.balance ?? '0', token));
 
-    return [toHolding(undefined, account.formattedBalance, undefined), ...tokenHoldings];
+    return [...coinHoldings, ...tokenHoldings];
 };
 
 /** A token as the definitions name it: the same token on two networks is two of them. */

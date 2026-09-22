@@ -178,6 +178,14 @@ describe('what becomes a holding', () => {
         ]);
     });
 
+    it('is the coin of an account that holds none of it', () => {
+        const state = createState({ accounts: [mockAccount({ balance: '0' })] });
+
+        expect(holdingsOfAsset(state, aliceCoin)).toEqual([
+            expect.objectContaining({ cryptoBalance: '0', contractAddress: undefined }),
+        ]);
+    });
+
     it('is each token the account holds', () => {
         const state = createState({
             accounts: [mockAccount({ tokens: [{ contract: USDC_ON_ETH, balance: '100' }] })],
