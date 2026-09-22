@@ -3,7 +3,7 @@ import { shallowEqual } from 'react-redux';
 import { type DeviceRootState } from '@suite-common/device';
 import { NetworkNameFormatter } from '@suite-common/formatters';
 import { createWeakMapSelector, returnStableArrayIfEmpty } from '@suite-common/redux-utils';
-import { type NetworkSymbol } from '@suite-common/wallet-config';
+import { type NetworkSymbol, getNetworkDecimals } from '@suite-common/wallet-config';
 import {
     type AssetAccount,
     type AssetAccountsRootState,
@@ -18,7 +18,7 @@ import {
     selectLastWeekFiatRates,
 } from '@suite-common/wallet-core';
 import { type RatesByKey } from '@suite-common/wallet-types';
-import { getFiatRateKey, toFiatCurrency } from '@suite-common/wallet-utils';
+import { getFiatRateKey, isDustBalance, toFiatCurrency } from '@suite-common/wallet-utils';
 import { type BaseCurrencyCode, type TokenInfo } from '@trezor/blockchain-link-types';
 import { type StaticSessionId } from '@trezor/device-utils';
 import { BigNumber } from '@trezor/utils';
@@ -80,6 +80,24 @@ export const selectDeviceAssetGroups = createMemoizedSelector(
         return returnStableArrayIfEmpty([...groups.values()]);
     },
 );
+
+export const isDustAsset = (
+    assetAccounts: AssetAccounts,
+    balance: AssetBalance | undefined,
+    fiatValue: BigNumber | undefined,
+): boolean => {
+    const [asset] = assetAccounts;
+
+    if (asset === undefined || asset.contractAddress === undefined || balance === undefined) {
+        return false;
+    }
+
+    return isDustBalance({
+        cryptoBalance: balance.cryptoBalance,
+        decimals: balance.tokenInfo?.decimals ?? getNetworkDecimals(asset.symbol),
+        fiatValue,
+    });
+};
 
 const selectHomeAssets = createMemoizedSelector(
     [
@@ -285,13 +303,44 @@ export type HomeAssetSection = {
     rows: readonly AssetAccounts[];
 };
 
+const selectPricedRows = createMemoizedSelector(
+    [selectHomeAssetRows, selectAssetBalances, selectAssetFiatValues],
+    (rows, balances, fiatValues): readonly AssetAccounts[] =>
+        returnStableArrayIfEmpty(
+            rows.filter(
+                assetAccounts =>
+                    !isDustAsset(
+                        assetAccounts,
+                        balances.get(assetAccounts),
+                        fiatValues.get(assetAccounts),
+                    ),
+            ),
+        ),
+    { memoizeOptions: { resultEqualityCheck: shallowEqual } },
+);
+
+export const selectHomeAssetDustRows = createMemoizedSelector(
+    [selectHomeAssetRows, selectAssetBalances, selectAssetFiatValues],
+    (rows, balances, fiatValues): readonly AssetAccounts[] =>
+        returnStableArrayIfEmpty(
+            rows.filter(assetAccounts =>
+                isDustAsset(
+                    assetAccounts,
+                    balances.get(assetAccounts),
+                    fiatValues.get(assetAccounts),
+                ),
+            ),
+        ),
+    { memoizeOptions: { resultEqualityCheck: shallowEqual } },
+);
+
 const selectDefaultSections = createMemoizedSelector(
-    [selectHomeAssetRows],
+    [selectPricedRows],
     (rows): readonly HomeAssetSection[] => [{ key: 'all', heading: undefined, rows }],
 );
 
 const selectNetworkSections = createMemoizedSelector(
-    [selectHomeAssetRows, selectAssetFiatValues],
+    [selectPricedRows, selectAssetFiatValues],
     (rows, fiatValues): readonly HomeAssetSection[] =>
         groupAssetRowsByNetwork(rows, fiatValues).map(group => ({
             key: group.symbol,

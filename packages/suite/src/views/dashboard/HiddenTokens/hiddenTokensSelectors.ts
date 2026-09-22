@@ -4,6 +4,7 @@ import {
     selectEnabledNetworks,
     selectHiddenTokenReasons,
 } from '@suite-common/wallet-core';
+import { isCryptoDustAmount } from '@suite-common/wallet-utils';
 import { type StaticSessionId } from '@trezor/device-utils';
 
 import {
@@ -23,6 +24,7 @@ const describeAsset = (assetAccounts: AssetAccounts) => {
     return {
         assetAccounts,
         cryptoBalance,
+        tokenInfo,
         displaySymbol: getAssetDisplaySymbol({ symbol, tokenInfo }),
     };
 };
@@ -46,8 +48,19 @@ const createHiddenAssetsSelector = (reason: HiddenTokenReason) =>
                 }
 
                 const shown = asAsset(assetAccounts.filter(held => held.isAccountVisible));
+                const asset = shown === undefined ? undefined : describeAsset(shown);
 
-                return shown === undefined ? [] : [describeAsset(shown)];
+                if (
+                    asset === undefined ||
+                    isCryptoDustAmount({
+                        cryptoBalance: asset.cryptoBalance,
+                        decimals: asset.tokenInfo?.decimals,
+                    })
+                ) {
+                    return [];
+                }
+
+                return [asset];
             });
 
             assets.sort(

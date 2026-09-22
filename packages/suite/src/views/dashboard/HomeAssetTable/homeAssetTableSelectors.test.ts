@@ -7,7 +7,9 @@ import { type StaticSessionId } from '@trezor/device-utils';
 import {
     type HomeAssetTableState,
     selectDeviceAssetGroups,
+    selectHomeAssetDustRows,
     selectHomeAssetRows,
+    selectHomeAssetSections,
     selectHomeAssetTotals,
 } from './homeAssetTableSelectors';
 
@@ -88,7 +90,12 @@ const createState = ({
 };
 
 const selectHomeAssetRowKeys = (state: HomeAssetTableState) =>
-    selectHomeAssetRows(state, ALICE).map(([asset]) => asset?.assetKey);
+    selectHomeAssetSections('default')(state, ALICE).flatMap(section =>
+        section.rows.map(([asset]) => asset?.assetKey),
+    );
+
+const selectDustRowKeys = (state: HomeAssetTableState) =>
+    selectHomeAssetDustRows(state, ALICE).map(([asset]) => asset?.assetKey);
 
 describe('the rows the table is given', () => {
     it('lists one key per asset and network', () => {
@@ -188,6 +195,31 @@ describe('the rows the table is given', () => {
         });
 
         expect(selectHomeAssetRowKeys(state)).toEqual([`${ALICE}/eth/`, `${ALICE}/pol/`]);
+    });
+
+    it('keeps a assetAccount worth less than a cent for the dust row, not the table', () => {
+        const state = createState({
+            accounts: [
+                mockAccount({
+                    symbol: ETH,
+                    balance: '1',
+                    tokens: [{ symbol: 'usdc', contract: USDC_ON_ETH, balance: '0.004' }],
+                }),
+            ],
+            rates: { ...mockRate(ETH, 2000), ...mockRate(ETH, 1, USDC_ON_ETH) },
+        });
+
+        expect(selectHomeAssetRowKeys(state)).toEqual([`${ALICE}/eth/`]);
+        expect(selectDustRowKeys(state)).toEqual([`${ALICE}/eth/${USDC_ON_ETH}`]);
+    });
+
+    it('keeps a small amount of something valuable', () => {
+        const state = createState({
+            accounts: [mockAccount({ symbol: ETH, balance: '0.000005' })],
+            rates: { ...mockRate(ETH, 2000) },
+        });
+
+        expect(selectHomeAssetRowKeys(state)).toEqual([`${ALICE}/eth/`]);
     });
 
     it('settles assetAccounts worth the same by asset and network', () => {
