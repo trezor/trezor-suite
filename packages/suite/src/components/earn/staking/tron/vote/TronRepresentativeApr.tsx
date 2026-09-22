@@ -1,7 +1,8 @@
 import { Translation } from '@suite/intl';
 import { type TrxStats } from '@suite-common/earn-staking-api';
 
-import { formatApr, getRepresentativeApr } from '../utils/voteUtils';
+import { useFormatApyValue } from '../../../utils/earnApyUtils';
+import { getRepresentativeApr } from '../utils/voteUtils';
 
 interface TronRepresentativeAprProps {
     address: string;
@@ -9,7 +10,12 @@ interface TronRepresentativeAprProps {
 }
 
 export const TronRepresentativeApr = ({ address, representatives }: TronRepresentativeAprProps) => {
+    const formatApyValue = useFormatApyValue();
     const apr = getRepresentativeApr(address, representatives);
 
-    return apr === undefined ? <Translation id="TR_UNKNOWN" /> : <>{formatApr(apr)}</>;
+    return apr === undefined ? (
+        <Translation id="TR_UNKNOWN" />
+    ) : (
+        <>{formatApyValue(apr, { withSymbol: true })}</>
+    );
 };

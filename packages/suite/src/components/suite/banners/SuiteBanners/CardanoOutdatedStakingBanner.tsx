@@ -7,11 +7,12 @@ import { Banner } from '@trezor/components';
 import { useServices } from '@trezor/dependency-injection';
 import { injectDispatch } from '@trezor/redux-utils';
 
-import { formatApyValue } from 'src/components/earn/utils/earnApyUtils';
+import { useFormatApyValue } from 'src/components/earn/utils/earnApyUtils';
 import { useSelector } from 'src/hooks/suite';
 
 export const CardanoOutdatedStakingBanner = () => {
     const { dispatch } = useServices(injectDispatch);
+    const formatApyValue = useFormatApyValue();
     const apy = useSelector(state =>
         selectPoolStatsApy(state, { networkSymbol: asNetworkSymbol('ada') }),
     );
