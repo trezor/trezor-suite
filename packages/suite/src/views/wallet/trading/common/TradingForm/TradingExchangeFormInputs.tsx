@@ -1,6 +1,7 @@
 import { useMemo } from 'react';
 import { useFormContext } from 'react-hook-form';
 
+import { Translation } from '@suite/intl';
 import {
     TRADING_FORM_OUTPUT_AMOUNT,
     TRADING_FORM_OUTPUT_FIAT,
@@ -24,7 +25,7 @@ import { useSelectedTradingAsset } from 'src/hooks/wallet/trading/form/common/us
 import { useTradingAssetDecimals } from 'src/hooks/wallet/trading/form/common/useTradingAssetDecimals';
 import { useTradingFormContext } from 'src/hooks/wallet/trading/form/useTradingCommonForm';
 import { TradingBalance } from 'src/views/wallet/trading/common/TradingBalance';
-import { TradingFormInputFiatCrypto } from 'src/views/wallet/trading/common/TradingForm/TradingFormInput/TradingFormInputFiatCrypto/TradingFormInputFiatCrypto';
+import { TradingFormInputCryptoAmount } from 'src/views/wallet/trading/common/TradingForm/TradingFormInput/TradingFormInputFiatCrypto/TradingFormInputCryptoAmount';
 
 import { TradingFormCard } from './TradingFormCard';
 import { TradingReceiveAddress } from '../TradingSelectedOffer/TradingReceiveAddress/TradingReceiveAddress';
@@ -64,7 +65,6 @@ export const TradingExchangeFormInputs = () => {
     } = getValues();
 
     const output = outputs[0];
-    const currencySelect = output?.currency;
     const tokenAddress = (output?.token ?? undefined) as TokenAddress | undefined;
 
     const { getAssetDecimals } = useTradingAssetDecimals();
@@ -110,12 +110,11 @@ export const TradingExchangeFormInputs = () => {
                         onAssetSelect={handleSellAssetSelect}
                     />
                     <Column gap={8}>
-                        <TradingFormInputFiatCrypto
+                        <TradingFormInputCryptoAmount
                             cryptoInputName={TRADING_FORM_OUTPUT_AMOUNT}
                             fiatInputName={TRADING_FORM_OUTPUT_FIAT}
                             cryptoSelectName={TRADING_FORM_SEND_CRYPTO_CURRENCY_SELECT}
-                            currencySelectLabel={currencySelect?.value.toUpperCase()}
-                            cryptoCurrencyLabel={sendCryptoSelect?.id}
+                            labelLeft={<Translation id="TR_TRADING_YOU_PAY" />}
                         />
                         {amountInCrypto && !!sendCryptoSelect && asset && (
                             <Row justifyContent="space-between" alignItems="center" gap={8}>
