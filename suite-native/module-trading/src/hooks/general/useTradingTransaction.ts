@@ -1,7 +1,7 @@
 import { type ReactNode, useCallback, useEffect } from 'react';
 import { useSelector } from 'react-redux';
 
-import { isFulfilled } from '@reduxjs/toolkit';
+import { isFulfilled, miniSerializeError } from '@reduxjs/toolkit';
 import type { ExchangeTrade, SellFiatTrade } from 'invity-api';
 
 import { useServices } from '@suite-common/dependency-injection';
@@ -174,7 +174,22 @@ export const useTradingTransaction = ({
                 return result.payload;
             }
 
-            return result.error as TradingFulfillValue;
+            const error = result.payload ?? result.error;
+            const serializedError = miniSerializeError(error);
+
+            if (
+                typeof error === 'object' &&
+                error !== null &&
+                'error' in error &&
+                typeof error.error === 'string'
+            ) {
+                serializedError.code = error.error;
+            }
+
+            return {
+                success: false,
+                error: serializedError,
+            };
         },
         [dispatch, waitForTransactionSendConsent],
     );

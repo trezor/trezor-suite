@@ -118,8 +118,6 @@ export const sendDexTransactionThunk = createThunk<
         if (isRejectedWithValue(recomposeAndSignTx) || !recomposeAndSignTx.payload?.success) {
             const { payload } = recomposeAndSignTx;
 
-            console.error('Failed to send dex transaction - sign tx error');
-
             return rejectWithValue({
                 type: payload && 'type' in payload ? payload.type : 'sign-tx-error',
                 error:

@@ -8,7 +8,7 @@ import { type NativeAnalyticsDep, events } from '@suite-native/analytics';
 import { mockNativeAnalytics } from '@suite-native/analytics/mocks';
 import { getTranslation } from '@suite-native/intl';
 import { type RootStackParamList, RootStackRoutes } from '@suite-native/navigation';
-import { renderWithStoreProvider, userEvent, waitFor } from '@suite-native/test-utils-store';
+import { act, renderWithStoreProvider, userEvent, waitFor } from '@suite-native/test-utils-store';
 import {
     createPrecomposedTxFinal,
     exchangeQuotes,
@@ -30,6 +30,8 @@ import { createTradingTestStore } from '../test-utils/tradingTestUtils';
 
 type State = TradingRootState & AccountsRootState;
 
+let mockFocusHandlers = new Set<() => void>();
+
 const btc1Account = getBtcAccount({ descriptor: asAccountDescriptor('btc1normal') });
 const eth1Account = getEthAccount({ descriptor: asAccountDescriptor('eth1normal') });
 
@@ -42,6 +44,10 @@ jest.mock('@trezor/react-utils', () => ({
 
 jest.mock('@react-navigation/native', () => ({
     ...jest.requireActual('@react-navigation/native'),
+    useFocusEffect: (handler: () => void) => {
+        mockFocusHandlers.add(handler);
+        require('react').useEffect(handler, [handler]);
+    },
     useNavigation: () => ({
         navigate: jest.fn(),
         popToTop: jest.fn(),
@@ -178,6 +184,7 @@ describe('TradingExchangePreviewScreen', () => {
 
     beforeEach(() => {
         jest.clearAllMocks();
+        mockFocusHandlers = new Set();
         mockTxnErrorString = null;
         mockIsDeviceConnected = true;
         mockUseExchangeIssue.mockReturnValue({
@@ -509,6 +516,30 @@ describe('TradingExchangePreviewScreen', () => {
                 step: 'transaction-preview',
                 action: 'continue',
             }),
+        });
+    });
+
+    it('should request and compose fresh trade data when returning from outputs review', async () => {
+        mockConfirmTrade.mockResolvedValue(true);
+        const { result } = await renderTradingExchangePreviewScreen();
+
+        await waitFor(() => {
+            expect(mockConfirmTrade).toHaveBeenCalledTimes(1);
+            expect(mockComposeTradingTransaction).toHaveBeenCalledTimes(1);
+        });
+
+        await userEvent.press(
+            result.getByText(getTranslation('moduleTrading.tradingScreen.buttons.continue')),
+        );
+
+        await act(async () => {
+            mockFocusHandlers.forEach(handler => handler());
+            await Promise.resolve();
+        });
+
+        await waitFor(() => {
+            expect(mockConfirmTrade).toHaveBeenCalledTimes(2);
+            expect(mockComposeTradingTransaction).toHaveBeenCalledTimes(2);
         });
     });
 
