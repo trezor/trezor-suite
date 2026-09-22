@@ -68,7 +68,6 @@ export const AssetPickerInputBalance = memo(function AssetPickerInputBalance({
                 balance={fiatValues.accountBalance}
                 symbol={fiatValues.symbol}
                 tokenAddress={fiatValues.tokenAddress}
-                displaySymbol={value?.displaySymbol}
                 decimals={assetDecimals}
                 showOnlyAmount={showOnlyAmount}
             />

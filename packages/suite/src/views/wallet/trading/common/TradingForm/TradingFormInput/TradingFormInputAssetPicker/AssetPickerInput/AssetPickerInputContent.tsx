@@ -5,7 +5,7 @@ import {
     type TradingAssetOption,
     type TradingAssetSellOption,
 } from '@suite-common/trading';
-import { Column, Row, Text } from '@trezor/components';
+import { Row } from '@trezor/components';
 import { TokenIcon } from '@trezor/product-components';
 
 export type AssetPickerInputContentProps = {} & (
@@ -22,46 +22,23 @@ export type AssetPickerInputContentProps = {} & (
 );
 
 export function AssetPickerInputContent({ value }: AssetPickerInputContentProps) {
-    const {
-        isNativeToken,
-        networkSymbol,
-        symbol,
-        displaySymbol,
-        name,
-        contractAddress,
-        networkName,
-        displaySymbolName,
-    } = value;
+    const { isNativeToken, networkSymbol, symbol, displaySymbol, contractAddress } = value;
     const showNetwork = networkSymbol !== displaySymbol.toLowerCase();
 
     return (
-        <Row gap={12}>
+        <Row gap={8} alignItems="center">
             {isNativeToken ? (
-                <TokenIcon size={32} symbol={symbol} showNetworkIcon />
+                <TokenIcon size={24} symbol={symbol} showNetworkIcon />
             ) : (
                 <TokenIcon
-                    size={32}
+                    size={24}
                     symbol={networkSymbol}
                     contractAddress={contractAddress}
                     placeholder={displaySymbol}
                     showNetworkIcon={showNetwork}
                 />
             )}
-            <Column alignItems="start">
-                <Text
-                    intent="neutral"
-                    priority="primary"
-                    typographyStyle="body-md"
-                    data-testid="@asset-picker/display-symbol"
-                >
-                    {displaySymbolName ?? name}
-                </Text>
-                {showNetwork && (
-                    <Text intent="neutral" priority="secondary" typographyStyle="body-xs">
-                        {networkName}
-                    </Text>
-                )}
-            </Column>
+            <span data-testid="@asset-picker/display-symbol">{displaySymbol}</span>
         </Row>
     );
 }

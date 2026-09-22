@@ -1,8 +1,7 @@
-import type React from 'react';
 import type { UseFormReturn } from 'react-hook-form';
 
 import { type UnknownAction } from '@reduxjs/toolkit';
-import type { BuyTrade, CryptoId, ExchangeTrade, FiatCurrencyCode } from 'invity-api';
+import type { BuyTrade, ExchangeTrade, FiatCurrencyCode } from 'invity-api';
 import { type ThunkDispatch } from 'redux-thunk';
 
 import type { TranslationKey } from '@suite/intl';
@@ -204,31 +203,13 @@ export interface TradingFormInputDefaultProps {
     label?: TranslationKey;
 }
 
-export interface TradingFormInputFiatCryptoProps {
+export type TradingFormInputFiatCryptoProps = {
     cryptoInputName: typeof TRADING_FORM_CRYPTO_INPUT | typeof TRADING_FORM_OUTPUT_AMOUNT;
     fiatInputName: typeof TRADING_FORM_FIAT_INPUT | typeof TRADING_FORM_OUTPUT_FIAT;
     cryptoSelectName:
         | typeof TRADING_FORM_CRYPTO_CURRENCY_SELECT
         | typeof TRADING_FORM_SEND_CRYPTO_CURRENCY_SELECT;
-    labelLeft?: React.ReactNode;
-    labelRight?: React.ReactNode;
-}
-
-export interface TradingFormInputFiatCryptoWrapProps {
-    showLabel?: boolean;
-    cryptoInputName: typeof TRADING_FORM_CRYPTO_INPUT | typeof TRADING_FORM_OUTPUT_AMOUNT;
-    fiatInputName: typeof TRADING_FORM_FIAT_INPUT | typeof TRADING_FORM_OUTPUT_FIAT;
-    cryptoSelectName:
-        | typeof TRADING_FORM_CRYPTO_CURRENCY_SELECT
-        | typeof TRADING_FORM_SEND_CRYPTO_CURRENCY_SELECT;
-    cryptoCurrencyLabel?: CryptoId;
-    currencySelectLabel?: string;
-}
-
-export interface TradingFormInputCurrencyProps {
-    width?: number;
-    isClean?: boolean;
-}
+};
 
 export interface TradingUseFormActionsProps<T extends TradingSellExchangeFormProps> {
     account: Account | undefined;

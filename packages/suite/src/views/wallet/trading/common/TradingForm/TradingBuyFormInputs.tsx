@@ -19,15 +19,17 @@ import {
     tradingActions,
 } from '@suite-common/trading';
 import { type TokenAddress } from '@suite-common/wallet-types';
-import { Column, Row } from '@trezor/components';
+import { Box, Column, Row } from '@trezor/components';
 import { hasBitcoinOnlyFirmware } from '@trezor/device-utils/src/firmwareUtils';
 import { useCurrentRef } from '@trezor/react-utils';
 import { BigNumber } from '@trezor/utils';
 
 import { useSelector } from 'src/hooks/suite';
 import { useTradingFormContext } from 'src/hooks/wallet/trading/form/useTradingCommonForm';
+import { useBitcoinAmountUnit } from 'src/hooks/wallet/useBitcoinAmountUnit';
 import { TradingBalance } from 'src/views/wallet/trading/common/TradingBalance';
 import { TradingFormInputCountry } from 'src/views/wallet/trading/common/TradingForm/TradingFormInput/TradingFormInputCountry/TradingFormInputCountry';
+import { TradingFormInputCurrency } from 'src/views/wallet/trading/common/TradingForm/TradingFormInput/TradingFormInputCurrency';
 import { TradingFormInputCryptoAmount } from 'src/views/wallet/trading/common/TradingForm/TradingFormInput/TradingFormInputFiatCrypto/TradingFormInputCryptoAmount';
 import { TradingFormInputFiat } from 'src/views/wallet/trading/common/TradingForm/TradingFormInput/TradingFormInputFiatCrypto/TradingFormInputFiat';
 import { TradingFormInputPaymentMethod } from 'src/views/wallet/trading/common/TradingForm/TradingFormInput/TradingFormInputPaymentMethod/TradingFormInputPaymentMethod';
@@ -48,13 +50,22 @@ export const TradingBuyFormInputs = () => {
     const { dispatch } = useServices(injectDispatch);
 
     const { device } = useDevice();
-    const { setAmountLimits, getValues, setValue, clearErrors } = context;
+    const {
+        setAmountLimits,
+        getValues,
+        setValue,
+        clearErrors,
+        formState: { errors },
+    } = context;
     const {
         [TRADING_FORM_CRYPTO_CURRENCY_SELECT]: cryptoSelect,
         [TRADING_FORM_CRYPTO_INPUT]: cryptoInput,
         [TRADING_FORM_COUNTRY_SELECT]: countrySelect,
-        amountInCrypto,
     } = getValues();
+
+    const { isBtcSatsAmountUnit: shouldBuyInSats } = useBitcoinAmountUnit(
+        cryptoSelect?.networkSymbol,
+    );
 
     // `useTradingBuyForm` has many re-rendering issues, use refs to avoid them
     const setAmountLimitsRef = useCurrentRef(setAmountLimits);
@@ -102,43 +113,53 @@ export const TradingBuyFormInputs = () => {
     return (
         <Column gap={16}>
             <TradingFormCard>
-                <TradingFormSection>
-                    <TradingFormInputBuyAsset
-                        inputLabel="TR_TRADING_YOU_BUY"
-                        inputName={TRADING_FORM_CRYPTO_CURRENCY_SELECT}
-                        inputDisabled={hasBitcoinOnlyFirmware(device)}
-                        onAssetSelect={handleCryptoSelect}
-                        includedCryptoIds={buySupportedCryptoIds}
-                    />
-                    <Column gap={8}>
+                <TradingFormSection
+                    title={<Translation id="TR_TRADING_YOU_PAY" />}
+                    errorMessage={errors.fiatInput?.message}
+                    data-testid="@trading/form/you-pay"
+                >
+                    <Row gap={12} alignItems="center">
                         <TradingFormInputFiat
                             cryptoInputName={TRADING_FORM_CRYPTO_INPUT}
                             fiatInputName={TRADING_FORM_FIAT_INPUT}
                             cryptoSelectName={TRADING_FORM_CRYPTO_CURRENCY_SELECT}
-                            labelLeft={<Translation id="TR_TRADING_YOU_PAY" />}
                         />
+                        <TradingFormInputCurrency />
+                    </Row>
+                </TradingFormSection>
+
+                <TradingFormSection
+                    title={<Translation id="TR_TRADING_YOU_GET" />}
+                    errorMessage={errors.cryptoInput?.message}
+                    data-testid="@trading/form/you-get"
+                >
+                    <Row gap={12} alignItems="center">
                         <TradingFormInputCryptoAmount
                             cryptoInputName={TRADING_FORM_CRYPTO_INPUT}
                             fiatInputName={TRADING_FORM_FIAT_INPUT}
                             cryptoSelectName={TRADING_FORM_CRYPTO_CURRENCY_SELECT}
-                            labelLeft={<Translation id="TR_TRADING_YOU_GET" />}
                         />
-
-                        {amountInCrypto && (
-                            <Row justifyContent="end">
-                                <TradingBalance
-                                    balance={cryptoInput}
-                                    displaySymbol={cryptoSelect.displaySymbol}
-                                    symbol={cryptoSelect.networkSymbol}
-                                    tokenAddress={
-                                        (cryptoSelect.contractAddress as TokenAddress) ?? undefined
-                                    }
-                                    showOnlyAmount
-                                    amountInCrypto={amountInCrypto}
-                                />
-                            </Row>
+                        <TradingFormInputBuyAsset
+                            inputLabel="TR_TRADING_YOU_BUY"
+                            inputName={TRADING_FORM_CRYPTO_CURRENCY_SELECT}
+                            inputDisabled={hasBitcoinOnlyFirmware(device)}
+                            onAssetSelect={handleCryptoSelect}
+                            includedCryptoIds={buySupportedCryptoIds}
+                        />
+                    </Row>
+                    <Box minHeight={20}>
+                        {!!cryptoSelect && (
+                            <TradingBalance
+                                balance={cryptoInput}
+                                symbol={cryptoSelect.networkSymbol}
+                                tokenAddress={
+                                    (cryptoSelect.contractAddress as TokenAddress) ?? undefined
+                                }
+                                showOnlyAmount
+                                isInSats={shouldBuyInSats}
+                            />
                         )}
-                    </Column>
+                    </Box>
                 </TradingFormSection>
             </TradingFormCard>
 

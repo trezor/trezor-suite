@@ -2,7 +2,7 @@ import { useMemo } from 'react';
 
 import { events, injectDesktopAnalytics } from '@suite/analytics';
 import { useServices } from '@suite-common/dependency-injection';
-import { FractionButton, Row } from '@trezor/components';
+import { Row, TextButton } from '@trezor/components';
 
 import { useTradingFormContext } from 'src/hooks/wallet/trading/form/useTradingCommonForm';
 import { isTradingSellContext } from 'src/utils/wallet/trading/tradingTypingUtils';
@@ -20,24 +20,25 @@ export const TradingFractionButtons = () => {
     );
 
     return (
-        <Row gap={8} data-testid="@trading/form/fraction-buttons">
-            {fractionButtons.map(button => {
-                const { percentValue, onClick, ...buttonProps } = button;
-
-                return (
-                    <FractionButton
-                        key={buttonProps.id}
-                        {...buttonProps}
-                        onClick={() => {
-                            analytics.report({
-                                type: events.appFormPercentButtonsEvent.name,
-                                payload: { type: analyticsType, value: percentValue },
-                            });
-                            onClick();
-                        }}
-                    />
-                );
-            })}
+        <Row gap={12} data-testid="@trading/form/fraction-buttons">
+            {fractionButtons.map(({ id, children, isDisabled, percentValue, onClick }) => (
+                <TextButton
+                    key={id}
+                    intent="brand"
+                    size="small"
+                    isUnderlined
+                    isDisabled={isDisabled}
+                    onClick={() => {
+                        analytics.report({
+                            type: events.appFormPercentButtonsEvent.name,
+                            payload: { type: analyticsType, value: percentValue },
+                        });
+                        onClick();
+                    }}
+                >
+                    {children}
+                </TextButton>
+            ))}
         </Row>
     );
 };
