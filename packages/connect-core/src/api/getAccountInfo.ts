@@ -71,8 +71,9 @@ export default class GetAccountInfo extends AbstractMethod<'getAccountInfo', Req
             if (batch.path) {
                 // Length 2 to allow root paths of single-account types.
                 address_n = validatePath(batch.path, 2);
-                // since there is no descriptor device will be used
-                willUseDevice = typeof batch.descriptor !== 'string';
+                // Since there is no descriptor the xpub is derived on the device. Any such batch
+                // needs the device, so a later batch that carries a descriptor must not reset this.
+                willUseDevice ||= typeof batch.descriptor !== 'string';
             }
             if (!batch.path && !batch.descriptor) {
                 throw ERRORS.TypedError(

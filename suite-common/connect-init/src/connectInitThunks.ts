@@ -36,14 +36,14 @@ import TrezorConnect, {
     type CreateLoggerDep,
     DEVICE,
     DEVICE_EVENT,
+    type MethodInfo,
     TRANSPORT_EVENT,
     UI_EVENT,
     UI_REQUEST,
 } from '@trezor/connect';
 import { asCoinSymbol } from '@trezor/connect-common';
-import { getSynchronize, isArrayMember } from '@trezor/utils';
+import { getSynchronize } from '@trezor/utils';
 
-import { blacklist } from './blacklist';
 import {
     type ConnectInitSettingsDep,
     type GetDebugSettingsDep,
@@ -159,8 +159,31 @@ export const connectInitThunk = createThunk<
     const synchronize = getSynchronize();
 
     const original = TrezorConnect.call.bind(TrezorConnect);
+
+    // Whether a call needs the physical device is asked of Connect itself instead of being kept in
+    // a second list here that has to be maintained in step. An `__info` probe builds the method and
+    // returns its `useDevice` — the same value core uses to decide whether to acquire the device
+    // (`if (!method.useDevice)` in `packages/connect-core/src/core/index.ts`) — so the host cannot
+    // disagree with core about which calls touch the device.
+    //
+    // Calls that do not need the device must skip the mutex below: core runs them immediately, and
+    // making them queue behind device work is what needlessly greyed out Suite for minutes (#31083).
+    // Device calls must take it, because `Device.run` rejects an overlapping device call with
+    // `Device_CallInProgress` instead of queueing it.
+    const callUsesDevice = async (params: CallMethodPayload) => {
+        try {
+            const info = await original({ ...params, __info: true });
+
+            // Lock on a failed probe too: the real call re-runs and surfaces the same error, and a
+            // device call must never reach Connect without the mutex.
+            return !info.success || (info.payload as MethodInfo).useDevice;
+        } catch {
+            return true;
+        }
+    };
+
     TrezorConnect.call = async (params: CallMethodPayload) => {
-        if (isArrayMember(params.method, blacklist)) {
+        if (!(await callUsesDevice(params))) {
             return original(params);
         }
 

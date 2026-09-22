@@ -234,7 +234,7 @@ describe('TrezorConnect Actions', () => {
         expect(actions.at(-1)).toEqual({ type: BLOCKCHAIN_EVENT });
     });
 
-    it('Wrapped method', async () => {
+    it('Wrapped method locks the device for a call that needs it', async () => {
         const { actions, dispatch, getState, extra } = createThunkDeps();
         await connectInitThunk()(dispatch, getState, extra);
         actions.length = 0;
@@ -246,6 +246,19 @@ describe('TrezorConnect Actions', () => {
             { type: extra.actions.lockDevice.type, payload: false },
             expect.objectContaining({ type: '@suite/device/removeButtonRequests' }),
         ]);
+    });
+
+    it('Wrapped method does not lock the device for a backend-only call', async () => {
+        const { actions, dispatch, getState, extra } = createThunkDeps();
+        await connectInitThunk()(dispatch, getState, extra);
+        actions.length = 0;
+
+        // A getAccountInfo carrying a descriptor is resolved by the backend, so Connect's `__info`
+        // probe reports it as not needing the device; the wrapper must then run it straight through
+        // without taking the device lock or the serializing mutex.
+        await testMocks.getTrezorConnectMock().getAccountInfo({ coin: 'btc', descriptor: 'xpub' });
+
+        expect(actions).toEqual([]);
     });
 
     it('only scoped callId-bearing UI events are swallowed by the global listener', async () => {

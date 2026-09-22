@@ -92,8 +92,15 @@ describe('buttonRequest middleware', () => {
         const store = initStore(getInitialState());
         const { dispatch } = store;
         await dispatch(connectInitThunk());
+        // The device-lock wrapper first asks Connect (via an `__info` probe) whether the call needs
+        // the device before it can lock, so keep the call itself pending. In production the device
+        // is driven — and its button requests emitted — only after that probe resolves and the lock
+        // is in place; the delayed fixture and the flush below reproduce that ordering.
+        testMocks.setTrezorConnectFixtures({ delay: 100 });
         const call = dispatch(deviceSettingsActions.changePinThunk({ remove: false }));
         const { emitTestEvent } = testMocks.getTrezorConnectMock();
+        // Let the probe settle and lockDevice(true) land before the device starts emitting.
+        await new Promise(resolve => setTimeout(resolve, 0));
         // fake few ui events, just like when user is changing PIN
         emitTestEvent(UI_EVENT, {
             type: UI_EVENTS.BUTTON_REQUEST,

@@ -55,20 +55,98 @@ const DEFAULT_PAYLOAD: Record<string, any> = {
     changePin: { payload: { message: 'Success' } },
 };
 
-const mockResponse = (method: string, params: any) =>
-    Promise.resolve({
+const mockResponse = (method: string, params: any) => {
+    const fixture = unscriptedMethods.includes(method) ? undefined : getNextFixture();
+    const response = {
         success: true,
         payload: { _comment: 'Default mock payload' },
         ...(failedByDefaultMethods.includes(method) ? ERROR_RESULT : DEFAULT_PAYLOAD[method]),
-        ...(unscriptedMethods.includes(method) ? undefined : getNextFixture()),
+        ...fixture,
         _method: method,
         _fixtures: fixtures,
         _params: params,
-    });
+    };
+
+    // A fixture may keep the call pending, so a test can interleave UI events while it is in flight
+    // (same convention as `composeTransaction`). Plain fixtures resolve synchronously as before.
+    return fixture && typeof fixture.delay === 'number'
+        ? new Promise(resolve => setTimeout(() => resolve(response), fixture.delay))
+        : Promise.resolve(response);
+};
 
 const init = (params: any): Promise<void> => mockResponse('init', params);
 
-const call = (params: CallMethodPayload) => mockResponse(params.method, params);
+// Methods whose real implementation sets `this.useDevice = false` (backend-only). The device-lock
+// wrapper in connectInitThunks asks Connect via an `__info` probe whether a call touches the device;
+// the real Connect answers from the constructed method, but here Connect is mocked, so this stands
+// in for that knowledge. Mirror `packages/connect-core/src/api/*` — keep in step when it changes.
+const backendOnlyMethods = new Set([
+    'blockchainDisconnect',
+    'blockchainEstimateFee',
+    'blockchainEvmRpcCall',
+    'blockchainEvmRpcGetChainId',
+    'blockchainGetAccountBalanceHistory',
+    'blockchainGetContractInfo',
+    'blockchainGetCurrentFiatRates',
+    'blockchainGetFiatRatesForTimestamps',
+    'blockchainGetInfo',
+    'blockchainGetTransactions',
+    'blockchainSetCustomBackend',
+    'blockchainSubscribe',
+    'blockchainSubscribeFiatRates',
+    'blockchainUnsubscribe',
+    'blockchainUnsubscribeFiatRates',
+    'cardanoComposeTransaction',
+    'composePsbt',
+    'composeTransaction',
+    'getCoinInfo',
+    'getSettings',
+    'pushTransaction',
+    'selectAccount',
+    'solanaComposeTransaction',
+    'tronComposeTransaction',
+]);
+
+// getAccountInfo derives the xpub on the device only without a descriptor; thpRemoveCredentials
+// touches the device only when one is addressed — mirroring their real constructors.
+const accountInfoBatchUsesDevice = (batch: any) =>
+    batch?.path !== undefined && typeof batch?.descriptor !== 'string';
+
+const probeUsesDevice = (params: any): boolean => {
+    if (backendOnlyMethods.has(params.method)) return false;
+    if (params.method === 'getAccountInfo') {
+        return params.bundle
+            ? params.bundle.some(accountInfoBatchUsesDevice)
+            : accountInfoBatchUsesDevice(params);
+    }
+    if (params.method === 'thpRemoveCredentials') return params.device !== undefined;
+
+    return true;
+};
+
+const call = (params: CallMethodPayload) => {
+    // An `__info` probe asks only whether the method needs the device; core answers it from the
+    // constructed method before touching a device or backend. Mirror that here, and crucially do
+    // NOT consume a positional response fixture, so probing never shifts a scripted call sequence.
+    if (params.__info) {
+        const useDevice = probeUsesDevice(params);
+
+        return Promise.resolve({
+            success: true,
+            payload: {
+                name: params.method,
+                useDevice,
+                useDeviceState: useDevice,
+                useUi: useDevice,
+                requiredPermissions: [],
+            },
+            _method: params.method,
+            _params: params,
+        });
+    }
+
+    return mockResponse(params.method, params);
+};
 
 const on = jest.fn((event: string, cb) => (listeners[event] = cb));
 
