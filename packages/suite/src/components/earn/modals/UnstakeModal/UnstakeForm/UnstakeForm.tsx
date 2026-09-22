@@ -1,6 +1,7 @@
 import { FormProvider } from 'react-hook-form';
 
 import { Translation } from '@suite/intl';
+import { useFormatters } from '@suite-common/formatters';
 import { getDisplaySymbol, getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import {
     getSolanaUnstakeAmountBounds,
@@ -34,6 +35,7 @@ export const UnstakeForm = () => {
         onCryptoAmountChange,
         getValues,
     } = useWithdrawalFormContext();
+    const { CryptoAmountFormatter } = useFormatters();
 
     const { symbol, networkType } = account;
 
@@ -69,14 +71,18 @@ export const UnstakeForm = () => {
             <form onSubmit={handleSubmit(signTx)}>
                 <Column gap={32} margin={{ bottom: 20 }}>
                     <Column gap={16}>
-                        {canClaim && (
+                        {canClaim && !isCardanoNetwork && (
                             <Banner
                                 intent="info"
                                 description={
                                     <Translation
                                         id="TR_STAKE_CAN_CLAIM_WARNING"
                                         values={{
-                                            amount: claimableAmount,
+                                            amount: CryptoAmountFormatter.format(claimableAmount, {
+                                                symbol,
+                                                isBalance: true,
+                                                withSymbol: false,
+                                            }),
                                             symbol: getDisplaySymbol(account.symbol),
                                             br: <br />,
                                         }}

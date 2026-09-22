@@ -23,7 +23,7 @@ export const YieldFlowCompleteClaim = ({ rewards }: YieldFlowCompleteClaimProps)
         >
             <Column gap={16} padding={{ vertical: 16, horizontal: 20 }}>
                 <Text typographyStyle="body-md">
-                    <Translation id="TR_STAKE_REWARDS" />
+                    <Translation id="TR_EARN_YIELD_BONUS_REWARDS" />
                 </Text>
 
                 <Column gap={16} data-testid="@yield/flow-complete/rewards-list">

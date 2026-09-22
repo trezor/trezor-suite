@@ -1,4 +1,4 @@
-import { type ReactNode, useEffect, useMemo, useRef, useState } from 'react';
+import { type ReactElement, type ReactNode, useEffect, useMemo, useRef, useState } from 'react';
 import { useDebounce } from 'react-use';
 
 import { Translation } from '@suite/intl';
@@ -32,6 +32,7 @@ interface TransactionListProps {
     account: Account;
     customTotalItems?: number;
     customNoTransactions?: ReactNode;
+    customHeading?: ReactElement;
     isExportable?: boolean;
     isTxFilteringEnabled?: boolean;
     customPageFetching?: boolean;
@@ -46,6 +47,7 @@ export const TransactionList = ({
     account,
     symbol,
     customNoTransactions,
+    customHeading,
     customTotalItems,
     onPageRequested,
     isExportable = true,
@@ -160,7 +162,7 @@ export const TransactionList = ({
     return (
         <DashboardSection
             ref={sectionRef}
-            heading={<Translation id="TR_ALL_TRANSACTIONS" />}
+            heading={customHeading ?? <Translation id="TR_ALL_TRANSACTIONS" />}
             actions={
                 <TransactionListActions
                     account={account}

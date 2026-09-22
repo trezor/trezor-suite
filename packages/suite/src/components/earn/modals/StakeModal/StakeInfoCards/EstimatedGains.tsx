@@ -1,11 +1,9 @@
 import React, { useMemo } from 'react';
 
-import { TrezorLink } from '@suite/external-links';
 import { Translation } from '@suite/intl';
 import {
     calculateGains,
     getNetworkAdjustedStakingBalance,
-    getStakingHelpCenterLink,
     selectPoolStatsApy,
 } from '@suite-common/wallet-core';
 import { Column, Grid, Image, Paragraph, Text } from '@trezor/components';
@@ -53,11 +51,6 @@ export const EstimatedGains = () => {
         },
     ];
 
-    const learnMoreLink = useMemo(
-        () => getStakingHelpCenterLink(account.networkType),
-        [account.networkType],
-    );
-
     return (
         <Column gap={20}>
             <Column>
@@ -89,14 +82,6 @@ export const EstimatedGains = () => {
                     </Grid>
                 ))}
             </Column>
-            <Paragraph intent="neutral" priority="secondary">
-                <Translation
-                    id="TR_STAKING_YOUR_EARNINGS"
-                    values={{
-                        a: chunks => <TrezorLink href={learnMoreLink}>{chunks}</TrezorLink>,
-                    }}
-                />
-            </Paragraph>
         </Column>
     );
 };

@@ -140,12 +140,14 @@ export const EarnClaimModal = ({ onCancel, account }: EarnClaimModalProps) => {
                 />
             }
             description={
-                !isCardanoNetworkType ? (
-                    <Translation
-                        id="TR_STAKE_CLAIMED_AMOUNT_TRANSFERRED"
-                        values={{ networkDisplaySymbol: getNetworkDisplaySymbol(account.symbol) }}
-                    />
-                ) : undefined
+                <Translation
+                    id={
+                        isCardanoNetworkType
+                            ? 'TR_STAKE_CLAIM_REWARDS_DESCRIPTION'
+                            : 'TR_STAKE_CLAIMED_AMOUNT_TRANSFERRED'
+                    }
+                    values={{ networkDisplaySymbol: getNetworkDisplaySymbol(account.symbol) }}
+                />
             }
             width={600}
             onCancel={onCancelClick}
@@ -264,13 +266,6 @@ export const EarnClaimModal = ({ onCancel, account }: EarnClaimModalProps) => {
                                             symbol={account.symbol}
                                         />
                                     </Paragraph>
-                                </InfoItem>
-
-                                <InfoItem
-                                    direction="column"
-                                    label={<Translation id="TR_STAKE_TIME_TO_CLAIM" />}
-                                >
-                                    <Translation id="TR_EARN_INSTANTLY" />
                                 </InfoItem>
 
                                 <Fees

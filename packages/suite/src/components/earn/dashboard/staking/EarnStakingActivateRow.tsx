@@ -1,4 +1,5 @@
 import { Translation } from '@suite/intl';
+import { useFormatters } from '@suite-common/formatters';
 import { type NetworkSymbol, getNetwork } from '@suite-common/wallet-config';
 import { getStakingLimitsByNetworkSymbol } from '@suite-common/wallet-core';
 
@@ -16,6 +17,7 @@ export const EarnStakingActivateRow = ({ symbol, isCardLayout }: EarnStakingActi
     const { rate } = useStakingRate({ symbol });
 
     const { isStakingDisabled } = useMessageSystemStaking(symbol);
+    const { CryptoAmountFormatter } = useFormatters();
 
     if (isStakingDisabled) return null;
 
@@ -32,7 +34,13 @@ export const EarnStakingActivateRow = ({ symbol, isCardLayout }: EarnStakingActi
                 <Translation
                     id="TR_EARN_STAKING_DASHBOARD_MINIMUM_STAKE"
                     values={{
-                        amount: minStakingAmount?.toString(),
+                        amount: minStakingAmount
+                            ? CryptoAmountFormatter.format(minStakingAmount.toString(), {
+                                  symbol,
+                                  isBalance: true,
+                                  withSymbol: false,
+                              })
+                            : undefined,
                         displaySymbol,
                     }}
                 />

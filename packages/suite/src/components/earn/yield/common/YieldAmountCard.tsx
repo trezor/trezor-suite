@@ -126,7 +126,7 @@ export const YieldAmountCard = ({
             data-testid="@yield/form/fiat-switch"
         >
             <Translation
-                id="TR_EARN_ENTER_AMOUNT_IN"
+                id="TR_ENTER_AMOUNT_IN"
                 values={{ currency: isFiatMode ? tokenSymbol : fiatToggle.fiatSymbol }}
             />
         </TextButton>
@@ -141,8 +141,8 @@ export const YieldAmountCard = ({
             isUnderlined
         >
             <Translation
-                id="TR_EARN_YIELD_ENTER_AMOUNT_IN_TOKEN"
-                values={{ tokenSymbol: unitToggle.otherTokenSymbol }}
+                id="TR_ENTER_AMOUNT_IN"
+                values={{ currency: unitToggle.otherTokenSymbol }}
             />
         </TextButton>
     ) : undefined;

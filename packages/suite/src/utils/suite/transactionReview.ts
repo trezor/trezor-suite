@@ -114,17 +114,25 @@ export const getTransactionReviewModalActionTranslation = ({
     }
 
     if (routeName === 'earn-yield-deposit') {
-        return { id: 'TR_EARN_YIELD_DEPOSIT' };
+        return {
+            id: source === 'heading' ? 'TR_EARN_YIELD_DEPOSIT' : 'TR_EARN_YIELD_DEPOSIT_BUTTON',
+        };
     }
 
     if (routeName === 'earn-yield-withdraw') {
+        if (txPurpose === 'redeem') {
+            return { id: 'TR_EARN_YIELD_REDEEM' };
+        }
+
         return {
-            id: txPurpose === 'redeem' ? 'TR_EARN_YIELD_REDEEM' : 'TR_EARN_YIELD_WITHDRAW',
+            id: source === 'heading' ? 'TR_EARN_YIELD_WITHDRAW_TITLE' : 'TR_EARN_YIELD_WITHDRAW',
         };
     }
 
     if (routeName === 'earn-yield-claim') {
-        return { id: source === 'heading' ? 'TR_EARN_CLAIM_REWARDS' : 'TR_EARN_YIELD_CLAIM' };
+        return {
+            id: source === 'heading' ? 'TR_EARN_YIELD_CLAIM_REWARDS' : 'TR_EARN_YIELD_CLAIM',
+        };
     }
 
     if (routeName === 'earn-tron-withdraw') {
