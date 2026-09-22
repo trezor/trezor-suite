@@ -11,6 +11,13 @@ export type EntityIndexChanges<TId extends EntityId> = {
     readonly updated: readonly TId[];
 };
 
+/**
+ * What an entity is looked up by, other than its id.
+ *
+ * A secondary index here is always the grouping kind: a key names however many entities answer to
+ * it, and an entity may answer to several of them, or to none by returning `undefined`. Being one
+ * of a kind is what the id is for.
+ */
 export type SecondaryKeyExtractor<TEntity, TKey extends EntityId = EntityId> = (
     entity: TEntity,
 ) => TKey | readonly TKey[] | undefined;
@@ -20,6 +27,7 @@ export type SecondaryKeyExtractors<TEntity> = Record<string, SecondaryKeyExtract
 export type SecondaryKey<TSelector> =
     TSelector extends SecondaryKeyExtractor<never, infer TKey> ? TKey : never;
 
+/** Everything under one secondary key, in the order the partitions hold it. */
 export type SecondaryIndexEntry<TEntity, TId extends EntityId> = {
     readonly ids: readonly TId[];
     readonly entities: readonly TEntity[];
