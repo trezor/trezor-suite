@@ -16,13 +16,19 @@ export const feedbackSentEvent: EventDef<Attributes, EventType.FeedbackSent> = {
 
     attributes: {
         category: {
-            description: 'Where the feedback card is shown, e.g. `trade`, `yield`',
-            changelog: [{ version: '26.9.0', notes: 'added' }],
+            description: 'Where the feedback card is shown, e.g. `trade`, `yield`, `staking`',
+            changelog: [
+                { version: '26.9.0', notes: 'added' },
+                { version: '26.10.0', notes: 'added `staking` (Tron staking completion screens)' },
+            ],
         },
         context: {
             description:
-                'Optional label for the feedback context; for trade feedback the trade type `buy`, `sell`, or `exchange`',
-            changelog: [{ version: '26.9.0', notes: 'added' }],
+                'Optional label for the feedback context; for trade feedback the trade type `buy`, `sell`, or `exchange`; for yield the flow `deposit`, `withdraw`, or `claim`; for staking the Tron flow `tron-stake`, `tron-vote`, `tron-unstake`, `tron-withdraw`, or `tron-claim`',
+            changelog: [
+                { version: '26.9.0', notes: 'added' },
+                { version: '26.10.0', notes: 'added the `tron-*` staking flow values' },
+            ],
         },
         provider: {
             description:

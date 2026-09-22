@@ -23,6 +23,7 @@ export const TronVote = ({ account }: TronVoteProps) => {
                     {step === 'complete' ? (
                         <TronStakeComplete
                             account={account}
+                            flow="vote"
                             heading={<Translation id="TR_EARN_TRON_VOTE_COMPLETE" />}
                             description={
                                 <Translation id="TR_EARN_TRON_VOTE_COMPLETE_DESCRIPTION" />

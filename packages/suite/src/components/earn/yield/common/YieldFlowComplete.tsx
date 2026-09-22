@@ -1,20 +1,16 @@
 import { type ReactNode } from 'react';
 
-import {
-    feedbackRatingSelectedEvent,
-    feedbackSentEvent,
-    injectDesktopAnalytics,
-} from '@suite/analytics';
-import { Translation, useTranslation } from '@suite/intl';
+import { injectDesktopAnalytics } from '@suite/analytics';
+import { Translation } from '@suite/intl';
 import { gotoThunk } from '@suite/router';
 import { events } from '@suite-common/analytics';
 import { useServices } from '@suite-common/dependency-injection';
-import { type Rating, buildUserFeedbackData, sendFeedbackThunk } from '@suite-common/feedback';
+import { type Rating } from '@suite-common/feedback';
 import { injectDispatch } from '@suite-common/redux-utils';
 import { Button, Card, Column, Divider, Icon, IconCircle, Row, Text } from '@trezor/components';
 import { CheckCircleFilledIcon, CheckIcon } from '@trezor/icons';
-import { FeedbackCard } from '@trezor/product-components';
 
+import { EarnFlowFeedbackCard } from 'src/components/earn/common/EarnFlowFeedbackCard';
 import { useLayoutSize } from 'src/hooks/suite/useLayoutSize';
 
 type YieldFlowCompleteProps = {
@@ -35,7 +31,6 @@ export const YieldFlowComplete = ({
     children,
 }: YieldFlowCompleteProps) => {
     const { analytics, dispatch } = useServices(injectDesktopAnalytics, injectDispatch);
-    const { translationString } = useTranslation();
     const { isBelowMobile } = useLayoutSize();
 
     const handleBackToOverview = () => {
@@ -52,14 +47,7 @@ export const YieldFlowComplete = ({
         dispatch(gotoThunk({ routeName: 'suite-earn' }));
     };
 
-    const handleRatingSelect = (rating: Rating) => {
-        analytics.report({
-            type: feedbackRatingSelectedEvent.name,
-            payload: { rating, category: 'yield', context: type, provider: vaultId },
-        });
-    };
-
-    const handleFeedbackSubmit = (rating: Rating, description: string) => {
+    const handleFeedbackSubmit = (rating: Rating) => {
         analytics.report({
             type: events.yieldInteractionEvent.name,
             payload: {
@@ -67,24 +55,6 @@ export const YieldFlowComplete = ({
                 value: rating,
                 vaultId,
             },
-        });
-
-        dispatch(
-            sendFeedbackThunk({
-                type: 'SUGGESTION',
-                payload: {
-                    category: 'experimental',
-                    feature: 'stablecoin-yield',
-                    rating,
-                    description,
-                    ...buildUserFeedbackData(),
-                },
-            }),
-        );
-
-        analytics.report({
-            type: feedbackSentEvent.name,
-            payload: { category: 'yield', context: type, provider: vaultId },
         });
     };
 
@@ -138,22 +108,13 @@ export const YieldFlowComplete = ({
             </Button>
 
             {showFeedback && (
-                <FeedbackCard
-                    heading={
-                        <Translation
-                            id="TR_FEATURE_FEEDBACK_CARD_HEADING"
-                            values={{
-                                feature: translationString('TR_EARN_DEFI_YIELD_TITLE'),
-                            }}
-                        />
-                    }
-                    description={<Translation id="TR_FEEDBACK_CARD_DESCRIPTION" />}
-                    submitLabel={<Translation id="TR_FEEDBACK_CARD_SEND_FEEDBACK" />}
-                    cancelLabel={<Translation id="TR_CANCEL" />}
-                    successHeading={<Translation id="TR_FEEDBACK_CARD_SUCCESS_TITLE" />}
-                    successDescription={<Translation id="TR_FEEDBACK_CARD_SUCCESS_DESCRIPTION" />}
+                <EarnFlowFeedbackCard
+                    featureTitleId="TR_EARN_DEFI_YIELD_TITLE"
+                    analyticsCategory="yield"
+                    context={type}
+                    provider={vaultId}
+                    feature="yield"
                     onSubmit={handleFeedbackSubmit}
-                    onRatingSelect={handleRatingSelect}
                 />
             )}
         </Column>
