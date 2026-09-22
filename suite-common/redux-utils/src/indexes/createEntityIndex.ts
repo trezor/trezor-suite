@@ -23,12 +23,10 @@ import {
     type EntityIndexListener,
     type EntityIndexSnapshot,
     type SecondaryIndexEntry,
-    type SecondaryKeyExtractor,
     type SecondaryKeyExtractors,
 } from './entityIndexTypes';
 import { type PrimaryIndex, buildPrimaryIndex } from './primaryIndex';
 import { assembleSecondaryIndexes } from './secondaryIndexAssembly';
-import { settleSecondaryIndex } from './secondaryIndexSettling';
 
 export type * from './entityIndexTypes';
 export { EMPTY_ENTITIES, EMPTY_ENTITY_IDS } from './emptyResults';
@@ -114,21 +112,11 @@ export const createEntityIndex = <
             ];
 
             assembleSecondaryIndexes({
-                extractors: toBuild.map(
-                    wanted => secondaryKeyExtractors?.[wanted] as SecondaryKeyExtractor<TEntity>,
-                ),
+                indexNames: toBuild,
+                secondaryIndexes: secondaryKeyExtractors,
                 byId: primary.byId,
-            }).forEach((entries, position) => {
-                const builtName = toBuild[position] as string;
-
-                builtIndexes.set(
-                    builtName,
-                    settleSecondaryIndex({
-                        entries,
-                        previousEntries: previousBuiltIndexes?.get(builtName),
-                    }),
-                );
-            });
+                previousIndexes: previousBuiltIndexes,
+            }).forEach((entries, builtName) => builtIndexes.set(builtName, entries));
         };
 
         const getSecondaryIndex = (indexName: string) => {
