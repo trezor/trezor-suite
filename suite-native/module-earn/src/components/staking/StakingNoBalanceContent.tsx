@@ -1,5 +1,6 @@
 import { useSelector } from 'react-redux';
 
+import { useFormatters } from '@suite-common/formatters';
 import { getNetworkDisplaySymbol, getNetworkDisplaySymbolName } from '@suite-common/wallet-config';
 import {
     type AccountsRootState,
@@ -31,6 +32,7 @@ export const StakingNoBalanceContent = ({ accountKey }: StakingNoBalanceContentP
     );
 
     const { handleBuyPress, handleReceivePress } = useEarnNoBalanceActions({ accountKey });
+    const { CryptoAmountFormatter } = useFormatters();
 
     if (!account) {
         return null;
@@ -71,7 +73,14 @@ export const StakingNoBalanceContent = ({ accountKey }: StakingNoBalanceContentP
                             <Translation
                                 id="earn.noBalance.staking.subtitle"
                                 values={{
-                                    minAmount: stakingLimits.MIN_AMOUNT_FOR_STAKING.toString(),
+                                    minAmount: CryptoAmountFormatter.format(
+                                        stakingLimits.MIN_AMOUNT_FOR_STAKING.toString(),
+                                        {
+                                            symbol: account.symbol,
+                                            isBalance: true,
+                                            withSymbol: false,
+                                        },
+                                    ),
                                     displaySymbol,
                                 }}
                             />

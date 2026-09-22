@@ -207,7 +207,7 @@ export const messages = {
         numberOfTokens: '+{numberOfTokens, plural, one{1 Token} other{# Tokens}}',
         staking: 'Staking',
         stakingDisabled: 'Staking is currently unavailable.',
-        rewardsReduced: 'Rewards reduced',
+        rewardsReduced: 'No rewards',
     },
     assets: {
         dashboard: {
@@ -2720,8 +2720,8 @@ export const messages = {
             yourStake: 'Your stake',
             stakedLabel: 'Staked',
             totalRewardsLabel: 'Total rewards',
-            autoRestakedBadge: 'Automatically restaked',
-            nextRewardLabel: 'Next reward in ~{value, plural, one {# day} other {# days}}',
+            autoRestakedBadge: 'Restaked',
+            nextRewardLabel: 'Next reward payout in ~{value, plural, one {# day} other {# days}}',
             rewardsFrequencyLabel: 'Rewards every ~{value, plural, one {# day} other {# days}}',
             cardanoDesktopOnlyBanner:
                 'Staking {symbol} can only be managed in Trezor Suite on desktop.',
@@ -2748,7 +2748,7 @@ export const messages = {
             unstakeButton: 'Unstake',
             stakeButton: 'Stake',
             stakeMoreButton: 'Stake more',
-            stakingHistory: 'Staking history',
+            stakingHistory: 'Staking transactions',
             pendingActions: 'Pending actions',
             instantUnstakeBanner: {
                 title: '{amount} {symbol} unstaked instantly',
@@ -2790,14 +2790,14 @@ export const messages = {
                 stepEntryPeriod: 'Staking activation (~{days, plural, one {# day} other {# days}})',
                 stepStakedReceivingRewards: 'Staked & earning rewards',
                 stepWithdrawalPeriod:
-                    'Withdrawal period (~{days, plural, one {# day} other {# days}})',
+                    'Staking deactivation (~{days, plural, one {# day} other {# days}})',
                 stepReadyToClaim: 'Ready to claim',
                 sol: {
                     stepWarmUpPeriod:
                         'Staking activation (~{days, plural, one {# day} other {# days}})',
                     stepStakedReceivingRewards: 'Staked & earning rewards',
                     stepCoolDownPeriod:
-                        'Cool-down period (~{days, plural, one {# day} other {# days}})',
+                        'Staking deactivation (~{days, plural, one {# day} other {# days}})',
                     stepUnstakedReadyToClaim: 'Unstaked and ready to claim',
                 },
             },
@@ -2833,7 +2833,7 @@ export const messages = {
             title: 'Wrap {nativeSymbol} to {wrappedSymbol}',
             amountToWrap: 'Amount to wrap',
             reserveRecommendation:
-                "It's recommended to leave {amount} {nativeSymbol} so you can pay for transaction fees.",
+                'We recommend leaving {amount} {nativeSymbol} so you can pay future network fees.',
             submitButton: 'Wrap',
             closeButton: 'Close',
             pendingTransactionTitle: 'Wrapping in progress',
@@ -2882,7 +2882,7 @@ export const messages = {
                     firstItem:
                         'Everstake maintains and protects your staked {displaySymbol} with their smart contracts, infrastructure, and technology.',
                     secondItem:
-                        'When you stake, the responsibility for keeping your funds secure transitions from your Trezor device to Everstake.',
+                        "When you stake, the responsibility for your funds' security transitions from your Trezor device to Everstake.",
                 },
                 sol: {
                     firstItem:
@@ -2986,7 +2986,7 @@ export const messages = {
             stakeMaxButton: 'Stake max',
             unstakeMaxButton: 'Unstake max',
             withdrawalFeesRecommendation:
-                "It's recommended to leave {amount} {displaySymbol} so you can pay withdrawal fees.",
+                'We recommend leaving {amount} {displaySymbol} so you can pay future network fees.',
             estimatedRewardsLabel: 'Estimated yearly rewards',
             validation: {
                 amountIsZero: 'Amount must be greater than 0.',
@@ -2994,12 +2994,12 @@ export const messages = {
                 amountExceedsMax: 'The amount exceeds the maximum allowed value of {maxAmount}.',
                 insufficientBalance: 'Insufficient balance to stake this amount.',
                 feeBufferReserve:
-                    'Insufficient funds remaining after we reserve for withdrawal fees.',
+                    'Insufficient funds remaining after the reserve for future network fees.',
                 tooManyDecimals: 'Too many decimal places.',
             },
             estimatedRewardsPlaceholder: 'Enter amount to see rewards',
             withdrawalFeesBanner:
-                "We've left {amount} {displaySymbol} in your account so you can pay withdrawal fees.",
+                "We've left {amount} {displaySymbol} in your account so you can pay future network fees.",
         },
         unstakeFormScreen: {
             validation: {
@@ -3016,7 +3016,7 @@ export const messages = {
         },
         unstakeFlowScreen: {
             canClaimWarning:
-                'You can already claim {amount}. Claim now or wait for the new unstaking round to finish.',
+                'You currently have {amount} from unstaking ready to claim. Claim it now, or wait until your new unstake is processed and claim everything at once.',
             instantlyAvailable: {
                 label: 'Instantly available',
                 infoTitle: 'Instantly available',
@@ -3052,7 +3052,7 @@ export const messages = {
             },
             chooseAccountSheet: {
                 stakingTitle: 'Choose account to stake',
-                yieldTitle: 'Choose account to yield',
+                yieldTitle: 'Choose account to deposit',
                 title: 'Choose account',
             },
             earnItem: {
@@ -3087,9 +3087,9 @@ export const messages = {
                     cta: 'Enable {networkName}',
                 },
             },
-            adaInfo: 'Your ADA stays fully accessible while earning rewards.',
+            adaInfo: 'Your ADA stays fully accessible while staked.',
             claimRewards: {
-                title: 'Claim rewards from an account',
+                title: 'Bonus rewards to claim',
                 subtitle: 'Select an account to claim bonus rewards.',
             },
             title: 'Earn',
@@ -3111,8 +3111,8 @@ export const messages = {
                     title: 'Unstake to get your funds in ~{days, plural, one {# day} other {# days}}',
                     description: {
                         ethereum:
-                            'After staking activation, you can unstake anytime. Your funds will be available within ~{days, plural, one {# day} other {# days}}.',
-                        solana: 'After staking activation, you can unstake anytime. Your funds will be available within ~{days, plural, one {# day} other {# days}}.',
+                            'After staking activation, you can unstake anytime. In ~{days, plural, one {# day} other {# days}}, your funds will be ready to claim.',
+                        solana: 'After staking activation, you can unstake anytime. In ~{days, plural, one {# day} other {# days}}, your funds will be ready to claim.',
                     },
                 },
             },
@@ -3127,7 +3127,7 @@ export const messages = {
                 second: {
                     titleEthereum: 'Staking activation',
                     titleSolana: 'Staking activation',
-                    description: '~{entryPeriod} days',
+                    description: '~{entryPeriod, plural, one {# day} other {# days}}',
                     title: 'Staking activation',
                 },
                 third: {
@@ -3144,9 +3144,9 @@ export const messages = {
                     description: 'Network fee',
                 },
                 second: {
-                    titleEthereum: 'Leave staking pool',
-                    titleSolana: 'Enter cool-down period',
-                    description: '~{unstakingPeriod} days',
+                    titleEthereum: 'Staking deactivation',
+                    titleSolana: 'Staking deactivation',
+                    description: '~{unstakingPeriod, plural, one {# day} other {# days}}',
                     title: 'Leave staking pool',
                 },
                 third: {
@@ -3154,14 +3154,14 @@ export const messages = {
                     description: 'Network fee',
                 },
                 fourth: {
-                    title: 'Receive {symbol} in your account',
+                    title: 'Receive {symbol} in account',
                     description: 'Instantly',
                 },
             },
         },
         howYieldWorksScreen: {
             defiYieldTitle: 'How DeFi Yield works',
-            defiYieldSubtitle: 'Put your assets to work and earn rewards.',
+            defiYieldSubtitle: 'Put your assets to work and earn yield.',
             wrappedNativeVault: {
                 defiYieldTitle: 'How {nativeSymbol} vaults work',
                 defiYieldSubtitle:
@@ -3173,9 +3173,8 @@ export const messages = {
                     description: 'Withdrawal is instant.',
                 },
                 second: {
-                    title: 'Rewards overview',
-                    description:
-                        'Most rewards compound automatically—some must be claimed manually.',
+                    title: 'Automatic compounding',
+                    description: 'Yield is automatically added and compounded.',
                 },
                 third: {
                     title: 'Deposit {tokenSymbol} to receive {vaultTokenSymbol}',
@@ -3224,7 +3223,7 @@ export const messages = {
                     description: 'Network fee',
                 },
                 third: {
-                    title: 'Earn rewards as your assets grow in value',
+                    title: 'Your {vaultTokenSymbol} amount stays the same, but its value grows with every block',
                     description: '~{apy}% APY',
                 },
             },
@@ -3289,7 +3288,7 @@ export const messages = {
             revokeApproval: 'Revoke approval',
             skipApproval: 'Skip',
             perDeposit: 'Per deposit',
-            estimatedRewardsLabel: 'Estimated yearly rewards',
+            estimatedRewardsLabel: 'Estimated yearly yield',
             approvalLimitSheet: {
                 title: 'Select approval limit',
                 perDeposit: {
@@ -3333,7 +3332,7 @@ export const messages = {
                     description: "Deposit couldn't be prepared. Check the amount and try again.",
                 },
                 approvalTooLow: {
-                    title: 'Approval is too low. Change approval or lower amount to supply.',
+                    title: 'Approval is too low. Change approval or lower the deposit amount.',
                     primaryButton: 'Change approval',
                 },
                 approvalIncreaseRequiresRevoke: {
@@ -3394,7 +3393,7 @@ export const messages = {
         },
         yieldClaimFlowScreen: {
             title: 'Claim rewards',
-            rewards: 'Rewards',
+            rewards: 'Bonus rewards',
             noRewards: 'No rewards to claim.',
             claimPendingTitle: 'Confirming claim…',
             feeWarning: {
@@ -3421,7 +3420,7 @@ export const messages = {
         },
         yieldDepositRevokeReviewScreen: {
             title: 'Confirm on Trezor',
-            submitButton: 'Revoke',
+            submitButton: 'Revoke approval',
             successMessage: 'Revoke approval transaction signed',
         },
         yieldDepositReviewScreen: {
@@ -3450,14 +3449,14 @@ export const messages = {
         },
         yieldClaimCompleteScreen: {
             title: 'Claim complete',
-            subtitle: 'Rewards added to your balance.',
+            subtitle: 'Bonus rewards added to your balance.',
         },
         yieldCompleteScreen: {
             status: 'Status',
             completed: 'Completed',
             apy: 'APY',
             received: 'Received',
-            rewards: 'Rewards',
+            rewards: 'Bonus rewards',
             sent: 'Sent',
             deposited: 'Deposited',
             withdrawalAmount: 'Withdrawal amount',
@@ -3650,16 +3649,16 @@ export const messages = {
         aprAbbr: 'APR',
         tron: {
             votes: 'Votes',
-            allVotesUsed: 'All {count} {count, plural, one {vote} other {votes}} used',
+            allVotesAssigned: '{count, plural, one {# vote assigned} other {All # votes assigned}}',
             votesRemaining:
-                '{count, plural, one {1 remaining vote} other {{count} remaining votes}}',
+                '{count, plural, one {1 unassigned vote} other {{count} unassigned votes}}',
             votesBottomSheet: {
                 title: 'Assign all votes to earn more rewards.',
                 description: 'Staking can currently be managed only in Trezor Suite for desktop.',
             },
             votesAlertText:
-                'Assign {count, plural, one {1 remaining vote} other {{count} remaining votes}} to earn more rewards.',
-            readyToWithdrawAlert: '{amount} TRX unstaked and ready to withdraw.',
+                '{count, plural, one {You have 1 unassigned vote. Assign it to earn more rewards.} other {You have {count} unassigned votes. Assign them to earn more rewards.}}',
+            readyToWithdrawAlert: '{amount} {displaySymbol} unstaked and ready to withdraw.',
             unstakingCardTitle: 'Unstaking (~{days} days)',
         },
         stakingCanBeManaged: 'Manage your staking accounts in the',
@@ -3670,9 +3669,9 @@ export const messages = {
         aprPercentage: '~{apy}% APR',
         rewardsEveryBlock: 'Rewards every block',
         positionValue: 'Position value',
-        yearlyRewards: 'Yearly rewards',
+        yearlyRewards: 'Your yearly yield',
         yearlyRewardsDeposited: '{amountWithSymbol} deposited',
-        potentialRewards: 'Potential yearly rewards',
+        potentialRewards: 'Potential yearly yield',
         potentialRewardsIfYouAdd: 'If you add {amountWithSymbol}',
         tokenBalance: 'Token balance',
         notAvailableShort: 'N/A',
@@ -3684,19 +3683,19 @@ export const messages = {
             upToApr: 'up to {value}% APR',
             upToRate: 'up to {value}% Rate',
         },
-        zeroApyBadge: '0% APY',
+        zeroApyBadge: 'No rewards',
         messageSystem: {
-            depositDisabled: 'Deposits currently disabled.',
-            withdrawDisabled: 'Withdrawals currently disabled.',
-            claimDisabled: 'Claims currently disabled.',
-            wrapDisabled: 'Wrapping currently disabled.',
-            unwrapDisabled: 'Unwrapping currently disabled.',
+            depositDisabled: 'Deposit is currently disabled.',
+            withdrawDisabled: 'Withdrawal is currently disabled.',
+            claimDisabled: 'Claim is currently disabled.',
+            wrapDisabled: 'Wrapping is currently disabled.',
+            unwrapDisabled: 'Unwrapping is currently disabled.',
         },
         stakePendingCard: {
-            totalStakePending: 'Total stake pending',
+            totalStakePending: 'Pending stake',
             addingToStakingPool: 'Staking activation',
-            activatingStake: 'Activating stake',
-            totalStakeActivating: 'Total stake activating',
+            activatingStake: 'Staking activation',
+            totalStakeActivating: 'Pending stake',
             transactionPending: 'Transaction pending',
         },
         claimReviewScreen: {
@@ -3705,7 +3704,7 @@ export const messages = {
             amountLabel: 'Amount',
             instantClaimBanner: "You'll claim the {displaySymbol} instantly",
             accountLimitBanner:
-                'Due to Solana transaction size restrictions, you can claim from {limit} accounts at once. In the next transaction you can claim up to {amount} {symbol}. To claim more, repeat the process.',
+                'Due to transaction size limits, you can claim from up to {limit} accounts per transaction. This transaction claims up to {amount} {symbol}. Repeat to claim the rest.',
             insufficientFeeBalance: {
                 title: 'Insufficient {displaySymbol} to cover the transaction fee.',
                 description: 'You only have {amount} available.',
@@ -3752,7 +3751,7 @@ export const messages = {
         stablecoinYield: 'Stablecoin yield',
         stakedAutomatically: 'Staked automatically',
         fullBalance: 'Full balance',
-        adaStaysFullyAccessuble: 'Your ADA stays fully accessible while earning rewards.',
+        adaStaysFullyAccessuble: 'Your ADA stays fully accessible while staked.',
         infoBanner: {
             updateProviderTitle: 'Save your ADA rewards by updating your staking provider',
             newProviderTitle: 'Earn ~{apy}% APY with our new provider',
@@ -4620,7 +4619,7 @@ export const messages = {
             confirmButton: 'Got it',
         },
         solanaLimitedHistoryBanner: {
-            title: 'Transaction history is limited to the last 100 transactions per token',
+            title: 'Only the most recent 100 transactions per token are shown',
             description: 'For the full history, view on the blockchain explorer.',
             confirmButton: 'Got it',
         },

@@ -10,6 +10,7 @@ export type EarnFormContext = {
     availableBalance?: string;
     decimals?: number;
     translate: Translate;
+    formatCryptoAmount?: (amount: string) => string;
 };
 
 export const earnFormValidationSchema = yup.object({
@@ -18,7 +19,11 @@ export const earnFormValidationSchema = yup.object({
         .required('Amount is required.')
         .matches(/^\d*\.?\d+$/, 'Invalid decimal value.')
         .test('min-amount', 'Amount is below minimum.', function (value) {
-            const { symbol, translate } = this.options.context as EarnFormContext;
+            const {
+                symbol,
+                translate,
+                formatCryptoAmount = (amount: string) => amount,
+            } = this.options.context as EarnFormContext;
 
             if (!value || !symbol) return true;
 
@@ -28,7 +33,7 @@ export const earnFormValidationSchema = yup.object({
             if (new BigNumber(value).lt(limits.MIN_AMOUNT_FOR_STAKING)) {
                 return this.createError({
                     message: translate('earn.earnFormScreen.validation.amountBelowMinimum', {
-                        amount: limits.MIN_AMOUNT_FOR_STAKING.toString(),
+                        amount: formatCryptoAmount(limits.MIN_AMOUNT_FOR_STAKING.toString()),
                         symbol: getNetworkDisplaySymbol(symbol),
                     }),
                 });
@@ -37,7 +42,11 @@ export const earnFormValidationSchema = yup.object({
             return true;
         })
         .test('max-amount', 'Amount exceeds maximum.', function (value) {
-            const { symbol, translate } = this.options.context as EarnFormContext;
+            const {
+                symbol,
+                translate,
+                formatCryptoAmount = (amount: string) => amount,
+            } = this.options.context as EarnFormContext;
 
             if (!value || !symbol) return true;
 
@@ -47,7 +56,7 @@ export const earnFormValidationSchema = yup.object({
             if (new BigNumber(value).gt(limits.MAX_AMOUNT_FOR_STAKING)) {
                 return this.createError({
                     message: translate('earn.earnFormScreen.validation.amountExceedsMax', {
-                        maxAmount: limits.MAX_AMOUNT_FOR_STAKING.toString(),
+                        maxAmount: formatCryptoAmount(limits.MAX_AMOUNT_FOR_STAKING.toString()),
                     }),
                 });
             }

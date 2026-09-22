@@ -1,5 +1,6 @@
 import { useSelector } from 'react-redux';
 
+import { useFormatters } from '@suite-common/formatters';
 import { type NetworkSymbol, getNetwork } from '@suite-common/wallet-config';
 import {
     type AccountsRootState,
@@ -28,6 +29,7 @@ export const EarnWithdrawalFeesBanner = ({
         selectAccountByKey(state, accountKey),
     );
     const { value: amountValue, hasError } = useField({ name: 'amount' });
+    const { CryptoAmountFormatter } = useFormatters();
 
     const limits = getStakingLimitsByNetworkSymbol(symbol);
 
@@ -53,7 +55,14 @@ export const EarnWithdrawalFeesBanner = ({
                             : 'earn.earnFormScreen.withdrawalFeesBanner'
                     }
                     values={{
-                        amount: limits.MIN_FOR_WITHDRAWALS.toString(),
+                        amount: CryptoAmountFormatter.format(
+                            limits.MIN_FOR_WITHDRAWALS.toString(),
+                            {
+                                symbol,
+                                isBalance: true,
+                                withSymbol: false,
+                            },
+                        ),
                         displaySymbol,
                     }}
                 />

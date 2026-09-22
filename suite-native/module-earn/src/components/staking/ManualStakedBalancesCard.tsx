@@ -179,7 +179,7 @@ export const ManualStakedBalancesCard = ({
                                     {availableVotingPower === '0' ? (
                                         <Text variant="body-sm-strong">
                                             <Translation
-                                                id="earn.tron.allVotesUsed"
+                                                id="earn.tron.allVotesAssigned"
                                                 values={{ count: totalVotingPower }}
                                             />
                                         </Text>
