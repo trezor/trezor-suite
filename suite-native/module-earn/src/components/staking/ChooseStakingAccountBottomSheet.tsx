@@ -4,15 +4,29 @@ import { FlashList } from '@shopify/flash-list';
 
 import { type Account } from '@suite-common/wallet-types';
 import { BottomSheetModal, type BottomSheetModalRef, VStack } from '@suite-native/atoms';
-import { Translation } from '@suite-native/intl';
+import { Translation, type TxKeyPath } from '@suite-native/intl';
 
 import { ChooseAccountItem } from './ChooseAccountItem';
 import { type ChooseAccountTokenBalance } from '../../types';
 import { getChooseAccountBalanceData } from '../../utils/staking/chooseAccountBalanceUtils';
 
+const getTitleTranslationId = (
+    type: ChooseStakingAccountBottomSheetProps['type'],
+    isViewOnly: boolean,
+): TxKeyPath => {
+    if (type === 'yield') {
+        return 'earn.earnScreen.chooseAccountSheet.yieldTitle';
+    }
+
+    return isViewOnly
+        ? 'earn.earnScreen.chooseAccountSheet.title'
+        : 'earn.earnScreen.chooseAccountSheet.stakingTitle';
+};
+
 type ChooseStakingAccountBottomSheetProps = {
     ref: BottomSheetModalRef;
     type: 'staking' | 'yield';
+    isViewOnly?: boolean;
     accounts: Account[];
     onAccountSelected: (account: Account) => void;
     onClose: () => void;
@@ -23,6 +37,7 @@ type ChooseStakingAccountBottomSheetProps = {
 export const ChooseStakingAccountBottomSheet = ({
     ref,
     type,
+    isViewOnly = false,
     accounts,
     onAccountSelected,
     onClose,
@@ -47,13 +62,7 @@ export const ChooseStakingAccountBottomSheet = ({
     return (
         <BottomSheetModal
             ref={ref}
-            title={
-                type === 'staking' ? (
-                    <Translation id="earn.earnScreen.chooseAccountSheet.stakingTitle" />
-                ) : (
-                    <Translation id="earn.earnScreen.chooseAccountSheet.yieldTitle" />
-                )
-            }
+            title={<Translation id={getTitleTranslationId(type, isViewOnly)} />}
             isCloseDisplayed
             onClose={onClose}
             onDismiss={onDismiss}

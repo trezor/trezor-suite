@@ -24,7 +24,10 @@ import { useStakingNavigateAnalytics } from './useStakingNavigateAnalytics';
 import { useEarnPortfolioTrackerGuard } from '../../components/earn/EarnPortfolioTrackerGuard';
 import { type StakingEarnItem } from '../../types';
 import { navigateByAccountState } from '../../utils/staking/navigateByAccountState';
-import { resolveStakingPromoAccounts } from '../../utils/staking/resolveStakingPromoAccounts';
+import {
+    type NavigableStakingSupport,
+    resolveStakingPromoAccounts,
+} from '../../utils/staking/resolveStakingPromoAccounts';
 
 export const useStakingPromoNavigation = () => {
     const navigation =
@@ -55,6 +58,8 @@ export const useStakingPromoNavigation = () => {
     } = useBottomSheetModalControls();
 
     const [chosenAccounts, setChosenAccounts] = useState<Account[]>([]);
+    const [chosenAccountsSupport, setChosenAccountsSupport] =
+        useState<NavigableStakingSupport>('manage');
     const [pendingEnableSymbol, setPendingEnableSymbol] = useState<NetworkSymbol | null>(null);
 
     const chooseAccountContinuedRef = useRef(false);
@@ -207,7 +212,7 @@ export const useStakingPromoNavigation = () => {
 
                     return;
                 case 'navigate': {
-                    const { navigableAccounts } = resolution;
+                    const { navigableAccounts, support } = resolution;
                     const singleAccount = navigableAccounts[0];
 
                     if (navigableAccounts.length === 1 && singleAccount) {
@@ -218,6 +223,7 @@ export const useStakingPromoNavigation = () => {
                     }
 
                     setChosenAccounts(navigableAccounts);
+                    setChosenAccountsSupport(support);
                     chooseAccountSymbolRef.current = item.symbol;
                     chooseAccountContinuedRef.current = false;
                     openChooseAccountModal();
@@ -249,6 +255,7 @@ export const useStakingPromoNavigation = () => {
         handleChooseAccountDismiss,
         handleEnableNetworkDismiss,
         chosenAccounts,
+        isChooseAccountViewOnly: chosenAccountsSupport === 'view',
         pendingEnableSymbol,
         infoSheetRef,
         chooseAccountSheetRef,

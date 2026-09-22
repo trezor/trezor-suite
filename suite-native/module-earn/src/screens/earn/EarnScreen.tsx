@@ -266,6 +266,7 @@ const EarnScreenContent = () => {
                 <ChooseStakingAccountBottomSheet
                     ref={staking.chooseAccountSheetRef}
                     type="staking"
+                    isViewOnly={staking.isChooseAccountViewOnly}
                     accounts={staking.chosenAccounts}
                     onAccountSelected={staking.handleAccountSelected}
                     onClose={staking.closeChooseAccountModal}
