@@ -59,8 +59,12 @@ export const desktopQueryKeys = {
     ],
     defaultUrls: (symbol: string) => ['default-urls', symbol],
     proxyImage: (src?: string) => ['proxy-image', src],
-    inactiveTokens: (symbol: string, accountKey?: string) =>
-        accountKey ? ['inactive-tokens', symbol, accountKey] : ['inactive-tokens', symbol],
+    // The coin definitions arrive after the first render, and they decide what the list holds, so
+    // their size is part of the identity or the list stays cached as it was without them.
+    inactiveTokens: (symbol: string, accountKey?: string, knownContractsCount = 0) =>
+        accountKey
+            ? ['inactive-tokens', symbol, accountKey, knownContractsCount]
+            : ['inactive-tokens', symbol, knownContractsCount],
 } as const satisfies Record<string, AllowedQueryKey>;
 
 export const tradingQueryKeys = {

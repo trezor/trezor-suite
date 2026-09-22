@@ -7,6 +7,7 @@ import { useServices } from '@suite-common/dependency-injection';
 import { desktopQueryKeys, useQuery } from '@suite-common/react-query';
 import { selectDispatch } from '@suite-common/redux-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
+import { selectCoinDefinitions } from '@suite-common/token-definitions';
 import { type SelectedAccountLoaded, type StellarTokenInfo } from '@suite-common/wallet-types';
 import { getStellarInactiveTokens } from '@suite-common/wallet-utils';
 import { Button, Card, Row, Table, Text, Tooltip } from '@trezor/components';
@@ -14,6 +15,7 @@ import { TokenIcon } from '@trezor/product-components';
 
 import { Loading } from 'src/components/suite';
 import { StellarManageTokenModal } from 'src/components/suite/modals/ReduxModal/UserContextModal/StellarManageTokenModal';
+import { useSelector } from 'src/hooks/suite';
 
 import { NoTokens } from '../common/NoTokens';
 import { NoSearchResultsWrapped } from '../common/TokensTable/TokensTable';
@@ -40,18 +42,23 @@ export const InactiveTokensTable = ({ selectedAccount, searchQuery }: InactiveTo
     const { dispatch } = useServices(selectDispatch);
     const { account } = selectedAccount;
     const [tokenToActivate, setTokenToActivate] = useState<StellarTokenInfo | null>(null);
+    const knownContracts = useSelector(state => selectCoinDefinitions(state, account.symbol)?.data);
 
     const {
         data: allInactiveTokens,
         isLoading,
         isError,
-        // eslint-disable-next-line @tanstack/query/exhaustive-deps -- cache identity is account.symbol + account.key; the queryFn passes the full account to getStellarInactiveTokens and uses dispatch only for an error toast — neither the extra account fields nor the stable dispatch belong in the key
+        // eslint-disable-next-line @tanstack/query/exhaustive-deps -- cache identity is account.symbol + account.key + the number of known contracts; the queryFn passes the full account to getStellarInactiveTokens and uses dispatch only for an error toast — neither the extra account fields nor the stable dispatch belong in the key
     } = useQuery({
         enabled: account.symbol === 'xlm',
-        queryKey: desktopQueryKeys.inactiveTokens(account.symbol, account.key),
+        queryKey: desktopQueryKeys.inactiveTokens(
+            account.symbol,
+            account.key,
+            knownContracts?.length,
+        ),
         queryFn: () => {
             try {
-                return getStellarInactiveTokens(account);
+                return getStellarInactiveTokens(account, knownContracts);
             } catch (error) {
                 dispatch(
                     notificationsActions.addToast({
