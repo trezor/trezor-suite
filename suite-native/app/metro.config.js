@@ -49,6 +49,13 @@ const legacyBrowserFieldPackages = [
     '@noble/hashes',
 ];
 
+// Metro strips the extension in async chunk URLs, so `dist/index.cjs` comes back as `dist/index`
+// and re-resolves to `dist/index.js` under a different module id: "Requiring unknown module".
+const cjsAsyncChunkPackages = ['@walletconnect/core', '@walletconnect/utils', '@reown/walletkit'];
+
+const isAsyncChunkEntryOf = (packageNames, moduleName) =>
+    packageNames.some(packageName => moduleName.endsWith(`${packageName}/dist/index`));
+
 const isModuleFrom = (packageNames, moduleName) =>
     packageNames.some(
         packageName => moduleName === packageName || moduleName.startsWith(`${packageName}/`),
@@ -98,6 +105,10 @@ const config = {
                 moduleName,
                 originModulePath: context.originModulePath,
             });
+
+            if (isAsyncChunkEntryOf(cjsAsyncChunkPackages, moduleName)) {
+                return context.resolveRequest(context, `${moduleName}.cjs`, platform);
+            }
 
             if (isModuleFrom(cjsOnlyPackages, moduleName)) {
                 return context.resolveRequest(
