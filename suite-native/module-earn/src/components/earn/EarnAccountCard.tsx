@@ -114,23 +114,10 @@ export const EarnAccountCard = ({ item, onPress }: EarnAccountCardProps) => {
                         {isAdaStakedOutsideEverstake || !isApyAvailable(apyValue) ? (
                             <ApyValue apy={null} withLabel />
                         ) : (
-                            <>
-                                {isStakingItem ? (
-                                    <Translation
-                                        id={
-                                            symbol === 'trx'
-                                                ? 'earn.aprPercentage'
-                                                : 'earn.apyPercentage'
-                                        }
-                                        values={{ apy: apyValue }}
-                                    />
-                                ) : (
-                                    <Translation
-                                        id="earn.ratePercentage"
-                                        values={{ apy: apyValue }}
-                                    />
-                                )}
-                            </>
+                            <Translation
+                                id={symbol === 'trx' ? 'earn.aprPercentage' : 'earn.apyPercentage'}
+                                values={{ apy: apyValue }}
+                            />
                         )}
                     </Text>
                 ))

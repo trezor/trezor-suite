@@ -34,7 +34,7 @@ const variantConfigMap: Record<YieldBadgeVariant, YieldBadgeVariantConfig> = {
         intent: 'brand',
     },
     promo: {
-        translationId: 'moduleAccountManagement.accountDetailContentScreen.yieldBadge.promoRate',
+        translationId: 'moduleAccountManagement.accountDetailContentScreen.yieldBadge.upToRate',
         intent: 'brand',
     },
 };

@@ -2080,9 +2080,8 @@ export const messages = {
                 changeIn7d: '7d',
             },
             yieldBadge: {
-                upToRate: 'Up to {apy}% Yield',
-                yieldRate: '{apy}% Yield',
-                promoRate: 'Up to {apy}% Rate',
+                upToRate: 'Up to {apy}% APY',
+                yieldRate: '{apy}% APY',
             },
         },
     },
@@ -2696,7 +2695,7 @@ export const messages = {
             claimedTitle: '{amount} {displaySymbol} claimed',
         },
         promoStakeBanner: {
-            title: 'Earn up to {apy}% on your {symbol}',
+            title: 'Earn up to {apy}% APY on your {symbol}',
             eth: {
                 title: 'Earn up to {apy}% on your ETH',
                 description: 'Stake {symbol} for network rewards, or deposit it in a yield vault.',
@@ -3127,7 +3126,7 @@ export const messages = {
                 third: {
                     titleEthereum: 'Receive weekly rewards',
                     titleSolana: 'Receive rewards every ~{days} days',
-                    description: '~{apy}% yearly',
+                    description: '~{apy}% APY',
                     title: 'Receive weekly rewards',
                 },
             },
@@ -3219,7 +3218,7 @@ export const messages = {
                 },
                 third: {
                     title: 'Earn rewards as your assets grow in value',
-                    description: '~{apy}% Rate',
+                    description: '~{apy}% APY',
                 },
             },
             withdrawTimelineTitle: 'Withdraw',
@@ -3662,7 +3661,6 @@ export const messages = {
         apyNotAvailable: 'APY not available',
         apyPercentage: '~{apy}% APY',
         aprPercentage: '~{apy}% APR',
-        ratePercentage: '~{apy}% Rate',
         rewardsEveryBlock: 'Rewards every block',
         positionValue: 'Position value',
         yearlyRewards: 'Yearly rewards',
