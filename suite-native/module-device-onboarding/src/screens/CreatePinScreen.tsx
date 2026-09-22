@@ -1,4 +1,5 @@
 import { useCallback } from 'react';
+import { useWindowDimensions } from 'react-native';
 import { useSelector } from 'react-redux';
 
 import { selectDeviceModel } from '@suite-common/device';
@@ -10,15 +11,16 @@ import { Translation, type TxKeyPath } from '@suite-native/intl';
 import { Screen, ScreenHeader } from '@suite-native/navigation';
 import TrezorConnect from '@trezor/connect';
 import { DeviceModelInternal } from '@trezor/device-utils';
-import { getScreenHeight } from '@trezor/env-utils';
 
 import { useOnDeviceOnboardingFinishedNavigation } from '../hooks/useOnDeviceOnboardingFinishedNavigation';
 import { useReportOnboardingSuccessAnalytics } from '../hooks/useReportOnboardingSuccessAnalytics';
 
-const SCREEN_HEIGHT = getScreenHeight();
+const DEVICE_IMAGE_MAX_HEIGHT_RATIO = 0.42;
+const CONNECTOR_IMAGE_MAX_HEIGHT_RATIO = 0.18;
 
 export const CreatePinScreen = () => {
     const deviceModel = useSelector(selectDeviceModel);
+    const { height: windowHeight } = useWindowDimensions();
 
     const reportOnboardingSuccessAnalytics = useReportOnboardingSuccessAnalytics();
 
@@ -83,9 +85,9 @@ export const CreatePinScreen = () => {
                 <Box flex={1} justifyContent="flex-end">
                     <DevicePinImage
                         deviceModel={deviceModel || DeviceModelInternal.UNKNOWN}
-                        maxHeight={0.42 * SCREEN_HEIGHT}
+                        maxHeight={windowHeight * DEVICE_IMAGE_MAX_HEIGHT_RATIO}
                     />
-                    <ConnectorImage maxHeight={0.18 * SCREEN_HEIGHT} />
+                    <ConnectorImage maxHeight={windowHeight * CONNECTOR_IMAGE_MAX_HEIGHT_RATIO} />
                 </Box>
             </VStack>
         </Screen>

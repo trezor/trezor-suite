@@ -1,3 +1,4 @@
+import { useWindowDimensions } from 'react-native';
 import { useSelector } from 'react-redux';
 
 import { type RequireAllOrNone } from 'type-fest';
@@ -5,7 +6,6 @@ import { type RequireAllOrNone } from 'type-fest';
 import { selectDeviceModelWithFlagshipFallback } from '@suite-common/device';
 import { Box, Button, Text, VStack } from '@suite-native/atoms';
 import { Translation, type TxKeyPath } from '@suite-native/intl';
-import { getScreenHeight } from '@trezor/env-utils';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
 import { ConnectorImage } from './ConnectorImage';
@@ -21,7 +21,8 @@ type ContinueOnTrezorScreenContentProps = {
     'actionLabelTxKey' | 'onActionPress'
 >;
 
-const SCREEN_HEIGHT = getScreenHeight();
+const DEVICE_IMAGE_MAX_HEIGHT_RATIO = 0.42;
+const CONNECTOR_IMAGE_MAX_HEIGHT_RATIO = 0.18;
 
 const titleStyle = prepareNativeStyle(utils => ({
     marginTop: utils.spacings.sp12,
@@ -38,6 +39,7 @@ export const ContinueOnTrezorScreenContent = ({
     onActionPress,
 }: ContinueOnTrezorScreenContentProps) => {
     const { applyStyle } = useNativeStyles();
+    const { height: windowHeight } = useWindowDimensions();
 
     const deviceModel = useSelector(selectDeviceModelWithFlagshipFallback);
 
@@ -61,9 +63,9 @@ export const ContinueOnTrezorScreenContent = ({
                 <DeviceImage
                     deviceModel={deviceModel}
                     size="large"
-                    maxHeight={0.42 * SCREEN_HEIGHT}
+                    maxHeight={windowHeight * DEVICE_IMAGE_MAX_HEIGHT_RATIO}
                 />
-                <ConnectorImage maxHeight={0.18 * SCREEN_HEIGHT} />
+                <ConnectorImage maxHeight={windowHeight * CONNECTOR_IMAGE_MAX_HEIGHT_RATIO} />
             </Box>
         </VStack>
     );

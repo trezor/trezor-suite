@@ -1,5 +1,5 @@
 import { useEffect } from 'react';
-import { Modal, StyleSheet } from 'react-native';
+import { Modal, StyleSheet, useWindowDimensions } from 'react-native';
 import Animated from 'react-native-reanimated';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
@@ -13,7 +13,6 @@ import {
     VStack,
     useAlertAnimation,
 } from '@suite-native/atoms';
-import { getScreenHeight, getScreenWidth } from '@trezor/env-utils';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
 import { type Alert } from '../alertsAtoms';
@@ -23,9 +22,6 @@ import { useShakeAnimation } from '../useShakeAnimation';
 type AlertSheetProps = {
     alert: Alert;
 };
-
-const SCREEN_WIDTH = getScreenWidth();
-const SCREEN_HEIGHT = getScreenHeight();
 
 const alertSheetContainerStyle = prepareNativeStyle<{ bottomInset: number }>(
     (utils, { bottomInset }) => ({
@@ -50,17 +46,20 @@ const shakeTriggerStyle = prepareNativeStyle(_ => ({
     justifyContent: 'flex-end',
 }));
 
-const sheetOverlayStyle = prepareNativeStyle(_ => ({
-    width: SCREEN_WIDTH,
-    height: SCREEN_HEIGHT,
-    ...StyleSheet.absoluteFill,
-}));
+const sheetOverlayStyle = prepareNativeStyle<{ windowWidth: number; windowHeight: number }>(
+    (_, { windowWidth, windowHeight }) => ({
+        width: windowWidth,
+        height: windowHeight,
+        ...StyleSheet.absoluteFill,
+    }),
+);
 
 export const AlertSheet = ({ alert }: AlertSheetProps) => {
     const { hideAlert } = useAlert();
     const { applyStyle } = useNativeStyles();
     const { runShakeAnimation, shakeAnimatedStyle } = useShakeAnimation();
     const { bottom } = useSafeAreaInsets();
+    const { width: windowWidth, height: windowHeight } = useWindowDimensions();
 
     const {
         animatedSheetWithOverlayStyle,
@@ -121,7 +120,12 @@ export const AlertSheet = ({ alert }: AlertSheetProps) => {
 
     return (
         <Modal transparent visible={!!alert} testID={testID}>
-            <Animated.View style={[applyStyle(sheetOverlayStyle), animatedSheetWithOverlayStyle]} />
+            <Animated.View
+                style={[
+                    applyStyle(sheetOverlayStyle, { windowWidth, windowHeight }),
+                    animatedSheetWithOverlayStyle,
+                ]}
+            />
             <AnimatedPressable
                 onPress={handlePressOutside}
                 style={[animatedSheetWrapperStyle, applyStyle(shakeTriggerStyle)]}
