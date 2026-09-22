@@ -5,8 +5,8 @@ import { useServices } from '@suite-common/dependency-injection';
 import { injectDispatch } from '@suite-common/redux-utils';
 import { DEFAULT_PAYMENT } from '@suite-common/wallet-constants';
 import {
-    type ComposeCancelTransactionPartialAccount,
     composeCancelTransactionThunk,
+    isComposeCancelTransactionAccount,
     selectTransactionConfirmations,
 } from '@suite-common/wallet-core';
 import {
@@ -28,11 +28,6 @@ import { CancelTransactionButton } from './CancelTransactionButton';
 import { AffectedTransactions } from '../AffectedTransactions/AffectedTransactions';
 import { ReplaceByFeeFailedOriginalTxConfirmed } from '../ReplaceByFeeFailedOriginalTxConfirmed';
 import { TxDetailModalBase } from '../TxDetailModalBase';
-
-const isComposeCancelTransactionPartialAccount = (
-    account: Account,
-): account is Account & ComposeCancelTransactionPartialAccount =>
-    account.addresses !== undefined && account.utxo !== undefined;
 
 type CancelTransactionModalProps = {
     tx: WalletAccountTransactionWithRequiredRbfParams;
@@ -85,7 +80,7 @@ export const CancelTransactionModal = ({
     useEffect(() => {
         if (account.networkType === 'ethereum') return;
         if (tx.vsize === undefined) return;
-        if (!isComposeCancelTransactionPartialAccount(account)) return;
+        if (!isComposeCancelTransactionAccount(account)) return;
 
         dispatch(composeCancelTransactionThunk({ account, tx, chainedTxs }))
             .unwrap()

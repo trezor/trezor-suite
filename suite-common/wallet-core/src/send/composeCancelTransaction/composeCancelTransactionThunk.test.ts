@@ -16,7 +16,6 @@ const FIRST_ACCOUNT_CHANGE_ADDRESS = 'bcrt1qte33uyyfzrdrm9nqk0uwlq9dqr6ezu2gurhr
 const account: ComposeCancelTransactionThunkParams['account'] = {
     path: "m/84'/1'/0'",
     symbol: asNetworkSymbol('regtest'),
-    utxo: [],
     addresses: {
         change: [
             {

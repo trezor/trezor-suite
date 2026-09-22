@@ -52,7 +52,6 @@ export * from './phishing/phishingReducer';
 export type * from './phishing/phishingReducerTypes';
 export * from './phishing/phishingSelectors';
 export * from './selectors';
-export type * from './send/composeCancelTransaction/cancelTransactionTypes';
 export * from './send/composeCancelTransaction/composeCancelTransactionThunk';
 export * from './send/composeCancelTransaction/composeEthereumCancelTransactionThunk';
 export * from './send/sendFormActions';
