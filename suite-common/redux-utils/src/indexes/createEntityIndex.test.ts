@@ -198,6 +198,16 @@ describe('createEntityIndex', () => {
         });
     });
 
+    it('goes back to the one empty snapshot once everything is gone', () => {
+        // The write that empties it has removals to report, so it gets a snapshot of its own; the
+        // writes after that have nothing to say and are the shared empty one again.
+        const { index } = createIndex();
+        index.read(createState([a]));
+        index.read(createState([]));
+
+        expect(index.read(createState([]))).toBe(index.read(createState([])));
+    });
+
     it('shares one empty snapshot, so an empty index is stable across sources', () => {
         const { index } = createIndex();
 

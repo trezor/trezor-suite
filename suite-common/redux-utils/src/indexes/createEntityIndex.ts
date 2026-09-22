@@ -57,6 +57,8 @@ export const createEntityIndex = <
     TSecondaryIndexes
 >): EntityIndex<TState, TEntity, TId, TSecondaryIndexes> => {
     type Snapshot = EntityIndexSnapshot<TEntity, TId, TSecondaryIndexes>;
+    // Entries are stored under the key as a string; what a key means is the caller's business,
+    // which is where the two casts back to the snapshot's own signature come from.
     type Entries = ReadonlyMap<EntityId, SecondaryIndexEntry<TEntity, TId>>;
 
     const indexNames = Object.keys(secondaryKeyExtractors ?? {});
@@ -80,7 +82,7 @@ export const createEntityIndex = <
         getIds: () => EMPTY_ENTITY_IDS,
         getEntitiesById: () => noEntities,
         getSecondaryIndex: ((_indexName: string) => noEntries) as Snapshot['getSecondaryIndex'],
-        getChanges: () => NO_CHANGES as EntityIndexChanges<TId>,
+        getChanges: () => NO_CHANGES,
     };
 
     // Which indexes were read off the last snapshot, so the next build assembles them together.
@@ -95,6 +97,7 @@ export const createEntityIndex = <
               partitions: ReadonlyMap<string, BuiltPartition<TEntity, TId>>;
               builtIndexes: Map<string, Entries>;
               identities: () => Identities<TEntity, TId>;
+              isEmpty: boolean;
           }
         | undefined;
 
@@ -104,7 +107,7 @@ export const createEntityIndex = <
         const previousPartitions = cached?.partitions;
         const previousBuiltIndexes = cached?.builtIndexes;
         const previousIdentities = cached?.identities;
-        const wasEmpty = cached === undefined || cached.snapshot === emptySnapshot;
+        const wasEmpty = cached?.isEmpty ?? true;
 
         const {
             partitions,
@@ -171,7 +174,7 @@ export const createEntityIndex = <
             if (changes === undefined) {
                 changes =
                     previousIdentities === undefined
-                        ? (NO_CHANGES as EntityIndexChanges<TId>)
+                        ? NO_CHANGES
                         : changesOf({
                               walked,
                               byId: identities().byId,
@@ -183,8 +186,9 @@ export const createEntityIndex = <
             return changes;
         };
 
+        const isEmpty = entityCount === 0;
         const snapshot: Snapshot =
-            entityCount === 0 && wasEmpty
+            isEmpty && wasEmpty
                 ? emptySnapshot
                 : {
                       getIds: () => identities().ids,
@@ -193,7 +197,7 @@ export const createEntityIndex = <
                       getChanges,
                   };
 
-        cached = { source, partitions, builtIndexes, identities, snapshot };
+        cached = { source, partitions, builtIndexes, identities, snapshot, isEmpty };
 
         return snapshot;
     };
