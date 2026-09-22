@@ -68,7 +68,7 @@ const fileUnderEach = <TEntity, TId extends EntityId>({
 
 /**
  * Which entities sit under which key, for every named index at once, settled against the build
- * before so a key whose members did not change keeps the array it had.
+ * before so a key whose members did not change keeps the array it had, and kept for this build.
  *
  * One pass over the primary index however many indexes are asked for, because asking an entity for
  * its key is the cheap half of this.
@@ -78,13 +78,16 @@ export const assembleSecondaryIndexes = <TEntity, TId extends EntityId>({
     secondaryIndexes,
     byId,
     previousIndexes,
+    builtIndexes,
 }: {
     /** The indexes to assemble on this pass, which is not always all of them. */
     indexNames: readonly string[];
     secondaryIndexes: SecondaryKeyExtractors<TEntity> | undefined;
     byId: ReadonlyMap<TId, TEntity>;
     previousIndexes: SecondaryIndexes<TEntity, TId> | undefined;
-}): SecondaryIndexes<TEntity, TId> => {
+    /** Where the build keeps what has been assembled for it so far. */
+    builtIndexes: SecondaryIndexes<TEntity, TId>;
+}) => {
     const extractors = indexNames.map(indexName => secondaryIndexes?.[indexName]);
     const assembled = indexNames.map((): AssembledEntries<TEntity, TId> => new Map());
 
@@ -99,13 +102,13 @@ export const assembleSecondaryIndexes = <TEntity, TId extends EntityId>({
         }
     });
 
-    return new Map(
-        indexNames.map((indexName, position) => [
+    indexNames.forEach((indexName, position) =>
+        builtIndexes.set(
             indexName,
             settleSecondaryIndex({
                 entries: assembled[position] as AssembledEntries<TEntity, TId>,
                 previousEntries: previousIndexes?.get(indexName),
             }),
-        ]),
+        ),
     );
 };

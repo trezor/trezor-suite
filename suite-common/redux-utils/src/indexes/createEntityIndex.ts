@@ -116,7 +116,8 @@ export const createEntityIndex = <
                 secondaryIndexes: secondaryKeyExtractors,
                 byId: primary.byId,
                 previousIndexes: previousBuiltIndexes,
-            }).forEach((entries, builtName) => builtIndexes.set(builtName, entries));
+                builtIndexes,
+            });
         };
 
         const getSecondaryIndex = (indexName: string) => {
