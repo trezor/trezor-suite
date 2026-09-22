@@ -1,10 +1,16 @@
-import { useState } from 'react';
+import { useCallback, useState } from 'react';
 import { useSelector } from 'react-redux';
+
+import { useFocusEffect } from '@react-navigation/native';
 
 import { selectIsDeviceConnected } from '@suite-common/device';
 import { selectIsDeviceConnectedAndThpUnlocked } from '@suite-native/device';
 
+import { useDeviceReadyEvents } from './useDeviceReadyEvents';
+
 export const useDeviceConnectionGuard = () => {
+    const { emitDeviceReadyEvent } = useDeviceReadyEvents();
+
     const [wasDeviceInitiallyConnected] = useState(useSelector(selectIsDeviceConnected));
     const isDeviceConnectedAndThpUnlocked = useSelector(selectIsDeviceConnectedAndThpUnlocked);
 
@@ -15,6 +21,14 @@ export const useDeviceConnectionGuard = () => {
     // deviceConnectThunk upon device connection, and that causes UX issues.
     const isDeviceConnectionGuardVisible =
         !wasDeviceInitiallyConnected && !isDeviceConnectedAndThpUnlocked;
+
+    useFocusEffect(
+        useCallback(() => {
+            if (!isDeviceConnectionGuardVisible) {
+                emitDeviceReadyEvent();
+            }
+        }, [isDeviceConnectionGuardVisible, emitDeviceReadyEvent]),
+    );
 
     return { isDeviceConnectionGuardVisible };
 };
