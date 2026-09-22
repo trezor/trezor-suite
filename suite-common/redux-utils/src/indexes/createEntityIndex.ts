@@ -48,7 +48,6 @@ export const createEntityIndex = <
     getEntities,
     getId,
     secondaryIndexes: secondaryKeyExtractors,
-    mayRepeatIds = false,
 }: EntityIndexDefinition<
     TState,
     TSource,
@@ -144,7 +143,6 @@ export const createEntityIndex = <
                 gonePartitions,
                 previousPartitions,
                 keysOf,
-                mayRepeatIds,
             }).forEach((assembled, position) => {
                 const builtName = toBuild[position] as string;
 
@@ -159,7 +157,7 @@ export const createEntityIndex = <
             });
         };
 
-        const identities = lazyIdentitiesOf(walked);
+        const identities = lazyIdentitiesOf(walked, name);
 
         const getSecondaryIndex = (indexName: string) => {
             demandedIndexes.add(indexName);

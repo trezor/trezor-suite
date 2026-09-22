@@ -185,16 +185,20 @@ describe('createEntityIndex', () => {
     describe('ids that repeat', () => {
         const duplicate = { id: 'a', value: 'also first' };
 
-        it('resolves to the last entity with that id', () => {
+        it('says so rather than answer two ways about one id', () => {
+            // Whichever of them the index kept, something would be wrong with what it answers:
+            // `getById` would name one entity and a secondary index could hold the other.
             const { index } = createIndex();
 
-            expect(index.getById(createState([a, duplicate]), 'a')).toBe(duplicate);
+            expect(() => index.getIds(createState([a, duplicate]))).toThrow(
+                'entity index "things" was given two entities with the id a',
+            );
         });
 
-        it('lists the id once', () => {
+        it('says it when asked for an entity, too', () => {
             const { index } = createIndex();
 
-            expect(index.getIds(createState([a, duplicate]))).toEqual(['a']);
+            expect(() => index.getById(createState([a, duplicate]), 'a')).toThrow();
         });
     });
 
