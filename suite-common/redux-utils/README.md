@@ -181,9 +181,9 @@ const middleware = [
 
 ## createEntityIndex
 
-Lazily maintained derived indexes over store entities: a primary index and any number of secondary
-indexes computed from a Redux slice on first read, rebuilt only for the partitions that changed,
-with stable array identities for unchanged keys.
+Derived indexes over store entities: a primary index computed from a Redux slice on first read and
+any number of secondary indexes assembled on the first read that asks for one, with stable array
+identities for keys whose members did not change.
 
 Nothing is stored in Redux and no reducer changes — the index derives itself from the slice it
 selects, so it cannot drift from the data it mirrors.
@@ -201,16 +201,31 @@ accountsIndex.getById(getState(), accountKey); //               in a thunk
 accountsIndex.getAllExcept(state, hiddenAccountKeys); //        everything but those
 ```
 
-| Term                | What it means here                                                                                                                                                                                                                                                                                                                                                                |
-| ------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **primary index**   | `ids` and `byId` — every entity by the id `getId` gives it, one entity per id.                                                                                                                                                                                                                                                                                                    |
-| **secondary index** | A grouping index, one per entry in `secondaryIndexes`: a `Map` from a key the extractor returns to every entity that answers to it. A key names many entities, never at most one the way a unique index does — that is what the id is for. An extractor may return several keys, or `undefined` to leave the entity out of that index; under any one key an entity is there once. |
-| **partition**       | A slice of the source that is written as a unit, declared by `getPartitions`. A write to one partition re-walks that partition only; without it the whole source is one partition.                                                                                                                                                                                                |
-| **entities**        | What a partition holds. `getEntities` flattens a partition into them; without it a partition is taken to be its entities.                                                                                                                                                                                                                                                         |
+| Term                | What it means here                                                                                                                                                                                                                                                        |
+| ------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **primary index**   | `ids` and `byId` — every entity by the id `getId` gives it, one entity per id.                                                                                                                                                                                            |
+| **secondary index** | A grouping index, one per entry in `secondaryIndexes`: a `Map` from a key the extractor returns to every entity that answers to it. A key names many entities, never at most one the way a unique index does — that is what the id is for. An entity is under a key once. |
+| **entities**        | What the source holds. `getEntities` derives them; without it the source is taken to be its entities.                                                                                                                                                                     |
 
 An id belongs to one entity: `getId` is expected to be unique across the whole source, and an index
-given two entities with the same id throws rather than answer one way by id and another by key. An
-entity is under a key once, however many keys it names.
+given two entities with the same id throws rather than answer one way by id and another by key.
+
+A build walks the source it was handed, so a `getEntities` that derives something — flattening an
+account into its holdings, say — belongs behind a `WeakMap` of its own, and then a write to one
+account derives that account only:
+
+```typescript
+const holdingsOf = new WeakMap<Account, Holding[]>();
+
+getEntities: (accounts: Account[]) =>
+    accounts.flatMap(account => {
+        const known = holdingsOf.get(account);
+        if (known) return known;
+        const built = toHoldings(account);
+        holdingsOf.set(account, built);
+        return built;
+    }),
+```
 
 A secondary index is built on the first read that asks for it and not before, and the array under a
 key keeps its identity for as long as its members do — which is what keeps a component watching one

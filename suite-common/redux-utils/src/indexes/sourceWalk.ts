@@ -4,37 +4,30 @@ import {
     type SecondaryKeyExtractor,
 } from './entityIndexTypes';
 
-/** What one partition's entities say their key is, in the order the partition holds them. */
-export type PartitionSecondaryKeys = readonly (
+/** What the source's entities say their key is, in the order the source holds them. */
+export type SourceSecondaryKeys = readonly (
     AnySecondaryKey | readonly AnySecondaryKey[] | undefined
 )[];
 
-export type BuiltPartition<TEntity, TId extends EntityId> = {
-    partition: unknown;
+export type WalkedSource<TEntity, TId extends EntityId> = {
     ids: readonly TId[];
     entities: readonly TEntity[];
-    secondaryKeys: Map<string, PartitionSecondaryKeys>;
+    secondaryKeys: Map<string, SourceSecondaryKeys>;
 };
 
-export type WalkedPartition<TEntity, TId extends EntityId> = {
-    key: string;
-    built: BuiltPartition<TEntity, TId>;
-    isDirty: boolean;
-};
-
-/** A partition is walked once per reference: the result is kept and handed back to the next build. */
-export const walkPartition = <TPartition, TEntity, TId extends EntityId>({
-    partition,
+/** Once per source, and what it walked is kept for as long as that source is the one in the store. */
+export const walkSource = <TSource, TEntity, TId extends EntityId>({
+    source,
     toEntities,
     getId,
 }: {
-    partition: TPartition;
-    toEntities: (partition: TPartition) => Iterable<TEntity>;
+    source: TSource;
+    toEntities: (source: TSource) => Iterable<TEntity>;
     getId: (entity: TEntity) => TId;
-}): BuiltPartition<TEntity, TId> => {
+}): WalkedSource<TEntity, TId> => {
     const ids: TId[] = [];
     const entities: TEntity[] = [];
-    const held = toEntities(partition);
+    const held = toEntities(source);
 
     if (Array.isArray(held)) {
         for (let position = 0; position < held.length; position++) {
@@ -49,27 +42,27 @@ export const walkPartition = <TPartition, TEntity, TId extends EntityId>({
         }
     }
 
-    return { partition, ids, entities, secondaryKeys: new Map() };
+    return { ids, entities, secondaryKeys: new Map() };
 };
 
-/** Asked once per partition per index, however many times the index is assembled. */
+/** Asked once per index, however many times the index is assembled from this walk. */
 export const secondaryKeysOf = <TEntity, TId extends EntityId>({
-    built,
+    walked,
     indexName,
     extractKey,
 }: {
-    built: BuiltPartition<TEntity, TId>;
+    walked: WalkedSource<TEntity, TId>;
     indexName: string;
     extractKey: SecondaryKeyExtractor<TEntity> | undefined;
-}): PartitionSecondaryKeys => {
-    const known = built.secondaryKeys.get(indexName);
+}): SourceSecondaryKeys => {
+    const known = walked.secondaryKeys.get(indexName);
 
     if (known !== undefined) {
         return known;
     }
 
-    const keys = built.entities.map(entity => extractKey?.(entity));
-    built.secondaryKeys.set(indexName, keys);
+    const keys = walked.entities.map(entity => extractKey?.(entity));
+    walked.secondaryKeys.set(indexName, keys);
 
     return keys;
 };

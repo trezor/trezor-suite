@@ -1,13 +1,14 @@
 /**
- * Lazily maintained derived indexes over store entities.
+ * Derived indexes over store entities.
  *
- * A primary index and any number of secondary indexes computed from a Redux slice on first read,
- * rebuilt only for the partitions that changed, with stable array identities for unchanged keys.
+ * A primary index computed from a Redux slice on first read, and any number of secondary indexes
+ * assembled on the first read that asks for one, with stable array identities for keys whose
+ * members did not change.
  *
- * What a build does is spelled out in the modules beside this one — the partition diff, the walk,
- * the identities, the assembly, the settling, the changes — and what is left here is when any of
- * it runs: nothing until a getter is touched, and nothing twice while the source is the one it
- * was built from.
+ * What a build does is spelled out in the modules beside this one — the walk, the identities, the
+ * assembly, the settling of their identities, the changes — and what is left here is when any of
+ * it runs: a secondary index not until it is asked for, and nothing twice while the source is the
+ * one it was built from.
  */
 
 import { EMPTY_ENTITY_IDS, NO_CHANGES } from './emptyResults';
@@ -24,16 +25,13 @@ import {
     type SecondaryIndexEntry,
     type SecondaryKeyExtractors,
 } from './entityIndexTypes';
-import { type Identities, lazyIdentitiesOf } from './identities';
-import { diffPartitions } from './partitionDiff';
-import { type BuiltPartition, secondaryKeysOf, walkPartition } from './partitionWalk';
+import { type Identities, identitiesOf } from './identities';
 import { assembleSecondaryIndexes } from './secondaryIndexAssembly';
 import { settleSecondaryIndex } from './secondaryIndexSettling';
+import { type WalkedSource, secondaryKeysOf, walkSource } from './sourceWalk';
 
 export type * from './entityIndexTypes';
 export { EMPTY_ENTITIES, EMPTY_ENTITY_IDS } from './emptyResults';
-
-const WHOLE_SOURCE_KEY = '';
 
 export const createEntityIndex = <
     TState,
@@ -41,22 +39,18 @@ export const createEntityIndex = <
     TEntity,
     TId extends EntityId,
     TSecondaryIndexes extends SecondaryKeyExtractors<TEntity> = Record<string, never>,
-    TPartition = TSource,
 >({
     name,
     selectSource,
-    getPartitions,
     getEntities,
     getId,
     secondaryIndexes: secondaryKeyExtractors,
-}: EntityIndexDefinition<
+}: EntityIndexDefinition<TState, TSource, TEntity, TId, TSecondaryIndexes>): EntityIndex<
     TState,
-    TSource,
-    TPartition,
     TEntity,
     TId,
     TSecondaryIndexes
->): EntityIndex<TState, TEntity, TId, TSecondaryIndexes> => {
+> => {
     type Snapshot = EntityIndexSnapshot<TEntity, TId, TSecondaryIndexes>;
     // What a key means is the caller's business, which is where the two casts back to the
     // snapshot's own signature come from.
@@ -64,17 +58,7 @@ export const createEntityIndex = <
 
     const indexNames = Object.keys(secondaryKeyExtractors ?? {});
 
-    const toEntities =
-        getEntities ?? ((partition: TPartition) => partition as unknown as Iterable<TEntity>);
-
-    const toPartitions =
-        getPartitions ??
-        ((source: TSource) => [[WHOLE_SOURCE_KEY, source as unknown as TPartition]] as const);
-
-    const walk = (partition: TPartition) => walkPartition({ partition, toEntities, getId });
-
-    const keysOf = (built: BuiltPartition<TEntity, TId>, indexName: string) =>
-        secondaryKeysOf({ built, indexName, extractKey: secondaryKeyExtractors?.[indexName] });
+    const toEntities = getEntities ?? ((source: TSource) => source as unknown as Iterable<TEntity>);
 
     const noEntries: Entries = new Map();
     const noEntities: ReadonlyMap<TId, TEntity> = new Map();
@@ -95,9 +79,8 @@ export const createEntityIndex = <
         | {
               source: TSource;
               snapshot: Snapshot;
-              partitions: ReadonlyMap<string, BuiltPartition<TEntity, TId>>;
               builtIndexes: Map<string, Entries>;
-              identities: () => Identities<TEntity, TId>;
+              identities: Identities<TEntity, TId>;
               isEmpty: boolean;
           }
         | undefined;
@@ -105,20 +88,19 @@ export const createEntityIndex = <
     const build = (source: TSource): Snapshot => {
         // Only what this build needs, never `cached` itself: a closure over it would keep every
         // build before this one alive for as long as the index lives.
-        const previousPartitions = cached?.partitions;
         const previousBuiltIndexes = cached?.builtIndexes;
         const previousIdentities = cached?.identities;
         const wasEmpty = cached?.isEmpty ?? true;
         const previousSnapshot = cached?.snapshot;
 
-        const {
-            partitions,
-            walked,
-            gonePartitions,
-            possiblyRemoved,
-            entityCount,
-            isPartitionOrderKept,
-        } = diffPartitions({ sourcePartitions: toPartitions(source), previousPartitions, walk });
+        const walked: WalkedSource<TEntity, TId> = walkSource({ source, toEntities, getId });
+
+        const keysOf = (indexName: string) =>
+            secondaryKeysOf({
+                walked,
+                indexName,
+                extractKey: secondaryKeyExtractors?.[indexName],
+            });
 
         const builtIndexes = new Map<string, Entries>();
 
@@ -127,7 +109,7 @@ export const createEntityIndex = <
 
         const assemble = (indexName: string) => {
             // The one asked for, and whatever else was read last time and has not been built yet:
-            // they cost one walk together and one walk each apart.
+            // they cost one pass together and one pass each apart.
             const toBuild = [
                 indexName,
                 ...indexNames.filter(
@@ -140,25 +122,23 @@ export const createEntityIndex = <
 
             assembleSecondaryIndexes({
                 indexNames: toBuild,
-                walked,
-                gonePartitions,
-                previousPartitions,
+                ids: walked.ids,
+                entities: walked.entities,
                 keysOf,
-            }).forEach((assembled, position) => {
+            }).forEach((entries, position) => {
                 const builtName = toBuild[position] as string;
 
                 builtIndexes.set(
                     builtName,
                     settleSecondaryIndex({
-                        assembled,
+                        entries,
                         previousEntries: previousBuiltIndexes?.get(builtName),
-                        isPartitionOrderKept,
                     }),
                 );
             });
         };
 
-        const identities = lazyIdentitiesOf(walked, name);
+        const identities = identitiesOf(walked, name);
 
         const getSecondaryIndex = (indexName: string) => {
             demandedIndexes.add(indexName);
@@ -178,30 +158,28 @@ export const createEntityIndex = <
                     previousIdentities === undefined
                         ? NO_CHANGES
                         : changesOf({
-                              walked,
-                              byId: identities().byId,
-                              previousById: previousIdentities().byId,
-                              possiblyRemoved,
+                              byId: identities.byId,
+                              previousById: previousIdentities.byId,
                           });
             }
 
             return changes;
         };
 
-        const isEmpty = entityCount === 0;
+        const isEmpty = identities.ids.length === 0;
         // Nothing to say and nothing to hand back that it has not handed back already: an index
         // that was empty and stays empty keeps the snapshot it had, so no listener hears of it.
         const snapshot: Snapshot =
             isEmpty && wasEmpty
                 ? (previousSnapshot ?? emptySnapshot)
                 : {
-                      getIds: () => identities().ids,
-                      getEntitiesById: () => identities().byId,
+                      getIds: () => identities.ids,
+                      getEntitiesById: () => identities.byId,
                       getSecondaryIndex: getSecondaryIndex as Snapshot['getSecondaryIndex'],
                       getChanges,
                   };
 
-        cached = { source, partitions, builtIndexes, identities, snapshot, isEmpty };
+        cached = { source, snapshot, builtIndexes, identities, isEmpty };
 
         return snapshot;
     };
