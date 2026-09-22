@@ -15604,7 +15604,6 @@ __metadata:
     "@suite-common/redux-utils": "workspace:*"
     "@suite-common/suite-config": "workspace:*"
     "@suite/analytics": "workspace:*"
-    "@suite/bluetooth": "workspace:*"
     "@suite/debug": "workspace:*"
     "@suite/desktop-app-api": "workspace:*"
     "@suite/desktop-app-api-electron": "workspace:*"

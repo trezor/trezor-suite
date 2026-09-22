@@ -2,7 +2,6 @@ import { Provider as ReduxProvider } from 'react-redux';
 
 import { createRoot } from 'react-dom/client';
 
-import { initBluetoothThunk } from '@suite/bluetooth';
 import { type DesktopApiDep } from '@suite/desktop-app-api';
 import { ServicesProvider } from '@suite-common/dependency-injection';
 import TrezorConnect from '@trezor/connect-electron';
@@ -96,7 +95,7 @@ export const createDesktopApp =
 
         // init bluetooth module
         // TODO should it really be here instead of initAction.ts?
-        await deps.services.store.dispatch(initBluetoothThunk());
+        await deps.services.bluetooth.init();
 
         // finally render whole app
         root.render(
