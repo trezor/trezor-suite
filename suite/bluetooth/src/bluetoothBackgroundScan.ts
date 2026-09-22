@@ -36,7 +36,11 @@ export const createBackgroundScan = (deps: BackgroundScanDeps): BackgroundScan =
     const hasDisconnectedKnownDevice = () =>
         deps.getKnownDevices().some(device => !isBluetoothDeviceReachable(device));
 
-    const shouldScan = () => deps.getAdapterStatus() === 'enabled' && hasDisconnectedKnownDevice();
+    const shouldScan = () =>
+        hasDisconnectedKnownDevice() &&
+        // unknown - adapter was not used yet, try to use it.
+        // enabled - adapter is ready for use.
+        ['unknown', 'enabled'].includes(deps.getAdapterStatus());
 
     const run = async (signal: AbortSignal) => {
         while (!signal.aborted && shouldScan()) {
