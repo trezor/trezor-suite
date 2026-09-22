@@ -90,7 +90,8 @@ export const messages = defineMessages({
         id: 'TR_EARN_YIELD_VAULT',
     },
     TR_EARN_YIELD_APPROVE_TOKEN_SPENDING_DESCRIPTION: {
-        defaultMessage: 'Approve the vault to spend your {displaySymbol} for the deposit.',
+        defaultMessage:
+            'Approve the vault to spend your {displaySymbol} for the deposit. The vault pulls the tokens from your account, which is why this approval comes first.',
         id: 'TR_EARN_YIELD_APPROVE_TOKEN_SPENDING_DESCRIPTION',
     },
     TR_EARN_YIELD_APPROVAL_VALUE_MINIMAL_INFO: {
@@ -3891,7 +3892,8 @@ export const messages = defineMessages({
         id: 'TR_TX_FEE',
     },
     TR_TX_FEE_COUNT: {
-        defaultMessage: '{count, plural, =0 {Fee} =1 {Fee} other {{count}× Fees}}',
+        defaultMessage:
+            '{count, plural, =0 {Network fee} =1 {Network fee} other {{count}× Network fee}}',
         id: 'TR_TX_FEE_COUNT',
     },
     TR_TX_FEE_INCLUDING_RENT: {
@@ -9027,12 +9029,7 @@ export const messages = defineMessages({
     },
     TR_STAKING_ONCE_YOU_CONFIRM: {
         id: 'TR_STAKING_ONCE_YOU_CONFIRM',
-        defaultMessage: 'Once you confirm',
-    },
-    TR_STAKING_YOUR_EARNINGS: {
-        id: 'TR_STAKING_YOUR_EARNINGS',
-        defaultMessage:
-            'Your rewards are automatically restaked, allowing you to earn <a>compound interest</a>.',
+        defaultMessage: 'Staking timeline',
     },
     TR_STAKE_ON_EVERSTAKE: {
         id: 'TR_STAKE_ON_EVERSTAKE',
@@ -10406,7 +10403,7 @@ export const messages = defineMessages({
     },
     TR_EARN_DEFI_YIELD_DASHBOARD_TEXT: {
         id: 'TR_EARN_DEFI_YIELD_DASHBOARD_TEXT',
-        defaultMessage: 'Put your assets to work and earn rewards.',
+        defaultMessage: 'Put your assets to work and earn yield.',
     },
     TR_EARN_YIELD_DASHBOARD_DEPOSIT_MORE: {
         id: 'TR_EARN_YIELD_DASHBOARD_DEPOSIT_MORE',
@@ -10784,7 +10781,7 @@ export const messages = defineMessages({
     TR_STAKING_MODAL_OUTDATED: {
         id: 'TR_STAKING_MODAL_OUTDATED',
         defaultMessage:
-            "You're earning nearly 0% in ADA rewards right now. Switch to Everstake to earn up to {apy}% APY. Your funds and past rewards are safe.",
+            'Your Cardano is no longer earning rewards. Switch to our partner Everstake to earn up to {apy}% APY. Your ADA and past rewards are safe.',
     },
     TR_STAKING_REWARDS_REDUCED: {
         id: 'TR_STAKING_REWARDS_REDUCED',
@@ -10826,6 +10823,10 @@ export const messages = defineMessages({
         id: 'TR_EARN_STAKING_DASHBOARD_STAKE_MORE',
         defaultMessage: 'Stake more',
     },
+    TR_EARN_STAKING_DASHBOARD_CLAIM_FUNDS: {
+        id: 'TR_EARN_STAKING_DASHBOARD_CLAIM_FUNDS',
+        defaultMessage: 'Claim funds',
+    },
     TR_EARN_STAKING_DASHBOARD_ACTIVATE: {
         id: 'TR_EARN_STAKING_DASHBOARD_ACTIVATE',
         defaultMessage: 'Enable {networkName}',
@@ -10852,7 +10853,7 @@ export const messages = defineMessages({
     },
     TR_EARN_STAKING_DASHBOARD_REMAINING_VOTES: {
         id: 'TR_EARN_STAKING_DASHBOARD_REMAINING_VOTES',
-        defaultMessage: 'Vote with all votes to earn ~{apr}% APR',
+        defaultMessage: 'Use all your votes to earn the full ~{apr}% APR',
     },
     TR_STAKING_BANNER_DETAIL_TITLE: {
         id: 'TR_STAKING_BANNER_DETAIL_TITLE',
@@ -10907,7 +10908,7 @@ export const messages = defineMessages({
     },
     TR_STAKING_NEW_PROVIDER_OUTDATED_TITLE: {
         id: 'TR_STAKING_NEW_PROVIDER_OUTDATED_TITLE',
-        defaultMessage: 'Update your provider now to keep your rewards growing',
+        defaultMessage: 'Your Cardano is no longer earning rewards',
     },
     TR_STAKING_NEW_PROVIDER_TEXT: {
         id: 'TR_STAKING_NEW_PROVIDER_TEXT',
@@ -10917,7 +10918,7 @@ export const messages = defineMessages({
     TR_STAKING_NEW_PROVIDER_OUTDATED_TEXT: {
         id: 'TR_STAKING_NEW_PROVIDER_OUTDATED_TEXT',
         defaultMessage:
-            'Your current provider is reducing its rewards. Update to Everstake for {apy}% APY and keep maximizing earnings. Your {displaySymbol} and past rewards stay safe.',
+            'Switch to Everstake to earn {apy}% APY and start earning again. Your {displaySymbol} and past rewards stay safe.',
     },
     TR_EARN_UPDATE_PROVIDER: {
         id: 'TR_EARN_UPDATE_PROVIDER',
@@ -10946,7 +10947,7 @@ export const messages = defineMessages({
     },
     TR_STAKING_DELEGATE_TO_ANOTHER_DREP: {
         id: 'TR_STAKING_DELEGATE_TO_ANOTHER_DREP',
-        defaultMessage: 'Delegate to another DRep',
+        defaultMessage: 'Delegate to a custom DRep',
     },
     TR_STAKING_KEEP_CURRENT_DELEGATION: {
         id: 'TR_STAKING_KEEP_CURRENT_DELEGATION',
@@ -10955,7 +10956,7 @@ export const messages = defineMessages({
     TR_STAKING_DELEGATION_INFO_TEXT: {
         id: 'TR_STAKING_DELEGATION_INFO_TEXT',
         defaultMessage:
-            "You can choose to support the Cardano ecosystem by delegating your community voting rights. This helps strengthen the network's resilience, sustainability, and community-driven governance. This has no effect on your staking.",
+            'You can choose to support the Cardano ecosystem by delegating your community voting rights. This has no effect on your staking.',
     },
     TR_STAKING_INVALID_DREP_ID: {
         id: 'TR_STAKING_INVALID_DREP_ID',
@@ -11131,7 +11132,7 @@ export const messages = defineMessages({
     },
     TR_EARN_APY_REQUIRED: {
         id: 'TR_EARN_APY_REQUIRED',
-        defaultMessage: 'APY is required to calculate rewards',
+        defaultMessage: 'A rate is needed to estimate rewards',
     },
     TR_STAKE_APY_DESC: {
         id: 'TR_STAKE_APY_DESC',
@@ -11181,6 +11182,10 @@ export const messages = defineMessages({
         id: 'TR_EARN_TRON_EARN_REWARDS',
         defaultMessage: 'Voting rewards',
     },
+    TR_EARN_TRON_REWARDS_CLAIMED_MANUALLY: {
+        id: 'TR_EARN_TRON_REWARDS_CLAIMED_MANUALLY',
+        defaultMessage: 'Rewards are claimed manually and can be staked again.',
+    },
     TR_EARN_TRON_RESOURCE_TO_EARN: {
         id: 'TR_EARN_TRON_RESOURCE_TO_EARN',
         defaultMessage: 'Resource to earn',
@@ -11208,7 +11213,7 @@ export const messages = defineMessages({
     },
     TR_EARN_TRON_STAKE_COMPLETE_DESCRIPTION: {
         id: 'TR_EARN_TRON_STAKE_COMPLETE_DESCRIPTION',
-        defaultMessage: 'Your stake is now earning rewards',
+        defaultMessage: 'Your {displaySymbol} is now staked and earning rewards.',
     },
     TR_EARN_TRON_APR_LABEL: {
         id: 'TR_EARN_TRON_APR_LABEL',
@@ -11220,7 +11225,7 @@ export const messages = defineMessages({
     },
     TR_EARN_TRON_SUPPLIED: {
         id: 'TR_EARN_TRON_SUPPLIED',
-        defaultMessage: 'Supplied',
+        defaultMessage: 'Staked',
     },
     TR_EARN_TRON_VOTE_COMPLETE: {
         id: 'TR_EARN_TRON_VOTE_COMPLETE',
@@ -11236,7 +11241,7 @@ export const messages = defineMessages({
     },
     TR_EARN_TRON_FREEZE_STEP_TITLE: {
         id: 'TR_EARN_TRON_FREEZE_STEP_TITLE',
-        defaultMessage: 'Freeze your funds',
+        defaultMessage: 'Freeze your {displaySymbol}',
     },
     TR_EARN_TRON_VOTE_STEP_TITLE: {
         id: 'TR_EARN_TRON_VOTE_STEP_TITLE',
@@ -11322,7 +11327,7 @@ export const messages = defineMessages({
     },
     TR_EARN_TRON_UNSTAKE_DESCRIPTION: {
         id: 'TR_EARN_TRON_UNSTAKE_DESCRIPTION',
-        defaultMessage: 'Withdraw your TRX in 14 days',
+        defaultMessage: 'You can withdraw your {displaySymbol} in 14 days.',
     },
     TR_EARN_TRON_UNSTAKE_COMPLETE: {
         id: 'TR_EARN_TRON_UNSTAKE_COMPLETE',
@@ -11543,7 +11548,7 @@ export const messages = defineMessages({
     },
     TR_EARN_YIELD_EARN_REWARDS_EACH_BLOCK: {
         id: 'TR_EARN_YIELD_EARN_REWARDS_EACH_BLOCK',
-        defaultMessage: 'Earn rewards with each confirmed block',
+        defaultMessage: 'Your {vaultSymbol} grows in value with every confirmed block',
     },
     TR_EARN_YIELD_RECEIVE_IN_ACCOUNT: {
         id: 'TR_EARN_YIELD_RECEIVE_IN_ACCOUNT',
@@ -11623,7 +11628,7 @@ export const messages = defineMessages({
     },
     TR_EARN_COOL_DOWN_PERIOD: {
         id: 'TR_EARN_COOL_DOWN_PERIOD',
-        defaultMessage: 'Enter cool-down period',
+        defaultMessage: 'Staking deactivation',
     },
     TR_EARN_STAKING_WAIT_FOR_DEACTIVATION: {
         id: 'TR_EARN_STAKING_WAIT_FOR_DEACTIVATION',
@@ -11817,7 +11822,7 @@ export const messages = defineMessages({
     },
     TR_STAKE_FUNDS_FULLY_ACCESSIBLE: {
         id: 'TR_STAKE_FUNDS_FULLY_ACCESSIBLE',
-        defaultMessage: 'Your {networkDisplaySymbol} stays fully accessible while earning rewards.',
+        defaultMessage: 'Your {networkDisplaySymbol} stays fully accessible while staked.',
     },
     TR_STAKE_UNSTAKE: {
         id: 'TR_STAKE_UNSTAKE',
@@ -11922,7 +11927,7 @@ export const messages = defineMessages({
     TR_STAKE_ETH_REWARDS_EARN_APY: {
         id: 'TR_STAKE_ETH_REWARDS_EARN_APY',
         defaultMessage:
-            'Your {networkDisplaySymbol} rewards also earn the APY rate. Keep your funds staked or add more to increase your rewards.',
+            'Your {networkDisplaySymbol} rewards are automatically restaked and earn the same APY, so you earn compound interest.',
     },
     TR_STAKE_REWARDS: {
         id: 'TR_STAKE_REWARDS',
@@ -11954,7 +11959,7 @@ export const messages = defineMessages({
     },
     TR_STAKE_CLAIM_AFTER_UNSTAKING: {
         id: 'TR_STAKE_CLAIM_AFTER_UNSTAKING',
-        defaultMessage: 'Once the staking pool exit period is over, you can use your assets.',
+        defaultMessage: 'Once the deactivation period is over, you can claim your funds.',
     },
     TR_STAKE_UNSTAKE_WITH_REWARDS: {
         id: 'TR_STAKE_UNSTAKE_WITH_REWARDS',

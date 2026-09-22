@@ -300,6 +300,7 @@ export const EarnStakingAccountRow = ({ account, isCardLayout }: EarnStakingAcco
         isVotingDisabled,
         votingMessageContent,
         canClaim,
+        networkType: account.networkType,
         isClaimButtonDisabled,
         claimingMessageContent,
         onBuy: navigateToTradingBuy,

@@ -266,13 +266,6 @@ export const EarnClaimModal = ({ onCancel, account }: EarnClaimModalProps) => {
                                     </Paragraph>
                                 </InfoItem>
 
-                                <InfoItem
-                                    direction="column"
-                                    label={<Translation id="TR_STAKE_TIME_TO_CLAIM" />}
-                                >
-                                    <Translation id="TR_EARN_INSTANTLY" />
-                                </InfoItem>
-
                                 <Fees
                                     feeInfo={feeInfo}
                                     account={account}

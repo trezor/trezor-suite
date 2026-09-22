@@ -239,7 +239,7 @@ export const WrapNativeToken = ({ account, token, onFlowCompleteChange }: WrapNa
                     <YieldWrapStep
                         token={token}
                         nativeSymbol={nativeSymbol}
-                        availableAmount={account.formattedBalance}
+                        availableAmount={maxWrapAmount}
                         shouldShowReceivingRow={false}
                         isSubmitting={wrapMutation.isPending}
                         isSubmitDisabled={!isAmountValid || isDisabled}
