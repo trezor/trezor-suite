@@ -1,7 +1,13 @@
-import { type EntityId, type SecondaryKeyExtractor } from './entityIndexTypes';
+import {
+    type AnySecondaryKey,
+    type EntityId,
+    type SecondaryKeyExtractor,
+} from './entityIndexTypes';
 
 /** What one partition's entities say their key is, in the order the partition holds them. */
-export type PartitionSecondaryKeys = readonly (EntityId | readonly EntityId[] | undefined)[];
+export type PartitionSecondaryKeys = readonly (
+    AnySecondaryKey | readonly AnySecondaryKey[] | undefined
+)[];
 
 export type BuiltPartition<TEntity, TId extends EntityId> = {
     partition: unknown;
@@ -69,8 +75,8 @@ export const secondaryKeysOf = <TEntity, TId extends EntityId>({
 };
 
 export const forEachKey = (
-    keys: EntityId | readonly EntityId[] | undefined,
-    visit: (key: EntityId) => void,
+    keys: AnySecondaryKey | readonly AnySecondaryKey[] | undefined,
+    visit: (key: AnySecondaryKey) => void,
 ) => {
     if (keys === undefined) {
         return;
@@ -84,5 +90,5 @@ export const forEachKey = (
         return;
     }
 
-    visit(keys as EntityId);
+    visit(keys as AnySecondaryKey);
 };

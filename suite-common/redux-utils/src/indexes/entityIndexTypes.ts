@@ -5,6 +5,12 @@
 
 export type EntityId = string;
 
+/**
+ * A secondary key once the index holds it, with whatever it meant to the extractor rubbed off —
+ * `SecondaryKey` is what the caller asks with and gets back.
+ */
+export type AnySecondaryKey = string;
+
 export type EntityIndexChanges<TId extends EntityId> = {
     readonly added: readonly TId[];
     readonly removed: readonly TId[];
