@@ -18,6 +18,7 @@ import {
     RootStackRoutes,
     type StackNavigationProps,
 } from '@suite-native/navigation';
+import { exhaustive } from '@trezor/type-utils';
 
 import { useStakingNavigateAnalytics } from './useStakingNavigateAnalytics';
 import { useEarnPortfolioTrackerGuard } from '../../components/earn/EarnPortfolioTrackerGuard';
@@ -109,6 +110,22 @@ export const useStakingPromoNavigation = () => {
         [hideAlert, showAlert, translate],
     );
 
+    const showViewOnlyStakingAlert = useCallback(
+        (symbol: NetworkSymbol) => {
+            const networkName = getNetwork(symbol).name;
+
+            showAlert({
+                title: translate('earn.earnScreen.viewOnlyStakingAlert.title'),
+                description: translate('earn.earnScreen.viewOnlyStakingAlert.description', {
+                    networkName,
+                }),
+                primaryButtonTitle: translate('generic.buttons.gotIt'),
+                onPressPrimaryButton: hideAlert,
+            });
+        },
+        [hideAlert, showAlert, translate],
+    );
+
     const handleEnableNetworkPress = useCallback(() => {
         if (!pendingEnableSymbol) {
             return;
@@ -159,9 +176,13 @@ export const useStakingPromoNavigation = () => {
 
     const handleStakingPromoPress = useCallback(
         (item: StakingEarnItem) => {
-            const resolution = resolveStakingPromoAccounts({ symbol: item.symbol, accounts });
+            const resolution = resolveStakingPromoAccounts({
+                symbol: item.symbol,
+                accounts,
+                isDeviceInViewOnlyMode,
+            });
 
-            if (resolution.isDesktopOnly) {
+            if (resolution.type === 'desktop-only') {
                 openInfoModal();
 
                 return;
@@ -173,32 +194,43 @@ export const useStakingPromoNavigation = () => {
                 return;
             }
 
-            const { navigableAccounts } = resolution;
+            switch (resolution.type) {
+                case 'enable-network':
+                    setPendingEnableSymbol(item.symbol);
+                    pendingEnableSymbolRef.current = item.symbol;
+                    enableNetworkContinuedRef.current = false;
+                    openEnableNetworkModal();
 
-            if (navigableAccounts.length === 0) {
-                setPendingEnableSymbol(item.symbol);
-                pendingEnableSymbolRef.current = item.symbol;
-                enableNetworkContinuedRef.current = false;
-                openEnableNetworkModal();
+                    return;
+                case 'connect-device':
+                    showViewOnlyStakingAlert(item.symbol);
 
-                return;
+                    return;
+                case 'navigate': {
+                    const { navigableAccounts } = resolution;
+                    const singleAccount = navigableAccounts[0];
+
+                    if (navigableAccounts.length === 1 && singleAccount) {
+                        reportStakingNavigate(singleAccount);
+                        navigateByAccountState(singleAccount, navigation.navigate);
+
+                        return;
+                    }
+
+                    setChosenAccounts(navigableAccounts);
+                    chooseAccountSymbolRef.current = item.symbol;
+                    chooseAccountContinuedRef.current = false;
+                    openChooseAccountModal();
+
+                    return;
+                }
+                default:
+                    exhaustive(resolution);
             }
-
-            const singleAccount = navigableAccounts[0];
-            if (navigableAccounts.length === 1 && singleAccount) {
-                reportStakingNavigate(singleAccount);
-                navigateByAccountState(singleAccount, navigation.navigate);
-
-                return;
-            }
-
-            setChosenAccounts(navigableAccounts);
-            chooseAccountSymbolRef.current = item.symbol;
-            chooseAccountContinuedRef.current = false;
-            openChooseAccountModal();
         },
         [
             accounts,
+            isDeviceInViewOnlyMode,
             navigation.navigate,
             isPortfolioTrackerDevice,
             openPortfolioTrackerSheet,
@@ -206,6 +238,7 @@ export const useStakingPromoNavigation = () => {
             openChooseAccountModal,
             openEnableNetworkModal,
             reportStakingNavigate,
+            showViewOnlyStakingAlert,
         ],
     );
 
