@@ -1,4 +1,5 @@
 import { type ReactNode, type Ref, forwardRef, useCallback, useState } from 'react';
+import { useWindowDimensions } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import {
@@ -12,7 +13,6 @@ import {
 import { type BottomSheetModalMethods } from '@gorhom/bottom-sheet/lib/typescript/types';
 
 import { useScrollDivider } from '@suite-native/scrollview';
-import { getScreenHeight } from '@trezor/env-utils';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
 import { Box, type BoxProps } from '../Box';
@@ -21,7 +21,6 @@ import { BottomSheetModalContent } from './BottomSheetModalContent';
 import { useBottomSheetInteractionGate } from './hooks/useBottomSheetInteractionGate';
 
 const TOP_OFFSET = 72; // corresponds to screen header size
-const MAX_MODAL_HEIGHT = getScreenHeight() - TOP_OFFSET;
 
 export type BottomSheetModalProps = {
     children: ReactNode;
@@ -70,12 +69,13 @@ export const BottomSheetModal = forwardRef<BottomSheetModalMethods, BottomSheetM
         const { applyStyle } = useNativeStyles();
         const { scrollDivider, handleScroll } = useScrollDivider();
         const { animatedIndex, isSheetSettled } = useBottomSheetInteractionGate();
+        const { height: windowHeight } = useWindowDimensions();
 
         const [footerHeight, setFooterHeight] = useState(0);
 
         // This ensures that the bottom sheet content evades the footer if present.
         // In case footerHeight > TOP_OFFSET, the content and footer might collide.
-        const maxDynamicContentSize = MAX_MODAL_HEIGHT - top + footerHeight;
+        const maxDynamicContentSize = windowHeight - TOP_OFFSET - top + footerHeight;
 
         const renderBackdrop = useCallback(
             ({ style, ...props }: BottomSheetBackdropProps) => (

@@ -1,5 +1,5 @@
-import { useCallback, useRef, useState } from 'react';
-import { Dimensions, View } from 'react-native';
+import { useCallback, useEffect, useRef, useState } from 'react';
+import { View, useWindowDimensions } from 'react-native';
 
 import { useFocusEffect } from '@react-navigation/native';
 
@@ -22,8 +22,6 @@ type AxisLabelStyleProps = {
 // https://reactnavigation.org/docs/native-stack-navigator/#animationduration
 const SCREEN_TRANSITION_ANIMATION_DURATION = 350;
 
-const SCREEN_WIDTH = Dimensions.get('screen').width;
-
 const axisLabelStyle = prepareNativeStyle<AxisLabelStyleProps>(
     ({ spacings }, { x, isOverflowing }) => ({
         position: 'absolute',
@@ -41,6 +39,7 @@ const axisLabelStyle = prepareNativeStyle<AxisLabelStyleProps>(
 
 export const AxisLabel = ({ x, value }: AxisLabelProps) => {
     const { applyStyle, utils } = useNativeStyles();
+    const { width: windowWidth } = useWindowDimensions();
     const { isDiscreetMode } = useDiscreetMode();
     const viewRef = useRef<View>(null);
     const [isOverflowing, setIsOverflowing] = useState(false);
@@ -50,12 +49,16 @@ export const AxisLabel = ({ x, value }: AxisLabelProps) => {
             viewRef.current.measureInWindow((viewX, _, viewWidth) => {
                 const graphHorizontalPadding = utils.spacings.sp8;
                 // The right most pixel of the axis label is overflowing the graph width.
-                if (viewX + viewWidth + graphHorizontalPadding > SCREEN_WIDTH) {
+                if (viewX + viewWidth + graphHorizontalPadding > windowWidth) {
                     setIsOverflowing(true);
                 }
             });
         }
-    }, [utils]);
+    }, [utils, windowWidth]);
+
+    useEffect(() => {
+        setIsOverflowing(false);
+    }, [windowWidth]);
 
     // We need to check the axis overflow on every return to a already rendered graph screen, because it might be shifted by the previous screen transition animation.
     // The timeout is needed because the calculation has to be started after the screen transition animation is finished.

@@ -1,5 +1,5 @@
 import { type ReactElement } from 'react';
-import { Dimensions, View } from 'react-native';
+import { View, useWindowDimensions } from 'react-native';
 import ReactQRCode from 'react-qr-code';
 
 import { Box, nativeSpacingToNumber } from '@suite-native/atoms';
@@ -14,13 +14,11 @@ type QRCodeProps = {
     centerIcon?: ReactElement;
 };
 
-const SCREEN_WIDTH = Dimensions.get('screen').width;
-
 const MAX_QRCODE_SIZE = 250;
 const QRCODE_PADDING = 24;
 
-const QRCODE_SIZE =
-    SCREEN_WIDTH < MAX_QRCODE_SIZE + QRCODE_PADDING ? SCREEN_WIDTH : MAX_QRCODE_SIZE;
+const getDefaultQRCodeSize = (windowWidth: number) =>
+    Math.min(windowWidth - QRCODE_PADDING, MAX_QRCODE_SIZE);
 
 // 25% squared equals 4% total covered area, which is well within safe limits for
 // "High" level QR code.
@@ -63,13 +61,15 @@ const qrCodeCenterIconStyle = prepareNativeStyle(utils => ({
 
 export const QRCode = ({
     data,
-    qrCodeSize = QRCODE_SIZE,
+    qrCodeSize,
     paddingHorizontal,
     paddingVertical,
     centerIcon,
 }: QRCodeProps) => {
     const { applyStyle } = useNativeStyles();
+    const { width: windowWidth } = useWindowDimensions();
 
+    const size = qrCodeSize ?? getDefaultQRCodeSize(windowWidth);
     const horizontalPadding = getQRCodePadding(paddingHorizontal);
     const verticalPadding = getQRCodePadding(paddingVertical);
     const hasCenterIcon = centerIcon !== undefined;
@@ -78,7 +78,7 @@ export const QRCode = ({
         <Box alignItems="center">
             <View
                 style={applyStyle(qrCodeContainerStyle, {
-                    qrCodeSize,
+                    qrCodeSize: size,
                     paddingVertical: verticalPadding,
                     paddingHorizontal: horizontalPadding,
                 })}
@@ -87,7 +87,7 @@ export const QRCode = ({
                     bgColor={colorVariants.standard.surfaceFillRaised}
                     fgColor={colorVariants.standard.elementFillContrast}
                     level={hasCenterIcon ? 'H' : 'Q'}
-                    size={qrCodeSize}
+                    size={size}
                     value={data}
                 />
                 {hasCenterIcon && (

@@ -1,7 +1,8 @@
+import { useWindowDimensions } from 'react-native';
+
 import { Image } from '@suite-native/atoms';
 import { type SetupSupportingDeviceModel } from '@suite-native/device';
 import { DeviceModelInternal } from '@trezor/device-utils';
-import { getScreenHeight } from '@trezor/env-utils';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
 type DeviceImageSize = 'normal' | 'small';
@@ -24,21 +25,26 @@ const sizeToHeightMap = {
     small: 280,
 } as const satisfies Record<DeviceImageSize, number>;
 
-const deviceImageStyle = prepareNativeStyle<{ size: DeviceImageSize }>((_, { size }) => ({
-    width: '100%',
-    height: sizeToHeightMap[size],
-    maxHeight: (getScreenHeight() / 3) * 2,
-    alignItems: 'center',
-}));
+const MAX_HEIGHT_RATIO = 2 / 3;
+
+const deviceImageStyle = prepareNativeStyle<{ size: DeviceImageSize; windowHeight: number }>(
+    (_, { size, windowHeight }) => ({
+        width: '100%',
+        height: sizeToHeightMap[size],
+        maxHeight: windowHeight * MAX_HEIGHT_RATIO,
+        alignItems: 'center',
+    }),
+);
 
 export const DeviceModelImage = ({ deviceModel, size }: DeviceModelImageProps) => {
     const { applyStyle } = useNativeStyles();
+    const { height: windowHeight } = useWindowDimensions();
 
     return (
         <Image
             source={deviceModelImageMap[deviceModel]}
             contentFit="contain"
-            style={applyStyle(deviceImageStyle, { size })}
+            style={applyStyle(deviceImageStyle, { size, windowHeight })}
         />
     );
 };
