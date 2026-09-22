@@ -16,18 +16,16 @@ import {
     assembleSecondaryIndex,
     buildPrimaryIndex,
 } from './buildIndexes';
-import { EMPTY_ENTITY_IDS, NO_CHANGES } from './emptyResults';
+import { EMPTY_SNAPSHOT, NO_CHANGES } from './emptyResults';
 import { changesOf } from './entityIndexChanges';
 import { createEntityIndexQueries } from './entityIndexQueries';
 import {
-    type AnySecondaryKey,
     type EntityId,
     type EntityIndex,
     type EntityIndexChanges,
     type EntityIndexDefinition,
     type EntityIndexListener,
     type EntityIndexSnapshot,
-    type SecondaryIndexEntry,
     type SecondaryKeyExtractors,
 } from './entityIndexTypes';
 
@@ -52,22 +50,14 @@ export const createEntityIndex = <
     TId,
     TSecondaryIndexes
 > => {
+    // What a key means is the caller's business, which is where the cast to the snapshot's own
+    // signature comes from.
     type Snapshot = EntityIndexSnapshot<TEntity, TId, TSecondaryIndexes>;
-    // What a key means is the caller's business, which is where the two casts back to the
-    // snapshot's own signature come from.
-    type Entries = ReadonlyMap<AnySecondaryKey, SecondaryIndexEntry<TEntity, TId>>;
 
     const toEntities = getEntities ?? ((source: TSource) => source as unknown as Iterable<TEntity>);
 
-    const noEntries: Entries = new Map();
-    const noEntities: ReadonlyMap<TId, TEntity> = new Map();
-
-    const emptySnapshot: Snapshot = {
-        getIds: () => EMPTY_ENTITY_IDS,
-        getEntitiesById: () => noEntities,
-        getSecondaryIndex: ((_indexName: string) => noEntries) as Snapshot['getSecondaryIndex'],
-        getChanges: () => NO_CHANGES,
-    };
+    const emptySnapshot = EMPTY_SNAPSHOT as unknown as Snapshot;
+    const noEntries = emptySnapshot.getSecondaryIndex('' as never);
 
     const listeners = new Set<EntityIndexListener<TEntity, TId, TSecondaryIndexes>>();
     let notifiedSnapshot: Snapshot | undefined;
@@ -76,7 +66,6 @@ export const createEntityIndex = <
               source: TSource;
               snapshot: Snapshot;
               indexes: BuiltIndexes<TEntity, TId>;
-              isEmpty: boolean;
           }
         | undefined;
 
@@ -84,7 +73,6 @@ export const createEntityIndex = <
         // Only what this build needs, never `cached` itself: a closure over it would keep every
         // build before this one alive for as long as the index lives.
         const previous = cached?.indexes;
-        const wasEmpty = cached?.isEmpty ?? true;
         const previousSnapshot = cached?.snapshot;
 
         const primary = buildPrimaryIndex({
@@ -100,8 +88,10 @@ export const createEntityIndex = <
 
         // The source was replaced but holds what it held: what was built from it still stands,
         // including whatever secondary indexes were assembled off it.
+        // A source that was replaced but holds what it held — including one that was empty and
+        // still is — keeps everything that was built from it, so no listener hears of it.
         if (primary === previous?.primary && previousSnapshot !== undefined) {
-            cached = { source, snapshot: previousSnapshot, indexes: previous, isEmpty: wasEmpty };
+            cached = { source, snapshot: previousSnapshot, indexes: previous };
 
             return previousSnapshot;
         }
@@ -113,8 +103,14 @@ export const createEntityIndex = <
                 return known;
             }
 
+            const extractKey = secondaryKeyExtractors?.[indexName];
+
+            if (extractKey === undefined) {
+                return noEntries;
+            }
+
             const built = assembleSecondaryIndex({
-                extractKey: secondaryKeyExtractors?.[indexName],
+                extractKey,
                 byId: primary.byId,
                 previousEntries: previous?.secondaryIndexes.get(indexName),
             });
@@ -136,12 +132,11 @@ export const createEntityIndex = <
             return changes;
         };
 
-        const isEmpty = primary.ids.length === 0;
-        // Nothing to say and nothing to hand back that it has not handed back already: an index
-        // that was empty and stays empty keeps the snapshot it had, so no listener hears of it.
+        // Only the first build over a source with nothing in it: one that empties out has
+        // removals to report, and one that stays empty came back above.
         const snapshot: Snapshot =
-            isEmpty && wasEmpty
-                ? (previousSnapshot ?? emptySnapshot)
+            previous === undefined && primary.ids.length === 0
+                ? emptySnapshot
                 : {
                       getIds: () => primary.ids,
                       getEntitiesById: () => primary.byId,
@@ -149,7 +144,7 @@ export const createEntityIndex = <
                       getChanges,
                   };
 
-        cached = { source, snapshot, indexes, isEmpty };
+        cached = { source, snapshot, indexes };
 
         return snapshot;
     };
