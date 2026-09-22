@@ -5261,6 +5261,11 @@ export const messages = defineMessages({
             "Your assets couldn't be loaded. If using a VPN, disable it and try again. {details}",
         id: 'TR_DASHBOARD_DISCOVERY_ERROR_PARTIAL_DESC',
     },
+    TR_DASHBOARD_DISCOVERY_ERROR_DEVICE_DESC: {
+        defaultMessage:
+            "Your assets couldn't be loaded. Check that your Trezor is connected and unlocked, then try again. {details}",
+        id: 'TR_DASHBOARD_DISCOVERY_ERROR_DEVICE_DESC',
+    },
     TR_PIN: {
         id: 'TR_PIN',
         defaultMessage: 'PIN',
