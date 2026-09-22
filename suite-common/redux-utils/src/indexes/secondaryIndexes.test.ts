@@ -88,51 +88,6 @@ describe('looking an entity up by something other than its id', () => {
     });
 });
 
-describe('an entry nobody reads', () => {
-    it('is not assembled, and its keys are never derived', () => {
-        const bySide = jest.fn((entity: Tagged) => entity.side);
-        const byTag = jest.fn((entity: Tagged) => entity.tags);
-        const index = createEntityIndex({
-            name: 'lazyIndexes',
-            selectSource: (state: { entities: Tagged[] }) => state.entities,
-            getEntities: (entities: Tagged[]) => entities,
-            getId: (entity: Tagged) => entity.id,
-            secondaryIndexes: { bySide, byTag },
-        });
-
-        index.getIdsBySecondaryKey({ entities: [one, two, three] }, 'bySide', 'left');
-
-        expect(bySide).toHaveBeenCalledTimes(3);
-        expect(byTag).not.toHaveBeenCalled();
-    });
-
-    it('derives its keys the first time it is read, and not again', () => {
-        const { index, bySide } = createIndexWithSecondaryIndex();
-        const state = { entities: [one, two] };
-
-        index.getIdsBySecondaryKey(state, 'bySide', 'left');
-        bySide.mockClear();
-        index.getIdsBySecondaryKey(state, 'bySide', 'left');
-
-        expect(bySide).not.toHaveBeenCalled();
-    });
-
-    it('costs nothing to the reads that do not want it', () => {
-        const byTag = jest.fn((entity: Tagged) => entity.tags);
-        const index = createEntityIndex({
-            name: 'lazyById',
-            selectSource: (state: { entities: Tagged[] }) => state.entities,
-            getEntities: (entities: Tagged[]) => entities,
-            getId: (entity: Tagged) => entity.id,
-            secondaryIndexes: { byTag },
-        });
-
-        index.getById({ entities: [one, two] }, '1');
-
-        expect(byTag).not.toHaveBeenCalled();
-    });
-});
-
 describe('an entry whose entity changed', () => {
     it('hands back a new array, so a consumer watching it sees the change', () => {
         const { index } = createIndexWithSecondaryIndex();
@@ -176,45 +131,84 @@ describe('an entry whose entity changed', () => {
     });
 });
 
-describe('the secondary indexes a consumer keeps reading', () => {
-    const createTwoIndexEntityIndex = () => {
-        const bySide = jest.fn((entity: Tagged) => entity.side);
-        const byTag = jest.fn((entity: Tagged) => entity.tags);
+describe('how often the source is walked for an index', () => {
+    const walkCountingIndex = () => {
+        const walks: string[] = [];
+        const index = createEntityIndex({
+            name: 'walks',
+            selectSource: (state: { entities: Tagged[] }) => state.entities,
+            getEntities: (entities: Tagged[]) => {
+                walks.push('walk');
 
-        return {
-            bySide,
-            byTag,
-            index: createEntityIndex({
-                name: 'twoIndexes',
-                selectSource: (state: { entities: Tagged[] }) => state.entities,
-                getEntities: (entities: Tagged[]) => entities,
-                getId: (entity: Tagged) => entity.id,
-                secondaryIndexes: { bySide, byTag },
-            }),
-        };
+                return entities;
+            },
+            getId: (entity: Tagged) => entity.id,
+            secondaryIndexes: { bySide: (entity: Tagged) => entity.side },
+        });
+
+        return { index, walks };
     };
 
-    it('are assembled together, in the walk the next build is doing anyway', () => {
-        const { index, byTag } = createTwoIndexEntityIndex();
+    it('walks it once for a build whose index was read off the build before', () => {
+        // What a consumer does every time: the same index, read after every write. The build fills
+        // it as it walks, rather than walking the entities and then the id map it just made.
+        const { index, walks } = walkCountingIndex();
         index.getIdsBySecondaryKey({ entities: [one] }, 'bySide', 'left');
-        index.getIdsBySecondaryKey({ entities: [one] }, 'byTag', 'red');
-        byTag.mockClear();
+        walks.length = 0;
 
         index.getIdsBySecondaryKey({ entities: [one, two] }, 'bySide', 'left');
 
-        expect(byTag).toHaveBeenCalled();
+        expect(walks).toHaveLength(1);
     });
 
-    it('stop being assembled once nobody reads them', () => {
-        const { index, byTag } = createTwoIndexEntityIndex();
-        index.getIdsBySecondaryKey({ entities: [one] }, 'bySide', 'left');
-        index.getIdsBySecondaryKey({ entities: [one] }, 'byTag', 'red');
+    it('does not walk it again for an index read twice off one build', () => {
+        const { index, walks } = walkCountingIndex();
+        const state = { entities: [one, two] };
+
+        index.getIdsBySecondaryKey(state, 'bySide', 'left');
+        index.getIdsBySecondaryKey(state, 'bySide', 'right');
+
+        expect(walks).toHaveLength(1);
+    });
+});
+
+describe('an index nobody reads', () => {
+    it('is not assembled, and its keys are never derived', () => {
+        const bySide = jest.fn((entity: Tagged) => entity.side);
+        const byTag = jest.fn((entity: Tagged) => entity.tags);
+        const index = createEntityIndex({
+            name: 'onlyWhatIsAsked',
+            selectSource: (state: { entities: Tagged[] }) => state.entities,
+            getEntities: (entities: Tagged[]) => entities,
+            getId: (entity: Tagged) => entity.id,
+            secondaryIndexes: { bySide, byTag },
+        });
+
         index.getIdsBySecondaryKey({ entities: [one, two] }, 'bySide', 'left');
-        byTag.mockClear();
 
-        index.getIdsBySecondaryKey({ entities: [one, two, three] }, 'bySide', 'left');
-
+        expect(bySide).toHaveBeenCalledTimes(2);
         expect(byTag).not.toHaveBeenCalled();
+    });
+
+    it('is assembled once the read that wants it comes', () => {
+        const { index, bySide } = createIndexWithSecondaryIndex();
+        const state = { entities: [one, two] };
+
+        index.getIds(state);
+        expect(bySide).not.toHaveBeenCalled();
+
+        index.getIdsBySecondaryKey(state, 'bySide', 'left');
+        expect(bySide).toHaveBeenCalledTimes(2);
+    });
+
+    it('is asked for once per build, however often it is read', () => {
+        const { index, bySide } = createIndexWithSecondaryIndex();
+        const state = { entities: [one, two] };
+
+        index.getIdsBySecondaryKey(state, 'bySide', 'left');
+        index.getIdsBySecondaryKey(state, 'bySide', 'right');
+
+        expect(bySide).toHaveBeenCalledTimes(2);
     });
 });
 

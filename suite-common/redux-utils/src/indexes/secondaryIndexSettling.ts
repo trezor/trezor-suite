@@ -1,6 +1,5 @@
+import { type AssembledEntries } from './buildIndexes';
 import { type AnySecondaryKey, type EntityId, type SecondaryIndexEntry } from './entityIndexTypes';
-import { type AssembledEntries } from './secondaryIndexAssembly';
-
 /**
  * Which freshly assembled arrays may keep the reference they had.
  *
