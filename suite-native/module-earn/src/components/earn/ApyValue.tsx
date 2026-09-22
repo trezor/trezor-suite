@@ -1,3 +1,4 @@
+import { useFormatters } from '@suite-common/formatters';
 import { isApyAvailable } from '@suite-common/wallet-utils';
 import { Translation } from '@suite-native/intl';
 
@@ -8,25 +9,25 @@ type ApyValueProps = {
     rateType?: 'apy' | 'apr';
 };
 
-const getApyValue = ({ apy, isNotEarning }: Pick<ApyValueProps, 'apy' | 'isNotEarning'>) => {
-    if (isNotEarning) {
-        return <>0%</>;
-    }
-
-    if (!isApyAvailable(apy)) {
-        return <Translation id="earn.notAvailableShort" />;
-    }
-
-    return <>{`~${apy}%`}</>;
-};
-
 export const ApyValue = ({
     apy,
     isNotEarning = false,
     withLabel = false,
     rateType = 'apy',
 }: ApyValueProps) => {
-    const value = getApyValue({ apy, isNotEarning });
+    const { PercentageFormatter } = useFormatters();
+    const getValue = () => {
+        if (isNotEarning) {
+            return <>{PercentageFormatter.format(0, { withSymbol: true })}</>;
+        }
+
+        if (apy == null || !isApyAvailable(apy)) {
+            return <Translation id="earn.notAvailableShort" />;
+        }
+
+        return <>~{PercentageFormatter.format(apy, { withSymbol: true })}</>;
+    };
+    const value = getValue();
 
     if (!withLabel) {
         return value;

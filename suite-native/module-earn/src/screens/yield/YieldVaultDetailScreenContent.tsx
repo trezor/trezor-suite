@@ -74,7 +74,7 @@ export const YieldVaultDetailScreenContent = ({
     const { analytics } = useServices(injectNativeAnalytics);
     const { translate } = useTranslate();
 
-    const { CryptoAmountFormatter: cryptoAmountFormatter } = useFormatters();
+    const { CryptoAmountFormatter: cryptoAmountFormatter, PercentageFormatter } = useFormatters();
     const { isFirmwareSupported, showFirmwareUpdateAlert } =
         useStablecoinYieldFirmwareUpdateAlert();
 
@@ -85,7 +85,7 @@ export const YieldVaultDetailScreenContent = ({
 
     const { vault, apy, depositedSharesAmount, token, wrappedNativeSymbol } = yieldFlowData;
 
-    const apyValue = apy && isApyAvailable(apy) ? apy.toFixed(2) : null;
+    const apyValue = apy && isApyAvailable(apy) ? PercentageFormatter.format(apy) : null;
 
     const {
         bottomSheetRef: apyBreakdownBottomSheetRef,
