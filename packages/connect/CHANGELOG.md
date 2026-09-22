@@ -18,7 +18,7 @@ Use [connect.trezor.io/10.0.0](https://connect.trezor.io/10.0.0/) to access this
 
 # 10.0.0
 
-**Shipped in:** `@trezor/connect` 10.0.0 (Node, in-process core) · Trezor Suite 26.7.2+ (web & desktop, Suite-hosted core) · Trezor Suite Lite (mobile, deeplink to the app).
+**Shipped in:** `@trezor/connect` 10.0.0 (Node, in-process core) · Trezor Suite 26.9.2 (web & desktop, Suite-hosted core) · Trezor Suite Lite 26.8.1 (mobile).
 
 First stable release of Connect 10. This promotes `10.0.0-beta.3` to stable — there are no code changes since beta.3. The `10.0.0-beta.1` → `beta.3` entries below are the full changelog for the 10.0.0 line; if you are upgrading from Connect 9, read **Breaking since beta.1** in the beta.3 notes first.
 
