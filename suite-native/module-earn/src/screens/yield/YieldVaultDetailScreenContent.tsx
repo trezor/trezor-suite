@@ -72,14 +72,7 @@ export const YieldVaultDetailScreenContent = ({
         tokenContract: yieldToken.contract,
     });
 
-    const {
-        vault,
-        apy,
-        depositedSharesAmount,
-        token,
-        wrappedNativeSymbol,
-        bonusRewardTokenSymbol,
-    } = yieldFlowData;
+    const { vault, apy, depositedSharesAmount, token, wrappedNativeSymbol } = yieldFlowData;
 
     const apyValue = apy && isApyAvailable(apy) ? apy.toFixed(2) : null;
 
@@ -370,11 +363,7 @@ export const YieldVaultDetailScreenContent = ({
                             <ApyDottedUnderline onPress={showYieldApyBreakdownAlert}>
                                 <Text variant="body-sm">
                                     <Translation
-                                        id={
-                                            bonusRewardTokenSymbol
-                                                ? 'earn.ratePercentage'
-                                                : 'earn.apyPercentage'
-                                        }
+                                        id="earn.apyPercentage"
                                         values={{ apy: apyValue }}
                                     />
                                 </Text>
