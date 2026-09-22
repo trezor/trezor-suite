@@ -416,3 +416,15 @@ jobs:
             aws s3 cp --recursive --no-progress "$BUNDLE/runs/" "$DESTINATION/runs/"
           fi
           aws s3 cp --recursive --no-progress --exclude "runs/*" "$BUNDLE/" "$DESTINATION/"
+
+      # The page is served from the store it reads, so its URLs are relative and same-origin: no
+      # CORS, no credentials, no backend. Refreshed with the data so it never drifts from the shape
+      # of the rows it renders.
+      - name: Publish the dashboard
+        if: ${{ hashFiles('perf-upload/**') != '' }}
+        run: |
+          aws s3 cp --no-progress \
+            packages/perf-e2e/dashboard/index.html \
+            "s3://dev.suite.sldev.cz/e2e/perf/v1/dashboard/index.html" \
+            --content-type "text/html; charset=utf-8" \
+            --cache-control "no-cache, max-age=0"

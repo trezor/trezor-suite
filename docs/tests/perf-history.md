@@ -61,6 +61,15 @@ unreachable index all end in a printed status and exit 0.
 
 ## Reading it back
 
+A page is served from the store itself, so it needs nothing installed and no credentials:
+
+**<https://dev.suite.sldev.cz/e2e/perf/v1/dashboard/index.html>** — pick a surface, a branch and a
+metric; each scenario gets its own trend and links through to the artifact behind its latest point.
+It reads the same rolling index described above, with relative URLs, and is redeployed whenever a
+run publishes. A branch with no run yet simply reports that its index does not exist.
+
+For anything else, the rows are plain text:
+
 ```sh
 curl -s https://dev.suite.sldev.cz/e2e/perf/v1/index/web/develop/index.ndjson | tail -20
 ```
