@@ -1,4 +1,4 @@
-import { type EntityId, type EntityIndexChanges } from './entityIndexTypes';
+import { type EntityIndexChanges } from './entityIndexTypes';
 
 /**
  * One instance each, so a read that finds nothing hands back what the last one did: a consumer
@@ -8,4 +8,4 @@ export const EMPTY_ENTITY_IDS: readonly never[] = [];
 
 export const EMPTY_ENTITIES: readonly never[] = [];
 
-export const NO_CHANGES: EntityIndexChanges<EntityId> = { added: [], removed: [], updated: [] };
+export const NO_CHANGES: EntityIndexChanges<never> = { added: [], removed: [], updated: [] };
