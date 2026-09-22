@@ -56,12 +56,6 @@ const fileUnder = <TEntity, TId extends EntityId>(
         return;
     }
 
-    // An entity naming the same key twice is under it once. Nothing else can be, since an id
-    // belongs to one entity and the source holds it once.
-    if (held.ids[held.ids.length - 1] === id) {
-        return;
-    }
-
     if (held.isSameAsPrevious && held.previous?.entities[held.ids.length] !== entity) {
         held.isSameAsPrevious = false;
     }
@@ -147,19 +141,9 @@ export const assembleSecondaryIndex = <TEntity, TId extends EntityId>({
     const entries: AssembledEntries<TEntity, TId> = new Map();
 
     byId.forEach((entity, id) => {
-        const keys = extractKey?.(entity);
+        const key = extractKey?.(entity);
 
-        if (keys === undefined) {
-            return;
-        }
-
-        if (typeof keys === 'string') {
-            fileUnder(entries, previousEntries, keys, id, entity);
-
-            return;
-        }
-
-        for (const key of keys) {
+        if (key !== undefined) {
             fileUnder(entries, previousEntries, key, id, entity);
         }
     });

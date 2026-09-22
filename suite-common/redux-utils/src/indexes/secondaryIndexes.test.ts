@@ -1,6 +1,6 @@
 import { createEntityIndex } from './createEntityIndex';
 
-type Tagged = { id: string; side: string; tags: string[] };
+type Tagged = { id: string; side: string; colour: string | undefined };
 
 const createIndexWithSecondaryIndex = () => {
     const bySide = jest.fn((entity: Tagged) => entity.side);
@@ -12,16 +12,16 @@ const createIndexWithSecondaryIndex = () => {
         getId: (entity: Tagged) => entity.id,
         secondaryIndexes: {
             bySide,
-            byTag: (entity: Tagged) => entity.tags,
+            byColour: (entity: Tagged) => entity.colour,
         },
     });
 
     return { index, bySide };
 };
 
-const one = { id: '1', side: 'left', tags: ['red', 'blue'] };
-const two = { id: '2', side: 'left', tags: ['red'] };
-const three = { id: '3', side: 'right', tags: [] };
+const one = { id: '1', side: 'left', colour: 'red' };
+const two = { id: '2', side: 'left', colour: 'red' };
+const three = { id: '3', side: 'right', colour: undefined };
 
 describe('looking an entity up by something other than its id', () => {
     it('gives the ids in an entry', () => {
@@ -38,19 +38,17 @@ describe('looking an entity up by something other than its id', () => {
         expect(index.getIdsBySecondaryKey({ entities: [one] }, 'bySide', 'nowhere')).toEqual([]);
     });
 
-    it('puts an entity in every key it names', () => {
-        // A transaction belongs to each of its target addresses, not to one of them.
+    it('puts every entity that names a key under it', () => {
         const { index } = createIndexWithSecondaryIndex();
         const state = { entities: [one, two] };
 
-        expect(index.getIdsBySecondaryKey(state, 'byTag', 'red')).toEqual(['1', '2']);
-        expect(index.getIdsBySecondaryKey(state, 'byTag', 'blue')).toEqual(['1']);
+        expect(index.getIdsBySecondaryKey(state, 'byColour', 'red')).toEqual(['1', '2']);
     });
 
     it('leaves out an entity that names no key', () => {
         const { index } = createIndexWithSecondaryIndex();
 
-        expect(index.getIdsBySecondaryKey({ entities: [three] }, 'byTag', 'red')).toEqual([]);
+        expect(index.getIdsBySecondaryKey({ entities: [three] }, 'byColour', 'red')).toEqual([]);
     });
 
     it('hands back the same array for an entry whose members did not change', () => {
@@ -60,7 +58,7 @@ describe('looking an entity up by something other than its id', () => {
         const left = index.getIdsBySecondaryKey({ entities: [one, two, three] }, 'bySide', 'left');
 
         const afterRightChanged = index.getIdsBySecondaryKey(
-            { entities: [one, two, { ...three, tags: ['new'] }] },
+            { entities: [one, two, { ...three, colour: 'changed' }] },
             'bySide',
             'left',
         );
@@ -92,7 +90,7 @@ describe('an entry whose entity changed', () => {
     it('hands back a new array, so a consumer watching it sees the change', () => {
         const { index } = createIndexWithSecondaryIndex();
         const left = index.getBySecondaryKey({ entities: [one, two, three] }, 'bySide', 'left');
-        const changedTwo = { ...two, tags: ['written'] };
+        const changedTwo = { ...two, colour: 'changed' };
 
         const afterChange = index.getBySecondaryKey(
             { entities: [one, changedTwo, three] },
@@ -122,7 +120,7 @@ describe('an entry whose entity changed', () => {
         const right = index.getBySecondaryKey({ entities: [one, two, three] }, 'bySide', 'right');
 
         const afterLeftChanged = index.getBySecondaryKey(
-            { entities: [one, { ...two, tags: ['written'] }, three] },
+            { entities: [one, { ...two, colour: 'changed' }, three] },
             'bySide',
             'right',
         );
@@ -175,19 +173,19 @@ describe('how often the source is walked for an index', () => {
 describe('an index nobody reads', () => {
     it('is not assembled, and its keys are never derived', () => {
         const bySide = jest.fn((entity: Tagged) => entity.side);
-        const byTag = jest.fn((entity: Tagged) => entity.tags);
+        const byColour = jest.fn((entity: Tagged) => entity.colour);
         const index = createEntityIndex({
             name: 'onlyWhatIsAsked',
             selectSource: (state: { entities: Tagged[] }) => state.entities,
             getEntities: (entities: Tagged[]) => entities,
             getId: (entity: Tagged) => entity.id,
-            secondaryIndexes: { bySide, byTag },
+            secondaryIndexes: { bySide, byColour },
         });
 
         index.getIdsBySecondaryKey({ entities: [one, two] }, 'bySide', 'left');
 
         expect(bySide).toHaveBeenCalledTimes(2);
-        expect(byTag).not.toHaveBeenCalled();
+        expect(byColour).not.toHaveBeenCalled();
     });
 
     it('is assembled once the read that wants it comes', () => {
@@ -234,7 +232,7 @@ describe('reading an entry as entities', () => {
 
         expect(
             index.getBySecondaryKey(
-                { entities: [one, two, { ...three, tags: ['new'] }] },
+                { entities: [one, two, { ...three, colour: 'changed' }] },
                 'bySide',
                 'left',
             ),
@@ -246,7 +244,7 @@ describe('reading an entry as entities', () => {
         // see, and a consumer reading ids has no reason to be woken by.
         const { index } = createIndexWithSecondaryIndex();
         const left = index.getBySecondaryKey({ entities: [one, two] }, 'bySide', 'left');
-        const state = { entities: [{ ...one, tags: ['changed'] }, two] };
+        const state = { entities: [{ ...one, colour: 'changed' }, two] };
 
         expect(index.getBySecondaryKey(state, 'bySide', 'left')).not.toBe(left);
         expect(index.getIdsBySecondaryKey(state, 'bySide', 'left')).toEqual(['1', '2']);
@@ -286,7 +284,7 @@ describe('an entry keeping up with what happened to its entities', () => {
     it('opens an entry for a key nothing had before', () => {
         const { index } = createIndexWithSecondaryIndex();
         index.read({ entities: [one] });
-        const arrived = { id: '9', side: 'elsewhere', tags: [] };
+        const arrived = { id: '9', side: 'elsewhere', colour: undefined };
 
         expect(
             index.getIdsBySecondaryKey({ entities: [one, arrived] }, 'bySide', 'elsewhere'),
@@ -297,13 +295,13 @@ describe('an entry keeping up with what happened to its entities', () => {
         // Multi-key entries: the entity has to leave every key it no longer names.
         const { index } = createIndexWithSecondaryIndex();
         index.read({ entities: [one] });
-        const retagged = { ...one, tags: ['green'] };
+        const recoloured = { ...one, colour: 'green' };
 
-        const state = { entities: [retagged] };
+        const state = { entities: [recoloured] };
 
-        expect(index.getIdsBySecondaryKey(state, 'byTag', 'red')).toEqual([]);
-        expect(index.getIdsBySecondaryKey(state, 'byTag', 'blue')).toEqual([]);
-        expect(index.getIdsBySecondaryKey(state, 'byTag', 'green')).toEqual(['1']);
+        expect(index.getIdsBySecondaryKey(state, 'byColour', 'red')).toEqual([]);
+        expect(index.getIdsBySecondaryKey(state, 'byColour', 'blue')).toEqual([]);
+        expect(index.getIdsBySecondaryKey(state, 'byColour', 'green')).toEqual(['1']);
     });
 
     it('empties every entry when the last entity goes', () => {
@@ -313,7 +311,7 @@ describe('an entry keeping up with what happened to its entities', () => {
         const state = { entities: [] };
 
         expect(index.getIdsBySecondaryKey(state, 'bySide', 'left')).toEqual([]);
-        expect(index.getIdsBySecondaryKey(state, 'byTag', 'red')).toEqual([]);
+        expect(index.getIdsBySecondaryKey(state, 'byColour', 'red')).toEqual([]);
         expect(index.getIds(state)).toEqual([]);
     });
 
@@ -323,32 +321,9 @@ describe('an entry keeping up with what happened to its entities', () => {
         const previousIds = index.getIdsBySecondaryKey(before, 'bySide', 'left');
         const previousEntities = index.getBySecondaryKey(before, 'bySide', 'left');
 
-        const state = { entities: [{ ...one, tags: ['changed'] }, two] };
+        const state = { entities: [{ ...one, colour: 'changed' }, two] };
 
         expect(index.getIdsBySecondaryKey(state, 'bySide', 'left')).toEqual(previousIds);
         expect(index.getBySecondaryKey(state, 'bySide', 'left')).not.toBe(previousEntities);
-    });
-});
-
-describe('an entity that names the same entry key more than once', () => {
-    it('is in that entry once', () => {
-        // A transaction paying an address both from an input and to a target names it twice, and
-        // belongs to the address once.
-        const { index } = createIndexWithSecondaryIndex();
-        const twice = { id: '1', side: 'left', tags: ['red', 'red'] };
-
-        expect(index.getIdsBySecondaryKey({ entities: [twice] }, 'byTag', 'red')).toEqual(['1']);
-        expect(index.getBySecondaryKey({ entities: [twice] }, 'byTag', 'red')).toEqual([twice]);
-    });
-
-    it('does not swallow a different entity that names the same key', () => {
-        const { index } = createIndexWithSecondaryIndex();
-        const first = { id: '1', side: 'left', tags: ['red', 'red'] };
-        const second = { id: '2', side: 'left', tags: ['red'] };
-
-        expect(index.getIdsBySecondaryKey({ entities: [first, second] }, 'byTag', 'red')).toEqual([
-            '1',
-            '2',
-        ]);
     });
 });

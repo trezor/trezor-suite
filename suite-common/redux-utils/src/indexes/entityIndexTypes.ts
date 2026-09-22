@@ -18,18 +18,18 @@ export type EntityIndexChanges<TId extends EntityId> = {
 };
 
 /**
- * What an entity is looked up by, other than its id.
+ * What an entity is looked up by, other than its id: one key, or none.
  *
  * A secondary index here is always the grouping kind: a key names every entity that answers to it,
  * rather than at most one the way a unique index would — a lookup gives back what is under the
  * key, never a single entity. Naming exactly one entity is what the id is for.
  *
- * An entity may answer to several keys, or to none by returning `undefined`. Under any one key it
- * is there once, however many times it names it.
+ * An entity that belongs under several keys is several entities: `getEntities` flattens it, the
+ * way an account is flattened into what it holds, and then each of them has its one key.
  */
 export type SecondaryKeyExtractor<TEntity, TKey extends EntityId = EntityId> = (
     entity: TEntity,
-) => TKey | readonly TKey[] | undefined;
+) => TKey | undefined;
 
 export type SecondaryKeyExtractors<TEntity> = Record<string, SecondaryKeyExtractor<TEntity>>;
 
