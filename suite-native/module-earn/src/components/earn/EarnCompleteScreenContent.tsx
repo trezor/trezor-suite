@@ -72,7 +72,7 @@ export type EarnCompleteSummaryRow = {
 
 type EarnCompleteScreenType = YieldFlowType | WrappedNativeFlowType | EarnFormDraftPrefix;
 
-type EarnCompleteFeedbackCategory = Extract<FeedbackCategory, 'yield' | 'staking'>;
+type EarnCompleteFeedbackFeature = Extract<FeedbackCategory, 'yield' | 'staking'>;
 
 type EarnCompleteScreenContentProps = {
     buttonTranslationId: TxKeyPath;
@@ -81,7 +81,7 @@ type EarnCompleteScreenContentProps = {
     subtitle?: ReactNode;
     title: ReactNode;
     type: EarnCompleteScreenType;
-    feedbackCategory?: EarnCompleteFeedbackCategory;
+    feedbackFeature?: EarnCompleteFeedbackFeature;
     vaultId?: string;
 };
 
@@ -92,7 +92,7 @@ export const EarnCompleteScreenContent = ({
     subtitle,
     title,
     type,
-    feedbackCategory = 'yield',
+    feedbackFeature = 'yield',
     vaultId,
 }: EarnCompleteScreenContentProps) => {
     const { applyStyle } = useNativeStyles();
@@ -102,7 +102,7 @@ export const EarnCompleteScreenContent = ({
     const onFeedbackRatingSelect = (rating: Rating) => {
         analytics.report({
             type: events.feedbackRatingSelectedEvent.name,
-            payload: { rating, category: feedbackCategory, context: type },
+            payload: { rating, category: feedbackFeature, context: type },
         });
     };
 
@@ -113,8 +113,9 @@ export const EarnCompleteScreenContent = ({
             sendFeedbackThunk({
                 type: 'SUGGESTION',
                 payload: {
-                    category: feedbackCategory,
-                    feature: type,
+                    category: 'feature',
+                    feature: feedbackFeature,
+                    context: type,
                     description,
                     rating,
                     vaultId,
@@ -125,7 +126,7 @@ export const EarnCompleteScreenContent = ({
 
         analytics.report({
             type: events.feedbackSentEvent.name,
-            payload: { category: feedbackCategory, context: type },
+            payload: { category: feedbackFeature, context: type },
         });
     };
 

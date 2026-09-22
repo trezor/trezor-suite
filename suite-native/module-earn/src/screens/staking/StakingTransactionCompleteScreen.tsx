@@ -74,7 +74,7 @@ export const StakingTransactionCompleteScreen = () => {
     return (
         <EarnCompleteScreenContent
             type={stakeType}
-            feedbackCategory="staking"
+            feedbackFeature="staking"
             buttonTranslationId="earn.transactionCompleteScreen.doneButton"
             onButtonPress={navigation.goBack}
             rows={rows}
