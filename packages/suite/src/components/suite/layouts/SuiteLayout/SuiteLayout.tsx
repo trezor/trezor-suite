@@ -15,6 +15,7 @@ import { CoinjoinBars } from './CoinjoinBars/CoinjoinBars';
 import { LayoutPayloadProvider } from './LayoutPayloadProvider';
 import { AboveTabletOnly, BelowTabletOnly } from './LayoutSizeOnly';
 import { LayoutFooterSlot, LayoutHeaderSlot, LayoutMetadata } from './LayoutSlots';
+import { LockInspector } from './LockInspector';
 import { PowerMonitorManager } from './PowerMonitor/PowerMonitor';
 import { ScrollProvider } from './ScrollProvider';
 import { Sidebar } from './Sidebar/Sidebar';
@@ -153,6 +154,8 @@ export const SuiteLayout = memo(({ children, 'data-testid': dataTest }: SuiteLay
                             <AboveTabletOnly>
                                 <GuideButton />
                             </AboveTabletOnly>
+
+                            <LockInspector />
                         </LayoutPayloadProvider>
                     </Modal.Provider>
                 </PageWrapper>

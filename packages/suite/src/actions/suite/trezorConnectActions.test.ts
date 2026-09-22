@@ -142,10 +142,12 @@ describe('TrezorConnect Actions', () => {
         expect(actions.pop()).toEqual({
             type: lockDevice.type,
             payload: false,
+            meta: expect.anything(),
         });
         expect(actions.pop()).toEqual({
             type: lockDevice.type,
             payload: true,
+            meta: expect.objectContaining({ origin: 'getFeatures' }),
         });
     });
 });

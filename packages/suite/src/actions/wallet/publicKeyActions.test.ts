@@ -1,4 +1,4 @@
-import { type UnknownAction, combineReducers, createAction, createReducer } from '@reduxjs/toolkit';
+import { type UnknownAction, combineReducers, createReducer } from '@reduxjs/toolkit';
 
 import { mockDesktopAnalytics } from '@suite/analytics/mocks';
 import { type ConnectInitThunkDeps, connectInitThunk } from '@suite-common/connect-init';
@@ -10,6 +10,7 @@ import {
     mockGetThpSettings,
 } from '@suite-common/connect-init/mocks';
 import type { DeviceReducerState } from '@suite-common/device';
+import { mockLockDevice } from '@suite-common/device/mocks';
 import { messageSystemInitialState } from '@suite-common/message-system';
 import {
     mockGetAllowPrerelease,
@@ -21,7 +22,7 @@ import { noopCreateLogger } from '@trezor/connect-common';
 
 import fixtures from './__fixtures__/publicKeyActions';
 const extra: ConnectInitThunkDeps = {
-    actions: { lockDevice: createAction<boolean>('notImplemented/lockDevice') },
+    actions: { lockDevice: mockLockDevice() },
     services: {
         analytics: mockDesktopAnalytics(),
         connectInitHooks: mockConnectInitHooks(),

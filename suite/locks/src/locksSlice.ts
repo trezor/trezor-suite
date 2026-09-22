@@ -12,6 +12,19 @@ export type LocksState = Record<LockType, number>;
 
 export type LocksRootState = { locks: LocksState };
 
+/**
+ * Provenance of a single acquire/release, attached by the caller for the debug lock inspector.
+ * The counters ignore it entirely.
+ */
+export type LockSource = {
+    /** Pairs a release with its acquisition. Releases without it match the oldest hold of the same type. */
+    id?: string;
+    /** What holds the lock, e.g. `TrezorConnect.discoverAccounts`. */
+    origin?: string;
+};
+
+export type LockActionMeta = LockSource & { at: number };
+
 export const locksInitialState: LocksState = {
     [LOCK_TYPE.UI]: 0,
     [LOCK_TYPE.ROUTER]: 0,
@@ -22,18 +35,32 @@ const changeLock = (state: LocksState, lock: LockType, enabled: boolean) => {
     state[lock] = Math.max(state[lock] + (enabled ? 1 : -1), 0);
 };
 
+const prepareLock = (enabled: boolean, source?: LockSource) => ({
+    payload: enabled,
+    meta: { ...source, at: Date.now() },
+});
+
 export const locksSlice = createSlice({
     name: 'locks',
     initialState: locksInitialState,
     reducers: {
-        lockUI: (state, { payload }: PayloadAction<boolean>) => {
-            changeLock(state, LOCK_TYPE.UI, payload);
+        lockUI: {
+            prepare: prepareLock,
+            reducer: (state: LocksState, { payload }: PayloadAction<boolean>) => {
+                changeLock(state, LOCK_TYPE.UI, payload);
+            },
         },
-        lockDevice: (state, { payload }: PayloadAction<boolean>) => {
-            changeLock(state, LOCK_TYPE.DEVICE, payload);
+        lockDevice: {
+            prepare: prepareLock,
+            reducer: (state: LocksState, { payload }: PayloadAction<boolean>) => {
+                changeLock(state, LOCK_TYPE.DEVICE, payload);
+            },
         },
-        lockRouter: (state, { payload }: PayloadAction<boolean>) => {
-            changeLock(state, LOCK_TYPE.ROUTER, payload);
+        lockRouter: {
+            prepare: prepareLock,
+            reducer: (state: LocksState, { payload }: PayloadAction<boolean>) => {
+                changeLock(state, LOCK_TYPE.ROUTER, payload);
+            },
         },
     },
 });

@@ -1,7 +1,6 @@
-import { createAction } from '@reduxjs/toolkit';
-
 import { asGetter } from '@suite-common/dependency-injection';
 import { deviceInitialState } from '@suite-common/device';
+import { mockLockDevice } from '@suite-common/device/mocks';
 import { firmwareInitialState } from '@suite-common/firmware';
 import { messageSystemInitialState } from '@suite-common/message-system';
 import { type MockDispatch, createMockDispatch } from '@suite-common/redux-utils/mocks';
@@ -51,7 +50,7 @@ const createThunkDeps = (
     const getState = () => state;
     const extra: ConnectInitThunkDeps = {
         actions: {
-            lockDevice: createAction<boolean>('@test/lock-device'),
+            lockDevice: mockLockDevice(),
         },
         services: {
             analytics: { report: jest.fn() },
@@ -242,10 +241,21 @@ describe('TrezorConnect Actions', () => {
         await testMocks.getTrezorConnectMock().getFeatures();
 
         expect(actions).toEqual([
-            { type: extra.actions.lockDevice.type, payload: true },
-            { type: extra.actions.lockDevice.type, payload: false },
+            {
+                type: extra.actions.lockDevice.type,
+                payload: true,
+                meta: expect.objectContaining({ origin: 'getFeatures' }),
+            },
+            { type: extra.actions.lockDevice.type, payload: false, meta: expect.anything() },
             expect.objectContaining({ type: '@suite/device/removeButtonRequests' }),
         ]);
+
+        const [acquiredId, releasedId] = actions
+            .slice(0, 2)
+            .map(action => (action as { meta?: { id?: string } }).meta?.id);
+
+        expect(acquiredId).toBeDefined();
+        expect(releasedId).toBe(acquiredId);
     });
 
     it('only scoped callId-bearing UI events are swallowed by the global listener', async () => {

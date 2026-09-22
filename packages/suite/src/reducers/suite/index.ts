@@ -7,7 +7,12 @@ import { type FeedbackFeatureName } from '@suite/experimental';
 import { featureFeedbackReducer } from '@suite/feature-feedback';
 import { type FlagsState, prepareFlagsReducer } from '@suite/flags';
 import { type TranslationKey } from '@suite/intl';
-import { type LocksState, locksReducer } from '@suite/locks';
+import {
+    type LockTrackerState,
+    type LocksState,
+    lockTrackerReducer,
+    locksReducer,
+} from '@suite/locks';
 import { metadataReducer } from '@suite/metadata';
 import { type State as ModalState, modalReducer as modal } from '@suite/modal';
 import { type RouterState, routerReducer } from '@suite/router';
@@ -50,6 +55,7 @@ export type SuiteReducersState = {
     debug: DebugState;
     flags: FlagsState;
     locks: LocksState;
+    lockTracker: LockTrackerState;
     router: RouterState;
     modal: ModalState;
     device: DesktopDeviceState;
@@ -75,6 +81,7 @@ export const suiteReducers: ReducersMapObject<SuiteReducersState, UnknownAction>
     debug,
     flags,
     locks: locksReducer,
+    lockTracker: lockTrackerReducer,
     router: routerReducer,
     modal,
     device,

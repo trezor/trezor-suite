@@ -1,11 +1,12 @@
 import { MODAL_CLOSE, MODAL_OPEN_USER_CONTEXT, MODAL_PRESERVE } from '@suite/modal';
 import { connectInitThunk } from '@suite-common/connect-init';
+import { mockLockDevice } from '@suite-common/device/mocks';
 import { mockSuiteDevice } from '@suite-common/suite-types/mocks';
 import { notificationsActions } from '@suite-common/toast-notifications';
 
 import * as publicKeyActions from 'src/actions/wallet/publicKeyActions';
 
-const LOCK_DEVICE = 'notImplemented/lockDevice';
+const LOCK_DEVICE = mockLockDevice().type;
 
 export default [
     {

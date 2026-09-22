@@ -6,6 +6,12 @@ import { type OnModalCancelDep, type OpenModalDep } from '@suite-common/suite-ty
 import { type Account } from '@suite-common/wallet-types';
 import { type BluetoothDeviceId } from '@trezor/connect';
 
+// Structurally mirrors `LockSource` in `@suite/locks`, which this contract layer must not import.
+type LockSource = {
+    id?: string;
+    origin?: string;
+};
+
 type BaseReducer = (state: any, action: { type: any; payload: any }) => void;
 type StorageLoadReducer = (state: any, action: { type: any; payload: any }) => void;
 type StorageLoadTransactionsReducer = (state: any, action: { type: any; payload: any }) => void;
@@ -26,7 +32,13 @@ export type ExtraDependenciesStatic = {
     actions: OnModalCancelDep &
         OpenModalDep & {
             setAccountAddMetadata: ActionCreatorWithPreparedPayload<[payload: Account], Account>;
-            lockDevice: ActionCreatorWithPreparedPayload<[payload: boolean], boolean>;
+            lockDevice: ActionCreatorWithPreparedPayload<
+                [payload: boolean, source?: LockSource],
+                boolean,
+                string,
+                never,
+                LockSource & { at: number }
+            >;
         };
     // Use action types + reducers as last resort if you can't use actions creators. For example for storageLoad it is used because
     // it would be really hard to move all types to @suite-common that are needed to type payload. This comes at cost of

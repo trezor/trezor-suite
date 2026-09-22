@@ -118,7 +118,7 @@ export const gotoThunk = createThunk<
 
         dispatch(onLocationChangeThunk({ pathname, hash, anchor }));
         if (route?.isForegroundApp) {
-            dispatch(lockRouter(true));
+            dispatch(lockRouter(true, { origin: `router/${routeName}` }));
 
             // NOTE: this is useful eg. on welcome screen / logged out screen
             // where we want to have suite-start router clearing the URL to ensure

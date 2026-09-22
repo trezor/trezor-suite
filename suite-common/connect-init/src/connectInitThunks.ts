@@ -157,6 +157,7 @@ export const connectInitThunk = createThunk<
     });
 
     const synchronize = getSynchronize();
+    let callCount = 0;
 
     const original = TrezorConnect.call.bind(TrezorConnect);
     TrezorConnect.call = async (params: CallMethodPayload) => {
@@ -164,11 +165,16 @@ export const connectInitThunk = createThunk<
             return original(params);
         }
 
-        dispatch(lockDevice(true));
+        // The lock is taken before the call queues on `synchronize`, so it also covers the wait.
+        // Naming the method lets the debug lock inspector show which call holds it, and for how long.
+        callCount += 1;
+        const lockId = `connect-call-${callCount}`;
+
+        dispatch(lockDevice(true, { id: lockId, origin: params.method }));
 
         const result = await synchronize(() => original(params));
 
-        dispatch(lockDevice(false));
+        dispatch(lockDevice(false, { id: lockId }));
         dispatch(
             deviceActions.removeButtonRequests({
                 // todo: device not 'thread safe' - meaning that device to which button requests have been added to might not
