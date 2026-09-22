@@ -10521,11 +10521,11 @@ export const messages = defineMessages({
     },
     TR_EARN_YIELD_BADGE_RATE: {
         id: 'TR_EARN_YIELD_BADGE_RATE',
-        defaultMessage: '{apy}% Yield',
+        defaultMessage: '{apy}% APY',
     },
     TR_EARN_YIELD_BADGE_UP_TO_RATE: {
         id: 'TR_EARN_YIELD_BADGE_UP_TO_RATE',
-        defaultMessage: 'up to {apy}% Yield',
+        defaultMessage: 'up to {apy}% APY',
     },
     TR_EARN_YIELD_APY_SOURCE_LENDING_INTEREST: {
         id: 'TR_EARN_YIELD_APY_SOURCE_LENDING_INTEREST',
@@ -10878,7 +10878,7 @@ export const messages = defineMessages({
     },
     TR_STAKING_BANNER_ETH_EARN_TITLE: {
         id: 'TR_STAKING_BANNER_ETH_EARN_TITLE',
-        defaultMessage: 'Earn up to {apy}% on your {displaySymbol}',
+        defaultMessage: 'Earn up to {apy}% APY on your {displaySymbol}',
     },
     TR_STAKING_BANNER_ETH_EARN_TITLE_NO_RATE: {
         id: 'TR_STAKING_BANNER_ETH_EARN_TITLE_NO_RATE',
