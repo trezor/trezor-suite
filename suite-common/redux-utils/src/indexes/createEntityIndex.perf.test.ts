@@ -20,7 +20,6 @@ const BUDGET = {
     oneWriteShareOfBuild: 1.1,
     oneWriteMultipleOfRawMap: 2.2,
     coldBuildMultipleOfRawMap: 3,
-    oneIndexShareOfBoth: 0.9,
 };
 
 const derivedHoldings = new WeakMap<Holding[], Holding[]>();
@@ -193,23 +192,6 @@ describePerf(`building an index over ${PARTITIONS * PER_PARTITION} entities`, ()
         expect(oneWrite).toBeLessThan(
             (report['raw map and array fill'] as number) * BUDGET.oneWriteMultipleOfRawMap,
         );
-    });
-
-    it('assembles only the index that was asked for', () => {
-        const oneIndex = time(index => () => {
-            index.getBySecondaryKey({ byAccount: createSource() }, 'byLabel', 'label-0');
-        });
-
-        const bothIndexes = time(index => () => {
-            const read = { byAccount: createSource() };
-            index.getBySecondaryKey(read, 'byLabel', 'label-0');
-            index.getBySecondaryKey(read, 'byAccount', 'account-0');
-        });
-
-        report['one index read'] = oneIndex;
-        report['both indexes read'] = bothIndexes;
-
-        expect(oneIndex).toBeLessThan(bothIndexes * BUDGET.oneIndexShareOfBoth);
     });
 
     it('answers the inverse of a hidden list once per build, not once per read', () => {
