@@ -5,6 +5,7 @@ import {
     selectEnabledNetworks,
     selectHiddenAssetHoldings,
 } from '@suite-common/wallet-core';
+import { isCryptoDustAmount } from '@suite-common/wallet-utils';
 import { type StaticSessionId } from '@trezor/device-utils';
 
 import {
@@ -37,7 +38,19 @@ const createHiddenAssetsSelector = (
                         enabledNetworks.includes(holding.symbol),
                 );
 
-                return toAssetTotal(held) ?? [];
+                const asset = toAssetTotal(held);
+
+                if (
+                    asset === undefined ||
+                    isCryptoDustAmount({
+                        cryptoBalance: asset.cryptoBalance,
+                        decimals: asset.tokenInfo?.decimals,
+                    })
+                ) {
+                    return [];
+                }
+
+                return asset;
             });
 
             return returnStableArrayIfEmpty(assets.sort(compareAssets));

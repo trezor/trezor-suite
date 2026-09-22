@@ -6,7 +6,9 @@ import { type StaticSessionId } from '@trezor/device-utils';
 import {
     type AssetFirstTableState,
     getAssetFirstTotals,
+    selectAssetFirstDustRows,
     selectAssetFirstRows,
+    selectAssetFirstSections,
 } from './assetFirstTableSelectors';
 
 const ALICE = 'aliceWallet@device:0' as StaticSessionId;
@@ -86,7 +88,12 @@ const createState = ({
 };
 
 const selectAssetFirstRowKeys = (state: AssetFirstTableState) =>
-    selectAssetFirstRows(state, ALICE).map(row => row.assetKey);
+    selectAssetFirstSections('default')(state, ALICE).flatMap(section =>
+        section.rows.map(row => row.assetKey),
+    );
+
+const selectDustRowKeys = (state: AssetFirstTableState) =>
+    selectAssetFirstDustRows(state, ALICE).map(row => row.assetKey);
 
 describe('the rows the table is given', () => {
     it('lists one key per asset and network', () => {
@@ -186,6 +193,31 @@ describe('the rows the table is given', () => {
         });
 
         expect(selectAssetFirstRowKeys(state)).toEqual([`${ALICE}/eth/`, `${ALICE}/pol/`]);
+    });
+
+    it('keeps a holding worth less than a cent for the dust row, not the table', () => {
+        const state = createState({
+            accounts: [
+                mockAccount({
+                    symbol: ETH,
+                    balance: '1',
+                    tokens: [{ symbol: 'usdc', contract: USDC_ON_ETH, balance: '0.004' }],
+                }),
+            ],
+            rates: { ...mockRate(ETH, 2000), ...mockRate(ETH, 1, USDC_ON_ETH) },
+        });
+
+        expect(selectAssetFirstRowKeys(state)).toEqual([`${ALICE}/eth/`]);
+        expect(selectDustRowKeys(state)).toEqual([`${ALICE}/eth/${USDC_ON_ETH}`]);
+    });
+
+    it('keeps a small amount of something valuable', () => {
+        const state = createState({
+            accounts: [mockAccount({ symbol: ETH, balance: '0.000005' })],
+            rates: { ...mockRate(ETH, 2000) },
+        });
+
+        expect(selectAssetFirstRowKeys(state)).toEqual([`${ALICE}/eth/`]);
     });
 
     it('settles holdings worth the same by asset and network', () => {
