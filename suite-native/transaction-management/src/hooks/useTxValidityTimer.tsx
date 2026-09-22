@@ -2,18 +2,23 @@ import { useCallback, useEffect, useRef } from 'react';
 
 import { type NetworkType } from '@suite-common/wallet-config';
 import { getTxValidityTimeoutInMs } from '@suite-common/wallet-utils';
-import { useAlert } from '@suite-native/alerts';
+import { type Alert, useAlert } from '@suite-native/alerts';
 import { Translation } from '@suite-native/intl';
 import TrezorConnect from '@trezor/connect';
 import { useClickCooldown, useCountdownTimer } from '@trezor/react-utils';
 
-type UseTxValidityTimerParams = {
+export type TxValidityTimerExpiredAlertOptions = Partial<
+    Omit<Alert, 'onPressPrimaryButton' | 'onPressSecondaryButton'>
+>;
+
+export type UseTxValidityTimerParams = {
     networkType?: NetworkType;
     createdTimestamp: number;
     isBroadcasting: boolean;
     isTransactionAlreadySigned: boolean;
     onRetry: () => void | Promise<void>;
     onCancel: () => void;
+    expiredAlertOptions?: TxValidityTimerExpiredAlertOptions;
 };
 
 export const useTxValidityTimer = ({
@@ -23,6 +28,7 @@ export const useTxValidityTimer = ({
     isTransactionAlreadySigned,
     onRetry,
     onCancel,
+    expiredAlertOptions,
 }: UseTxValidityTimerParams) => {
     const { showAlert } = useAlert();
 
@@ -71,20 +77,32 @@ export const useTxValidityTimer = ({
 
         hasShownExpiredAlertRef.current = true;
 
-        showAlert({
-            pictogramVariant: 'critical',
-            title: <Translation id="transactionManagement.txValidityTimer.expiredAlert.title" />,
-            description: (
+        const {
+            pictogramVariant = 'critical',
+            title = <Translation id="transactionManagement.txValidityTimer.expiredAlert.title" />,
+            description = (
                 <Translation id="transactionManagement.txValidityTimer.expiredAlert.description" />
             ),
-            primaryButtonTitle: <Translation id="generic.buttons.tryAgain" />,
-            primaryButtonColorProps: { intent: 'critical', priority: 'primary' },
+            primaryButtonTitle = <Translation id="generic.buttons.tryAgain" />,
+            primaryButtonColorProps = { intent: 'critical', priority: 'primary' },
+            secondaryButtonTitle = <Translation id="generic.buttons.cancel" />,
+            secondaryButtonColorProps = { intent: 'critical', priority: 'secondary' },
+            ...restExpiredAlertOptions
+        } = expiredAlertOptions ?? {};
+
+        showAlert({
+            ...restExpiredAlertOptions,
+            pictogramVariant,
+            title,
+            description,
+            primaryButtonTitle,
+            primaryButtonColorProps,
             onPressPrimaryButton: handleRetry,
-            secondaryButtonTitle: <Translation id="generic.buttons.cancel" />,
-            secondaryButtonColorProps: { intent: 'critical', priority: 'secondary' },
+            secondaryButtonTitle,
+            secondaryButtonColorProps,
             onPressSecondaryButton: onCancel,
         });
-    }, [isExpired, showAlert, handleRetry, onCancel]);
+    }, [expiredAlertOptions, isExpired, showAlert, handleRetry, onCancel]);
 
     return {
         showTimer: isValidityTimerRelevant,

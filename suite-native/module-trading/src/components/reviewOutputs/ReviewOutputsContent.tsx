@@ -30,10 +30,12 @@ export type ReviewOutputsContentProps = UseTradingOutputsReviewScreenControlsPro
         | {
               tradingType: 'sell';
               exchangeFlowType?: undefined;
+              isDexExchange?: undefined;
           }
         | {
               tradingType: 'exchange';
               exchangeFlowType: ExchangeFlowType;
+              isDexExchange?: boolean;
           }
     );
 
@@ -48,6 +50,7 @@ export const ReviewOutputsContent = memo(
         resolveTransactionSendConsent,
         reportToAnalytics,
         exchangeFlowType,
+        isDexExchange,
     }: ReviewOutputsContentProps) => {
         const { applyStyle } = useNativeStyles();
         const {
@@ -63,7 +66,7 @@ export const ReviewOutputsContent = memo(
         } = useTradingOutputsReviewScreenControls({
             orderId,
             accountKey,
-            exchangeFlowType,
+            isDexExchange,
             signAndSendTransaction,
             resolveTransactionSendConsent,
             reportToAnalytics,

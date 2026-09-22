@@ -26,6 +26,7 @@ import {
     isEvmApprovalTx,
     subunitsToUnits,
 } from '@suite-common/wallet-utils';
+import { type Ok } from '@trezor/type-utils';
 import { BigNumber } from '@trezor/utils';
 
 import {
@@ -85,7 +86,7 @@ export type RecomposeAndSignTxThunkState = ComposeSendFormTransactionFeeLevelsTh
     TradingRootState;
 
 export const recomposeAndSignTxThunk = createThunk<
-    TradingFulfillValue,
+    Ok<{ txid: string }>,
     RecomposeAndSignTxThunkProps,
     {
         rejectValue: TradingSendRejectedProps;
@@ -320,6 +321,16 @@ export const recomposeAndSignTxThunk = createThunk<
         if (!resultOfSignedTransaction) {
             return rejectWithValue({
                 type: 'sign-cancelled',
+                error: { id: 'TR_TRADING_CANNOT_SEND_TRANSACTION' },
+            });
+        }
+
+        if (!resultOfSignedTransaction.success) {
+            return rejectWithValue({
+                type:
+                    resultOfSignedTransaction.error.code === 'sign-transaction-timeout'
+                        ? 'sign-transaction-timeout'
+                        : 'sign-tx-error',
                 error: { id: 'TR_TRADING_CANNOT_SEND_TRANSACTION' },
             });
         }

@@ -131,6 +131,13 @@ describe('sendDexTransactionThunk', () => {
             ['when payload contains error', { type: 'error', error: { id: 'TR_ERROR' } }],
             ['when payload is not successful', { success: false }],
             [
+                'when signing times out',
+                {
+                    type: 'sign-transaction-timeout',
+                    error: { id: 'TR_TRADING_CANNOT_SEND_TRANSACTION' },
+                },
+            ],
+            [
                 'when the signing was cancelled on the device',
                 {
                     type: 'sign-cancelled',
@@ -143,8 +150,12 @@ describe('sendDexTransactionThunk', () => {
             (tradingThunks.recomposeAndSignTxThunk as unknown as jest.Mock) = jest
                 .fn()
                 .mockImplementation(
-                    createThunk('@trading/thunk/recomposeAndSignTx', (_, { rejectWithValue }) =>
-                        rejectWithValue(recomposeAndSignPayload),
+                    createThunk(
+                        '@trading/thunk/recomposeAndSignTx',
+                        (_, { rejectWithValue, fulfillWithValue }) =>
+                            recomposeAndSignPayload && 'success' in recomposeAndSignPayload
+                                ? fulfillWithValue(recomposeAndSignPayload)
+                                : rejectWithValue(recomposeAndSignPayload),
                     ),
                 );
 
@@ -162,7 +173,7 @@ describe('sendDexTransactionThunk', () => {
             expect(result.meta.requestStatus).toEqual('rejected');
             expect(result.payload).toEqual(
                 recomposeAndSignPayload && 'error' in recomposeAndSignPayload
-                    ? recomposeAndSignPayload
+                    ? { type: recomposeAndSignPayload.type, error: recomposeAndSignPayload.error }
                     : {
                           type: 'sign-tx-error',
                           error: {

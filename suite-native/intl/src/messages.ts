@@ -4075,6 +4075,12 @@ export const messages = {
         tradingReviewOutputs: {
             title: 'Confirm on Trezor',
             submitButton: 'Send transaction',
+            expiredAlert: {
+                title: 'Transaction confirmation expired',
+                description:
+                    'Not confirmed on your Trezor in time. Go back to the summary to try again.',
+                button: 'Back to summary',
+            },
             signData: {
                 heading: 'Sign EIP-712 typed data',
                 address: 'Address',

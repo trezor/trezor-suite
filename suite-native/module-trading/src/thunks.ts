@@ -543,7 +543,7 @@ export const signAndPushSendFormTransactionThunk = createThunk<
         );
 
         if (isRejected(signResult)) {
-            return rejectWithValue(signResult.error);
+            return rejectWithValue(signResult.payload ?? signResult.error);
         }
 
         // We need to wait until the user approves sending the transaction before pushing it
