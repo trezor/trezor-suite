@@ -6,6 +6,7 @@ import { useMutation } from '@tanstack/react-query';
 import { Translation } from '@suite/intl';
 import { openModal } from '@suite/modal';
 import { useServices } from '@suite-common/dependency-injection';
+import { useFormatters } from '@suite-common/formatters';
 import { injectDispatch } from '@suite-common/redux-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
@@ -47,6 +48,7 @@ type BroadcastWrap = {
 
 export const WrapNativeToken = ({ account, token, onFlowCompleteChange }: WrapNativeTokenProps) => {
     const { dispatch } = useServices(injectDispatch);
+    const { CryptoAmountFormatter } = useFormatters();
     const ensureDeviceReady = useWrappedNativeDeviceGuard();
     const {
         isDisabled,
@@ -181,7 +183,11 @@ export const WrapNativeToken = ({ account, token, onFlowCompleteChange }: WrapNa
             return (
                 <YieldActionStepWarning
                     reserveRecommendation={{
-                        amount: WETH_WRAP_GAS_RESERVE.toString(),
+                        amount: CryptoAmountFormatter.format(WETH_WRAP_GAS_RESERVE.toString(), {
+                            symbol: account.symbol,
+                            isBalance: true,
+                            withSymbol: false,
+                        }),
                         nativeSymbol,
                     }}
                 />
@@ -239,7 +245,7 @@ export const WrapNativeToken = ({ account, token, onFlowCompleteChange }: WrapNa
                     <YieldWrapStep
                         token={token}
                         nativeSymbol={nativeSymbol}
-                        availableAmount={account.formattedBalance}
+                        availableAmount={maxWrapAmount}
                         shouldShowReceivingRow={false}
                         isSubmitting={wrapMutation.isPending}
                         isSubmitDisabled={!isAmountValid || isDisabled}

@@ -32,7 +32,7 @@ export const EarnRewardsAmount = ({
     if (!apy)
         return (
             <Text
-                typographyStyle="body-sm-strong"
+                typographyStyle="body-sm"
                 intent={intent}
                 priority={priority}
                 isDisabled={isDisabled}

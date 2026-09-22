@@ -225,7 +225,7 @@ export const YieldWithdrawForm = () => {
                 {flow.currentStep !== 'complete' && (
                     <>
                         <Text typographyStyle="headline-md">
-                            <Translation id="TR_EARN_YIELD_WITHDRAW" />
+                            <Translation id="TR_EARN_YIELD_WITHDRAW_TITLE" />
                         </Text>
 
                         {errorMessage && (

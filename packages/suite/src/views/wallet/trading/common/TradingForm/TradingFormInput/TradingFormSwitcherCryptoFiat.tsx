@@ -23,7 +23,7 @@ export const TradingFormSwitcherCryptoFiat = ({
         isDisabled={isDisabled}
     >
         <Translation
-            id="TR_TRADING_ENTER_AMOUNT_IN"
+            id="TR_ENTER_AMOUNT_IN"
             values={{
                 currency,
             }}

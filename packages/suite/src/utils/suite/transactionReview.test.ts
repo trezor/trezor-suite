@@ -28,11 +28,13 @@ const getTranslation = ({
     precomposedForm,
     approvalToken,
     source,
+    routeName,
     isBumpFeeRbfAction = false,
 }: {
     precomposedForm: FormState;
     approvalToken: TokenInfo | undefined;
     source: 'heading' | 'button';
+    routeName?: string;
     isBumpFeeRbfAction?: boolean;
 }) =>
     getTransactionReviewModalActionTranslation({
@@ -40,6 +42,7 @@ const getTranslation = ({
         stakeType: null,
         precomposedForm,
         approvalToken,
+        routeName,
         isBumpFeeRbfAction,
         isCancelRbfAction: false,
         source,
@@ -111,5 +114,30 @@ describe('getTransactionReviewModalActionTranslation', () => {
         expect(
             getTranslation({ precomposedForm, approvalToken: undefined, source: 'heading' }),
         ).toEqual({ id: 'TR_TRADING_SWAP' });
+    });
+
+    it.each([
+        ['earn-yield-deposit', 'TR_EARN_YIELD_DEPOSIT', 'TR_EARN_YIELD_DEPOSIT_BUTTON'],
+        ['earn-yield-withdraw', 'TR_EARN_YIELD_WITHDRAW_TITLE', 'TR_EARN_YIELD_WITHDRAW'],
+        ['earn-yield-claim', 'TR_EARN_YIELD_CLAIM_REWARDS', 'TR_EARN_YIELD_CLAIM'],
+    ])('labels the %s review heading and send button separately', (routeName, heading, button) => {
+        const precomposedForm = getFormState();
+
+        expect(
+            getTranslation({
+                precomposedForm,
+                approvalToken: undefined,
+                source: 'heading',
+                routeName,
+            }),
+        ).toEqual({ id: heading });
+        expect(
+            getTranslation({
+                precomposedForm,
+                approvalToken: undefined,
+                source: 'button',
+                routeName,
+            }),
+        ).toEqual({ id: button });
     });
 });

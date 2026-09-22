@@ -164,7 +164,7 @@ export const YieldClaim = ({ account }: YieldClaimProps) => {
                         <ContextMessage context={Context.getEarnYield('claim')} />
 
                         <Text typographyStyle="headline-md" data-testid="@yield/claim/heading">
-                            <Translation id="TR_EARN_CLAIM_REWARDS" />
+                            <Translation id="TR_EARN_YIELD_CLAIM_REWARDS" />
                         </Text>
                     </>
                 )}
@@ -177,13 +177,13 @@ export const YieldClaim = ({ account }: YieldClaimProps) => {
                         currentStep={currentStep}
                         steps={{
                             action: {
-                                title: <Translation id="TR_EARN_CLAIM_REWARDS" />,
+                                title: <Translation id="TR_EARN_YIELD_CLAIM_REWARDS" />,
                                 content: () => (
                                     <>
                                         <Card>
                                             <Column gap={24}>
                                                 <Text typographyStyle="body-md-strong">
-                                                    <Translation id="TR_STAKE_REWARDS" />
+                                                    <Translation id="TR_EARN_YIELD_BONUS_REWARDS" />
                                                 </Text>
 
                                                 <YieldRewardsList

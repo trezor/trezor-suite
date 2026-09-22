@@ -1,4 +1,5 @@
 import { selectFullSelectedAccount } from '@suite/account';
+import { Translation } from '@suite/intl';
 import {
     selectAccountStakeTypeTransactions,
     selectAccountTransactionsWithNulls,
@@ -36,6 +37,7 @@ export const Transactions = () => {
             symbol={account.symbol}
             isLoading={!areAllTransactionsLoaded}
             customTotalItems={stakeTxs.length}
+            customHeading={<Translation id="TR_STAKING_TRANSACTIONS" />}
             isExportable={false}
             isTxFilteringEnabled={false}
         />

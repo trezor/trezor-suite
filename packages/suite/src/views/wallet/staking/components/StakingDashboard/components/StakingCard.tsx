@@ -292,7 +292,13 @@ export const StakingCard = ({
                     <Item
                         label={
                             <Row gap={8}>
-                                <Translation id="TR_STAKE_REWARDS" />
+                                <Translation
+                                    id={
+                                        account.networkType === 'solana'
+                                            ? 'TR_STAKE_TOTAL_REWARDS'
+                                            : 'TR_STAKE_REWARDS'
+                                    }
+                                />
                                 <Tooltip
                                     maxWidth={250}
                                     content={
@@ -306,11 +312,9 @@ export const StakingCard = ({
                                         />
                                     }
                                 >
-                                    {!isCardanoNetworkType && (
-                                        <Badge intent="brand" iconRight={InfoIcon} size="small">
-                                            <Translation id="TR_STAKE_RESTAKED_BADGE" />
-                                        </Badge>
-                                    )}
+                                    <Badge intent="brand" iconRight={InfoIcon} size="small">
+                                        <Translation id="TR_STAKE_RESTAKED_BADGE" />
+                                    </Badge>
                                 </Tooltip>
                             </Row>
                         }

@@ -46,6 +46,13 @@ const StakingSignRow = ({ flow }: Pick<EarnStakingRowsProps, 'flow'>) => (
     />
 );
 
+const ApproximateApy = ({ apy }: Pick<EarnStakingRowsProps, 'apy'>) =>
+    apy === null ? (
+        <Translation id="TR_EARN_APY_N_A" />
+    ) : (
+        <Translation id="TR_EARN_APY_APPROX" values={{ apyPercent: formatApyValue(apy) }} />
+    );
+
 const EthereumStakingRows = ({
     flow,
     displaySymbol,
@@ -74,14 +81,7 @@ const EthereumStakingRows = ({
         <EarnInfoRow
             heading={<Translation id="TR_EARN_REWARDS_WEEKLY" />}
             subheading={<Translation id="TR_EARN_REWARDS_ARE_RESTAKED" />}
-            content={{
-                text: (
-                    <Translation
-                        id="TR_EARN_APY_APPROX"
-                        values={{ apyPercent: formatApyValue(apy) }}
-                    />
-                ),
-            }}
+            content={{ text: <ApproximateApy apy={apy} /> }}
         />
     </>
 );
@@ -106,14 +106,7 @@ const SolanaStakingRows = ({ flow, displaySymbol, apy }: EarnStakingRowsProps) =
                 <Translation id="TR_EARN_REWARDS_EVERY" values={{ days: SOLANA_EPOCH_DAYS }} />
             }
             subheading={<Translation id="TR_EARN_REWARDS_ARE_RESTAKED" />}
-            content={{
-                text: (
-                    <Translation
-                        id="TR_EARN_APY_APPROX"
-                        values={{ apyPercent: formatApyValue(apy) }}
-                    />
-                ),
-            }}
+            content={{ text: <ApproximateApy apy={apy} /> }}
         />
     </>
 );
@@ -154,14 +147,7 @@ const CardanoStakingRows = ({ flow, apy }: EarnStakingRowsProps) => (
                 />
             }
             subheading={<Translation id="TR_EARN_REWARDS_ARE_RESTAKED" />}
-            content={{
-                text: (
-                    <Translation
-                        id="TR_EARN_APY_APPROX"
-                        values={{ apyPercent: formatApyValue(apy) }}
-                    />
-                ),
-            }}
+            content={{ text: <ApproximateApy apy={apy} /> }}
         />
     </>
 );

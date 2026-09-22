@@ -42,6 +42,10 @@ export const TronVoteAllocationModal = ({ account, onClose }: TronVoteAllocation
 
     const remainingVotes = getTronAvailableVotingPower(account);
     const totalVotes = getTronTotalVotingPower(account);
+    const assignedVotes = BigNumber.max(
+        new BigNumber(totalVotes).minus(remainingVotes),
+        0,
+    ).toFixed();
     const hasRemainingVotes = new BigNumber(remainingVotes).gt(0);
     const votes = getTronVotes(account);
     const hasVotes = votes.length > 0;
@@ -82,10 +86,10 @@ export const TronVoteAllocationModal = ({ account, onClose }: TronVoteAllocation
             <Column gap={16} alignItems="stretch">
                 <Card type="contrast" paddingType="none">
                     <TronStakeInfoRow
-                        label={<Translation id="TR_EARN_TRON_REMAINING_VOTES_LABEL" />}
+                        label={<Translation id="TR_EARN_TRON_ASSIGNED_VOTES_LABEL" />}
                     >
                         <Text typographyStyle="body-md-strong">
-                            {remainingVotes}/{totalVotes}
+                            {assignedVotes}/{totalVotes}
                         </Text>
                     </TronStakeInfoRow>
                 </Card>

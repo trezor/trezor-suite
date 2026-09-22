@@ -3,6 +3,7 @@ import { Translation } from '@suite/intl';
 import { useServices } from '@suite-common/dependency-injection';
 import { useTronStakingStats } from '@suite-common/earn-staking-api';
 import { type EarnModalAction } from '@suite-common/suite-types/src/staking';
+import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import { supportedTronNetworkSymbols } from '@suite-common/wallet-types';
 import { Divider, StepList } from '@trezor/components';
 import { CheckSquareOffsetIcon, LightningIcon, LockSimpleOpenIcon } from '@trezor/icons';
@@ -45,6 +46,7 @@ export const TronStakeInANutshellModal = ({
         });
     };
 
+    const displaySymbol = getNetworkDisplaySymbol(supportedTronNetworkSymbols[0]);
     const networkFeeBadge = { text: <Translation id="TR_TRADING_NETWORK_FEE" />, isBadge: true };
 
     const processes: EarnInANutshellProcess[] = [
@@ -54,7 +56,12 @@ export const TronStakeInANutshellModal = ({
             content: (
                 <StepList bulletGap={12} gap={16} bulletSize="small" titleGap={4}>
                     <EarnInfoRow
-                        heading={<Translation id="TR_EARN_TRON_FREEZE_TRANSACTION" />}
+                        heading={
+                            <Translation
+                                id="TR_EARN_TRON_FREEZE_TRANSACTION"
+                                values={{ displaySymbol }}
+                            />
+                        }
                         content={networkFeeBadge}
                     />
                     <EarnInfoRow
@@ -63,13 +70,17 @@ export const TronStakeInANutshellModal = ({
                     />
                     <EarnInfoRow
                         heading={<Translation id="TR_EARN_TRON_EARN_REWARDS" />}
+                        subheading={<Translation id="TR_EARN_TRON_REWARDS_CLAIMED_MANUALLY" />}
                         content={{
-                            text: (
-                                <Translation
-                                    id="TR_EARN_APR_APPROX"
-                                    values={{ aprPercent: formatApyValue(maxApr) }}
-                                />
-                            ),
+                            text:
+                                maxApr === null ? (
+                                    <Translation id="TR_EARN_APY_N_A" />
+                                ) : (
+                                    <Translation
+                                        id="TR_EARN_APR_APPROX"
+                                        values={{ aprPercent: formatApyValue(maxApr) }}
+                                    />
+                                ),
                         }}
                     />
                 </StepList>
@@ -119,7 +130,12 @@ export const TronStakeInANutshellModal = ({
                     },
                     {
                         icon: CheckSquareOffsetIcon,
-                        content: <Translation id="TR_EARN_TRON_NUTSHELL_FREEZE_VOTE" />,
+                        content: (
+                            <Translation
+                                id="TR_EARN_TRON_NUTSHELL_FREEZE_VOTE"
+                                values={{ displaySymbol }}
+                            />
+                        ),
                     },
                     {
                         icon: LockSimpleOpenIcon,

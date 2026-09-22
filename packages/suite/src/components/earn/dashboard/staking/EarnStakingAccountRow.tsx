@@ -222,7 +222,12 @@ export const EarnStakingAccountRow = ({ account, isCardLayout }: EarnStakingAcco
         <Paragraph typographyStyle="body-sm" intent="neutral" priority="secondary">
             <Translation
                 id="TR_EARN_STAKING_DASHBOARD_MINIMUM_STAKE"
-                values={{ amount: minStakingAmount?.toString(), displaySymbol }}
+                values={{
+                    amount: minStakingAmount
+                        ? formatCryptoAmount(minStakingAmount.toString())
+                        : undefined,
+                    displaySymbol,
+                }}
             />
         </Paragraph>
     );
@@ -300,6 +305,7 @@ export const EarnStakingAccountRow = ({ account, isCardLayout }: EarnStakingAcco
         isVotingDisabled,
         votingMessageContent,
         canClaim,
+        networkType: account.networkType,
         isClaimButtonDisabled,
         claimingMessageContent,
         onBuy: navigateToTradingBuy,

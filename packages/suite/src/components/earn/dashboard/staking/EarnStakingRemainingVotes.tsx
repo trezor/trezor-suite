@@ -1,5 +1,6 @@
 import { Translation } from '@suite/intl';
 import { formatTronApr } from '@suite-common/earn-staking-api';
+import { isApyAvailable } from '@suite-common/wallet-utils';
 import { Icon, Paragraph, Row } from '@trezor/components';
 import { WarningIcon } from '@trezor/icons';
 
@@ -11,10 +12,14 @@ export const EarnStakingRemainingVotes = ({ apr }: EarnStakingRemainingVotesProp
     <Row gap={4}>
         <Icon as={WarningIcon} size={20} intent="warning" />
         <Paragraph typographyStyle="body-sm" intent="warning">
-            <Translation
-                id="TR_EARN_STAKING_DASHBOARD_REMAINING_VOTES"
-                values={{ apr: formatTronApr(apr) }}
-            />
+            {isApyAvailable(apr) ? (
+                <Translation
+                    id="TR_EARN_STAKING_DASHBOARD_REMAINING_VOTES"
+                    values={{ apr: formatTronApr(apr) }}
+                />
+            ) : (
+                <Translation id="TR_EARN_STAKING_DASHBOARD_REMAINING_VOTES_NO_APR" />
+            )}
         </Paragraph>
     </Row>
 );

@@ -220,6 +220,7 @@ export const EarnYieldTable = () => {
                             <Table isRowHighlightedOnHover margin={{ top: 8 }}>
                                 <EarnDashboardTableHeader
                                     accountColumnTranslationId="TR_EARN_DASHBOARD_TABLE_ACCOUNT_VAULT"
+                                    variant="yield"
                                     showRewardsColumns={hasAnyRewardsData}
                                 />
                                 <EarnYieldTableBody

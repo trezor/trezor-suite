@@ -90,7 +90,7 @@ test.describe('stablecoin yield claim', { tag: ['@webOnly', '@T3W1', '@T3T1'] },
 
             await test.step('Claim page lists the claimable rewards', async () => {
                 await expect(yieldFlowSection.claimHeading).toHaveTranslation(
-                    'TR_EARN_CLAIM_REWARDS',
+                    'TR_EARN_YIELD_CLAIM_REWARDS',
                 );
                 await expect(yieldFlowSection.claimRewardAmount(CLAIM_REWARD_TOKEN)).toHaveText(
                     CLAIM_REWARD_AMOUNT,

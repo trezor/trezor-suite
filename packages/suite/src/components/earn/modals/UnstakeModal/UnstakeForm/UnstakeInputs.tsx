@@ -138,13 +138,13 @@ export const UnstakeInputs = () => {
                 switchTranslation={{
                     fiat: (
                         <Translation
-                            id="TR_TRADING_ENTER_AMOUNT_IN"
+                            id="TR_ENTER_AMOUNT_IN"
                             values={{ currency: baseCurrencyCode.toUpperCase() }}
                         />
                     ),
                     crypto: (
                         <Translation
-                            id="TR_TRADING_ENTER_AMOUNT_IN"
+                            id="TR_ENTER_AMOUNT_IN"
                             values={{ currency: networkDisplaySymbol }}
                         />
                     ),

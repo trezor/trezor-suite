@@ -52,6 +52,13 @@ export const StakeInputs = () => {
 
     const stakingLimits = getStakingLimitsByNetworkSymbol(account.symbol);
 
+    const formatCryptoAmount = (amount: string) =>
+        CryptoAmountFormatter.format(amount, {
+            symbol: account.symbol,
+            isBalance: true,
+            withSymbol: false,
+        });
+
     if (!stakingLimits) {
         return null;
     }
@@ -126,7 +133,7 @@ export const StakeInputs = () => {
         <Translation
             id="TR_STAKE_MIN_AMOUNT_TOOLTIP"
             values={{
-                amount: stakingLimits.MIN_AMOUNT_FOR_STAKING.toString(),
+                amount: formatCryptoAmount(stakingLimits.MIN_AMOUNT_FOR_STAKING.toString()),
                 networkDisplaySymbol,
             }}
         />
@@ -195,13 +202,13 @@ export const StakeInputs = () => {
                 switchTranslation={{
                     fiat: (
                         <Translation
-                            id="TR_TRADING_ENTER_AMOUNT_IN"
+                            id="TR_ENTER_AMOUNT_IN"
                             values={{ currency: baseCurrencyCode.toUpperCase() }}
                         />
                     ),
                     crypto: (
                         <Translation
-                            id="TR_TRADING_ENTER_AMOUNT_IN"
+                            id="TR_ENTER_AMOUNT_IN"
                             values={{ currency: networkDisplaySymbol }}
                         />
                     ),
@@ -282,7 +289,9 @@ export const StakeInputs = () => {
                                     : 'TR_STAKE_LEFT_AMOUNT_FOR_WITHDRAWAL'
                             }
                             values={{
-                                amount: stakingLimits.MIN_FOR_WITHDRAWALS.toString(),
+                                amount: formatCryptoAmount(
+                                    stakingLimits.MIN_FOR_WITHDRAWALS.toString(),
+                                ),
                                 networkDisplaySymbol,
                             }}
                         />
@@ -298,7 +307,9 @@ export const StakeInputs = () => {
                         <Translation
                             id="TR_STAKE_RECOMMENDED_AMOUNT_FOR_WITHDRAWALS"
                             values={{
-                                amount: stakingLimits.MIN_FOR_WITHDRAWALS.toString(),
+                                amount: formatCryptoAmount(
+                                    stakingLimits.MIN_FOR_WITHDRAWALS.toString(),
+                                ),
                                 networkDisplaySymbol,
                             }}
                         />

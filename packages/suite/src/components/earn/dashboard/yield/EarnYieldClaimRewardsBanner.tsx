@@ -105,6 +105,7 @@ export const EarnYieldClaimRewardsBanner = ({
                                         id="TR_EARN_CLAIM_REWARDS_SUMMARY_WITH_ACCOUNTS"
                                         values={{
                                             amount: amountContent,
+                                            tokensCount: tokenRewards.length,
                                             tokens: (
                                                 <EarnYieldClaimRewardsBannerTokensTooltip
                                                     rewards={tokenRewards}
@@ -129,6 +130,7 @@ export const EarnYieldClaimRewardsBanner = ({
                                         id="TR_EARN_CLAIM_REWARDS_SUMMARY"
                                         values={{
                                             amount: amountContent,
+                                            tokensCount: tokenRewards.length,
                                             tokens: (
                                                 <EarnYieldClaimRewardsBannerTokensTooltip
                                                     rewards={tokenRewards}

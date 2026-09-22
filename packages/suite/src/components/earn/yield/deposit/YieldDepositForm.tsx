@@ -2,9 +2,11 @@ import { injectDesktopAnalytics } from '@suite/analytics';
 import { Translation } from '@suite/intl';
 import { events } from '@suite-common/analytics';
 import { useServices } from '@suite-common/dependency-injection';
+import { useFormatters } from '@suite-common/formatters';
 import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import { WETH_WRAP_GAS_RESERVE } from '@suite-common/wallet-constants';
 import {
+    getMaxWrapAmount,
     getYieldFlowStepSequence,
     shouldRecommendWrapReserve,
     splitYieldPendingTransaction,
@@ -29,6 +31,7 @@ import { YieldWrapStep } from '../common/YieldWrapStep';
 
 export const YieldDepositForm = () => {
     const { analytics } = useServices(injectDesktopAnalytics);
+    const { CryptoAmountFormatter } = useFormatters();
 
     const {
         account,
@@ -120,7 +123,11 @@ export const YieldDepositForm = () => {
             return (
                 <YieldActionStepWarning
                     reserveRecommendation={{
-                        amount: WETH_WRAP_GAS_RESERVE.toString(),
+                        amount: CryptoAmountFormatter.format(WETH_WRAP_GAS_RESERVE.toString(), {
+                            symbol: account.symbol,
+                            isBalance: true,
+                            withSymbol: false,
+                        }),
                         nativeSymbol,
                     }}
                 />
@@ -325,7 +332,9 @@ export const YieldDepositForm = () => {
                                         <YieldWrapStep
                                             token={token}
                                             nativeSymbol={nativeSymbol}
-                                            availableAmount={account.formattedBalance}
+                                            availableAmount={getMaxWrapAmount(
+                                                account.formattedBalance,
+                                            )}
                                             receivingAmount={liveAmount || '0'}
                                             isSubmitting={isSubmittingAction}
                                             isSubmitDisabled={
