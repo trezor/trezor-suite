@@ -9,7 +9,7 @@ import { type Account } from '@suite-common/wallet-types';
 import { Banner, Tooltip } from '@trezor/components';
 import { InfoIcon } from '@trezor/icons';
 
-import { formatApyValue } from 'src/components/earn/utils/earnApyUtils';
+import { useFormatApyValue } from 'src/components/earn/utils/earnApyUtils';
 import { useSelector } from 'src/hooks/suite';
 import { useMessageSystemStaking } from 'src/hooks/suite/useMessageSystemStaking';
 
@@ -19,6 +19,7 @@ interface NewProviderCardProps {
 
 export const NewProviderCard = ({ account }: NewProviderCardProps) => {
     const { dispatch } = useServices(injectDispatch);
+    const formatApyValue = useFormatApyValue();
 
     const { isStakingDisabled, stakingMessageContent } = useMessageSystemStaking(account?.symbol);
 

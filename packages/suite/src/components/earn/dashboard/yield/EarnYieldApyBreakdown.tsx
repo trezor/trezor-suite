@@ -6,6 +6,7 @@ import {
     type TokenDtoV2,
     sortRewardsByUnderlyingToken,
 } from '@suite-common/earn-stablecoin-api';
+import { useFormatters } from '@suite-common/formatters';
 import { type NetworkSymbol, getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import { getApyPercent } from '@suite-common/wallet-utils';
 import { Column, Divider, Icon, Row, Text } from '@trezor/components';
@@ -103,6 +104,7 @@ export const EarnYieldApyBreakdown = ({
     networkSymbol,
     underlyingToken,
 }: EarnYieldApyBreakdownProps) => {
+    const { PercentageFormatter } = useFormatters();
     const sortedRewards = sortRewardsByUnderlyingToken(rewards, underlyingToken);
     // Only mention APR in the footer when a row actually shows an APR rate.
     const footerId = sortedRewards.some(isAprReward)
@@ -128,10 +130,15 @@ export const EarnYieldApyBreakdown = ({
                         rateNode = <Translation id="TR_EARN_APY_N_A" />;
                     } else if (rateTranslationId) {
                         rateNode = (
-                            <Translation id={rateTranslationId} values={{ rate: ratePercent }} />
+                            <Translation
+                                id={rateTranslationId}
+                                values={{ rate: PercentageFormatter.format(ratePercent) }}
+                            />
                         );
                     } else {
-                        rateNode = <>+{ratePercent}%</>;
+                        rateNode = (
+                            <>+{PercentageFormatter.format(ratePercent, { withSymbol: true })}</>
+                        );
                     }
 
                     return (

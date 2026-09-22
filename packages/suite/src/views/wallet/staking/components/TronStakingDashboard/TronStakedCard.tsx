@@ -26,7 +26,7 @@ import {
 import { WarningIcon } from '@trezor/icons';
 import { BigNumber } from '@trezor/utils';
 
-import { formatApr } from 'src/components/earn/staking/tron/voteUtils';
+import { useFormatApyValue } from 'src/components/earn/utils/earnApyUtils';
 import { BaseCurrencyValue, FormattedCryptoAmount } from 'src/components/suite';
 import { useMessageSystemStaking } from 'src/hooks/suite/useMessageSystemStaking';
 
@@ -38,6 +38,7 @@ interface TronStakedCardProps {
 
 export const TronStakedCard = ({ account }: TronStakedCardProps) => {
     const { analytics, dispatch } = useServices(injectDesktopAnalytics, injectDispatch);
+    const formatApyValue = useFormatApyValue();
     const [isVoteAllocationOpen, setIsVoteAllocationOpen] = useState(false);
     const { stats, maxApr } = useTronStakingStats();
 
@@ -168,7 +169,8 @@ export const TronStakedCard = ({ account }: TronStakedCardProps) => {
         >
             <Row justifyContent="space-between" alignItems="center">
                 <Text typographyStyle="body-md-strong">
-                    <Translation id="TR_EARN_TRON_APR_LABEL" /> {formatApr(apr ?? undefined)}
+                    <Translation id="TR_EARN_TRON_APR_LABEL" />{' '}
+                    {formatApyValue(apr, { withSymbol: true })}
                 </Text>
                 {hasRemainingVotes ? (
                     <Tooltip content={<Translation id="TR_EARN_TRON_ASSIGN_VOTES_TOOLTIP" />}>

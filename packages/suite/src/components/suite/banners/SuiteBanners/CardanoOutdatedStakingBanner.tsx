@@ -7,11 +7,12 @@ import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { selectPoolStatsApy } from '@suite-common/wallet-core';
 import { Banner } from '@trezor/components';
 
-import { formatApyValue } from 'src/components/earn/utils/earnApyUtils';
+import { useFormatApyValue } from 'src/components/earn/utils/earnApyUtils';
 import { useSelector } from 'src/hooks/suite';
 
 export const CardanoOutdatedStakingBanner = () => {
     const { dispatch } = useServices(injectDispatch);
+    const formatApyValue = useFormatApyValue();
     const apy = useSelector(state =>
         selectPoolStatsApy(state, { networkSymbol: asNetworkSymbol('ada') }),
     );

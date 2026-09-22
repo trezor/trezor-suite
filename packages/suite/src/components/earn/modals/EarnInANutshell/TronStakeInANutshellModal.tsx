@@ -7,7 +7,7 @@ import { supportedTronNetworkSymbols } from '@suite-common/wallet-types';
 import { Divider, StepList } from '@trezor/components';
 import { CheckSquareOffsetIcon, LightningIcon, LockSimpleOpenIcon } from '@trezor/icons';
 
-import { formatApyValue } from 'src/components/earn/utils/earnApyUtils';
+import { useFormatApyValue } from 'src/components/earn/utils/earnApyUtils';
 
 import { EarnInANutshellHighlights } from './components/EarnInANutshellHighlights';
 import { EarnInANutshellModalLayout } from './components/EarnInANutshellModalLayout';
@@ -31,6 +31,7 @@ export const TronStakeInANutshellModal = ({
 }: TronStakeInANutshellModalProps) => {
     const { analytics } = useServices(injectDesktopAnalytics);
     const { maxApr } = useTronStakingStats();
+    const formatApyValue = useFormatApyValue();
 
     const handleCancel = () => {
         onCancel();

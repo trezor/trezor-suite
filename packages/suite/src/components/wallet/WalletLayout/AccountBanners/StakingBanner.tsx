@@ -22,7 +22,7 @@ import { PiggyBankIcon, XIcon } from '@trezor/icons';
 import { exhaustive } from '@trezor/type-utils';
 import { BigNumber } from '@trezor/utils';
 
-import { formatApyValue } from 'src/components/earn/utils/earnApyUtils';
+import { useFormatApyValue } from 'src/components/earn/utils/earnApyUtils';
 import { useStakingRate } from 'src/hooks/earn/useStakingRate';
 import { useSelector } from 'src/hooks/suite';
 
@@ -36,6 +36,7 @@ type StakingBannerProps = {
 export const StakingBanner = ({ account }: StakingBannerProps) => {
     const { analytics, dispatch } = useServices(injectDesktopAnalytics, injectDispatch);
     const { CryptoAmountFormatter } = useFormatters();
+    const formatApyValue = useFormatApyValue();
     const {
         stakeEthBannerClosed,
         stakeSolBannerClosed,

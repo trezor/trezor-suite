@@ -4,11 +4,13 @@ import { Translation } from '@suite/intl';
 import { Icon, Row, Text } from '@trezor/components';
 import { InfoIcon } from '@trezor/icons';
 
+import { useFormatApyValue } from '../../../utils/earnApyUtils';
 import { useTronStakeContext } from '../TronStakeContext';
-import { formatApr } from '../voteUtils';
 
 export const TronVoteApr = () => {
     const { representatives, form } = useTronStakeContext();
+
+    const formatApyValue = useFormatApyValue();
 
     const representative = useWatch({ control: form.methods.control, name: 'representative' });
 
@@ -22,7 +24,8 @@ export const TronVoteApr = () => {
         <Row gap={4} alignItems="center">
             <Icon as={InfoIcon} size={16} intent="neutral" priority="secondary" />
             <Text typographyStyle="body-sm" intent="neutral" priority="secondary">
-                <Translation id="TR_EARN_TRON_APR_LABEL" /> {formatApr(selected?.apr)}
+                <Translation id="TR_EARN_TRON_APR_LABEL" />{' '}
+                {formatApyValue(selected?.apr, { withSymbol: true })}
             </Text>
         </Row>
     );

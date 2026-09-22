@@ -11,7 +11,7 @@ import { Badge, type BadgeProps, commonFocusStyles } from '@trezor/components';
 import { TrendUpIcon } from '@trezor/icons';
 import { getBorderRadiusCssValue } from '@trezor/theme';
 
-import { formatApyValue } from 'src/components/earn/utils/earnApyUtils';
+import { useFormatApyValue } from 'src/components/earn/utils/earnApyUtils';
 import { getYieldOpportunityAnchor } from 'src/components/earn/utils/getYieldOpportunityAnchor';
 
 // The badge itself is not interactive, so a button carries the click and the focus ring.
@@ -69,6 +69,7 @@ type YieldBadgeProps = {
 
 export const YieldBadge = ({ apy, variant, account, vaultId, analyticsFrom }: YieldBadgeProps) => {
     const { analytics, dispatch } = useServices(injectDesktopAnalytics, injectDispatch);
+    const formatApyValue = useFormatApyValue();
 
     const { translationId, iconLeft, priority, shouldAnchorAtVaultRow } = variantConfigMap[variant];
 
