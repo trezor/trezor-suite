@@ -19,3 +19,8 @@ export * from './utils/debug';
 export * from './utils/urlUtils';
 export { getSerializedPath, getSlip44ByPath, validatePath } from './utils/pathUtils';
 export { connectCallableMethods } from './callableMethods';
+export {
+    methodUsesDevice,
+    methodsWithConditionalDevice,
+    methodsWithoutDevice,
+} from './methodUsesDevice';

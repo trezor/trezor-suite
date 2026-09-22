@@ -40,10 +40,9 @@ import TrezorConnect, {
     UI_EVENT,
     UI_REQUEST,
 } from '@trezor/connect';
-import { asCoinSymbol } from '@trezor/connect-common';
-import { getSynchronize, isArrayMember } from '@trezor/utils';
+import { asCoinSymbol, methodUsesDevice } from '@trezor/connect-common';
+import { getSynchronize } from '@trezor/utils';
 
-import { blacklist } from './blacklist';
 import {
     type ConnectInitSettingsDep,
     type GetDebugSettingsDep,
@@ -160,7 +159,10 @@ export const connectInitThunk = createThunk<
 
     const original = TrezorConnect.call.bind(TrezorConnect);
     TrezorConnect.call = async (params: CallMethodPayload) => {
-        if (isArrayMember(params.method, blacklist)) {
+        // Connect runs calls that do not need the device immediately, so they must not queue
+        // behind device work here either. `Device.run` rejects overlapping device calls with
+        // `Device_CallInProgress` instead of queueing, which is what this mutex prevents.
+        if (!methodUsesDevice(params)) {
             return original(params);
         }
 
