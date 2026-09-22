@@ -4940,9 +4940,8 @@ export const messages = {
         },
         manualInput: {
             title: 'Activate token manually',
-            subtitle:
-                'To activate a token, enter its contract ID, or its asset code and issuer address.',
-            assetCode: 'Asset code or contract ID',
+            subtitle: 'To activate a token, enter its asset code and issuer address.',
+            assetCode: 'Asset code',
             assetCodePlaceholder: 'e.g. SHX',
             assetCodeError: 'Invalid asset code. Enter 1-12 alphanumeric characters.',
             contractIdUnknown:

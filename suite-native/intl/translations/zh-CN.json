@@ -2774,6 +2774,7 @@
     "moduleActivityCenter.notifications.txApproved": "在 {account} 中批准",
     "moduleActivityCenter.notifications.txWrap": "在 {account} 中包装",
     "moduleActivityCenter.notifications.txUnwrap": "在 {account} 中解包",
+    "moduleActivityCenter.notifications.txExchange": "在 {account} 中进行了交易",
     "biometricsButton": "使用生物识别认证解锁",
     "search.noResults": "无结果"
 }

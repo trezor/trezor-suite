@@ -763,7 +763,7 @@
     "moduleSettings.viewOnly.autoEject.alert.successToast": "Carteiras são ejetadas quando seu Trezor desconecta",
     "moduleSettings.security.title": "Segurança",
     "moduleSettings.security.mevProtection.title": "Proteção MEV",
-    "moduleSettings.security.mevProtection.subtitle": "Fique seguro e obtenha preços justos ao prevenir interferências de terceiros em suas transações. Disponível em {supportedNetworks}.",
+    "moduleSettings.security.mevProtection.subtitle": "Fique seguro e obtenha preços justos ao prevenir interferências de terceiros em suas transações.",
     "moduleSettings.security.dustPhishing.title": "Proteção contra phishing de poeira",
     "moduleSettings.security.dustPhishing.subtitle": "Ocultar microtransações suspeitas do seu histórico.",
     "moduleSettings.security.dustPhishing.enableProtection": "Ativar proteção",
@@ -2774,6 +2774,7 @@
     "moduleActivityCenter.notifications.txApproved": "Aprovado na {account}",
     "moduleActivityCenter.notifications.txWrap": "Wrapped em {account}",
     "moduleActivityCenter.notifications.txUnwrap": "Unwrapped em {account}",
+    "moduleActivityCenter.notifications.txExchange": "Traded in {account}",
     "biometricsButton": "Desbloquear com biometria",
     "search.noResults": "Sem resultados"
 }

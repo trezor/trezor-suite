@@ -2774,6 +2774,7 @@
     "moduleActivityCenter.notifications.txApproved": "Aprobado en {account}",
     "moduleActivityCenter.notifications.txWrap": "Empaquetado en {account}",
     "moduleActivityCenter.notifications.txUnwrap": "Desempaquetado en {account}",
+    "moduleActivityCenter.notifications.txExchange": "Traded in {account}",
     "biometricsButton": "Desbloquear con biometría",
     "search.noResults": "No hay resultados"
 }
