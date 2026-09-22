@@ -61,6 +61,12 @@ export type EntityIndexDefinition<
     getEntities?: (partition: TPartition) => Iterable<TEntity>;
     getId: (entity: TEntity) => TId;
     secondaryIndexes?: TSecondaryIndexes;
+    /**
+     * Whether the source can hold one entity in more than one partition — a transaction under
+     * each account that has it, say. The primary index resolves such an entity to one either way;
+     * this is what it costs to make a secondary index say the same, so it is off by default.
+     */
+    mayRepeatIds?: boolean;
 };
 
 export type EntityIndexListener<

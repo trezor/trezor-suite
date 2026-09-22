@@ -208,6 +208,11 @@ accountsIndex.getAllExcept(state, hiddenAccountKeys); //        everything but t
 | **partition**       | A slice of the source that is written as a unit, declared by `getPartitions`. A write to one partition re-walks that partition only; without it the whole source is one partition.  |
 | **entities**        | What a partition holds. `getEntities` flattens a partition into them; without it a partition is taken to be its entities.                                                           |
 
+An entity is under a key once, however many keys it names. One the _source_ holds in more than one
+partition is the exception: the primary index resolves it to a single entity, and a secondary index
+does the same only for an index declared `mayRepeatIds: true`, because keeping an entry from naming
+it twice costs about a third of what assembling the index costs at all.
+
 A secondary index is built on the first read that asks for it and not before, and the array under a
 key keeps its identity for as long as its members do — which is what keeps a component watching one
 key from re-rendering when another key changes.

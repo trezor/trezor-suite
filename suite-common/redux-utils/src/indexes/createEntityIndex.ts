@@ -48,6 +48,7 @@ export const createEntityIndex = <
     getEntities,
     getId,
     secondaryIndexes: secondaryKeyExtractors,
+    mayRepeatIds = false,
 }: EntityIndexDefinition<
     TState,
     TSource,
@@ -143,6 +144,7 @@ export const createEntityIndex = <
                 gonePartitions,
                 previousPartitions,
                 keysOf,
+                mayRepeatIds,
             }).forEach((assembled, position) => {
                 const builtName = toBuild[position] as string;
 
