@@ -10,9 +10,15 @@ export type Identities<TEntity, TId extends EntityId> = {
 export const areSame = <TItem>(left: readonly TItem[], right: readonly TItem[]) =>
     left.length === right.length && left.every((item, index) => item === right[index]);
 
-/** Ids in the order they were first seen; an id held twice resolves to the last entity with it. */
+/**
+ * The ids in the order the partitions hold them, and what each one is.
+ *
+ * An id belongs to one entity: two of them would make what the index answers depend on which
+ * question was asked, so the map that would have resolved them says so instead.
+ */
 export const identitiesOf = <TEntity, TId extends EntityId>(
     walked: readonly WalkedPartition<TEntity, TId>[],
+    name: string,
 ): Identities<TEntity, TId> => {
     const byId = new Map<TId, TEntity>();
     const ids: TId[] = [];
@@ -23,9 +29,11 @@ export const identitiesOf = <TEntity, TId extends EntityId>(
         for (let position = 0; position < partitionIds.length; position++) {
             const id = partitionIds[position] as TId;
 
-            if (!byId.has(id)) {
-                ids.push(id);
+            if (byId.has(id)) {
+                throw new Error(`entity index "${name}" was given two entities with the id ${id}`);
             }
+
+            ids.push(id);
             byId.set(id, entities[position] as TEntity);
         }
     }
@@ -36,8 +44,9 @@ export const identitiesOf = <TEntity, TId extends EntityId>(
 /** Holds the partitions it was walked with and nothing else, so a build cannot keep the one before it alive. */
 export const lazyIdentitiesOf = <TEntity, TId extends EntityId>(
     walked: readonly WalkedPartition<TEntity, TId>[],
+    name: string,
 ) => {
     let built: Identities<TEntity, TId> | undefined;
 
-    return () => (built ??= identitiesOf(walked));
+    return () => (built ??= identitiesOf(walked, name));
 };

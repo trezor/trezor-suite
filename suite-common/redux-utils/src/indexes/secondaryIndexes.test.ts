@@ -102,60 +102,6 @@ describe('looking an entity up by something other than its id', () => {
     });
 });
 
-describe('an entity the source holds twice', () => {
-    type Sided = { id: string; side: string };
-
-    const createIndexOverPartitions = () =>
-        createEntityIndex({
-            name: 'sided',
-            selectSource: (state: { byPartition: Record<string, Sided[]> }) => state.byPartition,
-            getPartitions: (byPartition: Record<string, Sided[]>) => Object.entries(byPartition),
-            getEntities: (entities: Sided[]) => entities,
-            getId: (entity: Sided) => entity.id,
-            secondaryIndexes: { bySide: (entity: Sided) => entity.side },
-            mayRepeatIds: true,
-        });
-
-    const state = {
-        byPartition: {
-            one: [
-                { id: 'a', side: 'left' },
-                { id: 'b', side: 'left' },
-            ],
-            two: [{ id: 'a', side: 'left' }],
-        },
-    };
-
-    it('is under a key once, as it is in the index as a whole', () => {
-        const index = createIndexOverPartitions();
-
-        // The primary index resolves a repeated id to one entity; an entry cannot say otherwise.
-        expect(index.getIds(state)).toEqual(['a', 'b']);
-        expect(index.getIdsBySecondaryKey(state, 'bySide', 'left')).toEqual(['a', 'b']);
-    });
-
-    it('is one entity under the key, not two', () => {
-        const index = createIndexOverPartitions();
-
-        expect(index.getBySecondaryKey(state, 'bySide', 'left')).toHaveLength(2);
-    });
-
-    it('is named twice by an index that was not told the source repeats ids', () => {
-        // What the default buys: no index that cannot repeat an entity pays to be told so.
-        const index = createEntityIndex({
-            name: 'sidedWithoutTheFlag',
-            selectSource: (partitioned: { byPartition: Record<string, Sided[]> }) =>
-                partitioned.byPartition,
-            getPartitions: (byPartition: Record<string, Sided[]>) => Object.entries(byPartition),
-            getEntities: (entities: Sided[]) => entities,
-            getId: (entity: Sided) => entity.id,
-            secondaryIndexes: { bySide: (entity: Sided) => entity.side },
-        });
-
-        expect(index.getIdsBySecondaryKey(state, 'bySide', 'left')).toEqual(['a', 'b', 'a']);
-    });
-});
-
 describe('an entry nobody reads', () => {
     it('is not assembled, and its keys are never derived', () => {
         const bySide = jest.fn((entity: Tagged) => entity.side);
