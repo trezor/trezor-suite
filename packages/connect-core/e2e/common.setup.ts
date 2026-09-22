@@ -1,4 +1,4 @@
-import { UI_EVENTS, UI_REQUESTS, UI_RESPONSE } from '@trezor/connect-common';
+import { UI_EVENTS, UI_REQUESTS, UI_RESPONSE, getLog, initLog } from '@trezor/connect-common';
 import type { ApplySettings } from '@trezor/protobuf/src/definitions';
 import { BridgeTransport } from '@trezor/transport-common';
 import type { EmuStartOptsType, TrezorUserEnvLinkClass } from '@trezor/trezor-user-env-link';
@@ -165,23 +165,49 @@ export const restartEmu = async (controller: TrezorUserEnvLinkClass) => {
 
 const DEVICE_HANDSHAKE_TIMEOUT = 30000;
 
-// Resolves once Connect has finished the initial handshake with the device, whatever its outcome.
-const waitForDeviceHandshake = () => {
-    const { promise, resolve, reject } = createDeferred();
-    const timeout = setTimeout(
-        () => reject(new Error(`Device handshake not finished in ${DEVICE_HANDSHAKE_TIMEOUT} ms`)),
-        DEVICE_HANDSHAKE_TIMEOUT,
-    );
-    const onDeviceConnected = () => resolve();
+// Connect drops its internal component logs (Core / Device / DeviceCommands / transport) unless
+// init gets a createLogger, which is why the failing nightly left no internal trace. Silent Log
+// instances keep the last messages of each component in memory; they are dumped only when the
+// handshake times out or finishes after init already gave up on it, so a future flake shows which
+// step stalled: a device round-trip, a firmware hash/revision check or a data.trezor.io fetch.
+// Emulator-only output: test devices and public test seeds, never real user secrets.
+const silentCreateLogger = (prefix: string) => initLog(prefix, false);
 
+const flushConnectLog = (reason: string, since: number) => {
+    console.error(`Connect handshake timeline (${reason}):`);
+    getLog({ since }).forEach(({ timestamp, prefix, level, message }) => {
+        console.error(`  +${timestamp - since}ms [${prefix}] ${level}`, ...message);
+    });
+};
+
+// Resolves once Connect has finished the initial device handshake, whatever its outcome, with
+// whether the device connected only after transport-start. Connect queues the events emitted
+// during init and delivers them in order right after init resolves, so this ordering is the exact
+// signal that DeviceList.waitForDevices gave up (10 s) before the device made it into the list.
+const waitForDeviceHandshake = () => {
+    const startedAt = Date.now();
+    const { promise, resolve, reject } = createDeferred<boolean>();
+    const timeout = setTimeout(() => {
+        flushConnectLog(`not finished in ${DEVICE_HANDSHAKE_TIMEOUT} ms`, startedAt);
+        reject(new Error(`Device handshake not finished in ${DEVICE_HANDSHAKE_TIMEOUT} ms`));
+    }, DEVICE_HANDSHAKE_TIMEOUT);
+    let transportStarted = false;
+    const onTransportStart = () => {
+        transportStarted = true;
+    };
+    const onDeviceConnected = () => resolve(transportStarted);
+    const cleanup = () => {
+        clearTimeout(timeout);
+        TrezorConnect.off('transport-start', onTransportStart);
+        TrezorConnect.off('device-connect', onDeviceConnected);
+        TrezorConnect.off('device-connect_unacquired', onDeviceConnected);
+    };
+
+    TrezorConnect.on('transport-start', onTransportStart);
     TrezorConnect.on('device-connect', onDeviceConnected);
     TrezorConnect.on('device-connect_unacquired', onDeviceConnected);
 
-    return promise.finally(() => {
-        clearTimeout(timeout);
-        TrezorConnect.off('device-connect', onDeviceConnected);
-        TrezorConnect.off('device-connect_unacquired', onDeviceConnected);
-    });
+    return { startedAt, promise: promise.finally(cleanup), cancel: cleanup };
 };
 
 type InitParams = Partial<Parameters<typeof TrezorConnect.init>[0]> & {
@@ -247,30 +273,46 @@ export const initTrezorConnect = async (
     // 10 s and resolves init anyway, e.g. when the firmware revision check is slow to reach
     // data.trezor.io. A method called before the handshake finishes fails with Device_NotFound.
     // Subscribe before init, because the handshake can finish on either side of it.
-    const deviceHandshake = waitForDevice ? waitForDeviceHandshake() : undefined;
+    const handshake = waitForDevice ? waitForDeviceHandshake() : undefined;
     // Keep a failed init from leaving the pending wait as an unhandled rejection.
-    deviceHandshake?.catch(() => {});
+    handshake?.promise.catch(() => {});
 
-    await TrezorConnect.init({
-        manifest: {
-            appName: 'Trezor Connect Tests',
-            appUrl: 'tests.connect.trezor.io',
-            email: 'tests@connect.trezor.io',
-        },
-        transports: [new BridgeTransport({ id: 'bridge', port: 21328 })],
-        debug: true,
-        pendingTransportEvent: true,
-        transportReconnect: false,
-        thp: {
-            appName: 'TrezorConnect',
-            hostName: 'tests:e2e',
-            knownCredentials: THP_CREDENTIALS_AUTOCONNECT,
-            pairingMethods: ['CodeEntry'],
-        },
-        ...options,
-    });
+    try {
+        await TrezorConnect.init({
+            manifest: {
+                appName: 'Trezor Connect Tests',
+                appUrl: 'tests.connect.trezor.io',
+                email: 'tests@connect.trezor.io',
+            },
+            transports: [new BridgeTransport({ id: 'bridge', port: 21328 })],
+            debug: true,
+            createLogger: silentCreateLogger,
+            pendingTransportEvent: true,
+            transportReconnect: false,
+            thp: {
+                appName: 'TrezorConnect',
+                hostName: 'tests:e2e',
+                knownCredentials: THP_CREDENTIALS_AUTOCONNECT,
+                pairingMethods: ['CodeEntry'],
+            },
+            ...options,
+        });
+    } catch (error) {
+        // Otherwise the handshake timer would still fire and dump a timeline into a later test.
+        handshake?.cancel();
+        throw error;
+    }
 
-    await deviceHandshake;
+    if (handshake) {
+        const connectedAfterTransportStart = await handshake.promise;
+        // eslint-disable-next-line no-console
+        console.log(`Device handshake finished in ${Date.now() - handshake.startedAt} ms`);
+        if (connectedAfterTransportStart) {
+            // The exact window behind the Device_NotFound flake: transport-start fired with an
+            // empty device list and the device made it into the list only afterwards.
+            flushConnectLog('device connected after transport-start', handshake.startedAt);
+        }
+    }
 };
 
 // skipping tests rules:

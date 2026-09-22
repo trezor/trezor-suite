@@ -88,8 +88,11 @@ describe(`TrezorConnect methods`, () => {
                         waitForDevice: !!(testCase.setup.mnemonic || testCase.setup.wiped),
                     });
                 } catch (error) {
-                    // eslint-disable-next-line no-console
-                    console.log('Controller WS init error', error);
+                    // Fail fast with the real cause. Swallowing setup/handshake errors here — in
+                    // particular the handshake timeout surfaced by initTrezorConnect — let the suite
+                    // run on and fail later with a confusing Device_NotFound instead of the root error.
+                    console.error('Device setup/handshake failed in beforeAll', error);
+                    throw error;
                 }
             }, 60000);
 
