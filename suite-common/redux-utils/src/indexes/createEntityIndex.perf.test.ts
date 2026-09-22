@@ -15,17 +15,32 @@ const REPEATS = 7;
 const BUDGET = {
     coldBuildMs: 4000,
     cachedReadShareOfBuild: 0.02,
-    // A rebuild carries the untouched partitions over, so it derives almost nothing — but it still
-    // fills the id lookup from scratch, and that fill is most of a build. The ceiling is against
-    // the raw fill below, not against the cold build.
-    oneWriteShareOfBuild: 0.95,
-    oneWriteMultipleOfRawMap: 1.6,
-    entryAfterWriteShareOfCold: 0.9,
+    // A rebuild derives nothing it already knows, but it walks every entity again and fills the id
+    // lookup from scratch, and that fill is most of a build. The ceiling is against the raw fill
+    // below, not against the cold build.
+    oneWriteShareOfBuild: 1,
+    oneWriteMultipleOfRawMap: 2.2,
     unreadIndexShareOfBothIndexes: 0.8,
-    entryOnlyShareOfEntryAndIds: 0.9,
     bothIndexesAfterWriteShareOfCold: 1,
     coldBuildMultipleOfRawMap: 3,
 };
+
+const derivedHoldings = new WeakMap<Holding[], Holding[]>();
+
+/** Stands in for the flattening a real index does, memoised the way a consumer of one would. */
+const derivedHoldingsOf = (source: Source) =>
+    Object.values(source).flatMap(holdings => {
+        const known = derivedHoldings.get(holdings);
+
+        if (known !== undefined) {
+            return known;
+        }
+
+        const derived = holdings.map(holding => ({ ...holding }));
+        derivedHoldings.set(holdings, derived);
+
+        return derived;
+    });
 
 const createSource = (): Source =>
     Object.fromEntries(
@@ -62,8 +77,9 @@ const createIndexUnderTest = (): IndexUnderTest =>
     createEntityIndex({
         name: 'perfHoldings',
         selectSource: (state: State) => state.byAccount,
-        getPartitions: (source: Source) => Object.entries(source),
-        getEntities: (holdings: Holding[]) => holdings,
+        // What a consumer that derives does with a source it is written piece by piece: the pieces
+        // it already knows come back from the weak map, and only what changed is derived again.
+        getEntities: derivedHoldingsOf,
         getId: (holding: Holding) => holding.id,
         secondaryIndexes: {
             byAccount: (holding: Holding) => holding.account,
@@ -167,7 +183,7 @@ describePerf(`building an index over ${PARTITIONS * PER_PARTITION} entities`, ()
         expect(cachedRead).toBeLessThan(coldBuild * BUDGET.cachedReadShareOfBuild);
     });
 
-    it('rebuilds a one-partition write for less than a build from nothing', () => {
+    it('rebuilds a write for less than a build from nothing', () => {
         const coldBuild = report['cold build'] as number;
         const oneWrite = measure('rebuild after one write', index => {
             index.getIds(state);
@@ -181,20 +197,6 @@ describePerf(`building an index over ${PARTITIONS * PER_PARTITION} entities`, ()
         );
     });
 
-    it('settles an entry after a one-partition write for less than assembling it', () => {
-        const entryCold = measure(
-            'entry, cold',
-            index => () => index.getBySecondaryKey(state, 'byAccount', 'account-7'),
-        );
-        const entryAfterWrite = measure('entry, after one write', index => {
-            index.getBySecondaryKey(state, 'byAccount', 'account-7');
-
-            return () => index.getBySecondaryKey(writtenState, 'byAccount', 'account-7');
-        });
-
-        expect(entryAfterWrite).toBeLessThan(entryCold * BUDGET.entryAfterWriteShareOfCold);
-    });
-
     it('costs less for one entry than for both', () => {
         const oneIndex = measure('one entry read', index => () => {
             index.getBySecondaryKey(state, 'byAccount', 'account-7');
@@ -205,25 +207,6 @@ describePerf(`building an index over ${PARTITIONS * PER_PARTITION} entities`, ()
         });
 
         expect(oneIndex).toBeLessThan(bothIndexes * BUDGET.unreadIndexShareOfBothIndexes);
-    });
-
-    it('does not build the id lookup for a consumer that only reads an entry', () => {
-        const entryOnly = measure('entry only, after one write', index => {
-            index.getBySecondaryKey(state, 'byAccount', 'account-7');
-
-            return () => index.getBySecondaryKey(writtenState, 'byAccount', 'account-7');
-        });
-        const entryAndIds = measure('entry and ids, after one write', index => {
-            index.getBySecondaryKey(state, 'byAccount', 'account-7');
-            index.getIds(state);
-
-            return () => {
-                index.getBySecondaryKey(writtenState, 'byAccount', 'account-7');
-                index.getIds(writtenState);
-            };
-        });
-
-        expect(entryOnly).toBeLessThan(entryAndIds * BUDGET.entryOnlyShareOfEntryAndIds);
     });
 
     it('answers the inverse of a hidden list once per build, not once per read', () => {

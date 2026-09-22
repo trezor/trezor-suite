@@ -77,28 +77,14 @@ describe('looking an entity up by something other than its id', () => {
         );
     });
 
-    it('does not ask an untouched partition for its keys again', () => {
-        const { bySide } = createIndexWithSecondaryIndex();
-        const untouched = [one];
-        const partitioned = createEntityIndex({
-            name: 'taggedPartitions',
-            selectSource: (state: { bySide: Record<string, Tagged[]> }) => state.bySide,
-            getPartitions: (partitions: Record<string, Tagged[]>) => Object.entries(partitions),
-            getEntities: (entities: Tagged[]) => entities,
-            getId: (entity: Tagged) => entity.id,
-            secondaryIndexes: { bySide },
-        });
-        partitioned.getIdsBySecondaryKey({ bySide: { a: untouched, b: [two] } }, 'bySide', 'left');
-        bySide.mockClear();
-        partitioned.getIdsBySecondaryKey(
-            { bySide: { a: untouched, b: [two, three] } },
-            'bySide',
-            'left',
-        );
+    it('asks an entity for its key once per index, however often the index is read', () => {
+        const { index, bySide } = createIndexWithSecondaryIndex();
+        const state = { entities: [one, two] };
 
-        // Only the rebuilt partition's entities were asked which entry they belong to.
+        index.getIdsBySecondaryKey(state, 'bySide', 'left');
+        index.getIdsBySecondaryKey(state, 'bySide', 'left');
+
         expect(bySide).toHaveBeenCalledTimes(2);
-        expect(bySide).not.toHaveBeenCalledWith(one);
     });
 });
 
@@ -229,85 +215,6 @@ describe('the secondary indexes a consumer keeps reading', () => {
         index.getIdsBySecondaryKey({ entities: [one, two, three] }, 'bySide', 'left');
 
         expect(byTag).not.toHaveBeenCalled();
-    });
-});
-
-describe('an entry settled against the partition that was written', () => {
-    type Partitioned = { byPartition: Record<string, Tagged[]> };
-
-    const createSettledIndex = () =>
-        createEntityIndex({
-            name: 'settledIndexes',
-            selectSource: (state: Partitioned) => state.byPartition,
-            getPartitions: (byPartition: Record<string, Tagged[]>) => Object.entries(byPartition),
-            getEntities: (entities: Tagged[]) => entities,
-            getId: (entity: Tagged) => entity.id,
-            secondaryIndexes: { bySide: (entity: Tagged) => entity.side },
-        });
-
-    it('keeps the array of a key no written partition had a hand in', () => {
-        const index = createSettledIndex();
-        const untouched = [one, two];
-        const left = index.getBySecondaryKey(
-            { byPartition: { a: untouched, b: [three] } },
-            'bySide',
-            'left',
-        );
-
-        const afterOtherPartWritten = index.getBySecondaryKey(
-            { byPartition: { a: untouched, b: [three, { ...three, id: '4' }] } },
-            'bySide',
-            'left',
-        );
-
-        expect(afterOtherPartWritten).toBe(left);
-    });
-
-    it('keeps the array of a key the written partition left alone', () => {
-        const index = createSettledIndex();
-        const right = index.getBySecondaryKey(
-            { byPartition: { a: [one], b: [three] } },
-            'bySide',
-            'right',
-        );
-
-        const afterWriteToTheSamePart = index.getBySecondaryKey(
-            { byPartition: { a: [one, two], b: [three] } },
-            'bySide',
-            'right',
-        );
-
-        expect(afterWriteToTheSamePart).toBe(right);
-    });
-
-    it('drops a member a vanished partition had put in a shared key', () => {
-        const index = createSettledIndex();
-
-        index.getBySecondaryKey({ byPartition: { a: [one], b: [two] } }, 'bySide', 'left');
-
-        expect(index.getBySecondaryKey({ byPartition: { a: [one] } }, 'bySide', 'left')).toEqual([
-            one,
-        ]);
-    });
-
-    it('drops a key a vanished partition held alone', () => {
-        const index = createSettledIndex();
-
-        index.getBySecondaryKey({ byPartition: { a: [one], b: [three] } }, 'bySide', 'right');
-
-        expect(index.getBySecondaryKey({ byPartition: { a: [one] } }, 'bySide', 'right')).toEqual(
-            [],
-        );
-    });
-
-    it('orders an entry by the partitions, however they are reordered', () => {
-        const index = createSettledIndex();
-
-        index.getBySecondaryKey({ byPartition: { a: [one], b: [two] } }, 'bySide', 'left');
-
-        expect(
-            index.getBySecondaryKey({ byPartition: { b: [two], a: [one] } }, 'bySide', 'left'),
-        ).toEqual([two, one]);
     });
 });
 

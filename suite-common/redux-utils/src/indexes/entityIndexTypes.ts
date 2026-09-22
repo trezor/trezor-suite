@@ -60,22 +60,21 @@ export type EntityIndexSnapshot<
     getChanges: () => EntityIndexChanges<TId>;
 };
 
-export type EntityIndexPartition<TPartition> = readonly [key: string, partition: TPartition];
-
-/** `getPartitions` makes a rebuild cost the write, not the store; without it the source is one partition. */
 export type EntityIndexDefinition<
     TState,
     TSource,
-    TPartition,
     TEntity,
     TId extends EntityId,
     TSecondaryIndexes extends SecondaryKeyExtractors<TEntity>,
 > = {
     name: string;
     selectSource: (state: TState) => TSource;
-    getPartitions?: (source: TSource) => Iterable<EntityIndexPartition<TPartition>>;
-    /** Without it a partition is taken to be its entities. */
-    getEntities?: (partition: TPartition) => Iterable<TEntity>;
+    /**
+     * What the source holds, derived on every read that finds a new source — so an index over a
+     * slice that is written often derives with a `WeakMap` of its own. Without it the source is
+     * taken to be its entities.
+     */
+    getEntities?: (source: TSource) => Iterable<TEntity>;
     /** What the index knows an entity by. Two entities of one source may not share it. */
     getId: (entity: TEntity) => TId;
     secondaryIndexes?: TSecondaryIndexes;

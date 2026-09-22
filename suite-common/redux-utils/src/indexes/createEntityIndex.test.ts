@@ -241,73 +241,6 @@ describe('createEntityIndex', () => {
     });
 });
 
-type PartitionedState = { bySide: Record<string, Thing[]> };
-
-const createPartitionedIndex = () => {
-    const getEntities = jest.fn((things: Thing[]) => things);
-
-    const index = createEntityIndex({
-        name: 'partitionedThings',
-        selectSource: (state: PartitionedState) => state.bySide,
-        getPartitions: (bySide: Record<string, Thing[]>) => Object.entries(bySide),
-        getEntities,
-        getId: (thing: Thing) => thing.id,
-    });
-
-    return { index, getEntities };
-};
-
-describe('an index over a source that is written in partitions', () => {
-    const c = { id: 'c', value: 'third' };
-
-    it('walks only the partition that changed', () => {
-        // The whole point: one account receiving a transaction costs one account's worth of work,
-        // however many accounts the user has. Immer leaves the untouched partitions identical, so they
-        // are carried over rather than walked.
-        const { index, getEntities } = createPartitionedIndex();
-        const untouched = [c];
-
-        index.read({ bySide: { left: [a], right: untouched } });
-        getEntities.mockClear();
-        index.read({ bySide: { left: [a, b], right: untouched } });
-
-        expect(getEntities).toHaveBeenCalledTimes(1);
-        expect(getEntities).toHaveBeenCalledWith([a, b]);
-    });
-
-    it('still holds the entities of the partitions it did not walk', () => {
-        const { index } = createPartitionedIndex();
-        const untouched = [c];
-
-        index.read({ bySide: { left: [a], right: untouched } });
-        const state = { bySide: { left: [a, b], right: untouched } };
-
-        expect(index.getById(state, 'c')).toBe(c);
-        expect(index.getById(state, 'b')).toBe(b);
-    });
-
-    it('walks a partition it has not seen before', () => {
-        const { index, getEntities } = createPartitionedIndex();
-        const untouched = [a];
-
-        index.read({ bySide: { left: untouched } });
-        getEntities.mockClear();
-        index.read({ bySide: { left: untouched, right: [c] } });
-
-        expect(getEntities).toHaveBeenCalledTimes(1);
-        expect(getEntities).toHaveBeenCalledWith([c]);
-    });
-
-    it('drops the entities of a partition the source no longer has', () => {
-        const { index } = createPartitionedIndex();
-        const untouched = [a];
-
-        index.read({ bySide: { left: untouched, right: [c] } });
-
-        expect(index.getById({ bySide: { left: untouched } }, 'c')).toBeUndefined();
-    });
-});
-
 describe('what a rebuild changed', () => {
     const readChanges = (index: ReturnType<typeof createIndex>['index'], state: State) =>
         index.read(state).getChanges();
@@ -365,11 +298,11 @@ describe('what a rebuild changed', () => {
         ]);
     });
 
-    it('does not report an entity that only moved between partitions as gone', () => {
-        const { index } = createPartitionedIndex();
-        index.read({ bySide: { left: [a], right: [] } });
+    it('says nothing about an entity that only moved within the source', () => {
+        const { index } = createIndex();
+        index.read(createState([a, b]));
 
-        expect(index.read({ bySide: { left: [], right: [a] } }).getChanges()).toEqual({
+        expect(index.read(createState([b, a])).getChanges()).toEqual({
             added: [],
             removed: [],
             updated: [],
