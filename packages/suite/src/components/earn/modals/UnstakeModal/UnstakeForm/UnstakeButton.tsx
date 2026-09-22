@@ -1,11 +1,16 @@
 import { events, injectDesktopAnalytics } from '@suite/analytics';
 import { setConnectionModal, setConnectionMode, useDevice } from '@suite/device';
 import { Translation } from '@suite/intl';
-import { selectAreFeesLoading, selectHasRunningDiscovery } from '@suite-common/wallet-core';
+import {
+    getStakingDataForNetwork,
+    selectAreFeesLoading,
+    selectHasRunningDiscovery,
+} from '@suite-common/wallet-core';
 import { Modal, Tooltip } from '@trezor/components';
 import { useServices } from '@trezor/dependency-injection';
 import { InfoIcon } from '@trezor/icons';
 import { injectDispatch } from '@trezor/redux-utils';
+import { BigNumber } from '@trezor/utils';
 
 import { useEarnDeviceStatus } from 'src/hooks/earn/useEarnDeviceStatus';
 import { useWithdrawalFormContext } from 'src/hooks/earn/useWithdrawalForm';
@@ -34,8 +39,15 @@ export const UnstakeButton = () => {
 
     const isDeviceConnected = device?.connected && device?.available;
 
+    const { autocompoundBalance = '0' } = getStakingDataForNetwork(account) ?? {};
+    const isCardanoBalanceEmpty =
+        account.networkType === 'cardano' && new BigNumber(autocompoundBalance).lte(0);
+
     const isDisabled =
-        !(formIsValid && hasValues) || isSubmitting || (isDeviceConnected && isLocked());
+        !(formIsValid && hasValues) ||
+        isSubmitting ||
+        isCardanoBalanceEmpty ||
+        (isDeviceConnected && isLocked());
     const isDiscoveryRunning = useSelector(selectHasRunningDiscovery);
     const areFeesLoading = useSelector(state => selectAreFeesLoading(state, network.symbol));
 
