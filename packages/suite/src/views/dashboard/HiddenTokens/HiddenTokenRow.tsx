@@ -17,14 +17,16 @@ import {
 type HiddenTokenRowProps = {
     asset: AssetTotal;
     onClick: () => void;
+    isCollapsed?: boolean;
 };
 
-export const HiddenTokenRow = memo(({ asset, onClick }: HiddenTokenRowProps) => {
+export const HiddenTokenRow = memo(({ asset, onClick, isCollapsed }: HiddenTokenRowProps) => {
     const { symbol, contractAddress, cryptoBalance, tokenInfo } = asset;
 
     return (
         <Table.Row
             onClick={onClick}
+            isCollapsed={isCollapsed}
             data-testid={`@hidden-tokens/item/${symbol}/${contractAddress ?? 'coin'}`}
         >
             <Table.Cell padding={ASSET_FIRST_CELL_PADDING.first}>

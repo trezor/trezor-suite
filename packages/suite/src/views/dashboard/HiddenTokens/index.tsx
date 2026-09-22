@@ -9,7 +9,12 @@ import { PageHeader } from 'src/components/suite/layouts/SuiteLayout';
 import { useLayout, useSelector } from 'src/hooks/suite';
 
 import { HiddenTokensCard } from './HiddenTokensCard';
-import { selectHiddenByUserAssets, selectUnrecognizedAssets } from './hiddenTokensSelectors';
+import {
+    selectHiddenByUserAssets,
+    selectHiddenByUserDustRows,
+    selectUnrecognizedAssets,
+    selectUnrecognizedDustRows,
+} from './hiddenTokensSelectors';
 
 const EMPTY_ASSETS = [] as const;
 
@@ -21,6 +26,12 @@ export const HiddenTokens = () => {
     );
     const unrecognized = useSelector(state =>
         deviceState === null ? EMPTY_ASSETS : selectUnrecognizedAssets(state, deviceState),
+    );
+    const hiddenByUserDust = useSelector(state =>
+        deviceState === null ? EMPTY_ASSETS : selectHiddenByUserDustRows(state, deviceState),
+    );
+    const unrecognizedDust = useSelector(state =>
+        deviceState === null ? EMPTY_ASSETS : selectUnrecognizedDustRows(state, deviceState),
     );
 
     const { translationString } = useTranslation();
@@ -34,7 +45,12 @@ export const HiddenTokens = () => {
         return null;
     }
 
-    if (hiddenByUser.length === 0 && unrecognized.length === 0) {
+    if (
+        hiddenByUser.length === 0 &&
+        unrecognized.length === 0 &&
+        hiddenByUserDust.length === 0 &&
+        unrecognizedDust.length === 0
+    ) {
         return (
             <Text intent="neutral" priority="secondary" data-testid="@hidden-tokens/empty">
                 <Translation id="TR_HIDDEN_TOKENS_EMPTY" />
@@ -47,11 +63,13 @@ export const HiddenTokens = () => {
             <HiddenTokensCard
                 heading={<Translation id="TR_HIDDEN_TOKENS" />}
                 assets={hiddenByUser}
+                dustRows={hiddenByUserDust}
                 data-testid="@hidden-tokens/hidden-by-user"
             />
             <HiddenTokensCard
                 heading={<Translation id="TR_TOKEN_UNRECOGNIZED_BY_TREZOR" />}
                 assets={unrecognized}
+                dustRows={unrecognizedDust}
                 data-testid="@hidden-tokens/unrecognized"
             />
         </Column>
