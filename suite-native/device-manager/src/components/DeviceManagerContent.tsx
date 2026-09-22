@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Dimensions } from 'react-native';
+import { useWindowDimensions } from 'react-native';
 import Animated, { LinearTransition } from 'react-native-reanimated';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useSelector } from 'react-redux';
@@ -42,7 +42,7 @@ import { DevicesToggleButton } from './DevicesToggleButton';
 import { WalletList } from './WalletList';
 import { useDeviceManager } from '../hooks/useDeviceManager';
 
-const CONTENT_MAX_HEIGHT = Dimensions.get('window').height * 0.8;
+const CONTENT_MAX_HEIGHT_RATIO = 0.8;
 const HEADER_HEIGHT = 86;
 
 const scrollViewStyle = prepareNativeStyle<{ maxHeight: number }>((utils, { maxHeight }) => ({
@@ -57,6 +57,7 @@ type NavigationProp = TabNavigationProp<AppTabsParamList, AppTabsRoutes.HomeStac
 
 export const DeviceManagerContent = () => {
     const { applyStyle, utils } = useNativeStyles();
+    const { height: windowHeight } = useWindowDimensions();
     const [isChangeDeviceRequested, setIsChangeDeviceRequested] = useState(false);
     const { analytics, dispatch } = useServices(injectNativeAnalytics, injectDispatch);
     const isPortfolioTrackerDevice = useSelector(selectIsPortfolioTrackerDevice);
@@ -103,7 +104,7 @@ export const DeviceManagerContent = () => {
 
     // based on DeviceManagerModal header height and top offset
     const scrollViewTopOffset = insets.top + utils.spacings.sp24 + HEADER_HEIGHT;
-    const scrollViewMaxHeight = CONTENT_MAX_HEIGHT - scrollViewTopOffset;
+    const scrollViewMaxHeight = windowHeight * CONTENT_MAX_HEIGHT_RATIO - scrollViewTopOffset;
 
     // Kept visible (but disabled) while discovery runs so the button doesn't vanish mid-discovery,
     // mirroring the desktop switch-device behavior.

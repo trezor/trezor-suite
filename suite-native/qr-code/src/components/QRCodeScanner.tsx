@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Dimensions, Platform } from 'react-native';
+import { Platform, useWindowDimensions } from 'react-native';
 
 import { type BarcodeScanningResult, CameraView, PermissionStatus } from 'expo-camera';
 
@@ -7,7 +7,6 @@ import { Box, HStack, Loader, Text, VStack } from '@suite-native/atoms';
 import { Icon } from '@suite-native/icons';
 import { Translation, useTranslate } from '@suite-native/intl';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
-import { nativeSpacings } from '@trezor/theme';
 
 import { CameraPermissionError } from './CameraPermissionError';
 import { useCameraPermission } from '../hooks/useCameraPermission';
@@ -16,22 +15,25 @@ type QRCodeScannerProps = {
     onCodeScanned: (data: string) => void;
 };
 
-const SCANNER_SIZE = Dimensions.get('screen').width - 2 * nativeSpacings.sp16;
-
 const cameraContainerStyle = prepareNativeStyle(utils => ({
     borderRadius: utils.borders.radii.r16,
     overflow: 'hidden',
 }));
 
-const cameraStyle = prepareNativeStyle(() => ({
-    height: SCANNER_SIZE,
-    width: SCANNER_SIZE,
-}));
+const cameraStyle = prepareNativeStyle<{ windowWidth: number }>((utils, { windowWidth }) => {
+    const scannerSize = windowWidth - 2 * utils.spacings.sp16;
+
+    return {
+        height: scannerSize,
+        width: scannerSize,
+    };
+});
 
 export const QRCodeScanner = ({ onCodeScanned }: QRCodeScannerProps) => {
     const { translate } = useTranslate();
     const { applyStyle } = useNativeStyles();
     const { cameraPermissionStatus } = useCameraPermission();
+    const { width: windowWidth } = useWindowDimensions();
 
     const [scanned, setScanned] = useState(false);
     // We don't need wait on iOS, check comment in useEffect lower for more details
@@ -78,7 +80,7 @@ export const QRCodeScanner = ({ onCodeScanned }: QRCodeScannerProps) => {
                     <Box style={applyStyle(cameraContainerStyle)}>
                         <CameraView
                             onBarcodeScanned={scanned ? undefined : handleBarCodeScanned}
-                            style={applyStyle(cameraStyle)}
+                            style={applyStyle(cameraStyle, { windowWidth })}
                             barcodeScannerSettings={{
                                 barcodeTypes: ['qr'],
                             }}
