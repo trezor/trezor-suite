@@ -17,25 +17,37 @@ export type AssembledIndex<TEntity, TId extends EntityId> = {
     dirtyKeys: Set<EntityId>;
 };
 
-const fileUnder = <TEntity, TId extends EntityId>(
-    entries: AssembledEntries<TEntity, TId>,
-    key: EntityId,
-    id: TId,
-    entity: TEntity,
-) => {
+const fileUnder = <TEntity, TId extends EntityId>({
+    entries,
+    filedIds,
+    key,
+    id,
+    entity,
+}: {
+    entries: AssembledEntries<TEntity, TId>;
+    filedIds: Map<EntityId, Set<TId>>;
+    key: EntityId;
+    id: TId;
+    entity: TEntity;
+}) => {
     const held = entries.get(key);
 
     if (held === undefined) {
         entries.set(key, { ids: [id], entities: [entity] });
+        filedIds.set(key, new Set([id]));
 
         return;
     }
 
-    // An entity naming the same key twice is under it once.
-    if (held.ids[held.ids.length - 1] === id) {
+    // Under a key an entity is once, however many times it names the key and however many
+    // partitions it turns up in — the primary index resolves it to one entity and so does this.
+    const filed = filedIds.get(key) as Set<TId>;
+
+    if (filed.has(id)) {
         return;
     }
 
+    filed.add(id);
     held.ids.push(id);
     held.entities.push(entity);
 };
@@ -63,6 +75,8 @@ export const assembleSecondaryIndexes = <TEntity, TId extends EntityId>({
         entries: new Map(),
         dirtyKeys: new Set(),
     }));
+    // What each key already holds, for as long as it is being assembled.
+    const filedPerIndex = indexNames.map(() => new Map<EntityId, Set<TId>>());
 
     for (const { built, isDirty } of walked) {
         const { ids, entities } = built;
@@ -70,6 +84,7 @@ export const assembleSecondaryIndexes = <TEntity, TId extends EntityId>({
         for (let indexPosition = 0; indexPosition < indexNames.length; indexPosition++) {
             const keys = keysOf(built, indexNames[indexPosition] as string);
             const { entries, dirtyKeys } = assembled[indexPosition] as AssembledIndex<TEntity, TId>;
+            const filedIds = filedPerIndex[indexPosition] as Map<EntityId, Set<TId>>;
 
             for (let position = 0; position < ids.length; position++) {
                 const keysAt = keys[position];
@@ -81,7 +96,7 @@ export const assembleSecondaryIndexes = <TEntity, TId extends EntityId>({
                         dirtyKeys.add(key);
                     }
 
-                    fileUnder(entries, key, id, entity);
+                    fileUnder({ entries, filedIds, key, id, entity });
                 });
             }
         }

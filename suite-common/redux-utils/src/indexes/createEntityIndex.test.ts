@@ -208,6 +208,20 @@ describe('createEntityIndex', () => {
         expect(index.read(createState([]))).toBe(index.read(createState([])));
     });
 
+    it('does not tell a listener about a write that emptied an index that was already empty', () => {
+        const { index } = createIndex();
+        const listener = jest.fn();
+        index.subscribe(listener);
+        index.read(createState([a]));
+        index.read(createState([]));
+        listener.mockClear();
+
+        index.read(createState([]));
+        index.read(createState([]));
+
+        expect(listener).not.toHaveBeenCalled();
+    });
+
     it('shares one empty snapshot, so an empty index is stable across sources', () => {
         const { index } = createIndex();
 

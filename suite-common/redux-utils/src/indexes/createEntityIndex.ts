@@ -108,6 +108,7 @@ export const createEntityIndex = <
         const previousBuiltIndexes = cached?.builtIndexes;
         const previousIdentities = cached?.identities;
         const wasEmpty = cached?.isEmpty ?? true;
+        const previousSnapshot = cached?.snapshot;
 
         const {
             partitions,
@@ -187,9 +188,11 @@ export const createEntityIndex = <
         };
 
         const isEmpty = entityCount === 0;
+        // Nothing to say and nothing to hand back that it has not handed back already: an index
+        // that was empty and stays empty keeps the snapshot it had, so no listener hears of it.
         const snapshot: Snapshot =
             isEmpty && wasEmpty
-                ? emptySnapshot
+                ? (previousSnapshot ?? emptySnapshot)
                 : {
                       getIds: () => identities().ids,
                       getEntitiesById: () => identities().byId,
