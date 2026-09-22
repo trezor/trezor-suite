@@ -2774,6 +2774,7 @@
     "moduleActivityCenter.notifications.txApproved": "Schváleno v {account}",
     "moduleActivityCenter.notifications.txWrap": "Wrapnuto na účtu {account}",
     "moduleActivityCenter.notifications.txUnwrap": "Unwrapnuto na účtu {account}",
+    "moduleActivityCenter.notifications.txExchange": "Traded in {account}",
     "biometricsButton": "Odemknout pomocí biometrie",
     "search.noResults": "Žádné výsledky"
 }

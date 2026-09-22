@@ -2774,6 +2774,7 @@
     "moduleActivityCenter.notifications.txApproved": "In {account} genehmigt",
     "moduleActivityCenter.notifications.txWrap": "In {account} verpackt",
     "moduleActivityCenter.notifications.txUnwrap": "In {account} entpackt",
+    "moduleActivityCenter.notifications.txExchange": "Traded in {account}",
     "biometricsButton": "Mit Biometrie entsperren",
     "search.noResults": "Keine Ergebnisse"
 }

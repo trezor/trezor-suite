@@ -2774,6 +2774,7 @@
     "moduleActivityCenter.notifications.txApproved": "Disetujui di {account}",
     "moduleActivityCenter.notifications.txWrap": "Di-wrap di {account}",
     "moduleActivityCenter.notifications.txUnwrap": "Unwrap di {account}",
+    "moduleActivityCenter.notifications.txExchange": "Traded in {account}",
     "biometricsButton": "Buka dengan biometrik",
     "search.noResults": "Hasil tidak ditemukan"
 }

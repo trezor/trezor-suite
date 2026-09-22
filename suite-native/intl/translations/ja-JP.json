@@ -2774,6 +2774,7 @@
     "moduleActivityCenter.notifications.txApproved": "{account}で承認されました",
     "moduleActivityCenter.notifications.txWrap": "{account}でラップ完了",
     "moduleActivityCenter.notifications.txUnwrap": "{account}でアンラップ完了",
+    "moduleActivityCenter.notifications.txExchange": "Traded in {account}",
     "biometricsButton": "生体認証でロック解除",
     "search.noResults": "該当がありません"
 }
