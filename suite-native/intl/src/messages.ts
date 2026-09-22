@@ -3048,6 +3048,10 @@ export const messages = {
                 yieldTitle: 'Choose account to yield',
                 title: 'Choose account',
             },
+            viewOnlyStakingAlert: {
+                title: 'Connect & unlock your Trezor to start staking',
+                description: "You can't stake {networkName} while your Trezor is disconnected.",
+            },
             earnItem: {
                 rewards: 'Rewards',
                 pending: 'Activation pending',
