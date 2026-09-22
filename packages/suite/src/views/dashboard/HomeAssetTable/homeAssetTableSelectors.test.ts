@@ -173,6 +173,23 @@ describe('the rows the table is given', () => {
         ]);
     });
 
+    it('leaves out a token the wallet holds none of, and keeps the network itself', () => {
+        const state = createState({
+            accounts: [
+                mockAccount({ symbol: ETH, balance: '1' }),
+                mockAccount({
+                    symbol: POL,
+                    index: 1,
+                    balance: '0',
+                    tokens: [{ symbol: 'usdc', contract: USDC_ON_POL, balance: '0' }],
+                }),
+            ],
+            rates: { ...mockRate(ETH, 2000), ...mockRate(POL, 0.5) },
+        });
+
+        expect(selectHomeAssetRowKeys(state)).toEqual([`${ALICE}/eth/`, `${ALICE}/pol/`]);
+    });
+
     it('settles assetAccounts worth the same by asset and network', () => {
         const state = createState({
             accounts: [
