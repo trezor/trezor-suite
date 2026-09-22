@@ -292,7 +292,7 @@ export const StakingCard = ({
                     <Item
                         label={
                             <Row gap={8}>
-                                <Translation id="TR_STAKE_REWARDS" />
+                                <Translation id="TR_STAKE_TOTAL_REWARDS" />
                                 <Tooltip
                                     maxWidth={250}
                                     content={

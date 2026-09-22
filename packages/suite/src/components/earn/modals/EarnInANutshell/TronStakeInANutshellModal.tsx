@@ -63,6 +63,7 @@ export const TronStakeInANutshellModal = ({
                     />
                     <EarnInfoRow
                         heading={<Translation id="TR_EARN_TRON_EARN_REWARDS" />}
+                        subheading={<Translation id="TR_EARN_TRON_REWARDS_CLAIMED_MANUALLY" />}
                         content={{
                             text: (
                                 <Translation

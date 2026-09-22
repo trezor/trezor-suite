@@ -5,6 +5,7 @@ import { useServices } from '@suite-common/dependency-injection';
 import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import { WETH_WRAP_GAS_RESERVE } from '@suite-common/wallet-constants';
 import {
+    getMaxWrapAmount,
     getYieldFlowStepSequence,
     shouldRecommendWrapReserve,
     splitYieldPendingTransaction,
@@ -325,7 +326,9 @@ export const YieldDepositForm = () => {
                                         <YieldWrapStep
                                             token={token}
                                             nativeSymbol={nativeSymbol}
-                                            availableAmount={account.formattedBalance}
+                                            availableAmount={getMaxWrapAmount(
+                                                account.formattedBalance,
+                                            )}
                                             receivingAmount={liveAmount || '0'}
                                             isSubmitting={isSubmittingAction}
                                             isSubmitDisabled={

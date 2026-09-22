@@ -1,4 +1,5 @@
 import { Translation } from '@suite/intl';
+import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import { TRON_FLOW_STEPS, type TronStakeStepId } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
 import { Column, StepList, type StepListItemState, Text } from '@trezor/components';
@@ -39,7 +40,12 @@ export const TronStake = ({ account }: TronStakeProps) => {
                             account={account}
                             heading={<Translation id="TR_EARN_TRON_STAKE_COMPLETE" />}
                             description={
-                                <Translation id="TR_EARN_TRON_STAKE_COMPLETE_DESCRIPTION" />
+                                <Translation
+                                    id="TR_EARN_TRON_STAKE_COMPLETE_DESCRIPTION"
+                                    values={{
+                                        displaySymbol: getNetworkDisplaySymbol(account.symbol),
+                                    }}
+                                />
                             }
                         >
                             <TronStakeSummaryCard />
@@ -73,7 +79,14 @@ export const TronStake = ({ account }: TronStakeProps) => {
                                                 />
                                             </Text>
 
-                                            <Translation id="TR_EARN_TRON_FREEZE_STEP_TITLE" />
+                                            <Translation
+                                                id="TR_EARN_TRON_FREEZE_STEP_TITLE"
+                                                values={{
+                                                    displaySymbol: getNetworkDisplaySymbol(
+                                                        account.symbol,
+                                                    ),
+                                                }}
+                                            />
                                         </Column>
                                     }
                                 >

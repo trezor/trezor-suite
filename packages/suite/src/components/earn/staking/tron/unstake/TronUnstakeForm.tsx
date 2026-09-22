@@ -1,6 +1,7 @@
 import { FormProvider, useWatch } from 'react-hook-form';
 
 import { Translation } from '@suite/intl';
+import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import { Banner, Card, Column, Divider, Text } from '@trezor/components';
 import { BigNumber } from '@trezor/utils';
 
@@ -33,7 +34,10 @@ export const TronUnstakeForm = () => {
                         <Translation id="TR_EARN_TRON_UNSTAKE_TITLE" />
                     </Text>
                     <Text typographyStyle="body-md" intent="neutral" priority="secondary">
-                        <Translation id="TR_EARN_TRON_UNSTAKE_DESCRIPTION" />
+                        <Translation
+                            id="TR_EARN_TRON_UNSTAKE_DESCRIPTION"
+                            values={{ displaySymbol: getNetworkDisplaySymbol(account.symbol) }}
+                        />
                     </Text>
                 </Column>
 

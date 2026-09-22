@@ -55,7 +55,7 @@ export const YieldWrapStep = ({
             // The wrap amount is the native coin, so no token contract address.
             approxFiat={{ symbol: token.networkSymbol }}
             heading={{
-                amountLabelTranslationId: 'TR_BALANCE',
+                amountLabelTranslationId: 'TR_EARN_YIELD_WRAP_AMOUNT',
             }}
             summary={{
                 labelTranslationId: 'TR_EARN_YIELD_AVAILABLE_TO_WRAP',
