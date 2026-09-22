@@ -24,4 +24,10 @@ describe(getAccountIncrementSizeQuota.name, () => {
 
         expect(result).toBe(0);
     });
+
+    it('return 0 when unspentStorage size is negative', () => {
+        const result = getAccountIncrementSizeQuota({ unspentStorage: -500 });
+
+        expect(result).toBe(0);
+    });
 });
