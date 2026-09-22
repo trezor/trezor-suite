@@ -45,31 +45,11 @@ export const EarnStakingActionButtons = ({
     <>
         {(stakingStatus === 'insufficient-funds' ||
             stakingStatus === 'staking-max' ||
-            stakingStatus === 'staked-but-insufficient-funds') &&
-            (canClaim ? (
-                <Tooltip content={claimingMessageContent}>
-                    <Button
-                        intent="brand"
-                        size="small"
-                        isDisabled={isClaimButtonDisabled}
-                        iconLeft={isClaimButtonDisabled ? InfoIcon : undefined}
-                        onClick={onClaim}
-                        data-testid="@account/staking/claim-button"
-                    >
-                        <Translation
-                            id={
-                                networkType === 'cardano'
-                                    ? 'TR_EARN_CLAIM_REWARDS'
-                                    : 'TR_EARN_STAKING_DASHBOARD_CLAIM_FUNDS'
-                            }
-                        />
-                    </Button>
-                </Tooltip>
-            ) : (
-                <Button intent="neutral" priority="secondary" size="small" onClick={onBuy}>
-                    <Translation id="TR_BUY" />
-                </Button>
-            ))}
+            stakingStatus === 'staked-but-insufficient-funds') && (
+            <Button intent="neutral" priority="secondary" size="small" onClick={onBuy}>
+                <Translation id="TR_BUY" />
+            </Button>
+        )}
 
         {stakingStatus === 'staking-active' && (
             <Tooltip content={stakingMessageContent}>
@@ -123,6 +103,28 @@ export const EarnStakingActionButtons = ({
                     onClick={onVote}
                 >
                     <Translation id="TR_EARN_TRON_VOTE" />
+                </Button>
+            </Tooltip>
+        )}
+
+        {canClaim && (
+            <Tooltip content={claimingMessageContent}>
+                <Button
+                    intent="brand"
+                    priority="secondary"
+                    size="small"
+                    isDisabled={isClaimButtonDisabled}
+                    iconLeft={isClaimButtonDisabled ? InfoIcon : undefined}
+                    onClick={onClaim}
+                    data-testid="@account/staking/claim-button"
+                >
+                    <Translation
+                        id={
+                            networkType === 'cardano'
+                                ? 'TR_EARN_CLAIM_REWARDS'
+                                : 'TR_EARN_STAKING_DASHBOARD_CLAIM_FUNDS'
+                        }
+                    />
                 </Button>
             </Tooltip>
         )}

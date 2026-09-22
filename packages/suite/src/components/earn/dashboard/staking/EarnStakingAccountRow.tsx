@@ -311,6 +311,12 @@ export const EarnStakingAccountRow = ({ account, isCardLayout }: EarnStakingAcco
         onClaim: openClaimModal,
     } as const;
 
+    const tableActionButtons = (
+        <Row justifyContent="flex-end" gap={8}>
+            <EarnStakingActionButtons {...actionButtonsProps} />
+        </Row>
+    );
+
     if (isCardLayout) {
         return (
             <Card paddingType="small" onClick={navigateToStaking}>
@@ -429,9 +435,7 @@ export const EarnStakingAccountRow = ({ account, isCardLayout }: EarnStakingAcco
             {stakingStatus === 'insufficient-funds' && (
                 <>
                     <Table.Cell colSpan={2}>{minStakeParagraph}</Table.Cell>
-                    <Table.Cell align="end">
-                        <EarnStakingActionButtons {...actionButtonsProps} />
-                    </Table.Cell>
+                    <Table.Cell align="end">{tableActionButtons}</Table.Cell>
                 </>
             )}
 
@@ -453,9 +457,7 @@ export const EarnStakingAccountRow = ({ account, isCardLayout }: EarnStakingAcco
                     <Table.Cell>
                         <EarnStakingPotentialRewards {...potentialRewardsProps} />
                     </Table.Cell>
-                    <Table.Cell align="end">
-                        <EarnStakingActionButtons {...actionButtonsProps} />
-                    </Table.Cell>
+                    <Table.Cell align="end">{tableActionButtons}</Table.Cell>
                 </>
             )}
 
@@ -467,9 +469,7 @@ export const EarnStakingAccountRow = ({ account, isCardLayout }: EarnStakingAcco
                         </Row>
                     </Table.Cell>
                     <Table.Cell>{maxStakeParagraph}</Table.Cell>
-                    <Table.Cell align="end">
-                        <EarnStakingActionButtons {...actionButtonsProps} />
-                    </Table.Cell>
+                    <Table.Cell align="end">{tableActionButtons}</Table.Cell>
                 </>
             )}
 
@@ -481,9 +481,7 @@ export const EarnStakingAccountRow = ({ account, isCardLayout }: EarnStakingAcco
                         </Row>
                     </Table.Cell>
                     <Table.Cell>{minStakeParagraph}</Table.Cell>
-                    <Table.Cell align="end">
-                        <EarnStakingActionButtons {...actionButtonsProps} />
-                    </Table.Cell>
+                    <Table.Cell align="end">{tableActionButtons}</Table.Cell>
                 </>
             )}
 
@@ -492,9 +490,7 @@ export const EarnStakingAccountRow = ({ account, isCardLayout }: EarnStakingAcco
                     <Table.Cell colSpan={2}>
                         <EarnStakingOutdatedProvider apy={newProviderApy} />
                     </Table.Cell>
-                    <Table.Cell align="end">
-                        <EarnStakingActionButtons {...actionButtonsProps} />
-                    </Table.Cell>
+                    <Table.Cell align="end">{tableActionButtons}</Table.Cell>
                 </>
             )}
 
@@ -503,9 +499,7 @@ export const EarnStakingAccountRow = ({ account, isCardLayout }: EarnStakingAcco
                     <Table.Cell colSpan={2}>
                         <EarnStakingRemainingVotes apr={rate} />
                     </Table.Cell>
-                    <Table.Cell align="end">
-                        <EarnStakingActionButtons {...actionButtonsProps} />
-                    </Table.Cell>
+                    <Table.Cell align="end">{tableActionButtons}</Table.Cell>
                 </>
             )}
         </Table.Row>
