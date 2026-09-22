@@ -25,20 +25,22 @@ export type SecondaryIndexEntry<TEntity, TId extends EntityId> = {
     readonly entities: readonly TEntity[];
 };
 
+/**
+ * What a read hands back. Every answer is a method because every answer is work the build put
+ * off: asking for the ids walks the partitions, asking for a secondary index assembles it, and
+ * asking what changed diffs against the build before. Each is done once per snapshot.
+ */
 export type EntityIndexSnapshot<
     TEntity,
     TId extends EntityId,
     TSecondaryIndexes extends SecondaryKeyExtractors<TEntity>,
 > = {
-    readonly ids: readonly TId[];
-    readonly byId: ReadonlyMap<TId, TEntity>;
-    readonly secondaryIndexes: {
-        readonly [TName in keyof TSecondaryIndexes]: ReadonlyMap<
-            SecondaryKey<TSecondaryIndexes[TName]>,
-            SecondaryIndexEntry<TEntity, TId>
-        >;
-    };
-    readonly changes: EntityIndexChanges<TId>;
+    getIds: () => readonly TId[];
+    getEntitiesById: () => ReadonlyMap<TId, TEntity>;
+    getSecondaryIndex: <TName extends keyof TSecondaryIndexes>(
+        indexName: TName,
+    ) => ReadonlyMap<SecondaryKey<TSecondaryIndexes[TName]>, SecondaryIndexEntry<TEntity, TId>>;
+    getChanges: () => EntityIndexChanges<TId>;
 };
 
 export type EntityIndexPartition<TPartition> = readonly [key: string, partition: TPartition];

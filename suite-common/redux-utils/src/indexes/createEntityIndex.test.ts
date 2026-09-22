@@ -282,7 +282,7 @@ describe('an index over a source that is written in partitions', () => {
 
 describe('what a rebuild changed', () => {
     const readChanges = (index: ReturnType<typeof createIndex>['index'], state: State) =>
-        index.read(state).changes;
+        index.read(state).getChanges();
 
     it('is nothing on the first build, which nobody can have missed', () => {
         const { index } = createIndex();
@@ -341,7 +341,7 @@ describe('what a rebuild changed', () => {
         const { index } = createPartitionedIndex();
         index.read({ bySide: { left: [a], right: [] } });
 
-        expect(index.read({ bySide: { left: [], right: [a] } }).changes).toEqual({
+        expect(index.read({ bySide: { left: [], right: [a] } }).getChanges()).toEqual({
             added: [],
             removed: [],
             updated: [],
@@ -360,7 +360,7 @@ describe('being told when the index changes', () => {
         index.read(createState([a, b]));
 
         expect(listener).toHaveBeenCalledTimes(1);
-        expect(listener.mock.calls[0]?.[0].changes).toEqual({
+        expect(listener.mock.calls[0]?.[0].getChanges()).toEqual({
             added: ['b'],
             removed: [],
             updated: [],

@@ -171,11 +171,9 @@ describe('an entry whose entity changed', () => {
 
         index.getBySecondaryKey({ entities: [one, { ...two, side: 'left' }] }, 'bySide', 'left');
 
-        expect(listener).toHaveBeenLastCalledWith(
-            expect.objectContaining({
-                changes: { added: [], removed: [], updated: ['2'] },
-            }),
-        );
+        const snapshot = listener.mock.calls.at(-1)?.[0];
+
+        expect(snapshot.getChanges()).toEqual({ added: [], removed: [], updated: ['2'] });
     });
 
     it('keeps the array of the entry the changed entity is not in', () => {

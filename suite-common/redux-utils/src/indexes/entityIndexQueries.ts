@@ -66,12 +66,12 @@ export const createEntityIndexQueries = <
     };
 
     return {
-        getById: (state, id) => read(state).byId.get(id),
+        getById: (state, id) => read(state).getEntitiesById().get(id),
 
-        getIds: state => read(state).ids,
+        getIds: state => read(state).getIds(),
 
         getAllExcept: (state, excluded) => {
-            const { byId } = read(state);
+            const byId = read(state).getEntitiesById();
             const excludedSet =
                 excluded instanceof Set ? excluded : toIdSet(excluded as readonly TId[]);
             const known = entitiesExcept.get(byId)?.get(excludedSet);
@@ -95,7 +95,7 @@ export const createEntityIndexQueries = <
         },
 
         getByIds: (state, ids) => {
-            const { byId } = read(state);
+            const byId = read(state).getEntitiesById();
             const known = typeof ids === 'object' ? entitiesByIds.get(byId)?.get(ids) : undefined;
 
             if (known !== undefined) {
@@ -123,9 +123,9 @@ export const createEntityIndexQueries = <
         },
 
         getBySecondaryKey: (state, indexName, key) =>
-            read(state).secondaryIndexes[indexName].get(key)?.entities ?? EMPTY_ENTITIES,
+            read(state).getSecondaryIndex(indexName).get(key)?.entities ?? EMPTY_ENTITIES,
 
         getIdsBySecondaryKey: (state, indexName, key) =>
-            read(state).secondaryIndexes[indexName].get(key)?.ids ?? EMPTY_ENTITY_IDS,
+            read(state).getSecondaryIndex(indexName).get(key)?.ids ?? EMPTY_ENTITY_IDS,
     };
 };
