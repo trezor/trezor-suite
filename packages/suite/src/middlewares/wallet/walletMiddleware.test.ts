@@ -13,6 +13,7 @@ import {
     blockchainActions,
     formDraftInitialState,
     prepareBlockchainMiddleware,
+    prepareBlockchainSubscriptionMiddleware,
     prepareSendFormReducer,
 } from '@suite-common/wallet-core';
 import { type WalletSettings, asAccountDescriptor } from '@suite-common/wallet-types';
@@ -114,7 +115,11 @@ const getInitialState = ({
 
 const mockStore = (preloadedState: State) =>
     createTestCompositionRoot<SyncAccountsWithBlockchainThunkDeps, State>({
-        middleware: [walletMiddleware, prepareBlockchainMiddleware(() => ({}))],
+        middleware: [
+            walletMiddleware,
+            prepareBlockchainMiddleware(() => ({})),
+            prepareBlockchainSubscriptionMiddleware(() => ({})),
+        ],
         // the synced action carries a live timer handle
         serializableCheck: { ignoredActions: [blockchainActions.synced.type] },
         reducer: (state = preloadedState, action) => ({
@@ -143,7 +148,7 @@ const mockStore = (preloadedState: State) =>
         }),
     }).services.store;
 
-// testing walletMiddleware, blockchainActions (subscribe/unsubscribe)
+// Testing walletMiddleware and blockchainSubscriptionMiddleware (subscribe/unsubscribe).
 describe('walletMiddleware', () => {
     afterEach(() => {
         jest.clearAllMocks();

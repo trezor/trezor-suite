@@ -51,6 +51,9 @@
         { "path": "../../packages/env-utils" },
         { "path": "../../packages/eslint" },
         {
+            "path": "../../networks/cardano/network-cardano"
+        },
+        {
             "path": "../../networks/ethereum/network-ethereum-suite-common"
         },
         {
