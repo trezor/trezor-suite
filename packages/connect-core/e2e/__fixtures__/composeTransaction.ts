@@ -1,54 +1,38 @@
-const BECH32_ACCOUNT = {
-    path: "m/84'/0'/0'",
-    addresses: {
-        used: [], // irrelevant
-        unused: [], // irrelevant
-        change: [
-            {
-                address: 'bc1qktmhrsmsenepnnfst8x6j27l0uqv7ggrg8x38q',
-                path: "m/84'/0'/0'/1/0",
-                transfers: 0,
-            },
-        ],
-    },
-    utxo: [
-        {
-            txid: '86a6e02943dcd057cfbe349f2c2274478a3a1be908eb788606a6950e727a0d36',
-            vout: 0,
-            amount: '9426',
-            blockHeight: 590093,
-            address: 'bc1qannfxke2tfd4l7vhepehpvt05y83v3qsf6nfkk',
-            path: "m/84'/0'/0'/0/0",
-            confirmations: 100,
-        },
-    ],
+const BECH32_PATH = "m/84'/0'/0'";
+const BECH32_CHANGE = {
+    address: 'bc1qktmhrsmsenepnnfst8x6j27l0uqv7ggrg8x38q',
+    path: "m/84'/0'/0'/1/0",
+    transfers: 0,
 };
+const BECH32_UTXO = [
+    {
+        txid: '86a6e02943dcd057cfbe349f2c2274478a3a1be908eb788606a6950e727a0d36',
+        vout: 0,
+        amount: '9426',
+        blockHeight: 590093,
+        address: 'bc1qannfxke2tfd4l7vhepehpvt05y83v3qsf6nfkk',
+        path: "m/84'/0'/0'/0/0",
+        confirmations: 100,
+    },
+];
 
-const DOGE_ACCOUNT = {
-    path: "m/44'/3'/0'",
-    addresses: {
-        used: [],
-        unused: [],
-        change: [
-            {
-                address: 'DKu2a8Wo6zC2dmBBYXwUG3fxWDHbKnNiPj',
-                path: "m/44'/3'/0'/1/0",
-                transfers: 0,
-            },
-        ],
-    },
-    utxo: [
-        {
-            txid: '78c3ee88226c7f63060fbf27ab0450961c09241bfd56a12ce164881791c7c6e5',
-            vout: 1,
-            amount: '500000000',
-            blockHeight: 2272181,
-            address: 'DUCd1B3YBiXL5By15yXgSLZtEkvwsgEdqS',
-            path: "m/44'/3'/0'/0/0",
-            confirmations: 100,
-        },
-    ],
+const DOGE_PATH = "m/44'/3'/0'";
+const DOGE_CHANGE = {
+    address: 'DKu2a8Wo6zC2dmBBYXwUG3fxWDHbKnNiPj',
+    path: "m/44'/3'/0'/1/0",
+    transfers: 0,
 };
+const DOGE_UTXO = [
+    {
+        txid: '78c3ee88226c7f63060fbf27ab0450961c09241bfd56a12ce164881791c7c6e5',
+        vout: 1,
+        amount: '500000000',
+        blockHeight: 2272181,
+        address: 'DUCd1B3YBiXL5By15yXgSLZtEkvwsgEdqS',
+        path: "m/44'/3'/0'/0/0",
+        confirmations: 100,
+    },
+];
 
 const FEE_LEVELS = [
     {
@@ -73,7 +57,9 @@ const composeTransaction: TestCase = {
         {
             description: 'Bitcoin (Bech32/P2WPKH): precompose with change',
             params: {
-                account: BECH32_ACCOUNT,
+                path: BECH32_PATH,
+                changeAddress: BECH32_CHANGE,
+                utxo: BECH32_UTXO,
                 feeLevels: FEE_LEVELS,
                 outputs: [
                     {
@@ -105,7 +91,9 @@ const composeTransaction: TestCase = {
             description:
                 "Bitcoin (Bech32/P2WPKH): precompose without outputs permutation (sortingStrategy: 'none'), with baseFee and custom sequence",
             params: {
-                account: BECH32_ACCOUNT,
+                path: BECH32_PATH,
+                changeAddress: BECH32_CHANGE,
+                utxo: BECH32_UTXO,
                 feeLevels: FEE_LEVELS,
                 outputs: [
                     {
@@ -139,30 +127,29 @@ const composeTransaction: TestCase = {
         {
             description: 'Bitcoin (Bech32/P2WPKH): precompose with required utxo',
             params: {
-                account: {
-                    ...BECH32_ACCOUNT,
-                    utxo: [
-                        {
-                            txid: '86a6e02943dcd057cfbe349f2c2274478a3a1be908eb788606a6950e727a0d36',
-                            vout: 0,
-                            amount: '9426',
-                            blockHeight: 590093,
-                            address: 'bc1qannfxke2tfd4l7vhepehpvt05y83v3qsf6nfkk',
-                            path: "m/84'/0'/0'/0/0",
-                            confirmations: 0,
-                            required: true, // NOTE: this utxo is used only because of this param
-                        },
-                        {
-                            txid: '86a6e02943dcd057cfbe349f2c2274478a3a1be908eb788606a6950e727a0d36',
-                            vout: 1, // NOTE: this utxo doesn't belong to this account
-                            amount: '309896',
-                            blockHeight: 590093,
-                            address: '3N6sbjPwa9L911fPxykD3XnGifMdVRMZPV',
-                            path: "m/84'/0'/0'/0/100",
-                            confirmations: 100,
-                        },
-                    ],
-                },
+                path: BECH32_PATH,
+                changeAddress: BECH32_CHANGE,
+                utxo: [
+                    {
+                        txid: '86a6e02943dcd057cfbe349f2c2274478a3a1be908eb788606a6950e727a0d36',
+                        vout: 0,
+                        amount: '9426',
+                        blockHeight: 590093,
+                        address: 'bc1qannfxke2tfd4l7vhepehpvt05y83v3qsf6nfkk',
+                        path: "m/84'/0'/0'/0/0",
+                        confirmations: 0,
+                        required: true, // NOTE: this utxo is used only because of this param
+                    },
+                    {
+                        txid: '86a6e02943dcd057cfbe349f2c2274478a3a1be908eb788606a6950e727a0d36',
+                        vout: 1, // NOTE: this utxo doesn't belong to this account
+                        amount: '309896',
+                        blockHeight: 590093,
+                        address: '3N6sbjPwa9L911fPxykD3XnGifMdVRMZPV',
+                        path: "m/84'/0'/0'/0/100",
+                        confirmations: 100,
+                    },
+                ],
                 feeLevels: FEE_LEVELS,
                 outputs: [
                     {
@@ -190,40 +177,39 @@ const composeTransaction: TestCase = {
         {
             description: 'Bitcoin (Bech32/P2WPKH): precompose with required and additional utxos',
             params: {
-                account: {
-                    ...BECH32_ACCOUNT,
-                    utxo: [
-                        {
-                            txid: '86a6e02943dcd057cfbe349f2c2274478a3a1be908eb788606a6950e727a0d36',
-                            vout: 0,
-                            amount: '9426',
-                            blockHeight: 590093,
-                            address: 'bc1qannfxke2tfd4l7vhepehpvt05y83v3qsf6nfkk',
-                            path: "m/84'/0'/0'/0/0",
-                            confirmations: 0,
-                            required: true,
-                        },
-                        {
-                            txid: '86a6e02943dcd057cfbe349f2c2274478a3a1be908eb788606a6950e727a0d36',
-                            vout: 1, // NOTE: this utxo doesn't belong to this account
-                            amount: '309896',
-                            blockHeight: 590093,
-                            address: '3N6sbjPwa9L911fPxykD3XnGifMdVRMZPV',
-                            path: "m/84'/0'/0'/0/100",
-                            confirmations: 100,
-                        },
-                        {
-                            txid: '5dfd1b037633adc7f84a17b2df31c9994fe50b3ab3e246c44c4ceff3d326f62e',
-                            vout: 0,
-                            amount: '7086',
-                            blockHeight: 626426,
-                            address: 'bc1q7e6qu5smalrpgqrx9k2gnf0hgjyref5p36ru2m',
-                            path: "m/84'/0'/0'/0/1",
-                            confirmations: 0,
-                            required: true,
-                        },
-                    ],
-                },
+                path: BECH32_PATH,
+                changeAddress: BECH32_CHANGE,
+                utxo: [
+                    {
+                        txid: '86a6e02943dcd057cfbe349f2c2274478a3a1be908eb788606a6950e727a0d36',
+                        vout: 0,
+                        amount: '9426',
+                        blockHeight: 590093,
+                        address: 'bc1qannfxke2tfd4l7vhepehpvt05y83v3qsf6nfkk',
+                        path: "m/84'/0'/0'/0/0",
+                        confirmations: 0,
+                        required: true,
+                    },
+                    {
+                        txid: '86a6e02943dcd057cfbe349f2c2274478a3a1be908eb788606a6950e727a0d36',
+                        vout: 1, // NOTE: this utxo doesn't belong to this account
+                        amount: '309896',
+                        blockHeight: 590093,
+                        address: '3N6sbjPwa9L911fPxykD3XnGifMdVRMZPV',
+                        path: "m/84'/0'/0'/0/100",
+                        confirmations: 100,
+                    },
+                    {
+                        txid: '5dfd1b037633adc7f84a17b2df31c9994fe50b3ab3e246c44c4ceff3d326f62e',
+                        vout: 0,
+                        amount: '7086',
+                        blockHeight: 626426,
+                        address: 'bc1q7e6qu5smalrpgqrx9k2gnf0hgjyref5p36ru2m',
+                        path: "m/84'/0'/0'/0/1",
+                        confirmations: 0,
+                        required: true,
+                    },
+                ],
                 feeLevels: FEE_LEVELS,
                 outputs: [
                     {
@@ -255,7 +241,9 @@ const composeTransaction: TestCase = {
         {
             description: 'Bitcoin (Bech32/P2WPKH): precompose with send-max',
             params: {
-                account: BECH32_ACCOUNT,
+                path: BECH32_PATH,
+                changeAddress: BECH32_CHANGE,
+                utxo: BECH32_UTXO,
                 feeLevels: FEE_LEVELS,
                 outputs: [
                     {
@@ -281,7 +269,9 @@ const composeTransaction: TestCase = {
         {
             description: 'Bitcoin (Segwit/P2SH): precompose with send-max',
             params: {
-                account: BECH32_ACCOUNT,
+                path: BECH32_PATH,
+                changeAddress: BECH32_CHANGE,
+                utxo: BECH32_UTXO,
                 feeLevels: FEE_LEVELS,
                 outputs: [
                     {
@@ -308,7 +298,9 @@ const composeTransaction: TestCase = {
         {
             description: 'Doge (P2PKH): precompose with change',
             params: {
-                account: DOGE_ACCOUNT,
+                path: DOGE_PATH,
+                changeAddress: DOGE_CHANGE,
+                utxo: DOGE_UTXO,
                 feeLevels: DOGE_FEE_LEVELS,
                 outputs: [
                     {
@@ -341,7 +333,9 @@ const composeTransaction: TestCase = {
         {
             description: 'Doge (P2PKH): precompose with 1 dust limit output',
             params: {
-                account: DOGE_ACCOUNT,
+                path: DOGE_PATH,
+                changeAddress: DOGE_CHANGE,
+                utxo: DOGE_UTXO,
                 feeLevels: DOGE_FEE_LEVELS,
                 outputs: [
                     {
@@ -375,7 +369,9 @@ const composeTransaction: TestCase = {
             description:
                 'Doge (P2PKH): precompose with 1 dust limit output, change spent as dust limit',
             params: {
-                account: DOGE_ACCOUNT,
+                path: DOGE_PATH,
+                changeAddress: DOGE_CHANGE,
+                utxo: DOGE_UTXO,
                 feeLevels: DOGE_FEE_LEVELS,
                 outputs: [
                     {
@@ -416,7 +412,9 @@ const composeTransaction: TestCase = {
         {
             description: 'Doge (P2PKH): precompose with send-max',
             params: {
-                account: DOGE_ACCOUNT,
+                path: DOGE_PATH,
+                changeAddress: DOGE_CHANGE,
+                utxo: DOGE_UTXO,
                 feeLevels: DOGE_FEE_LEVELS,
                 outputs: [
                     {

@@ -62,12 +62,14 @@ export const composeCancelTransactionThunk = createThunk<
         const feePerUnit = getRelayFee().toString();
         const coin = asCoinSymbol(account.symbol);
 
+        // will be unused anyway because of send-max presence
+        const changeAddress =
+            account.addresses.change.find(a => !a.transfers) ?? account.addresses.change.at(-1);
+
         const response = await TrezorConnect.composeTransaction({
-            account: {
-                path: account.path,
-                addresses: account.addresses,
-                utxo,
-            },
+            path: account.path,
+            utxo,
+            changeAddress,
             outputs: [{ type: 'send-max', address: cancelAddress }],
             sortingStrategy: DEFAULT_SORTING_STRATEGY,
             coin,

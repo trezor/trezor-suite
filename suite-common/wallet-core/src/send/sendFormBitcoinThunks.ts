@@ -119,15 +119,13 @@ export const composeBitcoinTransactionFeeLevelsThunk = createThunk<
             ? account.addresses.change.filter(a => !prison[a.address])
             : account.addresses.change;
 
+        // find unused change address or fallback to the last in the list
+        const changeAddress = changeAddresses.find(a => !a.transfers) ?? changeAddresses.at(-1);
+
         const params: Parameters<typeof TrezorConnect.composeTransaction>[0] = {
-            account: {
-                path: account.path,
-                addresses: {
-                    ...account.addresses,
-                    change: changeAddresses,
-                },
-                utxo,
-            },
+            path: account.path,
+            utxo,
+            changeAddress,
             feeLevels: predefinedLevels,
             baseFee: formState.baseFee,
             sequence,
