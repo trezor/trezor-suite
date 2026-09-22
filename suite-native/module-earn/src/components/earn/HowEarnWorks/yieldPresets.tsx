@@ -4,6 +4,7 @@ import { Translation } from '@suite-native/intl';
 
 import { type HowEarnWorksBenefitItem } from './HowEarnWorksBenefitsSection';
 import { type HowEarnWorksScreenPreset, type HowEarnWorksTimelineSectionPreset } from './types';
+import { useFormattedEarnRate } from '../../../hooks/earn/useFormattedEarnRate';
 import { ApyDottedUnderline } from '../ApyDottedUnderline';
 
 type UseHowYieldWorksPresetProps = {
@@ -23,6 +24,8 @@ export const useHowYieldWorksPreset = ({
     bonusRewardTokenSymbol,
     wrappedNativeSymbol,
 }: UseHowYieldWorksPresetProps): HowEarnWorksScreenPreset => {
+    const formattedApy = useFormattedEarnRate(apy);
+
     const benefitItems: HowEarnWorksBenefitItem[] = useMemo(() => {
         if (wrappedNativeSymbol !== null) {
             return [
@@ -202,7 +205,7 @@ export const useHowYieldWorksPreset = ({
                             apy !== null ? (
                                 <Translation
                                     id="earn.howYieldWorksScreen.depositTimeline.third.description"
-                                    values={{ apy }}
+                                    values={{ apy: formattedApy }}
                                 />
                             ) : (
                                 <Translation id="earn.notAvailableShort" />
@@ -300,6 +303,7 @@ export const useHowYieldWorksPreset = ({
             tokenSymbol,
             vaultTokenSymbol,
             apy,
+            formattedApy,
             onApyPress,
             bonusRewardTokenSymbol,
         ],

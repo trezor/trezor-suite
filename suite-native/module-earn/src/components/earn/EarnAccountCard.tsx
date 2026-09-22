@@ -25,6 +25,7 @@ import { ApyValue } from './ApyValue';
 import { EarnAccountCardLayout } from './EarnAccountCardLayout';
 import { EarnAccountCardValue } from './EarnAccountCardValue';
 import { EarnTronVotingAlert } from './EarnTronVotingAlert';
+import { useFormattedEarnRate } from '../../hooks/earn/useFormattedEarnRate';
 import { type EarnDepositsCardActiveItem } from '../../types';
 
 type EarnAccountCardProps = {
@@ -61,6 +62,7 @@ export const EarnAccountCard = ({ item, onPress }: EarnAccountCardProps) => {
 
     const resolvedApy = symbol === 'trx' ? tronApr : apy;
     const apyValue = isStakingItem ? resolvedApy : item.apy;
+    const formattedApy = useFormattedEarnRate(apyValue);
 
     const availableTronVotingPower = useSelector((state: AccountsRootState) =>
         selectTronAvailableVotingPowerByAccountKey(state, item.accountKey),
@@ -116,7 +118,7 @@ export const EarnAccountCard = ({ item, onPress }: EarnAccountCardProps) => {
                         ) : (
                             <Translation
                                 id={symbol === 'trx' ? 'earn.aprPercentage' : 'earn.apyPercentage'}
-                                values={{ apy: apyValue }}
+                                values={{ apy: formattedApy }}
                             />
                         )}
                     </Text>

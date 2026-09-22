@@ -128,7 +128,10 @@ export const useHowStakeWorksPreset = ({
                             />
                         ),
                         description: (
-                            <Translation id={stakingRewardsDescriptionId} values={{ apy }} />
+                            <Translation
+                                id={stakingRewardsDescriptionId}
+                                values={{ apy: apyFormatted }}
+                            />
                         ),
                     },
                 ],
