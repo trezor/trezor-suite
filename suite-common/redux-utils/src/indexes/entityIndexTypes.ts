@@ -14,9 +14,12 @@ export type EntityIndexChanges<TId extends EntityId> = {
 /**
  * What an entity is looked up by, other than its id.
  *
- * A secondary index here is always the grouping kind: a key names however many entities answer to
- * it, and an entity may answer to several of them, or to none by returning `undefined`. Being one
- * of a kind is what the id is for.
+ * A secondary index here is always the grouping kind: a key names every entity that answers to it,
+ * rather than at most one the way a unique index would — a lookup gives back what is under the
+ * key, never a single entity. Naming exactly one entity is what the id is for.
+ *
+ * An entity may answer to several keys, or to none by returning `undefined`. Under any one key it
+ * is there once, however many times it names it.
  */
 export type SecondaryKeyExtractor<TEntity, TKey extends EntityId = EntityId> = (
     entity: TEntity,
