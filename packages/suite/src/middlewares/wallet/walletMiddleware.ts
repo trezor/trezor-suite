@@ -1,4 +1,4 @@
-import { type UnknownAction, isAnyOf } from '@reduxjs/toolkit';
+import { type UnknownAction } from '@reduxjs/toolkit';
 import { type MiddlewareAPI, type Dispatch as ReduxDispatch } from 'redux';
 
 import { selectSelectedAccountKey } from '@suite/account';
@@ -17,10 +17,8 @@ import {
     sendFormActions,
     setCustomBackendThunk,
     stakeActions,
-    subscribeBlockchainThunk,
     syncAccountsWithBlockchainThunk,
     transactionsActions,
-    unsubscribeBlockchainThunk,
 } from '@suite-common/wallet-core';
 
 import { updateWindowVisibility } from 'src/actions/suite/windowActions';
@@ -56,15 +54,6 @@ const walletMiddleware =
                     perPage: getTxsPerPage(account.networkType),
                 }),
             );
-        }
-
-        if (isAnyOf(accountsActions.createAccount, accountsActions.updateAccount)(action)) {
-            const { account } = action.payload;
-            api.dispatch(subscribeBlockchainThunk({ symbol: account.symbol }));
-        }
-
-        if (accountsActions.removeAccount.match(action)) {
-            api.dispatch(unsubscribeBlockchainThunk(action.payload));
         }
 
         // Update custom backends

@@ -45,6 +45,7 @@ import {
 import {
     formatNetworkAmount,
     getMevProtectedTxData,
+    isCardanoTx,
     isRbfBumpFeeTransaction,
     tryGetAccountIdentity,
 } from '@suite-common/wallet-utils';
@@ -214,7 +215,7 @@ const pushTransactionThunk =
                 );
             }
 
-            if (account.networkType === 'cardano') {
+            if (isCardanoTx(account, precomposedTx)) {
                 const base = { withdrawal: undefined, deposit: undefined };
                 let cardanoSpecific: WalletAccountTransaction['cardanoSpecific'];
 

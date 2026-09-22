@@ -11,6 +11,7 @@ import {
 import { prepareSuiteSyncMiddleware } from '@suite-common/suite-sync';
 import { type SuiteSyncDep } from '@suite-common/suite-sync-types';
 import {
+    prepareBlockchainSubscriptionMiddleware,
     prepareFiatRatesMiddleware,
     preparePushNotificationMiddleware,
 } from '@suite-common/wallet-core';
@@ -65,6 +66,7 @@ const getMiddlewares = (getExtra: () => GetMiddlewaresDeps | null) => {
     const middlewares: Middleware[] = [
         messageSystemMiddleware,
         blockchainMiddleware,
+        prepareBlockchainSubscriptionMiddleware(getExtra),
         prepareFiatRatesMiddleware(getExtra),
         prepareDeviceMiddleware(getExtra),
         prepareDiscoveryMiddleware(getExtra),
