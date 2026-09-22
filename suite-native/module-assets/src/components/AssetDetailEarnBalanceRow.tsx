@@ -2,6 +2,7 @@ import { useSelector } from 'react-redux';
 
 import { type RouteProp, useRoute } from '@react-navigation/native';
 
+import { useFormatters } from '@suite-common/formatters';
 import { type StakeRootState, selectApy } from '@suite-common/wallet-core';
 import { Box, HStack, Text } from '@suite-native/atoms';
 import { CryptoToFiatAmountFormatter } from '@suite-native/formatters';
@@ -24,6 +25,7 @@ type AssetDetailEarnBalanceRowProps = {
 };
 
 export const AssetDetailEarnBalanceRow = ({ amount, type }: AssetDetailEarnBalanceRowProps) => {
+    const { PercentageFormatter } = useFormatters();
     const { networkSymbol } =
         useRoute<RouteProp<AssetsStackParamList, AssetsStackRoutes.AssetDetail>>().params;
     const { applyStyle } = useNativeStyles();
@@ -49,7 +51,10 @@ export const AssetDetailEarnBalanceRow = ({ amount, type }: AssetDetailEarnBalan
             <HStack alignItems="center" justifyContent="flex-end" spacing="sp12" flexShrink={1}>
                 {apy != null && apy > 0 && (
                     <Text variant="body-md" color="contentBrand" numberOfLines={1}>
-                        <Translation id="earn.yieldRateBadge.apy" values={{ value: apy }} />
+                        <Translation
+                            id="earn.yieldRateBadge.apy"
+                            values={{ value: PercentageFormatter.format(apy) }}
+                        />
                     </Text>
                 )}
                 <CryptoToFiatAmountFormatter

@@ -1,3 +1,4 @@
+import { useFormatters } from '@suite-common/formatters';
 import { isSupportedTronStakingNetworkSymbol } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
 import { HStack, Text } from '@suite-native/atoms';
@@ -13,6 +14,7 @@ type StakingApyBadgeProps = {
 };
 
 export const StakingApyBadge = ({ account }: StakingApyBadgeProps) => {
+    const { PercentageFormatter } = useFormatters();
     const { rate } = useStakingRate({ accountKey: account.key, symbol: account.symbol });
 
     if (!rate) return null;
@@ -25,7 +27,7 @@ export const StakingApyBadge = ({ account }: StakingApyBadgeProps) => {
             <Text variant="body-sm" color="borderOnDarkBrand">
                 <Translation
                     id={isTron ? 'earn.yieldRateBadge.apr' : 'earn.yieldRateBadge.apy'}
-                    values={{ value: rate }}
+                    values={{ value: PercentageFormatter.format(rate) }}
                 />
             </Text>
         </HStack>
