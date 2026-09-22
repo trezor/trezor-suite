@@ -8,8 +8,8 @@ export const MIN_CARDANO_AMOUNT_FOR_SEND = new BigNumber(1_000_000);
 export const CARDANO_STAKING_REGISTRATION_DEPOSIT = '2';
 
 export const CARDANO_EVERSTAKE_STAKING_POOL = {
-    hex: '88d719a2d9b57e7f68a77e70b3e8b8e17c76c74dc12ea52e159bb89f',
-    bech32: 'pool13rt3ngkek4l876980ect869cu978d36dcyh22ts4nwuf7ncq02u',
+    hex: '327f9bb05d6d5c3d0c6c4eb39eea9282e9d4bc75b3c77a999b9810cb',
+    bech32: 'pool1xflehvzad4wr6rrvf6eea65jst5af0r4k0rh4xvmnqgvkzt3xjt',
 };
 
 export const CARDANO_EVERSTAKE_DREP = {
