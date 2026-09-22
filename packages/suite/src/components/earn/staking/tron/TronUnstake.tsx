@@ -24,6 +24,7 @@ export const TronUnstake = ({ account }: TronUnstakeProps) => {
                     {step === 'complete' ? (
                         <TronStakeComplete
                             account={account}
+                            flow="unstake"
                             heading={<Translation id="TR_EARN_TRON_UNSTAKE_COMPLETE" />}
                             description={
                                 <Translation

@@ -38,6 +38,7 @@ export const TronStake = ({ account }: TronStakeProps) => {
                     {step === 'complete' ? (
                         <TronStakeComplete
                             account={account}
+                            flow="stake"
                             heading={<Translation id="TR_EARN_TRON_STAKE_COMPLETE" />}
                             description={
                                 <Translation
