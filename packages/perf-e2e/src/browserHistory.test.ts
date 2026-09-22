@@ -6,6 +6,8 @@ import {
     resolveSurface,
 } from './browserHistory';
 import type { PerfHistoryFile } from './browserHistory';
+import { buildFlowDocument } from './lighthouseFlow';
+import type { FlowDocument } from './lighthouseFlow';
 import type { PerfRunIdentity } from './publishRuns';
 
 const identity: PerfRunIdentity = {
@@ -164,5 +166,96 @@ describe('mergeHistories', () => {
 
     it('is null when the shard left nothing', () => {
         expect(mergeHistories([])).toBeNull();
+    });
+});
+
+describe('historyToPerfRun with Lighthouse flows', () => {
+    const flow = (overrides: Partial<Parameters<typeof buildFlowDocument>[0]> = {}): FlowDocument =>
+        buildFlowDocument({
+            surface: 'web',
+            model: 'T3W1',
+            title: 'wallet discovery',
+            retry: 0,
+            generatedAt: '2026-09-22T08:00:00.000Z',
+            flow: {
+                steps: [
+                    {
+                        name: 'wallet-discovery',
+                        lhr: { audits: { 'total-blocking-time': { numericValue: 812 } } },
+                    },
+                ],
+            },
+            ...overrides,
+        });
+
+    it('changes nothing when a run was not profiled', () => {
+        expect(historyToPerfRun('3', history, identity, [])).toEqual(
+            historyToPerfRun('3', history, identity),
+        );
+    });
+
+    it('carries both instruments in one row, and points it at the flow result', () => {
+        const run = historyToPerfRun('3', history, identity, [flow()]);
+        const [measurement] = run?.measurements ?? [];
+
+        expect(measurement?.metrics).toMatchObject({
+            'browser:totalBlockingTimeMs': 611,
+            'lh:total-blocking-time': 812,
+        });
+        expect(measurement?.artifact).toBe('flow-wallet-discovery-T3W1-0');
+    });
+
+    it('stores the stripped flow beside the history document', () => {
+        const run = historyToPerfRun('3', history, identity, [flow()]);
+
+        expect(run?.artifacts.map(artifact => [artifact.kind, artifact.name])).toEqual([
+            ['browser-report', 'history'],
+            ['flow-result', 'flow-wallet-discovery-T3W1-0'],
+        ]);
+    });
+
+    it('does not let a timespan of another device model claim this row', () => {
+        const run = historyToPerfRun('3', history, identity, [flow({ model: 'T3T1' })]);
+        const [measurement] = run?.measurements ?? [];
+
+        expect(measurement?.artifact).toBe('history');
+        expect(measurement?.metrics['lh:total-blocking-time']).toBeUndefined();
+    });
+
+    it('keeps a timespan we produced no median for, rather than dropping it', () => {
+        const unmeasured = flow({
+            flow: { steps: [{ name: 'send-flow', lhr: { audits: {} } }] },
+        });
+        const run = historyToPerfRun('3', history, identity, [unmeasured]);
+
+        expect(run?.measurements.map(m => m.scenario)).toEqual(['wallet-discovery', 'send-flow']);
+        expect(run?.measurements.at(-1)).toMatchObject({ variant: 'T3W1', samples: 1 });
+    });
+
+    it('publishes a profiled shard even when our instrumentation measured nothing', () => {
+        const run = historyToPerfRun('3', { ...history, measurements: [] }, identity, [flow()]);
+
+        expect(run?.measurements).toHaveLength(1);
+        expect(run?.artifacts.map(artifact => artifact.kind)).toEqual(['flow-result']);
+    });
+
+    it('lets the last retry of a test win', () => {
+        const run = historyToPerfRun('3', history, identity, [
+            flow({ retry: 0 }),
+            flow({
+                retry: 1,
+                flow: {
+                    steps: [
+                        {
+                            name: 'wallet-discovery',
+                            lhr: { audits: { 'total-blocking-time': { numericValue: 999 } } },
+                        },
+                    ],
+                },
+            }),
+        ]);
+
+        expect(run?.measurements[0]?.metrics['lh:total-blocking-time']).toBe(999);
+        expect(run?.measurements[0]?.artifact).toBe('flow-wallet-discovery-T3W1-1');
     });
 });

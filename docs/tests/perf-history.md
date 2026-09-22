@@ -94,6 +94,35 @@ Each line carries the identity, the sample count, the metric map and the key of 
 
 Fetch `runs/…` under the same prefix for the document behind a point.
 
+## Lighthouse
+
+Lighthouse records a timespan around each `@perf` measurement and the run stores the flow result —
+one audited step per timespan — as an artifact of kind `flow-result`. Fetch one and render it, with
+nothing installed but Lighthouse itself:
+
+```sh
+curl -sO https://dev.suite.sldev.cz/e2e/perf/v1/runs/web/develop/<sha>/<run>-1/shard-web-3/flow-<test>-T3W1-0.json
+node -e "import('lighthouse').then(({generateReport})=>require('fs').writeFileSync('report.html',generateReport(JSON.parse(require('fs').readFileSync(process.argv[1],'utf8')),'html')))" flow-*.json
+```
+
+Its numbers also travel in the index row that points at it, under `lh:` keys. Those are namespaced
+apart from `browser:` on purpose: Lighthouse and our in-page instrumentation measure overlapping
+things by different means and disagree, so a report must never present them as one metric.
+
+**What is stripped before storing**, and why — the audits themselves stay, so the rendered report
+still lists them:
+
+| removed                                     | why                                                                                                            |
+| ------------------------------------------- | -------------------------------------------------------------------------------------------------------------- |
+| `lhr.fullPageScreenshot`                    | top-level in Lighthouse 13, not an audit; the biggest payload, and the only part that can show a wallet screen |
+| `final-screenshot`, `screenshot-thumbnails` | base64 images and the filmstrip                                                                                |
+| `user-timings` details                      | unbounded — a profiling build emits tens of thousands of entries, most of the document                         |
+
+**Only the nightly profiles.** Lighthouse's tracing inflates the very numbers `budgets.ts` limits are
+compared against, so a profiled run is not baseline material and pull requests deliberately run
+without it (`lighthouse` input of `template-suite-run-e2e.yml`, default `false`). A run that cannot
+attach to the app's debugging endpoint warns and records nothing; it never fails a test.
+
 ## Baselines
 
 Only a run on the base branch seals `baseline/<surface>/<branch>/latest.json`

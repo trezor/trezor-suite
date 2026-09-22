@@ -39,6 +39,7 @@ jobs:
     with:
       target: "desktop"
       pw-config: "./playwright-config/playwright-desktop-nightly.config.ts"
+      lighthouse: "true"
       test-group: ${{ matrix.TEST_GROUP }}
       fail-fast: "false"
       currents-project-id: "4ytF0E"
@@ -104,6 +105,7 @@ jobs:
     with:
       target: "web"
       pw-config: "./playwright-config/playwright-web-nightly.config.ts"
+      lighthouse: "true"
       test-group: ${{ matrix.TEST_GROUP }}
       fail-fast: "false"
       currents-project-id: "Og0NOQ"
@@ -163,3 +165,87 @@ jobs:
       - name: Upload coverage map to S3
         run: |
           aws s3api put-object --bucket dev.suite.sldev.cz --key coverage/e2e/index.json --body packages/e2e-utils/coverage-map/index.json --content-type application/json --cache-control "no-cache, max-age=0"
+
+  # The counterpart of the pull request job, with one difference that matters: a run here is on the
+  # base branch, so it seals the baseline every later run is compared against. Nothing else does —
+  # a pull request never seals one.
+  #
+  # This is also the only place Lighthouse runs, so it is where flow results enter the store.
+  publish_performance_history:
+    name: Publish performance history
+    if: ${{ !cancelled() && github.repository == 'trezor/trezor-suite' }}
+    needs:
+      - run-e2e-suite-desktop-tests
+      - run-e2e-suite-web-tests
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    permissions:
+      id-token: write # to assume the dev-deploy role
+      contents: read
+    # Serialize the writers of the rolling branch index: a scheduled run and a manual dispatch would
+    # otherwise read-modify-write the same object at once.
+    concurrency:
+      group: publish-performance-history-web-${{ github.ref }}
+      cancel-in-progress: false
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v6
+        with:
+          persist-credentials: false
+
+      - name: Setup Node.js
+        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v6
+        with:
+          node-version-file: ".nvmrc"
+          cache: yarn
+
+      - name: Install dependencies
+        run: yarn workspaces focus @trezor/suite-e2e
+
+      - name: Download performance artifacts
+        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8
+        with:
+          pattern: perf-history-*
+          path: perf-artifacts
+
+      - name: Build the upload bundle
+        env:
+          PERF_ARTIFACTS_DIR: ${{ github.workspace }}/perf-artifacts
+          PERF_BUNDLE_DIR: ${{ github.workspace }}/perf-upload
+          PERF_SHA: ${{ github.sha }}
+          PERF_RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+          # A scheduled run only ever happens on the base branch; a manual dispatch from a feature
+          # branch seals that branch's own baseline, which is what github.ref_name already says.
+          PERF_SEAL_BASELINE: "true"
+        run: yarn workspace @trezor/suite-e2e perf:publish
+
+      - name: Configure AWS credentials
+        if: ${{ hashFiles('perf-upload/**') != '' }}
+        uses: aws-actions/configure-aws-credentials@e6de054238d6b7531b4efff3b6587d9aade6a06c # v6
+        with:
+          role-to-assume: arn:aws:iam::538326561891:role/gh_actions_trezor_suite_dev_deploy
+          aws-region: eu-central-1
+
+      # Two passes, and the order is the point: the artifacts go up first, then the index lines and
+      # the baseline that reference them, so a reader never meets a line pointing at an object that
+      # is not there yet.
+      - name: Upload the bundle
+        if: ${{ hashFiles('perf-upload/**') != '' }}
+        env:
+          BUNDLE: ${{ github.workspace }}/perf-upload
+          DESTINATION: s3://dev.suite.sldev.cz/e2e/perf/v1
+        run: |
+          set -euo pipefail
+          if [ -d "$BUNDLE/runs" ]; then
+            aws s3 cp --recursive --no-progress "$BUNDLE/runs/" "$DESTINATION/runs/"
+          fi
+          aws s3 cp --recursive --no-progress --exclude "runs/*" "$BUNDLE/" "$DESTINATION/"
+
+      - name: Publish the dashboard
+        if: ${{ hashFiles('perf-upload/**') != '' }}
+        run: |
+          aws s3 cp --no-progress \
+            packages/perf-e2e/dashboard/index.html \
+            "s3://dev.suite.sldev.cz/e2e/perf/v1/dashboard/index.html" \
+            --content-type "text/html; charset=utf-8" \
+            --cache-control "no-cache, max-age=0"
