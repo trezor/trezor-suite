@@ -13,7 +13,9 @@ const adaSymbol = asNetworkSymbol('ada');
 const startingBalance = Number(ADA_MOCKED_ACCOUNT.balance);
 const startingBalanceFormatted = toADA(startingBalance);
 const EXPECTED_CARDANO_POOL_ID = 'pool1k2qhlrrweu8fecd4hx4hn22lv00nrd3rjdxj6durax7m78q7ynu';
-const feeAmount = 177601; // mocked 44 lovelace/byte
+// Mocked 44 lovelace/byte; the vote delegation certificate carries the predefined abstain
+// DRep, which is 30 bytes smaller than a key-hash DRep.
+const feeAmount = 176281;
 const finalBalance =
     startingBalance - feeAmount - Number(CARDANO_STAKING_REGISTRATION_DEPOSIT) * 1_000_000;
 const finalBalanceFormatted = toADA(finalBalance);
@@ -172,6 +174,8 @@ test.describe('Staking - Cardano', { tag: ['@T3W1', '@T3T1'] }, () => {
                             ['Vote', '\n', 'delegation'],
                             ['For account #1'],
                             ["m/1852'/1815'/", '\n', "0'/2/0"],
+                            ['Delegating to'],
+                            ['Always Abstain'],
                         ],
                         actions: { right_button: 'Confirm' },
                     },
@@ -181,21 +185,9 @@ test.describe('Staking - Cardano', { tag: ['@T3W1', '@T3T1'] }, () => {
                             ['Vote delegation'],
                             ['For account #1'],
                             ["m/1852'/1815'/0'/2", '\n', '/0'],
+                            ['Delegating to'],
+                            ['Always Abstain'],
                         ],
-                    },
-                });
-
-                await devicePrompt.waitForPromptAndClick();
-                await expect(device).toShowOnDisplay({
-                    T3W1: {
-                        header: { title: 'Confirm transaction' },
-                        body: [
-                            ['Delegating to key hash'],
-                            device.wrapText(
-                                'drep1ectemlv45xsnvenfgkhwsxncfvxev4qllj7x5w6vlfc7kmd9zcs',
-                            ),
-                        ],
-                        actions: { right_button: 'Confirm' },
                     },
                 });
 
