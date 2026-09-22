@@ -8,9 +8,21 @@ import {
 } from './entityIndexTypes';
 import { settleSecondaryIndex } from './secondaryIndexSettling';
 
+/**
+ * What is under one key as the walk fills it, next to what was under it in the build before —
+ * compared member by member as they arrive, so that when the walk ends the only question left is
+ * whether the key has as many members as it had.
+ */
+type Filed<TEntity, TId extends EntityId> = {
+    ids: TId[];
+    entities: TEntity[];
+    previous: SecondaryIndexEntry<TEntity, TId> | undefined;
+    isSameAsPrevious: boolean;
+};
+
 export type AssembledEntries<TEntity, TId extends EntityId> = Map<
     AnySecondaryKey,
-    { ids: TId[]; entities: TEntity[] }
+    Filed<TEntity, TId>
 >;
 
 export type SecondaryIndex<TEntity, TId extends EntityId> = ReadonlyMap<
@@ -25,6 +37,7 @@ export type PrimaryIndex<TEntity, TId extends EntityId> = {
 
 const fileUnder = <TEntity, TId extends EntityId>(
     entries: AssembledEntries<TEntity, TId>,
+    previousEntries: SecondaryIndex<TEntity, TId> | undefined,
     key: AnySecondaryKey,
     id: TId,
     entity: TEntity,
@@ -32,7 +45,14 @@ const fileUnder = <TEntity, TId extends EntityId>(
     const held = entries.get(key);
 
     if (held === undefined) {
-        entries.set(key, { ids: [id], entities: [entity] });
+        const previous = previousEntries?.get(key);
+
+        entries.set(key, {
+            ids: [id],
+            entities: [entity],
+            previous,
+            isSameAsPrevious: previous?.entities[0] === entity,
+        });
 
         return;
     }
@@ -41,6 +61,10 @@ const fileUnder = <TEntity, TId extends EntityId>(
     // belongs to one entity and the source holds it once.
     if (held.ids[held.ids.length - 1] === id) {
         return;
+    }
+
+    if (held.isSameAsPrevious && held.previous?.entities[held.ids.length] !== entity) {
+        held.isSameAsPrevious = false;
     }
 
     held.ids.push(id);
@@ -85,8 +109,12 @@ export const buildIndexes = <TSource, TEntity, TId extends EntityId>({
     name: string;
 }): BuiltIndexes<TEntity, TId> => {
     const previousPrimary = previous?.primary;
-    const extractors = indexNames.map(indexName => secondaryIndexes?.[indexName]);
-    const assembled = indexNames.map((): AssembledEntries<TEntity, TId> => new Map());
+    const building = indexNames.map(indexName => ({
+        indexName,
+        extractKey: secondaryIndexes?.[indexName],
+        entries: new Map() as AssembledEntries<TEntity, TId>,
+        previousEntries: previous?.secondaryIndexes.get(indexName),
+    }));
 
     const byId = new Map<TId, TEntity>();
     const ids: TId[] = [];
@@ -111,41 +139,36 @@ export const buildIndexes = <TSource, TEntity, TId extends EntityId>({
 
         // Nothing is allocated per entity here: the same object would be built as many times as
         // there are entities times indexes, which is what makes one pass worth having.
-        for (let position = 0; position < extractors.length; position++) {
-            const keys = extractors[position]?.(entity);
+        for (const { extractKey, entries, previousEntries } of building) {
+            const keys = extractKey?.(entity);
 
             if (keys === undefined) {
                 continue;
             }
 
-            const entries = assembled[position] as AssembledEntries<TEntity, TId>;
-
             if (typeof keys === 'string') {
-                fileUnder(entries, keys, id, entity);
+                fileUnder(entries, previousEntries, keys, id, entity);
 
                 continue;
             }
 
-            for (let keyPosition = 0; keyPosition < keys.length; keyPosition++) {
-                fileUnder(entries, keys[keyPosition] as AnySecondaryKey, id, entity);
+            for (const key of keys) {
+                fileUnder(entries, previousEntries, key, id, entity);
             }
         }
     }
 
-    const isUnchanged = isSameAsPrevious && previousPrimary?.ids.length === ids.length;
+    const isPrimarySurelyUnchanged = isSameAsPrevious && previousPrimary?.ids.length === ids.length;
 
     return {
         primary:
-            isUnchanged && previousPrimary !== undefined
+            isPrimarySurelyUnchanged && previousPrimary !== undefined
                 ? previousPrimary
                 : { ids: ids.length === 0 ? EMPTY_ENTITY_IDS : ids, byId },
         secondaryIndexes: new Map(
-            indexNames.map((indexName, position) => [
+            building.map(({ indexName, entries, previousEntries }) => [
                 indexName,
-                settleSecondaryIndex({
-                    entries: assembled[position] as AssembledEntries<TEntity, TId>,
-                    previousEntries: previous?.secondaryIndexes.get(indexName),
-                }),
+                settleSecondaryIndex({ entries, previousEntries }),
             ]),
         ),
     };
@@ -177,13 +200,13 @@ export const assembleSecondaryIndex = <TEntity, TId extends EntityId>({
         }
 
         if (typeof keys === 'string') {
-            fileUnder(entries, keys, id, entity);
+            fileUnder(entries, previousEntries, keys, id, entity);
 
             return;
         }
 
-        for (let position = 0; position < keys.length; position++) {
-            fileUnder(entries, keys[position] as AnySecondaryKey, id, entity);
+        for (const key of keys) {
+            fileUnder(entries, previousEntries, key, id, entity);
         }
     });
 
