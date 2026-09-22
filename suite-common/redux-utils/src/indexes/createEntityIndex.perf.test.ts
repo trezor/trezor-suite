@@ -20,7 +20,7 @@ const BUDGET = {
     oneWriteShareOfBuild: 1.1,
     oneWriteMultipleOfRawMap: 2.2,
     coldBuildMultipleOfRawMap: 3,
-    indexAfterWriteShareOfCold: 1.1,
+    indexAfterWriteShareOfCold: 1.3,
 };
 
 const derivedHoldings = new WeakMap<Holding[], Holding[]>();

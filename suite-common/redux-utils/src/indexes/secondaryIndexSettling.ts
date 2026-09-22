@@ -1,5 +1,10 @@
-import { type AssembledEntries, type SecondaryIndex } from './buildIndexes';
-import { type AnySecondaryKey, type EntityId, type SecondaryIndexEntry } from './entityIndexTypes';
+import {
+    type AnySecondaryKey,
+    type AssembledEntries,
+    type EntityId,
+    type SecondaryIndex,
+    type SecondaryIndexEntry,
+} from './entityIndexTypes';
 
 /**
  * Which freshly filled arrays may keep the reference they had.

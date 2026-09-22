@@ -119,3 +119,36 @@ export type EntityIndex<
         key: SecondaryKey<TSecondaryIndexes[TName]>,
     ) => readonly TId[];
 };
+
+/**
+ * What is under one key as the walk fills it, next to what was under it in the build before —
+ * compared member by member as they arrive, so that when the walk ends the only question left is
+ * whether the key has as many members as it had.
+ */
+export type Filed<TEntity, TId extends EntityId> = {
+    ids: TId[];
+    entities: TEntity[];
+    previous: SecondaryIndexEntry<TEntity, TId> | undefined;
+    isSameAsPrevious: boolean;
+};
+
+export type AssembledEntries<TEntity, TId extends EntityId> = Map<
+    AnySecondaryKey,
+    Filed<TEntity, TId>
+>;
+
+export type SecondaryIndex<TEntity, TId extends EntityId> = ReadonlyMap<
+    AnySecondaryKey,
+    SecondaryIndexEntry<TEntity, TId>
+>;
+
+export type PrimaryIndex<TEntity, TId extends EntityId> = {
+    ids: readonly TId[];
+    byId: ReadonlyMap<TId, TEntity>;
+};
+
+export type BuiltIndexes<TEntity, TId extends EntityId> = {
+    primary: PrimaryIndex<TEntity, TId>;
+    /** Only the ones a read has asked for: the rest are never assembled. */
+    secondaryIndexes: Map<string, SecondaryIndex<TEntity, TId>>;
+};
