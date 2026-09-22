@@ -10,6 +10,7 @@ import { Column, Grid, Image, Paragraph, Text } from '@trezor/components';
 
 import { BaseCurrencyValue } from 'src/components/suite/BaseCurrencyValue';
 import { FormattedCryptoAmount } from 'src/components/suite/FormattedCryptoAmount';
+import { useFormatApy } from 'src/hooks/earn/useFormatApy';
 import { useStakeFormContext } from 'src/hooks/earn/useStakeForm';
 import { useSelector } from 'src/hooks/suite';
 import { CRYPTO_INPUT } from 'src/types/earn/earnFormFields';
@@ -21,6 +22,7 @@ export const EstimatedGains = () => {
     'use no memo';
 
     const { account, getValues, formState } = useStakeFormContext();
+    const formatApyValue = useFormatApy();
 
     const value = getValues(CRYPTO_INPUT);
     const hasInvalidFormState =
@@ -60,7 +62,7 @@ export const EstimatedGains = () => {
         <Column gap={20}>
             <Column>
                 <Paragraph intent="brand" typographyStyle="headline-md">
-                    {apy}%
+                    {formatApyValue(apy, { withSymbol: true })}
                 </Paragraph>
                 <Paragraph
                     typographyStyle="body-sm"

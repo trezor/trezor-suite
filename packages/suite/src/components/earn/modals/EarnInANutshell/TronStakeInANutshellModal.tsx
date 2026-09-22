@@ -11,7 +11,7 @@ import { useServices } from '@trezor/dependency-injection';
 import { CheckSquareOffsetIcon, LightningIcon, LockSimpleOpenIcon } from '@trezor/icons';
 import { injectDispatch } from '@trezor/redux-utils';
 
-import { formatApyValue } from 'src/components/earn/utils/earnApyUtils';
+import { useFormatApy } from 'src/hooks/earn/useFormatApy';
 
 import { EarnInANutshellHighlights } from './components/EarnInANutshellHighlights';
 import { EarnInANutshellModalLayout } from './components/EarnInANutshellModalLayout';
@@ -38,6 +38,7 @@ export const TronStakeInANutshellModal = ({
     const { dispatch } = useServices(injectDispatch);
     const { analytics } = useServices(injectDesktopAnalytics);
     const { maxApr } = useTronStakingStats();
+    const formatApyValue = useFormatApy();
 
     const handleCancel = () => {
         onCancel();
