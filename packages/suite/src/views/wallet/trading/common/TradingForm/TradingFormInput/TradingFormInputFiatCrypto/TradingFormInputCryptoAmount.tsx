@@ -16,7 +16,6 @@ import {
     useTradingUtils,
 } from '@suite-common/trading';
 import { formInputsMaxLength } from '@suite-common/validators';
-import { getDisplaySymbol } from '@suite-common/wallet-config';
 import { selectAccountByKey, selectIsNetworkReserveEnabled } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
 import { asAmountUnit, unitsToSubunits } from '@suite-common/wallet-utils';
@@ -38,12 +37,13 @@ import {
     isTradingExchangeOrSellContext,
     isTradingSellContext,
 } from 'src/utils/wallet/trading/tradingTypingUtils';
-import { getFeeInUnits, tradingGetAccountLabel } from 'src/utils/wallet/trading/tradingUtils';
+import { getFeeInUnits } from 'src/utils/wallet/trading/tradingUtils';
 import { useTradingQuoteAmounts } from 'src/views/wallet/trading/common/hooks/useTradingQuoteAmounts';
 import { useTradingSelectedQuote } from 'src/views/wallet/trading/common/hooks/useTradingSelectedQuote';
 
 import { TradingFormInputAmountPlaceholder } from './TradingFormInputAmountPlaceholder';
 import { getCryptoInputRules } from './tradingFormInputFiatCryptoRules';
+import { TRADING_AMOUNT_PLACEHOLDER, tradingAmountInputStyle } from '../../tradingFormInputsUtils';
 
 type TradingFormInputCryptoAmountContentProps = TradingFormInputFiatCryptoProps & {
     validationAccount: Account;
@@ -54,8 +54,6 @@ const TradingFormInputCryptoAmountContent = ({
     cryptoInputName,
     fiatInputName,
     cryptoSelectName,
-    labelLeft,
-    labelRight,
 }: TradingFormInputCryptoAmountContentProps) => {
     const { translationString } = useTranslation();
     const { CryptoAmountFormatter } = useFormatters();
@@ -89,11 +87,7 @@ const TradingFormInputCryptoAmountContent = ({
 
     const cryptoSelect = getValues(cryptoSelectName);
     const outputToken = getValues('outputs')?.[0]?.token;
-    const { coinSymbol, contractAddress } = cryptoIdToSymbolAndContractAddress(cryptoSelect?.id);
-    const displaySymbol = tradingGetAccountLabel(
-        getDisplaySymbol(coinSymbol ?? '', contractAddress),
-        shouldSendInSats,
-    );
+    const { contractAddress } = cryptoIdToSymbolAndContractAddress(cryptoSelect?.id);
     const decimals = isBuyContext
         ? getNetworkDecimalsWithFallback(network?.symbol)
         : getAssetDecimals({
@@ -209,18 +203,18 @@ const TradingFormInputCryptoAmountContent = ({
 
     return (
         <NumberInput
+            isClean
+            flex="1"
             name={cryptoInputName}
+            placeholder={TRADING_AMOUNT_PLACEHOLDER}
+            style={tradingAmountInputStyle}
             locale={locale}
-            labelLeft={labelLeft}
-            labelRight={labelRight}
             onChange={handleChange}
             hasError={!!cryptoInputError}
             isDisabled={!amountInCrypto && context.form.state.isFormLoading}
             control={control}
             rules={cryptoInputRules}
             maxLength={formInputsMaxLength.amount}
-            bottomText={cryptoInputError?.message || null}
-            rightContent={<>{displaySymbol}</>}
             data-testid="@trading/form/crypto-input"
         />
     );
@@ -241,13 +235,7 @@ export const TradingFormInputCryptoAmount = (props: TradingFormInputFiatCryptoPr
     const validationAccount = selectedSendAccount ?? sendAccount;
 
     if (!validationAccount) {
-        return (
-            <TradingFormInputAmountPlaceholder
-                name={props.cryptoInputName}
-                labelLeft={props.labelLeft}
-                labelRight={props.labelRight}
-            />
-        );
+        return <TradingFormInputAmountPlaceholder name={props.cryptoInputName} />;
     }
 
     return <TradingFormInputCryptoAmountContent validationAccount={validationAccount} {...props} />;

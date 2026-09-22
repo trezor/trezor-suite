@@ -113,6 +113,10 @@ export const useExchangeFormInputs = ({
     };
 
     const setAllAmount = () => {
+        if (!account) {
+            return;
+        }
+
         if (tokenData) {
             const cryptoInputValue = calcMaxTokenAmount({
                 balance: tokenData.balance || '0',

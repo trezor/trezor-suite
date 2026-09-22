@@ -110,7 +110,11 @@ export const useTradingSellForm = (): TradingSellFormContextProps => {
         isInitialDataLoading || formState.isSubmitting || isLoading || isComposing;
     const isFormInvalid = !(formIsValid && hasValues);
 
-    useTradingAmountUnitSync({ account, methods, cryptoInputName: TRADING_FORM_OUTPUT_AMOUNT });
+    useTradingAmountUnitSync({
+        networkSymbol: account?.symbol,
+        methods,
+        cryptoInputName: TRADING_FORM_OUTPUT_AMOUNT,
+    });
 
     const { isScheduledQuotesRefresh } = useSellQuotes({
         methods,
