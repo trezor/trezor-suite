@@ -144,7 +144,11 @@ export const useTradingExchangeForm = (): TradingExchangeFormContextProps => {
     const isFormLoadingBase = isInitialDataLoading || formState.isSubmitting || isLoading;
     const isFormInvalid = !(formIsValid && hasValues) || !isReceiveAddressFormValid;
 
-    useTradingAmountUnitSync({ account, methods, cryptoInputName: TRADING_FORM_OUTPUT_AMOUNT });
+    useTradingAmountUnitSync({
+        networkSymbol: account?.symbol,
+        methods,
+        cryptoInputName: TRADING_FORM_OUTPUT_AMOUNT,
+    });
 
     const { dexQuotes, isScheduledQuotesRefresh, refreshQuotes } = useExchangeQuotes({
         methods,

@@ -50,7 +50,7 @@ export const useTradingBuyForm = (): TradingBuyFormContextProps => {
 
     useServerEnvironment();
 
-    const { account, cryptoId } = useTradingFormAccount(type);
+    const { cryptoId } = useTradingFormAccount(type);
 
     const fiatTradingValuesParams = selectedQuote
         ? {
@@ -107,7 +107,11 @@ export const useTradingBuyForm = (): TradingBuyFormContextProps => {
         cryptoSelect?.networkSymbol,
     );
 
-    useTradingAmountUnitSync({ account, methods, cryptoInputName: TRADING_FORM_CRYPTO_INPUT });
+    useTradingAmountUnitSync({
+        networkSymbol: cryptoSelect?.networkSymbol,
+        methods,
+        cryptoInputName: TRADING_FORM_CRYPTO_INPUT,
+    });
 
     const { isScheduledQuotesRefresh } = useBuyQuotes({ methods, network, shouldSendInSats });
 

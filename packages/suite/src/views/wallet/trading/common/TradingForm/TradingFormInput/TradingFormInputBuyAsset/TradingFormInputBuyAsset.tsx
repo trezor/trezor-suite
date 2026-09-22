@@ -2,6 +2,8 @@ import { memo, useMemo } from 'react';
 
 import { type CryptoId } from 'invity-api';
 
+import { type TranslationKey } from '@suite/intl';
+
 import { useModal } from 'src/components/suite/asset-picker/hooks';
 
 import {
@@ -13,7 +15,7 @@ import { AssetPickerModal, type AssetPickerModalProps } from './AssetPickerModal
 
 export type TradingFormInputBuyAssetProps = {
     inputPlaceholder?: AssetPickerInputProps['placeholder'];
-    inputLabel: AssetPickerInputProps['label'];
+    inputLabel: TranslationKey;
     inputName: AssetPickerInputProps['name'];
     inputDisabled?: AssetPickerInputProps['isDisabled'];
 
@@ -40,7 +42,6 @@ export const TradingFormInputBuyAsset = memo(function TradingFormInputBuyAssetIn
         <AssetOptionsProvider includedCryptoIds={includedCryptoIdsSet}>
             <AssetPickerInput
                 name={inputName}
-                label={inputLabel}
                 placeholder={inputPlaceholder}
                 isDisabled={inputDisabled}
                 onClick={modal.openModal}

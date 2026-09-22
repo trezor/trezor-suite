@@ -4,8 +4,7 @@ import {
     type TRADING_FORM_CRYPTO_INPUT,
     type TRADING_FORM_OUTPUT_AMOUNT,
 } from '@suite-common/trading';
-import { asNetworkSymbol } from '@suite-common/wallet-config';
-import { type Account } from '@suite-common/wallet-types';
+import { type NetworkSymbol, asNetworkSymbol } from '@suite-common/wallet-config';
 import {
     asAmountSubunit,
     asAmountUnit,
@@ -21,7 +20,7 @@ import { type TradingAllFormProps } from 'src/types/trading/tradingForm';
 const bitcoinSymbol = asNetworkSymbol('btc');
 
 type UseTradingAmountUnitSyncProps<T extends TradingAllFormProps> = {
-    account: Account | undefined;
+    networkSymbol: NetworkSymbol | undefined;
     methods: UseFormReturn<T>;
     cryptoInputName: typeof TRADING_FORM_CRYPTO_INPUT | typeof TRADING_FORM_OUTPUT_AMOUNT;
 };
@@ -30,12 +29,12 @@ type UseTradingAmountUnitSyncProps<T extends TradingAllFormProps> = {
  * Keeps the crypto amount in the bitcoin unit chosen in settings (BTC / sats).
  */
 export const useTradingAmountUnitSync = <T extends TradingAllFormProps>({
-    account,
+    networkSymbol,
     methods,
     cryptoInputName,
 }: UseTradingAmountUnitSyncProps<T>) => {
     const { setValue, control } = methods as unknown as UseFormReturn<TradingAllFormProps>;
-    const { isBtcSatsAmountUnit: shouldSendInSats } = useBitcoinAmountUnit(account?.symbol);
+    const { isBtcSatsAmountUnit: shouldSendInSats } = useBitcoinAmountUnit(networkSymbol);
     const cryptoInputValue = useWatch({ control, name: cryptoInputName });
 
     useDidUpdate(() => {

@@ -2,6 +2,8 @@ import { memo, useMemo } from 'react';
 
 import { type CryptoId } from 'invity-api';
 
+import { type TranslationKey } from '@suite/intl';
+
 import { useTradingAssetPickerModal } from 'src/hooks/wallet/trading/form/common/useTradingAssetPickerModal';
 
 import {
@@ -13,10 +15,9 @@ import { AssetPickerModal, type AssetPickerModalProps } from './AssetPickerModal
 
 export type TradingFormInputSellAssetProps = {
     inputPlaceholder?: AssetPickerInputProps['placeholder'];
-    inputLabel: AssetPickerInputProps['label'];
+    inputLabel: TranslationKey;
     inputName: AssetPickerInputProps['name'];
     inputDisabled?: AssetPickerInputProps['isDisabled'];
-    inputBottomText?: AssetPickerInputProps['bottomText'];
 
     /**
      * Make to sure to use `useCallback` to avoid breaking the `memo`
@@ -31,7 +32,6 @@ export const TradingFormInputSellAsset = memo(function TradingFormInputSellAsset
     inputLabel,
     inputName,
     inputDisabled,
-    inputBottomText,
     onAssetSelect,
     includedCryptoIds,
 }: TradingFormInputSellAssetProps) {
@@ -42,12 +42,10 @@ export const TradingFormInputSellAsset = memo(function TradingFormInputSellAsset
         <AssetOptionsProvider includedCryptoIds={includedCryptoIdsSet}>
             <AssetPickerInput
                 name={inputName}
-                label={inputLabel}
                 placeholder={inputPlaceholder}
                 isDisabled={inputDisabled}
                 onClick={modal.openModal}
                 dataTestId="@trading/sell/asset-picker"
-                bottomText={inputBottomText}
             />
             {modal.open && (
                 <AssetPickerModal

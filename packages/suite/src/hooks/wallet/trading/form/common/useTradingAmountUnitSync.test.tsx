@@ -87,7 +87,7 @@ const renderAmountUnitSync = (account: Account) => {
                 defaultValues: DEFAULTS,
             });
             useTradingAmountUnitSync({
-                account: syncedAccount,
+                networkSymbol: syncedAccount.symbol,
                 methods,
                 cryptoInputName: TRADING_FORM_OUTPUT_AMOUNT,
             });

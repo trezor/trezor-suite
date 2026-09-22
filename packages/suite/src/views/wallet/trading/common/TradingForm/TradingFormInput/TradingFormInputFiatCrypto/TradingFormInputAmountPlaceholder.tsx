@@ -11,18 +11,17 @@ import {
     type TradingAllFormProps,
     type TradingFormInputFiatCryptoProps,
 } from 'src/types/trading/tradingForm';
+import {
+    TRADING_AMOUNT_PLACEHOLDER,
+    tradingAmountInputStyle,
+} from 'src/views/wallet/trading/common/TradingForm/tradingFormInputsUtils';
 
-type TradingFormInputAmountPlaceholderProps = Pick<
-    TradingFormInputFiatCryptoProps,
-    'labelLeft' | 'labelRight'
-> & {
+type TradingFormInputAmountPlaceholderProps = {
     name: TradingFormInputFiatCryptoProps['cryptoInputName' | 'fiatInputName'];
 };
 
 export const TradingFormInputAmountPlaceholder = ({
     name,
-    labelLeft,
-    labelRight,
 }: TradingFormInputAmountPlaceholderProps) => {
     const locale = useSelector(selectLanguage);
     const { isLoading } = useSelector(selectTradingLoadingAndTimestamp);
@@ -32,10 +31,12 @@ export const TradingFormInputAmountPlaceholder = ({
 
     return (
         <NumberInput
+            isClean
+            flex="1"
             name={name}
+            placeholder={TRADING_AMOUNT_PLACEHOLDER}
+            style={tradingAmountInputStyle}
             locale={locale}
-            labelLeft={labelLeft}
-            labelRight={labelRight}
             control={control}
             rightContent={isBusy ? <Spinner size={20} /> : undefined}
         />

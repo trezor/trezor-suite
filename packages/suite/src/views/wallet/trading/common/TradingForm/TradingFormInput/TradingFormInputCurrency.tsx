@@ -19,10 +19,7 @@ import { isFiatBaseCurrencyCode } from '@trezor/blockchain-link-types';
 
 import { useSelector } from 'src/hooks/suite';
 import { useTradingFormContext } from 'src/hooks/wallet/trading/form/useTradingCommonForm';
-import {
-    type TradingAllFormProps,
-    type TradingFormInputCurrencyProps,
-} from 'src/types/trading/tradingForm';
+import { type TradingAllFormProps } from 'src/types/trading/tradingForm';
 import {
     getSelectedTradingCurrency,
     isTradingBuyContext,
@@ -30,10 +27,7 @@ import {
     isTradingSellContext,
 } from 'src/utils/wallet/trading/tradingTypingUtils';
 
-export const TradingFormInputCurrency = ({
-    width,
-    isClean = false,
-}: TradingFormInputCurrencyProps) => {
+export const TradingFormInputCurrency = () => {
     const context = useTradingFormContext();
     const { control, setAmountLimits } = context;
     const name = isTradingBuyContext(context)
@@ -89,8 +83,6 @@ export const TradingFormInputCurrency = ({
                         }
                     }}
                     value={mapCurrencyToCurrencyPickerOption(value)}
-                    width={width}
-                    isClean={isClean}
                 />
             )}
         />
