@@ -1,5 +1,8 @@
-import { type AnySecondaryKey, type EntityId } from './entityIndexTypes';
-import { type SourceSecondaryKeys, forEachKey } from './sourceWalk';
+import {
+    type AnySecondaryKey,
+    type EntityId,
+    type SecondaryKeyExtractor,
+} from './entityIndexTypes';
 
 export type AssembledEntries<TEntity, TId extends EntityId> = Map<
     AnySecondaryKey,
@@ -30,36 +33,57 @@ const fileUnder = <TEntity, TId extends EntityId>(
     held.entities.push(entity);
 };
 
+const fileUnderEach = <TEntity, TId extends EntityId>({
+    entries,
+    keys,
+    id,
+    entity,
+}: {
+    entries: AssembledEntries<TEntity, TId>;
+    keys: AnySecondaryKey | readonly AnySecondaryKey[] | undefined;
+    id: TId;
+    entity: TEntity;
+}) => {
+    if (keys === undefined) {
+        return;
+    }
+
+    if (Array.isArray(keys)) {
+        for (const key of keys) {
+            fileUnder(entries, key, id, entity);
+        }
+
+        return;
+    }
+
+    fileUnder(entries, keys as AnySecondaryKey, id, entity);
+};
+
 /**
  * Which entities sit under which key, for every named index at once.
  *
- * One pass over the entities however many indexes are asked for, because asking an entity for its
- * key is the cheap half of this.
+ * One pass over the primary index however many indexes are asked for, because asking an entity for
+ * its key is the cheap half of this.
  */
 export const assembleSecondaryIndexes = <TEntity, TId extends EntityId>({
-    indexNames,
-    ids,
-    entities,
-    keysOf,
+    extractors,
+    byId,
 }: {
-    indexNames: readonly string[];
-    ids: readonly TId[];
-    entities: readonly TEntity[];
-    keysOf: (indexName: string) => SourceSecondaryKeys;
+    extractors: readonly SecondaryKeyExtractor<TEntity>[];
+    byId: ReadonlyMap<TId, TEntity>;
 }): AssembledEntries<TEntity, TId>[] => {
-    const assembled = indexNames.map((): AssembledEntries<TEntity, TId> => new Map());
+    const assembled = extractors.map((): AssembledEntries<TEntity, TId> => new Map());
 
-    for (let indexPosition = 0; indexPosition < indexNames.length; indexPosition++) {
-        const keys = keysOf(indexNames[indexPosition] as string);
-        const entries = assembled[indexPosition] as AssembledEntries<TEntity, TId>;
-
-        for (let position = 0; position < ids.length; position++) {
-            const id = ids[position] as TId;
-            const entity = entities[position] as TEntity;
-
-            forEachKey(keys[position], key => fileUnder(entries, key, id, entity));
+    byId.forEach((entity, id) => {
+        for (let position = 0; position < extractors.length; position++) {
+            fileUnderEach({
+                entries: assembled[position] as AssembledEntries<TEntity, TId>,
+                keys: (extractors[position] as SecondaryKeyExtractor<TEntity>)(entity),
+                id,
+                entity,
+            });
         }
-    }
+    });
 
     return assembled;
 };

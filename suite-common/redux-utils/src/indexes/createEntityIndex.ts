@@ -5,10 +5,10 @@
  * assembled on the first read that asks for one, with stable array identities for keys whose
  * members did not change.
  *
- * What a build does is spelled out in the modules beside this one — the walk, the identities, the
- * assembly, the settling of their identities, the changes — and what is left here is when any of
- * it runs: a secondary index not until it is asked for, and nothing twice while the source is the
- * one it was built from.
+ * What a build does is spelled out in the modules beside this one — the primary index, the
+ * assembly of a secondary one off it, the settling of their identities, the changes — and what is
+ * left here is when any of it runs: a secondary index not until it is asked for, and nothing twice
+ * while the source is the one it was built from.
  */
 
 import { EMPTY_ENTITY_IDS, NO_CHANGES } from './emptyResults';
@@ -23,12 +23,12 @@ import {
     type EntityIndexListener,
     type EntityIndexSnapshot,
     type SecondaryIndexEntry,
+    type SecondaryKeyExtractor,
     type SecondaryKeyExtractors,
 } from './entityIndexTypes';
-import { type Identities, identitiesOf } from './identities';
+import { type PrimaryIndex, buildPrimaryIndex } from './primaryIndex';
 import { assembleSecondaryIndexes } from './secondaryIndexAssembly';
 import { settleSecondaryIndex } from './secondaryIndexSettling';
-import { type WalkedSource, secondaryKeysOf, walkSource } from './sourceWalk';
 
 export type * from './entityIndexTypes';
 export { EMPTY_ENTITIES, EMPTY_ENTITY_IDS } from './emptyResults';
@@ -80,7 +80,7 @@ export const createEntityIndex = <
               source: TSource;
               snapshot: Snapshot;
               builtIndexes: Map<string, Entries>;
-              identities: Identities<TEntity, TId>;
+              primary: PrimaryIndex<TEntity, TId>;
               isEmpty: boolean;
           }
         | undefined;
@@ -89,18 +89,11 @@ export const createEntityIndex = <
         // Only what this build needs, never `cached` itself: a closure over it would keep every
         // build before this one alive for as long as the index lives.
         const previousBuiltIndexes = cached?.builtIndexes;
-        const previousIdentities = cached?.identities;
+        const previousPrimary = cached?.primary;
         const wasEmpty = cached?.isEmpty ?? true;
         const previousSnapshot = cached?.snapshot;
 
-        const walked: WalkedSource<TEntity, TId> = walkSource({ source, toEntities, getId });
-
-        const keysOf = (indexName: string) =>
-            secondaryKeysOf({
-                walked,
-                indexName,
-                extractKey: secondaryKeyExtractors?.[indexName],
-            });
+        const primary = buildPrimaryIndex({ source, toEntities, getId, name });
 
         const builtIndexes = new Map<string, Entries>();
 
@@ -121,10 +114,10 @@ export const createEntityIndex = <
             ];
 
             assembleSecondaryIndexes({
-                indexNames: toBuild,
-                ids: walked.ids,
-                entities: walked.entities,
-                keysOf,
+                extractors: toBuild.map(
+                    wanted => secondaryKeyExtractors?.[wanted] as SecondaryKeyExtractor<TEntity>,
+                ),
+                byId: primary.byId,
             }).forEach((entries, position) => {
                 const builtName = toBuild[position] as string;
 
@@ -137,8 +130,6 @@ export const createEntityIndex = <
                 );
             });
         };
-
-        const identities = identitiesOf(walked, name);
 
         const getSecondaryIndex = (indexName: string) => {
             demandedIndexes.add(indexName);
@@ -155,31 +146,31 @@ export const createEntityIndex = <
         const getChanges = () => {
             if (changes === undefined) {
                 changes =
-                    previousIdentities === undefined
+                    previousPrimary === undefined
                         ? NO_CHANGES
                         : changesOf({
-                              byId: identities.byId,
-                              previousById: previousIdentities.byId,
+                              byId: primary.byId,
+                              previousById: previousPrimary.byId,
                           });
             }
 
             return changes;
         };
 
-        const isEmpty = identities.ids.length === 0;
+        const isEmpty = primary.ids.length === 0;
         // Nothing to say and nothing to hand back that it has not handed back already: an index
         // that was empty and stays empty keeps the snapshot it had, so no listener hears of it.
         const snapshot: Snapshot =
             isEmpty && wasEmpty
                 ? (previousSnapshot ?? emptySnapshot)
                 : {
-                      getIds: () => identities.ids,
-                      getEntitiesById: () => identities.byId,
+                      getIds: () => primary.ids,
+                      getEntitiesById: () => primary.byId,
                       getSecondaryIndex: getSecondaryIndex as Snapshot['getSecondaryIndex'],
                       getChanges,
                   };
 
-        cached = { source, snapshot, builtIndexes, identities, isEmpty };
+        cached = { source, snapshot, builtIndexes, primary, isEmpty };
 
         return snapshot;
     };
