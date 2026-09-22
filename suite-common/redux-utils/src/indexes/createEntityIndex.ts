@@ -10,7 +10,7 @@
  * was built from.
  */
 
-import { NO_CHANGES } from './emptyResults';
+import { EMPTY_ENTITY_IDS, NO_CHANGES } from './emptyResults';
 import { changesOf } from './entityIndexChanges';
 import { createEntityIndexQueries } from './entityIndexQueries';
 import {
@@ -73,13 +73,14 @@ export const createEntityIndex = <
     const keysOf = (built: BuiltPartition<TEntity, TId>, indexName: string) =>
         secondaryKeysOf({ built, indexName, extractKey: secondaryKeyExtractors?.[indexName] });
 
+    const noEntries: Entries = new Map();
+    const noEntities: ReadonlyMap<TId, TEntity> = new Map();
+
     const emptySnapshot: Snapshot = {
-        ids: [],
-        byId: new Map(),
-        secondaryIndexes: Object.fromEntries(
-            indexNames.map(indexName => [indexName, new Map()]),
-        ) as unknown as Snapshot['secondaryIndexes'],
-        changes: NO_CHANGES as EntityIndexChanges<TId>,
+        getIds: () => EMPTY_ENTITY_IDS,
+        getEntitiesById: () => noEntities,
+        getSecondaryIndex: ((_indexName: string) => noEntries) as Snapshot['getSecondaryIndex'],
+        getChanges: () => NO_CHANGES as EntityIndexChanges<TId>,
     };
 
     // Which indexes were read off the last snapshot, so the next build assembles them together.
@@ -115,7 +116,6 @@ export const createEntityIndex = <
         } = diffPartitions({ sourcePartitions: toPartitions(source), previousPartitions, walk });
 
         const builtIndexes = new Map<string, Entries>();
-        const secondaryIndexes = {} as Snapshot['secondaryIndexes'];
 
         const wantedIndexes = demandedIndexes;
         demandedIndexes = new Set<string>();
@@ -153,51 +153,44 @@ export const createEntityIndex = <
             });
         };
 
-        indexNames.forEach(indexName => {
-            Object.defineProperty(secondaryIndexes, indexName, {
-                enumerable: true,
-                get: () => {
-                    demandedIndexes.add(indexName);
-
-                    if (!builtIndexes.has(indexName)) {
-                        assemble(indexName);
-                    }
-
-                    return builtIndexes.get(indexName) as Entries;
-                },
-            });
-        });
-
         const identities = lazyIdentitiesOf(walked);
 
+        const getSecondaryIndex = (indexName: string) => {
+            demandedIndexes.add(indexName);
+
+            if (!builtIndexes.has(indexName)) {
+                assemble(indexName);
+            }
+
+            return builtIndexes.get(indexName) as Entries;
+        };
+
         let changes: EntityIndexChanges<TId> | undefined;
+
+        const getChanges = () => {
+            if (changes === undefined) {
+                changes =
+                    previousIdentities === undefined
+                        ? (NO_CHANGES as EntityIndexChanges<TId>)
+                        : changesOf({
+                              walked,
+                              byId: identities().byId,
+                              previousById: previousIdentities().byId,
+                              possiblyRemoved,
+                          });
+            }
+
+            return changes;
+        };
 
         const snapshot: Snapshot =
             entityCount === 0 && wasEmpty
                 ? emptySnapshot
                 : {
-                      get ids() {
-                          return identities().ids;
-                      },
-                      get byId() {
-                          return identities().byId;
-                      },
-                      secondaryIndexes,
-                      get changes() {
-                          if (changes === undefined) {
-                              changes =
-                                  previousIdentities === undefined
-                                      ? (NO_CHANGES as EntityIndexChanges<TId>)
-                                      : changesOf({
-                                            walked,
-                                            byId: identities().byId,
-                                            previousById: previousIdentities().byId,
-                                            possiblyRemoved,
-                                        });
-                          }
-
-                          return changes;
-                      },
+                      getIds: () => identities().ids,
+                      getEntitiesById: () => identities().byId,
+                      getSecondaryIndex: getSecondaryIndex as Snapshot['getSecondaryIndex'],
+                      getChanges,
                   };
 
         cached = { source, partitions, builtIndexes, identities, snapshot };
