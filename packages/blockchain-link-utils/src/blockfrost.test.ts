@@ -3,6 +3,7 @@ import {
     parseAsset,
     transformAccountInfo,
     transformInputOutput,
+    transformProtocolParameters,
     transformTokenInfo,
     transformTransaction,
     transformUtxos,
@@ -60,6 +61,42 @@ describe('blockfrost/utils', () => {
                 // @ts-expect-error incorrect params
                 expect(transformAccountInfo(f.data)).toEqual(f.result);
             });
+        });
+    });
+
+    describe('transformProtocolParameters', () => {
+        const epochParameters = {
+            epoch: 656,
+            min_fee_a: 44,
+            min_fee_b: 155381,
+            max_tx_size: 16384,
+            max_val_size: '5000',
+            key_deposit: '2000000',
+            pool_deposit: '500000000',
+            coins_per_utxo_size: '4310',
+        };
+
+        it('maps Blockfrost epoch parameters', () => {
+            expect(transformProtocolParameters(epochParameters)).toEqual({
+                epoch: 656,
+                minFeeA: '44',
+                minFeeB: '155381',
+                maxTxSize: 16384,
+                maxValueSize: 5000,
+                keyDeposit: '2000000',
+                poolDeposit: '500000000',
+                coinsPerUtxoByte: '4310',
+            });
+        });
+
+        it('keeps nullable fields as null', () => {
+            expect(
+                transformProtocolParameters({
+                    ...epochParameters,
+                    max_val_size: null,
+                    coins_per_utxo_size: null,
+                }),
+            ).toMatchObject({ maxValueSize: null, coinsPerUtxoByte: null });
         });
     });
 });

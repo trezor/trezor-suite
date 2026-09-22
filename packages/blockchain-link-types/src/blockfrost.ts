@@ -129,6 +129,26 @@ export type Fee = {
     lovelacePerByte: number;
 };
 
+/** Subset of the Blockfrost `epochs/latest/parameters` response needed to compose transactions. */
+export type EpochParameters = {
+    /** Epoch number */
+    epoch: number;
+    /** The linear factor for the minimum fee calculation for given epoch */
+    min_fee_a: number;
+    /** The constant factor for the minimum fee calculation */
+    min_fee_b: number;
+    /** Maximum transaction size */
+    max_tx_size: number;
+    /** The maximum Val size */
+    max_val_size: string | null;
+    /** The amount of a key registration deposit in Lovelaces */
+    key_deposit: string;
+    /** The amount of a pool registration deposit in Lovelaces */
+    pool_deposit: string;
+    /** Cost per UTxO byte for Babbage and later */
+    coins_per_utxo_size: string | null;
+};
+
 export interface Address {
     address: string;
     path: string;
@@ -298,5 +318,6 @@ declare function FSend(
     params: AccountBalanceHistoryParams,
 ): Promise<AccountBalanceHistory[]>;
 declare function FSend(method: 'ESTIMATE_FEE', params: EstimateFeeParams): Promise<Fee>;
+declare function FSend(method: 'GET_PROTOCOL_PARAMETERS'): Promise<EpochParameters>;
 
 export type Send = typeof FSend;

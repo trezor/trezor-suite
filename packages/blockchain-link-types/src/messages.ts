@@ -149,6 +149,10 @@ export interface GetContractInfo {
     payload: ContractInfoParams;
 }
 
+export interface GetCardanoProtocolParameters {
+    type: typeof MESSAGES.GET_CARDANO_PROTOCOL_PARAMETERS;
+}
+
 export type Message =
     | ChannelMessage<{ type: typeof MESSAGES.TERMINATE; payload?: never }>
     | ChannelMessage<{ type: typeof MESSAGES.HANDSHAKE; settings: BlockchainSettings }>
@@ -171,4 +175,5 @@ export type Message =
     | ChannelMessage<Unsubscribe>
     | ChannelMessage<PushTransaction>
     | ChannelMessage<GetEvmChainId>
-    | ChannelMessage<GetContractInfo>;
+    | ChannelMessage<GetContractInfo>
+    | ChannelMessage<GetCardanoProtocolParameters>;

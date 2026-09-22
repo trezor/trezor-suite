@@ -7,8 +7,9 @@ import {
 import cardano from '@trezor/network-cardano/runtime';
 import { Assert } from '@trezor/schema-utils';
 
-import type { MethodMessage } from '../../../core/AbstractMethod';
+import type { MethodContext, MethodMessage } from '../../../core/AbstractMethod';
 import { AbstractMethod } from '../../../core/AbstractMethod';
+import { getCardanoProtocolParams } from '../cardanoProtocolParams';
 import { getCoinSelectionParams } from '../cardanoUtils';
 
 export default class CardanoComposeTransaction extends AbstractMethod<
@@ -33,7 +34,7 @@ export default class CardanoComposeTransaction extends AbstractMethod<
         return 'Compose Cardano transaction';
     }
 
-    async run() {
+    async run({ sendCoreMessage }: MethodContext) {
         const {
             feeLevels = [{}],
             account,
@@ -45,7 +46,14 @@ export default class CardanoComposeTransaction extends AbstractMethod<
             testnet,
         } = this.params;
 
-        const { trezorUtils, asCoinSelectionError, coinSelection } = await cardano();
+        const { trezorUtils, asCoinSelectionError, coinSelection, DEFAULT_PROTOCOL_PARAMS } =
+            await cardano();
+
+        const protocolParams = await getCardanoProtocolParams({
+            testnet: !!testnet,
+            postMessage: sendCoreMessage,
+            defaults: DEFAULT_PROTOCOL_PARAMS,
+        });
 
         const result = feeLevels.map<PrecomposedTransactionCardano>(({ feePerUnit }) => {
             try {
@@ -59,7 +67,10 @@ export default class CardanoComposeTransaction extends AbstractMethod<
                         changeAddress.address,
                         !!testnet,
                     ),
-                    { feeParams: feePerUnit ? { a: feePerUnit } : undefined },
+                    {
+                        feeParams: feePerUnit ? { a: feePerUnit } : undefined,
+                        protocolParams,
+                    },
                 );
 
                 return {

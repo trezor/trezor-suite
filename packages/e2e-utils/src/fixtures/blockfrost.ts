@@ -164,4 +164,16 @@ export const blockfrost = {
             lovelacePerByte: '44',
         },
     },
+    GET_PROTOCOL_PARAMETERS: {
+        data: {
+            epoch: 656,
+            min_fee_a: 44,
+            min_fee_b: 155381,
+            max_tx_size: 16384,
+            max_val_size: '5000',
+            key_deposit: '2000000',
+            pool_deposit: '500000000',
+            coins_per_utxo_size: '4310',
+        },
+    },
 };

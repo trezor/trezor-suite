@@ -3,8 +3,10 @@ import type {
     AccountInfo,
     AssetBalance,
     BlockfrostAccountInfo,
+    BlockfrostEpochParameters,
     BlockfrostTransaction,
     BlockfrostUtxos,
+    CardanoProtocolParameters,
     ParseAssetResult,
     TokenInfo,
     TokenTransfer,
@@ -361,3 +363,16 @@ export const transformAccountInfo = (info: BlockfrostAccountInfo): AccountInfo =
 
     return result;
 };
+
+export const transformProtocolParameters = (
+    parameters: BlockfrostEpochParameters,
+): CardanoProtocolParameters => ({
+    epoch: parameters.epoch,
+    minFeeA: parameters.min_fee_a.toString(),
+    minFeeB: parameters.min_fee_b.toString(),
+    maxTxSize: parameters.max_tx_size,
+    maxValueSize: parameters.max_val_size === null ? null : Number(parameters.max_val_size),
+    keyDeposit: parameters.key_deposit,
+    poolDeposit: parameters.pool_deposit,
+    coinsPerUtxoByte: parameters.coins_per_utxo_size,
+});

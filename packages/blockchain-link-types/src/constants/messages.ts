@@ -20,4 +20,5 @@ export const SUBSCRIBE = 'm_subscribe';
 export const UNSUBSCRIBE = 'm_unsubscribe';
 export const PUSH_TRANSACTION = 'm_push_tx';
 export const GET_EVM_CHAIN_ID = 'm_get_evm_chain_id';
+export const GET_CARDANO_PROTOCOL_PARAMETERS = 'm_get_cardano_protocol_parameters';
 export const TERMINATE = 'terminate';
