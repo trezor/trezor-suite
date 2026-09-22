@@ -7,6 +7,7 @@ import { TradingEnvironmentWarning } from '@suite/trading';
 import { Context } from '@suite-common/message-system';
 import { type TradingType } from '@suite-common/trading';
 import { Column } from '@trezor/components';
+import { exhaustive } from '@trezor/type-utils';
 
 import { useSelector } from 'src/hooks/suite';
 import { useTradingFormContext } from 'src/hooks/wallet/trading/form/useTradingCommonForm';
@@ -31,6 +32,8 @@ const getActionsComponent = (type: TradingType) => {
             return <TradingFormOfferSellActions />;
         case 'exchange':
             return <TradingFormOfferExchangeActions />;
+        default:
+            return exhaustive(type);
     }
 };
 
