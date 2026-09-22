@@ -83,12 +83,15 @@ describe(`TrezorConnect methods`, () => {
                     await setup(controller, testCase.setup);
                     lastSetupConfig = testCase.setup;
 
-                    await initTrezorConnect(controller);
+                    await initTrezorConnect(controller, {
+                        // Same condition as setup() uses to decide whether to start the emulator.
+                        waitForDevice: !!(testCase.setup.mnemonic || testCase.setup.wiped),
+                    });
                 } catch (error) {
                     // eslint-disable-next-line no-console
                     console.log('Controller WS init error', error);
                 }
-            }, 40000);
+            }, 60000);
 
             afterEach(() => {
                 TrezorConnect.cancel();

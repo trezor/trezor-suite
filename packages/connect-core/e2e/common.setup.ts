@@ -3,7 +3,7 @@ import type { ApplySettings } from '@trezor/protobuf/src/definitions';
 import { BridgeTransport } from '@trezor/transport-common';
 import type { EmuStartOptsType, TrezorUserEnvLinkClass } from '@trezor/trezor-user-env-link';
 import { MNEMONICS, TrezorUserEnvLink } from '@trezor/trezor-user-env-link';
-import { versionUtils } from '@trezor/utils';
+import { createDeferred, versionUtils } from '@trezor/utils';
 
 import TrezorConnect from '../src';
 import { THP_CREDENTIALS_AUTOCONNECT } from './common-thp-credentials';
@@ -163,12 +163,36 @@ export const restartEmu = async (controller: TrezorUserEnvLinkClass) => {
     });
 };
 
-type InitParams = Partial<Parameters<typeof TrezorConnect.init>[0]> & { autoConfirm?: boolean };
+const DEVICE_HANDSHAKE_TIMEOUT = 30000;
+
+// Resolves once Connect has finished the initial handshake with the device, whatever its outcome.
+const waitForDeviceHandshake = () => {
+    const { promise, resolve, reject } = createDeferred();
+    const timeout = setTimeout(
+        () => reject(new Error(`Device handshake not finished in ${DEVICE_HANDSHAKE_TIMEOUT} ms`)),
+        DEVICE_HANDSHAKE_TIMEOUT,
+    );
+    const onDeviceConnected = () => resolve();
+
+    TrezorConnect.on('device-connect', onDeviceConnected);
+    TrezorConnect.on('device-connect_unacquired', onDeviceConnected);
+
+    return promise.finally(() => {
+        clearTimeout(timeout);
+        TrezorConnect.off('device-connect', onDeviceConnected);
+        TrezorConnect.off('device-connect_unacquired', onDeviceConnected);
+    });
+};
+
+type InitParams = Partial<Parameters<typeof TrezorConnect.init>[0]> & {
+    autoConfirm?: boolean;
+    waitForDevice?: boolean;
+};
 
 export const initTrezorConnect = async (
     // eslint-disable-next-line @typescript-eslint/no-shadow
     TrezorUserEnvLink: TrezorUserEnvLinkClass,
-    { autoConfirm = true, ...options }: InitParams = {},
+    { autoConfirm = true, waitForDevice = false, ...options }: InitParams = {},
 ) => {
     TrezorConnect.removeAllListeners();
 
@@ -219,6 +243,14 @@ export const initTrezorConnect = async (
         });
     }
 
+    // With pendingTransportEvent, Connect stops waiting for the initial device handshake after
+    // 10 s and resolves init anyway, e.g. when the firmware revision check is slow to reach
+    // data.trezor.io. A method called before the handshake finishes fails with Device_NotFound.
+    // Subscribe before init, because the handshake can finish on either side of it.
+    const deviceHandshake = waitForDevice ? waitForDeviceHandshake() : undefined;
+    // Keep a failed init from leaving the pending wait as an unhandled rejection.
+    deviceHandshake?.catch(() => {});
+
     await TrezorConnect.init({
         manifest: {
             appName: 'Trezor Connect Tests',
@@ -237,6 +269,8 @@ export const initTrezorConnect = async (
         },
         ...options,
     });
+
+    await deviceHandshake;
 };
 
 // skipping tests rules:
