@@ -1,8 +1,4 @@
-import type {
-    Address as AccountAddress,
-    AccountAddresses,
-    Utxo as AccountUtxo,
-} from '@trezor/blockchain-link';
+import type { Address as AccountAddress, Utxo as AccountUtxo } from '@trezor/blockchain-link';
 import type { MessagesSchema as PROTO } from '@trezor/protobuf';
 import type {
     ComposeInput as ComposeInputBase,
@@ -19,11 +15,9 @@ import type { Params, Response } from '../../params';
 export type ComposeUtxo = AccountUtxo & Partial<ComposeInputBase>;
 
 export type PrecomposeParams = ComposeParams & {
-    account: {
-        path: string;
-        addresses: AccountAddresses;
-        utxo: ComposeUtxo[];
-    };
+    path: string;
+    utxo: ComposeUtxo[];
+    changeAddress?: AccountAddress;
     feeLevels: { feePerUnit: string }[];
 };
 
