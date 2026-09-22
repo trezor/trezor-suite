@@ -320,6 +320,9 @@ export const deriveBitcoinSwapFromAddresses = async ({
         });
     }
 
+    const changeAddress =
+        account.addresses.change.find(a => !a.transfers) ?? account.addresses.change.at(-1);
+
     const composeParams: Parameters<typeof TrezorConnect.composeTransaction>[0] = {
         outputs: [
             setMaxOutputId === 0
@@ -339,11 +342,9 @@ export const deriveBitcoinSwapFromAddresses = async ({
             }),
         ],
         coin: asCoinSymbol(network.symbol),
-        account: {
-            path: account.path,
-            addresses: account.addresses,
-            utxo: usedUtxos,
-        },
+        path: account.path,
+        changeAddress,
+        utxo: usedUtxos,
         feeLevels: [{ feePerUnit: feePerUnit || '1' }],
     };
 

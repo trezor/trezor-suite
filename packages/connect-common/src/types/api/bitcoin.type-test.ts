@@ -546,15 +546,16 @@ export const composePsbt = async (api: TrezorConnect) => {
 export const composeTransaction = async (api: TrezorConnect) => {
     const precompose = await api.composeTransaction({
         outputs: [],
-        account: {
+        path: 'm/49',
+        changeAddress: {
             path: 'm/49',
-            addresses: {
-                used: [],
-                unused: [],
-                change: [],
-            },
-            utxo: [],
+            address: 'a',
+            transfers: 0,
+            sent: '0',
+            balance: '0',
+            received: '0',
         },
+        utxo: [],
         feeLevels: [{ feePerUnit: '1' }],
         coin: 'btc',
     });
