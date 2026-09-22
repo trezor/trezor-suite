@@ -231,15 +231,20 @@ describe('TrezorConnect Actions', () => {
         expect(actions.at(-1)).toEqual({ type: BLOCKCHAIN_EVENT });
     });
 
-    it('Wrapped method', async () => {
+    it('DEVICE_LOCK / DEVICE_UNLOCK UI events drive the device lock', async () => {
         const { actions, dispatch, getState, extra } = createThunkDeps();
         await connectInitThunk()(dispatch, getState, extra);
         actions.length = 0;
+        const { emitTestEvent } = testMocks.getTrezorConnectMock();
 
-        await testMocks.getTrezorConnectMock().getFeatures();
+        emitTestEvent(UI_EVENT, { type: UI_EVENTS.DEVICE_LOCK });
+        expect(extra.services.lockDevice).toHaveBeenCalledTimes(1);
+        expect(extra.services.lockDevice).toHaveBeenLastCalledWith(true);
+        expect(actions).toEqual([]);
 
-        expect(extra.services.lockDevice).toHaveBeenNthCalledWith(1, true);
-        expect(extra.services.lockDevice).toHaveBeenNthCalledWith(2, false);
+        emitTestEvent(UI_EVENT, { type: UI_EVENTS.DEVICE_UNLOCK });
+        expect(extra.services.lockDevice).toHaveBeenCalledTimes(2);
+        expect(extra.services.lockDevice).toHaveBeenLastCalledWith(false);
         expect(actions).toEqual([
             expect.objectContaining({ type: '@suite/device/removeButtonRequests' }),
         ]);

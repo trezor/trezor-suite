@@ -272,7 +272,17 @@ const onCall = async (context: CoreContext, message: CoreCallMessage) => {
         return Promise.resolve();
     }
 
-    return await onCallDevice(methodContext, message, method);
+    // Reached only when `method.useDevice === true` (see the non-device early return above), so this
+    // is the single point that tells the host a device operation is in progress. The host locks the
+    // device UI on DEVICE_LOCK and unlocks on the paired DEVICE_UNLOCK, replacing a hand-kept method
+    // blocklist. Emitted without a callId (device locking is process-global, not scoped to one flow);
+    // the `finally` guarantees exactly one DEVICE_UNLOCK whether onCallDevice resolves or rejects.
+    sendCoreMessage(createUiEventMessage(UI_EVENTS.DEVICE_LOCK));
+    try {
+        return await onCallDevice(methodContext, message, method);
+    } finally {
+        sendCoreMessage(createUiEventMessage(UI_EVENTS.DEVICE_UNLOCK));
+    }
 };
 
 const onCallDevice = async (
@@ -912,6 +922,8 @@ export class Core extends EventEmitter {
                         this.sendCoreMessage.bind(this),
                         message.payload.callId,
                     );
+                    // firmwareUpdate uses the device but bypasses onCall, so it lock/unlocks itself.
+                    this.sendCoreMessage(createUiEventMessage(UI_EVENTS.DEVICE_LOCK));
                     onCallFirmwareUpdate({
                         params: message.payload,
                         context: {
@@ -932,6 +944,9 @@ export class Core extends EventEmitter {
                                 createResponseMessage(message.id, false, { error }),
                             );
                             this.coreLogger.error('onCallFirmwareUpdate', error);
+                        })
+                        .finally(() => {
+                            this.sendCoreMessage(createUiEventMessage(UI_EVENTS.DEVICE_UNLOCK));
                         });
                 } else {
                     onCall(this.getCoreContext(), message).catch(error => {

@@ -38,6 +38,7 @@ import TrezorConnect, {
     DEVICE_EVENT,
     TRANSPORT_EVENT,
     UI_EVENT,
+    UI_EVENTS,
     UI_REQUEST,
 } from '@trezor/connect';
 import { asCoinSymbol } from '@trezor/connect-common';
@@ -129,6 +130,28 @@ export const connectInitThunk = createThunk<
     });
 
     TrezorConnect.on(UI_EVENT, ({ event: _, ...action }) => {
+        // Connect-core emits these around every device-using call (useDevice === true), replacing the
+        // old method blocklist. Locking is process-global, so handle it before the scoped-callId guard
+        // below — a device call made inside a scoped flow (e.g. passphrase-wallet discovery) still
+        // carries no callId here and must lock the device.
+        if (action.type === UI_EVENTS.DEVICE_LOCK) {
+            lockDevice(true);
+
+            return;
+        }
+        if (action.type === UI_EVENTS.DEVICE_UNLOCK) {
+            lockDevice(false);
+            dispatch(
+                deviceActions.removeButtonRequests({
+                    // todo: device not 'thread safe' - meaning that device to which button requests have been added to might not
+                    // be the same re-selected device from this line. We should reuse device from params.
+                    device: selectSelectedDevice(getState()),
+                }),
+            );
+
+            return;
+        }
+
         // A bare `callId` is not proof of ownership — it doubles as the
         // cancellation token — so defer only events a scoped flow has registered.
         if ('callId' in action && action.callId && isScopedCallId(action.callId)) {
@@ -159,25 +182,15 @@ export const connectInitThunk = createThunk<
     const synchronize = getSynchronize();
 
     const original = TrezorConnect.call.bind(TrezorConnect);
-    TrezorConnect.call = async (params: CallMethodPayload) => {
+    TrezorConnect.call = (params: CallMethodPayload) => {
         if (isArrayMember(params.method, blacklist)) {
             return original(params);
         }
 
-        lockDevice(true);
-
-        const result = await synchronize(() => original(params));
-
-        lockDevice(false);
-        dispatch(
-            deviceActions.removeButtonRequests({
-                // todo: device not 'thread safe' - meaning that device to which button requests have been added to might not
-                // be the same re-selected device from this line. We should reuse device from params.
-                device: selectSelectedDevice(getState()),
-            }),
-        );
-
-        return result;
+        // Device locking and button-request cleanup are now driven by the DEVICE_LOCK / DEVICE_UNLOCK
+        // UI events emitted by connect-core for methods that actually use the device. This wrapper only
+        // serializes calls; the blacklist keeps backend-only methods out of that global serialization.
+        return synchronize(() => original(params));
     };
 
     const binFilesBaseUrl = getBinFilesBaseUrl();
