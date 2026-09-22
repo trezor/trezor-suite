@@ -42,8 +42,12 @@ const account = mockWalletAccount({ symbol: ethSymbol }) as Account;
 
 const signedTransaction: SignedWrappedNativeTokenTransaction = {
     serializedTx: '0xsignedtx',
-    precomposedTransaction: { type: 'final', fee: '0' } as unknown as PrecomposedTransactionFinal,
-    formState: {} as unknown as FormState,
+    precomposedTransaction: {
+        type: 'final',
+        fee: '0',
+        outputs: [{ address: '0x0000000000000000000000000000000000000001', amount: '0' }],
+    } as unknown as PrecomposedTransactionFinal,
+    formState: { selectedFee: 'custom' } as unknown as FormState,
 };
 
 const pushTransactionMock = TrezorConnect.pushTransaction as jest.Mock;

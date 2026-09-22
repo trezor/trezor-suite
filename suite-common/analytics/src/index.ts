@@ -15,7 +15,9 @@ export type { ValidateEventNameError } from './eventNameValidation';
 
 export * as events from './events';
 export { type DeviceOnboardingStepName } from './events/onboardingStepViewedEvent';
+export { type TransactionCreatedEventAction } from './events/transactionCreatedEvent';
 export { promoDashboardBannerEvent } from './events/promoDashboardBannerEvent';
+export { transactionCreatedEvent } from './events/transactionCreatedEvent';
 
 export type AnalyticsDep = {
     analytics: Analytics<AnalyticsSharedEvents>;
