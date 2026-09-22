@@ -206,7 +206,7 @@ export const messages = {
         numberOfTokens: '+{numberOfTokens, plural, one{1 Token} other{# Tokens}}',
         staking: 'Staking',
         stakingDisabled: 'Staking is currently unavailable.',
-        rewardsReduced: 'Rewards reduced',
+        rewardsReduced: 'No rewards',
     },
     assets: {
         dashboard: {
@@ -2790,7 +2790,7 @@ export const messages = {
                         'Staking activation (~{days, plural, one {# day} other {# days}})',
                     stepStakedReceivingRewards: 'Staked & earning rewards',
                     stepCoolDownPeriod:
-                        'Cool-down period (~{days, plural, one {# day} other {# days}})',
+                        'Staking deactivation (~{days, plural, one {# day} other {# days}})',
                     stepUnstakedReadyToClaim: 'Unstaked and ready to claim',
                 },
             },
@@ -3080,7 +3080,7 @@ export const messages = {
                     cta: 'Enable {networkName}',
                 },
             },
-            adaInfo: 'Your ADA stays fully accessible while earning rewards.',
+            adaInfo: 'Your ADA stays fully accessible while staked.',
             claimRewards: {
                 title: 'Claim rewards from an account',
                 subtitle: 'Select an account to claim bonus rewards.',
@@ -3138,7 +3138,7 @@ export const messages = {
                 },
                 second: {
                     titleEthereum: 'Leave staking pool',
-                    titleSolana: 'Enter cool-down period',
+                    titleSolana: 'Staking deactivation',
                     description: '~{unstakingPeriod} days',
                     title: 'Leave staking pool',
                 },
@@ -3745,7 +3745,7 @@ export const messages = {
         stablecoinYield: 'Stablecoin yield',
         stakedAutomatically: 'Staked automatically',
         fullBalance: 'Full balance',
-        adaStaysFullyAccessuble: 'Your ADA stays fully accessible while earning rewards.',
+        adaStaysFullyAccessuble: 'Your ADA stays fully accessible while staked.',
         infoBanner: {
             updateProviderTitle: 'Save your ADA rewards by updating your staking provider',
             newProviderTitle: 'Earn ~{apy}% APY with our new provider',
