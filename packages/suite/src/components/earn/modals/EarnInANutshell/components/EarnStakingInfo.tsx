@@ -15,7 +15,7 @@ import { type Account } from '@suite-common/wallet-types';
 import { StepList } from '@trezor/components';
 import { SOLANA_EPOCH_DAYS } from '@trezor/network-solana/constants';
 
-import { formatApyValue } from 'src/components/earn/utils/earnApyUtils';
+import { useFormatApy } from 'src/hooks/earn/useFormatApy';
 import { useSelector } from 'src/hooks/suite';
 
 import { EarnInfoRow } from './EarnInfoRow';
@@ -47,12 +47,15 @@ const StakingSignRow = ({ flow }: Pick<EarnStakingRowsProps, 'flow'>) => (
     />
 );
 
-const ApproximateApy = ({ apy }: Pick<EarnStakingRowsProps, 'apy'>) =>
-    apy === null ? (
+const ApproximateApy = ({ apy }: Pick<EarnStakingRowsProps, 'apy'>) => {
+    const formatApyValue = useFormatApy();
+
+    return apy === null ? (
         <Translation id="TR_EARN_APY_N_A" />
     ) : (
         <Translation id="TR_EARN_APY_APPROX" values={{ apyPercent: formatApyValue(apy) }} />
     );
+};
 
 const EthereumStakingRows = ({
     flow,

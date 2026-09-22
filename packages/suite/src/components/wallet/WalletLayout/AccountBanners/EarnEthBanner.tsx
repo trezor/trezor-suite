@@ -9,7 +9,7 @@ import { useServices } from '@trezor/dependency-injection';
 import { PiggyBankIcon, XIcon } from '@trezor/icons';
 import { injectDispatch } from '@trezor/redux-utils';
 
-import { formatApyValue } from 'src/components/earn/utils/earnApyUtils';
+import { useFormatApy } from 'src/hooks/earn/useFormatApy';
 import { useSelector } from 'src/hooks/suite';
 
 type EarnEthBannerProps = {
@@ -20,6 +20,7 @@ type EarnEthBannerProps = {
 export const EarnEthBanner = ({ networkSymbol, apy }: EarnEthBannerProps) => {
     const { analytics, dispatch } = useServices(injectDesktopAnalytics, injectDispatch);
     const { earnEthBannerClosed } = useSelector(selectFlags);
+    const formatApyValue = useFormatApy();
 
     const displaySymbol = getDisplaySymbol(networkSymbol);
 
