@@ -1,3 +1,4 @@
+import { useFormatters } from '@suite-common/formatters';
 import { Context } from '@suite-common/message-system';
 import { WETH_WRAP_GAS_RESERVE } from '@suite-common/wallet-constants';
 import { BannerFull, Box, VStack } from '@suite-native/atoms';
@@ -19,6 +20,7 @@ import { useYieldDepositWrapController } from '../../hooks/yield/controllers/use
 
 export const YieldDepositWrapScreen = () => {
     const controller = useYieldDepositWrapController();
+    const { CryptoAmountFormatter } = useFormatters();
 
     if (controller.status !== 'ready') {
         return null;
@@ -123,7 +125,14 @@ export const YieldDepositWrapScreen = () => {
                                         <Translation
                                             id="earn.wrapNativeToken.reserveRecommendation"
                                             values={{
-                                                amount: WETH_WRAP_GAS_RESERVE.toString(),
+                                                amount: CryptoAmountFormatter.format(
+                                                    WETH_WRAP_GAS_RESERVE.toString(),
+                                                    {
+                                                        symbol: account.symbol,
+                                                        isBalance: true,
+                                                        withSymbol: false,
+                                                    },
+                                                ),
                                                 nativeSymbol,
                                             }}
                                         />

@@ -209,9 +209,9 @@ export const StakingManagementStakedCard = ({
                         <Text variant="body-md" color="contentSecondary">
                             <Translation
                                 id={
-                                    isCardanoStaking
-                                        ? 'earn.rewards'
-                                        : 'earn.stakingManagementScreen.totalRewardsLabel'
+                                    isSolanaStaking
+                                        ? 'earn.stakingManagementScreen.totalRewardsLabel'
+                                        : 'earn.rewards'
                                 }
                             />
                         </Text>

@@ -1,6 +1,7 @@
 import { useMemo } from 'react';
 import { useSelector } from 'react-redux';
 
+import { useFormatters } from '@suite-common/formatters';
 import { getNetwork } from '@suite-common/wallet-config';
 import {
     type AccountsRootState,
@@ -20,6 +21,7 @@ import { useComposeEarnFees } from '../earn/useComposeEarnFees';
 
 export const useStakingForm = (accountKey: AccountKey) => {
     const { translate } = useTranslate();
+    const { CryptoAmountFormatter } = useFormatters();
     const account = useSelector((state: AccountsRootState) =>
         selectAccountByKey(state, accountKey),
     );
@@ -36,6 +38,14 @@ export const useStakingForm = (accountKey: AccountKey) => {
                 : undefined,
             decimals: network?.decimals,
             translate,
+            formatCryptoAmount: account
+                ? (amount: string) =>
+                      CryptoAmountFormatter.format(amount, {
+                          symbol: account.symbol,
+                          isBalance: true,
+                          withSymbol: false,
+                      })
+                : undefined,
         },
         defaultValues: { amount: '', fiat: '' },
     });
