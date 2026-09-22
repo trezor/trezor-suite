@@ -1,5 +1,4 @@
 import { type AnySecondaryKey, type EntityId, type SecondaryIndexEntry } from './entityIndexTypes';
-import { areSame } from './identities';
 import { type AssembledEntries } from './secondaryIndexAssembly';
 
 /**
@@ -9,6 +8,9 @@ import { type AssembledEntries } from './secondaryIndexAssembly';
  * render that did not happen. A key whose members are the same entities in the same order keeps
  * the array it had, and an index none of whose keys changed keeps the map it had.
  */
+const areSame = <TItem>(left: readonly TItem[], right: readonly TItem[]) =>
+    left.length === right.length && left.every((item, index) => item === right[index]);
+
 export const settleSecondaryIndex = <TEntity, TId extends EntityId>({
     entries,
     previousEntries,
