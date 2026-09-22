@@ -1,6 +1,7 @@
 import { useCallback } from 'react';
 
 import { useDevice } from '@suite/device';
+import { Translation } from '@suite/intl';
 import { useServices } from '@suite-common/dependency-injection';
 import { injectDispatch } from '@suite-common/redux-utils';
 import {
@@ -27,7 +28,8 @@ import { useSelector } from 'src/hooks/suite';
 import { useTradingFormContext } from 'src/hooks/wallet/trading/form/useTradingCommonForm';
 import { TradingBalance } from 'src/views/wallet/trading/common/TradingBalance';
 import { TradingFormInputCountry } from 'src/views/wallet/trading/common/TradingForm/TradingFormInput/TradingFormInputCountry/TradingFormInputCountry';
-import { TradingFormInputFiatCrypto } from 'src/views/wallet/trading/common/TradingForm/TradingFormInput/TradingFormInputFiatCrypto/TradingFormInputFiatCrypto';
+import { TradingFormInputCryptoAmount } from 'src/views/wallet/trading/common/TradingForm/TradingFormInput/TradingFormInputFiatCrypto/TradingFormInputCryptoAmount';
+import { TradingFormInputFiat } from 'src/views/wallet/trading/common/TradingForm/TradingFormInput/TradingFormInputFiatCrypto/TradingFormInputFiat';
 import { TradingFormInputPaymentMethod } from 'src/views/wallet/trading/common/TradingForm/TradingFormInput/TradingFormInputPaymentMethod/TradingFormInputPaymentMethod';
 
 import { TradingFormCard } from './TradingFormCard';
@@ -52,7 +54,6 @@ export const TradingBuyFormInputs = () => {
         [TRADING_FORM_CRYPTO_INPUT]: cryptoInput,
         [TRADING_FORM_COUNTRY_SELECT]: countrySelect,
         amountInCrypto,
-        currencySelect,
     } = getValues();
 
     // `useTradingBuyForm` has many re-rendering issues, use refs to avoid them
@@ -110,12 +111,17 @@ export const TradingBuyFormInputs = () => {
                         includedCryptoIds={buySupportedCryptoIds}
                     />
                     <Column gap={8}>
-                        <TradingFormInputFiatCrypto
+                        <TradingFormInputFiat
                             cryptoInputName={TRADING_FORM_CRYPTO_INPUT}
                             fiatInputName={TRADING_FORM_FIAT_INPUT}
                             cryptoSelectName={TRADING_FORM_CRYPTO_CURRENCY_SELECT}
-                            currencySelectLabel={currencySelect.value.toUpperCase()}
-                            cryptoCurrencyLabel={cryptoSelect.id}
+                            labelLeft={<Translation id="TR_TRADING_YOU_PAY" />}
+                        />
+                        <TradingFormInputCryptoAmount
+                            cryptoInputName={TRADING_FORM_CRYPTO_INPUT}
+                            fiatInputName={TRADING_FORM_FIAT_INPUT}
+                            cryptoSelectName={TRADING_FORM_CRYPTO_CURRENCY_SELECT}
+                            labelLeft={<Translation id="TR_TRADING_YOU_GET" />}
                         />
 
                         {amountInCrypto && (

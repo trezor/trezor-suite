@@ -1,9 +1,10 @@
-import { useCallback, useMemo } from 'react';
+import { useCallback, useEffect, useMemo } from 'react';
 import { type FieldErrors, useFormContext, useWatch } from 'react-hook-form';
 
 import { useTranslation } from '@suite/intl';
 import { selectLanguage } from '@suite/settings';
 import {
+    TRADING_FORM_AMOUNT_IN_CRYPTO,
     TRADING_FORM_FIAT_CURRENCY_SELECT,
     TRADING_FORM_OUTPUT_AMOUNT,
     TRADING_FORM_OUTPUT_CURRENCY,
@@ -25,6 +26,8 @@ import {
 } from 'src/types/trading/tradingForm';
 import { isTradingExchangeOrSellContext } from 'src/utils/wallet/trading/tradingTypingUtils';
 import { TradingFormInputCurrency } from 'src/views/wallet/trading/common/TradingForm/TradingFormInput/TradingFormInputCurrency';
+import { useTradingQuoteAmounts } from 'src/views/wallet/trading/common/hooks/useTradingQuoteAmounts';
+import { useTradingSelectedQuote } from 'src/views/wallet/trading/common/hooks/useTradingSelectedQuote';
 
 import { TradingFormInputAmountPlaceholder } from './TradingFormInputAmountPlaceholder';
 import { getFiatInputRules } from './tradingFormInputFiatCryptoRules';
@@ -39,16 +42,19 @@ const TradingFormInputFiatContent = ({
     const locale = useSelector(selectLanguage);
 
     const context = useTradingFormContext();
-    const { amountLimits } = context;
+    const { type, amountLimits } = context;
     const {
         control,
         formState: { errors },
+        getValues,
+        setValue,
         trigger,
         clearErrors,
     } = useFormContext<TradingAllFormProps>();
 
     const outputCurrencySelect = useWatch({ control, name: TRADING_FORM_OUTPUT_CURRENCY });
     const fiatCurrencySelect = useWatch({ control, name: TRADING_FORM_FIAT_CURRENCY_SELECT });
+    const amountInCrypto = useWatch({ control, name: TRADING_FORM_AMOUNT_IN_CRYPTO });
 
     const setFractionButton = isTradingExchangeOrSellContext(context)
         ? context.form.helpers.setFractionButton
@@ -82,8 +88,32 @@ const TradingFormInputFiatContent = ({
 
     const handleChange = useCallback(() => {
         setFractionButton?.(undefined);
+
+        if (getValues(TRADING_FORM_AMOUNT_IN_CRYPTO)) {
+            setValue(TRADING_FORM_AMOUNT_IN_CRYPTO, false, { shouldDirty: true });
+        }
+
+        if (getValues(cryptoInputName)) {
+            setValue(cryptoInputName, '', { shouldDirty: true });
+        }
+
         clearErrors(cryptoInputName);
-    }, [setFractionButton, clearErrors, cryptoInputName]);
+    }, [setFractionButton, getValues, setValue, clearErrors, cryptoInputName]);
+
+    const selectedQuote = useTradingSelectedQuote(type);
+    const quoteFiatAmount = useTradingQuoteAmounts(selectedQuote, type)?.sendAmount;
+
+    useEffect(() => {
+        if (!quoteFiatAmount || !getValues(TRADING_FORM_AMOUNT_IN_CRYPTO)) {
+            return;
+        }
+
+        if (quoteFiatAmount === getValues(fiatInputName)) {
+            return;
+        }
+
+        setValue(fiatInputName, quoteFiatAmount, { shouldValidate: true, shouldDirty: true });
+    }, [quoteFiatAmount, amountInCrypto, fiatInputName, getValues, setValue]);
 
     useDidUpdate(() => {
         if (amountLimits) {
@@ -99,6 +129,7 @@ const TradingFormInputFiatContent = ({
             labelRight={labelRight}
             onChange={handleChange}
             hasError={!!(fiatInputError ?? cryptoInputError)}
+            isDisabled={!!amountInCrypto && context.form.state.isFormLoading}
             control={control}
             rules={fiatInputRules}
             maxLength={formInputsMaxLength.amount}

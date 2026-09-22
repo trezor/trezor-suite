@@ -1,6 +1,7 @@
 import { useCallback, useMemo } from 'react';
 import { useFormContext, useWatch } from 'react-hook-form';
 
+import { Translation } from '@suite/intl';
 import {
     TRADING_FORM_OUTPUT_AMOUNT,
     TRADING_FORM_OUTPUT_FIAT,
@@ -24,7 +25,8 @@ import { useTradingAssetDecimals } from 'src/hooks/wallet/trading/form/common/us
 import { useTradingFormContext } from 'src/hooks/wallet/trading/form/useTradingCommonForm';
 import { TradingBalance } from 'src/views/wallet/trading/common/TradingBalance';
 import { TradingFormInputCountry } from 'src/views/wallet/trading/common/TradingForm/TradingFormInput/TradingFormInputCountry/TradingFormInputCountry';
-import { TradingFormInputFiatCrypto } from 'src/views/wallet/trading/common/TradingForm/TradingFormInput/TradingFormInputFiatCrypto/TradingFormInputFiatCrypto';
+import { TradingFormInputCryptoAmount } from 'src/views/wallet/trading/common/TradingForm/TradingFormInput/TradingFormInputFiatCrypto/TradingFormInputCryptoAmount';
+import { TradingFormInputFiat } from 'src/views/wallet/trading/common/TradingForm/TradingFormInput/TradingFormInputFiatCrypto/TradingFormInputFiat';
 import { TradingFormInputPaymentMethod } from 'src/views/wallet/trading/common/TradingForm/TradingFormInput/TradingFormInputPaymentMethod/TradingFormInputPaymentMethod';
 
 import { TradingFormCard } from './TradingFormCard';
@@ -63,7 +65,6 @@ export const TradingSellFormInputs = () => {
         name: ['outputs', 'sendCryptoSelect', 'amountInCrypto', 'countrySelect'],
     });
     const output = outputs[0];
-    const currencySelect = output?.currency;
     const tokenAddress = (output?.token ?? undefined) as TokenAddress | undefined;
 
     const { getAssetDecimals } = useTradingAssetDecimals();
@@ -112,12 +113,17 @@ export const TradingSellFormInputs = () => {
                         onAssetSelect={handleSellAssetSelect}
                     />
                     <Column gap={8}>
-                        <TradingFormInputFiatCrypto
+                        <TradingFormInputCryptoAmount
                             cryptoInputName={TRADING_FORM_OUTPUT_AMOUNT}
                             fiatInputName={TRADING_FORM_OUTPUT_FIAT}
                             cryptoSelectName={TRADING_FORM_SEND_CRYPTO_CURRENCY_SELECT}
-                            currencySelectLabel={currencySelect?.value.toUpperCase() ?? ''}
-                            cryptoCurrencyLabel={sendCryptoSelect?.id}
+                            labelLeft={<Translation id="TR_TRADING_YOU_PAY" />}
+                        />
+                        <TradingFormInputFiat
+                            cryptoInputName={TRADING_FORM_OUTPUT_AMOUNT}
+                            fiatInputName={TRADING_FORM_OUTPUT_FIAT}
+                            cryptoSelectName={TRADING_FORM_SEND_CRYPTO_CURRENCY_SELECT}
+                            labelLeft={<Translation id="TR_TRADING_YOU_GET" />}
                         />
                         {amountInCrypto && asset && (
                             <Row justifyContent="space-between" alignItems="center" gap={8}>
