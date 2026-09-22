@@ -78,6 +78,7 @@ export const EmptyWallet = () => {
                         <Box height={20}>
                             <NetworkIconSet
                                 networks={enabledNetworks}
+                                isToken
                                 size={20}
                                 gap={16}
                                 maxVisibleIcons={null}
