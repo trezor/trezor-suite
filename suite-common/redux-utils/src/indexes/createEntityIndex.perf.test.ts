@@ -20,6 +20,7 @@ const BUDGET = {
     oneWriteShareOfBuild: 1.1,
     oneWriteMultipleOfRawMap: 2.2,
     coldBuildMultipleOfRawMap: 3,
+    indexAfterWriteShareOfCold: 1.1,
 };
 
 const derivedHoldings = new WeakMap<Holding[], Holding[]>();
@@ -192,6 +193,29 @@ describePerf(`building an index over ${PARTITIONS * PER_PARTITION} entities`, ()
         expect(oneWrite).toBeLessThan(
             (report['raw map and array fill'] as number) * BUDGET.oneWriteMultipleOfRawMap,
         );
+    });
+
+    it('reads an index again after a write for no more than assembling it cold', () => {
+        // What a consumer does: the same index, after every write. A key the write did not touch
+        // keeps the array it had, which is what a component watching one key subscribes to.
+        const indexCold = measure('an index, cold', index => () => {
+            index.getBySecondaryKey(state, 'byLabel', 'label-0');
+        });
+
+        const indexAfterWrite = measure('an index, read again after a write', index => {
+            index.getBySecondaryKey(state, 'byLabel', 'label-0');
+
+            return () => index.getBySecondaryKey(writtenState, 'byLabel', 'label-0');
+        });
+
+        expect(indexAfterWrite).toBeLessThan(indexCold * BUDGET.indexAfterWriteShareOfCold);
+    });
+
+    it('keeps the array of a key a write did not touch', () => {
+        const index = createIndexUnderTest();
+        const untouched = index.getBySecondaryKey(state, 'byAccount', 'account-7');
+
+        expect(index.getBySecondaryKey(writtenState, 'byAccount', 'account-7')).toBe(untouched);
     });
 
     it('answers the inverse of a hidden list once per build, not once per read', () => {

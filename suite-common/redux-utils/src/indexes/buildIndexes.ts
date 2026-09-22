@@ -4,7 +4,6 @@ import {
     type EntityId,
     type SecondaryIndexEntry,
     type SecondaryKeyExtractor,
-    type SecondaryKeyExtractors,
 } from './entityIndexTypes';
 import { settleSecondaryIndex } from './secondaryIndexSettling';
 
@@ -73,52 +72,36 @@ const fileUnder = <TEntity, TId extends EntityId>(
 
 export type BuiltIndexes<TEntity, TId extends EntityId> = {
     primary: PrimaryIndex<TEntity, TId>;
-    /** Only the ones asked to be built: the rest are assembled if and when a read wants them. */
+    /** Only the ones a read has asked for: the rest are never assembled. */
     secondaryIndexes: Map<string, SecondaryIndex<TEntity, TId>>;
 };
 
 /**
- * Every entity of the source by the id it gives, and the secondary indexes named — in one pass.
- *
- * Which ones those are is what the build before was asked for, so an index that keeps being read
- * is filled as the source is walked rather than walking it again. One that is asked for out of
- * nowhere is assembled off `byId` instead, and will be in this pass next time.
+ * Every entity of the source by the id it gives, in the order the source holds them.
  *
  * A source that was replaced without anything in it changing — a reducer that rebuilds its array
- * on every write — gives back the primary index built from the one before, so nothing downstream
- * is told about a change that did not happen.
+ * on every write — gives back the index built from the one before, so nothing downstream is told
+ * about a change that did not happen.
  *
  * An id belongs to one entity: two of them would make what the index answers depend on which
  * question was asked, so the map that would have resolved them says so instead.
  */
-export const buildIndexes = <TSource, TEntity, TId extends EntityId>({
+export const buildPrimaryIndex = <TSource, TEntity, TId extends EntityId>({
     source,
     toEntities,
     getId,
-    secondaryIndexes,
-    indexNames,
     previous,
     name,
 }: {
     source: TSource;
     toEntities: (source: TSource) => Iterable<TEntity>;
     getId: (entity: TEntity) => TId;
-    secondaryIndexes: SecondaryKeyExtractors<TEntity> | undefined;
-    indexNames: readonly string[];
-    previous: BuiltIndexes<TEntity, TId> | undefined;
+    previous: PrimaryIndex<TEntity, TId> | undefined;
     name: string;
-}): BuiltIndexes<TEntity, TId> => {
-    const previousPrimary = previous?.primary;
-    const building = indexNames.map(indexName => ({
-        indexName,
-        extractKey: secondaryIndexes?.[indexName],
-        entries: new Map() as AssembledEntries<TEntity, TId>,
-        previousEntries: previous?.secondaryIndexes.get(indexName),
-    }));
-
+}): PrimaryIndex<TEntity, TId> => {
     const byId = new Map<TId, TEntity>();
     const ids: TId[] = [];
-    let isSameAsPrevious = previousPrimary !== undefined;
+    let isSameAsPrevious = previous !== undefined;
 
     for (const entity of toEntities(source)) {
         const id = getId(entity);
@@ -129,49 +112,20 @@ export const buildIndexes = <TSource, TEntity, TId extends EntityId>({
 
         if (
             isSameAsPrevious &&
-            (previousPrimary?.ids[ids.length] !== id || previousPrimary.byId.get(id) !== entity)
+            (previous?.ids[ids.length] !== id || previous.byId.get(id) !== entity)
         ) {
             isSameAsPrevious = false;
         }
 
         ids.push(id);
         byId.set(id, entity);
-
-        // Nothing is allocated per entity here: the same object would be built as many times as
-        // there are entities times indexes, which is what makes one pass worth having.
-        for (const { extractKey, entries, previousEntries } of building) {
-            const keys = extractKey?.(entity);
-
-            if (keys === undefined) {
-                continue;
-            }
-
-            if (typeof keys === 'string') {
-                fileUnder(entries, previousEntries, keys, id, entity);
-
-                continue;
-            }
-
-            for (const key of keys) {
-                fileUnder(entries, previousEntries, key, id, entity);
-            }
-        }
     }
 
-    const isPrimarySurelyUnchanged = isSameAsPrevious && previousPrimary?.ids.length === ids.length;
+    if (isSameAsPrevious && previous?.ids.length === ids.length) {
+        return previous;
+    }
 
-    return {
-        primary:
-            isPrimarySurelyUnchanged && previousPrimary !== undefined
-                ? previousPrimary
-                : { ids: ids.length === 0 ? EMPTY_ENTITY_IDS : ids, byId },
-        secondaryIndexes: new Map(
-            building.map(({ indexName, entries, previousEntries }) => [
-                indexName,
-                settleSecondaryIndex({ entries, previousEntries }),
-            ]),
-        ),
-    };
+    return { ids: ids.length === 0 ? EMPTY_ENTITY_IDS : ids, byId };
 };
 
 /**

@@ -10,7 +10,12 @@
  * something asks for it, and nothing twice while the source is the one it was built from.
  */
 
-import { type BuiltIndexes, assembleSecondaryIndex, buildIndexes } from './buildIndexes';
+import {
+    type BuiltIndexes,
+    type SecondaryIndex,
+    assembleSecondaryIndex,
+    buildPrimaryIndex,
+} from './buildIndexes';
 import { EMPTY_ENTITY_IDS, NO_CHANGES } from './emptyResults';
 import { changesOf } from './entityIndexChanges';
 import { createEntityIndexQueries } from './entityIndexQueries';
@@ -64,9 +69,6 @@ export const createEntityIndex = <
         getChanges: () => NO_CHANGES,
     };
 
-    // Which indexes were read off the last snapshot, so the next build fills them as it walks.
-    let demandedIndexes = new Set<string>();
-
     const listeners = new Set<EntityIndexListener<TEntity, TId, TSecondaryIndexes>>();
     let notifiedSnapshot: Snapshot | undefined;
     let cached:
@@ -85,24 +87,19 @@ export const createEntityIndex = <
         const wasEmpty = cached?.isEmpty ?? true;
         const previousSnapshot = cached?.snapshot;
 
-        // What was read off the last snapshot is filled as this source is walked; anything else is
-        // assembled off `byId` if a read asks for it, and is in the walk from then on.
-        const wantedIndexes = demandedIndexes;
-        demandedIndexes = new Set<string>();
-
-        const indexes = buildIndexes({
+        const primary = buildPrimaryIndex({
             source,
             toEntities,
             getId,
-            secondaryIndexes: secondaryKeyExtractors,
-            indexNames: [...wantedIndexes],
-            previous,
+            previous: previous?.primary,
             name,
         });
 
-        const { primary, secondaryIndexes } = indexes;
+        const secondaryIndexes = new Map<string, SecondaryIndex<TEntity, TId>>();
+        const indexes: BuiltIndexes<TEntity, TId> = { primary, secondaryIndexes };
 
-        // The source was replaced but holds what it held: what was built from it still stands.
+        // The source was replaced but holds what it held: what was built from it still stands,
+        // including whatever secondary indexes were assembled off it.
         if (primary === previous?.primary && previousSnapshot !== undefined) {
             cached = { source, snapshot: previousSnapshot, indexes: previous, isEmpty: wasEmpty };
 
@@ -110,8 +107,6 @@ export const createEntityIndex = <
         }
 
         const getSecondaryIndex = (indexName: string) => {
-            demandedIndexes.add(indexName);
-
             const known = secondaryIndexes.get(indexName);
 
             if (known !== undefined) {

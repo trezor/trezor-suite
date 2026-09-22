@@ -227,8 +227,7 @@ getEntities: (accounts: Account[]) =>
     }),
 ```
 
-An index nobody reads is never assembled and its keys are never derived. One that was read off the
-last build is filled as the next source is walked, so a consumer reading the same index after every
-write costs one pass over the entities; one asked for out of nowhere is assembled off `byId` and
-joins the walk from then on. The array under a key keeps its identity for as long as its members do
-— which is what keeps a component watching one key from re-rendering when another key changes.
+An index nobody reads is never assembled and its keys are never derived. One that is read is
+assembled off `byId` — a second, simple pass, which measures faster than filling it while the
+source is being walked. The array under a key keeps its identity for as long as its members do —
+which is what keeps a component watching one key from re-rendering when another key changes.
