@@ -25,7 +25,8 @@ const fileUnder = <TEntity, TId extends EntityId>({
     entity,
 }: {
     entries: AssembledEntries<TEntity, TId>;
-    filedIds: Map<EntityId, Set<TId>>;
+    /** Only when the source repeats an id; nothing else can put one under a key twice. */
+    filedIds: Map<EntityId, Set<TId>> | undefined;
     key: EntityId;
     id: TId;
     entity: TEntity;
@@ -34,20 +35,28 @@ const fileUnder = <TEntity, TId extends EntityId>({
 
     if (held === undefined) {
         entries.set(key, { ids: [id], entities: [entity] });
-        filedIds.set(key, new Set([id]));
+        filedIds?.set(key, new Set([id]));
 
         return;
     }
 
-    // Under a key an entity is once, however many times it names the key and however many
-    // partitions it turns up in — the primary index resolves it to one entity and so does this.
-    const filed = filedIds.get(key) as Set<TId>;
-
-    if (filed.has(id)) {
+    // An entity naming the same key twice is under it once.
+    if (held.ids[held.ids.length - 1] === id) {
         return;
     }
 
-    filed.add(id);
+    if (filedIds !== undefined) {
+        // And so is one the source holds in two partitions: the primary index resolves it to one
+        // entity, and an entry cannot say otherwise.
+        const filed = filedIds.get(key) as Set<TId>;
+
+        if (filed.has(id)) {
+            return;
+        }
+
+        filed.add(id);
+    }
+
     held.ids.push(id);
     held.entities.push(entity);
 };
@@ -64,19 +73,24 @@ export const assembleSecondaryIndexes = <TEntity, TId extends EntityId>({
     gonePartitions,
     previousPartitions,
     keysOf,
+    mayRepeatIds,
 }: {
     indexNames: readonly string[];
     walked: readonly WalkedPartition<TEntity, TId>[];
     gonePartitions: readonly BuiltPartition<TEntity, TId>[];
     previousPartitions: ReadonlyMap<string, BuiltPartition<TEntity, TId>> | undefined;
     keysOf: (built: BuiltPartition<TEntity, TId>, indexName: string) => PartitionSecondaryKeys;
+    /** Whether the source can hold one entity in more than one partition; what that costs is here. */
+    mayRepeatIds: boolean;
 }): AssembledIndex<TEntity, TId>[] => {
     const assembled = indexNames.map((): AssembledIndex<TEntity, TId> => ({
         entries: new Map(),
         dirtyKeys: new Set(),
     }));
     // What each key already holds, for as long as it is being assembled.
-    const filedPerIndex = indexNames.map(() => new Map<EntityId, Set<TId>>());
+    const filedPerIndex = indexNames.map(() =>
+        mayRepeatIds ? new Map<EntityId, Set<TId>>() : undefined,
+    );
 
     for (const { built, isDirty } of walked) {
         const { ids, entities } = built;
@@ -84,7 +98,7 @@ export const assembleSecondaryIndexes = <TEntity, TId extends EntityId>({
         for (let indexPosition = 0; indexPosition < indexNames.length; indexPosition++) {
             const keys = keysOf(built, indexNames[indexPosition] as string);
             const { entries, dirtyKeys } = assembled[indexPosition] as AssembledIndex<TEntity, TId>;
-            const filedIds = filedPerIndex[indexPosition] as Map<EntityId, Set<TId>>;
+            const filedIds = filedPerIndex[indexPosition];
 
             for (let position = 0; position < ids.length; position++) {
                 const keysAt = keys[position];

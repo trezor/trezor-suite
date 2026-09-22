@@ -113,6 +113,7 @@ describe('an entity the source holds twice', () => {
             getEntities: (entities: Sided[]) => entities,
             getId: (entity: Sided) => entity.id,
             secondaryIndexes: { bySide: (entity: Sided) => entity.side },
+            mayRepeatIds: true,
         });
 
     const state = {
@@ -137,6 +138,21 @@ describe('an entity the source holds twice', () => {
         const index = createIndexOverPartitions();
 
         expect(index.getBySecondaryKey(state, 'bySide', 'left')).toHaveLength(2);
+    });
+
+    it('is named twice by an index that was not told the source repeats ids', () => {
+        // What the default buys: no index that cannot repeat an entity pays to be told so.
+        const index = createEntityIndex({
+            name: 'sidedWithoutTheFlag',
+            selectSource: (partitioned: { byPartition: Record<string, Sided[]> }) =>
+                partitioned.byPartition,
+            getPartitions: (byPartition: Record<string, Sided[]>) => Object.entries(byPartition),
+            getEntities: (entities: Sided[]) => entities,
+            getId: (entity: Sided) => entity.id,
+            secondaryIndexes: { bySide: (entity: Sided) => entity.side },
+        });
+
+        expect(index.getIdsBySecondaryKey(state, 'bySide', 'left')).toEqual(['a', 'b', 'a']);
     });
 });
 
