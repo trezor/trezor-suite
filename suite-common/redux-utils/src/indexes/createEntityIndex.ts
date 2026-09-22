@@ -1,16 +1,16 @@
 /**
  * Derived indexes over store entities.
  *
- * A primary index computed from a Redux slice on first read, and any number of secondary indexes
- * assembled on the first read that asks for one, with stable array identities for keys whose
- * members did not change.
+ * A primary index computed from a Redux slice on first read, and any number of secondary ones
+ * assembled off it when a read asks for one, with stable array identities for keys whose members
+ * did not change.
  *
- * What a build does is spelled out in the modules beside this one — the primary index, the
- * assembly of a secondary one off it, the settling of their identities, the changes — and what is
- * left here is when any of it runs: a secondary index not until it is asked for, and nothing twice
- * while the source is the one it was built from.
+ * What a build does is spelled out in the modules beside this one — the indexes, the settling of
+ * their identities, the changes — and what is left here is when any of it runs: an index not until
+ * something asks for it, and nothing twice while the source is the one it was built from.
  */
 
+import { type BuiltIndexes, assembleSecondaryIndex, buildIndexes } from './buildIndexes';
 import { EMPTY_ENTITY_IDS, NO_CHANGES } from './emptyResults';
 import { changesOf } from './entityIndexChanges';
 import { createEntityIndexQueries } from './entityIndexQueries';
@@ -25,8 +25,6 @@ import {
     type SecondaryIndexEntry,
     type SecondaryKeyExtractors,
 } from './entityIndexTypes';
-import { type PrimaryIndex, buildPrimaryIndex } from './primaryIndex';
-import { assembleSecondaryIndexes } from './secondaryIndexAssembly';
 
 export type * from './entityIndexTypes';
 export { EMPTY_ENTITIES, EMPTY_ENTITY_IDS } from './emptyResults';
@@ -54,8 +52,6 @@ export const createEntityIndex = <
     // snapshot's own signature come from.
     type Entries = ReadonlyMap<AnySecondaryKey, SecondaryIndexEntry<TEntity, TId>>;
 
-    const indexNames = Object.keys(secondaryKeyExtractors ?? {});
-
     const toEntities = getEntities ?? ((source: TSource) => source as unknown as Iterable<TEntity>);
 
     const noEntries: Entries = new Map();
@@ -68,7 +64,7 @@ export const createEntityIndex = <
         getChanges: () => NO_CHANGES,
     };
 
-    // Which indexes were read off the last snapshot, so the next build assembles them together.
+    // Which indexes were read off the last snapshot, so the next build fills them as it walks.
     let demandedIndexes = new Set<string>();
 
     const listeners = new Set<EntityIndexListener<TEntity, TId, TSecondaryIndexes>>();
@@ -77,8 +73,7 @@ export const createEntityIndex = <
         | {
               source: TSource;
               snapshot: Snapshot;
-              builtIndexes: Map<string, Entries>;
-              primary: PrimaryIndex<TEntity, TId>;
+              indexes: BuiltIndexes<TEntity, TId>;
               isEmpty: boolean;
           }
         | undefined;
@@ -86,48 +81,51 @@ export const createEntityIndex = <
     const build = (source: TSource): Snapshot => {
         // Only what this build needs, never `cached` itself: a closure over it would keep every
         // build before this one alive for as long as the index lives.
-        const previousBuiltIndexes = cached?.builtIndexes;
-        const previousPrimary = cached?.primary;
+        const previous = cached?.indexes;
         const wasEmpty = cached?.isEmpty ?? true;
         const previousSnapshot = cached?.snapshot;
 
-        const primary = buildPrimaryIndex({ source, toEntities, getId, name });
-
-        const builtIndexes = new Map<string, Entries>();
-
+        // What was read off the last snapshot is filled as this source is walked; anything else is
+        // assembled off `byId` if a read asks for it, and is in the walk from then on.
         const wantedIndexes = demandedIndexes;
         demandedIndexes = new Set<string>();
 
-        const assemble = (indexName: string) => {
-            // The one asked for, and whatever else was read last time and has not been built yet:
-            // they cost one pass together and one pass each apart.
-            const toBuild = [
-                indexName,
-                ...indexNames.filter(
-                    wanted =>
-                        wanted !== indexName &&
-                        wantedIndexes.has(wanted) &&
-                        !builtIndexes.has(wanted),
-                ),
-            ];
+        const indexes = buildIndexes({
+            source,
+            toEntities,
+            getId,
+            secondaryIndexes: secondaryKeyExtractors,
+            indexNames: [...wantedIndexes],
+            previous,
+            name,
+        });
 
-            assembleSecondaryIndexes({
-                indexNames: toBuild,
-                secondaryIndexes: secondaryKeyExtractors,
-                byId: primary.byId,
-                previousIndexes: previousBuiltIndexes,
-                builtIndexes,
-            });
-        };
+        const { primary, secondaryIndexes } = indexes;
+
+        // The source was replaced but holds what it held: what was built from it still stands.
+        if (primary === previous?.primary && previousSnapshot !== undefined) {
+            cached = { source, snapshot: previousSnapshot, indexes: previous, isEmpty: wasEmpty };
+
+            return previousSnapshot;
+        }
 
         const getSecondaryIndex = (indexName: string) => {
             demandedIndexes.add(indexName);
 
-            if (!builtIndexes.has(indexName)) {
-                assemble(indexName);
+            const known = secondaryIndexes.get(indexName);
+
+            if (known !== undefined) {
+                return known;
             }
 
-            return builtIndexes.get(indexName) as Entries;
+            const built = assembleSecondaryIndex({
+                extractKey: secondaryKeyExtractors?.[indexName],
+                byId: primary.byId,
+                previousEntries: previous?.secondaryIndexes.get(indexName),
+            });
+            secondaryIndexes.set(indexName, built);
+
+            return built;
         };
 
         let changes: EntityIndexChanges<TId> | undefined;
@@ -135,12 +133,9 @@ export const createEntityIndex = <
         const getChanges = () => {
             if (changes === undefined) {
                 changes =
-                    previousPrimary === undefined
+                    previous === undefined
                         ? NO_CHANGES
-                        : changesOf({
-                              byId: primary.byId,
-                              previousById: previousPrimary.byId,
-                          });
+                        : changesOf({ byId: primary.byId, previousById: previous.primary.byId });
             }
 
             return changes;
@@ -159,7 +154,7 @@ export const createEntityIndex = <
                       getChanges,
                   };
 
-        cached = { source, snapshot, builtIndexes, primary, isEmpty };
+        cached = { source, snapshot, indexes, isEmpty };
 
         return snapshot;
     };

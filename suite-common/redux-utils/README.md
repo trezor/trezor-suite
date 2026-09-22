@@ -181,8 +181,8 @@ const middleware = [
 
 ## createEntityIndex
 
-Derived indexes over store entities: a primary index computed from a Redux slice on first read and
-any number of secondary indexes assembled on the first read that asks for one, with stable array
+Derived indexes over store entities: a primary index computed from a Redux slice on first read, and
+any number of secondary ones assembled off it when a read asks for one, with stable array
 identities for keys whose members did not change.
 
 Nothing is stored in Redux and no reducer changes — the index derives itself from the slice it
@@ -227,6 +227,8 @@ getEntities: (accounts: Account[]) =>
     }),
 ```
 
-A secondary index is built on the first read that asks for it and not before, and the array under a
-key keeps its identity for as long as its members do — which is what keeps a component watching one
-key from re-rendering when another key changes.
+An index nobody reads is never assembled and its keys are never derived. One that was read off the
+last build is filled as the next source is walked, so a consumer reading the same index after every
+write costs one pass over the entities; one asked for out of nowhere is assembled off `byId` and
+joins the walk from then on. The array under a key keeps its identity for as long as its members do
+— which is what keeps a component watching one key from re-rendering when another key changes.
