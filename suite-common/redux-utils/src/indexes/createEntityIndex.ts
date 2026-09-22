@@ -10,22 +10,19 @@
  * something asks for it, and nothing twice while the source is the one it was built from.
  */
 
-import {
-    type BuiltIndexes,
-    type SecondaryIndex,
-    assembleSecondaryIndex,
-    buildPrimaryIndex,
-} from './buildIndexes';
+import { assembleSecondaryIndex, buildPrimaryIndex } from './buildIndexes';
 import { EMPTY_SNAPSHOT, NO_CHANGES } from './emptyResults';
 import { changesOf } from './entityIndexChanges';
 import { createEntityIndexQueries } from './entityIndexQueries';
 import {
+    type BuiltIndexes,
     type EntityId,
     type EntityIndex,
     type EntityIndexChanges,
     type EntityIndexDefinition,
     type EntityIndexListener,
     type EntityIndexSnapshot,
+    type SecondaryIndex,
     type SecondaryKeyExtractors,
 } from './entityIndexTypes';
 
