@@ -45,6 +45,8 @@ export const UnstakeForm = () => {
         claimableAmount = '0',
     } = getStakingDataForNetwork(account) ?? {};
 
+    const isCardanoBalanceEmpty = isCardanoNetwork && new BigNumber(autocompoundBalance).lte(0);
+
     const inputError = errors[CRYPTO_INPUT] || errors[FIAT_INPUT] || errors?.outputs?.[0]?.amount;
     const showError = inputError && !['required', 'min'].includes(inputError.type);
 
@@ -69,6 +71,14 @@ export const UnstakeForm = () => {
             <form onSubmit={handleSubmit(signTx)}>
                 <Column gap={32} margin={{ bottom: 20 }}>
                     <Column gap={16}>
+                        {isCardanoBalanceEmpty && (
+                            <Banner
+                                intent="warning"
+                                description={
+                                    <Translation id="TR_STAKE_CARDANO_UNSTAKE_NEEDS_BALANCE" />
+                                }
+                            />
+                        )}
                         {canClaim && (
                             <Banner
                                 intent="info"

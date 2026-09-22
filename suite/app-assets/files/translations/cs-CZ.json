@@ -2414,6 +2414,7 @@
   "TR_STAKE_CAN_CLAIM_FROM_ACCOUNTS": "Výběr je omezen na {limit} účtů na jednu transakci. Vybrat si můžete až {amount} {symbol}. Chcete-li si vybrat více, opakujte akci.",
   "TR_STAKE_CAN_CLAIM_WARNING": "Momentálně si můžete vybrat {amount} {symbol}. {br}Vyberte je hned, nebo počkejte, dokud se nezpracuje nové zrušení stakingu.",
   "TR_STAKE_CAN_UNSTAKE_FROM_ACCOUNTS": "Zrušení stakingu je omezeno na {limit} účtů na jednu transakci. Staking můžete zrušit až ve výši {amount} {symbol}. Chcete-li zrušit staking ve větším rozsahu, opakujte zrušení stakingu vícekrát.",
+  "TR_STAKE_CARDANO_UNSTAKE_NEEDS_BALANCE": "Ke zrušení stakingu potřebujete malé množství ADA na síťový poplatek. Vratný vklad 2 ADA se vám poté vrátí.",
   "TR_STAKE_CHANGE_DELEGATE": "Změnit delegáta",
   "TR_STAKE_CHANGE_DELEGATE_DISABLED_TOOLTIP": "Nemůžete vybrat svého aktuálního delegáta. Vyberte jiného.",
   "TR_STAKE_CHANGE_YOUR_DELEGATE": "Změnit delegáta vašeho stakingu?",

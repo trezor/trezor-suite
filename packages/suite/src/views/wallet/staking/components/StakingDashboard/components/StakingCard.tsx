@@ -143,7 +143,10 @@ export const StakingCard = ({
     );
     const isStakeConfirming = stakeTxs.some(tx => isPending(tx));
 
-    const canUnstake = new BigNumber(autocompoundBalance).gt(0) && !isStakeConfirming;
+    const isCardanoNetworkType = account.networkType === 'cardano';
+    const canUnstake =
+        (new BigNumber(autocompoundBalance).gt(0) || (isCardanoNetworkType && isStakingActive)) &&
+        !isStakeConfirming;
     const canClaimRewards = new BigNumber(restakedReward).gt(0) && !isStakeConfirming;
     const isStakePending = new BigNumber(totalPendingStakeBalance).gt(0);
 
@@ -161,8 +164,6 @@ export const StakingCard = ({
 
     const shouldShowProgressLabels =
         (isStakeConfirming || isTxStatusShown) && !!progressLabelsData.length;
-
-    const isCardanoNetworkType = account.networkType === 'cardano';
 
     const openStakeModal = () => {
         if (!isStakingDisabled) {
