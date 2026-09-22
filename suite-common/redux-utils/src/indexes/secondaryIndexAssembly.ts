@@ -1,4 +1,4 @@
-import { type EntityId } from './entityIndexTypes';
+import { type AnySecondaryKey, type EntityId } from './entityIndexTypes';
 import {
     type BuiltPartition,
     type PartitionSecondaryKeys,
@@ -7,19 +7,19 @@ import {
 } from './partitionWalk';
 
 export type AssembledEntries<TEntity, TId extends EntityId> = Map<
-    EntityId,
+    AnySecondaryKey,
     { ids: TId[]; entities: TEntity[] }
 >;
 
 export type AssembledIndex<TEntity, TId extends EntityId> = {
     entries: AssembledEntries<TEntity, TId>;
     /** Keys a dirty or vanished partition had a hand in, so settling knows what it cannot keep. */
-    dirtyKeys: Set<EntityId>;
+    dirtyKeys: Set<AnySecondaryKey>;
 };
 
 const fileUnder = <TEntity, TId extends EntityId>(
     entries: AssembledEntries<TEntity, TId>,
-    key: EntityId,
+    key: AnySecondaryKey,
     id: TId,
     entity: TEntity,
 ) => {

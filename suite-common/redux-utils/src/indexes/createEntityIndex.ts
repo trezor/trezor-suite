@@ -14,6 +14,7 @@ import { EMPTY_ENTITY_IDS, NO_CHANGES } from './emptyResults';
 import { changesOf } from './entityIndexChanges';
 import { createEntityIndexQueries } from './entityIndexQueries';
 import {
+    type AnySecondaryKey,
     type EntityId,
     type EntityIndex,
     type EntityIndexChanges,
@@ -57,9 +58,9 @@ export const createEntityIndex = <
     TSecondaryIndexes
 >): EntityIndex<TState, TEntity, TId, TSecondaryIndexes> => {
     type Snapshot = EntityIndexSnapshot<TEntity, TId, TSecondaryIndexes>;
-    // Entries are stored under the key as a string; what a key means is the caller's business,
-    // which is where the two casts back to the snapshot's own signature come from.
-    type Entries = ReadonlyMap<EntityId, SecondaryIndexEntry<TEntity, TId>>;
+    // What a key means is the caller's business, which is where the two casts back to the
+    // snapshot's own signature come from.
+    type Entries = ReadonlyMap<AnySecondaryKey, SecondaryIndexEntry<TEntity, TId>>;
 
     const indexNames = Object.keys(secondaryKeyExtractors ?? {});
 

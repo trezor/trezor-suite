@@ -1,4 +1,4 @@
-import { type EntityId, type SecondaryIndexEntry } from './entityIndexTypes';
+import { type AnySecondaryKey, type EntityId, type SecondaryIndexEntry } from './entityIndexTypes';
 import { areSame } from './identities';
 import { type AssembledIndex } from './secondaryIndexAssembly';
 
@@ -16,11 +16,11 @@ export const settleSecondaryIndex = <TEntity, TId extends EntityId>({
     isPartitionOrderKept,
 }: {
     assembled: AssembledIndex<TEntity, TId>;
-    previousEntries: ReadonlyMap<EntityId, SecondaryIndexEntry<TEntity, TId>> | undefined;
+    previousEntries: ReadonlyMap<AnySecondaryKey, SecondaryIndexEntry<TEntity, TId>> | undefined;
     isPartitionOrderKept: boolean;
-}): ReadonlyMap<EntityId, SecondaryIndexEntry<TEntity, TId>> => {
+}): ReadonlyMap<AnySecondaryKey, SecondaryIndexEntry<TEntity, TId>> => {
     const { entries, dirtyKeys } = assembled;
-    const settled = new Map<EntityId, SecondaryIndexEntry<TEntity, TId>>();
+    const settled = new Map<AnySecondaryKey, SecondaryIndexEntry<TEntity, TId>>();
     let isUnchanged = previousEntries?.size === entries.size;
 
     entries.forEach((members, key) => {
