@@ -22,10 +22,11 @@ serde_json = "^1.0.151"
 tokio = { version = "^1.53.1", features = ["sync", "rt", "macros", "rt-multi-thread", "io-util"] }
 thiserror = "^2.0.20"
 
-# btleplug = { git = "https://github.com/trezor/btleplug", rev="f66eb37ca293bea1708264a319ec02b14e7935ab" }
-btleplug = "0.13.0"
+btleplug = { git = "https://github.com/trezor/btleplug", rev="45936a243a99221e427c11a0a2568d831eeb987a" }
+# btleplug = "0.13.2"
+# btleplug = { path="../../../trezor-btleplug", version = "0.13.2", features = ["serde"] }
 dashmap = "6.2.1"
-uuid = "1.26.0"
+uuid = "1.26.1"
 
 [target.'cfg(target_os = "linux")'.dependencies]
 dbus = {version = "0.9.12", features = ["vendored"]}
