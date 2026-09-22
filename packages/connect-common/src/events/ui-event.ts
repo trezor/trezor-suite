@@ -74,6 +74,19 @@ export const UI_EVENTS = {
     /** Account balance is insufficient for the transaction */
     ACCOUNT_INSUFFICIENT_FUNDS: 'ui-event_account_insufficient_funds',
 
+    // --- Device call lifecycle ---
+
+    /**
+     * A method that uses the device (`useDevice === true`) started talking to it.
+     * The host should lock the device UI until the matching `DEVICE_UNLOCK`.
+     */
+    DEVICE_LOCK: 'ui-event_device_lock',
+    /**
+     * A device-using method finished (resolved or rejected). Emitted exactly once
+     * per `DEVICE_LOCK`, so the host can pair lock/unlock without a method blocklist.
+     */
+    DEVICE_UNLOCK: 'ui-event_device_unlock',
+
     // --- Generic ---
 
     /** Device is requesting a physical button press confirmation */
@@ -95,6 +108,14 @@ export type UiEventWithoutPayload =
       }
     | {
           type: typeof UI_EVENTS.CLOSE_UI_WINDOW;
+          payload?: never;
+      }
+    | {
+          type: typeof UI_EVENTS.DEVICE_LOCK;
+          payload?: never;
+      }
+    | {
+          type: typeof UI_EVENTS.DEVICE_UNLOCK;
           payload?: never;
       };
 
