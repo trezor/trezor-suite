@@ -1,8 +1,15 @@
 import {
     type AnySecondaryKey,
     type EntityId,
-    type SecondaryKeyExtractor,
+    type SecondaryIndexEntry,
+    type SecondaryKeyExtractors,
 } from './entityIndexTypes';
+import { settleSecondaryIndex } from './secondaryIndexSettling';
+
+export type SecondaryIndexes<TEntity, TId extends EntityId> = Map<
+    string,
+    ReadonlyMap<AnySecondaryKey, SecondaryIndexEntry<TEntity, TId>>
+>;
 
 export type AssembledEntries<TEntity, TId extends EntityId> = Map<
     AnySecondaryKey,
@@ -60,30 +67,45 @@ const fileUnderEach = <TEntity, TId extends EntityId>({
 };
 
 /**
- * Which entities sit under which key, for every named index at once.
+ * Which entities sit under which key, for every named index at once, settled against the build
+ * before so a key whose members did not change keeps the array it had.
  *
  * One pass over the primary index however many indexes are asked for, because asking an entity for
  * its key is the cheap half of this.
  */
 export const assembleSecondaryIndexes = <TEntity, TId extends EntityId>({
-    extractors,
+    indexNames,
+    secondaryIndexes,
     byId,
+    previousIndexes,
 }: {
-    extractors: readonly SecondaryKeyExtractor<TEntity>[];
+    /** The indexes to assemble on this pass, which is not always all of them. */
+    indexNames: readonly string[];
+    secondaryIndexes: SecondaryKeyExtractors<TEntity> | undefined;
     byId: ReadonlyMap<TId, TEntity>;
-}): AssembledEntries<TEntity, TId>[] => {
-    const assembled = extractors.map((): AssembledEntries<TEntity, TId> => new Map());
+    previousIndexes: SecondaryIndexes<TEntity, TId> | undefined;
+}): SecondaryIndexes<TEntity, TId> => {
+    const extractors = indexNames.map(indexName => secondaryIndexes?.[indexName]);
+    const assembled = indexNames.map((): AssembledEntries<TEntity, TId> => new Map());
 
     byId.forEach((entity, id) => {
         for (let position = 0; position < extractors.length; position++) {
             fileUnderEach({
                 entries: assembled[position] as AssembledEntries<TEntity, TId>,
-                keys: (extractors[position] as SecondaryKeyExtractor<TEntity>)(entity),
+                keys: extractors[position]?.(entity),
                 id,
                 entity,
             });
         }
     });
 
-    return assembled;
+    return new Map(
+        indexNames.map((indexName, position) => [
+            indexName,
+            settleSecondaryIndex({
+                entries: assembled[position] as AssembledEntries<TEntity, TId>,
+                previousEntries: previousIndexes?.get(indexName),
+            }),
+        ]),
+    );
 };
