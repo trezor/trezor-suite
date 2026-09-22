@@ -28,6 +28,10 @@ const baseReporters = [
             outputName: `${projectName}-junit-report.xml`,
         },
     ],
+    [
+        './e2e/support/reporter/attempts.js',
+        { outputFile: `./reports/${projectName}-attempts.json` },
+    ],
 ];
 const githubReporter = './e2e/support/reporter/index.js';
 const reporters =
