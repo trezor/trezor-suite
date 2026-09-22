@@ -3,6 +3,7 @@ import {
     type YieldDtoV2,
     sortRewardsByUnderlyingToken,
 } from '@suite-common/earn-stablecoin-api';
+import { useFormatters } from '@suite-common/formatters';
 import { type NetworkSymbol } from '@suite-common/networks';
 import { type Account } from '@suite-common/wallet-types';
 import { getApyPercent } from '@suite-common/wallet-utils';
@@ -58,6 +59,7 @@ type RewardRowProps = {
 };
 
 const RewardRow = ({ reward, networkSymbol, tokenSymbol }: RewardRowProps) => {
+    const { PercentageFormatter } = useFormatters();
     const rewardRatePercent = getApyPercent(reward.rate);
     const rewardSymbol = reward.token.symbol || reward.token.name || '';
     const descriptionKey = getYieldApyBreakdownDescriptionKey(reward.yieldSource);
@@ -83,7 +85,10 @@ const RewardRow = ({ reward, networkSymbol, tokenSymbol }: RewardRowProps) => {
 
                         {rewardRatePercent !== null && rewardRatePercent > 0 && (
                             <Text variant="body-md" color="contentBrand">
-                                +{rewardRatePercent.toFixed(2)}%
+                                +
+                                {PercentageFormatter.format(rewardRatePercent, {
+                                    withSymbol: true,
+                                })}
                                 {rateTranslationId && (
                                     <>
                                         {' '}
