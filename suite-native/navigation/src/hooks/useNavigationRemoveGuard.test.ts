@@ -6,7 +6,7 @@ import {
     type UseNavigationRemoveGuardParams,
     useNavigationRemoveGuard,
 } from './useNavigationRemoveGuard';
-import { BACK_NAVIGATION_ACTIONS } from '../navigationRemove';
+import { DEFAULT_BACK_NAVIGATION_ACTIONS } from '../navigationRemove';
 
 const mockDispatch = jest.fn();
 
@@ -36,33 +36,32 @@ describe('useNavigationRemoveGuard', () => {
         jest.clearAllMocks();
     });
 
-    it.each(BACK_NAVIGATION_ACTIONS)('blocks %s until explicitly continued', async type => {
-        const onBlocked = jest.fn();
-        const action = { type, [Symbol('navigation metadata')]: new Set(['review']) };
+    it.each(DEFAULT_BACK_NAVIGATION_ACTIONS)(
+        'blocks %s by default until explicitly continued',
+        async type => {
+            const onBlocked = jest.fn();
+            const action = { type, [Symbol('navigation metadata')]: new Set(['review']) };
 
-        await renderHookWithBasicProvider(() =>
-            useNavigationRemoveGuard({ actionTypes: BACK_NAVIGATION_ACTIONS, onBlocked }),
-        );
-        triggerRemoval(action);
+            await renderHookWithBasicProvider(() => useNavigationRemoveGuard({ onBlocked }));
+            triggerRemoval(action);
 
-        expect(mockDispatch).not.toHaveBeenCalled();
-        expect(onBlocked).toHaveBeenCalledWith({
-            action,
-            continueNavigation: expect.any(Function),
-        });
+            expect(mockDispatch).not.toHaveBeenCalled();
+            expect(onBlocked).toHaveBeenCalledWith({
+                action,
+                continueNavigation: expect.any(Function),
+            });
 
-        const { continueNavigation } = onBlocked.mock.calls[0][0];
-        continueNavigation();
-        continueNavigation();
+            const { continueNavigation } = onBlocked.mock.calls[0][0];
+            continueNavigation();
+            continueNavigation();
 
-        expect(mockDispatch).toHaveBeenCalledTimes(1);
-        expect(mockDispatch.mock.calls[0][0]).toBe(action);
-    });
+            expect(mockDispatch).toHaveBeenCalledTimes(1);
+            expect(mockDispatch.mock.calls[0][0]).toBe(action);
+        },
+    );
 
-    it('keeps matching actions blocked without a callback', async () => {
-        await renderHookWithBasicProvider(() =>
-            useNavigationRemoveGuard({ actionTypes: BACK_NAVIGATION_ACTIONS }),
-        );
+    it('keeps default actions blocked without a callback', async () => {
+        await renderHookWithBasicProvider(() => useNavigationRemoveGuard());
         triggerRemoval({ type: 'GO_BACK' });
 
         expect(mockDispatch).not.toHaveBeenCalled();
@@ -82,7 +81,7 @@ describe('useNavigationRemoveGuard', () => {
         },
     );
 
-    it.each([{ actionTypes: BACK_NAVIGATION_ACTIONS }, { actionTypes: [] }])(
+    it.each([{ actionTypes: DEFAULT_BACK_NAVIGATION_ACTIONS }, { actionTypes: [] }])(
         'forwards unmatched actions for %j',
         async ({ actionTypes }) => {
             const onBlocked = jest.fn();
