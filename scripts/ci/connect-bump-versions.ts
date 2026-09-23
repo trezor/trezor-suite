@@ -63,6 +63,50 @@ const splitByNewlines = (input: string) => input.split('\n');
 const findIndexByCommit = (commitArr: string[], searchString: string) =>
     commitArr.findIndex(commit => commit.includes(searchString));
 
+// Release markers in the log (`-   <subject> (<hash>)`, quotes stripped). Only a plain x.y.z version is
+// a stable release; prereleases (`-beta.N`, also committed as `npm-release:` for connect itself and in
+// older per-package releases) are intentionally not boundaries: a stable changelog spans the whole
+// range since the last STABLE release.
+const STABLE_VERSION = String.raw`\d+\.\d+\.\d+(?=\s)`;
+const isPackageStableRelease = (commitLine: string, packageName: string) =>
+    new RegExp(String.raw`^-\s+npm-release: @trezor/${packageName} ${STABLE_VERSION}`).test(
+        commitLine,
+    );
+const isConnectStableRelease = (commitLine: string) =>
+    new RegExp(
+        String.raw`^-\s+(?:npm-release|release): (?:@trezor/)?connect ${STABLE_VERSION}`,
+    ).test(commitLine);
+
+// The previous stable release marks the boundary: everything above it in the (reverse-chronological)
+// log is what this release adds. The per-package marker `npm-release: @trezor/<pkg> <ver>` is written
+// by this script on every stable release, so it self-heals after a package's first stable cut. The
+// connect-wide marker is only a fallback for a package's very first stable release under this
+// scheme — 9.x used connect-wide `npm-release: @trezor/connect <ver>` (and legacy
+// `release: [@trezor/]connect <ver>`), which is why the first v10 stable dumped a package's entire history.
+const getCommitsSinceLastStableRelease = (commitLines: string[], packageName: string) => {
+    const packageBoundary = commitLines.findIndex(line =>
+        isPackageStableRelease(line, packageName),
+    );
+    const boundary =
+        packageBoundary !== -1 ? packageBoundary : commitLines.findIndex(isConnectStableRelease);
+
+    return boundary === -1 ? commitLines : commitLines.slice(0, boundary);
+};
+
+// Split a CHANGELOG into the fixed header (anything before the first `# <version>` heading, e.g. a
+// pointer to the core changelog) and the version history, so a new entry can be inserted at the top
+// of the history without clobbering the header.
+const splitChangelogHeader = (changelog: string) => {
+    const lines = changelog.split('\n');
+    const firstVersionIdx = lines.findIndex(line => /^#\s+\d/.test(line));
+    if (firstVersionIdx === -1) return { header: changelog.trim(), history: '' };
+
+    return {
+        header: lines.slice(0, firstVersionIdx).join('\n').trim(),
+        history: lines.slice(firstVersionIdx).join('\n').trim(),
+    };
+};
+
 type ConnectVersionMatrix = {
     package: string;
     stable: string;
@@ -187,16 +231,13 @@ const bumpConnect = async () => {
 
             const packageGitLog = await getGitCommitByPackageName(packageName, 1000);
 
-            const commitsArr = packageGitLog.stdout.split('\n');
+            // The log format wraps every line in literal quotes (no shell to strip them).
+            const commitsArr = packageGitLog.stdout
+                .split('\n')
+                .map(commit => commit.replaceAll('"', ''));
 
-            const newCommits: string[] = [];
-            for (const commit of commitsArr) {
-                // Here we check commits utils last stable release
-                if (commit.includes(`npm-release: @trezor/${packageName}`)) {
-                    break;
-                }
-                newCommits.push(commit.replaceAll('"', ''));
-            }
+            // Stop at the previous stable release so the entry spans only this release.
+            const newCommits = getCommitsSinceLastStableRelease(commitsArr, packageName);
 
             // In Connect dependencies packages we only update CHANGELOG when doing a stable release (patch or minor).
             // We do that so we can generate the complete CHANGELOG automatically when doing stable release.
@@ -206,10 +247,14 @@ const bumpConnect = async () => {
                     await writeFile(CHANGELOG_PATH, '');
                 }
 
-                let changelog = await readFile(CHANGELOG_PATH, 'utf-8');
+                const existingChangelog = await readFile(CHANGELOG_PATH, 'utf-8');
+                // Preserve any fixed header (e.g. a pointer to the core changelog) above the version
+                // history instead of prepending the new entry above everything.
+                const { header, history } = splitChangelogHeader(existingChangelog);
+                const entry = `# ${version}\n\n${newCommits.join('\n')}`;
+                const changelog = [header, entry, history].filter(Boolean).join('\n\n');
 
-                changelog = `# ${version}\n\n${newCommits.join('\n')}\n\n${changelog}`;
-                await writeFile(CHANGELOG_PATH, changelog, 'utf-8');
+                await writeFile(CHANGELOG_PATH, `${changelog}\n`, 'utf-8');
 
                 await exec('yarn', ['prettier', '--write', CHANGELOG_PATH]);
             }
