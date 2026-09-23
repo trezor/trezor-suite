@@ -1,41 +1,49 @@
+import { type ThunkDispatch, type UnknownAction } from '@reduxjs/toolkit';
+
+import { type DesktopApiDep } from '@suite/desktop-app-api';
 import {
     bluetoothActions,
     selectAdapterStatus,
     selectAutoConnectPolicy,
     selectKnownDevices,
 } from '@suite-common/bluetooth';
-import { selectDevices } from '@suite-common/device';
-import { selectFirmware } from '@suite-common/firmware';
+import { type DeviceRootState, selectDevices } from '@suite-common/device';
+import { type FirmwareRootState, selectFirmware } from '@suite-common/firmware';
+import { type WithServices } from '@suite-common/redux-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import TrezorConnect from '@trezor/connect';
 import { type BluetoothDevice, bluetoothIpc } from '@trezor/transport-bluetooth';
 import { resolveAfter } from '@trezor/utils';
 
 import { type DesktopBluetoothDevice, fromBluetoothDevice } from './DesktopBluetoothDevice';
+import { type BackgroundScanDep } from './bluetoothBackgroundScan';
 import { bluetoothConnectDeviceThunk } from './bluetoothConnectDeviceThunk';
-import {
-    type BluetoothService,
-    type BluetoothServiceDeps,
-    type BluetoothServiceInternalDeps,
-} from './bluetoothServiceTypes';
+import { type WithBluetoothRootState } from './desktopBluetoothReducer';
 import { selectConnectingDevices } from './desktopBluetoothSelectors';
 import { fixLinuxManufacturerData } from './fixLinuxManufacturerData';
 import { openSystemSettingsThunk } from './openSystemSettingsThunk';
 import { remapKnownDevices } from './remapKnownDevices';
 
-const bluetoothServiceInternal: Partial<BluetoothServiceInternalDeps> = {};
+export type BluetoothInitRootState = WithBluetoothRootState & DeviceRootState & FirmwareRootState;
 
-export const getBluetoothServiceInternal = <N extends keyof BluetoothServiceInternalDeps>(
-    name: N,
-): BluetoothServiceInternalDeps[N] => {
-    if (!bluetoothServiceInternal[name]) {
-        throw new Error(`Bluetooth service ${name} not initialized`);
-    }
+export type BluetoothInitDispatch = ThunkDispatch<
+    BluetoothInitRootState,
+    WithServices<DesktopApiDep<'openSystemSettings' | 'appFocus'>>,
+    UnknownAction
+>;
 
-    return bluetoothServiceInternal[name];
+export type BluetoothInitDeps = {
+    getState: () => BluetoothInitRootState;
+    dispatch: BluetoothInitDispatch;
+} & BackgroundScanDep;
+
+export type BluetoothInit = () => Promise<void>;
+
+export type BluetoothInitDep = {
+    bluetoothInit: BluetoothInit;
 };
 
-const attemptDeviceConnect = async (deps: BluetoothServiceDeps, device: DesktopBluetoothDevice) => {
+const attemptDeviceConnect = async (deps: BluetoothInitDeps, device: DesktopBluetoothDevice) => {
     const { getState, dispatch } = deps;
     const knownDevice = selectKnownDevices<DesktopBluetoothDevice>(getState()).find(
         d => d.id === device.id,
@@ -99,7 +107,7 @@ const attemptDeviceConnect = async (deps: BluetoothServiceDeps, device: DesktopB
     }
 };
 
-const setupAutoReconnect = (deps: BluetoothServiceDeps) => {
+const setupAutoReconnect = (deps: BluetoothInitDeps) => {
     const { getState } = deps;
     // Wait for 3 seconds or earlier if a connected device is detected.
     // The delay shouldn't be too perceptible, since other things are also loading at app start.
@@ -125,12 +133,12 @@ const setupAutoReconnect = (deps: BluetoothServiceDeps) => {
         // and therefore we start looking for it.
         const knownDevices = selectKnownDevices<DesktopBluetoothDevice>(getState());
         if (knownDevices.length > 0) {
-            getBluetoothServiceInternal('backgroundScan').start();
+            deps.backgroundScan.start();
         }
     });
 };
 
-const setupListeners = (deps: BluetoothServiceDeps) => {
+const setupListeners = (deps: BluetoothInitDeps) => {
     const { getState, dispatch } = deps;
 
     bluetoothIpc.on('adapter-event', status => {
@@ -183,7 +191,7 @@ const setupListeners = (deps: BluetoothServiceDeps) => {
     });
 };
 
-const init = async (deps: BluetoothServiceDeps) => {
+const init = async (deps: BluetoothInitDeps) => {
     const { getState, dispatch } = deps;
 
     const knownDevices = selectKnownDevices<DesktopBluetoothDevice>(getState());
@@ -217,22 +225,15 @@ const init = async (deps: BluetoothServiceDeps) => {
     setupAutoReconnect(deps);
 };
 
-export const createBluetoothService = (
-    deps: BluetoothServiceDeps,
-    internalDeps: BluetoothServiceInternalDeps,
-): BluetoothService => {
+export const createBluetoothInit = (deps: BluetoothInitDeps): BluetoothInit => {
     let inited = false;
 
-    Object.assign(bluetoothServiceInternal, internalDeps);
+    return () => {
+        if (inited) {
+            return Promise.resolve();
+        }
+        inited = true;
 
-    return {
-        init: () => {
-            if (inited) {
-                return Promise.resolve();
-            }
-            inited = true;
-
-            return init(deps);
-        },
+        return init(deps);
     };
 };

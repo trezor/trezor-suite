@@ -5,20 +5,21 @@
 import { type UnknownAction, isAction } from '@reduxjs/toolkit';
 
 import { type BluetoothReducerDeps, bluetoothActions } from '@suite-common/bluetooth';
-import { deviceInitialState } from '@suite-common/device';
-import { firmwareInitialState } from '@suite-common/firmware';
 import { mockActionType } from '@suite-common/redux-utils/mocks';
 import { bluetoothIpc } from '@trezor/transport-bluetooth';
 
-import { createBackgroundScan } from './bluetoothBackgroundScan';
-import { prepareBluetoothMiddleware } from './bluetoothMiddleware';
-import { createBluetoothService } from './bluetoothService';
 import {
     type BackgroundScan,
-    type BluetoothServiceDeps,
-    type BluetoothServiceRootState,
-} from './bluetoothServiceTypes';
+    type BackgroundScanDeps,
+    createBackgroundScan,
+} from './bluetoothBackgroundScan';
 import {
+    type PrepareBluetoothMiddlewareDeps,
+    prepareBluetoothMiddleware,
+} from './bluetoothMiddleware';
+import { createBluetooth } from './createBluetooth';
+import {
+    type WithBluetoothRootState,
     initialDesktopBluetoothState,
     prepareDesktopBluetoothReducer,
 } from './desktopBluetoothReducer';
@@ -27,7 +28,7 @@ import { mockDesktopBluetoothDevice } from '../mocks/mockDesktopBluetoothDevice'
 const device = mockDesktopBluetoothDevice({});
 
 describe('prepareBluetoothMiddleware', () => {
-    let state: BluetoothServiceRootState;
+    let state: WithBluetoothRootState;
     let scan: BackgroundScan;
     let dispatch: (action: UnknownAction) => unknown;
 
@@ -42,14 +43,14 @@ describe('prepareBluetoothMiddleware', () => {
                 adapterStatus: 'enabled',
                 knownDevices: [device],
             },
-            device: deviceInitialState,
-            firmware: firmwareInitialState,
         };
-        const deps: BluetoothServiceDeps = { getState: () => state, dispatch: jest.fn() };
-        scan = createBackgroundScan(deps);
-        createBluetoothService(deps, {
-            backgroundScan: scan,
-        });
+        const scanDeps: BackgroundScanDeps = { getState: () => state };
+        scan = createBackgroundScan(scanDeps);
+        const extra: PrepareBluetoothMiddlewareDeps = {
+            services: {
+                bluetooth: createBluetooth({ bluetoothInit: jest.fn(), backgroundScan: scan }),
+            },
+        };
         const reducerDeps: BluetoothReducerDeps = {
             actionTypes: { storageLoad: mockActionType('storageLoad') },
         };
@@ -63,7 +64,8 @@ describe('prepareBluetoothMiddleware', () => {
 
             return action;
         };
-        dispatch = prepareBluetoothMiddleware(() => ({}))(deps)(next);
+        const middlewareAPI = { getState: () => state, dispatch: jest.fn() };
+        dispatch = prepareBluetoothMiddleware(() => extra)(middlewareAPI)(next);
     });
 
     afterEach(async () => {

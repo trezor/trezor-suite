@@ -1,8 +1,23 @@
 import { createBackgroundScan } from './bluetoothBackgroundScan';
-import { createBluetoothService } from './bluetoothService';
-import { type BluetoothService, type BluetoothServiceDeps } from './bluetoothServiceTypes';
+import { type Bluetooth, createBluetooth } from './createBluetooth';
+import {
+    type BluetoothInitDispatch,
+    type BluetoothInitRootState,
+    createBluetoothInit,
+} from './createBluetoothInit';
 
-export const createBluetoothCompositionRoot = (deps: BluetoothServiceDeps): BluetoothService =>
-    createBluetoothService(deps, {
-        backgroundScan: createBackgroundScan(deps),
+type BluetoothCompositionRootDeps = {
+    getState: () => BluetoothInitRootState;
+    dispatch: BluetoothInitDispatch;
+};
+
+export const createBluetoothCompositionRoot = (deps: BluetoothCompositionRootDeps): Bluetooth => {
+    const backgroundScan = createBackgroundScan({ getState: deps.getState });
+    const bluetoothInit = createBluetoothInit({
+        getState: deps.getState,
+        dispatch: deps.dispatch,
+        backgroundScan,
     });
+
+    return createBluetooth({ bluetoothInit, backgroundScan });
+};
