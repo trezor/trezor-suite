@@ -1602,9 +1602,22 @@ export const messages = defineMessages({
         defaultMessage: 'Check the address or browse the list to select an option.',
         id: 'TR_TRADING_RECEIVE_ADDRESS_NOT_FOUND_TEXT',
     },
-    TR_TRADING_RECEIVE_ADDRESS_ENTER_TEXT: {
-        defaultMessage: "Enter {networkName} address that isn't in Trezor Suite.",
-        id: 'TR_TRADING_RECEIVE_ADDRESS_ENTER_TEXT',
+    TR_TRADING_RECEIVE_EXTERNAL_ADDRESS_TITLE: {
+        defaultMessage: 'Enter external address',
+        id: 'TR_TRADING_RECEIVE_EXTERNAL_ADDRESS_TITLE',
+    },
+    TR_TRADING_RECEIVE_EXTERNAL_ADDRESS_WARNING_TITLE: {
+        defaultMessage: 'Check the address carefully.',
+        id: 'TR_TRADING_RECEIVE_EXTERNAL_ADDRESS_WARNING_TITLE',
+    },
+    TR_TRADING_RECEIVE_EXTERNAL_ADDRESS_WARNING_TEXT: {
+        defaultMessage:
+            "External address balances won't appear in Trezor Suite. We can't recover funds sent to the wrong address.",
+        id: 'TR_TRADING_RECEIVE_EXTERNAL_ADDRESS_WARNING_TEXT',
+    },
+    TR_TRADING_RECEIVE_EXTERNAL_ADDRESS_LABEL: {
+        defaultMessage: 'Your external address',
+        id: 'TR_TRADING_RECEIVE_EXTERNAL_ADDRESS_LABEL',
     },
     TR_TRADING_RECEIVE_ADDRESS_NEW_ADDRESS: {
         defaultMessage: 'New address',

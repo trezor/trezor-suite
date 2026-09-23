@@ -1,12 +1,16 @@
 import { useForm, useWatch } from 'react-hook-form';
 
 import { Translation, useTranslation } from '@suite/intl';
+import { openDeferredModal } from '@suite/modal';
 import { useServices } from '@suite-common/dependency-injection';
-import { injectAddressValidator } from '@suite-common/networks';
-import { cryptoIdToNetwork, parseCryptoId, useTradingUtils } from '@suite-common/trading';
+import { injectAddressValidator, selectNetworkSymbolForProtocol } from '@suite-common/networks';
+import { injectDispatch, injectGetState } from '@suite-common/redux-utils';
+import { cryptoIdToNetwork, useTradingUtils } from '@suite-common/trading';
+import { parseTransferUri } from '@suite-common/transfer-uri';
 import { isNetworkSymbol } from '@suite-common/wallet-config';
 import { isHexValid, isInteger } from '@suite-common/wallet-utils';
-import { Column, Input, Modal, Text } from '@trezor/components';
+import { Banner, Button, Column, Icon, Input, Modal, Row } from '@trezor/components';
+import { QrCodeIcon } from '@trezor/icons';
 
 import { type TradingVerifyFormProps } from 'src/types/trading/tradingVerify';
 import { TradingExtraField } from 'src/views/wallet/trading/common/TradingSelectedOffer/TradingReceiveAddress/TradingExtraField';
@@ -20,14 +24,12 @@ export const TradingReceiveAddressModal = () => {
     const modalControls = useReceiveAddressModalControls();
 
     const { translationString } = useTranslation();
-    const { addressValidator } = useServices(injectAddressValidator);
-    const { cryptoIdToPlatformName, cryptoIdToCoinName, cryptoIdToNativeCoinSymbol } =
-        useTradingUtils();
-
-    const { networkId, contractAddress } = parseCryptoId(cryptoId);
-    const networkName = contractAddress
-        ? cryptoIdToPlatformName(networkId)
-        : cryptoIdToCoinName(networkId);
+    const { addressValidator, dispatch, getState } = useServices(
+        injectAddressValidator,
+        injectDispatch,
+        injectGetState,
+    );
+    const { cryptoIdToNativeCoinSymbol } = useTradingUtils();
 
     const { selectedAccount, selectNonSuiteAddress } = tradingReceiveAddress;
 
@@ -95,6 +97,20 @@ export const TradingReceiveAddressModal = () => {
         modalControls.open('accountModal');
     };
 
+    const onQrClick = async () => {
+        const uri = await dispatch(openDeferredModal({ type: 'qr-reader' }));
+
+        if (typeof uri !== 'string') return;
+
+        const result = parseTransferUri(uri, protocol =>
+            selectNetworkSymbolForProtocol(getState(), protocol),
+        );
+
+        form.setValue('address', result.success ? result.payload.address : uri, {
+            shouldValidate: true,
+        });
+    };
+
     const onConfirmClick = () => {
         if (form.formState.errors.address || form.formState.errors.extraField) return;
 
@@ -110,33 +126,25 @@ export const TradingReceiveAddressModal = () => {
     return (
         <Modal
             data-testid="@trading/receive-address-modal"
-            heading={<Translation id="TR_BUY_RECEIVING_ADDRESS" />}
+            heading={<Translation id="TR_TRADING_RECEIVE_EXTERNAL_ADDRESS_TITLE" />}
             onCancel={onCancel}
             onBackClick={onBackClick}
-            bottomContent={
-                <Modal.Button
-                    data-testid="@trading/receive-address-modal/confirm-button"
-                    onClick={onConfirmClick}
-                    isDisabled={
-                        !!form.formState.errors.address ||
-                        !receiveAddress ||
-                        receiveAddress.length === 0
-                    }
-                >
-                    <Translation id="TR_CONFIRM" />
-                </Modal.Button>
-            }
+            width={480}
         >
             <Column gap={12}>
-                <Text typographyStyle="body-md">
-                    <Translation
-                        id="TR_TRADING_RECEIVE_ADDRESS_ENTER_TEXT"
-                        values={{ networkName }}
-                    />
-                </Text>
+                <Banner
+                    icon
+                    intent="warning"
+                    title={<Translation id="TR_TRADING_RECEIVE_EXTERNAL_ADDRESS_WARNING_TITLE" />}
+                    description={
+                        <Translation id="TR_TRADING_RECEIVE_EXTERNAL_ADDRESS_WARNING_TEXT" />
+                    }
+                />
 
                 <Input
                     data-testid="@trading/receive-address-input"
+                    label={<Translation id="TR_TRADING_RECEIVE_EXTERNAL_ADDRESS_LABEL" />}
+                    rightContent={<Icon as={QrCodeIcon} onClick={onQrClick} />}
                     defaultValue={
                         selectedAccount === null && !!tradingReceiveAddress.receiveAddress
                             ? tradingReceiveAddress.receiveAddress
@@ -172,6 +180,29 @@ export const TradingReceiveAddressModal = () => {
                         required={false}
                     />
                 )}
+
+                <Row gap={8}>
+                    <Button
+                        data-testid="@trading/receive-address-modal/confirm-button"
+                        onClick={onConfirmClick}
+                        isDisabled={
+                            !!form.formState.errors.address ||
+                            !receiveAddress ||
+                            receiveAddress.length === 0
+                        }
+                    >
+                        <Translation id="TR_CONFIRM" />
+                    </Button>
+
+                    <Button
+                        data-testid="@trading/receive-address-modal/cancel-button"
+                        intent="neutral"
+                        priority="secondary"
+                        onClick={onCancel}
+                    >
+                        <Translation id="TR_CANCEL" />
+                    </Button>
+                </Row>
             </Column>
         </Modal>
     );
