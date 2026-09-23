@@ -1587,11 +1587,11 @@ export const messages = defineMessages({
         id: 'TR_TRADING_RECEIVE_USE_EXTERNAL_ACCOUNT',
     },
     TR_TRADING_RECEIVE_ACCOUNT_NOT_FOUND_TITLE: {
-        defaultMessage: 'Account not found',
+        defaultMessage: 'No account',
         id: 'TR_TRADING_RECEIVE_ACCOUNT_NOT_FOUND_TITLE',
     },
     TR_TRADING_RECEIVE_ACCOUNT_NOT_FOUND_TEXT: {
-        defaultMessage: "We couldn't find an account that matches this asset.",
+        defaultMessage: "It seems that you don't have any account matching the selected asset.",
         id: 'TR_TRADING_RECEIVE_ACCOUNT_NOT_FOUND_TEXT',
     },
     TR_TRADING_RECEIVE_ADDRESS_NOT_FOUND_TITLE: {

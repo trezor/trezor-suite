@@ -7,6 +7,7 @@ import { DiscoveryWarning } from 'src/views/wallet/staking/components/StakingDas
 import { TradingReceiveAddressEmpty } from 'src/views/wallet/trading/common/TradingSelectedOffer/TradingReceiveAddress/TradingReceiveAddress';
 import { useReceiveAddressModalControls } from 'src/views/wallet/trading/common/TradingSelectedOffer/TradingReceiveAddress/useReceiveAddressModalControls';
 
+import { TradingReceiveAccountActivateNetworkButton } from './TradingReceiveAccountActivateNetworkButton';
 import { TradingReceiveAccountAddSuiteButton } from './TradingReceiveAccountAddSuiteButton';
 import { TradingReceiveAccountNonSuiteButton } from './TradingReceiveAccountNonSuiteButton';
 import { TradingReceiveAccountSuiteOption } from './TradingReceiveAccountSuiteOption';
@@ -52,7 +53,12 @@ export const TradingReceiveAccountModal = () => {
 
                 {(canAddSuiteAccount || canUseNonSuiteAccount) && (
                     <Row gap={8}>
-                        {canAddSuiteAccount && <TradingReceiveAccountAddSuiteButton />}
+                        {canAddSuiteAccount &&
+                            (hasSuiteAccounts ? (
+                                <TradingReceiveAccountAddSuiteButton />
+                            ) : (
+                                <TradingReceiveAccountActivateNetworkButton />
+                            ))}
                         {canUseNonSuiteAccount && <TradingReceiveAccountNonSuiteButton />}
                     </Row>
                 )}

@@ -41,10 +41,7 @@ test.describe('Trading - Buy Ethereum', { tag: ['@T3W1', '@T3T1'] }, () => {
                 await tradingPage.fillBuyForm({
                     amount: fiatAmount,
                     selectReceiveAddress: async () => {
-                        await tradingPage.receiveAccount.selectAddSuiteReceiveAccount(
-                            0,
-                            asNetworkSymbol('eth'),
-                        );
+                        await tradingPage.receiveAccount.activateNetworkForReceiveAccount(0);
                     },
                 });
             });
