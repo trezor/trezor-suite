@@ -485,10 +485,7 @@ const drepCases: {
 export const isAccountOutdated = drepCases.map(({ description, stored, fresh, result }) => ({
     description: `cardano: ${description}`,
     account: {
-        ...mockWalletAccount(
-            { symbol: asNetworkSymbol('ada'), history },
-            networkSpecificDefaultCardano,
-        ),
+        ...mockWalletAccount({ symbol: asNetworkSymbol('ada'), history }),
         misc: { staking: staking(stored) },
     } as AccountWithNetworkType<'cardano'>,
     freshInfo: { history, misc: { staking: staking(fresh) } } as AccountInfo,

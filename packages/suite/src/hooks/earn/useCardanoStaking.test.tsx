@@ -4,7 +4,7 @@ import { createTestCompositionRoot, renderHookWithStoreProvider } from '@suite-c
 import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { stakeInitialState } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
-import { mockWalletAccount, networkSpecificDefaultCardano } from '@suite-common/wallet-types/mocks';
+import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
 import TrezorConnect from '@trezor/connect';
 
 import { useCardanoStaking } from './useCardanoStaking';
@@ -41,12 +41,7 @@ const mockNeverStakedAccount = (): Account =>
             addresses: { change: [CHANGE_ADDRESS], used: [], unused: [] },
             utxo: [],
         },
-        {
-            ...networkSpecificDefaultCardano,
-            misc: {
-                staking: { address: '', isActive: false, rewards: '', poolId: null, drep: null },
-            },
-        },
+        { misc: { staking: { isActive: false } } },
     );
 
 const mockAccountWithRewardsButNoDrep = (): Account =>

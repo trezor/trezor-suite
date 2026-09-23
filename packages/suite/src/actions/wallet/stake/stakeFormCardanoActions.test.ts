@@ -3,7 +3,7 @@ import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { CARDANO_EVERSTAKE_DREP } from '@suite-common/wallet-constants';
 import { type AccountVotingDelegation } from '@suite-common/wallet-core';
 import { type Account, type AccountKey, type CardanoAction } from '@suite-common/wallet-types';
-import { mockWalletAccount, networkSpecificDefaultCardano } from '@suite-common/wallet-types/mocks';
+import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
 import TrezorConnect, { type CardanoCertificate, PROTO } from '@trezor/connect';
 
 import { CardanoComposeError, prepareTxPlan } from './stakeFormCardanoActions';
@@ -85,12 +85,7 @@ const mockNeverStakedAccount = (): Account =>
             addresses: { change: [CHANGE_ADDRESS], used: [], unused: [] },
             utxo: [],
         },
-        {
-            ...networkSpecificDefaultCardano,
-            misc: {
-                staking: { address: '', isActive: false, rewards: '', poolId: null, drep: null },
-            },
-        },
+        { misc: { staking: { isActive: false } } },
     );
 
 const mockComposeSuccess = () => {
@@ -132,18 +127,7 @@ const createStakeReadyAccount = () =>
                 unused: [],
             },
         },
-        {
-            ...networkSpecificDefaultCardano,
-            misc: {
-                staking: {
-                    address: 'stake1_address',
-                    isActive: true,
-                    rewards: '1000000',
-                    poolId: null,
-                    drep: null,
-                },
-            },
-        },
+        { misc: { staking: { address: 'stake1_address', rewards: '1000000' } } },
     );
 
 const STAKE_READY_ACCOUNT_KEY = createStakeReadyAccount().key;

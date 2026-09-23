@@ -6,7 +6,7 @@ import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { mockGetSupportedNetworks } from '@suite-common/wallet-config/mocks';
 import { initialWalletSettingsState } from '@suite-common/wallet-core';
 import { type Account, asAccountDescriptor } from '@suite-common/wallet-types';
-import { mockWalletAccount, networkSpecificDefaultCardano } from '@suite-common/wallet-types/mocks';
+import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
 import { type StaticSessionId, asWalletDescriptor } from '@trezor/device-utils';
 
 import {
@@ -66,17 +66,14 @@ const ethAccount = mockWalletAccount({
     availableBalance: '10',
 });
 
-const adaAccount = mockWalletAccount(
-    {
-        symbol: asNetworkSymbol('ada'),
-        descriptor: asAccountDescriptor('adadefault'),
-        deviceState: SELECTED_DEVICE_STATIC_SESSION_ID,
-        accountType: 'normal',
-        index: 0,
-        availableBalance: '25',
-    },
-    networkSpecificDefaultCardano,
-);
+const adaAccount = mockWalletAccount({
+    symbol: asNetworkSymbol('ada'),
+    descriptor: asAccountDescriptor('adadefault'),
+    deviceState: SELECTED_DEVICE_STATIC_SESSION_ID,
+    accountType: 'normal',
+    index: 0,
+    availableBalance: '25',
+});
 
 const hiddenLtcAccount = mockWalletAccount({
     symbol: asNetworkSymbol('ltc'),

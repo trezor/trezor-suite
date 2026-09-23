@@ -1,9 +1,5 @@
 import { asNetworkSymbol, getNetwork, networksCollection } from '@suite-common/wallet-config';
-import {
-    mockWalletAccount,
-    networkSpecificDefaultRipple,
-    networkSpecificDefaultStellar,
-} from '@suite-common/wallet-types/mocks';
+import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
 import { type FeeLevel } from '@trezor/connect';
 import { BigNumber } from '@trezor/utils';
 
@@ -464,7 +460,7 @@ describe('sendForm utils', () => {
                     balance: '10000000', // 10 XRP
                     availableBalance: '9000000', // 9 XRP
                 },
-                { ...networkSpecificDefaultRipple, misc: { reserve: '1000000', sequence: 0 } },
+                { misc: { reserve: '1000000' } },
             );
 
             it('returns reserve when amount is above available but below total balance', () => {
@@ -490,10 +486,7 @@ describe('sendForm utils', () => {
                     balance: '100000000', // 10 XLM
                     availableBalance: '95000000', // 9.5 XLM
                 },
-                {
-                    ...networkSpecificDefaultStellar,
-                    misc: { reserve: '5000000', baseReserve: '5000000', stellarSequence: '0' },
-                },
+                { misc: { reserve: '5000000', baseReserve: '5000000' } },
             );
 
             it('returns reserve when amount exceeds available but below total', () => {

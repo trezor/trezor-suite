@@ -1,6 +1,6 @@
 import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { asAccountDescriptor } from '@suite-common/wallet-types';
-import { mockWalletAccount, networkSpecificDefaultCardano } from '@suite-common/wallet-types/mocks';
+import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
 import { type AccountAddress } from '@trezor/connect';
 
 import {
@@ -209,17 +209,14 @@ describe(getReceiveAddressHistoryList.name, () => {
     });
 
     it('keeps an unlabeled Cardano unused address when its path is lower than a used address path', () => {
-        const account = mockWalletAccount(
-            {
-                symbol: asNetworkSymbol('ada'),
-                addresses: {
-                    used: [createCardanoAddress(20, 1)],
-                    unused: [createCardanoAddress(18), createCardanoAddress(21)],
-                    change: [],
-                },
+        const account = mockWalletAccount({
+            symbol: asNetworkSymbol('ada'),
+            addresses: {
+                used: [createCardanoAddress(20, 1)],
+                unused: [createCardanoAddress(18), createCardanoAddress(21)],
+                change: [],
             },
-            networkSpecificDefaultCardano,
-        );
+        });
 
         const addresses = getReceiveAddressHistoryList({
             account,
