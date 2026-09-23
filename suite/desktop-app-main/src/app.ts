@@ -1,17 +1,10 @@
 import { randomBytes } from 'crypto';
-import {
-    BrowserWindow,
-    app,
-    powerSaveBlocker as electronPowerSaveBlocker,
-    nativeTheme,
-} from 'electron';
-import debounce from 'lodash/debounce';
+import { app, powerSaveBlocker as electronPowerSaveBlocker } from 'electron';
 import path from 'path';
 
 import type { HandshakeClient } from '@suite/desktop-app-api';
 import { isDevEnv } from '@suite-common/suite-utils';
 import { isMacOs } from '@trezor/env-utils';
-import { colorVariants } from '@trezor/theme';
 import { createDeferred, resolveAfter } from '@trezor/utils';
 
 import { handshakeAndHangDetect } from './handshake-and-hang-detect';
@@ -20,6 +13,7 @@ import { processStatePatch, restartApp } from './libs/app-utils';
 import { isAutoStartEnabled, promptForAutoStartBeforeQuit } from './libs/auto-start';
 import { APP_NAME } from './libs/constants';
 import { createElectronSessionInterceptor } from './libs/create-electron-session-interceptor';
+import { createMainWindow } from './libs/createMainWindow';
 import { createPowerSaveBlocker } from './libs/createPowerSaveBlocker';
 import { getBuildInfo, getComputerInfo } from './libs/info';
 import { isMainWindowUsable } from './libs/isMainWindowUsable';
@@ -29,7 +23,7 @@ import { MainWindowProxy } from './libs/main-window-proxy';
 import { hasSwitch } from './libs/process-switches';
 import { MIN_HEIGHT, MIN_WIDTH } from './libs/screen';
 import { initSentry } from './libs/sentry';
-import { Store, type WinBoundsCoords } from './libs/store';
+import { Store } from './libs/store';
 import { clearAppCache, clearUserDataOptimistically, initUserData } from './libs/user-data';
 import { initBackgroundModules, initModules } from './modules';
 // todo: why is this separated here? shoudlnt it be part of modules?
@@ -53,74 +47,6 @@ const parseRemoveUserDataSwitch = () => {
     }
 };
 parseRemoveUserDataSwitch();
-
-type CreateMainWindowParams = {
-    winBounds: WinBoundsCoords;
-    store: Store;
-    cspNonce: string;
-};
-
-const createMainWindow = ({ winBounds, cspNonce, store }: CreateMainWindowParams) => {
-    const darkTheme =
-        store.getThemeSettings() === 'dark' ||
-        (store.getThemeSettings() === 'system' && nativeTheme.shouldUseDarkColors);
-
-    const mainWindow = new BrowserWindow({
-        title: APP_NAME,
-        width: winBounds.width,
-        height: winBounds.height,
-        minWidth: MIN_WIDTH,
-        minHeight: MIN_HEIGHT,
-        x: winBounds.x,
-        y: winBounds.y,
-        ...(isMacOs()
-            ? {
-                  titleBarStyle: 'hidden',
-                  trafficLightPosition: { x: 14, y: 14 },
-              }
-            : {}),
-        webPreferences: {
-            nodeIntegration: false,
-            contextIsolation: true,
-            sandbox: true,
-            webSecurity: !isDevEnv,
-            allowRunningInsecureContent: isDevEnv,
-            preload: path.join(__dirname, 'preload.js'),
-            additionalArguments: [
-                // This will pass nonce to Renderer process, so it can be used
-                `--csp-nonce=${cspNonce}`,
-                ...(hasSwitch('expose-store') ? ['--expose-store'] : []),
-            ],
-        },
-        icon: path.join(global.resourcesPath, 'images', 'icons', '512x512.png'),
-        backgroundColor: colorVariants[darkTheme ? 'dark' : 'standard'].surfaceFillPage,
-    });
-
-    // Ensure all network requests from the renderer report a custom user-agent identifying Suite and its version.
-    mainWindow.webContents.setUserAgent(`Trezor Suite ${app.getVersion()}`);
-
-    const debouncedStoreWinBounds = debounce(() => {
-        // The trailing debounced call can fire after the window was destroyed within the debounce
-        // window; getBounds() on a destroyed BrowserWindow throws "Object has been destroyed".
-        if (!isMainWindowUsable(mainWindow)) return;
-        const winBound = mainWindow.getBounds();
-        Store.getStore().setWinBounds(winBound);
-        logger.debug('app', 'new winBounds saved');
-    }, 500);
-
-    mainWindow.on('resize', debouncedStoreWinBounds);
-    mainWindow.on('maximize', debouncedStoreWinBounds);
-    mainWindow.on('move', debouncedStoreWinBounds);
-
-    mainWindow.on('closed', () => {
-        debouncedStoreWinBounds.cancel();
-        mainWindow.off('resize', debouncedStoreWinBounds);
-        mainWindow.off('maximize', debouncedStoreWinBounds);
-        mainWindow.off('move', debouncedStoreWinBounds);
-    });
-
-    return mainWindow;
-};
 
 const init = async () => {
     initUserData(); // has to be before initSentry and logger
