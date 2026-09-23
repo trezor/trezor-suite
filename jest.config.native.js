@@ -6,8 +6,15 @@ const {
     moduleNameMapper,
 } = require('./jest.config.base');
 
+process.env.EXPO_OS ??= 'ios';
+
 const babelConfig = {
     presets: ['babel-preset-expo'],
+    caller: {
+        name: 'metro',
+        bundler: 'metro',
+        platform: process.env.EXPO_OS,
+    },
 };
 
 const swcConfig = require('./jest.config.swc-transform');
