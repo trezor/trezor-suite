@@ -30,6 +30,8 @@ export const selectResolvedEthereumNonce = (state: SendRootState) =>
     state.wallet.send.resolvedEthereumNonce;
 export const selectIsEthereumNonceAbovePending = (state: SendRootState) =>
     state.wallet.send.isEthereumNonceAbovePending === true;
+export const selectHasUnknownPendingNonces = (state: SendRootState) =>
+    state.wallet.send.hasUnknownPendingNonces === true;
 
 export const selectSendFormDraftByKey = (
     state: SendRootState,

@@ -1,5 +1,6 @@
 import { Translation } from '@suite/intl';
 import {
+    selectHasUnknownPendingNonces,
     selectIsEthereumNonceAbovePending,
     selectResolvedEthereumNonce,
     selectStake,
@@ -45,8 +46,9 @@ export const TransactionReviewEthereumNotes = ({
     tx,
 }: TransactionReviewEthereumNotesProps) => {
     const ethereumNonce = useSelector(selectReviewEthereumNonce);
-    // Only the send flow sets this.
+    // Only the send flow sets these.
     const isNonceAbovePending = useSelector(selectIsEthereumNonceAbovePending);
+    const hasUnknownPendingNonces = useSelector(selectHasUnknownPendingNonces);
 
     const fee = getFee(account.networkType, tx);
 
@@ -66,6 +68,15 @@ export const TransactionReviewEthereumNotes = ({
                     intent="warning"
                 >
                     <Translation id="TR_NONCE_ABOVE_PENDING_WARNING" />
+                </Note>
+            )}
+            {hasUnknownPendingNonces && (
+                <Note
+                    data-testid="@modal/header/nonce-unknown-pending"
+                    icon={WarningIcon}
+                    intent="warning"
+                >
+                    <Translation id="TR_NONCE_UNKNOWN_PENDING_WARNING" />
                 </Note>
             )}
             <Note data-testid="@modal/header/gas-limit" icon={GasPumpIcon}>

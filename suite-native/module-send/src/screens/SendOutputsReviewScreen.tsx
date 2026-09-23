@@ -10,6 +10,7 @@ import { injectDispatch } from '@suite-common/redux-utils';
 import {
     type AccountsRootState,
     selectAccountByKey,
+    selectHasUnknownPendingNonces,
     selectIsEthereumNonceAbovePending,
 } from '@suite-common/wallet-core';
 import { BannerInline } from '@suite-native/atoms';
@@ -57,6 +58,7 @@ export const SendOutputsReviewScreen = ({ route }: SendOutputsReviewScreenProps)
 
     const isTransactionAlreadySigned = useSelector(selectIsTransactionAlreadySigned);
     const isNonceAbovePending = useSelector(selectIsEthereumNonceAbovePending);
+    const hasUnknownPendingNonces = useSelector(selectHasUnknownPendingNonces);
 
     const [isSendInProgress, setIsSendInProgress] = useState(false);
 
@@ -135,12 +137,22 @@ export const SendOutputsReviewScreen = ({ route }: SendOutputsReviewScreenProps)
             reviewOutputs={reviewOutputs}
             summaryOutput={summaryOutput}
             banners={
-                isNonceAbovePending && (
-                    <BannerInline
-                        intent="warning"
-                        title={<Translation id="moduleSend.review.nonceAbovePendingWarning" />}
-                    />
-                )
+                <>
+                    {isNonceAbovePending && (
+                        <BannerInline
+                            intent="warning"
+                            title={<Translation id="moduleSend.review.nonceAbovePendingWarning" />}
+                        />
+                    )}
+                    {hasUnknownPendingNonces && (
+                        <BannerInline
+                            intent="warning"
+                            title={
+                                <Translation id="moduleSend.review.nonceUnknownPendingWarning" />
+                            }
+                        />
+                    )}
+                </>
             }
             onSendTransaction={onSendTransaction}
             onSendTransactionConfirmed={onSendTransactionConfirmed}

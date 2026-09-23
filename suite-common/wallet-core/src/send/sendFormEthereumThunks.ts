@@ -67,6 +67,7 @@ import { SEND_MODULE_PREFIX } from './sendFormConstants';
 import {
     type ComposeFeeLevelsError,
     type ComposeTransactionThunkArguments,
+    type EvmUnknownPendingNonces,
     type SignTransactionError,
     type SignTransactionThunkArguments,
 } from './sendFormTypes';
@@ -493,6 +494,9 @@ interface ResolveEthereumNonceResult {
     // Undefined for RBF and whenever the backend returned no usable pending nonce, which is the
     // signal to skip the cross-check rather than to treat the nonce as suspect.
     pendingNonceCeiling?: number;
+    // Set when the backend sees in-flight txs the account does not know about. Signing is gated on
+    // the user acknowledging this exact pair.
+    unknownPendingNonces?: EvmUnknownPendingNonces;
 }
 
 const parseNonce = (value: string | undefined) => {
@@ -502,45 +506,48 @@ const parseNonce = (value: string | undefined) => {
     return Number.isSafeInteger(parsed) && parsed >= 0 ? parsed : undefined;
 };
 
+// One immediate retry: a single dropped call otherwise downgrades signing to local derivation.
+const NONCE_FETCH_ATTEMPTS = 2;
+
 /**
  * Fetches both of the account's nonces — `nonce` (mempool-inclusive) and `confirmedNonce`
  * (mined-only) — in the single batched call blockbook already answers with both.
  *
- * Deliberately one attempt, no retry. A failure here is reported rather than retried: the rate at
- * which signing falls back to local derivation is unknown, and that is what the report measures.
- * Retrying would cost a second call on a path that runs once per signing operation, before there is
- * a number saying it is worth paying — and an immediate retry is the wrong shape anyway if the
- * backend is failing because it is loaded.
- *
- * Returns undefined on failure. A backend failure must never block signing, so the caller falls
- * back to local derivation — but it is no longer silent.
+ * Returns undefined once every attempt has failed. A backend failure must never block signing, so
+ * the caller falls back to local derivation — but it is no longer silent.
  */
 const fetchEvmNonces = async (selectedAccount: AccountWithNetworkType<'ethereum'>) => {
-    let reason: string;
+    let reason = 'unsuccessful-response';
 
-    try {
-        const response = await TrezorConnect.getAccountInfo({
-            coin: asCoinSymbol(selectedAccount.symbol),
-            descriptor: selectedAccount.descriptor,
-            identity: tryGetAccountIdentity(selectedAccount),
-            details: 'basic',
-            confirmedNonce: true,
-            suppressBackupWarning: true,
-        });
+    for (let attempt = 1; attempt <= NONCE_FETCH_ATTEMPTS; attempt++) {
+        try {
+            const response = await TrezorConnect.getAccountInfo({
+                coin: asCoinSymbol(selectedAccount.symbol),
+                descriptor: selectedAccount.descriptor,
+                identity: tryGetAccountIdentity(selectedAccount),
+                details: 'basic',
+                confirmedNonce: true,
+                suppressBackupWarning: true,
+            });
 
-        if (response?.success) {
-            return {
-                pendingNonce: parseNonce(response.payload.misc?.nonce),
-                confirmedNonce: parseNonce(response.payload.misc?.confirmedNonce),
-            };
+            if (response?.success) {
+                return {
+                    pendingNonce: parseNonce(response.payload.misc?.nonce),
+                    confirmedNonce: parseNonce(response.payload.misc?.confirmedNonce),
+                };
+            }
+
+            reason = response?.error?.code ?? response?.error?.message ?? 'unsuccessful-response';
+        } catch (error) {
+            reason = error instanceof Error ? error.message : 'threw';
         }
-
-        reason = response?.error?.code ?? response?.error?.message ?? 'unsuccessful-response';
-    } catch (error) {
-        reason = error instanceof Error ? error.message : 'threw';
     }
 
-    reportEvmNonceFetchFailed({ account: selectedAccount, reason });
+    reportEvmNonceFetchFailed({
+        account: selectedAccount,
+        reason,
+        attempts: NONCE_FETCH_ATTEMPTS,
+    });
 
     return undefined;
 };
@@ -591,11 +598,13 @@ export const resolveEthereumNonce = async ({
         : getEvmNonceInfo(accountNonce, accountTransactions);
 
     let pendingNonceCeiling: number | undefined;
+    let unknownPendingNonces: EvmUnknownPendingNonces | undefined;
     if (backendPendingNonce !== undefined) {
         pendingNonceCeiling = getEvmPendingNonceCeiling(backendPendingNonce, accountTransactions);
 
         const pendingNonces = { pendingNonce: backendPendingNonce, confirmedNonce };
         if (hasUnknownPendingEvmTxs(pendingNonces, accountTransactions)) {
+            unknownPendingNonces = pendingNonces;
             reportEvmUnknownPendingTxs({
                 account: selectedAccount,
                 ...pendingNonces,
@@ -618,6 +627,7 @@ export const resolveEthereumNonce = async ({
         nonce: nextNonce.toString(),
         confirmedNonce: confirmedNonce.toString(),
         pendingNonceCeiling,
+        unknownPendingNonces,
     };
 };
 
@@ -684,6 +694,7 @@ export const signEthereumSendFormTransactionThunk = createThunk<
             nonce: resolvedNonce,
             confirmedNonce,
             pendingNonceCeiling,
+            unknownPendingNonces,
         } = await dispatch(
             ethereumGetCurrentNonceThunk({
                 selectedAccount,
@@ -722,6 +733,7 @@ export const signEthereumSendFormTransactionThunk = createThunk<
         // it again (which would race this in-progress signing).
         dispatch(sendFormActions.storeResolvedEthereumNonce(nonce));
         dispatch(sendFormActions.storeIsEthereumNonceAbovePending(isNonceAbovePending));
+        dispatch(sendFormActions.storeHasUnknownPendingNonces(!!unknownPendingNonces));
 
         const { outputs: signOutputs } = formState;
         // @ts-expect-error: indexing with noUncheckedIndexedAccess

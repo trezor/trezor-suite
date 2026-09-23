@@ -14,6 +14,12 @@ import { type Err } from '@trezor/type-utils';
 
 export type SerializedTx = { tx: string; symbol: NetworkSymbol };
 
+/**
+ * Backend pending vs mined-only nonce, set only when the first ran ahead of what the account's own
+ * in-flight txs explain (`hasUnknownPendingEvmTxs`).
+ */
+export type EvmUnknownPendingNonces = { pendingNonce: number; confirmedNonce: number };
+
 export type EthTransactionData = {
     token?: TokenInfo;
     chainId: number;
