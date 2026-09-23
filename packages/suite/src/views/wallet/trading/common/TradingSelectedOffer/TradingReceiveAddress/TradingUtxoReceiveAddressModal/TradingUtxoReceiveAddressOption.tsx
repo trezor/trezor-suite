@@ -6,7 +6,6 @@ import { type Account } from '@suite-common/wallet-types';
 import { BASE_CURRENCY_ZERO, asAmountSubunit, subunitsToUnits } from '@suite-common/wallet-utils';
 import { type Address as BlockchainLinkAddress } from '@trezor/blockchain-link-types';
 import { Column, Row, Text } from '@trezor/components';
-import { TokenIcon } from '@trezor/product-components';
 import { BigNumber } from '@trezor/utils';
 
 import { CoinBalance } from 'src/components/suite';
@@ -17,11 +16,11 @@ import { useReceiveAddressModalControls } from 'src/views/wallet/trading/common/
 
 import { useTradingReceiveAddressValues } from '../useTradingReceiveAddressValues';
 
-interface TradingUtxoReceiveAddressOptionProps {
+type TradingUtxoReceiveAddressOptionProps = {
     account: Account;
     address: BlockchainLinkAddress;
     label?: string;
-}
+};
 
 export const TradingUtxoReceiveAddressOption = ({
     account,
@@ -58,32 +57,29 @@ export const TradingUtxoReceiveAddressOption = ({
             onClick={onOptionClick}
         >
             <Row width="100%" gap={12} justifyContent="space-between">
-                <Row gap={12}>
-                    <TokenIcon size={24} symbol={account.symbol} />
-                    <Column alignItems="flex-start">
-                        {label ? (
-                            <>
-                                <Text
-                                    as="div"
-                                    typographyStyle="body-md"
-                                    ellipsisLineCount={1}
-                                    maxWidth={200}
-                                >
-                                    {label}
-                                </Text>
-                                <Address
-                                    value={address.address}
-                                    typographyStyle="body-sm"
-                                    intent="neutral"
-                                    priority="secondary"
-                                    isTruncated
-                                />
-                            </>
-                        ) : (
-                            <Address isTruncated value={address.address} />
-                        )}
-                    </Column>
-                </Row>
+                <Column alignItems="flex-start">
+                    {label ? (
+                        <>
+                            <Text
+                                as="div"
+                                typographyStyle="body-md"
+                                ellipsisLineCount={1}
+                                maxWidth={200}
+                            >
+                                {label}
+                            </Text>
+                            <Address
+                                value={address.address}
+                                typographyStyle="body-sm"
+                                intent="neutral"
+                                priority="secondary"
+                                isTruncated
+                            />
+                        </>
+                    ) : (
+                        <Address isTruncated value={address.address} />
+                    )}
+                </Column>
 
                 {!!address.received && address.received !== '0' && (
                     <Column alignItems="flex-end">
