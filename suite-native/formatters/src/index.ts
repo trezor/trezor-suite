@@ -3,6 +3,10 @@ export { CoinToFiatAmountFormatter } from './components/CoinToFiatAmountFormatte
 export { CryptoToFiatAmountFormatter } from './components/CryptoToFiatAmountFormatter';
 export { AddressFormatter } from './components/AddressFormatter';
 export { BaseCurrencyAmountLargeFormatter } from './components/BaseCurrencyAmountLargeFormatter';
+export {
+    BaseCurrencyAmount,
+    type FormattedBaseCurrencyAmount,
+} from './components/BaseCurrencyAmount';
 export { TransactionIdFormatter } from './components/TransactionIdFormatter';
 export { PercentageDifferenceFormatter } from './components/PercentageDifferenceFormatter';
 export { BaseCurrencyAmountFormatter } from './components/BaseCurrencyAmountFormatter';

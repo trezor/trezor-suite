@@ -10,6 +10,11 @@ import {
 } from './messageSystemSelectors';
 import type { ExperimentId } from './messageSystemTypes';
 
+type UseIsExperimentVariantActiveParams = {
+    experimentId: ExperimentId;
+    variant: string;
+};
+
 export const useExperiment = (experimentId: ExperimentId) => {
     const instanceId = useSelector(selectAnalyticsInstanceId);
     const experiment = useSelector(selectExperimentById(experimentId));
@@ -29,4 +34,13 @@ export const useExperiment = (experimentId: ExperimentId) => {
         experiment,
         activeExperimentVariant,
     };
+};
+
+export const useIsExperimentVariantActive = ({
+    experimentId,
+    variant,
+}: UseIsExperimentVariantActiveParams): boolean => {
+    const { activeExperimentVariant } = useExperiment(experimentId);
+
+    return activeExperimentVariant?.variant === variant;
 };

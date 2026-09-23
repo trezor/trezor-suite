@@ -113,6 +113,7 @@ export const messages = {
         },
     },
     moduleHome: {
+        totalBalance: 'Total balance',
         graphIgnoredNetworks:
             "{networksString} and all related tokens are included in your portfolio balance, but aren't currently supported in the graph.",
         emptyState: {
