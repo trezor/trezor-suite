@@ -121,8 +121,7 @@ export const processJUnitReport = async (
         return true;
     }
 
-    // Nothing to process — report either passed cleanly or doesn't exist for a benign reason.
-    if (!grep && quarantinedActions.length === 0) return false;
+    if (!grep && quarantinedActions.length === 0) return detoxFailed;
 
     if (!reportExists) {
         console.warn(`Report not found at ${reportPath}`);
@@ -137,7 +136,7 @@ export const processJUnitReport = async (
         if (!result.testsuites?.testsuite) {
             console.log(`No test suites found in report for ${projectName}.`);
 
-            return false;
+            return detoxFailed;
         }
 
         const regex = grep ? new RegExp(grep) : null;
