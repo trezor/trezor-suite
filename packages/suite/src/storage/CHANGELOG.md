@@ -2,6 +2,7 @@
 
 ## 26.10.0
 
+- add `assetTable` store (what the asset table was left showing)
 - add `earnOnboarding` store (confirmed earn opportunities per account key)
 
 ## 26.9.0

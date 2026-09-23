@@ -28,6 +28,7 @@ import { type WalletConnectState, prepareWalletConnectReducer } from '@suite-com
 
 import { extraDependencies } from 'src/support/extraDependencies';
 
+import assetTable, { type AssetTableState } from './assetTableReducer';
 import guide, { type GuideState } from './guideReducer';
 import protocol, { type ProtocolState } from './protocolReducer';
 import suite, { type SuiteState } from './suiteReducer';
@@ -45,6 +46,7 @@ const walletConnectReducer = prepareWalletConnectReducer(extraDependencies);
 export type SuiteReducersState = {
     suite: SuiteState;
     discreetMode: DiscreetModeState;
+    assetTable: AssetTableState;
     tor: TorState;
     suiteSettings: SuiteSettingsState;
     debug: DebugState;
@@ -70,6 +72,7 @@ export type SuiteReducersState = {
 export const suiteReducers: ReducersMapObject<SuiteReducersState, UnknownAction> = {
     suite,
     discreetMode: discreetModeReducer,
+    assetTable,
     tor: torReducer,
     suiteSettings,
     debug,
