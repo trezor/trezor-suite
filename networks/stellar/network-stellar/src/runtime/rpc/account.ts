@@ -1,3 +1,5 @@
+import { arrayChunk } from '@trezor/utils';
+
 import { decodeAccountEntry, decodeTrustlineEntry } from './decode';
 import { buildAccountKey, buildTrustlineKey } from './ledgerKeys';
 import { STELLAR_RPC_MAX_LEDGER_KEYS } from '../../constants';
@@ -14,16 +16,6 @@ const EMPTY_ACCOUNT_STATE: StellarAccountState = {
     sellingLiabilities: '0',
     trustlines: [],
 };
-
-const toChunks = <T>(items: T[], size: number): T[][] =>
-    items.reduce<T[][]>((chunks, item, index) => {
-        if (index % size === 0) {
-            return [...chunks, [item]];
-        }
-        chunks[chunks.length - 1]?.push(item);
-
-        return chunks;
-    }, []);
 
 export type ReadAccountStateParams = {
     server: StellarRpcServer;
@@ -49,7 +41,9 @@ export const readAccountState = async ({
     ];
 
     const responses = await Promise.all(
-        toChunks(keys, STELLAR_RPC_MAX_LEDGER_KEYS).map(chunk => server.getLedgerEntries(...chunk)),
+        arrayChunk(keys, STELLAR_RPC_MAX_LEDGER_KEYS).map(chunk =>
+            server.getLedgerEntries(...chunk),
+        ),
     );
     const entries = responses.flatMap(response => response.entries);
 

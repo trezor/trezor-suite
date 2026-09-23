@@ -1,3 +1,5 @@
+import { arrayChunk } from '@trezor/utils';
+
 import {
     computeSorobanAssetContractId,
     isValidContractId,
@@ -14,14 +16,15 @@ const contractIndexes = new WeakMap<object, Promise<Map<string, StellarAssetRef>
 const buildSacContractIndex = async (contracts: readonly string[]) => {
     const index = new Map<string, StellarAssetRef>();
 
-    for (let offset = 0; offset < contracts.length; offset += SAC_INDEX_CHUNK_SIZE) {
-        if (offset > 0) {
+    for (const [batchIndex, batch] of arrayChunk(contracts, SAC_INDEX_CHUNK_SIZE).entries()) {
+        // Hashing every known asset would hold the main thread in one block otherwise.
+        if (batchIndex > 0) {
             await new Promise(resolve => {
                 setTimeout(resolve, 0);
             });
         }
 
-        contracts.slice(offset, offset + SAC_INDEX_CHUNK_SIZE).forEach(contract => {
+        batch.forEach(contract => {
             const asset = parseClassicAssetContract(contract);
 
             if (asset) {

@@ -13,7 +13,7 @@ import {
     xdr,
 } from '@stellar/stellar-sdk';
 
-import { BigNumber, isNotNullOrUndefined, resolveAfter } from '@trezor/utils';
+import { BigNumber, arrayChunk, isNotNullOrUndefined, resolveAfter } from '@trezor/utils';
 
 import { getStellarRpcServer } from './rpc/server';
 import {
@@ -320,10 +320,7 @@ const readContractLedgerEntries = async (
 
     if (keys.length === 0) return new Map();
 
-    const chunks: xdr.LedgerKey[][] = [];
-    for (let offset = 0; offset < keys.length; offset += MAX_LEDGER_KEYS_PER_REQUEST) {
-        chunks.push(keys.slice(offset, offset + MAX_LEDGER_KEYS_PER_REQUEST));
-    }
+    const chunks = arrayChunk(keys, MAX_LEDGER_KEYS_PER_REQUEST);
 
     try {
         // `allSettled`: a failed chunk says nothing about the ones that answered.

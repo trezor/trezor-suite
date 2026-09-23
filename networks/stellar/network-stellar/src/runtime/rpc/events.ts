@@ -1,5 +1,7 @@
 import { Address, nativeToScVal, scValToNative, type xdr } from '@stellar/stellar-sdk';
 
+import { arrayChunk } from '@trezor/utils';
+
 import type { StellarRpcServer } from '../../types/rpc';
 
 /** One SEP-41 `transfer` event that moved the token to or from the account, as the node still holds it. */
@@ -27,11 +29,6 @@ const FILTERS_PER_REQUEST = 5;
 const EVENTS_PAGE_SIZE = 200;
 // An account's own transfers are few; this is a guard, not a budget.
 const MAX_EVENT_PAGES = 5;
-
-const chunk = <T>(items: T[], size: number): T[][] =>
-    Array.from({ length: Math.ceil(items.length / size) }, (_, index) =>
-        items.slice(index * size, (index + 1) * size),
-    );
 
 const symbolTopic = (name: string) => nativeToScVal(name, { type: 'symbol' }).toXdr('base64');
 const addressTopic = (address: string) => Address.fromString(address).toScVal().toXdr('base64');
@@ -79,7 +76,7 @@ export const readContractTokenTransfers = async ({
         [transfer, '*', party, '**'],
         [transfer, party, '*', '**'],
     ];
-    const filters = chunk([...new Set(contractIds)], CONTRACTS_PER_FILTER).map(ids => ({
+    const filters = arrayChunk([...new Set(contractIds)], CONTRACTS_PER_FILTER).map(ids => ({
         type: 'contract' as const,
         contractIds: ids,
         topics,
@@ -89,7 +86,7 @@ export const readContractTokenTransfers = async ({
     // A transfer to the account from itself matches both patterns.
     const seen = new Set<string>();
 
-    for (const requestFilters of chunk(filters, FILTERS_PER_REQUEST)) {
+    for (const requestFilters of arrayChunk(filters, FILTERS_PER_REQUEST)) {
         let cursor: string | undefined;
 
         for (let page = 0; page < MAX_EVENT_PAGES; page++) {
