@@ -136,6 +136,11 @@ export const isPrerequisiteGloballyExcluded = ({
         return true;
     }
 
+    // Neither does the apps embedding showcase, which only renders external sites.
+    if (router.app === 'apps-embedding') {
+        return true;
+    }
+
     if (router.route?.name.startsWith('wallet-trading')) {
         return true;
     }
