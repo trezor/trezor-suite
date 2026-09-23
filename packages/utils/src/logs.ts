@@ -9,6 +9,10 @@ export type LogWriter = {
     add: (message: LogMessage) => void;
 };
 
+// `since` is a Date.now() timestamp. Consumers timing an operation can dump only what was logged
+// while it ran instead of the whole in-memory history.
+export type GetLogOptions = { since?: number };
+
 // Defines the minimal logger contract shared across the codebase.
 // Consumers can use an app-specific logger adapter instead of the concrete `Log` class.
 export interface Logger {
@@ -118,7 +122,9 @@ export class Log implements Logger {
         }
     }
 
-    getLog() {
-        return this.messages;
+    getLog({ since }: GetLogOptions = {}) {
+        return since === undefined
+            ? this.messages
+            : this.messages.filter(message => message.timestamp >= since);
     }
 }

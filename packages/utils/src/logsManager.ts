@@ -1,4 +1,4 @@
-import { Log, type LogMessage, type LogWriter } from './logs';
+import { type GetLogOptions, Log, type LogMessage, type LogWriter } from './logs';
 
 export class LogsManager {
     logs: { [k: string]: Log } = {};
@@ -54,13 +54,13 @@ export class LogsManager {
         }
     }
 
-    getLog() {
+    getLog(options?: GetLogOptions) {
         let logs: LogMessage[] = [];
         const ownLogs = this.logs;
         Object.keys(ownLogs).forEach(key => {
             // @ts-expect-error: indexing with noUncheckedIndexedAccess
             const log: Log = ownLogs[key];
-            logs = logs.concat(log.messages);
+            logs = logs.concat(log.getLog(options));
         });
         logs.sort((a, b) => a.timestamp - b.timestamp);
 
