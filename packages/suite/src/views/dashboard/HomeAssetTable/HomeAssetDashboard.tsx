@@ -9,6 +9,7 @@ import { useSelector } from 'src/hooks/suite';
 import { selectDiscoveryOverallStatus } from 'src/utils/wallet/selectDiscoveryOverallStatus';
 
 import { HomeAssetBalanceCard } from './HomeAssetBalanceCard';
+import { HomeAssetFeedback } from './HomeAssetFeedback';
 import { HomeAssetTable } from './HomeAssetTable';
 import { type AssetAccounts, selectHomeAssetRows } from './homeAssetTableSelectors';
 import { DashboardPromoBanner } from '../DashboardPromoBanner/DashboardPromoBanner';
@@ -48,7 +49,7 @@ export const HomeAssetDashboard = () => {
             <HomeAssetBalanceCard deviceState={deviceState} />
             <DashboardPromoBanner />
             <HomeAssetTable deviceState={deviceState} />
-            {/* The NFTs come after the table, and after anything the dashboard puts between. */}
+            <HomeAssetFeedback />
             <HomeAssetNfts deviceState={deviceState} />
         </Column>
     );
