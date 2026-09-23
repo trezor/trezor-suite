@@ -52,10 +52,7 @@ test.describe(
                 });
 
                 await test.step('Enable the Stellar network from the receive account picker', async () => {
-                    await tradingPage.receiveAccount.selectAddSuiteReceiveAccount(
-                        0,
-                        asNetworkSymbol('xlm'),
-                    );
+                    await tradingPage.receiveAccount.activateNetworkForReceiveAccount(0);
                     await expect(tradingPage.receiveAccount.selectedReceiveAccount).toContainText(
                         accountLabel,
                     );
