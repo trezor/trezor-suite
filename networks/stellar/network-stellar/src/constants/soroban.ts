@@ -33,6 +33,7 @@ export const STELLAR_CONTRACT_TOKENS: StellarContractToken[] = [
         decimals: 7,
     },
     {
-        contract: 'CD2KTWZ3S7BDDNPHJMUYYUDY5B7J4JL4GXVITLMUEPSE5BNTESUOM4LQ',
+        // Solv BTC, wrapped Bitcoin (self-reports its metadata, so none is repeated here)
+        contract: 'CBIJBDNZNF4X35BJ4FFZWCDBSCKOP5NB4PLG4SNENRMLAPYG4P5FM6VN',
     },
 ];
