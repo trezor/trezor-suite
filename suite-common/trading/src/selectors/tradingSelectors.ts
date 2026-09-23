@@ -48,6 +48,7 @@ import { unique, versionUtils } from '@trezor/utils';
 import {
     TRADING_EXCHANGE_FORM_DEX,
     TRADING_SLIP24_MIN_FIRMWARE_VERSION,
+    TRADING_SLIP24_SELL_MIN_FIRMWARE_VERSION,
     TRADING_SLIP24_SUPPORTED_NETWORK_TYPES,
 } from '../constants';
 import {
@@ -1220,6 +1221,20 @@ export const selectTradingIsSlip24Allowed = createMemoizedDeviceSelector(
         return isSlip24Active && isFirmwareVersionSlip24Compatible && isNetworkSupported;
     },
 );
+
+export const selectTradingIsSlip24SellAllowed = (
+    state: DeviceRootState,
+    account: Account | undefined | null,
+    isSlip24Active: boolean,
+) => {
+    const firmwareVersion = selectDeviceFirmwareVersion(state);
+
+    return (
+        selectTradingIsSlip24Allowed(state, account, isSlip24Active) &&
+        !!firmwareVersion &&
+        versionUtils.isNewerOrEqual(firmwareVersion, TRADING_SLIP24_SELL_MIN_FIRMWARE_VERSION)
+    );
+};
 
 export const selectTradingDetailData = createMemoizedSelector(
     [

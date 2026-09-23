@@ -22,6 +22,7 @@ import { TRADING_THUNK_PREFIX } from '../../constants';
 import {
     selectTradingComposedTransactionInfo,
     selectTradingIsSlip24Allowed,
+    selectTradingIsSlip24SellAllowed,
 } from '../../selectors/tradingSelectors';
 import type {
     TradingFulfillValue,
@@ -84,11 +85,10 @@ export const recomposeAndSignTxThunk = createThunk<
     ) => {
         const { composed } = selectTradingComposedTransactionInfo(getState());
 
-        const isPaymentRequestsAllowed = selectTradingIsSlip24Allowed(
-            getState(),
-            account,
-            isSlip24Active,
-        );
+        const isPaymentRequestsAllowed =
+            tradingFormState.activeSection === 'sell'
+                ? selectTradingIsSlip24SellAllowed(getState(), account, isSlip24Active)
+                : selectTradingIsSlip24Allowed(getState(), account, isSlip24Active);
 
         const composeResult = await dispatch(
             composeTradingTransactionThunk({

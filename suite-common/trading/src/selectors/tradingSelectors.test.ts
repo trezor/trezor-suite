@@ -76,6 +76,7 @@ import {
     selectTradingExchangeSellCryptoIds,
     selectTradingFormCryptoId,
     selectTradingIsSlip24Allowed,
+    selectTradingIsSlip24SellAllowed,
     selectTradingLastErrorMessageByTradeType,
     selectTradingModalAccountKey,
     selectTradingNativeCoinSymbolByCryptoId,
@@ -2701,6 +2702,36 @@ describe('tradingSelectors', () => {
             expect(
                 selectTradingIsSlip24Allowed(state, unsupportedNetworkAccount as any, true),
             ).toBe(false);
+        });
+    });
+
+    describe(selectTradingIsSlip24SellAllowed.name, () => {
+        const setFirmwareVersion = (minorVersion: number, patchVersion: number) => {
+            if (state.device.selectedDevice?.features) {
+                state.device.selectedDevice.features.minor_version = minorVersion;
+                state.device.selectedDevice.features.patch_version = patchVersion;
+            }
+        };
+
+        beforeEach(() => {
+            if (state.device.selectedDevice) {
+                state.device.selectedDevice.unavailableCapabilities = undefined;
+            }
+        });
+
+        it('should return false when firmware supports slip24 swaps but not sells', () => {
+            setFirmwareVersion(12, 6);
+            expect(selectTradingIsSlip24SellAllowed(state, accountBtc as any, true)).toBe(false);
+        });
+
+        it('should return true when firmware supports slip24 sells', () => {
+            setFirmwareVersion(13, 0);
+            expect(selectTradingIsSlip24SellAllowed(state, accountBtc as any, true)).toBe(true);
+        });
+
+        it('should return false when isSlip24Active is false', () => {
+            setFirmwareVersion(13, 0);
+            expect(selectTradingIsSlip24SellAllowed(state, accountBtc as any, false)).toBe(false);
         });
     });
 });

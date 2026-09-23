@@ -333,7 +333,9 @@ describe('commonSelectors', () => {
             }) as any;
 
         it('should be enabled when the experimental feature is on for a supported network and firmware', () => {
-            expect(selectIsTradingSlip24Enabled(getSlip24State(true), getBtcAccount())).toBe(true);
+            expect(
+                selectIsTradingSlip24Enabled(getSlip24State(true), getBtcAccount(), 'exchange'),
+            ).toBe(true);
         });
 
         it('should be disabled when the device firmware is too old', () => {
@@ -343,13 +345,13 @@ describe('commonSelectors', () => {
                 patch_version: 4,
             });
 
-            expect(selectIsTradingSlip24Enabled(state, getBtcAccount())).toBe(false);
+            expect(selectIsTradingSlip24Enabled(state, getBtcAccount(), 'exchange')).toBe(false);
         });
 
         it('should be disabled when the experimental feature is off', () => {
-            expect(selectIsTradingSlip24Enabled(getSlip24State(false), getBtcAccount())).toBe(
-                false,
-            );
+            expect(
+                selectIsTradingSlip24Enabled(getSlip24State(false), getBtcAccount(), 'exchange'),
+            ).toBe(false);
         });
 
         it('should be disabled when the message-system feature is disabled', () => {
@@ -358,17 +360,40 @@ describe('commonSelectors', () => {
                 messageSystem: getPreloadedState({ slip24: false }).messageSystem,
             };
 
-            expect(selectIsTradingSlip24Enabled(state, getBtcAccount())).toBe(false);
+            expect(selectIsTradingSlip24Enabled(state, getBtcAccount(), 'exchange')).toBe(false);
         });
 
         it('should be disabled for an unsupported network type', () => {
-            expect(selectIsTradingSlip24Enabled(getSlip24State(true), getCardanoAccount())).toBe(
+            expect(
+                selectIsTradingSlip24Enabled(getSlip24State(true), getCardanoAccount(), 'exchange'),
+            ).toBe(false);
+        });
+
+        it('should be disabled when there is no account', () => {
+            expect(selectIsTradingSlip24Enabled(getSlip24State(true), undefined, 'exchange')).toBe(
                 false,
             );
         });
 
-        it('should be disabled when there is no account', () => {
-            expect(selectIsTradingSlip24Enabled(getSlip24State(true), undefined)).toBe(false);
+        it('should be disabled for sell when the firmware supports swap but not sell payment requests', () => {
+            const state = getSlip24State(true, {
+                major_version: 2,
+                minor_version: 12,
+                patch_version: 6,
+            });
+
+            expect(selectIsTradingSlip24Enabled(state, getBtcAccount(), 'exchange')).toBe(true);
+            expect(selectIsTradingSlip24Enabled(state, getBtcAccount(), 'sell')).toBe(false);
+        });
+
+        it('should be enabled for sell when the firmware supports sell payment requests', () => {
+            const state = getSlip24State(true, {
+                major_version: 2,
+                minor_version: 13,
+                patch_version: 0,
+            });
+
+            expect(selectIsTradingSlip24Enabled(state, getBtcAccount(), 'sell')).toBe(true);
         });
     });
 

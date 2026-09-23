@@ -143,7 +143,7 @@ export const useTradingTransaction = ({
             state: MessageSystemRootState &
                 SettingsSliceRootState &
                 TradingRootStateWithDeviceAndAccounts,
-        ) => selectIsTradingSlip24Enabled(state, sendAccount ?? undefined),
+        ) => selectIsTradingSlip24Enabled(state, sendAccount, tradeType),
     );
 
     const { composeTradingTransaction } = useComposeTradingTransaction({ tradeType });

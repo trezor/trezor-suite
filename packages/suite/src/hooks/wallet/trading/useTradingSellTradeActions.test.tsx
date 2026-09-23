@@ -71,7 +71,7 @@ jest.mock('@suite-common/trading', () => {
 
     return {
         ...actual,
-        selectTradingIsSlip24Allowed: () => false,
+        selectTradingIsSlip24SellAllowed: () => false,
         tradingThunks: {
             ...actual.tradingThunks,
             loadInitialDataThunk: (args: unknown) => mockLoadInitialDataThunk(args),
