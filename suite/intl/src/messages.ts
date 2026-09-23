@@ -1797,6 +1797,15 @@ export const messages = defineMessages({
         defaultMessage: 'Show small balances',
         id: 'TR_HOME_ASSET_SMALL_BALANCES',
     },
+    TR_HOME_ASSET_BANNER_TITLE: {
+        defaultMessage: 'New — a simpler view of your assets',
+        id: 'TR_HOME_ASSET_BANNER_TITLE',
+    },
+    TR_HOME_ASSET_BANNER_TEXT: {
+        defaultMessage:
+            'Each asset is totaled across every account that holds it. Click on it to see more details.',
+        id: 'TR_HOME_ASSET_BANNER_TEXT',
+    },
     TR_HOME_ASSET_DUST_BALANCE: {
         defaultMessage: 'Dust balance',
         id: 'TR_HOME_ASSET_DUST_BALANCE',

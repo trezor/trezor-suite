@@ -13,6 +13,7 @@ import { useSelector } from 'src/hooks/suite';
 import { selectAreSmallBalancesShown } from 'src/reducers/suite/assetTableReducer';
 
 import { HomeAssetExpandRow } from './HomeAssetExpandRow';
+import { HomeAssetNewBanner } from './HomeAssetNewBanner';
 import { HomeAssetRow } from './HomeAssetRow';
 import { HomeAssetTableFilterHeader } from './HomeAssetTableFilter';
 import {
@@ -121,6 +122,7 @@ export const HomeAssetTable = ({ deviceState }: HomeAssetTableProps) => {
 
     return (
         <Card paddingType="none" data-testid="@dashboard/home-asset-table">
+            <HomeAssetNewBanner />
             <Table isRowHighlightedOnHover colWidths={[{ minWidth: '200px' }, {}, {}]}>
                 <Table.Header>
                     <Table.Row>
