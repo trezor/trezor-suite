@@ -70,7 +70,7 @@ test.describe('Trading - Swap', { tag: ['@T3W1', '@T3T1'] }, () => {
             let solanaFee: string;
 
             await test.step('Confirm the Swap trade', async () => {
-                receiveAmount = await tradingPage.quotes.getBestOfferAmount();
+                receiveAmount = await tradingPage.inputs.receiveAmount.innerText();
                 await page.expectReduxObjectNotToBeEmpty('wallet.trading.composedTransactionInfo');
                 const composedFee = await page.getReduxObject(
                     'wallet.trading.composedTransactionInfo.composed.fee',

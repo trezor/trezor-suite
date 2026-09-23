@@ -74,7 +74,7 @@ test.describe('Trading - Buy BTC', { tag: ['@T3W1', '@T3T1'] }, () => {
             });
 
             await test.step('Continue to the preview showing provider name and KYC warning', async () => {
-                receiveAmount = await tradingPage.quotes.getBestOfferAmount();
+                receiveAmount = await tradingPage.inputs.cryptoAmount.inputValue();
                 const providerName = await tradingPage.quotes.selectedProviderName.innerText();
 
                 await tradingPage.buyBestOfferButton.click();
@@ -139,7 +139,7 @@ test.describe('Trading - Buy BTC', { tag: ['@T3W1', '@T3T1'] }, () => {
 
             await test.step('Return to account buy form', async () => {
                 await tradingPage.backToAccountButton('Buy').click();
-                await tradingPage.verifyBuyFormOpened(/Bitcoin/);
+                await tradingPage.verifyBuyFormOpened(/BTC/);
             });
         },
     );

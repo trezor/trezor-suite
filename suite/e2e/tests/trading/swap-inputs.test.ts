@@ -11,7 +11,6 @@ import { createTestAnnotation } from '../../support/reporters/annotations';
 
 const fundedSymbol = asNetworkSymbol('eth');
 const insufficientCryptoAmount = '1000';
-const insufficientFiatAmount = '1000000';
 
 const sellBalance = '58.72333';
 const sellDecimals = 6;
@@ -102,7 +101,7 @@ test.describe('Trading - Swap inputs', { tag: ['@webOnly', '@noDevice', '@option
             await test.step('Open the funded account and open the Swap form', async () => {
                 await walletPage.openAccount({ symbol: fundedSymbol });
                 await walletPage.swapButton.click();
-                await tradingPage.verifySwapFormOpened(/Ethereum/);
+                await tradingPage.verifySwapFormOpened(/ETH/);
             });
 
             await test.step('Select sell asset USDC@ETH)', async () => {
@@ -115,10 +114,6 @@ test.describe('Trading - Swap inputs', { tag: ['@webOnly', '@noDevice', '@option
 
             for (const [index, asset] of buyAssets.entries()) {
                 await test.step(`[${asset.label}] Select buy asset and fill amount`, async () => {
-                    // The spinner used by waitForSync no longer exists, so its hidden check
-                    // finishes immediately. A slow quote request can then outlast the five-second
-                    // amount assertion while the UI still shows 0 ETH. Register the response wait
-                    // before changing the form so waitForSync checks the UI after quotes arrive.
                     const quotesResponse = page.waitForResponse(tradeEndpoint.swapQuotes);
                     await tradingPage.assetPicker.selectBuyAsset(asset.buy);
                     await tradingPage.inputs.cryptoAmount.fill(amount);
@@ -129,16 +124,16 @@ test.describe('Trading - Swap inputs', { tag: ['@webOnly', '@noDevice', '@option
                 // The form is now fully filled, so the read-only assertions about its
                 // resulting state (ticker, amount, offer, provider) all run together.
                 await test.step(`[${asset.label}] Verify filled form state`, async () => {
-                    await expect(tradingPage.inputs.cryptoAmountTicker).toHaveText('USDC', {
+                    await expect(tradingPage.inputs.youPayAssetSymbol).toHaveText('USDC', {
                         ignoreCase: true,
                     });
                     await expect(tradingPage.inputs.cryptoAmount).toHaveValue(amount);
                     await expect(
-                        tradingPage.inputs.bottomText,
+                        tradingPage.inputs.youPayError,
                         `[${asset.label}] amount ${amount} is outside the live swap limits; adjust the test amount.`,
                     ).toBeHidden();
 
-                    await expect(tradingPage.quotes.bestOfferAmount).not.toHaveText(/^0( \w+)?$/, {
+                    await expect(tradingPage.inputs.receiveAmount).not.toHaveText('0.0', {
                         timeout: 15_000,
                     });
                     await expect(tradingPage.quotes.selectedProvider).toBeVisible();
@@ -177,11 +172,10 @@ test.describe('Trading - Swap inputs', { tag: ['@webOnly', '@noDevice', '@option
                     await expect(tradingPage.inputs.cryptoAmount).toHaveValue(sellBalance);
                 });
 
-                await test.step('Verify amount limits and fiat input', async () => {
+                await test.step('Verify amount limits', async () => {
                     await tradingPage.inputs.verifyCryptoAmountExceedsBalance(
                         insufficientCryptoAmount,
                     );
-                    await tradingPage.inputs.verifyFiatAmountExceedsBalance(insufficientFiatAmount);
                 });
             }
         },

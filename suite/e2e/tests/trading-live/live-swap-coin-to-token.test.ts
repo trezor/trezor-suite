@@ -67,7 +67,8 @@ test.describe(
             });
 
             await test.step('Confirm the Swap trade', async () => {
-                await expect(tradingPage.quotes.bestOfferAmount).toHaveText(/^\d+(\.\d+)?\s+SOL$/);
+                await expect(tradingPage.inputs.youGetAssetSymbol).toHaveText('SOL');
+                await expect(tradingPage.inputs.receiveAmount).toHaveText(/^[\d,]+(\.\d+)?$/);
                 await tradingPage.swapBestOfferButton.click();
             });
 
@@ -112,11 +113,10 @@ test.describe(
                 let receiveAmount: string;
 
                 await test.step('Confirm the Swap trade', async () => {
-                    await expect(tradingPage.quotes.bestOfferAmount).toHaveText(
-                        /^\d+(\.\d+)?\s+USDC$/,
-                    );
+                    await expect(tradingPage.inputs.youGetAssetSymbol).toHaveText('USDC');
+                    await expect(tradingPage.inputs.receiveAmount).toHaveText(/^[\d,]+(\.\d+)?$/);
                     const receiveAmountUnformated =
-                        (await tradingPage.quotes.bestOfferAmount.innerText()).split(' ')[0] ?? '';
+                        await tradingPage.inputs.receiveAmount.innerText();
                     receiveAmount = localizeNumber(receiveAmountUnformated);
                     await tradingPage.waitForSolanaFeesAndClickSwapBestOffer();
                 });

@@ -57,7 +57,7 @@ test.describe('Trading - Sell inputs', { tag: ['@T3W1', '@T3T1', '@optional'] },
                 await test.step('Too many decimal digits', async () => {
                     await tradingPage.inputs.cryptoAmount.fill('0.000000001');
                     await expect
-                        .soft(tradingPage.inputs.bottomText)
+                        .soft(tradingPage.inputs.youPayError)
                         .toHaveTranslation('AMOUNT_IS_NOT_IN_RANGE_DECIMALS', {
                             values: { decimals: '8' },
                             timeout: 15_000,
@@ -67,17 +67,17 @@ test.describe('Trading - Sell inputs', { tag: ['@T3W1', '@T3T1', '@optional'] },
                 await test.step('Not enough funds', async () => {
                     await tradingPage.inputs.cryptoAmount.fill('10');
                     await expect
-                        .soft(tradingPage.inputs.bottomText)
+                        .soft(tradingPage.inputs.youPayError)
                         .toHaveTranslation('AMOUNT_IS_NOT_ENOUGH', { timeout: 15_000 });
                 });
 
                 await tradingPage.inputs.cryptoAmount.clear();
-                await expect.soft(tradingPage.inputs.bottomText).toBeHidden();
+                await expect.soft(tradingPage.inputs.youPayError).toBeHidden();
             });
 
             await test.step('Try all % inputs for Bitcoin', async () => {
                 await tradingPage.inputs.selectFiatCurrency('eur');
-                for (const percentage of [10, 25, 50]) {
+                for (const percentage of [25, 50]) {
                     await test.step(`${percentage}% of BTC balance`, async () => {
                         await tradingPage.inputs.fractionButtons
                             .getByRole('button', { name: percentage + '%' })
@@ -114,10 +114,10 @@ test.describe('Trading - Sell inputs', { tag: ['@T3W1', '@T3T1', '@optional'] },
             await test.step('Try all % inputs on Solana', async () => {
                 await walletPage.openAccount({ symbol: solSymbol, atIndex: 0 });
                 await tradingPage.sellTabButton.click();
-                await expect(tradingPage.inputs.cryptoAmountTicker).toHaveText('SOL');
+                await expect(tradingPage.inputs.youPayAssetSymbol).toHaveText('SOL');
                 await tradingPage.inputs.selectFiatCurrency('eur');
 
-                for (const percentage of [10, 25, 50]) {
+                for (const percentage of [25, 50]) {
                     await test.step(`${percentage}% of Solana balance`, async () => {
                         await page.getByRole('button', { name: percentage + '%' }).click();
                         await tradingPage.inputs.expectInputToBe({

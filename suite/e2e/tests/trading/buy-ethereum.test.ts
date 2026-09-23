@@ -50,7 +50,7 @@ test.describe('Trading - Buy Ethereum', { tag: ['@T3W1', '@T3T1'] }, () => {
             });
 
             await test.step('Continue to preview and confirm the trade', async () => {
-                receiveAmount = await tradingPage.quotes.getBestOfferAmount();
+                receiveAmount = await tradingPage.inputs.cryptoAmount.inputValue();
                 providerName = await tradingPage.quotes.selectedProviderName.innerText();
 
                 await expect(tradingPage.buyBestOfferButton).toHaveTranslation('TR_CONTINUE');
@@ -109,7 +109,7 @@ test.describe('Trading - Buy Ethereum', { tag: ['@T3W1', '@T3T1'] }, () => {
 
             await test.step('Return to account buy form', async () => {
                 await tradingPage.backToAccountButton('Buy').click();
-                await tradingPage.verifyBuyFormOpened(/Bitcoin|Ethereum/);
+                await tradingPage.verifyBuyFormOpened(/BTC|ETH/);
             });
         },
     );

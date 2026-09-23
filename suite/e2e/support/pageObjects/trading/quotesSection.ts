@@ -11,8 +11,6 @@ export class TradingQuotesSection {
     readonly providerInList: Locator;
     readonly selectedProvider: Locator;
     readonly selectedProviderName: Locator;
-    readonly loadingSpinner: Locator;
-    readonly bestOfferAmount: Locator;
 
     constructor(private readonly page: Page) {
         this.list = this.page.getByTestId('@trading/offers/quote');
@@ -22,27 +20,11 @@ export class TradingQuotesSection {
         this.selectedProviderName = this.selectedProvider.getByTestId(
             '@trading/offers/quote/provider',
         );
-        this.loadingSpinner = this.page.getByTestId('@trading/offers/loading-spinner');
-        this.bestOfferAmount = this.page.getByTestId('@trading/best-offer/amount');
     }
 
     @step()
     async waitForSync() {
-        await expect(this.loadingSpinner).toBeHidden({ timeout: 30000 });
-        // Even though the offer sync is finished, the best offer might not be displayed correctly yet and show 0 BTC
-        await expect(this.bestOfferAmount).not.toHaveText(/^0( \w+)?$/);
-    }
-
-    @step()
-    async getBestOfferAmount(): Promise<string> {
-        await expect(this.bestOfferAmount).toHaveText(/^(?=[\d,.]*[1-9])[\d,]+(\.\d+)?\s+\w+$/);
-        const rawText = await this.bestOfferAmount.innerText();
-        const [amount] = rawText.split(/\s+/);
-        if (!amount) {
-            throw new Error(`Best offer amount could not be parsed from "${rawText}"`);
-        }
-
-        return amount;
+        await expect(this.selectedProviderName).not.toBeEmpty({ timeout: 30_000 });
     }
 
     //  When `provider` is given, that specific provider is selected(must be
