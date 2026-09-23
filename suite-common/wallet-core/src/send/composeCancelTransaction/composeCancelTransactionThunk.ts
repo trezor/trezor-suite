@@ -12,7 +12,7 @@ import TrezorConnect, {
 import { asCoinSymbol } from '@trezor/connect-common';
 
 import { SEND_MODULE_PREFIX } from '../sendFormConstants';
-import { calculateNewFee } from './calculateNewFee';
+import { calculateBaseFee, getRelayFee } from './calculateNewFee';
 
 export type ComposeCancelTransactionAccount = Required<
     Pick<Account, 'addresses' | 'path' | 'symbol'>
@@ -58,50 +58,28 @@ export const composeCancelTransactionThunk = createThunk<
 
         const utxo = getMyInputsFromTransaction({ tx, account });
         const cancelAddress = resolveCancelAddress(tx, account);
+        const baseFee = calculateBaseFee(tx, chainedTxs);
+        const feePerUnit = getRelayFee().toString();
+        const coin = asCoinSymbol(account.symbol);
 
-        const composeParams: Parameters<(typeof TrezorConnect)['composeTransaction']>[0] = {
+        const response = await TrezorConnect.composeTransaction({
             account: {
                 path: account.path,
                 addresses: account.addresses,
                 utxo,
             },
-            feeLevels: [{ feePerUnit: '1' }], // We don't care about the fee, we just need to compose transaction to get its size
             outputs: [{ type: 'send-max', address: cancelAddress }],
             sortingStrategy: DEFAULT_SORTING_STRATEGY,
-            coin: asCoinSymbol(account.symbol),
-        };
-
-        const response = await TrezorConnect.composeTransaction(composeParams);
+            coin,
+            feeLevels: [{ feePerUnit }],
+            baseFee,
+        });
 
         if (!response.success) {
             return rejectWithValue(`Unexpected compose error: ${response.error.message}`);
         }
 
-        const tempCancelTx = response.payload[0];
-
-        if (tempCancelTx?.type !== 'final') {
-            return rejectWithValue('Unexpected compose tempCancelTxResult (non-final)');
-        }
-
-        const newTransactionSize = tempCancelTx.bytes;
-
-        const { newFeeRate, chainedTransactionFees } = calculateNewFee({
-            originalFee: tx.fee,
-            newTransactionSize,
-            chainedTxs,
-        });
-
-        const sizeCalculationResponse = await TrezorConnect.composeTransaction({
-            ...composeParams,
-            feeLevels: [{ feePerUnit: newFeeRate.toString() }],
-            baseFee: chainedTransactionFees, // BIP-125 rule 3 (paying for chained transactions)
-        });
-
-        if (!sizeCalculationResponse.success) {
-            return rejectWithValue('Unexpected compose result (error)');
-        }
-
-        const composedTx = sizeCalculationResponse.payload[0];
+        const composedTx = response.payload[0];
 
         if (composedTx?.type !== 'final') {
             return rejectWithValue('Unexpected compose result (non-final)');
