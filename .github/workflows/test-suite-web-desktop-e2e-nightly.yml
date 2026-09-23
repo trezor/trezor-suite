@@ -39,7 +39,6 @@ jobs:
     with:
       target: "desktop"
       pw-config: "./playwright-config/playwright-desktop-nightly.config.ts"
-      lighthouse: "true"
       test-group: ${{ matrix.TEST_GROUP }}
       fail-fast: "false"
       currents-project-id: "4ytF0E"
@@ -105,7 +104,6 @@ jobs:
     with:
       target: "web"
       pw-config: "./playwright-config/playwright-web-nightly.config.ts"
-      lighthouse: "true"
       test-group: ${{ matrix.TEST_GROUP }}
       fail-fast: "false"
       currents-project-id: "Og0NOQ"
@@ -170,8 +168,8 @@ jobs:
   # base branch, so it seals the baseline every later run is compared against. Nothing else does —
   # a pull request never seals one.
   #
-  # Lighthouse runs here as it does on a pull request, so the sealed baseline is a profiled run and
-  # what a pull request is compared against was measured the same way.
+  # Every e2e run profiles, this one included, so the sealed baseline was measured the same way as
+  # the pull requests compared against it.
   publish_performance_history:
     name: Publish performance history
     if: ${{ !cancelled() && github.repository == 'trezor/trezor-suite' }}

@@ -78,16 +78,6 @@ on:
         description: "Name of the artifact to download (e.g. desktop app build)"
         required: false
         type: string
-      lighthouse:
-        description: >
-          Record a Lighthouse timespan around each @perf measurement and store the flow result.
-          Only the tests that measure are profiled, so the cost is bounded to those. A profiled run
-          is not baseline material — its tracing inflates the very numbers budgets.ts limits are
-          compared against — so the reporter marks it and withholds its budgets paste, and the
-          store marks its rows `profiled` so a trend does not plot them beside untraced ones.
-        required: false
-        default: "false"
-        type: string
     secrets:
       currents-record-key:
         description: "Currents record key for reporting"
@@ -237,7 +227,12 @@ jobs:
           # Its own directory: test-results belongs to Playwright, which cleans it before the
           # upload step can run.
           PERF_HISTORY_DIR: "${{ github.workspace }}/perf-history"
-          LIGHTHOUSE: ${{ inputs.lighthouse == 'true' && '1' || '' }}
+          # Always on, and not an input: only a test that calls `perf.measure` opens a timespan, so
+          # the cost stays with the flows that are already being measured, and a run that cannot
+          # attach warns and records nothing. What a profiled run must not be read against is
+          # handled where it is read — the reporter marks it and withholds its budgets paste, and
+          # its index rows carry `profiled` so a trend never plots them beside untraced ones.
+          LIGHTHOUSE: "1"
           COLLECT_COVERAGE_MAP: ${{ inputs.enable-coverage == 'true' && 'true' || '' }}
           COVERAGE_MAP_DIR: ${{ github.workspace }}/coverage-map
         run: |
