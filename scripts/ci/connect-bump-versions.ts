@@ -93,6 +93,14 @@ const getCommitsSinceLastStableRelease = (commitLines: string[], packageName: st
     return boundary === -1 ? commitLines : commitLines.slice(0, boundary);
 };
 
+// Drop release bookkeeping and non-user-facing churn (tooling, deps, tests, formatting) so a package
+// changelog reads as a list of actual changes rather than every commit that happened to touch its
+// directory (the git log is path-scoped, so repo-wide mechanical sweeps leak in).
+const CHANGELOG_NOISE =
+    /^-\s+(?:chore|test|ci|build|style)(?:\([^)]*\))?:|^-\s+npm-(?:pre)?release:|^-\s+release:/;
+const filterChangelogCommits = (commitLines: string[]) =>
+    commitLines.filter(line => line.trim() !== '' && !CHANGELOG_NOISE.test(line));
+
 // Split a CHANGELOG into the fixed header (anything before the first `# <version>` heading, e.g. a
 // pointer to the core changelog) and the version history, so a new entry can be inserted at the top
 // of the history without clobbering the header.
@@ -239,9 +247,12 @@ const bumpConnect = async () => {
             // Stop at the previous stable release so the entry spans only this release.
             const newCommits = getCommitsSinceLastStableRelease(commitsArr, packageName);
 
+            // Keep only user-facing changes; drop release bookkeeping and mechanical churn.
+            const changelogCommits = filterChangelogCommits(newCommits);
+
             // In Connect dependencies packages we only update CHANGELOG when doing a stable release (patch or minor).
             // We do that so we can generate the complete CHANGELOG automatically when doing stable release.
-            if (newCommits.length && deploymentType === 'stable') {
+            if (changelogCommits.length && deploymentType === 'stable') {
                 const CHANGELOG_PATH = path.join(PACKAGE_PATH, 'CHANGELOG.md');
                 if (!fs.existsSync(CHANGELOG_PATH)) {
                     await writeFile(CHANGELOG_PATH, '');
@@ -251,7 +262,7 @@ const bumpConnect = async () => {
                 // Preserve any fixed header (e.g. a pointer to the core changelog) above the version
                 // history instead of prepending the new entry above everything.
                 const { header, history } = splitChangelogHeader(existingChangelog);
-                const entry = `# ${version}\n\n${newCommits.join('\n')}`;
+                const entry = `# ${version}\n\n${changelogCommits.join('\n')}`;
                 const changelog = [header, entry, history].filter(Boolean).join('\n\n');
 
                 await writeFile(CHANGELOG_PATH, `${changelog}\n`, 'utf-8');
