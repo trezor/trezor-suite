@@ -93,7 +93,7 @@ export const useTradingReceiveAddress = ({
         [accounts, symbol, device?.state?.staticSessionId, isDebug, supportedNetworks],
     );
 
-    const canAddSuiteAccount = !!(device?.connected && isSupportedNetwork);
+    const canAddSuiteAccount = isSupportedNetwork;
     const canUseNonSuiteAccount = nonSuiteAccount;
     const hasSuiteReceiveAccount = !!suiteReceiveAccounts?.length;
 

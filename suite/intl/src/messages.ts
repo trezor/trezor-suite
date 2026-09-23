@@ -801,14 +801,6 @@ export const messages = defineMessages({
         defaultMessage: '{extraFieldName} is invalid',
         id: 'TR_EXCHANGE_EXTRA_FIELD_INVALID',
     },
-    TR_EXCHANGE_CREATE_SUITE_ACCOUNT: {
-        defaultMessage: 'Create a new {symbol} account',
-        id: 'TR_EXCHANGE_CREATE_SUITE_ACCOUNT',
-    },
-    TR_EXCHANGE_USE_NON_SUITE_ACCOUNT: {
-        defaultMessage: "Use an account ({symbol}) that isn't in Trezor Suite.",
-        id: 'TR_EXCHANGE_USE_NON_SUITE_ACCOUNT',
-    },
     TR_EXCHANGE_FIXED: {
         defaultMessage: 'Fixed-rate offer',
         id: 'TR_EXCHANGE_FIXED',
@@ -1581,6 +1573,18 @@ export const messages = defineMessages({
     TR_TRADING_NO_PROVIDERS_AVAILABLE: {
         defaultMessage: 'No providers available for this country.',
         id: 'TR_TRADING_NO_PROVIDERS_AVAILABLE',
+    },
+    TR_TRADING_RECEIVE_SELECT_ACCOUNT: {
+        defaultMessage: 'Select account',
+        id: 'TR_TRADING_RECEIVE_SELECT_ACCOUNT',
+    },
+    TR_TRADING_RECEIVE_ADD_ACCOUNT: {
+        defaultMessage: 'Add account',
+        id: 'TR_TRADING_RECEIVE_ADD_ACCOUNT',
+    },
+    TR_TRADING_RECEIVE_USE_EXTERNAL_ACCOUNT: {
+        defaultMessage: 'Use external account',
+        id: 'TR_TRADING_RECEIVE_USE_EXTERNAL_ACCOUNT',
     },
     TR_TRADING_RECEIVE_ACCOUNT_NOT_FOUND_TITLE: {
         defaultMessage: 'Account not found',
