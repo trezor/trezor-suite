@@ -109,15 +109,17 @@ export type UiEventWithoutPayload =
     | {
           type: typeof UI_EVENTS.CLOSE_UI_WINDOW;
           payload?: never;
-      }
-    | {
-          type: typeof UI_EVENTS.DEVICE_LOCK;
-          payload?: never;
-      }
-    | {
-          type: typeof UI_EVENTS.DEVICE_UNLOCK;
-          payload?: never;
       };
+
+// Emitted around a device-using call (useDevice === true). `device` identifies the device the call
+// used; it is resolved only once the call has been assigned a device, so it is present on
+// DEVICE_UNLOCK and absent on DEVICE_LOCK (and on firmwareUpdate, which resolves the device later).
+export interface UiEventDeviceLock {
+    type: typeof UI_EVENTS.DEVICE_LOCK | typeof UI_EVENTS.DEVICE_UNLOCK;
+    payload: {
+        device?: Device;
+    };
+}
 
 export type UiEventDeviceAction =
     | {
@@ -240,6 +242,7 @@ export interface UiEventFirmwareDownloaded {
 
 export type UiEvent =
     | UiEventWithoutPayload
+    | UiEventDeviceLock
     | UiEventDeviceAction
     | UiEventButtonRequest
     | UiEventUnexpectedDeviceMode

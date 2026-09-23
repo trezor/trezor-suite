@@ -237,12 +237,12 @@ describe('TrezorConnect Actions', () => {
         actions.length = 0;
         const { emitTestEvent } = testMocks.getTrezorConnectMock();
 
-        emitTestEvent(UI_EVENT, { type: UI_EVENTS.DEVICE_LOCK });
+        emitTestEvent(UI_EVENT, { type: UI_EVENTS.DEVICE_LOCK, payload: {} });
         expect(extra.services.lockDevice).toHaveBeenCalledTimes(1);
         expect(extra.services.lockDevice).toHaveBeenLastCalledWith(true);
         expect(actions).toEqual([]);
 
-        emitTestEvent(UI_EVENT, { type: UI_EVENTS.DEVICE_UNLOCK });
+        emitTestEvent(UI_EVENT, { type: UI_EVENTS.DEVICE_UNLOCK, payload: {} });
         expect(extra.services.lockDevice).toHaveBeenCalledTimes(2);
         expect(extra.services.lockDevice).toHaveBeenLastCalledWith(false);
         expect(actions).toEqual([

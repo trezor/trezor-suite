@@ -277,11 +277,17 @@ const onCall = async (context: CoreContext, message: CoreCallMessage) => {
     // device UI on DEVICE_LOCK and unlocks on the paired DEVICE_UNLOCK, replacing a hand-kept method
     // blocklist. Emitted without a callId (device locking is process-global, not scoped to one flow);
     // the `finally` guarantees exactly one DEVICE_UNLOCK whether onCallDevice resolves or rejects.
-    sendCoreMessage(createUiEventMessage(UI_EVENTS.DEVICE_LOCK));
+    // The device is assigned inside onCallDevice (method.setDevice), so DEVICE_LOCK cannot yet name it;
+    // DEVICE_UNLOCK carries the resolved device so the host can act on the exact device the call used.
+    sendCoreMessage(createUiEventMessage(UI_EVENTS.DEVICE_LOCK, {}));
     try {
         return await onCallDevice(methodContext, message, method);
     } finally {
-        sendCoreMessage(createUiEventMessage(UI_EVENTS.DEVICE_UNLOCK));
+        sendCoreMessage(
+            createUiEventMessage(UI_EVENTS.DEVICE_UNLOCK, {
+                device: method.device?.toMessageObject(),
+            }),
+        );
     }
 };
 
@@ -923,7 +929,7 @@ export class Core extends EventEmitter {
                         message.payload.callId,
                     );
                     // firmwareUpdate uses the device but bypasses onCall, so it lock/unlocks itself.
-                    this.sendCoreMessage(createUiEventMessage(UI_EVENTS.DEVICE_LOCK));
+                    this.sendCoreMessage(createUiEventMessage(UI_EVENTS.DEVICE_LOCK, {}));
                     onCallFirmwareUpdate({
                         params: message.payload,
                         context: {
@@ -946,7 +952,7 @@ export class Core extends EventEmitter {
                             this.coreLogger.error('onCallFirmwareUpdate', error);
                         })
                         .finally(() => {
-                            this.sendCoreMessage(createUiEventMessage(UI_EVENTS.DEVICE_UNLOCK));
+                            this.sendCoreMessage(createUiEventMessage(UI_EVENTS.DEVICE_UNLOCK, {}));
                         });
                 } else {
                     onCall(this.getCoreContext(), message).catch(error => {

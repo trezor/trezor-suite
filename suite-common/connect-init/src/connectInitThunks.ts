@@ -4,6 +4,7 @@ import { type AnalyticsDep, events as sharedEvents } from '@suite-common/analyti
 import {
     type DeviceRootState,
     deviceActions,
+    selectDeviceByState,
     selectDevices,
     selectIsPendingTransportEvent,
     selectSelectedDevice,
@@ -140,9 +141,13 @@ export const connectInitThunk = createThunk<
             lockDevice(false);
             dispatch(
                 deviceActions.removeButtonRequests({
-                    // todo: device not 'thread safe' - meaning that device to which button requests have been added to might not
-                    // be the same re-selected device from this line. We should reuse device from params.
-                    device: selectSelectedDevice(getState()),
+                    // Clear button requests for the device the finished call actually used (carried on
+                    // the event), falling back to the selected device (e.g. firmwareUpdate, or before
+                    // the device state is resolved). Note: addButtonRequest still keys off the selected
+                    // device, so full add/remove device symmetry is a follow-up.
+                    device:
+                        selectDeviceByState(getState(), action.payload.device?.state) ??
+                        selectSelectedDevice(getState()),
                 }),
             );
 

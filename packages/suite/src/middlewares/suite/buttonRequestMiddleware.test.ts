@@ -74,7 +74,7 @@ describe('buttonRequest middleware', () => {
         const call = store.dispatch(deviceSettingsActions.changePinThunk({ remove: false }));
         const { emitTestEvent } = testMocks.getTrezorConnectMock();
         // connect-core locks the device when a device-using method starts talking to it
-        emitTestEvent(UI_EVENT, { type: UI_EVENTS.DEVICE_LOCK });
+        emitTestEvent(UI_EVENT, { type: UI_EVENTS.DEVICE_LOCK, payload: {} });
         // fake few ui events, just like when user is changing PIN
         emitTestEvent(UI_EVENT, {
             type: UI_EVENTS.BUTTON_REQUEST,
@@ -85,7 +85,7 @@ describe('buttonRequest middleware', () => {
             payload: { type: 'PinMatrixRequestType_NewFirst', device },
         });
         // ...and unlocks it (clearing button requests) when the method finishes
-        emitTestEvent(UI_EVENT, { type: UI_EVENTS.DEVICE_UNLOCK });
+        emitTestEvent(UI_EVENT, { type: UI_EVENTS.DEVICE_UNLOCK, payload: {} });
 
         await call;
 

@@ -102,8 +102,8 @@ describe('TrezorConnect Actions', () => {
 
         // connect-core emits these around any device-using call; here we emit them directly.
         const { emitTestEvent } = testMocks.getTrezorConnectMock();
-        emitTestEvent(UI_EVENT, { type: UI_EVENTS.DEVICE_LOCK });
-        emitTestEvent(UI_EVENT, { type: UI_EVENTS.DEVICE_UNLOCK });
+        emitTestEvent(UI_EVENT, { type: UI_EVENTS.DEVICE_LOCK, payload: {} });
+        emitTestEvent(UI_EVENT, { type: UI_EVENTS.DEVICE_UNLOCK, payload: {} });
 
         expect(lockDevice).toHaveBeenNthCalledWith(1, true);
         expect(lockDevice).toHaveBeenNthCalledWith(2, false);
