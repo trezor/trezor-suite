@@ -300,14 +300,14 @@ export const analyzeTransactions = [
 
 export const analyzeTransactionsPrepending = [
     {
-        description: 'pre-pending becomes confirmed (no confirmed)',
+        description: 'pre-pending becomes confirmed, upgraded in place (no confirmed)',
         fresh: [{ blockHeight: 1, blockHash: '1', txid: '1' }],
         known: [{ blockHeight: undefined, blockHash: '1', txid: '1', deadline: 2 }],
         blockHeight: 1,
         result: {
             newTransactions: [{ blockHeight: 1, blockHash: '1', txid: '1' }],
             add: [{ blockHeight: 1, blockHash: '1', txid: '1' }],
-            remove: [{ blockHeight: undefined, blockHash: '1', txid: '1', deadline: 2 }],
+            remove: [],
         },
     },
     {
@@ -358,7 +358,7 @@ export const analyzeTransactionsPrepending = [
         },
     },
     {
-        description: 'pre-pending becomes confirmed (has confirmed tx)',
+        description: 'pre-pending becomes confirmed, upgraded in place (has confirmed tx)',
         fresh: [
             { blockHeight: 3, blockHash: '3', txid: '3' },
             { blockHeight: 1, blockHash: '2', txid: '2' },
@@ -371,7 +371,21 @@ export const analyzeTransactionsPrepending = [
         result: {
             newTransactions: [{ blockHeight: 3, blockHash: '3', txid: '3' }],
             add: [{ blockHeight: 3, blockHash: '3', txid: '3' }],
-            remove: [{ blockHeight: undefined, blockHash: '3', txid: '3', deadline: 3 }],
+            remove: [],
+        },
+    },
+    {
+        description: 'pre-pending reaches mempool, upgraded in place without eviction',
+        fresh: [{ blockHeight: undefined, blockHash: '1', txid: '1' }],
+        known: [
+            { blockHeight: undefined, blockHash: '1', txid: '1', deadline: 2 },
+            { blockHeight: 1, blockHash: '2', txid: '2' },
+        ],
+        blockHeight: 1,
+        result: {
+            newTransactions: [],
+            add: [{ blockHeight: undefined, blockHash: '1', txid: '1' }],
+            remove: [],
         },
     },
     {

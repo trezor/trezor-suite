@@ -184,6 +184,31 @@ export const addTransaction: {
         },
         result: { [ACCOUNT.key]: [testMocks.getWalletTransaction({ txid: '00' })] },
     },
+    {
+        description: 'confirmed tx replaces the fake pending record in place, keeping its position',
+        initialState: {
+            transactions: {
+                [ACCOUNT.key]: [
+                    testMocks.getWalletTransaction({
+                        txid: '00',
+                        blockHeight: undefined,
+                        deadline: 10,
+                    }),
+                    testMocks.getWalletTransaction({ txid: '01' }),
+                ],
+            },
+        },
+        actionPayload: {
+            account: ACCOUNT,
+            transactions: [testMocks.getWalletTransaction({ txid: '00', blockHeight: 11 })],
+        },
+        result: {
+            [ACCOUNT.key]: [
+                testMocks.getWalletTransaction({ txid: '00', blockHeight: 11 }),
+                testMocks.getWalletTransaction({ txid: '01' }),
+            ],
+        },
+    },
 ];
 
 export const removeTransaction: {
