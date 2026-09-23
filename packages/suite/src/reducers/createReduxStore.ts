@@ -1,10 +1,11 @@
-import { type Middleware, configureStore, createDynamicMiddleware } from '@reduxjs/toolkit';
+import { configureStore } from '@reduxjs/toolkit';
 
 import { MODAL_OPEN_USER_CONTEXT } from '@suite/modal';
 import { type ExtraDependenciesStatic } from '@suite-common/extra-dependencies';
 import { type ReduxStoreWithThunk, createReduxExtra } from '@suite-common/redux-utils';
 import { type TokenDefinitionsMiddlewareDeps } from '@suite-common/token-definitions';
 
+import { type SuiteMiddlewares, type SuiteMiddlewaresDep } from 'src/middlewares/suiteMiddlewares';
 import { type SuiteServices } from 'src/support/createSuiteCompositionRoot';
 import { type ExtraDependenciesSuite } from 'src/support/extraDependencies';
 
@@ -22,19 +23,26 @@ export type SuiteReduxStoreDep = { store: SuiteReduxStore };
 export type ReduxStore = {
     store: SuiteReduxStore;
     injectServicesIntoReduxExtra: (services: SuiteServices) => void;
-    addBluetoothMiddleware: (middleware: Middleware) => void;
+    injectMiddlewares: (middlewares: SuiteMiddlewares) => void;
 };
 
 export type ReduxStoreDep = { reduxStore: ReduxStore };
 
 export const createReduxStore = (deps: ReduxStoreDeps): ReduxStore => {
-    // Bluetooth needs the store API before its middleware can be composed.
-    const bluetoothMiddleware = createDynamicMiddleware<AppState>();
     const { getExtra, thunkMiddleware, injectServicesIntoReduxExtra } = createReduxExtra<
         AppState,
         SuiteServices,
         ExtraDependenciesStatic & TokenDefinitionsMiddlewareDeps
     >({ extraDependencies: deps.extraDependencies });
+
+    let middlewares: SuiteMiddlewares | undefined;
+    const getMiddlewareExtra = (): ExtraDependenciesSuite & SuiteMiddlewaresDep => {
+        if (!middlewares) {
+            throw new Error('Middlewares must be injected before dispatching application actions.');
+        }
+
+        return { ...getExtra(), middlewares };
+    };
 
     const store = configureStore({
         reducer: deps.reducer,
@@ -52,13 +60,15 @@ export const createReduxStore = (deps: ReduxStoreDeps): ReduxStore => {
                 },
             })
                 .prepend(thunkMiddleware)
-                .concat(getCustomMiddleware(getExtra, bluetoothMiddleware.middleware)),
+                .concat(getCustomMiddleware(getMiddlewareExtra)),
         devTools,
     });
 
     return {
         store,
         injectServicesIntoReduxExtra,
-        addBluetoothMiddleware: bluetoothMiddleware.addMiddleware,
+        injectMiddlewares: injectedMiddlewares => {
+            middlewares = injectedMiddlewares;
+        },
     };
 };

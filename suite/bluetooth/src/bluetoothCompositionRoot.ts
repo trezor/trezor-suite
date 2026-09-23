@@ -1,8 +1,6 @@
-import { type Middleware } from '@reduxjs/toolkit';
-
 import { createBackgroundScan } from './bluetoothBackgroundScan';
-import { prepareBluetoothMiddleware } from './bluetoothMiddleware';
-import { type Bluetooth, createBluetooth } from './createBluetooth';
+import { type BluetoothMiddlewareDep, prepareBluetoothMiddleware } from './bluetoothMiddleware';
+import { type BluetoothDep, createBluetooth } from './createBluetooth';
 import {
     type BluetoothInitDispatch,
     type BluetoothInitRootState,
@@ -14,10 +12,7 @@ export type BluetoothCompositionRootDeps = {
     dispatch: BluetoothInitDispatch;
 };
 
-type BluetoothCompositionRoot = {
-    bluetooth: Bluetooth;
-    bluetoothMiddleware: Middleware;
-};
+type BluetoothCompositionRoot = BluetoothDep & BluetoothMiddlewareDep;
 
 export const createBluetoothCompositionRoot = (
     deps: BluetoothCompositionRootDeps,

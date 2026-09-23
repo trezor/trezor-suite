@@ -1,4 +1,4 @@
-import { type UnknownAction } from '@reduxjs/toolkit';
+import { type Middleware, type UnknownAction } from '@reduxjs/toolkit';
 
 import { bluetoothActions } from '@suite-common/bluetooth';
 import { deviceActions } from '@suite-common/device';
@@ -7,6 +7,10 @@ import { createMiddlewareWithExtraDeps } from '@suite-common/redux-utils';
 import { type BackgroundScanDep } from './bluetoothBackgroundScan';
 
 export type PrepareBluetoothMiddlewareDeps = BackgroundScanDep;
+
+export type BluetoothMiddlewareDep = {
+    bluetoothMiddleware: Middleware;
+};
 
 export const prepareBluetoothMiddleware = createMiddlewareWithExtraDeps<
     PrepareBluetoothMiddlewareDeps,

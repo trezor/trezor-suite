@@ -1,4 +1,5 @@
 export { createBluetoothCompositionRoot } from './bluetoothCompositionRoot';
+export { type BluetoothMiddlewareDep } from './bluetoothMiddleware';
 export { type Bluetooth, type BluetoothDep } from './createBluetooth';
 export {
     type DesktopBluetoothDevice,

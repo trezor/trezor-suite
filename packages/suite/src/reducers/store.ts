@@ -108,13 +108,10 @@ const loggerExcludedActions = [addLog.type];
 
 type GetCustomMiddlewareDeps = GetSuiteMiddlewareDeps & GetWalletMiddlewaresDeps;
 
-export const getCustomMiddleware = (
-    getExtra: () => GetCustomMiddlewareDeps | null,
-    bluetoothMiddleware: Middleware,
-) => {
+export const getCustomMiddleware = (getExtra: () => GetCustomMiddlewareDeps | null) => {
     const middleware = [
         toastMiddleware,
-        ...getSuiteMiddleware(getExtra, bluetoothMiddleware),
+        ...getSuiteMiddleware(getExtra),
         ...getWalletMiddlewares(getExtra),
         ...onboardingMiddlewares,
         backupMiddleware,

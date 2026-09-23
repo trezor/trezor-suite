@@ -1,4 +1,3 @@
-import { type Middleware } from '@reduxjs/toolkit';
 import { saveAs } from 'file-saver';
 
 import { type DesktopAnalyticsDep, createAnalytics } from '@suite/analytics';
@@ -46,6 +45,7 @@ import { selectAccountsByDeviceState } from '@suite-common/wallet-core';
 import { type CreateLoggerDep, type GetTrezorConnectPrivilegedDep } from '@trezor/connect';
 import { isDesktop } from '@trezor/env-utils';
 
+import { type SuiteMiddlewares } from 'src/middlewares/suiteMiddlewares';
 import { type SuiteReduxStore } from 'src/reducers/createReduxStore';
 import { selectIsWindowVisible } from 'src/reducers/suite/windowReducer';
 import { type DbDep } from 'src/storage/createDb';
@@ -93,7 +93,7 @@ export const selectSuiteServices = (services: any): SuiteServices => services;
 
 type SuiteServicesCompositionRoot = {
     services: SuiteServices;
-    bluetoothMiddleware: Middleware;
+    middlewares: SuiteMiddlewares;
 };
 
 export const createSuiteServicesCompositionRoot = (
@@ -232,5 +232,5 @@ export const createSuiteServicesCompositionRoot = (
             }),
     };
 
-    return { services, bluetoothMiddleware };
+    return { services, middlewares: { bluetoothMiddleware } };
 };
