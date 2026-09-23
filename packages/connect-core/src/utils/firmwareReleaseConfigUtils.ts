@@ -7,35 +7,49 @@ import type { FirmwareReleaseConfig } from '@trezor/device-utils';
 interface RemoteUrlParts {
     BASE_URL: string;
     MIDDLE_PATH: string;
+    CONFIG_PATH: string;
 }
 
-const RELEASES_URL_REMOTE_BASE = {
+const PRODUCTION_URL_REMOTE_BASE = {
     BASE_URL: 'https://data.trezor.io',
     MIDDLE_PATH: 'firmware',
+    CONFIG_PATH: 'config/',
 };
+
+const PRODUCTION_EARLY_ACCESS_URL_REMOTE_BASE = {
+    ...PRODUCTION_URL_REMOTE_BASE,
+    CONFIG_PATH: 'config-early-access/',
+};
+
 const UNSIGNED_URL_REMOTE_BASE = {
     BASE_URL: 'https://data.trezor.io',
     MIDDLE_PATH: 'dev/firmware/releases/unsigned',
+    CONFIG_PATH: '',
 };
 const UNSIGNED_STABLE_URL_REMOTE_BASE = {
     BASE_URL: 'https://data.trezor.io',
     MIDDLE_PATH: 'dev/firmware/releases/unsigned-stable',
+    CONFIG_PATH: '',
 };
 const UNSIGNED_NIGHTLY_URL_REMOTE_BASE = {
     BASE_URL: 'https://data.trezor.io',
     MIDDLE_PATH: 'dev/firmware/firmware-nightly',
+    CONFIG_PATH: '',
 };
 const SIGNED_URL_REMOTE_BASE = {
     BASE_URL: 'https://suite.corp.sldev.cz',
     MIDDLE_PATH: 'firmware/signed',
+    CONFIG_PATH: '',
 };
 const SIGNED_LOCALHOST = {
     BASE_URL: 'http://localhost:3000',
     MIDDLE_PATH: 'firmware/signed',
+    CONFIG_PATH: '',
 };
 const UNSIGNED_LOCALHOST = {
     BASE_URL: 'http://localhost:3000',
     MIDDLE_PATH: 'firmware/unsigned',
+    CONFIG_PATH: '',
 };
 
 interface FirmwareRemoteConfig {
@@ -51,12 +65,12 @@ const FIRMWARE_REMOTES_CONFIG: Record<FirmwareChannel, FirmwareRemoteConfig> = {
      Remotes that serve production-signed FW binaries
     */
     production: {
-        remoteUrlParts: RELEASES_URL_REMOTE_BASE,
+        remoteUrlParts: PRODUCTION_URL_REMOTE_BASE,
         useProductionKey: true,
         isSignatureOptional: false,
     },
     'production-early-access': {
-        remoteUrlParts: RELEASES_URL_REMOTE_BASE,
+        remoteUrlParts: PRODUCTION_EARLY_ACCESS_URL_REMOTE_BASE,
         useProductionKey: true,
         isSignatureOptional: false,
     },
@@ -119,15 +133,9 @@ const JWS_CONFIG = {
     REQUEST_TIMEOUT_MS: 5000,
 };
 
-const CONFIG_PATH_BY_CHANNEL: Partial<Record<FirmwareChannel, string>> = {
-    production: 'config/',
-    'production-early-access': 'config-early-access/',
-};
-
 const fetchRemoteFwConfig = async (firmwareChannel: FirmwareChannel) => {
-    const { BASE_URL, MIDDLE_PATH } = getOnlineFirmwareBaseUrl(firmwareChannel);
-    const configPath = CONFIG_PATH_BY_CHANNEL[firmwareChannel] ?? '';
-    const path = `${MIDDLE_PATH}/${configPath}${JWS_CONFIG.REMOTE_FILENAME}`;
+    const { BASE_URL, MIDDLE_PATH, CONFIG_PATH } = getOnlineFirmwareBaseUrl(firmwareChannel);
+    const path = `${MIDDLE_PATH}/${CONFIG_PATH}${JWS_CONFIG.REMOTE_FILENAME}`;
     const remoteReleasesUrl = new URL(path, BASE_URL);
 
     try {
