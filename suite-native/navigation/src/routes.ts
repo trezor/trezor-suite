@@ -20,6 +20,8 @@ export enum RootStackRoutes {
     DevUtils = 'DevUtils',
     MessageSystemManager = 'MessageSystemManager',
     MessageSystemExperiments = 'MessageSystemExperiments',
+    SignAndVerify = 'SignAndVerify',
+    SignAndVerifyStack = 'SignAndVerifyStack',
     TransactionDetailStack = 'TransactionDetailStack',
     ReceiveStack = 'ReceiveStack',
     SendStack = 'SendStack',
@@ -249,6 +251,11 @@ export enum DemoAccountQuestionnaireStackRoutes {
 
 export enum AccountsStackRoutes {
     Accounts = 'Accounts',
+}
+
+export enum SignAndVerifyStackRoutes {
+    DeviceConnectionGuard = 'DeviceConnectionGuard',
+    ContinueOnTrezor = 'ContinueOnTrezor',
 }
 
 export enum EarnStackRoutes {

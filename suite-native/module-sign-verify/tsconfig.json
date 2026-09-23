@@ -1,0 +1,39 @@
+{
+    "extends": "../../tsconfig.base.json",
+    "compilerOptions": { "outDir": "libDev" },
+    "references": [
+        {
+            "path": "../../suite-common/dependency-injection"
+        },
+        {
+            "path": "../../suite-common/formatters"
+        },
+        {
+            "path": "../../suite-common/redux-utils"
+        },
+        {
+            "path": "../../suite-common/sign-verify"
+        },
+        {
+            "path": "../../suite-common/validators"
+        },
+        {
+            "path": "../../suite-common/wallet-core"
+        },
+        {
+            "path": "../../suite-common/wallet-types"
+        },
+        {
+            "path": "../../suite-common/wallet-utils"
+        },
+        { "path": "../accounts" },
+        { "path": "../atoms" },
+        { "path": "../device" },
+        { "path": "../device-authorization" },
+        { "path": "../forms" },
+        { "path": "../intl" },
+        { "path": "../navigation" },
+        { "path": "../../packages/styles-native" }
+    ],
+    "include": [".", "**/*.json"]
+}

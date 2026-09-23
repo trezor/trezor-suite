@@ -2044,6 +2044,7 @@ export const messages = {
             coin: 'Network',
             accountType: 'Account type',
             derivationPath: 'Derivation path',
+            signAndVerifyButton: 'Sign & verify',
             xpubBottomSheet: {
                 xpub: {
                     title: 'Public key (XPUB)',
@@ -4999,5 +5000,48 @@ export const messages = {
     biometricsButton: 'Unlock with biometrics',
     search: {
         noResults: 'No results',
+    },
+    signAndVerify: {
+        tabs: {
+            sign: 'Sign',
+            verify: 'Verify',
+        },
+        format: {
+            label: 'Format',
+            values: {
+                trezor: 'Trezor (BIP-137)',
+                electrum: 'Electrum',
+                rawKey: 'Raw key',
+                cose: 'COSE (CIP-30)',
+            },
+        },
+        address: {
+            label: 'Address',
+            badges: {
+                stake: 'Stake',
+                fresh: 'Fresh',
+                change: 'Change',
+            },
+        },
+        message: {
+            label: 'Message',
+        },
+        hex: {
+            label: 'Hex',
+        },
+        signature: {
+            label: 'Signature',
+            placeholder: 'Generated after signing',
+        },
+        buttons: {
+            sign: 'Sign',
+            verify: 'Verify',
+            clear: 'Clear',
+        },
+        results: {
+            signed: 'Message signed',
+            verified: 'Message verified',
+            failed: 'Verification failed',
+        },
     },
 };
