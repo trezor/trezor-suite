@@ -120,6 +120,7 @@
 !/suite-common/redux-utils
 !/suite-common/schemas
 !/suite-common/sentry
+!/suite-common/sign-verify
 !/suite-common/suite-config
 !/suite-common/suite-constants
 !/suite-common/suite-rbf-labels-migrations
@@ -212,6 +213,7 @@
 !/suite-native/module-receive
 !/suite-native/module-send
 !/suite-native/module-settings
+!/suite-native/module-sign-verify
 !/suite-native/module-stellar-token-management
 !/suite-native/module-trading
 !/suite-native/module-transactions
