@@ -24,25 +24,6 @@ import { fixLinuxManufacturerData } from './fixLinuxManufacturerData';
 import { openSystemSettingsThunk } from './openSystemSettingsThunk';
 import { remapKnownDevices } from './remapKnownDevices';
 
-export type BluetoothInitRootState = WithBluetoothRootState & DeviceRootState & FirmwareRootState;
-
-export type BluetoothInitDispatch = ThunkDispatch<
-    BluetoothInitRootState,
-    WithServices<DesktopApiDep<'openSystemSettings' | 'appFocus'>>,
-    UnknownAction
->;
-
-export type BluetoothInitDeps = {
-    getState: () => BluetoothInitRootState;
-    dispatch: BluetoothInitDispatch;
-} & BackgroundScanDep;
-
-export type BluetoothInit = () => Promise<void>;
-
-export type BluetoothInitDep = {
-    bluetoothInit: BluetoothInit;
-};
-
 const attemptDeviceConnect = async (deps: BluetoothInitDeps, device: DesktopBluetoothDevice) => {
     const { getState, dispatch } = deps;
     const knownDevice = selectKnownDevices<DesktopBluetoothDevice>(getState()).find(
@@ -223,6 +204,25 @@ const init = async (deps: BluetoothInitDeps) => {
     setupListeners(deps);
 
     setupAutoReconnect(deps);
+};
+
+export type BluetoothInitRootState = WithBluetoothRootState & DeviceRootState & FirmwareRootState;
+
+export type BluetoothInitDispatch = ThunkDispatch<
+    BluetoothInitRootState,
+    WithServices<DesktopApiDep<'openSystemSettings' | 'appFocus'>>,
+    UnknownAction
+>;
+
+export type BluetoothInitDeps = {
+    getState: () => BluetoothInitRootState;
+    dispatch: BluetoothInitDispatch;
+} & BackgroundScanDep;
+
+export type BluetoothInit = () => Promise<void>;
+
+export type BluetoothInitDep = {
+    bluetoothInit: BluetoothInit;
 };
 
 export const createBluetoothInit = (deps: BluetoothInitDeps): BluetoothInit => {

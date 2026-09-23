@@ -9,6 +9,11 @@ import { isBluetoothDeviceReachable } from './isBluetoothDeviceReachable';
 const BACKGROUND_SCAN_INTERVAL = 6_000;
 const BACKGROUND_SCAN_DURATION = 2_000;
 
+// TODO: add logger to deps
+const logger = {
+    warn: (message: string) => console.warn(`[Bluetooth BackgroundScan] ${message}`),
+};
+
 export type BackgroundScanDeps = {
     getState: () => WithBluetoothRootState;
 };
@@ -21,11 +26,6 @@ export type BackgroundScan = {
 
 export type BackgroundScanDep = {
     backgroundScan: BackgroundScan;
-};
-
-// TODO: add logger to deps
-const logger = {
-    warn: (message: string) => console.warn(`[Bluetooth BackgroundScan] ${message}`),
 };
 
 /**
