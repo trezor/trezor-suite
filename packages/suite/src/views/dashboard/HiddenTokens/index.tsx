@@ -3,10 +3,11 @@ import { useMemo } from 'react';
 import { Translation, useTranslation } from '@suite/intl';
 import { selectDeviceStaticSessionId } from '@suite-common/device';
 import { ExperimentId, useExperiment } from '@suite-common/message-system';
-import { Column, Text } from '@trezor/components';
+import { Column } from '@trezor/components';
 
 import { PageHeader } from 'src/components/suite/layouts/SuiteLayout';
 import { useLayout, useSelector } from 'src/hooks/suite';
+import { NoTokens } from 'src/views/wallet/tokens/common/NoTokens';
 
 import { HiddenTokensCard } from './HiddenTokensCard';
 import {
@@ -51,11 +52,7 @@ export const HiddenTokens = () => {
         hiddenByUserDust.length === 0 &&
         unrecognizedDust.length === 0
     ) {
-        return (
-            <Text intent="neutral" priority="secondary" data-testid="@hidden-tokens/empty">
-                <Translation id="TR_HIDDEN_TOKENS_EMPTY" />
-            </Text>
-        );
+        return <NoTokens title={<Translation id="TR_HIDDEN_TOKENS_EMPTY" />} />;
     }
 
     return (
