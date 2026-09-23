@@ -1,6 +1,7 @@
 import { type NavigationAction, useNavigation, usePreventRemove } from '@react-navigation/native';
 
 import {
+    DEFAULT_BACK_NAVIGATION_ACTIONS,
     type NavigationRemoveActionTypes,
     matchesNavigationRemoveAction,
 } from '../navigationRemove';
@@ -14,8 +15,8 @@ type OnBlockedParams = {
 export type UseNavigationRemoveGuardParams = {
     /** Defaults to true. Disabling the guard also disables its callback. */
     isEnabled?: boolean;
-    /** Explicitly select removal actions to block; an empty list blocks none. */
-    actionTypes: NavigationRemoveActionTypes;
+    /** Defaults to back navigation actions; an empty list blocks none. */
+    actionTypes?: NavigationRemoveActionTypes;
     /** Returning or resolving leaves navigation blocked. Omit to block unconditionally. */
     onBlocked?: (params: OnBlockedParams) => void | Promise<void>;
 };
@@ -26,9 +27,9 @@ export type UseNavigationRemoveGuardParams = {
  */
 export const useNavigationRemoveGuard = ({
     isEnabled = true,
-    actionTypes,
+    actionTypes = DEFAULT_BACK_NAVIGATION_ACTIONS,
     onBlocked,
-}: UseNavigationRemoveGuardParams) => {
+}: UseNavigationRemoveGuardParams = {}) => {
     const navigation = useNavigation();
 
     usePreventRemove(isEnabled, ({ data }) => {
