@@ -1,14 +1,14 @@
-import { useCallback, useEffect, useRef } from 'react';
+import { useCallback, useRef } from 'react';
 
-import { useFocusEffect, useNavigation } from '@react-navigation/native';
+import { useFocusEffect } from '@react-navigation/native';
 
 import { type AnalyticsNativeEvents, injectNativeAnalytics } from '@suite-native/analytics';
+import { BACK_NAVIGATION_ACTIONS, useOnNavigationRemove } from '@suite-native/navigation';
 import { useServices } from '@trezor/dependency-injection';
 
 export const useNavigateBackAnalytics = (event: AnalyticsNativeEvents) => {
     const { analytics } = useServices(injectNativeAnalytics);
     const hasContinuedRef = useRef(false);
-    const navigation = useNavigation();
     const eventRef = useRef(event);
     eventRef.current = event;
 
@@ -18,22 +18,14 @@ export const useNavigateBackAnalytics = (event: AnalyticsNativeEvents) => {
         }, []),
     );
 
-    useEffect(
-        () =>
-            navigation.addListener('beforeRemove', e => {
-                // Native-stack dismissals (iOS swipe-back, native header back) dispatch POP,
-                // while JS navigation.goBack() dispatches GO_BACK. Closing a yield stack uses POP_TO_TOP.
-                const isBackRemoval =
-                    e.data.action.type === 'GO_BACK' ||
-                    e.data.action.type === 'POP' ||
-                    e.data.action.type === 'POP_TO_TOP';
-
-                if (isBackRemoval && navigation.isFocused() && !hasContinuedRef.current) {
-                    analytics.report(eventRef.current);
-                }
-            }),
-        [navigation, analytics],
-    );
+    useOnNavigationRemove({
+        actionTypes: BACK_NAVIGATION_ACTIONS,
+        onRemoveAttempt: () => {
+            if (!hasContinuedRef.current) {
+                analytics.report(eventRef.current);
+            }
+        },
+    });
 
     return useCallback(() => {
         hasContinuedRef.current = true;
