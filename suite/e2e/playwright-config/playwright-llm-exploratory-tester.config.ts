@@ -17,7 +17,6 @@ const definition: PlaywrightProjectDefinition[] = [
     { model: Model.T3T1, firmware: '2-main' },
     { model: Model.T3B1, firmware: '2-main' },
     { model: Model.T2T1, firmware: '2-main' },
-    { model: Model.T1B1, firmware: '1-main' },
 ];
 
 const config = defineConfig({

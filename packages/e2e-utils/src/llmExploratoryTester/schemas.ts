@@ -8,7 +8,7 @@ const toJsonSchema = (schema: z.ZodType) => {
     return jsonSchema;
 };
 
-export const DEVICE_MODELS = ['T1B1', 'T2T1', 'T3B1', 'T3T1', 'T3W1'] as const;
+export const DEVICE_MODELS = ['T2T1', 'T3B1', 'T3T1', 'T3W1'] as const;
 
 export const DeviceModelSchema = z.enum(DEVICE_MODELS);
 
@@ -55,7 +55,7 @@ export const TestResultSchema = z.object({
     unfinished: z
         .array(z.string())
         .describe(
-            'Areas attempted but not completed, each with its concrete blocker. Empty when everything was attempted. The harness resumes the session to continue these.',
+            'Areas attempted but not completed, each with its concrete blocker. Empty when everything was attempted.',
         ),
 });
 

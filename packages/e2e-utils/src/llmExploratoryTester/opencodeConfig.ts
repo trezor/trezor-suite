@@ -5,7 +5,7 @@ import { BOT_DIR, BROWSER_RELATIVE_DIR, REPO_ROOT } from './paths';
 
 export const MODEL = {
     providerID: 'openrouter',
-    modelID: process.env.LLM_EXPLORATORY_TESTER_MODEL ?? 'openai/gpt-5.6-luna',
+    modelID: process.env.LLM_EXPLORATORY_TESTER_MODEL || 'z-ai/glm-5.3-flash',
 };
 
 // Applied as the prompt `variant`; OpenRouter ignores provider `options` for effort.

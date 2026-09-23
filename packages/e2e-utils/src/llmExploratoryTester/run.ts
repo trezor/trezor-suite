@@ -16,7 +16,7 @@ import {
 import { runOpencode } from './runOpencode';
 import { type PrContext, PrContextSchema } from './schemas';
 
-const DEFAULT_BUDGET_USD = 10;
+const DEFAULT_BUDGET_USD = 4;
 const DEFAULT_TIMEOUT_MIN = 120;
 
 function buildAgentPrompt(context: PrContext): string {
