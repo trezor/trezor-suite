@@ -16,7 +16,7 @@ yarn suite:dev:vite        # Development with Vite (faster hot reload)
 ## Code Quality
 
 ```bash
-yarn format                # Format code with Prettier
+yarn format                # Prettier (via Nx) on files changed against origin/develop, plus uncommitted and untracked files
 yarn lint:styles --no-tui  # Lint CSS styles (check logs only if exit status is not 0)
 yarn lint:js:fix --no-tui  # Auto-fix linting issues (check logs only if exit status is not 0)
 yarn type-check --no-tui   # TypeScript type checking (allow 15 minutes, check logs only if exit status is not 0)
@@ -38,6 +38,6 @@ yarn workspace @package-scope/package-name test:unit  # Test specific package
 ## Build Commands
 
 ```bash
-yarn build:libs            # Build all libraries (required after dependency changes)
+yarn build:libs            # Rebuild all libraries without Nx cache; rarely needed
 yarn suite:build:web       # Production web build
 ```

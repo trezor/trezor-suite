@@ -42,9 +42,9 @@ Nested mandatory skills still apply within their stated scope.
   Style proposals: [Contribution guide](skills/skills-and-code-style-contribution/SKILL.md).
 
 The architecture and verification rules below supersede conflicting generalizations in the Packages
-and Development Commands skills, including the latter's prohibition on affected typechecks and
-once-only limit. Diagnose failures before applying troubleshooting recipes; cache deletion, dependency
-reinstallation and killing development servers are not routine prerequisites.
+and Development Commands skills; typechecks follow the limits in Verification and completion.
+Diagnose failures before applying troubleshooting recipes; cache deletion, dependency reinstallation
+and killing development servers are not routine prerequisites.
 
 ## Architecture and code map
 
@@ -91,8 +91,9 @@ For a fresh checkout, follow `README.md`: initialize submodules with
 `git submodule update --init --recursive`, install Git LFS once with `git lfs install`, run `git lfs pull`,
 then `nvm install`, `yarn` and `yarn build:essential`. Reuse an already prepared environment.
 Use `yarn --immutable` when installing without intended lockfile changes, as validation CI does.
-Preserve `.yarnrc.yml` install-script allowlisting and dependency age gates. Skipping dependency builds
-is not a substitute for runtime prerequisites.
+Preserve `.yarnrc.yml` install-script allowlisting and dependency age gates. `yarn --mode=skip-build`
+skips allowlisted install scripts (Playwright browsers, native modules). Use it only for lint/typecheck;
+running the app, E2E or tests that load native modules requires a full install.
 
 - Web development: `yarn suite:dev` at `http://localhost:8000`; `yarn suite:dev:vite` is
   experimental and development-only.
@@ -107,7 +108,7 @@ is not a substitute for runtime prerequisites.
 - Package lint: `ESLINT_RUN_EXPENSIVE_CHECKS=true yarn workspace <package-name> lint:js`; use the
   package's `lint:styles` script for styles where present.
 - Formatting changed files: `yarn prettier --check <files>`; use `--write` only on intended files.
-- Affected checks: `yarn test:unit --no-tui`, `yarn type-check --no-tui`,
+- Affected checks: `yarn test:unit --no-tui`, `yarn type-check --no-tui` (only on user's request),
   `ESLINT_RUN_EXPENSIVE_CHECKS=true yarn lint:js --no-tui`, `yarn lint:styles --no-tui`, `yarn format:verify`. Styles also runs local Stylelint rule tests.
 - Library build validation: `yarn build:libs:verify --no-tui` builds affected libraries; `yarn build:libs` rebuilds all libraries without Nx cache, so reserve it for a demonstrated need.
 - Production web behavior: `yarn suite:build:web`; `yarn suite:build:web:preview` builds and serves
@@ -129,8 +130,11 @@ variants exist for `test:unit:all`, `type-check:all`, `lint:js:all` and `lint:st
 
 Choose checks from the owning package and affected consumers. For behavior changes, reproduce the
 issue or establish the expected behavior, add meaningful regression coverage where applicable, and
-confirm the fix plus relevant failure/edge cases. Run scoped lint and typechecks for TypeScript changes;
-expand to affected checks for shared contracts, dependencies or configuration. Match CI's
+confirm the fix plus relevant failure/edge cases. Run scoped lint for TypeScript changes; expand to
+affected checks for shared contracts, dependencies or configuration. Typechecks are slow even per
+package: for isolated changes rely on IDE diagnostics and focused tests; run the package typecheck at
+most once near final validation, only for integration risk or on request, and warn first. Run affected
+or repo-wide typechecks, including the CI type-check gate, only on request. Match CI's
 `ESLINT_RUN_EXPENSIVE_CHECKS=true` when validating JS/TS. Build changed publishing/bundling surfaces;
 exercise changed UI/runtime behavior in the relevant app when available, including production headers
 for browser-permission changes. Documentation-only edits need link/command/diff and formatting checks,
