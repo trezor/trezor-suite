@@ -45,8 +45,7 @@ test.describe('Trading - Buy Solana token', { tag: ['@T3W1', '@T3T1'] }, () => {
                     searchFilter: cryptoTicker,
                     assetCryptoId: usdcCryptoId,
                 });
-                await tradingPage.inputs.fiatCryptoSwitchButton.click();
-                await expect(tradingPage.inputs.cryptoAmountTicker).toHaveText(cryptoTicker);
+                await expect(tradingPage.inputs.youGetAssetSymbol).toHaveText(cryptoTicker);
 
                 await tradingPage.fillBuyForm({
                     amount: cryptoAmount,
@@ -61,10 +60,8 @@ test.describe('Trading - Buy Solana token', { tag: ['@T3W1', '@T3T1'] }, () => {
             });
 
             await test.step('Continue to the preview', async () => {
-                // The crypto amount is the one typed, so the offer competes on the fiat it costs and
-                // the best-offer field carries that bare number rather than an amount with a ticker.
-                await expect(tradingPage.quotes.bestOfferAmount).toHaveText(/^[\d,]+(\.\d+)?$/);
-                fiatAmount = await tradingPage.quotes.bestOfferAmount.innerText();
+                await expect(tradingPage.inputs.fiatAmount).toHaveValue(/^[\d,]+(\.\d+)?$/);
+                fiatAmount = await tradingPage.inputs.fiatAmount.inputValue();
                 providerName = await tradingPage.quotes.selectedProviderName.innerText();
 
                 await expect(tradingPage.buyBestOfferButton).toHaveTranslation('TR_CONTINUE');
@@ -130,7 +127,7 @@ test.describe('Trading - Buy Solana token', { tag: ['@T3W1', '@T3T1'] }, () => {
 
             await test.step('Return to account buy form', async () => {
                 await tradingPage.backToAccountButton('Buy').click();
-                await tradingPage.verifyBuyFormOpened(/Bitcoin|Solana/);
+                await tradingPage.verifyBuyFormOpened(/BTC|SOL/);
             });
         },
     );

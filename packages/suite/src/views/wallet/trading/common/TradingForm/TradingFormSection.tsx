@@ -26,7 +26,11 @@ export const TradingFormSection = ({
                 <Text typographyStyle="body-sm" intent="neutral" priority="secondary">
                     {title}
                 </Text>
-                {!!errorMessage && <Badge intent="critical">{errorMessage}</Badge>}
+                {!!errorMessage && (
+                    <Badge intent="critical" data-testid={dataTestId && `${dataTestId}/error`}>
+                        {errorMessage}
+                    </Badge>
+                )}
             </Row>
         )}
         <Column gap={8} alignItems="stretch">

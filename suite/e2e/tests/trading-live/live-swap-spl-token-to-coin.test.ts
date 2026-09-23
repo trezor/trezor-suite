@@ -88,7 +88,7 @@ test.describe(
             });
 
             await test.step('Confirm the Swap trade', async () => {
-                await expect(tradingPage.quotes.bestOfferAmount).toContainText(sendTokenSymbol);
+                await expect(tradingPage.inputs.youPayAssetSymbol).toHaveText(sendTokenSymbol);
                 await tradingPage.waitForSolanaFeesAndClickSwapBestOffer();
             });
 
@@ -129,7 +129,7 @@ test.describe(
                 let liveTradeAmounts: ReturnType<typeof tradingPage.waitForLiveTradeAmounts>;
 
                 await test.step('Confirm the Swap trade', async () => {
-                    await expect(tradingPage.quotes.bestOfferAmount).toContainText(
+                    await expect(tradingPage.inputs.youGetAssetSymbol).toHaveText(
                         receiveCoinSymbol,
                     );
                     liveTradeAmounts = tradingPage.waitForLiveTradeAmounts();
