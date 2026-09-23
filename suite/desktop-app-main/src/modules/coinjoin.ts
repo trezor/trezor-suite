@@ -18,7 +18,7 @@ import { getSynchronize } from '@trezor/utils';
 
 import type { ModuleInit } from './module';
 import { ipcMain, looselyTypedIpcMain } from '../ipcMain';
-import { PowerSaveBlocker } from '../libs/power-save-blocker';
+import { type ReleasePowerSaveBlocker } from '../libs/createPowerSaveBlocker';
 import { CoinjoinProcess } from '../libs/processes/CoinjoinProcess';
 import { ThreadProxy } from '../libs/thread-proxy';
 
@@ -27,7 +27,12 @@ export const SERVICE_NAME = '@trezor/coinjoin';
 const CLIENT_CHANNEL = 'CoinjoinClient';
 const BACKEND_CHANNEL = 'CoinjoinBackend';
 
-export const init: ModuleInit = ({ mainWindowProxy, store, mainThreadEmitter }) => {
+export const init: ModuleInit = ({
+    mainWindowProxy,
+    store,
+    mainThreadEmitter,
+    powerSaveBlocker,
+}) => {
     const { logger } = global;
 
     const backends: ThreadProxy<CoinjoinBackend>[] = [];
@@ -62,7 +67,16 @@ export const init: ModuleInit = ({ mainWindowProxy, store, mainThreadEmitter }) 
         });
     };
 
-    const powerSaveBlocker = new PowerSaveBlocker();
+    let releasePowerSaveBlocker: ReleasePowerSaveBlocker | undefined;
+
+    const startBlockingPowerSave = () => {
+        releasePowerSaveBlocker ??= powerSaveBlocker.blockPowerSave();
+    };
+
+    const stopBlockingPowerSave = () => {
+        releasePowerSaveBlocker?.();
+        releasePowerSaveBlocker = undefined;
+    };
 
     logger.debug(SERVICE_NAME, `Starting service`);
 
@@ -170,15 +184,15 @@ export const init: ModuleInit = ({ mainWindowProxy, store, mainThreadEmitter }) 
                             synchronize(killCoinjoinProcess);
                         }
                         if (!clients.some(cli => cli.getAccounts().length > 0)) {
-                            powerSaveBlocker.stopBlockingPowerSave();
+                            stopBlockingPowerSave();
                         }
                     }
                     if (method === 'registerAccount') {
-                        powerSaveBlocker.startBlockingPowerSave();
+                        startBlockingPowerSave();
                     }
                     if (method === 'unregisterAccount') {
                         if (!clients.some(cli => cli.getAccounts().length > 0)) {
-                            powerSaveBlocker.stopBlockingPowerSave();
+                            stopBlockingPowerSave();
                         }
                     }
 
@@ -242,7 +256,7 @@ export const init: ModuleInit = ({ mainWindowProxy, store, mainThreadEmitter }) 
 
         unregisterProxies();
         await synchronize(killCoinjoinProcess);
-        powerSaveBlocker.stopBlockingPowerSave();
+        stopBlockingPowerSave();
     };
 
     const onQuit = async () => {
