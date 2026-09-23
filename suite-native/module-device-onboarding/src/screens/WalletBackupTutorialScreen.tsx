@@ -8,7 +8,7 @@ import { selectDeviceDefaultBackupType, selectIsDeviceInitialized } from '@suite
 import { type BackupType } from '@suite-common/suite-types';
 import {
     type DeviceOnboardingStackParamList,
-    type DeviceOnboardingStackRoutes,
+    DeviceOnboardingStackRoutes,
     type RootStackParamList,
     Screen,
     type StackToStackCompositeNavigationProps,
@@ -43,7 +43,7 @@ export const WalletBackupTutorialScreen = () => {
 
     const handlePressBack = () => {
         // Skip loader screen and navigate back to the create or recover crossroads.
-        navigation.pop(2);
+        navigation.popTo(DeviceOnboardingStackRoutes.CreateOrRecoverCrossroads);
     };
 
     const totalSteps = useMemo(

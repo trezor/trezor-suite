@@ -15,9 +15,10 @@ import {
 import { Translation } from '@suite-native/intl';
 import { SUITE_MOBILE_SUPPORT_URL, useOpenLink } from '@suite-native/link';
 import {
+    BACK_NAVIGATION_ACTIONS,
     DynamicScreenHeader,
     useDisableIOSGesture,
-    useNavigationRemoveActionInterceptor,
+    useNavigationRemoveGuard,
 } from '@suite-native/navigation';
 import { reportSecurityCheck } from '@suite-native/sentry';
 import TrezorConnect from '@trezor/connect';
@@ -253,7 +254,7 @@ export const FirmwareInstallationScreenContent = ({
     const buttonStyle = applyStyle(bottomButtonsContainerStyle);
 
     useDisableIOSGesture();
-    useNavigationRemoveActionInterceptor({ isEnabled: !isError });
+    useNavigationRemoveGuard({ actionTypes: BACK_NAVIGATION_ACTIONS, isEnabled: !isError });
 
     useEffect(() => {
         if (isSheetOpen && !showConfirmOnDevice) {
