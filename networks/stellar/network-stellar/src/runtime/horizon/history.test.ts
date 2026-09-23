@@ -1,5 +1,5 @@
 import { readAccountHistory } from './history';
-import { STELLAR_HISTORY_EFFECTS_LIMIT } from '../../constants';
+import { STELLAR_HISTORY_EFFECTS_LIMIT, STELLAR_HISTORY_PAGE_TIMEOUT_MS } from '../../constants';
 import type { StellarHorizonServer } from '../../types';
 
 const DESCRIPTOR = 'GBSXTBPFJOJ64NSYRFE2F6P6TPMMSD45KQZH5TEWIBEAHICY6IZVGCET';
@@ -26,6 +26,7 @@ type HorizonStub = {
     operationRecords: ReturnType<typeof operation>[];
     effectWindows: ReturnType<typeof effect>[][];
     effectsError?: unknown;
+    operationsHang?: boolean;
     horizon: StellarHorizonServer;
 };
 
@@ -51,6 +52,8 @@ const createHorizonStub = (): HorizonStub => {
                     },
                     call: () => {
                         stub.operationCursors.push(cursor);
+
+                        if (stub.operationsHang) return new Promise(() => {});
 
                         return Promise.resolve({ records: stub.operationRecords });
                     },
@@ -168,5 +171,19 @@ describe(readAccountHistory.name, () => {
 
         expect(stub.effectCursors).toEqual([]);
         expect(groups[0]?.effects).toEqual([]);
+    });
+
+    it('gives up on a Horizon read that never answers, rather than returning a short page', async () => {
+        jest.useFakeTimers();
+        const stub = createHorizonStub();
+        stub.operationsHang = true;
+
+        const settled = read(stub).catch((error: Error) => error.message);
+
+        await jest.advanceTimersByTimeAsync(STELLAR_HISTORY_PAGE_TIMEOUT_MS + 1);
+
+        await expect(settled).resolves.toBe('Aborted by timeout');
+
+        jest.useRealTimers();
     });
 });

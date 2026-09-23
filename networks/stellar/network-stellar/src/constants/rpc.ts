@@ -27,3 +27,6 @@ export type StellarHistoryEffects = 'horizon' | 'off';
 export const STELLAR_HISTORY_EFFECTS: StellarHistoryEffects = 'horizon';
 
 export const STELLAR_HISTORY_EFFECTS_LIMIT = 200;
+
+/** A page walks Horizon until it is full, so the walk needs a wall-clock bound of its own. */
+export const STELLAR_HISTORY_PAGE_TIMEOUT_MS = 30_000;

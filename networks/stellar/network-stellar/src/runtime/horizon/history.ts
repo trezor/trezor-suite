@@ -1,10 +1,11 @@
 import type { Horizon } from '@stellar/stellar-sdk';
 
-import { BigNumber } from '@trezor/utils';
+import { BigNumber, scheduleAction } from '@trezor/utils';
 
 import {
     STELLAR_HISTORY_EFFECTS,
     STELLAR_HISTORY_EFFECTS_LIMIT,
+    STELLAR_HISTORY_PAGE_TIMEOUT_MS,
     type StellarHistoryEffects,
 } from '../../constants';
 import type { StellarHorizonServer } from '../../types';
@@ -125,8 +126,15 @@ export const readAccountHistory = async (
         let { cursor } = params;
         let limit = Math.min(HORIZON_MAX_LIMIT, pageSize * 2);
 
+        const deadline = Date.now() + STELLAR_HISTORY_PAGE_TIMEOUT_MS;
+
         for (;;) {
-            const window = await fetchOperationGroups(params, limit, cursor, effectsSource);
+            // Returning a short page here would read as the end of the history, so this throws.
+            // A single attempt: `scheduleAction` would otherwise retry a 404 until the deadline.
+            const window = await scheduleAction(
+                () => fetchOperationGroups(params, limit, cursor, effectsSource),
+                { attempts: 1, timeout: Math.max(1, deadline - Date.now()) },
+            );
             groups = [...groups, ...window.groups];
 
             if (groups.length >= pageSize || !window.isWindowFull) break;
