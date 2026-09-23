@@ -43,7 +43,10 @@ import { useTradingSelectedQuote } from 'src/views/wallet/trading/common/hooks/u
 
 import { TradingFormInputAmountPlaceholder } from './TradingFormInputAmountPlaceholder';
 import { getCryptoInputRules } from './tradingFormInputFiatCryptoRules';
-import { TRADING_AMOUNT_PLACEHOLDER, tradingAmountInputStyle } from '../../tradingFormInputsUtils';
+import {
+    TRADING_AMOUNT_PLACEHOLDER,
+    getTradingAmountInputStyle,
+} from '../../tradingFormInputsUtils';
 
 type TradingFormInputCryptoAmountContentProps = TradingFormInputFiatCryptoProps & {
     validationAccount: Account;
@@ -76,6 +79,7 @@ const TradingFormInputCryptoAmountContent = ({
 
     const { shouldSendInSats } = useBitcoinAmountUnit(validationAccount.symbol);
     const amountInCrypto = useWatch({ control, name: TRADING_FORM_AMOUNT_IN_CRYPTO });
+    const cryptoAmount = useWatch({ control, name: cryptoInputName });
 
     const isBuyContext = isTradingBuyContext(context);
     const isExchangeOrSellContext = isTradingExchangeOrSellContext(context);
@@ -214,7 +218,7 @@ const TradingFormInputCryptoAmountContent = ({
             flex="1"
             name={cryptoInputName}
             placeholder={TRADING_AMOUNT_PLACEHOLDER}
-            style={tradingAmountInputStyle}
+            style={getTradingAmountInputStyle(cryptoAmount)}
             locale={locale}
             onChange={handleChange}
             hasError={!!cryptoInputError}

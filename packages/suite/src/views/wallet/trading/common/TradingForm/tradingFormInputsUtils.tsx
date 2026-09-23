@@ -3,18 +3,35 @@ import { type CSSProperties } from 'react';
 import { Translation } from '@suite/intl';
 import { type FractionButtonProps } from '@trezor/components';
 import { typographyStylesBase } from '@trezor/theme';
+import { clamp } from '@trezor/utils';
 
 import { type TradingUseFormActionsReturnProps } from 'src/types/trading/tradingForm';
 
 export const TRADING_AMOUNT_PLACEHOLDER = '0.0';
 
-const { fontSize, lineHeight, fontWeight, letterSpacing } = typographyStylesBase['headline-md'];
-
-export const tradingAmountInputStyle: CSSProperties = {
-    fontSize,
-    lineHeight: `${lineHeight}px`,
+const {
+    fontSize: maxFontSize,
+    lineHeight,
     fontWeight,
     letterSpacing,
+} = typographyStylesBase['headline-md'];
+
+const FULL_SIZE_AMOUNT_LENGTH = 12;
+const MIN_AMOUNT_FONT_SIZE = Math.ceil(maxFontSize / 2);
+
+export const getTradingAmountInputStyle = (value: string | undefined): CSSProperties => {
+    const scaledFontSize = clamp(
+        Math.floor((maxFontSize * FULL_SIZE_AMOUNT_LENGTH) / (value?.length ?? 0)),
+        MIN_AMOUNT_FONT_SIZE,
+        maxFontSize,
+    );
+
+    return {
+        fontSize: scaledFontSize,
+        lineHeight: `${lineHeight}px`,
+        fontWeight,
+        letterSpacing,
+    };
 };
 
 export type FormPercentButtonValue = '10%' | '25%' | '50%' | 'max';

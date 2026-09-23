@@ -1,4 +1,4 @@
-import { useFormContext } from 'react-hook-form';
+import { useFormContext, useWatch } from 'react-hook-form';
 
 import { selectLanguage } from '@suite/settings';
 import { selectTradingLoadingAndTimestamp } from '@suite-common/trading';
@@ -13,7 +13,7 @@ import {
 } from 'src/types/trading/tradingForm';
 import {
     TRADING_AMOUNT_PLACEHOLDER,
-    tradingAmountInputStyle,
+    getTradingAmountInputStyle,
 } from 'src/views/wallet/trading/common/TradingForm/tradingFormInputsUtils';
 
 type TradingFormInputAmountPlaceholderProps = {
@@ -28,6 +28,7 @@ export const TradingFormInputAmountPlaceholder = ({
     const isDiscoveryRunning = useSelector(selectHasRunningDiscovery);
     const isBusy = isLoading || isDiscoveryRunning;
     const { control } = useFormContext<TradingAllFormProps>();
+    const value = useWatch({ control, name });
 
     return (
         <NumberInput
@@ -35,7 +36,7 @@ export const TradingFormInputAmountPlaceholder = ({
             flex="1"
             name={name}
             placeholder={TRADING_AMOUNT_PLACEHOLDER}
-            style={tradingAmountInputStyle}
+            style={getTradingAmountInputStyle(value)}
             locale={locale}
             control={control}
             rightContent={isBusy ? <Spinner size={20} /> : undefined}
