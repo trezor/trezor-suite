@@ -27,7 +27,11 @@ export const TradingFormSection = ({
                     {title}
                 </Text>
                 {!!errorMessage && (
-                    <Badge intent="critical" data-testid={dataTestId && `${dataTestId}/error`}>
+                    <Badge
+                        intent="critical"
+                        size="small"
+                        data-testid={dataTestId && `${dataTestId}/error`}
+                    >
                         {errorMessage}
                     </Badge>
                 )}
