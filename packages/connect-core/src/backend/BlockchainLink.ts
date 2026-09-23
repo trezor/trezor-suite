@@ -10,11 +10,19 @@ const backends = new BackendManager();
 
 export const findBackend = (coin: string, identity?: string) => backends.get(coin, identity);
 
+// Without custom urls the default backend stays, but a custom broadcast backend still applies to it.
+export const getCustomBlockchainLink = (
+    coinInfo: CoinInfo,
+    blockchainLink: CoinInfo['blockchainLink'],
+): CoinInfo['blockchainLink'] => {
+    const primary = blockchainLink?.url.length ? blockchainLink : coinInfo.blockchainLink;
+    const broadcast = blockchainLink?.broadcast;
+
+    return primary && broadcast?.url.length ? { ...primary, broadcast } : primary;
+};
+
 export const setCustomBackend = (coinInfo: CoinInfo, blockchainLink: CoinInfo['blockchainLink']) =>
-    backends.setCustom(
-        coinInfo.shortcut,
-        blockchainLink?.url.length ? blockchainLink : coinInfo.blockchainLink,
-    );
+    backends.setCustom(coinInfo.shortcut, getCustomBlockchainLink(coinInfo, blockchainLink));
 
 export const assertBackendSupported = (coinInfo: CoinInfo) => {
     if (!backends.isSupported(coinInfo)) {

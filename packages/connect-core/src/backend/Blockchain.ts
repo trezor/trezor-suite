@@ -40,6 +40,9 @@ const getWorker = (type: string) => {
     }
 };
 
+const maxNonce = (primary: string | undefined, broadcast: string) =>
+    primary !== undefined && Number(primary) > Number(broadcast) ? primary : broadcast;
+
 const getNormalizedTrezorShortcut = (shortcut: string) => {
     // There is no `rippled` setting that defines which network it uses neither mainnet or testnet
     // see: https://xrpl.org/parallel-networks.html
@@ -70,16 +73,27 @@ export class Blockchain {
     private onDisconnected: BlockchainOptions['onDisconnected'];
     private initPromise?: Promise<ServerInfo>;
 
+    private readonly proxy?: Proxy;
+    private readonly debug?: boolean;
+
+    // Optional dedicated backend for transactions the primary one does not know yet.
+    private readonly broadcastConfig?: NonNullable<CoinInfo['blockchainLink']>['broadcast'];
+    private broadcastLink?: BlockchainLink;
+
     constructor(options: BlockchainOptions) {
         this.identity = options.identity;
         this.coinInfo = options.coinInfo;
         this.postMessage = options.postMessage;
         this.onDisconnected = options.onDisconnected;
+        this.proxy = options.proxy;
+        this.debug = options.debug;
 
         const { blockchainLink } = options.coinInfo;
         if (!blockchainLink) {
             throw ERRORS.TypedError('Backend_NotSupported');
         }
+
+        this.broadcastConfig = blockchainLink.broadcast;
 
         const worker = getWorker(blockchainLink.type);
         if (!worker) {
@@ -187,8 +201,24 @@ export class Blockchain {
         return this.initPromise;
     }
 
+    // The broadcast backend knows a transaction from the moment it is sent, the primary one only
+    // once it indexes it, so a lookup the primary backend cannot answer is retried there.
+    private getTransaction(params: { txid: string; descriptor?: string }) {
+        return this.link.getTransaction(params).catch(error => {
+            const broadcastLink = this.getBroadcastLink();
+            if (!broadcastLink) {
+                throw error;
+            }
+
+            // Report the primary backend error, the broadcast backend is only a fallback here.
+            return broadcastLink.getTransaction(params).catch(() => {
+                throw error;
+            });
+        });
+    }
+
     getTransactions(txs: string[], descriptor?: string) {
-        return Promise.all(txs.map(txid => this.link.getTransaction({ txid, descriptor })));
+        return Promise.all(txs.map(txid => this.getTransaction({ txid, descriptor })));
     }
 
     getTransactionHexes(txids: string[]) {
@@ -229,12 +259,78 @@ export class Blockchain {
     // caller to normalize via `toCanonicalDescriptor`, turning that requirement into a compiler check.
     // The brand is not exhaustive: `getTransactions` and `subscribeAccounts`/`unsubscribeAccounts`
     // still take plain strings, so read it as a guarantee for the branded methods only.
-    getAccountInfo(
+    async getAccountInfo(
         request: Omit<BlockchainLinkParams<'getAccountInfo'>, 'descriptor'> & {
             descriptor: CanonicalDescriptor;
         },
     ) {
-        return this.link.getAccountInfo(request);
+        const info = await this.link.getAccountInfo(request);
+        const broadcastLink = this.getBroadcastLink();
+        if (!broadcastLink) {
+            return info;
+        }
+
+        const [broadcastNonce, broadcastTransactions] = await Promise.all([
+            request.confirmedNonce
+                ? this.getBroadcastConfirmedNonce(broadcastLink, request.descriptor)
+                : undefined,
+            this.getBroadcastPendingTransactions(broadcastLink, request, info),
+        ]);
+
+        return {
+            ...info,
+            history: broadcastTransactions.length
+                ? {
+                      ...info.history,
+                      transactions: [
+                          ...broadcastTransactions,
+                          ...(info.history.transactions ?? []),
+                      ],
+                  }
+                : info.history,
+            misc:
+                broadcastNonce === undefined
+                    ? info.misc
+                    : {
+                          ...info.misc,
+                          confirmedNonce: maxNonce(info.misc?.confirmedNonce, broadcastNonce),
+                      },
+        };
+    }
+
+    // The broadcast backend sees mined transactions before the primary one indexes them, so its
+    // nonce can be ahead. A failure there must not block signing, the primary answer stands.
+    private getBroadcastConfirmedNonce(broadcastLink: BlockchainLink, descriptor: string) {
+        return broadcastLink
+            .getAccountInfo({ descriptor, details: 'basic' })
+            .then(info => info.misc?.nonce)
+            .catch(() => undefined);
+    }
+
+    // Transactions sent through the broadcast backend may never reach the primary one while they
+    // are pending, so without them the wallet would drop its own pending transactions as gone.
+    private async getBroadcastPendingTransactions(
+        broadcastLink: BlockchainLink,
+        request: BlockchainLinkParams<'getAccountInfo'>,
+        info: Awaited<ReturnType<BlockchainLink['getAccountInfo']>>,
+    ) {
+        const txids = request.privatePending?.txids;
+        if (request.details !== 'txs' || (request.page ?? 1) !== 1 || !txids?.length) {
+            return [];
+        }
+
+        const known = new Set(info.history.transactions?.map(tx => tx.txid.toLowerCase()));
+        const missing = txids.filter(txid => !known.has(txid.toLowerCase()));
+
+        const transactions = await Promise.all(
+            missing.map(txid =>
+                broadcastLink
+                    .getTransaction({ txid, descriptor: request.descriptor })
+                    .catch(() => undefined),
+            ),
+        );
+
+        return transactions.filter(tx => tx !== undefined);
     }
 
     getAccountUtxo(descriptor: CanonicalDescriptor) {
@@ -326,8 +422,39 @@ export class Blockchain {
         return this.unsubscribeBlocks();
     }
 
+    // Lazily create the broadcast link on first use so networks without a broadcast backend
+    // never spawn a second worker.
+    private getBroadcastLink() {
+        if (!this.broadcastConfig?.url.length) {
+            return undefined;
+        }
+
+        if (!this.broadcastLink) {
+            const worker = getWorker(this.broadcastConfig.type);
+            if (!worker) {
+                throw ERRORS.TypedError(
+                    'Backend_WorkerMissing',
+                    `BlockchainLink broadcast worker not found ${this.broadcastConfig.type}`,
+                );
+            }
+
+            this.broadcastLink = new BlockchainLink({
+                name: `${this.coinInfo.shortcut}-broadcast`,
+                worker,
+                server: this.broadcastConfig.url,
+                debug: this.debug,
+                proxy: this.proxy,
+            });
+        }
+
+        return this.broadcastLink;
+    }
+
     pushTransaction(params: BlockchainLinkParams<'pushTransaction'>) {
-        return this.link.pushTransaction(params);
+        // Broadcast via the dedicated link when configured, fall back to the primary one otherwise.
+        const link = this.getBroadcastLink() ?? this.link;
+
+        return link.pushTransaction(params);
     }
 
     disconnect() {
@@ -336,6 +463,15 @@ export class Blockchain {
             .disconnect()
             .catch(() => {})
             .finally(() => this.link.dispose());
+
+        const { broadcastLink } = this;
+        if (broadcastLink) {
+            broadcastLink
+                .disconnect()
+                .catch(() => {})
+                .finally(() => broadcastLink.dispose());
+        }
+
         this.onBackendDisconnected();
     }
 }

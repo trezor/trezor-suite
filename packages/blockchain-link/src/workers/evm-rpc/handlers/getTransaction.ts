@@ -34,5 +34,10 @@ export const getTransaction = async (
             ? undefined
             : await client.getBlock({ blockNumber: tx.blockNumber });
 
-    return mapGetTransactionResponse({ tx, receipt, block, userAddress: '' });
+    return mapGetTransactionResponse({
+        tx,
+        receipt,
+        block,
+        userAddress: request.payload.descriptor ?? '',
+    });
 };

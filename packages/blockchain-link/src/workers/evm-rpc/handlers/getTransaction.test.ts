@@ -21,9 +21,9 @@ type FakeClient = {
     getBlock: jest.Mock;
 };
 
-const createRequest = (client: FakeClient) =>
+const createRequest = (client: FakeClient, descriptor?: string) =>
     ({
-        payload: { txid: minedTx.hash },
+        payload: { txid: minedTx.hash, descriptor },
         connect: () => Promise.resolve(client),
     }) as unknown as Request<MessageTypes.GetTransaction>;
 
@@ -64,6 +64,20 @@ describe('evm-rpc getTransaction', () => {
         expect(payload.blockTime).toBe(1700000000);
         expect(payload.fee).toBe('60000');
         expect(payload.ethereumSpecific).toMatchObject({ status: 1, gasUsed: 20000 });
+    });
+
+    it('reads the transaction from the side of the account it is asked for', async () => {
+        const client: FakeClient = {
+            getTransaction: jest.fn().mockResolvedValue(pendingTx),
+            getTransactionReceipt: jest
+                .fn()
+                .mockRejectedValue(new TransactionReceiptNotFoundError({ hash: minedTx.hash })),
+            getBlock: jest.fn(),
+        };
+
+        const { payload } = await getTransaction(createRequest(client, pendingTx.from));
+
+        expect(payload.type).toBe('sent');
     });
 
     it('does not swallow a receipt lookup failing for another reason', async () => {
