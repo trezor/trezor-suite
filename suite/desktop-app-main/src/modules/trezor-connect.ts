@@ -158,10 +158,11 @@ export const initBackground: ModuleInitBackground = ({ mainThreadEmitter, store 
                 if (method === 'firmwareUpdate') {
                     const powerSaveBlocker = new PowerSaveBlocker();
                     powerSaveBlocker.startBlockingPowerSave();
-                    const response = await TrezorConnect.firmwareUpdate(params[0]);
-                    powerSaveBlocker.stopBlockingPowerSave();
-
-                    return response;
+                    try {
+                        return await TrezorConnect.firmwareUpdate(params[0]);
+                    } finally {
+                        powerSaveBlocker.stopBlockingPowerSave();
+                    }
                 }
 
                 // Only rewrite transports when the caller actually sent some. An enabledNetworks-only
