@@ -1,7 +1,3 @@
-export {
-    type PrepareBluetoothMiddlewareDeps,
-    prepareBluetoothMiddleware,
-} from './bluetoothMiddleware';
 export { createBluetoothCompositionRoot } from './bluetoothCompositionRoot';
 export { type Bluetooth, type BluetoothDep } from './createBluetooth';
 export {

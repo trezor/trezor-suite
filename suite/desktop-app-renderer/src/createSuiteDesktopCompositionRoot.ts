@@ -33,12 +33,12 @@ export const createSuiteDesktopCompositionRoot = (): SuiteDesktopCompositionRoot
         UdpTransport: () => 'UdpTransport' as const,
     });
 
-    const { store, injectServicesIntoReduxExtra } = createReduxStore({
+    const { store, injectServicesIntoReduxExtra, addBluetoothMiddleware } = createReduxStore({
         reducer: rootReducer,
         extraDependencies,
     });
     const db = createDb({ dispatch: store.dispatch, reloadApp });
-    const suiteServices = createSuiteServicesCompositionRoot({
+    const { services: suiteServices, bluetoothMiddleware } = createSuiteServicesCompositionRoot({
         db,
         desktopApi,
         dispatch: store.dispatch,
@@ -63,6 +63,7 @@ export const createSuiteDesktopCompositionRoot = (): SuiteDesktopCompositionRoot
     // Services need the store's dispatch/getState, while Redux thunks need those services in extra.
     // Inject them after construction to break the cycle, before the app can dispatch any actions.
     injectServicesIntoReduxExtra(services);
+    addBluetoothMiddleware(bluetoothMiddleware);
 
     return { app: createDesktopApp({ desktopApi, services }) };
 };

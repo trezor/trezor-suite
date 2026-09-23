@@ -1,6 +1,5 @@
-import type { MiddlewareAPI } from 'redux';
+import type { Middleware, MiddlewareAPI } from 'redux';
 
-import { type PrepareBluetoothMiddlewareDeps, prepareBluetoothMiddleware } from '@suite/bluetooth';
 import { metadataMiddleware } from '@suite/metadata';
 import { routerMiddleware } from '@suite/router';
 import { tradingMiddleware } from '@suite/trading';
@@ -20,12 +19,11 @@ import redirect from './redirectMiddleware';
 import sentry from './sentryMiddleware';
 import { type PrepareSuiteMiddlewareDeps, prepareSuiteMiddleware } from './suiteMiddleware';
 
-export type GetSuiteMiddlewareDeps = PrepareSuiteMiddlewareDeps &
-    PrepareAnalyticsMiddlewareDeps &
-    PrepareBluetoothMiddlewareDeps;
+export type GetSuiteMiddlewareDeps = PrepareSuiteMiddlewareDeps & PrepareAnalyticsMiddlewareDeps;
 
 export const getSuiteMiddleware = (
     getExtra: () => GetSuiteMiddlewareDeps | null,
+    bluetoothMiddleware: Middleware,
 ): ((api: MiddlewareAPI<any>) => any)[] => [
     log,
     logsMiddleware, // Common logs shared between desktop and mobile app
@@ -33,7 +31,7 @@ export const getSuiteMiddleware = (
     prepareSuiteMiddleware(getExtra),
     prepareAnalyticsMiddleware(getExtra),
     buttonRequest,
-    prepareBluetoothMiddleware(getExtra),
+    bluetoothMiddleware,
     events,
     preparePushNotificationMiddleware(getExtra),
     metadataMiddleware,

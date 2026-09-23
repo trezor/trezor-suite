@@ -1,3 +1,4 @@
+import { type Middleware } from '@reduxjs/toolkit';
 import { saveAs } from 'file-saver';
 
 import { type DesktopAnalyticsDep, createAnalytics } from '@suite/analytics';
@@ -90,7 +91,14 @@ export type SuiteAppDeps = StoreAPIDep &
 
 export const selectSuiteServices = (services: any): SuiteServices => services;
 
-export const createSuiteServicesCompositionRoot = (deps: SuiteAppDeps): SuiteServices => {
+type SuiteServicesCompositionRoot = {
+    services: SuiteServices;
+    bluetoothMiddleware: Middleware;
+};
+
+export const createSuiteServicesCompositionRoot = (
+    deps: SuiteAppDeps,
+): SuiteServicesCompositionRoot => {
     const { ensureDelegatedIdentityKey } = delegatedIdentityKeyCompositionRoot({
         dispatch: deps.dispatch,
         getState: deps.getState,
@@ -99,7 +107,7 @@ export const createSuiteServicesCompositionRoot = (deps: SuiteAppDeps): SuiteSer
     });
 
     const analytics = createAnalytics();
-    const bluetooth = createBluetoothCompositionRoot({
+    const { bluetooth, bluetoothMiddleware } = createBluetoothCompositionRoot({
         dispatch: deps.dispatch,
         getState: deps.getState,
     });
@@ -163,7 +171,7 @@ export const createSuiteServicesCompositionRoot = (deps: SuiteAppDeps): SuiteSer
         }) as ReturnType<CreateTransports>;
     };
 
-    return {
+    const services: SuiteServices = {
         db: deps.db,
         desktopApi: deps.desktopApi,
         networks,
@@ -223,4 +231,6 @@ export const createSuiteServicesCompositionRoot = (deps: SuiteAppDeps): SuiteSer
                 updateOutputLabel: suiteSync.labeling.updateOutputLabel,
             }),
     };
+
+    return { services, bluetoothMiddleware };
 };

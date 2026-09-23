@@ -17,7 +17,6 @@ import {
     type PrepareBluetoothMiddlewareDeps,
     prepareBluetoothMiddleware,
 } from './bluetoothMiddleware';
-import { createBluetooth } from './createBluetooth';
 import {
     type WithBluetoothRootState,
     initialDesktopBluetoothState,
@@ -47,9 +46,7 @@ describe('prepareBluetoothMiddleware', () => {
         const scanDeps: BackgroundScanDeps = { getState: () => state };
         scan = createBackgroundScan(scanDeps);
         const extra: PrepareBluetoothMiddlewareDeps = {
-            services: {
-                bluetooth: createBluetooth({ bluetoothInit: jest.fn(), backgroundScan: scan }),
-            },
+            backgroundScan: scan,
         };
         const reducerDeps: BluetoothReducerDeps = {
             actionTypes: { storageLoad: mockActionType('storageLoad') },
