@@ -2,10 +2,7 @@ import { mockActionType } from '@suite-common/redux-utils/mocks';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { accountsActions } from '@suite-common/wallet-core';
 import { type AccountKey } from '@suite-common/wallet-types';
-import {
-    mockWalletAccount,
-    networkSpecificDefaultEthereum,
-} from '@suite-common/wallet-types/mocks';
+import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
 
 import {
     type ReceiveAccountState,
@@ -18,10 +15,7 @@ import {
 } from './receiveSlice';
 
 const bitcoinAccount = mockWalletAccount({ symbol: asNetworkSymbol('btc') });
-const ethereumAccount = mockWalletAccount(
-    { symbol: asNetworkSymbol('eth') },
-    networkSpecificDefaultEthereum,
-);
+const ethereumAccount = mockWalletAccount({ symbol: asNetworkSymbol('eth') });
 const extraDependencies: ReceiveSliceDeps = {
     actionTypes: { storageLoad: mockActionType('storageLoad') },
     reducers: {

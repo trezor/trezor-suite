@@ -1,9 +1,6 @@
 import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { asAccountDescriptor } from '@suite-common/wallet-types';
-import {
-    mockWalletAccount,
-    networkSpecificDefaultEthereum,
-} from '@suite-common/wallet-types/mocks';
+import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
 
 import { getMerklRewardsQueryEntriesForAccounts } from './useGetMerklRewardsQueryEntries';
 
@@ -12,10 +9,7 @@ const emptyEthereumAccount = mockWalletAccount(
         symbol: asNetworkSymbol('eth'),
         descriptor: asAccountDescriptor('0xff6845f200000000000000000000000013fb4863'),
     },
-    {
-        ...networkSpecificDefaultEthereum,
-        misc: { nonce: '0' },
-    },
+    { misc: { nonce: '0' } },
 );
 
 describe('getMerklRewardsQueryEntriesForAccounts', () => {

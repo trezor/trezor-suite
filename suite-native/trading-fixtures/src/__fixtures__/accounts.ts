@@ -1,9 +1,6 @@
 import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { type Account, asAccountDescriptor } from '@suite-common/wallet-types';
-import {
-    mockWalletAccount,
-    networkSpecificDefaultEthereum,
-} from '@suite-common/wallet-types/mocks';
+import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
 import { type StaticSessionId } from '@trezor/device-utils';
 
 export const MOCK_ACCOUNT_DEVICE_SESSION_ID: StaticSessionId = '1@2:3';
@@ -121,20 +118,17 @@ export const eth3legacyAccount = mockWalletAccount({
     visible: false,
 });
 
-export const base1NormalAccount = mockWalletAccount(
-    {
-        symbol: asNetworkSymbol('base'),
-        accountLabel: 'Base Account #1',
-        deviceState: MOCK_ACCOUNT_DEVICE_SESSION_ID,
-        accountType: 'normal',
-        descriptor: asAccountDescriptor('base1normal'),
-        balance: '1000000000000000000',
-        availableBalance: '1000000000000000000',
-        formattedBalance: '1',
-        visible: true,
-    },
-    networkSpecificDefaultEthereum,
-);
+export const base1NormalAccount = mockWalletAccount({
+    symbol: asNetworkSymbol('base'),
+    accountLabel: 'Base Account #1',
+    deviceState: MOCK_ACCOUNT_DEVICE_SESSION_ID,
+    accountType: 'normal',
+    descriptor: asAccountDescriptor('base1normal'),
+    balance: '1000000000000000000',
+    availableBalance: '1000000000000000000',
+    formattedBalance: '1',
+    visible: true,
+});
 
 export const sol1normalAccount = mockWalletAccount({
     symbol: asNetworkSymbol('sol'),

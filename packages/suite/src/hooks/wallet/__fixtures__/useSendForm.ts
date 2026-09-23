@@ -26,11 +26,7 @@ import {
     type SendFormDraftKey,
     asAccountDescriptor,
 } from '@suite-common/wallet-types';
-import {
-    mockWalletAccount,
-    networkSpecificDefaultEthereum,
-    networkSpecificDefaultRipple,
-} from '@suite-common/wallet-types/mocks';
+import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
 import { PROTO } from '@trezor/connect';
 import { type DeepPartial } from '@trezor/type-utils';
 
@@ -160,40 +156,34 @@ export const BTC_ACCOUNT: Omit<SelectedAccountStatus, 'network'> & { network: Pa
 
 export const ETH_ACCOUNT: DeepPartial<SelectedAccountStatus> = {
     status: 'loaded',
-    account: mockWalletAccount(
-        {
-            symbol: asNetworkSymbol('eth'),
-            descriptor: asAccountDescriptor('0xdB09b793984B862C430b64B9ed53AcF867cC041F'),
-            deviceState: '1stTestnetAddress@device_id:0',
-            balance: '10000000000000000000', // 10 ETH
-            availableBalance: '10000000000000000000', // 10 ETH
-            tokens: [
-                {
-                    standard: 'ERC20',
-                    contract: '0xABCD',
-                    symbol: '0xABCD',
-                    decimals: 3,
-                    balance: '1',
-                },
-            ],
-        },
-        networkSpecificDefaultEthereum,
-    ),
+    account: mockWalletAccount({
+        symbol: asNetworkSymbol('eth'),
+        descriptor: asAccountDescriptor('0xdB09b793984B862C430b64B9ed53AcF867cC041F'),
+        deviceState: '1stTestnetAddress@device_id:0',
+        balance: '10000000000000000000', // 10 ETH
+        availableBalance: '10000000000000000000', // 10 ETH
+        tokens: [
+            {
+                standard: 'ERC20',
+                contract: '0xABCD',
+                symbol: '0xABCD',
+                decimals: 3,
+                balance: '1',
+            },
+        ],
+    }),
     network: { networkType: 'ethereum', symbol: 'eth', decimals: 18, chainId: 1 },
 };
 
 export const XRP_ACCOUNT: DeepPartial<SelectedAccountStatus> = {
     status: 'loaded',
-    account: mockWalletAccount(
-        {
-            symbol: asNetworkSymbol('xrp'),
-            descriptor: asAccountDescriptor('rAPERVgXZavGgiGv6xBgtiZurirW2yAmY'),
-            deviceState: '1stTestnetAddress@device_id:0',
-            balance: '100000000', // 100 XRP
-            availableBalance: '100000000', // 100 XRP
-        },
-        networkSpecificDefaultRipple,
-    ),
+    account: mockWalletAccount({
+        symbol: asNetworkSymbol('xrp'),
+        descriptor: asAccountDescriptor('rAPERVgXZavGgiGv6xBgtiZurirW2yAmY'),
+        deviceState: '1stTestnetAddress@device_id:0',
+        balance: '100000000', // 100 XRP
+        availableBalance: '100000000', // 100 XRP
+    }),
     network: { networkType: 'ripple', symbol: 'xrp', decimals: 6 },
 };
 

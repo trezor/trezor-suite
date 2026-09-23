@@ -1,5 +1,7 @@
 import type { NetworkSymbol } from '@suite-common/wallet-config';
 import type { StaticSessionId } from '@trezor/connect';
+import type { DeepPartial } from '@trezor/type-utils';
+import { mergeDeepObject } from '@trezor/utils';
 
 import {
     Account,
@@ -92,6 +94,7 @@ const networkTypeMap: Record<string, NetworkSpecificDefault> = {
     doge: networkSpecificDefaultBitcoin,
     zec: networkSpecificDefaultBitcoin,
 
+    // EVM
     eth: networkSpecificDefaultEthereum,
     etc: networkSpecificDefaultEthereum,
     hype: networkSpecificDefaultEthereum,
@@ -108,14 +111,18 @@ const networkTypeMap: Record<string, NetworkSpecificDefault> = {
     sol: networkSpecificDefaultSolana,
     dsol: networkSpecificDefaultSolana,
 
+    // Stellar
     xlm: networkSpecificDefaultStellar,
     txlm: networkSpecificDefaultStellar,
 
+    // Ripple
     xrp: networkSpecificDefaultRipple,
     txrp: networkSpecificDefaultRipple,
 
+    // Cardano
     ada: networkSpecificDefaultCardano,
 
+    // Tron
     trx: networkSpecificDefaultTron,
     ttrx: networkSpecificDefaultTron,
 };
@@ -133,7 +140,7 @@ export const mockWalletAccount = (
         | 'symbol'
     > &
         MandatoryAccountData,
-    networkSpecific?: NetworkSpecificDefault,
+    networkSpecific?: DeepPartial<NetworkSpecificDefault>,
     accountFailure: AccountFailureSpecific = { failed: false },
 ): Account => {
     const descriptor = account.descriptor ?? asAccountDescriptor(account.symbol);
@@ -166,11 +173,17 @@ export const mockWalletAccount = (
         symbol: account.symbol,
     };
 
-    const networkSpecificDefault = networkSpecific ?? networkTypeMap[account.symbol];
+    const networkSpecificDefault = networkTypeMap[account.symbol];
 
     if (!networkSpecificDefault) {
         throw new Error(`No mock defaults registered for network symbol: ${account.symbol}.`);
     }
+
+    // The override is merged over the network default, so a test changes only the fields it needs.
+    // The merged type cannot be expressed against the union, hence the assertion.
+    const networkSpecificData = networkSpecific
+        ? (mergeDeepObject(networkSpecificDefault, networkSpecific) as NetworkSpecificDefault)
+        : networkSpecificDefault;
 
     // This is needed to be separated, as typing the `Account` type with the union-type of
     // the Networks and Backends seems impossible.
@@ -178,6 +191,6 @@ export const mockWalletAccount = (
     return {
         ...accountBase,
         ...accountFailure,
-        ...networkSpecificDefault,
+        ...networkSpecificData,
     };
 };
