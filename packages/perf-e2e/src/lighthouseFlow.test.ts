@@ -39,8 +39,18 @@ describe('stripFlowResult', () => {
         const [step] = stripFlowResult(flow()).steps ?? [];
 
         expect(step?.lhr?.fullPageScreenshot).toBeUndefined();
-        expect(step?.lhr?.audits?.['final-screenshot']).toBeUndefined();
-        expect(step?.lhr?.audits?.['screenshot-thumbnails']).toBeUndefined();
+        expect(step?.lhr?.audits?.['final-screenshot']?.details).toBeUndefined();
+        expect(step?.lhr?.audits?.['screenshot-thumbnails']?.details).toBeUndefined();
+    });
+
+    it('keeps the stripped audits present, because auditRefs still point at them', () => {
+        const [step] = stripFlowResult(flow()).steps ?? [];
+
+        // The report's renderer walks categories[].auditRefs and dereferences each id; a missing
+        // audit makes the rendered page throw on load rather than merely omit a section.
+        for (const id of ['final-screenshot', 'screenshot-thumbnails', 'user-timings']) {
+            expect(step?.lhr?.audits?.[id]).toBeDefined();
+        }
     });
 
     it('keeps the user-timings audit but not its unbounded details', () => {

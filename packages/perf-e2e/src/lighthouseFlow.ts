@@ -63,22 +63,27 @@ export const LIGHTHOUSE_AUDITS = [
 ] as const;
 
 /**
- * What never reaches the store. Screenshots are the bulk of an LHR and the only part that can show a
- * wallet screen; `user-timings` details are unbounded — a profiling build emits tens of thousands of
- * entries, most of the document. The audits themselves stay, so the rendered report still lists
- * them; only the payloads go.
+ * What never reaches the store: the payloads, never the audits themselves. Screenshots are the bulk
+ * of an LHR and the only part that can show a wallet screen; `user-timings` details are unbounded —
+ * a profiling build emits tens of thousands of entries, most of the document.
+ *
+ * Their `details` go and the audit stays, because the report's own renderer walks
+ * `categories[].auditRefs` and dereferences `audits[ref.id]` for each one. Deleting an audit while
+ * its ref survives makes the rendered page throw on load, which is a broken report that still looks
+ * like a valid file — so the entry has to remain, empty.
  */
-const DROPPED_AUDITS = ['final-screenshot', 'screenshot-thumbnails'] as const;
-const DETAIL_ONLY_AUDITS = ['user-timings'] as const;
+const STRIPPED_AUDITS = ['final-screenshot', 'screenshot-thumbnails', 'user-timings'] as const;
 
 const stripLhr = (lhr: LhrLike): LhrLike => {
     const { fullPageScreenshot: _dropped, ...rest } = lhr;
-    const audits = { ...(rest.audits ?? {}) };
 
-    for (const id of DROPPED_AUDITS) {
-        delete audits[id];
+    if (!rest.audits) {
+        return rest;
     }
-    for (const id of DETAIL_ONLY_AUDITS) {
+
+    const audits = { ...rest.audits };
+
+    for (const id of STRIPPED_AUDITS) {
         const audit = audits[id];
 
         if (audit) {
@@ -88,7 +93,7 @@ const stripLhr = (lhr: LhrLike): LhrLike => {
         }
     }
 
-    return rest.audits ? { ...rest, audits } : rest;
+    return { ...rest, audits };
 };
 
 /**
