@@ -17,6 +17,7 @@ export const TradingReceiveOptionRow = ({
 }: TradingReceiveOptionRowProps) => (
     <CardList.Item
         data-testid={dataTestId}
+        paddingType="medium"
         onClick={isDisabled ? undefined : onClick}
         isDisabled={isDisabled}
     >
