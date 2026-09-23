@@ -47,6 +47,9 @@ class BlockchainLink {
     subscribe() {
         return Promise.resolve({ subscribed: true });
     }
+    getTransaction(params: { txid: string }) {
+        return Promise.resolve({ txid: params.txid, backend: this.name });
+    }
 }
 
 module.exports = {
