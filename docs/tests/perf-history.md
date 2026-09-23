@@ -118,10 +118,11 @@ still lists them:
 | `final-screenshot`, `screenshot-thumbnails` | base64 images and the filmstrip                                                                                |
 | `user-timings` details                      | unbounded — a profiling build emits tens of thousands of entries, most of the document                         |
 
-**Pull requests and the nightly both profile** (`lighthouse` input of `template-suite-run-e2e.yml`,
-`"true"` on both; the input itself still defaults to `false`). Only the tests that call
-`perf.measure` are traced, so the cost is bounded to those, and a run that cannot attach to the
-app's debugging endpoint warns and records nothing — it never fails a test.
+**Every e2e run profiles** — pull requests, the nightly, and anything else that calls
+`template-suite-run-e2e.yml`, which sets `LIGHTHOUSE: "1"` unconditionally rather than offering a
+switch. Only the tests that call `perf.measure` open a timespan, so the cost stays with the flows
+already being measured, and a run that cannot attach to the app's debugging endpoint warns and
+records nothing — it never fails a test. Locally, `LIGHTHOUSE` is unset and nothing is traced.
 
 Tracing costs the app time, so a profiled run's own `browser:` numbers sit above what the same
 commit costs untraced. Three things follow, and all three are implemented rather than left to the
@@ -135,7 +136,7 @@ reader:
   into `budgets.ts` would raise the limit by the overhead and leave every later untraced run
   comfortably under it.
 
-Because the nightly profiles too, the sealed baseline and the pull request compared against it were
+Because every run profiles, the sealed baseline and the pull request compared against it were
 measured the same way. What stays incomparable is `budgets.ts`, whose numbers were recorded without
 a tracer; refresh those from an unprofiled local run.
 
