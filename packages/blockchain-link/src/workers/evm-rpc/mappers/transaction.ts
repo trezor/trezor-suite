@@ -18,7 +18,7 @@ import { isSameAddress } from '../utils/address';
 
 interface MapTransactionParams {
     tx: Transaction;
-    receipt: TransactionReceipt;
+    receipt?: TransactionReceipt;
     block?: Block;
     /** Preferred over `block` when the timestamp is already known, e.g. from a log. */
     blockTime?: number;
@@ -29,11 +29,11 @@ interface MapTransactionParams {
 
 const DEFAULT_TOKEN_DECIMALS = 18;
 
-const getTransactionStatus = (receipt: TransactionReceipt): number => {
-    if (receipt.status === 'success') {
+const getTransactionStatus = (receipt?: TransactionReceipt): number => {
+    if (receipt?.status === 'success') {
         return 1;
     }
-    if (receipt.status === 'reverted') {
+    if (receipt?.status === 'reverted') {
         return 0;
     }
 
@@ -87,17 +87,19 @@ export const mapTransaction = ({
     tokenMetadata,
 }: MapTransactionParams): TransformedTransaction => {
     const { value, gasPrice } = tx;
-    const { gasUsed, effectiveGasPrice } = receipt;
+    const effectiveGasPrice = receipt?.effectiveGasPrice ?? 0n;
     // effectiveGasPrice is the price actually charged and differs from the gasPrice bid on L2s;
     // use it when positive, otherwise fall back to the gasPrice bid (mirrors blockbook).
     const feeGasPrice = effectiveGasPrice > 0n ? effectiveGasPrice : (gasPrice ?? 0n);
-    const fee = (gasUsed * feeGasPrice).toString(10);
+    // A transaction that is not mined yet has no receipt, the fee it can cost at most is
+    // the whole gas limit.
+    const fee = ((receipt?.gasUsed ?? tx.gas) * feeGasPrice).toString(10);
 
     const status = getTransactionStatus(receipt);
     const blockHash = tx.blockHash || '';
     const isMined = !!tx.blockNumber;
 
-    const transfers = (receipt.logs ?? [])
+    const transfers = (receipt?.logs ?? [])
         .map(log => parseTransferLog(log))
         .filter((transfer): transfer is ParsedTransfer => !!transfer);
 
@@ -165,7 +167,7 @@ export const mapTransaction = ({
     if (me) {
         const myTransfers = [...tokens, ...internalTransfers];
 
-        if (receipt.contractAddress) {
+        if (receipt?.contractAddress) {
             type = 'contract';
             targets = [];
         } else if (isFromMe) {
@@ -221,7 +223,8 @@ export const mapTransaction = ({
         type,
         txid: tx.hash,
         blockTime: blockTime ?? (block ? Number(block.timestamp) : 0),
-        blockHeight: Number(tx.blockNumber),
+        // Consumers read blockHeight 0 as pending.
+        blockHeight: tx.blockNumber === null ? 0 : Number(tx.blockNumber),
         blockHash,
         amount,
         fee,
@@ -239,10 +242,10 @@ export const mapTransaction = ({
             status,
             nonce: tx.nonce,
             gasLimit: Number(tx.gas),
-            gasUsed: Number(receipt.gasUsed),
+            gasUsed: receipt ? Number(receipt.gasUsed) : undefined,
             gasPrice: gasPrice?.toString(),
             effectiveGasPrice: effectiveGasPrice > 0n ? effectiveGasPrice.toString() : undefined,
-            createdContract: receipt.contractAddress ?? undefined,
+            createdContract: receipt?.contractAddress ?? undefined,
             data: tx.input,
         },
     };
