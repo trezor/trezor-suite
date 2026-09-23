@@ -74,6 +74,16 @@ describe(formatMarkdownReport.name, () => {
         expect(summary).toContain('Over limit');
         expect(summary).toContain('wallet-discovery');
     });
+
+    it('says when the numbers were traced, so nobody reads the overhead as a regression', () => {
+        const report = formatMarkdownReport([measurement('wallet-discovery')], { profiled: true });
+
+        expect(report).toContain('Recorded with Lighthouse attached');
+    });
+
+    it('says nothing of the kind about an ordinary run', () => {
+        expect(formatMarkdownReport([measurement('wallet-discovery')])).not.toContain('Lighthouse');
+    });
 });
 
 describe(readSectionMeasurements.name, () => {

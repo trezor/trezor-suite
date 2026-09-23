@@ -116,6 +116,7 @@ jobs:
       fail-fast: "7"
       currents-project-id: "4ytF0E"
       download-artifact-name: "desktop-app-build-e2e"
+      lighthouse: "true"
       spec-list: ${{ needs.resolve-spec-list.outputs.spec-list }}
       edited-specs: ${{ needs.determine-strategy.outputs.edited-specs }}
     secrets:
@@ -329,6 +330,7 @@ jobs:
       fail-fast: "7"
       currents-project-id: "Og0NOQ"
       download-artifact-name: "connect-explorer-webextension-dev.suite.sldev.cz"
+      lighthouse: "true"
       spec-list: ${{ needs.resolve-spec-list.outputs.spec-list }}
       edited-specs: ${{ needs.determine-strategy.outputs.edited-specs }}
     secrets:
