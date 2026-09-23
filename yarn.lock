@@ -13813,6 +13813,7 @@ __metadata:
   dependencies:
     "@react-navigation/native": "npm:7.1.31"
     "@react-navigation/native-stack": "npm:7.12.0"
+    "@shopify/flash-list": "npm:2.3.0"
     "@suite-common/analytics": "workspace:*"
     "@suite-common/dependency-injection": "workspace:*"
     "@suite-common/device": "workspace:*"
@@ -13839,6 +13840,7 @@ __metadata:
     "@suite-native/experimental-features": "workspace:*"
     "@suite-native/feature-feedback": "workspace:*"
     "@suite-native/firmware": "workspace:*"
+    "@suite-native/formatters": "workspace:*"
     "@suite-native/graph": "workspace:*"
     "@suite-native/intl": "workspace:*"
     "@suite-native/link": "workspace:*"

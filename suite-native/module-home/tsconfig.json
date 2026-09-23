@@ -46,6 +46,7 @@
         { "path": "../experimental-features" },
         { "path": "../feature-feedback" },
         { "path": "../firmware" },
+        { "path": "../formatters" },
         { "path": "../graph" },
         { "path": "../intl" },
         { "path": "../link" },

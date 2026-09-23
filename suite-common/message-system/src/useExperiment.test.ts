@@ -14,7 +14,7 @@ jest.mock('@trezor/utils', () => ({
 import { createMessageSystemState } from './__fixtures__/createMessageSystemState';
 import { messageSystemInitialState, prepareMessageSystemReducer } from './messageSystemReducer';
 import { ExperimentId, type MessageSystemState } from './messageSystemTypes';
-import { useExperiment } from './useExperiment';
+import { useExperiment, useIsExperimentVariantActive } from './useExperiment';
 
 const messageSystemReducer = prepareMessageSystemReducer({
     actionTypes: { storageLoad: mockActionType('storageLoad') },
@@ -113,4 +113,42 @@ describe('useExperiment', () => {
             expect(result.current.activeExperimentVariant?.variant).toBe(expectedVariant);
         },
     );
+});
+
+describe('useIsExperimentVariantActive', () => {
+    it('returns true when the requested variant is active', () => {
+        const root = createRoot({
+            messageSystem: createMessageSystemState({
+                groups: [{ variant: 'A', percentage: 100 }],
+            }),
+        });
+        const { result } = renderHookWithStoreProvider(
+            () =>
+                useIsExperimentVariantActive({
+                    experimentId: ExperimentId.tradingFeedbackForm,
+                    variant: 'A',
+                }),
+            { root },
+        );
+
+        expect(result.current).toBe(true);
+    });
+
+    it('returns false when the requested variant is not active', () => {
+        const root = createRoot({
+            messageSystem: createMessageSystemState({
+                groups: [{ variant: 'A', percentage: 100 }],
+            }),
+        });
+        const { result } = renderHookWithStoreProvider(
+            () =>
+                useIsExperimentVariantActive({
+                    experimentId: ExperimentId.tradingFeedbackForm,
+                    variant: 'B',
+                }),
+            { root },
+        );
+
+        expect(result.current).toBe(false);
+    });
 });
