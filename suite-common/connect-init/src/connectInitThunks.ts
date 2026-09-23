@@ -32,7 +32,6 @@ import {
 } from '@suite-common/wallet-core';
 import TrezorConnect, {
     BLOCKCHAIN_EVENT,
-    type CallMethodPayload,
     type CreateLoggerDep,
     DEVICE,
     DEVICE_EVENT,
@@ -42,9 +41,7 @@ import TrezorConnect, {
     UI_REQUEST,
 } from '@trezor/connect';
 import { asCoinSymbol } from '@trezor/connect-common';
-import { getSynchronize, isArrayMember } from '@trezor/utils';
 
-import { blacklist } from './blacklist';
 import {
     type ConnectInitSettingsDep,
     type GetDebugSettingsDep,
@@ -178,20 +175,6 @@ export const connectInitThunk = createThunk<
         // dispatch event as action
         dispatch(action);
     });
-
-    const synchronize = getSynchronize();
-
-    const original = TrezorConnect.call.bind(TrezorConnect);
-    TrezorConnect.call = (params: CallMethodPayload) => {
-        if (isArrayMember(params.method, blacklist)) {
-            return original(params);
-        }
-
-        // Device locking and button-request cleanup are now driven by the DEVICE_LOCK / DEVICE_UNLOCK
-        // UI events emitted by connect-core for methods that actually use the device. This wrapper only
-        // serializes calls; the blacklist keeps backend-only methods out of that global serialization.
-        return synchronize(() => original(params));
-    };
 
     const binFilesBaseUrl = getBinFilesBaseUrl();
 

@@ -215,7 +215,7 @@ describe('Suite Actions', () => {
             testMocks.setTrezorConnectFixtures(f.getFeatures || { success: true });
             const state = getInitialState(undefined, f.state.device);
             const { store, services } = createTestRoot(state);
-            store.dispatch(connectInitThunk()); // connectInitThunk needs to be called in order to wrap "getFeatures" with lockDevice
+            store.dispatch(connectInitThunk()); // initializes the connect integration; its own actions are discarded below
             await store.dispatch(acquireDeviceThunk({ requestedDevice: f.requestedDevice }));
             // we are not interested in thunk state here
             const expectedActions = filterThunkActionTypes(

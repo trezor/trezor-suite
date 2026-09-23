@@ -26,7 +26,6 @@
         "@suite-common/wallet-core": "workspace:*",
         "@trezor/connect": "workspace:*",
         "@trezor/connect-common": "workspace:*",
-        "@trezor/transport-common": "workspace:*",
-        "@trezor/utils": "workspace:*"
+        "@trezor/transport-common": "workspace:*"
     }
 }
