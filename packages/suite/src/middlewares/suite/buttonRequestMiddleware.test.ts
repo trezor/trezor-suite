@@ -27,7 +27,6 @@ import { createTestCompositionRoot, testMocks } from '@suite-common/test-utils';
 import {
     defaultTrezorUIEventHandlerThunk,
     initialWalletSettingsState,
-    observeSelectedDeviceThunk,
 } from '@suite-common/wallet-core';
 import { UI_EVENT, UI_EVENTS, UI_REQUEST, UI_REQUESTS } from '@trezor/connect';
 import { noopCreateLogger } from '@trezor/connect-common';
@@ -92,17 +91,22 @@ describe('buttonRequest middleware', () => {
 
         await call;
 
-        // Not interested in noisy lifecycle actions from reduxJS toolkit
-        const unrelatedActionTypes = [
-            observeSelectedDeviceThunk.pending.type,
-            observeSelectedDeviceThunk.fulfilled.type,
+        // Keep only the actions this test is about. They are all dispatched synchronously (the
+        // button-request add/remove driven by the UI events), so their order is deterministic —
+        // unlike the async thunk lifecycle tails (handler `fulfilled`, the changePin success toast,
+        // device re-observe) which land in a non-deterministic order and are irrelevant.
+        const relevantActionTypes = [
+            connectInitThunk.pending.type,
+            connectInitThunk.fulfilled.type,
+            defaultTrezorUIEventHandlerThunk.pending.type,
+            UI_EVENTS.BUTTON_REQUEST,
+            UI_REQUESTS.REQUEST_PIN,
+            deviceActions.addButtonRequest.type,
+            deviceActions.removeButtonRequests.type,
         ];
         const actions = services
             .getActions()
-            .filter(action => !unrelatedActionTypes.includes(action.type));
-
-        // not interested in the last action (its from changePinThunk mock);
-        actions.pop();
+            .filter(action => relevantActionTypes.includes(action.type));
 
         expect(lockDevice).toHaveBeenNthCalledWith(1, true);
         expect(lockDevice).toHaveBeenNthCalledWith(2, false);
@@ -125,8 +129,6 @@ describe('buttonRequest middleware', () => {
                 payload: { buttonRequest: { code: 'PinMatrixRequestType_NewFirst' }, device },
             },
             { type: deviceActions.removeButtonRequests.type, payload: { device } },
-            { type: defaultTrezorUIEventHandlerThunk.fulfilled.type },
-            { type: defaultTrezorUIEventHandlerThunk.fulfilled.type },
         ]);
     });
 });
