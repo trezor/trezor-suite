@@ -1,10 +1,19 @@
+import { useLayoutEffect } from 'react';
+
+import styled from 'styled-components';
+
 import { events, injectDesktopAnalytics } from '@suite/analytics';
 import { Translation, type TranslationKey } from '@suite/intl';
 import { type Route, gotoThunk } from '@suite/router';
 import { useServices } from '@suite-common/dependency-injection';
 import { injectDispatch } from '@suite-common/redux-utils';
-import { type IconComponent, SubTabs } from '@trezor/components';
+import { Box, type IconComponent, SubTabs, useScrollShadow } from '@trezor/components';
 import { HandshakeIcon, MinusIcon, PlusIcon, RepeatIcon } from '@trezor/icons';
+
+const ScrollContainer = styled.div`
+    overflow: auto hidden;
+    scrollbar-width: none;
+`;
 
 type TradingLayoutNavigationProps = {
     route?: Route['name'];
@@ -41,6 +50,18 @@ const navigationItems: NavigationItem[] = [
 
 export const TradingLayoutNavigation = ({ route }: TradingLayoutNavigationProps) => {
     const { analytics, dispatch } = useServices(injectDesktopAnalytics, injectDispatch);
+    const { scrollElementRef, ScrollSentinels, ShadowContainer, ShadowLeft, ShadowRight } =
+        useScrollShadow({ backgroundColor: 'surfaceFillPage' });
+
+    useLayoutEffect(() => {
+        const activeIndex = navigationItems.findIndex(item => item.id === route);
+        const activeItem = scrollElementRef.current?.querySelectorAll(
+            '[data-component="SubTabsItem"]',
+        )[activeIndex];
+
+        activeItem?.scrollIntoView({ inline: 'nearest', block: 'nearest' });
+    }, [route, scrollElementRef]);
+
     const goToRoute = (route: Route['name']) => () => {
         dispatch(gotoThunk({ routeName: route }));
 
@@ -85,18 +106,34 @@ export const TradingLayoutNavigation = ({ route }: TradingLayoutNavigationProps)
     };
 
     return (
-        <SubTabs activeItemId={route} size="large">
-            {navigationItems.map(item => (
-                <SubTabs.Item
-                    key={item.id}
-                    data-testid={`@trading/menu/${item.id}`}
-                    id={item.id}
-                    icon={item.icon}
-                    onClick={goToRoute(item.id)}
-                >
-                    <Translation id={item.translationId} />
-                </SubTabs.Item>
-            ))}
-        </SubTabs>
+        <Box width="100%" maxWidth={400} margin={{ horizontal: 'auto' }}>
+            <ShadowContainer>
+                <ShadowLeft />
+                <ScrollContainer ref={scrollElementRef}>
+                    <Box
+                        position={{ type: 'relative' }}
+                        width="max-content"
+                        padding={{ vertical: 4 }}
+                        margin={{ horizontal: 'auto' }}
+                    >
+                        <ScrollSentinels />
+                        <SubTabs activeItemId={route} size="large">
+                            {navigationItems.map(item => (
+                                <SubTabs.Item
+                                    key={item.id}
+                                    data-testid={`@trading/menu/${item.id}`}
+                                    id={item.id}
+                                    icon={item.icon}
+                                    onClick={goToRoute(item.id)}
+                                >
+                                    <Translation id={item.translationId} />
+                                </SubTabs.Item>
+                            ))}
+                        </SubTabs>
+                    </Box>
+                </ScrollContainer>
+                <ShadowRight />
+            </ShadowContainer>
+        </Box>
     );
 };
