@@ -59,43 +59,39 @@ test.use({
     },
 });
 
-test.describe(
-    'LLM Exploratory Tester setup',
-    { tag: ['@T1B1', '@T2T1', '@T3B1', '@T3T1', '@T3W1'] },
-    () => {
-        test('complete onboarding', async ({ onboardingPage, dashboardPage, settingsPage }) => {
-            await test.step('Complete onboarding', async () => {
-                await onboardingPage.completeOnboarding();
-            });
+test.describe('LLM Exploratory Tester setup', { tag: ['@T2T1', '@T3B1', '@T3T1', '@T3W1'] }, () => {
+    test('complete onboarding', async ({ onboardingPage, dashboardPage, settingsPage }) => {
+        await test.step('Complete onboarding', async () => {
+            await onboardingPage.completeOnboarding();
+        });
 
-            await test.step('Enable networks', async () => {
-                await settingsPage.changeNetworks({
-                    enableNetworks: [
-                        asNetworkSymbol('eth'),
-                        asNetworkSymbol('btc'),
-                        asNetworkSymbol('sol'),
-                        asNetworkSymbol('doge'),
-                        asNetworkSymbol('ada'),
-                        asNetworkSymbol('xlm'),
-                        asNetworkSymbol('xrp'),
-                        asNetworkSymbol('trx'),
-                        asNetworkSymbol('rhc'),
-                        asNetworkSymbol('base'),
-                    ],
-                });
-            });
-
-            await test.step('Open hidden wallet', async () => {
-                await dashboardPage.openDeviceSwitcher();
-                await dashboardPage.addHiddenWallet(process.env.LLM_EXPLORATORY_TESTER_PASSPHRASE!);
-            });
-
-            await test.step('Signal readiness and stay alive', async () => {
-                // Stay alive so the agent can attach over CDP to this Playwright browser.
-                test.info().setTimeout(0);
-                writeFileSync(process.env.LLM_EXPLORATORY_TESTER_READY_FILE!, '');
-                await new Promise(() => {});
+        await test.step('Enable networks', async () => {
+            await settingsPage.changeNetworks({
+                enableNetworks: [
+                    asNetworkSymbol('eth'),
+                    asNetworkSymbol('btc'),
+                    asNetworkSymbol('sol'),
+                    asNetworkSymbol('doge'),
+                    asNetworkSymbol('ada'),
+                    asNetworkSymbol('xlm'),
+                    asNetworkSymbol('xrp'),
+                    asNetworkSymbol('trx'),
+                    asNetworkSymbol('rhc'),
+                    asNetworkSymbol('base'),
+                ],
             });
         });
-    },
-);
+
+        await test.step('Open hidden wallet', async () => {
+            await dashboardPage.openDeviceSwitcher();
+            await dashboardPage.addHiddenWallet(process.env.LLM_EXPLORATORY_TESTER_PASSPHRASE!);
+        });
+
+        await test.step('Signal readiness and stay alive', async () => {
+            // Stay alive so the agent can attach over CDP to this Playwright browser.
+            test.info().setTimeout(0);
+            writeFileSync(process.env.LLM_EXPLORATORY_TESTER_READY_FILE!, '');
+            await new Promise(() => {});
+        });
+    });
+});

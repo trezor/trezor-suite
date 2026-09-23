@@ -1,7 +1,9 @@
 import {
+    type AssistantMessage,
     type Event,
     type Message,
     type OpencodeClient,
+    type OutputFormat,
     type Part,
     type PermissionRequest,
 } from '@opencode-ai/sdk/v2';
@@ -13,7 +15,17 @@ import { OPENCODE_CONFIG_DIR, REPO_ROOT } from './paths';
 import { type TestResult, TestResultJsonSchema, TestResultSchema } from './schemas';
 
 const SERVER_START_TIMEOUT_MS = 30_000;
-const MAX_CONTINUATIONS = 3;
+const MAX_CONSECUTIVE_UNPRICED_STEPS = 3;
+
+const VERDICT_FORMAT: OutputFormat = {
+    type: 'json_schema',
+    schema: TestResultJsonSchema,
+    retryCount: 2,
+};
+
+const VERDICT_PROMPT =
+    'Testing is over. Do not call tools. Emit the structured verdict for the WHOLE run: ' +
+    'result, summary, unfinished, issues — every pass and every issue found so far.';
 
 type RunOpencodeOptions = {
     prompt: string;
@@ -27,14 +39,15 @@ type Server = {
     stopServer: () => void;
 };
 
-type Budget = {
-    spentUsd: number;
-    maxBudgetUsd: number;
+type Session = {
+    client: OpencodeClient;
+    sessionId: string;
+    budgetGuard: BudgetGuard;
 };
 
-type RoundOutcome = {
-    verdict: TestResult;
-    costUsd: number;
+type Turn = {
+    prompt: string;
+    format?: OutputFormat;
 };
 
 function isolateServerConfig(): void {
@@ -89,25 +102,6 @@ async function createSession(client: OpencodeClient): Promise<string> {
     return session.id;
 }
 
-type SendPromptParams = {
-    client: OpencodeClient;
-    sessionId: string;
-    prompt: string;
-};
-
-async function sendPrompt({ client, sessionId, prompt }: SendPromptParams): Promise<void> {
-    await client.session.promptAsync(
-        {
-            sessionID: sessionId,
-            model: MODEL,
-            variant: REASONING_EFFORT,
-            parts: [{ type: 'text', text: prompt }],
-            format: { type: 'json_schema', schema: TestResultJsonSchema, retryCount: 2 },
-        },
-        { throwOnError: true },
-    );
-}
-
 // Unanswered permission prompts hang the run.
 function rejectPermission(client: OpencodeClient, request: PermissionRequest): void {
     void client.permission.reply({ requestID: request.id, reply: 'reject' });
@@ -122,44 +116,58 @@ function logToolPart(part: Part): void {
     log(`[tool] ${part.tool} ${part.state.status}${detail}`);
 }
 
-function assistantCostUsd(messages: Iterable<Message>): number {
-    return [...messages].reduce((sum, m) => sum + (m.role === 'assistant' ? m.cost : 0), 0);
+function isAssistant(message: Message): message is AssistantMessage {
+    return message.role === 'assistant';
 }
 
-function parseVerdict(messages: Message[]): TestResult {
-    for (const info of messages.toReversed()) {
-        if (info.role !== 'assistant') continue;
+// The budget cap is only as good as the per-step cost; a completed step billed
+// at $0 means the model omitted usage. Errored steps legitimately cost nothing.
+function isUnpricedStep(message: Message): boolean {
+    return (
+        isAssistant(message) &&
+        message.time.completed !== undefined &&
+        message.error === undefined &&
+        message.cost === 0
+    );
+}
 
-        const { structured } = info;
-        if (structured === undefined) continue;
+class BudgetGuard {
+    private readonly costByMessage = new Map<string, number>();
+    private readonly unpricedSteps = new Set<string>();
 
-        const parsed = TestResultSchema.safeParse(structured);
-        if (!parsed.success) {
-            throw new Error(`structured output failed TestResultSchema: ${parsed.error.message}`);
-        }
+    constructor(private readonly maxBudgetUsd: number) {}
 
-        return parsed.data;
+    get spentUsd(): number {
+        return [...this.costByMessage.values()].reduce((sum, cost) => sum + cost, 0);
     }
 
-    throw new Error('OpenCode round ended without structured output');
-}
+    get stopReason(): string | undefined {
+        if (this.spentUsd > this.maxBudgetUsd) {
+            return `Agent budget exceeded: $${this.spentUsd.toFixed(2)} > $${this.maxBudgetUsd}`;
+        }
+        if (this.unpricedSteps.size >= MAX_CONSECUTIVE_UNPRICED_STEPS) {
+            return `Agent reported $0 for ${this.unpricedSteps.size} consecutive steps; budget cannot be enforced`;
+        }
 
-type WatchRoundParams = {
-    client: OpencodeClient;
-    sessionId: string;
-    events: AsyncIterable<Event>;
-    budget: Budget;
-};
+        return undefined;
+    }
+
+    recordCost(message: Message): void {
+        if (!isAssistant(message)) return;
+
+        this.costByMessage.set(message.id, message.cost);
+        if (isUnpricedStep(message)) this.unpricedSteps.add(message.id);
+        else if (message.cost > 0) this.unpricedSteps.clear();
+    }
+}
 
 // session.prompt keeps one HTTP request open for the whole run and Node
 // drops it, so promptAsync + events until idle. Do not call session.messages:
 // OpenCode 1.18 fails to re-validate the stored OutputFormat and answers 400.
-async function watchRound({
-    client,
-    sessionId,
-    events,
-    budget,
-}: WatchRoundParams): Promise<RoundOutcome> {
+async function watchUntilIdle(
+    { client, sessionId, budgetGuard }: Session,
+    events: AsyncIterable<Event>,
+): Promise<Message[]> {
     const messages = new Map<string, Message>();
 
     for await (const event of events) {
@@ -184,32 +192,15 @@ async function watchRound({
                 const { info } = event.properties;
                 messages.set(info.id, info);
 
-                if (
-                    info.role === 'assistant' &&
-                    info.time.completed !== undefined &&
-                    info.error === undefined &&
-                    info.cost === 0
-                ) {
+                budgetGuard.recordCost(info);
+                if (budgetGuard.stopReason) {
                     await client.session.abort({ sessionID: sessionId });
-                    throw new Error(
-                        'OpenCode reported zero cost; the budget cap cannot be enforced',
-                    );
-                }
-
-                const totalCost = budget.spentUsd + assistantCostUsd(messages.values());
-                if (totalCost > budget.maxBudgetUsd) {
-                    await client.session.abort({ sessionID: sessionId });
-                    throw new Error(
-                        `Agent budget exceeded: $${totalCost.toFixed(2)} > $${budget.maxBudgetUsd}`,
-                    );
+                    throw new Error(budgetGuard.stopReason);
                 }
                 break;
             }
             case 'session.idle':
-                return {
-                    verdict: parseVerdict([...messages.values()]),
-                    costUsd: assistantCostUsd(messages.values()),
-                };
+                return [...messages.values()];
             default:
                 break;
         }
@@ -218,36 +209,59 @@ async function watchRound({
     throw new Error('OpenCode event stream ended before session.idle');
 }
 
-type RunRoundParams = {
-    client: OpencodeClient;
-    sessionId: string;
-    prompt: string;
-    budget: Budget;
-};
-
-// Leaving watchRound at session.idle closes the SSE stream, so each round
-// must subscribe before prompting.
-async function runRound({
-    client,
-    sessionId,
-    prompt,
-    budget,
-}: RunRoundParams): Promise<RoundOutcome> {
+async function subscribeToEvents(session: Session) {
+    const { client } = session;
     const { stream } = await client.event.subscribe();
-    await sendPrompt({ client, sessionId, prompt });
+    const first = await stream.next();
 
-    return watchRound({ client, sessionId, events: stream, budget });
+    if (first.done || first.value.type !== 'server.connected') {
+        throw new Error('OpenCode event stream did not open with server.connected');
+    }
+
+    return stream;
 }
 
-function continuationPrompt(unfinished: string[]): string {
-    return [
-        `You reported unfinished coverage: ${unfinished.join('; ')}.`,
-        'Continue what remains actionable. Items blocked by the sandbox itself',
-        '(fault injection, navigation rules) stay blocked — keep them in',
-        '`unfinished` and do not re-attempt them. End with the structured output',
-        'for the WHOLE run — summary covering every pass and all issues found',
-        'so far, not just this one.',
-    ].join(' ');
+// Leaving watchUntilIdle at session.idle closes the SSE stream, so each turn
+// must subscribe before prompting.
+async function runTurn(session: Session, { prompt, format }: Turn): Promise<Message[]> {
+    const { client, sessionId } = session;
+    const stream = await subscribeToEvents(session);
+    await client.session.promptAsync(
+        {
+            sessionID: sessionId,
+            model: MODEL,
+            variant: REASONING_EFFORT,
+            parts: [{ type: 'text', text: prompt }],
+            format,
+        },
+        { throwOnError: true },
+    );
+
+    return watchUntilIdle(session, stream);
+}
+
+// A schema retry can append an assistant message that has no structured payload.
+// The verdict is the latest assistant message that does.
+function parseVerdict(messages: Message[]): TestResult {
+    for (const message of messages.toReversed()) {
+        if (!isAssistant(message) || message.structured === undefined) {
+            continue;
+        }
+
+        return TestResultSchema.parse(message.structured);
+    }
+
+    throw new Error('OpenCode verdict turn ended without structured output');
+}
+
+// The testing turn carries no output format: models like GLM stop after a tool
+// call without a schema payload, which would end the run with nothing to parse.
+// The verdict is a separate, tool-free turn; OpenCode's own retryCount handles
+// schema misses there.
+async function requestVerdict(session: Session): Promise<TestResult> {
+    const messages = await runTurn(session, { prompt: VERDICT_PROMPT, format: VERDICT_FORMAT });
+
+    return parseVerdict(messages);
 }
 
 export async function runOpencode({
@@ -257,34 +271,20 @@ export async function runOpencode({
 }: RunOpencodeOptions): Promise<TestResult> {
     const { client, signal, stopServer } = await startServer(timeoutMs);
     try {
-        const sessionId = await createSession(client);
-
-        let spentUsd = 0;
-        let round = await runRound({
+        const budgetGuard = new BudgetGuard(maxBudgetUsd);
+        const session: Session = {
             client,
-            sessionId,
-            prompt,
-            budget: { spentUsd, maxBudgetUsd },
-        });
-        spentUsd += round.costUsd;
+            sessionId: await createSession(client),
+            budgetGuard,
+        };
+        await runTurn(session, { prompt });
+        const verdict = await requestVerdict(session);
 
-        for (let n = 0; round.verdict.unfinished.length > 0 && n < MAX_CONTINUATIONS; n++) {
-            const { unfinished } = round.verdict;
-            log(
-                `Agent unfinished (${unfinished.join('; ')}) — resuming (${n + 1}/${MAX_CONTINUATIONS})`,
-            );
-            round = await runRound({
-                client,
-                sessionId,
-                prompt: continuationPrompt(unfinished),
-                budget: { spentUsd, maxBudgetUsd },
-            });
-            spentUsd += round.costUsd;
-        }
+        // Estimated from provider-reported usage; the OpenRouter key runs across
+        // PRs so the key-level usage is not attributable to this run.
+        log(`Agent cost: $${budgetGuard.spentUsd.toFixed(4)} (OpenCode estimate)`);
 
-        log(`Agent cost: $${spentUsd.toFixed(4)}`);
-
-        return round.verdict;
+        return verdict;
     } catch (e) {
         if (signal.aborted) {
             throw new Error(`OpenCode timed out after ${timeoutMs / 60_000} min`, { cause: e });
