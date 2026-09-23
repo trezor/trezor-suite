@@ -9,7 +9,6 @@ export const InitSchema = Type.Object({
     }),
     debug: Type.Optional(Type.Boolean()),
     transportReconnect: Type.Optional(Type.Boolean()),
-    pendingTransportEvent: Type.Optional(Type.Boolean()),
     requestedPermissions: Type.Optional(
         Type.Array(
             Type.Object({
@@ -32,8 +31,6 @@ export const paramDescriptions = {
     debug: 'default `false`. Prints debug logs.',
     transportReconnect:
         'default `true`. If transport dies during lifecycle of application, this field decides whether TrezorConnect tries to reestablish connection with transport layer.',
-    pendingTransportEvent:
-        'default `true`. Postpone emitting TRANSPORT.START event to the moment when connected device becomes available.',
     requestedPermissions:
         'Permissions your application will need, declared up front so the user can approve the whole set in a single prompt instead of being asked per call. See [Permissions](/details/permissions).',
     coreMode: `default \`auto\`.

@@ -95,7 +95,7 @@ describe('DeviceList', () => {
             } as const),
         );
 
-        list.init({ transports: [transport], pendingTransportEvent: true });
+        list.init({ transports: [transport] });
         // transport-error is not emitted yet because list.init is not awaited
         expect(eventsSpy).toHaveBeenCalledTimes(0);
         await list.pendingConnection();
@@ -112,7 +112,7 @@ describe('DeviceList', () => {
             } as const),
         );
 
-        list.init({ transports: [transport], pendingTransportEvent: true });
+        list.init({ transports: [transport] });
         // transport-error is not emitted yet because list.init is not awaited
         expect(eventsSpy).toHaveBeenCalledTimes(0);
         await list.pendingConnection();
@@ -120,33 +120,33 @@ describe('DeviceList', () => {
         expect(eventsSpy.mock.calls[0][0]).toEqual('transport-error');
     });
 
-    it('.init() with pendingTransportEvent (unacquired device)', async () => {
+    it('.init() settles the initial handshake (unacquired device)', async () => {
         const transport = createTestTransport({
             openDevice: () =>
                 Promise.resolve({ success: false, error: { code: 'wrong previous session' } }),
         });
 
-        list.init({ transports: [transport], pendingTransportEvent: true });
+        list.init({ transports: [transport] });
         await list.pendingConnection();
 
         const events = eventsSpy.mock.calls.map(call => call[0]);
         expect(events).toEqual(['device-connect_unacquired', 'transport-start']);
     });
 
-    it('.init() with pendingTransportEvent (disconnected device)', async () => {
+    it('.init() settles the initial handshake (disconnected device)', async () => {
         const transport = createTestTransport({
             openDevice: () =>
                 Promise.resolve({ success: false, error: { code: 'device not found' } }),
         });
 
-        list.init({ transports: [transport], pendingTransportEvent: true });
+        list.init({ transports: [transport] });
         await list.pendingConnection();
 
         expect(eventsSpy).toHaveBeenCalledTimes(1);
         expect(eventsSpy.mock.calls[0][0]).toEqual('transport-start');
     });
 
-    it('.init() with pendingTransportEvent (unreadable device)', async () => {
+    it('.init() settles the initial handshake (unreadable device)', async () => {
         const transport = createTestTransport({
             read: () =>
                 Promise.resolve({
@@ -155,14 +155,14 @@ describe('DeviceList', () => {
                 }),
         });
 
-        list.init({ transports: [transport], pendingTransportEvent: true });
+        list.init({ transports: [transport] });
         await list.pendingConnection();
 
         const events = eventsSpy.mock.calls.map(call => call[0]);
         expect(events).toEqual(['device-connect_unacquired', 'transport-start']);
     });
 
-    it('.init() with pendingTransportEvent (multiple acquired devices)', async () => {
+    it('.init() settles the initial handshake (multiple acquired devices)', async () => {
         const transport = createTestTransport({
             enumerate: () => ({
                 success: true,
@@ -170,7 +170,7 @@ describe('DeviceList', () => {
             }),
         });
 
-        list.init({ transports: [transport], pendingTransportEvent: true });
+        list.init({ transports: [transport] });
         await list.pendingConnection();
 
         // note: acquire - release - connect should be ok.
@@ -183,7 +183,7 @@ describe('DeviceList', () => {
         ]);
     });
 
-    it('.init() with pendingTransportEvent (multiple transports)', async () => {
+    it('.init() settles the initial handshake (multiple transports)', async () => {
         const transportA = createTestTransport({
             enumerate: () => ({ success: true, payload: [{ path: '1' }, { path: '2' }] }),
             openDevice: (path: string) =>
@@ -204,7 +204,7 @@ describe('DeviceList', () => {
             type: 'usb2',
         });
 
-        list.init({ transports: [transportA, transportB], pendingTransportEvent: true });
+        list.init({ transports: [transportA, transportB] });
 
         await list.pendingConnection();
 
@@ -218,19 +218,28 @@ describe('DeviceList', () => {
         ]);
     });
 
-    it('.init() without pendingTransportEvent (device connected after start)', async () => {
-        const transport = createTestTransport();
+    it('.waitForPendingHandshakes() waits for a device that is still handshaking', async () => {
+        let onChangeCallback = (..._args: any[]) => {};
+        const transport = createTestTransport({
+            enumerate: () => ({ success: true, payload: [] }),
+            on: (eventName: string, callback: typeof onChangeCallback) => {
+                if (eventName === 'transport-interface-change') {
+                    onChangeCallback = callback;
+                }
+            },
+        });
 
         list.init({ transports: [transport] });
         await list.pendingConnection();
-        // transport start emitted almost immediately (after first enumerate)
-        expect(eventsSpy).toHaveBeenCalledTimes(1);
+        await expect(list.waitForPendingHandshakes()).resolves.toBeUndefined();
+        expect(list.getOnlyDevice()).toBeUndefined();
 
-        // wait for device-connect event
-        await new Promise(resolve => list.on('device-connect', resolve));
+        onChangeCallback([{ path: '1' }]);
+        // the device joins the list only after its handshake
+        expect(list.getOnlyDevice()).toBeUndefined();
 
-        const events = eventsSpy.mock.calls.map(call => call[0]);
-        expect(events).toEqual(['transport-start', 'device-connect']);
+        await list.waitForPendingHandshakes();
+        expect(list.getOnlyDevice()).toBeDefined();
     });
 
     it('multiple devices connected after .init()', async () => {
@@ -244,7 +253,7 @@ describe('DeviceList', () => {
             },
         });
 
-        list.init({ transports: [transport], pendingTransportEvent: true });
+        list.init({ transports: [transport] });
         await list.pendingConnection();
 
         // emit TRANSPORT.CHANGE 3 times
@@ -295,7 +304,7 @@ describe('DeviceList', () => {
             },
         });
 
-        list.init({ transports: [transport], pendingTransportEvent: true });
+        list.init({ transports: [transport] });
         await list.pendingConnection();
 
         const device = list.getOnlyDevice();

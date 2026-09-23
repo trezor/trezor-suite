@@ -66,7 +66,6 @@ export interface ConnectSettings {
     createLogger?: CreateLogger;
     transportReconnect?: boolean;
     transports?: ConnectSettingsTransport[];
-    pendingTransportEvent?: boolean;
     // URL for binary files such as firmware, may be local or remote
     binFilesBaseUrl?: string;
     // enable firmware hash check automatically when device connects. Requires binFilesBaseUrl to be set.

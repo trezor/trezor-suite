@@ -227,7 +227,6 @@ export const initTrezorConnect = async (
         },
         transports: [new BridgeTransport({ id: 'bridge', port: 21328 })],
         debug: true,
-        pendingTransportEvent: true,
         transportReconnect: false,
         thp: {
             appName: 'TrezorConnect',

@@ -282,17 +282,19 @@ const onCallDevice = async (
 ): Promise<void> => {
     const { deviceList, callMethods, sendCoreMessage, logger } = context;
     const responseID = message.id;
-    const { transports, pendingTransportEvent } = settingsStore.get();
+    const { transports } = settingsStore.get();
 
     if (!deviceList.isConnected() && !deviceList.pendingConnection()) {
         // transport is missing try to initialize it once again
-        deviceList.init({ transports, pendingTransportEvent });
+        deviceList.init({ transports });
     }
     await deviceList.pendingConnection();
 
     // find device
     let tempDevice: Device | undefined;
     try {
+        // a device joins the list only after its handshake; do not miss one that is still initializing
+        await deviceList.waitForPendingHandshakes();
         tempDevice = selectDevice(context, message.payload.device);
     } catch (error) {
         if (error.code === 'Transport_Missing') {
@@ -981,7 +983,7 @@ export class Core extends EventEmitter {
         this.coreLogger = this.createLogger('Core');
 
         // do not send any event until Core is fully loaded
-        // DeviceList emits TRANSPORT and DEVICE events if pendingTransportEvent is set
+        // DeviceList emits TRANSPORT and DEVICE events during its init
         const throttlePromise = createDeferred();
         throttlePromise.promise.catch(() => {});
         const onCoreEventThrottled = (message: CoreEventMessage) =>
@@ -1017,10 +1019,10 @@ export class Core extends EventEmitter {
             throw error;
         }
 
-        const { transports, pendingTransportEvent, transportReconnect } = settingsStore.get();
+        const { transports, transportReconnect } = settingsStore.get();
 
         try {
-            this.deviceList.init({ transports, pendingTransportEvent, transportReconnect });
+            this.deviceList.init({ transports, transportReconnect });
         } catch (error) {
             this.sendCoreMessage(createTransportMessage(TRANSPORT.ERROR, { error }));
             throttlePromise.reject(error);
@@ -1039,10 +1041,10 @@ export class Core extends EventEmitter {
 }
 
 const resetTransports = async ({ deviceList, sendCoreMessage }: CoreContext) => {
-    const { transports, pendingTransportEvent, transportReconnect } = settingsStore.get();
+    const { transports, transportReconnect } = settingsStore.get();
 
     try {
-        await deviceList.init({ transports, pendingTransportEvent, transportReconnect });
+        await deviceList.init({ transports, transportReconnect });
     } catch (error) {
         // do nothing
         sendCoreMessage(createTransportMessage(TRANSPORT.ERROR, { error }));

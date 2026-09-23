@@ -19,12 +19,14 @@ import {
     type ApiType as TransportApiType,
 } from '@trezor/transport-common';
 import {
+    type Logger,
     TypedEmitter,
     arrayDistinct,
     createDeferred,
     getSynchronize,
     isNotUndefined,
     resolveAfter,
+    scheduleAction,
     typedObjectKeys,
 } from '@trezor/utils';
 
@@ -64,6 +66,14 @@ const createAuthPenaltyManager = (priority = 2) => {
     return { get, add, remove };
 };
 
+// How long the initial enumeration waits for its device handshakes before TRANSPORT.START is
+// emitted anyway. Keeps a device that never finishes its handshake from blocking the consumer's
+// startup forever; a healthy but slow handshake is reported by a warning, not hidden.
+const INITIAL_HANDSHAKE_EVENT_TIMEOUT = 10000;
+// How long a method call waits for handshakes already in flight. Generous on purpose: a slow
+// firmware-release fetch during the handshake must not surface as a false Device_NotFound.
+const PENDING_HANDSHAKE_CALL_TIMEOUT = 30000;
+
 const getTransportInfo = (transport: Transport) => ({
     apiType: transport.apiType,
     type: transport.name,
@@ -83,6 +93,7 @@ interface DeviceListEvents {
 export interface IDeviceList {
     isConnected(): this is DeviceList;
     pendingConnection(): Promise<void> | undefined;
+    waitForPendingHandshakes: DeviceList['waitForPendingHandshakes'];
     addAuthPenalty: DeviceList['addAuthPenalty'];
     removeAuthPenalty: DeviceList['removeAuthPenalty'];
     on: DeviceList['on'];
@@ -102,10 +113,7 @@ export const assertDeviceListConnected: (
 type ConstructorParams = {
     createLogger: CreateLogger;
 };
-type InitParams = Pick<
-    ConnectSettings,
-    'transports' | 'pendingTransportEvent' | 'transportReconnect'
->;
+type InitParams = Pick<ConnectSettings, 'transports' | 'transportReconnect'>;
 
 export class DeviceList extends TypedEmitter<DeviceListEvents> implements IDeviceList {
     private readonly transportManagers: Partial<Record<TransportApiType, TransportManager>> = {};
@@ -118,6 +126,7 @@ export class DeviceList extends TypedEmitter<DeviceListEvents> implements IDevic
     private readonly handshakeLock;
     private readonly authPenaltyManager;
     private readonly createLogger: CreateLogger;
+    private readonly logger: Logger;
 
     private getConnectedTransports() {
         return Object.values(this.transportManagers)
@@ -137,6 +146,21 @@ export class DeviceList extends TypedEmitter<DeviceListEvents> implements IDevic
         if (pending.length) return Promise.all(pending).then(() => {});
     }
 
+    /**
+     * Resolves once every handshake already queued (from the initial enumeration or a hot-plug)
+     * has finished, whatever its outcome. A device joins the list only after its handshake, so a
+     * method call must wait here or it would miss a device that is plugged in but still
+     * initializing. Rejects with Device_InitializeInProgress if the handshakes do not settle in
+     * PENDING_HANDSHAKE_CALL_TIMEOUT.
+     */
+    waitForPendingHandshakes() {
+        return scheduleAction(() => this.handshakeLock(() => {}), {
+            timeout: PENDING_HANDSHAKE_CALL_TIMEOUT,
+        }).catch(() => {
+            throw ERRORS.TypedError('Device_InitializeInProgress');
+        });
+    }
+
     getActiveTransports() {
         return this.getConnectedTransports().map(getTransportInfo);
     }
@@ -145,6 +169,7 @@ export class DeviceList extends TypedEmitter<DeviceListEvents> implements IDevic
         super();
 
         this.createLogger = createLogger;
+        this.logger = createLogger('DeviceList');
         this.handshakeLock = getSynchronize();
         this.authPenaltyManager = createAuthPenaltyManager();
     }
@@ -249,7 +274,7 @@ export class DeviceList extends TypedEmitter<DeviceListEvents> implements IDevic
         return this.transportManagers[apiType];
     }
 
-    async init({ transports, transportReconnect, pendingTransportEvent }: InitParams = {}) {
+    async init({ transports, transportReconnect }: InitParams = {}) {
         // throws when unknown transport is requested, in that case nothing is changed
         this.transports = createTransportList(this.transports, transports);
 
@@ -261,18 +286,13 @@ export class DeviceList extends TypedEmitter<DeviceListEvents> implements IDevic
                 this.getOrCreateTransportManager(apiType).init({
                     transports: this.transports.filter(t => t.apiType === apiType),
                     transportReconnect,
-                    pendingTransportEvent,
                 }),
             );
 
         await Promise.all(promises);
     }
 
-    private async initializeTransport(
-        transport: Transport,
-        pendingTransportEvent: boolean,
-        signal: AbortSignal,
-    ) {
+    private async initializeTransport(transport: Transport, signal: AbortSignal) {
         /**
          * listen to change of descriptors reported by @trezor/transport
          * we can say that this part lets connect know about
@@ -285,8 +305,8 @@ export class DeviceList extends TypedEmitter<DeviceListEvents> implements IDevic
         transport.on(TRANSPORT.TREZOR_PUSH_NOTIFICATION, this.onPushNotification.bind(this));
         transport.on(TRANSPORT.BATTERY_LEVEL, this.onBatteryLevel.bind(this));
 
-        // enumerating for the first time. we intentionally postpone emitting TRANSPORT_START
-        // event until we read descriptors for the first time
+        // enumerating for the first time. TRANSPORT.START is intentionally postponed until the
+        // descriptors were read and their devices handshaked, so consumers get a settled picture
         const enumerateResult = await transport.enumerate({ signal });
 
         if (!enumerateResult.success) {
@@ -298,7 +318,7 @@ export class DeviceList extends TypedEmitter<DeviceListEvents> implements IDevic
         transport.handleDescriptorsChange(descriptors);
         transport.listen();
 
-        if (pendingTransportEvent && descriptors.length) {
+        if (descriptors.length) {
             await this.waitForDevices(transport, signal);
         }
     }
@@ -306,15 +326,10 @@ export class DeviceList extends TypedEmitter<DeviceListEvents> implements IDevic
     /**
      * Returned promise:
      * - resolves when all the devices visible from given transport were handshaked
-     * - resolves after 10 secs (in order not to get stuck waiting for devices)
+     * - resolves after INITIAL_HANDSHAKE_EVENT_TIMEOUT with a warning, so a device that never
+     *   finishes its handshake cannot block the consumer's startup forever
      * - rejects when aborted (e.g. because of DeviceList reinit)
      * - rejects when given transport emits an error
-     *
-     * Old note: when TRANSPORT.START_PENDING is emitted, we already know that transport is available
-     * but we wait with emitting TRANSPORT.START event to the implementator until we read from devices
-     * in case something wrong happens and we never finish reading from devices for whatever reason
-     * implementator could get stuck waiting from TRANSPORT.START event forever. To avoid this,
-     * we emit TRANSPORT.START event after autoResolveTransportEventTimeout
      */
     private waitForDevices(transport: Transport, signal: AbortSignal) {
         const { promise, reject, resolve } = createDeferred();
@@ -325,7 +340,12 @@ export class DeviceList extends TypedEmitter<DeviceListEvents> implements IDevic
         const onError = (error: string) => reject(new Error(error));
         transport.once(TRANSPORT.ERROR, onError);
 
-        const autoResolveTransportEventTimeout = setTimeout(resolve, 10000);
+        const autoResolveTransportEventTimeout = setTimeout(() => {
+            this.logger.warn(
+                `Initial device handshake still running after ${INITIAL_HANDSHAKE_EVENT_TIMEOUT} ms, emitting transport-start anyway`,
+            );
+            resolve();
+        }, INITIAL_HANDSHAKE_EVENT_TIMEOUT);
 
         // this works because all initial device handshakes are started synchronously from
         // initializeTransport -> transport.handleDescriptorsChange so this `resolve`
