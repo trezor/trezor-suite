@@ -18,4 +18,9 @@ export const STELLAR_EXPERT_URL = 'https://api.stellar.expert/explorer/public';
 
 export const NFTS_PER_PAGE = 250;
 
+// One entry per attempt, holding the pause taken before the attempt that follows it.
+export const REQUEST_RETRY_GAPS_MS = [1_000, 3_000, 9_000];
+export const REQUEST_TIMEOUT_MS = 20_000;
+export const REQUEST_MIN_GAP_MS = 250;
+
 export const YIELD_VAULTS_URL = 'https://earn.trezor.io/yield/vaults/v1';
