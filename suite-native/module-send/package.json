@@ -48,6 +48,7 @@
         "@suite-native/labeling": "workspace:*",
         "@suite-native/link": "workspace:*",
         "@suite-native/navigation": "workspace:*",
+        "@suite-native/performance-metrics": "workspace:*",
         "@suite-native/qr-code": "workspace:*",
         "@suite-native/scrollview": "workspace:*",
         "@suite-native/send": "workspace:*",

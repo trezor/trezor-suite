@@ -21,6 +21,12 @@ export type MarkdownReportContext = {
     runUrl?: string;
     /** Where the limits live, named in the note that offers to raise one. */
     budgetsPath?: string;
+    /**
+     * Whether a profiler was attached while these numbers were measured. It changes what they may be
+     * read against, so the section says so rather than leaving a reader to compare a traced run
+     * against limits that were set without one.
+     */
+    profiled?: boolean;
 };
 
 export const PERF_REPORT_MARKER = '<!-- PERF-E2E-REPORT -->';
@@ -40,6 +46,17 @@ const PERF_REPORT_NOTE = [
 ].join('\n');
 
 const PERF_REPORT_PREAMBLE = `${PERF_REPORT_MARKER}\n${PERF_REPORT_HEADING}\n\n${PERF_REPORT_NOTE}`;
+
+/**
+ * Said per section rather than once at the top: one comment holds a section per job, and a profiled
+ * job's numbers sit beside an unprofiled job's. The caveat belongs to the numbers it applies to.
+ */
+const PROFILED_NOTE = [
+    '> [!WARNING]',
+    '> Recorded with Lighthouse attached. Tracing costs the app time that the limits were never',
+    '> set for, so these numbers run high: compare them against another profiled run, and do not',
+    '> copy them into the budgets.',
+].join('\n');
 
 const SECTION_START = '<!-- PERF-E2E-SECTION:';
 
@@ -294,13 +311,14 @@ const legend = (measurements: readonly ReportedMeasurement[]) =>
 
 export const formatMarkdownReport = (
     measurements: readonly ReportedMeasurement[],
-    { heading = 'e2e', runUrl, budgetsPath }: MarkdownReportContext = {},
+    { heading = 'e2e', runUrl, budgetsPath, profiled = false }: MarkdownReportContext = {},
 ): string => {
     const overLimit = measurements.filter(measurement => measurement.report.overLimit);
 
     return [
         runUrl ? `### [${heading}](${runUrl})` : `### ${heading}`,
         '',
+        ...(profiled ? [PROFILED_NOTE, ''] : []),
         // Folded away when there is nothing to answer for, so a pull request carrying several of
         // these reads as a list of verdicts; unfolded the moment one is asking for a decision.
         overLimit.length > 0 ? '<details open>' : '<details>',

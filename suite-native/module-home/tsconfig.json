@@ -50,6 +50,7 @@
         { "path": "../intl" },
         { "path": "../link" },
         { "path": "../navigation" },
+        { "path": "../performance-metrics" },
         { "path": "../settings" },
         { "path": "../suite-sync" },
         { "path": "../toasts" },

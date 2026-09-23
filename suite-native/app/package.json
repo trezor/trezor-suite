@@ -21,7 +21,7 @@
         "ios": "expo run:ios",
         "start": "expo start --dev-client",
         "type-check": "yarn g:tsc --build",
-        "test:unit": "yarn g:jest:native src",
+        "test:unit": "yarn g:jest:native src e2e/performance",
         "prebuild": "expo prebuild",
         "eas-build-post-install": "yarn workspace @suite-common/message-system sign-config",
         "eas-build-on-success": "./eas-post-success.sh",
@@ -33,7 +33,8 @@
         "start:e2e": "EXPO_UNSTABLE_HEADLESS=1 NODE_ENV=test RN_SRC_EXT=e2e.ts,e2e.tsx expo start --dev-client",
         "reverse-ports": "adb reverse tcp:8081 tcp:8081 && adb reverse tcp:21328 tcp:21328 && adb reverse tcp:19121 tcp:19121",
         "github:report:manual": "jest --config=./e2e/jest.config.reporter.js",
-        "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'"
+        "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'",
+        "perf:publish": "tsx e2e/performance/publish.ts"
     },
     "dependencies": {
         "@evolu/common": "8.10.0",
@@ -197,11 +198,13 @@
         "@rozenite/redux-devtools-plugin": "^2.1.0",
         "@suite-common/e2e-evolu-client": "workspace:*",
         "@suite-common/message-system": "workspace:*",
+        "@suite-native/performance-metrics": "workspace:*",
         "@suite-native/storybook": "workspace:*",
         "@suite-native/test-utils-store": "workspace:*",
         "@trezor/connect-core": "workspace:*",
         "@trezor/connect-mobile": "workspace:^",
         "@trezor/eslint": "workspace:*",
+        "@trezor/perf-e2e": "workspace:*",
         "@types/lodash": "^4.17.16",
         "@types/minimist": "^1.2.5",
         "@types/node": "22.13.10",

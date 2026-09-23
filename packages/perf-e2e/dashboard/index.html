@@ -1,0 +1,369 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <title>Suite performance history</title>
+        <!--
+            Served from the store itself, at <prefix>/dashboard/index.html, so every URL below is
+            relative and same-origin: no CORS, no credentials, no backend. Deployed by the
+            `Publish performance history` job; see docs/tests/perf-history.md.
+        -->
+        <style>
+            :root {
+                color-scheme: light dark;
+                --bg: #fff;
+                --fg: #111;
+                --muted: #666;
+                --line: #e4e4e7;
+                --panel: #fafafa;
+                --accent: #0a7;
+            }
+            @media (prefers-color-scheme: dark) {
+                :root {
+                    --bg: #0e0e10;
+                    --fg: #ececee;
+                    --muted: #9a9aa2;
+                    --line: #26262b;
+                    --panel: #161619;
+                }
+            }
+            * {
+                box-sizing: border-box;
+            }
+            body {
+                margin: 0;
+                padding: 2rem 1rem 4rem;
+                background: var(--bg);
+                color: var(--fg);
+                font:
+                    14px/1.55 -apple-system,
+                    BlinkMacSystemFont,
+                    system-ui,
+                    sans-serif;
+            }
+            main {
+                max-width: 68rem;
+                margin: 0 auto;
+            }
+            h1 {
+                font-size: 1.15rem;
+                margin: 0 0 0.2rem;
+            }
+            p.sub {
+                color: var(--muted);
+                margin: 0 0 1.5rem;
+            }
+            form {
+                display: flex;
+                flex-wrap: wrap;
+                gap: 0.75rem;
+                align-items: flex-end;
+                margin-bottom: 1.5rem;
+            }
+            label {
+                display: flex;
+                flex-direction: column;
+                gap: 0.25rem;
+                font-size: 12px;
+                color: var(--muted);
+            }
+            select,
+            input {
+                font: inherit;
+                padding: 0.35rem 0.5rem;
+                background: var(--bg);
+                color: var(--fg);
+                border: 1px solid var(--line);
+                border-radius: 5px;
+                min-width: 11rem;
+            }
+            .card {
+                border: 1px solid var(--line);
+                border-radius: 8px;
+                padding: 1rem;
+                margin-bottom: 1.25rem;
+                background: var(--panel);
+            }
+            .card h2 {
+                font-size: 0.95rem;
+                margin: 0 0 0.1rem;
+            }
+            .card .meta {
+                color: var(--muted);
+                font-size: 12px;
+                margin: 0 0 0.75rem;
+            }
+            .card .note {
+                color: var(--muted);
+                font-size: 11px;
+                margin: 0.5rem 0 0;
+            }
+            svg {
+                display: block;
+                width: 100%;
+                height: auto;
+            }
+            .axis {
+                display: flex;
+                justify-content: space-between;
+                color: var(--muted);
+                font-size: 11px;
+                margin-top: 0.2rem;
+            }
+            .grid {
+                stroke: var(--line);
+                stroke-width: 1;
+            }
+            .series {
+                fill: none;
+                stroke: var(--accent);
+                stroke-width: 2;
+            }
+            .dot {
+                fill: var(--accent);
+            }
+            /* Hollow, not a second hue: a traced run is the same measurement recorded differently,
+               and the difference has to survive a colourblind reader and a black-and-white print. */
+            .dot.profiled {
+                fill: var(--bg);
+                stroke: var(--accent);
+                stroke-width: 2;
+            }
+            table {
+                border-collapse: collapse;
+                width: 100%;
+                font-size: 13px;
+            }
+            th,
+            td {
+                border-bottom: 1px solid var(--line);
+                padding: 0.45rem 0.55rem;
+                text-align: left;
+                white-space: nowrap;
+            }
+            th {
+                font-weight: 600;
+                color: var(--muted);
+                font-size: 12px;
+            }
+            td.n {
+                text-align: right;
+                font-variant-numeric: tabular-nums;
+            }
+            code {
+                font-size: 12px;
+                background: var(--panel);
+                border: 1px solid var(--line);
+                border-radius: 4px;
+                padding: 0.05rem 0.3rem;
+            }
+            .empty {
+                color: var(--muted);
+                padding: 2rem 0;
+            }
+            a {
+                color: var(--accent);
+            }
+        </style>
+    </head>
+    <body>
+        <main>
+            <h1>Suite performance history</h1>
+            <p class="sub">
+                Read straight from the object store — no server, no credentials. One point per run.
+            </p>
+
+            <form id="controls">
+                <label
+                    >Surface
+                    <select id="surface">
+                        <option value="web">web</option>
+                        <option value="desktop">desktop</option>
+                        <option value="android">android</option>
+                        <option value="ios">ios</option>
+                    </select>
+                </label>
+                <label
+                    >Branch
+                    <input id="branch" value="develop" spellcheck="false" />
+                </label>
+                <label
+                    >Metric
+                    <select id="metric"></select>
+                </label>
+            </form>
+
+            <div id="out"></div>
+        </main>
+
+        <script>
+            const $ = id => document.getElementById(id);
+            const params = new URLSearchParams(location.search);
+            const state = {
+                surface: params.get('surface') || 'web',
+                branch: params.get('branch') || 'develop',
+                metric: params.get('metric') || '',
+                rows: [],
+            };
+
+            const indexUrl = () =>
+                `../index/${encodeURIComponent(state.surface)}/${state.branch.replace(/\//g, '__')}/index.ndjson`;
+
+            /** A line the file holds that we cannot parse is dropped, never allowed to blank the page. */
+            const parse = text =>
+                text
+                    .split('\n')
+                    .map(line => line.trim())
+                    .filter(Boolean)
+                    .flatMap(line => {
+                        try {
+                            return [JSON.parse(line)];
+                        } catch {
+                            return [];
+                        }
+                    });
+
+            const key = row => (row.variant ? `${row.scenario} [${row.variant}]` : row.scenario);
+
+            const fmt = value =>
+                value === null || value === undefined
+                    ? '—'
+                    : Math.abs(value) >= 100
+                      ? Math.round(value).toLocaleString()
+                      : String(Math.round(value * 10) / 10);
+
+            /**
+             * One series per card, titled by its scenario, so it needs no legend. The domain is the
+             * data's own range, padded: anchoring a duration trend at zero flattens exactly the
+             * movement this chart exists to show. Both ends are labelled so the range is never
+             * implied. A real pixel viewBox, not a stretched unit square - `preserveAspectRatio:
+             * none` would render the point markers as ellipses.
+             */
+            const W = 600;
+            const H = 140;
+            const PAD = 10;
+
+            const chart = points => {
+                const values = points.map(p => p.value).filter(v => v !== null);
+                if (values.length === 0) return '';
+                const lo = Math.min(...values);
+                const hi = Math.max(...values);
+                const pad = (hi - lo) * 0.15 || Math.abs(hi) * 0.1 || 1;
+                const min = lo - pad;
+                const span = hi + pad - min;
+                const x = i =>
+                    points.length === 1 ? W / 2 : PAD + (i / (points.length - 1)) * (W - 2 * PAD);
+                const y = v => H - PAD - ((v - min) / span) * (H - 2 * PAD);
+                const drawn = points
+                    .map((p, i) => (p.value === null ? null : `${x(i)},${y(p.value)}`))
+                    .filter(Boolean);
+
+                return `<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="trend over ${points.length} run(s)">
+                    <line class="grid" x1="0" y1="${H - PAD}" x2="${W}" y2="${H - PAD}"/>
+                    <polyline class="series" points="${drawn.join(' ')}"/>
+                    ${points
+                        .map((p, i) =>
+                            p.value === null
+                                ? ''
+                                : `<circle class="dot${p.profiled ? ' profiled' : ''}" cx="${x(i)}" cy="${y(p.value)}" r="4"><title>${fmt(p.value)} — ${p.sha.slice(0, 9)} (run ${p.run})${p.profiled ? ' · profiled' : ''}</title></circle>`,
+                        )
+                        .join('')}
+                </svg>
+                <div class="axis"><span>oldest</span><span>${fmt(lo)} – ${fmt(hi)}</span><span>newest</span></div>
+                ${
+                    points.some(p => p.profiled)
+                        ? '<p class="note">Hollow points were recorded under Lighthouse tracing, which costs the app time: a step where the markers change is the tracer, not the app.</p>'
+                        : ''
+                }`;
+            };
+
+            const render = () => {
+                const out = $('out');
+                if (state.rows.length === 0) {
+                    out.innerHTML = `<p class="empty">No history at <code>${indexUrl()}</code> yet.
+                        A branch gets an index once a run on it publishes; pull request runs write per-run files instead.</p>`;
+
+                    return;
+                }
+
+                const groups = new Map();
+                for (const row of state.rows) {
+                    const k = key(row);
+                    groups.set(k, [...(groups.get(k) ?? []), row]);
+                }
+
+                out.innerHTML = [...groups.entries()]
+                    .map(([name, rows]) => {
+                        const points = rows.map(r => ({
+                            value: r.metrics?.[state.metric] ?? null,
+                            sha: r.sha ?? '',
+                            run: r.run ?? '',
+                            profiled: r.profiled === true,
+                        }));
+                        const last = rows.at(-1);
+                        const metrics = Object.keys(last.metrics ?? {});
+
+                        return `<section class="card">
+                            <h2>${name}</h2>
+                            <p class="meta">${rows.length} run(s) · last ${((last.ts ?? '').slice(0, 19) || '?').replace('T', ' ')}Z ·
+                                ${last.samples ?? '?'} sample(s) · shard ${last.shard ?? '?'}</p>
+                            ${chart(points)}
+                            <table><tr><th>metric</th><th style="text-align:right">latest</th><th></th></tr>
+                            ${metrics
+                                .map(
+                                    m =>
+                                        `<tr><td>${m}</td><td class="n">${fmt(last.metrics[m])}</td><td>${
+                                            last.blob
+                                                ? `<a href="../${last.blob.key}">${last.blob.kind}</a>`
+                                                : ''
+                                        }</td></tr>`,
+                                )
+                                .join('')}
+                            </table>
+                        </section>`;
+                    })
+                    .join('');
+            };
+
+            const fillMetrics = () => {
+                const all = [
+                    ...new Set(state.rows.flatMap(r => Object.keys(r.metrics ?? {}))),
+                ].sort();
+                const select = $('metric');
+                select.innerHTML = all.map(m => `<option value="${m}">${m}</option>`).join('');
+                if (!all.includes(state.metric)) state.metric = all[0] ?? '';
+                select.value = state.metric;
+            };
+
+            const load = async () => {
+                $('out').innerHTML = '<p class="empty">Loading…</p>';
+                try {
+                    const response = await fetch(indexUrl());
+                    state.rows = response.ok ? parse(await response.text()) : [];
+                } catch {
+                    state.rows = [];
+                }
+                fillMetrics();
+                render();
+            };
+
+            $('surface').value = state.surface;
+            $('branch').value = state.branch;
+            $('surface').addEventListener('change', e => {
+                state.surface = e.target.value;
+                load();
+            });
+            $('branch').addEventListener('change', e => {
+                state.branch = e.target.value;
+                load();
+            });
+            $('metric').addEventListener('change', e => {
+                state.metric = e.target.value;
+                render();
+            });
+
+            load();
+        </script>
+    </body>
+</html>

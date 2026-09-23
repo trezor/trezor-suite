@@ -29,6 +29,7 @@ jest-junit
 jest-watch-typeahead
 minimist
 opencode-ai
+react-native-lighthouse
 test-renderer
 ts-jest
 uri-scheme

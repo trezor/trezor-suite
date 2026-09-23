@@ -117,13 +117,15 @@
         {
             "path": "../../suite-common/message-system"
         },
+        { "path": "../performance-metrics" },
         { "path": "../storybook" },
         { "path": "../test-utils-store" },
         { "path": "../../packages/connect-core" },
         {
             "path": "../../packages/connect-mobile"
         },
-        { "path": "../../packages/eslint" }
+        { "path": "../../packages/eslint" },
+        { "path": "../../packages/perf-e2e" }
     ],
     "include": [".", "**/*.json"]
 }

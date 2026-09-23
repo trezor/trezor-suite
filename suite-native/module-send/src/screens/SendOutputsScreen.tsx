@@ -16,6 +16,7 @@ import {
     type SendStackRoutes,
     type StackProps,
 } from '@suite-native/navigation';
+import { ScreenPerformanceRoot, useScreenPerformance } from '@suite-native/performance-metrics';
 import { updateSelectedFeeLevelThunk } from '@suite-native/send';
 import { FeeSelector, selectFeeLevels } from '@suite-native/transaction-management';
 
@@ -35,6 +36,7 @@ export const SendOutputsScreen = ({
     const { accountKey, tokenContract, postNavigationAction, initialAddress, initialAmount } =
         params;
     const sendForm = useSendForm(accountKey, tokenContract);
+    const { panHandlers } = useScreenPerformance('send', !!sendForm);
     const { totalSelectedAmount, selectedUtxos } = useUtxoSelection(accountKey);
     const formDraft = useSelector((state: SendRootState) =>
         selectSendFormDraftByKey(state, accountKey, tokenContract),
@@ -87,61 +89,71 @@ export const SendOutputsScreen = ({
         selectedUtxos.length > 0 && amount && totalSelectedAmount.isLessThan(amount);
 
     return (
-        <Screen
-            header={
-                <AccountBalanceScreenHeader accountKey={accountKey} tokenContract={tokenContract} />
-            }
-        >
-            <>
-                <AccountDetailsCard accountKey={accountKey} tokenContract={tokenContract} />
+        <ScreenPerformanceRoot panHandlers={panHandlers}>
+            <Screen
+                header={
+                    <AccountBalanceScreenHeader
+                        accountKey={accountKey}
+                        tokenContract={tokenContract}
+                    />
+                }
+            >
+                <>
+                    <AccountDetailsCard accountKey={accountKey} tokenContract={tokenContract} />
 
-                <Box marginTop="sp32">
-                    <Form form={form}>
-                        <SendOutputFields
-                            accountKey={accountKey}
-                            tokenContract={tokenContract}
-                            maxAmount={maxSpendableAmount}
-                        />
-                        {network?.networkType === 'bitcoin' && (
-                            <Box flexDirection="row" justifyContent="center" marginTop="sp24">
-                                <SwitchCoinControlButton amount={amount} accountKey={accountKey} />
-                            </Box>
-                        )}
-                    </Form>
-                </Box>
-                {isValid && network && (
-                    <Box marginTop="sp16">
-                        <FeeSelector
-                            accountKey={accountKey}
-                            tokenContract={tokenContract}
-                            updateThunk={updateSelectedFeeLevelThunk}
-                            selectedFee={formDraft?.selectedFee ?? 'normal'}
-                            selectedFeePerUnit={formDraft?.feePerUnit}
-                            selectedSetMaxOutputId={formDraft?.setMaxOutputId}
-                            formDraft={formDraft}
-                        />
+                    <Box marginTop="sp32">
+                        <Form form={form}>
+                            <SendOutputFields
+                                accountKey={accountKey}
+                                tokenContract={tokenContract}
+                                maxAmount={maxSpendableAmount}
+                            />
+                            {network?.networkType === 'bitcoin' && (
+                                <Box flexDirection="row" justifyContent="center" marginTop="sp24">
+                                    <SwitchCoinControlButton
+                                        amount={amount}
+                                        accountKey={accountKey}
+                                    />
+                                </Box>
+                            )}
+                        </Form>
                     </Box>
-                )}
-                {isMissingUtxos ? (
-                    <Animated.View entering={FadeInDown} exiting={FadeOutDown}>
-                        <Box padding="sp16">
-                            <BannerInline
-                                intent="warning"
-                                title={<Translation id="moduleSend.coinControl.notEnoughCoins" />}
+                    {isValid && network && (
+                        <Box marginTop="sp16">
+                            <FeeSelector
+                                accountKey={accountKey}
+                                tokenContract={tokenContract}
+                                updateThunk={updateSelectedFeeLevelThunk}
+                                selectedFee={formDraft?.selectedFee ?? 'normal'}
+                                selectedFeePerUnit={formDraft?.feePerUnit}
+                                selectedSetMaxOutputId={formDraft?.setMaxOutputId}
+                                formDraft={formDraft}
                             />
                         </Box>
-                    </Animated.View>
-                ) : (
-                    isValid &&
-                    isFeeReady &&
-                    !isResolvingNamedAddress && (
-                        <SendOutputsScreenFooter
-                            isSubmitting={isSubmitting}
-                            handleNavigateToReviewScreen={handleSubmitSendForm}
-                        />
-                    )
-                )}
-            </>
-        </Screen>
+                    )}
+                    {isMissingUtxos ? (
+                        <Animated.View entering={FadeInDown} exiting={FadeOutDown}>
+                            <Box padding="sp16">
+                                <BannerInline
+                                    intent="warning"
+                                    title={
+                                        <Translation id="moduleSend.coinControl.notEnoughCoins" />
+                                    }
+                                />
+                            </Box>
+                        </Animated.View>
+                    ) : (
+                        isValid &&
+                        isFeeReady &&
+                        !isResolvingNamedAddress && (
+                            <SendOutputsScreenFooter
+                                isSubmitting={isSubmitting}
+                                handleNavigateToReviewScreen={handleSubmitSendForm}
+                            />
+                        )
+                    )}
+                </>
+            </Screen>
+        </ScreenPerformanceRoot>
     );
 };

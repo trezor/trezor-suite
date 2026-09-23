@@ -195,6 +195,109 @@ jobs:
           docker logs docker-quota-db-1 > quota-db.log 2>&1 || true
           docker logs docker-suite-sync-1 > suite-sync.log 2>&1 || true
 
+      - name: Summarize performance report
+        if: always()
+        continue-on-error: true
+        shell: bash
+        env:
+          PERF_REPORT: suite-native/app/artifacts/performance/perf-report.json
+          SHARD: ${{ matrix.TEST_GROUP }}
+        run: |
+          node -e '
+          const fs = require("fs");
+          const source = process.env.PERF_REPORT;
+          const summary = process.env.GITHUB_STEP_SUMMARY;
+          const append = text => {
+              if (summary) {
+                  fs.appendFileSync(summary, text + "\n");
+              }
+          };
+          const round = value =>
+              typeof value === "number" && Number.isFinite(value)
+                  ? String(Math.round(value * 10) / 10)
+                  : "n/a";
+          const render = () => {
+              if (!fs.existsSync(source)) {
+                  console.log("No performance report at " + source + ", nothing to summarize.");
+                  return;
+              }
+              const report = JSON.parse(fs.readFileSync(source, "utf8")) || {};
+              const meta = report.meta || {};
+              const aggregate = report.aggregate || {};
+              const screens = Array.isArray(report.screens) ? report.screens : [];
+              append("### Native E2E performance (shard " + process.env.SHARD + ")");
+              append("");
+              append(
+                  [
+                      meta.platform,
+                      meta.device,
+                      meta.appVersion,
+                      meta.commitHash && String(meta.commitHash).slice(0, 7),
+                      meta.sampleCount && meta.sampleCount + " samples",
+                  ]
+                      .filter(Boolean)
+                      .join(" - ") || "no run metadata",
+              );
+              append("");
+              append("| Screen | Samples | Metric | Current | Limit | % of limit | |");
+              append("| --- | ---: | --- | ---: | ---: | ---: | --- |");
+              screens.forEach(screen => {
+                  const metrics = Array.isArray(screen && screen.metrics) ? screen.metrics : [];
+                  metrics.forEach(metric => {
+                      const ratio =
+                          typeof metric.ratioToLimit === "number"
+                              ? Math.round(metric.ratioToLimit * 100) + "%"
+                              : "n/a";
+                      append(
+                          "| " +
+                              [
+                                  screen.scenario || "?",
+                                  round(screen.sampleCount),
+                                  metric.label || metric.key || "?",
+                                  round(metric.current),
+                                  round(metric.limit),
+                                  ratio,
+                                  metric.exceededLimit ? "over limit" : "",
+                              ].join(" | ") +
+                              " |",
+                      );
+                  });
+              });
+              append("");
+              append("Aggregate score: " + round(aggregate.score));
+              const over = screens.filter(screen => screen && screen.overLimit).map(s => s.scenario);
+              if (over.length > 0 || aggregate.overLimit) {
+                  const what = over.join(", ") || "aggregate";
+                  append("");
+                  append("Over limit: " + what + ". Reported only, this never fails the run.");
+                  console.log(
+                      "::warning title=Native performance over limit::" +
+                          what +
+                          ", see this job summary. Does not fail the run.",
+                  );
+              }
+          };
+          try {
+              render();
+          } catch (error) {
+              console.log(
+                  "::warning title=Native performance summary::could not render " +
+                      source +
+                      ": " +
+                      error.message,
+              );
+          }
+          '
+
+      - name: "Store performance report"
+        if: always()
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
+        with:
+          name: android-perf-report-${{ matrix.TEST_GROUP }}
+          path: suite-native/app/artifacts/performance/perf-report.json
+          if-no-files-found: ignore
+          retention-days: 14
+
       - name: "Store test artifacts"
         if: ${{ !cancelled() }}
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
