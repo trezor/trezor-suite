@@ -12,7 +12,18 @@ export type BluetoothDep = {
     bluetooth: Bluetooth;
 };
 
-export const createBluetooth = (deps: BluetoothDeps): Bluetooth => ({
-    init: deps.bluetoothInit,
-    restartBackgroundScanIfNeeded: () => deps.backgroundScan.restartIfNeeded(),
-});
+export const createBluetooth = (deps: BluetoothDeps): Bluetooth => {
+    let inited = false;
+
+    return {
+        init: () => {
+            if (inited) {
+                return Promise.resolve();
+            }
+            inited = true;
+
+            return deps.bluetoothInit();
+        },
+        restartBackgroundScanIfNeeded: () => deps.backgroundScan.restartIfNeeded(),
+    };
+};

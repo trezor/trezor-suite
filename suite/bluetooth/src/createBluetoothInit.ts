@@ -172,40 +172,6 @@ const setupListeners = (deps: BluetoothInitDeps) => {
     });
 };
 
-const init = async (deps: BluetoothInitDeps) => {
-    const { getState, dispatch } = deps;
-
-    const knownDevices = selectKnownDevices<DesktopBluetoothDevice>(getState());
-    const result = await bluetoothIpc.init({
-        knownDevices,
-    });
-
-    if (!result.success) {
-        dispatch(
-            notificationsActions.addToast({
-                type: 'error',
-                error: 'Unable to initialize Bluetooth Module.',
-            }),
-        );
-
-        return;
-    }
-
-    // NOTE: getInfo when adapter is disabled adapter may return different result in adapter_info field
-    const apiInfo = await bluetoothIpc.getInfo();
-    if (apiInfo.success) {
-        dispatch(
-            bluetoothActions.adapterEventAction({
-                status: apiInfo.payload.state,
-            }),
-        );
-    }
-
-    setupListeners(deps);
-
-    setupAutoReconnect(deps);
-};
-
 export type BluetoothInitRootState = WithBluetoothRootState & DeviceRootState & FirmwareRootState;
 
 export type BluetoothInitDispatch = ThunkDispatch<
@@ -225,15 +191,36 @@ export type BluetoothInitDep = {
     bluetoothInit: BluetoothInit;
 };
 
-export const createBluetoothInit = (deps: BluetoothInitDeps): BluetoothInit => {
-    let inited = false;
+export const createBluetoothInit =
+    (deps: BluetoothInitDeps): BluetoothInit =>
+    async () => {
+        const knownDevices = selectKnownDevices<DesktopBluetoothDevice>(deps.getState());
+        const result = await bluetoothIpc.init({
+            knownDevices,
+        });
 
-    return () => {
-        if (inited) {
-            return Promise.resolve();
+        if (!result.success) {
+            deps.dispatch(
+                notificationsActions.addToast({
+                    type: 'error',
+                    error: 'Unable to initialize Bluetooth Module.',
+                }),
+            );
+
+            return;
         }
-        inited = true;
 
-        return init(deps);
+        // NOTE: getInfo when adapter is disabled adapter may return different result in adapter_info field
+        const apiInfo = await bluetoothIpc.getInfo();
+        if (apiInfo.success) {
+            deps.dispatch(
+                bluetoothActions.adapterEventAction({
+                    status: apiInfo.payload.state,
+                }),
+            );
+        }
+
+        setupListeners(deps);
+
+        setupAutoReconnect(deps);
     };
-};
