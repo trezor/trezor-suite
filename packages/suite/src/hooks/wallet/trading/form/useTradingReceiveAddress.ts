@@ -27,34 +27,15 @@ import { filterReceiveAccounts } from '@suite-common/wallet-utils';
 
 import { useNetworkSupport } from 'src/hooks/settings/useNetworkSupport';
 import { useSelector } from 'src/hooks/suite';
-import {
-    type TradingGetTranslationIdsProps,
-    type TradingVerifyFormProps,
-} from 'src/types/trading/tradingVerify';
+import { type TradingVerifyFormProps } from 'src/types/trading/tradingVerify';
 
 import { useAccountAddressDictionary } from '../../useAccounts';
 
-const getTranslationIds = (
-    selectedAccount: Account | null | undefined,
-): TradingGetTranslationIdsProps => {
-    if (selectedAccount === null) {
-        return {
-            accountTooltipTranslationId: 'TR_EXCHANGE_RECEIVE_NON_SUITE_ACCOUNT_QUESTION_TOOLTIP',
-            addressTooltipTranslationId: 'TR_EXCHANGE_RECEIVE_NON_SUITE_ADDRESS_QUESTION_TOOLTIP',
-        };
-    }
-
-    return {
-        accountTooltipTranslationId: 'TR_BUY_RECEIVE_ACCOUNT_QUESTION_TOOLTIP',
-        addressTooltipTranslationId: 'TR_BUY_RECEIVE_ADDRESS_QUESTION_TOOLTIP',
-    };
-};
-
-interface UseTradingReceiveAddressProps {
+type UseTradingReceiveAddressProps = {
     cryptoId?: CryptoId;
     nonSuiteAccount: boolean;
     type: TradingType;
-}
+};
 
 export const useTradingReceiveAddress = ({
     type,
@@ -337,7 +318,6 @@ export const useTradingReceiveAddress = ({
         accountAddress,
         isMenuOpen,
         onChangeAccount,
-        getTranslationIds,
         receiveAddress,
         extraField,
         canAddSuiteAccount,

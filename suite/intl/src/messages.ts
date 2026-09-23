@@ -781,14 +781,6 @@ export const messages = defineMessages({
         defaultMessage: 'Confirm on Trezor & send',
         id: 'TR_EXCHANGE_CONFIRM_ON_TREZOR_SEND',
     },
-    TR_EXCHANGE_RECEIVE_NON_SUITE_ACCOUNT_QUESTION_TOOLTIP: {
-        id: 'TR_EXCHANGE_RECEIVE_NON_SUITE_ACCOUNT_QUESTION_TOOLTIP',
-        defaultMessage: 'Receive account is outside of Trezor Suite.',
-    },
-    TR_EXCHANGE_RECEIVE_NON_SUITE_ADDRESS_QUESTION_TOOLTIP: {
-        id: 'TR_EXCHANGE_RECEIVE_NON_SUITE_ADDRESS_QUESTION_TOOLTIP',
-        defaultMessage: 'This is the address for receiving your assets.',
-    },
     TR_EXCHANGE_RECEIVING_ADDRESS_REQUIRED: {
         defaultMessage: 'Receive address is required',
         id: 'TR_EXCHANGE_RECEIVING_ADDRESS_REQUIRED',
@@ -5305,15 +5297,6 @@ export const messages = defineMessages({
     TR_REMOVE_WIPE_CODE: {
         id: 'TR_REMOVE_WIPE_CODE',
         defaultMessage: 'Remove',
-    },
-    TR_BUY_RECEIVE_ACCOUNT_QUESTION_TOOLTIP: {
-        id: 'TR_BUY_RECEIVE_ACCOUNT_QUESTION_TOOLTIP',
-        defaultMessage:
-            'Your assets will be sent to this account once the transaction is complete.',
-    },
-    TR_BUY_RECEIVE_ADDRESS_QUESTION_TOOLTIP: {
-        id: 'TR_BUY_RECEIVE_ADDRESS_QUESTION_TOOLTIP',
-        defaultMessage: 'This is the address for receiving your assets.',
     },
     TR_PAYMENT_METHOD_CREDITCARD: {
         id: 'TR_PAYMENT_METHOD_CREDITCARD',
