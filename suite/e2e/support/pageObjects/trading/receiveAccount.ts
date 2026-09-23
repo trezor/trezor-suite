@@ -17,8 +17,6 @@ export class TradingReceiveAccount {
     readonly receiveAddressModalConfirmButton: Locator;
     readonly receiveAddressInput: Locator;
 
-    readonly extraFieldModal: Locator;
-    readonly extraFieldModalConfirmButton: Locator;
     readonly extraFieldSwitch: Locator;
     readonly extraFieldInput: Locator;
 
@@ -51,10 +49,6 @@ export class TradingReceiveAccount {
         );
         this.receiveAddressInput = this.page.getByTestId('@trading/receive-address-input');
 
-        this.extraFieldModal = this.page.getByTestId('@trading/extra-field-modal');
-        this.extraFieldModalConfirmButton = this.page.getByTestId(
-            '@trading/extra-field-modal/confirm-button',
-        );
         this.extraFieldSwitch = this.page.getByTestId('@trading/extra-field-switch');
         this.extraFieldInput = this.page.getByTestId('@trading/extra-field-input');
 
