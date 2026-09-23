@@ -2,13 +2,13 @@ import { decodeLedgerHeader } from './decode';
 import { STELLAR_BASE_RESERVE } from '../../constants';
 import type { StellarRpcServer } from '../../types/rpc';
 
-export interface StellarLedgerHead {
+export type StellarLedgerHead = {
     sequence: number;
     hash: string;
     /** Base reserve in stroops, taken from the ledger header. */
     baseReserve: string;
     protocolVersion: number;
-}
+};
 
 // The protocol constant is a safe answer when a node omits the header.
 const readBaseReserve = (headerXdr: string | undefined) => {

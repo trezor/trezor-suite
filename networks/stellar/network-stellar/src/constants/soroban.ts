@@ -2,12 +2,12 @@
  * A curated SEP-41 token, listed until the hosted definitions carry contract tokens. The metadata
  * only stands in when the contract does not report its own.
  */
-export interface StellarContractToken {
+export type StellarContractToken = {
     contract: string;
     name?: string;
     symbol?: string;
     decimals?: number;
-}
+};
 
 /** There is no on-chain registry of contract-token holdings, so discovery is explicit. */
 export const STELLAR_CONTRACT_TOKENS: StellarContractToken[] = [

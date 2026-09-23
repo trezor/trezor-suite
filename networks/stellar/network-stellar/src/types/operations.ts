@@ -20,8 +20,8 @@ export type StellarOperationType =
     | 'sponsorship'
     | 'trustLineFlags';
 
-export interface StellarClaimableBalanceOffer {
+export type StellarClaimableBalanceOffer = {
     /** The account is only a claimant: the value arrives when it claims, not now. */
     isClaimant: boolean;
     offeredAmount: string;
-}
+};

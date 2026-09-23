@@ -16,13 +16,13 @@ export type * from './operations';
 export type StellarHorizonServer = Horizon.Server;
 
 /** Both protocols served by the same origin. */
-export interface StellarConnection {
+export type StellarConnection = {
     rpc: StellarRpcServer;
     horizon: StellarHorizonServer;
     isTestnet: boolean;
     passphrase: string;
     url: string;
-}
+};
 
 export type StellarTransaction = Transaction;
 

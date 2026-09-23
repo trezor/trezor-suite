@@ -21,12 +21,12 @@ const HORIZON_MAX_LIMIT = 200;
 // One aggregator swap reports eight effects, so a window may not reach its oldest operation.
 const MAX_EFFECT_REQUESTS_PER_WINDOW = 2;
 
-export interface ReadAccountHistoryParams {
+export type ReadAccountHistoryParams = {
     horizon: StellarHorizonServer;
     descriptor: string;
     pageSize: number;
     cursor?: string;
-}
+};
 
 /** Whether the effects window reaches at least as far back as the operation it must describe. */
 const reachesOperation = (effects: EffectRecord[], operationId: string) => {

@@ -132,11 +132,11 @@ export const prepareContractTransaction = async (
 };
 
 /** SEP-41 descriptive metadata, read from the token contract itself. */
-export interface Sep41Metadata {
+export type Sep41Metadata = {
     decimals?: number;
     symbol?: string;
     name?: string;
-}
+};
 
 // Metadata never changes; the in-flight promise is cached so concurrent refreshes share one read.
 const metadataCache = new Map<string, Promise<Sep41Metadata>>();
@@ -213,10 +213,10 @@ const awaitCachedMetadata = async (
     return metadata;
 };
 
-export interface Sep41Token extends Sep41Metadata {
+export type Sep41Token = Sep41Metadata & {
     contract: string;
     balance: string;
-}
+};
 
 /** `undefined` when the balance could not be read; a zero would look like a spent holding. */
 export const getSep41Token = async (

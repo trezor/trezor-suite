@@ -2,10 +2,10 @@ import { Networks } from '@stellar/stellar-sdk';
 
 import type { StellarRpcServer } from '../../types/rpc';
 
-export interface StellarNetworkInfo {
+export type StellarNetworkInfo = {
     passphrase: string;
     isTestnet: boolean;
-}
+};
 
 export const readNetwork = async (server: StellarRpcServer): Promise<StellarNetworkInfo> => {
     const { passphrase } = await server.getNetwork();

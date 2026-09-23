@@ -25,13 +25,13 @@ import { submitTransaction } from './rpc/submit';
 import type { OperationGroup } from './transactions/group';
 import type { StellarAccountState, StellarAssetRef } from '../types/account';
 
-export interface StellarAccountStateRequest {
+export type StellarAccountStateRequest = {
     descriptor: string;
     /** Classic assets Suite already knows about; used when trustlines are discovered over RPC. */
     knownAssets: StellarAssetRef[];
-}
+};
 
-export interface StellarDataSource {
+export type StellarDataSource = {
     readVersion: () => Promise<string>;
     readLatestLedger: () => Promise<StellarLedgerHead>;
     readInclusionFee: () => Promise<string>;
@@ -40,7 +40,7 @@ export interface StellarDataSource {
         request: Omit<ReadAccountHistoryParams, 'horizon'>,
     ) => Promise<OperationGroup[]>;
     submitTransaction: (transaction: StellarTransaction) => Promise<string>;
-}
+};
 
 /** Falls back only when the first source throws; "no ledger entry" is an authoritative answer. */
 const readWithFallback = async <T>(

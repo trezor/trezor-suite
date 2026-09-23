@@ -25,12 +25,12 @@ const toChunks = <T>(items: T[], size: number): T[][] =>
         return chunks;
     }, []);
 
-export interface ReadAccountStateParams {
+export type ReadAccountStateParams = {
     server: StellarRpcServer;
     descriptor: string;
     /** Assets to look up. A trustline to anything outside this list stays invisible. */
     assets: StellarAssetRef[];
-}
+};
 
 /**
  * Reads the account and its trustlines in one batched `getLedgerEntries`, in stroops. A missing

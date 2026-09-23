@@ -5,11 +5,11 @@ import type { StellarHorizonServer } from '../../types';
 
 type EffectRecord = Horizon.ServerApi.EffectRecord;
 
-export interface ReadAccountEffectsParams {
+export type ReadAccountEffectsParams = {
     horizon: StellarHorizonServer;
     descriptor: string;
     cursor?: string;
-}
+};
 
 /** Effect cursors are `<operation id>-<index>` from 1, so `-0` sits below the operation. */
 export const toEffectsCursor = (operationCursor: string) => `${operationCursor}-0`;

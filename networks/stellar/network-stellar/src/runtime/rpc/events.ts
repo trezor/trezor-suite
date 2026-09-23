@@ -3,7 +3,7 @@ import { Address, nativeToScVal, scValToNative, type xdr } from '@stellar/stella
 import type { StellarRpcServer } from '../../types/rpc';
 
 /** One SEP-41 `transfer` event that moved the token to or from the account, as the node still holds it. */
-export interface StellarContractTokenTransfer {
+export type StellarContractTokenTransfer = {
     contract: string;
     txHash: string;
     ledger: number;
@@ -13,13 +13,13 @@ export interface StellarContractTokenTransfer {
     to: string;
     /** Base units. */
     amount: string;
-}
+};
 
-export interface ReadContractTokenTransfersParams {
+export type ReadContractTokenTransfersParams = {
     server: StellarRpcServer;
     account: string;
     contractIds: string[];
-}
+};
 
 // The RPC caps a filter at five contracts and a request at five filters.
 const CONTRACTS_PER_FILTER = 5;

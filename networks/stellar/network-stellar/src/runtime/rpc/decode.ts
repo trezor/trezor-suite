@@ -3,20 +3,20 @@ import { StrKey, xdr } from '@stellar/stellar-sdk';
 import type { StellarTrustline } from '../../types/account';
 
 /** The native-balance half of an `AccountEntry`, with every amount in stroops. */
-export interface DecodedAccountEntry {
+export type DecodedAccountEntry = {
     balance: string;
     sequence: string;
     numSubEntries: number;
     numSponsoring: number;
     numSponsored: number;
     sellingLiabilities: string;
-}
+};
 
-export interface DecodedLedgerHeader {
+export type DecodedLedgerHeader = {
     baseReserve: string;
     baseFee: string;
     ledgerVersion: number;
-}
+};
 
 const NO_EXTENSIONS = { sellingLiabilities: '0', numSponsoring: 0, numSponsored: 0 };
 

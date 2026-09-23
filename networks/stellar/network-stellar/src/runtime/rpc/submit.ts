@@ -102,10 +102,10 @@ const pollForApplyResult = async (server: StellarRpcServer, hash: string) => {
     }
 };
 
-export interface SubmitTransactionParams {
+export type SubmitTransactionParams = {
     server: StellarRpcServer;
     transaction: StellarTransaction;
-}
+};
 
 /** Submits a signed transaction and resolves with its hash once it has been applied. */
 export const submitTransaction = async ({
