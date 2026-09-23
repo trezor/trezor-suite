@@ -8,6 +8,7 @@ import { type PayloadAction, createSlice } from '@reduxjs/toolkit';
  */
 export type AssetTableState = {
     areSmallBalancesShown: boolean;
+    isNewBannerDismissed: boolean;
 };
 
 type StorageLoadAssetTableAction = PayloadAction<{
@@ -16,6 +17,7 @@ type StorageLoadAssetTableAction = PayloadAction<{
 
 export const assetTableInitialState: AssetTableState = {
     areSmallBalancesShown: true,
+    isNewBannerDismissed: false,
 };
 
 export const assetTableSlice = createSlice({
@@ -24,6 +26,9 @@ export const assetTableSlice = createSlice({
     reducers: {
         showSmallBalances: (state, { payload }: PayloadAction<boolean>) => {
             state.areSmallBalancesShown = payload;
+        },
+        dismissNewBanner: state => {
+            state.isNewBannerDismissed = true;
         },
     },
     extraReducers: builder => {
@@ -46,5 +51,8 @@ export const selectAssetTable = (state: AssetTableRootState) => state.assetTable
 
 export const selectAreSmallBalancesShown = (state: AssetTableRootState) =>
     state.assetTable.areSmallBalancesShown;
+
+export const selectIsNewAssetTableBannerDismissed = (state: AssetTableRootState) =>
+    state.assetTable.isNewBannerDismissed;
 
 export default assetTableSlice.reducer;
