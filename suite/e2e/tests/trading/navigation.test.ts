@@ -32,30 +32,30 @@ test.describe('Trading - Navigation', { tag: ['@T3W1', '@T3T1', '@optional'] }, 
             await test.step('Buy from dashboard asset card', async () => {
                 await dashboardPage.navigateTo();
                 await dashboardPage.buyButton(btcSymbol).click();
-                await tradingPage.verifyBuyFormOpened(/Bitcoin/);
+                await tradingPage.verifyBuyFormOpened(/BTC/);
             });
 
             await test.step('Buy from account trade section', async () => {
                 await walletPage.openAccount({ symbol: btcSymbol });
                 await tradingPage.buyButton.click();
-                await tradingPage.verifyBuyFormOpened(/Bitcoin/);
+                await tradingPage.verifyBuyFormOpened(/BTC/);
             });
 
             await test.step('Buy from global header', async () => {
                 await dashboardPage.navigateTo();
                 await walletPage.openTradingGlobalButton.click();
-                await tradingPage.verifyBuyFormOpened(/Bitcoin|Ethereum|Litecoin/);
+                await tradingPage.verifyBuyFormOpened(/BTC|ETH|LTC/);
             });
 
             await test.step('Buy from empty account', async () => {
                 await walletPage.openAccount({ symbol: asNetworkSymbol('ltc') });
                 await walletPage.buyButton.click();
-                await tradingPage.verifyBuyFormOpened(/Litecoin/);
+                await tradingPage.verifyBuyFormOpened(/LTC/);
             });
 
             await test.step('Buy from token', async () => {
                 await walletPage.openBuyTradingOfToken(ethSymbol, 'TUSD');
-                await tradingPage.verifyBuyFormOpened(/TrueUSD/);
+                await tradingPage.verifyBuyFormOpened(/TUSD/);
             });
 
             // SELL
@@ -63,13 +63,13 @@ test.describe('Trading - Navigation', { tag: ['@T3W1', '@T3T1', '@optional'] }, 
             await test.step('Sell from global header', async () => {
                 await dashboardPage.navigateTo();
                 await walletPage.openSellGlobalButton.click();
-                await tradingPage.verifySellFormOpened(/Bitcoin|Ethereum|Litecoin/);
+                await tradingPage.verifySellFormOpened(/BTC|ETH|LTC/);
             });
 
             await test.step('Sell from account trade section', async () => {
                 await walletPage.openAccount({ symbol: btcSymbol });
                 await tradingPage.sellTabButton.click();
-                await tradingPage.verifySellFormOpened(/Bitcoin/);
+                await tradingPage.verifySellFormOpened(/BTC/);
             });
 
             await test.step('Sell from token', async () => {
@@ -81,13 +81,13 @@ test.describe('Trading - Navigation', { tag: ['@T3W1', '@T3T1', '@optional'] }, 
             await test.step('Swap from sidebar', async () => {
                 await dashboardPage.navigateTo();
                 await walletPage.openSwapSidebarButton.click();
-                await tradingPage.verifySwapFormOpened(/Bitcoin|Ethereum|Litecoin/);
+                await tradingPage.verifySwapFormOpened(/BTC|ETH|LTC/);
             });
 
             await test.step('Swap from account trade section', async () => {
                 await walletPage.openAccount({ symbol: btcSymbol });
                 await walletPage.swapButton.click();
-                await tradingPage.verifySwapFormOpened(/Bitcoin/);
+                await tradingPage.verifySwapFormOpened(/BTC/);
             });
 
             await test.step('Swap from token', async () => {

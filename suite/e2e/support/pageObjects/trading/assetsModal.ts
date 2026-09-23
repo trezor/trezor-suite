@@ -19,7 +19,6 @@ export class TradingAssetPicker {
     readonly openSellModal: Locator;
     readonly openBuyModal: Locator;
     readonly searchInput: Locator;
-    readonly displaySymbol: Locator;
     readonly networkFilterButton: Locator;
     readonly sendReceiveNetworkFilterSelect: Locator;
     readonly networkFilterOption = (tab: AssetPickerNetworkFilter | NetworkSymbol) =>
@@ -69,7 +68,6 @@ export class TradingAssetPicker {
         this.openSellModal = this.page.getByTestId('@trading/sell/asset-picker');
         this.openBuyModal = this.page.getByTestId('@trading/buy/asset-picker');
         this.searchInput = this.page.getByTestId('@asset-picker/search/input');
-        this.displaySymbol = this.page.getByTestId('@asset-picker/display-symbol');
         this.networkFilterButton = this.page.getByTestId('@asset-picker/search/filter');
         this.sendReceiveNetworkFilterSelect = this.page.getByTestId(
             '@asset-picker/search/filter/input',

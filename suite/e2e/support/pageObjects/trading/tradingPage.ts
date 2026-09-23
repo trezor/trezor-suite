@@ -337,7 +337,7 @@ export class TradingPage {
         await this.assetPicker.selectBuyAsset(buyAsset);
 
         // We should not fill in amount until account change takes effect = correct ticker is displayed
-        await expect(this.inputs.cryptoAmountTicker).toHaveText(
+        await expect(this.inputs.youPayAssetSymbol).toHaveText(
             sellAsset.tokenSymbol ?? sellAsset.networkSymbol ?? '',
             { ignoreCase: true },
         );
@@ -347,7 +347,7 @@ export class TradingPage {
         }
 
         const quotesResponsePromise = this.page.waitForResponse(tradeEndpoint.swapQuotes);
-        await expect(this.quotes.bestOfferAmount).toHaveText(/0 \w+/);
+        await expect(this.inputs.receiveAmount).toHaveText('0.0');
         await this.inputs.cryptoAmount.fill(amount);
         await quotesResponsePromise;
         await this.quotes.waitForSync();
@@ -423,19 +423,19 @@ export class TradingPage {
 
     @step()
     async verifyBuyFormOpened(displaySymbol: RegExp) {
-        await expect.soft(this.assetPicker.displaySymbol).toHaveText(displaySymbol);
-        await expect.soft(this.page.getByText('You buy')).toBeVisible();
+        await expect.soft(this.buyBestOfferButton).toBeVisible();
+        await expect.soft(this.inputs.youGetAssetSymbol).toHaveText(displaySymbol);
     }
 
     @step()
     async verifySellFormOpened(displaySymbol: RegExp) {
-        await expect.soft(this.assetPicker.displaySymbol).toHaveText(displaySymbol);
-        await expect.soft(this.page.getByText('You sell')).toBeVisible();
+        await expect.soft(this.sellBestOfferButton).toBeVisible();
+        await expect.soft(this.inputs.youPayAssetSymbol).toHaveText(displaySymbol);
     }
 
     @step()
     async verifySwapFormOpened(displaySymbol: RegExp) {
-        await expect.soft(this.assetPicker.displaySymbol).toHaveText(displaySymbol);
-        await expect.soft(this.page.getByText('Swap amount')).toBeVisible();
+        await expect.soft(this.swapBestOfferButton).toBeVisible();
+        await expect.soft(this.inputs.youPayAssetSymbol).toHaveText(displaySymbol);
     }
 }
