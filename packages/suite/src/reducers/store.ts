@@ -34,8 +34,9 @@ import { isCodesignBuild } from '@trezor/env-utils';
 
 import { suiteSyncQuotaManagerSlice } from 'src/actions/suiteSyncQuotaManager/suiteSyncQuotaManagerSlice';
 import onboardingMiddlewares from 'src/middlewares/onboarding';
-import { type GetSuiteMiddlewareDeps, getSuiteMiddleware } from 'src/middlewares/suite';
+import { type GetSuiteMiddlewareExtra, getSuiteMiddleware } from 'src/middlewares/suite';
 import { toastMiddleware } from 'src/middlewares/suite/toastMiddleware';
+import { type SuiteMiddlewaresDep } from 'src/middlewares/suiteMiddlewares';
 import { type GetWalletMiddlewaresDeps, getWalletMiddlewares } from 'src/middlewares/wallet';
 import onboardingReducers from 'src/reducers/onboarding';
 import { type OnboardingState } from 'src/reducers/onboarding/onboardingReducer';
@@ -106,13 +107,15 @@ export const rootReducer: SuiteRootReducer = combineReducers({
 
 const loggerExcludedActions = [addLog.type];
 
-type GetCustomMiddlewareDeps = GetSuiteMiddlewareDeps & GetWalletMiddlewaresDeps;
+type GetCustomMiddlewareDeps = {
+    getExtra: () => (GetSuiteMiddlewareExtra & GetWalletMiddlewaresDeps) | null;
+} & SuiteMiddlewaresDep;
 
-export const getCustomMiddleware = (getExtra: () => GetCustomMiddlewareDeps | null) => {
+export const getCustomMiddleware = (deps: GetCustomMiddlewareDeps) => {
     const middleware = [
         toastMiddleware,
-        ...getSuiteMiddleware(getExtra),
-        ...getWalletMiddlewares(getExtra),
+        ...getSuiteMiddleware(deps),
+        ...getWalletMiddlewares(deps.getExtra),
         ...onboardingMiddlewares,
         backupMiddleware,
     ];

@@ -18,29 +18,30 @@ import protocol from './protocolMiddleware';
 import redirect from './redirectMiddleware';
 import sentry from './sentryMiddleware';
 import { type PrepareSuiteMiddlewareDeps, prepareSuiteMiddleware } from './suiteMiddleware';
-import { deferMiddleware } from '../deferMiddleware';
 import { type SuiteMiddlewaresDep } from '../suiteMiddlewares';
 
-export type GetSuiteMiddlewareDeps = PrepareSuiteMiddlewareDeps &
-    PrepareAnalyticsMiddlewareDeps &
-    SuiteMiddlewaresDep;
+export type GetSuiteMiddlewareExtra = PrepareSuiteMiddlewareDeps & PrepareAnalyticsMiddlewareDeps;
+
+export type GetSuiteMiddlewareDeps = {
+    getExtra: () => GetSuiteMiddlewareExtra | null;
+} & SuiteMiddlewaresDep;
 
 export const getSuiteMiddleware = (
-    getExtra: () => GetSuiteMiddlewareDeps | null,
+    deps: GetSuiteMiddlewareDeps,
 ): ((api: MiddlewareAPI<any>) => any)[] => [
     log,
     logsMiddleware, // Common logs shared between desktop and mobile app
     redirect,
-    prepareSuiteMiddleware(getExtra),
-    prepareAnalyticsMiddleware(getExtra),
+    prepareSuiteMiddleware(deps.getExtra),
+    prepareAnalyticsMiddleware(deps.getExtra),
     buttonRequest,
-    deferMiddleware(() => getExtra()?.middlewares.bluetoothMiddleware),
+    deps.middlewares.bluetoothMiddleware,
     events,
-    preparePushNotificationMiddleware(getExtra),
+    preparePushNotificationMiddleware(deps.getExtra),
     metadataMiddleware,
     messageSystem,
     protocol,
-    routerMiddleware(getExtra),
-    tradingMiddleware(getExtra),
+    routerMiddleware(deps.getExtra),
+    tradingMiddleware(deps.getExtra),
     sentry,
 ];

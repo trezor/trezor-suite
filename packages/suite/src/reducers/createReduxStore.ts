@@ -1,11 +1,16 @@
-import { configureStore } from '@reduxjs/toolkit';
+import {
+    type DynamicMiddlewareInstance,
+    configureStore,
+    createDynamicMiddleware,
+} from '@reduxjs/toolkit';
 
 import { MODAL_OPEN_USER_CONTEXT } from '@suite/modal';
 import { type ExtraDependenciesStatic } from '@suite-common/extra-dependencies';
 import { type ReduxStoreWithThunk, createReduxExtra } from '@suite-common/redux-utils';
 import { type TokenDefinitionsMiddlewareDeps } from '@suite-common/token-definitions';
+import { typedObjectKeys, typedObjectTransformValues } from '@trezor/utils';
 
-import { type SuiteMiddlewares, type SuiteMiddlewaresDep } from 'src/middlewares/suiteMiddlewares';
+import { type SuiteMiddlewares } from 'src/middlewares/suiteMiddlewares';
 import { type SuiteServices } from 'src/support/createSuiteCompositionRoot';
 import { type ExtraDependenciesSuite } from 'src/support/extraDependencies';
 
@@ -23,6 +28,7 @@ export type SuiteReduxStoreDep = { store: SuiteReduxStore };
 export type ReduxStore = {
     store: SuiteReduxStore;
     injectServicesIntoReduxExtra: (services: SuiteServices) => void;
+    /** Call once during startup, before dispatching application actions. */
     injectMiddlewares: (middlewares: SuiteMiddlewares) => void;
 };
 
@@ -35,14 +41,10 @@ export const createReduxStore = (deps: ReduxStoreDeps): ReduxStore => {
         ExtraDependenciesStatic & TokenDefinitionsMiddlewareDeps
     >({ extraDependencies: deps.extraDependencies });
 
-    let middlewares: SuiteMiddlewares | undefined;
-    const getMiddlewareExtra = (): ExtraDependenciesSuite & SuiteMiddlewaresDep => {
-        if (!middlewares) {
-            throw new Error('Middlewares must be injected before dispatching application actions.');
-        }
-
-        return { ...getExtra(), middlewares };
+    const middlewareSlots: Record<keyof SuiteMiddlewares, DynamicMiddlewareInstance<AppState>> = {
+        bluetoothMiddleware: createDynamicMiddleware<AppState>(),
     };
+    const middlewares = typedObjectTransformValues(middlewareSlots, slot => slot.middleware);
 
     const store = configureStore({
         reducer: deps.reducer,
@@ -60,7 +62,7 @@ export const createReduxStore = (deps: ReduxStoreDeps): ReduxStore => {
                 },
             })
                 .prepend(thunkMiddleware)
-                .concat(getCustomMiddleware(getMiddlewareExtra)),
+                .concat(getCustomMiddleware({ getExtra, middlewares })),
         devTools,
     });
 
@@ -68,7 +70,9 @@ export const createReduxStore = (deps: ReduxStoreDeps): ReduxStore => {
         store,
         injectServicesIntoReduxExtra,
         injectMiddlewares: injectedMiddlewares => {
-            middlewares = injectedMiddlewares;
+            for (const name of typedObjectKeys(middlewareSlots)) {
+                middlewareSlots[name].addMiddleware(injectedMiddlewares[name]);
+            }
         },
     };
 };
