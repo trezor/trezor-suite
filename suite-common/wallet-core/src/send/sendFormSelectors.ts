@@ -66,8 +66,7 @@ export const selectSendFormButtonRequestCodes = createMemoizedSelector(
                     ({ code, name }) =>
                         code === 'ButtonRequest_ConfirmOutput' ||
                         code === 'ButtonRequest_SignTx' ||
-                        isCardano ||
-                        (isEthereum && code === 'ButtonRequest_Other') ||
+                        ((isCardano || isEthereum) && code === 'ButtonRequest_Other') ||
                         (code === 'ButtonRequest_Other' &&
                             name !== undefined &&
                             PAYMENT_REQUEST_BUTTON_NAMES.includes(name)) ||
