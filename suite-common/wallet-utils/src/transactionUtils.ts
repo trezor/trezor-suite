@@ -762,9 +762,11 @@ export const analyzeTransactions = (
         tx => 'deadline' in tx,
     );
 
-    const removePrepending = knownPrepending.filter(
-        tx => (tx.deadline && tx.deadline < blockHeight) || fresh.find(fTx => fTx.txid === tx.txid),
-    );
+    // A fake pending record whose txid shows up in `fresh` is deliberately left out of `remove`:
+    // the `addTransaction` reducer upgrades it in place once the real record arrives, so the txid
+    // never leaves the store. Removing it here first would evict the tx for a render, which the
+    // detail modal and every other consumer of the list would see as a missing transaction.
+    const removePrepending = knownPrepending.filter(tx => tx.deadline && tx.deadline < blockHeight);
     // If there are no known confirmed txs
     // remove all known and add all fresh
     const gotConfirmedTxs = knownRest.some(tx => !isPending(tx));

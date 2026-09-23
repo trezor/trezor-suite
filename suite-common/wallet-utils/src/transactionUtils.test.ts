@@ -552,7 +552,7 @@ describe('transaction utils', () => {
             expect(analyzeTransactions(fresh as any, known as any, { blockHeight: 4 })).toEqual({
                 newTransactions: [{ blockHeight: 4, blockHash: '1', txid: '1' }],
                 add: [{ blockHeight: 4, blockHash: '1', txid: '1' }],
-                remove: [{ blockHeight: undefined, blockHash: '1', txid: '1', deadline: 5 }],
+                remove: [],
             });
         });
     });
