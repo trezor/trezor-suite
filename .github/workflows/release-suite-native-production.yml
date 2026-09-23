@@ -58,6 +58,15 @@ jobs:
           --auto-submit
           --message ${{ github.sha }}
         working-directory: suite-native/app
+      - name: Build on EAS iOS simulator
+        # Archive of production builds installable to iOS Simulator
+        run: eas build
+          --platform ios
+          --profile production-simulator
+          --non-interactive
+          --no-wait
+          --message ${{ github.sha }}
+        working-directory: suite-native/app
   android:
     if: ${{ github.event.inputs.PLATFORM == 'Android' || github.event.inputs.PLATFORM == 'iOS & Android' && (github.repository == 'trezor/trezor-suite' || github.repository == 'trezor/trezor-suite-private') }}
     name: Build and submit Android
