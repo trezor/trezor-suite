@@ -5,16 +5,11 @@ import {
 } from '@suite-common/redux-utils';
 import {
     type TokenDefinitionsRootState,
-    isTokenDefinitionKnown,
     selectTokenDefinitions,
 } from '@suite-common/token-definitions';
-import {
-    type NetworkSymbol,
-    getNetworkFeatures,
-    isNetworkSymbol,
-} from '@suite-common/wallet-config';
+import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { type Account, type AccountKey, type TokenAddress } from '@suite-common/wallet-types';
-import { isNftToken } from '@suite-common/wallet-utils';
+import { isNftCollection } from '@suite-common/wallet-utils';
 import { type TokenInfo } from '@trezor/blockchain-link-types';
 import { type StaticSessionId } from '@trezor/device-utils';
 import { type Branded } from '@trezor/type-utils';
@@ -22,6 +17,7 @@ import { BigNumber } from '@trezor/utils';
 
 import { type AccountsRootState } from './accountsReducer';
 import { selectAccounts } from './accountsSelectors';
+import { getTokens } from '../tokens/tokenUtils';
 
 /**
  * The index's own keys, spelled out of what they identify and meaningful to this index alone.
@@ -94,12 +90,12 @@ const toAccountHoldings = (account: Account): readonly AssetHolding[] => {
 
     // Which tokens the user is shown is settled by selectHiddenAssetHoldingKeys, so that hiding one
     // does not rebuild every account's holdings. What is left out here cannot be shown by any
-    // setting: an NFT is not a holding, and nothing holds none of a token. An account of a network
-    // the user enabled is its own answer, however empty it is.
+    // setting: a collection is not a holding — it is the NFT section's — and nothing holds none of
+    // a token. An account of a network the user enabled is its own answer, however empty it is.
     const coinHoldings = [toHolding(undefined, account.formattedBalance, undefined)];
 
     const tokenHoldings = (account.tokens ?? [])
-        .filter(token => !isNftToken(token) && new BigNumber(token.balance ?? '0').gt(0))
+        .filter(token => !isNftCollection(token) && new BigNumber(token.balance ?? '0').gt(0))
         .map(token => toHolding(token.contract as TokenAddress, token.balance ?? '0', token));
 
     return [...coinHoldings, ...tokenHoldings];
@@ -155,8 +151,11 @@ export type HiddenAssetHoldings = {
 /**
  * The tokens hidden by hand, and the ones nothing vouches for that were not asked for anyway.
  *
- * Asked per token rather than per holding, so the question is asked once for a token however many
- * accounts hold it, and hiding one leaves every other holding in the index exactly as it was.
+ * Which of the two a token is, is not decided here: `getTokens` is what the wallet has always
+ * asked, so it is what is asked here — one token at a time, because the index has already gathered
+ * the accounts that hold it, and a token an account holds none of is not among them. Asking it
+ * rather than repeating it keeps this from drifting: an NFT is left out of both buckets because
+ * `getTokens` leaves it out, and the user's own list beats a missing definition there too.
  */
 export const selectHiddenAssetHoldings = createMemoizedSelector(
     [
@@ -168,24 +167,23 @@ export const selectHiddenAssetHoldings = createMemoizedSelector(
         const hiddenByUser: (readonly AssetHolding[])[] = [];
         const unrecognized: (readonly AssetHolding[])[] = [];
 
-        tokenGroups.forEach((group, tokenKey) => {
-            const separator = tokenKey.indexOf(ASSET_KEY_SEPARATOR);
-            const symbol = tokenKey.slice(0, separator);
-            const contractAddress = tokenKey.slice(separator + 1);
+        tokenGroups.forEach(group => {
+            const [holding] = group.entities;
 
-            if (!isNetworkSymbol(symbol)) {
+            if (holding?.tokenInfo === undefined) {
                 return;
             }
 
-            const definitions = tokenDefinitions?.[symbol]?.coin;
-            // A network with no definitions to go by shows what it holds — the testnets.
-            const hasDefinitions = getNetworkFeatures(symbol).includes('coin-definitions');
-            const isShownByUser = definitions?.show?.includes(contractAddress) ?? false;
-            const isKnown = isTokenDefinitionKnown(definitions?.data, symbol, contractAddress);
+            const { hiddenWithBalance, hiddenWithoutBalance, unverifiedWithBalance } = getTokens({
+                tokens: [holding.tokenInfo],
+                symbol: holding.symbol,
+                tokenDefinitions: tokenDefinitions?.[holding.symbol]?.coin,
+                areCollectionsRecognisedByIds: true,
+            });
 
-            if (definitions?.hide?.includes(contractAddress) ?? false) {
+            if (hiddenWithBalance.length + hiddenWithoutBalance.length > 0) {
                 hiddenByUser.push(group.entities);
-            } else if (hasDefinitions && !isKnown && !isShownByUser) {
+            } else if (unverifiedWithBalance.length > 0) {
                 unrecognized.push(group.entities);
             }
         });

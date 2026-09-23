@@ -865,6 +865,17 @@ const NFT_TOKEN_STANDARDS: ReadonlySet<TokenStandard> = new Set([
 export const isNftToken = <T extends Pick<TokenInfo, 'standard'>>(token: T) =>
     NFT_TOKEN_STANDARDS.has(token.standard);
 
+/**
+ * A collection, whether or not the backend named the standard it follows.
+ *
+ * What a collection holds are token ids, one per item, which a fungible token never has — so a
+ * response that left `standard` out is still recognisable, and its items are not mistaken for a
+ * token nothing vouches for.
+ */
+export const isNftCollection = <T extends Pick<TokenInfo, 'standard' | 'ids' | 'multiTokenValues'>>(
+    token: T,
+) => isNftToken(token) || (token.ids?.length ?? 0) > 0 || (token.multiTokenValues?.length ?? 0) > 0;
+
 export const isNftTokenTransfer = <T extends Pick<TokenTransfer, 'standard'>>(transfer: T) =>
     transfer.standard && NFT_TOKEN_STANDARDS.has(transfer.standard);
 

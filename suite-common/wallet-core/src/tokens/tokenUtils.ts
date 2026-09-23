@@ -5,7 +5,12 @@ import {
     getNetworkFeatures,
 } from '@suite-common/wallet-config';
 import { type Account, type TokenSymbol } from '@suite-common/wallet-types';
-import { isNftMatchesSearch, isNftToken, isTokenMatchesSearch } from '@suite-common/wallet-utils';
+import {
+    isNftCollection,
+    isNftMatchesSearch,
+    isNftToken,
+    isTokenMatchesSearch,
+} from '@suite-common/wallet-utils';
 import { type TokenInfo } from '@trezor/blockchain-link-types';
 import { BigNumber } from '@trezor/utils';
 
@@ -15,6 +20,11 @@ type GetTokensInput<T extends TokenInfo> = {
     tokenDefinitions?: TokenDefinition;
     searchQuery?: string;
     isNft?: boolean;
+    /**
+     * Whether a token holding token ids counts as a collection even when the backend named no NFT
+     * standard for it. Opt-in: the asset-first Home reads it that way, and nothing else does.
+     */
+    areCollectionsRecognisedByIds?: boolean;
 };
 
 export type GetTokensOutputType<T extends TokenInfo = TokenInfo> = {
@@ -32,10 +42,12 @@ export const getTokens = <T extends TokenInfo = TokenInfo>({
     tokenDefinitions,
     searchQuery,
     isNft = false,
+    areCollectionsRecognisedByIds = false,
 }: GetTokensInput<T>): GetTokensOutputType<T> => {
+    const isCollection = areCollectionsRecognisedByIds ? isNftCollection : isNftToken;
     const filteredTokens = isNft
-        ? tokens.filter(token => isNftToken(token))
-        : tokens.filter(token => !isNftToken(token));
+        ? tokens.filter(token => isCollection(token))
+        : tokens.filter(token => !isCollection(token));
 
     const hasDefinitions = getNetworkFeatures(symbol).includes(
         isNft ? 'nft-definitions' : 'coin-definitions',

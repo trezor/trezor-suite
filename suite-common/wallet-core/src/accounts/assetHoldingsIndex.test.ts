@@ -33,7 +33,7 @@ type MockAccountParams = {
     index?: number;
     balance?: string;
     isVisible?: boolean;
-    tokens?: { contract: TokenAddress; balance: string }[];
+    tokens?: { contract: TokenAddress; balance: string; standard?: string }[];
 };
 
 const mockAccount = ({
@@ -114,14 +114,26 @@ describe('which holdings the user is shown', () => {
         expect(contractsOf(shownHoldings(state))).toEqual([undefined, UNKNOWN_TOKEN]);
     });
 
-    it('keeps a token the user hid even when it is also on the shown list', () => {
+    it('keeps a token the user asked to see, even after hiding it', () => {
         const state = createState({
             accounts: [mockAccount({ tokens: [{ contract: USDC_ON_ETH, balance: '100' }] })],
             hiddenTokens: [USDC_ON_ETH],
             shownTokens: [USDC_ON_ETH],
         });
 
-        expect(contractsOf(shownHoldings(state))).toEqual([undefined]);
+        expect(contractsOf(shownHoldings(state))).toEqual([undefined, USDC_ON_ETH]);
+    });
+
+    it('never hides an NFT, whatever the coin definitions say of its contract', () => {
+        const state = createState({
+            accounts: [
+                mockAccount({
+                    tokens: [{ contract: UNKNOWN_TOKEN, balance: '1', standard: 'ERC721' }],
+                }),
+            ],
+        });
+
+        expect(selectHiddenAssetHoldingKeys(state)).toEqual([]);
     });
 
     it('keeps every token on a network with no definitions to go by', () => {
