@@ -69,6 +69,13 @@ export type PerfRunContext = {
     prNumber?: string;
     runUrl?: string;
     generatedAt: string;
+    /**
+     * Whether the run was recorded under a profiler. Lighthouse's tracing costs the app time, so a
+     * profiled run's own in-page numbers sit above what the same commit costs unprofiled: the two
+     * are each internally comparable and must not be plotted as one series. Absent means not
+     * profiled, which is every run that predates this field.
+     */
+    profiled?: boolean;
     /** Whatever identifies the machine and build the numbers came from. */
     env?: Record<string, string | undefined>;
 };
@@ -91,6 +98,8 @@ export type PerfIndexRow = {
     variant?: string;
     samples: number;
     metrics: Record<string, number | null>;
+    /** See `PerfRunContext.profiled`: a reader must not compare a profiled row against a bare one. */
+    profiled?: boolean;
     env?: Record<string, string | undefined>;
     /** Key of the artifact this row was reduced from, relative to the prefix. */
     blob?: { kind: PerfArtifactKind; key: string };
@@ -193,6 +202,7 @@ export const toIndexRows = ({ context, artifacts, measurements }: PerfRun): Perf
             ...(measurement.variant ? { variant: measurement.variant } : {}),
             samples: measurement.samples,
             metrics: measurement.metrics,
+            ...(context.profiled ? { profiled: true } : {}),
             ...(context.env ? { env: context.env } : {}),
             ...(measurement.artifact && kind
                 ? { blob: { kind, key: artifactKey(context, measurement.artifact) } }

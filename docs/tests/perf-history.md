@@ -29,11 +29,11 @@ in `@trezor/perf-e2e`. Surface-specific is the artifact, stored as produced and 
 `kind`, because a Lighthouse report and a Detox report are not the same document and flattening them
 would throw away what makes each one worth opening.
 
-| `blob.kind`          | Written by                      | Opened with                                               |
-| -------------------- | ------------------------------- | --------------------------------------------------------- |
-| `browser-report`     | web & desktop e2e               | the numbers in the row; the document holds the comparison |
-| `native-report`      | Android/iOS Detox               | same                                                      |
-| `lhr`, `flow-result` | Lighthouse runs (not yet wired) | Lighthouse's own `generateReport(lhr, 'html')`, offline   |
+| `blob.kind`          | Written by        | Opened with                                               |
+| -------------------- | ----------------- | --------------------------------------------------------- |
+| `browser-report`     | web & desktop e2e | the numbers in the row; the document holds the comparison |
+| `native-report`      | Android/iOS Detox | same                                                      |
+| `lhr`, `flow-result` | Lighthouse runs   | Lighthouse's own `generateReport(lhr, 'html')`, offline   |
 
 Metric keys are namespaced by the instrument, never the surface: `browser:` for our in-page
 instrumentation (which also runs inside Electron), `rn:` for the React Native numbers, `lh:` for
@@ -118,10 +118,26 @@ still lists them:
 | `final-screenshot`, `screenshot-thumbnails` | base64 images and the filmstrip                                                                                |
 | `user-timings` details                      | unbounded — a profiling build emits tens of thousands of entries, most of the document                         |
 
-**Only the nightly profiles.** Lighthouse's tracing inflates the very numbers `budgets.ts` limits are
-compared against, so a profiled run is not baseline material and pull requests deliberately run
-without it (`lighthouse` input of `template-suite-run-e2e.yml`, default `false`). A run that cannot
-attach to the app's debugging endpoint warns and records nothing; it never fails a test.
+**Pull requests and the nightly both profile** (`lighthouse` input of `template-suite-run-e2e.yml`,
+`"true"` on both; the input itself still defaults to `false`). Only the tests that call
+`perf.measure` are traced, so the cost is bounded to those, and a run that cannot attach to the
+app's debugging endpoint warns and records nothing — it never fails a test.
+
+Tracing costs the app time, so a profiled run's own `browser:` numbers sit above what the same
+commit costs untraced. Three things follow, and all three are implemented rather than left to the
+reader:
+
+- the index row carries `profiled: true`, and the trend page draws those points hollow, so a step
+  where the markers change reads as the tracer rather than as a regression;
+- the run's report says so — in the console header, in the pull request comment, and by downgrading
+  the over-limit annotation from a red `::error` to a `::notice`;
+- no budgets paste and no suggested limit is offered for a profiled run. Writing a traced number
+  into `budgets.ts` would raise the limit by the overhead and leave every later untraced run
+  comfortably under it.
+
+Because the nightly profiles too, the sealed baseline and the pull request compared against it were
+measured the same way. What stays incomparable is `budgets.ts`, whose numbers were recorded without
+a tracer; refresh those from an unprofiled local run.
 
 ## Baselines
 

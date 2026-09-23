@@ -133,6 +133,16 @@ describe('toIndexRows', () => {
         expect(toIndexRows(run)[1]?.metrics).toEqual({ 'rn:ttffMs': null });
     });
 
+    it('marks a row from a profiled run, so a trend can keep the two populations apart', () => {
+        const rows = toIndexRows({ ...run, context: { ...context, profiled: true } });
+
+        expect(rows[0]?.profiled).toBe(true);
+    });
+
+    it('leaves the mark off an ordinary run rather than writing false on every row', () => {
+        expect(toIndexRows(run)[0]).not.toHaveProperty('profiled');
+    });
+
     it('leaves out the blob when the named artifact was not produced', () => {
         const rows = toIndexRows({
             ...run,

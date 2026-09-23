@@ -81,9 +81,10 @@ on:
       lighthouse:
         description: >
           Record a Lighthouse timespan around each @perf measurement and store the flow result.
-          Off by default and deliberately not enabled on pull requests: Lighthouse's tracing
-          inflates the very numbers budgets.ts limits are compared against, so a profiled run is
-          not baseline material.
+          Only the tests that measure are profiled, so the cost is bounded to those. A profiled run
+          is not baseline material — its tracing inflates the very numbers budgets.ts limits are
+          compared against — so the reporter marks it and withholds its budgets paste, and the
+          store marks its rows `profiled` so a trend does not plot them beside untraced ones.
         required: false
         default: "false"
         type: string

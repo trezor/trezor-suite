@@ -194,6 +194,16 @@ describe('historyToPerfRun with Lighthouse flows', () => {
         );
     });
 
+    it('marks the run profiled, because the tracer was attached while it measured', () => {
+        expect(historyToPerfRun('3', history, identity, [flow()])?.context.profiled).toBe(true);
+    });
+
+    it('leaves a run whose attach failed unmarked: no flows means nothing was traced', () => {
+        expect(historyToPerfRun('3', history, identity, [])?.context).not.toHaveProperty(
+            'profiled',
+        );
+    });
+
     it('carries both instruments in one row, and points it at the flow result', () => {
         const run = historyToPerfRun('3', history, identity, [flow()]);
         const [measurement] = run?.measurements ?? [];

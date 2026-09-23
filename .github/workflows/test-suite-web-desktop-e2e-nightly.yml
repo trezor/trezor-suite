@@ -170,7 +170,8 @@ jobs:
   # base branch, so it seals the baseline every later run is compared against. Nothing else does —
   # a pull request never seals one.
   #
-  # This is also the only place Lighthouse runs, so it is where flow results enter the store.
+  # Lighthouse runs here as it does on a pull request, so the sealed baseline is a profiled run and
+  # what a pull request is compared against was measured the same way.
   publish_performance_history:
     name: Publish performance history
     if: ${{ !cancelled() && github.repository == 'trezor/trezor-suite' }}

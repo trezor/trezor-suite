@@ -177,6 +177,11 @@ export const historyToPerfRun = (
             surface: history.surface,
             shard,
             generatedAt: history.generatedAt,
+            // A shard that produced flow results was traced while it measured, so its `browser:`
+            // numbers carry Lighthouse's overhead. Derived from the documents rather than from an
+            // environment variable on purpose: a run where the attach failed produced no flows and
+            // was not in fact profiled, and this says so without anything having to notice.
+            ...(flows.length > 0 ? { profiled: true } : {}),
         },
         artifacts: [
             ...(history.measurements.length > 0

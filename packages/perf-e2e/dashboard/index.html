@@ -94,6 +94,11 @@
                 font-size: 12px;
                 margin: 0 0 0.75rem;
             }
+            .card .note {
+                color: var(--muted);
+                font-size: 11px;
+                margin: 0.5rem 0 0;
+            }
             svg {
                 display: block;
                 width: 100%;
@@ -117,6 +122,13 @@
             }
             .dot {
                 fill: var(--accent);
+            }
+            /* Hollow, not a second hue: a traced run is the same measurement recorded differently,
+               and the difference has to survive a colourblind reader and a black-and-white print. */
+            .dot.profiled {
+                fill: var(--bg);
+                stroke: var(--accent);
+                stroke-width: 2;
             }
             table {
                 border-collapse: collapse;
@@ -254,11 +266,16 @@
                         .map((p, i) =>
                             p.value === null
                                 ? ''
-                                : `<circle class="dot" cx="${x(i)}" cy="${y(p.value)}" r="4"><title>${fmt(p.value)} — ${p.sha.slice(0, 9)} (run ${p.run})</title></circle>`,
+                                : `<circle class="dot${p.profiled ? ' profiled' : ''}" cx="${x(i)}" cy="${y(p.value)}" r="4"><title>${fmt(p.value)} — ${p.sha.slice(0, 9)} (run ${p.run})${p.profiled ? ' · profiled' : ''}</title></circle>`,
                         )
                         .join('')}
                 </svg>
-                <div class="axis"><span>oldest</span><span>${fmt(lo)} – ${fmt(hi)}</span><span>newest</span></div>`;
+                <div class="axis"><span>oldest</span><span>${fmt(lo)} – ${fmt(hi)}</span><span>newest</span></div>
+                ${
+                    points.some(p => p.profiled)
+                        ? '<p class="note">Hollow points were recorded under Lighthouse tracing, which costs the app time: a step where the markers change is the tracer, not the app.</p>'
+                        : ''
+                }`;
             };
 
             const render = () => {
@@ -282,6 +299,7 @@
                             value: r.metrics?.[state.metric] ?? null,
                             sha: r.sha ?? '',
                             run: r.run ?? '',
+                            profiled: r.profiled === true,
                         }));
                         const last = rows.at(-1);
                         const metrics = Object.keys(last.metrics ?? {});
