@@ -86,7 +86,7 @@ const sendWithRetry = async (server: StellarRpcServer, transaction: StellarTrans
 const pollForApplyResult = async (server: StellarRpcServer, hash: string) => {
     const deadline = Date.now() + STELLAR_RPC_SUBMIT_POLL_TIMEOUT_MS;
 
-    for (;;) {
+    while (Date.now() < deadline) {
         // A failed poll says nothing about a transaction the node already accepted.
         const result = await server.getTransaction(hash).catch(() => undefined);
 
@@ -94,12 +94,15 @@ const pollForApplyResult = async (server: StellarRpcServer, hash: string) => {
             throw toSubmitError(result.resultXdr);
         }
 
-        if (result?.status === rpc.Api.GetTransactionStatus.SUCCESS || Date.now() >= deadline) {
+        if (result?.status === rpc.Api.GetTransactionStatus.SUCCESS) {
             return hash;
         }
 
         await resolveAfter(STELLAR_RPC_SUBMIT_POLL_INTERVAL_MS);
     }
+
+    // The node accepted it, so the hash stands even if the apply result never arrived in time.
+    return hash;
 };
 
 export type SubmitTransactionParams = {
