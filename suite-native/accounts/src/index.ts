@@ -12,6 +12,7 @@ export * from './components/SelectableNetworkItem';
 export * from './components/AccountsList/AccountsListTokenItem';
 export * from './components/AccountLabelFieldHint';
 export * from './components/AccountDetailsCard';
+export * from './components/AccountDetailScreenHeaderContent';
 export * from './components/TokenReceiveCard';
 export * from './hooks/useAccountLabelForm';
 export * from './hooks/useResolvedAccountKey';

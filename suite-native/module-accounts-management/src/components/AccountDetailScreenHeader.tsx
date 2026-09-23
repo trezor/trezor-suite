@@ -1,11 +1,9 @@
 import { type RouteProp, useNavigation, useRoute } from '@react-navigation/native';
 
-import { getNetworkDisplaySymbolName } from '@suite-common/wallet-config';
 import { type Account } from '@suite-common/wallet-types';
 import { isStakingSymbol } from '@suite-common/wallet-utils';
-import { AccountLabel } from '@suite-native/accounts';
-import { HStack, IconButton, Text, VStack, useBottomSheetModal } from '@suite-native/atoms';
-import { TokenIcon } from '@suite-native/icons';
+import { AccountDetailScreenHeaderContent } from '@suite-native/accounts';
+import { IconButton, useBottomSheetModal } from '@suite-native/atoms';
 import { TokenSettingsBottomSheet } from '@suite-native/module-earn';
 import {
     type AccountsStackParamList,
@@ -26,30 +24,6 @@ type AccountDetailNavigationProps = StackToStackCompositeNavigationProps<
     RootStackRoutes.AccountDetail,
     RootStackParamList
 >;
-
-export const AccountDetailScreenHeaderContent = ({ account }: AccountDetailScreenHeaderProps) => (
-    <HStack alignItems="center" flexShrink={1}>
-        <TokenIcon
-            tokenSymbol={account.symbol}
-            networkSymbol={account.symbol}
-            size="small"
-            showNetworkIcon
-        />
-        <VStack spacing={0} flexShrink={1}>
-            <Text variant="body-md-strong" numberOfLines={1} ellipsizeMode="tail">
-                {getNetworkDisplaySymbolName(account.symbol)}
-            </Text>
-            <AccountLabel
-                account={account}
-                variant="body-xs"
-                color="contentSecondary"
-                numberOfLines={1}
-                ellipsizeMode="tail"
-                showAccountTypeBadge
-            />
-        </VStack>
-    </HStack>
-);
 
 export const AccountDetailScreenHeader = ({ account }: AccountDetailScreenHeaderProps) => {
     const navigation = useNavigation<AccountDetailNavigationProps>();
