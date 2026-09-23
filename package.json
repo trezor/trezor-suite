@@ -124,6 +124,7 @@
         "### Align versions of sentry internal packages, because electron & native use different versions of @core": "1.0.0",
         "@sentry/core": "10.69.0",
         "@sentry/browser": "10.69.0",
+        "@sentry/node": "10.67.0",
         "expo-build-properties": "~57.0.6",
         "@types/react": "19.2.14",
         "react-dom": "19.2.3",

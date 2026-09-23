@@ -9087,35 +9087,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@sentry/node-core@npm:10.75.2":
-  version: 10.75.2
-  resolution: "@sentry/node-core@npm:10.75.2"
-  dependencies:
-    "@sentry/conventions": "npm:^0.16.0"
-    "@sentry/core": "npm:10.75.2"
-    "@sentry/opentelemetry": "npm:10.75.2"
-    import-in-the-middle: "npm:^3.0.0"
-  peerDependencies:
-    "@opentelemetry/api": ^1.9.0
-    "@opentelemetry/core": ^1.30.1 || ^2.1.0
-    "@opentelemetry/exporter-trace-otlp-http": ">=0.57.0 <1"
-    "@opentelemetry/instrumentation": ">=0.57.1 <1"
-    "@opentelemetry/sdk-trace-base": ^1.30.1 || ^2.1.0
-  peerDependenciesMeta:
-    "@opentelemetry/api":
-      optional: true
-    "@opentelemetry/core":
-      optional: true
-    "@opentelemetry/exporter-trace-otlp-http":
-      optional: true
-    "@opentelemetry/instrumentation":
-      optional: true
-    "@opentelemetry/sdk-trace-base":
-      optional: true
-  checksum: 10/5b206f97a3b454c5110ed8e92ddbc2b6fb4c10f74eaf329c83ada88f144d4021c38d6bd3c0fe0a14637647d577da0e3ed9f80b09859cfe05161729a2d95bc79a
-  languageName: node
-  linkType: hard
-
 "@sentry/node@npm:10.67.0":
   version: 10.67.0
   resolution: "@sentry/node@npm:10.67.0"
@@ -9133,23 +9104,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@sentry/node@npm:^10.0.0":
-  version: 10.75.2
-  resolution: "@sentry/node@npm:10.75.2"
-  dependencies:
-    "@opentelemetry/api": "npm:^1.9.1"
-    "@opentelemetry/instrumentation": "npm:^0.220.0"
-    "@opentelemetry/sdk-trace-base": "npm:^2.9.0"
-    "@sentry/conventions": "npm:^0.16.0"
-    "@sentry/core": "npm:10.75.2"
-    "@sentry/node-core": "npm:10.75.2"
-    "@sentry/opentelemetry": "npm:10.75.2"
-    "@sentry/server-utils": "npm:10.75.2"
-    import-in-the-middle: "npm:^3.0.0"
-  checksum: 10/2d0f7e7485362d23ba65cf0b95da4263027fe936f6a04a042c1c547109f7fd32e56b1de9f53d06ef9ff19b7bbf4a074f35226003843a436153325653935e3121
-  languageName: node
-  linkType: hard
-
 "@sentry/opentelemetry@npm:10.67.0":
   version: 10.67.0
   resolution: "@sentry/opentelemetry@npm:10.67.0"
@@ -9161,20 +9115,6 @@ __metadata:
     "@opentelemetry/core": ^1.30.1 || ^2.1.0
     "@opentelemetry/sdk-trace-base": ^1.30.1 || ^2.1.0
   checksum: 10/90a64415d34483980d0c116d71e3a9efc5ade66d91480a47cd1379d21733322fa21e602126dc88d901796afc2e38c70ca94294841f8a132388a6eb739cef1d51
-  languageName: node
-  linkType: hard
-
-"@sentry/opentelemetry@npm:10.75.2":
-  version: 10.75.2
-  resolution: "@sentry/opentelemetry@npm:10.75.2"
-  dependencies:
-    "@sentry/conventions": "npm:^0.16.0"
-    "@sentry/core": "npm:10.75.2"
-  peerDependencies:
-    "@opentelemetry/api": ^1.9.0
-    "@opentelemetry/core": ^1.30.1 || ^2.1.0
-    "@opentelemetry/sdk-trace-base": ^1.30.1 || ^2.1.0
-  checksum: 10/5ef526c1fd79a9a998e1c9b3ef7607560b707cc6775a2e928727d9ff4dee4de5ec7056219b6e39a22ebbd0ab7105463a9e43391cc6d12bc731168aa59f14f468
   languageName: node
   linkType: hard
 
@@ -9246,16 +9186,6 @@ __metadata:
     "@sentry/conventions": "npm:^0.16.0"
     "@sentry/core": "npm:10.67.0"
   checksum: 10/dbdcdb2fb0596d56d6249100cfaa7c6ad0d0560db530aa915fcc355f05732788efc68291ee3046369b9d953fc3fceac85df73d670a7dcb28896d25dd5b07ea5d
-  languageName: node
-  linkType: hard
-
-"@sentry/server-utils@npm:10.75.2":
-  version: 10.75.2
-  resolution: "@sentry/server-utils@npm:10.75.2"
-  dependencies:
-    "@sentry/conventions": "npm:^0.16.0"
-    "@sentry/core": "npm:10.75.2"
-  checksum: 10/912217f68067e4b04ec0228944c5ea2ae8b87f0b40775ab6644188b26a383f8905354ec74c1f6f8e42d87a1d1c91f0c2dc85529b795025ec8569d85d8bf7fccd
   languageName: node
   linkType: hard
 
@@ -22294,14 +22224,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"axe-core@npm:^4.10.0":
-  version: 4.10.2
-  resolution: "axe-core@npm:4.10.2"
-  checksum: 10/a69423b2ff16c15922c4ea7cf9cc5112728a2817bbe0f2cc212248d648885ffd1ba554e3a341dfc289cd9e67fc0d06f333b5c6837c5c38ca6652507381216fc1
-  languageName: node
-  linkType: hard
-
-"axe-core@npm:^4.12.1":
+"axe-core@npm:^4.10.0, axe-core@npm:^4.12.1":
   version: 4.13.0
   resolution: "axe-core@npm:4.13.0"
   checksum: 10/b9319bedc705fde00e4abd981d8724202cc20102e4ae6d8edfde33cb5265e0fb8f67f32adcb4ad33fbd4a2c8d7ad7ef5af1d933d9ad859bed90e3eae0ee8c52f
