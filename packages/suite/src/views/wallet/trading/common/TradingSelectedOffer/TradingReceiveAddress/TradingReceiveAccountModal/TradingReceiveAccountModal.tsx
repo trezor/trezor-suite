@@ -1,14 +1,14 @@
 import { Translation } from '@suite/intl';
 import { selectHasRunningDiscovery } from '@suite-common/wallet-core';
-import { CardList, Column, Modal } from '@trezor/components';
+import { CardList, Column, Modal, Row } from '@trezor/components';
 
 import { useSelector } from 'src/hooks/suite';
 import { DiscoveryWarning } from 'src/views/wallet/staking/components/StakingDashboard/components/DiscoveryWarning';
 import { TradingReceiveAddressEmpty } from 'src/views/wallet/trading/common/TradingSelectedOffer/TradingReceiveAddress/TradingReceiveAddress';
 import { useReceiveAddressModalControls } from 'src/views/wallet/trading/common/TradingSelectedOffer/TradingReceiveAddress/useReceiveAddressModalControls';
 
-import { TradingReceiveAccountAddSuiteOption } from './TradingReceiveAccountAddSuiteOption';
-import { TradingReceiveAccountNonSuiteOption } from './TradingReceiveAccountNonSuiteOption';
+import { TradingReceiveAccountAddSuiteButton } from './TradingReceiveAccountAddSuiteButton';
+import { TradingReceiveAccountNonSuiteButton } from './TradingReceiveAccountNonSuiteButton';
 import { TradingReceiveAccountSuiteOption } from './TradingReceiveAccountSuiteOption';
 import { useTradingReceiveAddressValues } from '../useTradingReceiveAddressValues';
 
@@ -28,9 +28,9 @@ export const TradingReceiveAccountModal = () => {
     return (
         <Modal
             data-testid="@trading/receive-account-modal"
-            heading={<Translation id="TR_BUY_RECEIVING_ACCOUNT" />}
+            heading={<Translation id="TR_TRADING_RECEIVE_SELECT_ACCOUNT" />}
             onCancel={onCancel}
-            width={600}
+            width={480}
         >
             <Column gap={12}>
                 {isDiscoveryRunning && <DiscoveryWarning />}
@@ -42,14 +42,19 @@ export const TradingReceiveAccountModal = () => {
                     />
                 )}
 
-                {(hasSuiteAccounts || canAddSuiteAccount || canUseNonSuiteAccount) && (
+                {hasSuiteAccounts && (
                     <CardList>
                         {suiteReceiveAccounts?.map(account => (
                             <TradingReceiveAccountSuiteOption key={account.key} account={account} />
                         ))}
-                        {canAddSuiteAccount && <TradingReceiveAccountAddSuiteOption />}
-                        {canUseNonSuiteAccount && <TradingReceiveAccountNonSuiteOption />}
                     </CardList>
+                )}
+
+                {(canAddSuiteAccount || canUseNonSuiteAccount) && (
+                    <Row gap={8}>
+                        {canAddSuiteAccount && <TradingReceiveAccountAddSuiteButton />}
+                        {canUseNonSuiteAccount && <TradingReceiveAccountNonSuiteButton />}
+                    </Row>
                 )}
             </Column>
         </Modal>

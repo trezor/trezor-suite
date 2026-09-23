@@ -10,8 +10,8 @@ export class TradingReceiveAccount {
 
     readonly receiveAccountModal: Locator;
     readonly receiveAccountModalSuiteOption: Locator;
-    readonly receiveAccountModalAddSuiteOption: Locator;
-    readonly receiveAccountModalNonSuiteOption: Locator;
+    readonly receiveAccountModalAddAccountButton: Locator;
+    readonly receiveAccountModalUseExternalAccountButton: Locator;
 
     readonly receiveAddressModal: Locator;
     readonly receiveAddressModalConfirmButton: Locator;
@@ -36,11 +36,11 @@ export class TradingReceiveAccount {
         this.receiveAccountModalSuiteOption = this.page.getByTestId(
             '@trading/receive-account-modal/option/suite',
         );
-        this.receiveAccountModalAddSuiteOption = this.page.getByTestId(
-            '@trading/receive-account-modal/option/add-suite',
+        this.receiveAccountModalAddAccountButton = this.page.getByTestId(
+            '@trading/receive-account-modal/add-account',
         );
-        this.receiveAccountModalNonSuiteOption = this.page.getByTestId(
-            '@trading/receive-account-modal/option/non-suite',
+        this.receiveAccountModalUseExternalAccountButton = this.page.getByTestId(
+            '@trading/receive-account-modal/use-external-account',
         );
 
         this.receiveAddressModal = this.page.getByTestId('@trading/receive-address-modal');
@@ -94,7 +94,7 @@ export class TradingReceiveAccount {
         await this.receiveAddressPicker.click();
         await expect(this.receiveAccountModal).toBeVisible();
 
-        await this.receiveAccountModalNonSuiteOption.nth(0).click();
+        await this.receiveAccountModalUseExternalAccountButton.click();
         await this.receiveAddressInput.fill(receiveAddress);
 
         if (extraField) {
@@ -111,7 +111,7 @@ export class TradingReceiveAccount {
         await this.receiveAddressPicker.click();
         await expect(this.receiveAccountModal).toBeVisible();
 
-        await this.receiveAccountModalAddSuiteOption.nth(0).click();
+        await this.receiveAccountModalAddAccountButton.click();
 
         if (symbol) {
             await this.addAccountModalNetworkButton(symbol).click();
