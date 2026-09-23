@@ -19,7 +19,7 @@ import {
     tradingActions,
 } from '@suite-common/trading';
 import { type TokenAddress } from '@suite-common/wallet-types';
-import { Box, Column, Row } from '@trezor/components';
+import { Column, Row } from '@trezor/components';
 import { hasBitcoinOnlyFirmware } from '@trezor/device-utils/src/firmwareUtils';
 import { useCurrentRef } from '@trezor/react-utils';
 import { BigNumber } from '@trezor/utils';
@@ -27,9 +27,9 @@ import { BigNumber } from '@trezor/utils';
 import { useSelector } from 'src/hooks/suite';
 import { useTradingFormContext } from 'src/hooks/wallet/trading/form/useTradingCommonForm';
 import { useBitcoinAmountUnit } from 'src/hooks/wallet/useBitcoinAmountUnit';
-import { TradingBalance } from 'src/views/wallet/trading/common/TradingBalance';
 import { TradingFormInputCountry } from 'src/views/wallet/trading/common/TradingForm/TradingFormInput/TradingFormInputCountry/TradingFormInputCountry';
 import { TradingFormInputCurrency } from 'src/views/wallet/trading/common/TradingForm/TradingFormInput/TradingFormInputCurrency';
+import { TradingFormInputBaseCurrencyAmount } from 'src/views/wallet/trading/common/TradingForm/TradingFormInput/TradingFormInputFiatCrypto/TradingFormInputBaseCurrencyAmount';
 import { TradingFormInputCryptoAmount } from 'src/views/wallet/trading/common/TradingForm/TradingFormInput/TradingFormInputFiatCrypto/TradingFormInputCryptoAmount';
 import { TradingFormInputFiat } from 'src/views/wallet/trading/common/TradingForm/TradingFormInput/TradingFormInputFiatCrypto/TradingFormInputFiat';
 import { TradingFormInputPaymentMethod } from 'src/views/wallet/trading/common/TradingForm/TradingFormInput/TradingFormInputPaymentMethod/TradingFormInputPaymentMethod';
@@ -59,7 +59,6 @@ export const TradingBuyFormInputs = () => {
     } = context;
     const {
         [TRADING_FORM_CRYPTO_CURRENCY_SELECT]: cryptoSelect,
-        [TRADING_FORM_CRYPTO_INPUT]: cryptoInput,
         [TRADING_FORM_COUNTRY_SELECT]: countrySelect,
     } = getValues();
 
@@ -147,19 +146,19 @@ export const TradingBuyFormInputs = () => {
                             includedCryptoIds={buySupportedCryptoIds}
                         />
                     </Row>
-                    <Box minHeight={20}>
+                    <Row minHeight={20}>
                         {!!cryptoSelect && (
-                            <TradingBalance
-                                balance={cryptoInput}
+                            <TradingFormInputBaseCurrencyAmount
+                                cryptoInputName={TRADING_FORM_CRYPTO_INPUT}
+                                fiatInputName={TRADING_FORM_FIAT_INPUT}
                                 symbol={cryptoSelect.networkSymbol}
                                 tokenAddress={
                                     (cryptoSelect.contractAddress as TokenAddress) ?? undefined
                                 }
-                                showOnlyAmount
                                 isInSats={shouldBuyInSats}
                             />
                         )}
-                    </Box>
+                    </Row>
                 </TradingFormSection>
             </TradingFormCard>
 
