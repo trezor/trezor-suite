@@ -90,6 +90,11 @@ export const webComponents: Record<PageName, LazyExoticComponent<ComponentType>>
             }),
         ),
     ),
+    'apps-embedding-index': lazy(() =>
+        import(
+            /* webpackChunkName: "apps-embedding" */ 'src/views/apps-embedding/AppsEmbedding'
+        ).then(({ AppsEmbedding }) => ({ default: AppsEmbedding })),
+    ),
     'suite-connect-popup': lazy(() =>
         import(/* webpackChunkName: "connect-popup" */ 'src/views/connect-popup/index').then(
             ({ ConnectPopup }) => ({ default: ConnectPopup }),

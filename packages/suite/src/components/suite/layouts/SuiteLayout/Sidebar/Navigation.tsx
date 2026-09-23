@@ -1,6 +1,7 @@
 import { type FC, useCallback, useEffect, useMemo, useState } from 'react';
 
 import { events, injectDesktopAnalytics } from '@suite/analytics';
+import { selectIsAppsEmbeddingAvailable } from '@suite/apps-embedding-demo';
 import {
     NewContentIndicatorId,
     markNewContentIndicatorAsSeen,
@@ -13,7 +14,14 @@ import { selectHasBitcoinOnlyFirmware } from '@suite-common/device';
 import { injectDispatch } from '@suite-common/redux-utils';
 import { selectHasUnseenTransactionNotifications } from '@suite-common/toast-notifications';
 import { Column } from '@trezor/components';
-import { BellIcon, GearSixIcon, HouseIcon, PiggyBankIcon, RepeatIcon } from '@trezor/icons';
+import {
+    AppWindowIcon,
+    BellIcon,
+    GearSixIcon,
+    HouseIcon,
+    PiggyBankIcon,
+    RepeatIcon,
+} from '@trezor/icons';
 
 import { useSelector } from 'src/hooks/suite';
 import { useResponsiveContext } from 'src/support/suite/ResponsiveContext';
@@ -42,6 +50,7 @@ export const Navigation = ({ children }: NavigationProps) => {
     const startRoute: Route['name'] = isInitialRun ? 'suite-start' : 'suite-index';
 
     const isBtcOnly = useSelector(selectHasBitcoinOnlyFirmware);
+    const isAppsEmbeddingAvailable = useSelector(selectIsAppsEmbeddingAvailable);
 
     const hasUnseenNotifications = useSelector(selectHasUnseenTransactionNotifications);
     const isActivityNewContentIndicatorVisible = useSelector(
@@ -151,6 +160,16 @@ export const Navigation = ({ children }: NavigationProps) => {
                           } as NavigationItemProps,
                       ]
                     : []),
+                ...(isAppsEmbeddingAvailable
+                    ? [
+                          {
+                              nameId: 'TR_APPS_EMBEDDING',
+                              icon: AppWindowIcon,
+                              goToRoute: 'apps-embedding-index',
+                              routes: ['apps-embedding-index'],
+                          } as NavigationItemProps,
+                      ]
+                    : []),
                 {
                     nameId: 'TR_NOTIFICATIONS',
                     icon: BellIcon,
@@ -175,6 +194,7 @@ export const Navigation = ({ children }: NavigationProps) => {
             [
                 startRoute,
                 isBtcOnly,
+                isAppsEmbeddingAvailable,
                 reportSwapNavigation,
                 isEarnNewContentIndicatorVisible,
                 shouldAnimateNewContentIndicators,

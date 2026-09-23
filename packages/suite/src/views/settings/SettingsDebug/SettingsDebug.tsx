@@ -1,3 +1,4 @@
+import { AppsEmbeddingSwitch } from '@suite/apps-embedding-demo';
 import { Translation } from '@suite/intl';
 import {
     ContextMessage,
@@ -85,6 +86,9 @@ export const SettingsDebug = () => {
             </SettingsSection>
             <SettingsSection hasVerticalLayout={hasContentBelowTabletWidth} title="Trade">
                 <TradeApi />
+            </SettingsSection>
+            <SettingsSection hasVerticalLayout={hasContentBelowTabletWidth} title="Apps embedding">
+                <AppsEmbeddingSwitch />
             </SettingsSection>
             <SettingsSection hasVerticalLayout={hasContentBelowTabletWidth} title="Earn">
                 <EarnApi />
