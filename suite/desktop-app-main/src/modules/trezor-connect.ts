@@ -17,7 +17,6 @@ import type { ModuleInit, ModuleInitBackground } from './module';
 import { looselyTypedIpcMain } from '../ipcMain';
 import { APP_NAME } from '../libs/constants';
 import { getComputerName } from '../libs/info';
-import { PowerSaveBlocker } from '../libs/power-save-blocker';
 import { getSwitchValue } from '../libs/process-switches';
 
 export const SERVICE_NAME = '@trezor/connect';
@@ -71,7 +70,11 @@ export const getTransportsParam = (
     return [bluetooth, new BridgeTransport(createTransportParams(createLogger))];
 };
 
-export const initBackground: ModuleInitBackground = ({ mainThreadEmitter, store }) => {
+export const initBackground: ModuleInitBackground = ({
+    mainThreadEmitter,
+    store,
+    powerSaveBlocker,
+}) => {
     const { logger } = global;
     let createLogger: ConnectSettings['createLogger'];
 
@@ -156,12 +159,11 @@ export const initBackground: ModuleInitBackground = ({ mainThreadEmitter, store 
                 }
 
                 if (method === 'firmwareUpdate') {
-                    const powerSaveBlocker = new PowerSaveBlocker();
-                    powerSaveBlocker.startBlockingPowerSave();
+                    const releasePowerSaveBlocker = powerSaveBlocker.blockPowerSave();
                     try {
                         return await TrezorConnect.firmwareUpdate(params[0]);
                     } finally {
-                        powerSaveBlocker.stopBlockingPowerSave();
+                        releasePowerSaveBlocker();
                     }
                 }
 

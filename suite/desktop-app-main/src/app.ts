@@ -1,5 +1,10 @@
 import { randomBytes } from 'crypto';
-import { BrowserWindow, app, nativeTheme } from 'electron';
+import {
+    BrowserWindow,
+    app,
+    powerSaveBlocker as electronPowerSaveBlocker,
+    nativeTheme,
+} from 'electron';
 import debounce from 'lodash/debounce';
 import path from 'path';
 
@@ -15,6 +20,7 @@ import { processStatePatch, restartApp } from './libs/app-utils';
 import { isAutoStartEnabled, promptForAutoStartBeforeQuit } from './libs/auto-start';
 import { APP_NAME } from './libs/constants';
 import { createElectronSessionInterceptor } from './libs/create-electron-session-interceptor';
+import { createPowerSaveBlocker } from './libs/createPowerSaveBlocker';
 import { getBuildInfo, getComputerInfo } from './libs/info';
 import { isMainWindowUsable } from './libs/isMainWindowUsable';
 import { loadIndex } from './libs/loadIndex';
@@ -179,6 +185,7 @@ const init = async () => {
     // Load bridge module first, it is required in both UI and daemon mode
     const interceptor = createElectronSessionInterceptor();
     const mainWindowProxy = new MainWindowProxy();
+    const powerSaveBlocker = createPowerSaveBlocker({ electronPowerSaveBlocker, logger });
     const { loadModules: loadBackgroundModules, quitModules: quitBackgroundModules } =
         initBackgroundModules({
             mainWindowProxy,
@@ -186,6 +193,7 @@ const init = async () => {
             interceptor,
             mainThreadEmitter,
             cspNonce,
+            powerSaveBlocker,
         });
 
     // todo:
@@ -249,6 +257,7 @@ const init = async () => {
         interceptor,
         mainThreadEmitter,
         cspNonce,
+        powerSaveBlocker,
     });
 
     const reactivateWindow = () => {
@@ -312,6 +321,7 @@ const init = async () => {
         interceptor,
         mainThreadEmitter,
         cspNonce,
+        powerSaveBlocker,
     });
 
     const { onLoad: loadBioAuthModule, onQuit: quitBioAuthModule } = initBioAuthModule({
