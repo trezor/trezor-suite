@@ -179,6 +179,7 @@ export const watchTradeThunk = createThunk<void, WatchTradeThunk, { state: Watch
                         data: data.tradeData,
                         sendAccountKey: trade.sendAccountKey,
                         receiveAccountKey: trade.receiveAccountKey,
+                        sendTxid: trade.sendTxid,
                     }),
                 );
 

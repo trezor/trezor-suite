@@ -147,6 +147,7 @@ export type TradingTransactionExchange = TradingCommonTransaction & {
     data: ExchangeTrade;
     receiveAccountKey?: Account['key'];
     sendAccountKey: Account['key'] | undefined;
+    sendTxid?: string;
 };
 export type TradingTransaction =
     TradingTransactionBuy | TradingTransactionSell | TradingTransactionExchange;

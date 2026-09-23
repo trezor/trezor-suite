@@ -6,7 +6,7 @@ import {
     selectTradingProviderCompanyName,
 } from '../selectors/tradingSelectors';
 import { type TradingTransaction, type TradingType } from '../types';
-import { cryptoIdToNetwork, isBuyTrade, isExchangeTrade, isSellFiatTrade } from '../utils';
+import { cryptoIdToNetwork, isBuyTrade, isExchangeTrade } from '../utils';
 import { getTradeOperationData } from './tradeOperationUtils';
 
 const CSV_NEWLINE = '\n';
@@ -82,7 +82,17 @@ export const getTradingHistoryCsvRow = (
         isCrypto: boolean | undefined,
     ) => (isCrypto && currency ? (cryptoIdToNetwork(currency as CryptoId)?.name ?? '') : '');
 
-    const spendTransactionId = isSellFiatTrade(data) ? (data.txid ?? '') : '';
+    const getSpendTransactionId = () => {
+        if (trade.tradeType === 'sell') {
+            return trade.data.txid;
+        }
+
+        if (trade.tradeType === 'exchange') {
+            return trade.data.isDex ? trade.data.receiveTxHash : trade.sendTxid;
+        }
+
+        return undefined;
+    };
     const receiveTransactionId =
         isBuyTrade(data) || isExchangeTrade(data) ? (data.receiveTxHash ?? '') : '';
 
@@ -93,7 +103,7 @@ export const getTradingHistoryCsvRow = (
         spentAmount: fromValue ?? '',
         spendTicker: resolveTicker(fromCurrency, isFromCrypto),
         spendNetwork: resolveNetwork(fromCurrency, isFromCrypto),
-        spendTransactionId,
+        spendTransactionId: getSpendTransactionId() ?? '',
         receiveAmount: toValue ?? '',
         receiveTicker: resolveTicker(toCurrency, isToCrypto),
         receiveNetwork: resolveNetwork(toCurrency, isToCrypto),

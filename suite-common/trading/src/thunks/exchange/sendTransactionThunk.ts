@@ -141,6 +141,7 @@ export const sendTransactionThunk = createThunk<
                 data: { ...selectedTrade, receiveTxHash: recomposeAndSignTx.payload.payload.txid },
                 sendAccountKey,
                 receiveAccountKey,
+                sendTxid: recomposeAndSignTx.payload.payload.txid,
             }),
         );
         dispatch(tradingExchangeActions.saveTransactionId(selectedTrade.orderId));
