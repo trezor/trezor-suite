@@ -5383,6 +5383,10 @@ export const messages = defineMessages({
         id: 'TR_EARN',
         defaultMessage: 'Earn',
     },
+    TR_APPS_EMBEDDING: {
+        id: 'TR_APPS_EMBEDDING',
+        defaultMessage: 'Apps embedding',
+    },
     TR_WALLET: {
         id: 'TR_WALLET',
         defaultMessage: 'Accounts',
