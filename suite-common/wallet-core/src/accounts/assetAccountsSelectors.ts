@@ -5,7 +5,7 @@ import {
 } from '@suite-common/token-definitions';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { type Account, type AccountKey, type TokenAddress } from '@suite-common/wallet-types';
-import { isNftToken } from '@suite-common/wallet-utils';
+import { isNftCollection } from '@suite-common/wallet-utils';
 import { type TokenInfo } from '@trezor/blockchain-link-types';
 import { type StaticSessionId } from '@trezor/device-utils';
 import { type Branded } from '@trezor/type-utils';
@@ -53,6 +53,7 @@ export type AssetAccount = {
     cryptoBalance: string;
     tokenInfo: TokenInfo | undefined;
     isAccountVisible: boolean;
+    isCollection: boolean;
 };
 
 const toAssetAccounts = (account: Account): readonly AssetAccount[] => {
@@ -60,6 +61,7 @@ const toAssetAccounts = (account: Account): readonly AssetAccount[] => {
         contractAddress: TokenAddress | undefined,
         cryptoBalance: string,
         tokenInfo: TokenInfo | undefined,
+        isCollection = false,
     ): AssetAccount => ({
         assetAccountKey: getAssetAccountKey({ accountKey: account.key, contractAddress }),
         accountKey: account.key,
@@ -74,13 +76,21 @@ const toAssetAccounts = (account: Account): readonly AssetAccount[] => {
         cryptoBalance,
         tokenInfo,
         isAccountVisible: account.visible,
+        isCollection,
     });
 
     const coinAccounts = [toAssetAccount(undefined, account.formattedBalance, undefined)];
 
     const tokenAccounts = (account.tokens ?? [])
-        .filter(token => !isNftToken(token) && new BigNumber(token.balance ?? '0').gt(0))
-        .map(token => toAssetAccount(token.contract as TokenAddress, token.balance ?? '0', token));
+        .filter(token => new BigNumber(token.balance ?? '0').gt(0))
+        .map(token =>
+            toAssetAccount(
+                token.contract as TokenAddress,
+                token.balance ?? '0',
+                token,
+                isNftCollection(token),
+            ),
+        );
 
     return [...coinAccounts, ...tokenAccounts];
 };
@@ -101,7 +111,12 @@ export const selectAssetAccountsByWallet = createMemoizedSelector(
         const byWallet = new Map<StaticSessionId, Map<NetworkSymbol, AssetAccount[]>>();
 
         assetAccounts.forEach(assetAccount => {
-            const { deviceState, symbol } = assetAccount;
+            const { isCollection, deviceState, symbol } = assetAccount;
+
+            if (isCollection) {
+                return;
+            }
+
             let byNetwork = byWallet.get(deviceState);
 
             if (byNetwork === undefined) {
@@ -130,9 +145,9 @@ const selectAssetAccountsByToken = createMemoizedSelector(
         const byNetwork = new Map<NetworkSymbol, Map<TokenAddress, AssetAccount[]>>();
 
         assetAccounts.forEach(assetAccount => {
-            const { symbol, contractAddress } = assetAccount;
+            const { isCollection, symbol, contractAddress } = assetAccount;
 
-            if (contractAddress === undefined) {
+            if (isCollection || contractAddress === undefined) {
                 return;
             }
 
@@ -153,6 +168,61 @@ const selectAssetAccountsByToken = createMemoizedSelector(
         });
 
         return byNetwork;
+    },
+);
+
+export const selectCollectionsByDevice = createMemoizedSelector(
+    [selectAssetAccounts],
+    (assetAccounts): ReadonlyMap<StaticSessionId, readonly AssetAccount[]> => {
+        const byWallet = new Map<StaticSessionId, AssetAccount[]>();
+
+        assetAccounts.forEach(assetAccount => {
+            if (!assetAccount.isCollection) {
+                return;
+            }
+
+            const held = byWallet.get(assetAccount.deviceState);
+
+            if (held === undefined) {
+                byWallet.set(assetAccount.deviceState, [assetAccount]);
+            } else {
+                held.push(assetAccount);
+            }
+        });
+
+        return byWallet;
+    },
+);
+
+export const selectDeviceAssetGroups = createMemoizedSelector(
+    [
+        selectAssetAccountsByWallet,
+        (_state: AssetAccountsRootState, deviceState: StaticSessionId) => deviceState,
+        (
+            _state: AssetAccountsRootState,
+            _deviceState: StaticSessionId,
+            symbols: readonly NetworkSymbol[],
+        ) => symbols,
+    ],
+    (byWallet, deviceState, symbols): readonly (readonly AssetAccount[])[] => {
+        const groups = new Map<WalletAssetKey, AssetAccount[]>();
+        const byNetwork = byWallet.get(deviceState);
+
+        symbols.forEach(symbol => {
+            const held = byNetwork?.get(symbol);
+
+            held?.forEach(assetAccount => {
+                const group = groups.get(assetAccount.assetKey);
+
+                if (group === undefined) {
+                    groups.set(assetAccount.assetKey, [assetAccount]);
+                } else {
+                    group.push(assetAccount);
+                }
+            });
+        });
+
+        return returnStableArrayIfEmpty([...groups.values()]);
     },
 );
 
@@ -179,6 +249,7 @@ export const selectHiddenTokenReasons = createMemoizedSelector(
                         tokens: [assetAccount.tokenInfo],
                         symbol,
                         tokenDefinitions: tokenDefinitions?.[symbol]?.coin,
+                        areCollectionsRecognisedByIds: true,
                     });
 
                 const isHiddenByUser = hiddenWithBalance.length + hiddenWithoutBalance.length > 0;
