@@ -1777,6 +1777,10 @@ export const messages = defineMessages({
         defaultMessage: 'Show small balances',
         id: 'TR_ASSET_FIRST_SMALL_BALANCES',
     },
+    TR_ASSET_FIRST_FEEDBACK_TITLE: {
+        defaultMessage: 'How do you like the new asset table?',
+        id: 'TR_ASSET_FIRST_FEEDBACK_TITLE',
+    },
     TR_ASSET_FIRST_NFTS: {
         defaultMessage: 'NFTs',
         id: 'TR_ASSET_FIRST_NFTS',

@@ -9,6 +9,7 @@ import { useSelector } from 'src/hooks/suite';
 import { selectDiscoveryOverallStatus } from 'src/utils/wallet/selectDiscoveryOverallStatus';
 
 import { AssetFirstBalanceCard } from './AssetFirstBalanceCard';
+import { AssetFirstFeedback } from './AssetFirstFeedback';
 import { AssetFirstTable } from './AssetFirstTable';
 import { type AssetRow, selectAssetFirstRows } from './assetFirstTableSelectors';
 import { AssetFirstNfts } from '../AssetFirstNfts/AssetFirstNfts';
@@ -51,7 +52,7 @@ export const AssetFirstDashboard = () => {
             <AssetFirstBalanceCard rows={rows} />
             <DashboardPromoBanner />
             <AssetFirstTable deviceState={deviceState} />
-            {/* The NFTs come after the table, and after anything the dashboard puts between. */}
+            <AssetFirstFeedback />
             <AssetFirstNfts deviceState={deviceState} />
         </Column>
     );
