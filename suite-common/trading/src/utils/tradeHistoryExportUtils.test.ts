@@ -103,6 +103,7 @@ const exchangeTrade: TradingTransactionExchange = {
     },
     sendAccountKey: undefined,
     receiveAccountKey: undefined,
+    sendTxid: 'exchange-send-hash',
 };
 
 describe('tradeHistoryExportUtils', () => {
@@ -190,7 +191,7 @@ describe('tradeHistoryExportUtils', () => {
                 spentAmount: '10.1232',
                 spendTicker: 'USDC',
                 spendNetwork: 'Ethereum',
-                spendTransactionId: '',
+                spendTransactionId: 'exchange-send-hash',
                 receiveAmount: '0.462586',
                 receiveTicker: 'BTC',
                 receiveNetwork: 'Bitcoin',
@@ -199,6 +200,19 @@ describe('tradeHistoryExportUtils', () => {
                 receiveTransactionId: 'exchange-receive-hash',
                 paymentId: '',
             });
+        });
+
+        it('uses the swap tx as both spend and receive tx for a DEX trade', () => {
+            const trade: TradingTransactionExchange = {
+                ...exchangeTrade,
+                data: { ...exchangeTrade.data, isDex: true, receiveTxHash: 'dex-swap-hash' },
+                sendTxid: undefined,
+            };
+
+            const row = getTradingHistoryCsvRow(trade, resolvers);
+
+            expect(row.spendTransactionId).toBe('dex-swap-hash');
+            expect(row.receiveTransactionId).toBe('dex-swap-hash');
         });
 
         it('falls back to the raw crypto id when the ticker cannot be resolved', () => {

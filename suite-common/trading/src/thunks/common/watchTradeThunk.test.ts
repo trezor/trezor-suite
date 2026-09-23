@@ -1,4 +1,5 @@
 import { combineReducers } from '@reduxjs/toolkit';
+import { type WatchExchangeTradeResponse } from 'invity-api';
 
 import { mockActionType } from '@suite-common/redux-utils/mocks';
 import { createTestStore } from '@suite-common/test-utils';
@@ -577,6 +578,54 @@ describe('watchTradeThunk', () => {
                 rate: 49,
             });
             expect(saveSelectedQuoteAction?.payload).toEqual(savedTradeData);
+        });
+
+        it('should keep the send txid when the provider reports the receive tx', async () => {
+            const trade: TradingTransactionExchange = {
+                date: dateISO,
+                key: 'tradeKey',
+                tradeType: 'exchange',
+                data: {
+                    status: 'SENDING',
+                    orderId: 'tradeKey',
+                },
+                sendAccountKey: 'sendAccountKey' as AccountKey,
+                sendTxid: 'sendTxid',
+            };
+
+            const store = getStore({
+                trades: [trade],
+            });
+
+            const response: WatchExchangeTradeResponse = {
+                status: 'SUCCESS',
+                receiveTxHash: 'receiveTxHash',
+            };
+            jest.spyOn(tradeApi, 'watchTrade').mockResolvedValue(response);
+
+            await store.dispatch(
+                watchTradeThunk({
+                    account,
+                    trade,
+                    refreshCount,
+                }),
+            );
+
+            const actions = store.getActions();
+            const saveTradeAction = actions.find(action => action.type === '@trading/saveTrade');
+
+            expect(saveTradeAction?.payload).toEqual({
+                tradeType: 'exchange',
+                date: dateISO,
+                key: 'tradeKey',
+                data: {
+                    status: 'SUCCESS',
+                    orderId: 'tradeKey',
+                    receiveTxHash: 'receiveTxHash',
+                },
+                sendAccountKey: 'sendAccountKey',
+                sendTxid: 'sendTxid',
+            });
         });
     });
 });

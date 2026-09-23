@@ -353,6 +353,7 @@ describe('sendTransactionThunk', () => {
                     partnerPaymentExtraId: undefined,
                 },
                 key: trade.data.orderId,
+                sendTxid: 'txid',
             },
         ]);
         expect(store.getState().wallet.trading.exchange.transactionId).toBe(trade.data.orderId);
