@@ -33,25 +33,27 @@ const reportOnce = (
 };
 
 /**
- * The backend nonce fetch failed, so signing falls back to reconstructing the nonce from local
- * state. Counting these tells us how often signing runs on the degraded path — and therefore
- * whether a retry would be worth the extra call.
+ * Every attempt at the backend nonce fetch failed, so signing falls back to reconstructing the
+ * nonce from local state. Counting these tells us how often signing runs on the degraded path.
  */
 export const reportEvmNonceFetchFailed = ({
     account,
     reason,
+    attempts,
 }: {
     account: NonceAccount;
     reason: string;
+    attempts: number;
 }) =>
     reportOnce(
         ['fetch-failed', account.symbol, reason].join('|'),
         'evm_nonce_fetch_failed',
-        `EVM confirmed-nonce fetch failed, falling back to local derivation [${reason}]`,
+        `EVM confirmed-nonce fetch failed after ${attempts} attempt(s), falling back to local derivation [${reason}]`,
         scope => {
             scope.setTag('nonce.network', account.symbol);
             scope.setTag('nonce.accountType', account.accountType);
             scope.setExtra('reason', reason);
+            scope.setExtra('attempts', attempts);
         },
     );
 

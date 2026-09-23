@@ -61,6 +61,15 @@ const storeIsEthereumNonceAbovePending = createAction(
     }),
 );
 
+// Whether the backend reported in-flight txs this account cannot see (see hasUnknownPendingEvmTxs).
+// Surfaced as a review warning; like the ceiling check it never blocks signing.
+const storeHasUnknownPendingNonces = createAction(
+    `${SEND_MODULE_PREFIX}/store-has-unknown-pending-nonces`,
+    (payload: boolean) => ({
+        payload,
+    }),
+);
+
 const discardTransaction = createAction(`${SEND_MODULE_PREFIX}/discard-transaction`);
 
 const clearSignedTransactionData = createAction(`${SEND_MODULE_PREFIX}/clear-signed-transaction`);
@@ -78,6 +87,7 @@ export const sendFormActions = {
     storeSignedTransaction,
     storeResolvedEthereumNonce,
     storeIsEthereumNonceAbovePending,
+    storeHasUnknownPendingNonces,
     discardTransaction,
     clearSignedTransactionData,
     sendRaw,

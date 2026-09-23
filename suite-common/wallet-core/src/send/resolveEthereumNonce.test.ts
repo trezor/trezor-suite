@@ -128,7 +128,13 @@ describe('resolveEthereumNonce', () => {
             fetchConfirmedNonce: true,
         });
 
-        expect(result).toEqual({ nonce: '9', confirmedNonce: '9', pendingNonceCeiling: 10 });
+        expect(result).toEqual({
+            nonce: '9',
+            confirmedNonce: '9',
+            pendingNonceCeiling: 10,
+            // a gap with nothing of ours in flight is, by definition, a tx we cannot see
+            unknownPendingNonces: { pendingNonce: 10, confirmedNonce: 9 },
+        });
     });
 
     it('trusts the backend confirmed nonce even when local tx history has a bogus/corrupted nonce', async () => {
@@ -170,10 +176,7 @@ describe('resolveEthereumNonce', () => {
         expect(result).toEqual({ nonce: '12', confirmedNonce: '12', pendingNonceCeiling: 12 });
     });
 
-    it('costs exactly one backend call and does not retry a rejection', async () => {
-        // The cross-check must stay free: it reads a field of a response already being fetched.
-        // A failure is reported, not retried — signing runs once per user action and the fallback
-        // to local derivation is correct, just degraded.
+    it('retries a rejection once, then falls back to local derivation', async () => {
         getAccountInfo.mockRejectedValue(new Error('network down'));
 
         const result = await resolveEthereumNonce({
@@ -182,11 +185,11 @@ describe('resolveEthereumNonce', () => {
             fetchConfirmedNonce: true,
         });
 
-        expect(getAccountInfo).toHaveBeenCalledTimes(1);
+        expect(getAccountInfo).toHaveBeenCalledTimes(2);
         expect(result).toEqual({ nonce: '5', confirmedNonce: '5' });
     });
 
-    it('does not retry an unsuccessful response either', async () => {
+    it('retries an unsuccessful response once, then falls back to local derivation', async () => {
         getAccountInfo.mockResolvedValue({
             success: false,
             error: { code: 'Method_Interrupted', message: 'interrupted' },
@@ -198,8 +201,41 @@ describe('resolveEthereumNonce', () => {
             fetchConfirmedNonce: true,
         });
 
-        expect(getAccountInfo).toHaveBeenCalledTimes(1);
+        expect(getAccountInfo).toHaveBeenCalledTimes(2);
         expect(result).toEqual({ nonce: '5', confirmedNonce: '5' });
+    });
+
+    it('uses the retry when only the first attempt fails, so one dropped call does not degrade signing', async () => {
+        getAccountInfo.mockRejectedValueOnce(new Error('network down')).mockResolvedValue({
+            success: true,
+            payload: { misc: { nonce: '12', confirmedNonce: '12' } },
+        } as any);
+
+        const result = await resolveEthereumNonce({
+            selectedAccount: accountWithNonce(5),
+            accountTransactions: [],
+            fetchConfirmedNonce: true,
+        });
+
+        expect(getAccountInfo).toHaveBeenCalledTimes(2);
+        expect(result).toEqual({ nonce: '12', confirmedNonce: '12', pendingNonceCeiling: 12 });
+    });
+
+    it('does not spend the retry on a success that merely omits confirmedNonce', async () => {
+        // That path is blockbook's "latest lookup failed" partial, not a failed call: the pending
+        // nonce it carries is live, so a second call would buy nothing.
+        getAccountInfo.mockResolvedValue({
+            success: true,
+            payload: { misc: { nonce: '12' } },
+        } as any);
+
+        await resolveEthereumNonce({
+            selectedAccount: accountWithNonce(3),
+            accountTransactions: [],
+            fetchConfirmedNonce: true,
+        });
+
+        expect(getAccountInfo).toHaveBeenCalledTimes(1);
     });
 
     it("raises the pending ceiling by the account's own in-flight txs the node has not seen", async () => {
@@ -249,6 +285,38 @@ describe('resolveEthereumNonce', () => {
 
         expect(result).toEqual({ nonce: '49', confirmedNonce: '48', pendingNonceCeiling: 49 });
         expect(parseInt(result.nonce, 10)).not.toBeGreaterThan(result.pendingNonceCeiling!);
+    });
+
+    it('flags in-flight txs the account cannot see, so signing can stop and ask', async () => {
+        // The node's pending count runs two ahead of its mined-only count with nothing of ours in
+        // flight: someone broadcast from another wallet and our next send would collide.
+        getAccountInfo.mockResolvedValue({
+            success: true,
+            payload: { misc: { nonce: '50', confirmedNonce: '48' } },
+        } as any);
+
+        const result = await resolveEthereumNonce({
+            selectedAccount: accountWithNonce(48),
+            accountTransactions: [],
+            fetchConfirmedNonce: true,
+        });
+
+        expect(result.unknownPendingNonces).toEqual({ pendingNonce: 50, confirmedNonce: 48 });
+    });
+
+    it("does not flag the gap when the account's own in-flight txs explain it", async () => {
+        getAccountInfo.mockResolvedValue({
+            success: true,
+            payload: { misc: { nonce: '50', confirmedNonce: '48' } },
+        } as any);
+
+        const result = await resolveEthereumNonce({
+            selectedAccount: accountWithNonce(48),
+            accountTransactions: [evmTx(48, { confirmed: false }), evmTx(49, { confirmed: false })],
+            fetchConfirmedNonce: true,
+        });
+
+        expect(result.unknownPendingNonces).toBeUndefined();
     });
 
     it("does not count a stranger's pending tx towards the ceiling", async () => {

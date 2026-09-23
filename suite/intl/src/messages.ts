@@ -4099,6 +4099,11 @@ export const messages = defineMessages({
         defaultMessage:
             'This nonce is higher than the network expects for this account. Unless you have a transaction in flight from another wallet, this one may stay pending until the gap is filled.',
     },
+    TR_NONCE_UNKNOWN_PENDING_WARNING: {
+        id: 'TR_NONCE_UNKNOWN_PENDING_WARNING',
+        defaultMessage:
+            "The network reports transactions for this account that Suite can't see, most likely sent from another wallet. This transaction may replace one of them or be rejected.",
+    },
     ETHEREUM_NONCE_IS_NOT_INTEGER: {
         id: 'ETHEREUM_NONCE_IS_NOT_INTEGER',
         defaultMessage: 'Nonce must be zero or a positive whole number',

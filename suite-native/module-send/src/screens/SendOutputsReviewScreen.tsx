@@ -4,6 +4,7 @@ import { useSelector } from 'react-redux';
 import {
     type AccountsRootState,
     selectAccountByKey,
+    selectHasUnknownPendingNonces,
     selectIsEthereumNonceAbovePending,
 } from '@suite-common/wallet-core';
 import { BannerInline, Box, VStack } from '@suite-native/atoms';
@@ -50,6 +51,7 @@ export const SendOutputsReviewScreen = ({
 
     const isTransactionAlreadySigned = useSelector(selectIsTransactionAlreadySigned);
     const isNonceAbovePending = useSelector(selectIsEthereumNonceAbovePending);
+    const hasUnknownPendingNonces = useSelector(selectHasUnknownPendingNonces);
     const showOutputsReviewFooter = isTransactionAlreadySigned && account;
 
     const [isSendInProgress, setIsSendInProgress] = useState(false);
@@ -97,6 +99,14 @@ export const SendOutputsReviewScreen = ({
                         <BannerInline
                             intent="warning"
                             title={<Translation id="moduleSend.review.nonceAbovePendingWarning" />}
+                        />
+                    )}
+                    {hasUnknownPendingNonces && (
+                        <BannerInline
+                            intent="warning"
+                            title={
+                                <Translation id="moduleSend.review.nonceUnknownPendingWarning" />
+                            }
                         />
                     )}
                     <ReviewOutputItemList
