@@ -1,5 +1,4 @@
 import { type Account } from '@suite-common/wallet-types';
-import { isStakingSymbol } from '@suite-common/wallet-utils';
 import {
     type RootStackParamList,
     RootStackRoutes,
@@ -7,6 +6,7 @@ import {
 } from '@suite-native/navigation';
 
 import { hasAccountActiveStaking } from './hasAccountActiveStaking';
+import { getMobileStakingSupport } from './mobileStakingSupport';
 import { resolveStakingTargetRoute } from './resolveStakingTargetRoute';
 
 type StakingNavigateFn = StackNavigationProps<
@@ -14,21 +14,23 @@ type StakingNavigateFn = StackNavigationProps<
     RootStackRoutes.StakingManagement
 >['navigate'];
 
-export const navigateByAccountState = (account: Account, navigate: StakingNavigateFn) => {
+export const navigateByAccountState = (account: Account, navigate: StakingNavigateFn): boolean => {
     if (hasAccountActiveStaking(account)) {
         navigate(resolveStakingTargetRoute(account.symbol), {
             accountKey: account.key,
         });
 
-        return;
+        return true;
     }
 
-    if (!isStakingSymbol(account.symbol)) {
-        return;
+    if (getMobileStakingSupport(account.symbol) !== 'manage') {
+        return false;
     }
 
     navigate(RootStackRoutes.HowStakeWorksScreen, {
         symbol: account.symbol,
         accountKey: account.key,
     });
+
+    return true;
 };

@@ -148,6 +148,20 @@ export const useAddCoinAccount = (networksSearchQuery?: string) => {
         }
     };
 
+    const resetToEarnTab = () => {
+        navigation.dispatch(
+            CommonActions.reset({
+                index: 0,
+                routes: [
+                    {
+                        name: RootStackRoutes.AppTabs,
+                        params: { screen: AppTabsRoutes.EarnStack },
+                    },
+                ],
+            }),
+        );
+    };
+
     const navigateToEarnAfterDiscovery = ({
         symbol,
         accountIndex,
@@ -166,25 +180,20 @@ export const useAddCoinAccount = (networksSearchQuery?: string) => {
 
         if (!account) {
             showGeneralErrorAlert();
-            navigation.dispatch(
-                CommonActions.reset({
-                    index: 0,
-                    routes: [
-                        {
-                            name: RootStackRoutes.AppTabs,
-                            params: { screen: AppTabsRoutes.EarnStack },
-                        },
-                    ],
-                }),
-            );
+            resetToEarnTab();
 
             return;
         }
 
         switch (earnFlowParams?.earnType) {
-            case 'staking':
-                navigateByAccountState(account, navigation.navigate);
+            case 'staking': {
+                const hasNavigated = navigateByAccountState(account, navigation.navigate);
+
+                if (!hasNavigated) {
+                    resetToEarnTab();
+                }
                 break;
+            }
             case 'yield':
                 navigateByYieldAccountState(
                     account,

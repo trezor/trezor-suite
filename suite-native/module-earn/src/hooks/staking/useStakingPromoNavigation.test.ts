@@ -144,6 +144,20 @@ describe('useStakingPromoNavigation', () => {
         expect(mockShowAlert).not.toHaveBeenCalled();
     });
 
+    it('asks to enable Cardano when the device has no Cardano account', async () => {
+        const { result } = await renderUseStakingPromoNavigation({
+            accounts: [createEthereumAccount('eth1')],
+            isDeviceConnected: true,
+        });
+
+        await act(() => {
+            result.current.handleStakingPromoPress(cardanoItem);
+        });
+
+        expect(result.current.pendingEnableSymbol).toBe('ada');
+        expect(result.current.chosenAccounts).toHaveLength(0);
+    });
+
     it('offers delegated Cardano accounts only for viewing', async () => {
         const { result } = await renderUseStakingPromoNavigation({
             accounts: [
