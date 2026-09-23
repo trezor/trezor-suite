@@ -4,7 +4,7 @@ import type { FirmwareChannel } from '@trezor/connect-common/src/types/firmware'
 import { firmwareConfigCodesignPublicKey, firmwareConfigDevPublicKey } from '@trezor/connect-data';
 import type { FirmwareReleaseConfig } from '@trezor/device-utils';
 
-interface RemoteBaseInfo {
+interface RemoteUrlParts {
     BASE_URL: string;
     MIDDLE_PATH: string;
 }
@@ -37,15 +37,67 @@ const UNSIGNED_LOCALHOST = {
     BASE_URL: 'http://localhost:3000',
     MIDDLE_PATH: 'firmware/unsigned',
 };
-const FIRMWARE_REMOTE_BASE_URLS: Record<FirmwareChannel, RemoteBaseInfo> = {
-    production: RELEASES_URL_REMOTE_BASE,
-    'production-early-access': RELEASES_URL_REMOTE_BASE,
-    'test-unsigned': UNSIGNED_URL_REMOTE_BASE,
-    'test-unsigned-stable': UNSIGNED_STABLE_URL_REMOTE_BASE,
-    'test-unsigned-nightly': UNSIGNED_NIGHTLY_URL_REMOTE_BASE,
-    'test-signed': SIGNED_URL_REMOTE_BASE,
-    'localhost-unsigned': UNSIGNED_LOCALHOST,
-    'localhost-signed': SIGNED_LOCALHOST,
+
+interface FirmwareRemoteConfig {
+    remoteUrlParts: RemoteUrlParts;
+    // If set to `true`, the JWS is verified against production pubKey, otherwise against dev pubKey.
+    useProductionKey: boolean;
+    // If set to `true`, accept also raw JSON besides the JWS signed by the specified key.
+    isSignatureOptional: boolean;
+}
+
+const FIRMWARE_REMOTES_CONFIG: Record<FirmwareChannel, FirmwareRemoteConfig> = {
+    /*
+     Remotes that serve production-signed FW binaries
+    */
+    production: {
+        remoteUrlParts: RELEASES_URL_REMOTE_BASE,
+        useProductionKey: true,
+        isSignatureOptional: false,
+    },
+    'production-early-access': {
+        remoteUrlParts: RELEASES_URL_REMOTE_BASE,
+        useProductionKey: true,
+        isSignatureOptional: false,
+    },
+    'test-signed': {
+        remoteUrlParts: SIGNED_URL_REMOTE_BASE,
+        useProductionKey: true,
+        isSignatureOptional: false,
+    },
+    /*
+     Remotes that serve unsigned FW binaries
+    */
+    'test-unsigned': {
+        remoteUrlParts: UNSIGNED_URL_REMOTE_BASE,
+        useProductionKey: false,
+        isSignatureOptional: false,
+    },
+    'test-unsigned-stable': {
+        remoteUrlParts: UNSIGNED_STABLE_URL_REMOTE_BASE,
+        useProductionKey: false,
+        isSignatureOptional: false,
+    },
+    'test-unsigned-nightly': {
+        remoteUrlParts: UNSIGNED_NIGHTLY_URL_REMOTE_BASE,
+        useProductionKey: false,
+        // Nightly does not use JWS signing.
+        isSignatureOptional: true,
+    },
+    /*
+     The two localhost "remotes" differ only semantically (one is meant to serve signed FW, the other unsigned), but
+     the JWS signing is not necessarily related to FW signature, so developers can use it with or without JWS signing.
+    */
+    'localhost-signed': {
+        remoteUrlParts: SIGNED_LOCALHOST,
+        useProductionKey: false,
+        isSignatureOptional: true,
+    },
+    'localhost-unsigned': {
+        remoteUrlParts: UNSIGNED_LOCALHOST,
+        useProductionKey: false,
+        isSignatureOptional: true,
+    },
 };
 
 /**
@@ -56,8 +108,9 @@ const FIRMWARE_REMOTE_BASE_URLS: Record<FirmwareChannel, RemoteBaseInfo> = {
  *   { BASE_URL: 'https://suite.corp.sldev.cz', MIDDLE_PATH: 'firmware/signed' }
  *   { BASE_URL: 'http://localhost:3000', MIDDLE_PATH: 'firmware/unsigned' }
  */
-export const getOnlineFirmwareBaseUrl = (firmwareChannel?: FirmwareChannel): RemoteBaseInfo =>
-    FIRMWARE_REMOTE_BASE_URLS[firmwareChannel ?? 'production'];
+export const getOnlineFirmwareBaseUrl = (
+    firmwareChannel: FirmwareChannel = 'production',
+): RemoteUrlParts => FIRMWARE_REMOTES_CONFIG[firmwareChannel].remoteUrlParts;
 
 const JWS_CONFIG = {
     SIGN_ALGORITHM: 'ES256',
@@ -102,17 +155,6 @@ const fetchRemoteFwConfig = async (firmwareChannel: FirmwareChannel) => {
     }
 };
 
-const fetchRemoteJws = async (firmwareChannel: FirmwareChannel): Promise<string> => {
-    const data = await fetchRemoteFwConfig(firmwareChannel);
-
-    // Assuming the response JSON has a 'jws' property.
-    if (typeof data.jws !== 'string') {
-        throw new Error('Invalid response format: "jws" property missing or not a string.');
-    }
-
-    return data.jws;
-};
-
 const verifyAndDecodeJws = (jws: string, publicKey: string): FirmwareReleaseConfig => {
     const decoded = decode(jws);
 
@@ -137,24 +179,29 @@ const verifyAndDecodeJws = (jws: string, publicKey: string): FirmwareReleaseConf
     return parsedPayload;
 };
 
+const fetchAndDecodeConfig = async (
+    firmwareChannel: FirmwareChannel,
+    publicKey: string,
+    isSignatureOptional: boolean,
+): Promise<FirmwareReleaseConfig> => {
+    const data = await fetchRemoteFwConfig(firmwareChannel);
+
+    // Even if `isSignatureOptional`, when JWS is present, always parse it strictly.
+    if (typeof data.jws === 'string') return verifyAndDecodeJws(data.jws, publicKey);
+
+    if (isSignatureOptional) return data as FirmwareReleaseConfig;
+
+    throw new Error('Invalid response format: "jws" property missing or not a string.');
+};
+
 export const fetchFirmwareReleaseConfig = async (firmwareChannel: FirmwareChannel) => {
     try {
-        if (firmwareChannel === 'test-unsigned-nightly') {
-            // Nightly does not use JWS signing
-            const data = await fetchRemoteFwConfig(firmwareChannel);
-
-            return data as FirmwareReleaseConfig;
-        }
-
-        const jws = await fetchRemoteJws(firmwareChannel);
-        const useProductionKey = ['test-signed', 'production-early-access', 'production'].includes(
-            firmwareChannel,
-        );
+        const { useProductionKey, isSignatureOptional } = FIRMWARE_REMOTES_CONFIG[firmwareChannel];
         const publicKey = useProductionKey
             ? firmwareConfigCodesignPublicKey
             : firmwareConfigDevPublicKey;
 
-        return verifyAndDecodeJws(jws, publicKey);
+        return await fetchAndDecodeConfig(firmwareChannel, publicKey, isSignatureOptional);
     } catch {
         // empty
     }
