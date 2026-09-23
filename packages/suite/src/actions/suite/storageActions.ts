@@ -88,6 +88,7 @@ import { type StaticSessionId } from '@trezor/connect';
 import { parseStaticSessionId } from '@trezor/device-utils';
 import { cloneObject, isNotNullOrUndefined, typedObjectKeys } from '@trezor/utils';
 
+import { type AssetTableRootState, selectAssetTable } from 'src/reducers/suite/assetTableReducer';
 import { type SuiteState } from 'src/reducers/suite/suiteReducer';
 import { type GraphState } from 'src/reducers/wallet/graphReducer';
 import { selectGraph } from 'src/reducers/wallet/graphReducer';
@@ -666,6 +667,26 @@ export const saveWalletSettingsThunk =
                 ...selectWalletSettings(getState()),
             },
             'wallet',
+            true,
+        );
+    };
+
+type SaveAssetTableThunkState = AssetTableRootState;
+
+type SaveAssetTableThunkDeps = WithServices<DbDep>;
+
+export const saveAssetTableThunk =
+    () =>
+    async (
+        _dispatch: Dispatch<UnknownAction>,
+        getState: () => SaveAssetTableThunkState,
+        extra: SaveAssetTableThunkDeps,
+    ) => {
+        if (!extra.services.db.isAccessible()) return;
+        await extra.services.db.addItem(
+            'assetTable',
+            selectAssetTable(getState()),
+            'assetTable',
             true,
         );
     };

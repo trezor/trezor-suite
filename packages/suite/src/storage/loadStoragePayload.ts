@@ -37,6 +37,7 @@ export const loadStoragePayload = async (db: Db) => {
         suiteSyncQuotaManager,
         featureFeedback,
         discreetMode,
+        assetTable,
         debug,
         earnOnboarding,
     ] = await Promise.all([
@@ -72,6 +73,7 @@ export const loadStoragePayload = async (db: Db) => {
         db.getItemByPK('suiteSyncQuotaManager', 'suiteSyncQuotaManager'),
         db.getItemByPK('featureFeedback', 'featureFeedback'),
         db.getItemByPK('discreetMode', 'discreetMode'),
+        db.getItemByPK('assetTable', 'assetTable'),
         db.getItemByPK('debug', 'debug'),
         db.getItemsWithKeys('earnOnboarding'),
     ]);
@@ -112,6 +114,7 @@ export const loadStoragePayload = async (db: Db) => {
         suiteSyncQuotaManager,
         featureFeedback,
         discreetMode,
+        assetTable,
         debug,
         earnOnboarding,
     } as const;

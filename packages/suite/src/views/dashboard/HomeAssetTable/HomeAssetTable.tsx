@@ -1,23 +1,32 @@
 import { useState } from 'react';
 
 import { Translation } from '@suite/intl';
+import { useServices } from '@suite-common/dependency-injection';
 import { useFormatters } from '@suite-common/formatters';
+import { injectDispatch } from '@suite-common/redux-utils';
 import { asBaseCurrencyAmount } from '@suite-common/wallet-types';
 import { Card, Table, Text } from '@trezor/components';
 import { type StaticSessionId } from '@trezor/device-utils';
 
+import { showSmallBalancesThunk } from 'src/actions/suite/assetTableThunks';
 import { useSelector } from 'src/hooks/suite';
+import { selectAreSmallBalancesShown } from 'src/reducers/suite/assetTableReducer';
 
-import { HomeAssetDustRow } from './HomeAssetDustRow';
+import { HomeAssetExpandRow } from './HomeAssetExpandRow';
 import { HomeAssetRow } from './HomeAssetRow';
 import { HomeAssetTableFilterHeader } from './HomeAssetTableFilter';
 import {
     type AssetAccounts,
     type HomeAssetSection,
-    selectHomeAssetDustRows,
     selectHomeAssetSections,
 } from './homeAssetTableSelectors';
-import { HOME_ASSET_CELL_PADDING, type HomeAssetGrouping } from './homeAssetTableUtils';
+import {
+    DEFAULT_HOME_ASSET_ARRANGEMENT,
+    HOME_ASSET_CELL_PADDING,
+    HOME_ASSET_COLLAPSED_ROW_COUNT,
+    type HomeAssetArrangement,
+    type HomeAssetGrouping,
+} from './homeAssetTableUtils';
 
 type SectionHeadingProps = {
     sectionKey: string;
@@ -60,18 +69,55 @@ const renderRows = (
         />
     ));
 
+const countRows = (sections: readonly HomeAssetSection[]) =>
+    sections.reduce((count, section) => count + section.rows.length, 0);
+
+const takeRows = (sections: readonly HomeAssetSection[], limit: number) => {
+    let left = limit;
+
+    return sections.flatMap(section => {
+        const rows = section.rows.slice(0, left);
+        left -= rows.length;
+
+        return rows.length === 0 ? [] : [{ ...section, rows }];
+    });
+};
+
 type HomeAssetTableProps = {
     deviceState: StaticSessionId;
 };
 
 export const HomeAssetTable = ({ deviceState }: HomeAssetTableProps) => {
-    const [grouping, setGrouping] = useState<HomeAssetGrouping>('default');
-    const sections = useSelector(state => selectHomeAssetSections(grouping)(state, deviceState));
-    const dustRows = useSelector(state => selectHomeAssetDustRows(state, deviceState));
+    const { dispatch } = useServices(injectDispatch);
+    const [grouping, setGrouping] = useState<HomeAssetGrouping>(
+        DEFAULT_HOME_ASSET_ARRANGEMENT.grouping,
+    );
+    const areSmallBalancesShown = useSelector(selectAreSmallBalancesShown);
+    const arrangement: HomeAssetArrangement = { grouping, areSmallBalancesShown };
 
-    if (sections.every(section => section.rows.length === 0) && dustRows.length === 0) {
+    const [isExpanded, setIsExpanded] = useState(false);
+
+    const sections = useSelector(state => selectHomeAssetSections(arrangement)(state, deviceState));
+
+    const changeArrangement = (chosen: HomeAssetArrangement) => {
+        setGrouping(chosen.grouping);
+
+        if (chosen.areSmallBalancesShown !== areSmallBalancesShown) {
+            dispatch(showSmallBalancesThunk({ areShown: chosen.areSmallBalancesShown }));
+        }
+    };
+
+    const rowCount = countRows(sections);
+
+    if (rowCount === 0) {
         return null;
     }
+
+    const isCollapsible = rowCount > HOME_ASSET_COLLAPSED_ROW_COUNT;
+    const shownSections =
+        isCollapsible && !isExpanded
+            ? takeRows(sections, HOME_ASSET_COLLAPSED_ROW_COUNT)
+            : sections;
 
     return (
         <Card paddingType="none" data-testid="@dashboard/home-asset-table">
@@ -80,8 +126,8 @@ export const HomeAssetTable = ({ deviceState }: HomeAssetTableProps) => {
                     <Table.Row>
                         <Table.Cell padding={HOME_ASSET_CELL_PADDING.first}>
                             <HomeAssetTableFilterHeader
-                                grouping={grouping}
-                                onChange={setGrouping}
+                                arrangement={arrangement}
+                                onChange={changeArrangement}
                             />
                         </Table.Cell>
                         <Table.Cell align="end">
@@ -93,7 +139,7 @@ export const HomeAssetTable = ({ deviceState }: HomeAssetTableProps) => {
                     </Table.Row>
                 </Table.Header>
                 <Table.Body>
-                    {sections.flatMap(section =>
+                    {shownSections.flatMap(section =>
                         section.heading === undefined
                             ? renderRows(section.rows, deviceState)
                             : [
@@ -105,7 +151,12 @@ export const HomeAssetTable = ({ deviceState }: HomeAssetTableProps) => {
                                   ...renderRows(section.rows, deviceState, false),
                               ],
                     )}
-                    <HomeAssetDustRow rows={dustRows} deviceState={deviceState} />
+                    {isCollapsible && (
+                        <HomeAssetExpandRow
+                            isExpanded={isExpanded}
+                            onToggle={() => setIsExpanded(expanded => !expanded)}
+                        />
+                    )}
                 </Table.Body>
             </Table>
         </Card>
