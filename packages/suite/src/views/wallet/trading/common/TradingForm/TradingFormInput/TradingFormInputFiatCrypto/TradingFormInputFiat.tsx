@@ -31,7 +31,10 @@ import { useTradingSelectedQuote } from 'src/views/wallet/trading/common/hooks/u
 
 import { TradingFormInputAmountPlaceholder } from './TradingFormInputAmountPlaceholder';
 import { getFiatInputRules } from './tradingFormInputFiatCryptoRules';
-import { TRADING_AMOUNT_PLACEHOLDER, tradingAmountInputStyle } from '../../tradingFormInputsUtils';
+import {
+    TRADING_AMOUNT_PLACEHOLDER,
+    getTradingAmountInputStyle,
+} from '../../tradingFormInputsUtils';
 
 const TradingFormInputFiatContent = ({
     cryptoInputName,
@@ -54,6 +57,7 @@ const TradingFormInputFiatContent = ({
     const outputCurrencySelect = useWatch({ control, name: TRADING_FORM_OUTPUT_CURRENCY });
     const fiatCurrencySelect = useWatch({ control, name: TRADING_FORM_FIAT_CURRENCY_SELECT });
     const amountInCrypto = useWatch({ control, name: TRADING_FORM_AMOUNT_IN_CRYPTO });
+    const fiatAmount = useWatch({ control, name: fiatInputName });
 
     const setFractionButton = isTradingExchangeOrSellContext(context)
         ? context.form.helpers.setFractionButton
@@ -142,7 +146,7 @@ const TradingFormInputFiatContent = ({
             flex="1"
             name={fiatInputName}
             placeholder={TRADING_AMOUNT_PLACEHOLDER}
-            style={tradingAmountInputStyle}
+            style={getTradingAmountInputStyle(fiatAmount)}
             locale={locale}
             onChange={handleChange}
             hasError={!!fiatInputError}
