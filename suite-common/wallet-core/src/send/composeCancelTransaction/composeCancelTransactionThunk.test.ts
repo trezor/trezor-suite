@@ -115,22 +115,13 @@ const createComposeTsResult = (extra?: Partial<PrecomposeResultFinal>): Precompo
 });
 
 const createComposeTransactionMock = () =>
-    jest
-        .spyOn(TrezorConnect, 'composeTransaction')
-
-        // First `composeTransaction` call is just to get size of the transaction
-        .mockImplementation(() =>
-            Promise.resolve({ success: true, payload: [createComposeTsResult()] }),
-        )
-
-        // Second `composeTransaction` call calculates the fee
-        .mockImplementation(() =>
-            Promise.resolve({
-                success: true,
-                // 1520 + 1410 = 2930, responsibility of `composeTransaction` so not tested
-                payload: [createComposeTsResult({ fee: '2930' })],
-            }),
-        );
+    jest.spyOn(TrezorConnect, 'composeTransaction').mockImplementation(() =>
+        Promise.resolve({
+            success: true,
+            // 1520 + 1410 = 2930, responsibility of `composeTransaction` so not tested
+            payload: [createComposeTsResult({ fee: '2930' })],
+        }),
+    );
 
 describe(composeCancelTransactionThunk.name, () => {
     it('calculates correctly the cancel fee when there is a chain transaction and cancel transaction is less bytes then the original', async () => {
@@ -147,30 +138,10 @@ describe(composeCancelTransactionThunk.name, () => {
             )
             .unwrap();
 
-        const { calls } = composeTransactionMock.mock;
-        // First call
-        // @ts-expect-error: indexing with noUncheckedIndexedAccess
-        const firstCall: (typeof calls)[number] = calls[0];
-        const [first] = firstCall;
-        const { feeLevels: firstFeeLevels } = first;
-        // @ts-expect-error: indexing with noUncheckedIndexedAccess
-        const firstFeeLevel: (typeof firstFeeLevels)[number] = firstFeeLevels[0];
-        expect(firstFeeLevel.feePerUnit).toBe('1');
-        expect(first.baseFee).toBe(undefined);
-
-        // Second call
-        // @ts-expect-error: indexing with noUncheckedIndexedAccess
-        const secondCall: (typeof calls)[number] = calls[1];
-        const [second] = secondCall;
-
-        // This is the most important assertion. This is the fee, that satisfies the condition set by BIP-125
-        // with the new size of the transaction of 110 bytes.
-        const { feeLevels: secondFeeLevels } = second;
-        // @ts-expect-error: indexing with noUncheckedIndexedAccess
-        const secondFeeLevel: (typeof secondFeeLevels)[number] = secondFeeLevels[0];
-        expect(secondFeeLevel.feePerUnit).toBe('13.01818181818181818182'); // = (1410 + 110 * 0.2) / 110
-        expect(second.baseFee).toBe(1410); // This is the sum of fees for chained transactions
-        expect(second.outputs).toStrictEqual([
+        const [call] = composeTransactionMock.mock.calls[0] ?? [];
+        expect(call?.feeLevels).toStrictEqual([{ feePerUnit: '0.2' }]); // new relay fee
+        expect(call?.baseFee).toBe(1410 + 1410); // sum of fees for original tx and chained txs
+        expect(call?.outputs).toStrictEqual([
             {
                 address: ORIGINAL_CHANGE_ADDRESS,
                 type: 'send-max',
@@ -187,13 +158,9 @@ describe(composeCancelTransactionThunk.name, () => {
             .dispatch(composeCancelTransactionThunk({ tx: transactionWithNoChange, account }))
             .unwrap();
 
-        const { calls } = composeTransactionMock.mock;
-        // Second call
-        // @ts-expect-error: indexing with noUncheckedIndexedAccess
-        const secondCall: (typeof calls)[number] = calls[1];
-        const [second] = secondCall;
+        const [call] = composeTransactionMock.mock.calls[0] ?? [];
 
-        expect(second.outputs).toStrictEqual([
+        expect(call?.outputs).toStrictEqual([
             {
                 address: FIRST_ACCOUNT_CHANGE_ADDRESS,
                 type: 'send-max',
