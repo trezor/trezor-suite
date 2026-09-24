@@ -1,5 +1,5 @@
 import { useEffect } from 'react';
-import { type UseFormReturn } from 'react-hook-form';
+import { type UseFormReturn, useWatch } from 'react-hook-form';
 
 import { events, injectDesktopAnalytics } from '@suite/analytics';
 import { useServices } from '@suite-common/dependency-injection';
@@ -20,6 +20,7 @@ import {
     tradingSellActions,
 } from '@suite-common/trading';
 import { type Network } from '@suite-common/wallet-config';
+import { useDidUpdate } from '@trezor/react-utils';
 
 import {
     getSellActiveAmount,
@@ -37,7 +38,6 @@ type UseSellQuotesProps = {
 };
 
 const SELL_IMMEDIATE_FIELDS = [
-    TRADING_FORM_SEND_CRYPTO_CURRENCY_SELECT,
     TRADING_FORM_COUNTRY_SELECT,
     TRADING_FORM_COUNTRY_SUBDIVISION_SELECT,
     TRADING_FORM_OUTPUT_CURRENCY,
@@ -61,7 +61,12 @@ export const useSellQuotes = ({
         injectGetState,
     );
 
-    const { isScheduledQuotesRefresh } = useTradingQuoteRequest({
+    const sendCryptoSelect = useWatch({
+        control: methods.control,
+        name: TRADING_FORM_SEND_CRYPTO_CURRENCY_SELECT,
+    });
+
+    const { isScheduledQuotesRefresh, refreshQuotes } = useTradingQuoteRequest({
         methods,
         immediateFields: SELL_IMMEDIATE_FIELDS,
         debouncedFields: SELL_DEBOUNCED_FIELDS,
@@ -102,6 +107,10 @@ export const useSellQuotes = ({
         },
         isRequestContextAvailable: !!network,
     });
+
+    useDidUpdate(() => {
+        refreshQuotes();
+    }, [sendCryptoSelect?.accountKey, sendCryptoSelect?.id, refreshQuotes]);
 
     useEffect(() => {
         if (!network) {

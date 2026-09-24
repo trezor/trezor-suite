@@ -22,6 +22,7 @@ import {
 } from '@suite-common/trading';
 import { type Network, type NetworkSymbol } from '@suite-common/wallet-config';
 import { type AccountKey } from '@suite-common/wallet-types';
+import { useDidUpdate } from '@trezor/react-utils';
 
 import { useSelector } from 'src/hooks/suite';
 import {
@@ -42,7 +43,7 @@ type UseExchangeQuotesProps = {
     composeRequestCallback: () => void;
 };
 
-const EXCHANGE_IMMEDIATE_FIELDS = [TRADING_FORM_SEND_CRYPTO_CURRENCY_SELECT] as const;
+const EXCHANGE_IMMEDIATE_FIELDS = [] as const;
 
 const EXCHANGE_DEBOUNCED_FIELDS = [TRADING_FORM_OUTPUT_AMOUNT] as const;
 
@@ -68,6 +69,11 @@ export const useExchangeQuotes = ({
     const receiveCryptoSelect = useWatch({
         control: methods.control,
         name: TRADING_FORM_RECEIVE_CRYPTO_CURRENCY_SELECT,
+    });
+
+    const sendCryptoSelect = useWatch({
+        control: methods.control,
+        name: TRADING_FORM_SEND_CRYPTO_CURRENCY_SELECT,
     });
 
     const receiveIdentityKey = JSON.stringify({
@@ -104,6 +110,10 @@ export const useExchangeQuotes = ({
         },
         isRequestContextAvailable: !!network,
     });
+
+    useDidUpdate(() => {
+        refreshQuotes();
+    }, [sendCryptoSelect?.accountKey, sendCryptoSelect?.id, refreshQuotes]);
 
     const previousReceiveIdentityKey = useRef(receiveIdentityKey);
     useEffect(() => {
