@@ -9,15 +9,37 @@ import {
 } from '@suite-common/wallet-core';
 import {
     type ActionAvailability,
+    type ActionUnavailableReason,
     type CardanoAction,
     type CardanoStaking,
 } from '@suite-common/wallet-types';
+import { type PrecomposedTransactionCardano } from '@trezor/connect';
+import { exhaustive } from '@trezor/type-utils';
+import { isArrayMember } from '@trezor/utils';
 
-import {
-    CardanoComposeError,
-    prepareTxPlan,
-} from 'src/actions/wallet/stake/stakeFormCardanoActions';
+import { prepareTxPlan } from 'src/actions/wallet/stake/stakeFormCardanoActions';
 import { useSelector } from 'src/hooks/suite';
+
+const COMPOSE_ERROR_REASONS = [
+    'UTXO_BALANCE_INSUFFICIENT',
+    'UTXO_VALUE_TOO_SMALL',
+] as const satisfies readonly ActionUnavailableReason[];
+
+const getComposeErrorReason = (error: string): ActionUnavailableReason =>
+    isArrayMember(error, COMPOSE_ERROR_REASONS) ? error : 'COMPOSE_FAILED';
+
+const getActionAvailability = (txPlan: PrecomposedTransactionCardano): ActionAvailability => {
+    switch (txPlan.type) {
+        case 'final':
+            return { status: true };
+        case 'nonfinal':
+            return { status: false, reason: 'TX_NOT_FINAL' };
+        case 'error':
+            return { status: false, reason: getComposeErrorReason(txPlan.error) };
+        default:
+            return exhaustive(txPlan);
+    }
+};
 
 export const useCardanoStaking = (): CardanoStaking => {
     const account = useSelector(selectSelectedAccount);
@@ -72,32 +94,20 @@ export const useCardanoStaking = (): CardanoStaking => {
                     votingDelegation,
                 });
                 if (composeRes?.txPlan) {
-                    if (composeRes.txPlan.type === 'error') {
-                        throw new Error(composeRes.txPlan.error);
+                    if (composeRes.txPlan.type !== 'error') {
+                        setFee(composeRes.txPlan.fee);
+                        setDeposit(composeRes.txPlan.deposit);
                     }
-                    setFee(composeRes.txPlan.fee);
-                    setDeposit(composeRes.txPlan.deposit);
-                    const actionAvailability: ActionAvailability =
-                        composeRes.txPlan.type === 'final'
-                            ? {
-                                  status: true,
-                              }
-                            : {
-                                  status: false,
-                                  reason: 'TX_NOT_FINAL',
-                              };
+                    const actionAvailability = getActionAvailability(composeRes.txPlan);
                     setDelegatingAvailable(actionAvailability);
                     seWithdrawingAvailable(actionAvailability);
                 }
-            } catch (err) {
-                // todo:  noted that this err appears regularly. error becomes undefined
-                // which effectively removes any previously set errors
-                // Deserialization failed in Ed25519KeyHash because: Invalid cbor: expected tuple 'hash length' of length 28 but got length Len(0).
+            } catch {
+                // A TrezorConnect failure is reduced to a fixed reason, never its message, which
+                // may embed the composed account payload.
                 const actionAvailability: ActionAvailability = {
                     status: false,
-                    // A TrezorConnect failure is kept as its code only, never as its message, which
-                    // may embed the composed account payload.
-                    reason: err instanceof CardanoComposeError ? err.code : err.message,
+                    reason: 'COMPOSE_FAILED',
                 };
                 setDelegatingAvailable(actionAvailability);
                 seWithdrawingAvailable(actionAvailability);

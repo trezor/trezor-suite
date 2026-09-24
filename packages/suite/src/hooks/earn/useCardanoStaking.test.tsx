@@ -126,7 +126,39 @@ describe('useCardanoStaking', () => {
         expect(result.current.isStakingDisabled).toBe(true);
     });
 
-    it('keeps only the error code of a failed compose, never the message that may embed the payload', async () => {
+    it('keeps a known compose error as the reason', async () => {
+        cardanoComposeTransactionMock.mockResolvedValue({
+            success: true,
+            payload: [{ type: 'error', error: 'UTXO_BALANCE_INSUFFICIENT' }],
+        });
+
+        const { result } = renderCardanoStaking(mockNeverStakedAccount());
+
+        await act(() => result.current.calculateFeeAndDeposit('delegate'));
+
+        expect(result.current.delegatingAvailable).toEqual({
+            status: false,
+            reason: 'UTXO_BALANCE_INSUFFICIENT',
+        });
+    });
+
+    it('reduces an unknown compose error to a fixed reason', async () => {
+        cardanoComposeTransactionMock.mockResolvedValue({
+            success: true,
+            payload: [{ type: 'error', error: 'Something the UI has no case for' }],
+        });
+
+        const { result } = renderCardanoStaking(mockNeverStakedAccount());
+
+        await act(() => result.current.calculateFeeAndDeposit('delegate'));
+
+        expect(result.current.delegatingAvailable).toEqual({
+            status: false,
+            reason: 'COMPOSE_FAILED',
+        });
+    });
+
+    it('reports a failed compose by a fixed reason, never the message that may embed the payload', async () => {
         const utxoAddress = 'addr1q9utxo';
         cardanoComposeTransactionMock.mockResolvedValue({
             success: false,
@@ -142,7 +174,7 @@ describe('useCardanoStaking', () => {
 
         expect(result.current.delegatingAvailable).toEqual({
             status: false,
-            reason: 'Failure_UnknownCode',
+            reason: 'COMPOSE_FAILED',
         });
     });
 
