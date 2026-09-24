@@ -1,14 +1,14 @@
 import type {
     DeviceModelInternal,
     FirmwareType,
-    IntermediaryReleaseConfig,
+    IntermediariesConfig,
     ReleasesConfig,
 } from '@trezor/device-utils';
 import { throwError } from '@trezor/utils';
 
-type FirmwareReleaseState = {
+export type FirmwareReleaseState = {
     releases: Partial<ReleasesConfig>;
-    intermediaries: Partial<Record<DeviceModelInternal, IntermediaryReleaseConfig[]>>;
+    intermediaries: Partial<IntermediariesConfig>;
 };
 
 let _state: FirmwareReleaseState | undefined;
@@ -17,9 +17,10 @@ export const init = (config: FirmwareReleaseState) => {
     _state = config;
 };
 
-const state = () => _state ?? throwError('Firmware release config not loaded.');
+const getStateOrThrow = () => _state ?? throwError('Firmware release config not loaded.');
 
 export const getReleases = (model: DeviceModelInternal, type: FirmwareType) =>
-    state().releases[model]?.[type];
+    getStateOrThrow().releases[model]?.[type];
 
-export const getIntermediary = (model: DeviceModelInternal) => state().intermediaries[model];
+export const getIntermediary = (model: DeviceModelInternal) =>
+    getStateOrThrow().intermediaries[model];
