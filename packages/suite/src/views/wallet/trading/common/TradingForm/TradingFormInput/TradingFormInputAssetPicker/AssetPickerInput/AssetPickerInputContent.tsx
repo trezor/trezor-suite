@@ -28,10 +28,10 @@ export function AssetPickerInputContent({ value }: AssetPickerInputContentProps)
     return (
         <Row gap={8} alignItems="center">
             {isNativeToken ? (
-                <TokenIcon size={20} symbol={symbol} showNetworkIcon />
+                <TokenIcon size={24} symbol={symbol} showNetworkIcon />
             ) : (
                 <TokenIcon
-                    size={20}
+                    size={24}
                     symbol={networkSymbol}
                     contractAddress={contractAddress}
                     placeholder={displaySymbol}
