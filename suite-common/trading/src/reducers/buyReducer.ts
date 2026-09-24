@@ -91,6 +91,11 @@ const tradingBuySlice = createSlice({
             if (action.payload !== state.tradingAccountKey) {
                 state.amountLimits = undefined;
             }
+            if (action.payload === undefined) {
+                state.quotes = [];
+                state.quotesRequest = undefined;
+                state.selectedQuote = undefined;
+            }
             state.tradingAccountKey = action.payload;
         },
         setReceiveAccountKey(

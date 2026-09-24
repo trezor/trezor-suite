@@ -3,6 +3,7 @@ import { Translation, type TranslationKey } from '@suite/intl';
 import { type Route, gotoThunk } from '@suite/router';
 import { useServices } from '@suite-common/dependency-injection';
 import { injectDispatch } from '@suite-common/redux-utils';
+import { type TradingType, tradingThunks } from '@suite-common/trading';
 import { type IconComponent, SubTabs } from '@trezor/components';
 import { HandshakeIcon, MinusIcon, PlusIcon, RepeatIcon } from '@trezor/icons';
 
@@ -12,6 +13,7 @@ type TradingLayoutNavigationProps = {
 
 type NavigationItem = {
     id: Route['name'];
+    tradingType?: TradingType;
     icon: IconComponent;
     translationId: TranslationKey;
 };
@@ -19,16 +21,19 @@ type NavigationItem = {
 const navigationItems: NavigationItem[] = [
     {
         id: 'wallet-trading-exchange',
+        tradingType: 'exchange',
         icon: RepeatIcon,
         translationId: 'TR_TRADING_SWAP',
     },
     {
         id: 'wallet-trading-buy',
+        tradingType: 'buy',
         icon: PlusIcon,
         translationId: 'TR_NAV_BUY',
     },
     {
         id: 'wallet-trading-sell',
+        tradingType: 'sell',
         icon: MinusIcon,
         translationId: 'TR_NAV_SELL',
     },
@@ -41,10 +46,14 @@ const navigationItems: NavigationItem[] = [
 
 export const TradingLayoutNavigation = ({ route }: TradingLayoutNavigationProps) => {
     const { analytics, dispatch } = useServices(injectDesktopAnalytics, injectDispatch);
-    const goToRoute = (route: Route['name']) => () => {
-        dispatch(gotoThunk({ routeName: route }));
+    const goToRoute = (routeName: Route['name'], tradingType?: TradingType) => () => {
+        if (tradingType && routeName !== route) {
+            dispatch(tradingThunks.clearQuotesAndParamsByTradingTypeThunk({ tradingType }));
+        }
 
-        switch (route) {
+        dispatch(gotoThunk({ routeName }));
+
+        switch (routeName) {
             case 'wallet-trading-buy':
                 return analytics.report({
                     type: events.tradeNavigateEvent.name,
@@ -92,7 +101,7 @@ export const TradingLayoutNavigation = ({ route }: TradingLayoutNavigationProps)
                     data-testid={`@trading/menu/${item.id}`}
                     id={item.id}
                     icon={item.icon}
-                    onClick={goToRoute(item.id)}
+                    onClick={goToRoute(item.id, item.tradingType)}
                 >
                     <Translation id={item.translationId} />
                 </SubTabs.Item>
