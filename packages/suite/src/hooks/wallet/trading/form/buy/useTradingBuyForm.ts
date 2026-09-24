@@ -31,7 +31,7 @@ import { type TradingBuyFormContextProps } from 'src/types/trading/tradingForm';
 import { useBuyFlow } from './useBuyFlow';
 import { useBuyQuotes } from './useBuyQuotes';
 import { useTradingBuyFormDefaultValues } from './useTradingBuyFormDefaultValues';
-import { useTradingBuyFormRedirectValues } from './useTradingBuyFormRedirectValues';
+import { useTradingBuyFormQuotesRequestValues } from './useTradingBuyFormQuotesRequestValues';
 import { useTradingFiatValues } from '../common/useTradingFiatValues';
 import { useTradingFormReset } from '../common/useTradingFormReset';
 import { useTradingFormAccount } from '../useTradingFormAccount';
@@ -66,10 +66,15 @@ export const useTradingBuyForm = (): TradingBuyFormContextProps => {
     useTradingFiatValues(fiatTradingValuesParams);
 
     const { defaultValues } = useTradingBuyFormDefaultValues(cryptoId, buyInfo);
-    const redirectValues = useTradingBuyFormRedirectValues(isFromRedirect, quotesRequest);
+    const quotesRequestValues = useTradingBuyFormQuotesRequestValues({
+        quotesRequest,
+        selectedQuote,
+        defaultValues,
+    });
+    const initialValues = quotesRequestValues ?? defaultValues;
     const methods = useForm<TradingBuyFormProps>({
         mode: 'onChange',
-        defaultValues: redirectValues || defaultValues,
+        defaultValues: initialValues,
     });
     const { formState, reset, setValue, getValues, control } = methods;
     // Watch only those values that are relevant in render function
@@ -128,7 +133,7 @@ export const useTradingBuyForm = (): TradingBuyFormContextProps => {
     useTradingFormReset({
         isInfoReady: !!buyInfo,
         reset,
-        defaultValues,
+        defaultValues: initialValues,
         getPreservedValues: () => ({ receiveAddress: getValues('receiveAddress') }),
     });
 
