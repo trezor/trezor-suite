@@ -146,14 +146,14 @@ const bitcoinRequestThunk = createThunk<
             const feeLevels = await TrezorConnect.blockchainEstimateFee({
                 coin: asCoinSymbol(account.symbol),
                 identity: getAccountIdentity(account),
-                request: {
-                    blocks: [1],
-                },
+                request: { blocks: [1] },
             });
-            if (!feeLevels.success) {
+            if (!feeLevels.success || !feeLevels.payload.levels[0]) {
                 console.error('blockchainEstimateFee error', feeLevels);
                 throw new Error('blockchainEstimateFee error');
             }
+
+            const { feePerUnit } = feeLevels.payload.levels[0];
 
             // will be unused in case changeAddress param is present as well
             const change =
@@ -166,17 +166,15 @@ const bitcoinRequestThunk = createThunk<
                 path: account.path,
                 utxo: account.utxo!,
                 changeAddress: change,
-                feeLevels: feeLevels.payload.levels,
+                feePerUnit,
                 device,
             });
             if (!precomposedTransaction.success) {
                 console.error('composeTransaction error', precomposedTransaction);
                 throw new Error('composeTransaction error');
             }
-            const { payload: precomposedPayload } = precomposedTransaction;
-            // @ts-expect-error: indexing with noUncheckedIndexedAccess
-            const firstResult: (typeof precomposedPayload)[number] = precomposedPayload[0];
-            if (firstResult.type !== 'final') {
+            const { payload: composedTransaction } = precomposedTransaction;
+            if (composedTransaction.type !== 'final') {
                 console.error('composeTransaction error', precomposedTransaction);
                 throw new Error('composeTransaction error');
             }
@@ -184,8 +182,8 @@ const bitcoinRequestThunk = createThunk<
                 trezorConnectPopupActions.connectPopupCallThunk({
                     method: 'signTransaction',
                     payload: {
-                        inputs: firstResult.inputs,
-                        outputs: firstResult.outputs,
+                        inputs: composedTransaction.inputs,
+                        outputs: composedTransaction.outputs,
                         account: {
                             addresses: account.addresses!,
                         },

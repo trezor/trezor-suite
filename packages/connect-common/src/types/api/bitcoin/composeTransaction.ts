@@ -18,7 +18,7 @@ export type PrecomposeParams = ComposeParams & {
     path: string;
     utxo: ComposeUtxo[];
     changeAddress?: AccountAddress;
-    feeLevels: { feePerUnit: string }[];
+    feePerUnit: string;
 };
 
 // @trezor/utxo-lib `composeTx` transaction.input (ComposeInput) response intersects AccountUtxo
@@ -58,4 +58,4 @@ export type PrecomposedResult =
 
 export declare function composeTransaction(
     params: Params<PrecomposeParams>,
-): Response<PrecomposedResult[]>;
+): Response<PrecomposedResult>;

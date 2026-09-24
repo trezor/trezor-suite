@@ -751,11 +751,7 @@ export const composeDebouncedTransaction = [
         skip: true, // TODO: fix flaky test https://github.com/trezor/trezor-suite/issues/23022
         connect: {
             success: true,
-            payload: [
-                {
-                    type: 'nonfinal',
-                },
-            ],
+            payload: { type: 'nonfinal' },
         },
         actions: [{ type: 'input', element: 'outputs.0.amount', value: '111', delay: 100 }],
         finalResult: {
@@ -772,18 +768,18 @@ export const composeDebouncedTransaction = [
         connect: [
             {
                 success: true,
-                payload: [{ type: 'nonfinal', totalSpent: '100000000' }],
+                payload: { type: 'nonfinal', totalSpent: '100000000' },
             },
             {
                 // delay in @trezor/connect response greater than typing delay
                 // basically it means: return this response AFTER third call to connect, this response should be ignored
                 delay: 500,
                 success: true,
-                payload: [{ type: 'nonfinal', totalSpent: '1100000000' }],
+                payload: { type: 'nonfinal', totalSpent: '1100000000' },
             },
             {
                 success: true,
-                payload: [{ type: 'nonfinal', totalSpent: '11100000000' }],
+                payload: { type: 'nonfinal', totalSpent: '11100000000' },
             }, // delay in @trezor/connect response, greater than typing delay
         ],
         actions: [{ type: 'input', element: 'outputs.0.amount', value: '111', delay: 310 }], // delay greater than composeDebounced timeout
@@ -857,12 +853,10 @@ export const setMax: any[] = [
         ],
         connect: {
             success: true,
-            payload: [
-                {
-                    type: 'nonfinal',
-                    max: '31249999500',
-                },
-            ],
+            payload: {
+                type: 'nonfinal',
+                max: '31249999500',
+            },
         },
         finalResult: {
             composeTransactionCalls: 1,
@@ -898,12 +892,10 @@ export const setMax: any[] = [
         },
         connect: {
             success: true,
-            payload: [
-                {
-                    type: 'nonfinal',
-                    max: '100000000',
-                },
-            ],
+            payload: {
+                type: 'nonfinal',
+                max: '100000000',
+            },
         },
         finalResult: {
             composeTransactionCalls: 1,
@@ -943,23 +935,21 @@ export const setMax: any[] = [
             undefined, // updateFeeInfoThunk
             {
                 success: true,
-                payload: [
-                    {
-                        type: 'error',
-                    },
-                ],
+                payload: { type: 'error' },
             },
             {
+                // custom fee level 3 sat/B
                 success: true,
-                payload: [
-                    { type: 'error' },
-                    { type: 'final', feePerByte: '2', max: '10000000' },
-                    { type: 'final', feePerByte: '1', max: '10000001' },
-                ],
+                payload: { type: 'error' },
+            },
+            {
+                // custom fee level 2 sat/B
+                success: true,
+                payload: { type: 'final', feePerByte: '2', max: '10000000' },
             },
         ],
         finalResult: {
-            composeTransactionCalls: 2,
+            composeTransactionCalls: 3,
             composedLevels: { normal: { type: 'error' }, custom: { type: 'final' } },
             formValues: {
                 selectedFee: 'custom' as const,
@@ -974,21 +964,17 @@ export const setMax: any[] = [
             undefined, // updateFeeInfoThunk
             {
                 success: true,
-                payload: [
-                    {
-                        type: 'nonfinal',
-                        max: '100000000',
-                    },
-                ],
+                payload: {
+                    type: 'nonfinal',
+                    max: '100000000',
+                },
             },
             {
                 success: true,
-                payload: [
-                    {
-                        type: 'final',
-                        max: '100000000',
-                    },
-                ],
+                payload: {
+                    type: 'final',
+                    max: '100000000',
+                },
             },
         ],
         actions: [
@@ -1047,39 +1033,31 @@ export const setMax: any[] = [
             undefined, // updateFeeInfoThunk
             {
                 success: true,
-                payload: [
-                    {
-                        type: 'final',
-                        max: '100000000',
-                    },
-                ],
+                payload: {
+                    type: 'final',
+                    max: '100000000',
+                },
             },
             {
                 success: true,
-                payload: [
-                    {
-                        type: 'nonfinal',
-                        max: '100000000',
-                    },
-                ],
+                payload: {
+                    type: 'nonfinal',
+                    max: '100000000',
+                },
             },
             {
                 success: true,
-                payload: [
-                    {
-                        type: 'nonfinal',
-                        max: '100000000',
-                    },
-                ],
+                payload: {
+                    type: 'nonfinal',
+                    max: '100000000',
+                },
             },
             {
                 success: true,
-                payload: [
-                    {
-                        type: 'final',
-                        totalSpent: '120000000',
-                    },
-                ],
+                payload: {
+                    type: 'final',
+                    totalSpent: '120000000',
+                },
             },
         ],
         actions: [
@@ -1401,18 +1379,16 @@ export const setMax: any[] = [
 
 const getComposeResponse = (resp?: any) => ({
     success: true,
-    payload: [
-        {
-            type: 'final',
-            totalSpent: '2500000000',
-            fee: '100',
-            inputs: [{ amount: '12500000000', prev_hash: UTXO.CC.txid, prev_index: 0 }],
-            outputs: [
-                { address_n: [44, 0, 0, 1, 1], amount: '10000000000' },
-                { address: 'A-external', amount: '2499999900' },
-            ],
-        },
-    ],
+    payload: {
+        type: 'final',
+        totalSpent: '2500000000',
+        fee: '100',
+        inputs: [{ amount: '12500000000', prev_hash: UTXO.CC.txid, prev_index: 0 }],
+        outputs: [
+            { address_n: [44, 0, 0, 1, 1], amount: '10000000000' },
+            { address: 'A-external', amount: '2499999900' },
+        ],
+    },
     ...resp,
 });
 
@@ -1564,34 +1540,34 @@ export const signAndPush: SignAndPush[] = [
         connect: [
             undefined, // updateFeeInfoThunk
             getComposeResponse({
-                payload: [
-                    {
-                        // normal fee level, not used in this test
-                        type: 'final',
-                        totalSpent: '2500000000',
-                        fee: '200',
-                        inputs: [],
-                        outputs: [],
-                    },
-                    {
-                        // custom fee level, used
-                        type: 'final',
-                        totalSpent: '2500000000', // 2200000000 are externals + fee
-                        fee: '100',
-                        inputs: [
-                            { amount: '0', prev_hash: 'should not be used', prev_index: 0 },
-                            { amount: '12500000000', prev_hash: UTXO.CC.txid, prev_index: 0 },
-                        ],
-                        outputs: [
-                            { address_n: [44, 0, 0, 1, 1], amount: '10000000000' },
-                            { address: 'A-external', amount: '2100000000' },
-                            { address: '1-unused', amount: '100000000' },
-                            { address: '2-used', amount: '100000000' },
-                            { address: '1-change', amount: '100000000' },
-                            { address: 'B-external', amount: '99999900' },
-                        ],
-                    },
-                ],
+                payload: {
+                    // normal fee level, not used in this test
+                    type: 'final',
+                    totalSpent: '2500000000',
+                    fee: '200',
+                    inputs: [],
+                    outputs: [],
+                },
+            }),
+            getComposeResponse({
+                payload: {
+                    // custom fee level, used
+                    type: 'final',
+                    totalSpent: '2500000000', // 2200000000 are externals + fee
+                    fee: '100',
+                    inputs: [
+                        { amount: '0', prev_hash: 'should not be used', prev_index: 0 },
+                        { amount: '12500000000', prev_hash: UTXO.CC.txid, prev_index: 0 },
+                    ],
+                    outputs: [
+                        { address_n: [44, 0, 0, 1, 1], amount: '10000000000' },
+                        { address: 'A-external', amount: '2100000000' },
+                        { address: '1-unused', amount: '100000000' },
+                        { address: '2-used', amount: '100000000' },
+                        { address: '1-change', amount: '100000000' },
+                        { address: 'B-external', amount: '99999900' },
+                    ],
+                },
             }),
             {
                 success: true,
@@ -2237,12 +2213,10 @@ export const amountUnitChange = [
         connect: [
             {
                 success: true,
-                payload: [
-                    {
-                        type: 'final',
-                        max: '100000000',
-                    },
-                ],
+                payload: {
+                    type: 'final',
+                    max: '100000000',
+                },
             },
         ],
         store: {
@@ -2263,12 +2237,10 @@ export const amountUnitChange = [
             undefined,
             {
                 success: true,
-                payload: [
-                    {
-                        type: 'nonfinal',
-                        max: '100000000',
-                    },
-                ],
+                payload: {
+                    type: 'nonfinal',
+                    max: '100000000',
+                },
             },
         ],
         actions: [

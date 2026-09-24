@@ -73,7 +73,7 @@ export const composeCancelTransactionThunk = createThunk<
             outputs: [{ type: 'send-max', address: cancelAddress }],
             sortingStrategy: DEFAULT_SORTING_STRATEGY,
             coin,
-            feeLevels: [{ feePerUnit }],
+            feePerUnit,
             baseFee,
         });
 
@@ -81,9 +81,9 @@ export const composeCancelTransactionThunk = createThunk<
             return rejectWithValue(`Unexpected compose error: ${response.error.message}`);
         }
 
-        const composedTx = response.payload[0];
+        const composedTx = response.payload;
 
-        if (composedTx?.type !== 'final') {
+        if (composedTx.type !== 'final') {
             return rejectWithValue('Unexpected compose result (non-final)');
         }
 

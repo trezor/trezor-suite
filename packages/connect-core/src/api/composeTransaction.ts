@@ -33,7 +33,7 @@ export default class ComposeTransaction extends AbstractMethod<'composeTransacti
             { name: 'path', type: 'string', required: true },
             { name: 'utxo', type: 'array', required: true },
             { name: 'changeAddress', type: 'object' },
-            { name: 'feeLevels', type: 'array', required: true },
+            { name: 'feePerUnit', type: 'string', required: true },
             { name: 'baseFee', type: 'number' },
             { name: 'sequence', type: 'number' },
             { name: 'sortingStrategy', type: 'string' },
@@ -50,7 +50,7 @@ export default class ComposeTransaction extends AbstractMethod<'composeTransacti
             path: payload.path,
             utxo: payload.utxo,
             changeAddress: payload.changeAddress,
-            feeLevels: payload.feeLevels,
+            feePerUnit: payload.feePerUnit,
             baseFee: payload.baseFee,
             sequence: payload.sequence,
             sortingStrategy: payload.sortingStrategy,
@@ -71,8 +71,8 @@ export default class ComposeTransaction extends AbstractMethod<'composeTransacti
         return `Compose transaction`;
     }
 
-    run(): Promise<PrecomposedResult[]> {
-        const { coinInfo, outputs, baseFee, sortingStrategy, path, utxo, feeLevels } = this.params;
+    run(): Promise<PrecomposedResult> {
+        const { coinInfo, outputs, baseFee, sortingStrategy, path, utxo, feePerUnit } = this.params;
         const { changeAddress } = this.params;
         const address_n = pathUtils.validatePath(path);
 
@@ -86,25 +86,23 @@ export default class ComposeTransaction extends AbstractMethod<'composeTransacti
             sortingStrategy: sortingStrategy ?? DEFAULT_SORTING_STRATEGY,
         });
 
-        const levels = feeLevels.map(level => {
-            const tx = compose(level.feePerUnit);
-            if (tx.type === 'final') {
-                return {
-                    ...tx,
-                    inputs: tx.inputs.map(inp => inputToTrezor(inp, this.params.sequence)),
-                    outputs: tx.outputs.map(outputToTrezor),
-                };
-            }
-            if (tx.type === 'nonfinal') {
-                return {
-                    ...tx,
-                    inputs: tx.inputs.map(inp => inputToTrezor(inp, this.params.sequence)),
-                };
-            }
+        const tx = compose(feePerUnit);
 
-            return tx;
-        });
+        if (tx.type === 'final') {
+            return Promise.resolve({
+                ...tx,
+                inputs: tx.inputs.map(inp => inputToTrezor(inp, this.params.sequence)),
+                outputs: tx.outputs.map(outputToTrezor),
+            });
+        }
 
-        return Promise.resolve(levels);
+        if (tx.type === 'nonfinal') {
+            return Promise.resolve({
+                ...tx,
+                inputs: tx.inputs.map(inp => inputToTrezor(inp, this.params.sequence)),
+            });
+        }
+
+        return Promise.resolve(tx);
     }
 }
