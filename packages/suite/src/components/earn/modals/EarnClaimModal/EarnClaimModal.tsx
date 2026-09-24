@@ -71,6 +71,10 @@ export const EarnClaimModal = ({ onCancel, account }: EarnClaimModalProps) => {
 
     // cardano specific logic
     const { calculateFeeAndDeposit, withdrawingAvailable, fee, rewards } = useCardanoStaking();
+    const isCardanoDrepDelegationRequired =
+        isCardanoNetworkType &&
+        !withdrawingAvailable.status &&
+        withdrawingAvailable.reason === 'DREP_DELEGATION_REQUIRED';
     const isCardanoWithdrawalBalanceInsufficient =
         isCardanoNetworkType &&
         !withdrawingAvailable.status &&
@@ -182,6 +186,16 @@ export const EarnClaimModal = ({ onCancel, account }: EarnClaimModalProps) => {
                     <Column gap={16}>
                         {isCardanoNetworkType ? (
                             <>
+                                {isCardanoDrepDelegationRequired && (
+                                    <Banner
+                                        data-testid="@modal/claim/drep-delegation-banner"
+                                        intent="warning"
+                                        icon={WarningIcon}
+                                        description={
+                                            <Translation id="TR_STAKE_DREP_DELEGATION_REQUIRED" />
+                                        }
+                                    />
+                                )}
                                 {shouldShowCardanoWarning && shouldShowCardanoClaimRewardsCard && (
                                     <Banner
                                         data-testid="@modal/claim/fee-warning-banner"

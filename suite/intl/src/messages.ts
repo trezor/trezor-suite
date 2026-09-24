@@ -11946,6 +11946,11 @@ export const messages = defineMessages({
         id: 'TR_STAKE_CHANGE_DELEGATE',
         defaultMessage: 'Change delegate',
     },
+    TR_STAKE_DREP_DELEGATION_REQUIRED: {
+        id: 'TR_STAKE_DREP_DELEGATION_REQUIRED',
+        defaultMessage:
+            "Delegate your voting rights first. Cardano doesn't allow claiming rewards or unstaking without it.",
+    },
     TR_STAKE_CHANGE_YOUR_DELEGATE: {
         id: 'TR_STAKE_CHANGE_YOUR_DELEGATE',
         defaultMessage: 'Change your stake delegate?',

@@ -49,7 +49,8 @@ export const EarnStakingActionButtons = ({
             (canClaim ? (
                 <Tooltip content={claimingMessageContent}>
                     <Button
-                        intent="brand"
+                        intent={isClaimButtonDisabled ? 'neutral' : 'brand'}
+                        priority={isClaimButtonDisabled ? 'secondary' : 'primary'}
                         size="small"
                         isDisabled={isClaimButtonDisabled}
                         iconLeft={isClaimButtonDisabled ? InfoIcon : undefined}

@@ -4,7 +4,14 @@ export type CardanoAction =
 
 export type ActionAvailability =
     | { status: true; reason?: undefined }
-    | { status: false; reason: 'POOL_ID_FETCH_FAIL' | 'TX_NOT_FINAL' | 'UTXO_BALANCE_INSUFFICIENT' }
+    | {
+          status: false;
+          reason:
+              | 'DREP_DELEGATION_REQUIRED'
+              | 'POOL_ID_FETCH_FAIL'
+              | 'TX_NOT_FINAL'
+              | 'UTXO_BALANCE_INSUFFICIENT';
+      }
     | { status: false; reason?: string };
 
 export type CardanoStaking = {

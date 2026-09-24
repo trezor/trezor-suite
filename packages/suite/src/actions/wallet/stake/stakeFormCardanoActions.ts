@@ -23,6 +23,7 @@ import {
     getCardanoAccountPoolId,
     hasCardanoLiveVoteDelegation,
     isCardanoStakedWithEverstake,
+    isCardanoWithdrawalBlockedByMissingDrep,
     parseDrepBech32,
     selectBestCardanoPool,
     selectCardanoPoolsInfo,
@@ -144,6 +145,13 @@ export const prepareTxPlan = async ({
     }
 
     if (action === 'withdrawal' && (!rewardsAmount || !stakeAddress)) {
+        return null;
+    }
+
+    if (
+        (action === 'withdrawal' || action === 'deregister') &&
+        isCardanoWithdrawalBlockedByMissingDrep(account)
+    ) {
         return null;
     }
 
