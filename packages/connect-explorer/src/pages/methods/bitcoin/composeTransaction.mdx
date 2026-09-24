@@ -15,7 +15,7 @@ export const PrecomposeSchema = Type.Object({
             transfers: Type.Number(),
         }),
     ),
-    feeLevels: Type.Array(Type.Object({ feePerUnit: Type.String() })),
+    feePerUnit: Type.String(),
     baseFee: Type.Optional(Type.Number()),
     sequence: Type.Optional(Type.Number()),
     sortingStrategy: Type.Optional(
@@ -30,8 +30,8 @@ export const paramDescriptions = {
     utxo: 'account utxos to select from, partial result of [getAccountInfo method](../common/getAccountInfo#result)',
     changeAddress:
         'address where the change is sent, typically an unused change address from [getAccountInfo method](../common/getAccountInfo#result). Optional in the type, but composing without it always fails with the `ADDRESSES-NOT-SET` error.',
-    feeLevels:
-        'Array of objects. set of requested variants, partial result of `blockchainEstimateFee method`',
+    feePerUnit:
+        'requested fee rate in satoshi per byte, a `feePerUnit` value of a single fee level from `blockchainEstimateFee method`',
     baseFee:
         'base fee of transaction in satoshi. used in replacement transactions calculation (RBF) and DOGE',
     sequence: 'transaction input field used in RBF or locktime transactions',
@@ -42,11 +42,11 @@ export const paramDescriptions = {
 
 This method works only for `Bitcoin` and `Bitcoin-like` coins.
 
-Prepare transaction to be signed by Trezor by providing account data (`path`, `utxo`, `changeAddress`) and `feeLevels` params and perform **only** transaction calculation. [[1]](#additional-notes)
+Prepare transaction to be signed by Trezor by providing account data (`path`, `utxo`, `changeAddress`) and a `feePerUnit` fee rate, and perform **only** transaction calculation. [[1]](#additional-notes)
 
 The result, internally called [`PrecomposedTransaction`](https://github.com/trezor/trezor-suite/blob/develop/packages/connect-common/src/types/api/bitcoin/composeTransaction.ts) is a set of params that can be used in [signTransaction method](signTransaction.md#params) afterwards.
 
-This is useful for the quick preparation of multiple variants for the same transaction using different fee levels or using incomplete data (like missing output addresses just to calculate fee).
+The method composes a single transaction per call. To prepare multiple variants of the same transaction, call it once per fee rate. It also accepts incomplete data (like missing output addresses just to calculate fee), in which case the result is `nonfinal`.
 
 _Device and backend connection is not required for this case since all data are provided._
 
@@ -77,7 +77,7 @@ For an interactive flow that includes account discovery, fee selection, and sign
 
 ## Example
 
-Prepare multiple variants of the same transaction
+Prepare a transaction for a given fee rate
 
 ```javascript
 TrezorConnect.composeTransaction({
@@ -100,59 +100,50 @@ TrezorConnect.composeTransaction({
         path: "m/84'/0'/0'/1/0",
         transfers: 0,
     },
-    feeLevels: [{ feePerUnit: '1' }, { feePerUnit: '5' }, { feePerUnit: '30' }],
+    feePerUnit: '1',
 });
 ```
 
 ## Result
 
+The payload is a single composed transaction. Its `type` field determines the shape:
+
+- `final` - the transaction is complete and can be passed to [signTransaction](signTransaction)
+- `nonfinal` - fee and inputs are calculated, but the transaction cannot be signed yet because some outputs are incomplete (`payment-noaddress`, `send-max-noaddress`)
+- `error` - the transaction cannot be composed, `error` holds the reason (eg. `NOT-ENOUGH-FUNDS`, `MISSING-UTXOS`, `ADDRESSES-NOT-SET`)
+
 ```javascript
 {
     success: true,
-    payload: [
-        {
-            type: 'final',
-            totalSpent: '200167',
-            fee: '167',
-            feePerByte: '1',
-            bytes: 167,
-            inputs: [
-                {
-                    address_n: [84 | 0x80000000, 1 | 0x80000000, 0 | 0x80000000, 0, 0],
-                    amount: "300000",
-                    prev_hash: "86a6e02943dcd057cfbe349f2c2274478a3a1be908eb788606a6950e727a0d36",
-                    prev_index: 0,
-                    script_type: "SPENDWITNESS",
-                }
-            ],
-            outputs: [
-                {
-                    address_n: [84 | 0x80000000, 1 | 0x80000000, 0 | 0x80000000, 1, 0],
-                    amount: "99833",
-                    script_type: "PAYTOWITNESS",
-                },
-                {
-                    address: 'tb1q9l0rk0gkgn73d0gc57qn3t3cwvucaj3h8wtrlu',
-                    amount: '200000',
-                    script_type: 'PAYTOADDRESS',
-                }
-            ],
-            outputsPermutation: [1, 0],
-        },
-        {
-            type: 'final',
-            totalSpent: '200835',
-            fee: '835',
-            feePerByte: '5',
-            bytes: 167,
-            inputs: [{ ... }],
-            outputs: [{ ... }],
-            outputsPermutation: [],
-        },
-        {
-            type: 'error',
-        }
-    ]
+    payload: {
+        type: 'final',
+        totalSpent: '200167',
+        fee: '167',
+        feePerByte: '1',
+        bytes: 167,
+        inputs: [
+            {
+                address_n: [84 | 0x80000000, 1 | 0x80000000, 0 | 0x80000000, 0, 0],
+                amount: "300000",
+                prev_hash: "86a6e02943dcd057cfbe349f2c2274478a3a1be908eb788606a6950e727a0d36",
+                prev_index: 0,
+                script_type: "SPENDWITNESS",
+            }
+        ],
+        outputs: [
+            {
+                address_n: [84 | 0x80000000, 1 | 0x80000000, 0 | 0x80000000, 1, 0],
+                amount: "99833",
+                script_type: "PAYTOWITNESS",
+            },
+            {
+                address: 'tb1q9l0rk0gkgn73d0gc57qn3t3cwvucaj3h8wtrlu',
+                amount: '200000',
+                script_type: 'PAYTOADDRESS',
+            }
+        ],
+        outputsPermutation: [1, 0],
+    }
 }
 ```
 
