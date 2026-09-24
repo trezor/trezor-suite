@@ -6,7 +6,7 @@ import { injectDispatch } from '@suite-common/redux-utils';
 import { selectAddressDisplayType, setAddressDisplayType } from '@suite-common/wallet-core';
 import { AddressDisplayOptions } from '@suite-common/wallet-types';
 import { Switch } from '@trezor/components';
-import { ActionColumn, SectionItem, TextColumn } from '@trezor/product-components';
+import { SectionItem } from '@trezor/product-components';
 
 import { useSelector } from 'src/hooks/suite';
 
@@ -36,18 +36,15 @@ export const AddressDisplay = () => {
                     data-testid={anchorId}
                     ref={anchorRef}
                     shouldHighlight={shouldHighlight}
-                >
-                    <TextColumn
-                        title={<Translation id="TR_ADDRESS_DISPLAY" />}
-                        description={<Translation id="TR_ADDRESS_DISPLAY_DESCRIPTION" />}
-                    />
-                    <ActionColumn>
+                    title={<Translation id="TR_ADDRESS_DISPLAY" />}
+                    description={<Translation id="TR_ADDRESS_DISPLAY_DESCRIPTION" />}
+                    actions={
                         <Switch
                             isChecked={selectedAddressDisplay === AddressDisplayOptions.CHUNKED}
                             onChange={onChange}
                         />
-                    </ActionColumn>
-                </SectionItem>
+                    }
+                />
             )}
         </Anchor>
     );

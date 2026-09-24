@@ -5,9 +5,9 @@ import styled from 'styled-components';
 import { useDevice } from '@suite/device';
 import { Translation } from '@suite/intl';
 import { EntryForm, PasswordsList, TagsList, getNextId, usePasswords } from '@suite/metadata';
-import { Button, Tooltip } from '@trezor/components';
+import { Button } from '@trezor/components';
 import { PencilIcon } from '@trezor/icons';
-import { ActionColumn, TextColumn } from '@trezor/product-components';
+import { SectionItem } from '@trezor/product-components';
 
 const PasswordManagerBody = styled.div`
     display: flex;
@@ -51,37 +51,32 @@ export const PasswordManager = () => {
 
     if (!selectedProvider || !fileName) {
         return (
-            <Section>
-                <TextColumn
-                    title="Trezor password manager"
-                    description="Re-implementation of former Trezor Password Manager webextension"
-                />
-                <ActionColumn>
-                    <Tooltip
-                        isActive={isDeviceLocked}
-                        content={<Translation id="TR_SETTINGS_DEVICE_BANNER_TITLE_REMEMBERED" />}
+            <SectionItem
+                title="Trezor password manager"
+                description="Re-implementation of former Trezor Password Manager webextension"
+                actions={
+                    <SectionItem.Button
+                        isDisabled={isDeviceLocked}
+                        isTooltipActive={isDeviceLocked}
+                        tooltipContent={
+                            <Translation id="TR_SETTINGS_DEVICE_BANNER_TITLE_REMEMBERED" />
+                        }
+                        onClick={connect}
                     >
-                        <Button onClick={connect} isDisabled={isDeviceLocked}>
-                            Connect to Dropbox
-                        </Button>
-                    </Tooltip>
-                    {/* TODO: connect to drive */}
-                </ActionColumn>
-            </Section>
+                        Connect to Dropbox
+                    </SectionItem.Button>
+                }
+            />
         );
     }
 
     return (
         <>
-            <Section>
-                <TextColumn
-                    title="Provider details"
-                    description={`type: ${selectedProvider.type}, clientId: ${selectedProvider.clientId}, connected user: ${selectedProvider.user}`}
-                />
-                <ActionColumn>
-                    <Button onClick={disconnect}>Disconnect</Button>
-                </ActionColumn>
-            </Section>
+            <SectionItem
+                title="Provider details"
+                description={`type: ${selectedProvider.type}, clientId: ${selectedProvider.clientId}, connected user: ${selectedProvider.user}`}
+                actions={<SectionItem.Button onClick={disconnect}>Disconnect</SectionItem.Button>}
+            />
             <Section>
                 {config ? (
                     <PasswordManagerBody>

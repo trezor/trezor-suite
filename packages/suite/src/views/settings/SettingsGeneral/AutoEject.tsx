@@ -8,7 +8,7 @@ import { selectDevices } from '@suite-common/device';
 import { injectDispatch } from '@suite-common/redux-utils';
 import { selectIsDeviceAutoEjectEnabled } from '@suite-common/wallet-core';
 import { Modal, Switch } from '@trezor/components';
-import { ActionColumn, SectionItem, TextColumn } from '@trezor/product-components';
+import { SectionItem } from '@trezor/product-components';
 
 import { setAutoEjectEnabledThunk } from 'src/actions/suite/autoEjectThunks';
 import { useSelector } from 'src/hooks/suite';
@@ -81,29 +81,28 @@ export const AutoEject = () => {
     return (
         <Anchor anchorId={SettingsAnchor.AutoEject}>
             {({ anchorId, anchorRef, shouldHighlight }) => (
-                <SectionItem
-                    data-testid={anchorId}
-                    ref={anchorRef}
-                    shouldHighlight={shouldHighlight}
-                >
-                    <TextColumn
+                <>
+                    <SectionItem
+                        data-testid={anchorId}
+                        ref={anchorRef}
+                        shouldHighlight={shouldHighlight}
                         title={<Translation id="TR_AUTO_EJECT" />}
                         description={<Translation id="TR_AUTO_EJECT_DESCRIPTION" />}
+                        actions={
+                            <Switch
+                                isChecked={isAutoEjectEnabled}
+                                onChange={handleSubmit}
+                                data-testid="@settings/auto-eject-switch"
+                            />
+                        }
                     />
-                    <ActionColumn>
-                        <Switch
-                            isChecked={isAutoEjectEnabled}
-                            onChange={handleSubmit}
-                            data-testid="@settings/auto-eject-switch"
-                        />
-                    </ActionColumn>
                     {isConfirmationModalOpen && (
                         <AutoEjectConfirmationModal
                             onCancel={() => setIsConfirmationModalOpen(false)}
                             onSubmit={toggleAutoEject}
                         />
                     )}
-                </SectionItem>
+                </>
             )}
         </Anchor>
     );

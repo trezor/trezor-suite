@@ -5,9 +5,8 @@ import { Translation } from '@suite/intl';
 import { Anchor, SettingsAnchor } from '@suite/router';
 import { selectSelectedDevice } from '@suite-common/device';
 import { selectIsSuiteSyncEnabled } from '@suite-common/suite-sync';
-import { Tooltip } from '@trezor/components';
 import { type StaticSessionId } from '@trezor/connect';
-import { ActionButton, ActionColumn, SectionItem, TextColumn } from '@trezor/product-components';
+import { SectionItem } from '@trezor/product-components';
 
 import { LegacyLabelingMigrationModal } from './LegacyLabelingMigrationModal';
 import type { MigrationError } from './legacyLabelsMigration';
@@ -40,37 +39,30 @@ export const LegacyLabelingMigration = ({ onSuiteSyncError }: LegacyLabelingMigr
                     onSuiteSyncError={onSuiteSyncError}
                 />
             )}
-
             <Anchor anchorId={SettingsAnchor.LabelingMigration}>
                 {({ anchorId, anchorRef, shouldHighlight }) => (
                     <SectionItem
                         data-testid={anchorId}
                         ref={anchorRef}
                         shouldHighlight={shouldHighlight}
-                    >
-                        <TextColumn
-                            title={<Translation id="TR_LABELING_MIGRATION_TITLE" />}
-                            description={<Translation id="TR_LABELING_MIGRATION_DESCRIPTION" />}
-                        />
-                        <ActionColumn>
-                            <Tooltip
-                                content={
+                        title={<Translation id="TR_LABELING_MIGRATION_TITLE" />}
+                        description={<Translation id="TR_LABELING_MIGRATION_DESCRIPTION" />}
+                        actions={
+                            <SectionItem.Button
+                                intent="brand"
+                                onClick={() => setIsModalVisible(true)}
+                                isDisabled={!isMigratable}
+                                data-testid="@settings/metadata/migrate-button"
+                                tooltipContent={
                                     isMigratable ? undefined : (
                                         <Translation id="TR_DEVICE_NOT_CONNECTED" />
                                     )
                                 }
                             >
-                                <ActionButton
-                                    intent="brand"
-                                    onClick={() => setIsModalVisible(true)}
-                                    isDisabled={!isMigratable}
-                                    data-testid="@settings/metadata/migrate-button"
-                                >
-                                    <Translation id="TR_MIGRATE" />
-                                </ActionButton>
-                            </Tooltip>
-                        </ActionColumn>
-                    </SectionItem>
+                                <Translation id="TR_MIGRATE" />
+                            </SectionItem.Button>
+                        }
+                    />
                 )}
             </Anchor>
         </>

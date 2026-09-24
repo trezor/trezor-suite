@@ -9,7 +9,7 @@ import { doesSupportMultiShare } from '@suite-common/backup';
 import { useServices } from '@suite-common/dependency-injection';
 import { selectSelectedDevice } from '@suite-common/device';
 import { injectDispatch } from '@suite-common/redux-utils';
-import { ActionButton, ActionColumn, SectionItem, TextColumn } from '@trezor/product-components';
+import { SectionItem } from '@trezor/product-components';
 import { HELP_CENTER_MULTI_SHARE_BACKUP_URL } from '@trezor/urls';
 
 export const MultiShareBackup = ({ isDeviceLocked }: { isDeviceLocked: boolean }) => {
@@ -39,14 +39,12 @@ export const MultiShareBackup = ({ isDeviceLocked }: { isDeviceLocked: boolean }
     };
 
     return (
-        <SectionItem>
-            <TextColumn
-                title={<Translation id="TR_MULTI_SHARE_BACKUP" />}
-                description={<Translation id="TR_MULTI_SHARE_BACKUP_DESCRIPTION" />}
-                bottomContent={<LearnMoreButton url={HELP_CENTER_MULTI_SHARE_BACKUP_URL} />}
-            />
-            <ActionColumn>
-                <ActionButton
+        <SectionItem
+            title={<Translation id="TR_MULTI_SHARE_BACKUP" />}
+            description={<Translation id="TR_MULTI_SHARE_BACKUP_DESCRIPTION" />}
+            bottomContent={<LearnMoreButton url={HELP_CENTER_MULTI_SHARE_BACKUP_URL} />}
+            actions={
+                <SectionItem.Button
                     intent="brand"
                     data-testid="@settings/device/create-multi-share-backup-button"
                     onClick={handleClick}
@@ -55,8 +53,8 @@ export const MultiShareBackup = ({ isDeviceLocked }: { isDeviceLocked: boolean }
                     tooltipContent={<Translation id="TR_SETTINGS_DEVICE_BANNER_TITLE_REMEMBERED" />}
                 >
                     <Translation id="TR_CREATE_MULTI_SHARE_BACKUP" />
-                </ActionButton>
-            </ActionColumn>
-        </SectionItem>
+                </SectionItem.Button>
+            }
+        />
     );
 };

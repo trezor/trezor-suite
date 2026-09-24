@@ -3,7 +3,7 @@ import { openModal } from '@suite/modal';
 import { Anchor, SettingsAnchor } from '@suite/router';
 import { useServices } from '@suite-common/dependency-injection';
 import { injectDispatch } from '@suite-common/redux-utils';
-import { ActionButton, ActionColumn, SectionItem, TextColumn } from '@trezor/product-components';
+import { SectionItem } from '@trezor/product-components';
 
 interface SafetyChecksProps {
     isDeviceLocked: boolean;
@@ -21,13 +21,10 @@ export const SafetyChecks = ({ isDeviceLocked }: SafetyChecksProps) => {
                     data-testid={anchorId}
                     ref={anchorRef}
                     shouldHighlight={shouldHighlight}
-                >
-                    <TextColumn
-                        title={<Translation id="TR_DEVICE_SETTINGS_SAFETY_CHECKS_TITLE" />}
-                        description={<Translation id="TR_DEVICE_SETTINGS_SAFETY_CHECKS_DESC" />}
-                    />
-                    <ActionColumn>
-                        <ActionButton
+                    title={<Translation id="TR_DEVICE_SETTINGS_SAFETY_CHECKS_TITLE" />}
+                    description={<Translation id="TR_DEVICE_SETTINGS_SAFETY_CHECKS_DESC" />}
+                    actions={
+                        <SectionItem.Button
                             intent="brand"
                             onClick={handleClick}
                             data-testid="@settings/device/safety-checks-button"
@@ -38,9 +35,9 @@ export const SafetyChecks = ({ isDeviceLocked }: SafetyChecksProps) => {
                             }
                         >
                             <Translation id="TR_DEVICE_SETTINGS_SAFETY_CHECKS_BUTTON" />
-                        </ActionButton>
-                    </ActionColumn>
-                </SectionItem>
+                        </SectionItem.Button>
+                    }
+                />
             )}
         </Anchor>
     );

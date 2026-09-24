@@ -15,7 +15,7 @@ import { injectDispatch } from '@suite-common/redux-utils';
 import { isDevEnv } from '@suite-common/suite-utils';
 import { Button, Row } from '@trezor/components';
 import { isDesktop } from '@trezor/env-utils';
-import { ActionButton, ActionColumn, SectionItem, TextColumn } from '@trezor/product-components';
+import { SectionItem } from '@trezor/product-components';
 
 import { useSelector } from 'src/hooks/suite';
 
@@ -104,47 +104,51 @@ export const VersionWithUpdate = () => {
                     data-testid={anchorId}
                     ref={anchorRef}
                     shouldHighlight={shouldHighlight}
-                >
-                    <TextColumn
-                        title={<Translation id="TR_SUITE_VERSION" />}
-                        description={
-                            <Description
-                                desktopUpdateState={desktopUpdateState}
-                                openUpdateModal={openUpdateModal}
-                            />
-                        }
-                    />
-                    {desktopUpdateState.enabled && (
-                        <ActionColumn>
-                            {desktopUpdateState.state === UpdateState.Checking && (
-                                <ActionButton isDisabled intent="brand">
-                                    <Translation id="SETTINGS_UPDATE_CHECKING" />
-                                </ActionButton>
-                            )}
-                            {(desktopUpdateState.state === UpdateState.NotAvailable ||
-                                desktopUpdateState.state === UpdateState.EarlyAccessDisable) && (
-                                <ActionButton onClick={checkForUpdates} intent="brand">
-                                    <Translation id="SETTINGS_UPDATE_CHECK" />
-                                </ActionButton>
-                            )}
-                            {desktopUpdateState.state === UpdateState.Available && (
-                                <ActionButton onClick={openUpdateModal} intent="brand">
-                                    <Translation id="SETTINGS_UPDATE_AVAILABLE" />
-                                </ActionButton>
-                            )}
-                            {desktopUpdateState.state === UpdateState.Downloading && (
-                                <ActionButton onClick={openUpdateModal} intent="brand" isLoading>
-                                    <Translation id="SETTINGS_UPDATE_DOWNLOADING" />
-                                </ActionButton>
-                            )}
-                            {desktopUpdateState.state === UpdateState.Ready && (
-                                <ActionButton onClick={installAndRestart} intent="brand">
-                                    <Translation id="SETTINGS_UPDATE_READY" />
-                                </ActionButton>
-                            )}
-                        </ActionColumn>
-                    )}
-                </SectionItem>
+                    title={<Translation id="TR_SUITE_VERSION" />}
+                    description={
+                        <Description
+                            desktopUpdateState={desktopUpdateState}
+                            openUpdateModal={openUpdateModal}
+                        />
+                    }
+                    actions={
+                        desktopUpdateState.enabled ? (
+                            <>
+                                {desktopUpdateState.state === UpdateState.Checking && (
+                                    <SectionItem.Button isDisabled intent="brand">
+                                        <Translation id="SETTINGS_UPDATE_CHECKING" />
+                                    </SectionItem.Button>
+                                )}
+                                {(desktopUpdateState.state === UpdateState.NotAvailable ||
+                                    desktopUpdateState.state ===
+                                        UpdateState.EarlyAccessDisable) && (
+                                    <SectionItem.Button onClick={checkForUpdates} intent="brand">
+                                        <Translation id="SETTINGS_UPDATE_CHECK" />
+                                    </SectionItem.Button>
+                                )}
+                                {desktopUpdateState.state === UpdateState.Available && (
+                                    <SectionItem.Button onClick={openUpdateModal} intent="brand">
+                                        <Translation id="SETTINGS_UPDATE_AVAILABLE" />
+                                    </SectionItem.Button>
+                                )}
+                                {desktopUpdateState.state === UpdateState.Downloading && (
+                                    <SectionItem.Button
+                                        onClick={openUpdateModal}
+                                        intent="brand"
+                                        isLoading
+                                    >
+                                        <Translation id="SETTINGS_UPDATE_DOWNLOADING" />
+                                    </SectionItem.Button>
+                                )}
+                                {desktopUpdateState.state === UpdateState.Ready && (
+                                    <SectionItem.Button onClick={installAndRestart} intent="brand">
+                                        <Translation id="SETTINGS_UPDATE_READY" />
+                                    </SectionItem.Button>
+                                )}
+                            </>
+                        ) : undefined
+                    }
+                />
             )}
         </Anchor>
     );

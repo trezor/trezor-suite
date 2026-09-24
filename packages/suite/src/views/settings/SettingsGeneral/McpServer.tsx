@@ -6,10 +6,10 @@ import { injectDesktopApi } from '@suite/desktop-app-api';
 import { LearnMoreButton } from '@suite/external-links';
 import { Translation } from '@suite/intl';
 import { useServices } from '@suite-common/dependency-injection';
-import { Button, Column, Modal, SelectBar } from '@trezor/components';
+import { Column, Modal, SelectBar } from '@trezor/components';
 import { copyToClipboard } from '@trezor/dom-utils';
 import { ArrowsClockwiseIcon, CopyIcon } from '@trezor/icons';
-import { ActionColumn, SectionItem, TextColumn } from '@trezor/product-components';
+import { SectionItem } from '@trezor/product-components';
 import { GITHUB_MCP_DOCS_URL } from '@trezor/urls';
 
 const ConfigBox = styled.div`
@@ -134,21 +134,19 @@ export const McpServer = () => {
 
     return (
         <>
-            <SectionItem>
-                <TextColumn
-                    title={<Translation id="TR_MCP_CLIENT_CONFIGURATION" />}
-                    description={
-                        <Translation
-                            id={
-                                selectedClient === 'claude-code'
-                                    ? 'TR_MCP_PASTE_COMMAND'
-                                    : 'TR_MCP_ADD_JSON_CONFIG'
-                            }
-                        />
-                    }
-                    bottomContent={<LearnMoreButton url={GITHUB_MCP_DOCS_URL} />}
-                />
-                <ActionColumn>
+            <SectionItem
+                title={<Translation id="TR_MCP_CLIENT_CONFIGURATION" />}
+                description={
+                    <Translation
+                        id={
+                            selectedClient === 'claude-code'
+                                ? 'TR_MCP_PASTE_COMMAND'
+                                : 'TR_MCP_ADD_JSON_CONFIG'
+                        }
+                    />
+                }
+                bottomContent={<LearnMoreButton url={GITHUB_MCP_DOCS_URL} />}
+                actions={
                     <Column gap={12}>
                         <SelectBar
                             selectedOption={selectedClient}
@@ -156,32 +154,34 @@ export const McpServer = () => {
                             onChange={setSelectedClient}
                             size="small"
                         />
+
                         <ConfigBox>
                             <ConfigSnippet>
                                 {getSnippet(selectedClient, settings.url, settings.token)}
                             </ConfigSnippet>
                             <CopyButtonWrapper>
-                                <Button
+                                <SectionItem.Button
                                     size="small"
                                     iconLeft={ArrowsClockwiseIcon}
                                     intent="neutral"
                                     onClick={() => setIsRegenerateModalOpen(true)}
                                 >
                                     <Translation id="TR_MCP_REGENERATE_TOKEN" />
-                                </Button>
-                                <Button
+                                </SectionItem.Button>
+                                <SectionItem.Button
                                     size="small"
                                     iconLeft={CopyIcon}
                                     intent="neutral"
                                     onClick={handleCopy}
                                 >
                                     <Translation id="TR_COPY_TO_CLIPBOARD" />
-                                </Button>
+                                </SectionItem.Button>
                             </CopyButtonWrapper>
                         </ConfigBox>
                     </Column>
-                </ActionColumn>
-            </SectionItem>
+                }
+            />
+
             {isRegenerateModalOpen && (
                 <RegenerateTokenModal
                     onCancel={() => setIsRegenerateModalOpen(false)}

@@ -6,7 +6,7 @@ import { Anchor, SettingsAnchor } from '@suite/router';
 import { useServices } from '@suite-common/dependency-injection';
 import { injectDispatch } from '@suite-common/redux-utils';
 import { Switch, Tooltip } from '@trezor/components';
-import { ActionColumn, SectionItem, TextColumn } from '@trezor/product-components';
+import { SectionItem } from '@trezor/product-components';
 import { HELP_CENTER_PASSPHRASE_URL } from '@trezor/urls';
 
 import { applySettingsThunk } from 'src/actions/settings/deviceSettingsActions';
@@ -37,13 +37,10 @@ export const Passphrase = ({ isDeviceLocked }: PassphraseProps) => {
                     data-testid={anchorId}
                     ref={anchorRef}
                     shouldHighlight={shouldHighlight}
-                >
-                    <TextColumn
-                        title={<Translation id="TR_DEVICE_SETTINGS_PASSPHRASE_TITLE" />}
-                        description={<Translation id="TR_DEVICE_SETTINGS_PASSPHRASE_DESC" />}
-                        bottomContent={<LearnMoreButton url={HELP_CENTER_PASSPHRASE_URL} />}
-                    />
-                    <ActionColumn>
+                    title={<Translation id="TR_DEVICE_SETTINGS_PASSPHRASE_TITLE" />}
+                    description={<Translation id="TR_DEVICE_SETTINGS_PASSPHRASE_DESC" />}
+                    bottomContent={<LearnMoreButton url={HELP_CENTER_PASSPHRASE_URL} />}
+                    actions={
                         <Tooltip
                             isActive={isDeviceLocked}
                             content={
@@ -57,8 +54,8 @@ export const Passphrase = ({ isDeviceLocked }: PassphraseProps) => {
                                 isDisabled={isDeviceLocked}
                             />
                         </Tooltip>
-                    </ActionColumn>
-                </SectionItem>
+                    }
+                />
             )}
         </Anchor>
     );

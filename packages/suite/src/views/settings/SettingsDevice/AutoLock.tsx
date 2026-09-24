@@ -7,7 +7,7 @@ import { Anchor, SettingsAnchor } from '@suite/router';
 import { useServices } from '@suite-common/dependency-injection';
 import { injectDispatch } from '@suite-common/redux-utils';
 import { formatDurationStrict } from '@suite-common/suite-utils';
-import { ActionColumn, ActionSelect, SectionItem, TextColumn } from '@trezor/product-components';
+import { SectionItem } from '@trezor/product-components';
 
 import { applySettingsThunk } from 'src/actions/settings/deviceSettingsActions';
 import { useLocales } from 'src/hooks/suite';
@@ -64,13 +64,10 @@ export const AutoLock = ({ isDeviceLocked }: AutoLockProps) => {
                     data-testid={anchorId}
                     ref={anchorRef}
                     shouldHighlight={shouldHighlight}
-                >
-                    <TextColumn
-                        title={<Translation id="TR_DEVICE_SETTINGS_AUTO_LOCK" />}
-                        description={<Translation id="TR_DEVICE_SETTINGS_AUTO_LOCK_SUBHEADING" />}
-                    />
-                    <ActionColumn>
-                        <ActionSelect
+                    title={<Translation id="TR_DEVICE_SETTINGS_AUTO_LOCK" />}
+                    description={<Translation id="TR_DEVICE_SETTINGS_AUTO_LOCK_SUBHEADING" />}
+                    actions={
+                        <SectionItem.Select
                             placeholder=""
                             onChange={handleChange}
                             options={[AUTO_LOCK_OPTIONS]}
@@ -84,8 +81,8 @@ export const AutoLock = ({ isDeviceLocked }: AutoLockProps) => {
                             }
                             data-testid="@settings/auto-lock-select"
                         />
-                    </ActionColumn>
-                </SectionItem>
+                    }
+                />
             )}
         </Anchor>
     );

@@ -15,7 +15,7 @@ import {
     updateQuotaManagerBaseUrl,
 } from '@suite-common/suite-sync-quota-manager';
 import { Button, ButtonGroup, Checkbox, Code, Column, Input, Text } from '@trezor/components';
-import { ActionColumn, SectionItem, SettingsSection, TextColumn } from '@trezor/product-components';
+import { SectionItem, SettingsSection } from '@trezor/product-components';
 import { breakpoints } from '@trezor/theme';
 
 import { useSelector } from 'src/hooks/suite';
@@ -62,9 +62,9 @@ export const QuotaManagerSettings = () => {
 
     return (
         <SettingsSection hasVerticalLayout={hasContentBelowTabletWidth} title="Quota Manager">
-            <SectionItem>
-                <TextColumn title="Quota Manager URL" />
-                <ActionColumn>
+            <SectionItem
+                title="Quota Manager URL"
+                actions={
                     <Column gap={4}>
                         <Input
                             data-testid="@settings/debug/quota-manager-url-input"
@@ -82,6 +82,7 @@ export const QuotaManagerSettings = () => {
                                 </Button>
                             }
                         />
+
                         <Text typographyStyle="body-sm" intent="neutral" priority="secondary">
                             Default is: <Code>{defaultQuotaManagerUrl}</Code>
                         </Text>
@@ -128,11 +129,12 @@ export const QuotaManagerSettings = () => {
                             </Button>
                         </ButtonGroup>
                     </Column>
-                </ActionColumn>
-            </SectionItem>
-            <SectionItem>
-                <TextColumn title="Registered Devices" />
-                <ActionColumn>
+                }
+            />
+
+            <SectionItem
+                title="Registered Devices"
+                actions={
                     <Column gap={4}>
                         {registeredDevices.length === 0 ? (
                             <div>No devices registered.</div>
@@ -154,11 +156,12 @@ export const QuotaManagerSettings = () => {
                             ))
                         )}
                     </Column>
-                </ActionColumn>
-            </SectionItem>
-            <SectionItem>
-                <TextColumn title="Assigned Owner IDs" />
-                <ActionColumn>
+                }
+            />
+
+            <SectionItem
+                title="Assigned Owner IDs"
+                actions={
                     <Column gap={4}>
                         {ownersAllowance.length === 0 ? (
                             <div>No owner IDs assigned.</div>
@@ -175,22 +178,24 @@ export const QuotaManagerSettings = () => {
                             ))
                         )}
                     </Column>
-                </ActionColumn>
-            </SectionItem>
-            <SectionItem>
-                <TextColumn title="Enforce Quota Manager for custom relay" />
-                <ActionColumn>
+                }
+            />
+
+            <SectionItem
+                title="Enforce Quota Manager for custom relay"
+                actions={
                     <Checkbox
                         data-testid="@settings/debug/quota-manager-enforce-for-custom-relay-checkbox"
                         isChecked={enforceQuotaManager}
                         onChange={onToggleEnforceQuotaManager}
                     />
-                </ActionColumn>
-            </SectionItem>
+                }
+            />
+
             <SectionItem>
-                <Button onClick={onEraseFetchedData} intent="critical">
+                <SectionItem.Button onClick={onEraseFetchedData} intent="critical">
                     Erase fetched data
-                </Button>
+                </SectionItem.Button>
             </SectionItem>
         </SettingsSection>
     );

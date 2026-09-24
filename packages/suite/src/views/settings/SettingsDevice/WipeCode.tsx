@@ -5,7 +5,7 @@ import { Anchor, SettingsAnchor } from '@suite/router';
 import { useServices } from '@suite-common/dependency-injection';
 import { selectIsDeviceProtectedByWipeCode } from '@suite-common/device';
 import { injectDispatch } from '@suite-common/redux-utils';
-import { ActionButton, ActionColumn, SectionItem, TextColumn } from '@trezor/product-components';
+import { SectionItem } from '@trezor/product-components';
 import { HELP_CENTER_WIPE_CODE_URL } from '@trezor/urls';
 
 import { changeWipeCodeThunk } from 'src/actions/settings/deviceSettingsActions';
@@ -42,35 +42,13 @@ export const WipeCode = ({ isDeviceLocked }: Props) => {
                     data-testid={anchorId}
                     ref={anchorRef}
                     shouldHighlight={shouldHighlight}
-                >
-                    <TextColumn
-                        title={<Translation id="TR_DEVICE_SETTINGS_WIPE_CODE_TITLE" />}
-                        description={<Translation id="TR_DEVICE_SETTINGS_WIPE_CODE_DESC" />}
-                        bottomContent={<LearnMoreButton url={HELP_CENTER_WIPE_CODE_URL} />}
-                    />
-
-                    <ActionColumn>
-                        <ActionButton
-                            onClick={enableWipeCode}
-                            isDisabled={isDeviceLocked}
-                            intent="critical"
-                            isTooltipActive={isDeviceLocked}
-                            tooltipContent={
-                                <Translation id="TR_SETTINGS_DEVICE_BANNER_TITLE_REMEMBERED" />
-                            }
-                        >
-                            <Translation
-                                id={
-                                    isDeviceProtectedByWipeCode
-                                        ? 'TR_CHANGE_WIPE_CODE'
-                                        : 'TR_SETUP_WIPE_CODE'
-                                }
-                            />
-                        </ActionButton>
-
-                        {isDeviceProtectedByWipeCode && (
-                            <ActionButton
-                                onClick={disableWipeCode}
+                    title={<Translation id="TR_DEVICE_SETTINGS_WIPE_CODE_TITLE" />}
+                    description={<Translation id="TR_DEVICE_SETTINGS_WIPE_CODE_DESC" />}
+                    bottomContent={<LearnMoreButton url={HELP_CENTER_WIPE_CODE_URL} />}
+                    actions={
+                        <>
+                            <SectionItem.Button
+                                onClick={enableWipeCode}
                                 isDisabled={isDeviceLocked}
                                 intent="critical"
                                 isTooltipActive={isDeviceLocked}
@@ -78,11 +56,30 @@ export const WipeCode = ({ isDeviceLocked }: Props) => {
                                     <Translation id="TR_SETTINGS_DEVICE_BANNER_TITLE_REMEMBERED" />
                                 }
                             >
-                                <Translation id="TR_REMOVE_WIPE_CODE" />
-                            </ActionButton>
-                        )}
-                    </ActionColumn>
-                </SectionItem>
+                                <Translation
+                                    id={
+                                        isDeviceProtectedByWipeCode
+                                            ? 'TR_CHANGE_WIPE_CODE'
+                                            : 'TR_SETUP_WIPE_CODE'
+                                    }
+                                />
+                            </SectionItem.Button>
+                            {isDeviceProtectedByWipeCode && (
+                                <SectionItem.Button
+                                    onClick={disableWipeCode}
+                                    isDisabled={isDeviceLocked}
+                                    intent="critical"
+                                    isTooltipActive={isDeviceLocked}
+                                    tooltipContent={
+                                        <Translation id="TR_SETTINGS_DEVICE_BANNER_TITLE_REMEMBERED" />
+                                    }
+                                >
+                                    <Translation id="TR_REMOVE_WIPE_CODE" />
+                                </SectionItem.Button>
+                            )}
+                        </>
+                    }
+                />
             )}
         </Anchor>
     );

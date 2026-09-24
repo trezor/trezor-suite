@@ -2,7 +2,7 @@ import { useState } from 'react';
 
 import { LearnMoreButton } from '@suite/external-links';
 import { Translation } from '@suite/intl';
-import { ActionButton, ActionColumn, SectionItem, TextColumn } from '@trezor/product-components';
+import { SectionItem } from '@trezor/product-components';
 import { HELP_CENTER_DEVICE_AUTHENTICATION } from '@trezor/urls';
 
 import { AuthenticateDeviceModal } from './AuthenticateDevice/AuthenticateDeviceModal';
@@ -19,14 +19,12 @@ export const AuthenticateDevice = ({ isDeviceLocked }: AuthenticateDeviceProps) 
     return (
         <>
             {isModalOpen && <AuthenticateDeviceModal handleClose={() => setIsModalOpen(false)} />}
-            <SectionItem>
-                <TextColumn
-                    title={<Translation id="TR_CHECK_DEVICE_ORIGIN_TITLE" />}
-                    description={<Translation id="TR_CHECK_DEVICE_ORIGIN_DESCRIPTION" />}
-                    bottomContent={<LearnMoreButton url={HELP_CENTER_DEVICE_AUTHENTICATION} />}
-                />
-                <ActionColumn>
-                    <ActionButton
+            <SectionItem
+                title={<Translation id="TR_CHECK_DEVICE_ORIGIN_TITLE" />}
+                description={<Translation id="TR_CHECK_DEVICE_ORIGIN_DESCRIPTION" />}
+                bottomContent={<LearnMoreButton url={HELP_CENTER_DEVICE_AUTHENTICATION} />}
+                actions={
+                    <SectionItem.Button
                         intent="brand"
                         onClick={handleClick}
                         isDisabled={isDeviceLocked}
@@ -36,9 +34,9 @@ export const AuthenticateDevice = ({ isDeviceLocked }: AuthenticateDeviceProps) 
                         }
                     >
                         <Translation id="TR_CHECK_ORIGIN" />
-                    </ActionButton>
-                </ActionColumn>
-            </SectionItem>
+                    </SectionItem.Button>
+                }
+            />
         </>
     );
 };
