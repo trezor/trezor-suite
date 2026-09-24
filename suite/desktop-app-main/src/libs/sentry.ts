@@ -18,8 +18,33 @@ interface InitSentryParams {
     store: Store;
 }
 
+/**
+ * @sentry/electron attaches each renderer's last URL to Electron breadcrumbs and renderer crash reports.
+ * Suite's own window is normalized to `app:///`; any other URL is a page the in-app browser loaded,
+ * which can be a URL the user typed or one carrying an address or an OAuth code.
+ */
+const isSuiteRendererUrl = (url: unknown) => typeof url === 'string' && url.startsWith('app:///');
+
 const ELECTRON_MAIN_SENTRY_CONFIG = {
     ...SENTRY_CONFIG,
+    beforeBreadcrumb: (breadcrumb, hint) => {
+        if (breadcrumb.category === 'electron' && !isSuiteRendererUrl(breadcrumb.data?.url)) {
+            delete breadcrumb.data?.url;
+        }
+
+        return SENTRY_CONFIG.beforeBreadcrumb
+            ? SENTRY_CONFIG.beforeBreadcrumb(breadcrumb, hint)
+            : breadcrumb;
+    },
+    beforeSend: event => {
+        const electronContext = event.contexts?.electron;
+
+        if (electronContext && !isSuiteRendererUrl(electronContext.crashed_url)) {
+            delete electronContext.crashed_url;
+        }
+
+        return SENTRY_CONFIG.beforeSend(event);
+    },
     // Force turn off Sentry in offline mode, because prevent noise from Sentry (blocked domains).
     enabled: SENTRY_CONFIG.enabled && !hasSwitch('offline-mode'),
     // Important: must be a function to keep default Sentry integrations; an array would mean ONLY those specific integrations.

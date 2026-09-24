@@ -47,18 +47,40 @@ const fixtures: { description: string; event: AppsEmbeddingEvent; expected: stri
         expected: 'window.open opened in an app window — https://example.com/popup',
     },
     {
-        description: 'window-open-attempt opened in the system browser',
-        event: {
-            type: 'window-open-attempt',
-            url: 'https://example.com/popup',
-            outcome: 'opened-in-system-browser',
-        },
-        expected: 'window.open opened in the system browser — https://example.com/popup',
-    },
-    {
         description: 'navigation-blocked',
         event: { type: 'navigation-blocked', url: 'https://elsewhere.example/' },
         expected: 'navigation blocked — https://elsewhere.example/',
+    },
+    {
+        description: 'requested http-auth',
+        event: { type: 'http-auth', origin: 'https://guides.example', outcome: 'requested' },
+        expected: 'HTTP auth requested — https://guides.example',
+    },
+    {
+        description: 'submitted http-auth',
+        event: { type: 'http-auth', origin: 'https://guides.example', outcome: 'submitted' },
+        expected: 'HTTP auth credentials submitted — https://guides.example',
+    },
+    {
+        description: 'cancelled http-auth',
+        event: { type: 'http-auth', origin: 'https://guides.example', outcome: 'cancelled' },
+        expected: 'HTTP auth cancelled by the user — https://guides.example',
+    },
+    {
+        description: 'dismissed http-auth',
+        event: { type: 'http-auth', origin: 'https://guides.example', outcome: 'dismissed' },
+        expected: 'HTTP auth dismissed — https://guides.example',
+    },
+    {
+        description: 'refused http-auth with the reason',
+        event: {
+            type: 'http-auth',
+            origin: 'https://ads.example',
+            outcome: 'refused',
+            detail: 'the challenge did not come from the main frame',
+        },
+        expected:
+            'HTTP auth refused by the host — https://ads.example (the challenge did not come from the main frame)',
     },
     {
         description: 'closed',

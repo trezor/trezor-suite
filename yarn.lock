@@ -12005,6 +12005,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@suite-common/schemas@workspace:suite-common/schemas"
   dependencies:
+    "@trezor/utils": "workspace:*"
     zod: "npm:4.6.5"
   languageName: unknown
   linkType: soft
@@ -16143,15 +16144,20 @@ __metadata:
   resolution: "@suite/apps-embedding-demo@workspace:suite/apps-embedding-demo"
   dependencies:
     "@suite-common/apps-embedding": "workspace:*"
+    "@suite-common/react-query": "workspace:*"
     "@suite/apps-embedding-web": "workspace:*"
     "@suite/debug": "workspace:*"
+    "@suite/desktop-app-api": "workspace:*"
     "@suite/settings": "workspace:*"
     "@trezor/components": "workspace:*"
     "@trezor/dependency-injection": "workspace:*"
     "@trezor/env-utils": "workspace:*"
+    "@trezor/icons": "workspace:*"
     "@trezor/product-components": "workspace:*"
+    "@trezor/react-utils": "workspace:*"
     "@trezor/redux-utils": "workspace:*"
     "@trezor/type-utils": "workspace:*"
+    "@trezor/utils": "workspace:*"
     react: "npm:19.2.3"
     react-redux: "npm:9.3.0"
     styled-components: "npm:^6.5.3"
@@ -16305,6 +16311,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@suite/desktop-app-api-electron@workspace:suite/desktop-app-api-electron"
   dependencies:
+    "@suite-common/apps-embedding": "workspace:*"
     "@suite/desktop-app-api": "workspace:*"
     electron: "npm:43.2.0"
   languageName: unknown
@@ -16314,10 +16321,13 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@suite/desktop-app-api@workspace:suite/desktop-app-api"
   dependencies:
+    "@suite-common/apps-embedding": "workspace:*"
     "@suite-common/platform-encryption": "workspace:*"
+    "@suite-common/schemas": "workspace:*"
     "@suite/tor-types": "workspace:*"
     "@trezor/dependency-injection": "workspace:*"
     "@trezor/type-utils": "workspace:*"
+    zod: "npm:4.6.5"
   languageName: unknown
   linkType: soft
 
@@ -16329,6 +16339,7 @@ __metadata:
     "@electron/notarize": "npm:3.1.1"
     "@sentry/electron": "npm:^7.16.0"
     "@sentry/webpack-plugin": "npm:^5.4.0"
+    "@suite-common/apps-embedding": "workspace:*"
     "@suite-common/connect-popup": "workspace:*"
     "@suite-common/delegated-identity-key": "workspace:*"
     "@suite-common/platform-encryption": "workspace:*"

@@ -17,6 +17,10 @@ export type {
     Status,
     TorSettings,
     TraySettings,
+    InAppBrowserBounds,
+    InAppBrowserHostEvent,
+    InAppBrowserOpenPayload,
 } from './messages';
+export { inAppBrowserBounds, inAppBrowserOpenPayload } from './messages';
 
 export { type DesktopApiDep, injectDesktopApi } from './desktopApiDependency';

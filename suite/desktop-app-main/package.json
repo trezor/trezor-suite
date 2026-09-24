@@ -15,6 +15,7 @@
     },
     "dependencies": {
         "@sentry/electron": "^7.16.0",
+        "@suite-common/apps-embedding": "workspace:*",
         "@suite-common/connect-popup": "workspace:*",
         "@suite-common/delegated-identity-key": "workspace:*",
         "@suite-common/platform-encryption": "workspace:*",

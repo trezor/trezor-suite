@@ -164,7 +164,10 @@ const config: webpack.Configuration = {
     },
     optimization: {
         splitChunks: {
-            chunks: 'all',
+            // The preload runs sandboxed (`sandbox: true` in src/libs/createMainWindow.ts), where
+            // `require` loads only a few built-in modules and never a file, so a chunk split out of
+            // it can never load.
+            chunks: chunk => chunk.name !== 'preload',
             name(_: any, chunks: any) {
                 if (chunks.every((item: any) => item.name)) {
                     return chunks.length > 1

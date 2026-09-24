@@ -1,7 +1,6 @@
 {
     "extends": "../../../tsconfig.base.json",
     "compilerOptions": {
-        "watch": false,
         "preserveWatchOutput": true,
         "outDir": "../dist",
         "noEmit": false,

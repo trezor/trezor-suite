@@ -5,18 +5,25 @@
         {
             "path": "../../suite-common/apps-embedding"
         },
+        {
+            "path": "../../suite-common/react-query"
+        },
         { "path": "../apps-embedding-web" },
         { "path": "../debug" },
+        { "path": "../desktop-app-api" },
         { "path": "../settings" },
         { "path": "../../packages/components" },
         {
             "path": "../../packages/dependency-injection"
         },
         { "path": "../../packages/env-utils" },
+        { "path": "../../packages/icons" },
         {
             "path": "../../packages/product-components"
         },
+        { "path": "../../packages/react-utils" },
         { "path": "../../packages/redux-utils" },
-        { "path": "../../packages/type-utils" }
+        { "path": "../../packages/type-utils" },
+        { "path": "../../packages/utils" }
     ]
 }

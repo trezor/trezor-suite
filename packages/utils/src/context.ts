@@ -46,5 +46,11 @@ export function createContext<T>() {
         });
     }
 
-    return { set, get, reset } as const;
+    async function insert(inserter: (ctx: T) => Partial<T>) {
+        const currentContext = await get();
+        const newContext = Object.assign({}, currentContext, inserter(currentContext));
+        set(newContext);
+    }
+
+    return { set, get, reset, insert } as const;
 }
