@@ -4,25 +4,25 @@ import { useNavigation } from '@react-navigation/native';
 
 import { LANGUAGES, type Locale } from '@suite-common/suite-types';
 import { useAlert } from '@suite-native/alerts';
+import { useDeviceReadyEvents } from '@suite-native/device-authorization';
 import { requestPrioritizedDeviceAccess } from '@suite-native/device-mutex';
 import { useTranslate } from '@suite-native/intl';
 import {
     type DeviceSettingsStackParamList,
-    type DeviceSettingsStackRoutes,
-    type RootStackParamList,
-    type StackToStackCompositeNavigationProps,
+    DeviceSettingsStackRoutes,
+    type StackNavigationProps,
 } from '@suite-native/navigation';
 import { useToast } from '@suite-native/toasts';
 import TrezorConnect from '@trezor/connect';
 
-type NavigationProps = StackToStackCompositeNavigationProps<
+type NavigationProps = StackNavigationProps<
     DeviceSettingsStackParamList,
-    DeviceSettingsStackRoutes.FirmwareLanguageStack,
-    RootStackParamList
+    DeviceSettingsStackRoutes.FirmwareLanguageStack
 >;
 
 export const useFirmwareLanguage = () => {
     const navigation = useNavigation<NavigationProps>();
+    const { waitForDevice } = useDeviceReadyEvents();
 
     const { showToast } = useToast();
     const { showAlert } = useAlert();
@@ -30,6 +30,13 @@ export const useFirmwareLanguage = () => {
 
     const changeFirmwareLanguage = useCallback(
         async (language: Locale) => {
+            navigation.navigate(DeviceSettingsStackRoutes.FirmwareLanguageStack);
+
+            const isDeviceReady = await waitForDevice();
+            if (!isDeviceReady) {
+                return;
+            }
+
             const result = await requestPrioritizedDeviceAccess(() =>
                 TrezorConnect.changeLanguage({ language }),
             );
@@ -66,7 +73,7 @@ export const useFirmwareLanguage = () => {
                 }
             }
         },
-        [navigation, showToast, showAlert, translate],
+        [navigation, waitForDevice, showToast, showAlert, translate],
     );
 
     return { changeFirmwareLanguage };
