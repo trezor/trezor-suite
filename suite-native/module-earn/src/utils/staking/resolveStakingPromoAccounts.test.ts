@@ -120,14 +120,24 @@ describe('resolveStakingPromoAccounts', () => {
             ).toEqual({ type: 'desktop-only' });
         });
 
-        it('marks Cardano as desktop only when there is no account', () => {
+        it('asks to enable Cardano without accounts before pointing to desktop', () => {
             expect(
                 resolveStakingPromoAccounts({
                     symbol: asNetworkSymbol('ada'),
                     accounts: [],
                     isDeviceInViewOnlyMode: false,
                 }),
-            ).toEqual({ type: 'desktop-only' });
+            ).toEqual({ type: 'enable-network' });
+        });
+
+        it('asks to enable a network without a mobile staking flow when it has no accounts', () => {
+            expect(
+                resolveStakingPromoAccounts({
+                    symbol: asNetworkSymbol('trx'),
+                    accounts: [createEthereumAccount('eth1')],
+                    isDeviceInViewOnlyMode: false,
+                }),
+            ).toEqual({ type: 'enable-network' });
         });
     });
 
@@ -190,6 +200,16 @@ describe('resolveStakingPromoAccounts', () => {
                     isDeviceInViewOnlyMode: true,
                 }),
             ).toEqual({ type: 'desktop-only' });
+        });
+
+        it('still asks to enable a network without a mobile staking flow when it has no accounts', () => {
+            expect(
+                resolveStakingPromoAccounts({
+                    symbol: asNetworkSymbol('trx'),
+                    accounts: [],
+                    isDeviceInViewOnlyMode: true,
+                }),
+            ).toEqual({ type: 'enable-network' });
         });
     });
 });

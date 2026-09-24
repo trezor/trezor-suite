@@ -25,14 +25,18 @@ export const resolveStakingPromoAccounts = ({
 }: ResolveStakingPromoAccountsParams): StakingPromoAccountsResolution => {
     const networkSupport = getMobileStakingSupport(symbol);
 
-    if (networkSupport === null || networkSupport === 'desktop-only') {
+    if (networkSupport === null) {
         return { type: 'desktop-only' };
     }
 
     const accountsForSymbol = accounts.filter(account => account.symbol === symbol);
 
-    if (networkSupport === 'manage' && accountsForSymbol.length === 0) {
+    if (accountsForSymbol.length === 0) {
         return { type: 'enable-network' };
+    }
+
+    if (networkSupport === 'desktop-only') {
+        return { type: 'desktop-only' };
     }
 
     const support: NavigableStakingSupport = isDeviceInViewOnlyMode ? 'view' : networkSupport;
