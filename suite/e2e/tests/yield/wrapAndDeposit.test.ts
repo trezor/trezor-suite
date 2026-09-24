@@ -14,6 +14,7 @@ import {
 import { createTestAnnotation } from '../../support/reporters/annotations';
 
 const { wethPrime } = YIELD_VAULTS;
+const ETH_ACCOUNT_NAME = 'Ethereum #1';
 const DEPOSIT_AMOUNT = '10';
 const DEPOSIT_AMOUNT_FORMATTED = '10.00';
 const YIELD_WETH_VAULT_DISPLAY_NAME = ['Trezor Steakhouse', '\n', 'ETH Prime Vault'];
@@ -86,7 +87,7 @@ test.describe('eth yield deposit with wrap', { tag: ['@webOnly', '@T3W1', '@T3T1
             });
 
             await test.step('Wrap amount is validated', async () => {
-                await expect(yieldFlowSection.wrapButton).toBeVisible();
+                await expect(yieldFlowSection.wrapButton).toBeDisabled();
                 await expect(yieldFlowSection.approveButton).toBeHidden();
                 await expect(yieldFlowSection.depositButton).toBeHidden();
 
@@ -94,7 +95,6 @@ test.describe('eth yield deposit with wrap', { tag: ['@webOnly', '@T3W1', '@T3T1
                 await expect(yieldFlowSection.summaryLabel).toContainTranslation(
                     'TR_EARN_YIELD_AVAILABLE_TO_WRAP',
                 );
-                await expect(yieldFlowSection.wrapButton).toBeDisabled();
                 await yieldFlowSection.amountInput.fill('1234.1');
                 await expect(yieldFlowSection.insufficientFundsWarning).toContainTranslation(
                     'AMOUNT_IS_NOT_ENOUGH',
@@ -149,6 +149,9 @@ test.describe('eth yield deposit with wrap', { tag: ['@webOnly', '@T3W1', '@T3T1
                     },
                 });
                 await device.pressYes();
+                await expect(devicePrompt.cryptoAmountWithSymbolOf('amount')).toHaveText(
+                    `${DEPOSIT_AMOUNT} ETH`,
+                );
                 await expect(device).toShowOnDisplay({
                     T3W1: {
                         header: { title: 'Confirm contract' },
@@ -168,7 +171,9 @@ test.describe('eth yield deposit with wrap', { tag: ['@webOnly', '@T3W1', '@T3T1
                 await devicePrompt.waitForFinalPromptAndConfirm();
                 await devicePrompt.sendButton.click();
 
-                await expect(toastSection.wrapped).toBeVisible();
+                await expect(toastSection.wrappedMessage).toHaveTranslation(
+                    'TOAST_TX_WRAP_BROADCASTED',
+                );
                 await expect(toastSection.wrappedSendAmount).toHaveText(DEPOSIT_AMOUNT_FORMATTED);
                 await expect(toastSection.wrappedReceiveAmount).toHaveText(
                     DEPOSIT_AMOUNT_FORMATTED,
@@ -188,8 +193,7 @@ test.describe('eth yield deposit with wrap', { tag: ['@webOnly', '@T3W1', '@T3T1
             });
 
             await test.step('Approve WETH spending', async () => {
-                // The confirmed wrap advances the wizard to the approve step.
-                await expect(yieldFlowSection.approveButton).toBeVisible();
+                await expect(yieldFlowSection.approveButton).toBeEnabled();
                 await expect(yieldFlowSection.wrapButton).toBeHidden();
                 await expect(yieldFlowSection.depositButton).toBeHidden();
 
@@ -219,6 +223,9 @@ test.describe('eth yield deposit with wrap', { tag: ['@webOnly', '@T3W1', '@T3T1
                     },
                 });
                 await device.pressYes();
+                await expect(devicePrompt.cryptoAmountWithSymbolOf('amount-amount')).toHaveText(
+                    `${DEPOSIT_AMOUNT} WETH`,
+                );
                 await expect(device).toShowOnDisplay({
                     T3W1: {
                         header: { title: 'Token approval' },
@@ -254,7 +261,7 @@ test.describe('eth yield deposit with wrap', { tag: ['@webOnly', '@T3W1', '@T3T1
                 await devicePrompt.waitForFinalPromptAndConfirm();
                 await devicePrompt.sendButton.click();
 
-                await expect(toastSection.approved).toBeVisible();
+                await expect(toastSection.approvedMessage).toHaveTranslation('TOAST_TX_APPROVED');
                 await expect(toastSection.approvedAmount).toHaveText(
                     `${DEPOSIT_AMOUNT_FORMATTED}WETH`,
                 );
@@ -279,7 +286,7 @@ test.describe('eth yield deposit with wrap', { tag: ['@webOnly', '@T3W1', '@T3T1
             await test.step('Deposit WETH', async () => {
                 blockbookMock.setBroadcastTxid(DEPOSIT_TXID);
 
-                await expect(yieldFlowSection.depositButton).toBeVisible();
+                await expect(yieldFlowSection.depositButton).toBeEnabled();
                 await expect(yieldFlowSection.approveButton).toBeHidden();
                 await expect(yieldFlowSection.approvedAmount).toHaveText(`${DEPOSIT_AMOUNT} WETH`);
 
@@ -293,14 +300,13 @@ test.describe('eth yield deposit with wrap', { tag: ['@webOnly', '@T3W1', '@T3T1
                 await expect(yieldFlowSection.depositButton).toBeDisabled();
 
                 await yieldFlowSection.modifyApprovalButton.click();
-                await expect(yieldFlowSection.approveButton).toBeVisible();
+                await expect(yieldFlowSection.approveButton).toBeEnabled();
                 await expect(yieldFlowSection.depositButton).toBeHidden();
                 await expect(yieldFlowSection.amountInput).toHaveValue(DEPOSIT_AMOUNT);
                 await expect(yieldFlowSection.approvedAmount).toHaveText(`${DEPOSIT_AMOUNT} WETH`);
-                await expect(yieldFlowSection.approveButton).toBeEnabled();
                 await yieldFlowSection.approveSkipButton.click();
 
-                await expect(yieldFlowSection.depositButton).toBeVisible();
+                await expect(yieldFlowSection.depositButton).toBeEnabled();
                 await expect(yieldFlowSection.approveButton).toBeHidden();
                 await expect(yieldFlowSection.amountInput).toHaveValue(DEPOSIT_AMOUNT);
                 await expect(yieldFlowSection.approvalTooLowWarning).toBeHidden();
@@ -336,6 +342,9 @@ test.describe('eth yield deposit with wrap', { tag: ['@webOnly', '@T3W1', '@T3T1
                     },
                 });
                 await device.pressYes();
+                await expect(devicePrompt.cryptoAmountWithSymbolOf('amount')).toHaveText(
+                    `${DEPOSIT_AMOUNT} WETH`,
+                );
                 await expect(device).toShowOnDisplay({
                     T3W1: {
                         header: { title: 'Deposit' },
@@ -383,7 +392,10 @@ test.describe('eth yield deposit with wrap', { tag: ['@webOnly', '@T3W1', '@T3T1
                 });
                 await devicePrompt.sendButton.click();
 
-                await expect(toastSection.yieldDeposit).toBeVisible();
+                await expect(toastSection.yieldDepositMessage).toHaveTranslation(
+                    'TOAST_TX_YIELD_DEPOSIT',
+                    { values: { account: ETH_ACCOUNT_NAME } },
+                );
                 await expect(yieldFlowSection.flowCompleteHeading).toHaveTranslation(
                     'TR_EARN_YIELD_DEPOSIT_COMPLETE',
                 );

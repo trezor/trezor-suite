@@ -26,7 +26,7 @@ export class DevicePrompt {
             | 'swap_intent'
             | 'recipient_name',
     ) => this.page.getByTestId(`@modal/output-${section}`).getByTestId('@modal/output-value');
-    readonly cryptoAmountWithSymbolOf = (section: 'amount' | 'fee' | 'total') =>
+    readonly cryptoAmountWithSymbolOf = (section: 'amount' | 'amount-amount' | 'fee' | 'total') =>
         this.page
             .getByTestId(`@modal/output-${section}`)
             .getByTestId('@modal/crypto-amount-with-symbol');

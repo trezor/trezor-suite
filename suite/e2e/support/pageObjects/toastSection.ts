@@ -6,10 +6,12 @@ import { expect } from '../testExtends/customMatchers';
 
 export class ToastSection {
     readonly approved: Locator;
+    readonly approvedMessage: Locator;
     readonly approvedAmount: Locator;
     readonly txSent: Locator;
     readonly yieldDeposit: Locator;
-    readonly wrapped: Locator;
+    readonly yieldDepositMessage: Locator;
+    readonly wrappedMessage: Locator;
     readonly wrappedSendAmount: Locator;
     readonly wrappedReceiveAmount: Locator;
     readonly toast = (preset: ActivityPreset): Locator => this.page.getByTestId(`@toast/${preset}`);
@@ -18,10 +20,12 @@ export class ToastSection {
 
     constructor(private readonly page: Page) {
         this.approved = this.page.getByTestId('@toast/tx-approved');
+        this.approvedMessage = this.page.getByTestId('@toast/tx-approved/message');
         this.approvedAmount = this.page.getByTestId('@toast/tx-approved/amount');
         this.txSent = this.page.getByTestId('@toast/tx-sent');
         this.yieldDeposit = this.page.getByTestId('@toast/tx-yield-deposit');
-        this.wrapped = this.page.getByTestId('@toast/tx-wrap');
+        this.yieldDepositMessage = this.page.getByTestId('@toast/tx-yield-deposit/message');
+        this.wrappedMessage = this.page.getByTestId('@toast/tx-wrap/message');
         this.wrappedSendAmount = this.page.getByTestId('@toast/tx-wrap/send-amount');
         this.wrappedReceiveAmount = this.page.getByTestId('@toast/tx-wrap/receive-amount');
     }
