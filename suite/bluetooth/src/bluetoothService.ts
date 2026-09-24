@@ -10,16 +10,17 @@ import { type BluetoothDevice, bluetoothIpc } from '@trezor/transport-bluetooth'
 import { resolveAfter } from '@trezor/utils';
 
 import { type DesktopBluetoothDevice, fromBluetoothDevice } from './DesktopBluetoothDevice';
+import { type BackgroundScan } from './bluetoothBackgroundScan';
 import { bluetoothConnectDeviceThunk } from './bluetoothConnectDeviceThunk';
-import {
-    type BluetoothService,
-    type BluetoothServiceDeps,
-    type BluetoothServiceInternalDeps,
-} from './bluetoothServiceTypes';
+import { type BluetoothService, type BluetoothServiceDeps } from './bluetoothServiceTypes';
 import { selectConnectingDevices } from './desktopBluetoothSelectors';
 
-const attemptDeviceConnect = async (deps: BluetoothServiceDeps, device: DesktopBluetoothDevice) => {
-    const { getState, dispatch } = deps;
+type AttemptDeviceConnectDeps = Pick<BluetoothServiceDeps, 'getState' | 'dispatch'> & {
+    device: DesktopBluetoothDevice;
+};
+
+const attemptDeviceConnect = async (deps: AttemptDeviceConnectDeps) => {
+    const { getState, dispatch, device } = deps;
     const knownDevice = selectKnownDevices<DesktopBluetoothDevice>(getState()).find(
         d => d.id === device.id,
     );
@@ -82,11 +83,12 @@ const attemptDeviceConnect = async (deps: BluetoothServiceDeps, device: DesktopB
     }
 };
 
-const setupAutoReconnect = (
-    deps: BluetoothServiceDeps,
-    { backgroundScan }: BluetoothServiceInternalDeps,
-) => {
-    const { getState } = deps;
+type SetupAutoReconnectDeps = Pick<BluetoothServiceDeps, 'getState' | 'dispatch'> & {
+    backgroundScan: BackgroundScan;
+};
+
+const setupAutoReconnect = (deps: SetupAutoReconnectDeps) => {
+    const { getState, backgroundScan } = deps;
     // Wait for 3 seconds or earlier if a connected device is detected.
     // The delay shouldn't be too perceptible, since other things are also loading at app start.
     // If user connects a device via USB, we don't start the BT connection,
@@ -104,7 +106,7 @@ const setupAutoReconnect = (
         // Start attempting to connect to known BT devices
         bluetoothIpc.on('device-update', async (deviceIpc: BluetoothDevice) => {
             const device = fromBluetoothDevice(deviceIpc);
-            await attemptDeviceConnect(deps, device);
+            await attemptDeviceConnect({ ...deps, device });
         });
 
         // If we already have some paired devices, we assume user will have a BT device,
@@ -118,7 +120,7 @@ const setupAutoReconnect = (
 
 export const createBluetoothService = (
     deps: BluetoothServiceDeps,
-    internalDeps: BluetoothServiceInternalDeps,
+    internalDeps: { backgroundScan: BackgroundScan },
 ): BluetoothService => {
     let inited = false;
 
@@ -129,7 +131,7 @@ export const createBluetoothService = (
             }
             inited = true;
 
-            return setupAutoReconnect(deps, internalDeps);
+            return setupAutoReconnect({ ...deps, backgroundScan: internalDeps.backgroundScan });
         },
         restartBackgroundScan: () => {
             internalDeps.backgroundScan.restartIfNeeded();

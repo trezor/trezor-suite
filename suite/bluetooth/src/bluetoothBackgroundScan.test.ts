@@ -10,8 +10,12 @@ import { type IpcResponse, bluetoothIpc } from '@trezor/transport-bluetooth';
 import { createDeferred } from '@trezor/utils';
 
 import { type DesktopBluetoothDevice } from './DesktopBluetoothDevice';
-import { type BackgroundScanDeps, createBackgroundScan } from './bluetoothBackgroundScan';
-import { type BackgroundScan, type BluetoothServiceRootState } from './bluetoothServiceTypes';
+import {
+    type BackgroundScan,
+    type BackgroundScanDeps,
+    createBackgroundScan,
+} from './bluetoothBackgroundScan';
+import { type BluetoothServiceRootState } from './bluetoothServiceTypes';
 import { initialDesktopBluetoothState } from './desktopBluetoothReducer';
 
 const disconnectedDevice: DesktopBluetoothDevice = {
