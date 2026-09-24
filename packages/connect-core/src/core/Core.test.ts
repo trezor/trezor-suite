@@ -9,10 +9,13 @@ import { parseConnectSettings } from '@trezor/connect-common/src/data/connectSet
 import type { ConnectSettings } from '@trezor/connect-common/src/types/settings';
 import { type Deferred, createDeferred } from '@trezor/utils';
 
+import { onCallFirmwareUpdate } from './onCallFirmwareUpdate';
 import * as firmwareReleaseStore from '../data/firmwareReleaseStore';
 import { Device } from '../device/Device';
 
 import { Core, initCoreState } from './index';
+
+jest.mock('./onCallFirmwareUpdate', () => ({ onCallFirmwareUpdate: jest.fn() }));
 
 // `import * as` against a CJS-transpiled module gives non-configurable property
 // bindings, so jest.spyOn cannot replace `init` directly. Wrap it in a jest.fn
@@ -307,5 +310,193 @@ describe('Core calls during device handshakes', () => {
             }),
         ]);
         expect(runSpy).not.toHaveBeenCalled();
+    });
+
+    describe('firmwareUpdate', () => {
+        const callFirmwareUpdate = async (device?: DeviceIdentity) => {
+            core.handleMessage({
+                type: CORE_CALL,
+                id: 'firmware-call',
+                payload: { method: 'firmwareUpdate', callId, device },
+            });
+            await jest.advanceTimersByTimeAsync(0);
+        };
+
+        beforeEach(() => {
+            jest.mocked(onCallFirmwareUpdate)
+                .mockReset()
+                .mockImplementation(({ params, context }) => {
+                    // Exercise selection, but stop before downloading or flashing firmware.
+                    context.selectDevice(params.device?.path);
+
+                    return Promise.resolve({
+                        versionCheck: true,
+                        bootloaderVersion: [2, 1, 0],
+                        installedVersion: [2, 9, 0],
+                        binaryVersion: [2, 9, 0],
+                    });
+                });
+        });
+
+        it.each(['complete', 'cancel'] as const)(
+            'waits for initial transport enumeration (%s)',
+            async outcome => {
+                core.dispose();
+                const enumeration = createDeferred<{
+                    success: true;
+                    payload: { path: string }[];
+                }>();
+                const actual: typeof firmwareReleaseStore = jest.requireActual(
+                    '../data/firmwareReleaseStore',
+                );
+                jest.mocked(firmwareReleaseStore.init).mockImplementationOnce(
+                    (channel, _onlyLocal, initialize) => actual.init(channel, true, initialize),
+                );
+                core = new Core();
+                await core.init(
+                    getSettings({
+                        transports: [createTestTransport({ enumerate: () => enumeration.promise })],
+                        transportReconnect: true,
+                    }),
+                    event => events.push(event),
+                );
+
+                try {
+                    await callFirmwareUpdate();
+                    expect(onCallFirmwareUpdate).not.toHaveBeenCalled();
+                    expect(getResponses()).toHaveLength(0);
+                    if (outcome === 'cancel') {
+                        core.handleMessage({ type: CORE_CALL_CANCEL, payload: { callId } });
+                        await jest.advanceTimersByTimeAsync(0);
+                        expect(getResponses()).toEqual([
+                            expect.objectContaining({
+                                success: false,
+                                error: expect.objectContaining({ code: 'Method_Cancel' }),
+                            }),
+                        ]);
+                    }
+                } finally {
+                    enumeration.resolve({ success: true, payload: [{ path: '1' }] });
+                    await jest.advanceTimersByTimeAsync(1000);
+                }
+
+                if (outcome === 'complete') {
+                    expect(onCallFirmwareUpdate).toHaveBeenCalledTimes(1);
+                    expect(getResponses()).toEqual([expect.objectContaining({ success: true })]);
+                } else {
+                    expect(onCallFirmwareUpdate).not.toHaveBeenCalled();
+                    expect(getResponses()).toHaveLength(1);
+                }
+            },
+        );
+
+        it('waits for the requested device handshake', async () => {
+            const handshake = createDeferred();
+            handshakes.set('1', handshake);
+            await connectDevices('1');
+            await callFirmwareUpdate({ path: getDevice('1').getUniquePath() });
+            expect(onCallFirmwareUpdate).not.toHaveBeenCalled();
+            expect(getResponses()).toHaveLength(0);
+
+            handshake.resolve();
+            await jest.advanceTimersByTimeAsync(0);
+
+            expect(onCallFirmwareUpdate).toHaveBeenCalledTimes(1);
+            expect(getResponses()).toEqual([expect.objectContaining({ success: true })]);
+        });
+
+        it('does not block an explicitly selected ready device on another handshake', async () => {
+            await connectDevices('1');
+            handshakes.set('2', createDeferred());
+            await connectDevices('1', '2');
+            await callFirmwareUpdate({ path: getDevice('1').getUniquePath() });
+
+            expect(onCallFirmwareUpdate).toHaveBeenCalledTimes(1);
+            expect(getResponses()).toEqual([expect.objectContaining({ success: true })]);
+        });
+
+        it.each(['scoped', 'all'] as const)(
+            'cancels before starting the update (%s)',
+            async scope => {
+                const handshake = createDeferred();
+                handshakes.set('1', handshake);
+                await connectDevices('1');
+                await callFirmwareUpdate();
+                core.handleMessage({
+                    type: CORE_CALL_CANCEL,
+                    payload: scope === 'scoped' ? { callId } : null,
+                });
+                await jest.advanceTimersByTimeAsync(0);
+
+                expect(getResponses()).toEqual([
+                    expect.objectContaining({
+                        success: false,
+                        error: expect.objectContaining({ code: 'Method_Cancel' }),
+                    }),
+                ]);
+                handshake.resolve();
+                await jest.advanceTimersByTimeAsync(30001);
+
+                expect(onCallFirmwareUpdate).not.toHaveBeenCalled();
+                expect(getResponses()).toHaveLength(1);
+            },
+        );
+
+        it('does not resume the update after disposal', async () => {
+            const handshake = createDeferred();
+            handshakes.set('1', handshake);
+            await connectDevices('1');
+            await callFirmwareUpdate();
+            core.dispose();
+            handshake.resolve();
+            await jest.advanceTimersByTimeAsync(30001);
+
+            expect(onCallFirmwareUpdate).not.toHaveBeenCalled();
+            expect(getResponses()).toHaveLength(0);
+        });
+
+        it('keeps another waiting call alive when cancelling the update by callId', async () => {
+            const handshake = createDeferred();
+            handshakes.set('1', handshake);
+            await connectDevices('1');
+            await callFirmwareUpdate();
+            core.handleMessage({
+                type: CORE_CALL,
+                id: 'other-call',
+                payload: { method: 'getFeatures' },
+            });
+            await jest.advanceTimersByTimeAsync(0);
+
+            core.handleMessage({ type: CORE_CALL_CANCEL, payload: { callId } });
+            await jest.advanceTimersByTimeAsync(0);
+            handshake.resolve();
+            await jest.advanceTimersByTimeAsync(0);
+
+            expect(getResponses()).toEqual([
+                expect.objectContaining({
+                    id: 'firmware-call',
+                    success: false,
+                    error: expect.objectContaining({ code: 'Method_Cancel' }),
+                }),
+                expect.objectContaining({ id: 'other-call', success: true }),
+            ]);
+            expect(onCallFirmwareUpdate).not.toHaveBeenCalled();
+            expect(runSpy).toHaveBeenCalledTimes(1);
+        });
+
+        it('reports a handshake timeout without starting the update', async () => {
+            handshakes.set('1', createDeferred());
+            await connectDevices('1');
+            await callFirmwareUpdate();
+            await jest.advanceTimersByTimeAsync(30001);
+
+            expect(getResponses()).toEqual([
+                expect.objectContaining({
+                    success: false,
+                    error: expect.objectContaining({ code: 'Device_InitializeInProgress' }),
+                }),
+            ]);
+            expect(onCallFirmwareUpdate).not.toHaveBeenCalled();
+        });
     });
 });

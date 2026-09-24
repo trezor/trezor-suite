@@ -108,6 +108,75 @@ const selectDevice = ({ deviceList }: CoreContext, methodCallDevice?: DeviceIden
     return device;
 };
 
+const waitForDevice = async (
+    { deviceList }: CoreContext,
+    methodCallDevice: DeviceIdentity | undefined,
+    signal: AbortSignal,
+) => {
+    if (signal.aborted) throw signal.reason;
+    if (!deviceList.isConnected() && !deviceList.pendingConnection()) {
+        // Transport is missing; try to initialize it once again.
+        deviceList.init({ transports: settingsStore.get().transports });
+    }
+    await scheduleAction(() => Promise.resolve(deviceList.pendingConnection()), { signal });
+    assertDeviceListConnected(deviceList);
+
+    // Explicitly selected ready devices must not wait for unrelated handshakes. Without an
+    // available target, wait before selecting so pending devices are not missed.
+    if (!findRequestedDevice(deviceList, methodCallDevice)) {
+        await deviceList.waitForPendingHandshakes(signal);
+    }
+    if (signal.aborted) throw signal.reason;
+
+    return deviceList;
+};
+
+const onCallFirmwareUpdateWithDevice = async (context: CoreContext, message: CoreCallMessage) => {
+    const { pendingDeviceCalls, sendCoreMessage, logger } = context;
+    const abortController = new AbortController();
+    const { signal } = abortController;
+    if (context.signal.aborted) abortController.abort(context.signal.reason);
+    pendingDeviceCalls.set(message.id, { callId: message.payload.callId, abortController });
+
+    try {
+        let deviceList: DeviceList;
+        try {
+            // Firmware update selects by path and handles subsequent reconnects itself.
+            deviceList = await waitForDevice(
+                context,
+                { path: message.payload.device?.path },
+                signal,
+            );
+        } finally {
+            pendingDeviceCalls.delete(message.id);
+        }
+        if (signal.aborted) throw signal.reason;
+
+        const payload = await onCallFirmwareUpdate({
+            params: message.payload,
+            context: {
+                deviceList,
+                postMessage: createSendCoreMessageWithCallId(
+                    sendCoreMessage,
+                    message.payload.callId,
+                ),
+                selectDevice: path => selectDevice(context, { path }),
+                log: logger,
+                abortSignal: context.signal,
+                registerEvents: registerDeviceEvents(context),
+                uiPromises: context.uiPromises,
+            },
+        });
+        sendCoreMessage(createResponseMessage(message.id, true, payload));
+    } catch (error) {
+        if (context.signal.aborted) return;
+
+        const responseError = signal.aborted ? signal.reason : error;
+        sendCoreMessage(createResponseMessage(message.id, false, { error: responseError }));
+        if (!signal.aborted) logger.error('onCallFirmwareUpdate', responseError);
+    }
+};
+
 /**
  * This function will run inside Device.run() after device will be acquired and initialized
  */
@@ -286,27 +355,15 @@ const onCallDevice = async (
 ): Promise<void> => {
     const { deviceList, callMethods, pendingDeviceCalls, sendCoreMessage, logger } = context;
     const responseID = message.id;
-    const { transports } = settingsStore.get();
     const abortController = new AbortController();
     const { signal } = abortController;
     if (context.signal.aborted) abortController.abort(context.signal.reason);
-    pendingDeviceCalls.set(responseID, abortController);
+    pendingDeviceCalls.set(responseID, { callId: method.callId, abortController });
 
     // find device
     let tempDevice: Device | undefined;
     try {
-        if (!deviceList.isConnected() && !deviceList.pendingConnection()) {
-            // Transport is missing; try to initialize it once again.
-            deviceList.init({ transports });
-        }
-        await scheduleAction(() => Promise.resolve(deviceList.pendingConnection()), { signal });
-        assertDeviceListConnected(deviceList);
-
-        // Explicitly selected ready devices must not wait for unrelated handshakes. Without an
-        // available target, wait before selecting so pending devices are not missed.
-        if (!findRequestedDevice(deviceList, message.payload.device)) {
-            await deviceList.waitForPendingHandshakes(signal);
-        }
+        await waitForDevice(context, message.payload.device, signal);
         if (signal.aborted) throw signal.reason;
         if (!callMethods.includes(method)) return;
 
@@ -695,8 +752,8 @@ const registerDeviceEvents =
         device.on(DEVICE.THP_PAIRING_STATUS_CHANGED, onThpPhaseChangedHandler(device, context));
     };
 
-// When `callId` is provided, the abort is scoped to the single method whose
-// AbstractMethod.callId matches. Other in-flight methods, devices and UI
+// When `callId` is provided, the abort is scoped to the matching pending device
+// call or AbstractMethod. Other in-flight methods, devices and UI
 // promises remain untouched. When `callId` is undefined, all in-flight work
 // is aborted (legacy behavior).
 const abortRunningCall = (context: CoreContext, error: TrezorError, callId?: string) => {
@@ -710,15 +767,17 @@ const abortRunningCall = (context: CoreContext, error: TrezorError, callId?: str
     } = context;
 
     if (callId) {
-        const method = callMethods.find(m => m.callId === callId);
-        if (!method) {
+        const pendingDeviceCall = Array.from(pendingDeviceCalls.values()).find(
+            call => call.callId === callId,
+        );
+        if (pendingDeviceCall) {
+            pendingDeviceCall.abortController.abort(error);
+
             return;
         }
 
-        const pendingDeviceCall = pendingDeviceCalls.get(method.responseID);
-        if (pendingDeviceCall) {
-            pendingDeviceCall.abort(error);
-
+        const method = callMethods.find(m => m.callId === callId);
+        if (!method) {
             return;
         }
 
@@ -736,7 +795,7 @@ const abortRunningCall = (context: CoreContext, error: TrezorError, callId?: str
         return;
     }
 
-    pendingDeviceCalls.forEach(abortController => abortController.abort(error));
+    pendingDeviceCalls.forEach(({ abortController }) => abortController.abort(error));
 
     // Device was already acquired. Try to interrupt running action which will throw error from onCall try/catch block
     if (deviceList.isConnected() && deviceList.getDeviceCount() > 0) {
@@ -818,7 +877,10 @@ const initDeviceList = (context: CoreContext) => {
 export class Core extends EventEmitter {
     private abortController = new AbortController();
     private callMethods: AbstractMethod<any>[] = []; // generic type is irrelevant. only common functions are called at this level
-    private pendingDeviceCalls = new Map<string, AbortController>();
+    private pendingDeviceCalls = new Map<
+        string,
+        { callId?: string; abortController: AbortController }
+    >();
     private methodSynchronize = getSynchronize();
     private uiPromises = createUiPromiseManager();
 
@@ -946,34 +1008,7 @@ export class Core extends EventEmitter {
                         break;
                     }
 
-                    assertDeviceListConnected(this.deviceList);
-
-                    const coreContext = this.getCoreContext();
-                    const sendCoreMessageWithCallId = createSendCoreMessageWithCallId(
-                        this.sendCoreMessage.bind(this),
-                        message.payload.callId,
-                    );
-                    onCallFirmwareUpdate({
-                        params: message.payload,
-                        context: {
-                            deviceList: this.deviceList,
-                            postMessage: sendCoreMessageWithCallId,
-                            selectDevice: path => selectDevice(coreContext, { path }),
-                            log: this.coreLogger,
-                            abortSignal: this.abortController.signal,
-                            registerEvents: registerDeviceEvents(coreContext),
-                            uiPromises: coreContext.uiPromises,
-                        },
-                    })
-                        .then(payload => {
-                            this.sendCoreMessage(createResponseMessage(message.id, true, payload));
-                        })
-                        .catch(error => {
-                            this.sendCoreMessage(
-                                createResponseMessage(message.id, false, { error }),
-                            );
-                            this.coreLogger.error('onCallFirmwareUpdate', error);
-                        });
+                    onCallFirmwareUpdateWithDevice(this.getCoreContext(), message);
                 } else {
                     onCall(this.getCoreContext(), message).catch(error => {
                         this.coreLogger.error('onCall', error);
@@ -986,7 +1021,7 @@ export class Core extends EventEmitter {
         disposeBackend();
         this.removeAllListeners();
         this.abortController.abort();
-        this.pendingDeviceCalls.forEach(abortController =>
+        this.pendingDeviceCalls.forEach(({ abortController }) =>
             abortController.abort(this.abortController.signal.reason),
         );
         this.deviceList.dispose();
