@@ -1,7 +1,7 @@
 // origin: https://github.com/trezor/connect/blob/develop/src/js/core/methods/tx/TransactionComposer.js
 
+import type { Address } from '@trezor/blockchain-link-types';
 import type {
-    AccountAddresses,
     BitcoinNetworkInfo,
     ComposeResult,
     ComposeUtxo,
@@ -19,7 +19,7 @@ import { DEFAULT_BITCOIN_LONGTERM_FEE_RATE } from '../../data/defaultFeeLevels';
 
 type Options = {
     txType: DiscoveryAccountType;
-    addresses?: AccountAddresses;
+    changeAddress: Address | undefined;
     utxos: ComposeUtxo[];
     outputs: ComposeOutput[];
     coinInfo: BitcoinNetworkInfo;
@@ -27,27 +27,23 @@ type Options = {
     sortingStrategy: TransactionInputOutputSortingStrategy;
 };
 
-export const createComposer = (options: Options) => {
-    const { txType, addresses, outputs, coinInfo, baseFee = 0, sortingStrategy, utxos } = options;
-
-    const allAddresses = new Set(
-        addresses?.used
-            .concat(addresses.unused)
-            .concat(addresses.change)
-            .map(a => a.address),
-    );
-
-    // find unused change address or fallback to the last in the list
-    const changeAddress = addresses?.change.find(a => !a.transfers) ?? addresses?.change.at(-1);
-
+export const createComposer = ({
+    txType,
+    changeAddress,
+    outputs,
+    coinInfo,
+    baseFee = 0,
+    sortingStrategy,
+    utxos,
+}: Options) => {
     // map to @trezor/utxo-lib/compose format
     const utxosFiltered = utxos
         // exclude amounts lower than dust limit if they are NOT required
         .filter(u => u.required || new BigNumber(u.amount).gt(coinInfo.dustLimit))
         .map(u => ({
             ...u,
-            coinbase: typeof u.coinbase === 'boolean' ? u.coinbase : false, // decide it it can be spent immediately (false) or after 100 conf (true)
-            own: allAddresses.has(u.address), // decide if it can be spent immediately (own) or after 6 conf (not own)
+            coinbase: u.coinbase || false, // decide it it can be spent immediately (false) or after 100 conf (true)
+            own: u.own ?? true, // decide if it can be spent immediately (own) or after 6 conf (not own)
         }));
 
     let feePolicy: ComposeFeePolicy | undefined;

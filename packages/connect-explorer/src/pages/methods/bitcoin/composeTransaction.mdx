@@ -6,11 +6,15 @@ import { ParamsTable } from '../../../components/ParamsTable';
 export const PrecomposeSchema = Type.Object({
     outputs: Type.Array(Type.Object({}, { $id: 'Output' })),
     coin: Type.String(),
-    account: Type.Object({
-        path: Type.String(),
-        utxo: Type.Array(Type.Object({})),
-        addresses: Type.String(),
-    }),
+    path: Type.String(),
+    utxo: Type.Array(Type.Object({}, { $id: 'Utxo' })),
+    changeAddress: Type.Optional(
+        Type.Object({
+            address: Type.String(),
+            path: Type.String(),
+            transfers: Type.Number(),
+        }),
+    ),
     feeLevels: Type.Array(Type.Object({ feePerUnit: Type.String() })),
     baseFee: Type.Optional(Type.Number()),
     sequence: Type.Optional(Type.Number()),
@@ -22,13 +26,15 @@ export const PrecomposeSchema = Type.Object({
 export const paramDescriptions = {
     outputs: 'Array of output objects described [below](#accepted-output-objects)',
     coin: 'determines the network definition. Coin `shortcut` (a `CoinSymbol`, e.g. `btc`) is used — see [supported coins](/details/coins) for every accepted value.',
-    sequence: 'transaction input field used in RBF or locktime transactions',
-    account:
-        'containing essential data, partial result of [getAccountInfo method](../common/getAccountInfo#result)',
+    path: "account derivation path (BIP-44), eg. `m/84'/0'/0'`",
+    utxo: 'account utxos to select from, partial result of [getAccountInfo method](../common/getAccountInfo#result)',
+    changeAddress:
+        'address where the change is sent, typically an unused change address from [getAccountInfo method](../common/getAccountInfo#result). Optional in the type, but composing without it always fails with the `ADDRESSES-NOT-SET` error.',
     feeLevels:
         'Array of objects. set of requested variants, partial result of `blockchainEstimateFee method`',
     baseFee:
         'base fee of transaction in satoshi. used in replacement transactions calculation (RBF) and DOGE',
+    sequence: 'transaction input field used in RBF or locktime transactions',
     sortingStrategy: 'strategy for sorting inputs/outputs: bip69, none, random',
 };
 
@@ -36,7 +42,7 @@ export const paramDescriptions = {
 
 This method works only for `Bitcoin` and `Bitcoin-like` coins.
 
-Prepare transaction to be signed by Trezor by providing `account` and `feeLevels` params and perform **only** transaction calculation. [[1]](#additional-notes)
+Prepare transaction to be signed by Trezor by providing account data (`path`, `utxo`, `changeAddress`) and `feeLevels` params and perform **only** transaction calculation. [[1]](#additional-notes)
 
 The result, internally called [`PrecomposedTransaction`](https://github.com/trezor/trezor-suite/blob/develop/packages/connect-common/src/types/api/bitcoin/composeTransaction.ts) is a set of params that can be used in [signTransaction method](signTransaction.md#params) afterwards.
 
@@ -77,42 +83,22 @@ Prepare multiple variants of the same transaction
 TrezorConnect.composeTransaction({
     outputs: [{ amount: '200000', address: 'tb1q9l0rk0gkgn73d0gc57qn3t3cwvucaj3h8wtrlu' }],
     coin: 'btc',
-    account: {
-        path: "m/84'/0'/0'",
-        addresses: {
-            used: [
-                {
-                    address: 'bc1qannfxke2tfd4l7vhepehpvt05y83v3qsf6nfkk',
-                    path: "m/84'/0'/0'/0/0",
-                    transfers: 1,
-                },
-            ],
-            unused: [
-                {
-                    address: '',
-                    path: "m/84'/0'/0'/0/1",
-                    transfers: 0,
-                },
-            ],
-            change: [
-                {
-                    address: 'bc1qktmhrsmsenepnnfst8x6j27l0uqv7ggrg8x38q',
-                    path: "m/84'/0'/0'/1/0",
-                    transfers: 0,
-                },
-            ],
+    path: "m/84'/0'/0'",
+    utxo: [
+        {
+            txid: '86a6e02943dcd057cfbe349f2c2274478a3a1be908eb788606a6950e727a0d36',
+            vout: 0,
+            amount: '300000',
+            blockHeight: 590093,
+            address: 'bc1qannfxke2tfd4l7vhepehpvt05y83v3qsf6nfkk',
+            path: "m/84'/0'/0'/0/0",
+            confirmations: 100,
         },
-        utxo: [
-            {
-                txid: '86a6e02943dcd057cfbe349f2c2274478a3a1be908eb788606a6950e727a0d36',
-                vout: 0,
-                amount: '300000',
-                blockHeight: 590093,
-                address: 'bc1qannfxke2tfd4l7vhepehpvt05y83v3qsf6nfkk',
-                path: "m/84'/0'/0'/0/0",
-                confirmations: 100,
-            },
-        ],
+    ],
+    changeAddress: {
+        address: 'bc1qktmhrsmsenepnnfst8x6j27l0uqv7ggrg8x38q',
+        path: "m/84'/0'/0'/1/0",
+        transfers: 0,
     },
     feeLevels: [{ feePerUnit: '1' }, { feePerUnit: '5' }, { feePerUnit: '30' }],
 });

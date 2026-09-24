@@ -201,17 +201,6 @@ const useRbfState = ({ account, rbfParams, chainedTxs }: UseRbfProps): RbfState 
             availableBalance:
                 account.networkType === 'ethereum' ? account.balance : account.availableBalance,
             utxo: rbfParams.type === 'bitcoin' ? rbfParams.utxo.concat(availableUtxo) : undefined,
-            // make sure that the exact same change output will be picked by @trezor/connect > hd-wallet during the tx compose process
-            // fallback to default if change address is not present
-            addresses: account.addresses
-                ? {
-                      ...account.addresses,
-                      change:
-                          rbfParams.type === 'bitcoin' && rbfParams.changeAddress
-                              ? [rbfParams.changeAddress]
-                              : account.addresses.change,
-                  }
-                : undefined,
         };
 
         // transform original outputs

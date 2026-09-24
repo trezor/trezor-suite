@@ -226,10 +226,10 @@ const actionCallback = (
             TrezorConnect.composeTransaction.mock.calls[composeTransactionCallsLength - 1]?.[0];
 
         if (result.composeTransactionParams.account && composeTransactionsParams) {
-            expect(composeTransactionsParams.account.utxo.length).toEqual(
+            expect(composeTransactionsParams.utxo.length).toEqual(
                 result.composeTransactionParams.account.utxo.length,
             );
-            expect(composeTransactionsParams.account.utxo).toMatchObject(
+            expect(composeTransactionsParams.utxo).toMatchObject(
                 result.composeTransactionParams.account.utxo,
             );
         } else {

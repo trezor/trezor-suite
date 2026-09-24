@@ -30,7 +30,9 @@ export default class ComposeTransaction extends AbstractMethod<'composeTransacti
         validateParams(payload, [
             { name: 'outputs', type: 'array', required: true },
             { name: 'coin', type: 'string', required: true },
-            { name: 'account', type: 'object', required: true },
+            { name: 'path', type: 'string', required: true },
+            { name: 'utxo', type: 'array', required: true },
+            { name: 'changeAddress', type: 'object' },
             { name: 'feeLevels', type: 'array', required: true },
             { name: 'baseFee', type: 'number' },
             { name: 'sequence', type: 'number' },
@@ -45,7 +47,9 @@ export default class ComposeTransaction extends AbstractMethod<'composeTransacti
         const params = {
             outputs,
             coinInfo,
-            account: payload.account,
+            path: payload.path,
+            utxo: payload.utxo,
+            changeAddress: payload.changeAddress,
             feeLevels: payload.feeLevels,
             baseFee: payload.baseFee,
             sequence: payload.sequence,
@@ -68,13 +72,14 @@ export default class ComposeTransaction extends AbstractMethod<'composeTransacti
     }
 
     run(): Promise<PrecomposedResult[]> {
-        const { coinInfo, outputs, baseFee, sortingStrategy, account, feeLevels } = this.params;
-        const address_n = pathUtils.validatePath(account.path);
+        const { coinInfo, outputs, baseFee, sortingStrategy, path, utxo, feeLevels } = this.params;
+        const { changeAddress } = this.params;
+        const address_n = pathUtils.validatePath(path);
 
         const compose = createComposer({
             txType: pathUtils.getAccountType(address_n),
-            addresses: account.addresses,
-            utxos: account.utxo,
+            changeAddress,
+            utxos: utxo,
             coinInfo,
             outputs,
             baseFee,

@@ -154,14 +154,18 @@ const bitcoinRequestThunk = createThunk<
                 console.error('blockchainEstimateFee error', feeLevels);
                 throw new Error('blockchainEstimateFee error');
             }
+
+            // will be unused in case changeAddress param is present as well
+            const change =
+                account.addresses?.change.find(a => !a.transfers) ??
+                account.addresses?.change.at(-1);
+
             const precomposedTransaction = await TrezorConnect.composeTransaction({
                 outputs,
                 coin: asCoinSymbol(account.symbol),
-                account: {
-                    path: account.path,
-                    addresses: account.addresses!,
-                    utxo: account.utxo!,
-                },
+                path: account.path,
+                utxo: account.utxo!,
+                changeAddress: change,
                 feeLevels: feeLevels.payload.levels,
                 device,
             });
