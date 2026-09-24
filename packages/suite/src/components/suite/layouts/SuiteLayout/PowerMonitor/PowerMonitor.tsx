@@ -2,11 +2,12 @@ import { useEffect } from 'react';
 
 import {
     type DesktopBluetoothDevice,
+    bluetoothAdapterEventThunk,
     bluetoothDisconnectDeviceThunk,
     isBluetoothDeviceReachable,
 } from '@suite/bluetooth';
 import { injectDesktopApi } from '@suite/desktop-app-api';
-import { bluetoothActions, selectKnownDevices } from '@suite-common/bluetooth';
+import { selectKnownDevices } from '@suite-common/bluetooth';
 import { useServices } from '@suite-common/dependency-injection';
 import { injectDispatch } from '@suite-common/redux-utils';
 import { isMacOs } from '@trezor/env-utils';
@@ -25,7 +26,7 @@ export const PowerMonitorManager = () => {
         if (!isMacOs()) return;
 
         const disconnectAllDevices = () => {
-            dispatch(bluetoothActions.adapterEventAction({ status: 'power-suspending' }));
+            dispatch(bluetoothAdapterEventThunk({ status: 'power-suspending' }));
             knownDevices.forEach(device => {
                 if (isBluetoothDeviceReachable(device))
                     dispatch(bluetoothDisconnectDeviceThunk({ id: device.id }));
