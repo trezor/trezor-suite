@@ -45,14 +45,9 @@ export { QuickActionButton } from './components/QuickActionButton/QuickActionBut
 export { RelativeTime } from './components/RelativeTime/RelativeTime';
 export { RotateDeviceImage } from './components/RotateDeviceImage/RotateDeviceImage';
 export { SearchAsset } from './components/SearchAsset/SearchAsset';
-export { ActionButton } from './components/Settings/ActionButton';
-export { ActionColumn } from './components/Settings/ActionColumn';
-export { ActionSelect } from './components/Settings/ActionSelect';
-export { OutlineHighlight, type Offset } from './components/Settings/OutlineHighlight';
+export { OutlineHighlight, type Offset } from './components/OutlineHighlight/OutlineHighlight';
 export { SectionItem } from './components/Settings/SectionItem';
-export { SettingsRequirementBanner } from './components/Settings/SettingsRequirementBanner';
 export { SettingsSection } from './components/Settings/SettingsSection';
-export { TextColumn } from './components/Settings/TextColumn';
 export { SidebarBanner } from './components/SidebarBanner/SidebarBanner';
 export { StepCard } from './components/StepCard/StepCard';
 export { TokenIcon } from './components/TokenIcon/TokenIcon';

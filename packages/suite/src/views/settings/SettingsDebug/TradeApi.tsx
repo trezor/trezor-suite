@@ -2,7 +2,7 @@ import { selectTradeServerEnvironment, suiteSettingsActions } from '@suite/setti
 import { useServices } from '@suite-common/dependency-injection';
 import { injectDispatch } from '@suite-common/redux-utils';
 import { type TradeServerEnvironment, tradeApi, tradingActions } from '@suite-common/trading';
-import { ActionColumn, ActionSelect, SectionItem, TextColumn } from '@trezor/product-components';
+import { SectionItem } from '@trezor/product-components';
 
 import { useSelector } from 'src/hooks/suite';
 
@@ -26,18 +26,16 @@ export const TradeApi = () => {
     };
 
     return (
-        <SectionItem>
-            <TextColumn
-                title="API server"
-                description="Set the server url for buy and exchange features"
-            />
-            <ActionColumn>
-                <ActionSelect
+        <SectionItem
+            title="API server"
+            description="Set the server url for buy and exchange features"
+            actions={
+                <SectionItem.Select
                     onChange={handleChange}
                     value={selectedTradeApiServer}
                     options={tradeApiServerOptions}
                 />
-            </ActionColumn>
-        </SectionItem>
+            }
+        />
     );
 };

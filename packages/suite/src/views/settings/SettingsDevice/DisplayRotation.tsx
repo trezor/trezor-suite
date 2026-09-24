@@ -10,7 +10,7 @@ import { Icon, SelectBar, Tooltip } from '@trezor/components';
 import { type DisplayRotation as DisplayRotationType, PROTO } from '@trezor/connect';
 import { DeviceModelInternal } from '@trezor/device-utils';
 import { ArrowDownIcon, ArrowLeftIcon, ArrowRightIcon, ArrowUpIcon } from '@trezor/icons';
-import { ActionColumn, SectionItem, TextColumn } from '@trezor/product-components';
+import { SectionItem } from '@trezor/product-components';
 
 import { applySettingsThunk } from 'src/actions/settings/deviceSettingsActions';
 
@@ -23,6 +23,7 @@ const DISPLAY_ROTATIONS: Array<Rotation> = [
                 <Icon as={ArrowUpIcon} />
             </Tooltip>
         ),
+
         value: 'North',
     },
     {
@@ -31,6 +32,7 @@ const DISPLAY_ROTATIONS: Array<Rotation> = [
                 <Icon as={ArrowLeftIcon} />
             </Tooltip>
         ),
+
         value: 'East',
     },
     {
@@ -39,6 +41,7 @@ const DISPLAY_ROTATIONS: Array<Rotation> = [
                 <Icon as={ArrowDownIcon} />
             </Tooltip>
         ),
+
         value: 'South',
     },
     {
@@ -47,6 +50,7 @@ const DISPLAY_ROTATIONS: Array<Rotation> = [
                 <Icon as={ArrowRightIcon} />
             </Tooltip>
         ),
+
         value: 'West',
     },
 ];
@@ -78,9 +82,8 @@ export const DisplayRotation = ({ isDeviceLocked }: DisplayRotationProps) => {
                     data-testid={anchorId}
                     ref={anchorRef}
                     shouldHighlight={shouldHighlight}
-                >
-                    <TextColumn title={<Translation id="TR_DEVICE_SETTINGS_DISPLAY_ROTATION" />} />
-                    <ActionColumn>
+                    title={<Translation id="TR_DEVICE_SETTINGS_DISPLAY_ROTATION" />}
+                    actions={
                         <Tooltip
                             isActive={isDeviceLocked}
                             content={
@@ -104,8 +107,8 @@ export const DisplayRotation = ({ isDeviceLocked }: DisplayRotationProps) => {
                                 }}
                             />
                         </Tooltip>
-                    </ActionColumn>
-                </SectionItem>
+                    }
+                />
             )}
         </Anchor>
     );

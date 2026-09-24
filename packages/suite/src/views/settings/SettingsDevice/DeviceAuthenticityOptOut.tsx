@@ -4,14 +4,9 @@ import { openModal } from '@suite/modal';
 import { selectIsDeviceAuthenticityCheckEnabled } from '@suite/settings';
 import { useServices } from '@suite-common/dependency-injection';
 import { injectDispatch } from '@suite-common/redux-utils';
-import { Column } from '@trezor/components';
-import {
-    ActionButton,
-    ActionColumn,
-    SectionItem,
-    SettingsRequirementBanner,
-    TextColumn,
-} from '@trezor/product-components';
+import { Banner, Column } from '@trezor/components';
+import { InfoIcon } from '@trezor/icons';
+import { SectionItem } from '@trezor/product-components';
 import { HELP_CENTER_DEVICE_AUTHENTICATION } from '@trezor/urls';
 
 import { toggleDeviceAuthenticityCheck } from 'src/actions/suite/suiteActions';
@@ -38,39 +33,39 @@ export const DeviceAuthenticityOptOut = ({
     };
 
     return (
-        <SectionItem>
-            <TextColumn
-                title={
-                    <Translation
-                        id={
-                            isDeviceAuthenticityCheckEnabled
-                                ? 'TR_DEVICE_AUTHENTICITY_OPT_OUT_TITLE'
-                                : 'TR_DEVICE_AUTHENTICITY_OPT_OUT_TITLE_DISABLED'
-                        }
-                    />
-                }
-                description={
-                    <Translation
-                        id={
-                            isDeviceAuthenticityCheckEnabled
-                                ? 'TR_DEVICE_AUTHENTICITY_OPT_OUT_DESCRIPTION'
-                                : 'TR_DEVICE_AUTHENTICITY_OPT_OUT_DESCRIPTION_DISABLED'
-                        }
-                    />
-                }
-                bottomContent={
-                    <Column gap={8} alignItems="flex-start">
-                        {!isDeviceAuthenticityCheckSupported && (
-                            <SettingsRequirementBanner>
-                                <Translation id="TR_NOT_SUPPORTED_ON_THIS_DEVICE" />
-                            </SettingsRequirementBanner>
-                        )}
-                        <LearnMoreButton url={HELP_CENTER_DEVICE_AUTHENTICATION} />
-                    </Column>
-                }
-            />
-            <ActionColumn>
-                <ActionButton
+        <SectionItem
+            title={
+                <Translation
+                    id={
+                        isDeviceAuthenticityCheckEnabled
+                            ? 'TR_DEVICE_AUTHENTICITY_OPT_OUT_TITLE'
+                            : 'TR_DEVICE_AUTHENTICITY_OPT_OUT_TITLE_DISABLED'
+                    }
+                />
+            }
+            description={
+                <Translation
+                    id={
+                        isDeviceAuthenticityCheckEnabled
+                            ? 'TR_DEVICE_AUTHENTICITY_OPT_OUT_DESCRIPTION'
+                            : 'TR_DEVICE_AUTHENTICITY_OPT_OUT_DESCRIPTION_DISABLED'
+                    }
+                />
+            }
+            bottomContent={
+                <Column gap={8} alignItems="flex-start">
+                    {!isDeviceAuthenticityCheckSupported && (
+                        <Banner
+                            intent="neutral"
+                            icon={InfoIcon}
+                            description={<Translation id="TR_NOT_SUPPORTED_ON_THIS_DEVICE" />}
+                        />
+                    )}
+                    <LearnMoreButton url={HELP_CENTER_DEVICE_AUTHENTICATION} />
+                </Column>
+            }
+            actions={
+                <SectionItem.Button
                     onClick={handleClick}
                     intent={isDeviceAuthenticityCheckEnabled ? 'critical' : 'brand'}
                     isDisabled={!isDeviceAuthenticityCheckSupported}
@@ -83,8 +78,8 @@ export const DeviceAuthenticityOptOut = ({
                                 : 'TR_DEVICE_AUTHENTICITY_OPT_OUT_BUTTON_DISABLED'
                         }
                     />
-                </ActionButton>
-            </ActionColumn>
-        </SectionItem>
+                </SectionItem.Button>
+            }
+        />
     );
 };
