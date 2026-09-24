@@ -30,6 +30,7 @@ export type BluetoothServiceDeps = {
 
 export type BluetoothService = {
     init: () => Promise<void>;
+    restartBackgroundScan: () => void;
 };
 
 export type BackgroundScan = {
