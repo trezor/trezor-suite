@@ -418,6 +418,8 @@ jest.mock('react-native-safe-area-context', () => mockSafeAreaContext);
 
 jest.mock('react-native-permissions', () => require('react-native-permissions/mock'));
 
+jest.mock('react-native-teleport', () => require('react-native-teleport/jest'));
+
 jest.mock('react-native-keyboard-controller', () =>
     require('react-native-keyboard-controller/jest'),
 );

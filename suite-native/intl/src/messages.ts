@@ -3765,6 +3765,9 @@ export const messages = {
         goToVault: 'Go to vault',
     },
     moduleTrading: {
+        keyboardToolbar: {
+            max: 'Max',
+        },
         paymentMethods: {
             bankTransfer: 'Bank Transfer',
             creditCard: 'Credit/Debit Card',

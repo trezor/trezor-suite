@@ -16,6 +16,7 @@ import {
     selectTradeToBeOpened,
 } from '@suite-native/trading-state';
 
+import { TRADING_KEYBOARD_TOOLBAR_HOST } from '../components/general/CryptoAmountKeyboardToolbar';
 import { Header } from '../components/general/Header/Header';
 import { HistoryButton, type NavigationProps } from '../components/general/HistoryButton';
 import { LegalGatewayContextMessage } from '../components/general/LegalGatewayContextMessage';
@@ -66,6 +67,7 @@ export const TradingScreen = () => {
 
     return (
         <Screen
+            keyboardToolbarHostName={TRADING_KEYBOARD_TOOLBAR_HOST}
             noHorizontalPadding
             header={
                 <>

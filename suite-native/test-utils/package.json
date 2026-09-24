@@ -26,6 +26,7 @@
         "react-native-permissions": "5.4.4",
         "react-native-reanimated": "4.5.0",
         "react-native-safe-area-context": "~5.7.0",
+        "react-native-teleport": "^1.2.1",
         "react-native-worklets": "0.10.0",
         "test-renderer": "1.2.0"
     }

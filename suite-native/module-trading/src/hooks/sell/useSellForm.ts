@@ -27,6 +27,7 @@ import {
 import { type SellFormType, type SellFormValues } from '@suite-native/trading-types';
 
 import { sellFormValidationSchema } from '../../utils/sell/sellFormValidationSchema';
+import { type TradingFormWithMetadata } from '../general/form/tradingFormTypes';
 import { useContextForTradingForm } from '../general/form/useContextForTradingForm';
 import { useCountryChangeEffect } from '../general/form/useCountryChangeEffect';
 import { useProviderMetadataChangeEffect } from '../general/form/useProviderMetadataChangeEffect';
@@ -143,7 +144,7 @@ const useValidations = ({
     }, [generalAlertMsg, setValue]);
 };
 
-export const useSellForm = (): SellFormType => {
+export const useSellForm = (): TradingFormWithMetadata<SellFormType> => {
     const defaultValues = useSelector(selectSellFormDefaultValues);
     const limits = useSelector(selectSellAmountLimits);
     const {
@@ -189,7 +190,7 @@ export const useSellForm = (): SellFormType => {
     useCountryChangeEffect(control);
     useProviderMetadataChangeEffect(control, 'sell');
 
-    return form;
+    return { ...form, metadata: { maxSpendableAmount: context.maxSpendableAmount } };
 };
 
 export const clearSellFormQuoteData = (form: SellFormType) => {
