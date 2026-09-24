@@ -1,4 +1,4 @@
-import { useForm } from 'react-hook-form';
+import { type Resolver, useForm } from 'react-hook-form';
 
 import { act, waitFor } from '@testing-library/react';
 import type { BuyTrade, CryptoId } from 'invity-api';
@@ -76,7 +76,11 @@ const wait = (ms: number) =>
             }),
     );
 
-const renderBuyQuotes = (defaultValues: TradingBuyFormProps) => {
+const renderBuyQuotes = (
+    defaultValues: TradingBuyFormProps,
+    options: { resolver?: Resolver<TradingBuyFormProps> } = {},
+) => {
+    const { resolver } = options;
     const services = { analytics: mockDesktopAnalytics() };
     const root = createTestCompositionRoot({
         extra: { services },
@@ -95,6 +99,7 @@ const renderBuyQuotes = (defaultValues: TradingBuyFormProps) => {
             const methods = useForm<TradingBuyFormProps>({
                 mode: 'onChange',
                 defaultValues,
+                resolver,
             });
             useBuyQuotes({ methods, network: getNetwork(btcSymbol), shouldSendInSats: false });
 
@@ -234,5 +239,27 @@ describe('useBuyQuotes', () => {
         await wait(NO_REFETCH_WAIT_MS);
 
         expect(mockHandleRequest).toHaveBeenCalledTimes(1);
+    });
+
+    it('does not fetch while the active amount is invalid', async () => {
+        const invalidResolver: Resolver<TradingBuyFormProps> = () => ({
+            values: {},
+            errors: { fiatInput: { type: 'manual', message: 'invalid' } },
+        });
+        renderBuyQuotes(VALID_DEFAULTS, { resolver: invalidResolver });
+
+        await wait(NO_REFETCH_WAIT_MS);
+
+        expect(mockHandleRequest).not.toHaveBeenCalled();
+    });
+
+    it('fetches while only the inactive amount is invalid', async () => {
+        const invalidResolver: Resolver<TradingBuyFormProps> = () => ({
+            values: {},
+            errors: { cryptoInput: { type: 'manual', message: 'invalid' } },
+        });
+        renderBuyQuotes(VALID_DEFAULTS, { resolver: invalidResolver });
+
+        await waitFor(() => expect(mockHandleRequest).toHaveBeenCalledTimes(1), { timeout: 1500 });
     });
 });
