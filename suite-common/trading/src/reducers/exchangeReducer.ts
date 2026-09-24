@@ -76,6 +76,12 @@ const tradingExchangeSlice = createSlice({
             state.quotes = [];
             state.selectedQuote = undefined;
         },
+        clearQuotesAndParams(state: TradingExchangeState) {
+            state.quotes = [];
+            state.quotesRequest = undefined;
+            state.selectedQuote = undefined;
+            state.amountLimits = undefined;
+        },
         setTradingAccountKey(
             state: TradingExchangeState,
             action: PayloadAction<AccountKey | undefined>,

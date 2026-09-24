@@ -1,9 +1,17 @@
 import { combineReducers } from '@reduxjs/toolkit';
+import { type BuyTradeQuoteRequest, type CryptoId } from 'invity-api';
 
 import { createTestCompositionRoot } from '@suite-common/test-utils';
+import { type AccountKey } from '@suite-common/wallet-types';
 
+import { mercuryoApplePayQuote } from '../__fixtures__/buyUtils';
 import { buyTradingFixtures } from './__fixtures__/buyTradingReducer';
-import { type TradingBuyState, tradingBuyActions, tradingBuyReducer } from './buyReducer';
+import {
+    type TradingBuyState,
+    buyInitialState,
+    tradingBuyActions,
+    tradingBuyReducer,
+} from './buyReducer';
 
 type State = { wallet: { trading: { buy: TradingBuyState } } };
 
@@ -57,6 +65,36 @@ describe('tradingBuyReducer', () => {
             expect(state.quotesRequest).toBeUndefined();
             expect(state.selectedQuote).toBeUndefined();
             expect(state.amountLimits).toBeUndefined();
+        });
+    });
+
+    describe('setTradingAccountKey', () => {
+        const KEY_1 = 'account-1' as AccountKey;
+        const QUOTES_REQUEST: BuyTradeQuoteRequest = {
+            wantCrypto: false,
+            fiatCurrency: 'EUR',
+            receiveCurrency: 'bitcoin' as CryptoId,
+            fiatStringAmount: '10',
+            country: 'CZ',
+        };
+        const withQuotes = () =>
+            [
+                tradingBuyActions.setTradingAccountKey(KEY_1),
+                tradingBuyActions.saveQuoteRequest(QUOTES_REQUEST),
+                tradingBuyActions.saveQuotes([mercuryoApplePayQuote]),
+                tradingBuyActions.saveSelectedQuote(mercuryoApplePayQuote),
+            ].reduce(tradingBuyReducer, buyInitialState);
+
+        it('clears quotes, quotesRequest and selectedQuote when the account key is cleared', () => {
+            const state = tradingBuyReducer(
+                withQuotes(),
+                tradingBuyActions.setTradingAccountKey(undefined),
+            );
+
+            expect(state.tradingAccountKey).toBeUndefined();
+            expect(state.quotes).toEqual([]);
+            expect(state.quotesRequest).toBeUndefined();
+            expect(state.selectedQuote).toBeUndefined();
         });
     });
 });
