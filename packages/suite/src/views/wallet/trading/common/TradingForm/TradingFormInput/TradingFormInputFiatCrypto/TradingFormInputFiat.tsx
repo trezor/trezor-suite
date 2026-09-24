@@ -101,10 +101,15 @@ const TradingFormInputFiatContent = ({
     }, [setFractionButton, getValues, setValue, clearErrors, cryptoInputName]);
 
     const selectedQuote = useTradingSelectedQuote(type);
-    const quoteFiatAmount = useTradingQuoteAmounts(selectedQuote, type)?.sendAmount;
+    const quoteAmounts = useTradingQuoteAmounts(selectedQuote, type);
+    const quoteFiatAmount = quoteAmounts?.amountInCrypto ? quoteAmounts.sendAmount : undefined;
 
     useEffect(() => {
-        if (!quoteFiatAmount || !getValues(TRADING_FORM_AMOUNT_IN_CRYPTO)) {
+        if (
+            !quoteFiatAmount ||
+            !getValues(TRADING_FORM_AMOUNT_IN_CRYPTO) ||
+            !getValues(cryptoInputName)
+        ) {
             return;
         }
 
@@ -115,7 +120,15 @@ const TradingFormInputFiatContent = ({
         }
 
         setValue(fiatInputName, roundedFiatAmount, { shouldValidate: true, shouldDirty: true });
-    }, [quoteFiatAmount, amountInCrypto, fiatInputName, fiatInputDecimals, getValues, setValue]);
+    }, [
+        quoteFiatAmount,
+        amountInCrypto,
+        cryptoInputName,
+        fiatInputName,
+        fiatInputDecimals,
+        getValues,
+        setValue,
+    ]);
 
     useDidUpdate(() => {
         if (amountLimits) {

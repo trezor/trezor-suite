@@ -156,10 +156,16 @@ const TradingFormInputCryptoAmountContent = ({
     }, [setValue, getValues, setFractionButton, clearErrors, fiatInputName]);
 
     const selectedQuote = useTradingSelectedQuote(type);
-    const quoteCryptoAmount = useTradingQuoteAmounts(selectedQuote, type)?.receiveAmount;
+    const quoteAmounts = useTradingQuoteAmounts(selectedQuote, type);
+    const quoteCryptoAmount =
+        quoteAmounts?.amountInCrypto === false ? quoteAmounts.receiveAmount : undefined;
 
     useEffect(() => {
-        if (!quoteCryptoAmount || getValues(TRADING_FORM_AMOUNT_IN_CRYPTO)) {
+        if (
+            !quoteCryptoAmount ||
+            getValues(TRADING_FORM_AMOUNT_IN_CRYPTO) ||
+            !getValues(fiatInputName)
+        ) {
             return;
         }
 
@@ -182,6 +188,7 @@ const TradingFormInputCryptoAmountContent = ({
         shouldSendInSats,
         decimals,
         cryptoInputName,
+        fiatInputName,
         getValues,
         setValue,
         composeRequest,
