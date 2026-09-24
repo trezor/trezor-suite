@@ -4,12 +4,10 @@ import { useServices } from '@suite-common/dependency-injection';
 import { injectDispatch } from '@suite-common/redux-utils';
 import { selectHasRunningDiscovery, startOrRestartDiscoveryThunk } from '@suite-common/wallet-core';
 import { type AccountKey } from '@suite-common/wallet-types';
-import {
-    type NativeAccountsRootState,
-    selectIsAccountDiscoveryFailed,
-} from '@suite-native/accounts';
 import { BannerFull } from '@suite-native/atoms';
 import { useTranslate } from '@suite-native/intl';
+
+import { type NativeAccountsRootState, selectIsAccountDiscoveryFailed } from '../selectors';
 
 type AccountDiscoveryFailedBannerProps = {
     accountKey: AccountKey;
