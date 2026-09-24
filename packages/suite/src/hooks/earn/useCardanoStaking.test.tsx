@@ -49,6 +49,28 @@ const mockNeverStakedAccount = (): Account =>
         },
     );
 
+const mockAccountWithRewardsButNoDrep = (): Account =>
+    mockWalletAccount(
+        {
+            symbol: asNetworkSymbol('ada'),
+            availableBalance: '10000000',
+            addresses: { change: [CHANGE_ADDRESS], used: [], unused: [] },
+            utxo: [],
+        },
+        {
+            ...networkSpecificDefaultCardano,
+            misc: {
+                staking: {
+                    address: 'stake1address',
+                    isActive: true,
+                    rewards: '1000000',
+                    poolId: null,
+                    drep: null,
+                },
+            },
+        },
+    );
+
 const renderCardanoStaking = (account: Account) => {
     const root = createTestCompositionRoot({
         extra: { services: {} },
@@ -122,6 +144,18 @@ describe('useCardanoStaking', () => {
             status: false,
             reason: 'Failure_UnknownCode',
         });
+    });
+
+    it('reports the missing DRep delegation instead of composing a withdrawal the node would reject', async () => {
+        const { result } = renderCardanoStaking(mockAccountWithRewardsButNoDrep());
+
+        await act(() => result.current.calculateFeeAndDeposit('withdrawal'));
+
+        expect(result.current.withdrawingAvailable).toEqual({
+            status: false,
+            reason: 'DREP_DELEGATION_REQUIRED',
+        });
+        expect(cardanoComposeTransactionMock).not.toHaveBeenCalled();
     });
 
     it('does not make withdrawing available when there is nothing to withdraw', async () => {

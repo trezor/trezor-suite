@@ -3,6 +3,7 @@ import { useCallback, useState } from 'react';
 import { selectSelectedAccount } from '@suite/account';
 import {
     hasPendingStakeTypeTransaction,
+    isCardanoWithdrawalBlockedByMissingDrep,
     selectCardanoPoolsInfo,
     selectStakeVotingDelegation,
 } from '@suite-common/wallet-core';
@@ -52,6 +53,15 @@ export const useCardanoStaking = (): CardanoStaking => {
     const calculateFeeAndDeposit = useCallback(
         async (action: CardanoAction) => {
             if (!account) return;
+
+            if (
+                (action === 'withdrawal' || action === 'deregister') &&
+                isCardanoWithdrawalBlockedByMissingDrep(account)
+            ) {
+                seWithdrawingAvailable({ status: false, reason: 'DREP_DELEGATION_REQUIRED' });
+
+                return;
+            }
 
             setLoading(true);
             try {

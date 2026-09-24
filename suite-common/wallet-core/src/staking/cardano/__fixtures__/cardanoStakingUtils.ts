@@ -231,3 +231,44 @@ export const hasCardanoLiveVoteDelegation = [
         result: false,
     },
 ];
+
+const cardanoAccountWithRewards = (
+    rewards: string,
+    drep: { drep_id: string } | null,
+    isActive = true,
+) => ({
+    networkType: 'cardano',
+    misc: { staking: { poolId: everstakePool, drep, isActive, rewards } },
+});
+
+export const isCardanoWithdrawalBlockedByMissingDrep = [
+    {
+        description: 'rewards on an account with no vote delegation',
+        account: cardanoAccountWithRewards('1000000', null),
+        result: true,
+    },
+    {
+        description: 'rewards on an account voting for a DRep',
+        account: cardanoAccountWithRewards('1000000', { drep_id: CARDANO_EVERSTAKE_DREP.bech32 }),
+        result: false,
+    },
+    {
+        description: 'no rewards on an account with no vote delegation',
+        account: cardanoAccountWithRewards('0', null),
+        result: false,
+    },
+    {
+        description: 'rewards on an unregistered account, whose reported DRep is stale',
+        account: cardanoAccountWithRewards(
+            '1000000',
+            { drep_id: CARDANO_EVERSTAKE_DREP.bech32 },
+            false,
+        ),
+        result: true,
+    },
+    {
+        description: 'non-cardano account',
+        account: { networkType: 'ethereum' },
+        result: false,
+    },
+];

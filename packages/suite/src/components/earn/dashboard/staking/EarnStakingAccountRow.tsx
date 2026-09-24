@@ -13,6 +13,7 @@ import {
     getNetworkAdjustedStakingBalance,
     getStakingDataForNetwork,
     getStakingLimitsByNetworkSymbol,
+    isCardanoWithdrawalBlockedByMissingDrep,
     selectAccountClaimTransactions,
     selectAccountIsStakingActive,
     selectPoolStatsApy,
@@ -70,7 +71,13 @@ export const EarnStakingAccountRow = ({ account, isCardLayout }: EarnStakingAcco
     } = useMessageSystemStaking(account.symbol);
 
     const { canClaim = false } = getStakingDataForNetwork(account) ?? {};
-    const isClaimButtonDisabled = isClaimingDisabled || isClaimPending;
+    const isDrepDelegationRequired = isCardanoWithdrawalBlockedByMissingDrep(account);
+    const isClaimButtonDisabled = isClaimingDisabled || isClaimPending || isDrepDelegationRequired;
+    const claimTooltipContent =
+        claimingMessageContent ??
+        (isDrepDelegationRequired ? (
+            <Translation id="TR_STAKE_DREP_DELEGATION_REQUIRED" />
+        ) : undefined);
 
     const minStakingAmount = getStakingLimitsByNetworkSymbol(
         account.symbol,
@@ -307,7 +314,7 @@ export const EarnStakingAccountRow = ({ account, isCardLayout }: EarnStakingAcco
         canClaim,
         networkType: account.networkType,
         isClaimButtonDisabled,
-        claimingMessageContent,
+        claimingMessageContent: claimTooltipContent,
         onBuy: navigateToTradingBuy,
         onStake: account.symbol === 'trx' ? onTronStake : openStakeModal,
         onStakeNow: account.symbol === 'trx' ? onTronStake : navigateToStaking,

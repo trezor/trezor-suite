@@ -8,6 +8,7 @@ import {
     isCardanoStakedOutsideEverstake,
     isCardanoStakedWithEverstake,
     isCardanoStakedWithFiveBinaries,
+    isCardanoWithdrawalBlockedByMissingDrep,
     poolBech32ToHex,
     selectBestCardanoPool,
 } from './cardanoStakingUtils';
@@ -57,6 +58,12 @@ describe('cardano staking utils', () => {
     fixtures.hasCardanoLiveVoteDelegation.forEach(f => {
         it(`hasCardanoLiveVoteDelegation: ${f.description}`, () => {
             expect(hasCardanoLiveVoteDelegation(f.account as Account)).toBe(f.result);
+        });
+    });
+
+    fixtures.isCardanoWithdrawalBlockedByMissingDrep.forEach(f => {
+        it(`isCardanoWithdrawalBlockedByMissingDrep: ${f.description}`, () => {
+            expect(isCardanoWithdrawalBlockedByMissingDrep(f.account as Account)).toBe(f.result);
         });
     });
 });

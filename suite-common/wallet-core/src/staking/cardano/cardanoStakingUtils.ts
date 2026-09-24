@@ -15,7 +15,7 @@ import {
     supportedCardanoNetworkSymbols,
 } from '@suite-common/wallet-types';
 import { PROTO } from '@trezor/connect';
-import { isArrayMember } from '@trezor/utils';
+import { BigNumber, isArrayMember } from '@trezor/utils';
 
 export function isSupportedAdaStakingNetworkSymbol(
     symbol: NetworkSymbol,
@@ -49,6 +49,14 @@ export const getCardanoAccountDrepId = (account?: Account) => {
 
 export const hasCardanoLiveVoteDelegation = (account?: Account) =>
     !!isCardanoStakingActive(account ?? null) && !!getCardanoAccountDrepId(account);
+
+export const isCardanoWithdrawalBlockedByMissingDrep = (account?: Account) => {
+    if (account?.networkType !== 'cardano') return false;
+
+    const rewards = account.misc?.staking?.rewards ?? '0';
+
+    return new BigNumber(rewards).gt(0) && !hasCardanoLiveVoteDelegation(account);
+};
 
 export const isCardanoStakedWithEverstake = (
     account: Account,
