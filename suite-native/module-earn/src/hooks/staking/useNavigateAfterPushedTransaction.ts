@@ -5,7 +5,6 @@ import { CommonActions, useNavigation } from '@react-navigation/native';
 
 import { useServices } from '@suite-common/dependency-injection';
 import { injectDispatch } from '@suite-common/redux-utils';
-import { type NetworkSymbol } from '@suite-common/wallet-config';
 import {
     type AccountsRootState,
     type FeesRootState,
@@ -30,7 +29,6 @@ import {
 } from '@suite-native/navigation';
 
 import { type EarnFormDraftPrefix } from '../../types';
-import { resolveStakingTargetRoute } from '../../utils/staking/resolveStakingTargetRoute';
 
 type NavigationProps = StackNavigationProps<RootStackParamList, RootStackRoutes>;
 
@@ -39,7 +37,6 @@ interface NavigateToPushedTransactionActionProps {
     amountInBaseUnits: string;
     failedTxid?: string;
     stakeType: EarnFormDraftPrefix;
-    symbol: NetworkSymbol;
 }
 
 const navigateToPushedTransactionAction = ({
@@ -47,7 +44,6 @@ const navigateToPushedTransactionAction = ({
     amountInBaseUnits,
     failedTxid,
     stakeType,
-    symbol,
 }: NavigateToPushedTransactionActionProps) =>
     CommonActions.reset({
         index: 2,
@@ -57,7 +53,7 @@ const navigateToPushedTransactionAction = ({
                 params: { screen: AppTabsRoutes.EarnStack },
             },
             {
-                name: resolveStakingTargetRoute(symbol),
+                name: RootStackRoutes.StakingManagement,
                 params: { accountKey },
             },
             // A confirmed transaction can still have failed on-chain (e.g. reverted contract
@@ -129,7 +125,7 @@ export const useNavigateAfterPushedTransaction = ({
     }, [accountKey, dispatch, pollIntervalMs, shouldPollPendingTransaction]);
 
     useEffect(() => {
-        if (txid && isTransactionConfirmed && networkSymbol) {
+        if (txid && isTransactionConfirmed) {
             markReviewNavigationSuccess();
             navigation.dispatch(
                 navigateToPushedTransactionAction({
@@ -137,7 +133,6 @@ export const useNavigateAfterPushedTransaction = ({
                     amountInBaseUnits,
                     failedTxid: isTransactionFailed ? txid : undefined,
                     stakeType,
-                    symbol: networkSymbol,
                 }),
             );
         }
@@ -148,7 +143,6 @@ export const useNavigateAfterPushedTransaction = ({
         isTransactionFailed,
         markReviewNavigationSuccess,
         navigation,
-        networkSymbol,
         stakeType,
         txid,
     ]);

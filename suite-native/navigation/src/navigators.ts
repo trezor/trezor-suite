@@ -520,7 +520,6 @@ export type RootStackParamList = {
         flowType?: AccountAssetsFlow;
     } & AccountIdentityParams;
     [RootStackRoutes.AccountDetail]: AccountDetailParams;
-    [RootStackRoutes.StakingDetail]: { accountKey: AccountKey };
     [RootStackRoutes.StakingManagement]: { accountKey: AccountKey };
     [RootStackRoutes.YieldVaultDetail]: { accountKey: AccountKey; tokenContract: TokenAddress };
     [RootStackRoutes.HowStakeWorksScreen]: {

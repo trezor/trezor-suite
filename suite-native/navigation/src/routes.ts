@@ -6,7 +6,6 @@ export enum RootStackRoutes {
     AuthorizeDeviceStack = 'AuthorizeDeviceStack',
     AccountAssets = 'AccountAssets',
     AccountDetail = 'AccountDetail',
-    StakingDetail = 'StakingDetail',
     StakingManagement = 'StakingManagement',
     YieldVaultDetail = 'YieldVaultDetail',
     HowStakeWorksScreen = 'HowStakeWorksScreen',

@@ -1,3 +1,4 @@
+import { isSupportedTronStakingNetworkSymbol } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
 import { HStack, Text } from '@suite-native/atoms';
 import { Icon } from '@suite-native/icons';
@@ -16,7 +17,7 @@ export const StakingApyBadge = ({ account }: StakingApyBadgeProps) => {
 
     if (!rate) return null;
 
-    const isTron = account.symbol === 'trx';
+    const isTron = isSupportedTronStakingNetworkSymbol(account.symbol);
 
     return (
         <HStack spacing="sp8" alignItems="center" testID="@accountList/item/yieldRateBadge">

@@ -9,6 +9,7 @@ import { getNetworkDisplaySymbolName } from '@suite-common/wallet-config';
 import {
     type AccountsRootState,
     type StakeRootState,
+    isSupportedTronStakingNetworkSymbol,
     selectApy,
     selectIsCardanoStakedOutsideEverstake,
     selectIsCardanoStakedWithFiveBinaries,
@@ -45,7 +46,7 @@ export const EarnAccountCard = ({ item, onPress }: EarnAccountCardProps) => {
     );
 
     const { stats: tronStats, formattedMaxApr: tronMaxApr } = useTronStakingStats({
-        enabled: isStakingItem && item.symbol === 'trx',
+        enabled: isStakingItem && isSupportedTronStakingNetworkSymbol(item.symbol),
     });
 
     const tronVotes = useSelector((state: AccountsRootState) =>
@@ -59,7 +60,8 @@ export const EarnAccountCard = ({ item, onPress }: EarnAccountCardProps) => {
 
     const tronApr = formatTronApr(votedTronApr ?? tronMaxApr);
 
-    const resolvedApy = symbol === 'trx' ? tronApr : apy;
+    const isTronStaking = isSupportedTronStakingNetworkSymbol(symbol);
+    const resolvedApy = isTronStaking ? tronApr : apy;
     const apyValue = isStakingItem ? resolvedApy : item.apy;
 
     const availableTronVotingPower = useSelector((state: AccountsRootState) =>
@@ -74,8 +76,7 @@ export const EarnAccountCard = ({ item, onPress }: EarnAccountCardProps) => {
         selectIsCardanoStakedWithFiveBinaries(state, item.accountKey),
     );
 
-    const showTronVotingAlert =
-        isStakingItem && item.symbol === 'trx' && availableTronVotingPower !== '0';
+    const showTronVotingAlert = isStakingItem && isTronStaking && availableTronVotingPower !== '0';
 
     const contractAddress = isDefiYieldItem ? item.tokenContractAddress : undefined;
 
@@ -115,7 +116,7 @@ export const EarnAccountCard = ({ item, onPress }: EarnAccountCardProps) => {
                             <ApyValue apy={null} withLabel />
                         ) : (
                             <Translation
-                                id={symbol === 'trx' ? 'earn.aprPercentage' : 'earn.apyPercentage'}
+                                id={isTronStaking ? 'earn.aprPercentage' : 'earn.apyPercentage'}
                                 values={{ apy: apyValue }}
                             />
                         )}

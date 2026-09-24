@@ -5,6 +5,7 @@ import { type NetworkSymbol } from '@suite-common/wallet-config';
 import {
     type StakeRootState,
     isCardanoStakedWithFiveBinaries,
+    isSupportedAdaStakingNetworkSymbol,
     selectFirstCardanoAccountStakedWithFiveBinaries,
 } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
@@ -41,7 +42,7 @@ export const StakingBadge = ({ networkSymbol, account }: StakingBadgeProps) => {
     );
 
     const shouldShowWarningIcon = useMemo(() => {
-        if (networkSymbol !== 'ada') return false;
+        if (!isSupportedAdaStakingNetworkSymbol(networkSymbol)) return false;
 
         if (account) return isCardanoStakedWithFiveBinaries(account);
 

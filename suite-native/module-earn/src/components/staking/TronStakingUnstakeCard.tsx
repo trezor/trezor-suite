@@ -2,25 +2,21 @@ import { useSelector } from 'react-redux';
 
 import {
     type StakeRootState,
-    selectAccountByKey,
     selectTronPendingUnstakeBalanceByAccountKey,
     selectUnstakingPeriodInDaysByAccountKey,
 } from '@suite-common/wallet-core';
 import { type AccountKey } from '@suite-common/wallet-types';
-import { Box, Card, Text } from '@suite-native/atoms';
-import {
-    CompactCryptoAmountFormatter,
-    CryptoToFiatAmountFormatter,
-} from '@suite-native/formatters';
+import { isPositiveBalance } from '@suite-common/wallet-utils';
+import { Text, VStack } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 
-interface TronStakingUnstakeCardProps {
+import { StakingManagementPendingItem } from './StakingManagementPendingItem';
+
+type TronStakingUnstakeCardProps = {
     accountKey: AccountKey;
-}
+};
 
 export const TronStakingUnstakeCard = ({ accountKey }: TronStakingUnstakeCardProps) => {
-    const account = useSelector((state: StakeRootState) => selectAccountByKey(state, accountKey));
-
     const pendingUnstakeBalance = useSelector((state: StakeRootState) =>
         selectTronPendingUnstakeBalanceByAccountKey(state, accountKey),
     );
@@ -28,36 +24,23 @@ export const TronStakingUnstakeCard = ({ accountKey }: TronStakingUnstakeCardPro
         selectUnstakingPeriodInDaysByAccountKey(state, accountKey),
     );
 
-    if (account?.networkType !== 'tron') return null;
-    if (pendingUnstakeBalance === '0') return null;
+    if (!isPositiveBalance(pendingUnstakeBalance)) return null;
 
     return (
-        <Card>
-            <Box flexDirection="row" alignItems="center" justifyContent="space-between">
-                <Text variant="body-sm-strong">
+        <VStack spacing="sp12">
+            <Text variant="headline-sm">
+                <Translation id="earn.stakingManagementScreen.pendingActions" />
+            </Text>
+            <StakingManagementPendingItem
+                accountKey={accountKey}
+                label={
                     <Translation
-                        id="earn.tron.unstakingCardTitle"
-                        values={{ days: unstakingPeriodInDays ?? 14 }}
+                        id="earn.stakingManagementScreen.unstakingItem.label"
+                        values={{ days: unstakingPeriodInDays }}
                     />
-                </Text>
-
-                <Box flexDirection="column" alignItems="flex-end">
-                    <CompactCryptoAmountFormatter
-                        value={pendingUnstakeBalance}
-                        symbol={account.symbol}
-                        variant="body-sm"
-                        color="contentPrimary"
-                    />
-
-                    <CryptoToFiatAmountFormatter
-                        value={pendingUnstakeBalance}
-                        symbol={account.symbol}
-                        isBalance
-                        variant="body-sm"
-                        color="contentSecondary"
-                    />
-                </Box>
-            </Box>
-        </Card>
+                }
+                amount={pendingUnstakeBalance}
+            />
+        </VStack>
     );
 };
