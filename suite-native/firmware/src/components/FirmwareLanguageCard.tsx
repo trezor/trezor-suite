@@ -11,15 +11,15 @@ import { Badge, Card, HStack, Select, Text, VStack } from '@suite-native/atoms';
 import { Icon } from '@suite-native/icons';
 import { Translation } from '@suite-native/intl';
 
-import { useFirmwareLanguage } from '../hooks/useFirmwareLanguage';
+type FirmwareLanguageCardProps = {
+    onChange: (language: Locale) => void;
+};
 
 const BetaBadge = () => (
     <Badge label={<Translation id="firmware.languageCard.betaBadge" />} intent="info" />
 );
 
-export const FirmwareLanguageCard = () => {
-    const { changeFirmwareLanguage } = useFirmwareLanguage();
-
+export const FirmwareLanguageCard = ({ onChange }: FirmwareLanguageCardProps) => {
     const isDeviceLanguageConfigurable = useSelector(selectIsDeviceLanguageConfigurable);
     const supportedDeviceLanguages = useSelector(selectSupportedDeviceLanguages);
     const deviceLanguage = useSelector(selectDeviceLanguage);
@@ -35,9 +35,9 @@ export const FirmwareLanguageCard = () => {
         [supportedDeviceLanguages],
     );
 
-    const changeFirmwareLanguageIfDifferent = (language: Locale) => {
+    const handleLanguageSelection = (language: Locale) => {
         if (language !== deviceLanguage) {
-            changeFirmwareLanguage(language);
+            onChange(language);
         }
     };
 
@@ -58,7 +58,7 @@ export const FirmwareLanguageCard = () => {
                     title={<Translation id="firmware.languageCard.title" />}
                     items={deviceLanguageItems}
                     value={deviceLanguage}
-                    onSelectItem={changeFirmwareLanguageIfDifferent}
+                    onSelectItem={handleLanguageSelection}
                     isConfirmable
                 />
             </VStack>

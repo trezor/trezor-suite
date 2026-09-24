@@ -15,6 +15,9 @@
         {
             "path": "../../suite-common/suite-constants"
         },
+        {
+            "path": "../../suite-common/suite-types"
+        },
         { "path": "../../suite-common/thp" },
         {
             "path": "../../suite-common/validators"
@@ -28,6 +31,7 @@
         { "path": "../bluetooth" },
         { "path": "../device" },
         { "path": "../device-authorization" },
+        { "path": "../device-mutex" },
         { "path": "../firmware" },
         { "path": "../forms" },
         { "path": "../helpers" },
