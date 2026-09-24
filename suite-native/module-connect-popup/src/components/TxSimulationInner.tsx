@@ -1,8 +1,13 @@
 import { useState } from 'react';
 
-import { type ConnectCallSource, connectPopupActions } from '@suite-common/connect-popup';
+import {
+    CALL_SOURCE_WALLETCONNECT,
+    type ConnectCallSource,
+    connectPopupActions,
+} from '@suite-common/connect-popup';
 import { useServices } from '@suite-common/dependency-injection';
 import { injectDispatch } from '@suite-common/redux-utils';
+import { getGasLimitFromGasEstimation } from '@suite-common/tx-simulation';
 import { ETH_CONTRACT_CALL_BACKUP_GAS_LIMIT } from '@suite-common/wallet-constants';
 import { type Account, type TxSimulationAction } from '@suite-common/wallet-types';
 import { AccountsListItem } from '@suite-native/accounts';
@@ -12,6 +17,9 @@ import { EvmTxSimulationReviewContent } from '@suite-native/tx-simulation';
 import { ERRORS } from '@trezor/connect-common/src/constants';
 
 import { ConnectAppIcon } from './ConnectAppIcon';
+
+// Connect reads the gas limit as hex.
+const toHexGasLimit = (value: string) => `0x${BigInt(value).toString(16)}`;
 
 interface TxSimulationInnerProps {
     action: TxSimulationAction;
@@ -26,9 +34,12 @@ export function TxSimulationInner({ action, account, source }: TxSimulationInner
     const defaultGasLimit =
         action.method === 'ethereumSignTransaction'
             ? action.payload.transaction.gasLimit
-            : ETH_CONTRACT_CALL_BACKUP_GAS_LIMIT;
+            : toHexGasLimit(ETH_CONTRACT_CALL_BACKUP_GAS_LIMIT);
     const [gasLimit, setGasLimit] = useState(defaultGasLimit);
     const isSigningTransaction = action.method === 'ethereumSignTransaction';
+    // The ethereumSignTransaction preCallHook replaces the payload fee with the selected fee
+    // only for WalletConnect. Other sources keep the gas limit from their payload.
+    const isFeeSelectable = source.type === CALL_SOURCE_WALLETCONNECT;
 
     const onConfirm = () => {
         if (isSigningTransaction) {
@@ -119,6 +130,7 @@ export function TxSimulationInner({ action, account, source }: TxSimulationInner
                     </Button>
                 }
                 confirmTestID="@popup/confirm-simulation"
+                gasLimit={gasLimit}
                 insufficientGasWarning={{
                     transaction: isSigningTransaction ? action.payload.transaction : undefined,
                     gasLimit,
@@ -131,17 +143,13 @@ export function TxSimulationInner({ action, account, source }: TxSimulationInner
                         case 'ethereumSignTransaction':
                         case 'ethereumSignTypedData': {
                             const { simulation: evmSimulation, gas_estimation } = payload;
-                            const newFeeLimit =
-                                gas_estimation?.status === 'Success'
-                                    ? Number(gas_estimation.estimate).toString()
-                                    : null;
-
+                            const estimatedGasLimit = getGasLimitFromGasEstimation(gas_estimation);
                             if (
+                                isFeeSelectable &&
                                 evmSimulation?.status === 'Success' &&
-                                newFeeLimit &&
-                                newFeeLimit !== defaultGasLimit
+                                estimatedGasLimit
                             ) {
-                                setGasLimit(newFeeLimit);
+                                setGasLimit(estimatedGasLimit);
                             }
 
                             break;

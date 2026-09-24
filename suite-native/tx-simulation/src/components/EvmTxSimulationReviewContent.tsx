@@ -35,6 +35,11 @@ type EvmTxSimulationReviewContentProps = {
     assetVariant?: 'stack' | 'wrap';
     cancelButton?: ReactNode;
     confirmTestID?: string;
+    /**
+     * Gas limit selected for the transaction, for example the simulation estimate.
+     * Replaces the gas limit in the action payload.
+     */
+    gasLimit?: string;
     headerContent?: ReactNode;
     insufficientGasWarning?: EvmInsufficientGasWarningProps;
     isConfirmDisabled?: boolean;
@@ -52,6 +57,7 @@ export function EvmTxSimulationReviewContent({
     assetVariant = 'stack',
     cancelButton,
     confirmTestID,
+    gasLimit,
     headerContent,
     insufficientGasWarning,
     isConfirmDisabled = false,
@@ -122,7 +128,10 @@ export function EvmTxSimulationReviewContent({
             ? getEvmTxSimulationFeeInfoItems({
                   formatCryptoAmount: CryptoAmountFormatter.format,
                   network,
-                  transaction: action.payload.transaction,
+                  transaction: {
+                      ...action.payload.transaction,
+                      gasLimit: gasLimit ?? action.payload.transaction.gasLimit,
+                  },
               })
             : [];
 
