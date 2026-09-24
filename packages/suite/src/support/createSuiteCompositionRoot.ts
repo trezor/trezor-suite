@@ -181,6 +181,7 @@ export const createSuiteServicesCompositionRoot = (deps: SuiteAppDeps): SuiteSer
         connectInitSettings,
         connectInitDeviceEventHooks: createConnectInitDeviceEventHooks({
             dispatch: deps.dispatch,
+            bluetooth,
         }),
         connectInitUIEventHooks: createConnectInitUIEventHooks({
             dispatch: deps.dispatch,

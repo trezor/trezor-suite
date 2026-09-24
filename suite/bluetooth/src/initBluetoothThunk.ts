@@ -9,6 +9,7 @@ import {
     fromBluetoothDevice,
     toBluetoothDevice,
 } from './DesktopBluetoothDevice';
+import { bluetoothAdapterEventThunk } from './bluetoothAdapterEventThunk';
 import { type BluetoothDep } from './bluetoothServiceTypes';
 import { type WithBluetoothRootState } from './desktopBluetoothReducer';
 import { fixLinuxManufacturerData } from './fixLinuxManufacturerData';
@@ -57,7 +58,7 @@ export const initBluetoothThunk = createThunk<
     bluetoothIpc.on('adapter-event', status => {
         // TODO: check if redux.status != status && status == enabled
         // and fetch bluetoothIpc.getInfo() again
-        dispatch(bluetoothActions.adapterEventAction({ status }));
+        dispatch(bluetoothAdapterEventThunk({ status }));
     });
 
     bluetoothIpc.on('device-list-update', nearbyDevicesIpc => {
@@ -73,6 +74,8 @@ export const initBluetoothThunk = createThunk<
                 knownDevices: remappedKnownDevices,
             }),
         );
+        extra.services.bluetooth.restartBackgroundScan();
+
         dispatch(
             bluetoothActions.nearbyDevicesUpdateAction({
                 nearbyDevices,
@@ -89,6 +92,7 @@ export const initBluetoothThunk = createThunk<
         device = fixLinuxManufacturerData(device, knownDevice);
 
         dispatch(bluetoothActions.deviceUpdateAction({ device }));
+        extra.services.bluetooth.restartBackgroundScan();
     });
 
     bluetoothIpc.on('open-bluetooth-settings', async ({ id }) => {
