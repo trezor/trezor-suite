@@ -59,7 +59,7 @@ export const useFirmwareLanguage = () => {
                 if (
                     errorCode === 'Failure_ActionCancelled' ||
                     errorCode === 'Failure_PinCancelled' ||
-                    errorCode === 'Method_Interrupted'
+                    errorCode === 'Method_Cancel'
                 ) {
                     navigation.goBack();
                 } else {
