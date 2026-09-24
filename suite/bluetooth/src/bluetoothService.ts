@@ -109,15 +109,6 @@ const setupAutoReconnect = (deps: SetupAutoReconnectDeps) => {
             await attemptDeviceConnect({ ...deps, device });
         });
 
-        TrezorConnect.on('device-disconnect', device => {
-            if (device.descriptor.apiType === 'bluetooth') {
-                // wait for deviceActions.deviceDisconnect to update redux state
-                queueMicrotask(() => {
-                    backgroundScan.restartIfNeeded();
-                });
-            }
-        });
-
         // If we already have some paired devices, we assume user will have a BT device,
         // and therefore we start looking for it.
         const knownDevices = selectKnownDevices<DesktopBluetoothDevice>(getState());

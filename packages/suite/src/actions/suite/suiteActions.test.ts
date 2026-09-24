@@ -8,6 +8,7 @@ import { routerReducer } from '@suite/router';
 import { type RouterStateOverrides, createRouterStateMock } from '@suite/router/mocks';
 import { torReducer } from '@suite/tor';
 import { type AnalyticsDep } from '@suite-common/analytics';
+import { mockBluetoothServiceCommon } from '@suite-common/bluetooth/mocks';
 import { type ConnectInitThunkDeps, connectInitThunk } from '@suite-common/connect-init';
 import {
     mockConnectInitHooks,
@@ -78,6 +79,7 @@ const extra: SuiteActionsTestDeps = {
     actions: { lockDevice },
     services: {
         analytics: mockDesktopAnalytics(),
+        bluetooth: mockBluetoothServiceCommon(),
         connectInitHooks: mockConnectInitHooks(),
         connectInitSettings: mockConnectInitSettings(),
         createLogger: noopCreateLogger,

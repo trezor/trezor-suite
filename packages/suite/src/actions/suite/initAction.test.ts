@@ -25,6 +25,7 @@ import {
 } from '@suite/settings';
 import { onSuiteInit, onSuiteReady } from '@suite/suite-lifecycle';
 import { prepareAnalyticsReducer } from '@suite-common/analytics-redux';
+import { mockBluetoothServiceCommon } from '@suite-common/bluetooth/mocks';
 import { connectInitThunk } from '@suite-common/connect-init';
 import {
     mockConnectInitHooks,
@@ -362,6 +363,7 @@ const initStore = (state: State) => {
             services: {
                 ...createDesktopApiDep(),
                 analytics: mockDesktopAnalytics(),
+                bluetooth: mockBluetoothServiceCommon(),
                 connectInitHooks: mockConnectInitHooks(),
                 connectInitSettings: mockConnectInitSettings(),
                 createLogger: noopCreateLogger,

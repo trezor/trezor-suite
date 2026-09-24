@@ -117,6 +117,8 @@ export const createNativeServicesCompositionRoot = (deps: NativeAppDeps): Native
             },
         },
         connectInitHooks: { deviceEvent: {}, uiEvent: {} },
+        // Native has no Bluetooth background scan; scanning is driven by the UI.
+        bluetooth: { restartBackgroundScan: () => {} },
         createLogger,
         // Native constructs its per-device-type transports directly (single platform, no
         // web/desktop split) and returns the enabled ones as ready-made instances.

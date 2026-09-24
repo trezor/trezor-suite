@@ -1,5 +1,6 @@
 import { createAction } from '@reduxjs/toolkit';
 
+import { mockBluetoothServiceCommon } from '@suite-common/bluetooth/mocks';
 import { asGetter } from '@suite-common/dependency-injection';
 import { deviceInitialState } from '@suite-common/device';
 import { firmwareInitialState } from '@suite-common/firmware';
@@ -55,6 +56,7 @@ const createThunkDeps = (
         },
         services: {
             analytics: { report: jest.fn() },
+            bluetooth: mockBluetoothServiceCommon(),
             connectInitHooks: { deviceEvent: {}, uiEvent: {} },
             connectInitSettings: {
                 manifest: {

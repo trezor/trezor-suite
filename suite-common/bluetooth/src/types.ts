@@ -72,3 +72,12 @@ export type ForgetBluetoothDeviceThunk = SuiteCompatibleThunk<ForgetBluetoothDev
 export type ForgetBluetoothDeviceDep = {
     forgetBluetoothDevice: ForgetBluetoothDeviceThunk;
 };
+
+/** @serviceContract */
+export type BluetoothServiceCommon = {
+    restartBackgroundScan: () => void;
+};
+
+export type BluetoothServiceCommonDep = {
+    bluetooth: BluetoothServiceCommon;
+};
