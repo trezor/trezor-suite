@@ -70,6 +70,15 @@ const compareDisplayContent = async (
             return expectedValue.test(actualValue);
         }
 
+        // A paragraph is an array of line tokens, join it back so a RegExp matches across a wrap.
+        if (
+            expectedValue instanceof RegExp &&
+            Array.isArray(actualValue) &&
+            actualValue.every(token => typeof token === 'string')
+        ) {
+            return expectedValue.test(actualValue.filter(token => token !== '\n').join(' '));
+        }
+
         // Let default comparison handle all other cases
         return undefined;
     };

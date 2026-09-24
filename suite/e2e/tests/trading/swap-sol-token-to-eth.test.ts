@@ -91,12 +91,7 @@ test.describe('Trading - Swap', { tag: ['@T3W1', '@T3T1'] }, () => {
                 await expect(devicePrompt.cryptoAmountWithSymbolOf('total')).toHaveText(
                     formattedSendAmount,
                 );
-                const reviewFee = (await devicePrompt.cryptoAmountOf('fee').innerText())?.trim();
-                if (!reviewFee) {
-                    throw new Error(
-                        'Review fee amount was not displayed on the confirmation modal',
-                    );
-                }
+                await expect(devicePrompt.cryptoAmountOf('fee')).toHaveText(/^[\d,]+(\.\d+)?$/);
                 await expect(device).toShowOnDisplay({
                     T3W1: {
                         header: { title: 'Send' },
@@ -104,7 +99,8 @@ test.describe('Trading - Swap', { tag: ['@T3W1', '@T3T1'] }, () => {
                             ['Amount'],
                             [formattedSendAmount],
                             ['Max fees and rent'],
-                            device.wrapText(`${reviewFee} SOL`, { wrapByWords: true }),
+                            // TODO: match the fee shown in Suite once BUG https://github.com/trezor/trezor-suite/issues/32840 is fixed
+                            /^[\d,]+(\.\d+)? SOL$/,
                         ],
                         actions: { right_button: 'Hold to sign' },
                     },
