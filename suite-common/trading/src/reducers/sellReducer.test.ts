@@ -1,10 +1,12 @@
 import { combineReducers } from '@reduxjs/toolkit';
+import { type CryptoId, type SellFiatTradeQuoteRequest } from 'invity-api';
 
 import { createTestStore } from '@suite-common/test-utils';
 import { type AccountKey } from '@suite-common/wallet-types';
 
+import { MIN_MAX_QUOTES_LOW } from '../__fixtures__/sellUtils';
 import { sellTradingFixtures } from './__fixtures__/sellTradingReducer';
-import { tradingSellActions, tradingSellReducer } from './sellReducer';
+import { sellInitialState, tradingSellActions, tradingSellReducer } from './sellReducer';
 
 describe('tradingSellReducer', () => {
     sellTradingFixtures.forEach(fixture => {
@@ -93,6 +95,34 @@ describe('tradingSellReducer', () => {
             );
 
             expect(state.amountLimits).toEqual({ currency: 'eth' });
+        });
+
+        const QUOTES_REQUEST: SellFiatTradeQuoteRequest = {
+            amountInCrypto: true,
+            cryptoCurrency: 'bitcoin' as CryptoId,
+            fiatCurrency: 'EUR',
+            cryptoStringAmount: '0.01',
+            country: 'CZ',
+        };
+        const [SELECTED_QUOTE] = MIN_MAX_QUOTES_LOW;
+        const withQuotes = () =>
+            [
+                tradingSellActions.setTradingAccountKey(KEY_1),
+                tradingSellActions.saveQuoteRequest(QUOTES_REQUEST),
+                tradingSellActions.saveQuotes(MIN_MAX_QUOTES_LOW),
+                tradingSellActions.saveSelectedQuote(SELECTED_QUOTE),
+            ].reduce(tradingSellReducer, sellInitialState);
+
+        it('clears quotes, quotesRequest and selectedQuote when the account key is cleared', () => {
+            const state = tradingSellReducer(
+                withQuotes(),
+                tradingSellActions.setTradingAccountKey(undefined),
+            );
+
+            expect(state.tradingAccountKey).toBeUndefined();
+            expect(state.quotes).toEqual([]);
+            expect(state.quotesRequest).toBeUndefined();
+            expect(state.selectedQuote).toBeUndefined();
         });
     });
 });
