@@ -7,6 +7,9 @@
         },
         { "path": "../../suite-common/bip329" },
         {
+            "path": "../../suite-common/connect-init"
+        },
+        {
             "path": "../../suite-common/connect-popup"
         },
         {

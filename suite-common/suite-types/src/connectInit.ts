@@ -37,6 +37,12 @@ export type LockDeviceDep = {
     lockDevice: LockDevice;
 };
 
+export type ConnectInit = () => Promise<void>;
+
+export type ConnectInitDep = {
+    connectInit: ConnectInit;
+};
+
 export type ConnectInitSettings = {
     manifest: Manifest;
 } & Partial<ConnectSettings>;
