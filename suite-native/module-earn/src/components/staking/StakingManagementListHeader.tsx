@@ -5,6 +5,7 @@ import {
     type StakeRootState,
     isSupportedEthStakingNetworkSymbol,
     isSupportedSolStakingNetworkSymbol,
+    isSupportedTronStakingNetworkSymbol,
     selectAdaAccountHasStaked,
 } from '@suite-common/wallet-core';
 import { type AccountKey } from '@suite-common/wallet-types';
@@ -20,6 +21,9 @@ import { SolExternalStakingBanner } from './SolExternalStakingBanner';
 import { SolStakingRewardsWarning } from './SolStakingRewardsWarning';
 import { StakingManagementPendingSection } from './StakingManagementPendingSection';
 import { StakingManagementStakedCard } from './StakingManagementStakedCard';
+import { TronResourcesCard } from './TronResourcesCard';
+import { TronStakingUnstakeCard } from './TronStakingUnstakeCard';
+import { TronStakingWithdrawBanner } from './TronStakingWithdrawBanner';
 
 type StakingManagementListHeaderProps = {
     accountKey: AccountKey;
@@ -34,6 +38,7 @@ export const StakingManagementListHeader = ({ accountKey }: StakingManagementLis
 
     const isSolanaStaking = isSupportedSolStakingNetworkSymbol(networkSymbol);
     const isCardanoStaking = networkSymbol === 'ada';
+    const isTronStaking = isSupportedTronStakingNetworkSymbol(networkSymbol);
 
     const isStakeSectionShown = !isCardanoStaking || hasAdaStaked;
 
@@ -49,7 +54,12 @@ export const StakingManagementListHeader = ({ accountKey }: StakingManagementLis
             {isStakingSymbol(networkSymbol) && (
                 <ContextMessage context={Context.getStaking(networkSymbol)} />
             )}
-            <StakingManagementPendingSection accountKey={accountKey} />
+            {isTronStaking && <TronStakingWithdrawBanner accountKey={accountKey} />}
+            {isTronStaking ? (
+                <TronStakingUnstakeCard accountKey={accountKey} />
+            ) : (
+                <StakingManagementPendingSection accountKey={accountKey} />
+            )}
             {isSolanaStaking && <SolStakingRewardsWarning accountKey={accountKey} />}
             <VStack spacing="sp16">
                 {isCardanoStaking && <CardanoStakingInfoBanner accountKey={accountKey} />}
@@ -74,6 +84,7 @@ export const StakingManagementListHeader = ({ accountKey }: StakingManagementLis
                     </>
                 )}
             </VStack>
+            {isTronStaking && <TronResourcesCard accountKey={accountKey} />}
             <Text variant="headline-sm">
                 <Translation id={historyHeadingId} />
             </Text>

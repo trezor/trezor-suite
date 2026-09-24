@@ -22,9 +22,9 @@ describe('resolveStakingTargetRoute', () => {
         );
     });
 
-    it('routes Tron accounts to StakingDetail', () => {
+    it('routes Tron accounts to StakingManagement', () => {
         expect(resolveStakingTargetRoute(asNetworkSymbol('trx'))).toBe(
-            RootStackRoutes.StakingDetail,
+            RootStackRoutes.StakingManagement,
         );
     });
 

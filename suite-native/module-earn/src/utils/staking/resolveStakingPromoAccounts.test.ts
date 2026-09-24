@@ -44,7 +44,24 @@ describe('resolveStakingPromoAccounts', () => {
     });
 
     describe('with a connected device', () => {
-        it('marks a network without a mobile staking flow as desktop only', () => {
+        it('returns only the staked Tron accounts for viewing', () => {
+            const stakedAccount = createTronAccount();
+            mockGetAccountTotalStakingBalance.mockReturnValue('1000000');
+
+            expect(
+                resolveStakingPromoAccounts({
+                    symbol: asNetworkSymbol('trx'),
+                    accounts: [stakedAccount],
+                    isDeviceInViewOnlyMode: false,
+                }),
+            ).toEqual({
+                type: 'navigate',
+                support: 'view',
+                navigableAccounts: [stakedAccount],
+            });
+        });
+
+        it('marks Tron as desktop only when no account is staked', () => {
             expect(
                 resolveStakingPromoAccounts({
                     symbol: asNetworkSymbol('trx'),
@@ -182,7 +199,7 @@ describe('resolveStakingPromoAccounts', () => {
             ).toEqual({ type: 'desktop-only' });
         });
 
-        it('keeps a network without a mobile staking flow desktop only', () => {
+        it('keeps Tron desktop only when no account is staked', () => {
             expect(
                 resolveStakingPromoAccounts({
                     symbol: asNetworkSymbol('trx'),

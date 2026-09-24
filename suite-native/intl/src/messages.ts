@@ -3650,6 +3650,7 @@ export const messages = {
         apr: 'Annual Percentage Rate',
         apyAbbr: 'APY',
         apyValueWithLabel: '{value} APY',
+        aprValueWithLabel: '{value} APR',
         aprAbbr: 'APR',
         tron: {
             votes: 'Votes',
@@ -3663,7 +3664,12 @@ export const messages = {
             votesAlertText:
                 '{count, plural, one {You have 1 unassigned vote. Assign it to earn more rewards.} other {You have {count} unassigned votes. Assign them to earn more rewards.}}',
             readyToWithdrawAlert: '{amount} {displaySymbol} unstaked and ready to withdraw.',
-            unstakingCardTitle: 'Unstaking (~{days} days)',
+            resources: {
+                title: 'Resources',
+                bandwidth: 'Bandwidth',
+                energy: 'Energy',
+                availableOfTotal: '{available} / {total}',
+            },
         },
         stakingCanBeManaged: 'Manage your staking accounts in the',
         trezorDesktop: 'Trezor Suite desktop app.',
