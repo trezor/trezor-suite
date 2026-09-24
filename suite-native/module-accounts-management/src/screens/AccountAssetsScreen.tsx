@@ -12,6 +12,7 @@ import {
 } from '@suite-common/wallet-core';
 import { isAccountFailed } from '@suite-common/wallet-utils';
 import {
+    AccountDiscoveryFailedBanner,
     type NativeAccountsRootState,
     selectAccountListSectionsWithZeroBalanceGroup,
     useResolvedAccountKey,
@@ -24,7 +25,6 @@ import { AccountAssetsTabBar } from '../components/AccountAssets/AccountAssetsTa
 import { AccountAssetsTabContent } from '../components/AccountAssets/AccountAssetsTabContent';
 import { AccountEarnPromoBanner } from '../components/AccountAssets/AccountEarnPromoBanner';
 import { type AccountAssetsTab } from '../components/AccountAssets/types';
-import { AccountDiscoveryFailedBanner } from '../components/AccountBanners/AccountDiscoveryFailedBanner';
 
 export const AccountAssetsScreen = ({
     route: {

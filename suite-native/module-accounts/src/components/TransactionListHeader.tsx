@@ -11,6 +11,7 @@ import {
     useDisplayBaseCurrency,
 } from '@suite-common/wallet-core';
 import { type AccountKey, type TokenAddress } from '@suite-common/wallet-types';
+import { AccountDiscoveryFailedBanner } from '@suite-native/accounts';
 import { Box, Text, VStack } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 import {
@@ -20,7 +21,6 @@ import {
 } from '@suite-native/tokens';
 import { selectHasAccountAnyTransactionsForToken } from '@suite-native/transactions';
 
-import { AccountDiscoveryFailedBanner } from './AccountBanners/AccountDiscoveryFailedBanner';
 import { SolanaLimitedHistoryBanner } from './AccountBanners/SolanaLimitedHistoryBanner';
 import { StellarLimitedHistoryBanner } from './AccountBanners/StellarLimitedHistoryBanner';
 import { AccountDetailActionButtons } from './AccountDetailActionButtons';

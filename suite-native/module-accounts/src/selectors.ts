@@ -17,10 +17,9 @@ import {
     type FeatureFlagsRootState,
     selectIsFeatureFlagEnabled,
 } from '@suite-native/feature-flags';
+import { type AccountAssetsTab } from '@suite-native/navigation';
 import { type TokensRootState, selectAccountTokenInfo } from '@suite-native/tokens';
 import { deepEqual } from '@trezor/utils';
-
-import { type AccountAssetsTab } from './components/AccountAssets/types';
 
 const createAccountsMemoizedSelector = createWeakMapSelector.withTypes<AccountsRootState>();
 

@@ -4,12 +4,9 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
 import { isDevelopOrDebugEnv } from '@suite-native/config';
 import { BootloaderModeScreen } from '@suite-native/device-bootloader-mode';
+import { AccountDetailScreen, AccountSettingsScreen } from '@suite-native/module-accounts';
 import { AccountsImportStackNavigator } from '@suite-native/module-accounts-import';
-import {
-    AccountAssetsScreen,
-    AccountDetailScreen,
-    AccountSettingsScreen,
-} from '@suite-native/module-accounts-management';
+import { AccountAssetsScreen } from '@suite-native/module-accounts-management';
 import { ActivityCenterStackNavigator } from '@suite-native/module-activity-center';
 import { AddCoinAccountStackNavigator } from '@suite-native/module-add-accounts';
 import { DeviceCompromisedModalScreen } from '@suite-native/module-authenticity-checks';
