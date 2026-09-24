@@ -104,6 +104,8 @@ export const confirmExchangeTradeThunk = createThunk<
         // invity drops DEX-specific fields on the response — preserve those the review flow needs
         const response = rawResponse && {
             ...rawResponse,
+            isDex: rawResponse.isDex ?? trade.isDex,
+            receiveTxHash: rawResponse.receiveTxHash ?? trade.receiveTxHash,
             swapSlippage: rawResponse.swapSlippage || trade.swapSlippage,
         };
 
