@@ -133,7 +133,7 @@ test.describe('Trading - Swap inputs', { tag: ['@webOnly', '@noDevice', '@option
                         `[${asset.label}] amount ${amount} is outside the live swap limits; adjust the test amount.`,
                     ).toBeHidden();
 
-                    await expect(tradingPage.inputs.receiveAmount).not.toHaveText('0.0', {
+                    await expect(tradingPage.inputs.receiveAmount).toHaveText(/[1-9]/, {
                         timeout: 15_000,
                     });
                     await expect(tradingPage.quotes.selectedProvider).toBeVisible();
