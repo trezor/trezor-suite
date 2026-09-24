@@ -3,9 +3,8 @@ import { debugInitialState } from '@suite/debug';
 import { prepareDesktopDeviceReducer } from '@suite/device';
 import { lockDevice } from '@suite/locks';
 import { suiteSettingsInitialState } from '@suite/settings';
-import { type ConnectInitThunkDeps, connectInitThunk } from '@suite-common/connect-init';
+import { createConnectInit } from '@suite-common/connect-init';
 import {
-    mockConnectInitHooks,
     mockConnectInitSettings,
     mockCreateTransports,
     mockGetDebugSettings,
@@ -16,6 +15,7 @@ import { messageSystemInitialState } from '@suite-common/message-system';
 import { mockActionType, mockReducer } from '@suite-common/redux-utils/mocks';
 import { mockGetAllowPrerelease, mockGetBinFilesBaseUrl } from '@suite-common/suite-types/mocks';
 import { createTestStore, testMocks } from '@suite-common/test-utils';
+import { defaultTrezorUIEventHandlerThunk } from '@suite-common/wallet-core';
 import { BLOCKCHAIN_EVENT, DEVICE_EVENT, TRANSPORT_EVENT, UI_EVENT } from '@trezor/connect';
 import { noopCreateLogger } from '@trezor/connect-common';
 
@@ -33,21 +33,6 @@ const deviceReducer = prepareDesktopDeviceReducer({
         storageLoadDevices: mockReducer(),
     },
 });
-
-const extra: ConnectInitThunkDeps = {
-    actions: { lockDevice },
-    services: {
-        analytics: mockDesktopAnalytics(),
-        connectInitHooks: mockConnectInitHooks(),
-        connectInitSettings: mockConnectInitSettings(),
-        createLogger: noopCreateLogger,
-        createTransports: mockCreateTransports(),
-        getAllowPrerelease: mockGetAllowPrerelease(),
-        getBinFilesBaseUrl: mockGetBinFilesBaseUrl(),
-        getDebugSettings: mockGetDebugSettings(),
-        getThpSettings: mockGetThpSettings(),
-    },
-};
 
 type SuiteState = ReturnType<typeof suiteReducer>;
 type DevicesState = ReturnType<typeof deviceReducer>;
@@ -76,7 +61,7 @@ const getInitialState = (suite?: Partial<SuiteState>, device?: Partial<DevicesSt
 type State = ReturnType<typeof getInitialState>;
 const mockStore = (preloadedState: State) =>
     createTestStore({
-        extra,
+        extra: undefined,
         reducer: (state = preloadedState, action) => ({
             ...state,
             suite: suiteReducer(state.suite, action),
@@ -85,11 +70,27 @@ const mockStore = (preloadedState: State) =>
         preloadedState,
     });
 
+const initConnect = (store: ReturnType<typeof mockStore>) =>
+    createConnectInit({
+        dispatch: store.dispatch,
+        getState: store.getState,
+        analytics: mockDesktopAnalytics(),
+        lockDevice,
+        connectInitSettings: mockConnectInitSettings(),
+        createLogger: noopCreateLogger,
+        createTransports: mockCreateTransports(),
+        getAllowPrerelease: mockGetAllowPrerelease(),
+        getBinFilesBaseUrl: mockGetBinFilesBaseUrl(),
+        getDebugSettings: mockGetDebugSettings(),
+        getThpSettings: mockGetThpSettings(),
+        trezorUiEventHandler: action => store.dispatch(defaultTrezorUIEventHandlerThunk(action)),
+    })();
+
 describe('TrezorConnect Actions', () => {
     it('Success', () => {
         const state = getInitialState();
         const store = mockStore(state);
-        expect(() => store.dispatch(connectInitThunk())).not.toThrow();
+        expect(() => initConnect(store)).not.toThrow();
     });
 
     it('Error', async () => {
@@ -99,7 +100,7 @@ describe('TrezorConnect Actions', () => {
         const state = getInitialState();
         const store = mockStore(state);
         try {
-            await store.dispatch(connectInitThunk()).unwrap();
+            await initConnect(store);
             throw new Error('Unreachable!');
         } catch (error) {
             expect(error.message).toEqual('Iframe error');
@@ -111,7 +112,7 @@ describe('TrezorConnect Actions', () => {
         process.env.SUITE_TYPE = 'desktop';
         const state = getInitialState();
         const store = mockStore(state);
-        expect(() => store.dispatch(connectInitThunk())).not.toThrow();
+        expect(() => initConnect(store)).not.toThrow();
 
         const actions = store.getActions();
         const { emitTestEvent } = testMocks.getTrezorConnectMock();
@@ -132,7 +133,7 @@ describe('TrezorConnect Actions', () => {
         testMocks.setTrezorConnectFixtures();
         const state = getInitialState();
         const store = mockStore(state);
-        await store.dispatch(connectInitThunk());
+        await initConnect(store);
         await testMocks.getTrezorConnectMock().getFeatures();
         const actions = store.getActions();
         // check actions in reversed order

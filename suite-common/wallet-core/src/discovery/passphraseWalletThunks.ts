@@ -1,7 +1,7 @@
 import { type AnalyticsDep } from '@suite-common/analytics';
 import { type FetchAndSaveMetadataDep } from '@suite-common/metadata-types';
 import { type WithServices, createThunk } from '@suite-common/redux-utils';
-import { type ConnectInitHooksDeps, type TrezorDevice } from '@suite-common/suite-types';
+import { type TrezorDevice, type TrezorUiEventHandlerDep } from '@suite-common/suite-types';
 import { type GetTradedAccountKeysDep } from '@suite-common/wallet-types';
 import TrezorConnect, { UI_EVENT, UI_REQUEST, UI_REQUESTS } from '@trezor/connect';
 import type { PopupEventMessage, UiEventMessage, UiRequestMessage } from '@trezor/connect-common';
@@ -15,7 +15,6 @@ import {
     runDiscoveryThunk,
     startDiscoveryThunk,
 } from './discoveryThunks';
-import { defaultTrezorUIEventHandlerThunk } from '../uiEvent/defaultTrezorUIEventHandlerThunk';
 import { registerScopedCallId, unregisterScopedCallId } from '../uiEvent/scopedCallIdRegistry';
 
 type RunPassphraseWalletAddingDiscoveryThunkParams = {
@@ -25,7 +24,7 @@ type RunPassphraseWalletAddingDiscoveryThunkParams = {
 type RunPassphraseWalletAddingDiscoveryThunkState = RunDiscoveryThunkState;
 
 type RunPassphraseWalletAddingDiscoveryThunkDeps = WithServices<
-    AnalyticsDep & ConnectInitHooksDeps & GetTradedAccountKeysDep
+    AnalyticsDep & GetTradedAccountKeysDep & TrezorUiEventHandlerDep
 > & {
     thunks: FetchAndSaveMetadataDep;
 };
@@ -42,14 +41,14 @@ export const runPassphraseWalletAddingDiscoveryThunk = createThunk<
     }
 >(
     `${DISCOVERY_MODULE_PREFIX}/runPassphraseWalletAddingDiscovery`,
-    async ({ device }, { dispatch }) => {
+    async ({ device }, { dispatch, extra }) => {
         const callId = crypto.randomUUID();
         const onUiEvent = (message: UiEventMessage | PopupEventMessage | UiRequestMessage) => {
             const { event: _, ...action } = message;
             if (!('callId' in action) || !action.callId) return;
             if (action.callId !== callId) return;
             if (action.type === UI_REQUESTS.REQUEST_PASSPHRASE) return;
-            dispatch(defaultTrezorUIEventHandlerThunk(action));
+            extra.services.trezorUiEventHandler(action);
         };
 
         // Claim this callId so the global handler defers its events to the scoped listener.
@@ -77,7 +76,7 @@ type StartDiscoveryOfExistingPassphraseWalletThunkPayload = {
 type StartDiscoveryOfExistingPassphraseWalletThunkState = RunDiscoveryThunkState;
 
 type StartDiscoveryOfExistingPassphraseWalletThunkDeps = WithServices<
-    AnalyticsDep & ConnectInitHooksDeps & GetTradedAccountKeysDep
+    AnalyticsDep & GetTradedAccountKeysDep & TrezorUiEventHandlerDep
 > & {
     thunks: FetchAndSaveMetadataDep;
 };

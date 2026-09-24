@@ -1,35 +1,20 @@
-import type {
-    ConnectSettings,
-    DEVICE,
-    Device,
-    Manifest,
-    UI_EVENTS,
-    UI_REQUESTS,
-} from '@trezor/connect';
-import type { POPUP } from '@trezor/connect-common';
+import type { ConnectSettings, Manifest } from '@trezor/connect';
+import type { PopupEventMessage, UiEventMessage, UiRequestMessage } from '@trezor/connect-common';
+import type { Without } from '@trezor/type-utils';
 
-import type { TrezorDevice } from './device';
+export type UiEventAction = Without<UiEventMessage | PopupEventMessage | UiRequestMessage, 'event'>;
 
-type UiRequestType =
-    (typeof UI_EVENTS)[keyof typeof UI_EVENTS] | (typeof UI_REQUESTS)[keyof typeof UI_REQUESTS];
-type PopupEventType = (typeof POPUP)[keyof typeof POPUP];
+/** @serviceContract */
+export type TrezorUiEventHandler = (action: UiEventAction) => void;
 
-export type ConnectInitDeviceEventHooks = Partial<
-    Record<
-        typeof DEVICE.CONNECT | typeof DEVICE.CONNECT_UNACQUIRED,
-        (device: Device, prevConnectedDevices: TrezorDevice[]) => void
-    >
->;
-
-export type ConnectInitUiEventHooks = Partial<Record<UiRequestType | PopupEventType, () => void>>;
-
-export type ConnectInitHooks = {
-    deviceEvent: ConnectInitDeviceEventHooks;
-    uiEvent: ConnectInitUiEventHooks;
+export type TrezorUiEventHandlerDep = {
+    trezorUiEventHandler: TrezorUiEventHandler;
 };
 
-export type ConnectInitHooksDeps = {
-    connectInitHooks: ConnectInitHooks;
+export type ConnectInit = () => Promise<void>;
+
+export type ConnectInitDep = {
+    connectInit: ConnectInit;
 };
 
 export type ConnectInitSettings = {

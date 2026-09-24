@@ -1,2 +1,2 @@
-export * from './connectInitThunks';
+export * from './createConnectInit';
 export type * from './connectInitTypes';

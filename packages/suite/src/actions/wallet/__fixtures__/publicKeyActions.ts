@@ -1,5 +1,4 @@
 import { MODAL_CLOSE, MODAL_OPEN_USER_CONTEXT, MODAL_PRESERVE } from '@suite/modal';
-import { connectInitThunk } from '@suite-common/connect-init';
 import { mockSuiteDevice } from '@suite-common/suite-types/mocks';
 import { notificationsActions } from '@suite-common/toast-notifications';
 
@@ -14,11 +13,7 @@ export default [
         mocks: {},
         action: publicKeyActions.openXpubModal,
         result: {
-            actions: [
-                { type: connectInitThunk.pending.type, payload: undefined },
-                { type: connectInitThunk.fulfilled.type, payload: undefined },
-                { type: MODAL_OPEN_USER_CONTEXT },
-            ],
+            actions: [{ type: MODAL_OPEN_USER_CONTEXT }],
         },
     },
     {
@@ -28,8 +23,6 @@ export default [
         action: publicKeyActions.showXpubThunk,
         result: {
             actions: [
-                { type: connectInitThunk.pending.type, payload: undefined },
-                { type: connectInitThunk.fulfilled.type, payload: undefined },
                 { type: MODAL_PRESERVE },
                 { type: LOCK_DEVICE },
                 { type: LOCK_DEVICE },
@@ -48,8 +41,6 @@ export default [
         action: publicKeyActions.showXpubThunk,
         result: {
             actions: [
-                { type: connectInitThunk.pending.type, payload: undefined },
-                { type: connectInitThunk.fulfilled.type, payload: undefined },
                 { type: MODAL_PRESERVE },
                 { type: LOCK_DEVICE },
                 { type: LOCK_DEVICE },
@@ -67,8 +58,6 @@ export default [
         action: publicKeyActions.showXpubThunk,
         result: {
             actions: [
-                { type: connectInitThunk.pending.type, payload: undefined },
-                { type: connectInitThunk.fulfilled.type, payload: undefined },
                 { type: MODAL_PRESERVE },
                 { type: MODAL_CLOSE },
                 {
@@ -93,8 +82,6 @@ export default [
         action: publicKeyActions.showXpubThunk,
         result: {
             actions: [
-                { type: connectInitThunk.pending.type, payload: undefined },
-                { type: connectInitThunk.fulfilled.type, payload: undefined },
                 {
                     type: MODAL_OPEN_USER_CONTEXT,
                 },
@@ -112,10 +99,7 @@ export default [
         mocks: {},
         action: publicKeyActions.showXpubThunk,
         result: {
-            actions: [
-                { type: connectInitThunk.pending.type, payload: undefined },
-                { type: connectInitThunk.fulfilled.type, payload: undefined },
-            ],
+            actions: [],
         },
     },
     {
@@ -127,8 +111,6 @@ export default [
         action: publicKeyActions.showXpubThunk,
         result: {
             actions: [
-                { type: connectInitThunk.pending.type, payload: undefined },
-                { type: connectInitThunk.fulfilled.type, payload: undefined },
                 { type: MODAL_PRESERVE },
                 { type: LOCK_DEVICE },
                 { type: LOCK_DEVICE },
@@ -154,8 +136,6 @@ export default [
         action: publicKeyActions.showXpubThunk,
         result: {
             actions: [
-                { type: connectInitThunk.pending.type, payload: undefined },
-                { type: connectInitThunk.fulfilled.type, payload: undefined },
                 { type: MODAL_PRESERVE },
                 { type: LOCK_DEVICE },
                 { type: LOCK_DEVICE },

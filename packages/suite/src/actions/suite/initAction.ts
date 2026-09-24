@@ -17,8 +17,6 @@ import {
     suiteSettingsActions,
 } from '@suite/settings';
 import { onSuiteInit, onSuiteReady } from '@suite/suite-lifecycle';
-import * as trezorConnectActions from '@suite-common/connect-init';
-import { type ConnectInitThunkDeps, type ConnectInitThunkState } from '@suite-common/connect-init';
 import { type DeviceRootState } from '@suite-common/device';
 import { earnYieldWorkerBaseUrl } from '@suite-common/earn-stablecoin-api';
 import {
@@ -28,6 +26,7 @@ import {
     selectActiveKillswitchMessage,
 } from '@suite-common/message-system';
 import { type WithServices } from '@suite-common/redux-utils';
+import { type ConnectInitDep } from '@suite-common/suite-types';
 import {
     type InitTokenDefinitionsThunkDeps,
     type InitTokenDefinitionsThunkState,
@@ -61,8 +60,7 @@ import { selectSuiteLifecycleStatus } from 'src/selectors/suite/suiteSelectors';
 
 import { setSuiteError } from './suiteActions';
 
-type InitThunkState = ConnectInitThunkState &
-    DeviceRootState &
+type InitThunkState = DeviceRootState &
     FlagsRootState &
     GotoThunkState &
     InitBlockchainThunkState &
@@ -77,13 +75,12 @@ type InitThunkState = ConnectInitThunkState &
     WalletConnectInitThunkState &
     WalletSettingsRootState;
 
-type InitThunkDeps = ConnectInitThunkDeps &
-    GotoThunkDeps &
+type InitThunkDeps = GotoThunkDeps &
     InitBlockchainThunkDeps &
     InitTokenDefinitionsThunkDeps &
     PeriodicFetchFiatRatesThunkDeps &
     WalletConnectInitThunkDeps &
-    WithServices<InitThunkDesktopApiDep>;
+    WithServices<ConnectInitDep & InitThunkDesktopApiDep>;
 
 export type InitThunkDesktopApiDep = DesktopApiDep<
     | 'setAutomaticUpdateEnabled'
@@ -148,7 +145,7 @@ export const initThunk =
         try {
             // it is necessary to unwrap the result here because init calls async thunk from redux-toolkit which is always resolved
             // see more details here: https://redux-toolkit.js.org/api/createAsyncThunk#unwrapping-result-actions
-            await dispatch(trezorConnectActions.connectInitThunk()).unwrap();
+            await extra.services.connectInit();
         } catch (err) {
             dispatch(setSuiteError(err.message));
 

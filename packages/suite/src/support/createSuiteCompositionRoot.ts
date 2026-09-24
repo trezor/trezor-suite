@@ -2,9 +2,14 @@ import { saveAs } from 'file-saver';
 
 import { type DesktopAnalyticsDep, createAnalytics } from '@suite/analytics';
 import { selectShouldRetryFirmwareRevisionCheckError } from '@suite/authenticity-checks';
-import { type BluetoothDep, createBluetoothCompositionRoot } from '@suite/bluetooth';
+import {
+    type BluetoothDep,
+    bluetoothOnDeviceConnectedThunk,
+    createBluetoothCompositionRoot,
+} from '@suite/bluetooth';
 import { type DesktopApiDep } from '@suite/desktop-app-api';
 import { rerunFwAuthenticityChecksThunk } from '@suite/device';
+import { lockDevice } from '@suite/locks';
 import { selectLabelingDataForAccount } from '@suite/metadata';
 import {
     type MetadataMigrationDep,
@@ -23,6 +28,7 @@ import {
     type CreateTransports,
     type GetTransportsFactoriesDep,
     type TransportsDep,
+    createConnectInit,
 } from '@suite-common/connect-init';
 import { delegatedIdentityKeyCompositionRoot } from '@suite-common/delegated-identity-key';
 import { toGetter } from '@suite-common/dependency-injection';
@@ -42,7 +48,11 @@ import { type GetBinFilesBaseUrlDep, type ReloadAppDep } from '@suite-common/sui
 import { type ThpHostNameDep } from '@suite-common/thp';
 import { selectTradedAccountKeys } from '@suite-common/trading';
 import { selectAccountsByDeviceState } from '@suite-common/wallet-core';
-import { type CreateLoggerDep, type GetTrezorConnectPrivilegedDep } from '@trezor/connect';
+import {
+    type CreateLoggerDep,
+    type GetTrezorConnectPrivilegedDep,
+    type ThpSettings,
+} from '@trezor/connect';
 import { isDesktop } from '@trezor/env-utils';
 
 import { type SuiteReduxStore } from 'src/reducers/createReduxStore';
@@ -50,7 +60,8 @@ import { selectIsWindowVisible } from 'src/reducers/suite/windowReducer';
 import { type DbDep } from 'src/storage/createDb';
 import { reportSecurityCheck } from 'src/utils/suite/sentry';
 
-import { createConnectInitHooks } from './createConnectInitHooks';
+import { createSuiteTrezorUiEventHandler } from './createSuiteTrezorUiEventHandler';
+import { markDeviceAsRecentlyConnectedThunk } from '../actions/wallet/markDeviceAsRecentlyConnectedThunk';
 import { type AppState } from '../types/suite';
 
 const connectInitSettings: ConnectInitSettings = {
@@ -141,7 +152,7 @@ export const createSuiteServicesCompositionRoot = (deps: SuiteAppDeps): SuiteSer
         updateOutputLabel: suiteSync.labeling.updateOutputLabel,
     });
 
-    const connectInitHooks = createConnectInitHooks({
+    const trezorUiEventHandler = createSuiteTrezorUiEventHandler({
         dispatch: deps.dispatch,
         getState: deps.getState,
     });
@@ -163,6 +174,41 @@ export const createSuiteServicesCompositionRoot = (deps: SuiteAppDeps): SuiteSer
         }) as ReturnType<CreateTransports>;
     };
 
+    // TODO: Coinjoin has not been moved to @suite-common yet, so its debug settings type is not available here.
+    const getDebugSettings = toGetter(deps.getState, selectDebugSettings);
+    const getThpSettings = toGetter(deps.getState, (state: AppState): ThpSettings => ({
+        appName: 'Trezor Suite', // NOTE: this is displayed on Trezor. not the same as manifest.appName
+        pairingMethods: ['CodeEntry'],
+        knownCredentials: state.thp?.credentials,
+    }));
+    const getAllowPrerelease = toGetter(
+        deps.getState,
+        (state: AppState) => state.desktopUpdate?.allowPrerelease ?? false,
+    );
+
+    const connectInit = createConnectInit({
+        dispatch: deps.dispatch,
+        getState: deps.getState,
+        analytics,
+        lockDevice,
+        connectInitSettings,
+        createLogger: deps.createLogger,
+        getAllowPrerelease,
+        getBinFilesBaseUrl: deps.getBinFilesBaseUrl,
+        getDebugSettings,
+        getThpSettings,
+        thpHostName: deps.thpHostName,
+        createTransports,
+        trezorUiEventHandler,
+        onDeviceConnect: device => {
+            deps.dispatch(markDeviceAsRecentlyConnectedThunk(device));
+            deps.dispatch(bluetoothOnDeviceConnectedThunk(device));
+        },
+        onDeviceConnectUnacquired: device => {
+            deps.dispatch(markDeviceAsRecentlyConnectedThunk(device));
+        },
+    });
+
     return {
         db: deps.db,
         desktopApi: deps.desktopApi,
@@ -180,8 +226,9 @@ export const createSuiteServicesCompositionRoot = (deps: SuiteAppDeps): SuiteSer
         reportSecurityCheck,
         reloadApp: deps.reloadApp,
         saveAs: (data: Blob, fileName: string) => saveAs(data, fileName),
+        connectInit,
         connectInitSettings,
-        connectInitHooks,
+        trezorUiEventHandler,
         createLogger: deps.createLogger,
         thpHostName: deps.thpHostName,
         createTransports,
@@ -189,8 +236,7 @@ export const createSuiteServicesCompositionRoot = (deps: SuiteAppDeps): SuiteSer
             deps.getState,
             (state: AppState) => state.wallet.settings.enabledNetworks,
         ),
-        // TODO: Coinjoin has not been moved to @suite-common yet, so its debug settings type is not available here.
-        getDebugSettings: toGetter(deps.getState, selectDebugSettings),
+        getDebugSettings,
         getBinFilesBaseUrl: deps.getBinFilesBaseUrl,
         getLanguage: toGetter(deps.getState, selectLanguage),
         getSelectedAccount: toGetter(
@@ -200,15 +246,8 @@ export const createSuiteServicesCompositionRoot = (deps: SuiteAppDeps): SuiteSer
         getIsWindowVisible: toGetter(deps.getState, selectIsWindowVisible),
         getTradingEnvironment: toGetter(deps.getState, selectTradeServerEnvironment),
         getTradedAccountKeys: toGetter(deps.getState, selectTradedAccountKeys),
-        getThpSettings: toGetter(deps.getState, (state: AppState) => ({
-            appName: 'Trezor Suite', // NOTE: this is displayed on Trezor. not the same as manifest.appName
-            pairingMethods: ['CodeEntry'],
-            knownCredentials: state.thp?.credentials,
-        })),
-        getAllowPrerelease: toGetter(
-            deps.getState,
-            (state: AppState) => state.desktopUpdate?.allowPrerelease ?? false,
-        ),
+        getThpSettings,
+        getAllowPrerelease,
         shouldRetryFirmwareRevisionCheckError: toGetter(
             deps.getState,
             selectShouldRetryFirmwareRevisionCheckError,

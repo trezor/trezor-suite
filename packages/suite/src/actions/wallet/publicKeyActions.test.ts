@@ -1,9 +1,8 @@
 import { type UnknownAction, combineReducers, createAction, createReducer } from '@reduxjs/toolkit';
 
 import { mockDesktopAnalytics } from '@suite/analytics/mocks';
-import { type ConnectInitThunkDeps, connectInitThunk } from '@suite-common/connect-init';
+import { createConnectInit } from '@suite-common/connect-init';
 import {
-    mockConnectInitHooks,
     mockConnectInitSettings,
     mockCreateTransports,
     mockGetDebugSettings,
@@ -17,24 +16,10 @@ import {
     mockSuiteDevice,
 } from '@suite-common/suite-types/mocks';
 import { createTestStore, testMocks } from '@suite-common/test-utils';
+import { defaultTrezorUIEventHandlerThunk } from '@suite-common/wallet-core';
 import { noopCreateLogger } from '@trezor/connect-common';
 
 import fixtures from './__fixtures__/publicKeyActions';
-const extra: ConnectInitThunkDeps = {
-    actions: { lockDevice: createAction<boolean>('notImplemented/lockDevice') },
-    services: {
-        analytics: mockDesktopAnalytics(),
-        connectInitHooks: mockConnectInitHooks(),
-        connectInitSettings: mockConnectInitSettings(),
-        createLogger: noopCreateLogger,
-        createTransports: mockCreateTransports(),
-        getAllowPrerelease: mockGetAllowPrerelease(),
-        getBinFilesBaseUrl: mockGetBinFilesBaseUrl(),
-        getDebugSettings: mockGetDebugSettings(),
-        getThpSettings: mockGetThpSettings(),
-    },
-};
-
 const device = mockSuiteDevice({
     state: { staticSessionId: '1stTestnetAddress@device_id:0' },
     connected: true,
@@ -88,19 +73,35 @@ const initStore = (stateOverrides?: StateOverrides) => {
         preloadedState.wallet.selectedAccount.account.networkType = stateOverrides.networkType;
     }
 
-    return createTestStore<ConnectInitThunkDeps, any, UnknownAction>({
-        extra,
+    return createTestStore<undefined, any, UnknownAction>({
+        extra: undefined,
         reducer: rootReducer,
         preloadedState,
     });
 };
+
+const initConnect = (store: ReturnType<typeof initStore>) =>
+    createConnectInit({
+        dispatch: store.dispatch,
+        getState: store.getState,
+        analytics: mockDesktopAnalytics(),
+        lockDevice: createAction<boolean>('notImplemented/lockDevice'),
+        connectInitSettings: mockConnectInitSettings(),
+        createLogger: noopCreateLogger,
+        createTransports: mockCreateTransports(),
+        getAllowPrerelease: mockGetAllowPrerelease(),
+        getBinFilesBaseUrl: mockGetBinFilesBaseUrl(),
+        getDebugSettings: mockGetDebugSettings(),
+        getThpSettings: mockGetThpSettings(),
+        trezorUiEventHandler: action => store.dispatch(defaultTrezorUIEventHandlerThunk(action)),
+    })();
 
 describe('PublicKeyActions', () => {
     fixtures.forEach(f => {
         it(f.description, async () => {
             testMocks.setTrezorConnectFixtures(f.mocks.getPublicKey);
             const store = initStore(f.initialState);
-            await store.dispatch(connectInitThunk());
+            await initConnect(store);
             await store.dispatch(f.action() as any);
 
             if (f.result?.actions) {
