@@ -4,14 +4,10 @@ import { Anchor, SettingsAnchor } from '@suite/router';
 import { injectDispatch } from '@suite-common/redux-utils';
 import { getNetworksWithMevProtection } from '@suite-common/wallet-config';
 import { selectIsMevProtectionEnabled, setMevProtection } from '@suite-common/wallet-core';
-import { Column, Switch } from '@trezor/components';
+import { Banner, Switch } from '@trezor/components';
 import { useServices } from '@trezor/dependency-injection';
-import {
-    ActionColumn,
-    SectionItem,
-    SettingsRequirementBanner,
-    TextColumn,
-} from '@trezor/product-components';
+import { InfoIcon } from '@trezor/icons';
+import { SectionItem } from '@trezor/product-components';
 
 import { useSelector } from 'src/hooks/suite';
 
@@ -39,29 +35,28 @@ export const MevProtection = () => {
                     data-testid={anchorId}
                     ref={anchorRef}
                     shouldHighlight={shouldHighlight}
-                >
-                    <TextColumn
-                        title={<Translation id="TR_MEV" />}
-                        description={<Translation id="TR_MEV_DESCRIPTION" />}
-                        bottomContent={
-                            <Column gap={8} alignItems="flex-start">
-                                <SettingsRequirementBanner>
-                                    <Translation
-                                        id="TR_MEV_AVAILABLE_ON"
-                                        values={{ supportedNetworks }}
-                                    />
-                                </SettingsRequirementBanner>
-                            </Column>
-                        }
-                    />
-                    <ActionColumn>
+                    title={<Translation id="TR_MEV" />}
+                    description={<Translation id="TR_MEV_DESCRIPTION" />}
+                    bottomContent={
+                        <Banner
+                            intent="neutral"
+                            icon={InfoIcon}
+                            description={
+                                <Translation
+                                    id="TR_MEV_AVAILABLE_ON"
+                                    values={{ supportedNetworks }}
+                                />
+                            }
+                        />
+                    }
+                    actions={
                         <Switch
                             isChecked={isMevProtectionEnabled}
                             onChange={handleSwitchChange}
                             data-testid="@settings/mev-protection-switch"
                         />
-                    </ActionColumn>
-                </SectionItem>
+                    }
+                />
             )}
         </Anchor>
     );
