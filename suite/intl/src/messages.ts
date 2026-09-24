@@ -11913,6 +11913,11 @@ export const messages = defineMessages({
         id: 'TR_STAKE_UNSTAKE_TO_CLAIM',
         defaultMessage: 'Unstake to claim',
     },
+    TR_STAKE_CARDANO_UNSTAKE_NEEDS_BALANCE: {
+        id: 'TR_STAKE_CARDANO_UNSTAKE_NEEDS_BALANCE',
+        defaultMessage:
+            'You need a small amount of ADA to cover the network fee. Unstaking returns your 2 ADA deposit.',
+    },
     TR_EARN_CLAIM_REWARDS: {
         id: 'TR_EARN_CLAIM_REWARDS',
         defaultMessage: 'Claim rewards',
