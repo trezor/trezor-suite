@@ -1,8 +1,9 @@
 import { combineReducers } from '@reduxjs/toolkit';
 
+import { mock } from '@suite-common/dependency-injection';
 import { deviceInitialState } from '@suite-common/device';
-import { mockLockDevice } from '@suite-common/device/mocks';
 import { mockActionType } from '@suite-common/redux-utils/mocks';
+import { type LockDevice } from '@suite-common/suite-types';
 import { mockSuiteDevice } from '@suite-common/suite-types/mocks';
 import { createTestStore } from '@suite-common/test-utils';
 import { accountsInitialState } from '@suite-common/wallet-core';
@@ -67,7 +68,7 @@ const usedAddress = (address: string) => ({
 const connectPopupReducer = prepareConnectPopupReducer({
     actionTypes: { storageLoad: mockActionType('storageLoad') },
 });
-const extra = { actions: { lockDevice: mockLockDevice() } };
+const extra = { services: { lockDevice: mock<LockDevice>() } };
 
 const initStore = () =>
     createTestStore({

@@ -3,7 +3,6 @@ import { type ThunkDispatch, type UnknownAction } from '@reduxjs/toolkit';
 import { type AnalyticsDep, events as sharedEvents } from '@suite-common/analytics';
 import {
     type DeviceRootState,
-    type LockDeviceDep,
     deviceActions,
     selectDevices,
     selectIsPendingTransportEvent,
@@ -21,6 +20,7 @@ import {
     type ConnectInitHooksDeps,
     type GetAllowPrereleaseDep,
     type GetBinFilesBaseUrlDep,
+    type LockDeviceDep,
 } from '@suite-common/suite-types';
 import { type GetThpSettingsDep, type ThpHostNameDep } from '@suite-common/thp';
 import {
@@ -62,7 +62,6 @@ export type ConnectInitThunkState = DeviceRootState &
     WalletSettingsRootState;
 
 export type ConnectInitThunkDeps = {
-    actions: LockDeviceDep;
     services: {
         analytics: Pick<AnalyticsDep['analytics'], 'report'>;
     } & ConnectInitHooksDeps &
@@ -72,6 +71,7 @@ export type ConnectInitThunkDeps = {
         GetBinFilesBaseUrlDep &
         GetDebugSettingsDep &
         GetThpSettingsDep &
+        LockDeviceDep &
         ThpHostNameDep &
         TransportsDep;
 };
@@ -88,7 +88,6 @@ export const connectInitThunk = createThunk<
     { state: ConnectInitThunkState; extra: ConnectInitThunkDeps }
 >(`${CONNECT_INIT_MODULE}/initThunk`, async (_, { dispatch, getState, extra }) => {
     const {
-        actions: { lockDevice },
         services: {
             connectInitSettings,
             connectInitHooks,
@@ -100,6 +99,7 @@ export const connectInitThunk = createThunk<
             getBinFilesBaseUrl,
             getDebugSettings,
             getThpSettings,
+            lockDevice,
         },
     } = extra;
 
@@ -164,11 +164,11 @@ export const connectInitThunk = createThunk<
             return original(params);
         }
 
-        dispatch(lockDevice(true));
+        lockDevice(true);
 
         const result = await synchronize(() => original(params));
 
-        dispatch(lockDevice(false));
+        lockDevice(false);
         dispatch(
             deviceActions.removeButtonRequests({
                 // todo: device not 'thread safe' - meaning that device to which button requests have been added to might not

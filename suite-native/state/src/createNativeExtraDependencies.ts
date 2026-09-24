@@ -25,7 +25,6 @@ export const extraDependencies: ExtraDependenciesStatic = {
         // need for this is architectural mistake. Please DO NOT add more and try
         // to remove them.
         setAccountAddMetadata: notImplementedAction('setAccountAddMetadata'),
-        lockDevice: notImplementedAction('lockDevice'),
         onModalCancel: notImplementedAction('onModalCancel'),
         openModal: notImplementedAction('openModal'),
     },

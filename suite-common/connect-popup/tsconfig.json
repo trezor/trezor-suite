@@ -6,6 +6,7 @@
         { "path": "../device" },
         { "path": "../networks" },
         { "path": "../redux-utils" },
+        { "path": "../suite-types" },
         { "path": "../toast-notifications" },
         { "path": "../wallet-config" },
         { "path": "../wallet-core" },
@@ -24,7 +25,7 @@
         },
         { "path": "../../packages/type-utils" },
         { "path": "../../packages/utils" },
-        { "path": "../suite-types" },
+        { "path": "../dependency-injection" },
         { "path": "../test-utils" }
     ]
 }

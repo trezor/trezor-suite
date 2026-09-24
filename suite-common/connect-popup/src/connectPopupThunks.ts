@@ -1,13 +1,9 @@
 import { type AsyncThunkAction } from '@reduxjs/toolkit';
 
 import { type AnalyticsDep, events } from '@suite-common/analytics';
-import {
-    type DeviceRootState,
-    type LockDeviceDep,
-    deviceActions,
-    selectSelectedDevice,
-} from '@suite-common/device';
+import { type DeviceRootState, deviceActions, selectSelectedDevice } from '@suite-common/device';
 import { createThunk } from '@suite-common/redux-utils';
+import { type LockDeviceDep } from '@suite-common/suite-types';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { getNetwork } from '@suite-common/wallet-config';
 import {
@@ -73,8 +69,7 @@ type ConnectPopupCallThunkParams<M extends CallMethodKeys> = {
 export type ConnectPopupCallInnerThunkState = DeviceRootState & ConnectPopupStateRootState;
 
 export type ConnectPopupCallInnerThunkDeps = {
-    actions: LockDeviceDep;
-    services: AnalyticsDep;
+    services: AnalyticsDep & LockDeviceDep;
 };
 
 export type ConnectPopupCallThunkState = ConnectPopupCallInnerThunkState;
@@ -296,7 +291,7 @@ export const connectPopupCallInnerThunk = createThunk<
                 error: serializeError(error),
             });
         } finally {
-            dispatch(extra.actions.lockDevice(false));
+            extra.services.lockDevice(false);
         }
     },
 );
@@ -314,8 +309,7 @@ export const connectPopupCallThunk = <M extends CallMethodKeys>(
 type ConnectPopupDeeplinkThunkState = DeviceRootState & ConnectPopupStateRootState;
 
 type ConnectPopupDeeplinkThunkDeps = {
-    actions: LockDeviceDep;
-    services: AnalyticsDep;
+    services: AnalyticsDep & LockDeviceDep;
 };
 
 export const connectPopupDeeplinkThunk = createThunk<
@@ -400,7 +394,7 @@ export const connectPopupDeeplinkThunk = createThunk<
 type ConnectPopupVerifyAddressThunkState = DeviceRootState & ConnectPopupStateRootState;
 
 type ConnectPopupVerifyAddressThunkDeps = {
-    actions: LockDeviceDep;
+    services: LockDeviceDep;
 };
 
 export const connectPopupVerifyAddressThunk = createThunk<
@@ -414,7 +408,7 @@ export const connectPopupVerifyAddressThunk = createThunk<
     `${CONNECT_POPUP_MODULE}/verifyAddressThunk`,
     async ({ index }, { dispatch, getState, extra }) => {
         // Unlock device access from previous call
-        dispatch(extra.actions.lockDevice(false));
+        extra.services.lockDevice(false);
 
         const device = selectSelectedDevice(getState());
         const call = selectConnectPopupCall(getState());
@@ -501,7 +495,7 @@ type ConnectPopupLoadSelectAccountPageThunkState = DeviceRootState &
     AccountsRootState;
 
 type ConnectPopupLoadSelectAccountPageThunkDeps = {
-    actions: LockDeviceDep;
+    services: LockDeviceDep;
 };
 
 export const connectPopupLoadSelectAccountPageThunk = createThunk<
@@ -515,7 +509,7 @@ export const connectPopupLoadSelectAccountPageThunk = createThunk<
     `${CONNECT_POPUP_MODULE}/loadSelectAccountPageThunk`,
     async ({ page }, { dispatch, getState, extra }) => {
         // release any device lock held by the (still pending) selectAccount call
-        dispatch(extra.actions.lockDevice(false));
+        extra.services.lockDevice(false);
 
         const device = selectSelectedDevice(getState());
         const call = selectConnectPopupCall(getState());
@@ -861,7 +855,7 @@ type ConnectPopupSelectManualAccountThunkState = DeviceRootState &
     AccountsRootState;
 
 type ConnectPopupSelectManualAccountThunkDeps = {
-    actions: LockDeviceDep;
+    services: LockDeviceDep;
 };
 
 export const connectPopupSelectManualAccountThunk = createThunk<
@@ -895,7 +889,7 @@ type ConnectPopupBackToManualAccountsThunkState = DeviceRootState &
     AccountsRootState;
 
 type ConnectPopupBackToManualAccountsThunkDeps = {
-    actions: LockDeviceDep;
+    services: LockDeviceDep;
 };
 
 export const connectPopupBackToManualAccountsThunk = createThunk<
@@ -926,7 +920,7 @@ export const connectPopupBackToManualAccountsThunk = createThunk<
 type ConnectPopupVerifySelectAccountThunkState = DeviceRootState & ConnectPopupStateRootState;
 
 type ConnectPopupVerifySelectAccountThunkDeps = {
-    actions: LockDeviceDep;
+    services: LockDeviceDep;
 };
 
 export const connectPopupVerifySelectAccountThunk = createThunk<
@@ -939,7 +933,7 @@ export const connectPopupVerifySelectAccountThunk = createThunk<
 >(
     `${CONNECT_POPUP_MODULE}/verifySelectAccountThunk`,
     async ({ accountIndex, accountTypeKey }, { dispatch, getState, extra }) => {
-        dispatch(extra.actions.lockDevice(false));
+        extra.services.lockDevice(false);
 
         const isTarget = (c: SelectAccountCandidate) =>
             c.accountIndex === accountIndex && c.accountTypeKey === accountTypeKey;

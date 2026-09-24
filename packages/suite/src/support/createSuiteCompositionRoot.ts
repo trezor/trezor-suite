@@ -5,6 +5,7 @@ import { selectShouldRetryFirmwareRevisionCheckError } from '@suite/authenticity
 import { type BluetoothDep, createBluetoothCompositionRoot } from '@suite/bluetooth';
 import { type DesktopApiDep } from '@suite/desktop-app-api';
 import { rerunFwAuthenticityChecksThunk } from '@suite/device';
+import { lockDevice } from '@suite/locks';
 import { selectLabelingDataForAccount } from '@suite/metadata';
 import {
     type MetadataMigrationDep,
@@ -215,6 +216,9 @@ export const createSuiteServicesCompositionRoot = (deps: SuiteAppDeps): SuiteSer
         ),
         rerunFwAuthenticityChecksCall: () => {
             deps.dispatch(rerunFwAuthenticityChecksThunk());
+        },
+        lockDevice: isLocked => {
+            deps.dispatch(lockDevice(isLocked));
         },
         migrateSuiteSyncLabelsForRbfTransaction:
             createMigrateSuiteSyncLabelsForRbfTransactionCompositionRoot({

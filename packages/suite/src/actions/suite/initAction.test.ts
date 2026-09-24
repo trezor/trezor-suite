@@ -358,7 +358,6 @@ const initStore = (state: State) => {
     const suiteRouterHistory = createSuiteRouterHistory({ history: memoryHistory });
     const store = createTestStore({
         extra: {
-            actions: { lockDevice },
             services: {
                 ...createDesktopApiDep(),
                 analytics: mockDesktopAnalytics(),
@@ -375,6 +374,9 @@ const initStore = (state: State) => {
                     () => state.wallet.settings.enabledNetworks,
                 ),
                 suiteRouterHistory,
+                lockDevice: (isLocked: boolean): void => {
+                    store.dispatch(lockDevice(isLocked));
+                },
             },
         },
         middleware: [
