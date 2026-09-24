@@ -1,1 +1,0 @@
-export { mockLockDevice } from './mockDeviceActions';

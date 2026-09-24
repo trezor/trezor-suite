@@ -3,7 +3,6 @@ import type { PayloadAction } from '@reduxjs/toolkit';
 import { forgetBluetoothDeviceThunk } from '@suite/bluetooth';
 import { fixLoadedCoinjoinAccount } from '@suite/coinjoin';
 import type { FlagsState } from '@suite/flags';
-import { lockDevice } from '@suite/locks';
 import { metadataActions, metadataLabelingActions } from '@suite/metadata';
 import { closeModal, openModal } from '@suite/modal';
 import { type SuiteSettingsState } from '@suite/settings';
@@ -50,7 +49,6 @@ export const extraDependencies: ExtraDependenciesStatic & TokenDefinitionsMiddle
     },
     actions: {
         setAccountAddMetadata: metadataActions.setAccountAdd,
-        lockDevice,
         onModalCancel: closeModal,
         openModal,
         changeNetworks,

@@ -26,7 +26,6 @@ export type ExtraDependenciesStatic = {
     actions: OnModalCancelDep &
         OpenModalDep & {
             setAccountAddMetadata: ActionCreatorWithPreparedPayload<[payload: Account], Account>;
-            lockDevice: ActionCreatorWithPreparedPayload<[payload: boolean], boolean>;
         };
     // Use action types + reducers as last resort if you can't use actions creators. For example for storageLoad it is used because
     // it would be really hard to move all types to @suite-common that are needed to type payload. This comes at cost of

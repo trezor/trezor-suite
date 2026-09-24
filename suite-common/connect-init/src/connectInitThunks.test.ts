@@ -1,10 +1,9 @@
-import { createAction } from '@reduxjs/toolkit';
-
-import { asGetter } from '@suite-common/dependency-injection';
+import { asGetter, mock } from '@suite-common/dependency-injection';
 import { deviceInitialState } from '@suite-common/device';
 import { firmwareInitialState } from '@suite-common/firmware';
 import { messageSystemInitialState } from '@suite-common/message-system';
 import { type MockDispatch, createMockDispatch } from '@suite-common/redux-utils/mocks';
+import { type LockDevice } from '@suite-common/suite-types';
 import { testMocks } from '@suite-common/test-utils';
 import {
     defaultTrezorUIEventHandlerThunk,
@@ -50,9 +49,6 @@ const createThunkDeps = (
 ): ConnectInitThunkTestDeps => {
     const getState = () => state;
     const extra: ConnectInitThunkDeps = {
-        actions: {
-            lockDevice: createAction<boolean>('@test/lock-device'),
-        },
         services: {
             analytics: { report: jest.fn() },
             connectInitHooks: { deviceEvent: {}, uiEvent: {} },
@@ -72,6 +68,7 @@ const createThunkDeps = (
             })),
             getThpSettings: asGetter(() => ({ pairingMethods: ['CodeEntry'] })),
             thpHostName: undefined,
+            lockDevice: mock<LockDevice>(),
             ...services,
         },
     };
@@ -241,9 +238,9 @@ describe('TrezorConnect Actions', () => {
 
         await testMocks.getTrezorConnectMock().getFeatures();
 
+        expect(extra.services.lockDevice).toHaveBeenNthCalledWith(1, true);
+        expect(extra.services.lockDevice).toHaveBeenNthCalledWith(2, false);
         expect(actions).toEqual([
-            { type: extra.actions.lockDevice.type, payload: true },
-            { type: extra.actions.lockDevice.type, payload: false },
             expect.objectContaining({ type: '@suite/device/removeButtonRequests' }),
         ]);
     });

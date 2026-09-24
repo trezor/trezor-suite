@@ -161,6 +161,7 @@ export const createNativeServicesCompositionRoot = (deps: NativeAppDeps): Native
         rerunFwAuthenticityChecksCall: () => {
             deps.dispatch(rerunFwAuthenticityChecksThunk());
         },
+        lockDevice: () => {},
         getBinFilesBaseUrl: asGetter(() => resolveConnectPath('data')),
 
         // Not implemented. We assume those are NEVER called on Native.

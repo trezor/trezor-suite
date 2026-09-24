@@ -1,8 +1,9 @@
 import { mockDesktopAnalytics } from '@suite/analytics/mocks';
-import { mockLockDevice } from '@suite-common/device/mocks';
+import { mock } from '@suite-common/dependency-injection';
 import { networksActions, networksReducer } from '@suite-common/networks';
 import { mockNetworkMetadata } from '@suite-common/networks/mocks';
 import { createMockDispatch } from '@suite-common/redux-utils/mocks';
+import { type LockDevice } from '@suite-common/suite-types';
 
 import * as protocolConstants from './constants/protocolConstants';
 import * as protocolActions from './protocolActions';
@@ -23,9 +24,9 @@ const createHandleProtocolRequestDeps = () => {
     };
     const getState = () => state;
     const extra: HandleProtocolRequestDispatchDeps = {
-        actions: { lockDevice: mockLockDevice() },
         services: {
             analytics: mockDesktopAnalytics(),
+            lockDevice: mock<LockDevice>(),
             suiteRouterHistory: {
                 getLocation: jest.fn(),
                 navigate: jest.fn(),

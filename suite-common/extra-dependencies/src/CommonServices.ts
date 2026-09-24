@@ -13,6 +13,7 @@ import {
     type GetBinFilesBaseUrlDep,
     type GetIsWindowVisibleDep,
     type GetLanguageDep,
+    type LockDeviceDep,
     type ReloadAppDep,
     type ReportSecurityCheckDep,
     type RerunFwAuthenticityChecksCallDep,
@@ -41,6 +42,7 @@ export type CommonServices = SuiteSyncDep &
     RerunFwAuthenticityChecksCallDep &
     GetIsWindowVisibleDep &
     GetLanguageDep &
+    LockDeviceDep &
     GetTradedAccountKeysDep & {
         saveAs: (data: Blob, fileName: string) => void;
         // Getters, so a component cannot read them during render and miss later state changes.

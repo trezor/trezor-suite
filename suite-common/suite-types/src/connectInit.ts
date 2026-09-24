@@ -32,6 +32,12 @@ export type ConnectInitHooksDeps = {
     connectInitHooks: ConnectInitHooks;
 };
 
+export type LockDevice = (isLocked: boolean) => void;
+
+export type LockDeviceDep = {
+    lockDevice: LockDevice;
+};
+
 export type ConnectInitSettings = {
     manifest: Manifest;
 } & Partial<ConnectSettings>;
