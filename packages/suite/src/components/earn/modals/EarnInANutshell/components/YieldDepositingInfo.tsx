@@ -4,7 +4,7 @@ import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { StepList } from '@trezor/components';
 
 import { EarnYieldApyTooltip } from 'src/components/earn/dashboard/yield/EarnYieldApyTooltip';
-import { formatApyValue } from 'src/components/earn/utils/earnApyUtils';
+import { useFormatApyValue } from 'src/components/earn/utils/earnApyUtils';
 
 import { EarnInfoRow } from './EarnInfoRow';
 
@@ -26,62 +26,69 @@ export const YieldDepositingInfo = ({
     vaultSymbol,
     isWrappedNativeVault = false,
     nativeSymbol,
-}: YieldDepositingInfoProps) => (
-    <StepList bulletGap={12} gap={16} bulletSize="small" titleGap={2}>
-        {isWrappedNativeVault && nativeSymbol && (
+}: YieldDepositingInfoProps) => {
+    const formatApyValue = useFormatApyValue();
+
+    return (
+        <StepList bulletGap={12} gap={16} bulletSize="small" titleGap={2}>
+            {isWrappedNativeVault && nativeSymbol && (
+                <EarnInfoRow
+                    heading={
+                        <Translation
+                            id="TR_EARN_YIELD_WRAP_TITLE"
+                            values={{ nativeSymbol, tokenSymbol: depositSymbol }}
+                        />
+                    }
+                    content={{ text: <Translation id="TR_TRADING_NETWORK_FEE" />, isBadge: true }}
+                />
+            )}
             <EarnInfoRow
                 heading={
                     <Translation
-                        id="TR_EARN_YIELD_WRAP_TITLE"
-                        values={{ nativeSymbol, tokenSymbol: depositSymbol }}
+                        id="TR_EARN_YIELD_APPROVE_SPENDING_TRANSACTION"
+                        values={{ supplySymbol: depositSymbol }}
                     />
                 }
                 content={{ text: <Translation id="TR_TRADING_NETWORK_FEE" />, isBadge: true }}
             />
-        )}
-        <EarnInfoRow
-            heading={
-                <Translation
-                    id="TR_EARN_YIELD_APPROVE_SPENDING_TRANSACTION"
-                    values={{ supplySymbol: depositSymbol }}
-                />
-            }
-            content={{ text: <Translation id="TR_TRADING_NETWORK_FEE" />, isBadge: true }}
-        />
-        <EarnInfoRow
-            heading={<Translation id="TR_EARN_SIGN_DEPOSIT_TRANSACTION" />}
-            subheading={
-                <Translation
-                    id="TR_EARN_YIELD_DEPOSIT_INTO_VAULT_SUB"
-                    values={{ supplySymbol: depositSymbol }}
-                />
-            }
-            content={{ text: <Translation id="TR_TRADING_NETWORK_FEE" />, isBadge: true }}
-        />
-        {vault && vaultSymbol && (
             <EarnInfoRow
-                heading={
-                    <Translation id="TR_EARN_YIELD_RECEIVE_VAULT_TOKENS" values={{ vaultSymbol }} />
+                heading={<Translation id="TR_EARN_SIGN_DEPOSIT_TRANSACTION" />}
+                subheading={
+                    <Translation
+                        id="TR_EARN_YIELD_DEPOSIT_INTO_VAULT_SUB"
+                        values={{ supplySymbol: depositSymbol }}
+                    />
                 }
-                subheading={<Translation id="TR_EARN_YIELD_EARN_REWARDS_EACH_BLOCK" />}
-                content={{
-                    text:
-                        apy !== null && apy > 0 ? (
-                            <EarnYieldApyTooltip
-                                vault={vault}
-                                apyPercentage={apy}
-                                networkSymbol={networkSymbol}
-                            >
-                                <Translation
-                                    id="TR_EARN_APY_APPROX"
-                                    values={{ apyPercent: formatApyValue(apy) }}
-                                />
-                            </EarnYieldApyTooltip>
-                        ) : (
-                            <Translation id="TR_EARN_APY_N_A" />
-                        ),
-                }}
+                content={{ text: <Translation id="TR_TRADING_NETWORK_FEE" />, isBadge: true }}
             />
-        )}
-    </StepList>
-);
+            {vault && vaultSymbol && (
+                <EarnInfoRow
+                    heading={
+                        <Translation
+                            id="TR_EARN_YIELD_RECEIVE_VAULT_TOKENS"
+                            values={{ vaultSymbol }}
+                        />
+                    }
+                    subheading={<Translation id="TR_EARN_YIELD_EARN_REWARDS_EACH_BLOCK" />}
+                    content={{
+                        text:
+                            apy !== null && apy > 0 ? (
+                                <EarnYieldApyTooltip
+                                    vault={vault}
+                                    apyPercentage={apy}
+                                    networkSymbol={networkSymbol}
+                                >
+                                    <Translation
+                                        id="TR_EARN_APY_APPROX"
+                                        values={{ apyPercent: formatApyValue(apy) }}
+                                    />
+                                </EarnYieldApyTooltip>
+                            ) : (
+                                <Translation id="TR_EARN_APY_N_A" />
+                            ),
+                    }}
+                />
+            )}
+        </StepList>
+    );
+};

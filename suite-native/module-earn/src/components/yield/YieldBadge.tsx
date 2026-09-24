@@ -3,6 +3,7 @@ import { Pressable } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 
 import { useYieldOpportunity } from '@suite-common/earn-stablecoin-api';
+import { useFormatters } from '@suite-common/formatters';
 import { getYieldVaultContractAddress } from '@suite-common/wallet-core';
 import { type Account, toTokenAddress } from '@suite-common/wallet-types';
 import { Badge, type BadgeProps } from '@suite-native/atoms';
@@ -49,6 +50,7 @@ interface YieldBadgeProps {
 type NavigationProps = StackNavigationProps<RootStackParamList, RootStackRoutes.AccountDetail>;
 
 export const YieldBadge = ({ apy, variant, account, vaultId }: YieldBadgeProps) => {
+    const { PercentageFormatter } = useFormatters();
     const navigation = useNavigation<NavigationProps>();
     const { data: vault } = useYieldOpportunity(vaultId);
     const { navigateToYieldDetail } = useYieldDetailNavigation();
@@ -81,7 +83,12 @@ export const YieldBadge = ({ apy, variant, account, vaultId }: YieldBadgeProps) 
             <Badge
                 intent={intent}
                 size="small"
-                label={<Translation id={translationId} values={{ apy }} />}
+                label={
+                    <Translation
+                        id={translationId}
+                        values={{ apy: PercentageFormatter.format(apy) }}
+                    />
+                }
             />
         </Pressable>
     );

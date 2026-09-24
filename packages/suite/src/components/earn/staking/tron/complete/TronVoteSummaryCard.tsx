@@ -2,12 +2,14 @@ import { Translation } from '@suite/intl';
 import { Card, Column, Divider, Icon, Row, Text } from '@trezor/components';
 import { CheckCircleFilledIcon } from '@trezor/icons';
 
+import { useFormatApyValue } from '../../../utils/earnApyUtils';
 import { useTronStakeContext } from '../TronStakeContext';
 import { TronStakeInfoRow } from '../TronStakeInfoRow';
-import { formatApr, resolveVotedRepresentativeAddress } from '../voteUtils';
+import { resolveVotedRepresentativeAddress } from '../voteUtils';
 
 export const TronVoteSummaryCard = () => {
     const { form, representatives } = useTronStakeContext();
+    const formatApyValue = useFormatApyValue();
 
     const votedAddress = resolveVotedRepresentativeAddress(form.methods.getValues());
     const apr = (representatives.data ?? []).find(({ address }) => address === votedAddress)?.apr;
@@ -27,7 +29,9 @@ export const TronVoteSummaryCard = () => {
                 <Divider color="borderNeutral" margin={0} />
 
                 <TronStakeInfoRow label={<Translation id="TR_EARN_TRON_APR_LABEL" />}>
-                    <Text typographyStyle="body-md-strong">{formatApr(apr)}</Text>
+                    <Text typographyStyle="body-md-strong">
+                        {formatApyValue(apr, { withSymbol: true })}
+                    </Text>
                 </TronStakeInfoRow>
             </Column>
         </Card>

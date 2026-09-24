@@ -9,7 +9,7 @@ import { type NetworkSymbol, getDisplaySymbol } from '@suite-common/wallet-confi
 import { Banner } from '@trezor/components';
 import { PiggyBankIcon, XIcon } from '@trezor/icons';
 
-import { formatApyValue } from 'src/components/earn/utils/earnApyUtils';
+import { useFormatApyValue } from 'src/components/earn/utils/earnApyUtils';
 import { useSelector } from 'src/hooks/suite';
 
 type EarnEthBannerProps = {
@@ -20,6 +20,7 @@ type EarnEthBannerProps = {
 export const EarnEthBanner = ({ networkSymbol, apy }: EarnEthBannerProps) => {
     const { analytics, dispatch } = useServices(injectDesktopAnalytics, injectDispatch);
     const { earnEthBannerClosed } = useSelector(selectFlags);
+    const formatApyValue = useFormatApyValue();
 
     const displaySymbol = getDisplaySymbol(networkSymbol);
 

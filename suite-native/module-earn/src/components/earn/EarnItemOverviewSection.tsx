@@ -16,6 +16,7 @@ import { TokenIcon } from '@suite-native/icons';
 import { Translation } from '@suite-native/intl';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
+import { useFormattedEarnRate } from '../../hooks/earn/useFormattedEarnRate';
 import { type EarnPromoItem } from '../../types';
 
 const accountDescriptionStyle = prepareNativeStyle(_ => ({
@@ -95,6 +96,7 @@ export const EarnItemOverviewSection = (item: EarnPromoItem) => {
 
     const resolvedApy = symbol === 'trx' ? tronMaxApr : apy;
     const apyValue = item.type === 'staking' ? resolvedApy : item.apy;
+    const formattedApy = useFormattedEarnRate(apyValue);
 
     const iconProps =
         item.type === 'staking'
@@ -152,7 +154,7 @@ export const EarnItemOverviewSection = (item: EarnPromoItem) => {
                                             ? 'earn.aprPercentage'
                                             : 'earn.apyPercentage'
                                     }
-                                    values={{ apy: apyValue }}
+                                    values={{ apy: formattedApy }}
                                 />
                             )}
                         </Text>

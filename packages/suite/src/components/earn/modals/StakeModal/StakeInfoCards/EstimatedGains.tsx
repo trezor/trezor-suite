@@ -10,6 +10,7 @@ import {
 } from '@suite-common/wallet-core';
 import { Column, Grid, Image, Paragraph, Text } from '@trezor/components';
 
+import { useFormatApyValue } from 'src/components/earn/utils/earnApyUtils';
 import { BaseCurrencyValue } from 'src/components/suite/BaseCurrencyValue';
 import { FormattedCryptoAmount } from 'src/components/suite/FormattedCryptoAmount';
 import { useStakeFormContext } from 'src/hooks/earn/useStakeForm';
@@ -18,6 +19,7 @@ import { CRYPTO_INPUT } from 'src/types/earn/earnFormFields';
 
 export const EstimatedGains = () => {
     const { account, getValues, formState } = useStakeFormContext();
+    const formatApyValue = useFormatApyValue();
 
     const value = getValues(CRYPTO_INPUT);
     const hasInvalidFormState =
@@ -62,7 +64,7 @@ export const EstimatedGains = () => {
         <Column gap={20}>
             <Column>
                 <Paragraph intent="brand" typographyStyle="headline-md">
-                    {apy}%
+                    {formatApyValue(apy, { withSymbol: true })}
                 </Paragraph>
                 <Paragraph
                     typographyStyle="body-sm"

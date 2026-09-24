@@ -29,6 +29,10 @@ import {
     prepareDisplaySymbolFormatter,
 } from './formatters/prepareDisplaySymbolFormatter';
 import { MonthNameFormatter } from './formatters/prepareMonthNameFormatter';
+import {
+    type PercentageFormatterDataContext,
+    preparePercentageFormatter,
+} from './formatters/preparePercentageFormatter';
 import { prepareTimeFormatter } from './formatters/prepareTimeFormatter';
 import type { Formatter } from './makeFormatter';
 import type { FormatterConfig, FormatterProviderConfig } from './types';
@@ -57,6 +61,7 @@ export type Formatters = {
     TimeFormatter: Formatter<Date | number, string>;
     DateTimeFormatter: Formatter<Date | number | null, string | null, DateTimeFormatterDataContext>;
     MonthNameFormatter: Formatter<Date, string>;
+    PercentageFormatter: Formatter<number, string, PercentageFormatterDataContext>;
 };
 
 export const FormatterProviderContext = createContext<Formatters>({} as Formatters);
@@ -68,6 +73,7 @@ export const getFormatters = (config: FormatterConfig): Formatters => {
     const DateFormatter = prepareDateFormatter(config);
     const TimeFormatter = prepareTimeFormatter(config);
     const DateTimeFormatter = prepareDateTimeFormatter(config);
+    const PercentageFormatter = preparePercentageFormatter(config);
 
     return {
         AddressFormatter,
@@ -80,6 +86,7 @@ export const getFormatters = (config: FormatterConfig): Formatters => {
         TimeFormatter,
         DateTimeFormatter,
         MonthNameFormatter,
+        PercentageFormatter,
     };
 };
 

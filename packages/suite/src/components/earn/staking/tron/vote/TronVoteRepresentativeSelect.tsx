@@ -7,7 +7,7 @@ import { Column, Input, Row, Select, Text } from '@trezor/components';
 
 import { useSelector } from 'src/hooks/suite';
 
-import { formatApyValue } from '../../../utils/earnApyUtils';
+import { useFormatApyValue } from '../../../utils/earnApyUtils';
 import { useTronStakeContext } from '../TronStakeContext';
 import { CUSTOM_REPRESENTATIVE } from './constants';
 
@@ -22,6 +22,7 @@ type FormatContext = { context: 'menu' | 'value' };
 
 export const TronVoteRepresentativeSelect = () => {
     const { translationString } = useTranslation();
+    const formatApyValue = useFormatApyValue();
     const isDebugModeActive = useSelector(selectIsDebugModeActive);
     const { representatives, form, actions } = useTronStakeContext();
     const { control, setValue, register } = form.methods;
