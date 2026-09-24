@@ -13,6 +13,9 @@ import { ERRORS } from '@trezor/connect-common/src/constants';
 
 import { ConnectAppIcon } from './ConnectAppIcon';
 
+// Connect reads the gas limit as hex.
+const toHexGasLimit = (value: string) => `0x${BigInt(value).toString(16)}`;
+
 interface TxSimulationInnerProps {
     action: TxSimulationAction;
     account: Account;
@@ -26,7 +29,7 @@ export function TxSimulationInner({ action, account, source }: TxSimulationInner
     const defaultGasLimit =
         action.method === 'ethereumSignTransaction'
             ? action.payload.transaction.gasLimit
-            : ETH_CONTRACT_CALL_BACKUP_GAS_LIMIT;
+            : toHexGasLimit(ETH_CONTRACT_CALL_BACKUP_GAS_LIMIT);
     const [gasLimit, setGasLimit] = useState(defaultGasLimit);
     const isSigningTransaction = action.method === 'ethereumSignTransaction';
 
@@ -119,6 +122,7 @@ export function TxSimulationInner({ action, account, source }: TxSimulationInner
                     </Button>
                 }
                 confirmTestID="@popup/confirm-simulation"
+                gasLimit={gasLimit}
                 insufficientGasWarning={{
                     transaction: isSigningTransaction ? action.payload.transaction : undefined,
                     gasLimit,
@@ -131,17 +135,11 @@ export function TxSimulationInner({ action, account, source }: TxSimulationInner
                         case 'ethereumSignTransaction':
                         case 'ethereumSignTypedData': {
                             const { simulation: evmSimulation, gas_estimation } = payload;
-                            const newFeeLimit =
-                                gas_estimation?.status === 'Success'
-                                    ? Number(gas_estimation.estimate).toString()
-                                    : null;
-
                             if (
                                 evmSimulation?.status === 'Success' &&
-                                newFeeLimit &&
-                                newFeeLimit !== defaultGasLimit
+                                gas_estimation?.status === 'Success'
                             ) {
-                                setGasLimit(newFeeLimit);
+                                setGasLimit(toHexGasLimit(gas_estimation.estimate));
                             }
 
                             break;
