@@ -1,15 +1,26 @@
 import { useSelector } from 'react-redux';
 
+import { useNavigation } from '@react-navigation/native';
+
+import { events } from '@suite-common/analytics';
+import { useServices } from '@suite-common/dependency-injection';
 import { getCompactAmount, useFormatters } from '@suite-common/formatters';
 import { getNetworkDisplaySymbolName } from '@suite-common/wallet-config';
 import { type AccountsRootState, selectAccountByKey } from '@suite-common/wallet-core';
 import { AccountLabel } from '@suite-native/accounts';
+import { injectNativeAnalytics } from '@suite-native/analytics';
 import { Box, HStack, PressableOpacity, Text, VStack } from '@suite-native/atoms';
 import { BaseCurrencyAmountFormatter } from '@suite-native/formatters';
 import { Icon, TokenIcon } from '@suite-native/icons';
+import {
+    type RootStackParamList,
+    RootStackRoutes,
+    type StackNavigationProps,
+    YieldStackRoutes,
+} from '@suite-native/navigation';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
-import { type YieldClaimSummary } from '../../types';
+import { type YieldClaimAccountItem } from '../../types';
 
 const COMPACT_REWARD_AMOUNT_OPTIONS = {
     maximumSignificantDigits: 4,
@@ -39,25 +50,33 @@ const tokenAmountsStyle = prepareNativeStyle(() => ({
     fontVariant: ['tabular-nums'],
 }));
 
-interface YieldClaimAccountCardProps {
-    summary: YieldClaimSummary;
-    onPress: () => void;
-}
+type NavigationProp = StackNavigationProps<RootStackParamList, RootStackRoutes.YieldNavigator>;
 
-export const YieldClaimAccountCard = ({ summary, onPress }: YieldClaimAccountCardProps) => {
+type YieldClaimRewardsAccountCardProps = {
+    item: YieldClaimAccountItem;
+    onClose: () => void;
+};
+
+export const YieldClaimRewardsAccountCard = ({
+    item,
+    onClose,
+}: YieldClaimRewardsAccountCardProps) => {
+    const { analytics } = useServices(injectNativeAnalytics);
     const { applyStyle } = useNativeStyles();
     const { CryptoAmountFormatter } = useFormatters();
+    const navigation = useNavigation<NavigationProp>();
 
     const account = useSelector((state: AccountsRootState) =>
-        selectAccountByKey(state, summary.accountKey),
+        selectAccountByKey(state, item.summary.accountKey),
     );
 
-    const formattedRewardTokenAmounts = summary.tokens
+    const formattedRewardTokenAmounts = item.summary.tokens
         .map(({ claimableAmount, decimals, symbol }) => {
             const compactAmount = getCompactAmount({
                 value: claimableAmount,
                 ...COMPACT_REWARD_AMOUNT_OPTIONS,
             });
+
             const formattedAmount = CryptoAmountFormatter.format(compactAmount.value, {
                 symbol,
                 isBalance: true,
@@ -69,12 +88,34 @@ export const YieldClaimAccountCard = ({ summary, onPress }: YieldClaimAccountCar
         })
         .join('\n');
 
+    const onPress = () => {
+        onClose();
+
+        analytics.report({
+            type: events.yieldNavigateEvent.name,
+            payload: {
+                action: 'continue',
+                from: 'earn-dashboard',
+                to: 'claim-form',
+                networkSymbol: item.summary.networkSymbol,
+            },
+        });
+
+        navigation.navigate(RootStackRoutes.YieldNavigator, {
+            screen: YieldStackRoutes.YieldClaim,
+            params: {
+                accountKey: item.summary.accountKey,
+                vault: item.vaults.length === 1 ? item.vaults[0] : undefined,
+            },
+        });
+    };
+
     return (
         <PressableOpacity onPress={onPress} style={applyStyle(rowStyle)}>
             <Box marginRight="sp12">
                 <TokenIcon
-                    tokenSymbol={summary.networkSymbol}
-                    networkSymbol={summary.networkSymbol}
+                    tokenSymbol={item.summary.networkSymbol}
+                    networkSymbol={item.summary.networkSymbol}
                     size="small"
                 />
             </Box>
@@ -89,9 +130,10 @@ export const YieldClaimAccountCard = ({ summary, onPress }: YieldClaimAccountCar
                     />
                 ) : (
                     <Text variant="body-md-strong" numberOfLines={1}>
-                        {getNetworkDisplaySymbolName(summary.networkSymbol)}
+                        {getNetworkDisplaySymbolName(item.summary.networkSymbol)}
                     </Text>
                 )}
+
                 <Text
                     variant="body-xs"
                     color="contentSecondary"
@@ -103,7 +145,7 @@ export const YieldClaimAccountCard = ({ summary, onPress }: YieldClaimAccountCar
 
             <HStack spacing="sp8" alignItems="center" marginLeft="sp8">
                 <BaseCurrencyAmountFormatter
-                    value={summary.fiatClaimableAmount}
+                    value={item.summary.fiatClaimableAmount}
                     variant="body-md-strong"
                     isDiscreetText={false}
                     numberOfLines={1}
