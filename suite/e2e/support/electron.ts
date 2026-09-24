@@ -42,12 +42,33 @@ const formatErrorLogMessage = (data: string) => {
     return `${timestamp} - ${bold}${red}ERROR${unbold}: ${data}${reset}`;
 };
 
-const buildArgs = (params: LaunchSuiteParams) => {
+/**
+ * Whether this worker's debugging endpoint is currently held by a running app.
+ *
+ * A worker gets one port, but a test may run a second app beside the one its fixtures gave it — the
+ * bridge tests launch their own. Two processes cannot listen on one port, and the loser starts
+ * without a working endpoint, which is how it first showed up: the two tests that launch a second
+ * app were the two that timed out. So the port goes to the app that is running alone, and anything
+ * launched beside it runs unprofiled rather than fighting over it. That is the right way round —
+ * the app the fixtures provide is the one `perf.measure` measures.
+ */
+let debugPortHeld = false;
+
+const takeDebugPort = (): number | null => {
+    if (!isLighthouseEnabled() || debugPortHeld) {
+        return null;
+    }
+    debugPortHeld = true;
+
+    return getLighthouseDebugPort();
+};
+
+const buildArgs = (params: LaunchSuiteParams, debugPort: number | null) => {
     const args = [
         // Lighthouse attaches to the renderer through Puppeteer, which needs a CDP endpoint of its
         // own. The switch goes ahead of the app path: Electron takes the first argument that is not
         // a switch as the app to run, and hands only what precedes it to Chromium.
-        ...(isLighthouseEnabled() ? [`--remote-debugging-port=${getLighthouseDebugPort()}`] : []),
+        ...(debugPort === null ? [] : [`--remote-debugging-port=${debugPort}`]),
 
         // This needs to be just path to the app root, so it is same as for production builds,
         // electron will resolve the path to app.js from the package.json => "main": "dist/app.js",
@@ -102,17 +123,34 @@ export const launchSuiteElectronApp = async (params: LaunchSuiteParams) => {
         await TrezorUserEnvLink.startBridge(BRIDGE_VERSION);
     }
 
-    const electronApp = await electron.launch({
-        cwd: appDir,
-        args: buildArgs(params),
-        env: {
-            ...process.env,
-            PLAYWRIGHT_RUN: 'true',
-        },
-        colorScheme: params.colorScheme,
-        locale: params.locale,
-        recordVideo: { dir: params.artefactFolder, size: params.viewport },
-    });
+    const debugPort = takeDebugPort();
+
+    const release = () => {
+        if (debugPort !== null) {
+            debugPortHeld = false;
+        }
+    };
+
+    let electronApp;
+    try {
+        electronApp = await electron.launch({
+            cwd: appDir,
+            args: buildArgs(params, debugPort),
+            env: {
+                ...process.env,
+                PLAYWRIGHT_RUN: 'true',
+            },
+            colorScheme: params.colorScheme,
+            locale: params.locale,
+            recordVideo: { dir: params.artefactFolder, size: params.viewport },
+        });
+    } catch (error) {
+        // An app that never started is not holding anything; the next launch may have the port.
+        release();
+        throw error;
+    }
+
+    electronApp.process().on('close', release);
 
     setupLoggingToFile(electronApp, params);
 

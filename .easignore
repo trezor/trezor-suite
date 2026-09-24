@@ -53,6 +53,7 @@
 !/packages/eslint
 !/packages/icons
 !/packages/node-utils
+!/packages/perf-e2e
 !/packages/protobuf
 !/packages/protocol
 !/packages/react-native-usb
@@ -217,6 +218,7 @@
 !/suite-native/module-transactions
 !/suite-native/navigation
 !/suite-native/passphrase
+!/suite-native/performance-metrics
 !/suite-native/platform-encryption-native
 !/suite-native/qr-code
 !/suite-native/react-native-graph
