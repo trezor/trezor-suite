@@ -3,6 +3,9 @@
     "compilerOptions": { "outDir": "libDev" },
     "include": ["."],
     "references": [
+        {
+            "path": "../../suite-common/apps-embedding"
+        },
         { "path": "../desktop-app-api" }
     ]
 }
