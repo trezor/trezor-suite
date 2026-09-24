@@ -55,11 +55,9 @@
         { "path": "../message-system" },
         { "path": "../module-accounts" },
         { "path": "../module-accounts-import" },
-        {
-            "path": "../module-accounts-management"
-        },
         { "path": "../module-activity-center" },
         { "path": "../module-add-accounts" },
+        { "path": "../module-assets-management" },
         {
             "path": "../module-authenticity-checks"
         },
