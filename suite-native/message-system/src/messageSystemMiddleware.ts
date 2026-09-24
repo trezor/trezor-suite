@@ -17,6 +17,8 @@ const isAnyOfMessageSystemAffectingActions = isAnyOf(
     messageSystemActions.fetchSuccessUpdate,
     messageSystemActions.addMessage,
     messageSystemActions.removeMessage,
+    messageSystemActions.addExperiment,
+    messageSystemActions.removeExperiment,
     deviceActions.selectDevice,
     deviceActions.connectDevice,
     changeNetworks,

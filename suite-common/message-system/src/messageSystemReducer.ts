@@ -38,6 +38,7 @@ export const messageSystemPersistedWhitelist: Array<keyof MessageSystemState> = 
     'currentSequence',
     'dismissedMessages',
     'configSource',
+    'manuallyAddedExperimentIds',
 ];
 
 const getMessageStateById = (draft: MessageSystemState, id: string): MessageState => {

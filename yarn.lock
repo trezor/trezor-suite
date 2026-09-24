@@ -13614,6 +13614,7 @@ __metadata:
     "@trezor/requirements": "workspace:*"
     expo: "npm:~57.0.8"
     react: "npm:19.2.3"
+    react-hook-form: "npm:^7.77.0"
     react-native: "npm:0.86.0"
     react-redux: "npm:9.3.0"
   languageName: unknown

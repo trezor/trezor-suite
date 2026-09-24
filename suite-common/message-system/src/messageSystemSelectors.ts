@@ -257,6 +257,23 @@ export const selectAllValidExperiments = createMemoizedSelector(
     },
 );
 
+export const selectAllConfigExperiments = createMemoizedSelector([selectConfig], config =>
+    returnStableArrayIfEmpty(config?.experiments),
+);
+
+export const selectAllValidConfigExperiments = createMemoizedSelector(
+    [selectAllConfigExperiments, selectValidExperiments],
+    (experiments, validExperiments) =>
+        returnStableArrayIfEmpty(
+            experiments.filter(({ experiment }) => validExperiments.includes(experiment.id)),
+        ),
+);
+
+export const selectIsExperimentValid = createMemoizedSelector(
+    [selectValidExperiments, (_state, experimentId: string) => experimentId],
+    (validExperiments, experimentId) => validExperiments.includes(experimentId),
+);
+
 export const selectExperimentById = (id: ExperimentId) =>
     createMemoizedSelector([selectAllValidExperiments], allValidExperiments =>
         allValidExperiments.find(
