@@ -603,6 +603,53 @@ describe('confirmExchangeTradeThunk', () => {
         expect(!!response).toBeTruthy();
     });
 
+    it('should preserve DEX fields omitted by the provider response', async () => {
+        const {
+            store,
+            returnUrl,
+            receiveAddress,
+            account,
+            trade,
+            mockProcessResponseData,
+            mockNextStep,
+            mockTriggerAnalyticsTradeConfirmation,
+        } = getMocks();
+        const dexTrade: ExchangeTrade = {
+            ...trade,
+            isDex: true,
+            receiveTxHash: 'dex-swap-hash',
+        };
+        const tradeResponse: ExchangeTrade = {
+            status: 'CONFIRMING',
+            orderId: 'orderId',
+        };
+
+        tradeApi.doExchangeTrade = () => Promise.resolve(tradeResponse);
+
+        await store
+            .dispatch(
+                exchangeThunks.confirmTradeThunk({
+                    returnUrl,
+                    receiveAddress,
+                    account,
+                    trade: dexTrade,
+                    nextStep: mockNextStep,
+                    triggerAnalyticsTradeConfirmation: mockTriggerAnalyticsTradeConfirmation,
+                    processResponseData: mockProcessResponseData,
+                }),
+            )
+            .unwrap();
+
+        expect(store.getState().wallet.trading.trades).toEqual([
+            expect.objectContaining({
+                data: expect.objectContaining({
+                    isDex: true,
+                    receiveTxHash: 'dex-swap-hash',
+                }),
+            }),
+        ]);
+    });
+
     describe('should return true from confirmation for trade, which is in to confirm state from dex and request approval transaction', () => {
         it('when trade.approvalType is ZERO', async () => {
             const {
