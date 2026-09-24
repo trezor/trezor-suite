@@ -40,7 +40,14 @@ import {
     setLogWriter,
 } from '@trezor/connect-common/src/utils/debug';
 import { TRANSPORT, TRANSPORT_ERROR } from '@trezor/transport-common';
-import { type Logger, createDeferred, createLazy, getSynchronize, throwError } from '@trezor/utils';
+import {
+    type Logger,
+    createDeferred,
+    createLazy,
+    getSynchronize,
+    scheduleAction,
+    throwError,
+} from '@trezor/utils';
 
 import type { AbstractMethod } from './AbstractMethod';
 import { getMethod } from './method';
@@ -77,15 +84,7 @@ const createSendCoreMessageWithCallId =
         sendCoreMessage(message);
     };
 
-/**
- * Find device by device path. Returned device may be unacquired.
- * @param {AbstractMethod} method
- * @returns {Promise<Device>}
- * @memberof Core
- */
-const selectDevice = ({ deviceList }: CoreContext, methodCallDevice?: DeviceIdentity) => {
-    assertDeviceListConnected(deviceList);
-
+const findRequestedDevice = (deviceList: DeviceList, methodCallDevice?: DeviceIdentity) => {
     let device: Device | undefined;
 
     if (methodCallDevice?.state?.staticSessionId) {
@@ -94,9 +93,14 @@ const selectDevice = ({ deviceList }: CoreContext, methodCallDevice?: DeviceIden
     if (!device && methodCallDevice?.path) {
         device = deviceList.getDeviceByPath(methodCallDevice.path);
     }
-    if (!device) {
-        device = deviceList.getOnlyDevice();
-    }
+
+    return device;
+};
+
+const selectDevice = ({ deviceList }: CoreContext, methodCallDevice?: DeviceIdentity) => {
+    assertDeviceListConnected(deviceList);
+
+    const device = findRequestedDevice(deviceList, methodCallDevice) ?? deviceList.getOnlyDevice();
     if (!device) {
         throw ERRORS.TypedError('Device_NotFound');
     }
@@ -280,30 +284,48 @@ const onCallDevice = async (
     message: CoreCallMessage,
     method: AbstractMethod<any>,
 ): Promise<void> => {
-    const { deviceList, callMethods, sendCoreMessage, logger } = context;
+    const { deviceList, callMethods, pendingDeviceCalls, sendCoreMessage, logger } = context;
     const responseID = message.id;
     const { transports } = settingsStore.get();
-
-    if (!deviceList.isConnected() && !deviceList.pendingConnection()) {
-        // transport is missing try to initialize it once again
-        deviceList.init({ transports });
-    }
-    await deviceList.pendingConnection();
+    const abortController = new AbortController();
+    const { signal } = abortController;
+    if (context.signal.aborted) abortController.abort(context.signal.reason);
+    pendingDeviceCalls.set(responseID, abortController);
 
     // find device
     let tempDevice: Device | undefined;
     try {
-        // a device joins the list only after its handshake; do not miss one that is still initializing
-        await deviceList.waitForPendingHandshakes();
+        if (!deviceList.isConnected() && !deviceList.pendingConnection()) {
+            // Transport is missing; try to initialize it once again.
+            deviceList.init({ transports });
+        }
+        await scheduleAction(() => Promise.resolve(deviceList.pendingConnection()), { signal });
+        assertDeviceListConnected(deviceList);
+
+        // Explicitly selected ready devices must not wait for unrelated handshakes. Without an
+        // available target, wait before selecting so pending devices are not missed.
+        if (!findRequestedDevice(deviceList, message.payload.device)) {
+            await deviceList.waitForPendingHandshakes(signal);
+        }
+        if (signal.aborted) throw signal.reason;
+        if (!callMethods.includes(method)) return;
+
         tempDevice = selectDevice(context, message.payload.device);
     } catch (error) {
-        if (error.code === 'Transport_Missing') {
+        if (context.signal.aborted || !callMethods.includes(method)) return;
+
+        const responseError = signal.aborted ? signal.reason : error;
+        if (responseError.code === 'Transport_Missing') {
             // show message about transport
             sendCoreMessage(createUiEventMessage(UI_EVENTS.TRANSPORT_MISSING));
         }
         // TODO: this should not be returned here before user agrees on "read" perms...
-        sendCoreMessage(createResponseMessage(responseID, false, { error }));
-        throw error;
+        sendCoreMessage(createResponseMessage(responseID, false, { error: responseError }));
+        if (signal.aborted) return;
+
+        throw responseError;
+    } finally {
+        pendingDeviceCalls.delete(responseID);
     }
 
     const device = tempDevice;
@@ -678,12 +700,25 @@ const registerDeviceEvents =
 // promises remain untouched. When `callId` is undefined, all in-flight work
 // is aborted (legacy behavior).
 const abortRunningCall = (context: CoreContext, error: TrezorError, callId?: string) => {
-    const { uiPromises, deviceList, callMethods, resetWaitForFirstMethod, sendCoreMessage } =
-        context;
+    const {
+        uiPromises,
+        deviceList,
+        callMethods,
+        pendingDeviceCalls,
+        resetWaitForFirstMethod,
+        sendCoreMessage,
+    } = context;
 
     if (callId) {
         const method = callMethods.find(m => m.callId === callId);
         if (!method) {
+            return;
+        }
+
+        const pendingDeviceCall = pendingDeviceCalls.get(method.responseID);
+        if (pendingDeviceCall) {
+            pendingDeviceCall.abort(error);
+
             return;
         }
 
@@ -700,6 +735,8 @@ const abortRunningCall = (context: CoreContext, error: TrezorError, callId?: str
 
         return;
     }
+
+    pendingDeviceCalls.forEach(abortController => abortController.abort(error));
 
     // Device was already acquired. Try to interrupt running action which will throw error from onCall try/catch block
     if (deviceList.isConnected() && deviceList.getDeviceCount() > 0) {
@@ -781,6 +818,7 @@ const initDeviceList = (context: CoreContext) => {
 export class Core extends EventEmitter {
     private abortController = new AbortController();
     private callMethods: AbstractMethod<any>[] = []; // generic type is irrelevant. only common functions are called at this level
+    private pendingDeviceCalls = new Map<string, AbortController>();
     private methodSynchronize = getSynchronize();
     private uiPromises = createUiPromiseManager();
 
@@ -814,6 +852,7 @@ export class Core extends EventEmitter {
             deviceList: this.deviceList,
             logger: this.coreLogger,
             callMethods: this.callMethods,
+            pendingDeviceCalls: this.pendingDeviceCalls,
             methodSynchronize: this.methodSynchronize,
             sendCoreMessage: this.sendCoreMessage.bind(this),
             resetWaitForFirstMethod: () => {
@@ -947,6 +986,9 @@ export class Core extends EventEmitter {
         disposeBackend();
         this.removeAllListeners();
         this.abortController.abort();
+        this.pendingDeviceCalls.forEach(abortController =>
+            abortController.abort(this.abortController.signal.reason),
+        );
         this.deviceList.dispose();
     }
 

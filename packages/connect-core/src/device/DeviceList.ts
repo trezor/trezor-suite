@@ -151,12 +151,15 @@ export class DeviceList extends TypedEmitter<DeviceListEvents> implements IDevic
      * has finished, whatever its outcome. A device joins the list only after its handshake, so a
      * method call must wait here or it would miss a device that is plugged in but still
      * initializing. Rejects with Device_InitializeInProgress if the handshakes do not settle in
-     * PENDING_HANDSHAKE_CALL_TIMEOUT.
+     * PENDING_HANDSHAKE_CALL_TIMEOUT, or with the signal's reason when cancelled.
      */
-    waitForPendingHandshakes() {
+    waitForPendingHandshakes(signal?: AbortSignal) {
         return scheduleAction(() => this.handshakeLock(() => {}), {
             timeout: PENDING_HANDSHAKE_CALL_TIMEOUT,
+            signal,
         }).catch(() => {
+            if (signal?.aborted) throw signal.reason;
+
             throw ERRORS.TypedError('Device_InitializeInProgress');
         });
     }
