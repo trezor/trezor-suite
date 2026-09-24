@@ -112,6 +112,11 @@ export const connectInitThunk = createThunk<
             dispatch(deviceConnectThunk({ type: eventData.type, device: eventData.payload }));
 
             connectInitHooks.deviceEvent[eventData.type]?.(eventData.payload, connectedDevices);
+        } else if (eventData.type === DEVICE.DISCONNECT) {
+            const connectedDevices = selectDevices(getState());
+            dispatch({ type: eventData.type, payload: eventData.payload });
+
+            connectInitHooks.deviceEvent[eventData.type]?.(eventData.payload, connectedDevices);
         } else {
             // dispatch event as action
             dispatch({ type: eventData.type, payload: eventData.payload });
