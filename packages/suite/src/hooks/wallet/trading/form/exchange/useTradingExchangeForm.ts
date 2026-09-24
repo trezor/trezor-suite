@@ -18,6 +18,7 @@ import {
     selectTradingExchangeInfo,
     selectTradingExchangeIsFromRedirect,
     selectTradingExchangeIsLoading,
+    selectTradingExchangeQuotesRequest,
     selectTradingExchangeSelectedQuote,
     selectTradingExchangeTransactionId,
     selectTradingSendAccount,
@@ -33,6 +34,7 @@ import { useTradingAmountUnitSync } from 'src/hooks/wallet/trading/form/common/u
 import { useTradingComposeTransaction } from 'src/hooks/wallet/trading/form/common/useTradingComposeTransaction';
 import { useTradingFiatValues } from 'src/hooks/wallet/trading/form/common/useTradingFiatValues';
 import { useTradingExchangeFormDefaultValues } from 'src/hooks/wallet/trading/form/exchange/useTradingExchangeFormDefaultValues';
+import { useTradingExchangeFormQuotesRequestValues } from 'src/hooks/wallet/trading/form/exchange/useTradingExchangeFormQuotesRequestValues';
 import { useServerEnvironment } from 'src/hooks/wallet/trading/useServerEnviroment';
 import { useTradingExchangeTradeActions } from 'src/hooks/wallet/trading/useTradingExchangeTradeActions';
 import { useBitcoinAmountUnit } from 'src/hooks/wallet/useBitcoinAmountUnit';
@@ -52,6 +54,7 @@ export const useTradingExchangeForm = (): TradingExchangeFormContextProps => {
     const { dispatch } = useServices(injectDispatch);
     const isFromRedirect = useSelector(selectTradingExchangeIsFromRedirect);
     const transactionId = useSelector(selectTradingExchangeTransactionId);
+    const quotesRequest = useSelector(selectTradingExchangeQuotesRequest);
     const selectedQuote = useSelector(selectTradingExchangeSelectedQuote);
     const amountLimits = useSelector(selectTradingExchangeAmountLimits);
     const isLoading = useSelector(selectTradingExchangeIsLoading);
@@ -75,10 +78,17 @@ export const useTradingExchangeForm = (): TradingExchangeFormContextProps => {
     const network = symbol ? getNetwork(symbol) : undefined;
 
     const { defaultValues } = useTradingExchangeFormDefaultValues(accountKey, cryptoId);
+    const quotesRequestValues = useTradingExchangeFormQuotesRequestValues({
+        quotesRequest,
+        selectedQuote,
+        accountKey,
+        defaultValues,
+    });
+    const initialValues = quotesRequestValues ?? defaultValues;
 
     const methods = useForm<TradingExchangeFormProps>({
         mode: 'onChange',
-        defaultValues,
+        defaultValues: initialValues,
     });
 
     const { reset, register, formState, control } = methods;
@@ -206,7 +216,7 @@ export const useTradingExchangeForm = (): TradingExchangeFormContextProps => {
     useTradingFormReset({
         isInfoReady: !!exchangeInfo?.providerInfos,
         reset,
-        defaultValues,
+        defaultValues: initialValues,
     });
 
     // Subscribe to blocks for Solana, since they are not fetched globally
