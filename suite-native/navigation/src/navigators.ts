@@ -1,7 +1,7 @@
 import { type NavigatorScreenParams } from '@react-navigation/native';
 import { type RequireAllOrNone } from 'type-fest';
 
-import { type BackupType, type Locale } from '@suite-common/suite-types';
+import { type BackupType } from '@suite-common/suite-types';
 import { type TradingType } from '@suite-common/trading';
 import { type AccountType, type NetworkSymbol } from '@suite-common/wallet-config';
 import {
@@ -380,9 +380,7 @@ export type DeviceSettingsStackParamList = {
         closeActionType: CloseActionType;
     };
     [DeviceSettingsStackRoutes.FirmwareUpdateStack]: undefined;
-    [DeviceSettingsStackRoutes.FirmwareLanguageStack]: {
-        language: Locale;
-    };
+    [DeviceSettingsStackRoutes.FirmwareLanguageStack]: undefined;
     [DeviceSettingsStackRoutes.DeviceConnection]: undefined;
     [DeviceSettingsStackRoutes.DeviceAutoConnectStack]: undefined;
     [DeviceSettingsStackRoutes.ForgetDevice]: undefined;
