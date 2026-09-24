@@ -1,7 +1,6 @@
 import { type UnknownAction, combineReducers, createAction, createReducer } from '@reduxjs/toolkit';
 
 import { mockDesktopAnalytics } from '@suite/analytics/mocks';
-import { createConnectInit } from '@suite-common/connect-init';
 import {
     mockConnectInitSettings,
     mockCreateTransports,
@@ -18,6 +17,8 @@ import {
 import { createTestStore, testMocks } from '@suite-common/test-utils';
 import { defaultTrezorUIEventHandlerThunk } from '@suite-common/wallet-core';
 import { noopCreateLogger } from '@trezor/connect-common';
+
+import { createSuiteConnectInit } from 'src/support/createSuiteConnectInit';
 
 import fixtures from './__fixtures__/publicKeyActions';
 const device = mockSuiteDevice({
@@ -81,7 +82,7 @@ const initStore = (stateOverrides?: StateOverrides) => {
 };
 
 const initConnect = (store: ReturnType<typeof initStore>) =>
-    createConnectInit({
+    createSuiteConnectInit({
         dispatch: store.dispatch,
         getState: store.getState,
         analytics: mockDesktopAnalytics(),

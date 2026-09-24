@@ -3,7 +3,6 @@ import { debugInitialState } from '@suite/debug';
 import { lockDevice } from '@suite/locks';
 import { routerReducer } from '@suite/router';
 import { suiteSettingsInitialState } from '@suite/settings';
-import { createConnectInit } from '@suite-common/connect-init';
 import {
     mockConnectInitSettings,
     mockCreateTransports,
@@ -30,6 +29,7 @@ import * as deviceSettingsActions from 'src/actions/settings/deviceSettingsActio
 import buttonRequestMiddleware from 'src/middlewares/suite/buttonRequestMiddleware';
 import { prepareSuiteMiddleware } from 'src/middlewares/suite/suiteMiddleware';
 import suiteReducer from 'src/reducers/suite/suiteReducer';
+import { createSuiteConnectInit } from 'src/support/createSuiteConnectInit';
 
 const device = mockSuiteDevice();
 
@@ -69,7 +69,7 @@ const initStore = (state: State) => {
 };
 
 const initConnect = (store: ReturnType<typeof initStore>) =>
-    createConnectInit({
+    createSuiteConnectInit({
         dispatch: store.dispatch,
         getState: store.getState,
         analytics: mockDesktopAnalytics(),

@@ -4,7 +4,6 @@ import RNRestart from 'react-native-restart';
 import * as Device from 'expo-device';
 
 import { createBip329CompositionRoot } from '@suite-common/bip329';
-import { createConnectInit } from '@suite-common/connect-init';
 import { delegatedIdentityKeyCompositionRoot } from '@suite-common/delegated-identity-key';
 import { asGetter, toGetter } from '@suite-common/dependency-injection';
 import { notImplementedGetter } from '@suite-common/extra-dependencies';
@@ -12,11 +11,7 @@ import { createNetworksCompositionRoot } from '@suite-common/networks';
 import { createNativePlatformEncryption } from '@suite-common/platform-encryption-native';
 import { createMigrateSuiteSyncLabelsForRbfTransactionCompositionRoot } from '@suite-common/suite-rbf-labels-migrations';
 import { selectAllLabelsForAccount, selectIsSuiteSyncEnabled } from '@suite-common/suite-sync';
-import {
-    type ConnectInitSettings,
-    type CreateTransports,
-    type TrezorUiEventHandler,
-} from '@suite-common/suite-types';
+import { type ConnectInitSettings, type TrezorUiEventHandler } from '@suite-common/suite-types';
 import { defaultTrezorUIEventHandlerThunk } from '@suite-common/wallet-core';
 import { analytics } from '@suite-native/analytics';
 import {
@@ -44,6 +39,7 @@ import { NativeBluetoothTransport } from '@trezor/transport-native-bluetooth';
 import { NativeUsbTransport } from '@trezor/transport-native-usb';
 
 import { type NativeServices } from './NativeServices';
+import { createNativeConnectInit } from './createNativeConnectInit';
 import { extraDependencies } from './createNativeExtraDependencies';
 import { type NativeReduxStore } from './createReduxStore';
 
@@ -117,7 +113,7 @@ export const createNativeServicesCompositionRoot = (deps: NativeAppDeps): Native
     };
     // Native constructs its per-device-type transports directly (single platform, no
     // web/desktop split) and returns the enabled ones as ready-made instances.
-    const createTransports: CreateTransports = () =>
+    const createTransports = () =>
         (transports ?? []).map(name => {
             switch (name) {
                 case 'BridgeTransport':
@@ -141,7 +137,7 @@ export const createNativeServicesCompositionRoot = (deps: NativeAppDeps): Native
         deps.dispatch(defaultTrezorUIEventHandlerThunk(action));
     };
 
-    const connectInit = createConnectInit({
+    const connectInit = createNativeConnectInit({
         dispatch: deps.dispatch,
         getState: deps.getState,
         analytics,
@@ -150,11 +146,6 @@ export const createNativeServicesCompositionRoot = (deps: NativeAppDeps): Native
         createLogger,
         getAllowPrerelease,
         getBinFilesBaseUrl,
-        // Native transports are selected by createTransports, not by debug settings.
-        getDebugSettings: toGetter(deps.getState, () => ({
-            transports: [],
-            showConnectLogs: false,
-        })),
         getThpSettings,
         createTransports,
         trezorUiEventHandler,

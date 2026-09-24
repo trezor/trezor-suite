@@ -190,7 +190,7 @@ export const observeSelectedDeviceThunk = createThunk<
 
         // The "Is becoming acquired/connect" logic lives here, because currently we only care about
         // that for the selected device updates.
-        // TBD: maybe this would be cleaner in createConnectInit – if we care about all devices?
+        // TBD: maybe this would be cleaner in the ConnectInit services – if we care about all devices?
         const deviceComparison = { prevDevice: selectedDevice, nextDevice: deviceFromReducer };
         const isDeviceBecomingAcquired = getIsDeviceBecomingAcquired(deviceComparison);
         const isDeviceBecomingConnected = getIsDeviceBecomingConnected(deviceComparison);

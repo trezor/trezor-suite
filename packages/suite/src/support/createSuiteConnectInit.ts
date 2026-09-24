@@ -1,4 +1,11 @@
+import { bluetoothOnDeviceConnectedThunk } from '@suite/bluetooth';
 import { type AnalyticsDep, events as sharedEvents } from '@suite-common/analytics';
+import {
+    type ConnectInitSettingsDep,
+    type GetDebugSettingsDep,
+    type TransportsDep,
+    blacklist,
+} from '@suite-common/connect-init';
 import {
     type DeviceRootState,
     type LockDeviceDep,
@@ -33,7 +40,6 @@ import TrezorConnect, {
     type CreateLoggerDep,
     DEVICE,
     DEVICE_EVENT,
-    type Device,
     TRANSPORT_EVENT,
     UI_EVENT,
     UI_REQUEST,
@@ -41,27 +47,16 @@ import TrezorConnect, {
 import { asCoinSymbol } from '@trezor/connect-common';
 import { getSynchronize, isArrayMember } from '@trezor/utils';
 
-import { blacklist } from './blacklist';
-import {
-    type ConnectInitSettingsDep,
-    type GetDebugSettingsDep,
-    type TransportsDep,
-} from './connectInitTypes';
+import { markDeviceAsRecentlyConnectedThunk } from '../actions/wallet/markDeviceAsRecentlyConnectedThunk';
 
-// connectInitSettings is defined in the platform composition root:
-// packages/suite/src/support/createSuiteCompositionRoot.ts or
-// suite-native/state/src/createNativeServicesCompositionRoot.ts.
-
-export type ConnectInitState = DeviceRootState &
+export type SuiteConnectInitState = DeviceRootState &
     FirmwareRootState &
     MessageSystemRootState &
     WalletSettingsRootState;
 
-export type ConnectInitDeps = {
-    getState: () => ConnectInitState;
+export type SuiteConnectInitDeps = {
+    getState: () => SuiteConnectInitState;
     analytics: Pick<AnalyticsDep['analytics'], 'report'>;
-    onDeviceConnect?: (device: Device) => void;
-    onDeviceConnectUnacquired?: (device: Device) => void;
 } & DispatchDep &
     LockDeviceDep &
     ConnectInitSettingsDep &
@@ -74,8 +69,8 @@ export type ConnectInitDeps = {
     TransportsDep &
     TrezorUiEventHandlerDep;
 
-export const createConnectInit =
-    (deps: ConnectInitDeps): ConnectInit =>
+export const createSuiteConnectInit =
+    (deps: SuiteConnectInitDeps): ConnectInit =>
     async () => {
         // set event listeners and dispatch as
         TrezorConnect.on(DEVICE_EVENT, ({ event: _, ...eventData }) => {
@@ -86,10 +81,9 @@ export const createConnectInit =
                     deviceConnectThunk({ type: eventData.type, device: eventData.payload }),
                 );
 
+                deps.dispatch(markDeviceAsRecentlyConnectedThunk(eventData.payload));
                 if (eventData.type === DEVICE.CONNECT) {
-                    deps.onDeviceConnect?.(eventData.payload);
-                } else {
-                    deps.onDeviceConnectUnacquired?.(eventData.payload);
+                    deps.dispatch(bluetoothOnDeviceConnectedThunk(eventData.payload));
                 }
             } else {
                 // dispatch event as action

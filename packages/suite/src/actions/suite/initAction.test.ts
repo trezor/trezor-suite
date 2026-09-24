@@ -25,7 +25,6 @@ import {
 } from '@suite/settings';
 import { onSuiteInit, onSuiteReady } from '@suite/suite-lifecycle';
 import { prepareAnalyticsReducer } from '@suite-common/analytics-redux';
-import { createConnectInit } from '@suite-common/connect-init';
 import {
     mockConnectInitSettings,
     mockCreateTransports,
@@ -75,6 +74,7 @@ import { prepareSuiteMiddleware } from 'src/middlewares/suite/suiteMiddleware';
 import suiteReducer from 'src/reducers/suite/suiteReducer';
 import windowReducer from 'src/reducers/suite/windowReducer';
 import { walletReducers } from 'src/reducers/wallet';
+import { createSuiteConnectInit } from 'src/support/createSuiteConnectInit';
 import type { AppState } from 'src/types/suite';
 
 const deviceReducer = prepareDeviceReducer({
@@ -354,7 +354,7 @@ const initStore = (state: State) => {
                 ...createDesktopApiDep(),
                 analytics: mockDesktopAnalytics(),
                 connectInit: (): Promise<void> =>
-                    createConnectInit({
+                    createSuiteConnectInit({
                         dispatch: store.dispatch,
                         getState: store.getState,
                         analytics: mockDesktopAnalytics(),

@@ -2,11 +2,7 @@ import { saveAs } from 'file-saver';
 
 import { type DesktopAnalyticsDep, createAnalytics } from '@suite/analytics';
 import { selectShouldRetryFirmwareRevisionCheckError } from '@suite/authenticity-checks';
-import {
-    type BluetoothDep,
-    bluetoothOnDeviceConnectedThunk,
-    createBluetoothCompositionRoot,
-} from '@suite/bluetooth';
+import { type BluetoothDep, createBluetoothCompositionRoot } from '@suite/bluetooth';
 import { type DesktopApiDep } from '@suite/desktop-app-api';
 import { rerunFwAuthenticityChecksThunk } from '@suite/device';
 import { lockDevice } from '@suite/locks';
@@ -28,7 +24,6 @@ import {
     type CreateTransports,
     type GetTransportsFactoriesDep,
     type TransportsDep,
-    createConnectInit,
 } from '@suite-common/connect-init';
 import { delegatedIdentityKeyCompositionRoot } from '@suite-common/delegated-identity-key';
 import { toGetter } from '@suite-common/dependency-injection';
@@ -60,8 +55,8 @@ import { selectIsWindowVisible } from 'src/reducers/suite/windowReducer';
 import { type DbDep } from 'src/storage/createDb';
 import { reportSecurityCheck } from 'src/utils/suite/sentry';
 
+import { createSuiteConnectInit } from './createSuiteConnectInit';
 import { createSuiteTrezorUiEventHandler } from './createSuiteTrezorUiEventHandler';
-import { markDeviceAsRecentlyConnectedThunk } from '../actions/wallet/markDeviceAsRecentlyConnectedThunk';
 import { type AppState } from '../types/suite';
 
 const connectInitSettings: ConnectInitSettings = {
@@ -186,7 +181,7 @@ export const createSuiteServicesCompositionRoot = (deps: SuiteAppDeps): SuiteSer
         (state: AppState) => state.desktopUpdate?.allowPrerelease ?? false,
     );
 
-    const connectInit = createConnectInit({
+    const connectInit = createSuiteConnectInit({
         dispatch: deps.dispatch,
         getState: deps.getState,
         analytics,
@@ -200,13 +195,6 @@ export const createSuiteServicesCompositionRoot = (deps: SuiteAppDeps): SuiteSer
         thpHostName: deps.thpHostName,
         createTransports,
         trezorUiEventHandler,
-        onDeviceConnect: device => {
-            deps.dispatch(markDeviceAsRecentlyConnectedThunk(device));
-            deps.dispatch(bluetoothOnDeviceConnectedThunk(device));
-        },
-        onDeviceConnectUnacquired: device => {
-            deps.dispatch(markDeviceAsRecentlyConnectedThunk(device));
-        },
     });
 
     return {

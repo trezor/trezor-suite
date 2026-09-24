@@ -3,6 +3,9 @@
     "compilerOptions": { "outDir": "libDev" },
     "references": [
         {
+            "path": "../../suite-common/analytics"
+        },
+        {
             "path": "../../suite-common/analytics-redux"
         },
         { "path": "../../suite-common/bip329" },
@@ -102,6 +105,9 @@
         { "path": "../trading-state" },
         { "path": "../transaction-management" },
         { "path": "../../packages/connect" },
+        {
+            "path": "../../packages/connect-common"
+        },
         { "path": "../../packages/env-utils" },
         {
             "path": "../../packages/transport-common"
@@ -112,6 +118,7 @@
         {
             "path": "../../packages/transport-native-usb"
         },
-        { "path": "../../packages/type-utils" }
+        { "path": "../../packages/type-utils" },
+        { "path": "../../packages/utils" }
     ]
 }

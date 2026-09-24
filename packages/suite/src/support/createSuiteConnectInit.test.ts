@@ -14,7 +14,6 @@ import {
 } from '@suite-common/wallet-core';
 import TrezorConnect, {
     BLOCKCHAIN_EVENT,
-    DEVICE,
     DEVICE_EVENT,
     TRANSPORT_EVENT,
     UI_EVENT,
@@ -24,28 +23,30 @@ import TrezorConnect, {
 } from '@trezor/connect';
 
 import {
-    type ConnectInitDeps,
-    type ConnectInitState,
-    createConnectInit,
-} from './createConnectInit';
+    type SuiteConnectInitDeps,
+    type SuiteConnectInitState,
+    createSuiteConnectInit,
+} from './createSuiteConnectInit';
 
-type CreateConnectInitTestDeps = {
+type CreateSuiteConnectInitTestDeps = {
     actions: unknown[];
-    onDispatch: MockDispatch<ConnectInitState, undefined>['onDispatch'];
-    deps: ConnectInitDeps;
+    onDispatch: MockDispatch<SuiteConnectInitState, undefined>['onDispatch'];
+    deps: SuiteConnectInitDeps;
 };
 
-const state: ConnectInitState = {
+const state: SuiteConnectInitState = {
     wallet: { settings: initialWalletSettingsState },
     device: deviceInitialState,
     firmware: firmwareInitialState,
     messageSystem: messageSystemInitialState,
 };
 
-const createTestDeps = (overrides: Partial<ConnectInitDeps> = {}): CreateConnectInitTestDeps => {
+const createTestDeps = (
+    overrides: Partial<SuiteConnectInitDeps> = {},
+): CreateSuiteConnectInitTestDeps => {
     const getState = () => state;
     const { actions, dispatch, onDispatch } = createMockDispatch({ getState });
-    const deps: ConnectInitDeps = {
+    const deps: SuiteConnectInitDeps = {
         dispatch,
         getState,
         analytics: { report: jest.fn() },
@@ -73,7 +74,7 @@ const createTestDeps = (overrides: Partial<ConnectInitDeps> = {}): CreateConnect
     return { actions, onDispatch, deps };
 };
 
-describe('createConnectInit', () => {
+describe('createSuiteConnectInit', () => {
     beforeEach(() => {
         testMocks.setTrezorConnectFixtures();
     });
@@ -85,7 +86,7 @@ describe('createConnectInit', () => {
     it('Success', async () => {
         const { deps } = createTestDeps();
 
-        await expect(createConnectInit(deps)()).resolves.toBeUndefined();
+        await expect(createSuiteConnectInit(deps)()).resolves.toBeUndefined();
     });
 
     it('uses the injected bin files base URL', async () => {
@@ -96,7 +97,7 @@ describe('createConnectInit', () => {
             getBinFilesBaseUrl: asGetter(getBinFilesBaseUrl),
         });
 
-        await createConnectInit(deps)();
+        await createSuiteConnectInit(deps)();
 
         expect(getBinFilesBaseUrl).toHaveBeenCalledTimes(1);
         expect(initSpy).toHaveBeenCalledWith(
@@ -109,7 +110,7 @@ describe('createConnectInit', () => {
 
         const { deps } = createTestDeps();
 
-        await createConnectInit(deps)();
+        await createSuiteConnectInit(deps)();
 
         expect(initSpy).toHaveBeenCalledWith(
             expect.objectContaining({ firmwareChannel: 'production' }),
@@ -123,7 +124,7 @@ describe('createConnectInit', () => {
             getAllowPrerelease: asGetter(() => true),
         });
 
-        await createConnectInit(deps)();
+        await createSuiteConnectInit(deps)();
 
         expect(initSpy).toHaveBeenCalledWith(
             expect.objectContaining({ firmwareChannel: 'production-early-access' }),
@@ -138,7 +139,7 @@ describe('createConnectInit', () => {
 
         const { deps } = createTestDeps();
 
-        await expect(createConnectInit(deps)()).rejects.toThrow(errorFixture.message);
+        await expect(createSuiteConnectInit(deps)()).rejects.toThrow(errorFixture.message);
     });
 
     it('TypedError', async () => {
@@ -152,7 +153,7 @@ describe('createConnectInit', () => {
 
         const { deps } = createTestDeps();
 
-        await expect(createConnectInit(deps)()).rejects.toThrow(
+        await expect(createSuiteConnectInit(deps)()).rejects.toThrow(
             `${errorFixture.code}: ${errorFixture.message}`,
         );
     });
@@ -165,12 +166,12 @@ describe('createConnectInit', () => {
 
         const { deps } = createTestDeps();
 
-        await expect(createConnectInit(deps)()).rejects.toThrow(errorFixture);
+        await expect(createSuiteConnectInit(deps)()).rejects.toThrow(errorFixture);
     });
 
     it('Events', async () => {
         const { actions, deps } = createTestDeps();
-        await createConnectInit(deps)();
+        await createSuiteConnectInit(deps)();
         actions.length = 0;
         const { emitTestEvent } = testMocks.getTrezorConnectMock();
 
@@ -189,7 +190,7 @@ describe('createConnectInit', () => {
 
     it('Wrapped method', async () => {
         const { actions, deps } = createTestDeps();
-        await createConnectInit(deps)();
+        await createSuiteConnectInit(deps)();
         actions.length = 0;
 
         await testMocks.getTrezorConnectMock().getFeatures();
@@ -203,7 +204,7 @@ describe('createConnectInit', () => {
 
     it('only scoped callId-bearing UI events are swallowed by the global listener', async () => {
         const { actions, onDispatch, deps } = createTestDeps();
-        await createConnectInit(deps)();
+        await createSuiteConnectInit(deps)();
         actions.length = 0;
         const { emitTestEvent } = testMocks.getTrezorConnectMock();
         const scopedCallId = 'scoped-call-id';
@@ -243,34 +244,10 @@ describe('createConnectInit', () => {
         }
     });
 
-    it('calls the device event deps for DEVICE.CONNECT / DEVICE.CONNECT_UNACQUIRED', async () => {
-        const onDeviceConnect = mock<NonNullable<ConnectInitDeps['onDeviceConnect']>>();
-        const onDeviceConnectUnacquired =
-            mock<NonNullable<ConnectInitDeps['onDeviceConnectUnacquired']>>();
-        const { deps } = createTestDeps({
-            onDeviceConnect,
-            onDeviceConnectUnacquired,
-        });
-
-        await createConnectInit(deps)();
-        const { emitTestEvent } = testMocks.getTrezorConnectMock();
-
-        const connectPayload = { path: 'device-1', features: {} };
-        emitTestEvent(DEVICE_EVENT, { type: DEVICE.CONNECT, payload: connectPayload });
-        const unacquiredPayload = { path: 'device-2' };
-        emitTestEvent(DEVICE_EVENT, {
-            type: DEVICE.CONNECT_UNACQUIRED,
-            payload: unacquiredPayload,
-        });
-
-        expect(onDeviceConnect).toHaveBeenCalledWith(connectPayload);
-        expect(onDeviceConnectUnacquired).toHaveBeenCalledWith(unacquiredPayload);
-    });
-
     it('forwards unscoped UI events and requests to trezorUiEventHandler', async () => {
-        const trezorUiEventHandler = mock<ConnectInitDeps['trezorUiEventHandler']>();
+        const trezorUiEventHandler = mock<SuiteConnectInitDeps['trezorUiEventHandler']>();
         const { deps } = createTestDeps({ trezorUiEventHandler });
-        await createConnectInit(deps)();
+        await createSuiteConnectInit(deps)();
         const { emitTestEvent } = testMocks.getTrezorConnectMock();
 
         emitTestEvent(UI_EVENT, {

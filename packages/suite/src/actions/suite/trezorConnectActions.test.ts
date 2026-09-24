@@ -3,7 +3,6 @@ import { debugInitialState } from '@suite/debug';
 import { prepareDesktopDeviceReducer } from '@suite/device';
 import { lockDevice } from '@suite/locks';
 import { suiteSettingsInitialState } from '@suite/settings';
-import { createConnectInit } from '@suite-common/connect-init';
 import {
     mockConnectInitSettings,
     mockCreateTransports,
@@ -20,6 +19,7 @@ import { BLOCKCHAIN_EVENT, DEVICE_EVENT, TRANSPORT_EVENT, UI_EVENT } from '@trez
 import { noopCreateLogger } from '@trezor/connect-common';
 
 import suiteReducer from 'src/reducers/suite/suiteReducer';
+import { createSuiteConnectInit } from 'src/support/createSuiteConnectInit';
 
 const deviceReducer = prepareDesktopDeviceReducer({
     actionTypes: {
@@ -71,7 +71,7 @@ const mockStore = (preloadedState: State) =>
     });
 
 const initConnect = (store: ReturnType<typeof mockStore>) =>
-    createConnectInit({
+    createSuiteConnectInit({
         dispatch: store.dispatch,
         getState: store.getState,
         analytics: mockDesktopAnalytics(),

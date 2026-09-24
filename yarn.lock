@@ -10777,21 +10777,12 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@suite-common/connect-init@workspace:suite-common/connect-init"
   dependencies:
-    "@reduxjs/toolkit": "npm:2.12.0"
-    "@suite-common/analytics": "workspace:*"
     "@suite-common/dependency-injection": "workspace:*"
-    "@suite-common/device": "workspace:*"
-    "@suite-common/firmware": "workspace:*"
-    "@suite-common/message-system": "workspace:*"
-    "@suite-common/redux-utils": "workspace:*"
     "@suite-common/suite-types": "workspace:*"
-    "@suite-common/test-utils": "workspace:*"
     "@suite-common/thp": "workspace:*"
-    "@suite-common/wallet-core": "workspace:*"
     "@trezor/connect": "workspace:*"
     "@trezor/connect-common": "workspace:*"
     "@trezor/transport-common": "workspace:*"
-    "@trezor/utils": "workspace:*"
   languageName: unknown
   linkType: soft
 
@@ -14505,6 +14496,7 @@ __metadata:
   dependencies:
     "@reduxjs/toolkit": "npm:2.12.0"
     "@rozenite/redux-devtools-plugin": "npm:^2.1.0"
+    "@suite-common/analytics": "workspace:*"
     "@suite-common/analytics-redux": "workspace:*"
     "@suite-common/bip329": "workspace:*"
     "@suite-common/connect-init": "workspace:*"
@@ -14559,11 +14551,13 @@ __metadata:
     "@suite-native/trading-state": "workspace:*"
     "@suite-native/transaction-management": "workspace:*"
     "@trezor/connect": "workspace:*"
+    "@trezor/connect-common": "workspace:*"
     "@trezor/env-utils": "workspace:*"
     "@trezor/transport-common": "workspace:*"
     "@trezor/transport-native-bluetooth": "workspace:*"
     "@trezor/transport-native-usb": "workspace:*"
     "@trezor/type-utils": "workspace:*"
+    "@trezor/utils": "workspace:*"
     "@types/redux-logger": "npm:^3.0.13"
     expo-device: "npm:~57.0.1"
     react: "npm:19.2.3"

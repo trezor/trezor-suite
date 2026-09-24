@@ -1,2 +1,2 @@
-export * from './createConnectInit';
+export { blacklist } from './blacklist';
 export type * from './connectInitTypes';

@@ -11,6 +11,7 @@ export type TrezorUiEventHandlerDep = {
     trezorUiEventHandler: TrezorUiEventHandler;
 };
 
+/** @serviceContract */
 export type ConnectInit = () => Promise<void>;
 
 export type ConnectInitDep = {

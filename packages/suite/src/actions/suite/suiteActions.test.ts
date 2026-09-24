@@ -8,7 +8,6 @@ import { routerReducer } from '@suite/router';
 import { type RouterStateOverrides, createRouterStateMock } from '@suite/router/mocks';
 import { torReducer } from '@suite/tor';
 import { type AnalyticsDep } from '@suite-common/analytics';
-import { createConnectInit } from '@suite-common/connect-init';
 import {
     mockConnectInitSettings,
     mockCreateTransports,
@@ -45,6 +44,7 @@ import { noopCreateLogger } from '@trezor/connect-common';
 
 import { markDeviceAsRecentlyConnectedThunk } from 'src/actions/wallet/markDeviceAsRecentlyConnectedThunk';
 import suiteReducer from 'src/reducers/suite/suiteReducer';
+import { createSuiteConnectInit } from 'src/support/createSuiteConnectInit';
 
 import fixtures from './__fixtures__/suiteActions';
 import { SUITE } from './constants';
@@ -138,7 +138,7 @@ const mockStore = (preloadedState: State) =>
     });
 
 const initConnect = (store: ReturnType<typeof mockStore>) =>
-    createConnectInit({
+    createSuiteConnectInit({
         dispatch: store.dispatch,
         getState: store.getState,
         analytics: mockDesktopAnalytics(),
