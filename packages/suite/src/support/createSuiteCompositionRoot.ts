@@ -5,7 +5,7 @@ import { selectShouldRetryFirmwareRevisionCheckError } from '@suite/authenticity
 import { type BluetoothDep, createBluetoothCompositionRoot } from '@suite/bluetooth';
 import { type DesktopApiDep } from '@suite/desktop-app-api';
 import { rerunFwAuthenticityChecksThunk } from '@suite/device';
-import { lockDevice } from '@suite/locks';
+import { lockDevice as lockDeviceAction } from '@suite/locks';
 import { selectLabelingDataForAccount } from '@suite/metadata';
 import {
     type MetadataMigrationDep,
@@ -24,6 +24,7 @@ import {
     type CreateTransports,
     type GetTransportsFactoriesDep,
     type TransportsDep,
+    createConnectInitCompositionRoot,
 } from '@suite-common/connect-init';
 import { delegatedIdentityKeyCompositionRoot } from '@suite-common/delegated-identity-key';
 import { toGetter } from '@suite-common/dependency-injection';
@@ -39,7 +40,11 @@ import {
     selectIsSuiteSyncEnabled,
     selectSuiteSyncWalletLabel,
 } from '@suite-common/suite-sync';
-import { type GetBinFilesBaseUrlDep, type ReloadAppDep } from '@suite-common/suite-types';
+import {
+    type GetBinFilesBaseUrlDep,
+    type LockDevice,
+    type ReloadAppDep,
+} from '@suite-common/suite-types';
 import { type ThpHostNameDep } from '@suite-common/thp';
 import { selectTradedAccountKeys } from '@suite-common/trading';
 import { selectAccountsByDeviceState } from '@suite-common/wallet-core';
@@ -161,6 +166,36 @@ export const createSuiteServicesCompositionRoot = (deps: SuiteAppDeps): SuiteSer
         }) as ReturnType<CreateTransports>;
     };
 
+    const lockDevice: LockDevice = isLocked => {
+        deps.dispatch(lockDeviceAction(isLocked));
+    };
+    const getAllowPrerelease = toGetter(
+        deps.getState,
+        (state: AppState) => state.desktopUpdate?.allowPrerelease ?? false,
+    );
+
+    const { connectInit } = createConnectInitCompositionRoot({
+        dispatch: deps.dispatch,
+        getState: deps.getState,
+        lockDevice,
+        analytics,
+        connectInitDeviceEventHooks: createConnectInitDeviceEventHooks({
+            dispatch: deps.dispatch,
+        }),
+        connectInitSettings,
+        createLogger: deps.createLogger,
+        createTransports,
+        getAllowPrerelease,
+        getBinFilesBaseUrl: deps.getBinFilesBaseUrl,
+        getDebugSettings: toGetter(deps.getState, selectDebugSettings),
+        getThpSettings: toGetter(deps.getState, (state: AppState) => ({
+            appName: 'Trezor Suite', // NOTE: this is displayed on Trezor. not the same as manifest.appName
+            pairingMethods: ['CodeEntry'],
+            knownCredentials: state.thp?.credentials,
+        })),
+        thpHostName: deps.thpHostName,
+    });
+
     return {
         db: deps.db,
         desktopApi: deps.desktopApi,
@@ -178,23 +213,16 @@ export const createSuiteServicesCompositionRoot = (deps: SuiteAppDeps): SuiteSer
         reportSecurityCheck,
         reloadApp: deps.reloadApp,
         saveAs: (data: Blob, fileName: string) => saveAs(data, fileName),
-        connectInitSettings,
-        connectInitDeviceEventHooks: createConnectInitDeviceEventHooks({
-            dispatch: deps.dispatch,
-        }),
+        connectInit,
         connectInitUiEventHooks: createConnectInitUiEventHooks({
             dispatch: deps.dispatch,
             getState: deps.getState,
         }),
-        createLogger: deps.createLogger,
-        thpHostName: deps.thpHostName,
         createTransports,
         getTokenDefinitionsEnabledNetworks: toGetter(
             deps.getState,
             (state: AppState) => state.wallet.settings.enabledNetworks,
         ),
-        // TODO: Coinjoin has not been moved to @suite-common yet, so its debug settings type is not available here.
-        getDebugSettings: toGetter(deps.getState, selectDebugSettings),
         getBinFilesBaseUrl: deps.getBinFilesBaseUrl,
         getLanguage: toGetter(deps.getState, selectLanguage),
         getSelectedAccount: toGetter(
@@ -204,15 +232,7 @@ export const createSuiteServicesCompositionRoot = (deps: SuiteAppDeps): SuiteSer
         getIsWindowVisible: toGetter(deps.getState, selectIsWindowVisible),
         getTradingEnvironment: toGetter(deps.getState, selectTradeServerEnvironment),
         getTradedAccountKeys: toGetter(deps.getState, selectTradedAccountKeys),
-        getThpSettings: toGetter(deps.getState, (state: AppState) => ({
-            appName: 'Trezor Suite', // NOTE: this is displayed on Trezor. not the same as manifest.appName
-            pairingMethods: ['CodeEntry'],
-            knownCredentials: state.thp?.credentials,
-        })),
-        getAllowPrerelease: toGetter(
-            deps.getState,
-            (state: AppState) => state.desktopUpdate?.allowPrerelease ?? false,
-        ),
+        getAllowPrerelease,
         shouldRetryFirmwareRevisionCheckError: toGetter(
             deps.getState,
             selectShouldRetryFirmwareRevisionCheckError,
@@ -220,9 +240,7 @@ export const createSuiteServicesCompositionRoot = (deps: SuiteAppDeps): SuiteSer
         rerunFwAuthenticityChecksCall: () => {
             deps.dispatch(rerunFwAuthenticityChecksThunk());
         },
-        lockDevice: isLocked => {
-            deps.dispatch(lockDevice(isLocked));
-        },
+        lockDevice,
         migrateSuiteSyncLabelsForRbfTransaction:
             createMigrateSuiteSyncLabelsForRbfTransactionCompositionRoot({
                 dispatch: deps.dispatch,

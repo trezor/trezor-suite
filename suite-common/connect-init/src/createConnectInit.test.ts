@@ -3,7 +3,7 @@ import { deviceInitialState } from '@suite-common/device';
 import { firmwareInitialState } from '@suite-common/firmware';
 import { messageSystemInitialState } from '@suite-common/message-system';
 import { type MockDispatch, createMockDispatch } from '@suite-common/redux-utils/mocks';
-import { type LockDevice } from '@suite-common/suite-types';
+import { type ConnectInitUiEventHooks } from '@suite-common/suite-types';
 import { testMocks } from '@suite-common/test-utils';
 import {
     defaultTrezorUIEventHandlerThunk,
@@ -23,69 +23,63 @@ import TrezorConnect, {
 } from '@trezor/connect';
 
 import {
-    type ConnectInitThunkDeps,
-    type ConnectInitThunkDispatch,
-    type ConnectInitThunkState,
-    connectInitThunk,
-} from './connectInitThunks';
+    type ConnectInitDeps,
+    type ConnectInitState,
+    createConnectInit,
+} from './createConnectInit';
+import { type WrapTrezorConnect } from './createWrapTrezorConnect';
 
-type ConnectInitThunkTestDeps = {
+type ConnectInitTestDeps = {
     actions: unknown[];
-    onDispatch: MockDispatch<ConnectInitThunkState, ConnectInitThunkDeps>['onDispatch'];
-    dispatch: ConnectInitThunkDispatch;
-    getState: () => ConnectInitThunkState;
-    extra: ConnectInitThunkDeps;
+    onDispatch: MockDispatch<ConnectInitState, unknown>['onDispatch'];
+    deps: ConnectInitDeps;
 };
 
-const state: ConnectInitThunkState = {
+const state: ConnectInitState = {
     wallet: { settings: initialWalletSettingsState },
     device: deviceInitialState,
     firmware: firmwareInitialState,
     messageSystem: messageSystemInitialState,
 };
 
-const createThunkDeps = (
-    services: Partial<ConnectInitThunkDeps['services']> = {},
-): ConnectInitThunkTestDeps => {
+const createTestDeps = (
+    overrides: Partial<ConnectInitDeps> = {},
+    connectInitUiEventHooks: ConnectInitUiEventHooks = {},
+): ConnectInitTestDeps => {
     const getState = () => state;
-    const extra: ConnectInitThunkDeps = {
-        services: {
-            analytics: { report: jest.fn() },
-            connectInitDeviceEventHooks: {},
-            connectInitSettings: {
-                manifest: {
-                    email: 'info@trezor.io',
-                    appName: 'Trezor Suite',
-                    appUrl: '@trezor/suite',
-                },
-            },
-            createTransports: () => [],
-            getAllowPrerelease: asGetter(() => false),
-            getBinFilesBaseUrl: asGetter(() => '/bin'),
-            getDebugSettings: asGetter(() => ({
-                transports: [],
-                showConnectLogs: false,
-            })),
-            getThpSettings: asGetter(() => ({ pairingMethods: ['CodeEntry'] })),
-            connectInitUiEventHooks: {},
-            thpHostName: undefined,
-            lockDevice: mock<LockDevice>(),
-            ...services,
-        },
-    };
-
-    const { actions, dispatch, onDispatch } = createMockDispatch({ getState, extra });
-
-    return {
-        actions,
-        onDispatch,
+    const { actions, dispatch, onDispatch } = createMockDispatch({
+        getState,
+        extra: { services: { connectInitUiEventHooks } },
+    });
+    const deps: ConnectInitDeps = {
         dispatch,
         getState,
-        extra,
+        analytics: { report: jest.fn() },
+        connectInitDeviceEventHooks: {},
+        connectInitSettings: {
+            manifest: {
+                email: 'info@trezor.io',
+                appName: 'Trezor Suite',
+                appUrl: '@trezor/suite',
+            },
+        },
+        createTransports: () => [],
+        getAllowPrerelease: asGetter(() => false),
+        getBinFilesBaseUrl: asGetter(() => '/bin'),
+        getDebugSettings: asGetter(() => ({
+            transports: [],
+            showConnectLogs: false,
+        })),
+        getThpSettings: asGetter(() => ({ pairingMethods: ['CodeEntry'] })),
+        thpHostName: undefined,
+        wrapTrezorConnect: mock<WrapTrezorConnect>(),
+        ...overrides,
     };
+
+    return { actions, onDispatch, deps };
 };
 
-describe('TrezorConnect Actions', () => {
+describe('createConnectInit', () => {
     beforeEach(() => {
         testMocks.setTrezorConnectFixtures();
     });
@@ -95,25 +89,20 @@ describe('TrezorConnect Actions', () => {
     });
 
     it('Success', async () => {
-        const { actions, dispatch, getState, extra } = createThunkDeps();
+        const { deps } = createTestDeps();
 
-        await connectInitThunk()(dispatch, getState, extra);
-
-        expect(actions).toEqual([
-            expect.objectContaining({ type: connectInitThunk.pending.type }),
-            expect.objectContaining({ type: connectInitThunk.fulfilled.type }),
-        ]);
+        await expect(createConnectInit(deps)()).resolves.toBeUndefined();
     });
 
     it('uses the injected bin files base URL', async () => {
         const getBinFilesBaseUrl = jest.fn(() => '/custom-bin-files');
         const initSpy = jest.spyOn(TrezorConnect, 'init');
 
-        const { dispatch, getState, extra } = createThunkDeps({
+        const { deps } = createTestDeps({
             getBinFilesBaseUrl: asGetter(getBinFilesBaseUrl),
         });
 
-        await connectInitThunk()(dispatch, getState, extra);
+        await createConnectInit(deps)();
 
         expect(getBinFilesBaseUrl).toHaveBeenCalledTimes(1);
         expect(initSpy).toHaveBeenCalledWith(
@@ -124,9 +113,9 @@ describe('TrezorConnect Actions', () => {
     it('passes the firmware channel from the state to Connect', async () => {
         const initSpy = jest.spyOn(TrezorConnect, 'init');
 
-        const { dispatch, getState, extra } = createThunkDeps();
+        const { deps } = createTestDeps();
 
-        await connectInitThunk()(dispatch, getState, extra);
+        await createConnectInit(deps)();
 
         expect(initSpy).toHaveBeenCalledWith(
             expect.objectContaining({ firmwareChannel: 'production' }),
@@ -136,11 +125,11 @@ describe('TrezorConnect Actions', () => {
     it('forces the early access firmware channel for a prerelease-allowing user', async () => {
         const initSpy = jest.spyOn(TrezorConnect, 'init');
 
-        const { dispatch, getState, extra } = createThunkDeps({
+        const { deps } = createTestDeps({
             getAllowPrerelease: asGetter(() => true),
         });
 
-        await connectInitThunk()(dispatch, getState, extra);
+        await createConnectInit(deps)();
 
         expect(initSpy).toHaveBeenCalledWith(
             expect.objectContaining({ firmwareChannel: 'production-early-access' }),
@@ -153,17 +142,9 @@ describe('TrezorConnect Actions', () => {
             throw errorFixture;
         });
 
-        const { actions, dispatch, getState, extra } = createThunkDeps();
+        const { deps } = createTestDeps();
 
-        await connectInitThunk()(dispatch, getState, extra);
-
-        expect(actions).toEqual([
-            expect.objectContaining({ type: connectInitThunk.pending.type }),
-            expect.objectContaining({
-                type: connectInitThunk.rejected.type,
-                error: expect.objectContaining({ message: errorFixture.message }),
-            }),
-        ]);
+        await expect(createConnectInit(deps)()).rejects.toThrow(errorFixture.message);
     });
 
     it('TypedError', async () => {
@@ -175,19 +156,11 @@ describe('TrezorConnect Actions', () => {
             throw errorFixture;
         });
 
-        const { actions, dispatch, getState, extra } = createThunkDeps();
+        const { deps } = createTestDeps();
 
-        await connectInitThunk()(dispatch, getState, extra);
-
-        expect(actions).toEqual([
-            expect.objectContaining({ type: connectInitThunk.pending.type }),
-            expect.objectContaining({
-                type: connectInitThunk.rejected.type,
-                error: expect.objectContaining({
-                    message: `${errorFixture.code}: ${errorFixture.message}`,
-                }),
-            }),
-        ]);
+        await expect(createConnectInit(deps)()).rejects.toThrow(
+            `${errorFixture.code}: ${errorFixture.message}`,
+        );
     });
 
     it('Error as string', async () => {
@@ -196,26 +169,14 @@ describe('TrezorConnect Actions', () => {
             throw errorFixture;
         });
 
-        const { actions, dispatch, getState, extra } = createThunkDeps();
+        const { deps } = createTestDeps();
 
-        await connectInitThunk()(dispatch, getState, extra);
-
-        expect(actions).toEqual([
-            expect.objectContaining({ type: connectInitThunk.pending.type }),
-            expect.objectContaining({
-                type: connectInitThunk.rejected.type,
-                error: expect.objectContaining({ message: errorFixture }),
-            }),
-        ]);
+        await expect(createConnectInit(deps)()).rejects.toThrow(errorFixture);
     });
 
     it('Events', async () => {
-        const { actions, dispatch, getState, extra } = createThunkDeps();
-        const connectInitPromise = connectInitThunk()(dispatch, getState, extra);
-
-        expect(actions).toEqual([expect.objectContaining({ type: connectInitThunk.pending.type })]);
-
-        await connectInitPromise;
+        const { actions, deps } = createTestDeps();
+        await createConnectInit(deps)();
         actions.length = 0;
         const { emitTestEvent } = testMocks.getTrezorConnectMock();
 
@@ -232,23 +193,16 @@ describe('TrezorConnect Actions', () => {
         expect(actions.at(-1)).toEqual({ type: BLOCKCHAIN_EVENT });
     });
 
-    it('Wrapped method', async () => {
-        const { actions, dispatch, getState, extra } = createThunkDeps();
-        await connectInitThunk()(dispatch, getState, extra);
-        actions.length = 0;
+    it('wraps TrezorConnect calls', async () => {
+        const { deps } = createTestDeps();
+        await createConnectInit(deps)();
 
-        await testMocks.getTrezorConnectMock().getFeatures();
-
-        expect(extra.services.lockDevice).toHaveBeenNthCalledWith(1, true);
-        expect(extra.services.lockDevice).toHaveBeenNthCalledWith(2, false);
-        expect(actions).toEqual([
-            expect.objectContaining({ type: '@suite/device/removeButtonRequests' }),
-        ]);
+        expect(deps.wrapTrezorConnect).toHaveBeenCalledTimes(1);
     });
 
     it('only scoped callId-bearing UI events are swallowed by the global listener', async () => {
-        const { actions, onDispatch, dispatch, getState, extra } = createThunkDeps();
-        await connectInitThunk()(dispatch, getState, extra);
+        const { actions, onDispatch, deps } = createTestDeps();
+        await createConnectInit(deps)();
         actions.length = 0;
         const { emitTestEvent } = testMocks.getTrezorConnectMock();
         const scopedCallId = 'scoped-call-id';
@@ -291,14 +245,14 @@ describe('TrezorConnect Actions', () => {
     it('connectInitDeviceEventHooks are called for DEVICE.CONNECT / DEVICE.CONNECT_UNACQUIRED', async () => {
         const onConnect = jest.fn();
         const onConnectUnacquired = jest.fn();
-        const { dispatch, getState, extra } = createThunkDeps({
+        const { deps } = createTestDeps({
             connectInitDeviceEventHooks: {
                 [DEVICE.CONNECT]: onConnect,
                 [DEVICE.CONNECT_UNACQUIRED]: onConnectUnacquired,
             },
         });
 
-        await connectInitThunk()(dispatch, getState, extra);
+        await createConnectInit(deps)();
         const { emitTestEvent } = testMocks.getTrezorConnectMock();
 
         const connectPayload = { path: 'device-1', features: {} };
@@ -316,13 +270,14 @@ describe('TrezorConnect Actions', () => {
     it('connectInitUiEventHooks are called per action.type forwarded from the global listener', async () => {
         const onInvalidPinDepleted = jest.fn();
         const onRequestWord = jest.fn();
-        const { actions, dispatch, getState, extra } = createThunkDeps({
-            connectInitUiEventHooks: {
+        const { actions, deps } = createTestDeps(
+            {},
+            {
                 [UI_EVENTS.PIN_INVALID_ATTEMPTS_DEPLETED]: onInvalidPinDepleted,
                 [UI_REQUESTS.REQUEST_WORD]: onRequestWord,
             },
-        });
-        await connectInitThunk()(dispatch, getState, extra);
+        );
+        await createConnectInit(deps)();
         actions.length = 0;
         const { emitTestEvent } = testMocks.getTrezorConnectMock();
 

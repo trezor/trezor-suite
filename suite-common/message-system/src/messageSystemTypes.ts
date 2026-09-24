@@ -79,7 +79,7 @@ export const Feature = {
     firmwareHashCheck: 'security.firmware.hashCheck',
     // subset of `firmwareHashCheck`: can turn off specifically UI for other-error result
     firmwareHashCheckOtherError: 'security.firmware.hashCheck.otherError',
-    // subset of `firmwareHashCheck`: can turn off timeout result, and also may bear `timeoutThresholdsPerModel` payload, see connectInitThunks
+    // subset of `firmwareHashCheck`: can turn off timeout result, and also may bear `timeoutThresholdsPerModel` payload, see createConnectInit
     firmwareHashCheckTimeout: 'security.firmware.hashCheck.timeout',
 
     entropyCheck: 'security.entropyCheck',

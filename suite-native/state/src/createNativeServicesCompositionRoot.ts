@@ -4,6 +4,7 @@ import RNRestart from 'react-native-restart';
 import * as Device from 'expo-device';
 
 import { createBip329CompositionRoot } from '@suite-common/bip329';
+import { createConnectInitCompositionRoot } from '@suite-common/connect-init';
 import { delegatedIdentityKeyCompositionRoot } from '@suite-common/delegated-identity-key';
 import { asGetter, toGetter } from '@suite-common/dependency-injection';
 import { notImplementedGetter } from '@suite-common/extra-dependencies';
@@ -11,6 +12,7 @@ import { createNetworksCompositionRoot } from '@suite-common/networks';
 import { createNativePlatformEncryption } from '@suite-common/platform-encryption-native';
 import { createMigrateSuiteSyncLabelsForRbfTransactionCompositionRoot } from '@suite-common/suite-rbf-labels-migrations';
 import { selectAllLabelsForAccount, selectIsSuiteSyncEnabled } from '@suite-common/suite-sync';
+import { type CreateTransports, type LockDevice } from '@suite-common/suite-types';
 import { analytics } from '@suite-native/analytics';
 import {
     rerunFwAuthenticityChecksThunk,
@@ -93,6 +95,55 @@ export const createNativeServicesCompositionRoot = (deps: NativeAppDeps): Native
 
     const logger = createLogger('native-transport');
 
+    // Native constructs its per-device-type transports directly (single platform, no
+    // web/desktop split) and returns the enabled ones as ready-made instances.
+    const createTransports: CreateTransports = () =>
+        (transports ?? []).map(name => {
+            switch (name) {
+                case 'BridgeTransport':
+                    return new BridgeTransport({ port: 21328, id: 'bridge', logger });
+                case 'NativeUsbTransport':
+                    return new NativeUsbTransport({ id: 'native-usb', logger });
+                case 'NativeBluetoothTransport':
+                    return new NativeBluetoothTransport({ id: 'native-bluetooth', logger });
+            }
+        });
+    const lockDevice: LockDevice = () => {};
+    const getAllowPrerelease = toGetter(deps.getState, () => false);
+    const getBinFilesBaseUrl = asGetter(() => resolveConnectPath('data'));
+
+    const { connectInit } = createConnectInitCompositionRoot({
+        dispatch: deps.dispatch,
+        getState: deps.getState,
+        lockDevice,
+        analytics,
+        connectInitDeviceEventHooks: {},
+        connectInitSettings: {
+            transportReconnect: false,
+            debug: false,
+            manifest: {
+                email: 'info@trezor.io',
+                appName: 'Trezor Suite',
+                appUrl: '@trezor/suite',
+            },
+        },
+        createLogger,
+        createTransports,
+        getAllowPrerelease,
+        getBinFilesBaseUrl,
+        // Native transports are selected by createTransports, not by debug settings.
+        getDebugSettings: toGetter(deps.getState, () => ({
+            transports: [],
+            showConnectLogs: false,
+        })),
+        getThpSettings: toGetter(deps.getState, state => ({
+            // On iOS 16 and newer, deviceName is set to "iPhone" without the correct entitlement.
+            hostName: (Platform.OS === 'ios' ? Device.modelName : Device.deviceName) ?? undefined,
+            pairingMethods: ['CodeEntry', 'NFC'],
+            knownCredentials: state.thp?.credentials,
+        })),
+    });
+
     return {
         networks,
         suiteSync,
@@ -107,37 +158,14 @@ export const createNativeServicesCompositionRoot = (deps: NativeAppDeps): Native
             console.warn(
                 `Save data: ${data} into file: ${fileName}. Implementation on phone not ready.`,
             ),
-        connectInitSettings: {
-            transportReconnect: false,
-            debug: false,
-            manifest: {
-                email: 'info@trezor.io',
-                appName: 'Trezor Suite',
-                appUrl: '@trezor/suite',
-            },
-        },
-        connectInitDeviceEventHooks: {},
+        connectInit,
         connectInitUiEventHooks: {},
-        createLogger,
-        // Native constructs its per-device-type transports directly (single platform, no
-        // web/desktop split) and returns the enabled ones as ready-made instances.
-        createTransports: () =>
-            (transports ?? []).map(name => {
-                switch (name) {
-                    case 'BridgeTransport':
-                        return new BridgeTransport({ port: 21328, id: 'bridge', logger });
-                    case 'NativeUsbTransport':
-                        return new NativeUsbTransport({ id: 'native-usb', logger });
-                    case 'NativeBluetoothTransport':
-                        return new NativeBluetoothTransport({ id: 'native-bluetooth', logger });
-                }
-            }),
+        createTransports,
         getLanguage: toGetter(deps.getState, selectSupportedLanguageLocale),
         getTokenDefinitionsEnabledNetworks: toGetter(
             deps.getState,
             selectTokenDefinitionsEnabledNetworks,
         ),
-        getDebugSettings: toGetter(deps.getState, () => ({ transports })),
         getTradingEnvironment: toGetter(deps.getState, selectTradingEnvironment),
         getTradedAccountKeys: toGetter(deps.getState, selectTradedAccountKeys),
         // This getter is not used in native app, but it is used in @suite-common/trading in loadInitialDataThunk.
@@ -148,13 +176,7 @@ export const createNativeServicesCompositionRoot = (deps: NativeAppDeps): Native
             network: undefined,
             params: undefined,
         })),
-        getThpSettings: toGetter(deps.getState, state => ({
-            // On iOS 16 and newer, deviceName is set to "iPhone" without the correct entitlement.
-            hostName: (Platform.OS === 'ios' ? Device.modelName : Device.deviceName) ?? undefined,
-            pairingMethods: ['CodeEntry', 'NFC'],
-            knownCredentials: state.thp?.credentials,
-        })),
-        getAllowPrerelease: toGetter(deps.getState, () => false),
+        getAllowPrerelease,
         shouldRetryFirmwareRevisionCheckError: toGetter(
             deps.getState,
             selectShouldRetryFirmwareRevisionCheckError,
@@ -162,8 +184,8 @@ export const createNativeServicesCompositionRoot = (deps: NativeAppDeps): Native
         rerunFwAuthenticityChecksCall: () => {
             deps.dispatch(rerunFwAuthenticityChecksThunk());
         },
-        lockDevice: () => {},
-        getBinFilesBaseUrl: asGetter(() => resolveConnectPath('data')),
+        lockDevice,
+        getBinFilesBaseUrl,
 
         // Not implemented. We assume those are NEVER called on Native.
         getIsWindowVisible: notImplementedGetter('getIsWindowVisible', true),

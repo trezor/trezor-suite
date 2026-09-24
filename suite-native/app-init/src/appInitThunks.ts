@@ -1,8 +1,4 @@
-import {
-    type ConnectInitThunkDeps,
-    type ConnectInitThunkState,
-    connectInitThunk,
-} from '@suite-common/connect-init';
+import { type ConnectInitDep } from '@suite-common/connect-init';
 import {
     defaultEarnYieldWorkerBaseUrl,
     earnYieldWorkerBaseUrl,
@@ -13,7 +9,7 @@ import {
     prepareCachedEnvData,
     selectActiveKillswitchMessage,
 } from '@suite-common/message-system';
-import { createThunk } from '@suite-common/redux-utils';
+import { type WithServices, createThunk } from '@suite-common/redux-utils';
 import {
     type InitTokenDefinitionsThunkDeps,
     type InitTokenDefinitionsThunkState,
@@ -52,31 +48,30 @@ import { setIsAppReady } from '@suite-native/state';
 
 const ACTION_PREFIX = '@suite-native/app';
 
-type PostOnboardingInitThunkState = ConnectInitThunkState &
-    InitBlockchainThunkState &
+type PostOnboardingInitThunkState = InitBlockchainThunkState &
     InitTokenDefinitionsThunkState &
     InitStakeDataThunkState &
     PeriodicFetchFiatRatesThunkState &
     CreateImportedDeviceThunkState &
     WalletConnectInitThunkState;
 
-type PostOnboardingInitThunkDeps = ConnectInitThunkDeps &
-    InitBlockchainThunkDeps &
+type PostOnboardingInitThunkDeps = InitBlockchainThunkDeps &
     InitTokenDefinitionsThunkDeps &
     PeriodicFetchFiatRatesThunkDeps &
-    WalletConnectInitThunkDeps;
+    WalletConnectInitThunkDeps &
+    WithServices<ConnectInitDep>;
 
 export const postOnboardingInitThunk = createThunk<
     void,
     void,
     { state: PostOnboardingInitThunkState; extra: PostOnboardingInitThunkDeps }
->(`${ACTION_PREFIX}/postOnboardingInit`, async (_, { dispatch, getState }) => {
+>(`${ACTION_PREFIX}/postOnboardingInit`, async (_, { dispatch, getState, extra }) => {
     // Do not initialize Connect or anything else related to it, if there is an app-wide killswitch via message-system.
     const activeKillswitchMessage = selectActiveKillswitchMessage(getState());
     if (activeKillswitchMessage) return;
 
     try {
-        await dispatch(connectInitThunk()).unwrap();
+        await extra.services.connectInit();
     } catch (error) {
         console.error(`Connect init error: ${JSON.stringify(error)}`);
     }

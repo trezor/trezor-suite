@@ -14,6 +14,7 @@
         "@reduxjs/toolkit": "2.12.0",
         "@suite-common/analytics-redux": "workspace:*",
         "@suite-common/bip329": "workspace:*",
+        "@suite-common/connect-init": "workspace:*",
         "@suite-common/connect-popup": "workspace:*",
         "@suite-common/delegated-identity-key": "workspace:*",
         "@suite-common/dependency-injection": "workspace:*",
