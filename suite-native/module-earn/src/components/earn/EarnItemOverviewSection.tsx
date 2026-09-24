@@ -3,6 +3,7 @@ import { useSelector } from 'react-redux';
 import { useTronStakingStats } from '@suite-common/earn-staking-api';
 import {
     type StakeRootState,
+    isSupportedTronStakingNetworkSymbol,
     selectApy,
     selectFormattedAccountType,
     selectHasRunningDiscovery,
@@ -82,7 +83,7 @@ export const EarnItemOverviewSection = (item: EarnPromoItem) => {
     );
 
     const { formattedMaxApr: tronMaxApr } = useTronStakingStats({
-        enabled: item.type === 'staking' && item.symbol === 'trx',
+        enabled: item.type === 'staking' && isSupportedTronStakingNetworkSymbol(item.symbol),
     });
 
     const isDiscoveryRunning = useSelector(selectHasRunningDiscovery);
@@ -93,7 +94,8 @@ export const EarnItemOverviewSection = (item: EarnPromoItem) => {
 
     const symbol = item.type === 'staking' ? item.symbol : item.networkSymbol;
 
-    const resolvedApy = symbol === 'trx' ? tronMaxApr : apy;
+    const isTronStaking = isSupportedTronStakingNetworkSymbol(symbol);
+    const resolvedApy = isTronStaking ? tronMaxApr : apy;
     const apyValue = item.type === 'staking' ? resolvedApy : item.apy;
 
     const iconProps =
@@ -147,11 +149,7 @@ export const EarnItemOverviewSection = (item: EarnPromoItem) => {
                                 <Translation id="earn.notAvailableShort" />
                             ) : (
                                 <Translation
-                                    id={
-                                        symbol === 'trx'
-                                            ? 'earn.aprPercentage'
-                                            : 'earn.apyPercentage'
-                                    }
+                                    id={isTronStaking ? 'earn.aprPercentage' : 'earn.apyPercentage'}
                                     values={{ apy: apyValue }}
                                 />
                             )}

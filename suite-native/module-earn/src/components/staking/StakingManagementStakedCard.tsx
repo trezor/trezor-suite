@@ -13,6 +13,7 @@ import {
     type AccountsRootState,
     CARDANO_EPOCH_DAYS,
     type StakeRootState,
+    isSupportedAdaStakingNetworkSymbol,
     isSupportedEthStakingNetworkSymbol,
     isSupportedSolStakingNetworkSymbol,
     isSupportedTronStakingNetworkSymbol,
@@ -98,7 +99,7 @@ export const StakingManagementStakedCard = ({
 
     const isEthereumStaking = isSupportedEthStakingNetworkSymbol(networkSymbol);
     const isSolanaStaking = isSupportedSolStakingNetworkSymbol(networkSymbol);
-    const isCardanoStaking = networkSymbol === 'ada';
+    const isCardanoStaking = isSupportedAdaStakingNetworkSymbol(networkSymbol);
     const isTronStaking = isSupportedTronStakingNetworkSymbol(networkSymbol);
     const areStakeActionsShown = getMobileStakingSupport(networkSymbol) === 'manage';
     const areRewardsAutoRestaked = isEthereumStaking || isSolanaStaking;

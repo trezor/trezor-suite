@@ -11,6 +11,7 @@ import {
     isCardanoStakedOutsideEverstake,
     isCardanoStakedWithFiveBinaries,
     isCardanoStakingActive,
+    isSupportedAdaStakingNetworkSymbol,
 } from './cardanoStakingUtils';
 
 const createMemoizedSelector = createWeakMapSelector.withTypes<StakeRootState>();
@@ -21,7 +22,9 @@ export const selectVisibleDeviceCardanoAccountsWithStakingByNetworkSymbol = crea
         returnStableArrayIfEmpty(
             accounts.filter(
                 account =>
-                    account.visible && account.symbol === 'ada' && isCardanoStakingActive(account),
+                    account.visible &&
+                    isSupportedAdaStakingNetworkSymbol(account.symbol) &&
+                    isCardanoStakingActive(account),
             ),
         ),
 );
