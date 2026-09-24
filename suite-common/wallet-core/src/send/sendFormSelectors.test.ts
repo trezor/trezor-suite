@@ -118,16 +118,13 @@ describe('selectSendFormReviewButtonRequestsCount', () => {
         );
     });
 
-    it('subtracts one on cardano', () => {
+    it('counts every button request on cardano', () => {
         const state = stateWith([
-            { code: 'ButtonRequest_ConfirmOutput' },
-            { code: 'ButtonRequest_SignTx' },
+            { code: 'ButtonRequest_Other' },
+            { code: 'ButtonRequest_Other' },
+            { code: 'ButtonRequest_Other' },
         ]);
-        expect(selectSendFormReviewButtonRequestsCount(state, adaSymbol)).toBe(1);
-    });
-
-    it('does not return a negative count for cardano without button requests', () => {
-        expect(selectSendFormReviewButtonRequestsCount(stateWith([]), adaSymbol)).toBe(0);
+        expect(selectSendFormReviewButtonRequestsCount(state, adaSymbol)).toBe(3);
     });
 
     it('drops one ConfirmOutput when decreasing an RBF output, without mutating the cached array', () => {

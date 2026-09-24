@@ -17,10 +17,12 @@ import {
     findAccountsByAddress,
     findTransactions,
     fromGwei,
+    getAccountAddresses,
     getEvmTransactionTextSignature,
     getPendingAccount,
     getRbfParams,
     getTronResources,
+    getUtxoOutpoint,
     isEip1559,
     isEvmYieldTxByTextSignature,
     isRbfBumpFeeTransaction,
@@ -37,6 +39,7 @@ import TrezorConnect, {
 } from '@trezor/connect';
 import { asCoinSymbol } from '@trezor/connect-common';
 import { __btcUnknownTxDebug__ } from '@trezor/connect-core/src/utils/pathUtils';
+import { LOVELACE_UNIT } from '@trezor/network-cardano/constants';
 import { BigNumber } from '@trezor/utils';
 
 import { TRANSACTIONS_MODULE_PREFIX, transactionsActions } from './transactionsActions';
@@ -451,8 +454,14 @@ export const addFakePendingEvmTxThunk = createThunk<
     },
 );
 
+const sumValues = (items: { value: string }[]) =>
+    items.reduce((sum, { value }) => sum.plus(value), new BigNumber(0)).toString();
+
 type AddFakePendingCardanoTxThunkParams = {
-    precomposedTransaction: Pick<PrecomposedTransactionCardanoFinal, 'totalSpent' | 'fee'>;
+    precomposedTransaction: Pick<
+        PrecomposedTransactionCardanoFinal,
+        'totalSpent' | 'fee' | 'inputs' | 'outputs'
+    >;
     txid: string;
     account: Account;
     cardanoSpecific?: WalletAccountTransaction['cardanoSpecific'];
@@ -466,36 +475,129 @@ export const addFakePendingCardanoTxThunk = createThunk<
     { state: AddFakePendingCardanoTxThunkState }
 >(
     `${TRANSACTIONS_MODULE_PREFIX}/addFakePendingTransaction`,
-    ({ precomposedTransaction, txid, account, cardanoSpecific }, { dispatch, getState }) => {
+    (
+        {
+            precomposedTransaction: { totalSpent, fee, inputs, outputs },
+            txid,
+            account,
+            cardanoSpecific,
+        },
+        { dispatch, getState },
+    ) => {
         const blockHeight = selectBlockchainHeightBySymbol(getState(), account.symbol);
 
         // Used in cardano send form and staking tab until Blockfrost supports pending txs on its backend
         // https://github.com/trezor/trezor-suite/issues/4932
+        // Mirrors the shape Blockfrost produces for the confirmed tx, so the placeholder renders the same.
+        const addressByPath = new Map(
+            getAccountAddresses(account).map(({ path, address }) => [path, address]),
+        );
+        const ownAddresses = new Set(addressByPath.values());
+        const changeAddresses = new Set(account.addresses?.change.map(({ address }) => address));
+        // Blockfrost lists one entry per asset a UTXO carries; the ADA entry is what the input spends.
+        const adaUtxoByOutpoint = new Map(
+            account.utxo
+                ?.filter(utxo => (utxo.cardanoSpecific?.unit ?? LOVELACE_UNIT) === LOVELACE_UNIT)
+                .map(utxo => [getUtxoOutpoint(utxo), utxo]),
+        );
+        const accountTokenByUnit = new Map(account.tokens?.map(token => [token.contract, token]));
+
+        const toVinVout = (n: number, address: string, value: string) => ({
+            n,
+            addresses: [address],
+            isAddress: true,
+            value,
+            // Blockfrost leaves the flag out for foreign addresses instead of setting it to false.
+            isAccountOwned: ownAddresses.has(address) || undefined,
+        });
+
+        const vin = inputs.flatMap((input, n) => {
+            const utxo = adaUtxoByOutpoint.get(
+                getUtxoOutpoint({ txid: input.prev_hash, vout: input.prev_index }),
+            );
+
+            return utxo ? [toVinVout(n, utxo.address, utxo.amount)] : [];
+        });
+
+        const getOutputAddress = (output: (typeof outputs)[number]) => {
+            if ('address' in output) return output.address;
+            const { path } = output.addressParameters;
+
+            return typeof path === 'string' ? addressByPath.get(path) : undefined;
+        };
+
+        const resolvedOutputs = outputs.flatMap((output, n) => {
+            const address = getOutputAddress(output);
+
+            return address
+                ? [{ output, address, vinVout: toVinVout(n, address, output.amount) }]
+                : [];
+        });
+        const nonChangeOutputs = resolvedOutputs.filter(
+            ({ address }) => !changeAddresses.has(address),
+        );
+        const foreignOutputs = nonChangeOutputs.filter(({ address }) => !ownAddresses.has(address));
+
+        const type = foreignOutputs.length === 0 ? ('self' as const) : ('sent' as const);
+
+        const vout = resolvedOutputs.map(({ vinVout }) => vinVout);
+        const targets = nonChangeOutputs.map(
+            ({ vinVout: { value, isAccountOwned, ...target } }) => ({
+                ...target,
+                amount: value,
+                isAccountTarget: isAccountOwned,
+            }),
+        );
+
+        const tokens = nonChangeOutputs.flatMap(({ address, output }) =>
+            (output.tokenBundle ?? []).flatMap(({ policyId, tokenAmounts }) =>
+                tokenAmounts.flatMap(({ assetNameBytes, amount }) => {
+                    if (!amount) return [];
+
+                    const unit = policyId + assetNameBytes;
+                    const token = accountTokenByUnit.get(unit);
+
+                    return [
+                        {
+                            type,
+                            standard: 'BLOCKFROST' as const,
+                            amount,
+                            from: account.descriptor,
+                            to: address,
+                            contract: unit,
+                            name: token?.name,
+                            symbol: token?.symbol,
+                            decimals: token?.decimals ?? 0,
+                        },
+                    ];
+                }),
+            ),
+        );
+
         const fakeTx = {
-            type: 'sent' as const,
+            type,
             txid,
             blockTime: Math.floor(new Date().getTime() / 1000),
             blockHash: undefined,
-            // fee is excluded to match the amount of the confirmed tx from blockfrost
-            amount: new BigNumber(precomposedTransaction.totalSpent)
-                .minus(precomposedTransaction.fee)
-                .toString(),
-            fee: precomposedTransaction.fee,
+            // Blockfrost reports what left the account: the foreign outputs, or just the fee of a self tx
+            amount: type === 'self' ? fee : sumValues(foreignOutputs.map(({ vinVout }) => vinVout)),
+            fee,
             feeRate: '0',
-            totalSpent: precomposedTransaction.totalSpent,
-            targets: [],
-            tokens: [],
+            totalSpent,
+            targets,
+            tokens,
             internalTransfers: [],
             cardanoSpecific: cardanoSpecific || {},
             details: {
-                vin: [],
-                vout: [],
+                vin,
+                vout,
                 size: 0,
-                totalInput: '0',
-                totalOutput: '0',
+                totalInput: sumValues(vin),
+                totalOutput: sumValues(vout),
             },
             deadline: blockHeight + Math.ceil(FAKE_TX_TTL_SECONDS / CARDANO_BLOCK_TIME_SECONDS),
         };
+
         dispatch(transactionsActions.addTransaction({ transactions: [fakeTx], account }));
     },
 );

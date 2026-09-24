@@ -89,9 +89,6 @@ export const selectSendFormReviewButtonRequestsCount = (
 ) => {
     if (symbol === undefined) return 0;
 
-    const networkType = getNetworkType(symbol);
-    const isCardano = networkType === 'cardano';
-
     const sendFormReviewRequest = selectSendFormButtonRequestCodes(state, symbol);
 
     let count = sendFormReviewRequest.length;
@@ -105,7 +102,7 @@ export const selectSendFormReviewButtonRequestsCount = (
         count -= 1;
     }
 
-    return isCardano ? Math.max(0, count - 1) : count;
+    return count;
 };
 
 export const selectSendFormReviewLastButtonCode = (
