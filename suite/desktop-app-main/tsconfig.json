@@ -4,6 +4,9 @@
     "include": ["src", "e2e", "**/*.json"],
     "references": [
         {
+            "path": "../../suite-common/apps-embedding"
+        },
+        {
             "path": "../../suite-common/connect-popup"
         },
         {

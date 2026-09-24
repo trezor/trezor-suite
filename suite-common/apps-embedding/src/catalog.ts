@@ -114,40 +114,6 @@ export const APPS_EMBEDDING_CATALOG: AppsEmbeddingCatalogEntry[] = [
         communication: [],
     },
     {
-        // Deliberately a near-duplicate of `google-pay-demo`: the two differ in
-        // `openPopupInSystemBrowser` and nothing else, so the popup destinations can be compared on
-        // the same flow without editing the catalog. One of them goes away once that comparison is
-        // settled.
-        id: 'google-pay-demo-system-browser',
-        name: 'Google Pay demo (system browser popup)',
-        description:
-            'The same Google Pay demo, with the payment sheet handed to the default browser instead of an app window.',
-        url: 'https://gpay-live-demo.web.app/',
-        platformSpecific: [
-            {
-                kind: 'web',
-                expectedBehavior:
-                    'No different from the other Google Pay entry — the popup destination is a desktop-host setting and the iframe cannot act on it.',
-                allow: 'payment',
-            },
-            {
-                kind: 'desktop',
-                expectedBehavior:
-                    'The sheet opens in the default browser and the embedded page keeps none of its cookies, so watch whether the flow completes at all: without window.opener the merchant page can only learn the result from a redirect back to itself. The event log says "opened in the system browser". Refused while Tor is running, since the handoff would leave the proxy.',
-                persistSession: true,
-                openPopupInSystemBrowser: true,
-                redirectExternalOrigins: ['https://pay.google.com', 'https://accounts.google.com'],
-                popupExternalOrigins: ['https://pay.google.com', 'https://accounts.google.com'],
-            },
-            {
-                kind: 'mobile',
-                expectedBehavior:
-                    'Google Pay does not work in plain WebViews at all — it requires Chrome Custom Tabs.',
-            },
-        ],
-        communication: [],
-    },
-    {
         id: 'google-sign-in',
         name: 'Google Sign-In',
         description: 'accounts.google.com — refuses framing via X-Frame-Options: DENY.',
@@ -163,7 +129,6 @@ export const APPS_EMBEDDING_CATALOG: AppsEmbeddingCatalogEntry[] = [
                 kind: 'desktop',
                 expectedBehavior:
                     'Loads in the WebContentsView — X-Frame-Options does not apply to a top-level browsing context.',
-                openPopupInSystemBrowser: true,
             },
             {
                 kind: 'mobile',
@@ -189,7 +154,6 @@ export const APPS_EMBEDDING_CATALOG: AppsEmbeddingCatalogEntry[] = [
                 kind: 'desktop',
                 expectedBehavior:
                     'PaymentRequest constructor exists but Electron ships no payment apps.',
-                openPopupInSystemBrowser: true,
             },
             {
                 kind: 'mobile',
