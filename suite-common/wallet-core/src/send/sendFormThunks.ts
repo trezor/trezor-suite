@@ -107,6 +107,7 @@ import { type TransactionsRootState } from '../transactions/transactionsReducerT
 import {
     addFakePendingCardanoTxThunk,
     addFakePendingEvmTxThunk,
+    addFakePendingSolanaSendTxThunk,
     addFakePendingTronSendTxThunk,
     addFakePendingTxThunk,
 } from '../transactions/transactionsThunks';
@@ -413,9 +414,21 @@ export const synchronizeSentTransactionThunk = createThunk<
 
                 dispatch(syncAccountsWithBlockchainThunk(selectedAccount.symbol));
                 break;
+            case 'solana':
+                // Solana backends only report a tx once it is confirmed and indexed, so without a
+                // fake pending tx a just-broadcast send or swap is missing from the store until then.
+                dispatch(
+                    addFakePendingSolanaSendTxThunk({
+                        precomposedTransaction,
+                        txid,
+                        account: selectedAccount,
+                    }),
+                );
+
+                dispatch(syncAccountsWithBlockchainThunk(selectedAccount.symbol));
+                break;
             case 'cardano':
             case 'ripple':
-            case 'solana':
             case 'stellar':
                 // there is no point in fetching account data right after tx submit
                 //  as the account will update only after the tx is confirmed
