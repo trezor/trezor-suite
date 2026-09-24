@@ -3,6 +3,7 @@ import { type Resolver, useForm } from 'react-hook-form';
 import { act, waitFor } from '@testing-library/react';
 import type { BuyTrade, CryptoId } from 'invity-api';
 
+import { events } from '@suite/analytics';
 import { mockDesktopAnalytics } from '@suite/analytics/mocks';
 import { createTestCompositionRoot, renderHookWithStoreProvider } from '@suite-common/test-utils';
 import {
@@ -76,12 +77,16 @@ const wait = (ms: number) =>
             }),
     );
 
+type RenderBuyQuotesOptions = {
+    resolver?: Resolver<TradingBuyFormProps>;
+};
+
 const renderBuyQuotes = (
     defaultValues: TradingBuyFormProps,
-    options: { resolver?: Resolver<TradingBuyFormProps> } = {},
+    { resolver }: RenderBuyQuotesOptions = {},
 ) => {
-    const { resolver } = options;
-    const services = { analytics: mockDesktopAnalytics() };
+    const report = jest.fn();
+    const services = { analytics: mockDesktopAnalytics(report) };
     const root = createTestCompositionRoot({
         extra: { services },
         preloadedState: {
@@ -94,7 +99,7 @@ const renderBuyQuotes = (
         },
     });
 
-    return renderHookWithStoreProvider(
+    const rendered = renderHookWithStoreProvider(
         () => {
             const methods = useForm<TradingBuyFormProps>({
                 mode: 'onChange',
@@ -107,6 +112,8 @@ const renderBuyQuotes = (
         },
         { root },
     );
+
+    return { ...rendered, report };
 };
 
 describe('useBuyQuotes', () => {
@@ -182,6 +189,25 @@ describe('useBuyQuotes', () => {
         expect(mockHandleRequest).toHaveBeenCalledTimes(1);
 
         await waitFor(() => expect(mockHandleRequest).toHaveBeenCalledTimes(2), { timeout: 1500 });
+    });
+
+    it('reports the input the amount was entered in with the received quotes', async () => {
+        const { result, report } = renderBuyQuotes(VALID_DEFAULTS);
+
+        await waitFor(() => expect(mockHandleRequest).toHaveBeenCalledTimes(1), { timeout: 1500 });
+
+        act(() => {
+            result.current.setValue('amountInputSource', 'fiat');
+            result.current.setValue('fiatInput', '200');
+        });
+
+        await waitFor(() => expect(mockHandleRequest).toHaveBeenCalledTimes(2), { timeout: 1500 });
+        await waitFor(() =>
+            expect(report).toHaveBeenLastCalledWith({
+                type: events.tradeReceivedQuotesEvent.name,
+                payload: { type: 'buy', count: QUOTES.length, input: 'fiat' },
+            }),
+        );
     });
 
     it('ignores the derived crypto input while fiat is the active side', async () => {

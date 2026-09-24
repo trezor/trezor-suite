@@ -9,6 +9,7 @@ import {
     TRADING_EXCHANGE_FORM,
     TRADING_EXCHANGE_FORM_CEX,
     TRADING_EXCHANGE_FORM_DEX,
+    TRADING_FORM_AMOUNT_INPUT_SOURCE,
     TRADING_FORM_OUTPUT_AMOUNT,
     TRADING_FORM_RECEIVE_CRYPTO_CURRENCY_SELECT,
     TRADING_FORM_SEND_CRYPTO_CURRENCY_SELECT,
@@ -99,12 +100,13 @@ export const useExchangeQuotes = ({
                 }),
             ),
         stopScheduler: () => dispatch(tradingActions.stopRefetchQuotes()),
-        onResolved: quotes => {
+        onResolved: (quotes, values) => {
             analytics.report({
                 type: events.tradeReceivedQuotesEvent.name,
                 payload: {
                     type: 'exchange',
                     count: quotes.length,
+                    input: values[TRADING_FORM_AMOUNT_INPUT_SOURCE],
                 },
             });
         },

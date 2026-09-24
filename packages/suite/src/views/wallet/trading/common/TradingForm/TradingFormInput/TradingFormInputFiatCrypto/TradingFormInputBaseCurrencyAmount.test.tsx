@@ -73,9 +73,9 @@ type TradingFormTestHarnessProps = {
 
 const TradingFormTestHarness = ({ invalidField }: TradingFormTestHarnessProps) => {
     const methods = useForm<TradingBuyFormProps>({ defaultValues: DEFAULT_VALUES });
-    const [cryptoInput, fiatInput, amountInCrypto] = useWatch({
+    const [cryptoInput, fiatInput, amountInCrypto, amountInputSource] = useWatch({
         control: methods.control,
-        name: ['cryptoInput', 'fiatInput', 'amountInCrypto'],
+        name: ['cryptoInput', 'fiatInput', 'amountInCrypto', 'amountInputSource'],
     });
 
     const { setError } = methods;
@@ -103,7 +103,7 @@ const TradingFormTestHarness = ({ invalidField }: TradingFormTestHarnessProps) =
                 symbol={BTC_SYMBOL}
             />
             <output data-testid="@trading/form/values">
-                {JSON.stringify({ cryptoInput, fiatInput, amountInCrypto })}
+                {JSON.stringify({ cryptoInput, fiatInput, amountInCrypto, amountInputSource })}
             </output>
         </>
     );
@@ -134,7 +134,7 @@ const renderBaseCurrencyAmount = (harnessProps: TradingFormTestHarnessProps = {}
 };
 
 describe('TradingFormInputBaseCurrencyAmount', () => {
-    it('writes the converted crypto amount and switches the active input to crypto', async () => {
+    it('writes the converted crypto amount, switches the active input to crypto and marks the base currency as the input source', async () => {
         const user = userEvent.setup();
 
         renderBaseCurrencyAmount();
@@ -142,7 +142,12 @@ describe('TradingFormInputBaseCurrencyAmount', () => {
         await user.type(screen.getByTestId('@trading/form/base-currency-input'), '100');
 
         expect(screen.getByTestId('@trading/form/values')).toHaveTextContent(
-            JSON.stringify({ cryptoInput: '4', fiatInput: '', amountInCrypto: true }),
+            JSON.stringify({
+                cryptoInput: '4',
+                fiatInput: '',
+                amountInCrypto: true,
+                amountInputSource: 'base-currency',
+            }),
         );
     });
 

@@ -7,6 +7,7 @@ import { useTheme } from 'styled-components';
 import { selectLanguage } from '@suite/settings';
 import {
     CONTRACT_ADDRESS_FOR_NATIVE_TOKEN,
+    TRADING_FORM_AMOUNT_INPUT_SOURCE,
     TRADING_FORM_AMOUNT_IN_CRYPTO,
     TRADING_FORM_OUTPUT_MAX,
     getNetworkDecimalsWithFallback,
@@ -137,6 +138,8 @@ export const TradingFormInputBaseCurrencyAmount = ({
                 decimals,
                 isInSats,
             });
+
+            setValue(TRADING_FORM_AMOUNT_INPUT_SOURCE, 'base-currency');
 
             if (setFractionButton) {
                 setValue(TRADING_FORM_OUTPUT_MAX, undefined, { shouldDirty: true });
