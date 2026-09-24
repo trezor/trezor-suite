@@ -51,7 +51,7 @@ jobs:
           submodules: "true"
 
       - name: Free Disk Space
-        uses: jlumbroso/free-disk-space@54081f138730dfa15788a46383842cd2f914a1be # main
+        uses: jlumbroso/free-disk-space@ceedf095f4ec1a097402bc6bd80831f2e1a6fde6 # main
         with:
           dotnet: true
           haskell: true
@@ -76,7 +76,7 @@ jobs:
           key: node_modules-native-full-${{ hashFiles('yarn.lock') }}
 
       - name: Install SafeDep PMG
-        uses: safedep/pmg@be0a93f10fbec6a5c94dd78bc722abf1b7fbfc2d # v0.26.0
+        uses: safedep/pmg@0d4f89121c773b0009cc2f2dfb578d03603263f2 # v0.29.1
         continue-on-error: true
         with:
           version: v0.19.1
