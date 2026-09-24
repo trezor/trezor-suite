@@ -5,7 +5,7 @@ import { type BottomTabBarProps, createBottomTabNavigator } from '@react-navigat
 import { useServices } from '@suite-common/dependency-injection';
 import { selectHasBitcoinOnlyFirmware } from '@suite-common/device';
 import { events, injectNativeAnalytics } from '@suite-native/analytics';
-import { AccountsStackNavigator } from '@suite-native/module-accounts-management';
+import { AccountsStackNavigator } from '@suite-native/module-accounts';
 import { EarnStackNavigator } from '@suite-native/module-earn';
 import { HomeStackNavigator } from '@suite-native/module-home';
 import { SettingsScreen } from '@suite-native/module-settings';

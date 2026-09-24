@@ -51,8 +51,6 @@
         { "path": "../banners" },
         { "path": "../bip329" },
         { "path": "../device" },
-        { "path": "../device-manager" },
-        { "path": "../discovery" },
         { "path": "../feature-feedback" },
         { "path": "../feature-flags" },
         { "path": "../formatters" },

@@ -53,6 +53,7 @@
         { "path": "../icons" },
         { "path": "../intl" },
         { "path": "../message-system" },
+        { "path": "../module-accounts" },
         { "path": "../module-accounts-import" },
         {
             "path": "../module-accounts-management"
