@@ -28,6 +28,7 @@
         "@suite-native/atoms": "workspace:*",
         "@suite-native/icons": "workspace:*",
         "@suite-native/intl": "workspace:*",
+        "@suite-native/keyboard": "workspace:*",
         "@suite-native/scrollview": "workspace:*",
         "@suite-native/sentry": "workspace:*",
         "@suite-native/settings": "workspace:*",
