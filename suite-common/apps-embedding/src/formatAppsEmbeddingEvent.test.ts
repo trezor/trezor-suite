@@ -47,15 +47,6 @@ const fixtures: { description: string; event: AppsEmbeddingEvent; expected: stri
         expected: 'window.open opened in an app window — https://example.com/popup',
     },
     {
-        description: 'window-open-attempt opened in the system browser',
-        event: {
-            type: 'window-open-attempt',
-            url: 'https://example.com/popup',
-            outcome: 'opened-in-system-browser',
-        },
-        expected: 'window.open opened in the system browser — https://example.com/popup',
-    },
-    {
         description: 'navigation-blocked',
         event: { type: 'navigation-blocked', url: 'https://elsewhere.example/' },
         expected: 'navigation blocked — https://elsewhere.example/',

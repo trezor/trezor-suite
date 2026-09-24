@@ -28,6 +28,7 @@ import { clearAppCache, clearUserDataOptimistically, initUserData } from './libs
 import { initBackgroundModules, initModules } from './modules';
 // todo: why is this separated here? shoudlnt it be part of modules?
 import { initBioAuthModule } from './modules/bioAuthModule';
+import { isWebContentsOfInAppBrowser } from './modules/in-app-browser';
 import { mainThreadEmitter } from './modules/module';
 import { init as initTorModule } from './modules/tor';
 
@@ -157,6 +158,15 @@ const init = async () => {
 
     app.on('web-contents-created', (_, contents) => {
         contents.on('will-navigate', (event, navigationUrl) => {
+            /**
+             * The apps-embedding module installs its own origin-scoped guard on its view,
+             * and that guard is what reports a block back to the renderer.
+             * Deferring keeps the decision in one place.
+             */
+            if (isWebContentsOfInAppBrowser(contents.id)) {
+                return;
+            }
+
             // See: https://www.electronjs.org/docs/latest/tutorial/security#13-disable-or-limit-navigation
 
             logger.error('electron', `Prevented unexpected redirect to: ${navigationUrl}`);

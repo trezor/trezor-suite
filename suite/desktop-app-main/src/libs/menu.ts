@@ -1,14 +1,10 @@
 import { Menu, type MenuItemConstructorOptions, app, shell } from 'electron';
 
-import { isCodesignBuild } from '@trezor/env-utils';
-
 import { restartApp } from './app-utils';
+import { isDevToolsEnabled } from './dev-tools-policy';
 import type { MainWindowProxy } from './main-window-proxy';
-import { hasSwitch } from './process-switches';
 
 const isMac = process.platform === 'darwin';
-// DevTools are only available in development, or in production when explicitly enabled via CLI flag.
-const isDevToolsEnabled = !isCodesignBuild() || hasSwitch('open-devtools');
 
 // original MenuItemConstructorOptions is too complex for our purpose.
 // submenu field may be an object or array of objects.

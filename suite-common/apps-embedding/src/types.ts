@@ -5,8 +5,7 @@ import { type HttpsUrl } from '@trezor/type-utils';
 export type AppsEmbeddingCommCapability = 'callbackUrls' | 'postMessage';
 
 /** What the host did with a `window.open` the embedded page attempted. */
-export type AppsEmbeddingWindowOpenOutcome =
-    'denied' | 'opened-in-app' | 'opened-in-system-browser';
+export type AppsEmbeddingWindowOpenOutcome = 'denied' | 'opened-in-app';
 
 export const AppsEmbeddingCallbackStatusSchema = z.enum(['success', 'failure']);
 export type AppsEmbeddingCallbackStatus = z.infer<typeof AppsEmbeddingCallbackStatusSchema>;
@@ -15,6 +14,21 @@ export type AppsEmbeddingCatalogEntryUrlParams = {
     /** The locale Suite runs in, as Suite stores it, e.g. `cs-CZ`. */
     locale: string;
 };
+
+export const ENTRY_ID_PATTERN = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
+export const ENTRY_ID_MAX_LENGTH = 40;
+
+/**
+ * Catalog entry id. On desktop it decides which on-disk session the entry gets, so it ends up as a
+ * directory name — hence lowercase-only (macOS and Windows would fold two casings into one
+ * directory), no dots (`x.` and `x` are the same file on Windows) and a length cap (Chromium's own
+ * storage tree underneath it is deep enough to reach Windows' path limit).
+ *
+ * This is the renderer-side guard only. The main process re-checks the id and resolves it against
+ * the catalog before building any path: this schema runs in the preload, which is the renderer, and
+ * the `ipcMain` wrapper validates the sender frame rather than the payload.
+ */
+export const appsEmbeddingEntryId = z.string().max(ENTRY_ID_MAX_LENGTH).regex(ENTRY_ID_PATTERN);
 
 export type AppsEmbeddingCatalogEntry = {
     /**
@@ -100,24 +114,6 @@ export type AppsEmbeddingCatalogEntry = {
                * a path would be silently ignored.
                */
               redirectExternalOrigins?: HttpsUrl[];
-
-              /**
-               * Where a permitted popup opens: the user's default browser instead of a window
-               * belonging to Suite. Off by default.
-               *
-               * Both destinations exist so they can be compared on real flows before one is
-               * dropped. The trade is not subtle: a system-browser window has no `window.opener`
-               * back to the embedded page and none of its cookies, so it only completes a flow
-               * that finishes by redirect — a sheet that posts its result through the opener
-               * hangs. In exchange the site's popup state lives in the browser the user already
-               * manages, so Suite stores nothing for it and [persistSession] does not reach it,
-               * and the popup runs as whoever the user is signed in as there rather than as an
-               * identity isolated to this entry.
-               *
-               * Only origins in [popupExternalOrigins] are affected — this decides where an
-               * allowed popup goes, never whether one is allowed.
-               */
-              openPopupInSystemBrowser?: boolean;
 
               /**
                * Origins the embedded site may open in a window of its own — the allowlist of the

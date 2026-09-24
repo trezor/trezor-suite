@@ -54,5 +54,10 @@ const validChannels: Array<keyof RendererChannels> = [
     'bio-auth/bio-auth-availability-changed',
     'bio-auth/settings-changed',
     'theme/system-change',
+    'in-app-browser/event',
 ];
 export const isValidChannel = (channel: any) => validChannels.includes(channel);
+
+export function rejectInAppBrowserInvalidCall(channel: string, payload: unknown) {
+    console.warn(`in-app-browser: dropped an invalid ${channel} payload`, payload);
+}

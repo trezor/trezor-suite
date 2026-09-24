@@ -20,6 +20,7 @@ import * as eventLoggingProcess from './event-logging/process';
 import * as externalLinks from './external-links';
 import * as firmware from './firmware';
 import * as httpReceiverModule from './http-receiver';
+import * as appsEmbedding from './in-app-browser';
 import * as mcpServer from './mcp-server';
 import * as menu from './menu';
 import * as metadata from './metadata';
@@ -81,6 +82,7 @@ const MODULES: Module[] = [
     powerMonitor,
     mcpServer,
     responseHeaders,
+    appsEmbedding,
 ];
 
 const MODULES_BACKGROUND: ModuleBackground[] = [bridge, trezorConnect, httpReceiverModule, tray];
