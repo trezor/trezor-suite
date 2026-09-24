@@ -1,5 +1,3 @@
-import React from 'react';
-
 import {
     BottomSheetModal,
     type BottomSheetModalRef,
@@ -9,18 +7,11 @@ import {
     TitleHeader,
 } from '@suite-native/atoms';
 import { useCopyToClipboard } from '@suite-native/clipboard';
-import { type IconName } from '@suite-native/icons';
 import { Translation, useTranslate } from '@suite-native/intl';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 import { SUITE_URL } from '@trezor/urls';
 
-import { StakingPromoRingIcon } from '../staking/StakingPromoRingIcon';
-
-export type EarnType = 'staking' | 'stablecoin-yield';
-type EarnItemInfoModalProps = {
-    ref: BottomSheetModalRef;
-    type?: EarnType;
-};
+import { StakingPromoRingIcon } from './StakingPromoRingIcon';
 
 const clipboardContainerStyle = prepareNativeStyle(utils => ({
     backgroundColor: utils.colors.elementFillBrandSofter,
@@ -34,28 +25,27 @@ const clipboardContainerStyle = prepareNativeStyle(utils => ({
     borderRadius: utils.borders.radii.r12,
 }));
 
-const iconByEarnType: Record<EarnType, IconName> = {
-    staking: 'piggyBank',
-    'stablecoin-yield': 'coins',
+type StakingDesktopOnlyBottomSheetProps = {
+    ref: BottomSheetModalRef;
 };
 
-const earnTypeTranslationIdByType = {
-    staking: 'earn.staking',
-    'stablecoin-yield': 'earn.defiYield',
-} as const;
-
-export const EarnItemInfoModal = ({ ref, type = 'staking' }: EarnItemInfoModalProps) => {
+export const StakingDesktopOnlyBottomSheet = ({ ref }: StakingDesktopOnlyBottomSheetProps) => {
     const { applyStyle } = useNativeStyles();
     const { translate } = useTranslate();
     const copyToClipboard = useCopyToClipboard();
+
+    const earnType = translate('earn.staking');
     const formattedUrl = SUITE_URL.replace('https://', 'www.');
 
-    const earnType = translate(earnTypeTranslationIdByType[type]);
+    const onCopyPress = () => {
+        copyToClipboard(formattedUrl);
+    };
 
     return (
         <BottomSheetModal ref={ref}>
             <Box alignItems="center">
-                <StakingPromoRingIcon iconName={iconByEarnType[type]} />
+                <StakingPromoRingIcon iconName="piggyBank" />
+
                 <TitleHeader
                     titleVariant="headline-sm"
                     title={
@@ -64,13 +54,12 @@ export const EarnItemInfoModal = ({ ref, type = 'staking' }: EarnItemInfoModalPr
                     subtitle={<Translation id="earn.earnScreen.infoModal.subtitle" />}
                     textAlign="center"
                 />
-                <PressableOpacity
-                    style={applyStyle(clipboardContainerStyle)}
-                    onPress={() => copyToClipboard(formattedUrl)}
-                >
+
+                <PressableOpacity style={applyStyle(clipboardContainerStyle)} onPress={onCopyPress}>
                     <Text textAlign="center" variant="body-sm" color="contentSecondary">
                         <Translation id="earn.earnScreen.infoModal.copyLabel" />
                     </Text>
+
                     <Text variant="body-md-strong" color="contentBrand">
                         {formattedUrl}
                     </Text>

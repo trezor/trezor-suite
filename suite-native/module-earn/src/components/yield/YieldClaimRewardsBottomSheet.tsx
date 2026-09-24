@@ -1,4 +1,4 @@
-import { Fragment, useCallback } from 'react';
+import { Fragment } from 'react';
 
 import {
     BottomSheetModal,
@@ -9,50 +9,35 @@ import {
 } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 
-import { YieldClaimAccountCard } from './YieldClaimAccountCard';
-import { type StablecoinYieldClaimItem } from '../../utils/yield/stablecoinYieldClaimSummaryUtils';
+import { YieldClaimRewardsAccountCard } from './YieldClaimRewardsAccountCard';
+import { type YieldClaimAccountItem } from '../../types';
 
-interface YieldClaimRewardsBottomSheetProps {
+type YieldClaimRewardsBottomSheetProps = {
     ref: BottomSheetModalRef;
-    claimItems: StablecoinYieldClaimItem[];
-    onClaimRewardPress: (claimItem: StablecoinYieldClaimItem) => void;
+    items: YieldClaimAccountItem[];
     onClose: () => void;
-}
+};
 
 export const YieldClaimRewardsBottomSheet = ({
     ref,
-    claimItems,
-    onClaimRewardPress,
+    items,
     onClose,
-}: YieldClaimRewardsBottomSheetProps) => {
-    const onClaimRewardsSelect = useCallback(
-        (claimItem: StablecoinYieldClaimItem) => {
-            onClose();
-            onClaimRewardPress(claimItem);
-        },
-        [onClaimRewardPress, onClose],
-    );
-
-    return (
-        <BottomSheetModal
-            ref={ref}
-            title={<Translation id="earn.earnScreen.claimRewards.title" />}
-            isCloseDisplayed
-            onClose={onClose}
-        >
-            <Box paddingTop="sp16">
-                <Card borderColor="borderNeutral" noPadding>
-                    {claimItems.map((claimItem, index) => (
-                        <Fragment key={claimItem.summary.accountKey}>
-                            {index > 0 && <Divider />}
-                            <YieldClaimAccountCard
-                                summary={claimItem.summary}
-                                onPress={() => onClaimRewardsSelect(claimItem)}
-                            />
-                        </Fragment>
-                    ))}
-                </Card>
-            </Box>
-        </BottomSheetModal>
-    );
-};
+}: YieldClaimRewardsBottomSheetProps) => (
+    <BottomSheetModal
+        ref={ref}
+        title={<Translation id="earn.earnScreen.claimRewards.title" />}
+        isCloseDisplayed
+        onClose={onClose}
+    >
+        <Box paddingTop="sp16">
+            <Card borderColor="borderNeutral" noPadding>
+                {items.map((claimItem, index) => (
+                    <Fragment key={claimItem.summary.accountKey}>
+                        {index > 0 && <Divider />}
+                        <YieldClaimRewardsAccountCard item={claimItem} onClose={onClose} />
+                    </Fragment>
+                ))}
+            </Card>
+        </Box>
+    </BottomSheetModal>
+);

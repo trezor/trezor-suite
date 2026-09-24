@@ -21,15 +21,13 @@ import {
 
 import { useStakingNavigateAnalytics } from './useStakingNavigateAnalytics';
 import { useEarnPortfolioTrackerGuard } from '../../components/earn/EarnPortfolioTrackerGuard';
-import { type StakingEarnItem } from '../../types';
 import { navigateByAccountState } from '../../utils/staking/navigateByAccountState';
 import { resolveStakingPromoAccounts } from '../../utils/staking/resolveStakingPromoAccounts';
 
+type NavigationProp = StackNavigationProps<RootStackParamList, RootStackRoutes.StakingManagement>;
+
 export const useStakingPromoNavigation = () => {
-    const navigation =
-        useNavigation<
-            StackNavigationProps<RootStackParamList, RootStackRoutes.StakingManagement>
-        >();
+    const navigation = useNavigation<NavigationProp>();
     const accounts = useSelector(selectVisibleDeviceAccounts);
     const isDeviceInViewOnlyMode = useSelector(selectIsDeviceInViewOnlyMode);
     const { showAlert, hideAlert } = useAlert();
@@ -39,18 +37,18 @@ export const useStakingPromoNavigation = () => {
 
     const reportStakingNavigate = useStakingNavigateAnalytics();
 
-    const { bottomSheetRef: infoSheetRef, openModal: openInfoModal } = useBottomSheetModal();
+    const { bottomSheetRef: infoSheetRef, openModal: openInfoSheet } = useBottomSheetModal();
 
     const {
-        bottomSheetRef: chooseAccountSheetRef,
-        showSheet: openChooseAccountModal,
-        hideSheet: closeChooseAccountModal,
+        bottomSheetRef: selectAccountSheetRef,
+        showSheet: openSelectAccountSheet,
+        hideSheet: closeSelectAccountSheet,
     } = useBottomSheetModalControls();
 
     const {
         bottomSheetRef: enableNetworkSheetRef,
-        showSheet: openEnableNetworkModal,
-        hideSheet: closeEnableNetworkModal,
+        showSheet: openEnableNetworkSheet,
+        hideSheet: closeEnableNetworkSheet,
     } = useBottomSheetModalControls();
 
     const [chosenAccounts, setChosenAccounts] = useState<Account[]>([]);
@@ -61,19 +59,19 @@ export const useStakingPromoNavigation = () => {
     const chooseAccountSymbolRef = useRef<NetworkSymbol | null>(null);
     const pendingEnableSymbolRef = useRef<NetworkSymbol | null>(null);
 
-    const handleAccountSelected = useCallback(
+    const onAccountPress = useCallback(
         (account: Account) => {
             chooseAccountContinuedRef.current = true;
-            closeChooseAccountModal();
+            closeSelectAccountSheet();
             reportStakingNavigate(account);
 
             navigateByAccountState(account, navigation.navigate);
         },
-        [closeChooseAccountModal, navigation.navigate, reportStakingNavigate],
+        [closeSelectAccountSheet, navigation.navigate, reportStakingNavigate],
     );
 
-    const handleChooseAccountDismiss = useCallback(() => {
-        closeChooseAccountModal(false);
+    const onSelectAccountDismiss = useCallback(() => {
+        closeSelectAccountSheet(false);
 
         if (chooseAccountContinuedRef.current) {
             chooseAccountContinuedRef.current = false;
@@ -88,7 +86,7 @@ export const useStakingPromoNavigation = () => {
                 networkSymbol: chooseAccountSymbolRef.current ?? undefined,
             },
         });
-    }, [analytics, closeChooseAccountModal]);
+    }, [analytics, closeSelectAccountSheet]);
 
     const showViewOnlyEnableNetworkAlert = useCallback(
         (symbol: NetworkSymbol) => {
@@ -109,13 +107,13 @@ export const useStakingPromoNavigation = () => {
         [hideAlert, showAlert, translate],
     );
 
-    const handleEnableNetworkPress = useCallback(() => {
+    const onEnableNetworkPress = useCallback(() => {
         if (!pendingEnableSymbol) {
             return;
         }
 
         enableNetworkContinuedRef.current = true;
-        closeEnableNetworkModal();
+        closeEnableNetworkSheet();
 
         if (isDeviceInViewOnlyMode) {
             showViewOnlyEnableNetworkAlert(pendingEnableSymbol);
@@ -133,14 +131,14 @@ export const useStakingPromoNavigation = () => {
         });
     }, [
         pendingEnableSymbol,
-        closeEnableNetworkModal,
+        closeEnableNetworkSheet,
         isDeviceInViewOnlyMode,
         showViewOnlyEnableNetworkAlert,
         navigation,
     ]);
 
-    const handleEnableNetworkDismiss = useCallback(() => {
-        closeEnableNetworkModal(false);
+    const onEnableNetworkDismiss = useCallback(() => {
+        closeEnableNetworkSheet(false);
 
         if (enableNetworkContinuedRef.current) {
             enableNetworkContinuedRef.current = false;
@@ -155,14 +153,14 @@ export const useStakingPromoNavigation = () => {
                 networkSymbol: pendingEnableSymbolRef.current ?? undefined,
             },
         });
-    }, [analytics, closeEnableNetworkModal]);
+    }, [analytics, closeEnableNetworkSheet]);
 
-    const handleStakingPromoPress = useCallback(
-        (item: StakingEarnItem) => {
-            const resolution = resolveStakingPromoAccounts({ symbol: item.symbol, accounts });
+    const onPromoItemPress = useCallback(
+        (symbol: NetworkSymbol) => {
+            const resolution = resolveStakingPromoAccounts({ symbol, accounts });
 
             if (resolution.isDesktopOnly) {
-                openInfoModal();
+                openInfoSheet();
 
                 return;
             }
@@ -176,10 +174,10 @@ export const useStakingPromoNavigation = () => {
             const { navigableAccounts } = resolution;
 
             if (navigableAccounts.length === 0) {
-                setPendingEnableSymbol(item.symbol);
-                pendingEnableSymbolRef.current = item.symbol;
+                setPendingEnableSymbol(symbol);
+                pendingEnableSymbolRef.current = symbol;
                 enableNetworkContinuedRef.current = false;
-                openEnableNetworkModal();
+                openEnableNetworkSheet();
 
                 return;
             }
@@ -193,33 +191,33 @@ export const useStakingPromoNavigation = () => {
             }
 
             setChosenAccounts(navigableAccounts);
-            chooseAccountSymbolRef.current = item.symbol;
+            chooseAccountSymbolRef.current = symbol;
             chooseAccountContinuedRef.current = false;
-            openChooseAccountModal();
+            openSelectAccountSheet();
         },
         [
             accounts,
             navigation.navigate,
             isPortfolioTrackerDevice,
             openPortfolioTrackerSheet,
-            openInfoModal,
-            openChooseAccountModal,
-            openEnableNetworkModal,
+            openInfoSheet,
+            openSelectAccountSheet,
+            openEnableNetworkSheet,
             reportStakingNavigate,
         ],
     );
 
     return {
-        handleStakingPromoPress,
-        handleAccountSelected,
-        handleEnableNetworkPress,
-        handleChooseAccountDismiss,
-        handleEnableNetworkDismiss,
+        onPromoItemPress,
+        onAccountPress,
+        onEnableNetworkPress,
+        onSelectAccountDismiss,
+        onEnableNetworkDismiss,
         chosenAccounts,
         pendingEnableSymbol,
         infoSheetRef,
-        chooseAccountSheetRef,
+        selectAccountSheetRef,
         enableNetworkSheetRef,
-        closeChooseAccountModal,
+        closeSelectAccountSheet,
     };
 };
