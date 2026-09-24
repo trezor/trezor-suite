@@ -5,6 +5,7 @@ import { useServices } from '@suite-common/dependency-injection';
 import { injectDispatch, injectGetState } from '@suite-common/redux-utils';
 import {
     TRADING_BUY_RECEIVE_ADDRESS,
+    TRADING_FORM_AMOUNT_INPUT_SOURCE,
     TRADING_FORM_AMOUNT_IN_CRYPTO,
     TRADING_FORM_COUNTRY_SELECT,
     TRADING_FORM_COUNTRY_SUBDIVISION_SELECT,
@@ -73,6 +74,7 @@ export const useBuyQuotes = ({ methods, network, shouldSendInSats }: UseBuyQuote
                 payload: {
                     type: 'buy',
                     count: quotes.length,
+                    input: values[TRADING_FORM_AMOUNT_INPUT_SOURCE],
                 },
             });
 
