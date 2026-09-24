@@ -3831,6 +3831,9 @@ export const messages = {
         },
     },
     moduleTrading: {
+        keyboardToolbar: {
+            max: 'Max',
+        },
         paymentMethods: {
             bankTransfer: 'Bank Transfer',
             creditCard: 'Credit/Debit Card',

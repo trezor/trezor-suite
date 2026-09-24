@@ -3,6 +3,7 @@ import { Freeze } from 'react-freeze';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { KeyboardProvider } from 'react-native-keyboard-controller';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
+import { PortalProvider } from 'react-native-teleport';
 import { useSelector } from 'react-redux';
 
 import { BottomSheetModalProvider } from '@gorhom/bottom-sheet';
@@ -76,7 +77,9 @@ export const PureApp = ({ services }: PureAppProps) => (
                         <SafeAreaProvider>
                             <StylesProvider>
                                 <NavigationContainerWithAnalytics>
-                                    <AppComponent />
+                                    <PortalProvider>
+                                        <AppComponent />
+                                    </PortalProvider>
                                 </NavigationContainerWithAnalytics>
                             </StylesProvider>
                         </SafeAreaProvider>
