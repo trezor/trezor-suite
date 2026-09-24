@@ -34,7 +34,6 @@
         { "path": "../metadata" },
         { "path": "../router" },
         { "path": "../suite-sync" },
-        { "path": "../../packages/components" },
         { "path": "../../packages/connect" },
         {
             "path": "../../packages/dependency-injection"

@@ -2,7 +2,7 @@ import { forgetAllBluetoothDevicesThunk, openSystemSettingsThunk } from '@suite/
 import { injectDispatch } from '@suite-common/redux-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { useServices } from '@trezor/dependency-injection';
-import { ActionButton, ActionColumn, SectionItem, TextColumn } from '@trezor/product-components';
+import { SectionItem } from '@trezor/product-components';
 
 export const ForgetAllDevicesButton = () => {
     const { dispatch } = useServices(injectDispatch);
@@ -16,24 +16,28 @@ export const ForgetAllDevicesButton = () => {
     };
 
     return (
-        <SectionItem>
-            <TextColumn
-                title="Forget all known Bluetooth devices"
-                description="Forgets devices persisted in Suite. In order to fully remove, go to system settings and manually remove the device there."
-            />
-            <ActionColumn>
-                <ActionButton onClick={handleForgetButtonClick} size="small" intent="critical">
-                    Forget in Suite
-                </ActionButton>
-                <ActionButton
-                    onClick={handleOpenSettingsButtonClick}
-                    size="small"
-                    intent="neutral"
-                    priority="secondary"
-                >
-                    Open system settings
-                </ActionButton>
-            </ActionColumn>
-        </SectionItem>
+        <SectionItem
+            title="Forget all known Bluetooth devices"
+            description="Forgets devices persisted in Suite. In order to fully remove, go to system settings and manually remove the device there."
+            actions={
+                <>
+                    <SectionItem.Button
+                        onClick={handleForgetButtonClick}
+                        size="small"
+                        intent="critical"
+                    >
+                        Forget in Suite
+                    </SectionItem.Button>
+                    <SectionItem.Button
+                        onClick={handleOpenSettingsButtonClick}
+                        size="small"
+                        intent="neutral"
+                        priority="secondary"
+                    >
+                        Open system settings
+                    </SectionItem.Button>
+                </>
+            }
+        />
     );
 };
