@@ -4,7 +4,7 @@ import type { FirmwareRelease, IntermediaryReleaseConfig } from '@trezor/device-
 import { DeviceModelInternal } from '@trezor/device-utils';
 import { versionUtils } from '@trezor/utils';
 
-import type { selectFirmwareRelease } from './firmwareInfo';
+import type { SelectedFirmwareRelease } from './firmwareInfo';
 
 type SelectFirmwareReleaseFixture = {
     desc: string;
@@ -12,15 +12,14 @@ type SelectFirmwareReleaseFixture = {
     release: FirmwareRelease;
     releasesOfDevice: FirmwareRelease[];
     intermediaries: IntermediaryReleaseConfig[];
-} & (
-    | { result: ReturnType<typeof selectFirmwareRelease>; error?: never }
-    | { result?: never; error: string }
-);
+} & ({ result: SelectedFirmwareRelease; error?: never } | { result?: never; error: string });
 
 // Firmware releases below are copies of packages/connect-data/files/firmware/<model>/universal/<release>.json,
 // except the unneeded fields were omitted.
 
-const mockFirmwareRelease = (release: Partial<FirmwareRelease>) => release as FirmwareRelease;
+const mockFirmwareRelease = (
+    release: Omit<FirmwareRelease, 'url' | 'fingerprint' | 'translations'>,
+): FirmwareRelease => ({ url: 'foo/bar', fingerprint: 'deadbeef', translations: {}, ...release });
 
 const t1b1_1_6_1 = mockFirmwareRelease({
     required: true,

@@ -127,10 +127,12 @@ export interface IntermediaryReleaseConfig {
     version: number;
 }
 
+export type IntermediariesConfig = Record<DeviceModelInternal, IntermediaryReleaseConfig[]>;
+
 export interface FirmwareReleaseConfig {
     version: number;
     timestamp: string;
     sequence: number;
     releases: ReleasesConfig;
-    intermediaries: Record<DeviceModelInternal, IntermediaryReleaseConfig[]>;
+    intermediaries: IntermediariesConfig;
 }

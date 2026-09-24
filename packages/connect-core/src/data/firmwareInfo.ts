@@ -8,12 +8,12 @@ import type {
 import { firmwareAssets, firmwareReleaseConfigAssets } from '@trezor/connect-data';
 import type {
     ConditionalRelease,
+    DeviceModelInternal,
     FirmwareRelease,
     IntermediaryReleaseConfig,
     ReleasesConfig,
 } from '@trezor/device-utils';
 import {
-    DeviceModelInternal,
     FirmwareType,
     getBootloaderVersionArray,
     getFirmwareVersionArray,
@@ -22,11 +22,13 @@ import {
     getIntegerInRangeFromString,
     isNotNull,
     removeTrailingSlashes,
+    typedObjectFromEntries,
     versionUtils,
 } from '@trezor/utils';
 import type { VersionArray } from '@trezor/utils/src/versionUtils';
 
 import * as firmwareReleaseStore from './firmwareReleaseStore';
+import type { FirmwareReleaseState } from './firmwareReleaseStore';
 import * as localFirmwareStore from './localFirmwareStore';
 import * as settingsStore from './settingsStore';
 import { httpRequest } from '../utils/assets';
@@ -188,8 +190,9 @@ export const getReleaseByVersion = async (
     const useBundledRelease = isProductionFirmwareChannel(firmwareChannel);
 
     const release =
-        // Order is important!
+        // if you're allowed to use bundled release, try to
         (useBundledRelease && getReleaseAsset(deviceModel, firmwareVersion, firmwareType)) ||
+        // if you're not allowed OR it wasn't possible to get bundled release, fall back to online release
         (await getOnlineReleaseByVersion(deviceModel, firmwareVersion, firmwareType).catch(
             () => undefined,
         ));
@@ -199,17 +202,15 @@ export const getReleaseByVersion = async (
         return release;
     }
 
-    return;
+    return undefined;
 };
 
-// We can build the local firmware release config only using local bundled releases JSON, and we will need to use it
-// it is not possible to build the remote one.
-const createLocalFirmwareConfig = (releases: ReleasesConfig) => {
+// We can build the local firmware release config only using local bundled releases JSON,
+// and we will need to use it if it is not possible to build the remote one.
+const createLocalFirmwareConfig = (releases: ReleasesConfig): ReleasesConfig => {
     const releaseEntries = Object.entries(releases)
         .map(([deviceModel, modelReleases]) => {
             const modelKey = deviceModel as DeviceModelInternal;
-
-            if (modelKey === DeviceModelInternal.UNKNOWN) return null;
 
             const { 'bitcoin-only': btcOnly, universal } = modelReleases ?? {};
 
@@ -225,19 +226,17 @@ const createLocalFirmwareConfig = (releases: ReleasesConfig) => {
                 [FirmwareType.Universal]: { ...universal, release: universalRelease },
             };
 
-            return [modelKey, newReleases];
+            return [modelKey, newReleases] as const;
         })
         .filter(isNotNull);
 
-    return Object.fromEntries(releaseEntries);
+    return typedObjectFromEntries(releaseEntries);
 };
 
-const createRemoteFirmwareConfig = async (releases: ReleasesConfig) => {
+const createRemoteFirmwareConfig = async (releases: ReleasesConfig): Promise<ReleasesConfig> => {
     const releaseEntryPromises = Object.entries(releases).map(
         async ([deviceModel, modelReleases]) => {
             const modelKey = deviceModel as DeviceModelInternal;
-
-            if (modelKey === DeviceModelInternal.UNKNOWN) return null;
 
             const { 'bitcoin-only': btcOnly, universal } = modelReleases ?? {};
 
@@ -255,16 +254,18 @@ const createRemoteFirmwareConfig = async (releases: ReleasesConfig) => {
                 [FirmwareType.Universal]: { ...universal, release: universalRelease },
             };
 
-            return [modelKey, newReleases];
+            return [modelKey, newReleases] as const;
         },
     );
 
     const validEntries = (await Promise.all(releaseEntryPromises)).filter(isNotNull);
 
-    return Object.fromEntries(validEntries);
+    return typedObjectFromEntries(validEntries);
 };
 
-export const getRemoteFirmwareConfig = async (firmwareChannel: FirmwareChannel) => {
+export const getRemoteFirmwareConfig = async (
+    firmwareChannel: FirmwareChannel,
+): Promise<FirmwareReleaseState | null> => {
     const remoteConfig = await fetchFirmwareReleaseConfig(firmwareChannel);
 
     if (remoteConfig && remoteConfig.sequence > firmwareReleaseConfigAssets.sequence) {
@@ -279,9 +280,11 @@ export const getRemoteFirmwareConfig = async (firmwareChannel: FirmwareChannel) 
             // There was an error fetching the remote data for config, we ignore it and use local config.
         }
     }
+
+    return null;
 };
 
-export const getLocalFirmwareConfig = () => ({
+export const getLocalFirmwareConfig = (): FirmwareReleaseState => ({
     releases: createLocalFirmwareConfig(firmwareReleaseConfigAssets.releases),
     intermediaries: firmwareReleaseConfigAssets.intermediaries,
 });
@@ -304,15 +307,26 @@ export const calculateShouldOfferRelease = (
         throw new Error('Probability must be between 0 and 100.');
     }
 
-    // If deviceId is provided, use the deterministic approach. `rolloutProbability` is a
-    // 0..100 percentage compared with `<`, so the bucket count must be 100 (values 0..99) -
-    // passing 101 here would bucket one extra value (100) that can never satisfy `< 100`,
-    // permanently excluding ~1% of devices from being offered a release at ANY rollout
-    // percentage including 100. See the sibling usage in
-    // suite-common/message-system/src/experimentUtils.ts for the same pattern done right.
-    const value = deviceId === null ? 0 : getIntegerInRangeFromString(deviceId, 100);
+    if (deviceId === null) {
+        // When deviceId is null, it means device is fresh so we always want to install latest FW,
+        // unless rolloutProbability is 0, in that case we should never offer it.
+        return rollout_probability > 0;
+    } else {
+        // If deviceId is provided, use the deterministic approach. `rolloutProbability` is a
+        // 0..100 percentage compared with `<`, so the bucket count must be 100 (values 0..99) -
+        // passing 101 here would bucket one extra value (100) that can never satisfy `< 100`,
+        // permanently excluding ~1% of devices from being offered a release at ANY rollout
+        // percentage including 100. See the sibling usage in
+        // suite-common/message-system/src/experimentUtils.ts for the same pattern done right.
+        return rollout_probability > getIntegerInRangeFromString(deviceId, 100);
+    }
+};
 
-    return value < rollout_probability;
+export type SelectedFirmwareRelease = {
+    release: FirmwareRelease;
+    intermediary: IntermediaryReleaseConfig | undefined;
+    isRequired: boolean;
+    isNewer: boolean;
 };
 
 export const selectFirmwareRelease = (
@@ -320,65 +334,76 @@ export const selectFirmwareRelease = (
     latest: FirmwareRelease,
     releases: FirmwareRelease[],
     intermediaries: IntermediaryReleaseConfig[],
-) => {
+): SelectedFirmwareRelease => {
     const firmwareVersion = getFirmwareVersionArray({ features });
     const bootloaderVersion = getBootloaderVersionArray({ features });
     const sorted = releases.sort((a, b) => (versionUtils.isNewer(b.version, a.version) ? 1 : -1));
 
-    let intermediary, isNewer;
-    let release = latest;
-    let isRequired;
-
+    // firmware mode or bootloader mode with known firmware version
     if (versionUtils.isVersionArray(firmwareVersion)) {
-        // firmware mode or bootloader mode with known firmware version
-
-        const supportsMinFw = (current: VersionArray, r: { min_firmware_version: VersionArray }) =>
-            versionUtils.isNewerOrEqual(current, r.min_firmware_version);
-
-        if (!supportsMinFw(firmwareVersion, latest)) {
-            // Find the first intermediary release that requires a newer version than the current one.
-            intermediary = intermediaries.find(r => !supportsMinFw(firmwareVersion, r));
-
-            if (!intermediary) {
-                // If the target isn't compatible, search for the best alternative.
-                // If an alternative is found, use it. Otherwise, we proceed with the original.
-                const compatible = sorted.find(r => supportsMinFw(firmwareVersion, r));
-                release = compatible ?? latest;
-            }
-        }
-        isNewer = !!intermediary || versionUtils.isNewer(release.version, firmwareVersion);
-        isRequired = sorted.some(
+        const isRequired = sorted.some(
             r => versionUtils.isNewer(r.version, firmwareVersion) && r.required,
         );
-    } else if (features.bootloader_mode && versionUtils.isVersionArray(bootloaderVersion)) {
-        // bootloader mode on older T1B1 devices which don't report firmware versions
+
+        const supportsMinFw = (
+            current: VersionArray,
+            { min_firmware_version }: FirmwareRelease | IntermediaryReleaseConfig,
+        ) => versionUtils.isNewerOrEqual(current, min_firmware_version);
+
+        if (supportsMinFw(firmwareVersion, latest)) {
+            const isNewer = versionUtils.isNewer(latest.version, firmwareVersion);
+
+            return { release: latest, intermediary: undefined, isNewer, isRequired };
+        }
+
+        // Find the first intermediary release that requires a newer version than the current one.
+        const intermediary = intermediaries.find(r => !supportsMinFw(firmwareVersion, r));
+
+        if (intermediary) {
+            return { release: latest, intermediary, isNewer: true, isRequired };
+        }
+
+        // If the target isn't compatible, search for the best alternative.
+        // If an alternative is found, use it. Otherwise, we proceed with the original.
+        const compatible = sorted.find(r => supportsMinFw(firmwareVersion, r));
+        const release = compatible ?? latest;
+
+        return { release, intermediary: undefined, isNewer: true, isRequired };
+    }
+
+    // bootloader mode on older T1B1 devices which don't report firmware versions
+    if (features.bootloader_mode && versionUtils.isVersionArray(bootloaderVersion)) {
+        const isRequired = !features.firmware_present && sorted.some(item => item.required);
 
         const supportsMinBl = (
             current: VersionArray,
-            r: { min_bootloader_version: VersionArray },
-        ) => versionUtils.isNewerOrEqual(current, r.min_bootloader_version);
+            { min_bootloader_version }: FirmwareRelease | IntermediaryReleaseConfig,
+        ) => versionUtils.isNewerOrEqual(current, min_bootloader_version);
 
-        if (!supportsMinBl(bootloaderVersion, latest)) {
-            // Find the first intermediary release that requires a newer version than the current one.
-            intermediary = intermediaries.find(r => !supportsMinBl(bootloaderVersion, r));
+        if (supportsMinBl(bootloaderVersion, latest)) {
+            const isNewer =
+                !!latest.bootloader_version &&
+                versionUtils.isNewer(latest.bootloader_version, bootloaderVersion);
 
-            if (!intermediary) {
-                // If the target isn't compatible, search for the best alternative.
-                // If an alternative is found, use it. Otherwise, we proceed with the original.
-                const compatible = sorted.find(r => supportsMinBl(bootloaderVersion, r));
-                release = compatible ?? latest;
-            }
+            return { release: latest, intermediary: undefined, isNewer, isRequired };
         }
-        isNewer =
-            !!intermediary ||
-            (!!release.bootloader_version &&
-                versionUtils.isNewer(release.bootloader_version, bootloaderVersion));
-        isRequired = !features.firmware_present && sorted.some(item => item.required);
-    } else {
-        throw new Error('Firmware version is not version array.');
+
+        // Find the first intermediary release that requires a newer version than the current one.
+        const intermediary = intermediaries.find(r => !supportsMinBl(bootloaderVersion, r));
+
+        if (intermediary) {
+            return { release: latest, intermediary, isNewer: true, isRequired };
+        }
+
+        // If the target isn't compatible, search for the best alternative.
+        // If an alternative is found, use it. Otherwise, we proceed with the original.
+        const compatible = sorted.find(r => supportsMinBl(bootloaderVersion, r));
+        const release = compatible ?? latest;
+
+        return { release, intermediary: undefined, isNewer: true, isRequired };
     }
 
-    return { release, intermediary, isNewer, isRequired };
+    throw new Error('Firmware version is not version array.');
 };
 
 export const getFirmwareReleaseConfigInfo = (
@@ -391,8 +416,8 @@ export const getFirmwareReleaseConfigInfo = (
 
     const model = features.internal_model;
 
-    const deviceMessageRelease = firmwareReleaseStore.getReleases(model, type);
-    if (!deviceMessageRelease?.release) {
+    const deviceReleases = firmwareReleaseStore.getReleases(model, type);
+    if (!deviceReleases?.release) {
         return;
     }
 
@@ -401,7 +426,7 @@ export const getFirmwareReleaseConfigInfo = (
         FirmwareType.BitcoinOnly,
     );
 
-    const { release: latestRelease, firmware_type: firmwareType } = deviceMessageRelease;
+    const { release: latestRelease, firmware_type: firmwareType } = deviceReleases;
 
     const intermediaries = firmwareReleaseStore.getIntermediary(model) ?? [];
     const releases = Object.values(getReleaseAssets(model, type));
@@ -412,12 +437,12 @@ export const getFirmwareReleaseConfigInfo = (
         throw new Error(`Release object in unexpected shape.`);
     }
 
-    const shouldBeOffered = calculateShouldOfferRelease(deviceMessageRelease, features.device_id);
+    const shouldBeOffered = calculateShouldOfferRelease(deviceReleases, features.device_id);
 
     return {
         firmwareType,
         isBitcoinOnlyAvailable,
-        releaseConditions: { ...deviceMessageRelease.conditions, shouldBeOffered },
+        releaseConditions: { ...deviceReleases.conditions, shouldBeOffered },
         translations: selected.release.translations,
         ...selected,
     };
