@@ -18,7 +18,12 @@ import {
     selectIsMevProtectionEnabled,
 } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
-import { getAccountIdentity, getMevProtectedTxData, sanitizeHex } from '@suite-common/wallet-utils';
+import {
+    fromIntegerString,
+    getAccountIdentity,
+    getMevProtectedTxData,
+    sanitizeHex,
+} from '@suite-common/wallet-utils';
 import TrezorConnect, {
     type CallMethodResponse,
     type EthereumSignTypedData,
@@ -41,6 +46,16 @@ const methods = [
     'personal_sign',
     'wallet_switchEthereumChain',
 ];
+
+// Connect reads these values as hex. EIP-1474 requires the 0x prefix. Reject other formats,
+// because Connect signs a decimal value as a different hex value.
+const TRANSACTION_QUANTITY_FIELDS = [
+    'gas',
+    'value',
+    'gasPrice',
+    'maxFeePerGas',
+    'maxPriorityFeePerGas',
+] as const;
 
 export type EthereumRequestThunkState = trezorConnectPopupActions.ConnectPopupCallThunkState &
     WalletConnectStateRootState &
@@ -151,6 +166,12 @@ const ethereumRequestThunk = createThunk<
             if (account.networkType !== 'ethereum') {
                 throw new Error('Account is not Ethereum');
             }
+            for (const field of TRANSACTION_QUANTITY_FIELDS) {
+                const value = transaction[field];
+                if (value && !isHex(value, { allowEmpty: false })) {
+                    throw new Error(`eth_sendTransaction invalid ${field}`);
+                }
+            }
             if (
                 !transaction.gasPrice &&
                 (!transaction.maxFeePerGas || !transaction.maxPriorityFeePerGas)
@@ -169,18 +190,24 @@ const ethereumRequestThunk = createThunk<
                 if (!feeLevels.success) {
                     throw new Error('eth_sendTransaction cannot estimate fee');
                 }
-                if (feeLevels.payload.levels[0]?.eip1559) {
-                    transaction.maxFeePerGas =
-                        feeLevels.payload.levels[0]?.eip1559?.medium?.maxFeePerGas;
-                    transaction.maxPriorityFeePerGas =
-                        feeLevels.payload.levels[0]?.eip1559?.medium?.maxPriorityFeePerGas;
+                // Fee levels are decimal strings in wei. Connect reads all values as hex.
+                const toHex = (value?: string) =>
+                    value ? fromIntegerString(value).toHex() : undefined;
+                const eip1559Fee = feeLevels.payload.levels[0]?.eip1559?.medium;
+                // Both values are optional. Use the legacy gas price if one of them is missing.
+                if (eip1559Fee?.maxFeePerGas && eip1559Fee.maxPriorityFeePerGas) {
+                    transaction.maxFeePerGas = toHex(eip1559Fee.maxFeePerGas);
+                    transaction.maxPriorityFeePerGas = toHex(eip1559Fee.maxPriorityFeePerGas);
                 } else {
-                    transaction.gasPrice = feeLevels.payload.levels[0]?.feePerUnit;
+                    transaction.gasPrice = toHex(feeLevels.payload.levels[0]?.feePerUnit);
+                    if (!transaction.gasPrice) {
+                        throw new Error('eth_sendTransaction cannot estimate fee');
+                    }
                 }
             }
             if (!transaction.gas) {
                 // Placeholder, will be replaced by estimate from TX simulation response
-                transaction.gas = ETH_CONTRACT_CALL_BACKUP_GAS_LIMIT;
+                transaction.gas = fromIntegerString(ETH_CONTRACT_CALL_BACKUP_GAS_LIMIT).toHex();
             }
             if (!transaction.value) {
                 transaction.value = '0x0';

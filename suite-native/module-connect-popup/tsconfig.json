@@ -11,6 +11,9 @@
             "path": "../../suite-common/redux-utils"
         },
         {
+            "path": "../../suite-common/tx-simulation"
+        },
+        {
             "path": "../../suite-common/wallet-config"
         },
         {
