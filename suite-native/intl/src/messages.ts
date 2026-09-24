@@ -3644,10 +3644,7 @@ export const messages = {
         },
         staked: 'Stake',
         rewards: 'Rewards',
-        rewardsPerEpoch: 'Next estimated reward',
         rate: 'Rate',
-        apy: 'Annual Percentage Yield',
-        apr: 'Annual Percentage Rate',
         apyAbbr: 'APY',
         apyValueWithLabel: '{value} APY',
         aprValueWithLabel: '{value} APR',
@@ -3671,8 +3668,6 @@ export const messages = {
                 availableOfTotal: '{available} / {total}',
             },
         },
-        stakingCanBeManaged: 'Manage your staking accounts in the',
-        trezorDesktop: 'Trezor Suite desktop app.',
         notAvailable: 'Not available',
         apyNotAvailable: 'APY not available',
         apyPercentage: '~{apy}% APY',
@@ -3700,13 +3695,6 @@ export const messages = {
             claimDisabled: 'Claim is currently disabled.',
             wrapDisabled: 'Wrapping is currently disabled.',
             unwrapDisabled: 'Unwrapping is currently disabled.',
-        },
-        stakePendingCard: {
-            totalStakePending: 'Pending stake',
-            addingToStakingPool: 'Staking activation',
-            activatingStake: 'Staking activation',
-            totalStakeActivating: 'Pending stake',
-            transactionPending: 'Transaction pending',
         },
         claimReviewScreen: {
             title: 'Claim {displaySymbol}',
@@ -3745,13 +3733,7 @@ export const messages = {
             },
             successMessage: "You're all set",
         },
-        claimableCard: {
-            claimable: 'Claimable',
-            claimButton: 'Claim',
-            readyToClaim: '{amount} ready to be claimed',
-        },
         stakingBottomSheet: {
-            title: 'Manage staking in the Trezor Suite desktop app',
             description:
                 'Staking accounts can be viewed but not managed in the Trezor Suite mobile app.',
         },

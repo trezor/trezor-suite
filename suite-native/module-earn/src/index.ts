@@ -22,7 +22,6 @@ export { EarnConsentsScreen } from './screens/earn/EarnConsentsScreen';
 export { StakingFormScreen } from './screens/staking/StakingFormScreen';
 export { HowStakeWorksScreen } from './screens/staking/HowStakeWorksScreen';
 export { StakingClaimReviewScreen } from './screens/staking/StakingClaimReviewScreen';
-export { StakingDetailScreen } from './screens/staking/StakingDetailScreen';
 export { StakingManagementScreen } from './screens/staking/StakingManagementScreen';
 export { StakingTransactionCompleteScreen } from './screens/staking/StakingTransactionCompleteScreen';
 export { StakingTransactionDataReviewScreen } from './screens/staking/StakingTransactionDataReviewScreen';
