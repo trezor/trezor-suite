@@ -3,6 +3,7 @@ import { useForm } from 'react-hook-form';
 import { act, waitFor } from '@testing-library/react';
 import { type CryptoId, type ExchangeTrade } from 'invity-api';
 
+import { events } from '@suite/analytics';
 import { mockDesktopAnalytics } from '@suite/analytics/mocks';
 import { createTestCompositionRoot, renderHookWithStoreProvider } from '@suite-common/test-utils';
 import {
@@ -144,9 +145,10 @@ const renderExchangeQuotes = (
 ) => {
     const { receiveAddress, receiveAccountKey, receiveAccountSymbol } = options;
     const network = 'network' in options ? options.network : getNetwork(btcSymbol);
+    const report = jest.fn();
     const services = {
         networks: { addressValidator: mockAddressValidator },
-        analytics: mockDesktopAnalytics(),
+        analytics: mockDesktopAnalytics(report),
     };
 
     const root = createTestCompositionRoot({
@@ -160,7 +162,7 @@ const renderExchangeQuotes = (
         },
     });
 
-    return renderHookWithStoreProvider(
+    const rendered = renderHookWithStoreProvider(
         ({ currentNetwork, currentReceiveAccountKey }) => {
             const methods = useForm<TradingExchangeFormProps>({
                 mode: 'onChange',
@@ -187,6 +189,8 @@ const renderExchangeQuotes = (
             },
         },
     );
+
+    return { ...rendered, report };
 };
 
 describe('useExchangeQuotes', () => {
@@ -212,6 +216,27 @@ describe('useExchangeQuotes', () => {
                 formValues: expect.objectContaining({ receiveAddress: '0xreceive' }),
                 network: expect.objectContaining({ symbol: 'btc' }),
                 shouldSendInSats: false,
+            }),
+        );
+    });
+
+    it('reports the input the amount was entered in with the received quotes', async () => {
+        const { result, report } = renderExchangeQuotes(VALID_DEFAULTS, {
+            receiveAddress: '0xreceive',
+        });
+
+        await waitFor(() => expect(mockHandleRequest).toHaveBeenCalledTimes(1), { timeout: 1500 });
+
+        act(() => {
+            result.current.methods.setValue('amountInputSource', 'fraction');
+            result.current.methods.setValue('outputs.0.amount', '0.5');
+        });
+
+        await waitFor(() => expect(mockHandleRequest).toHaveBeenCalledTimes(2), { timeout: 1500 });
+        await waitFor(() =>
+            expect(report).toHaveBeenLastCalledWith({
+                type: events.tradeReceivedQuotesEvent.name,
+                payload: { type: 'exchange', count: QUOTES.length, input: 'fraction' },
             }),
         );
     });
