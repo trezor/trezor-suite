@@ -463,13 +463,11 @@ describe('deriveBitcoinSwapFromAddresses', () => {
         jest.clearAllMocks();
         (TrezorConnect.composeTransaction as jest.Mock).mockResolvedValue({
             success: true,
-            payload: [
-                {
-                    type: 'final',
-                    inputs: [{ prev_hash: 'abc', prev_index: 0 }],
-                    outputs: [{ amount: '5000' }],
-                },
-            ],
+            payload: {
+                type: 'final',
+                inputs: [{ prev_hash: 'abc', prev_index: 0 }],
+                outputs: [{ amount: '5000' }],
+            },
         });
     });
 
@@ -581,13 +579,11 @@ describe('deriveBitcoinSwapFromAddresses', () => {
     it('should return undefined when no input address can be derived', async () => {
         (TrezorConnect.composeTransaction as jest.Mock).mockResolvedValue({
             success: true,
-            payload: [
-                {
-                    type: 'final',
-                    inputs: [{ prev_hash: 'unknown', prev_index: 99 }],
-                    outputs: [{ amount: '5000' }],
-                },
-            ],
+            payload: {
+                type: 'final',
+                inputs: [{ prev_hash: 'unknown', prev_index: 99 }],
+                outputs: [{ amount: '5000' }],
+            },
         });
 
         const result = await deriveBitcoinSwapFromAddresses({

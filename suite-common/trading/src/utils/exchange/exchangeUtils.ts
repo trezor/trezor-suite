@@ -345,17 +345,17 @@ export const deriveBitcoinSwapFromAddresses = async ({
         path: account.path,
         changeAddress,
         utxo: usedUtxos,
-        feeLevels: [{ feePerUnit: feePerUnit || '1' }],
+        feePerUnit: feePerUnit || '1',
     };
 
     const precomposed = await TrezorConnect.composeTransaction(composeParams);
 
-    if (!precomposed.success || precomposed.payload.length === 0) {
+    if (!precomposed.success) {
         return undefined;
     }
 
-    const tx = precomposed.payload[0];
-    if (!tx || (tx.type !== 'final' && tx.type !== 'nonfinal')) {
+    const tx = precomposed.payload;
+    if (tx.type !== 'final' && tx.type !== 'nonfinal') {
         return undefined;
     }
 

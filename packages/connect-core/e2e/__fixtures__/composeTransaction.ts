@@ -34,19 +34,9 @@ const DOGE_UTXO = [
     },
 ];
 
-const FEE_LEVELS = [
-    {
-        label: 'normal',
-        feePerUnit: '1',
-    },
-];
+const FEE_PER_UNIT = '1';
 
-const DOGE_FEE_LEVELS = [
-    {
-        label: 'normal',
-        feePerUnit: '1000', // 0.001 DOGE
-    },
-];
+const DOGE_FEE_PER_UNIT = '1000'; // 0.001 DOGE
 
 const composeTransaction: TestCase = {
     method: 'composeTransaction',
@@ -60,7 +50,7 @@ const composeTransaction: TestCase = {
                 path: BECH32_PATH,
                 changeAddress: BECH32_CHANGE,
                 utxo: BECH32_UTXO,
-                feeLevels: FEE_LEVELS,
+                feePerUnit: FEE_PER_UNIT,
                 outputs: [
                     {
                         address: '36JkLACrdxARqXXffZk91V9W6SJvghKaVK',
@@ -69,23 +59,21 @@ const composeTransaction: TestCase = {
                 ],
                 coin: 'btc',
             },
-            result: [
-                {
-                    type: 'final',
-                    bytes: 142,
-                    fee: '142',
-                    feePerByte: '1',
-                    max: undefined,
-                    totalSpent: '6639',
-                    // Order of inputs & outputs is important as we mock randomness in test to make it deterministic
-                    inputs: [{ script_type: 'SPENDWITNESS', sequence: 0xffffffff }],
-                    outputs: [
-                        { amount: '2787', script_type: 'PAYTOWITNESS' },
-                        { amount: '6497', script_type: 'PAYTOADDRESS' },
-                    ],
-                    outputsPermutation: [1, 0], // default permutation from @trezor/utxo-lib/compose
-                },
-            ],
+            result: {
+                type: 'final',
+                bytes: 142,
+                fee: '142',
+                feePerByte: '1',
+                max: undefined,
+                totalSpent: '6639',
+                // Order of inputs & outputs is important as we mock randomness in test to make it deterministic
+                inputs: [{ script_type: 'SPENDWITNESS', sequence: 0xffffffff }],
+                outputs: [
+                    { amount: '2787', script_type: 'PAYTOWITNESS' },
+                    { amount: '6497', script_type: 'PAYTOADDRESS' },
+                ],
+                outputsPermutation: [1, 0], // default permutation from @trezor/utxo-lib/compose
+            },
         },
         {
             description:
@@ -94,7 +82,7 @@ const composeTransaction: TestCase = {
                 path: BECH32_PATH,
                 changeAddress: BECH32_CHANGE,
                 utxo: BECH32_UTXO,
-                feeLevels: FEE_LEVELS,
+                feePerUnit: FEE_PER_UNIT,
                 outputs: [
                     {
                         address: '36JkLACrdxARqXXffZk91V9W6SJvghKaVK',
@@ -106,23 +94,21 @@ const composeTransaction: TestCase = {
                 sequence: 1,
                 coin: 'btc',
             },
-            result: [
-                {
-                    type: 'final',
-                    bytes: 142,
-                    fee: '309',
-                    feePerByte: '2.176056338028169',
-                    max: undefined,
-                    totalSpent: '6806',
-                    // Order of inputs & outputs is important as we mock randomness in test to make it deterministic
-                    inputs: [{ script_type: 'SPENDWITNESS', sequence: 1 }],
-                    outputs: [
-                        { amount: '6497', script_type: 'PAYTOADDRESS' },
-                        { amount: '2620', script_type: 'PAYTOWITNESS' }, // skipped permutation
-                    ],
-                    outputsPermutation: [0, 1],
-                },
-            ],
+            result: {
+                type: 'final',
+                bytes: 142,
+                fee: '309',
+                feePerByte: '2.176056338028169',
+                max: undefined,
+                totalSpent: '6806',
+                // Order of inputs & outputs is important as we mock randomness in test to make it deterministic
+                inputs: [{ script_type: 'SPENDWITNESS', sequence: 1 }],
+                outputs: [
+                    { amount: '6497', script_type: 'PAYTOADDRESS' },
+                    { amount: '2620', script_type: 'PAYTOWITNESS' }, // skipped permutation
+                ],
+                outputsPermutation: [0, 1],
+            },
         },
         {
             description: 'Bitcoin (Bech32/P2WPKH): precompose with required utxo',
@@ -150,7 +136,7 @@ const composeTransaction: TestCase = {
                         confirmations: 100,
                     },
                 ],
-                feeLevels: FEE_LEVELS,
+                feePerUnit: FEE_PER_UNIT,
                 outputs: [
                     {
                         address: '3N6sbjPwa9L911fPxykD3XnGifMdVRMZPV',
@@ -159,20 +145,18 @@ const composeTransaction: TestCase = {
                 ],
                 coin: 'btc',
             },
-            result: [
-                {
-                    type: 'final',
-                    bytes: 142,
-                    fee: '142',
-                    totalSpent: '1142',
-                    // Order of inputs & outputs is important as we mock randomness in test to make it deterministic
-                    inputs: [{ amount: '9426', script_type: 'SPENDWITNESS' }],
-                    outputs: [
-                        { amount: '8284', script_type: 'PAYTOWITNESS' },
-                        { amount: '1000', script_type: 'PAYTOADDRESS' },
-                    ],
-                },
-            ],
+            result: {
+                type: 'final',
+                bytes: 142,
+                fee: '142',
+                totalSpent: '1142',
+                // Order of inputs & outputs is important as we mock randomness in test to make it deterministic
+                inputs: [{ amount: '9426', script_type: 'SPENDWITNESS' }],
+                outputs: [
+                    { amount: '8284', script_type: 'PAYTOWITNESS' },
+                    { amount: '1000', script_type: 'PAYTOADDRESS' },
+                ],
+            },
         },
         {
             description: 'Bitcoin (Bech32/P2WPKH): precompose with required and additional utxos',
@@ -210,7 +194,7 @@ const composeTransaction: TestCase = {
                         required: true,
                     },
                 ],
-                feeLevels: FEE_LEVELS,
+                feePerUnit: FEE_PER_UNIT,
                 outputs: [
                     {
                         address: '3N6sbjPwa9L911fPxykD3XnGifMdVRMZPV',
@@ -219,24 +203,22 @@ const composeTransaction: TestCase = {
                 ],
                 coin: 'btc',
             },
-            result: [
-                {
-                    type: 'final',
-                    bytes: 278,
-                    fee: '278',
-                    totalSpent: '16678',
-                    // Order of inputs & outputs is important as we mock randomness in test to make it deterministic
-                    inputs: [
-                        { amount: '309896' }, // NOTE: this utxo is used because required utxo is not enough to cover fee
-                        { amount: '9426' },
-                        { amount: '7086' },
-                    ],
-                    outputs: [
-                        { amount: '309730', script_type: 'PAYTOWITNESS' },
-                        { amount: '16400', script_type: 'PAYTOADDRESS' },
-                    ],
-                },
-            ],
+            result: {
+                type: 'final',
+                bytes: 278,
+                fee: '278',
+                totalSpent: '16678',
+                // Order of inputs & outputs is important as we mock randomness in test to make it deterministic
+                inputs: [
+                    { amount: '309896' }, // NOTE: this utxo is used because required utxo is not enough to cover fee
+                    { amount: '9426' },
+                    { amount: '7086' },
+                ],
+                outputs: [
+                    { amount: '309730', script_type: 'PAYTOWITNESS' },
+                    { amount: '16400', script_type: 'PAYTOADDRESS' },
+                ],
+            },
         },
         {
             description: 'Bitcoin (Bech32/P2WPKH): precompose with send-max',
@@ -244,7 +226,7 @@ const composeTransaction: TestCase = {
                 path: BECH32_PATH,
                 changeAddress: BECH32_CHANGE,
                 utxo: BECH32_UTXO,
-                feeLevels: FEE_LEVELS,
+                feePerUnit: FEE_PER_UNIT,
                 outputs: [
                     {
                         type: 'send-max',
@@ -253,18 +235,16 @@ const composeTransaction: TestCase = {
                 ],
                 coin: 'btc',
             },
-            result: [
-                {
-                    type: 'final',
-                    bytes: 111,
-                    fee: '111',
-                    feePerByte: '1',
-                    max: '9315',
-                    totalSpent: '9426',
-                    inputs: [{ script_type: 'SPENDWITNESS' }],
-                    outputs: [{ amount: '9315', script_type: 'PAYTOADDRESS' }],
-                },
-            ],
+            result: {
+                type: 'final',
+                bytes: 111,
+                fee: '111',
+                feePerByte: '1',
+                max: '9315',
+                totalSpent: '9426',
+                inputs: [{ script_type: 'SPENDWITNESS' }],
+                outputs: [{ amount: '9315', script_type: 'PAYTOADDRESS' }],
+            },
         },
         {
             description: 'Bitcoin (Segwit/P2SH): precompose with send-max',
@@ -272,7 +252,7 @@ const composeTransaction: TestCase = {
                 path: BECH32_PATH,
                 changeAddress: BECH32_CHANGE,
                 utxo: BECH32_UTXO,
-                feeLevels: FEE_LEVELS,
+                feePerUnit: FEE_PER_UNIT,
                 outputs: [
                     {
                         type: 'send-max',
@@ -281,19 +261,17 @@ const composeTransaction: TestCase = {
                 ],
                 coin: 'btc',
             },
-            result: [
-                {
-                    type: 'final',
-                    bytes: 111,
-                    fee: '111',
-                    feePerByte: '1',
-                    max: '9315',
-                    totalSpent: '9426',
-                    // Order of inputs & outputs is important as we mock randomness in test to make it deterministic
-                    inputs: [{ script_type: 'SPENDWITNESS' }],
-                    outputs: [{ amount: '9315', script_type: 'PAYTOADDRESS' }],
-                },
-            ],
+            result: {
+                type: 'final',
+                bytes: 111,
+                fee: '111',
+                feePerByte: '1',
+                max: '9315',
+                totalSpent: '9426',
+                // Order of inputs & outputs is important as we mock randomness in test to make it deterministic
+                inputs: [{ script_type: 'SPENDWITNESS' }],
+                outputs: [{ amount: '9315', script_type: 'PAYTOADDRESS' }],
+            },
         },
         {
             description: 'Doge (P2PKH): precompose with change',
@@ -301,7 +279,7 @@ const composeTransaction: TestCase = {
                 path: DOGE_PATH,
                 changeAddress: DOGE_CHANGE,
                 utxo: DOGE_UTXO,
-                feeLevels: DOGE_FEE_LEVELS,
+                feePerUnit: DOGE_FEE_PER_UNIT,
                 outputs: [
                     {
                         address: 'DDn7UV1CrqVefzwrHyw7H2zEZZKqfzR2ZD',
@@ -310,25 +288,23 @@ const composeTransaction: TestCase = {
                 ],
                 coin: 'doge',
             },
-            result: [
-                {
-                    type: 'final',
-                    bytes: 226,
-                    fee: '226000',
-                    max: undefined,
-                    totalSpent: '100226000',
-                    // Order of inputs & outputs is important as we mock randomness in test to make it deterministic
-                    inputs: [{ script_type: 'SPENDADDRESS' }],
-                    outputs: [
-                        { amount: '399774000', script_type: 'PAYTOADDRESS' },
-                        {
-                            address: 'DDn7UV1CrqVefzwrHyw7H2zEZZKqfzR2ZD',
-                            amount: '100000000',
-                            script_type: 'PAYTOADDRESS',
-                        },
-                    ],
-                },
-            ],
+            result: {
+                type: 'final',
+                bytes: 226,
+                fee: '226000',
+                max: undefined,
+                totalSpent: '100226000',
+                // Order of inputs & outputs is important as we mock randomness in test to make it deterministic
+                inputs: [{ script_type: 'SPENDADDRESS' }],
+                outputs: [
+                    { amount: '399774000', script_type: 'PAYTOADDRESS' },
+                    {
+                        address: 'DDn7UV1CrqVefzwrHyw7H2zEZZKqfzR2ZD',
+                        amount: '100000000',
+                        script_type: 'PAYTOADDRESS',
+                    },
+                ],
+            },
         },
         {
             description: 'Doge (P2PKH): precompose with 1 dust limit output',
@@ -336,7 +312,7 @@ const composeTransaction: TestCase = {
                 path: DOGE_PATH,
                 changeAddress: DOGE_CHANGE,
                 utxo: DOGE_UTXO,
-                feeLevels: DOGE_FEE_LEVELS,
+                feePerUnit: DOGE_FEE_PER_UNIT,
                 outputs: [
                     {
                         address: 'DDn7UV1CrqVefzwrHyw7H2zEZZKqfzR2ZD',
@@ -345,25 +321,23 @@ const composeTransaction: TestCase = {
                 ],
                 coin: 'doge',
             },
-            result: [
-                {
-                    type: 'final',
-                    bytes: 226,
-                    fee: '1226000', // NOTE: +0.01 DOGE per dust limit output
-                    max: undefined,
-                    totalSpent: '1326000',
-                    // Order of inputs & outputs is important as we mock randomness in test to make it deterministic
-                    inputs: [{ script_type: 'SPENDADDRESS' }],
-                    outputs: [
-                        { amount: '498674000', script_type: 'PAYTOADDRESS' },
-                        {
-                            address: 'DDn7UV1CrqVefzwrHyw7H2zEZZKqfzR2ZD',
-                            amount: '100000',
-                            script_type: 'PAYTOADDRESS',
-                        },
-                    ],
-                },
-            ],
+            result: {
+                type: 'final',
+                bytes: 226,
+                fee: '1226000', // NOTE: +0.01 DOGE per dust limit output
+                max: undefined,
+                totalSpent: '1326000',
+                // Order of inputs & outputs is important as we mock randomness in test to make it deterministic
+                inputs: [{ script_type: 'SPENDADDRESS' }],
+                outputs: [
+                    { amount: '498674000', script_type: 'PAYTOADDRESS' },
+                    {
+                        address: 'DDn7UV1CrqVefzwrHyw7H2zEZZKqfzR2ZD',
+                        amount: '100000',
+                        script_type: 'PAYTOADDRESS',
+                    },
+                ],
+            },
         },
         {
             description:
@@ -372,7 +346,7 @@ const composeTransaction: TestCase = {
                 path: DOGE_PATH,
                 changeAddress: DOGE_CHANGE,
                 utxo: DOGE_UTXO,
-                feeLevels: DOGE_FEE_LEVELS,
+                feePerUnit: DOGE_FEE_PER_UNIT,
                 outputs: [
                     {
                         address: 'DDn7UV1CrqVefzwrHyw7H2zEZZKqfzR2ZD',
@@ -385,29 +359,27 @@ const composeTransaction: TestCase = {
                 ],
                 coin: 'doge',
             },
-            result: [
-                {
-                    type: 'final',
-                    bytes: 226,
-                    fee: '1000000', // NOTE: +0.01 DOGE per dust limit output + ~0.08 DOGE dust limit change
-                    max: undefined,
-                    totalSpent: '500000000',
-                    // Order of inputs & outputs is important as we mock randomness in test to make it deterministic
-                    inputs: [{ script_type: 'SPENDADDRESS' }],
-                    outputs: [
-                        {
-                            address: 'DDn7UV1CrqVefzwrHyw7H2zEZZKqfzR2ZD',
-                            amount: '299000000',
-                            script_type: 'PAYTOADDRESS',
-                        },
-                        {
-                            address: 'DDn7UV1CrqVefzwrHyw7H2zEZZKqfzR2ZD',
-                            amount: '200000000',
-                            script_type: 'PAYTOADDRESS',
-                        },
-                    ],
-                },
-            ],
+            result: {
+                type: 'final',
+                bytes: 226,
+                fee: '1000000', // NOTE: +0.01 DOGE per dust limit output + ~0.08 DOGE dust limit change
+                max: undefined,
+                totalSpent: '500000000',
+                // Order of inputs & outputs is important as we mock randomness in test to make it deterministic
+                inputs: [{ script_type: 'SPENDADDRESS' }],
+                outputs: [
+                    {
+                        address: 'DDn7UV1CrqVefzwrHyw7H2zEZZKqfzR2ZD',
+                        amount: '299000000',
+                        script_type: 'PAYTOADDRESS',
+                    },
+                    {
+                        address: 'DDn7UV1CrqVefzwrHyw7H2zEZZKqfzR2ZD',
+                        amount: '200000000',
+                        script_type: 'PAYTOADDRESS',
+                    },
+                ],
+            },
         },
         {
             description: 'Doge (P2PKH): precompose with send-max',
@@ -415,7 +387,7 @@ const composeTransaction: TestCase = {
                 path: DOGE_PATH,
                 changeAddress: DOGE_CHANGE,
                 utxo: DOGE_UTXO,
-                feeLevels: DOGE_FEE_LEVELS,
+                feePerUnit: DOGE_FEE_PER_UNIT,
                 outputs: [
                     {
                         type: 'send-max',
@@ -424,18 +396,16 @@ const composeTransaction: TestCase = {
                 ],
                 coin: 'doge',
             },
-            result: [
-                {
-                    type: 'final',
-                    bytes: 192,
-                    fee: '192000',
-                    max: '499808000',
-                    totalSpent: '500000000',
-                    // Order of inputs & outputs is important as we mock randomness in test to make it deterministic
-                    inputs: [{ script_type: 'SPENDADDRESS' }],
-                    outputs: [{ amount: '499808000', script_type: 'PAYTOADDRESS' }],
-                },
-            ],
+            result: {
+                type: 'final',
+                bytes: 192,
+                fee: '192000',
+                max: '499808000',
+                totalSpent: '500000000',
+                // Order of inputs & outputs is important as we mock randomness in test to make it deterministic
+                inputs: [{ script_type: 'SPENDADDRESS' }],
+                outputs: [{ amount: '499808000', script_type: 'PAYTOADDRESS' }],
+            },
         },
     ],
 };

@@ -556,14 +556,13 @@ export const composeTransaction = async (api: TrezorConnect) => {
             received: '0',
         },
         utxo: [],
-        feeLevels: [{ feePerUnit: '1' }],
+        feePerUnit: '1',
         coin: 'btc',
     });
 
     if (precompose.success) {
         const { payload } = precompose;
-        // @ts-expect-error noUncheckedIndexedAccess: test fixture always has one element
-        const tx: PrecomposedResult = payload[0];
+        const tx: PrecomposedResult = payload;
         if (tx.type === 'error') {
             tx.error.toLowerCase();
         }

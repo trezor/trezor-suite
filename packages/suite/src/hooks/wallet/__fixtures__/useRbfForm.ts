@@ -427,7 +427,7 @@ export const composeAndSign: ComposeAndSignFixture[] = [
                 ],
             },
         },
-        composeTransactionCalls: 2, // 1. normal fee, 2. custom fee
+        composeTransactionCalls: 3, // 1. normal fee, 2-3. custom fees
         signedTx: {
             outputs: [
                 // change-output is gone
@@ -580,7 +580,7 @@ export const composeAndSign: ComposeAndSignFixture[] = [
                 ],
             },
         },
-        composeTransactionCalls: 2, // 1. normal fee, 2. custom fee
+        composeTransactionCalls: 10, // 1. normal fee, 2-10. custom fees
         signedTx: {
             inputs: [{ prev_hash: DCBA }, { prev_hash: ABCD }],
             outputs: [
@@ -659,7 +659,7 @@ export const composeAndSign: ComposeAndSignFixture[] = [
                 ],
             },
         },
-        composeTransactionCalls: 2, // 1. normal fee, 2. custom fee
+        composeTransactionCalls: 7, // 1. normal fee, 2-7. custom fees
         signedTx: {
             inputs: [{ prev_hash: DCBA }, { prev_hash: ABCD }],
             outputs: [
@@ -733,7 +733,7 @@ export const composeAndSign: ComposeAndSignFixture[] = [
                 ],
             },
         },
-        composeTransactionCalls: 3, // 1. normal fee, 2. custom fee, 3. send-max
+        composeTransactionCalls: 11, // 1. normal fee, 2-10. custom fees, 11. send-max
         decreasedOutputs: true,
         signedTx: {
             inputs: [{ prev_hash: DCBA }],
@@ -839,7 +839,7 @@ export const composeAndSign: ComposeAndSignFixture[] = [
                 ],
             },
         },
-        composeTransactionCalls: 3, // 1. normal fee, 2. custom fee, 3 send-max
+        composeTransactionCalls: 5, // 1. normal fee, 2-4. custom fees, 5. send-max
         decreasedOutputs: true,
         signedTx: {
             inputs: [{ prev_hash: DCBA }],
@@ -963,7 +963,7 @@ export const composeAndSign: ComposeAndSignFixture[] = [
                 error: 'NOT-ENOUGH-FUNDS',
             },
         },
-        composeTransactionCalls: 4, // 1. normal fee, 2. custom fee, 3. send-max normal fee, 4. send-max custom fee
+        composeTransactionCalls: 8, // 1. normal fee, 2-4. custom fees, 5. send-max normal fee, 6-8. send-max custom fees
         // tx is not signed
     },
     {

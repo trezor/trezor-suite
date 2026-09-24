@@ -119,7 +119,7 @@ const createComposeTransactionMock = () =>
         Promise.resolve({
             success: true,
             // 1520 + 1410 = 2930, responsibility of `composeTransaction` so not tested
-            payload: [createComposeTsResult({ fee: '2930' })],
+            payload: createComposeTsResult({ fee: '2930' }),
         }),
     );
 
@@ -139,7 +139,7 @@ describe(composeCancelTransactionThunk.name, () => {
             .unwrap();
 
         const [call] = composeTransactionMock.mock.calls[0] ?? [];
-        expect(call?.feeLevels).toStrictEqual([{ feePerUnit: '0.2' }]); // new relay fee
+        expect(call?.feePerUnit).toBe('0.2'); // new relay fee
         expect(call?.baseFee).toBe(1410 + 1410); // sum of fees for original tx and chained txs
         expect(call?.outputs).toStrictEqual([
             {
