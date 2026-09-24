@@ -16,6 +16,7 @@ import {
     selectTradingSellIsFromRedirect,
     selectTradingSellIsLoading,
     selectTradingSellQuotesRequest,
+    selectTradingSellSelectedQuote,
     selectTradingSellTransactionId,
     selectTradingSendAccount,
     tradingSellActions,
@@ -34,7 +35,7 @@ import { useSellFlow } from './useSellFlow';
 import { useSellFormInputs } from './useSellFormInputs';
 import { useSellQuotes } from './useSellQuotes';
 import { useTradingSellFormDefaultValues } from './useTradingSellFormDefaultValues';
-import { useTradingSellFormRedirectValues } from './useTradingSellFormRedirectValues';
+import { useTradingSellFormQuotesRequestValues } from './useTradingSellFormQuotesRequestValues';
 import { useTradingFormReset } from '../common/useTradingFormReset';
 import { useTradingFormAccount } from '../useTradingFormAccount';
 
@@ -43,6 +44,7 @@ export const useTradingSellForm = (): TradingSellFormContextProps => {
     const { dispatch } = useServices(injectDispatch);
     const isLoading = useSelector(selectTradingSellIsLoading);
     const quotesRequest = useSelector(selectTradingSellQuotesRequest);
+    const selectedQuote = useSelector(selectTradingSellSelectedQuote);
     const isFromRedirect = useSelector(selectTradingSellIsFromRedirect);
     const transactionId = useSelector(selectTradingSellTransactionId);
     const sellInfo = useSelector(selectTradingSellInfo);
@@ -68,10 +70,17 @@ export const useTradingSellForm = (): TradingSellFormContextProps => {
         sellInfo?.country,
         sellInfo?.countrySubdivision,
     );
-    const redirectValues = useTradingSellFormRedirectValues(isFromRedirect, quotesRequest);
+    const quotesRequestValues = useTradingSellFormQuotesRequestValues({
+        quotesRequest,
+        selectedQuote,
+        accountKey,
+        isFromRedirect,
+        defaultValues,
+    });
+    const initialValues = quotesRequestValues ?? defaultValues;
     const methods = useForm<TradingSellFormProps>({
         mode: 'onChange',
-        defaultValues: redirectValues ?? defaultValues,
+        defaultValues: initialValues,
     });
     const { register, reset, control, formState, getValues } = methods;
     // Watch only those values that are relevant in the render function
@@ -159,7 +168,7 @@ export const useTradingSellForm = (): TradingSellFormContextProps => {
     useTradingFormReset({
         isInfoReady: !!sellInfo,
         reset,
-        defaultValues,
+        defaultValues: initialValues,
     });
 
     // Subscribe to blocks for Solana, since they are not fetched globally
