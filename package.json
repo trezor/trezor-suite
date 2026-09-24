@@ -93,7 +93,7 @@
         "native:reverse-ports": "yarn workspace @suite-native/app reverse-ports",
         "ws": "./scripts/workspace-run.sh",
         "_______ Aliases _______": "Aliases for longer commands which we often have to run manually. Names don't have to be pretty or make total sense.",
-        "refs": "yarn update-project-references",
+        "refs": "yarn update-project-references \"$@\" && yarn requirements:fix --only=easignore-mobile-closure",
         "types": "yarn type-check",
         "messages": "yarn message-system-sign-config",
         "a": "yarn native:android",

@@ -5,7 +5,7 @@
 ## How to use this new package?
 
 1. Place this package to dependency field of package.json in package where you want to use it.
-1. Run `yarn refs` to generate tsconfig refs.
+1. Run `yarn refs` to update tsconfig references and, if needed, `.easignore` for mobile dependencies.
 1. Run `yarn` to let yarn symlink this package.
 
 ## How to publish this new package to npm?
