@@ -110,7 +110,10 @@ export const connectInitThunk = createThunk<
             // and change the type of the action (in this case DeviceEvent type !== Redux Action type)
             const connectedDevices = selectDevices(getState());
             dispatch(deviceConnectThunk({ type: eventData.type, device: eventData.payload }));
-
+            connectInitDeviceEventHooks[eventData.type]?.(eventData.payload, connectedDevices);
+        } else if (eventData.type === DEVICE.DISCONNECT) {
+            const connectedDevices = selectDevices(getState());
+            dispatch({ type: eventData.type, payload: eventData.payload });
             connectInitDeviceEventHooks[eventData.type]?.(eventData.payload, connectedDevices);
         } else {
             // dispatch event as action

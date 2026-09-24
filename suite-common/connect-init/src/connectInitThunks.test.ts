@@ -288,13 +288,15 @@ describe('TrezorConnect Actions', () => {
         }
     });
 
-    it('connectInitDeviceEventHooks are called for DEVICE.CONNECT / DEVICE.CONNECT_UNACQUIRED', async () => {
+    it('connectInitDeviceEventHooks are called for DEVICE.CONNECT / DEVICE.CONNECT_UNACQUIRED / DEVICE.DISCONNECT', async () => {
         const onConnect = jest.fn();
         const onConnectUnacquired = jest.fn();
+        const onDisconnect = jest.fn();
         const { dispatch, getState, extra } = createThunkDeps({
             connectInitDeviceEventHooks: {
                 [DEVICE.CONNECT]: onConnect,
                 [DEVICE.CONNECT_UNACQUIRED]: onConnectUnacquired,
+                [DEVICE.DISCONNECT]: onDisconnect,
             },
         });
 
@@ -311,6 +313,9 @@ describe('TrezorConnect Actions', () => {
 
         expect(onConnect).toHaveBeenCalledWith(connectPayload, []);
         expect(onConnectUnacquired).toHaveBeenCalledWith(unacquiredPayload, []);
+
+        emitTestEvent(DEVICE_EVENT, { type: DEVICE.DISCONNECT, payload: connectPayload });
+        expect(onDisconnect).toHaveBeenCalledWith(connectPayload, []);
     });
 
     it('connectInitUIEventHooks are called per action.type forwarded from the global listener', async () => {

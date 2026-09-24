@@ -16,7 +16,7 @@ type PopupEventType = (typeof POPUP)[keyof typeof POPUP];
 
 export type ConnectInitDeviceEventHooks = Partial<
     Record<
-        typeof DEVICE.CONNECT | typeof DEVICE.CONNECT_UNACQUIRED,
+        typeof DEVICE.CONNECT | typeof DEVICE.CONNECT_UNACQUIRED | typeof DEVICE.DISCONNECT,
         (device: Device, prevConnectedDevices: TrezorDevice[]) => void
     >
 >;
