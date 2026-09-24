@@ -3,6 +3,7 @@
     "compilerOptions": { "outDir": "libDev" },
     "references": [
         { "path": "../analytics" },
+        { "path": "../bluetooth" },
         { "path": "../dependency-injection" },
         { "path": "../device" },
         { "path": "../firmware" },

@@ -1,6 +1,7 @@
 import { type UnknownAction, combineReducers, createAction, createReducer } from '@reduxjs/toolkit';
 
 import { mockDesktopAnalytics } from '@suite/analytics/mocks';
+import { mockBluetoothServiceCommon } from '@suite-common/bluetooth/mocks';
 import { type ConnectInitThunkDeps, connectInitThunk } from '@suite-common/connect-init';
 import {
     mockConnectInitHooks,
@@ -24,6 +25,7 @@ const extra: ConnectInitThunkDeps = {
     actions: { lockDevice: createAction<boolean>('notImplemented/lockDevice') },
     services: {
         analytics: mockDesktopAnalytics(),
+        bluetooth: mockBluetoothServiceCommon(),
         connectInitHooks: mockConnectInitHooks(),
         connectInitSettings: mockConnectInitSettings(),
         createLogger: noopCreateLogger,

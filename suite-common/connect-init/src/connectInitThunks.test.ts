@@ -1,6 +1,7 @@
 import { createAction } from '@reduxjs/toolkit';
 
-import { asGetter } from '@suite-common/dependency-injection';
+import { mockBluetoothServiceCommon } from '@suite-common/bluetooth/mocks';
+import { asGetter, mock } from '@suite-common/dependency-injection';
 import { deviceInitialState } from '@suite-common/device';
 import { firmwareInitialState } from '@suite-common/firmware';
 import { messageSystemInitialState } from '@suite-common/message-system';
@@ -55,6 +56,7 @@ const createThunkDeps = (
         },
         services: {
             analytics: { report: jest.fn() },
+            bluetooth: mockBluetoothServiceCommon(),
             connectInitHooks: { deviceEvent: {}, uiEvent: {} },
             connectInitSettings: {
                 manifest: {
@@ -316,6 +318,30 @@ describe('TrezorConnect Actions', () => {
 
         expect(onConnect).toHaveBeenCalledWith(connectPayload, []);
         expect(onConnectUnacquired).toHaveBeenCalledWith(unacquiredPayload, []);
+    });
+
+    it('restarts the Bluetooth background scan after DEVICE.DISCONNECT is dispatched', async () => {
+        const devicePayload = { path: 'device-1' };
+        const disconnectAction = { type: DEVICE.DISCONNECT, payload: devicePayload };
+        let actionsOnRestart: unknown[] = [];
+        const { actions, dispatch, getState, extra } = createThunkDeps({
+            bluetooth: {
+                restartBackgroundScan: mock(() => {
+                    actionsOnRestart = [...actions];
+                }),
+            },
+        });
+
+        await connectInitThunk()(dispatch, getState, extra);
+        const { emitTestEvent } = testMocks.getTrezorConnectMock();
+
+        emitTestEvent(DEVICE_EVENT, { type: DEVICE.CHANGED, payload: devicePayload });
+        expect(extra.services.bluetooth.restartBackgroundScan).not.toHaveBeenCalled();
+
+        emitTestEvent(DEVICE_EVENT, disconnectAction);
+
+        expect(extra.services.bluetooth.restartBackgroundScan).toHaveBeenCalledTimes(1);
+        expect(actionsOnRestart).toContainEqual(disconnectAction);
     });
 
     it('connectInitHooks.uiEvent is called per action.type forwarded from the global listener', async () => {

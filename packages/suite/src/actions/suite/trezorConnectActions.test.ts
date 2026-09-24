@@ -3,6 +3,7 @@ import { debugInitialState } from '@suite/debug';
 import { prepareDesktopDeviceReducer } from '@suite/device';
 import { lockDevice } from '@suite/locks';
 import { suiteSettingsInitialState } from '@suite/settings';
+import { mockBluetoothServiceCommon } from '@suite-common/bluetooth/mocks';
 import { type ConnectInitThunkDeps, connectInitThunk } from '@suite-common/connect-init';
 import {
     mockConnectInitHooks,
@@ -38,6 +39,7 @@ const extra: ConnectInitThunkDeps = {
     actions: { lockDevice },
     services: {
         analytics: mockDesktopAnalytics(),
+        bluetooth: mockBluetoothServiceCommon(),
         connectInitHooks: mockConnectInitHooks(),
         connectInitSettings: mockConnectInitSettings(),
         createLogger: noopCreateLogger,

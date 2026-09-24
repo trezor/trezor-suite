@@ -1,6 +1,7 @@
 import { type ThunkDispatch, type UnknownAction } from '@reduxjs/toolkit';
 
 import { type AnalyticsDep, events as sharedEvents } from '@suite-common/analytics';
+import { type BluetoothServiceCommonDep } from '@suite-common/bluetooth';
 import {
     type DeviceRootState,
     type LockDeviceDep,
@@ -65,7 +66,8 @@ export type ConnectInitThunkDeps = {
     actions: LockDeviceDep;
     services: {
         analytics: Pick<AnalyticsDep['analytics'], 'report'>;
-    } & ConnectInitHooksDeps &
+    } & BluetoothServiceCommonDep &
+        ConnectInitHooksDeps &
         ConnectInitSettingsDep &
         CreateLoggerDep &
         GetAllowPrereleaseDep &
@@ -93,6 +95,7 @@ export const connectInitThunk = createThunk<
             connectInitSettings,
             connectInitHooks,
             analytics,
+            bluetooth,
             createLogger,
             thpHostName,
             createTransports,
@@ -115,6 +118,10 @@ export const connectInitThunk = createThunk<
         } else {
             // dispatch event as action
             dispatch({ type: eventData.type, payload: eventData.payload });
+
+            if (eventData.type === DEVICE.DISCONNECT) {
+                bluetooth.restartBackgroundScan();
+            }
 
             if (eventData.type === DEVICE.THP_PAIRING_STATUS_CHANGED) {
                 const { status } = eventData.payload;
