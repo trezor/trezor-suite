@@ -6,10 +6,10 @@ import { type StaticSessionId } from '@trezor/device-utils';
 import {
     type AssetFirstTableState,
     getAssetFirstTotals,
-    selectAssetFirstDustRows,
     selectAssetFirstRows,
     selectAssetFirstSections,
 } from './assetFirstTableSelectors';
+import { DEFAULT_ASSET_FIRST_ARRANGEMENT } from './assetFirstTableUtils';
 
 const ALICE = 'aliceWallet@device:0' as StaticSessionId;
 const BOB = 'bobWallet@device:1' as StaticSessionId;
@@ -88,12 +88,15 @@ const createState = ({
 };
 
 const selectAssetFirstRowKeys = (state: AssetFirstTableState) =>
-    selectAssetFirstSections('default')(state, ALICE).flatMap(section =>
+    selectAssetFirstSections(DEFAULT_ASSET_FIRST_ARRANGEMENT)(state, ALICE).flatMap(section =>
         section.rows.map(row => row.assetKey),
     );
 
-const selectDustRowKeys = (state: AssetFirstTableState) =>
-    selectAssetFirstDustRows(state, ALICE).map(row => row.assetKey);
+const selectLargeRowKeys = (state: AssetFirstTableState) =>
+    selectAssetFirstSections({
+        ...DEFAULT_ASSET_FIRST_ARRANGEMENT,
+        areSmallBalancesShown: false,
+    })(state, ALICE).flatMap(section => section.rows.map(row => row.assetKey));
 
 describe('the rows the table is given', () => {
     it('lists one key per asset and network', () => {
@@ -195,7 +198,7 @@ describe('the rows the table is given', () => {
         expect(selectAssetFirstRowKeys(state)).toEqual([`${ALICE}/eth/`, `${ALICE}/pol/`]);
     });
 
-    it('keeps a holding worth less than a cent for the dust row, not the table', () => {
+    it('leaves out a holding worth less than a cent when small balances are not shown', () => {
         const state = createState({
             accounts: [
                 mockAccount({
@@ -207,8 +210,11 @@ describe('the rows the table is given', () => {
             rates: { ...mockRate(ETH, 2000), ...mockRate(ETH, 1, USDC_ON_ETH) },
         });
 
-        expect(selectAssetFirstRowKeys(state)).toEqual([`${ALICE}/eth/`]);
-        expect(selectDustRowKeys(state)).toEqual([`${ALICE}/eth/${USDC_ON_ETH}`]);
+        expect(selectAssetFirstRowKeys(state)).toEqual([
+            `${ALICE}/eth/`,
+            `${ALICE}/eth/${USDC_ON_ETH}`,
+        ]);
+        expect(selectLargeRowKeys(state)).toEqual([`${ALICE}/eth/`]);
     });
 
     it('keeps a small amount of something valuable', () => {

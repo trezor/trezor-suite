@@ -12,6 +12,21 @@ import { BigNumber } from '@trezor/utils';
 
 export type AssetFirstGrouping = 'default' | 'networks';
 
+/** How the user asked to see the table: what the rows are cut into, and what is left out of them. */
+export type AssetFirstArrangement = {
+    grouping: AssetFirstGrouping;
+    /** Whether an asset worth less than a cent is listed at all. */
+    areSmallBalancesShown: boolean;
+};
+
+export const DEFAULT_ASSET_FIRST_ARRANGEMENT: AssetFirstArrangement = {
+    grouping: 'default',
+    areSmallBalancesShown: true,
+};
+
+/** How many assets the table shows before it asks to be expanded. */
+export const ASSET_FIRST_COLLAPSED_ROW_COUNT = 25;
+
 export const ASSET_FIRST_CELL_PADDING = {
     first: { vertical: 12, left: 20, right: 20 },
     last: { vertical: 12, left: 20, right: 20 },

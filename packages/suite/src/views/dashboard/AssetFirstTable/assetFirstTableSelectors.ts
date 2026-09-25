@@ -22,6 +22,7 @@ import { type StaticSessionId } from '@trezor/device-utils';
 import { BigNumber } from '@trezor/utils';
 
 import {
+    type AssetFirstArrangement,
     type AssetFirstGrouping,
     getAssetDisplaySymbol,
     getNetworkName,
@@ -271,29 +272,40 @@ export type AssetFirstSection = {
     rows: readonly AssetRow[];
 };
 
-/** What the table lists as assets: everything the dust row gathers up is not among them. */
-const selectPricedRows = createMemoizedSelector([selectAssetFirstRows], rows =>
+/** What the table lists when the user asked not to see what an asset worth under a cent is. */
+const selectLargeRows = createMemoizedSelector([selectAssetFirstRows], rows =>
     returnStableArrayIfEmpty(rows.filter(row => !row.isDust)),
 );
 
-export const selectAssetFirstDustRows = createMemoizedSelector([selectAssetFirstRows], rows =>
-    returnStableArrayIfEmpty(rows.filter(row => row.isDust)),
-);
+type RowsSelector = typeof selectAssetFirstRows;
 
-const selectDefaultSections = createMemoizedSelector(
-    [selectPricedRows],
-    (rows): readonly AssetFirstSection[] => [{ key: 'all', heading: undefined, rows }],
-);
+const toDefaultSections = (selectRows: RowsSelector) =>
+    createMemoizedSelector([selectRows], (rows): readonly AssetFirstSection[] => [
+        { key: 'all', heading: undefined, rows },
+    ]);
 
-const selectNetworkSections = createMemoizedSelector(
-    [selectPricedRows],
-    (rows): readonly AssetFirstSection[] =>
+const toNetworkSections = (selectRows: RowsSelector) =>
+    createMemoizedSelector([selectRows], (rows): readonly AssetFirstSection[] =>
         groupAssetRowsByNetwork(rows).map(group => ({
             key: group.symbol,
             heading: { name: group.name, fiatValue: group.fiatValue },
             rows: group.rows,
         })),
-);
+    );
 
-export const selectAssetFirstSections = (grouping: AssetFirstGrouping) =>
-    grouping === 'networks' ? selectNetworkSections : selectDefaultSections;
+// One selector per arrangement, built once: a selector built per render would memoize nothing.
+const sectionSelectors = {
+    default: {
+        all: toDefaultSections(selectAssetFirstRows),
+        large: toDefaultSections(selectLargeRows),
+    },
+    networks: {
+        all: toNetworkSections(selectAssetFirstRows),
+        large: toNetworkSections(selectLargeRows),
+    },
+} satisfies Record<AssetFirstGrouping, Record<string, unknown>>;
+
+export const selectAssetFirstSections = ({
+    grouping,
+    areSmallBalancesShown,
+}: AssetFirstArrangement) => sectionSelectors[grouping][areSmallBalancesShown ? 'all' : 'large'];

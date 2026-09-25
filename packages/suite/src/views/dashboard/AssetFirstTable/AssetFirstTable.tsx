@@ -1,23 +1,32 @@
 import { useState } from 'react';
 
 import { Translation } from '@suite/intl';
+import { useServices } from '@suite-common/dependency-injection';
 import { useFormatters } from '@suite-common/formatters';
+import { injectDispatch } from '@suite-common/redux-utils';
 import { asBaseCurrencyAmount } from '@suite-common/wallet-types';
 import { Card, Table, Text } from '@trezor/components';
 import { type StaticSessionId } from '@trezor/device-utils';
 
+import { showSmallBalancesThunk } from 'src/actions/suite/assetTableThunks';
 import { useSelector } from 'src/hooks/suite';
+import { selectAreSmallBalancesShown } from 'src/reducers/suite/assetTableReducer';
 
-import { AssetFirstDustRow } from './AssetFirstDustRow';
+import { AssetFirstExpandRow } from './AssetFirstExpandRow';
 import { AssetFirstRow } from './AssetFirstRow';
 import { AssetFirstTableFilterHeader } from './AssetFirstTableFilter';
 import {
     type AssetFirstSection,
     type AssetRow,
-    selectAssetFirstDustRows,
     selectAssetFirstSections,
 } from './assetFirstTableSelectors';
-import { ASSET_FIRST_CELL_PADDING, type AssetFirstGrouping } from './assetFirstTableUtils';
+import {
+    ASSET_FIRST_CELL_PADDING,
+    ASSET_FIRST_COLLAPSED_ROW_COUNT,
+    type AssetFirstArrangement,
+    type AssetFirstGrouping,
+    DEFAULT_ASSET_FIRST_ARRANGEMENT,
+} from './assetFirstTableUtils';
 
 type SectionHeadingProps = {
     sectionKey: string;
@@ -49,19 +58,61 @@ const SectionHeading = ({ sectionKey, heading }: SectionHeadingProps) => {
 const renderRows = (rows: readonly AssetRow[], hasBorderTop?: boolean) =>
     rows.map(row => <AssetFirstRow key={row.assetKey} row={row} hasBorderTop={hasBorderTop} />);
 
+const countRows = (sections: readonly AssetFirstSection[]) =>
+    sections.reduce((count, section) => count + section.rows.length, 0);
+
+/** The first `limit` assets, and the sections they fall in — a section left with none is dropped. */
+const takeRows = (sections: readonly AssetFirstSection[], limit: number) => {
+    let left = limit;
+
+    return sections.flatMap(section => {
+        const rows = section.rows.slice(0, left);
+        left -= rows.length;
+
+        return rows.length === 0 ? [] : [{ ...section, rows }];
+    });
+};
+
 type AssetFirstTableProps = {
     /** Whose assets: the page knows, so the table does not go looking. */
     deviceState: StaticSessionId;
 };
 
 export const AssetFirstTable = ({ deviceState }: AssetFirstTableProps) => {
-    const [grouping, setGrouping] = useState<AssetFirstGrouping>('default');
-    const sections = useSelector(state => selectAssetFirstSections(grouping)(state, deviceState));
-    const dustRows = useSelector(state => selectAssetFirstDustRows(state, deviceState));
+    const { dispatch } = useServices(injectDispatch);
+    // The grouping is how the user is looking at the table now; whether small balances belong in
+    // it is a setting, and outlives the visit.
+    const [grouping, setGrouping] = useState<AssetFirstGrouping>(
+        DEFAULT_ASSET_FIRST_ARRANGEMENT.grouping,
+    );
+    const areSmallBalancesShown = useSelector(selectAreSmallBalancesShown);
+    const arrangement: AssetFirstArrangement = { grouping, areSmallBalancesShown };
 
-    if (sections.every(section => section.rows.length === 0) && dustRows.length === 0) {
+    const [isExpanded, setIsExpanded] = useState(false);
+
+    const sections = useSelector(state =>
+        selectAssetFirstSections(arrangement)(state, deviceState),
+    );
+
+    const changeArrangement = (chosen: AssetFirstArrangement) => {
+        setGrouping(chosen.grouping);
+
+        if (chosen.areSmallBalancesShown !== areSmallBalancesShown) {
+            dispatch(showSmallBalancesThunk({ areShown: chosen.areSmallBalancesShown }));
+        }
+    };
+
+    const rowCount = countRows(sections);
+
+    if (rowCount === 0) {
         return null;
     }
+
+    const isCollapsible = rowCount > ASSET_FIRST_COLLAPSED_ROW_COUNT;
+    const shownSections =
+        isCollapsible && !isExpanded
+            ? takeRows(sections, ASSET_FIRST_COLLAPSED_ROW_COUNT)
+            : sections;
 
     return (
         <Card paddingType="none" data-testid="@dashboard/asset-first-table">
@@ -70,8 +121,8 @@ export const AssetFirstTable = ({ deviceState }: AssetFirstTableProps) => {
                     <Table.Row>
                         <Table.Cell padding={ASSET_FIRST_CELL_PADDING.first}>
                             <AssetFirstTableFilterHeader
-                                grouping={grouping}
-                                onChange={setGrouping}
+                                arrangement={arrangement}
+                                onChange={changeArrangement}
                             />
                         </Table.Cell>
                         <Table.Cell align="end">
@@ -83,7 +134,7 @@ export const AssetFirstTable = ({ deviceState }: AssetFirstTableProps) => {
                     </Table.Row>
                 </Table.Header>
                 <Table.Body>
-                    {sections.flatMap(section =>
+                    {shownSections.flatMap(section =>
                         section.heading === undefined
                             ? renderRows(section.rows)
                             : [
@@ -96,7 +147,12 @@ export const AssetFirstTable = ({ deviceState }: AssetFirstTableProps) => {
                                   ...renderRows(section.rows, false),
                               ],
                     )}
-                    <AssetFirstDustRow rows={dustRows} />
+                    {isCollapsible && (
+                        <AssetFirstExpandRow
+                            isExpanded={isExpanded}
+                            onToggle={() => setIsExpanded(expanded => !expanded)}
+                        />
+                    )}
                 </Table.Body>
             </Table>
         </Card>
