@@ -1,40 +1,28 @@
 /* eslint-disable no-console */
 import { unique } from '@trezor/utils';
 
+import { coinGeckoApi } from './api';
 import {
     AdvancedTokenStructure,
     SimpleTokenStructure,
     TokenStructureType,
 } from '../../src/tokenDefinitionsTypes';
-import { NFTS_PER_PAGE, NFT_LIST_URL } from '../constants';
-import { NftData } from '../types';
+import { NFTS_PER_PAGE } from '../constants';
+import { type NftData, nftListSchema } from '../schemas';
 
-const fetchNftPage = async (page: number, assetPlatformId: string): Promise<NftData[]> => {
-    const params = new URLSearchParams({
-        page: page.toString(),
-        per_page: NFTS_PER_PAGE.toString(),
-        asset_platform_id: assetPlatformId,
+const fetchNftList = coinGeckoApi('/nfts/list', {
+    method: 'GET',
+    schema: nftListSchema,
+});
+
+const fetchNftPage = (page: number, assetPlatformId: string) =>
+    fetchNftList({
+        params: {
+            page,
+            per_page: NFTS_PER_PAGE,
+            asset_platform_id: assetPlatformId,
+        },
     });
-
-    const options = {
-        method: 'GET',
-        headers: { 'x-cg-pro-api-key': process.env.COINGECKO_API_KEY! },
-    };
-
-    try {
-        const response = await fetch(`${NFT_LIST_URL}?${params.toString()}`, options);
-
-        if (!response.ok) {
-            const { error } = await response.json();
-
-            throw new Error(`${error}, status: ${response.status}`);
-        }
-
-        return await response.json();
-    } catch (error) {
-        throw new Error(error, { cause: error });
-    }
-};
 
 export const fetchNftData = async (assetPlatformId: string, structure: TokenStructureType) => {
     console.log('Start fetching NFT data for:', assetPlatformId, 'platform');
