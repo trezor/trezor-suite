@@ -87,6 +87,8 @@ export const TradingReceiveAddressModal = () => {
     });
 
     const receiveAddress = useWatch({ control: form.control, name: 'address' });
+    const isConfirmDisabled =
+        !!form.formState.errors.address || !receiveAddress || receiveAddress.length === 0;
 
     const onCancel = () => {
         modalControls.close();
@@ -100,7 +102,9 @@ export const TradingReceiveAddressModal = () => {
     const onQrClick = async () => {
         const uri = await dispatch(openDeferredModal({ type: 'qr-reader' }));
 
-        if (typeof uri !== 'string') return;
+        if (typeof uri !== 'string') {
+            return;
+        }
 
         const result = parseTransferUri(uri, protocol =>
             selectNetworkSymbolForProtocol(getState(), protocol),
@@ -185,11 +189,7 @@ export const TradingReceiveAddressModal = () => {
                     <Button
                         data-testid="@trading/receive-address-modal/confirm-button"
                         onClick={onConfirmClick}
-                        isDisabled={
-                            !!form.formState.errors.address ||
-                            !receiveAddress ||
-                            receiveAddress.length === 0
-                        }
+                        isDisabled={isConfirmDisabled}
                     >
                         <Translation id="TR_CONFIRM" />
                     </Button>
