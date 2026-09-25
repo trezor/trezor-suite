@@ -27,6 +27,7 @@ export const StakeButton = ({ flow }: StakeButtonProps) => {
         handleSubmit,
         formState: { errors, isSubmitting },
         isComposing,
+        isLoading: isSigning,
         watch,
         currency,
         isStakingDisabled: isCardanoStakingDisabled,
@@ -45,7 +46,10 @@ export const StakeButton = ({ flow }: StakeButtonProps) => {
     const formIsValid = Object.keys(errors).length === 0;
     // there is no input for cardano. Form validation should always pass
     const isFormInputsValid = !isCardano ? formIsValid && hasValues : !isCardanoStakingDisabled;
-    const isDisabled = !isFormInputsValid || isSubmitting || (isDeviceConnected && isLocked());
+    // Cardano signs straight from onSubmit without handleSubmit, so isSubmitting stays false, and
+    // the device lock is taken only after the transaction plan is composed.
+    const isDisabled =
+        !isFormInputsValid || isSubmitting || isSigning || (isDeviceConnected && isLocked());
 
     const onStakeClick = () => {
         if (!isDeviceConnected) {
@@ -75,7 +79,8 @@ export const StakeButton = ({ flow }: StakeButtonProps) => {
         });
     };
 
-    const isLoading = isComposing || isSubmitting || isDiscoveryRunning || areFeesLoading;
+    const isLoading =
+        isComposing || isSubmitting || isSigning || isDiscoveryRunning || areFeesLoading;
 
     return (
         <Tooltip content={stakingMessageContent}>
