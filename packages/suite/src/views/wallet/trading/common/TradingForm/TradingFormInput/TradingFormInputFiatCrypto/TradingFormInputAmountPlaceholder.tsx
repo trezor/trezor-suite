@@ -36,7 +36,7 @@ export const TradingFormInputAmountPlaceholder = ({
             flex="1"
             name={name}
             placeholder={TRADING_AMOUNT_PLACEHOLDER}
-            style={getTradingAmountInputStyle(value)}
+            style={getTradingAmountInputStyle(value, locale)}
             locale={locale}
             control={control}
             rightContent={isBusy ? <Spinner size={20} /> : undefined}
