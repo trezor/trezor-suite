@@ -2,19 +2,19 @@ import { type ReactNode, memo, useRef } from 'react';
 
 import styled from 'styled-components';
 
-import { Modal, variables } from '@trezor/components';
+import { Modal } from '@trezor/components';
 
 import { GuideButton, GuideRouter } from 'src/components/guide';
 import { SuiteBanners } from 'src/components/suite/banners';
 import { DiscoveryProgress } from 'src/components/wallet';
 
-import { ContentContainer } from '../ContentContainer';
 import { AddPassphraseWalletFlow } from './AddPassphraseWalletFlow';
 import { AnchorHighlightHandler } from './AnchorHighlightHandler';
+import { AppScrollArea } from './AppScrollArea';
 import { CoinjoinBars } from './CoinjoinBars/CoinjoinBars';
 import { LayoutPayloadProvider } from './LayoutPayloadProvider';
 import { AboveTabletOnly, BelowTabletOnly } from './LayoutSizeOnly';
-import { LayoutFooterSlot, LayoutHeaderSlot, LayoutMetadata } from './LayoutSlots';
+import { LayoutMetadata } from './LayoutSlots';
 import { PowerMonitorManager } from './PowerMonitor/PowerMonitor';
 import { ScrollProvider } from './ScrollProvider';
 import { Sidebar } from './Sidebar/Sidebar';
@@ -45,28 +45,13 @@ export const Body = styled.div`
     overflow: hidden;
 `;
 
-// AppWrapper and MenuSecondary creates own scrollbars independently
+// AppScrollArea and MenuSecondary creates own scrollbars independently
 export const Columns = styled.div`
     display: flex;
     flex-direction: row;
     flex: 1 0 100%;
     overflow: auto;
     padding: 0;
-`;
-
-export const AppWrapper = styled.div`
-    display: flex;
-    flex: 1;
-    flex-direction: column;
-    overflow: auto scroll;
-    width: 100%;
-    background: ${({ theme }) => theme.surfaceFillPage};
-    align-items: center;
-    position: relative;
-
-    ${variables.SCREEN_QUERY.BELOW_LAPTOP} {
-        overflow-x: hidden;
-    }
 `;
 
 export const MainContentContainer = styled.div`
@@ -133,20 +118,14 @@ export const SuiteLayout = memo(({ children, 'data-testid': dataTest }: SuiteLay
                                             <CoinjoinBars />
                                         </AboveTabletOnly>
                                         <SuiteBanners />
-                                        <AppWrapper data-testid="@app" ref={scrollRef}>
-                                            <LayoutHeaderSlot />
-
-                                            <ContentContainer
-                                                data-testid={
-                                                    dataTest
-                                                        ? `${dataTest}/content`
-                                                        : '@app/content'
-                                                }
-                                            >
-                                                {children}
-                                            </ContentContainer>
-                                            <LayoutFooterSlot />
-                                        </AppWrapper>
+                                        <AppScrollArea
+                                            scrollRef={scrollRef}
+                                            data-testid={
+                                                dataTest ? `${dataTest}/content` : '@app/content'
+                                            }
+                                        >
+                                            {children}
+                                        </AppScrollArea>
                                     </MainContent>
                                 </Columns>
                             </Body>

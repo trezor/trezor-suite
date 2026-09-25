@@ -125,6 +125,7 @@ const SECTIONS = {
         '/udev',
         '/switch-device',
         '/password-manager',
+        '/apps-embedding',
         '/coinmarket-redirect',
     ],
     onboarding: [

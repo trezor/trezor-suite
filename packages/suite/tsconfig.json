@@ -176,6 +176,9 @@
         { "path": "../../suite/analytics" },
         { "path": "../../suite/app-assets" },
         {
+            "path": "../../suite/apps-embedding-demo"
+        },
+        {
             "path": "../../suite/authenticity-checks"
         },
         { "path": "../../suite/backup" },
