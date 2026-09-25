@@ -128,6 +128,54 @@ const waitForDevice = async (
         await deviceList.waitForPendingHandshakes(signal);
     }
     if (signal.aborted) throw signal.reason;
+
+    return deviceList;
+};
+
+const onCallFirmwareUpdateWithDevice = async (context: CoreContext, message: CoreCallMessage) => {
+    const { pendingDeviceCalls, sendCoreMessage, logger } = context;
+    const abortController = new AbortController();
+    const { signal } = abortController;
+    if (context.signal.aborted) abortController.abort(context.signal.reason);
+    pendingDeviceCalls.set(message.id, { callId: message.payload.callId, abortController });
+
+    try {
+        let deviceList: DeviceList;
+        try {
+            // Firmware update selects by path and handles subsequent reconnects itself.
+            deviceList = await waitForDevice(
+                context,
+                { path: message.payload.device?.path },
+                signal,
+            );
+        } finally {
+            pendingDeviceCalls.delete(message.id);
+        }
+        if (signal.aborted) throw signal.reason;
+
+        const payload = await onCallFirmwareUpdate({
+            params: message.payload,
+            context: {
+                deviceList,
+                postMessage: createSendCoreMessageWithCallId(
+                    sendCoreMessage,
+                    message.payload.callId,
+                ),
+                selectDevice: path => selectDevice(context, { path }),
+                log: logger,
+                abortSignal: context.signal,
+                registerEvents: registerDeviceEvents(context),
+                uiPromises: context.uiPromises,
+            },
+        });
+        sendCoreMessage(createResponseMessage(message.id, true, payload));
+    } catch (error) {
+        if (context.signal.aborted) return;
+
+        const responseError = signal.aborted ? signal.reason : error;
+        sendCoreMessage(createResponseMessage(message.id, false, { error: responseError }));
+        if (!signal.aborted) logger.error('onCallFirmwareUpdate', responseError);
+    }
 };
 
 /**
@@ -961,34 +1009,7 @@ export class Core extends EventEmitter {
                         break;
                     }
 
-                    assertDeviceListConnected(this.deviceList);
-
-                    const coreContext = this.getCoreContext();
-                    const sendCoreMessageWithCallId = createSendCoreMessageWithCallId(
-                        this.sendCoreMessage.bind(this),
-                        message.payload.callId,
-                    );
-                    onCallFirmwareUpdate({
-                        params: message.payload,
-                        context: {
-                            deviceList: this.deviceList,
-                            postMessage: sendCoreMessageWithCallId,
-                            selectDevice: path => selectDevice(coreContext, { path }),
-                            log: this.coreLogger,
-                            abortSignal: this.abortController.signal,
-                            registerEvents: registerDeviceEvents(coreContext),
-                            uiPromises: coreContext.uiPromises,
-                        },
-                    })
-                        .then(payload => {
-                            this.sendCoreMessage(createResponseMessage(message.id, true, payload));
-                        })
-                        .catch(error => {
-                            this.sendCoreMessage(
-                                createResponseMessage(message.id, false, { error }),
-                            );
-                            this.coreLogger.error('onCallFirmwareUpdate', error);
-                        });
+                    onCallFirmwareUpdateWithDevice(this.getCoreContext(), message);
                 } else {
                     onCall(this.getCoreContext(), message).catch(error => {
                         this.coreLogger.error('onCall', error);
