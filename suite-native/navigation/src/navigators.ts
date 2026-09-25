@@ -89,11 +89,6 @@ export type AccountsStackParamList = {
 export type AccountDetailStackParamList = {
     [AccountDetailStackRoutes.AccountDetail]: AccountDetailParams;
     [AccountDetailStackRoutes.AccountSettings]: { accountKey: AccountKey };
-    [AccountDetailStackRoutes.AccountAssets]: {
-        accountKey: AccountKey;
-        tab?: AccountAssetsTab;
-        flowType?: AccountAssetsFlow;
-    } & AccountIdentityParams;
 };
 
 export type EarnStackParamList = {
@@ -514,6 +509,11 @@ export type PassphraseStackParamList = {
 export type RootStackParamList = {
     [RootStackRoutes.AppTabs]: NavigatorScreenParams<AppTabsParamList>;
     [RootStackRoutes.AccountDetailStack]: NavigatorScreenParams<AccountDetailStackParamList>;
+    [RootStackRoutes.AccountAssets]: {
+        accountKey: AccountKey;
+        tab?: AccountAssetsTab;
+        flowType?: AccountAssetsFlow;
+    } & AccountIdentityParams;
     [RootStackRoutes.OnboardingStack]: NavigatorScreenParams<OnboardingStackParamList>;
     [RootStackRoutes.DeviceOnboardingStack]: NavigatorScreenParams<DeviceOnboardingStackParamList>;
     [RootStackRoutes.AuthorizeDeviceStack]: NavigatorScreenParams<AuthorizeDeviceStackParamList>;

@@ -193,8 +193,9 @@
 !/suite-native/link
 !/suite-native/markdown
 !/suite-native/message-system
+!/suite-native/module-account-detail
+!/suite-native/module-accounts
 !/suite-native/module-accounts-import
-!/suite-native/module-accounts-management
 !/suite-native/module-activity-center
 !/suite-native/module-add-accounts
 !/suite-native/module-authenticity-checks

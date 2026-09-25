@@ -14,17 +14,18 @@ import { HStack, IconButton, VStack } from '@suite-native/atoms';
 import { BaseCurrencyAmountFormatter } from '@suite-native/formatters';
 import { TokenIcon } from '@suite-native/icons';
 import {
-    type AccountDetailStackParamList,
     AccountDetailStackRoutes,
+    type RootStackParamList,
+    RootStackRoutes,
     ScreenHeader,
     type StackNavigationProps,
 } from '@suite-native/navigation';
 
 import { type AccountAssetsFlow } from './types';
 
-type AccountDetailNavigationProps = StackNavigationProps<
-    AccountDetailStackParamList,
-    AccountDetailStackRoutes.AccountAssets
+type AccountAssetsNavigationProps = StackNavigationProps<
+    RootStackParamList,
+    RootStackRoutes.AccountAssets
 >;
 
 type Props = { accountKey: AccountKey; flowType?: AccountAssetsFlow };
@@ -64,11 +65,12 @@ const AccountAssetsScreenHeaderContent = ({ accountKey }: Omit<Props, 'flowType'
 };
 
 export const AccountAssetsScreenHeader = ({ accountKey, flowType }: Props) => {
-    const navigation = useNavigation<AccountDetailNavigationProps>();
+    const navigation = useNavigation<AccountAssetsNavigationProps>();
 
     const handleSettingsNavigation = () => {
-        navigation.navigate(AccountDetailStackRoutes.AccountSettings, {
-            accountKey,
+        navigation.navigate(RootStackRoutes.AccountDetailStack, {
+            screen: AccountDetailStackRoutes.AccountSettings,
+            params: { accountKey },
         });
     };
 

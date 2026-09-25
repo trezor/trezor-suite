@@ -21,11 +21,9 @@ import {
     useInactiveStellarTokens,
 } from '@suite-native/module-stellar-token-management';
 import {
-    type AccountDetailStackParamList,
-    type AccountDetailStackRoutes,
     type RootStackParamList,
     RootStackRoutes,
-    type StackToStackCompositeNavigationProps,
+    type StackNavigationProps,
     StellarManageTokenStackRoutes,
 } from '@suite-native/navigation';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
@@ -51,13 +49,7 @@ const listFooterStyle = prepareNativeStyle(utils => ({
 
 export const InactiveTokensTab = ({ accountKey }: InactiveTokensTabProps) => {
     const navigation =
-        useNavigation<
-            StackToStackCompositeNavigationProps<
-                AccountDetailStackParamList,
-                AccountDetailStackRoutes.AccountAssets,
-                RootStackParamList
-            >
-        >();
+        useNavigation<StackNavigationProps<RootStackParamList, RootStackRoutes.AccountAssets>>();
     const { translate } = useTranslate();
     const { showAlert } = useAlert();
     const { applyStyle } = useNativeStyles();
