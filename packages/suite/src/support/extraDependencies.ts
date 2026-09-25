@@ -24,11 +24,12 @@ import {
     type FiatRatesState,
     type PhishingState,
     type SendState,
+    type StellarContractTokensState,
     type TransactionsState,
     type WalletSettingsState,
     changeNetworks,
 } from '@suite-common/wallet-core';
-import { createAccountKey } from '@suite-common/wallet-types';
+import { type AccountKey, createAccountKey } from '@suite-common/wallet-types';
 import { buildHistoricRatesFromStorage, sortByCoin } from '@suite-common/wallet-utils';
 import { type StaticSessionId } from '@trezor/connect';
 
@@ -70,10 +71,17 @@ export const extraDependencies: ExtraDependenciesStatic & TokenDefinitionsMiddle
         },
         storageLoadExplorer: (state: ExplorerConfig, { payload }: StorageLoadAction) => {
             payload.explorer.forEach(({ symbol, explorer }) => {
-                state[symbol as keyof typeof state] = {
-                    ...state[symbol as keyof typeof state],
-                    custom: explorer,
-                };
+                // An explorer config can outlive its network; a throw here would cost the store.
+                const config = state[symbol as keyof typeof state];
+
+                if (!config) return;
+
+                // Older configs lack newer explorer paths; unset paths keep the defaults.
+                const storedPaths = Object.fromEntries(
+                    Object.entries(explorer).filter(([, value]) => value !== undefined),
+                );
+
+                config.custom = { ...config.default, ...storedPaths };
             });
         },
         storageLoadTransactions: (state: TransactionsState, { payload }: StorageLoadAction) => {
@@ -123,6 +131,14 @@ export const extraDependencies: ExtraDependenciesStatic & TokenDefinitionsMiddle
                     }
                 });
             }
+        },
+        storageLoadStellarContractTokens: (
+            state: StellarContractTokensState,
+            { payload }: StorageLoadAction,
+        ) => {
+            payload.stellarContractTokens.forEach(({ key, value }) => {
+                state[key as AccountKey] = value;
+            });
         },
         storageLoadAccounts: (_, { payload }: StorageLoadAction) =>
             // Storage returns accounts in IndexedDB key order, sort them like the reducer does.

@@ -1,4 +1,4 @@
-import { Translation, useTranslation } from '@suite/intl';
+import { Translation, type TranslationKey, useTranslation } from '@suite/intl';
 import { redactNumericalSubstring, useDiscreetMode } from '@suite-common/discreet-mode';
 import { getNetworkDisplaySymbol, isNetworkSymbol } from '@suite-common/wallet-config';
 import { type TronTxContractType } from '@suite-common/wallet-constants';
@@ -8,8 +8,16 @@ import {
     isSupportedSolStakingNetworkSymbol,
 } from '@suite-common/wallet-core';
 import { type StakeType } from '@suite-common/wallet-types';
-import { getNativeWrapTxKind, getTxHeaderSymbol } from '@suite-common/wallet-utils';
+import {
+    getNativeWrapTxKind,
+    getTxHeaderSymbol,
+    hasValueMovement,
+} from '@suite-common/wallet-utils';
 import { type AccountTransaction } from '@trezor/connect';
+import {
+    type StellarOperationLabel,
+    getStellarOperationLabel,
+} from '@trezor/network-stellar/constants';
 import { BigNumber } from '@trezor/utils';
 
 import { UnstakingTxAmount } from 'src/components/suite/UnstakingTxAmount';
@@ -77,6 +85,22 @@ const getTransactionMessageId = ({ transaction, isPending }: GetTransactionMessa
         default:
             return 'TR_UNKNOWN_TRANSACTION';
     }
+};
+
+const STELLAR_OPERATION_MESSAGES: Record<StellarOperationLabel, TranslationKey> = {
+    accountMerge: 'TR_STELLAR_TX_ACCOUNT_MERGE',
+    claimableBalanceClaimed: 'TR_STELLAR_TX_CLAIMABLE_BALANCE_CLAIMED',
+    claimableBalanceCreated: 'TR_STELLAR_TX_CLAIMABLE_BALANCE_CREATED',
+    claimableBalanceOffered: 'TR_STELLAR_TX_CLAIMABLE_BALANCE_OFFERED',
+    dataEntry: 'TR_STELLAR_TX_DATA_ENTRY',
+    footprint: 'TR_STELLAR_TX_FOOTPRINT',
+    liquidityPool: 'TR_STELLAR_TX_LIQUIDITY_POOL',
+    offer: 'TR_STELLAR_TX_OFFER',
+    sequenceBumped: 'TR_STELLAR_TX_SEQUENCE_BUMPED',
+    setOptions: 'TR_STELLAR_TX_SET_OPTIONS',
+    sponsorship: 'TR_STELLAR_TX_SPONSORSHIP',
+    trustlineFlags: 'TR_STELLAR_TX_TRUSTLINE_FLAGS',
+    trustlineUpdated: 'TR_STELLAR_TX_TRUSTLINE_UPDATED',
 };
 
 const getSolTransactionStakeTypeName = (stakeType: StakeType) => {
@@ -165,6 +189,12 @@ export const TransactionHeader = ({ transaction, isPending }: TransactionHeaderP
         );
     }
 
+    // `transfer` is left to the token-transfer wording below.
+    const stellarFunctionName = transaction.stellarSpecific?.contractCall?.functionName;
+    if (stellarFunctionName && stellarFunctionName !== 'transfer') {
+        return <>{stellarFunctionName}</>;
+    }
+
     const tronTransactionMessageId = getTronTransactionMessageId(transaction);
     if (tronTransactionMessageId) {
         const contractType = transaction.tronSpecific?.contractType;
@@ -209,6 +239,15 @@ export const TransactionHeader = ({ transaction, isPending }: TransactionHeaderP
                 )}
             </>
         );
+    }
+
+    // With nothing moved the generic wording misleads ("Sent 0 XLM to self"), so name the operation.
+    const stellarOperationLabel =
+        transaction.stellarSpecific && !hasValueMovement(transaction)
+            ? getStellarOperationLabel(transaction.stellarSpecific)
+            : undefined;
+    if (stellarOperationLabel) {
+        return <Translation id={STELLAR_OPERATION_MESSAGES[stellarOperationLabel]} />;
     }
 
     // Stellar trustline addition/removal
