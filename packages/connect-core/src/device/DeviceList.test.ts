@@ -233,6 +233,30 @@ describe('DeviceList', () => {
         expect(events).toEqual(['transport-start', 'device-connect']);
     });
 
+    it('.waitForPendingHandshakes() waits for a device that is still handshaking', async () => {
+        let onChangeCallback = (..._args: any[]) => {};
+        const transport = createTestTransport({
+            enumerate: () => ({ success: true, payload: [] }),
+            on: (eventName: string, callback: typeof onChangeCallback) => {
+                if (eventName === 'transport-interface-change') {
+                    onChangeCallback = callback;
+                }
+            },
+        });
+
+        list.init({ transports: [transport] });
+        await list.pendingConnection();
+        await expect(list.waitForPendingHandshakes()).resolves.toBeUndefined();
+        expect(list.getOnlyDevice()).toBeUndefined();
+
+        onChangeCallback([{ path: '1' }]);
+        // the device joins the list only after its handshake
+        expect(list.getOnlyDevice()).toBeUndefined();
+
+        await list.waitForPendingHandshakes();
+        expect(list.getOnlyDevice()).toBeDefined();
+    });
+
     it('multiple devices connected after .init()', async () => {
         let onChangeCallback = (..._args: any[]) => {};
         const transport = createTestTransport({

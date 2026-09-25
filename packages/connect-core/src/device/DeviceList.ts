@@ -25,6 +25,7 @@ import {
     getSynchronize,
     isNotUndefined,
     resolveAfter,
+    scheduleAction,
     typedObjectKeys,
 } from '@trezor/utils';
 
@@ -64,6 +65,10 @@ const createAuthPenaltyManager = (priority = 2) => {
     return { get, add, remove };
 };
 
+// How long a method call waits for handshakes already in flight. Generous on purpose: a slow
+// firmware-release fetch during the handshake must not surface as a false Device_NotFound.
+const PENDING_HANDSHAKE_CALL_TIMEOUT = 30000;
+
 const getTransportInfo = (transport: Transport) => ({
     apiType: transport.apiType,
     type: transport.name,
@@ -83,6 +88,7 @@ interface DeviceListEvents {
 export interface IDeviceList {
     isConnected(): this is DeviceList;
     pendingConnection(): Promise<void> | undefined;
+    waitForPendingHandshakes: DeviceList['waitForPendingHandshakes'];
     addAuthPenalty: DeviceList['addAuthPenalty'];
     removeAuthPenalty: DeviceList['removeAuthPenalty'];
     on: DeviceList['on'];
@@ -135,6 +141,24 @@ export class DeviceList extends TypedEmitter<DeviceListEvents> implements IDevic
             .filter(isNotUndefined);
 
         if (pending.length) return Promise.all(pending).then(() => {});
+    }
+
+    /**
+     * Resolves once every handshake already queued (from the initial enumeration or a hot-plug)
+     * has finished, whatever its outcome. A device joins the list only after its handshake, so a
+     * method call must wait here or it would miss a device that is plugged in but still
+     * initializing. Rejects with Device_InitializeInProgress if the handshakes do not settle in
+     * PENDING_HANDSHAKE_CALL_TIMEOUT, or with the signal's reason when cancelled.
+     */
+    waitForPendingHandshakes(signal?: AbortSignal) {
+        return scheduleAction(() => this.handshakeLock(() => {}), {
+            timeout: PENDING_HANDSHAKE_CALL_TIMEOUT,
+            signal,
+        }).catch(() => {
+            if (signal?.aborted) throw signal.reason;
+
+            throw ERRORS.TypedError('Device_InitializeInProgress');
+        });
     }
 
     getActiveTransports() {

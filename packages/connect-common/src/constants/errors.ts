@@ -38,6 +38,7 @@ export const ERROR_CODES = {
 
     Device_NotFound: 'Device not found',
     Device_InitializeFailed: '', // generic error from firmware while calling "Initialize" message
+    Device_InitializeInProgress: 'Device initialization in progress', // a call waited for an enumerated device that never finished its handshake
     Device_FwException: '', // generic FirmwareException type
     Device_ModeException: '', // generic Device.UnexpectedMode type
     Device_Disconnected: 'Device disconnected', // device disconnected during call
