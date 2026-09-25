@@ -1,20 +1,24 @@
 > **Upgrading from Connect 9?**
 >
-> - [Migration guide: Connect 9 → 10](https://connect.trezor.io/10.0.0/guides/migrating-to-connect-10) — what you need to change in your code, as a checklist.
-> - [New Connect flow in Trezor Suite](https://connect.trezor.io/10.0.0/guides/new-connect-flow-in-trezor-suite) — how the Suite-hosted flow works and why.
+> - [Migration guide: Connect 9 → 10](https://connect.trezor.io/10.0.1/guides/migrating-to-connect-10) — what you need to change in your code, as a checklist.
+> - [New Connect flow in Trezor Suite](https://connect.trezor.io/10.0.1/guides/new-connect-flow-in-trezor-suite) — how the Suite-hosted flow works and why.
 
 |             Package              | Stable | Canary |
 | :------------------------------: | :----: | :----: |
-|       npm @trezor/connect        | 10.0.0 |   -    |
-|     npm @trezor/connect-web      | 10.0.0 |   -    |
-| npm @trezor/connect-webextension | 10.0.0 |   -    |
-|    npm @trezor/connect-mobile    | 10.0.0 |   -    |
+|       npm @trezor/connect        | 10.0.1 |   -    |
+|     npm @trezor/connect-web      | 10.0.1 |   -    |
+| npm @trezor/connect-webextension | 10.0.1 |   -    |
+|    npm @trezor/connect-mobile    | 10.0.1 |   -    |
 
 |     Deployment     | Stable | Canary |
 | :----------------: | :----: | :----: |
-| connect.trezor.io/ | 10.0.0 |   -    |
+| connect.trezor.io/ | 10.0.1 |   -    |
 
-Use the persistent link [connect.trezor.io/10](https://connect.trezor.io/10/) to access the latest stable version of Connect Explorer.
+Use [connect.trezor.io/10.0.1](https://connect.trezor.io/10.0.1/) to access this release of Connect Explorer. The persistent link [connect.trezor.io/10](https://connect.trezor.io/10/) points to the latest stable version.
+
+# 10.0.1
+
+Fixes communication between `@trezor/connect-webextension` and Suite Web due to message channel ID mismatch in version 10.0.0
 
 # 10.0.0
 
