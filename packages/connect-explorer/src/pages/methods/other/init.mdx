@@ -33,7 +33,7 @@ export const paramDescriptions = {
     transportReconnect:
         'default `true`. If transport dies during lifecycle of application, this field decides whether TrezorConnect tries to reestablish connection with transport layer.',
     pendingTransportEvent:
-        'default `true`. Postpone emitting TRANSPORT.START event to the moment when connected device becomes available.',
+        'Deprecated, has no effect. TRANSPORT.START is emitted once the devices connected at startup finished their handshake (at most 10 s).',
     requestedPermissions:
         'Permissions your application will need, declared up front so the user can approve the whole set in a single prompt instead of being asked per call. See [Permissions](/details/permissions).',
     coreMode: `default \`auto\`.
