@@ -1,0 +1,15 @@
+subprojects { subproject ->
+    ['com.android.application', 'com.android.library'].each { pluginId ->
+        subproject.plugins.withId(pluginId) {
+            subproject.androidComponents.finalizeDsl { android ->
+                // AGP invokes Ninja directly, outside Gradle's worker pool.
+                // Compile and link jobs share one pool in each native build.
+                android.defaultConfig.externalNativeBuild.cmake.arguments.addAll([
+                    "-DCMAKE_JOB_POOLS=suite_build=${gradle.startParameter.maxWorkerCount}".toString(),
+                    '-DCMAKE_JOB_POOL_COMPILE=suite_build',
+                    '-DCMAKE_JOB_POOL_LINK=suite_build',
+                ])
+            }
+        }
+    }
+}
