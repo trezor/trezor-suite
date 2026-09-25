@@ -110,9 +110,7 @@ export const TokenSettingsBottomSheet = forwardRef(
         const { applyStyle } = useNativeStyles();
         const { analytics, dispatch } = useServices(injectNativeAnalytics, injectDispatch);
         const navigation =
-            useNavigation<
-                StackNavigationProps<RootStackParamList, RootStackRoutes.AccountDetail>
-            >();
+            useNavigation<StackNavigationProps<RootStackParamList, RootStackRoutes>>();
 
         const token = useSelector((state: NativeTokensRootState) =>
             selectAccountTokenInfo(state, accountKey, tokenContract),

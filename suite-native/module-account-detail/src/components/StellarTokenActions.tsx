@@ -14,9 +14,11 @@ import { Box, Button } from '@suite-native/atoms';
 import { Translation, useTranslate } from '@suite-native/intl';
 import { composeStellarTrustlineFeesThunk } from '@suite-native/module-stellar-token-management';
 import {
+    type AccountDetailStackParamList,
+    type AccountDetailStackRoutes,
     type RootStackParamList,
     RootStackRoutes,
-    type StackNavigationProps,
+    type StackToStackCompositeNavigationProps,
     StellarManageTokenStackRoutes,
 } from '@suite-native/navigation';
 import { type TokensRootState, selectAccountTokenBalance } from '@suite-native/tokens';
@@ -26,7 +28,11 @@ type StellarTokenActionsProps = {
     tokenContract?: TokenAddress;
 };
 
-type NavigationProp = StackNavigationProps<RootStackParamList, RootStackRoutes.AccountDetail>;
+type NavigationProp = StackToStackCompositeNavigationProps<
+    AccountDetailStackParamList,
+    AccountDetailStackRoutes.AccountDetail,
+    RootStackParamList
+>;
 
 export const StellarTokenActions = ({ accountKey, tokenContract }: StellarTokenActionsProps) => {
     const navigation = useNavigation<NavigationProp>();

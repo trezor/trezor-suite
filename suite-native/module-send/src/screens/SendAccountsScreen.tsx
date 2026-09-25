@@ -5,6 +5,7 @@ import { AccountsListWithFilter, type OnSelectAccount } from '@suite-native/acco
 import { events, injectNativeAnalytics } from '@suite-native/analytics';
 import { Translation } from '@suite-native/intl';
 import {
+    AccountDetailStackRoutes,
     type RootStackParamList,
     RootStackRoutes,
     Screen,
@@ -15,9 +16,9 @@ import {
 } from '@suite-native/navigation';
 
 type NavigationProps = StackToStackCompositeNavigationProps<
-    RootStackParamList,
-    RootStackRoutes.AccountAssets,
-    SendStackParamList
+    SendStackParamList,
+    SendStackRoutes.SendAccounts,
+    RootStackParamList
 >;
 
 export const SendAccountsScreen = () => {
@@ -32,9 +33,12 @@ export const SendAccountsScreen = () => {
         });
 
         if (hasAnyKnownTokens) {
-            navigation.navigate(RootStackRoutes.AccountAssets, {
-                accountKey: account.key,
-                flowType: 'send',
+            navigation.navigate(RootStackRoutes.AccountDetailStack, {
+                screen: AccountDetailStackRoutes.AccountAssets,
+                params: {
+                    accountKey: account.key,
+                    flowType: 'send',
+                },
             });
 
             return;

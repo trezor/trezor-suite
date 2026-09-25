@@ -6,6 +6,7 @@ import { DeviceManagerScreenHeader } from '@suite-native/device-manager';
 import { AccountsRediscoveryNeededWarning } from '@suite-native/discovery';
 import { Translation } from '@suite-native/intl';
 import {
+    AccountDetailStackRoutes,
     type AccountsStackParamList,
     type AccountsStackRoutes,
     type RootStackParamList,
@@ -31,13 +32,19 @@ export const AccountsScreen = ({ navigation, route }: ScreenNavigationProps) => 
         const { key: accountKey, symbol } = account;
 
         if (isNetworkWithTokens(symbol) || isStakingSymbol(symbol)) {
-            navigation.navigate(RootStackRoutes.AccountAssets, { accountKey });
+            navigation.navigate(RootStackRoutes.AccountDetailStack, {
+                screen: AccountDetailStackRoutes.AccountAssets,
+                params: { accountKey },
+            });
 
             return;
         }
-        navigation.navigate(RootStackRoutes.AccountDetail, {
-            accountKey,
-            closeActionType: 'back',
+        navigation.navigate(RootStackRoutes.AccountDetailStack, {
+            screen: AccountDetailStackRoutes.AccountDetail,
+            params: {
+                accountKey,
+                closeActionType: 'back',
+            },
         });
     };
 

@@ -8,11 +8,10 @@ import { HStack, IconButton, Text, VStack, useBottomSheetModal } from '@suite-na
 import { TokenIcon } from '@suite-native/icons';
 import { TokenSettingsBottomSheet } from '@suite-native/module-earn';
 import {
-    type AccountsStackParamList,
-    type RootStackParamList,
-    RootStackRoutes,
+    type AccountDetailStackParamList,
+    AccountDetailStackRoutes,
     ScreenHeader,
-    type StackToStackCompositeNavigationProps,
+    type StackNavigationProps,
     useNavigateToInitialScreen,
 } from '@suite-native/navigation';
 import { isNetworkWithTokens } from '@suite-native/tokens';
@@ -21,10 +20,9 @@ type AccountDetailScreenHeaderProps = {
     account: Account;
 };
 
-type AccountDetailNavigationProps = StackToStackCompositeNavigationProps<
-    AccountsStackParamList,
-    RootStackRoutes.AccountDetail,
-    RootStackParamList
+type AccountDetailNavigationProps = StackNavigationProps<
+    AccountDetailStackParamList,
+    AccountDetailStackRoutes.AccountDetail
 >;
 
 export const AccountDetailScreenHeaderContent = ({ account }: AccountDetailScreenHeaderProps) => (
@@ -54,7 +52,8 @@ export const AccountDetailScreenHeaderContent = ({ account }: AccountDetailScree
 export const AccountDetailScreenHeader = ({ account }: AccountDetailScreenHeaderProps) => {
     const navigation = useNavigation<AccountDetailNavigationProps>();
     const navigateToInitialScreen = useNavigateToInitialScreen();
-    const route = useRoute<RouteProp<RootStackParamList, RootStackRoutes.AccountDetail>>();
+    const route =
+        useRoute<RouteProp<AccountDetailStackParamList, AccountDetailStackRoutes.AccountDetail>>();
     const { closeActionType } = route.params;
 
     const { bottomSheetRef, closeModal, openModal } = useBottomSheetModal();
@@ -63,7 +62,7 @@ export const AccountDetailScreenHeader = ({ account }: AccountDetailScreenHeader
         if (isNetworkWithTokens(account.symbol) || isStakingSymbol(account.symbol)) {
             openModal();
         } else {
-            navigation.navigate(RootStackRoutes.AccountSettings, {
+            navigation.navigate(AccountDetailStackRoutes.AccountSettings, {
                 accountKey: account.key,
             });
         }

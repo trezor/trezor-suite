@@ -4,8 +4,8 @@ import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
 import { getTranslation } from '@suite-native/intl';
 import {
-    type RootStackParamList,
-    RootStackRoutes,
+    type AccountDetailStackParamList,
+    AccountDetailStackRoutes,
     type StackProps,
 } from '@suite-native/navigation';
 import { renderWithStoreProvider } from '@suite-native/test-utils-store';
@@ -19,8 +19,8 @@ jest.mock('@react-navigation/native', () => ({
 }));
 
 const navigationMock = {} as StackProps<
-    RootStackParamList,
-    RootStackRoutes.AccountSettings
+    AccountDetailStackParamList,
+    AccountDetailStackRoutes.AccountSettings
 >['navigation'];
 
 const btcAccount = mockWalletAccount({ symbol: asNetworkSymbol('btc') });
@@ -30,9 +30,12 @@ const services: SuiteSyncDep = { suiteSync: mockSuiteSync() };
 const buildRoute = (accountKey: string) =>
     ({
         key: 'AccountSettings',
-        name: RootStackRoutes.AccountSettings,
+        name: AccountDetailStackRoutes.AccountSettings,
         params: { accountKey },
-    }) as StackProps<RootStackParamList, RootStackRoutes.AccountSettings>['route'];
+    }) as StackProps<
+        AccountDetailStackParamList,
+        AccountDetailStackRoutes.AccountSettings
+    >['route'];
 
 const buildPreloadedState = (account: ReturnType<typeof mockWalletAccount>) => ({
     device: { devices: [], selectedDevice: undefined },

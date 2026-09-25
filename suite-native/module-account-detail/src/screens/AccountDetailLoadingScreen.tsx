@@ -4,8 +4,8 @@ import { type RouteProp, useRoute } from '@react-navigation/native';
 
 import { BoxSkeleton, Card, VStack } from '@suite-native/atoms';
 import {
-    type RootStackParamList,
-    type RootStackRoutes,
+    type AccountDetailStackParamList,
+    type AccountDetailStackRoutes,
     Screen,
     ScreenHeader,
 } from '@suite-native/navigation';
@@ -19,7 +19,8 @@ const cardStyle = prepareNativeStyle(utils => ({
 
 export const AccountDetailLoadingScreen = () => {
     const { applyStyle } = useNativeStyles();
-    const route = useRoute<RouteProp<RootStackParamList, RootStackRoutes.AccountDetail>>();
+    const route =
+        useRoute<RouteProp<AccountDetailStackParamList, AccountDetailStackRoutes.AccountDetail>>();
     const { closeActionType } = route.params;
 
     return (

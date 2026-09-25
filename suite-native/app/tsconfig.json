@@ -53,11 +53,11 @@
         { "path": "../icons" },
         { "path": "../intl" },
         { "path": "../message-system" },
+        { "path": "../module-account-detail" },
         { "path": "../module-accounts" },
         { "path": "../module-accounts-import" },
         { "path": "../module-activity-center" },
         { "path": "../module-add-accounts" },
-        { "path": "../module-assets-management" },
         {
             "path": "../module-authenticity-checks"
         },

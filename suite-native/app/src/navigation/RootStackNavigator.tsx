@@ -4,11 +4,10 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
 import { isDevelopOrDebugEnv } from '@suite-native/config';
 import { BootloaderModeScreen } from '@suite-native/device-bootloader-mode';
-import { AccountDetailScreen, AccountSettingsScreen } from '@suite-native/module-accounts';
+import { AccountDetailStackNavigator } from '@suite-native/module-account-detail';
 import { AccountsImportStackNavigator } from '@suite-native/module-accounts-import';
 import { ActivityCenterStackNavigator } from '@suite-native/module-activity-center';
 import { AddCoinAccountStackNavigator } from '@suite-native/module-add-accounts';
-import { AccountAssetsScreen } from '@suite-native/module-assets-management';
 import { DeviceCompromisedModalScreen } from '@suite-native/module-authenticity-checks';
 import { AuthorizeDeviceStackNavigator } from '@suite-native/module-authorize-device';
 import {
@@ -113,23 +112,12 @@ export const RootStackNavigator = () => {
             />
             <RootStack.Screen name={RootStackRoutes.AppTabs} component={AppTabNavigator} />
             <RootStack.Screen
-                options={{ title: RootStackRoutes.AccountSettings }}
-                name={RootStackRoutes.AccountSettings}
-                component={AccountSettingsScreen}
+                name={RootStackRoutes.AccountDetailStack}
+                component={AccountDetailStackNavigator}
             />
             <RootStack.Screen
                 name={RootStackRoutes.TransactionDetailStack}
                 component={TransactionDetailStackNavigator}
-            />
-            <RootStack.Screen
-                options={{ title: RootStackRoutes.AccountAssets }}
-                name={RootStackRoutes.AccountAssets}
-                component={AccountAssetsScreen}
-            />
-            <RootStack.Screen
-                options={{ title: RootStackRoutes.AccountDetail }}
-                name={RootStackRoutes.AccountDetail}
-                component={AccountDetailScreen}
             />
             <RootStack.Screen
                 options={{ title: RootStackRoutes.StakingDetail }}

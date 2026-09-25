@@ -15,6 +15,7 @@ import {
 } from '@suite-native/accounts';
 import { Icon } from '@suite-native/icons';
 import {
+    AccountDetailStackRoutes,
     AccountsStackRoutes,
     type AppTabsParamList,
     AppTabsRoutes,
@@ -64,9 +65,12 @@ export const AssetItem = memo(({ cryptoCurrencySymbol }: AssetItemProps) => {
     const handleAssetPress = useCallback(() => {
         // A single tokenless account opens its detail directly; anything else opens the list.
         if (singleAccountKey && !hasAnyTokens && !hasAnyAccountsWithStaking) {
-            navigation.navigate(RootStackRoutes.AccountDetail, {
-                accountKey: singleAccountKey,
-                closeActionType: 'back',
+            navigation.navigate(RootStackRoutes.AccountDetailStack, {
+                screen: AccountDetailStackRoutes.AccountDetail,
+                params: {
+                    accountKey: singleAccountKey,
+                    closeActionType: 'back',
+                },
             });
 
             return;

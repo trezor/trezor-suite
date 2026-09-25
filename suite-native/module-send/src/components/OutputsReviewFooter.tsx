@@ -19,6 +19,7 @@ import { useAlert } from '@suite-native/alerts';
 import { AnimatedBox, Button, useBannerAwareSafeAreaInsets } from '@suite-native/atoms';
 import { Translation, useTranslate } from '@suite-native/intl';
 import {
+    AccountDetailStackRoutes,
     AppTabsRoutes,
     type RootStackParamList,
     RootStackRoutes,
@@ -61,10 +62,14 @@ const navigateOutOfSendFlowAction = ({
             },
         },
         {
-            name: RootStackRoutes.AccountDetail,
+            name: RootStackRoutes.AccountDetailStack,
             params: {
-                accountKey,
-                tokenContract,
+                screen: AccountDetailStackRoutes.AccountDetail,
+                params: {
+                    accountKey,
+                    tokenContract,
+                    closeActionType: 'back',
+                },
             },
         },
     ];
