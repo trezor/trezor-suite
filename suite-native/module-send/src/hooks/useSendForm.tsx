@@ -211,7 +211,15 @@ export const useSendForm = (accountKey: AccountKey, tokenContract?: TokenAddress
     const isResolvingNamedAddress = namedAddressMode === 'forward' && isResolving;
 
     const updateFormState = useCallback(async () => {
-        if (account && network && networkFeeInfo) {
+        const formValues = getValues();
+        // Unlike other networks, Cardano composes outputs without an amount, and the validation
+        // triggered below would flag the fields the user has not filled in yet.
+        const isIncompleteCardanoOutput =
+            network?.networkType === 'cardano' &&
+            formValues.setMaxOutputId === undefined &&
+            !formValues.outputs.some(output => !!output.amount);
+
+        if (account && network && networkFeeInfo && !isIncompleteCardanoOutput) {
             const response = await dispatch(
                 composeSendFormTransactionFeeLevelsThunk({
                     formState: constructFormDraft({
