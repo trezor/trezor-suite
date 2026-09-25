@@ -11,7 +11,7 @@ import {
 
 const initStore = () => createTestStore({ extra: undefined });
 
-const FIRST_ACCOUNT_CHANGE_ADDRESS = 'bcrt1qte33uyyfzrdrm9nqk0uwlq9dqr6ezu2gurhree';
+const UNUSED_CHANGE_ADDRESS = 'bcrt1qte33uyyfzrdrm9nqk0uwlq9dqr6ezu2gurhree';
 
 const account: ComposeCancelTransactionThunkParams['account'] = {
     path: "m/84'/1'/0'",
@@ -19,28 +19,20 @@ const account: ComposeCancelTransactionThunkParams['account'] = {
     addresses: {
         change: [
             {
-                address: FIRST_ACCOUNT_CHANGE_ADDRESS,
+                address: UNUSED_CHANGE_ADDRESS,
                 path: "m/84'/1'/0'/1/0",
-                transfers: 2,
-                balance: '',
-                sent: '',
-                received: '',
-            },
-        ],
-        used: [],
-        unused: [
-            {
-                address: 'bcrt1qaqma3u205mykw7uhrav5tugn8ylu9f55uk8leg',
-                path: "m/84'/1'/0'/0/1",
                 transfers: 0,
                 balance: '',
                 sent: '',
                 received: '',
             },
         ],
+        used: [],
+        unused: [],
     },
 };
-const ORIGINAL_CHANGE_ADDRESS = 'bcrt1qte33uyyfzrdrm9nqk0uwlq9dqr6ezu2gurhree';
+
+const ORIGINAL_CHANGE_ADDRESS = 'bcrt1qejqxwzfld7zr6mf7ygqy5s5se5xq7vmt8ntmj0';
 
 const transactionWithChange: Pick<WalletAccountTransaction, 'details' | 'vsize' | 'fee'> = {
     fee: '1410',
@@ -84,7 +76,7 @@ const transactionWithNoChange: Pick<WalletAccountTransaction, 'details' | 'vsize
             {
                 value: '8999998590',
                 n: 0,
-                addresses: ['bcrt1qte33uyyfzrdrm9nqk0uwlq9dqr6ezu2gurhree'],
+                addresses: ['bcrt1qreeergcmsw604zgd7hsreq6872swxnh3485fs5'],
                 isAddress: true,
             },
         ],
@@ -115,13 +107,16 @@ const createComposeTsResult = (extra?: Partial<PrecomposeResultFinal>): Precompo
 });
 
 const createComposeTransactionMock = () =>
-    jest.spyOn(TrezorConnect, 'composeTransaction').mockImplementation(() =>
-        Promise.resolve({
-            success: true,
-            // 1520 + 1410 = 2930, responsibility of `composeTransaction` so not tested
-            payload: [createComposeTsResult({ fee: '2930' })],
-        }),
-    );
+    jest
+        .spyOn(TrezorConnect, 'composeTransaction')
+        .mockClear()
+        .mockImplementation(() =>
+            Promise.resolve({
+                success: true,
+                // 1520 + 1410 = 2930, responsibility of `composeTransaction` so not tested
+                payload: [createComposeTsResult({ fee: '2930' })],
+            }),
+        );
 
 describe(composeCancelTransactionThunk.name, () => {
     it('calculates correctly the cancel fee when there is a chain transaction and cancel transaction is less bytes then the original', async () => {
@@ -142,14 +137,11 @@ describe(composeCancelTransactionThunk.name, () => {
         expect(call?.feeLevels).toStrictEqual([{ feePerUnit: '0.2' }]); // new relay fee
         expect(call?.baseFee).toBe(1410 + 1410); // sum of fees for original tx and chained txs
         expect(call?.outputs).toStrictEqual([
-            {
-                address: ORIGINAL_CHANGE_ADDRESS,
-                type: 'send-max',
-            },
+            { address: ORIGINAL_CHANGE_ADDRESS, type: 'send-max' },
         ]);
     });
 
-    it('uses first change address if tx has no change output (no chained transactions)', async () => {
+    it('uses first unused change address if tx has no change output (no chained transactions)', async () => {
         const store = initStore();
 
         const composeTransactionMock = createComposeTransactionMock();
@@ -160,11 +152,6 @@ describe(composeCancelTransactionThunk.name, () => {
 
         const [call] = composeTransactionMock.mock.calls[0] ?? [];
 
-        expect(call?.outputs).toStrictEqual([
-            {
-                address: FIRST_ACCOUNT_CHANGE_ADDRESS,
-                type: 'send-max',
-            },
-        ]);
+        expect(call?.outputs).toStrictEqual([{ address: UNUSED_CHANGE_ADDRESS, type: 'send-max' }]);
     });
 });
