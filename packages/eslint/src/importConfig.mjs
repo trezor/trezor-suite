@@ -122,6 +122,7 @@ export const importConfig = [
                 'error',
                 { devDependencies: false, includeTypes: true },
             ],
+            'import/newline-after-import': 'error',
 
             // Offs
             'import/no-unresolved': 'off', // Does not work with Babel react-native to react-native-web
