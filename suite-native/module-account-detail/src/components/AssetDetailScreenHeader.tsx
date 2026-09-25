@@ -133,12 +133,12 @@ export const AssetDetailScreenHeader = ({
     );
 
     const closeAction = () => {
-        const isAccountAssetsInStack = navigation
+        const isAccountTokensInStack = navigation
             .getState()
-            .routes.some(stackRoute => stackRoute.name === AccountDetailStackRoutes.AccountAssets);
+            .routes.some(stackRoute => stackRoute.name === AccountDetailStackRoutes.AccountTokens);
 
-        if (isAccountAssetsInStack) {
-            navigation.popTo(AccountDetailStackRoutes.AccountAssets, {
+        if (isAccountTokensInStack) {
+            navigation.popTo(AccountDetailStackRoutes.AccountTokens, {
                 accountKey: account.key,
                 tab: tokenTab,
             });

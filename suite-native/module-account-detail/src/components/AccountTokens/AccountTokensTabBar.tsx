@@ -6,7 +6,7 @@ import { Button } from '@suite-native/atoms';
 import { Translation, type TxKeyPath } from '@suite-native/intl';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
-import { type AccountAssetsFlow, type AccountAssetsTab } from './types';
+import { type AccountTokensFlow, type AccountTokensTab } from './types';
 import { useActiveTabScroll } from './useActiveTabScroll';
 
 const scrollStyle = prepareNativeStyle(() => ({
@@ -20,24 +20,24 @@ const scrollContentStyle = prepareNativeStyle(({ spacings }) => ({
 }));
 
 interface TabItem {
-    tab: AccountAssetsTab;
+    tab: AccountTokensTab;
     icon: NonNullable<ComponentProps<typeof Button>['iconLeft']>;
     translationId: TxKeyPath;
     translationValues?: Record<string, number>;
     isVisible: boolean;
 }
 
-interface AccountAssetsTabBarProps {
-    activeTab: AccountAssetsTab;
-    flowType: AccountAssetsFlow;
+interface AccountTokensTabBarProps {
+    activeTab: AccountTokensTab;
+    flowType: AccountTokensFlow;
     networkType?: NetworkType;
     tokenCount: number;
     defiTokenCount: number;
     hiddenTokenCount: number;
-    onTabChange: (tab: AccountAssetsTab) => void;
+    onTabChange: (tab: AccountTokensTab) => void;
 }
 
-export const AccountAssetsTabBar = ({
+export const AccountTokensTabBar = ({
     activeTab,
     flowType,
     networkType,
@@ -45,7 +45,7 @@ export const AccountAssetsTabBar = ({
     defiTokenCount,
     hiddenTokenCount,
     onTabChange,
-}: AccountAssetsTabBarProps) => {
+}: AccountTokensTabBarProps) => {
     const { applyStyle } = useNativeStyles();
     const { scrollViewRef, handleTabLayout, handleScroll, handleScrollViewLayout } =
         useActiveTabScroll(activeTab);

@@ -33,7 +33,7 @@ export const AccountsScreen = ({ navigation, route }: ScreenNavigationProps) => 
 
         if (isNetworkWithTokens(symbol) || isStakingSymbol(symbol)) {
             navigation.navigate(RootStackRoutes.AccountDetailStack, {
-                screen: AccountDetailStackRoutes.AccountAssets,
+                screen: AccountDetailStackRoutes.AccountTokens,
                 params: { accountKey },
             });
 

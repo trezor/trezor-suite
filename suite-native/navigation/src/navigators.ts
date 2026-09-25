@@ -60,8 +60,8 @@ type AccountIdentityParams = RequireAllOrNone<
 >;
 
 export type CloseActionType = 'back' | 'close';
-export type AccountAssetsTab = 'tokens' | 'defi' | 'hidden' | 'inactive';
-export type AccountAssetsFlow = 'assets' | 'send';
+export type AccountTokensTab = 'tokens' | 'defi' | 'hidden' | 'inactive';
+export type AccountTokensFlow = 'assets' | 'send';
 export type DeviceSuspicionCause =
     | 'deviceLooksDifferent'
     | 'firmwareAlreadyInstalled'
@@ -89,10 +89,10 @@ export type AccountsStackParamList = {
 export type AccountDetailStackParamList = {
     [AccountDetailStackRoutes.AccountDetail]: AccountDetailParams;
     [AccountDetailStackRoutes.AccountSettings]: { accountKey: AccountKey };
-    [AccountDetailStackRoutes.AccountAssets]: {
+    [AccountDetailStackRoutes.AccountTokens]: {
         accountKey: AccountKey;
-        tab?: AccountAssetsTab;
-        flowType?: AccountAssetsFlow;
+        tab?: AccountTokensTab;
+        flowType?: AccountTokensFlow;
     } & AccountIdentityParams;
 };
 

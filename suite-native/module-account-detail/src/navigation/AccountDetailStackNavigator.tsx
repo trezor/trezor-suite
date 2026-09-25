@@ -6,9 +6,9 @@ import {
     stackNavigationOptionsConfig,
 } from '@suite-native/navigation';
 
-import { AccountAssetsScreen } from '../screens/AccountAssetsScreen';
 import { AccountDetailScreen } from '../screens/AccountDetailScreen';
 import { AccountSettingsScreen } from '../screens/AccountSettingsScreen';
+import { AccountTokensScreen } from '../screens/AccountTokensScreen';
 
 const AccountDetailStack = createNativeStackNavigator<AccountDetailStackParamList>();
 
@@ -22,8 +22,8 @@ export const AccountDetailStackNavigator = () => (
             component={AccountDetailScreen}
         />
         <AccountDetailStack.Screen
-            name={AccountDetailStackRoutes.AccountAssets}
-            component={AccountAssetsScreen}
+            name={AccountDetailStackRoutes.AccountTokens}
+            component={AccountTokensScreen}
         />
         <AccountDetailStack.Screen
             name={AccountDetailStackRoutes.AccountSettings}

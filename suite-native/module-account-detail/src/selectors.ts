@@ -17,7 +17,7 @@ import {
     type FeatureFlagsRootState,
     selectIsFeatureFlagEnabled,
 } from '@suite-native/feature-flags';
-import { type AccountAssetsTab } from '@suite-native/navigation';
+import { type AccountTokensTab } from '@suite-native/navigation';
 import { type TokensRootState, selectAccountTokenInfo } from '@suite-native/tokens';
 import { deepEqual } from '@trezor/utils';
 
@@ -55,7 +55,7 @@ export const selectAssetTabOfAccountToken = (
     state: TokensRootState & FiatRatesRootState & WalletSettingsRootState,
     accountKey: AccountKey,
     tokenContract: TokenAddress,
-): AccountAssetsTab => {
+): AccountTokensTab => {
     const lcContract = tokenContract.toLowerCase();
 
     const defiTokens = selectAccountDefiTokens(state, accountKey);

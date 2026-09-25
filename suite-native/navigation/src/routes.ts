@@ -60,7 +60,7 @@ export enum RootStackRoutes {
 
 export enum AccountDetailStackRoutes {
     AccountDetail = 'AccountDetail',
-    AccountAssets = 'AccountAssets',
+    AccountTokens = 'AccountTokens',
     AccountSettings = 'AccountSettings',
 }
 

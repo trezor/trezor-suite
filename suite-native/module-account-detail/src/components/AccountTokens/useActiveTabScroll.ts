@@ -6,15 +6,15 @@ import {
     type ScrollView,
 } from 'react-native';
 
-import { type AccountAssetsTab } from './types';
+import { type AccountTokensTab } from './types';
 
-export const useActiveTabScroll = (activeTab: AccountAssetsTab) => {
+export const useActiveTabScroll = (activeTab: AccountTokensTab) => {
     const scrollViewRef = useRef<ScrollView>(null);
-    const tabLayouts = useRef<Partial<Record<AccountAssetsTab, { x: number; width: number }>>>({});
+    const tabLayouts = useRef<Partial<Record<AccountTokensTab, { x: number; width: number }>>>({});
     const scrollOffset = useRef(0);
     const visibleWidth = useRef(0);
 
-    const scrollToSelectedTab = useCallback((tab: AccountAssetsTab) => {
+    const scrollToSelectedTab = useCallback((tab: AccountTokensTab) => {
         const layout = tabLayouts.current[tab];
         if (!layout) return;
 
@@ -30,7 +30,7 @@ export const useActiveTabScroll = (activeTab: AccountAssetsTab) => {
     }, []);
 
     const handleTabLayout = useCallback(
-        (tab: AccountAssetsTab) =>
+        (tab: AccountTokensTab) =>
             ({ nativeEvent }: LayoutChangeEvent) => {
                 tabLayouts.current[tab] = {
                     x: nativeEvent.layout.x,

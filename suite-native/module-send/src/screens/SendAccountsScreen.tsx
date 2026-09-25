@@ -34,7 +34,7 @@ export const SendAccountsScreen = () => {
 
         if (hasAnyKnownTokens) {
             navigation.navigate(RootStackRoutes.AccountDetailStack, {
-                screen: AccountDetailStackRoutes.AccountAssets,
+                screen: AccountDetailStackRoutes.AccountTokens,
                 params: {
                     accountKey: account.key,
                     flowType: 'send',

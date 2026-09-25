@@ -20,16 +20,16 @@ import {
     type StackNavigationProps,
 } from '@suite-native/navigation';
 
-import { type AccountAssetsFlow } from './types';
+import { type AccountTokensFlow } from './types';
 
 type AccountDetailNavigationProps = StackNavigationProps<
     AccountDetailStackParamList,
-    AccountDetailStackRoutes.AccountAssets
+    AccountDetailStackRoutes.AccountTokens
 >;
 
-type Props = { accountKey: AccountKey; flowType?: AccountAssetsFlow };
+type Props = { accountKey: AccountKey; flowType?: AccountTokensFlow };
 
-const AccountAssetsScreenHeaderContent = ({ accountKey }: Omit<Props, 'flowType'>) => {
+const AccountTokensScreenHeaderContent = ({ accountKey }: Omit<Props, 'flowType'>) => {
     const account = useSelector((state: AccountsRootState) =>
         selectAccountByKey(state, accountKey),
     );
@@ -63,7 +63,7 @@ const AccountAssetsScreenHeaderContent = ({ accountKey }: Omit<Props, 'flowType'
     );
 };
 
-export const AccountAssetsScreenHeader = ({ accountKey, flowType }: Props) => {
+export const AccountTokensScreenHeader = ({ accountKey, flowType }: Props) => {
     const navigation = useNavigation<AccountDetailNavigationProps>();
 
     const handleSettingsNavigation = () => {
@@ -74,7 +74,7 @@ export const AccountAssetsScreenHeader = ({ accountKey, flowType }: Props) => {
 
     return (
         <ScreenHeader
-            customContent={<AccountAssetsScreenHeaderContent accountKey={accountKey} />}
+            customContent={<AccountTokensScreenHeaderContent accountKey={accountKey} />}
             closeActionType={flowType === 'send' ? 'back' : 'close'}
             rightIcon={
                 <IconButton

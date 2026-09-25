@@ -54,7 +54,7 @@ export const InactiveTokensTab = ({ accountKey }: InactiveTokensTabProps) => {
         useNavigation<
             StackToStackCompositeNavigationProps<
                 AccountDetailStackParamList,
-                AccountDetailStackRoutes.AccountAssets,
+                AccountDetailStackRoutes.AccountTokens,
                 RootStackParamList
             >
         >();

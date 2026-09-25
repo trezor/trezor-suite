@@ -9,7 +9,6 @@
         "depcheck": "yarn g:depcheck",
         "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'",
         "lint:js:fix": "yarn lint:js --fix",
-        "test:unit": "yarn g:jest:native",
         "type-check": "yarn g:tsc --build"
     },
     "dependencies": {

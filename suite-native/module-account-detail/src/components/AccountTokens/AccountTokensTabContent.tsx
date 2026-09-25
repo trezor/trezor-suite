@@ -21,24 +21,24 @@ import { ActiveTokensTab } from './ActiveTokensTab';
 import { DefiTokensTab } from './DefiTokensTab';
 import { HiddenTokensTab } from './HiddenTokensTab';
 import { InactiveTokensTab } from './InactiveTokensTab';
-import { type AccountAssetsFlow, type AccountAssetsTab, type OnSelectAsset } from './types';
+import { type AccountTokensFlow, type AccountTokensTab, type OnSelectAsset } from './types';
 
-type AccountAssetsTabContentProps = {
+type AccountTokensTabContentProps = {
     accountKey: AccountKey;
-    activeTab: AccountAssetsTab;
-    flowType: AccountAssetsFlow;
+    activeTab: AccountTokensTab;
+    flowType: AccountTokensFlow;
 };
 
-export const AccountAssetsTabContent = ({
+export const AccountTokensTabContent = ({
     accountKey,
     activeTab,
     flowType,
-}: AccountAssetsTabContentProps) => {
+}: AccountTokensTabContentProps) => {
     const navigation =
         useNavigation<
             StackToStackCompositeNavigationProps<
                 AccountDetailStackParamList,
-                AccountDetailStackRoutes.AccountAssets,
+                AccountDetailStackRoutes.AccountTokens,
                 RootStackParamList
             >
         >();

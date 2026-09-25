@@ -24,13 +24,13 @@ import {
     Screen,
 } from '@suite-native/navigation';
 
-import { AccountAssetsScreenHeader } from '../components/AccountAssets/AccountAssetsScreenHeader';
-import { AccountAssetsTabBar } from '../components/AccountAssets/AccountAssetsTabBar';
-import { AccountAssetsTabContent } from '../components/AccountAssets/AccountAssetsTabContent';
-import { AccountEarnPromoBanner } from '../components/AccountAssets/AccountEarnPromoBanner';
-import { type AccountAssetsTab } from '../components/AccountAssets/types';
+import { AccountEarnPromoBanner } from '../components/AccountTokens/AccountEarnPromoBanner';
+import { AccountTokensScreenHeader } from '../components/AccountTokens/AccountTokensScreenHeader';
+import { AccountTokensTabBar } from '../components/AccountTokens/AccountTokensTabBar';
+import { AccountTokensTabContent } from '../components/AccountTokens/AccountTokensTabContent';
+import { type AccountTokensTab } from '../components/AccountTokens/types';
 
-export const AccountAssetsScreen = ({
+export const AccountTokensScreen = ({
     route: {
         params: {
             accountKey: routeAccountKey,
@@ -42,8 +42,8 @@ export const AccountAssetsScreen = ({
         },
     },
     navigation,
-}: NativeStackScreenProps<AccountDetailStackParamList, AccountDetailStackRoutes.AccountAssets>) => {
-    const [activeTab, setActiveTab] = useState<AccountAssetsTab>(tab ?? 'tokens');
+}: NativeStackScreenProps<AccountDetailStackParamList, AccountDetailStackRoutes.AccountTokens>) => {
+    const [activeTab, setActiveTab] = useState<AccountTokensTab>(tab ?? 'tokens');
 
     useEffect(() => {
         if (tab !== undefined) {
@@ -77,14 +77,14 @@ export const AccountAssetsScreen = ({
     const isFailed = !!account && isAccountFailed(account);
 
     return (
-        <Screen header={<AccountAssetsScreenHeader accountKey={accountKey} flowType={flowType} />}>
+        <Screen header={<AccountTokensScreenHeader accountKey={accountKey} flowType={flowType} />}>
             {isFailed ? (
                 <AccountDiscoveryFailedBanner accountKey={accountKey} />
             ) : (
                 <VStack spacing="sp16">
                     <AccountEarnPromoBanner account={account} />
 
-                    <AccountAssetsTabBar
+                    <AccountTokensTabBar
                         activeTab={activeTab}
                         flowType={flowType}
                         networkType={account?.networkType}
@@ -93,7 +93,7 @@ export const AccountAssetsScreen = ({
                         hiddenTokenCount={manuallyHiddenTokens}
                         onTabChange={setActiveTab}
                     />
-                    <AccountAssetsTabContent
+                    <AccountTokensTabContent
                         accountKey={accountKey}
                         activeTab={activeTab}
                         flowType={flowType}
