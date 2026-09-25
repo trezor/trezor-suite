@@ -74,7 +74,8 @@ type StartDiscoveryOfExistingPassphraseWalletThunkPayload = {
 
 type StartDiscoveryOfExistingPassphraseWalletThunkState = RunDiscoveryThunkState;
 
-type StartDiscoveryOfExistingPassphraseWalletThunkDeps = RunPassphraseWalletAddingDiscoveryThunkDeps;
+type StartDiscoveryOfExistingPassphraseWalletThunkDeps =
+    RunPassphraseWalletAddingDiscoveryThunkDeps;
 
 const startDiscoveryOfExistingPassphraseWalletThunk = createThunk<
     void,
