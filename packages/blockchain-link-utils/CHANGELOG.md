@@ -1,3 +1,8 @@
+# 10.0.1
+
+- fix(blockchain-link): treat cardano deregistration with rewards as unstake (53565832f6)
+- fix(blockchain-link): correct cardano withdrawal amount on stake deregistration (c9056f0b26)
+
 # 10.0.0
 
 - npm-prerelease: @trezor/blockchain-link-utils 10.0.0-beta.3 (afced14fa3)
