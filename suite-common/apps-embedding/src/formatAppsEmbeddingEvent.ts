@@ -6,7 +6,6 @@ import { type AppsEmbeddingEvent, type AppsEmbeddingWindowOpenOutcome } from './
 const WINDOW_OPEN_OUTCOME_LABEL: Record<AppsEmbeddingWindowOpenOutcome, string> = {
     denied: 'denied',
     'opened-in-app': 'opened in an app window',
-    'opened-in-system-browser': 'opened in the system browser',
 };
 
 const MAX_MESSAGE_DATA_LENGTH = 500;
