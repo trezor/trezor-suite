@@ -2,6 +2,7 @@ import type { CryptoId } from 'invity-api';
 
 import { AnalyticsDesktopEvents } from '@suite/analytics';
 import type { NetworkConfigWithoutTestnets, NetworkSymbol } from '@suite-common/wallet-config';
+import type TrezorConnect from '@trezor/connect-web';
 import type { TrezorUserEnvLinkClass } from '@trezor/trezor-user-env-link';
 
 import { LaunchSuiteParams } from '../electron';
@@ -36,6 +37,7 @@ declare global {
         // Needed for Cypress and Playwright
         Playwright?: any;
         store?: any;
+        TrezorConnect?: Pick<typeof TrezorConnect, 'ethereumSignTransaction'>;
     }
 }
 
