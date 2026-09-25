@@ -1,5 +1,5 @@
 import { useMemo } from 'react';
-import { Gesture, type PanGesture } from 'react-native-gesture-handler';
+import { Gesture } from 'react-native-gesture-handler';
 import { type SharedValue, useSharedValue } from 'react-native-reanimated';
 
 interface Config {
@@ -11,7 +11,7 @@ interface Result {
     x: SharedValue<number>;
     y: SharedValue<number>;
     isActive: SharedValue<boolean>;
-    gesture: PanGesture;
+    gesture: ReturnType<typeof Gesture.Pan>;
 }
 
 export function usePanGesture({ enabled, holdDuration = 300 }: Config): Result {

@@ -14,8 +14,8 @@
         "@suite-common/formatters": "workspace:*",
         "@suite-common/wallet-core": "workspace:*",
         "@suite-native/intl": "workspace:*",
-        "expo-localization": "~57.0.1",
-        "react": "19.2.3",
+        "expo-localization": "~58.0.1",
+        "react": "19.3.0",
         "react-redux": "9.3.0"
     }
 }

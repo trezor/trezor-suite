@@ -1,4 +1,9 @@
-import { forwardRef } from 'react';
+import {
+    type ForwardRefExoticComponent,
+    type PropsWithoutRef,
+    type RefAttributes,
+    forwardRef,
+} from 'react';
 
 import {
     Input,
@@ -27,7 +32,9 @@ export type FieldProps = AllowedTextInputFieldProps &
         valueTransformer?: (value: string) => string;
     };
 
-export const TextInputField = forwardRef<InputType, FieldProps>(
+export const TextInputField: ForwardRefExoticComponent<
+    PropsWithoutRef<FieldProps> & RefAttributes<InputType>
+> = forwardRef<InputType, FieldProps>(
     (
         {
             name,

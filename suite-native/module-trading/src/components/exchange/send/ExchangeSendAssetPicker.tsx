@@ -1,5 +1,5 @@
 import { useCallback, useRef, useState } from 'react';
-import { type TextInput } from 'react-native';
+import { type TextInputInstance } from 'react-native';
 import { useSelector } from 'react-redux';
 
 import { tradingExchangeActions } from '@suite-common/trading';
@@ -30,7 +30,7 @@ const SEND_ASSET_COLLISION = {
 } as const;
 
 export const ExchangeSendAssetPicker = () => {
-    const inputRef = useRef<TextInput>(null);
+    const inputRef = useRef<TextInputInstance>(null);
     const form = useExchangeFormContext();
     const [shouldFocusInput, setShouldFocusInput] = useState<boolean>(false);
     const myAssets = useSelector((state: CombinedSelectorsRootState) =>

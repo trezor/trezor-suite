@@ -43,10 +43,10 @@
         "@suite-native/trading-state": "workspace:*",
         "@trezor/connect-common": "workspace:^",
         "@trezor/env-utils": "workspace:*",
-        "expo": "~57.0.8",
-        "react": "19.2.3",
+        "expo": "58.0.0-preview.7",
+        "react": "19.3.0",
         "react-hook-form": "^7.77.0",
-        "react-native": "0.86.0",
+        "react-native": "0.88.0-rc.1",
         "react-redux": "9.3.0"
     },
     "devDependencies": {

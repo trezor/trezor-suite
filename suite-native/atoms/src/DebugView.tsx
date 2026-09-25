@@ -1,5 +1,12 @@
-import { forwardRef, useLayoutEffect, useRef } from 'react';
-import { View, type ViewProps } from 'react-native';
+import {
+    type ForwardRefExoticComponent,
+    type PropsWithoutRef,
+    type RefAttributes,
+    forwardRef,
+    useLayoutEffect,
+    useRef,
+} from 'react';
+import { View, type ViewInstance, type ViewProps } from 'react-native';
 import Animated, {
     interpolateColor,
     useAnimatedStyle,
@@ -41,7 +48,9 @@ export const useDebugView = () => {
     };
 };
 
-export const DebugView = forwardRef<View, ViewProps>(({ style, children, ...props }, ref) => {
+export const DebugView: ForwardRefExoticComponent<
+    PropsWithoutRef<ViewProps> & RefAttributes<ViewInstance>
+> = forwardRef<ViewInstance, ViewProps>(({ style, children, ...props }, ref) => {
     const { utils } = useNativeStyles();
     const { isRerenderCountEnabled } = useDebugView();
     const rerenderCount = useRef(0);

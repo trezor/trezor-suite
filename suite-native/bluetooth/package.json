@@ -29,9 +29,9 @@
         "@trezor/device-utils": "workspace:*",
         "@trezor/styles-native": "workspace:*",
         "@trezor/transport-native-bluetooth": "workspace:*",
-        "expo-constants": "~57.0.6",
-        "react": "19.2.3",
-        "react-native": "0.86.0",
+        "expo-constants": "~58.0.7",
+        "react": "19.3.0",
+        "react-native": "0.88.0-rc.1",
         "react-native-permissions": "5.4.4",
         "react-redux": "9.3.0"
     }

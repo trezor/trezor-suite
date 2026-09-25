@@ -1,11 +1,19 @@
 import {
     type ComponentType,
+    type ForwardRefExoticComponent,
+    type PropsWithoutRef,
     type RefAttributes,
     forwardRef,
     useImperativeHandle,
     useRef,
 } from 'react';
-import { Platform, Pressable, TextInput, type TextInputProps } from 'react-native';
+import {
+    Platform,
+    Pressable,
+    TextInput,
+    type TextInputInstance,
+    type TextInputProps,
+} from 'react-native';
 
 import { BottomSheetTextInput } from '@gorhom/bottom-sheet';
 
@@ -87,7 +95,9 @@ export type SearchInputProps = {
     autoCapitalize?: TextInputProps['autoCapitalize'];
 };
 
-export const SearchInput = forwardRef<TextInput, SearchInputProps>(
+export const SearchInput: ForwardRefExoticComponent<
+    PropsWithoutRef<SearchInputProps> & RefAttributes<TextInputInstance>
+> = forwardRef<TextInputInstance, SearchInputProps>(
     (
         {
             onChange,
@@ -110,8 +120,8 @@ export const SearchInput = forwardRef<TextInput, SearchInputProps>(
 
         // Keep an internal ref so tap-to-focus and clear work even when no ref is
         // forwarded, and expose the underlying TextInput instance to forwarded refs.
-        const inputRef = useRef<TextInput>(null);
-        useImperativeHandle(ref, () => inputRef.current as TextInput, []);
+        const inputRef = useRef<TextInputInstance>(null);
+        useImperativeHandle(ref, () => inputRef.current as TextInputInstance, []);
 
         const {
             handleClear,
@@ -127,7 +137,7 @@ export const SearchInput = forwardRef<TextInput, SearchInputProps>(
         // a single signature so the shared `ref`/props type-check against both.
         const InputComponent = (
             isBottomSheetInput ? BottomSheetTextInput : TextInput
-        ) as ComponentType<TextInputProps & RefAttributes<TextInput>>;
+        ) as ComponentType<TextInputProps & RefAttributes<TextInputInstance>>;
 
         return (
             <Pressable onPress={handleInputFocus}>

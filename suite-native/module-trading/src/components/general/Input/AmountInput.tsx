@@ -1,5 +1,20 @@
-import { forwardRef, useCallback, useImperativeHandle, useRef, useState } from 'react';
-import { type LayoutChangeEvent, Pressable, TextInput, type TextInputProps } from 'react-native';
+import {
+    type ForwardRefExoticComponent,
+    type PropsWithoutRef,
+    type RefAttributes,
+    forwardRef,
+    useCallback,
+    useImperativeHandle,
+    useRef,
+    useState,
+} from 'react';
+import {
+    type LayoutChangeEvent,
+    Pressable,
+    TextInput,
+    type TextInputInstance,
+    type TextInputProps,
+} from 'react-native';
 
 import { BoxSkeleton } from '@suite-native/atoms';
 import { truncateDecimals } from '@suite-native/helpers';
@@ -92,7 +107,9 @@ const useInputLayoutControls = (value: string | undefined) => {
     };
 };
 
-export const AmountInput = forwardRef<TextInput, AmountInputProps>(
+export const AmountInput: ForwardRefExoticComponent<
+    PropsWithoutRef<AmountInputProps> & RefAttributes<TextInputInstance>
+> = forwardRef<TextInputInstance, AmountInputProps>(
     (
         {
             onPress,
@@ -110,7 +127,7 @@ export const AmountInput = forwardRef<TextInput, AmountInputProps>(
         },
         ref,
     ) => {
-        const innerRef = useRef<TextInput>(null);
+        const innerRef = useRef<TextInputInstance>(null);
         useImperativeHandle(ref, () => innerRef.current!, []);
 
         const { applyStyle, utils } = useNativeStyles();

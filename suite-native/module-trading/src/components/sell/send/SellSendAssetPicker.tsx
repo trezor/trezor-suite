@@ -1,5 +1,5 @@
 import { useCallback, useRef, useState } from 'react';
-import { type TextInput } from 'react-native';
+import { type TextInputInstance } from 'react-native';
 import { useSelector } from 'react-redux';
 
 import { tradingSellActions } from '@suite-common/trading';
@@ -22,7 +22,7 @@ import { TradeableAssetButton } from '../../general/TradeableAssetButton';
 const ASSET_PICKER_TEST_ID = '@trading/sell/asset-send-button';
 
 export const SellSendAssetPicker = () => {
-    const inputRef = useRef<TextInput>(null);
+    const inputRef = useRef<TextInputInstance>(null);
     const form = useSellFormContext();
     const { control, setValue } = form;
     const [shouldFocusInput, setShouldFocusInput] = useState<boolean>(false);

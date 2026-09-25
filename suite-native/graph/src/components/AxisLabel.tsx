@@ -1,5 +1,5 @@
 import { useCallback, useRef, useState } from 'react';
-import { Dimensions, View } from 'react-native';
+import { Dimensions, View, type ViewInstance } from 'react-native';
 
 import { useFocusEffect } from '@react-navigation/native';
 
@@ -42,7 +42,7 @@ const axisLabelStyle = prepareNativeStyle<AxisLabelStyleProps>(
 export const AxisLabel = ({ x, value }: AxisLabelProps) => {
     const { applyStyle, utils } = useNativeStyles();
     const { isDiscreetMode } = useDiscreetMode();
-    const viewRef = useRef<View>(null);
+    const viewRef = useRef<ViewInstance>(null);
     const [isOverflowing, setIsOverflowing] = useState(false);
 
     const handleLayoutOverflow = useCallback(() => {

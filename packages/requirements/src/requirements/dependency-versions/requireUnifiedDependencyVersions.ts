@@ -16,6 +16,8 @@ import type { Requirement } from '../Requirement';
  */
 export const ALLOWED_DRIFTS = new Set([
     'babel-jest', // waiting for suite-native who are waiting for expo to update babel-jest
+    'react', // Expo SDK 58 native experiment uses 19.3 while web manifests still declare 19.2
+    'react-dom', // root resolution keeps React DOM aligned with React during the native experiment
 ]);
 
 type VersionOccurrence = {

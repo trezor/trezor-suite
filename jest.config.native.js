@@ -5,6 +5,7 @@ const {
     watchPathIgnorePatterns,
     moduleNameMapper,
 } = require('./jest.config.base');
+const swcConfig = require('./jest.config.swc-transform');
 
 process.env.EXPO_OS ??= 'ios';
 
@@ -17,8 +18,6 @@ const babelConfig = {
     },
 };
 
-const swcConfig = require('./jest.config.swc-transform');
-
 module.exports = {
     rootDir: process.cwd(),
     moduleFileExtensions,
@@ -27,6 +26,8 @@ module.exports = {
     watchPathIgnorePatterns,
     moduleNameMapper: {
         ...moduleNameMapper,
+        '^react-native/asset-registry$':
+            '<rootDir>/../../node_modules/react-native/src/asset-registry.js',
         '^@evolu/common$': '<rootDir>/../../suite-native/test-utils/src/mocks/evoluMock.ts',
         '^@evolu/common/evolu$': '<rootDir>/../../suite-native/test-utils/src/mocks/evoluMock.ts',
         '^@evolu/react-native$': '<rootDir>/../../suite-native/test-utils/src/mocks/evoluMock.ts',
@@ -38,6 +39,7 @@ module.exports = {
     },
     testEnvironment: 'jsdom',
     preset: 'jest-expo',
+    resolver: '<rootDir>/../../suite-native/test-utils/src/jestResolver.js',
     // SWC has no Flow support; React Native source in node_modules (allowed through
     // transformIgnorePatterns) ships Flow types, so .js/.jsx must go through babel.
     // Inspiration from GH issue comment: https://github.com/swc-project/jest/issues/85#issuecomment-1122482982

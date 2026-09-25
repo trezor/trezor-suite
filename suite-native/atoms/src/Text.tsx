@@ -3,9 +3,10 @@ import {
     PixelRatio,
     Text as RNText,
     type TextProps as RNTextProps,
+    type TextInstance,
     type TextStyle,
 } from 'react-native';
-import Animated from 'react-native-reanimated';
+import Animated, { type AnimatedProps } from 'react-native-reanimated';
 
 import {
     type NativeStyleObject,
@@ -85,7 +86,9 @@ const textStyle = prepareNativeStyle<TextStyleProps>(
     }),
 );
 
-export const Text = React.forwardRef<RNText, TextProps>(
+export const Text: React.ForwardRefExoticComponent<
+    React.PropsWithoutRef<TextProps> & React.RefAttributes<TextInstance>
+> = React.forwardRef<TextInstance, TextProps>(
     (
         {
             variant = 'body-md',
@@ -119,4 +122,6 @@ export const Text = React.forwardRef<RNText, TextProps>(
 
 Text.displayName = 'Text';
 
-export const AnimatedText = Animated.createAnimatedComponent(Text);
+export const AnimatedText: React.ComponentType<
+    AnimatedProps<TextProps> & React.RefAttributes<TextInstance>
+> = Animated.createAnimatedComponent(Text);

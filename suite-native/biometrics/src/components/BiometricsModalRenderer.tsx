@@ -33,7 +33,16 @@ export const BiometricsModalRenderer = () => {
             );
         };
 
-        handleBiometricsAppStateChange(AppState.currentState);
+        const { currentState } = AppState;
+        if (
+            currentState === 'active' ||
+            currentState === 'background' ||
+            currentState === 'inactive' ||
+            currentState === 'extension' ||
+            currentState === 'unknown'
+        ) {
+            handleBiometricsAppStateChange(currentState);
+        }
 
         const subscription = AppState.addEventListener('change', handleBiometricsAppStateChange);
 

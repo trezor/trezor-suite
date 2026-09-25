@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, type ViewProps, type ViewStyle } from 'react-native';
+import { View, type ViewInstance, type ViewProps, type ViewStyle } from 'react-native';
 
 import { D, pipe } from '@mobily/ts-belt';
 
@@ -53,7 +53,9 @@ const boxStyle = prepareNativeStyle<BoxStyleProps>((_utils, { ...styles }) => ({
     ...styles,
 }));
 
-export const Box = React.forwardRef<View, BoxProps>(({ style, ...props }, ref) => {
+export const Box: React.ForwardRefExoticComponent<
+    React.PropsWithoutRef<BoxProps> & React.RefAttributes<ViewInstance>
+> = React.forwardRef<ViewInstance, BoxProps>(({ style, ...props }, ref) => {
     const { applyStyle, utils } = useNativeStyles();
     const { isFlashOnRerenderEnabled } = useDebugView();
     const ViewComponent = isFlashOnRerenderEnabled ? DebugView : View;

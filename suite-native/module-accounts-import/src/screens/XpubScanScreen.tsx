@@ -212,7 +212,7 @@ export const XpubScanScreen = ({
                             <AnimatedBox entering={FadeIn.duration(FORM_BUTTON_FADE_IN_DURATION)}>
                                 <Button
                                     testID="@accounts-import/sync-coins/xpub-submit"
-                                    onPress={onXpubFormSubmit}
+                                    onPress={() => onXpubFormSubmit()}
                                 >
                                     <Translation id="generic.buttons.confirm" />
                                 </Button>

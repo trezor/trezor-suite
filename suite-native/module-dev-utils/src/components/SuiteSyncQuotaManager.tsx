@@ -67,7 +67,7 @@ export const SuiteSyncQuotaManager = () => {
                             intent="neutral"
                             priority="secondary"
                             size="medium"
-                            onPress={onSubmit}
+                            onPress={() => onSubmit()}
                         >
                             Save
                         </Button>

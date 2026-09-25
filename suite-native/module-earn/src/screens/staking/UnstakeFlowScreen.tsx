@@ -119,7 +119,7 @@ export const UnstakeFlowScreen = () => {
                     <Box paddingHorizontal="sp16" paddingBottom="sp16">
                         <Button
                             isDisabled={!isValid || isFeeUnavailable || isPrecomposeError}
-                            onPress={handleReviewAndSign}
+                            onPress={() => handleReviewAndSign()}
                         >
                             <Translation id="earn.earnFormScreen.reviewAndSign" />
                         </Button>

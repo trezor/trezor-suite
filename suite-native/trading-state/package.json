@@ -40,7 +40,7 @@
         "@trezor/device-utils": "workspace:*",
         "@trezor/type-utils": "workspace:*",
         "@trezor/utils": "workspace:*",
-        "react-native": "0.86.0"
+        "react-native": "0.88.0-rc.1"
     },
     "devDependencies": {
         "@suite-native/trading-fixtures": "workspace:*",

@@ -94,7 +94,7 @@ export const AnalyticsLogging = () => {
                             <Button
                                 testID="@analytics-url-control/save-button"
                                 size="medium"
-                                onPress={onSubmit}
+                                onPress={() => onSubmit()}
                             >
                                 Save
                             </Button>

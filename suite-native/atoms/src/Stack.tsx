@@ -1,6 +1,6 @@
 import React, { type ReactNode } from 'react';
-import { type View } from 'react-native';
-import Animated from 'react-native-reanimated';
+import { type ViewInstance } from 'react-native';
+import Animated, { type AnimatedProps } from 'react-native-reanimated';
 
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 import { type NativeSpacing } from '@trezor/theme';
@@ -29,7 +29,9 @@ const spacerStyle = prepareNativeStyle<SpacerStyleProps>((utils, { spacing, orie
     };
 });
 
-export const Stack = React.forwardRef<View, StackProps>(
+export const Stack: React.ForwardRefExoticComponent<
+    React.PropsWithoutRef<StackProps> & React.RefAttributes<ViewInstance>
+> = React.forwardRef<ViewInstance, StackProps>(
     ({ children, style, spacing, orientation = 'vertical', ...rest }: StackProps, ref) => {
         const { applyStyle } = useNativeStyles();
 
@@ -51,12 +53,14 @@ export const Stack = React.forwardRef<View, StackProps>(
     },
 );
 
-export const VStack = Stack;
+export const VStack: typeof Stack = Stack;
 export const HStack = (props: StackProps) => <Stack {...props} orientation="horizontal" />;
 
 Stack.displayName = 'Stack';
 VStack.displayName = 'VStack';
 HStack.displayName = 'HStack';
 
-export const AnimatedVStack = Animated.createAnimatedComponent(VStack);
+export const AnimatedVStack: React.ComponentType<
+    AnimatedProps<StackProps> & React.RefAttributes<ViewInstance>
+> = Animated.createAnimatedComponent(VStack);
 export const AnimatedHStack = Animated.createAnimatedComponent(HStack);

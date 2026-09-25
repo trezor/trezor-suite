@@ -1,14 +1,12 @@
 import { type ReactNode, createContext, useCallback, useContext, useState } from 'react';
-
-import { type NativeScrollEvent } from 'react-native/Libraries/Components/ScrollView/ScrollView';
-import { type NativeSyntheticEvent } from 'react-native/Libraries/Types/CoreEventTypes';
+import { type ScrollEvent } from 'react-native';
 
 import { throwError } from '@trezor/utils';
 
 type HeaderContextType = {
     setScrollableHeaderHeight: (height: number) => void;
     isScrollableHeaderScrolled: boolean;
-    handleDynamicHeaderScroll: (e: NativeSyntheticEvent<NativeScrollEvent>) => void;
+    handleDynamicHeaderScroll: (e: ScrollEvent) => void;
 };
 
 const HeaderContext = createContext<HeaderContextType | undefined>(undefined);
@@ -23,7 +21,7 @@ export const DynamicHeaderProvider = ({ children, scrollThreshold }: HeaderProvi
     const [scrollableHeaderHeight, setScrollableHeaderHeight] = useState(0);
 
     const handleDynamicHeaderScroll = useCallback(
-        ({ nativeEvent }: NativeSyntheticEvent<NativeScrollEvent>) => {
+        ({ nativeEvent }: ScrollEvent) => {
             const isOffsetBigger =
                 nativeEvent.contentOffset.y > scrollableHeaderHeight * (scrollThreshold ?? 1);
             setIsScrollableHeaderScrolled(isOffsetBigger);

@@ -3,13 +3,13 @@ import {
     type LayoutChangeEvent,
     type NativeScrollEvent,
     type NativeSyntheticEvent,
-    type ScrollView,
+    type ScrollViewInstance,
 } from 'react-native';
 
 import { type AccountAssetsTab } from './types';
 
 export const useActiveTabScroll = (activeTab: AccountAssetsTab) => {
-    const scrollViewRef = useRef<ScrollView>(null);
+    const scrollViewRef = useRef<ScrollViewInstance>(null);
     const tabLayouts = useRef<Partial<Record<AccountAssetsTab, { x: number; width: number }>>>({});
     const scrollOffset = useRef(0);
     const visibleWidth = useRef(0);

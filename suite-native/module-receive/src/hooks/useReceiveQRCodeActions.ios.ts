@@ -17,15 +17,22 @@ import { saveQRCodeImageToPhotos } from '../utils/saveQRCodeImageToPhotos.ios';
 const getShareableFileURI = (uri: string): string =>
     uri.startsWith('file://') ? uri : `file://${uri}`;
 
+const captureQRCodeImage = (
+    qrCodeView: ViewShotRef,
+    options: Parameters<typeof captureRef>[1],
+): Promise<string> =>
+    // react-native-view-shot still types host views as React.Component, unlike RN 0.88.
+    captureRef(qrCodeView as unknown as Parameters<typeof captureRef>[0], options);
+
 const captureQRCodeImageURI = (qrCodeView: ViewShotRef): Promise<string> =>
-    captureRef(qrCodeView, {
+    captureQRCodeImage(qrCodeView, {
         fileName: 'trezor-receive-address-qr',
         format: 'png',
         result: 'tmpfile',
     });
 
 const captureQRCodeImageBase64 = (qrCodeView: ViewShotRef): Promise<string> =>
-    captureRef(qrCodeView, {
+    captureQRCodeImage(qrCodeView, {
         format: 'png',
         result: 'base64',
     });

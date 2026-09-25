@@ -1,12 +1,20 @@
-import { type ReactNode, forwardRef, useEffect, useState } from 'react';
+import {
+    type ForwardRefExoticComponent,
+    type PropsWithoutRef,
+    type ReactNode,
+    type RefAttributes,
+    forwardRef,
+    useEffect,
+    useState,
+} from 'react';
 import {
     type NativeSyntheticEvent,
     Platform,
     type TargetedEvent,
     TextInput,
+    type TextInputInstance,
     type TextInputProps,
 } from 'react-native';
-import { type TextInput as GHTextInput } from 'react-native-gesture-handler';
 import Animated, {
     Easing,
     interpolate,
@@ -46,7 +54,7 @@ export type InputLabelVariantProps =
 
 export type InputProps = TextInputProps & InputBaseProps & InputLabelVariantProps;
 
-export type InputType = TextInput | GHTextInput;
+export type InputType = TextInputInstance;
 
 const INPUT_VERTICAL_PADDING =
     Platform.OS == 'android' ? nativeSpacings.sp16 - 2 : nativeSpacings.sp16;
@@ -240,7 +248,9 @@ const usePlaceholderAnimatedStyle = (isPlaceholderVisible: boolean) => {
     return useAnimatedStyle(() => ({ opacity: opacity.value }));
 };
 
-export const Input = forwardRef<TextInput, InputProps>(
+export const Input: ForwardRefExoticComponent<
+    PropsWithoutRef<InputProps> & RefAttributes<TextInputInstance>
+> = forwardRef<TextInputInstance, InputProps>(
     (
         {
             value,

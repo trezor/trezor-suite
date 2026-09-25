@@ -1,5 +1,10 @@
-import { forwardRef } from 'react';
-import { type TextInput } from 'react-native';
+import {
+    type ForwardRefExoticComponent,
+    type PropsWithoutRef,
+    type RefAttributes,
+    forwardRef,
+} from 'react';
+import { type TextInputInstance } from 'react-native';
 import { useSelector } from 'react-redux';
 
 import { selectTradingExchangeIsLoading } from '@suite-common/trading';
@@ -18,33 +23,31 @@ export type ExchangeReceiveAmountInputProps = {
 
 const EXCHANGE_RECEIVE_INPUT_TEST_ID = '@trading/exchange/receive-amount-input';
 
-export const ExchangeReceiveAmountInput = forwardRef<TextInput, ExchangeReceiveAmountInputProps>(
-    ({ showAssetsSheet }, ref) => {
-        const { translate } = useTranslate();
-        const isLoading = useSelector(selectTradingExchangeIsLoading);
-        const { control } = useExchangeFormContext();
-        const [asset, amount] = useWatch({
-            control,
-            name: ['receiveAsset', 'receiveCryptoAmount'],
-        });
-        const symbol = getSymbolFromTradeableAsset(asset);
-        const { cryptoAmountTransformer } = useAmountInputTransformers(symbol);
+export const ExchangeReceiveAmountInput: ForwardRefExoticComponent<
+    PropsWithoutRef<ExchangeReceiveAmountInputProps> & RefAttributes<TextInputInstance>
+> = forwardRef<TextInputInstance, ExchangeReceiveAmountInputProps>(({ showAssetsSheet }, ref) => {
+    const { translate } = useTranslate();
+    const isLoading = useSelector(selectTradingExchangeIsLoading);
+    const { control } = useExchangeFormContext();
+    const [asset, amount] = useWatch({
+        control,
+        name: ['receiveAsset', 'receiveCryptoAmount'],
+    });
+    const symbol = getSymbolFromTradeableAsset(asset);
+    const { cryptoAmountTransformer } = useAmountInputTransformers(symbol);
 
-        return (
-            <AmountInput
-                ref={ref}
-                value={amount}
-                accessibilityLabel={translate('moduleTrading.selectCoin.amountLabel')}
-                editable={false}
-                inputTransformer={cryptoAmountTransformer}
-                onPress={showAssetsSheet}
-                loadingAccessibilityLabel={translate(
-                    'moduleTrading.tradingScreen.quotesLoadingLabel',
-                )}
-                onChangeText={noop}
-                isLoading={isLoading}
-                testID={EXCHANGE_RECEIVE_INPUT_TEST_ID}
-            />
-        );
-    },
-);
+    return (
+        <AmountInput
+            ref={ref}
+            value={amount}
+            accessibilityLabel={translate('moduleTrading.selectCoin.amountLabel')}
+            editable={false}
+            inputTransformer={cryptoAmountTransformer}
+            onPress={showAssetsSheet}
+            loadingAccessibilityLabel={translate('moduleTrading.tradingScreen.quotesLoadingLabel')}
+            onChangeText={noop}
+            isLoading={isLoading}
+            testID={EXCHANGE_RECEIVE_INPUT_TEST_ID}
+        />
+    );
+});

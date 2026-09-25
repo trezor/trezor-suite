@@ -1,12 +1,9 @@
 import React, { type ReactNode, useRef } from 'react';
-import { type ScrollViewProps } from 'react-native';
+import { type ScrollEvent, type ScrollViewProps } from 'react-native';
 import {
     KeyboardAwareScrollView,
     type KeyboardAwareScrollViewRef,
 } from 'react-native-keyboard-controller';
-
-import { type NativeScrollEvent } from 'react-native/Libraries/Components/ScrollView/ScrollView';
-import { type NativeSyntheticEvent } from 'react-native/Libraries/Types/CoreEventTypes';
 
 import { ScrollViewContext, useScrollDivider } from '@suite-native/scrollview';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
@@ -40,7 +37,7 @@ export const ScreenContentWrapper = ({
 
     const scrollHandler = (() => {
         if (hasHeader && isDynamicHeader) {
-            return (event: NativeSyntheticEvent<NativeScrollEvent>) => {
+            return (event: ScrollEvent) => {
                 handleDynamicHeaderScroll(event);
                 handleScroll(event);
             };

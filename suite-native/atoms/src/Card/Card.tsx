@@ -1,5 +1,5 @@
 import React, { type ComponentProps, type ReactNode } from 'react';
-import { View } from 'react-native';
+import { View, type ViewInstance } from 'react-native';
 import Animated from 'react-native-reanimated';
 
 import { type NativeStyleObject, prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
@@ -100,7 +100,9 @@ const alertBoxWrapperStyle = prepareNativeStyle<{
     ],
 }));
 
-export const Card = React.forwardRef<View, CardProps>(
+export const Card: React.ForwardRefExoticComponent<
+    React.PropsWithoutRef<CardProps> & React.RefAttributes<ViewInstance>
+> = React.forwardRef<ViewInstance, CardProps>(
     (
         {
             children,

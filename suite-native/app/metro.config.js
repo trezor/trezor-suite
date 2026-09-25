@@ -172,6 +172,7 @@ const configWithStorybook = mergeConfig(
     }),
 );
 
+/** @type {import('metro-config').MetroConfig} */
 let exportedConfig = configWithStorybook;
 
 if (

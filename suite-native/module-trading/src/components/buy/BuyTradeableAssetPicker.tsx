@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { type TextInput } from 'react-native';
+import { type TextInputInstance } from 'react-native';
 import { useSelector } from 'react-redux';
 
 import { selectHasBitcoinOnlyFirmware } from '@suite-common/device';
@@ -18,7 +18,7 @@ import { TradeableAssetButton } from '../general/TradeableAssetButton';
 const ASSET_PICKER_TEST_ID = '@trading/buy/asset-receive-button';
 
 export const BuyTradeableAssetPicker = () => {
-    const inputRef = useRef<TextInput>(null);
+    const inputRef = useRef<TextInputInstance>(null);
     const form = useBuyFormContext();
     const [shouldFocusInput, setShouldFocusInput] = useState<boolean>(false);
     const selectedValue = useWatch({ control: form.control, name: 'asset' });

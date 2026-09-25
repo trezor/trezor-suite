@@ -39,7 +39,7 @@ export const DeviceNameScreen = () => {
                     </VStack>
                 </VStack>
                 <FormSubmitButton
-                    onPress={onSubmit}
+                    onPress={() => onSubmit()}
                     isVisible={isSubmittable}
                     testID="@device-name/submit-button"
                 >

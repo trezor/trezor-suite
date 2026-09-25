@@ -1,7 +1,7 @@
 import { type MutableRefObject, createContext, useContext } from 'react';
-import { type ScrollView } from 'react-native';
+import { type ScrollViewInstance } from 'react-native';
 
-export const ScrollViewContext = createContext<MutableRefObject<ScrollView | null>>({
+export const ScrollViewContext = createContext<MutableRefObject<ScrollViewInstance | null>>({
     current: null,
 });
 

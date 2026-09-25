@@ -146,7 +146,7 @@ export const MessageSystemAddExperimentForm = () => {
                     <Button
                         size="medium"
                         isDisabled={!form.formState.isValid}
-                        onPress={handleAddExperiment}
+                        onPress={() => handleAddExperiment()}
                         flex={1}
                     >
                         Add experiment

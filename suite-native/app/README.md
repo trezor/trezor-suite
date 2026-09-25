@@ -27,9 +27,12 @@ nix develop .#use_android
 
 ## Before you run the app
 
+For this Expo SDK 58 preview, if the Yarn registry cannot resolve a preview package, install from the npm registry with `YARN_NPM_REGISTRY_SERVER=https://registry.npmjs.org yarn --immutable` from the repository root.
+
 1. Run `yarn native:prebuild` (shortcut `yarn p`) to generate `ios/` and `android/` directories.
     - You can prebuild for specific platform if you setup only Android/iOS: `yarn prebuild --platform [android|ios]`
     - It's necessary to re-run faster version of this command `yarn native:prebuild:no-clean` on any change in native code (when you change branch/pull/rebase).
+    - During the Expo SDK 58 preview, the `prebuild` script uses the published `expo-template-bare-minimum@58.0.0` directly because the `sdk-58` template tag is not available yet.
 
 ## Running app on Android
 
@@ -51,8 +54,9 @@ Trezor can't be connected to iOS device via cable, but it's possible to use Port
 
 Or via Xcode (for native errors debug):
 
-1. Open `suite-native/app/ios/TrezorSuite.xcworkspace` in Xcode (from cli `xed suite-native/app/ios`)
-2. Hit the ▶️ `Run` button
+1. Open the generated workspace for your build type in Xcode, for example `suite-native/app/ios/TrezorSuiteDebug.xcworkspace` (from CLI `xed suite-native/app/ios`).
+2. Select the `TrezorSuiteDebug` scheme and your iPhone, configure your signing team if needed, then hit the ▶️ `Run` button.
+3. For a physical iPhone, keep Metro running on a reachable host address. If another worktree already uses port 8081, start this worktree with `yarn native:start --port 8092`.
 
 It is also possible for development purposes to connect Trezor emulator to iOS Simulator if you turn on the feature flag `Connect device` in DEV utils.
 

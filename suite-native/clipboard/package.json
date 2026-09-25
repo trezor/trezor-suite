@@ -11,12 +11,12 @@
         "type-check": "yarn g:tsc --build"
     },
     "dependencies": {
-        "@expo/ui": "57.0.10",
+        "@expo/ui": "~58.0.7",
         "@suite-native/intl": "workspace:*",
         "@suite-native/toasts": "workspace:*",
-        "expo-clipboard": "~57.0.1",
-        "expo-haptics": "~57.0.1",
-        "react": "19.2.3",
-        "react-native": "0.86.0"
+        "expo-clipboard": "~58.0.1",
+        "expo-haptics": "~58.0.1",
+        "react": "19.3.0",
+        "react-native": "0.88.0-rc.1"
     }
 }

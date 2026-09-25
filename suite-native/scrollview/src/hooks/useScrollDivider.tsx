@@ -1,9 +1,6 @@
 import React, { useCallback, useState } from 'react';
-import { View } from 'react-native';
+import { type ScrollEvent, View } from 'react-native';
 import Animated, { FadeIn, FadeOut } from 'react-native-reanimated';
-
-import { type NativeScrollEvent } from 'react-native/Libraries/Components/ScrollView/ScrollView';
-import { type NativeSyntheticEvent } from 'react-native/Libraries/Types/CoreEventTypes';
 
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
@@ -26,7 +23,7 @@ const ScrollDivider = () => {
 export const useScrollDivider = () => {
     const [isScrolled, setIsScrolled] = useState(false);
 
-    const handleScroll = useCallback(({ nativeEvent }: NativeSyntheticEvent<NativeScrollEvent>) => {
+    const handleScroll = useCallback(({ nativeEvent }: ScrollEvent) => {
         setIsScrolled(nativeEvent.contentOffset.y > 0);
     }, []);
 

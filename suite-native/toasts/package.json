@@ -18,8 +18,8 @@
         "@trezor/styles-native": "workspace:*",
         "@trezor/theme": "workspace:*",
         "jotai": "2.17.1",
-        "react": "19.2.3",
-        "react-native-reanimated": "4.5.0",
-        "react-native-safe-area-context": "~5.7.0"
+        "react": "19.3.0",
+        "react-native-reanimated": "4.7.0",
+        "react-native-safe-area-context": "~5.9.1"
     }
 }

@@ -1,5 +1,10 @@
-import { forwardRef } from 'react';
-import { type TextInput } from 'react-native';
+import {
+    type ForwardRefExoticComponent,
+    type PropsWithoutRef,
+    type RefAttributes,
+    forwardRef,
+} from 'react';
+import { type TextInputInstance } from 'react-native';
 import { useSelector } from 'react-redux';
 
 import { selectTradingSellIsLoading } from '@suite-common/trading';
@@ -19,38 +24,36 @@ export type SellSendAmountInputProps = {
 
 const SELL_SEND_INPUT_TEST_ID = '@trading/sell/send-amount-input';
 
-export const SellSendAmountInput = forwardRef<TextInput, SellSendAmountInputProps>(
-    ({ showAssetsScreen }, ref) => {
-        const { translate } = useTranslate();
-        const { control } = useSellFormContext();
-        const [asset, account, amountInCrypto] = useWatch({
-            control,
-            name: ['sendAsset', 'sendAccount', 'amountInCrypto'],
-        });
-        const symbol = getSymbolFromTradeableAsset(asset);
-        const { cryptoAmountTransformer } = useAmountInputTransformers(symbol);
-        const inputControls = useSellInputFormControls('cryptoStringAmount');
-        const decimals = useAmountInputDecimals(account, asset?.contractAddress);
+export const SellSendAmountInput: ForwardRefExoticComponent<
+    PropsWithoutRef<SellSendAmountInputProps> & RefAttributes<TextInputInstance>
+> = forwardRef<TextInputInstance, SellSendAmountInputProps>(({ showAssetsScreen }, ref) => {
+    const { translate } = useTranslate();
+    const { control } = useSellFormContext();
+    const [asset, account, amountInCrypto] = useWatch({
+        control,
+        name: ['sendAsset', 'sendAccount', 'amountInCrypto'],
+    });
+    const symbol = getSymbolFromTradeableAsset(asset);
+    const { cryptoAmountTransformer } = useAmountInputTransformers(symbol);
+    const inputControls = useSellInputFormControls('cryptoStringAmount');
+    const decimals = useAmountInputDecimals(account, asset?.contractAddress);
 
-        const isLoading = useSelector(selectTradingSellIsLoading);
+    const isLoading = useSelector(selectTradingSellIsLoading);
 
-        const isAssetSelected = !!asset;
+    const isAssetSelected = !!asset;
 
-        return (
-            <AmountInput
-                ref={ref}
-                {...inputControls}
-                accessibilityLabel={translate('moduleTrading.selectCoinToSell.amountLabel')}
-                editable={isAssetSelected}
-                inputTransformer={cryptoAmountTransformer}
-                maxDecimals={decimals}
-                onPress={isAssetSelected ? undefined : showAssetsScreen}
-                loadingAccessibilityLabel={translate(
-                    'moduleTrading.tradingScreen.quotesLoadingLabel',
-                )}
-                isLoading={isLoading && !amountInCrypto}
-                testID={SELL_SEND_INPUT_TEST_ID}
-            />
-        );
-    },
-);
+    return (
+        <AmountInput
+            ref={ref}
+            {...inputControls}
+            accessibilityLabel={translate('moduleTrading.selectCoinToSell.amountLabel')}
+            editable={isAssetSelected}
+            inputTransformer={cryptoAmountTransformer}
+            maxDecimals={decimals}
+            onPress={isAssetSelected ? undefined : showAssetsScreen}
+            loadingAccessibilityLabel={translate('moduleTrading.tradingScreen.quotesLoadingLabel')}
+            isLoading={isLoading && !amountInCrypto}
+            testID={SELL_SEND_INPUT_TEST_ID}
+        />
+    );
+});
