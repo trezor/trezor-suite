@@ -1,6 +1,6 @@
 import { type DeviceRootState } from '@suite-common/device';
 import { createWeakMapSelector, returnStableArrayIfEmpty } from '@suite-common/redux-utils';
-import { type NetworkSymbol } from '@suite-common/wallet-config';
+import { type NetworkSymbol, getNetworkDecimals } from '@suite-common/wallet-config';
 import {
     type AssetHolding,
     type AssetHoldingKey,
@@ -16,7 +16,7 @@ import {
     selectLastWeekFiatRates,
 } from '@suite-common/wallet-core';
 import { type RatesByKey, type TokenAddress } from '@suite-common/wallet-types';
-import { getFiatRateKey, toFiatCurrency } from '@suite-common/wallet-utils';
+import { getFiatRateKey, isDustHolding, toFiatCurrency } from '@suite-common/wallet-utils';
 import { type BaseCurrencyCode, type TokenInfo } from '@trezor/blockchain-link-types';
 import { type StaticSessionId } from '@trezor/device-utils';
 import { BigNumber } from '@trezor/utils';
@@ -44,6 +44,7 @@ export type AssetRow = {
     tokenInfo: TokenInfo | undefined;
     fiatValue: BigNumber;
     weekAgoFiatValue: BigNumber;
+    isDust: boolean;
 };
 
 const ZERO_FIAT_VALUE = new BigNumber(0);
@@ -55,7 +56,8 @@ const isSameRow = (previous: AssetRow, next: AssetRow) =>
     previous.fiatValue.eq(next.fiatValue) &&
     previous.weekAgoFiatValue.eq(next.weekAgoFiatValue) &&
     previous.tokenInfo === next.tokenInfo &&
-    previous.displaySymbol === next.displaySymbol;
+    previous.displaySymbol === next.displaySymbol &&
+    previous.isDust === next.isDust;
 
 const settleRow = (next: AssetRow): AssetRow => {
     const previous = builtRows.get(next.assetKey);
@@ -167,15 +169,24 @@ export const priceAssets = (
     const priced = assets.map(asset => {
         const fiatRateKey = getFiatRateKey(asset.symbol, baseCurrencyCode, asset.contractAddress);
         const amount = asset.cryptoBalance.toFixed();
+        const rate = currentFiatRates?.[fiatRateKey]?.rate;
+        const fiatValue = toFiatCurrency({ amount, rate }) ?? ZERO_FIAT_VALUE;
 
         return settleRow({
             ...asset,
-            fiatValue:
-                toFiatCurrency({ amount, rate: currentFiatRates?.[fiatRateKey]?.rate }) ??
-                ZERO_FIAT_VALUE,
+            fiatValue,
             weekAgoFiatValue:
                 toFiatCurrency({ amount, rate: lastWeekFiatRates?.[fiatRateKey]?.rate }) ??
                 ZERO_FIAT_VALUE,
+            // Only a token is ever dust: a coin is the network the user enabled, and the table
+            // says so whether the account holds anything or not.
+            isDust:
+                asset.contractAddress !== undefined &&
+                isDustHolding({
+                    cryptoBalance: asset.cryptoBalance,
+                    decimals: asset.tokenInfo?.decimals ?? getNetworkDecimals(asset.symbol),
+                    fiatValue: rate === undefined ? undefined : fiatValue,
+                }),
         });
     });
 
@@ -260,13 +271,22 @@ export type AssetFirstSection = {
     rows: readonly AssetRow[];
 };
 
+/** What the table lists as assets: everything the dust row gathers up is not among them. */
+const selectPricedRows = createMemoizedSelector([selectAssetFirstRows], rows =>
+    returnStableArrayIfEmpty(rows.filter(row => !row.isDust)),
+);
+
+export const selectAssetFirstDustRows = createMemoizedSelector([selectAssetFirstRows], rows =>
+    returnStableArrayIfEmpty(rows.filter(row => row.isDust)),
+);
+
 const selectDefaultSections = createMemoizedSelector(
-    [selectAssetFirstRows],
+    [selectPricedRows],
     (rows): readonly AssetFirstSection[] => [{ key: 'all', heading: undefined, rows }],
 );
 
 const selectNetworkSections = createMemoizedSelector(
-    [selectAssetFirstRows],
+    [selectPricedRows],
     (rows): readonly AssetFirstSection[] =>
         groupAssetRowsByNetwork(rows).map(group => ({
             key: group.symbol,

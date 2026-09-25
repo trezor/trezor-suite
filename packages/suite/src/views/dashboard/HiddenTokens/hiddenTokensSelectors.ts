@@ -2,14 +2,19 @@ import { createWeakMapSelector, returnStableArrayIfEmpty } from '@suite-common/r
 import {
     type AssetHolding,
     type HiddenAssetHoldings,
+    selectBaseCurrency,
+    selectCurrentFiatRates,
     selectEnabledNetworks,
     selectHiddenAssetHoldings,
+    selectLastWeekFiatRates,
 } from '@suite-common/wallet-core';
+import { isCryptoDustAmount } from '@suite-common/wallet-utils';
 import { type StaticSessionId } from '@trezor/device-utils';
 
 import {
     type AssetFirstTableState,
     type AssetTotal,
+    priceAssets,
     toAssetTotal,
 } from '../AssetFirstTable/assetFirstTableSelectors';
 
@@ -18,6 +23,13 @@ const createMemoizedSelector = createWeakMapSelector.withTypes<AssetFirstTableSt
 const compareAssets = (left: AssetTotal, right: AssetTotal) =>
     right.cryptoBalance.comparedTo(left.cryptoBalance) ||
     left.displaySymbol.localeCompare(right.displaySymbol);
+
+/** Nothing here can be priced, so how little of it there is decides what is dust. */
+const isDust = (asset: AssetTotal) =>
+    isCryptoDustAmount({
+        cryptoBalance: asset.cryptoBalance,
+        decimals: asset.tokenInfo?.decimals,
+    });
 
 const createHiddenAssetsSelector = (
     pick: (hidden: HiddenAssetHoldings) => readonly (readonly AssetHolding[])[],
@@ -44,6 +56,35 @@ const createHiddenAssetsSelector = (
         },
     );
 
-export const selectHiddenByUserAssets = createHiddenAssetsSelector(hidden => hidden.hiddenByUser);
+const createHiddenTokensSelectors = (
+    pick: (hidden: HiddenAssetHoldings) => readonly (readonly AssetHolding[])[],
+) => {
+    const selectAssets = createHiddenAssetsSelector(pick);
 
-export const selectUnrecognizedAssets = createHiddenAssetsSelector(hidden => hidden.unrecognized);
+    return {
+        selectAssets: createMemoizedSelector([selectAssets], assets =>
+            returnStableArrayIfEmpty(assets.filter(asset => !isDust(asset))),
+        ),
+        // The rows themselves have no price, but what the dust adds up to is worth saying.
+        selectDustRows: createMemoizedSelector(
+            [selectAssets, selectCurrentFiatRates, selectLastWeekFiatRates, selectBaseCurrency],
+            (assets, currentFiatRates, lastWeekFiatRates, baseCurrencyCode) =>
+                priceAssets(
+                    assets.filter(isDust),
+                    currentFiatRates,
+                    lastWeekFiatRates,
+                    baseCurrencyCode,
+                ),
+        ),
+    };
+};
+
+export const {
+    selectAssets: selectHiddenByUserAssets,
+    selectDustRows: selectHiddenByUserDustRows,
+} = createHiddenTokensSelectors(hidden => hidden.hiddenByUser);
+
+export const {
+    selectAssets: selectUnrecognizedAssets,
+    selectDustRows: selectUnrecognizedDustRows,
+} = createHiddenTokensSelectors(hidden => hidden.unrecognized);

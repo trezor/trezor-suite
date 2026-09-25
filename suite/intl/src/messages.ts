@@ -1773,6 +1773,10 @@ export const messages = defineMessages({
         defaultMessage: 'By networks',
         id: 'TR_ASSET_FIRST_GROUPING_NETWORKS',
     },
+    TR_ASSET_FIRST_DUST_BALANCE: {
+        defaultMessage: 'Dust balance',
+        id: 'TR_ASSET_FIRST_DUST_BALANCE',
+    },
     TR_ASSET_FIRST_UNHIDE: {
         defaultMessage: 'Unhide',
         id: 'TR_ASSET_FIRST_UNHIDE',
