@@ -495,13 +495,16 @@ const observeSelectedDevice = [
 
 const acquireDevice = [
     {
+        // Device locking / button-request cleanup used to be appended by the removed
+        // TrezorConnect.call wrapper; it is now driven by connect's DEVICE_LOCK/UNLOCK events
+        // (not emitted by the mocked connect here), so a successful acquire dispatches no
+        // filter-surviving actions of its own.
         description: `success`,
         state: {
             device: {
                 selectedDevice: SUITE_DEVICE,
             },
         },
-        result: '@suite/device/removeButtonRequests',
     },
     {
         description: `success with requestedDevice param`,
@@ -509,7 +512,6 @@ const acquireDevice = [
             device: {},
         },
         requestedDevice: SUITE_DEVICE,
-        result: '@suite/device/removeButtonRequests',
     },
     {
         description: `with TrezorConnect error`,

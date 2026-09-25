@@ -30,8 +30,6 @@ export default [
                 { type: connectInitThunk.pending.type, payload: undefined },
                 { type: connectInitThunk.fulfilled.type, payload: undefined },
                 { type: MODAL_PRESERVE },
-                { type: '@suite/device/removeButtonRequests' },
-
                 { type: MODAL_OPEN_USER_CONTEXT },
             ],
         },
@@ -48,7 +46,6 @@ export default [
                 { type: connectInitThunk.pending.type, payload: undefined },
                 { type: connectInitThunk.fulfilled.type, payload: undefined },
                 { type: MODAL_PRESERVE },
-                { type: '@suite/device/removeButtonRequests' },
                 { type: MODAL_OPEN_USER_CONTEXT },
             ],
         },
@@ -125,8 +122,6 @@ export default [
                 { type: connectInitThunk.pending.type, payload: undefined },
                 { type: connectInitThunk.fulfilled.type, payload: undefined },
                 { type: MODAL_PRESERVE },
-                { type: '@suite/device/removeButtonRequests' },
-
                 { type: MODAL_CLOSE },
                 {
                     type: notificationsActions.addToast.type,
@@ -150,8 +145,6 @@ export default [
                 { type: connectInitThunk.pending.type, payload: undefined },
                 { type: connectInitThunk.fulfilled.type, payload: undefined },
                 { type: MODAL_PRESERVE },
-                { type: '@suite/device/removeButtonRequests' },
-
                 { type: MODAL_CLOSE },
             ],
         },

@@ -19,7 +19,13 @@ import { type LockDevice } from '@suite-common/suite-types';
 import { mockGetAllowPrerelease, mockGetBinFilesBaseUrl } from '@suite-common/suite-types/mocks';
 import { createTestCompositionRoot, testMocks } from '@suite-common/test-utils';
 import { initialWalletSettingsState } from '@suite-common/wallet-core';
-import { BLOCKCHAIN_EVENT, DEVICE_EVENT, TRANSPORT_EVENT, UI_EVENT } from '@trezor/connect';
+import {
+    BLOCKCHAIN_EVENT,
+    DEVICE_EVENT,
+    TRANSPORT_EVENT,
+    UI_EVENT,
+    UI_EVENTS,
+} from '@trezor/connect';
 import { noopCreateLogger } from '@trezor/connect-common';
 
 const getInitialState = (): ConnectInitThunkState => ({
@@ -88,12 +94,16 @@ describe('TrezorConnect Actions', () => {
         process.env.SUITE_TYPE = defaultSuiteType;
     });
 
-    it('Wrapped method', async () => {
+    it('DEVICE_LOCK / DEVICE_UNLOCK UI events drive the device lock', async () => {
         testMocks.setTrezorConnectFixtures();
         const lockDevice = mock<LockDevice>();
         const { store, services } = createTestRoot(lockDevice);
         await store.dispatch(connectInitThunk());
-        await testMocks.getTrezorConnectMock().getFeatures();
+
+        // connect-core emits these around any device-using call; here we emit them directly.
+        const { emitTestEvent } = testMocks.getTrezorConnectMock();
+        emitTestEvent(UI_EVENT, { type: UI_EVENTS.DEVICE_LOCK, payload: {} });
+        emitTestEvent(UI_EVENT, { type: UI_EVENTS.DEVICE_UNLOCK, payload: {} });
 
         expect(lockDevice).toHaveBeenNthCalledWith(1, true);
         expect(lockDevice).toHaveBeenNthCalledWith(2, false);

@@ -4,6 +4,7 @@ import { type AnalyticsDep, events as sharedEvents } from '@suite-common/analyti
 import {
     type DeviceRootState,
     deviceActions,
+    selectDeviceByState,
     selectDevices,
     selectIsPendingTransportEvent,
     selectSelectedDevice,
@@ -32,18 +33,16 @@ import {
 } from '@suite-common/wallet-core';
 import TrezorConnect, {
     BLOCKCHAIN_EVENT,
-    type CallMethodPayload,
     type CreateLoggerDep,
     DEVICE,
     DEVICE_EVENT,
     TRANSPORT_EVENT,
     UI_EVENT,
+    UI_EVENTS,
     UI_REQUEST,
 } from '@trezor/connect';
 import { asCoinSymbol } from '@trezor/connect-common';
-import { getSynchronize, isArrayMember } from '@trezor/utils';
 
-import { blacklist } from './blacklist';
 import {
     type ConnectInitSettingsDep,
     type GetDebugSettingsDep,
@@ -129,6 +128,32 @@ export const connectInitThunk = createThunk<
     });
 
     TrezorConnect.on(UI_EVENT, ({ event: _, ...action }) => {
+        // Connect-core emits these around every device-using call (useDevice === true), replacing the
+        // old method blocklist. Locking is process-global, so handle it before the scoped-callId guard
+        // below — a device call made inside a scoped flow (e.g. passphrase-wallet discovery) still
+        // carries no callId here and must lock the device.
+        if (action.type === UI_EVENTS.DEVICE_LOCK) {
+            lockDevice(true);
+
+            return;
+        }
+        if (action.type === UI_EVENTS.DEVICE_UNLOCK) {
+            lockDevice(false);
+            dispatch(
+                deviceActions.removeButtonRequests({
+                    // Clear button requests for the device the finished call actually used (carried on
+                    // the event), falling back to the selected device (e.g. firmwareUpdate, or before
+                    // the device state is resolved). Note: addButtonRequest still keys off the selected
+                    // device, so full add/remove device symmetry is a follow-up.
+                    device:
+                        selectDeviceByState(getState(), action.payload.device?.state) ??
+                        selectSelectedDevice(getState()),
+                }),
+            );
+
+            return;
+        }
+
         // A bare `callId` is not proof of ownership — it doubles as the
         // cancellation token — so defer only events a scoped flow has registered.
         if ('callId' in action && action.callId && isScopedCallId(action.callId)) {
@@ -155,30 +180,6 @@ export const connectInitThunk = createThunk<
         // dispatch event as action
         dispatch(action);
     });
-
-    const synchronize = getSynchronize();
-
-    const original = TrezorConnect.call.bind(TrezorConnect);
-    TrezorConnect.call = async (params: CallMethodPayload) => {
-        if (isArrayMember(params.method, blacklist)) {
-            return original(params);
-        }
-
-        lockDevice(true);
-
-        const result = await synchronize(() => original(params));
-
-        lockDevice(false);
-        dispatch(
-            deviceActions.removeButtonRequests({
-                // todo: device not 'thread safe' - meaning that device to which button requests have been added to might not
-                // be the same re-selected device from this line. We should reuse device from params.
-                device: selectSelectedDevice(getState()),
-            }),
-        );
-
-        return result;
-    };
 
     const binFilesBaseUrl = getBinFilesBaseUrl();
 

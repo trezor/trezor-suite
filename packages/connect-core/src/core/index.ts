@@ -225,7 +225,24 @@ const onCall = async (context: CoreContext, message: CoreCallMessage) => {
             const method2 = await getMethod(message);
             logger.debug('method selected', method2.name);
 
-            await method2.initAsync?.();
+            // `useDevice` is final once the method is constructed, so the host UI is locked here
+            // rather than after initAsync, which may fetch over the network (e.g. ethereum
+            // definitions) while the host would otherwise still accept a second device call.
+            // Sent without a callId: device locking is process-global, not scoped to one flow.
+            const isDeviceCall = method2.useDevice && !message.payload.__info;
+            if (isDeviceCall) {
+                sendCoreMessage(createUiEventMessage(UI_EVENTS.DEVICE_LOCK, {}));
+            }
+
+            try {
+                await method2.initAsync?.();
+            } catch (error) {
+                // Unlock before the error response so the caller resumes on an unlocked host.
+                if (isDeviceCall) {
+                    sendCoreMessage(createUiEventMessage(UI_EVENTS.DEVICE_UNLOCK, {}));
+                }
+                throw error;
+            }
 
             return method2;
         });
@@ -272,7 +289,19 @@ const onCall = async (context: CoreContext, message: CoreCallMessage) => {
         return Promise.resolve();
     }
 
-    return await onCallDevice(methodContext, message, method);
+    // Only device calls (`useDevice`, not `__info`) get here, and those sent DEVICE_LOCK right after
+    // getMethod; the `finally` pairs it with exactly one DEVICE_UNLOCK whether onCallDevice resolves
+    // or rejects. The device is assigned inside onCallDevice (method.setDevice), so DEVICE_UNLOCK is
+    // the event that can carry the device the call used.
+    try {
+        return await onCallDevice(methodContext, message, method);
+    } finally {
+        sendCoreMessage(
+            createUiEventMessage(UI_EVENTS.DEVICE_UNLOCK, {
+                device: method.device?.toMessageObject(),
+            }),
+        );
+    }
 };
 
 const onCallDevice = async (
@@ -912,6 +941,8 @@ export class Core extends EventEmitter {
                         this.sendCoreMessage.bind(this),
                         message.payload.callId,
                     );
+                    // firmwareUpdate uses the device but bypasses onCall, so it lock/unlocks itself.
+                    this.sendCoreMessage(createUiEventMessage(UI_EVENTS.DEVICE_LOCK, {}));
                     onCallFirmwareUpdate({
                         params: message.payload,
                         context: {
@@ -932,6 +963,9 @@ export class Core extends EventEmitter {
                                 createResponseMessage(message.id, false, { error }),
                             );
                             this.coreLogger.error('onCallFirmwareUpdate', error);
+                        })
+                        .finally(() => {
+                            this.sendCoreMessage(createUiEventMessage(UI_EVENTS.DEVICE_UNLOCK, {}));
                         });
                 } else {
                     onCall(this.getCoreContext(), message).catch(error => {
