@@ -3,7 +3,10 @@ use btleplug::{
     platform::Adapter,
 };
 use log::info;
-use tokio::time::{sleep, Duration};
+use tokio::{
+    sync::broadcast::error::RecvError,
+    time::{sleep, Duration},
+};
 
 use crate::server::{
     adapter_manager::{AdapterError, AdapterManager},
@@ -14,9 +17,9 @@ use crate::server::{
     ConnectionBroadcast,
 };
 
-async fn start_scanning(adapter: &Adapter) -> Result<(), AdapterError> {
+async fn start_scanning(adapter: &Adapter, manager: &AdapterManager) -> Result<(), AdapterError> {
     // stop previous process just to be sure
-    stop_scanning(adapter).await;
+    stop_scanning(adapter, manager).await;
 
     if let Err(err) = adapter.start_scan(ScanFilter::default()).await {
         info!("Start scan error {err}");
@@ -26,10 +29,16 @@ async fn start_scanning(adapter: &Adapter) -> Result<(), AdapterError> {
     Ok(())
 }
 
-async fn stop_scanning(adapter: &Adapter) {
+async fn stop_scanning(adapter: &Adapter, manager: &AdapterManager) {
     if let Err(err) = adapter.stop_scan().await {
         info!("start_scan/adapter.stop_scan: {err}");
     }
+
+    if let Err(err) = adapter.clear_peripherals().await {
+        info!("start_scan/adapter.clear_peripherals: {err}");
+    }
+
+    manager.clear_serviceless_devices().await;
 }
 
 pub async fn start_scan(manager: AdapterManager, broadcast: ConnectionBroadcast) -> MethodResult {
@@ -48,7 +57,9 @@ pub async fn start_scan(manager: AdapterManager, broadcast: ConnectionBroadcast)
     // restart (stop/start) ensures that the event stream is really running in
     // workaround for https://github.com/deviceplug/btleplug/issues/255
     // windows: calling adapter.stop_scan breaks current broadcast.subscribe stream
-    if let Err(err) = start_scanning(&adapter).await {
+    if let Err(err) = start_scanning(&adapter, &manager).await {
+        stop_scanning(&adapter, &manager).await;
+        manager.set_scanning(false).await;
         return Err(err.into());
     }
 
@@ -56,20 +67,25 @@ pub async fn start_scan(manager: AdapterManager, broadcast: ConnectionBroadcast)
     let mut receiver = broadcast.subscribe();
     let manager_ref = manager.clone();
     tokio::spawn(async move {
-        while let Ok(event) = receiver.recv().await {
+        loop {
+            let event = match receiver.recv().await {
+                Ok(event) => event,
+                Err(RecvError::Lagged(skipped)) => {
+                    // Keep watching, exiting here would strand the scan state.
+                    info!("start_scan loop lagged, {skipped} events skipped");
+                    continue;
+                }
+                Err(RecvError::Closed) => break,
+            };
+
             match event {
                 ChannelMessage::Abort(AbortProcess::Scan) => {
-                    stop_scanning(&adapter).await;
-                    manager_ref.set_scanning(false).await;
+                    // Scanning itself was already stopped by the stop_scan method.
                     info!("Abort start_scan loop");
                     break;
                 }
                 ChannelMessage::Abort(AbortProcess::ClientDisconnected(_client)) => {
-                    if manager_ref.is_listeners_empty().await {
-                        info!("All clients disconnected, stopping scanning");
-                        stop_scanning(&adapter).await;
-                        manager_ref.set_scanning(false).await;
-                    }
+                    // Last-client cleanup is owned by AdapterManager::remove_listener.
                     break;
                 }
                 ChannelMessage::Notification(NotificationEvent::AdapterStateChanged { state }) => {
@@ -81,7 +97,7 @@ pub async fn start_scan(manager: AdapterManager, broadcast: ConnectionBroadcast)
                             }
                         }
                         _ => {
-                            stop_scanning(&adapter).await;
+                            stop_scanning(&adapter, &manager_ref).await;
                             manager_ref.set_scanning(false).await;
                         }
                     }

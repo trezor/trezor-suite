@@ -17,7 +17,11 @@ use tokio::{
 
 use crate::server::{
     device::{DeviceConnectionStatus, TrezorDevice},
-    types::{AbortProcess, AdapterState, ChannelMessage, KnownDevice, NotificationEvent},
+    notification_registry::{NotificationRegistry, RemovedStream},
+    types::{
+        AbortProcess, AdapterState, ChannelMessage, KnownDevice, NotificationCharacteristic,
+        NotificationEvent,
+    },
     utils, ConnectionBroadcast,
 };
 
@@ -36,6 +40,7 @@ pub struct AdapterManager {
     discovered_id: DashSet<String>,
     serviceless_peripherals: DashMap<String, ServicelessDevice>,
     serviceless_peripherals_prune_ts: Arc<Mutex<u128>>,
+    notification_streams: NotificationRegistry,
 }
 
 struct ManagerState {
@@ -100,6 +105,7 @@ impl AdapterManager {
             discovered_id: DashSet::new(),
             serviceless_peripherals: DashMap::new(),
             serviceless_peripherals_prune_ts: Arc::new(Mutex::new(0)),
+            notification_streams: NotificationRegistry::default(),
         })
     }
 
@@ -282,6 +288,13 @@ impl AdapterManager {
         state.known_peripherals = value;
     }
 
+    pub async fn clear_serviceless_devices(&self) {
+        self.serviceless_peripherals.clear();
+
+        let mut timestamp = self.serviceless_peripherals_prune_ts.lock().await;
+        *timestamp = 0;
+    }
+
     async fn is_known_peripheral(&self, id: &str) -> bool {
         let state = self.manager_state.lock().await;
 
@@ -295,8 +308,8 @@ impl AdapterManager {
         }
         drop(state);
 
+        let peripheral = self.get_peripheral_by_id(id).await?;
         let id = id.to_string();
-        let peripheral = self.get_peripheral_or_die(&id).await?;
         let is_known = self.is_known_peripheral(&id).await;
         let device = match TrezorDevice::new(peripheral, is_known).await {
             Ok(device) => device,
@@ -403,15 +416,15 @@ impl AdapterManager {
     pub async fn get_peripheral_or_die(&self, id: &String) -> Result<Peripheral, AdapterError> {
         let adapter = self.get_adapter_or_die().await?;
         let peripherals = adapter.peripherals().await?;
-        let id_str = id.to_string();
-        let peripheral = peripherals
+        peripherals
             .into_iter()
-            .find(|x| x.id().to_string() == id_str);
+            .find(|peripheral| peripheral.id().to_string() == *id)
+            .ok_or(AdapterError::PeripheralNotFound)
+    }
 
-        match peripheral {
-            Some(device) => Ok(device),
-            None => Err(AdapterError::PeripheralNotFound),
-        }
+    async fn get_peripheral_by_id(&self, id: &PeripheralId) -> Result<Peripheral, AdapterError> {
+        let adapter = self.get_adapter_or_die().await?;
+        Ok(adapter.peripheral(id).await?)
     }
 
     // return array of TrezorDevice sorted by discovery_timestamp
@@ -435,7 +448,7 @@ impl AdapterManager {
         id: &PeripheralId,
         update_count: u128,
     ) -> Result<(), AdapterError> {
-        let peripheral = self.get_peripheral_or_die(&id.to_string()).await?;
+        let peripheral = self.get_peripheral_by_id(id).await?;
         if let Ok(Some(props)) = peripheral.properties().await {
             if let Some(_name) = props.local_name {
                 let device = ServicelessDevice {
@@ -463,7 +476,7 @@ impl AdapterManager {
         }
 
         let adapter = self.get_adapter_or_die().await?;
-        let peripheral = self.get_peripheral_or_die(&id_string).await?;
+        let peripheral = self.get_peripheral_by_id(id).await?;
         if let Some(_device) = utils::scan_filter(&adapter, id).await {
             if let Ok(_device) = self.add_device(id).await {
                 let devices = self.get_devices().await;
@@ -527,9 +540,7 @@ impl AdapterManager {
                     CentralEvent::DeviceUpdated(id) => {
                         if let Some(mut device) = self_ref.get_device(&id).await {
                             let mut emit_update = false;
-                            if let Ok(peripheral) =
-                                self_ref.get_peripheral_or_die(&id.to_string()).await
-                            {
+                            if let Ok(peripheral) = self_ref.get_peripheral_by_id(&id).await {
                                 if let Ok(updated) = device.update_properties(peripheral).await {
                                     emit_update = updated;
                                 }
@@ -550,6 +561,12 @@ impl AdapterManager {
                         }
                     }
                     CentralEvent::DeviceDisconnected(id) => {
+                        // The BLE subscriptions died with the connection, abort
+                        // the notification streams reading from this peripheral.
+                        self_ref
+                            .close_notification_streams(None, Some(&id.to_string()), None)
+                            .await;
+
                         if let Some(mut device) = self_ref.get_device(&id).await {
                             info!("DeviceDisconnected: {:?} : {:?}", id, device);
 
@@ -560,9 +577,7 @@ impl AdapterManager {
                                 .await;
 
                             let mut emit_event = false;
-                            if let Ok(peripheral) =
-                                self_ref.get_peripheral_or_die(&id.to_string()).await
-                            {
+                            if let Ok(peripheral) = self_ref.get_peripheral_by_id(&id).await {
                                 if let Ok(updated) = device.update_properties(peripheral).await {
                                     emit_event = updated;
                                 }
@@ -631,18 +646,93 @@ impl AdapterManager {
     }
 
     pub async fn remove_listener(&self, listener: &ConnectionBroadcast) {
+        // Notification streams forward to this connection only, so they must
+        // not outlive it no matter how many other clients stay connected.
+        self.close_notification_streams(Some(listener.get_peer()), None, None)
+            .await;
+
         let mut state = self.manager_state.lock().await;
         state.listeners.retain(|item| !item.same_channel(listener));
 
-        if state.listeners.is_empty() {
-            if let Some(adapter_loader) = state.adapter_loader.take() {
-                adapter_loader.abort();
+        if !state.listeners.is_empty() {
+            return;
+        }
+
+        if let Some(adapter_loader) = state.adapter_loader.take() {
+            adapter_loader.abort();
+        }
+
+        let was_scanning = state.is_scanning;
+        state.is_scanning = false;
+        drop(state); // unlock for get_adapter_or_die
+
+        // Scanning must not outlive the last client, even when the client
+        // that originally started it disconnected earlier.
+        if was_scanning {
+            info!("All clients disconnected, stopping scanning");
+            if let Ok(adapter) = self.get_adapter_or_die().await {
+                if let Err(err) = adapter.stop_scan().await {
+                    info!("remove_listener/adapter.stop_scan: {err}");
+                }
             }
         }
     }
-    pub async fn is_listeners_empty(&self) -> bool {
-        let state = self.manager_state.lock().await;
-        state.listeners.is_empty()
+
+    pub fn register_notification_stream(
+        &self,
+        peer: String,
+        device_id: String,
+        characteristic: NotificationCharacteristic,
+        task: JoinHandle<()>,
+    ) {
+        self.notification_streams
+            .register(peer, device_id, characteristic, task);
+    }
+
+    /// Aborts matching notification stream tasks and releases BLE
+    /// subscriptions that lost their last stream. `None` filters match
+    /// everything.
+    pub async fn close_notification_streams(
+        &self,
+        peer: Option<&str>,
+        device_id: Option<&str>,
+        characteristic: Option<&NotificationCharacteristic>,
+    ) {
+        let removed = self
+            .notification_streams
+            .remove(peer, device_id, characteristic);
+
+        for stream in removed {
+            info!(
+                "{} {:?} stream terminated",
+                stream.device_id, stream.characteristic
+            );
+            if stream.unsubscribe {
+                self.unsubscribe_characteristic(&stream).await;
+            }
+        }
+    }
+
+    // Best effort BLE-level unsubscribe. The peripheral may already be gone
+    // (device disconnected), errors are only logged.
+    async fn unsubscribe_characteristic(&self, stream: &RemovedStream) {
+        let Ok(peripheral) = self.get_peripheral_or_die(&stream.device_id).await else {
+            return;
+        };
+        let uuid = stream.characteristic.to_uuid();
+        let Some(characteristic) = peripheral
+            .characteristics()
+            .into_iter()
+            .find(|c| c.uuid == uuid)
+        else {
+            return;
+        };
+        if let Err(err) = peripheral.unsubscribe(&characteristic).await {
+            info!(
+                "Unsubscribe {} {:?} error: {err}",
+                stream.device_id, stream.characteristic
+            );
+        }
     }
 
     async fn dispatch_adapter_event(&self) {
@@ -666,5 +756,85 @@ impl AdapterManager {
         for listener in &listeners {
             listener.send(message.clone());
         }
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use std::sync::atomic::{AtomicBool, Ordering};
+
+    // Sets the flag when the task future is dropped, i.e. when it was aborted.
+    struct SetOnDrop(Arc<AtomicBool>);
+    impl Drop for SetOnDrop {
+        fn drop(&mut self) {
+            self.0.store(true, Ordering::SeqCst);
+        }
+    }
+
+    fn pending_stream_task(aborted: Arc<AtomicBool>) -> JoinHandle<()> {
+        // The guard is captured by the future itself, so it is dropped even
+        // when the task is aborted before its first poll.
+        let guard = SetOnDrop(aborted);
+        tokio::spawn(async move {
+            let _guard = guard;
+            std::future::pending::<()>().await;
+        })
+    }
+
+    // Finding 2 of https://github.com/trezor/trezor-suite/issues/31948:
+    // a disconnecting client must not leave its notification stream task
+    // alive just because another client is still connected.
+    #[tokio::test]
+    async fn remove_listener_aborts_streams_of_disconnected_client_only() {
+        let manager = AdapterManager::new().await.expect("manager");
+        let client_a = ConnectionBroadcast::new("a".to_string()).expect("broadcast");
+        let client_b = ConnectionBroadcast::new("b".to_string()).expect("broadcast");
+        manager.add_listener(client_a.clone()).await;
+        manager.add_listener(client_b.clone()).await;
+
+        let aborted_a = Arc::new(AtomicBool::new(false));
+        let aborted_b = Arc::new(AtomicBool::new(false));
+        manager.register_notification_stream(
+            "a".to_string(),
+            "dev1".to_string(),
+            NotificationCharacteristic::Read,
+            pending_stream_task(aborted_a.clone()),
+        );
+        manager.register_notification_stream(
+            "b".to_string(),
+            "dev1".to_string(),
+            NotificationCharacteristic::Read,
+            pending_stream_task(aborted_b.clone()),
+        );
+
+        // Client "a" disconnects while client "b" stays connected.
+        manager.remove_listener(&client_a).await;
+        // Give the runtime a moment to drop the aborted task.
+        sleep(Duration::from_millis(50)).await;
+
+        assert!(aborted_a.load(Ordering::SeqCst));
+        assert!(!aborted_b.load(Ordering::SeqCst));
+    }
+
+    // Finding 3 of https://github.com/trezor/trezor-suite/issues/31948:
+    // scanning must stop with the last client, not with the client that
+    // originally started it.
+    #[tokio::test]
+    async fn scanning_stops_with_the_last_listener() {
+        let manager = AdapterManager::new().await.expect("manager");
+        let client_a = ConnectionBroadcast::new("a".to_string()).expect("broadcast");
+        let client_b = ConnectionBroadcast::new("b".to_string()).expect("broadcast");
+        manager.add_listener(client_a.clone()).await;
+        manager.add_listener(client_b.clone()).await;
+        manager.set_scanning(true).await;
+
+        // The client that started the scan disconnects first.
+        manager.remove_listener(&client_a).await;
+        assert!(manager.is_scanning().await);
+
+        // The last client disconnects.
+        manager.remove_listener(&client_b).await;
+        assert!(!manager.is_scanning().await);
     }
 }
