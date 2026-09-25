@@ -19,17 +19,8 @@ const labelStyle = prepareNativeStyle(utils => ({
     marginTop: utils.spacings.sp8,
 }));
 
-// Temperorary translation of the error messages used in the native app.
-// Should be later replaced by an implementation of a localization module.
-const errorToMessageMap: Record<string, string> = {
-    TR_REQUIRED_FIELD: 'Field is mandatory',
-    TR_EXCEEDS_MAX: 'Number of characters exceeded',
-};
-
 export const InputWrapper = ({ children, label, hint, error }: InputWrapperProps) => {
     const { applyStyle } = useNativeStyles();
-
-    const errorMessage = (error && errorToMessageMap[error]) ?? error;
 
     return (
         <VStack flex={1} spacing="sp6">
@@ -43,7 +34,7 @@ export const InputWrapper = ({ children, label, hint, error }: InputWrapperProps
                 <Box marginLeft="sp12">
                     {!!error && (
                         <Animated.View entering={FadeIn} exiting={FadeOut}>
-                            <Hint variant="error">{errorMessage}</Hint>
+                            <Hint variant="error">{error}</Hint>
                         </Animated.View>
                     )}
                     {!!hint && (

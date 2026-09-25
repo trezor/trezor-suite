@@ -4,6 +4,13 @@
     "references": [
         { "path": "../atoms" },
         { "path": "../icons" },
-        { "path": "../../packages/styles-native" }
+        { "path": "../intl" },
+        {
+            "path": "../../packages/styles-native"
+        },
+        {
+            "path": "../../suite-common/validators"
+        },
+        { "path": "../test-utils" }
     ]
 }
