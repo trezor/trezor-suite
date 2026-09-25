@@ -93,6 +93,7 @@ local.properties
 .cxx/
 *.keystore
 !debug.keystore
+/.air/worktree.json
 
 # scan temporary files
 **/android/fastlane/test_output
