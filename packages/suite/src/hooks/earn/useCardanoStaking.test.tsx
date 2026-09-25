@@ -53,7 +53,6 @@ const mockAccountWithRewardsButNoDrep = (): Account =>
             utxo: [],
         },
         {
-            ...networkSpecificDefaultCardano,
             misc: {
                 staking: {
                     address: 'stake1address',
