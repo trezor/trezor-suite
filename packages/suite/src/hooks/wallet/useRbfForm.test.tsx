@@ -122,7 +122,6 @@ describe('useRbfForm hook', () => {
     beforeAll(async () => {
         await TrezorConnect.init({
             transportReconnect: false,
-            pendingTransportEvent: false,
             manifest: {
                 email: 'info@trezor.io',
                 appName: 'Trezor Connect Tests',
