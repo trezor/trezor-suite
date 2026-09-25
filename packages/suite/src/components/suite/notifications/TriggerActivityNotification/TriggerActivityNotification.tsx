@@ -6,9 +6,14 @@ import { injectDispatch } from '@suite-common/redux-utils';
 import { type TrezorDevice } from '@suite-common/suite-types';
 import { AUTH_DEVICE, notificationsActions } from '@suite-common/toast-notifications';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
+import { selectAccounts, selectTransactions } from '@suite-common/wallet-core';
+import { type Account } from '@suite-common/wallet-types';
+import { getAccountTransactions } from '@suite-common/wallet-utils';
 import { Checkbox, Column, Select } from '@trezor/components';
 import { DEVICE } from '@trezor/connect';
 import { ActionButton, ActionColumn, SectionItem, TextColumn } from '@trezor/product-components';
+
+import { useSelector } from 'src/hooks/suite';
 
 const MOCK_TX = {
     amount: '0.05',
@@ -17,11 +22,103 @@ const MOCK_TX = {
     txid: 'debug-txid',
 };
 
+const LONG_TITLE_MOCK_TOKEN = {
+    contract: '0x0000000000000000000000000000000000000000',
+    name: 'Trust Wallet Token',
+    symbol: 'TWT',
+};
+
+const LONG_TITLE_MOCK_TX = {
+    formattedAmount: '0 TWT',
+    descriptor: 'Trezor Safe 5 Passphrase wallet #1 Optimism #2',
+    symbol: 'op' as NetworkSymbol,
+    txid: 'debug-txid-long-title',
+    token: LONG_TITLE_MOCK_TOKEN,
+};
+
+const LONG_TITLE_PREFERRED_NETWORKS: NetworkSymbol[] = ['op', 'eth', 'base', 'arb'];
+
+type DebugTransactionFields = {
+    formattedAmount: string;
+    descriptor: string;
+    symbol: NetworkSymbol;
+    txid: string;
+};
+
+type GetDebugTransactionFieldsParams = {
+    account?: Account;
+    txid?: string;
+    fallback: DebugTransactionFields;
+    formattedAmount?: string;
+};
+
+const getDebugTransactionFields = ({
+    account,
+    txid,
+    fallback,
+    formattedAmount,
+}: GetDebugTransactionFieldsParams): DebugTransactionFields => {
+    if (!account) {
+        return fallback;
+    }
+
+    return {
+        formattedAmount: formattedAmount ?? fallback.formattedAmount,
+        descriptor: account.descriptor,
+        symbol: account.symbol,
+        txid: txid ?? fallback.txid,
+    };
+};
+
+type GetLongTitleDebugAccountParams = {
+    accounts: Account[];
+    selectedDeviceState?: Account['deviceState'];
+};
+
+const getLongTitleDebugAccount = ({
+    accounts,
+    selectedDeviceState,
+}: GetLongTitleDebugAccountParams): Account | undefined => {
+    const otherWalletAccounts = accounts.filter(
+        account => account.deviceState !== selectedDeviceState,
+    );
+    const candidateAccounts = otherWalletAccounts.length > 0 ? otherWalletAccounts : accounts;
+
+    for (const networkSymbol of LONG_TITLE_PREFERRED_NETWORKS) {
+        const match = candidateAccounts.find(account => account.symbol === networkSymbol);
+
+        if (match) {
+            return match;
+        }
+    }
+
+    return candidateAccounts[0];
+};
+
+const getDebugToken = (account?: Account) => {
+    const accountToken = account?.tokens?.find(token => token.contract && token.symbol);
+
+    if (!accountToken) {
+        return LONG_TITLE_MOCK_TOKEN;
+    }
+
+    return {
+        contract: accountToken.contract,
+        name: accountToken.name,
+        symbol: accountToken.symbol,
+    };
+};
+
 type DebugNotificationAction =
     | ReturnType<typeof notificationsActions.addToast>
     | ReturnType<typeof notificationsActions.addEvent>;
 
-type PresetContext = { device?: TrezorDevice; seen: boolean };
+type PresetContext = {
+    device?: TrezorDevice;
+    seen: boolean;
+    account?: Account;
+    txid?: string;
+};
 
 type Preset = {
     value: string;
@@ -110,38 +207,85 @@ const PRESETS: Preset[] = [
     {
         value: 'tx-received',
         label: 'Transaction: Received',
-        build: ({ device, seen }) =>
-            notificationsActions.addEvent({ type: 'tx-received', device, ...MOCK_TX, seen }),
+        build: ({ device, seen, account, txid }) =>
+            notificationsActions.addEvent({
+                type: 'tx-received',
+                device,
+                seen,
+                ...getDebugTransactionFields({ account, txid, fallback: MOCK_TX }),
+            }),
     },
     {
         value: 'tx-confirmed',
         label: 'Transaction: Confirmed',
-        build: ({ device, seen }) =>
-            notificationsActions.addEvent({ type: 'tx-confirmed', device, ...MOCK_TX, seen }),
+        build: ({ device, seen, account, txid }) =>
+            notificationsActions.addEvent({
+                type: 'tx-confirmed',
+                device,
+                seen,
+                ...getDebugTransactionFields({ account, txid, fallback: MOCK_TX }),
+            }),
+    },
+    {
+        value: 'tx-confirmed-long-title',
+        label: 'Transaction: Confirmed (long title)',
+        build: ({ device, seen, account, txid }) =>
+            notificationsActions.addEvent({
+                type: 'tx-confirmed',
+                device,
+                seen,
+                token: getDebugToken(account),
+                ...getDebugTransactionFields({
+                    account,
+                    txid,
+                    fallback: LONG_TITLE_MOCK_TX,
+                    formattedAmount: LONG_TITLE_MOCK_TX.formattedAmount,
+                }),
+            }),
     },
     {
         value: 'tx-sent',
         label: 'Transaction: Sent',
-        build: ({ device, seen }) =>
-            notificationsActions.addToast({ type: 'tx-sent', device, ...MOCK_TX, seen }),
+        build: ({ device, seen, account, txid }) =>
+            notificationsActions.addToast({
+                type: 'tx-sent',
+                device,
+                seen,
+                ...getDebugTransactionFields({ account, txid, fallback: MOCK_TX }),
+            }),
     },
     {
         value: 'tx-staked',
         label: 'Transaction: Staked',
-        build: ({ device, seen }) =>
-            notificationsActions.addToast({ type: 'tx-staked', device, ...MOCK_TX, seen }),
+        build: ({ device, seen, account, txid }) =>
+            notificationsActions.addToast({
+                type: 'tx-staked',
+                device,
+                seen,
+                ...getDebugTransactionFields({ account, txid, fallback: MOCK_TX }),
+            }),
     },
     {
         value: 'tx-unstaked',
         label: 'Transaction: Unstaked',
-        build: ({ device, seen }) =>
-            notificationsActions.addToast({ type: 'tx-unstaked', device, ...MOCK_TX, seen }),
+        build: ({ device, seen, account, txid }) =>
+            notificationsActions.addToast({
+                type: 'tx-unstaked',
+                device,
+                seen,
+                ...getDebugTransactionFields({ account, txid, fallback: MOCK_TX }),
+            }),
     },
     {
         value: 'tx-claimed',
         label: 'Transaction: Claimed',
-        build: ({ device, seen }) =>
-            notificationsActions.addToast({ type: 'tx-claimed', device, ...MOCK_TX, seen }),
+        build: ({ device, seen, account, txid }) =>
+            notificationsActions.addToast({
+                type: 'tx-claimed',
+                device,
+                seen,
+                ...getDebugTransactionFields({ account, txid, fallback: MOCK_TX }),
+            }),
     },
     {
         value: 'successful-claim',
@@ -160,6 +304,8 @@ const options = PRESETS.map(({ value, label }) => ({ value, label }));
 export const TriggerActivityNotification = () => {
     const { dispatch } = useServices(injectDispatch);
     const { device } = useDevice();
+    const accounts = useSelector(selectAccounts);
+    const transactions = useSelector(selectTransactions);
     const [selectedValue, setSelectedValue] = useState<string>(PRESETS[0]?.value ?? '');
     const [addAsUnseen, setAddAsUnseen] = useState(true);
 
@@ -169,7 +315,20 @@ export const TriggerActivityNotification = () => {
         const preset = PRESETS.find(p => p.value === selectedValue);
         if (!preset) return;
 
-        const action = preset.build({ device, seen: !addAsUnseen });
+        const account =
+            preset.value === 'tx-confirmed-long-title'
+                ? getLongTitleDebugAccount({
+                      accounts,
+                      selectedDeviceState: device?.state?.staticSessionId,
+                  })
+                : accounts[0];
+        const txid = account
+            ? getAccountTransactions(account.key, transactions).find(
+                  transaction => transaction?.txid,
+              )?.txid
+            : undefined;
+
+        const action = preset.build({ device, seen: !addAsUnseen, account, txid });
         if (action) {
             dispatch(action);
         } else {
