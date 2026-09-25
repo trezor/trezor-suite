@@ -10,24 +10,19 @@ export class TradingReceiveAccount {
 
     readonly receiveAccountModal: Locator;
     readonly receiveAccountModalSuiteOption: Locator;
-    readonly receiveAccountModalAddSuiteOption: Locator;
-    readonly receiveAccountModalNonSuiteOption: Locator;
+    readonly receiveAccountModalAddAccountButton: Locator;
+    readonly receiveAccountModalActivateNetworkButton: Locator;
+    readonly receiveAccountModalUseExternalAccountButton: Locator;
 
     readonly receiveAddressModal: Locator;
     readonly receiveAddressModalConfirmButton: Locator;
     readonly receiveAddressInput: Locator;
 
-    readonly extraFieldModal: Locator;
-    readonly extraFieldModalConfirmButton: Locator;
     readonly extraFieldSwitch: Locator;
     readonly extraFieldInput: Locator;
 
     readonly bitcoinReceiveAddressModal: Locator;
     readonly bitcoinReceiveAddressModalOption: Locator;
-
-    readonly addAccountButton: Locator;
-    readonly addAccountModalNetworkButton = (symbol: NetworkSymbol) =>
-        this.page.getByTestId(`@settings/wallet/network/${symbol}/add-button`);
 
     constructor(private readonly page: Page) {
         // receive account & receive address
@@ -38,11 +33,14 @@ export class TradingReceiveAccount {
         this.receiveAccountModalSuiteOption = this.page.getByTestId(
             '@trading/receive-account-modal/option/suite',
         );
-        this.receiveAccountModalAddSuiteOption = this.page.getByTestId(
-            '@trading/receive-account-modal/option/add-suite',
+        this.receiveAccountModalAddAccountButton = this.page.getByTestId(
+            '@trading/receive-account-modal/add-account',
         );
-        this.receiveAccountModalNonSuiteOption = this.page.getByTestId(
-            '@trading/receive-account-modal/option/non-suite',
+        this.receiveAccountModalActivateNetworkButton = this.page.getByTestId(
+            '@trading/receive-account-modal/activate-network',
+        );
+        this.receiveAccountModalUseExternalAccountButton = this.page.getByTestId(
+            '@trading/receive-account-modal/use-external-account',
         );
 
         this.receiveAddressModal = this.page.getByTestId('@trading/receive-address-modal');
@@ -51,10 +49,6 @@ export class TradingReceiveAccount {
         );
         this.receiveAddressInput = this.page.getByTestId('@trading/receive-address-input');
 
-        this.extraFieldModal = this.page.getByTestId('@trading/extra-field-modal');
-        this.extraFieldModalConfirmButton = this.page.getByTestId(
-            '@trading/extra-field-modal/confirm-button',
-        );
         this.extraFieldSwitch = this.page.getByTestId('@trading/extra-field-switch');
         this.extraFieldInput = this.page.getByTestId('@trading/extra-field-input');
 
@@ -64,8 +58,6 @@ export class TradingReceiveAccount {
         this.bitcoinReceiveAddressModalOption = this.page.getByTestId(
             '@trading/bitcoin-receive-address-modal/option',
         );
-
-        this.addAccountButton = this.page.getByTestId('@add-account');
     }
 
     @step()
@@ -100,7 +92,7 @@ export class TradingReceiveAccount {
         await this.receiveAddressPicker.click();
         await expect(this.receiveAccountModal).toBeVisible();
 
-        await this.receiveAccountModalNonSuiteOption.nth(0).click();
+        await this.receiveAccountModalUseExternalAccountButton.click();
         await this.receiveAddressInput.fill(receiveAddress);
 
         if (extraField) {
@@ -113,17 +105,11 @@ export class TradingReceiveAccount {
     }
 
     @step()
-    async selectAddSuiteReceiveAccount(index: number, symbol?: NetworkSymbol) {
+    async activateNetworkForReceiveAccount(index: number) {
         await this.receiveAddressPicker.click();
         await expect(this.receiveAccountModal).toBeVisible();
 
-        await this.receiveAccountModalAddSuiteOption.nth(0).click();
-
-        if (symbol) {
-            await this.addAccountModalNetworkButton(symbol).click();
-        } else {
-            await this.addAccountButton.click();
-        }
+        await this.receiveAccountModalActivateNetworkButton.click();
 
         await this.page.discoveryShouldFinish();
 

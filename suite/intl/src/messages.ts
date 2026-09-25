@@ -782,14 +782,6 @@ export const messages = defineMessages({
         defaultMessage: 'Confirm on Trezor & send',
         id: 'TR_EXCHANGE_CONFIRM_ON_TREZOR_SEND',
     },
-    TR_EXCHANGE_RECEIVE_NON_SUITE_ACCOUNT_QUESTION_TOOLTIP: {
-        id: 'TR_EXCHANGE_RECEIVE_NON_SUITE_ACCOUNT_QUESTION_TOOLTIP',
-        defaultMessage: 'Receive account is outside of Trezor Suite.',
-    },
-    TR_EXCHANGE_RECEIVE_NON_SUITE_ADDRESS_QUESTION_TOOLTIP: {
-        id: 'TR_EXCHANGE_RECEIVE_NON_SUITE_ADDRESS_QUESTION_TOOLTIP',
-        defaultMessage: 'This is the address for receiving your assets.',
-    },
     TR_EXCHANGE_RECEIVING_ADDRESS_REQUIRED: {
         defaultMessage: 'Receive address is required',
         id: 'TR_EXCHANGE_RECEIVING_ADDRESS_REQUIRED',
@@ -809,14 +801,6 @@ export const messages = defineMessages({
     TR_EXCHANGE_EXTRA_FIELD_INVALID: {
         defaultMessage: '{extraFieldName} is invalid',
         id: 'TR_EXCHANGE_EXTRA_FIELD_INVALID',
-    },
-    TR_EXCHANGE_CREATE_SUITE_ACCOUNT: {
-        defaultMessage: 'Create a new {symbol} account',
-        id: 'TR_EXCHANGE_CREATE_SUITE_ACCOUNT',
-    },
-    TR_EXCHANGE_USE_NON_SUITE_ACCOUNT: {
-        defaultMessage: "Use an account ({symbol}) that isn't in Trezor Suite.",
-        id: 'TR_EXCHANGE_USE_NON_SUITE_ACCOUNT',
     },
     TR_EXCHANGE_FIXED: {
         defaultMessage: 'Fixed-rate offer',
@@ -1601,13 +1585,25 @@ export const messages = defineMessages({
         defaultMessage: 'No providers available for this country.',
         id: 'TR_TRADING_NO_PROVIDERS_AVAILABLE',
     },
-    TR_TRADING_RECEIVE_ACCOUNT_NOT_FOUND_TITLE: {
-        defaultMessage: 'Account not found',
-        id: 'TR_TRADING_RECEIVE_ACCOUNT_NOT_FOUND_TITLE',
+    TR_TRADING_RECEIVE_SELECT_ACCOUNT: {
+        defaultMessage: 'Select account',
+        id: 'TR_TRADING_RECEIVE_SELECT_ACCOUNT',
     },
-    TR_TRADING_RECEIVE_ACCOUNT_NOT_FOUND_TEXT: {
-        defaultMessage: "We couldn't find an account that matches this asset.",
-        id: 'TR_TRADING_RECEIVE_ACCOUNT_NOT_FOUND_TEXT',
+    TR_TRADING_RECEIVE_ADD_ACCOUNT: {
+        defaultMessage: 'Add account',
+        id: 'TR_TRADING_RECEIVE_ADD_ACCOUNT',
+    },
+    TR_TRADING_RECEIVE_USE_EXTERNAL_ACCOUNT: {
+        defaultMessage: 'Use external account',
+        id: 'TR_TRADING_RECEIVE_USE_EXTERNAL_ACCOUNT',
+    },
+    TR_TRADING_RECEIVE_NO_ACCOUNT_TITLE: {
+        defaultMessage: 'No account',
+        id: 'TR_TRADING_RECEIVE_NO_ACCOUNT_TITLE',
+    },
+    TR_TRADING_RECEIVE_NO_ACCOUNT_TEXT: {
+        defaultMessage: "It seems that you don't have any account matching the selected asset.",
+        id: 'TR_TRADING_RECEIVE_NO_ACCOUNT_TEXT',
     },
     TR_TRADING_RECEIVE_ADDRESS_NOT_FOUND_TITLE: {
         defaultMessage: 'Address not found',
@@ -1617,9 +1613,22 @@ export const messages = defineMessages({
         defaultMessage: 'Check the address or browse the list to select an option.',
         id: 'TR_TRADING_RECEIVE_ADDRESS_NOT_FOUND_TEXT',
     },
-    TR_TRADING_RECEIVE_ADDRESS_ENTER_TEXT: {
-        defaultMessage: "Enter {networkName} address that isn't in Trezor Suite.",
-        id: 'TR_TRADING_RECEIVE_ADDRESS_ENTER_TEXT',
+    TR_TRADING_RECEIVE_EXTERNAL_ADDRESS_TITLE: {
+        defaultMessage: 'Enter external address',
+        id: 'TR_TRADING_RECEIVE_EXTERNAL_ADDRESS_TITLE',
+    },
+    TR_TRADING_RECEIVE_EXTERNAL_ADDRESS_WARNING_TITLE: {
+        defaultMessage: 'Check the address carefully.',
+        id: 'TR_TRADING_RECEIVE_EXTERNAL_ADDRESS_WARNING_TITLE',
+    },
+    TR_TRADING_RECEIVE_EXTERNAL_ADDRESS_WARNING_TEXT: {
+        defaultMessage:
+            "External address balances won't appear in Trezor Suite. We can't recover funds sent to the wrong address.",
+        id: 'TR_TRADING_RECEIVE_EXTERNAL_ADDRESS_WARNING_TEXT',
+    },
+    TR_TRADING_RECEIVE_EXTERNAL_ADDRESS_LABEL: {
+        defaultMessage: 'Your external address',
+        id: 'TR_TRADING_RECEIVE_EXTERNAL_ADDRESS_LABEL',
     },
     TR_TRADING_RECEIVE_ADDRESS_NEW_ADDRESS: {
         defaultMessage: 'New address',
@@ -5317,15 +5326,6 @@ export const messages = defineMessages({
     TR_REMOVE_WIPE_CODE: {
         id: 'TR_REMOVE_WIPE_CODE',
         defaultMessage: 'Remove',
-    },
-    TR_BUY_RECEIVE_ACCOUNT_QUESTION_TOOLTIP: {
-        id: 'TR_BUY_RECEIVE_ACCOUNT_QUESTION_TOOLTIP',
-        defaultMessage:
-            'Your assets will be sent to this account once the transaction is complete.',
-    },
-    TR_BUY_RECEIVE_ADDRESS_QUESTION_TOOLTIP: {
-        id: 'TR_BUY_RECEIVE_ADDRESS_QUESTION_TOOLTIP',
-        defaultMessage: 'This is the address for receiving your assets.',
     },
     TR_PAYMENT_METHOD_CREDITCARD: {
         id: 'TR_PAYMENT_METHOD_CREDITCARD',

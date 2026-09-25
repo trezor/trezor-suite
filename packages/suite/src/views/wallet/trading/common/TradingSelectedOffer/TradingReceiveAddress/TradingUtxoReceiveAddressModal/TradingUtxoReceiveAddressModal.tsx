@@ -78,7 +78,7 @@ export const TradingUtxoReceiveAddressModal = () => {
             heading={<Translation id="TR_BUY_RECEIVING_ADDRESS" />}
             onCancel={onCancel}
             onBackClick={onBackClick}
-            width={600}
+            width={480}
         >
             <Column gap={24}>
                 <SearchAsset
