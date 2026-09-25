@@ -78,7 +78,7 @@ describe('App Settings - without device interactions [@noDevice]', () => {
         await onSettings.openSection('preferences');
         await onSettings.changeLanguage('cs-CZ');
         await onTabBar.tapBackButton();
-        await onTabBar.navigateToHome();
+        await onTabBar.navigateToHome(CS_TRANSLATIONS['navigation.tabs.home']);
 
         await onTabBar.assertHomeTabBarItemTitle(CS_TRANSLATIONS['navigation.tabs.home']);
     });

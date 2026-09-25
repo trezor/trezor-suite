@@ -1,17 +1,10 @@
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
-import { type BottomTabBarProps } from '@react-navigation/bottom-tabs';
-
 import { Box } from '@suite-native/atoms';
-import { type TxKeyPath, useTranslate } from '@suite-native/intl';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
-import { AppTabsRoutes } from '../routes';
-import { type TabsOptions } from '../types';
 import { TabBarItem } from './TabBarItem';
-interface TabBarProps extends BottomTabBarProps {
-    tabItemOptions: TabsOptions;
-}
+import { type TabBarProps, useTabBarItems } from './useTabBarItems';
 
 const tabBarStyle = prepareNativeStyle<{
     insetLeft: number;
@@ -30,16 +23,8 @@ const tabBarStyle = prepareNativeStyle<{
     paddingBottom: insetsBottom,
 }));
 
-const TabBarLabelTxKeys = {
-    [AppTabsRoutes.HomeStack]: 'navigation.tabs.home',
-    [AppTabsRoutes.AccountsStack]: 'navigation.tabs.accountsList',
-    [AppTabsRoutes.TradeStack]: 'navigation.tabs.trade',
-    [AppTabsRoutes.EarnStack]: 'navigation.tabs.earn',
-    [AppTabsRoutes.Settings]: 'navigation.tabs.settings',
-} as const satisfies Record<AppTabsRoutes, TxKeyPath>;
-
-export const TabBar = ({ state, navigation, tabItemOptions }: TabBarProps) => {
-    const { translate } = useTranslate();
+export const TabBar = (props: TabBarProps) => {
+    const items = useTabBarItems(props);
     const { applyStyle } = useNativeStyles();
     const insets = useSafeAreaInsets();
 
@@ -51,37 +36,17 @@ export const TabBar = ({ state, navigation, tabItemOptions }: TabBarProps) => {
                 insetsBottom: insets.bottom,
             })}
         >
-            {state.routes.map((route, index) => {
-                const isFocused = state.index === index;
-                const tabOption = tabItemOptions[route.name];
-                if (!tabOption) return null;
-                const { routeName, iconName, focusedIconName, params } = tabOption;
-                const tabBarLabelTxKey = TabBarLabelTxKeys[routeName];
-
-                const handleTabBarItemPress = () => {
-                    const event = navigation.emit({
-                        type: 'tabPress',
-                        target: route.key,
-                        canPreventDefault: true,
-                    });
-
-                    if (!isFocused && !event.defaultPrevented) {
-                        navigation.navigate(routeName, { ...params });
-                    }
-                };
-
-                return (
-                    <TabBarItem
-                        key={route.key}
-                        isFocused={isFocused}
-                        iconName={iconName}
-                        focusedIconName={focusedIconName}
-                        title={translate(tabBarLabelTxKey)}
-                        onPress={handleTabBarItemPress}
-                        testID={route.name}
-                    />
-                );
-            })}
+            {items.map(item => (
+                <TabBarItem
+                    key={item.key}
+                    isFocused={item.isFocused}
+                    iconName={item.iconName}
+                    focusedIconName={item.focusedIconName}
+                    title={item.title}
+                    onPress={item.onPress}
+                    testID={item.testID}
+                />
+            ))}
         </Box>
     );
 };

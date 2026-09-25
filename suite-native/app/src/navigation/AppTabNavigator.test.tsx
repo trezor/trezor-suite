@@ -15,7 +15,11 @@ import { AppTabNavigator } from './AppTabNavigator';
 
 jest.mock('@suite-native/module-home', () => ({ HomeStackNavigator: () => null }));
 jest.mock('@suite-native/module-accounts-management', () => ({
-    AccountsStackNavigator: () => null,
+    AccountsStackNavigator: () => {
+        const { View } = require('react-native');
+
+        return <View testID="@screen/Accounts" />;
+    },
 }));
 jest.mock('@suite-native/module-earn', () => ({ EarnStackNavigator: () => null }));
 jest.mock('@suite-native/module-settings', () => ({ SettingsScreen: () => null }));
@@ -24,6 +28,41 @@ jest.mock('@suite-native/module-trading', () => {
 
     return {
         TradingStackNavigator: () => <View testID="@screen/Trading" />,
+    };
+});
+jest.mock('@expo/ui/swift-ui', () => {
+    const { Pressable, Text, View } = require('react-native');
+
+    return {
+        Host: ({ children }: { children: React.ReactNode }) => (
+            <View testID="@tabBar/native">{children}</View>
+        ),
+        HStack: View,
+        VStack: View,
+        Button: ({ children, onPress }: { children: React.ReactNode; onPress: () => void }) => (
+            <Pressable onPress={onPress}>{children}</Pressable>
+        ),
+        Image: () => null,
+        Text,
+    };
+});
+jest.mock('@expo/ui/jetpack-compose', () => {
+    const { Pressable, Text, View } = require('react-native');
+    const NavigationBarItem = Object.assign(
+        ({ children, onClick }: { children: React.ReactNode; onClick: () => void }) => (
+            <Pressable onPress={onClick}>{children}</Pressable>
+        ),
+        { Icon: View, Label: View },
+    );
+
+    return {
+        Host: ({ children }: { children: React.ReactNode }) => (
+            <View testID="@tabBar/native">{children}</View>
+        ),
+        Icon: () => null,
+        NavigationBar: View,
+        NavigationBarItem,
+        Text,
     };
 });
 
@@ -50,6 +89,16 @@ describe('AppTabNavigator', () => {
         expect(getByText(getTranslation('navigation.tabs.home'))).toBeTruthy();
         expect(getByText(getTranslation('navigation.tabs.accountsList'))).toBeTruthy();
         expect(getByText(getTranslation('navigation.tabs.settings'))).toBeTruthy();
+    });
+
+    it('uses native tabs to switch to Accounts', async () => {
+        const { getByTestId, getByText } = await renderTabs();
+
+        expect(getByTestId('@tabBar/native')).toBeTruthy();
+
+        await fireEvent.press(getByText(getTranslation('navigation.tabs.accountsList')));
+
+        expect(getByTestId('@screen/Accounts')).toBeTruthy();
     });
 
     it('should not render Trade tab when all trading flags are disabled', async () => {

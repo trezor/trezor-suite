@@ -1,25 +1,40 @@
 import { expect as detoxExpect } from 'detox';
 
+import EN_TRANSLATIONS from '@suite-native/intl/translations/en-US.json';
+
 import { waitForVisible } from '../support/utils';
 
+const getTabBarItem = (routeName: string, title: string) =>
+    element(
+        device.getPlatform() === 'android'
+            ? by.text(title).withAncestor(by.id('@tabBar'))
+            : by.id(`@tabBar/${routeName}`),
+    );
+
 class TabBarActions {
-    async navigateToHome() {
-        const homeTabBarItem = element(by.id('@tabBar/HomeStack'));
+    async navigateToHome(title = EN_TRANSLATIONS['navigation.tabs.home']) {
+        const homeTabBarItem = getTabBarItem('HomeStack', title);
         await waitForVisible(homeTabBarItem);
         await homeTabBarItem.tap();
 
         await detoxExpect(element(by.id('@screen/Home'))).toBeVisible();
     }
     async navigateToMyAssets() {
-        const AccountsTabBarItem = element(by.id('@tabBar/AccountsStack'));
-        await waitForVisible(AccountsTabBarItem);
-        await AccountsTabBarItem.tap();
+        const accountsTabBarItem = getTabBarItem(
+            'AccountsStack',
+            EN_TRANSLATIONS['navigation.tabs.accountsList'],
+        );
+        await waitForVisible(accountsTabBarItem);
+        await accountsTabBarItem.tap();
 
         await detoxExpect(element(by.id('@screen/Accounts'))).toBeVisible();
     }
 
     async navigateToSettings() {
-        const settingsTabBarItem = element(by.id('@tabBar/Settings'));
+        const settingsTabBarItem = getTabBarItem(
+            'Settings',
+            EN_TRANSLATIONS['navigation.tabs.settings'],
+        );
         await waitForVisible(settingsTabBarItem);
         await settingsTabBarItem.tap();
 
@@ -33,7 +48,10 @@ class TabBarActions {
     }
 
     async navigateToTrade() {
-        const tradeTabBarItem = element(by.id('@tabBar/TradeStack'));
+        const tradeTabBarItem = getTabBarItem(
+            'TradeStack',
+            EN_TRANSLATIONS['navigation.tabs.trade'],
+        );
         await waitForVisible(tradeTabBarItem);
         await tradeTabBarItem.tap();
 
@@ -45,7 +63,11 @@ class TabBarActions {
     }
 
     async assertHomeTabBarItemTitle(title: string) {
-        await detoxExpect(element(by.id('@tabBar/HomeStack/title'))).toHaveText(title);
+        if (device.getPlatform() === 'android') {
+            await detoxExpect(getTabBarItem('HomeStack', title)).toBeVisible();
+        } else {
+            await detoxExpect(getTabBarItem('HomeStack', title)).toHaveLabel(title);
+        }
     }
 }
 

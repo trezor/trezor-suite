@@ -3775,6 +3775,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@expo/material-symbols@npm:0.1.1":
+  version: 0.1.1
+  resolution: "@expo/material-symbols@npm:0.1.1"
+  bin:
+    add-material-symbols: bin/add-material-symbols.mjs
+  checksum: 10/c96b292d36260671aa148bb9b188607b1e455054fe76776242af488c4132834635db0e8c24bb1e06a9d0cf5e1c32dc6b546e264c5b721f42ecb386bbefe0dfaf
+  languageName: node
+  linkType: hard
+
 "@expo/mcp-tunnel@npm:~0.2.3":
   version: 0.2.4
   resolution: "@expo/mcp-tunnel@npm:0.2.4"
@@ -14312,6 +14321,8 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@suite-native/navigation@workspace:suite-native/navigation"
   dependencies:
+    "@expo/material-symbols": "npm:0.1.1"
+    "@expo/ui": "npm:57.0.10"
     "@react-navigation/bottom-tabs": "npm:7.13.0"
     "@react-navigation/native": "npm:7.1.31"
     "@react-navigation/native-stack": "npm:7.12.0"
