@@ -3,6 +3,8 @@ export type { AddressType, AddressValidator } from './AddressValidator';
 export type { NamedAddressResolver } from './NamedAddressResolver';
 export { createNetworkModule } from './createNetworkModule';
 export type { NetworkModuleDefinition } from './createNetworkModule';
+export { asDisplayOrderKey } from './DisplayOrderKey';
+export type { DisplayOrderKey } from './DisplayOrderKey';
 export type { NetworkSuiteCommonModuleApi } from './NetworkSuiteCommonModuleApi';
 export { asProtocol } from './Protocol';
 export type { Protocol } from './Protocol';

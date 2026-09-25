@@ -1,6 +1,7 @@
 import {
     type Explorer,
     type SuiteCommonNetworkConfig,
+    asDisplayOrderKey,
     asProtocol,
 } from '@trezor/network-module-suite-common-types';
 import { STELLAR_DECIMALS, type StellarNetworkSymbol } from '@trezor/network-stellar/constants';
@@ -19,6 +20,7 @@ type NetworkConfig = SuiteCommonNetworkConfig & {
 export const networkConfigBySymbol = {
     xlm: {
         color: '#000000',
+        displayOrder: asDisplayOrderKey('aF'),
         protocols: [asProtocol('stellar'), asProtocol('xlm')],
         displaySymbol: 'XLM',
         name: 'Stellar',
@@ -37,6 +39,7 @@ export const networkConfigBySymbol = {
     },
     txlm: {
         color: '#e75f5f',
+        displayOrder: asDisplayOrderKey('aQ'),
         protocols: [asProtocol('txlm')],
         displaySymbol: 'tXLM',
         name: 'Stellar Testnet',
