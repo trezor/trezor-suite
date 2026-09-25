@@ -37,7 +37,9 @@ export const TradingReceiveAccountActivateNetworkButton = () => {
             return;
         }
 
-        if (!symbol) return;
+        if (!symbol) {
+            return;
+        }
 
         dispatch(changeCoinVisibilityThunk({ symbol, shouldBeVisible: true }));
     };

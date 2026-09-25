@@ -2,7 +2,7 @@ import { type ReactNode } from 'react';
 
 import { Address } from '@suite/address';
 import { Translation } from '@suite/intl';
-import { Column, GhostContainer, Icon, Row, Text } from '@trezor/components';
+import { Card, Column, GhostContainer, Icon, Row, Text } from '@trezor/components';
 import { CaretRightIcon } from '@trezor/icons';
 
 import { AccountLabeling } from 'src/components/suite/labeling/AccountLabeling';
@@ -10,18 +10,22 @@ import { AccountLabeling } from 'src/components/suite/labeling/AccountLabeling';
 import { useReceiveAddressModalControls } from './useReceiveAddressModalControls';
 import { useTradingReceiveAddressValues } from './useTradingReceiveAddressValues';
 
-interface TradingReceiveAddressEmptyProps {
+type TradingReceiveAddressEmptyProps = {
     title: ReactNode;
     text: ReactNode;
-}
+};
 
 export const TradingReceiveAddressEmpty = ({ title, text }: TradingReceiveAddressEmptyProps) => (
-    <Column alignItems="center" gap={4} padding={{ vertical: 16 }}>
-        <Text typographyStyle="body-md">{title}</Text>
-        <Text typographyStyle="body-sm" intent="neutral" priority="secondary">
-            {text}
-        </Text>
-    </Column>
+    <Card>
+        <Column alignItems="center" gap={4} padding={{ vertical: 8 }}>
+            <Text typographyStyle="headline-sm" align="center">
+                {title}
+            </Text>
+            <Text typographyStyle="body-sm" intent="neutral" priority="secondary" align="center">
+                {text}
+            </Text>
+        </Column>
+    </Card>
 );
 
 export const TradingReceiveAddress = () => {
