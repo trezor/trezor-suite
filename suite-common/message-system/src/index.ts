@@ -6,6 +6,7 @@ export * from './messageSystemThunks';
 export * from './messageSystemTypes';
 export * from './messageSystemUtils';
 export * from './messageSystemValidation';
+export * from './promoBannerUtils';
 
 export * from './cachedEnvData';
 export * from './experimentUtils';
