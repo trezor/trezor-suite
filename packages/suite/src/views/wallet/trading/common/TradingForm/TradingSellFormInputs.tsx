@@ -21,9 +21,9 @@ import { useSelector } from 'src/hooks/suite';
 import { useSelectedTradingAsset } from 'src/hooks/wallet/trading/form/common/useSelectedTradingAsset';
 import { useTradingAssetDecimals } from 'src/hooks/wallet/trading/form/common/useTradingAssetDecimals';
 import { useTradingFormContext } from 'src/hooks/wallet/trading/form/useTradingCommonForm';
-import { TradingBalance } from 'src/views/wallet/trading/common/TradingBalance';
 import { TradingFormInputCountry } from 'src/views/wallet/trading/common/TradingForm/TradingFormInput/TradingFormInputCountry/TradingFormInputCountry';
 import { TradingFormInputCurrency } from 'src/views/wallet/trading/common/TradingForm/TradingFormInput/TradingFormInputCurrency';
+import { TradingFormInputBaseCurrencyAmount } from 'src/views/wallet/trading/common/TradingForm/TradingFormInput/TradingFormInputFiatCrypto/TradingFormInputBaseCurrencyAmount';
 import { TradingFormInputCryptoAmount } from 'src/views/wallet/trading/common/TradingForm/TradingFormInput/TradingFormInputFiatCrypto/TradingFormInputCryptoAmount';
 import { TradingFormInputFiat } from 'src/views/wallet/trading/common/TradingForm/TradingFormInput/TradingFormInputFiatCrypto/TradingFormInputFiat';
 import { TradingFormInputPaymentMethod } from 'src/views/wallet/trading/common/TradingForm/TradingFormInput/TradingFormInputPaymentMethod/TradingFormInputPaymentMethod';
@@ -114,11 +114,11 @@ export const TradingSellFormInputs = () => {
                     </Row>
                     <Row gap={8} justifyContent="space-between" alignItems="center" minHeight={20}>
                         {!!asset && (
-                            <TradingBalance
-                                balance={output?.amount}
+                            <TradingFormInputBaseCurrencyAmount
+                                cryptoInputName={TRADING_FORM_OUTPUT_AMOUNT}
+                                fiatInputName={TRADING_FORM_OUTPUT_FIAT}
                                 symbol={asset.symbol}
                                 tokenAddress={tokenAddress}
-                                showOnlyAmount
                                 isInSats={shouldSendInSats}
                                 decimals={sendAssetDecimals}
                             />

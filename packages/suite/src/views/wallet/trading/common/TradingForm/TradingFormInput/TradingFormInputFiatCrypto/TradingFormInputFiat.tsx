@@ -1,6 +1,8 @@
 import { useCallback, useEffect, useMemo } from 'react';
 import { type FieldErrors, useFormContext, useWatch } from 'react-hook-form';
 
+import { useTheme } from 'styled-components';
+
 import { useTranslation } from '@suite/intl';
 import { selectLanguage } from '@suite/settings';
 import {
@@ -13,6 +15,7 @@ import {
 import { formInputsMaxLength } from '@suite-common/validators';
 import { getDecimalsForBaseCurrency } from '@suite-common/wallet-utils';
 import { type BaseCurrencyCode, isFiatBaseCurrencyCode } from '@trezor/blockchain-link-types';
+import { Skeleton } from '@trezor/components';
 import { NumberInput } from '@trezor/product-components';
 import { useDidUpdate } from '@trezor/react-utils';
 import { BigNumber } from '@trezor/utils';
@@ -32,7 +35,9 @@ import { useTradingSelectedQuote } from 'src/views/wallet/trading/common/hooks/u
 import { TradingFormInputAmountPlaceholder } from './TradingFormInputAmountPlaceholder';
 import { getFiatInputRules } from './tradingFormInputFiatCryptoRules';
 import {
+    TRADING_AMOUNT_HEIGHT,
     TRADING_AMOUNT_PLACEHOLDER,
+    TRADING_AMOUNT_SKELETON_WIDTH,
     getTradingAmountInputStyle,
 } from '../../tradingFormInputsUtils';
 
@@ -41,6 +46,7 @@ const TradingFormInputFiatContent = ({
     fiatInputName,
 }: TradingFormInputFiatCryptoProps) => {
     const { translationString } = useTranslation();
+    const theme = useTheme();
     const locale = useSelector(selectLanguage);
 
     const context = useTradingFormContext();
@@ -140,17 +146,32 @@ const TradingFormInputFiatContent = ({
         }
     }, [amountLimits, fiatInputName, trigger]);
 
+    const isDerivedAmountLoading = !!amountInCrypto && context.form.state.isFormLoading;
+
     return (
         <NumberInput
             isClean
             flex="1"
             name={fiatInputName}
             placeholder={TRADING_AMOUNT_PLACEHOLDER}
-            style={getTradingAmountInputStyle(fiatAmount)}
+            style={{
+                ...getTradingAmountInputStyle(fiatAmount),
+                color: fiatInputError ? theme.contentCritical : undefined,
+                visibility: isDerivedAmountLoading ? 'hidden' : undefined,
+            }}
+            leftContent={
+                isDerivedAmountLoading ? (
+                    <Skeleton
+                        animate
+                        width={TRADING_AMOUNT_SKELETON_WIDTH}
+                        height={TRADING_AMOUNT_HEIGHT}
+                    />
+                ) : undefined
+            }
             locale={locale}
             onChange={handleChange}
             hasError={!!fiatInputError}
-            isDisabled={!!amountInCrypto && context.form.state.isFormLoading}
+            isDisabled={isDerivedAmountLoading}
             control={control}
             rules={fiatInputRules}
             maxLength={formInputsMaxLength.amount}

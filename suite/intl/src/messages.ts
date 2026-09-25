@@ -1203,6 +1203,10 @@ export const messages = defineMessages({
         defaultMessage: 'You get',
         id: 'TR_TRADING_YOU_GET',
     },
+    TR_TRADING_SWAP_RECEIVE_AMOUNT_TOOLTIP: {
+        defaultMessage: "For now, swaps only let you enter the amount you're paying.",
+        id: 'TR_TRADING_SWAP_RECEIVE_AMOUNT_TOOLTIP',
+    },
     TR_TRADING_REVIEW_SWAP: {
         defaultMessage: 'Review your swap',
         id: 'TR_TRADING_REVIEW_SWAP',
