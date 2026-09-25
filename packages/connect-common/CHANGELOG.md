@@ -1,3 +1,9 @@
+# 10.0.1
+
+- refactor(connect): flattened `getFirmwareReleaseConfigInfo` (182c3f81b9)
+- chore(connect): remove unused `UI_EVENTS.FIRMWARE_DISCONNECT` (984f76b29e)
+- npm-release: @trezor/connect 10.0.0 (149a963a5c)
+
 # 10.0.0
 
 - feat(connect): support Tron delegate/undelegate resource contracts (93cbc731e7)
