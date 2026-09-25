@@ -11942,6 +11942,10 @@ export const messages = defineMessages({
         id: 'TR_STAKE_CHANGE_DELEGATE',
         defaultMessage: 'Change delegate',
     },
+    TR_STAKE_DELEGATE_TO_POOL: {
+        id: 'TR_STAKE_DELEGATE_TO_POOL',
+        defaultMessage: 'Delegate to {pool}',
+    },
     TR_STAKE_CHANGE_YOUR_DELEGATE: {
         id: 'TR_STAKE_CHANGE_YOUR_DELEGATE',
         defaultMessage: 'Change your stake delegate?',

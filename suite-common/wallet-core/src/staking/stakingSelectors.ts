@@ -42,7 +42,11 @@ import {
     selectVisibleDeviceSolanaAccountsWithStakingByNetworkSymbol,
 } from './solana/solanaStakingSelectors';
 import { getSolanaCryptoBalanceWithStaking } from './solana/solanaStakingUtils';
-import type { AccountVotingDelegation, VotingDelegationOption } from './stakingActions';
+import type {
+    AccountPoolSelection,
+    AccountVotingDelegation,
+    VotingDelegationOption,
+} from './stakingActions';
 import { DEFAULT_VOTING_OPTION } from './stakingConstants';
 import type { StakeRootState } from './stakingReducerTypes';
 import {
@@ -400,6 +404,9 @@ export const selectVotingDelegationOption = (
         ? votingDelegation.option
         : DEFAULT_VOTING_OPTION;
 };
+
+export const selectStakePoolSelection = (state: StakeRootState): AccountPoolSelection | undefined =>
+    selectStake(state).poolSelection;
 
 export const selectStakePrecomposedForm = (state: StakeRootState) =>
     selectStake(state).precomposedForm;

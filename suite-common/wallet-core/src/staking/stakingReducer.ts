@@ -9,6 +9,7 @@ export const stakeInitialState: StakeState = {
     precomposedTx: undefined,
     serializedTx: undefined,
     votingDelegation: undefined,
+    poolSelection: undefined,
     data: stakeDataInitialState,
 };
 
@@ -48,6 +49,12 @@ export const prepareStakeReducer = createReducerWithExtraDeps(stakeInitialState,
         })
         .addCase(stakeActions.clearAccountVotingDelegation, state => {
             delete state.votingDelegation;
+        })
+        .addCase(stakeActions.setAccountPoolSelection, (state, action) => {
+            state.poolSelection = action.payload;
+        })
+        .addCase(stakeActions.clearAccountPoolSelection, state => {
+            delete state.poolSelection;
         })
         .addCase(stakeActions.dispose, state => {
             delete state.precomposedTx;

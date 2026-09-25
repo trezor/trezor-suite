@@ -5,13 +5,19 @@ import { useServices } from '@suite-common/dependency-injection';
 import { useSolanaRewardsTotal } from '@suite-common/earn-staking-api/src/staking';
 import { injectDispatch } from '@suite-common/redux-utils';
 import { EarnFlow, EarnProvider } from '@suite-common/suite-types/src/staking';
-import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import {
+    EVERSTAKE_EVE9_POOL,
+    EVERSTAKE_POOL_NAMES,
+    getNetworkDisplaySymbol,
+} from '@suite-common/wallet-config';
+import {
+    getCardanoAccountPoolId,
     getStakingDataForNetwork,
     isCardanoStakedWithEverstake,
     selectAccountIsStakingActive,
     selectAccountStakeTypeTransactions,
     selectCardanoPoolsInfo,
+    stakeActions,
 } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
 import { isPending } from '@suite-common/wallet-utils';
@@ -163,6 +169,8 @@ export const StakingCard = ({
         (isStakeConfirming || isTxStatusShown) && !!progressLabelsData.length;
 
     const isCardanoNetworkType = account.networkType === 'cardano';
+    const isDelegatedToEve9 = getCardanoAccountPoolId(account) === EVERSTAKE_EVE9_POOL;
+    const isDelegateToPoolDisabled = !isStakingActive || isStakeConfirming || isStakingDisabled;
 
     const openStakeModal = () => {
         if (!isStakingDisabled) {
@@ -222,6 +230,18 @@ export const StakingCard = ({
                 networkSymbol: account.symbol,
             },
         });
+    };
+
+    const openDelegateToPoolModal = () => {
+        if (!isCardanoNetworkType || isDelegateToPoolDisabled) return;
+
+        dispatch(
+            stakeActions.setAccountPoolSelection({
+                accountKey: account.key,
+                poolId: EVERSTAKE_EVE9_POOL,
+            }),
+        );
+        dispatch(openModal({ type: 'stake', flow: EarnFlow.UpdateProvider, account }));
     };
 
     return (
@@ -433,6 +453,23 @@ export const StakingCard = ({
                                 priority="secondary"
                             >
                                 <Translation id="TR_STAKE_CHANGE_DELEGATE" />
+                            </Button>
+                        </Tooltip>
+                    )}
+                    {isCardanoNetworkType && !isDelegatedToEve9 && (
+                        <Tooltip content={stakingMessageContent}>
+                            <Button
+                                onClick={openDelegateToPoolModal}
+                                isDisabled={isDelegateToPoolDisabled}
+                                iconLeft={isStakingDisabled ? InfoIcon : undefined}
+                                intent="neutral"
+                                priority="secondary"
+                                data-testid="@account/staking/delegate-to-pool-button"
+                            >
+                                <Translation
+                                    id="TR_STAKE_DELEGATE_TO_POOL"
+                                    values={{ pool: EVERSTAKE_POOL_NAMES[EVERSTAKE_EVE9_POOL] }}
+                                />
                             </Button>
                         </Tooltip>
                     )}

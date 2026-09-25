@@ -13,6 +13,7 @@ import { notificationsActions } from '@suite-common/toast-notifications';
 import { EVERSTAKE_POOL_NAMES, type NetworkSymbol } from '@suite-common/wallet-config';
 import { CARDANO_EVERSTAKE_DREP } from '@suite-common/wallet-constants';
 import {
+    type AccountPoolSelection,
     type AccountVotingDelegation,
     MIN_CARDANO_AMOUNT_FOR_STAKING,
     MIN_CARDANO_BALANCE_FOR_STAKING,
@@ -24,8 +25,10 @@ import {
     hasCardanoLiveVoteDelegation,
     isCardanoStakedWithEverstake,
     parseDrepBech32,
+    poolBech32ToHex,
     selectBestCardanoPool,
     selectCardanoPoolsInfo,
+    selectStakePoolSelection,
     selectStakeVotingDelegation,
     validateCardanoDrep,
 } from '@suite-common/wallet-core';
@@ -120,6 +123,7 @@ type PrepareTxPlanParams = {
     action: CardanoAction;
     cardanoPools: AdaPools['pools'];
     votingDelegation?: AccountVotingDelegation;
+    poolSelection?: AccountPoolSelection;
 };
 
 export const prepareTxPlan = async ({
@@ -127,6 +131,7 @@ export const prepareTxPlan = async ({
     action,
     cardanoPools,
     votingDelegation,
+    poolSelection,
 }: PrepareTxPlanParams) => {
     if (account?.networkType !== 'cardano') return;
 
@@ -149,7 +154,10 @@ export const prepareTxPlan = async ({
 
     const addressParameters = getAddressParameters(account, changeAddress.path);
 
-    const selectedPool = selectBestCardanoPool(cardanoPools, getCardanoAccountPoolId(account));
+    const selectedPool =
+        poolSelection?.accountKey === account.key
+            ? { hex: poolBech32ToHex(poolSelection.poolId), bech32: poolSelection.poolId }
+            : selectBestCardanoPool(cardanoPools, getCardanoAccountPoolId(account));
 
     const certificates = [];
 
@@ -233,6 +241,7 @@ const getTransactionData = (
     selectedAccount: SelectedAccountStatus,
     cardanoPools: AdaPools['pools'],
     votingDelegation?: AccountVotingDelegation,
+    poolSelection?: AccountPoolSelection,
 ) => {
     const { stakeType } = formValues;
 
@@ -243,7 +252,13 @@ const getTransactionData = (
     const { account } = selectedAccount;
 
     if (stakeType === 'stake') {
-        return prepareTxPlan({ account, action: 'delegate', cardanoPools, votingDelegation });
+        return prepareTxPlan({
+            account,
+            action: 'delegate',
+            cardanoPools,
+            votingDelegation,
+            poolSelection,
+        });
     }
 
     if (stakeType === 'unstake') {
@@ -292,6 +307,7 @@ export const composeTransactionThunk =
         const selectedAccount = selectFullSelectedAccount(getState());
         const cardanoPools = selectCardanoPoolsInfo(getState());
         const votingDelegation = selectStakeVotingDelegation(getState());
+        const poolSelection = selectStakePoolSelection(getState());
 
         if (!selectedAccount.account) return;
 
@@ -302,6 +318,7 @@ export const composeTransactionThunk =
             selectedAccount,
             cardanoPools,
             votingDelegation,
+            poolSelection,
         );
         const { txPlan } = txData || {};
         if (txPlan?.type !== 'final') return;
@@ -392,6 +409,7 @@ export const signTransactionThunk =
         const selectedAccount = selectFullSelectedAccount(getState());
         const cardanoPools = selectCardanoPoolsInfo(getState());
         const votingDelegation = selectStakeVotingDelegation(getState());
+        const poolSelection = selectStakePoolSelection(getState());
         if (!selectedAccount?.account) return;
 
         const device = selectSelectedDevice(getState());
@@ -409,6 +427,7 @@ export const signTransactionThunk =
             selectedAccount,
             cardanoPools,
             votingDelegation,
+            poolSelection,
         );
 
         if (!txData) {

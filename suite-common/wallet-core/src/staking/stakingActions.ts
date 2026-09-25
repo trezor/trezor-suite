@@ -27,6 +27,11 @@ export type AccountVotingDelegation = {
     option: VotingDelegationOption;
 };
 
+export type AccountPoolSelection = {
+    accountKey: AccountKey;
+    poolId: string;
+};
+
 const setAccountVotingDelegation = createAction(
     `${STAKE_MODULE_PREFIX}/setAccountVotingDelegation`,
     (payload: AccountVotingDelegation) => ({
@@ -37,6 +42,15 @@ const setAccountVotingDelegation = createAction(
 const clearAccountVotingDelegation = createAction(
     `${STAKE_MODULE_PREFIX}/clearAccountVotingDelegation`,
 );
+
+const setAccountPoolSelection = createAction(
+    `${STAKE_MODULE_PREFIX}/setAccountPoolSelection`,
+    (payload: AccountPoolSelection) => ({
+        payload,
+    }),
+);
+
+const clearAccountPoolSelection = createAction(`${STAKE_MODULE_PREFIX}/clearAccountPoolSelection`);
 
 const requestSignTransaction = createAction(
     `${STAKE_MODULE_PREFIX}/requestSignTransaction`,
@@ -66,6 +80,8 @@ export const stakeActions = {
     requestPushTransaction,
     setAccountVotingDelegation,
     clearAccountVotingDelegation,
+    setAccountPoolSelection,
+    clearAccountPoolSelection,
     setResolvedEthereumNonce,
     dispose,
 };
