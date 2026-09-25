@@ -1,21 +1,22 @@
-import { type AnalyticsDep } from '@suite-common/analytics';
-import { type FetchAndSaveMetadataDep } from '@suite-common/metadata-types';
-import { type WithServices, createThunk } from '@suite-common/redux-utils';
-import { type ConnectInitUiEventHooksDep, type TrezorDevice } from '@suite-common/suite-types';
-import { type GetTradedAccountKeysDep } from '@suite-common/wallet-types';
+import { createThunk } from '@suite-common/redux-utils';
+import { type TrezorDevice } from '@suite-common/suite-types';
 import TrezorConnect, { UI_EVENT, UI_REQUEST, UI_REQUESTS } from '@trezor/connect';
 import type { PopupEventMessage, UiEventMessage, UiRequestMessage } from '@trezor/connect-common';
 
 import { DISCOVERY_MODULE_PREFIX, discoveryActions } from './discoveryActions';
 import { isDiscoveryInProgress, selectDiscoveryByDevicePath } from './discoverySelectors';
 import {
+    type RunDiscoveryThunkDeps,
     type RunDiscoveryThunkState,
     type StartDiscoveryThunkDeps,
     type StartDiscoveryThunkState,
     runDiscoveryThunk,
     startDiscoveryThunk,
 } from './discoveryThunks';
-import { defaultTrezorUIEventHandlerThunk } from '../uiEvent/defaultTrezorUIEventHandlerThunk';
+import {
+    type DefaultTrezorUIEventHandlerThunkDeps,
+    defaultTrezorUIEventHandlerThunk,
+} from '../uiEvent/defaultTrezorUIEventHandlerThunk';
 import { registerScopedCallId, unregisterScopedCallId } from '../uiEvent/scopedCallIdRegistry';
 
 type RunPassphraseWalletAddingDiscoveryThunkParams = {
@@ -24,11 +25,8 @@ type RunPassphraseWalletAddingDiscoveryThunkParams = {
 
 type RunPassphraseWalletAddingDiscoveryThunkState = RunDiscoveryThunkState;
 
-type RunPassphraseWalletAddingDiscoveryThunkDeps = WithServices<
-    AnalyticsDep & ConnectInitUiEventHooksDep & GetTradedAccountKeysDep
-> & {
-    thunks: FetchAndSaveMetadataDep;
-};
+type RunPassphraseWalletAddingDiscoveryThunkDeps = RunDiscoveryThunkDeps &
+    DefaultTrezorUIEventHandlerThunkDeps;
 
 // The "run" step. Exported because for a *new* hidden wallet the run is deferred from
 // start — called from PassphraseWalletIsNotExistFlow's "Next" once the user confirms
@@ -76,11 +74,7 @@ type StartDiscoveryOfExistingPassphraseWalletThunkPayload = {
 
 type StartDiscoveryOfExistingPassphraseWalletThunkState = RunDiscoveryThunkState;
 
-type StartDiscoveryOfExistingPassphraseWalletThunkDeps = WithServices<
-    AnalyticsDep & ConnectInitUiEventHooksDep & GetTradedAccountKeysDep
-> & {
-    thunks: FetchAndSaveMetadataDep;
-};
+type StartDiscoveryOfExistingPassphraseWalletThunkDeps = RunPassphraseWalletAddingDiscoveryThunkDeps;
 
 const startDiscoveryOfExistingPassphraseWalletThunk = createThunk<
     void,
