@@ -38,32 +38,30 @@ describe('TxWeightCalculator', () => {
         expect(c.getTotal()).toEqual(4 * 94 + 68);
     });
 
-    // multisig is not implemented
-    // eslint-disable-next-line jest/no-commented-out-tests
-    // it('legacy multisig', () => {
-    //     const c = new TxWeightCalculator();
-    //     c.addInput({
-    //         script_type: 'SPENDMULTISIG',
-    //         multisig: {
-    //             pubkeys: [{}, {}, {}],
-    //             m: 2,
-    //         },
-    //     });
-    //     c.addOutputByKey('p2pkh');
-    //     expect(c.getTotal()).toEqual(4 * 341);
-    // });
+    it('legacy multisig', () => {
+        const c = new TxWeightCalculator();
+        c.addInput({
+            script_type: 'SPENDMULTISIG',
+            multisig: {
+                pubkeys: [{}, {}, {}],
+                m: 2,
+            },
+        });
+        c.addOutputByKey('p2pkh');
+        expect(c.getTotal()).toEqual(4 * 341);
+    });
 
-    // eslint-disable-next-line jest/no-commented-out-tests
-    // it('segwit multisig', () => {
-    //     const c = new TxWeightCalculator();
-    //     c.addInput({
-    //         script_type: 'SPENDP2SHWITNESS',
-    //         multisig: {
-    //             pubkeys: [{}, {}, {}],
-    //             m: 2,
-    //         },
-    //     });
-    //     c.addOutputByKey('p2wpkh');
-    //     expect(c.getTotal()).toEqual(4 * 129 + 256);
-    // });
+    it('segwit multisig', () => {
+        const c = new TxWeightCalculator();
+        c.addInput({
+            script_type: 'SPENDP2SHWITNESS',
+            multisig: {
+                pubkeys: [{}, {}, {}],
+                m: 2,
+            },
+        });
+        // P2WSH output: OP_0, 32-byte witness program.
+        c.addOutput({ length: 34 });
+        expect(c.getTotal()).toEqual(4 * 129 + 256);
+    });
 });
