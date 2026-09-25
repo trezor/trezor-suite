@@ -1,8 +1,7 @@
 import { blockfrostUtils } from '@trezor/blockchain-link-utils';
 import { err, ok } from '@trezor/type-utils';
 
-import { REQUEST_RETRY_GAPS_MS } from '../constants';
-import { getContractAddress } from './fetchCoins';
+import { REQUEST_RETRIES } from '../constants';
 
 jest.mock('@trezor/blockchain-link-utils', () => ({
     ...jest.requireActual('@trezor/blockchain-link-utils'),
@@ -14,7 +13,24 @@ jest.mock('@trezor/blockchain-link-utils', () => ({
     },
 }));
 
+const fetchMock = jest.fn();
+global.fetch = fetchMock as unknown as typeof fetch;
+
+// The API clients capture `globalThis.fetch` when the module under test is first evaluated, so the
+// mock above has to be installed before that happens — hence the require instead of a top-level
+// import, which would be hoisted above the assignment.
+const { fetchAllCoins, getContractAddress } =
+    require('./fetchCoins') as typeof import('./fetchCoins');
+
+// up-fetch hands `fetch` a Request instance rather than a URL string.
+const requestedUrls = () =>
+    fetchMock.mock.calls.map(([request]) => String((request as Request).url));
+
 describe('getContractAddress', () => {
+    beforeEach(() => {
+        fetchMock.mockReset();
+    });
+
     afterEach(() => {
         jest.useRealTimers();
         jest.restoreAllMocks();
@@ -123,7 +139,7 @@ describe('getContractAddress', () => {
             const sorobanAddress = 'CCW67TSZV3SSS2HXMBQ5JFGCKJNXKZM7UQUWUZPUTHXSTZLEO7SJMI75';
             const platforms = { stellar: sorobanAddress };
 
-            const fetchSpy = jest.spyOn(global, 'fetch').mockResolvedValue(
+            fetchMock.mockResolvedValue(
                 new Response(
                     JSON.stringify({
                         asset: 'USDC-GA5ZSEJYB37JRC5AVCIA5MOP4RHTM335X2KGX3IHOJAPP5RE34K4KZVN-1',
@@ -135,10 +151,9 @@ describe('getContractAddress', () => {
             expect(await getContractAddress('stellar', platforms)).toEqual(
                 ok('USDC-GA5ZSEJYB37JRC5AVCIA5MOP4RHTM335X2KGX3IHOJAPP5RE34K4KZVN'),
             );
-            expect(fetchSpy).toHaveBeenCalledWith(
+            expect(requestedUrls()).toEqual([
                 `https://api.stellar.expert/explorer/public/contract/${sorobanAddress}`,
-                expect.objectContaining({ signal: expect.anything() }),
-            );
+            ]);
         });
 
         it('should report an unsupported format when the API returns an unusable asset', async () => {
@@ -146,7 +161,7 @@ describe('getContractAddress', () => {
             const platforms = { stellar: sorobanAddress };
 
             jest.spyOn(console, 'warn').mockImplementation(() => undefined);
-            jest.spyOn(global, 'fetch').mockResolvedValue(
+            fetchMock.mockResolvedValue(
                 new Response(JSON.stringify({ asset: 'INVALID_FORMAT' }), {
                     status: 200,
                     headers: { 'Content-Type': 'application/json' },
@@ -164,10 +179,7 @@ describe('getContractAddress', () => {
         const usdc = 'USDC-GA5ZSEJYB37JRC5AVCIA5MOP4RHTM335X2KGX3IHOJAPP5RE34K4KZVN';
 
         const mockStellarExpert = (...responses: Response[]) => {
-            const fetchSpy = jest.spyOn(global, 'fetch');
-            responses.forEach(response => fetchSpy.mockResolvedValueOnce(response));
-
-            return fetchSpy;
+            responses.forEach(response => fetchMock.mockResolvedValueOnce(response));
         };
 
         const assetResponse = () =>
@@ -179,26 +191,21 @@ describe('getContractAddress', () => {
         it('should retry a rate limited lookup rather than lose the asset', async () => {
             jest.useFakeTimers();
             jest.spyOn(console, 'warn').mockImplementation(() => undefined);
-            const fetchSpy = mockStellarExpert(
-                new Response('Too Many Requests', { status: 429 }),
-                assetResponse(),
-            );
+            mockStellarExpert(new Response('Too Many Requests', { status: 429 }), assetResponse());
 
             const resultPromise = getContractAddress('stellar', { stellar: sorobanAddress });
             await jest.runAllTimersAsync();
 
             expect(await resultPromise).toEqual(ok(usdc));
-            expect(fetchSpy).toHaveBeenCalledTimes(2);
+            expect(fetchMock).toHaveBeenCalledTimes(2);
         });
 
         it('should report a failed lookup, so the asset is never silently dropped', async () => {
             jest.useFakeTimers();
             jest.spyOn(console, 'warn').mockImplementation(() => undefined);
-            const fetchSpy = jest
-                .spyOn(global, 'fetch')
-                .mockImplementation(() =>
-                    Promise.resolve(new Response('Too Many Requests', { status: 429 })),
-                );
+            fetchMock.mockImplementation(() =>
+                Promise.resolve(new Response('Too Many Requests', { status: 429 })),
+            );
 
             const resultPromise = getContractAddress('stellar', { stellar: sorobanAddress });
             await jest.runAllTimersAsync();
@@ -206,7 +213,7 @@ describe('getContractAddress', () => {
 
             expect(result.success).toBe(false);
             expect(result.success === false && result.error.type).toBe('LOOKUP_FAILED');
-            expect(fetchSpy).toHaveBeenCalledTimes(REQUEST_RETRY_GAPS_MS.length);
+            expect(fetchMock).toHaveBeenCalledTimes(REQUEST_RETRIES + 1);
         });
 
         it('should treat a contract the API does not know as an answer, not a failure', async () => {
@@ -263,5 +270,51 @@ describe('getContractAddress', () => {
                 err({ type: 'NOT_ON_PLATFORM' }),
             );
         });
+    });
+});
+
+describe('fetchAllCoins', () => {
+    beforeEach(() => {
+        fetchMock.mockReset();
+        jest.spyOn(console, 'log').mockImplementation(() => undefined);
+    });
+
+    afterEach(() => {
+        jest.restoreAllMocks();
+    });
+
+    it('should ask CoinGecko for the platforms and keep only the contracts it filled in', async () => {
+        fetchMock.mockResolvedValue(
+            new Response(
+                JSON.stringify([
+                    {
+                        id: 'usd-coin',
+                        symbol: 'usdc',
+                        name: 'USDC',
+                        platforms: {
+                            stellar:
+                                'USDC-GA5ZSEJYB37JRC5AVCIA5MOP4RHTM335X2KGX3IHOJAPP5RE34K4KZVN',
+                            ethereum: '',
+                            solana: null,
+                        },
+                    },
+                ]),
+                { status: 200, headers: { 'Content-Type': 'application/json' } },
+            ),
+        );
+
+        expect(await fetchAllCoins()).toEqual([
+            {
+                id: 'usd-coin',
+                symbol: 'usdc',
+                name: 'USDC',
+                platforms: {
+                    stellar: 'USDC-GA5ZSEJYB37JRC5AVCIA5MOP4RHTM335X2KGX3IHOJAPP5RE34K4KZVN',
+                },
+            },
+        ]);
+        expect(requestedUrls()).toEqual([
+            'https://pro-api.coingecko.com/api/v3/coins/list?include_platform=true',
+        ]);
     });
 });

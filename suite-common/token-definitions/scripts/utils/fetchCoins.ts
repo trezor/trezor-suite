@@ -1,13 +1,47 @@
 /* eslint-disable no-console */
 import * as toml from 'toml';
+import { z } from 'zod';
 
 import { blockfrostUtils } from '@trezor/blockchain-link-utils';
 import { type Result, err, ok } from '@trezor/type-utils';
 
+import { coinGeckoApi, publicApi, requestResult, stellarExpertApi, stellarHorizonApi } from './api';
 import { AdvancedTokenStructure, TokenStructureType } from '../../src/tokenDefinitionsTypes';
-import { COIN_LIST_URL, STELLAR_EXPERT_URL, STELLAR_HORIZON_URL } from '../constants';
-import { CoinData } from '../types';
-import { requestJson, requestText } from './request';
+import {
+    type CoinData,
+    coinListSchema,
+    stellarAccountSchema,
+    stellarExpertContractSchema,
+    stellarExpertRatingSchema,
+} from '../schemas';
+
+const fetchCoinList = coinGeckoApi('/coins/list', {
+    method: 'GET',
+    schema: coinListSchema,
+    params: { include_platform: true },
+});
+
+const fetchContract = stellarExpertApi('/contract/:contractAddress', {
+    method: 'GET',
+    schema: stellarExpertContractSchema,
+});
+
+const fetchAssetRating = stellarExpertApi('/asset/:asset/rating', {
+    method: 'GET',
+    schema: stellarExpertRatingSchema,
+});
+
+const fetchIssuerAccount = stellarHorizonApi('/accounts/:issuer', {
+    method: 'GET',
+    schema: stellarAccountSchema,
+});
+
+const fetchStellarToml = (homeDomain: string) =>
+    publicApi(`https://${homeDomain}/.well-known/stellar.toml`, {
+        method: 'GET',
+        parseResponse: response => response.text(),
+        schema: z.string(),
+    })();
 
 const normalizeStellarAssetAddress = (address: string): string | undefined => {
     // Stellar address format: CODE-ISSUER, CODE:ISSUER, or CODE-ISSUER-NUMBER
@@ -28,10 +62,6 @@ const normalizeStellarAssetAddress = (address: string): string | undefined => {
 
 const isSorobanContractAddress = (address: string) => /^C[A-Z0-9]{55}$/.test(address);
 
-type StellarExpertContractData = {
-    asset?: string;
-};
-
 /**
  * Why a coin has no contract address on a platform.
  *
@@ -49,9 +79,7 @@ export type ContractAddressError =
 const fetchSorobanContractAsset = async (
     contractAddress: string,
 ): Promise<Result<string, ContractAddressError>> => {
-    const result = await requestJson<StellarExpertContractData>(
-        `${STELLAR_EXPERT_URL}/contract/${contractAddress}`,
-    );
+    const result = await requestResult(() => fetchContract({ routeParams: { contractAddress } }));
 
     if (!result.success) {
         return result.error.type === 'NOT_FOUND'
@@ -127,16 +155,10 @@ export const getContractAddress = async (
 export type StellarHomeDomainError =
     { type: 'NOT_PUBLISHED' } | { type: 'NOT_VERIFIABLE'; reason: string };
 
-type StellarAccountData = {
-    home_domain?: string;
-};
-
 const fetchStellarHomeDomain = async (
     issuer: string,
 ): Promise<Result<string, StellarHomeDomainError>> => {
-    const result = await requestJson<StellarAccountData>(
-        `${STELLAR_HORIZON_URL}/accounts/${issuer}`,
-    );
+    const result = await requestResult(() => fetchIssuerAccount({ routeParams: { issuer } }));
 
     if (!result.success) {
         return result.error.type === 'NOT_FOUND'
@@ -172,7 +194,7 @@ const verifyStellarToml = async (
     code: string,
     issuer: string,
 ): Promise<Result<void, StellarHomeDomainError>> => {
-    const result = await requestText(`https://${homeDomain}/.well-known/stellar.toml`);
+    const result = await requestResult(() => fetchStellarToml(homeDomain));
 
     if (!result.success) {
         return result.error.type === 'NOT_FOUND'
@@ -223,10 +245,6 @@ const getStellarHomeDomain = async (
 
 export type StellarRatingError = { type: 'UNRATED' } | { type: 'LOOKUP_FAILED'; reason: string };
 
-type StellarExpertRatingData = {
-    rating?: { average?: number };
-};
-
 /**
  * Fetch Stellar token rating from StellarExpert API
  *
@@ -235,8 +253,8 @@ type StellarExpertRatingData = {
 const fetchStellarTokenRating = async (
     contractAddress: string,
 ): Promise<Result<number, StellarRatingError>> => {
-    const result = await requestJson<StellarExpertRatingData>(
-        `${STELLAR_EXPERT_URL}/asset/${contractAddress}/rating`,
+    const result = await requestResult(() =>
+        fetchAssetRating({ routeParams: { asset: contractAddress } }),
     );
 
     if (!result.success) {
@@ -253,36 +271,12 @@ const fetchStellarTokenRating = async (
     return typeof average === 'number' ? ok(average) : err({ type: 'UNRATED' });
 };
 
-const options = {
-    method: 'GET',
-    headers: { 'x-cg-pro-api-key': process.env.COINGECKO_API_KEY! },
-};
-
 export const fetchAllCoins = async (): Promise<CoinData[]> => {
-    const params = new URLSearchParams({ include_platform: String(true) });
+    const coins = await fetchCoinList();
 
-    try {
-        const res = await fetch(`${COIN_LIST_URL}?${params.toString()}`, options);
+    console.log('Number of coin records fetched (ALL):', coins.length);
 
-        if (!res.ok) {
-            let msg = `status: ${res.status}`;
-            try {
-                const { error } = await res.json();
-                if (error) msg = `${error}, ${msg}`;
-            } catch {
-                // ignore JSON parse error
-            }
-            throw new Error(`CoinGecko coins/list failed: ${msg}`);
-        }
-
-        const data: CoinData[] = await res.json();
-        console.log('Number of coin records fetched (ALL):', data.length);
-
-        return data;
-    } catch (error) {
-        const message = error instanceof Error ? error.message : String(error);
-        throw new Error(`fetchAllCoins error: ${message}`, { cause: error });
-    }
+    return coins;
 };
 
 /**
