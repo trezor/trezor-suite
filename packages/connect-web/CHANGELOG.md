@@ -1,3 +1,9 @@
+# 10.0.1
+
+- fix(connect): keep webextension channel tag as @trezor/suite-web (5c29b8f3c0)
+- docs(connect): curate thin package 10.0.0 changelogs as communication-layer notes (d323502e65)
+- docs(connect): drop pre-v10 history wrongly dumped into thin package changelogs (c5eb341ac0)
+
 See https://github.com/trezor/trezor-suite/blob/develop/packages/connect/CHANGELOG.md for the Connect changelog. This file lists only changes to the `@trezor/connect-web` package itself.
 
 # 10.0.0
