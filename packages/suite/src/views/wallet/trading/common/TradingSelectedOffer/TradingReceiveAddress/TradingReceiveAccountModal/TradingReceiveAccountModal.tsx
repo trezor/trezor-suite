@@ -38,8 +38,8 @@ export const TradingReceiveAccountModal = () => {
 
                 {!hasSuiteAccounts && !isDiscoveryRunning && (
                     <TradingReceiveAddressEmpty
-                        title={<Translation id="TR_TRADING_RECEIVE_ACCOUNT_NOT_FOUND_TITLE" />}
-                        text={<Translation id="TR_TRADING_RECEIVE_ACCOUNT_NOT_FOUND_TEXT" />}
+                        title={<Translation id="TR_TRADING_RECEIVE_NO_ACCOUNT_TITLE" />}
+                        text={<Translation id="TR_TRADING_RECEIVE_NO_ACCOUNT_TEXT" />}
                     />
                 )}
 
