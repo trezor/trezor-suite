@@ -1,5 +1,6 @@
 import { getSupportedNetworks } from '@suite-common/wallet-config';
 import { launchArguments } from '@suite-native/config';
+import { createNativeNetworksCompositionRoot } from '@suite-native/networks';
 import {
     type PreloadedState,
     createHydrateReduxStore,
@@ -24,6 +25,7 @@ export const createSuiteNativeCompositionRoot = (
 ): SuiteNativeCompositionRoot => {
     const ensureEncryptionKey = createEnsureEncryptionKey();
     const mmkvStorage = createMMKVStorage({ ensureEncryptionKey });
+    const nativeNetworks = createNativeNetworksCompositionRoot({ mmkvStorage });
     const { store, injectServicesIntoReduxExtra } = createReduxStore({
         // Passing runtime dependencies into reducer setup is an anti-pattern: reducers should
         // remain pure and receive runtime data through action payloads, not services or extra.
@@ -31,7 +33,11 @@ export const createSuiteNativeCompositionRoot = (
         // whitelist to reducer construction, not a pattern to follow for other reducers.
         // See https://github.com/trezor/trezor-suite/issues/32215.
         // Network metadata is loaded after hydration, so it cannot supply this whitelist yet.
-        reducer: prepareRootReducers({ mmkvStorage, getSupportedNetworks }),
+        reducer: prepareRootReducers({
+            mmkvStorage,
+            getSupportedNetworks,
+            nativeNetworksReducer: nativeNetworks.reducer,
+        }),
         extraDependencies,
         preloadedState,
     });
@@ -40,6 +46,7 @@ export const createSuiteNativeCompositionRoot = (
         getState: store.getState,
         ensureEncryptionKey,
         mmkvStorage,
+        nativeNetworks: nativeNetworks.services,
         getTrezorConnect: () => TrezorConnect,
     });
     const storePersistor = createStorePersistor({ store });

@@ -66,6 +66,9 @@
             "path": "../module-stellar-token-management"
         },
         { "path": "../navigation" },
+        {
+            "path": "../networks/native-common-networks"
+        },
         { "path": "../qr-code" },
         { "path": "../suite-sync" },
         { "path": "../tokens" },
