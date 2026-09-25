@@ -116,7 +116,7 @@ export const installUpdateThunk =
             payload,
         });
 
-        // auto-updater is by default configured to update on quit 'autoUpdater.autoInstallOnAppQuit = true'
+        // auto-updater is by default configured to update on quit via `autoUpdater.autoInstallEvent = 'onQuit'`
         if (installNow) {
             extra.services.desktopApi.installUpdate();
         } else {

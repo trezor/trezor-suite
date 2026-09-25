@@ -195,18 +195,18 @@ export const init: ModuleInit = ({ mainWindowProxy, store }) => {
     autoUpdater.on('update-downloaded', async (info: UpdateDownloadedEvent) => {
         const { version, releaseDate, downloadedFile, releaseNotes } = info;
 
-        // Need to make the event handler async before setting `autoInstallOnAppQuit = false` here, because the Node.js
+        // Need to make the event handler async before setting `autoInstallEvent = 'manual'` here, because the Node.js
         // EventEmitter is synchronous, and it would cause a macOS specific bug during app update, see upstream code:
         // https://github.com/electron-userland/electron-builder/blob/a5121de49582eaa8870d4c05e6ae55eff160a592/packages/electron-updater/src/MacUpdater.ts#L253-L255
-        // autoInstallOnAppQuit is considered a permanent setting, not something that can toggle on/off during the process.
-        // → we need to make sure the MacUpdater code finishes with previous `autoInstallOnAppQuit` value.
+        // autoInstallEvent is considered a permanent setting, not something that can toggle on/off during the process.
+        // → we need to make sure the MacUpdater code finishes with the previous autoInstallEvent value.
         await Promise.resolve();
 
         // Disable installation of the downloaded file before our own verification is complete, it's quite hacky but
         // electron-updater doesn't have an interface to delay the installation with an arbitrary async function.
         // TODO refactor https://github.com/electron-userland/electron-builder/issues/10010
-        const previousAutoInstallOnAppQuit = autoUpdater.autoInstallOnAppQuit;
-        autoUpdater.autoInstallOnAppQuit = false;
+        const previousAutoInstallEvent = autoUpdater.autoInstallEvent;
+        autoUpdater.autoInstallEvent = 'manual';
 
         logger.info(SERVICE_NAME, [
             'Update downloaded:',
@@ -219,7 +219,7 @@ export const init: ModuleInit = ({ mainWindowProxy, store }) => {
         mainWindowProxy.getInstance()?.webContents.send('update/downloading', { verifying: true });
 
         const abortUpdate = () => {
-            autoUpdater.autoInstallOnAppQuit = false;
+            autoUpdater.autoInstallEvent = 'manual';
             unlinkSync(downloadedFile);
             logger.info(SERVICE_NAME, `Unlink downloaded file ${downloadedFile}`);
             mainWindowProxy.getInstance()?.webContents.send('update/error');
@@ -242,7 +242,7 @@ export const init: ModuleInit = ({ mainWindowProxy, store }) => {
             });
 
             logger.info(SERVICE_NAME, 'Signature of update file is valid');
-            autoUpdater.autoInstallOnAppQuit = previousAutoInstallOnAppQuit;
+            autoUpdater.autoInstallEvent = previousAutoInstallEvent;
 
             mainWindowProxy.getInstance()?.webContents.send('update/downloaded', {
                 version,
@@ -257,7 +257,9 @@ export const init: ModuleInit = ({ mainWindowProxy, store }) => {
 
         logger.info(
             SERVICE_NAME,
-            `Is configured to auto update after app quit? ${autoUpdater.autoInstallOnAppQuit}`,
+            `Is configured to auto update after app quit? ${b2t(
+                autoUpdater.autoInstallEvent === 'onQuit',
+            )}`,
         );
     });
 
@@ -278,7 +280,7 @@ export const init: ModuleInit = ({ mainWindowProxy, store }) => {
         // If the update is triggered manually by the button in the app, we want to force update,
         // because it may have been disabled by the user switch the automatic update off. But because the user deliberately
         // clicked the "Update on quit" button, we want to install it.
-        autoUpdater.autoInstallOnAppQuit = true;
+        autoUpdater.autoInstallEvent = 'onQuit';
     });
 
     ipcMain.on('update/install', () => {
@@ -292,7 +294,7 @@ export const init: ModuleInit = ({ mainWindowProxy, store }) => {
             mainWindowProxy.getInstance()?.close();
 
             // Silent installation on Windows to match on "Update on quit" and macOS behavior
-            autoUpdater.quitAndInstall(true, true);
+            autoUpdater.quitAndInstall({ isSilent: true, isForceRunAfter: true });
         });
     });
 
@@ -339,7 +341,7 @@ export const init: ModuleInit = ({ mainWindowProxy, store }) => {
             //      3) user wants to disable auto-update and PREVENT the downloaded update from installing
             //
             // We have to disable auto update so it won't get installed.
-            autoUpdater.autoInstallOnAppQuit = false;
+            autoUpdater.autoInstallEvent = 'manual';
         }
     });
 
