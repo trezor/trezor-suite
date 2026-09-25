@@ -13,12 +13,11 @@ import {
     type StackProps,
 } from '@suite-native/navigation';
 import {
-    LIST_VERTICAL_SPACING,
     SlidingFooterOverlay,
     type TransactionReviewOutputsState,
     selectIsTransactionReviewInProgress,
-    useActiveStepOffset,
 } from '@suite-native/transaction-management';
+import { LIST_VERTICAL_SPACING, useActiveStepOffset } from '@suite-native/transaction-review';
 
 import { AddressOriginHelpButton } from './AddressOriginHelpButton';
 import { AddressReviewStep } from './AddressReviewStep';

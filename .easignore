@@ -251,6 +251,7 @@
 !/suite-native/trading-state
 !/suite-native/trading-types
 !/suite-native/transaction-management
+!/suite-native/transaction-review
 !/suite-native/transactions
 !/suite-native/tx-simulation
 !/suite-native/video-assets

@@ -1,4 +1,4 @@
-import { type NetworkSymbol, getNetwork } from '@suite-common/wallet-config';
+import { type NetworkSymbol, type NetworkType, getNetwork } from '@suite-common/wallet-config';
 import { BigNumber, isNotNull } from '@trezor/utils';
 
 export const getFeeDecimals = ({ symbol }: { symbol: NetworkSymbol }) => {
@@ -37,3 +37,8 @@ export const getFeeValue = ({
 
     return feeRate;
 };
+
+export const getTransactionReviewNetworkOptions = (networkType?: NetworkType) => ({
+    isSummaryItemEnabled: networkType !== 'tron',
+    isSlidingOverlayEnabled: networkType !== 'solana',
+});
