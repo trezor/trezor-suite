@@ -66,6 +66,8 @@ import { selectSendSignedTx } from '../send/sendFormSelectors';
 const FAKE_TX_TTL_SECONDS = 15 * 60;
 // Cardano's average block interval, not reported by @trezor/connect.
 const CARDANO_BLOCK_TIME_SECONDS = 20;
+// Solana's average block interval; its fee info reports the block time as unknown (-1).
+const SOLANA_BLOCK_TIME_SECONDS = 0.4;
 
 /**
  * Replace existing transaction in the reducer (RBF)
@@ -626,6 +628,85 @@ export const addFakePendingTronSendTxThunk = createThunk<
                 },
             }),
         );
+    },
+);
+
+interface AddFakePendingSolanaSendTxThunkParams {
+    precomposedTransaction: PrecomposedTransactionFinal;
+    txid: string;
+    account: Account;
+}
+
+type AddFakePendingSolanaSendTxThunkState = BlockchainRootState;
+
+export const addFakePendingSolanaSendTxThunk = createThunk<
+    void,
+    AddFakePendingSolanaSendTxThunkParams,
+    { state: AddFakePendingSolanaSendTxThunkState }
+>(
+    `${TRANSACTIONS_MODULE_PREFIX}/addFakePendingTransaction`,
+    ({ precomposedTransaction, txid, account }, { dispatch, getState }) => {
+        if (account.networkType !== 'solana') return;
+
+        const [output] = precomposedTransaction.outputs;
+        const { token } = precomposedTransaction;
+        const recipient = output?.address;
+        const outputAmount = output?.amount?.toString() ?? '0';
+        const blockHeight = selectBlockchainHeightBySymbol(getState(), account.symbol) ?? 0;
+
+        const tokenTransfer: TokenTransfer | undefined =
+            token && recipient
+                ? {
+                      type: 'sent',
+                      standard: token.standard,
+                      amount: outputAmount,
+                      from: account.descriptor,
+                      to: recipient,
+                      contract: token.contract,
+                      name: token.name,
+                      symbol: token.symbol,
+                      decimals: token.decimals,
+                  }
+                : undefined;
+        const nativeTarget = recipient && !token ? recipient : undefined;
+
+        const fakeTx = {
+            type: 'sent' as const,
+            txid,
+            blockTime: Math.floor(Date.now() / 1000),
+            blockHash: undefined,
+            // the fee is included to match the confirmed tx, whose amount is the account's SOL
+            // balance change; for an SPL token transfer that change is only the fee
+            amount: new BigNumber(token ? '0' : outputAmount)
+                .plus(precomposedTransaction.fee)
+                .toString(),
+            fee: precomposedTransaction.fee,
+            feeRate: undefined,
+            targets: nativeTarget
+                ? [{ n: 0, addresses: [nativeTarget], isAddress: true, amount: outputAmount }]
+                : [],
+            tokens: tokenTransfer ? [tokenTransfer] : [],
+            internalTransfers: [],
+            details: {
+                vin: [
+                    {
+                        n: 0,
+                        addresses: [account.descriptor],
+                        isAddress: true,
+                        isOwn: true,
+                        isAccountOwned: true,
+                    },
+                ],
+                vout: nativeTarget
+                    ? [{ value: outputAmount, n: 0, addresses: [nativeTarget], isAddress: true }]
+                    : [],
+                size: 0,
+                totalInput: '0',
+                totalOutput: nativeTarget ? outputAmount : '0',
+            },
+            deadline: blockHeight + Math.ceil(FAKE_TX_TTL_SECONDS / SOLANA_BLOCK_TIME_SECONDS),
+        };
+        dispatch(transactionsActions.addTransaction({ transactions: [fakeTx], account }));
     },
 );
 
