@@ -155,6 +155,9 @@ const search = (value: string) => {
 const optionOf = (container: HTMLElement, { address }: Address) =>
     container.querySelector(`[id="${address}"]`)?.closest(`[data-testid="${OPTION}"]`) ?? null;
 
+const optionWithLabel = (label: string) =>
+    screen.getByText(label).closest(`[data-testid="${OPTION}"]`);
+
 describe('TradingUtxoReceiveAddressModal', () => {
     beforeEach(() => {
         jest.mocked(useTradingReceiveAddressValues).mockReturnValue({
@@ -168,13 +171,15 @@ describe('TradingUtxoReceiveAddressModal', () => {
         } as unknown as ReturnType<typeof useTradingReceiveAddressValues>);
     });
 
-    it('renders the label of a labeled address next to the address itself', () => {
+    it('renders the label of a labeled address instead of the address itself', () => {
         const { container } = renderModal();
 
         expect(screen.getAllByTestId(OPTION)).toHaveLength(3);
 
-        expect(optionOf(container, LABELED_USED)).toHaveTextContent(USED_LABEL);
-        expect(optionOf(container, LABELED_UNUSED)).toHaveTextContent(UNUSED_LABEL);
+        expect(optionWithLabel(USED_LABEL)).toBeInTheDocument();
+        expect(optionWithLabel(UNUSED_LABEL)).toBeInTheDocument();
+        expect(optionOf(container, LABELED_USED)).not.toBeInTheDocument();
+        expect(optionOf(container, LABELED_UNUSED)).not.toBeInTheDocument();
     });
 
     it('renders an unlabeled address without any label', () => {
@@ -187,12 +192,12 @@ describe('TradingUtxoReceiveAddressModal', () => {
     });
 
     it('filters addresses by label, case insensitively', () => {
-        const { container } = renderModal();
+        renderModal();
 
         search('salary');
 
         expect(screen.getAllByTestId(OPTION)).toHaveLength(1);
-        expect(optionOf(container, LABELED_USED)).toHaveTextContent(USED_LABEL);
+        expect(optionWithLabel(USED_LABEL)).toBeInTheDocument();
     });
 
     it('still filters addresses by address and by path', () => {
@@ -206,7 +211,7 @@ describe('TradingUtxoReceiveAddressModal', () => {
         search(LABELED_UNUSED.path);
 
         expect(screen.getAllByTestId(OPTION)).toHaveLength(1);
-        expect(optionOf(container, LABELED_UNUSED)).toHaveTextContent(UNUSED_LABEL);
+        expect(optionWithLabel(UNUSED_LABEL)).toBeInTheDocument();
     });
 
     it('renders the empty state when nothing matches', () => {

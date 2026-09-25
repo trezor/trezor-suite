@@ -56,26 +56,18 @@ export const TradingUtxoReceiveAddressOption = ({
             data-testid="@trading/bitcoin-receive-address-modal/option"
             onClick={onOptionClick}
         >
-            <Row width="100%" gap={12} justifyContent="space-between">
-                <Column alignItems="flex-start">
+            <Row
+                width="100%"
+                minHeight={44}
+                gap={12}
+                alignItems="center"
+                justifyContent="space-between"
+            >
+                <Column alignItems="flex-start" flex="1" minWidth={0}>
                     {label ? (
-                        <>
-                            <Text
-                                as="div"
-                                typographyStyle="body-md"
-                                ellipsisLineCount={1}
-                                maxWidth={200}
-                            >
-                                {label}
-                            </Text>
-                            <Address
-                                value={address.address}
-                                typographyStyle="body-sm"
-                                intent="neutral"
-                                priority="secondary"
-                                isTruncated
-                            />
-                        </>
+                        <Text as="div" typographyStyle="body-md" ellipsisLineCount={1}>
+                            {label}
+                        </Text>
                     ) : (
                         <Address isTruncated value={address.address} />
                     )}
