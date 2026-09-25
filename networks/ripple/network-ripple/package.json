@@ -1,6 +1,6 @@
 {
     "name": "@trezor/network-ripple",
-    "version": "10.0.0",
+    "version": "10.0.1",
     "repository": {
         "type": "git",
         "url": "git://github.com/trezor/trezor-suite.git"
