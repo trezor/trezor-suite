@@ -178,3 +178,56 @@ const middleware = [
     ...otherMiddlewares,
 ];
 ```
+
+## createEntityIndex
+
+Derived indexes over store entities: a primary index computed from a Redux slice on first read, and
+any number of secondary ones assembled off it when a read asks for one, with stable array
+identities for keys whose members did not change.
+
+Nothing is stored in Redux and no reducer changes — the index derives itself from the slice it
+selects, so it cannot drift from the data it mirrors.
+
+```typescript
+export const accountsIndex = createEntityIndex({
+    name: 'accounts',
+    selectSource: (state: AccountsRootState) => state.wallet.accounts,
+    getId: (account: Account) => account.key,
+    secondaryIndexes: { byNetwork: account => account.symbol },
+});
+
+accountsIndex.getBySecondaryKey(state, 'byNetwork', symbol); // in a selector or useSelector
+accountsIndex.getById(getState(), accountKey); //               in a thunk
+accountsIndex.getAllExcept(state, hiddenAccountKeys); //        everything but those
+```
+
+| Term                | What it means here                                                                                                                                                                                                                                                                                                                                                                         |
+| ------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| **primary index**   | `ids` and `byId` — every entity by the id `getId` gives it, one entity per id.                                                                                                                                                                                                                                                                                                             |
+| **secondary index** | A grouping index, one per entry in `secondaryIndexes`: a `Map` from a key the extractor returns to every entity that answers to it. A key names many entities, never at most one the way a unique index does — that is what the id is for. An extractor returns one key or `undefined`; an entity that belongs under several keys is several entities, which is what `getEntities` is for. |
+| **entities**        | What the source holds. `getEntities` derives them; without it the source is taken to be its entities.                                                                                                                                                                                                                                                                                      |
+
+An id belongs to one entity: `getId` is expected to be unique across the whole source, and an index
+given two entities with the same id throws rather than answer one way by id and another by key.
+
+A build walks the source it was handed, so a `getEntities` that derives something — flattening an
+account into its holdings, say — belongs behind a `WeakMap` of its own, and then a write to one
+account derives that account only:
+
+```typescript
+const holdingsOf = new WeakMap<Account, Holding[]>();
+
+getEntities: (accounts: Account[]) =>
+    accounts.flatMap(account => {
+        const known = holdingsOf.get(account);
+        if (known) return known;
+        const built = toHoldings(account);
+        holdingsOf.set(account, built);
+        return built;
+    }),
+```
+
+An index nobody reads is never assembled and its keys are never derived. One that is read is
+assembled off `byId` — a second, simple pass, which measures faster than filling it while the
+source is being walked. The array under a key keeps its identity for as long as its members do —
+which is what keeps a component watching one key from re-rendering when another key changes.
