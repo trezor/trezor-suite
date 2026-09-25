@@ -1,3 +1,8 @@
+# 10.0.1
+
+- refactor(connect): firmware channels improvement (84e84009e2)
+- refactor(connect): move `firmwareReleaseConfigAssets` to connect-data (c9a79db11a)
+
 # 10.0.0
 
 - npm-prerelease: @trezor/connect-data 10.0.0-beta.3 (3e7f08c373)
