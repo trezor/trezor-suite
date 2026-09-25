@@ -2,6 +2,7 @@ import type { Bip43PathTemplate } from '@trezor/crypto-utils';
 import type { DeviceModelInternal } from '@trezor/device-utils';
 import type { NetworkSymbol } from '@trezor/network-module-types';
 
+import type { DisplayOrderKey } from './DisplayOrderKey';
 import type { Protocol } from './Protocol';
 
 export type NetworkColor = `#${string}`;
@@ -118,4 +119,5 @@ export type SuiteCommonNetworkConfig = {
     readonly yieldXyzId: string | null;
     readonly color: NetworkColor;
     readonly protocols: readonly Protocol[];
+    readonly displayOrder: DisplayOrderKey;
 };

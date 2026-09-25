@@ -1,7 +1,4 @@
-import { type LegacyNetworkSymbol, networkDisplayOrder } from '@suite-common/legacy-network-config';
-
 import type { NetworkModuleRepositoryDep } from './NetworkModuleRepository';
-import type { NetworkSymbol } from './NetworkModules';
 import type { GetNetworkConfigDep } from './createGetNetworkConfig';
 import type { NetworkMetadata } from '../reduxState/NetworkMetadata';
 
@@ -11,16 +8,21 @@ export type GetNetworkConfigs = () => readonly NetworkMetadata[];
 
 export type GetNetworkConfigsDep = { getNetworkConfigs: GetNetworkConfigs };
 
-// Keyed by the legacy display-order list; the open symbol is narrowed at the lookup.
-// TODO: refactor this legacy ordering away with the rest of the legacy network config.
-// See https://github.com/trezor/trezor-suite/issues/32060
-// and https://github.com/trezor/trezor-suite/pull/32469
-const displayOrderBySymbol = new Map<LegacyNetworkSymbol, number>(
-    networkDisplayOrder.map((symbol, index) => [symbol, index]),
-);
+// Byte-wise, not locale-aware, as fractional-indexing keys require.
+const compareStrings = (a: string, b: string) => {
+    if (a < b) {
+        return -1;
+    }
 
-const getDisplayOrder = (symbol: NetworkSymbol) =>
-    displayOrderBySymbol.get(symbol as LegacyNetworkSymbol) ?? Number.MAX_SAFE_INTEGER;
+    if (a > b) {
+        return 1;
+    }
+
+    return 0;
+};
+
+const compareDisplayOrder = (a: NetworkMetadata, b: NetworkMetadata) =>
+    compareStrings(a.displayOrder, b.displayOrder) || compareStrings(a.symbol, b.symbol);
 
 export const createGetNetworkConfigs =
     (deps: GetNetworkConfigsDeps): GetNetworkConfigs =>
@@ -29,4 +31,4 @@ export const createGetNetworkConfigs =
             .getSupportedNetworks()
             .map(symbol => ({ ...deps.getNetworkConfig(symbol), symbol }))
             // Hermes does not support toSorted; map creates a new array that is safe to sort.
-            .sort((a, b) => getDisplayOrder(a.symbol) - getDisplayOrder(b.symbol));
+            .sort(compareDisplayOrder);

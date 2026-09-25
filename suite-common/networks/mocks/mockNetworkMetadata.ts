@@ -1,4 +1,4 @@
-import { asProtocol } from '@trezor/network-module-suite-common-types';
+import { asDisplayOrderKey, asProtocol } from '@trezor/network-module-suite-common-types';
 import { asNetworkSymbol } from '@trezor/network-module-types';
 
 import type { NetworkMetadata } from '../reduxState/NetworkMetadata';
@@ -36,6 +36,7 @@ export type MockNetworkSymbol =
 export const mockNetworkMetadata: Readonly<Record<MockNetworkSymbol, NetworkMetadata>> = {
     btc: {
         symbol: asNetworkSymbol('btc'),
+        displayOrder: asDisplayOrderKey('a0'),
         bip43Path: "m/44'/0'/i'",
         accountTypes: {},
         features: [],
@@ -56,6 +57,7 @@ export const mockNetworkMetadata: Readonly<Record<MockNetworkSymbol, NetworkMeta
     },
     eth: {
         symbol: asNetworkSymbol('eth'),
+        displayOrder: asDisplayOrderKey('a1'),
         bip43Path: "m/44'/0'/i'",
         accountTypes: {},
         features: [],
@@ -77,6 +79,7 @@ export const mockNetworkMetadata: Readonly<Record<MockNetworkSymbol, NetworkMeta
     },
     pol: {
         symbol: asNetworkSymbol('pol'),
+        displayOrder: asDisplayOrderKey('a2'),
         bip43Path: "m/44'/0'/i'",
         accountTypes: {},
         features: [],
@@ -98,6 +101,7 @@ export const mockNetworkMetadata: Readonly<Record<MockNetworkSymbol, NetworkMeta
     },
     bsc: {
         symbol: asNetworkSymbol('bsc'),
+        displayOrder: asDisplayOrderKey('a3'),
         bip43Path: "m/44'/0'/i'",
         accountTypes: {},
         features: [],
@@ -119,6 +123,7 @@ export const mockNetworkMetadata: Readonly<Record<MockNetworkSymbol, NetworkMeta
     },
     arb: {
         symbol: asNetworkSymbol('arb'),
+        displayOrder: asDisplayOrderKey('a4'),
         bip43Path: "m/44'/0'/i'",
         accountTypes: {},
         features: [],
@@ -145,6 +150,7 @@ export const mockNetworkMetadata: Readonly<Record<MockNetworkSymbol, NetworkMeta
     },
     base: {
         symbol: asNetworkSymbol('base'),
+        displayOrder: asDisplayOrderKey('a5'),
         bip43Path: "m/44'/0'/i'",
         accountTypes: {},
         features: [],
@@ -166,6 +172,7 @@ export const mockNetworkMetadata: Readonly<Record<MockNetworkSymbol, NetworkMeta
     },
     op: {
         symbol: asNetworkSymbol('op'),
+        displayOrder: asDisplayOrderKey('a6'),
         bip43Path: "m/44'/0'/i'",
         accountTypes: {},
         features: [],
@@ -187,6 +194,7 @@ export const mockNetworkMetadata: Readonly<Record<MockNetworkSymbol, NetworkMeta
     },
     rhc: {
         symbol: asNetworkSymbol('rhc'),
+        displayOrder: asDisplayOrderKey('a7'),
         bip43Path: "m/44'/0'/i'",
         accountTypes: {},
         features: [],
@@ -208,6 +216,7 @@ export const mockNetworkMetadata: Readonly<Record<MockNetworkSymbol, NetworkMeta
     },
     hype: {
         symbol: asNetworkSymbol('hype'),
+        displayOrder: asDisplayOrderKey('a8'),
         bip43Path: "m/44'/0'/i'",
         accountTypes: {},
         features: [],
@@ -229,6 +238,7 @@ export const mockNetworkMetadata: Readonly<Record<MockNetworkSymbol, NetworkMeta
     },
     avax: {
         symbol: asNetworkSymbol('avax'),
+        displayOrder: asDisplayOrderKey('a9'),
         bip43Path: "m/44'/0'/i'",
         accountTypes: {},
         features: [],
@@ -250,6 +260,7 @@ export const mockNetworkMetadata: Readonly<Record<MockNetworkSymbol, NetworkMeta
     },
     sol: {
         symbol: asNetworkSymbol('sol'),
+        displayOrder: asDisplayOrderKey('aA'),
         bip43Path: "m/44'/0'/i'",
         accountTypes: {},
         features: [],
@@ -271,6 +282,7 @@ export const mockNetworkMetadata: Readonly<Record<MockNetworkSymbol, NetworkMeta
     },
     trx: {
         symbol: asNetworkSymbol('trx'),
+        displayOrder: asDisplayOrderKey('aB'),
         bip43Path: "m/44'/0'/i'",
         accountTypes: {},
         features: [],
@@ -293,6 +305,7 @@ export const mockNetworkMetadata: Readonly<Record<MockNetworkSymbol, NetworkMeta
     },
     ada: {
         symbol: asNetworkSymbol('ada'),
+        displayOrder: asDisplayOrderKey('aC'),
         bip43Path: "m/44'/0'/i'",
         accountTypes: {},
         features: [],
@@ -314,6 +327,7 @@ export const mockNetworkMetadata: Readonly<Record<MockNetworkSymbol, NetworkMeta
     },
     etc: {
         symbol: asNetworkSymbol('etc'),
+        displayOrder: asDisplayOrderKey('aD'),
         bip43Path: "m/44'/0'/i'",
         accountTypes: {},
         features: [],
@@ -335,6 +349,7 @@ export const mockNetworkMetadata: Readonly<Record<MockNetworkSymbol, NetworkMeta
     },
     xrp: {
         symbol: asNetworkSymbol('xrp'),
+        displayOrder: asDisplayOrderKey('aE'),
         bip43Path: "m/44'/0'/i'",
         accountTypes: {},
         features: [],
@@ -355,6 +370,7 @@ export const mockNetworkMetadata: Readonly<Record<MockNetworkSymbol, NetworkMeta
     },
     xlm: {
         symbol: asNetworkSymbol('xlm'),
+        displayOrder: asDisplayOrderKey('aF'),
         bip43Path: "m/44'/0'/i'",
         accountTypes: {},
         features: [],
@@ -376,6 +392,7 @@ export const mockNetworkMetadata: Readonly<Record<MockNetworkSymbol, NetworkMeta
     },
     ltc: {
         symbol: asNetworkSymbol('ltc'),
+        displayOrder: asDisplayOrderKey('aG'),
         bip43Path: "m/44'/0'/i'",
         accountTypes: {},
         features: [],
@@ -396,6 +413,7 @@ export const mockNetworkMetadata: Readonly<Record<MockNetworkSymbol, NetworkMeta
     },
     bch: {
         symbol: asNetworkSymbol('bch'),
+        displayOrder: asDisplayOrderKey('aH'),
         bip43Path: "m/44'/0'/i'",
         accountTypes: {},
         features: [],
@@ -416,6 +434,7 @@ export const mockNetworkMetadata: Readonly<Record<MockNetworkSymbol, NetworkMeta
     },
     doge: {
         symbol: asNetworkSymbol('doge'),
+        displayOrder: asDisplayOrderKey('aI'),
         bip43Path: "m/44'/0'/i'",
         accountTypes: {},
         features: [],
@@ -436,6 +455,7 @@ export const mockNetworkMetadata: Readonly<Record<MockNetworkSymbol, NetworkMeta
     },
     zec: {
         symbol: asNetworkSymbol('zec'),
+        displayOrder: asDisplayOrderKey('aJ'),
         bip43Path: "m/44'/0'/i'",
         accountTypes: {},
         features: [],
@@ -456,6 +476,7 @@ export const mockNetworkMetadata: Readonly<Record<MockNetworkSymbol, NetworkMeta
     },
     test: {
         symbol: asNetworkSymbol('test'),
+        displayOrder: asDisplayOrderKey('aK'),
         bip43Path: "m/44'/0'/i'",
         accountTypes: {},
         features: [],
@@ -476,6 +497,7 @@ export const mockNetworkMetadata: Readonly<Record<MockNetworkSymbol, NetworkMeta
     },
     regtest: {
         symbol: asNetworkSymbol('regtest'),
+        displayOrder: asDisplayOrderKey('aL'),
         bip43Path: "m/44'/0'/i'",
         accountTypes: {},
         features: [],
@@ -496,6 +518,7 @@ export const mockNetworkMetadata: Readonly<Record<MockNetworkSymbol, NetworkMeta
     },
     tsep: {
         symbol: asNetworkSymbol('tsep'),
+        displayOrder: asDisplayOrderKey('aM'),
         bip43Path: "m/44'/0'/i'",
         accountTypes: {},
         features: [],
@@ -517,6 +540,7 @@ export const mockNetworkMetadata: Readonly<Record<MockNetworkSymbol, NetworkMeta
     },
     thod: {
         symbol: asNetworkSymbol('thod'),
+        displayOrder: asDisplayOrderKey('aN'),
         bip43Path: "m/44'/0'/i'",
         accountTypes: {},
         features: [],
@@ -538,6 +562,7 @@ export const mockNetworkMetadata: Readonly<Record<MockNetworkSymbol, NetworkMeta
     },
     dsol: {
         symbol: asNetworkSymbol('dsol'),
+        displayOrder: asDisplayOrderKey('aO'),
         bip43Path: "m/44'/0'/i'",
         accountTypes: {},
         features: [],
@@ -559,6 +584,7 @@ export const mockNetworkMetadata: Readonly<Record<MockNetworkSymbol, NetworkMeta
     },
     txrp: {
         symbol: asNetworkSymbol('txrp'),
+        displayOrder: asDisplayOrderKey('aP'),
         bip43Path: "m/44'/0'/i'",
         accountTypes: {},
         features: [],
@@ -579,6 +605,7 @@ export const mockNetworkMetadata: Readonly<Record<MockNetworkSymbol, NetworkMeta
     },
     txlm: {
         symbol: asNetworkSymbol('txlm'),
+        displayOrder: asDisplayOrderKey('aQ'),
         bip43Path: "m/44'/0'/i'",
         accountTypes: {},
         features: [],
@@ -600,6 +627,7 @@ export const mockNetworkMetadata: Readonly<Record<MockNetworkSymbol, NetworkMeta
     },
     ttrx: {
         symbol: asNetworkSymbol('ttrx'),
+        displayOrder: asDisplayOrderKey('aR'),
         bip43Path: "m/44'/0'/i'",
         accountTypes: {},
         features: [],
