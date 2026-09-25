@@ -46,7 +46,7 @@ interface YieldBadgeProps {
     vaultId: string;
 }
 
-type NavigationProps = StackNavigationProps<RootStackParamList, RootStackRoutes.AccountDetail>;
+type NavigationProps = StackNavigationProps<RootStackParamList, RootStackRoutes>;
 
 export const YieldBadge = ({ apy, variant, account, vaultId }: YieldBadgeProps) => {
     const navigation = useNavigation<NavigationProps>();
