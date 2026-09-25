@@ -6,7 +6,7 @@ import { Anchor, SettingsAnchor } from '@suite/router';
 import { selectIsAnalyticsEnabled } from '@suite-common/analytics-redux';
 import { useServices } from '@suite-common/dependency-injection';
 import { Switch } from '@trezor/components';
-import { ActionColumn, SectionItem, TextColumn } from '@trezor/product-components';
+import { SectionItem } from '@trezor/product-components';
 
 import { useSelector } from 'src/hooks/suite';
 
@@ -25,12 +25,9 @@ export const Analytics = () => {
                     data-testid={anchorId}
                     ref={anchorRef}
                     shouldHighlight={shouldHighlight}
-                >
-                    <TextColumn
-                        title={<Translation id="TR_ALLOW_ANALYTICS" />}
-                        description={<Translation id="TR_ALLOW_ANALYTICS_DESCRIPTION" />}
-                    />
-                    <ActionColumn>
+                    title={<Translation id="TR_ALLOW_ANALYTICS" />}
+                    description={<Translation id="TR_ALLOW_ANALYTICS_DESCRIPTION" />}
+                    actions={
                         <PositionedSwitch>
                             <Switch
                                 data-testid="@analytics/toggle-switch"
@@ -44,8 +41,8 @@ export const Analytics = () => {
                                 }}
                             />
                         </PositionedSwitch>
-                    </ActionColumn>
-                </SectionItem>
+                    }
+                />
             )}
         </Anchor>
     );

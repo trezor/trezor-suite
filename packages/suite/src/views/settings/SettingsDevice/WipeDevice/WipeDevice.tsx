@@ -4,7 +4,7 @@ import { useDevice } from '@suite/device';
 import { Translation } from '@suite/intl';
 import { Anchor, SettingsAnchor } from '@suite/router';
 import { isDeviceInBootloaderMode } from '@trezor/device-utils';
-import { ActionButton, ActionColumn, SectionItem, TextColumn } from '@trezor/product-components';
+import { SectionItem } from '@trezor/product-components';
 
 import { WipeDeviceModal } from './WipeDeviceModal';
 
@@ -25,13 +25,12 @@ export const WipeDevice = ({ isDeviceLocked }: WipeDeviceProps) => {
     return (
         <Anchor anchorId={SettingsAnchor.WipeDevice}>
             {({ anchorId, anchorRef, shouldHighlight }) => (
-                <SectionItem
-                    data-testid={anchorId}
-                    ref={anchorRef}
-                    shouldHighlight={shouldHighlight}
-                >
+                <>
                     {isModalOpen && <WipeDeviceModal onCancel={() => setIsModalOpen(false)} />}
-                    <TextColumn
+                    <SectionItem
+                        data-testid={anchorId}
+                        ref={anchorRef}
+                        shouldHighlight={shouldHighlight}
                         title={<Translation id={headingTranslation} />}
                         description={
                             <Translation
@@ -42,22 +41,22 @@ export const WipeDevice = ({ isDeviceLocked }: WipeDeviceProps) => {
                                 }
                             />
                         }
+                        actions={
+                            <SectionItem.Button
+                                onClick={() => setIsModalOpen(true)}
+                                intent="critical"
+                                isDisabled={isDeviceLocked}
+                                data-testid="@settings/device/open-wipe-modal-button"
+                                isTooltipActive={isDeviceLocked}
+                                tooltipContent={
+                                    <Translation id="TR_SETTINGS_DEVICE_BANNER_TITLE_REMEMBERED" />
+                                }
+                            >
+                                <Translation id={headingTranslation} />
+                            </SectionItem.Button>
+                        }
                     />
-                    <ActionColumn>
-                        <ActionButton
-                            onClick={() => setIsModalOpen(true)}
-                            intent="critical"
-                            isDisabled={isDeviceLocked}
-                            data-testid="@settings/device/open-wipe-modal-button"
-                            isTooltipActive={isDeviceLocked}
-                            tooltipContent={
-                                <Translation id="TR_SETTINGS_DEVICE_BANNER_TITLE_REMEMBERED" />
-                            }
-                        >
-                            <Translation id={headingTranslation} />
-                        </ActionButton>
-                    </ActionColumn>
-                </SectionItem>
+                </>
             )}
         </Anchor>
     );

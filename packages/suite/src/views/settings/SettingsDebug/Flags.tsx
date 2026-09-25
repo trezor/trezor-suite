@@ -9,7 +9,7 @@ import {
 import { useServices } from '@suite-common/dependency-injection';
 import { injectDispatch } from '@suite-common/redux-utils';
 import { Switch } from '@trezor/components';
-import { ActionColumn, SectionItem, TextColumn } from '@trezor/product-components';
+import { SectionItem } from '@trezor/product-components';
 import { typedObjectEntries, typedObjectValues } from '@trezor/utils';
 
 import { useSelector } from 'src/hooks/suite';
@@ -34,12 +34,11 @@ export const Flags = () => {
                 };
 
                 return (
-                    <SectionItem key={key}>
-                        <TextColumn title={key} />
-                        <ActionColumn>
-                            <Switch isChecked={value} onChange={handleChange} />
-                        </ActionColumn>
-                    </SectionItem>
+                    <SectionItem
+                        key={key}
+                        title={key}
+                        actions={<Switch isChecked={value} onChange={handleChange} />}
+                    />
                 );
             })}
             {typedObjectValues(NewContentIndicatorId).map(indicatorId => {
@@ -49,12 +48,11 @@ export const Flags = () => {
                 };
 
                 return (
-                    <SectionItem key={indicatorId}>
-                        <TextColumn title={`seenNewContentIndicators.${indicatorId}`} />
-                        <ActionColumn>
-                            <Switch isChecked={isSeen} onChange={handleChange} />
-                        </ActionColumn>
-                    </SectionItem>
+                    <SectionItem
+                        key={indicatorId}
+                        title={`seenNewContentIndicators.${indicatorId}`}
+                        actions={<Switch isChecked={isSeen} onChange={handleChange} />}
+                    />
                 );
             })}
         </>

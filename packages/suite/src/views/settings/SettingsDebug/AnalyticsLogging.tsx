@@ -11,7 +11,7 @@ import { useServices } from '@suite-common/dependency-injection';
 import { injectDispatch } from '@suite-common/redux-utils';
 import { Badge, Button, Column, Input, Switch } from '@trezor/components';
 import { InfoIcon } from '@trezor/icons';
-import { ActionColumn, SectionItem, TextColumn } from '@trezor/product-components';
+import { SectionItem } from '@trezor/product-components';
 
 import { useSelector } from 'src/hooks/suite';
 
@@ -44,16 +44,14 @@ export const AnalyticsLogging = () => {
 
     return (
         <>
-            <SectionItem>
-                <TextColumn
-                    title="Custom Analytics URL"
-                    description={
-                        customAnalyticsUrl && !isAnalyticsEnabled
-                            ? renderAnalyticsDisabledBadge()
-                            : undefined
-                    }
-                />
-                <ActionColumn>
+            <SectionItem
+                title="Custom Analytics URL"
+                description={
+                    customAnalyticsUrl && !isAnalyticsEnabled
+                        ? renderAnalyticsDisabledBadge()
+                        : undefined
+                }
+                actions={
                     <Column gap={4}>
                         <Input
                             data-testid="@settings/debug/analytics/url-input"
@@ -82,21 +80,20 @@ export const AnalyticsLogging = () => {
                             }
                         />
                     </Column>
-                </ActionColumn>
-            </SectionItem>
-            <SectionItem>
-                <TextColumn
-                    title="Console Logging"
-                    description={
-                        <>
-                            Log analytics events to the browser console for debugging
-                            {loggerEnabled && !isAnalyticsEnabled && (
-                                <div style={{ marginTop: 8 }}>{renderAnalyticsDisabledBadge()}</div>
-                            )}
-                        </>
-                    }
-                />
-                <ActionColumn>
+                }
+            />
+
+            <SectionItem
+                title="Console Logging"
+                description={
+                    <>
+                        Log analytics events to the browser console for debugging
+                        {loggerEnabled && !isAnalyticsEnabled && (
+                            <div style={{ marginTop: 8 }}>{renderAnalyticsDisabledBadge()}</div>
+                        )}
+                    </>
+                }
+                actions={
                     <Switch
                         data-testid="@settings/debug/analytics/logger-switch"
                         isChecked={!!loggerEnabled}
@@ -106,8 +103,8 @@ export const AnalyticsLogging = () => {
                             analytics.setLoggerEnabled(newValue);
                         }}
                     />
-                </ActionColumn>
-            </SectionItem>
+                }
+            />
         </>
     );
 };

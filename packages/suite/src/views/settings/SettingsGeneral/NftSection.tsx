@@ -3,7 +3,7 @@ import { selectIsNftSectionEnabled, suiteSettingsActions } from '@suite/settings
 import { useServices } from '@suite-common/dependency-injection';
 import { injectDispatch } from '@suite-common/redux-utils';
 import { Switch } from '@trezor/components';
-import { ActionColumn, SectionItem, TextColumn } from '@trezor/product-components';
+import { SectionItem } from '@trezor/product-components';
 
 import { useSelector } from 'src/hooks/suite';
 
@@ -16,18 +16,16 @@ export const NftSection = () => {
     };
 
     return (
-        <SectionItem>
-            <TextColumn
-                title={<Translation id="TR_EXPERIMENTAL_NFT_SECTION" />}
-                description={<Translation id="TR_EXPERIMENTAL_NFT_SECTION_DESCRIPTION" />}
-            />
-            <ActionColumn>
+        <SectionItem
+            title={<Translation id="TR_EXPERIMENTAL_NFT_SECTION" />}
+            description={<Translation id="TR_EXPERIMENTAL_NFT_SECTION_DESCRIPTION" />}
+            actions={
                 <Switch
                     isChecked={isEnabled}
                     onChange={handleSwitchChange}
                     data-testid="@settings/nft-section-switch"
                 />
-            </ActionColumn>
-        </SectionItem>
+            }
+        />
     );
 };

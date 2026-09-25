@@ -6,7 +6,7 @@ import { injectDispatch } from '@suite-common/redux-utils';
 import { getChangelogUrl } from '@suite-common/suite-utils';
 import { Button, Tooltip } from '@trezor/components';
 import { getFirmwareVersion } from '@trezor/device-utils';
-import { ActionButton, ActionColumn, SectionItem, TextColumn } from '@trezor/product-components';
+import { SectionItem } from '@trezor/product-components';
 
 import { type AcquiredDevice } from 'src/types/suite';
 
@@ -54,39 +54,36 @@ export const FirmwareVersion = ({ isDeviceLocked }: FirmwareVersionProps) => {
                     data-testid={anchorId}
                     ref={anchorRef}
                     shouldHighlight={shouldHighlight}
-                >
-                    <TextColumn
-                        title={<Translation id="TR_FIRMWARE_VERSION" />}
-                        description={
-                            currentFwVersion ? (
-                                <Translation
-                                    id="TR_YOUR_FIRMWARE_VERSION"
-                                    values={{
-                                        version: (
-                                            <Tooltip content={revision} display="inline-flex">
-                                                <Button
-                                                    intent="neutral"
-                                                    priority="secondary"
-                                                    size="small"
-                                                    isDisabled={!revision}
-                                                    href={revision ? changelogUrl : undefined}
-                                                    margin={{ left: 4 }}
-                                                >
-                                                    {device.firmware === 'valid'
-                                                        ? `${currentFwVersion} (${translationString('TR_UP_TO_DATE').toLowerCase()})`
-                                                        : currentFwVersion}
-                                                </Button>
-                                            </Tooltip>
-                                        ),
-                                    }}
-                                />
-                            ) : (
-                                <Translation id="TR_YOUR_CURRENT_FIRMWARE_UNKNOWN" />
-                            )
-                        }
-                    />
-                    <ActionColumn>
-                        <ActionButton
+                    title={<Translation id="TR_FIRMWARE_VERSION" />}
+                    description={
+                        currentFwVersion ? (
+                            <Translation
+                                id="TR_YOUR_FIRMWARE_VERSION"
+                                values={{
+                                    version: (
+                                        <Tooltip content={revision} display="inline-flex">
+                                            <Button
+                                                intent="neutral"
+                                                priority="secondary"
+                                                size="small"
+                                                isDisabled={!revision}
+                                                href={revision ? changelogUrl : undefined}
+                                                margin={{ left: 4 }}
+                                            >
+                                                {device.firmware === 'valid'
+                                                    ? `${currentFwVersion} (${translationString('TR_UP_TO_DATE').toLowerCase()})`
+                                                    : currentFwVersion}
+                                            </Button>
+                                        </Tooltip>
+                                    ),
+                                }}
+                            />
+                        ) : (
+                            <Translation id="TR_YOUR_CURRENT_FIRMWARE_UNKNOWN" />
+                        )
+                    }
+                    actions={
+                        <SectionItem.Button
                             intent="brand"
                             onClick={handleUpdate}
                             data-testid="@settings/device/update-button"
@@ -97,9 +94,9 @@ export const FirmwareVersion = ({ isDeviceLocked }: FirmwareVersionProps) => {
                             }
                         >
                             <Translation id={getButtonLabelId({ device })} />
-                        </ActionButton>
-                    </ActionColumn>
-                </SectionItem>
+                        </SectionItem.Button>
+                    }
+                />
             )}
         </Anchor>
     );

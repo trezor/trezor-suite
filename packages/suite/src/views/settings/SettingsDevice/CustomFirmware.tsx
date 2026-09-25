@@ -5,7 +5,7 @@ import { Anchor, SettingsAnchor, gotoThunk } from '@suite/router';
 import { useServices } from '@suite-common/dependency-injection';
 import { injectDispatch } from '@suite-common/redux-utils';
 import { getFirmwareDowngradeUrl } from '@suite-common/suite-utils';
-import { ActionButton, ActionColumn, SectionItem, TextColumn } from '@trezor/product-components';
+import { SectionItem } from '@trezor/product-components';
 
 export const CustomFirmware = () => {
     const { dispatch } = useServices(injectDispatch);
@@ -24,20 +24,17 @@ export const CustomFirmware = () => {
                     data-testid={anchorId}
                     ref={anchorRef}
                     shouldHighlight={shouldHighlight}
-                >
-                    <TextColumn
-                        title={<Translation id="TR_DEVICE_SETTINGS_CUSTOM_FIRMWARE_TITLE" />}
-                        description={
-                            <Translation id="TR_DEVICE_SETTINGS_CUSTOM_FIRMWARE_DESCRIPTION" />
-                        }
-                        bottomContent={
-                            firmwareDowngradeUrl ? (
-                                <LearnMoreButton url={firmwareDowngradeUrl} />
-                            ) : undefined
-                        }
-                    />
-                    <ActionColumn>
-                        <ActionButton
+                    title={<Translation id="TR_DEVICE_SETTINGS_CUSTOM_FIRMWARE_TITLE" />}
+                    description={
+                        <Translation id="TR_DEVICE_SETTINGS_CUSTOM_FIRMWARE_DESCRIPTION" />
+                    }
+                    bottomContent={
+                        firmwareDowngradeUrl ? (
+                            <LearnMoreButton url={firmwareDowngradeUrl} />
+                        ) : undefined
+                    }
+                    actions={
+                        <SectionItem.Button
                             onClick={openModal}
                             intent="critical"
                             isDisabled={isDeviceLocked}
@@ -48,9 +45,9 @@ export const CustomFirmware = () => {
                             }
                         >
                             <Translation id="TR_DEVICE_SETTINGS_CUSTOM_FIRMWARE_BUTTON" />
-                        </ActionButton>
-                    </ActionColumn>
-                </SectionItem>
+                        </SectionItem.Button>
+                    }
+                />
             )}
         </Anchor>
     );

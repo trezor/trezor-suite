@@ -8,7 +8,7 @@ import {
 import { useServices } from '@suite-common/dependency-injection';
 import { injectDispatch } from '@suite-common/redux-utils';
 import { Switch } from '@trezor/components';
-import { ActionColumn, SectionItem, TextColumn } from '@trezor/product-components';
+import { SectionItem } from '@trezor/product-components';
 
 import { useSelector } from 'src/hooks/suite';
 
@@ -30,51 +30,44 @@ export const CheckFirmwareAuthenticity = () => {
 
     return (
         <>
-            <SectionItem>
-                <TextColumn
-                    title="Check entropy on wallet creation"
-                    description="Carry out entropy check when a wallet is created."
-                />
-                <ActionColumn>
-                    <Switch onChange={toggleEntropyCheck} isChecked={isEntropyCheckEnabled} />
-                </ActionColumn>
-            </SectionItem>
-            <SectionItem>
-                <TextColumn
-                    title="Check firmware Hash regularly"
-                    description="Carry out firmware hash check every time you authorize Trezor device."
-                />
-                <ActionColumn>
+            <SectionItem
+                title="Check entropy on wallet creation"
+                description="Carry out entropy check when a wallet is created."
+                actions={<Switch onChange={toggleEntropyCheck} isChecked={isEntropyCheckEnabled} />}
+            />
+
+            <SectionItem
+                title="Check firmware Hash regularly"
+                description="Carry out firmware hash check every time you authorize Trezor device."
+                actions={
                     <Switch
                         onChange={toggleFirmwareHashCheck}
                         isChecked={isFirmwareHashCheckEnabled}
                     />
-                </ActionColumn>
-            </SectionItem>
-            <SectionItem>
-                <TextColumn
-                    title="Check firmware Revision regularly"
-                    description="Carry out firmware revision check every time you authorize Trezor device."
-                />
-                <ActionColumn>
+                }
+            />
+
+            <SectionItem
+                title="Check firmware Revision regularly"
+                description="Carry out firmware revision check every time you authorize Trezor device."
+                actions={
                     <Switch
                         onChange={toggleFirmwareRevisionCheck}
                         isChecked={isFirmwareRevisionCheckEnabled}
                     />
-                </ActionColumn>
-            </SectionItem>
-            <SectionItem>
-                <TextColumn
-                    title="Perform device meta checks regularly"
-                    description="Carry out ID check & invariabilitiy check every time you authorize Trezor device."
-                />
-                <ActionColumn>
+                }
+            />
+
+            <SectionItem
+                title="Perform device meta checks regularly"
+                description="Carry out ID check & invariabilitiy check every time you authorize Trezor device."
+                actions={
                     <Switch
                         onChange={toggleDeviceMetaChecks}
                         isChecked={areDeviceMetaChecksEnabled}
                     />
-                </ActionColumn>
-            </SectionItem>
+                }
+            />
         </>
     );
 };

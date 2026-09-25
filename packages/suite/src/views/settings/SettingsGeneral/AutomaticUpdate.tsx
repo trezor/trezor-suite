@@ -6,7 +6,7 @@ import { Translation } from '@suite/intl';
 import { Anchor, SettingsAnchor } from '@suite/router';
 import { useServices } from '@suite-common/dependency-injection';
 import { Switch } from '@trezor/components';
-import { ActionColumn, SectionItem, TextColumn } from '@trezor/product-components';
+import { SectionItem } from '@trezor/product-components';
 
 import { useSelector } from 'src/hooks/suite';
 
@@ -36,14 +36,9 @@ export const AutomaticUpdate = () => {
                     data-testid={anchorId}
                     ref={anchorRef}
                     shouldHighlight={shouldHighlight}
-                >
-                    <TextColumn
-                        title={<Translation id="TR_ALLOW_AUTOMATIC_SUITE_UPDATES" />}
-                        description={
-                            <Translation id="TR_ALLOW_AUTOMATIC_SUITE_UPDATES_DESCRIPTION" />
-                        }
-                    />
-                    <ActionColumn>
+                    title={<Translation id="TR_ALLOW_AUTOMATIC_SUITE_UPDATES" />}
+                    description={<Translation id="TR_ALLOW_AUTOMATIC_SUITE_UPDATES_DESCRIPTION" />}
+                    actions={
                         <PositionedSwitch>
                             <Switch
                                 data-testid="@isAutomaticUpdateEnabled-update/toggle-switch"
@@ -51,8 +46,8 @@ export const AutomaticUpdate = () => {
                                 onChange={handleChange}
                             />
                         </PositionedSwitch>
-                    </ActionColumn>
-                </SectionItem>
+                    }
+                />
             )}
         </Anchor>
     );

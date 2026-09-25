@@ -13,9 +13,9 @@ import { Anchor, SettingsAnchor } from '@suite/router';
 import { useServices } from '@suite-common/dependency-injection';
 import { injectDispatch } from '@suite-common/redux-utils';
 import { isDevEnv } from '@suite-common/suite-utils';
-import { Button, type ButtonProps } from '@trezor/components';
+import { Button, Row } from '@trezor/components';
 import { isDesktop } from '@trezor/env-utils';
-import { ActionButton, ActionColumn, SectionItem, TextColumn } from '@trezor/product-components';
+import { SectionItem } from '@trezor/product-components';
 
 import { useSelector } from 'src/hooks/suite';
 
@@ -31,42 +31,34 @@ const getUpdateStateMessage = (state: UpdateState) => {
     }
 };
 
-const Description = ({ desktopUpdateState }: { desktopUpdateState: DesktopUpdateState }) => {
+type DescriptionProps = {
+    desktopUpdateState: DesktopUpdateState;
+    openUpdateModal: () => void;
+};
+
+const Description = ({ desktopUpdateState, openUpdateModal }: DescriptionProps) => {
     const appVersion = process.env.VERSION || '';
     const { dispatch } = useServices(injectDispatch);
     const openChangelog = () => dispatch(desktopUpdateActions.setIsVersionInfoModalVisible(true));
     const url = useExternalLink(getReleaseUrl(appVersion));
-    const commonButtonProps: Partial<ButtonProps> = {
-        'data-testid': '@settings/suite-version',
-        intent: 'neutral',
-        priority: 'secondary',
-        size: 'small',
-    } as const;
-    const buttonLabel = (
-        <>
-            {appVersion}
-            {isDevEnv && '-dev'}
-        </>
-    );
 
     return (
-        <div>
+        <Row columnGap={16} rowGap={4} alignItems="center" flexWrap="wrap">
             <Translation
                 id="TR_YOUR_CURRENT_VERSION"
                 values={{
-                    version: isDesktop() ? (
+                    version: (
                         <Button
-                            onClick={() => {
-                                openChangelog();
-                            }}
+                            data-testid="@settings/suite-version"
+                            intent="neutral"
+                            priority="secondary"
+                            size="small"
                             margin={{ left: 4 }}
-                            {...commonButtonProps}
+                            onClick={isDesktop() ? openChangelog : undefined}
+                            href={isDesktop() ? undefined : url}
                         >
-                            {buttonLabel}
-                        </Button>
-                    ) : (
-                        <Button href={url} margin={{ left: 4 }} {...commonButtonProps}>
-                            {buttonLabel}
+                            {appVersion}
+                            {isDevEnv && '-dev'}
                         </Button>
                     ),
                 }}
@@ -75,25 +67,25 @@ const Description = ({ desktopUpdateState }: { desktopUpdateState: DesktopUpdate
                 desktopUpdateState.state,
             ) &&
                 desktopUpdateState.latest && (
-                    <>
-                        &nbsp;
-                        <Translation
-                            id={getUpdateStateMessage(desktopUpdateState.state)}
-                            values={{
-                                version: (
-                                    <Button
-                                        intent="critical"
-                                        size="small"
-                                        href={getReleaseUrl(desktopUpdateState.latest.version)}
-                                    >
-                                        {desktopUpdateState.latest.version}
-                                    </Button>
-                                ),
-                            }}
-                        />
-                    </>
+                    <Translation
+                        id={getUpdateStateMessage(desktopUpdateState.state)}
+                        values={{
+                            version: (
+                                <Button
+                                    data-testid="@settings/suite-new-version"
+                                    intent="neutral"
+                                    priority="primary"
+                                    size="small"
+                                    margin={{ left: 4 }}
+                                    onClick={openUpdateModal}
+                                >
+                                    {desktopUpdateState.latest.version}
+                                </Button>
+                            ),
+                        }}
+                    />
                 )}
-        </div>
+        </Row>
     );
 };
 
@@ -102,7 +94,7 @@ export const VersionWithUpdate = () => {
     const { desktopApi, dispatch } = useServices(injectDispatch, injectDesktopApi);
 
     const checkForUpdates = () => desktopApi.checkForUpdates({ isManual: true });
-    const maximizeUpdateModal = () => dispatch(desktopUpdateActions.setIsUpdateModalVisible(true));
+    const openUpdateModal = () => dispatch(desktopUpdateActions.setIsUpdateModalVisible(true));
     const installAndRestart = () => dispatch(installUpdateThunk({ installNow: true }));
 
     return (
@@ -112,42 +104,51 @@ export const VersionWithUpdate = () => {
                     data-testid={anchorId}
                     ref={anchorRef}
                     shouldHighlight={shouldHighlight}
-                >
-                    <TextColumn
-                        title={<Translation id="TR_SUITE_VERSION" />}
-                        description={<Description desktopUpdateState={desktopUpdateState} />}
-                    />
-                    {desktopUpdateState.enabled && (
-                        <ActionColumn>
-                            {desktopUpdateState.state === UpdateState.Checking && (
-                                <ActionButton isDisabled intent="brand">
-                                    <Translation id="SETTINGS_UPDATE_CHECKING" />
-                                </ActionButton>
-                            )}
-                            {(desktopUpdateState.state === UpdateState.NotAvailable ||
-                                desktopUpdateState.state === UpdateState.EarlyAccessDisable) && (
-                                <ActionButton onClick={checkForUpdates} intent="brand">
-                                    <Translation id="SETTINGS_UPDATE_CHECK" />
-                                </ActionButton>
-                            )}
-                            {desktopUpdateState.state === UpdateState.Available && (
-                                <ActionButton onClick={maximizeUpdateModal} intent="brand">
-                                    <Translation id="SETTINGS_UPDATE_AVAILABLE" />
-                                </ActionButton>
-                            )}
-                            {desktopUpdateState.state === UpdateState.Downloading && (
-                                <ActionButton onClick={maximizeUpdateModal} intent="brand">
-                                    <Translation id="SETTINGS_UPDATE_DOWNLOADING" />
-                                </ActionButton>
-                            )}
-                            {desktopUpdateState.state === UpdateState.Ready && (
-                                <ActionButton onClick={installAndRestart} intent="brand">
-                                    <Translation id="SETTINGS_UPDATE_READY" />
-                                </ActionButton>
-                            )}
-                        </ActionColumn>
-                    )}
-                </SectionItem>
+                    title={<Translation id="TR_SUITE_VERSION" />}
+                    description={
+                        <Description
+                            desktopUpdateState={desktopUpdateState}
+                            openUpdateModal={openUpdateModal}
+                        />
+                    }
+                    actions={
+                        desktopUpdateState.enabled ? (
+                            <>
+                                {desktopUpdateState.state === UpdateState.Checking && (
+                                    <SectionItem.Button isDisabled intent="brand">
+                                        <Translation id="SETTINGS_UPDATE_CHECKING" />
+                                    </SectionItem.Button>
+                                )}
+                                {(desktopUpdateState.state === UpdateState.NotAvailable ||
+                                    desktopUpdateState.state ===
+                                        UpdateState.EarlyAccessDisable) && (
+                                    <SectionItem.Button onClick={checkForUpdates} intent="brand">
+                                        <Translation id="SETTINGS_UPDATE_CHECK" />
+                                    </SectionItem.Button>
+                                )}
+                                {desktopUpdateState.state === UpdateState.Available && (
+                                    <SectionItem.Button onClick={openUpdateModal} intent="brand">
+                                        <Translation id="SETTINGS_UPDATE_AVAILABLE" />
+                                    </SectionItem.Button>
+                                )}
+                                {desktopUpdateState.state === UpdateState.Downloading && (
+                                    <SectionItem.Button
+                                        onClick={openUpdateModal}
+                                        intent="brand"
+                                        isLoading
+                                    >
+                                        <Translation id="SETTINGS_UPDATE_DOWNLOADING" />
+                                    </SectionItem.Button>
+                                )}
+                                {desktopUpdateState.state === UpdateState.Ready && (
+                                    <SectionItem.Button onClick={installAndRestart} intent="brand">
+                                        <Translation id="SETTINGS_UPDATE_READY" />
+                                    </SectionItem.Button>
+                                )}
+                            </>
+                        ) : undefined
+                    }
+                />
             )}
         </Anchor>
     );

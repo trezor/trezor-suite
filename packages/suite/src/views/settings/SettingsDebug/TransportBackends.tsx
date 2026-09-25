@@ -1,5 +1,5 @@
 import { Checkbox } from '@trezor/components';
-import { ActionColumn, SectionItem, TextColumn } from '@trezor/product-components';
+import { SectionItem } from '@trezor/product-components';
 
 import { useSelector } from 'src/hooks/suite';
 import { useBridgeDesktopApi } from 'src/hooks/suite/useBridgeDesktopApi';
@@ -22,32 +22,31 @@ export const TransportBackends = () => {
 
     return (
         <>
-            <SectionItem data-testid="@settings/debug/processes">
-                <TextColumn
-                    title="Transport backends"
-                    description="You may need to restart your application after changes are made."
-                />
-            </SectionItem>
-            <SectionItem data-testid="@settings/debug/processes/Bridge">
-                <TextColumn
-                    title="Bridge server"
-                    description={bridge?.version ? `version: ${bridge.version}` : 'not running'}
-                />
-                <ActionColumn>
+            <SectionItem
+                data-testid="@settings/debug/processes"
+                title="Transport backends"
+                description="You may need to restart your application after changes are made."
+            />
+
+            <SectionItem
+                data-testid="@settings/debug/processes/Bridge"
+                title="Bridge server"
+                description={bridge?.version ? `version: ${bridge.version}` : 'not running'}
+                actions={
                     <Checkbox
                         isChecked={bridgeProcess.process}
                         onChange={() => {
                             toggleBridge();
                         }}
                     />
-                </ActionColumn>
-            </SectionItem>
-            <SectionItem data-testid="@settings/debug/processes/runOnStartUp">
-                <TextColumn
-                    title="Run on startup"
-                    description="This is useful for testing of other Transport clients"
-                />
-                <ActionColumn>
+                }
+            />
+
+            <SectionItem
+                data-testid="@settings/debug/processes/runOnStartUp"
+                title="Run on startup"
+                description="This is useful for testing of other Transport clients"
+                actions={
                     <Checkbox
                         isChecked={!bridgeSettings.doNotStartOnStartup}
                         onChange={() => {
@@ -57,8 +56,8 @@ export const TransportBackends = () => {
                             });
                         }}
                     />
-                </ActionColumn>
-            </SectionItem>
+                }
+            />
         </>
     );
 };

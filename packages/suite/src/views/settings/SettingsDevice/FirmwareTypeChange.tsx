@@ -11,7 +11,7 @@ import {
     hasBitcoinOnlyFirmware,
     isBitcoinOnlyDevice,
 } from '@trezor/device-utils';
-import { ActionButton, ActionColumn, SectionItem, TextColumn } from '@trezor/product-components';
+import { SectionItem } from '@trezor/product-components';
 import { HELP_FIRMWARE_TYPE } from '@trezor/urls';
 
 interface FirmwareTypeProps {
@@ -45,35 +45,32 @@ export const FirmwareTypeChange = ({ isDeviceLocked }: FirmwareTypeProps) => {
                     data-testid={anchorId}
                     ref={anchorRef}
                     shouldHighlight={shouldHighlight}
-                >
-                    <TextColumn
-                        title={<Translation id="TR_FIRMWARE_TYPE" />}
-                        description={
-                            currentFwVersion && currentFwType ? (
-                                <Translation
-                                    id="TR_YOUR_FIRMWARE_TYPE"
-                                    values={{
-                                        version: (
-                                            <Button
-                                                intent="neutral"
-                                                priority="secondary"
-                                                size="small"
-                                                href={HELP_FIRMWARE_TYPE}
-                                                margin={{ left: 4 }}
-                                            >
-                                                <Translation id={currentFwType} />
-                                            </Button>
-                                        ),
-                                    }}
-                                />
-                            ) : (
-                                <Translation id="TR_YOUR_CURRENT_FIRMWARE_UNKNOWN" />
-                            )
-                        }
-                    />
-                    {!bitcoinOnlyDevice && (
-                        <ActionColumn>
-                            <ActionButton
+                    title={<Translation id="TR_FIRMWARE_TYPE" />}
+                    description={
+                        currentFwVersion && currentFwType ? (
+                            <Translation
+                                id="TR_YOUR_FIRMWARE_TYPE"
+                                values={{
+                                    version: (
+                                        <Button
+                                            intent="neutral"
+                                            priority="secondary"
+                                            size="small"
+                                            href={HELP_FIRMWARE_TYPE}
+                                            margin={{ left: 4 }}
+                                        >
+                                            <Translation id={currentFwType} />
+                                        </Button>
+                                    ),
+                                }}
+                            />
+                        ) : (
+                            <Translation id="TR_YOUR_CURRENT_FIRMWARE_UNKNOWN" />
+                        )
+                    }
+                    actions={
+                        !bitcoinOnlyDevice ? (
+                            <SectionItem.Button
                                 intent="brand"
                                 onClick={handleAction}
                                 data-testid="@settings/device/switch-fw-type-button"
@@ -92,10 +89,10 @@ export const FirmwareTypeChange = ({ isDeviceLocked }: FirmwareTypeProps) => {
                                         regular: <Translation id="TR_FIRMWARE_TYPE_REGULAR" />,
                                     }}
                                 />
-                            </ActionButton>
-                        </ActionColumn>
-                    )}
-                </SectionItem>
+                            </SectionItem.Button>
+                        ) : undefined
+                    }
+                />
             )}
         </Anchor>
     );

@@ -4,8 +4,7 @@ import { metadataLabelingActions } from '@suite/metadata';
 import { Anchor, SettingsAnchor } from '@suite/router';
 import { useServices } from '@suite-common/dependency-injection';
 import { injectDispatch } from '@suite-common/redux-utils';
-import { Tooltip } from '@trezor/components';
-import { ActionButton, ActionColumn, SectionItem, TextColumn } from '@trezor/product-components';
+import { SectionItem } from '@trezor/product-components';
 
 export const ConnectLabelingProvider = () => {
     const { dispatch } = useServices(injectDispatch);
@@ -20,30 +19,24 @@ export const ConnectLabelingProvider = () => {
                     data-testid={anchorId}
                     ref={anchorRef}
                     shouldHighlight={shouldHighlight}
-                >
-                    <TextColumn
-                        title={<Translation id="TR_LABELING_NOT_SYNCED" />}
-                        description={<Translation id="TR_TO_MAKE_YOUR_LABELS_PERSISTENT" />}
-                    />
-                    <ActionColumn>
-                        <Tooltip
-                            content={
+                    title={<Translation id="TR_LABELING_NOT_SYNCED" />}
+                    description={<Translation id="TR_TO_MAKE_YOUR_LABELS_PERSISTENT" />}
+                    actions={
+                        <SectionItem.Button
+                            intent="brand"
+                            onClick={handleClick}
+                            isDisabled={!isDeviceConnected}
+                            data-testid="@settings/metadata/connect-provider-button"
+                            tooltipContent={
                                 isDeviceConnected ? undefined : (
                                     <Translation id="TR_DEVICE_NOT_CONNECTED" />
                                 )
                             }
                         >
-                            <ActionButton
-                                intent="brand"
-                                onClick={handleClick}
-                                isDisabled={!isDeviceConnected}
-                                data-testid="@settings/metadata/connect-provider-button"
-                            >
-                                <Translation id="TR_CONNECT" />
-                            </ActionButton>
-                        </Tooltip>
-                    </ActionColumn>
-                </SectionItem>
+                            <Translation id="TR_CONNECT" />
+                        </SectionItem.Button>
+                    }
+                />
             )}
         </Anchor>
     );

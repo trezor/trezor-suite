@@ -5,7 +5,7 @@ import { Anchor, SettingsAnchor } from '@suite/router';
 import { useServices } from '@suite-common/dependency-injection';
 import { injectDispatch } from '@suite-common/redux-utils';
 import { Switch, Tooltip } from '@trezor/components';
-import { ActionColumn, SectionItem, TextColumn } from '@trezor/product-components';
+import { SectionItem } from '@trezor/product-components';
 
 import { applySettingsThunk } from 'src/actions/settings/deviceSettingsActions';
 
@@ -42,12 +42,9 @@ export const HapticFeedback = ({ isDeviceLocked }: DeviceLabelProps) => {
                     data-testid={anchorId}
                     ref={anchorRef}
                     shouldHighlight={shouldHighlight}
-                >
-                    <TextColumn
-                        title={<Translation id="TR_DEVICE_SETTINGS_HAPTIC_FEEDBACK_TITLE" />}
-                        description={<Translation id="TR_DEVICE_SETTINGS_HAPTIC_FEEDBACK_DESC" />}
-                    />
-                    <ActionColumn>
+                    title={<Translation id="TR_DEVICE_SETTINGS_HAPTIC_FEEDBACK_TITLE" />}
+                    description={<Translation id="TR_DEVICE_SETTINGS_HAPTIC_FEEDBACK_DESC" />}
+                    actions={
                         <Tooltip
                             isActive={isDeviceLocked}
                             content={
@@ -61,8 +58,8 @@ export const HapticFeedback = ({ isDeviceLocked }: DeviceLabelProps) => {
                                 data-testid="@settings/device/haptic-switch"
                             />
                         </Tooltip>
-                    </ActionColumn>
-                </SectionItem>
+                    }
+                />
             )}
         </Anchor>
     );

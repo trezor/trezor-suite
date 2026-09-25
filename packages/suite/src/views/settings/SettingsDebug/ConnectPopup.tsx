@@ -3,7 +3,7 @@ import { useEffect, useState } from 'react';
 import { injectDesktopApi } from '@suite/desktop-app-api';
 import { useServices } from '@suite-common/dependency-injection';
 import { Switch } from '@trezor/components';
-import { ActionColumn, SectionItem, TextColumn } from '@trezor/product-components';
+import { SectionItem } from '@trezor/product-components';
 
 export const ConnectPopup = () => {
     const { desktopApi } = useServices(injectDesktopApi);
@@ -24,14 +24,10 @@ export const ConnectPopup = () => {
     };
 
     return (
-        <SectionItem>
-            <TextColumn
-                title="Connect Popup"
-                description="Enable communication between Connect in 3rd party apps and Trezor Suite. Toggling restarts the application."
-            />
-            <ActionColumn>
-                <Switch isChecked={isEnabled} onChange={handleOnChange} />
-            </ActionColumn>
-        </SectionItem>
+        <SectionItem
+            title="Connect Popup"
+            description="Enable communication between Connect in 3rd party apps and Trezor Suite. Toggling restarts the application."
+            actions={<Switch isChecked={isEnabled} onChange={handleOnChange} />}
+        />
     );
 };

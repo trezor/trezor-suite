@@ -8,7 +8,7 @@ import { selectIsTorEnabled, selectIsTorEnabling, selectIsTorLoading } from '@su
 import { useServices } from '@suite-common/dependency-injection';
 import { injectDispatch } from '@suite-common/redux-utils';
 import { Switch } from '@trezor/components';
-import { ActionColumn, SectionItem, TextColumn } from '@trezor/product-components';
+import { SectionItem } from '@trezor/product-components';
 import { HELP_CENTER_TOR_URL } from '@trezor/urls';
 
 import { toggleTorThunk } from '../toggleTorThunk';
@@ -55,27 +55,24 @@ export const Tor = ({ onBeforeDisable }: TorProps) => {
                     data-testid={anchorId}
                     ref={anchorRef}
                     shouldHighlight={shouldHighlight}
-                >
-                    <TextColumn
-                        title={<Translation id="TR_TOR_TITLE" />}
-                        description={
-                            <Translation
-                                id="TR_TOR_DESCRIPTION"
-                                values={{
-                                    lineBreak: <br />,
-                                }}
-                            />
-                        }
-                        bottomContent={<LearnMoreButton url={HELP_CENTER_TOR_URL} />}
-                    />
-                    <ActionColumn>
+                    title={<Translation id="TR_TOR_TITLE" />}
+                    description={
+                        <Translation
+                            id="TR_TOR_DESCRIPTION"
+                            values={{
+                                lineBreak: <br />,
+                            }}
+                        />
+                    }
+                    bottomContent={<LearnMoreButton url={HELP_CENTER_TOR_URL} />}
+                    actions={
                         <Switch
                             data-testid="@settings/general/tor-switch"
                             isChecked={isTorEnabled || isTorEnabling}
                             onChange={handleTorSwitch}
                         />
-                    </ActionColumn>
-                </SectionItem>
+                    }
+                />
             )}
         </Anchor>
     );

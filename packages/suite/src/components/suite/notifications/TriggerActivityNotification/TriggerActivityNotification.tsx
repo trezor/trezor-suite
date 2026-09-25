@@ -6,9 +6,9 @@ import { injectDispatch } from '@suite-common/redux-utils';
 import { type TrezorDevice } from '@suite-common/suite-types';
 import { AUTH_DEVICE, notificationsActions } from '@suite-common/toast-notifications';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
-import { Checkbox, Column, Select } from '@trezor/components';
+import { Checkbox, Column } from '@trezor/components';
 import { DEVICE } from '@trezor/connect';
-import { ActionButton, ActionColumn, SectionItem, TextColumn } from '@trezor/product-components';
+import { SectionItem } from '@trezor/product-components';
 
 const MOCK_TX = {
     amount: '0.05',
@@ -183,14 +183,13 @@ export const TriggerActivityNotification = () => {
     };
 
     return (
-        <SectionItem data-testid="@settings/debug/trigger-activity">
-            <TextColumn
-                title="Trigger activity notification"
-                description="Add a notification/activity entry of a selected type to test the Activity page. Transaction types show up in the Notifications tab, everything else in the All activity tab."
-            />
-            <ActionColumn>
+        <SectionItem
+            data-testid="@settings/debug/trigger-activity"
+            title="Trigger activity notification"
+            description="Add a notification/activity entry of a selected type to test the Activity page. Transaction types show up in the Notifications tab, everything else in the All activity tab."
+            actions={
                 <Column gap={12} alignItems="flex-end">
-                    <Select
+                    <SectionItem.Select
                         size="small"
                         width={260}
                         value={selectedOption}
@@ -198,23 +197,24 @@ export const TriggerActivityNotification = () => {
                         onChange={(option: { value: string }) => setSelectedValue(option.value)}
                         data-testid="@activity/debug/preset-select"
                     />
+
                     <Checkbox
                         isChecked={addAsUnseen}
                         labelAlignment="end"
                         onChange={() => setAddAsUnseen(prev => !prev)}
                         data-testid="@activity/debug/unseen-checkbox"
                     >
-                        <TextColumn description="Add as unseen (new)" />
+                        Add as unseen (new)
                     </Checkbox>
-                    <ActionButton
+                    <SectionItem.Button
                         intent="brand"
                         onClick={handleAdd}
                         data-testid="@activity/debug/add-button"
                     >
                         Add activity
-                    </ActionButton>
+                    </SectionItem.Button>
                 </Column>
-            </ActionColumn>
-        </SectionItem>
+            }
+        />
     );
 };
