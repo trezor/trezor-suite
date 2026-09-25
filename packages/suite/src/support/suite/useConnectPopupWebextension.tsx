@@ -19,7 +19,7 @@ interface ChromeRuntime {
 declare const chrome: { runtime?: ChromeRuntime } | undefined;
 
 const webextChannel = {
-    here: '@suite/web-app',
+    here: '@trezor/suite-web',
     peer: '@trezor/connect-webextension-externally-connectable',
 };
 
