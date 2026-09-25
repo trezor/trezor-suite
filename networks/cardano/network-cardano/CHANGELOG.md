@@ -1,3 +1,9 @@
+# 10.0.1
+
+- chore(suite-native): commit the generated Cardano Serialization Lib build via Git LFS (a39e1e876a)
+- feat(networks): prune Cardano Serialization Lib to what coin selection uses (e4b61e27d8)
+- feat(suite-native): compose Cardano transactions with an asm.js Cardano Serialization Lib (a4f73f5d45)
+
 # 10.0.0
 
 - npm-prerelease(connect): bump remaining 10.0.0-beta.3 references (81f7711a24)
