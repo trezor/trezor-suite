@@ -1,5 +1,6 @@
 import { CATEGORY_FILTER_OPTIONS } from '@suite-common/message-system';
 import { Checkbox, Row, SelectBar } from '@trezor/components';
+
 export type CategoryFilterOption = (typeof CATEGORY_FILTER_OPTIONS)[number]['value'];
 
 type MessageSystemManagerFiltersProps = {

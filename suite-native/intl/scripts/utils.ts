@@ -1,4 +1,5 @@
 import fs from 'fs';
+
 export const writeMessagesObjectToFile = (messages: Record<string, any>, filePath: string) => {
     fs.writeFileSync(
         filePath,

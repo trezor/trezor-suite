@@ -5,6 +5,7 @@ import {
 } from '@suite-common/redux-utils';
 
 import { bioAuthActions } from 'src/actions/suite/bioAuthActions';
+
 export interface BioAuthState {
     /** enabled by user settings */
     bioAuthEnabled: boolean;

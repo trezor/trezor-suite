@@ -14,6 +14,7 @@ import fixtures, {
     type DeviceSettingsFixtureState,
     deviceReducer,
 } from './__fixtures__/deviceSettingsActions';
+
 const DEVICE = mockSuiteDevice({ path: '1', connected: true });
 const suiteSettingsReducer = prepareSuiteSettingsReducer({
     actionTypes: { storageLoad: mockActionType('storageLoad') },

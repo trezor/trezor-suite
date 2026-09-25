@@ -4,6 +4,7 @@ import { useServices } from '@suite-common/dependency-injection';
 import { events, injectNativeAnalytics } from '@suite-native/analytics';
 import { atomWithUnecryptedStorage } from '@suite-native/storage';
 import { type ThemeColorVariant } from '@trezor/theme';
+
 export type AppColorScheme = ThemeColorVariant | 'system';
 
 const userColorSchemeAtom = atomWithUnecryptedStorage<AppColorScheme>('colorScheme', 'system');

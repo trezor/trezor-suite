@@ -13,6 +13,7 @@ import { DeviceModelInternal } from '@trezor/device-utils';
 import suiteReducer from 'src/reducers/suite/suiteReducer';
 
 import { actions, reducerActions } from './__fixtures__/firmwareActions';
+
 const firmwareReducer = prepareFirmwareReducer({
     actionTypes: { storageLoad: mockActionType('storageLoad') },
 });

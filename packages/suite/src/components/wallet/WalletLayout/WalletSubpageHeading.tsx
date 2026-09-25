@@ -2,6 +2,7 @@ import { type ReactNode } from 'react';
 
 import { Translation, type TranslationKey } from '@suite/intl';
 import { H2, Row } from '@trezor/components';
+
 type WalletSubpageHeadingProps = {
     title: TranslationKey;
     children?: ReactNode;

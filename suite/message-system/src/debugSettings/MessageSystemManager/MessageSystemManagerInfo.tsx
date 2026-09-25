@@ -9,6 +9,7 @@ import {
     WarningIcon,
     XCircleIcon,
 } from '@trezor/icons';
+
 type MessageSystemManagerInfoProps = {
     message: Message;
     allValidMessages: Message[];

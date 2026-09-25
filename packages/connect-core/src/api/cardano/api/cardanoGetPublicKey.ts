@@ -16,6 +16,7 @@ import { AbstractMethod } from '../../../core/AbstractMethod';
 import { getMiscNetwork } from '../../../data/coinInfo';
 import { getSerializedPath, validatePath } from '../../../utils/pathUtils';
 import { bundlify } from '../../common/paramsValidator';
+
 interface Params {
     proto: PROTO.CardanoGetPublicKey;
     suppressBackupWarning?: boolean;

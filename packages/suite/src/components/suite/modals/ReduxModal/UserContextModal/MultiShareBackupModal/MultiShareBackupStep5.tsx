@@ -11,6 +11,7 @@ import {
     Paragraph,
 } from '@trezor/components';
 import { CoinsIcon, EyeSlashIcon, RecoverySeedIcon, TrezorDevicesFilledIcon } from '@trezor/icons';
+
 type CalloutProps = {
     title: TranslationKey;
     items: { iconName: IconComponent; label: TranslationKey }[];

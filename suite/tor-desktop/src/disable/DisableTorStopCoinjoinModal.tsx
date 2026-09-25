@@ -1,6 +1,7 @@
 import { Translation } from '@suite/intl';
 import { Banner, Column, Modal, Paragraph } from '@trezor/components';
 import { TorBrowserIcon } from '@trezor/icons';
+
 type DisableTorStopCoinjoinModalProps = {
     decision: { resolve: (value: boolean) => void };
     onCancel: () => void;

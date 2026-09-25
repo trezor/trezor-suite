@@ -11,6 +11,7 @@ import {
     SIDEBAR_COLLAPSED_WIDTH,
     SIDEBAR_MIN_WIDTH,
 } from '../../components/suite/layouts/SuiteLayout/Sidebar/consts';
+
 type ResponsiveContextType = {
     sidebarWidth: number;
     setSidebarWidth: (width: number) => void;

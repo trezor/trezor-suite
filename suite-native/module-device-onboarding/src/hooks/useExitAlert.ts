@@ -20,6 +20,7 @@ import {
     type StackToStackCompositeNavigationProps,
 } from '@suite-native/navigation';
 import TrezorConnect from '@trezor/connect';
+
 type NavigationProps = StackToStackCompositeNavigationProps<
     DeviceOnboardingStackParamList,
     DeviceOnboardingStackRoutes,

@@ -1,4 +1,5 @@
 import { type NetworkSymbol, asNetworkSymbol } from '@suite-common/wallet-config';
+
 export type StakeType = 'stake' | 'unstake' | 'claim' | 'change-delegate';
 
 // The stake operations every staking sign flow supports

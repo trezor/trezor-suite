@@ -3,6 +3,7 @@ import styled from 'styled-components';
 import { Translation } from '@suite/intl';
 import { type GeneralPrecomposedTransactionFinal } from '@suite-common/wallet-types';
 import { Card, Column, InfoItem, Text } from '@trezor/components';
+
 const Pre = styled.pre`
     text-align: left;
     word-break: break-all;
