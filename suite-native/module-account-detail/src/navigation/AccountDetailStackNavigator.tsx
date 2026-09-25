@@ -6,7 +6,6 @@ import {
     stackNavigationOptionsConfig,
 } from '@suite-native/navigation';
 
-import { AccountAssetsScreen } from '../screens/AccountAssetsScreen';
 import { AccountDetailScreen } from '../screens/AccountDetailScreen';
 import { AccountSettingsScreen } from '../screens/AccountSettingsScreen';
 
@@ -20,10 +19,6 @@ export const AccountDetailStackNavigator = () => (
         <AccountDetailStack.Screen
             name={AccountDetailStackRoutes.AccountDetail}
             component={AccountDetailScreen}
-        />
-        <AccountDetailStack.Screen
-            name={AccountDetailStackRoutes.AccountAssets}
-            component={AccountAssetsScreen}
         />
         <AccountDetailStack.Screen
             name={AccountDetailStackRoutes.AccountSettings}

@@ -18,6 +18,8 @@ import { TokenSettingsBottomSheet } from '@suite-native/module-earn';
 import {
     type AccountDetailStackParamList,
     AccountDetailStackRoutes,
+    type RootStackParamList,
+    RootStackRoutes,
     ScreenHeader,
     type StackNavigationProps,
 } from '@suite-native/navigation';
@@ -133,18 +135,22 @@ export const AssetDetailScreenHeader = ({
     );
 
     const closeAction = () => {
-        const isAccountAssetsInStack = navigation
-            .getState()
-            .routes.some(stackRoute => stackRoute.name === AccountDetailStackRoutes.AccountAssets);
+        const rootNavigation =
+            navigation.getParent<NativeStackNavigationProp<RootStackParamList>>();
+        const isAccountAssetsInStack = rootNavigation
+            ?.getState()
+            .routes.some(stackRoute => stackRoute.name === RootStackRoutes.AccountAssets);
 
-        if (isAccountAssetsInStack) {
-            navigation.popTo(AccountDetailStackRoutes.AccountAssets, {
+        if (rootNavigation && isAccountAssetsInStack) {
+            rootNavigation.popTo(RootStackRoutes.AccountAssets, {
                 accountKey: account.key,
                 tab: tokenTab,
             });
-        } else {
-            navigation.goBack();
+
+            return;
         }
+
+        navigation.goBack();
     };
 
     return (
