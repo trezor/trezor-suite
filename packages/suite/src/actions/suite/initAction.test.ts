@@ -25,9 +25,7 @@ import {
 } from '@suite/settings';
 import { onSuiteInit, onSuiteReady } from '@suite/suite-lifecycle';
 import { prepareAnalyticsReducer } from '@suite-common/analytics-redux';
-import { connectInitThunk } from '@suite-common/connect-init';
 import {
-    mockConnectInitHooks,
     mockConnectInitSettings,
     mockCreateTransports,
     mockGetDebugSettings,
@@ -53,6 +51,7 @@ import {
 } from '@suite-common/token-definitions';
 import { mockGetSupportedNetworks } from '@suite-common/wallet-config/mocks';
 import {
+    defaultTrezorUIEventHandlerThunk,
     feesActions,
     fetchFiatRatesThunk,
     initBlockchainThunk,
@@ -75,6 +74,7 @@ import { prepareSuiteMiddleware } from 'src/middlewares/suite/suiteMiddleware';
 import suiteReducer from 'src/reducers/suite/suiteReducer';
 import windowReducer from 'src/reducers/suite/windowReducer';
 import { walletReducers } from 'src/reducers/wallet';
+import { createSuiteConnectInit } from 'src/support/createSuiteConnectInit';
 import type { AppState } from 'src/types/suite';
 
 const deviceReducer = prepareDeviceReducer({
@@ -173,11 +173,9 @@ const fixtures: Fixture[] = [
             routerLocationChange.type,
             routerAppChanged.type,
             lockRouter.type,
-            connectInitThunk.pending.type,
             onLocationChangeThunk.fulfilled.type,
             gotoThunk.fulfilled.type,
             initialRedirectionThunk.fulfilled.type,
-            connectInitThunk.fulfilled.type,
             initBlockchainThunk.pending.type,
             preloadFeeInfoThunk.pending.type,
             feesActions.updateMultipleFees.type,
@@ -224,9 +222,7 @@ const fixtures: Fixture[] = [
             fetchConfigThunk.fulfilled.type,
             initMessageSystemThunk.fulfilled.type,
             initialRedirectionThunk.pending.type,
-            connectInitThunk.pending.type,
             initialRedirectionThunk.fulfilled.type,
-            connectInitThunk.fulfilled.type,
             initBlockchainThunk.pending.type,
             preloadFeeInfoThunk.pending.type,
             feesActions.updateMultipleFees.type,
@@ -275,9 +271,7 @@ const fixtures: Fixture[] = [
             fetchConfigThunk.fulfilled.type,
             initMessageSystemThunk.fulfilled.type,
             initialRedirectionThunk.pending.type,
-            connectInitThunk.pending.type,
             initialRedirectionThunk.fulfilled.type,
-            connectInitThunk.fulfilled.type,
             initBlockchainThunk.pending.type,
             preloadFeeInfoThunk.pending.type,
             feesActions.updateMultipleFees.type,
@@ -331,11 +325,9 @@ const fixtures: Fixture[] = [
             routerLocationChange.type,
             routerAppChanged.type,
             lockRouter.type,
-            connectInitThunk.pending.type,
             onLocationChangeThunk.fulfilled.type,
             gotoThunk.fulfilled.type,
             initialRedirectionThunk.fulfilled.type,
-            connectInitThunk.rejected.type,
             SUITE.ERROR,
         ],
     },
@@ -358,19 +350,26 @@ const initStore = (state: State) => {
     const suiteRouterHistory = createSuiteRouterHistory({ history: memoryHistory });
     const store = createTestStore({
         extra: {
-            actions: { lockDevice },
             services: {
                 ...createDesktopApiDep(),
                 analytics: mockDesktopAnalytics(),
-                connectInitHooks: mockConnectInitHooks(),
-                connectInitSettings: mockConnectInitSettings(),
-                createLogger: noopCreateLogger,
-                createTransports: mockCreateTransports(),
-                getAllowPrerelease: mockGetAllowPrerelease(),
-                getBinFilesBaseUrl: mockGetBinFilesBaseUrl(),
-                getDebugSettings: mockGetDebugSettings(),
+                connectInit: (): Promise<void> =>
+                    createSuiteConnectInit({
+                        dispatch: store.dispatch,
+                        getState: store.getState,
+                        analytics: mockDesktopAnalytics(),
+                        lockDevice,
+                        connectInitSettings: mockConnectInitSettings(),
+                        createLogger: noopCreateLogger,
+                        createTransports: mockCreateTransports(),
+                        getAllowPrerelease: mockGetAllowPrerelease(),
+                        getBinFilesBaseUrl: mockGetBinFilesBaseUrl(),
+                        getDebugSettings: mockGetDebugSettings(),
+                        getThpSettings: mockGetThpSettings(),
+                        trezorUiEventHandler: action =>
+                            store.dispatch(defaultTrezorUIEventHandlerThunk(action)),
+                    })(),
                 getIsWindowVisible: asGetter(() => true),
-                getThpSettings: mockGetThpSettings(),
                 getTokenDefinitionsEnabledNetworks: asGetter(
                     () => state.wallet.settings.enabledNetworks,
                 ),

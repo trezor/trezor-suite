@@ -1,5 +1,4 @@
 import { type CoinjoinAccount } from '@suite/coinjoin';
-import { connectInitThunk } from '@suite-common/connect-init';
 import { filterInconclusiveAuthenticityChecks } from '@suite-common/firmware-authenticity';
 import { type DeviceWithEmptyPath } from '@suite-common/suite-types';
 
@@ -28,20 +27,3 @@ export const serializeCoinjoinAccount = (coinjoinAccount: CoinjoinAccount) => {
 
     return propertiesToSave;
 };
-
-/**
- * Discard @suite-common/connect-init/init actions, we don't care about it in this test
- * if store dispatched these actions.
- * @suite-common/connect-init/init/pending
- * @suite-common/connect-init/init/fulfilled
- * @suite-common/connect-init/init/rejected
- */
-export const discardMockedConnectInitActions = (actions: any[]) =>
-    actions.filter(
-        action =>
-            ![
-                connectInitThunk.pending.type,
-                connectInitThunk.fulfilled.type,
-                connectInitThunk.rejected.type,
-            ].includes(action.type),
-    );

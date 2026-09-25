@@ -7,7 +7,7 @@ import { type PlatformEncryptionDep } from '@suite-common/platform-encryption';
 import { type MigrateSuiteSyncLabelsForRbfTransactionDep } from '@suite-common/suite-rbf-labels-migrations-types';
 import { type SuiteSyncDep } from '@suite-common/suite-sync-types';
 import {
-    type ConnectInitHooksDeps,
+    type ConnectInitDep,
     type ConnectInitSettingsDep,
     type GetAllowPrereleaseDep,
     type GetBinFilesBaseUrlDep,
@@ -19,6 +19,7 @@ import {
     type ShouldRetryFirmwareRevisionCheckErrorDep,
     type ThpHostNameDep,
     type TransportsDep,
+    type TrezorUiEventHandlerDep,
 } from '@suite-common/suite-types';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import {
@@ -34,7 +35,7 @@ export type CommonServices = SuiteSyncDep &
     PlatformEncryptionDep &
     AnalyticsDep &
     ConnectInitSettingsDep &
-    ConnectInitHooksDeps &
+    ConnectInitDep &
     GetAllowPrereleaseDep &
     GetBinFilesBaseUrlDep &
     ShouldRetryFirmwareRevisionCheckErrorDep &
@@ -58,4 +59,5 @@ export type CommonServices = SuiteSyncDep &
     MigrateSuiteSyncLabelsForRbfTransactionDep &
     CreateLoggerDep &
     ThpHostNameDep &
-    TransportsDep;
+    TransportsDep &
+    TrezorUiEventHandlerDep;

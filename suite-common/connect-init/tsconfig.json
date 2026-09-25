@@ -2,23 +2,15 @@
     "extends": "../../tsconfig.base.json",
     "compilerOptions": { "outDir": "libDev" },
     "references": [
-        { "path": "../analytics" },
         { "path": "../dependency-injection" },
-        { "path": "../device" },
-        { "path": "../firmware" },
-        { "path": "../message-system" },
-        { "path": "../redux-utils" },
         { "path": "../suite-types" },
-        { "path": "../test-utils" },
         { "path": "../thp" },
-        { "path": "../wallet-core" },
         { "path": "../../packages/connect" },
         {
             "path": "../../packages/connect-common"
         },
         {
             "path": "../../packages/transport-common"
-        },
-        { "path": "../../packages/utils" }
+        }
     ]
 }

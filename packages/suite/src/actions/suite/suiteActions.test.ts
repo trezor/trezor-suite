@@ -8,9 +8,7 @@ import { routerReducer } from '@suite/router';
 import { type RouterStateOverrides, createRouterStateMock } from '@suite/router/mocks';
 import { torReducer } from '@suite/tor';
 import { type AnalyticsDep } from '@suite-common/analytics';
-import { type ConnectInitThunkDeps, connectInitThunk } from '@suite-common/connect-init';
 import {
-    mockConnectInitHooks,
     mockConnectInitSettings,
     mockCreateTransports,
     mockGetDebugSettings,
@@ -36,6 +34,7 @@ import {
 } from '@suite-common/suite-types/mocks';
 import { createTestStore, filterThunkActionTypes, testMocks } from '@suite-common/test-utils';
 import {
+    defaultTrezorUIEventHandlerThunk,
     forgetDisconnectedDevicesThunk,
     observeSelectedDeviceThunk,
 } from '@suite-common/wallet-core';
@@ -45,7 +44,7 @@ import { noopCreateLogger } from '@trezor/connect-common';
 
 import { markDeviceAsRecentlyConnectedThunk } from 'src/actions/wallet/markDeviceAsRecentlyConnectedThunk';
 import suiteReducer from 'src/reducers/suite/suiteReducer';
-import { discardMockedConnectInitActions } from 'src/utils/suite/storage';
+import { createSuiteConnectInit } from 'src/support/createSuiteConnectInit';
 
 import fixtures from './__fixtures__/suiteActions';
 import { SUITE } from './constants';
@@ -69,23 +68,13 @@ const flagsReducer = prepareFlagsReducer({
     reducers: { storageLoadFlags: mockReducer() },
 });
 
-type SuiteActionsTestDeps = ConnectInitThunkDeps &
-    WithServices<AnalyticsDep & GetTradedAccountKeysDep> & {
-        thunks: FetchAndSaveMetadataDep;
-    };
+type SuiteActionsTestDeps = WithServices<AnalyticsDep & GetTradedAccountKeysDep> & {
+    thunks: FetchAndSaveMetadataDep;
+};
 
 const extra: SuiteActionsTestDeps = {
-    actions: { lockDevice },
     services: {
         analytics: mockDesktopAnalytics(),
-        connectInitHooks: mockConnectInitHooks(),
-        connectInitSettings: mockConnectInitSettings(),
-        createLogger: noopCreateLogger,
-        createTransports: mockCreateTransports(),
-        getAllowPrerelease: mockGetAllowPrerelease(),
-        getBinFilesBaseUrl: mockGetBinFilesBaseUrl(),
-        getDebugSettings: mockGetDebugSettings(),
-        getThpSettings: mockGetThpSettings(),
         getTradedAccountKeys: mockGetTradedAccountKeys(),
     },
     thunks: {
@@ -147,6 +136,22 @@ const mockStore = (preloadedState: State) =>
         }),
         preloadedState,
     });
+
+const initConnect = (store: ReturnType<typeof mockStore>) =>
+    createSuiteConnectInit({
+        dispatch: store.dispatch,
+        getState: store.getState,
+        analytics: mockDesktopAnalytics(),
+        lockDevice,
+        connectInitSettings: mockConnectInitSettings(),
+        createLogger: noopCreateLogger,
+        createTransports: mockCreateTransports(),
+        getAllowPrerelease: mockGetAllowPrerelease(),
+        getBinFilesBaseUrl: mockGetBinFilesBaseUrl(),
+        getDebugSettings: mockGetDebugSettings(),
+        getThpSettings: mockGetThpSettings(),
+        trezorUiEventHandler: action => store.dispatch(defaultTrezorUIEventHandlerThunk(action)),
+    })();
 
 describe('Suite Actions', () => {
     fixtures.reducerActions.forEach(f => {
@@ -239,12 +244,10 @@ describe('Suite Actions', () => {
             testMocks.setTrezorConnectFixtures(f.getFeatures || { success: true });
             const state = getInitialState(undefined, f.state.device);
             const store = mockStore(state);
-            store.dispatch(connectInitThunk()); // trezorConnectActions.connectInitThunk needs to be called in order to wrap "getFeatures" with lockUi action
+            initConnect(store); // connectInit needs to be called in order to wrap "getFeatures" with lockUi action
             await store.dispatch(acquireDeviceThunk({ requestedDevice: f.requestedDevice }));
             // we are not interested in thunk state here
-            const expectedActions = filterThunkActionTypes(
-                discardMockedConnectInitActions(store.getActions()),
-            );
+            const expectedActions = filterThunkActionTypes(store.getActions());
             if (!f.result) {
                 expect(expectedActions.length).toEqual(0);
             } else {

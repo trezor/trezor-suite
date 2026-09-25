@@ -17,10 +17,6 @@ const requestWordEvent = createUiRequestMessage(
     { requestId: 'abcd' },
 );
 
-const pinDepletedEvent = createUiEventMessage(UI_EVENTS.PIN_INVALID_ATTEMPTS_DEPLETED, {
-    device,
-});
-
 const firmwareDownloadedEvent = createUiEventMessage(UI_EVENTS.FIRMWARE_DOWNLOADED, {
     binary: new ArrayBuffer(0),
     binaryVersion: [1, 0, 0],
@@ -29,55 +25,26 @@ const firmwareDownloadedEvent = createUiEventMessage(UI_EVENTS.FIRMWARE_DOWNLOAD
     firmwareType: FirmwareType.Universal,
 });
 
-const setupStore = (uiEventHooks: Record<string, () => void>) =>
-    createTestStore({
-        extra: { services: { connectInitHooks: { deviceEvent: {}, uiEvent: uiEventHooks } } },
-    });
+const setupStore = () => createTestStore({ extra: undefined });
 
-describe('defaultTrezorUIEventHandlerThunk - connectInitHooks.uiEvent', () => {
-    it('calls the hook registered for the dispatched event type and still dispatches the event', async () => {
-        const requestWordHook = jest.fn();
-        const store = setupStore({ [UI_REQUESTS.REQUEST_WORD]: requestWordHook });
+describe('defaultTrezorUIEventHandlerThunk', () => {
+    it('dispatches the event', async () => {
+        const store = setupStore();
 
         await store.dispatch(defaultTrezorUIEventHandlerThunk(requestWordEvent));
 
-        expect(requestWordHook).toHaveBeenCalledTimes(1);
         expect(store.getActions()).toContainEqual(
             expect.objectContaining({ type: UI_REQUESTS.REQUEST_WORD }),
         );
     });
 
-    it('calls only the hook matching the dispatched event type', async () => {
-        const requestWordHook = jest.fn();
-        const pinDepletedHook = jest.fn();
-        const store = setupStore({
-            [UI_REQUESTS.REQUEST_WORD]: requestWordHook,
-            [UI_EVENTS.PIN_INVALID_ATTEMPTS_DEPLETED]: pinDepletedHook,
-        });
-
-        await store.dispatch(defaultTrezorUIEventHandlerThunk(pinDepletedEvent));
-
-        expect(pinDepletedHook).toHaveBeenCalledTimes(1);
-        expect(requestWordHook).not.toHaveBeenCalled();
-    });
-
-    it('ignores FIRMWARE_DOWNLOADED completely: the event is dropped and no hook runs', async () => {
-        const firmwareHook = jest.fn();
-        const store = setupStore({ [UI_EVENTS.FIRMWARE_DOWNLOADED]: firmwareHook });
+    it('ignores FIRMWARE_DOWNLOADED completely', async () => {
+        const store = setupStore();
 
         await store.dispatch(defaultTrezorUIEventHandlerThunk(firmwareDownloadedEvent));
 
-        expect(firmwareHook).not.toHaveBeenCalled();
         expect(store.getActions()).not.toContainEqual(
             expect.objectContaining({ type: UI_EVENTS.FIRMWARE_DOWNLOADED }),
         );
-    });
-
-    it('does not throw when no hook is registered for the dispatched event type', async () => {
-        const store = setupStore({});
-
-        await expect(
-            store.dispatch(defaultTrezorUIEventHandlerThunk(requestWordEvent)),
-        ).resolves.toBeDefined();
     });
 });

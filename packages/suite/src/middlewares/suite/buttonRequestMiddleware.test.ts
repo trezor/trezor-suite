@@ -3,9 +3,7 @@ import { debugInitialState } from '@suite/debug';
 import { lockDevice } from '@suite/locks';
 import { routerReducer } from '@suite/router';
 import { suiteSettingsInitialState } from '@suite/settings';
-import { type ConnectInitThunkDeps, connectInitThunk } from '@suite-common/connect-init';
 import {
-    mockConnectInitHooks,
     mockConnectInitSettings,
     mockCreateTransports,
     mockGetDebugSettings,
@@ -31,6 +29,7 @@ import * as deviceSettingsActions from 'src/actions/settings/deviceSettingsActio
 import buttonRequestMiddleware from 'src/middlewares/suite/buttonRequestMiddleware';
 import { prepareSuiteMiddleware } from 'src/middlewares/suite/suiteMiddleware';
 import suiteReducer from 'src/reducers/suite/suiteReducer';
+import { createSuiteConnectInit } from 'src/support/createSuiteConnectInit';
 
 const device = mockSuiteDevice();
 
@@ -56,27 +55,9 @@ const getInitialState = () => ({
 
 type State = ReturnType<typeof getInitialState>;
 
-const connectInitThunkDeps: ConnectInitThunkDeps = {
-    actions: { lockDevice },
-    services: {
-        analytics: mockDesktopAnalytics(),
-        connectInitHooks: mockConnectInitHooks(),
-        connectInitSettings: mockConnectInitSettings(),
-        createLogger: noopCreateLogger,
-        createTransports: mockCreateTransports(),
-        getAllowPrerelease: mockGetAllowPrerelease(),
-        getBinFilesBaseUrl: mockGetBinFilesBaseUrl(),
-        getDebugSettings: mockGetDebugSettings(),
-        getThpSettings: mockGetThpSettings(),
-    },
-};
-
 const initStore = (state: State) => {
     const store = createTestStore({
-        extra: {
-            ...connectInitThunkDeps,
-            actions: { lockDevice },
-        },
+        extra: undefined,
         middleware: [
             prepareSuiteMiddleware(() => ({ services: { suiteSync: mockSuiteSync() } })),
             buttonRequestMiddleware,
@@ -87,11 +68,27 @@ const initStore = (state: State) => {
     return store;
 };
 
+const initConnect = (store: ReturnType<typeof initStore>) =>
+    createSuiteConnectInit({
+        dispatch: store.dispatch,
+        getState: store.getState,
+        analytics: mockDesktopAnalytics(),
+        lockDevice,
+        connectInitSettings: mockConnectInitSettings(),
+        createLogger: noopCreateLogger,
+        createTransports: mockCreateTransports(),
+        getAllowPrerelease: mockGetAllowPrerelease(),
+        getBinFilesBaseUrl: mockGetBinFilesBaseUrl(),
+        getDebugSettings: mockGetDebugSettings(),
+        getThpSettings: mockGetThpSettings(),
+        trezorUiEventHandler: action => store.dispatch(defaultTrezorUIEventHandlerThunk(action)),
+    })();
+
 describe('buttonRequest middleware', () => {
     it('see what happens on pin change call', async () => {
         const store = initStore(getInitialState());
         const { dispatch } = store;
-        await dispatch(connectInitThunk());
+        await initConnect(store);
         const call = dispatch(deviceSettingsActions.changePinThunk({ remove: false }));
         const { emitTestEvent } = testMocks.getTrezorConnectMock();
         // fake few ui events, just like when user is changing PIN
@@ -119,8 +116,6 @@ describe('buttonRequest middleware', () => {
         actions.pop();
 
         expect(actions).toMatchObject([
-            { type: connectInitThunk.pending.type, payload: undefined },
-            { type: connectInitThunk.fulfilled.type, payload: undefined },
             { type: lockDevice.type, payload: true },
             { type: defaultTrezorUIEventHandlerThunk.pending.type },
             { type: UI_EVENTS.BUTTON_REQUEST, payload: { code: 'ButtonRequest_ProtectCall' } },
