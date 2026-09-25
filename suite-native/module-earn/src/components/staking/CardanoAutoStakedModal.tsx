@@ -1,7 +1,15 @@
 import { type NetworkSymbol, getNetworkDisplaySymbol } from '@suite-common/wallet-config';
-import { BottomSheetModal, type BottomSheetModalRef, Text, VStack } from '@suite-native/atoms';
+import {
+    BottomSheetModal,
+    type BottomSheetModalRef,
+    Button,
+    Text,
+    VStack,
+} from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
+import { useOpenLink } from '@suite-native/link';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
+import { HELP_CENTER_ADA_STAKING } from '@trezor/urls';
 
 type CardanoAutoStakedModalProps = {
     ref: BottomSheetModalRef;
@@ -14,6 +22,11 @@ const backgroundStyle = prepareNativeStyle(utils => ({
 
 export const CardanoAutoStakedModal = ({ ref, networkSymbol }: CardanoAutoStakedModalProps) => {
     const { applyStyle } = useNativeStyles();
+    const openLink = useOpenLink();
+
+    const handleLearnMorePress = () => {
+        openLink(HELP_CENTER_ADA_STAKING);
+    };
 
     return (
         <BottomSheetModal
@@ -35,6 +48,14 @@ export const CardanoAutoStakedModal = ({ ref, networkSymbol }: CardanoAutoStaked
                         <Translation id="earn.stakingManagementScreen.cardanoAutoStakedModal.accessibilityDescription" />
                     </Text>
                 </VStack>
+                <Button
+                    onPress={handleLearnMorePress}
+                    priority="secondary"
+                    iconLeft="arrowSquareOut"
+                    testID="@staking/cardano-auto-staked-modal/learn-more-button"
+                >
+                    <Translation id="earn.stakingManagementScreen.cardanoAutoStakedModal.learnMoreButton" />
+                </Button>
             </VStack>
         </BottomSheetModal>
     );
