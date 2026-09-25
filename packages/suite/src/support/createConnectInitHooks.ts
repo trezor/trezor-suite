@@ -1,4 +1,7 @@
-import { bluetoothOnDeviceConnectedThunk } from '@suite/bluetooth';
+import {
+    bluetoothOnDeviceConnectedThunk,
+    bluetoothOnDeviceDisconnectedThunk,
+} from '@suite/bluetooth';
 import { openModal, preserveModal } from '@suite/modal';
 import { recoveryActions, selectRecoveryStatus } from '@suite/recovery';
 import { type Dispatch } from '@suite-common/redux-utils';
@@ -20,6 +23,9 @@ export const createConnectInitHooks = (deps: ConnectInitHooksDeps): ConnectInitH
         },
         [DEVICE.CONNECT_UNACQUIRED]: device => {
             deps.dispatch(markDeviceAsRecentlyConnectedThunk(device));
+        },
+        [DEVICE.DISCONNECT]: device => {
+            deps.dispatch(bluetoothOnDeviceDisconnectedThunk(device));
         },
     },
     uiEvent: {

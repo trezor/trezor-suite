@@ -1,5 +1,4 @@
-import { openSystemSettingsThunk } from '@suite/bluetooth';
-import { bluetoothActions } from '@suite-common/bluetooth';
+import { forgetAllBluetoothDevicesThunk, openSystemSettingsThunk } from '@suite/bluetooth';
 import { useServices } from '@suite-common/dependency-injection';
 import { injectDispatch } from '@suite-common/redux-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
@@ -9,7 +8,7 @@ export const ForgetAllDevicesButton = () => {
     const { dispatch } = useServices(injectDispatch);
 
     const handleForgetButtonClick = () => {
-        dispatch(bluetoothActions.knownDevicesUpdateAction({ knownDevices: [] }));
+        dispatch(forgetAllBluetoothDevicesThunk());
         dispatch(notificationsActions.addToast({ type: 'clear-storage' }));
     };
     const handleOpenSettingsButtonClick = () => {
