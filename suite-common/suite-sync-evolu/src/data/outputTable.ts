@@ -22,6 +22,7 @@ import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { asAccountDescriptor, asTxTargetId } from '@suite-common/wallet-types';
 import { err, ok } from '@trezor/type-utils';
 
+import { describeEvoluTypeError } from './describeEvoluTypeError';
 import { normalizeLabel } from './normalizeLabel';
 
 export const OutputEvoluId = id('OutputLabelId');
@@ -59,7 +60,7 @@ export class OutputEvoluTable implements OutputTable {
         );
 
         if (!idResult.ok) {
-            return err(createSuiteSyncUpdateError(idResult.error));
+            return err(createSuiteSyncUpdateError(describeEvoluTypeError(idResult.error)));
         }
 
         const validated = EvoluOutput.fromUnknown({
@@ -72,7 +73,7 @@ export class OutputEvoluTable implements OutputTable {
         });
 
         if (!validated.ok) {
-            return err(createSuiteSyncUpdateError({ caused: validated.error }));
+            return err(createSuiteSyncUpdateError(describeEvoluTypeError(validated.error)));
         }
 
         this.evolu.upsert('output', validated.value);

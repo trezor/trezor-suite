@@ -23,6 +23,7 @@ import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { asAccountDescriptor } from '@suite-common/wallet-types';
 import { err, ok } from '@trezor/type-utils';
 
+import { describeEvoluTypeError } from './describeEvoluTypeError';
 import { normalizeLabel } from './normalizeLabel';
 
 export const AccountEvoluId = id('AccountEvoluId');
@@ -57,7 +58,7 @@ export class EvoluAccountTable implements AccountTable {
         );
 
         if (!idResult.ok) {
-            return err(createSuiteSyncUpdateError(idResult.error));
+            return err(createSuiteSyncUpdateError(describeEvoluTypeError(idResult.error)));
         }
 
         const validated = AccountEvoluSchema.fromUnknown({
@@ -68,7 +69,7 @@ export class EvoluAccountTable implements AccountTable {
         });
 
         if (!validated.ok) {
-            return err(createSuiteSyncUpdateError({ caused: validated.error }));
+            return err(createSuiteSyncUpdateError(describeEvoluTypeError(validated.error)));
         }
 
         this.evolu.upsert('account', validated.value);

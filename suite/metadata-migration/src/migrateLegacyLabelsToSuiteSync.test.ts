@@ -270,7 +270,7 @@ describe(createMigrateLegacyLabelsToSuiteSync.name, () => {
 
     it('returns typed failure when a SuiteSync update fails', async () => {
         const migrateLegacyLabelsToSuiteSync = createMigrate({
-            writeWalletLabel: () => err(createSuiteSyncUpdateError({ reason: 'boom' })),
+            writeWalletLabel: () => err(createSuiteSyncUpdateError('boom')),
         });
 
         await expect(migrateLegacyLabelsToSuiteSync()).resolves.toEqual({
@@ -279,7 +279,7 @@ describe(createMigrateLegacyLabelsToSuiteSync.name, () => {
                 type: 'update-failed',
                 entity: 'wallet',
                 deviceStaticSessionId: 'device@wallet:1',
-                cause: createSuiteSyncUpdateError({ reason: 'boom' }),
+                cause: createSuiteSyncUpdateError('boom'),
             },
         });
     });
