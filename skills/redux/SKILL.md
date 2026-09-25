@@ -209,7 +209,7 @@ const disableAccountsThunk = createThunk(
 ```tsx
 await TrezorConnect.init({
     ...connectInitSettings,
-    pendingTransportEvent: selectIsPendingTransportEvent(getState()),
+    firmwareChannel: selectEffectiveFirmwareChannel(getState(), getAllowPrerelease()),
 });
 ```
 

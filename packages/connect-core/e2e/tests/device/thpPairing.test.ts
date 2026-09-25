@@ -24,7 +24,6 @@ describe('THP pairing', () => {
 
     const waitForDevice = async (settings: Partial<ThpSettings>) => {
         await initTrezorConnect(controller, {
-            pendingTransportEvent: false,
             thp: {
                 appName: 'TrezorConnect',
                 hostName: 'tests:e2e',
