@@ -1,0 +1,15 @@
+{
+    "extends": "../../../tsconfig.base.json",
+    "compilerOptions": { "outDir": "libDev" },
+    "references": [
+        {
+            "path": "../../../suite-common/dependency-injection"
+        },
+        {
+            "path": "../../../suite-common/networks"
+        },
+        { "path": "../network-module-types" },
+        { "path": "../solana" },
+        { "path": "../../storage" }
+    ]
+}

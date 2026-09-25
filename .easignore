@@ -217,6 +217,7 @@
 !/suite-native/module-trading
 !/suite-native/module-transactions
 !/suite-native/navigation
+!/suite-native/networks
 !/suite-native/passphrase
 !/suite-native/platform-encryption-native
 !/suite-native/qr-code
@@ -280,6 +281,10 @@
 /networks/tron/*
 !/networks/tron/network-tron
 !/networks/tron/network-tron-suite-common
+/suite-native/networks/*
+!/suite-native/networks/native-common-networks
+!/suite-native/networks/network-module-types
+!/suite-native/networks/solana
 
 # Never uploaded, including out of the allowed directories
 **/node_modules/

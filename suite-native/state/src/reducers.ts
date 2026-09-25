@@ -55,6 +55,7 @@ import { featureFlagsPersistedKeys, featureFlagsReducer } from '@suite-native/fe
 import { nativeFirmwareReducer } from '@suite-native/firmware';
 import { graphPersistTransform, graphReducer } from '@suite-native/graph';
 import { type TxKeyPath, localePersistWhitelist, localeReducer } from '@suite-native/intl';
+import { type NativeNetworksReducerDep } from '@suite-native/networks';
 import { appSettingsPersistWhitelist, appSettingsReducer } from '@suite-native/settings';
 import {
     type MMKVStorageDep,
@@ -113,9 +114,10 @@ const receiveReducer = prepareReceiveReducer(extraDependencies);
 const bluetoothReducer = prepareBluetoothReducer(extraDependencies);
 const thpReducer = prepareThpReducer(extraDependencies);
 
-type PrepareRootReducersDeps = MMKVStorageDep & {
-    getSupportedNetworks: () => readonly NetworkSymbol[];
-};
+type PrepareRootReducersDeps = MMKVStorageDep &
+    NativeNetworksReducerDep & {
+        getSupportedNetworks: () => readonly NetworkSymbol[];
+    };
 
 export const prepareRootReducers = (deps: PrepareRootReducersDeps) => {
     const appSettingsPersistedReducer = preparePersistReducer({
@@ -538,6 +540,7 @@ export const prepareRootReducers = (deps: PrepareRootReducersDeps) => {
             pendingCoinVisibility: pendingCoinVisibilitySlice.reducer,
             persistentDeviceData: persistentDeviceDataPersistedReducer,
             receive: receivePersistedReducer,
+            nativeNetworks: deps.nativeNetworksReducer,
             suiteSync: suiteSyncPersistedReducer,
             suiteSyncData: suiteSyncDataReducer,
             thp: thpPersistedReducer,

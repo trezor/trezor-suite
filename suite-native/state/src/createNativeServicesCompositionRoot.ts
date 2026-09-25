@@ -18,6 +18,7 @@ import {
 } from '@suite-native/device';
 import { selectTokenDefinitionsEnabledNetworks } from '@suite-native/discovery';
 import { selectSupportedLanguageLocale } from '@suite-native/intl';
+import { type NativeNetworksDep } from '@suite-native/networks';
 import { reportSecurityCheck } from '@suite-native/sentry';
 import type {
     EnsureEncryptionKeyDep,
@@ -52,6 +53,7 @@ const transports = transportsPerDeviceType[deviceType];
 type NativeAppDeps = Pick<NativeReduxStore, 'getState' | 'dispatch'> &
     EnsureEncryptionKeyDep &
     NativeStorageDep &
+    NativeNetworksDep &
     GetTrezorConnectPrivilegedDep;
 
 export const createNativeServicesCompositionRoot = (deps: NativeAppDeps): NativeServices => {
@@ -95,6 +97,7 @@ export const createNativeServicesCompositionRoot = (deps: NativeAppDeps): Native
 
     return {
         networks,
+        nativeNetworks: deps.nativeNetworks,
         suiteSync,
         bip329,
         ensureDelegatedIdentityKey,
