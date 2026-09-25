@@ -24,23 +24,21 @@ export const isComposeCancelTransactionAccount = (
 
 const resolveCancelAddress = (
     tx: Pick<WalletAccountTransaction, 'details'>,
-    account: ComposeCancelTransactionAccount,
-): string => {
+    { addresses }: ComposeCancelTransactionAccount,
+): string | undefined => {
     const firstChangeAddress = tx.details.vout.find(vout => vout.isAccountOwned)?.addresses?.[0];
     if (firstChangeAddress) {
         return firstChangeAddress;
     }
 
-    const firstUnused = account.addresses.unused[0];
+    const firstUnused = addresses.change.find(a => !a.transfers) ?? addresses.change.at(-1);
     if (firstUnused) {
         return firstUnused.address;
     }
-
-    throw new Error('No unused addresses, should not happen!');
 };
 
 export type ComposeCancelTransactionThunkParams = {
-    tx: Pick<WalletAccountTransaction, 'details' | 'vsize' | 'fee'>;
+    tx: Pick<WalletAccountTransaction, 'details' | 'fee'>;
     account: ComposeCancelTransactionAccount;
     chainedTxs?: ChainedTransactions;
 };
@@ -52,15 +50,15 @@ export const composeCancelTransactionThunk = createThunk<
 >(
     `${SEND_MODULE_PREFIX}/composeCancelTransactionThunk`,
     async ({ tx, account, chainedTxs }, { rejectWithValue }) => {
-        if (tx.vsize === undefined) {
-            return rejectWithValue('Transaction vsize is not loaded');
-        }
-
         const utxo = getMyInputsFromTransaction({ tx, account });
         const cancelAddress = resolveCancelAddress(tx, account);
         const baseFee = calculateBaseFee(tx, chainedTxs);
         const feePerUnit = getRelayFee().toString();
         const coin = asCoinSymbol(account.symbol);
+
+        if (!cancelAddress) {
+            return rejectWithValue('No change addresses, should not happen!');
+        }
 
         const response = await TrezorConnect.composeTransaction({
             account: {
