@@ -1,4 +1,5 @@
 export type {
+    AllowedDepsRule,
     AllowedOnlyInRule,
     ForbiddenDependency,
     ForbiddenDepsConfig,

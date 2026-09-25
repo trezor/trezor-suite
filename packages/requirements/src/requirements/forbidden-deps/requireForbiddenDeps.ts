@@ -5,7 +5,12 @@ import { pathToFileURL } from 'node:url';
 import { type PackageJson, readPackageJson } from '@trezor/node-utils';
 import { typedObjectKeys } from '@trezor/utils';
 
-import type { AllowedOnlyInRule, ForbiddenDepsConfig, ForbiddenInRule } from './forbiddenDepsTypes';
+import type {
+    AllowedDepsRule,
+    AllowedOnlyInRule,
+    ForbiddenDepsConfig,
+    ForbiddenInRule,
+} from './forbiddenDepsTypes';
 import { getWorkspaceDirectoryMap } from '../../workspaces';
 import type { Requirement } from '../Requirement';
 
@@ -93,7 +98,7 @@ const loadForbiddenDepsConfig: ForbiddenDepsConfigLoader = async workspaceDir =>
  * A config also covers the workspaces beneath its directory, so a tree can state its boundary once
  * instead of repeating it in every package, and a package added later inherits it.
  */
-const loadInheritedForbiddenDeps = async (repoRoot: string, workspaceDir: string) => {
+const loadInheritedConfigs = async (repoRoot: string, workspaceDir: string) => {
     const configs: Array<ForbiddenDepsConfig | undefined> = [];
 
     for (
@@ -104,8 +109,17 @@ const loadInheritedForbiddenDeps = async (repoRoot: string, workspaceDir: string
         configs.push(await loadForbiddenDepsConfig(directory));
     }
 
-    return configs.flatMap(config => config?.['forbidden-deps'] ?? []);
+    return configs.flatMap(config => (config === undefined ? [] : [config]));
 };
+
+const getAllowedDepsRules = (
+    configs: ReadonlyArray<ForbiddenDepsConfig>,
+): ReadonlyArray<AllowedDepsRule> =>
+    configs.flatMap(config => {
+        const allowedDeps = config['allowed-deps'];
+
+        return allowedDeps === undefined ? [] : [allowedDeps];
+    });
 
 const getWorkspaceDirectoryResolver = (repoRoot: string): WorkspaceDirectories =>
     getWorkspaceDirectoryMap(repoRoot);
@@ -125,17 +139,31 @@ const parseForbiddenInPattern = (rule: ForbiddenInRule) => {
 };
 
 type InvalidConfiguredPackagesErrorsParams = {
+    readonly allowedDepsRules: ReadonlyArray<AllowedDepsRule>;
     readonly dependencyRule: ForbiddenDepsConfig | undefined;
     readonly workspaceDirectories: WorkspaceDirectories;
     readonly workspaceName: string;
 };
 
 const getInvalidConfiguredPackagesErrors = ({
+    allowedDepsRules,
     dependencyRule,
     workspaceDirectories,
     workspaceName,
 }: InvalidConfiguredPackagesErrorsParams): ReadonlyArray<string> => {
     const errors: string[] = [];
+
+    for (const allowedDepsRule of allowedDepsRules) {
+        for (const packageName of allowedDepsRule.except ?? []) {
+            if (workspaceDirectories.has(packageName)) {
+                continue;
+            }
+
+            errors.push(
+                `${workspaceName}: ${JSON.stringify(packageName)} in "allowed-deps" is not an existing workspace package.`,
+            );
+        }
+    }
 
     const forbiddenIn = dependencyRule?.['forbidden-in'];
     if (forbiddenIn !== undefined) {
@@ -171,6 +199,41 @@ const getInvalidConfiguredPackagesErrors = ({
 
     return errors;
 };
+
+type AllowedDependencyErrorsParams = {
+    readonly allowedDepsRules: ReadonlyArray<AllowedDepsRule>;
+    readonly dependencyOccurrences: ReadonlyArray<DependencyOccurrence>;
+    readonly workspaceDirectories: WorkspaceDirectories;
+    readonly workspaceName: string;
+};
+
+/** Packages outside the monorepo are not covered by a workspace allowlist. */
+export const getAllowedDependencyErrors = ({
+    allowedDepsRules,
+    dependencyOccurrences,
+    workspaceDirectories,
+    workspaceName,
+}: AllowedDependencyErrorsParams): ReadonlyArray<string> =>
+    dependencyOccurrences.flatMap(dependencyOccurrence => {
+        if (!workspaceDirectories.has(dependencyOccurrence.name)) {
+            return [];
+        }
+
+        return allowedDepsRules.flatMap(allowedDepsRule => {
+            const isAllowed =
+                allowedDepsRule.packageNamePrefixes.some(packageNamePrefix =>
+                    dependencyOccurrence.name.startsWith(packageNamePrefix),
+                ) || (allowedDepsRule.except ?? []).includes(dependencyOccurrence.name);
+
+            if (isAllowed) {
+                return [];
+            }
+
+            return [
+                `${workspaceName}: ${JSON.stringify(dependencyOccurrence.name)} is not an allowed dependency in ${dependencyOccurrence.field}. Reason: ${allowedDepsRule.reason}`,
+            ];
+        });
+    });
 
 type ForbiddenDependencyErrorsParams = {
     readonly dependencyOccurrences: ReadonlyArray<DependencyOccurrence>;
@@ -276,19 +339,28 @@ export const requireForbiddenDeps: Requirement<'workspace'> = {
         }
 
         const localRule = await loadForbiddenDepsConfig(context.workspaceDir);
+        const configs = [
+            ...(localRule === undefined ? [] : [localRule]),
+            ...(await loadInheritedConfigs(context.repoRoot, context.workspaceDir)),
+        ];
         const dependencyRule: ForbiddenDepsConfig = {
             ...localRule,
-            'forbidden-deps': [
-                ...(localRule?.['forbidden-deps'] ?? []),
-                ...(await loadInheritedForbiddenDeps(context.repoRoot, context.workspaceDir)),
-            ],
+            'forbidden-deps': configs.flatMap(config => config['forbidden-deps'] ?? []),
         };
+        const allowedDepsRules = getAllowedDepsRules(configs);
         const workspaceDirectories = getWorkspaceDirectoryResolver(context.repoRoot);
 
         const dependencyOccurrences = collectDependencyOccurrences(packageJson);
         const errors = new Set<string>([
             ...getInvalidConfiguredPackagesErrors({
+                allowedDepsRules,
                 dependencyRule,
+                workspaceDirectories,
+                workspaceName: context.workspaceName,
+            }),
+            ...getAllowedDependencyErrors({
+                allowedDepsRules,
+                dependencyOccurrences,
                 workspaceDirectories,
                 workspaceName: context.workspaceName,
             }),
