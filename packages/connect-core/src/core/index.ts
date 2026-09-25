@@ -116,8 +116,7 @@ const waitForDevice = async (
     if (signal.aborted) throw signal.reason;
     if (!deviceList.isConnected() && !deviceList.pendingConnection()) {
         // Transport is missing; try to initialize it once again.
-        const { transports, pendingTransportEvent } = settingsStore.get();
-        deviceList.init({ transports, pendingTransportEvent });
+        deviceList.init({ transports: settingsStore.get().transports });
     }
     await scheduleAction(() => Promise.resolve(deviceList.pendingConnection()), { signal });
     assertDeviceListConnected(deviceList);
@@ -1061,7 +1060,7 @@ export class Core extends EventEmitter {
         this.coreLogger = this.createLogger('Core');
 
         // do not send any event until Core is fully loaded
-        // DeviceList emits TRANSPORT and DEVICE events if pendingTransportEvent is set
+        // DeviceList emits TRANSPORT and DEVICE events during its init
         const throttlePromise = createDeferred();
         throttlePromise.promise.catch(() => {});
         const onCoreEventThrottled = (message: CoreEventMessage) =>
@@ -1096,10 +1095,10 @@ export class Core extends EventEmitter {
             throw error;
         }
 
-        const { transports, pendingTransportEvent, transportReconnect } = settingsStore.get();
+        const { transports, transportReconnect } = settingsStore.get();
 
         try {
-            this.deviceList.init({ transports, pendingTransportEvent, transportReconnect });
+            this.deviceList.init({ transports, transportReconnect });
         } catch (error) {
             this.sendCoreMessage(createTransportMessage(TRANSPORT.ERROR, { error }));
             throttlePromise.reject(error);
@@ -1118,10 +1117,10 @@ export class Core extends EventEmitter {
 }
 
 const resetTransports = async ({ deviceList, sendCoreMessage }: CoreContext) => {
-    const { transports, pendingTransportEvent, transportReconnect } = settingsStore.get();
+    const { transports, transportReconnect } = settingsStore.get();
 
     try {
-        await deviceList.init({ transports, pendingTransportEvent, transportReconnect });
+        await deviceList.init({ transports, transportReconnect });
     } catch (error) {
         // do nothing
         sendCoreMessage(createTransportMessage(TRANSPORT.ERROR, { error }));

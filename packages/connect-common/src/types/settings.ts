@@ -66,6 +66,7 @@ export interface ConnectSettings {
     createLogger?: CreateLogger;
     transportReconnect?: boolean;
     transports?: ConnectSettingsTransport[];
+    /** @deprecated No effect. TRANSPORT.START waits for the initial device handshake (at most 10 s). */
     pendingTransportEvent?: boolean;
     // URL for binary files such as firmware, may be local or remote
     binFilesBaseUrl?: string;
