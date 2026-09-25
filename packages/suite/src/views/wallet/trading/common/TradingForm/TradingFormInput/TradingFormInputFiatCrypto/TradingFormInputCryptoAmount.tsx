@@ -7,6 +7,7 @@ import { useTranslation } from '@suite/intl';
 import { selectLanguage } from '@suite/settings';
 import { useFormatters } from '@suite-common/formatters';
 import {
+    TRADING_FORM_AMOUNT_INPUT_SOURCE,
     TRADING_FORM_AMOUNT_IN_CRYPTO,
     TRADING_FORM_OUTPUT_AMOUNT,
     TRADING_FORM_OUTPUT_MAX,
@@ -149,6 +150,8 @@ const TradingFormInputCryptoAmountContent = ({
     );
 
     const handleChange = useCallback(() => {
+        setValue(TRADING_FORM_AMOUNT_INPUT_SOURCE, 'crypto');
+
         if (setFractionButton) {
             setValue(TRADING_FORM_OUTPUT_MAX, undefined, { shouldDirty: true });
             setFractionButton(undefined);

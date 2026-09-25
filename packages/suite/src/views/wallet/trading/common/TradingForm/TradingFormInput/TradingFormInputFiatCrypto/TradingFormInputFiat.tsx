@@ -6,6 +6,7 @@ import { useTheme } from 'styled-components';
 import { useTranslation } from '@suite/intl';
 import { selectLanguage } from '@suite/settings';
 import {
+    TRADING_FORM_AMOUNT_INPUT_SOURCE,
     TRADING_FORM_AMOUNT_IN_CRYPTO,
     TRADING_FORM_FIAT_CURRENCY_SELECT,
     TRADING_FORM_OUTPUT_CURRENCY,
@@ -97,6 +98,8 @@ const TradingFormInputFiatContent = ({
     );
 
     const handleChange = useCallback(() => {
+        setValue(TRADING_FORM_AMOUNT_INPUT_SOURCE, 'fiat');
+
         setFractionButton?.(undefined);
 
         if (getValues(TRADING_FORM_AMOUNT_IN_CRYPTO)) {

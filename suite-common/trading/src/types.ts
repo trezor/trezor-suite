@@ -46,6 +46,7 @@ export type TradingSellType = 'sell';
 export type TradingExchangeType = 'exchange';
 export type TradingType = TradingBuyType | TradingSellType | TradingExchangeType;
 export type TradingTypeWithConcierge = TradingType | 'concierge';
+export type TradingAmountInputSource = 'crypto' | 'fiat' | 'base-currency' | 'fraction';
 
 export type SelectedTradingAsset = {
     symbol: NetworkSymbol;
@@ -193,6 +194,7 @@ export type TradingBuyFormProps = {
     [constants.TRADING_FORM_PAYMENT_METHOD_SELECT]?: TradingPaymentMethodListProps;
     [constants.TRADING_FORM_PROVIDER_SELECT]?: string;
     [constants.TRADING_FORM_AMOUNT_IN_CRYPTO]: boolean;
+    [constants.TRADING_FORM_AMOUNT_INPUT_SOURCE]?: TradingAmountInputSource;
     [constants.TRADING_BUY_RECEIVE_ADDRESS]?: string;
 };
 
@@ -251,6 +253,7 @@ export interface TradingExchangeFormProps extends FormState {
     [constants.TRADING_FORM_RECEIVE_CRYPTO_CURRENCY_SELECT]: TradingAssetOption | null;
     [constants.TRADING_FORM_SEND_CRYPTO_CURRENCY_SELECT]: TradingAssetSellOption | undefined;
     [constants.TRADING_FORM_AMOUNT_IN_CRYPTO]: boolean;
+    [constants.TRADING_FORM_AMOUNT_INPUT_SOURCE]?: TradingAmountInputSource;
     [constants.TRADING_EXCHANGE_RATE]: TradingExchangeRateType;
     [constants.TRADING_EXCHANGE_FORM]: TradingExchangeFormType;
     [constants.TRADING_EXCHANGE_COMPARATOR_KYC_FILTER]: TradingExchangeKycFilter;
@@ -301,6 +304,7 @@ export interface TradingSellFormProps extends FormState {
     [constants.TRADING_FORM_COUNTRY_SELECT]: TradingCountryOption;
     [constants.TRADING_FORM_COUNTRY_SUBDIVISION_SELECT]?: TradingCountrySubdivisionOption;
     [constants.TRADING_FORM_AMOUNT_IN_CRYPTO]: boolean;
+    [constants.TRADING_FORM_AMOUNT_INPUT_SOURCE]?: TradingAmountInputSource;
     [constants.TRADING_FORM_PROVIDER_SELECT]?: string;
 }
 

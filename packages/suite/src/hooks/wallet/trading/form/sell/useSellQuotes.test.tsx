@@ -3,6 +3,7 @@ import { useForm, useWatch } from 'react-hook-form';
 import { act, waitFor } from '@testing-library/react';
 import { type CryptoId, type SellFiatTrade } from 'invity-api';
 
+import { events } from '@suite/analytics';
 import { mockDesktopAnalytics } from '@suite/analytics/mocks';
 import { createTestCompositionRoot, renderHookWithStoreProvider } from '@suite-common/test-utils';
 import {
@@ -133,7 +134,8 @@ const renderSellQuotes = (
     const initialProps: { currentNetwork: Network | undefined } = {
         currentNetwork: getNetwork(btcSymbol),
     };
-    const services = { analytics: mockDesktopAnalytics() };
+    const report = jest.fn();
+    const services = { analytics: mockDesktopAnalytics(report) };
 
     const root = createTestCompositionRoot({
         extra: { services },
@@ -147,7 +149,7 @@ const renderSellQuotes = (
         },
     });
 
-    return renderHookWithStoreProvider(
+    const rendered = renderHookWithStoreProvider(
         ({ currentNetwork }) => {
             const methods = useForm<TradingSellFormProps>({
                 mode: 'onChange',
@@ -175,6 +177,8 @@ const renderSellQuotes = (
         },
         { root, initialProps },
     );
+
+    return { ...rendered, report };
 };
 
 describe('useSellQuotes', () => {
@@ -305,6 +309,29 @@ describe('useSellQuotes', () => {
 
         expect(mockAbort).toHaveBeenCalledTimes(1);
         expect(mockHandleRequest).toHaveBeenCalledTimes(1);
+    });
+
+    it('reports the input the amount was entered in with the received quotes', async () => {
+        const { result, report } = renderSellQuotes(VALID_DEFAULTS);
+
+        await waitFor(() => expect(mockHandleRequest).toHaveBeenCalledTimes(1), { timeout: 1500 });
+        expect(report).toHaveBeenCalledWith({
+            type: events.tradeReceivedQuotesEvent.name,
+            payload: { type: 'sell', count: QUOTES.length, input: undefined },
+        });
+
+        act(() => {
+            result.current.setValue('amountInputSource', 'base-currency');
+            result.current.setValue('outputs.0.amount', '0.003');
+        });
+
+        await waitFor(() => expect(mockHandleRequest).toHaveBeenCalledTimes(2), { timeout: 1500 });
+        await waitFor(() =>
+            expect(report).toHaveBeenLastCalledWith({
+                type: events.tradeReceivedQuotesEvent.name,
+                payload: { type: 'sell', count: QUOTES.length, input: 'base-currency' },
+            }),
+        );
     });
 
     it('clears quotes eagerly when the network becomes undefined', async () => {
