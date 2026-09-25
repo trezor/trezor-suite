@@ -1,7 +1,11 @@
 import { type UnknownAction, combineReducers } from '@reduxjs/toolkit';
 
 import { prepareDebugReducer } from '@suite/debug';
-import { metadataReducer, selectLabelingDataForAccount } from '@suite/metadata';
+import {
+    createMetadataProviderCache,
+    metadataReducer,
+    selectLabelingDataForAccount,
+} from '@suite/metadata';
 import { prepareSuiteSettingsReducer } from '@suite/settings';
 import { mockActionType, mockReducer } from '@suite-common/redux-utils/mocks';
 import { mockMigrateSuiteSyncLabelsForRbfTransaction } from '@suite-common/suite-rbf-labels-migrations-types/mocks';
@@ -52,6 +56,7 @@ const initStore = ({
     // State != suite AppState, therefore <any>
     const extra: MoveLabelsForRbfThunkDeps = {
         services: {
+            metadataProviderCache: createMetadataProviderCache(),
             migrateSuiteSyncLabelsForRbfTransaction: mockMigrateSuiteSyncLabelsForRbfTransaction(),
         },
     };

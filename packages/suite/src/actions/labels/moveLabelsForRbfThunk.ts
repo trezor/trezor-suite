@@ -1,6 +1,7 @@
 import { type ThunkDispatch, type UnknownAction } from '@reduxjs/toolkit';
 
 import {
+    type MoveLabelsForRbfOldMetadataThunkDeps,
     type MoveLabelsForRbfOldMetadataThunkState,
     moveLabelsForRbfOldMetadataThunk,
 } from '@suite/metadata';
@@ -32,7 +33,8 @@ export type MoveLabelsForRbfThunkState = DeviceRootState &
     MoveLabelsForRbfOldMetadataThunkState &
     WithSuiteSyncState;
 
-export type MoveLabelsForRbfThunkDeps = WithServices<MigrateSuiteSyncLabelsForRbfTransactionDep>;
+export type MoveLabelsForRbfThunkDeps = WithServices<MigrateSuiteSyncLabelsForRbfTransactionDep> &
+    MoveLabelsForRbfOldMetadataThunkDeps;
 
 type MoveLabelsForRbfThunkDispatch = ThunkDispatch<
     MoveLabelsForRbfThunkState,

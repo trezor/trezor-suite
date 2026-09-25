@@ -163,7 +163,8 @@ type ApplySendFormMetadataLabelsThunkState = DeviceRootState &
     SendRootState &
     WithSuiteSyncState;
 
-type ApplySendFormMetadataLabelsThunkDeps = WithServices<SuiteSyncDep>;
+type ApplySendFormMetadataLabelsThunkDeps = WithServices<SuiteSyncDep> &
+    metadataLabelingActions.AddAccountMetadataThunkDeps;
 
 const applySendFormMetadataLabelsThunk = createThunk<
     void,

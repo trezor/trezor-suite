@@ -6,10 +6,11 @@ import {
     type PasswordEntry,
     ProviderErrorAction,
 } from '@suite-common/metadata-types';
-import { type Dispatch } from '@suite-common/redux-utils';
+import { type Dispatch, type WithServices } from '@suite-common/redux-utils';
 import TrezorConnect from '@trezor/connect';
 import { cloneObject } from '@trezor/utils';
 
+import { type MetadataProviderCacheDep } from './createMetadataProviderCache';
 import * as METADATA from './metadataConstants';
 import * as metadataDataThunks from './metadataDataThunks';
 import * as METADATA_PASSWORDS from './metadataPasswordsConstants';
@@ -85,53 +86,17 @@ const selectIsSuiteOnline = (state: MetadataRootState) => state.suite.online;
 
 type InitThunkState = MetadataRootState;
 
-export const initThunk = () => async (dispatch: Dispatch, getState: () => InitThunkState) => {
-    let device = selectSelectedDevice(getState());
+type InitThunkDeps = WithServices<MetadataProviderCacheDep>;
 
-    if (!device?.state?.staticSessionId) {
-        console.error('no device state!');
+export const initThunk =
+    () => async (dispatch: Dispatch, getState: () => InitThunkState, extra: InitThunkDeps) => {
+        let device = selectSelectedDevice(getState());
 
-        return Promise.resolve();
-    }
+        if (!device?.state?.staticSessionId) {
+            console.error('no device state!');
 
-    dispatch({
-        type: METADATA.SET_DEVICE_METADATA_PASSWORDS,
-        payload: {
-            deviceState: device.state.staticSessionId,
-            metadata: {
-                ...device.passwords,
-                [1]: {
-                    fileName: '',
-                    aesKey: '',
-                    key: '',
-                },
-            },
-        },
-    });
-
-    try {
-        const res = await TrezorConnect.cipherKeyValue({
-            device: { path: device?.path, useEmptyPassphrase: true },
-            path: METADATA_PASSWORDS.PATH,
-            key: METADATA_PASSWORDS.DEFAULT_KEYPHRASE,
-            value: METADATA_PASSWORDS.DEFAULT_NONCE,
-            encrypt: true,
-            askOnEncrypt: true,
-            askOnDecrypt: true,
-        });
-        if (!res.success) {
-            throw new Error(res.error.message);
+            return Promise.resolve();
         }
-        const encryptionKey = res.payload.value.substring(
-            res.payload.value.length / 2,
-            res.payload.value.length,
-        );
-
-        const fileKey = res.payload.value.substring(0, res.payload.value.length / 2);
-        const fname = `${crypto
-            .createHmac('sha256', fileKey)
-            .update(METADATA_PASSWORDS.FILENAME_MESS)
-            .digest('hex')}.pswd`;
 
         dispatch({
             type: METADATA.SET_DEVICE_METADATA_PASSWORDS,
@@ -140,65 +105,113 @@ export const initThunk = () => async (dispatch: Dispatch, getState: () => InitTh
                 metadata: {
                     ...device.passwords,
                     [1]: {
-                        fileName: fname,
-                        aesKey: encryptionKey,
-                        // todo: this is most likely not needed. only for sub-account keys derivations which
-                        // is not present in passwords
+                        fileName: '',
+                        aesKey: '',
                         key: '',
                     },
                 },
             },
         });
-        const selectedProvider = selectSelectedProviderForPasswords(getState());
-        if (!selectedProvider) {
+
+        try {
+            const res = await TrezorConnect.cipherKeyValue({
+                device: { path: device?.path, useEmptyPassphrase: true },
+                path: METADATA_PASSWORDS.PATH,
+                key: METADATA_PASSWORDS.DEFAULT_KEYPHRASE,
+                value: METADATA_PASSWORDS.DEFAULT_NONCE,
+                encrypt: true,
+                askOnEncrypt: true,
+                askOnDecrypt: true,
+            });
+            if (!res.success) {
+                throw new Error(res.error.message);
+            }
+            const encryptionKey = res.payload.value.substring(
+                res.payload.value.length / 2,
+                res.payload.value.length,
+            );
+
+            const fileKey = res.payload.value.substring(0, res.payload.value.length / 2);
+            const fname = `${crypto
+                .createHmac('sha256', fileKey)
+                .update(METADATA_PASSWORDS.FILENAME_MESS)
+                .digest('hex')}.pswd`;
+
+            dispatch({
+                type: METADATA.SET_DEVICE_METADATA_PASSWORDS,
+                payload: {
+                    deviceState: device.state.staticSessionId,
+                    metadata: {
+                        ...device.passwords,
+                        [1]: {
+                            fileName: fname,
+                            aesKey: encryptionKey,
+                            // todo: this is most likely not needed. only for sub-account keys derivations which
+                            // is not present in passwords
+                            key: '',
+                        },
+                    },
+                },
+            });
+            const selectedProvider = selectSelectedProviderForPasswords(getState());
+            if (!selectedProvider) {
+                await dispatch(
+                    metadataProviderActions.connectProviderThunk({
+                        type: 'dropbox',
+                        dataType: 'passwords',
+                        clientId: METADATA_PROVIDER.DROPBOX_PASSWORDS_CLIENT_ID,
+                    }),
+                );
+            }
+
             await dispatch(
-                metadataProviderActions.connectProviderThunk({
-                    type: 'dropbox',
-                    dataType: 'passwords',
-                    clientId: METADATA_PROVIDER.DROPBOX_PASSWORDS_CLIENT_ID,
+                fetchPasswordsThunk({
+                    fileName: fname,
+                    aesKey: encryptionKey,
                 }),
             );
+        } catch (err) {
+            console.error('cipherKeyValue error', err);
         }
 
-        await dispatch(
-            fetchPasswordsThunk({
-                fileName: fname,
-                aesKey: encryptionKey,
-            }),
+        device = selectSelectedDevice(getState());
+        const selectedProvider = selectSelectedProviderForPasswords(getState());
+        if (!selectedProvider || !device?.state?.staticSessionId) {
+            // ts, should not happen
+            return;
+        }
+        const fetchIntervalTrackingId: FetchIntervalTrackingId = metadataUtils.getFetchTrackingId(
+            'passwords',
+            selectedProvider.clientId,
+            device.state.staticSessionId,
         );
-    } catch (err) {
-        console.error('cipherKeyValue error', err);
-    }
 
-    device = selectSelectedDevice(getState());
-    const selectedProvider = selectSelectedProviderForPasswords(getState());
-    if (!selectedProvider || !device?.state?.staticSessionId) {
-        // ts, should not happen
-        return;
-    }
-    const fetchIntervalTrackingId: FetchIntervalTrackingId = metadataUtils.getFetchTrackingId(
-        'passwords',
-        selectedProvider.clientId,
-        device.state.staticSessionId,
-    );
+        if (
+            device?.state &&
+            !extra.services.metadataProviderCache.fetchIntervals[fetchIntervalTrackingId]
+        ) {
+            extra.services.metadataProviderCache.fetchIntervals[fetchIntervalTrackingId] =
+                setInterval(() => {
+                    device = selectSelectedDevice(getState());
+                    const { fileName, aesKey } = device?.passwords?.[1] || {};
 
-    if (device?.state && !metadataProviderActions.fetchIntervals[fetchIntervalTrackingId]) {
-        metadataProviderActions.fetchIntervals[fetchIntervalTrackingId] = setInterval(() => {
-            device = selectSelectedDevice(getState());
-            const { fileName, aesKey } = device?.passwords?.[1] || {};
-
-            if (!selectIsSuiteOnline(getState()) || !device?.state || !fileName || !aesKey) {
-                return;
-            }
-            dispatch(
-                fetchPasswordsThunk({
-                    fileName,
-                    aesKey,
-                }),
-            );
-        }, METADATA_PASSWORDS.FETCH_INTERVAL);
-    }
-};
+                    if (
+                        !selectIsSuiteOnline(getState()) ||
+                        !device?.state ||
+                        !fileName ||
+                        !aesKey
+                    ) {
+                        return;
+                    }
+                    dispatch(
+                        fetchPasswordsThunk({
+                            fileName,
+                            aesKey,
+                        }),
+                    );
+                }, METADATA_PASSWORDS.FETCH_INTERVAL);
+        }
+    };
 
 type AddPasswordMetadataThunkState = MetadataRootState;
 

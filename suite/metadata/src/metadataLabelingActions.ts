@@ -21,6 +21,7 @@ import TrezorConnect, { type StaticSessionId } from '@trezor/connect';
 import { parseStaticSessionId } from '@trezor/device-utils';
 import { cloneObject, throwError } from '@trezor/utils';
 
+import { type MetadataProviderCacheDep } from './createMetadataProviderCache';
 import * as metadataActions from './metadataActions';
 import * as METADATA from './metadataConstants';
 import * as metadataDataThunks from './metadataDataThunks';
@@ -174,9 +175,15 @@ const syncMetadataKeysThunk =
 
 type FetchAndSaveMetadataThunkState = MetadataRootState;
 
+type FetchAndSaveMetadataThunkDeps = WithServices<MetadataProviderCacheDep>;
+
 export const fetchAndSaveMetadataThunk =
     (deviceStateArg?: StaticSessionId) =>
-    async (dispatch: Dispatch, getState: () => FetchAndSaveMetadataThunkState) => {
+    async (
+        dispatch: Dispatch,
+        getState: () => FetchAndSaveMetadataThunkState,
+        extra: FetchAndSaveMetadataThunkDeps,
+    ) => {
         const provider = selectSelectedProviderForLabels(getState());
         if (!provider) return;
 
@@ -236,9 +243,15 @@ export const fetchAndSaveMetadataThunk =
 
             // device is disconnected or something is wrong with it
             if (!device?.metadata?.[METADATA_LABELING.ENCRYPTION_VERSION]) {
-                if (metadataProviderActions.fetchIntervals[fetchIntervalTrackingId]) {
-                    clearInterval(metadataProviderActions.fetchIntervals[fetchIntervalTrackingId]);
-                    delete metadataProviderActions.fetchIntervals[fetchIntervalTrackingId];
+                if (extra.services.metadataProviderCache.fetchIntervals[fetchIntervalTrackingId]) {
+                    clearInterval(
+                        extra.services.metadataProviderCache.fetchIntervals[
+                            fetchIntervalTrackingId
+                        ],
+                    );
+                    delete extra.services.metadataProviderCache.fetchIntervals[
+                        fetchIntervalTrackingId
+                    ];
                 }
 
                 return;
@@ -261,7 +274,10 @@ export const fetchAndSaveMetadataThunk =
             // it expires, we want them to silently disconnect provider, keep metadata in place.
             // So that users will not notice that token expired until they will try to add or edit
             // already existing label
-            if (device?.state && metadataProviderActions.fetchIntervals[fetchIntervalTrackingId]) {
+            if (
+                device?.state &&
+                extra.services.metadataProviderCache.fetchIntervals[fetchIntervalTrackingId]
+            ) {
                 return dispatch(
                     metadataProviderActions.disconnectProviderThunk({
                         removeMetadata: false,
@@ -303,9 +319,15 @@ export const fetchAndSaveMetadataForAllDevicesThunk =
 
 type AddDeviceMetadataThunkState = MetadataRootState;
 
+export type AddDeviceMetadataThunkDeps = WithServices<MetadataProviderCacheDep>;
+
 export const addDeviceMetadataThunk =
     (payload: Extract<MetadataAddPayload, { type: 'walletLabel' }>) =>
-    (dispatch: Dispatch, getState: () => AddDeviceMetadataThunkState) => {
+    (
+        dispatch: Dispatch,
+        getState: () => AddDeviceMetadataThunkState,
+        _extra: AddDeviceMetadataThunkDeps,
+    ) => {
         const devices = selectDevices(getState());
         const device = devices.find(d => d.state?.staticSessionId === payload.entityKey);
         const provider = selectSelectedProviderForLabels(getState());
@@ -372,9 +394,15 @@ type AddAccountMetadataThunkState = MetadataRootState;
  * @param save - should metadata be saved into persistent storage? this is useful when you are updating multiple records
  *               in a single account you may want to set "save" param to true only for the last call
  */
+export type AddAccountMetadataThunkDeps = WithServices<MetadataProviderCacheDep>;
+
 export const addAccountMetadataThunk =
     (payload: Exclude<MetadataAddPayload, { type: 'walletLabel' }>) =>
-    (dispatch: Dispatch, getState: () => AddAccountMetadataThunkState) => {
+    (
+        dispatch: Dispatch,
+        getState: () => AddAccountMetadataThunkState,
+        _extra: AddAccountMetadataThunkDeps,
+    ) => {
         const account = selectAccounts(getState()).find(({ key }) => key === payload.entityKey);
         const provider = selectSelectedProviderForLabels(getState());
 
@@ -536,9 +564,15 @@ export const setDeviceMetadataKeyThunk =
 
 type AddMetadataThunkState = MetadataRootState;
 
+export type AddMetadataThunkDeps = AddDeviceMetadataThunkDeps & AddAccountMetadataThunkDeps;
+
 export const addMetadataThunk =
     (payload: MetadataAddPayload) =>
-    async (dispatch: Dispatch, getState: () => AddMetadataThunkState): Promise<boolean> => {
+    async (
+        dispatch: Dispatch,
+        getState: () => AddMetadataThunkState,
+        _extra: AddMetadataThunkDeps,
+    ): Promise<boolean> => {
         const result = await dispatch(
             payload.type === 'walletLabel'
                 ? addDeviceMetadataThunk(payload)
@@ -583,7 +617,7 @@ export const addMetadataThunk =
         return result.success;
     };
 
-export type InitMetadataDeps = WithServices<DesktopAnalyticsDep>;
+export type InitMetadataDeps = WithServices<DesktopAnalyticsDep & MetadataProviderCacheDep>;
 
 const selectIsSuiteOnline = (state: MetadataRootState) => state.suite.online;
 
@@ -714,16 +748,20 @@ export const initThunk =
         );
 
         // 7. if interval for watching provider is not set, create it
-        if (device.state && !metadataProviderActions.fetchIntervals[fetchIntervalTrackingId]) {
+        if (
+            device.state &&
+            !extra.services.metadataProviderCache.fetchIntervals[fetchIntervalTrackingId]
+        ) {
             // todo: possible race condition that has been around since always
             // user is editing label and at that very moment update arrives. updates to specific entities should be probably discarded in such case?
-            metadataProviderActions.fetchIntervals[fetchIntervalTrackingId] = setInterval(() => {
-                const device = selectSelectedDevice(getState());
-                if (!selectIsSuiteOnline(getState()) || !device?.state?.staticSessionId) {
-                    return;
-                }
-                dispatch(fetchAndSaveMetadataThunk(device.state.staticSessionId));
-            }, METADATA_LABELING.FETCH_INTERVAL);
+            extra.services.metadataProviderCache.fetchIntervals[fetchIntervalTrackingId] =
+                setInterval(() => {
+                    const device = selectSelectedDevice(getState());
+                    if (!selectIsSuiteOnline(getState()) || !device?.state?.staticSessionId) {
+                        return;
+                    }
+                    dispatch(fetchAndSaveMetadataThunk(device.state.staticSessionId));
+                }, METADATA_LABELING.FETCH_INTERVAL);
         }
 
         return true;

@@ -11,6 +11,7 @@ import TrezorConnect from '@trezor/connect';
 import { asWalletDescriptor } from '@trezor/device-utils';
 
 import * as fixtures from './__fixtures__/metadataActions';
+import { createMetadataProviderCache } from './createMetadataProviderCache';
 import * as metadataActions from './metadataActions';
 import * as metadataLabelingActions from './metadataLabelingActions';
 import * as metadataProviderActions from './metadataProviderThunks';
@@ -36,7 +37,10 @@ const accountsReducer = prepareAccountsReducer({
     reducers: { storageLoadAccounts: mockReducer() },
 });
 const extra: metadataLabelingActions.InitMetadataDeps = {
-    services: { analytics: mockDesktopAnalytics() },
+    services: {
+        analytics: mockDesktopAnalytics(),
+        metadataProviderCache: createMetadataProviderCache(),
+    },
 };
 
 jest.spyOn(TrezorConnect, 'cipherKeyValue').mockImplementation(() =>
