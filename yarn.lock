@@ -12738,6 +12738,7 @@ __metadata:
     "@suite-native/intl": "workspace:*"
     "@suite-native/labeling": "workspace:*"
     "@suite-native/navigation": "workspace:*"
+    "@suite-native/test-utils": "workspace:*"
     "@suite-native/wallet": "workspace:*"
     "@trezor/device-utils": "workspace:*"
     "@trezor/styles-native": "workspace:*"
