@@ -17,13 +17,14 @@ import {
 } from '@suite-common/message-system';
 import { createThunk } from '@suite-common/redux-utils';
 import {
-    type ConnectInitHooksDeps,
+    type ConnectInitDeviceEventHooksDep,
     type GetAllowPrereleaseDep,
     type GetBinFilesBaseUrlDep,
     type LockDeviceDep,
 } from '@suite-common/suite-types';
 import { type GetThpSettingsDep, type ThpHostNameDep } from '@suite-common/thp';
 import {
+    type DefaultTrezorUIEventHandlerThunkDeps,
     type WalletSettingsRootState,
     defaultTrezorUIEventHandlerThunk,
     deviceConnectThunk,
@@ -64,7 +65,7 @@ export type ConnectInitThunkState = DeviceRootState &
 export type ConnectInitThunkDeps = {
     services: {
         analytics: Pick<AnalyticsDep['analytics'], 'report'>;
-    } & ConnectInitHooksDeps &
+    } & ConnectInitDeviceEventHooksDep &
         ConnectInitSettingsDep &
         CreateLoggerDep &
         GetAllowPrereleaseDep &
@@ -74,7 +75,7 @@ export type ConnectInitThunkDeps = {
         LockDeviceDep &
         ThpHostNameDep &
         TransportsDep;
-};
+} & DefaultTrezorUIEventHandlerThunkDeps;
 
 export type ConnectInitThunkDispatch = ThunkDispatch<
     ConnectInitThunkState,
@@ -90,7 +91,7 @@ export const connectInitThunk = createThunk<
     const {
         services: {
             connectInitSettings,
-            connectInitHooks,
+            connectInitDeviceEventHooks,
             analytics,
             createLogger,
             thpHostName,
@@ -111,7 +112,7 @@ export const connectInitThunk = createThunk<
             const connectedDevices = selectDevices(getState());
             dispatch(deviceConnectThunk({ type: eventData.type, device: eventData.payload }));
 
-            connectInitHooks.deviceEvent[eventData.type]?.(eventData.payload, connectedDevices);
+            connectInitDeviceEventHooks[eventData.type]?.(eventData.payload, connectedDevices);
         } else {
             // dispatch event as action
             dispatch({ type: eventData.type, payload: eventData.payload });

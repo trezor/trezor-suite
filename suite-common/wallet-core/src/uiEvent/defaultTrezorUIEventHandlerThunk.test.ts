@@ -31,10 +31,10 @@ const firmwareDownloadedEvent = createUiEventMessage(UI_EVENTS.FIRMWARE_DOWNLOAD
 
 const setupStore = (uiEventHooks: Record<string, () => void>) =>
     createTestStore({
-        extra: { services: { connectInitHooks: { deviceEvent: {}, uiEvent: uiEventHooks } } },
+        extra: { services: { connectInitUiEventHooks: uiEventHooks } },
     });
 
-describe('defaultTrezorUIEventHandlerThunk - connectInitHooks.uiEvent', () => {
+describe('defaultTrezorUIEventHandlerThunk - connectInitUiEventHooks', () => {
     it('calls the hook registered for the dispatched event type and still dispatches the event', async () => {
         const requestWordHook = jest.fn();
         const store = setupStore({ [UI_REQUESTS.REQUEST_WORD]: requestWordHook });

@@ -27,8 +27,9 @@ import { onSuiteInit, onSuiteReady } from '@suite/suite-lifecycle';
 import { prepareAnalyticsReducer } from '@suite-common/analytics-redux';
 import { connectInitThunk } from '@suite-common/connect-init';
 import {
-    mockConnectInitHooks,
+    mockConnectInitDeviceEventHooks,
     mockConnectInitSettings,
+    mockConnectInitUiEventHooks,
     mockCreateTransports,
     mockGetDebugSettings,
     mockGetThpSettings,
@@ -361,8 +362,9 @@ const initStore = (state: State) => {
             services: {
                 ...createDesktopApiDep(),
                 analytics: mockDesktopAnalytics(),
-                connectInitHooks: mockConnectInitHooks(),
+                connectInitDeviceEventHooks: mockConnectInitDeviceEventHooks(),
                 connectInitSettings: mockConnectInitSettings(),
+                connectInitUiEventHooks: mockConnectInitUiEventHooks(),
                 createLogger: noopCreateLogger,
                 createTransports: mockCreateTransports(),
                 getAllowPrerelease: mockGetAllowPrerelease(),

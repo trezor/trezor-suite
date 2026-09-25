@@ -23,13 +23,12 @@ export type ConnectInitDeviceEventHooks = Partial<
 
 export type ConnectInitUiEventHooks = Partial<Record<UiRequestType | PopupEventType, () => void>>;
 
-export type ConnectInitHooks = {
-    deviceEvent: ConnectInitDeviceEventHooks;
-    uiEvent: ConnectInitUiEventHooks;
+export type ConnectInitDeviceEventHooksDep = {
+    connectInitDeviceEventHooks: ConnectInitDeviceEventHooks;
 };
 
-export type ConnectInitHooksDeps = {
-    connectInitHooks: ConnectInitHooks;
+export type ConnectInitUiEventHooksDep = {
+    connectInitUiEventHooks: ConnectInitUiEventHooks;
 };
 
 export type LockDevice = (isLocked: boolean) => void;
