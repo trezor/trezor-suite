@@ -40,7 +40,7 @@ import {
     setLogWriter,
 } from '@trezor/connect-common/src/utils/debug';
 import { TRANSPORT, TRANSPORT_ERROR } from '@trezor/transport-common';
-import { type Logger, createDeferred, createLazy, getSynchronize, throwError } from '@trezor/utils';
+import { type Logger, createDeferred, createLazy, throwError } from '@trezor/utils';
 
 import type { AbstractMethod } from './AbstractMethod';
 import { getMethod } from './method';
@@ -207,29 +207,18 @@ const onCall = async (context: CoreContext, message: CoreCallMessage) => {
         );
     }
 
-    const {
-        uiPromises,
-        callMethods,
-        methodSynchronize,
-        resolveWaitForFirstMethod,
-        sendCoreMessage,
-        logger,
-    } = context;
+    const { uiPromises, callMethods, sendCoreMessage, logger } = context;
     const responseID = message.id;
 
     // find method and parse incoming params
     let method: AbstractMethod<any>;
     try {
-        method = await methodSynchronize(async () => {
-            logger.debug('loading method...');
-            const method2 = await getMethod(message);
-            logger.debug('method selected', method2.name);
+        logger.debug('loading method...');
+        method = await getMethod(message);
+        logger.debug('method selected', method.name);
 
-            await method2.initAsync?.();
+        await method.initAsync?.();
 
-            return method2;
-        });
-        resolveWaitForFirstMethod();
         callMethods.push(method);
     } catch (error) {
         sendCoreMessage(createResponseMessage(responseID, false, { error }));
@@ -676,8 +665,7 @@ const registerDeviceEvents =
 // promises remain untouched. When `callId` is undefined, all in-flight work
 // is aborted (legacy behavior).
 const abortRunningCall = (context: CoreContext, error: TrezorError, callId?: string) => {
-    const { uiPromises, deviceList, callMethods, resetWaitForFirstMethod, sendCoreMessage } =
-        context;
+    const { uiPromises, deviceList, callMethods, sendCoreMessage } = context;
 
     if (callId) {
         const method = callMethods.find(m => m.callId === callId);
@@ -711,7 +699,6 @@ const abortRunningCall = (context: CoreContext, error: TrezorError, callId?: str
                         sendCoreMessage(createResponseMessage(m.responseID, false, { error }));
                     });
                     callMethods.splice(0, callMethods.length);
-                    resetWaitForFirstMethod();
                 }
             }
         });
@@ -779,13 +766,10 @@ const initDeviceList = (context: CoreContext) => {
 export class Core extends EventEmitter {
     private abortController = new AbortController();
     private callMethods: AbstractMethod<any>[] = []; // generic type is irrelevant. only common functions are called at this level
-    private methodSynchronize = getSynchronize();
     private uiPromises = createUiPromiseManager();
 
     private createLogger: CreateLogger = noopCreateLogger;
     private coreLogger: Logger = noopLogger;
-
-    private waitForFirstMethod = createDeferred();
 
     private _deviceList?: IDeviceList;
     private get deviceList() {
@@ -797,9 +781,6 @@ export class Core extends EventEmitter {
             const index = this.callMethods.findIndex(call => call?.responseID === message.id);
             if (index >= 0) {
                 this.callMethods.splice(index, 1);
-                if (this.callMethods.length === 0) {
-                    this.waitForFirstMethod = createDeferred();
-                }
             }
         }
         this.emit(CORE_EVENT, message);
@@ -812,14 +793,7 @@ export class Core extends EventEmitter {
             deviceList: this.deviceList,
             logger: this.coreLogger,
             callMethods: this.callMethods,
-            methodSynchronize: this.methodSynchronize,
             sendCoreMessage: this.sendCoreMessage.bind(this),
-            resetWaitForFirstMethod: () => {
-                this.waitForFirstMethod = createDeferred();
-            },
-            resolveWaitForFirstMethod: () => {
-                this.waitForFirstMethod.resolve();
-            },
         };
     }
 
@@ -948,21 +922,9 @@ export class Core extends EventEmitter {
         this.deviceList.dispose();
     }
 
-    async getCurrentMethod() {
-        await this.waitForFirstMethod.promise;
-
-        return await this.methodSynchronize(() => this.callMethods[0]);
-    }
-
     getActiveTransports(): TransportInfo[] | undefined {
         if (this.deviceList.isConnected()) {
             return this.deviceList.getActiveTransports();
-        }
-    }
-
-    enumerate() {
-        if (this.deviceList.isConnected()) {
-            this.deviceList.enumerate();
         }
     }
 
