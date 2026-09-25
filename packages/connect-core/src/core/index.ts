@@ -225,7 +225,24 @@ const onCall = async (context: CoreContext, message: CoreCallMessage) => {
             const method2 = await getMethod(message);
             logger.debug('method selected', method2.name);
 
-            await method2.initAsync?.();
+            // `useDevice` is final once the method is constructed, so the host UI is locked here
+            // rather than after initAsync, which may fetch over the network (e.g. ethereum
+            // definitions) while the host would otherwise still accept a second device call.
+            // Sent without a callId: device locking is process-global, not scoped to one flow.
+            const isDeviceCall = method2.useDevice && !message.payload.__info;
+            if (isDeviceCall) {
+                sendCoreMessage(createUiEventMessage(UI_EVENTS.DEVICE_LOCK, {}));
+            }
+
+            try {
+                await method2.initAsync?.();
+            } catch (error) {
+                // Unlock before the error response so the caller resumes on an unlocked host.
+                if (isDeviceCall) {
+                    sendCoreMessage(createUiEventMessage(UI_EVENTS.DEVICE_UNLOCK, {}));
+                }
+                throw error;
+            }
 
             return method2;
         });
@@ -272,14 +289,10 @@ const onCall = async (context: CoreContext, message: CoreCallMessage) => {
         return Promise.resolve();
     }
 
-    // Reached only when `method.useDevice === true` (see the non-device early return above), so this
-    // is the single point that tells the host a device operation is in progress. The host locks the
-    // device UI on DEVICE_LOCK and unlocks on the paired DEVICE_UNLOCK, replacing a hand-kept method
-    // blocklist. Emitted without a callId (device locking is process-global, not scoped to one flow);
-    // the `finally` guarantees exactly one DEVICE_UNLOCK whether onCallDevice resolves or rejects.
-    // The device is assigned inside onCallDevice (method.setDevice), so DEVICE_LOCK cannot yet name it;
-    // DEVICE_UNLOCK carries the resolved device so the host can act on the exact device the call used.
-    sendCoreMessage(createUiEventMessage(UI_EVENTS.DEVICE_LOCK, {}));
+    // Only device calls (`useDevice`, not `__info`) get here, and those sent DEVICE_LOCK right after
+    // getMethod; the `finally` pairs it with exactly one DEVICE_UNLOCK whether onCallDevice resolves
+    // or rejects. The device is assigned inside onCallDevice (method.setDevice), so DEVICE_UNLOCK is
+    // the event that can carry the device the call used.
     try {
         return await onCallDevice(methodContext, message, method);
     } finally {
