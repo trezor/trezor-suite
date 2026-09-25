@@ -2744,6 +2744,7 @@ export const messages = {
                     'On Cardano you delegate your entire balance, not a set amount. Everything in this account earns rewards automatically, including {symbol} you receive later.',
                 accessibilityDescription:
                     'Nothing gets locked. You can send or spend at any time and your stake adjusts automatically.',
+                learnMoreButton: 'Learn more',
             },
             unstakeButton: 'Unstake',
             stakeButton: 'Stake',
