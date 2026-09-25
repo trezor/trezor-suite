@@ -1,3 +1,9 @@
 import { allowDevDependenciesIn, eslint } from '@trezor/eslint';
 
-export default [...eslint, allowDevDependenciesIn(['**/scripts/**'])];
+export default [
+    {
+        ignores: ['src/definitions/*_pb.js'],
+    },
+    ...eslint,
+    allowDevDependenciesIn(['**/scripts/**']),
+];
