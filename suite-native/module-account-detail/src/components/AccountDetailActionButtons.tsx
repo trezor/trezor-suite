@@ -12,11 +12,13 @@ import { selectHasFirmwareAuthenticityCheckHardFailedForSelectedDevice } from '@
 import { type FeatureFlagsRootState } from '@suite-native/feature-flags';
 import { Translation } from '@suite-native/intl';
 import {
+    type AccountDetailStackParamList,
+    type AccountDetailStackRoutes,
     ReceiveStackRoutes,
     type RootStackParamList,
     RootStackRoutes,
     SendStackRoutes,
-    type StackNavigationProps,
+    type StackToStackCompositeNavigationProps,
 } from '@suite-native/navigation';
 import { type TokensRootState, selectAccountTokenInfo } from '@suite-native/tokens';
 
@@ -30,7 +32,11 @@ type AccountDetailActionButtonsProps = {
     tokenContract?: TokenAddress;
 };
 
-type NavigationProp = StackNavigationProps<RootStackParamList, RootStackRoutes.AccountDetail>;
+type NavigationProp = StackToStackCompositeNavigationProps<
+    AccountDetailStackParamList,
+    AccountDetailStackRoutes.AccountDetail,
+    RootStackParamList
+>;
 
 export const AccountDetailActionButtons = ({
     accountKey,

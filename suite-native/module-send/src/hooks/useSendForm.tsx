@@ -45,6 +45,7 @@ import { useAlert } from '@suite-native/alerts';
 import { useForm } from '@suite-native/forms';
 import { Translation } from '@suite-native/intl';
 import {
+    AccountDetailStackRoutes,
     AuthorizeDeviceStackRoutes,
     type RootStackParamList,
     RootStackRoutes,
@@ -470,10 +471,13 @@ export const useSendForm = (accountKey: AccountKey, tokenContract?: TokenAddress
                     }
 
                     dispatch(sendFormActions.discardTransaction());
-                    navigation.navigate(RootStackRoutes.AccountDetail, {
-                        accountKey,
-                        tokenContract,
-                        closeActionType: 'back',
+                    navigation.navigate(RootStackRoutes.AccountDetailStack, {
+                        screen: AccountDetailStackRoutes.AccountDetail,
+                        params: {
+                            accountKey,
+                            tokenContract,
+                            closeActionType: 'back',
+                        },
                     });
                 }
             });

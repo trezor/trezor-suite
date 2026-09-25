@@ -16,8 +16,8 @@ import { Bip329ManageLabelsCard } from '@suite-native/bip329';
 import { TokenIcon } from '@suite-native/icons';
 import { Translation } from '@suite-native/intl';
 import {
-    type RootStackParamList,
-    type RootStackRoutes,
+    type AccountDetailStackParamList,
+    type AccountDetailStackRoutes,
     Screen,
     ScreenHeader,
     type StackProps,
@@ -56,7 +56,7 @@ const CryptoNameWithIcon = ({ symbol }: { symbol: NetworkSymbol }) => (
 
 export const AccountSettingsScreen = ({
     route,
-}: StackProps<RootStackParamList, RootStackRoutes.AccountSettings>) => {
+}: StackProps<AccountDetailStackParamList, AccountDetailStackRoutes.AccountSettings>) => {
     const { accountKey } = route.params;
 
     const isPortfolioTrackerDevice = useSelector(selectIsPortfolioTrackerDevice);

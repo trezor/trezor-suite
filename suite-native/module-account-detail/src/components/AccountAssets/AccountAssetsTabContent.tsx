@@ -8,10 +8,12 @@ import { type AccountsRootState, selectAccountByKey } from '@suite-common/wallet
 import { type AccountKey } from '@suite-common/wallet-types';
 import { events, injectNativeAnalytics } from '@suite-native/analytics';
 import {
+    type AccountDetailStackParamList,
+    AccountDetailStackRoutes,
     type RootStackParamList,
     RootStackRoutes,
     SendStackRoutes,
-    type StackNavigationProps,
+    type StackToStackCompositeNavigationProps,
 } from '@suite-native/navigation';
 import { exhaustive } from '@trezor/type-utils';
 
@@ -33,7 +35,13 @@ export const AccountAssetsTabContent = ({
     flowType,
 }: AccountAssetsTabContentProps) => {
     const navigation =
-        useNavigation<StackNavigationProps<RootStackParamList, RootStackRoutes.AccountAssets>>();
+        useNavigation<
+            StackToStackCompositeNavigationProps<
+                AccountDetailStackParamList,
+                AccountDetailStackRoutes.AccountAssets,
+                RootStackParamList
+            >
+        >();
     const { analytics } = useServices(injectNativeAnalytics);
     const account = useSelector((state: AccountsRootState) =>
         selectAccountByKey(state, accountKey),
@@ -57,7 +65,7 @@ export const AccountAssetsTabContent = ({
                     params: { accountKey, tokenContract },
                 });
             } else {
-                navigation.navigate(RootStackRoutes.AccountDetail, {
+                navigation.navigate(AccountDetailStackRoutes.AccountDetail, {
                     accountKey,
                     tokenContract,
                     closeActionType: 'back',

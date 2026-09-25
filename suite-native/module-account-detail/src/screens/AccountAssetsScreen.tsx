@@ -18,7 +18,11 @@ import {
     useResolvedAccountKey,
 } from '@suite-native/accounts';
 import { VStack } from '@suite-native/atoms';
-import { type RootStackParamList, type RootStackRoutes, Screen } from '@suite-native/navigation';
+import {
+    type AccountDetailStackParamList,
+    type AccountDetailStackRoutes,
+    Screen,
+} from '@suite-native/navigation';
 
 import { AccountAssetsScreenHeader } from '../components/AccountAssets/AccountAssetsScreenHeader';
 import { AccountAssetsTabBar } from '../components/AccountAssets/AccountAssetsTabBar';
@@ -38,7 +42,7 @@ export const AccountAssetsScreen = ({
         },
     },
     navigation,
-}: NativeStackScreenProps<RootStackParamList, RootStackRoutes.AccountAssets>) => {
+}: NativeStackScreenProps<AccountDetailStackParamList, AccountDetailStackRoutes.AccountAssets>) => {
     const [activeTab, setActiveTab] = useState<AccountAssetsTab>(tab ?? 'tokens');
 
     useEffect(() => {

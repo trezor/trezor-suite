@@ -28,7 +28,7 @@ describe('Navigation Utils', () => {
                 routeNames: [
                     RootStackRoutes.OnboardingStack,
                     RootStackRoutes.AppTabs,
-                    RootStackRoutes.AccountSettings,
+                    RootStackRoutes.AccountDetailStack,
                 ],
                 routes: [
                     {
@@ -50,11 +50,11 @@ describe('Navigation Utils', () => {
                 type: 'stack',
                 key: 'stack-test2',
                 index: 0,
-                routeNames: [RootStackRoutes.AppTabs, RootStackRoutes.AccountSettings],
+                routeNames: [RootStackRoutes.AppTabs, RootStackRoutes.AccountDetailStack],
                 routes: [
                     {
-                        name: RootStackRoutes.AccountSettings,
-                        key: 'AccountSettings-test2',
+                        name: RootStackRoutes.AccountDetailStack,
+                        key: 'AccountDetailStack-test2',
                     },
                 ],
             });
