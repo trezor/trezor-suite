@@ -8,8 +8,9 @@ import {
     connectInitThunk,
 } from '@suite-common/connect-init';
 import {
-    mockConnectInitHooks,
+    mockConnectInitDeviceEventHooks,
     mockConnectInitSettings,
+    mockConnectInitUiEventHooks,
     mockCreateTransports,
     mockGetDebugSettings,
     mockGetThpSettings,
@@ -97,8 +98,9 @@ const createTestRoot = (preloadedState: SuiteActionsTestState) =>
         extra: {
             services: {
                 analytics: mockDesktopAnalytics(),
-                connectInitHooks: mockConnectInitHooks(),
+                connectInitDeviceEventHooks: mockConnectInitDeviceEventHooks(),
                 connectInitSettings: mockConnectInitSettings(),
+                connectInitUiEventHooks: mockConnectInitUiEventHooks(),
                 createLogger: noopCreateLogger,
                 createTransports: mockCreateTransports(),
                 getAllowPrerelease: mockGetAllowPrerelease(),

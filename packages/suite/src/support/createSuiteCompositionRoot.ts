@@ -51,7 +51,8 @@ import { selectIsWindowVisible } from 'src/reducers/suite/windowReducer';
 import { type DbDep } from 'src/storage/createDb';
 import { reportSecurityCheck } from 'src/utils/suite/sentry';
 
-import { createConnectInitHooks } from './createConnectInitHooks';
+import { createConnectInitDeviceEventHooks } from './createConnectInitDeviceEventHooks';
+import { createConnectInitUiEventHooks } from './createConnectInitUiEventHooks';
 import { type AppState } from '../types/suite';
 
 const connectInitSettings: ConnectInitSettings = {
@@ -142,10 +143,6 @@ export const createSuiteServicesCompositionRoot = (deps: SuiteAppDeps): SuiteSer
         updateOutputLabel: suiteSync.labeling.updateOutputLabel,
     });
 
-    const connectInitHooks = createConnectInitHooks({
-        dispatch: deps.dispatch,
-        getState: deps.getState,
-    });
     const networks = createNetworksCompositionRoot({
         getTrezorConnect: deps.getTrezorConnect,
         dispatch: deps.dispatch,
@@ -182,7 +179,13 @@ export const createSuiteServicesCompositionRoot = (deps: SuiteAppDeps): SuiteSer
         reloadApp: deps.reloadApp,
         saveAs: (data: Blob, fileName: string) => saveAs(data, fileName),
         connectInitSettings,
-        connectInitHooks,
+        connectInitDeviceEventHooks: createConnectInitDeviceEventHooks({
+            dispatch: deps.dispatch,
+        }),
+        connectInitUiEventHooks: createConnectInitUiEventHooks({
+            dispatch: deps.dispatch,
+            getState: deps.getState,
+        }),
         createLogger: deps.createLogger,
         thpHostName: deps.thpHostName,
         createTransports,

@@ -51,7 +51,7 @@ const createThunkDeps = (
     const extra: ConnectInitThunkDeps = {
         services: {
             analytics: { report: jest.fn() },
-            connectInitHooks: { deviceEvent: {}, uiEvent: {} },
+            connectInitDeviceEventHooks: {},
             connectInitSettings: {
                 manifest: {
                     email: 'info@trezor.io',
@@ -67,6 +67,7 @@ const createThunkDeps = (
                 showConnectLogs: false,
             })),
             getThpSettings: asGetter(() => ({ pairingMethods: ['CodeEntry'] })),
+            connectInitUiEventHooks: {},
             thpHostName: undefined,
             lockDevice: mock<LockDevice>(),
             ...services,
@@ -287,16 +288,13 @@ describe('TrezorConnect Actions', () => {
         }
     });
 
-    it('connectInitHooks.deviceEvent is called for DEVICE.CONNECT / DEVICE.CONNECT_UNACQUIRED', async () => {
+    it('connectInitDeviceEventHooks are called for DEVICE.CONNECT / DEVICE.CONNECT_UNACQUIRED', async () => {
         const onConnect = jest.fn();
         const onConnectUnacquired = jest.fn();
         const { dispatch, getState, extra } = createThunkDeps({
-            connectInitHooks: {
-                deviceEvent: {
-                    [DEVICE.CONNECT]: onConnect,
-                    [DEVICE.CONNECT_UNACQUIRED]: onConnectUnacquired,
-                },
-                uiEvent: {},
+            connectInitDeviceEventHooks: {
+                [DEVICE.CONNECT]: onConnect,
+                [DEVICE.CONNECT_UNACQUIRED]: onConnectUnacquired,
             },
         });
 
@@ -315,16 +313,13 @@ describe('TrezorConnect Actions', () => {
         expect(onConnectUnacquired).toHaveBeenCalledWith(unacquiredPayload, []);
     });
 
-    it('connectInitHooks.uiEvent is called per action.type forwarded from the global listener', async () => {
+    it('connectInitUiEventHooks are called per action.type forwarded from the global listener', async () => {
         const onInvalidPinDepleted = jest.fn();
         const onRequestWord = jest.fn();
         const { actions, dispatch, getState, extra } = createThunkDeps({
-            connectInitHooks: {
-                deviceEvent: {},
-                uiEvent: {
-                    [UI_EVENTS.PIN_INVALID_ATTEMPTS_DEPLETED]: onInvalidPinDepleted,
-                    [UI_REQUESTS.REQUEST_WORD]: onRequestWord,
-                },
+            connectInitUiEventHooks: {
+                [UI_EVENTS.PIN_INVALID_ATTEMPTS_DEPLETED]: onInvalidPinDepleted,
+                [UI_REQUESTS.REQUEST_WORD]: onRequestWord,
             },
         });
         await connectInitThunk()(dispatch, getState, extra);

@@ -1,7 +1,7 @@
 import { type AnalyticsDep } from '@suite-common/analytics';
 import { type FetchAndSaveMetadataDep } from '@suite-common/metadata-types';
 import { type WithServices, createThunk } from '@suite-common/redux-utils';
-import { type ConnectInitHooksDeps, type TrezorDevice } from '@suite-common/suite-types';
+import { type ConnectInitUiEventHooksDep, type TrezorDevice } from '@suite-common/suite-types';
 import { type GetTradedAccountKeysDep } from '@suite-common/wallet-types';
 import TrezorConnect, { UI_EVENT, UI_REQUEST, UI_REQUESTS } from '@trezor/connect';
 import type { PopupEventMessage, UiEventMessage, UiRequestMessage } from '@trezor/connect-common';
@@ -25,7 +25,7 @@ type RunPassphraseWalletAddingDiscoveryThunkParams = {
 type RunPassphraseWalletAddingDiscoveryThunkState = RunDiscoveryThunkState;
 
 type RunPassphraseWalletAddingDiscoveryThunkDeps = WithServices<
-    AnalyticsDep & ConnectInitHooksDeps & GetTradedAccountKeysDep
+    AnalyticsDep & ConnectInitUiEventHooksDep & GetTradedAccountKeysDep
 > & {
     thunks: FetchAndSaveMetadataDep;
 };
@@ -77,7 +77,7 @@ type StartDiscoveryOfExistingPassphraseWalletThunkPayload = {
 type StartDiscoveryOfExistingPassphraseWalletThunkState = RunDiscoveryThunkState;
 
 type StartDiscoveryOfExistingPassphraseWalletThunkDeps = WithServices<
-    AnalyticsDep & ConnectInitHooksDeps & GetTradedAccountKeysDep
+    AnalyticsDep & ConnectInitUiEventHooksDep & GetTradedAccountKeysDep
 > & {
     thunks: FetchAndSaveMetadataDep;
 };

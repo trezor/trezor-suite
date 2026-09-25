@@ -7,8 +7,9 @@ import { type PlatformEncryptionDep } from '@suite-common/platform-encryption';
 import { type MigrateSuiteSyncLabelsForRbfTransactionDep } from '@suite-common/suite-rbf-labels-migrations-types';
 import { type SuiteSyncDep } from '@suite-common/suite-sync-types';
 import {
-    type ConnectInitHooksDeps,
+    type ConnectInitDeviceEventHooksDep,
     type ConnectInitSettingsDep,
+    type ConnectInitUiEventHooksDep,
     type GetAllowPrereleaseDep,
     type GetBinFilesBaseUrlDep,
     type GetIsWindowVisibleDep,
@@ -35,7 +36,8 @@ export type CommonServices = SuiteSyncDep &
     PlatformEncryptionDep &
     AnalyticsDep &
     ConnectInitSettingsDep &
-    ConnectInitHooksDeps &
+    ConnectInitDeviceEventHooksDep &
+    ConnectInitUiEventHooksDep &
     GetAllowPrereleaseDep &
     GetBinFilesBaseUrlDep &
     ShouldRetryFirmwareRevisionCheckErrorDep &

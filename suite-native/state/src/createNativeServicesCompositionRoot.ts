@@ -116,7 +116,8 @@ export const createNativeServicesCompositionRoot = (deps: NativeAppDeps): Native
                 appUrl: '@trezor/suite',
             },
         },
-        connectInitHooks: { deviceEvent: {}, uiEvent: {} },
+        connectInitDeviceEventHooks: {},
+        connectInitUiEventHooks: {},
         createLogger,
         // Native constructs its per-device-type transports directly (single platform, no
         // web/desktop split) and returns the enabled ones as ready-made instances.
