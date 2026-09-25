@@ -12,6 +12,7 @@ import {
 } from '@suite/router';
 import { selectIsAnalyticsConfirmed } from '@suite-common/analytics-redux';
 import { useServices } from '@suite-common/dependency-injection';
+import { selectDevices } from '@suite-common/device';
 import {
     useReportDeviceCompromised,
     useRetryFwAuthenticityChecks,
@@ -61,6 +62,7 @@ const getFullscreenApp = (app: RouterAppWithParams['app']): FC | undefined => {
 export const Preloader = memo(function Preloader({ children }: PropsWithChildren) {
     const lifecycle = useSelector(selectSuiteLifecycle);
     const isTransportInitialized = useSelector(selectIsTransportInitialized);
+    const hasKnownDevices = useSelector(state => selectDevices(state).length > 0);
     const isRouterLoaded = useSelector(selectRouterLoaded);
     const routerApp = useSelector(selectRouterApp);
     const isForegroundApp = useSelector(selectIsForegroundApp);
@@ -124,9 +126,15 @@ export const Preloader = memo(function Preloader({ children }: PropsWithChildren
         return <KillswitchMessageScreen />;
     }
 
-    // @trezor/connect was initialized, but didn't emit "TRANSPORT" event yet (it could take a while)
-    // display Loader as full page view
-    if (lifecycle.status !== 'ready' || !isRouterLoaded || !isTransportInitialized) {
+    // @trezor/connect was initialized, but didn't emit "TRANSPORT" event yet: it waits for the
+    // initial device handshake, which can take a while. Show the full-page loader only when there
+    // is nothing better to render; with a remembered device the dashboard can be shown from the
+    // persisted state right away.
+    if (
+        lifecycle.status !== 'ready' ||
+        !isRouterLoaded ||
+        (!isTransportInitialized && !hasKnownDevices)
+    ) {
         // TODO: multiplied by 5, temporarily. Now initActions incorrectly awaits altcoin specific logic which can trigger this timeout easily for bigger accounts
         return <InitialLoading timeout={90 * 5} />;
     }

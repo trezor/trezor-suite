@@ -1,6 +1,6 @@
 import '@suite-common/test-utils/globalOverrides';
 
-import { fireEvent } from '@testing-library/react';
+import { fireEvent, screen } from '@testing-library/react';
 
 import { type DesktopAnalyticsDep } from '@suite/analytics';
 import { mockDesktopAnalytics } from '@suite/analytics/mocks';
@@ -218,6 +218,30 @@ describe(`${Preloader.name} component`, () => {
             <Index app={root.store.getState().router.app} />,
         );
         expect(findByTestId('@suite/loading')).not.toBeNull();
+
+        unmount();
+    });
+
+    it('Transport is not set yet, but a known device skips the loader', () => {
+        const knownDevice = mockSuiteDevice({ transportSessionOwner: 'foo', type: 'unacquired' });
+        const root = createTestCompositionRoot({
+            extra: { services },
+            preloadedState: getInitialState({
+                suite: {
+                    transport: undefined,
+                },
+                device: {
+                    devices: [knownDevice],
+                    selectedDevice: knownDevice,
+                },
+            }),
+        });
+        const { unmount } = renderWithProviders(
+            root,
+            <Index app={root.store.getState().router.app} />,
+        );
+        expect(screen.queryByTestId('@suite/loading')).toBeNull();
+        expect(findByTestId('@connect-device-prompt')).not.toBeNull();
 
         unmount();
     });
