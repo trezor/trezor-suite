@@ -1,5 +1,7 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 
+import { WEBEXTENSION_SUITE_WEB_CHANNEL } from '@trezor/connect-common';
+
 import {
     type ConnectPopupLink,
     type ConnectPopupMessage,
@@ -19,8 +21,8 @@ interface ChromeRuntime {
 declare const chrome: { runtime?: ChromeRuntime } | undefined;
 
 const webextChannel = {
-    here: '@trezor/suite-web',
-    peer: '@trezor/connect-webextension-externally-connectable',
+    here: WEBEXTENSION_SUITE_WEB_CHANNEL.suiteWeb,
+    peer: WEBEXTENSION_SUITE_WEB_CHANNEL.webextension,
 };
 
 const postMessageToExtension = (message: ConnectPopupOutgoingMessage, extensionId: string) => {
