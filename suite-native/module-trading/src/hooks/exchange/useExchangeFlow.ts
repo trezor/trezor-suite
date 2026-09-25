@@ -61,6 +61,7 @@ export const useExchangeFlow = ({ flowType }: UseExchangeFlowProps = {}) => {
 
     const { openBrowserForFormData } = useBrowserAuth('exchange');
     const quoteStatus = quote?.status;
+    const isDexExchange = quote?.isDex;
 
     useFocusEffect(
         useCallback(() => {
@@ -230,5 +231,6 @@ export const useExchangeFlow = ({ flowType }: UseExchangeFlowProps = {}) => {
         serializedTx,
         resolveTransactionSendConsent,
         isTransactionSendConsentRequested,
+        isDexExchange,
     };
 };

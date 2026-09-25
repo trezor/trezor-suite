@@ -21,6 +21,7 @@ export const TradingExchangeOutputsReviewScreen = ({
         signDataAndConfirm,
         isTransactionSendConsentRequested,
         resolveTransactionSendConsent,
+        isDexExchange,
     } = useExchangeFlow({ flowType });
     const analyticsReportCallback = useExchangeAnalyticReportCallback();
 
@@ -28,6 +29,7 @@ export const TradingExchangeOutputsReviewScreen = ({
 
     return (
         <ReviewOutputsContent
+            isDexExchange={isDexExchange}
             accountKey={accountKey}
             tokenContract={tokenContract}
             orderId={orderId}

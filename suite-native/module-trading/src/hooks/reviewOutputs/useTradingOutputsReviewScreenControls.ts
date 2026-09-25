@@ -5,10 +5,11 @@ import { useNavigation } from '@react-navigation/native';
 
 import { useServices } from '@suite-common/dependency-injection';
 import { injectDispatch } from '@suite-common/redux-utils';
+import { isSilentSendRejection } from '@suite-common/trading';
 import { sendFormActions } from '@suite-common/wallet-core';
 import { type AccountKey } from '@suite-common/wallet-types';
 import { useConfirmOnTrezorController } from '@suite-native/confirm-on-trezor';
-import { type ExchangeFlowType } from '@suite-native/navigation';
+import { RootStackRoutes } from '@suite-native/navigation';
 import type {
     TradingExchangeAnalyticReportCallback,
     TradingSellAnalyticReportCallback,
@@ -34,19 +35,18 @@ export type UseTradingOutputsReviewScreenControlsProps = Pick<
 > & {
     orderId: string;
     accountKey: AccountKey;
-    exchangeFlowType?: ExchangeFlowType;
     reportToAnalytics: TradingExchangeAnalyticReportCallback | TradingSellAnalyticReportCallback;
+    isDexExchange?: boolean;
 };
 
 export const useTradingOutputsReviewScreenControls = ({
     orderId,
     accountKey,
-    exchangeFlowType,
     signAndSendTransaction,
     resolveTransactionSendConsent,
     reportToAnalytics,
+    isDexExchange,
 }: UseTradingOutputsReviewScreenControlsProps) => {
-    const allowAlertRef = useRef(true);
     const signingExecutedRef = useRef(false);
     const activeSigningAttemptIdRef = useRef(0);
 
@@ -57,7 +57,7 @@ export const useTradingOutputsReviewScreenControls = ({
 
     const { confirmOnTrezorRef, closeSheet, revealConfirmOnTrezorSheet } =
         useConfirmOnTrezorController();
-    const showOutputsReviewErrorAlert = useTradingOutputsReviewErrorAlert(accountKey);
+    const showOutputsReviewErrorAlert = useTradingOutputsReviewErrorAlert();
 
     const isTransactionAlreadySigned = useSelector(selectIsTransactionAlreadySigned);
 
@@ -71,10 +71,11 @@ export const useTradingOutputsReviewScreenControls = ({
     const onReviewCanceled = useCallback(() => {
         activeSigningAttemptIdRef.current += 1;
         resolveTransactionSendConsent(false);
-        TrezorConnect.cancel('tx-timeout');
+        TrezorConnect.cancel('tx-cancelled');
         navigation.popToTop();
         reportToAnalytics('sign-and-send', 'cancel');
     }, [navigation, reportToAnalytics, resolveTransactionSendConsent]);
+
     useOutputsReviewBackInterceptor(onReviewCanceled);
 
     const nextStep: TradingTransactionSignAndSendProps['nextStep'] = useCallback(() => {
@@ -90,15 +91,16 @@ export const useTradingOutputsReviewScreenControls = ({
             const signingAttemptId = activeSigningAttemptIdRef.current + 1;
             activeSigningAttemptIdRef.current = signingAttemptId;
 
-            const handleSigningError: TradingTransactionSignAndSendProps['onError'] = () => {
-                if (
-                    !allowAlertRef.current ||
-                    signingAttemptId !== activeSigningAttemptIdRef.current
-                ) {
+            const handleSigningError: TradingTransactionSignAndSendProps['onError'] = error => {
+                if (signingAttemptId !== activeSigningAttemptIdRef.current) {
                     return;
                 }
 
                 setIsBroadcasting(false);
+
+                // Timeout is handled by solana timer
+                if (isSilentSendRejection(error.type)) return;
+
                 showOutputsReviewErrorAlert(() => {
                     reportToAnalytics('sign-and-send', 'retry');
                     runSigningAttempt();
@@ -125,6 +127,11 @@ export const useTradingOutputsReviewScreenControls = ({
 
     useEffect(() => {
         startInitialSigning();
+
+        return () => {
+            // just in case, we don't want to show alert if user already left the screen
+            activeSigningAttemptIdRef.current += 1;
+        };
     }, []);
 
     // TODO: We should handle the close by event callback from the signing process.
@@ -134,33 +141,38 @@ export const useTradingOutputsReviewScreenControls = ({
         }
     }, [closeSheet, isTransactionAlreadySigned]);
 
-    // just in case, we don't want to show alert if user already left the screen
-    useEffect(
-        () => () => {
-            allowAlertRef.current = false;
-            activeSigningAttemptIdRef.current += 1;
-        },
-        [],
-    );
-
-    const handleRetry = useCallback(async () => {
+    const handleSolanaRetry = useCallback(async () => {
         activeSigningAttemptIdRef.current += 1;
         resolveTransactionSendConsent(false);
         TrezorConnect.cancel('tx-timeout');
         dispatch(sendFormActions.clearSignedTransactionData());
         setIsBroadcasting(false);
+
+        if (isDexExchange) {
+            navigation.popTo(RootStackRoutes.TradingExchangePreview, {});
+
+            return;
+        }
+
         revealConfirmOnTrezorSheet();
 
         await startSigning();
-    }, [dispatch, resolveTransactionSendConsent, revealConfirmOnTrezorSheet, startSigning]);
+    }, [
+        dispatch,
+        isDexExchange,
+        navigation,
+        resolveTransactionSendConsent,
+        revealConfirmOnTrezorSheet,
+        startSigning,
+    ]);
 
     const { isPastDeadline, isRetryDisabled, onRetry, secondsLeft, showTimer } =
         useTradingTxValidityTimer({
+            isDexExchange,
             accountKey,
-            exchangeFlowType,
             isBroadcasting,
             isTransactionAlreadySigned,
-            onRetry: handleRetry,
+            onRetry: handleSolanaRetry,
             onCancel: onReviewCanceled,
         });
 

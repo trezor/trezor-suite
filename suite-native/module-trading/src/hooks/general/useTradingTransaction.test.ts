@@ -2,7 +2,10 @@ import { type Store } from '@reduxjs/toolkit';
 
 import { type DeviceRootState } from '@suite-common/device';
 import { type MessageSystemRootState } from '@suite-common/message-system';
-import { type TradingRootStateWithDeviceAndAccounts } from '@suite-common/trading';
+import {
+    type TradingRootStateWithDeviceAndAccounts,
+    type TradingSendRejectedProps,
+} from '@suite-common/trading';
 import {
     type AccountsRootState,
     type FormDraftRootState,
@@ -37,6 +40,22 @@ type State = TradingRootState &
     SettingsSliceRootState;
 
 const mockComposeTradingTransaction = jest.fn();
+const mockSendTransactionResult = jest.fn<
+    {
+        payload?: TradingSendRejectedProps;
+        meta: { requestId: string; requestStatus: 'fulfilled' | 'rejected' };
+        error?: { message: string };
+    },
+    []
+>();
+const mockSigningResult = jest.fn<
+    {
+        payload: unknown;
+        meta: { requestId: string; requestStatus: 'fulfilled' | 'rejected' };
+        error?: { message: string };
+    },
+    []
+>();
 
 // Mock TrezorConnect to prevent errors during cleanup
 jest.mock('@trezor/connect', () => ({
@@ -48,27 +67,42 @@ jest.mock('@trezor/connect', () => ({
 jest.mock('@suite-common/trading', () => ({
     ...jest.requireActual('@suite-common/trading'),
     exchangeThunks: {
-        sendTransactionThunk: (payload: unknown) => ({
-            type: 'sendTransactionThunkMock',
-            payload,
-            unwrap: () => Promise.resolve(true),
-        }),
+        sendTransactionThunk: (payload: unknown) => {
+            const result = mockSendTransactionResult();
+
+            return {
+                type: 'sendTransactionThunkMock',
+                payload,
+                ...result,
+                unwrap: () =>
+                    result.meta.requestStatus === 'rejected'
+                        ? Promise.reject(result.payload ?? result.error)
+                        : Promise.resolve(result.payload),
+            };
+        },
     },
     sellThunks: {
-        sendTransactionThunk: (payload: unknown) => ({
-            type: 'sellSendTransactionThunkMock',
-            payload,
-            unwrap: () => Promise.resolve(true),
-        }),
+        sendTransactionThunk: (payload: unknown) => {
+            const result = mockSendTransactionResult();
+
+            return {
+                type: 'sellSendTransactionThunkMock',
+                payload,
+                ...result,
+                unwrap: () =>
+                    result.meta.requestStatus === 'rejected'
+                        ? Promise.reject(result.payload ?? result.error)
+                        : Promise.resolve(result.payload),
+            };
+        },
     },
 }));
 
 // Mock the thunks
 jest.mock('../../thunks', () => ({
-    signAndPushSendFormTransactionThunk: (payload: unknown) => ({
+    signAndPushSendFormTransactionThunk: () => ({
         type: 'signAndPushSendFormTransactionThunkMock',
-        payload,
-        unwrap: () => Promise.resolve(true),
+        ...mockSigningResult(),
     }),
 }));
 
@@ -96,6 +130,8 @@ describe('useTradingTransaction', () => {
         tradingState.exchange.receiveAccountKey = btc2Account.key;
         // Set a selected quote so the hook can access selectedQuote.send
         tradingState.exchange.selectedQuote = tradingState.exchange.quotes[0];
+        tradingState.sell.tradingAccountKey = btc1Account.key;
+        tradingState.sell.selectedQuote = tradingState.sell.quotes[0];
 
         return createTradingTestStore({
             tradeType: 'exchange',
@@ -131,6 +167,14 @@ describe('useTradingTransaction', () => {
     beforeEach(() => {
         jest.clearAllMocks();
         mockComposeTradingTransaction.mockResolvedValue(undefined);
+        mockSendTransactionResult.mockReturnValue({
+            meta: { requestId: 'test-send', requestStatus: 'fulfilled' },
+        });
+        mockSigningResult.mockReturnValue({
+            payload: { error: 'sign-transaction-timeout' },
+            error: { message: 'Rejected' },
+            meta: { requestId: 'test-sign', requestStatus: 'rejected' },
+        });
 
         // Mock the serializedTx selector to return a proper value
         jest.spyOn(require('@suite-common/wallet-core'), 'selectSendSerializedTx').mockReturnValue({
@@ -183,10 +227,12 @@ describe('useTradingTransaction', () => {
             const { result } = await renderUseTradingTransaction({ store });
 
             await act(async () => {
-                await result.current.signAndSendTransaction({
-                    nextStep: mockNextStep,
-                    onError: jest.fn(),
-                });
+                expect(
+                    await result.current.signAndSendTransaction({
+                        nextStep: mockNextStep,
+                        onError: jest.fn(),
+                    }),
+                ).toBe(true);
             });
 
             expect(dispatchSpy).toHaveBeenCalledWith({
@@ -204,6 +250,7 @@ describe('useTradingTransaction', () => {
                     triggerAnalyticsTradeConfirmation: expect.any(Function),
                     signAndPushSendFormTransaction: expect.any(Function),
                 },
+                meta: { requestId: 'test-send', requestStatus: 'fulfilled' },
                 unwrap: expect.any(Function),
             });
         });
@@ -242,7 +289,8 @@ describe('useTradingTransaction', () => {
                 require('@suite-common/trading').exchangeThunks.sendTransactionThunk;
             require('@suite-common/trading').exchangeThunks.sendTransactionThunk = () => ({
                 type: 'sendTransactionThunkMock',
-                unwrap: () => Promise.resolve(true),
+                meta: { requestId: 'test-send', requestStatus: 'fulfilled' },
+                unwrap: () => Promise.resolve(),
             });
 
             await act(async () => {

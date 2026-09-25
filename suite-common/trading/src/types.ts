@@ -1,3 +1,4 @@
+import { type SerializedError } from '@reduxjs/toolkit';
 import type {
     BuyCryptoPaymentMethod,
     BuyProviderInfo,
@@ -33,7 +34,6 @@ import {
     type TokenAddress,
 } from '@suite-common/wallet-types';
 import { type PROTO, type TokenInfo } from '@trezor/connect';
-import { type SerializedError } from '@trezor/connect-common/src/constants/errors';
 import { type Err, type Ok, type PrimitiveType } from '@trezor/type-utils';
 
 import type * as constants from './constants';
