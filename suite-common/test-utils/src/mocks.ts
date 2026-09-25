@@ -499,6 +499,15 @@ const getTrezorConnectMock = () => {
     } as MockTrezorConnect;
 };
 
+// The default-export Connect singleton itself — what a DI consumer's injected `getTrezorConnect` must
+// return. The connect-init thunk reassigns `.call` and registers `.on` handlers on the instance in
+// place, so the object it drives has to be identical to the one tests spy on (`jest.spyOn(TrezorConnect,
+// 'init')`) and emit through (`getTrezorConnectMock().emitTestEvent`). Not getTrezorConnectMock(), which
+// returns a fresh `{ ...default }` spread per call — a reassigned `.call` on that copy is invisible to
+// the fixture methods.
+const getTrezorConnectSingleton = (): TrezorConnectPrivilegedAPI =>
+    require('@trezor/connect').default;
+
 const setTrezorConnectFixtures = (f?: any) => {
     getTrezorConnectMock().setTestFixtures(f);
 };
@@ -514,5 +523,6 @@ export const testMocks = {
     intlMock,
     mockedBlockchainNetworks,
     getTrezorConnectMock,
+    getTrezorConnectSingleton,
     setTrezorConnectFixtures,
 };

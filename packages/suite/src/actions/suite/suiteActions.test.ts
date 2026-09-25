@@ -87,6 +87,7 @@ const extra: SuiteActionsTestDeps = {
         getDebugSettings: mockGetDebugSettings(),
         getThpSettings: mockGetThpSettings(),
         getTradedAccountKeys: mockGetTradedAccountKeys(),
+        getTrezorConnect: testMocks.getTrezorConnectSingleton,
     },
     thunks: {
         fetchAndSaveMetadata: mockFetchAndSaveMetadata(),
