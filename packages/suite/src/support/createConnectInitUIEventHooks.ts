@@ -1,17 +1,17 @@
 import { openModal, preserveModal } from '@suite/modal';
 import { recoveryActions, selectRecoveryStatus } from '@suite/recovery';
 import { type Dispatch } from '@suite-common/redux-utils';
-import { type ConnectInitUiEventHooks } from '@suite-common/suite-types';
+import { type ConnectInitUIEventHooks } from '@suite-common/suite-types';
 import { UI_EVENTS, UI_REQUESTS } from '@trezor/connect';
 
-type ConnectInitUiEventHooksDeps = {
+type ConnectInitUIEventHooksDeps = {
     dispatch: Dispatch;
     getState: () => any;
 };
 
-export const createConnectInitUiEventHooks = (
-    deps: ConnectInitUiEventHooksDeps,
-): ConnectInitUiEventHooks => ({
+export const createConnectInitUIEventHooks = (
+    deps: ConnectInitUIEventHooksDeps,
+): ConnectInitUIEventHooks => ({
     [UI_EVENTS.PIN_INVALID_ATTEMPTS_DEPLETED]: () => {
         deps.dispatch(openModal({ type: UI_EVENTS.PIN_INVALID_ATTEMPTS_DEPLETED }));
         deps.dispatch(preserveModal());

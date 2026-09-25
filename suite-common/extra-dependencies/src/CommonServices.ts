@@ -9,7 +9,7 @@ import { type SuiteSyncDep } from '@suite-common/suite-sync-types';
 import {
     type ConnectInitDeviceEventHooksDep,
     type ConnectInitSettingsDep,
-    type ConnectInitUiEventHooksDep,
+    type ConnectInitUIEventHooksDep,
     type GetAllowPrereleaseDep,
     type GetBinFilesBaseUrlDep,
     type GetIsWindowVisibleDep,
@@ -37,7 +37,7 @@ export type CommonServices = SuiteSyncDep &
     AnalyticsDep &
     ConnectInitSettingsDep &
     ConnectInitDeviceEventHooksDep &
-    ConnectInitUiEventHooksDep &
+    ConnectInitUIEventHooksDep &
     GetAllowPrereleaseDep &
     GetBinFilesBaseUrlDep &
     ShouldRetryFirmwareRevisionCheckErrorDep &

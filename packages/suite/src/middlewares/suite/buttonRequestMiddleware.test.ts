@@ -7,7 +7,7 @@ import {
 import {
     mockConnectInitDeviceEventHooks,
     mockConnectInitSettings,
-    mockConnectInitUiEventHooks,
+    mockConnectInitUIEventHooks,
     mockCreateTransports,
     mockGetDebugSettings,
     mockGetThpSettings,
@@ -52,7 +52,7 @@ const createTestRoot = (lockDevice = mock<LockDevice>()) =>
                 analytics: mockDesktopAnalytics(),
                 connectInitDeviceEventHooks: mockConnectInitDeviceEventHooks(),
                 connectInitSettings: mockConnectInitSettings(),
-                connectInitUiEventHooks: mockConnectInitUiEventHooks(),
+                connectInitUIEventHooks: mockConnectInitUIEventHooks(),
                 createLogger: noopCreateLogger,
                 createTransports: mockCreateTransports(),
                 getAllowPrerelease: mockGetAllowPrerelease(),

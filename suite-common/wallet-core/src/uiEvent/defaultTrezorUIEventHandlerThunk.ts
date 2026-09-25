@@ -1,6 +1,6 @@
 import { type DeviceRootState, deviceActions, selectSelectedDevice } from '@suite-common/device';
 import { type WithServices, createThunk } from '@suite-common/redux-utils';
-import { type ConnectInitUiEventHooksDep } from '@suite-common/suite-types';
+import { type ConnectInitUIEventHooksDep } from '@suite-common/suite-types';
 import { UI_EVENTS, UI_REQUESTS } from '@trezor/connect';
 import type { PopupEventMessage, UiEventMessage, UiRequestMessage } from '@trezor/connect-common';
 import { type Without } from '@trezor/type-utils';
@@ -11,7 +11,7 @@ export type UiEventAction = Without<UiEventMessage | PopupEventMessage | UiReque
 
 export type DefaultTrezorUIEventHandlerThunkState = DeviceRootState;
 
-export type DefaultTrezorUIEventHandlerThunkDeps = WithServices<ConnectInitUiEventHooksDep>;
+export type DefaultTrezorUIEventHandlerThunkDeps = WithServices<ConnectInitUIEventHooksDep>;
 
 export const defaultTrezorUIEventHandlerThunk = createThunk<
     void,
@@ -21,7 +21,7 @@ export const defaultTrezorUIEventHandlerThunk = createThunk<
         extra: DefaultTrezorUIEventHandlerThunkDeps;
     }
 >(`${MODULE}/defaultTrezorUIEventHandler`, (action, { dispatch, getState, extra }) => {
-    const { connectInitUiEventHooks } = extra.services;
+    const { connectInitUIEventHooks } = extra.services;
 
     if (action.type === UI_EVENTS.FIRMWARE_DOWNLOADED) {
         // We are in web therefore we ignore `FIRMWARE_DOWNLOADED` action.
@@ -56,5 +56,5 @@ export const defaultTrezorUIEventHandlerThunk = createThunk<
         }
     }
 
-    connectInitUiEventHooks[action.type]?.();
+    connectInitUIEventHooks[action.type]?.();
 });
