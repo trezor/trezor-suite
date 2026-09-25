@@ -49,6 +49,9 @@ import { DeviceCommands } from './DeviceCommands';
 import type { TypedCallProvider } from './DeviceCurrentSession';
 import { DeviceCurrentSession } from './DeviceCurrentSession';
 import { checkFirmwareRevision } from './checkFirmwareRevision';
+import { getModularAppTypedCall } from './modularApp/appCommands';
+import { loadModularApp } from './modularApp/loadModularApp';
+import type { ModularAppDefinition } from './modularApp/types';
 import { abortThpWorkflow, getThpChannel } from './thp';
 import { getAllNetworks } from '../data/coinInfo';
 import {
@@ -139,6 +142,9 @@ export class Device extends TypedEmitter<DeviceEvents> implements IDevice {
 
     private keepTransportSession = false;
     private currentSession?: DeviceCurrentSession;
+
+    // Instance ids of firmware modular apps loaded in the current session, keyed by app id.
+    private loadedModularApps = new Map<string, number>();
 
     private instance = 0;
 
@@ -283,6 +289,8 @@ export class Device extends TypedEmitter<DeviceEvents> implements IDevice {
                         this.sessionAcquired,
                         this.createLogger('DeviceCommands'),
                     );
+                    // Loaded modular app instances belong to the previous session.
+                    this.loadedModularApps.clear();
 
                     return result;
                 } else {
@@ -639,6 +647,36 @@ export class Device extends TypedEmitter<DeviceEvents> implements IDevice {
 
     getCommands() {
         return DeviceCommands(this.getCurrentSession());
+    }
+
+    // Ensures a firmware modular app is loaded onto the device once per session. No-op when the app
+    // has no bundled binary (native call flow) or is already loaded.
+    async ensureModularAppLoaded(appDef: ModularAppDefinition, forceReload = false) {
+        if (!appDef.binary.length) return;
+        if (this.loadedModularApps.has(appDef.id)) return;
+
+        const session = this.getCurrentSession();
+        const instanceId = await loadModularApp({
+            typedCall: session.typedCall.bind(session),
+            appDef,
+            forceReload,
+        });
+        this.loadedModularApps.set(appDef.id, instanceId);
+    }
+
+    // Returns a `typedCall` addressing a loaded modular app. Falls back to the native `typedCall` when
+    // the app is not loaded, so methods keep working on firmware without modular-app support.
+    getModularAppCommands(appDef: ModularAppDefinition) {
+        const session = this.getCurrentSession();
+        const rawTypedCall = session.typedCall.bind(session);
+        const instanceId = this.loadedModularApps.get(appDef.id);
+
+        return {
+            typedCall:
+                instanceId === undefined
+                    ? rawTypedCall
+                    : getModularAppTypedCall(rawTypedCall, appDef, instanceId),
+        };
     }
 
     setInstance(instance = 0) {

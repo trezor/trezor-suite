@@ -22,6 +22,7 @@ import { isNotUndefined, isUUID, versionUtils } from '@trezor/utils';
 import { DEFAULT_FIRMWARE_RANGE, getFirmwareRange } from '../api/common/paramsValidator';
 import * as enabledNetworksStore from '../data/enabledNetworksStore';
 import type { Device } from '../device/Device';
+import type { ModularAppDefinition } from '../device/modularApp/types';
 import type { UiPromiseCreator } from '../events/ui-promise';
 import { isDebugFirmware } from '../utils/firmwareUtils';
 
@@ -183,6 +184,9 @@ export abstract class AbstractMethod<Name extends CallMethodPayload['method'], P
     protected requiredDeviceCapabilities: Capability[] = [];
     protected requiredFirmwareCapabilities: FirmwareCapability[] = [];
     protected requiredFirmwareCoins: (CoinInfo | undefined)[] = [];
+
+    // Firmware modular app this method needs loaded before it runs (loaded in the device lifecycle).
+    public requiredApp?: ModularAppDefinition;
 
     public useCardanoDerivation: boolean;
 

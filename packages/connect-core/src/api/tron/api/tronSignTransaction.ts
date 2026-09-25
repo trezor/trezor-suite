@@ -14,6 +14,7 @@ import { Assert } from '@trezor/schema-utils';
 import type { MethodMessage } from '../../../core/AbstractMethod';
 import { AbstractMethod } from '../../../core/AbstractMethod';
 import { getMiscNetwork } from '../../../data/coinInfo';
+import { TRON_MODULAR_APP } from '../../../data/modularApps/tron';
 import { validatePath } from '../../../utils/pathUtils';
 import { encodeTronContractRawData } from '../tronEncode';
 import { encodeBroadcastTransaction } from '../tronProtobuf';
@@ -133,6 +134,7 @@ export default class TronSignTransaction extends AbstractMethod<'tronSignTransac
         super(message, params);
         this.requiredDeviceCapabilities = ['Capability_Tron'];
         this.requiredFirmwareCoins = [getMiscNetwork('trx')];
+        this.requiredApp = TRON_MODULAR_APP;
     }
 
     get requiredPermissions(): PermissionRequest[] {
@@ -144,7 +146,7 @@ export default class TronSignTransaction extends AbstractMethod<'tronSignTransac
     }
 
     async run() {
-        const cmd = this.getDevice().getCommands();
+        const cmd = this.getDevice().getModularAppCommands(TRON_MODULAR_APP);
 
         await cmd.typedCall('TronSignTx', 'TronContractRequest', this.params.tx);
 
