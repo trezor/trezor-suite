@@ -52,6 +52,26 @@ describe(createAllocateOwnerQuota.name, () => {
         expect(deps.transferStorageFetch).not.toHaveBeenCalled();
     });
 
+    it('returns ok and does not attempt allocation when the device quota is negative', async () => {
+        const deps = createMockDeps<AllocateOwnerQuotaDeps>({
+            getLeftDeviceQuota: () => -500,
+            prepareChallengeSessionFetch: null,
+            transferStorageFetch: null,
+        });
+
+        const result = await createAllocateOwnerQuota(deps)({
+            ownerId,
+            delegatedKey: DELEGATED_IDENTITY_KEY,
+            deviceId,
+            walletDescriptor,
+            isWriteMode: true,
+        });
+
+        expect(result).toEqual(ok());
+        expect(deps.prepareChallengeSessionFetch).not.toHaveBeenCalled();
+        expect(deps.transferStorageFetch).not.toHaveBeenCalled();
+    });
+
     it('maps challenge session failure to quota manager communication failure', async () => {
         const deps = createMockDeps<AllocateOwnerQuotaDeps>({
             getLeftDeviceQuota: () => undefined,

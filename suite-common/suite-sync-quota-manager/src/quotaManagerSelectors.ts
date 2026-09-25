@@ -60,5 +60,5 @@ export const selectShouldDisplayOutOfQuotaAlert = createMemoizedSelector(
         (state: WithSuiteSyncQuotaManagerState & DeviceRootState) =>
             selectDeviceDismissedNoQuotaLeftWarning(state, selectDeviceId(state) ?? ''),
     ],
-    (quotaLeft, alreadyDismissed) => quotaLeft === 0 && !alreadyDismissed,
+    (quotaLeft, alreadyDismissed) => quotaLeft !== undefined && quotaLeft <= 0 && !alreadyDismissed,
 );

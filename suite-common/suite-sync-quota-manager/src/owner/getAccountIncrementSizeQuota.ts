@@ -8,7 +8,8 @@ export const getAccountIncrementSizeQuota = ({
     unspentStorage,
 }: GetAccountIncrementSizeQuotaParams) => {
     if (unspentStorage < DEFAULT_ACCOUNT_INCREMENT_SIZE_QUOTA) {
-        return unspentStorage;
+        // The returned size is serialized as an UInt32, which rejects negative values.
+        return Math.max(unspentStorage, 0);
     }
 
     return DEFAULT_ACCOUNT_INCREMENT_SIZE_QUOTA;
