@@ -14,10 +14,8 @@ Scripts:
     - `advanced` (object with token symbols and names per contract address)
 - and chain
     - `ethereum`, `polygon-pos`, `solana`, `stellar`...
-- and file type
-    - `jws` for signed data
-    - `json` for unsigned data
-- e.g. `yarn coins advanced solana json` and you get `json` in format:
+- both `jws` (signed) and `json` (unsigned) files are written for every definition
+- e.g. `yarn coins advanced solana` and you get `solana.advanced.coin.definitions.v1.json` in format:
 
 ```
 {
@@ -33,12 +31,20 @@ Scripts:
     "symbol": "acs",
     "name": "Access Protocol"
   },
-  "4rUfhWTRpjD1ECGjw1UReVhA8G63CrATuoFLRVRkkqhs": {
-    "symbol": "achi",
-    "name": "achi"
-  },
   ...
 }
+```
+
+- `yarn coins simple <chains...>` writes the per-chain address lists as before, and one
+  `ranked.coin.definitions.v1.json` covering every chain of that run, ordered by market cap:
+
+```
+[
+  { "assetPlatformId": "ethereum", "address": "0xdac17f958d2ee523a2206206994597c13d831ec7", "marketCap": 139000000000 },
+  { "assetPlatformId": "solana", "address": "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v", "marketCap": 43210000000 },
+  { "assetPlatformId": "ethereum", "address": "0x6b175474e89094c44da98b954eedeac495271d0f", "marketCap": 5300000000 },
+  ...
+]
 ```
 
 - e.g. `yarn nfts simple polygon-pos jws` and you get `jws` in format:
@@ -55,6 +61,25 @@ Scripts:
   ...
 ]
 ```
+
+## Market cap
+
+Market caps come from the CoinGecko `coins/markets` endpoint, joined onto the coin ids from
+`coins/list` (that endpoint carries no market data). Its pages are requested in `id_asc` order,
+because ordering by market cap reranks between requests and silently drops coins that move across
+a page boundary. A page that is rate limited or fails is retried; a run that cannot fetch the whole
+list fails rather than publishing a ranking built from partial data.
+
+They are published as one cross-chain `ranked.coin.definitions.v1.json`, so a consumer can rank
+tokens without fetching and merging every per-chain file. The per-chain definitions stay the
+complete list of known tokens; the ranked file only holds those that have a market cap, since a
+token without one carries no ranking information. Tokens sharing a market cap are ordered by
+platform and address, so an unchanged data set produces an identical file. Where several coins
+share one contract address, as Cardano assets minted under a single policy id do, the address
+keeps the market cap of the largest of them.
+
+The file covers exactly the chains of the run that produced it, so it is only complete when the
+whole platform list is built in one `yarn coins simple` invocation, as the release workflow does.
 
 ## Naming
 

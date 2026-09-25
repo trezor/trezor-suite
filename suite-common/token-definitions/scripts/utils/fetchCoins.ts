@@ -4,7 +4,12 @@ import * as toml from 'toml';
 import { blockfrostUtils } from '@trezor/blockchain-link-utils';
 
 import { AdvancedTokenStructure, TokenStructureType } from '../../src/tokenDefinitionsTypes';
-import { COIN_LIST_URL, STELLAR_EXPERT_URL, STELLAR_HORIZON_URL } from '../constants';
+import {
+    COIN_LIST_URL,
+    STELLAR_EXPERT_URL,
+    STELLAR_HORIZON_URL,
+    UNKNOWN_MARKET_CAP,
+} from '../constants';
 import { CoinData } from '../types';
 
 const normalizeStellarAssetAddress = (address: string): string | undefined => {
@@ -251,16 +256,25 @@ export const fetchAllCoins = async (): Promise<CoinData[]> => {
     }
 };
 
+export type BuildCoinDataForPlatformParams = {
+    allCoins: CoinData[];
+    assetPlatformId: string;
+    structure: TokenStructureType;
+    marketCaps: Map<string, number>;
+};
+
 /**
- * Returns a Set for the simple structure rather than SimpleTokenStructure (string[]), so the caller
- * can merge extra addresses with `has`/`add` instead of a linear scan over tens of thousands of
- * contracts. Convert with `Array.from` before writing the definition files.
+ * Returns a Map for the simple structure (contract address to market cap in USD) rather than
+ * SimpleTokenStructure (string[]), so the caller can merge extra addresses with `has`/`set`
+ * instead of a linear scan over tens of thousands of contracts, and can write both the address
+ * array and the market cap map from a single pass.
  */
-export const buildCoinDataForPlatform = async (
-    allCoins: CoinData[],
-    assetPlatformId: string,
-    structure: TokenStructureType,
-): Promise<AdvancedTokenStructure | Set<string>> => {
+export const buildCoinDataForPlatform = async ({
+    allCoins,
+    assetPlatformId,
+    structure,
+    marketCaps,
+}: BuildCoinDataForPlatformParams): Promise<AdvancedTokenStructure | Map<string, number>> => {
     if (structure === TokenStructureType.ADVANCED) {
         const result: AdvancedTokenStructure = {};
 
@@ -282,15 +296,22 @@ export const buildCoinDataForPlatform = async (
         return result;
     }
 
-    const contractAddresses = new Set<string>();
+    const contractAddresses = new Map<string, number>();
 
-    for (const { platforms } of allCoins) {
+    for (const { id, platforms } of allCoins) {
         const contractAddress = await getContractAddress(assetPlatformId, platforms);
         if (!contractAddress) {
             continue;
         }
 
-        contractAddresses.add(contractAddress);
+        const marketCap = marketCaps.get(id) ?? UNKNOWN_MARKET_CAP;
+        // Several coins can share a contract address, most notably Cardano assets minted under
+        // one policy id, so the address keeps the market cap of the largest of them.
+        const knownMarketCap = contractAddresses.get(contractAddress);
+
+        if (knownMarketCap === undefined || marketCap > knownMarketCap) {
+            contractAddresses.set(contractAddress, marketCap);
+        }
     }
 
     return contractAddresses;
