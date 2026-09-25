@@ -1,3 +1,7 @@
+# 10.0.1
+
+- refactor(connect): change requests dispatched (701c26f41b)
+
 # 10.0.0
 
 - npm-prerelease: @trezor/device-utils 10.0.0-beta.3 (6bfcc5bd7c)
