@@ -31,6 +31,7 @@ import { EmptyStakingCard } from '../StakingDashboard/components/EmptyStakingCar
 import { ExternalStakingProviderCard } from '../StakingDashboard/components/ExternalStakingProviderCard';
 import { PayoutCardFrequencyRewards } from '../StakingDashboard/components/PayoutCardFrequencyRewards';
 import { StakingCard } from '../StakingDashboard/components/StakingCard';
+
 interface SolStakingDashboardProps {
     selectedAccount: SelectedAccountLoaded;
 }

@@ -1,5 +1,6 @@
 import TrezorConnect, { connectCallableMethods } from '../../../src';
 import { getController, initTrezorConnect, setup } from '../../common.setup';
+
 const controller = getController();
 
 describe('__info common param', () => {

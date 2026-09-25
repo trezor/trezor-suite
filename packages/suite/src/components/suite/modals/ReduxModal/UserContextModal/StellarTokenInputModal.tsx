@@ -3,6 +3,7 @@ import { useForm, useWatch } from 'react-hook-form';
 import { Translation, type TranslationKey, useTranslation } from '@suite/intl';
 import { Button, Column, Input, Modal, Row, Text } from '@trezor/components';
 import stellar from '@trezor/network-stellar/runtime';
+
 type StellarTokenInputModalProps = {
     onSubmit: (assetCode: string, assetIssuer: string) => void;
     onCancel: () => void;

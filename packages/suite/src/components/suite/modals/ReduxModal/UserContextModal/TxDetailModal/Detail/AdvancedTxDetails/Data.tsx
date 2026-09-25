@@ -3,6 +3,7 @@ import styled from 'styled-components';
 import { Translation, type TranslationKey } from '@suite/intl';
 import { type WalletAccountTransaction } from '@suite-common/wallet-types';
 import { Column, InfoItem, Paragraph } from '@trezor/components';
+
 const ParagraphWrapper = styled.div`
     white-space: pre-wrap;
     overflow-wrap: anywhere;

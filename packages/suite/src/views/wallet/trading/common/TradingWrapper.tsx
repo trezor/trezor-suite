@@ -1,4 +1,5 @@
 import { variables } from '@trezor/components';
+
 export const TradingWrapper = `
     gap: 16px;
     display: grid;

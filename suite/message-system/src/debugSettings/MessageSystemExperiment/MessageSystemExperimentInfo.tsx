@@ -17,6 +17,7 @@ import {
     UsersIcon,
 } from '@trezor/icons';
 import { useDebounce } from '@trezor/react-utils';
+
 type MessageSystemExperimentInfoProps = {
     experiment: ExperimentsItemType;
     assignedGroup?: ExperimentsItemType['groups'][number];

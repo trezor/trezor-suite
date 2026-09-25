@@ -7,6 +7,7 @@ import { type LogMessage } from '@trezor/utils';
 
 import { Card } from './Card';
 import { Translation } from './Translation';
+
 const Log = styled.div`
     font-family: monospace;
     font-size: 12px;

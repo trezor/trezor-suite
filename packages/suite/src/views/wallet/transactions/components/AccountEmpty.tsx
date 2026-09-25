@@ -13,6 +13,7 @@ import { ArrowDownIcon, ArrowsLeftRightIcon, CurrencyCircleDollarIcon } from '@t
 
 import { AccountExceptionLayout } from 'src/components/wallet';
 import { type Account } from 'src/types/wallet';
+
 interface AccountEmptyProps {
     account: Account;
 }

@@ -3,6 +3,7 @@ import { Card, Column, Icon, Paragraph } from '@trezor/components';
 import { PercentIcon } from '@trezor/icons';
 
 import { ApyValue } from '../../ApyValue';
+
 interface ApyCardProps {
     apy?: number | null;
 }

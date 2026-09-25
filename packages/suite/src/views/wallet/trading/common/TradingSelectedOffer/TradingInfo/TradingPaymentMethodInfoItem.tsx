@@ -2,6 +2,7 @@ import { Translation, type TranslationKey } from '@suite/intl';
 import { PaymentMethodType } from '@suite/trading';
 import type { TradingPaymentMethodType } from '@suite-common/trading';
 import { InfoItem, Text } from '@trezor/components';
+
 type TradingPaymentMethodInfoItemProps = {
     paymentMethod: TradingPaymentMethodType;
     paymentMethodName?: string;

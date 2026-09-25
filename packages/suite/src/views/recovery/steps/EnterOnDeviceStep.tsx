@@ -2,6 +2,7 @@ import { Translation } from '@suite/intl';
 import { Banner } from '@trezor/components';
 import { type DeviceModelInternal } from '@trezor/device-utils';
 import { mapTrezorModelToIcon } from '@trezor/product-components';
+
 export const EnterOnDeviceStep = ({
     deviceModelInternal,
 }: {

@@ -23,6 +23,7 @@ import {
     transactionSendingCoinsReplacement,
 } from './__fixtures__/moveLabelsForRbfTransactions.fixture';
 import { type MoveLabelsForRbfThunkDeps, moveLabelsForRbfThunk } from './moveLabelsForRbfThunk';
+
 const rootReducer = combineReducers({
     wallet: combineReducers({
         accounts: accountsReducer,

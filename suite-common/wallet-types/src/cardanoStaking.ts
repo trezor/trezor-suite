@@ -1,4 +1,5 @@
 import { type NetworkSymbol, asNetworkSymbol } from '@suite-common/wallet-config';
+
 export type CardanoAction =
     'delegate' | 'withdrawal' | 'voteDelegate' | 'voteAbstain' | 'deregister';
 

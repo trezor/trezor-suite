@@ -2,6 +2,7 @@ import { Translation } from '@suite/intl';
 import { type RecoveryInputType, recoveryInputTypes } from '@suite/recovery';
 import { Card, Column, Grid, H4, Icon, Paragraph, RadioCard, Row } from '@trezor/components';
 import { RecoverySeedFilledIcon, TrezorModelOneFilledIcon } from '@trezor/icons';
+
 type SelectRecoveryTypeStepProps = {
     setRecoveryInputType: (type: RecoveryInputType) => void;
     recoveryInputType?: RecoveryInputType;

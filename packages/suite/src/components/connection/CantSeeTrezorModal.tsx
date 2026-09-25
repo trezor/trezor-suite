@@ -22,6 +22,7 @@ import { selectHasTransportOfType } from 'src/selectors/suite/suiteSelectors';
 
 import { AnimationCard } from './AnimationCard';
 import { useConnectionGlobalModalContext } from './context/ConnectionGlobalModalContext';
+
 type DontSeeYourTrezorModalProps = {
     onClose: () => void;
 };

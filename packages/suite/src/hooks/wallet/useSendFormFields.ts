@@ -20,6 +20,7 @@ import { useSelector } from 'src/hooks/suite';
 import { type SendContextValues, type UseSendFormState } from 'src/types/wallet/sendForm';
 
 import { useBitcoinAmountUnit } from './useBitcoinAmountUnit';
+
 export type GetCurrentRateParams = {
     currencyCode: BaseCurrencyCode;
     tokenAddress: TokenAddress;

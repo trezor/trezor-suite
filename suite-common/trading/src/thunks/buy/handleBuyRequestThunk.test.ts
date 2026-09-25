@@ -22,6 +22,7 @@ import {
 import { MIN_MAX_QUOTES_OK } from '../../utils/buy/__fixtures__/buyUtils';
 
 import { buyThunks } from './index';
+
 const tradingReducer = prepareTradingReducer({
     actionTypes: { storageLoad: mockActionType('storageLoad') },
 });

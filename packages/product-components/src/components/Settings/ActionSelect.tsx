@@ -3,6 +3,7 @@ import { type ReactNode } from 'react';
 import styled from 'styled-components';
 
 import { Select, type SelectProps, Tooltip, variables } from '@trezor/components';
+
 const { SCREEN_SIZE } = variables;
 
 type WithTooltipProps = { tooltipContent?: ReactNode; isTooltipActive?: boolean };

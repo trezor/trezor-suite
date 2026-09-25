@@ -9,6 +9,7 @@ import { CloudIcon } from '@trezor/icons';
 import { AccountExceptionLayout } from 'src/components/wallet';
 import { useSelector } from 'src/hooks/suite';
 import { type Account } from 'src/types/wallet';
+
 interface NoTransactionsProps {
     account: Account;
 }

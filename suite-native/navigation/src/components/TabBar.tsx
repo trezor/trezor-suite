@@ -9,6 +9,7 @@ import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 import { AppTabsRoutes } from '../routes';
 import { type TabsOptions } from '../types';
 import { TabBarItem } from './TabBarItem';
+
 interface TabBarProps extends BottomTabBarProps {
     tabItemOptions: TabsOptions;
 }

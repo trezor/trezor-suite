@@ -6,6 +6,7 @@ import styled from 'styled-components';
 
 import { Button, Card, H3, Paragraph } from '@trezor/components';
 import { ArrowLineUpRightIcon } from '@trezor/icons';
+
 const BottomRow = styled.div`
     margin-top: 12px;
 `;
