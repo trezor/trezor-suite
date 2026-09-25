@@ -1,8 +1,8 @@
+import type { VerifyUpdateFile } from 'electron-updater';
 import fs from 'fs';
 import { createMessage, readKey, readSignature, verify } from 'openpgp';
-import path from 'path';
 
-import { removeTrailingSlashes } from '@trezor/utils';
+import { removeTrailingSlashes, serializeError } from '@trezor/utils';
 
 const signingKey = process.env.APP_PUBKEY;
 
@@ -11,24 +11,30 @@ if (signingKey === undefined) {
     throw new Error('APP_PUBKEY is undefined.');
 }
 
-type GetSignatureFileProps = { feedURL: string; downloadedFile: string };
+type GetSignatureFileProps = { feedURL: string; originalUpdateFileName: string };
 
 const GET_SIGNATURE_TIMEOUT = 10_000; // [ms]
 /**
  * Get signature files, which are available next to installation files.
  */
-export const getSignatureFile = async ({ downloadedFile, feedURL }: GetSignatureFileProps) => {
+export const getSignatureFile = async ({
+    originalUpdateFileName,
+    feedURL,
+}: GetSignatureFileProps) => {
     const abortController = new AbortController();
     const timeoutId = setTimeout(() => abortController.abort(), GET_SIGNATURE_TIMEOUT);
 
     try {
-        const filename = path.basename(downloadedFile);
-        const signatureFileURL = `${removeTrailingSlashes(feedURL)}/${filename}.asc`;
+        const signatureFileURL = `${removeTrailingSlashes(feedURL)}/${originalUpdateFileName}.asc`;
         const signatureFile = await fetch(signatureFileURL, { signal: abortController.signal });
 
+        if (!signatureFile.ok) {
+            throw new Error(
+                `Failed to fetch signature file from ${signatureFileURL}: ${signatureFile.status} ${signatureFile.statusText}.`,
+            );
+        }
+
         return await signatureFile.text();
-    } catch {
-        return null;
     } finally {
         clearTimeout(timeoutId);
     }
@@ -65,3 +71,26 @@ export const verifySignature = async ({ downloadedFile, signatureFile }: VerifyS
         throw new Error('Invalid signature.');
     }
 };
+
+type CreateVerifyUpdateFileParams = {
+    feedURL: string;
+    onVerifyStart?: () => void;
+};
+
+export const createVerifyUpdateFile =
+    ({ feedURL, onVerifyStart }: CreateVerifyUpdateFileParams): VerifyUpdateFile =>
+    async ({ temporaryUpdateFilePath, originalUpdateFileName }) => {
+        onVerifyStart?.();
+
+        try {
+            const signatureFile = await getSignatureFile({ originalUpdateFileName, feedURL });
+            await verifySignature({ downloadedFile: temporaryUpdateFilePath, signatureFile });
+
+            return { success: true };
+        } catch (error) {
+            return {
+                success: false,
+                error: serializeError(error),
+            };
+        }
+    };

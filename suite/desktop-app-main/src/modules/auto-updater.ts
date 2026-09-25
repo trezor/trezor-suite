@@ -6,7 +6,6 @@ import {
     type UpdateInfo,
     autoUpdater,
 } from 'electron-updater';
-import { unlinkSync } from 'fs';
 
 import { type HandshakeElectron } from '@suite/desktop-app-api';
 import { isDevEnv, isFeatureFlagEnabled } from '@suite-common/suite-utils';
@@ -16,7 +15,7 @@ import { type ModuleInit, mainThreadEmitter } from './module';
 import { ipcMain } from '../ipcMain';
 import { parseCustomFeedURL } from '../libs/parseCustomFeedURL';
 import { getSwitchValue, hasSwitch } from '../libs/process-switches';
-import { getSignatureFile, verifySignature } from '../libs/update-checker';
+import { createVerifyUpdateFile } from '../libs/update-checker';
 import { b2t } from '../libs/utils';
 import { app } from '../typed-electron';
 
@@ -101,7 +100,20 @@ export const init: ModuleInit = ({ mainWindowProxy, store }) => {
         autoUpdater.disableDifferentialDownload = true;
     }
 
+    const setVerifyUpdateFile = () => {
+        autoUpdater.verifyUpdateFile = createVerifyUpdateFile({
+            feedURL,
+            onVerifyStart: () => {
+                logger.info(SERVICE_NAME, 'Verifying downloaded update signature');
+                mainWindowProxy.getInstance()?.webContents.send('update/downloading', {
+                    verifying: true,
+                });
+            },
+        });
+    };
+
     autoUpdater.setFeedURL(feedURL);
+    setVerifyUpdateFile();
     logger.warn(SERVICE_NAME, [`Feed url: ${feedURL}`]);
 
     logger.info(SERVICE_NAME, `Is looking for pre-releases? (${b2t(allowPrerelease)})`);
@@ -192,21 +204,8 @@ export const init: ModuleInit = ({ mainWindowProxy, store }) => {
         mainWindowProxy.getInstance()?.webContents.send('update/downloading', progressObj);
     });
 
-    autoUpdater.on('update-downloaded', async (info: UpdateDownloadedEvent) => {
+    autoUpdater.on('update-downloaded', (info: UpdateDownloadedEvent) => {
         const { version, releaseDate, downloadedFile, releaseNotes } = info;
-
-        // Need to make the event handler async before setting `autoInstallEvent = 'manual'` here, because the Node.js
-        // EventEmitter is synchronous, and it would cause a macOS specific bug during app update, see upstream code:
-        // https://github.com/electron-userland/electron-builder/blob/a5121de49582eaa8870d4c05e6ae55eff160a592/packages/electron-updater/src/MacUpdater.ts#L253-L255
-        // autoInstallEvent is considered a permanent setting, not something that can toggle on/off during the process.
-        // → we need to make sure the MacUpdater code finishes with the previous autoInstallEvent value.
-        await Promise.resolve();
-
-        // Disable installation of the downloaded file before our own verification is complete, it's quite hacky but
-        // electron-updater doesn't have an interface to delay the installation with an arbitrary async function.
-        // TODO refactor https://github.com/electron-userland/electron-builder/issues/10010
-        const previousAutoInstallEvent = autoUpdater.autoInstallEvent;
-        autoUpdater.autoInstallEvent = 'manual';
 
         logger.info(SERVICE_NAME, [
             'Update downloaded:',
@@ -215,52 +214,13 @@ export const init: ModuleInit = ({ mainWindowProxy, store }) => {
             `- Downloaded file: ${downloadedFile}`,
             `- Release notes: ${releaseNotes}`,
         ]);
+        logger.info(SERVICE_NAME, 'Signature of update file is valid');
 
-        mainWindowProxy.getInstance()?.webContents.send('update/downloading', { verifying: true });
-
-        const abortUpdate = () => {
-            autoUpdater.autoInstallEvent = 'manual';
-            unlinkSync(downloadedFile);
-            logger.info(SERVICE_NAME, `Unlink downloaded file ${downloadedFile}`);
-            mainWindowProxy.getInstance()?.webContents.send('update/error');
-        };
-
-        try {
-            // Find the right signature for the downloaded file
-            const signatureFile = await getSignatureFile({ downloadedFile, feedURL });
-            // If fetching of signature file has failed, abort the update, but do not log it as an error
-            if (signatureFile === null) {
-                abortUpdate();
-
-                return;
-            }
-
-            // check downloaded file
-            await verifySignature({
-                downloadedFile,
-                signatureFile,
-            });
-
-            logger.info(SERVICE_NAME, 'Signature of update file is valid');
-            autoUpdater.autoInstallEvent = previousAutoInstallEvent;
-
-            mainWindowProxy.getInstance()?.webContents.send('update/downloaded', {
-                version,
-                releaseDate,
-                downloadedFile,
-            });
-        } catch (err) {
-            captureMessage(serializeError(err));
-            abortUpdate();
-            logger.error(SERVICE_NAME, `Signature check of update file failed: ${err.message}`);
-        }
-
-        logger.info(
-            SERVICE_NAME,
-            `Is configured to auto update after app quit? ${b2t(
-                autoUpdater.autoInstallEvent === 'onQuit',
-            )}`,
-        );
+        mainWindowProxy.getInstance()?.webContents.send('update/downloaded', {
+            version,
+            releaseDate,
+            downloadedFile,
+        });
     });
 
     ipcMain.on('update/check', (_, { isManual }) => {
@@ -317,6 +277,7 @@ export const init: ModuleInit = ({ mainWindowProxy, store }) => {
 
         feedURL = getFeedURL({ allowPrerelease });
         autoUpdater.setFeedURL(feedURL);
+        setVerifyUpdateFile();
         logger.info(SERVICE_NAME, `New feed url: ${feedURL}`);
     });
 
