@@ -2,7 +2,7 @@ import { type TokenDefinition } from '@suite-common/token-definitions';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { mockAccountToken, mockWalletAccount } from '@suite-common/wallet-types/mocks';
 
-import { getAccountAnalyticsTokenSymbols } from './tokenUtils';
+import { getAccountAnalyticsTokenSymbols, getTokens } from './tokenUtils';
 
 const ethSymbol = asNetworkSymbol('eth');
 
@@ -10,6 +10,7 @@ const legitContract = '0x' + 'a'.repeat(40);
 const spamContract = '0x' + 'b'.repeat(40);
 const hiddenContract = '0x' + 'c'.repeat(40);
 const zeroBalanceContract = '0x' + 'e'.repeat(40);
+const collectionContract = '0x' + 'd'.repeat(40);
 
 const ethDefinitions: TokenDefinition = {
     error: false,
@@ -84,5 +85,41 @@ describe('getAccountAnalyticsTokenSymbols', () => {
         });
 
         expect(getAccountAnalyticsTokenSymbols(account, undefined)).toEqual(['ETH']);
+    });
+});
+
+describe('getTokens tells a collection from a token', () => {
+    const collection = mockAccountToken({
+        symbol: 'PPG',
+        contract: collectionContract,
+        balance: '2',
+        // A collection the backend did not name an NFT standard for: what it holds says so.
+        standard: undefined,
+        ids: ['1492', '4820'],
+    });
+
+    it('leaves a collection out of the tokens, definition or not', () => {
+        const { shownWithBalance, hiddenWithBalance, unverifiedWithBalance } = getTokens({
+            tokens: [collection],
+            symbol: ethSymbol,
+            tokenDefinitions: ethDefinitions,
+            areCollectionsRecognisedByIds: true,
+        });
+
+        expect(shownWithBalance).toEqual([]);
+        expect(hiddenWithBalance).toEqual([]);
+        expect(unverifiedWithBalance).toEqual([]);
+    });
+
+    it('is a collection when the collections are asked for', () => {
+        const { shownWithBalance, unverifiedWithBalance } = getTokens({
+            tokens: [collection],
+            symbol: ethSymbol,
+            tokenDefinitions: ethDefinitions,
+            isNft: true,
+            areCollectionsRecognisedByIds: true,
+        });
+
+        expect([...shownWithBalance, ...unverifiedWithBalance]).toEqual([collection]);
     });
 });

@@ -11,6 +11,7 @@ import { selectDiscoveryOverallStatus } from 'src/utils/wallet/selectDiscoveryOv
 import { AssetFirstBalanceCard } from './AssetFirstBalanceCard';
 import { AssetFirstTable } from './AssetFirstTable';
 import { type AssetRow, selectAssetFirstRows } from './assetFirstTableSelectors';
+import { AssetFirstNfts } from '../AssetFirstNfts/AssetFirstNfts';
 import { DashboardPromoBanner } from '../DashboardPromoBanner/DashboardPromoBanner';
 import { EmptyWallet } from '../PortfolioCard/EmptyWallet';
 import { PortfolioCardException } from '../PortfolioCard/PortfolioCardException';
@@ -50,6 +51,8 @@ export const AssetFirstDashboard = () => {
             <AssetFirstBalanceCard rows={rows} />
             <DashboardPromoBanner />
             <AssetFirstTable deviceState={deviceState} />
+            {/* The NFTs come after the table, and after anything the dashboard puts between. */}
+            <AssetFirstNfts deviceState={deviceState} />
         </Column>
     );
 };
