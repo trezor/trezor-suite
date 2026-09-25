@@ -385,6 +385,28 @@ export const networkConfigBySymbol = {
         tradeCryptoId: 'ethereum-classic',
         yieldXyzId: null,
     },
+    arc: {
+        color: '#2775ca',
+        protocols: [asProtocol('arc')],
+        displaySymbol: 'USDC',
+        displaySymbolName: 'USDC',
+        name: 'Arc',
+        networkType: 'ethereum',
+        chainId: 5042,
+        bip43Path: "m/44'/60'/0'/0/i",
+        decimals: 18,
+        testnet: false,
+        explorer: getExplorerUrls('https://explorer.arc.io'),
+        features: ['rbf', 'sign-verify', 'tokens', 'eip1559'],
+        backendOptions: [{ type: 'evm-rpc', isExternalBackend: true }],
+        accountTypes: {},
+        // Arc's native asset is USDC, so the balance prices against the USDC market; the platform
+        // id only matters for tokens, which are not verified against a definitions list here.
+        coingeckoId: 'arc',
+        tradeCryptoId: 'usd-coin',
+        caipId: 'eip155:5042',
+        yieldXyzId: null,
+    },
     tsep: {
         color: '#454a75',
         protocols: [asProtocol('tsep')],
@@ -432,6 +454,25 @@ export const networkConfigBySymbol = {
         coingeckoId: 'hoodi-test-ethereum', // fake, coingecko does not have testnets
         tradeCryptoId: 'hoodi-test-ethereum', // fake, coingecko does not have testnets
         yieldXyzId: 'ethereum-hoodi',
+    },
+    tarc: {
+        color: '#2775ca',
+        protocols: [asProtocol('tarc')],
+        displaySymbol: 'tUSDC',
+        name: 'Arc Testnet',
+        networkType: 'ethereum',
+        chainId: 5042002,
+        bip43Path: "m/44'/60'/0'/0/i",
+        decimals: 18,
+        testnet: true,
+        explorer: getExplorerUrls('https://testnet.arcscan.app'),
+        features: ['rbf', 'sign-verify', 'tokens', 'eip1559'],
+        backendOptions: [{ type: 'evm-rpc', isExternalBackend: true }],
+        accountTypes: {},
+        isDebugOnlyNetwork: true,
+        coingeckoId: undefined,
+        tradeCryptoId: undefined,
+        yieldXyzId: null,
     },
 } satisfies Readonly<Record<EthereumNetworkSymbol, NetworkConfig>>;
 

@@ -104,6 +104,8 @@ const networkTypeMap: Record<string, NetworkSpecificDefault> = {
     avax: networkSpecificDefaultEthereum,
     tsep: networkSpecificDefaultEthereum,
     thod: networkSpecificDefaultEthereum,
+    arc: networkSpecificDefaultEthereum,
+    tarc: networkSpecificDefaultEthereum,
 
     sol: networkSpecificDefaultSolana,
     dsol: networkSpecificDefaultSolana,

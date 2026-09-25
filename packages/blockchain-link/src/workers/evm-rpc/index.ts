@@ -49,7 +49,7 @@ const onRequest = (request: Request<MessageTypes.Message>) => {
 
 export class EvmRpcWorker extends BaseWorker<PublicClient> {
     cleanup() {
-        cleanupSubscriptions();
+        cleanupSubscriptions(this.state);
         super.cleanup();
     }
 

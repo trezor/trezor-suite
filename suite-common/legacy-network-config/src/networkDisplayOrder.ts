@@ -26,6 +26,8 @@ export const networkDisplayOrder: readonly (keyof LegacyNetworkConfigs)[] = [
     'regtest',
     'tsep',
     'thod',
+    'arc',
+    'tarc',
     'dsol',
     'txrp',
     'txlm',

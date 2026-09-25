@@ -261,6 +261,49 @@
                 "T3T1": "2.6.1",
                 "T3W1": "2.6.1"
             }
+        },
+        {
+            "blockchain_link": {
+                "type": "evm-rpc",
+                "url": ["https://rpc.mainnet.arc.io"]
+            },
+            "chain": "arc",
+            "chain_id": 5042,
+            "blocktime_seconds": 1,
+            "coingecko_id": "arc",
+            "label": "USDC",
+            "name": "Arc",
+            "shortcut": "ARC",
+            "slip44": 60,
+            "support": {
+                "T1B1": "1.11.3",
+                "T2B1": "2.6.4",
+                "T2T1": "2.5.4",
+                "T3B1": "2.8.1",
+                "T3T1": "2.6.1",
+                "T3W1": "2.6.1"
+            }
+        },
+        {
+            "blockchain_link": {
+                "type": "evm-rpc",
+                "url": ["https://rpc.testnet.arc.network"]
+            },
+            "chain": "tarc",
+            "chain_id": 5042002,
+            "blocktime_seconds": 1,
+            "label": "tUSDC",
+            "name": "Arc Testnet",
+            "shortcut": "tARC",
+            "slip44": 60,
+            "support": {
+                "T1B1": "1.11.3",
+                "T2B1": "2.6.4",
+                "T2T1": "2.5.4",
+                "T3B1": "2.8.1",
+                "T3T1": "2.6.1",
+                "T3W1": "2.6.1"
+            }
         }
     ]
 }
