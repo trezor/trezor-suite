@@ -1,5 +1,7 @@
 import { Translation } from '@suite/intl';
 import {
+    selectHasUnknownPendingNonces,
+    selectIsEthereumNonceAbovePending,
     selectResolvedEthereumNonce,
     selectStake,
     selectTronStakeTxReview,
@@ -8,7 +10,7 @@ import {
 import { type GeneralPrecomposedTransactionFinal } from '@suite-common/wallet-types';
 import { getFee, hasEip1559MaxPriorityFee, isEip1559 } from '@suite-common/wallet-utils';
 import { Note, Text } from '@trezor/components';
-import { CheckCircleIcon, GasPumpIcon } from '@trezor/icons';
+import { CheckCircleIcon, GasPumpIcon, WarningIcon } from '@trezor/icons';
 
 import { FeeRate } from 'src/components/wallet/Fees/FeeRate';
 import { useSelector } from 'src/hooks/suite';
@@ -44,6 +46,9 @@ export const TransactionReviewEthereumNotes = ({
     tx,
 }: TransactionReviewEthereumNotesProps) => {
     const ethereumNonce = useSelector(selectReviewEthereumNonce);
+    // Only the send flow sets these.
+    const isNonceAbovePending = useSelector(selectIsEthereumNonceAbovePending);
+    const hasUnknownPendingNonces = useSelector(selectHasUnknownPendingNonces);
 
     const fee = getFee(account.networkType, tx);
 
@@ -54,6 +59,24 @@ export const TransactionReviewEthereumNotes = ({
                     <Translation id="TR_NONCE" />
                     {': '}
                     <Text data-testid="@modal/header/nonce/value">{ethereumNonce}</Text>
+                </Note>
+            )}
+            {isNonceAbovePending && (
+                <Note
+                    data-testid="@modal/header/nonce-above-pending"
+                    icon={WarningIcon}
+                    intent="warning"
+                >
+                    <Translation id="TR_NONCE_ABOVE_PENDING_WARNING" />
+                </Note>
+            )}
+            {hasUnknownPendingNonces && (
+                <Note
+                    data-testid="@modal/header/nonce-unknown-pending"
+                    icon={WarningIcon}
+                    intent="warning"
+                >
+                    <Translation id="TR_NONCE_UNKNOWN_PENDING_WARNING" />
                 </Note>
             )}
             <Note data-testid="@modal/header/gas-limit" icon={GasPumpIcon}>

@@ -2616,6 +2616,10 @@ export const messages = {
                 primaryButton: 'Reconnect Trezor',
             },
             destinationTagTitle: 'Confirm the XRP destination tag on your Trezor',
+            nonceAbovePendingWarning:
+                'This nonce is higher than the network expects for this account. Unless you have a transaction in flight from another wallet, this one may stay pending until the gap is filled.',
+            nonceUnknownPendingWarning:
+                "The network reports transactions for this account that Suite can't see, most likely sent from another wallet. This transaction may replace one of them or be rejected.",
             address: {
                 title: 'Verify the address',
                 step1: 'Go to the app or website where you originally got the address.',

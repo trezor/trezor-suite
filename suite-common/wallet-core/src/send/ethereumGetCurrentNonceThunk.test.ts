@@ -80,6 +80,12 @@ describe(ethereumGetCurrentNonceThunk.name, () => {
         expect(getAccountInfo).toHaveBeenCalledWith(
             expect.objectContaining({ confirmedNonce: true }),
         );
-        expect(result).toEqual({ nonce: '9', confirmedNonce: '9' });
+        expect(result).toEqual({
+            nonce: '9',
+            confirmedNonce: '9',
+            pendingNonceCeiling: 10,
+            // a gap with nothing of ours in flight is, by definition, a tx we cannot see
+            unknownPendingNonces: { pendingNonce: 10, confirmedNonce: 9 },
+        });
     });
 });
