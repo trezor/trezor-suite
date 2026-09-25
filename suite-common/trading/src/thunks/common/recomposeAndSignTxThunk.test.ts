@@ -1258,6 +1258,67 @@ describe('recomposeAndSignTxThunk', () => {
         });
     });
 
+    it('should not create payment requests for sell when firmware does not support SLIP24 sells', async () => {
+        const { store, account, tradingFormState } = getMocks(
+            {
+                composedTransactionInfo: {
+                    ...mockComposedTransactionInfo,
+                },
+            },
+            {
+                minor_version: 12,
+                patch_version: 5,
+            },
+        );
+
+        const mockSignAndPushSendFormTransaction = jest.fn().mockResolvedValueOnce({
+            success: true,
+            payload: {
+                txid: 'txid-without-payment-requests',
+            },
+        });
+
+        (composeSendFormTransactionFeeLevelsThunk as unknown as jest.Mock).mockImplementationOnce(
+            createThunk(
+                composeSendFormTransactionFeeLevelsThunk.typePrefix,
+                (_, { fulfillWithValue }) =>
+                    fulfillWithValue({
+                        normal: {
+                            type: 'final',
+                            outputs: [
+                                {
+                                    amount: '10000000',
+                                },
+                            ],
+                        },
+                    }),
+            ),
+        );
+
+        const response = await store.dispatch(
+            tradingThunks.recomposeAndSignTxThunk({
+                account: {
+                    ...account,
+                    networkType: 'bitcoin' as const,
+                } as Account,
+                address: 'address',
+                amount: '0.1',
+                isSlip24Active: true,
+                tradingFormState: { ...tradingFormState, activeSection: 'sell' as const },
+                signAndPushSendFormTransaction: mockSignAndPushSendFormTransaction,
+            }),
+        );
+
+        expect(response.meta.requestStatus).toBe('fulfilled');
+        expect(tradingThunks.createPaymentRequestsThunk).not.toHaveBeenCalled();
+        expect(mockSignAndPushSendFormTransaction).toHaveBeenCalledWith({
+            formState: expect.any(Object),
+            precomposedTransaction: expect.any(Object),
+            selectedAccount: expect.any(Object),
+            paymentRequests: [],
+        });
+    });
+
     it('should not create payment requests when SLIP24 is not active', async () => {
         const { store, account, tradingFormState } = getMocks({
             composedTransactionInfo: {
