@@ -372,10 +372,11 @@ const initStore = (state: InitActionTestState) => {
     const { services } = createTestCompositionRoot<InitActionTestDeps, InitActionTestState>({
         services: store => {
             const analytics = mockDesktopAnalytics();
+            const lockDevice = mock<LockDevice>();
             const { connectInit } = createConnectInitCompositionRoot({
                 dispatch: store.dispatch,
                 getState: store.getState,
-                lockDevice: mock<LockDevice>(),
+                lockDevice,
                 analytics,
                 connectInitDeviceEventHooks: mockConnectInitDeviceEventHooks(),
                 connectInitSettings: mockConnectInitSettings(),
@@ -396,6 +397,7 @@ const initStore = (state: InitActionTestState) => {
                 getTokenDefinitionsEnabledNetworks: asGetter(
                     () => state.wallet.settings.enabledNetworks,
                 ),
+                lockDevice,
                 suiteRouterHistory,
             };
         },
