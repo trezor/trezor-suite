@@ -162,7 +162,7 @@ export class HttpServer<T extends EventMap> extends TypedEmitter<T & BaseEvents>
     }
 
     public start() {
-        const port = this.port || this.ports.shift();
+        const port = this.ports.shift() ?? this.port;
         if (typeof port !== 'number') {
             // this should not happen
             throw new Error('There is no port available in ports array');
