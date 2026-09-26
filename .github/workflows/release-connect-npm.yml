@@ -135,7 +135,8 @@ jobs:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v6
         if: matrix.package != 'no-packages-to-release'
         with:
-          ref: develop
+          ref: ${{ github.sha }}
+          submodules: recursive
 
       - name: Set deployment type
         if: matrix.package != 'no-packages-to-release'
@@ -169,7 +170,8 @@ jobs:
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v6
         with:
-          ref: develop
+          ref: ${{ github.sha }}
+          submodules: recursive
 
       - name: Set deployment type
         id: set_deployment_type
