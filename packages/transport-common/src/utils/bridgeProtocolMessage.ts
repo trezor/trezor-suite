@@ -12,7 +12,7 @@ export type BridgeProtocolMessage = {
 // - parsed json string (parsed protocol message)
 export function validateProtocolMessage(body: unknown, withData = true): BridgeProtocolMessage {
     const isValidProtocol = (s: any): s is BridgeProtocolMessage['protocol'] =>
-        s === 'v1' || s === 'v2' || s === 'bridge';
+        s === 'v1' || s === 'v2';
 
     let json: Record<string, any> | undefined | null;
     if (typeof body === 'object') {
