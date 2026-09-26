@@ -275,6 +275,17 @@ export class OnboardingPage {
     }
 
     @step()
+    async createWalletWithoutBackupAndPin() {
+        await this.createWalletButton.click();
+        await expect(this.walletBackupTypeCard).toBeVisible();
+        await this.selectSeedConfirmButton.click();
+
+        await this.backup.skipBackup();
+        await this.pin.skip();
+        await this.finalButton.click();
+    }
+
+    @step()
     async selectSeedType(backupType: BackupType) {
         await this.selectSeedTypeOpenButton.click();
         await this.selectSeedTypeCheckbox(backupType).click();
