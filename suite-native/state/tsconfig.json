@@ -90,6 +90,9 @@
         { "path": "../graph" },
         { "path": "../intl" },
         { "path": "../message-system" },
+        {
+            "path": "../networks/native-common-networks"
+        },
         { "path": "../send" },
         { "path": "../sentry" },
         { "path": "../services" },

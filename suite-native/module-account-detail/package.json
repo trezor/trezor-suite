@@ -53,6 +53,7 @@
         "@suite-native/module-earn": "workspace:*",
         "@suite-native/module-stellar-token-management": "workspace:*",
         "@suite-native/navigation": "workspace:*",
+        "@suite-native/networks": "workspace:*",
         "@suite-native/qr-code": "workspace:*",
         "@suite-native/suite-sync": "workspace:*",
         "@suite-native/tokens": "workspace:*",

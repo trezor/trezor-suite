@@ -12259,6 +12259,7 @@ __metadata:
     "@suite-native/module-trading": "workspace:*"
     "@suite-native/module-transactions": "workspace:*"
     "@suite-native/navigation": "workspace:*"
+    "@suite-native/networks": "workspace:*"
     "@suite-native/sentry": "workspace:*"
     "@suite-native/services": "workspace:*"
     "@suite-native/settings": "workspace:*"
@@ -13276,6 +13277,7 @@ __metadata:
     "@suite-native/module-earn": "workspace:*"
     "@suite-native/module-stellar-token-management": "workspace:*"
     "@suite-native/navigation": "workspace:*"
+    "@suite-native/networks": "workspace:*"
     "@suite-native/qr-code": "workspace:*"
     "@suite-native/suite-sync": "workspace:*"
     "@suite-native/test-utils-store": "workspace:*"
@@ -14368,6 +14370,51 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"@suite-native/network-module-suite-native-types@workspace:*, @suite-native/network-module-suite-native-types@workspace:suite-native/networks/network-module-types":
+  version: 0.0.0-use.local
+  resolution: "@suite-native/network-module-suite-native-types@workspace:suite-native/networks/network-module-types"
+  dependencies:
+    "@reduxjs/toolkit": "npm:2.12.0"
+    "@suite-common/wallet-types": "workspace:*"
+    "@trezor/network-module-types": "workspace:*"
+    react: "npm:19.2.3"
+  languageName: unknown
+  linkType: soft
+
+"@suite-native/network-solana@workspace:*, @suite-native/network-solana@workspace:suite-native/networks/solana":
+  version: 0.0.0-use.local
+  resolution: "@suite-native/network-solana@workspace:suite-native/networks/solana"
+  dependencies:
+    "@reduxjs/toolkit": "npm:2.12.0"
+    "@suite-common/dependency-injection": "workspace:*"
+    "@suite-common/redux-utils": "workspace:*"
+    "@suite-native/atoms": "workspace:*"
+    "@suite-native/intl": "workspace:*"
+    "@suite-native/network-module-suite-native-types": "workspace:*"
+    "@suite-native/storage": "workspace:*"
+    "@trezor/network-module-types": "workspace:*"
+    "@trezor/network-solana": "workspace:*"
+    react: "npm:19.2.3"
+    react-native: "npm:0.86.0"
+    react-redux: "npm:9.3.0"
+    redux-persist: "npm:6.0.0"
+  languageName: unknown
+  linkType: soft
+
+"@suite-native/networks@workspace:*, @suite-native/networks@workspace:suite-native/networks/native-common-networks":
+  version: 0.0.0-use.local
+  resolution: "@suite-native/networks@workspace:suite-native/networks/native-common-networks"
+  dependencies:
+    "@reduxjs/toolkit": "npm:2.12.0"
+    "@suite-common/dependency-injection": "workspace:*"
+    "@suite-common/networks": "workspace:*"
+    "@suite-native/network-module-suite-native-types": "workspace:*"
+    "@suite-native/network-solana": "workspace:*"
+    "@suite-native/storage": "workspace:*"
+    react: "npm:19.2.3"
+  languageName: unknown
+  linkType: soft
+
 "@suite-native/passphrase@workspace:*, @suite-native/passphrase@workspace:suite-native/passphrase":
   version: 0.0.0-use.local
   resolution: "@suite-native/passphrase@workspace:suite-native/passphrase"
@@ -14568,6 +14615,7 @@ __metadata:
     "@suite-native/graph": "workspace:*"
     "@suite-native/intl": "workspace:*"
     "@suite-native/message-system": "workspace:*"
+    "@suite-native/networks": "workspace:*"
     "@suite-native/send": "workspace:*"
     "@suite-native/sentry": "workspace:*"
     "@suite-native/services": "workspace:*"

@@ -14,6 +14,7 @@ import { type AccountKey, type TokenAddress } from '@suite-common/wallet-types';
 import { AccountDiscoveryFailedBanner } from '@suite-native/accounts';
 import { Box, Text, VStack } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
+import { NativeNetworkAccountDetailBanners } from '@suite-native/networks';
 import {
     type TokensRootState,
     selectAccountTokenInfo,
@@ -21,7 +22,6 @@ import {
 } from '@suite-native/tokens';
 import { selectHasAccountAnyTransactionsForToken } from '@suite-native/transactions';
 
-import { SolanaLimitedHistoryBanner } from './AccountBanners/SolanaLimitedHistoryBanner';
 import { StellarLimitedHistoryBanner } from './AccountBanners/StellarLimitedHistoryBanner';
 import { AccountDetailActionButtons } from './AccountDetailActionButtons';
 import { AccountDetailGraph } from './AccountDetailGraph';
@@ -128,7 +128,11 @@ export const TransactionListHeader = memo(
                         />
                     )}
                     {isStellarAccount && <StellarLimitedHistoryBanner />}
-                    {account.networkType === 'solana' && <SolanaLimitedHistoryBanner />}
+                    <NativeNetworkAccountDetailBanners
+                        networkSymbol={account.symbol}
+                        accountKey={accountKey}
+                        tokenContract={tokenContract}
+                    />
                     {account.networkType === 'tron' &&
                         !tokenContract &&
                         hasSelectedAssetTransactions && <TronResources accountKey={accountKey} />}

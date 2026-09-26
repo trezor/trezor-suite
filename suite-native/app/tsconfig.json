@@ -82,6 +82,9 @@
         { "path": "../module-trading" },
         { "path": "../module-transactions" },
         { "path": "../navigation" },
+        {
+            "path": "../networks/native-common-networks"
+        },
         { "path": "../sentry" },
         { "path": "../services" },
         { "path": "../settings" },

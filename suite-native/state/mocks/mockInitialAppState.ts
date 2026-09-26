@@ -40,6 +40,7 @@ import { featureFlagsInitialState } from '@suite-native/feature-flags';
 import { nativeFirmwareInitialState } from '@suite-native/firmware';
 import { graphInitialState } from '@suite-native/graph';
 import { TxKeyPath, localeInitialState } from '@suite-native/intl';
+import { nativeNetworksInitialState } from '@suite-native/networks/mocks';
 import { appSettingsInitialState } from '@suite-native/settings';
 import { tradingInitialState } from '@suite-native/trading-state';
 import { sendFormInitialState } from '@suite-native/transaction-management';
@@ -73,6 +74,7 @@ export const mockInitialAppState = (partialState?: Partial<FullAppState>): FullA
     messageSystem: messageSystemInitialState,
     nativeFirmware: nativeFirmwareInitialState,
     notifications: createNotificationsReducer<TxKeyPath>().initialState,
+    nativeNetworks: nativeNetworksInitialState,
     pendingCoinVisibility: pendingCoinVisibilitySlice.getInitialState(),
     receive: receiveInitialState,
     suiteSync: initialSuiteSyncState,

@@ -3,20 +3,20 @@ import { useSelector } from 'react-redux';
 import { useServices } from '@suite-common/dependency-injection';
 import { injectDispatch } from '@suite-common/redux-utils';
 import { BannerFull } from '@suite-native/atoms';
-import {
-    selectIsSolanaLimitedHistoryBannerClosed,
-    setIsSolanaLimitedHistoryBannerClosed,
-} from '@suite-native/banners';
 import { useTranslate } from '@suite-native/intl';
+
+import {
+    closeLimitedHistoryBanner,
+    selectIsSolanaLimitedHistoryBannerClosed,
+} from '../solanaSlice';
 
 export const SolanaLimitedHistoryBanner = () => {
     const { translate } = useTranslate();
-
     const isClosed = useSelector(selectIsSolanaLimitedHistoryBannerClosed);
-
     const { dispatch } = useServices(injectDispatch);
+
     const handleClose = () => {
-        dispatch(setIsSolanaLimitedHistoryBannerClosed());
+        dispatch(closeLimitedHistoryBanner());
     };
 
     if (isClosed) {
