@@ -48,7 +48,7 @@ const getTransactionAmountInFiat = ({
     const roundedTimestamp = roundTimestampToNearestPastHour(transaction.blockTime as Timestamp);
 
     const amountInUnits = subunitsToUnits(
-        decimals
+        decimals !== undefined
             ? {
                   value: asAmountSubunit(new BigNumber(amount)),
                   decimals,

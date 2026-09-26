@@ -1,6 +1,8 @@
 import type {
     AccountAddresses,
+    BlockbookAccountInfo,
     BlockbookTransaction,
+    TokenInfo,
     Transaction,
 } from '@trezor/blockchain-link-types';
 import type { DeepPartial } from '@trezor/type-utils';
@@ -133,6 +135,20 @@ export const filterTokenTransfers = [
         ],
     },
     {
+        description: 'decimals: 0 is preserved (indivisible token, not treated as missing)',
+        addresses: 'B',
+        transfers: [{ ...tIn, from: 'A', to: 'B', decimals: 0 }],
+        parsed: [
+            {
+                ...tOut,
+                decimals: 0,
+                type: 'recv',
+                from: 'A',
+                to: 'B',
+            },
+        ],
+    },
+    {
         description: 'addresses as unexpected object (number)',
         addresses: 1,
         transfers: tokenTransfers,
@@ -179,6 +195,60 @@ export const filterTokenTransfers = [
         addresses: 'A',
         transfers: ['A', null, 1, {}],
         parsed: [],
+    },
+];
+
+type BlockbookAccountToken = NonNullable<BlockbookAccountInfo['tokens']>[number];
+
+const erc20Balance = {
+    type: 'ERC20',
+    standard: 'ERC20',
+    contract: '0x0',
+    name: 'Token name',
+    symbol: 'TN',
+    transfers: 1,
+    balance: '5',
+    decimals: 6,
+} satisfies BlockbookAccountToken;
+
+const { decimals: _decimals, ...erc20BalanceWithoutDecimals } = erc20Balance;
+const erc20BalanceMissingDecimals = erc20BalanceWithoutDecimals as BlockbookAccountToken;
+
+export const transformTokenInfo: {
+    description: string;
+    tokens: BlockbookAccountInfo['tokens'];
+    parsed: TokenInfo[] | undefined;
+}[] = [
+    {
+        description: 'decimals: 0 is preserved (indivisible token, not treated as missing)',
+        tokens: [{ ...erc20Balance, decimals: 0 }],
+        parsed: [{ ...erc20Balance, decimals: 0 }],
+    },
+    {
+        description: 'missing decimals falls back to the ERC-20 convention (18)',
+        tokens: [erc20BalanceMissingDecimals],
+        parsed: [{ ...erc20BalanceWithoutDecimals, decimals: 18 }],
+    },
+    {
+        description: 'decimals are taken as reported',
+        tokens: [erc20Balance],
+        parsed: [erc20Balance],
+    },
+    {
+        description: 'XPUBAddress entries are skipped',
+        tokens: [
+            {
+                type: 'XPUBAddress',
+                name: 'A',
+                path: "m/44'/0'/0'/0/0",
+                transfers: 1,
+                decimals: 8,
+                balance: '0',
+                totalSent: '0',
+                totalReceived: '0',
+            },
+        ],
+        parsed: undefined,
     },
 ];
 
