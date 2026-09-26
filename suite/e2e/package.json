@@ -64,6 +64,7 @@
         "@trezor/network-solana": "workspace:*",
         "@trezor/perf-e2e": "workspace:*",
         "@trezor/protobuf": "workspace:*",
+        "@trezor/suite": "workspace:*",
         "@trezor/theme": "workspace:*",
         "@trezor/transport-common": "workspace:*",
         "@trezor/trezor-user-env-link": "workspace:*",

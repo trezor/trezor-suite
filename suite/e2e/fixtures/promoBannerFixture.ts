@@ -1,6 +1,9 @@
-import { PromoBannerType } from '../support/pageObjects/dashboardPage';
+import type { DashboardBannerType } from '../support/pageObjects/promoBanner';
 
-export function getPromoBannerJsonContent(messageId: string, bannerType: PromoBannerType): string {
+export function getPromoBannerJsonContent(
+    messageId: string,
+    bannerType: DashboardBannerType,
+): string {
     const languages = ['en', 'es', 'cs', 'de', 'fr', 'it', 'pt', 'tr', 'ru', 'ja', 'uk', 'hu'];
 
     const content = {

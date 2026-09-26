@@ -82,6 +82,7 @@
         },
         { "path": "../../packages/perf-e2e" },
         { "path": "../../packages/protobuf" },
+        { "path": "../../packages/suite" },
         { "path": "../../packages/theme" },
         {
             "path": "../../packages/transport-common"
