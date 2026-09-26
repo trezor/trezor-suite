@@ -48,7 +48,7 @@ export const HomescreenAlerts = () => {
         return <OutOfQuotaAlert />;
     }
 
-    if (pendingFeatureForFeedback) {
+    if (pendingFeatureForFeedback && FEEDBACK_FEATURE_CONFIGS[pendingFeatureForFeedback]) {
         const { titleKey } = FEEDBACK_FEATURE_CONFIGS[pendingFeatureForFeedback];
 
         return (
