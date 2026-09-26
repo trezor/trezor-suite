@@ -15,6 +15,7 @@ import {
 import { useAlert } from '@suite-native/alerts';
 import { Translation } from '@suite-native/intl';
 import {
+    AccountDetailStackRoutes,
     type RootStackParamList,
     RootStackRoutes,
     type SendStackParamList,
@@ -113,10 +114,13 @@ export const useHandleOnDeviceTransactionReview = ({
                 return;
             }
 
-            navigation.navigate(RootStackRoutes.AccountDetail, {
-                accountKey,
-                tokenContract,
-                closeActionType: 'back',
+            navigation.navigate(RootStackRoutes.AccountDetailStack, {
+                screen: AccountDetailStackRoutes.AccountDetail,
+                params: {
+                    accountKey,
+                    tokenContract,
+                    closeActionType: 'back',
+                },
             });
         }
     }, [

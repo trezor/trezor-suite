@@ -1,0 +1,43 @@
+import { Dimensions } from 'react-native';
+
+import { type RouteProp, useRoute } from '@react-navigation/native';
+
+import { BoxSkeleton, Card, VStack } from '@suite-native/atoms';
+import {
+    type AccountDetailStackParamList,
+    type AccountDetailStackRoutes,
+    Screen,
+    ScreenHeader,
+} from '@suite-native/navigation';
+import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
+
+const SCREEN_WIDTH = Dimensions.get('window').width;
+
+const cardStyle = prepareNativeStyle(utils => ({
+    padding: utils.spacings.sp8,
+}));
+
+export const AccountDetailLoadingScreen = () => {
+    const { applyStyle } = useNativeStyles();
+    const route =
+        useRoute<RouteProp<AccountDetailStackParamList, AccountDetailStackRoutes.AccountDetail>>();
+    const { closeActionType } = route.params;
+
+    return (
+        <Screen header={<ScreenHeader closeActionType={closeActionType} />}>
+            <VStack spacing="sp32" alignItems="center">
+                <Card style={applyStyle(cardStyle)}>
+                    <BoxSkeleton width={SCREEN_WIDTH - 32} height={70} />
+                </Card>
+                <Card style={applyStyle(cardStyle)}>
+                    <VStack spacing="sp24" alignItems="center" paddingHorizontal="sp24">
+                        <BoxSkeleton width={104} height={104} borderRadius={52} />
+                        <BoxSkeleton width={160} height={30} />
+                        <BoxSkeleton width={200} height={24} />
+                        <BoxSkeleton width={SCREEN_WIDTH - 80} height={48} borderRadius={24} />
+                    </VStack>
+                </Card>
+            </VStack>
+        </Screen>
+    );
+};

@@ -16,6 +16,7 @@ import { type AccountInfo } from '@trezor/connect';
 import { type DeviceModelInternal } from '@trezor/device-utils';
 
 import {
+    type AccountDetailStackRoutes,
     type AccountsImportStackRoutes,
     type AccountsStackRoutes,
     type ActivityCenterStackRoutes,
@@ -59,8 +60,8 @@ type AccountIdentityParams = RequireAllOrNone<
 >;
 
 export type CloseActionType = 'back' | 'close';
-export type AccountAssetsTab = 'tokens' | 'defi' | 'hidden' | 'inactive';
-export type AccountAssetsFlow = 'assets' | 'send';
+export type AccountTokensTab = 'tokens' | 'defi' | 'hidden' | 'inactive';
+export type AccountTokensFlow = 'assets' | 'send';
 export type DeviceSuspicionCause =
     | 'deviceLooksDifferent'
     | 'firmwareAlreadyInstalled'
@@ -83,6 +84,16 @@ type AccountDetailParams = {
 
 export type AccountsStackParamList = {
     [AccountsStackRoutes.Accounts]: { networksFilter?: NetworkSymbol[] } | undefined;
+};
+
+export type AccountDetailStackParamList = {
+    [AccountDetailStackRoutes.AccountDetail]: AccountDetailParams;
+    [AccountDetailStackRoutes.AccountSettings]: { accountKey: AccountKey };
+    [AccountDetailStackRoutes.AccountTokens]: {
+        accountKey: AccountKey;
+        tab?: AccountTokensTab;
+        flowType?: AccountTokensFlow;
+    } & AccountIdentityParams;
 };
 
 export type EarnStackParamList = {
@@ -502,22 +513,16 @@ export type PassphraseStackParamList = {
 
 export type RootStackParamList = {
     [RootStackRoutes.AppTabs]: NavigatorScreenParams<AppTabsParamList>;
+    [RootStackRoutes.AccountDetailStack]: NavigatorScreenParams<AccountDetailStackParamList>;
     [RootStackRoutes.OnboardingStack]: NavigatorScreenParams<OnboardingStackParamList>;
     [RootStackRoutes.DeviceOnboardingStack]: NavigatorScreenParams<DeviceOnboardingStackParamList>;
     [RootStackRoutes.AuthorizeDeviceStack]: NavigatorScreenParams<AuthorizeDeviceStackParamList>;
     [RootStackRoutes.AccountsImport]: NavigatorScreenParams<AccountsImportStackParamList>;
     [RootStackRoutes.DemoAccountQuestionnaireStack]: NavigatorScreenParams<DemoAccountQuestionnaireStackParamList>;
-    [RootStackRoutes.AccountSettings]: { accountKey: AccountKey };
     [RootStackRoutes.TransactionDetailStack]: NavigatorScreenParams<TransactionDetailStackParamList>;
     [RootStackRoutes.DevUtils]: undefined;
     [RootStackRoutes.MessageSystemManager]: undefined;
     [RootStackRoutes.MessageSystemExperiments]: undefined;
-    [RootStackRoutes.AccountAssets]: {
-        accountKey: AccountKey;
-        tab?: AccountAssetsTab;
-        flowType?: AccountAssetsFlow;
-    } & AccountIdentityParams;
-    [RootStackRoutes.AccountDetail]: AccountDetailParams;
     [RootStackRoutes.StakingDetail]: { accountKey: AccountKey };
     [RootStackRoutes.StakingManagement]: { accountKey: AccountKey };
     [RootStackRoutes.YieldVaultDetail]: { accountKey: AccountKey; tokenContract: TokenAddress };

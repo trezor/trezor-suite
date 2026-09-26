@@ -48,7 +48,7 @@ const stakedSectionStyleWithBorder = prepareNativeStyle(utils => ({
     borderBottomColor: utils.colors.borderNeutral,
 }));
 
-type NavigationProps = StackNavigationProps<RootStackParamList, RootStackRoutes.AccountDetail>;
+type NavigationProps = StackNavigationProps<RootStackParamList, RootStackRoutes.YieldVaultDetail>;
 
 interface YieldVaultDetailScreenContentProps {
     account: Account;

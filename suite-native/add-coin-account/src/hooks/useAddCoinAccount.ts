@@ -44,6 +44,7 @@ import {
     useStablecoinYieldFirmwareUpdateAlert,
 } from '@suite-native/module-earn';
 import {
+    AccountDetailStackRoutes,
     type AddCoinAccountStackParamList,
     AddCoinAccountStackRoutes,
     type AddCoinEarnFlowParams,
@@ -226,11 +227,14 @@ export const useAddCoinAccount = (networksSearchQuery?: string) => {
                 });
                 break;
             case 'accounts':
-                navigation.replace(RootStackRoutes.AccountDetail, {
-                    networkSymbol: symbol,
-                    accountType,
-                    accountIndex,
-                    closeActionType: 'close',
+                navigation.replace(RootStackRoutes.AccountDetailStack, {
+                    screen: AccountDetailStackRoutes.AccountDetail,
+                    params: {
+                        networkSymbol: symbol,
+                        accountType,
+                        accountIndex,
+                        closeActionType: 'close',
+                    },
                 });
                 break;
             case 'receive':

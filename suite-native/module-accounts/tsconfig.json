@@ -1,0 +1,16 @@
+{
+    "extends": "../../tsconfig.base.json",
+    "compilerOptions": { "outDir": "libDev" },
+    "references": [
+        {
+            "path": "../../suite-common/wallet-utils"
+        },
+        { "path": "../accounts" },
+        { "path": "../device-manager" },
+        { "path": "../discovery" },
+        { "path": "../intl" },
+        { "path": "../navigation" },
+        { "path": "../tokens" },
+        { "path": "../../packages/requirements" }
+    ]
+}
