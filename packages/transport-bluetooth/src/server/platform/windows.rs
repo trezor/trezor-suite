@@ -8,6 +8,7 @@ use btleplug::{
     platform::Peripheral,
 };
 use log::info;
+use tokio::sync::broadcast::error::RecvError;
 use windows::{
     core::Ref,
     Devices::Bluetooth::BluetoothLEDevice,
@@ -81,7 +82,16 @@ pub async fn try_to_pair(ctx: &ConnectDeviceContext) -> Result<(), PlatformError
         let pin_sender = tx.clone();
         let mut listener = tx.subscribe();
         let pin_listener = tokio::spawn(async move {
-            while let Ok(pin) = listener.recv().await {
+            loop {
+                let pin = match listener.recv().await {
+                    Ok(pin) => pin,
+                    Err(RecvError::Lagged(skipped)) => {
+                        info!("pin_listener loop lagged, {skipped} events skipped");
+                        continue;
+                    }
+                    Err(RecvError::Closed) => break,
+                };
+
                 dispatch_status(
                     bt_manager.clone(),
                     bt_device.clone(),

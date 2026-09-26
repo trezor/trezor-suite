@@ -13,7 +13,10 @@ use dbus::{
 };
 use log::info;
 use std::collections::HashMap;
-use tokio::time::{sleep, Duration};
+use tokio::{
+    sync::broadcast::error::RecvError,
+    time::{sleep, Duration},
+};
 
 const BLUEZ_SERVICE: &str = "org.bluez";
 const DBUS_PROPERTIES_INTERFACE: &str = "org.freedesktop.DBus.Properties";
@@ -145,7 +148,16 @@ fn watch_abort(
     let (tx, rx) = tokio::sync::oneshot::channel();
 
     let handler = tokio::spawn(async move {
-        while let Ok(event) = receiver.recv().await {
+        loop {
+            let event = match receiver.recv().await {
+                Ok(event) => event,
+                Err(RecvError::Lagged(skipped)) => {
+                    info!("watch_abort loop lagged, {skipped} events skipped");
+                    continue;
+                }
+                Err(RecvError::Closed) => break,
+            };
+
             // TODO: if websocket client connection is related to this device
             // AbortProcess::ClientDisconnected
             if let ChannelMessage::Abort(AbortProcess::DeviceDisconnected(id)) = event {
