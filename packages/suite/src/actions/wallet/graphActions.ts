@@ -68,7 +68,7 @@ type FetchAccountGraphDataThunkState = BlockchainRootState &
  * @param {Account} account
  * @returns
  */
-export const fetchAccountGraphDataThunk =
+const fetchAccountGraphDataThunk =
     (account: Account, options: { abortSignal?: AbortSignal }) =>
     async (dispatch: Dispatch, getState: () => FetchAccountGraphDataThunkState) => {
         dispatch(
