@@ -118,11 +118,13 @@
             "path": "../../suite-common/message-system"
         },
         { "path": "../storybook" },
+        { "path": "../test-utils" },
         { "path": "../test-utils-store" },
         { "path": "../../packages/connect-core" },
         {
             "path": "../../packages/connect-mobile"
         },
+        { "path": "../../packages/device-utils" },
         { "path": "../../packages/eslint" }
     ],
     "include": [".", "**/*.json"]

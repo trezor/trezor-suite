@@ -1,25 +1,78 @@
+import { Platform } from 'react-native';
+import { type TabsHostProps, type TabsScreenProps } from 'react-native-screens';
+
 import { deviceInitialState } from '@suite-common/device';
 import { messageSystemInitialState } from '@suite-common/message-system';
 import { mockMessageSystemStateWithFeatureFlags } from '@suite-common/message-system/mocks';
-import { type NativeAnalyticsDep } from '@suite-native/analytics';
+import { type NativeAnalyticsDep, events } from '@suite-native/analytics';
 import { mockNativeAnalytics } from '@suite-native/analytics/mocks';
 import { FeatureFlag, featureFlagsInitialState } from '@suite-native/feature-flags';
-import { icons } from '@suite-native/icons';
+import { type IconName, icons } from '@suite-native/icons';
 import { getTranslation } from '@suite-native/intl';
+import { AccountsStackRoutes } from '@suite-native/navigation';
 import {
+    act,
     fireEvent,
     mergePreloadedState,
     renderWithStoreProvider,
 } from '@suite-native/test-utils-store';
+import { FirmwareType } from '@trezor/device-utils';
 
 import { AppTabNavigator } from './AppTabNavigator';
+import { type NativeTabIcons } from './useNativeTabIcons';
+
+let mockDeviceModelName: string | null = null;
+const originalNativeTabsOverride = process.env.EXPO_PUBLIC_NATIVE_TABS;
+const nativeIconNames: IconName[] = [
+    'house',
+    'houseFilled',
+    'discover',
+    'discoverFilled',
+    'repeat',
+    'piggyBank',
+    'piggyBankFilled',
+    'gear',
+    'gearFilled',
+];
+const originalNativeTabIcons: NativeTabIcons = Object.fromEntries(
+    nativeIconNames.map(iconName => [
+        iconName,
+        { uri: `file:///${iconName}.png`, width: 24, height: 24, scale: 3 },
+    ]),
+);
+let mockNativeTabIcons = originalNativeTabIcons;
+
+jest.mock('expo-device', () => ({
+    ...jest.requireActual('expo-device'),
+    get modelName() {
+        return mockDeviceModelName;
+    },
+}));
+jest.mock('./useNativeTabIcons', () => ({
+    useNativeTabIcons: () => mockNativeTabIcons,
+}));
+jest.mock('react-native-screens', () => {
+    const { View } = require('react-native');
+
+    return {
+        ...jest.requireActual('react-native-screens'),
+        Tabs: {
+            Host: (props: TabsHostProps) => <View {...props} testID="@systemTabs" />,
+            Screen: (props: TabsScreenProps) => (
+                <View {...props} testID={`@systemTabs/${props.title}`} />
+            ),
+        },
+    };
+});
 
 jest.mock('@suite-native/module-home', () => ({ HomeStackNavigator: () => null }));
 jest.mock('@suite-native/module-accounts-management', () => ({
     AccountsStackNavigator: () => {
         const { View } = require('react-native');
+        const { useRoute } = require('@react-navigation/native');
+        const route = useRoute();
 
-        return <View testID="@screen/Accounts" />;
+        return <View testID="@screen/Accounts" accessibilityLabel={route.params?.screen} />;
     },
 }));
 jest.mock('@suite-native/module-earn', () => ({ EarnStackNavigator: () => null }));
@@ -83,6 +136,23 @@ describe('AppTabNavigator', () => {
             preloadedState: mergePreloadedState(baseState, overrides),
             services,
         });
+
+    beforeEach(() => {
+        jest.clearAllMocks();
+        mockDeviceModelName = null;
+        mockNativeTabIcons = originalNativeTabIcons;
+        delete process.env.EXPO_PUBLIC_NATIVE_TABS;
+    });
+
+    afterEach(() => {
+        jest.restoreAllMocks();
+
+        if (originalNativeTabsOverride === undefined) {
+            delete process.env.EXPO_PUBLIC_NATIVE_TABS;
+        } else {
+            process.env.EXPO_PUBLIC_NATIVE_TABS = originalNativeTabsOverride;
+        }
+    });
 
     it('should render 3 buttons', async () => {
         const { getByText } = await renderTabs();
@@ -175,5 +245,288 @@ describe('AppTabNavigator', () => {
         const { queryByText } = await renderTabs();
 
         expect(queryByText(getTranslation('navigation.tabs.earn'))).toBeTruthy();
+    });
+
+    it('keeps Expo UI tabs on Android even for the Duo model or development override', async () => {
+        jest.replaceProperty(Platform, 'OS', 'android');
+        mockDeviceModelName = 'iPhone Duo';
+        process.env.EXPO_PUBLIC_NATIVE_TABS = '1';
+
+        const { getByTestId, queryByTestId } = await renderTabs();
+
+        expect(getByTestId('@tabBar/native')).toBeTruthy();
+        expect(queryByTestId('@systemTabs')).toBeNull();
+    });
+
+    describe('iPhone Duo system tabs', () => {
+        beforeEach(() => {
+            jest.replaceProperty(Platform, 'OS', 'ios');
+            mockDeviceModelName = 'iPhone Duo';
+        });
+
+        it('uses original template images for regular and selected icons', async () => {
+            const { getByTestId, queryByTestId } = await renderTabs({
+                featureFlags: { [FeatureFlag.IsTradingResidenceCheckEnabled]: false },
+                messageSystem: mockMessageSystemStateWithFeatureFlags({
+                    'trading.buy': false,
+                    'trading.exchange': true,
+                    'trading.sell': false,
+                    'trading.concierge': false,
+                }),
+            });
+            const tabIcons = [
+                { title: 'navigation.tabs.home', regular: 'house', selected: 'houseFilled' },
+                {
+                    title: 'navigation.tabs.accountsList',
+                    regular: 'discover',
+                    selected: 'discoverFilled',
+                },
+                { title: 'navigation.tabs.trade', regular: 'repeat', selected: 'repeat' },
+                {
+                    title: 'navigation.tabs.earn',
+                    regular: 'piggyBank',
+                    selected: 'piggyBankFilled',
+                },
+                { title: 'navigation.tabs.settings', regular: 'gear', selected: 'gearFilled' },
+            ] as const;
+
+            expect(getByTestId('@systemTabs')).toBeTruthy();
+            expect(queryByTestId('@tabBar/native')).toBeNull();
+
+            for (const tab of tabIcons) {
+                const nativeTab = getByTestId(`@systemTabs/${getTranslation(tab.title)}`);
+
+                expect(nativeTab.props.ios.icon).toEqual({
+                    type: 'templateSource',
+                    templateSource: originalNativeTabIcons[tab.regular],
+                });
+                expect(nativeTab.props.ios.selectedIcon).toEqual({
+                    type: 'templateSource',
+                    templateSource: originalNativeTabIcons[tab.selected],
+                });
+            }
+        });
+
+        it('switches to Accounts from a native selection and preserves its initial nested route', async () => {
+            const { getByTestId, queryByTestId } = await renderTabs();
+            const accounts = getByTestId(
+                `@systemTabs/${getTranslation('navigation.tabs.accountsList')}`,
+            );
+            const home = getByTestId(`@systemTabs/${getTranslation('navigation.tabs.home')}`);
+
+            expect(queryByTestId('@screen/Accounts')).toBeNull();
+
+            await fireEvent(getByTestId('@systemTabs'), 'tabSelected', {
+                nativeEvent: {
+                    selectedScreenKey: accounts.props.screenKey,
+                    provenance: 1,
+                    actionOrigin: 'user',
+                    isRepeated: false,
+                    hasTriggeredSpecialEffect: false,
+                },
+            });
+
+            expect(getByTestId('@systemTabs').props.navStateRequest).toEqual({
+                selectedScreenKey: accounts.props.screenKey,
+                baseProvenance: 1,
+            });
+            expect(getByTestId('@screen/Accounts').props.accessibilityLabel).toBe(
+                AccountsStackRoutes.Accounts,
+            );
+
+            await fireEvent(getByTestId('@systemTabs'), 'tabSelected', {
+                nativeEvent: {
+                    selectedScreenKey: home.props.screenKey,
+                    provenance: 2,
+                    actionOrigin: 'user',
+                    isRepeated: false,
+                    hasTriggeredSpecialEffect: false,
+                },
+            });
+
+            expect(getByTestId('@systemTabs').props.navStateRequest.selectedScreenKey).toBe(
+                home.props.screenKey,
+            );
+            expect(getByTestId('@screen/Accounts')).toBeTruthy();
+        });
+
+        it('ignores stale native selections without mounting Trade or reporting analytics', async () => {
+            const { getByTestId, queryByTestId } = await renderTabs({
+                featureFlags: { [FeatureFlag.IsTradingResidenceCheckEnabled]: false },
+                messageSystem: mockMessageSystemStateWithFeatureFlags({
+                    'trading.buy': false,
+                    'trading.exchange': true,
+                    'trading.sell': false,
+                    'trading.concierge': false,
+                }),
+            });
+            const accounts = getByTestId(
+                `@systemTabs/${getTranslation('navigation.tabs.accountsList')}`,
+            );
+            const trade = getByTestId(`@systemTabs/${getTranslation('navigation.tabs.trade')}`);
+
+            await fireEvent(getByTestId('@systemTabs'), 'tabSelected', {
+                nativeEvent: {
+                    selectedScreenKey: accounts.props.screenKey,
+                    provenance: 2,
+                    actionOrigin: 'user',
+                    isRepeated: false,
+                    hasTriggeredSpecialEffect: false,
+                },
+            });
+            await fireEvent(getByTestId('@systemTabs'), 'tabSelected', {
+                nativeEvent: {
+                    selectedScreenKey: trade.props.screenKey,
+                    provenance: 1,
+                    actionOrigin: 'user',
+                    isRepeated: false,
+                    hasTriggeredSpecialEffect: false,
+                },
+            });
+
+            expect(getByTestId('@systemTabs').props.navStateRequest).toEqual({
+                selectedScreenKey: accounts.props.screenKey,
+                baseProvenance: 2,
+            });
+            expect(queryByTestId('@screen/Trading')).toBeNull();
+            expect(services.analytics.report).not.toHaveBeenCalled();
+        });
+
+        it('keeps the latest native selection when two events arrive before rendering', async () => {
+            const { getByTestId } = await renderTabs();
+            const accounts = getByTestId(
+                `@systemTabs/${getTranslation('navigation.tabs.accountsList')}`,
+            );
+            const home = getByTestId(`@systemTabs/${getTranslation('navigation.tabs.home')}`);
+            const { onTabSelected } = getByTestId('@systemTabs').props;
+
+            await act(() => {
+                onTabSelected({
+                    nativeEvent: {
+                        selectedScreenKey: accounts.props.screenKey,
+                        provenance: 1,
+                        actionOrigin: 'user',
+                        isRepeated: false,
+                        hasTriggeredSpecialEffect: false,
+                    },
+                });
+                onTabSelected({
+                    nativeEvent: {
+                        selectedScreenKey: home.props.screenKey,
+                        provenance: 2,
+                        actionOrigin: 'user',
+                        isRepeated: false,
+                        hasTriggeredSpecialEffect: false,
+                    },
+                });
+            });
+
+            expect(getByTestId('@systemTabs').props.navStateRequest).toEqual({
+                selectedScreenKey: home.props.screenKey,
+                baseProvenance: 2,
+            });
+        });
+
+        it('reports Trade navigation once for a user selection and ignores programmatic acknowledgements', async () => {
+            const { getByTestId } = await renderTabs({
+                featureFlags: { [FeatureFlag.IsTradingResidenceCheckEnabled]: false },
+                messageSystem: mockMessageSystemStateWithFeatureFlags({
+                    'trading.buy': false,
+                    'trading.exchange': true,
+                    'trading.sell': false,
+                    'trading.concierge': false,
+                }),
+            });
+            const trade = getByTestId(`@systemTabs/${getTranslation('navigation.tabs.trade')}`);
+
+            await fireEvent(getByTestId('@systemTabs'), 'tabSelected', {
+                nativeEvent: {
+                    selectedScreenKey: trade.props.screenKey,
+                    provenance: 1,
+                    actionOrigin: 'user',
+                    isRepeated: false,
+                    hasTriggeredSpecialEffect: false,
+                },
+            });
+            await fireEvent(getByTestId('@systemTabs'), 'tabSelected', {
+                nativeEvent: {
+                    selectedScreenKey: trade.props.screenKey,
+                    provenance: 2,
+                    actionOrigin: 'programmatic-js',
+                    isRepeated: false,
+                    hasTriggeredSpecialEffect: false,
+                },
+            });
+
+            expect(getByTestId('@screen/Trading')).toBeTruthy();
+            expect(services.analytics.report).toHaveBeenCalledTimes(1);
+            expect(services.analytics.report).toHaveBeenCalledWith({
+                type: events.tradingNavigateEvent.name,
+                payload: { action: 'navigate', type: 'buy', from: 'trade' },
+            });
+        });
+
+        it('omits Trade when disabled and Earn for Bitcoin-only firmware without shifting Settings selection', async () => {
+            const { getByTestId, queryByTestId } = await renderTabs({
+                device: { selectedDevice: { firmwareType: FirmwareType.BitcoinOnly } },
+                featureFlags: { [FeatureFlag.IsTradingResidenceCheckEnabled]: false },
+                messageSystem: mockMessageSystemStateWithFeatureFlags({
+                    'trading.buy': false,
+                    'trading.exchange': false,
+                    'trading.sell': false,
+                    'trading.concierge': false,
+                }),
+            });
+            const settings = getByTestId(
+                `@systemTabs/${getTranslation('navigation.tabs.settings')}`,
+            );
+
+            expect(
+                queryByTestId(`@systemTabs/${getTranslation('navigation.tabs.trade')}`),
+            ).toBeNull();
+            expect(
+                queryByTestId(`@systemTabs/${getTranslation('navigation.tabs.earn')}`),
+            ).toBeNull();
+
+            await fireEvent(getByTestId('@systemTabs'), 'tabSelected', {
+                nativeEvent: {
+                    selectedScreenKey: settings.props.screenKey,
+                    provenance: 1,
+                    actionOrigin: 'user',
+                    isRepeated: false,
+                    hasTriggeredSpecialEffect: false,
+                },
+            });
+
+            expect(getByTestId('@systemTabs').props.navStateRequest.selectedScreenKey).toBe(
+                settings.props.screenKey,
+            );
+        });
+
+        it('uses native symbols while original icon images are unavailable', async () => {
+            mockNativeTabIcons = {};
+
+            const { getByTestId } = await renderTabs();
+            const home = getByTestId(`@systemTabs/${getTranslation('navigation.tabs.home')}`);
+
+            expect(home.props.ios.icon).toEqual({ type: 'sfSymbol', name: 'house' });
+            expect(home.props.ios.selectedIcon).toEqual({ type: 'sfSymbol', name: 'house' });
+        });
+
+        it.each(['house', 'houseFilled'] as const)(
+            'uses the available %s image for both native icon states when the other image is missing',
+            async availableIcon => {
+                const image = originalNativeTabIcons[availableIcon];
+
+                mockNativeTabIcons = { [availableIcon]: image };
+
+                const { getByTestId } = await renderTabs();
+                const home = getByTestId(`@systemTabs/${getTranslation('navigation.tabs.home')}`);
+                const expectedIcon = { type: 'templateSource', templateSource: image };
+
+                expect(home.props.ios.icon).toEqual(expectedIcon);
+                expect(home.props.ios.selectedIcon).toEqual(expectedIcon);
+            },
+        );
     });
 });

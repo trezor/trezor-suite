@@ -21,7 +21,7 @@ export type TabBarItemData = {
     onPress: () => void;
 };
 
-const tabBarLabelTxKeys = {
+export const tabBarLabelTxKeys = {
     [AppTabsRoutes.HomeStack]: 'navigation.tabs.home',
     [AppTabsRoutes.AccountsStack]: 'navigation.tabs.accountsList',
     [AppTabsRoutes.TradeStack]: 'navigation.tabs.trade',

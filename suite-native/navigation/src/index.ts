@@ -9,6 +9,7 @@ export * from './hooks/useLastRouteName';
 export * from './routeUtils';
 export * from './hooks/useOverrideBackNavigation';
 export * from './components/TabBar';
+export { tabBarLabelTxKeys } from './components/useTabBarItems';
 export * from './components/Screen';
 export * from './components/ScreenHeader';
 export * from './components/DynamicHeader/DynamicScreenHeader';
