@@ -3,9 +3,8 @@
 import { mockDesktopAnalytics } from '@suite/analytics/mocks';
 import { type AnalyticsDep } from '@suite-common/analytics';
 import {
-    type ConnectInitThunkDeps,
-    type ConnectInitThunkState,
-    connectInitThunk,
+    type ConnectInitState,
+    createConnectInitCompositionRoot,
 } from '@suite-common/connect-init';
 import {
     mockConnectInitDeviceEventHooks,
@@ -31,7 +30,11 @@ import { type FetchAndSaveMetadataDep } from '@suite-common/metadata-types';
 import { mockFetchAndSaveMetadata } from '@suite-common/metadata-types/mocks';
 import { type WithServices } from '@suite-common/redux-utils';
 import { mockActionType, mockReducer } from '@suite-common/redux-utils/mocks';
-import { type LockDevice } from '@suite-common/suite-types';
+import {
+    type ConnectInitDep,
+    type ConnectInitUiEventHooksDep,
+    type LockDevice,
+} from '@suite-common/suite-types';
 import {
     mockGetAllowPrerelease,
     mockGetBinFilesBaseUrl,
@@ -57,7 +60,6 @@ import suiteReducer, {
     type SuiteState,
     suiteInitialState,
 } from 'src/reducers/suite/suiteReducer';
-import { discardMockedConnectInitActions } from 'src/utils/suite/storage';
 
 import fixtures from './__fixtures__/suiteActions';
 import { SUITE } from './constants';
@@ -75,13 +77,14 @@ const deviceReducer = prepareDeviceReducer({
     },
 });
 
-// Suite reducer assertions need its own slice alongside the connect-init thunk state.
-type SuiteActionsTestState = SuiteRootState & ConnectInitThunkState;
+// Suite reducer assertions need its own slice alongside the connect-init state.
+type SuiteActionsTestState = SuiteRootState & ConnectInitState;
 
-type SuiteActionsTestDeps = ConnectInitThunkDeps &
-    WithServices<AnalyticsDep & GetTradedAccountKeysDep> & {
-        thunks: FetchAndSaveMetadataDep;
-    };
+type SuiteActionsTestDeps = WithServices<
+    AnalyticsDep & ConnectInitDep & ConnectInitUiEventHooksDep & GetTradedAccountKeysDep
+> & {
+    thunks: FetchAndSaveMetadataDep;
+};
 
 const getInitialState = (
     suite?: Partial<SuiteState>,
@@ -101,20 +104,30 @@ const createTestRoot = (preloadedState: SuiteActionsTestState) =>
                 fetchAndSaveMetadata: mockFetchAndSaveMetadata(),
             },
         },
-        services: () => ({
-            analytics: mockDesktopAnalytics(),
-            connectInitDeviceEventHooks: mockConnectInitDeviceEventHooks(),
-            connectInitSettings: mockConnectInitSettings(),
-            connectInitUiEventHooks: mockConnectInitUiEventHooks(),
-            createLogger: noopCreateLogger,
-            createTransports: mockCreateTransports(),
-            getAllowPrerelease: mockGetAllowPrerelease(),
-            getBinFilesBaseUrl: mockGetBinFilesBaseUrl(),
-            getDebugSettings: mockGetDebugSettings(),
-            getThpSettings: mockGetThpSettings(),
-            getTradedAccountKeys: mockGetTradedAccountKeys(),
-            lockDevice: mock<LockDevice>(),
-        }),
+        services: store => {
+            const analytics = mockDesktopAnalytics();
+            const { connectInit } = createConnectInitCompositionRoot({
+                dispatch: store.dispatch,
+                getState: store.getState,
+                lockDevice: mock<LockDevice>(),
+                analytics,
+                connectInitDeviceEventHooks: mockConnectInitDeviceEventHooks(),
+                connectInitSettings: mockConnectInitSettings(),
+                createLogger: noopCreateLogger,
+                createTransports: mockCreateTransports(),
+                getAllowPrerelease: mockGetAllowPrerelease(),
+                getBinFilesBaseUrl: mockGetBinFilesBaseUrl(),
+                getDebugSettings: mockGetDebugSettings(),
+                getThpSettings: mockGetThpSettings(),
+            });
+
+            return {
+                analytics,
+                connectInit,
+                connectInitUiEventHooks: mockConnectInitUiEventHooks(),
+                getTradedAccountKeys: mockGetTradedAccountKeys(),
+            };
+        },
         reducer: {
             suite: suiteReducer,
             device: deviceReducer,
@@ -222,14 +235,12 @@ describe('Suite Actions', () => {
             testMocks.setTrezorConnectFixtures(f.getFeatures || { success: true });
             const state = getInitialState(undefined, f.state.device);
             const { services } = createTestRoot(state);
-            services.store.dispatch(connectInitThunk()); // connectInitThunk needs to be called in order to wrap "getFeatures" with lockDevice
+            await services.connectInit(); // connectInit needs to be called in order to wrap "getFeatures" with lockDevice
             await services.store.dispatch(
                 acquireDeviceThunk({ requestedDevice: f.requestedDevice }),
             );
             // we are not interested in thunk state here
-            const expectedActions = filterThunkActionTypes(
-                discardMockedConnectInitActions(services.store.getActions()),
-            );
+            const expectedActions = filterThunkActionTypes(services.store.getActions());
             if (!f.result) {
                 expect(expectedActions.length).toEqual(0);
             } else {

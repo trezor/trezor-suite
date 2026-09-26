@@ -2,7 +2,7 @@ import { createMemoryHistory } from 'history';
 
 import { mockDesktopAnalytics } from '@suite/analytics/mocks';
 import { prepareFlagsReducer } from '@suite/flags';
-import { lockDevice, lockRouter, locksInitialState, locksReducer } from '@suite/locks';
+import { lockRouter, locksInitialState, locksReducer } from '@suite/locks';
 import { metadataReducer } from '@suite/metadata';
 import { modalReducer } from '@suite/modal';
 import type { GotoThunkDeps, PathString } from '@suite/router';
@@ -23,7 +23,10 @@ import {
     suiteSettingsInitialState,
 } from '@suite/settings';
 import { onSuiteInit, onSuiteReady } from '@suite/suite-lifecycle';
-import { type ConnectInitThunkDeps, connectInitThunk } from '@suite-common/connect-init';
+import {
+    type ConnectInitState,
+    createConnectInitCompositionRoot,
+} from '@suite-common/connect-init';
 import {
     mockConnectInitDeviceEventHooks,
     mockConnectInitSettings,
@@ -47,6 +50,11 @@ import { mockNetworksState } from '@suite-common/networks/mocks';
 import { type WithServices } from '@suite-common/redux-utils';
 import { mockActionType, mockReducer } from '@suite-common/redux-utils/mocks';
 import { mockSuiteSync } from '@suite-common/suite-sync/mocks';
+import {
+    type ConnectInitDep,
+    type ConnectInitUiEventHooksDep,
+    type LockDevice,
+} from '@suite-common/suite-types';
 import { mockGetAllowPrerelease, mockGetBinFilesBaseUrl } from '@suite-common/suite-types/mocks';
 import { createTestCompositionRoot } from '@suite-common/test-utils';
 import {
@@ -121,7 +129,10 @@ global.fetch = jest.fn().mockImplementation(() =>
 
 const EMPTY_ACTION = { type: 'foo' } as any;
 
-const getInitialState = (initialRun?: boolean): InitThunkState => {
+// connectInit is composed from the same store, so the state also covers what it reads.
+type InitActionTestState = InitThunkState & ConnectInitState;
+
+const getInitialState = (initialRun?: boolean): InitActionTestState => {
     const initialFlagsState = flagsReducer(undefined, EMPTY_ACTION);
 
     return {
@@ -181,13 +192,11 @@ const fixtures: Fixture[] = [
             routerLocationChange.type,
             routerAppChanged.type,
             lockRouter.type,
-            connectInitThunk.pending.type,
+            initBlockchainThunk.pending.type,
+            preloadFeeInfoThunk.pending.type,
             onLocationChangeThunk.fulfilled.type,
             gotoThunk.fulfilled.type,
             initialRedirectionThunk.fulfilled.type,
-            connectInitThunk.fulfilled.type,
-            initBlockchainThunk.pending.type,
-            preloadFeeInfoThunk.pending.type,
             feesActions.updateMultipleFees.type,
             preloadFeeInfoThunk.fulfilled.type,
             initBlockchainThunk.fulfilled.type,
@@ -232,11 +241,9 @@ const fixtures: Fixture[] = [
             fetchConfigThunk.fulfilled.type,
             initMessageSystemThunk.fulfilled.type,
             initialRedirectionThunk.pending.type,
-            connectInitThunk.pending.type,
-            initialRedirectionThunk.fulfilled.type,
-            connectInitThunk.fulfilled.type,
             initBlockchainThunk.pending.type,
             preloadFeeInfoThunk.pending.type,
+            initialRedirectionThunk.fulfilled.type,
             feesActions.updateMultipleFees.type,
             preloadFeeInfoThunk.fulfilled.type,
             initBlockchainThunk.fulfilled.type,
@@ -283,11 +290,9 @@ const fixtures: Fixture[] = [
             fetchConfigThunk.fulfilled.type,
             initMessageSystemThunk.fulfilled.type,
             initialRedirectionThunk.pending.type,
-            connectInitThunk.pending.type,
-            initialRedirectionThunk.fulfilled.type,
-            connectInitThunk.fulfilled.type,
             initBlockchainThunk.pending.type,
             preloadFeeInfoThunk.pending.type,
+            initialRedirectionThunk.fulfilled.type,
             feesActions.updateMultipleFees.type,
             preloadFeeInfoThunk.fulfilled.type,
             initBlockchainThunk.fulfilled.type,
@@ -339,11 +344,6 @@ const fixtures: Fixture[] = [
             routerLocationChange.type,
             routerAppChanged.type,
             lockRouter.type,
-            connectInitThunk.pending.type,
-            onLocationChangeThunk.fulfilled.type,
-            gotoThunk.fulfilled.type,
-            initialRedirectionThunk.fulfilled.type,
-            connectInitThunk.rejected.type,
             SUITE.ERROR,
         ],
     },
@@ -359,39 +359,48 @@ const createDesktopApiDep = (): InitThunkDesktopApiDep => ({
     },
 });
 
-type InitActionTestDeps = ConnectInitThunkDeps &
-    GotoThunkDeps &
+type InitActionTestDeps = GotoThunkDeps &
     InitBlockchainThunkDeps &
     InitTokenDefinitionsThunkDeps &
     PeriodicFetchFiatRatesThunkDeps &
     WalletConnectInitThunkDeps &
-    WithServices<InitThunkDesktopApiDep>;
+    WithServices<ConnectInitDep & ConnectInitUiEventHooksDep & InitThunkDesktopApiDep>;
 
-const initStore = (state: InitThunkState) => {
+const initStore = (state: InitActionTestState) => {
     const memoryHistory = createMemoryHistory();
     const suiteRouterHistory = createSuiteRouterHistory({ history: memoryHistory });
-    const { services } = createTestCompositionRoot<InitActionTestDeps, InitThunkState>({
-        services: store => ({
-            ...createDesktopApiDep(),
-            analytics: mockDesktopAnalytics(),
-            connectInitDeviceEventHooks: mockConnectInitDeviceEventHooks(),
-            connectInitSettings: mockConnectInitSettings(),
-            connectInitUiEventHooks: mockConnectInitUiEventHooks(),
-            createLogger: noopCreateLogger,
-            createTransports: mockCreateTransports(),
-            getAllowPrerelease: mockGetAllowPrerelease(),
-            getBinFilesBaseUrl: mockGetBinFilesBaseUrl(),
-            getDebugSettings: mockGetDebugSettings(),
-            getIsWindowVisible: asGetter(() => true),
-            getThpSettings: mockGetThpSettings(),
-            getTokenDefinitionsEnabledNetworks: asGetter(
-                () => state.wallet.settings.enabledNetworks,
-            ),
-            suiteRouterHistory,
-            lockDevice: (isLocked: boolean): void => {
-                store.dispatch(lockDevice(isLocked));
-            },
-        }),
+    const { services } = createTestCompositionRoot<InitActionTestDeps, InitActionTestState>({
+        services: store => {
+            const analytics = mockDesktopAnalytics();
+            const lockDevice = mock<LockDevice>();
+            const { connectInit } = createConnectInitCompositionRoot({
+                dispatch: store.dispatch,
+                getState: store.getState,
+                lockDevice,
+                analytics,
+                connectInitDeviceEventHooks: mockConnectInitDeviceEventHooks(),
+                connectInitSettings: mockConnectInitSettings(),
+                createLogger: noopCreateLogger,
+                createTransports: mockCreateTransports(),
+                getAllowPrerelease: mockGetAllowPrerelease(),
+                getBinFilesBaseUrl: mockGetBinFilesBaseUrl(),
+                getDebugSettings: mockGetDebugSettings(),
+                getThpSettings: mockGetThpSettings(),
+            });
+
+            return {
+                ...createDesktopApiDep(),
+                analytics,
+                connectInit,
+                connectInitUiEventHooks: mockConnectInitUiEventHooks(),
+                getIsWindowVisible: asGetter(() => true),
+                getTokenDefinitionsEnabledNetworks: asGetter(
+                    () => state.wallet.settings.enabledNetworks,
+                ),
+                lockDevice,
+                suiteRouterHistory,
+            };
+        },
         middleware: [
             prepareSuiteMiddleware(() => ({ services: { suiteSync: mockSuiteSync() } })),
             routerMiddleware(() => ({})),

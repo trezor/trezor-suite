@@ -1,5 +1,4 @@
 import { MODAL_CLOSE, MODAL_OPEN_USER_CONTEXT, MODAL_PRESERVE } from '@suite/modal';
-import { connectInitThunk } from '@suite-common/connect-init';
 import { mockSuiteDevice } from '@suite-common/suite-types/mocks';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
@@ -13,11 +12,7 @@ export default [
         mocks: {},
         action: publicKeyActions.openXpubModal,
         result: {
-            actions: [
-                { type: connectInitThunk.pending.type, payload: undefined },
-                { type: connectInitThunk.fulfilled.type, payload: undefined },
-                { type: MODAL_OPEN_USER_CONTEXT },
-            ],
+            actions: [{ type: MODAL_OPEN_USER_CONTEXT }],
         },
     },
     {
@@ -27,8 +22,6 @@ export default [
         action: publicKeyActions.showXpubThunk,
         result: {
             actions: [
-                { type: connectInitThunk.pending.type, payload: undefined },
-                { type: connectInitThunk.fulfilled.type, payload: undefined },
                 { type: MODAL_PRESERVE },
                 { type: '@suite/device/removeButtonRequests' },
 
@@ -45,8 +38,6 @@ export default [
         action: publicKeyActions.showXpubThunk,
         result: {
             actions: [
-                { type: connectInitThunk.pending.type, payload: undefined },
-                { type: connectInitThunk.fulfilled.type, payload: undefined },
                 { type: MODAL_PRESERVE },
                 { type: '@suite/device/removeButtonRequests' },
                 { type: MODAL_OPEN_USER_CONTEXT },
@@ -62,8 +53,6 @@ export default [
         action: publicKeyActions.showXpubThunk,
         result: {
             actions: [
-                { type: connectInitThunk.pending.type, payload: undefined },
-                { type: connectInitThunk.fulfilled.type, payload: undefined },
                 { type: MODAL_PRESERVE },
                 { type: MODAL_CLOSE },
                 {
@@ -88,8 +77,6 @@ export default [
         action: publicKeyActions.showXpubThunk,
         result: {
             actions: [
-                { type: connectInitThunk.pending.type, payload: undefined },
-                { type: connectInitThunk.fulfilled.type, payload: undefined },
                 {
                     type: MODAL_OPEN_USER_CONTEXT,
                 },
@@ -107,10 +94,7 @@ export default [
         mocks: {},
         action: publicKeyActions.showXpubThunk,
         result: {
-            actions: [
-                { type: connectInitThunk.pending.type, payload: undefined },
-                { type: connectInitThunk.fulfilled.type, payload: undefined },
-            ],
+            actions: [],
         },
     },
     {
@@ -122,8 +106,6 @@ export default [
         action: publicKeyActions.showXpubThunk,
         result: {
             actions: [
-                { type: connectInitThunk.pending.type, payload: undefined },
-                { type: connectInitThunk.fulfilled.type, payload: undefined },
                 { type: MODAL_PRESERVE },
                 { type: '@suite/device/removeButtonRequests' },
 
@@ -147,8 +129,6 @@ export default [
         action: publicKeyActions.showXpubThunk,
         result: {
             actions: [
-                { type: connectInitThunk.pending.type, payload: undefined },
-                { type: connectInitThunk.fulfilled.type, payload: undefined },
                 { type: MODAL_PRESERVE },
                 { type: '@suite/device/removeButtonRequests' },
 

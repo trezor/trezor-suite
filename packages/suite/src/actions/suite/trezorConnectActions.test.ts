@@ -1,8 +1,7 @@
 import { mockDesktopAnalytics } from '@suite/analytics/mocks';
 import {
-    type ConnectInitThunkDeps,
-    type ConnectInitThunkState,
-    connectInitThunk,
+    type ConnectInitState,
+    createConnectInitCompositionRoot,
 } from '@suite-common/connect-init';
 import {
     mockConnectInitDeviceEventHooks,
@@ -16,14 +15,19 @@ import { mock } from '@suite-common/dependency-injection';
 import { deviceInitialState } from '@suite-common/device';
 import { firmwareInitialState } from '@suite-common/firmware';
 import { messageSystemInitialState } from '@suite-common/message-system';
-import { type LockDevice } from '@suite-common/suite-types';
+import { type WithServices } from '@suite-common/redux-utils';
+import {
+    type ConnectInitDep,
+    type ConnectInitUiEventHooksDep,
+    type LockDevice,
+} from '@suite-common/suite-types';
 import { mockGetAllowPrerelease, mockGetBinFilesBaseUrl } from '@suite-common/suite-types/mocks';
 import { createTestCompositionRoot, testMocks } from '@suite-common/test-utils';
 import { initialWalletSettingsState } from '@suite-common/wallet-core';
 import { BLOCKCHAIN_EVENT, DEVICE_EVENT, TRANSPORT_EVENT, UI_EVENT } from '@trezor/connect';
 import { noopCreateLogger } from '@trezor/connect-common';
 
-const getInitialState = (): ConnectInitThunkState => ({
+const getInitialState = (): ConnectInitState => ({
     device: deviceInitialState,
     firmware: firmwareInitialState,
     messageSystem: messageSystemInitialState,
@@ -31,27 +35,43 @@ const getInitialState = (): ConnectInitThunkState => ({
 });
 
 const createTestRoot = (lockDevice = mock<LockDevice>()) =>
-    createTestCompositionRoot<ConnectInitThunkDeps, ConnectInitThunkState>({
-        services: () => ({
-            analytics: mockDesktopAnalytics(),
-            connectInitDeviceEventHooks: mockConnectInitDeviceEventHooks(),
-            connectInitSettings: mockConnectInitSettings(),
-            connectInitUiEventHooks: mockConnectInitUiEventHooks(),
-            createLogger: noopCreateLogger,
-            createTransports: mockCreateTransports(),
-            getAllowPrerelease: mockGetAllowPrerelease(),
-            getBinFilesBaseUrl: mockGetBinFilesBaseUrl(),
-            getDebugSettings: mockGetDebugSettings(),
-            getThpSettings: mockGetThpSettings(),
-            lockDevice,
-        }),
+    createTestCompositionRoot<
+        WithServices<ConnectInitDep & ConnectInitUiEventHooksDep>,
+        ConnectInitState
+    >({
+        services: store => {
+            const { connectInit } = createConnectInitCompositionRoot({
+                dispatch: store.dispatch,
+                getState: store.getState,
+                lockDevice,
+                analytics: mockDesktopAnalytics(),
+                connectInitDeviceEventHooks: mockConnectInitDeviceEventHooks(),
+                connectInitSettings: mockConnectInitSettings(),
+                createLogger: noopCreateLogger,
+                createTransports: mockCreateTransports(),
+                getAllowPrerelease: mockGetAllowPrerelease(),
+                getBinFilesBaseUrl: mockGetBinFilesBaseUrl(),
+                getDebugSettings: mockGetDebugSettings(),
+                getThpSettings: mockGetThpSettings(),
+            });
+
+            return {
+                connectInit,
+                connectInitUiEventHooks: mockConnectInitUiEventHooks(),
+            };
+        },
         preloadedState: getInitialState(),
     });
 
 describe('TrezorConnect Actions', () => {
-    it('Success', () => {
+    beforeEach(() => {
+        testMocks.setTrezorConnectFixtures();
+    });
+
+    it('Success', async () => {
         const { services } = createTestRoot();
-        expect(() => services.store.dispatch(connectInitThunk())).not.toThrow();
+
+        await expect(services.connectInit()).resolves.toBeUndefined();
     });
 
     it('Error', async () => {
@@ -59,19 +79,15 @@ describe('TrezorConnect Actions', () => {
             throw new Error('Iframe error');
         });
         const { services } = createTestRoot();
-        try {
-            await services.store.dispatch(connectInitThunk()).unwrap();
-            throw new Error('Unreachable!');
-        } catch (error) {
-            expect(error.message).toEqual('Iframe error');
-        }
+
+        await expect(services.connectInit()).rejects.toThrow('Iframe error');
     });
 
-    it('Events', () => {
+    it('Events', async () => {
         const defaultSuiteType = process.env.SUITE_TYPE;
         process.env.SUITE_TYPE = 'desktop';
         const { services } = createTestRoot();
-        expect(() => services.store.dispatch(connectInitThunk())).not.toThrow();
+        await services.connectInit();
 
         const actions = services.store.getActions();
         const { emitTestEvent } = testMocks.getTrezorConnectMock();
@@ -89,10 +105,9 @@ describe('TrezorConnect Actions', () => {
     });
 
     it('Wrapped method', async () => {
-        testMocks.setTrezorConnectFixtures();
         const lockDevice = mock<LockDevice>();
         const { services } = createTestRoot(lockDevice);
-        await services.store.dispatch(connectInitThunk());
+        await services.connectInit();
         await testMocks.getTrezorConnectMock().getFeatures();
 
         expect(lockDevice).toHaveBeenNthCalledWith(1, true);

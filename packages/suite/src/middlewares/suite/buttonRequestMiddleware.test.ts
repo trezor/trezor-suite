@@ -1,8 +1,7 @@
 import { mockDesktopAnalytics } from '@suite/analytics/mocks';
 import {
-    type ConnectInitThunkDeps,
-    type ConnectInitThunkState,
-    connectInitThunk,
+    type ConnectInitState,
+    createConnectInitCompositionRoot,
 } from '@suite-common/connect-init';
 import {
     mockConnectInitDeviceEventHooks,
@@ -16,8 +15,13 @@ import { mock } from '@suite-common/dependency-injection';
 import { deviceActions, deviceInitialState } from '@suite-common/device';
 import { firmwareInitialState } from '@suite-common/firmware';
 import { messageSystemInitialState } from '@suite-common/message-system';
+import { type WithServices } from '@suite-common/redux-utils';
 import { mockSuiteSync } from '@suite-common/suite-sync/mocks';
-import { type LockDevice } from '@suite-common/suite-types';
+import {
+    type ConnectInitDep,
+    type ConnectInitUiEventHooksDep,
+    type LockDevice,
+} from '@suite-common/suite-types';
 import {
     mockGetAllowPrerelease,
     mockGetBinFilesBaseUrl,
@@ -38,7 +42,7 @@ import { prepareSuiteMiddleware } from 'src/middlewares/suite/suiteMiddleware';
 
 const device = mockSuiteDevice();
 
-const getInitialState = (): ConnectInitThunkState => ({
+const getInitialState = (): ConnectInitState => ({
     device: { ...deviceInitialState, devices: [device], selectedDevice: device },
     firmware: firmwareInitialState,
     messageSystem: messageSystemInitialState,
@@ -46,20 +50,31 @@ const getInitialState = (): ConnectInitThunkState => ({
 });
 
 const createTestRoot = (lockDevice = mock<LockDevice>()) =>
-    createTestCompositionRoot<ConnectInitThunkDeps, ConnectInitThunkState>({
-        services: () => ({
-            analytics: mockDesktopAnalytics(),
-            connectInitDeviceEventHooks: mockConnectInitDeviceEventHooks(),
-            connectInitSettings: mockConnectInitSettings(),
-            connectInitUiEventHooks: mockConnectInitUiEventHooks(),
-            createLogger: noopCreateLogger,
-            createTransports: mockCreateTransports(),
-            getAllowPrerelease: mockGetAllowPrerelease(),
-            getBinFilesBaseUrl: mockGetBinFilesBaseUrl(),
-            getDebugSettings: mockGetDebugSettings(),
-            getThpSettings: mockGetThpSettings(),
-            lockDevice,
-        }),
+    createTestCompositionRoot<
+        WithServices<ConnectInitDep & ConnectInitUiEventHooksDep>,
+        ConnectInitState
+    >({
+        services: store => {
+            const { connectInit } = createConnectInitCompositionRoot({
+                dispatch: store.dispatch,
+                getState: store.getState,
+                lockDevice,
+                analytics: mockDesktopAnalytics(),
+                connectInitDeviceEventHooks: mockConnectInitDeviceEventHooks(),
+                connectInitSettings: mockConnectInitSettings(),
+                createLogger: noopCreateLogger,
+                createTransports: mockCreateTransports(),
+                getAllowPrerelease: mockGetAllowPrerelease(),
+                getBinFilesBaseUrl: mockGetBinFilesBaseUrl(),
+                getDebugSettings: mockGetDebugSettings(),
+                getThpSettings: mockGetThpSettings(),
+            });
+
+            return {
+                connectInit,
+                connectInitUiEventHooks: mockConnectInitUiEventHooks(),
+            };
+        },
         middleware: [
             prepareSuiteMiddleware(() => ({ services: { suiteSync: mockSuiteSync() } })),
             buttonRequestMiddleware,
@@ -71,7 +86,7 @@ describe('buttonRequest middleware', () => {
     it('see what happens on pin change call', async () => {
         const lockDevice = mock<LockDevice>();
         const { services } = createTestRoot(lockDevice);
-        await services.store.dispatch(connectInitThunk());
+        await services.connectInit();
         const call = services.store.dispatch(
             deviceSettingsActions.changePinThunk({ remove: false }),
         );
@@ -103,8 +118,6 @@ describe('buttonRequest middleware', () => {
         expect(lockDevice).toHaveBeenNthCalledWith(1, true);
         expect(lockDevice).toHaveBeenNthCalledWith(2, false);
         expect(actions).toMatchObject([
-            { type: connectInitThunk.pending.type, payload: undefined },
-            { type: connectInitThunk.fulfilled.type, payload: undefined },
             { type: defaultTrezorUIEventHandlerThunk.pending.type },
             { type: UI_EVENTS.BUTTON_REQUEST, payload: { code: 'ButtonRequest_ProtectCall' } },
             {

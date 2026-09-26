@@ -1,5 +1,7 @@
 import { type Getter } from '@suite-common/dependency-injection';
 import {
+    type ConnectInit,
+    type ConnectInitDep,
     type ConnectInitSettings,
     type ConnectInitSettingsDep,
     type CreateTransports,
@@ -11,6 +13,8 @@ import { type DefinitionsChannel } from '@trezor/connect-common';
 import { type Transport } from '@trezor/transport-common';
 
 export type {
+    ConnectInit,
+    ConnectInitDep,
     ConnectInitSettings,
     ConnectInitSettingsDep,
     CreateTransports,
