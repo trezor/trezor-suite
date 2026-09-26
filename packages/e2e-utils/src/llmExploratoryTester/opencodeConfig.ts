@@ -1,7 +1,10 @@
 import { type Config } from '@opencode-ai/sdk/v2';
+import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
 
 import { BOT_DIR, BROWSER_RELATIVE_DIR, REPO_ROOT } from './paths';
+
+const AGENT_NAME = 'llm-exploratory-tester';
 
 export const MODEL = {
     providerID: 'openrouter',
@@ -28,10 +31,17 @@ export const OPENCODE_CONFIG: Config = {
             },
         },
     },
+    // A custom agent prompt replaces opencode's built-in coding-assistant system prompt.
+    default_agent: AGENT_NAME,
+    agent: {
+        [AGENT_NAME]: {
+            mode: 'primary',
+            description: 'Black-box QA of Suite PRs in a live browser with a Trezor emulator',
+            prompt: readFileSync(join(BOT_DIR, 'AGENT.md'), 'utf-8'),
+        },
+    },
     share: 'disabled',
     autoupdate: false,
-    // Empty so a local AGENTS.md is not mixed into the prompt.
-    instructions: [],
     lsp: false,
     formatter: false,
     plugin: [join(BOT_DIR, 'hooks/sandboxGate.ts')],
@@ -61,6 +71,7 @@ export const OPENCODE_CONFIG: Config = {
         external_directory: 'deny',
         // An unanswered question hangs a headless run.
         question: 'deny',
+        skill: 'deny',
     },
     experimental: {
         // Denied tools must not abort the turn.
