@@ -32,12 +32,6 @@ const useTabsData = () => {
                 icon: 'minus',
                 testID: '@trading/sell/header-tab',
             },
-            {
-                value: 'concierge',
-                label: translate('moduleTrading.tradingScreen.tabs.concierge'),
-                icon: 'handshake',
-                testID: '@trading/concierge/header-tab',
-            },
         ];
 
         return tabs;
