@@ -6,7 +6,6 @@ import {
     deviceActions,
     selectDevices,
     selectIsPendingTransportEvent,
-    selectSelectedDevice,
 } from '@suite-common/device';
 import { type FirmwareRootState, selectEffectiveFirmwareChannel } from '@suite-common/firmware';
 import {
@@ -167,18 +166,13 @@ export const connectInitThunk = createThunk<
 
         lockDevice(true);
 
-        const result = await synchronize(() => original(params));
+        const response = await synchronize(() => original(params));
 
         lockDevice(false);
-        dispatch(
-            deviceActions.removeButtonRequests({
-                // todo: device not 'thread safe' - meaning that device to which button requests have been added to might not
-                // be the same re-selected device from this line. We should reuse device from params.
-                device: selectSelectedDevice(getState()),
-            }),
-        );
+        const path = response.device?.path ?? params.device?.path;
+        dispatch(deviceActions.removeButtonRequests({ path }));
 
-        return result;
+        return response;
     };
 
     const binFilesBaseUrl = getBinFilesBaseUrl();

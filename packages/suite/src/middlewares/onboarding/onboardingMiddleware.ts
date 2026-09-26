@@ -3,11 +3,11 @@ import { type MiddlewareAPI, type Dispatch as ReduxDispatch } from 'redux';
 
 import { isRecoveryInProgress, recoveryActions, selectRecoveryStatus } from '@suite/recovery';
 import { routerAppChanged } from '@suite/router';
-import { deviceActions } from '@suite-common/device';
+import { deviceActions, selectSelectedDevice } from '@suite-common/device';
 import { firmwareActions } from '@suite-common/firmware';
 import { type Dispatch } from '@suite-common/redux-utils';
 import { forgetDisconnectedDevicesThunk } from '@suite-common/wallet-core';
-import { UI_EVENTS, isUiEventOfType } from '@trezor/connect';
+import { type PROTO, UI_EVENTS, isUiEventOfType } from '@trezor/connect';
 
 import * as onboardingActions from 'src/actions/onboarding/onboardingActions';
 import { type AppState } from 'src/types/suite';
@@ -50,12 +50,19 @@ const onboardingMiddleware =
             }
         }
 
-        if (
-            deviceActions.updateSelectedDevice.match(action) &&
-            action.payload?.features !== undefined &&
-            isRecoveryInProgress(action.payload?.features) &&
-            selectRecoveryStatus(api.getState()) !== 'in-progress'
-        ) {
+        // Resume an interrupted recovery when the device reports it is mid-recovery. The addButtonRequest
+        // trigger is load-bearing for a mid-recovery reload: the router resets the recovery reducer to
+        // 'initial' (suiteMiddleware), so the device's next button request must re-initialize it —
+        // previously implicit via an updateSelectedDevice re-broadcast when button requests lived on the
+        // device object.
+        const resumeRecoveryIfInProgress = (features: PROTO.Features | undefined) => {
+            if (
+                features === undefined ||
+                !isRecoveryInProgress(features) ||
+                selectRecoveryStatus(api.getState()) === 'in-progress'
+            ) {
+                return;
+            }
             api.dispatch(
                 onboardingActions.updateAnalytics({
                     startTime: Date.now(),
@@ -68,6 +75,15 @@ const onboardingMiddleware =
             } else {
                 api.dispatch(onboardingActions.rerunRecoveryThunk());
             }
+        };
+
+        if (deviceActions.updateSelectedDevice.match(action)) {
+            resumeRecoveryIfInProgress(action.payload?.features);
+        }
+        if (deviceActions.addButtonRequest.match(action)) {
+            // During a recovery the recovering device is the selected one; the guard makes it a no-op
+            // otherwise, so reading the selected device's features is fine.
+            resumeRecoveryIfInProgress(selectSelectedDevice(api.getState())?.features);
         }
 
         return action;

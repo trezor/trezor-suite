@@ -73,7 +73,6 @@ export const portfolioTrackerDevice: TrezorDevice = {
     useEmptyPassphrase: true,
     available: true,
     ts: 0,
-    buttonRequests: [],
     metadata: {},
     passwords: {},
     unavailableCapabilities: {
