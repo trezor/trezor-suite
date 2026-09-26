@@ -2,6 +2,7 @@ import {
     type Middleware as RTKMiddleware,
     type Reducer,
     type ReducersMapObject,
+    type Store,
     type UnknownAction,
     configureStore,
     isFulfilled,
@@ -9,7 +10,7 @@ import {
 } from '@reduxjs/toolkit';
 import { type ThunkDispatch } from 'redux-thunk';
 
-import { createMiddleware } from '@suite-common/redux-utils';
+import { createMiddleware, createReduxExtra } from '@suite-common/redux-utils';
 import { mergeDeepObject } from '@trezor/utils';
 
 /*
@@ -20,21 +21,47 @@ import { mergeDeepObject } from '@trezor/utils';
 export const filterThunkActionTypes = <Action extends UnknownAction>(actions: Action[]) =>
     actions.filter(action => !isPending(action) && !isFulfilled(action));
 
-export type CreateTestStoreParams<S, A extends UnknownAction, Extra> = {
-    middleware?: any[];
-    extra: Extra;
-    // The third generic (PreloadedState) sits in a contravariant position in redux's Reducer
-    // signature, so neither `unknown` nor `Record<string, never>` work as drop-in replacements
-    // for `{}` here — both reject test fixtures that pass a Partial<S> as preloaded state.
-    // eslint-disable-next-line @typescript-eslint/no-empty-object-type
-    reducer?: Reducer<S, A, {}> | ReducersMapObject<S, A, {}>;
-    preloadedState?: any;
-    serializableCheck?: { ignoredActions?: string[] };
+// Static (non-service) thunk extra, e.g. `thunks` or `actions`. Services are injected separately.
+type TestStoreExtraDependencies<Extra> = Omit<Extra, 'services'>;
+
+// A contract without `services`, including `void`, declares that no services are injected.
+export type TestStoreServices<Extra> = 0 extends 1 & Extra
+    ? any
+    : Extra extends { services: infer TServices }
+      ? TServices
+      : Record<never, never>;
+
+// Thunks receive the composed `extra`, so dispatch checks them against that shape. A `void` contract
+// still hands thunks an object with (empty) services.
+type TestStoreDispatchExtra<Extra> = 0 extends 1 & Extra ? any : TestStoreExtra<Extra>;
+
+export type TestReduxStore<S, A extends UnknownAction, Extra> = Omit<Store<S, A>, 'dispatch'> & {
+    dispatch: ThunkDispatch<S, TestStoreDispatchExtra<Extra>, A>;
+    getActions: () => A[];
+    clearActions: () => void;
 };
 
-// createThunk represents `void` dependencies as an empty object internally. Mirror that here so
-// dependency-free thunks remain dispatchable while tests still have to pass `extra: undefined`.
-type MockStoreExtra<Extra> = [Extra] extends [void] ? Record<never, never> : Extra;
+export type TestStoreExtra<Extra> = TestStoreExtraDependencies<Extra> & {
+    services: TestStoreServices<Extra>;
+};
+
+type TestStoreResult<S, A extends UnknownAction, Extra> = {
+    store: TestReduxStore<S, A, Extra>;
+    injectServicesIntoReduxExtra: (services: TestStoreServices<Extra>) => void;
+    getExtra: () => TestStoreExtra<Extra>;
+};
+
+export type CreateTestStoreParams<S, A extends UnknownAction, Extra> = {
+    middleware?: any[];
+    // The third generic (PreloadedState) is what the reducer must accept besides its own state.
+    // `S` lets a hand-written `(state = preloadedState, action) => ...` read `state` as `S`, while
+    // `combineReducers` reducers, which also accept a partial state, still fit.
+    reducer?: Reducer<S, A, S> | ReducersMapObject<S, A, S>;
+    preloadedState?: any;
+    serializableCheck?: { ignoredActions?: string[] };
+} & (Record<never, never> extends TestStoreExtraDependencies<Extra>
+    ? { extra?: TestStoreExtraDependencies<Extra> }
+    : { extra: TestStoreExtraDependencies<Extra> });
 
 export const initPreloadedState = ({
     rootReducer,
@@ -52,20 +79,25 @@ export const initPreloadedState = ({
 /**
  * A Redux store for testing async action creators and middleware.
  *
- * `extra` is required so every test declares its thunk dependencies. Pass `undefined` when the
- * tested code has none.
+ * It is wired like the application store: thunks read their `extra` lazily, and services are
+ * injected explicitly with `injectServicesIntoReduxExtra` once they are composed next to the store,
+ * e.g. `injectServicesIntoReduxExtra({ analytics: mockAnalytics(), store })`. Dispatching a thunk
+ * before the services are injected throws, exactly like in the application.
  *
- * @deprecated This is a low-level internal utility. Use `createTestCompositionRoot` for application
- * tests. Call `createTestStore` directly only in special cases that intentionally test store or
- * middleware infrastructure without an application composition root.
+ * Declare the thunk dependency contract as the first type argument, so the injected services and
+ * the static `extra` are type-checked against it.
+ *
+ * @internal Tests compose through `createTestCompositionRoot`; this is not exported from the package.
  */
-export function createTestStore<Extra, S = any, A extends UnknownAction = UnknownAction>({
-    middleware = [],
-    extra,
-    reducer = (state: any) => state,
-    preloadedState,
-    serializableCheck = {},
-}: CreateTestStoreParams<S, A, Extra>) {
+export function createTestStore<Extra = any, S = any, A extends UnknownAction = UnknownAction>(
+    {
+        middleware = [],
+        extra,
+        reducer = (state: any) => state,
+        preloadedState,
+        serializableCheck = {},
+    }: CreateTestStoreParams<S, A, Extra> = {} as CreateTestStoreParams<S, A, Extra>,
+): TestStoreResult<S, A, Extra> {
     let actions: A[] = [];
 
     const actionLoggerMiddleware = createMiddleware((action, { next }) => {
@@ -74,14 +106,19 @@ export function createTestStore<Extra, S = any, A extends UnknownAction = Unknow
         return next(action);
     });
 
+    const { getExtra, thunkMiddleware, injectServicesIntoReduxExtra } = createReduxExtra<
+        S,
+        TestStoreServices<Extra>,
+        TestStoreExtraDependencies<Extra>
+    >({ extraDependencies: extra ?? ({} as TestStoreExtraDependencies<Extra>) });
+
     const store = configureStore({
         middleware: getDefaultMiddleware =>
             getDefaultMiddleware({
-                thunk: {
-                    extraArgument: extra,
-                },
+                thunk: false,
                 serializableCheck,
             })
+                .prepend(thunkMiddleware)
                 .concat([actionLoggerMiddleware])
                 .concat(middleware as RTKMiddleware[]),
         reducer,
@@ -89,14 +126,16 @@ export function createTestStore<Extra, S = any, A extends UnknownAction = Unknow
     });
 
     return {
-        ...store,
-        dispatch: store.dispatch as ThunkDispatch<S, MockStoreExtra<Extra>, A>,
-        getActions: () => actions,
+        store: {
+            ...store,
+            dispatch: store.dispatch as ThunkDispatch<S, TestStoreDispatchExtra<Extra>, A>,
+            getActions: () => actions,
 
-        clearActions: () => {
-            actions = [];
+            clearActions: () => {
+                actions = [];
+            },
         },
+        injectServicesIntoReduxExtra,
+        getExtra,
     };
 }
-
-export type TestStoreResult = ReturnType<typeof createTestStore>;

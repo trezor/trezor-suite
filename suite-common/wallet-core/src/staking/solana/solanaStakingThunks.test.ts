@@ -1,6 +1,6 @@
 import { combineReducers, isFulfilled, isRejected } from '@reduxjs/toolkit';
 
-import { createTestStore } from '@suite-common/test-utils';
+import { type TestCompositionStore, createTestCompositionRoot } from '@suite-common/test-utils';
 import { type Account, type AccountKey } from '@suite-common/wallet-types';
 import TrezorConnect from '@trezor/connect';
 
@@ -80,6 +80,15 @@ const solanaFeeBucket = {
     },
 };
 
+// Fee-level cases use sparse Solana backend and fee fixtures instead of full wallet slices.
+type State = {
+    wallet: {
+        accounts: Account[];
+        blockchain: Partial<Record<'sol' | 'dsol', { url: string }>>;
+        fees: Record<'sol' | 'dsol', typeof solanaFeeBucket>;
+    };
+};
+
 const buildStore = ({
     accounts = [solAccount],
     blockchain = {
@@ -90,8 +99,7 @@ const buildStore = ({
     accounts?: Account[];
     blockchain?: Partial<Record<'sol' | 'dsol', { url: string }>>;
 } = {}) =>
-    createTestStore({
-        extra: undefined,
+    createTestCompositionRoot<void, State>({
         reducer: combineReducers({
             wallet: combineReducers({
                 accounts: () => accounts,
@@ -99,13 +107,13 @@ const buildStore = ({
                 fees: () => ({ sol: solanaFeeBucket, dsol: solanaFeeBucket }),
             }),
         }),
-    });
+    }).services.store;
 
 const blockchainGetInfoMock = TrezorConnect.blockchainGetInfo as jest.Mock;
 const blockchainEstimateFeeMock = TrezorConnect.blockchainEstimateFee as jest.Mock;
 
 const dispatchCompose = async (
-    store: ReturnType<typeof buildStore>,
+    store: TestCompositionStore<State, void>,
     args: Parameters<typeof composeSolanaStakingTransactionFeeLevelsThunk>[0],
 ) => {
     const action = await store.dispatch(composeSolanaStakingTransactionFeeLevelsThunk(args) as any);

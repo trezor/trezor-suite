@@ -7,13 +7,11 @@ import {
     analyticsInitialState,
 } from '@suite-common/analytics-redux';
 import { type WithServices } from '@suite-common/redux-utils';
-import { createTestStore } from '@suite-common/test-utils';
+import { createTestCompositionRoot } from '@suite-common/test-utils';
 
 import { initThunk } from 'src/actions/suite/analyticsActions';
 
-const extra: WithServices<DesktopAnalyticsDep> = {
-    services: { analytics: mockDesktopAnalytics() },
-};
+const desktopAnalytics = mockDesktopAnalytics();
 
 type InitialState = {
     analytics: Partial<AnalyticsState>;
@@ -27,10 +25,10 @@ const getInitialState = ({ analytics }: InitialState): AnalyticsRootState => ({
 });
 
 const mockStore = (preloadedState: AnalyticsRootState) =>
-    createTestStore({
-        extra,
+    createTestCompositionRoot<WithServices<DesktopAnalyticsDep>, AnalyticsRootState>({
         preloadedState,
-    });
+        services: () => ({ analytics: desktopAnalytics }),
+    }).services.store;
 
 describe('analytics initThunk', () => {
     beforeAll(() => {

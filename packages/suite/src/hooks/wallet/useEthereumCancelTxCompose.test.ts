@@ -8,6 +8,8 @@ import {
 } from '@suite-common/wallet-types';
 import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
 
+import { type AppState } from 'src/reducers/store';
+
 import { useEthereumCancelTxCompose } from './useEthereumCancelTxCompose';
 
 jest.mock('@suite-common/react-query', () => ({
@@ -64,17 +66,18 @@ const renderUseEthereumCancelTxCompose = ({
     feeInfo?: FeeInfo | null;
     dispatch?: jest.Mock;
 } = {}) => {
-    const root = createTestCompositionRoot({
-        extra: { services: {} },
+    const { services } = createTestCompositionRoot<void, AppState>({
         preloadedState: {
             wallet: {
                 fees: feeInfo ? { eth: { status: 'loaded' as const, data: feeInfo } } : {},
             },
         },
     });
-    root.store.dispatch = dispatch;
+    services.store.dispatch = dispatch;
 
-    return renderHookWithStoreProvider(() => useEthereumCancelTxCompose({ account, tx }), { root });
+    return renderHookWithStoreProvider(() => useEthereumCancelTxCompose({ account, tx }), {
+        services,
+    });
 };
 
 describe('useEthereumCancelTxCompose', () => {

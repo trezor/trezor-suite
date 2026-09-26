@@ -1,5 +1,5 @@
 import { getFiatRatesForTimestamps } from '@suite-common/fiat-services';
-import { createTestStore } from '@suite-common/test-utils';
+import { createTestCompositionRoot } from '@suite-common/test-utils';
 import {
     type Account,
     type AccountKey,
@@ -9,7 +9,7 @@ import {
 } from '@suite-common/wallet-types';
 import type { BaseCurrencyCode } from '@trezor/blockchain-link-types';
 
-import { updateTxsFiatRatesThunk } from './fiatRatesThunks';
+import { type UpdateTxsFiatRatesThunkState, updateTxsFiatRatesThunk } from './fiatRatesThunks';
 import { blockchainInitialState } from '../blockchain/blockchainReducer';
 
 jest.mock('@suite-common/fiat-services', () => ({
@@ -40,8 +40,7 @@ const tokenTransaction = (contract: TokenAddress): WalletAccountTransaction =>
     }) as unknown as WalletAccountTransaction;
 
 const initStore = () =>
-    createTestStore({
-        extra: undefined,
+    createTestCompositionRoot<void, UpdateTxsFiatRatesThunkState>({
         preloadedState: {
             wallet: {
                 accounts: [ethAccount],
@@ -57,7 +56,7 @@ const initStore = () =>
                 },
             },
         },
-    });
+    }).services.store;
 
 describe('updateTxsFiatRatesThunk', () => {
     beforeEach(() => {

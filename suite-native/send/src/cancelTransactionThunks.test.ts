@@ -2,7 +2,7 @@ import { createAction, isFulfilled, isRejected } from '@reduxjs/toolkit';
 
 import { asGetter } from '@suite-common/dependency-injection';
 import { selectIsMevProtectionFeatureEnabled } from '@suite-common/mev';
-import { createTestStore } from '@suite-common/test-utils';
+import { createTestCompositionRoot } from '@suite-common/test-utils';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
 import {
     type PushSendFormTransactionThunkDeps,
@@ -17,7 +17,10 @@ import {
 import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
 import { mockNativeAnalytics } from '@suite-native/analytics/mocks';
 
-import { signAndPushEvmCancelTransactionThunk } from './cancelTransactionThunks';
+import {
+    type SignAndPushEvmCancelTransactionThunkState,
+    signAndPushEvmCancelTransactionThunk,
+} from './cancelTransactionThunks';
 import { cleanupSendFormThunk, signTransactionNativeThunk } from './sendFormThunks';
 
 jest.mock('@suite-common/mev', () => ({
@@ -72,19 +75,25 @@ const cleanupMock = cleanupSendFormThunk as unknown as jest.Mock;
 const selectAccountByKeyMock = selectAccountByKey as unknown as jest.Mock;
 const mevEnabledMock = selectIsMevProtectionEnabled as unknown as jest.Mock;
 const mevFeatureMock = selectIsMevProtectionFeatureEnabled as unknown as jest.Mock;
-const extra: PushSendFormTransactionThunkDeps = {
-    actions: { onModalCancel: createAction<void>('test/onModalCancel') },
-    services: {
-        analytics: mockNativeAnalytics(),
-        getIsWindowVisible: asGetter(() => true),
-        getTradedAccountKeys: asGetter(() => []),
-    },
-};
+const dispatchCancel = () => {
+    const { store } = createTestCompositionRoot<
+        PushSendFormTransactionThunkDeps,
+        SignAndPushEvmCancelTransactionThunkState
+    >({
+        extra: {
+            actions: { onModalCancel: createAction<void>('test/onModalCancel') },
+        },
+        services: () => ({
+            analytics: mockNativeAnalytics(),
+            getIsWindowVisible: asGetter(() => true),
+            getTradedAccountKeys: asGetter(() => []),
+        }),
+    }).services;
 
-const dispatchCancel = () =>
-    createTestStore({ extra }).dispatch(
+    return store.dispatch(
         signAndPushEvmCancelTransactionThunk({ accountKey, composedCancelTx, cancelFormState }),
     );
+};
 
 describe('signAndPushEvmCancelTransactionThunk', () => {
     beforeEach(() => {

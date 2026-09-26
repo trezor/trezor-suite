@@ -2,8 +2,11 @@ import '@suite-common/test-utils/globalOverrides';
 
 import { screen } from '@testing-library/react';
 
+import { type DesktopAnalyticsDep } from '@suite/analytics';
 import { mockDesktopAnalytics } from '@suite/analytics/mocks';
+import { type SuiteRouterHistoryDep } from '@suite/router';
 import { mockSuiteRouterHistory } from '@suite/router/mocks';
+import { type WithServices } from '@suite-common/redux-utils';
 import { createTestCompositionRoot, initPreloadedState } from '@suite-common/test-utils';
 import { type SelectedAccountLoaded } from '@suite-common/wallet-types';
 import { type ServerInfo } from '@trezor/blockchain-link-types';
@@ -11,6 +14,7 @@ import TrezorConnect from '@trezor/connect';
 
 import { ChangeFee } from 'src/components/suite/modals/ReduxModal/UserContextModal/TxDetailModal/ChangeFee/ChangeFee';
 import { ReplaceTxButton } from 'src/components/suite/modals/ReduxModal/UserContextModal/TxDetailModal/ChangeFee/ReplaceTxButton';
+import { type AppState } from 'src/reducers/store';
 import {
     actionSequence,
     findByTestId,
@@ -141,19 +145,20 @@ describe('useRbfForm hook', () => {
     fixtures.composeAndSign.forEach(f => {
         it(`composeAndSign: ${f.description}`, async () => {
             const rootReducer = fixtures.getRootReducer(f.store.selectedAccount, f.store.fees);
-            const root = createTestCompositionRoot({
-                extra: {
-                    services: {
-                        analytics: mockDesktopAnalytics(),
-                        suiteRouterHistory: { ...mockSuiteRouterHistory(), navigate: jest.fn() },
-                    },
-                },
+            const { services } = createTestCompositionRoot<
+                WithServices<DesktopAnalyticsDep & SuiteRouterHistoryDep>,
+                AppState
+            >({
                 reducer: rootReducer,
                 preloadedState: initPreloadedState({
                     rootReducer,
                     partialState: {
                         wallet: { coinjoin: f.store.coinjoin },
                     },
+                }),
+                services: () => ({
+                    analytics: mockDesktopAnalytics(),
+                    suiteRouterHistory: { ...mockSuiteRouterHistory(), navigate: jest.fn() },
                 }),
             });
             const callback: TestCallback = {};
@@ -176,7 +181,7 @@ describe('useRbfForm hook', () => {
                 );
             };
 
-            const { unmount } = renderWithProviders(root, <TestComponent />);
+            const { unmount } = renderWithProviders(services, <TestComponent />);
 
             const composeTransactionSpy = jest.spyOn(TrezorConnect, 'composeTransaction');
 

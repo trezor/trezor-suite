@@ -1,6 +1,6 @@
 import { combineReducers } from '@reduxjs/toolkit';
 
-import { createTestStore } from '@suite-common/test-utils';
+import { createTestCompositionRoot } from '@suite-common/test-utils';
 import { type DeviceUniquePath } from '@trezor/connect';
 
 import { discoveryActions } from './discoveryActions';
@@ -12,15 +12,11 @@ type InitStoreArgs = {
     preloadedState?: DiscoveryRootState;
 };
 
-const initStore = ({ preloadedState }: InitStoreArgs = {}) => {
-    const store = createTestStore({
-        extra: undefined,
+const initStore = ({ preloadedState }: InitStoreArgs = {}) =>
+    createTestCompositionRoot<void, DiscoveryRootState>({
         reducer: { wallet: combineReducers({ discovery: discoveryReducer }) },
         preloadedState,
-    });
-
-    return store;
-};
+    }).services.store;
 
 const TEST_DEVICE_PATH = 'device-id:1' as DeviceUniquePath;
 const TEST_DEVICE_PATH_2 = 'device-id:2' as DeviceUniquePath;

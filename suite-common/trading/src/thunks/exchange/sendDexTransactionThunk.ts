@@ -33,7 +33,7 @@ export type SendDexTransactionThunkProps = {
     signAndPushSendFormTransaction: RecomposeAndSignTxThunkProps['signAndPushSendFormTransaction'];
 };
 
-type SendDexTransactionThunkState = TradingRootState;
+export type SendDexTransactionThunkState = TradingRootState;
 
 export const sendDexTransactionThunk = createThunk<
     undefined,

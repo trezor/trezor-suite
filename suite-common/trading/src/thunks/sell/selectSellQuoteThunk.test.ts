@@ -2,8 +2,9 @@ import { combineReducers } from '@reduxjs/toolkit';
 import { type CryptoId, type SellFiatTradeQuoteRequest } from 'invity-api';
 
 import { mockActionType } from '@suite-common/redux-utils/mocks';
-import { createTestStore } from '@suite-common/test-utils';
+import { createTestCompositionRoot } from '@suite-common/test-utils';
 
+import { type SelectSellQuoteThunkState } from './selectSellQuoteThunk';
 import { type SellInfo, type TradingSellState } from '../../reducers/sellReducer';
 import { initialState } from '../../reducers/tradingCommonReducer';
 import { prepareTradingReducer } from '../../reducers/tradingReducer';
@@ -73,8 +74,7 @@ describe('selectSellQuoteThunk', () => {
     };
 
     const getMocks = (initialSellState?: Partial<TradingSellState>) => {
-        const store = createTestStore({
-            extra: undefined,
+        const { store } = createTestCompositionRoot<void, SelectSellQuoteThunkState>({
             reducer: combineReducers({
                 wallet: combineReducers({
                     trading: tradingReducer,
@@ -91,7 +91,7 @@ describe('selectSellQuoteThunk', () => {
                     },
                 },
             },
-        });
+        }).services;
 
         const mockNextStep = jest.fn();
 

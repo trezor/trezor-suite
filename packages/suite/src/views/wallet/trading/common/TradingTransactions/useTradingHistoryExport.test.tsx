@@ -121,15 +121,14 @@ const buildState = (): AppState => ({
 });
 
 const renderExport = () => {
-    const root = createTestCompositionRoot({
-        extra: { services: {} },
+    const { services } = createTestCompositionRoot<void, AppState>({
         preloadedState: buildState(),
     });
-    const { result } = renderHookWithProviders(root, () => useTradingHistoryExport());
+    const { result } = renderHookWithProviders(services, () => useTradingHistoryExport());
 
     return {
         exportTradeHistory: () => result.current(),
-        getActions: () => root.services.getActions(),
+        getActions: () => services.store.getActions(),
     };
 };
 

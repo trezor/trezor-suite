@@ -1,14 +1,18 @@
 import { type CryptoId, type SellFiatTrade } from 'invity-api';
 
 import { mockGetHttpReceiverAddress } from '@suite/desktop-app-api/mocks';
-import { createTestStore } from '@suite-common/test-utils';
+import { createTestCompositionRoot } from '@suite-common/test-utils';
 import { initialState as tradingInitialState } from '@suite-common/trading';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { type Account, asAccountDescriptor } from '@suite-common/wallet-types';
 import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
 import type { StaticSessionId } from '@trezor/connect';
 
-import { type RequestSellTradeThunkDeps, requestSellTradeThunk } from './requestSellTradeThunk';
+import {
+    type RequestSellTradeThunkDeps,
+    type RequestSellTradeThunkState,
+    requestSellTradeThunk,
+} from './requestSellTradeThunk';
 
 const mockCreateQuoteLink = jest.fn((..._args: unknown[]) => Promise.resolve('https://return.url'));
 jest.mock('src/utils/wallet/trading/sellUtils', () => ({
@@ -68,13 +72,8 @@ const QUOTE: SellFiatTrade = {
     amountInCrypto: true,
 };
 
-const createExtra = (): RequestSellTradeThunkDeps => ({
-    services: { desktopApi: { getHttpReceiverAddress: mockGetHttpReceiverAddress() } },
-});
-
 const buildStore = (accounts: Account[] = [ACCOUNT]) =>
-    createTestStore({
-        extra: createExtra(),
+    createTestCompositionRoot<RequestSellTradeThunkDeps, RequestSellTradeThunkState>({
         preloadedState: {
             device: { selectedDevice: { state: { staticSessionId: DEVICE_STATE } } },
             tokenDefinitions: {},
@@ -96,7 +95,8 @@ const buildStore = (accounts: Account[] = [ACCOUNT]) =>
                 },
             },
         },
-    });
+        services: () => ({ desktopApi: { getHttpReceiverAddress: mockGetHttpReceiverAddress() } }),
+    }).services.store;
 
 describe('requestSellTradeThunk', () => {
     beforeEach(() => {

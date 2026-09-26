@@ -5,6 +5,8 @@ import { type TradingTransactionSell, tradingSellActions } from '@suite-common/t
 import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { mockAccountKey } from '@suite-common/wallet-types/mocks';
 
+import { type AppState } from 'src/reducers/store';
+
 import { useSellFlow } from './useSellFlow';
 
 const btcSymbol = asNetworkSymbol('btc');
@@ -41,7 +43,7 @@ const renderSellFlow = ({
     transactionId = undefined,
     isAmountEmpty = false,
 }: Props = {}) => {
-    const root = createTestCompositionRoot({
+    const { services } = createTestCompositionRoot<void, AppState>({
         preloadedState: {
             wallet: { trading: { sell: { quotes: [] } } },
         },
@@ -49,10 +51,10 @@ const renderSellFlow = ({
 
     renderHookWithStoreProvider(
         () => useSellFlow({ isFromRedirect, trade, transactionId, isAmountEmpty }),
-        { root },
+        { services },
     );
 
-    const { getActions } = root.services;
+    const { getActions } = services.store;
 
     return { getActions };
 };

@@ -1,10 +1,14 @@
+import { type DesktopAnalyticsDep } from '@suite/analytics';
 import { mockDesktopAnalytics } from '@suite/analytics/mocks';
 import { events } from '@suite-common/analytics';
+import { type WithServices } from '@suite-common/redux-utils';
 import { createTestCompositionRoot, renderHookWithStoreProvider } from '@suite-common/test-utils';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { type YieldPendingTransactionState } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
 import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
+
+import { type AppState } from 'src/reducers/store';
 
 import { useYieldPendingTransactionTracking } from './useYieldPendingTransactionTracking';
 
@@ -33,15 +37,15 @@ const pendingDeposit = (): YieldPendingTransactionState => ({
 });
 
 const renderTracking = () => {
-    const root = createTestCompositionRoot({
-        extra: { services: { analytics: mockDesktopAnalytics(mockReport) } },
+    const { services } = createTestCompositionRoot<WithServices<DesktopAnalyticsDep>, AppState>({
         preloadedState: {},
+        services: () => ({ analytics: mockDesktopAnalytics(mockReport) }),
     });
 
     return renderHookWithStoreProvider(
         () =>
             useYieldPendingTransactionTracking({ account, flowType: 'deposit', flowKey: 'flow-1' }),
-        { root },
+        { services },
     );
 };
 

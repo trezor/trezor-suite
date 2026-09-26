@@ -566,7 +566,8 @@ export const ethereumGetCurrentNonceThunk = createThunk<
     },
 );
 
-type SignEthereumSendFormTransactionThunkState = TransactionsRootState & WalletSettingsRootState;
+export type SignEthereumSendFormTransactionThunkState = TransactionsRootState &
+    WalletSettingsRootState;
 
 export const signEthereumSendFormTransactionThunk = createThunk<
     { serializedTx: string },

@@ -29,7 +29,7 @@ export type ComposedEthereumCancelTransaction = {
     cancelFormState: FormState;
 };
 
-type ComposeEthereumCancelTransactionThunkState = FeesRootState &
+export type ComposeEthereumCancelTransactionThunkState = FeesRootState &
     ComposeSendFormTransactionFeeLevelsThunkState;
 
 /**

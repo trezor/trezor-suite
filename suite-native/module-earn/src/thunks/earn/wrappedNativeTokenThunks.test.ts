@@ -1,5 +1,5 @@
 import { asGetter } from '@suite-common/dependency-injection';
-import { createTestStore } from '@suite-common/test-utils';
+import { type TestCompositionStore, createTestCompositionRoot } from '@suite-common/test-utils';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { accountsActions } from '@suite-common/wallet-core';
 import {
@@ -14,6 +14,7 @@ import { getWrappedNativeToken } from '@trezor/network-ethereum-suite-common';
 
 import {
     type PushWrappedNativeTokenThunkDeps,
+    type PushWrappedNativeTokenThunkState,
     type SignedWrappedNativeTokenTransaction,
     pushWrappedNativeTokenThunk,
 } from './wrappedNativeTokenThunks';
@@ -47,23 +48,21 @@ const signedTransaction: SignedWrappedNativeTokenTransaction = {
 };
 
 const pushTransactionMock = TrezorConnect.pushTransaction as jest.Mock;
-const extra: PushWrappedNativeTokenThunkDeps = {
-    services: {
-        analytics: mockNativeAnalytics(),
-        getIsWindowVisible: asGetter(() => true),
-        getTradedAccountKeys: asGetter(() => []),
-    },
-};
-
 const buildStore = (storeAccount: Account) =>
-    createTestStore({
-        extra,
+    createTestCompositionRoot<PushWrappedNativeTokenThunkDeps, PushWrappedNativeTokenThunkState>({
         preloadedState: {
             wallet: { accounts: [storeAccount], settings: { mevProtection: false } },
         },
-    });
+        services: () => ({
+            analytics: mockNativeAnalytics(),
+            getIsWindowVisible: asGetter(() => true),
+            getTradedAccountKeys: asGetter(() => []),
+        }),
+    }).services.store;
 
-const getTrackedTokenUpdates = (store: ReturnType<typeof buildStore>) =>
+const getTrackedTokenUpdates = (
+    store: TestCompositionStore<PushWrappedNativeTokenThunkState, PushWrappedNativeTokenThunkDeps>,
+) =>
     store
         .getActions()
         .filter(accountsActions.addAccountTokens.match)

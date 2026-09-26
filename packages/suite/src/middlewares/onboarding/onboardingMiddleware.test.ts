@@ -1,11 +1,12 @@
-import { modalReducer } from '@suite/modal';
-import { routerAppChanged, routerReducer } from '@suite/router';
+import { type ModalRootState, modalReducer } from '@suite/modal';
+import { type RouterRootState, routerAppChanged, routerReducer } from '@suite/router';
 import { type RouterStateOverrides, createRouterStateMock } from '@suite/router/mocks';
-import { createTestStore } from '@suite-common/test-utils';
+import { createTestCompositionRoot } from '@suite-common/test-utils';
 
 import onboardingMiddlewares from 'src/middlewares/onboarding';
 import onboardingReducer from 'src/reducers/onboarding/index';
-import suiteReducer from 'src/reducers/suite/suiteReducer';
+import { type OnboardingRootState } from 'src/reducers/onboarding/onboardingReducer';
+import suiteReducer, { type SuiteRootState } from 'src/reducers/suite/suiteReducer';
 
 const middlewares = [...onboardingMiddlewares];
 
@@ -16,14 +17,13 @@ jest.mock('@trezor/suite-storage', () => ({
 
 jest.mock('src/actions/suite/storageActions', () => ({ __esModule: true }));
 
-type SuiteState = ReturnType<typeof suiteReducer>;
-type OnboardingState = ReturnType<typeof onboardingReducer>;
+type State = SuiteRootState & RouterRootState & OnboardingRootState & ModalRootState;
 
 const getInitialState = (
     router?: RouterStateOverrides,
-    suite?: Partial<SuiteState>,
-    onboarding?: Partial<OnboardingState>,
-) => ({
+    suite?: Partial<State['suite']>,
+    onboarding?: Partial<State['onboarding']>,
+): State => ({
     suite: {
         ...suiteReducer(undefined, { type: 'foo' } as any),
         ...suite,
@@ -36,11 +36,8 @@ const getInitialState = (
     modal: modalReducer(undefined, { type: 'foo' } as any),
 });
 
-type State = ReturnType<typeof getInitialState>;
-
-const initStore = (state: State) => {
-    const store = createTestStore({
-        extra: undefined,
+const initStore = (state: State) =>
+    createTestCompositionRoot<void, State>({
         middleware: [...middlewares],
         reducer: (currentState = state, action) => ({
             ...currentState,
@@ -49,10 +46,7 @@ const initStore = (state: State) => {
             onboarding: onboardingReducer(currentState.onboarding, action),
         }),
         preloadedState: state,
-    });
-
-    return store;
-};
+    }).services.store;
 
 describe('onboardingMiddleware', () => {
     describe('routerAppChanged.type', () => {

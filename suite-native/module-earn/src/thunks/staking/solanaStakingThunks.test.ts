@@ -1,10 +1,10 @@
 import { combineReducers, isFulfilled, isRejected } from '@reduxjs/toolkit';
 
-import { messageSystemInitialState } from '@suite-common/message-system';
+import { type MessageSystemState, messageSystemInitialState } from '@suite-common/message-system';
 import { mockActionType, mockReducer } from '@suite-common/redux-utils/mocks';
 import { type TrezorDevice } from '@suite-common/suite-types';
-import { createTestStore } from '@suite-common/test-utils';
-import { prepareSendFormReducer } from '@suite-common/wallet-core';
+import { type TestCompositionStore, createTestCompositionRoot } from '@suite-common/test-utils';
+import { type SendState, prepareSendFormReducer } from '@suite-common/wallet-core';
 import {
     type Account,
     type AccountKey,
@@ -93,6 +93,25 @@ const solanaFeeBucket = {
     },
 };
 
+// This integration fixture uses deliberately sparse device and wallet slices across signing paths.
+type State = {
+    device: { selectedDevice: TrezorDevice };
+    messageSystem: MessageSystemState;
+    wallet: {
+        accounts: Account[];
+        transactions: {
+            transactions: Record<never, never>;
+            phishing: Record<never, never>;
+            fetchStatusDetail: Record<never, never>;
+        };
+        formDrafts: Record<never, never>;
+        blockchain: Partial<Record<'sol' | 'dsol', { url: string }>>;
+        fees: { sol: typeof solanaFeeBucket; dsol: typeof solanaFeeBucket };
+        send: SendState;
+        settings: { mevProtection: boolean };
+    };
+};
+
 const buildStore = ({
     accounts = [solAccount],
     blockchain = {
@@ -103,8 +122,7 @@ const buildStore = ({
     accounts?: Account[];
     blockchain?: Partial<Record<'sol' | 'dsol', { url: string }>>;
 } = {}) =>
-    createTestStore({
-        extra: undefined,
+    createTestCompositionRoot<void, State>({
         reducer: combineReducers({
             device: (): { selectedDevice: TrezorDevice } => ({
                 selectedDevice: {
@@ -128,7 +146,7 @@ const buildStore = ({
                 settings: () => ({ mevProtection: false }),
             }),
         }),
-    });
+    }).services.store;
 
 const buildSolanaPrecomposedTransaction = (): PrecomposedTransactionFinal =>
     ({
@@ -147,7 +165,7 @@ const solanaSignTransactionMock = TrezorConnect.solanaSignTransaction as jest.Mo
 const blockchainGetInfoMock = TrezorConnect.blockchainGetInfo as jest.Mock;
 
 const dispatchSign = async (
-    store: ReturnType<typeof buildStore>,
+    store: TestCompositionStore<State, void>,
     args: Parameters<typeof signSolanaStakingTransactionThunk>[0],
 ) => {
     const action = await store.dispatch(signSolanaStakingTransactionThunk(args) as any);

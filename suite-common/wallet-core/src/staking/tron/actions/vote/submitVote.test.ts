@@ -1,13 +1,14 @@
 import { captureException, withScope } from '@sentry/core';
 
 import { type TrezorDevice } from '@suite-common/suite-types';
-import { createTestStore } from '@suite-common/test-utils';
+import { type TestCompositionStore, createTestCompositionRoot } from '@suite-common/test-utils';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { type Account, type AccountKey } from '@suite-common/wallet-types';
 import TrezorConnect from '@trezor/connect';
 import { createDeferred } from '@trezor/utils';
 
 import { submitTronVoteThunk } from './submitVote';
+import { type AddFakePendingTronTxThunkState } from '../../../../transactions/transactionsThunks';
 import { reportTronVoteTxId } from '../../shared/reportTronVoteTxId';
 import { signTronContract } from '../../shared/signTronContract';
 import { tronStakeActions } from '../../tronStakingReducer';
@@ -74,18 +75,17 @@ const buildAccount = (overrides?: Partial<Account>): Account =>
     }) as unknown as Account;
 
 const initStore = () =>
-    createTestStore({
-        extra: undefined,
+    createTestCompositionRoot<void, AddFakePendingTronTxThunkState>({
         preloadedState: {
             wallet: {
                 blockchain: { [trxSymbol]: { blockHeight: 100 } },
                 fees: { [trxSymbol]: { data: { blockTime: 3 } } },
             },
         },
-    });
+    }).services.store;
 
 const submitVote = (
-    store: ReturnType<typeof initStore>,
+    store: TestCompositionStore<AddFakePendingTronTxThunkState, void>,
     account = buildAccount(),
     requestPushApproval = () => Promise.resolve(true),
 ) =>
@@ -99,8 +99,9 @@ const submitVote = (
         }),
     );
 
-const getSubmitFinishedActions = (store: ReturnType<typeof initStore>) =>
-    store.getActions().filter(tronStakeActions.submitFinished.match);
+const getSubmitFinishedActions = (
+    store: TestCompositionStore<AddFakePendingTronTxThunkState, void>,
+) => store.getActions().filter(tronStakeActions.submitFinished.match);
 
 beforeEach(() => {
     jest.clearAllMocks();

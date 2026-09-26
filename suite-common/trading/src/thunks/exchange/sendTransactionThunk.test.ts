@@ -3,11 +3,12 @@ import { type CryptoId, type ExchangeTrade } from 'invity-api';
 
 import { createThunk } from '@suite-common/redux-utils';
 import { mockActionType } from '@suite-common/redux-utils/mocks';
-import { createTestStore } from '@suite-common/test-utils';
+import { createTestCompositionRoot } from '@suite-common/test-utils';
 import { getNetwork } from '@suite-common/wallet-config';
 import { type Account, type AccountKey } from '@suite-common/wallet-types';
 
 import { sendDexTransactionThunk } from './sendDexTransactionThunk';
+import { type SendTransactionThunkState } from './sendTransactionThunk';
 import { MIN_MAX_QUOTES_OK } from '../../__fixtures__/exchangeUtils';
 import { accountBtc } from '../../__fixtures__/utils';
 import { type TradingExchangeState } from '../../reducers/exchangeReducer';
@@ -77,8 +78,7 @@ describe('sendTransactionThunk', () => {
     };
 
     const getMocks = (initialExchangeState?: Partial<TradingExchangeState>) => {
-        const store = createTestStore({
-            extra: undefined,
+        const { store } = createTestCompositionRoot<void, SendTransactionThunkState>({
             reducer: combineReducers({
                 wallet: combineReducers({
                     trading: tradingReducer,
@@ -96,7 +96,7 @@ describe('sendTransactionThunk', () => {
                     },
                 },
             },
-        });
+        }).services;
 
         const account = accountBtc as Account;
 

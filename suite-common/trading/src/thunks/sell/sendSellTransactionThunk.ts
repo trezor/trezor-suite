@@ -28,7 +28,7 @@ export type SendSellTransactionThunkProps = {
     signAndPushSendFormTransaction: RecomposeAndSignTxThunkProps['signAndPushSendFormTransaction'];
 };
 
-type SendSellTransactionThunkState = TradingRootState;
+export type SendSellTransactionThunkState = TradingRootState;
 
 export const sendSellTransactionThunk = createThunk<
     undefined,

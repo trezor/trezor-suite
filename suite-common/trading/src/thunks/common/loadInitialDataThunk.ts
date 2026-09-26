@@ -31,7 +31,7 @@ export interface LoadInitialDataThunkProps {
     forceReload?: boolean;
 }
 
-type LoadInitialDataThunkState = TradingRootStateWithAccounts;
+export type LoadInitialDataThunkState = TradingRootStateWithAccounts;
 
 export type LoadInitialDataThunkDeps = WithServices<{
     getSelectedAccount: () => SelectedAccountStatus;

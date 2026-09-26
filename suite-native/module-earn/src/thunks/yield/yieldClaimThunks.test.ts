@@ -1,6 +1,6 @@
 import { combineReducers, isFulfilled, isRejected } from '@reduxjs/toolkit';
 
-import { createTestStore } from '@suite-common/test-utils';
+import { type TestCompositionStore, createTestCompositionRoot } from '@suite-common/test-utils';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
 import {
     type YieldClaimUnsignedTransaction,
@@ -111,17 +111,17 @@ const precomposedTransaction = {
 const pushTransactionMock = TrezorConnect.pushTransaction as jest.Mock;
 const synchronizeSentTransactionThunkMock = synchronizeSentTransactionThunk as unknown as jest.Mock;
 
+// Other thunk dependencies are mocked; only the yield reducer is needed for review-state assertions.
 const buildStore = () =>
-    createTestStore({
-        extra: undefined,
+    createTestCompositionRoot<void, YieldRootState>({
         reducer: combineReducers({
             wallet: combineReducers({
                 stablecoinYield: yieldReducer,
             }),
         }),
-    });
+    }).services.store;
 
-const prepareSignedClaimReview = (store: ReturnType<typeof buildStore>) => {
+const prepareSignedClaimReview = (store: TestCompositionStore<YieldRootState, void>) => {
     store.dispatch(yieldActions.initSession({ flowType: 'claim', flowKey: account.key }));
     store.dispatch(
         yieldActions.storeActionReviewData({
@@ -150,7 +150,7 @@ const prepareSignedClaimReview = (store: ReturnType<typeof buildStore>) => {
     );
 };
 
-const dispatchPush = async (store: ReturnType<typeof buildStore>) => {
+const dispatchPush = async (store: TestCompositionStore<YieldRootState, void>) => {
     const action = await store.dispatch(
         pushYieldClaimReviewThunk({
             account,

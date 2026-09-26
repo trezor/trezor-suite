@@ -54,7 +54,6 @@ export const actions = [
                 devices: [bootloaderDevice],
                 selectedDevice: bootloaderDevice,
             },
-            suite: {},
         },
         result: {
             actions: [
@@ -80,7 +79,6 @@ export const actions = [
                 devices: [bootloaderDevice],
                 selectedDevice: bootloaderDevice,
             },
-            suite: {},
         },
         result: {
             actions: [
@@ -106,7 +104,6 @@ export const actions = [
                 selectedDevice: bootloaderDeviceNeedsIntermediary,
                 devices: [bootloaderDeviceNeedsIntermediary],
             },
-            suite: {},
         },
         result: {
             actions: [
@@ -135,7 +132,6 @@ export const actions = [
                 selectedDevice: bootloaderDeviceNoIntermediaryT1,
                 devices: [bootloaderDeviceNoIntermediaryT1],
             },
-            suite: {},
         },
         result: {
             actions: [
@@ -157,7 +153,6 @@ export const actions = [
             device: {
                 selectedDevice: undefined,
             },
-            suite: {},
         },
         result: {
             state: { firmware: { status: 'error' } },
@@ -171,7 +166,6 @@ export const actions = [
                 selectedDevice: bootloaderDevice,
                 devices: [bootloaderDevice],
             },
-            suite: {},
         },
         mocks: {
             connect: {
@@ -208,7 +202,6 @@ export const actions = [
                 selectedDevice: bootloaderDevice,
                 devices: [bootloaderDevice],
             },
-            suite: {},
         },
         mocks: {
             connect: {

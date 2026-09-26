@@ -31,15 +31,13 @@ type IssueAnalyticsProps = {
 
 const renderIssueAnalytics = (initialProps: IssueAnalyticsProps) => {
     const report = jest.fn();
-    const services: DesktopAnalyticsDep = { analytics: mockDesktopAnalytics(report) };
-
-    const root = createTestCompositionRoot({
-        extra: { services },
+    const { services } = createTestCompositionRoot<{ services: DesktopAnalyticsDep }, AppState>({
         preloadedState: mockInitialAppState satisfies AppState,
+        services: () => ({ analytics: mockDesktopAnalytics(report) }),
     });
 
     const { rerender } = renderHookWithProviders(
-        root,
+        services,
         (props: IssueAnalyticsProps) => useExchangeIssueAnalytics(props),
         { initialProps },
     );

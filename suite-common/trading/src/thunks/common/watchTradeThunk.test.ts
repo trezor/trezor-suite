@@ -2,9 +2,10 @@ import { combineReducers } from '@reduxjs/toolkit';
 import { type WatchExchangeTradeResponse } from 'invity-api';
 
 import { mockActionType } from '@suite-common/redux-utils/mocks';
-import { createTestStore } from '@suite-common/test-utils';
+import { createTestCompositionRoot } from '@suite-common/test-utils';
 import { type Account, type AccountKey } from '@suite-common/wallet-types';
 
+import { type WatchTradeThunkState } from './watchTradeThunk';
 import { watchTradeThunk } from './watchTradeThunk';
 import { accountBtc } from '../../__fixtures__/utils';
 import { tradingBuyActions } from '../../reducers/buyReducer';
@@ -30,8 +31,7 @@ describe('watchTradeThunk', () => {
     const refreshCount = 1;
 
     const getStore = (updatedState: Partial<TradingState>) =>
-        createTestStore({
-            extra: undefined,
+        createTestCompositionRoot<void, WatchTradeThunkState>({
             reducer: combineReducers({
                 wallet: combineReducers({
                     trading: tradingReducer,
@@ -45,7 +45,7 @@ describe('watchTradeThunk', () => {
                     },
                 },
             },
-        });
+        }).services.store;
 
     const date = new Date('2025-04-09');
     const dateISO = date.toISOString();

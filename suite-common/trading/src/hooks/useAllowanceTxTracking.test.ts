@@ -6,6 +6,7 @@ import {
     renderHookWithStoreProvider,
     testMocks,
 } from '@suite-common/test-utils';
+import { type TransactionsState } from '@suite-common/wallet-core';
 import type { WalletAccountTransaction } from '@suite-common/wallet-types';
 import { mockAccountKey } from '@suite-common/wallet-types/mocks';
 
@@ -13,6 +14,8 @@ import { useAllowanceTxTracking } from './useAllowanceTxTracking';
 
 const ACCOUNT_KEY = mockAccountKey({ descriptor: 'testAccountKey' });
 const TXID = 'test-txid-abc123';
+
+type State = { wallet: { transactions: TransactionsState; accounts: never[] } };
 
 const createPreloadedState = (transactions: WalletAccountTransaction[] = []) => ({
     wallet: {
@@ -26,7 +29,7 @@ const createPreloadedState = (transactions: WalletAccountTransaction[] = []) => 
 });
 
 const renderUseAllowanceTxTracking = (preloadedState = createPreloadedState()) => {
-    const root = createTestCompositionRoot({
+    const { services } = createTestCompositionRoot<void, State>({
         reducer: combineReducers({
             wallet: combineReducers({
                 transactions: (state = preloadedState.wallet.transactions) => state,
@@ -38,9 +41,9 @@ const renderUseAllowanceTxTracking = (preloadedState = createPreloadedState()) =
 
     return {
         ...renderHookWithStoreProvider(() => useAllowanceTxTracking({ accountKey: ACCOUNT_KEY }), {
-            root,
+            services,
         }),
-        root,
+        services,
     };
 };
 

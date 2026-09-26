@@ -6,6 +6,7 @@ import { createTestCompositionRoot } from '@suite-common/test-utils';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { PROTO } from '@trezor/connect';
 
+import { type AppState } from 'src/reducers/store';
 import { renderWithProviders } from 'src/support/test-utils/hooksHelper';
 
 import { FormattedCryptoAmount } from './FormattedCryptoAmount';
@@ -14,8 +15,7 @@ import { mockInitialAppState } from '../../../mocks/mockInitialAppState';
 const bitcoin = asNetworkSymbol('btc');
 
 const renderAmount = (element: React.ReactElement, areSatsDisplayed = false) => {
-    const root = createTestCompositionRoot({
-        extra: { services: {} },
+    const { services } = createTestCompositionRoot<void, AppState>({
         preloadedState: areSatsDisplayed
             ? {
                   ...mockInitialAppState,
@@ -30,7 +30,7 @@ const renderAmount = (element: React.ReactElement, areSatsDisplayed = false) => 
             : mockInitialAppState,
     });
 
-    renderWithProviders(root, element);
+    renderWithProviders(services, element);
 };
 
 describe('FormattedCryptoAmount', () => {

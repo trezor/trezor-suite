@@ -122,7 +122,7 @@ describe('useProviderMetadataChangeEffect', () => {
     });
 
     it('should clear provider metadata on unmount', () => {
-        const { unmount, store } = renderHookWithTradingStore(
+        const { unmount, services } = renderHookWithTradingStore(
             () => useProviderMetadataChangeEffect('buy', 'changenow', true),
             {
                 preloadedState: createTradingTestState({
@@ -137,10 +137,10 @@ describe('useProviderMetadataChangeEffect', () => {
             },
         );
 
-        expect(store.getState().wallet.trading.currentProviderMetadata).toEqual(
+        expect(services.store.getState().wallet.trading.currentProviderMetadata).toEqual(
             mockProviderMetadataChangeNow,
         );
         unmount();
-        expect(store.getState().wallet.trading.currentProviderMetadata).toBeUndefined();
+        expect(services.store.getState().wallet.trading.currentProviderMetadata).toBeUndefined();
     });
 });

@@ -9,6 +9,7 @@ import { type ComposeActionContext, type StakeFormState } from '@suite-common/wa
 import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
 
 import { composeTransaction } from 'src/actions/wallet/stakeActions';
+import { type AppState } from 'src/reducers/store';
 
 import { useStakeCompose } from './useStakeCompose';
 
@@ -32,10 +33,7 @@ const composeActionContext = (): ComposeActionContext => ({
 });
 
 const renderStakeCompose = () => {
-    const root = createTestCompositionRoot({
-        extra: { services: {} },
-        preloadedState: {},
-    });
+    const { services } = createTestCompositionRoot<void, AppState>({ preloadedState: {} });
 
     return renderHookWithStoreProvider(
         () => {
@@ -44,7 +42,7 @@ const renderStakeCompose = () => {
             return useStakeCompose({ ...methods, state: composeActionContext() });
         },
         {
-            root,
+            services,
             wrapper: ({ children }) => <IntlProvider locale="en">{children}</IntlProvider>,
         },
     );

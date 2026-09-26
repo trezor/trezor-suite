@@ -4,7 +4,7 @@ import { mockActionType } from '@suite-common/redux-utils/mocks';
 import { createTestCompositionRoot, renderHookWithStoreProvider } from '@suite-common/test-utils';
 
 import { messageSystemInitialState, prepareMessageSystemReducer } from './messageSystemReducer';
-import { type MessageSystemState } from './messageSystemTypes';
+import { type MessageSystemRootState, type MessageSystemState } from './messageSystemTypes';
 import { useMessageSystemEarnDashboard } from './useMessageSystemEarnDashboard';
 
 const messageSystemReducer = prepareMessageSystemReducer({
@@ -51,15 +51,15 @@ const stateWithMessages = {
     },
 } as unknown as MessageSystemState;
 
-const createRoot = (state: MessageSystemState = stateWithMessages) =>
-    createTestCompositionRoot({
+const createTestServices = (state: MessageSystemState = stateWithMessages) =>
+    createTestCompositionRoot<void, MessageSystemRootState>({
         reducer: combineReducers({ messageSystem: messageSystemReducer }),
         preloadedState: { messageSystem: state } as { messageSystem: MessageSystemState },
-    });
+    }).services;
 
 const renderHook = (props: Parameters<typeof useMessageSystemEarnDashboard>[0]) =>
     renderHookWithStoreProvider(() => useMessageSystemEarnDashboard(props), {
-        root: createRoot(),
+        services: createTestServices(),
     });
 
 describe('useMessageSystemEarnDashboard', () => {
@@ -90,10 +90,10 @@ describe('useMessageSystemEarnDashboard', () => {
     });
 
     it('returns not disabled without content when no messages are configured', () => {
-        const root = createRoot(messageSystemInitialState);
+        const services = createTestServices(messageSystemInitialState);
         const { result } = renderHookWithStoreProvider(
             () => useMessageSystemEarnDashboard({ type: 'yield', locale: 'en' }),
-            { root },
+            { services },
         );
 
         expect(result.current).toMatchObject({

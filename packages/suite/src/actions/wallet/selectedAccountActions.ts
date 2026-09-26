@@ -198,7 +198,7 @@ const actions = new Set<UnknownAction['type']>([
 /*
  * Called from WalletMiddleware
  */
-type SyncSelectedAccountThunkState = SelectedAccountState;
+export type SyncSelectedAccountThunkState = SelectedAccountState;
 
 export const syncSelectedAccountThunk =
     (action: UnknownAction) =>

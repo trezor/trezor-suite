@@ -58,8 +58,7 @@ const exchangeQuote = {
 } satisfies ExchangeTrade;
 
 const renderQuoteAmount = (quote: TradingTradeType, buyQuotesRequest?: BuyTradeQuoteRequest) => {
-    const root = createTestCompositionRoot({
-        extra: { services: {} },
+    const { services } = createTestCompositionRoot<void, AppState>({
         preloadedState: {
             ...mockInitialAppState,
             wallet: {
@@ -73,7 +72,7 @@ const renderQuoteAmount = (quote: TradingTradeType, buyQuotesRequest?: BuyTradeQ
         } satisfies AppState,
     });
 
-    renderWithProviders(root, <TradingQuoteAmount quote={quote} />);
+    renderWithProviders(services, <TradingQuoteAmount quote={quote} />);
 };
 
 describe('TradingQuoteAmount', () => {

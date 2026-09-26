@@ -7,6 +7,7 @@ import { CARDANO_EVERSTAKE_DREP } from '@suite-common/wallet-constants';
 import { DEFAULT_VOTING_OPTION, stakeActions, stakeInitialState } from '@suite-common/wallet-core';
 import { type Account, type AccountKey } from '@suite-common/wallet-types';
 
+import { type AppState } from 'src/reducers/store';
 import { stakeReducer } from 'src/reducers/wallet';
 import { renderHookWithProviders } from 'src/support/test-utils/hooksHelper';
 
@@ -110,8 +111,7 @@ describe('useSeededCardanoVotingDelegation', () => {
             wallet: { ...mockInitialAppState.wallet, stake: stakeInitialState },
         };
 
-        const root = createTestCompositionRoot({
-            extra: { services: {} },
+        const { services } = createTestCompositionRoot<void, AppState>({
             preloadedState,
             // The real stake reducer, so that seeding reads back the selection it just wrote.
             reducer: (state = preloadedState, action: UnknownAction) => ({
@@ -122,13 +122,13 @@ describe('useSeededCardanoVotingDelegation', () => {
         });
 
         const { rerender } = renderHookWithProviders(
-            root,
+            services,
             ({ account: renderedAccount }: { account: Account }) =>
                 useSeededCardanoVotingDelegation(renderedAccount),
             { initialProps: { account } },
         );
 
-        const { getActions, dispatch } = root.services;
+        const { getActions, dispatch } = services.store;
 
         return { getActions, dispatch, rerender };
     };

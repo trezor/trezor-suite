@@ -41,7 +41,7 @@ type SignAndPushEvmCancelTransactionThunkParams = {
 export type SignAndPushEvmCancelTransactionError =
     SignTransactionError | SignTransactionTimeoutError | PushTransactionError | undefined;
 
-type SignAndPushEvmCancelTransactionThunkState = AccountsRootState &
+export type SignAndPushEvmCancelTransactionThunkState = AccountsRootState &
     WalletSettingsRootState &
     MevProtectionRootState &
     SignTransactionNativeThunkState &

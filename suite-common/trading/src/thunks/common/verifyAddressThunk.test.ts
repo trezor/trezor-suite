@@ -1,10 +1,11 @@
 import { combineReducers } from '@reduxjs/toolkit';
 
 import { deviceInitialState, selectSelectedDevice } from '@suite-common/device';
-import { createThunk } from '@suite-common/redux-utils';
+import { type WithServices, createThunk } from '@suite-common/redux-utils';
 import { mockActionType, mockReducer } from '@suite-common/redux-utils/mocks';
+import { type OpenModalDep } from '@suite-common/suite-types';
 import { mockOpenModal } from '@suite-common/suite-types/mocks';
-import { createTestStore } from '@suite-common/test-utils';
+import { createTestCompositionRoot } from '@suite-common/test-utils';
 import {
     confirmAddressOnDeviceThunk,
     prepareWalletSettingsReducer,
@@ -12,6 +13,7 @@ import {
 import { type Account } from '@suite-common/wallet-types';
 
 import type { LogErrorThunkProps } from './logErrorThunk';
+import { type VerifyAddressThunkState } from './verifyAddressThunk';
 import { accounts } from '../../reducers/__fixtures__/account';
 import { initialState } from '../../reducers/tradingCommonReducer';
 import { prepareTradingReducer } from '../../reducers/tradingReducer';
@@ -31,8 +33,10 @@ const verifyAddressThunkDeps = {
     },
 };
 
+type VerifyAddressThunkTestDeps = WithServices<Record<never, never>> & { actions: OpenModalDep };
+
 const createMockStore = () =>
-    createTestStore({
+    createTestCompositionRoot<VerifyAddressThunkTestDeps, VerifyAddressThunkState>({
         extra: verifyAddressThunkDeps,
         reducer: combineReducers({
             device: () => deviceInitialState,
@@ -47,7 +51,7 @@ const createMockStore = () =>
                 trading: initialState,
             },
         },
-    });
+    }).services.store;
 
 jest.mock('@suite-common/device', () => ({
     ...jest.requireActual('@suite-common/device'),

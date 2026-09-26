@@ -1,7 +1,8 @@
 import { type BuyTrade, type BuyTradeQuoteRequest, type CryptoId } from 'invity-api';
 
 import { mockGetHttpReceiverAddress } from '@suite/desktop-app-api/mocks';
-import { createTestStore } from '@suite-common/test-utils';
+import { createTestCompositionRoot } from '@suite-common/test-utils';
+import { type TokenDefinitionsState } from '@suite-common/token-definitions';
 import { initialState as tradingInitialState } from '@suite-common/trading';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { type Account, asAccountDescriptor } from '@suite-common/wallet-types';
@@ -9,7 +10,11 @@ import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
 import { mockAnalytics } from '@trezor/analytics-uploader/mocks';
 import type { StaticSessionId } from '@trezor/connect';
 
-import { type SelectBuyQuoteThunkDeps, selectBuyQuoteThunk } from './selectBuyQuoteThunk';
+import {
+    type SelectBuyQuoteThunkDeps,
+    type SelectBuyQuoteThunkState,
+    selectBuyQuoteThunk,
+} from './selectBuyQuoteThunk';
 
 const mockSelectQuoteThunk = jest.fn((args: unknown) =>
     Object.assign(
@@ -32,17 +37,26 @@ jest.mock('@suite-common/trading', () => ({
 
 const DEVICE_STATE: StaticSessionId = '1stTestnetAddress@device_id:0';
 
-const createExtra = (report: jest.Mock): SelectBuyQuoteThunkDeps => ({
-    services: {
-        desktopApi: { getHttpReceiverAddress: mockGetHttpReceiverAddress() },
-        analytics: mockAnalytics(report),
-        suiteRouterHistory: {
-            getLocation: jest.fn(),
-            navigate: jest.fn(),
-            listen: jest.fn(() => jest.fn()),
-        },
-    },
-});
+type FixtureState = {
+    device: { selectedDevice: { state: { staticSessionId: StaticSessionId } } };
+    tokenDefinitions: Partial<TokenDefinitionsState>;
+    wallet: {
+        accounts: Account[];
+        trading: {
+            info: { coins: Record<string, { name: string; symbol: string }> };
+            buy: {
+                receiveAddress: string;
+                quotesRequest?: BuyTradeQuoteRequest;
+                buyInfo: {
+                    buyInfo: { defaultAmountsOfFiatCurrencies: Record<string, never> };
+                    providerInfos: Record<string, { companyName: string }>;
+                    supportedCryptoCurrencies: CryptoId[];
+                    supportedFiatCurrencies: never[];
+                };
+            };
+        };
+    };
+};
 
 const ACCOUNT: Account = mockWalletAccount({
     symbol: asNetworkSymbol('eth'),
@@ -69,7 +83,7 @@ const buildState = (
     { quotesRequest }: { quotesRequest?: BuyTradeQuoteRequest } = {
         quotesRequest: DEFAULT_QUOTES_REQUEST,
     },
-) => ({
+): FixtureState => ({
     device: { selectedDevice: { state: { staticSessionId: DEVICE_STATE } } },
     tokenDefinitions: {},
     wallet: {
@@ -95,6 +109,20 @@ const buildState = (
     },
 });
 
+const initStore = (report: jest.Mock, preloadedState: FixtureState) =>
+    createTestCompositionRoot<SelectBuyQuoteThunkDeps, SelectBuyQuoteThunkState>({
+        preloadedState,
+        services: () => ({
+            desktopApi: { getHttpReceiverAddress: mockGetHttpReceiverAddress() },
+            analytics: mockAnalytics(report),
+            suiteRouterHistory: {
+                getLocation: jest.fn(),
+                navigate: jest.fn(),
+                listen: jest.fn(() => jest.fn()),
+            },
+        }),
+    }).services.store;
+
 describe('selectBuyQuoteThunk', () => {
     beforeEach(() => {
         mockSelectQuoteThunk.mockClear();
@@ -102,10 +130,7 @@ describe('selectBuyQuoteThunk', () => {
 
     it('reports analytics derived from the redux quotesRequest, not form values', async () => {
         const report = jest.fn();
-        const store = createTestStore({
-            preloadedState: buildState(),
-            extra: createExtra(report),
-        });
+        const store = initStore(report, buildState());
 
         await store.dispatch(selectBuyQuoteThunk({ quote: QUOTE }));
 
@@ -131,10 +156,7 @@ describe('selectBuyQuoteThunk', () => {
 
     it('returns early without reporting analytics when the quotes request is missing', async () => {
         const report = jest.fn();
-        const store = createTestStore({
-            preloadedState: buildState({ quotesRequest: undefined }),
-            extra: createExtra(report),
-        });
+        const store = initStore(report, buildState({ quotesRequest: undefined }));
 
         await store.dispatch(selectBuyQuoteThunk({ quote: QUOTE }));
 

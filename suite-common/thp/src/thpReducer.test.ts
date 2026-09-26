@@ -2,13 +2,14 @@ import { type UnknownAction, combineReducers } from '@reduxjs/toolkit';
 
 import { mockActionType } from '@suite-common/redux-utils/mocks';
 import { mockConnectDevice } from '@suite-common/suite-types/mocks';
-import { createTestStore } from '@suite-common/test-utils';
+import { createTestCompositionRoot } from '@suite-common/test-utils';
 import { DEVICE, type DeviceEventMessage, createDeviceMessage } from '@trezor/connect';
 
 import { createCredential, createDeviceThp } from '../mocks';
 import { thpActions } from './thpActions';
 import { type ThpState, prepareThpReducer } from './thpReducer';
 import {
+    type ThpRootState,
     selectThpAutoconnectStep,
     selectThpCredentials,
     selectThpLastCode,
@@ -18,6 +19,8 @@ import {
 const thpReduce = prepareThpReducer({
     actionTypes: { storageLoad: mockActionType('storageLoad') },
 });
+
+const reducer = combineReducers({ thp: thpReduce });
 
 const initialState: ThpState = {
     step: null,
@@ -35,11 +38,10 @@ const createDeviceAction = (...args: Parameters<typeof createDeviceMessage>) =>
 
 describe('thpReducer', () => {
     test('finishThpFlow', () => {
-        const store = createTestStore({
-            extra: undefined,
-            reducer: combineReducers({ thp: thpReduce }),
+        const { store } = createTestCompositionRoot<void, ThpRootState>({
+            reducer,
             preloadedState: { thp: { ...initialState, step: 'ConfirmOnlyConnection' } },
-        });
+        }).services;
 
         store.dispatch(thpActions.finishThpFlow());
 
@@ -57,9 +59,8 @@ describe('thpReducer', () => {
             ['finished (connection counter incremented, autoconnect set)', 2, 3, 'AutoconnectInfo'],
             ['finished (connection counter not changed)', 3, 3, null],
         ])('%s', (_, initialCounter, expectedCounter, expectedAutoconnectStep) => {
-            const store = createTestStore({
-                extra: undefined,
-                reducer: combineReducers({ thp: thpReduce }),
+            const { store } = createTestCompositionRoot<void, ThpRootState>({
+                reducer,
                 preloadedState: {
                     thp: {
                         ...initialState,
@@ -71,7 +72,7 @@ describe('thpReducer', () => {
                         ],
                     },
                 },
-            });
+            }).services;
 
             store.dispatch(
                 createDeviceAction(DEVICE.THP_PAIRING_STATUS_CHANGED, {
@@ -91,13 +92,12 @@ describe('thpReducer', () => {
         });
 
         test('canceled', () => {
-            const store = createTestStore({
-                extra: undefined,
-                reducer: combineReducers({ thp: thpReduce }),
+            const { store } = createTestCompositionRoot<void, ThpRootState>({
+                reducer,
                 preloadedState: {
                     thp: { ...initialState, step: 'ConfirmOnlyConnection', lastThpCode: '1234' },
                 },
-            });
+            }).services;
 
             store.dispatch(
                 createDeviceAction(DEVICE.THP_PAIRING_STATUS_CHANGED, {
@@ -112,13 +112,12 @@ describe('thpReducer', () => {
         });
 
         test('failed', () => {
-            const store = createTestStore({
-                extra: undefined,
-                reducer: combineReducers({ thp: thpReduce }),
+            const { store } = createTestCompositionRoot<void, ThpRootState>({
+                reducer,
                 preloadedState: {
                     thp: { ...initialState, step: 'ConfirmOnlyConnection', lastThpCode: '1234' },
                 },
-            });
+            }).services;
 
             store.dispatch(
                 createDeviceAction(DEVICE.THP_PAIRING_STATUS_CHANGED, {
@@ -134,13 +133,12 @@ describe('thpReducer', () => {
         });
 
         test('invalid-tag', () => {
-            const store = createTestStore({
-                extra: undefined,
-                reducer: combineReducers({ thp: thpReduce }),
+            const { store } = createTestCompositionRoot<void, ThpRootState>({
+                reducer,
                 preloadedState: {
                     thp: initialState,
                 },
-            });
+            }).services;
 
             store.dispatch(
                 createDeviceAction(DEVICE.THP_PAIRING_STATUS_CHANGED, {
@@ -157,16 +155,15 @@ describe('thpReducer', () => {
     });
 
     it('filters out the credentials to be removed', () => {
-        const store = createTestStore({
-            extra: undefined,
-            reducer: combineReducers({ thp: thpReduce }),
+        const { store } = createTestCompositionRoot<void, ThpRootState>({
+            reducer,
             preloadedState: {
                 thp: {
                     ...initialState,
                     credentials: [credential1, credential2],
                 },
             },
-        });
+        }).services;
 
         expect(store.getState().thp.credentials.map(it => it.credential)).toEqual(['1', '2']);
 
