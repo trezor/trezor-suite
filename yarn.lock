@@ -10697,6 +10697,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@suite-common/apps-embedding@workspace:suite-common/apps-embedding"
   dependencies:
+    "@trezor/env-utils": "workspace:*"
     "@trezor/type-utils": "workspace:*"
     zod: "npm:4.3.6"
   languageName: unknown
@@ -15402,7 +15403,27 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@suite/apps-embedding-web@workspace:suite/apps-embedding-web":
+"@suite/apps-embedding-demo@workspace:*, @suite/apps-embedding-demo@workspace:suite/apps-embedding-demo":
+  version: 0.0.0-use.local
+  resolution: "@suite/apps-embedding-demo@workspace:suite/apps-embedding-demo"
+  dependencies:
+    "@suite-common/apps-embedding": "workspace:*"
+    "@suite-common/dependency-injection": "workspace:*"
+    "@suite-common/redux-utils": "workspace:*"
+    "@suite/apps-embedding-web": "workspace:*"
+    "@suite/debug": "workspace:*"
+    "@suite/settings": "workspace:*"
+    "@trezor/components": "workspace:*"
+    "@trezor/env-utils": "workspace:*"
+    "@trezor/product-components": "workspace:*"
+    "@trezor/type-utils": "workspace:*"
+    react: "npm:19.2.3"
+    react-redux: "npm:9.3.0"
+    styled-components: "npm:^6.3.9"
+  languageName: unknown
+  linkType: soft
+
+"@suite/apps-embedding-web@workspace:*, @suite/apps-embedding-web@workspace:suite/apps-embedding-web":
   version: 0.0.0-use.local
   resolution: "@suite/apps-embedding-web@workspace:suite/apps-embedding-web"
   dependencies:
@@ -18340,6 +18361,7 @@ __metadata:
     "@suite/address": "workspace:*"
     "@suite/analytics": "workspace:*"
     "@suite/app-assets": "workspace:*"
+    "@suite/apps-embedding-demo": "workspace:*"
     "@suite/authenticity-checks": "workspace:*"
     "@suite/backup": "workspace:*"
     "@suite/bluetooth": "workspace:*"

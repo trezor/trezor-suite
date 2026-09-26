@@ -48,6 +48,14 @@ export const PageName = () => {
         );
     }
 
+    if (currentRoute === 'apps-embedding-index') {
+        return (
+            <BasicName>
+                <Translation id="TR_APPS_EMBEDDING" />
+            </BasicName>
+        );
+    }
+
     if (selectedAccount && isAccountTabPage) {
         return <AccountName key={selectedAccount.key} selectedAccount={selectedAccount} />;
     }
