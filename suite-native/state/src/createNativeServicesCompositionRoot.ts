@@ -160,7 +160,6 @@ export const createNativeServicesCompositionRoot = (deps: NativeAppDeps): Native
             ),
         connectInit,
         connectInitUiEventHooks: {},
-        createTransports,
         getLanguage: toGetter(deps.getState, selectSupportedLanguageLocale),
         getTokenDefinitionsEnabledNetworks: toGetter(
             deps.getState,
