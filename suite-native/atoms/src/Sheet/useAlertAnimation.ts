@@ -1,4 +1,5 @@
 import { useCallback, useEffect } from 'react';
+import { useWindowDimensions } from 'react-native';
 import {
     Easing,
     cancelAnimation,
@@ -9,17 +10,16 @@ import {
     withTiming,
 } from 'react-native-reanimated';
 
-import { getScreenHeight } from '@trezor/env-utils';
 import { useNativeStyles } from '@trezor/styles-native';
 
 const ANIMATION_DURATION = 300;
-const SCREEN_HEIGHT = getScreenHeight();
 
 export const useAlertAnimation = ({ onClose }: { onClose?: () => void }) => {
     const { utils } = useNativeStyles();
+    const { height: windowHeight } = useWindowDimensions();
     const transparency = 1;
     const colorOverlay = utils.colors.surfaceFillMediaOverlay;
-    const translatePanY = useSharedValue(SCREEN_HEIGHT);
+    const translatePanY = useSharedValue(windowHeight);
     const animatedTransparency = useSharedValue(transparency);
 
     useEffect(() => {
@@ -50,7 +50,7 @@ export const useAlertAnimation = ({ onClose }: { onClose?: () => void }) => {
     const closeSheetAnimated = useCallback(
         () =>
             new Promise((resolve, _) => {
-                translatePanY.value = withTiming(SCREEN_HEIGHT, {
+                translatePanY.value = withTiming(windowHeight, {
                     duration: ANIMATION_DURATION,
                     easing: Easing.out(Easing.cubic),
                 });
@@ -67,7 +67,7 @@ export const useAlertAnimation = ({ onClose }: { onClose?: () => void }) => {
 
                 setTimeout(resolve, ANIMATION_DURATION);
             }),
-        [translatePanY, animatedTransparency, onClose],
+        [translatePanY, animatedTransparency, onClose, windowHeight],
     );
 
     const openSheetAnimated = useCallback(() => {

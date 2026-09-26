@@ -23,7 +23,6 @@
         { "path": "../atoms" },
         { "path": "../intl" },
         { "path": "../tokens" },
-        { "path": "../../packages/env-utils" },
         { "path": "../../packages/protobuf" },
         {
             "path": "../../packages/styles-native"

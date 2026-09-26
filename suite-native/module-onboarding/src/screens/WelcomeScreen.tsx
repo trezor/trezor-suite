@@ -1,4 +1,4 @@
-import { ImageBackground, StyleSheet } from 'react-native';
+import { ImageBackground, StyleSheet, useWindowDimensions } from 'react-native';
 
 import { LinearGradient } from 'expo-linear-gradient';
 
@@ -11,18 +11,19 @@ import {
     Screen,
     type StackProps,
 } from '@suite-native/navigation';
-import { getWindowHeight } from '@trezor/env-utils';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 import { colorVariants } from '@trezor/theme';
 import { hexToRgba } from '@trezor/utils';
 
-const GRADIENT_HEIGHT = getWindowHeight() / 3;
+const GRADIENT_HEIGHT_RATIO = 1 / 3;
 const BLACK_BACKGROUND_COLOR = '#000000';
 
-const gradientBackgroundBottomStyle = prepareNativeStyle(() => ({
-    width: '100%',
-    height: GRADIENT_HEIGHT,
-}));
+const gradientBackgroundBottomStyle = prepareNativeStyle<{ windowHeight: number }>(
+    (_, { windowHeight }) => ({
+        width: '100%',
+        height: windowHeight * GRADIENT_HEIGHT_RATIO,
+    }),
+);
 
 const buttonWrapperStyle = prepareNativeStyle(_ => ({
     width: '100%',
@@ -42,6 +43,7 @@ export const WelcomeScreen = ({
     navigation,
 }: StackProps<OnboardingStackParamList, OnboardingStackRoutes.Welcome>) => {
     const { applyStyle, utils } = useNativeStyles();
+    const { height: windowHeight } = useWindowDimensions();
 
     const transparentColor = hexToRgba(utils.colors.transparent, 0.01);
     const navigateToAnalyticsConsent = () => {
@@ -59,11 +61,11 @@ export const WelcomeScreen = ({
                 <Box flex={1} justifyContent="space-between">
                     <LinearGradient
                         colors={[BLACK_BACKGROUND_COLOR, transparentColor]}
-                        style={applyStyle(gradientBackgroundBottomStyle)}
+                        style={applyStyle(gradientBackgroundBottomStyle, { windowHeight })}
                     />
                     <LinearGradient
                         colors={[transparentColor, BLACK_BACKGROUND_COLOR]}
-                        style={applyStyle(gradientBackgroundBottomStyle)}
+                        style={applyStyle(gradientBackgroundBottomStyle, { windowHeight })}
                     />
                 </Box>
             </ImageBackground>

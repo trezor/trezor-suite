@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Dimensions, Platform } from 'react-native';
+import { Platform, useWindowDimensions } from 'react-native';
 
 import { type BarcodeScanningResult, CameraView, PermissionStatus } from 'expo-camera';
 
@@ -16,22 +16,23 @@ type QRCodeScannerProps = {
     onCodeScanned: (data: string) => void;
 };
 
-const SCANNER_SIZE = Dimensions.get('screen').width - 2 * nativeSpacings.sp16;
-
 const cameraContainerStyle = prepareNativeStyle(utils => ({
     borderRadius: utils.borders.radii.r16,
     overflow: 'hidden',
 }));
 
-const cameraStyle = prepareNativeStyle(() => ({
-    height: SCANNER_SIZE,
-    width: SCANNER_SIZE,
+const cameraStyle = prepareNativeStyle<{ scannerSize: number }>((_, { scannerSize }) => ({
+    height: scannerSize,
+    width: scannerSize,
 }));
 
 export const QRCodeScanner = ({ onCodeScanned }: QRCodeScannerProps) => {
     const { translate } = useTranslate();
     const { applyStyle } = useNativeStyles();
     const { cameraPermissionStatus } = useCameraPermission();
+    const { width: windowWidth } = useWindowDimensions();
+
+    const scannerSize = windowWidth - 2 * nativeSpacings.sp16;
 
     const [scanned, setScanned] = useState(false);
     // We don't need wait on iOS, check comment in useEffect lower for more details
@@ -78,7 +79,7 @@ export const QRCodeScanner = ({ onCodeScanned }: QRCodeScannerProps) => {
                     <Box style={applyStyle(cameraContainerStyle)}>
                         <CameraView
                             onBarcodeScanned={scanned ? undefined : handleBarCodeScanned}
-                            style={applyStyle(cameraStyle)}
+                            style={applyStyle(cameraStyle, { scannerSize })}
                             barcodeScannerSettings={{
                                 barcodeTypes: ['qr'],
                             }}

@@ -46,7 +46,6 @@
         "@trezor/connect": "workspace:*",
         "@trezor/crypto-utils": "workspace:*",
         "@trezor/device-utils": "workspace:*",
-        "@trezor/env-utils": "workspace:*",
         "@trezor/styles-native": "workspace:*",
         "@trezor/theme": "workspace:*",
         "@trezor/type-utils": "workspace:*",

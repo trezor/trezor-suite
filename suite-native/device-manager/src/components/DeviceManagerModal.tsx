@@ -1,5 +1,11 @@
 import { type ReactNode } from 'react';
-import { Dimensions, type GestureResponderEvent, Modal, Pressable, StatusBar } from 'react-native';
+import {
+    type GestureResponderEvent,
+    Modal,
+    Pressable,
+    StatusBar,
+    useWindowDimensions,
+} from 'react-native';
 import Animated, { FadeIn, LinearTransition, SlideInUp } from 'react-native-reanimated';
 import { type EdgeInsets, useSafeAreaInsets } from 'react-native-safe-area-context';
 
@@ -19,15 +25,16 @@ type DeviceManagerModalProps = {
 
 export const MANAGER_MODAL_BOTTOM_RADIUS = nativeBorders.radii.r12;
 
-const SCREEN_SIZE = Dimensions.get('screen');
-
-const modalBackgroundOverlayStyle = prepareNativeStyle(utils => ({
+const modalBackgroundOverlayStyle = prepareNativeStyle<{
+    windowWidth: number;
+    windowHeight: number;
+}>((utils, { windowWidth, windowHeight }) => ({
     flex: 1,
     backgroundColor: utils.colors.surfaceFillMediaOverlay,
     // this need to be here so the background does not stretch out when appearing
     // new RN architecture might fix this, so evaluate later
-    width: SCREEN_SIZE.width,
-    height: SCREEN_SIZE.height,
+    width: windowWidth,
+    height: windowHeight,
 }));
 
 const deviceManagerModalWrapperStyle = prepareNativeStyle(utils => ({
@@ -67,6 +74,7 @@ export const DeviceManagerModal = ({
     const { applyStyle } = useNativeStyles();
 
     const insets = useSafeAreaInsets();
+    const { width: windowWidth, height: windowHeight } = useWindowDimensions();
 
     const { setIsDeviceManagerVisible, isDeviceManagerVisible } = useDeviceManager();
 
@@ -88,7 +96,10 @@ export const DeviceManagerModal = ({
             animationType="fade"
             statusBarTranslucent={true}
         >
-            <Pressable style={applyStyle(modalBackgroundOverlayStyle)} onPress={handlePressOutside}>
+            <Pressable
+                style={applyStyle(modalBackgroundOverlayStyle, { windowWidth, windowHeight })}
+                onPress={handlePressOutside}
+            >
                 <Animated.View entering={SlideInUp.damping(30)}>
                     <Animated.View
                         style={applyStyle(deviceManagerModalWrapperStyle, { insets })}

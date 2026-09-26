@@ -1,4 +1,4 @@
-import { Dimensions, View } from 'react-native';
+import { View, useWindowDimensions } from 'react-native';
 
 import { useNavigation } from '@react-navigation/native';
 
@@ -14,15 +14,15 @@ import {
 } from '@suite-native/navigation';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
-const SCREEN_HEIGHT = Dimensions.get('screen').height;
+const IMAGE_MAX_HEIGHT_RATIO = 0.25;
 
 const cardStyle = prepareNativeStyle(utils => ({
     paddingTop: utils.spacings.sp32,
     paddingBottom: utils.spacings.sp16,
     paddingVertical: utils.spacings.sp16,
 }));
-const imageStyle = prepareNativeStyle(_ => ({
-    maxHeight: SCREEN_HEIGHT * 0.25,
+const imageStyle = prepareNativeStyle<{ windowHeight: number }>((_, { windowHeight }) => ({
+    maxHeight: windowHeight * IMAGE_MAX_HEIGHT_RATIO,
     width: '100%',
     height: 180,
     alignItems: 'center',
@@ -40,6 +40,7 @@ type NavigationProp = StackToTabCompositeNavigationProp<
 
 export const EmptyPortfolioTrackerState = () => {
     const { applyStyle } = useNativeStyles();
+    const { height: windowHeight } = useWindowDimensions();
     const navigation = useNavigation<NavigationProp>();
 
     const handleSyncMyCoins = () => {
@@ -75,7 +76,7 @@ export const EmptyPortfolioTrackerState = () => {
                     <Image
                         source={require('../../../assets/dashboard.png')}
                         contentFit="contain"
-                        style={applyStyle(imageStyle)}
+                        style={applyStyle(imageStyle, { windowHeight })}
                     />
                     <View style={applyStyle(buttonWrapperStyle)}>
                         <Button
