@@ -128,6 +128,28 @@ const discoveryFailedMessage = (
     return <>{details}</>;
 };
 
+// A VPN sits on discovery's outbound backend connection, so it can only be to blame
+// on the network path: per-account backend failures (which carry no top-level errorCode)
+// and these explicitly network-related connect codes. Every other failure is a device,
+// firmware or auth condition where blaming the VPN just misleads the user.
+const NETWORK_ERROR_CODES = new Set<string>([
+    'Transport_Missing',
+    'Browser_LocalNetworkPermissionMissing',
+    'Backend_Disconnected',
+    'Backend_Error',
+]);
+
+const getDiscoveryFailedDescriptionId = (
+    discovery: DiscoveryStatus | undefined,
+): TranslationKey => {
+    const errorCode = discovery?.status === 'failed' ? discovery.errorCode : undefined;
+    const isNetworkError = errorCode === undefined || NETWORK_ERROR_CODES.has(errorCode);
+
+    return isNetworkError
+        ? 'TR_DASHBOARD_DISCOVERY_ERROR_PARTIAL_DESC'
+        : 'TR_DASHBOARD_DISCOVERY_ERROR_DEVICE_DESC';
+};
+
 type PortfolioCardExceptionProps = {
     exception: Extract<DiscoveryStatusType, { status: 'exception' }>;
     discovery?: DiscoveryStatus;
@@ -172,7 +194,7 @@ export const PortfolioCardException = ({
                     title="TR_DASHBOARD_DISCOVERY_ERROR"
                     description={
                         <Translation
-                            id="TR_DASHBOARD_DISCOVERY_ERROR_PARTIAL_DESC"
+                            id={getDiscoveryFailedDescriptionId(discovery)}
                             values={{ details: discoveryFailedMessage(discovery, failed) }}
                         />
                     }
