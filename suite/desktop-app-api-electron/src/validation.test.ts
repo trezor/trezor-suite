@@ -13,6 +13,14 @@ describe('Validation', () => {
         expect(validation.isObject({ foo: 'string' }, { foo: 'value' })).toBe(true);
         // optional
         expect(validation.isObject({ foo: ['string', true] }, {})).toBe(true);
+        // all-optional shape accepts a partial payload carrying only one field (e.g. the bridge
+        // change-settings payload sending just usbImplementation without doNotStartOnStartup)
+        expect(
+            validation.isObject(
+                { foo: ['boolean', true], bar: ['string', true] },
+                { bar: 'value' },
+            ),
+        ).toBe(true);
 
         expect(validation.isObject({ foo: 'string' }, {})).toBe(false);
         expect(validation.isObject({ foo: 'string' }, null)).toBe(false);

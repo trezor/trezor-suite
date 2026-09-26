@@ -42,6 +42,13 @@ export interface UsbDeviceLike {
     productName?: string | null;
     manufacturerName?: string | null;
     serialNumber?: string | null;
+    /**
+     * node-usb 3.x (node-usb-rs) only: a stable per-physical-device id (device_info.id()) that
+     * survives the fresh-object-per-getDevices() churn and changes on replug. Absent on
+     * navigator.usb and react-native-usb, so it is optional; consumers must fall back to object
+     * identity when it is missing.
+     */
+    handle?: string;
     vendorId: number;
     productId: number;
     deviceVersionMajor: number;
@@ -49,16 +56,31 @@ export interface UsbDeviceLike {
     opened: boolean;
     configuration: UsbConfigurationLike | null;
 
+    /**
+     * usb 2.x (legacy, libusb) only: low-level handle used to read the serial number string
+     * descriptor on drivers that withhold it (see UsbApi.loadSerialNumber). Absent on usb 3.x
+     * (node-usb-rs), navigator.usb and react-native-usb.
+     */
+    device?: { deviceDescriptor: { iSerialNumber: number } };
+    /** usb 2.x (legacy) only companion to `device`; reads a string descriptor by index. */
+    getStringDescriptor?(index: number): Promise<string>;
+
     open(): Promise<void>;
     close(): Promise<void>;
     selectConfiguration(configurationValue: number): Promise<void>;
     claimInterface(interfaceNumber: number): Promise<void>;
     releaseInterface(interfaceNumber: number): Promise<void>;
     reset(): Promise<void>;
-    transferIn(endpointNumber: number, length: number): Promise<UsbInTransferResultLike>;
+    transferIn(
+        endpointNumber: number,
+        length: number,
+        // usb 3.x accepts a per-transfer timeout (ms); the browser navigator.usb ignores it.
+        timeout?: number,
+    ): Promise<UsbInTransferResultLike>;
     transferOut(
         endpointNumber: number,
         data: UsbTransferOutData,
+        timeout?: number,
     ): Promise<UsbOutTransferResultLike>;
 }
 

@@ -113,6 +113,11 @@ export type Status = {
 // todo: duplicate, see prev comment
 export type BridgeSettings = {
     doNotStartOnStartup: boolean;
+    /**
+     * Which usb library the bundled node-bridge uses. Read at bridge cold-start; a change applies
+     * on the next app launch. Undefined = 'legacy' (the safe default). Desktop-only.
+     */
+    usbImplementation?: 'legacy' | 'nusb';
 };
 
 export type BioAuthSettings = {

@@ -1,5 +1,3 @@
-import { WebUSB, usb } from 'usb';
-
 import {
     type TransportProtocol,
     bridge as protocolBridge,
@@ -33,30 +31,42 @@ import {
 } from '@trezor/transport-common';
 import { type Log } from '@trezor/utils';
 
-export const createCore = (apiArg: 'usb' | 'udp' | AbstractApi, logger?: Log) => {
+export const createCore = (
+    apiArg: 'usb' | 'legacy' | 'nusb' | 'udp' | AbstractApi,
+    logger?: Log,
+) => {
     let api: AbstractApi;
 
     const sessionsBackground = new SessionsBackground();
     const sessionsClient = new SessionsClient(sessionsBackground);
 
-    if (apiArg === 'usb' && logger?.enabled) {
-        // https://libusb.sourceforge.io/api-1.0/group__libusb__lib.html#ga2d6144203f0fc6d373677f6e2e89d2d2
-        usb.setDebugLevel(1); // Level 3 would probably be ok as well (doesn't seem too spammy). For full debugging use 4.
-    }
-
     if (typeof apiArg === 'string') {
-        api =
-            apiArg === 'udp'
-                ? new UdpApi({ logger })
-                : new UsbApi({
-                      logger,
-                      usbInterface: new WebUSB({
-                          allowAllDevices: true, // return all devices, not only authorized
-                      }),
-
-                      // todo: possibly only for windows
-                      forceReadSerialOnConnect: true,
-                  });
+        if (apiArg === 'udp') {
+            api = new UdpApi({ logger });
+        } else if (apiArg === 'legacy') {
+            // Lazy-require so only the SELECTED native usb addon is ever loaded - never both at
+            // once, which would make libusb (2.x) and nusb (3.x) contend for the same device.
+            const { WebUSB, usb } = require('usb-legacy');
+            if (logger?.enabled) {
+                // https://libusb.sourceforge.io/api-1.0/group__libusb__lib.html#ga2d6144203f0fc6d373677f6e2e89d2d2
+                usb.setDebugLevel(1);
+            }
+            api = new UsbApi({
+                logger,
+                usbInterface: new WebUSB({ allowAllDevices: true }), // all devices, not only authorized
+                forceReadSerialOnConnect: true, // todo: possibly only for windows
+                usbVersion: 'legacy',
+            });
+        } else {
+            // 'nusb' = usb 3.x (node-usb-rs); 'usb' kept as a back-compat alias for the default.
+            const { WebUSB } = require('usb');
+            api = new UsbApi({
+                logger,
+                usbInterface: new WebUSB({ allowAllDevices: true }), // all devices, not only authorized
+                forceReadSerialOnConnect: true, // todo: possibly only for windows
+                usbVersion: 'nusb',
+            });
+        }
     } else {
         api = apiArg;
     }
