@@ -27,7 +27,7 @@ test.describe('Metadata - Output labeling', { tag: ['@webOnly', '@T3W1', '@T3T1'
                 stream: TestStream.Wallet,
             }),
         },
-        async ({ page, onboardingPage, metadataPage, settingsPage, walletPage }) => {
+        async ({ page, onboardingPage, metadataPage, settingsPage, walletPage, dashboardPage }) => {
             await onboardingPage.completeOnboarding();
             await settingsPage.changeNetworks({ enableNetworks: [btcSymbol] });
             await metadataPage.enableLegacyLabeling(MetadataProvider.DROPBOX);
@@ -39,7 +39,7 @@ test.describe('Metadata - Output labeling', { tag: ['@webOnly', '@T3W1', '@T3T1'
             await page.keyboard.press('Enter');
 
             await test.step('Go to legacy account 6, it has txs with multiple outputs', async () => {
-                await metadataPage.closeLegacyNotification();
+                await dashboardPage.closeLegacyNotification();
                 await walletPage.openAccount({ symbol: btcSymbol, type: 'legacy', atIndex: 5 });
             });
 

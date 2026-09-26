@@ -104,6 +104,15 @@ export class DevicePrompt {
     }
 
     @step()
+    async confirmOnDeviceUntilPromptIsHidden(options?: { timeout?: number }) {
+        await this.confirmOnDevicePromptIsShown();
+        await expect(async () => {
+            await this.device.pressYes();
+            await expect(this.confirmOnDevicePrompt).toBeHidden({ timeout: 1_000 });
+        }).toPass({ timeout: options?.timeout ?? 15_000 });
+    }
+
+    @step()
     async waitForPromptAndClick(): Promise<void> {
         await this.confirmOnDevicePromptIsShown();
         await this.device.tapCenter();

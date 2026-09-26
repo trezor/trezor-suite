@@ -144,6 +144,15 @@ export class DeviceFixture {
         return await TrezorUserEnvLink.getDebugState();
     }
 
+    // Call with the bridge stopped: both use the emulator UDP port and a collision hangs tenv.
+    @step()
+    async getFirmwareVersion() {
+        const { major_version, minor_version, patch_version } =
+            await TrezorUserEnvLink.getFeatures();
+
+        return `${major_version}.${minor_version}.${patch_version}`;
+    }
+
     @step()
     async getAnalyzedDisplayContent() {
         const debugState = await this.getDisplayContent();

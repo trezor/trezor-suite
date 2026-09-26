@@ -6,7 +6,7 @@ import { createTestAnnotation } from '../../../support/reporters/annotations';
 const mnemonic =
     'nasty answer gentle inform unaware abandon regret supreme dragon gravity behind lava dose pilot garden into dynamic outer hard speed luxury run truly armed';
 
-test.describe('Onboarding - recover wallet T1B1', { tag: ['@firmware-ready', '@T1B1'] }, () => {
+test.describe('Onboarding - recover wallet T1B1', { tag: ['@T1B1'] }, () => {
     test.use({
         setupEmulator: false,
     });

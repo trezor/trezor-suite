@@ -25,6 +25,7 @@
             "path": "../../suite-common/earn-staking-api"
         },
         { "path": "../../suite-common/feedback" },
+        { "path": "../../suite-common/firmware" },
         {
             "path": "../../suite-common/formatters"
         },
