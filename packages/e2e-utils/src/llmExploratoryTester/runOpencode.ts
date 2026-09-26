@@ -55,6 +55,9 @@ function isolateServerConfig(): void {
     process.chdir(REPO_ROOT);
     mkdirSync(OPENCODE_CONFIG_DIR, { recursive: true });
     process.env.XDG_CONFIG_HOME = OPENCODE_CONFIG_DIR;
+    // Otherwise opencode injects the repo AGENTS.md and ~/.claude files into the system prompt.
+    process.env.OPENCODE_DISABLE_PROJECT_CONFIG = '1';
+    process.env.OPENCODE_DISABLE_CLAUDE_CODE = '1';
 }
 
 async function startServer(timeoutMs: number): Promise<Server> {
