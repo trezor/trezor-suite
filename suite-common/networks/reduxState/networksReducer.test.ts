@@ -1,3 +1,4 @@
+import { asDisplayOrderKey } from '@trezor/network-module-suite-common-types';
 import { asNetworkSymbol } from '@trezor/network-module-types';
 
 import type { NetworkMetadata } from './NetworkMetadata';
@@ -5,6 +6,7 @@ import { networksActions, networksReducer } from './networksReducer';
 
 const bitcoin: NetworkMetadata = {
     symbol: asNetworkSymbol('btc'),
+    displayOrder: asDisplayOrderKey('a0'),
     bip43Path: "m/84'/0'/i'",
     accountTypes: {},
     features: [],

@@ -3,6 +3,7 @@ import { CARDANO_DECIMALS, type CardanoNetworkSymbol } from '@trezor/network-car
 import {
     type Explorer,
     type SuiteCommonNetworkConfig,
+    asDisplayOrderKey,
     asProtocol,
 } from '@trezor/network-module-suite-common-types';
 
@@ -20,6 +21,7 @@ type NetworkConfig = SuiteCommonNetworkConfig & {
 export const networkConfigBySymbol = {
     ada: {
         color: '#3468d1',
+        displayOrder: asDisplayOrderKey('aC'),
         protocols: [asProtocol('cardano'), asProtocol('ada')],
         // icarus derivation
         displaySymbol: 'ADA',

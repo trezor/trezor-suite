@@ -2,6 +2,7 @@ import type { EthereumNetworkSymbol } from '@trezor/network-ethereum/constants';
 import {
     type Explorer,
     type SuiteCommonNetworkConfig,
+    asDisplayOrderKey,
     asProtocol,
 } from '@trezor/network-module-suite-common-types';
 import { asNetworkSymbol } from '@trezor/network-module-types';
@@ -23,6 +24,7 @@ const ethSymbol = asNetworkSymbol('eth');
 export const networkConfigBySymbol = {
     eth: {
         color: '#454a75',
+        displayOrder: asDisplayOrderKey('a1'),
         protocols: [asProtocol('ethereum'), asProtocol('eth')],
         displaySymbol: 'ETH',
         name: 'Ethereum',
@@ -67,6 +69,7 @@ export const networkConfigBySymbol = {
     },
     pol: {
         color: '#7b3fe4',
+        displayOrder: asDisplayOrderKey('a2'),
         protocols: [asProtocol('polygon'), asProtocol('matic'), asProtocol('pol')],
         displaySymbol: 'POL',
         displaySymbolName: 'Polygon',
@@ -103,6 +106,7 @@ export const networkConfigBySymbol = {
     },
     bsc: {
         color: '#f0b90b',
+        displayOrder: asDisplayOrderKey('a3'),
         protocols: [asProtocol('binance'), asProtocol('bnb'), asProtocol('bsc')],
         displaySymbol: 'BNB',
         displaySymbolName: 'BNB',
@@ -139,6 +143,7 @@ export const networkConfigBySymbol = {
     },
     arb: {
         color: '#213147',
+        displayOrder: asDisplayOrderKey('a4'),
         protocols: [
             asProtocol('arbitrum'),
             asProtocol('arbitrum-one'),
@@ -182,6 +187,7 @@ export const networkConfigBySymbol = {
     },
     base: {
         color: '#0052ff',
+        displayOrder: asDisplayOrderKey('a5'),
         protocols: [asProtocol('base')],
         settlementLayer: ethSymbol,
         displaySymbol: 'ETH',
@@ -221,6 +227,7 @@ export const networkConfigBySymbol = {
     },
     op: {
         color: '#ff0720',
+        displayOrder: asDisplayOrderKey('a6'),
         protocols: [asProtocol('optimism'), asProtocol('op')],
         settlementLayer: ethSymbol,
         displaySymbol: 'ETH',
@@ -259,6 +266,7 @@ export const networkConfigBySymbol = {
     },
     rhc: {
         color: '#ccff00',
+        displayOrder: asDisplayOrderKey('a7'),
         protocols: [asProtocol('robinhood'), asProtocol('robinhood-chain'), asProtocol('rhc')],
         settlementLayer: ethSymbol,
         displaySymbol: 'ETH',
@@ -297,6 +305,7 @@ export const networkConfigBySymbol = {
     },
     hype: {
         color: '#97fce4',
+        displayOrder: asDisplayOrderKey('a8'),
         protocols: [asProtocol('hyperliquid'), asProtocol('hyperevm'), asProtocol('hype')],
         displaySymbol: 'HYPE',
         name: 'HyperEVM',
@@ -333,6 +342,7 @@ export const networkConfigBySymbol = {
     },
     avax: {
         color: '#e84142',
+        displayOrder: asDisplayOrderKey('a9'),
         protocols: [asProtocol('avalanche'), asProtocol('avax')],
         displaySymbol: 'AVAX',
         displaySymbolName: 'Avalanche',
@@ -369,6 +379,7 @@ export const networkConfigBySymbol = {
     },
     etc: {
         color: '#60c67e',
+        displayOrder: asDisplayOrderKey('aD'),
         protocols: [asProtocol('ethclassic'), asProtocol('etc')],
         displaySymbol: 'ETC',
         name: 'Ethereum Classic',
@@ -387,6 +398,7 @@ export const networkConfigBySymbol = {
     },
     tsep: {
         color: '#454a75',
+        displayOrder: asDisplayOrderKey('aM'),
         protocols: [asProtocol('tsep')],
         displaySymbol: 'tETH',
         name: 'Ethereum Sepolia',
@@ -411,6 +423,7 @@ export const networkConfigBySymbol = {
     },
     thod: {
         color: '#454a75',
+        displayOrder: asDisplayOrderKey('aN'),
         protocols: [asProtocol('thod')],
         displaySymbol: 'tETH',
         name: 'Ethereum Hoodi',
