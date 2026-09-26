@@ -1,4 +1,5 @@
-import { renderHookWithBasicProvider, waitFor } from '@suite-native/test-utils';
+import { useNavigationRemoveGuard } from '@suite-native/navigation';
+import { renderHookWithBasicProvider } from '@suite-native/test-utils';
 
 import { useOutputsReviewBackInterceptor } from './useOutputsReviewBackInterceptor';
 
@@ -6,11 +7,7 @@ const mockShowReviewCancellationAlert = jest.fn();
 
 jest.mock('@suite-native/navigation', () => ({
     ...jest.requireActual('@suite-native/navigation'),
-    useNavigationRemoveActionInterceptor: ({
-        onInterceptedAction,
-    }: {
-        onInterceptedAction: () => void;
-    }) => onInterceptedAction(),
+    useNavigationRemoveGuard: jest.fn(),
 }));
 
 jest.mock('./useShowReviewCancellationAlert', () => ({
@@ -18,41 +15,27 @@ jest.mock('./useShowReviewCancellationAlert', () => ({
 }));
 
 describe('useOutputsReviewBackInterceptor', () => {
-    const renderUseOutputsReviewBackInterceptor = async (
-        onReviewCanceled: () => void = jest.fn(),
-    ) => await renderHookWithBasicProvider(() => useOutputsReviewBackInterceptor(onReviewCanceled));
-
     beforeEach(() => {
         jest.clearAllMocks();
-        mockShowReviewCancellationAlert.mockReturnValue(
-            Promise.resolve({ wasReviewCanceled: true }),
-        );
     });
 
-    it('should call showReviewCancellationAlert onBack action', async () => {
-        await renderUseOutputsReviewBackInterceptor();
+    it.each([true, false])(
+        'only calls the existing cancellation handler when confirmed: %s',
+        async wasReviewCanceled => {
+            const onReviewCanceled = jest.fn();
+            const continueNavigation = jest.fn();
+            mockShowReviewCancellationAlert.mockResolvedValue({ wasReviewCanceled });
+            await renderHookWithBasicProvider(() =>
+                useOutputsReviewBackInterceptor(onReviewCanceled),
+            );
+            const options = jest.mocked(useNavigationRemoveGuard).mock.calls.at(-1)?.[0];
 
-        expect(mockShowReviewCancellationAlert).toHaveBeenCalledTimes(1);
-    });
+            expect(options?.actionTypes).toEqual(['GO_BACK', 'POP']);
+            await options?.onBlocked?.({ action: { type: 'POP' }, continueNavigation });
 
-    it('should call onReviewCanceled if review was canceled', async () => {
-        const mockOnReviewCanceled = jest.fn();
-
-        await renderUseOutputsReviewBackInterceptor(mockOnReviewCanceled);
-
-        await waitFor(() => {
-            expect(mockOnReviewCanceled).toHaveBeenCalledTimes(1);
-        });
-    });
-
-    it('should not call onReviewCanceled if review was not canceled', async () => {
-        const mockOnReviewCanceled = jest.fn();
-        mockShowReviewCancellationAlert.mockReturnValue(
-            Promise.resolve({ wasReviewCanceled: false }),
-        );
-        await renderUseOutputsReviewBackInterceptor(mockOnReviewCanceled);
-
-        await Promise.resolve(); // wait for the promise in the hook to resolve
-        expect(mockOnReviewCanceled).toHaveBeenCalledTimes(0);
-    });
+            expect(mockShowReviewCancellationAlert).toHaveBeenCalledTimes(1);
+            expect(onReviewCanceled).toHaveBeenCalledTimes(wasReviewCanceled ? 1 : 0);
+            expect(continueNavigation).not.toHaveBeenCalled();
+        },
+    );
 });
