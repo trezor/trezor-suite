@@ -204,14 +204,6 @@ jobs:
           CURRENTS_CI_BUILD_ID: pr-run-${{ github.run_id }}-${{ github.run_attempt }}
         run: yarn test:e2e --config=e2e/trezorDetoxRunner/config/runner-ios-release.config.js --shard=${{ matrix.TEST_GROUP }} --totalShards=2 --headless --quarantine
 
-      - name: "Store test artifacts"
-        if: ${{ !cancelled() }}
-        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
-        with:
-          name: ios-tests-${{ matrix.TEST_GROUP }}
-          path: suite-native/app/artifacts
-          retention-days: 14
-
   notify_scheduled_failure_to_slack:
     runs-on: ubuntu-latest
     if: ${{ failure() && github.event_name == 'schedule' }}

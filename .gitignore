@@ -50,6 +50,7 @@ packages/e2e-utils/src/llmTestFixer/reports/
 packages/e2e-utils/src/llmExploratoryTester/reports/
 suite-native/app/.metadata/
 suite-native/app/artifacts/
+suite-native/app/crash-reports/
 
 # build outputs
 lib
