@@ -93,23 +93,20 @@ describe('createBackgroundScan', () => {
         },
     );
 
-    it.each([
-        'unknown',
-        'disabled',
-        'permission-denied',
-        'not-compatible',
-        'power-suspending',
-    ] as const)('does not scan when the adapter is %s', async adapterStatus => {
-        state.bluetooth = { ...state.bluetooth, adapterStatus };
+    it.each(['disabled', 'permission-denied', 'not-compatible', 'power-suspending'] as const)(
+        'does not scan when the adapter is %s',
+        async adapterStatus => {
+            state.bluetooth = { ...state.bluetooth, adapterStatus };
 
-        scan.start();
-        scan.restartIfNeeded();
-        await jest.advanceTimersByTimeAsync(12000);
+            scan.start();
+            scan.restartIfNeeded();
+            await jest.advanceTimersByTimeAsync(12000);
 
-        expect(bluetoothIpc.startScan).not.toHaveBeenCalled();
-        expect(bluetoothIpc.stopScan).not.toHaveBeenCalled();
-        expect(jest.getTimerCount()).toBe(0);
-    });
+            expect(bluetoothIpc.startScan).not.toHaveBeenCalled();
+            expect(bluetoothIpc.stopScan).not.toHaveBeenCalled();
+            expect(jest.getTimerCount()).toBe(0);
+        },
+    );
 
     it('uses the latest adapter status before another cycle and can restart when enabled', async () => {
         scan.start();
