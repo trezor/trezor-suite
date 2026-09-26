@@ -17410,6 +17410,7 @@ __metadata:
     "@vitest/browser-playwright": "npm:^4.1.10"
     cross-fetch: "npm:^4.1.0"
     crypto-browserify: "npm:3.12.1"
+    fast-check: "npm:4.9.0"
     jest: "npm:29.7.0"
     jws: "npm:^4.0.1"
     process: "npm:^0.11.10"
