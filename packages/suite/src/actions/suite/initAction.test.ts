@@ -23,7 +23,10 @@ import {
     suiteSettingsInitialState,
 } from '@suite/settings';
 import { onSuiteInit, onSuiteReady } from '@suite/suite-lifecycle';
-import { createConnectInitCompositionRoot } from '@suite-common/connect-init';
+import {
+    type ConnectInitState,
+    createConnectInitCompositionRoot,
+} from '@suite-common/connect-init';
 import {
     mockConnectInitDeviceEventHooks,
     mockConnectInitSettings,
@@ -126,7 +129,10 @@ global.fetch = jest.fn().mockImplementation(() =>
 
 const EMPTY_ACTION = { type: 'foo' } as any;
 
-const getInitialState = (initialRun?: boolean): InitThunkState => {
+// connectInit is composed from the same store, so the state also covers what it reads.
+type InitActionTestState = InitThunkState & ConnectInitState;
+
+const getInitialState = (initialRun?: boolean): InitActionTestState => {
     const initialFlagsState = flagsReducer(undefined, EMPTY_ACTION);
 
     return {
@@ -360,10 +366,10 @@ type InitActionTestDeps = GotoThunkDeps &
     WalletConnectInitThunkDeps &
     WithServices<ConnectInitDep & ConnectInitUiEventHooksDep & InitThunkDesktopApiDep>;
 
-const initStore = (state: InitThunkState) => {
+const initStore = (state: InitActionTestState) => {
     const memoryHistory = createMemoryHistory();
     const suiteRouterHistory = createSuiteRouterHistory({ history: memoryHistory });
-    const { services } = createTestCompositionRoot<InitActionTestDeps, InitThunkState>({
+    const { services } = createTestCompositionRoot<InitActionTestDeps, InitActionTestState>({
         services: store => {
             const analytics = mockDesktopAnalytics();
             const { connectInit } = createConnectInitCompositionRoot({
