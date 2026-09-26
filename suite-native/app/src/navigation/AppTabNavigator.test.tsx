@@ -1,5 +1,19 @@
-import { Platform } from 'react-native';
+import {
+    Image,
+    Pressable as NativePressable,
+    Text as NativeText,
+    View as NativeView,
+    Platform,
+} from 'react-native';
 import { type TabsHostProps, type TabsScreenProps } from 'react-native-screens';
+
+import { useNavigation } from '@react-navigation/native';
+import {
+    type NativeStackHeaderItemButton,
+    type NativeStackNavigationProp,
+    createNativeStackNavigator,
+} from '@react-navigation/native-stack';
+import { DeviceType } from 'expo-device';
 
 import { deviceInitialState } from '@suite-common/device';
 import { messageSystemInitialState } from '@suite-common/message-system';
@@ -9,12 +23,18 @@ import { mockNativeAnalytics } from '@suite-native/analytics/mocks';
 import { FeatureFlag, featureFlagsInitialState } from '@suite-native/feature-flags';
 import { type IconName, icons } from '@suite-native/icons';
 import { getTranslation } from '@suite-native/intl';
-import { AccountsStackRoutes } from '@suite-native/navigation';
+import {
+    AccountsStackRoutes,
+    AppTabsRoutes,
+    type RootStackParamList,
+    RootStackRoutes,
+} from '@suite-native/navigation';
 import {
     act,
     fireEvent,
     mergePreloadedState,
     renderWithStoreProvider,
+    waitFor,
 } from '@suite-native/test-utils-store';
 import { FirmwareType } from '@trezor/device-utils';
 
@@ -22,6 +42,8 @@ import { AppTabNavigator } from './AppTabNavigator';
 import { type NativeTabIcons } from './useNativeTabIcons';
 
 let mockDeviceModelName: string | null = null;
+let mockDeviceType = DeviceType.PHONE;
+let mockEarnStackContent: React.ReactNode = null;
 const originalNativeTabsOverride = process.env.EXPO_PUBLIC_NATIVE_TABS;
 const nativeIconNames: IconName[] = [
     'house',
@@ -46,6 +68,9 @@ jest.mock('expo-device', () => ({
     ...jest.requireActual('expo-device'),
     get modelName() {
         return mockDeviceModelName;
+    },
+    get deviceType() {
+        return mockDeviceType;
     },
 }));
 jest.mock('./useNativeTabIcons', () => ({
@@ -75,7 +100,9 @@ jest.mock('@suite-native/module-accounts-management', () => ({
         return <View testID="@screen/Accounts" accessibilityLabel={route.params?.screen} />;
     },
 }));
-jest.mock('@suite-native/module-earn', () => ({ EarnStackNavigator: () => null }));
+jest.mock('@suite-native/module-earn', () => ({
+    EarnStackNavigator: () => mockEarnStackContent,
+}));
 jest.mock('@suite-native/module-settings', () => ({ SettingsScreen: () => null }));
 jest.mock('@suite-native/module-trading', () => {
     const { View } = require('react-native');
@@ -130,6 +157,71 @@ const baseState = {
 };
 const services: NativeAnalyticsDep = { analytics: mockNativeAnalytics() };
 
+const RootStack = createNativeStackNavigator<RootStackParamList>();
+type TestEarnStackParamList = { Landing: undefined; Detail: undefined };
+const TestEarnStack = createNativeStackNavigator<TestEarnStackParamList>();
+
+type HeaderButtonProbeProps = { item: NativeStackHeaderItemButton };
+
+const HeaderButtonProbe = ({ item }: HeaderButtonProbeProps) => (
+    <NativePressable
+        accessibilityRole="button"
+        accessibilityLabel={item.accessibilityLabel}
+        accessibilityState={{ selected: item.selected }}
+        onPress={item.onPress}
+        testID={item.identifier}
+    >
+        {item.icon?.type === 'image' && (
+            <Image
+                source={item.icon.source}
+                tintColor={item.tintColor}
+                testID={`${item.identifier}/icon`}
+            />
+        )}
+        <NativeText>{item.label}</NativeText>
+    </NativePressable>
+);
+
+const RootTabsFixture = () => (
+    <RootStack.Navigator
+        initialRouteName={RootStackRoutes.AppTabs}
+        screenOptions={{ headerShown: false }}
+        screenLayout={({ children, options }) => (
+            <NativeView>
+                <NativeView
+                    testID="@parentHeader"
+                    accessibilityLabel={options.headerShown ? 'shown' : 'hidden'}
+                >
+                    {options
+                        .unstable_headerLeftItems?.({})
+                        .map(item =>
+                            item.type === 'button' ? (
+                                <HeaderButtonProbe key={item.identifier} item={item} />
+                            ) : null,
+                        )}
+                </NativeView>
+                {children}
+            </NativeView>
+        )}
+    >
+        <RootStack.Screen name={RootStackRoutes.AppTabs}>
+            {() => <AppTabNavigator />}
+        </RootStack.Screen>
+    </RootStack.Navigator>
+);
+
+const EarnLandingFixture = () => {
+    const navigation = useNavigation<NativeStackNavigationProp<TestEarnStackParamList>>();
+
+    return (
+        <NativePressable testID="@earn/landing" onPress={() => navigation.navigate('Detail')}>
+            <NativeText>Detail</NativeText>
+        </NativePressable>
+    );
+};
+
+const EarnDetailFixture = () => <NativeView testID="@earn/detail" />;
+
 describe('AppTabNavigator', () => {
     const renderTabs = async (overrides: Record<string, unknown> = {}) =>
         await renderWithStoreProvider(<AppTabNavigator />, {
@@ -137,9 +229,17 @@ describe('AppTabNavigator', () => {
             services,
         });
 
+    const renderRootTabs = async (overrides: Record<string, unknown> = {}) =>
+        await renderWithStoreProvider(<RootTabsFixture />, {
+            preloadedState: mergePreloadedState(baseState, overrides),
+            services,
+        });
+
     beforeEach(() => {
         jest.clearAllMocks();
         mockDeviceModelName = null;
+        mockDeviceType = DeviceType.PHONE;
+        mockEarnStackContent = null;
         mockNativeTabIcons = originalNativeTabIcons;
         delete process.env.EXPO_PUBLIC_NATIVE_TABS;
     });
@@ -262,6 +362,131 @@ describe('AppTabNavigator', () => {
         beforeEach(() => {
             jest.replaceProperty(Platform, 'OS', 'ios');
             mockDeviceModelName = 'iPhone Duo';
+        });
+
+        it('uses five parent header buttons to select tabs with original icons and single Trade analytics', async () => {
+            const { getByTestId } = await renderRootTabs({
+                featureFlags: { [FeatureFlag.IsTradingResidenceCheckEnabled]: false },
+                messageSystem: mockMessageSystemStateWithFeatureFlags({
+                    'trading.buy': false,
+                    'trading.exchange': true,
+                    'trading.sell': false,
+                    'trading.concierge': false,
+                }),
+            });
+            const expectedIcons = [
+                { route: AppTabsRoutes.HomeStack, icon: 'houseFilled' },
+                { route: AppTabsRoutes.AccountsStack, icon: 'discover' },
+                { route: AppTabsRoutes.TradeStack, icon: 'repeat' },
+                { route: AppTabsRoutes.EarnStack, icon: 'piggyBank' },
+                { route: AppTabsRoutes.Settings, icon: 'gear' },
+            ] as const;
+            const selectedTint = getByTestId('@tabBar/HomeStack/icon').props.tintColor;
+            const inactiveTint = getByTestId('@tabBar/AccountsStack/icon').props.tintColor;
+
+            expect(getByTestId('@parentHeader').props.accessibilityLabel).toBe('shown');
+            expect(getByTestId('@systemTabs').props.tabBarHidden).toBe(true);
+            expect(selectedTint).toBeDefined();
+            expect(inactiveTint).toBeDefined();
+            expect(selectedTint).not.toEqual(inactiveTint);
+
+            for (const { route, icon } of expectedIcons) {
+                const selected = route === AppTabsRoutes.HomeStack;
+
+                expect(getByTestId(`@tabBar/${route}`).props.accessibilityState.selected).toBe(
+                    selected,
+                );
+                expect(getByTestId(`@tabBar/${route}/icon`).props.source).toEqual(
+                    originalNativeTabIcons[icon],
+                );
+                expect(getByTestId(`@tabBar/${route}/icon`).props.tintColor).toEqual(
+                    selected ? selectedTint : inactiveTint,
+                );
+            }
+
+            await fireEvent.press(getByTestId('@tabBar/AccountsStack'));
+            await fireEvent.press(getByTestId('@tabBar/AccountsStack'));
+
+            expect(getByTestId('@screen/Accounts').props.accessibilityLabel).toBe(
+                AccountsStackRoutes.Accounts,
+            );
+            expect(getByTestId('@tabBar/AccountsStack/icon').props.source).toEqual(
+                originalNativeTabIcons.discoverFilled,
+            );
+            expect(getByTestId('@tabBar/AccountsStack').props.accessibilityState.selected).toBe(
+                true,
+            );
+
+            await fireEvent.press(getByTestId('@tabBar/TradeStack'));
+
+            const trade = getByTestId(`@systemTabs/${getTranslation('navigation.tabs.trade')}`);
+
+            await fireEvent(getByTestId('@systemTabs'), 'tabSelected', {
+                nativeEvent: {
+                    selectedScreenKey: trade.props.screenKey,
+                    provenance: 1,
+                    actionOrigin: 'programmatic-js',
+                    isRepeated: false,
+                    hasTriggeredSpecialEffect: false,
+                },
+            });
+
+            expect(getByTestId('@screen/Trading')).toBeTruthy();
+            expect(getByTestId('@tabBar/TradeStack').props.accessibilityState.selected).toBe(true);
+            expect(services.analytics.report).toHaveBeenCalledTimes(1);
+            expect(services.analytics.report).toHaveBeenCalledWith({
+                type: events.tradingNavigateEvent.name,
+                payload: { action: 'navigate', type: 'buy', from: 'trade' },
+            });
+        });
+
+        it('pops a nested native stack to its root when pressing the selected header tab again', async () => {
+            mockEarnStackContent = (
+                <TestEarnStack.Navigator screenOptions={{ headerShown: false }}>
+                    <TestEarnStack.Screen name="Landing" component={EarnLandingFixture} />
+                    <TestEarnStack.Screen name="Detail" component={EarnDetailFixture} />
+                </TestEarnStack.Navigator>
+            );
+
+            const { getByTestId, queryByTestId } = await renderRootTabs();
+
+            await fireEvent.press(getByTestId('@tabBar/EarnStack'));
+            await fireEvent.press(getByTestId('@earn/landing'));
+
+            expect(getByTestId('@earn/detail')).toBeTruthy();
+
+            await fireEvent.press(getByTestId('@tabBar/EarnStack'));
+
+            await waitFor(() => expect(queryByTestId('@earn/detail')).toBeNull());
+            expect(getByTestId('@earn/landing')).toBeTruthy();
+            expect(getByTestId('@tabBar/EarnStack').props.accessibilityState.selected).toBe(true);
+        });
+
+        it('clears parent header options when switching back to ordinary iPhone tabs', async () => {
+            const { getByTestId, queryByTestId, rerender } = await renderRootTabs();
+
+            expect(getByTestId('@parentHeader').props.accessibilityLabel).toBe('shown');
+
+            mockDeviceModelName = 'iPhone 17';
+            await rerender(<RootTabsFixture />);
+
+            expect(getByTestId('@parentHeader').props.accessibilityLabel).toBe('hidden');
+            expect(queryByTestId('@tabBar/HomeStack')).toBeNull();
+            expect(queryByTestId('@systemTabs')).toBeNull();
+            expect(getByTestId('@tabBar/native')).toBeTruthy();
+        });
+
+        it('keeps the ordinary tab bar and no parent header on iPad with the development override', async () => {
+            mockDeviceModelName = 'iPad Pro';
+            mockDeviceType = DeviceType.TABLET;
+            process.env.EXPO_PUBLIC_NATIVE_TABS = '1';
+
+            const { getByTestId, queryByTestId } = await renderRootTabs();
+
+            expect(getByTestId('@parentHeader').props.accessibilityLabel).toBe('hidden');
+            expect(queryByTestId('@tabBar/HomeStack')).toBeNull();
+            expect(queryByTestId('@systemTabs')).toBeNull();
+            expect(getByTestId('@tabBar/native')).toBeTruthy();
         });
 
         it('uses original template images for regular and selected icons', async () => {
@@ -467,7 +692,7 @@ describe('AppTabNavigator', () => {
         });
 
         it('omits Trade when disabled and Earn for Bitcoin-only firmware without shifting Settings selection', async () => {
-            const { getByTestId, queryByTestId } = await renderTabs({
+            const { getByTestId, queryByTestId } = await renderRootTabs({
                 device: { selectedDevice: { firmwareType: FirmwareType.BitcoinOnly } },
                 featureFlags: { [FeatureFlag.IsTradingResidenceCheckEnabled]: false },
                 messageSystem: mockMessageSystemStateWithFeatureFlags({
@@ -487,6 +712,8 @@ describe('AppTabNavigator', () => {
             expect(
                 queryByTestId(`@systemTabs/${getTranslation('navigation.tabs.earn')}`),
             ).toBeNull();
+            expect(queryByTestId('@tabBar/TradeStack')).toBeNull();
+            expect(queryByTestId('@tabBar/EarnStack')).toBeNull();
 
             await fireEvent(getByTestId('@systemTabs'), 'tabSelected', {
                 nativeEvent: {
@@ -501,6 +728,7 @@ describe('AppTabNavigator', () => {
             expect(getByTestId('@systemTabs').props.navStateRequest.selectedScreenKey).toBe(
                 settings.props.screenKey,
             );
+            expect(getByTestId('@tabBar/Settings').props.accessibilityState.selected).toBe(true);
         });
 
         it('uses native symbols while original icon images are unavailable', async () => {

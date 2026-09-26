@@ -41,10 +41,11 @@ export const AppTabNavigator = () => {
     const isTradingEnabled = useSelector(selectIsTradingEnabled);
     const isBitcoinOnlyFirmware = useSelector(selectHasBitcoinOnlyFirmware);
     const { translate } = useTranslate();
-    // A system tab controller lets iPhone Duo place tabs outside the app window.
+    // Native navigation controls let iPhone Duo place tabs on its system control edge.
     // Expo Device reports a generic model in Simulator, so allow a development override.
     const useSystemTabs =
         Platform.OS === 'ios' &&
+        Device.deviceType !== Device.DeviceType.TABLET &&
         (Device.modelName === 'iPhone Duo' ||
             (__DEV__ && process.env.EXPO_PUBLIC_NATIVE_TABS === '1'));
     const nativeTabIcons = useNativeTabIcons(useSystemTabs);
