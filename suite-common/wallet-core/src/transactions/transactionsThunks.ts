@@ -46,6 +46,7 @@ import {
     selectAreAllAccountTransactionsLoaded,
     selectAreAllAccountTransactionsLoadedFromNowUntilTimestamp,
     selectIsPageAlreadyFetched,
+    selectTransactionByAccountKeyAndTxid,
     selectTransactions,
 } from './transactionsSelectors';
 import { accountsActions } from '../accounts/accountsActions';
@@ -722,6 +723,85 @@ type FetchUtxoTransactionsForAccountThunkParams = {
     accountKey: AccountKey;
 };
 
+const fetchTransactionsByTxids = async ({
+    account,
+    txids,
+}: {
+    account: Account;
+    txids: string[];
+}) => {
+    const result = await TrezorConnect.blockchainGetTransactions({
+        coin: asCoinSymbol(account.symbol),
+        txs: txids,
+        descriptor: account.descriptor,
+    });
+
+    if (!result.success) {
+        throw new Error(result.error.message);
+    }
+
+    return result.payload;
+};
+
+type FetchTransactionByIdThunkParams = {
+    accountKey: AccountKey;
+    txid: string;
+};
+
+type FetchTransactionByIdError = 'transaction-fetch-failed';
+
+type FetchTransactionByIdThunkState = AccountsRootState & TransactionsRootState;
+
+export const fetchTransactionByIdThunk = createSingleInstanceThunk<
+    FetchTransactionByIdThunkParams,
+    WalletAccountTransaction,
+    {
+        state: FetchTransactionByIdThunkState;
+        rejectValue: FetchTransactionByIdError;
+    }
+>(
+    `${TRANSACTIONS_MODULE_PREFIX}/fetchTransactionByIdThunk`,
+    async ({ accountKey, txid }, { dispatch, getState, rejectWithValue, signal }) => {
+        const storedTransaction = selectTransactionByAccountKeyAndTxid(
+            getState(),
+            accountKey,
+            txid,
+        );
+        if (storedTransaction) return storedTransaction;
+
+        const account = selectAccountByKey(getState(), accountKey);
+        if (!account) {
+            return rejectWithValue('transaction-fetch-failed');
+        }
+
+        try {
+            const transactions = await fetchTransactionsByTxids({
+                account,
+                txids: [txid],
+            });
+
+            if (signal.aborted) {
+                return rejectWithValue('transaction-fetch-failed');
+            }
+
+            dispatch(transactionsActions.addTransaction({ transactions, account }));
+
+            const fetchedTransaction = selectTransactionByAccountKeyAndTxid(
+                getState(),
+                accountKey,
+                txid,
+            );
+            if (!fetchedTransaction) {
+                return rejectWithValue('transaction-fetch-failed');
+            }
+
+            return fetchedTransaction;
+        } catch {
+            return rejectWithValue('transaction-fetch-failed');
+        }
+    },
+);
+
 type FetchUtxoTransactionsForAccountThunkState = AccountsRootState & TransactionsRootState;
 
 export const fetchUtxoTransactionsForAccountThunk = createSingleInstanceThunk<
@@ -743,23 +823,18 @@ export const fetchUtxoTransactionsForAccountThunk = createSingleInstanceThunk<
             return selectAccountTransactions(getState(), accountKey);
         }
 
-        const result = await TrezorConnect.blockchainGetTransactions({
-            coin: asCoinSymbol(account.symbol),
-            txs: account.utxo.map(utxo => utxo.txid),
-            descriptor: account.descriptor,
+        const transactions = await fetchTransactionsByTxids({
+            account,
+            txids: account.utxo.map(utxo => utxo.txid),
         });
 
         if (signal.aborted) {
             throw new Error('Aborted');
         }
 
-        if (!result.success) {
-            throw new Error(result.error.message);
-        }
-
         dispatch(
             transactionsActions.addTransaction({
-                transactions: result.payload,
+                transactions,
                 account,
             }),
         );
