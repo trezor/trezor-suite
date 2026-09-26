@@ -91,7 +91,7 @@ export interface BluetoothIpcEvents {
 type TypedManagerEvents = TypedEmitter<BluetoothIpcEvents>;
 
 export interface BluetoothIpcState {
-    knownDevices: BluetoothDevice[];
+    knownDevices: Pick<BluetoothDevice, 'id' | 'macAddress'>[];
 }
 
 export type ScanOwner = 'ui' | 'background';
