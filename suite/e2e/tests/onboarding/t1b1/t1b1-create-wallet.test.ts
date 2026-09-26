@@ -3,7 +3,7 @@ import { TestCategory, TestPriority, TestStream } from '@trezor/e2e-utils';
 import { expect, test } from '../../../support/fixtures';
 import { createTestAnnotation } from '../../../support/reporters/annotations';
 
-test.describe('Onboarding - create wallet', { tag: ['@firmware-ready', '@T1B1'] }, () => {
+test.describe('Onboarding - create wallet', { tag: ['@T1B1'] }, () => {
     test.use({
         setupEmulator: false,
     });

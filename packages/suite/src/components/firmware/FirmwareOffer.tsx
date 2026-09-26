@@ -49,7 +49,7 @@ export const FirmwareOffer = ({ isCustomFirmware, targetFirmwareType }: Firmware
                 <Text typographyStyle="body-xs" intent="neutral" priority="secondary">
                     <Translation id="TR_ONBOARDING_CURRENT_VERSION" />
                 </Text>
-                <Text typographyStyle="body-sm">
+                <Text typographyStyle="body-sm" data-testid="@firmware/offer-version/current">
                     {currentFirmwareType ? translationString(currentFirmwareType) : ''}
                     {currentVersion ? ` ${currentVersion}` : ''}
                 </Text>
@@ -86,7 +86,11 @@ export const FirmwareOffer = ({ isCustomFirmware, targetFirmwareType }: Firmware
                 <Tooltip
                     hasIcon
                     content={
-                        <Column padding={4} gap={4}>
+                        <Column
+                            padding={4}
+                            gap={4}
+                            data-testid="@firmware/offer-version/new/tooltip"
+                        >
                             {parsedChangelog && (
                                 <Row justifyContent="space-between">
                                     <Text typographyStyle="body-sm-strong" intent="neutral">
