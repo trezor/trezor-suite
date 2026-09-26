@@ -30,7 +30,11 @@ import { type FetchAndSaveMetadataDep } from '@suite-common/metadata-types';
 import { mockFetchAndSaveMetadata } from '@suite-common/metadata-types/mocks';
 import { type WithServices } from '@suite-common/redux-utils';
 import { mockActionType, mockReducer } from '@suite-common/redux-utils/mocks';
-import { type ConnectInitUiEventHooksDep, type LockDevice } from '@suite-common/suite-types';
+import {
+    type ConnectInitDep,
+    type ConnectInitUiEventHooksDep,
+    type LockDevice,
+} from '@suite-common/suite-types';
 import {
     mockGetAllowPrerelease,
     mockGetBinFilesBaseUrl,
@@ -77,7 +81,7 @@ const deviceReducer = prepareDeviceReducer({
 type SuiteActionsTestState = SuiteRootState & ConnectInitState;
 
 type SuiteActionsTestDeps = WithServices<
-    AnalyticsDep & ConnectInitUiEventHooksDep & GetTradedAccountKeysDep
+    AnalyticsDep & ConnectInitDep & ConnectInitUiEventHooksDep & GetTradedAccountKeysDep
 > & {
     thunks: FetchAndSaveMetadataDep;
 };
@@ -93,19 +97,37 @@ const getInitialState = (
     wallet: { settings: initialWalletSettingsState },
 });
 
-const createTestRoot = (preloadedState: SuiteActionsTestState) => {
-    const analytics = mockDesktopAnalytics();
-    const root = createTestCompositionRoot<SuiteActionsTestDeps, SuiteActionsTestState>({
+const createTestRoot = (preloadedState: SuiteActionsTestState) =>
+    createTestCompositionRoot<SuiteActionsTestDeps, SuiteActionsTestState>({
         extra: {
             thunks: {
                 fetchAndSaveMetadata: mockFetchAndSaveMetadata(),
             },
         },
-        services: () => ({
-            analytics,
-            connectInitUiEventHooks: mockConnectInitUiEventHooks(),
-            getTradedAccountKeys: mockGetTradedAccountKeys(),
-        }),
+        services: store => {
+            const analytics = mockDesktopAnalytics();
+            const { connectInit } = createConnectInitCompositionRoot({
+                dispatch: store.dispatch,
+                getState: store.getState,
+                lockDevice: mock<LockDevice>(),
+                analytics,
+                connectInitDeviceEventHooks: mockConnectInitDeviceEventHooks(),
+                connectInitSettings: mockConnectInitSettings(),
+                createLogger: noopCreateLogger,
+                createTransports: mockCreateTransports(),
+                getAllowPrerelease: mockGetAllowPrerelease(),
+                getBinFilesBaseUrl: mockGetBinFilesBaseUrl(),
+                getDebugSettings: mockGetDebugSettings(),
+                getThpSettings: mockGetThpSettings(),
+            });
+
+            return {
+                analytics,
+                connectInit,
+                connectInitUiEventHooks: mockConnectInitUiEventHooks(),
+                getTradedAccountKeys: mockGetTradedAccountKeys(),
+            };
+        },
         reducer: {
             suite: suiteReducer,
             device: deviceReducer,
@@ -115,23 +137,6 @@ const createTestRoot = (preloadedState: SuiteActionsTestState) => {
         },
         preloadedState,
     });
-    const { connectInit } = createConnectInitCompositionRoot({
-        dispatch: root.services.store.dispatch,
-        getState: root.services.store.getState,
-        lockDevice: mock<LockDevice>(),
-        analytics,
-        connectInitDeviceEventHooks: mockConnectInitDeviceEventHooks(),
-        connectInitSettings: mockConnectInitSettings(),
-        createLogger: noopCreateLogger,
-        createTransports: mockCreateTransports(),
-        getAllowPrerelease: mockGetAllowPrerelease(),
-        getBinFilesBaseUrl: mockGetBinFilesBaseUrl(),
-        getDebugSettings: mockGetDebugSettings(),
-        getThpSettings: mockGetThpSettings(),
-    });
-
-    return { ...root, connectInit };
-};
 
 describe('Suite Actions', () => {
     fixtures.reducerActions.forEach(f => {
@@ -229,8 +234,8 @@ describe('Suite Actions', () => {
         it(`acquireDevice: ${f.description}`, async () => {
             testMocks.setTrezorConnectFixtures(f.getFeatures || { success: true });
             const state = getInitialState(undefined, f.state.device);
-            const { services, connectInit } = createTestRoot(state);
-            await connectInit(); // connectInit needs to be called in order to wrap "getFeatures" with lockDevice
+            const { services } = createTestRoot(state);
+            await services.connectInit(); // connectInit needs to be called in order to wrap "getFeatures" with lockDevice
             await services.store.dispatch(
                 acquireDeviceThunk({ requestedDevice: f.requestedDevice }),
             );
