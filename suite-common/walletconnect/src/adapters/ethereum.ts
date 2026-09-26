@@ -18,7 +18,12 @@ import {
     selectIsMevProtectionEnabled,
 } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
-import { getAccountIdentity, getMevProtectedTxData, sanitizeHex } from '@suite-common/wallet-utils';
+import {
+    fromIntegerString,
+    getAccountIdentity,
+    getMevProtectedTxData,
+    sanitizeHex,
+} from '@suite-common/wallet-utils';
 import TrezorConnect, {
     type CallMethodResponse,
     type EthereumSignTypedData,
@@ -169,18 +174,20 @@ const ethereumRequestThunk = createThunk<
                 if (!feeLevels.success) {
                     throw new Error('eth_sendTransaction cannot estimate fee');
                 }
-                if (feeLevels.payload.levels[0]?.eip1559) {
-                    transaction.maxFeePerGas =
-                        feeLevels.payload.levels[0]?.eip1559?.medium?.maxFeePerGas;
-                    transaction.maxPriorityFeePerGas =
-                        feeLevels.payload.levels[0]?.eip1559?.medium?.maxPriorityFeePerGas;
+                // Fee levels are decimal strings in wei. Connect reads all values as hex.
+                const toHex = (value?: string) =>
+                    value ? fromIntegerString(value).toHex() : undefined;
+                const eip1559Fee = feeLevels.payload.levels[0]?.eip1559?.medium;
+                if (eip1559Fee) {
+                    transaction.maxFeePerGas = toHex(eip1559Fee.maxFeePerGas);
+                    transaction.maxPriorityFeePerGas = toHex(eip1559Fee.maxPriorityFeePerGas);
                 } else {
-                    transaction.gasPrice = feeLevels.payload.levels[0]?.feePerUnit;
+                    transaction.gasPrice = toHex(feeLevels.payload.levels[0]?.feePerUnit);
                 }
             }
             if (!transaction.gas) {
                 // Placeholder, will be replaced by estimate from TX simulation response
-                transaction.gas = ETH_CONTRACT_CALL_BACKUP_GAS_LIMIT;
+                transaction.gas = fromIntegerString(ETH_CONTRACT_CALL_BACKUP_GAS_LIMIT).toHex();
             }
             if (!transaction.value) {
                 transaction.value = '0x0';
