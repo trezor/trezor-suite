@@ -16,7 +16,11 @@ import { deviceInitialState } from '@suite-common/device';
 import { firmwareInitialState } from '@suite-common/firmware';
 import { messageSystemInitialState } from '@suite-common/message-system';
 import { type WithServices } from '@suite-common/redux-utils';
-import { type ConnectInitUiEventHooksDep, type LockDevice } from '@suite-common/suite-types';
+import {
+    type ConnectInitDep,
+    type ConnectInitUiEventHooksDep,
+    type LockDevice,
+} from '@suite-common/suite-types';
 import { mockGetAllowPrerelease, mockGetBinFilesBaseUrl } from '@suite-common/suite-types/mocks';
 import { createTestCompositionRoot, testMocks } from '@suite-common/test-utils';
 import { initialWalletSettingsState } from '@suite-common/wallet-core';
@@ -30,31 +34,34 @@ const getInitialState = (): ConnectInitState => ({
     wallet: { settings: initialWalletSettingsState },
 });
 
-const createTestRoot = (lockDevice = mock<LockDevice>()) => {
-    const root = createTestCompositionRoot<
-        WithServices<ConnectInitUiEventHooksDep>,
+const createTestRoot = (lockDevice = mock<LockDevice>()) =>
+    createTestCompositionRoot<
+        WithServices<ConnectInitDep & ConnectInitUiEventHooksDep>,
         ConnectInitState
     >({
-        services: () => ({ connectInitUiEventHooks: mockConnectInitUiEventHooks() }),
+        services: store => {
+            const { connectInit } = createConnectInitCompositionRoot({
+                dispatch: store.dispatch,
+                getState: store.getState,
+                lockDevice,
+                analytics: mockDesktopAnalytics(),
+                connectInitDeviceEventHooks: mockConnectInitDeviceEventHooks(),
+                connectInitSettings: mockConnectInitSettings(),
+                createLogger: noopCreateLogger,
+                createTransports: mockCreateTransports(),
+                getAllowPrerelease: mockGetAllowPrerelease(),
+                getBinFilesBaseUrl: mockGetBinFilesBaseUrl(),
+                getDebugSettings: mockGetDebugSettings(),
+                getThpSettings: mockGetThpSettings(),
+            });
+
+            return {
+                connectInit,
+                connectInitUiEventHooks: mockConnectInitUiEventHooks(),
+            };
+        },
         preloadedState: getInitialState(),
     });
-    const { connectInit } = createConnectInitCompositionRoot({
-        dispatch: root.services.store.dispatch,
-        getState: root.services.store.getState,
-        lockDevice,
-        analytics: mockDesktopAnalytics(),
-        connectInitDeviceEventHooks: mockConnectInitDeviceEventHooks(),
-        connectInitSettings: mockConnectInitSettings(),
-        createLogger: noopCreateLogger,
-        createTransports: mockCreateTransports(),
-        getAllowPrerelease: mockGetAllowPrerelease(),
-        getBinFilesBaseUrl: mockGetBinFilesBaseUrl(),
-        getDebugSettings: mockGetDebugSettings(),
-        getThpSettings: mockGetThpSettings(),
-    });
-
-    return { ...root, connectInit };
-};
 
 describe('TrezorConnect Actions', () => {
     beforeEach(() => {
@@ -62,25 +69,25 @@ describe('TrezorConnect Actions', () => {
     });
 
     it('Success', async () => {
-        const { connectInit } = createTestRoot();
+        const { services } = createTestRoot();
 
-        await expect(connectInit()).resolves.toBeUndefined();
+        await expect(services.connectInit()).resolves.toBeUndefined();
     });
 
     it('Error', async () => {
         testMocks.setTrezorConnectFixtures(() => {
             throw new Error('Iframe error');
         });
-        const { connectInit } = createTestRoot();
+        const { services } = createTestRoot();
 
-        await expect(connectInit()).rejects.toThrow('Iframe error');
+        await expect(services.connectInit()).rejects.toThrow('Iframe error');
     });
 
     it('Events', async () => {
         const defaultSuiteType = process.env.SUITE_TYPE;
         process.env.SUITE_TYPE = 'desktop';
-        const { connectInit, services } = createTestRoot();
-        await connectInit();
+        const { services } = createTestRoot();
+        await services.connectInit();
 
         const actions = services.store.getActions();
         const { emitTestEvent } = testMocks.getTrezorConnectMock();
@@ -99,8 +106,8 @@ describe('TrezorConnect Actions', () => {
 
     it('Wrapped method', async () => {
         const lockDevice = mock<LockDevice>();
-        const { connectInit, services } = createTestRoot(lockDevice);
-        await connectInit();
+        const { services } = createTestRoot(lockDevice);
+        await services.connectInit();
         await testMocks.getTrezorConnectMock().getFeatures();
 
         expect(lockDevice).toHaveBeenNthCalledWith(1, true);

@@ -16,7 +16,11 @@ import { type DeviceReducerState, deviceInitialState } from '@suite-common/devic
 import { firmwareInitialState } from '@suite-common/firmware';
 import { messageSystemInitialState } from '@suite-common/message-system';
 import { type WithServices } from '@suite-common/redux-utils';
-import { type ConnectInitUiEventHooksDep, type LockDevice } from '@suite-common/suite-types';
+import {
+    type ConnectInitDep,
+    type ConnectInitUiEventHooksDep,
+    type LockDevice,
+} from '@suite-common/suite-types';
 import {
     mockGetAllowPrerelease,
     mockGetBinFilesBaseUrl,
@@ -67,38 +71,41 @@ const getInitialState = (overrides: StateOverrides = {}): PublicKeyActionsTestSt
     },
 });
 
-const createTestRoot = (overrides?: StateOverrides) => {
-    const root = createTestCompositionRoot<
-        WithServices<ConnectInitUiEventHooksDep>,
+const createTestRoot = (overrides?: StateOverrides) =>
+    createTestCompositionRoot<
+        WithServices<ConnectInitDep & ConnectInitUiEventHooksDep>,
         PublicKeyActionsTestState
     >({
-        services: () => ({ connectInitUiEventHooks: mockConnectInitUiEventHooks() }),
+        services: store => {
+            const { connectInit } = createConnectInitCompositionRoot({
+                dispatch: store.dispatch,
+                getState: store.getState,
+                lockDevice: mock<LockDevice>(),
+                analytics: mockDesktopAnalytics(),
+                connectInitDeviceEventHooks: mockConnectInitDeviceEventHooks(),
+                connectInitSettings: mockConnectInitSettings(),
+                createLogger: noopCreateLogger,
+                createTransports: mockCreateTransports(),
+                getAllowPrerelease: mockGetAllowPrerelease(),
+                getBinFilesBaseUrl: mockGetBinFilesBaseUrl(),
+                getDebugSettings: mockGetDebugSettings(),
+                getThpSettings: mockGetThpSettings(),
+            });
+
+            return {
+                connectInit,
+                connectInitUiEventHooks: mockConnectInitUiEventHooks(),
+            };
+        },
         preloadedState: getInitialState(overrides),
     });
-    const { connectInit } = createConnectInitCompositionRoot({
-        dispatch: root.services.store.dispatch,
-        getState: root.services.store.getState,
-        lockDevice: mock<LockDevice>(),
-        analytics: mockDesktopAnalytics(),
-        connectInitDeviceEventHooks: mockConnectInitDeviceEventHooks(),
-        connectInitSettings: mockConnectInitSettings(),
-        createLogger: noopCreateLogger,
-        createTransports: mockCreateTransports(),
-        getAllowPrerelease: mockGetAllowPrerelease(),
-        getBinFilesBaseUrl: mockGetBinFilesBaseUrl(),
-        getDebugSettings: mockGetDebugSettings(),
-        getThpSettings: mockGetThpSettings(),
-    });
-
-    return { ...root, connectInit };
-};
 
 describe('PublicKeyActions', () => {
     fixtures.forEach(f => {
         it(f.description, async () => {
             testMocks.setTrezorConnectFixtures(f.mocks.getPublicKey);
-            const { services, connectInit } = createTestRoot(f.initialState);
-            await connectInit();
+            const { services } = createTestRoot(f.initialState);
+            await services.connectInit();
             await services.store.dispatch(f.action() as any);
 
             if (f.result?.actions) {
