@@ -1,29 +1,16 @@
 import { View } from 'react-native';
 
-import AccountsIcon from '@expo/material-symbols/account_balance_wallet.xml';
-import HomeIcon from '@expo/material-symbols/home.xml';
-import EarnIcon from '@expo/material-symbols/savings.xml';
-import SettingsIcon from '@expo/material-symbols/settings.xml';
-import TradeIcon from '@expo/material-symbols/swap_horiz.xml';
-import { Host, Icon, NavigationBar, NavigationBarItem, Text } from '@expo/ui/jetpack-compose';
+import { Host, NavigationBar, NavigationBarItem, Text } from '@expo/ui/jetpack-compose';
 
+import { MOBILE_ICON_FONT_NAME, icons } from '@suite-native/icons';
 import { isDarkColor, prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
-import { AppTabsRoutes } from '../routes';
 import { type TabBarProps, useTabBarItems } from './useTabBarItems';
 
 const tabBarStyle = prepareNativeStyle(utils => ({
     width: '100%',
     backgroundColor: utils.colors.surfaceFillPage,
 }));
-
-const tabIcons = {
-    [AppTabsRoutes.HomeStack]: HomeIcon,
-    [AppTabsRoutes.AccountsStack]: AccountsIcon,
-    [AppTabsRoutes.TradeStack]: TradeIcon,
-    [AppTabsRoutes.EarnStack]: EarnIcon,
-    [AppTabsRoutes.Settings]: SettingsIcon,
-} as const satisfies Record<AppTabsRoutes, number>;
 
 export const TabBar = (props: TabBarProps) => {
     const items = useTabBarItems(props);
@@ -56,7 +43,23 @@ export const TabBar = (props: TabBarProps) => {
                             }}
                         >
                             <NavigationBarItem.Icon>
-                                <Icon source={tabIcons[item.routeName]} size={24} />
+                                <Text
+                                    color={
+                                        item.isFocused ? colors.contentBrand : colors.contentNeutral
+                                    }
+                                    style={{
+                                        fontFamily: MOBILE_ICON_FONT_NAME,
+                                        fontSize: 24,
+                                        lineHeight: 24,
+                                    }}
+                                    maxLines={1}
+                                >
+                                    {String.fromCodePoint(
+                                        icons[
+                                            item.isFocused ? item.focusedIconName : item.iconName
+                                        ],
+                                    )}
+                                </Text>
                             </NavigationBarItem.Icon>
                             <NavigationBarItem.Label>
                                 <Text>{item.title}</Text>

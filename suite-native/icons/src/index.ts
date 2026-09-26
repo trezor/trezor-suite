@@ -1,3 +1,5 @@
+export { MOBILE_ICON_FONT_NAME } from '@suite-common/icons';
+
 export * from './Icon';
 export * from './CryptoIconWithPercentage';
 export * from './DeviceModelIcon';

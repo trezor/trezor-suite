@@ -1,7 +1,7 @@
 import { View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
-import { Button, HStack, Host, Image, type ImageProps, Text, VStack } from '@expo/ui/swift-ui';
+import { Button, HStack, Host, Text, VStack } from '@expo/ui/swift-ui';
 import {
     accessibilityAddTraits,
     accessibilityHidden,
@@ -17,9 +17,9 @@ import {
     shapes,
 } from '@expo/ui/swift-ui/modifiers';
 
+import { MOBILE_ICON_FONT_NAME, icons } from '@suite-native/icons';
 import { isDarkColor, prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
-import { AppTabsRoutes } from '../routes';
 import { type TabBarProps, useTabBarItems } from './useTabBarItems';
 
 const tabBarStyle = prepareNativeStyle<{
@@ -35,20 +35,6 @@ const tabBarStyle = prepareNativeStyle<{
     paddingRight: insetRight,
     paddingBottom: insetBottom,
 }));
-
-const tabSymbols = {
-    [AppTabsRoutes.HomeStack]: { regular: 'house', selected: 'house.fill' },
-    [AppTabsRoutes.AccountsStack]: { regular: 'square.stack', selected: 'square.stack.fill' },
-    [AppTabsRoutes.TradeStack]: {
-        regular: 'arrow.left.arrow.right',
-        selected: 'arrow.left.arrow.right',
-    },
-    [AppTabsRoutes.EarnStack]: { regular: 'banknote', selected: 'banknote.fill' },
-    [AppTabsRoutes.Settings]: { regular: 'gearshape', selected: 'gearshape.fill' },
-} as const satisfies Record<
-    AppTabsRoutes,
-    { regular: ImageProps['systemName']; selected: ImageProps['systemName'] }
->;
 
 export const TabBar = (props: TabBarProps) => {
     const items = useTabBarItems(props);
@@ -78,7 +64,7 @@ export const TabBar = (props: TabBarProps) => {
                         const iconColor = item.isFocused
                             ? colors.contentBrand
                             : colors.contentNeutral;
-                        const symbols = tabSymbols[item.routeName];
+                        const iconName = item.isFocused ? item.focusedIconName : item.iconName;
 
                         return (
                             <Button
@@ -101,14 +87,16 @@ export const TabBar = (props: TabBarProps) => {
                                         contentShape(shapes.rectangle()),
                                     ]}
                                 >
-                                    <Image
-                                        systemName={
-                                            item.isFocused ? symbols.selected : symbols.regular
-                                        }
-                                        size={22}
-                                        color={iconColor}
-                                        modifiers={[accessibilityHidden()]}
-                                    />
+                                    <Text
+                                        modifiers={[
+                                            font({ family: MOBILE_ICON_FONT_NAME, size: 24 }),
+                                            foregroundStyle(iconColor),
+                                            frame({ width: 24, height: 24 }),
+                                            accessibilityHidden(),
+                                        ]}
+                                    >
+                                        {String.fromCodePoint(icons[iconName])}
+                                    </Text>
                                     <Text
                                         modifiers={[
                                             font({ textStyle: 'caption2', weight: 'medium' }),

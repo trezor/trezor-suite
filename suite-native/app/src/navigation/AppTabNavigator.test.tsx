@@ -4,6 +4,7 @@ import { mockMessageSystemStateWithFeatureFlags } from '@suite-common/message-sy
 import { type NativeAnalyticsDep } from '@suite-native/analytics';
 import { mockNativeAnalytics } from '@suite-native/analytics/mocks';
 import { FeatureFlag, featureFlagsInitialState } from '@suite-native/feature-flags';
+import { icons } from '@suite-native/icons';
 import { getTranslation } from '@suite-native/intl';
 import {
     fireEvent,
@@ -99,6 +100,41 @@ describe('AppTabNavigator', () => {
         await fireEvent.press(getByText(getTranslation('navigation.tabs.accountsList')));
 
         expect(getByTestId('@screen/Accounts')).toBeTruthy();
+    });
+
+    it('shows the original icon for every tab in its selected and unselected states', async () => {
+        const { getByText } = await renderTabs({
+            featureFlags: {
+                [FeatureFlag.IsTradingResidenceCheckEnabled]: false,
+            },
+            messageSystem: mockMessageSystemStateWithFeatureFlags({
+                'trading.buy': false,
+                'trading.exchange': true,
+                'trading.sell': false,
+                'trading.concierge': false,
+            }),
+        });
+        const tabIcons = [
+            { title: 'navigation.tabs.home', regular: 'house', selected: 'houseFilled' },
+            {
+                title: 'navigation.tabs.accountsList',
+                regular: 'discover',
+                selected: 'discoverFilled',
+            },
+            { title: 'navigation.tabs.trade', regular: 'repeat', selected: 'repeat' },
+            { title: 'navigation.tabs.earn', regular: 'piggyBank', selected: 'piggyBankFilled' },
+            { title: 'navigation.tabs.settings', regular: 'gear', selected: 'gearFilled' },
+        ] as const;
+
+        for (const activeTab of tabIcons) {
+            await fireEvent.press(getByText(getTranslation(activeTab.title)));
+
+            for (const tab of tabIcons) {
+                const iconName = tab === activeTab ? tab.selected : tab.regular;
+
+                expect(getByText(String.fromCodePoint(icons[iconName]))).toBeTruthy();
+            }
+        }
     });
 
     it('should not render Trade tab when all trading flags are disabled', async () => {
