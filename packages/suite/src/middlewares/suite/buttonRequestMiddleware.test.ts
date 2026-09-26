@@ -17,7 +17,11 @@ import { firmwareInitialState } from '@suite-common/firmware';
 import { messageSystemInitialState } from '@suite-common/message-system';
 import { type WithServices } from '@suite-common/redux-utils';
 import { mockSuiteSync } from '@suite-common/suite-sync/mocks';
-import { type ConnectInitUiEventHooksDep, type LockDevice } from '@suite-common/suite-types';
+import {
+    type ConnectInitDep,
+    type ConnectInitUiEventHooksDep,
+    type LockDevice,
+} from '@suite-common/suite-types';
 import {
     mockGetAllowPrerelease,
     mockGetBinFilesBaseUrl,
@@ -45,41 +49,44 @@ const getInitialState = (): ConnectInitState => ({
     wallet: { settings: initialWalletSettingsState },
 });
 
-const createTestRoot = (lockDevice = mock<LockDevice>()) => {
-    const root = createTestCompositionRoot<
-        WithServices<ConnectInitUiEventHooksDep>,
+const createTestRoot = (lockDevice = mock<LockDevice>()) =>
+    createTestCompositionRoot<
+        WithServices<ConnectInitDep & ConnectInitUiEventHooksDep>,
         ConnectInitState
     >({
-        services: () => ({ connectInitUiEventHooks: mockConnectInitUiEventHooks() }),
+        services: store => {
+            const { connectInit } = createConnectInitCompositionRoot({
+                dispatch: store.dispatch,
+                getState: store.getState,
+                lockDevice,
+                analytics: mockDesktopAnalytics(),
+                connectInitDeviceEventHooks: mockConnectInitDeviceEventHooks(),
+                connectInitSettings: mockConnectInitSettings(),
+                createLogger: noopCreateLogger,
+                createTransports: mockCreateTransports(),
+                getAllowPrerelease: mockGetAllowPrerelease(),
+                getBinFilesBaseUrl: mockGetBinFilesBaseUrl(),
+                getDebugSettings: mockGetDebugSettings(),
+                getThpSettings: mockGetThpSettings(),
+            });
+
+            return {
+                connectInit,
+                connectInitUiEventHooks: mockConnectInitUiEventHooks(),
+            };
+        },
         middleware: [
             prepareSuiteMiddleware(() => ({ services: { suiteSync: mockSuiteSync() } })),
             buttonRequestMiddleware,
         ],
         preloadedState: getInitialState(),
     });
-    const { connectInit } = createConnectInitCompositionRoot({
-        dispatch: root.services.store.dispatch,
-        getState: root.services.store.getState,
-        lockDevice,
-        analytics: mockDesktopAnalytics(),
-        connectInitDeviceEventHooks: mockConnectInitDeviceEventHooks(),
-        connectInitSettings: mockConnectInitSettings(),
-        createLogger: noopCreateLogger,
-        createTransports: mockCreateTransports(),
-        getAllowPrerelease: mockGetAllowPrerelease(),
-        getBinFilesBaseUrl: mockGetBinFilesBaseUrl(),
-        getDebugSettings: mockGetDebugSettings(),
-        getThpSettings: mockGetThpSettings(),
-    });
-
-    return { ...root, connectInit };
-};
 
 describe('buttonRequest middleware', () => {
     it('see what happens on pin change call', async () => {
         const lockDevice = mock<LockDevice>();
-        const { services, connectInit } = createTestRoot(lockDevice);
-        await connectInit();
+        const { services } = createTestRoot(lockDevice);
+        await services.connectInit();
         const call = services.store.dispatch(
             deviceSettingsActions.changePinThunk({ remove: false }),
         );
