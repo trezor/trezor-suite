@@ -216,13 +216,29 @@ const onCall = async (context: CoreContext, message: CoreCallMessage) => {
         logger.debug('loading method...');
         method = await getMethod(message);
         logger.debug('method selected', method.name);
-
-        await method.initAsync?.();
-
-        callMethods.push(method);
     } catch (error) {
         sendCoreMessage(createResponseMessage(responseID, false, { error }));
 
+        return Promise.resolve();
+    }
+
+    // Registered before initAsync, which may wait on the network (e.g. ethereum definitions),
+    // so that a cancel or popup close arriving meanwhile finds the call and responds to it.
+    callMethods.push(method);
+
+    try {
+        await method.initAsync?.();
+    } catch (error) {
+        if (callMethods.includes(method)) {
+            sendCoreMessage(createResponseMessage(responseID, false, { error }));
+        }
+
+        return Promise.resolve();
+    }
+
+    // sendCoreMessage prunes callMethods on every response, so a call missing here was already
+    // cancelled or interrupted while initAsync was pending and must not proceed to the device.
+    if (!callMethods.includes(method)) {
         return Promise.resolve();
     }
 
@@ -687,6 +703,15 @@ const abortRunningCall = (context: CoreContext, error: TrezorError, callId?: str
         return;
     }
 
+    // Device calls without an assigned device (e.g. still in initAsync) hold neither a device
+    // session nor a UI promise the branches below could abort, so they are answered regardless
+    // of the device state.
+    callMethods
+        .filter(m => m.useDevice && !m.device)
+        .forEach(m => {
+            sendCoreMessage(createResponseMessage(m.responseID, false, { error }));
+        });
+
     // Device was already acquired. Try to interrupt running action which will throw error from onCall try/catch block
     if (deviceList.isConnected() && deviceList.getDeviceCount() > 0) {
         deviceList.getAllDevices().forEach(d => {
@@ -695,10 +720,11 @@ const abortRunningCall = (context: CoreContext, error: TrezorError, callId?: str
             } else {
                 const success = uiPromises.resolve({ type: DEVICE.DISCONNECT, payload: undefined });
                 if (!success) {
-                    callMethods.forEach(m => {
+                    // Detach the list first: sendCoreMessage prunes callMethods on every
+                    // response, which would make an in-place forEach skip every other call.
+                    callMethods.splice(0).forEach(m => {
                         sendCoreMessage(createResponseMessage(m.responseID, false, { error }));
                     });
-                    callMethods.splice(0, callMethods.length);
                 }
             }
         });
