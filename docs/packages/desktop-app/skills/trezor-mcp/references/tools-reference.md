@@ -398,24 +398,33 @@ No auto-fill is available. You must provide a complete `transaction` object with
 
 ## Error Codes
 
-### JSON-RPC Errors (HTTP-level)
+### JSON-RPC Error Codes (returned inside HTTP 200 responses)
+
+These appear in the `error.code` field of a successful JSON-RPC envelope (`{ "jsonrpc": "2.0", "id": ..., "error": { "code": ..., "message": ... } }`). Transport-layer failures use plain HTTP status codes with `{ "error": "..." }` bodies — see the next table.
 
 | Code     | Name             | Meaning                                            |
 | -------- | ---------------- | -------------------------------------------------- |
-| `-32700` | Parse error      | Malformed JSON in request body                     |
 | `-32601` | Method not found | Unknown JSON-RPC method (typo in `"method"` field) |
 | `-32602` | Invalid params   | Unknown tool name in `tools/call`                  |
 
 ### HTTP Status Codes
 
-| Status | Meaning                                                                                                                                                                      |
-| ------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `200`  | Success                                                                                                                                                                      |
-| `202`  | Notification accepted (request without `id`)                                                                                                                                 |
-| `401`  | Unauthorized — provide token via `?token=` query parameter or `Authorization: Bearer <token>` header (token from Trezor Suite Settings → Experimental Features → MCP Server) |
-| `403`  | Forbidden — request not from localhost                                                                                                                                       |
-| `404`  | Session not found — `Mcp-Session-Id` header doesn't match server session                                                                                                     |
-| `405`  | Method not allowed — `GET` is not supported                                                                                                                                  |
+Transport-layer errors return `{ "error": "<message>" }` (not a JSON-RPC envelope).
+
+| Status | Body                                     | Meaning                                                                                                                                                            |
+| ------ | ---------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `200`  | JSON-RPC response                        | Success                                                                                                                                                            |
+| `202`  | empty                                    | Notification accepted (request without `id`)                                                                                                                       |
+| `400`  | `Invalid json body: ...`                 | Request body is not valid JSON                                                                                                                                     |
+| `400`  | `Invalid JSON-RPC request`               | Request body is JSON but not a non-null object with a string `method` field (e.g. `null`, `[]`, `{}`)                                                              |
+| `401`  | `Unauthorized. ...`                      | Provide token via `?token=` query parameter or `Authorization: Bearer <token>` header (token from Trezor Suite Settings → Experimental Features → MCP Server)      |
+| `403`  | empty                                    | Request not from localhost                                                                                                                                         |
+| `404`  | `Session not found`                      | `Mcp-Session-Id` header doesn't match server session (only for non-`initialize` methods)                                                                           |
+| `404`  | empty                                    | No matching route — e.g. `OPTIONS /mcp` (CORS preflight is rejected this way), `PUT /mcp`, or any path other than `/mcp`. CORS headers are intentionally not sent. |
+| `405`  | empty                                    | `GET /mcp` (SSE streaming is not supported)                                                                                                                        |
+| `413`  | `Payload too large`                      | Request body exceeds 1 MB                                                                                                                                          |
+| `500`  | `Server misconfiguration: no auth token` | Server has no token configured — toggle MCP off and on in Trezor Suite to regenerate one                                                                           |
+| `500`  | `Internal server error`                  | Unexpected exception in the request handler — check Trezor Suite logs                                                                                              |
 
 ### Tool-Level Errors
 
@@ -449,7 +458,7 @@ Use `trezor_push_transaction` to retry the broadcast manually with the signed tr
 ## Session Management
 
 - Session ID is generated on the first `initialize` call and returned in the `Mcp-Session-Id` response header
-- **All subsequent requests must include the `Mcp-Session-Id` header** — requests that omit it or send a mismatched value are rejected with HTTP 404
-- If the server returns HTTP 404 "Session not found", send a new `initialize` request
+- **All subsequent non-`initialize` requests must include the `Mcp-Session-Id` header** — requests that omit it or send a mismatched value are rejected with HTTP 404 `Session not found`
+- `initialize` is always allowed without (or with a stale) `Mcp-Session-Id` and starts a fresh session — useful when a client reconnects after Suite was restarted
 - Send `DELETE /mcp` with the session header to terminate a session
 - Sessions are in-memory only — they do not survive app restarts
