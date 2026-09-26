@@ -18,7 +18,6 @@ import {
     type ReportSecurityCheckDep,
     type RerunFwAuthenticityChecksCallDep,
     type ShouldRetryFirmwareRevisionCheckErrorDep,
-    type TransportsDep,
 } from '@suite-common/suite-types';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import {
@@ -53,5 +52,4 @@ export type CommonServices = SuiteSyncDep &
         >;
     } & ReportSecurityCheckDep &
     ReloadAppDep &
-    MigrateSuiteSyncLabelsForRbfTransactionDep &
-    TransportsDep;
+    MigrateSuiteSyncLabelsForRbfTransactionDep;
