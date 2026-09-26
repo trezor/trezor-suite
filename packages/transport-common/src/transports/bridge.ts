@@ -4,8 +4,6 @@ import {
     type TransportProtocol,
     v1 as protocolV1,
 } from '@trezor/protocol';
-import { versionUtils } from '@trezor/utils';
-
 import * as ERRORS from '../errors';
 import {
     AbstractTransport,
@@ -82,7 +80,6 @@ type BridgeSendResult = ReturnType<AbstractTransport['send']>;
 type BridgeReceiveResult = ReturnType<AbstractTransport['receive']>;
 
 export class BridgeTransport extends AbstractTransport {
-    private useAbortEndpoint: boolean = false;
     /**
      * url of trezord server.
      */
@@ -112,7 +109,6 @@ export class BridgeTransport extends AbstractTransport {
                 }
 
                 this.version = response.payload.version;
-                this.useAbortEndpoint = versionUtils.isNewerOrEqual(this.version, '3.2.1');
 
                 this.stopped = false;
 
@@ -217,10 +213,6 @@ export class BridgeTransport extends AbstractTransport {
     // abort signal is also meant to resolve immediately but it could take a while to process it on the server
     // try to abort pending process through the server and fallback to local signal only if that fails
     private createAbortSignal = (session: Session, signal?: AbortSignal) => {
-        if (!this.useAbortEndpoint) {
-            return signal;
-        }
-
         const abortController = new AbortController();
         signal?.addEventListener('abort', async () => {
             const result = await this.post('/abort', { params: session });
