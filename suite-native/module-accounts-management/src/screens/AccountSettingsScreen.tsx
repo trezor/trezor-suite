@@ -11,19 +11,20 @@ import {
     selectFormattedAccountTypeWithDefault,
     selectIsAccountUtxoBased,
 } from '@suite-common/wallet-core';
-import { Box, Card, HStack, Text, VStack } from '@suite-native/atoms';
+import { hasNetworkFeatures } from '@suite-common/wallet-utils';
+import { AccountDetailScreenHeaderContent } from '@suite-native/accounts';
+import { Box, Button, Card, HStack, Text, VStack } from '@suite-native/atoms';
 import { Bip329ManageLabelsCard } from '@suite-native/bip329';
 import { TokenIcon } from '@suite-native/icons';
 import { Translation } from '@suite-native/intl';
 import {
     type RootStackParamList,
-    type RootStackRoutes,
+    RootStackRoutes,
     Screen,
     ScreenHeader,
     type StackProps,
 } from '@suite-native/navigation';
 
-import { AccountDetailScreenHeaderContent } from '../components/AccountDetailScreenHeader';
 import { AccountRenameButton } from '../components/AccountRenameButton';
 import { AccountSettingsRemoveCoinButton } from '../components/AccountSettingsRemoveCoinButton';
 import { AccountSettingsShowXpubButton } from '../components/AccountSettingsShowXpubButton';
@@ -55,6 +56,7 @@ const CryptoNameWithIcon = ({ symbol }: { symbol: NetworkSymbol }) => (
 );
 
 export const AccountSettingsScreen = ({
+    navigation,
     route,
 }: StackProps<RootStackParamList, RootStackRoutes.AccountSettings>) => {
     const { accountKey } = route.params;
@@ -74,12 +76,14 @@ export const AccountSettingsScreen = ({
     );
 
     const isSuiteSyncEnabled = useSelector(selectIsSuiteSyncEnabled);
+
     if (!account) return null;
 
     const shouldDisplayExportImport = shouldDisplayExportImportBip329Labels({
         account,
         isSuiteSyncEnabled,
     });
+    const isSignAndVerifyAvailable = hasNetworkFeatures(account, 'sign-verify');
 
     return (
         <Screen
@@ -131,12 +135,24 @@ export const AccountSettingsScreen = ({
                         />
                     )}
                 </VStack>
-                <VStack spacing="sp16">
+                <VStack spacing="sp12">
                     {isUtxoBasedAccount && (
                         <AccountSettingsShowXpubButton accountKey={account.key} />
                     )}
-                    {isPortfolioTrackerDevice && (
+                    {isPortfolioTrackerDevice ? (
                         <AccountSettingsRemoveCoinButton accountKey={account.key} />
+                    ) : (
+                        isSignAndVerifyAvailable && (
+                            <Button
+                                onPress={() =>
+                                    navigation.navigate(RootStackRoutes.SignAndVerify, {
+                                        accountKey: account.key,
+                                    })
+                                }
+                            >
+                                <Translation id="moduleAccountManagement.accountSettingsScreen.signAndVerifyButton" />
+                            </Button>
+                        )
                     )}
                 </VStack>
             </Box>

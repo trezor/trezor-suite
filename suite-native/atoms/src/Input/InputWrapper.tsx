@@ -18,6 +18,7 @@ export type InputWrapperProps = {
 const errorToMessageMap: Record<string, string> = {
     TR_REQUIRED_FIELD: 'Field is mandatory',
     TR_EXCEEDS_MAX: 'Number of characters exceeded',
+    DATA_NOT_VALID_HEX: 'Not a valid hex',
 };
 
 export const InputWrapper = ({ children, label, hint, error }: InputWrapperProps) => {

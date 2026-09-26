@@ -44,6 +44,7 @@ import {
     type RootStackRoutes,
     type SendStackRoutes,
     type SettingsStackRoutes,
+    type SignAndVerifyStackRoutes,
     type StellarManageTokenStackRoutes,
     type TradingStackRoutes,
     type TransactionDetailStackRoutes,
@@ -83,6 +84,11 @@ type AccountDetailParams = {
 
 export type AccountsStackParamList = {
     [AccountsStackRoutes.Accounts]: { networksFilter?: NetworkSymbol[] } | undefined;
+};
+
+export type SignAndVerifyStackParamList = {
+    [SignAndVerifyStackRoutes.DeviceConnectionGuard]: undefined;
+    [SignAndVerifyStackRoutes.ContinueOnTrezor]: undefined;
 };
 
 export type EarnStackParamList = {
@@ -508,6 +514,8 @@ export type RootStackParamList = {
     [RootStackRoutes.AccountsImport]: NavigatorScreenParams<AccountsImportStackParamList>;
     [RootStackRoutes.DemoAccountQuestionnaireStack]: NavigatorScreenParams<DemoAccountQuestionnaireStackParamList>;
     [RootStackRoutes.AccountSettings]: { accountKey: AccountKey };
+    [RootStackRoutes.SignAndVerify]: { accountKey: AccountKey };
+    [RootStackRoutes.SignAndVerifyStack]: undefined;
     [RootStackRoutes.TransactionDetailStack]: NavigatorScreenParams<TransactionDetailStackParamList>;
     [RootStackRoutes.DevUtils]: undefined;
     [RootStackRoutes.MessageSystemManager]: undefined;

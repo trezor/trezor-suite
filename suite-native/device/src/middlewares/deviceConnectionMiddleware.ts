@@ -233,6 +233,7 @@ deviceConnectionMiddleware.startListening({
                 DeviceSettingsStackRoutes.DevicePassphraseStack,
                 DeviceSettingsStackRoutes.DeviceAuthenticityStack,
                 DeviceSettingsStackRoutes.WipeDeviceStack,
+                RootStackRoutes.SignAndVerifyStack,
             ])
         ) {
             return;
