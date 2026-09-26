@@ -20,6 +20,7 @@ export class BackupSection {
     readonly backupFailedSettingLink: Locator;
     readonly backupFailedSettingButton: Locator;
     readonly skipBackupButton: Locator;
+    readonly skipBackupConfirmButton: Locator;
     readonly createBackupButton: Locator;
     readonly continueButton: Locator;
 
@@ -53,8 +54,16 @@ export class BackupSection {
             '@device-settings/backup-failed/disabled-button',
         );
         this.skipBackupButton = this.page.getByTestId('@onboarding/skip-backup');
+        this.skipBackupConfirmButton = this.page.getByTestId('@onboarding/skip-button-confirm');
         this.createBackupButton = this.page.getByTestId('@onboarding/create-backup-button');
         this.continueButton = this.page.getByTestId('@onboarding/continue-button');
+    }
+
+    @step()
+    async skipBackup() {
+        await this.skipBackupButton.click();
+        await this.skipBackupConfirmButton.click();
+        await this.devicePrompt.confirmOnDeviceUntilPromptIsHidden();
     }
 
     @step()

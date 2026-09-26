@@ -91,7 +91,6 @@ At the moment, there are these additional tags:
 - @skipOnPR
 - @optional
 - @specificFirmware
-- @firmware-ready
 
 #### Device coverage on PR
 
@@ -120,10 +119,6 @@ Tests that are excluded from the full PR run but run on a PR when the LLM test s
 #### @specificFirmware
 
 Some tests must run on specific Firmware version. That version is setup and defined in test. This tag lets our runner know, that this test should not be included in Canary nightly run.
-
-#### @firmware-ready
-
-This tag server for easier test quarantine. This tag si dedicated to few tests that are guarding against firmware update issues. As such those tests start failing on every firmware release until we adopt new firmware to out Trezor User Env
 
 ## Results
 

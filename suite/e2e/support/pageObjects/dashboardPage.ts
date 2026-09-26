@@ -51,6 +51,11 @@ export class DashboardPage {
     readonly openUnusedWalletButton2: Locator;
     readonly loading: Locator;
     readonly notificationNoBackupButton: Locator;
+    readonly updateNotificationBanner: Locator;
+    readonly updateNotificationBannerHeading: Locator;
+    readonly closeUpdateNotificationButton: Locator;
+    readonly legacyNotification: Locator;
+    readonly closeLegacyNotificationButton: Locator;
     readonly buyButton = (networkSymbol: NetworkSymbol): Locator =>
         this.page.getByTestId(`@dashboard/asset/${networkSymbol}/buy-button`);
     readonly stakeButton = (networkSymbol: NetworkSymbol): Locator =>
@@ -115,6 +120,17 @@ export class DashboardPage {
         );
         this.loading = this.page.getByTestId('@dashboard/loading');
         this.notificationNoBackupButton = this.page.getByTestId('@notification/no-backup/button');
+        this.updateNotificationBanner = this.page.getByTestId(
+            '@notification/update-notification-banner',
+        );
+        this.updateNotificationBannerHeading = this.updateNotificationBanner.getByRole('heading');
+        this.closeUpdateNotificationButton = this.page.getByTestId(
+            '@notification/update-notification-banner/close-button',
+        );
+        this.legacyNotification = this.page.getByTestId('@notification/legacy-labeling-upgrade');
+        this.closeLegacyNotificationButton = this.page.getByTestId(
+            '@notification/legacy-labeling-upgrade/close-button',
+        );
         this.walletReady = this.page.getByTestId('@dashboard/wallet-ready');
         this.discoveryEmptyHeader = this.page.getByTestId('@exception/discovery-empty/header');
         this.discoveryEmptyDesc = this.page.getByTestId('@exception/discovery-empty/description');
@@ -130,6 +146,15 @@ export class DashboardPage {
     async navigateTo() {
         await this.dashboardMenuButton.click();
         await expect(this.dashboardHeader).toBeVisible();
+    }
+
+    @step()
+    async closeLegacyNotification() {
+        await expect(this.legacyNotification.or(this.updateNotificationBanner)).toBeVisible();
+        if (await this.updateNotificationBanner.isVisible()) {
+            await this.closeUpdateNotificationButton.click();
+        }
+        await this.closeLegacyNotificationButton.click();
     }
 
     @step()

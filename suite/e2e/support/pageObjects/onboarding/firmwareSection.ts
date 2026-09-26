@@ -7,6 +7,9 @@ export class FirmwareSection {
     readonly skipButton: Locator;
     readonly skipConfirmButton: Locator;
     readonly installFirmwareButton: Locator;
+    readonly currentVersion: Locator;
+    readonly offeredVersion: Locator;
+    readonly offeredVersionTooltip: Locator;
     readonly onboardingLayout: Locator;
 
     constructor(private readonly page: Page) {
@@ -14,6 +17,9 @@ export class FirmwareSection {
         this.skipButton = this.page.getByTestId('@firmware/skip-button');
         this.skipConfirmButton = this.page.getByTestId('@onboarding/skip-button-confirm');
         this.installFirmwareButton = this.page.getByTestId('@firmware/install-button');
+        this.currentVersion = this.page.getByTestId('@firmware/offer-version/current');
+        this.offeredVersion = this.page.getByTestId('@firmware/offer-version/new');
+        this.offeredVersionTooltip = this.page.getByTestId('@firmware/offer-version/new/tooltip');
         this.onboardingLayout = this.page.getByTestId('@onboarding-layout/body');
     }
 
@@ -31,19 +37,32 @@ export class FirmwareSection {
         await Promise.race([this.continueButton.click(), this.skip()]);
     }
 
-    // This method serves as a watchdog for the situation where new firmware is released to suite desktop and web
-    // But is not yet available in our TrezorEnv that is used by the test CIs.
     @step()
     async expectFirmwareToBeReady() {
         await expect(this.onboardingLayout).toBeVisible();
-        const isInstallButtonVisible = await this.installFirmwareButton.isVisible();
-        const isInstallTitleVisible = await this.page.getByText('Installing firmware').isVisible();
-        if (isInstallButtonVisible || isInstallTitleVisible) {
-            throw new Error(
-                'New Firmware was released but it was not yet adopted by our test CIs. Please contact @testautomationhelp in #tech_qa.',
-            );
-        }
-        await expect(this.page.getByText('Firmware ready')).toBeVisible();
-        await this.continueButton.click();
+        await expect(this.continueButton).toBeVisible();
+        await expect(this.installFirmwareButton).toBeHidden();
+        await expect(this.skipButton).toBeHidden();
+    }
+
+    @step()
+    async expectFirmwareUpdateToBeOffered({
+        currentVersion,
+        offeredVersion,
+        changelog,
+    }: {
+        currentVersion: string;
+        offeredVersion: string;
+        changelog: string;
+    }) {
+        await expect(this.onboardingLayout).toBeVisible();
+        await expect(this.installFirmwareButton).toBeVisible();
+        await expect(this.skipButton).toBeVisible();
+        await expect(this.currentVersion).toContainText(currentVersion);
+        await expect(this.offeredVersion).toContainText(offeredVersion);
+
+        await this.offeredVersion.hover();
+        await expect(this.offeredVersionTooltip).toContainText(offeredVersion);
+        await expect(this.offeredVersionTooltip).toContainText(changelog);
     }
 }
