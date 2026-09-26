@@ -1,0 +1,30 @@
+{
+    "name": "@suite-native/keyboard",
+    "version": "1.0.0",
+    "private": true,
+    "license": "See LICENSE.md in repo root",
+    "sideEffects": false,
+    "main": "src/index",
+    "scripts": {
+        "depcheck": "yarn g:depcheck",
+        "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'",
+        "lint:js:fix": "yarn lint:js --fix",
+        "test:unit": "yarn g:jest:native",
+        "test:unit:coverage": "yarn g:jest:native --coverage",
+        "test:unit:watch": "yarn g:jest:native --watch",
+        "type-check": "yarn g:tsc --build"
+    },
+    "dependencies": {
+        "@react-navigation/bottom-tabs": "7.13.0",
+        "@trezor/styles-native": "workspace:*",
+        "react": "19.2.3",
+        "react-native": "0.86.0",
+        "react-native-keyboard-controller": "1.21.9",
+        "react-native-reanimated": "4.5.0",
+        "react-native-teleport": "^1.2.1"
+    },
+    "devDependencies": {
+        "@suite-common/dependency-injection": "workspace:*",
+        "@suite-native/test-utils": "workspace:*"
+    }
+}

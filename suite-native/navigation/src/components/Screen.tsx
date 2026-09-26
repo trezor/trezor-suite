@@ -1,4 +1,4 @@
-import { type ReactNode, useContext } from 'react';
+import { type ReactNode, useContext, useState } from 'react';
 import { type ScrollViewProps, View, type ViewProps } from 'react-native';
 import { SystemBars } from 'react-native-edge-to-edge';
 import { KeyboardStickyView } from 'react-native-keyboard-controller';
@@ -10,6 +10,7 @@ import { useRoute } from '@react-navigation/native';
 
 import { selectIsAnyBannerMessageActive } from '@suite-common/message-system';
 import { Box, useBannerAwareSafeAreaInsets } from '@suite-native/atoms';
+import { KeyboardToolbar, KeyboardToolbarHost } from '@suite-native/keyboard';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 import { type Color } from '@trezor/theme';
 
@@ -25,6 +26,8 @@ export type ScreenProps = {
     children: ReactNode;
     header?: ReactNode;
     footer?: ReactNode;
+    keyboardToolbar?: ReactNode;
+    keyboardToolbarHostName?: string;
     systemThemeStyle?: 'dark' | 'light';
     isScrollable?: boolean;
     backgroundColor?: Color;
@@ -85,6 +88,8 @@ export const Screen = ({
     children,
     header,
     footer,
+    keyboardToolbar,
+    keyboardToolbarHostName,
     refreshControl,
     containerStyle,
     systemThemeStyle,
@@ -96,6 +101,7 @@ export const Screen = ({
     isFooterKeyboardAware = true,
     hasBottomInset = true,
 }: ScreenProps) => {
+    const [keyboardToolbarHeight, setKeyboardToolbarHeight] = useState(0);
     const {
         applyStyle,
         utils: { spacings },
@@ -103,6 +109,7 @@ export const Screen = ({
 
     const insets = useBannerAwareSafeAreaInsets();
     const isKeyboardShown = useIsKeyboardShown();
+    const activeKeyboardToolbarHeight = keyboardToolbar ? keyboardToolbarHeight : 0;
 
     const horizontalPadding = noHorizontalPadding ? 0 : spacings.sp16;
     const bottomPadding = noBottomPadding ? 0 : spacings.sp16;
@@ -166,10 +173,19 @@ export const Screen = ({
                 {footer && (
                     <KeyboardStickyView
                         enabled={isFooterKeyboardAware}
+                        offset={{ opened: -activeKeyboardToolbarHeight }}
                         style={applyStyle(screenFooterStyle, { insets, applyBottomInset })}
                     >
                         {footer}
                     </KeyboardStickyView>
+                )}
+                {!!keyboardToolbar && (
+                    <KeyboardToolbar onHeightChange={setKeyboardToolbarHeight}>
+                        {keyboardToolbar}
+                    </KeyboardToolbar>
+                )}
+                {keyboardToolbarHostName !== undefined && (
+                    <KeyboardToolbarHost name={keyboardToolbarHostName} />
                 )}
             </View>
         </DynamicHeaderProvider>
