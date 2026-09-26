@@ -104,7 +104,7 @@ type UpdateTxsFiatRatesThunkResult = {
 };
 
 // TODO: Refactor this to batch requests as much as possible
-type UpdateTxsFiatRatesThunkState = AccountsRootState &
+export type UpdateTxsFiatRatesThunkState = AccountsRootState &
     BlockchainRootState &
     TokenDefinitionsRootState;
 

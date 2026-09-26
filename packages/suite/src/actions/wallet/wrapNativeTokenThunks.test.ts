@@ -1,10 +1,11 @@
 import { type AnalyticsDep, events } from '@suite-common/analytics';
 import { asGetter } from '@suite-common/dependency-injection';
 import { type WithServices } from '@suite-common/redux-utils';
-import { createTestStore } from '@suite-common/test-utils';
+import { type TestCompositionStore, createTestCompositionRoot } from '@suite-common/test-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { asNetworkSymbol, getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import {
+    type ComposeYieldWrapTransactionThunkState,
     type YieldFlowDisplayToken,
     accountsActions,
     yieldActions,
@@ -16,6 +17,7 @@ import { mockAnalytics } from '@trezor/analytics-uploader/mocks';
 import {
     PUSH_TRANSACTION_FAILED_CAUSE,
     type SendYieldTransactionDeps,
+    type SendYieldTransactionState,
 } from './stablecoin-yield/signingHelpers';
 import { submitWrapNativeTokenThunk } from './wrapNativeTokenThunks';
 
@@ -29,14 +31,11 @@ const mockSentResult = (txid: string) => ({ status: 'sent' as const, txid, fee: 
 const mockCancelledResult = { status: 'cancelled' as const };
 
 type WrapNativeTokenThunkDeps = SendYieldTransactionDeps & WithServices<AnalyticsDep>;
-
-const createExtra = (report: jest.Mock = jest.fn()): WrapNativeTokenThunkDeps => ({
-    services: {
-        analytics: mockAnalytics(report),
-        getIsWindowVisible: asGetter(() => true),
-        getTradedAccountKeys: asGetter(() => []),
-    },
-});
+type WrapNativeTokenThunkState = ComposeYieldWrapTransactionThunkState & SendYieldTransactionState;
+type WrapNativeTokenTestStore = TestCompositionStore<
+    WrapNativeTokenThunkState,
+    WrapNativeTokenThunkDeps
+>;
 
 jest.mock('@suite-common/wallet-core', () => ({
     ...jest.requireActual('@suite-common/wallet-core'),
@@ -64,10 +63,14 @@ const token: YieldFlowDisplayToken & { contractAddress: string } = {
 };
 
 const buildStore = (report: jest.Mock) =>
-    createTestStore({
-        extra: createExtra(report),
+    createTestCompositionRoot<WrapNativeTokenThunkDeps, WrapNativeTokenThunkState>({
         preloadedState: {},
-    });
+        services: () => ({
+            analytics: mockAnalytics(report),
+            getIsWindowVisible: asGetter(() => true),
+            getTradedAccountKeys: asGetter(() => []),
+        }),
+    }).services.store;
 
 const dispatchWrap = (report: jest.Mock) =>
     buildStore(report)
@@ -110,7 +113,7 @@ describe('submitWrapNativeTokenThunk', () => {
     });
 
     it('uses the parent yield flow identity when provided', async () => {
-        const store = createTestStore({ extra: createExtra(), preloadedState: {} });
+        const store = buildStore(jest.fn());
         mockOpenDeferredModal.mockImplementation(
             () => () => Promise.resolve({ value: true, resolve: jest.fn() }),
         );
@@ -138,7 +141,7 @@ describe('submitWrapNativeTokenThunk', () => {
         );
     });
 
-    const getTrackedTokenUpdates = (store: ReturnType<typeof createTestStore>) =>
+    const getTrackedTokenUpdates = (store: WrapNativeTokenTestStore) =>
         store
             .getActions()
             .filter(accountsActions.updateAccount.match)
@@ -253,14 +256,14 @@ describe('submitWrapNativeTokenThunk', () => {
             mockSendYieldTransaction.mockRejectedValue(error);
         };
 
-        const getFlowErrors = (store: ReturnType<typeof createTestStore>) =>
+        const getFlowErrors = (store: WrapNativeTokenTestStore) =>
             store.getActions().filter(action => action.type === yieldActions.setError.type);
 
         it('reports a push failure on the deposit step it was started from', async () => {
             acceptModalAndFailWith(
                 new Error('push failed', { cause: PUSH_TRANSACTION_FAILED_CAUSE }),
             );
-            const store = createTestStore({ extra: createExtra(), preloadedState: {} });
+            const store = buildStore(jest.fn());
 
             await store
                 .dispatch(
@@ -276,7 +279,7 @@ describe('submitWrapNativeTokenThunk', () => {
 
         it('falls back to the generic error for an unrecognised failure', async () => {
             acceptModalAndFailWith(new Error('boom'));
-            const store = createTestStore({ extra: createExtra(), preloadedState: {} });
+            const store = buildStore(jest.fn());
 
             await store
                 .dispatch(
@@ -291,7 +294,7 @@ describe('submitWrapNativeTokenThunk', () => {
 
         it('still shows the signing toast, the only feedback a standalone wrap gets', async () => {
             acceptModalAndFailWith(new Error('boom'));
-            const store = createTestStore({ extra: createExtra(), preloadedState: {} });
+            const store = buildStore(jest.fn());
 
             await store
                 .dispatch(submitWrapNativeTokenThunk({ account, token, wrapAmount: '1' }))
@@ -307,7 +310,7 @@ describe('submitWrapNativeTokenThunk', () => {
 
         it('does not report a flow error for a standalone wrap', async () => {
             acceptModalAndFailWith(new Error('boom'));
-            const store = createTestStore({ extra: createExtra(), preloadedState: {} });
+            const store = buildStore(jest.fn());
 
             await store
                 .dispatch(submitWrapNativeTokenThunk({ account, token, wrapAmount: '1' }))
@@ -320,7 +323,7 @@ describe('submitWrapNativeTokenThunk', () => {
             mockComposeYieldWrapTransactionThunk.mockImplementation(() => () => ({
                 unwrap: () => Promise.resolve({ type: 'error', reason: 'fee-estimation-failed' }),
             }));
-            const store = createTestStore({ extra: createExtra(), preloadedState: {} });
+            const store = buildStore(jest.fn());
 
             await store
                 .dispatch(

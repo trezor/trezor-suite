@@ -1,13 +1,15 @@
 import { combineReducers } from '@reduxjs/toolkit';
 
-import { deviceInitialState } from '@suite-common/device';
-import { createTestStore } from '@suite-common/test-utils';
+import { createTestCompositionRoot } from '@suite-common/test-utils';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { type FeeInfo, asAccountDescriptor } from '@suite-common/wallet-types';
 import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
 import { BigNumber } from '@trezor/utils';
 
-import { composeYieldDepositTransactionThunk } from './yieldDepositThunks';
+import {
+    type ComposeYieldDepositTransactionThunkState,
+    composeYieldDepositTransactionThunk,
+} from './yieldDepositThunks';
 import { accountsInitialState } from '../../accounts/accountsReducer';
 import { fetchAllowance } from '../../allowance/fetchAllowance';
 import { blockchainInitialState } from '../../blockchain/blockchainReducer';
@@ -72,10 +74,8 @@ const ethFeeInfo: FeeInfo = {
 };
 
 const initStore = () =>
-    createTestStore({
-        extra: undefined,
+    createTestCompositionRoot<void, ComposeYieldDepositTransactionThunkState>({
         reducer: combineReducers({
-            device: () => deviceInitialState,
             wallet: combineReducers({
                 accounts: () => accountsInitialState,
                 blockchain: () => blockchainInitialState,
@@ -84,7 +84,6 @@ const initStore = () =>
             }),
         }),
         preloadedState: {
-            device: deviceInitialState,
             wallet: {
                 accounts: accountsInitialState,
                 blockchain: blockchainInitialState,
@@ -92,7 +91,7 @@ const initStore = () =>
                 transactions: transactionsInitialState,
             },
         },
-    });
+    }).services.store;
 
 describe(composeYieldDepositTransactionThunk.name, () => {
     beforeEach(() => {

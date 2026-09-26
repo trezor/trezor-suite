@@ -34,7 +34,7 @@ const signDataRejectedValue: TradingSendRejectedProps = {
     error: { id: 'TR_TRADING_CANNOT_SEND_TRANSACTION' },
 };
 
-type SignDataAndConfirmThunkState = TradingRootState;
+export type SignDataAndConfirmThunkState = TradingRootState;
 
 export const signDataAndConfirmThunk = createThunk<
     undefined,

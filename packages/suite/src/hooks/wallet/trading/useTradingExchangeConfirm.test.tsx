@@ -3,11 +3,17 @@ import type { CryptoId, ExchangeTrade } from 'invity-api';
 
 import { locksReducer } from '@suite/locks';
 import { modalReducer } from '@suite/modal';
-import { routerReducer } from '@suite/router';
+import { type GotoThunkState, type SuiteRouterHistoryDep, routerReducer } from '@suite/router';
 import { mockSuiteRouterHistory } from '@suite/router/mocks';
+import { type WithServices } from '@suite-common/redux-utils';
 import { createTestCompositionRoot, renderHookWithStoreProvider } from '@suite-common/test-utils';
-import { exchangeInitialState, initialState as tradingInitialState } from '@suite-common/trading';
+import {
+    type TradingRootState,
+    exchangeInitialState,
+    initialState as tradingInitialState,
+} from '@suite-common/trading';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
+import { type AccountsRootState } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
 import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
 
@@ -69,14 +75,17 @@ type StateOverrides = {
     trades?: Array<typeof REDIRECT_TRADE>;
 };
 
-const buildState = (overrides: StateOverrides = {}) => {
+// The hook reads trading and account selectors in addition to dispatching gotoThunk.
+type State = GotoThunkState & TradingRootState & AccountsRootState;
+
+const buildState = (overrides: StateOverrides = {}): Pick<State, 'wallet'> => {
     const selectedQuote = 'selectedQuote' in overrides ? overrides.selectedQuote : SELECTED_QUOTE;
     const quotesRequest = 'quotesRequest' in overrides ? overrides.quotesRequest : QUOTES_REQUEST;
     const accountKey = 'accountKey' in overrides ? overrides.accountKey : ACCOUNT.key;
-    const accounts = 'accounts' in overrides ? overrides.accounts : [ACCOUNT];
-    const isFromRedirect = 'isFromRedirect' in overrides ? overrides.isFromRedirect : false;
+    const accounts = overrides.accounts ?? [ACCOUNT];
+    const isFromRedirect = overrides.isFromRedirect ?? false;
     const transactionId = 'transactionId' in overrides ? overrides.transactionId : undefined;
-    const trades = 'trades' in overrides ? overrides.trades : [];
+    const trades = overrides.trades ?? [];
 
     const overridesForExchange = {
         selectedQuote,
@@ -102,10 +111,7 @@ const renderConfirm = (overrides?: StateOverrides) => {
     const state = buildState(overrides);
 
     const suiteRouterHistory = { ...mockSuiteRouterHistory(), navigate: jest.fn() };
-    const root = createTestCompositionRoot({
-        extra: {
-            services: { suiteRouterHistory },
-        },
+    const { services } = createTestCompositionRoot<WithServices<SuiteRouterHistoryDep>, State>({
         preloadedState: state,
         reducer: {
             router: routerReducer,
@@ -113,10 +119,13 @@ const renderConfirm = (overrides?: StateOverrides) => {
             modal: modalReducer,
             wallet: (wallet = state.wallet) => wallet,
         },
+        services: () => ({ suiteRouterHistory }),
     });
-    const { result } = renderHookWithStoreProvider(() => useTradingExchangeConfirm(), { root });
+    const { result } = renderHookWithStoreProvider(() => useTradingExchangeConfirm(), {
+        services,
+    });
 
-    const { getActions } = root.services;
+    const { getActions } = services.store;
 
     return { getActions, result, suiteRouterHistory };
 };

@@ -18,7 +18,7 @@ export type PrefetchDexQuoteApprovalThunkProps = {
     trade: ExchangeTrade;
 };
 
-type PrefetchDexQuoteApprovalThunkState = TradingRootState;
+export type PrefetchDexQuoteApprovalThunkState = TradingRootState;
 
 export const prefetchDexQuoteApprovalThunk = createThunk<
     ExchangeTrade | undefined,

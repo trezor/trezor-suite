@@ -2,7 +2,9 @@ import '@suite-common/test-utils/globalOverrides';
 
 import { screen } from '@testing-library/react';
 
+import { type DesktopAnalyticsDep } from '@suite/analytics';
 import { mockDesktopAnalytics } from '@suite/analytics/mocks';
+import { type WithServices } from '@suite-common/redux-utils';
 import { createTestCompositionRoot } from '@suite-common/test-utils';
 
 import { type AppState } from 'src/reducers/store';
@@ -39,13 +41,15 @@ const buildState = (): AppState => ({
 
 describe('TradingLayout', () => {
     it('always renders children regardless of visible accounts or device state', () => {
-        const root = createTestCompositionRoot({
-            extra: { services: { analytics: mockDesktopAnalytics() } },
-            preloadedState: buildState(),
-        });
+        const { services } = createTestCompositionRoot<WithServices<DesktopAnalyticsDep>, AppState>(
+            {
+                preloadedState: buildState(),
+                services: () => ({ analytics: mockDesktopAnalytics() }),
+            },
+        );
 
         renderWithProviders(
-            root,
+            services,
             <TradingLayout>
                 <div data-testid="trading-content" />
             </TradingLayout>,

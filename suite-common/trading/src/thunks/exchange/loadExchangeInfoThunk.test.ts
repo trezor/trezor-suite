@@ -1,13 +1,20 @@
 import { combineReducers } from '@reduxjs/toolkit';
 import { type ExchangeListResponse } from 'invity-api';
 
-import { createTestStore } from '@suite-common/test-utils';
+import { createTestCompositionRoot } from '@suite-common/test-utils';
 
 import { exchange } from '../../reducers/__fixtures__/exchangeTradingReducer';
-import { exchangeInitialState, tradingExchangeReducer } from '../../reducers/exchangeReducer';
+import {
+    type TradingExchangeState,
+    exchangeInitialState,
+    tradingExchangeReducer,
+} from '../../reducers/exchangeReducer';
 import { tradeApi } from '../../tradeApi';
 
 import { exchangeThunks } from './index';
+
+// The thunk has no state dependency; this slice is needed to assert its reducer updates.
+type State = { wallet: { trading: { exchange: TradingExchangeState } } };
 
 describe('loadExchangeInfoThunk', () => {
     jest.mock('../../tradeApi');
@@ -15,8 +22,7 @@ describe('loadExchangeInfoThunk', () => {
     tradeApi.setServersEnvironment = () => {};
     tradeApi.createApiKey = () => {};
 
-    const store = createTestStore({
-        extra: undefined,
+    const { store } = createTestCompositionRoot<void, State>({
         reducer: combineReducers({
             wallet: combineReducers({
                 trading: combineReducers({
@@ -31,7 +37,7 @@ describe('loadExchangeInfoThunk', () => {
                 },
             },
         },
-    });
+    }).services;
 
     it('should load data when response is successful', async () => {
         const exchangeInfoApi = [exchange];

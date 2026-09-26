@@ -1,26 +1,29 @@
 import { type TranslationKey } from '@suite/intl';
-import { createTestStore } from '@suite-common/test-utils';
+import { createTestCompositionRoot } from '@suite-common/test-utils';
 import {
     type NotificationEntry,
+    type NotificationsState,
     createNotificationsReducer,
     notificationsActions,
 } from '@suite-common/toast-notifications';
 
 import { PROTOCOL } from 'src/actions/suite/constants';
-import protocolReducer from 'src/reducers/suite/protocolReducer';
+import protocolReducer, { type ProtocolState } from 'src/reducers/suite/protocolReducer';
 
 import protocolMiddleware from './protocolMiddleware';
 
 const middlewares = [protocolMiddleware];
 
 const { reducer: notificationsReducer } = createNotificationsReducer<TranslationKey>();
-type ProtocolState = ReturnType<typeof protocolReducer>;
-type NotificationsState = ReturnType<typeof notificationsReducer>;
+type State = {
+    protocol: ProtocolState;
+    notifications: Partial<NotificationsState<TranslationKey>>;
+};
 
 const getInitialState = (
-    notifications: Partial<NotificationsState>,
-    protocol?: Partial<ProtocolState>,
-) => ({
+    notifications: State['notifications'],
+    protocol?: Partial<State['protocol']>,
+): State => ({
     protocol: {
         ...protocolReducer(undefined, { type: 'foo' } as any),
         ...protocol,
@@ -28,11 +31,8 @@ const getInitialState = (
     notifications: [...notifications],
 });
 
-type State = ReturnType<typeof getInitialState>;
-
-const initStore = (state: State) => {
-    const store = createTestStore({
-        extra: undefined,
+const initStore = (state: State) =>
+    createTestCompositionRoot<void, State>({
         middleware: [...middlewares],
         reducer: (currentState = state, action) => ({
             ...currentState,
@@ -43,10 +43,7 @@ const initStore = (state: State) => {
             ),
         }),
         preloadedState: state,
-    });
-
-    return store;
-};
+    }).services.store;
 
 describe('Protocol middleware', () => {
     it('closes old protocol notifications', async () => {

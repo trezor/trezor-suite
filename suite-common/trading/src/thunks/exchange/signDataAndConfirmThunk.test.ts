@@ -4,10 +4,11 @@ import { type CryptoId } from 'invity-api';
 import { createThunk } from '@suite-common/redux-utils';
 import { mockActionType } from '@suite-common/redux-utils/mocks';
 import { type TrezorDevice } from '@suite-common/suite-types';
-import { createTestStore } from '@suite-common/test-utils';
+import { createTestCompositionRoot } from '@suite-common/test-utils';
 import { type Account } from '@suite-common/wallet-types';
 import TrezorConnect from '@trezor/connect';
 
+import { type SignDataAndConfirmThunkState } from './signDataAndConfirmThunk';
 import { MIN_MAX_QUOTES_OK } from '../../__fixtures__/exchangeUtils';
 import { accountEth } from '../../__fixtures__/utils';
 import { type TradingExchangeState } from '../../reducers/exchangeReducer';
@@ -49,8 +50,7 @@ describe('signDataAndConfirmThunk', () => {
             receiveAddress: 'receiveAddress',
             orderId: 'orderId',
         };
-        const store = createTestStore({
-            extra: undefined,
+        const { store } = createTestCompositionRoot<void, SignDataAndConfirmThunkState>({
             reducer: combineReducers({
                 wallet: combineReducers({
                     trading: tradingReducer,
@@ -71,7 +71,7 @@ describe('signDataAndConfirmThunk', () => {
                     },
                 },
             },
-        });
+        }).services;
 
         const mockProcessResponseData = jest.fn();
         const mockTriggerAnalyticsTradeConfirmation = jest.fn();

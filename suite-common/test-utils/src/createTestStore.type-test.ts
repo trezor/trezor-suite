@@ -1,19 +1,9 @@
-import { type UnknownAction } from '@reduxjs/toolkit';
-
 import { type WithServices } from '@suite-common/redux-utils';
 
 import { createTestStore } from './createTestStore';
 
-// @ts-expect-error Every test must provide a config with an explicit dependency value.
-createTestStore();
-
-// @ts-expect-error A test must explicitly declare that it has no dependencies.
-createTestStore({});
-
-const dependencyFreeStore = createTestStore({
-    extra: undefined,
-    preloadedState: { value: 1 },
-});
+// A store whose tested code needs no services requires no configuration.
+const { store: dependencyFreeStore } = createTestStore({ preloadedState: { value: 1 } });
 
 void dependencyFreeStore;
 
@@ -24,20 +14,23 @@ type PlatformExtraDependencies = WithServices<{
     platformOnlyService: () => void;
 }>;
 
-const platformExtraDependencies: PlatformExtraDependencies = {
-    services: {
-        platformOnlyService: () => {},
-    },
-};
-
-const store = createTestStore({
-    extra: platformExtraDependencies,
+const { store, injectServicesIntoReduxExtra } = createTestStore<PlatformExtraDependencies>({
     preloadedState: { value: 1 },
 });
+
+injectServicesIntoReduxExtra({ platformOnlyService: () => {} });
+
+// @ts-expect-error Injected services must satisfy the declared dependency contract.
+injectServicesIntoReduxExtra({});
 
 void store;
 
-// @ts-expect-error A non-void dependency contract must be backed by an explicit value.
-createTestStore<PlatformExtraDependencies, { value: number }, UnknownAction>({
-    preloadedState: { value: 1 },
-});
+// Static (non-service) extra dependencies are passed when the store is created.
+type StaticExtraDependencies = WithServices<Record<never, never>> & {
+    thunks: { run: () => void };
+};
+
+createTestStore<StaticExtraDependencies>({ extra: { thunks: { run: () => {} } } });
+
+// @ts-expect-error Declared static extra dependencies must be provided.
+createTestStore<StaticExtraDependencies>({});

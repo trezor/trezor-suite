@@ -5,7 +5,7 @@ import { createThunk } from '@suite-common/redux-utils';
 import { mockActionType, mockReducer } from '@suite-common/redux-utils/mocks';
 import { type TrezorDevice } from '@suite-common/suite-types';
 import { mockSuiteDevice } from '@suite-common/suite-types/mocks';
-import { createTestStore } from '@suite-common/test-utils';
+import { createTestCompositionRoot } from '@suite-common/test-utils';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
 import {
     blockchainInitialState,
@@ -15,6 +15,7 @@ import {
 import { type Account, type FeesState } from '@suite-common/wallet-types';
 import { type TokenInfo } from '@trezor/connect';
 
+import { type RecomposeAndSignTxThunkState } from './recomposeAndSignTxThunk';
 import { accountBtc } from '../../__fixtures__/utils';
 import { type TradingState, initialState } from '../../reducers/tradingCommonReducer';
 import { prepareTradingReducer } from '../../reducers/tradingReducer';
@@ -152,8 +153,7 @@ describe('recomposeAndSignTxThunk', () => {
             } as TrezorDevice,
         };
 
-        const store = createTestStore({
-            extra: undefined,
+        const { store } = createTestCompositionRoot<void, RecomposeAndSignTxThunkState>({
             reducer: combineReducers({
                 wallet: combineReducers({
                     accounts: () => [account],
@@ -182,7 +182,7 @@ describe('recomposeAndSignTxThunk', () => {
                     },
                 },
             },
-        });
+        }).services;
         const tradingFormState = {
             activeSection: 'exchange' as const,
             isSlip24Active: false,

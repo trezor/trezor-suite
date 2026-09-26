@@ -48,13 +48,12 @@ const getInitialState = (): AppState => ({
 
 describe('FormattedNftAmount', () => {
     it('opens a token in the explorer of its own network, not of the selected account', () => {
-        const root = createTestCompositionRoot({
-            extra: { services: {} },
+        const { services } = createTestCompositionRoot<void, AppState>({
             preloadedState: getInitialState(),
         });
 
         renderWithProviders(
-            root,
+            services,
             <FormattedNftAmount
                 transfer={nftTransfer}
                 networkSymbol={asNetworkSymbol('pol')}

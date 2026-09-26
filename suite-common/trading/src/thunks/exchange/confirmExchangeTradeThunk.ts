@@ -32,7 +32,7 @@ export type ConfirmExchangeTradeThunkProps = {
     nextStep?: () => void;
 };
 
-type ConfirmExchangeTradeThunkState = TradingRootState;
+export type ConfirmExchangeTradeThunkState = TradingRootState;
 
 export const confirmExchangeTradeThunk = createThunk<
     ExchangeTrade | undefined,

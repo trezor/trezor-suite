@@ -22,7 +22,7 @@ import { submitRequestFormThunk } from '../tradingCommonActions';
 
 type SelectBuyQuoteThunkParams = { quote: BuyTrade };
 
-type SelectBuyQuoteThunkState = GotoThunkState & TradingFormAccountRootState;
+export type SelectBuyQuoteThunkState = GotoThunkState & TradingFormAccountRootState;
 
 export type SelectBuyQuoteThunkDeps = GotoThunkDeps &
     WithServices<DesktopAnalyticsDep & DesktopApiDep<'getHttpReceiverAddress'>>;

@@ -217,7 +217,7 @@ export const handleYieldApproveCancelThunk = createThunk<void, YieldSessionPaylo
     },
 );
 
-type InitYieldAllowanceThunkState = YieldRootState;
+export type InitYieldAllowanceThunkState = YieldRootState;
 
 export const initYieldAllowanceThunk = createThunk<
     void,

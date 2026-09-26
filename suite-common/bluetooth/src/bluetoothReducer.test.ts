@@ -3,12 +3,13 @@ import { combineReducers } from '@reduxjs/toolkit';
 import { deviceActions } from '@suite-common/device';
 import { mockActionType } from '@suite-common/redux-utils/mocks';
 import type { TrezorDevice } from '@suite-common/suite-types';
-import { createTestStore } from '@suite-common/test-utils';
+import { createTestCompositionRoot } from '@suite-common/test-utils';
 import { type Device, asBluetoothDeviceId } from '@trezor/connect';
 import { DeviceModelInternal } from '@trezor/device-utils';
 
 import { bluetoothActions } from './bluetoothActions';
 import { prepareBluetoothReducerCreator, prepareInitialState } from './bluetoothReducer';
+import { type WithBluetoothState } from './bluetoothSelectors';
 import type { BluetoothDeviceCommon, BluetoothManufacturerData } from './types';
 
 const manufacturerData: BluetoothManufacturerData = {
@@ -20,6 +21,8 @@ const manufacturerData: BluetoothManufacturerData = {
 const bluetoothReducer = prepareBluetoothReducerCreator<BluetoothDeviceCommon>()({
     actionTypes: { storageLoad: mockActionType('storageLoad') },
 });
+
+const reducer = combineReducers({ bluetooth: bluetoothReducer });
 
 const initialState = prepareInitialState();
 
@@ -49,11 +52,13 @@ const pairingErrorDevice: BluetoothDeviceCommon = {
 
 describe('bluetoothReducer', () => {
     it('sets the bluetooth adapter as enabled/disabled when powered/unpowered', () => {
-        const store = createTestStore({
-            extra: undefined,
-            reducer: combineReducers({ bluetooth: bluetoothReducer }),
+        const { store } = createTestCompositionRoot<
+            void,
+            WithBluetoothState<BluetoothDeviceCommon>
+        >({
+            reducer,
             preloadedState: { bluetooth: initialState },
-        });
+        }).services;
 
         expect(store.getState().bluetooth.adapterStatus).toEqual('unknown');
         store.dispatch(bluetoothActions.adapterEventAction({ status: 'enabled' }));
@@ -63,13 +68,15 @@ describe('bluetoothReducer', () => {
     });
 
     it('changes the status of the given device during pairing process', () => {
-        const store = createTestStore({
-            extra: undefined,
-            reducer: combineReducers({ bluetooth: bluetoothReducer }),
+        const { store } = createTestCompositionRoot<
+            void,
+            WithBluetoothState<BluetoothDeviceCommon>
+        >({
+            reducer,
             preloadedState: {
                 bluetooth: { ...initialState, nearbyDevices: [pairingDeviceA] },
             },
-        });
+        }).services;
 
         store.dispatch(
             bluetoothActions.deviceUpdateAction({
@@ -88,11 +95,13 @@ describe('bluetoothReducer', () => {
     });
 
     it('updates and removes known devices', () => {
-        const store = createTestStore({
-            extra: undefined,
-            reducer: combineReducers({ bluetooth: bluetoothReducer }),
+        const { store } = createTestCompositionRoot<
+            void,
+            WithBluetoothState<BluetoothDeviceCommon>
+        >({
+            reducer,
             preloadedState: { bluetooth: initialState },
-        });
+        }).services;
 
         const knownDeviceToAdd: BluetoothDeviceCommon[] = [pairingDeviceA, disconnectedDeviceB];
 
@@ -107,13 +116,15 @@ describe('bluetoothReducer', () => {
     });
 
     it('removes device from nearbyDevices when the device is disconnected by TrezorConnect', () => {
-        const store = createTestStore({
-            extra: undefined,
-            reducer: combineReducers({ bluetooth: bluetoothReducer }),
+        const { store } = createTestCompositionRoot<
+            void,
+            WithBluetoothState<BluetoothDeviceCommon>
+        >({
+            reducer,
             preloadedState: {
                 bluetooth: { ...initialState, nearbyDevices: [pairingDeviceA] },
             },
-        });
+        }).services;
 
         const trezorDevice: Pick<TrezorDevice, 'descriptor'> = {
             descriptor: { apiType: 'bluetooth', id: 'A' },
@@ -129,13 +140,15 @@ describe('bluetoothReducer', () => {
             connectionStatus: { type: 'connected' },
         };
 
-        const store = createTestStore({
-            extra: undefined,
-            reducer: combineReducers({ bluetooth: bluetoothReducer }),
+        const { store } = createTestCompositionRoot<
+            void,
+            WithBluetoothState<BluetoothDeviceCommon>
+        >({
+            reducer,
             preloadedState: {
                 bluetooth: { ...initialState, nearbyDevices: [nearbyDevice] },
             },
-        });
+        }).services;
 
         const trezorDevice: Pick<Device, 'descriptor'> = {
             descriptor: { apiType: 'bluetooth', id: 'A' },
@@ -150,11 +163,13 @@ describe('bluetoothReducer', () => {
     });
 
     it('filters the error device from nearbyDevices, odds the other', () => {
-        const store = createTestStore({
-            extra: undefined,
-            reducer: combineReducers({ bluetooth: bluetoothReducer }),
+        const { store } = createTestCompositionRoot<
+            void,
+            WithBluetoothState<BluetoothDeviceCommon>
+        >({
+            reducer,
             preloadedState: { bluetooth: initialState },
-        });
+        }).services;
 
         const nearbyDevices: BluetoothDeviceCommon[] = [pairingErrorDevice, pairingDeviceA];
 

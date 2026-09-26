@@ -1,7 +1,7 @@
-import { type UnknownAction, combineReducers } from '@reduxjs/toolkit';
+import { combineReducers } from '@reduxjs/toolkit';
 
 import { mockActionType } from '@suite-common/redux-utils/mocks';
-import { createTestStore } from '@suite-common/test-utils';
+import { type TestCompositionStore, createTestCompositionRoot } from '@suite-common/test-utils';
 import { type AccountKey } from '@suite-common/wallet-types';
 
 import { getProviderMetadataFixture } from './__fixtures__/providerMetadata';
@@ -9,7 +9,7 @@ import { tradingFixtures } from './__fixtures__/tradingReducer';
 import { buyInitialState, tradingBuyActions } from './buyReducer';
 import { exchangeInitialState, tradingExchangeActions } from './exchangeReducer';
 import { sellInitialState, tradingSellActions } from './sellReducer';
-import { initialState, tradingActions } from './tradingCommonReducer';
+import { type TradingRootState, initialState, tradingActions } from './tradingCommonReducer';
 import { prepareTradingReducer } from './tradingReducer';
 import { buyThunks } from '../thunks/buy';
 import { exchangeThunks } from '../thunks/exchange';
@@ -22,15 +22,14 @@ const tradingReducer = prepareTradingReducer({
 describe('Testing trading reducer', () => {
     tradingFixtures.forEach(f => {
         it(f.description, () => {
-            const store = createTestStore({
-                extra: undefined,
+            const { store } = createTestCompositionRoot<void, TradingRootState>({
                 reducer: combineReducers({
                     wallet: combineReducers({
                         trading: tradingReducer,
                     }),
                 }),
                 preloadedState: { wallet: { trading: f.initialState } },
-            });
+            }).services;
             f.actions.forEach(action => {
                 store.dispatch(action);
             });
@@ -39,8 +38,7 @@ describe('Testing trading reducer', () => {
     });
 
     it('buyThunks.handleRequestThunk.rejected should clear quotes and amountLimits and set isLoading to false', () => {
-        const store = createTestStore({
-            extra: undefined,
+        const { store } = createTestCompositionRoot<void, TradingRootState>({
             reducer: combineReducers({
                 wallet: combineReducers({
                     trading: tradingReducer,
@@ -59,7 +57,7 @@ describe('Testing trading reducer', () => {
                     },
                 },
             },
-        });
+        }).services;
 
         store.dispatch({ type: buyThunks.handleRequestThunk.rejected.type });
 
@@ -74,8 +72,7 @@ describe('Testing trading reducer', () => {
     });
 
     it('sellThunks.handleRequestThunk.rejected should clear quotes, amountLimits and set isLoading to false', () => {
-        const store = createTestStore({
-            extra: undefined,
+        const { store } = createTestCompositionRoot<void, TradingRootState>({
             reducer: combineReducers({
                 wallet: combineReducers({
                     trading: tradingReducer,
@@ -94,7 +91,7 @@ describe('Testing trading reducer', () => {
                     },
                 },
             },
-        });
+        }).services;
 
         store.dispatch({ type: sellThunks.handleRequestThunk.rejected.type });
 
@@ -109,8 +106,7 @@ describe('Testing trading reducer', () => {
     });
 
     it('exchangeThunks.handleRequestThunk.rejected should clear quotes, amountLimits and set isLoading to false', () => {
-        const store = createTestStore({
-            extra: undefined,
+        const { store } = createTestCompositionRoot<void, TradingRootState>({
             reducer: combineReducers({
                 wallet: combineReducers({
                     trading: tradingReducer,
@@ -134,7 +130,7 @@ describe('Testing trading reducer', () => {
                     },
                 },
             },
-        });
+        }).services;
 
         store.dispatch({ type: exchangeThunks.handleRequestThunk.rejected.type });
 
@@ -149,8 +145,7 @@ describe('Testing trading reducer', () => {
     });
 
     it('sellThunks.handleRequestThunk.pending should set isLoading to true', () => {
-        const store = createTestStore({
-            extra: undefined,
+        const { store } = createTestCompositionRoot<void, TradingRootState>({
             reducer: combineReducers({
                 wallet: combineReducers({
                     trading: tradingReducer,
@@ -167,7 +162,7 @@ describe('Testing trading reducer', () => {
                     },
                 },
             },
-        });
+        }).services;
 
         store.dispatch({ type: sellThunks.handleRequestThunk.pending.type });
 
@@ -179,23 +174,19 @@ describe('Testing trading reducer', () => {
     });
 
     describe('action delegation', () => {
-        let store: ReturnType<
-            typeof createTestStore<
-                void,
-                { wallet: { trading: typeof initialState } },
-                UnknownAction
-            >
-        >;
-
-        beforeEach(() => {
-            store = createTestStore({
-                extra: undefined,
+        const initStore = () =>
+            createTestCompositionRoot<void, TradingRootState>({
                 reducer: combineReducers({
                     wallet: combineReducers({
                         trading: tradingReducer,
                     }),
                 }),
-            });
+            }).services.store;
+
+        let store: TestCompositionStore<TradingRootState, void>;
+
+        beforeEach(() => {
+            store = initStore();
         });
 
         describe('tradingCommon', () => {

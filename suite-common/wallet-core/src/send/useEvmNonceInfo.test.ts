@@ -13,6 +13,8 @@ import TrezorConnect from '@trezor/connect';
 
 import { evmTx } from './__fixtures__/evmFixtures';
 import { useEvmNonceInfo } from './useEvmNonceInfo';
+import { type AccountsRootState } from '../accounts/accountsReducer';
+import { type TransactionsRootState } from '../transactions/transactionsReducerTypes';
 
 jest.mock('@suite-common/react-query', () => ({
     __esModule: true,
@@ -21,6 +23,8 @@ jest.mock('@suite-common/react-query', () => ({
 }));
 
 type EthAccount = AccountWithNetworkType<'ethereum'>;
+// The hook selects an account as well as dispatching the nonce thunk.
+type State = TransactionsRootState & AccountsRootState;
 
 // mockWalletAccount seeds ethereum accounts with misc.nonce = '6'.
 const account = mockWalletAccount({ symbol: asNetworkSymbol('eth') }) as EthAccount;
@@ -44,8 +48,7 @@ const renderUseEvmNonceInfo = (
     selectedAccount: EthAccount | undefined,
     options?: { enabled?: boolean },
 ) => {
-    const root = createTestCompositionRoot({
-        extra: { services: {} },
+    const { services } = createTestCompositionRoot<void, State>({
         preloadedState: {
             wallet: {
                 accounts: [],
@@ -58,7 +61,9 @@ const renderUseEvmNonceInfo = (
         },
     });
 
-    return renderHookWithStoreProvider(() => useEvmNonceInfo(selectedAccount, options), { root });
+    return renderHookWithStoreProvider(() => useEvmNonceInfo(selectedAccount, options), {
+        services,
+    });
 };
 
 describe('useEvmNonceInfo', () => {

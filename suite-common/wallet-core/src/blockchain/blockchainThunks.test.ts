@@ -1,12 +1,12 @@
 import { combineReducers } from '@reduxjs/toolkit';
 
 import { mockActionType, mockReducer } from '@suite-common/redux-utils/mocks';
-import { createTestStore } from '@suite-common/test-utils';
+import { createTestCompositionRoot } from '@suite-common/test-utils';
 import { type NetworkSymbol, asNetworkSymbol } from '@suite-common/wallet-config';
 import TrezorConnect from '@trezor/connect';
 
 import { blockchainInitialState, prepareBlockchainReducer } from './blockchainReducer';
-import { setCustomBackendThunk } from './blockchainThunks';
+import { type SetCustomBackendThunkState, setCustomBackendThunk } from './blockchainThunks';
 import {
     initialWalletSettingsState,
     prepareWalletSettingsReducer,
@@ -20,11 +20,11 @@ const walletSettingsReducer = prepareWalletSettingsReducer({
     actionTypes: { storageLoad: mockActionType('storageLoad') },
     reducers: { storageLoadWalletSettings: mockReducer() },
 });
+
 const electrumUrl = '127.0.0.1:50001:t';
 
 const initStore = (enabledNetworks: NetworkSymbol[]) =>
-    createTestStore({
-        extra: undefined,
+    createTestCompositionRoot<void, SetCustomBackendThunkState>({
         reducer: combineReducers({
             wallet: combineReducers({
                 blockchain: blockchainReducer,
@@ -49,7 +49,7 @@ const initStore = (enabledNetworks: NetworkSymbol[]) =>
                 },
             },
         },
-    });
+    }).services.store;
 
 describe(setCustomBackendThunk.name, () => {
     afterEach(() => jest.restoreAllMocks());

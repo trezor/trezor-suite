@@ -52,12 +52,14 @@ const getInitialState = (): AppState => ({
 
 describe('IOGroup', () => {
     it('opens an address in the explorer of the transaction network, not of the selected account', () => {
-        const root = createTestCompositionRoot({
-            extra: { services: {} },
+        const { services } = createTestCompositionRoot<void, AppState>({
             preloadedState: getInitialState(),
         });
 
-        renderWithProviders(root, <IOGroup tx={bitcoinTransaction} inputs={inputs} outputs={[]} />);
+        renderWithProviders(
+            services,
+            <IOGroup tx={bitcoinTransaction} inputs={inputs} outputs={[]} />,
+        );
 
         const bitcoinAddressUrl = getExplorerUrl(explorerInitialState.btc.default, 'address');
         const ethereumAddressUrl = getExplorerUrl(explorerInitialState.eth.default, 'address');

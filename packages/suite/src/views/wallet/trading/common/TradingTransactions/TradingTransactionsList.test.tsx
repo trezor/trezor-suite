@@ -4,8 +4,11 @@ import { screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { type Coins, type CryptoId } from 'invity-api';
 
+import { type DesktopAnalyticsDep } from '@suite/analytics';
 import { mockDesktopAnalytics } from '@suite/analytics/mocks';
+import { type SuiteRouterHistoryDep } from '@suite/router';
 import { mockSuiteRouterHistory } from '@suite/router/mocks';
+import { type WithServices } from '@suite-common/redux-utils';
 import { mockSuiteDevice } from '@suite-common/suite-types/mocks';
 import { createTestCompositionRoot } from '@suite-common/test-utils';
 import {
@@ -119,17 +122,18 @@ const buildState = (trades: TradingTransaction[]): AppState => ({
 });
 
 const renderList = (trades: TradingTransaction[]) => {
-    const root = createTestCompositionRoot({
-        extra: {
-            services: {
-                analytics: mockDesktopAnalytics(),
-                suiteRouterHistory: { ...mockSuiteRouterHistory(), navigate: jest.fn() },
-            },
-        },
+    const { services } = createTestCompositionRoot<
+        WithServices<DesktopAnalyticsDep & SuiteRouterHistoryDep>,
+        AppState
+    >({
         preloadedState: buildState(trades),
+        services: () => ({
+            analytics: mockDesktopAnalytics(),
+            suiteRouterHistory: { ...mockSuiteRouterHistory(), navigate: jest.fn() },
+        }),
     });
 
-    return renderWithProviders(root, <TradingTransactionsList />);
+    return renderWithProviders(services, <TradingTransactionsList />);
 };
 
 const getRowOrderIds = () =>

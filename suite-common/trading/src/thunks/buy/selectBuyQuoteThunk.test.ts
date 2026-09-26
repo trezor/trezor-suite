@@ -9,8 +9,9 @@ import {
 } from 'invity-api';
 
 import { mockActionType } from '@suite-common/redux-utils/mocks';
-import { createTestStore } from '@suite-common/test-utils';
+import { createTestCompositionRoot } from '@suite-common/test-utils';
 
+import { type SelectBuyQuoteThunkState } from './selectBuyQuoteThunk';
 import { MIN_MAX_QUOTES_OK } from '../../__fixtures__/buyUtils';
 import { type BuyInfo, type TradingBuyState } from '../../reducers/buyReducer';
 import { initialState } from '../../reducers/tradingCommonReducer';
@@ -109,8 +110,7 @@ describe('selectBuyQuoteThunk', () => {
     };
 
     const getMocks = (initialBuyState?: Partial<TradingBuyState>) => {
-        const store = createTestStore({
-            extra: undefined,
+        const { store } = createTestCompositionRoot<void, SelectBuyQuoteThunkState>({
             reducer: combineReducers({
                 wallet: combineReducers({
                     trading: tradingReducer,
@@ -127,7 +127,7 @@ describe('selectBuyQuoteThunk', () => {
                     },
                 },
             },
-        });
+        }).services;
 
         const mockNextStep = jest.fn();
         const mockLoginRequest = jest.fn();

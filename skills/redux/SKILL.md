@@ -293,9 +293,8 @@ expect(actions).toEqual([
 ```
 
 Use `createTestCompositionRoot` only when the test intentionally covers Redux integration and
-should verify the resulting state or rendered UI. Do not call `createTestStore` directly by default;
-reserve it for low-level store or middleware infrastructure tests where an application service
-container is deliberately outside the test boundary.
+should verify the resulting state or rendered UI. The underlying `createTestStore` is internal to
+`@suite-common/test-utils`; tests always compose through `createTestCompositionRoot`.
 
 ### Composition roots
 

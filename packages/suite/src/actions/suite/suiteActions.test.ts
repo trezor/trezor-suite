@@ -75,6 +75,7 @@ const deviceReducer = prepareDeviceReducer({
     },
 });
 
+// Suite reducer assertions need its own slice alongside the connect-init thunk state.
 type SuiteActionsTestState = SuiteRootState & ConnectInitThunkState;
 
 type SuiteActionsTestDeps = ConnectInitThunkDeps &
@@ -96,24 +97,24 @@ const getInitialState = (
 const createTestRoot = (preloadedState: SuiteActionsTestState) =>
     createTestCompositionRoot<SuiteActionsTestDeps, SuiteActionsTestState>({
         extra: {
-            services: {
-                analytics: mockDesktopAnalytics(),
-                connectInitDeviceEventHooks: mockConnectInitDeviceEventHooks(),
-                connectInitSettings: mockConnectInitSettings(),
-                connectInitUiEventHooks: mockConnectInitUiEventHooks(),
-                createLogger: noopCreateLogger,
-                createTransports: mockCreateTransports(),
-                getAllowPrerelease: mockGetAllowPrerelease(),
-                getBinFilesBaseUrl: mockGetBinFilesBaseUrl(),
-                getDebugSettings: mockGetDebugSettings(),
-                getThpSettings: mockGetThpSettings(),
-                getTradedAccountKeys: mockGetTradedAccountKeys(),
-                lockDevice: mock<LockDevice>(),
-            },
             thunks: {
                 fetchAndSaveMetadata: mockFetchAndSaveMetadata(),
             },
         },
+        services: () => ({
+            analytics: mockDesktopAnalytics(),
+            connectInitDeviceEventHooks: mockConnectInitDeviceEventHooks(),
+            connectInitSettings: mockConnectInitSettings(),
+            connectInitUiEventHooks: mockConnectInitUiEventHooks(),
+            createLogger: noopCreateLogger,
+            createTransports: mockCreateTransports(),
+            getAllowPrerelease: mockGetAllowPrerelease(),
+            getBinFilesBaseUrl: mockGetBinFilesBaseUrl(),
+            getDebugSettings: mockGetDebugSettings(),
+            getThpSettings: mockGetThpSettings(),
+            getTradedAccountKeys: mockGetTradedAccountKeys(),
+            lockDevice: mock<LockDevice>(),
+        }),
         reducer: {
             suite: suiteReducer,
             device: deviceReducer,
@@ -128,12 +129,12 @@ describe('Suite Actions', () => {
     fixtures.reducerActions.forEach(f => {
         it(f.description, () => {
             const state = getInitialState();
-            const { store } = createTestRoot(state);
+            const { services } = createTestRoot(state);
             f.actions.forEach((action: any, i: number) => {
-                store.dispatch(action);
+                services.store.dispatch(action);
                 const result = f.result[i];
                 if (!result) throw new Error(`Missing expected result at index ${i}`);
-                expect(store.getState().suite).toMatchObject(result);
+                expect(services.store.getState().suite).toMatchObject(result);
             });
         });
     });
@@ -141,12 +142,12 @@ describe('Suite Actions', () => {
     fixtures.selectDevice.forEach(f => {
         it(`selectDevice: ${f.description}`, async () => {
             const state = getInitialState({}, f.state.device);
-            const { store, services } = createTestRoot(state);
-            await store.dispatch(selectDeviceThunk({ device: f.device }));
+            const { services } = createTestRoot(state);
+            await services.store.dispatch(selectDeviceThunk({ device: f.device }));
             if (!f.result) {
-                expect(services.getActions().length).toEqual(0);
+                expect(services.store.getActions().length).toEqual(0);
             } else {
-                const action = filterThunkActionTypes(services.getActions()).pop();
+                const action = filterThunkActionTypes(services.store.getActions()).pop();
                 expect(action?.payload).toEqual(f.result.payload);
             }
         });
@@ -155,26 +156,28 @@ describe('Suite Actions', () => {
     fixtures.selectNewlyConnectedDevice.forEach(f => {
         it(`selectNewlyConnectedDevice: ${f.description}`, async () => {
             const state = getInitialState({}, f.state.device);
-            const { store, services } = createTestRoot(state);
+            const { services } = createTestRoot(state);
 
             const device = f.newlyConnectedDevice;
-            await store.dispatch(selectNewlyConnectedDeviceThunk({ device }));
+            await services.store.dispatch(selectNewlyConnectedDeviceThunk({ device }));
             // a lot of actions may get called, and the one we are interested in may not be the last one
-            expect(services.getActions().some(a => a?.type === f.expectedNextActionType)).toBe(
-                true,
-            );
+            expect(
+                services.store.getActions().some(a => a?.type === f.expectedNextActionType),
+            ).toBe(true);
         });
     });
 
     fixtures.markDeviceAsRecentlyConnected.forEach(f => {
         it(`markDeviceAsRecentlyConnected: ${f.description}`, async () => {
             const state = getInitialState(f.state.suite, f.state.device);
-            const { store, services } = createTestRoot(state);
+            const { services } = createTestRoot(state);
 
             const device = f.newlyConnectedDevice;
-            await store.dispatch(markDeviceAsRecentlyConnectedThunk(device));
+            await services.store.dispatch(markDeviceAsRecentlyConnectedThunk(device));
             expect(
-                services.getActions().some(a => a?.type === SUITE.SET_RECENTLY_CONNECTED_DEVICE),
+                services.store
+                    .getActions()
+                    .some(a => a?.type === SUITE.SET_RECENTLY_CONNECTED_DEVICE),
             ).toBe(f.isSetAsRecentlyConnected);
         });
     });
@@ -182,9 +185,9 @@ describe('Suite Actions', () => {
     fixtures.forgetDisconnectedDevices.forEach(f => {
         it(`forgetDisconnectedDevices: ${f.description}`, () => {
             const state = getInitialState(f.state.suite, f.state.device);
-            const { store, services } = createTestRoot(state);
-            store.dispatch(forgetDisconnectedDevicesThunk({ device: f.device }));
-            const actions = filterThunkActionTypes(services.getActions());
+            const { services } = createTestRoot(state);
+            services.store.dispatch(forgetDisconnectedDevicesThunk({ device: f.device }));
+            const actions = filterThunkActionTypes(services.store.getActions());
             expect(actions.length).toEqual(f.result.length);
             actions.forEach((a, i) => {
                 const result = f.result[i];
@@ -200,11 +203,13 @@ describe('Suite Actions', () => {
     fixtures.observeSelectedDevice.forEach(f => {
         it(`observeSelectedDevice: ${f.description}`, async () => {
             const state = getInitialState(f.state.suite, f.state.device);
-            const { store, services } = createTestRoot(state);
-            const observeResult = await store.dispatch(observeSelectedDeviceThunk()).unwrap();
+            const { services } = createTestRoot(state);
+            const observeResult = await services.store
+                .dispatch(observeSelectedDeviceThunk())
+                .unwrap();
             expect(observeResult).toEqual(f.observeResult);
 
-            const actionTypes = filterThunkActionTypes(services.getActions()).map(
+            const actionTypes = filterThunkActionTypes(services.store.getActions()).map(
                 action => action.type,
             );
 
@@ -216,12 +221,14 @@ describe('Suite Actions', () => {
         it(`acquireDevice: ${f.description}`, async () => {
             testMocks.setTrezorConnectFixtures(f.getFeatures || { success: true });
             const state = getInitialState(undefined, f.state.device);
-            const { store, services } = createTestRoot(state);
-            store.dispatch(connectInitThunk()); // connectInitThunk needs to be called in order to wrap "getFeatures" with lockDevice
-            await store.dispatch(acquireDeviceThunk({ requestedDevice: f.requestedDevice }));
+            const { services } = createTestRoot(state);
+            services.store.dispatch(connectInitThunk()); // connectInitThunk needs to be called in order to wrap "getFeatures" with lockDevice
+            await services.store.dispatch(
+                acquireDeviceThunk({ requestedDevice: f.requestedDevice }),
+            );
             // we are not interested in thunk state here
             const expectedActions = filterThunkActionTypes(
-                discardMockedConnectInitActions(services.getActions()),
+                discardMockedConnectInitActions(services.store.getActions()),
             );
             if (!f.result) {
                 expect(expectedActions.length).toEqual(0);

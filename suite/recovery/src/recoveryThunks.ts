@@ -77,7 +77,7 @@ export const checkSeedThunk = createThunk<
     dispatch(recoveryActions.setStatus('finished'));
 });
 
-type RecoverDeviceThunkState = DeviceRootState & { recovery: RecoveryState };
+export type RecoverDeviceThunkState = DeviceRootState & { recovery: RecoveryState };
 
 export const recoverDeviceThunk = createThunk<void, void, { state: RecoverDeviceThunkState }>(
     `${actionPrefix}/recoverDeviceThunk`,

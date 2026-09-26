@@ -16,7 +16,7 @@ export type ConfirmSellTradeThunkProps = {
     triggerAnalyticsTradeConfirmation: () => void;
 } & Omit<HandleSellTradeThunkProps, 'trade'>;
 
-type ConfirmSellTradeThunkState = HandleSellTradeThunkState;
+export type ConfirmSellTradeThunkState = HandleSellTradeThunkState;
 
 export const confirmSellTradeThunk = createThunk<
     void,

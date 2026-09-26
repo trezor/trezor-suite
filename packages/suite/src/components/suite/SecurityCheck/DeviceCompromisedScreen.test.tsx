@@ -33,9 +33,7 @@ global.ResizeObserver = class MockedResizeObserver {
     disconnect = jest.fn();
 };
 
-const services: SuiteRouterHistoryDep = {
-    suiteRouterHistory: mockSuiteRouterHistory(),
-};
+const suiteRouterHistory = mockSuiteRouterHistory();
 
 const getInitialState = (
     device: DeviceReducerState,
@@ -189,11 +187,17 @@ const deviceCompromisedFixtures: Array<{
 describe(`${DeviceCompromisedScreen.name} component`, () => {
     deviceCompromisedFixtures.forEach(({ description, device, persistentDeviceData, result }) => {
         it(description, () => {
-            const root = createTestCompositionRoot({
-                extra: { services },
+            const { services } = createTestCompositionRoot<
+                { services: SuiteRouterHistoryDep },
+                AppState
+            >({
                 preloadedState: getInitialState(device, persistentDeviceData),
+                services: () => ({ suiteRouterHistory }),
             });
-            const { getByText, unmount } = renderWithProviders(root, <DeviceCompromisedScreen />);
+            const { getByText, unmount } = renderWithProviders(
+                services,
+                <DeviceCompromisedScreen />,
+            );
             expect(getByText(result)).not.toBeNull();
             unmount();
         });

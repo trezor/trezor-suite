@@ -1,20 +1,24 @@
 import { combineReducers, createReducer } from '@reduxjs/toolkit';
 
-import { selectedAccountReducer } from '@suite/account';
-import { locksReducer } from '@suite/locks';
-import { routerReducer } from '@suite/router';
-import { torReducer } from '@suite/tor';
-import { prepareMessageSystemReducer } from '@suite-common/message-system';
+import { type SelectedAccountRootState, selectedAccountReducer } from '@suite/account';
+import { type LocksRootState, locksReducer } from '@suite/locks';
+import { type RouterRootState, routerReducer } from '@suite/router';
+import { type TorRootState, torReducer } from '@suite/tor';
+import {
+    type MessageSystemRootState,
+    prepareMessageSystemReducer,
+} from '@suite-common/message-system';
 import { mockActionType, mockReducer } from '@suite-common/redux-utils/mocks';
-import { createTestStore, testMocks } from '@suite-common/test-utils';
+import { createTestCompositionRoot, testMocks } from '@suite-common/test-utils';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
-import { prepareAccountsReducer } from '@suite-common/wallet-core';
+import { type AccountsRootState, prepareAccountsReducer } from '@suite-common/wallet-core';
 import { mockSetAccountAddMetadata } from '@suite-common/wallet-core/mocks';
 import '@suite-common/test-utils/globalOverrides';
 
 import { fixtures } from './__fixtures__/coinjoinMiddleware';
 import { coinjoinMiddleware } from './coinjoinMiddleware';
 import { coinjoinReducer } from './coinjoinReducer';
+import { type CoinjoinRootState, type SuiteOnlineRootState } from './coinjoinSelectors';
 import { CoinjoinService } from './coinjoinService';
 
 jest.mock('./coinjoinService', () => {
@@ -46,7 +50,17 @@ const rootReducer = combineReducers({
     }),
 });
 
-type State = ReturnType<typeof rootReducer>;
+type State = AccountsRootState &
+    CoinjoinRootState &
+    SelectedAccountRootState &
+    LocksRootState &
+    MessageSystemRootState &
+    RouterRootState &
+    SuiteOnlineRootState &
+    TorRootState & {
+        device: Record<never, never>;
+        discreetMode: { isActive: boolean };
+    };
 
 const initStore = ({ device, router, suite, tor, wallet }: Partial<State> = {}) => {
     const preloadedState: State = rootReducer(undefined, { type: 'init' });
@@ -83,14 +97,11 @@ const initStore = ({ device, router, suite, tor, wallet }: Partial<State> = {}) 
         };
     }
 
-    const store = createTestStore({
-        extra: undefined,
+    return createTestCompositionRoot<void, State>({
         reducer: rootReducer,
         preloadedState,
         middleware: [coinjoinMiddleware],
-    });
-
-    return store;
+    }).services.store;
 };
 
 describe('coinjoinMiddleware', () => {

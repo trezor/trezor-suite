@@ -15,7 +15,7 @@ export type SelectSellQuoteThunkProps = {
     nextStep: () => void;
 };
 
-type SelectSellQuoteThunkState = TradingRootState;
+export type SelectSellQuoteThunkState = TradingRootState;
 
 export const selectSellQuoteThunk = createThunk<
     void,

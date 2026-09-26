@@ -16,7 +16,7 @@ import userEvent from '@testing-library/user-event';
 
 import { ServicesProvider } from '@suite-common/dependency-injection';
 import { MockedFormatterProvider } from '@suite-common/formatters/mocks';
-import { type TestAppRoot } from '@suite-common/test-utils';
+import { type TestServices } from '@suite-common/test-utils';
 
 import { ConnectedThemeProvider } from 'src/support/suite/ConnectedThemeProvider';
 
@@ -27,14 +27,14 @@ const testQueryClient = new QueryClient({
 });
 
 type SuiteProvidersProps = {
-    root: TestAppRoot;
+    services: TestServices;
     children: ReactNode;
 };
 
-const SuiteProviders = ({ root, children }: SuiteProvidersProps) => (
+const SuiteProviders = ({ services, children }: SuiteProvidersProps) => (
     <QueryClientProvider client={testQueryClient}>
-        <Provider store={root.store}>
-            <ServicesProvider services={root.services}>
+        <Provider store={services.store}>
+            <ServicesProvider services={services}>
                 <ConnectedThemeProvider>
                     <ResponsiveContextProvider>
                         <IntlProvider locale="en">
@@ -48,16 +48,16 @@ const SuiteProviders = ({ root, children }: SuiteProvidersProps) => (
 );
 
 // used in hooks tests
-export const renderWithProviders = (root: TestAppRoot, children: ReactNode): RenderResult =>
-    render(<SuiteProviders root={root}>{children}</SuiteProviders>);
+export const renderWithProviders = (services: TestServices, children: ReactNode): RenderResult =>
+    render(<SuiteProviders services={services}>{children}</SuiteProviders>);
 
 export const renderHookWithProviders = <Result, Props>(
-    root: TestAppRoot,
+    services: TestServices,
     callback: (props: Props) => Result,
     options?: Omit<RenderHookOptions<Props>, 'wrapper'>,
 ) =>
     renderHook(callback, {
-        wrapper: ({ children }) => <SuiteProviders root={root}>{children}</SuiteProviders>,
+        wrapper: ({ children }) => <SuiteProviders services={services}>{children}</SuiteProviders>,
         ...options,
     });
 

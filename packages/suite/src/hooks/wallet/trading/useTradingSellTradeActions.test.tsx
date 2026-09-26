@@ -11,6 +11,8 @@ import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { type Account, type AccountKey } from '@suite-common/wallet-types';
 import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
 
+import { type AppState } from 'src/reducers/store';
+
 import { useTradingSellTradeActions } from './useTradingSellTradeActions';
 
 const mockLoadInitialDataThunk = jest.fn((args: unknown) =>
@@ -160,20 +162,22 @@ const renderActions = (overrides?: StateOverrides) => {
         cryptoId: BITCOIN_CRYPTO_ID,
     });
 
-    const services: UseTradingSellTradeActionsServices = {
-        analytics: mockDesktopAnalytics(),
-        suiteRouterHistory: { ...mockSuiteRouterHistory(), navigate: jest.fn() },
-        desktopApi: { getHttpReceiverAddress: mockGetHttpReceiverAddress() },
-    };
-    const root = createTestCompositionRoot({
-        extra: { services },
+    const { services } = createTestCompositionRoot<
+        { services: UseTradingSellTradeActionsServices },
+        AppState
+    >({
         preloadedState: state,
+        services: () => ({
+            analytics: mockDesktopAnalytics(),
+            suiteRouterHistory: { ...mockSuiteRouterHistory(), navigate: jest.fn() },
+            desktopApi: { getHttpReceiverAddress: mockGetHttpReceiverAddress() },
+        }),
     });
     const { result } = renderHookWithStoreProvider(() => useTradingSellTradeActions(), {
-        root,
+        services,
     });
 
-    const { getActions } = root.services;
+    const { getActions } = services.store;
 
     return { getActions, result };
 };

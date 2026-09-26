@@ -4,6 +4,8 @@ import { fireEvent, screen } from '@testing-library/react';
 
 import { initialMetadataState } from '@suite/metadata';
 import { mockAddressValidator } from '@suite-common/address/mocks';
+import { type AddressValidatorDep } from '@suite-common/networks';
+import { type WithServices } from '@suite-common/redux-utils';
 import { createSuiteSyncAddressId } from '@suite-common/suite-sync-storage';
 import { mockSuiteDevice } from '@suite-common/suite-types/mocks';
 import { createTestCompositionRoot } from '@suite-common/test-utils';
@@ -13,6 +15,7 @@ import { type Account, asAccountDescriptor, createAccountKey } from '@suite-comm
 import { type Address } from '@trezor/blockchain-link-types';
 import { type WalletDescriptor } from '@trezor/device-utils';
 
+import { type AppState } from 'src/reducers/store';
 import { renderWithProviders } from 'src/support/test-utils/hooksHelper';
 
 import { TradingUtxoReceiveAddressModal } from './TradingUtxoReceiveAddressModal';
@@ -139,13 +142,15 @@ const buildState = () => ({
 });
 
 const renderModal = () => {
-    const services = { networks: { addressValidator: mockAddressValidator() } };
-    const root = createTestCompositionRoot({
-        extra: { services },
+    const { services } = createTestCompositionRoot<
+        WithServices<{ networks: AddressValidatorDep }>,
+        AppState
+    >({
         preloadedState: buildState(),
+        services: () => ({ networks: { addressValidator: mockAddressValidator() } }),
     });
 
-    return renderWithProviders(root, <TradingUtxoReceiveAddressModal />);
+    return renderWithProviders(services, <TradingUtxoReceiveAddressModal />);
 };
 
 const search = (value: string) => {

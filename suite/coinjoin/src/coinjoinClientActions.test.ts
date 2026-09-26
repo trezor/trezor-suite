@@ -1,14 +1,23 @@
-import { type UnknownAction, combineReducers, createReducer } from '@reduxjs/toolkit';
+import { combineReducers, createReducer } from '@reduxjs/toolkit';
 
-import { selectedAccountReducer } from '@suite/account';
-import { locksReducer } from '@suite/locks';
-import { modalReducer } from '@suite/modal';
-import { TorStatus, torActions, torReducer } from '@suite/tor';
-import { prepareMessageSystemReducer } from '@suite-common/message-system';
+import { type SelectedAccountRootState, selectedAccountReducer } from '@suite/account';
+import { type LocksRootState, locksReducer } from '@suite/locks';
+import { type State as ModalReducerState, modalReducer } from '@suite/modal';
+import { type TorRootState, TorStatus, torActions, torReducer } from '@suite/tor';
+import {
+    type MessageSystemRootState,
+    prepareMessageSystemReducer,
+} from '@suite-common/message-system';
 import { mockActionType, mockReducer } from '@suite-common/redux-utils/mocks';
-import { createTestStore, initPreloadedState, testMocks } from '@suite-common/test-utils';
+import { type TrezorDevice } from '@suite-common/suite-types';
+import { createTestCompositionRoot, initPreloadedState, testMocks } from '@suite-common/test-utils';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
-import { prepareAccountsReducer, prepareWalletSettingsReducer } from '@suite-common/wallet-core';
+import {
+    type AccountsRootState,
+    type WalletSettingsRootState,
+    prepareAccountsReducer,
+    prepareWalletSettingsReducer,
+} from '@suite-common/wallet-core';
 import { mockSetAccountAddMetadata } from '@suite-common/wallet-core/mocks';
 import '@suite-common/test-utils/globalOverrides';
 import { asAccountDescriptor } from '@suite-common/wallet-types';
@@ -28,6 +37,7 @@ import {
 } from './coinjoinClientActions';
 import { coinjoinMiddleware } from './coinjoinMiddleware';
 import { coinjoinReducer } from './coinjoinReducer';
+import { type CoinjoinRootState } from './coinjoinSelectors';
 import { CoinjoinService } from './coinjoinService';
 
 const TrezorConnect = testMocks.getTrezorConnectMock();
@@ -73,17 +83,27 @@ const rootReducer = combineReducers({
     }),
 });
 
-type State = ReturnType<typeof rootReducer>;
+// Client lifecycle cases share reducers for several thunks and device/modal side effects.
+type State = AccountsRootState &
+    CoinjoinRootState &
+    SelectedAccountRootState &
+    WalletSettingsRootState &
+    TorRootState &
+    LocksRootState &
+    MessageSystemRootState & {
+        suite: Record<never, never>;
+        discreetMode: { isActive: boolean };
+        device: { devices: TrezorDevice[]; selectedDevice: TrezorDevice };
+        modal: ModalReducerState;
+    };
 type Wallet = Partial<State['wallet']> & {
     device?: State['device'];
     suite?: State['suite'];
     locks?: Partial<State['locks']>;
 };
 
-const initStore = ({ accounts, coinjoin, device, selectedAccount, suite, locks }: Wallet = {}) => {
-    // State != suite AppState, therefore <any>
-    const store = createTestStore<void, any, UnknownAction>({
-        extra: undefined,
+const initStore = ({ accounts, coinjoin, device, selectedAccount, suite, locks }: Wallet = {}) =>
+    createTestCompositionRoot<void, State>({
         reducer: rootReducer,
         preloadedState: initPreloadedState({
             rootReducer,
@@ -99,10 +119,7 @@ const initStore = ({ accounts, coinjoin, device, selectedAccount, suite, locks }
             },
         }),
         middleware: [coinjoinMiddleware],
-    });
-
-    return store;
-};
+    }).services.store;
 
 describe('coinjoinClientActions', () => {
     afterEach(() => {

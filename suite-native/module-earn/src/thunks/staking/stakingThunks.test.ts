@@ -1,13 +1,14 @@
 import { combineReducers, isFulfilled, isRejected } from '@reduxjs/toolkit';
 
-import { messageSystemInitialState } from '@suite-common/message-system';
+import { type MessageSystemState, messageSystemInitialState } from '@suite-common/message-system';
 import { mockActionType, mockReducer } from '@suite-common/redux-utils/mocks';
 import { type TrezorDevice } from '@suite-common/suite-types';
 import { mockGetIsWindowVisible, mockOnModalCancel } from '@suite-common/suite-types/mocks';
-import { createTestStore } from '@suite-common/test-utils';
+import { type TestCompositionStore, createTestCompositionRoot } from '@suite-common/test-utils';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
 import {
     type PushStakeTransactionThunkDeps,
+    type SendState,
     WALLET_SDK_SOURCE_MOBILE,
     buildStakeData,
     prepareSendFormReducer,
@@ -111,15 +112,6 @@ const SOL_ACCOUNT_KEY = mockAccountKey({
     deviceStaticSessionId: STATIC_SESSION_ID,
 });
 const POOL_ADDRESS = '0xD523794C879D9eC028960a231F866758e405bE34';
-const extra: PushStakeTransactionThunkDeps = {
-    actions: { onModalCancel: mockOnModalCancel() },
-    services: {
-        analytics: mockNativeAnalytics(),
-        getIsWindowVisible: mockGetIsWindowVisible(),
-        getTradedAccountKeys: mockGetTradedAccountKeys(),
-    },
-};
-
 const ethAccount: Account = {
     symbol: 'eth',
     networkType: 'ethereum',
@@ -141,6 +133,24 @@ const solAccount: Account = {
     visible: true,
 } as unknown as Account;
 
+// These Ethereum and Solana cases share deliberately sparse wallet slices and one test store.
+type State = {
+    device: { selectedDevice: TrezorDevice };
+    messageSystem: MessageSystemState;
+    wallet: {
+        accounts: Account[];
+        transactions: {
+            transactions: Record<never, never>;
+            phishing: Record<never, never>;
+            fetchStatusDetail: Record<never, never>;
+        };
+        formDrafts: Record<string, FormState>;
+        blockchain: Record<string, unknown>;
+        send: SendState;
+        settings: { mevProtection: boolean };
+    };
+};
+
 const buildStore = ({
     accounts = [ethAccount],
     formDrafts = {},
@@ -150,8 +160,8 @@ const buildStore = ({
     formDrafts?: Record<string, FormState>;
     blockchain?: Record<string, unknown>;
 } = {}) =>
-    createTestStore({
-        extra,
+    createTestCompositionRoot<PushStakeTransactionThunkDeps, State>({
+        extra: { actions: { onModalCancel: mockOnModalCancel() } },
         reducer: combineReducers({
             device: (): { selectedDevice: TrezorDevice } => ({
                 selectedDevice: {
@@ -178,7 +188,12 @@ const buildStore = ({
                 settings: () => ({ mevProtection: false }),
             }),
         }),
-    });
+        services: () => ({
+            analytics: mockNativeAnalytics(),
+            getIsWindowVisible: mockGetIsWindowVisible(),
+            getTradedAccountKeys: mockGetTradedAccountKeys(),
+        }),
+    }).services.store;
 
 const buildPrecomposedTransaction = (): PrecomposedTransactionFinal =>
     ({
@@ -239,7 +254,7 @@ const solanaSignTransactionMock = TrezorConnect.solanaSignTransaction as jest.Mo
 const pushTransactionMock = TrezorConnect.pushTransaction as jest.Mock;
 
 const dispatchDispatcher = async (
-    store: ReturnType<typeof buildStore>,
+    store: TestCompositionStore<State, PushStakeTransactionThunkDeps>,
     args: Parameters<typeof signStakeTransactionThunk>[0],
 ) => {
     const action = await store.dispatch(signStakeTransactionThunk(args) as any);
@@ -249,7 +264,7 @@ const dispatchDispatcher = async (
 };
 
 const dispatchPush = async (
-    store: ReturnType<typeof buildStore>,
+    store: TestCompositionStore<State, PushStakeTransactionThunkDeps>,
     args: Parameters<typeof pushStakeTransactionThunk>[0],
 ) => {
     const action = await store.dispatch(pushStakeTransactionThunk(args) as any);

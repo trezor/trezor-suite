@@ -1,14 +1,43 @@
+import { type DeviceReducerState } from '@suite-common/device';
 import { mockSuiteDevice } from '@suite-common/suite-types/mocks';
+import { DeviceModelInternal } from '@trezor/device-utils';
 
 import * as onboardingActions from 'src/actions/onboarding/onboardingActions';
 import * as STEP from 'src/constants/onboarding/steps';
-import onboardingReducer from 'src/reducers/onboarding/onboardingReducer';
+import onboardingReducer, { type OnboardingState } from 'src/reducers/onboarding/onboardingReducer';
 
-export default [
+type OnboardingAction = ReturnType<
+    | typeof onboardingActions.goToNextStepThunk
+    | typeof onboardingActions.goToPreviousStepThunk
+    | typeof onboardingActions.addPath
+    | typeof onboardingActions.removePath
+    | typeof onboardingActions.resetOnboarding
+>;
+
+export type OnboardingActionsFixture = {
+    description: string;
+    initialState: {
+        onboarding?: Partial<OnboardingState>;
+        device?: Partial<DeviceReducerState>;
+    };
+    action: () => OnboardingAction;
+    expect: {
+        toMatchObject: {
+            activeStepId?: OnboardingState['activeStepId'];
+            path?: string[];
+        };
+    };
+};
+
+export const fixtures: OnboardingActionsFixture[] = [
     {
         description: 'goToNextStepThunk (without param)',
         initialState: {
-            device: mockSuiteDevice(),
+            device: {
+                selectedDevice: mockSuiteDevice(undefined, {
+                    internal_model: DeviceModelInternal.T3T1,
+                }),
+            },
         },
         action: () => onboardingActions.goToNextStepThunk(),
         expect: {
@@ -18,7 +47,7 @@ export default [
     {
         description: 'goToNextStepThunk (with param)',
         initialState: {
-            device: mockSuiteDevice(),
+            device: { selectedDevice: mockSuiteDevice() },
         },
         action: () => onboardingActions.goToNextStepThunk('firmware'),
         expect: {
@@ -41,9 +70,9 @@ export default [
         description: 'addPath: should add unique entry',
         initialState: {
             onboarding: {
-                path: ['new'],
+                path: ['new' as unknown as OnboardingState['path'][number]],
             },
-            device: mockSuiteDevice(),
+            device: { selectedDevice: mockSuiteDevice() },
         },
         action: () => onboardingActions.addPath('create'),
         expect: {
@@ -56,7 +85,7 @@ export default [
             onboarding: {
                 path: ['create'],
             },
-            device: mockSuiteDevice(),
+            device: { selectedDevice: mockSuiteDevice() },
         },
         action: () => onboardingActions.addPath('create'),
         expect: {
@@ -81,7 +110,7 @@ export default [
             onboarding: {
                 path: ['create', 'recovery'],
             },
-            device: mockSuiteDevice(),
+            device: { selectedDevice: mockSuiteDevice() },
         },
         action: () => onboardingActions.removePath(['recovery']),
         expect: {
@@ -95,11 +124,11 @@ export default [
                 path: ['create'],
                 activeStepId: STEP.ID_RECOVERY_STEP,
             },
-            device: mockSuiteDevice(),
+            device: { selectedDevice: mockSuiteDevice() },
         },
         action: () => onboardingActions.resetOnboarding(),
         expect: {
             toMatchObject: onboardingReducer(undefined, { type: 'foo' } as any),
         },
     },
-] as const;
+];

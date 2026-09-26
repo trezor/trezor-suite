@@ -1,6 +1,8 @@
 import { act } from '@testing-library/react';
 
+import { type DesktopAnalyticsDep } from '@suite/analytics';
 import { mockDesktopAnalytics } from '@suite/analytics/mocks';
+import { type WithServices } from '@suite-common/redux-utils';
 import { mockSuiteDevice } from '@suite-common/suite-types/mocks';
 import { createTestCompositionRoot, renderHookWithStoreProvider } from '@suite-common/test-utils';
 import {
@@ -105,12 +107,12 @@ const buildState = (trades: TradingTransaction[]): AppState => ({
 });
 
 const renderWatcher = (trades: TradingTransaction[]) => {
-    const root = createTestCompositionRoot({
-        extra: { services: { analytics: mockDesktopAnalytics() } },
+    const { services } = createTestCompositionRoot<WithServices<DesktopAnalyticsDep>, AppState>({
         preloadedState: buildState(trades),
+        services: () => ({ analytics: mockDesktopAnalytics() }),
     });
 
-    return renderHookWithStoreProvider(() => useTradingTransactionsWatcher(), { root });
+    return renderHookWithStoreProvider(() => useTradingTransactionsWatcher(), { services });
 };
 
 const getRefreshedTradeKeys = () =>

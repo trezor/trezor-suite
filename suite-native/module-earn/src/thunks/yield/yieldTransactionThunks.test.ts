@@ -2,7 +2,7 @@ import { combineReducers, isFulfilled, isRejected } from '@reduxjs/toolkit';
 
 import { selectSelectedDevice } from '@suite-common/device';
 import { mockSuiteDevice } from '@suite-common/suite-types/mocks';
-import { createTestStore } from '@suite-common/test-utils';
+import { type TestCompositionStore, createTestCompositionRoot } from '@suite-common/test-utils';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
 import {
     type YieldFlowResolvedData,
@@ -119,18 +119,18 @@ const ethereumSignTransactionMock = TrezorConnect.ethereumSignTransaction as jes
 const synchronizeSentTransactionThunkMock = synchronizeSentTransactionThunk as unknown as jest.Mock;
 const selectSelectedDeviceMock = selectSelectedDevice as jest.Mock;
 
+// Other thunk dependencies are mocked; only the yield reducer is needed for review-state assertions.
 const buildStore = () =>
-    createTestStore({
-        extra: undefined,
+    createTestCompositionRoot<void, YieldRootState>({
         reducer: combineReducers({
             wallet: combineReducers({
                 stablecoinYield: yieldReducer,
             }),
         }),
-    });
+    }).services.store;
 
 type PrepareParams = {
-    store: ReturnType<typeof buildStore>;
+    store: TestCompositionStore<YieldRootState, void>;
     flowType: YieldPositionFlowType;
     flowKey: string;
 };
@@ -148,11 +148,7 @@ const prepareActionReview = ({ store, flowType, flowKey }: PrepareParams) => {
     );
 };
 
-const storeSignedTransaction = ({
-    flowType,
-    flowKey,
-    store,
-}: PrepareParams & { store: ReturnType<typeof buildStore> }) => {
+const storeSignedTransaction = ({ flowType, flowKey, store }: PrepareParams) => {
     store.dispatch(
         yieldActions.storePrecomposedTransaction({
             precomposedTx: precomposedTransaction,
@@ -173,7 +169,7 @@ const storeSignedTransaction = ({
 };
 
 type DispatchPushParams = {
-    store: ReturnType<typeof buildStore>;
+    store: TestCompositionStore<YieldRootState, void>;
     flowType: YieldPositionFlowType;
     flowKey: string;
     flowAccount?: Account;

@@ -19,7 +19,7 @@ type CheckDeviceAuthenticityThunkParams = {
     skipSuccessToast?: boolean;
 };
 
-type CheckDeviceAuthenticityThunkState = DeviceRootState & MessageSystemRootState;
+export type CheckDeviceAuthenticityThunkState = DeviceRootState & MessageSystemRootState;
 
 export const checkDeviceAuthenticityThunk = createThunk<
     StoredAuthenticateDeviceResult,

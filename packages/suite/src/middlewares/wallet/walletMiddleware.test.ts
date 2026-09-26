@@ -3,22 +3,29 @@ import { mockDesktopAnalytics } from '@suite/analytics/mocks';
 import { type RouterState } from '@suite/router';
 import { mockActionType, mockReducer } from '@suite-common/redux-utils/mocks';
 import { mockGetIsWindowVisible } from '@suite-common/suite-types/mocks';
-import { createTestStore, testMocks } from '@suite-common/test-utils';
+import { createTestCompositionRoot, testMocks } from '@suite-common/test-utils';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
 import {
+    type AccountsState,
     type SendState,
+    type SyncAccountsWithBlockchainThunkDeps,
     accountsRefreshTimeReducer,
     blockchainActions,
     formDraftInitialState,
     prepareBlockchainMiddleware,
     prepareSendFormReducer,
 } from '@suite-common/wallet-core';
-import { asAccountDescriptor } from '@suite-common/wallet-types';
+import { type WalletSettings, asAccountDescriptor } from '@suite-common/wallet-types';
 import { mockGetTradedAccountKeys, mockWalletAccount } from '@suite-common/wallet-types/mocks';
 
 import { updateWindowVisibility } from 'src/actions/suite/windowActions';
 import walletMiddleware from 'src/middlewares/wallet/walletMiddleware';
-import { accountsReducer, blockchainReducer, walletSettingsReducer } from 'src/reducers/wallet';
+import {
+    type WalletState,
+    accountsReducer,
+    blockchainReducer,
+    walletSettingsReducer,
+} from 'src/reducers/wallet';
 
 import * as fixtures from './__fixtures__/walletMiddleware';
 
@@ -29,18 +36,33 @@ const sendFormReducer = prepareSendFormReducer({
 
 const TrezorConnect = testMocks.getTrezorConnectMock();
 
-type AccountsState = ReturnType<typeof accountsReducer>;
-type SettingsState = ReturnType<typeof walletSettingsReducer>;
-
 interface Args {
     router?: Partial<RouterState>;
     accounts?: AccountsState;
-    settings?: Partial<SettingsState>;
+    settings?: Partial<WalletSettings>;
     selectedAccount?: Partial<SelectedAccountState>;
     send?: Partial<SendState>;
     transactions?: Record<string, unknown[]>;
     isWindowVisible?: boolean;
 }
+
+type State = {
+    router: Pick<RouterState, 'app' | 'route'> & Partial<RouterState>;
+    suite: Record<string, never>;
+    device: { selectedDevice: { state: { staticSessionId: string } } };
+    window: { isVisible: boolean };
+    wallet: Pick<
+        WalletState,
+        | 'accounts'
+        | 'accountsRefreshTime'
+        | 'blockchain'
+        | 'transactions'
+        | 'settings'
+        | 'selectedAccount'
+        | 'send'
+        | 'formDrafts'
+    >;
+};
 
 const getInitialState = ({
     router,
@@ -50,14 +72,14 @@ const getInitialState = ({
     send,
     transactions,
     isWindowVisible = true,
-}: Args = {}) => ({
+}: Args = {}): State => ({
     router: {
         app: 'wallet',
         route: {
             name: 'wallet-index',
         },
         ...router,
-    },
+    } as State['router'],
     suite: {},
     device: {
         // matches the default deviceState of mockWalletAccount, so the accounts count as
@@ -72,7 +94,7 @@ const getInitialState = ({
         accountsRefreshTime: accountsRefreshTimeReducer(undefined, { type: 'foo' } as any),
         blockchain: blockchainReducer(undefined, { type: 'foo' } as any),
         transactions: {
-            transactions: transactions || {},
+            transactions: (transactions || {}) as WalletState['transactions']['transactions'],
             phishing: {},
             fetchStatusDetail: {},
         },
@@ -84,23 +106,14 @@ const getInitialState = ({
             ...selectedAccountReducer(undefined, { type: 'foo' } as any),
             ...selectedAccount,
             status: 'loaded',
-        },
+        } as SelectedAccountState,
         send: { ...sendFormReducer(undefined, { type: 'foo' } as any), ...send },
         formDrafts: formDraftInitialState,
     },
 });
 
-type State = ReturnType<typeof getInitialState>;
-
 const mockStore = (preloadedState: State) =>
-    createTestStore({
-        extra: {
-            services: {
-                analytics: mockDesktopAnalytics(),
-                getIsWindowVisible: mockGetIsWindowVisible(),
-                getTradedAccountKeys: mockGetTradedAccountKeys(),
-            },
-        },
+    createTestCompositionRoot<SyncAccountsWithBlockchainThunkDeps, State>({
         middleware: [walletMiddleware, prepareBlockchainMiddleware(() => ({}))],
         // the synced action carries a live timer handle
         serializableCheck: { ignoredActions: [blockchainActions.synced.type] },
@@ -123,7 +136,12 @@ const mockStore = (preloadedState: State) =>
             },
         }),
         preloadedState,
-    });
+        services: () => ({
+            analytics: mockDesktopAnalytics(),
+            getIsWindowVisible: mockGetIsWindowVisible(),
+            getTradedAccountKeys: mockGetTradedAccountKeys(),
+        }),
+    }).services.store;
 
 // testing walletMiddleware, blockchainActions (subscribe/unsubscribe)
 describe('walletMiddleware', () => {

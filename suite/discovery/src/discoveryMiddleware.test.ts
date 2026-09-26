@@ -25,12 +25,15 @@ import {
     messageSystemInitialState,
     prepareMessageSystemReducer,
 } from '@suite-common/message-system';
-import { preparePersistentDeviceDataReducer } from '@suite-common/persistent-device-data';
+import {
+    type PersistentDeviceDataState,
+    preparePersistentDeviceDataReducer,
+} from '@suite-common/persistent-device-data';
 import { mockActionType, mockReducer } from '@suite-common/redux-utils/mocks';
 import { type AcquiredDevice } from '@suite-common/suite-types';
 import { mockSuiteDevice } from '@suite-common/suite-types/mocks';
 import { isDeviceAcquired } from '@suite-common/suite-utils';
-import { createTestStore } from '@suite-common/test-utils';
+import { createTestCompositionRoot } from '@suite-common/test-utils';
 import { type ThpState, initialThpState, prepareThpReducer, thpActions } from '@suite-common/thp';
 import * as walletCore from '@suite-common/wallet-core';
 import { discoveryInitialState, prepareDiscoveryReducer } from '@suite-common/wallet-core';
@@ -86,7 +89,7 @@ type State = {
     suiteSettings: SuiteSettingsState;
     thp: ThpState;
     wallet: { discovery: Discovery };
-    persistentDeviceData: ReturnType<typeof persistentDeviceDataReducer>;
+    persistentDeviceData: PersistentDeviceDataState;
 };
 
 type FixtureState = {
@@ -334,8 +337,7 @@ const getInitialState = (state: FixtureState = {}): State => ({
 });
 
 const initStore = (state?: FixtureState) =>
-    createTestStore({
-        extra: undefined,
+    createTestCompositionRoot<void, State>({
         middleware: [prepareDiscoveryMiddleware(() => ({}))],
         reducer: {
             device: deviceReducer,
@@ -348,7 +350,7 @@ const initStore = (state?: FixtureState) =>
             persistentDeviceData: persistentDeviceDataReducer,
         },
         preloadedState: getInitialState(state),
-    });
+    }).services.store;
 
 describe('discoveryMiddleware', () => {
     beforeEach(() => {

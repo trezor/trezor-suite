@@ -1,17 +1,21 @@
 import { combineReducers } from '@reduxjs/toolkit';
 
 import { mock } from '@suite-common/dependency-injection';
-import { deviceInitialState } from '@suite-common/device';
+import { type DeviceReducerState, deviceInitialState } from '@suite-common/device';
+import { type WithServices } from '@suite-common/redux-utils';
 import { mockActionType } from '@suite-common/redux-utils/mocks';
-import { type LockDevice } from '@suite-common/suite-types';
+import { type LockDevice, type LockDeviceDep } from '@suite-common/suite-types';
 import { mockSuiteDevice } from '@suite-common/suite-types/mocks';
-import { createTestStore } from '@suite-common/test-utils';
+import { createTestCompositionRoot } from '@suite-common/test-utils';
 import { accountsInitialState } from '@suite-common/wallet-core';
 import * as walletUtils from '@suite-common/wallet-utils';
 
 import { connectPopupActions } from './connectPopupActions';
 import { prepareConnectPopupReducer, selectConnectPopupCallWithState } from './connectPopupReducer';
-import { connectPopupLoadSelectAccountPageThunk } from './connectPopupThunks';
+import {
+    type ConnectPopupLoadSelectAccountPageThunkState,
+    connectPopupLoadSelectAccountPageThunk,
+} from './connectPopupThunks';
 
 // prepareNewAccountPayload is the device round-trip the load thunk awaits — exactly once on the
 // manual address-phase path these tests exercise (the account-index path loops it per row). Mocking
@@ -39,6 +43,7 @@ const fakeDevice = mockSuiteDevice({
     state: undefined,
     useEmptyPassphrase: true,
 });
+const fakeDeviceState: DeviceReducerState = { ...deviceInitialState, selectedDevice: fakeDevice };
 
 // A UTXO `addressSelection: 'manual'` picker sitting in the address phase, with an empty candidate
 // list (the cold-cache drill-in). A *custom* account-type tab (no `accountType`) keeps the thunk on
@@ -68,22 +73,24 @@ const usedAddress = (address: string) => ({
 const connectPopupReducer = prepareConnectPopupReducer({
     actionTypes: { storageLoad: mockActionType('storageLoad') },
 });
-const extra = { services: { lockDevice: mock<LockDevice>() } };
 
 const initStore = () =>
-    createTestStore({
-        extra,
+    createTestCompositionRoot<
+        WithServices<LockDeviceDep>,
+        ConnectPopupLoadSelectAccountPageThunkState
+    >({
+        services: () => ({ lockDevice: mock<LockDevice>() }),
         reducer: combineReducers({
             connectPopup: connectPopupReducer,
-            device: (state = { ...deviceInitialState, selectedDevice: fakeDevice }) => state,
+            device: (state = fakeDeviceState) => state,
             wallet: (state = { accounts: accountsInitialState }) => state,
         }),
         preloadedState: {
             connectPopup: { activeCall: selectAccountState, permissions: [] },
-            device: { ...deviceInitialState, selectedDevice: fakeDevice },
+            device: fakeDeviceState,
             wallet: { accounts: accountsInitialState },
         },
-    });
+    }).services.store;
 
 describe('connectPopupLoadSelectAccountPageThunk — concurrent loads', () => {
     beforeEach(() => {

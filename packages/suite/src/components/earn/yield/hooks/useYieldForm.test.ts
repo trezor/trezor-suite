@@ -1,6 +1,9 @@
 import { act } from '@testing-library/react';
 
+import { type DesktopAnalyticsDep } from '@suite/analytics';
+import { mockDesktopAnalytics } from '@suite/analytics/mocks';
 import { type YieldDtoV2 } from '@suite-common/earn-stablecoin-api';
+import { type WithServices } from '@suite-common/redux-utils';
 import { createTestCompositionRoot, renderHookWithStoreProvider } from '@suite-common/test-utils';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
 import {
@@ -11,6 +14,8 @@ import {
 } from '@suite-common/wallet-core';
 import { toTokenSymbol } from '@suite-common/wallet-types';
 import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
+
+import { type AppState } from 'src/reducers/store';
 
 import { useYieldForm } from './useYieldForm';
 
@@ -119,11 +124,11 @@ const getMockState = () => ({
     },
 });
 
-const createRoot = () =>
-    createTestCompositionRoot({
-        extra: { services: { analytics: { report: jest.fn() } } },
+const createTestServices = () =>
+    createTestCompositionRoot<WithServices<DesktopAnalyticsDep>, AppState>({
         preloadedState: getMockState(),
-    });
+        services: () => ({ analytics: mockDesktopAnalytics() }),
+    }).services;
 
 // Reads the mutable `mockSession` at render time, so reassign-then-rerender takes effect.
 const renderYieldForm = (flowType: YieldPositionFlowType = 'deposit') =>
@@ -137,7 +142,7 @@ const renderYieldForm = (flowType: YieldPositionFlowType = 'deposit') =>
                 flowKey: FLOW_KEY,
                 session: mockSession,
             }),
-        { root: createRoot() },
+        { services: createTestServices() },
     );
 
 describe('useYieldForm', () => {
@@ -323,7 +328,7 @@ describe('useYieldForm', () => {
                     session: mockSession,
                 }),
             {
-                root: createRoot(),
+                services: createTestServices(),
                 initialProps: { currentFlowKey: FLOW_KEY },
             },
         );

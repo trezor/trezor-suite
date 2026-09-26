@@ -107,7 +107,7 @@ const setBackendsToConnect = (backends: CustomBackend[]) =>
         ),
     );
 
-type SetCustomBackendThunkState = BlockchainRootState & WalletSettingsRootState;
+export type SetCustomBackendThunkState = BlockchainRootState & WalletSettingsRootState;
 
 export const setCustomBackendThunk = createThunk<
     unknown,

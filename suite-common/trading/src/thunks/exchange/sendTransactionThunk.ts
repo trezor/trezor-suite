@@ -28,7 +28,7 @@ export type SendTransactionThunkProps = {
     isSlip24Active?: boolean;
 } & SendDexTransactionThunkProps;
 
-type SendTransactionThunkState = TradingRootState;
+export type SendTransactionThunkState = TradingRootState;
 
 export const sendTransactionThunk = createThunk<
     undefined,

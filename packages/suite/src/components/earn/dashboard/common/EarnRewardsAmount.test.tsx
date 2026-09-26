@@ -6,6 +6,7 @@ import { createTestCompositionRoot } from '@suite-common/test-utils';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { toTokenSymbol } from '@suite-common/wallet-types';
 
+import { type AppState } from 'src/reducers/store';
 import { renderWithProviders } from 'src/support/test-utils/hooksHelper';
 
 import { EarnRewardsAmount } from './EarnRewardsAmount';
@@ -15,12 +16,11 @@ const ethereum = asNetworkSymbol('eth');
 const usdc = toTokenSymbol('USDC');
 
 const renderRewards = (element: React.ReactElement) => {
-    const root = createTestCompositionRoot({
-        extra: { services: {} },
+    const { services } = createTestCompositionRoot<void, AppState>({
         preloadedState: mockInitialAppState,
     });
 
-    renderWithProviders(root, element);
+    renderWithProviders(services, element);
 };
 
 const testId = '@earn/dashboard/rewards/amount';

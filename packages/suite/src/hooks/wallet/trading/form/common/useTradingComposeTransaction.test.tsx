@@ -17,6 +17,7 @@ import { type Account, asAccountDescriptor } from '@suite-common/wallet-types';
 import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
 import { PROTO } from '@trezor/connect';
 
+import { type AppState } from 'src/reducers/store';
 import { getComposeAddressPlaceholder } from 'src/utils/wallet/trading/tradingUtils';
 
 import { useTradingComposeTransaction } from './useTradingComposeTransaction';
@@ -114,7 +115,7 @@ const renderComposeTransaction = ({
     defaultValues,
     bitcoinAmountUnit,
 }: RenderComposeTransactionParams = {}) => {
-    const root = createTestCompositionRoot({
+    const { services } = createTestCompositionRoot<void, AppState>({
         preloadedState: {
             wallet: {
                 accounts: [BTC_ACCOUNT, BTC_ACCOUNT_B, SOL_ACCOUNT],
@@ -147,7 +148,7 @@ const renderComposeTransaction = ({
 
             return { methods, compose };
         },
-        { root, initialProps: { account: BTC_ACCOUNT } },
+        { services, initialProps: { account: BTC_ACCOUNT } },
     );
 };
 

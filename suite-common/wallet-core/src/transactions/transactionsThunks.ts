@@ -450,7 +450,7 @@ type AddFakePendingCardanoTxThunkParams = {
     cardanoSpecific?: WalletAccountTransaction['cardanoSpecific'];
 };
 
-type AddFakePendingCardanoTxThunkState = BlockchainRootState;
+export type AddFakePendingCardanoTxThunkState = BlockchainRootState;
 
 export const addFakePendingCardanoTxThunk = createThunk<
     void,

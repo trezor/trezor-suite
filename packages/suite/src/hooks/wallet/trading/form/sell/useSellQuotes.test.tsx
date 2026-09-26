@@ -3,7 +3,9 @@ import { useForm, useWatch } from 'react-hook-form';
 import { act, waitFor } from '@testing-library/react';
 import { type CryptoId, type SellFiatTrade } from 'invity-api';
 
+import { type DesktopAnalyticsDep } from '@suite/analytics';
 import { mockDesktopAnalytics } from '@suite/analytics/mocks';
+import { type WithServices } from '@suite-common/redux-utils';
 import { createTestCompositionRoot, renderHookWithStoreProvider } from '@suite-common/test-utils';
 import {
     type TradingAssetSellOption,
@@ -13,6 +15,8 @@ import {
 } from '@suite-common/trading';
 import { type Network, getNetwork, toNetworkSymbolNonTestnet } from '@suite-common/wallet-config';
 import { mockAccountKey } from '@suite-common/wallet-types/mocks';
+
+import { type AppState } from 'src/reducers/store';
 
 import { useSellQuotes } from './useSellQuotes';
 import { DEBOUNCE_DELAY_MS } from '../common/useTradingQuoteRequest';
@@ -133,10 +137,7 @@ const renderSellQuotes = (
     const initialProps: { currentNetwork: Network | undefined } = {
         currentNetwork: getNetwork(btcSymbol),
     };
-    const services = { analytics: mockDesktopAnalytics() };
-
-    const root = createTestCompositionRoot({
-        extra: { services },
+    const { services } = createTestCompositionRoot<WithServices<DesktopAnalyticsDep>, AppState>({
         preloadedState: {
             wallet: {
                 trading: {
@@ -145,6 +146,7 @@ const renderSellQuotes = (
                 },
             },
         },
+        services: () => ({ analytics: mockDesktopAnalytics() }),
     });
 
     return renderHookWithStoreProvider(
@@ -173,7 +175,7 @@ const renderSellQuotes = (
 
             return methods;
         },
-        { root, initialProps },
+        { services, initialProps },
     );
 };
 

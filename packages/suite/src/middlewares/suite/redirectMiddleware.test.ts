@@ -2,7 +2,7 @@ import { type UnknownAction } from '@reduxjs/toolkit';
 
 import { type LocksRootState, locksInitialState, locksReducer } from '@suite/locks';
 import { type State as ModalReducerState, type ModalRootState, modalReducer } from '@suite/modal';
-import { type RouterRootState, routerReducer } from '@suite/router';
+import { type GotoThunkDeps, type RouterRootState, routerReducer } from '@suite/router';
 import {
     type RouterStateOverrides,
     createRouterStateMock,
@@ -21,7 +21,7 @@ import {
 import { mockActionType, mockReducer } from '@suite-common/redux-utils/mocks';
 import { mockSuiteSync } from '@suite-common/suite-sync/mocks';
 import { mockConnectDevice, mockSuiteDevice } from '@suite-common/suite-types/mocks';
-import { createTestStore } from '@suite-common/test-utils';
+import { createTestCompositionRoot } from '@suite-common/test-utils';
 import { DEVICE } from '@trezor/connect';
 
 import redirectMiddleware from 'src/middlewares/suite/redirectMiddleware';
@@ -77,10 +77,8 @@ const middlewares = [
     prepareSuiteMiddleware(() => ({ services: { suiteSync: mockSuiteSync() } })),
 ];
 
-const initStore = (state: State) => {
-    const extra = { services: { suiteRouterHistory: mockSuiteRouterHistory() } };
-    const store = createTestStore<typeof extra, State, UnknownAction>({
-        extra,
+const initStore = (state: State) =>
+    createTestCompositionRoot<GotoThunkDeps, State>({
         middleware: middlewares,
         reducer: (currentState = state, action: UnknownAction) => {
             const typedState = currentState as State;
@@ -94,10 +92,8 @@ const initStore = (state: State) => {
             };
         },
         preloadedState: state,
-    });
-
-    return store;
-};
+        services: () => ({ suiteRouterHistory: mockSuiteRouterHistory() }),
+    }).services.store;
 
 describe('redirectMiddleware', () => {
     describe('redirects on DEVICE.CONNECT event', () => {

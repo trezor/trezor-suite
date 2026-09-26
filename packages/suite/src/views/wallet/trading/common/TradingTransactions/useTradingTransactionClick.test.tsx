@@ -1,7 +1,10 @@
 import { type CryptoId } from 'invity-api';
 
+import { type DesktopAnalyticsDep } from '@suite/analytics';
 import { mockDesktopAnalytics } from '@suite/analytics/mocks';
+import { type SuiteRouterHistoryDep } from '@suite/router';
 import { mockSuiteRouterHistory } from '@suite/router/mocks';
+import { type WithServices } from '@suite-common/redux-utils';
 import { createTestCompositionRoot, renderHookWithStoreProvider } from '@suite-common/test-utils';
 import {
     type TradingTransaction,
@@ -84,21 +87,21 @@ const buildState = (): AppState => ({
 
 const renderClickHandler = () => {
     const suiteRouterHistory = { ...mockSuiteRouterHistory(), navigate: jest.fn() };
-    const root = createTestCompositionRoot({
-        extra: {
-            services: {
-                analytics: mockDesktopAnalytics(),
-                suiteRouterHistory,
-            },
-        },
+    const { services } = createTestCompositionRoot<
+        WithServices<DesktopAnalyticsDep & SuiteRouterHistoryDep>,
+        AppState
+    >({
         preloadedState: buildState(),
+        services: () => ({ analytics: mockDesktopAnalytics(), suiteRouterHistory }),
     });
-    const { result } = renderHookWithStoreProvider(() => useTradingTransactionClick(), { root });
+    const { result } = renderHookWithStoreProvider(() => useTradingTransactionClick(), {
+        services,
+    });
 
     return {
         click: (trade: TradingTransaction) => result.current(trade),
         getActions: () =>
-            root.services
+            services.store
                 .getActions()
                 .filter(
                     action =>

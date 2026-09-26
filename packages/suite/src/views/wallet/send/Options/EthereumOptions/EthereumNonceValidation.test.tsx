@@ -10,6 +10,7 @@ import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
 
 import { SendContext } from 'src/hooks/wallet/useSendForm';
+import { type AppState } from 'src/reducers/store';
 import { renderWithProviders } from 'src/support/test-utils/hooksHelper';
 
 import { EthereumNonce } from './EthereumNonce';
@@ -74,8 +75,7 @@ const pendingAtNonce6 = {
 } as any;
 
 const render = (props: Props) => {
-    const root = createTestCompositionRoot({
-        extra: { services: {} },
+    const { services } = createTestCompositionRoot<void, AppState>({
         preloadedState: {
             ...mockInitialAppState,
             wallet: {
@@ -88,7 +88,7 @@ const render = (props: Props) => {
         },
     });
 
-    return renderWithProviders(root, <Harness {...props} />);
+    return renderWithProviders(services, <Harness {...props} />);
 };
 
 const typeNonce = async (text: string) => {

@@ -1,10 +1,11 @@
-import { createTestStore } from '@suite-common/test-utils';
+import { createTestCompositionRoot } from '@suite-common/test-utils';
+
+import { type RecoveryState } from './recoveryReducer';
 
 import { recoveryActions, recoveryReducer } from './index';
 
 const initStore = () =>
-    createTestStore({
-        extra: undefined,
+    createTestCompositionRoot<void, { recovery: RecoveryState }>({
         preloadedState: {
             recovery: recoveryReducer(undefined, { type: 'foo' }),
         },
@@ -12,7 +13,7 @@ const initStore = () =>
             ...state,
             recovery: recoveryReducer(state.recovery, action),
         }),
-    });
+    }).services.store;
 
 describe('Recovery Slice', () => {
     it('setWordsCount', () => {

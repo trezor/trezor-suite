@@ -2,10 +2,15 @@ import { useForm } from 'react-hook-form';
 
 import { act } from '@testing-library/react';
 
+import { type DesktopAnalyticsDep } from '@suite/analytics';
+import { mockDesktopAnalytics } from '@suite/analytics/mocks';
 import { events } from '@suite-common/analytics';
+import { type WithServices } from '@suite-common/redux-utils';
 import { createTestCompositionRoot, renderHookWithStoreProvider } from '@suite-common/test-utils';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { type YieldFlowFormValues } from '@suite-common/wallet-core';
+
+import { type AppState } from 'src/reducers/store';
 
 import { useYieldFiatInput } from './useYieldFiatInput';
 
@@ -22,9 +27,9 @@ const mockState = {
 const mockReport = jest.fn();
 
 const renderYieldFiatInput = (vaultId?: string) => {
-    const root = createTestCompositionRoot({
-        extra: { services: { analytics: { report: mockReport } } },
+    const { services } = createTestCompositionRoot<WithServices<DesktopAnalyticsDep>, AppState>({
         preloadedState: mockState,
+        services: () => ({ analytics: mockDesktopAnalytics(mockReport) }),
     });
 
     return renderHookWithStoreProvider(
@@ -39,7 +44,7 @@ const renderYieldFiatInput = (vaultId?: string) => {
                 fiat: useYieldFiatInput({ methods, symbol: ethSymbol, decimals: 18, vaultId }),
             };
         },
-        { root },
+        { services },
     );
 };
 
