@@ -16,12 +16,15 @@ module.exports = {
     },
     productName: 'Trezor Suite',
     copyright: 'Copyright © ${author}',
-    asar: true,
-    asarUnpack: ['**/*.node'],
+    asar: {
+        unpack: ['**/*.node'],
+    },
     directories: {
         output: 'build-electron',
     },
-    npmRebuild: false,
+    nativeModules: {
+        npmRebuild: false,
+    },
     files: [
         // defaults are https://www.electron.build/configuration#files
         'build/**/*', // Electron renderer process
@@ -79,6 +82,12 @@ module.exports = {
         oneClick: false,
     },
     mac: {
+        sign: {
+            identity: isCodesignBuild ? undefined : '-',
+            entitlements: 'entitlements.mac.inherit.plist',
+            entitlementsInherit: 'entitlements.mac.inherit.plist',
+            hardenedRuntime: isCodesignBuild,
+        },
         files: ['entitlements.mac.inherit.plist'],
         extraResources: [
             {
@@ -96,12 +105,7 @@ module.exports = {
         ],
         icon: 'build/static/images/desktop/512x512.icns',
         artifactName: 'Trezor-Suite-${version}-mac-${arch}.${ext}',
-        identity: isCodesignBuild ? undefined : '-',
-        hardenedRuntime: isCodesignBuild,
-        gatekeeperAssess: false,
         darkModeSupport: true,
-        entitlements: 'entitlements.mac.inherit.plist',
-        entitlementsInherit: 'entitlements.mac.inherit.plist',
         extendInfo: {
             NSBluetoothAlwaysUsageDescription:
                 'Allow Trezor Suite to use Bluetooth to securely connect and communicate with your Trezor device.',
@@ -136,7 +140,8 @@ module.exports = {
         artifactName: 'Trezor-Suite-${version}-win-${arch}.${ext}',
         target: ['nsis'],
         signExts: ['.exe', '.dll'],
-        signtoolOptions: {
+        sign: {
+            type: 'signtool',
             publisherName: ['SatoshiLabs, s.r.o.', 'Trezor Company s.r.o.'],
             // TODO #14482: when Electron-main is migrated to ESM, and we declare whole suite-desktop package as ESM, rename .mjs files to .js
             sign: '../desktop-app-main/scripts/sign-windows.mjs',
