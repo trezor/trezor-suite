@@ -52,7 +52,7 @@ import { type DbDep } from 'src/storage/createDb';
 import { reportSecurityCheck } from 'src/utils/suite/sentry';
 
 import { createConnectInitDeviceEventHooks } from './createConnectInitDeviceEventHooks';
-import { createConnectInitUiEventHooks } from './createConnectInitUiEventHooks';
+import { createConnectInitUIEventHooks } from './createConnectInitUIEventHooks';
 import { type AppState } from '../types/suite';
 
 const connectInitSettings: ConnectInitSettings = {
@@ -182,7 +182,7 @@ export const createSuiteServicesCompositionRoot = (deps: SuiteAppDeps): SuiteSer
         connectInitDeviceEventHooks: createConnectInitDeviceEventHooks({
             dispatch: deps.dispatch,
         }),
-        connectInitUiEventHooks: createConnectInitUiEventHooks({
+        connectInitUIEventHooks: createConnectInitUIEventHooks({
             dispatch: deps.dispatch,
             getState: deps.getState,
         }),

@@ -10,7 +10,7 @@ import {
 import {
     mockConnectInitDeviceEventHooks,
     mockConnectInitSettings,
-    mockConnectInitUiEventHooks,
+    mockConnectInitUIEventHooks,
     mockCreateTransports,
     mockGetDebugSettings,
     mockGetThpSettings,
@@ -100,7 +100,7 @@ const createTestRoot = (preloadedState: SuiteActionsTestState) =>
                 analytics: mockDesktopAnalytics(),
                 connectInitDeviceEventHooks: mockConnectInitDeviceEventHooks(),
                 connectInitSettings: mockConnectInitSettings(),
-                connectInitUiEventHooks: mockConnectInitUiEventHooks(),
+                connectInitUIEventHooks: mockConnectInitUIEventHooks(),
                 createLogger: noopCreateLogger,
                 createTransports: mockCreateTransports(),
                 getAllowPrerelease: mockGetAllowPrerelease(),
