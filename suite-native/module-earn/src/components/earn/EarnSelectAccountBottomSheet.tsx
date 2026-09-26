@@ -4,31 +4,36 @@ import { FlashList } from '@shopify/flash-list';
 
 import { type Account } from '@suite-common/wallet-types';
 import { BottomSheetModal, type BottomSheetModalRef, VStack } from '@suite-native/atoms';
-import { Translation } from '@suite-native/intl';
+import { Translation, type TxKeyPath } from '@suite-native/intl';
 
-import { ChooseAccountItem } from './ChooseAccountItem';
-import { type ChooseAccountTokenBalance } from '../../types';
+import { type ChooseAccountTokenBalance, type EarnType } from '../../types';
 import { getChooseAccountBalanceData } from '../../utils/staking/chooseAccountBalanceUtils';
+import { ChooseAccountItem } from '../staking/ChooseAccountItem';
 
-type ChooseStakingAccountBottomSheetProps = {
+const titleTranslationIds = {
+    staking: 'earn.earnScreen.chooseAccountSheet.stakingTitle',
+    yield: 'earn.earnScreen.chooseAccountSheet.yieldTitle',
+} satisfies Record<EarnType, TxKeyPath>;
+
+type EarnSelectAccountBottomSheetProps = {
     ref: BottomSheetModalRef;
-    type: 'staking' | 'yield';
+    type: EarnType;
     accounts: Account[];
-    onAccountSelected: (account: Account) => void;
+    onAccountPress: (account: Account) => void;
+    tokenBalance?: ChooseAccountTokenBalance;
     onClose: () => void;
     onDismiss?: () => void;
-    tokenBalance?: ChooseAccountTokenBalance;
 };
 
-export const ChooseStakingAccountBottomSheet = ({
+export const EarnSelectAccountBottomSheet = ({
     ref,
     type,
     accounts,
-    onAccountSelected,
+    onAccountPress,
+    tokenBalance,
     onClose,
     onDismiss,
-    tokenBalance,
-}: ChooseStakingAccountBottomSheetProps) => {
+}: EarnSelectAccountBottomSheetProps) => {
     const renderItem = useCallback(
         ({ item }: { item: Account }) => {
             const balanceData = getChooseAccountBalanceData(item, tokenBalance);
@@ -37,23 +42,17 @@ export const ChooseStakingAccountBottomSheet = ({
                 <ChooseAccountItem
                     account={item}
                     balanceData={balanceData}
-                    onPress={onAccountSelected}
+                    onPress={onAccountPress}
                 />
             );
         },
-        [onAccountSelected, tokenBalance],
+        [onAccountPress, tokenBalance],
     );
 
     return (
         <BottomSheetModal
             ref={ref}
-            title={
-                type === 'staking' ? (
-                    <Translation id="earn.earnScreen.chooseAccountSheet.stakingTitle" />
-                ) : (
-                    <Translation id="earn.earnScreen.chooseAccountSheet.yieldTitle" />
-                )
-            }
+            title={<Translation id={titleTranslationIds[type]} />}
             isCloseDisplayed
             onClose={onClose}
             onDismiss={onDismiss}
@@ -61,7 +60,7 @@ export const ChooseStakingAccountBottomSheet = ({
             <VStack marginTop="sp16">
                 <FlashList
                     data={accounts}
-                    keyExtractor={item => item.key}
+                    keyExtractor={account => `${type}:${account.key}`}
                     renderItem={renderItem}
                 />
             </VStack>

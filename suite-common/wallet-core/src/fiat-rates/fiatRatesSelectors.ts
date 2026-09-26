@@ -1,9 +1,11 @@
 import { A, F, pipe } from '@mobily/ts-belt';
 
+import { createWeakMapSelector, weakMapMemoize } from '@suite-common/redux-utils';
 import {
     type TokenDefinitionsRootState,
     selectIsSpecificCoinDefinitionKnown,
 } from '@suite-common/token-definitions';
+import { type NetworkSymbol } from '@suite-common/wallet-config';
 import {
     type CryptoBaseCurrencyPair,
     type Rate,
@@ -26,8 +28,65 @@ import { type FiatRatesRootState } from './fiatRatesTypes';
 import { type AccountsRootState } from '../accounts/accountsReducer';
 import { selectAccounts } from '../accounts/accountsSelectors';
 
+const createMemoizedSelector = createWeakMapSelector.withTypes<FiatRatesRootState>();
+
+export const createStableFiatRateKeys = weakMapMemoize(
+    (...fiatRateKeys: CryptoBaseCurrencyPair[]) => fiatRateKeys,
+);
+
+export const createStableTickerId = weakMapMemoize(
+    (symbol: NetworkSymbol, tokenAddress?: TokenAddress): TickerId =>
+        tokenAddress ? { symbol, tokenAddress } : { symbol },
+);
+
+export const createStableTickerIds = weakMapMemoize((...tickers: TickerId[]) => tickers);
+
+const createStableRatesByKey = weakMapMemoize(
+    (fiatRateKeys: CryptoBaseCurrencyPair[], ...rates: (Rate | undefined)[]): RatesByKey =>
+        fiatRateKeys.reduce<RatesByKey>((ratesByKey, fiatRateKey, index) => {
+            const rate = rates[index];
+            if (rate) {
+                ratesByKey[fiatRateKey] = rate;
+            }
+
+            return ratesByKey;
+        }, {}),
+);
+
 export const selectCurrentFiatRates = (state: FiatRatesRootState): RatesByKey | undefined =>
     state.wallet.fiat?.['current'];
+
+const getRatesByLowerCasedKey = weakMapMemoize(
+    (currentFiatRates: RatesByKey) =>
+        new Map(Object.entries(currentFiatRates).map(([key, rate]) => [key.toLowerCase(), rate])),
+);
+
+const getCurrentFiatRate = (
+    currentFiatRates: RatesByKey | undefined,
+    fiatRateKey: CryptoBaseCurrencyPair,
+): Rate | undefined => {
+    if (!currentFiatRates) {
+        return undefined;
+    }
+
+    return (
+        currentFiatRates[fiatRateKey] ??
+        getRatesByLowerCasedKey(currentFiatRates).get(fiatRateKey.toLowerCase())
+    );
+};
+
+export const selectCurrentFiatRatesByFiatRateKeys = createMemoizedSelector(
+    [
+        selectCurrentFiatRates,
+        (_state: FiatRatesRootState, fiatRateKeys: readonly CryptoBaseCurrencyPair[]) =>
+            fiatRateKeys,
+    ],
+    (currentFiatRates, fiatRateKeys): RatesByKey =>
+        createStableRatesByKey(
+            createStableFiatRateKeys(...fiatRateKeys),
+            ...fiatRateKeys.map(fiatRateKey => getCurrentFiatRate(currentFiatRates, fiatRateKey)),
+        ),
+);
 
 export const selectHistoricFiatRates = (state: FiatRatesRootState): RatesByTimestamps =>
     state.wallet.fiat.historic;

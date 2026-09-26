@@ -1,6 +1,5 @@
 import { type YieldDtoV2 } from '@suite-common/earn-stablecoin-api';
-import { type EarnDashboardType } from '@suite-common/message-system';
-import { type NetworkSymbol, type StakingNetworkSymbol } from '@suite-common/wallet-config';
+import { type NetworkSymbol } from '@suite-common/wallet-config';
 import {
     type SignTransactionError,
     type SignTransactionTimeoutError,
@@ -13,8 +12,9 @@ import {
     type TokenAddress,
     type TokenSymbol,
 } from '@suite-common/wallet-types';
+import { type YieldClaimVaultParams } from '@suite-native/navigation';
 
-type YieldPricePerShareState = NonNullable<YieldDtoV2['state']>['pricePerShareState'];
+export type EarnType = 'staking' | 'yield';
 
 export type EarnFormDraftPrefix = 'stake' | 'unstake' | 'claim';
 
@@ -37,18 +37,32 @@ export type YieldBroadcastTransaction = {
     fee?: string;
 };
 
-export type StakingEarnItem = {
-    id: string;
-    type: 'staking';
-    symbol: StakingNetworkSymbol & NetworkSymbol;
-    accountKey: AccountKey | null;
-    accountLabel?: Account['accountLabel'];
-    balance: string | null;
+export type YieldClaimToken = {
+    networkSymbol: NetworkSymbol;
+    contractAddress: TokenAddress;
+    symbol: TokenSymbol;
 };
 
-export type YieldEarnItem = {
+export type YieldNavigationItem = {
+    yieldId: string;
+    underlyingTokenContract: TokenAddress;
+    receiptTokenContract: TokenAddress | null;
+};
+
+export type ChooseAccountTokenBalance = {
+    tokenContractAddress: TokenAddress;
+    tokenDecimals?: number;
+    tokenSymbol: TokenSymbol;
+};
+
+export type StakingListItem = {
+    symbol: NetworkSymbol;
+    accountKey: AccountKey;
+    balance: string;
+};
+
+export type YieldListItem = {
     id: string;
-    type: 'stablecoin-yield';
     yieldId: string;
     vaultName: string;
     tokenSymbol: TokenSymbol;
@@ -57,28 +71,23 @@ export type YieldEarnItem = {
     receiptTokenContract: TokenAddress | null;
     contractAddress: TokenAddress;
     tokenContractAddress: TokenAddress;
-    accountKey: AccountKey | null;
-    accountLabel?: Account['accountLabel'];
-    tokenBalance: string | null;
     apy: number | null;
     token?: YieldDtoV2['token'];
     outputToken?: YieldDtoV2['outputToken'];
-    pricePerShareState?: YieldPricePerShareState;
-};
-
-export type YieldClaimSummary = {
-    type: 'stablecoin-yield';
+    pricePerShareState?: NonNullable<YieldDtoV2['state']>['pricePerShareState'];
     accountKey: AccountKey;
-    networkSymbol: NetworkSymbol;
-    claimableRewardsCount: number;
-    fiatClaimableAmount: BaseCurrencyAmount | null;
-    tokens: YieldClaimRewardToken[];
+    tokenBalance: string;
 };
 
-export type YieldClaimToken = {
+export type YieldListItemWithAccount = {
+    item: YieldListItem;
+    account: Account;
+};
+
+export type YieldListVaultIcon = {
     networkSymbol: NetworkSymbol;
-    contractAddress: TokenAddress;
-    symbol: TokenSymbol;
+    tokenSymbol: TokenSymbol;
+    tokenContractAddress: TokenAddress;
 };
 
 export type YieldClaimRewardToken = YieldClaimToken & {
@@ -86,93 +95,31 @@ export type YieldClaimRewardToken = YieldClaimToken & {
     decimals: number;
 };
 
-export type YieldNavigationItem = Pick<
-    YieldEarnItem,
-    'yieldId' | 'underlyingTokenContract' | 'receiptTokenContract'
->;
+export type YieldClaimListItem = {
+    accountKey: AccountKey;
+    networkSymbol: NetworkSymbol;
+    claimableRewardsCount: number;
+    fiatClaimableAmount: BaseCurrencyAmount | null;
+    tokens: YieldClaimRewardToken[];
+};
 
-export type YieldPromoNavigationItem = YieldNavigationItem &
-    Pick<YieldEarnItem, 'networkSymbol' | 'token' | 'tokenSymbol'>;
+export type YieldClaimAccountItem = {
+    summary: YieldClaimListItem;
+    vaults: YieldClaimVaultParams[];
+};
 
-export type ChooseAccountTokenBalance = {
-    tokenContractAddress: TokenAddress;
-    tokenDecimals?: number;
+export type YieldPromoListItem = {
+    id: string;
+    yieldId: string;
+    vaultName: string;
     tokenSymbol: TokenSymbol;
-};
-
-export type EarnPromoItem = StakingEarnItem | YieldEarnItem;
-
-export type EarnPromoSectionType = EarnPromoItem['type'];
-
-export type SkeletonLoaderItem = {
-    type: 'skeleton-loader';
-    id: string;
-};
-
-export type YieldLoadErrorListItem = {
-    type: 'stablecoin-yield-load-error';
-    id: string;
-};
-
-export type EarnProvider = 'everstake' | 'morpho';
-
-export type EarnProviderListItem = {
-    type: 'provider';
-    id: string;
-    provider: EarnProvider;
-};
-
-export type EarnStakingProvidersInfoListItem = {
-    type: 'staking-providers-info';
-    id: string;
-};
-
-export type EarnDashboardDisabledListItem = {
-    type: 'dashboard-disabled';
-    id: string;
-    dashboardType: EarnDashboardType;
-};
-
-export type EarnPromoListDataItem =
-    | EarnPromoItem
-    | EarnPromoSectionType
-    | SkeletonLoaderItem
-    | YieldLoadErrorListItem
-    | EarnProviderListItem
-    | EarnStakingProvidersInfoListItem
-    | EarnDashboardDisabledListItem;
-
-export type EarnDepositsCardActiveItem =
-    | {
-          id: string;
-          type: 'staking';
-          title: string;
-          symbol: StakingNetworkSymbol & NetworkSymbol;
-          accountKey: AccountKey;
-          accountLabel?: string;
-          balance: string;
-          fiatAmount: BaseCurrencyAmount;
-      }
-    | {
-          id: string;
-          type: 'stablecoin-yield';
-          title: string;
-          networkSymbol: NetworkSymbol;
-          tokenSymbol: TokenSymbol;
-          contractAddress: TokenAddress;
-          tokenContractAddress: TokenAddress;
-          tokenDecimals?: number;
-          accountKey: AccountKey;
-          accountLabel?: string;
-          balance: string;
-          fiatAmount: BaseCurrencyAmount;
-          apy: number | null;
-      };
-
-export type YieldPositionItem = Extract<EarnDepositsCardActiveItem, { type: 'stablecoin-yield' }>;
-
-export type EarnDepositsCardRow = {
-    type: EarnPromoSectionType;
-    title: string;
-    activeItems: EarnDepositsCardActiveItem[];
+    networkSymbol: NetworkSymbol;
+    underlyingTokenContract: TokenAddress;
+    receiptTokenContract: TokenAddress | null;
+    contractAddress: TokenAddress;
+    tokenContractAddress: TokenAddress;
+    apy: number | null;
+    token?: YieldDtoV2['token'];
+    outputToken?: YieldDtoV2['outputToken'];
+    pricePerShareState?: NonNullable<YieldDtoV2['state']>['pricePerShareState'];
 };

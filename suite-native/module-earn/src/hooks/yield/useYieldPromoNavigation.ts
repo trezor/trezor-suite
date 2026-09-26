@@ -6,12 +6,11 @@ import { useNavigation } from '@react-navigation/native';
 import { events } from '@suite-common/analytics';
 import { useServices } from '@suite-common/dependency-injection';
 import { selectIsDeviceInViewOnlyMode } from '@suite-common/device';
-import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { selectVisibleDeviceAccounts } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
 import { useAccountAlerts } from '@suite-native/accounts';
 import { injectNativeAnalytics } from '@suite-native/analytics';
-import { type BottomSheetModalRef, useBottomSheetModalControls } from '@suite-native/atoms';
+import { useBottomSheetModalControls } from '@suite-native/atoms';
 import {
     AddCoinAccountStackRoutes,
     type RootStackParamList,
@@ -21,29 +20,16 @@ import {
 
 import { useStablecoinYieldFirmwareUpdateAlert } from './useStablecoinYieldFirmwareUpdateAlert';
 import { useEarnPortfolioTrackerGuard } from '../../components/earn/EarnPortfolioTrackerGuard';
-import { type ChooseAccountTokenBalance, type YieldPromoNavigationItem } from '../../types';
+import { type YieldPromoListItem } from '../../types';
 import {
     type YieldAccountNavigationDestination,
     navigateByYieldAccountState,
 } from '../../utils/yield/navigateByYieldAccountState';
 
-type UseStablecoinYieldPromoNavigationReturn = {
-    handleStablecoinYieldPromoPress: (item: YieldPromoNavigationItem) => void;
-    handleAccountSelected: (account: Account) => void;
-    handleEnableNetworkPress: () => void;
-    handleEnableNetworkDismiss: () => void;
-    chosenAccounts: Account[];
-    pendingEnableSymbol: NetworkSymbol | null;
-    chooseAccountSheetRef: BottomSheetModalRef;
-    enableNetworkSheetRef: BottomSheetModalRef;
-    closeChooseAccountModal: () => void;
-    handleChooseAccountDismiss: () => void;
-    chooseAccountTokenBalance?: ChooseAccountTokenBalance;
-};
+type NavigationProp = StackNavigationProps<RootStackParamList, RootStackRoutes.YieldNavigator>;
 
-export const useStablecoinYieldPromoNavigation = (): UseStablecoinYieldPromoNavigationReturn => {
-    const navigation =
-        useNavigation<StackNavigationProps<RootStackParamList, RootStackRoutes.YieldNavigator>>();
+export const useYieldPromoNavigation = () => {
+    const navigation = useNavigation<NavigationProp>();
     const { analytics } = useServices(injectNativeAnalytics);
     const accounts = useSelector(selectVisibleDeviceAccounts);
     const isDeviceInViewOnlyMode = useSelector(selectIsDeviceInViewOnlyMode);
@@ -53,23 +39,25 @@ export const useStablecoinYieldPromoNavigation = (): UseStablecoinYieldPromoNavi
         useStablecoinYieldFirmwareUpdateAlert();
 
     const {
-        bottomSheetRef: chooseAccountSheetRef,
-        showSheet: openChooseAccountModal,
-        hideSheet: closeChooseAccountModal,
+        bottomSheetRef: selectAccountSheetRef,
+        showSheet: openSelectAccountSheet,
+        hideSheet: closeSelectAccountSheet,
     } = useBottomSheetModalControls();
 
     const {
         bottomSheetRef: enableNetworkSheetRef,
-        showSheet: openEnableNetworkModal,
-        hideSheet: closeEnableNetworkModal,
+        showSheet: openEnableNetworkSheet,
+        hideSheet: closeEnableNetworkSheet,
     } = useBottomSheetModalControls();
 
     const [chosenAccounts, setChosenAccounts] = useState<Account[]>([]);
-    const [chosenYieldItem, setChosenYieldItem] = useState<YieldPromoNavigationItem | null>(null);
-    const [pendingEnableYieldItem, setPendingEnableYieldItem] =
-        useState<YieldPromoNavigationItem | null>(null);
+    const [chosenYieldItem, setChosenYieldItem] = useState<YieldPromoListItem | null>(null);
+    const [pendingEnableYieldItem, setPendingEnableYieldItem] = useState<YieldPromoListItem | null>(
+        null,
+    );
+
     const pendingEnableSymbol = pendingEnableYieldItem?.networkSymbol ?? null;
-    const chooseAccountTokenBalance = chosenYieldItem
+    const selectAccountTokenBalance = chosenYieldItem
         ? {
               tokenContractAddress: chosenYieldItem.underlyingTokenContract,
               tokenDecimals: chosenYieldItem.token?.decimals,
@@ -80,7 +68,7 @@ export const useStablecoinYieldPromoNavigation = (): UseStablecoinYieldPromoNavi
     const reportYieldEntryNavigation = useCallback(
         (
             destination: YieldAccountNavigationDestination | 'choose-account-sheet',
-            item: YieldPromoNavigationItem,
+            item: YieldPromoListItem,
             from: 'earn-dashboard' | 'choose-account-sheet',
         ) => {
             if (destination === 'firmware-update-alert') {
@@ -111,13 +99,13 @@ export const useStablecoinYieldPromoNavigation = (): UseStablecoinYieldPromoNavi
         [analytics],
     );
 
-    const handleAccountSelected = useCallback(
+    const onAccountPress = useCallback(
         (account: Account) => {
             if (!chosenYieldItem) {
                 return;
             }
 
-            closeChooseAccountModal();
+            closeSelectAccountSheet();
             const destination = navigateByYieldAccountState(
                 account,
                 chosenYieldItem,
@@ -129,7 +117,7 @@ export const useStablecoinYieldPromoNavigation = (): UseStablecoinYieldPromoNavi
         },
         [
             chosenYieldItem,
-            closeChooseAccountModal,
+            closeSelectAccountSheet,
             isFirmwareSupported,
             navigation.navigate,
             reportYieldEntryNavigation,
@@ -137,12 +125,12 @@ export const useStablecoinYieldPromoNavigation = (): UseStablecoinYieldPromoNavi
         ],
     );
 
-    const handleEnableNetworkPress = useCallback(() => {
+    const onEnableNetworkPress = useCallback(() => {
         if (!pendingEnableYieldItem) {
             return;
         }
 
-        closeEnableNetworkModal();
+        closeEnableNetworkSheet();
 
         if (isDeviceInViewOnlyMode) {
             showViewOnlyAddAccountAlert();
@@ -168,22 +156,22 @@ export const useStablecoinYieldPromoNavigation = (): UseStablecoinYieldPromoNavi
         });
     }, [
         pendingEnableYieldItem,
-        closeEnableNetworkModal,
+        closeEnableNetworkSheet,
         isDeviceInViewOnlyMode,
         showViewOnlyAddAccountAlert,
         navigation,
     ]);
 
-    const handleChooseAccountDismiss = useCallback(() => {
-        closeChooseAccountModal(false);
-    }, [closeChooseAccountModal]);
+    const onSelectAccountDismiss = useCallback(() => {
+        closeSelectAccountSheet(false);
+    }, [closeSelectAccountSheet]);
 
-    const handleEnableNetworkDismiss = useCallback(() => {
-        closeEnableNetworkModal(false);
-    }, [closeEnableNetworkModal]);
+    const onEnableNetworkDismiss = useCallback(() => {
+        closeEnableNetworkSheet(false);
+    }, [closeEnableNetworkSheet]);
 
-    const handleStablecoinYieldPromoPress = useCallback(
-        (item: YieldPromoNavigationItem) => {
+    const onPromoItemPress = useCallback(
+        (item: YieldPromoListItem) => {
             if (isPortfolioTrackerDevice) {
                 openPortfolioTrackerSheet();
 
@@ -196,7 +184,7 @@ export const useStablecoinYieldPromoNavigation = (): UseStablecoinYieldPromoNavi
 
             if (accountsForNetwork.length === 0) {
                 setPendingEnableYieldItem(item);
-                openEnableNetworkModal();
+                openEnableNetworkSheet();
 
                 return;
             }
@@ -217,7 +205,7 @@ export const useStablecoinYieldPromoNavigation = (): UseStablecoinYieldPromoNavi
 
             setChosenAccounts(accountsForNetwork);
             setChosenYieldItem(item);
-            openChooseAccountModal();
+            openSelectAccountSheet();
             reportYieldEntryNavigation('choose-account-sheet', item, 'earn-dashboard');
         },
         [
@@ -225,8 +213,8 @@ export const useStablecoinYieldPromoNavigation = (): UseStablecoinYieldPromoNavi
             isFirmwareSupported,
             isPortfolioTrackerDevice,
             navigation.navigate,
-            openChooseAccountModal,
-            openEnableNetworkModal,
+            openSelectAccountSheet,
+            openEnableNetworkSheet,
             openPortfolioTrackerSheet,
             reportYieldEntryNavigation,
             showFirmwareUpdateAlert,
@@ -234,16 +222,16 @@ export const useStablecoinYieldPromoNavigation = (): UseStablecoinYieldPromoNavi
     );
 
     return {
-        handleStablecoinYieldPromoPress,
-        handleAccountSelected,
-        handleEnableNetworkPress,
-        handleEnableNetworkDismiss,
+        onPromoItemPress,
+        onAccountPress,
+        onEnableNetworkPress,
+        onEnableNetworkDismiss,
         chosenAccounts,
         pendingEnableSymbol,
-        chooseAccountSheetRef,
+        selectAccountSheetRef,
         enableNetworkSheetRef,
-        closeChooseAccountModal,
-        handleChooseAccountDismiss,
-        chooseAccountTokenBalance,
+        closeSelectAccountSheet,
+        onSelectAccountDismiss,
+        selectAccountTokenBalance,
     };
 };
