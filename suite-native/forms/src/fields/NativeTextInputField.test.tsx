@@ -1,4 +1,4 @@
-import { useForm } from 'react-hook-form';
+import { type ResolverResult, useForm } from 'react-hook-form';
 import { Button, Text } from 'react-native';
 
 import { fireEvent, renderWithBasicProvider } from '@suite-native/test-utils';
@@ -14,10 +14,13 @@ const TestForm = ({ onSubmit = jest.fn(), ...props }: TestFormProps) => {
     const form = useForm<{ url: string }>({
         defaultValues: { url: '' },
         mode: 'onBlur',
-        resolver: values => ({
-            values,
-            errors: values.url ? {} : { url: { type: 'required', message: 'URL is required' } },
-        }),
+        resolver: (values): ResolverResult<{ url: string }> =>
+            values.url
+                ? { values, errors: {} }
+                : {
+                      values: {},
+                      errors: { url: { type: 'required', message: 'URL is required' } },
+                  },
     });
 
     return (
@@ -26,7 +29,7 @@ const TestForm = ({ onSubmit = jest.fn(), ...props }: TestFormProps) => {
             <Text>{form.formState.touchedFields.url ? 'touched' : 'untouched'}</Text>
             <Text>{form.formState.isDirty ? 'dirty' : 'pristine'}</Text>
             <Button title="Reset" onPress={() => form.reset({ url: 'https://default.example' })} />
-            <Button title="Submit" onPress={form.handleSubmit(onSubmit)} />
+            <Button title="Submit" onPress={() => form.handleSubmit(onSubmit)()} />
         </Form>
     );
 };
