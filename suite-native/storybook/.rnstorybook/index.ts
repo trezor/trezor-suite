@@ -7,6 +7,8 @@ const mmkvStorage = createMMKV({
 });
 
 export const StorybookUI = view.getStorybookUI({
+    // The stock wrapper dismisses the keyboard on touch start, interrupting native controls.
+    hasStoryWrapper: false,
     storage: {
         setItem: (key, value) => {
             mmkvStorage.set(key, value);
