@@ -38,22 +38,33 @@ const backgroundStyle = prepareNativeStyle(({ colors }) => ({
 type NativeSheetContentProps = ViewProps & { hasSnapPoints: boolean };
 
 const NativeSheetContent = ({ hasSnapPoints, children, onLayout }: NativeSheetContentProps) => {
-    const { height } = useWindowDimensions();
+    const { width, height } = useWindowDimensions();
     const { top } = useSafeAreaInsets();
     const { applyStyle } = useNativeStyles();
-    const [keyboardHeight, setKeyboardHeight] = useState(() => Keyboard.metrics()?.height ?? 0);
+    const [keyboardFrame, setKeyboardFrame] = useState(() => Keyboard.metrics());
+    let keyboardHeight = keyboardFrame?.height ?? 0;
+    if (Platform.OS === 'ios' && keyboardFrame) {
+        // RN converts iOS keyboard frames into the current window's coordinates.
+        const isDocked =
+            keyboardFrame.screenX <= 0 &&
+            keyboardFrame.screenX + keyboardFrame.width >= width &&
+            keyboardFrame.screenY + keyboardFrame.height >= height;
+        keyboardHeight = isDocked ? Math.max(0, height - keyboardFrame.screenY) : 0;
+    }
 
     useEffect(() => {
-        const updateHeight = (event: KeyboardEvent) =>
-            setKeyboardHeight(event.endCoordinates.height);
+        const updateFrame = (event: KeyboardEvent) => setKeyboardFrame(event.endCoordinates);
+        const clearFrame = () => setKeyboardFrame(undefined);
         const subscriptions = [
-            Keyboard.addListener('keyboardDidShow', updateHeight),
-            Keyboard.addListener('keyboardDidHide', () => setKeyboardHeight(0)),
+            Keyboard.addListener('keyboardDidShow', updateFrame),
+            Keyboard.addListener('keyboardDidHide', clearFrame),
         ];
         if (Platform.OS === 'ios') {
             subscriptions.push(
-                Keyboard.addListener('keyboardWillShow', updateHeight),
-                Keyboard.addListener('keyboardWillHide', () => setKeyboardHeight(0)),
+                Keyboard.addListener('keyboardWillShow', updateFrame),
+                Keyboard.addListener('keyboardWillHide', clearFrame),
+                Keyboard.addListener('keyboardWillChangeFrame', updateFrame),
+                Keyboard.addListener('keyboardDidChangeFrame', updateFrame),
             );
         }
 

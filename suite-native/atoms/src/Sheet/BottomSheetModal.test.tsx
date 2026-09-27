@@ -1,13 +1,15 @@
 import { createRef } from 'react';
 import type * as ReactModule from 'react';
 import {
+    Dimensions,
     Keyboard,
     type KeyboardEvent,
     type KeyboardEventName,
-    type Pressable,
+    type Pressable as NativePressable,
+    type View as NativeView,
+    Platform,
     StyleSheet,
     Text,
-    type View,
 } from 'react-native';
 
 import { type BottomSheetProps } from '@expo/ui/community/bottom-sheet';
@@ -26,9 +28,10 @@ const mockExpand = jest.fn();
 
 jest.mock('@expo/ui/community/bottom-sheet', () => {
     const { useImperativeHandle, useState } = jest.requireActual<typeof ReactModule>('react');
-    const { View } = jest.requireActual<{ View: typeof View; Pressable: typeof Pressable }>(
-        'react-native',
-    );
+    const { View } = jest.requireActual<{
+        View: typeof NativeView;
+        Pressable: typeof NativePressable;
+    }>('react-native');
 
     return {
         BottomSheetModal: (props: BottomSheetProps) => {
@@ -57,9 +60,10 @@ jest.mock('@expo/ui/community/bottom-sheet', () => {
 });
 
 jest.mock('../Button/IconButton', () => {
-    const { Pressable } = jest.requireActual<{ View: typeof View; Pressable: typeof Pressable }>(
-        'react-native',
-    );
+    const { Pressable } = jest.requireActual<{
+        View: typeof NativeView;
+        Pressable: typeof NativePressable;
+    }>('react-native');
 
     return { IconButton: Pressable };
 });
@@ -255,16 +259,38 @@ describe('BottomSheetModal', () => {
         await act(() => ref.current?.expand());
         expect(mockExpand).toHaveBeenCalledTimes(1);
     });
+});
 
-    it('keeps content and the footer within the space above the native modal keyboard', async () => {
-        const listeners = new Map<KeyboardEventName, (event: KeyboardEvent) => void>();
-        const subscription = jest
-            .spyOn(Keyboard, 'addListener')
-            .mockImplementation((name, listener) => {
-                listeners.set(name, listener);
+describe('BottomSheetModal keyboard layout', () => {
+    const originalPlatform = Platform.OS;
+    const originalWindow = Dimensions.get('window');
+    const originalScreen = Dimensions.get('screen');
+    const listeners = new Map<KeyboardEventName, (event: KeyboardEvent) => void>();
 
-                return { remove: () => listeners.delete(name) };
-            });
+    beforeEach(async () => {
+        Platform.OS = 'ios';
+        listeners.clear();
+        jest.spyOn(Keyboard, 'metrics').mockReturnValue(undefined);
+        jest.spyOn(Keyboard, 'addListener').mockImplementation((name, listener) => {
+            listeners.set(name, listener);
+
+            return { remove: () => listeners.delete(name) };
+        });
+        await act(() =>
+            Dimensions.set({
+                window: { ...originalWindow, width: 400, height: 800 },
+                screen: { ...originalScreen, width: 900, height: 1400 },
+            }),
+        );
+    });
+
+    afterEach(async () => {
+        jest.restoreAllMocks();
+        Platform.OS = originalPlatform;
+        await act(() => Dimensions.set({ window: originalWindow, screen: originalScreen }));
+    });
+
+    const presentSheet = async () => {
         const ref = createRef<BottomSheetModalMethods>();
         await renderWithBasicProvider(
             <BottomSheetModal ref={ref} footer={<Text>Action</Text>}>
@@ -275,6 +301,18 @@ describe('BottomSheetModal', () => {
         const { maxHeight } = StyleSheet.flatten(
             screen.getByTestId('@native-sheet/content').props.style,
         );
+
+        return maxHeight as number;
+    };
+
+    const emitKeyboardEvent = (
+        name: KeyboardEventName,
+        endCoordinates: KeyboardEvent['endCoordinates'],
+    ) => act(() => listeners.get(name)?.({ duration: 0, easing: 'keyboard', endCoordinates }));
+
+    it('preserves Android keyboard height updates and hide events', async () => {
+        Platform.OS = 'android';
+        const maxHeight = await presentSheet();
 
         await act(() =>
             listeners.get('keyboardDidShow')?.({
@@ -288,6 +326,16 @@ describe('BottomSheetModal', () => {
             maxHeight: maxHeight - 300,
         });
 
+        await emitKeyboardEvent('keyboardDidShow', {
+            width: 400,
+            height: 420,
+            screenX: 0,
+            screenY: 500,
+        });
+        expect(screen.getByTestId('@native-sheet/content')).toHaveStyle({
+            maxHeight: maxHeight - 420,
+        });
+
         await act(() =>
             listeners.get('keyboardDidHide')?.({
                 duration: 0,
@@ -297,6 +345,64 @@ describe('BottomSheetModal', () => {
         );
 
         expect(screen.getByTestId('@native-sheet/content')).toHaveStyle({ maxHeight });
-        subscription.mockRestore();
     });
+
+    it.each(['keyboardWillChangeFrame', 'keyboardDidChangeFrame'] as const)(
+        'resizes an already visible iOS keyboard on %s in window coordinates',
+        async eventName => {
+            const maxHeight = await presentSheet();
+            await emitKeyboardEvent('keyboardDidShow', {
+                width: 400,
+                height: 300,
+                screenX: 0,
+                screenY: 500,
+            });
+            expect(screen.getByTestId('@native-sheet/content')).toHaveStyle({
+                maxHeight: maxHeight - 300,
+            });
+
+            await emitKeyboardEvent(eventName, {
+                width: 400,
+                height: 420,
+                screenX: 0,
+                screenY: 380,
+            });
+            expect(screen.getByTestId('@native-sheet/content')).toHaveStyle({
+                maxHeight: maxHeight - 420,
+            });
+
+            await emitKeyboardEvent(eventName, {
+                width: 400,
+                height: 420,
+                screenX: 0,
+                screenY: 800,
+            });
+            expect(screen.getByTestId('@native-sheet/content')).toHaveStyle({ maxHeight });
+        },
+    );
+
+    it('only reserves the iOS keyboard area that overlaps the current window', async () => {
+        const maxHeight = await presentSheet();
+        await emitKeyboardEvent('keyboardDidShow', {
+            width: 400,
+            height: 400,
+            screenX: 0,
+            screenY: 500,
+        });
+        expect(screen.getByTestId('@native-sheet/content')).toHaveStyle({
+            maxHeight: maxHeight - 300,
+        });
+    });
+
+    it.each([
+        { width: 250, height: 300, screenX: 100, screenY: 500 },
+        { width: 400, height: 300, screenX: 0, screenY: 300 },
+    ])(
+        'does not reserve a bottom inset for a floating iOS keyboard ($width, $screenY)',
+        async frame => {
+            const maxHeight = await presentSheet();
+            await emitKeyboardEvent('keyboardDidShow', frame);
+            expect(screen.getByTestId('@native-sheet/content')).toHaveStyle({ maxHeight });
+        },
+    );
 });
