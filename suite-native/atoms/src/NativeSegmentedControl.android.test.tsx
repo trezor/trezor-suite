@@ -11,11 +11,13 @@ import { act, renderWithBasicProvider } from '@suite-native/test-utils';
 import { NativeSegmentedControl } from './NativeSegmentedControl.android';
 
 jest.mock('@expo/ui/jetpack-compose', () => {
+    const getTestID = (modifiers: SegmentedButtonProps['modifiers']) => {
+        const testID = modifiers?.find(modifier => modifier.$type === 'testID')?.testID;
+
+        return typeof testID === 'string' ? testID : undefined;
+    };
     const MockSegmentedButton = (props: SegmentedButtonProps) => (
-        <MockView
-            {...props}
-            testID={props.modifiers?.find(modifier => modifier.$type === 'testID')?.testID}
-        />
+        <MockView {...props} testID={getTestID(props.modifiers)} />
     );
 
     MockSegmentedButton.Label = ({ children }: PropsWithChildren) => children;
@@ -23,10 +25,7 @@ jest.mock('@expo/ui/jetpack-compose', () => {
     return {
         Host: ({ children }: PropsWithChildren) => children,
         SingleChoiceSegmentedButtonRow: (props: SingleChoiceSegmentedButtonRowProps) => (
-            <MockView
-                {...props}
-                testID={props.modifiers?.find(modifier => modifier.$type === 'testID')?.testID}
-            />
+            <MockView {...props} testID={getTestID(props.modifiers)} />
         ),
         SegmentedButton: MockSegmentedButton,
         Text: MockText,

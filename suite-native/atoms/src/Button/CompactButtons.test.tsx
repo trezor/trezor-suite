@@ -25,7 +25,9 @@ describe('IconButton', () => {
         );
 
         await fireEvent.press(getByLabelText('Close'));
-        expect(onPress.mock.calls[0][0].nativeEvent).toBeDefined();
+        expect(onPress).toHaveBeenCalledWith(
+            expect.objectContaining({ nativeEvent: expect.any(Object) }),
+        );
     });
 
     it('keeps long press and custom hit areas on the legacy pressable', async () => {
@@ -107,7 +109,9 @@ describe('TextButton', () => {
         );
 
         await fireEvent.press(getByText('Continue'));
-        expect(onPress.mock.calls[0][0].nativeEvent).toBeDefined();
+        expect(onPress).toHaveBeenCalledWith(
+            expect.objectContaining({ nativeEvent: expect.any(Object) }),
+        );
     });
 
     it('keeps loading, disabled semantics and existing test identifiers', async () => {

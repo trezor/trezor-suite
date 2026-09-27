@@ -92,6 +92,11 @@ export const NativeButton = ({
                             <Box />
                         ) : (
                             <Text
+                                color={
+                                    utils.colors[
+                                        isDisabled ? nativeDisabledContentColor : nativeContentColor
+                                    ]
+                                }
                                 style={{
                                     fontWeight: 'normal',
                                     letterSpacing: 0,
@@ -101,9 +106,6 @@ export const NativeButton = ({
                                                 size === 'small' ? 'small' : 'large'
                                             ]
                                         ].fontSize,
-                                    color: utils.colors[
-                                        isDisabled ? nativeDisabledContentColor : nativeContentColor
-                                    ],
                                     textDecoration: isUnderlined ? 'underline' : 'none',
                                 }}
                                 maxLines={1}

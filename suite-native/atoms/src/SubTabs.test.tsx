@@ -1,3 +1,5 @@
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
+
 import {
     BasicProviderForTests,
     fireEvent,
@@ -47,14 +49,16 @@ describe('SubTabs', () => {
         value?: string;
     } = {}) =>
         await renderWithBasicProvider(
-            <SubTabs
-                items={items}
-                onChange={onChange}
-                paddingHorizontal={paddingHorizontal}
-                size={size}
-                testID="sub-tabs"
-                value={value}
-            />,
+            <GestureHandlerRootView>
+                <SubTabs
+                    items={items}
+                    onChange={onChange}
+                    paddingHorizontal={paddingHorizontal}
+                    size={size}
+                    testID="sub-tabs"
+                    value={value}
+                />
+            </GestureHandlerRootView>,
         );
 
     it('renders the active and inactive tabs with accessible selected states', async () => {

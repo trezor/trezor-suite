@@ -11,7 +11,9 @@ import { Radio as IOSRadio, RadioIndicator as IOSRadioIndicator } from './Radio.
 
 jest.mock('@expo/ui/swift-ui', () => ({
     Host: ({ children }: PropsWithChildren) => children,
-    Button: (props: ButtonProps) => <MockView {...props} testID={props.testID ?? 'native-radio'} />,
+    Button: ({ role: _, ...props }: ButtonProps) => (
+        <MockView {...props} testID={props.testID ?? 'native-radio'} />
+    ),
     Image: (props: ImageProps) => <MockView {...props} testID="native-radio-image" />,
 }));
 

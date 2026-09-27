@@ -111,7 +111,7 @@ const buttonTextStyle = prepareNativeStyle<ButtonTextStyleProps>(
         paddingHorizontal: nativeSpacings.sp4,
         extend: [
             {
-                condition: usesSystemFont,
+                condition: !!usesSystemFont,
                 style: {
                     fontFamily: Platform.OS === 'ios' ? 'System' : 'sans-serif',
                     fontWeight: '600',
