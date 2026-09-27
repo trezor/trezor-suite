@@ -28,7 +28,9 @@ import {
 } from '@suite-native/navigation';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
-type InactiveTokensTabProps = {
+import { type AccountAssetsTabListProps } from './types';
+
+type InactiveTokensTabProps = AccountAssetsTabListProps & {
     accountKey: AccountKey;
 };
 
@@ -47,7 +49,37 @@ const listFooterStyle = prepareNativeStyle(utils => ({
     paddingTop: utils.spacings.sp16,
 }));
 
-export const InactiveTokensTab = ({ accountKey }: InactiveTokensTabProps) => {
+const listStyle = prepareNativeStyle(() => ({
+    flex: 1,
+}));
+
+type InactiveTokensSearchHeaderProps = {
+    isLoading: boolean;
+    onSearchChange: (value: string) => void;
+};
+
+const InactiveTokensSearchHeader = ({
+    isLoading,
+    onSearchChange,
+}: InactiveTokensSearchHeaderProps) => {
+    const { translate } = useTranslate();
+
+    return (
+        <Box paddingBottom="sp16">
+            <SearchInput
+                onChange={onSearchChange}
+                placeholder={translate('moduleStellarToken.tokenSelection.searchPlaceholder')}
+            />
+            {isLoading && (
+                <Box alignItems="center" justifyContent="center" paddingVertical="sp24">
+                    <Loader />
+                </Box>
+            )}
+        </Box>
+    );
+};
+
+export const InactiveTokensTab = ({ accountKey, ListHeaderComponent }: InactiveTokensTabProps) => {
     const navigation =
         useNavigation<StackNavigationProps<RootStackParamList, RootStackRoutes.AccountOverview>>();
     const { translate } = useTranslate();
@@ -129,23 +161,18 @@ export const InactiveTokensTab = ({ accountKey }: InactiveTokensTabProps) => {
 
     return (
         <FlashList
+            style={applyStyle(listStyle)}
             data={filteredTokens}
             keyExtractor={item => item.contract}
             renderItem={renderItem}
             ListHeaderComponent={
-                <Box paddingBottom="sp16">
-                    <SearchInput
-                        onChange={setSearchQuery}
-                        placeholder={translate(
-                            'moduleStellarToken.tokenSelection.searchPlaceholder',
-                        )}
+                <>
+                    {ListHeaderComponent}
+                    <InactiveTokensSearchHeader
+                        isLoading={isLoading}
+                        onSearchChange={setSearchQuery}
                     />
-                    {isLoading && (
-                        <Box alignItems="center" justifyContent="center" paddingVertical="sp24">
-                            <Loader />
-                        </Box>
-                    )}
-                </Box>
+                </>
             }
             ListEmptyComponent={
                 !isLoading ? (
