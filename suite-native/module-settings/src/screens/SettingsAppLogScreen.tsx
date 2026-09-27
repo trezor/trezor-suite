@@ -14,10 +14,11 @@ import {
     VStack,
 } from '@suite-native/atoms';
 import { shareAsTextFile } from '@suite-native/helpers';
-import { Translation } from '@suite-native/intl';
+import { Translation, useTranslate } from '@suite-native/intl';
 import { DynamicScreenHeader, Screen } from '@suite-native/navigation';
 
 export const SettingsAppLogScreen = () => {
+    const { translate } = useTranslate();
     const [includeSensitiveInfo, setIncludeSensitiveInfo] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
     const { analytics } = useServices(injectNativeAnalytics);
@@ -61,6 +62,9 @@ export const SettingsAppLogScreen = () => {
                                         <Translation id="moduleSettings.appLog.sensitiveDataToggle.title" />
                                     </Text>
                                     <Switch
+                                        accessibilityLabel={translate(
+                                            'moduleSettings.appLog.sensitiveDataToggle.title',
+                                        )}
                                         isChecked={includeSensitiveInfo}
                                         onChange={setIncludeSensitiveInfo}
                                     />

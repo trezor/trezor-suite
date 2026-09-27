@@ -16,7 +16,7 @@ import {
     Text,
     VStack,
 } from '@suite-native/atoms';
-import { Translation } from '@suite-native/intl';
+import { Translation, useTranslate } from '@suite-native/intl';
 
 type EarnConsentsDelegatingCardProps = {
     symbol: NetworkSymbol;
@@ -27,6 +27,7 @@ export const EarnConsentsDelegatingCard = ({
     symbol,
     onConfirm,
 }: EarnConsentsDelegatingCardProps) => {
+    const { translate } = useTranslate();
     const [hasAgreed, setHasAgreed] = useState(false);
     const displaySymbol = getNetworkDisplaySymbol(symbol);
     const itemsTranslationKey = getNetwork(symbol).networkType === 'solana' ? 'sol' : 'eth';
@@ -53,6 +54,7 @@ export const EarnConsentsDelegatingCard = ({
                 </IconList>
                 <HStack spacing="sp12" alignItems="center">
                     <CheckBox
+                        accessibilityLabel={translate('earn.earnConsentsScreen.acknowledge')}
                         isChecked={hasAgreed}
                         onChange={setHasAgreed}
                         testID="@earn/consent/checkbox"

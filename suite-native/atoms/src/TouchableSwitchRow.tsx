@@ -1,12 +1,13 @@
 import { type ReactNode } from 'react';
 
 import { Icon, type IconName } from '@suite-native/icons';
-import { Translation } from '@suite-native/intl';
+import { Translation, useTranslate } from '@suite-native/intl';
 
 import { BannerInline } from './BannerInline/BannerInline';
 import { Box } from './Box';
 import { Button } from './Button/Button';
 import { Card } from './Card/Card';
+import { DecorativeControl } from './DecorativeControl';
 import { PressableOpacity } from './Pressable';
 import { HStack, VStack } from './Stack';
 import { Switch } from './Switch';
@@ -18,17 +19,26 @@ export const TouchableSwitchRowDescription = ({ children }: { children: ReactNod
     </Text>
 );
 
-const LearnMoreButton = ({ onPress }: { onPress: () => void }) => (
-    <Button
-        size="medium"
-        iconLeft="arrowSquareOut"
-        onPress={onPress}
-        intent="neutral"
-        priority="secondary"
-    >
-        <Translation id="generic.buttons.learnMore" />
-    </Button>
-);
+type LearnMoreButtonProps = {
+    onPress: () => void;
+};
+
+const LearnMoreButton = ({ onPress }: LearnMoreButtonProps) => {
+    const { translate } = useTranslate();
+
+    return (
+        <Button
+            size="medium"
+            iconLeft="arrowSquareOut"
+            onPress={onPress}
+            intent="neutral"
+            priority="secondary"
+            accessibilityLabel={translate('generic.buttons.learnMore')}
+        >
+            <Translation id="generic.buttons.learnMore" />
+        </Button>
+    );
+};
 
 export type TouchableSwitchRowProps = {
     icon: IconName;
@@ -59,16 +69,19 @@ export const TouchableSwitchRow = ({
 
     return (
         <Card borderColor="borderNeutral" noPadding>
-            <PressableOpacity
-                onPress={handleChange}
-                accessibilityLabel={accessibilityLabel}
-                accessibilityRole="switch"
-                accessibilityState={{ checked: isChecked }}
-            >
-                <VStack margin="sp16" spacing="sp12">
+            <VStack margin="sp16" spacing="sp12">
+                <PressableOpacity
+                    onPress={handleChange}
+                    accessibilityLabel={accessibilityLabel}
+                    accessibilityRole="switch"
+                    accessibilityState={{ checked: isChecked }}
+                    testID={testID}
+                >
                     <HStack spacing="sp12">
                         <Box marginVertical="sp2">
-                            <Icon name={icon} size="mediumLarge" />
+                            <DecorativeControl>
+                                <Icon name={icon} size="mediumLarge" />
+                            </DecorativeControl>
                         </Box>
                         <VStack flex={1}>
                             <HStack justifyContent="space-between" flex={1}>
@@ -80,18 +93,20 @@ export const TouchableSwitchRow = ({
                                         </Text>
                                     )}
                                 </VStack>
-                                <Switch
-                                    testID={testID}
-                                    isChecked={isChecked}
-                                    onChange={() => onChange(!isChecked)}
-                                />
+                                <DecorativeControl>
+                                    <Switch isChecked={isChecked} onChange={onChange} />
+                                </DecorativeControl>
                             </HStack>
-                            {onLearnMorePress && <LearnMoreButton onPress={onLearnMorePress} />}
                         </VStack>
                     </HStack>
-                    {additionalInfo && <BannerInline title={additionalInfo} intent="neutral" />}
-                </VStack>
-            </PressableOpacity>
+                </PressableOpacity>
+                {onLearnMorePress && (
+                    <Box alignSelf="flex-start">
+                        <LearnMoreButton onPress={onLearnMorePress} />
+                    </Box>
+                )}
+                {additionalInfo && <BannerInline title={additionalInfo} intent="neutral" />}
+            </VStack>
         </Card>
     );
 };

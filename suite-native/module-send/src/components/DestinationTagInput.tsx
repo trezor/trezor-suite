@@ -14,7 +14,7 @@ import {
 import { TextInputField, useFormContext } from '@suite-native/forms';
 import { integerTransformer } from '@suite-native/helpers';
 import { Icon } from '@suite-native/icons';
-import { Translation } from '@suite-native/intl';
+import { Translation, useTranslate } from '@suite-native/intl';
 import { Link } from '@suite-native/link';
 import { useDebounce } from '@trezor/react-utils';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
@@ -38,6 +38,7 @@ interface DestinationTagInputProps {
 }
 
 export const DestinationTagInput = ({ networkSymbol }: DestinationTagInputProps) => {
+    const { translate } = useTranslate();
     const inputRef = useRef<InputType | null>(null);
     const { applyStyle } = useNativeStyles();
 
@@ -96,7 +97,13 @@ export const DestinationTagInput = ({ networkSymbol }: DestinationTagInputProps)
                         />
                     </Text>
                 </HStack>
-                <Switch isChecked={isInputDisplayed} onChange={handleShowInputChange} />
+                <Switch
+                    accessibilityLabel={translate(
+                        'moduleSend.outputs.recipients.destinationTag.label',
+                    )}
+                    isChecked={isInputDisplayed}
+                    onChange={handleShowInputChange}
+                />
             </HStack>
             {isInputDisplayed ? (
                 <AnimatedVStack spacing="sp8" entering={FadeIn} exiting={FadeOut}>

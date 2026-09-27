@@ -72,6 +72,7 @@ export const SuiteSyncRelaySettings = () => {
                     <HStack justifyContent="space-between">
                         <Text>Enable Suite Sync Debug</Text>
                         <CheckBox
+                            accessibilityLabel="Enable Suite Sync Debug"
                             isChecked={isSuiteSyncDebugEnabled}
                             onChange={handleSuiteSyncDebugToggle}
                         />

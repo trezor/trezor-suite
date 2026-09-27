@@ -1,6 +1,13 @@
 import { type ReactNode } from 'react';
 
-import { BannerFull, CheckBox, HStack, PressableOpacity, Text } from '@suite-native/atoms';
+import {
+    BannerFull,
+    CheckBox,
+    DecorativeControl,
+    HStack,
+    PressableOpacity,
+    Text,
+} from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 
 type TxSimulationRiskBannerProps = {
@@ -20,12 +27,18 @@ export const TxSimulationRiskBanner = ({
 }: TxSimulationRiskBannerProps) => (
     <>
         <BannerFull intent={intent} title={title} description={description} />
-        <PressableOpacity onPress={() => setDisclaimerAccepted(!disclaimerAccepted)}>
+        <PressableOpacity
+            onPress={() => setDisclaimerAccepted(!disclaimerAccepted)}
+            accessibilityRole="checkbox"
+            accessibilityState={{ checked: disclaimerAccepted }}
+        >
             <HStack spacing="sp16" padding="sp8" alignItems="center">
-                <CheckBox
-                    isChecked={disclaimerAccepted}
-                    onChange={() => setDisclaimerAccepted(!disclaimerAccepted)}
-                />
+                <DecorativeControl>
+                    <CheckBox
+                        isChecked={disclaimerAccepted}
+                        onChange={() => setDisclaimerAccepted(!disclaimerAccepted)}
+                    />
+                </DecorativeControl>
                 <Text color="contentSecondary" variant="body-sm">
                     <Translation id="moduleConnectPopup.simulation.disclaimerOverride" />
                 </Text>

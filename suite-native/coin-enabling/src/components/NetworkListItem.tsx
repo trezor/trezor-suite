@@ -1,5 +1,5 @@
 import { type ReactNode } from 'react';
-import { type AccessibilityRole } from 'react-native';
+import { type AccessibilityRole, type AccessibilityState } from 'react-native';
 
 import { type NetworkSymbol, getNetwork } from '@suite-common/wallet-config';
 import { Box, Card, PressableOpacity } from '@suite-native/atoms';
@@ -13,6 +13,7 @@ type NetworkListItemProps = {
     accessory: ReactNode;
     onPress: () => void;
     accessibilityRole: AccessibilityRole;
+    accessibilityState?: AccessibilityState;
     testID: string;
 };
 
@@ -31,6 +32,7 @@ export const NetworkListItem = ({
     accessory,
     onPress,
     accessibilityRole,
+    accessibilityState,
     testID,
 }: NetworkListItemProps) => {
     const { applyStyle } = useNativeStyles();
@@ -43,6 +45,8 @@ export const NetworkListItem = ({
             <PressableOpacity
                 onPress={onPress}
                 accessibilityRole={accessibilityRole}
+                accessibilityState={accessibilityState}
+                accessibilityLabel={network.name}
                 testID={testID}
             >
                 <Box style={applyStyle(wrapperStyle)} justifyContent="flex-start">

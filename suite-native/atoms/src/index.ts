@@ -18,6 +18,7 @@ export * from './Input/SearchInput';
 export * from './Input/SearchInputWithCancel';
 export * from './Input/Input';
 export * from './CheckBox';
+export * from './DecorativeControl';
 export * from './Switch';
 export * from './DiscreetText/DiscreetText';
 export * from './DiscreetText/DiscreetTextTrigger';

@@ -27,7 +27,11 @@ const FeatureFlag = ({ featureFlag }: { featureFlag: FeatureFlagEnum }) => {
     return (
         <Box flexDirection="row" justifyContent="space-between">
             <Text>{`${featureFlagsTitleMap[featureFlag]} [${featureFlagsInitialState[featureFlag]}]`}</Text>
-            <CheckBox isChecked={value} onChange={onChange} />
+            <CheckBox
+                accessibilityLabel={featureFlagsTitleMap[featureFlag]}
+                isChecked={value}
+                onChange={onChange}
+            />
         </Box>
     );
 };

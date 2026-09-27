@@ -7,6 +7,7 @@ import {
     Box,
     Button,
     Card,
+    DecorativeControl,
     IconList,
     IconListTitledItem,
     PressableOpacity,
@@ -114,7 +115,12 @@ export const AnalyticsConsentScreen = ({
                                         <Translation id="moduleOnboarding.analyticsConsentScreen.bulletPoints.dataCollection.description" />
                                     </IconListTitledItem>
                                 </IconList>
-                                <PressableOpacity onPress={toggleAnalyticsConsent}>
+                                <PressableOpacity
+                                    onPress={toggleAnalyticsConsent}
+                                    accessibilityRole="switch"
+                                    accessibilityState={{ checked: isEnabled }}
+                                    testID="@onboarding/AnalyticsConsent/consentSwitch"
+                                >
                                     <Box
                                         flexDirection="row"
                                         alignItems="center"
@@ -124,11 +130,12 @@ export const AnalyticsConsentScreen = ({
                                         <Text>
                                             <Translation id="moduleOnboarding.analyticsConsentScreen.helpSwitchTitle" />
                                         </Text>
-                                        <Switch
-                                            testID="@onboarding/AnalyticsConsent/consentSwitch"
-                                            isChecked={isEnabled}
-                                            onChange={toggleAnalyticsConsent}
-                                        />
+                                        <DecorativeControl>
+                                            <Switch
+                                                isChecked={isEnabled}
+                                                onChange={toggleAnalyticsConsent}
+                                            />
+                                        </DecorativeControl>
                                     </Box>
                                 </PressableOpacity>
                             </VStack>

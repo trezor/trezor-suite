@@ -1,5 +1,5 @@
 import { HStack, Switch, Text } from '@suite-native/atoms';
-import { Translation } from '@suite-native/intl';
+import { Translation, useTranslate } from '@suite-native/intl';
 
 type EarnMaxSwitchProps = {
     isChecked: boolean;
@@ -7,11 +7,20 @@ type EarnMaxSwitchProps = {
     testID?: string;
 };
 
-export const EarnMaxSwitch = ({ isChecked, onChange, testID }: EarnMaxSwitchProps) => (
-    <HStack alignItems="center" spacing="sp8">
-        <Text variant="body-sm">
-            <Translation id="earn.max" />
-        </Text>
-        <Switch isChecked={isChecked} onChange={onChange} testID={testID} />
-    </HStack>
-);
+export const EarnMaxSwitch = ({ isChecked, onChange, testID }: EarnMaxSwitchProps) => {
+    const { translate } = useTranslate();
+
+    return (
+        <HStack alignItems="center" spacing="sp8">
+            <Text variant="body-sm">
+                <Translation id="earn.max" />
+            </Text>
+            <Switch
+                accessibilityLabel={translate('earn.max')}
+                isChecked={isChecked}
+                onChange={onChange}
+                testID={testID}
+            />
+        </HStack>
+    );
+};

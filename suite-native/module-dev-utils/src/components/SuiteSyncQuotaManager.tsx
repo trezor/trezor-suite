@@ -116,6 +116,7 @@ export const SuiteSyncQuotaManager = () => {
                         </Text>
                     </Box>
                     <Switch
+                        accessibilityLabel="Enforce Quota Manager for custom relay"
                         testID="@suiteSyncQuotaManager/enforce-switch"
                         isChecked={enforceQuotaManager}
                         onChange={onToggleEnforceQuotaManager}

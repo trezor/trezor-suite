@@ -17,6 +17,7 @@ import { getFiatRateKey } from '@suite-common/wallet-utils';
 import {
     Card,
     CheckBox,
+    DecorativeControl,
     Divider,
     HStack,
     PressableOpacity,
@@ -108,7 +109,11 @@ export const UtxoCard = ({
             style={applyStyle(cardStyle)}
         >
             <VStack spacing="sp12">
-                <PressableOpacity onPress={handleToggle}>
+                <PressableOpacity
+                    onPress={handleToggle}
+                    accessibilityRole="checkbox"
+                    accessibilityState={{ checked: isSelected }}
+                >
                     <HStack
                         paddingTop="sp16"
                         paddingHorizontal="sp12"
@@ -145,7 +150,9 @@ export const UtxoCard = ({
                                 deviceStaticSessionId={deviceStaticSessionId}
                             />
                         </VStack>
-                        <CheckBox isChecked={isSelected} onChange={handleToggle} />
+                        <DecorativeControl>
+                            <CheckBox isChecked={isSelected} onChange={handleToggle} />
+                        </DecorativeControl>
                     </HStack>
                 </PressableOpacity>
                 <Divider />

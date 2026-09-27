@@ -5,7 +5,7 @@ import { selectIsAnalyticsEnabled } from '@suite-common/analytics-redux';
 import { type DeviceRootState } from '@suite-common/device';
 import { selectSupportChatUrl } from '@suite-common/support';
 import { CheckBox, HStack, Text, VStack } from '@suite-native/atoms';
-import { Translation } from '@suite-native/intl';
+import { Translation, useTranslate } from '@suite-native/intl';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
 const checkboxRowStyle = prepareNativeStyle(utils => ({
@@ -20,6 +20,7 @@ export type ContactSupportAlertAppendixRef = {
 };
 
 export const ContactSupportAlertAppendix = forwardRef<ContactSupportAlertAppendixRef>((_, ref) => {
+    const { translate } = useTranslate();
     const isAnalyticsEnabled = useSelector(selectIsAnalyticsEnabled);
     const [isChecked, setIsChecked] = useState(isAnalyticsEnabled);
     const supportChatUrl = useSelector((state: DeviceRootState) =>
@@ -46,6 +47,9 @@ export const ContactSupportAlertAppendix = forwardRef<ContactSupportAlertAppendi
         <VStack spacing="sp12">
             <HStack spacing="sp12" alignItems="center" style={applyStyle(checkboxRowStyle)}>
                 <CheckBox
+                    accessibilityLabel={translate(
+                        'moduleSettings.faq.needHelp.contactSupportAlert.toggleLabel',
+                    )}
                     isChecked={isChecked}
                     onChange={setIsChecked}
                     testID="@contact-support-alert/share-info-switch"

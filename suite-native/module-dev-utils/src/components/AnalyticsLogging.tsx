@@ -118,6 +118,7 @@ export const AnalyticsLogging = () => {
                         {loggerEnabled && !isAnalyticsEnabled && renderAnalyticsDisabledBadge()}
                     </VStack>
                     <CheckBox
+                        accessibilityLabel="Console Logging"
                         testID="@analytics-url-control/logger-checkbox"
                         isChecked={!!loggerEnabled}
                         onChange={() => {

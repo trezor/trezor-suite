@@ -15,7 +15,7 @@ import { getDecimalsForBaseCurrency } from '@suite-common/wallet-utils';
 import { HStack, Switch, Text } from '@suite-native/atoms';
 import { useCryptoFiatConverters } from '@suite-native/formatters';
 import { useFormContext } from '@suite-native/forms';
-import { Translation } from '@suite-native/intl';
+import { Translation, useTranslate } from '@suite-native/intl';
 import { BigNumber } from '@trezor/utils';
 
 import { type SendOutputsFormValues } from '../sendOutputsFormSchema';
@@ -34,6 +34,7 @@ export const SendMaxSwitch = ({
     tokenContract,
     maxSpendableAmount,
 }: SendMaxSwitchProps) => {
+    const { translate } = useTranslate();
     const symbol = useSelector((state: AccountsRootState) =>
         selectAccountNetworkSymbol(state, accountKey),
     );
@@ -99,7 +100,11 @@ export const SendMaxSwitch = ({
                         <Translation id="moduleSend.outputs.recipients.maxButton" />
                     </Text>
 
-                    <Switch isChecked={isSendMaxEnabled} onChange={toggleSendMax} />
+                    <Switch
+                        accessibilityLabel={translate('moduleSend.outputs.recipients.maxButton')}
+                        isChecked={isSendMaxEnabled}
+                        onChange={toggleSendMax}
+                    />
                 </HStack>
             </Animated.View>
         )

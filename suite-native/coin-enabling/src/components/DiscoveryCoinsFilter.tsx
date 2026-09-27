@@ -16,8 +16,7 @@ import {
     getEnabledCoinFieldName,
     getNetworkSymbolsFromEnabledCoins,
 } from '../coinEnablingFormUtils';
-import { NetworkListItem } from './NetworkListItem';
-import { NetworkSymbolSwitch } from './NetworkSymbolSwitch';
+import { NetworkSwitchListItem } from './NetworkSwitchListItem';
 
 type NetworkGroupProps = {
     networks: Network[];
@@ -38,14 +37,7 @@ const NetworkGroup = ({ networks, handleToggle, showTestnetsLabel }: NetworkGrou
             </Text>
         )}
         {networks.map(({ symbol }) => (
-            <NetworkListItem
-                key={symbol}
-                symbol={symbol}
-                accessory={<NetworkSymbolSwitch symbol={symbol} onToggle={handleToggle} />}
-                onPress={() => handleToggle(symbol)}
-                accessibilityRole="togglebutton"
-                testID={`@coin-enabling/toggle-${symbol}`}
-            />
+            <NetworkSwitchListItem key={symbol} symbol={symbol} onToggle={handleToggle} />
         ))}
     </VStack>
 );
@@ -77,8 +69,6 @@ export const DiscoveryCoinsFilter = ({
         (symbol: NetworkSymbol, isEnabled?: boolean) => {
             const enabledCoins = getValues('enabledCoins') ?? {};
             const isSymbolEnabled = !!enabledCoins[symbol];
-            // Row press does not subscribe to form state, so it toggles from current form value.
-            // Switch press already knows the next value and passes it directly.
             const nextIsEnabled = isEnabled ?? !isSymbolEnabled;
 
             if (nextIsEnabled === isSymbolEnabled) {

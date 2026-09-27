@@ -17,6 +17,7 @@ export type SwitchProps = {
     onChange: (value: boolean) => void;
     isDisabled?: boolean;
     testID?: string;
+    accessibilityLabel?: string;
 };
 
 const SWITCH_CONTAINER_WIDTH = 44 * ACCESSIBILITY_FONTSIZE_MULTIPLIER;
@@ -83,7 +84,13 @@ const useAnimationStyles = ({
     };
 };
 
-export const Switch = ({ isChecked, onChange, isDisabled = false, testID }: SwitchProps) => {
+export const Switch = ({
+    isChecked,
+    onChange,
+    isDisabled = false,
+    testID,
+    accessibilityLabel,
+}: SwitchProps) => {
     const { applyStyle } = useNativeStyles();
 
     const { animatedSwitchCircleStyle, animatedSwitchContainerStyle } = useAnimationStyles({
@@ -97,7 +104,14 @@ export const Switch = ({ isChecked, onChange, isDisabled = false, testID }: Swit
     };
 
     return (
-        <Pressable onPress={handlePress} accessibilityRole="switch" testID={testID}>
+        <Pressable
+            onPress={handlePress}
+            disabled={isDisabled}
+            accessibilityRole="switch"
+            accessibilityLabel={accessibilityLabel}
+            accessibilityState={{ checked: isChecked, disabled: isDisabled }}
+            testID={testID}
+        >
             <Animated.View style={[animatedSwitchContainerStyle, applyStyle(switchContainerStyle)]}>
                 <Animated.View style={[animatedSwitchCircleStyle, applyStyle(switchCircleStyle)]} />
             </Animated.View>

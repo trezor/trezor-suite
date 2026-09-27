@@ -10,6 +10,7 @@ import {
     Button,
     Card,
     CheckBox,
+    DecorativeControl,
     HStack,
     PressableOpacity,
     Text,
@@ -92,7 +93,13 @@ export const NetworkFilterBottomSheet = forwardRef(
             >
                 <VStack spacing="sp12" paddingBottom="sp16">
                     {options.map(({ symbol, accountCount }) => (
-                        <PressableOpacity key={symbol} onPress={() => handleSelectNetwork(symbol)}>
+                        <PressableOpacity
+                            key={symbol}
+                            onPress={() => handleSelectNetwork(symbol)}
+                            accessibilityRole="checkbox"
+                            accessibilityLabel={getNetwork(symbol).name}
+                            accessibilityState={{ checked: pendingSelection.includes(symbol) }}
+                        >
                             <Card noShadow>
                                 <HStack alignItems="center" spacing="sp16">
                                     <TokenIcon tokenSymbol={symbol} networkSymbol={symbol} />
@@ -107,10 +114,12 @@ export const NetworkFilterBottomSheet = forwardRef(
                                             />
                                         </Text>
                                     </VStack>
-                                    <CheckBox
-                                        isChecked={pendingSelection.includes(symbol)}
-                                        onChange={() => handleSelectNetwork(symbol)}
-                                    />
+                                    <DecorativeControl>
+                                        <CheckBox
+                                            isChecked={pendingSelection.includes(symbol)}
+                                            onChange={() => handleSelectNetwork(symbol)}
+                                        />
+                                    </DecorativeControl>
                                 </HStack>
                             </Card>
                         </PressableOpacity>

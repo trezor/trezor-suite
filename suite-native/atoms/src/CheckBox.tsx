@@ -10,6 +10,7 @@ export type CheckBoxProps = {
     onChange: (value: boolean) => void;
     style?: NativeStyleObject;
     testID?: string;
+    accessibilityLabel?: string;
 };
 
 type CheckBoxStyleProps = {
@@ -54,6 +55,7 @@ export const CheckBox = ({
     onChange,
     style,
     testID,
+    accessibilityLabel,
 }: CheckBoxProps) => {
     const { applyStyle } = useNativeStyles();
 
@@ -63,6 +65,7 @@ export const CheckBox = ({
             disabled={isDisabled}
             onPress={() => onChange(!isChecked)}
             accessibilityRole="checkbox"
+            accessibilityLabel={accessibilityLabel}
             accessibilityState={{ checked: isChecked, disabled: isDisabled }}
             style={[applyStyle(checkBoxStyle, { isChecked, isDisabled }), style]}
         >

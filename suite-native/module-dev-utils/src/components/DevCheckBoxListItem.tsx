@@ -1,4 +1,4 @@
-import { CheckBox, HStack, PressableOpacity, Text } from '@suite-native/atoms';
+import { CheckBox, DecorativeControl, HStack, PressableOpacity, Text } from '@suite-native/atoms';
 
 export const DevCheckBoxListItem = ({
     title,
@@ -9,10 +9,17 @@ export const DevCheckBoxListItem = ({
     onPress: () => void;
     isChecked: boolean;
 }) => (
-    <PressableOpacity onPress={onPress}>
+    <PressableOpacity
+        onPress={onPress}
+        accessibilityRole="checkbox"
+        accessibilityState={{ checked: isChecked }}
+        accessibilityLabel={title}
+    >
         <HStack justifyContent="space-between" alignItems="center">
             <Text variant="body-md">{title}</Text>
-            <CheckBox isChecked={isChecked} onChange={onPress} />
+            <DecorativeControl>
+                <CheckBox isChecked={isChecked} onChange={onPress} />
+            </DecorativeControl>
         </HStack>
     </PressableOpacity>
 );

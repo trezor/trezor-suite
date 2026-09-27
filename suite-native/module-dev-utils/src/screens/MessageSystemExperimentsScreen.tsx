@@ -34,6 +34,7 @@ export const MessageSystemExperimentsScreen = () => {
                 <Box flexDirection="row" justifyContent="space-between" alignItems="center">
                     <Text>Show only active</Text>
                     <CheckBox
+                        accessibilityLabel="Show only active"
                         isChecked={isActiveOnlyShown}
                         onChange={() => setIsActiveOnlyShown(prev => !prev)}
                     />

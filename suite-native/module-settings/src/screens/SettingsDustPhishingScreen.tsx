@@ -8,7 +8,16 @@ import {
     selectDustPhishingIsEnabled,
     selectDustPhishingThreshold,
 } from '@suite-common/wallet-core';
-import { Button, Card, HStack, PressableOpacity, Switch, Text, VStack } from '@suite-native/atoms';
+import {
+    Button,
+    Card,
+    DecorativeControl,
+    HStack,
+    PressableOpacity,
+    Switch,
+    Text,
+    VStack,
+} from '@suite-native/atoms';
 import { Form, TextInputField } from '@suite-native/forms';
 import { Translation, useTranslate } from '@suite-native/intl';
 import { DynamicScreenHeader, Screen } from '@suite-native/navigation';
@@ -62,9 +71,11 @@ export const SettingsDustPhishingScreen = () => {
                 <Card borderColor="borderNeutral" noPadding>
                     <PressableOpacity
                         onPress={() => onSwitchChange(!dustPhishingIsEnabled)}
-                        accessibilityLabel=""
+                        accessibilityLabel={translate(
+                            'moduleSettings.security.dustPhishing.enableProtection',
+                        )}
                         accessibilityRole="switch"
-                        accessibilityState={{ checked: true }}
+                        accessibilityState={{ checked: dustPhishingIsEnabled }}
                     >
                         <HStack margin="sp16" spacing="sp12">
                             <VStack flex={1}>
@@ -72,10 +83,12 @@ export const SettingsDustPhishingScreen = () => {
                                     <Text variant="body-md-strong">
                                         <Translation id="moduleSettings.security.dustPhishing.enableProtection" />
                                     </Text>
-                                    <Switch
-                                        isChecked={dustPhishingIsEnabled}
-                                        onChange={onSwitchChange}
-                                    />
+                                    <DecorativeControl>
+                                        <Switch
+                                            isChecked={dustPhishingIsEnabled}
+                                            onChange={onSwitchChange}
+                                        />
+                                    </DecorativeControl>
                                 </HStack>
                             </VStack>
                         </HStack>

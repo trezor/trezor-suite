@@ -10,6 +10,7 @@ import {
     Button,
     Card,
     CheckBox,
+    DecorativeControl,
     ErrorMessage,
     HStack,
     PressableOpacity,
@@ -85,12 +86,18 @@ export const PermissionConfirmation = () => {
 
                 <TextDivider title="moduleConnectPopup.optional" />
 
-                <PressableOpacity onPress={() => setIsRemembered(!isRemembered)}>
+                <PressableOpacity
+                    onPress={() => setIsRemembered(!isRemembered)}
+                    accessibilityRole="checkbox"
+                    accessibilityState={{ checked: isRemembered }}
+                >
                     <HStack spacing="sp16" padding="sp8" alignItems="center">
-                        <CheckBox
-                            isChecked={isRemembered}
-                            onChange={() => setIsRemembered(!isRemembered)}
-                        />
+                        <DecorativeControl>
+                            <CheckBox
+                                isChecked={isRemembered}
+                                onChange={() => setIsRemembered(!isRemembered)}
+                            />
+                        </DecorativeControl>
                         <Text color="contentSecondary" variant="body-sm">
                             <Translation id="moduleConnectPopup.alwaysAllow" />
                         </Text>

@@ -9,6 +9,7 @@ import {
     Button,
     Card,
     CheckBox,
+    DecorativeControl,
     HStack,
     IconList,
     IconListTitledItem,
@@ -87,7 +88,11 @@ export const TurnOffCheckScreenContent = ({ title, onConfirm }: TurnOffCheckScre
                     }
                 />
                 <InformativeList />
-                <Pressable onPress={handleCheckboxPress}>
+                <Pressable
+                    onPress={handleCheckboxPress}
+                    accessibilityRole="checkbox"
+                    accessibilityState={{ checked: isChecked }}
+                >
                     <Card
                         alertProps={{
                             intent: 'warning',
@@ -105,7 +110,9 @@ export const TurnOffCheckScreenContent = ({ title, onConfirm }: TurnOffCheckScre
                                     <Translation id="moduleSettings.advanced.authenticityChecks.turnOff.acknowledgement" />
                                 </Text>
                             </Box>
-                            <CheckBox isChecked={isChecked} onChange={handleCheckboxPress} />
+                            <DecorativeControl>
+                                <CheckBox isChecked={isChecked} onChange={handleCheckboxPress} />
+                            </DecorativeControl>
                         </HStack>
                     </Card>
                 </Pressable>

@@ -15,7 +15,7 @@ import { formatNetworkAmount, getDecimalsForBaseCurrency } from '@suite-common/w
 import { HStack, Switch, Text } from '@suite-native/atoms';
 import { useCryptoFiatConverters } from '@suite-native/formatters';
 import { useFormContext } from '@suite-native/forms';
-import { Translation } from '@suite-native/intl';
+import { Translation, useTranslate } from '@suite-native/intl';
 import { BigNumber } from '@trezor/utils';
 
 import { type EarnFormValues } from '../../utils/earn/earnFormSchema';
@@ -37,6 +37,7 @@ export const EarnMaxButton = ({
     onChange,
     variant = 'stake',
 }: EarnMaxButtonProps) => {
+    const { translate } = useTranslate();
     const { setValue } = useFormContext<EarnFormValues>();
 
     const account = useSelector((state: AccountsRootState) =>
@@ -99,7 +100,15 @@ export const EarnMaxButton = ({
                     <Translation id="earn.earnFormScreen.stakeMaxButton" />
                 )}
             </Text>
-            <Switch isChecked={isChecked} onChange={handleChange} />
+            <Switch
+                accessibilityLabel={translate(
+                    variant === 'unstake'
+                        ? 'earn.earnFormScreen.unstakeMaxButton'
+                        : 'earn.earnFormScreen.stakeMaxButton',
+                )}
+                isChecked={isChecked}
+                onChange={handleChange}
+            />
         </HStack>
     );
 };

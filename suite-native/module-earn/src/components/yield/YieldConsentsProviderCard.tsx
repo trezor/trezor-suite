@@ -12,7 +12,7 @@ import {
     VStack,
 } from '@suite-native/atoms';
 import { Icon } from '@suite-native/icons';
-import { Translation } from '@suite-native/intl';
+import { Translation, useTranslate } from '@suite-native/intl';
 import { Link } from '@suite-native/link';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 import { MORPHO_DISCLAIMER_URL, TREZOR_SUITE_TOS_URL } from '@trezor/urls';
@@ -51,6 +51,7 @@ export const YieldConsentsProviderCard = ({
     isConfirmLoading,
     onConfirm,
 }: YieldConsentsProviderCardProps) => {
+    const { translate } = useTranslate();
     const { applyStyle } = useNativeStyles();
     const [hasAgreed, setHasAgreed] = useState(false);
 
@@ -88,6 +89,11 @@ export const YieldConsentsProviderCard = ({
                 </IconList>
                 <HStack spacing="sp12" alignItems="center">
                     <CheckBox
+                        accessibilityLabel={translate('earn.yieldConsentsScreen.terms', {
+                            providerName,
+                            tos: chunks => chunks.join(''),
+                            disclaimer: chunks => chunks.join(''),
+                        })}
                         isChecked={hasAgreed}
                         onChange={setHasAgreed}
                         testID="@earn/yield-consent/checkbox"
