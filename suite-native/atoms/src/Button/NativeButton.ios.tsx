@@ -1,3 +1,5 @@
+import { useWindowDimensions } from 'react-native';
+
 import { Button, HStack, Host, Text } from '@expo/ui/swift-ui';
 import {
     buttonBorderShape,
@@ -39,6 +41,7 @@ export const NativeButton = ({
     ...containerProps
 }: NativeButtonProps) => {
     const { utils } = useNativeStyles();
+    const { fontScale } = useWindowDimensions();
     const { isDisabled } = containerProps;
     const { backgroundColor, contentColor } = getButtonColors({
         intent,
@@ -88,11 +91,12 @@ export const NativeButton = ({
                                     modifiers={[
                                         font({
                                             weight: 'regular',
-                                            size: utils.typography[
-                                                textButtonTypographyMap[
-                                                    size === 'small' ? 'small' : 'large'
-                                                ]
-                                            ].fontSize,
+                                            size:
+                                                utils.typography[
+                                                    textButtonTypographyMap[
+                                                        size === 'small' ? 'small' : 'large'
+                                                    ]
+                                                ].fontSize * fontScale,
                                         }),
                                         lineLimit(1),
                                         underline({ isActive: isUnderlined, pattern: 'solid' }),

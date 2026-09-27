@@ -1,5 +1,6 @@
 import { type ComponentType, type ReactNode } from 'react';
 import {
+    Dimensions,
     Pressable as MockPressable,
     Text as MockText,
     View as MockView,
@@ -7,7 +8,7 @@ import {
     Text,
 } from 'react-native';
 
-import { fireEvent, renderWithBasicProvider, within } from '@suite-native/test-utils';
+import { act, fireEvent, renderWithBasicProvider, within } from '@suite-native/test-utils';
 
 import { NativeButton as AndroidButton } from './NativeButton.android';
 import { NativeButton as IOSButton } from './NativeButton.ios';
@@ -198,5 +199,46 @@ describe.each<ButtonPlatform>([
         if (platform === 'android') expect(control.props.accessibilityHint).toBe('text');
         await fireEvent.press(control);
         expect(onPress).toHaveBeenCalledTimes(1);
+    });
+
+    it('keeps visible native text in sync with uncapped system font scaling', async () => {
+        const originalDimensions = Dimensions.get('window');
+        await act(() => {
+            Dimensions.set({ window: { ...originalDimensions, fontScale: 1 } });
+        });
+
+        const { getByTestId, unmount } = await renderButton({
+            variant: 'text',
+            textLabel: 'Continue',
+        });
+        const getNativeFontSize = () => {
+            const control = getByTestId('native-control', { includeHiddenElements: true });
+            const label = within(control).getByText('Continue', { includeHiddenElements: true });
+
+            return platform === 'ios'
+                ? label.props.modifiers.find(({ $type }: { $type: string }) => $type === 'font')
+                      .size
+                : label.props.style.fontSize;
+        };
+        const baseFontSize = getNativeFontSize();
+        expect(baseFontSize).toBeGreaterThan(0);
+
+        try {
+            for (const fontScale of [1.8, 2.8]) {
+                await act(() => {
+                    Dimensions.set({ window: { ...originalDimensions, fontScale } });
+                });
+
+                // Compose uses sp; SwiftUI's explicit point size needs the same scale as RN text.
+                expect(getNativeFontSize()).toBeCloseTo(
+                    baseFontSize * (platform === 'ios' ? fontScale : 1),
+                );
+            }
+        } finally {
+            await unmount();
+            await act(() => {
+                Dimensions.set({ window: originalDimensions });
+            });
+        }
     });
 });
