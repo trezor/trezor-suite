@@ -36,6 +36,7 @@ export const XpubHint = ({ networkType, handleOpen }: XpubScanHintSheet) => {
     return (
         <Box style={applyStyle(sheetTriggerStyle)}>
             <TextButton
+                native
                 iconLeft="question"
                 onPress={handleOpen}
                 testID="@accounts-import/sync-coins/xpub-help-link"

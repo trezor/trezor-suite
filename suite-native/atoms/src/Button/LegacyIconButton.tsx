@@ -1,0 +1,111 @@
+import { useState } from 'react';
+import { type PressableProps, type ViewStyle } from 'react-native';
+import { type AnimatedStyle } from 'react-native-reanimated';
+
+import { Icon, type IconName } from '@suite-native/icons';
+import {
+    type NativeStyleObject,
+    mergeNativeStyles,
+    prepareNativeStyle,
+    useNativeStyles,
+} from '@trezor/styles-native';
+
+import { Loader } from '../Loader';
+import { AnimatedPressable } from '../Pressable';
+import { type ButtonStyleProps, buttonStyle } from './Button';
+import { type ButtonColorProps, type ButtonSize } from './types';
+import { useButtonPressAnimatedStyle } from './useButtonPressAnimatedStyle';
+import {
+    getButtonColors,
+    iconButtonBorderRadiusMap,
+    iconButtonPaddingMap,
+    iconButtonToIconSizeMap,
+} from './utils';
+
+export type LegacyIconButtonProps = Omit<
+    PressableProps,
+    'style' | 'onPressIn' | 'onPressOut' | 'children'
+> & {
+    iconName: IconName;
+    size?: ButtonSize;
+    style?: NativeStyleObject | AnimatedStyle<ViewStyle>;
+    isLoading?: boolean;
+    isDisabled?: boolean;
+} & ButtonColorProps;
+
+const iconButtonStyle = mergeNativeStyles([
+    buttonStyle,
+    prepareNativeStyle<ButtonStyleProps>((_, { size }) => ({
+        alignSelf: 'center',
+        // Padding must be set explicitly to override the base button size styles.
+        paddingVertical: iconButtonPaddingMap[size],
+        paddingHorizontal: iconButtonPaddingMap[size],
+        borderRadius: iconButtonBorderRadiusMap[size],
+    })),
+]);
+
+export const LegacyIconButton = ({
+    iconName,
+    testID,
+    style,
+    intent = 'brand',
+    priority = 'primary',
+    isInverse = false,
+    size = 'large',
+    isLoading = false,
+    isDisabled = false,
+    disabled,
+    accessibilityState,
+    ...pressableProps
+}: LegacyIconButtonProps) => {
+    const [isPressed, setIsPressed] = useState(false);
+    const { applyStyle } = useNativeStyles();
+    const hasDisabledState = isDisabled || !!disabled || isLoading;
+    const { backgroundColor, onPressColor, contentColor } = getButtonColors({
+        intent,
+        priority,
+        isInverse,
+        isDisabled: hasDisabledState,
+    });
+
+    const animatedPressStyle = useButtonPressAnimatedStyle(
+        isPressed,
+        hasDisabledState,
+        backgroundColor,
+        onPressColor,
+    );
+
+    const handlePressIn = () => setIsPressed(true);
+    const handlePressOut = () => setIsPressed(false);
+
+    return (
+        <AnimatedPressable
+            accessibilityRole="button"
+            accessibilityState={{
+                ...accessibilityState,
+                disabled: hasDisabledState,
+                busy: isLoading,
+            }}
+            onPressIn={handlePressIn}
+            onPressOut={handlePressOut}
+            disabled={hasDisabledState}
+            style={[
+                animatedPressStyle,
+                applyStyle(iconButtonStyle, {
+                    size,
+                    isFullWidth: false,
+                    backgroundColor,
+                }),
+                style,
+            ]}
+            testID={testID}
+            {...pressableProps}
+        >
+            {isLoading ? (
+                <Loader color={contentColor} />
+            ) : (
+                <Icon name={iconName} color={contentColor} size={iconButtonToIconSizeMap[size]} />
+            )}
+        </AnimatedPressable>
+    );
+};

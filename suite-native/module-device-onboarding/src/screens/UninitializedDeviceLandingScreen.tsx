@@ -158,6 +158,7 @@ export const UninitializedDeviceLandingScreen = ({
                 <VStack spacing="sp32">
                     <UninitializedDeviceLandingScreenContent deviceModel={deviceModel} />
                     <TextButton
+                        native
                         isUnderlined
                         onPress={handleDeviceLooksDifferentButtonPress}
                         testID="@deviceOnboarding/UninitializedDeviceLandingScreen/deviceLooksDifferentBtn"

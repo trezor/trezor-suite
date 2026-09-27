@@ -35,6 +35,7 @@ export const ExplanationText = ({
 
     return (
         <TextButton
+            native
             accessibilityRole="button"
             iconRight="question"
             intent="neutral"

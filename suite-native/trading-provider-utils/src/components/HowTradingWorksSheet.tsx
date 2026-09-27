@@ -28,7 +28,12 @@ const IconListTextButtonItem = ({ icon, href, children }: IconListTextButtonItem
 
     return (
         <IconListItem icon={icon}>
-            <TextButton iconRight="arrowSquareOut" isUnderlined onPress={() => openLink(href)}>
+            <TextButton
+                native
+                iconRight="arrowSquareOut"
+                isUnderlined
+                onPress={() => openLink(href)}
+            >
                 {children}
             </TextButton>
         </IconListItem>

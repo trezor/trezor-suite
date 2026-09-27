@@ -1,176 +1,126 @@
-import { type ReactNode, useCallback, useEffect } from 'react';
-import { Pressable, type PressableProps } from 'react-native';
-import Animated, {
-    cancelAnimation,
-    useAnimatedStyle,
-    useSharedValue,
-    withTiming,
-} from 'react-native-reanimated';
+import { Platform, Text } from 'react-native';
 
-import { Icon, type IconName } from '@suite-native/icons';
-import { type NativeStyleObject, prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
-import { type Color } from '@trezor/theme';
+import { useTranslate } from '@suite-native/intl';
+import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
-import { Loader } from '../Loader';
-import { HStack } from '../Stack';
-import { pressTimingConfig } from '../constants';
-import { type TestProps } from '../types';
-import { type ButtonColorProps, TEXT_BUTTON_SIZES, type TextButtonSize } from './types';
-import {
-    getTextButtonColor,
-    getTextButtonDisabledColor,
-    textButtonGapMap,
-    textButtonIconSizeMap,
-    textButtonTypographyMap,
-} from './utils';
+import { getNativeTextLabel } from '../getNativeTextLabel';
+import { LegacyTextButton, type LegacyTextButtonProps } from './LegacyTextButton';
+import { NativeButton, supportsNativeButton } from './NativeButton';
+import { hasUnsupportedNativeButtonProps } from './hasUnsupportedNativeButtonProps';
+import { type NativeButtonPressProps } from './nativeButtonTypes';
+import { type TextButtonSize } from './types';
+import { getTextButtonColor, getTextButtonDisabledColor, textButtonTypographyMap } from './utils';
 
-export { TEXT_BUTTON_SIZES };
+export { TEXT_BUTTON_SIZES } from './types';
 
-export type TextButtonProps = Omit<
-    PressableProps,
-    'children' | 'onPressIn' | 'onPressOut' | 'style'
-> & {
-    children?: ReactNode;
-    iconLeft?: IconName;
-    iconRight?: IconName;
-    size?: TextButtonSize;
-    style?: NativeStyleObject;
-    isLoading?: boolean;
-    isDisabled?: boolean;
-    isUnderlined?: boolean;
-    isDotted?: boolean;
-} & ButtonColorProps &
-    TestProps;
+export type TextButtonProps = Omit<LegacyTextButtonProps, 'onPress'> & NativeButtonPressProps;
 
-type TextButtonStyleProps = {
-    isUnderlined: boolean;
-    size: TextButtonSize;
-    isDotted?: boolean;
-};
+type NativeTextButtonProps = Omit<LegacyTextButtonProps, 'onPress'> & { onPress?: () => void };
 
-const buttonContainerStyle = prepareNativeStyle(() => ({
+const nativeTextButtonStyle = prepareNativeStyle(() => ({
     alignSelf: 'center',
     maxWidth: '100%',
+    paddingVertical: 0,
+    paddingHorizontal: 0,
+    borderRadius: 0,
 }));
 
-const textStyle = prepareNativeStyle<TextButtonStyleProps>(
-    (utils, { isUnderlined, size, isDotted }) => ({
+const labelStyle = prepareNativeStyle<{ size: TextButtonSize; isUnderlined: boolean }>(
+    (utils, { size, isUnderlined }) => ({
         ...utils.typography[textButtonTypographyMap[size]],
+        fontFamily: Platform.OS === 'ios' ? 'System' : 'sans-serif',
+        fontWeight: 'normal',
+        letterSpacing: 0,
         flexShrink: 1,
-        extend: [
-            {
-                condition: isUnderlined,
-                style: {
-                    textDecorationLine: 'underline',
-                    textDecorationStyle: isDotted ? 'dotted' : 'solid',
-                },
-            },
-        ],
+        textDecorationLine: isUnderlined ? 'underline' : 'none',
     }),
 );
 
-export const TextButton = ({
-    children,
-    disabled: isNativeDisabled,
-    iconLeft,
-    iconRight,
-    intent = 'neutral',
-    isDisabled = false,
-    isInverse = false,
-    isLoading = false,
-    isUnderlined = false,
-    isDotted = false,
-    priority = 'primary',
-    size = 'large',
-    style,
-    testID,
-    ...pressableProps
-}: TextButtonProps) => {
+const NativeTextButton = (props: NativeTextButtonProps) => {
+    const {
+        children,
+        disabled,
+        iconLeft,
+        iconRight,
+        intent = 'neutral',
+        isDisabled = false,
+        isInverse = false,
+        isLoading = false,
+        isUnderlined = false,
+        isDotted = false,
+        priority = 'primary',
+        size = 'large',
+        style,
+        testID,
+        ...pressableProps
+    } = props;
     const { applyStyle, utils } = useNativeStyles();
-    const hasDisabledVisualState = isDisabled || !!isNativeDisabled || isLoading;
-    const disabledColor = getTextButtonDisabledColor(isInverse);
-    const defaultTextColor = getTextButtonColor({
-        intent,
-        priority,
-        isInverse,
-        isPressed: false,
-    });
-    const pressedTextColor = getTextButtonColor({
-        intent,
-        priority,
-        isInverse,
-        isPressed: true,
-    });
-    const animatedColor = useSharedValue(
-        utils.colors[hasDisabledVisualState ? disabledColor : defaultTextColor],
-    );
+    const { translate } = useTranslate();
+    const textLabel = getNativeTextLabel({ label: children, translate });
 
-    const animatedTextStyle = useAnimatedStyle(() => ({
-        color: animatedColor.value,
-    }));
+    // The native label must own its pressed appearance. Custom content keeps its RN renderer.
+    if (
+        !supportsNativeButton ||
+        hasUnsupportedNativeButtonProps(props) ||
+        textLabel === null ||
+        iconLeft ||
+        iconRight ||
+        isLoading ||
+        isDotted
+    ) {
+        return (
+            <LegacyTextButton
+                {...props}
+                accessibilityLabel={props.accessibilityLabel ?? textLabel ?? undefined}
+                onPress={props.onPress ? () => props.onPress?.() : undefined}
+            />
+        );
+    }
 
-    const setAnimatedColor = useCallback(
-        (color: Color) => {
-            // eslint-disable-next-line react-hooks/immutability
-            animatedColor.value = withTiming(utils.colors[color], pressTimingConfig);
-        },
-        [animatedColor, utils.colors],
-    );
-
-    useEffect(() => {
-        setAnimatedColor(hasDisabledVisualState ? disabledColor : defaultTextColor);
-    }, [defaultTextColor, disabledColor, hasDisabledVisualState, setAnimatedColor]);
-
-    useEffect(() => () => cancelAnimation(animatedColor), [animatedColor]);
-
-    const handlePressIn = () => {
-        setAnimatedColor(pressedTextColor);
-    };
-
-    const handlePressOut = () => {
-        setAnimatedColor(defaultTextColor);
-    };
+    const hasDisabledState = isDisabled || !!disabled;
+    const contentColor = hasDisabledState
+        ? getTextButtonDisabledColor(isInverse)
+        : getTextButtonColor({ intent, priority, isInverse, isPressed: false });
 
     return (
-        <Pressable
-            disabled={hasDisabledVisualState}
-            onPressIn={handlePressIn}
-            onPressOut={handlePressOut}
-            style={[applyStyle(buttonContainerStyle), style]}
-            testID={testID ? `${testID}/button` : undefined}
+        <NativeButton
             {...pressableProps}
+            accessibilityLabel={pressableProps.accessibilityLabel ?? textLabel}
+            intent={intent}
+            priority={priority}
+            isInverse={isInverse}
+            variant="text"
+            textLabel={textLabel}
+            isUnderlined={isUnderlined}
+            size={size}
+            isDisabled={hasDisabledState}
+            isLoading={false}
+            isFullWidth={false}
+            style={[applyStyle(nativeTextButtonStyle), style]}
+            testID={testID ? `${testID}/button` : undefined}
         >
-            <HStack alignItems="center" justifyContent="center" spacing={textButtonGapMap[size]}>
-                {isLoading && (
-                    <Animated.View testID={testID ? `${testID}/loading` : undefined}>
-                        <Loader color={disabledColor} size={textButtonIconSizeMap[size]} />
-                    </Animated.View>
-                )}
-                {!isLoading && !!iconLeft && (
-                    <Icon.Animated
-                        name={iconLeft}
-                        color={animatedColor}
-                        size={textButtonIconSizeMap[size]}
-                    />
-                )}
-                <Animated.Text
-                    numberOfLines={1}
-                    style={[
-                        applyStyle(textStyle, { isUnderlined, size, isDotted }),
-                        animatedTextStyle,
-                    ]}
-                    testID={testID ? `${testID}/text` : undefined}
-                >
-                    {children}
-                </Animated.Text>
-                {!isLoading && !!iconRight && (
-                    <Icon.Animated
-                        name={iconRight}
-                        color={animatedColor}
-                        size={textButtonIconSizeMap[size]}
-                    />
-                )}
-            </HStack>
-        </Pressable>
+            <Text
+                numberOfLines={1}
+                style={[
+                    applyStyle(labelStyle, { size, isUnderlined }),
+                    { color: utils.colors[contentColor] },
+                ]}
+                testID={testID ? `${testID}/text` : undefined}
+            >
+                {children}
+            </Text>
+        </NativeButton>
     );
+};
+
+export const TextButton = (props: TextButtonProps) => {
+    if (props.native) {
+        const { native: _, ...nativeProps } = props;
+
+        return <NativeTextButton {...nativeProps} />;
+    }
+
+    const { native: _, ...legacyProps } = props;
+
+    return <LegacyTextButton {...legacyProps} />;
 };

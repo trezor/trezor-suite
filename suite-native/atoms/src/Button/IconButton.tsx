@@ -1,20 +1,13 @@
-import { useState } from 'react';
-import { type PressableProps, type ViewStyle } from 'react-native';
-import { type AnimatedStyle } from 'react-native-reanimated';
+import { View } from 'react-native';
 
-import { Icon, type IconName } from '@suite-native/icons';
-import {
-    type NativeStyleObject,
-    mergeNativeStyles,
-    prepareNativeStyle,
-    useNativeStyles,
-} from '@trezor/styles-native';
+import { Icon } from '@suite-native/icons';
+import { type NativeStyleObject, prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
 import { Loader } from '../Loader';
-import { AnimatedPressable } from '../Pressable';
-import { type ButtonStyleProps, buttonStyle } from './Button';
-import { type ButtonColorProps, type ButtonSize } from './types';
-import { useButtonPressAnimatedStyle } from './useButtonPressAnimatedStyle';
+import { LegacyIconButton, type LegacyIconButtonProps } from './LegacyIconButton';
+import { NativeButton, supportsNativeButton } from './NativeButton';
+import { hasUnsupportedNativeButtonProps } from './hasUnsupportedNativeButtonProps';
+import { type ButtonSize } from './types';
 import {
     getButtonColors,
     iconButtonBorderRadiusMap,
@@ -22,29 +15,23 @@ import {
     iconButtonToIconSizeMap,
 } from './utils';
 
-export type IconButtonProps = Omit<
-    PressableProps,
-    'style' | 'onPressIn' | 'onPressOut' | 'children'
-> & {
-    iconName: IconName;
-    size?: ButtonSize;
-    style?: NativeStyleObject | AnimatedStyle<ViewStyle>;
-    isLoading?: boolean;
-    isDisabled?: boolean;
-} & ButtonColorProps;
+type NativeIconButtonProps = Omit<LegacyIconButtonProps, 'onPress' | 'style'> & {
+    onPress?: () => void;
+    style?: NativeStyleObject;
+    accessibilityLabel: string;
+};
 
-const iconButtonStyle = mergeNativeStyles([
-    buttonStyle,
-    prepareNativeStyle<ButtonStyleProps>((_, { size }) => ({
-        alignSelf: 'center',
-        // Padding must be set explicitly to override the base button size styles.
-        paddingVertical: iconButtonPaddingMap[size],
-        paddingHorizontal: iconButtonPaddingMap[size],
-        borderRadius: iconButtonBorderRadiusMap[size],
-    })),
-]);
+export type IconButtonProps =
+    (NativeIconButtonProps & { native: true }) | (LegacyIconButtonProps & { native?: false });
 
-export const IconButton = ({
+const nativeIconButtonStyle = prepareNativeStyle<{ size: ButtonSize }>((_, { size }) => ({
+    alignSelf: 'center',
+    paddingVertical: iconButtonPaddingMap[size],
+    paddingHorizontal: iconButtonPaddingMap[size],
+    borderRadius: iconButtonBorderRadiusMap[size],
+}));
+
+const NativeIconButton = ({
     iconName,
     testID,
     style,
@@ -54,50 +41,70 @@ export const IconButton = ({
     size = 'large',
     isLoading = false,
     isDisabled = false,
+    disabled,
     ...pressableProps
-}: IconButtonProps) => {
-    const [isPressed, setIsPressed] = useState(false);
+}: NativeIconButtonProps) => {
     const { applyStyle } = useNativeStyles();
-    const hasDisabledState = isDisabled || isLoading;
-    const { backgroundColor, onPressColor, contentColor } = getButtonColors({
+    const hasDisabledState = isDisabled || !!disabled || isLoading;
+    const { contentColor } = getButtonColors({
         intent,
         priority,
         isInverse,
         isDisabled: hasDisabledState,
     });
 
-    const animatedPressStyle = useButtonPressAnimatedStyle(
-        isPressed,
-        hasDisabledState,
-        backgroundColor,
-        onPressColor,
-    );
-
-    const handlePressIn = () => setIsPressed(true);
-    const handlePressOut = () => setIsPressed(false);
-
     return (
-        <AnimatedPressable
-            onPressIn={handlePressIn}
-            onPressOut={handlePressOut}
-            disabled={hasDisabledState}
-            style={[
-                animatedPressStyle,
-                applyStyle(iconButtonStyle, {
-                    size,
-                    isFullWidth: false,
-                    backgroundColor,
-                }),
-                style,
-            ]}
-            testID={testID}
+        <NativeButton
             {...pressableProps}
+            intent={intent}
+            priority={priority}
+            isInverse={isInverse}
+            variant="icon"
+            size={size}
+            isDisabled={hasDisabledState}
+            isLoading={isLoading}
+            isFullWidth={false}
+            testID={testID}
+            style={[applyStyle(nativeIconButtonStyle, { size }), style]}
         >
-            {isLoading ? (
-                <Loader color={contentColor} />
-            ) : (
-                <Icon name={iconName} color={contentColor} size={iconButtonToIconSizeMap[size]} />
-            )}
-        </AnimatedPressable>
+            <View
+                accessible={false}
+                accessibilityElementsHidden
+                importantForAccessibility="no-hide-descendants"
+            >
+                {isLoading ? (
+                    <View testID={testID ? `${testID}/loading` : undefined}>
+                        <Loader color={contentColor} />
+                    </View>
+                ) : (
+                    <Icon
+                        name={iconName}
+                        color={contentColor}
+                        size={iconButtonToIconSizeMap[size]}
+                    />
+                )}
+            </View>
+        </NativeButton>
     );
+};
+
+export const IconButton = (props: IconButtonProps) => {
+    if (props.native) {
+        const { native: _, ...nativeProps } = props;
+
+        if (supportsNativeButton && !hasUnsupportedNativeButtonProps(props)) {
+            return <NativeIconButton {...nativeProps} />;
+        }
+
+        return (
+            <LegacyIconButton
+                {...nativeProps}
+                onPress={props.onPress ? () => props.onPress?.() : undefined}
+            />
+        );
+    }
+
+    const { native: _, ...legacyProps } = props;
+
+    return <LegacyIconButton {...legacyProps} />;
 };

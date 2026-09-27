@@ -24,6 +24,8 @@ export default meta;
 
 export const IconButton: IconButtonStory = {
     args: {
+        native: true,
+        accessibilityLabel: 'Search',
         onPress: action('onPress'),
         iconName: 'magnifyingGlass',
         intent: 'brand',

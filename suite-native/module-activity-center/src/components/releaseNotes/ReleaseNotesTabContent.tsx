@@ -65,6 +65,7 @@ export const ReleaseNotesTabContent = () => {
                     <MarkdownText markdown={releaseNotesMarkdown} />
                     <CardDivider />
                     <TextButton
+                        native
                         priority="secondary"
                         size="small"
                         isUnderlined

@@ -39,6 +39,7 @@ export const ReceiveAddressListButton = ({
 
     return (
         <IconButton
+            native
             iconName="listBullets"
             intent="neutral"
             priority="secondary"

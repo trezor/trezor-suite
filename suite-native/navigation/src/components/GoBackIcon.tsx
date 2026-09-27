@@ -25,6 +25,7 @@ export const GoBackIcon = ({ closeActionType = 'back', closeAction, testID }: Go
 
     return (
         <IconButton
+            native
             testID={testID}
             iconName={closeActionType === 'back' ? 'caretLeft' : 'x'}
             intent="neutral"

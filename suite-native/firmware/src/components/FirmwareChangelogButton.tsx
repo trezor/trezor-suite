@@ -9,6 +9,7 @@ export const FirmwareChangelogButton = () => {
     return (
         <>
             <TextButton
+                native
                 iconLeft="question"
                 intent="neutral"
                 priority="secondary"

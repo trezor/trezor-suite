@@ -24,6 +24,7 @@ export default meta;
 
 export const TextButton: TextButtonStory = {
     args: {
+        native: true,
         children: 'Button label',
         onPress: action('onPress'),
         intent: 'brand',

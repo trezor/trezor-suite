@@ -32,6 +32,7 @@ export const SheetHeaderTitle = ({
         </Text>
         {rightButtonIcon && (
             <IconButton
+                native
                 iconName={rightButtonIcon}
                 onPress={onRightButtonPress}
                 intent="neutral"

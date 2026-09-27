@@ -4,7 +4,7 @@ import { Linking } from 'react-native';
 import { type BottomSheetModalMethods } from '@gorhom/bottom-sheet/lib/typescript/types';
 
 import { getTranslation } from '@suite-native/intl';
-import { renderWithBasicProvider, userEvent } from '@suite-native/test-utils';
+import { act, renderWithBasicProvider, userEvent } from '@suite-native/test-utils';
 import { TREZOR_SUITE_TOS_URL, TREZOR_SUPPORT_UNDERSTANDING_FEES } from '@trezor/urls';
 
 import { HowTradingWorksSheet } from './HowTradingWorksSheet';
@@ -14,13 +14,16 @@ const mockCloseModal = jest.fn();
 describe('HowTradingWorksSheet', () => {
     const mockOpenLink = jest.spyOn(Linking, 'openURL');
 
-    const renderHowTradingWorksSheet = async () =>
-        await renderWithBasicProvider(
-            <HowTradingWorksSheet
-                ref={createRef<BottomSheetModalMethods>()}
-                closeModal={mockCloseModal}
-            />,
+    const renderHowTradingWorksSheet = async () => {
+        const ref = createRef<BottomSheetModalMethods>();
+        const result = await renderWithBasicProvider(
+            <HowTradingWorksSheet ref={ref} closeModal={mockCloseModal} />,
         );
+
+        await act(() => ref.current?.present());
+
+        return result;
+    };
 
     beforeEach(() => {
         jest.clearAllMocks();

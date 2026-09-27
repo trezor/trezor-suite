@@ -14,6 +14,7 @@ export const BluetoothPairingSettings = () => {
         <VStack spacing="sp24">
             <Image source={imageSource} height={150} contentFit="contain" />
             <TextButton
+                native
                 intent="info"
                 priority="primary"
                 isUnderlined

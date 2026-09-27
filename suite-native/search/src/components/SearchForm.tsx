@@ -73,7 +73,7 @@ export const SearchForm = ({ placeholder, onPressCancel, onInputChange }: Search
                     />
                 </Animated.View>
                 <Box style={applyStyle(cancelButtonContainerStyle)}>
-                    <TextButton onPress={onPressCancel}>
+                    <TextButton native onPress={onPressCancel}>
                         <Translation id="generic.buttons.cancel" />
                     </TextButton>
                 </Box>

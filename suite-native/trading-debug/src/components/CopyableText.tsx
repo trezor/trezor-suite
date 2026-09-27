@@ -28,6 +28,7 @@ export const CopyableText = ({ text, title }: CopyableTextProps) => {
                 {text}
             </Text>
             <IconButton
+                native
                 iconName="copy"
                 intent="neutral"
                 priority="secondary"

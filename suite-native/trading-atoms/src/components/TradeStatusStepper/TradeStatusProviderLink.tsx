@@ -38,6 +38,7 @@ export const TradeStatusProviderLink = ({
             {!!logo && <ProviderLogo logo={logo} size="body-sm" />}
             <Box flexShrink={1}>
                 <TextButton
+                    native
                     size="small"
                     intent={isActive ? 'brand' : 'neutral'}
                     priority={isActive ? 'primary' : 'secondary'}

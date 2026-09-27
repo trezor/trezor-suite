@@ -102,7 +102,7 @@ export function SearchInputWithCancel<R extends ClearAndBlur | null>({
                         exiting={FadeOut}
                         style={applyStyle(buttonStyle)}
                     >
-                        <TextButton onPress={handleCancel}>
+                        <TextButton native onPress={handleCancel}>
                             <Translation id="generic.buttons.cancel" />
                         </TextButton>
                     </Animated.View>

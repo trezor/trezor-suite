@@ -50,6 +50,7 @@ const SwipeableWalkthroughBackButton = ({
     return (
         <Animated.View style={animatedButtonStyle}>
             <IconButton
+                native
                 iconName="caretLeft"
                 intent="neutral"
                 priority="secondary"

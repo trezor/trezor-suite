@@ -44,6 +44,7 @@ export const SettingsExperimentalScreen = () => {
                     subtitle={<Translation id="moduleSettings.experimental.subtitle" />}
                     rightIcon={
                         <IconButton
+                            native
                             iconName="info"
                             intent="neutral"
                             priority="secondary"

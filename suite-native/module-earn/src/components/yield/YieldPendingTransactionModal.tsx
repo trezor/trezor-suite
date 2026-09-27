@@ -327,6 +327,7 @@ export const YieldPendingTransactionModal = ({
                                 style={applyStyle(valueStyle)}
                             />
                             <IconButton
+                                native
                                 iconName="copy"
                                 onPress={handleCopyTxid}
                                 intent="neutral"
@@ -337,6 +338,7 @@ export const YieldPendingTransactionModal = ({
                                 )}
                             />
                             <IconButton
+                                native
                                 iconName="arrowUpRight"
                                 onPress={onExplorePress}
                                 isDisabled={isExploreDisabled}

@@ -107,6 +107,7 @@ export const ConnectDeviceScreenHeader = ({
         <ScreenHeaderWrapper>
             {shouldDisplayCancelButton && (
                 <IconButton
+                    native
                     iconName={closeActionType === 'back' ? 'caretLeft' : 'x'}
                     intent="neutral"
                     priority="secondary"

@@ -17,6 +17,7 @@ export const NativeButtonContainer = ({
     onAccessibilityAction,
     accessibilityState,
     accessibilityActions,
+    hideLabel = false,
     ...viewProps
 }: NativeButtonContainerProps) => {
     const handlePress = () => {
@@ -75,7 +76,9 @@ export const NativeButtonContainer = ({
             >
                 {control}
             </View>
-            <View pointerEvents="none">{children}</View>
+            <View pointerEvents="none" style={hideLabel ? { opacity: 0 } : undefined}>
+                {children}
+            </View>
         </View>
     );
 };

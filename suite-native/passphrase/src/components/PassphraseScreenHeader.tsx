@@ -88,6 +88,7 @@ export const PassphraseScreenHeader = () => {
     return (
         <ScreenHeaderWrapper>
             <IconButton
+                native
                 iconName="x"
                 intent="neutral"
                 priority="secondary"

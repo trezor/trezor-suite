@@ -167,6 +167,7 @@ export const UtxoCard = ({
                         </Text>
                     )}
                     <TextButton
+                        native
                         intent="neutral"
                         priority="primary"
                         onPress={handleShowDetails}

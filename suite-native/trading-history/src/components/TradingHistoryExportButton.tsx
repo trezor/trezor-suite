@@ -108,6 +108,7 @@ export const TradingHistoryExportButton = () => {
 
     return (
         <IconButton
+            native
             iconName="downloadSimple"
             intent="neutral"
             priority="secondary"

@@ -1,7 +1,13 @@
 import { type ComponentType, type ReactNode } from 'react';
-import { Pressable as MockPressable, View as MockView, Platform, Text } from 'react-native';
+import {
+    Pressable as MockPressable,
+    Text as MockText,
+    View as MockView,
+    Platform,
+    Text,
+} from 'react-native';
 
-import { fireEvent, renderWithBasicProvider } from '@suite-native/test-utils';
+import { fireEvent, renderWithBasicProvider, within } from '@suite-native/test-utils';
 
 import { NativeButton as AndroidButton } from './NativeButton.android';
 import { NativeButton as IOSButton } from './NativeButton.ios';
@@ -24,42 +30,46 @@ jest.unmock('./NativeButton');
 jest.mock('@expo/ui/swift-ui', () => ({
     Host: MockView,
     HStack: MockView,
+    Text: MockText,
     Button: ({ onPress, children, modifiers }: MockSwiftButtonProps) => (
         <MockPressable
             testID="native-control"
             onPress={onPress}
             disabled={modifiers?.find(modifier => modifier.$type === 'disabled')?.disabled}
             accessibilityRole="button"
+            {...{ modifiers }}
         >
             {children}
         </MockPressable>
     ),
 }));
 
-jest.mock('@expo/ui/jetpack-compose', () => ({
-    Host: MockView,
-    Box: MockView,
-    Button: ({ onClick, children, enabled }: MockComposeButtonProps) => (
-        <MockPressable
-            testID="native-control"
-            onPress={onClick}
-            disabled={!enabled}
-            accessibilityRole="button"
-        >
-            {children}
-        </MockPressable>
-    ),
-    FilledTonalButton: ({ onClick, children, enabled }: MockComposeButtonProps) => (
-        <MockPressable
-            testID="native-control"
-            onPress={onClick}
-            disabled={!enabled}
-            accessibilityRole="button"
-        >
-            {children}
-        </MockPressable>
-    ),
-}));
+jest.mock('@expo/ui/jetpack-compose', () => {
+    const control =
+        (variant: string) =>
+        ({ onClick, children, enabled }: MockComposeButtonProps) => (
+            <MockPressable
+                testID="native-control"
+                onPress={onClick}
+                disabled={!enabled}
+                accessibilityRole="button"
+                accessibilityHint={variant}
+            >
+                {children}
+            </MockPressable>
+        );
+
+    return {
+        Host: MockView,
+        Box: MockView,
+        Text: MockText,
+        Button: control('filled'),
+        FilledTonalButton: control('tonal'),
+        FilledIconButton: control('filled-icon'),
+        FilledTonalIconButton: control('tonal-icon'),
+        TextButton: control('text'),
+    };
+});
 
 type ButtonPlatform = {
     platform: 'ios' | 'android';
@@ -155,5 +165,38 @@ describe.each<ButtonPlatform>([
         const { getByRole } = await renderButton({ flex: 1, isFullWidth: true });
 
         expect(getByRole('button')).toHaveStyle({ flex: 1, width: '100%' });
+    });
+
+    it('uses a native icon control with a platform shape', async () => {
+        const { getByTestId } = await renderButton({ variant: 'icon', priority: 'secondary' });
+        const control = getByTestId('native-control', { includeHiddenElements: true });
+
+        if (platform === 'android') {
+            expect(control.props.accessibilityHint).toBe('tonal-icon');
+        } else {
+            expect(control.props.modifiers).toEqual(
+                expect.arrayContaining([
+                    expect.objectContaining({ $type: 'buttonBorderShape', shape: 'circle' }),
+                ]),
+            );
+        }
+    });
+
+    it('renders the visible text inside the native text button so it receives native pressed feedback', async () => {
+        const onPress = jest.fn();
+        const { getByTestId, getByRole } = await renderButton({
+            variant: 'text',
+            textLabel: 'Continue',
+            accessibilityLabel: 'Continue',
+            onPress,
+        });
+        const control = getByTestId('native-control', { includeHiddenElements: true });
+        expect(
+            within(control).getByText('Continue', { includeHiddenElements: true }),
+        ).toBeOnTheScreen();
+        expect(getByRole('button', { name: 'Continue' })).toBeOnTheScreen();
+        if (platform === 'android') expect(control.props.accessibilityHint).toBe('text');
+        await fireEvent.press(control);
+        expect(onPress).toHaveBeenCalledTimes(1);
     });
 });

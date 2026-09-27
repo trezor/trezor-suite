@@ -12,6 +12,7 @@ import { Text } from '../Text';
 import { type TestProps } from '../types';
 import { LegacyButtonPressable } from './LegacyButtonPressable';
 import { NativeButton, supportsNativeButton } from './NativeButton';
+import { hasUnsupportedNativeButtonProps } from './hasUnsupportedNativeButtonProps';
 import { type ButtonColorProps, type ButtonSize } from './types';
 import {
     buttonGapMap,
@@ -171,22 +172,7 @@ export const Button = ({
         isDisabled: hasDisabledVisualState,
     });
 
-    const hasCustomGestures = Object.keys(pressableProps).some(
-        key =>
-            key === 'onLongPress' ||
-            key === 'onHoverIn' ||
-            key === 'onHoverOut' ||
-            key === 'onFocus' ||
-            key === 'onBlur' ||
-            key.startsWith('onTouch') ||
-            key.startsWith('onResponder') ||
-            key.includes('ShouldSetResponder') ||
-            key === 'android_ripple' ||
-            key === 'android_disableSound' ||
-            key === 'unstable_pressDelay' ||
-            key === 'hitSlop' ||
-            key === 'pressRetentionOffset',
-    );
+    const hasCustomGestures = hasUnsupportedNativeButtonProps(pressableProps);
 
     const usesNativeButton = supportsNativeButton && !hasCustomGestures;
 

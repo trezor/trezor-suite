@@ -28,6 +28,7 @@ export const EditableLabelLayout = ({ children, label, testID }: EditableLabelLa
     return (
         <>
             <TextButton
+                native
                 onPress={() => {
                     Keyboard.dismiss();
                     handleAddLabel(openModal);

@@ -1,11 +1,25 @@
-import { Box, Button, FilledTonalButton, Host } from '@expo/ui/jetpack-compose';
+import {
+    Box,
+    Button,
+    FilledIconButton,
+    FilledTonalButton,
+    FilledTonalIconButton,
+    Host,
+    Text,
+    TextButton,
+} from '@expo/ui/jetpack-compose';
 import { fillMaxSize } from '@expo/ui/jetpack-compose/modifiers';
 
 import { isDarkColor, useNativeStyles } from '@trezor/styles-native';
 
 import { NativeButtonContainer } from './NativeButtonContainer';
 import { type NativeButtonProps } from './nativeButtonTypes';
-import { getButtonColors } from './utils';
+import {
+    getButtonColors,
+    getTextButtonColor,
+    getTextButtonDisabledColor,
+    textButtonTypographyMap,
+} from './utils';
 
 export const supportsNativeButton = true;
 
@@ -16,6 +30,9 @@ export const NativeButton = ({
     intent,
     priority = 'primary',
     isInverse,
+    variant = 'button',
+    textLabel,
+    isUnderlined = false,
     ...containerProps
 }: NativeButtonProps) => {
     const { utils } = useNativeStyles();
@@ -27,13 +44,25 @@ export const NativeButton = ({
         isDisabled: false,
     });
     const disabledColors = getButtonColors({ intent, priority, isInverse, isDisabled: true });
-    const NativeControl = priority === 'primary' ? Button : FilledTonalButton;
+    const controls = {
+        button: priority === 'primary' ? Button : FilledTonalButton,
+        icon: priority === 'primary' ? FilledIconButton : FilledTonalIconButton,
+        text: TextButton,
+    };
+    const NativeControl = controls[variant];
+    const nativeContentColor =
+        variant === 'text'
+            ? getTextButtonColor({ intent, priority, isInverse, isPressed: false })
+            : contentColor;
+    const nativeDisabledContentColor =
+        variant === 'text' ? getTextButtonDisabledColor(!!isInverse) : disabledColors.contentColor;
 
     return (
         <NativeButtonContainer
             {...containerProps}
             size={size}
             onPress={onPress}
+            hideLabel={textLabel !== undefined}
             control={
                 <Host
                     colorScheme={isDarkColor(utils.colors.surfaceFillPage) ? 'dark' : 'light'}
@@ -42,17 +71,46 @@ export const NativeButton = ({
                     style={{ flex: 1 }}
                 >
                     <NativeControl
+                        {...(variant === 'text'
+                            ? { contentPadding: { start: 0, end: 0, top: 0, bottom: 0 } }
+                            : {})}
                         onClick={isDisabled ? undefined : onPress}
                         enabled={!isDisabled}
                         colors={{
-                            containerColor: utils.colors[backgroundColor],
-                            contentColor: utils.colors[contentColor],
-                            disabledContainerColor: utils.colors[disabledColors.backgroundColor],
-                            disabledContentColor: utils.colors[disabledColors.contentColor],
+                            containerColor:
+                                variant === 'text' ? 'transparent' : utils.colors[backgroundColor],
+                            contentColor: utils.colors[nativeContentColor],
+                            disabledContainerColor:
+                                variant === 'text'
+                                    ? 'transparent'
+                                    : utils.colors[disabledColors.backgroundColor],
+                            disabledContentColor: utils.colors[nativeDisabledContentColor],
                         }}
                         modifiers={[fillMaxSize()]}
                     >
-                        <Box />
+                        {textLabel === undefined ? (
+                            <Box />
+                        ) : (
+                            <Text
+                                style={{
+                                    fontWeight: 'normal',
+                                    letterSpacing: 0,
+                                    fontSize:
+                                        utils.typography[
+                                            textButtonTypographyMap[
+                                                size === 'small' ? 'small' : 'large'
+                                            ]
+                                        ].fontSize,
+                                    color: utils.colors[
+                                        isDisabled ? nativeDisabledContentColor : nativeContentColor
+                                    ],
+                                    textDecoration: isUnderlined ? 'underline' : 'none',
+                                }}
+                                maxLines={1}
+                            >
+                                {textLabel}
+                            </Text>
+                        )}
                     </NativeControl>
                 </Host>
             }

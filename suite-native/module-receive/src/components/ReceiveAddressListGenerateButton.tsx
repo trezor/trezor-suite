@@ -80,6 +80,7 @@ export const ReceiveAddressListGenerateButton = ({
 
     return (
         <IconButton
+            native
             iconName="plus"
             intent="neutral"
             priority="secondary"

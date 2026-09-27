@@ -89,7 +89,7 @@ export const TransactionDetailAddressesSection = ({
 
             {isShowMoreButtonVisible && (
                 <Box style={applyStyle(showMoreButtonContainerStyle)}>
-                    <TextButton onPress={onShowMore} isUnderlined>
+                    <TextButton native onPress={onShowMore} isUnderlined>
                         <Translation
                             id="transactions.detail.showMoreButton"
                             values={{ amount: hiddenAddressesCount }}

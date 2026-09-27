@@ -62,6 +62,7 @@ export const Banner = ({
                     </Text>
                     <HStack>
                         <TextButton
+                            native
                             size="large"
                             intent="neutral"
                             priority="secondary"
