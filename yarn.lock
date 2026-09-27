@@ -4050,7 +4050,7 @@ __metadata:
 
 "@expo/ui@patch:@expo/ui@npm%3A58.0.7#~/.yarn/patches/@expo-ui-npm-58.0.7-5075f1c598.patch":
   version: 58.0.7
-  resolution: "@expo/ui@patch:@expo/ui@npm%3A58.0.7#~/.yarn/patches/@expo-ui-npm-58.0.7-5075f1c598.patch::version=58.0.7&hash=88052c"
+  resolution: "@expo/ui@patch:@expo/ui@npm%3A58.0.7#~/.yarn/patches/@expo-ui-npm-58.0.7-5075f1c598.patch::version=58.0.7&hash=0f8a11"
   dependencies:
     sf-symbols-typescript: "npm:^2.1.0"
   peerDependencies:
@@ -4067,7 +4067,7 @@ __metadata:
       optional: true
     react-native-worklets:
       optional: true
-  checksum: 10/9907c21ccad16705d4cc88db7a4b423c94dc9a4200bc5a787a690132d80d2e8b051d04715e35462fd0e2b4585b370a56e290895c1bd8dca1b393fe5455d0ba1d
+  checksum: 10/351ef1767c423863d787ec07d06e848624de45856d662e3b28a849d8d104f44a56d284863478c978ed21da7f7a24969296f860d23a0865f491e0583101457101
   languageName: node
   linkType: hard
 

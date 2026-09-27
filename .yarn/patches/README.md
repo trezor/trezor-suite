@@ -36,8 +36,10 @@ Prevents the Expo dev client from hanging when Detox starts an Android test. Int
 Adds an optional `onDidPresent` event for bottom sheets. Native form focus must wait for the iOS
 presentation transition or the Android dialog's opening animation and window focus; the existing
 `onChange` callback can run before the native window is ready. The patch preserves `onChange`
-behavior and forwards the new event through the community bottom-sheet adapter. Remove it when
-an upstream release exposes an equivalent presentation-ready event. Requires a native rebuild;
+behavior and forwards the new event through the community bottom-sheet adapter. The iOS adapter
+also measures the actual sheet width instead of forcing the app window width, which clips content
+in narrower presentations. Remove these changes when upstream provides the equivalent behavior.
+The presentation event requires a native rebuild;
 the app's platform-specific `expo.autolinking` settings ensure both platforms compile the patched
 sources instead of selecting precompiled Expo UI artifacts. Remove those settings with the patch.
 
