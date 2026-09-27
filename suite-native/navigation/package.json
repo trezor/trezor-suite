@@ -12,7 +12,7 @@
         "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'"
     },
     "dependencies": {
-        "@expo/ui": "~58.0.7",
+        "@expo/ui": "patch:@expo/ui@npm%3A58.0.7#~/.yarn/patches/@expo-ui-npm-58.0.7-5075f1c598.patch",
         "@react-navigation/bottom-tabs": "7.13.0",
         "@react-navigation/native": "7.1.31",
         "@react-navigation/native-stack": "7.12.0",

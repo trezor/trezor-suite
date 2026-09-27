@@ -4025,7 +4025,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@expo/ui@npm:~58.0.7":
+"@expo/ui@npm:58.0.7":
   version: 58.0.7
   resolution: "@expo/ui@npm:58.0.7"
   dependencies:
@@ -4045,6 +4045,29 @@ __metadata:
     react-native-worklets:
       optional: true
   checksum: 10/d2a6db6d6733f9889e0e961523cc4a53864e10b14d583dadf6a84206354c419f0f77aab6b34044fdd9d0c5b37023cc03dcfdf1703cd927a93db8a629abccdff6
+  languageName: node
+  linkType: hard
+
+"@expo/ui@patch:@expo/ui@npm%3A58.0.7#~/.yarn/patches/@expo-ui-npm-58.0.7-5075f1c598.patch":
+  version: 58.0.7
+  resolution: "@expo/ui@patch:@expo/ui@npm%3A58.0.7#~/.yarn/patches/@expo-ui-npm-58.0.7-5075f1c598.patch::version=58.0.7&hash=88052c"
+  dependencies:
+    sf-symbols-typescript: "npm:^2.1.0"
+  peerDependencies:
+    "@babel/core": "*"
+    expo: "*"
+    react: "*"
+    react-dom: "*"
+    react-native: "*"
+    react-native-worklets: "*"
+  peerDependenciesMeta:
+    "@babel/core":
+      optional: true
+    react-dom:
+      optional: true
+    react-native-worklets:
+      optional: true
+  checksum: 10/9907c21ccad16705d4cc88db7a4b423c94dc9a4200bc5a787a690132d80d2e8b051d04715e35462fd0e2b4585b370a56e290895c1bd8dca1b393fe5455d0ba1d
   languageName: node
   linkType: hard
 
@@ -12224,7 +12247,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@suite-native/atoms@workspace:suite-native/atoms"
   dependencies:
-    "@expo/ui": "npm:~58.0.7"
+    "@expo/ui": "patch:@expo/ui@npm%3A58.0.7#~/.yarn/patches/@expo-ui-npm-58.0.7-5075f1c598.patch"
     "@gorhom/bottom-sheet": "npm:5.2.9"
     "@mobily/ts-belt": "npm:^3.13.1"
     "@react-navigation/native": "npm:7.1.31"
@@ -12395,7 +12418,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@suite-native/clipboard@workspace:suite-native/clipboard"
   dependencies:
-    "@expo/ui": "npm:~58.0.7"
+    "@expo/ui": "patch:@expo/ui@npm%3A58.0.7#~/.yarn/patches/@expo-ui-npm-58.0.7-5075f1c598.patch"
     "@suite-native/intl": "workspace:*"
     "@suite-native/toasts": "workspace:*"
     expo-clipboard: "npm:~58.0.1"
@@ -14138,7 +14161,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@suite-native/navigation@workspace:suite-native/navigation"
   dependencies:
-    "@expo/ui": "npm:~58.0.7"
+    "@expo/ui": "patch:@expo/ui@npm%3A58.0.7#~/.yarn/patches/@expo-ui-npm-58.0.7-5075f1c598.patch"
     "@react-navigation/bottom-tabs": "npm:7.13.0"
     "@react-navigation/native": "npm:7.1.31"
     "@react-navigation/native-stack": "npm:7.12.0"

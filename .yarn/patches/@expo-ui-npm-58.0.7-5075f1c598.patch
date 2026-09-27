@@ -1,0 +1,523 @@
+diff --git a/android/src/main/java/expo/modules/ui/ExpoUIModule.kt b/android/src/main/java/expo/modules/ui/ExpoUIModule.kt
+index 53f944bebd2db0c2bc528525bb51918f2c6df35f..ca4c650edb0608a3431f9423cce959eed0a702b4 100644
+--- a/android/src/main/java/expo/modules/ui/ExpoUIModule.kt
++++ b/android/src/main/java/expo/modules/ui/ExpoUIModule.kt
+@@ -228,9 +228,17 @@ class ExpoUIModule : Module() {
+       val expand by AsyncFunction()
+       val partialExpand by AsyncFunction()
+       val onDismissRequest by Event<Unit>()
++      val onDidPresent by Event<Unit>()
+ 
+       Content { props ->
+-        ModalBottomSheetContent(props, hide, expand, partialExpand) { onDismissRequest(Unit) }
++        ModalBottomSheetContent(
++          props,
++          hide,
++          expand,
++          partialExpand,
++          onDismissRequest = { onDismissRequest(Unit) },
++          onDidPresent = { onDidPresent(Unit) }
++        )
+       }
+     }
+ 
+diff --git a/android/src/main/java/expo/modules/ui/ModalBottomSheetView.kt b/android/src/main/java/expo/modules/ui/ModalBottomSheetView.kt
+index 8b531bb20aba0fc0df263f89c464082311b5e206..5ed3c8b847e88b142355ff21e21f40b57b19f236 100644
+--- a/android/src/main/java/expo/modules/ui/ModalBottomSheetView.kt
++++ b/android/src/main/java/expo/modules/ui/ModalBottomSheetView.kt
+@@ -13,16 +13,22 @@ import androidx.compose.material3.ExperimentalMaterial3Api
+ import androidx.compose.material3.MaterialTheme
+ import androidx.compose.material3.ModalBottomSheet
+ import androidx.compose.material3.ModalBottomSheetProperties
++import androidx.compose.material3.SheetState
++import androidx.compose.material3.SheetValue
+ import androidx.compose.material3.contentColorFor
+ import androidx.compose.material3.rememberModalBottomSheetState
+ import androidx.compose.runtime.Composable
+ import androidx.compose.runtime.DisposableEffect
+ import androidx.compose.runtime.LaunchedEffect
++import androidx.compose.runtime.getValue
+ import androidx.compose.runtime.rememberCoroutineScope
++import androidx.compose.runtime.rememberUpdatedState
++import androidx.compose.runtime.snapshotFlow
+ import androidx.compose.ui.graphics.Color as ComposeColor
+ import androidx.compose.ui.graphics.luminance
+ import androidx.compose.ui.graphics.takeOrElse
+ import androidx.compose.ui.platform.LocalView
++import androidx.compose.ui.platform.LocalWindowInfo
+ import androidx.compose.ui.window.DialogWindowProvider
+ import expo.modules.kotlin.records.Field
+ import expo.modules.kotlin.records.Record
+@@ -31,6 +37,7 @@ import expo.modules.kotlin.views.AsyncFunctionHandle
+ import expo.modules.kotlin.views.ComposeProps
+ import expo.modules.kotlin.views.FunctionalComposableScope
+ import expo.modules.kotlin.views.OptimizedComposeProps
++import kotlinx.coroutines.flow.first
+ import kotlinx.coroutines.withContext
+ import kotlin.coroutines.cancellation.CancellationException
+ 
+@@ -94,13 +101,31 @@ private fun ForwardKeyEventsToActivity(activity: Activity?) {
+   }
+ }
+ 
++@Composable
++private fun NotifySheetPresented(sheetState: SheetState, onDidPresent: () -> Unit) {
++  // Read inside the sheet content so this is the dialog's window, not the activity's window.
++  val windowInfo = LocalWindowInfo.current
++  val currentOnDidPresent by rememberUpdatedState(onDidPresent)
++
++  LaunchedEffect(sheetState) {
++    snapshotFlow {
++      sheetState.currentValue != SheetValue.Hidden &&
++        sheetState.currentValue == sheetState.targetValue &&
++        !sheetState.isAnimationRunning &&
++        windowInfo.isWindowFocused
++    }.first { it }
++    currentOnDidPresent()
++  }
++}
++
+ @Composable
+ fun FunctionalComposableScope.ModalBottomSheetContent(
+   props: ModalBottomSheetViewProps,
+   hide: AsyncFunctionHandle<Unit>,
+   expand: AsyncFunctionHandle<Unit>,
+   partialExpand: AsyncFunctionHandle<Unit>,
+-  onDismissRequest: () -> Unit
++  onDismissRequest: () -> Unit,
++  onDidPresent: () -> Unit
+ ) {
+   val sheetState = rememberModalBottomSheetState(props.skipPartiallyExpanded)
+   val scope = rememberCoroutineScope()
+@@ -173,6 +198,7 @@ fun FunctionalComposableScope.ModalBottomSheetContent(
+     modifier = ModifierRegistry.applyModifiers(props.modifiers, appContext, composableScope, globalEventDispatcher)
+   ) {
+     ForwardKeyEventsToActivity(appContext.currentActivity)
++    NotifySheetPresented(sheetState, onDidPresent)
+     Children(UIComposableScope(), filter = { !isSlotView(it) })
+   }
+ 
+diff --git a/build/community/bottom-sheet/BottomSheet.android.js b/build/community/bottom-sheet/BottomSheet.android.js
+index d39d9de891d83a7bf10f74e66d4a55bd38b63a22..41b5e40af6be7069908d9426c67129118aeee2d3 100644
+--- a/build/community/bottom-sheet/BottomSheet.android.js
++++ b/build/community/bottom-sheet/BottomSheet.android.js
+@@ -37,7 +37,7 @@ function findNearestSnapPointIndex(snapPoints, position) {
+  * @remarks Supports two snap states: partially expanded (~50%) and fully expanded.
+  * `snapToIndex(0)` maps to partial, `snapToIndex(lastIndex)` maps to expanded.
+  */ export function BottomSheet(props) {
+-    const { ref, snapPoints: snapPointsProp, index: indexProp = 0, onChange, onClose, onDismiss, enablePanDownToClose = false, enableDynamicSizing = true, handleComponent, backgroundStyle, children } = props;
++    const { ref, snapPoints: snapPointsProp, index: indexProp = 0, onChange, onClose, onDismiss, onDidPresent, enablePanDownToClose = false, enableDynamicSizing = true, handleComponent, backgroundStyle, children } = props;
+     const { width } = useWindowDimensions();
+     const hasMultipleSnapPoints = snapPointsProp != null && snapPointsProp.length > 1;
+     const fitToContents = enableDynamicSizing && (!snapPointsProp || snapPointsProp.length === 0);
+@@ -174,6 +174,7 @@ function findNearestSnapPointIndex(snapPoints, position) {
+                 children: /*#__PURE__*/ _jsx(ModalBottomSheet, {
+                     ref: sheetRef,
+                     onDismissRequest: handleDismiss,
++                    onDidPresent: onDidPresent,
+                     skipPartiallyExpanded: skipPartially,
+                     initialFullyExpanded: hasMultipleSnapPoints && pendingIndexRef.current === maxIndex,
+                     showDragHandle: handleComponent !== null,
+diff --git a/build/community/bottom-sheet/BottomSheet.android.js.map b/build/community/bottom-sheet/BottomSheet.android.js.map
+index c830a7e3253bb06d54382a9d560ac368e7c9f1c6..09279693b31c07ed730344af1ec391ee71a98994 100644
+--- a/build/community/bottom-sheet/BottomSheet.android.js.map
++++ b/build/community/bottom-sheet/BottomSheet.android.js.map
+@@ -1 +1 @@
+-{"version":3,"sources":["community/bottom-sheet/BottomSheet.android.tsx"],"sourcesContent":[null],"names":["useCallback","useEffect","useImperativeHandle","useMemo","useRef","useState","StyleSheet","useWindowDimensions","View","Host","ModalBottomSheet","RNHostView","BottomSheetContext","BottomSheetInternalContext","SheetScrollContextReset","parseSnapPoint","useBottomSheet","extractBackgroundColor","backgroundStyle","undefined","flatten","backgroundColor","findNearestSnapPointIndex","snapPoints","position","length","parsedTarget","nearestIndex","nearestDistance","Infinity","forEach","snapPoint","index","parsedSnapPoint","type","distance","Math","abs","value","BottomSheet","props","ref","snapPointsProp","indexProp","onChange","onClose","onDismiss","enablePanDownToClose","enableDynamicSizing","handleComponent","children","width","hasMultipleSnapPoints","fitToContents","skipPartially","maxIndex","containerColor","internalContextValue","clampIndex","min","max","isOpen","setIsOpen","isOpenRef","current","pendingIndexRef","sheetRef","closedRef","onChangeRef","onCloseRef","onDismissRef","fireCloseCallbacks","handleDismiss","methods","snapToIndex","hide","then","clampedIndex","expand","partialExpand","close","snapToPosition","collapse","forceClose","present","dismiss","Provider","style","pointerEvents","onDismissRequest","skipPartiallyExpanded","initialFullyExpanded","showDragHandle","sheetGesturesEnabled","properties","shouldDismissOnBackPress","shouldDismissOnClickOutside","matchContents","flexGrow","height"],"mappings":"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"}
+\ No newline at end of file
++{"version":3,"sources":["community/bottom-sheet/BottomSheet.android.tsx"],"sourcesContent":["import { useCallback, useEffect, useImperativeHandle, useMemo, useRef, useState } from 'react';\nimport { StyleSheet, useWindowDimensions, View } from 'react-native';\n\nimport { Host } from '../../jetpack-compose/Host';\nimport { ModalBottomSheet, type ModalBottomSheetRef } from '../../jetpack-compose/ModalBottomSheet';\nimport { RNHostView } from '../../jetpack-compose/RNHostView';\nimport { BottomSheetContext, BottomSheetInternalContext } from './context';\nimport { SheetScrollContextReset } from './scrollContextReset';\nimport type { BottomSheetMethods, BottomSheetProps } from './types';\nimport { parseSnapPoint } from './types';\n\nexport { useBottomSheet } from './context';\n\nfunction extractBackgroundColor(\n  backgroundStyle: BottomSheetProps['backgroundStyle']\n): string | undefined {\n  if (!backgroundStyle) return undefined;\n  return (StyleSheet.flatten(backgroundStyle) as any)?.backgroundColor;\n}\n\nfunction findNearestSnapPointIndex(\n  snapPoints: BottomSheetProps['snapPoints'],\n  position: string | number\n): number {\n  if (!snapPoints || snapPoints.length === 0) return 0;\n\n  const parsedTarget = parseSnapPoint(position);\n  let nearestIndex = 0;\n  let nearestDistance = Infinity;\n\n  snapPoints.forEach((snapPoint, index) => {\n    const parsedSnapPoint = parseSnapPoint(snapPoint);\n    if (parsedSnapPoint.type !== parsedTarget.type) return;\n\n    const distance = Math.abs(parsedSnapPoint.value - parsedTarget.value);\n    if (distance < nearestDistance) {\n      nearestDistance = distance;\n      nearestIndex = index;\n    }\n  });\n\n  if (nearestDistance !== Infinity) {\n    return nearestIndex;\n  }\n\n  return typeof position === 'number' ? snapPoints.length - 1 : 0;\n}\n\n/**\n * Android implementation of `BottomSheet` using Material3 ModalBottomSheet.\n *\n * @remarks Supports two snap states: partially expanded (~50%) and fully expanded.\n * `snapToIndex(0)` maps to partial, `snapToIndex(lastIndex)` maps to expanded.\n */\nexport function BottomSheet(props: BottomSheetProps) {\n  const {\n    ref,\n    snapPoints: snapPointsProp,\n    index: indexProp = 0,\n    onChange,\n    onClose,\n    onDismiss,\n    onDidPresent,\n    enablePanDownToClose = false,\n    enableDynamicSizing = true,\n    handleComponent,\n    backgroundStyle,\n    children,\n  } = props;\n  const { width } = useWindowDimensions();\n\n  const hasMultipleSnapPoints = snapPointsProp != null && snapPointsProp.length > 1;\n  const fitToContents = enableDynamicSizing && (!snapPointsProp || snapPointsProp.length === 0);\n  const skipPartially = fitToContents || !hasMultipleSnapPoints;\n  const maxIndex = snapPointsProp ? snapPointsProp.length - 1 : 0;\n  const containerColor = extractBackgroundColor(backgroundStyle);\n  const internalContextValue = useMemo(() => ({ fitToContents }), [fitToContents]);\n  const clampIndex = useCallback(\n    (index: number) => Math.min(Math.max(index, 0), maxIndex),\n    [maxIndex]\n  );\n\n  const [isOpen, setIsOpen] = useState(indexProp >= 0);\n  // Ref mirrors isOpen for use in snapToIndex without adding it as a useMemo dep\n  // (adding isOpen to deps would recreate methods on every open/close, destabilizing context)\n  const isOpenRef = useRef(isOpen);\n  isOpenRef.current = isOpen;\n  const pendingIndexRef = useRef(indexProp >= 0 ? clampIndex(indexProp) : null);\n  const sheetRef = useRef<ModalBottomSheetRef>(null);\n  // Guards fireCloseCallbacks against double-firing when programmatic hide and\n  // a native onDismissRequest race (e.g. swipe-dismiss during auto-close).\n  const closedRef = useRef(indexProp < 0);\n\n  // Stable callback refs\n  const onChangeRef = useRef(onChange);\n  onChangeRef.current = onChange;\n  const onCloseRef = useRef(onClose);\n  onCloseRef.current = onClose;\n  const onDismissRef = useRef(onDismiss);\n  onDismissRef.current = onDismiss;\n\n  const fireCloseCallbacks = useCallback(() => {\n    if (closedRef.current) return;\n    closedRef.current = true;\n    onCloseRef.current?.();\n    onDismissRef.current?.();\n    onChangeRef.current?.(-1);\n  }, []);\n\n  // Sync with external index prop changes\n  useEffect(() => {\n    if (indexProp === -1) {\n      pendingIndexRef.current = null;\n      setIsOpen(false);\n      fireCloseCallbacks();\n    } else if (indexProp >= 0) {\n      pendingIndexRef.current = clampIndex(indexProp);\n      closedRef.current = false;\n      setIsOpen(true);\n    }\n  }, [clampIndex, indexProp, fireCloseCallbacks]);\n\n  const handleDismiss = useCallback(() => {\n    setIsOpen(false);\n    fireCloseCallbacks();\n  }, [fireCloseCallbacks]);\n\n  const methods: BottomSheetMethods = useMemo(() => {\n    const snapToIndex = (index: number) => {\n      if (index === -1) {\n        sheetRef.current?.hide().then(() => {\n          setIsOpen(false);\n          pendingIndexRef.current = null;\n          fireCloseCallbacks();\n        });\n        return;\n      }\n      const clampedIndex = clampIndex(index);\n      pendingIndexRef.current = clampedIndex;\n      closedRef.current = false;\n      if (!isOpenRef.current) {\n        setIsOpen(true);\n      } else if (hasMultipleSnapPoints) {\n        // Native ModalBottomSheet has two states: partial (~50%) and expanded (full).\n        // Map index 0 → partialExpand(), last index → expand().\n        if (clampedIndex === maxIndex) {\n          sheetRef.current?.expand();\n        } else {\n          sheetRef.current?.partialExpand();\n        }\n        pendingIndexRef.current = null;\n      }\n      onChangeRef.current?.(clampedIndex);\n    };\n\n    const close = () => {\n      sheetRef.current?.hide().then(() => {\n        setIsOpen(false);\n        pendingIndexRef.current = null;\n        fireCloseCallbacks();\n      });\n    };\n\n    return {\n      snapToIndex,\n      snapToPosition: (position: string | number) =>\n        snapToIndex(findNearestSnapPointIndex(snapPointsProp, position)),\n      expand: () => snapToIndex(maxIndex),\n      collapse: () => snapToIndex(0),\n      close,\n      forceClose: close,\n      present: () => snapToIndex(0),\n      dismiss: close,\n    };\n  }, [clampIndex, maxIndex, hasMultipleSnapPoints, fireCloseCallbacks, snapPointsProp]);\n\n  useImperativeHandle(ref, () => methods, [methods]);\n\n  if (!isOpen) {\n    return (\n      <BottomSheetInternalContext.Provider value={internalContextValue}>\n        <BottomSheetContext.Provider value={methods}>{null}</BottomSheetContext.Provider>\n      </BottomSheetInternalContext.Provider>\n    );\n  }\n\n  return (\n    <BottomSheetInternalContext.Provider value={internalContextValue}>\n      <BottomSheetContext.Provider value={methods}>\n        <Host style={{ position: 'absolute', width }} pointerEvents=\"none\">\n          <ModalBottomSheet\n            ref={sheetRef}\n            onDismissRequest={handleDismiss}\n            onDidPresent={onDidPresent}\n            skipPartiallyExpanded={skipPartially}\n            initialFullyExpanded={hasMultipleSnapPoints && pendingIndexRef.current === maxIndex}\n            showDragHandle={handleComponent !== null}\n            sheetGesturesEnabled={enablePanDownToClose}\n            containerColor={containerColor}\n            properties={{\n              shouldDismissOnBackPress: enablePanDownToClose,\n              shouldDismissOnClickOutside: enablePanDownToClose,\n            }}>\n            <RNHostView matchContents={fitToContents}>\n              {/* With matchContents, RNHostView lays the hosted view out at its own size, so `width` gives it\n                  the sheet width while its height stays content-sized. Otherwise flexGrow:1 + height:0\n                  (flex-basis 0) fills RNHostView's measured height without inheriting the scrollable\n                  child's content height, which would block scrolling to the end. */}\n              <View style={fitToContents ? { width } : { flexGrow: 1, height: 0 }}>\n                <SheetScrollContextReset>{children}</SheetScrollContextReset>\n              </View>\n            </RNHostView>\n          </ModalBottomSheet>\n        </Host>\n      </BottomSheetContext.Provider>\n    </BottomSheetInternalContext.Provider>\n  );\n}\n"],"names":["useCallback","useEffect","useImperativeHandle","useMemo","useRef","useState","StyleSheet","useWindowDimensions","View","Host","ModalBottomSheet","RNHostView","BottomSheetContext","BottomSheetInternalContext","SheetScrollContextReset","parseSnapPoint","useBottomSheet","extractBackgroundColor","backgroundStyle","undefined","flatten","backgroundColor","findNearestSnapPointIndex","snapPoints","position","length","parsedTarget","nearestIndex","nearestDistance","Infinity","forEach","snapPoint","index","parsedSnapPoint","type","distance","Math","abs","value","BottomSheet","props","ref","snapPointsProp","indexProp","onChange","onClose","onDismiss","onDidPresent","enablePanDownToClose","enableDynamicSizing","handleComponent","children","width","hasMultipleSnapPoints","fitToContents","skipPartially","maxIndex","containerColor","internalContextValue","clampIndex","min","max","isOpen","setIsOpen","isOpenRef","current","pendingIndexRef","sheetRef","closedRef","onChangeRef","onCloseRef","onDismissRef","fireCloseCallbacks","handleDismiss","methods","snapToIndex","hide","then","clampedIndex","expand","partialExpand","close","snapToPosition","collapse","forceClose","present","dismiss","Provider","style","pointerEvents","onDismissRequest","skipPartiallyExpanded","initialFullyExpanded","showDragHandle","sheetGesturesEnabled","properties","shouldDismissOnBackPress","shouldDismissOnClickOutside","matchContents","flexGrow","height"],"mappings":"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"}
+\ No newline at end of file
+diff --git a/build/community/bottom-sheet/BottomSheet.ios.js b/build/community/bottom-sheet/BottomSheet.ios.js
+index e776a031c0a5ed413331daa5f574ffc512b6ee8a..505498a07cee257fb8ee54540b51a87fa0f40c65 100644
+--- a/build/community/bottom-sheet/BottomSheet.ios.js
++++ b/build/community/bottom-sheet/BottomSheet.ios.js
+@@ -71,7 +71,7 @@ function findNearestDetentIndex(detents, position) {
+  *
+  * @remarks Uses SwiftUI's `.sheet()` presentation (modal overlay).
+  */ export function BottomSheet(props) {
+-    const { ref, snapPoints: snapPointsProp, index: indexProp = 0, onChange, onClose, onDismiss, enablePanDownToClose = false, enableDynamicSizing = true, handleComponent, backgroundStyle, children } = props;
++    const { ref, snapPoints: snapPointsProp, index: indexProp = 0, onChange, onClose, onDismiss, onDidPresent, enablePanDownToClose = false, enableDynamicSizing = true, handleComponent, backgroundStyle, children } = props;
+     const { width } = useWindowDimensions();
+     const [isPresented, setIsPresented] = useState(indexProp >= 0);
+     const [currentIndex, setCurrentIndex] = useState(Math.max(indexProp, 0));
+@@ -214,6 +214,7 @@ function findNearestDetentIndex(detents, position) {
+                     isPresented: isPresented,
+                     onIsPresentedChange: handlePresentedChange,
+                     onDismiss: fireCloseCallbacks,
++                    onDidPresent: onDidPresent,
+                     fitToContents: fitToContents,
+                     children: /*#__PURE__*/ _jsx(Group, {
+                         modifiers: modifiers,
+diff --git a/build/community/bottom-sheet/BottomSheet.ios.js.map b/build/community/bottom-sheet/BottomSheet.ios.js.map
+index ac3a9d3c7daff8cff29e8ae851d9f0e2c20d9a6a..e9969069bc84ddfae3c8ea40d9cae2d3a78319b0 100644
+--- a/build/community/bottom-sheet/BottomSheet.ios.js.map
++++ b/build/community/bottom-sheet/BottomSheet.ios.js.map
+@@ -1 +1 @@
+-{"version":3,"sources":["community/bottom-sheet/BottomSheet.ios.tsx"],"sourcesContent":[null],"names":["useCallback","useEffect","useImperativeHandle","useMemo","useRef","useState","useWindowDimensions","View","StyleSheet","BottomSheet","NativeBottomSheet","Group","Host","RNHostView","interactiveDismissDisabled","presentationBackground","presentationDetents","presentationDragIndicator","presentationSizing","BottomSheetContext","BottomSheetInternalContext","SheetScrollContextReset","parseSnapPoint","useBottomSheet","extractBackgroundColor","style","undefined","flat","flatten","color","backgroundColor","snapPointToDetent","point","parsed","type","fraction","value","height","detentsAreEqual","a","b","findDetentIndex","detents","detent","findIndex","d","findNearestDetentIndex","position","nearestIndex","nearestDist","Infinity","forEach","i","pValue","dValue","dist","Math","abs","props","ref","snapPoints","snapPointsProp","index","indexProp","onChange","onClose","onDismiss","enablePanDownToClose","enableDynamicSizing","handleComponent","backgroundStyle","children","width","isPresented","setIsPresented","currentIndex","setCurrentIndex","max","currentIndexRef","closedRef","onChangeRef","current","onCloseRef","onDismissRef","length","map","selectedDetent","fitToContents","internalContextValue","fireCloseCallbacks","clampedIndex","min","handlePresentedChange","presented","handleDetentChange","newIndex","methods","snapToIndex","close","snapToPosition","expand","collapse","forceClose","present","dismiss","modifiers","bg","selection","onSelectionChange","Provider","pointerEvents","onIsPresentedChange","matchContents","paddingTop","flexGrow"],"mappings":"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"}
+\ No newline at end of file
++{"version":3,"sources":["community/bottom-sheet/BottomSheet.ios.tsx"],"sourcesContent":["import { useCallback, useEffect, useImperativeHandle, useMemo, useRef, useState } from 'react';\nimport { useWindowDimensions, View, StyleSheet } from 'react-native';\nimport type { StyleProp, ViewStyle } from 'react-native';\n\nimport { BottomSheet as NativeBottomSheet } from '../../swift-ui/BottomSheet';\nimport { Group } from '../../swift-ui/Group';\nimport { Host } from '../../swift-ui/Host';\nimport { RNHostView } from '../../swift-ui/RNHostView';\nimport {\n  type PresentationDetent,\n  interactiveDismissDisabled,\n  presentationBackground,\n  presentationDetents,\n  presentationDragIndicator,\n  presentationSizing,\n} from '../../swift-ui/modifiers/presentationModifiers';\nimport { BottomSheetContext, BottomSheetInternalContext } from './context';\nimport { SheetScrollContextReset } from './scrollContextReset';\nimport type { BottomSheetMethods, BottomSheetProps } from './types';\nimport { parseSnapPoint } from './types';\n\nexport { useBottomSheet } from './context';\n\n// #region Helpers\n\nfunction extractBackgroundColor(style: StyleProp<ViewStyle>): string | undefined {\n  if (!style) return undefined;\n  const flat = StyleSheet.flatten(style) as ViewStyle | undefined;\n  const color = flat?.backgroundColor;\n  return typeof color === 'string' ? color : undefined;\n}\n\nfunction snapPointToDetent(point: string | number): PresentationDetent {\n  const parsed = parseSnapPoint(point);\n  return parsed.type === 'fraction' ? { fraction: parsed.value } : { height: parsed.value };\n}\n\nfunction detentsAreEqual(a: PresentationDetent, b: PresentationDetent): boolean {\n  if (typeof a === 'string' && typeof b === 'string') return a === b;\n  if (typeof a === 'object' && typeof b === 'object') {\n    if ('fraction' in a && 'fraction' in b) return a.fraction === b.fraction;\n    if ('height' in a && 'height' in b) return a.height === b.height;\n  }\n  return false;\n}\n\nfunction findDetentIndex(detents: PresentationDetent[], detent: PresentationDetent): number {\n  return detents.findIndex((d) => detentsAreEqual(d, detent));\n}\n\nfunction findNearestDetentIndex(detents: PresentationDetent[], position: string | number): number {\n  const parsed = parseSnapPoint(position);\n  let nearestIndex = 0;\n  let nearestDist = Infinity;\n  detents.forEach((d, i) => {\n    const detent =\n      typeof d === 'string'\n        ? d === 'medium'\n          ? { type: 'fraction' as const, value: 0.5 }\n          : { type: 'fraction' as const, value: 1.0 }\n        : 'fraction' in d\n          ? { type: 'fraction' as const, value: d.fraction }\n          : { type: 'height' as const, value: d.height };\n    if (detent.type !== parsed.type) return;\n    const pValue = parsed.value;\n    const dValue = detent.value;\n    const dist = Math.abs(dValue - pValue);\n    if (dist < nearestDist) {\n      nearestDist = dist;\n      nearestIndex = i;\n    }\n  });\n  return nearestIndex;\n}\n\n// #endregion\n\n/**\n * iOS implementation of `BottomSheet` using native SwiftUI sheets.\n *\n * @remarks Uses SwiftUI's `.sheet()` presentation (modal overlay).\n */\nexport function BottomSheet(props: BottomSheetProps) {\n  const {\n    ref,\n    snapPoints: snapPointsProp,\n    index: indexProp = 0,\n    onChange,\n    onClose,\n    onDismiss,\n    onDidPresent,\n    enablePanDownToClose = false,\n    enableDynamicSizing = true,\n    handleComponent,\n    backgroundStyle,\n    children,\n  } = props;\n  const { width } = useWindowDimensions();\n\n  const [isPresented, setIsPresented] = useState(indexProp >= 0);\n  const [currentIndex, setCurrentIndex] = useState(Math.max(indexProp, 0));\n  // Ref mirrors currentIndex for use in handleDetentChange without adding it as a useCallback dep\n  const currentIndexRef = useRef(currentIndex);\n  // Guards fireCloseCallbacks against double-firing.\n  const closedRef = useRef(indexProp < 0);\n\n  // Stable callback refs\n  const onChangeRef = useRef(onChange);\n  onChangeRef.current = onChange;\n  const onCloseRef = useRef(onClose);\n  onCloseRef.current = onClose;\n  const onDismissRef = useRef(onDismiss);\n  onDismissRef.current = onDismiss;\n\n  const detents = useMemo<PresentationDetent[]>(() => {\n    if (!snapPointsProp || snapPointsProp.length === 0) return ['medium', 'large'];\n    return snapPointsProp.map(snapPointToDetent);\n  }, [snapPointsProp]);\n\n  const selectedDetent = detents[currentIndex] ?? detents[0];\n  const fitToContents = enableDynamicSizing && (!snapPointsProp || snapPointsProp.length === 0);\n  const internalContextValue = useMemo(() => ({ fitToContents }), [fitToContents]);\n\n  const fireCloseCallbacks = useCallback(() => {\n    if (closedRef.current) return;\n    closedRef.current = true;\n    onCloseRef.current?.();\n    onDismissRef.current?.();\n    onChangeRef.current?.(-1);\n  }, []);\n\n  // Sync with external index prop changes\n  useEffect(() => {\n    if (indexProp === -1) {\n      setIsPresented(false);\n    } else if (indexProp >= 0) {\n      closedRef.current = false;\n      setIsPresented(true);\n      const clampedIndex = Math.min(indexProp, detents.length - 1);\n      setCurrentIndex(clampedIndex);\n      currentIndexRef.current = clampedIndex;\n    }\n  }, [indexProp, detents.length]);\n\n  const handlePresentedChange = useCallback((presented: boolean) => {\n    if (!presented) {\n      setIsPresented(false);\n    }\n  }, []);\n\n  const handleDetentChange = useCallback(\n    (detent: PresentationDetent) => {\n      const newIndex = findDetentIndex(detents, detent);\n      if (newIndex >= 0 && newIndex !== currentIndexRef.current) {\n        currentIndexRef.current = newIndex;\n        setCurrentIndex(newIndex);\n        onChangeRef.current?.(newIndex);\n      }\n    },\n    [detents]\n  );\n\n  const methods: BottomSheetMethods = useMemo(() => {\n    const snapToIndex = (index: number) => {\n      if (index === -1) {\n        setIsPresented(false);\n        return;\n      }\n      const clampedIndex = Math.min(Math.max(index, 0), detents.length - 1);\n      closedRef.current = false;\n      setIsPresented(true);\n      currentIndexRef.current = clampedIndex;\n      setCurrentIndex(clampedIndex);\n      onChangeRef.current?.(clampedIndex);\n    };\n\n    // Close callbacks fire from the native `onDismiss` event, which SwiftUI sends after\n    // the dismissal transition finishes, so they can present another modal without UIKit\n    // rejecting it. Android awaits `hide()` for the same reason.\n    const close = () => {\n      setIsPresented(false);\n    };\n\n    return {\n      snapToIndex,\n      snapToPosition: (position: string | number) =>\n        snapToIndex(findNearestDetentIndex(detents, position)),\n      expand: () => snapToIndex(detents.length - 1),\n      collapse: () => snapToIndex(0),\n      close,\n      forceClose: close,\n      present: () => snapToIndex(0),\n      dismiss: close,\n    };\n  }, [detents]);\n\n  useImperativeHandle(ref, () => methods, [methods]);\n\n  const modifiers = useMemo(() => {\n    const bg = extractBackgroundColor(backgroundStyle);\n    return [\n      ...(fitToContents\n        ? // Makes the iPad sheet size to that content instead of opening near full height.\n          [presentationSizing('fitted')]\n        : [\n            presentationDetents(detents, {\n              selection: selectedDetent,\n              onSelectionChange: handleDetentChange,\n            }),\n          ]),\n      presentationDragIndicator(handleComponent === null ? 'hidden' : 'visible'),\n      interactiveDismissDisabled(!enablePanDownToClose),\n      ...(bg ? [presentationBackground(bg)] : []),\n    ];\n  }, [\n    fitToContents,\n    detents,\n    selectedDetent,\n    handleDetentChange,\n    handleComponent,\n    enablePanDownToClose,\n    backgroundStyle,\n  ]);\n\n  return (\n    <BottomSheetInternalContext.Provider value={internalContextValue}>\n      <BottomSheetContext.Provider value={methods}>\n        <Host style={{ position: 'absolute', width }} pointerEvents=\"none\">\n          <NativeBottomSheet\n            isPresented={isPresented}\n            onIsPresentedChange={handlePresentedChange}\n            onDismiss={fireCloseCallbacks}\n            onDidPresent={onDidPresent}\n            fitToContents={fitToContents}>\n            <Group modifiers={modifiers}>\n              <RNHostView matchContents={fitToContents}>\n                {/* paddingTop compensates for tighter spacing between native drag indicator and content\n                    compared to gorhom's handle. flexGrow:1 + height:0 (flex-basis 0) fills the snap-point\n                    height without inheriting the scrollable child's intrinsic content height. With matchContents,\n                    RNHostView lays the hosted view out at its own size, so `width` gives it the sheet width\n                    while its height stays content-sized. */}\n                <View\n                  style={\n                    fitToContents\n                      ? { width, paddingTop: handleComponent !== null ? 16 : 0 }\n                      : { flexGrow: 1, height: 0, paddingTop: handleComponent !== null ? 16 : 0 }\n                  }>\n                  <SheetScrollContextReset>{children}</SheetScrollContextReset>\n                </View>\n              </RNHostView>\n            </Group>\n          </NativeBottomSheet>\n        </Host>\n      </BottomSheetContext.Provider>\n    </BottomSheetInternalContext.Provider>\n  );\n}\n"],"names":["useCallback","useEffect","useImperativeHandle","useMemo","useRef","useState","useWindowDimensions","View","StyleSheet","BottomSheet","NativeBottomSheet","Group","Host","RNHostView","interactiveDismissDisabled","presentationBackground","presentationDetents","presentationDragIndicator","presentationSizing","BottomSheetContext","BottomSheetInternalContext","SheetScrollContextReset","parseSnapPoint","useBottomSheet","extractBackgroundColor","style","undefined","flat","flatten","color","backgroundColor","snapPointToDetent","point","parsed","type","fraction","value","height","detentsAreEqual","a","b","findDetentIndex","detents","detent","findIndex","d","findNearestDetentIndex","position","nearestIndex","nearestDist","Infinity","forEach","i","pValue","dValue","dist","Math","abs","props","ref","snapPoints","snapPointsProp","index","indexProp","onChange","onClose","onDismiss","onDidPresent","enablePanDownToClose","enableDynamicSizing","handleComponent","backgroundStyle","children","width","isPresented","setIsPresented","currentIndex","setCurrentIndex","max","currentIndexRef","closedRef","onChangeRef","current","onCloseRef","onDismissRef","length","map","selectedDetent","fitToContents","internalContextValue","fireCloseCallbacks","clampedIndex","min","handlePresentedChange","presented","handleDetentChange","newIndex","methods","snapToIndex","close","snapToPosition","expand","collapse","forceClose","present","dismiss","modifiers","bg","selection","onSelectionChange","Provider","pointerEvents","onIsPresentedChange","matchContents","paddingTop","flexGrow"],"mappings":"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"}
+\ No newline at end of file
+diff --git a/build/community/bottom-sheet/types.d.ts b/build/community/bottom-sheet/types.d.ts
+index cf72b27f4304b6772a844acd0eb144796c03b5c0..6686f1f6d6d2828fec1f4f6186605e67a5be14a3 100644
+--- a/build/community/bottom-sheet/types.d.ts
++++ b/build/community/bottom-sheet/types.d.ts
+@@ -159,6 +159,13 @@ export interface BottomSheetProps {
+      * Alias for `onClose`.
+      */
+     onDismiss?: () => void;
++    /**
++     * Called once after the native presentation transition completes and the sheet is ready for
++     * interaction. Unlike `onChange`, this is not called when changing snap points.
++     * @platform ios
++     * @platform android
++     */
++    onDidPresent?: () => void;
+     /**
+      * Whether the sheet can be dismissed by panning down.
+      * @default false
+diff --git a/build/community/bottom-sheet/types.js.map b/build/community/bottom-sheet/types.js.map
+index 5d5eb6914650176f186bb3b6a8405d46bdfe77e6..f667687f122ea2d516c12c4e0a7a7545b5454283 100644
+--- a/build/community/bottom-sheet/types.js.map
++++ b/build/community/bottom-sheet/types.js.map
+@@ -1 +1 @@
+-{"version":3,"sources":["community/bottom-sheet/types.ts"],"sourcesContent":[null],"names":["parseSnapPoint","point","type","value","endsWith","parseFloat"],"mappings":"AAqXA,aAAa;AAEb,oBAAoB;AAEpB;;;;CAIC,GACD,OAAO,SAASA,eACdC,KAAsB;IAEtB,IAAI,OAAOA,UAAU,UAAU;QAC7B,OAAO;YAAEC,MAAM;YAAUC,OAAOF;QAAM;IACxC;IACA,IAAIA,MAAMG,QAAQ,CAAC,MAAM;QACvB,OAAO;YAAEF,MAAM;YAAYC,OAAOE,WAAWJ,SAAS;QAAI;IAC5D;IACA,OAAO;QAAEC,MAAM;QAAUC,OAAOE,WAAWJ;IAAO;AACpD,EAEA,aAAa"}
+\ No newline at end of file
++{"version":3,"sources":["community/bottom-sheet/types.ts"],"sourcesContent":["import type { ComponentType, ReactNode, Ref } from 'react';\nimport type { StyleProp, ViewProps, ViewStyle } from 'react-native';\n\n// #region BottomSheetMethods\n\n/**\n * Imperative methods exposed via ref on the `BottomSheet` component.\n * Compatible with `@gorhom/bottom-sheet` `BottomSheetMethods`.\n */\nexport interface BottomSheetMethods {\n  /**\n   * Snap to a snap point by index.\n   *\n   * @remarks On Android, only two snap states are supported (partial and expanded).\n   * Indices are mapped to the nearest available state.\n   */\n  snapToIndex: (index: number) => void;\n\n  /**\n   * Snap to an arbitrary position.\n   * @param position - A pixel value or percentage string (e.g., `'50%'` or `200`).\n   *\n   * @remarks On iOS and Android, this is mapped to the nearest available detent/state.\n   * Arbitrary positioning is only fully supported on web.\n   */\n  snapToPosition: (position: string | number) => void;\n\n  /**\n   * Snap to the maximum (highest) snap point.\n   *\n   * @remarks On Android, this expands to full screen.\n   */\n  expand: () => void;\n\n  /**\n   * Snap to the minimum (lowest) snap point.\n   *\n   * @remarks On Android, this snaps to the partially expanded state (~50% height).\n   */\n  collapse: () => void;\n\n  /**\n   * Close the bottom sheet.\n   */\n  close: () => void;\n\n  /**\n   * Force close the bottom sheet, preventing gesture interruptions.\n   *\n   * @remarks Behaves identically to `close()` in this implementation,\n   * as native sheets do not support gesture interruption during close.\n   */\n  forceClose: () => void;\n\n  /**\n   * Present the bottom sheet (open at the first snap point).\n   * Compatible with `@gorhom/bottom-sheet` `BottomSheetModal.present()`.\n   */\n  present: () => void;\n\n  /**\n   * Dismiss the bottom sheet.\n   * Compatible with `@gorhom/bottom-sheet` `BottomSheetModal.dismiss()`.\n   */\n  dismiss: () => void;\n}\n\n// #endregion\n\n// #region Component Props\n\n/**\n * Props for custom handle components.\n * Compatible with `@gorhom/bottom-sheet` `BottomSheetHandleProps`.\n */\nexport interface BottomSheetHandleProps {\n  animatedIndex?: { value: number };\n  animatedPosition?: { value: number };\n}\n\n/**\n * Props for custom backdrop components.\n * Compatible with `@gorhom/bottom-sheet` `BottomSheetBackdropProps`.\n */\nexport interface BottomSheetBackdropProps {\n  animatedIndex?: { value: number };\n  animatedPosition?: { value: number };\n  style?: StyleProp<ViewStyle>;\n}\n\n/**\n * Props for custom background components.\n * Compatible with `@gorhom/bottom-sheet` `BottomSheetBackgroundProps`.\n */\nexport interface BottomSheetBackgroundProps {\n  animatedIndex?: { value: number };\n  animatedPosition?: { value: number };\n  style?: StyleProp<ViewStyle>;\n  pointerEvents?: ViewProps['pointerEvents'];\n}\n\n/**\n * Props for custom footer components.\n * Compatible with `@gorhom/bottom-sheet` `BottomSheetFooterProps`.\n */\nexport interface BottomSheetFooterProps {\n  animatedFooterPosition?: { value: number };\n}\n\n// #endregion\n\n// #region BottomSheetProps\n\n/**\n * Props for the `BottomSheet` component.\n * API-compatible with `@gorhom/bottom-sheet` `BottomSheetProps`.\n *\n * @remarks This component uses native platform bottom sheets (SwiftUI on iOS,\n * Material3 ModalBottomSheet on Android, CSS-based on web). Unlike `@gorhom/bottom-sheet`\n * which renders inline at the bottom of its container, this implementation presents\n * a modal sheet overlay on iOS and Android. On web, it renders inline.\n */\nexport interface BottomSheetProps {\n  /**\n   * Ref to the bottom sheet component. Exposes imperative methods (`snapToIndex`,\n   * `expand`, `collapse`, `close`, `present`, `dismiss`, etc.).\n   */\n  ref?: Ref<BottomSheetMethods>;\n\n  // --- Snap points ---\n\n  /**\n   * Points for the bottom sheet to snap to, ordered from bottom to top.\n   * Accepts pixel values (numbers) or percentage strings (e.g., `'25%'`, `'50%'`).\n   *\n   * @remarks On Android, only 2 snap states are supported (partial ~50% and expanded).\n   * When more than 2 snap points are provided, only the first and last are effective.\n   * iOS and web support arbitrary snap points.\n   *\n   * @example\n   * ```tsx\n   * snapPoints={['25%', '50%']}\n   * snapPoints={[200, 500]}\n   * ```\n   */\n  snapPoints?: (string | number)[];\n\n  /**\n   * Initial snap point index. Set to `-1` to start closed.\n   * @default 0\n   *\n   * @remarks For `BottomSheet`, defaults to `0` (open at first snap point), matching\n   * `@gorhom/bottom-sheet`. For `BottomSheetModal`, the sheet always starts closed\n   * regardless of this value — use `present()` to open. The `index` value then controls\n   * which snap point `present()` opens to.\n   */\n  index?: number;\n\n  // --- Callbacks ---\n\n  /**\n   * Callback when the current snap point index changes.\n   *\n   * @remarks On Android, index values are limited to `0` (partial) and\n   * `snapPoints.length - 1` (expanded) due to the 2-state limitation.\n   */\n  onChange?: (index: number) => void;\n\n  /**\n   * Callback when the bottom sheet is fully closed.\n   */\n  onClose?: () => void;\n\n  /**\n   * Callback when the bottom sheet is dismissed.\n   * Compatible with `@gorhom/bottom-sheet` `BottomSheetModal.onDismiss`.\n   * Alias for `onClose`.\n   */\n  onDismiss?: () => void;\n\n  /**\n   * Called once after the native presentation transition completes and the sheet is ready for\n   * interaction. Unlike `onChange`, this is not called when changing snap points.\n   * @platform ios\n   * @platform android\n   */\n  onDidPresent?: () => void;\n\n  // --- Behavior ---\n\n  /**\n   * Whether the sheet can be dismissed by panning down.\n   * @default false\n   *\n   * @remarks On iOS, this enables both swipe-to-dismiss and backdrop tap dismiss —\n   * SwiftUI does not allow separating these behaviors. In `@gorhom/bottom-sheet`,\n   * only swipe-to-dismiss is controlled (there is no backdrop since the sheet is inline).\n   * On Android, this also controls back button and scrim tap dismiss.\n   */\n  enablePanDownToClose?: boolean;\n\n  /**\n   * Whether the sheet should automatically size to fit its content.\n   * @default true\n   *\n   * @remarks Only effective when `snapPoints` is not provided. In `@gorhom/bottom-sheet`,\n   * `enableDynamicSizing` prepends a content-sized snap point even when `snapPoints` are\n   * provided (e.g., `snapPoints={['25%', '50%']}` becomes `[content-height, 25%, 50%]`).\n   * This implementation cannot combine dynamic sizing with explicit snap points — the\n   * native iOS `fitToContents` and explicit `presentationDetents` are mutually exclusive.\n   * When both `enableDynamicSizing` and `snapPoints` are set, `snapPoints` takes precedence.\n   */\n  enableDynamicSizing?: boolean;\n\n  /**\n   * Whether to animate the sheet from closed to initial snap point on mount.\n   * @default true\n   *\n   * @remarks This prop is accepted for API compatibility but has no effect.\n   * Native sheets always animate on presentation.\n   */\n  animateOnMount?: boolean;\n\n  /**\n   * Resistance factor when over-dragging the sheet.\n   * @default 2.5\n   *\n   * @remarks This prop is accepted for API compatibility but has no effect.\n   * Native sheets handle over-drag behavior internally.\n   */\n  overDragResistanceFactor?: number;\n\n  /**\n   * Whether to enable over-dragging the sheet.\n   * @default true\n   *\n   * @remarks This prop is accepted for API compatibility but has no effect.\n   * Native sheets handle over-drag behavior internally.\n   */\n  enableOverDrag?: boolean;\n\n  /**\n   * Whether to enable content panning gesture.\n   * @default true\n   *\n   * @remarks This prop is accepted for API compatibility but has no effect.\n   * Native sheets handle content panning internally.\n   */\n  enableContentPanningGesture?: boolean;\n\n  /**\n   * Whether to enable handle panning gesture.\n   * @default true\n   *\n   * @remarks This prop is accepted for API compatibility but has no effect.\n   * Native sheets handle panning internally.\n   */\n  enableHandlePanningGesture?: boolean;\n\n  // --- Keyboard ---\n\n  /**\n   * Keyboard behavior when the sheet has a text input.\n   *\n   * @remarks This prop is accepted for API compatibility but has no effect.\n   * Native sheets handle keyboard behavior automatically.\n   */\n  keyboardBehavior?: 'interactive' | 'extend' | 'fillParent';\n\n  /**\n   * Behavior when the keyboard is dismissed.\n   *\n   * @remarks This prop is accepted for API compatibility but has no effect.\n   * Native sheets handle keyboard blur behavior automatically.\n   */\n  keyboardBlurBehavior?: 'none' | 'restore';\n\n  // --- Components ---\n\n  /**\n   * Custom handle component. Pass `null` to hide the handle.\n   *\n   * @remarks On native platforms (iOS and Android), custom handle components are not rendered.\n   * Only `null` (hides the native drag indicator) vs any non-null value (shows the default\n   * native drag indicator) is distinguished. On web, the default handle is shown or hidden.\n   */\n  handleComponent?: ComponentType<BottomSheetHandleProps> | null;\n\n  /**\n   * Custom backdrop component.\n   *\n   * @remarks This prop is accepted for API compatibility but has no effect on native platforms.\n   * iOS uses a system-provided backdrop. Android provides scrim color control via `backgroundStyle`.\n   * On web, the default scrim is always rendered.\n   */\n  backdropComponent?: ComponentType<BottomSheetBackdropProps>;\n\n  /**\n   * Custom background component.\n   *\n   * @remarks This prop is accepted for API compatibility but has no effect.\n   * Native sheets render their own background.\n   */\n  backgroundComponent?: ComponentType<BottomSheetBackgroundProps> | null;\n\n  /**\n   * Custom footer component.\n   *\n   * @remarks This prop is accepted for API compatibility but has no effect.\n   */\n  footerComponent?: ComponentType<BottomSheetFooterProps>;\n\n  // --- Styles ---\n\n  /**\n   * Style applied to the bottom sheet container.\n   */\n  style?: StyleProp<ViewStyle>;\n\n  /**\n   * Style for the sheet background.\n   *\n   * @remarks On Android, `backgroundColor` is extracted and applied as `containerColor`.\n   * On iOS, `backgroundColor` is extracted and applied via SwiftUI's\n   * `.presentationBackground(_:)` modifier.\n   * Other style properties may not take effect on native platforms.\n   * On web, the full style is applied.\n   */\n  backgroundStyle?: StyleProp<ViewStyle>;\n\n  /**\n   * Style for the handle area.\n   *\n   * @remarks This prop is accepted for API compatibility but has no effect on native platforms.\n   * Native handle styling is controlled by the platform.\n   */\n  handleStyle?: StyleProp<ViewStyle>;\n\n  /**\n   * Style for the handle indicator.\n   *\n   * @remarks This prop is accepted for API compatibility but has no effect on native platforms.\n   * Native handle indicator styling is controlled by the platform.\n   */\n  handleIndicatorStyle?: StyleProp<ViewStyle>;\n\n  /**\n   * Style for the outer container.\n   *\n   * @remarks This prop is accepted for API compatibility but has no effect on native platforms.\n   */\n  containerStyle?: StyleProp<ViewStyle>;\n\n  /**\n   * The content to render inside the bottom sheet.\n   */\n  children: ReactNode;\n\n  /**\n   * Identifier used to locate the inner content container in end-to-end tests.\n   * Applied on web only.\n   */\n  testID?: string;\n}\n\n// #endregion\n\n// #region BottomSheetView props\n\n/**\n * Props for the `BottomSheetView` component.\n * Compatible with `@gorhom/bottom-sheet` `BottomSheetViewProps`.\n *\n * @remarks In this implementation, `BottomSheetView` is a simple pass-through wrapper.\n * Dynamic sizing is handled by the parent `BottomSheet` component via `enableDynamicSizing`.\n */\nexport interface BottomSheetViewProps {\n  children: ReactNode;\n  style?: StyleProp<ViewStyle>;\n}\n\n// #endregion\n\n// #region Utilities\n\n/**\n * Parse a gorhom-style snap point into a normalized format.\n * - Numbers are treated as pixel heights.\n * - Strings ending with `%` are treated as fractions of container height.\n */\nexport function parseSnapPoint(\n  point: string | number\n): { type: 'height'; value: number } | { type: 'fraction'; value: number } {\n  if (typeof point === 'number') {\n    return { type: 'height', value: point };\n  }\n  if (point.endsWith('%')) {\n    return { type: 'fraction', value: parseFloat(point) / 100 };\n  }\n  return { type: 'height', value: parseFloat(point) };\n}\n\n// #endregion\n"],"names":["parseSnapPoint","point","type","value","endsWith","parseFloat"],"mappings":"AA6XA,aAAa;AAEb,oBAAoB;AAEpB;;;;CAIC,GACD,OAAO,SAASA,eACdC,KAAsB;IAEtB,IAAI,OAAOA,UAAU,UAAU;QAC7B,OAAO;YAAEC,MAAM;YAAUC,OAAOF;QAAM;IACxC;IACA,IAAIA,MAAMG,QAAQ,CAAC,MAAM;QACvB,OAAO;YAAEF,MAAM;YAAYC,OAAOE,WAAWJ,SAAS;QAAI;IAC5D;IACA,OAAO;QAAEC,MAAM;QAAUC,OAAOE,WAAWJ;IAAO;AACpD,EAEA,aAAa"}
+\ No newline at end of file
+diff --git a/build/jetpack-compose/ModalBottomSheet/index.d.ts b/build/jetpack-compose/ModalBottomSheet/index.d.ts
+index 6d3806c8213034310a304287da1e609453d30243..622be898ade313cb56494656d2e2475d9ba0f854 100644
+--- a/build/jetpack-compose/ModalBottomSheet/index.d.ts
++++ b/build/jetpack-compose/ModalBottomSheet/index.d.ts
+@@ -44,6 +44,11 @@ export interface ModalBottomSheetProps {
+      * (via swipe, back press, or tapping outside the scrim).
+      */
+     onDismissRequest: () => void;
++    /**
++     * Called once after the sheet is visible, its opening animation has completed, and its window
++     * has focus. This is a suitable point to focus a text input inside the sheet.
++     */
++    onDidPresent?: () => void;
+     /**
+      * Immediately opens the bottom sheet in full screen.
+      * @default false
+diff --git a/build/jetpack-compose/ModalBottomSheet/index.js b/build/jetpack-compose/ModalBottomSheet/index.js
+index ba36efa65298eff84f5614318ee5b3e8c76ec0f7..11f69895175a204dbec20ec4dd751d90c1e1ac92 100644
+--- a/build/jetpack-compose/ModalBottomSheet/index.js
++++ b/build/jetpack-compose/ModalBottomSheet/index.js
+@@ -5,7 +5,7 @@ import { createViewModifierEventListener } from '../modifiers/utils';
+ const SlotNativeView = requireNativeView('ExpoUI', 'SlotView');
+ const ModalBottomSheetNativeView = requireNativeView('ExpoUI', 'ModalBottomSheetView');
+ function transformProps(props) {
+-    const { modifiers, onDismissRequest, ...restProps } = props;
++    const { modifiers, onDismissRequest, onDidPresent, ...restProps } = props;
+     return {
+         modifiers,
+         ...modifiers ? createViewModifierEventListener(modifiers) : undefined,
+@@ -14,6 +14,9 @@ function transformProps(props) {
+         initialFullyExpanded: props.initialFullyExpanded ?? false,
+         onDismissRequest: ()=>{
+             onDismissRequest?.();
++        },
++        onDidPresent: ()=>{
++            onDidPresent?.();
+         }
+     };
+ }
+diff --git a/build/jetpack-compose/ModalBottomSheet/index.js.map b/build/jetpack-compose/ModalBottomSheet/index.js.map
+index 6e528b96482d2bc617fae30644554fac61df3c71..6cf5323d9d085e840dbe0c6e57677578148bcb72 100644
+--- a/build/jetpack-compose/ModalBottomSheet/index.js.map
++++ b/build/jetpack-compose/ModalBottomSheet/index.js.map
+@@ -1 +1 @@
+-{"version":3,"sources":["jetpack-compose/ModalBottomSheet/index.tsx"],"sourcesContent":[null],"names":["requireNativeView","PresentedContent","createViewModifierEventListener","SlotNativeView","ModalBottomSheetNativeView","transformProps","props","modifiers","onDismissRequest","restProps","undefined","skipPartiallyExpanded","initialFullyExpanded","DragHandle","slotName","children","ModalBottomSheetComponent","rest","ModalBottomSheet"],"mappings":";AAAA,SAASA,iBAAiB,QAAQ,OAAO;AAIzC,SAASC,gBAAgB,QAAQ,gCAAgC;AAEjE,SAASC,+BAA+B,QAAQ,qBAAqB;AAOrE,MAAMC,iBAAqDH,kBAAkB,UAAU;AA+FvF,MAAMI,6BAAyEJ,kBAC7E,UACA;AAGF,SAASK,eAAeC,KAA4B;IAClD,MAAM,EAAEC,SAAS,EAAEC,gBAAgB,EAAE,GAAGC,WAAW,GAAGH;IACtD,OAAO;QACLC;QACA,GAAIA,YAAYL,gCAAgCK,aAAaG,SAAS;QACtE,GAAGD,SAAS;QACZE,uBAAuBL,MAAMK,qBAAqB,IAAI;QACtDC,sBAAsBN,MAAMM,oBAAoB,IAAI;QACpDJ,kBAAkB;YAChBA;QACF;IACF;AACF;AAEA;;;;;CAKC,GACD,SAASK,WAAWP,KAA8B;IAChD,qBAAO,KAACH;QAAeW,UAAS;kBAAcR,MAAMS,QAAQ;;AAC9D;AAEA;;CAEC,GACD,SAASC,0BAA0BV,KAA4B;IAC7D,MAAM,EAAES,QAAQ,EAAE,GAAGE,MAAM,GAAGX;IAC9B,iGAAiG;IACjG,qBACE,KAACF;QAA4B,GAAGC,eAAeY,KAA8B;kBAC3E,cAAA,KAAChB;sBAAkBc;;;AAGzB;AAEAC,0BAA0BH,UAAU,GAAGA;AAEvC,OAAO,MAAMK,mBAAmBF,0BAA0B"}
+\ No newline at end of file
++{"version":3,"sources":["jetpack-compose/ModalBottomSheet/index.tsx"],"sourcesContent":["import { requireNativeView } from 'expo';\nimport type { Ref, ReactNode, ComponentType } from 'react';\nimport type { ColorValue } from 'react-native';\n\nimport { PresentedContent } from '../../PresentedContentContext';\nimport { type ModifierConfig } from '../../types';\nimport { createViewModifierEventListener } from '../modifiers/utils';\n\ntype SlotNativeViewProps = {\n  slotName: string;\n  children: ReactNode;\n};\n\nconst SlotNativeView: ComponentType<SlotNativeViewProps> = requireNativeView('ExpoUI', 'SlotView');\n\nexport type ModalBottomSheetRef = {\n  /**\n   * Programmatically hides the bottom sheet with an animation.\n   * The returned promise resolves after the dismiss animation completes.\n   */\n  hide: () => Promise<void>;\n  /**\n   * Programmatically expands the bottom sheet to full height with an animation.\n   */\n  expand: () => Promise<void>;\n  /**\n   * Programmatically collapses the bottom sheet to partially expanded (~50%) state.\n   * Only works when `skipPartiallyExpanded` is `false`.\n   */\n  partialExpand: () => Promise<void>;\n};\n\nexport type ModalBottomSheetProperties = {\n  /**\n   * Whether the bottom sheet can be dismissed by pressing the back button.\n   * @default true\n   */\n  shouldDismissOnBackPress?: boolean;\n  /**\n   * Whether the bottom sheet can be dismissed by clicking outside (on the scrim).\n   * @default true\n   */\n  shouldDismissOnClickOutside?: boolean;\n};\n\nexport interface ModalBottomSheetProps {\n  /**\n   * The children of the `ModalBottomSheet` component.\n   * Can include a `ModalBottomSheet.DragHandle` slot for a custom drag handle.\n   */\n  children: ReactNode;\n  /**\n   * Can be used to imperatively hide the bottom sheet with an animation.\n   */\n  ref?: Ref<ModalBottomSheetRef>;\n  /**\n   * Callback function that is called when the user dismisses the bottom sheet\n   * (via swipe, back press, or tapping outside the scrim).\n   */\n  onDismissRequest: () => void;\n  /**\n   * Called once after the sheet is visible, its opening animation has completed, and its window\n   * has focus. This is a suitable point to focus a text input inside the sheet.\n   */\n  onDidPresent?: () => void;\n  /**\n   * Immediately opens the bottom sheet in full screen.\n   * @default false\n   */\n  skipPartiallyExpanded?: boolean;\n  /**\n   * Opens the sheet fully expanded on first composition. Ignored when `skipPartiallyExpanded` is `true`.\n   * @default false\n   * @platform android\n   */\n  initialFullyExpanded?: boolean;\n  /**\n   * The background color of the bottom sheet.\n   */\n  containerColor?: ColorValue;\n  /**\n   * The preferred color of the content inside the bottom sheet.\n   */\n  contentColor?: ColorValue;\n  /**\n   * The color of the scrim overlay behind the bottom sheet.\n   */\n  scrimColor?: ColorValue;\n  /**\n   * Whether to show the default drag handle at the top of the bottom sheet.\n   * Ignored if a custom `ModalBottomSheet.DragHandle` slot is provided.\n   * @default true\n   */\n  showDragHandle?: boolean;\n  /**\n   * Whether gestures (swipe to dismiss) are enabled on the bottom sheet.\n   * @default true\n   */\n  sheetGesturesEnabled?: boolean;\n  /**\n   * Properties for the modal window behavior.\n   */\n  properties?: ModalBottomSheetProperties;\n  /**\n   * Modifiers for the component.\n   */\n  modifiers?: ModifierConfig[];\n}\n\ntype NativeModalBottomSheetProps = Omit<\n  ModalBottomSheetProps,\n  'onDismissRequest' | 'onDidPresent'\n> & {\n  onDismissRequest: () => void;\n  onDidPresent: () => void;\n};\n\nconst ModalBottomSheetNativeView: ComponentType<NativeModalBottomSheetProps> = requireNativeView(\n  'ExpoUI',\n  'ModalBottomSheetView'\n);\n\nfunction transformProps(props: ModalBottomSheetProps): NativeModalBottomSheetProps {\n  const { modifiers, onDismissRequest, onDidPresent, ...restProps } = props;\n  return {\n    modifiers,\n    ...(modifiers ? createViewModifierEventListener(modifiers) : undefined),\n    ...restProps,\n    skipPartiallyExpanded: props.skipPartiallyExpanded ?? false,\n    initialFullyExpanded: props.initialFullyExpanded ?? false,\n    onDismissRequest: () => {\n      onDismissRequest?.();\n    },\n    onDidPresent: () => {\n      onDidPresent?.();\n    },\n  };\n}\n\n/**\n * A custom drag handle slot for `ModalBottomSheet`.\n * Wrap any content to use as the sheet's drag handle.\n *\n * @platform android\n */\nfunction DragHandle(props: { children: ReactNode }) {\n  return <SlotNativeView slotName=\"dragHandle\">{props.children}</SlotNativeView>;\n}\n\n/**\n * A Material Design modal bottom sheet.\n */\nfunction ModalBottomSheetComponent(props: ModalBottomSheetProps) {\n  const { children, ...rest } = props;\n  // The whole sheet, drag handle included, is presented in its own window, so all of it is marked.\n  return (\n    <ModalBottomSheetNativeView {...transformProps(rest as ModalBottomSheetProps)}>\n      <PresentedContent>{children}</PresentedContent>\n    </ModalBottomSheetNativeView>\n  );\n}\n\nModalBottomSheetComponent.DragHandle = DragHandle;\n\nexport const ModalBottomSheet = ModalBottomSheetComponent;\n"],"names":["requireNativeView","PresentedContent","createViewModifierEventListener","SlotNativeView","ModalBottomSheetNativeView","transformProps","props","modifiers","onDismissRequest","onDidPresent","restProps","undefined","skipPartiallyExpanded","initialFullyExpanded","DragHandle","slotName","children","ModalBottomSheetComponent","rest","ModalBottomSheet"],"mappings":";AAAA,SAASA,iBAAiB,QAAQ,OAAO;AAIzC,SAASC,gBAAgB,QAAQ,gCAAgC;AAEjE,SAASC,+BAA+B,QAAQ,qBAAqB;AAOrE,MAAMC,iBAAqDH,kBAAkB,UAAU;AAwGvF,MAAMI,6BAAyEJ,kBAC7E,UACA;AAGF,SAASK,eAAeC,KAA4B;IAClD,MAAM,EAAEC,SAAS,EAAEC,gBAAgB,EAAEC,YAAY,EAAE,GAAGC,WAAW,GAAGJ;IACpE,OAAO;QACLC;QACA,GAAIA,YAAYL,gCAAgCK,aAAaI,SAAS;QACtE,GAAGD,SAAS;QACZE,uBAAuBN,MAAMM,qBAAqB,IAAI;QACtDC,sBAAsBP,MAAMO,oBAAoB,IAAI;QACpDL,kBAAkB;YAChBA;QACF;QACAC,cAAc;YACZA;QACF;IACF;AACF;AAEA;;;;;CAKC,GACD,SAASK,WAAWR,KAA8B;IAChD,qBAAO,KAACH;QAAeY,UAAS;kBAAcT,MAAMU,QAAQ;;AAC9D;AAEA;;CAEC,GACD,SAASC,0BAA0BX,KAA4B;IAC7D,MAAM,EAAEU,QAAQ,EAAE,GAAGE,MAAM,GAAGZ;IAC9B,iGAAiG;IACjG,qBACE,KAACF;QAA4B,GAAGC,eAAea,KAA8B;kBAC3E,cAAA,KAACjB;sBAAkBe;;;AAGzB;AAEAC,0BAA0BH,UAAU,GAAGA;AAEvC,OAAO,MAAMK,mBAAmBF,0BAA0B"}
+\ No newline at end of file
+diff --git a/build/swift-ui/BottomSheet/index.d.ts b/build/swift-ui/BottomSheet/index.d.ts
+index cc6228651224cb7a7684ec56da98feace182dae5..2a3df862a083233153d0e157e779091dbef0fd34 100644
+--- a/build/swift-ui/BottomSheet/index.d.ts
++++ b/build/swift-ui/BottomSheet/index.d.ts
+@@ -23,6 +23,12 @@ export interface BottomSheetProps extends CommonViewModifierProps {
+      * Callback function that is called after the `BottomSheet` has been fully dismissed.
+      */
+     onDismiss?: () => void;
++    /**
++     * Called once after the native presentation transition completes.
++     * @platform ios
++     * @platform tvos
++     */
++    onDidPresent?: () => void;
+     /**
+      * When `true`, the sheet will automatically size itself to fit its content.
+      * This sets the presentation detent to match the height of the children.
+diff --git a/build/swift-ui/BottomSheet/index.js b/build/swift-ui/BottomSheet/index.js
+index f98055f23721c82dad80df568c773c12e70a5d01..4366a4b76528209d84397dda5c36a127bd729486 100644
+--- a/build/swift-ui/BottomSheet/index.js
++++ b/build/swift-ui/BottomSheet/index.js
+@@ -8,7 +8,7 @@ const BottomSheetNativeView = requireNativeView('ExpoUI', 'BottomSheetView');
+ /**
+  * `BottomSheet` presents content from the bottom of the screen.
+  */ function BottomSheet(props) {
+-    const { modifiers, onIsPresentedChange, onDismiss, anchor, children, ...restProps } = props;
++    const { modifiers, onIsPresentedChange, onDismiss, onDidPresent, anchor, children, ...restProps } = props;
+     const [isMounted, setIsMounted] = useState(props.isPresented);
+     if (props.isPresented && !isMounted) {
+         setIsMounted(true);
+@@ -22,6 +22,7 @@ const BottomSheetNativeView = requireNativeView('ExpoUI', 'BottomSheetView');
+         onIsPresentedChange: ({ nativeEvent: { isPresented } })=>{
+             onIsPresentedChange?.(isPresented);
+         },
++        onDidPresent: ()=>onDidPresent?.(),
+         onDismiss: ()=>{
+             setIsMounted(false);
+             onDismiss?.();
+diff --git a/build/swift-ui/BottomSheet/index.js.map b/build/swift-ui/BottomSheet/index.js.map
+index 93dc8e0b96976f6fd0517593a260ab015556724f..a5bff3273752538b9aa76ee1aac368936048de1b 100644
+--- a/build/swift-ui/BottomSheet/index.js.map
++++ b/build/swift-ui/BottomSheet/index.js.map
+@@ -1 +1 @@
+-{"version":3,"sources":["swift-ui/BottomSheet/index.tsx"],"sourcesContent":[null],"names":["requireNativeView","useState","PresentedContent","Slot","createViewModifierEventListener","BottomSheetNativeView","BottomSheet","props","modifiers","onIsPresentedChange","onDismiss","anchor","children","restProps","isMounted","setIsMounted","isPresented","undefined","nativeEvent","name"],"mappings":";AAAA,SAASA,iBAAiB,QAAQ,OAAO;AACzC,SAASC,QAAQ,QAA4C,QAAQ;AAGrE,SAASC,gBAAgB,QAAQ,gCAAgC;AACjE,SAASC,IAAI,QAAQ,cAAc;AACnC,SAASC,+BAA+B,QAAQ,qBAAqB;AA0CrE,MAAMC,wBAA+DL,kBACnE,UACA;AAGF;;CAEC,GACD,SAASM,YAAYC,KAAuB;IAC1C,MAAM,EAAEC,SAAS,EAAEC,mBAAmB,EAAEC,SAAS,EAAEC,MAAM,EAAEC,QAAQ,EAAE,GAAGC,WAAW,GAAGN;IACtF,MAAM,CAACO,WAAWC,aAAa,GAAGd,SAASM,MAAMS,WAAW;IAE5D,IAAIT,MAAMS,WAAW,IAAI,CAACF,WAAW;QACnCC,aAAa;IACf;IAEA,8FAA8F;IAC9F,iBAAiB;IACjB,qBACE,MAACV;QACCG,WAAWA;QACV,GAAIA,YAAYJ,gCAAgCI,aAAaS,SAAS;QACtE,GAAGJ,SAAS;QACbJ,qBAAqB,CAAC,EAAES,aAAa,EAAEF,WAAW,EAAE,EAAE;YACpDP,sBAAsBO;QACxB;QACAN,WAAW;YACTK,aAAa;YACbL;QACF;;YACCC,UAAU,qBAAO,KAACR;gBAAKgB,MAAK;0BAAUR;iBAAiB;YAGvDG,0BAAY,KAACZ;0BAAkBU;iBAA+B;;;AAGrE;AAEA,SAASN,WAAW,GAAG"}
+\ No newline at end of file
++{"version":3,"sources":["swift-ui/BottomSheet/index.tsx"],"sourcesContent":["import { requireNativeView } from 'expo';\nimport { useState, type ComponentType, type ReactNode } from 'react';\nimport { type NativeSyntheticEvent } from 'react-native';\n\nimport { PresentedContent } from '../../PresentedContentContext';\nimport { Slot } from '../SlotView';\nimport { createViewModifierEventListener } from '../modifiers/utils';\nimport { type CommonViewModifierProps } from '../types';\n\nexport interface BottomSheetProps extends CommonViewModifierProps {\n  /**\n   * The sheet's content, mounted while presented and unmounted after dismiss. Wrap it in `Group`\n   * to apply presentation modifiers.\n   */\n  children: ReactNode;\n  /**\n   * A view the sheet is anchored to, for example the `Button` that opens it. Rendered in place and\n   * kept mounted, so presenting the sheet doesn't shift surrounding layout. Optional.\n   */\n  anchor?: ReactNode;\n  /**\n   * Whether the `BottomSheet` is presented.\n   */\n  isPresented: boolean;\n  /**\n   * Callback function that is called when the `BottomSheet` presented state changes.\n   */\n  onIsPresentedChange: (isPresented: boolean) => void;\n  /**\n   * Callback function that is called after the `BottomSheet` has been fully dismissed.\n   */\n  onDismiss?: () => void;\n  /**\n   * Called once after the native presentation transition completes.\n   * @platform ios\n   * @platform tvos\n   */\n  onDidPresent?: () => void;\n  /**\n   * When `true`, the sheet will automatically size itself to fit its content.\n   * This sets the presentation detent to match the height of the children.\n   * @default false\n   */\n  fitToContents?: boolean;\n}\n\ntype NativeBottomSheetProps = Omit<\n  BottomSheetProps,\n  'onIsPresentedChange' | 'onDismiss' | 'onDidPresent' | 'anchor'\n> & {\n  onIsPresentedChange: (event: NativeSyntheticEvent<{ isPresented: boolean }>) => void;\n  onDismiss: (event: NativeSyntheticEvent<object>) => void;\n  onDidPresent: (event: NativeSyntheticEvent<object>) => void;\n};\n\nconst BottomSheetNativeView: ComponentType<NativeBottomSheetProps> = requireNativeView(\n  'ExpoUI',\n  'BottomSheetView'\n);\n\n/**\n * `BottomSheet` presents content from the bottom of the screen.\n */\nfunction BottomSheet(props: BottomSheetProps) {\n  const {\n    modifiers,\n    onIsPresentedChange,\n    onDismiss,\n    onDidPresent,\n    anchor,\n    children,\n    ...restProps\n  } = props;\n  const [isMounted, setIsMounted] = useState(props.isPresented);\n\n  if (props.isPresented && !isMounted) {\n    setIsMounted(true);\n  }\n\n  // The anchor stays mounted so it's always visible; the content mounts on present and unmounts\n  // after dismiss.\n  return (\n    <BottomSheetNativeView\n      modifiers={modifiers}\n      {...(modifiers ? createViewModifierEventListener(modifiers) : undefined)}\n      {...restProps}\n      onIsPresentedChange={({ nativeEvent: { isPresented } }) => {\n        onIsPresentedChange?.(isPresented);\n      }}\n      onDidPresent={() => onDidPresent?.()}\n      onDismiss={() => {\n        setIsMounted(false);\n        onDismiss?.();\n      }}>\n      {anchor != null ? <Slot name=\"anchor\">{anchor}</Slot> : null}\n      {/* Only the sheet's content is presented in its own view controller. The anchor renders in\n          place, in the React Native surface, so it stays outside `PresentedContent`. */}\n      {isMounted ? <PresentedContent>{children}</PresentedContent> : null}\n    </BottomSheetNativeView>\n  );\n}\n\nexport { BottomSheet };\n"],"names":["requireNativeView","useState","PresentedContent","Slot","createViewModifierEventListener","BottomSheetNativeView","BottomSheet","props","modifiers","onIsPresentedChange","onDismiss","onDidPresent","anchor","children","restProps","isMounted","setIsMounted","isPresented","undefined","nativeEvent","name"],"mappings":";AAAA,SAASA,iBAAiB,QAAQ,OAAO;AACzC,SAASC,QAAQ,QAA4C,QAAQ;AAGrE,SAASC,gBAAgB,QAAQ,gCAAgC;AACjE,SAASC,IAAI,QAAQ,cAAc;AACnC,SAASC,+BAA+B,QAAQ,qBAAqB;AAiDrE,MAAMC,wBAA+DL,kBACnE,UACA;AAGF;;CAEC,GACD,SAASM,YAAYC,KAAuB;IAC1C,MAAM,EACJC,SAAS,EACTC,mBAAmB,EACnBC,SAAS,EACTC,YAAY,EACZC,MAAM,EACNC,QAAQ,EACR,GAAGC,WACJ,GAAGP;IACJ,MAAM,CAACQ,WAAWC,aAAa,GAAGf,SAASM,MAAMU,WAAW;IAE5D,IAAIV,MAAMU,WAAW,IAAI,CAACF,WAAW;QACnCC,aAAa;IACf;IAEA,8FAA8F;IAC9F,iBAAiB;IACjB,qBACE,MAACX;QACCG,WAAWA;QACV,GAAIA,YAAYJ,gCAAgCI,aAAaU,SAAS;QACtE,GAAGJ,SAAS;QACbL,qBAAqB,CAAC,EAAEU,aAAa,EAAEF,WAAW,EAAE,EAAE;YACpDR,sBAAsBQ;QACxB;QACAN,cAAc,IAAMA;QACpBD,WAAW;YACTM,aAAa;YACbN;QACF;;YACCE,UAAU,qBAAO,KAACT;gBAAKiB,MAAK;0BAAUR;iBAAiB;YAGvDG,0BAAY,KAACb;0BAAkBW;iBAA+B;;;AAGrE;AAEA,SAASP,WAAW,GAAG"}
+\ No newline at end of file
+diff --git a/ios/BottomSheetView.swift b/ios/BottomSheetView.swift
+index 29b1a3ad7a8dc653347899c514fc538f9f9433f3..f071a5003cf9bce161a605d370f658fc84523cd1 100644
+--- a/ios/BottomSheetView.swift
++++ b/ios/BottomSheetView.swift
+@@ -8,6 +8,7 @@ final class BottomSheetProps: UIBaseViewProps {
+   @Field var fitToContents: Bool = false
+   var onIsPresentedChange = EventDispatcher()
+   var onDismiss = EventDispatcher()
++  var onDidPresent = EventDispatcher()
+ }
+ 
+ struct SizePreferenceKey: PreferenceKey {
+@@ -58,10 +59,48 @@ private struct BottomSheetSizeReader<Content: View>: View {
+   }
+ }
+ 
++#if os(iOS) || os(tvOS)
++private struct BottomSheetPresentationObserver: UIViewControllerRepresentable {
++  var onDidAppear: () -> Void
++
++  func makeUIViewController(context: Context) -> ViewController {
++    let controller = ViewController()
++    controller.onDidAppear = onDidAppear
++    return controller
++  }
++
++  func updateUIViewController(_ controller: ViewController, context: Context) {
++    controller.onDidAppear = onDidAppear
++  }
++
++  final class ViewController: UIViewController {
++    var onDidAppear: (() -> Void)?
++
++    override func loadView() {
++      view = UIView()
++      view.backgroundColor = .clear
++      view.isUserInteractionEnabled = false
++    }
++
++    override func viewDidAppear(_ animated: Bool) {
++      super.viewDidAppear(animated)
++      onDidAppear?()
++    }
++  }
++}
++#endif
++
+ struct BottomSheetView: ExpoSwiftUI.View {
+   @ObservedObject var props: BottomSheetProps
+   @State private var isPresented: Bool = false
+   @State private var childrenSize: CGSize = .zero
++  @State private var didPresent: Bool = false
++
++  private func handleDidPresent() {
++    guard isPresented, props.isPresented, !didPresent else { return }
++    didPresent = true
++    props.onDidPresent()
++  }
+ 
+   private func handleSizeChange(_ size: CGSize) {
+     guard childrenSize != size else { return }
+@@ -105,9 +144,17 @@ struct BottomSheetView: ExpoSwiftUI.View {
+   var body: some View {
+     anchor
+       .sheet(isPresented: $isPresented, onDismiss: {
++        didPresent = false
+         props.onDismiss()
+       }) {
+         sheetContent
++          #if os(iOS) || os(tvOS)
++          .background(
++            BottomSheetPresentationObserver(onDidAppear: handleDidPresent)
++              .frame(width: 0, height: 0)
++              .allowsHitTesting(false)
++          )
++          #endif
+       }
+       .onChange(of: isPresented, perform: { newIsPresented in
+         if props.isPresented == newIsPresented {
+diff --git a/src/community/bottom-sheet/BottomSheet.android.tsx b/src/community/bottom-sheet/BottomSheet.android.tsx
+index 419edefacdca8b98e318dc924c66575171e35124..97d5e9bacb5450bae506f023701e995150d992bf 100644
+--- a/src/community/bottom-sheet/BottomSheet.android.tsx
++++ b/src/community/bottom-sheet/BottomSheet.android.tsx
+@@ -60,6 +60,7 @@ export function BottomSheet(props: BottomSheetProps) {
+     onChange,
+     onClose,
+     onDismiss,
++    onDidPresent,
+     enablePanDownToClose = false,
+     enableDynamicSizing = true,
+     handleComponent,
+@@ -190,6 +191,7 @@ export function BottomSheet(props: BottomSheetProps) {
+           <ModalBottomSheet
+             ref={sheetRef}
+             onDismissRequest={handleDismiss}
++            onDidPresent={onDidPresent}
+             skipPartiallyExpanded={skipPartially}
+             initialFullyExpanded={hasMultipleSnapPoints && pendingIndexRef.current === maxIndex}
+             showDragHandle={handleComponent !== null}
+diff --git a/src/community/bottom-sheet/BottomSheet.ios.tsx b/src/community/bottom-sheet/BottomSheet.ios.tsx
+index b6c03007179931a2c06cc79aaa65cadcf690a6c1..3ad7b2e858190dde768589ab1eec617cfea5c204 100644
+--- a/src/community/bottom-sheet/BottomSheet.ios.tsx
++++ b/src/community/bottom-sheet/BottomSheet.ios.tsx
+@@ -88,6 +88,7 @@ export function BottomSheet(props: BottomSheetProps) {
+     onChange,
+     onClose,
+     onDismiss,
++    onDidPresent,
+     enablePanDownToClose = false,
+     enableDynamicSizing = true,
+     handleComponent,
+@@ -229,6 +230,7 @@ export function BottomSheet(props: BottomSheetProps) {
+             isPresented={isPresented}
+             onIsPresentedChange={handlePresentedChange}
+             onDismiss={fireCloseCallbacks}
++            onDidPresent={onDidPresent}
+             fitToContents={fitToContents}>
+             <Group modifiers={modifiers}>
+               <RNHostView matchContents={fitToContents}>
+diff --git a/src/community/bottom-sheet/types.ts b/src/community/bottom-sheet/types.ts
+index 51326fbfdeb9642f52e6fe244093cc697fa585f7..1d8e074327914a9bad34442468dadab9d7304782 100644
+--- a/src/community/bottom-sheet/types.ts
++++ b/src/community/bottom-sheet/types.ts
+@@ -178,6 +178,14 @@ export interface BottomSheetProps {
+    */
+   onDismiss?: () => void;
+ 
++  /**
++   * Called once after the native presentation transition completes and the sheet is ready for
++   * interaction. Unlike `onChange`, this is not called when changing snap points.
++   * @platform ios
++   * @platform android
++   */
++  onDidPresent?: () => void;
++
+   // --- Behavior ---
+ 
+   /**
+diff --git a/src/jetpack-compose/ModalBottomSheet/index.tsx b/src/jetpack-compose/ModalBottomSheet/index.tsx
+index c3225b1d9c7c0636d366203e2b23f536fec9e54e..afa19e991e85ba08df3cf17c5bd60bb86f2afd0a 100644
+--- a/src/jetpack-compose/ModalBottomSheet/index.tsx
++++ b/src/jetpack-compose/ModalBottomSheet/index.tsx
+@@ -58,6 +58,11 @@ export interface ModalBottomSheetProps {
+    * (via swipe, back press, or tapping outside the scrim).
+    */
+   onDismissRequest: () => void;
++  /**
++   * Called once after the sheet is visible, its opening animation has completed, and its window
++   * has focus. This is a suitable point to focus a text input inside the sheet.
++   */
++  onDidPresent?: () => void;
+   /**
+    * Immediately opens the bottom sheet in full screen.
+    * @default false
+@@ -102,8 +107,12 @@ export interface ModalBottomSheetProps {
+   modifiers?: ModifierConfig[];
+ }
+ 
+-type NativeModalBottomSheetProps = Omit<ModalBottomSheetProps, 'onDismissRequest'> & {
++type NativeModalBottomSheetProps = Omit<
++  ModalBottomSheetProps,
++  'onDismissRequest' | 'onDidPresent'
++> & {
+   onDismissRequest: () => void;
++  onDidPresent: () => void;
+ };
+ 
+ const ModalBottomSheetNativeView: ComponentType<NativeModalBottomSheetProps> = requireNativeView(
+@@ -112,7 +121,7 @@ const ModalBottomSheetNativeView: ComponentType<NativeModalBottomSheetProps> = r
+ );
+ 
+ function transformProps(props: ModalBottomSheetProps): NativeModalBottomSheetProps {
+-  const { modifiers, onDismissRequest, ...restProps } = props;
++  const { modifiers, onDismissRequest, onDidPresent, ...restProps } = props;
+   return {
+     modifiers,
+     ...(modifiers ? createViewModifierEventListener(modifiers) : undefined),
+@@ -122,6 +131,9 @@ function transformProps(props: ModalBottomSheetProps): NativeModalBottomSheetPro
+     onDismissRequest: () => {
+       onDismissRequest?.();
+     },
++    onDidPresent: () => {
++      onDidPresent?.();
++    },
+   };
+ }
+ 
+diff --git a/src/swift-ui/BottomSheet/index.tsx b/src/swift-ui/BottomSheet/index.tsx
+index c6327bba32ced43c7b206c014eb93bf665ed6a38..afedfcd384e288a6e721ba893d2cf2edb4a282e7 100644
+--- a/src/swift-ui/BottomSheet/index.tsx
++++ b/src/swift-ui/BottomSheet/index.tsx
+@@ -30,6 +30,12 @@ export interface BottomSheetProps extends CommonViewModifierProps {
+    * Callback function that is called after the `BottomSheet` has been fully dismissed.
+    */
+   onDismiss?: () => void;
++  /**
++   * Called once after the native presentation transition completes.
++   * @platform ios
++   * @platform tvos
++   */
++  onDidPresent?: () => void;
+   /**
+    * When `true`, the sheet will automatically size itself to fit its content.
+    * This sets the presentation detent to match the height of the children.
+@@ -40,10 +46,11 @@ export interface BottomSheetProps extends CommonViewModifierProps {
+ 
+ type NativeBottomSheetProps = Omit<
+   BottomSheetProps,
+-  'onIsPresentedChange' | 'onDismiss' | 'anchor'
++  'onIsPresentedChange' | 'onDismiss' | 'onDidPresent' | 'anchor'
+ > & {
+   onIsPresentedChange: (event: NativeSyntheticEvent<{ isPresented: boolean }>) => void;
+   onDismiss: (event: NativeSyntheticEvent<object>) => void;
++  onDidPresent: (event: NativeSyntheticEvent<object>) => void;
+ };
+ 
+ const BottomSheetNativeView: ComponentType<NativeBottomSheetProps> = requireNativeView(
+@@ -55,7 +62,15 @@ const BottomSheetNativeView: ComponentType<NativeBottomSheetProps> = requireNati
+  * `BottomSheet` presents content from the bottom of the screen.
+  */
+ function BottomSheet(props: BottomSheetProps) {
+-  const { modifiers, onIsPresentedChange, onDismiss, anchor, children, ...restProps } = props;
++  const {
++    modifiers,
++    onIsPresentedChange,
++    onDismiss,
++    onDidPresent,
++    anchor,
++    children,
++    ...restProps
++  } = props;
+   const [isMounted, setIsMounted] = useState(props.isPresented);
+ 
+   if (props.isPresented && !isMounted) {
+@@ -72,6 +87,7 @@ function BottomSheet(props: BottomSheetProps) {
+       onIsPresentedChange={({ nativeEvent: { isPresented } }) => {
+         onIsPresentedChange?.(isPresented);
+       }}
++      onDidPresent={() => onDidPresent?.()}
+       onDismiss={() => {
+         setIsMounted(false);
+         onDismiss?.();

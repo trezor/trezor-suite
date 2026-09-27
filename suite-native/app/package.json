@@ -5,7 +5,15 @@
     "main": "index.js",
     "expo": {
         "autolinking": {
+            "ios": {
+                "buildFromSource": [
+                    "@expo/ui"
+                ]
+            },
             "android": {
+                "buildFromSource": [
+                    "expo-ui"
+                ],
                 "exclude": [
                     "expo-media-library",
                     "react-native-view-shot"

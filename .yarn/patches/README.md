@@ -31,6 +31,16 @@ abort events with a null target on React Native. Introduced for
 Prevents the Expo dev client from hanging when Detox starts an Android test. Introduced in
 [#25924](https://github.com/trezor/trezor-suite/pull/25924).
 
+## @expo/ui
+
+Adds an optional `onDidPresent` event for bottom sheets. Native form focus must wait for the iOS
+presentation transition or the Android dialog's opening animation and window focus; the existing
+`onChange` callback can run before the native window is ready. The patch preserves `onChange`
+behavior and forwards the new event through the community bottom-sheet adapter. Remove it when
+an upstream release exposes an equivalent presentation-ready event. Requires a native rebuild;
+the app's platform-specific `expo.autolinking` settings ensure both platforms compile the patched
+sources instead of selecting precompiled Expo UI artifacts. Remove those settings with the patch.
+
 ## nextra
 
 Undocumented reason, introduced in [#26620](https://github.com/trezor/trezor-suite/pull/26620)
