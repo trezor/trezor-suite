@@ -2,7 +2,7 @@ import { useState } from 'react';
 
 import { Button, type ButtonProps } from './Button';
 
-export type AsyncButtonProps = Exclude<ButtonProps, 'isLoading' | 'onPress'> & {
+export type AsyncButtonProps = Omit<ButtonProps, 'isLoading' | 'onPress'> & {
     onPress: () => Promise<void>;
     onReject?: (error: unknown) => void;
 };

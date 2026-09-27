@@ -1,77 +1,69 @@
 import { Text } from 'react-native';
 
-import { fireEvent, renderWithBasicProvider } from '@suite-native/test-utils';
+import { act, renderWithBasicProvider, userEvent } from '@suite-native/test-utils';
+import { createDeferred } from '@trezor/utils';
 
 import { AsyncButton, type AsyncButtonProps } from './AsyncButton';
 
 describe('AsyncButton', () => {
-    const renderAsyncButton = async (props: Partial<AsyncButtonProps>) =>
-        await renderWithBasicProvider(
-            <AsyncButton
-                onPress={() => new Promise(resolve => setTimeout(resolve, 1000))}
-                testID="async-button"
-                {...props}
-            >
-                <Text>Press me</Text>
-            </AsyncButton>,
-        );
+    const renderAsyncButton = (props: AsyncButtonProps) =>
+        renderWithBasicProvider(<AsyncButton testID="async-button" {...props} />);
 
-    beforeEach(() => {
-        jest.useFakeTimers();
-    });
+    it('disables repeated activation and shows a loader until the action finishes', async () => {
+        const action = createDeferred<void>();
+        const onPress = jest.fn(() => action.promise);
+        const { getByRole, getByTestId, queryByTestId } = await renderAsyncButton({
+            onPress,
+            children: <Text>Press me</Text>,
+        });
 
-    afterEach(() => {
-        jest.useRealTimers();
-    });
-
-    it('should display loading indicator after press', async () => {
-        const { getByTestId, getByText } = await renderAsyncButton({});
-
-        const pressPromise = fireEvent.press(getByText('Press me'));
-        await jest.advanceTimersByTimeAsync(0);
+        await userEvent.press(getByRole('button', { name: 'Press me' }));
 
         expect(getByTestId('async-button/loading')).toBeOnTheScreen();
+        expect(getByRole('button', { busy: true })).toBeDisabled();
 
-        await jest.runAllTimersAsync();
-        await pressPromise;
-    });
+        await userEvent.press(getByRole('button'));
+        expect(onPress).toHaveBeenCalledTimes(1);
 
-    it('should hide loading indicator after async operation is complete', async () => {
-        const { getByText, queryByTestId } = await renderAsyncButton({});
-
-        const pressPromise = fireEvent.press(getByText('Press me'));
-        await jest.runAllTimersAsync();
-        await pressPromise;
-
-        expect(queryByTestId('async-button/loading')).toBeNull();
-    });
-
-    it('should handle onPress rejection gracefully', async () => {
-        const { getByText, queryByTestId } = await renderAsyncButton({
-            onPress: () =>
-                new Promise((_, reject) => setTimeout(() => reject(new Error('Failed')), 1000)),
+        await act(async () => {
+            action.resolve();
+            await action.promise;
         });
 
-        const pressPromise = fireEvent.press(getByText('Press me'));
-        await jest.runAllTimersAsync();
-        await pressPromise;
-
         expect(queryByTestId('async-button/loading')).toBeNull();
+        expect(getByRole('button')).toBeEnabled();
     });
 
-    it('should call onReject on rejection', async () => {
-        const mockOnReject = jest.fn();
-        const { getByText } = await renderAsyncButton({
-            onPress: () =>
-                new Promise((_, reject) => setTimeout(() => reject(new Error('Failed')), 1000)),
-            onReject: mockOnReject,
+    it('restores the button after a rejected action', async () => {
+        const action = createDeferred<void>();
+        const { getByRole, queryByTestId } = await renderAsyncButton({
+            onPress: () => action.promise,
+            children: 'Press me',
         });
 
-        const pressPromise = fireEvent.press(getByText('Press me'));
+        await userEvent.press(getByRole('button'));
+        await act(async () => {
+            action.reject(new Error('Failed'));
+            await action.promise.catch(() => undefined);
+        });
 
-        await jest.runAllTimersAsync();
-        await pressPromise;
+        expect(queryByTestId('async-button/loading')).toBeNull();
+        expect(getByRole('button')).toBeEnabled();
+    });
 
-        expect(mockOnReject).toHaveBeenCalledWith(new Error('Failed'));
+    it('calls onReject once with the original rejection', async () => {
+        const error = new Error('Failed');
+        const onReject = jest.fn();
+        const { getByRole } = await renderAsyncButton({
+            onPress: () => Promise.reject(error),
+            onReject,
+            children: 'Press me',
+        });
+
+        await userEvent.press(getByRole('button'));
+
+        expect(onReject).toHaveBeenCalledTimes(1);
+        expect(onReject).toHaveBeenCalledWith(error);
+        expect(getByRole('button')).toBeEnabled();
     });
 });

@@ -1,4 +1,17 @@
-import { View as MockView } from 'react-native';
+import { Pressable as MockPressable, View as MockView } from 'react-native';
+
+jest.mock('./Button/NativeButton', () => ({
+    supportsNativeButton: true,
+    NativeButton: ({ isDisabled, isLoading, accessibilityState, onPress, ...props }) => (
+        <MockPressable
+            {...props}
+            accessibilityRole="button"
+            accessibilityState={{ ...accessibilityState, disabled: isDisabled, busy: isLoading }}
+            disabled={isDisabled}
+            onPress={isDisabled ? undefined : onPress}
+        />
+    ),
+}));
 
 jest.mock('./Skeleton/BoxSkeleton', () => ({
     BoxSkeleton: props => <MockView {...props} testID="BoxSkeleton" />,

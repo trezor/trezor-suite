@@ -1,5 +1,5 @@
-import { type ReactNode, useState } from 'react';
-import { type PressableProps } from 'react-native';
+import { type ReactNode } from 'react';
+import { Platform, type PressableProps, View } from 'react-native';
 import Animated, { FadeIn } from 'react-native-reanimated';
 
 import { type AnimatedIconColor, Icon, type IconName } from '@suite-native/icons';
@@ -7,12 +7,12 @@ import { type NativeStyleObject, prepareNativeStyle, useNativeStyles } from '@tr
 import { type Color, nativeSpacings } from '@trezor/theme';
 
 import { Loader } from '../Loader';
-import { AnimatedPressable } from '../Pressable';
 import { HStack } from '../Stack';
 import { Text } from '../Text';
 import { type TestProps } from '../types';
+import { LegacyButtonPressable } from './LegacyButtonPressable';
+import { NativeButton, supportsNativeButton } from './NativeButton';
 import { type ButtonColorProps, type ButtonSize } from './types';
-import { useButtonPressAnimatedStyle } from './useButtonPressAnimatedStyle';
 import {
     buttonGapMap,
     buttonSizeToDimensionsMap,
@@ -39,8 +39,9 @@ export {
 
 export type ButtonAccessory = IconName;
 
-export type ButtonProps = Omit<PressableProps, 'style' | 'onPressIn' | 'onPressOut'> & {
+export type ButtonProps = Omit<PressableProps, 'style' | 'onPress' | 'onPressIn' | 'onPressOut'> & {
     children: ReactNode;
+    onPress?: () => void;
     size?: ButtonSize;
     style?: NativeStyleObject;
     isDisabled?: boolean;
@@ -74,6 +75,7 @@ export type ButtonStyleProps = {
 
 export type ButtonTextStyleProps = {
     buttonSize: ButtonSize;
+    usesSystemFont?: boolean;
 };
 
 const LOADER_FADE_IN_DURATION = 500;
@@ -101,11 +103,22 @@ export const buttonStyle = prepareNativeStyle<ButtonStyleProps>(
     },
 );
 
-const buttonTextStyle = prepareNativeStyle<ButtonTextStyleProps>((utils, { buttonSize }) => ({
-    ...utils.typography[buttonToTextSizeMap[buttonSize]],
-    flexShrink: 1,
-    paddingHorizontal: nativeSpacings.sp4,
-}));
+const buttonTextStyle = prepareNativeStyle<ButtonTextStyleProps>(
+    (utils, { buttonSize, usesSystemFont }) => ({
+        ...utils.typography[buttonToTextSizeMap[buttonSize]],
+        flexShrink: 1,
+        paddingHorizontal: nativeSpacings.sp4,
+        extend: [
+            {
+                condition: usesSystemFont,
+                style: {
+                    fontFamily: Platform.OS === 'ios' ? 'System' : 'sans-serif',
+                    fontWeight: '600',
+                },
+            },
+        ],
+    }),
+);
 
 export const ButtonIcon = ({
     iconName,
@@ -119,10 +132,19 @@ export const ButtonAccessoryView = ({
     element,
     iconColor = 'contentPrimary',
     iconSize = 'medium',
-}: ButtonAccessoryViewProps) => <ButtonIcon iconName={element} color={iconColor} size={iconSize} />;
+}: ButtonAccessoryViewProps) => (
+    <View
+        accessible={false}
+        accessibilityElementsHidden
+        importantForAccessibility="no-hide-descendants"
+    >
+        <ButtonIcon iconName={element} color={iconColor} size={iconSize} />
+    </View>
+);
 
 export const Button = ({
     children,
+    accessibilityState,
     disabled: isNativeDisabled,
     flex,
     iconLeft,
@@ -139,7 +161,6 @@ export const Button = ({
     shouldWrapChildrenInText = true,
     ...pressableProps
 }: ButtonProps) => {
-    const [isPressed, setIsPressed] = useState(false);
     const { applyStyle } = useNativeStyles();
     const hasDisabledState = isDisabled || !!isNativeDisabled;
     const hasDisabledVisualState = hasDisabledState || isLoading;
@@ -150,23 +171,99 @@ export const Button = ({
         isDisabled: hasDisabledVisualState,
     });
 
-    const animatedPressStyle = useButtonPressAnimatedStyle(
-        isPressed,
-        hasDisabledVisualState,
-        backgroundColor,
-        onPressColor,
+    const hasCustomGestures = Object.keys(pressableProps).some(
+        key =>
+            key === 'onLongPress' ||
+            key === 'onHoverIn' ||
+            key === 'onHoverOut' ||
+            key === 'onFocus' ||
+            key === 'onBlur' ||
+            key.startsWith('onTouch') ||
+            key.startsWith('onResponder') ||
+            key.includes('ShouldSetResponder') ||
+            key === 'android_ripple' ||
+            key === 'android_disableSound' ||
+            key === 'unstable_pressDelay' ||
+            key === 'hitSlop' ||
+            key === 'pressRetentionOffset',
     );
 
-    const handlePressIn = () => setIsPressed(true);
-    const handlePressOut = () => setIsPressed(false);
+    const usesNativeButton = supportsNativeButton && !hasCustomGestures;
+
+    const content = (
+        <HStack alignItems="center" justifyContent="center" spacing={buttonGapMap[size]}>
+            {isLoading && (
+                <Animated.View
+                    entering={FadeIn.duration(LOADER_FADE_IN_DURATION)}
+                    testID={testID ? `${testID}/loading` : undefined}
+                >
+                    <Loader color={contentColor} />
+                </Animated.View>
+            )}
+            {!isLoading && !!iconLeft && (
+                <ButtonAccessoryView element={iconLeft} iconColor={contentColor} iconSize={size} />
+            )}
+
+            {shouldWrapChildrenInText ? (
+                <Text
+                    color={contentColor}
+                    numberOfLines={1}
+                    style={applyStyle(buttonTextStyle, {
+                        buttonSize: size,
+                        usesSystemFont: usesNativeButton,
+                    })}
+                    testID={testID ? `${testID}/text` : undefined}
+                    textAlign="center"
+                    variant={buttonToTextSizeMap[size]}
+                >
+                    {children}
+                </Text>
+            ) : (
+                children
+            )}
+            {!isLoading && !!iconRight && (
+                <ButtonAccessoryView element={iconRight} iconColor={contentColor} iconSize={size} />
+            )}
+        </HStack>
+    );
+
+    if (usesNativeButton) {
+        return (
+            <NativeButton
+                {...pressableProps}
+                accessibilityLabel={
+                    pressableProps.accessibilityLabel ??
+                    (typeof children === 'string' ? children : undefined)
+                }
+                accessibilityState={accessibilityState}
+                intent={intent}
+                priority={priority}
+                isInverse={isInverse}
+                size={size}
+                isDisabled={hasDisabledVisualState}
+                isLoading={isLoading}
+                isFullWidth={isFullWidth}
+                flex={flex}
+                style={style}
+                testID={testID}
+            >
+                {content}
+            </NativeButton>
+        );
+    }
 
     return (
-        <AnimatedPressable
-            disabled={hasDisabledVisualState}
-            onPressIn={handlePressIn}
-            onPressOut={handlePressOut}
+        <LegacyButtonPressable
+            accessibilityRole="button"
+            accessibilityState={{
+                ...accessibilityState,
+                disabled: hasDisabledVisualState,
+                busy: isLoading,
+            }}
+            isDisabled={hasDisabledVisualState}
+            backgroundColor={backgroundColor}
+            onPressColor={onPressColor}
             style={[
-                animatedPressStyle,
                 applyStyle(buttonStyle, {
                     size,
                     backgroundColor,
@@ -178,47 +275,7 @@ export const Button = ({
             testID={testID}
             {...pressableProps}
         >
-            <HStack alignItems="center" justifyContent="center" spacing={buttonGapMap[size]}>
-                {isLoading && (
-                    <Animated.View
-                        entering={FadeIn.duration(LOADER_FADE_IN_DURATION)}
-                        testID={testID ? `${testID}/loading` : undefined}
-                    >
-                        <Loader color={contentColor} />
-                    </Animated.View>
-                )}
-                {!isLoading && !!iconLeft && (
-                    <ButtonAccessoryView
-                        element={iconLeft}
-                        iconColor={contentColor}
-                        iconSize={size}
-                    />
-                )}
-
-                {shouldWrapChildrenInText ? (
-                    <Text
-                        color={contentColor}
-                        numberOfLines={1}
-                        style={applyStyle(buttonTextStyle, {
-                            buttonSize: size,
-                        })}
-                        testID={testID ? `${testID}/text` : undefined}
-                        textAlign="center"
-                        variant={buttonToTextSizeMap[size]}
-                    >
-                        {children}
-                    </Text>
-                ) : (
-                    children
-                )}
-                {!isLoading && !!iconRight && (
-                    <ButtonAccessoryView
-                        element={iconRight}
-                        iconColor={contentColor}
-                        iconSize={size}
-                    />
-                )}
-            </HStack>
-        </AnimatedPressable>
+            {content}
+        </LegacyButtonPressable>
     );
 };
