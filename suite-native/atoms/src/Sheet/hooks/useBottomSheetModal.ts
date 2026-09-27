@@ -21,7 +21,17 @@ export const useBottomSheetModal = ({ isNestedSheet = false }: UseBottomSheetMod
             // finishes & unmounts. Dismissing the last presented bottom sheet prevents this.
             dismiss();
         }
-        bottomSheetRef.current?.present();
+        const sheet = bottomSheetRef.current;
+        if (
+            isNestedSheet &&
+            sheet &&
+            'presentNested' in sheet &&
+            typeof sheet.presentNested === 'function'
+        ) {
+            sheet.presentNested();
+        } else {
+            sheet?.present();
+        }
     }, [dismissAll, dismiss, isNestedSheet]);
 
     const closeModal = useCallback(() => {

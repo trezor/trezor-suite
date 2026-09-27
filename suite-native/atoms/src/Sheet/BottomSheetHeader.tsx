@@ -16,6 +16,7 @@ type BottomSheetHeaderProps = {
     onCloseSheet: () => void;
     scrollDivider?: ReactNode;
     pointerEvents?: ViewProps['pointerEvents'];
+    isGrabberDisplayed?: boolean;
 };
 
 const sheetHeaderStyle = prepareNativeStyle<{ isCloseDisplayed: boolean }>(
@@ -40,6 +41,7 @@ export const BottomSheetHeader = ({
     onCloseSheet,
     scrollDivider,
     pointerEvents,
+    isGrabberDisplayed = true,
 }: BottomSheetHeaderProps) => {
     const { applyStyle } = useNativeStyles();
     const { translate } = useTranslate();
@@ -48,9 +50,11 @@ export const BottomSheetHeader = ({
 
     return (
         <Box pointerEvents={pointerEvents}>
-            <Box marginTop="sp8" marginBottom="sp24">
-                <BottomSheetGrabber />
-            </Box>
+            {isGrabberDisplayed && (
+                <Box marginTop="sp8" marginBottom="sp24">
+                    <BottomSheetGrabber />
+                </Box>
+            )}
             {isHeaderDisplayed && (
                 <View style={applyStyle(sheetHeaderStyle, { isCloseDisplayed })}>
                     <View style={applyStyle(titlesContainer)}>
@@ -63,6 +67,7 @@ export const BottomSheetHeader = ({
                     </View>
                     {isCloseDisplayed && (
                         <IconButton
+                            native
                             iconName="x"
                             onPress={onCloseSheet}
                             intent="neutral"

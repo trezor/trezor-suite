@@ -1,7 +1,5 @@
-import { BottomSheetModal } from '@gorhom/bottom-sheet';
-
 import { getTranslation } from '@suite-native/intl';
-import { act, fireEvent, renderWithBasicProvider, screen } from '@suite-native/test-utils';
+import { fireEvent, renderWithBasicProvider, screen } from '@suite-native/test-utils';
 
 import { FeedbackCard } from './FeedbackCard';
 
@@ -22,8 +20,6 @@ const expectSheetRatingSelection = (rating: string, isSelected: boolean) => {
 describe('FeedbackCard', () => {
     const onSubmit = jest.fn();
     const onRatingSelect = jest.fn();
-    const presentSpy = jest.spyOn(BottomSheetModal.prototype, 'present');
-    const dismissSpy = jest.spyOn(BottomSheetModal.prototype, 'dismiss');
 
     const renderFeedbackCard = async (props?: Partial<Parameters<typeof FeedbackCard>[0]>) =>
         await renderWithBasicProvider(
@@ -39,12 +35,8 @@ describe('FeedbackCard', () => {
             />,
         );
 
-    const dismissSheet = async () => {
-        const sheetInstance = presentSpy.mock.contexts[0];
-        await act(() => {
-            sheetInstance.dismiss();
-        });
-    };
+    const dismissSheet = () =>
+        fireEvent(screen.getByTestId('@native-sheet/content'), 'accessibilityEscape');
 
     beforeEach(() => {
         jest.clearAllMocks();
@@ -54,6 +46,7 @@ describe('FeedbackCard', () => {
         await renderFeedbackCard();
 
         expect(screen.getByText(HEADING)).toBeOnTheScreen();
+        expect(screen.queryByTestId('@feedback-form/description-input')).not.toBeOnTheScreen();
         ['1', '2', '3', '4', '5'].forEach(rating => {
             expect(screen.getByTestId(`@feedback-form/rating/${rating}`)).toBeOnTheScreen();
         });
@@ -64,7 +57,7 @@ describe('FeedbackCard', () => {
 
         await fireEvent.press(screen.getByTestId('@feedback-form/rating/4'));
 
-        expect(presentSpy).toHaveBeenCalledTimes(1);
+        expect(screen.getByTestId('@feedback-form/description-input')).toBeOnTheScreen();
         expectSheetRatingSelection('4', true);
         expectSheetRatingSelection('3', false);
     });
@@ -77,8 +70,7 @@ describe('FeedbackCard', () => {
 
         expectSheetRatingSelection('2', true);
         expectSheetRatingSelection('4', false);
-        // Changing the rating inside the sheet must not present the sheet again.
-        expect(presentSpy).toHaveBeenCalledTimes(1);
+        expect(screen.getAllByTestId('@native-sheet/content')).toHaveLength(1);
     });
 
     it('calls onRatingSelect when a card rating is pressed', async () => {
@@ -102,6 +94,7 @@ describe('FeedbackCard', () => {
 
     it('does not render the description row when no description is provided', async () => {
         await renderFeedbackCard({ description: undefined });
+        await fireEvent.press(screen.getByTestId('@feedback-form/rating/4'));
 
         expect(screen.queryByText(DESCRIPTION)).not.toBeOnTheScreen();
         expect(screen.getByTestId('@feedback-form/description-input')).toBeOnTheScreen();
@@ -133,9 +126,8 @@ describe('FeedbackCard', () => {
         expect(screen.getAllByText(SUCCESS_DESCRIPTION)).toHaveLength(2);
         expect(screen.getByTestId('@feedback-form/close-button')).toBeOnTheScreen();
         // The card form is gone in the success view.
-        expect(screen.queryByText(HEADING)).not.toBeOnTheScreen();
-        // The sheet stays open until the user closes it.
-        expect(dismissSpy).not.toHaveBeenCalled();
+        expect(screen.queryByTestId('@feedback-form/rating/5')).not.toBeOnTheScreen();
+        expect(screen.getByTestId('@native-sheet/content')).toBeOnTheScreen();
     });
 
     it('closes the sheet when the close button is pressed after submitting', async () => {
@@ -149,9 +141,10 @@ describe('FeedbackCard', () => {
         await fireEvent.press(screen.getByTestId('@feedback-form/submit-button'));
         await fireEvent.press(screen.getByTestId('@feedback-form/close-button'));
 
-        expect(dismissSpy).toHaveBeenCalledTimes(1);
+        expect(screen.queryByTestId('@native-sheet/content')).not.toBeOnTheScreen();
+        expect(screen.queryByTestId('@feedback-form/close-button')).not.toBeOnTheScreen();
         // The card keeps the success view after the sheet is closed.
-        expect(screen.getAllByText(SUCCESS_HEADING).length).toBeGreaterThan(0);
+        expect(screen.getAllByText(SUCCESS_HEADING)).toHaveLength(1);
     });
 
     it('resets the form when the sheet is dismissed without submitting', async () => {
@@ -165,10 +158,35 @@ describe('FeedbackCard', () => {
 
         await dismissSheet();
 
-        expectSheetRatingSelection('3', false);
-        expect(screen.getByTestId('@feedback-form/description-input')).toHaveProp('value', '');
-        // The card stays in the form view.
+        expect(screen.queryByTestId('@feedback-form/description-input')).not.toBeOnTheScreen();
+        // The card stays in the form view while dismissed content unmounts.
         expect(screen.getByText(HEADING)).toBeOnTheScreen();
+
+        await fireEvent.press(screen.getByTestId('@feedback-form/rating/4'));
+
+        expectSheetRatingSelection('3', false);
+        expectSheetRatingSelection('4', true);
+        expect(screen.getByTestId('@feedback-form/description-input')).toHaveProp('value', '');
+    });
+
+    it('closes from the sheet header and reopens with a fresh draft', async () => {
+        await renderFeedbackCard();
+
+        await fireEvent.press(screen.getByTestId('@feedback-form/rating/2'));
+        await fireEvent.changeText(
+            screen.getByTestId('@feedback-form/description-input'),
+            'Unsubmitted draft',
+        );
+        await fireEvent.press(screen.getByTestId('@bottom-sheet/header/close-button'));
+
+        expect(screen.queryByTestId('@feedback-form/description-input')).not.toBeOnTheScreen();
+        expect(onSubmit).not.toHaveBeenCalled();
+
+        await fireEvent.press(screen.getByTestId('@feedback-form/rating/5'));
+
+        expectSheetRatingSelection('2', false);
+        expectSheetRatingSelection('5', true);
+        expect(screen.getByTestId('@feedback-form/description-input')).toHaveProp('value', '');
     });
 
     it('renders the success view directly when defaultView is "success"', async () => {

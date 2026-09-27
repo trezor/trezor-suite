@@ -23,10 +23,10 @@ const mockOnClose = jest.fn();
 const mockOnSlippageConfirmed = jest.fn();
 
 describe('SlippageBottomSheet', () => {
-    const renderSlippageBottomSheet = async (store: Store<State>) => {
+    const renderSlippageBottomSheet = async (store: Store<State>, isVisible = true) => {
         const result = await renderWithSlippageTestProvider(
             <SlippageBottomSheet
-                isVisible={false}
+                isVisible={isVisible}
                 receiveAmount="1"
                 onClose={mockOnClose}
                 onSlippageConfirmed={mockOnSlippageConfirmed}
@@ -42,6 +42,15 @@ describe('SlippageBottomSheet', () => {
     beforeEach(() => {
         jest.clearAllMocks();
         mockUseOpenLink.mockReturnValue(mockOpenLink);
+    });
+
+    it('keeps the form unmounted while the sheet is closed', async () => {
+        const store = createSlippageTestStore();
+        const { queryByLabelText } = await renderSlippageBottomSheet(store, false);
+
+        expect(
+            queryByLabelText(getTranslation('moduleTrading.slippage.inputLabel')),
+        ).not.toBeOnTheScreen();
     });
 
     it('should show default slippage value initially', async () => {

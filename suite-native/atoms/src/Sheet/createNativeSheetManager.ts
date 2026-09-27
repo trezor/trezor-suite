@@ -12,6 +12,7 @@ type SheetEntry = {
 type PendingSheet = {
     sheet: NativeSheet;
     isNested: boolean;
+    parent?: NativeSheet;
 };
 
 export const createNativeSheetManager = () => {
@@ -41,10 +42,15 @@ export const createNativeSheetManager = () => {
     };
 
     const present = (sheet: NativeSheet, isNested = false) => {
-        const existing = sheets.find(entry => entry.sheet === sheet);
+        const existingIndex = sheets.findIndex(entry => entry.sheet === sheet);
+        const existing = sheets[existingIndex];
         if (existing && existing.phase !== 'closing' && !existing.shouldDismiss) return;
 
-        pendingSheet = { sheet, isNested };
+        const parentIndex = existingIndex >= 0 ? existingIndex - 1 : sheets.length - 1;
+        const parent = isNested ? sheets[parentIndex] : undefined;
+        if (parent?.phase === 'closing' || parent?.shouldDismiss) return;
+
+        pendingSheet = { sheet, isNested, parent: parent?.sheet };
         advance();
     };
 
@@ -56,20 +62,30 @@ export const createNativeSheetManager = () => {
 
         for (const entry of sheets.slice(index)) {
             entry.shouldDismiss = true;
+            if (pendingSheet?.parent === entry.sheet) pendingSheet = undefined;
         }
 
         advance();
     };
 
+    const isOpen = (sheet: NativeSheet) => {
+        const top = sheets.at(-1);
+
+        return top?.sheet === sheet && top.phase === 'open' && !top.shouldDismiss;
+    };
+
     const didPresent = (sheet: NativeSheet) => {
         const entry = sheets.find(candidate => candidate.sheet === sheet);
-        if (entry?.phase !== 'opening') return;
+        if (entry?.phase === 'opening') {
+            entry.phase = 'open';
+            advance();
+        }
 
-        entry.phase = 'open';
-        advance();
+        return isOpen(sheet);
     };
 
     const didDismiss = (sheet: NativeSheet) => {
+        if (pendingSheet?.parent === sheet) pendingSheet = undefined;
         sheets = sheets.filter(entry => entry.sheet !== sheet);
         advance();
     };
@@ -82,7 +98,7 @@ export const createNativeSheetManager = () => {
         advance();
     };
 
-    return { present, dismiss, didPresent, didDismiss, dismissAll };
+    return { present, dismiss, didPresent, didDismiss, dismissAll, isOpen };
 };
 
 export const nativeSheetManager = createNativeSheetManager();

@@ -4,7 +4,10 @@ import {
     type ReactNode,
     type RefAttributes,
     forwardRef,
+    useContext,
     useEffect,
+    useImperativeHandle,
+    useRef,
     useState,
 } from 'react';
 import {
@@ -32,6 +35,8 @@ import { nativeSpacings } from '@trezor/theme';
 
 import { AnimatedBox } from '../AnimatedBox';
 import { Box } from '../Box';
+import { useNativeSheetAutoFocus } from './useNativeSheetAutoFocus';
+import { NativeSheetContext } from '../Sheet/NativeSheetContext';
 import { ACCESSIBILITY_FONTSIZE_MULTIPLIER, Text } from '../Text';
 
 const PLACEHOLDER_ANIMATION_DURATION = 200;
@@ -261,6 +266,7 @@ export const Input: ForwardRefExoticComponent<
             rightIcon,
             style,
             editable,
+            autoFocus,
             labelType = 'innerLabel',
             hasError = false,
             hasWarning = false,
@@ -270,17 +276,21 @@ export const Input: ForwardRefExoticComponent<
         ref,
     ) => {
         const [isFocused, setIsFocused] = useState<boolean>(false);
+        const isNativeSheet = useContext(NativeSheetContext);
         const isInnerLabelDisplayed = labelType === 'innerLabel' && !!label;
         const isLabelMinimized = isFocused || !!value?.length;
         const isRightIconDisplayed = !!rightIcon;
         const isDisabled = G.isBoolean(editable) && !editable;
+        const inputRef = useRef<TextInputInstance>(null);
+        useImperativeHandle(ref, () => inputRef.current as TextInputInstance, []);
+        const platformAutoFocus = useNativeSheetAutoFocus(inputRef, autoFocus && !isDisabled);
 
         const { applyStyle } = useNativeStyles();
         const { animatedInputLabelStyle } = useInputLabelAnimationStyles({
             isLabelMinimized,
         });
-        // BottomSheetTextInput allows to avoid keyboard by expanding BottomSheet
-        const InputComponent = asBottomSheetInput ? BottomSheetTextInput : TextInput;
+        const InputComponent =
+            asBottomSheetInput && !isNativeSheet ? BottomSheetTextInput : TextInput;
 
         const handleOnFocus = (event: NativeSyntheticEvent<TargetedEvent>) => {
             setIsFocused(true);
@@ -335,7 +345,7 @@ export const Input: ForwardRefExoticComponent<
                     )}
                     <Box flexDirection="row" alignItems="center">
                         <InputComponent
-                            ref={ref as any}
+                            ref={inputRef as any}
                             style={[
                                 applyStyle(inputStyle, {
                                     isInnerLabelDisplayed,
@@ -349,6 +359,8 @@ export const Input: ForwardRefExoticComponent<
                             hitSlop={inputHitSlop}
                             value={value}
                             editable={editable}
+                            // eslint-disable-next-line jsx-a11y/no-autofocus
+                            autoFocus={platformAutoFocus}
                             {...props}
                         />
                     </Box>

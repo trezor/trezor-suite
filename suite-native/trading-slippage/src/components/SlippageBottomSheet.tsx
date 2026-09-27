@@ -69,15 +69,13 @@ export const SlippageBottomSheet = ({
             dispatch(tradingExchangeActions.setSelectedQuoteSwapSlippage(String(slippage)));
             await onSlippageConfirmed();
             closeModal();
-            onClose();
         },
-        [closeModal, dispatch, onClose, onSlippageConfirmed],
+        [closeModal, dispatch, onSlippageConfirmed],
     );
 
     const handleCancel = useCallback(() => {
         closeModal();
-        onClose();
-    }, [closeModal, onClose]);
+    }, [closeModal]);
 
     return (
         <BottomSheetModal
@@ -118,6 +116,7 @@ export const SlippageBottomSheet = ({
                     <SlippageSummary receiveAmount={receiveAmount} />
                     <Box alignSelf="flex-start">
                         <TextButton
+                            native
                             onPress={() => openLink(TREZOR_TRADING_DEX_SLIPPAGE_URL)}
                             iconRight="arrowUpRight"
                             intent="brand"

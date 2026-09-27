@@ -15,6 +15,11 @@ jest.mock('./Button/NativeButton', () => ({
     ),
 }));
 
+jest.mock('./Sheet/NativeBottomSheetModal', () => ({
+    NativeBottomSheetModal: jest.requireActual('../mocks/mockNativeBottomSheetModal')
+        .mockNativeBottomSheetModal,
+}));
+
 jest.mock('./Skeleton/BoxSkeleton', () => ({
     BoxSkeleton: props => <MockView {...props} testID="BoxSkeleton" />,
 }));

@@ -4,6 +4,7 @@ import {
     type PropsWithoutRef,
     type RefAttributes,
     forwardRef,
+    useContext,
     useImperativeHandle,
     useRef,
 } from 'react';
@@ -22,7 +23,9 @@ import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 import { Box } from '../Box';
 import { SearchInputClearButton } from './SearchInputClearButton';
 import { SearchInputMagnifyingGlass } from './SearchInputMagnifyingGlass';
+import { useNativeSheetAutoFocus } from './useNativeSheetAutoFocus';
 import { useSearchInputCallbacks } from './useSearchInputCallbacks';
+import { NativeSheetContext } from '../Sheet/NativeSheetContext';
 
 export const SEARCH_INPUT_SIZES = ['medium', 'large'] as const;
 type SearchInputSize = (typeof SEARCH_INPUT_SIZES)[number];
@@ -117,11 +120,13 @@ export const SearchInput: ForwardRefExoticComponent<
         ref,
     ) => {
         const { applyStyle, utils } = useNativeStyles();
+        const isNativeSheet = useContext(NativeSheetContext);
 
         // Keep an internal ref so tap-to-focus and clear work even when no ref is
         // forwarded, and expose the underlying TextInput instance to forwarded refs.
         const inputRef = useRef<TextInputInstance>(null);
         useImperativeHandle(ref, () => inputRef.current as TextInputInstance, []);
+        const platformAutoFocus = useNativeSheetAutoFocus(inputRef, autoFocus && !isDisabled);
 
         const {
             handleClear,
@@ -136,7 +141,7 @@ export const SearchInput: ForwardRefExoticComponent<
         // gesture-handler's `TextInput` — a nominally different type from react-native's. Cast to
         // a single signature so the shared `ref`/props type-check against both.
         const InputComponent = (
-            isBottomSheetInput ? BottomSheetTextInput : TextInput
+            isBottomSheetInput && !isNativeSheet ? BottomSheetTextInput : TextInput
         ) as ComponentType<TextInputProps & RefAttributes<TextInputInstance>>;
 
         return (
@@ -151,7 +156,7 @@ export const SearchInput: ForwardRefExoticComponent<
                         accessibilityLabel={placeholder}
                         placeholderTextColor={utils.colors.contentSecondary}
                         // eslint-disable-next-line jsx-a11y/no-autofocus
-                        autoFocus={autoFocus}
+                        autoFocus={platformAutoFocus}
                         editable={!isDisabled}
                         onFocus={() => {
                             setIsFocused(true);
