@@ -17,6 +17,7 @@ export * from './Input/InputWrapper';
 export * from './Input/SearchInput';
 export * from './Input/SearchInputWithCancel';
 export * from './Input/Input';
+export * from './Input/NativeTextInput';
 export * from './CheckBox';
 export * from './DecorativeControl';
 export * from './Switch';

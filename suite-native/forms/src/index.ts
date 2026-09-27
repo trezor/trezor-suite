@@ -1,4 +1,5 @@
 export * from './fields/TextInputField';
+export * from './fields/NativeTextInputField';
 export * from './fields/SecureTextInputField';
 export * from './Form';
 export type * from './types';

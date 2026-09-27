@@ -1,5 +1,5 @@
 import { Badge, Button, HStack, VStack } from '@suite-native/atoms';
-import { Form, TextInputField } from '@suite-native/forms';
+import { Form, NativeTextInputField } from '@suite-native/forms';
 import { Translation, useTranslate } from '@suite-native/intl';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
@@ -44,7 +44,13 @@ const ExplorerBadge = ({ isDefault }: ExplorerBadgeProps) =>
 const PathInputField = ({ name, label }: PathInputFieldProps) => (
     <HStack spacing={0}>
         <NetworkExplorerConnectorSvg />
-        <TextInputField name={name} label={label} autoCapitalize="none" keyboardType="url" />
+        <NativeTextInputField
+            name={name}
+            label={label}
+            autoCapitalize="none"
+            autoCorrect={false}
+            keyboardType="url"
+        />
     </HStack>
 );
 
@@ -61,10 +67,11 @@ export const NetworkExplorerCard = ({ form }: NetworkExplorerCardProps) => {
             badge={!isDirty && <ExplorerBadge isDefault={isDefault} />}
         >
             <Form form={hookForm}>
-                <TextInputField
+                <NativeTextInputField
                     name="base"
                     label={translate('moduleSettings.networkBackends.explorer.labels.base')}
                     autoCapitalize="none"
+                    autoCorrect={false}
                     keyboardType="url"
                 />
                 <VStack style={applyStyle(inputFieldWrapperStyle)}>

@@ -3,7 +3,7 @@ import {
     type SuiteSyncServerTypeSelectValue,
 } from '@suite-common/suite-sync';
 import { Button, Card, Select, VStack } from '@suite-native/atoms';
-import { Form, TextInputField, useWatch } from '@suite-native/forms';
+import { Form, NativeTextInputField, useWatch } from '@suite-native/forms';
 import { Translation, useTranslate } from '@suite-native/intl';
 
 import { useSuiteSyncRelayUrlForm } from '../hooks/useSuiteSyncRelayUrlForm';
@@ -31,12 +31,13 @@ export const SuiteSyncRelayUrlCard = () => {
                         isLabelShown
                     />
                     {server === SUITE_SYNC_SERVER_TYPE_OPTIONS_MAP.custom.value && (
-                        <TextInputField
+                        <NativeTextInputField
                             name="customRelayUrl"
                             label={translate(
                                 'moduleSettings.items.features.suiteSync.relayUrl.customUrlInput.label',
                             )}
                             autoCapitalize="none"
+                            autoCorrect={false}
                             keyboardType="url"
                         />
                     )}

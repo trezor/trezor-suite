@@ -1,5 +1,7 @@
 import { Pressable as MockPressable, View as MockView } from 'react-native';
 
+jest.mock('./Input/NativeTextInput', () => jest.requireActual('./Input/NativeTextInput.tsx'));
+
 jest.mock('./Button/NativeButton', () => ({
     supportsNativeButton: true,
     NativeButton: ({ isDisabled, isLoading, accessibilityState, onPress, ...props }) => (
@@ -8,7 +10,7 @@ jest.mock('./Button/NativeButton', () => ({
             accessibilityRole="button"
             accessibilityState={{ ...accessibilityState, disabled: isDisabled, busy: isLoading }}
             disabled={isDisabled}
-            onPress={isDisabled ? undefined : onPress}
+            onPress={isDisabled ? undefined : () => onPress?.()}
         />
     ),
 }));
