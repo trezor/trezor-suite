@@ -13505,6 +13505,7 @@ __metadata:
     "@suite-native/navigation": "workspace:*"
     "@suite-native/settings": "workspace:*"
     "@suite-native/swipeable-walkthrough": "workspace:*"
+    "@suite-native/test-utils": "workspace:*"
     "@suite-native/test-utils-store": "workspace:*"
     "@suite-native/thp": "workspace:*"
     "@suite-native/toasts": "workspace:*"

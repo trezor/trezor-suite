@@ -59,6 +59,7 @@
         { "path": "../../packages/theme" },
         { "path": "../../packages/urls" },
         { "path": "../../packages/utils" },
+        { "path": "../test-utils" },
         { "path": "../test-utils-store" },
         { "path": "../../packages/requirements" }
     ],
