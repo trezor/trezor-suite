@@ -12224,6 +12224,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@suite-native/atoms@workspace:suite-native/atoms"
   dependencies:
+    "@expo/ui": "npm:~58.0.7"
     "@gorhom/bottom-sheet": "npm:5.2.9"
     "@mobily/ts-belt": "npm:^3.13.1"
     "@react-navigation/native": "npm:7.1.31"
