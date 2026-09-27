@@ -22,9 +22,14 @@ import { ActiveTokensTab } from './ActiveTokensTab';
 import { DefiTokensTab } from './DefiTokensTab';
 import { HiddenTokensTab } from './HiddenTokensTab';
 import { InactiveTokensTab } from './InactiveTokensTab';
-import { type AccountOverviewFlow, type AccountOverviewTab, type OnSelectAsset } from './types';
+import {
+    type AccountOverviewFlow,
+    type AccountOverviewTab,
+    type AccountAssetsTabListProps,
+    type OnSelectAsset,
+} from './types';
 
-type AccountOverviewTabContentProps = {
+type AccountOverviewTabContentProps = AccountAssetsTabListProps & {
     accountKey: AccountKey;
     activeTab: AccountOverviewTab;
     flowType: AccountOverviewFlow;
@@ -34,6 +39,7 @@ export const AccountOverviewTabContent = ({
     accountKey,
     activeTab,
     flowType,
+    ListHeaderComponent,
 }: AccountOverviewTabContentProps) => {
     const navigation =
         useNavigation<StackNavigationProps<RootStackParamList, RootStackRoutes.AccountOverview>>();
@@ -92,14 +98,32 @@ export const AccountOverviewTabContent = ({
                     accountKey={accountKey}
                     onSelect={handleSelect}
                     isStakingDisplayed={flowType === 'overview'}
+                    ListHeaderComponent={ListHeaderComponent}
                 />
             );
         case 'defi':
-            return <DefiTokensTab accountKey={accountKey} onSelect={handleSelect} />;
+            return (
+                <DefiTokensTab
+                    accountKey={accountKey}
+                    onSelect={handleSelect}
+                    ListHeaderComponent={ListHeaderComponent}
+                />
+            );
         case 'hidden':
-            return <HiddenTokensTab accountKey={accountKey} onSelect={handleSelect} />;
+            return (
+                <HiddenTokensTab
+                    accountKey={accountKey}
+                    onSelect={handleSelect}
+                    ListHeaderComponent={ListHeaderComponent}
+                />
+            );
         case 'inactive':
-            return <InactiveTokensTab accountKey={accountKey} />;
+            return (
+                <InactiveTokensTab
+                    accountKey={accountKey}
+                    ListHeaderComponent={ListHeaderComponent}
+                />
+            );
         default:
             return exhaustive(activeTab);
     }
