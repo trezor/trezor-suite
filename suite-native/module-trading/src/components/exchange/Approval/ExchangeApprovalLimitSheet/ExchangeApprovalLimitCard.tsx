@@ -2,7 +2,7 @@ import { type PropsWithChildren, type ReactNode, memo } from 'react';
 import { Pressable } from 'react-native';
 
 import { type NetworkSymbol } from '@suite-common/wallet-config';
-import { Card, HStack, Radio, Text, VStack } from '@suite-native/atoms';
+import { Card, HStack, RadioIndicator, Text, VStack } from '@suite-native/atoms';
 import { TokenIcon } from '@suite-native/icons';
 
 export type ExchangeApprovalLimitCardProps = {
@@ -26,7 +26,11 @@ export const ExchangeApprovalLimitCard = memo(
         onChange,
         children,
     }: ExchangeApprovalLimitCardProps) => (
-        <Pressable onPress={onChange}>
+        <Pressable
+            onPress={onChange}
+            accessibilityRole="radio"
+            accessibilityState={{ checked: isChecked, selected: isChecked }}
+        >
             <Card>
                 <VStack>
                     <HStack alignItems="center" justifyContent="space-between">
@@ -41,7 +45,7 @@ export const ExchangeApprovalLimitCard = memo(
                             )}
                             {title}
                         </HStack>
-                        <Radio value="option" isChecked={isChecked} onPress={onChange} />
+                        <RadioIndicator isChecked={isChecked} />
                     </HStack>
                     <Text variant="body-sm" color="contentSecondary">
                         {description}

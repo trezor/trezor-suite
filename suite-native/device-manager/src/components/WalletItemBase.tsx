@@ -8,7 +8,7 @@ import {
 } from '@suite-common/suite-sync';
 import { type TrezorDevice } from '@suite-common/suite-types';
 import { type BaseCurrencyAmount } from '@suite-common/wallet-types';
-import { HStack, Radio, Text } from '@suite-native/atoms';
+import { HStack, RadioIndicator, Text } from '@suite-native/atoms';
 import { BaseCurrencyAmountFormatter } from '@suite-native/formatters';
 import { Icon } from '@suite-native/icons';
 import { Translation } from '@suite-native/intl';
@@ -115,7 +115,13 @@ export const WalletItemBase = ({
     );
 
     return (
-        <Pressable onPress={onPress}>
+        <Pressable
+            onPress={onPress}
+            accessibilityRole={isSelectable ? 'radio' : 'button'}
+            accessibilityState={
+                isSelectable ? { checked: isSelected, selected: isSelected } : undefined
+            }
+        >
             <HStack style={applyStyle(walletItemBaseStyle, { isSelected, isSelectable })}>
                 <HStack alignItems="center" flex={1}>
                     <Icon name={isStandard ? 'wallet' : 'password'} size="mediumLarge" />
@@ -141,7 +147,7 @@ export const WalletItemBase = ({
                             color="contentSecondary"
                         />
                     )}
-                    {isSelectable && <Radio value="" onPress={onPress} isChecked={isSelected} />}
+                    {isSelectable && <RadioIndicator isChecked={isSelected} />}
                 </HStack>
             </HStack>
         </Pressable>

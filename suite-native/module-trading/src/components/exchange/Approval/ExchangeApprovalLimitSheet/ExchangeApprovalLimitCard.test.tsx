@@ -57,9 +57,13 @@ describe('ExchangeApprovalLimitCard', () => {
     });
 
     it('should call onChange when card is pressed', async () => {
-        const { getByText } = await renderExchangeApprovalLimitCard({});
+        const { getByRole, getAllByRole } = await renderExchangeApprovalLimitCard({
+            isChecked: true,
+        });
 
-        await fireEvent.press(getByText('Test limit'));
+        expect(getAllByRole('radio')).toHaveLength(1);
+
+        await fireEvent.press(getByRole('radio', { name: /Test limit/, checked: true }));
         expect(mockOnChange).toHaveBeenCalledTimes(1);
     });
 

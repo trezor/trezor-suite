@@ -1,5 +1,5 @@
 import { type BackupType } from '@suite-common/suite-types';
-import { Box, HStack, Radio, Text, TitleHeader } from '@suite-native/atoms';
+import { Box, HStack, RadioIndicator, Text, TitleHeader } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 import { type Color } from '@trezor/theme';
 
@@ -25,6 +25,6 @@ export const CardHeader = ({ type, isSelected }: CardHeaderProps) => (
                 <Translation id={walletBackupSheetCopyByType[type].description} />
             </Text>
         </Box>
-        <Radio disabled isChecked={isSelected} value="single" onPress={() => undefined} />
+        <RadioIndicator isChecked={isSelected} />
     </HStack>
 );

@@ -42,4 +42,22 @@ describe('TradeInfoRow', () => {
 
         expect(mockOnPress).toHaveBeenCalledTimes(1);
     });
+
+    it('puts selection semantics on the actionable row', async () => {
+        const onPress = jest.fn();
+        const { getByRole, getByTestId } = await renderTradeInfoRow({
+            onPress,
+            testID: 'trade-info-row',
+            accessibilityRole: 'radio',
+            accessibilityLabel: 'Bank account',
+            accessibilityState: { checked: true },
+        });
+
+        const row = getByRole('radio', { name: 'Bank account', checked: true });
+        expect(row).toBe(getByTestId('trade-info-row'));
+
+        await userEvent.press(row);
+
+        expect(onPress).toHaveBeenCalledTimes(1);
+    });
 });

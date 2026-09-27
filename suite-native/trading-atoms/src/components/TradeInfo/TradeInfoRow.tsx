@@ -32,12 +32,23 @@ export const TradeInfoRow = ({
     style,
     noHorizontalPadding,
     noVerticalPadding,
+    accessibilityRole,
+    accessibilityState,
+    accessibilityLabel,
+    accessibilityHint,
     ...rest
 }: TradeInfoRowProps) => {
     const { applyStyle } = useNativeStyles();
 
     return (
-        <Pressable onPress={onPress} testID={testID}>
+        <Pressable
+            onPress={onPress}
+            testID={testID}
+            accessibilityRole={accessibilityRole}
+            accessibilityState={accessibilityState}
+            accessibilityLabel={accessibilityLabel}
+            accessibilityHint={accessibilityHint}
+        >
             <HStack
                 {...rest}
                 style={[

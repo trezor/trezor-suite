@@ -48,33 +48,37 @@ export const WalletBackupCard = memo(
         if (!isVisible) return null;
 
         return (
-            <Pressable
-                onPress={selectCard}
-                testID={`@deviceOnboarding/WalletBackupTutorialStep5/WalletBackupCard/selectedType=${type}`}
-            >
-                <Card style={applyStyle(containerStyle, { isSelected })}>
-                    <VStack spacing="sp16">
-                        <CardHeader isSelected={isSelected} type={type} />
-                        <CardDivider horizontalPadding={isSelected ? 'sp16' : 'sp18'} />
-                        <CardContent type={type} />
-                        <BannerFull
-                            intent={intentByWalletBackupType[type]}
-                            title={translate(walletBackupSheetCopyByType[type].calloutLabel)}
-                            onPressPrimaryButton={handleLearnMorePress}
-                            primaryButtonLabel={
-                                type === 'shamir-advanced'
-                                    ? translate(
-                                          'moduleDeviceOnboarding.walletBackupSheet.options.shamir-advanced.alertButtonLabel',
-                                      )
-                                    : undefined
-                            }
-                            primaryButtonProps={{
-                                iconLeft: 'arrowSquareOut',
-                            }}
-                        />
-                    </VStack>
-                </Card>
-            </Pressable>
+            <Card style={applyStyle(containerStyle, { isSelected })}>
+                <VStack spacing="sp16">
+                    <Pressable
+                        onPress={selectCard}
+                        testID={`@deviceOnboarding/WalletBackupTutorialStep5/WalletBackupCard/selectedType=${type}`}
+                        accessibilityRole="radio"
+                        accessibilityState={{ checked: isSelected, selected: isSelected }}
+                    >
+                        <VStack spacing="sp16">
+                            <CardHeader isSelected={isSelected} type={type} />
+                            <CardDivider horizontalPadding={isSelected ? 'sp16' : 'sp18'} />
+                            <CardContent type={type} />
+                        </VStack>
+                    </Pressable>
+                    <BannerFull
+                        intent={intentByWalletBackupType[type]}
+                        title={translate(walletBackupSheetCopyByType[type].calloutLabel)}
+                        onPressPrimaryButton={handleLearnMorePress}
+                        primaryButtonLabel={
+                            type === 'shamir-advanced'
+                                ? translate(
+                                      'moduleDeviceOnboarding.walletBackupSheet.options.shamir-advanced.alertButtonLabel',
+                                  )
+                                : undefined
+                        }
+                        primaryButtonProps={{
+                            iconLeft: 'arrowSquareOut',
+                        }}
+                    />
+                </VStack>
+            </Card>
         );
     },
 );

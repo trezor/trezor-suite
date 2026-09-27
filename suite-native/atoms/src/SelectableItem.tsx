@@ -7,7 +7,7 @@ import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 import { Badge } from './Badge';
 import { Box } from './Box';
 import { PressableOpacity } from './Pressable';
-import { Radio } from './Radio';
+import { RadioIndicator } from './Radio';
 import { VStack } from './Stack';
 import { Text } from './Text';
 
@@ -65,11 +65,18 @@ export const SelectableItem = ({
     isSelected,
     isDefault,
     onSelected,
+    testID,
 }: SelectableItemProps) => {
     const { applyStyle, utils } = useNativeStyles();
 
     return (
-        <PressableOpacity onPress={onSelected} style={applyStyle(cardStyle, { isSelected })}>
+        <PressableOpacity
+            onPress={onSelected}
+            style={applyStyle(cardStyle, { isSelected })}
+            testID={testID}
+            accessibilityRole="radio"
+            accessibilityState={{ checked: isSelected, selected: isSelected }}
+        >
             <VStack spacing={utils.spacings.sp4}>
                 <Box style={applyStyle(titleWrapperStyle)}>
                     <Text variant="headline-sm" color="contentPrimary">
@@ -96,7 +103,7 @@ export const SelectableItem = ({
                 <Box>{content}</Box>
             </VStack>
             <View style={applyStyle(radioWrapperStyle)}>
-                <Radio value="toggle" onPress={onSelected} isChecked={isSelected} />
+                <RadioIndicator isChecked={isSelected} />
             </View>
         </PressableOpacity>
     );

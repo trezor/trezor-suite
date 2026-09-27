@@ -21,7 +21,7 @@ import {
     isFinalPrecomposedTransaction,
 } from '@suite-common/wallet-types';
 import { getFeeUnits, isEip1559 } from '@suite-common/wallet-utils';
-import { Box, HStack, Radio, Text, VStack } from '@suite-native/atoms';
+import { Box, HStack, RadioIndicator, Text, VStack } from '@suite-native/atoms';
 import {
     CryptoToFiatAmountFormatter,
     EmptyAmountSkeleton,
@@ -177,6 +177,10 @@ export const FeeOption = ({
         <Pressable
             onPress={handleSelectFeeLevel}
             disabled={!isInteractive}
+            accessibilityRole={isInteractive ? 'radio' : undefined}
+            accessibilityState={
+                isInteractive ? { checked: isChecked, selected: isChecked } : undefined
+            }
             testID={`@transactionManagement/fees-level-container-${feeKey}`}
         >
             <Animated.View style={[applyStyle(wrapperStyle), animatedCardStyle]}>
@@ -231,12 +235,8 @@ export const FeeOption = ({
                             />
                         </VStack>
                         {isInteractive && (
-                            <Radio
+                            <RadioIndicator
                                 isChecked={isChecked}
-                                value={feeKey}
-                                onPress={handleSelectFeeLevel}
-                                accessibilityRole="radio"
-                                accessibilityState={{ checked: isChecked }}
                                 testID={`@transactionManagement/fees-level-radio-${feeKey}`}
                             />
                         )}

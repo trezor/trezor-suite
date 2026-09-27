@@ -1,7 +1,7 @@
 import { type ReactNode } from 'react';
 import { Pressable } from 'react-native';
 
-import { Card, HStack, IconSquare, Radio, Text } from '@suite-native/atoms';
+import { Card, HStack, IconSquare, RadioIndicator, Text } from '@suite-native/atoms';
 import { type IconName } from '@suite-native/icons';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
@@ -43,7 +43,12 @@ export const DemoAccountQuestionnaireAnswer = ({
     const { applyStyle } = useNativeStyles();
 
     return (
-        <Pressable onPress={onSelect}>
+        <Pressable
+            onPress={onSelect}
+            accessibilityRole="radio"
+            accessibilityState={{ checked: isSelected, selected: isSelected }}
+            testID={`@demo-account-questionnaire/answer/${value}`}
+        >
             <Card noPadding style={applyStyle(cardStyle, { isSelected })}>
                 <HStack
                     alignItems="center"
@@ -61,7 +66,7 @@ export const DemoAccountQuestionnaireAnswer = ({
                             {label}
                         </Text>
                     </HStack>
-                    <Radio value={value} onPress={onSelect} isChecked={isSelected} />
+                    <RadioIndicator isChecked={isSelected} />
                 </HStack>
             </Card>
         </Pressable>

@@ -211,23 +211,23 @@ describe('FeeOptionsList', () => {
             const { getByTestId, form } = await renderFeeOptionsList({});
             await act(() => form.setValue('feeLevel', 'normal'));
 
-            expect(getByTestId('@transactionManagement/fees-level-radio-normal')).toHaveProp(
+            expect(getByTestId('@transactionManagement/fees-level-container-normal')).toHaveProp(
                 'accessibilityState',
                 expect.objectContaining({ checked: true }),
             );
-            expect(getByTestId('@transactionManagement/fees-level-radio-high')).toHaveProp(
+            expect(getByTestId('@transactionManagement/fees-level-container-high')).toHaveProp(
                 'accessibilityState',
                 expect.objectContaining({ checked: false }),
             );
 
-            await userEvent.press(getByTestId('@transactionManagement/fees-level-radio-high'));
+            await userEvent.press(getByTestId('@transactionManagement/fees-level-container-high'));
 
             expect(form.getValues('feeLevel')).toBe('high');
-            expect(getByTestId('@transactionManagement/fees-level-radio-normal')).toHaveProp(
+            expect(getByTestId('@transactionManagement/fees-level-container-normal')).toHaveProp(
                 'accessibilityState',
                 expect.objectContaining({ checked: false }),
             );
-            expect(getByTestId('@transactionManagement/fees-level-radio-high')).toHaveProp(
+            expect(getByTestId('@transactionManagement/fees-level-container-high')).toHaveProp(
                 'accessibilityState',
                 expect.objectContaining({ checked: true }),
             );

@@ -2,7 +2,7 @@ import { type PropsWithChildren, type ReactNode } from 'react';
 import { Pressable } from 'react-native';
 
 import { type NetworkSymbol } from '@suite-common/wallet-config';
-import { Card, HStack, Radio, Text, VStack } from '@suite-native/atoms';
+import { Card, HStack, RadioIndicator, Text, VStack } from '@suite-native/atoms';
 import { TokenIcon } from '@suite-native/icons';
 
 type YieldDepositApprovalLimitCardProps = {
@@ -25,7 +25,11 @@ export const YieldDepositApprovalLimitCard = ({
     symbol,
     title,
 }: YieldDepositApprovalLimitCardProps) => (
-    <Pressable onPress={onChange}>
+    <Pressable
+        onPress={onChange}
+        accessibilityRole="radio"
+        accessibilityState={{ checked: isChecked, selected: isChecked }}
+    >
         <Card>
             <VStack>
                 <HStack alignItems="center" justifyContent="space-between">
@@ -38,7 +42,7 @@ export const YieldDepositApprovalLimitCard = ({
                         />
                         {title}
                     </HStack>
-                    <Radio value="option" isChecked={isChecked} onPress={onChange} />
+                    <RadioIndicator isChecked={isChecked} />
                 </HStack>
                 <Text variant="body-sm" color="contentSecondary">
                     {description}

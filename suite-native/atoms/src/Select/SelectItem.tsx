@@ -6,7 +6,7 @@ import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
 import { Box } from '../Box';
 import { PressableOpacity } from '../Pressable';
-import { Radio } from '../Radio';
+import { RadioIndicator } from '../Radio';
 import { HStack } from '../Stack';
 import { Text } from '../Text';
 
@@ -71,7 +71,7 @@ export const SelectItem = ({
             style={applyStyle(selectItemStyle)}
             onPress={onSelect}
             accessibilityRole="radio"
-            accessibilityState={{ checked: isSelected }}
+            accessibilityState={{ checked: isSelected, selected: isSelected }}
             accessibilityLabel={label}
             testID={`@select/item/${value}`}
         >
@@ -85,7 +85,7 @@ export const SelectItem = ({
                 </HStack>
                 <HStack spacing="sp12">
                     {badge}
-                    <Radio value={value} onPress={onSelect} isChecked={isSelected} />
+                    <RadioIndicator isChecked={isSelected} />
                 </HStack>
             </Box>
         </PressableOpacity>

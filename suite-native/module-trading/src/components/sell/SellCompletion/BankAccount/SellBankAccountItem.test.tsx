@@ -92,14 +92,18 @@ describe('SellBankAccountItem', () => {
 
         it('should call onPress when radio button is pressed', async () => {
             const mockOnPress = jest.fn();
-            const { getByTestId } = await renderBankAccountItem({
+            const { getByTestId, getByRole, getAllByRole } = await renderBankAccountItem({
                 accessoryType: 'select',
                 onPress: mockOnPress,
+                isSelected: true,
             });
 
-            // Since Radio is a PressableOpacity, we can press the main component
-            // The onPress will be called through the AccessoryView
-            await userEvent.press(getByTestId(BANK_ACCOUNT_ITEM_TEST_ID));
+            expect(getAllByRole('radio')).toHaveLength(1);
+            expect(getByRole('radio', { checked: true })).toBe(
+                getByTestId(BANK_ACCOUNT_ITEM_TEST_ID),
+            );
+
+            await userEvent.press(getByTestId('radio-button-select'));
 
             expect(mockOnPress).toHaveBeenCalledTimes(1);
         });

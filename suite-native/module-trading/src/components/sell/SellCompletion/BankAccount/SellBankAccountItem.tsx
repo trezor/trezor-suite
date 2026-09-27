@@ -1,7 +1,7 @@
 import type { BankAccount } from 'invity-api';
 
 import { sellUtils } from '@suite-common/trading';
-import { HStack, Radio, Text, VStack } from '@suite-native/atoms';
+import { HStack, RadioIndicator, Text, VStack } from '@suite-native/atoms';
 import { Icon } from '@suite-native/icons';
 import { Translation } from '@suite-native/intl';
 import { TradeInfoRow } from '@suite-native/trading-atoms';
@@ -20,24 +20,16 @@ export type SellBankAccountItemProps = {
 export type SellBankAccountAccessoryProps = {
     accessoryType: AccessoryType;
     isSelected: boolean;
-    onPress: () => void;
 };
 
 export const BANK_ACCOUNT_ITEM_TEST_ID = '@trading/sell/bank-account-item';
 
-const AccessoryView = ({ accessoryType, isSelected, onPress }: SellBankAccountAccessoryProps) => {
+const AccessoryView = ({ accessoryType, isSelected }: SellBankAccountAccessoryProps) => {
     switch (accessoryType) {
         case 'caret':
             return <Icon name="caretRight" size="medium" testID="caret-right-icon" />;
         case 'select':
-            return (
-                <Radio
-                    value="select"
-                    onPress={onPress}
-                    isChecked={isSelected}
-                    testID="radio-button-select"
-                />
-            );
+            return <RadioIndicator isChecked={isSelected} testID="radio-button-select" />;
         case 'none':
             return null;
 
@@ -53,7 +45,15 @@ export const SellBankAccountItem = ({
     noBorder = false,
     onPress = () => {},
 }: SellBankAccountItemProps) => (
-    <TradeInfoRow onPress={onPress} noBorder={noBorder} testID={BANK_ACCOUNT_ITEM_TEST_ID}>
+    <TradeInfoRow
+        onPress={onPress}
+        noBorder={noBorder}
+        testID={BANK_ACCOUNT_ITEM_TEST_ID}
+        accessibilityRole={accessoryType === 'select' ? 'radio' : 'button'}
+        accessibilityState={
+            accessoryType === 'select' ? { checked: isSelected, selected: isSelected } : undefined
+        }
+    >
         <VStack spacing={0}>
             <Text variant="body-sm">{bankAccount.holder}</Text>
             <Text variant="body-sm" color="contentSecondary">
@@ -77,6 +77,6 @@ export const SellBankAccountItem = ({
                 </Text>
             )}
         </VStack>
-        <AccessoryView accessoryType={accessoryType} isSelected={isSelected} onPress={onPress} />
+        <AccessoryView accessoryType={accessoryType} isSelected={isSelected} />
     </TradeInfoRow>
 );

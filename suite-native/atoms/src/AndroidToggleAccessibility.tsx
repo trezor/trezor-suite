@@ -5,7 +5,7 @@ type AndroidToggleAccessibilityProps = {
     children: ReactNode;
     accessibilityLabel?: string;
     testID?: string;
-    role: 'checkbox' | 'switch';
+    role: 'checkbox' | 'switch' | 'radio';
     isChecked: boolean;
     isDisabled: boolean;
     onChange: (value: boolean) => void;
