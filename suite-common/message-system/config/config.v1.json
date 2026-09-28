@@ -1374,7 +1374,15 @@
                 "feature": [
                     {
                         "domain": "dashboard.promoBanner",
-                        "visibleBanner": "ts7",
+                        "payload": {
+                            "bannerId": "ts7",
+                            "carouselOrder": [
+                                { "platform": "desktop", "placement": "dashboard", "value": 1 },
+                                { "platform": "web", "placement": "dashboard", "value": 1 },
+                                { "platform": "ios", "placement": "home", "value": 1 },
+                                { "platform": "android", "placement": "home", "value": 1 }
+                            ]
+                        },
                         "flag": true
                     }
                 ]
@@ -1548,7 +1556,7 @@
                 {
                     "environment": {
                         "desktop": ">=26.8.1",
-                        "mobile": "!",
+                        "mobile": "*",
                         "web": "*"
                     }
                 }
@@ -1577,7 +1585,15 @@
                 "feature": [
                     {
                         "domain": "dashboard.promoBanner",
-                        "visibleBanner": "defi-yield",
+                        "payload": {
+                            "bannerId": "defi-yield",
+                            "carouselOrder": [
+                                { "platform": "desktop", "placement": "dashboard", "value": 2 },
+                                { "platform": "web", "placement": "dashboard", "value": 2 },
+                                { "platform": "ios", "placement": "home", "value": 2 },
+                                { "platform": "android", "placement": "home", "value": 2 }
+                            ]
+                        },
                         "flag": true
                     }
                 ]
@@ -1588,7 +1604,7 @@
                 {
                     "environment": {
                         "desktop": ">=26.8.1",
-                        "mobile": "!",
+                        "mobile": "*",
                         "web": "*"
                     }
                 }
@@ -1617,7 +1633,15 @@
                 "feature": [
                     {
                         "domain": "dashboard.promoBanner",
-                        "visibleBanner": "eth-vault",
+                        "payload": {
+                            "bannerId": "eth-vault",
+                            "carouselOrder": [
+                                { "platform": "desktop", "placement": "dashboard", "value": 3 },
+                                { "platform": "web", "placement": "dashboard", "value": 3 },
+                                { "platform": "ios", "placement": "home", "value": 3 },
+                                { "platform": "android", "placement": "home", "value": 3 }
+                            ]
+                        },
                         "flag": true
                     }
                 ]
