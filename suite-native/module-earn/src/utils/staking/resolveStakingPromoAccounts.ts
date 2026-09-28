@@ -1,41 +1,51 @@
 import { type NetworkSymbol } from '@suite-common/wallet-config';
-import {
-    isSupportedAdaStakingNetworkSymbol,
-    isSupportedNativeStakingManagementSymbol,
-} from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
 
 import { hasAccountActiveStaking } from './hasAccountActiveStaking';
+import { type MobileStakingSupport, getMobileStakingSupport } from './mobileStakingSupport';
 
 type ResolveStakingPromoAccountsParams = {
     symbol: NetworkSymbol;
     accounts: Account[];
+    isDeviceInViewOnlyMode: boolean;
 };
 
-type StakingPromoAccountsResolution =
-    { isDesktopOnly: true } | { isDesktopOnly: false; navigableAccounts: Account[] };
+export type NavigableStakingSupport = Exclude<MobileStakingSupport, 'desktop-only'>;
+
+export type StakingPromoAccountsResolution =
+    | { type: 'desktop-only' }
+    | { type: 'enable-network' }
+    | { type: 'connect-device' }
+    | { type: 'navigate'; support: NavigableStakingSupport; navigableAccounts: Account[] };
 
 export const resolveStakingPromoAccounts = ({
     symbol,
     accounts,
+    isDeviceInViewOnlyMode,
 }: ResolveStakingPromoAccountsParams): StakingPromoAccountsResolution => {
-    const isCardanoStaking = isSupportedAdaStakingNetworkSymbol(symbol);
+    const networkSupport = getMobileStakingSupport(symbol);
 
-    if (!isSupportedNativeStakingManagementSymbol(symbol) && !isCardanoStaking) {
-        return { isDesktopOnly: true };
+    if (networkSupport === null || networkSupport === 'desktop-only') {
+        return { type: 'desktop-only' };
     }
 
     const accountsForSymbol = accounts.filter(account => account.symbol === symbol);
 
-    if (!isCardanoStaking) {
-        return { isDesktopOnly: false, navigableAccounts: accountsForSymbol };
+    if (networkSupport === 'manage' && accountsForSymbol.length === 0) {
+        return { type: 'enable-network' };
     }
 
-    const delegatedAccounts = accountsForSymbol.filter(hasAccountActiveStaking);
+    const support: NavigableStakingSupport = isDeviceInViewOnlyMode ? 'view' : networkSupport;
 
-    if (delegatedAccounts.length === 0) {
-        return { isDesktopOnly: true };
+    if (support === 'manage') {
+        return { type: 'navigate', support, navigableAccounts: accountsForSymbol };
     }
 
-    return { isDesktopOnly: false, navigableAccounts: delegatedAccounts };
+    const stakedAccounts = accountsForSymbol.filter(hasAccountActiveStaking);
+
+    if (stakedAccounts.length > 0) {
+        return { type: 'navigate', support, navigableAccounts: stakedAccounts };
+    }
+
+    return networkSupport === 'manage' ? { type: 'connect-device' } : { type: 'desktop-only' };
 };

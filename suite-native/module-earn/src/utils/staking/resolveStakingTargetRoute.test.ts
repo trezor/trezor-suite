@@ -27,4 +27,10 @@ describe('resolveStakingTargetRoute', () => {
             RootStackRoutes.StakingDetail,
         );
     });
+
+    it('routes accounts of a network without staking to StakingDetail', () => {
+        expect(resolveStakingTargetRoute(asNetworkSymbol('btc'))).toBe(
+            RootStackRoutes.StakingDetail,
+        );
+    });
 });
