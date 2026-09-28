@@ -1,5 +1,5 @@
 import { type ReactNode } from 'react';
-import { FadeInUp, FadeOutDown, LinearTransition } from 'react-native-reanimated';
+import { FadeInUp, FadeOutDown, LinearTransition, useReducedMotion } from 'react-native-reanimated';
 
 import { Icon, type IconName } from '@suite-native/icons';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
@@ -82,12 +82,13 @@ export const CardStepperItem = ({
     buttonsActionType = 'primary',
 }: CardStepperItemProps) => {
     const { applyStyle } = useNativeStyles();
+    const isReducedMotion = useReducedMotion();
     const iconName = isChecked ? 'check' : icon;
     const headerColor: Color = isChecked ? 'contentBrand' : 'contentSecondary';
 
     return (
         <AnimatedContainerCard
-            layout={LAYOUT_ANIMATION}
+            layout={isReducedMotion ? undefined : LAYOUT_ANIMATION}
             style={applyStyle(cardStyle, { isDisabled: !isOpened && !isChecked })}
         >
             <VStack spacing="sp16">
@@ -103,9 +104,9 @@ export const CardStepperItem = ({
                 {isOpened && (
                     <AnimatedVStack
                         spacing="sp16"
-                        layout={LAYOUT_ANIMATION}
-                        entering={ENTERING_ANIMATION}
-                        exiting={EXITING_ANIMATION}
+                        layout={isReducedMotion ? undefined : LAYOUT_ANIMATION}
+                        entering={isReducedMotion ? undefined : ENTERING_ANIMATION}
+                        exiting={isReducedMotion ? undefined : EXITING_ANIMATION}
                     >
                         <Text variant="body-md-strong">{description}</Text>
                         <HStack flex={1} spacing="sp12" paddingBottom="sp4">
