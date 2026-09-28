@@ -152,7 +152,6 @@ export const TradingFormOfferExchangeActions = () => {
                 <Button
                     onClick={onContinueClick}
                     intent="brand"
-                    margin={{ top: 16 }}
                     isDisabled={isButtonDisabled}
                     isLoading={areFeesLoading || state.isFormLoading || isComposing}
                     size="large"

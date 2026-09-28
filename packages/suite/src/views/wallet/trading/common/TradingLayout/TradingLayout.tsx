@@ -13,7 +13,7 @@ export const TradingLayout = ({ children }: PropsWithChildren) => {
     useTradingPageHeader();
 
     return (
-        <Column data-testid="@trading" gap={24}>
+        <Column data-testid="@trading" gap={16}>
             <Row justifyContent="center">
                 <TradingLayoutNavigation route={routeName} />
             </Row>
