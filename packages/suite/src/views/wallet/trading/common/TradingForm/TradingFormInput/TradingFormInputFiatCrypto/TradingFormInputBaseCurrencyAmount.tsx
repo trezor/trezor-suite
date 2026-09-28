@@ -18,12 +18,18 @@ import {
     type FiatRatesRootState,
     selectBaseCurrency,
     selectFiatRatesByFiatRateKey,
+    selectIsBaseCurrencyInSats,
 } from '@suite-common/wallet-core';
 import { type TokenAddress } from '@suite-common/wallet-types';
-import { getDecimalsForBaseCurrency, getFiatRateKey } from '@suite-common/wallet-utils';
+import {
+    getFiatRateKey,
+    parseBaseCurrencyToFormattedCrypto,
+    parseCryptoToFormattedBaseCurrency,
+} from '@suite-common/wallet-utils';
 import { isFiatBaseCurrencyCode } from '@trezor/blockchain-link-types';
 import { Row, Skeleton, Text } from '@trezor/components';
 import { NumberInput } from '@trezor/product-components';
+import { BigNumber } from '@trezor/utils';
 
 import { useTradingFormContext } from 'src/hooks/wallet/trading/form/useTradingCommonForm';
 import {
@@ -32,11 +38,7 @@ import {
 } from 'src/types/trading/tradingForm';
 import { isTradingExchangeOrSellContext } from 'src/utils/wallet/trading/tradingTypingUtils';
 
-import {
-    TRADING_BASE_CURRENCY_SKELETON_WIDTH,
-    getTradingBaseCurrencyAmountFromCrypto,
-    getTradingCryptoAmountFromBaseCurrency,
-} from '../../tradingFormInputsUtils';
+import { TRADING_BASE_CURRENCY_SKELETON_WIDTH } from '../../tradingFormInputsUtils';
 
 const BASE_CURRENCY_AMOUNT_FIELD = 'baseCurrencyAmount';
 
@@ -65,6 +67,7 @@ export const TradingFormInputBaseCurrencyAmount = ({
     const theme = useTheme();
     const locale = useSelector(selectLanguage);
     const baseCurrency = useSelector(selectBaseCurrency);
+    const isBaseCurrencyInSats = useSelector(selectIsBaseCurrencyInSats);
     const isNativeToken = !tokenAddress || tokenAddress === CONTRACT_ADDRESS_FOR_NATIVE_TOKEN;
     const rate = useSelector(
         (state: FiatRatesRootState) =>
@@ -93,16 +96,11 @@ export const TradingFormInputBaseCurrencyAmount = ({
     });
     const writtenCryptoAmountRef = useRef<string | undefined>(undefined);
 
-    const baseCurrencyDecimals = getDecimalsForBaseCurrency({
-        code: baseCurrency,
-        isInSats: false,
-    });
-
     const currencyLabel = useMemo(() => {
         const currencyCode = baseCurrency.toUpperCase();
 
         if (!isFiatBaseCurrencyCode(baseCurrency)) {
-            return currencyCode;
+            return isBaseCurrencyInSats ? 'sat' : currencyCode;
         }
 
         return (
@@ -110,7 +108,23 @@ export const TradingFormInputBaseCurrencyAmount = ({
                 .formatToParts(0)
                 .find(part => part.type === 'currency')?.value ?? currencyCode
         );
-    }, [baseCurrency, locale]);
+    }, [baseCurrency, isBaseCurrencyInSats, locale]);
+
+    const baseCurrencyAmountFromCrypto = useMemo(() => {
+        const formattedAmount =
+            cryptoAmount && rate
+                ? parseCryptoToFormattedBaseCurrency({
+                      areSatsDisplayed: isBaseCurrencyInSats,
+                      baseCurrencyToSats: isInSats,
+                      symbol,
+                      value: new BigNumber(cryptoAmount),
+                      rate,
+                      baseCurrencyCode: baseCurrency,
+                  })
+                : null;
+
+        return formattedAmount ? new BigNumber(formattedAmount).toFixed() : '';
+    }, [cryptoAmount, rate, isBaseCurrencyInSats, isInSats, symbol, baseCurrency]);
 
     useEffect(() => {
         if (cryptoAmount === writtenCryptoAmountRef.current) {
@@ -118,26 +132,25 @@ export const TradingFormInputBaseCurrencyAmount = ({
         }
 
         writtenCryptoAmountRef.current = undefined;
-        baseCurrencyForm.setValue(
-            BASE_CURRENCY_AMOUNT_FIELD,
-            getTradingBaseCurrencyAmountFromCrypto({
-                cryptoAmount: cryptoAmount ?? '',
-                rate,
-                decimals,
-                isInSats,
-                baseCurrencyDecimals,
-            }),
-        );
-    }, [cryptoAmount, rate, decimals, isInSats, baseCurrencyDecimals, baseCurrencyForm]);
+        baseCurrencyForm.setValue(BASE_CURRENCY_AMOUNT_FIELD, baseCurrencyAmountFromCrypto);
+    }, [cryptoAmount, baseCurrencyAmountFromCrypto, baseCurrencyForm]);
 
     const handleChange = useCallback(
         (baseCurrencyAmount: string) => {
-            const nextCryptoAmount = getTradingCryptoAmountFromBaseCurrency({
-                baseCurrencyAmount,
-                rate,
-                decimals,
-                isInSats,
-            });
+            const formattedCryptoAmount =
+                baseCurrencyAmount && rate
+                    ? parseBaseCurrencyToFormattedCrypto({
+                          areSatsDisplayed: isBaseCurrencyInSats,
+                          isCryptoInSats: isInSats,
+                          value: new BigNumber(baseCurrencyAmount),
+                          rate,
+                          cryptoDecimals: decimals,
+                          roundingMode: BigNumber.ROUND_DOWN,
+                      })
+                    : null;
+            const nextCryptoAmount = formattedCryptoAmount
+                ? new BigNumber(formattedCryptoAmount).toFixed()
+                : '';
 
             setValue(TRADING_FORM_AMOUNT_INPUT_SOURCE, 'base-currency');
 
@@ -163,6 +176,7 @@ export const TradingFormInputBaseCurrencyAmount = ({
         },
         [
             rate,
+            isBaseCurrencyInSats,
             decimals,
             isInSats,
             setFractionButton,
