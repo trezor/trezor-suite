@@ -1,5 +1,5 @@
-import { Box, Text, TitleHeader, VStack } from '@suite-native/atoms';
-import { Form, FormSubmitButton, TextInputField } from '@suite-native/forms';
+import { Box, Button, Text, TitleHeader, VStack } from '@suite-native/atoms';
+import { Form, TextInputField } from '@suite-native/forms';
 import { Translation } from '@suite-native/intl';
 import { Screen, ScreenHeader } from '@suite-native/navigation';
 
@@ -15,13 +15,11 @@ export const DeviceNameScreen = () => {
                 header={<ScreenHeader closeActionType="close" />}
                 footer={
                     <Box marginHorizontal="sp16" marginBottom="sp16">
-                        <FormSubmitButton
-                            onPress={onSubmit}
-                            isVisible={isSubmittable}
-                            testID="@device-name/submit-button"
-                        >
-                            <Translation id="moduleDeviceSettings.changeDeviceName.submitButton" />
-                        </FormSubmitButton>
+                        {isSubmittable && (
+                            <Button onPress={onSubmit} testID="@device-name/submit-button">
+                                <Translation id="moduleDeviceSettings.changeDeviceName.submitButton" />
+                            </Button>
+                        )}
                     </Box>
                 }
             >
