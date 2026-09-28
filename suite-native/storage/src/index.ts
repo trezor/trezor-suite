@@ -3,7 +3,7 @@ export * from './contexts';
 export * from './StorageProvider';
 export { createEnsureEncryptionKey } from './createEnsureEncryptionKey';
 export type { EnsureEncryptionKeyDep } from './createEnsureEncryptionKey';
-export { createMMKVStorage, clearStorage } from './mmkvStorage';
+export { createMMKVStorage, clearStorage, alertStorageLoadFailure } from './mmkvStorage';
 export type { MMKVStorageDep, MMKVStorage } from './mmkvStorage';
 export * from './atomWithUnecryptedStorage';
 
