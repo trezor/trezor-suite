@@ -7,7 +7,6 @@ import {
 
 import { hasAccountActiveStaking } from './hasAccountActiveStaking';
 import { getMobileStakingSupport } from './mobileStakingSupport';
-import { resolveStakingTargetRoute } from './resolveStakingTargetRoute';
 
 type StakingNavigateFn = StackNavigationProps<
     RootStackParamList,
@@ -16,9 +15,7 @@ type StakingNavigateFn = StackNavigationProps<
 
 export const navigateByAccountState = (account: Account, navigate: StakingNavigateFn): boolean => {
     if (hasAccountActiveStaking(account)) {
-        navigate(resolveStakingTargetRoute(account.symbol), {
-            accountKey: account.key,
-        });
+        navigate(RootStackRoutes.StakingManagement, { accountKey: account.key });
 
         return true;
     }
