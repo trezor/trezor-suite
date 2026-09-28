@@ -3,7 +3,7 @@ import { Fragment, type ReactNode } from 'react';
 import styled from 'styled-components';
 
 import { Translation, type TranslationKey } from '@suite/intl';
-import { Box, Collapsible, Row, Text } from '@trezor/components';
+import { Collapsible, Row, Text } from '@trezor/components';
 import { CaretUpDownIcon, CaretUpDownReverseIcon } from '@trezor/icons';
 import { TokenIconSet, type TokenIconSetToken } from '@trezor/product-components';
 
@@ -14,6 +14,11 @@ import {
 } from '../../../utils/assetPickerItemHeights';
 
 const GROUP_VISIBLE_ICON_COUNT = 2;
+
+const GroupContainer = styled.div<{ $height: number }>`
+    height: ${({ $height }) => $height}px;
+    transition: height 0.2s ease-in-out;
+`;
 
 // Don't use `Collapsible.Content`, it's not optimized for larger content.
 // Use this custom component, thanks to 'will-change' it acts as single layer.
@@ -57,7 +62,7 @@ export function ExpandableAssetRowGroup({
 
     return (
         <Collapsible isOpen={expanded} data-testid={dataTestId}>
-            <Box height={getExpandableGroupHeight(expanded, items.length)}>
+            <GroupContainer $height={getExpandableGroupHeight(expanded, items.length)}>
                 <Collapsible.Toggle
                     onClick={() => {
                         // The operation will be probably expensive. Ask for fresh frame before switching the state.
@@ -107,7 +112,7 @@ export function ExpandableAssetRowGroup({
                             <Fragment key={getItemKey(item)}>{renderItem(item)}</Fragment>
                         ))}
                 </CollapsibleContent>
-            </Box>
+            </GroupContainer>
         </Collapsible>
     );
 }
