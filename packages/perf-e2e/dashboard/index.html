@@ -234,6 +234,29 @@
                       : String(Math.round(value * 10) / 10);
 
             /**
+             * Everything on this page is built as nodes, never as a string of HTML: the branch comes
+             * from the query string and the rest comes from objects in a bucket, and `innerHTML`
+             * would run whatever either of them contained. `textContent` and `setAttribute` cannot.
+             */
+            const SVG_NS = 'http://www.w3.org/2000/svg';
+
+            const make = (ns, tag, props, children) => {
+                const node = ns ? document.createElementNS(ns, tag) : document.createElement(tag);
+
+                for (const [name, value] of Object.entries(props ?? {})) {
+                    if (value === undefined || value === null) continue;
+                    if (name === 'text') node.textContent = String(value);
+                    else node.setAttribute(name, String(value));
+                }
+                node.append(...(children ?? []));
+
+                return node;
+            };
+
+            const el = (tag, props, children) => make(null, tag, props, children);
+            const svg = (tag, props, children) => make(SVG_NS, tag, props, children);
+
+            /**
              * One series per card, titled by its scenario, so it needs no legend. The domain is the
              * data's own range, padded: anchoring a duration trend at zero flattens exactly the
              * movement this chart exists to show. Both ends are labelled so the range is never
@@ -246,7 +269,7 @@
 
             const chart = points => {
                 const values = points.map(p => p.value).filter(v => v !== null);
-                if (values.length === 0) return '';
+                if (values.length === 0) return [];
                 const lo = Math.min(...values);
                 const hi = Math.max(...values);
                 const pad = (hi - lo) * 0.15 || Math.abs(hi) * 0.1 || 1;
@@ -259,30 +282,112 @@
                     .map((p, i) => (p.value === null ? null : `${x(i)},${y(p.value)}`))
                     .filter(Boolean);
 
-                return `<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="trend over ${points.length} run(s)">
-                    <line class="grid" x1="0" y1="${H - PAD}" x2="${W}" y2="${H - PAD}"/>
-                    <polyline class="series" points="${drawn.join(' ')}"/>
-                    ${points
-                        .map((p, i) =>
+                const plot = svg(
+                    'svg',
+                    {
+                        viewBox: `0 0 ${W} ${H}`,
+                        role: 'img',
+                        'aria-label': `trend over ${points.length} run(s)`,
+                    },
+                    [
+                        svg('line', { class: 'grid', x1: 0, y1: H - PAD, x2: W, y2: H - PAD }),
+                        svg('polyline', { class: 'series', points: drawn.join(' ') }),
+                        ...points.flatMap((p, i) =>
                             p.value === null
-                                ? ''
-                                : `<circle class="dot${p.profiled ? ' profiled' : ''}" cx="${x(i)}" cy="${y(p.value)}" r="4"><title>${fmt(p.value)} — ${p.sha.slice(0, 9)} (run ${p.run})${p.profiled ? ' · profiled' : ''}</title></circle>`,
-                        )
-                        .join('')}
-                </svg>
-                <div class="axis"><span>oldest</span><span>${fmt(lo)} – ${fmt(hi)}</span><span>newest</span></div>
-                ${
-                    points.some(p => p.profiled)
-                        ? '<p class="note">Hollow points were recorded under Lighthouse tracing, which costs the app time: a step where the markers change is the tracer, not the app.</p>'
-                        : ''
-                }`;
+                                ? []
+                                : [
+                                      svg(
+                                          'circle',
+                                          {
+                                              class: `dot${p.profiled ? ' profiled' : ''}`,
+                                              cx: x(i),
+                                              cy: y(p.value),
+                                              r: 4,
+                                          },
+                                          [
+                                              svg('title', {
+                                                  text: `${fmt(p.value)} — ${String(p.sha).slice(0, 9)} (run ${p.run})${p.profiled ? ' · profiled' : ''}`,
+                                              }),
+                                          ],
+                                      ),
+                                  ],
+                        ),
+                    ],
+                );
+
+                const axis = el('div', { class: 'axis' }, [
+                    el('span', { text: 'oldest' }),
+                    el('span', { text: `${fmt(lo)} – ${fmt(hi)}` }),
+                    el('span', { text: 'newest' }),
+                ]);
+
+                return points.some(p => p.profiled)
+                    ? [
+                          plot,
+                          axis,
+                          el('p', {
+                              class: 'note',
+                              text: 'Hollow points were recorded under Lighthouse tracing, which costs the app time: a step where the markers change is the tracer, not the app.',
+                          }),
+                      ]
+                    : [plot, axis];
+            };
+
+            const metricRow = (metric, last) =>
+                el('tr', {}, [
+                    el('td', { text: metric }),
+                    el('td', { class: 'n', text: fmt(last.metrics[metric]) }),
+                    el(
+                        'td',
+                        {},
+                        // The key is a path under this prefix, never a whole URL, so a stored value
+                        // cannot choose the scheme.
+                        last.blob
+                            ? [el('a', { href: `../${last.blob.key}`, text: last.blob.kind })]
+                            : [],
+                    ),
+                ]);
+
+            const card = (name, rows) => {
+                const points = rows.map(r => ({
+                    value: r.metrics?.[state.metric] ?? null,
+                    sha: r.sha ?? '',
+                    run: r.run ?? '',
+                    profiled: r.profiled === true,
+                }));
+                const last = rows.at(-1);
+                const metrics = Object.keys(last.metrics ?? {});
+                const when = ((last.ts ?? '').slice(0, 19) || '?').replace('T', ' ');
+
+                return el('section', { class: 'card' }, [
+                    el('h2', { text: name }),
+                    el('p', {
+                        class: 'meta',
+                        text: `${rows.length} run(s) · last ${when}Z · ${last.samples ?? '?'} sample(s) · shard ${last.shard ?? '?'}`,
+                    }),
+                    ...chart(points),
+                    el('table', {}, [
+                        el('tr', {}, [
+                            el('th', { text: 'metric' }),
+                            el('th', { style: 'text-align:right', text: 'latest' }),
+                            el('th'),
+                        ]),
+                        ...metrics.map(metric => metricRow(metric, last)),
+                    ]),
+                ]);
             };
 
             const render = () => {
                 const out = $('out');
+
                 if (state.rows.length === 0) {
-                    out.innerHTML = `<p class="empty">No history at <code>${indexUrl()}</code> yet.
-                        A branch gets an index once a run on it publishes; pull request runs write per-run files instead.</p>`;
+                    out.replaceChildren(
+                        el('p', { class: 'empty' }, [
+                            'No history at ',
+                            el('code', { text: indexUrl() }),
+                            ' yet. A branch gets an index once a run on it publishes; pull request runs write per-run files instead.',
+                        ]),
+                    );
 
                     return;
                 }
@@ -293,37 +398,9 @@
                     groups.set(k, [...(groups.get(k) ?? []), row]);
                 }
 
-                out.innerHTML = [...groups.entries()]
-                    .map(([name, rows]) => {
-                        const points = rows.map(r => ({
-                            value: r.metrics?.[state.metric] ?? null,
-                            sha: r.sha ?? '',
-                            run: r.run ?? '',
-                            profiled: r.profiled === true,
-                        }));
-                        const last = rows.at(-1);
-                        const metrics = Object.keys(last.metrics ?? {});
-
-                        return `<section class="card">
-                            <h2>${name}</h2>
-                            <p class="meta">${rows.length} run(s) · last ${((last.ts ?? '').slice(0, 19) || '?').replace('T', ' ')}Z ·
-                                ${last.samples ?? '?'} sample(s) · shard ${last.shard ?? '?'}</p>
-                            ${chart(points)}
-                            <table><tr><th>metric</th><th style="text-align:right">latest</th><th></th></tr>
-                            ${metrics
-                                .map(
-                                    m =>
-                                        `<tr><td>${m}</td><td class="n">${fmt(last.metrics[m])}</td><td>${
-                                            last.blob
-                                                ? `<a href="../${last.blob.key}">${last.blob.kind}</a>`
-                                                : ''
-                                        }</td></tr>`,
-                                )
-                                .join('')}
-                            </table>
-                        </section>`;
-                    })
-                    .join('');
+                out.replaceChildren(
+                    ...[...groups.entries()].map(([name, rows]) => card(name, rows)),
+                );
             };
 
             const fillMetrics = () => {
@@ -331,13 +408,13 @@
                     ...new Set(state.rows.flatMap(r => Object.keys(r.metrics ?? {}))),
                 ].sort();
                 const select = $('metric');
-                select.innerHTML = all.map(m => `<option value="${m}">${m}</option>`).join('');
+                select.replaceChildren(...all.map(m => el('option', { value: m, text: m })));
                 if (!all.includes(state.metric)) state.metric = all[0] ?? '';
                 select.value = state.metric;
             };
 
             const load = async () => {
-                $('out').innerHTML = '<p class="empty">Loading…</p>';
+                $('out').replaceChildren(el('p', { class: 'empty', text: 'Loading…' }));
                 try {
                     const response = await fetch(indexUrl());
                     state.rows = response.ok ? parse(await response.text()) : [];
