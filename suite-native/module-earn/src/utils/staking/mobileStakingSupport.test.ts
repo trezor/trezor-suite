@@ -8,12 +8,9 @@ describe('getMobileStakingSupport', () => {
         expect(getMobileStakingSupport(asNetworkSymbol('sol'))).toBe('manage');
     });
 
-    it('only views staking positions on Cardano', () => {
+    it('only views staking positions on Cardano and Tron', () => {
         expect(getMobileStakingSupport(asNetworkSymbol('ada'))).toBe('view');
-    });
-
-    it('leaves Tron staking to the desktop app', () => {
-        expect(getMobileStakingSupport(asNetworkSymbol('trx'))).toBe('desktop-only');
+        expect(getMobileStakingSupport(asNetworkSymbol('trx'))).toBe('view');
     });
 
     it('returns null for a network without staking', () => {
