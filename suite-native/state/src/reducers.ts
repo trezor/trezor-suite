@@ -40,10 +40,7 @@ import {
     walletSettingsPersistedWhitelist,
     yieldReducer,
 } from '@suite-common/wallet-core';
-// Suite Native has circular in @suite-native/test-utils -> @suite-native/state -> ... -> @suite-native/test-utils
-// This is causing problems handling types in WalletConnect, so we import the reducer directly instead of the whole module
-// eslint-disable-next-line local-rules/no-package-deep-imports
-import { prepareWalletConnectReducer } from '@suite-common/walletconnect/src/walletConnectReducer';
+import { prepareWalletConnectReducer } from '@suite-common/walletconnect';
 import { bannerFlagsPersistWhitelist, bannerFlagsReducer } from '@suite-native/banners';
 import { biometricsPersistWhitelist, biometricsSlice } from '@suite-native/biometrics';
 import { prepareBluetoothReducer } from '@suite-native/bluetooth';
