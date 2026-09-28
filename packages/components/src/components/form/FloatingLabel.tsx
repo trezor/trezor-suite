@@ -14,7 +14,9 @@ export const FloatingLabel = styled.label<FloatingLabelProps>`
     position: absolute;
     left: ${INPUT_PADDING}px;
     top: 50%;
-    transition: 120ms ${motionEasingStrings.enter};
+    transition:
+        transform 120ms ${motionEasingStrings.enter},
+        color 120ms ${motionEasingStrings.enter};
     transform-origin: left;
     transform: translateY(-50%);
     pointer-events: none;

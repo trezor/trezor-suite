@@ -53,7 +53,11 @@ const Container = styled.div<
     box-shadow: unset;
     outline: ${({ $borderColor, theme }) => theme[$borderColor ?? 'borderNeutral']} solid 0;
     border: 0;
-    transition: 0.2s ease-in-out;
+    transition:
+        background 0.2s ease-in-out,
+        outline 0.2s ease-in-out,
+        outline-offset 0.2s ease-in-out,
+        box-shadow 0.2s ease-in-out;
 
     ${({ $borderWidth }) =>
         $borderWidth &&

@@ -61,7 +61,11 @@ export const commonCheckInputStyles = css`
     width: 24px;
     height: 24px;
     border: 2px solid;
-    transition: 0.1s ease-in-out;
+    transition:
+        background-color 0.1s ease-in-out,
+        border-color 0.1s ease-in-out,
+        outline 0.1s ease-in-out,
+        outline-offset 0.1s ease-in-out;
 
     ${({ theme }) => css`
         border-color: ${theme.elementBorderField};
