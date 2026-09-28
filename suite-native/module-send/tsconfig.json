@@ -60,10 +60,10 @@
         { "path": "../link" },
         { "path": "../navigation" },
         { "path": "../qr-code" },
-        { "path": "../scrollview" },
         { "path": "../send" },
         { "path": "../tokens" },
         { "path": "../transaction-management" },
+        { "path": "../transaction-review" },
         { "path": "../transactions" },
         {
             "path": "../../packages/blockchain-link-types"

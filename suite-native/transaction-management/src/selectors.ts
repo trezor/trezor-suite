@@ -18,8 +18,10 @@ import {
     type FormDraftWithSendKeyPrefix,
     type FormState,
     type GeneralPrecomposedTransaction,
-    type ReviewOutputState,
     type TokenAddress,
+    type TransactionReviewOutputState,
+    type TransactionReviewStatefulOutput,
+    type TransactionReviewSummaryOutput,
 } from '@suite-common/wallet-types';
 import {
     constructTransactionReviewOutputs,
@@ -134,11 +136,11 @@ export const selectTransactionReviewOutputs = createSendMemoizedSelector(
             : outputs?.filter(output => output.type !== 'fee'); // The `fee` output is already included in the final transaction summary output.
 
         return newFlowOutputs.map((output, outputIndex) => {
-            const outputState: ReviewOutputState = isTransactionAlreadySigned
+            const outputState: TransactionReviewOutputState = isTransactionAlreadySigned
                 ? 'success'
                 : getTransactionReviewOutputState(outputIndex, sendReviewButtonRequests);
 
-            return { ...output, state: outputState };
+            return { ...output, state: outputState } satisfies TransactionReviewStatefulOutput;
         });
     },
 );
@@ -239,7 +241,7 @@ export const selectReviewSummaryOutputState = (
     prefix: FormDraftWithSendKeyPrefix,
     accountKey: AccountKey,
     tokenContract?: TokenAddress,
-): ReviewOutputState => {
+): TransactionReviewOutputState => {
     const isTransactionAlreadySigned = selectIsTransactionAlreadySigned(state);
 
     if (isTransactionAlreadySigned) {
@@ -271,31 +273,9 @@ export const selectReviewSummaryOutput = createSendMemoizedSelector(
             state: outputState,
             totalSpent: precomposedTx.totalSpent,
             fee: precomposedTx.fee,
-        };
+        } satisfies TransactionReviewSummaryOutput;
     },
 );
-
-export const selectTransactionReviewActiveStepIndex = (
-    state: TransactionReviewOutputsState,
-    prefix: FormDraftWithSendKeyPrefix,
-    accountKey: AccountKey,
-    tokenContract?: TokenAddress,
-) => {
-    const reviewOutputs = selectTransactionReviewOutputsFromDraft(
-        state,
-        prefix,
-        accountKey,
-        tokenContract,
-    );
-
-    if (!reviewOutputs) {
-        return 0;
-    }
-
-    const activeIndex = reviewOutputs.findIndex(output => output.state === 'active');
-
-    return activeIndex === -1 ? reviewOutputs.length : activeIndex;
-};
 
 export const selectIsClearSignedTradingSwap = createSendMemoizedSelector(
     [

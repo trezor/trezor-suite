@@ -13,5 +13,5 @@ export type TradingStackNavigationProp<
 
 export type TradingOutputsReviewScreenNavigationProp = StackNavigationProps<
     RootStackParamList,
-    RootStackRoutes.TradingSellOutputsReview | RootStackRoutes.TradingExchangeOutputsReview
+    RootStackRoutes.TradingSellTransactionReview | RootStackRoutes.TradingExchangeTransactionReview
 >;

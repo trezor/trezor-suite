@@ -1,6 +1,6 @@
 import { asNetworkSymbol } from '@suite-common/wallet-config';
 
-import { getFeeDecimals, getFeeValue } from './utils';
+import { getFeeDecimals, getFeeValue, getTransactionReviewNetworkOptions } from './utils';
 
 const btcSymbol = asNetworkSymbol('btc');
 const adaSymbol = asNetworkSymbol('ada');
@@ -86,6 +86,32 @@ describe('utils', () => {
                         symbol: asNetworkSymbol(symbol),
                     }),
                 ).toBe('100.999999999');
+            },
+        );
+    });
+
+    describe('getTransactionReviewNetworkOptions', () => {
+        it('should hide the summary item for Tron', () => {
+            expect(getTransactionReviewNetworkOptions('tron')).toEqual({
+                isSummaryItemEnabled: false,
+                isSlidingOverlayEnabled: true,
+            });
+        });
+
+        it('should hide the sliding overlay for Solana', () => {
+            expect(getTransactionReviewNetworkOptions('solana')).toEqual({
+                isSummaryItemEnabled: true,
+                isSlidingOverlayEnabled: false,
+            });
+        });
+
+        it.each(['bitcoin', 'ethereum', 'cardano', 'ripple', 'stellar', undefined] as const)(
+            'should enable both for other network types: %s',
+            networkType => {
+                expect(getTransactionReviewNetworkOptions(networkType)).toEqual({
+                    isSummaryItemEnabled: true,
+                    isSlidingOverlayEnabled: true,
+                });
             },
         );
     });

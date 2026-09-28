@@ -76,22 +76,35 @@ export const useYieldDepositReview = ({
 
     const onPushSuccess = useCallback(() => navigation.goBack(), [navigation]);
 
-    const review = useEarnTransactionReview({
-        formType: 'yield-deposit',
-        isSigned: isDepositSigned,
-        navigation,
-        onPushSuccess,
-        onReviewLeave,
-        reportCancel: reportDepositCancel,
-        reportError: reportDepositError,
-        signAction,
-        pushAction,
-    });
+    const { finalizeSubmit, leaveReviewFromDeviceCancel, startReview, status, submitReview } =
+        useEarnTransactionReview({
+            formType: 'yield-deposit',
+            isSigned: isDepositSigned,
+            navigation,
+            onPushSuccess,
+            onReviewLeave,
+            reportCancel: reportDepositCancel,
+            reportError: reportDepositError,
+            signAction,
+            pushAction,
+        });
+
+    const submitDeposit = useCallback(async () => {
+        const pushedPayload = await submitReview();
+
+        return pushedPayload?.txid;
+    }, [submitReview]);
+
+    const finalizeDepositSubmit = useCallback(
+        (txid: string) => finalizeSubmit({ txid }),
+        [finalizeSubmit],
+    );
 
     return {
-        status: review.status,
-        submit: review.handleSubmitted,
-        startReview: review.startReview,
-        leaveReviewFromDeviceCancel: review.leaveReviewFromDeviceCancel,
+        finalizeDepositSubmit,
+        leaveReviewFromDeviceCancel,
+        startReview,
+        status,
+        submitDeposit,
     };
 };

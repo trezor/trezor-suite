@@ -8,9 +8,8 @@ import type {
 } from '@suite-common/wallet-types';
 import { getTranslation } from '@suite-native/intl';
 import { btc1NormalAccount } from '@suite-native/trading-fixtures';
-import type { ReviewOutputItemContentDataProps } from '@suite-native/transaction-management';
 
-import { useTradingContentBuilder } from './useTradingContentBuilder';
+import { type ContentBuilderProps, useTradingContentBuilder } from './useTradingContentBuilder';
 import { renderWithTradingProvider } from '../../test-utils/tradingTestUtils';
 
 const mockSend: FormStateTradingCryptoCurrency = {
@@ -32,7 +31,7 @@ const mockReceiveFiat: FormStateTradingFiatCurrency = {
     fiatCurrency: 'USD',
 };
 
-const baseProps: ReviewOutputItemContentDataProps = {
+const baseProps: ContentBuilderProps = {
     accountKey: 'account-key' as AccountKey,
     outputType: 'traded_assets',
     value: '',
@@ -41,17 +40,13 @@ const baseProps: ReviewOutputItemContentDataProps = {
 };
 
 describe('useTradingContentBuilder', () => {
-    const ContentBuilderWrapper = ({
-        props,
-    }: {
-        props: Partial<ReviewOutputItemContentDataProps>;
-    }) => {
+    const ContentBuilderWrapper = ({ props }: { props: Partial<ContentBuilderProps> }) => {
         const contentBuilder = useTradingContentBuilder();
 
         return <>{contentBuilder({ ...baseProps, ...props })}</>;
     };
 
-    const renderContentBuilder = async (props: Partial<ReviewOutputItemContentDataProps> = {}) =>
+    const renderContentBuilder = async (props: Partial<ContentBuilderProps> = {}) =>
         await renderWithTradingProvider(<ContentBuilderWrapper props={props} />, {
             tradeType: 'exchange',
         });

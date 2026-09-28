@@ -57,17 +57,17 @@ import {
     TradingBuyPreviewScreen,
     TradingConfirmingScreen,
     TradingExchangeApprovalScreen,
-    TradingExchangeOutputsReviewScreen,
     TradingExchangePreviewScreen,
     TradingExchangeRevokeScreen,
+    TradingExchangeTransactionReviewScreen,
     TradingHistoryDetailScreen,
     TradingHistoryScreen,
     TradingMyAssetScreen,
     TradingReceiveAccountsPickerScreen,
     TradingReceiveAddressPickerScreen,
     TradingSellCompletionScreen,
-    TradingSellOutputsReviewScreen,
     TradingSellPreviewScreen,
+    TradingSellTransactionReviewScreen,
     TradingTradeableAssetScreen,
 } from '@suite-native/module-trading';
 import { TransactionDetailStackNavigator } from '@suite-native/module-transactions';
@@ -227,14 +227,14 @@ export const RootStackNavigator = () => {
                     component={TradingConfirmingScreen}
                 />
                 <RootStack.Screen
-                    options={{ title: RootStackRoutes.TradingSellOutputsReview }}
-                    name={RootStackRoutes.TradingSellOutputsReview}
-                    component={TradingSellOutputsReviewScreen}
+                    options={{ title: RootStackRoutes.TradingSellTransactionReview }}
+                    name={RootStackRoutes.TradingSellTransactionReview}
+                    component={TradingSellTransactionReviewScreen}
                 />
                 <RootStack.Screen
-                    options={{ title: RootStackRoutes.TradingExchangeOutputsReview }}
-                    name={RootStackRoutes.TradingExchangeOutputsReview}
-                    component={TradingExchangeOutputsReviewScreen}
+                    options={{ title: RootStackRoutes.TradingExchangeTransactionReview }}
+                    name={RootStackRoutes.TradingExchangeTransactionReview}
+                    component={TradingExchangeTransactionReviewScreen}
                 />
                 <RootStack.Screen
                     options={{ title: RootStackRoutes.TradingMyAsset }}

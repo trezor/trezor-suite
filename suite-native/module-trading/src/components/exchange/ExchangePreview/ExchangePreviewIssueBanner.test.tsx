@@ -192,7 +192,7 @@ describe('ExchangePreviewIssueBanner', () => {
             getByText(getTranslation('moduleTrading.transactionSimulation.continueAnyway')),
         );
 
-        expect(mockNavigate).toHaveBeenCalledWith('TradingExchangeOutputsReview', {
+        expect(mockNavigate).toHaveBeenCalledWith('TradingExchangeTransactionReview', {
             accountKey: btcAccountKey,
             orderId: mercuryoFixedWorstQuote.orderId,
             tokenContract: '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',

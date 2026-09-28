@@ -1,14 +1,10 @@
 import { useMemo } from 'react';
-import { useSelector } from 'react-redux';
 
 import { type TrezorDevice } from '@suite-common/suite-types';
 import { type YieldFlowResolvedData } from '@suite-common/wallet-core';
-import { Button } from '@suite-native/atoms';
-import { Translation } from '@suite-native/intl';
-import { selectIsTransactionAlreadySigned } from '@suite-native/transaction-management';
+import { TransactionReviewScreen } from '@suite-native/transaction-review';
 
-import { YieldReviewScreenLayout } from './YieldReviewScreenLayout';
-import { YieldTransactionReviewOutputList } from './YieldTransactionReviewOutputList';
+import { YieldTransactionReviewSummaryCard } from './YieldTransactionReviewSummaryCard';
 import { useYieldApprovalReview } from '../../hooks/yield/useYieldApprovalReview';
 import { useYieldApprovalReviewTransaction } from '../../hooks/yield/useYieldApprovalReviewTransaction';
 import { useYieldReviewActiveStep } from '../../hooks/yield/useYieldReviewActiveStep';
@@ -16,11 +12,16 @@ import {
     useYieldReviewScreenControls,
     useYieldReviewSheetAutoStart,
 } from '../../hooks/yield/useYieldReviewScreenControls';
+import { useYieldTransactionReviewOutputs } from '../../hooks/yield/useYieldTransactionReviewOutputs';
 import {
     type YieldAllowanceFormDraftTransactionType,
     type YieldApprovalLimitType,
 } from '../../types';
-import { buildYieldReviewPreview } from '../../utils/yield/yieldReviewOutputUtils';
+import {
+    buildYieldReviewPreview,
+    getYieldReviewSummaryState,
+    getYieldStatefulReviewOutputs,
+} from '../../utils/yield/yieldReviewOutputUtils';
 
 type YieldDepositApprovalReviewContentProps = {
     approvalLimitType?: YieldApprovalLimitType;
@@ -46,33 +47,34 @@ export const YieldDepositApprovalReviewContent = ({
         markReviewLeave,
         revealConfirmOnTrezorSheet,
     } = useYieldReviewScreenControls();
+
+    const yieldTransactionReviewOutputs = useYieldTransactionReviewOutputs({
+        evmTransactionPurpose: transactionType,
+        account: flowData.account,
+    });
+
     const reviewTransaction = useYieldApprovalReviewTransaction({
         accountKey: flowData.account.key,
     });
-    const isTransactionAlreadySigned = useSelector(selectIsTransactionAlreadySigned);
     const activeStep = useYieldReviewActiveStep(flowData.account.symbol);
     const isRevokeReview = transactionType === 'revoke';
+
     const submitButtonTranslationId = isRevokeReview
         ? 'earn.yieldDepositRevokeReviewScreen.submitButton'
         : 'earn.yieldDepositApprovalReviewScreen.submitButton';
+
     const titleTranslationId = isRevokeReview
         ? 'earn.yieldDepositRevokeReviewScreen.title'
         : 'earn.yieldDepositApprovalReviewScreen.title';
-    const {
-        handleApprovalSubmitted,
-        isApprovalSigned,
-        isApprovalReviewReady,
-        isSendingApproval,
-        isSigningApproval,
-        leaveReviewFromDeviceCancel,
-        startApprovalReview,
-    } = useYieldApprovalReview({
+
+    const review = useYieldApprovalReview({
         approvalLimitType,
         flowData,
         flowKey,
         onReviewLeave: markReviewLeave,
         transactionType,
     });
+
     const preview = useMemo(() => {
         if (!reviewTransaction) {
             return null;
@@ -91,33 +93,63 @@ export const YieldDepositApprovalReviewContent = ({
     useYieldReviewSheetAutoStart({
         closeSheet,
         hasLeftReview,
-        isSigned: isApprovalSigned,
-        leaveReviewFromDeviceCancel,
+        isSigned: review.isApprovalSigned,
+        leaveReviewFromDeviceCancel: review.leaveReviewFromDeviceCancel,
         revealConfirmOnTrezorSheet,
-        shouldAutoStartReview: isApprovalReviewReady && !isSigningApproval,
-        startReview: startApprovalReview,
+        shouldAutoStartReview: review.isApprovalReviewReady && !review.isSigningApproval,
+        startReview: review.startApprovalReview,
     });
 
+    const reviewOutputs = preview
+        ? getYieldStatefulReviewOutputs({
+              activeStep,
+              isSigned: review.isApprovalSigned,
+              outputs: preview.outputs,
+          })
+        : undefined;
+
+    const summaryState = preview
+        ? getYieldReviewSummaryState({
+              activeStep,
+              isSigned: review.isApprovalSigned,
+              outputsCount: preview.outputs.length,
+          })
+        : undefined;
+
+    const sheetController = { closeSheet, confirmOnTrezorRef, revealConfirmOnTrezorSheet };
+
+    const onSendTransaction = () => review.submitApproval();
+
+    const onSendTransactionSuccess = (txid: string) => {
+        review.finalizeApprovalSubmit(txid);
+    };
+
     return (
-        <YieldReviewScreenLayout
-            confirmOnTrezorRef={confirmOnTrezorRef}
+        <TransactionReviewScreen
+            accountKey={flowData.account.key}
+            reviewOutputs={reviewOutputs}
             titleTranslationId={titleTranslationId}
-            submitButton={
-                isApprovalSigned ? (
-                    <Button isLoading={isSendingApproval} onPress={handleApprovalSubmitted}>
-                        <Translation id={submitButtonTranslationId} />
-                    </Button>
-                ) : undefined
+            summaryTranslationId="transactionManagement.review.outputs.summary.label"
+            sendButtonTranslationId={submitButtonTranslationId}
+            isTransactionAlreadySigned={review.isApprovalSigned}
+            onSendTransaction={onSendTransaction}
+            onSendTransactionSuccess={onSendTransactionSuccess}
+            renderSummaryItem={({ onLayout }) =>
+                !!preview && (
+                    <YieldTransactionReviewSummaryCard
+                        accountKey={flowData.account.key}
+                        fee={preview.summary.fee}
+                        onLayout={onLayout}
+                        outputState={summaryState}
+                    />
+                )
             }
-        >
-            {preview && (
-                <YieldTransactionReviewOutputList
-                    accountKey={flowData.account.key}
-                    activeStep={activeStep}
-                    isSigned={isTransactionAlreadySigned}
-                    preview={preview}
-                />
-            )}
-        </YieldReviewScreenLayout>
+            sheetController={sheetController}
+            isManualSheetControlEnabled
+            isBackInterceptorEnabled={false}
+            closeActionType="back"
+            outputTitleOverride={yieldTransactionReviewOutputs.getOutputTitle}
+            outputOverride={yieldTransactionReviewOutputs.getOutputValue}
+        />
     );
 };

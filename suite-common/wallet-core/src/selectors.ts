@@ -12,8 +12,8 @@ import {
 } from '@suite-common/wallet-config';
 import {
     type Account,
-    type ReviewOutput,
     type SuccessfulAccount,
+    type TransactionReviewOutput,
 } from '@suite-common/wallet-types';
 import {
     findAccountsByAddress,
@@ -248,7 +248,11 @@ export const selectHasOnlyEmptyPortfolioTracker = createMemoizedSelector(
 export const selectIsTxOutputInternal = createMemoizedSelector(
     [
         selectDeviceAccountsByNetworkSymbol,
-        (_state: WalletCoreCompoundRootState, symbol?: NetworkSymbol, output?: ReviewOutput) => ({
+        (
+            _state: WalletCoreCompoundRootState,
+            symbol?: NetworkSymbol,
+            output?: TransactionReviewOutput,
+        ) => ({
             symbol,
             output,
         }),

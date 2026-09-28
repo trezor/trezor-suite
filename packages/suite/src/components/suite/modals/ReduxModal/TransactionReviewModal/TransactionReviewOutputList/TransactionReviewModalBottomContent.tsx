@@ -12,7 +12,7 @@ import {
     type Account,
     type FormState,
     type RbfTransactionType,
-    type ReviewOutput,
+    type TransactionReviewOutput,
     type TronStakingFormState,
 } from '@suite-common/wallet-types';
 import {
@@ -58,7 +58,7 @@ type TransactionReviewModalBottomContentProps = {
     isRbfConfirmedError?: boolean;
     account: Account;
     precomposedForm: FormState;
-    outputs: ReviewOutput[];
+    outputs: TransactionReviewOutput[];
 };
 
 export const TransactionReviewModalBottomContent = ({
@@ -100,8 +100,8 @@ export const TransactionReviewModalBottomContent = ({
                 action,
                 symbol,
                 tokens: outputs
-                    .filter((output: ReviewOutput) => output.token?.symbol)
-                    .map((output: ReviewOutput) => output.token?.symbol)
+                    .filter((output: TransactionReviewOutput) => output.token?.symbol)
+                    .map((output: TransactionReviewOutput) => output.token?.symbol)
                     .join(','),
                 outputsCount: precomposedForm.outputs.length,
                 broadcast: isBroadcastEnabled,

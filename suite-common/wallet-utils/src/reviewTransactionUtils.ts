@@ -13,10 +13,10 @@ import {
     type FormState,
     type GeneralPrecomposedTransaction,
     type GeneralPrecomposedTransactionFinal,
-    type ReviewOutput,
-    type ReviewOutputState,
     type StakeFormState,
     type StakeType,
+    type TransactionReviewOutput,
+    type TransactionReviewOutputState,
     type YieldClaimReward,
 } from '@suite-common/wallet-types';
 import type { CardanoOutput } from '@trezor/connect';
@@ -54,7 +54,7 @@ export const isDeviceReviewOnlyTransaction = (transaction?: GeneralPrecomposedTr
 export const getTransactionReviewOutputState = (
     index: number,
     buttonRequestsCount: number,
-): ReviewOutputState => {
+): TransactionReviewOutputState => {
     if (index === buttonRequestsCount - 1) return 'active';
     if (index < buttonRequestsCount - 1) return 'success';
 
@@ -264,9 +264,9 @@ const constructOldFlow = ({
     account,
     precomposedForm,
     clearSignedSwapCoverage,
-}: ConstructOutputsParams): ReviewOutput[] => {
+}: ConstructOutputsParams): TransactionReviewOutput[] => {
     const isClearSignedTradingSwap = clearSignedSwapCoverage !== undefined;
-    const outputs: ReviewOutput[] = [];
+    const outputs: TransactionReviewOutput[] = [];
 
     const isBitcoin = account.networkType === 'bitcoin';
     const isCardano = isCardanoTx(account, precomposedTx);
@@ -452,9 +452,9 @@ const constructNewFlow = ({
     isUpdatedStellarSendFlow: boolean;
     isApprovalFlowSupported: boolean;
     isEvmClearSigningSupported: boolean;
-}): ReviewOutput[] => {
+}): TransactionReviewOutput[] => {
     const isClearSignedTradingSwap = clearSignedSwapCoverage !== undefined;
-    const outputs: ReviewOutput[] = [];
+    const outputs: TransactionReviewOutput[] = [];
 
     const isBitcoin = account.networkType === 'bitcoin';
     const isCardano = isCardanoTx(account, precomposedTx);
@@ -724,7 +724,7 @@ const constructNewFlow = ({
     } else {
         precomposedTx.outputs.forEach(o => {
             if (typeof o.address === 'string') {
-                const tokenOutput: ReviewOutput = {
+                const tokenOutput: TransactionReviewOutput = {
                     type: 'contract',
                     value: precomposedTx.token ? precomposedTx.token.contract : '',
                 };
@@ -847,7 +847,7 @@ type ConstructTransactionReviewOutputsProps = Omit<
 export const constructTransactionReviewOutputs = ({
     device,
     ...params
-}: ConstructTransactionReviewOutputsProps): ReviewOutput[] => {
+}: ConstructTransactionReviewOutputsProps): TransactionReviewOutput[] => {
     const isUpdatedSendFlow = getIsUpdatedSendFlow(device); // >= 2.6.0
     const isUpdatedEthereumSendFlow = getIsUpdatedEthereumSendFlow(
         device,
@@ -895,7 +895,7 @@ export const constructTransactionReviewOutputsOptional = ({
     precomposedTx,
     vaultName,
     swapSlippage,
-}: Partial<ConstructTransactionReviewOutputsProps>): ReviewOutput[] => {
+}: Partial<ConstructTransactionReviewOutputsProps>): TransactionReviewOutput[] => {
     if (
         account === undefined ||
         device === undefined ||
