@@ -49,7 +49,7 @@ export const runAllProjects = async (
         });
         uploadToCurrents(project.projectName);
 
-        // A project fails only when the (post-quarantine) report still contains failures,
+        // A project fails only when non-quarantined failures remain,
         // or when Detox crashed without producing a report at all.
         if (hasRemainingFailures) {
             failedProjects.push(project.projectName);
