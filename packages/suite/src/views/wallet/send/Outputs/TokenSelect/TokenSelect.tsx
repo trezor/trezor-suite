@@ -112,7 +112,12 @@ export const TokenSelect = ({ outputId }: TokenSelectProps) => {
                 />
             )}
 
-            <Card type="raised" paddingType="normal" onClick={onOpenTokensModal}>
+            <Card
+                type="raised"
+                paddingType="normal"
+                onClick={onOpenTokensModal}
+                data-testid="@wallet/send/token-select"
+            >
                 <Row justifyContent="space-between" height={64}>
                     <Row justifyContent="flex-start" gap={12}>
                         {selectedToken ? (
@@ -129,7 +134,11 @@ export const TokenSelect = ({ outputId }: TokenSelectProps) => {
                         )}
                         <Column alignItems="flex-start">
                             <Row justifyContent="flex-start">
-                                <Text intent="neutral" typographyStyle="body-md">
+                                <Text
+                                    intent="neutral"
+                                    typographyStyle="body-md"
+                                    data-testid={`@wallet/send/token-name/${outputId}`}
+                                >
                                     {selectedToken?.name ||
                                         getNetworkDisplaySymbolName(account.symbol)}
                                 </Text>
@@ -188,6 +197,7 @@ export const TokenSelect = ({ outputId }: TokenSelectProps) => {
                                                     intent="neutral"
                                                     priority="secondary"
                                                     isCopyAllowed
+                                                    data-testid={`@wallet/send/token-contract/${outputId}`}
                                                     onCopy={() => {
                                                         dispatch(
                                                             shouldShowCopyAddressModal
