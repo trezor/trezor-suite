@@ -84,6 +84,10 @@ export const createVerifyUpdateFile =
 
         try {
             const signatureFile = await getSignatureFile({ originalUpdateFileName, feedURL });
+
+            // TODO REMOVE THIS
+            await new Promise(resolve => setTimeout(resolve, 5000));
+
             await verifySignature({ downloadedFile: temporaryUpdateFilePath, signatureFile });
 
             return { response: 'success' };
