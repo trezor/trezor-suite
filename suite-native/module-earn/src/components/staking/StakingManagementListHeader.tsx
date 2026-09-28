@@ -3,6 +3,7 @@ import { useSelector } from 'react-redux';
 import { Context } from '@suite-common/message-system';
 import {
     type StakeRootState,
+    isSupportedAdaStakingNetworkSymbol,
     isSupportedEthStakingNetworkSymbol,
     isSupportedSolStakingNetworkSymbol,
     isSupportedTronStakingNetworkSymbol,
@@ -37,7 +38,7 @@ export const StakingManagementListHeader = ({ accountKey }: StakingManagementLis
     );
 
     const isSolanaStaking = isSupportedSolStakingNetworkSymbol(networkSymbol);
-    const isCardanoStaking = networkSymbol === 'ada';
+    const isCardanoStaking = isSupportedAdaStakingNetworkSymbol(networkSymbol);
     const isTronStaking = isSupportedTronStakingNetworkSymbol(networkSymbol);
 
     const isStakeSectionShown = !isCardanoStaking || hasAdaStaked;
