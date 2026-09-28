@@ -18,6 +18,7 @@ type AmountComponentProps = {
     signGrayscale?: boolean;
     alignMultitoken?: 'flex-end' | 'flex-start';
     linkTypographyStyle?: TypographyStyle;
+    'data-testid'?: string;
 };
 
 export const AmountComponent = ({
@@ -28,6 +29,7 @@ export const AmountComponent = ({
     signGrayscale,
     alignMultitoken,
     linkTypographyStyle,
+    'data-testid': dataTest,
 }: AmountComponentProps): React.ReactNode => {
     const operation = getTxOperation(transfer.type);
 
@@ -53,6 +55,7 @@ export const AmountComponent = ({
                 contractAddress={transfer.contract}
                 signValue={operation}
                 signGrayscale={signGrayscale}
+                data-testid={dataTest}
             />
         );
     }

@@ -4,6 +4,7 @@ import { type NetworkSymbol, asNetworkSymbol } from '@suite-common/wallet-config
 import { isTestnet } from '@suite-common/wallet-utils';
 
 import { step } from '../common';
+import { TradingAssetPicker } from './trading/assetsModal';
 
 export type ExportType = 'pdf' | 'csv' | 'json';
 
@@ -42,6 +43,14 @@ export class WalletPage {
     readonly showPublicKeyButton: Locator;
     readonly copyPublicKeyButton: Locator;
     readonly openSendFormButton: Locator;
+    readonly assetPicker: TradingAssetPicker;
+    readonly sendTokenSelect: Locator;
+    readonly selectedSendToken: Locator;
+    readonly selectedSendTokenName: Locator;
+    readonly selectedSendTokenContract: Locator;
+    readonly transactionDetailTokenAmount = (contractAddress: string): Locator =>
+        this.page.getByTestId(`@modal/tx-details/token-amount/${contractAddress}-with-symbol`);
+    readonly pendingTransactionHeading: Locator;
     readonly sendForm: Locator;
     readonly sendFormHeader: Locator;
     readonly totalSent: Locator;
@@ -110,6 +119,14 @@ export class WalletPage {
         this.showPublicKeyButton = this.page.getByTestId('@wallets/details/show-xpub-button');
         this.copyPublicKeyButton = this.page.getByTestId('@metadata/copy-xpub-button');
         this.openSendFormButton = this.page.getByTestId('@wallet/menu/wallet-send');
+        this.assetPicker = new TradingAssetPicker(page);
+        this.sendTokenSelect = this.page.getByTestId('@wallet/send/token-select');
+        this.selectedSendToken = this.page.getByTestId('outputs.0.token-with-symbol');
+        this.selectedSendTokenName = this.page.getByTestId('@wallet/send/token-name/0');
+        this.selectedSendTokenContract = this.page.getByTestId('@wallet/send/token-contract/0');
+        this.pendingTransactionHeading = this.page
+            .getByTestId('@wallet/accounts/transaction-list/pending/group/0')
+            .getByTestId('@transaction-item/0/heading');
         this.sendForm = this.page.getByTestId('@wallet/send/outputs-and-options');
         this.sendFormHeader = this.page.getByTestId('@wallet/send-header');
         this.totalSent = this.page.getByTestId('@wallet/send/total-sent');
@@ -203,6 +220,21 @@ export class WalletPage {
         if (!params.symbol || !isTestnet(params.symbol)) {
             await expect(this.fiatAmount).toBeVisible({ timeout: 25_000 });
         }
+    }
+
+    @step()
+    async selectSendToken({
+        networkSymbol,
+        tokenSymbol,
+    }: {
+        networkSymbol: NetworkSymbol;
+        tokenSymbol: string;
+    }) {
+        await this.sendTokenSelect.click();
+        await this.assetPicker.searchAsset(tokenSymbol);
+        await this.page
+            .getByTestId(`@asset-picker/send-token/option/${networkSymbol}/${tokenSymbol}`)
+            .click();
     }
 
     @step()
