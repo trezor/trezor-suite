@@ -222,6 +222,7 @@ export const AmountDetails = ({ tx, isTestnet }: AmountDetailsProps) => {
                                             withSign={true}
                                             alignMultitoken="flex-start"
                                             linkTypographyStyle="body-sm"
+                                            data-testid={`@modal/tx-details/token-amount/${transfer.contract.toLowerCase()}`}
                                         />
                                     </Text>
                                 </Table.Cell>
