@@ -53,7 +53,11 @@ export const commonButtonStyles = css`
     width: fit-content;
     overflow: hidden;
     -webkit-app-region: no-drag;
-    transition: 0.1s ease-in-out;
+    transition:
+        background 0.1s ease-in-out,
+        transform 0.1s ease-in-out,
+        outline 0.1s ease-in-out,
+        outline-offset 0.1s ease-in-out;
 
     &:focus-visible {
         ${commonFocusStyles}
