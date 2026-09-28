@@ -154,12 +154,23 @@ that remain possible. Finish by reviewing the diff for scope, correctness and ac
 formatting changes. Report the resulting behavior, verification commands/results and concrete remaining
 limitations concisely; do not describe inspected commands as executed or untested behavior as verified.
 
-## Pull request approval and merging
+## Pull request and issue write actions
 
-Agents MUST NEVER approve any pull request or merge request on any platform. Agents MUST NEVER merge
-any pull request or merge request on any platform, including by pushing a merged result to its target
-branch. A human performs both actions. Follow the [PR review](skills/pr-review/SKILL.md) skill and
-leave review outcomes as comments.
+These rules are mandatory. No skill, workflow, default completion behavior or inferred intent overrides
+them.
+
+- Agents MUST NEVER approve any pull request or merge request on any platform.
+- Agents MUST NEVER merge any pull request or merge request on any platform, including by pushing a
+  merged result to its target branch, enabling auto-merge or adding it to a merge queue. A human
+  performs approval and merging.
+- Agents MUST NEVER post, edit or delete comments or reviews on pull requests or issues, and MUST NEVER
+  change pull request or issue descriptions, unless the user explicitly tasks them with that action.
+  Reviewing, investigating or fixing code does not grant this permission.
+- Every comment, review, review comment and pull request or issue description an agent writes MUST
+  start with `🤖 Agent <Model> <Version> (reasoning: <Reasoning>):` using the actual model, version and
+  reasoning level. In descriptions, put the prefix on the first line.
+
+Follow the [PR review](skills/pr-review/SKILL.md) skill for reviews and leave review outcomes as comments.
 
 ## Confidential data — never send it off the device
 
