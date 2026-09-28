@@ -154,6 +154,13 @@ that remain possible. Finish by reviewing the diff for scope, correctness and ac
 formatting changes. Report the resulting behavior, verification commands/results and concrete remaining
 limitations concisely; do not describe inspected commands as executed or untested behavior as verified.
 
+## Pull request approval and merging
+
+Agents MUST NEVER approve any pull request or merge request on any platform. Agents MUST NEVER merge
+any pull request or merge request on any platform, including by pushing a merged result to its target
+branch. A human performs both actions. Follow the [PR review](skills/pr-review/SKILL.md) skill and
+leave review outcomes as comments.
+
 ## Confidential data — never send it off the device
 
 Account/device confidential data must never leave the device to any external sink (analytics, Sentry,
