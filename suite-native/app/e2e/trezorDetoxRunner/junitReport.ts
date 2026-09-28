@@ -161,7 +161,6 @@ const addAttemptArtifacts = ({
 }: AddAttemptArtifactsParams): void => {
     suite.testcase?.forEach(testCase => {
         const attempts = testAttempts.get(testCase.$.name);
-        // The converter only supports artifacts from the first attempt of a skipped test.
         if (!attempts || testCase.skipped !== undefined) return;
 
         const invocations = Array.from({ length: attempts.invocations }, (_, index) => index + 1);
