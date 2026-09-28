@@ -1,3 +1,5 @@
+import { createMMKV } from 'react-native-mmkv';
+
 import { getSupportedNetworks } from '@suite-common/wallet-config';
 import { launchArguments } from '@suite-native/config';
 import {
@@ -9,7 +11,11 @@ import {
     extraDependencies,
     prepareRootReducers,
 } from '@suite-native/state';
-import { createEnsureEncryptionKey, createMMKVStorage } from '@suite-native/storage';
+import {
+    alertStorageLoadFailure,
+    createEnsureEncryptionKey,
+    createMMKVStorage,
+} from '@suite-native/storage';
 import TrezorConnect from '@trezor/connect';
 
 import { type NativeApp, createNativeApp } from './createNativeApp';
@@ -23,7 +29,11 @@ export const createSuiteNativeCompositionRoot = (
     preloadedState = launchArguments.preloadedState as PreloadedState,
 ): SuiteNativeCompositionRoot => {
     const ensureEncryptionKey = createEnsureEncryptionKey();
-    const mmkvStorage = createMMKVStorage({ ensureEncryptionKey });
+    const mmkvStorage = createMMKVStorage({
+        ensureEncryptionKey,
+        createMMKV,
+        alertStorageLoadFailure,
+    });
     const { store, injectServicesIntoReduxExtra } = createReduxStore({
         // Passing runtime dependencies into reducer setup is an anti-pattern: reducers should
         // remain pure and receive runtime data through action payloads, not services or extra.

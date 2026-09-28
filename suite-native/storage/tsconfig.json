@@ -34,6 +34,9 @@
         {
             "path": "../../packages/transport-native-bluetooth"
         },
-        { "path": "../../packages/type-utils" }
+        { "path": "../../packages/type-utils" },
+        {
+            "path": "../../suite-common/dependency-injection"
+        }
     ]
 }

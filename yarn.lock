@@ -14584,6 +14584,7 @@ __metadata:
     "@reduxjs/toolkit": "npm:2.12.0"
     "@scure/base": "npm:^2.0.0"
     "@sentry/react-native": "npm:8.22.0"
+    "@suite-common/dependency-injection": "workspace:*"
     "@suite-common/device": "workspace:*"
     "@suite-common/firmware-authenticity": "workspace:*"
     "@suite-common/redux-utils": "workspace:*"
