@@ -31,7 +31,11 @@ const Container = styled.button<{ $isActive?: boolean }>`
     gap: 16px;
     padding: 8px;
     border-radius: 12px;
-    transition: 0.2s ease-in-out;
+    transition:
+        background 0.2s ease-in-out,
+        box-shadow 0.2s ease-in-out,
+        outline 0.2s ease-in-out,
+        outline-offset 0.2s ease-in-out;
     cursor: pointer;
     border: 0;
     background: none;
