@@ -1,4 +1,4 @@
-import { Text, TitleHeader, VStack } from '@suite-native/atoms';
+import { Box, Text, TitleHeader, VStack } from '@suite-native/atoms';
 import { Form, FormSubmitButton, TextInputField } from '@suite-native/forms';
 import { Translation } from '@suite-native/intl';
 import { Screen, ScreenHeader } from '@suite-native/navigation';
@@ -10,9 +10,22 @@ export const DeviceNameScreen = () => {
         useChangeDeviceName();
 
     return (
-        <Screen header={<ScreenHeader closeActionType="close" />}>
-            <Form form={form}>
-                <VStack marginTop="sp32" spacing="sp32" style={{ marginBottom: 'auto' }}>
+        <Form form={form}>
+            <Screen
+                header={<ScreenHeader closeActionType="close" />}
+                footer={
+                    <Box marginHorizontal="sp16" marginBottom="sp16">
+                        <FormSubmitButton
+                            onPress={onSubmit}
+                            isVisible={isSubmittable}
+                            testID="@device-name/submit-button"
+                        >
+                            <Translation id="moduleDeviceSettings.changeDeviceName.submitButton" />
+                        </FormSubmitButton>
+                    </Box>
+                }
+            >
+                <VStack marginTop="sp32" spacing="sp32">
                     <TitleHeader
                         title={<Translation id="moduleDeviceSettings.changeDeviceName.title" />}
                         titleVariant="headline-md"
@@ -38,14 +51,7 @@ export const DeviceNameScreen = () => {
                         />
                     </VStack>
                 </VStack>
-                <FormSubmitButton
-                    onPress={onSubmit}
-                    isVisible={isSubmittable}
-                    testID="@device-name/submit-button"
-                >
-                    <Translation id="moduleDeviceSettings.changeDeviceName.submitButton" />
-                </FormSubmitButton>
-            </Form>
-        </Screen>
+            </Screen>
+        </Form>
     );
 };
