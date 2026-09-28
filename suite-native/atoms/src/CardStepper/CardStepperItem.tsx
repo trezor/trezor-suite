@@ -83,12 +83,15 @@ export const CardStepperItem = ({
 }: CardStepperItemProps) => {
     const { applyStyle } = useNativeStyles();
     const isReducedMotion = useReducedMotion();
+    const layoutAnimation = isReducedMotion ? undefined : LAYOUT_ANIMATION;
+    const enteringAnimation = isReducedMotion ? undefined : ENTERING_ANIMATION;
+    const exitingAnimation = isReducedMotion ? undefined : EXITING_ANIMATION;
     const iconName = isChecked ? 'check' : icon;
     const headerColor: Color = isChecked ? 'contentBrand' : 'contentSecondary';
 
     return (
         <AnimatedContainerCard
-            layout={isReducedMotion ? undefined : LAYOUT_ANIMATION}
+            layout={layoutAnimation}
             style={applyStyle(cardStyle, { isDisabled: !isOpened && !isChecked })}
         >
             <VStack spacing="sp16">
@@ -104,9 +107,9 @@ export const CardStepperItem = ({
                 {isOpened && (
                     <AnimatedVStack
                         spacing="sp16"
-                        layout={isReducedMotion ? undefined : LAYOUT_ANIMATION}
-                        entering={isReducedMotion ? undefined : ENTERING_ANIMATION}
-                        exiting={isReducedMotion ? undefined : EXITING_ANIMATION}
+                        layout={layoutAnimation}
+                        entering={enteringAnimation}
+                        exiting={exitingAnimation}
                     >
                         <Text variant="body-md-strong">{description}</Text>
                         <HStack flex={1} spacing="sp12" paddingBottom="sp4">
