@@ -43,6 +43,7 @@ import { BigNumber } from '@trezor/utils';
 import { CardanoAutoStakedModal } from './CardanoAutoStakedModal';
 import { useMessageSystemStaking } from '../../hooks/staking/useMessageSystemStaking';
 import { useStakingTotalRewards } from '../../hooks/staking/useStakingTotalRewards';
+import { getMobileStakingSupport } from '../../utils/staking/mobileStakingSupport';
 import { ApyValue } from '../earn/ApyValue';
 import { useEarnPortfolioTrackerGuard } from '../earn/EarnPortfolioTrackerGuard';
 
@@ -88,7 +89,7 @@ export const StakingManagementStakedCard = ({
 
     const isSolanaStaking = isSupportedSolStakingNetworkSymbol(networkSymbol);
     const isCardanoStaking = networkSymbol === 'ada';
-    const areStakeActionsShown = !isCardanoStaking;
+    const areStakeActionsShown = getMobileStakingSupport(networkSymbol) === 'manage';
 
     const handleStake = () => {
         if (isPortfolioTrackerDevice) {

@@ -10,14 +10,20 @@ import { type ChooseAccountTokenBalance, type EarnType } from '../../types';
 import { getChooseAccountBalanceData } from '../../utils/staking/chooseAccountBalanceUtils';
 import { ChooseAccountItem } from '../staking/ChooseAccountItem';
 
-const titleTranslationIds = {
-    staking: 'earn.earnScreen.chooseAccountSheet.stakingTitle',
-    yield: 'earn.earnScreen.chooseAccountSheet.yieldTitle',
-} satisfies Record<EarnType, TxKeyPath>;
+const getTitleTranslationId = (type: EarnType, isViewOnly: boolean): TxKeyPath => {
+    if (type === 'yield') {
+        return 'earn.earnScreen.chooseAccountSheet.yieldTitle';
+    }
+
+    return isViewOnly
+        ? 'earn.earnScreen.chooseAccountSheet.title'
+        : 'earn.earnScreen.chooseAccountSheet.stakingTitle';
+};
 
 type EarnSelectAccountBottomSheetProps = {
     ref: BottomSheetModalRef;
     type: EarnType;
+    isViewOnly?: boolean;
     accounts: Account[];
     onAccountPress: (account: Account) => void;
     tokenBalance?: ChooseAccountTokenBalance;
@@ -28,6 +34,7 @@ type EarnSelectAccountBottomSheetProps = {
 export const EarnSelectAccountBottomSheet = ({
     ref,
     type,
+    isViewOnly = false,
     accounts,
     onAccountPress,
     tokenBalance,
@@ -52,7 +59,7 @@ export const EarnSelectAccountBottomSheet = ({
     return (
         <BottomSheetModal
             ref={ref}
-            title={<Translation id={titleTranslationIds[type]} />}
+            title={<Translation id={getTitleTranslationId(type, isViewOnly)} />}
             isCloseDisplayed
             onClose={onClose}
             onDismiss={onDismiss}

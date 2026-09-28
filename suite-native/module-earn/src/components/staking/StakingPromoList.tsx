@@ -37,6 +37,7 @@ export const StakingPromoList = () => {
         selectAccountSheetRef,
         closeSelectAccountSheet,
         onSelectAccountDismiss,
+        isSelectAccountViewOnly,
         onAccountPress,
         enableNetworkSheetRef,
         onEnableNetworkPress,
@@ -80,6 +81,7 @@ export const StakingPromoList = () => {
 
             <EarnSelectAccountBottomSheet
                 type="staking"
+                isViewOnly={isSelectAccountViewOnly}
                 ref={selectAccountSheetRef}
                 accounts={chosenAccounts}
                 onAccountPress={onAccountPress}
