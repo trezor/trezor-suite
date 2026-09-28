@@ -40,7 +40,9 @@ const Container = styled.div<{
             opacity: 1;
             transform: translateX(0);
             pointer-events: auto;
-            transition: 200ms ease-in-out;
+            transition:
+                opacity 200ms ease-in-out,
+                transform 200ms ease-in-out;
         `}
 `;
 
