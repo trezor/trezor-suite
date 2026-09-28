@@ -31,7 +31,7 @@ const Line = styled.div<LineProps>`
     display: flex;
     flex: 1;
     height: 5px;
-    transition: all 0.5s;
+    transition: background 0.5s;
 `;
 
 type OptionalZXCVBNScore = ZXCVBNScore | undefined;
