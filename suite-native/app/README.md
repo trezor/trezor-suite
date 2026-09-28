@@ -38,6 +38,7 @@ nix develop .#use_android
         - It's recommended to use [adb over wifi](https://developer.android.com/studio/command-line/adb#connect-to-a-device-over-wi-fi-android-11+) because you will have free up a USB port to connect Trezor device.
 2. Run packager - `yarn native:start` in separate terminal window and keep it running
 3. Run native build - `yarn native:android` this takes time (~10min) and it should install and start the app at the end
+    - If you need to debug a C++ issue, run `yarn workspace @suite-native/app android:debug` to use the regular `debug` variant.
 4. With emulator running, reverse android emulator ports to enable communication between the app and localhost services - `yarn native:reverse-ports`
 
 ## Running app on iOS

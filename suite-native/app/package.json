@@ -16,7 +16,8 @@
     },
     "scripts": {
         "depcheck": "yarn g:depcheck",
-        "android": "expo run:android",
+        "android": "expo run:android --variant debugOptimized",
+        "android:debug": "expo run:android --variant debug",
         "android:clean": "cd android && ./gradlew clean",
         "ios": "expo run:ios",
         "start": "expo start --dev-client",
