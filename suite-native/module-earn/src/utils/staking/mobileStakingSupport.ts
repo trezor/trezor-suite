@@ -9,7 +9,7 @@ const MOBILE_STAKING_SUPPORT: Record<StakingNetworkSymbol, MobileStakingSupport>
     sol: 'manage',
     dsol: 'manage',
     ada: 'view',
-    trx: 'desktop-only',
+    trx: 'view',
 };
 
 const getStakingNetworkSupport = (symbol: StakingNetworkSymbol): MobileStakingSupport =>
