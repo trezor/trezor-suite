@@ -14,7 +14,7 @@ const ThumbnailImage = styled.img`
     cursor: zoom-in;
     border: solid 2px ${({ theme }) => theme.elementBorderField};
     border-radius: 4px;
-    transition: all 0.2s ease;
+    transition: border-color 0.2s ease;
     padding: 4px;
 
     &:hover {

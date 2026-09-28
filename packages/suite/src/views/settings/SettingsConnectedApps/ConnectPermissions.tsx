@@ -68,7 +68,9 @@ const PermissionRow = styled.div`
         opacity: 1;
         pointer-events: auto;
         transform: translateX(0);
-        transition: 200ms ease-in-out;
+        transition:
+            opacity 200ms ease-in-out,
+            transform 200ms ease-in-out;
     }
 `;
 

@@ -31,7 +31,7 @@ const Wrapper = styled.div<{ $isGuideOpen: boolean }>`
     right: 16px;
     border-radius: 12px;
     backdrop-filter: blur(10px);
-    transition: ${({ $isGuideOpen }) => ($isGuideOpen ? 'none' : 'all 0.3s ease 0.3s')};
+    transition: ${({ $isGuideOpen }) => ($isGuideOpen ? 'none' : 'opacity 0.3s ease 0.3s')};
     opacity: ${({ $isGuideOpen }) => ($isGuideOpen ? '0' : '1')};
 `;
 
@@ -48,7 +48,11 @@ const MascotButton = styled.button`
     overflow: hidden;
     -webkit-app-region: no-drag;
     background: ${({ theme }) => theme.elementFillNeutralSoft};
-    transition: 0.1s ease-in-out;
+    transition:
+        background 0.1s ease-in-out,
+        transform 0.1s ease-in-out,
+        outline 0.1s ease-in-out,
+        outline-offset 0.1s ease-in-out;
 
     &:hover {
         background: ${({ theme }) => theme.elementFillNeutralSoftHovered};
