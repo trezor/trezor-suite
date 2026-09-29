@@ -34,6 +34,7 @@ const handleNotifications = async <T>(
     context: Context,
     notifications: AsyncIterable<T>,
     account: SubscriptionAccountInfo,
+    abortSignal: AbortSignal,
     // Address whose history changed, or undefined to ignore the notification.
     getChangedAddress: (notification: T, tokenMetadata: TokenDetailByMint) => string | undefined,
 ) => {
@@ -41,49 +42,64 @@ const handleNotifications = async <T>(
     const { address, isConnectionClosedError } = await solana();
     try {
         for await (const notification of notifications) {
-            const tokenMetadata = await getTokenMetadata();
-            const changedAddress = getChangedAddress(notification, tokenMetadata);
-            if (!changedAddress) continue;
+            try {
+                const tokenMetadata = await getTokenMetadata();
+                const changedAddress = getChangedAddress(notification, tokenMetadata);
+                if (!changedAddress) continue;
 
-            const api = await connect();
-            // get the last transaction signature for the account, since that what triggered this callback
-            const [lastSignatureResponse] = await api.rpc
-                .getSignaturesForAddress(address(changedAddress), {
-                    limit: 1,
-                })
-                .send();
-            const lastSignature = lastSignatureResponse?.signature;
-            if (!lastSignature) continue;
+                const api = await connect();
+                // get the last transaction signature for the account, since that what triggered this callback
+                const [lastSignatureResponse] = await api.rpc
+                    .getSignaturesForAddress(address(changedAddress), {
+                        limit: 1,
+                    })
+                    .send();
+                const lastSignature = lastSignatureResponse?.signature;
+                if (!lastSignature) continue;
 
-            // get the last transaction
-            const lastTx = await api.rpc
-                .getTransaction(lastSignature, {
-                    encoding: 'jsonParsed',
-                    maxSupportedTransactionVersion: RPC_MAX_SUPPORTED_TRANSACTION_VERSION,
-                    commitment: 'confirmed',
-                })
-                .send();
+                // get the last transaction
+                const lastTx = await api.rpc
+                    .getTransaction(lastSignature, {
+                        encoding: 'jsonParsed',
+                        maxSupportedTransactionVersion: RPC_MAX_SUPPORTED_TRANSACTION_VERSION,
+                        commitment: 'confirmed',
+                    })
+                    .send();
 
-            if (!lastTx || !isValidTransaction(lastTx)) continue;
+                if (!lastTx || !isValidTransaction(lastTx)) continue;
 
-            // Transformed from the perspective of the address that changed: for a token transfer
-            // that is the token account appearing as the instruction's source or destination.
-            const tx = solanaUtils.transformTransaction(lastTx, changedAddress, [], tokenMetadata);
+                // Transformed from the perspective of the address that changed: for a token transfer
+                // that is the token account appearing as the instruction's source or destination.
+                const tx = solanaUtils.transformTransaction(
+                    lastTx,
+                    changedAddress,
+                    [],
+                    tokenMetadata,
+                );
 
-            post({
-                id: -1,
-                type: RESPONSES.NOTIFICATION,
-                payload: {
-                    type: 'notification',
+                post({
+                    id: -1,
+                    type: RESPONSES.NOTIFICATION,
                     payload: {
-                        descriptor: account.descriptor,
-                        tx,
+                        type: 'notification',
+                        payload: {
+                            descriptor: account.descriptor,
+                            tx,
+                        },
                     },
-                },
-            });
+                });
+            } catch (error) {
+                // A closed channel is the stream's problem, handled below. Anything else is one
+                // notification we cannot turn into a transaction, and letting it out of the loop
+                // would end the subscription over a single failed request or unparseable payload.
+                if (isConnectionClosedError(error)) throw error;
+            }
         }
-    } catch (error) {
-        if (isConnectionClosedError(error)) context.onSubscriptionsClosed();
+    } catch {
+        // An intentional unsubscribe ends the stream without an error, so reaching here means the
+        // subscription is gone. Hand it to the worker, which re-subscribes every account with a
+        // growing delay, rather than leaving the account with no notifications at all.
+        if (!abortSignal.aborted) context.onSubscriptionsClosed();
     }
 };
 
@@ -115,7 +131,13 @@ export const subscribeAccounts = async (context: Context, accounts: Subscription
             const accountNotifications = await api.rpcSubscriptions
                 .accountNotifications(address(a.descriptor), { commitment: 'confirmed' })
                 .subscribe({ abortSignal: abortController.signal });
-            handleNotifications(context, accountNotifications, account, () => a.descriptor);
+            handleNotifications(
+                context,
+                accountNotifications,
+                account,
+                abortController.signal,
+                () => a.descriptor,
+            );
 
             // One owner-filtered program subscription covers every token account, so the
             // subscription count scales with accounts rather than with tokens held. It also
@@ -143,6 +165,7 @@ export const subscribeAccounts = async (context: Context, accounts: Subscription
                         context,
                         tokenNotifications,
                         account,
+                        abortController.signal,
                         ({ value }, tokenMetadata) => {
                             const mint = getTokenAccountMint(value.account);
 

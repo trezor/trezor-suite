@@ -398,11 +398,11 @@ export const onBlockMinedThunk = createThunk<
     return dispatch(syncAccountsWithBlockchainThunk(symbol));
 });
 
-type OnBlockchainNotificationThunkState = DeviceRootState &
+export type OnBlockchainNotificationThunkState = DeviceRootState &
     SyncAccountsWithBlockchainThunkState &
     WalletSettingsRootState;
 
-type OnBlockchainNotificationThunkDeps = WithServices<
+export type OnBlockchainNotificationThunkDeps = WithServices<
     AnalyticsDep & GetIsWindowVisibleDep & GetTradedAccountKeysDep
 >;
 
