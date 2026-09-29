@@ -7,6 +7,9 @@
         },
         {
             "path": "../../../networks/network-module/network-module-types"
+        },
+        {
+            "path": "../../../packages/type-utils"
         }
     ]
 }

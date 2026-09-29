@@ -1,5 +1,6 @@
 import { type Reducer, combineReducers } from '@reduxjs/toolkit';
 
+import type { NativeNetworkReducerKey } from '@suite-native/network-module-suite-native-types';
 import { type MMKVStorageDep } from '@suite-native/storage';
 import { typedObjectFromEntries } from '@trezor/utils';
 
@@ -11,7 +12,7 @@ import {
 } from './createNativeModulesCompositionRoot';
 
 export const combineNetworkReducers = (networkModules: NativeNetworkModules): Reducer => {
-    const reducers = new Map<string, Reducer>();
+    const reducers = new Map<NativeNetworkReducerKey, Reducer>();
 
     networkModules.forEach(networkModule => {
         const { key, reducer } = networkModule.reducer;

@@ -1,4 +1,7 @@
-import type { SuiteNativeNetworkModule } from '@suite-native/network-module-suite-native-types';
+import {
+    type SuiteNativeNetworkModule,
+    asNativeNetworkReducerKey,
+} from '@suite-native/network-module-suite-native-types';
 import { type MMKVStorageDep } from '@suite-native/storage';
 import { asNetworkSymbols } from '@trezor/network-module-types';
 import { supportedSolanaNetworks } from '@trezor/network-solana/constants';
@@ -22,7 +25,7 @@ export const createSolanaNativeNetworkModule = (
         },
     ],
     reducer: {
-        key: 'solana',
+        key: asNativeNetworkReducerKey('solana'),
         reducer: prepareSolanaReducer(deps),
     },
 });

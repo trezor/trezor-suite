@@ -14396,6 +14396,7 @@ __metadata:
     "@reduxjs/toolkit": "npm:2.12.0"
     "@suite-common/wallet-types": "workspace:*"
     "@trezor/network-module-types": "workspace:*"
+    "@trezor/type-utils": "workspace:*"
     react: "npm:19.2.3"
   languageName: unknown
   linkType: soft
