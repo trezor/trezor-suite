@@ -8,7 +8,7 @@ import type {
 } from 'invity-api';
 
 import { invariant } from '@suite-common/suite-utils';
-import { type Network } from '@suite-common/wallet-config';
+import { type Network, type NetworkType } from '@suite-common/wallet-config';
 import { type Account } from '@suite-common/wallet-types';
 import {
     asAmountUnit,
@@ -134,6 +134,10 @@ export type ApprovalStatus =
 
 export const hasEip712SignDataType = (quote?: ExchangeTrade): boolean =>
     quote?.signData?.type === 'eip712-typed-data';
+
+// BTC DEX swaps sign the provider's PSBT as is, so its fee can't be changed.
+export const hasFixedPsbtFee = (quote: ExchangeTrade | undefined, networkType: NetworkType) =>
+    networkType === 'bitcoin' && !!quote?.isDex && !!quote.dexTx?.data;
 
 export const hasEip712SignData = (quote?: ExchangeTrade) =>
     quote?.status === 'SIGN_DATA' && hasEip712SignDataType(quote);
