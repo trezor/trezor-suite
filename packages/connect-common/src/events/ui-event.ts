@@ -77,7 +77,8 @@ export const UI_EVENTS = {
     // --- Device call lifecycle ---
 
     /**
-     * A method that uses the device (`useDevice === true`) started talking to it.
+     * A method that uses the device (`useDevice === true`) was accepted, sent as soon as the
+     * method is resolved and before any async preparation (e.g. fetching definitions).
      * The host should lock the device UI until the matching `DEVICE_UNLOCK`.
      */
     DEVICE_LOCK: 'ui-event_device_lock',
@@ -113,7 +114,8 @@ export type UiEventWithoutPayload =
 
 // Emitted around a device-using call (useDevice === true). `device` identifies the device the call
 // used; it is resolved only once the call has been assigned a device, so it is present on
-// DEVICE_UNLOCK and absent on DEVICE_LOCK (and on firmwareUpdate, which resolves the device later).
+// DEVICE_UNLOCK and absent on DEVICE_LOCK (and on firmwareUpdate, which resolves the device later,
+// or when the call fails before it is assigned a device).
 export interface UiEventDeviceLock {
     type: typeof UI_EVENTS.DEVICE_LOCK | typeof UI_EVENTS.DEVICE_UNLOCK;
     payload: {
