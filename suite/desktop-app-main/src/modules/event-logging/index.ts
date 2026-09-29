@@ -8,6 +8,6 @@ export const init: ModuleInit = () => {
 
     ipcMain.on('logger/config', (_, { level, writeToDisk }) => {
         logger.level = level;
-        logger.config.writeToDisk = writeToDisk === true;
+        logger.config = { writeToDisk };
     });
 };
