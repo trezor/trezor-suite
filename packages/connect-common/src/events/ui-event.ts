@@ -74,6 +74,20 @@ export const UI_EVENTS = {
     /** Account balance is insufficient for the transaction */
     ACCOUNT_INSUFFICIENT_FUNDS: 'ui-event_account_insufficient_funds',
 
+    // --- Device call lifecycle ---
+
+    /**
+     * A method that uses the device (`useDevice === true`) was accepted, sent as soon as the
+     * method is resolved and before any async preparation (e.g. fetching definitions).
+     * The host should lock the device UI until the matching `DEVICE_UNLOCK`.
+     */
+    DEVICE_LOCK: 'ui-event_device_lock',
+    /**
+     * A device-using method finished (resolved or rejected). Emitted exactly once
+     * per `DEVICE_LOCK`, so the host can pair lock/unlock without a method blocklist.
+     */
+    DEVICE_UNLOCK: 'ui-event_device_unlock',
+
     // --- Generic ---
 
     /** Device is requesting a physical button press confirmation */
@@ -97,6 +111,17 @@ export type UiEventWithoutPayload =
           type: typeof UI_EVENTS.CLOSE_UI_WINDOW;
           payload?: never;
       };
+
+// Emitted around a device-using call (useDevice === true). `device` identifies the device the call
+// used; it is resolved only once the call has been assigned a device, so it is present on
+// DEVICE_UNLOCK and absent on DEVICE_LOCK (and on firmwareUpdate, which resolves the device later,
+// or when the call fails before it is assigned a device).
+export interface UiEventDeviceLock {
+    type: typeof UI_EVENTS.DEVICE_LOCK | typeof UI_EVENTS.DEVICE_UNLOCK;
+    payload: {
+        device?: Device;
+    };
+}
 
 export type UiEventDeviceAction =
     | {
@@ -219,6 +244,7 @@ export interface UiEventFirmwareDownloaded {
 
 export type UiEvent =
     | UiEventWithoutPayload
+    | UiEventDeviceLock
     | UiEventDeviceAction
     | UiEventButtonRequest
     | UiEventUnexpectedDeviceMode
