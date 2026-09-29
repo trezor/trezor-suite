@@ -19,7 +19,6 @@ describe('featureFlagsSlice', () => {
                 areExperimentalOnlyNetworksEnabled: false,
                 isCardanoSendEnabled: false,
                 isDebugKeysAllowed: false,
-                isTradingResidenceCheckEnabled: true,
                 isTradingDebugEnabled: false,
                 isN4w1BackupEnabled: false,
             });
@@ -36,7 +35,6 @@ describe('featureFlagsSlice', () => {
                 areExperimentalOnlyNetworksEnabled: false,
                 isCardanoSendEnabled: false,
                 isDebugKeysAllowed: false,
-                isTradingResidenceCheckEnabled: false,
                 isTradingDebugEnabled: false,
                 isN4w1BackupEnabled: false,
             });

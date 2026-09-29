@@ -9,7 +9,6 @@ import {
     banxaBankTransferSellQuote,
     btcAsset,
     getBtcAccount,
-    residenceCheckDisabledState,
     sellQuotes,
 } from '@suite-native/trading-fixtures';
 import { type SellFormType } from '@suite-native/trading-types';
@@ -95,7 +94,6 @@ describe('SellForm', () => {
         beforeEach(async () => {
             overrides = {
                 wallet: { trading: { sell: { quotes: sellQuotes } } },
-                ...residenceCheckDisabledState,
             };
 
             const { result } = await renderFormHook(overrides);
