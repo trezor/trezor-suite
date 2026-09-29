@@ -119,10 +119,12 @@ const waitForDeviceEnumerated = async ({ retries = 60, intervalMs = 1000 } = {})
 export const openApp = async ({
     newInstance = true,
     wipeData = true,
+    waitForAppLoaded,
     args = {},
 }: {
     newInstance?: boolean;
     wipeData?: boolean;
+    waitForAppLoaded?: boolean;
     args?: LaunchArguments;
 }) => {
     const launchArgs = {
@@ -153,7 +155,7 @@ export const openApp = async ({
         await onDeviceOnboarding.enterTHPPairingCode();
     }
 
-    if (launchArgs.preloadedState) {
+    if (waitForAppLoaded ?? Boolean(launchArgs.preloadedState)) {
         // wait for preloaded state to be applied
         await appIsFullyLoaded();
     }

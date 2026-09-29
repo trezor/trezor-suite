@@ -1,3 +1,5 @@
+import { Feature, messageSystemInitialState } from '@suite-common/message-system';
+import { mockMessageSystemStateWithFeatureFlags } from '@suite-common/message-system/mocks';
 import { type TradingCountryCode } from '@suite-common/trading';
 import { renderHookWithStoreProvider } from '@suite-native/test-utils-store';
 
@@ -5,6 +7,12 @@ import { useIsTradingAvailableForForm } from './useIsTradingAvailableForForm';
 import { LocationForm } from '../components/LocationForm';
 
 describe('useIsTradingAvailableForForm', () => {
+    const residenceDomain = Feature.trading.restrictions.residence;
+    const residenceCheckMessageSystemState = mockMessageSystemStateWithFeatureFlags(
+        { [residenceDomain]: true },
+        { [residenceDomain]: { countries: ['PL', 'US'] } },
+    );
+
     const renderUseIsTradingAvailableForForm = async (preloadedState: Record<string, unknown>) =>
         await renderHookWithStoreProvider(() => useIsTradingAvailableForForm(), {
             wrapper: LocationForm,
@@ -27,6 +35,7 @@ describe('useIsTradingAvailableForForm', () => {
         'should be [%s] for country [%s] and subdivision [%s]',
         async (expectedValue, country, countrySubdivision) => {
             const preloadedState = {
+                messageSystem: residenceCheckMessageSystemState,
                 wallet: { trading: { residence: { country, countrySubdivision } } },
             };
 
@@ -35,4 +44,43 @@ describe('useIsTradingAvailableForForm', () => {
             expect(result.current).toEqual(expectedValue);
         },
     );
+
+    it('should be true when residence check message is absent', async () => {
+        const preloadedState = {
+            messageSystem: messageSystemInitialState,
+            wallet: { trading: { residence: { country: 'ZM' } } },
+        };
+
+        const { result } = await renderUseIsTradingAvailableForForm(preloadedState);
+
+        expect(result.current).toBe(true);
+    });
+
+    it('should be true for non-whitelisted country when residence check flag is false', async () => {
+        const preloadedState = {
+            messageSystem: mockMessageSystemStateWithFeatureFlags(
+                { [residenceDomain]: false },
+                { [residenceDomain]: { countries: ['PL', 'US'] } },
+            ),
+            wallet: { trading: { residence: { country: 'ZM' } } },
+        };
+
+        const { result } = await renderUseIsTradingAvailableForForm(preloadedState);
+
+        expect(result.current).toBe(true);
+    });
+
+    it('should be false when residence check is enabled with an empty whitelist', async () => {
+        const preloadedState = {
+            messageSystem: mockMessageSystemStateWithFeatureFlags(
+                { [residenceDomain]: true },
+                { [residenceDomain]: { countries: [] } },
+            ),
+            wallet: { trading: { residence: { country: 'US', countrySubdivision: 'CA' } } },
+        };
+
+        const { result } = await renderUseIsTradingAvailableForForm(preloadedState);
+
+        expect(result.current).toBe(false);
+    });
 });

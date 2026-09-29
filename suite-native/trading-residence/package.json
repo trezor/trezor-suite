@@ -19,6 +19,7 @@
         "@reduxjs/toolkit": "2.12.0",
         "@suite-common/dependency-injection": "workspace:*",
         "@suite-common/flags": "workspace:*",
+        "@suite-common/message-system": "workspace:*",
         "@suite-common/redux-utils": "workspace:*",
         "@suite-common/trading": "workspace:*",
         "@suite-common/validators": "workspace:*",
@@ -29,7 +30,6 @@
         "@suite-native/intl": "workspace:*",
         "@suite-native/navigation": "workspace:*",
         "@suite-native/trading-atoms": "workspace:*",
-        "@suite-native/trading-consts": "workspace:*",
         "@suite-native/trading-state": "workspace:*",
         "@trezor/analytics-uploader": "workspace:*",
         "expo-localization": "~57.0.1",
@@ -40,7 +40,6 @@
         "react-redux": "9.3.0"
     },
     "devDependencies": {
-        "@suite-common/message-system": "workspace:*",
         "@suite-common/wallet-core": "workspace:*",
         "@suite-native/test-utils": "workspace:*",
         "@suite-native/test-utils-store": "workspace:*",

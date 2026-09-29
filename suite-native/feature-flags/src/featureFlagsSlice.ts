@@ -1,13 +1,10 @@
 import { type PayloadAction, createSlice } from '@reduxjs/toolkit';
 
-import { isIOs } from '@trezor/env-utils';
-
 export const FeatureFlag = {
     AreDebugOnlyNetworksEnabled: 'areDebugOnlyNetworksEnabled',
     AreExperimentalOnlyNetworksEnabled: 'areExperimentalOnlyNetworksEnabled',
     IsCardanoSendEnabled: 'isCardanoSendEnabled',
     IsDebugKeysAllowed: 'isDebugKeysAllowed',
-    IsTradingResidenceCheckEnabled: 'isTradingResidenceCheckEnabled',
     IsTradingDebugEnabled: 'isTradingDebugEnabled',
     IsN4w1BackupEnabled: 'isN4w1BackupEnabled',
 } as const;
@@ -28,9 +25,6 @@ export const featureFlagsInitialState: FeatureFlagsState = {
     [FeatureFlag.IsCardanoSendEnabled]:
         process.env.EXPO_PUBLIC_FF_IS_CARDANO_SEND_ENABLED === 'true',
     [FeatureFlag.IsDebugKeysAllowed]: process.env.EXPO_PUBLIC_FF_IS_DEBUG_KEYS_ALLOWED === 'true',
-    [FeatureFlag.IsTradingResidenceCheckEnabled]:
-        process.env.EXPO_PUBLIC_FF_IS_TRADING_RESIDENCE_CHECK_ENABLED === 'true' ||
-        (isIOs() && process.env.EXPO_PUBLIC_FF_IS_TRADING_RESIDENCE_CHECK_ENABLED !== 'false'),
     [FeatureFlag.IsTradingDebugEnabled]:
         process.env.EXPO_PUBLIC_FF_IS_TRADING_DEBUG_ENABLED === 'true',
     [FeatureFlag.IsN4w1BackupEnabled]: process.env.EXPO_PUBLIC_FF_IS_N4W1_BACKUP_ENABLED === 'true',
@@ -40,7 +34,6 @@ export const featureFlagsPersistedKeys: Array<keyof FeatureFlagsState> = [
     FeatureFlag.AreDebugOnlyNetworksEnabled,
     FeatureFlag.AreExperimentalOnlyNetworksEnabled,
     FeatureFlag.IsCardanoSendEnabled,
-    FeatureFlag.IsTradingResidenceCheckEnabled,
     FeatureFlag.IsTradingDebugEnabled,
     FeatureFlag.IsN4w1BackupEnabled,
 ];
