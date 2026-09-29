@@ -6,7 +6,7 @@ export const badgeIntents = [
     'info',
     'warning',
     'critical',
-    'accentViolet',
+    'explore',
 ] as const satisfies UIIntent[];
 export type BadgeIntent = Extract<UIIntent, (typeof badgeIntents)[number]>;
 

@@ -50,7 +50,7 @@ export const ReceiveAccountItem = ({ account, onAccountSelect }: ReceiveAccountI
                         </Text>
 
                         {account.key === selectedAccount?.key && (
-                            <Badge intent="accentViolet" size="small">
+                            <Badge intent="explore" size="small">
                                 Myself
                             </Badge>
                         )}

@@ -39,7 +39,7 @@ export const ReceiveAccountModal = ({
                             <WalletLabeling device={wallet} shouldUseDeviceLabel />
                             {wallet.state?.staticSessionId ===
                                 activeWallet?.state?.staticSessionId && (
-                                <Badge intent="accentViolet">Current wallet</Badge>
+                                <Badge intent="explore">Current wallet</Badge>
                             )}
                         </Row>
                     )}

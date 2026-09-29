@@ -119,7 +119,7 @@ const NavItem = ({
     const isNewContentDotShown =
         expanded !== true && hasNewContentIndicator === true && hasIndicator !== true;
     const isIconIndicatorShown = hasIndicator === true || isNewContentDotShown;
-    const iconIndicatorIntent = hasIndicator === true ? 'critical' : 'accentViolet';
+    const iconIndicatorIntent = hasIndicator === true ? 'critical' : 'explore';
     const navigationItemTestId = dataTest || `@suite/menu/${goToRoute}`;
 
     return (
@@ -184,7 +184,7 @@ const NavItem = ({
                         {isNewContentBadgeShown && (
                             <Badge
                                 size="medium"
-                                intent="accentViolet"
+                                intent="explore"
                                 isAnimated={isNewContentIndicatorAnimated}
                                 data-testid={`${navigationItemTestId}/new-content-indicator`}
                             >
