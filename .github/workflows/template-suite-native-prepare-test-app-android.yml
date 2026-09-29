@@ -89,11 +89,12 @@ jobs:
       - name: Check if native build exists in AWS bucket
         id: s3_build_cache
         run: |
-          if aws s3 ls s3://dev.suite.sldev.cz/suite-mobile/${{ steps.expo-fingerprint.outputs.HASH }} --summarize;
-           then
-             echo "hit=true"  >> $GITHUB_OUTPUT;
-           else
-             echo "hit=false"  >> $GITHUB_OUTPUT;
+          if [ "$GITHUB_EVENT_NAME" = "workflow_dispatch" ]; then
+            echo "hit=false" >> "$GITHUB_OUTPUT"
+          elif aws s3 ls s3://dev.suite.sldev.cz/suite-mobile/${{ steps.expo-fingerprint.outputs.HASH }} --summarize; then
+            echo "hit=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "hit=false" >> "$GITHUB_OUTPUT"
           fi
 
       ################ CACHE HIT - REPLACE JS BUNDLE ONLY ##############
@@ -162,7 +163,27 @@ jobs:
         working-directory: ./suite-native/app
         env:
           ORG_GRADLE_PROJECT_reactNativeArchitectures: x86_64
-        run: yarn exec detox build --configuration android.emu.release
+        run: |
+          (
+            while true; do
+              printf '[resources] %s\n' "$(date -u +%FT%TZ)"
+              free -m
+              for metric in memory.current memory.peak memory.max; do
+                if [ -r "/sys/fs/cgroup/$metric" ]; then
+                  printf '%s=%s ' "$metric" "$(cat "/sys/fs/cgroup/$metric")"
+                fi
+              done
+              if [ -r /sys/fs/cgroup/memory.events ]; then
+                tr '\n' ' ' < /sys/fs/cgroup/memory.events
+              fi
+              printf '\n'
+              ps -eo pid,ppid,%cpu,rss,comm --sort=-rss | sed -n '1,12p'
+              sleep 15
+            done
+          ) &
+          monitor_pid=$!
+          trap 'kill "$monitor_pid" 2>/dev/null || true' EXIT
+          yarn exec detox build --configuration android.emu.release
 
       - name: save .apk to the aws s3 bucket
         if: steps.s3_build_cache.outputs.hit == 'false'
