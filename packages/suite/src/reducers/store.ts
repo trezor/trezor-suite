@@ -45,6 +45,10 @@ import {
     type GlobalSendReceiveFiltersState,
     globalSendReceiveFiltersReducer,
 } from 'src/slices/wallet/globalSendReceiveFilters';
+import {
+    type VerifiedNonceState,
+    verifiedNonceReducer,
+} from 'src/slices/wallet/verifiedNonce/verifiedNonceSlice';
 
 import { type BioAuthState, prepareBioAuthReducer } from './bioAuth';
 import { type DesktopState, desktopReducer } from './desktop';
@@ -78,6 +82,7 @@ export type AppState = SuiteReducersState & {
     geolocation: GeolocationState;
     globalSendReceiveFilters: GlobalSendReceiveFiltersState;
     persistentDeviceData: PersistentDeviceDataState;
+    verifiedNonce: VerifiedNonceState;
 };
 
 export type SuiteRootReducer = Reducer<AppState, UnknownAction, Partial<AppState>>;
@@ -102,6 +107,7 @@ export const rootReducer: SuiteRootReducer = combineReducers({
     geolocation: geolocationReducer,
     globalSendReceiveFilters: globalSendReceiveFiltersReducer,
     persistentDeviceData: persistentDeviceDataReducer,
+    verifiedNonce: verifiedNonceReducer,
 } satisfies ReducersMapObject<AppState, never, Record<keyof AppState, never>>);
 
 const loggerExcludedActions = [addLog.type];

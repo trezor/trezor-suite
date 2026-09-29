@@ -89,6 +89,11 @@ export const EXPERIMENTAL_FEATURES: Record<ExperimentalFeature, ExperimentalFeat
             await desktopApi.mcpSetEnabled(newValue);
         },
     },
+    'verified-nonce': {
+        title: { id: 'TR_EXPERIMENTAL_VERIFIED_NONCE' },
+        description: { id: 'TR_EXPERIMENTAL_VERIFIED_NONCE_DESCRIPTION' },
+        isDisabled: () => !isDesktop(),
+    },
     'gap-limit': {
         title: { id: 'TR_EXPERIMENTAL_GAP_LIMIT' },
         description: { id: 'TR_EXPERIMENTAL_GAP_LIMIT_DESCRIPTION' },
