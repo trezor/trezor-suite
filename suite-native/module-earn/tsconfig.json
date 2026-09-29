@@ -86,7 +86,6 @@
         { "path": "../scrollview" },
         { "path": "../settings" },
         { "path": "../test-utils" },
-        { "path": "../test-utils-store" },
         { "path": "../tokens" },
         { "path": "../trading-state" },
         { "path": "../transaction-management" },
@@ -118,6 +117,7 @@
         { "path": "../../packages/type-utils" },
         { "path": "../../packages/urls" },
         { "path": "../../packages/utils" },
+        { "path": "../test-utils-store" },
         { "path": "../../packages/requirements" }
     ]
 }
