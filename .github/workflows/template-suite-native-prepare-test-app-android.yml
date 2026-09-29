@@ -163,6 +163,7 @@ jobs:
         working-directory: ./suite-native/app
         env:
           ORG_GRADLE_PROJECT_reactNativeArchitectures: x86_64
+          NODE_OPTIONS: --max-old-space-size=12288
         run: |
           (
             while true; do
