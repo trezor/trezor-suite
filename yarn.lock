@@ -17414,6 +17414,7 @@ __metadata:
     "@trezor/utils": "workspace:*"
     "@trezor/utxo-lib": "workspace:*"
     socks-proxy-agent: "npm:8.0.5"
+    zod: "npm:4.3.6"
   peerDependencies:
     tslib: ^2.6.2
   languageName: unknown

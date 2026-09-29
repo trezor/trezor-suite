@@ -1,3 +1,40 @@
+const basicCardanoAccountInfo = {
+    descriptor:
+        '6d17587575a3b4f0f86ebad3977e8f7e4981faa863eccf5c1467065c74fe3435943769446dd290d103fb3d360128e86de4b47faea73ffb0900c94c6a61ef9ea2',
+    empty: false,
+    balance: '27429803',
+    availableBalance: '27256514',
+    history: {
+        total: 6,
+        unconfirmed: 0,
+    },
+    page: {
+        index: 1,
+        size: 25,
+        total: 1,
+    },
+};
+
+const basicCardanoAccountInfoResult = {
+    ...basicCardanoAccountInfo,
+    history: { ...basicCardanoAccountInfo.history, transactions: [] },
+};
+
+const cardanoStaking = {
+    address: 'stake1uxzutrtmxwv2rf2j3hdpps66ch0jydmkr58vwgnetddcdwg32u4rc',
+    rewards: '173289',
+    isActive: true,
+    poolId: 'pool1pu5jlj4q9w9jlxeu370a3c9myx47md5j5m2str0naunn2q3lkdy',
+    drep: {
+        drep_id: 'drep1ygdzk0zdtehhpqvj5w6vt4h8lqy352euf40x7uypj23mf3gs6c9xy',
+        hex: '2b9d3e82e5a5e69f3e9b8d7c1a4f0d2e6c8b7a5d4c3b2a1f0e9d8c7b6a5f4e3d',
+        amount: '1000000000',
+        active: true,
+        active_epoch: 507,
+        has_script: false,
+    },
+};
+
 export default {
     transformUtxos: [
         {
@@ -508,6 +545,7 @@ export default {
                         rewards: '173289',
                         isActive: true,
                         poolId: 'pool1pu5jlj4q9w9jlxeu370a3c9myx47md5j5m2str0naunn2q3lkdy',
+                        drep: null,
                     },
                 },
                 tokens: [
@@ -621,8 +659,96 @@ export default {
                         rewards: '173289',
                         isActive: true,
                         poolId: 'pool1pu5jlj4q9w9jlxeu370a3c9myx47md5j5m2str0naunn2q3lkdy',
+                        drep: null,
                     },
                 },
+            },
+        },
+        {
+            description: 'Transform account info (basic, with DRep)',
+            data: {
+                ...basicCardanoAccountInfo,
+                misc: { staking: cardanoStaking },
+            },
+            result: {
+                ...basicCardanoAccountInfoResult,
+                misc: { staking: cardanoStaking },
+            },
+        },
+        {
+            description: 'Transform account info (basic, without misc)',
+            data: basicCardanoAccountInfo,
+            result: {
+                ...basicCardanoAccountInfoResult,
+                misc: undefined,
+            },
+        },
+        {
+            description: 'Transform account info (basic, without staking)',
+            data: {
+                ...basicCardanoAccountInfo,
+                misc: {},
+            },
+            result: {
+                ...basicCardanoAccountInfoResult,
+                misc: undefined,
+            },
+        },
+        {
+            description: 'Transform account info (basic, staking without isActive)',
+            data: {
+                ...basicCardanoAccountInfo,
+                misc: {
+                    staking: {
+                        address: cardanoStaking.address,
+                        rewards: cardanoStaking.rewards,
+                        poolId: cardanoStaking.poolId,
+                        drep: null,
+                    },
+                },
+            },
+            result: {
+                ...basicCardanoAccountInfoResult,
+                misc: undefined,
+            },
+        },
+        {
+            description: 'Transform account info (basic, staking with a malformed poolId)',
+            data: {
+                ...basicCardanoAccountInfo,
+                misc: {
+                    staking: { ...cardanoStaking, poolId: undefined },
+                },
+            },
+            result: {
+                ...basicCardanoAccountInfoResult,
+                misc: undefined,
+            },
+        },
+        {
+            description: 'Transform account info (basic, staking with a malformed DRep)',
+            data: {
+                ...basicCardanoAccountInfo,
+                misc: {
+                    staking: { ...cardanoStaking, drep: { hex: cardanoStaking.drep.hex } },
+                },
+            },
+            result: {
+                ...basicCardanoAccountInfoResult,
+                misc: undefined,
+            },
+        },
+        {
+            description: 'Transform account info (basic, staking with unknown extra fields)',
+            data: {
+                ...basicCardanoAccountInfo,
+                misc: {
+                    staking: { ...cardanoStaking, extra: 'ignored' },
+                },
+            },
+            result: {
+                ...basicCardanoAccountInfoResult,
+                misc: { staking: cardanoStaking },
             },
         },
     ],

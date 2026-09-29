@@ -260,4 +260,61 @@ describe('Account Reducer', () => {
             ]);
         });
     });
+
+    describe('cardano staking on update', () => {
+        const delegatedStaking = {
+            address: 'stake1uxzutrtmxwv2rf2j3hdpps66ch0jydmkr58vwgnetddcdwg32u4rc',
+            isActive: true,
+            rewards: '173289',
+            poolId: 'pool1pu5jlj4q9w9jlxeu370a3c9myx47md5j5m2str0naunn2q3lkdy',
+            drep: null,
+        };
+
+        const cardanoAccount = mockWalletAccount(
+            { symbol: asNetworkSymbol('ada') },
+            { misc: { staking: delegatedStaking } },
+        );
+
+        const accountInfo: AccountInfo = {
+            descriptor: cardanoAccount.descriptor,
+            balance: '27429803',
+            availableBalance: '27256514',
+            empty: false,
+            history: { total: 14, unconfirmed: 0, transactions: [] },
+        };
+
+        const initStoreWithCardanoAccount = () =>
+            initStore({ preloadedState: { wallet: { accounts: [cardanoAccount] } } });
+
+        it('keeps the stored staking block when the update carries none', () => {
+            const store = initStoreWithCardanoAccount();
+
+            store.dispatch(accountsActions.updateAccount(cardanoAccount, accountInfo));
+
+            expect(store.getState().wallet.accounts[0]?.misc).toEqual({
+                staking: delegatedStaking,
+            });
+        });
+
+        it('replaces the stored staking block when the update carries one', () => {
+            const store = initStoreWithCardanoAccount();
+            const deregisteredStaking = {
+                ...delegatedStaking,
+                isActive: false,
+                rewards: '0',
+                poolId: null,
+            };
+
+            store.dispatch(
+                accountsActions.updateAccount(cardanoAccount, {
+                    ...accountInfo,
+                    misc: { staking: deregisteredStaking },
+                }),
+            );
+
+            expect(store.getState().wallet.accounts[0]?.misc).toEqual({
+                staking: deregisteredStaking,
+            });
+        });
+    });
 });

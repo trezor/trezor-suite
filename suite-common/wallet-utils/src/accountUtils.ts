@@ -25,7 +25,10 @@ import {
     asBaseCurrencyAmount,
     createAccountKey,
 } from '@suite-common/wallet-types';
-import type { BaseCurrencyCode } from '@trezor/blockchain-link-types';
+import {
+    type BaseCurrencyCode,
+    NON_DELEGATED_CARDANO_STAKING_INFO,
+} from '@trezor/blockchain-link-types';
 import TrezorConnect, {
     type AccountAddress,
     type AccountAddresses,
@@ -697,16 +700,22 @@ export const isAccountOutdated = (account: Account, freshInfo: AccountInfo) => {
                     JSON.stringify(account?.misc?.stakingPools)
             );
         case 'cardano': {
-            const freshDrep = freshInfo.misc!.staking?.drep ?? null;
+            const freshStaking = freshInfo.misc?.staking;
+
+            if (!freshStaking) {
+                return false;
+            }
+
+            const freshDrep = freshStaking.drep ?? null;
             const storedDrep = account.misc.staking.drep ?? null;
 
             return (
                 // stake address (de)registration
-                freshInfo.misc!.staking?.isActive !== account.misc.staking.isActive ||
+                freshStaking.isActive !== account.misc.staking.isActive ||
                 // changed rewards amount (rewards are distributed every epoch (5 days))
-                freshInfo.misc!.staking?.rewards !== account.misc.staking.rewards ||
+                freshStaking.rewards !== account.misc.staking.rewards ||
                 // changed stake pool
-                freshInfo.misc!.staking?.poolId !== account.misc.staking.poolId ||
+                freshStaking.poolId !== account.misc.staking.poolId ||
                 // changed DRep vote or its (de)registration; `amount` drifts with other delegators
                 freshDrep?.drep_id !== storedDrep?.drep_id ||
                 freshDrep?.active !== storedDrep?.active ||
@@ -733,8 +742,18 @@ export const isAccountOutdated = (account: Account, freshInfo: AccountInfo) => {
     }
 };
 
+type GetAccountSpecificParams = {
+    accountInfo: Partial<AccountInfo>;
+    networkType: NetworkType;
+    storedAccount?: Account;
+};
+
 // Used in accountActions and failed accounts
-export const getAccountSpecific = (accountInfo: Partial<AccountInfo>, networkType: NetworkType) => {
+export const getAccountSpecific = ({
+    accountInfo,
+    networkType,
+    storedAccount,
+}: GetAccountSpecificParams) => {
     const { misc } = accountInfo;
     if (networkType === 'ripple') {
         return {
@@ -763,16 +782,13 @@ export const getAccountSpecific = (accountInfo: Partial<AccountInfo>, networkTyp
     }
 
     if (networkType === 'cardano') {
+        const storedStaking =
+            storedAccount?.networkType === 'cardano' ? storedAccount.misc.staking : undefined;
+
         return {
             networkType,
             misc: {
-                staking: {
-                    rewards: misc?.staking?.rewards ?? '0',
-                    isActive: misc?.staking?.isActive ?? false,
-                    address: misc?.staking?.address ?? '',
-                    poolId: misc?.staking?.poolId ?? null,
-                    drep: misc?.staking?.drep ?? null,
-                },
+                staking: misc?.staking ?? storedStaking ?? NON_DELEGATED_CARDANO_STAKING_INFO,
             },
             marker: undefined,
             stellarCursor: undefined,

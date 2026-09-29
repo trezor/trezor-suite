@@ -59,6 +59,7 @@
         "viem",
         "wif",
         "ws",
-        "xrpl"
+        "xrpl",
+        "zod"
     ]
 }
