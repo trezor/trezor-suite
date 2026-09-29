@@ -22,15 +22,18 @@
 // derived from the dep graph and live in a sibling "Manual additions" block.
 
 import fs from 'node:fs';
+import { createRequire } from 'node:module';
 import path from 'node:path';
 
-import {
-    computePublishClosure,
-    createReadWorkspaceDeps,
-    getWorkspaceDirectoryMap,
-} from '@trezor/requirements';
+// `@trezor/requirements` is CJS: Node cannot detect its named exports from ESM,
+// hence `createRequire` plus the type-only import below.
+import type * as Requirements from '@trezor/requirements';
 
 import { CONNECT_PUBLISH_ROOTS } from './connect-publish-roots';
+
+const { computePublishClosure, createReadWorkspaceDeps, getWorkspaceDirectoryMap } = createRequire(
+    import.meta.url,
+)('@trezor/requirements') as typeof Requirements;
 
 const ROOT = path.resolve(import.meta.dirname, '..', '..');
 const WORKFLOWS_DIR = path.join(ROOT, '.github', 'workflows');

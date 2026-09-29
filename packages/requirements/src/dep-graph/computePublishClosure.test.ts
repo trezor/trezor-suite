@@ -1,5 +1,5 @@
-import { computePublishClosure } from '../computePublishClosure';
-import type { PackageDepsResolver } from '../computePublishClosure';
+import { computePublishClosure } from './computePublishClosure';
+import type { PackageDepsResolver } from './computePublishClosure';
 
 const makeGetDeps =
     (graph: Record<string, string[]>): PackageDepsResolver =>
