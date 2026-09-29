@@ -27,6 +27,7 @@ export const {
     isLinux,
     isCodesignBuild,
     getOsName,
+    getNativeOsVersion,
     getJWSPublicKey,
 } = envUtils;
 
