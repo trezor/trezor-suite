@@ -30,7 +30,12 @@ import { checkXPubWithHashes } from './firmware/calculateXPubHash';
 const { CARDANO_TXS_PER_PAGE, DEFAULT_TXS_PER_PAGE, SOLANA_TXS_PER_PAGE } = PAGING;
 
 const ACCOUNT_LIMIT = 10;
-const DETAILS = 'txs';
+
+// A plain RPC node cannot list tokens or transactions the way blockbook does, so discovery on one
+// only asks whether the address is used (balance and nonce); Suite fetches the rest once it has
+// taken the account on. Everywhere else the full first page comes back in the same request.
+const getDiscoveryDetails = (coinInfo: CoinInfo): AdditionalParams['details'] =>
+    coinInfo.blockchainLink?.type === 'evm-rpc' ? 'basic' : 'txs';
 
 type CardanoDerivation = (typeof CARDANO_DERIVATIONS)[keyof typeof CARDANO_DERIVATIONS];
 
@@ -134,7 +139,7 @@ export default class DiscoverAccounts extends AbstractMethod<
                 .filter(([_, known]) => (known ? typeof known.skip === 'number' : !knownOnly)) // Include passed known accounts with skip param (the other ones are known completely) and unpassed accounts if knownOnly wasn't requested
                 .map(([account, known]) => ({
                     pageSize: getTxsPerPage(account),
-                    details: DETAILS,
+                    details: getDiscoveryDetails(coinInfo),
                     coinInfo,
                     firmwareRange,
                     skip: known?.skip ?? 0, // Use the possibly passed skip param or fall back to zero

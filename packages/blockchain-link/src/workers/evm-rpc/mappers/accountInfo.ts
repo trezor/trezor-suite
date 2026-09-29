@@ -22,7 +22,9 @@ export const mapGetAccountInfoResponse = ({
     tokens,
     stakingPools,
 }: MapGetAccountInfoResponseParams): Responses.GetAccountInfo => {
-    const empty = balance === 0n && nonce === 0;
+    // A token counts too: an address that only ever received an ERC-20 has no balance and no nonce,
+    // and calling it empty would hide the token it holds.
+    const empty = balance === 0n && nonce === 0 && !tokens?.length;
     const unconfirmed = pendingNonce - nonce;
     const balanceString = balance.toString();
 
