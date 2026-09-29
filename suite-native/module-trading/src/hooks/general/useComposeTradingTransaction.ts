@@ -72,7 +72,7 @@ export const useComposeTradingTransaction = ({ tradeType }: UseComposeTradingTra
             return;
         }
 
-        const isSlip24Active = selectIsTradingSlip24Enabled(state, sendAccount);
+        const isSlip24Active = selectIsTradingSlip24Enabled(state, sendAccount, tradeType);
 
         try {
             await dispatch(

@@ -59,5 +59,35 @@ describe('arrayPartition', () => {
             expect(foos).toEqual([{ foo: 1 }, { foo: 4 }]);
             expect(bars).toEqual([{ bar: 3 }, { bar: 2 }]);
         });
+
+        it('partition empty array', () => {
+            expect(arrayPartition([], () => true)).toStrictEqual([[], []]);
+        });
+
+        it('partition when all elements pass', () => {
+            const array = [1, 2, 3];
+            const condition = jest.fn((element: number) => element > 0);
+            const [pass, fail] = arrayPartition(array, condition);
+            expect(pass).toStrictEqual([1, 2, 3]);
+            expect(pass).not.toBe(array);
+            expect(fail).toStrictEqual([]);
+            expect(condition).toHaveBeenCalledTimes(3);
+            expect(condition).toHaveBeenNthCalledWith(1, 1);
+            expect(condition).toHaveBeenNthCalledWith(2, 2);
+            expect(condition).toHaveBeenNthCalledWith(3, 3);
+        });
+
+        it('partition when all elements fail', () => {
+            const array = [1, 2, 3];
+            const condition = jest.fn((element: number) => element < 0);
+            const [pass, fail] = arrayPartition(array, condition);
+            expect(pass).toStrictEqual([]);
+            expect(fail).toStrictEqual([1, 2, 3]);
+            expect(fail).not.toBe(array);
+            expect(condition).toHaveBeenCalledTimes(3);
+            expect(condition).toHaveBeenNthCalledWith(1, 1);
+            expect(condition).toHaveBeenNthCalledWith(2, 2);
+            expect(condition).toHaveBeenNthCalledWith(3, 3);
+        });
     });
 });

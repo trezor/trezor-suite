@@ -1,11 +1,10 @@
 import { config as loadDotenv } from 'dotenv';
-import { mkdirSync, readFileSync } from 'node:fs';
+import { mkdirSync } from 'node:fs';
 import { join } from 'node:path';
 
 import { error, log } from '../logger';
 import { killHarnessBrowser, killHarnessBrowserOnExitSignals } from './browserState';
 import {
-    BOT_DIR,
     BROWSER_DIR,
     CONTEXT_FILE,
     REPO_ROOT,
@@ -19,7 +18,7 @@ import { type PrContext, PrContextSchema } from './schemas';
 const DEFAULT_BUDGET_USD = 4;
 const DEFAULT_TIMEOUT_MIN = 120;
 
-function buildAgentPrompt(context: PrContext): string {
+function buildPrContextPrompt(context: PrContext): string {
     const brief = {
         prs: context.prs,
         issues: context.issues,
@@ -27,12 +26,7 @@ function buildAgentPrompt(context: PrContext): string {
         contextImages: context.contextImages,
     };
 
-    return [
-        readFileSync(join(BOT_DIR, 'AGENT.md'), 'utf-8'),
-        '\n\n---\n\n## PR Context\n\n```json\n',
-        JSON.stringify(brief, null, 2),
-        '\n```\n',
-    ].join('');
+    return ['## PR Context\n\n```json\n', JSON.stringify(brief, null, 2), '\n```\n'].join('');
 }
 
 async function main(): Promise<void> {
@@ -58,7 +52,7 @@ async function main(): Promise<void> {
         log(`Model: ${context.deviceModel}`);
         log(`Agent: budget $${budgetUsd} · timeout ${timeoutMs / 60_000}min`);
 
-        const prompt = buildAgentPrompt(context);
+        const prompt = buildPrContextPrompt(context);
         log('─── Agent prompt ───');
         log(prompt);
         log('─── End prompt ───');

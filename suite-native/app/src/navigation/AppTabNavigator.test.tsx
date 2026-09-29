@@ -14,7 +14,7 @@ import {
 import { AppTabNavigator } from './AppTabNavigator';
 
 jest.mock('@suite-native/module-home', () => ({ HomeStackNavigator: () => null }));
-jest.mock('@suite-native/module-accounts-management', () => ({
+jest.mock('@suite-native/module-accounts', () => ({
     AccountsStackNavigator: () => null,
 }));
 jest.mock('@suite-native/module-earn', () => ({ EarnStackNavigator: () => null }));

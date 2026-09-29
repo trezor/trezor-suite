@@ -23,6 +23,7 @@ import {
     isFinalStatus,
     selectDeviceTradingTrades,
     selectTradingIsSlip24Allowed,
+    selectTradingIsSlip24SellAllowed,
     selectTradingSupportedSymbols,
     selectTradingTradeByOrderId,
     toTokenCryptoId,
@@ -143,16 +144,21 @@ export const selectIsTradingConciergeEnabled = (
 export const selectIsTradingTxSimulationEnabled = (state: MessageSystemRootState) =>
     selectIsFeatureEnabled(state, Feature.trading.txSimulation, true);
 
+const selectIsTradingSlip24Active = (state: MessageSystemRootState & SettingsSliceRootState) =>
+    selectIsFeatureEnabled(state, Feature.trading.slip24, true) &&
+    selectIsExperimentalFeatureEnabled(state, 'slip24');
+
 export const selectIsTradingSlip24Enabled = (
     state: MessageSystemRootState & SettingsSliceRootState & TradingRootStateWithDeviceAndAccounts,
     account: Account | undefined | null,
-) =>
-    selectTradingIsSlip24Allowed(
-        state,
-        account,
-        selectIsFeatureEnabled(state, Feature.trading.slip24, true) &&
-            selectIsExperimentalFeatureEnabled(state, 'slip24'),
-    );
+    tradeType: 'exchange' | 'sell',
+) => {
+    const isSlip24Active = selectIsTradingSlip24Active(state);
+
+    return tradeType === 'sell'
+        ? selectTradingIsSlip24SellAllowed(state, account, isSlip24Active)
+        : selectTradingIsSlip24Allowed(state, account, isSlip24Active);
+};
 
 export const selectIsTradingEnabled = (
     state: MessageSystemRootState & FeatureFlagsRootState & TradingRootState,

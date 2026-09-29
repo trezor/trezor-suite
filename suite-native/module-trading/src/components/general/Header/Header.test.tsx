@@ -86,6 +86,14 @@ describe('Header', () => {
         ).toBeOnTheScreen();
     });
 
+    it('should not display the Concierge tab', async () => {
+        const { renderer } = await renderHeader();
+
+        expect(
+            renderer.queryByText(getTranslation('moduleTrading.tradingScreen.tabs.concierge')),
+        ).not.toBeOnTheScreen();
+    });
+
     it('should display nothing when isAmountInputActive is true', async () => {
         const { renderer } = await renderHeader({
             ...getFFOverrides(),

@@ -1,9 +1,6 @@
 import { useSelector } from 'react-redux';
 
-import {
-    type FeatureFeedbackRootState,
-    selectPendingFeedbackFeature,
-} from '@suite-common/feedback';
+import { type FeatureFeedbackRootState, selectFeatureFeedback } from '@suite-common/feedback';
 import { selectShouldDisplayOutOfQuotaAlert } from '@suite-common/suite-sync-quota-manager';
 import { FEEDBACK_FEATURE_CONFIGS } from '@suite-native/experimental-features';
 import { FeatureFeedbackAlert } from '@suite-native/feature-feedback';
@@ -29,7 +26,9 @@ export const HomescreenAlerts = () => {
 
     const pendingFeatureForFeedback = useSelector(
         (state: FeatureFeedbackRootState<ExperimentalFeature>) =>
-            selectPendingFeedbackFeature(state),
+            selectFeatureFeedback(state).pendingFeedbackFeatures.find(feature =>
+                Object.hasOwn(FEEDBACK_FEATURE_CONFIGS, feature),
+            ) ?? null,
     );
 
     if (shouldDisplaySuiteSyncAlert) {

@@ -1,3 +1,5 @@
+import { decodeFunctionData, formatUnits, isHex, parseAbi, slice, toFunctionSelector } from 'viem';
+
 import { getCryptoId } from '@suite-common/trading';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { fromGwei } from '@suite-common/wallet-utils';
@@ -15,6 +17,30 @@ const formattedSendAmount = `${localizeNumber(sendAmount)} ETH`;
 const accountLabel = 'Ethereum #1';
 const usdcCryptoId = getCryptoId(ethSymbol, '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48');
 const usdcDecimals = 6;
+
+const lifiNativeToErc20Abi = parseAbi([
+    'struct SwapData { address callTo; address approveTo; address sendingAssetId; address receivingAssetId; uint256 fromAmount; bytes callData; bool requiresDeposit; }',
+    'function swapTokensMultipleV3NativeToERC20(bytes32 transactionId, string integrator, string referrer, address receiver, uint256 minAmountOut, SwapData[] swapData)',
+    'function swapTokensSingleV3NativeToERC20(bytes32 transactionId, string integrator, string referrer, address receiver, uint256 minAmountOut, SwapData swapData)',
+]);
+
+const getLifiMinAmountOut = (calldata: string | undefined) => {
+    if (!isHex(calldata)) {
+        throw new Error('The LI.FI trade has no swap calldata');
+    }
+
+    const selector = slice(calldata, 0, 4);
+    if (!lifiNativeToErc20Abi.some(entrypoint => toFunctionSelector(entrypoint) === selector)) {
+        const expectedEntrypoints = lifiNativeToErc20Abi.map(({ name }) => name).join(' or ');
+        throw new Error(
+            `The LI.FI trade calls an unexpected entrypoint ${selector}, expected ${expectedEntrypoints}. Add its signature to lifiNativeToErc20Abi.`,
+        );
+    }
+
+    const { args } = decodeFunctionData({ abi: lifiNativeToErc20Abi, data: calldata });
+
+    return formatUnits(args[4], usdcDecimals);
+};
 
 // Firmware strings on the DEX review pages.
 const deviceReview = {
@@ -103,7 +129,7 @@ test.describe('Trading - DEX swap (LI.FI)', { tag: ['@T3T1', '@T3W1'] }, () => {
             let slippagePercent: string;
 
             await test.step('Verify DEX details on the Confirm & send screen', async () => {
-                const { receiveStringAmount, swapSlippage, receive } =
+                const { receiveStringAmount, swapSlippage, receive, dexTx } =
                     await tradingResponses.swap.trade();
                 receiveAmount = localizeNumber(receiveStringAmount);
                 formattedReceiveAmount = `${receiveAmount} USDC`;
@@ -112,8 +138,8 @@ test.describe('Trading - DEX swap (LI.FI)', { tag: ['@T3T1', '@T3W1'] }, () => {
                 minimumReceived = new BigNumber(receiveStringAmount).times(guaranteedShare);
                 formattedMinimumReceived = `${localizeNumber(minimumReceived.toFixed(4))} USDC`;
                 promptMinimumReceived = `${minimumReceived.toFixed()} USDC`;
-                // The device renders the amount at USDC's own precision, rounded and zero-trimmed.
-                displayedMinimumReceived = `${minimumReceived.decimalPlaces(usdcDecimals).toFixed()} USDC`;
+                // The device shows LI.FI's minimum from the calldata; receive × slippage misses it by a unit.
+                displayedMinimumReceived = `${getLifiMinAmountOut(dexTx?.data)} USDC`;
 
                 await expect(tradingPage.confirmation.dexExchangeType).toHaveTranslation(
                     'TR_EXCHANGE_DEX',

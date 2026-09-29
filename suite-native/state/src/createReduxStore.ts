@@ -1,4 +1,4 @@
-import { type Middleware, type StoreEnhancer, configureStore } from '@reduxjs/toolkit';
+import { type Middleware, configureStore } from '@reduxjs/toolkit';
 
 import { type ExtraDependenciesStatic } from '@suite-common/extra-dependencies';
 import { logsMiddleware } from '@suite-common/logger';
@@ -29,6 +29,7 @@ import { type DeepPartial } from '@trezor/type-utils';
 import { type NativeServices } from './NativeServices';
 import { type ExtraDependenciesNative } from './createNativeExtraDependencies';
 import { type prepareRootReducers } from './reducers';
+import { getRozeniteDevToolsEnhancers } from './rozeniteDevTools';
 
 type RootReducerShape = ReturnType<typeof prepareRootReducers>;
 
@@ -57,7 +58,6 @@ export type FullAppState = ExcludeChildPersists<
 export type PreloadedState = DeepPartial<FullPersistedAppState> | undefined;
 
 const ENABLE_REDUX_LOGGER = false;
-const enhancers: Array<StoreEnhancer<any, any>> = [];
 
 type GetMiddlewaresDeps = WithServices<NativeAnalyticsDep & SuiteSyncDep>;
 
@@ -77,10 +77,6 @@ const getMiddlewares = (getExtra: () => GetMiddlewaresDeps | null) => {
     ];
 
     if (__DEV__) {
-        // eslint-disable-next-line import/no-extraneous-dependencies
-        const { rozeniteDevToolsEnhancer } = require('@rozenite/redux-devtools-plugin');
-        enhancers.push(rozeniteDevToolsEnhancer());
-
         if (ENABLE_REDUX_LOGGER) {
             const { createLogger } = require('redux-logger');
             middlewares.push(createLogger());
@@ -127,7 +123,8 @@ export const createReduxStore = (deps: ReduxStoreDeps): ReduxStore => {
                 .prepend(deviceConnectionMiddleware.middleware)
                 .concat(getMiddlewares(getExtra)),
         devTools: false, // Rozenite DevTools will be used instead of default browser dev tools.
-        enhancers: getDefaultEnhancers => getDefaultEnhancers().concat(enhancers),
+        enhancers: getDefaultEnhancers =>
+            getDefaultEnhancers().concat(getRozeniteDevToolsEnhancers()),
     });
 
     return {

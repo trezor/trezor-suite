@@ -1,4 +1,4 @@
-import { type MouseEventHandler, type ReactNode, useLayoutEffect, useRef, useState } from 'react';
+import { type MouseEventHandler, type ReactNode, useRef, useState } from 'react';
 import { useSelector } from 'react-redux';
 
 import styled, { css } from 'styled-components';
@@ -11,7 +11,7 @@ const PIXELS_TOLERANCE = 0.5;
 const approxEqual = (a: number, b: number) => Math.abs(a - b) < PIXELS_TOLERANCE;
 
 type WrapperProps = {
-    $intensity: number;
+    $intensity?: number;
     $discreetMode: boolean;
     $minWidth?: number;
 };
@@ -23,8 +23,8 @@ const Wrapper = styled.span<WrapperProps>`
     ${({ $intensity, $discreetMode }: WrapperProps) =>
         $discreetMode &&
         css`
-            transition: all 0.1s ease;
-            filter: blur(${$intensity}px);
+            transition: filter 0.1s ease;
+            filter: blur(${$intensity !== undefined ? `${$intensity}px` : '0.2em'});
 
             &:hover {
                 filter: none;
@@ -67,25 +67,12 @@ export const HiddenPlaceholder = ({
     'data-testid': dataTestId,
 }: HiddenPlaceholderProps) => {
     const ref = useRef<HTMLSpanElement>(null);
-    const [automaticIntensity, setAutomaticIntensity] = useState(10);
     const [wrapperMinWidth, setWrapperMinWidth] = useState<undefined | number>(undefined);
     const [isHovered, setIsHovered] = useState(false);
     const [mouseEnteredAtCoords, setmouseEnteredAtCoords] = useState<MouseCoords | null>(null);
 
     const discreetMode = useSelector(selectIsDiscreteModeActive);
     const shouldRedactNumbers = discreetMode && !isHovered;
-
-    useLayoutEffect(() => {
-        if (ref.current === null) return;
-
-        const fontSize = Number(
-            window
-                .getComputedStyle(ref.current, null)
-                .getPropertyValue('font-size')
-                .replace('px', ''),
-        );
-        setAutomaticIntensity(fontSize / 5);
-    }, []);
 
     // we only need to handle the case when revealed content is smaller than redacted, not vice versa.
     // in such case, onMouseEnter shrinks content, and it may immediately onMouseLeave even when cursor is still.
@@ -121,7 +108,7 @@ export const HiddenPlaceholder = ({
             onMouseLeave={onMouseLeave}
             onMouseMove={onMouseMove}
             $discreetMode={discreetMode}
-            $intensity={enforceIntensity !== undefined ? enforceIntensity : automaticIntensity}
+            $intensity={enforceIntensity}
             $minWidth={shouldEnforceMinWidth ? wrapperMinWidth : undefined}
             className={className}
             ref={ref}

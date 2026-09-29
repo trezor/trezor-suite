@@ -14,7 +14,7 @@ import {
     isSendRejectedError,
     isSilentSendRejection,
     selectTradingComposedTransactionInfo,
-    selectTradingIsSlip24Allowed,
+    selectTradingIsSlip24SellAllowed,
     selectTradingSellActiveTrade,
     selectTradingSellInfo,
     selectTradingSellQuotesRequest,
@@ -64,7 +64,7 @@ export const useTradingSellTradeActions = () => {
     const isSlip24ExperimentalFeatureEnabled = useSelector(selectHasExperimentalFeature('slip24'));
     const isSlip24Active = useSelector(state =>
         account
-            ? selectTradingIsSlip24Allowed(
+            ? selectTradingIsSlip24SellAllowed(
                   state,
                   account,
                   isSlip24FeatureEnabled && isSlip24ExperimentalFeatureEnabled,

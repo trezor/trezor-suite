@@ -15,9 +15,9 @@ import {
 } from '@suite-native/navigation';
 
 type NavigationProps = StackToStackCompositeNavigationProps<
-    RootStackParamList,
-    RootStackRoutes.AccountAssets,
-    SendStackParamList
+    SendStackParamList,
+    SendStackRoutes.SendAccounts,
+    RootStackParamList
 >;
 
 export const SendAccountsScreen = () => {

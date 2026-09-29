@@ -27,6 +27,7 @@ export const TRADING_SLIP24_SUPPORTED_NETWORK_TYPES: NetworkType[] = [
 ];
 
 export const TRADING_SLIP24_MIN_FIRMWARE_VERSION = '2.12.5';
+export const TRADING_SLIP24_SELL_MIN_FIRMWARE_VERSION = '2.13.0';
 
 export const TRADING_EXCHANGE_RATE = 'rateType';
 export const TRADING_EXCHANGE_RATE_FIXED = 'fixed';
@@ -53,6 +54,7 @@ export const TRADING_FORM_COUNTRY_SUBDIVISION_SELECT = 'countrySubdivisionSelect
 export const TRADING_FORM_PAYMENT_METHOD_SELECT = 'paymentMethod';
 export const TRADING_FORM_PROVIDER_SELECT = 'provider';
 export const TRADING_FORM_AMOUNT_IN_CRYPTO = 'amountInCrypto';
+export const TRADING_FORM_AMOUNT_INPUT_SOURCE = 'amountInputSource';
 
 export const TRADING_FORM_OUTPUT_AMOUNT_FIELDS = [
     TRADING_FORM_OUTPUT_AMOUNT,

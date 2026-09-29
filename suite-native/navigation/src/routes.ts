@@ -1,11 +1,11 @@
 export enum RootStackRoutes {
     AppTabs = 'AppTabs',
+    AccountDetailStack = 'AccountDetailStack',
+    AccountAssets = 'AccountAssets',
     OnboardingStack = 'OnboardingStack',
     DeviceOnboardingStack = 'DeviceOnboardingStack',
     AccountsImport = 'AccountsImport',
     AuthorizeDeviceStack = 'AuthorizeDeviceStack',
-    AccountAssets = 'AccountAssets',
-    AccountDetail = 'AccountDetail',
     StakingDetail = 'StakingDetail',
     StakingManagement = 'StakingManagement',
     YieldVaultDetail = 'YieldVaultDetail',
@@ -20,7 +20,6 @@ export enum RootStackRoutes {
     DevUtils = 'DevUtils',
     MessageSystemManager = 'MessageSystemManager',
     MessageSystemExperiments = 'MessageSystemExperiments',
-    AccountSettings = 'AccountSettings',
     TransactionDetailStack = 'TransactionDetailStack',
     ReceiveStack = 'ReceiveStack',
     SendStack = 'SendStack',
@@ -58,6 +57,11 @@ export enum RootStackRoutes {
     TradingHistoryDetail = 'TradingHistoryDetail',
     TradingBuyPreview = 'TradingBuyPreview',
     ActivityCenterStack = 'ActivityCenterStack',
+}
+
+export enum AccountDetailStackRoutes {
+    AccountDetail = 'AccountDetail',
+    AccountSettings = 'AccountSettings',
 }
 
 export enum ActivityCenterStackRoutes {

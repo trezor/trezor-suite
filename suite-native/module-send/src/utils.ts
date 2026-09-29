@@ -2,6 +2,7 @@ import { CommonActions } from '@react-navigation/native';
 
 import { type AccountKey, type FormState, type TokenAddress } from '@suite-common/wallet-types';
 import {
+    AccountDetailStackRoutes,
     AppTabsRoutes,
     RootStackRoutes,
     TransactionDetailStackRoutes,
@@ -84,10 +85,14 @@ export const navigateOutOfSendFlowAction = ({
             },
         },
         {
-            name: RootStackRoutes.AccountDetail,
+            name: RootStackRoutes.AccountDetailStack,
             params: {
-                accountKey,
-                tokenContract,
+                screen: AccountDetailStackRoutes.AccountDetail,
+                params: {
+                    accountKey,
+                    tokenContract,
+                    closeActionType: 'back',
+                },
             },
         },
     ];

@@ -1,21 +1,30 @@
 import { memo, useEffect, useState } from 'react';
 import { type MMKV } from 'react-native-mmkv';
 
+import { useMMKVDevTools } from '@rozenite/mmkv-plugin';
+import { useNetworkActivityDevTools } from '@rozenite/network-activity-plugin';
+import { usePerformanceMonitorDevTools } from '@rozenite/performance-monitor-plugin';
+
 import { useServices } from '@suite-common/dependency-injection';
 import { injectMMKVStorage } from '@suite-native/services';
 
-import { useRozenitePlugins } from '../hooks/useRozenitePlugins';
+type InitRozeniteMMKVPluginInternalProps = {
+    mmkvStorage: MMKV;
+};
 
-const InitRosenitePluginInternal = memo(({ mmkvStorage }: { mmkvStorage: MMKV }) => {
-    // react hooks can be conditionally called with __DEV__ statement (Metro takes care of it)
-    useRozenitePlugins({
-        mmkvStorage,
-    });
+const InitRozeniteMMKVPluginInternal = memo(
+    ({ mmkvStorage }: InitRozeniteMMKVPluginInternalProps) => {
+        useMMKVDevTools({
+            storages: {
+                'encrypted-storage': mmkvStorage,
+            },
+        });
 
-    return null;
-});
+        return null;
+    },
+);
 
-export const InitRosenitePlugin = memo(() => {
+const InitRozeniteMMKVPlugin = memo(() => {
     const { getMMKVStorage } = useServices(injectMMKVStorage);
     const [mmkvStorage, setMMKVStorage] = useState<MMKV | null>(null);
 
@@ -25,7 +34,14 @@ export const InitRosenitePlugin = memo(() => {
         });
     }, [getMMKVStorage]);
 
-    return Boolean(mmkvStorage) && mmkvStorage ? (
-        <InitRosenitePluginInternal mmkvStorage={mmkvStorage} />
+    return mmkvStorage ? <InitRozeniteMMKVPluginInternal mmkvStorage={mmkvStorage} /> : null;
+});
+
+export const InitRosenitePlugin = memo(() => {
+    usePerformanceMonitorDevTools();
+    useNetworkActivityDevTools();
+
+    return process.env.EXPO_PUBLIC_IS_ROZENITE_MMKV_DEVTOOLS_ENABLED === 'true' ? (
+        <InitRozeniteMMKVPlugin />
     ) : null;
 });
