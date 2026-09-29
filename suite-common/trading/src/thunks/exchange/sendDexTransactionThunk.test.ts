@@ -9,7 +9,7 @@ import { type Account } from '@suite-common/wallet-types';
 import { confirmExchangeTradeThunk } from './confirmExchangeTradeThunk';
 import { type SendDexTransactionThunkState } from './sendDexTransactionThunk';
 import { MIN_MAX_QUOTES_OK } from '../../__fixtures__/exchangeUtils';
-import { accountBtc } from '../../__fixtures__/utils';
+import { accountBtc, accountEth } from '../../__fixtures__/utils';
 import { type TradingExchangeState } from '../../reducers/exchangeReducer';
 import { initialState } from '../../reducers/tradingCommonReducer';
 import { prepareTradingReducer } from '../../reducers/tradingReducer';
@@ -81,7 +81,7 @@ describe('sendDexTransactionThunk', () => {
             },
         }).services;
 
-        const account = accountBtc as Account;
+        const account = accountEth as Account;
 
         return {
             store,
@@ -277,6 +277,37 @@ describe('sendDexTransactionThunk', () => {
             (tradingThunks.recomposeAndSignTxThunk as unknown as jest.Mock).mock.calls[0][0]
                 .transactionData,
         ).toBe(expectedHex);
+    });
+
+    it('should not recalculate the custom fee limit for a bitcoin PSBT', async () => {
+        const { store, returnUrl } = getMocks();
+
+        (tradingThunks.recomposeAndSignTxThunk as unknown as jest.Mock) = jest
+            .fn()
+            .mockImplementation(
+                createThunk('@trading/thunk/recomposeAndSignTx', (_, { fulfillWithValue }) =>
+                    fulfillWithValue({ success: true, payload: { txid: 'txid' } }),
+                ),
+            );
+        (confirmExchangeTradeThunk as unknown as jest.Mock).mockImplementation(
+            createThunk('@trading-exchange/thunk/confirmTrade', () => undefined),
+        );
+
+        await store.dispatch(
+            exchangeThunks.sendDexTransactionThunk({
+                account: accountBtc as Account,
+                returnUrl,
+                nextStep: jest.fn(),
+                triggerAnalyticsTradeConfirmation: jest.fn(),
+                processResponseData: jest.fn(),
+                signAndPushSendFormTransaction: jest.fn(),
+            }),
+        );
+
+        expect(
+            (tradingThunks.recomposeAndSignTxThunk as unknown as jest.Mock).mock.calls[0][0]
+                .recalculateCustomLimit,
+        ).toBe(false);
     });
 
     it('should successfully call confirmTradeThunk for making trade', async () => {

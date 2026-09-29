@@ -13,6 +13,7 @@ import {
 import { injectDispatch } from '@suite-common/redux-utils';
 import {
     getSimulatedReceiveAmount,
+    hasFixedPsbtFee,
     selectTradingComposedTransactionInfo,
     selectTradingExchangeActiveTrade,
     selectTradingExchangeFormStep,
@@ -99,6 +100,7 @@ export const TradingOfferExchange = () => {
     const isSignData = formStep === 'SIGN_DATA' && !!signData;
 
     const isNetworkFeeEditable = (account: Account) =>
+        !hasFixedPsbtFee(selectedTrade, account.networkType) &&
         getSupportsAdjustableFees({
             networkType: account.networkType,
             isTokenTransfer: !!composed?.token,
