@@ -55,6 +55,8 @@ const ERC20_REVOKE_DATA = buildApprovalTransactionData({
 // Canonical WETH (Wrapped Ether) — clear-signed wrap/unwrap (deposit/withdraw) on mainnet
 const WETH_MAINNET = '0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2';
 const WETH_DEPOSIT_DATA = '0xd0e30db0'; // deposit() — wrap
+const TRON_REPRESENTATIVE_A = 'TN3W4H6rK2ce4vX9YnFQHwKENnHjoxb3m9';
+const TRON_REPRESENTATIVE_B = 'TKWJhMU8NAviZ9TN5hroaFQPZ83FNctzz4';
 const WETH_WITHDRAW_DATA = `0x2e1a7d4d${'00'.repeat(32)}`; // withdraw(uint256) — unwrap
 // WBNB on BSC — a wrapped native the firmware does NOT clear-sign
 const WBNB_BSC = '0xbb4CdB9CBd36B01bD1cBaEBF2De08d9173bc095c';
@@ -651,6 +653,30 @@ describe('constructTransactionReviewOutputs', () => {
                 expect.objectContaining({ type: 'data', value: WETH_DEPOSIT_DATA }),
             ]),
         );
+    });
+
+    it('renders one tron-vote line per representative with its own vote count', () => {
+        const outputs = constructTransactionReviewOutputs({
+            account: mockWalletAccount({ symbol: asNetworkSymbol('trx') }),
+            device,
+            decreaseOutputId: undefined,
+            precomposedForm: buildFormState({
+                tronStaking: {
+                    kind: 'vote',
+                    votes: '46',
+                    allocations: [
+                        { address: TRON_REPRESENTATIVE_A, votes: '16' },
+                        { address: TRON_REPRESENTATIVE_B, votes: '30' },
+                    ],
+                },
+            }),
+            precomposedTx: buildPrecomposedTransaction({ to: TRON_REPRESENTATIVE_A }),
+        });
+
+        expect(outputs).toEqual([
+            { type: 'tron-vote', value: TRON_REPRESENTATIVE_A, value2: '16' },
+            { type: 'tron-vote', value: TRON_REPRESENTATIVE_B, value2: '30' },
+        ]);
     });
 });
 

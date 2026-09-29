@@ -550,14 +550,8 @@ const constructNewFlow = ({
     }
 
     if (tronStaking?.kind === 'vote') {
-        precomposedTx.outputs.forEach(o => {
-            if ('address' in o && typeof o.address === 'string') {
-                outputs.push({
-                    type: 'tron-vote',
-                    value: o.address,
-                    value2: tronStaking.votes,
-                });
-            }
+        tronStaking.allocations.forEach(({ address, votes }) => {
+            outputs.push({ type: 'tron-vote', value: address, value2: votes });
         });
 
         return outputs;

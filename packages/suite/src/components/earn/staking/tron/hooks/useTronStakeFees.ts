@@ -3,12 +3,15 @@ import { useEffect, useMemo, useState } from 'react';
 import { useServices } from '@suite-common/dependency-injection';
 import { injectDispatch } from '@suite-common/redux-utils';
 import {
+    type TronFlow,
     type TronStakeStepId,
     composeTronClaimFeeLevelsThunk,
     composeTronFreezeFeeLevelsThunk,
     composeTronUnstakeFeeLevelsThunk,
     composeTronVoteFeeLevelsThunk,
     composeTronWithdrawFeeLevelsThunk,
+    isTronVoteFlow,
+    resolveVoteAllocations,
     selectRawNetworkFeeInfo,
 } from '@suite-common/wallet-core';
 import { type Account, type FeeInfo, type PrecomposedLevels } from '@suite-common/wallet-types';
@@ -29,9 +32,15 @@ interface UseTronStakeFeesProps {
     account: Account;
     form: ReturnType<typeof useTronStakeForm>;
     step: TronStakeStepId;
+    flow: TronFlow;
 }
 
-export const useTronStakeFees = ({ account, form, step }: UseTronStakeFeesProps): TronStakeFees => {
+export const useTronStakeFees = ({
+    account,
+    form,
+    step,
+    flow,
+}: UseTronStakeFeesProps): TronStakeFees => {
     const { dispatch } = useServices(injectDispatch);
 
     const amount = form.methods.watch('amount');
@@ -59,8 +68,18 @@ export const useTronStakeFees = ({ account, form, step }: UseTronStakeFeesProps)
                     customRepresentativeAddress,
                 });
 
+                if (!representativeAddress || !isTronVoteFlow(flow)) {
+                    return undefined;
+                }
+
+                const allocations = resolveVoteAllocations({
+                    account,
+                    representativeAddress,
+                    flow,
+                });
+
                 return () =>
-                    dispatch(composeTronVoteFeeLevelsThunk({ account, representativeAddress }))
+                    dispatch(composeTronVoteFeeLevelsThunk({ account, allocations }))
                         .unwrap()
                         .catch(() => undefined);
             }
@@ -86,6 +105,7 @@ export const useTronStakeFees = ({ account, form, step }: UseTronStakeFeesProps)
         }
     }, [
         step,
+        flow,
         account,
         amount,
         resourceType,
