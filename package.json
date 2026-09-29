@@ -124,10 +124,10 @@
         "### Align versions of sentry internal packages, because electron & native use different versions of @core": "1.0.0",
         "@sentry/core": "10.69.0",
         "@sentry/browser": "10.69.0",
-        "expo-build-properties": "~57.0.6",
+        "expo-build-properties": "~57.0.20",
         "@types/react": "19.2.14",
         "react-dom": "19.2.3",
-        "expo-modules-core": "~57.0.6",
+        "expo-modules-core": "~57.0.19",
         "test-renderer": "1.2.0",
         "@solana/rpc@npm:6.9.0": "patch:@solana/rpc@npm%3A6.9.0#~/.yarn/patches/@solana-rpc-npm-6.9.0-ba7976484d.patch"
     },

@@ -145,6 +145,8 @@ const getPlugins = (): ExpoPlugins => {
                 },
                 ios: {
                     deploymentTarget: '16.4',
+                    // iOS 27 traps apps that don't adopt the UIScene lifecycle. No-op on SDK 58+.
+                    enableSceneSupport: true,
                 },
             },
         ],
@@ -217,7 +219,7 @@ export default ({ config }: ConfigContext): ExpoConfig => {
         slug: appSlugs[buildType],
         owner: appOwners[buildType],
         version: suiteNativeVersion,
-        runtimeVersion: '50',
+        runtimeVersion: '51',
         ...(buildType === 'production'
             ? {}
             : {

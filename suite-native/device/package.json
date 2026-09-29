@@ -61,7 +61,7 @@
         "@trezor/urls": "workspace:*",
         "@trezor/utils": "workspace:*",
         "@types/semver": "^7.7.0",
-        "expo": "~57.0.8",
+        "expo": "~57.0.23",
         "expo-video": "~57.0.1",
         "jotai": "2.17.1",
         "react": "19.2.3",
