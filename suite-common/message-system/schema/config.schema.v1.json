@@ -791,7 +791,7 @@
         },
         "yieldFlowType": {
             "type": "string",
-            "enum": ["deposit", "withdraw", "redeem", "claim"]
+            "enum": ["deposit", "withdraw", "claim"]
         },
         "wrappedNativeFlowType": {
             "type": "string",
