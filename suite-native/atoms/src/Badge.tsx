@@ -9,7 +9,14 @@ import { type BoxProps } from './Box';
 import { HStack } from './Stack';
 import { Text } from './Text';
 
-export const BADGE_INTENTS = ['neutral', 'brand', 'warning', 'critical', 'info'] as const;
+export const BADGE_INTENTS = [
+    'brand',
+    'neutral',
+    'info',
+    'warning',
+    'critical',
+    'explore',
+] as const;
 export type BadgeIntent = (typeof BADGE_INTENTS)[number];
 
 export const BADGE_SIZES = ['small', 'medium'] as const;
@@ -43,13 +50,17 @@ const badgeStyle = prepareNativeStyle<BadgeStyleProps>((utils, { backgroundColor
 }));
 
 const badgeIntentToStylePropsMap = {
+    brand: {
+        backgroundColor: 'elementFillBrandSoft',
+        textColor: 'contentBrand',
+    },
     neutral: {
         backgroundColor: 'elementFillNeutralSoft',
         textColor: 'contentSecondary',
     },
-    brand: {
-        backgroundColor: 'elementFillBrandSoft',
-        textColor: 'contentBrand',
+    info: {
+        backgroundColor: 'elementFillInfoSoft',
+        textColor: 'contentInfo',
     },
     warning: {
         backgroundColor: 'elementFillWarningSoft',
@@ -59,9 +70,9 @@ const badgeIntentToStylePropsMap = {
         backgroundColor: 'elementFillCriticalSoft',
         textColor: 'contentCritical',
     },
-    info: {
-        backgroundColor: 'elementFillInfoSoft',
-        textColor: 'contentInfo',
+    explore: {
+        backgroundColor: 'elementFillAccentVioletSoft',
+        textColor: 'contentAccentViolet',
     },
 } as const satisfies Record<BadgeIntent, BadgeStyle>;
 
