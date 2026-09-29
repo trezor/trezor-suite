@@ -1,11 +1,13 @@
 import React, { useCallback, useState } from 'react';
 import { View } from 'react-native';
-import Animated, { FadeIn, FadeOut } from 'react-native-reanimated';
+import { FadeIn, FadeOut } from 'react-native-reanimated';
 
 import { type NativeScrollEvent } from 'react-native/Libraries/Components/ScrollView/ScrollView';
 import { type NativeSyntheticEvent } from 'react-native/Libraries/Types/CoreEventTypes';
 
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
+
+import { AnimatedView } from './AnimatedView';
 
 const scrollDividerStyle = prepareNativeStyle(({ borders, colors }) => ({
     marginTop: -borders.widths.small,
@@ -17,9 +19,9 @@ const ScrollDivider = () => {
     const { applyStyle } = useNativeStyles();
 
     return (
-        <Animated.View entering={FadeIn.duration(500)} exiting={FadeOut.duration(250)}>
+        <AnimatedView entering={FadeIn.duration(500)} exiting={FadeOut.duration(250)}>
             <View style={applyStyle(scrollDividerStyle)} />
-        </Animated.View>
+        </AnimatedView>
     );
 };
 

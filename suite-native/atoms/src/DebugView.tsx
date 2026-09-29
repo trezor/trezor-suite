@@ -1,6 +1,6 @@
 import { forwardRef, useLayoutEffect, useRef } from 'react';
 import { View, type ViewProps } from 'react-native';
-import Animated, {
+import {
     interpolateColor,
     useAnimatedStyle,
     useDerivedValue,
@@ -13,6 +13,7 @@ import { atom, useAtom } from 'jotai';
 
 import { useNativeStyles } from '@trezor/styles-native';
 
+import { AnimatedView } from './AnimatedView';
 import { Text } from './Text';
 
 const FLASH_DURATION = 300;
@@ -80,7 +81,7 @@ export const DebugView = forwardRef<View, ViewProps>(({ style, children, ...prop
     });
 
     return (
-        <Animated.View ref={ref} style={[style, rStyle]} {...props}>
+        <AnimatedView ref={ref} style={[style, rStyle]} {...props}>
             {children}
             {isRerenderCountEnabled && (
                 <View
@@ -95,7 +96,7 @@ export const DebugView = forwardRef<View, ViewProps>(({ style, children, ...prop
                     <Text variant="body-sm">{++rerenderCount.current}</Text>
                 </View>
             )}
-        </Animated.View>
+        </AnimatedView>
     );
 });
 

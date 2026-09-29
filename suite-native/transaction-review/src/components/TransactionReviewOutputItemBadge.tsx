@@ -1,13 +1,8 @@
 import { useEffect } from 'react';
-import Animated, {
-    useAnimatedStyle,
-    useSharedValue,
-    withRepeat,
-    withTiming,
-} from 'react-native-reanimated';
+import { useAnimatedStyle, useSharedValue, withRepeat, withTiming } from 'react-native-reanimated';
 
 import { type TransactionReviewOutputState } from '@suite-common/wallet-types';
-import { ENDLESS_ANIMATION_VALUE } from '@suite-native/atoms';
+import { AnimatedView, ENDLESS_ANIMATION_VALUE } from '@suite-native/atoms';
 import { Icon } from '@suite-native/icons';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
@@ -62,8 +57,8 @@ export const TransactionReviewOutputItemBadge = ({
     const isActive = status === 'active';
 
     return (
-        <Animated.View
+        <AnimatedView
             style={[animatedBadgeStyle, applyStyle(badgeStyle, { isActive })]}
-        ></Animated.View>
+        ></AnimatedView>
     );
 };

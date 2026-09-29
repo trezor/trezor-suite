@@ -96,3 +96,7 @@ export * from './SubTabs';
 export { useDebugView } from './DebugView';
 export { TouchableSwitchRow, TouchableSwitchRowDescription } from './TouchableSwitchRow';
 export { type AlertBoxIntent } from './BannerFull/types';
+
+export * from './AnimatedView';
+export * from './AnimatedScrollView';
+export * from './useScrollDivider';
