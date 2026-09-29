@@ -279,7 +279,6 @@ const getOutputTitle = (
         case 'tron-vote':
             return <Translation id="TR_SUMMARY" />;
         case 'tron-withdraw':
-            return <Translation id="TR_SUMMARY" />;
         case 'tron-claim':
             return <Translation id="TR_STAKE_CLAIM" />;
         default:
@@ -619,10 +618,9 @@ const getOutputLines = ({
         case 'tron-withdraw':
             return [
                 {
-                    id: 'address',
-                    type: 'safe-address',
-                    label: <Translation id="TR_EARN_TRON_CLAIM_ADDRESS" />,
-                    value,
+                    id: 'tron-withdraw',
+                    type: 'data',
+                    value: translationString('TR_EARN_TRON_CLAIM_WITHDRAW'),
                 },
             ];
         case 'tron-claim':
