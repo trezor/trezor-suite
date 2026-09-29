@@ -110,7 +110,7 @@ const colorMap: Record<InverseKey, Record<ButtonPriority, Record<ButtonIntent, C
             info: 'contentButtonInfoPrimary',
             warning: 'contentButtonWarningPrimary',
             critical: 'contentButtonCriticalPrimary',
-            accentViolet: 'contentButtonAccentVioletPrimary',
+            explore: 'contentButtonAccentVioletPrimary',
         },
         secondary: {
             brand: 'contentBrand',
@@ -118,7 +118,7 @@ const colorMap: Record<InverseKey, Record<ButtonPriority, Record<ButtonIntent, C
             info: 'contentInfo',
             warning: 'contentWarning',
             critical: 'contentCritical',
-            accentViolet: 'contentAccentViolet',
+            explore: 'contentAccentViolet',
         },
     },
     inverse: {
@@ -128,7 +128,7 @@ const colorMap: Record<InverseKey, Record<ButtonPriority, Record<ButtonIntent, C
             info: 'contentOnDarkButtonInfoPrimary',
             warning: 'contentOnDarkButtonWarningPrimary',
             critical: 'contentOnDarkButtonCriticalPrimary',
-            accentViolet: 'contentOnDarkButtonAccentVioletPrimary',
+            explore: 'contentOnDarkButtonAccentVioletPrimary',
         },
         secondary: {
             brand: 'contentOnDarkBrand',
@@ -136,7 +136,7 @@ const colorMap: Record<InverseKey, Record<ButtonPriority, Record<ButtonIntent, C
             info: 'contentOnDarkInfo',
             warning: 'contentOnDarkWarning',
             critical: 'contentOnDarkCritical',
-            accentViolet: 'contentOnDarkAccentViolet',
+            explore: 'contentOnDarkAccentViolet',
         },
     },
 };
@@ -175,7 +175,7 @@ const backgroundMapBase: Record<InverseKey, Record<ButtonPriority, Record<Button
             info: 'elementFillInfoBold',
             warning: 'elementFillWarningBold',
             critical: 'elementFillCriticalBold',
-            accentViolet: 'elementFillAccentVioletBold',
+            explore: 'elementFillAccentVioletBold',
         },
         secondary: {
             brand: 'elementFillBrandSoft',
@@ -183,7 +183,7 @@ const backgroundMapBase: Record<InverseKey, Record<ButtonPriority, Record<Button
             info: 'elementFillInfoSoft',
             warning: 'elementFillWarningSoft',
             critical: 'elementFillCriticalSoft',
-            accentViolet: 'elementFillAccentVioletSoft',
+            explore: 'elementFillAccentVioletSoft',
         },
     },
     inverse: {
@@ -193,7 +193,7 @@ const backgroundMapBase: Record<InverseKey, Record<ButtonPriority, Record<Button
             info: 'elementFillOnDarkInfoBold',
             warning: 'elementFillOnDarkWarningBold',
             critical: 'elementFillOnDarkCriticalBold',
-            accentViolet: 'elementFillOnDarkAccentVioletBold',
+            explore: 'elementFillOnDarkAccentVioletBold',
         },
         secondary: {
             brand: 'elementFillOnDarkBrandSoft',
@@ -201,7 +201,7 @@ const backgroundMapBase: Record<InverseKey, Record<ButtonPriority, Record<Button
             info: 'elementFillOnDarkInfoSoft',
             warning: 'elementFillOnDarkWarningSoft',
             critical: 'elementFillOnDarkCriticalSoft',
-            accentViolet: 'elementFillOnDarkAccentVioletSoft',
+            explore: 'elementFillOnDarkAccentVioletSoft',
         },
     },
 };
@@ -217,7 +217,7 @@ const backgroundMapHovered: Record<
             info: 'elementFillInfoBoldHovered',
             warning: 'elementFillWarningBoldHovered',
             critical: 'elementFillCriticalBoldHovered',
-            accentViolet: 'elementFillAccentVioletBoldHovered',
+            explore: 'elementFillAccentVioletBoldHovered',
         },
         secondary: {
             brand: 'elementFillBrandSoftHovered',
@@ -225,7 +225,7 @@ const backgroundMapHovered: Record<
             info: 'elementFillInfoSoftHovered',
             warning: 'elementFillWarningSoftHovered',
             critical: 'elementFillCriticalSoftHovered',
-            accentViolet: 'elementFillAccentVioletSoftHovered',
+            explore: 'elementFillAccentVioletSoftHovered',
         },
     },
     inverse: {
@@ -235,7 +235,7 @@ const backgroundMapHovered: Record<
             info: 'elementFillOnDarkInfoBoldHovered',
             warning: 'elementFillOnDarkWarningBoldHovered',
             critical: 'elementFillOnDarkCriticalBoldHovered',
-            accentViolet: 'elementFillOnDarkAccentVioletBoldHovered',
+            explore: 'elementFillOnDarkAccentVioletBoldHovered',
         },
         secondary: {
             brand: 'elementFillOnDarkBrandSoftHovered',
@@ -243,7 +243,7 @@ const backgroundMapHovered: Record<
             info: 'elementFillOnDarkInfoSoftHovered',
             warning: 'elementFillOnDarkWarningSoftHovered',
             critical: 'elementFillOnDarkCriticalSoftHovered',
-            accentViolet: 'elementFillOnDarkAccentVioletSoftHovered',
+            explore: 'elementFillOnDarkAccentVioletSoftHovered',
         },
     },
 };
@@ -259,7 +259,7 @@ const backgroundMapPressed: Record<
             info: 'elementFillInfoBoldPressed',
             warning: 'elementFillWarningBoldPressed',
             critical: 'elementFillCriticalBoldPressed',
-            accentViolet: 'elementFillAccentVioletBoldPressed',
+            explore: 'elementFillAccentVioletBoldPressed',
         },
         secondary: {
             brand: 'elementFillBrandSoftPressed',
@@ -267,7 +267,7 @@ const backgroundMapPressed: Record<
             info: 'elementFillInfoSoftPressed',
             warning: 'elementFillWarningSoftPressed',
             critical: 'elementFillCriticalSoftPressed',
-            accentViolet: 'elementFillAccentVioletSoftPressed',
+            explore: 'elementFillAccentVioletSoftPressed',
         },
     },
     inverse: {
@@ -277,7 +277,7 @@ const backgroundMapPressed: Record<
             info: 'elementFillOnDarkInfoBoldPressed',
             warning: 'elementFillOnDarkWarningBoldPressed',
             critical: 'elementFillOnDarkCriticalBoldPressed',
-            accentViolet: 'elementFillOnDarkAccentVioletBoldPressed',
+            explore: 'elementFillOnDarkAccentVioletBoldPressed',
         },
         secondary: {
             brand: 'elementFillOnDarkBrandSoftPressed',
@@ -285,7 +285,7 @@ const backgroundMapPressed: Record<
             info: 'elementFillOnDarkInfoSoftPressed',
             warning: 'elementFillOnDarkWarningSoftPressed',
             critical: 'elementFillOnDarkCriticalSoftPressed',
-            accentViolet: 'elementFillOnDarkAccentVioletSoftPressed',
+            explore: 'elementFillOnDarkAccentVioletSoftPressed',
         },
     },
 };

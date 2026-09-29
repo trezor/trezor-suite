@@ -97,7 +97,7 @@ export const WrapNativeTokenButton = ({ account }: WrapNativeTokenButtonProps) =
             )}
             <Tooltip content={wrapDisabledContent} isActive={isWrapDisabled}>
                 <Button
-                    intent="accentViolet"
+                    intent="explore"
                     size="small"
                     isDisabled={isWrapDisabled}
                     onClick={onClick}

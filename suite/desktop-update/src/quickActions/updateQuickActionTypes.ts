@@ -31,8 +31,8 @@ export const mapUpdateStatusToIntent: Record<UpdateStatus, UIIntent> = {
     'update-downloaded-manual': 'info',
     'update-downloaded-auto-restart-to-update': 'info',
     'up-to-date': 'brand',
-    'update-available': 'accentViolet',
-    'just-updated': 'accentViolet',
+    'update-available': 'explore',
+    'just-updated': 'explore',
 };
 
 type OnClickCallback = ((params: { dispatch: Dispatch }) => void) | null;

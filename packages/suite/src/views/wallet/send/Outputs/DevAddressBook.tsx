@@ -35,7 +35,7 @@ export const DevAddressBook = ({ account, outputId }: DevAddressBookProps) => {
             <Button
                 size="small"
                 priority="secondary"
-                intent="accentViolet"
+                intent="explore"
                 onClick={onSelectAddressClick}
             >
                 Address book

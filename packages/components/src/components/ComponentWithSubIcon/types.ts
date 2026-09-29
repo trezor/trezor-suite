@@ -6,7 +6,7 @@ export const componentWithSubIconIntents = [
     'info',
     'warning',
     'critical',
-    'accentViolet',
+    'explore',
 ] as const satisfies UIIntent[];
 export type ComponentWithSubIconIntent = Extract<
     UIIntent,

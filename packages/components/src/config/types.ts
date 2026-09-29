@@ -16,15 +16,7 @@ export type UISize = (typeof uiSizes)[number];
 export const uiAlignments = ['start', 'center', 'end'] as const;
 export type UIAlignment = (typeof uiAlignments)[number];
 
-export const uiIntents = [
-    'brand',
-    'neutral',
-    'info',
-    'warning',
-    'critical',
-    // TODO: Replace with intent-like label
-    'accentViolet',
-] as const;
+export const uiIntents = ['brand', 'neutral', 'info', 'warning', 'critical', 'explore'] as const;
 export type UIIntent = (typeof uiIntents)[number];
 
 export const uiPriorities = ['primary', 'secondary', 'tertiary'] as const;
