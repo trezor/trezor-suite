@@ -39,7 +39,8 @@
         "@trezor/type-utils": "workspace:*",
         "@trezor/utils": "workspace:*",
         "@trezor/utxo-lib": "workspace:*",
-        "socks-proxy-agent": "8.0.5"
+        "socks-proxy-agent": "8.0.5",
+        "zod": "4.3.6"
     },
     "peerDependencies": {
         "tslib": "^2.6.2"

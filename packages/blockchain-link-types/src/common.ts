@@ -2,6 +2,7 @@ import type { SocksProxyAgentOptions } from 'socks-proxy-agent';
 
 import type { BaseCurrencyCode } from './baseCurrency';
 import type { TokenProtocols, TronAccountExtraData, TronChainExtraData } from './blockbook-api';
+import type { CardanoStakingInfo } from './cardano';
 
 /* Shared types — canonical definitions used by both common and backend-specific modules */
 
@@ -364,20 +365,7 @@ export interface AccountInfo {
         // blockfrost
         rewards?: string;
         // ADA
-        staking?: {
-            address: string;
-            isActive: boolean;
-            rewards: string;
-            poolId: string | null;
-            drep: {
-                drep_id: string;
-                hex: string;
-                amount: string;
-                active: boolean;
-                active_epoch: number | null;
-                has_script: boolean;
-            } | null;
-        };
+        staking?: CardanoStakingInfo;
         // SOL
         owner?: string; // The Solana program owning the account
         rent?: number; // The rent required for the account to opened
