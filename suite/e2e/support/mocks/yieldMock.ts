@@ -343,6 +343,42 @@ const BLOCKAID_WETH_DEPOSIT_RESPONSE = createBlockaidBenignResponse({
     },
 });
 
+// Withdrawing 5 WETH at pricePerShare 1.25 burns exactly 4 vault shares.
+const BLOCKAID_WETH_WITHDRAW_RESPONSE = createBlockaidBenignResponse({
+    sent: {
+        asset: WETH_VAULT_SHARE_ASSET,
+        rawValue: '0x3782dace9d900000',
+        value: '4.0',
+        usdPrice: '12500',
+        summary: 'Sending 4 trSHWETHp',
+    },
+    received: {
+        asset: WETH_ASSET,
+        rawValue: '0x4563918244f40000',
+        value: '5.0',
+        usdPrice: '12500',
+        summary: 'Receiving 5 WETH',
+    },
+});
+
+// Unwrapping calls WETH withdraw() and pays out the same amount as native: 5 WETH out, 5 ETH in.
+const BLOCKAID_UNWRAP_RESPONSE = createBlockaidBenignResponse({
+    sent: {
+        asset: WETH_ASSET,
+        rawValue: '0x4563918244f40000',
+        value: '5.0',
+        usdPrice: '12500',
+        summary: 'Sending 5 WETH',
+    },
+    received: {
+        asset: ETH_NATIVE_ASSET,
+        rawValue: '0x4563918244f40000',
+        value: '5.0',
+        usdPrice: '12500',
+        summary: 'Receiving 5 ETH',
+    },
+});
+
 // Claiming Merkl rewards only receives tokens; there is no outgoing transfer.
 const BLOCKAID_CLAIM_RESPONSE = createBlockaidBenignResponse({
     received: {
@@ -665,6 +701,20 @@ export class YieldMock {
     async mockWethDeposit() {
         await this.page.route(BLOCKAID_API_PATTERN, route =>
             route.fulfill({ json: BLOCKAID_WETH_DEPOSIT_RESPONSE }),
+        );
+    }
+
+    @step()
+    async mockWethWithdraw() {
+        await this.page.route(BLOCKAID_API_PATTERN, route =>
+            route.fulfill({ json: BLOCKAID_WETH_WITHDRAW_RESPONSE }),
+        );
+    }
+
+    @step()
+    async mockEthUnwrap() {
+        await this.page.route(BLOCKAID_API_PATTERN, route =>
+            route.fulfill({ json: BLOCKAID_UNWRAP_RESPONSE }),
         );
     }
 
