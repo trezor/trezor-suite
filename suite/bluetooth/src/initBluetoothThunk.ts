@@ -17,9 +17,7 @@ import { remapKnownDevices } from './remapKnownDevices';
 
 type InitBluetoothThunkState = WithBluetoothRootState;
 
-type InitBluetoothThunkDeps = WithServices<
-    DesktopApiDep<'openSystemSettings' | 'appFocus'> & BluetoothDep
->;
+type InitBluetoothThunkDeps = WithServices<DesktopApiDep<'openSystemSettings'> & BluetoothDep>;
 
 export const initBluetoothThunk = createThunk<
     void,
