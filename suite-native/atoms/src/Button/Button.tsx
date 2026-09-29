@@ -6,9 +6,9 @@ import { type AnimatedIconColor, Icon, type IconName } from '@suite-native/icons
 import { type NativeStyleObject, prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 import { type Color, nativeSpacings } from '@trezor/theme';
 
-import { AnimatedView } from '../AnimatedView';
+import { AnimatedPressable } from '../Animated/AnimatedPressable';
+import { AnimatedView } from '../Animated/AnimatedView';
 import { Loader } from '../Loader';
-import { AnimatedPressable } from '../Pressable';
 import { HStack } from '../Stack';
 import { Text } from '../Text';
 import { type TestProps } from '../types';

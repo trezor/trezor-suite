@@ -10,7 +10,7 @@ import {
 import { Icon, type IconName } from '@suite-native/icons';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
-import { AnimatedBox } from '../AnimatedBox';
+import { AnimatedBox } from '../Animated/AnimatedBox';
 import { Box } from '../Box';
 import { Divider } from '../Divider';
 import { HStack, VStack } from '../Stack';
