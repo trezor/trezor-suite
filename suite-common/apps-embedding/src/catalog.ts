@@ -56,6 +56,31 @@ export const APPS_EMBEDDING_CATALOG: AppsEmbeddingCatalogEntry[] = [
         ],
     },
     {
+        id: 'tor-check',
+        name: 'Tor check',
+        description:
+            "check.torproject.org — reports whether the visitor arrived over Tor and from which address. A quick way to see that the embedded page follows Suite's Tor setting; meaningful on desktop only, the one platform where Suite routes anything through Tor.",
+        url: 'https://check.torproject.org/',
+        communication: [],
+        platformSpecific: [
+            {
+                kind: 'web',
+                expectedBehavior:
+                    "Suite web routes nothing through Tor, so the page can only report the browser's own address. Whether it renders at all depends on the site's framing headers and, in preview/production builds, on frame-src.",
+            },
+            {
+                kind: 'desktop',
+                expectedBehavior:
+                    'With Tor off the page says the browser is not using Tor and shows the real address (via the system proxy, if any). With Tor on it congratulates and shows a Tor exit address; opened while Tor is still bootstrapping it fails to load rather than leaking, since the session is already routed. Toggling Tor while the page is open drops its connections — reload and the verdict flips.',
+            },
+            {
+                kind: 'mobile',
+                expectedBehavior:
+                    "Suite mobile has no Tor at all; the page reports the device's own address.",
+            },
+        ],
+    },
+    {
         id: 'apple-pay-demo',
         name: 'Apple Pay demo',
         description: 'Apple demo merchant exercising the ApplePaySession API.',
@@ -103,7 +128,12 @@ export const APPS_EMBEDDING_CATALOG: AppsEmbeddingCatalogEntry[] = [
                 redirectExternalOrigins: ['https://pay.google.com', 'https://accounts.google.com'],
                 // The sheet prefers a window of its own — it posts the result back through
                 // window.opener — and the sign-in step inside it does the same.
-                popupExternalOrigins: ['https://pay.google.com', 'https://accounts.google.com'],
+                popupExternalOrigins: [
+                    'https://pay.google.com',
+                    'https://accounts.google.com',
+                    'https://accounts.youtube.com',
+                    'https://accounts.google.cz',
+                ],
             },
             {
                 kind: 'mobile',
@@ -129,6 +159,7 @@ export const APPS_EMBEDDING_CATALOG: AppsEmbeddingCatalogEntry[] = [
                 kind: 'desktop',
                 expectedBehavior:
                     'Loads in the WebContentsView — X-Frame-Options does not apply to a top-level browsing context.',
+                popupExternalOrigins: ['https://accounts.youtube.com'],
             },
             {
                 kind: 'mobile',
