@@ -47,7 +47,7 @@ export const runAllProjects = async (
             artifactsRootDir,
             instanceAttachments,
         });
-        uploadToCurrents(project.projectName);
+        uploadToCurrents(project.projectName, quarantinedActions);
 
         // A project fails only when non-quarantined failures remain,
         // or when Detox crashed without producing a report at all.
