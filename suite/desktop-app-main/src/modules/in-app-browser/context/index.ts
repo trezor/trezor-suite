@@ -22,6 +22,20 @@ type InAppBrowserContext = {
      * anything installed on a session is installed once, at creation, instead of stacking per open.
      */
     sessions: Map<string, Session>;
+
+    /**
+     * The shared in-memory session, once created. Kept so that a Tor toggle can re-route it
+     * without `fromPartition` creating a partition just for that.
+     */
+    inMemorySession: Session | undefined;
+
+    /**
+     * The route each session was last given, so a change of the Tor settings can tell a session
+     * that already runs on the new route from one whose live connections have to be closed.
+     * Cleared by `closeView`: with no page left there is nothing to close, and the next open routes
+     * its session afresh.
+     */
+    appliedProxyRules: Map<Session, string>;
 };
 
 /**

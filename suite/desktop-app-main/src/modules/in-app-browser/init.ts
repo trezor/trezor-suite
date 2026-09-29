@@ -1,3 +1,4 @@
+import { SERVICE_NAME } from './constants';
 import { activeViewContext, inAppBrowserContext } from './context';
 import { ipcMain } from '../../ipcMain';
 import { toggleDevTools } from './services/devTools';
@@ -6,7 +7,7 @@ import { closeView, openView } from './services/webContentsView';
 import { isDevToolsEnabled } from '../../libs/dev-tools-policy';
 import { type ModuleInit } from '../module';
 import { getActiveWebContents } from './services/general';
-import { clearSession, flushPersistentSessions } from './services/session';
+import { clearSession, flushPersistentSessions, followTorSettings } from './services/session';
 
 export const init: ModuleInit = ({ mainWindowProxy, store }) => {
     // Seeded once, here, rather than in `onLoad`: that runs again after every renderer reload and
@@ -16,6 +17,16 @@ export const init: ModuleInit = ({ mainWindowProxy, store }) => {
         mainWindowProxy,
         store,
         sessions: new Map(),
+        inMemorySession: undefined,
+        appliedProxyRules: new Map(),
+    });
+
+    // Tor's proxy is per session: `modules/tor.ts` re-routes Suite's own on every toggle, and the
+    // sessions created here have to follow, or the embedded site would keep its clear-net route.
+    const unsubscribeTorSettingsChange = store.onTorSettingsChange(torSettings => {
+        followTorSettings(torSettings, closeView).catch(error => {
+            logger.error(SERVICE_NAME, `Failed to follow the Tor settings: ${error}`);
+        });
     });
 
     activeViewContext.set({
@@ -103,12 +114,14 @@ export const init: ModuleInit = ({ mainWindowProxy, store }) => {
 
     return {
         async onLoad() {
-            // Runs on every handshake, so also after a renderer reload, which drops the page that
-            // owned the view without running its cleanup.
+            // Runs on every handshake, so also after a renderer reload,
+            // which drops the page that owned the view without running its cleanup.
             await closeView();
             await activeViewContext.insert(() => ({ lastReportedRect: undefined }));
         },
         async onQuit() {
+            // Unsubscribed first: a change landing after the reset would wait on the context forever.
+            unsubscribeTorSettingsChange();
             // Closed first, so a page gets to write its final state before the flush.
             await closeView();
             // Flushed before the reset: it reads the sessions from the context, and `get` on a

@@ -1,4 +1,4 @@
-import { type Session, session } from 'electron';
+import { type ProxyConfig, type Session, session } from 'electron';
 import { mkdir } from 'fs/promises';
 import { dirname } from 'path';
 
@@ -81,6 +81,151 @@ function setPlainChromeUserAgent(inAppBrowserSession: Session): void {
 }
 
 /**
+ * The rule Suite's own session runs with while Tor is on — the one `modules/tor.ts` builds — or an
+ * empty rule, which stands for the system proxy. Read from the settings rather than from Tor's
+ * status: `running` flips the moment the user toggles Tor, before it has bootstrapped, so until
+ * then requests fail instead of leaving over the clear network, exactly as Suite's own do.
+ */
+export function getTorProxyRules({
+    running,
+    host,
+    port,
+    useExternalTor,
+    externalPort,
+}: TorSettings): string {
+    return running ? `socks5://${host}:${useExternalTor ? externalPort : port}` : '';
+}
+
+// An empty rule handed to `setProxy` means a direct connection, so Tor being off is spelled out as
+// the system proxy, Electron's default — a user behind one would otherwise get a Suite that
+// connects and an embedded view that does not.
+const toProxyConfig = (proxyRules: string): ProxyConfig =>
+    proxyRules === '' ? { mode: 'system' } : { proxyRules };
+
+/**
+ * Tor's proxy is per session and `modules/tor.ts` sets it on Suite's own only, so a session of this
+ * module has to take the same route itself — or Tor would hide the wallet's traffic while the site
+ * beside it sees the real address. Awaited before the session is used: `setProxy` resolves once
+ * the network service has the rule, and a request issued earlier goes direct.
+ *
+ * Connections already open do not pick up a new rule, so when the rule of a session with a live
+ * page changes they are closed as well; whatever is in flight fails and the page retries through
+ * the new route. Which sessions have a live page is what [InAppBrowserContext.appliedProxyRules]
+ * records, and `closeView` clearing it is what makes the next open route without closing anything.
+ */
+export async function applyTorProxy(inAppBrowserSession: Session): Promise<Result<void, string>> {
+    const { store, appliedProxyRules } = await inAppBrowserContext.get();
+    const proxyRules = getTorProxyRules(store.getTorSettings());
+    const previousProxyRules = appliedProxyRules.get(inAppBrowserSession);
+
+    if (previousProxyRules === proxyRules) {
+        return ok();
+    }
+
+    // Recorded before the await, so a toggle landing meanwhile compares against this rule instead
+    // of applying it a second time.
+    appliedProxyRules.set(inAppBrowserSession, proxyRules);
+
+    try {
+        await inAppBrowserSession.setProxy(toProxyConfig(proxyRules));
+    } catch (error) {
+        // The previous rule is the one still in force, and the connections the page opened under it
+        // still have to be closed once a later attempt succeeds.
+        if (previousProxyRules === undefined) {
+            appliedProxyRules.delete(inAppBrowserSession);
+        } else {
+            appliedProxyRules.set(inAppBrowserSession, previousProxyRules);
+        }
+
+        logger.error(SERVICE_NAME, `Failed to set the proxy rules "${proxyRules}": ${error}`);
+
+        return err('the session could not be routed through the proxy Suite uses');
+    }
+
+    logger.info(
+        SERVICE_NAME,
+        `Routing a session ${proxyRules === '' ? 'through the system proxy' : `through ${proxyRules}`}`,
+    );
+
+    if (previousProxyRules !== undefined) {
+        // The new rule is in force by now; old connections that would not close are worth a line,
+        // not a refused session.
+        await inAppBrowserSession.closeAllConnections().catch(error => {
+            logger.warn(
+                SERVICE_NAME,
+                `Failed to close the connections of a re-routed session: ${error}`,
+            );
+        });
+    }
+
+    return ok();
+}
+
+/**
+ * Re-routes every session this module has created so far. Fails when any of them could not follow,
+ * so that the caller can take a live page off its stale route.
+ */
+async function applyTorProxyToSessions(): Promise<Result<void, string>> {
+    const { sessions, inMemorySession } = await inAppBrowserContext.get();
+    const createdSessions = [...sessions.values(), inMemorySession].filter(
+        (created): created is Session => created !== undefined,
+    );
+    const results = await Promise.all(createdSessions.map(created => applyTorProxy(created)));
+
+    return results.every(result => result.success)
+        ? ok()
+        : err('a session could not be routed through the proxy Suite uses');
+}
+
+/**
+ * What a change of the Tor settings means for the sessions here: the rule Suite's own session runs
+ * with has changed, so every session created so far follows it, and a live page whose session could
+ * not follow is closed rather than left on a stale route.
+ *
+ * A wiped store — Suite resetting itself — reads as "Tor off" while Suite's own session keeps its
+ * route until the app reloads, so the view is closed instead of being put on the clear network for
+ * that window; whatever opens next is routed from the fresh store.
+ */
+export async function followTorSettings(
+    torSettings: TorSettings | undefined,
+    onCloseView: () => Promise<void>,
+): Promise<void> {
+    if (torSettings === undefined) {
+        await onCloseView();
+
+        return;
+    }
+
+    const rerouted = await applyTorProxyToSessions();
+
+    if (!rerouted.success) {
+        logger.error(SERVICE_NAME, `Closing the embedded view: ${rerouted.error}`);
+        await onCloseView();
+    }
+}
+
+/**
+ * The shared partition every non-persisting open lands in, created on first use and reused
+ * afterwards. Recorded in the context so that a Tor toggle can reach it without `fromPartition`
+ * creating a partition just to route it.
+ */
+async function getInMemorySession(): Promise<Session> {
+    const { inMemorySession: recorded } = await inAppBrowserContext.get();
+
+    if (recorded) {
+        return recorded;
+    }
+
+    const inMemorySession = session.fromPartition(IN_APP_BROWSER_SESSION_PARTITION);
+
+    denyAllPermissions(inMemorySession);
+    setPlainChromeUserAgent(inMemorySession);
+    await inAppBrowserContext.insert(() => ({ inMemorySession }));
+
+    return inMemorySession;
+}
+
+/**
  * The session an entry's data lives in, created on first use and reused afterwards.
  *
  * The directory is created here rather than left to Chromium: `mkdir -p` is one call, and it
@@ -140,17 +285,15 @@ export async function getPersistentSession(entryId: string): Promise<Result<Sess
  *
  * A custom url has no entry, and an entry that keeps nothing needs no directory: both get the
  * shared in-memory partition.
+ *
+ * Not routed here: `openView` routes the session with [applyTorProxy] once the previous view is
+ * torn down, since that teardown forgets the route of every session.
  */
 export async function resolveSessionForOpen(
     entry: AppsEmbeddingCatalogEntry | undefined,
 ): Promise<Result<Session, string>> {
     if (entry === undefined || !getPlatformSpecificEntry(entry, 'desktop')?.persistSession) {
-        const inMemorySession = session.fromPartition(IN_APP_BROWSER_SESSION_PARTITION);
-
-        denyAllPermissions(inMemorySession);
-        setPlainChromeUserAgent(inMemorySession);
-
-        return ok(inMemorySession);
+        return ok(await getInMemorySession());
     }
 
     return await getPersistentSession(entry.id);

@@ -1,7 +1,14 @@
 {
     "extends": "../../tsconfig.base.json",
-    "compilerOptions": { "outDir": "libDev" },
-    "include": ["src", "e2e", "**/*.json"],
+    "compilerOptions": {
+        "outDir": "libDev"
+    },
+    "include": [
+        "src",
+        "e2e",
+        "src/modules/in-app-browser/mocks",
+        "**/*.json"
+    ],
     "references": [
         {
             "path": "../../suite-common/apps-embedding"
@@ -15,7 +22,9 @@
         {
             "path": "../../suite-common/platform-encryption"
         },
-        { "path": "../../suite-common/sentry" },
+        {
+            "path": "../../suite-common/sentry"
+        },
         {
             "path": "../../suite-common/suite-constants"
         },
@@ -31,29 +40,57 @@
         {
             "path": "../../suite-common/wallet-utils"
         },
-        { "path": "../desktop-app-api" },
-        { "path": "../desktop-app-api-electron" },
+        {
+            "path": "../desktop-app-api"
+        },
+        {
+            "path": "../desktop-app-api-electron"
+        },
         {
             "path": "../desktop-app-native-bindings"
         },
-        { "path": "../sentry" },
-        { "path": "../tor-types" },
-        { "path": "../../packages/coinjoin" },
-        { "path": "../../packages/connect" },
+        {
+            "path": "../sentry"
+        },
+        {
+            "path": "../tor-types"
+        },
+        {
+            "path": "../../packages/coinjoin"
+        },
+        {
+            "path": "../../packages/connect"
+        },
         {
             "path": "../../packages/connect-common"
         },
-        { "path": "../../packages/connect-core" },
-        { "path": "../../packages/env-utils" },
-        { "path": "../../packages/eslint" },
-        { "path": "../../packages/ipc-proxy" },
-        { "path": "../../packages/logger" },
-        { "path": "../../packages/node-utils" },
+        {
+            "path": "../../packages/connect-core"
+        },
+        {
+            "path": "../../packages/env-utils"
+        },
+        {
+            "path": "../../packages/eslint"
+        },
+        {
+            "path": "../../packages/ipc-proxy"
+        },
+        {
+            "path": "../../packages/logger"
+        },
+        {
+            "path": "../../packages/node-utils"
+        },
         {
             "path": "../../packages/request-manager"
         },
-        { "path": "../../packages/theme" },
-        { "path": "../../packages/transport" },
+        {
+            "path": "../../packages/theme"
+        },
+        {
+            "path": "../../packages/transport"
+        },
         {
             "path": "../../packages/transport-bluetooth"
         },
@@ -63,11 +100,17 @@
         {
             "path": "../../packages/transport-common"
         },
-        { "path": "../../packages/urls" },
-        { "path": "../../packages/utils" },
+        {
+            "path": "../../packages/urls"
+        },
+        {
+            "path": "../../packages/utils"
+        },
         {
             "path": "../../suite-common/dependency-injection"
         },
-        { "path": "../../packages/type-utils" }
+        {
+            "path": "../../packages/type-utils"
+        }
     ]
 }

@@ -9,7 +9,7 @@ import { activeViewContext, inAppBrowserContext, inAppBrowserWebContentsIds } fr
 import { handleZoomChanged } from './dimensions';
 import { getActiveWebContents, isNavigationToAllowedOrigin, sendEventToRenderer } from './general';
 import { registerPopup, registerPopupOpener } from './popup';
-import { resolveSessionForOpen } from './session';
+import { applyTorProxy, resolveSessionForOpen } from './session';
 
 // Unparsable entries are dropped rather than rejecting the whole open call: an allowlist that
 // cannot be parsed can only ever widen nothing.
@@ -58,7 +58,7 @@ export async function closeView() {
 
     if (liveWebContents) inAppBrowserWebContentsIds.delete(liveWebContents.id);
 
-    const { mainWindowProxy } = await inAppBrowserContext.get();
+    const { mainWindowProxy, appliedProxyRules } = await inAppBrowserContext.get();
     const mainWindow = mainWindowProxy.getInstance();
 
     mainWindow?.webContents.off('zoom-changed', handleZoomChanged);
@@ -69,6 +69,10 @@ export async function closeView() {
     Array.from(openPopups).forEach(popupWindow => popupWindow.destroy());
 
     liveWebContents?.close();
+
+    // With the page and its popups gone there is nothing whose connections a re-route would have
+    // to close, and the next open routes its session afresh.
+    appliedProxyRules.clear();
 
     await activeViewContext.insert(() => ({
         activeView: undefined,
@@ -151,6 +155,19 @@ export async function openView({
     // The showcase embeds a single site at a time.
     await closeView();
 
+    // Routed only now: `closeView` forgets the route of every session, and the record written here
+    // is what a later toggle consults to know that this page's connections have to be closed. A
+    // session that cannot take the route Suite's own runs on is not used, so the failure reads as a
+    // failed open rather than as a leak.
+    const routed = await applyTorProxy(openSession.payload);
+
+    if (!routed.success) {
+        logger.error(SERVICE_NAME, `Refusing to open ${url}: ${routed.error}`);
+        sendEventToRenderer(mainWindowProxy, { type: 'load-failed', url, error: routed.error });
+
+        return;
+    }
+
     logger.info(
         SERVICE_NAME,
         `Opening embedded view for ${url}${openSession.payload.storagePath === null ? '' : ' with a persistent session'}`,
@@ -190,6 +207,11 @@ export async function openView({
 
     const { webContents } = view;
     const webContentsId = webContents.id;
+
+    // WebRTC's UDP never goes through a SOCKS proxy: a STUN request from the page would carry the
+    // real address past Tor. Pinned to proxied transports for the page and, in `registerPopup`, for
+    // its popups.
+    webContents.setWebRTCIPHandlingPolicy('disable_non_proxied_udp');
 
     // The page can destroy its own WebContents, and nothing else would take the view down: it would
     // stay attached to the window as the active view. Checked against the active view because a
