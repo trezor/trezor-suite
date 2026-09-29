@@ -657,6 +657,31 @@ export const getTotalFiatBalance = ({
 
 export const isTestnet = (symbol: NetworkSymbol) => getNetwork(symbol).testnet;
 
+/**
+ * Whether the backend's token list disagrees with what the account stores. Backend balances are in
+ * subunits and stored ones in units, so the fresh list goes through the same conversion first. A
+ * stored token missing from the fresh list only counts once it has a balance, as a token the user
+ * added by hand or has already spent to zero is not reported back on its own.
+ */
+export const haveTokenBalancesChanged = (
+    freshTokens: AccountInfo['tokens'],
+    accountTokens: Account['tokens'],
+) => {
+    const fresh = new Map(
+        enhanceTokens(freshTokens).map(token => [token.contract.toLowerCase(), token.balance]),
+    );
+    const stored = new Map(
+        (accountTokens ?? []).map(token => [token.contract.toLowerCase(), token.balance]),
+    );
+
+    const freshDiffers = [...fresh].some(([contract, balance]) => stored.get(contract) !== balance);
+    const heldTokenGone = [...stored].some(
+        ([contract, balance]) => !fresh.has(contract) && new BigNumber(balance || '0').gt(0),
+    );
+
+    return freshDiffers || heldTokenGone;
+};
+
 export const isAccountOutdated = (account: Account, freshInfo: AccountInfo) => {
     if (
         // if backend/coin supports addrTxCount, compare it instead of total
@@ -694,7 +719,11 @@ export const isAccountOutdated = (account: Account, freshInfo: AccountInfo) => {
                 freshInfo.misc!.nonce !== account.misc.nonce ||
                 freshInfo.balance !== account.balance || // balance can change because of beacon chain/internal txs
                 JSON.stringify(freshInfo?.misc?.stakingPools) !==
-                    JSON.stringify(account?.misc?.stakingPools)
+                    JSON.stringify(account?.misc?.stakingPools) ||
+                // A plain RPC node has no transaction count to compare, so on direct RPC a token
+                // moving is only visible in the token list itself.
+                (account.backendType === 'evm-rpc' &&
+                    haveTokenBalancesChanged(freshInfo.tokens, account.tokens))
             );
         case 'cardano': {
             const freshDrep = freshInfo.misc!.staking?.drep ?? null;

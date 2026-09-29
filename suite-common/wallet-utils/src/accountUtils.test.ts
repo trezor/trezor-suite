@@ -22,6 +22,7 @@ import {
     getUtxoFromSignedTransaction,
     getUtxoOutpoint,
     hasNetworkFeatures,
+    haveTokenBalancesChanged,
     isAccountOutdated,
     isTestnet,
     sortByBIP44AddressIndex,
@@ -532,6 +533,45 @@ describe('account utils', () => {
         accountInfo.addresses.change = [];
         account.addresses = enhanceAddresses(accountInfo, account);
         expect(account.addresses.change).toEqual([]);
+    });
+});
+
+describe(haveTokenBalancesChanged.name, () => {
+    const contract = '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48';
+    const fresh = (balance: string) => ({
+        standard: 'ERC20' as const,
+        contract: contract.toLowerCase(),
+        balance,
+        decimals: 6,
+    });
+    const stored = (balance: string) => mockAccountToken({ contract, decimals: 6, balance });
+
+    it('is unchanged when both sides are empty', () => {
+        expect(haveTokenBalancesChanged(undefined, undefined)).toBe(false);
+        expect(haveTokenBalancesChanged([], [])).toBe(false);
+    });
+
+    it('compares fresh subunit balances against stored unit balances', () => {
+        expect(haveTokenBalancesChanged([fresh('1500000')], [stored('1.5')])).toBe(false);
+        expect(haveTokenBalancesChanged([fresh('1500001')], [stored('1.5')])).toBe(true);
+    });
+
+    it('matches contracts regardless of case', () => {
+        expect(haveTokenBalancesChanged([{ ...fresh('1500000'), contract }], [stored('1.5')])).toBe(
+            false,
+        );
+    });
+
+    it('reports a fresh token the account does not know', () => {
+        expect(haveTokenBalancesChanged([fresh('1')], [])).toBe(true);
+    });
+
+    it('reports a held token that is no longer listed', () => {
+        expect(haveTokenBalancesChanged([], [stored('1.5')])).toBe(true);
+    });
+
+    it('ignores a stored token at zero that is no longer listed', () => {
+        expect(haveTokenBalancesChanged([], [stored('0')])).toBe(false);
     });
 });
 
