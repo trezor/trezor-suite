@@ -1,5 +1,5 @@
 import { Platform, View } from 'react-native';
-import Animated, { FadeOut, LinearTransition } from 'react-native-reanimated';
+import { FadeOut, LinearTransition } from 'react-native-reanimated';
 import { useSelector } from 'react-redux';
 
 import { useNavigation } from '@react-navigation/native';
@@ -13,6 +13,7 @@ import {
 import { events, injectNativeAnalytics } from '@suite-native/analytics';
 import {
     AnimatedVStack,
+    AnimatedView,
     Button,
     Card,
     CenteredTitleHeader,
@@ -128,7 +129,7 @@ export const EmptyPortfolioCrossroads = () => {
 
     return (
         <AnimatedVStack spacing="sp16" flex={1} layout={LinearTransition}>
-            <Animated.View layout={LinearTransition} style={applyStyle(cardFlexStyle, { flex: 2 })}>
+            <AnimatedView layout={LinearTransition} style={applyStyle(cardFlexStyle, { flex: 2 })}>
                 <Card style={applyStyle(cardContentStyle)}>
                     <VStack spacing="sp24" justifyContent="center" alignItems="center">
                         <ConnectTrezorSvg />
@@ -145,13 +146,13 @@ export const EmptyPortfolioCrossroads = () => {
                         </View>
                     </VStack>
                 </Card>
-            </Animated.View>
+            </AnimatedView>
             {!isGetTrezorBannerClosed && !areGetTrezorPromoBannersDisabled && (
-                <Animated.View exiting={FadeOut}>
+                <AnimatedView exiting={FadeOut}>
                     <NoDevicePromoBanner />
-                </Animated.View>
+                </AnimatedView>
             )}
-            <Animated.View layout={LinearTransition} style={applyStyle(cardFlexStyle, { flex: 1 })}>
+            <AnimatedView layout={LinearTransition} style={applyStyle(cardFlexStyle, { flex: 1 })}>
                 <Card style={applyStyle(cardContentStyle)}>
                     <VStack spacing="sp24" justifyContent="center" alignItems="center">
                         <VStack alignItems="center">
@@ -174,7 +175,7 @@ export const EmptyPortfolioCrossroads = () => {
                         </View>
                     </VStack>
                 </Card>
-            </Animated.View>
+            </AnimatedView>
         </AnimatedVStack>
     );
 };

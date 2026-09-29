@@ -12445,7 +12445,6 @@ __metadata:
     "@suite-native/intl": "workspace:*"
     "@suite-native/labeling": "workspace:*"
     "@suite-native/navigation": "workspace:*"
-    "@suite-native/scrollview": "workspace:*"
     "@suite-native/search": "workspace:*"
     "@suite-native/test-utils": "workspace:*"
     "@suite-native/test-utils-store": "workspace:*"
@@ -12847,7 +12846,6 @@ __metadata:
     "@suite-native/helpers": "workspace:*"
     "@suite-native/icons": "workspace:*"
     "@suite-native/intl": "workspace:^"
-    "@suite-native/scrollview": "workspace:*"
     "@suite-native/test-utils": "workspace:*"
     "@trezor/env-utils": "workspace:*"
     "@trezor/react-utils": "workspace:*"
@@ -14947,10 +14945,8 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@suite-native/scrollview@workspace:suite-native/scrollview"
   dependencies:
-    "@trezor/styles-native": "workspace:*"
     react: "npm:19.2.3"
     react-native: "npm:0.86.0"
-    react-native-reanimated: "npm:4.5.0"
   languageName: unknown
   linkType: soft
 
@@ -15785,7 +15781,6 @@ __metadata:
     "@suite-native/intl": "workspace:*"
     "@suite-native/labeling": "workspace:*"
     "@suite-native/navigation": "workspace:*"
-    "@suite-native/scrollview": "workspace:*"
     "@suite-native/suite-sync": "workspace:*"
     "@suite-native/test-utils-store": "workspace:*"
     "@suite-native/tokens": "workspace:*"
@@ -15826,6 +15821,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@suite-native/video-assets@workspace:suite-native/video-assets"
   dependencies:
+    "@suite-native/atoms": "workspace:*"
     "@trezor/styles-native": "workspace:*"
     expo: "npm:~57.0.23"
     expo-video: "npm:~57.0.1"

@@ -1,5 +1,5 @@
 import { useWindowDimensions } from 'react-native';
-import Animated, { FadeIn, FadeOut } from 'react-native-reanimated';
+import { FadeIn, FadeOut } from 'react-native-reanimated';
 import { useSelector } from 'react-redux';
 
 import { N } from '@mobily/ts-belt';
@@ -8,7 +8,7 @@ import { type GroupedBalanceMovementEventPayload } from '@suite-common/graph';
 import { type SignValue } from '@suite-common/suite-types';
 import { type NetworkSymbol, getNetworkType } from '@suite-common/wallet-config';
 import { type AccountKey, type TokenAddress } from '@suite-common/wallet-types';
-import { Box, Card, Text } from '@suite-native/atoms';
+import { AnimatedView, Box, Card, Text } from '@suite-native/atoms';
 import {
     ExactCryptoAmountFormatter,
     ExactTokenAmountFormatter,
@@ -148,7 +148,7 @@ export const TransactionEventTooltip = ({
     const isReceivedDisplayed = received !== 0 && receivedTransactionsCount !== 0;
 
     return (
-        <Animated.View
+        <AnimatedView
             style={applyStyle(TooltipContainerStyle, { x: eventX, y: eventY, windowWidth })}
             entering={FadeIn.duration(ANIMATION_DURATION)}
             exiting={FadeOut.duration(ANIMATION_DURATION)}
@@ -185,6 +185,6 @@ export const TransactionEventTooltip = ({
                     />
                 )}
             </Card>
-        </Animated.View>
+        </AnimatedView>
     );
 };

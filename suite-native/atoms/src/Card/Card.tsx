@@ -1,11 +1,11 @@
 import React, { type ComponentProps, type ReactNode } from 'react';
 import { View } from 'react-native';
-import Animated from 'react-native-reanimated';
 
 import { type NativeStyleObject, prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 import { type Color } from '@trezor/theme';
 import { isNotNullOrUndefined } from '@trezor/utils';
 
+import { AnimatedView } from '../AnimatedView';
 import { BannerInline, type BannerInlineProps } from '../BannerInline/BannerInline';
 
 const CARD_CONTAINER_TEST_ID = '@atom/card/container';
@@ -169,12 +169,12 @@ export const Card = React.forwardRef<View, CardProps>(
 Card.displayName = 'Card';
 
 export type AnimatedContainerCardProps = CardProps &
-    Pick<ComponentProps<typeof Animated.View>, 'layout' | 'entering' | 'exiting'> & {
+    Pick<ComponentProps<typeof AnimatedView>, 'layout' | 'entering' | 'exiting'> & {
         // Use for animated container styles (opacity, transform). style goes to the inner Card.
-        animatedStyle?: ComponentProps<typeof Animated.View>['style'];
+        animatedStyle?: ComponentProps<typeof AnimatedView>['style'];
     };
 
-// Wrapping in Animated.View ensures animated styles (opacity, transform) target the outermost
+// Wrapping in AnimatedView ensures animated styles (opacity, transform) target the outermost
 // container. createAnimatedComponent(Card) would drive the inner styled View instead, which
 // breaks transform animations. For animated inner styles (e.g. borderColor), use AnimatedBorderCard.
 export const AnimatedContainerCard = ({
@@ -185,7 +185,7 @@ export const AnimatedContainerCard = ({
     children,
     ...cardProps
 }: AnimatedContainerCardProps) => (
-    <Animated.View style={animatedStyle} layout={layout} entering={entering} exiting={exiting}>
+    <AnimatedView style={animatedStyle} layout={layout} entering={entering} exiting={exiting}>
         <Card {...cardProps}>{children}</Card>
-    </Animated.View>
+    </AnimatedView>
 );

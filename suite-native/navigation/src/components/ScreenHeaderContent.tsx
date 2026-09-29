@@ -1,7 +1,7 @@
 import { type ComponentProps, type ReactElement, type ReactNode } from 'react';
-import Animated, { FadeIn, FadeOut } from 'react-native-reanimated';
+import { FadeIn, FadeOut } from 'react-native-reanimated';
 
-import { Box, Text } from '@suite-native/atoms';
+import { AnimatedView, Box, Text } from '@suite-native/atoms';
 import { type Translation } from '@suite-native/intl';
 
 export type ScreenHeaderContentProps = {
@@ -20,7 +20,7 @@ export const ScreenHeaderContent = ({ title, customContent }: ScreenHeaderConten
 
     if (title) {
         return (
-            <Animated.View entering={FadeIn} exiting={FadeOut}>
+            <AnimatedView entering={FadeIn} exiting={FadeOut}>
                 <Box alignItems="center">
                     <Text
                         variant="body-md-strong"
@@ -31,7 +31,7 @@ export const ScreenHeaderContent = ({ title, customContent }: ScreenHeaderConten
                         {title}
                     </Text>
                 </Box>
-            </Animated.View>
+            </AnimatedView>
         );
     }
 

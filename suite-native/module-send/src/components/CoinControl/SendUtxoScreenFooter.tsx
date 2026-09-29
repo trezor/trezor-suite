@@ -1,8 +1,15 @@
 import { useMemo } from 'react';
-import Animated, { FadeIn, FadeOut, SlideInDown, SlideOutDown } from 'react-native-reanimated';
+import { FadeIn, FadeOut, SlideInDown, SlideOutDown } from 'react-native-reanimated';
 
 import { type NetworkSymbol } from '@suite-common/wallet-config';
-import { Button, HStack, ScreenFooterGradient, Text, VStack } from '@suite-native/atoms';
+import {
+    AnimatedView,
+    Button,
+    HStack,
+    ScreenFooterGradient,
+    Text,
+    VStack,
+} from '@suite-native/atoms';
 import { ExactCryptoAmountFormatter } from '@suite-native/formatters';
 import { Translation } from '@suite-native/intl';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
@@ -63,7 +70,7 @@ export const SendUtxoScreenFooter = ({
                         />
                     </HStack>
                     {missingToAmount && (
-                        <Animated.View entering={FadeIn} exiting={FadeOut}>
+                        <AnimatedView entering={FadeIn} exiting={FadeOut}>
                             <HStack justifyContent="space-between">
                                 <Text variant="body-md">
                                     <Translation id="moduleSend.coinControl.utxos.remaining" />
@@ -76,16 +83,16 @@ export const SendUtxoScreenFooter = ({
                                     isDiscreetText={false}
                                 />
                             </HStack>
-                        </Animated.View>
+                        </AnimatedView>
                     )}
                 </VStack>
 
                 {!missingToAmount && (
-                    <Animated.View entering={SlideInDown.duration(300)} exiting={SlideOutDown}>
+                    <AnimatedView entering={SlideInDown.duration(300)} exiting={SlideOutDown}>
                         <Button onPress={onSubmit}>
                             <Translation id="generic.buttons.confirm" />
                         </Button>
-                    </Animated.View>
+                    </AnimatedView>
                 )}
             </VStack>
         </>

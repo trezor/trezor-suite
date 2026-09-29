@@ -1,9 +1,10 @@
-import Animated, { FadeIn, FadeOut } from 'react-native-reanimated';
+import { FadeIn, FadeOut } from 'react-native-reanimated';
 
 import { useServices } from '@suite-common/dependency-injection';
 import { messageSystemActions } from '@suite-common/message-system';
 import { injectDispatch } from '@suite-common/redux-utils';
 import { type Message, type Variant } from '@suite-common/suite-types';
+import { AnimatedView } from '@suite-native/atoms';
 import {
     Box,
     HStack,
@@ -109,7 +110,7 @@ export const MessageBanner = ({ message }: MessageBannerProps) => {
         MessageBannerVariantToStyleMap[message.variant];
 
     return (
-        <Animated.View
+        <AnimatedView
             entering={FadeIn.duration(CONTEXT_MESSAGE_ANIMATION_DURATION)}
             exiting={FadeOut.duration(CONTEXT_MESSAGE_ANIMATION_DURATION)}
             style={applyStyle(messageContainerStyle, { backgroundColor })}
@@ -140,6 +141,6 @@ export const MessageBanner = ({ message }: MessageBannerProps) => {
                     <MessageCloseButton intent={iconIntent} onClose={handleDismissMessage} />
                 )}
             </HStack>
-        </Animated.View>
+        </AnimatedView>
     );
 };

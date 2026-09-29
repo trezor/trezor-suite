@@ -1,6 +1,6 @@
 import { useRef, useState } from 'react';
 import { View } from 'react-native';
-import Animated, { FadeIn, FadeOut } from 'react-native-reanimated';
+import { FadeIn, FadeOut } from 'react-native-reanimated';
 import { useSelector } from 'react-redux';
 
 import { useServices } from '@suite-common/dependency-injection';
@@ -12,7 +12,7 @@ import {
 import { injectDispatch } from '@suite-common/redux-utils';
 import { submitPassphraseThunk } from '@suite-common/wallet-core';
 import { events, injectNativeAnalytics } from '@suite-native/analytics';
-import { Button, Card, TextDivider, VStack } from '@suite-native/atoms';
+import { AnimatedView, Button, Card, TextDivider, VStack } from '@suite-native/atoms';
 import { selectPassphraseRequestId } from '@suite-native/device-authorization';
 import { Form, SecureTextInputField, useForm } from '@suite-native/forms';
 import { Translation } from '@suite-native/intl';
@@ -101,7 +101,7 @@ export const PassphraseForm = ({
                             testID="@passphrase/passphraseInput"
                         />
                         {(isInputFocused || isDirty) && (
-                            <Animated.View entering={FadeIn} exiting={FadeOut}>
+                            <AnimatedView entering={FadeIn} exiting={FadeOut}>
                                 <Button
                                     accessibilityRole="button"
                                     accessibilityLabel="confirm passphrase"
@@ -110,10 +110,10 @@ export const PassphraseForm = ({
                                 >
                                     <Translation id="generic.buttons.confirm" />
                                 </Button>
-                            </Animated.View>
+                            </AnimatedView>
                         )}
                         {!isDirty && !isInputFocused && hasDevicePassphraseEntryCapability && (
-                            <Animated.View entering={FadeIn} exiting={FadeOut}>
+                            <AnimatedView entering={FadeIn} exiting={FadeOut}>
                                 <VStack>
                                     <TextDivider
                                         title="generic.orSeparator"
@@ -122,7 +122,7 @@ export const PassphraseForm = ({
                                     <EnterPassphraseOnTrezorButton />
                                     {noPassphraseEnabled && <NoPassphraseButton />}
                                 </VStack>
-                            </Animated.View>
+                            </AnimatedView>
                         )}
                     </VStack>
                 </Card>

@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useState } from 'react';
 import { type LayoutChangeEvent } from 'react-native';
-import Animated, {
+import {
     FadeIn,
     FadeOut,
     useAnimatedStyle,
@@ -10,7 +10,7 @@ import Animated, {
 import { useSelector } from 'react-redux';
 
 import { useAlert } from '@suite-native/alerts';
-import { Box, Button, HStack, IconButton } from '@suite-native/atoms';
+import { AnimatedView, Box, Button, HStack, IconButton } from '@suite-native/atoms';
 import { useFormContext, useWatch } from '@suite-native/forms';
 import { Translation } from '@suite-native/intl';
 import { useOpenLink } from '@suite-native/link';
@@ -117,9 +117,9 @@ export const PinFormControlButtons = ({ onSuccess }: PinFormControlButtonsProps)
         setContainerHeight(event.nativeEvent.layout.height);
 
     return (
-        <Animated.View style={cardAnimatedStyle}>
+        <AnimatedView style={cardAnimatedStyle}>
             {!!pinLength && (
-                <Animated.View
+                <AnimatedView
                     entering={FadeIn.delay(ANIMATION_DURATION / 2)}
                     exiting={FadeOut}
                     style={applyStyle(buttonsWrapperStyle)}
@@ -137,8 +137,8 @@ export const PinFormControlButtons = ({ onSuccess }: PinFormControlButtonsProps)
                             </Button>
                         </Box>
                     </HStack>
-                </Animated.View>
+                </AnimatedView>
             )}
-        </Animated.View>
+        </AnimatedView>
     );
 };

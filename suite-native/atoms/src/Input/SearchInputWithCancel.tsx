@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from 'react';
-import Animated, { FadeIn, FadeOut, LinearTransition } from 'react-native-reanimated';
+import { FadeIn, FadeOut, LinearTransition } from 'react-native-reanimated';
 
 import { Translation, useTranslate } from '@suite-native/intl';
 import { useDebounce } from '@trezor/react-utils';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
+import { AnimatedView } from '../AnimatedView';
 import { TextButton } from '../Button/TextButton';
 import { HStack } from '../Stack';
 
@@ -78,7 +79,7 @@ export function SearchInputWithCancel<R extends ClearAndBlur | null>({
 
     return (
         <HStack alignItems="center" spacing={0}>
-            <Animated.View layout={LinearTransition} style={applyStyle(inputWrapperStyle)}>
+            <AnimatedView layout={LinearTransition} style={applyStyle(inputWrapperStyle)}>
                 <SearchComponent
                     {...(searchRef ? { ref: searchRef } : {})}
                     placeholder={placeholder ?? translate('moduleTrading.defaultSearchLabel')}
@@ -93,10 +94,10 @@ export function SearchInputWithCancel<R extends ClearAndBlur | null>({
                     onChange={handleOnChange}
                     {...props}
                 />
-            </Animated.View>
-            <Animated.View layout={LinearTransition} style={applyStyle(buttonWrapperStyle)}>
+            </AnimatedView>
+            <AnimatedView layout={LinearTransition} style={applyStyle(buttonWrapperStyle)}>
                 {isInputActive && (
-                    <Animated.View
+                    <AnimatedView
                         layout={LinearTransition}
                         entering={FadeIn.delay(100)}
                         exiting={FadeOut}
@@ -105,9 +106,9 @@ export function SearchInputWithCancel<R extends ClearAndBlur | null>({
                         <TextButton onPress={handleCancel}>
                             <Translation id="generic.buttons.cancel" />
                         </TextButton>
-                    </Animated.View>
+                    </AnimatedView>
                 )}
-            </Animated.View>
+            </AnimatedView>
         </HStack>
     );
 }

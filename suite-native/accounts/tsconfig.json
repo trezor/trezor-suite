@@ -50,7 +50,6 @@
         { "path": "../intl" },
         { "path": "../labeling" },
         { "path": "../navigation" },
-        { "path": "../scrollview" },
         { "path": "../search" },
         { "path": "../tokens" },
         { "path": "../../packages/connect" },

@@ -1,16 +1,11 @@
 import { useContext } from 'react';
-import Animated, {
-    FadeInDown,
-    FadeOutDown,
-    useAnimatedStyle,
-    withTiming,
-} from 'react-native-reanimated';
+import { FadeInDown, FadeOutDown, useAnimatedStyle, withTiming } from 'react-native-reanimated';
 import { useSelector } from 'react-redux';
 
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { type FeesRootState, selectAreFeesLoading } from '@suite-common/wallet-core';
 import { type AccountKey, type TokenAddress } from '@suite-common/wallet-types';
-import { Button, Card, HStack, Text, VStack } from '@suite-native/atoms';
+import { AnimatedView, Button, Card, HStack, Text, VStack } from '@suite-native/atoms';
 import {
     CryptoToFiatAmountFormatter,
     ExactCryptoAmountFormatter,
@@ -179,7 +174,7 @@ export const FeesFooter = ({
     return (
         <>
             <Card style={applyStyle(cardStyle)}>
-                <Animated.View style={animatedFooterStyle}>
+                <AnimatedView style={animatedFooterStyle}>
                     {tokenContract ? (
                         <TokenSummary
                             accountKey={accountKey}
@@ -196,10 +191,10 @@ export const FeesFooter = ({
                             isLoading={areFeesLoading}
                         />
                     )}
-                </Animated.View>
+                </AnimatedView>
             </Card>
             {isSubmitButtonVisible && (
-                <Animated.View
+                <AnimatedView
                     style={applyStyle(buttonWrapperStyle)}
                     entering={FadeInDown}
                     exiting={FadeOutDown}
@@ -213,7 +208,7 @@ export const FeesFooter = ({
                     >
                         <Translation id="transactionManagement.fees.submitButton" />
                     </Button>
-                </Animated.View>
+                </AnimatedView>
             )}
         </>
     );
