@@ -25,7 +25,7 @@ test.describe(
             await settingsPage.changeNetworks({ enableNetworks: [solSymbol] });
             await dashboardPage.openDeviceSwitcher();
             await dashboardPage.addHiddenWallet(process.env.PASSPHRASE!);
-            await walletPage.openSwapTrading({ symbol: solSymbol });
+            await walletPage.openSwapTrading({ symbol: solSymbol, atIndex: 3 });
         });
 
         test(
@@ -38,6 +38,7 @@ test.describe(
                         sellAsset: {
                             networkSymbol: solSymbol,
                             tokenSymbol: 'USDT',
+                            accountIndex: 3,
                         },
                         buyAsset: {
                             searchFilter: 'XLM',
@@ -52,7 +53,9 @@ test.describe(
                 });
 
                 await test.step('Enable the Stellar network from the receive account picker', async () => {
-                    await tradingPage.receiveAccount.activateNetworkForReceiveAccount(0);
+                    await tradingPage.receiveAccount.activateNetworkForReceiveAccount({
+                        symbol: asNetworkSymbol('xlm'),
+                    });
                     await expect(tradingPage.receiveAccount.selectedReceiveAccount).toContainText(
                         accountLabel,
                     );

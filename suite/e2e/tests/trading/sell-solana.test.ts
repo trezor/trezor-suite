@@ -10,9 +10,9 @@ import { transformAddress } from '../../support/testExtends/customMatchers';
 
 const solSymbol = asNetworkSymbol('sol');
 
-const sendAmount = '1.5';
+const sendAmount = '0.5';
 const formattedSendAmount = `${localizeNumber(sendAmount)} SOL`;
-const accountLabel = 'Solana #1';
+const accountLabel = 'Solana #4';
 
 // Live Invity never hands out a deposit address for a payment its provider page never initiated,
 // so the test supplies one. It is an address of this same wallet: the broadcast is already blocked
@@ -43,7 +43,7 @@ test.describe('Trading - Sell Solana', { tag: ['@T3W1', '@T3T1'] }, () => {
             });
             await dashboardPage.deviceSwitchingOpenButton.click();
             await dashboardPage.addHiddenWallet(process.env.PASSPHRASE!);
-            await walletPage.openTrading({ symbol: solSymbol });
+            await walletPage.openTrading({ symbol: solSymbol, atIndex: 3 });
             await tradingPage.sellTabButton.click();
         },
     );

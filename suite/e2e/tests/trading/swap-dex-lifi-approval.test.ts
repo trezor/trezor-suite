@@ -11,7 +11,7 @@ const ethSymbol = asNetworkSymbol('eth');
 const approvalAmount = '10';
 // The toast shows the approved amount compactly, and a stablecoin reads money-like.
 const compactApprovalAmount = '10.00';
-const accountLabel = 'Ethereum #2';
+const accountLabel = 'Ethereum #3';
 const providerName = 'LiFI Diamond';
 const positiveEthereumAmountPattern = /^(?!0+(?:\.0+)?\s*ETH$)\d+(?:\.\d+)?\s*ETH$/;
 
@@ -34,7 +34,7 @@ test.describe('Trading - DEX swap approval (LI.FI)', { tag: ['@T3T1', '@T3W1'] }
             });
             await dashboardPage.deviceSwitchingOpenButton.click();
             await dashboardPage.addHiddenWallet(process.env.PASSPHRASE!);
-            await walletPage.openSwapTrading({ symbol: ethSymbol, atIndex: 1 });
+            await walletPage.openSwapTrading({ symbol: ethSymbol, atIndex: 2 });
         },
     );
 
@@ -59,13 +59,16 @@ test.describe('Trading - DEX swap approval (LI.FI)', { tag: ['@T3T1', '@T3W1'] }
                         tokenSymbol: 'USDC',
                         searchFilter: 'USDC',
                         networkFilter: 'eth',
-                        accountIndex: 1,
+                        accountIndex: 2,
                     },
                     buyAsset: {
                         assetCryptoId: getCryptoId(ethSymbol),
                     },
                     selectReceiveAddress: async () => {
-                        await tradingPage.receiveAccount.selectSuiteReceiveAccount(1, ethSymbol);
+                        await tradingPage.receiveAccount.selectSuiteReceiveAccount({
+                            symbol: ethSymbol,
+                            atIndex: 2,
+                        });
                     },
                 });
                 await tradingPage.quotes.chooseDifferentOfferIfAvailable(dexProvider);

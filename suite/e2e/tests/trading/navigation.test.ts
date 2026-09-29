@@ -54,7 +54,11 @@ test.describe('Trading - Navigation', { tag: ['@T3W1', '@T3T1', '@optional'] }, 
             });
 
             await test.step('Buy from token', async () => {
-                await walletPage.openBuyTradingOfToken(ethSymbol, 'TUSD');
+                await walletPage.openBuyTradingOfToken({
+                    symbol: ethSymbol,
+                    atIndex: 2,
+                    tokenName: 'TUSD',
+                });
                 await tradingPage.verifyBuyFormOpened(/TUSD/);
             });
 
@@ -73,7 +77,11 @@ test.describe('Trading - Navigation', { tag: ['@T3W1', '@T3T1', '@optional'] }, 
             });
 
             await test.step('Sell from token', async () => {
-                await walletPage.openSellTradingOfToken(ethSymbol, 'USDC');
+                await walletPage.openSellTradingOfToken({
+                    symbol: ethSymbol,
+                    atIndex: 2,
+                    tokenName: 'USDC',
+                });
                 await tradingPage.verifySellFormOpened(/USDC/);
             });
 
@@ -91,7 +99,11 @@ test.describe('Trading - Navigation', { tag: ['@T3W1', '@T3T1', '@optional'] }, 
             });
 
             await test.step('Swap from token', async () => {
-                await walletPage.openSwapTradingOfToken(ethSymbol, 'USDC');
+                await walletPage.openSwapTradingOfToken({
+                    symbol: ethSymbol,
+                    atIndex: 2,
+                    tokenName: 'USDC',
+                });
                 await tradingPage.verifySwapFormOpened(/USDC/);
             });
         },

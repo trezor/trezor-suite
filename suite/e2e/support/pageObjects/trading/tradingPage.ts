@@ -176,7 +176,7 @@ export class TradingPage {
      * await tradingPage.fillBuyForm({
      *     amount: '1000',
      *     selectReceiveAddress: async () => {
-     *         await tradingPage.receiveAccount.selectSuiteReceiveAccount(0, 'btc');
+     *         await tradingPage.receiveAccount.selectSuiteReceiveAccount({ symbol: 'btc', atIndex: 0 });
      *     }
      * });
      *
@@ -313,7 +313,7 @@ export class TradingPage {
      *         assetCryptoId: getCryptoId('btc')
      *     },
      *     selectReceiveAddress: async () => {
-     *         await tradingPage.receiveAccount.selectSuiteReceiveAccount(0, 'btc');
+     *         await tradingPage.receiveAccount.selectSuiteReceiveAccount({ symbol: 'btc', atIndex: 0 });
      *     }
      * });
      *
@@ -334,7 +334,7 @@ export class TradingPage {
      *         assetCryptoId: usdcMint as CryptoId
      *     },
      *     selectReceiveAddress: async () => {
-     *         await tradingPage.receiveAccount.selectSuiteReceiveAccount(0);
+     *         await tradingPage.receiveAccount.selectSuiteReceiveAccount({ symbol: 'sol', atIndex: 0 });
      *     }
      * });
      *
@@ -357,6 +357,10 @@ export class TradingPage {
         const quotesResponsePromise = this.page.waitForResponse(tradeEndpoint.swapQuotes);
         await expect(this.inputs.receiveAmount).toHaveText('0.0');
         await this.inputs.cryptoAmount.fill(amount);
+        await expect(
+            this.page.getByText(messages['AMOUNT_IS_NOT_ENOUGH'].defaultMessage),
+            'Insufficient funds in the account to run swap flow test. Please contact the "tech_qa" Slack group immediately.',
+        ).toBeHidden();
         await quotesResponsePromise;
         await this.quotes.waitForSync();
     }

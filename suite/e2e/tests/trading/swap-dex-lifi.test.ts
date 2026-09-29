@@ -12,9 +12,9 @@ import { createTestAnnotation } from '../../support/reporters/annotations';
 
 const ethSymbol = asNetworkSymbol('eth');
 
-const sendAmount = '0.03';
+const sendAmount = '0.02';
 const formattedSendAmount = `${localizeNumber(sendAmount)} ETH`;
-const accountLabel = 'Ethereum #1';
+const accountLabel = 'Ethereum #3';
 const usdcCryptoId = getCryptoId(ethSymbol, '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48');
 const usdcDecimals = 6;
 
@@ -74,7 +74,7 @@ test.describe('Trading - DEX swap (LI.FI)', { tag: ['@T3T1', '@T3W1'] }, () => {
             });
             await dashboardPage.deviceSwitchingOpenButton.click();
             await dashboardPage.addHiddenWallet(process.env.PASSPHRASE!);
-            await walletPage.openSwapTrading({ symbol: ethSymbol });
+            await walletPage.openSwapTrading({ symbol: ethSymbol, atIndex: 2 });
         },
     );
 
@@ -87,7 +87,7 @@ test.describe('Trading - DEX swap (LI.FI)', { tag: ['@T3T1', '@T3W1'] }, () => {
             await test.step('Fill in the Swap form (ETH -> USDC)', async () => {
                 await tradingPage.fillSwapForm({
                     amount: sendAmount,
-                    sellAsset: { networkSymbol: ethSymbol },
+                    sellAsset: { networkSymbol: ethSymbol, accountIndex: 2 },
                     buyAsset: {
                         searchFilter: 'USDC',
                         networkFilter: 'eth',

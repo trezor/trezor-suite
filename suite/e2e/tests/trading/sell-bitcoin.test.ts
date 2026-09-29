@@ -12,7 +12,7 @@ const btcSymbol = asNetworkSymbol('btc');
 
 const sendAmount = '0.0015';
 const formattedSendAmount = `${localizeNumber(sendAmount)} BTC`;
-const accountLabel = 'Bitcoin #1';
+const accountLabel = 'Bitcoin #2';
 
 // Live Invity never hands out a deposit address for a payment its provider page never initiated,
 // so the test supplies one. It is an address of this same wallet: the broadcast is already blocked
@@ -48,7 +48,7 @@ test.describe('Trading - Sell BTC', { tag: ['@T3W1', '@T3T1'] }, () => {
             });
             await dashboardPage.deviceSwitchingOpenButton.click();
             await dashboardPage.addHiddenWallet(process.env.PASSPHRASE!);
-            await walletPage.openTrading({ symbol: btcSymbol });
+            await walletPage.openTrading({ symbol: btcSymbol, atIndex: 1 });
             await tradingPage.sellTabButton.click();
             await tradingResponses.sell.list();
         },

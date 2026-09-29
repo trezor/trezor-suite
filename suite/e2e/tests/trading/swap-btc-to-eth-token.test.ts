@@ -14,8 +14,8 @@ const ethSymbol = asNetworkSymbol('eth');
 
 const sendAmount = '0.001';
 const formattedSendAmount = `${localizeNumber(sendAmount)} BTC`;
-const sendAccountLabel = 'Bitcoin #1';
-const receiveAccountLabel = 'Ethereum #1';
+const sendAccountLabel = 'Bitcoin #2';
+const receiveAccountLabel = 'Ethereum #3';
 const receiveTokenSymbol = 'USDC';
 
 test.describe('Trading - Swap', { tag: ['@T3W1', '@T3T1'] }, () => {
@@ -32,7 +32,7 @@ test.describe('Trading - Swap', { tag: ['@T3W1', '@T3T1'] }, () => {
             });
             await dashboardPage.deviceSwitchingOpenButton.click();
             await dashboardPage.addHiddenWallet(process.env.PASSPHRASE!);
-            await walletPage.openSwapTrading({ symbol: btcSymbol });
+            await walletPage.openSwapTrading({ symbol: btcSymbol, atIndex: 1 });
         },
     );
 
@@ -45,6 +45,7 @@ test.describe('Trading - Swap', { tag: ['@T3W1', '@T3T1'] }, () => {
                     amount: sendAmount,
                     sellAsset: {
                         networkSymbol: btcSymbol,
+                        accountIndex: 1,
                     },
                     buyAsset: {
                         searchFilter: receiveTokenSymbol,
@@ -55,7 +56,10 @@ test.describe('Trading - Swap', { tag: ['@T3W1', '@T3T1'] }, () => {
                         ),
                     },
                     selectReceiveAddress: async () => {
-                        await tradingPage.receiveAccount.selectSuiteReceiveAccount(0, ethSymbol);
+                        await tradingPage.receiveAccount.selectSuiteReceiveAccount({
+                            symbol: ethSymbol,
+                            atIndex: 2,
+                        });
                     },
                 });
             });

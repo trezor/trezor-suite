@@ -15,7 +15,7 @@ const btcSymbol = asNetworkSymbol('btc');
 
 const sendAmount = '0.5';
 const formattedSendAmount = `${localizeNumber(sendAmount)} SOL`;
-const accountLabel = 'Solana #1';
+const accountLabel = 'Solana #4';
 
 test.describe('Trading - Swap', { tag: ['@T3W1', '@T3T1'] }, () => {
     test.use({ deviceSetup: { mnemonic: 'mnemonic_academic', passphrase_protection: true } });
@@ -32,7 +32,7 @@ test.describe('Trading - Swap', { tag: ['@T3W1', '@T3T1'] }, () => {
             });
             await dashboardPage.deviceSwitchingOpenButton.click();
             await dashboardPage.addHiddenWallet(process.env.PASSPHRASE!);
-            await walletPage.openSwapTrading({ symbol: solSymbol });
+            await walletPage.openSwapTrading({ symbol: solSymbol, atIndex: 3 });
         },
     );
 
@@ -54,13 +54,17 @@ test.describe('Trading - Swap', { tag: ['@T3W1', '@T3T1'] }, () => {
                     sellAsset: {
                         searchFilter: accountLabel,
                         networkSymbol: solSymbol,
+                        accountIndex: 3,
                     },
                     buyAsset: {
                         searchFilter: 'Bitcoin',
                         assetCryptoId: getCryptoId(btcSymbol),
                     },
                     selectReceiveAddress: async () => {
-                        await tradingPage.receiveAccount.selectSuiteReceiveAccount(0, btcSymbol);
+                        await tradingPage.receiveAccount.selectSuiteReceiveAccount({
+                            symbol: btcSymbol,
+                            atIndex: 1,
+                        });
                     },
                 });
             });
@@ -135,7 +139,7 @@ test.describe('Trading - Swap', { tag: ['@T3W1', '@T3T1'] }, () => {
 
                 await tradingPage.verifySwapToast({
                     sendAccount: accountLabel,
-                    receiveAccount: 'Bitcoin #1',
+                    receiveAccount: 'Bitcoin #2',
                     // The toast echoes the provider's formatting of the amount, not the one we typed.
                     sendAmount: sendStringAmount,
                     receiveAmount,
