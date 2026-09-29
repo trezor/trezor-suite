@@ -30,7 +30,6 @@ import { BigNumber } from '@trezor/utils';
 import { useSelector } from 'src/hooks/suite';
 import { useTradingAssetDecimals } from 'src/hooks/wallet/trading/form/common/useTradingAssetDecimals';
 import { useTradingFormContext } from 'src/hooks/wallet/trading/form/useTradingCommonForm';
-import { useBitcoinAmountUnit } from 'src/hooks/wallet/useBitcoinAmountUnit';
 import {
     type TradingAllFormProps,
     type TradingFormInputFiatCryptoProps,
@@ -54,7 +53,11 @@ import {
     getTradingAmountInputStyle,
 } from '../../tradingFormInputsUtils';
 
-type TradingFormInputCryptoAmountContentProps = TradingFormInputFiatCryptoProps & {
+type TradingFormInputCryptoAmountProps = TradingFormInputFiatCryptoProps & {
+    isInSats?: boolean;
+};
+
+type TradingFormInputCryptoAmountContentProps = TradingFormInputCryptoAmountProps & {
     validationAccount: Account;
 };
 
@@ -63,6 +66,7 @@ const TradingFormInputCryptoAmountContent = ({
     cryptoInputName,
     fiatInputName,
     cryptoSelectName,
+    isInSats = false,
 }: TradingFormInputCryptoAmountContentProps) => {
     const { translationString } = useTranslation();
     const theme = useTheme();
@@ -84,7 +88,6 @@ const TradingFormInputCryptoAmountContent = ({
         clearErrors,
     } = context as UseFormReturn<TradingAllFormProps>;
 
-    const { shouldSendInSats } = useBitcoinAmountUnit(validationAccount.symbol);
     const amountInCrypto = useWatch({ control, name: TRADING_FORM_AMOUNT_IN_CRYPTO });
     const cryptoAmount = useWatch({ control, name: cryptoInputName });
 
@@ -124,7 +127,7 @@ const TradingFormInputCryptoAmountContent = ({
             getCryptoInputRules({
                 isBuyContext,
                 translationString,
-                shouldSendInSats,
+                shouldSendInSats: isInSats,
                 decimals,
                 amountLimits,
                 formatter: CryptoAmountFormatter,
@@ -137,7 +140,7 @@ const TradingFormInputCryptoAmountContent = ({
         [
             isBuyContext,
             translationString,
-            shouldSendInSats,
+            isInSats,
             decimals,
             amountLimits,
             CryptoAmountFormatter,
@@ -182,7 +185,7 @@ const TradingFormInputCryptoAmountContent = ({
             return;
         }
 
-        const filledAmount = shouldSendInSats
+        const filledAmount = isInSats
             ? unitsToSubunits({
                   value: asAmountUnit(new BigNumber(quoteCryptoAmount)),
                   decimals,
@@ -198,7 +201,7 @@ const TradingFormInputCryptoAmountContent = ({
     }, [
         quoteCryptoAmount,
         amountInCrypto,
-        shouldSendInSats,
+        isInSats,
         decimals,
         cryptoInputName,
         fiatInputName,
@@ -255,7 +258,7 @@ const TradingFormInputCryptoAmountContent = ({
     );
 };
 
-export const TradingFormInputCryptoAmount = (props: TradingFormInputFiatCryptoProps) => {
+export const TradingFormInputCryptoAmount = (props: TradingFormInputCryptoAmountProps) => {
     const context = useTradingFormContext();
     const { control } = context as UseFormReturn<TradingAllFormProps>;
 
