@@ -4,14 +4,22 @@ import { MessagesSchema, protobufManager } from '@trezor/protobuf';
 import { trzd } from '@trezor/protocol';
 import { Assert } from '@trezor/schema-utils';
 
+import type { DefinitionsVersion } from '../../utils/definitionsUtils';
+import { getProductionDefinitionsUrl } from '../../utils/definitionsUtils';
+
 interface GetSolanaTokenDefinition {
     mintAddress?: string;
+    // Definitions sent to the device must match its format version.
+    version?: DefinitionsVersion;
 }
 
-export const getSolanaTokenDefinition = async ({ mintAddress }: GetSolanaTokenDefinition) => {
+export const getSolanaTokenDefinition = async ({
+    mintAddress,
+    version = 1,
+}: GetSolanaTokenDefinition) => {
     try {
         if (mintAddress) {
-            const tokenDefinitionUrl = `https://data.trezor.io/firmware/definitions/solana/token/${mintAddress}.dat`;
+            const tokenDefinitionUrl = `${getProductionDefinitionsUrl(version)}/solana/token/${mintAddress}.dat`;
             const tokenDefinition = await fetch(tokenDefinitionUrl);
 
             if (tokenDefinition.status === 200) {

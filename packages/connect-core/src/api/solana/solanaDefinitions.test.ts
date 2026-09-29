@@ -24,6 +24,14 @@ describe('getSolanaTokenDefinition', () => {
         expect(result).toBe(mockArrayBuffer);
     });
 
+    it('should fetch v2 definition', async () => {
+        mockedFetch.mockResolvedValue({ status: 404 } as any);
+        await getSolanaTokenDefinition({ mintAddress, version: 2 });
+        expect(fetch).toHaveBeenCalledWith(
+            `https://data.trezor.io/firmware/definitions/v2/solana/token/${mintAddress}.dat`,
+        );
+    });
+
     it('should return undefined for 404 status', async () => {
         mockedFetch.mockResolvedValue({ status: 404 } as any);
         const result = await getSolanaTokenDefinition({ mintAddress });
