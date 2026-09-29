@@ -26,17 +26,9 @@ test.describe('Onboarding - recover wallet T1B1', { tag: ['@T1B1'] }, () => {
                 stream: TestStream.Growth,
             }),
         },
-        async ({
-            page,
-            device,
-            onboardingPage,
-            analyticsSection,
-            devicePrompt,
-            recoveryModal,
-            trezorInput,
-        }) => {
+        async ({ page, device, onboardingPage, devicePrompt, recoveryModal, trezorInput }) => {
             await test.step('Start wallet recovery process', async () => {
-                await analyticsSection.passThroughAnalytics();
+                await onboardingPage.passThroughAnalyticsAndDeviceCheck();
                 await onboardingPage.firmware.continueThroughFirmware();
                 await onboardingPage.recoverWalletButton.click();
                 await recoveryModal.selectWordCount(24);

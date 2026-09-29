@@ -36,7 +36,7 @@ test.describe('Firmware - update availability', { tag: ['@T3W1'] }, () => {
             await test.step('Pass through onboarding', async () => {
                 await analyticsSection.continueButton.click();
                 await onboardingPage.pairTHP();
-                await analyticsSection.continueButton.click();
+                await onboardingPage.setupDeviceButton.click();
                 await firmwareReleaseConfigMock.expectReleaseConfigServed();
 
                 await onboardingPage.firmware.expectFirmwareToBeReady();
@@ -72,7 +72,7 @@ test.describe('Firmware - update availability', { tag: ['@T3W1'] }, () => {
             await test.step('Skip the offered update and pass through onboarding', async () => {
                 await analyticsSection.continueButton.click();
                 await onboardingPage.pairTHP();
-                await analyticsSection.continueButton.click();
+                await onboardingPage.setupDeviceButton.click();
                 await firmwareReleaseConfigMock.expectReleaseConfigServed();
 
                 await onboardingPage.firmware.expectFirmwareUpdateToBeOffered({

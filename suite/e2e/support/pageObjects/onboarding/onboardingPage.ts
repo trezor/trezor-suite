@@ -26,6 +26,7 @@ export class OnboardingPage {
     readonly welcomeBody: Locator;
     readonly databaseUpgradeModalHeading: Locator;
     readonly completeOnboardingButton: Locator;
+    readonly setupDeviceButton: Locator;
     readonly authenticityStartButton: Locator;
     readonly authenticityContinueButton: Locator;
     readonly createBackupButton: Locator;
@@ -64,6 +65,7 @@ export class OnboardingPage {
         this.welcomeBody = this.page.getByTestId('@welcome-layout/body');
         this.databaseUpgradeModalHeading = this.page.getByTestId('@modal/database-upgrade/heading');
         this.completeOnboardingButton = this.page.getByTestId('@onboarding/complete-onboarding');
+        this.setupDeviceButton = this.page.getByTestId('@onboarding/device-check/setup-button');
         this.authenticityStartButton = this.page.getByTestId('@authenticity-check/start-button');
         this.authenticityContinueButton = this.page.getByTestId(
             '@authenticity-check/continue-button',
@@ -157,6 +159,12 @@ export class OnboardingPage {
 
         await this.completeOnboardingButton.click();
         await this.page.discoveryShouldFinish();
+    }
+
+    @step()
+    async passThroughAnalyticsAndDeviceCheck() {
+        await this.analyticsSection.continueButton.click();
+        await this.setupDeviceButton.click();
     }
 
     @step()

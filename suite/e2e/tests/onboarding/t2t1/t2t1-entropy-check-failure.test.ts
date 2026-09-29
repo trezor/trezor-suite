@@ -9,9 +9,9 @@ test.describe('Onboarding - simulated entropy check failure', { tag: ['@T2T1'] }
         ignoreToastErrors: ['SIMULATED ERROR', 'device disconnected during action'],
     });
 
-    test.beforeEach(async ({ onboardingPage, analyticsSection }) => {
+    test.beforeEach(async ({ onboardingPage }) => {
         await onboardingPage.disableNecessaryFirmwareChecks();
-        await analyticsSection.passThroughAnalytics();
+        await onboardingPage.passThroughAnalyticsAndDeviceCheck();
     });
 
     test(

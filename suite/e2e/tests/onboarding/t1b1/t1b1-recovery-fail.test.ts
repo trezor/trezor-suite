@@ -15,9 +15,9 @@ test.describe('Onboarding - recover wallet T1B1', { tag: ['@T1B1', '@optional'] 
     test(
         'Device disconnected during recovery offers retry',
         { annotation: createTestAnnotation({ stream: TestStream.Growth }) },
-        async ({ device, onboardingPage, analyticsSection, recoveryModal, devicePrompt }) => {
+        async ({ device, onboardingPage, recoveryModal, devicePrompt }) => {
             await test.step('Start wallet recovery process', async () => {
-                await analyticsSection.passThroughAnalytics();
+                await onboardingPage.passThroughAnalyticsAndDeviceCheck();
                 await onboardingPage.firmware.continueThroughFirmware();
                 await onboardingPage.recoverWalletButton.click();
                 await recoveryModal.selectWordCount(24);

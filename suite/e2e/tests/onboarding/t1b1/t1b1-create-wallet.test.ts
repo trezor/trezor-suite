@@ -23,17 +23,9 @@ test.describe('Onboarding - create wallet', { tag: ['@T1B1'] }, () => {
                 stream: TestStream.Growth,
             }),
         },
-        async ({
-            page,
-            device,
-            analyticsSection,
-            onboardingPage,
-            dashboardPage,
-            devicePrompt,
-            trezorInput,
-        }) => {
+        async ({ page, device, onboardingPage, dashboardPage, devicePrompt, trezorInput }) => {
             await test.step('Pass through analytics and firmware steps', async () => {
-                await analyticsSection.passThroughAnalytics();
+                await onboardingPage.passThroughAnalyticsAndDeviceCheck();
                 await onboardingPage.firmware.continueThroughFirmware();
             });
 
