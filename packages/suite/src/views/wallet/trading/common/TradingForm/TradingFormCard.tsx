@@ -1,7 +1,9 @@
 import { Card, Column } from '@trezor/components';
 
+export const TRADING_FORM_CARD_COMPONENT = 'TradingFormCard';
+
 export const TradingFormCard = ({ children }: { children: React.ReactNode }) => (
-    <Card paddingType="none">
+    <Card paddingType="none" data-component={TRADING_FORM_CARD_COMPONENT}>
         <Column hasDivider>{children}</Column>
     </Card>
 );
