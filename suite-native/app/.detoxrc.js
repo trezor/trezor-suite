@@ -32,7 +32,7 @@ module.exports = {
         'android.release': {
             type: 'android.apk',
             binaryPath: 'android/app/build/outputs/apk/release/app-release.apk',
-            build: 'cd android && NODE_ENV=test ./gradlew :app:assembleRelease :app:assembleAndroidTest -DtestBuildType=release',
+            build: 'cd android && NODE_ENV=test ./gradlew :app:assembleRelease :app:assembleAndroidTest --max-workers=2 -DtestBuildType=release',
             reversePorts: [21328, 19121],
         },
     },

@@ -88,6 +88,7 @@ require('v8').setFlagsFromString('--max-old-space-size=12288');
  * @type {import('metro-config').MetroConfig}
  */
 const config = {
+    maxWorkers: 2,
     transformer: {
         getTransformOptions: async () => ({
             transform: {
