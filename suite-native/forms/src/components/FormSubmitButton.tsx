@@ -1,7 +1,7 @@
 import { type ComponentProps, type PropsWithChildren } from 'react';
-import Animated, { SlideInDown, SlideOutDown } from 'react-native-reanimated';
+import { SlideInDown, SlideOutDown } from 'react-native-reanimated';
 
-import { Button } from '@suite-native/atoms';
+import { AnimatedView, Button } from '@suite-native/atoms';
 
 type FormSubmitButtonProps = PropsWithChildren<{
     isVisible: boolean;
@@ -19,10 +19,10 @@ export const FormSubmitButton = ({
     }
 
     return (
-        <Animated.View entering={SlideInDown} exiting={SlideOutDown}>
+        <AnimatedView entering={SlideInDown} exiting={SlideOutDown}>
             <Button onPress={onPress} {...restProps}>
                 {children}
             </Button>
-        </Animated.View>
+        </AnimatedView>
     );
 };

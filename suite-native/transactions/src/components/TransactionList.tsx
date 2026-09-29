@@ -24,8 +24,7 @@ import {
     groupTransactionsByDate,
     isPending,
 } from '@suite-common/wallet-utils';
-import { Box } from '@suite-native/atoms';
-import { useScrollDivider } from '@suite-native/scrollview';
+import { Box, useScrollDivider } from '@suite-native/atoms';
 import {
     type TokensRootState,
     type TypedTokenTransfer,

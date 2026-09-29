@@ -1,6 +1,6 @@
-import Animated, { FadeIn, FadeOut } from 'react-native-reanimated';
+import { FadeIn, FadeOut } from 'react-native-reanimated';
 
-import { Hint } from '@suite-native/atoms';
+import { AnimatedView, Hint } from '@suite-native/atoms';
 import { useField } from '@suite-native/forms';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
@@ -28,10 +28,10 @@ export const AmountErrorMessage = ({
     if (!errorMessage) return null;
 
     return (
-        <Animated.View entering={FadeIn} exiting={FadeOut}>
+        <AnimatedView entering={FadeIn} exiting={FadeOut}>
             <Hint variant="error" style={applyStyle(errorStyle, { isFiatDisplayed })}>
                 {errorMessage}
             </Hint>
-        </Animated.View>
+        </AnimatedView>
     );
 };

@@ -1,6 +1,6 @@
-import Animated, { useAnimatedStyle, withTiming } from 'react-native-reanimated';
+import { useAnimatedStyle, withTiming } from 'react-native-reanimated';
 
-import { HStack, Text } from '@suite-native/atoms';
+import { AnimatedView, HStack, Text } from '@suite-native/atoms';
 import { Icon } from '@suite-native/icons';
 import { Translation } from '@suite-native/intl';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
@@ -30,7 +30,7 @@ export const FeeOptionErrorMessage = ({ isVisible }: FeeOptionErrorMessageProps)
     }
 
     return (
-        <Animated.View
+        <AnimatedView
             style={[applyStyle(errorStyle), animatedErrorStyle]}
             testID="@transactionManagement/fee-option-error-message"
         >
@@ -40,6 +40,6 @@ export const FeeOptionErrorMessage = ({ isVisible }: FeeOptionErrorMessageProps)
                     <Translation id="transactionManagement.fees.error" />
                 </Text>
             </HStack>
-        </Animated.View>
+        </AnimatedView>
     );
 };

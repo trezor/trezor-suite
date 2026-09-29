@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
 import { Pressable } from 'react-native';
-import Animated, {
+import {
     Easing,
     interpolateColor,
     useAnimatedStyle,
@@ -10,6 +10,7 @@ import Animated, {
 
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
+import { AnimatedView } from './AnimatedView';
 import { ACCESSIBILITY_FONTSIZE_MULTIPLIER } from './Text';
 
 export type SwitchProps = {
@@ -98,9 +99,9 @@ export const Switch = ({ isChecked, onChange, isDisabled = false, testID }: Swit
 
     return (
         <Pressable onPress={handlePress} accessibilityRole="switch" testID={testID}>
-            <Animated.View style={[animatedSwitchContainerStyle, applyStyle(switchContainerStyle)]}>
-                <Animated.View style={[animatedSwitchCircleStyle, applyStyle(switchCircleStyle)]} />
-            </Animated.View>
+            <AnimatedView style={[animatedSwitchContainerStyle, applyStyle(switchContainerStyle)]}>
+                <AnimatedView style={[animatedSwitchCircleStyle, applyStyle(switchCircleStyle)]} />
+            </AnimatedView>
         </Pressable>
     );
 };

@@ -1,9 +1,10 @@
 import { ActivityIndicator, View } from 'react-native';
-import Animated, { FadeIn } from 'react-native-reanimated';
+import { FadeIn } from 'react-native-reanimated';
 
 import { useEvent } from 'expo';
 import { VideoView, useVideoPlayer } from 'expo-video';
 
+import { AnimatedView } from '@suite-native/atoms';
 import { useNativeStyles } from '@trezor/styles-native';
 
 import { type VideoName, videos } from '../videos';
@@ -38,14 +39,14 @@ export const Video = ({ name, aspectRatio = 1 }: VideoProps) => {
                 />
             )}
             {!isLoading && (
-                <Animated.View entering={FadeIn}>
+                <AnimatedView entering={FadeIn}>
                     <VideoView
                         player={videoPlayer}
                         style={applyStyle(videoStyle, { aspectRatio })}
                         contentFit="contain"
                         nativeControls={false}
                     />
-                </Animated.View>
+                </AnimatedView>
             )}
         </View>
     );

@@ -1,6 +1,6 @@
 import { useContext } from 'react';
 import { Pressable } from 'react-native';
-import Animated, {
+import {
     interpolateColor,
     useAnimatedStyle,
     useDerivedValue,
@@ -21,7 +21,7 @@ import {
     isFinalPrecomposedTransaction,
 } from '@suite-common/wallet-types';
 import { getFeeUnits, isEip1559 } from '@suite-common/wallet-utils';
-import { Box, HStack, Radio, Text, VStack } from '@suite-native/atoms';
+import { AnimatedView, Box, HStack, Radio, Text, VStack } from '@suite-native/atoms';
 import {
     CryptoToFiatAmountFormatter,
     EmptyAmountSkeleton,
@@ -173,7 +173,7 @@ export const FeeOption = ({
             disabled={!isInteractive}
             testID={`@transactionManagement/fees-level-container-${feeKey}`}
         >
-            <Animated.View style={[applyStyle(wrapperStyle), animatedCardStyle]}>
+            <AnimatedView style={[applyStyle(wrapperStyle), animatedCardStyle]}>
                 <Box style={applyStyle(valuesWrapperStyle)}>
                     <HStack
                         spacing="sp24"
@@ -238,7 +238,7 @@ export const FeeOption = ({
                 </Box>
 
                 {!areFeeValuesComplete && <FeeOptionErrorMessage isVisible={isChecked} />}
-            </Animated.View>
+            </AnimatedView>
         </Pressable>
     );
 };

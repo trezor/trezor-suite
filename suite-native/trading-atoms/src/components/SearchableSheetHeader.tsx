@@ -1,7 +1,7 @@
 import { type ReactNode, useCallback, useState } from 'react';
-import Animated, { FadeIn, FadeOut, LinearTransition } from 'react-native-reanimated';
+import { FadeIn, FadeOut, LinearTransition } from 'react-native-reanimated';
 
-import { BottomSheetGrabber, VStack } from '@suite-native/atoms';
+import { AnimatedView, BottomSheetGrabber, VStack } from '@suite-native/atoms';
 import { type IconName } from '@suite-native/icons';
 import { useTranslate } from '@suite-native/intl';
 import { type NativeStyleObject, prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
@@ -64,9 +64,9 @@ export const SearchableSheetHeader = ({
     return (
         <VStack style={[applyStyle(wrapperStyle), style]}>
             <BottomSheetGrabber />
-            <Animated.View layout={LinearTransition.duration(FOCUS_ANIMATION_DURATION)}>
+            <AnimatedView layout={LinearTransition.duration(FOCUS_ANIMATION_DURATION)}>
                 {!isFilterActive && (
-                    <Animated.View
+                    <AnimatedView
                         entering={FadeIn.duration(FOCUS_ANIMATION_DURATION)}
                         exiting={FadeOut.duration(FOCUS_ANIMATION_DURATION)}
                     >
@@ -79,10 +79,10 @@ export const SearchableSheetHeader = ({
                         >
                             {title}
                         </SheetHeaderTitle>
-                    </Animated.View>
+                    </AnimatedView>
                 )}
-            </Animated.View>
-            <Animated.View layout={LinearTransition.duration(FOCUS_ANIMATION_DURATION)}>
+            </AnimatedView>
+            <AnimatedView layout={LinearTransition.duration(FOCUS_ANIMATION_DURATION)}>
                 <BottomSheetSearchInputWithCancel
                     onChange={onFilterChange}
                     onFocus={() => changeFilterFocus(true)}
@@ -92,7 +92,7 @@ export const SearchableSheetHeader = ({
                     testId={searchInputTestId}
                     autoCorrect={autoCorrect}
                 />
-            </Animated.View>
+            </AnimatedView>
             {children}
         </VStack>
     );

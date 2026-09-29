@@ -1,5 +1,7 @@
-import Animated, { FadeInDown, LinearTransition } from 'react-native-reanimated';
+import { FadeInDown, LinearTransition } from 'react-native-reanimated';
 import { useSelector } from 'react-redux';
+
+import { AnimatedView } from '@suite-native/atoms';
 
 import { selectDeviceNetworkSymbolsWithAssets, selectIsAssetListLoading } from '../assetsSelectors';
 import { AssetItem } from './AssetItem';
@@ -11,13 +13,13 @@ export const AssetList = () => {
     return (
         <>
             {deviceNetworkSymbols.map(symbol => (
-                <Animated.View
+                <AnimatedView
                     entering={isAssetListLoading ? FadeInDown : undefined}
                     layout={LinearTransition}
                     key={symbol}
                 >
                     <AssetItem cryptoCurrencySymbol={symbol} />
-                </Animated.View>
+                </AnimatedView>
             ))}
         </>
     );

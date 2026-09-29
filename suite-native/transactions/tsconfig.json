@@ -51,7 +51,6 @@
         { "path": "../intl" },
         { "path": "../labeling" },
         { "path": "../navigation" },
-        { "path": "../scrollview" },
         { "path": "../suite-sync" },
         { "path": "../tokens" },
         {

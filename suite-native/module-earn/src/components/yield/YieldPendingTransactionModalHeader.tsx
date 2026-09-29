@@ -1,8 +1,15 @@
 import { type ReactNode } from 'react';
 import { type ViewStyle } from 'react-native';
-import Animated, { type AnimatedStyle } from 'react-native-reanimated';
+import { type AnimatedStyle } from 'react-native-reanimated';
 
-import { BottomSheetGrabber, Box, HStack, PressableOpacity, Text } from '@suite-native/atoms';
+import {
+    AnimatedView,
+    BottomSheetGrabber,
+    Box,
+    HStack,
+    PressableOpacity,
+    Text,
+} from '@suite-native/atoms';
 import { Icon } from '@suite-native/icons';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
@@ -47,9 +54,9 @@ export const YieldPendingTransactionModalHeader = ({
                     onPress={onToggleSheet}
                     style={applyStyle(caretButtonStyle)}
                 >
-                    <Animated.View style={caretAnimatedStyle}>
+                    <AnimatedView style={caretAnimatedStyle}>
                         <Icon name="caretDown" color="contentPrimary" size="mediumLarge" />
-                    </Animated.View>
+                    </AnimatedView>
                 </PressableOpacity>
             </HStack>
         </Box>

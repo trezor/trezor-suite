@@ -5,8 +5,7 @@ import { FlashList, type ListRenderItemInfo } from '@shopify/flash-list';
 
 import { type NetworksRootState } from '@suite-common/networks';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
-import { Box } from '@suite-native/atoms';
-import { useScrollDivider } from '@suite-native/scrollview';
+import { Box, useScrollDivider } from '@suite-native/atoms';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
 import { AccountsListEmptyPlaceholder } from './AccountsListEmptyPlaceholder';
