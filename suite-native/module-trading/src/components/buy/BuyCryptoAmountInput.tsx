@@ -1,4 +1,4 @@
-import { forwardRef } from 'react';
+import { type Ref } from 'react';
 import { type TextInput } from 'react-native';
 import { useSelector } from 'react-redux';
 
@@ -15,40 +15,37 @@ import { AmountInput } from '../general/Input/AmountInput';
 
 export type CryptoAmountInputProps = {
     showAssetsSheet: () => void;
+    ref?: Ref<TextInput>;
 };
 
 const CRYPTO_AMOUNT_TEST_ID = '@trading/buy/crypto-amount-input';
 
-export const BuyCryptoAmountInput = forwardRef<TextInput, CryptoAmountInputProps>(
-    ({ showAssetsSheet }, ref) => {
-        const { translate } = useTranslate();
-        const { control } = useBuyFormContext();
-        const [amountInCrypto, asset] = useWatch({
-            control,
-            name: ['amountInCrypto', 'asset'],
-        });
-        const symbol = getSymbolFromTradeableAsset(asset);
-        const { cryptoAmountTransformer } = useAmountInputTransformers(symbol);
-        const isLoading = useSelector(selectTradingBuyIsLoading);
-        const inputControls = useBuyInputFormControls('cryptoValue');
+export const BuyCryptoAmountInput = ({ showAssetsSheet, ref }: CryptoAmountInputProps) => {
+    const { translate } = useTranslate();
+    const { control } = useBuyFormContext();
+    const [amountInCrypto, asset] = useWatch({
+        control,
+        name: ['amountInCrypto', 'asset'],
+    });
+    const symbol = getSymbolFromTradeableAsset(asset);
+    const { cryptoAmountTransformer } = useAmountInputTransformers(symbol);
+    const isLoading = useSelector(selectTradingBuyIsLoading);
+    const inputControls = useBuyInputFormControls('cryptoValue');
 
-        const isAssetSelected = !!asset;
+    const isAssetSelected = !!asset;
 
-        return (
-            <AmountInput
-                ref={ref}
-                {...inputControls}
-                accessibilityLabel={translate('moduleTrading.selectCoin.amountLabel')}
-                editable={isAssetSelected}
-                inputTransformer={cryptoAmountTransformer}
-                maxDecimals={MAX_CRYPTO_DECIMALS}
-                onPress={isAssetSelected ? undefined : showAssetsSheet}
-                testID={CRYPTO_AMOUNT_TEST_ID}
-                isLoading={isLoading && !amountInCrypto}
-                loadingAccessibilityLabel={translate(
-                    'moduleTrading.tradingScreen.quotesLoadingLabel',
-                )}
-            />
-        );
-    },
-);
+    return (
+        <AmountInput
+            ref={ref}
+            {...inputControls}
+            accessibilityLabel={translate('moduleTrading.selectCoin.amountLabel')}
+            editable={isAssetSelected}
+            inputTransformer={cryptoAmountTransformer}
+            maxDecimals={MAX_CRYPTO_DECIMALS}
+            onPress={isAssetSelected ? undefined : showAssetsSheet}
+            testID={CRYPTO_AMOUNT_TEST_ID}
+            isLoading={isLoading && !amountInCrypto}
+            loadingAccessibilityLabel={translate('moduleTrading.tradingScreen.quotesLoadingLabel')}
+        />
+    );
+};
