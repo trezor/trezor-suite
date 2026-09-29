@@ -1,5 +1,7 @@
 import { type Store, combineReducers } from '@reduxjs/toolkit';
 
+import { Feature, type MessageSystemRootState } from '@suite-common/message-system';
+import { mockMessageSystemStateWithFeatureFlags } from '@suite-common/message-system/mocks';
 import { initialWalletSettingsState } from '@suite-common/wallet-core';
 import { Text } from '@suite-native/atoms';
 import { getTranslation, localeReducer } from '@suite-native/intl';
@@ -17,7 +19,7 @@ import {
     type TradingLocationSettingsProps,
 } from './TradingLocationSettings';
 
-type State = TradingResidenceRootState;
+type State = TradingResidenceRootState & MessageSystemRootState;
 
 describe('TradingLocationSettings', () => {
     let store: Store<State>;
@@ -26,6 +28,12 @@ describe('TradingLocationSettings', () => {
         createLightStore({
             reducer: {
                 locale: localeReducer,
+                messageSystem: createStaticReducer(
+                    mockMessageSystemStateWithFeatureFlags(
+                        { [Feature.trading.restrictions.residence]: true },
+                        { [Feature.trading.restrictions.residence]: { countries: ['PL', 'US'] } },
+                    ),
+                ),
                 wallet: combineReducers({
                     settings: createStaticReducer(initialWalletSettingsState),
                     trading: combineReducers({

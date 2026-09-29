@@ -6,6 +6,7 @@ export { prepareTradingLastErrorSentryMiddleware } from './middlewares/tradingLa
 export * from './selectors/buySelectors';
 export * from './selectors/commonSelectors';
 export * from './selectors/exchangeSelectors';
+export * from './selectors/residenceCheck';
 export * from './selectors/residenceSelectors';
 export * from './selectors/sellSelectors';
 export * from './selectors/tradeableAssetBalancesSelectors';
