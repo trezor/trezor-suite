@@ -7,6 +7,7 @@ import { type AccountTableSchema, EvoluAccountTable } from './data/accountTable'
 import { AddressEvoluTable, type AddressTableSchema } from './data/addressTable';
 import { OutputEvoluTable, type OutputTableSchema } from './data/outputTable';
 import { EvoluWalletTable, type WalletTableSchema } from './data/walletTable';
+import { type EvoluSyncStateDep, subscribeEvoluOwnerSyncStatus } from './evoluSyncState';
 
 export type CreateOwnerWebSocketTransport = typeof createOwnerWebSocketTransport;
 
@@ -15,7 +16,8 @@ export type CreateOwnerWebSocketTransportDep = {
 };
 
 export type CreateEvoluStorageFactoryDeps = EvoluInstanceFactoryDep &
-    CreateOwnerWebSocketTransportDep;
+    CreateOwnerWebSocketTransportDep &
+    EvoluSyncStateDep;
 
 export type EvoluStorageFactory = CreateSuiteStorage;
 
@@ -35,6 +37,7 @@ export const createEvoluStorageFactory =
          * @private
          */
         let unuseOwner = () => {};
+        const syncStatusUnsubscribes = new Set<() => void>();
 
         const disconnectRelay = () => {
             unuseOwner();
@@ -46,11 +49,7 @@ export const createEvoluStorageFactory =
 
         const forceResync = () => {
             if (relayUrl !== null) {
-                // Resubscribing starts full reconciliation, including previously rejected writes.
-                unuseOwner();
-                unuseOwner = evolu.useOwner(owner, [
-                    deps.createOwnerWebSocketTransport({ url: relayUrl, ownerId: owner.id }),
-                ]);
+                evolu.requestSync(owner.id);
             }
 
             return Promise.resolve();
@@ -58,8 +57,26 @@ export const createEvoluStorageFactory =
 
         const updateRelayUrl = (url: string) => {
             relayUrl = url;
+            unuseOwner();
+            unuseOwner = evolu.useOwner(owner, [
+                deps.createOwnerWebSocketTransport({ url, ownerId: owner.id }),
+            ]);
 
-            return forceResync();
+            return Promise.resolve();
+        };
+
+        const subscribeSyncStatus: SuiteSyncStorage['subscribeSyncStatus'] = listener => {
+            const unsubscribe = subscribeEvoluOwnerSyncStatus({
+                syncState: deps.syncState,
+                ownerId: owner.id,
+                listener,
+            });
+            syncStatusUnsubscribes.add(unsubscribe);
+
+            return () => {
+                unsubscribe();
+                syncStatusUnsubscribes.delete(unsubscribe);
+            };
         };
 
         return {
@@ -77,7 +94,10 @@ export const createEvoluStorageFactory =
             updateRelayUrl,
             forceResync,
             disconnectRelay,
+            subscribeSyncStatus,
             dispose: async () => {
+                syncStatusUnsubscribes.forEach(unsubscribe => unsubscribe());
+                syncStatusUnsubscribes.clear();
                 await disconnectRelay();
                 await evolu[Symbol.asyncDispose]();
             },

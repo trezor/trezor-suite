@@ -40,6 +40,13 @@ export {
     type DisconnectAllRelaysDep,
     injectDisconnectAllRelays,
 } from './relay/disconnectAllRelays';
+export type {
+    SuiteSyncRelayConnection,
+    SuiteSyncRelayConnectionError,
+    SuiteSyncRelayConnectionsListener,
+    SubscribeSuiteSyncRelayConnections,
+    SubscribeSuiteSyncRelayConnectionsDep,
+} from './relay/relayConnection';
 export {
     type ReconnectAllRelays,
     type ReconnectAllRelaysDep,

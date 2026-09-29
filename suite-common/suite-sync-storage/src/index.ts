@@ -1,5 +1,8 @@
 export type {
     SuiteSyncStorage,
+    SuiteSyncStorageSyncState,
+    SuiteSyncStorageSyncStatus,
+    SuiteSyncStorageSyncStatusListener,
     CreateSuiteStorage,
     CreateSuiteStorageDep,
 } from './SuiteSyncStorage';

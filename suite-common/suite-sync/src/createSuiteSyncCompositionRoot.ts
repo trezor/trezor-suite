@@ -24,6 +24,7 @@ import {
     type OnStorageEnsured,
     type OnStorageEnsuredDep,
     type SubscribeSuiteSyncInternalErrorHandler,
+    type SubscribeSuiteSyncRelayConnectionsDep,
     type SuiteSync,
 } from '@suite-common/suite-sync-types';
 import { type AccountsRootState, selectAccounts } from '@suite-common/wallet-core';
@@ -67,6 +68,7 @@ import {
     selectIsSuiteSyncEnabled,
     selectSuiteSyncOwnerForDeviceStaticId,
 } from './suiteSyncSelectors';
+import { setSuiteSyncRelayConnections, setSuiteSyncStorageSyncStatus } from './suiteSyncSlice';
 import { type SuiteSyncUncontrolledErrorHandlerDep } from './suiteSyncUncontrolledErrorHandler';
 
 export type SuiteSyncAnalytics = Pick<Analytics<AnalyticsSharedEvents>, 'report'>;
@@ -92,7 +94,8 @@ type CreateSuiteSyncCompositionRootDeps = {
     PlatformEncryptionDep &
     FetchDep &
     SuiteSyncUncontrolledErrorHandlerDep &
-    GetIsTorEnabledDep;
+    GetIsTorEnabledDep &
+    SubscribeSuiteSyncRelayConnectionsDep;
 
 export const createSuiteSyncCompositionRoot = (
     deps: CreateSuiteSyncCompositionRootDeps,
@@ -151,6 +154,9 @@ export const createSuiteSyncCompositionRoot = (
     });
 
     deps.subscribeError(suiteSyncInternalErrorHandler);
+    deps.subscribeRelayConnections(connections =>
+        deps.dispatch(setSuiteSyncRelayConnections(connections)),
+    );
 
     const ensureStorage = createEnsureStorage({
         ensureSuiteSyncKeys,
@@ -158,6 +164,7 @@ export const createSuiteSyncCompositionRoot = (
         suiteSyncStorageRepository,
         createSuiteStorage: deps.createSuiteStorage,
         getRelayUrl,
+        updateStorageSyncStatus: params => deps.dispatch(setSuiteSyncStorageSyncStatus(params)),
         getDeviceForStaticSessionId,
         getOwnerHasAllowance,
     });

@@ -1,4 +1,4 @@
-import { createOwnerWebSocketTransport } from '@evolu/common';
+import { type SyncState, createOwnerWebSocketTransport, createStore } from '@evolu/common';
 
 import {
     type SuiteSyncOwner,
@@ -34,29 +34,34 @@ const createEvoluDouble = () => {
         },
     );
 
+    const requestSync = jest.fn((ownerId: string) => calls.push(`requestSync ${ownerId}`));
+
     const evolu = {
         appOwner: Promise.resolve(appOwner),
         useOwner,
+        requestSync,
         [Symbol.asyncDispose]: jest.fn(() => Promise.resolve()),
     };
 
-    return { calls, useOwner, evolu };
+    return { calls, useOwner, requestSync, evolu };
 };
 
 const createStorage = (evolu: ReturnType<typeof createEvoluDouble>['evolu']) =>
     createEvoluStorageFactory({
         evoluInstanceFactory: () => Promise.resolve(evolu as never),
         createOwnerWebSocketTransport,
+        syncState: createStore<SyncState | null>(null),
     })({ suiteSyncOwner });
 
 describe('evolu storage relay subscription', () => {
-    it('does not subscribe before a relay is known', async () => {
-        const { calls, useOwner, evolu } = createEvoluDouble();
+    it('does not subscribe or sync before a relay is known', async () => {
+        const { calls, useOwner, requestSync, evolu } = createEvoluDouble();
         const storage = await createStorage(evolu);
 
         await storage.forceResync();
 
         expect(useOwner).not.toHaveBeenCalled();
+        expect(requestSync).not.toHaveBeenCalled();
         expect(calls).toEqual([]);
     });
 
@@ -69,19 +74,16 @@ describe('evolu storage relay subscription', () => {
         expect(calls).toEqual(['subscribe#1 ws://relay.example.com?ownerId=owner-id']);
     });
 
-    it('resubscribes to the same relay, dropping the previous subscription first', async () => {
+    it('requests a sync on the existing subscription', async () => {
         const { calls, evolu } = createEvoluDouble();
         const storage = await createStorage(evolu);
         await storage.updateRelayUrl('ws://relay.example.com');
 
         await storage.forceResync();
 
-        // Order is the point: the old subscription has to go before the new one starts, or the
-        // relay never sees the reconciliation the resync exists to trigger.
         expect(calls).toEqual([
             'subscribe#1 ws://relay.example.com?ownerId=owner-id',
-            'unsubscribe#1',
-            'subscribe#2 ws://relay.example.com?ownerId=owner-id',
+            'requestSync owner-id',
         ]);
     });
 

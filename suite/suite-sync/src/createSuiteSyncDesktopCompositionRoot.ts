@@ -5,10 +5,7 @@ import { selectIsTorEnabled } from '@suite/tor';
 import { type EnsureDelegatedIdentityKeyDep } from '@suite-common/delegated-identity-key-types';
 import { toGetter } from '@suite-common/dependency-injection';
 import { type PlatformEncryptionDep } from '@suite-common/platform-encryption';
-import {
-    createSuiteSyncCompositionRoot,
-    createUpdateRelayConnectionStatus,
-} from '@suite-common/suite-sync';
+import { createSuiteSyncCompositionRoot } from '@suite-common/suite-sync';
 import { evoluCreateSuiteSyncOwner } from '@suite-common/suite-sync-evolu';
 import { type FetchDep } from '@suite-common/suite-sync-quota-manager';
 import { type OnStorageEnsured, type SuiteSync } from '@suite-common/suite-sync-types';
@@ -31,12 +28,8 @@ type SuiteSyncDesktopCompositionRootDeps = {
 export const createSuiteSyncDesktopCompositionRoot = (
     deps: SuiteSyncDesktopCompositionRootDeps,
 ): SuiteSync => {
-    const updateRelayConnectionStatus = createUpdateRelayConnectionStatus({
+    const { createSuiteStorage, subscribeError, subscribeRelayConnections } = createEvoluDeps({
         dispatch: deps.dispatch,
-    });
-    const { createSuiteStorage, subscribeError } = createEvoluDeps({
-        dispatch: deps.dispatch,
-        updateRelayConnectionStatus,
     });
 
     // This sets up Evolu as a SuiteSync Storage. We provide a factory that
@@ -48,6 +41,7 @@ export const createSuiteSyncDesktopCompositionRoot = (
         getIsTorEnabled: toGetter(deps.getState, selectIsTorEnabled),
         analytics: deps.analytics,
         subscribeError,
+        subscribeRelayConnections,
         suiteSyncUncontrolledErrorHandler: ({ device, error }) =>
             suiteSyncErrorHandler({
                 error,

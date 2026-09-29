@@ -24,6 +24,7 @@ type CreateSuiteSyncStorageMockParams = {
     disconnectRelay?: SuiteSyncStorage['disconnectRelay'];
     updateRelayUrl?: SuiteSyncStorage['updateRelayUrl'];
     dispose?: SuiteSyncStorage['dispose'];
+    subscribeSyncStatus?: SuiteSyncStorage['subscribeSyncStatus'];
 };
 
 export const createSuiteSyncStorageMock = (params: CreateSuiteSyncStorageMockParams = {}) =>
@@ -38,4 +39,5 @@ export const createSuiteSyncStorageMock = (params: CreateSuiteSyncStorageMockPar
         disconnectRelay: params.disconnectRelay ?? mockNotExpected('disconnectRelay'),
         dispose: params.dispose ?? mockNotExpected('dispose'),
         updateRelayUrl: params.updateRelayUrl ?? mockNotExpected('updateRelayUrl'),
+        subscribeSyncStatus: params.subscribeSyncStatus ?? mockNotExpected('subscribeSyncStatus'),
     }) satisfies SuiteSyncStorage;

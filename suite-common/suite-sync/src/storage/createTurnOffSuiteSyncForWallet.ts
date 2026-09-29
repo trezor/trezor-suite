@@ -7,7 +7,7 @@ import {
 } from '@suite-common/suite-sync-types';
 
 import { createStorageIdFromDeviceStaticSessionId } from './createStorageIdFromDeviceStaticSessionId';
-import { setSuiteSyncOwner } from '../suiteSyncSlice';
+import { removeSuiteSyncStorageSyncStatus, setSuiteSyncOwner } from '../suiteSyncSlice';
 
 export type TurnOffSuiteSyncForWalletDeps = SuiteSyncStorageRepositoryDep &
     SubscriptionStorageDep & { dispatch: Dispatch };
@@ -25,5 +25,6 @@ export const createTurnOffSuiteSyncForWallet =
             deps.dispatch(
                 setSuiteSyncOwner({ deviceStaticId: deviceStaticSessionId, owner: null }),
             );
+            deps.dispatch(removeSuiteSyncStorageSyncStatus({ storageId }));
         }
     };

@@ -2,6 +2,16 @@ import { type SuiteSyncTable } from './SuiteSyncTable';
 import { type SuiteSyncSchema } from './data/SuiteSyncSchema';
 import { type SuiteSyncOwner } from './owner/suiteSyncOwner';
 
+export type SuiteSyncStorageSyncState = 'initial' | 'syncing' | 'synced' | 'offline' | 'error';
+
+export type SuiteSyncStorageSyncStatus = {
+    state: SuiteSyncStorageSyncState;
+    syncedAt: number | null;
+    errorType: string | null;
+};
+
+export type SuiteSyncStorageSyncStatusListener = (status: SuiteSyncStorageSyncStatus) => void;
+
 type SuiteSyncStorageData = {
     [K in keyof SuiteSyncSchema]: SuiteSyncTable<SuiteSyncSchema[K]>;
 };
@@ -21,6 +31,11 @@ export type SuiteSyncStorage = {
      */
     forceResync(): Promise<void>;
     disconnectRelay(): Promise<void>;
+    /**
+     * Calls the listener with the current status and after each change. Only `synced` means that
+     * every relay has all local changes. Listeners are removed on dispose.
+     */
+    subscribeSyncStatus(listener: SuiteSyncStorageSyncStatusListener): () => void;
     dispose(): Promise<void>;
 };
 

@@ -5,10 +5,12 @@ import {
 import {
     type CreateSuiteStorageDep,
     type SuiteSyncStorage,
+    type SuiteSyncStorageSyncStatus,
 } from '@suite-common/suite-sync-storage';
 import {
     type EnsureSuiteSyncKeysDep,
     type QuotaManagerCommunicationFailedErrType,
+    type StorageId,
     type SuiteSyncStorageRepositoryDep,
     type SuiteSyncUnavailableOnDeviceErrorType,
     type WriteModeRequiredForAllocationErrType,
@@ -27,8 +29,16 @@ import { createStorageIdFromDeviceStaticSessionId } from './createStorageIdFromD
 import { SuiteSyncUnavailableOnDeviceError } from '../createEnsureSuiteSyncKeys';
 import { type GetDeviceForStaticSessionIdDep } from '../getDeviceForStaticSessionId';
 
+export type UpdateStorageSyncStatusParams = {
+    storageId: StorageId;
+    status: SuiteSyncStorageSyncStatus;
+};
+
+export type UpdateStorageSyncStatus = (params: UpdateStorageSyncStatusParams) => void;
+
 export type EnsureStorageDeps = {
     getRelayUrl: () => string;
+    updateStorageSyncStatus: UpdateStorageSyncStatus;
 } & SuiteSyncStorageRepositoryDep &
     CreateSuiteStorageDep &
     EnsureSuiteSyncKeysDep &
@@ -134,6 +144,9 @@ export const createEnsureStorage =
 
         if (!isNotNull(existingStorage)) {
             deps.suiteSyncStorageRepository.set(storageId, storage);
+            storage.subscribeSyncStatus(status =>
+                deps.updateStorageSyncStatus({ storageId, status }),
+            );
         }
 
         return ok(storage);

@@ -1,39 +1,42 @@
 import { useSelector } from 'react-redux';
 
-import {
-    type SuiteSyncRelayConnectionLogEntry,
-    selectSuiteSyncRelayConnectionStatuses,
-} from '@suite-common/suite-sync';
+import { selectSuiteSyncRelayConnectionStatuses } from '@suite-common/suite-sync';
+import { type SuiteSyncRelayConnection } from '@suite-common/suite-sync-types';
 import { Code, Column, Row, Text } from '@trezor/components';
 import { ActionColumn, SectionItem, TextColumn } from '@trezor/product-components';
 
 import { SuiteSyncConnectionStatusDot } from '../SuiteSyncConnectionStatusDot';
 
-const formatLogEntry = (entry: SuiteSyncRelayConnectionLogEntry) => {
-    const date = new Date(entry.timestamp);
+const formatTimestamp = (timestamp: number) => {
+    const date = new Date(timestamp);
     const format = (value: number, length = 2) => value.toString().padStart(length, '0');
 
-    const timestamp = [
+    return [
         format(date.getHours()),
         format(date.getMinutes()),
         format(date.getSeconds()),
         format(date.getMilliseconds(), 3),
     ].join(':');
-    let message: string = entry.state;
-
-    if (entry.state === 'error' && entry.errorMessage) {
-        message = `error (${entry.errorMessage})`;
-    }
-
-    return `${timestamp} ${message}`;
 };
 
-const Log = ({ entries }: { entries: SuiteSyncRelayConnectionLogEntry[] }) => {
-    if (entries.length === 0) return null;
+const getConnectionDetails = ({ openedAt, closedAt, error }: SuiteSyncRelayConnection) => [
+    ...(openedAt === null ? [] : [`${formatTimestamp(openedAt)} opened`]),
+    ...(closedAt === null ? [] : [`${formatTimestamp(closedAt)} closed`]),
+    ...(error === null ? [] : [`${formatTimestamp(error.at)} error (${error.type})`]),
+];
+
+type ConnectionDetailsProps = {
+    connection: SuiteSyncRelayConnection;
+};
+
+const ConnectionDetails = ({ connection }: ConnectionDetailsProps) => {
+    const details = getConnectionDetails(connection);
+
+    if (details.length === 0) return null;
 
     return (
         <Text as="pre" isMonospaced typographyStyle="body-sm" overflowWrap="break-word" margin={{}}>
-            {entries.map(formatLogEntry).join('\n')}
+            {details.join('\n')}
         </Text>
     );
 };
@@ -53,11 +56,9 @@ export const SuiteSyncConnectionStatus = () => {
                                     <Text typographyStyle="body-sm">
                                         <Code>{connection.url}</Code>
                                     </Text>
-                                    <SuiteSyncConnectionStatusDot
-                                        isConnected={connection.state === 'connected'}
-                                    />
+                                    <SuiteSyncConnectionStatusDot isConnected={connection.isOpen} />
                                 </Row>
-                                <Log entries={connection.log} />
+                                <ConnectionDetails connection={connection} />
                             </li>
                         ))}
                     </ul>

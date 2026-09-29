@@ -13,6 +13,7 @@ type MockSuiteSyncStorageOverrides = {
     disconnectRelay?: SuiteSyncStorage['disconnectRelay'];
     dispose?: SuiteSyncStorage['dispose'];
     updateRelayUrl?: SuiteSyncStorage['updateRelayUrl'];
+    subscribeSyncStatus?: SuiteSyncStorage['subscribeSyncStatus'];
 };
 
 export const mockSuiteSyncStorage = (
@@ -28,4 +29,5 @@ export const mockSuiteSyncStorage = (
     disconnectRelay: overrides.disconnectRelay ?? (async () => {}),
     updateRelayUrl: overrides.updateRelayUrl ?? (async (_url: string) => {}),
     dispose: overrides.dispose ?? (async () => {}),
+    subscribeSyncStatus: overrides.subscribeSyncStatus ?? (() => () => {}),
 });

@@ -13,6 +13,7 @@ export { AddressEvoluId } from './data/addressTable';
 export { OutputEvoluId } from './data/outputTable';
 export { WalletLabelId } from './data/walletTable';
 export { createEvoluErrorHandler } from './createEvoluErrorHandler';
+export { createEvoluSubscribeRelayConnections } from './evoluSyncState';
 
 // Useful in e2e to easily create fixtures
 export { WalletEvoluSchema } from './data/walletTable';

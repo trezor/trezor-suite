@@ -2,7 +2,7 @@ import { createMockDeps } from '@suite-common/dependency-injection';
 import { type StaticSessionId } from '@trezor/connect';
 
 import { createSubscriptionStorageMock } from '../../mocks/mockCreateSubscriptionStorage';
-import { setSuiteSyncOwner } from '../suiteSyncSlice';
+import { removeSuiteSyncStorageSyncStatus, setSuiteSyncOwner } from '../suiteSyncSlice';
 import { createStorageIdFromDeviceStaticSessionId } from './createStorageIdFromDeviceStaticSessionId';
 import {
     type TurnOffSuiteSyncForWalletDeps,
@@ -12,7 +12,7 @@ import {
 const DEVICE_STATIC_SESSION_ID_123: StaticSessionId = '1@2:3';
 
 describe(createTurnOffSuiteSyncForWallet.name, () => {
-    it('disposes wallet storage, deletes repository entry, and clears owner from state', async () => {
+    it('disposes wallet storage, deletes repository entry, and clears owner and sync status from state', async () => {
         const deps = createMockDeps<TurnOffSuiteSyncForWalletDeps>({
             dispatch: jest.fn(),
             subscriptionStorage: createSubscriptionStorageMock(),
@@ -37,5 +37,6 @@ describe(createTurnOffSuiteSyncForWallet.name, () => {
                 owner: null,
             }),
         );
+        expect(deps.dispatch).toHaveBeenCalledWith(removeSuiteSyncStorageSyncStatus({ storageId }));
     });
 });

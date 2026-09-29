@@ -17,6 +17,7 @@ import {
     createEvoluErrorHandler,
     createEvoluInstanceFactory,
     createEvoluStorageFactory,
+    createEvoluSubscribeRelayConnections,
     evoluCreateSuiteSyncOwner,
 } from '@suite-common/suite-sync-evolu';
 import { type FetchDep } from '@suite-common/suite-sync-quota-manager';
@@ -48,6 +49,7 @@ export const createSuiteSyncNativeCompositionRoot = (
         createSuiteStorage: createEvoluStorageFactory({
             evoluInstanceFactory: createEvoluInstanceFactory({ run }),
             createOwnerWebSocketTransport,
+            syncState: evoluDeps.syncState,
         }),
         createSuiteSyncOwner: evoluCreateSuiteSyncOwner,
         getIsTorEnabled: () => false,
@@ -56,6 +58,9 @@ export const createSuiteSyncNativeCompositionRoot = (
                 createEvoluErrorHandler(evoluDeps.evoluError, errorHandler),
             );
         },
+        subscribeRelayConnections: createEvoluSubscribeRelayConnections({
+            syncState: evoluDeps.syncState,
+        }),
         // Todo: we need to reuse useSuiteSyncErrorHandler somehow, but we do not have showAlert here.
         suiteSyncUncontrolledErrorHandler: () => {},
         onStorageEnsured: () => {},

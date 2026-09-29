@@ -10,11 +10,29 @@ import {
     selectIsSuiteSyncDebugEnabled,
     selectIsSuiteSyncEnabled,
     selectSuiteSyncOwnerForDeviceStaticId,
+    selectSuiteSyncStorageSyncStatus,
     setSuiteSyncOwner,
 } from '@suite-common/suite-sync';
+import { type SuiteSyncStorageSyncStatus } from '@suite-common/suite-sync-storage';
 import { type AcquiredDevice } from '@suite-common/suite-types';
 import { Code, Row, Text, Tooltip } from '@trezor/components';
 import { parseStaticSessionId } from '@trezor/device-utils';
+import { RelativeTime } from '@trezor/product-components';
+
+type SyncStatusProps = {
+    syncStatus: SuiteSyncStorageSyncStatus;
+};
+
+const SyncStatus = ({ syncStatus }: SyncStatusProps) => (
+    <Text typographyStyle="body-sm" intent="accentViolet">
+        S:
+        <Code>
+            {syncStatus.state}
+            {syncStatus.errorType !== null && ` (${syncStatus.errorType})`}
+        </Code>
+        {syncStatus.syncedAt !== null && <RelativeTime timestamp={syncStatus.syncedAt} />}
+    </Text>
+);
 
 type SuiteSyncWalletDebugProps = {
     device: AcquiredDevice;
@@ -34,6 +52,11 @@ export const SuiteSyncWalletDebug = ({
     const deviceStaticSessionId = device.state?.staticSessionId;
     const suiteSyncOwner = useSelector((state: WithSuiteSyncAndDeviceState) =>
         selectSuiteSyncOwnerForDeviceStaticId(state, deviceStaticSessionId),
+    );
+    const syncStatus = useSelector((state: WithSuiteSyncAndDeviceState) =>
+        deviceStaticSessionId === undefined
+            ? null
+            : selectSuiteSyncStorageSyncStatus(state, deviceStaticSessionId),
     );
 
     const isSuiteSyncDebug =
@@ -85,6 +108,7 @@ export const SuiteSyncWalletDebug = ({
                             <Code>{suiteSyncOwner?.slice(-8)}</Code>
                         </Text>
                     </Tooltip>
+                    {syncStatus !== null && <SyncStatus syncStatus={syncStatus} />}
                 </>
             )}
             <span

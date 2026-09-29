@@ -21,6 +21,7 @@ const createSuiteSyncState = ({
 }: CreateSuiteSyncStateParams): WithSuiteSyncState => ({
     suiteSync: {
         relayConnectionStatuses: [],
+        storageSyncStatuses: {},
         settings: {
             isSuiteSyncDebugEnabled: false,
             isSuiteSyncEnabled: false,
