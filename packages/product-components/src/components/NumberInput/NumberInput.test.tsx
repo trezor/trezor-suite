@@ -11,6 +11,8 @@ import { NumberInput } from './NumberInput';
 
 const onChangeMock = jest.fn();
 
+const styleMock = jest.fn(() => ({}));
+
 const InputWithForm = ({ locale }: { locale: Locale }) => {
     const { control } = useForm({
         defaultValues: {
@@ -25,6 +27,7 @@ const InputWithForm = ({ locale }: { locale: Locale }) => {
                 name="input"
                 data-testid="number-input"
                 onChange={onChangeMock}
+                style={styleMock}
                 locale={locale}
             />
         </ThemeProvider>
@@ -103,6 +106,23 @@ describe('NumberInput component', () => {
         await testCase(input, 'a', '', '');
         await testCase(input, '2234adf134', '2\u00A0234\u00A0134', '2234134');
     });
+
+    test.each<[Locale, string, string]>([
+        ['cs-CZ', '0.0000', '0,0000'],
+        ['en-US', '1234.500', '1,234.500'],
+    ])(
+        'Passes the displayed value to the style function (%s, %p)',
+        async (locale, userInput, displayed) => {
+            const input = renderInput(locale);
+
+            await act(async () => {
+                await userEvent.type(input, userInput);
+            });
+
+            expect(input.value).toBe(displayed);
+            expect(styleMock).toHaveBeenLastCalledWith(displayed);
+        },
+    );
 
     test('Formats with the es locale', async () => {
         const input = renderInput('es-ES');

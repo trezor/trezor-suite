@@ -1,10 +1,9 @@
 import { type CSSProperties } from 'react';
 
 import { Translation } from '@suite/intl';
-import { type Locale } from '@suite-common/suite-types';
 import { type FractionButtonProps } from '@trezor/components';
 import { typographyStylesBase } from '@trezor/theme';
-import { clamp, localizeNumber } from '@trezor/utils';
+import { clamp } from '@trezor/utils';
 
 import { type TradingUseFormActionsReturnProps } from 'src/types/trading/tradingForm';
 
@@ -24,13 +23,9 @@ export const TRADING_BASE_CURRENCY_SKELETON_WIDTH = 60;
 const FULL_SIZE_AMOUNT_LENGTH = 12;
 const MIN_AMOUNT_FONT_SIZE = Math.ceil(maxFontSize / 2);
 
-export const getTradingAmountInputStyle = (
-    value: string | undefined,
-    locale: Locale,
-): CSSProperties => {
-    const displayedLength = localizeNumber(value ?? '', locale).length;
+export const getTradingAmountInputStyle = (displayValue: string): CSSProperties => {
     const scaledFontSize = clamp(
-        Math.floor((maxFontSize * FULL_SIZE_AMOUNT_LENGTH) / displayedLength),
+        Math.floor((maxFontSize * FULL_SIZE_AMOUNT_LENGTH) / displayValue.length),
         MIN_AMOUNT_FONT_SIZE,
         maxFontSize,
     );

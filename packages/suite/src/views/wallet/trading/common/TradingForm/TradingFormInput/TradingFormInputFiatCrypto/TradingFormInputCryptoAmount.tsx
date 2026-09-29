@@ -89,7 +89,6 @@ const TradingFormInputCryptoAmountContent = ({
     } = context as UseFormReturn<TradingAllFormProps>;
 
     const amountInCrypto = useWatch({ control, name: TRADING_FORM_AMOUNT_IN_CRYPTO });
-    const cryptoAmount = useWatch({ control, name: cryptoInputName });
 
     const isBuyContext = isTradingBuyContext(context);
     const isExchangeOrSellContext = isTradingExchangeOrSellContext(context);
@@ -232,11 +231,11 @@ const TradingFormInputCryptoAmountContent = ({
             flex="1"
             name={cryptoInputName}
             placeholder={TRADING_AMOUNT_PLACEHOLDER}
-            style={{
-                ...getTradingAmountInputStyle(cryptoAmount, locale),
+            style={displayValue => ({
+                ...getTradingAmountInputStyle(displayValue),
                 color: cryptoInputError ? theme.contentCritical : undefined,
                 visibility: isDerivedAmountLoading ? 'hidden' : undefined,
-            }}
+            })}
             leftContent={
                 isDerivedAmountLoading ? (
                     <Skeleton
