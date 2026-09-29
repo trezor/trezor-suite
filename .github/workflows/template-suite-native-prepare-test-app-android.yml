@@ -177,6 +177,8 @@ jobs:
                 tr '\n' ' ' < /sys/fs/cgroup/memory.events
               fi
               printf '\n'
+              awk '$1 == "oom_kill" { print "oom_kill=" $2 }' /proc/vmstat
+              sed 's/^/[memory-pressure] /' /proc/pressure/memory
               ps -eo pid,ppid,%cpu,rss,comm --sort=-rss | sed -n '1,12p'
               sleep 15
             done
@@ -186,7 +188,7 @@ jobs:
           yarn exec detox build --configuration android.emu.release
 
       - name: save .apk to the aws s3 bucket
-        if: steps.s3_build_cache.outputs.hit == 'false'
+        if: steps.s3_build_cache.outputs.hit == 'false' && github.event_name != 'workflow_dispatch'
         working-directory: ./suite-native/app/android/app/build/outputs
         run: aws s3 cp . s3://dev.suite.sldev.cz/suite-mobile/${{ steps.expo-fingerprint.outputs.HASH }}/ --recursive
 
