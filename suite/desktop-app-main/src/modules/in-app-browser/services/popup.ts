@@ -29,6 +29,9 @@ export async function registerPopup(popupWindow: BrowserWindow) {
     // arbitrary origin.
     inAppBrowserWebContentsIds.add(popupContentsId);
 
+    // As in the view: a STUN request over plain UDP would carry the real address past Tor.
+    popupContents.setWebRTCIPHandlingPolicy('disable_non_proxied_udp');
+
     // One level of popups covers every flow the showcase is for.
     popupContents.setWindowOpenHandler(({ url: openedUrl }) => {
         sendEventToRenderer(mainWindowProxy, {

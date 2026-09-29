@@ -1,11 +1,14 @@
 import {
     type BrowserWindow,
     type Event,
+    type HandlerDetails,
+    type WebContents,
+    type WebContentsView,
     type WebContentsWillNavigateEventParams,
     type WebContentsWillRedirectEventParams,
 } from 'electron';
 
-import { registerPopup } from './popup';
+import { registerPopup, registerPopupOpener } from './popup';
 import { Logger } from '../../../libs/logger';
 import { MainWindowProxy } from '../../../libs/main-window-proxy';
 import { type Store } from '../../../libs/store';
@@ -23,6 +26,7 @@ const mockPopupListeners = new Map<string, PopupListener>();
 const mockPopupContents = {
     id: 11,
     setWindowOpenHandler: jest.fn(),
+    setWebRTCIPHandlingPolicy: jest.fn(),
     on: jest.fn((event: string, listener: PopupListener) => {
         mockPopupListeners.set(event, listener);
     }),
@@ -100,6 +104,8 @@ describe('registerPopup navigation guards', () => {
             store: {} as Store,
             logger,
             sessions: new Map(),
+            inMemorySession: undefined,
+            appliedProxyRules: new Map(),
         });
         activeViewContext.set({
             activeView: undefined,
@@ -113,6 +119,12 @@ describe('registerPopup navigation guards', () => {
         });
 
         await registerPopup(mockPopupWindow);
+    });
+
+    it('pins WebRTC to proxied transports so no STUN request bypasses the session proxy', () => {
+        expect(mockPopupContents.setWebRTCIPHandlingPolicy).toHaveBeenCalledWith(
+            'disable_non_proxied_udp',
+        );
     });
 
     it('blocks a main-frame server-side redirect to an origin outside both lists', () => {
@@ -164,5 +176,73 @@ describe('registerPopup navigation guards', () => {
         getListener('will-navigate')(navigation);
 
         expect(navigation.preventDefault).not.toHaveBeenCalled();
+    });
+});
+
+type WindowOpenHandler = Parameters<WebContents['setWindowOpenHandler']>[0];
+
+describe('registerPopupOpener', () => {
+    const mainWindowProxy = createMainWindowProxy();
+    const setWindowOpenHandler = jest.fn<void, [WindowOpenHandler]>();
+
+    const decideWindowOpen = (url: string) => {
+        const [firstCall] = setWindowOpenHandler.mock.calls;
+
+        if (firstCall === undefined) {
+            throw new Error('no window open handler was registered');
+        }
+
+        const [handleWindowOpen] = firstCall;
+
+        return handleWindowOpen({
+            url,
+            frameName: '',
+            features: '',
+            disposition: 'new-window',
+            referrer: { url: '', policy: 'no-referrer' },
+        } satisfies HandlerDetails);
+    };
+
+    beforeEach(async () => {
+        jest.clearAllMocks();
+
+        inAppBrowserContext.set({
+            mainWindowProxy,
+            store: {} as Store,
+            logger,
+            sessions: new Map(),
+            inMemorySession: undefined,
+            appliedProxyRules: new Map(),
+        });
+        activeViewContext.set({
+            activeView: { webContents: { setWindowOpenHandler } } as unknown as WebContentsView,
+            activeEntryId: undefined,
+            clearingEntryIds: new Set(),
+            lastReportedRect: undefined,
+            isVisibleRequested: true,
+            allowedNavigationOrigins: new Set(['https://app.example']),
+            allowedPopupOrigins: new Set(['https://accounts.example']),
+            openPopups: new Set(),
+        });
+
+        await registerPopupOpener();
+    });
+
+    it('lets a permitted popup inherit the view session instead of naming one of its own', () => {
+        const decision = decideWindowOpen('https://accounts.example/signin');
+
+        if (decision.action !== 'allow') {
+            throw new Error('expected the popup to be allowed');
+        }
+
+        const { webPreferences } = decision.overrideBrowserWindowOptions ?? {};
+
+        expect(webPreferences).toBeDefined();
+        expect(webPreferences).not.toHaveProperty('partition');
+        expect(webPreferences).not.toHaveProperty('session');
+    });
+
+    it('denies a popup for an origin outside the popup list', () => {
+        expect(decideWindowOpen('https://attacker.example/').action).toBe('deny');
     });
 });

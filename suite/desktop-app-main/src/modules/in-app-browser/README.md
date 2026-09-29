@@ -15,9 +15,16 @@ The view never runs in Suite's own session:
   entry so entries cannot read each other's cookies. Which one an entry gets is decided here from the catalog, never from the renderer's word.
 
 Either way the request-filter and response-headers modules (both bound to the default session) do
-not apply to the embedded page, so no allowlist or CSP changes are needed for the showcase — and
-neither does Tor's proxy, which is worth weighing before marking an entry persistent: a durable
-clear-net cookie jar is re-sent on the next launch even if Tor is switched on in between.
+not apply to the embedded page, so no allowlist or CSP changes are needed for the showcase. Tor's
+proxy is not inherited either — `modules/tor.ts` sets it on Suite's own session only — so this module
+applies the same rule to every session it hands out: from the moment Tor is toggled on, before it
+has bootstrapped, and again on every change of the Tor settings, closing the connections a live page
+holds so that none of them stays on the old route. A session that cannot be routed is not used, and
+a live page whose session cannot follow a toggle is closed. While Tor is off a session runs on the
+system proxy, Electron's default. WebRTC would still send STUN requests over plain UDP past any proxy,
+so the view and its popups are pinned to proxied transports. What no proxy undoes is history, which is
+worth weighing before marking an entry persistent: a cookie jar filled while Tor was off is re-sent
+through Tor once it is on, tying the two visits together.
 
 ### Persistent sessions on disk
 
@@ -65,48 +72,3 @@ The page is contained by two separate allowlists, both supplied by the caller an
     - It also shares the view's session — including a persistent one — which Electron gives no way to change.
 
 **The page has no preload, no node integration, and no access to Suite IPC.**
-
-### HTTP authentication
-
-A server answering with `401` and `WWW-Authenticate: Basic` makes the view's `WebContents` emit
-`login`. Left alone, Electron cancels the challenge and the page shows the server's 401 body — which
-is what this module does for everything it refuses. What it puts to the user goes through the rules
-of `services/httpAuth.ts`, in this order, each refusal logged and reported to the renderer as
-`http-auth-refused` with the origin and the rule:
-
-- no proxy challenges (Suite has no authenticating proxy; Tor is SOCKS without credentials);
-- only the `basic` scheme (no digest, NTLM or Negotiate);
-- only over `https`, and only from a parsable url;
-- only from the main frame and only for a navigation — both flags are undocumented fields of the
-  event's details, read fail-closed, because a cross-origin iframe or a `credentials: 'include'`
-  fetch raises `login` too and would otherwise draw a third party's prompt under the site's origin;
-- only from the origin the view was opened with;
-- only one challenge at a time;
-- at most three prompts per navigation: wrong credentials re-fire `login` for the same navigation
-  and Chromium never gives up on its own, so the host counts and a new navigation resets.
-
-An accepted challenge is held open with a synchronous `preventDefault()` — one behind an await is
-too late — and relayed as `http-auth-requested` with a `requestId` the host generated, the origin
-(never the url, which may name a path) and the realm cut to 200 characters, the server's own text to
-be rendered as text. The renderer draws the prompt and answers over `in-app-browser/http-auth-response`
-with that id and either the credentials or `null`; the id is looked up in the pending registry and an
-unknown or already settled one is dropped. Nothing in Electron says that a challenge died when the
-navigation is superseded or the view goes away, so the host cancels every pending challenge and sends
-`http-auth-dismissed` when a new main-frame navigation starts (`did-start-navigation`, before the new
-navigation's own `login` fires, which would otherwise be refused as "already pending"), on the commit
-(`did-navigate`) and in `closeView` — which also runs on quit, on the window being destroyed and on a
-renderer reload. A wrong answer restarts the request, not the navigation, so neither event fires
-between the retries and the per-navigation cap holds.
-
-Popups refuse every challenge (a popup's `login` fires on the popup's own `WebContents`): no showcase
-flow needs a popup to authenticate.
-
-After a successful answer the session's HTTP auth cache answers same-realm requests silently. The
-shared in-memory partition is one session for every non-persistent entry and every custom url, so
-`closeView` clears that cache: credentials entered for one entry would otherwise be replayed to that
-origin for requests another entry's page issues. The cache is in memory only, so a persistent entry
-re-prompts after a restart anyway.
-
-The credentials are handed to Electron's callback and to nothing else — not logged, not put into an
-event, not persisted by this module. A url that carries `user:pass@` is refused on open, reported
-under its origin, and an unparsable url is not logged at all for the same reason.
