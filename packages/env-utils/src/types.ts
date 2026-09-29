@@ -25,5 +25,6 @@ export interface EnvUtils {
     isLinux: () => boolean;
     isCodesignBuild: () => boolean;
     getOsName: () => '' | 'android' | 'linux' | 'windows' | 'macos' | 'chromeos' | 'ios';
+    getNativeOsVersion: () => string;
     getJWSPublicKey: () => string;
 }
