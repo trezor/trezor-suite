@@ -9,6 +9,7 @@ import type { MethodMessage } from '../../../core/AbstractMethod';
 import { AbstractMethod } from '../../../core/AbstractMethod';
 import { getEthereumNetwork } from '../../../data/coinInfo';
 import { validateModelOneMessageSize } from '../../../device/validateMessageSize';
+import { getDefinitionsVersion } from '../../../utils/definitionsUtils';
 import { getNetworkLabel } from '../../../utils/ethereumUtils';
 import { hexToText, messageToHex } from '../../../utils/formatUtils';
 import { getSerializedPath, getSlip44ByPath, validatePath } from '../../../utils/pathUtils';
@@ -47,15 +48,6 @@ export default class EthereumSignMessage extends AbstractMethod<'ethereumSignMes
         return this.coinPerms('sign', this.requiredFirmwareCoins);
     }
 
-    async initAsync() {
-        if (this.params.network) return;
-
-        const { address_n } = this.params.proto;
-        const slip44 = getSlip44ByPath(address_n);
-        const definitions = await getEthereumDefinitions({ slip44 });
-        this.params.proto.encoded_network = definitions.encoded_network;
-    }
-
     get info() {
         return getNetworkLabel(
             'Sign #NETWORK message',
@@ -74,16 +66,27 @@ export default class EthereumSignMessage extends AbstractMethod<'ethereumSignMes
         }
     }
 
+    private async getEncodedNetwork() {
+        if (this.params.network) return;
+
+        const definitions = await getEthereumDefinitions({
+            slip44: getSlip44ByPath(this.params.proto.address_n),
+            version: getDefinitionsVersion(this.getDevice()),
+        });
+
+        return definitions.encoded_network;
+    }
+
     async run() {
         validateModelOneMessageSize(this.getDevice(), this.params.proto.message);
 
         const cmd = this.getDevice().getCommands();
+        const encodedNetwork = await this.getEncodedNetwork();
 
-        const response = await cmd.typedCall(
-            'EthereumSignMessage',
-            'EthereumMessageSignature',
-            this.params.proto,
-        );
+        const response = await cmd.typedCall('EthereumSignMessage', 'EthereumMessageSignature', {
+            ...this.params.proto,
+            encoded_network: encodedNetwork,
+        });
 
         return response.message;
     }

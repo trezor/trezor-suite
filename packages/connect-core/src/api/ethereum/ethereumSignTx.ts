@@ -13,6 +13,7 @@ import type { MessagesSchema } from '@trezor/protobuf';
 
 import { getEthereumDefinitions } from './ethereumDefinitions';
 import type { TypedCall } from '../../device/DeviceCommands';
+import type { DefinitionsVersion } from '../../utils/definitionsUtils';
 import { addHexPrefix } from '../../utils/formatUtils';
 
 const splitString = (str?: string, len?: number): [string, string] => {
@@ -82,6 +83,7 @@ export const parseAuth7702List = (
 
 async function processTxRequest(
     typedCall: TypedCall,
+    definitionsVersion: DefinitionsVersion,
     request: PROTO.EthereumTxRequest,
     data?: string,
     chain_id?: number,
@@ -115,11 +117,12 @@ async function processTxRequest(
         { data_chunk: first },
     );
 
-    return handleTxFlowResponse(typedCall, nextResponse, rest, chain_id);
+    return handleTxFlowResponse(typedCall, definitionsVersion, nextResponse, rest, chain_id);
 }
 
 async function processDefinitionRequest(
     typedCall: TypedCall,
+    definitionsVersion: DefinitionsVersion,
     request: PROTO.EthereumDefinitionRequest,
     data?: string,
     chain_id?: number,
@@ -128,6 +131,7 @@ async function processDefinitionRequest(
         chainId: request.chain_id,
         contractAddress: request.token_address,
         functionSignature: request.func_sig,
+        version: definitionsVersion,
     });
 
     const nextResponse = await typedCall(
@@ -136,20 +140,27 @@ async function processDefinitionRequest(
         { definitions },
     );
 
-    return handleTxFlowResponse(typedCall, nextResponse, data, chain_id);
+    return handleTxFlowResponse(typedCall, definitionsVersion, nextResponse, data, chain_id);
 }
 
 function handleTxFlowResponse(
     typedCall: TypedCall,
+    definitionsVersion: DefinitionsVersion,
     response: TxFlowResponse,
     data?: string,
     chain_id?: number,
 ): Promise<TxResult> {
     if (response.type === 'EthereumDefinitionRequest') {
-        return processDefinitionRequest(typedCall, response.message, data, chain_id);
+        return processDefinitionRequest(
+            typedCall,
+            definitionsVersion,
+            response.message,
+            data,
+            chain_id,
+        );
     }
 
-    return processTxRequest(typedCall, response.message, data, chain_id);
+    return processTxRequest(typedCall, definitionsVersion, response.message, data, chain_id);
 }
 
 const ifNotUndefined = <T, U>(value: T | undefined, convert: (value: T) => U): U | undefined =>
@@ -211,6 +222,7 @@ const stripLeadingZeroes = (str: string) => {
 export const ethereumSignTx = async (
     // todo: don't we change parameters here to object?
     typedCall: TypedCall,
+    definitionsVersion: DefinitionsVersion,
     address_n: number[],
     to: string | null,
     value: string,
@@ -263,12 +275,13 @@ export const ethereumSignTx = async (
         message,
     );
 
-    return handleTxFlowResponse(typedCall, response, rest, chain_id);
+    return handleTxFlowResponse(typedCall, definitionsVersion, response, rest, chain_id);
 };
 
 export const ethereumSignTxEIP1559 = async (
     // todo: don't we change parameters here to object?
     typedCall: TypedCall,
+    definitionsVersion: DefinitionsVersion,
     address_n: number[],
     to: string | null,
     value: string,
@@ -316,5 +329,5 @@ export const ethereumSignTxEIP1559 = async (
         message,
     );
 
-    return handleTxFlowResponse(typedCall, response, rest);
+    return handleTxFlowResponse(typedCall, definitionsVersion, response, rest);
 };
