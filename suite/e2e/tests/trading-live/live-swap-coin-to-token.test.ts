@@ -61,7 +61,10 @@ test.describe(
                     },
 
                     selectReceiveAddress: async () => {
-                        await tradingPage.receiveAccount.selectSuiteReceiveAccount(0, solSymbol);
+                        await tradingPage.receiveAccount.selectSuiteReceiveAccount({
+                            symbol: solSymbol,
+                            atIndex: 0,
+                        });
                     },
                 });
             });
@@ -102,10 +105,10 @@ test.describe(
                         },
 
                         selectReceiveAddress: async () => {
-                            await tradingPage.receiveAccount.selectSuiteReceiveAccount(
-                                0,
-                                baseSymbol,
-                            );
+                            await tradingPage.receiveAccount.selectSuiteReceiveAccount({
+                                symbol: baseSymbol,
+                                atIndex: 0,
+                            });
                         },
                     });
                 });

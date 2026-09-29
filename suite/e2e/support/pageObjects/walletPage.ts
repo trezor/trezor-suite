@@ -20,6 +20,8 @@ type GetTokenBalanceParams = {
     tokenName: string;
 };
 
+type TokenWalletParams = Omit<WalletParams, 'subAccount'> & { tokenName: string };
+
 export class WalletPage {
     readonly transactionSearch: Locator;
     readonly accountSearch: Locator;
@@ -250,24 +252,24 @@ export class WalletPage {
     }
 
     @step()
-    async openBuyTradingOfToken(symbol: NetworkSymbol, tokenName: string) {
-        await this.openAccount({ symbol, subAccount: 'tokens' });
+    async openBuyTradingOfToken({ tokenName, ...params }: TokenWalletParams) {
+        await this.openAccount({ ...params, subAccount: 'tokens' });
         await this.page.expectReduxObjectNotToBeEmpty('wallet.trading.info.coins');
         await this.tokenRowMoreButton(tokenName).click();
         await this.tokenBuyButton.click();
     }
 
     @step()
-    async openSellTradingOfToken(symbol: NetworkSymbol, tokenName: string) {
-        await this.openAccount({ symbol, subAccount: 'tokens' });
+    async openSellTradingOfToken({ tokenName, ...params }: TokenWalletParams) {
+        await this.openAccount({ ...params, subAccount: 'tokens' });
         await this.page.expectReduxObjectNotToBeEmpty('wallet.trading.info.coins');
         await this.tokenRowMoreButton(tokenName).click();
         await this.tokenSellButton.click();
     }
 
     @step()
-    async openSwapTradingOfToken(symbol: NetworkSymbol, tokenName: string) {
-        await this.openAccount({ symbol, subAccount: 'tokens' });
+    async openSwapTradingOfToken({ tokenName, ...params }: TokenWalletParams) {
+        await this.openAccount({ ...params, subAccount: 'tokens' });
         await this.page.expectReduxObjectNotToBeEmpty('wallet.trading.info.coins');
         await this.tokenRowSwapButton(tokenName).click();
     }

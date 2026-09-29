@@ -1,7 +1,7 @@
 import { messages } from '@suite/intl';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { TestStream } from '@trezor/e2e-utils';
-import { localizeNumber } from '@trezor/utils';
+import { BigNumber, localizeNumber } from '@trezor/utils';
 
 import { expect, test } from '../../support/fixtures';
 import { createTestAnnotation } from '../../support/reporters/annotations';
@@ -9,7 +9,7 @@ import { createTestAnnotation } from '../../support/reporters/annotations';
 const btcSymbol = asNetworkSymbol('btc');
 const solSymbol = asNetworkSymbol('sol');
 
-const solanaBalanceAddress = '41baq3croaLZEj8dPWZnXn8e6xdAtvtWu2h941vm3Ngw';
+const solanaBalanceAddress = '73SMAcuFzcuZAfDWU1RMVnNLks1UKLru8gRsg2NJYcgm';
 const customFeeRate = 1;
 let bitcoinBalance: string;
 let solanaBalance: string;
@@ -41,13 +41,13 @@ test.describe('Trading - Sell inputs', { tag: ['@T3W1', '@T3T1', '@optional'] },
         { annotation: createTestAnnotation({ stream: TestStream.Trade }) },
         async ({ page, walletPage, tradingPage }) => {
             await test.step('Find out btc and sol balances', async () => {
-                await walletPage.openAccount({ symbol: btcSymbol });
+                await walletPage.openAccount({ symbol: btcSymbol, atIndex: 1 });
                 await expect(walletPage.topPanelBalance).toHaveText(/\d/);
                 bitcoinBalance = await walletPage.topPanelBalance.innerText();
-                await walletPage.openAccount({ symbol: solSymbol });
+                await walletPage.openAccount({ symbol: solSymbol, atIndex: 3 });
                 await expect(walletPage.topPanelBalance).toHaveText(/\d/);
                 solanaBalance = await walletPage.topPanelBalance.innerText();
-                await walletPage.openTrading();
+                await walletPage.openTrading({ symbol: btcSymbol, atIndex: 1 });
                 await tradingPage.sellTabButton.click();
                 const worldwideOption = messages['TR_TRADING_COUNTRY_WORLD'].defaultMessage;
                 await expect(tradingPage.inputs.countryValue).not.toHaveText(worldwideOption);
@@ -100,9 +100,7 @@ test.describe('Trading - Sell inputs', { tag: ['@T3W1', '@T3T1', '@optional'] },
                     await expect
                         .soft(async () => {
                             const resultingFee = await tradingPage.fees.maxFee.innerText();
-                            const maxValue = (
-                                parseFloat(bitcoinBalance) - parseFloat(resultingFee)
-                            ).toString();
+                            const maxValue = new BigNumber(bitcoinBalance).minus(resultingFee);
                             await expect(tradingPage.inputs.cryptoAmount).toHaveValue(
                                 localizeNumber(maxValue, 'en-US', 0, 8),
                             );
@@ -112,7 +110,7 @@ test.describe('Trading - Sell inputs', { tag: ['@T3W1', '@T3T1', '@optional'] },
             });
 
             await test.step('Try all % inputs on Solana', async () => {
-                await walletPage.openAccount({ symbol: solSymbol, atIndex: 0 });
+                await walletPage.openAccount({ symbol: solSymbol, atIndex: 3 });
                 await tradingPage.sellTabButton.click();
                 await expect(tradingPage.inputs.youPayAssetSymbol).toHaveText('SOL');
                 await tradingPage.inputs.selectFiatCurrency('eur');

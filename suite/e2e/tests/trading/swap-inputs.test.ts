@@ -149,10 +149,10 @@ test.describe('Trading - Swap inputs', { tag: ['@webOnly', '@noDevice', '@option
                 });
 
                 await test.step(`[${asset.label}] Select receive account`, async () => {
-                    await tradingPage.receiveAccount.selectSuiteReceiveAccount(
-                        asset.accountIndex,
-                        asset.receiveNetwork,
-                    );
+                    await tradingPage.receiveAccount.selectSuiteReceiveAccount({
+                        symbol: asset.receiveNetwork,
+                        atIndex: asset.accountIndex,
+                    });
                 });
 
                 // We want to run the "the fraction / Max / amount limits" asserts only once in this loop.

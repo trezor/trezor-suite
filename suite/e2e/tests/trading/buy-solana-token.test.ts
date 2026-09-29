@@ -14,22 +14,28 @@ const cryptoTicker = 'USDC';
 // Not every provider honours the exact crypto amount typed, so only the ticker is pinned.
 const cryptoAmountPattern = new RegExp(String.raw`^[\d,]+(\.\d+)? ${cryptoTicker}$`);
 const usdcCryptoId = getCryptoId(solSymbol, 'EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v');
-const receiveAccountLabel = 'Solana #1';
+const receiveAccountLabel = 'Solana #4';
 const fiatCurrency = 'usd';
 
 test.describe('Trading - Buy Solana token', { tag: ['@T3W1', '@T3T1'] }, () => {
-    test.beforeEach(async ({ onboardingPage, settingsPage, walletPage, tradingMock }) => {
-        tradingMock.setTradeFlow('buy');
-        await tradingMock.rewriteProviderRedirect();
-        await tradingMock.setStatus('SUBMITTED');
+    test.use({ deviceSetup: { mnemonic: 'mnemonic_academic', passphrase_protection: true } });
 
-        await onboardingPage.completeOnboarding();
+    test.beforeEach(
+        async ({ onboardingPage, dashboardPage, settingsPage, walletPage, tradingMock }) => {
+            tradingMock.setTradeFlow('buy');
+            await tradingMock.rewriteProviderRedirect();
+            await tradingMock.setStatus('SUBMITTED');
 
-        await test.step('Enable Solana and open its trading', async () => {
-            await settingsPage.changeNetworks({ enableNetworks: [solSymbol] });
-            await walletPage.openTrading({ symbol: solSymbol });
-        });
-    });
+            await onboardingPage.completeOnboarding();
+
+            await test.step('Enable Solana and open its trading', async () => {
+                await settingsPage.changeNetworks({ enableNetworks: [solSymbol] });
+                await dashboardPage.deviceSwitchingOpenButton.click();
+                await dashboardPage.addHiddenWallet(process.env.PASSPHRASE!);
+                await walletPage.openTrading({ symbol: solSymbol, atIndex: 3 });
+            });
+        },
+    );
 
     test(
         'Buy Solana USDC token - amount specified in crypto',
@@ -54,7 +60,10 @@ test.describe('Trading - Buy Solana token', { tag: ['@T3W1', '@T3T1'] }, () => {
                     country: 'US',
                     countrySubdivision: 'CA',
                     selectReceiveAddress: async () => {
-                        await tradingPage.receiveAccount.selectSuiteReceiveAccount(0);
+                        await tradingPage.receiveAccount.selectSuiteReceiveAccount({
+                            symbol: solSymbol,
+                            atIndex: 3,
+                        });
                     },
                 });
             });
