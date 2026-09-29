@@ -58,7 +58,7 @@ test.describe('Onboarding - create wallet', { tag: ['@T3W1'] }, () => {
                     await onboardingPage.optionallyDismissFwHashCheckError();
                     await analyticsSection.continueButton.click();
                     await onboardingPage.pairTHP();
-                    await analyticsSection.continueButton.click();
+                    await onboardingPage.setupDeviceButton.click();
                     await onboardingPage.firmware.continueThroughFirmware();
                     await page.waitForTimeout(500);
                     await onboardingPage.tutorial.skip();

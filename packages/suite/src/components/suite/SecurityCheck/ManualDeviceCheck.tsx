@@ -265,7 +265,7 @@ export const ManualDeviceCheck = ({
                     >
                         <SecurityCheckButton
                             onClick={handleSetupButtonClick}
-                            data-testid="@analytics/continue-button"
+                            data-testid="@onboarding/device-check/setup-button"
                             intent="brand"
                         >
                             <Translation id={primaryButtonTopText} />

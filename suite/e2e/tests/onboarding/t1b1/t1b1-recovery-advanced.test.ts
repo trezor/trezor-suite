@@ -15,9 +15,9 @@ test.describe('Onboarding - recover wallet T1B1', { tag: ['@T1B1', '@optional'] 
     test(
         'Incomplete run of advanced recovery',
         { annotation: createTestAnnotation({ stream: TestStream.Growth }) },
-        async ({ device, onboardingPage, analyticsSection, devicePrompt, recoveryModal, page }) => {
+        async ({ device, onboardingPage, devicePrompt, recoveryModal, page }) => {
             await test.step('Navigate through onboarding steps', async () => {
-                await analyticsSection.passThroughAnalytics();
+                await onboardingPage.passThroughAnalyticsAndDeviceCheck();
                 await onboardingPage.firmware.continueThroughFirmware();
                 await onboardingPage.recoverWalletButton.click();
             });
