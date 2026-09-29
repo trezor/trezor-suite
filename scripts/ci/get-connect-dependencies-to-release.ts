@@ -1,17 +1,23 @@
 // This script should check what packages from the repository have a higher version than in NPM
 // and stdout out those to be used by GitHub workflow.
 
+import { createRequire } from 'node:module';
 import path from 'node:path';
 import semver from 'semver';
 
-import {
+// `@trezor/requirements` is a CommonJS workspace package of TypeScript sources.
+// Node cannot detect its named exports when this ESM script imports it, so the
+// helpers are pulled in through `createRequire` and typed from the package.
+import type * as Requirements from '@trezor/requirements';
+
+import { getNpmRemoteGreatestVersion } from './helpers';
+
+const {
     computePublishClosure,
     createReadWorkspaceDeps,
     getWorkspaceDirectoryMap,
     readPackageJson,
-} from '@trezor/requirements';
-
-import { getNpmRemoteGreatestVersion } from './helpers';
+} = createRequire(import.meta.url)('@trezor/requirements') as typeof Requirements;
 
 const ROOT = path.join(import.meta.dirname, '..', '..');
 const readWorkspaceDeps = createReadWorkspaceDeps(ROOT);

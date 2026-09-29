@@ -19,13 +19,17 @@
 // derived from the dep graph and live in a sibling "Manual additions" block.
 
 import fs from 'node:fs';
+import { createRequire } from 'node:module';
 import path from 'node:path';
 
-import {
-    computePublishClosure,
-    createReadWorkspaceDeps,
-    getWorkspaceDirectoryMap,
-} from '@trezor/requirements';
+// `@trezor/requirements` is a CommonJS workspace package of TypeScript sources.
+// Node cannot detect its named exports when this ESM script imports it, so the
+// helpers are pulled in through `createRequire` and typed from the package.
+import type * as Requirements from '@trezor/requirements';
+
+const { computePublishClosure, createReadWorkspaceDeps, getWorkspaceDirectoryMap } = createRequire(
+    import.meta.url,
+)('@trezor/requirements') as typeof Requirements;
 
 const ROOT = path.resolve(import.meta.dirname, '..', '..');
 const WORKFLOWS_DIR = path.join(ROOT, '.github', 'workflows');
