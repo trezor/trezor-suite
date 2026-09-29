@@ -1,5 +1,7 @@
 import { UAParser } from 'ua-parser-js';
 
+import { getNativeOsVersion, isNative } from '@trezor/env-utils';
+
 let userAgentParser: UAParser;
 
 export const getUserAgent = () => window.navigator.userAgent;
@@ -19,6 +21,10 @@ const getUserAgentParser = () => {
  * FYI it uses `getHighEntropyValues` under the hood (works only on Chromium-based browsers).
  */
 export const getOsVersion = async () => {
+    if (isNative()) {
+        return getNativeOsVersion();
+    }
+
     const { version } = await getUserAgentParser().getOS().withClientHints();
 
     return version ?? '';
