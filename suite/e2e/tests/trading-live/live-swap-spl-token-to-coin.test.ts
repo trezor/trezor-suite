@@ -20,6 +20,7 @@ const accountLabel = 'Solana #2';
 // afterEach constants
 const usdtTopUpThreshold = parseFloat(sendAmount) * 3;
 const solFeeReserve = 0.05;
+const topUpProvider = 'SideShift';
 
 // limiting number of runs due to fees onchain and nonce issues during teardown - by using specific model and FW tags
 test.describe(
@@ -88,7 +89,8 @@ test.describe(
             });
 
             await test.step('Confirm the Swap trade', async () => {
-                await expect(tradingPage.inputs.youPayAssetSymbol).toHaveText(sendTokenSymbol);
+                await expect(tradingPage.inputs.youGetAssetSymbol).toHaveText(sendTokenSymbol);
+                await tradingPage.quotes.chooseDifferentOfferIfAvailable(topUpProvider);
                 await tradingPage.waitForSolanaFeesAndClickSwapBestOffer();
             });
 

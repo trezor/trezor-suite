@@ -13,6 +13,7 @@ const tenMinutes = 10 * 60 * 1000;
 const sendAmount = '0.053329';
 const formattedSendAmount = `${localizeNumber(sendAmount)} SOL`;
 const accountLabel = 'Solana #1';
+const topUpProvider = 'ChangeNOW';
 
 // limiting number of runs due to fees onchain and nonce issues during teardown - by using specific model and FW tags
 test.describe(
@@ -69,6 +70,7 @@ test.describe(
             await test.step('Confirm the Swap trade', async () => {
                 await expect(tradingPage.inputs.youGetAssetSymbol).toHaveText('SOL');
                 await expect(tradingPage.inputs.receiveAmount).toHaveText(/^[\d,]+(\.\d+)?$/);
+                await tradingPage.quotes.chooseDifferentOfferIfAvailable(topUpProvider);
                 await tradingPage.swapBestOfferButton.click();
             });
 
