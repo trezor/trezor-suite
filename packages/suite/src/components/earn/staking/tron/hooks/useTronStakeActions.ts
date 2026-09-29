@@ -11,6 +11,8 @@ import {
     type TronStakeStepId,
     getTronStakingRewards,
     getTronWithdrawableBalance,
+    isTronVoteFlow,
+    resolveVoteAllocations,
     selectTronStakeSession,
     submitTronClaimThunk,
     submitTronFreezeThunk,
@@ -104,11 +106,16 @@ export const useTronStakeActions = ({
                 break;
             }
             case 'vote': {
-                if (isVotingDisabled) break;
+                if (isVotingDisabled || !isTronVoteFlow(flow)) break;
 
                 const representativeAddress = resolveVotedRepresentativeAddress(
                     form.methods.getValues(),
                 );
+                const allocations = resolveVoteAllocations({
+                    account,
+                    representativeAddress,
+                    flow,
+                });
                 const representative = stats.data?.find(
                     ({ address }) => address === representativeAddress,
                 );
@@ -151,7 +158,7 @@ export const useTronStakeActions = ({
                         account,
                         device,
                         flow,
-                        representativeAddress,
+                        allocations,
                         requestVoteConsent,
                         requestPushApproval: async () =>
                             Boolean(

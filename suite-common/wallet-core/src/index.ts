@@ -107,6 +107,11 @@ export { composeTronUnstakeFeeLevelsThunk } from './staking/tron/actions/unstake
 export { submitTronUnstakeThunk } from './staking/tron/actions/unstake/submitUnstake';
 export { composeTronVoteFeeLevelsThunk } from './staking/tron/actions/vote/composeVote';
 export { submitTronVoteThunk } from './staking/tron/actions/vote/submitVote';
+export {
+    type TronVoteAllocation,
+    isTronVoteFlow,
+    resolveVoteAllocations,
+} from './staking/tron/actions/vote/voteContract';
 export { composeTronWithdrawFeeLevelsThunk } from './staking/tron/actions/withdraw/composeWithdraw';
 export { submitTronWithdrawThunk } from './staking/tron/actions/withdraw/submitWithdraw';
 export * from './staking/tron/tronStakingConstants';

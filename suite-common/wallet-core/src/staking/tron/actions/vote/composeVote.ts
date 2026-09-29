@@ -8,7 +8,7 @@ import { computeBandwidthFeeLevel } from '@suite-common/wallet-utils';
 import TrezorConnect from '@trezor/connect';
 import { BigNumber } from '@trezor/utils';
 
-import { buildVoteContract } from './voteContract';
+import { type TronVoteAllocation, buildVoteContract } from './voteContract';
 import {
     TRON_DUMMY_BLOCK_HASH,
     TRON_DUMMY_BLOCK_HEIGHT,
@@ -18,7 +18,7 @@ import { type TronStakeError } from '../../tronStakingTypes';
 
 export interface VoteThunkArguments {
     account: Account;
-    representativeAddress: string;
+    allocations: TronVoteAllocation[];
 }
 
 export const composeTronVoteFeeLevelsThunk = createThunk<
@@ -27,17 +27,17 @@ export const composeTronVoteFeeLevelsThunk = createThunk<
     { rejectValue: TronStakeError }
 >(
     `${TRON_STAKE_MODULE}/composeTronVoteFeeLevelsThunk`,
-    async ({ account, representativeAddress }, { rejectWithValue }) => {
+    async ({ account, allocations }, { rejectWithValue }) => {
         if (account.networkType !== 'tron') {
             return rejectWithValue({ kind: 'compose-failed', message: 'Invalid network type.' });
         }
 
-        const contract = buildVoteContract(account, representativeAddress);
+        const contract = buildVoteContract(account, allocations);
 
         if (!contract) {
             return rejectWithValue({
                 kind: 'compose-failed',
-                message: 'Invalid representative address.',
+                message: 'Invalid vote allocation.',
             });
         }
 
@@ -72,8 +72,8 @@ export const composeTronVoteFeeLevelsThunk = createThunk<
             feePerByte: feeLevel.feePerUnit ?? '0',
             bytes,
             inputs: [],
-            outputs: [{ address: representativeAddress, amount: '0' }],
-            outputsPermutation: [0],
+            outputs: allocations.map(({ address }) => ({ address, amount: '0' })),
+            outputsPermutation: allocations.map((_, index) => index),
         };
 
         return { normal: tx };

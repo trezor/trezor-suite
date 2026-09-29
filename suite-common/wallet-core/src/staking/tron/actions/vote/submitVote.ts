@@ -7,7 +7,7 @@ import TrezorConnect from '@trezor/connect';
 import { asCoinSymbol } from '@trezor/connect-common';
 
 import { type VoteThunkArguments, composeTronVoteFeeLevelsThunk } from './composeVote';
-import { buildVoteContract, buildVoteReviewForm, getTotalVotes } from './voteContract';
+import { buildVoteContract, buildVoteReviewForm } from './voteContract';
 import {
     type AddFakePendingTronTxThunkState,
     addFakePendingTronTxThunk,
@@ -40,7 +40,7 @@ export const submitTronVoteThunk = createThunk<
             account,
             device,
             flow,
-            representativeAddress,
+            allocations,
             requestVoteConsent,
             requestPushApproval,
             onSigningStart,
@@ -73,14 +73,14 @@ export const submitTronVoteThunk = createThunk<
             return;
         }
 
-        const contract = buildVoteContract(account, representativeAddress);
+        const contract = buildVoteContract(account, allocations);
 
         if (!contract) {
             dispatch(
                 tronStakeActions.submitFinished({
                     accountKey,
                     flow,
-                    error: { kind: 'compose-failed', message: 'Invalid representative address.' },
+                    error: { kind: 'compose-failed', message: 'Invalid vote allocation.' },
                 }),
             );
 
@@ -90,9 +90,7 @@ export const submitTronVoteThunk = createThunk<
         dispatch(tronStakeActions.submitStarted({ accountKey, flow }));
 
         try {
-            const composed = await dispatch(
-                composeTronVoteFeeLevelsThunk({ account, representativeAddress }),
-            )
+            const composed = await dispatch(composeTronVoteFeeLevelsThunk({ account, allocations }))
                 .unwrap()
                 .catch(() => undefined);
             const precomposedTx = composed?.normal?.type === 'final' ? composed.normal : undefined;
@@ -112,7 +110,7 @@ export const submitTronVoteThunk = createThunk<
             dispatch(
                 tronStakeActions.storePrecomposedTransaction({
                     precomposedTx,
-                    precomposedForm: buildVoteReviewForm(getTotalVotes(account)),
+                    precomposedForm: buildVoteReviewForm(allocations),
                     accountKey,
                 }),
             );
@@ -214,16 +212,14 @@ export const submitTronVoteThunk = createThunk<
                     amount: '0',
                     fee: precomposedTx.fee ?? '0',
                     type: 'self',
-                    target: { addresses: [representativeAddress], amount: '0' },
+                    target: { addresses: allocations.map(({ address }) => address), amount: '0' },
                     tronSpecific: {
                         contractType: 'VoteWitnessContract',
                         operation: 'vote',
-                        votes: [
-                            {
-                                address: representativeAddress,
-                                count: String(getTotalVotes(account)),
-                            },
-                        ],
+                        votes: allocations.map(({ address, count }) => ({
+                            address,
+                            count: String(count),
+                        })),
                     },
                 }),
             );

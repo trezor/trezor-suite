@@ -33,6 +33,7 @@ jest.mock('../../shared/signTronContract', () => ({ signTronContract: jest.fn() 
 const ACCOUNT_KEY = 'tron-account' as AccountKey;
 const ACCOUNT_ADDRESS = 'TVDGpn4hCSzJ5nkHPLetk8KQBtwaTppnkr';
 const REPRESENTATIVE_ADDRESS = 'TN3W4H6rK2ce4vX9YnFQHwKENnHjoxb3m9';
+const OTHER_REPRESENTATIVE_ADDRESS = 'TKWJhMU8NAviZ9TN5hroaFQPZ83FNctzz4';
 const SIGNED_TXID = 'a'.repeat(64);
 const OTHER_TXID = 'b'.repeat(64);
 const SERIALIZED_TX = '0a0201';
@@ -84,6 +85,8 @@ const initStore = () =>
         },
     }).services.store;
 
+const ALLOCATIONS = [{ address: REPRESENTATIVE_ADDRESS, count: 10 }];
+
 const submitVote = (
     store: TestCompositionStore<AddFakePendingTronTxThunkState, void>,
     account = buildAccount(),
@@ -94,7 +97,7 @@ const submitVote = (
             account,
             device,
             flow: FLOW,
-            representativeAddress: REPRESENTATIVE_ADDRESS,
+            allocations: ALLOCATIONS,
             requestPushApproval,
         }),
     );
@@ -238,6 +241,55 @@ describe('submitTronVoteThunk', () => {
                 error: {
                     kind: 'compose-failed',
                     message: 'TRON voting is supported only for TRX mainnet accounts.',
+                },
+            }),
+        ]);
+    });
+
+    it('signs a contract carrying one vote entry per allocation and reviews their total', async () => {
+        const store = initStore();
+
+        await store.dispatch(
+            submitTronVoteThunk({
+                account: buildAccount(),
+                device,
+                flow: FLOW,
+                allocations: [
+                    { address: REPRESENTATIVE_ADDRESS, count: 16 },
+                    { address: OTHER_REPRESENTATIVE_ADDRESS, count: 30 },
+                ],
+                requestPushApproval: () => Promise.resolve(true),
+            }),
+        );
+
+        expect(signTronContractMock).toHaveBeenCalledWith(
+            expect.objectContaining({
+                contract: expect.objectContaining({
+                    parameter: {
+                        value: expect.objectContaining({
+                            votes: [
+                                expect.objectContaining({ count: 16 }),
+                                expect.objectContaining({ count: 30 }),
+                            ],
+                        }),
+                    },
+                }),
+            }),
+        );
+
+        const storedForms = store
+            .getActions()
+            .filter(tronStakeActions.storePrecomposedTransaction.match)
+            .map(action => action.payload.precomposedForm);
+        expect(storedForms).toEqual([
+            expect.objectContaining({
+                tronStaking: {
+                    kind: 'vote',
+                    votes: '46',
+                    allocations: [
+                        { address: REPRESENTATIVE_ADDRESS, votes: '16' },
+                        { address: OTHER_REPRESENTATIVE_ADDRESS, votes: '30' },
+                    ],
                 },
             }),
         ]);
