@@ -1,6 +1,6 @@
 import { Text } from 'react-native';
 
-import { fireEvent, renderWithBasicProvider } from '@suite-native/test-utils';
+import { act, fireEvent, renderWithBasicProvider } from '@suite-native/test-utils';
 
 import { AsyncButton, type AsyncButtonProps } from './AsyncButton';
 
@@ -39,9 +39,11 @@ describe('AsyncButton', () => {
     it('should hide loading indicator after async operation is complete', async () => {
         const { getByText, queryByTestId } = await renderAsyncButton({});
 
-        const pressPromise = fireEvent.press(getByText('Press me'));
-        await jest.runAllTimersAsync();
-        await pressPromise;
+        await act(async () => {
+            const pressPromise = fireEvent.press(getByText('Press me'));
+            await jest.runAllTimersAsync();
+            await pressPromise;
+        });
 
         expect(queryByTestId('async-button/loading')).toBeNull();
     });
@@ -52,9 +54,11 @@ describe('AsyncButton', () => {
                 new Promise((_, reject) => setTimeout(() => reject(new Error('Failed')), 1000)),
         });
 
-        const pressPromise = fireEvent.press(getByText('Press me'));
-        await jest.runAllTimersAsync();
-        await pressPromise;
+        await act(async () => {
+            const pressPromise = fireEvent.press(getByText('Press me'));
+            await jest.runAllTimersAsync();
+            await pressPromise;
+        });
 
         expect(queryByTestId('async-button/loading')).toBeNull();
     });
@@ -67,10 +71,11 @@ describe('AsyncButton', () => {
             onReject: mockOnReject,
         });
 
-        const pressPromise = fireEvent.press(getByText('Press me'));
-
-        await jest.runAllTimersAsync();
-        await pressPromise;
+        await act(async () => {
+            const pressPromise = fireEvent.press(getByText('Press me'));
+            await jest.runAllTimersAsync();
+            await pressPromise;
+        });
 
         expect(mockOnReject).toHaveBeenCalledWith(new Error('Failed'));
     });
