@@ -11,6 +11,7 @@ import {
     getDexEstimationData,
     getDisplayNetworkFee,
     hasEip712SignDataType,
+    hasFixedPsbtFee,
     requiresErc20Approval,
     requiresTokenApproval,
     tokenSupportsIncreasingAllowance,
@@ -404,6 +405,32 @@ describe('hasEip712SignDataType', () => {
             },
         };
         expect(hasEip712SignDataType(quote)).toBe(true);
+    });
+});
+
+describe('hasFixedPsbtFee', () => {
+    const dexTx = { from: 'from', to: 'to', data: 'cHNidP8B', value: '0' };
+
+    it('should return true for a bitcoin DEX quote with a PSBT', () => {
+        expect(hasFixedPsbtFee({ isDex: true, dexTx }, 'bitcoin')).toBe(true);
+    });
+
+    it('should return false for a bitcoin CEX quote', () => {
+        expect(hasFixedPsbtFee({ isDex: false }, 'bitcoin')).toBe(false);
+    });
+
+    it('should return false for a bitcoin DEX quote without transaction data', () => {
+        expect(hasFixedPsbtFee({ isDex: true, dexTx: { ...dexTx, data: '' } }, 'bitcoin')).toBe(
+            false,
+        );
+    });
+
+    it('should return false for an EVM DEX quote', () => {
+        expect(hasFixedPsbtFee({ isDex: true, dexTx }, 'ethereum')).toBe(false);
+    });
+
+    it('should return false when no quote is provided', () => {
+        expect(hasFixedPsbtFee(undefined, 'bitcoin')).toBe(false);
     });
 });
 

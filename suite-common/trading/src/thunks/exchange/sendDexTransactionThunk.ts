@@ -104,6 +104,7 @@ export const sendDexTransactionThunk = createThunk<
             dexTx: selectedQuote.dexTx,
             partnerPaymentExtraId: selectedQuote.partnerPaymentExtraId,
             serializedTx,
+            networkType: account.networkType,
         });
         const recomposeAndSignTx = await dispatch(
             tradingThunks.recomposeAndSignTxThunk({
