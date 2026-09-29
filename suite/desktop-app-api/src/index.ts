@@ -20,3 +20,13 @@ export type {
 } from './messages';
 
 export { type DesktopApiDep, injectDesktopApi } from './desktopApiDependency';
+export type {
+    VerifiedNonceChainId,
+    VerifiedNonceRequest,
+    VerifiedNonce,
+    VerifiedNonceEvidence,
+    NonceFailure,
+    NonceFailureCode,
+    VerifiedNonceResult,
+    NonceVerifierInfo,
+} from './verifiedNonce';

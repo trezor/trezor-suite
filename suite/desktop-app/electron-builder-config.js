@@ -30,6 +30,7 @@ module.exports = {
         'build/release-notes.md', // this one is dynamically loaded in runtime
         '!build/static/**/{favicon,icons,bin,browsers}', // copied as extraResources instead, some are platform-specific
         '!node_modules/usb/**/{libusb,libusb_config,src}', // exclude files unnecessary for runtime
+        '!node_modules/@corpus-core/colibri-stateless/{c4w.js,c4w.wasm}', // the nonce verifier must run the native addon; leave no WASM build to fall back to
         '!node_modules/@trezor/**', // no @trezor package is a runtime dependency of this app; webpack bundles them.
     ],
     extraResources: [

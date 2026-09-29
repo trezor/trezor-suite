@@ -215,4 +215,9 @@ export const createDesktopApiBridge = <R extends StrictIpcRenderer<any, IpcRende
 
     // Browser Window
     reloadBrowserWindow: () => ipcRenderer.invoke('browser-window/reload'),
+
+    // Verified account nonce (experimental)
+    getVerifiedNonceInfo: () => ipcRenderer.invoke('verified-nonce/get-info'),
+    verifyAccountNonce: request => ipcRenderer.invoke('verified-nonce/verify', request),
+    cancelAccountNonceVerification: payload => ipcRenderer.invoke('verified-nonce/cancel', payload),
 });

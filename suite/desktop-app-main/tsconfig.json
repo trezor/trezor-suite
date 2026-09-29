@@ -28,6 +28,7 @@
         {
             "path": "../../suite-common/wallet-utils"
         },
+        { "path": "../colibri-nonce-verifier" },
         { "path": "../desktop-app-api" },
         { "path": "../desktop-app-api-electron" },
         {

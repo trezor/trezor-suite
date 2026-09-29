@@ -1,0 +1,23 @@
+{
+    "name": "@suite/colibri-nonce-verifier",
+    "version": "1.0.0",
+    "private": true,
+    "license": "See LICENSE.md in repo root",
+    "sideEffects": false,
+    "main": "src/index",
+    "scripts": {
+        "depcheck": "yarn g:depcheck",
+        "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'",
+        "test:fixtures": "yarn g:tsx scripts/fixtureSmoke.ts",
+        "test:live": "yarn g:tsx scripts/liveSmoke.ts",
+        "test:unit": "yarn g:jest",
+        "trust-manifest:populate": "node scripts/populateTrustManifest.mjs",
+        "verify-record": "yarn g:tsx scripts/verifyRecord.ts",
+        "type-check": "yarn g:tsc --build"
+    },
+    "dependencies": {
+        "@corpus-core/colibri-stateless": "3.0.0",
+        "@noble/hashes": "^2.0.1",
+        "@suite/desktop-app-api": "workspace:*"
+    }
+}
