@@ -1,3 +1,17 @@
+import { type ComponentProps } from 'react';
 import Animated from 'react-native-reanimated';
 
-export const AnimatedScrollView = Animated.ScrollView;
+import { useLayoutAnimationProps } from './useLayoutAnimationProps';
+
+type AnimatedScrollViewProps = Omit<ComponentProps<typeof Animated.ScrollView>, 'key'>;
+
+export const AnimatedScrollView = ({
+    entering,
+    exiting,
+    layout,
+    ...props
+}: AnimatedScrollViewProps) => {
+    const animationProps = useLayoutAnimationProps({ entering, exiting, layout });
+
+    return <Animated.ScrollView {...props} {...animationProps} />;
+};
