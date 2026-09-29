@@ -282,7 +282,16 @@ export const toBaselineDocument = (runs: readonly PerfRun[]): PerfBaselineDocume
  */
 export const buildUploadBundle = (
     runs: readonly PerfRun[],
-    options: { existingIndex?: string; sealBaseline?: boolean } = {},
+    options: {
+        /**
+         * What each rolling index file already holds, keyed by its index key. Per key rather than
+         * one string for the lot: a publish covers every surface a run measured, each has its own
+         * index, and handing them all the same text writes one surface's history into another's
+         * file.
+         */
+        existingIndex?: Readonly<Record<string, string>>;
+        sealBaseline?: boolean;
+    } = {},
 ): PerfUploadFile[] => {
     const files: PerfUploadFile[] = runs.flatMap(run =>
         run.artifacts.map(artifact => ({
@@ -306,18 +315,33 @@ export const buildUploadBundle = (
         files.push({
             path: key,
             body: isRollingIndex(context)
-                ? appendIndexRows(options.existingIndex ?? '', rows)
+                ? appendIndexRows(options.existingIndex?.[key] ?? '', rows)
                 : renderNdjson(rows),
         });
     }
 
-    if (options.sealBaseline && runs.length > 0) {
-        const document = toBaselineDocument(runs);
+    if (options.sealBaseline) {
+        // One baseline per surface. A publish covers every surface the run measured, and their
+        // measurement labels collide by design — `wallet-discovery [T3W1]` is a scenario on desktop
+        // and on web alike — so sealing them together files one surface's numbers under another's
+        // key and silently drops the rest.
+        const bySurface = new Map<PerfSurface, PerfRun[]>();
 
-        files.push({
-            path: baselineKey(document.surface, document.branch),
-            body: `${JSON.stringify(document, null, 2)}\n`,
-        });
+        for (const run of runs) {
+            bySurface.set(run.context.surface, [
+                ...(bySurface.get(run.context.surface) ?? []),
+                run,
+            ]);
+        }
+
+        for (const surfaceRuns of bySurface.values()) {
+            const document = toBaselineDocument(surfaceRuns);
+
+            files.push({
+                path: baselineKey(document.surface, document.branch),
+                body: `${JSON.stringify(document, null, 2)}\n`,
+            });
+        }
     }
 
     return files;

@@ -60,7 +60,7 @@ export const writeBundle = (root: string, files: readonly PerfUploadFile[]): voi
 };
 
 export type PublishOutcome =
-    | { status: 'written'; files: PerfUploadFile[]; indexUrl: string }
+    | { status: 'written'; files: PerfUploadFile[]; indexUrls: string[] }
     | { status: 'skipped'; reason: string };
 
 export const publishRuns = async ({
@@ -80,23 +80,32 @@ export const publishRuns = async ({
         return { status: 'skipped', reason: 'no runs to publish' };
     }
 
-    // A branch appends to one rolling index, so what is already there is read back first — over
+    // A branch appends to its rolling index, so what is already there is read back first — over
     // plain HTTPS, because the objects are public. Absent is the normal state of a first run.
-    const indexUrl = publicUrl(indexKey(first.context));
-    const existing = isRollingIndex(first.context)
-        ? await fetchStoreText(indexUrl)
-        : ({ status: 'absent' } as const);
+    //
+    // One publish can cover several surfaces, and each keeps its own index, so every one of them is
+    // read separately. Reading a single file and reusing its contents for the rest would write one
+    // surface's history into another surface's index.
+    const indexKeys = [...new Set(runs.map(run => indexKey(run.context)))];
+    const rollingKeys = [
+        ...new Set(
+            runs.filter(run => isRollingIndex(run.context)).map(run => indexKey(run.context)),
+        ),
+    ];
+    const existingIndex: Record<string, string> = {};
 
-    if (existing.status === 'unavailable') {
-        log(
-            `[performance] Could not read ${indexUrl} (${existing.reason}); writing a fresh index.`,
-        );
+    for (const key of rollingKeys) {
+        const url = publicUrl(key);
+        const existing = await fetchStoreText(url);
+
+        if (existing.status === 'ok') {
+            existingIndex[key] = existing.text;
+        } else if (existing.status === 'unavailable') {
+            log(`[performance] Could not read ${url} (${existing.reason}); writing a fresh index.`);
+        }
     }
 
-    const files = buildUploadBundle(runs, {
-        existingIndex: existing.status === 'ok' ? existing.text : '',
-        sealBaseline,
-    });
+    const files = buildUploadBundle(runs, { existingIndex, sealBaseline });
 
     writeBundle(bundleRoot, files);
 
@@ -104,7 +113,11 @@ export const publishRuns = async ({
     for (const file of files) {
         log(`  ${file.path}`);
     }
-    log(`[performance] Index: ${indexUrl}`);
+    const indexUrls = indexKeys.map(publicUrl);
 
-    return { status: 'written', files, indexUrl };
+    for (const url of indexUrls) {
+        log(`[performance] Index: ${url}`);
+    }
+
+    return { status: 'written', files, indexUrls };
 };

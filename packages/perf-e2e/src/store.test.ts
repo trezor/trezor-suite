@@ -260,18 +260,70 @@ describe('buildUploadBundle', () => {
         const previous = renderNdjson(
             toIndexRows({ ...run, context: { ...context, runId: '1841' } }),
         );
-        const index = buildUploadBundle([run], { existingIndex: previous }).find(
-            file => file.path === indexKey(context),
-        );
+        const index = buildUploadBundle([run], {
+            existingIndex: { [indexKey(context)]: previous },
+        }).find(file => file.path === indexKey(context));
 
         expect(parseNdjson(index?.body ?? '')).toHaveLength(4);
+    });
+
+    it('seals one baseline per surface, not one for whichever run came first', () => {
+        // A web run and a desktop run of the same branch label their measurements identically
+        // (`wallet-discovery [T3W1]`), so a single document would file one surface's numbers under
+        // the other's key and drop the rest.
+        const webMeasured: PerfRun = {
+            context: { ...context, surface: 'web' },
+            artifacts: [{ kind: 'flow-result', name: 'flow', body: '{}\n' }],
+            measurements: [
+                {
+                    scenario: 'home',
+                    samples: 1,
+                    metrics: { 'lh:bootup-time': 12 },
+                    artifact: 'flow',
+                },
+            ],
+        };
+
+        const baselines = buildUploadBundle([run, webMeasured], { sealBaseline: true }).filter(
+            file => file.path.startsWith('baseline/'),
+        );
+
+        expect(baselines.map(file => file.path).toSorted()).toEqual([
+            baselineKey('android', context.branch),
+            baselineKey('web', context.branch),
+        ]);
+
+        const android = JSON.parse(
+            baselines.find(file => file.path === baselineKey('android', context.branch))?.body ??
+                '',
+        );
+        // The android baseline keeps android's numbers; the web run does not overwrite them.
+        expect(android.measurements.home).toEqual({ 'rn:ttffMs': 412, 'rn:ttiMs': 980 });
+    });
+
+    it("appends each rolling index to its own history, not to a sibling surface's", () => {
+        const webContext = { ...context, surface: 'web' as const };
+        const webEmpty: PerfRun = { context: webContext, artifacts: [], measurements: [] };
+        const androidHistory = renderNdjson(
+            toIndexRows({ ...run, context: { ...context, runId: '1841' } }),
+        );
+
+        const files = buildUploadBundle([run, { ...webEmpty, measurements: run.measurements }], {
+            existingIndex: { [indexKey(context)]: androidHistory },
+        });
+        const webIndex = files.find(file => file.path === indexKey(webContext));
+
+        // Web has no history of its own yet, so it gets only this run's rows — android's history
+        // belongs to android's file.
+        expect(parseNdjson(webIndex?.body ?? '')).toHaveLength(2);
+        expect(parseNdjson(webIndex?.body ?? '').every(row => row.surface === 'web')).toBe(true);
     });
 
     it('never appends for a pull request, whose file is its own', () => {
         const prContext = { ...context, prNumber: '32587' };
         const previous = renderNdjson(toIndexRows({ ...run, context: prContext }));
         const index = buildUploadBundle([{ ...run, context: prContext }], {
-            existingIndex: previous,
+            existingIndex: { [indexKey(prContext)]: previous },
         }).find(file => file.path === indexKey(prContext));
 
         expect(parseNdjson(index?.body ?? '')).toHaveLength(2);
