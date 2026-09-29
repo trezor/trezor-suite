@@ -13,10 +13,14 @@ export class YieldFlowSection {
     // Continue button of the shared allowance approve modal opened by the approve step
     readonly approveModalContinueButton: Locator;
     readonly pendingTransactionLabel: Locator;
+    readonly pendingTransactionId: Locator;
     // Wrap step (wrapped-native vaults only)
     readonly wrapButton: Locator;
     readonly wrapSkipButton: Locator;
     readonly wrapReceivingAmount: Locator;
+    // Unwrap step (wrapped-native vaults only)
+    readonly unwrapButton: Locator;
+    readonly unwrapSkipButton: Locator;
     // Amount validation warnings shared by the flow steps
     readonly insufficientFundsWarning: Locator;
     readonly reserveRecommendationWarning: Locator;
@@ -58,11 +62,14 @@ export class YieldFlowSection {
         this.approveSkipButton = this.page.getByTestId('@yield/form/approve-skip-button');
         this.approveModalContinueButton = this.page.getByTestId('@modal/approve/continue-button');
         this.pendingTransactionLabel = this.page.getByTestId('@pending-transaction/title');
+        this.pendingTransactionId = this.page.getByTestId('@pending-transaction/txid/value');
         this.wrapButton = this.page.getByTestId('@yield/form/wrap-button');
         this.wrapSkipButton = this.page.getByTestId('@yield/form/wrap-skip-button');
         this.wrapReceivingAmount = this.page.getByTestId(
             '@yield/form/wrap-receiving-amount-with-symbol',
         );
+        this.unwrapButton = this.page.getByTestId('@yield/form/unwrap-button');
+        this.unwrapSkipButton = this.page.getByTestId('@yield/form/unwrap-skip-button');
         this.insufficientFundsWarning = this.page.getByTestId('@yield/warning/insufficient-funds');
         this.reserveRecommendationWarning = this.page.getByTestId(
             '@yield/warning/reserve-recommendation',

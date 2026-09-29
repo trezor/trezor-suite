@@ -75,6 +75,7 @@ export const YieldUnwrapStep = ({
                 onClick={onSubmit}
                 isLoading={isSubmitting}
                 isDisabled={isSubmitDisabled || !!pendingTransaction}
+                data-testid="@yield/form/unwrap-button"
             >
                 <Translation id="TR_EARN_YIELD_UNWRAP_SUBMIT" values={{ tokenSymbol }} />
             </Button>
@@ -85,6 +86,7 @@ export const YieldUnwrapStep = ({
                     priority="secondary"
                     onClick={onSkip}
                     isDisabled={isSubmitting || !!pendingTransaction}
+                    data-testid="@yield/form/unwrap-skip-button"
                 >
                     <Translation id="TR_SKIP" />
                 </Button>
