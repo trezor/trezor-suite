@@ -50,10 +50,13 @@ import {
     type Account,
     type BaseCurrencyAmount,
     type RatesByKey,
-    areBaseCurrencyAmountsEqual,
     asBaseCurrencyAmount,
 } from '@suite-common/wallet-types';
-import { getAccountFiatBalance, isStakingSymbol } from '@suite-common/wallet-utils';
+import {
+    getAccountFiatBalance,
+    isStakingSymbol,
+    toBaseCurrencyDisplayAmount,
+} from '@suite-common/wallet-utils';
 import { type DeviceOnboardingSliceRootState } from '@suite-native/device-onboarding';
 import { type FeatureFlagsRootState } from '@suite-native/feature-flags';
 import { type NativeFirmwareRootState } from '@suite-native/firmware';
@@ -158,27 +161,21 @@ export const selectSelectedDeviceTotalFiatBalance = createMemoizedSelector(
         // do not return any value before discovery is finished to prevent unnecessary rerenders of portfolio graph.
         hasRunningDiscovery
             ? undefined
-            : getTotalFiatBalanceNative({ deviceAccounts, localCurrency, rates }),
-    {
-        memoizeOptions: {
-            // Accounts and fiat rates churn on every sync; keep the previous BigNumber reference
-            // when the amount is unchanged so useSelector consumers don't rerender.
-            resultEqualityCheck: areBaseCurrencyAmountsEqual,
-        },
-    },
+            : toBaseCurrencyDisplayAmount({
+                  value: getTotalFiatBalanceNative({ deviceAccounts, localCurrency, rates }),
+                  baseCurrencyCode: localCurrency,
+                  // The portfolio header truncates decimals instead of rounding them.
+                  roundingMode: BigNumber.ROUND_DOWN,
+              }),
 );
 
 export const selectDeviceTotalFiatBalanceByDeviceState = createMemoizedSelector(
     [selectAccountsByDeviceState, selectCurrentFiatRates, selectBaseCurrency],
     (deviceAccounts, rates, localCurrency) =>
-        getTotalFiatBalanceNative({ deviceAccounts, localCurrency, rates }),
-    {
-        memoizeOptions: {
-            // Accounts and fiat rates churn on every sync; keep the previous BigNumber reference
-            // when the amount is unchanged so useSelector consumers don't rerender.
-            resultEqualityCheck: areBaseCurrencyAmountsEqual,
-        },
-    },
+        toBaseCurrencyDisplayAmount({
+            value: getTotalFiatBalanceNative({ deviceAccounts, localCurrency, rates }),
+            baseCurrencyCode: localCurrency,
+        }),
 );
 
 export const selectHasNoDeviceWithEmptyPassphrase = createMemoizedSelector(

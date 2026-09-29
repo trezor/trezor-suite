@@ -23,6 +23,9 @@
         { "path": "../atoms" },
         { "path": "../intl" },
         { "path": "../tokens" },
+        {
+            "path": "../../packages/blockchain-link-types"
+        },
         { "path": "../../packages/env-utils" },
         { "path": "../../packages/protobuf" },
         {

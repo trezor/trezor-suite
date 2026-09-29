@@ -21,6 +21,7 @@
         "@suite-native/atoms": "workspace:*",
         "@suite-native/intl": "workspace:*",
         "@suite-native/tokens": "workspace:*",
+        "@trezor/blockchain-link-types": "workspace:*",
         "@trezor/env-utils": "workspace:*",
         "@trezor/protobuf": "workspace:*",
         "@trezor/styles-native": "workspace:*",
