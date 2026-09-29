@@ -1,6 +1,7 @@
 import { type ReactNode } from 'react';
-import Animated, { FadeIn, FadeOut } from 'react-native-reanimated';
+import { FadeIn, FadeOut } from 'react-native-reanimated';
 
+import { AnimatedView } from '../AnimatedView';
 import { Box } from '../Box';
 import { Hint } from '../Hint';
 import { VStack } from '../Stack';
@@ -35,14 +36,14 @@ export const InputWrapper = ({ children, label, hint, error }: InputWrapperProps
             {(!!error || !!hint) && (
                 <Box marginLeft="sp12">
                     {!!error && (
-                        <Animated.View entering={FadeIn} exiting={FadeOut}>
+                        <AnimatedView entering={FadeIn} exiting={FadeOut}>
                             <Hint variant="error">{errorMessage}</Hint>
-                        </Animated.View>
+                        </AnimatedView>
                     )}
                     {!!hint && (
-                        <Animated.View entering={FadeIn} exiting={FadeOut}>
+                        <AnimatedView entering={FadeIn} exiting={FadeOut}>
                             <Hint>{hint}</Hint>
-                        </Animated.View>
+                        </AnimatedView>
                     )}
                 </Box>
             )}

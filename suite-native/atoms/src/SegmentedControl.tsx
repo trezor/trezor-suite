@@ -1,14 +1,10 @@
 import { type ReactNode, useEffect, useState } from 'react';
 import { type LayoutChangeEvent } from 'react-native';
-import Animated, {
-    Easing,
-    useAnimatedStyle,
-    useSharedValue,
-    withTiming,
-} from 'react-native-reanimated';
+import { Easing, useAnimatedStyle, useSharedValue, withTiming } from 'react-native-reanimated';
 
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
+import { AnimatedView } from './AnimatedView';
 import { Box } from './Box';
 import { PressableOpacity } from './Pressable';
 import { Text } from './Text';
@@ -93,7 +89,7 @@ export const SegmentedControl = <TValue extends string>({
 
     return (
         <Box style={applyStyle(containerStyle)} onLayout={handleLayout} testID={testID}>
-            <Animated.View style={[applyStyle(indicatorStyle), animatedIndicatorStyle]} />
+            <AnimatedView style={[applyStyle(indicatorStyle), animatedIndicatorStyle]} />
             {options.map(option => {
                 const isSelected = option.value === selectedValue;
 

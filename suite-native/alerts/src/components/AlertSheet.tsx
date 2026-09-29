@@ -1,10 +1,10 @@
 import { useEffect } from 'react';
 import { Modal, StyleSheet, useWindowDimensions } from 'react-native';
-import Animated from 'react-native-reanimated';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import {
     AnimatedPressable,
+    AnimatedView,
     Box,
     Button,
     Card,
@@ -120,7 +120,7 @@ export const AlertSheet = ({ alert }: AlertSheetProps) => {
 
     return (
         <Modal transparent visible={!!alert} testID={testID}>
-            <Animated.View
+            <AnimatedView
                 style={[
                     applyStyle(sheetOverlayStyle, { windowWidth, windowHeight }),
                     animatedSheetWithOverlayStyle,
@@ -130,7 +130,7 @@ export const AlertSheet = ({ alert }: AlertSheetProps) => {
                 onPress={handlePressOutside}
                 style={[animatedSheetWrapperStyle, applyStyle(shakeTriggerStyle)]}
             >
-                <Animated.View
+                <AnimatedView
                     style={shakeAnimatedStyle}
                     onStartShouldSetResponder={_ => true} // Stop the shake event trigger propagation.
                 >
@@ -174,7 +174,7 @@ export const AlertSheet = ({ alert }: AlertSheetProps) => {
                             </VStack>
                         </VStack>
                     </Card>
-                </Animated.View>
+                </AnimatedView>
             </AnimatedPressable>
         </Modal>
     );

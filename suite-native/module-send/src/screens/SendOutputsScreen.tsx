@@ -1,12 +1,12 @@
 import { useCallback, useEffect, useRef } from 'react';
-import Animated, { FadeInDown, FadeOutDown } from 'react-native-reanimated';
+import { FadeInDown, FadeOutDown } from 'react-native-reanimated';
 import { useSelector } from 'react-redux';
 
 import { useFocusEffect } from '@react-navigation/native';
 
 import { isFinalPrecomposedTransaction } from '@suite-common/wallet-types';
 import { AccountDetailsCard } from '@suite-native/accounts';
-import { BannerInline, Box } from '@suite-native/atoms';
+import { AnimatedView, BannerInline, Box } from '@suite-native/atoms';
 import { Form } from '@suite-native/forms';
 import { Translation } from '@suite-native/intl';
 import {
@@ -112,14 +112,14 @@ export const SendOutputsScreen = ({
                     isFormValid={isValid}
                 />
                 {isMissingUtxos ? (
-                    <Animated.View entering={FadeInDown} exiting={FadeOutDown}>
+                    <AnimatedView entering={FadeInDown} exiting={FadeOutDown}>
                         <Box padding="sp16">
                             <BannerInline
                                 intent="warning"
                                 title={<Translation id="moduleSend.coinControl.notEnoughCoins" />}
                             />
                         </Box>
-                    </Animated.View>
+                    </AnimatedView>
                 ) : (
                     isValid &&
                     isFeeReady &&

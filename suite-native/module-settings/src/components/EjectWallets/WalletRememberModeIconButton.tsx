@@ -1,4 +1,4 @@
-import Animated, { FadeIn, FadeOut } from 'react-native-reanimated';
+import { FadeIn, FadeOut } from 'react-native-reanimated';
 import { useSelector } from 'react-redux';
 
 import { useServices } from '@suite-common/dependency-injection';
@@ -6,7 +6,7 @@ import { deviceActions } from '@suite-common/device';
 import { injectDispatch } from '@suite-common/redux-utils';
 import { type TrezorDevice } from '@suite-common/suite-types';
 import { selectIsDeviceAutoEjectEnabled } from '@suite-common/wallet-core';
-import { IconButton } from '@suite-native/atoms';
+import { AnimatedView, IconButton } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 import { useToast } from '@suite-native/toasts';
 
@@ -40,7 +40,7 @@ export const WalletRememberModeIconButton = ({ device }: { device: TrezorDevice 
     if (isDeviceAutoEjectEnabled) return null;
 
     return (
-        <Animated.View entering={FadeIn} exiting={FadeOut}>
+        <AnimatedView entering={FadeIn} exiting={FadeOut}>
             <IconButton
                 iconName={device.remember ? 'ejectSimple' : 'arrowUUpLeft'}
                 onPress={handleEjectWallet}
@@ -48,6 +48,6 @@ export const WalletRememberModeIconButton = ({ device }: { device: TrezorDevice 
                 priority="secondary"
                 testID="@settings/eject-single-wallet"
             />
-        </Animated.View>
+        </AnimatedView>
     );
 };

@@ -1,7 +1,7 @@
 import { type ReactNode, useCallback, useEffect, useState } from 'react';
 import { View, useWindowDimensions } from 'react-native';
 import { Gesture, GestureDetector } from 'react-native-gesture-handler';
-import Animated, {
+import {
     useAnimatedReaction,
     useAnimatedStyle,
     useSharedValue,
@@ -9,7 +9,7 @@ import Animated, {
 } from 'react-native-reanimated';
 import { scheduleOnRN } from 'react-native-worklets';
 
-import { AnimatedVStack } from '@suite-native/atoms';
+import { AnimatedVStack, AnimatedView } from '@suite-native/atoms';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
 const SNAP_SPRING = { damping: 20, stiffness: 200, mass: 0.5 };
@@ -46,7 +46,7 @@ const Dot = ({ isActive }: DotProps) => {
         backgroundColor: isActive ? utils.colors.contentNeutral : utils.colors.borderNeutral,
     }));
 
-    return <Animated.View style={[applyStyle(dotBaseStyle), dotAnimatedStyle]} />;
+    return <AnimatedView style={[applyStyle(dotBaseStyle), dotAnimatedStyle]} />;
 };
 
 type CarouselDotsProps = {
@@ -141,7 +141,7 @@ export const PromoBannerCarousel = ({ items }: PromoBannerCarouselProps) => {
         <AnimatedVStack spacing="sp12" alignItems="center">
             <GestureDetector gesture={panGesture}>
                 <View style={{ width: screenWidth, overflow: 'hidden' }}>
-                    <Animated.View style={[applyStyle(slideRowStyle), slideRowAnimatedStyle]}>
+                    <AnimatedView style={[applyStyle(slideRowStyle), slideRowAnimatedStyle]}>
                         {items.map((item, index) => (
                             <View
                                 key={index}
@@ -150,7 +150,7 @@ export const PromoBannerCarousel = ({ items }: PromoBannerCarouselProps) => {
                                 {item}
                             </View>
                         ))}
-                    </Animated.View>
+                    </AnimatedView>
                 </View>
             </GestureDetector>
             {count > 1 && <CarouselDots count={count} activeIndex={activeIndex} />}

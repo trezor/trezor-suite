@@ -1,11 +1,11 @@
-import Animated, { FadeInDown } from 'react-native-reanimated';
+import { FadeInDown } from 'react-native-reanimated';
 import { useSelector } from 'react-redux';
 
 import { useNavigation } from '@react-navigation/native';
 
 import { parseCryptoId, selectTradingExchangeSelectedQuote } from '@suite-common/trading';
 import { type TokenAddress } from '@suite-common/wallet-types';
-import { Box, Button, ScreenFooterGradient } from '@suite-native/atoms';
+import { AnimatedView, Box, Button, ScreenFooterGradient } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 import {
     type ExchangeFlowType,
@@ -72,7 +72,7 @@ export const ApprovalButton = ({ isReady, isDisabled, flowType }: ApprovalButton
     };
 
     return (
-        <Animated.View entering={FadeInDown}>
+        <AnimatedView entering={FadeInDown}>
             <ScreenFooterGradient />
             <Box style={applyStyle(footerStyle)}>
                 <Button
@@ -84,6 +84,6 @@ export const ApprovalButton = ({ isReady, isDisabled, flowType }: ApprovalButton
                     <Translation id="generic.buttons.continue" />
                 </Button>
             </Box>
-        </Animated.View>
+        </AnimatedView>
     );
 };

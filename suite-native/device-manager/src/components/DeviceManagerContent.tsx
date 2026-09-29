@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useWindowDimensions } from 'react-native';
-import Animated, { LinearTransition } from 'react-native-reanimated';
+import { LinearTransition } from 'react-native-reanimated';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useSelector } from 'react-redux';
 
@@ -20,7 +20,7 @@ import { injectDispatch } from '@suite-common/redux-utils';
 import { type TrezorDevice } from '@suite-common/suite-types';
 import { selectHasRunningDiscovery } from '@suite-common/wallet-core';
 import { events, injectNativeAnalytics } from '@suite-native/analytics';
-import { AnimatedVStack, VStack } from '@suite-native/atoms';
+import { AnimatedScrollView, AnimatedVStack, VStack } from '@suite-native/atoms';
 import { selectShouldFactoryResetBeVisible } from '@suite-native/device';
 import {
     type AppTabsParamList,
@@ -129,7 +129,7 @@ export const DeviceManagerContent = () => {
             }
             onClose={() => setIsChangeDeviceRequested(false)}
         >
-            <Animated.ScrollView
+            <AnimatedScrollView
                 style={applyStyle(scrollViewStyle, { maxHeight: scrollViewMaxHeight })}
                 alwaysBounceVertical={false}
                 showsVerticalScrollIndicator={false}
@@ -154,7 +154,7 @@ export const DeviceManagerContent = () => {
                         </AnimatedVStack>
                     )}
                 </VStack>
-            </Animated.ScrollView>
+            </AnimatedScrollView>
         </DeviceManagerModal>
     );
 };

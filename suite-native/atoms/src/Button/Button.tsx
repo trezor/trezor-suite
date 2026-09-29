@@ -1,11 +1,12 @@
 import { type ReactNode, useState } from 'react';
 import { type PressableProps } from 'react-native';
-import Animated, { FadeIn } from 'react-native-reanimated';
+import { FadeIn } from 'react-native-reanimated';
 
 import { type AnimatedIconColor, Icon, type IconName } from '@suite-native/icons';
 import { type NativeStyleObject, prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 import { type Color, nativeSpacings } from '@trezor/theme';
 
+import { AnimatedView } from '../AnimatedView';
 import { Loader } from '../Loader';
 import { AnimatedPressable } from '../Pressable';
 import { HStack } from '../Stack';
@@ -180,12 +181,12 @@ export const Button = ({
         >
             <HStack alignItems="center" justifyContent="center" spacing={buttonGapMap[size]}>
                 {isLoading && (
-                    <Animated.View
+                    <AnimatedView
                         entering={FadeIn.duration(LOADER_FADE_IN_DURATION)}
                         testID={testID ? `${testID}/loading` : undefined}
                     >
                         <Loader color={contentColor} />
-                    </Animated.View>
+                    </AnimatedView>
                 )}
                 {!isLoading && !!iconLeft && (
                     <ButtonAccessoryView
