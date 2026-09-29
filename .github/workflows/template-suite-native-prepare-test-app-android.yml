@@ -160,7 +160,9 @@ jobs:
       - name: Build a new Detox test .apk
         if: steps.s3_build_cache.outputs.hit == 'false'
         working-directory: ./suite-native/app
-        run: yarn exec detox build -PreactNativeArchitectures=x86_64 --configuration android.emu.release
+        env:
+          ORG_GRADLE_PROJECT_reactNativeArchitectures: x86_64
+        run: yarn exec detox build --configuration android.emu.release
 
       - name: save .apk to the aws s3 bucket
         if: steps.s3_build_cache.outputs.hit == 'false'
