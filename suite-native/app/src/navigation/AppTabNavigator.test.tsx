@@ -3,7 +3,7 @@ import { messageSystemInitialState } from '@suite-common/message-system';
 import { mockMessageSystemStateWithFeatureFlags } from '@suite-common/message-system/mocks';
 import { type NativeAnalyticsDep } from '@suite-native/analytics';
 import { mockNativeAnalytics } from '@suite-native/analytics/mocks';
-import { FeatureFlag, featureFlagsInitialState } from '@suite-native/feature-flags';
+import { featureFlagsInitialState } from '@suite-native/feature-flags';
 import { getTranslation } from '@suite-native/intl';
 import {
     fireEvent,
@@ -54,9 +54,6 @@ describe('AppTabNavigator', () => {
 
     it('should not render Trade tab when all trading flags are disabled', async () => {
         const { queryByText } = await renderTabs({
-            featureFlags: {
-                [FeatureFlag.IsTradingResidenceCheckEnabled]: false,
-            },
             messageSystem: mockMessageSystemStateWithFeatureFlags({
                 'trading.buy': false,
                 'trading.exchange': false,
@@ -70,9 +67,6 @@ describe('AppTabNavigator', () => {
 
     it('should render Trade tab when at least one trading flag is enabled', async () => {
         const { getByText, getByTestId } = await renderTabs({
-            featureFlags: {
-                [FeatureFlag.IsTradingResidenceCheckEnabled]: false,
-            },
             messageSystem: mockMessageSystemStateWithFeatureFlags({
                 'trading.buy': false,
                 'trading.exchange': true,

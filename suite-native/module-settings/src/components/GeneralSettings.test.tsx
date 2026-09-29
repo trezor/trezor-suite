@@ -5,7 +5,7 @@ import { GeneralSettings } from './GeneralSettings';
 jest.mock('@suite-native/trading-state', () => ({
     ...jest.requireActual('@suite-native/trading-state'),
     selectIsTradingCountrySet: () => true,
-    selectIsTradingResidenceCheckEnabled: () => true,
+    selectIsTradingResidenceWhitelistRequired: () => true,
 }));
 
 describe('GeneralSettings', () => {

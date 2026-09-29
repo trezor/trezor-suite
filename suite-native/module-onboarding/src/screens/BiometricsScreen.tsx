@@ -16,7 +16,7 @@ import {
     ScreenHeader,
     type StackProps,
 } from '@suite-native/navigation';
-import { selectIsTradingResidenceCheckEnabled } from '@suite-native/trading-state';
+import { selectIsTradingResidenceWhitelistRequired } from '@suite-native/trading-state';
 import { useServices } from '@trezor/dependency-injection';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
@@ -38,7 +38,9 @@ export const BiometricsScreen = ({ navigation }: BiometricsScreenProps) => {
     const { toggleBiometricsOption } = useBiometricsSettings();
     const exitOnboardingFlow = useExitOnboardingFlow();
 
-    const shouldDisplayTradingLocationScreen = useSelector(selectIsTradingResidenceCheckEnabled);
+    const shouldDisplayTradingLocationScreen = useSelector(
+        selectIsTradingResidenceWhitelistRequired,
+    );
 
     const enableBiometrics = async () => {
         const result = await toggleBiometricsOption();

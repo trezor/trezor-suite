@@ -3,7 +3,7 @@ import { useSelector } from 'react-redux';
 import { Translation } from '@suite-native/intl';
 import {
     selectIsTradingCountrySet,
-    selectIsTradingResidenceCheckEnabled,
+    selectIsTradingResidenceWhitelistRequired,
 } from '@suite-native/trading-state';
 
 import { AppSettingsCardWithIconLayout } from './AppSettingsCardWithIconLayout';
@@ -14,7 +14,7 @@ export type TradingSettingsCardProps = {
 };
 
 export const TradingSettingsCard = (props: TradingSettingsCardProps) => {
-    const shouldDisplayTradingSettings = useSelector(selectIsTradingResidenceCheckEnabled);
+    const shouldDisplayTradingSettings = useSelector(selectIsTradingResidenceWhitelistRequired);
     const isTradingCountrySet = useSelector(selectIsTradingCountrySet);
 
     if (!shouldDisplayTradingSettings) {
