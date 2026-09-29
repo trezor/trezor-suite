@@ -9,7 +9,7 @@ import {
 
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
-import { AnimatedView } from '../AnimatedView';
+import { AnimatedView } from '../Animated/AnimatedView';
 
 export type RenderViewProps = {
     isDisabled?: boolean;

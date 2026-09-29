@@ -5,7 +5,7 @@ import { type NativeStyleObject, prepareNativeStyle, useNativeStyles } from '@tr
 import { type Color } from '@trezor/theme';
 import { isNotNullOrUndefined } from '@trezor/utils';
 
-import { AnimatedView } from '../AnimatedView';
+import { AnimatedView } from '../Animated/AnimatedView';
 import { BannerInline, type BannerInlineProps } from '../BannerInline/BannerInline';
 
 const CARD_CONTAINER_TEST_ID = '@atom/card/container';
