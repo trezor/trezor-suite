@@ -1,6 +1,6 @@
 import { selectLanguage } from '@suite/settings';
 import { useMessageSystemYield as useMessageSystemYieldCore } from '@suite-common/message-system';
-import type { YieldFlowType } from '@suite-common/wallet-core';
+import type { YieldFlowType } from '@suite-common/suite-types';
 
 import { useSelector } from 'src/hooks/suite';
 

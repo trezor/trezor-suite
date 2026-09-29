@@ -78,7 +78,6 @@ describe('Message system types', () => {
             it.each([
                 ['deposit', 'earn.yield.deposit'],
                 ['withdraw', 'earn.yield.withdraw'],
-                ['redeem', 'earn.yield.redeem'],
                 ['claim', 'earn.yield.claim'],
             ] as const)('getEarnYield(%s) → %s', (type, expected) => {
                 expect(Context.getEarnYield(type)).toBe(expected);
