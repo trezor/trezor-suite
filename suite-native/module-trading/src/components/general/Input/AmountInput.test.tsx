@@ -1,7 +1,12 @@
-import { fireEvent, renderWithBasicProvider, userEvent } from '@suite-native/test-utils';
+import { fireEvent, renderWithBasicProvider, screen, userEvent } from '@suite-native/test-utils';
 import { palette } from '@trezor/theme';
 
-import { AMOUNT_INPUT_TEST_ID, AmountInput, type AmountInputProps } from './AmountInput';
+import {
+    AMOUNT_INPUT_CONTENT_TEST_ID,
+    AMOUNT_INPUT_TEST_ID,
+    AmountInput,
+    type AmountInputProps,
+} from './AmountInput';
 
 describe('AmountInput', () => {
     const renderAmountInput = async (props: Partial<AmountInputProps>) =>
@@ -13,6 +18,18 @@ describe('AmountInput', () => {
                 {...props}
             />,
         );
+
+    type ExpectedTextMetrics = { fontSize: number; lineHeight: number };
+
+    const expectTextMetrics = (
+        element: ReturnType<typeof screen.getByLabelText>,
+        { fontSize, lineHeight }: ExpectedTextMetrics,
+    ) => {
+        expect(element).toHaveStyle({ fontSize });
+        expect(screen.getByTestId(AMOUNT_INPUT_CONTENT_TEST_ID)).toHaveStyle({
+            minHeight: lineHeight,
+        });
+    };
 
     it('should respect maxLength property', async () => {
         const changeTextMock = jest.fn();
@@ -67,12 +84,13 @@ describe('AmountInput', () => {
     it('should have font size of 34 before layout events', async () => {
         const { getByLabelText } = await renderAmountInput({});
 
-        expect(getByLabelText('INPUT')).toHaveStyle({ fontSize: 34, lineHeight: 41 });
+        expectTextMetrics(getByLabelText('INPUT'), { fontSize: 34, lineHeight: 41 });
     });
 
     describe('font size scaling on content change', () => {
         let input: ReturnType<Awaited<ReturnType<typeof renderAmountInput>>['getByLabelText']>;
         let box: ReturnType<Awaited<ReturnType<typeof renderAmountInput>>['getByTestId']>;
+        let content: ReturnType<Awaited<ReturnType<typeof renderAmountInput>>['getByTestId']>;
 
         beforeEach(async () => {
             const { getByLabelText, getByTestId } = await renderAmountInput({
@@ -80,6 +98,7 @@ describe('AmountInput', () => {
             });
             input = getByLabelText('INPUT');
             box = getByTestId(AMOUNT_INPUT_TEST_ID);
+            content = getByTestId(AMOUNT_INPUT_CONTENT_TEST_ID);
 
             // Simulate initial layout event
             await fireEvent(box, 'layout', {
@@ -92,7 +111,7 @@ describe('AmountInput', () => {
         });
 
         it('should have font size of 34 after initial layout events', () => {
-            expect(input).toHaveStyle({ fontSize: 34, lineHeight: 41 });
+            expectTextMetrics(input, { fontSize: 34, lineHeight: 41 });
         });
 
         it.each([
@@ -103,7 +122,7 @@ describe('AmountInput', () => {
         ])(
             'should downscale font when not enough space is available for content with width %i',
             async (contentWidth, expectedFontSize, expectedLineHeight) => {
-                await fireEvent(input, 'layout', {
+                await fireEvent(content, 'layout', {
                     nativeEvent: {
                         layout: {
                             width: contentWidth,
@@ -111,7 +130,7 @@ describe('AmountInput', () => {
                     },
                 });
 
-                expect(input).toHaveStyle({
+                expectTextMetrics(input, {
                     fontSize: expectedFontSize,
                     lineHeight: expectedLineHeight,
                 });
@@ -125,14 +144,14 @@ describe('AmountInput', () => {
         ])(
             'should upscale font when enough space is available for content with width %i',
             async (contentWidth, expectedFontSize, expectedLineHeight) => {
-                await fireEvent(input, 'layout', {
+                await fireEvent(content, 'layout', {
                     nativeEvent: {
                         layout: {
                             width: 200,
                         },
                     },
                 });
-                await fireEvent(input, 'layout', {
+                await fireEvent(content, 'layout', {
                     nativeEvent: {
                         layout: {
                             width: contentWidth,
@@ -140,7 +159,7 @@ describe('AmountInput', () => {
                     },
                 });
 
-                expect(input).toHaveStyle({
+                expectTextMetrics(input, {
                     fontSize: expectedFontSize,
                     lineHeight: expectedLineHeight,
                 });
@@ -150,14 +169,14 @@ describe('AmountInput', () => {
         it.each([100, 80])(
             'should not upscale until hysteresis is reached for content with width %i',
             async contentWidth => {
-                await fireEvent(input, 'layout', {
+                await fireEvent(content, 'layout', {
                     nativeEvent: {
                         layout: {
                             width: 200,
                         },
                     },
                 });
-                await fireEvent(input, 'layout', {
+                await fireEvent(content, 'layout', {
                     nativeEvent: {
                         layout: {
                             width: contentWidth,
@@ -165,15 +184,12 @@ describe('AmountInput', () => {
                     },
                 });
 
-                expect(input).toHaveStyle({
-                    fontSize: 17,
-                    lineHeight: 20,
-                });
+                expectTextMetrics(input, { fontSize: 17, lineHeight: 20 });
             },
         );
 
         it('should not divide by zero', async () => {
-            await fireEvent(input, 'layout', {
+            await fireEvent(content, 'layout', {
                 nativeEvent: {
                     layout: {
                         width: 0,
@@ -181,10 +197,7 @@ describe('AmountInput', () => {
                 },
             });
 
-            expect(input).toHaveStyle({
-                fontSize: 34,
-                lineHeight: 41,
-            });
+            expectTextMetrics(input, { fontSize: 34, lineHeight: 41 });
         });
 
         it('should use full sized font when available space is equal zero', async () => {
@@ -196,10 +209,7 @@ describe('AmountInput', () => {
                 },
             });
 
-            expect(input).toHaveStyle({
-                fontSize: 34,
-                lineHeight: 41,
-            });
+            expectTextMetrics(input, { fontSize: 34, lineHeight: 41 });
         });
     });
 
