@@ -156,7 +156,7 @@ jobs:
         with:
           name: web-app-build-e2e
           path: web-build.tar.gz
-          retention-days: 7
+          retention-days: 1
 
   fix:
     needs: [prepare-matrix, build-desktop, build-web]
