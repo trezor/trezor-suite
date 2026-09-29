@@ -11,7 +11,7 @@ import { Icon, type IconName } from '@suite-native/icons';
 import { type NativeStyleObject, prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 import { type Color } from '@trezor/theme';
 
-import { AnimatedView } from '../AnimatedView';
+import { AnimatedView } from '../Animated/AnimatedView';
 import { Loader } from '../Loader';
 import { HStack } from '../Stack';
 import { pressTimingConfig } from '../constants';

@@ -13,7 +13,7 @@ import { atom, useAtom } from 'jotai';
 
 import { useNativeStyles } from '@trezor/styles-native';
 
-import { AnimatedView } from './AnimatedView';
+import { AnimatedView } from './Animated/AnimatedView';
 import { Text } from './Text';
 
 const FLASH_DURATION = 300;

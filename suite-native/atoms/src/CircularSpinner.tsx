@@ -13,7 +13,7 @@ import { Canvas, Circle, SweepGradient, vec } from '@shopify/react-native-skia';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 import { type Color } from '@trezor/theme';
 
-import { AnimatedView } from './AnimatedView';
+import { AnimatedView } from './Animated/AnimatedView';
 import { ENDLESS_ANIMATION_VALUE } from './constants';
 
 export type CircularSpinnerProps = {

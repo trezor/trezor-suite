@@ -7,7 +7,7 @@ import { type NativeSyntheticEvent } from 'react-native/Libraries/Types/CoreEven
 
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
-import { AnimatedView } from './AnimatedView';
+import { AnimatedView } from './Animated/AnimatedView';
 
 const scrollDividerStyle = prepareNativeStyle(({ borders, colors }) => ({
     marginTop: -borders.widths.small,

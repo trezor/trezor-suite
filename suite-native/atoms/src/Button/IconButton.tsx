@@ -10,11 +10,11 @@ import {
     useNativeStyles,
 } from '@trezor/styles-native';
 
-import { Loader } from '../Loader';
-import { AnimatedPressable } from '../Pressable';
 import { type ButtonStyleProps, buttonStyle } from './Button';
 import { type ButtonColorProps, type ButtonSize } from './types';
 import { useButtonPressAnimatedStyle } from './useButtonPressAnimatedStyle';
+import { AnimatedPressable } from '../Animated/AnimatedPressable';
+import { Loader } from '../Loader';
 import {
     getButtonColors,
     iconButtonBorderRadiusMap,

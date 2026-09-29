@@ -4,12 +4,12 @@ import { LinearTransition } from 'react-native-reanimated';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { useDisplayBaseCurrency } from '@suite-common/wallet-core';
 
+import { AnimatedView } from './Animated/AnimatedView';
 import {
     AnimatedDoubleInput,
     type RenderInputProps,
 } from './AnimatedDoubleView/AnimatedDoubleInput';
 import { type ActiveView } from './AnimatedDoubleView/AnimatedDoubleView';
-import { AnimatedView } from './AnimatedView';
 import { type InputType } from './Input/Input';
 import { HStack, VStack } from './Stack';
 
