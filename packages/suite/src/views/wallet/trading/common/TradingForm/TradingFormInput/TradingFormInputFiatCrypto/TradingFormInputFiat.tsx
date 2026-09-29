@@ -64,7 +64,6 @@ const TradingFormInputFiatContent = ({
     const outputCurrencySelect = useWatch({ control, name: TRADING_FORM_OUTPUT_CURRENCY });
     const fiatCurrencySelect = useWatch({ control, name: TRADING_FORM_FIAT_CURRENCY_SELECT });
     const amountInCrypto = useWatch({ control, name: TRADING_FORM_AMOUNT_IN_CRYPTO });
-    const fiatAmount = useWatch({ control, name: fiatInputName });
 
     const setFractionButton = isTradingExchangeOrSellContext(context)
         ? context.form.helpers.setFractionButton
@@ -157,11 +156,11 @@ const TradingFormInputFiatContent = ({
             flex="1"
             name={fiatInputName}
             placeholder={TRADING_AMOUNT_PLACEHOLDER}
-            style={{
-                ...getTradingAmountInputStyle(fiatAmount, locale),
+            style={displayValue => ({
+                ...getTradingAmountInputStyle(displayValue),
                 color: fiatInputError ? theme.contentCritical : undefined,
                 visibility: isDerivedAmountLoading ? 'hidden' : undefined,
-            }}
+            })}
             leftContent={
                 isDerivedAmountLoading ? (
                     <Skeleton
