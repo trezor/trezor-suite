@@ -15,6 +15,7 @@ import {
     type AccountKey,
     type FiatRatesResult,
     type RateTypeWithoutHistoric,
+    type RatesByTimestamps,
     type TickerId,
     type TickerResult,
     type Timestamp,
@@ -27,13 +28,20 @@ import {
     getErc4626Contracts,
     groupTokensTransactionsByContractAddress,
     isTestnet,
+    selectHistoricRatesByTransactions,
 } from '@suite-common/wallet-utils';
 import type { BaseCurrencyCode } from '@trezor/blockchain-link-types';
 import { type TimerId, exhaustive } from '@trezor/type-utils';
-import { BigNumber, isNotUndefined, typedObjectKeys } from '@trezor/utils';
+import {
+    BigNumber,
+    deepEqual,
+    isNotNullOrUndefined,
+    isNotUndefined,
+    typedObjectKeys,
+} from '@trezor/utils';
 
 import { FIAT_RATES_MODULE_PREFIX, REFETCH_INTERVAL } from './fiatRatesConstants';
-import { selectTickersToBeUpdated } from './fiatRatesSelectors';
+import { selectHistoricFiatRates, selectTickersToBeUpdated } from './fiatRatesSelectors';
 import { type FiatRatesRootState } from './fiatRatesTypes';
 import { type AccountsRootState } from '../accounts/accountsReducer';
 import { selectAccountByKey } from '../accounts/accountsSelectors';
@@ -43,7 +51,10 @@ import {
     selectIsElectrumBackendSelected,
 } from '../blockchain/blockchainSelectors';
 import { type TransactionsRootState } from '../transactions/transactionsReducerTypes';
-import { selectTransactionsWithMissingRates } from '../transactions/transactionsSelectors';
+import {
+    selectTransactions,
+    selectTransactionsWithMissingRates,
+} from '../transactions/transactionsSelectors';
 
 interface FetchErc4626FiatRateProps {
     ticker: TickerId;
@@ -315,6 +326,29 @@ export const updateMissingTxFiatRatesThunk = createThunk<
         });
     },
 );
+
+export type PruneHistoricFiatRatesThunkState = FiatRatesRootState & TransactionsRootState;
+
+/**
+ * Drops historic rates no transaction refers to any more, left behind by forgotten devices and
+ * removed accounts.
+ */
+export const pruneHistoricFiatRatesThunk = createThunk<
+    RatesByTimestamps | undefined,
+    void,
+    { state: PruneHistoricFiatRatesThunkState }
+>(`${FIAT_RATES_MODULE_PREFIX}/pruneHistoricRates`, (_, { getState }) => {
+    const historicRates = selectHistoricFiatRates(getState());
+    if (!historicRates) return;
+
+    const transactions = Object.values(selectTransactions(getState()))
+        .flat()
+        .filter(isNotNullOrUndefined);
+
+    const referencedRates = selectHistoricRatesByTransactions(historicRates, transactions);
+
+    return deepEqual(referencedRates, historicRates) ? undefined : referencedRates;
+});
 
 type FetchFiatRatesThunkPayload = {
     rateType: RateTypeWithoutHistoric;

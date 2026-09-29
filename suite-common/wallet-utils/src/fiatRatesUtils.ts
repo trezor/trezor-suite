@@ -106,33 +106,74 @@ export const buildHistoricRatesFromStorage = (storageHistoricRates: RatesByTimes
     return historicFiatRates;
 };
 
+type SymbolRateKeys = {
+    coinKeys: CryptoBaseCurrencyPair[];
+    tokenKeys: Map<string, CryptoBaseCurrencyPair[]>;
+};
+
+// A token key is `${symbol}-${tokenAddress}-${baseCurrency}` and a coin key
+// `${symbol}-${baseCurrency}` (see getFiatRateKey), so a prefix match would keep every token rate
+// of the network. Stellar contracts contain a dash of their own, hence the slice rather than a
+// fixed part index.
+const indexRateKeysBySymbol = (historicRates: RatesByTimestamps) => {
+    const keysBySymbol = new Map<string, SymbolRateKeys>();
+
+    typedObjectKeys(historicRates).forEach(fiatRateKey => {
+        const parts = fiatRateKey.split('-');
+        const symbol = parts[0] ?? fiatRateKey;
+        const tokenAddress = parts.slice(1, -1).join('-');
+
+        let symbolKeys = keysBySymbol.get(symbol);
+        if (!symbolKeys) {
+            symbolKeys = { coinKeys: [], tokenKeys: new Map() };
+            keysBySymbol.set(symbol, symbolKeys);
+        }
+
+        if (tokenAddress === '') {
+            symbolKeys.coinKeys.push(fiatRateKey);
+
+            return;
+        }
+
+        const tokenKeys = symbolKeys.tokenKeys.get(tokenAddress);
+        if (tokenKeys) {
+            tokenKeys.push(fiatRateKey);
+        } else {
+            symbolKeys.tokenKeys.set(tokenAddress, [fiatRateKey]);
+        }
+    });
+
+    return keysBySymbol;
+};
+
 export const selectHistoricRatesByTransactions = (
     historicRates: RatesByTimestamps,
     txs: WalletAccountTransaction[],
 ) => {
     const selectedRates: RatesByTimestamps = {};
+    const keysBySymbol = indexRateKeysBySymbol(historicRates);
 
-    txs.forEach(tx => {
-        const { symbol, blockTime, tokens } = tx;
+    const keepRate = (fiatRateKey: CryptoBaseCurrencyPair, timestamp: Timestamp) => {
+        const rate = historicRates[fiatRateKey]?.[timestamp];
+        if (!rate) return;
+
+        const ratesForKey = selectedRates[fiatRateKey] ?? {};
+        ratesForKey[timestamp] = rate;
+        selectedRates[fiatRateKey] = ratesForKey;
+    };
+
+    txs.forEach(({ symbol, blockTime, tokens }) => {
+        const symbolKeys = keysBySymbol.get(symbol);
+        if (!symbolKeys) return;
+
         const timestamp = roundTimestampToNearestPastHour(asTimestamp(blockTime ?? 0));
 
-        typedObjectKeys(historicRates).forEach(fiatRateKey => {
-            if (
-                fiatRateKey.startsWith(symbol) ||
-                tokens.some(token => fiatRateKey.startsWith(`[${symbol}-${token.contract}]`))
-            ) {
-                // @ts-expect-error: indexing with noUncheckedIndexedAccess
-                const historicRatesForKey: Record<Timestamp, number> = historicRates[fiatRateKey];
-                if (historicRatesForKey[timestamp]) {
-                    if (!selectedRates[fiatRateKey]) {
-                        selectedRates[fiatRateKey] = {};
-                    }
-                    const selectedRatesForKey: Record<Timestamp, number> =
-                        selectedRates[fiatRateKey];
-                    selectedRatesForKey[timestamp] = historicRatesForKey[timestamp];
-                }
-            }
-        });
+        symbolKeys.coinKeys.forEach(fiatRateKey => keepRate(fiatRateKey, timestamp));
+        tokens.forEach(token =>
+            symbolKeys.tokenKeys
+                .get(token.contract)
+                ?.forEach(fiatRateKey => keepRate(fiatRateKey, timestamp)),
+        );
     });
 
     return selectedRates;
