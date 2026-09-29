@@ -41,6 +41,7 @@ export const getTradingAmountInputStyle = (
         height: TRADING_AMOUNT_HEIGHT,
         fontWeight,
         letterSpacing,
+        fontFeatureSettings: 'normal',
     };
 };
 

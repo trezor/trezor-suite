@@ -216,7 +216,10 @@ export const TradingFormInputBaseCurrencyAmount = ({
                 flex="1"
                 name={BASE_CURRENCY_AMOUNT_FIELD}
                 placeholder="0"
-                style={{ color: hasError ? theme.contentCritical : undefined }}
+                style={{
+                    fontFeatureSettings: 'normal',
+                    color: hasError ? theme.contentCritical : undefined,
+                }}
                 locale={locale}
                 onChange={handleChange}
                 isDisabled={!rate}
