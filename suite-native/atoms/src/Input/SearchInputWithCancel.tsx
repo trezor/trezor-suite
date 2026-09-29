@@ -5,7 +5,7 @@ import { Translation, useTranslate } from '@suite-native/intl';
 import { useDebounce } from '@trezor/react-utils';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
-import { AnimatedView } from '../AnimatedView';
+import { AnimatedView } from '../Animated/AnimatedView';
 import { TextButton } from '../Button/TextButton';
 import { HStack } from '../Stack';
 

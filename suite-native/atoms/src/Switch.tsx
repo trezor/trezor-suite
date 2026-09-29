@@ -10,7 +10,7 @@ import {
 
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
-import { AnimatedView } from './AnimatedView';
+import { AnimatedView } from './Animated/AnimatedView';
 import { ACCESSIBILITY_FONTSIZE_MULTIPLIER } from './Text';
 
 export type SwitchProps = {

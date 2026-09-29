@@ -22,7 +22,7 @@ import { Icon, type IconName, isIconName } from '@suite-native/icons';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 import { nativeSpacings } from '@trezor/theme';
 
-import { AnimatedBox } from '../AnimatedBox';
+import { AnimatedBox } from '../Animated/AnimatedBox';
 import { Box } from '../Box';
 import { ACCESSIBILITY_FONTSIZE_MULTIPLIER, Text } from '../Text';
 

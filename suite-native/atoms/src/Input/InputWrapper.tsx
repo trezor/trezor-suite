@@ -1,7 +1,7 @@
 import { type ReactNode } from 'react';
 import { FadeIn, FadeOut } from 'react-native-reanimated';
 
-import { AnimatedView } from '../AnimatedView';
+import { AnimatedView } from '../Animated/AnimatedView';
 import { Box } from '../Box';
 import { Hint } from '../Hint';
 import { VStack } from '../Stack';

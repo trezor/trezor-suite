@@ -4,13 +4,13 @@ import { LinearTransition } from 'react-native-reanimated';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 import { noop } from '@trezor/utils';
 
-import { AnimatedView } from '../AnimatedView';
 import {
     ANIMATION_DURATION,
     AnimatedViewWrapper,
     type AnimatedViewWrapperProps,
 } from './AnimatedViewWrapper';
 import { SwitchViewsButton } from './SwitchViewsButton';
+import { AnimatedView } from '../Animated/AnimatedView';
 
 export type { RenderViewProps } from './AnimatedViewWrapper';
 
