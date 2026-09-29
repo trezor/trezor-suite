@@ -155,6 +155,7 @@ jobs:
           serverHostname: "dev.suite.sldev.cz"
           serverPath: "connect/${{ needs.extract-branch.outputs.branch }}"
           uploadArtifacts: "true"
+          explorerRetentionDays: "1"
           buildArtifacts: "true"
           nodeEnv: "development"
           connectPopupUrl: "https://dev.suite.sldev.cz/suite-web/${{ needs.extract-branch.outputs.branch }}/web/connect-popup"

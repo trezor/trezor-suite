@@ -59,4 +59,4 @@ jobs:
         with:
           name: desktop-app-build-e2e
           path: app-build.tar.gz
-          retention-days: 7
+          retention-days: 1

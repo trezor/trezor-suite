@@ -25,6 +25,11 @@ inputs:
     description: "Configures if to upload built artifacts"
     type: string
     required: false
+  explorerRetentionDays:
+    description: "Retention in days for the connect-explorer webextension artifact"
+    type: string
+    required: false
+    default: "90"
   nodeEnv:
     description: "Node environment"
     type: string
@@ -137,3 +142,4 @@ runs:
         name: connect-explorer-webextension-${{ inputs.serverHostname }}
         path: |
           packages/connect-explorer/build-webextension
+        retention-days: ${{ inputs.explorerRetentionDays }}
