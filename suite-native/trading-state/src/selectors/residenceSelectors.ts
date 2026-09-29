@@ -1,11 +1,17 @@
-import { isCountrySubdivisionEmpty } from '@suite-common/trading';
 import {
-    FeatureFlag,
-    type FeatureFlagsRootState,
-    selectIsFeatureFlagEnabled,
-} from '@suite-native/feature-flags';
-import { tradingCountriesWhitelistSet } from '@suite-native/trading-consts';
+    Feature,
+    type MessageSystemRootState,
+    getTradingResidenceWhitelist,
+    selectFeatureConfig,
+} from '@suite-common/message-system';
+import { type TradingCountryCode, isCountrySubdivisionEmpty } from '@suite-common/trading';
 import { type TradingResidenceRootState } from '@suite-native/trading-types';
+import { createWeakMapSelector } from '@trezor/redux-utils';
+
+import { selectIsTradingResidenceWhitelistRequired } from './residenceWhitelistRequired';
+
+const createMessageSystemMemoizedSelector =
+    createWeakMapSelector.withTypes<MessageSystemRootState>();
 
 export const selectTradingResidenceCountry = (state: TradingResidenceRootState) =>
     state.wallet.trading.residence.country;
@@ -16,30 +22,35 @@ export const selectTradingResidenceCountrySubdivision = (state: TradingResidence
 export const selectWasTradingResidenceOnboardingVisited = (state: TradingResidenceRootState) =>
     state.wallet.trading.residence.wasOnboardingVisited;
 
-export const selectIsTradingResidenceCheckEnabled = (state: FeatureFlagsRootState) =>
-    selectIsFeatureFlagEnabled(state, FeatureFlag.IsTradingResidenceCheckEnabled);
+export const selectTradingResidenceWhitelist = createMessageSystemMemoizedSelector(
+    [state => selectFeatureConfig(state, Feature.trading.restrictions.residenceWhitelistRequired)],
+    feature => new Set<TradingCountryCode>(getTradingResidenceWhitelist(feature)),
+);
 
-export const selectIsTradingEnabledForCountry = (
-    state: TradingResidenceRootState & FeatureFlagsRootState,
+export const selectIsTradingEnabledForLocation = (
+    state: MessageSystemRootState,
+    country: TradingCountryCode | undefined,
+    countrySubdivision: string | undefined,
 ) => {
-    const isResidenceCheckEnabled = selectIsTradingResidenceCheckEnabled(state);
-    if (!isResidenceCheckEnabled) {
+    if (!selectIsTradingResidenceWhitelistRequired(state)) {
         return true;
     }
 
-    const country = selectTradingResidenceCountry(state);
-
-    if (!country) {
-        return false;
-    }
-    const countrySubdivision = selectTradingResidenceCountrySubdivision(state);
-
-    if (isCountrySubdivisionEmpty(country, countrySubdivision)) {
+    if (!country || isCountrySubdivisionEmpty(country, countrySubdivision)) {
         return false;
     }
 
-    return tradingCountriesWhitelistSet.has(country);
+    return selectTradingResidenceWhitelist(state).has(country);
 };
+
+export const selectIsTradingEnabledForCountry = (
+    state: TradingResidenceRootState & MessageSystemRootState,
+) =>
+    selectIsTradingEnabledForLocation(
+        state,
+        selectTradingResidenceCountry(state),
+        selectTradingResidenceCountrySubdivision(state),
+    );
 
 export const selectIsTradingCountrySet = (state: TradingResidenceRootState) => {
     const country = selectTradingResidenceCountry(state);
@@ -50,11 +61,11 @@ export const selectIsTradingCountrySet = (state: TradingResidenceRootState) => {
     );
 };
 export const selectShouldDisplayTradingResidenceOnboarding = (
-    state: TradingResidenceRootState & FeatureFlagsRootState,
+    state: TradingResidenceRootState & MessageSystemRootState,
 ) => {
-    const isResidenceCheckEnabled = selectIsTradingResidenceCheckEnabled(state);
+    const isResidenceWhitelistRequired = selectIsTradingResidenceWhitelistRequired(state);
     const wasOnboardingVisited = selectWasTradingResidenceOnboardingVisited(state);
     const isCountrySet = selectIsTradingCountrySet(state);
 
-    return isResidenceCheckEnabled && !wasOnboardingVisited && !isCountrySet;
+    return isResidenceWhitelistRequired && !wasOnboardingVisited && !isCountrySet;
 };

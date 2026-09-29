@@ -27,7 +27,7 @@ import {
     type CurrentRatesByKey,
     asAccountDescriptor,
 } from '@suite-common/wallet-types';
-import { FeatureFlag, featureFlagsInitialState } from '@suite-native/feature-flags';
+import { featureFlagsInitialState } from '@suite-native/feature-flags';
 import { appSettingsInitialState } from '@suite-native/settings';
 import {
     btcAsset,
@@ -159,12 +159,16 @@ const getPreloadedState = ({
             flag: slip24,
         });
     }
+    if (residence !== undefined) {
+        features.push({
+            domain: 'trading.restrictions.residenceWhitelistRequired',
+            flag: residence,
+            payload: { allowedCountries: ['CZ'] },
+        });
+    }
 
     return {
-        featureFlags: {
-            ...featureFlagsInitialState,
-            [FeatureFlag.IsTradingResidenceCheckEnabled]: residence ?? false,
-        },
+        featureFlags: featureFlagsInitialState,
         messageSystem: {
             config: {
                 version: 1,

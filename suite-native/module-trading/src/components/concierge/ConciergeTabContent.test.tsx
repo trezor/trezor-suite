@@ -3,7 +3,6 @@ import { type NativeAnalyticsDep } from '@suite-native/analytics';
 import { mockNativeAnalytics } from '@suite-native/analytics/mocks';
 import { getTranslation } from '@suite-native/intl';
 import { fireEvent, screen, userEvent, waitFor } from '@suite-native/test-utils-store';
-import { residenceCheckDisabledState } from '@suite-native/trading-fixtures';
 
 import { ConciergeTabContent } from './ConciergeTabContent';
 import {
@@ -44,10 +43,7 @@ const renderConciergeTabContent = async (
     overrides: PreloadedStatePartial<TradingTestPreloadedState> = {},
 ) =>
     await renderWithTradingProvider(<ConciergeTabContent />, {
-        overrides: {
-            ...residenceCheckDisabledState,
-            ...overrides,
-        },
+        overrides,
         services,
     });
 

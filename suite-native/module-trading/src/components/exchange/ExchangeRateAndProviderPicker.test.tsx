@@ -1,6 +1,6 @@
 import { type NativeAnalyticsDep, events } from '@suite-native/analytics';
 import { mockNativeAnalytics } from '@suite-native/analytics/mocks';
-import { FeatureFlag, featureFlagsInitialState } from '@suite-native/feature-flags';
+import { featureFlagsInitialState } from '@suite-native/feature-flags';
 import { Form } from '@suite-native/forms';
 import { getTranslation } from '@suite-native/intl';
 import { act, userEvent } from '@suite-native/test-utils-store';
@@ -27,10 +27,7 @@ describe('ExchangeRateAndProviderPicker', () => {
     let unmount: (() => void) | undefined;
 
     const baseOverrides: PreloadedStatePartial<TradingTestPreloadedState> = {
-        featureFlags: {
-            ...featureFlagsInitialState,
-            [FeatureFlag.IsTradingResidenceCheckEnabled]: false,
-        },
+        featureFlags: featureFlagsInitialState,
     };
 
     const renderExchangeRateAndProviderPicker = async (

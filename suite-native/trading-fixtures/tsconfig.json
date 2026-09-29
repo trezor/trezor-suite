@@ -15,7 +15,6 @@
         {
             "path": "../../suite-common/wallet-utils"
         },
-        { "path": "../feature-flags" },
         { "path": "../trading-consts" },
         { "path": "../../packages/connect" },
         { "path": "../../packages/device-utils" },

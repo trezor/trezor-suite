@@ -1,7 +1,7 @@
 import { deviceInitialState } from '@suite-common/device';
 import { mockNetworksState } from '@suite-common/networks/mocks';
 import { mockGetSupportedNetworks } from '@suite-common/wallet-config/mocks';
-import { FeatureFlag, featureFlagsInitialState } from '@suite-native/feature-flags';
+import { featureFlagsInitialState } from '@suite-native/feature-flags';
 import { Form } from '@suite-native/forms';
 import {
     act,
@@ -22,10 +22,7 @@ describe('ExchangeReceiveAccountCryptoBalance', () => {
     const preloadedState = {
         networks: mockNetworksState(mockGetSupportedNetworks()),
         device: deviceInitialState,
-        featureFlags: {
-            ...featureFlagsInitialState,
-            [FeatureFlag.IsTradingResidenceCheckEnabled]: false,
-        },
+        featureFlags: featureFlagsInitialState,
         wallet: getWalletState({ tradeType: 'exchange' }),
     };
 

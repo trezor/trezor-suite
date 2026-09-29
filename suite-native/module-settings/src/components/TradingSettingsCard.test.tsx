@@ -4,12 +4,12 @@ import { renderWithStoreProvider } from '@suite-native/test-utils-store';
 import { TradingSettingsCard, type TradingSettingsCardProps } from './TradingSettingsCard';
 
 let mockIsTradingCountrySet: boolean;
-let mockIsTradingResidenceCheckEnabled: boolean;
+let mockIsTradingResidenceWhitelistRequired: boolean;
 
 jest.mock('@suite-native/trading-state', () => ({
     ...jest.requireActual('@suite-native/trading-state'),
     selectIsTradingCountrySet: () => mockIsTradingCountrySet,
-    selectIsTradingResidenceCheckEnabled: () => mockIsTradingResidenceCheckEnabled,
+    selectIsTradingResidenceWhitelistRequired: () => mockIsTradingResidenceWhitelistRequired,
 }));
 
 describe('TradingSettingsCard', () => {
@@ -18,18 +18,18 @@ describe('TradingSettingsCard', () => {
 
     beforeEach(() => {
         mockIsTradingCountrySet = false;
-        mockIsTradingResidenceCheckEnabled = false;
+        mockIsTradingResidenceWhitelistRequired = false;
     });
 
-    it('should not render trading settings button when selectIsTradingResidenceCheckEnabled is false', async () => {
+    it('should not render trading settings button when selectIsTradingResidenceWhitelistRequired is false', async () => {
         const { toJSON } = await renderTradingSettingsCard();
 
         expect(toJSON()).toBeNull();
     });
 
-    describe('when selectIsTradingResidenceCheckEnabled is true', () => {
+    describe('when selectIsTradingResidenceWhitelistRequired is true', () => {
         beforeEach(() => {
-            mockIsTradingResidenceCheckEnabled = true;
+            mockIsTradingResidenceWhitelistRequired = true;
         });
 
         it('should render "Enable trading" button when selectIsTradingCountrySet is false', async () => {
