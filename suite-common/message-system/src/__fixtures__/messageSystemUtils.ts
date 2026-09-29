@@ -408,6 +408,48 @@ export const isVersionCompatible = [
         version: '34.0.2',
         result: true,
     },
+    {
+        description: 'os isVersionCompatible matches any range with unknown version',
+        condition: {
+            windows: '!',
+            linux: '!',
+            macos: '!',
+            android: '!',
+            ios: '*',
+            chromeos: '!',
+        },
+        type: 'ios',
+        version: '',
+        result: true,
+    },
+    {
+        description: 'os isVersionCompatible disallowed os with unknown version',
+        condition: {
+            windows: '!',
+            linux: '!',
+            macos: '!',
+            android: '!',
+            ios: '*',
+            chromeos: '!',
+        },
+        type: 'android',
+        version: '',
+        result: false,
+    },
+    {
+        description: 'os isVersionCompatible bounded range with unknown version',
+        condition: {
+            windows: '!',
+            linux: '!',
+            macos: '!',
+            android: '!',
+            ios: '>=17.0.0',
+            chromeos: '!',
+        },
+        type: 'ios',
+        version: '',
+        result: false,
+    },
 ];
 
 export const isEnvironmentCompatible = [

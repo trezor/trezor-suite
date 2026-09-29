@@ -115,6 +115,10 @@ export const isVersionCompatible = (
         return false;
     }
 
+    if (conditionVersion === '*') {
+        return true;
+    }
+
     return semver.satisfies(version, conditionVersion);
 };
 
