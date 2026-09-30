@@ -1,12 +1,11 @@
-import { useFormatters } from '@suite-common/formatters';
 import { Context } from '@suite-common/message-system';
-import { YIELD_GAS_RESERVE_FALLBACK } from '@suite-common/wallet-constants';
 import { BannerFull, Box, VStack } from '@suite-native/atoms';
 import { Form } from '@suite-native/forms';
 import { Translation } from '@suite-native/intl';
 import { ContextMessage } from '@suite-native/message-system';
 import { Screen } from '@suite-native/navigation';
 
+import { WrappedNativeFeeReserveBanner } from '../../components/earn/WrappedNativeFeeReserveBanner';
 import { WrappedNativeTokenAmountInputCard } from '../../components/earn/WrappedNativeTokenAmountInputCard';
 import { YieldDepositStepCard } from '../../components/yield/YieldDepositStepCard';
 import { YieldDisabledAlert } from '../../components/yield/YieldDisabledAlert';
@@ -20,7 +19,6 @@ import { useYieldDepositWrapController } from '../../hooks/yield/controllers/use
 
 export const YieldDepositWrapScreen = () => {
     const controller = useYieldDepositWrapController();
-    const { CryptoAmountFormatter } = useFormatters();
 
     if (controller.status !== 'ready') {
         return null;
@@ -30,6 +28,7 @@ export const YieldDepositWrapScreen = () => {
         accountLabel,
         amountInput,
         disabledAlerts,
+        feeReserve,
         feeSection,
         footer,
         form,
@@ -37,7 +36,6 @@ export const YieldDepositWrapScreen = () => {
         isDeviceNotConnectedVisible,
         isFirmwareOutdatedVisible,
         isInteractionBlocked,
-        isReserveRecommended,
         nativeSymbol,
         pendingModal,
         receivingCard,
@@ -97,6 +95,7 @@ export const YieldDepositWrapScreen = () => {
                             <WrappedNativeTokenAmountInputCard
                                 amountLabel={<Translation id="earn.wrapNativeToken.amountToWrap" />}
                                 balance={amountInput.balance}
+                                isDisabled={amountInput.isDisabled}
                                 maxAmount={amountInput.maxAmount}
                                 onCurrencyChange={amountInput.onCurrencyChange}
                                 onMaxPress={amountInput.onMaxPress}
@@ -117,29 +116,11 @@ export const YieldDepositWrapScreen = () => {
                             </Box>
                         )}
 
-                        {isReserveRecommended && (
-                            <Box paddingHorizontal="sp16">
-                                <BannerFull
-                                    intent="info"
-                                    title={
-                                        <Translation
-                                            id="earn.wrapNativeToken.reserveRecommendation"
-                                            values={{
-                                                amount: CryptoAmountFormatter.format(
-                                                    YIELD_GAS_RESERVE_FALLBACK.toFixed(),
-                                                    {
-                                                        symbol: account.symbol,
-                                                        isBalance: true,
-                                                        withSymbol: false,
-                                                    },
-                                                ),
-                                                nativeSymbol,
-                                            }}
-                                        />
-                                    }
-                                />
-                            </Box>
-                        )}
+                        <WrappedNativeFeeReserveBanner
+                            feeReserve={feeReserve}
+                            networkSymbol={account.symbol}
+                            paddingHorizontal="sp16"
+                        />
 
                         {isDeviceNotConnectedVisible && (
                             <Box paddingHorizontal="sp16">

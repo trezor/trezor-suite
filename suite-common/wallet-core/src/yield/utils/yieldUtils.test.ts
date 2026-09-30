@@ -10,7 +10,6 @@ import {
     buildYieldUnwrapTransactionData,
     buildYieldWithdrawCalldata,
     buildYieldWrapTransactionData,
-    getMaxWrapAmount,
     getNextYieldFlowStep,
     getWrapReserveStatus,
     getWrappableNativeBalance,
@@ -22,7 +21,6 @@ import {
     getYieldWrapAmount,
     hasYieldVaultPosition,
     isYieldVaultOperational,
-    shouldRecommendWrapReserve,
     splitYieldPendingTransaction,
 } from './yieldUtils';
 
@@ -427,48 +425,6 @@ describe('yieldUtils', () => {
         });
     });
 
-    describe('getMaxWrapAmount', () => {
-        it('keeps the gas reserve aside when the balance covers it', () => {
-            expect(getMaxWrapAmount('0.2', RESERVE)).toBe('0.195');
-        });
-
-        it('offers the whole balance when it does not cover the reserve', () => {
-            expect(getMaxWrapAmount('0.003', RESERVE)).toBe('0.003');
-        });
-
-        it('offers the whole balance when it exactly matches the reserve', () => {
-            expect(getMaxWrapAmount('0.005', RESERVE)).toBe('0.005');
-        });
-
-        // Max must offer an amount that is both usable and flagged, otherwise the button reads as
-        // dead — the regression behind trezor/trezor-suite#30842.
-        it('offers an amount that triggers the reserve recommendation', () => {
-            expect(
-                shouldRecommendWrapReserve({
-                    amountInput: getMaxWrapAmount('0.003', RESERVE),
-                    nativeFormattedBalance: '0.003',
-                    reserve: RESERVE,
-                }),
-            ).toBe(true);
-        });
-
-        it('treats an empty balance as zero', () => {
-            expect(getMaxWrapAmount('', RESERVE)).toBe('0');
-        });
-
-        it('returns zero for a zero balance', () => {
-            expect(getMaxWrapAmount('0', RESERVE)).toBe('0');
-        });
-
-        it('returns zero for a negative balance', () => {
-            expect(getMaxWrapAmount('-1', RESERVE)).toBe('0');
-        });
-
-        it('returns zero for non-numeric input', () => {
-            expect(getMaxWrapAmount('abc', RESERVE)).toBe('0');
-        });
-    });
-
     describe('getWrapReserveStatus', () => {
         const getStatus = (amountInput: string, nativeFormattedBalance: string) =>
             getWrapReserveStatus({ amountInput, nativeFormattedBalance, reserve: RESERVE });
@@ -502,50 +458,6 @@ describe('yieldUtils', () => {
                     reserve: '0.1',
                 }),
             ).toBe('kept');
-        });
-    });
-
-    describe('shouldRecommendWrapReserve', () => {
-        const recommend = (amountInput: string, nativeFormattedBalance: string) =>
-            shouldRecommendWrapReserve({ amountInput, nativeFormattedBalance, reserve: RESERVE });
-
-        it('does not recommend when enough native coin is left for the reserve', () => {
-            expect(recommend('0.9', '1')).toBe(false);
-        });
-
-        it('recommends at exactly balance minus the reserve (the Max amount)', () => {
-            expect(recommend('0.995', '1')).toBe(true);
-        });
-
-        it('recommends when the amount eats into the reserve', () => {
-            expect(recommend('0.996', '1')).toBe(true);
-        });
-
-        it('recommends when wrapping the whole balance', () => {
-            expect(recommend('1', '1')).toBe(true);
-        });
-
-        it('does not recommend when the amount exceeds the balance (hard error case)', () => {
-            expect(recommend('1.5', '1')).toBe(false);
-        });
-
-        it('does not recommend for an empty or zero amount', () => {
-            expect(recommend('', '1')).toBe(false);
-            expect(recommend('0', '1')).toBe(false);
-        });
-
-        it('does not recommend for non-numeric input', () => {
-            expect(recommend('abc', '1')).toBe(false);
-        });
-
-        it('follows a dynamic reserve', () => {
-            expect(
-                shouldRecommendWrapReserve({
-                    amountInput: '0.9',
-                    nativeFormattedBalance: '1',
-                    reserve: '0.1',
-                }),
-            ).toBe(true);
         });
     });
 

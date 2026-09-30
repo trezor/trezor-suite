@@ -4,14 +4,15 @@ import { Translation } from '@suite-native/intl';
 type EarnMaxSwitchProps = {
     isChecked: boolean;
     onChange: (value: boolean) => void;
+    isDisabled?: boolean;
     testID?: string;
 };
 
-export const EarnMaxSwitch = ({ isChecked, onChange, testID }: EarnMaxSwitchProps) => (
+export const EarnMaxSwitch = ({ isChecked, onChange, isDisabled, testID }: EarnMaxSwitchProps) => (
     <HStack alignItems="center" spacing="sp8">
         <Text variant="body-sm">
             <Translation id="earn.max" />
         </Text>
-        <Switch isChecked={isChecked} onChange={onChange} testID={testID} />
+        <Switch isChecked={isChecked} onChange={onChange} isDisabled={isDisabled} testID={testID} />
     </HStack>
 );

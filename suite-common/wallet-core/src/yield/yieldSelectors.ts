@@ -45,11 +45,14 @@ export const selectYieldTxReview = (state: YieldRootState): YieldTxReviewState =
 export const selectYieldGasReserve = createFeesMemoizedSelector(
     [
         selectConvertedNetworkFeeInfo,
-        (_state: FeesRootState, _symbol: NetworkSymbol, isWrappedNativeVault: boolean) =>
-            isWrappedNativeVault,
         (
             _state: FeesRootState,
-            _symbol: NetworkSymbol,
+            _symbol: NetworkSymbol | undefined,
+            isWrappedNativeVault: boolean,
+        ) => isWrappedNativeVault,
+        (
+            _state: FeesRootState,
+            _symbol: NetworkSymbol | undefined,
             _isWrappedNativeVault: boolean,
             tokenContractAddress?: string | null,
         ) => tokenContractAddress,

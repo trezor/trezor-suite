@@ -5,7 +5,11 @@ import { type RouteProp, useNavigation, useRoute } from '@react-navigation/nativ
 import { useServices } from '@suite-common/dependency-injection';
 import { injectDispatch } from '@suite-common/redux-utils';
 import { getNetwork } from '@suite-common/wallet-config';
-import { getYieldApprovalAction, yieldActions } from '@suite-common/wallet-core';
+import {
+    getYieldApprovalAction,
+    getYieldNativeFeeStatus,
+    yieldActions,
+} from '@suite-common/wallet-core';
 import { isPositiveBalance } from '@suite-common/wallet-utils';
 import { useBottomSheetModal } from '@suite-native/atoms';
 import {
@@ -15,9 +19,9 @@ import {
     useNavigateToInitialScreen,
 } from '@suite-native/navigation';
 
-import { useYieldFlowScreenBase } from './useYieldFlowScreenBase';
 import { getYieldApprovalAnalyticsType } from '../../../utils/yield/yieldAnalyticsUtils';
 import { isYieldApprovalAllowanceUnlimited } from '../../../utils/yield/yieldApprovalUtils';
+import { getYieldFeeReserveAlert } from '../../../utils/yield/yieldFeeReserveUtils';
 import { useRefreshYieldDepositAllowanceOnIdle } from '../useRefreshYieldDepositAllowanceOnIdle';
 import { useReturnToYieldDepositWrapStep } from '../useReturnToYieldDepositWrapStep';
 import { useYieldApprovalFees } from '../useYieldApprovalFees';
@@ -25,9 +29,11 @@ import { useYieldApprovalLimit } from '../useYieldApprovalLimit';
 import { useYieldCurrencyToggleAnalytics } from '../useYieldCurrencyToggleAnalytics';
 import { useYieldDepositApprovalSubmit } from '../useYieldDepositApprovalSubmit';
 import { useYieldDepositForm } from '../useYieldDepositForm';
+import { useYieldDepositGasReserve } from '../useYieldDepositGasReserve';
 import { useYieldFlowAnalytics } from '../useYieldFlowAnalytics';
 import { useYieldPendingTransaction } from '../useYieldPendingTransaction';
 import { useYieldPendingTransactionTracking } from '../useYieldPendingTransactionTracking';
+import { useYieldFlowScreenBase } from './useYieldFlowScreenBase';
 
 type RouteProps = RouteProp<YieldStackParamList, YieldStackRoutes.YieldDepositApproval>;
 type NavigationProps = StackNavigationProps<
@@ -127,6 +133,21 @@ export const useYieldDepositApprovalController = () => {
         flowKey,
         routeParams: route.params,
     });
+
+    const gasReserve = useYieldDepositGasReserve({
+        account,
+        isWrappedNativeVault: yieldFlowData.isWrappedNativeVault,
+        tokenContractAddress: token?.contractAddress,
+        flowKey,
+    });
+
+    const nativeFeeStatus = getYieldNativeFeeStatus({
+        nativeBalance: account?.formattedBalance ?? '0',
+        reserve: gasReserve,
+        isWrapStep: false,
+        isWrappedNativeVault: yieldFlowData.isWrappedNativeVault,
+    });
+
     const isApprovalSessionReady = session?.step === 'approve';
     const canSkipApproval = isApprovalSessionReady && shouldShowApprovedAmountCard;
     const canSubmitApproval =
@@ -134,7 +155,8 @@ export const useYieldDepositApprovalController = () => {
         approvalFees.isAllowanceFeeReady &&
         isApprovalSessionReady &&
         !isApprovalPending &&
-        !isCheckingApproval;
+        !isCheckingApproval &&
+        nativeFeeStatus !== 'insufficient';
     const isSubmitDisabled = !canSubmitApproval || messageSystem.isDisabled;
 
     useRefreshYieldDepositAllowanceOnIdle({
@@ -284,6 +306,7 @@ export const useYieldDepositApprovalController = () => {
             onApprovalLimitPress: openApprovalLimitBottomSheet,
         },
         isRevokeRequired: footerApprovalAction === 'revoke',
+        feeReserveAlert: getYieldFeeReserveAlert({ nativeFeeStatus, gasReserve }),
         feeSection: {
             isVisible: isValid && !!amountValue,
             formDraft: approvalFees.formDraft,

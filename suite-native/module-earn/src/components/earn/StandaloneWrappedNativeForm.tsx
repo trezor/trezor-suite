@@ -1,6 +1,4 @@
-import { useFormatters } from '@suite-common/formatters';
 import { Context } from '@suite-common/message-system';
-import { YIELD_GAS_RESERVE_FALLBACK } from '@suite-common/wallet-constants';
 import { type WrappedNativeFlowType } from '@suite-common/wallet-core';
 import { BannerFull, Box, Button, VStack } from '@suite-native/atoms';
 import { Form } from '@suite-native/forms';
@@ -8,6 +6,7 @@ import { Translation } from '@suite-native/intl';
 import { ContextMessage } from '@suite-native/message-system';
 import { Screen } from '@suite-native/navigation';
 
+import { WrappedNativeFeeReserveBanner } from './WrappedNativeFeeReserveBanner';
 import { WrappedNativeTokenAmountInputCard } from './WrappedNativeTokenAmountInputCard';
 import { useStandaloneWrappedNativeController } from '../../hooks/earn/useStandaloneWrappedNativeController';
 import { wrappedNativeFlowMessages } from '../../utils/earn/wrappedNativeFlowMessages';
@@ -23,7 +22,6 @@ type StandaloneWrappedNativeFormProps = {
 
 export const StandaloneWrappedNativeForm = ({ flowType }: StandaloneWrappedNativeFormProps) => {
     const controller = useStandaloneWrappedNativeController(flowType);
-    const { CryptoAmountFormatter } = useFormatters();
 
     if (controller.status !== 'ready') {
         return null;
@@ -34,13 +32,13 @@ export const StandaloneWrappedNativeForm = ({ flowType }: StandaloneWrappedNativ
         accountLabel,
         amountInput,
         disabledAlert,
+        feeReserve,
         feeSection,
         form,
         hasFlowFailed,
         isDeviceNotConnectedVisible,
         isFirmwareOutdatedVisible,
         isInteractionBlocked,
-        isReserveRecommended,
         nativeSymbol,
         pendingModal,
         simulationSheet,
@@ -72,6 +70,7 @@ export const StandaloneWrappedNativeForm = ({ flowType }: StandaloneWrappedNativ
             <Box marginTop="sp16" pointerEvents={isInteractionBlocked ? 'none' : 'auto'}>
                 <VStack spacing="sp16">
                     <ContextMessage context={Context.getWrappedNative(flowType)} />
+
                     {disabledAlert && (
                         <YieldDisabledAlert
                             type={flowType}
@@ -79,10 +78,12 @@ export const StandaloneWrappedNativeForm = ({ flowType }: StandaloneWrappedNativ
                             variant={disabledAlert.variant}
                         />
                     )}
+
                     <Form form={form.form}>
                         <WrappedNativeTokenAmountInputCard
                             amountLabel={<Translation id={messages.amountLabel} />}
                             balance={amountInput.balance}
+                            isDisabled={amountInput.isDisabled}
                             maxAmount={amountInput.maxAmount}
                             onCurrencyChange={amountInput.onCurrencyChange}
                             onMaxPress={amountInput.onMaxPress}
@@ -92,27 +93,12 @@ export const StandaloneWrappedNativeForm = ({ flowType }: StandaloneWrappedNativ
                             tokenSymbol={spentSymbol}
                         />
                     </Form>
-                    {isReserveRecommended && (
-                        <BannerFull
-                            intent="info"
-                            title={
-                                <Translation
-                                    id="earn.wrapNativeToken.reserveRecommendation"
-                                    values={{
-                                        amount: CryptoAmountFormatter.format(
-                                            YIELD_GAS_RESERVE_FALLBACK.toFixed(),
-                                            {
-                                                symbol: account.symbol,
-                                                isBalance: true,
-                                                withSymbol: false,
-                                            },
-                                        ),
-                                        nativeSymbol,
-                                    }}
-                                />
-                            }
-                        />
-                    )}
+
+                    <WrappedNativeFeeReserveBanner
+                        feeReserve={feeReserve}
+                        networkSymbol={account.symbol}
+                    />
+
                     {feeSection.isVisible && (
                         <YieldFeeSection
                             accountKey={account.key}
@@ -120,18 +106,21 @@ export const StandaloneWrappedNativeForm = ({ flowType }: StandaloneWrappedNativ
                             tokenContract={spentTokenContract}
                         />
                     )}
+
                     {isDeviceNotConnectedVisible && (
                         <BannerFull
                             intent="critical"
                             title={<Translation id={messages.deviceNotConnectedError} />}
                         />
                     )}
+
                     {isFirmwareOutdatedVisible && (
                         <BannerFull
                             intent="critical"
                             title={<Translation id="earn.wrappedNativeToken.firmwareOutdated" />}
                         />
                     )}
+
                     {hasFlowFailed && (
                         <BannerFull
                             intent="critical"
@@ -139,6 +128,7 @@ export const StandaloneWrappedNativeForm = ({ flowType }: StandaloneWrappedNativ
                             description={<Translation id={messages.failedSubtitle} />}
                         />
                     )}
+
                     <Button
                         isDisabled={submit.isDisabled}
                         onPress={submit.onPress}
@@ -148,11 +138,13 @@ export const StandaloneWrappedNativeForm = ({ flowType }: StandaloneWrappedNativ
                     </Button>
                 </VStack>
             </Box>
+
             <YieldSessionTxSimulationSheet
                 account={account}
                 flow={flowType}
                 sheet={simulationSheet}
             />
+
             <YieldSessionPendingModal
                 pendingModal={pendingModal}
                 accountLabel={accountLabel}
