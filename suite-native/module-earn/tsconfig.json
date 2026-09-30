@@ -83,6 +83,7 @@
         { "path": "../link" },
         { "path": "../message-system" },
         { "path": "../navigation" },
+        { "path": "../performance-metrics" },
         { "path": "../scrollview" },
         { "path": "../settings" },
         { "path": "../test-utils" },

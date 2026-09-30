@@ -43,4 +43,9 @@ export const LIMITS: Limits = {
         ttiMs: 1500,
         fidMs: 150,
     },
+    earn: {
+        ttffMs: 800,
+        ttiMs: 1500,
+        fidMs: 150,
+    },
 };

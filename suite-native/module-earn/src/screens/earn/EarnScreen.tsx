@@ -11,6 +11,7 @@ import { VStack } from '@suite-native/atoms';
 import { DeviceManagerScreenHeader } from '@suite-native/device-manager';
 import { ContextMessage } from '@suite-native/message-system';
 import { Screen } from '@suite-native/navigation';
+import { ScreenPerformanceRoot, useScreenPerformance } from '@suite-native/performance-metrics';
 
 import { EarnDashboardDisabledRow } from '../../components/earn/EarnDashboardDisabledRow';
 import { EarnItemInfoModal } from '../../components/earn/EarnItemInfoModal';
@@ -64,6 +65,7 @@ const isSectionBoundaryItem = (item: EarnPromoListDataItem | undefined) =>
 
 const EarnScreenContent = () => {
     const { analytics } = useServices(injectNativeAnalytics);
+    const { panHandlers } = useScreenPerformance('earn');
 
     const {
         promoListData: stakingPromoItems,
@@ -214,87 +216,91 @@ const EarnScreenContent = () => {
     );
 
     return (
-        <Screen header={<DeviceManagerScreenHeader />}>
-            <VStack spacing="sp32">
-                <FlashList
-                    data={earnListData}
-                    getItemType={getEarnListItemType}
-                    ListHeaderComponent={
-                        <>
-                            <ContextMessage
-                                context={Context.getEarnDashboard('staking')}
-                                marginBottom="sp16"
-                            />
-                            <ContextMessage
-                                context={Context.getEarnDashboard('yield')}
-                                marginBottom="sp16"
-                            />
-                            <EarnScreenListHeader
-                                isStablecoinYieldLoading={
-                                    !isYieldDashboardDisabled && isYieldLoading
-                                }
-                                isStablecoinYieldClaimSummariesLoading={
-                                    !isYieldDashboardDisabled && isClaimSummariesLoading
-                                }
-                                cardanoStakingAccountKey={
-                                    isStakingDashboardDisabled
-                                        ? undefined
-                                        : accountStakedWithFiveBinaries?.key
-                                }
-                                stakingActiveItems={
-                                    isStakingDashboardDisabled ? [] : stakingActiveItems
-                                }
-                                stablecoinYieldActiveItems={
-                                    isYieldDashboardDisabled ? [] : stablecoinYieldActiveItems
-                                }
-                                stablecoinYieldClaimSummaries={
-                                    isYieldDashboardDisabled ? [] : stablecoinYieldClaimSummaries
-                                }
-                                stablecoinYieldTotalFiatClaimableAmount={
-                                    isYieldDashboardDisabled
-                                        ? null
-                                        : stablecoinYieldTotalFiatClaimableAmount
-                                }
-                            />
-                        </>
-                    }
-                    keyExtractor={getEarnListItemKey}
-                    renderItem={renderItem}
-                />
+        <ScreenPerformanceRoot panHandlers={panHandlers}>
+            <Screen header={<DeviceManagerScreenHeader />}>
+                <VStack spacing="sp32">
+                    <FlashList
+                        data={earnListData}
+                        getItemType={getEarnListItemType}
+                        ListHeaderComponent={
+                            <>
+                                <ContextMessage
+                                    context={Context.getEarnDashboard('staking')}
+                                    marginBottom="sp16"
+                                />
+                                <ContextMessage
+                                    context={Context.getEarnDashboard('yield')}
+                                    marginBottom="sp16"
+                                />
+                                <EarnScreenListHeader
+                                    isStablecoinYieldLoading={
+                                        !isYieldDashboardDisabled && isYieldLoading
+                                    }
+                                    isStablecoinYieldClaimSummariesLoading={
+                                        !isYieldDashboardDisabled && isClaimSummariesLoading
+                                    }
+                                    cardanoStakingAccountKey={
+                                        isStakingDashboardDisabled
+                                            ? undefined
+                                            : accountStakedWithFiveBinaries?.key
+                                    }
+                                    stakingActiveItems={
+                                        isStakingDashboardDisabled ? [] : stakingActiveItems
+                                    }
+                                    stablecoinYieldActiveItems={
+                                        isYieldDashboardDisabled ? [] : stablecoinYieldActiveItems
+                                    }
+                                    stablecoinYieldClaimSummaries={
+                                        isYieldDashboardDisabled
+                                            ? []
+                                            : stablecoinYieldClaimSummaries
+                                    }
+                                    stablecoinYieldTotalFiatClaimableAmount={
+                                        isYieldDashboardDisabled
+                                            ? null
+                                            : stablecoinYieldTotalFiatClaimableAmount
+                                    }
+                                />
+                            </>
+                        }
+                        keyExtractor={getEarnListItemKey}
+                        renderItem={renderItem}
+                    />
 
-                <EarnItemInfoModal ref={staking.infoSheetRef} type="staking" />
-                <ChooseStakingAccountBottomSheet
-                    ref={staking.chooseAccountSheetRef}
-                    type="staking"
-                    accounts={staking.chosenAccounts}
-                    onAccountSelected={staking.handleAccountSelected}
-                    onClose={staking.closeChooseAccountModal}
-                    onDismiss={staking.handleChooseAccountDismiss}
-                />
-                <EnableNetworkForEarnBottomSheet
-                    ref={staking.enableNetworkSheetRef}
-                    symbol={staking.pendingEnableSymbol}
-                    onEnablePress={staking.handleEnableNetworkPress}
-                    onDismiss={staking.handleEnableNetworkDismiss}
-                />
-                <ChooseStakingAccountBottomSheet
-                    ref={stablecoinYield.chooseAccountSheetRef}
-                    type="yield"
-                    accounts={stablecoinYield.chosenAccounts}
-                    onAccountSelected={stablecoinYield.handleAccountSelected}
-                    onClose={stablecoinYield.closeChooseAccountModal}
-                    onDismiss={stablecoinYield.handleChooseAccountDismiss}
-                    tokenBalance={stablecoinYield.chooseAccountTokenBalance}
-                />
-                <EnableNetworkForEarnBottomSheet
-                    ref={stablecoinYield.enableNetworkSheetRef}
-                    symbol={stablecoinYield.pendingEnableSymbol}
-                    type="stablecoin-yield"
-                    onEnablePress={stablecoinYield.handleEnableNetworkPress}
-                    onDismiss={stablecoinYield.handleEnableNetworkDismiss}
-                />
-            </VStack>
-        </Screen>
+                    <EarnItemInfoModal ref={staking.infoSheetRef} type="staking" />
+                    <ChooseStakingAccountBottomSheet
+                        ref={staking.chooseAccountSheetRef}
+                        type="staking"
+                        accounts={staking.chosenAccounts}
+                        onAccountSelected={staking.handleAccountSelected}
+                        onClose={staking.closeChooseAccountModal}
+                        onDismiss={staking.handleChooseAccountDismiss}
+                    />
+                    <EnableNetworkForEarnBottomSheet
+                        ref={staking.enableNetworkSheetRef}
+                        symbol={staking.pendingEnableSymbol}
+                        onEnablePress={staking.handleEnableNetworkPress}
+                        onDismiss={staking.handleEnableNetworkDismiss}
+                    />
+                    <ChooseStakingAccountBottomSheet
+                        ref={stablecoinYield.chooseAccountSheetRef}
+                        type="yield"
+                        accounts={stablecoinYield.chosenAccounts}
+                        onAccountSelected={stablecoinYield.handleAccountSelected}
+                        onClose={stablecoinYield.closeChooseAccountModal}
+                        onDismiss={stablecoinYield.handleChooseAccountDismiss}
+                        tokenBalance={stablecoinYield.chooseAccountTokenBalance}
+                    />
+                    <EnableNetworkForEarnBottomSheet
+                        ref={stablecoinYield.enableNetworkSheetRef}
+                        symbol={stablecoinYield.pendingEnableSymbol}
+                        type="stablecoin-yield"
+                        onEnablePress={stablecoinYield.handleEnableNetworkPress}
+                        onDismiss={stablecoinYield.handleEnableNetworkDismiss}
+                    />
+                </VStack>
+            </Screen>
+        </ScreenPerformanceRoot>
     );
 };
 
