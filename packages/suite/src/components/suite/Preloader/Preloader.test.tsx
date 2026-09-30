@@ -1,6 +1,6 @@
 import '@suite-common/test-utils/globalOverrides';
 
-import { fireEvent } from '@testing-library/react';
+import { act, fireEvent, screen } from '@testing-library/react';
 
 import { type DesktopAnalyticsDep } from '@suite/analytics';
 import { mockDesktopAnalytics } from '@suite/analytics/mocks';
@@ -221,6 +221,64 @@ describe(`${Preloader.name} component`, () => {
             <Index app={services.store.getState().router.app} />,
         );
         expect(findByTestId('@suite/loading')).not.toBeNull();
+
+        unmount();
+    });
+
+    it('Loading: initially connected device is not in the reducer yet', () => {
+        const transport = createTransportInfo({ type: 'BridgeTransport', initialDeviceCount: 1 });
+        const { services } = createTestCompositionRoot<PreloaderTestDeps, AppState>({
+            preloadedState: getInitialState({ suite: { transport: { transports: [transport] } } }),
+            services: createServices,
+        });
+        const { unmount } = renderWithProviders(
+            services,
+            <Index app={services.store.getState().router.app} />,
+        );
+        expect(findByTestId('@suite/loading')).not.toBeNull();
+
+        unmount();
+    });
+
+    it('Initially connected device is not awaited for more than 10 seconds', () => {
+        jest.useFakeTimers();
+        const transport = createTransportInfo({ type: 'BridgeTransport', initialDeviceCount: 1 });
+        const { services } = createTestCompositionRoot<PreloaderTestDeps, AppState>({
+            preloadedState: getInitialState({ suite: { transport: { transports: [transport] } } }),
+            services: createServices,
+        });
+        const { unmount } = renderWithProviders(
+            services,
+            <Index app={services.store.getState().router.app} />,
+        );
+        expect(findByTestId('@suite/loading')).not.toBeNull();
+
+        act(() => jest.advanceTimersByTime(10_000));
+
+        expect(screen.queryByTestId('@suite/loading')).toBeNull();
+        expect(findByTestId('@connect-device-prompt')).not.toBeNull();
+
+        unmount();
+        jest.useRealTimers();
+    });
+
+    it('Remembered device is in the reducer', () => {
+        const device = mockSuiteDevice({ firmware: 'required' });
+        const transport = createTransportInfo({ type: 'BridgeTransport', initialDeviceCount: 1 });
+        const { services } = createTestCompositionRoot<PreloaderTestDeps, AppState>({
+            preloadedState: getInitialState({
+                suite: { transport: { transports: [transport] } },
+                device: { devices: [device], selectedDevice: device },
+            }),
+            services: createServices,
+        });
+        const { unmount } = renderWithProviders(
+            services,
+            <Index app={services.store.getState().router.app} />,
+        );
+
+        expect(screen.queryByTestId('@suite/loading')).toBeNull();
+        expect(findByTestId('@connect-device-prompt')).not.toBeNull();
 
         unmount();
     });
