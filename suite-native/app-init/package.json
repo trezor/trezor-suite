@@ -11,10 +11,10 @@
         "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'"
     },
     "dependencies": {
-        "@suite-common/connect-init": "workspace:*",
         "@suite-common/earn-stablecoin-api": "workspace:*",
         "@suite-common/message-system": "workspace:*",
         "@suite-common/redux-utils": "workspace:*",
+        "@suite-common/suite-types": "workspace:*",
         "@suite-common/token-definitions": "workspace:*",
         "@suite-common/wallet-core": "workspace:*",
         "@suite-common/walletconnect": "workspace:*",

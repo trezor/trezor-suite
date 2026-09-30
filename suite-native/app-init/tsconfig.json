@@ -3,9 +3,6 @@
     "compilerOptions": { "outDir": "libDev" },
     "references": [
         {
-            "path": "../../suite-common/connect-init"
-        },
-        {
             "path": "../../suite-common/earn-stablecoin-api"
         },
         {
@@ -13,6 +10,9 @@
         },
         {
             "path": "../../suite-common/redux-utils"
+        },
+        {
+            "path": "../../suite-common/suite-types"
         },
         {
             "path": "../../suite-common/token-definitions"

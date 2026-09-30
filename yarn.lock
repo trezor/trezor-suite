@@ -12245,10 +12245,10 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@suite-native/app-init@workspace:suite-native/app-init"
   dependencies:
-    "@suite-common/connect-init": "workspace:*"
     "@suite-common/earn-stablecoin-api": "workspace:*"
     "@suite-common/message-system": "workspace:*"
     "@suite-common/redux-utils": "workspace:*"
+    "@suite-common/suite-types": "workspace:*"
     "@suite-common/token-definitions": "workspace:*"
     "@suite-common/wallet-core": "workspace:*"
     "@suite-common/walletconnect": "workspace:*"

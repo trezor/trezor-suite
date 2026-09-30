@@ -1,4 +1,3 @@
-import { type ConnectInitDep } from '@suite-common/connect-init';
 import {
     defaultEarnYieldWorkerBaseUrl,
     earnYieldWorkerBaseUrl,
@@ -10,6 +9,7 @@ import {
     selectActiveKillswitchMessage,
 } from '@suite-common/message-system';
 import { type WithServices, createThunk } from '@suite-common/redux-utils';
+import { type ConnectInitDep } from '@suite-common/suite-types';
 import {
     type InitTokenDefinitionsThunkDeps,
     type InitTokenDefinitionsThunkState,
