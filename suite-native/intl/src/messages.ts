@@ -2885,6 +2885,9 @@ export const messages = {
             amountToWrap: 'Amount to wrap',
             reserveRecommendation:
                 'We recommend leaving {amount} {nativeSymbol} so you can pay future network fees.',
+            reserveKept: 'We left {amount} {nativeSymbol} so you can pay future network fees.',
+            insufficientFeeReserve:
+                'You need at least {amount} {nativeSymbol} to cover the network fees.',
             submitButton: 'Wrap',
             closeButton: 'Close',
             pendingTransactionTitle: 'Wrapping in progress',
@@ -3395,6 +3398,12 @@ export const messages = {
                 },
                 approvalIncreaseRequiresRevoke: {
                     title: 'To increase your approval, you must first revoke the current allowance.',
+                },
+                insufficientFeeReserve: {
+                    title: 'You need at least {amount} {nativeSymbol} to cover the network fees.',
+                },
+                feeReserveTopUp: {
+                    title: 'We recommend holding at least {amount} {nativeSymbol} to cover future network fees, including withdrawal.',
                 },
                 transactionFailed: {
                     title: 'Transaction failed',

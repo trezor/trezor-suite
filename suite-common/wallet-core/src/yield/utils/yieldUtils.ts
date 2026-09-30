@@ -381,30 +381,6 @@ export const getWrappableNativeBalance = (
 ): string =>
     BigNumber.max(0, new BigNumber(nativeFormattedBalance || '0').minus(reserve)).toString();
 
-/**
- * Amount the wrap step's "Max" button fills in: the balance minus `reserve` while that leaves
- * something to wrap, otherwise the whole balance. A balance at or below the reserve has nothing
- * to keep aside, and offering `0` reads as a dead button (trezor/trezor-suite#30842). Wrapping it
- * all is allowed, and `shouldRecommendWrapReserve` then surfaces the non-blocking recommendation
- * to keep some native coin for the follow-up fees.
- *
- * Desktop blocks the wrap step instead once the balance is within the reserve and offers
- * `getWrappableNativeBalance`; mobile follows in trezor/trezor-suite#31192.
- */
-export const getMaxWrapAmount = (nativeFormattedBalance: string, reserve: string): string => {
-    const balance = new BigNumber(nativeFormattedBalance || '0');
-
-    if (!balance.isFinite() || balance.lte(0)) {
-        return '0';
-    }
-
-    const wrappableBalance = new BigNumber(
-        getWrappableNativeBalance(nativeFormattedBalance, reserve),
-    );
-
-    return wrappableBalance.gt(0) ? wrappableBalance.toString() : balance.toString();
-};
-
 type GetWrapReserveStatusParams = {
     amountInput: string;
     /** Native coin balance in display units, NOT subunits. */
@@ -439,14 +415,6 @@ export const getWrapReserveStatus = ({
 
     return remaining.lt(reserve) ? 'below' : 'none';
 };
-
-/**
- * Whether wrapping `amountInput` would leave at most `reserve` behind, i.e. no safety margin
- * above the reserve needed for the follow-up fees. Surfaces a non-blocking recommendation to
- * keep a reserve; this also covers the "Max" amount, which leaves exactly the reserve.
- */
-export const shouldRecommendWrapReserve = (params: GetWrapReserveStatusParams): boolean =>
-    getWrapReserveStatus(params) !== 'none';
 
 /**
  * Balance available for a yield deposit. For a wrapped-native (WETH) vault the native balance can

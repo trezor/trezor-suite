@@ -17,7 +17,7 @@ import { selectYieldGasReserve, selectYieldSessionByFlowKey } from '../yieldSele
 import { type YieldFlowType, type YieldGasReserve } from '../yieldTypes';
 
 type UseYieldGasReserveParams = {
-    networkSymbol: NetworkSymbol;
+    networkSymbol: NetworkSymbol | undefined;
     isWrappedNativeVault: boolean;
     tokenContractAddress?: string | null;
     /** Given together with `flowKey`, the reserve is frozen into that yield session. */
