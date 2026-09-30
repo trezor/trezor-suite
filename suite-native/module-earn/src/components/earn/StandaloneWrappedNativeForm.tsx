@@ -1,6 +1,6 @@
 import { useFormatters } from '@suite-common/formatters';
 import { Context } from '@suite-common/message-system';
-import { WETH_WRAP_GAS_RESERVE } from '@suite-common/wallet-constants';
+import { YIELD_GAS_RESERVE_FALLBACK } from '@suite-common/wallet-constants';
 import { type WrappedNativeFlowType } from '@suite-common/wallet-core';
 import { BannerFull, Box, Button, VStack } from '@suite-native/atoms';
 import { Form } from '@suite-native/forms';
@@ -100,7 +100,7 @@ export const StandaloneWrappedNativeForm = ({ flowType }: StandaloneWrappedNativ
                                     id="earn.wrapNativeToken.reserveRecommendation"
                                     values={{
                                         amount: CryptoAmountFormatter.format(
-                                            WETH_WRAP_GAS_RESERVE.toString(),
+                                            YIELD_GAS_RESERVE_FALLBACK.toFixed(),
                                             {
                                                 symbol: account.symbol,
                                                 isBalance: true,
