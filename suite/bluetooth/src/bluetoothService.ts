@@ -1,10 +1,12 @@
 import {
+    bluetoothActions,
     selectAdapterStatus,
     selectAutoConnectPolicy,
     selectKnownDevices,
 } from '@suite-common/bluetooth';
 import { selectDevices } from '@suite-common/device';
 import { selectFirmware } from '@suite-common/firmware';
+import { notificationsActions } from '@suite-common/toast-notifications';
 import TrezorConnect from '@trezor/connect';
 import { type BluetoothDevice, bluetoothIpc } from '@trezor/transport-bluetooth';
 import { resolveAfter } from '@trezor/utils';
@@ -17,6 +19,9 @@ import {
     type BluetoothServiceInternalDeps,
 } from './bluetoothServiceTypes';
 import { selectConnectingDevices } from './desktopBluetoothSelectors';
+import { fixLinuxManufacturerData } from './fixLinuxManufacturerData';
+import { openSystemSettingsThunk } from './openSystemSettingsThunk';
+import { remapKnownDevices } from './remapKnownDevices';
 
 const bluetoothServiceInternal: Partial<BluetoothServiceInternalDeps> = {};
 
@@ -125,6 +130,93 @@ const setupAutoReconnect = (deps: BluetoothServiceDeps) => {
     });
 };
 
+const setupListeners = (deps: BluetoothServiceDeps) => {
+    const { getState, dispatch } = deps;
+
+    bluetoothIpc.on('adapter-event', status => {
+        // TODO: check if redux.status != status && status == enabled
+        // and fetch bluetoothIpc.getInfo() again
+        dispatch(bluetoothActions.adapterEventAction({ status }));
+    });
+
+    bluetoothIpc.on('device-list-update', nearbyDevicesIpc => {
+        const nearbyDevices = nearbyDevicesIpc.map(fromBluetoothDevice);
+
+        const remappedKnownDevices = remapKnownDevices({
+            knownDevices: selectKnownDevices<DesktopBluetoothDevice>(getState()),
+            nearbyDevices,
+        });
+
+        dispatch(
+            bluetoothActions.knownDevicesUpdateAction({
+                knownDevices: remappedKnownDevices,
+            }),
+        );
+        dispatch(
+            bluetoothActions.nearbyDevicesUpdateAction({
+                nearbyDevices,
+            }),
+        );
+    });
+
+    bluetoothIpc.on('device-update', (deviceIpc: BluetoothDevice) => {
+        let device = fromBluetoothDevice(deviceIpc);
+
+        const knownDevice = selectKnownDevices<DesktopBluetoothDevice>(getState()).find(
+            d => d.id === device.id,
+        );
+        device = fixLinuxManufacturerData(device, knownDevice);
+
+        dispatch(bluetoothActions.deviceUpdateAction({ device }));
+    });
+
+    bluetoothIpc.on('open-bluetooth-settings', async ({ id }) => {
+        const settingsOpened = await dispatch(
+            openSystemSettingsThunk({ type: 'bluetooth' }),
+        ).unwrap();
+        if (!settingsOpened.success) {
+            // stop here and disconnect the device (abort pairing before it starts)
+            // this should throw BluetoothSettingsMissing error in current connection process
+            // device needs to be paired manually via system settings
+            bluetoothIpc.disconnectDevice(id);
+        }
+    });
+};
+
+const init = async (deps: BluetoothServiceDeps) => {
+    const { getState, dispatch } = deps;
+
+    const knownDevices = selectKnownDevices<DesktopBluetoothDevice>(getState());
+    const result = await bluetoothIpc.init({
+        knownDevices,
+    });
+
+    if (!result.success) {
+        dispatch(
+            notificationsActions.addToast({
+                type: 'error',
+                error: 'Unable to initialize Bluetooth Module.',
+            }),
+        );
+
+        return;
+    }
+
+    // NOTE: getInfo when adapter is disabled adapter may return different result in adapter_info field
+    const apiInfo = await bluetoothIpc.getInfo();
+    if (apiInfo.success) {
+        dispatch(
+            bluetoothActions.adapterEventAction({
+                status: apiInfo.payload.state,
+            }),
+        );
+    }
+
+    setupListeners(deps);
+
+    setupAutoReconnect(deps);
+};
+
 export const createBluetoothService = (
     deps: BluetoothServiceDeps,
     internalDeps: BluetoothServiceInternalDeps,
@@ -140,7 +232,7 @@ export const createBluetoothService = (
             }
             inited = true;
 
-            return setupAutoReconnect(deps);
+            return init(deps);
         },
     };
 };

@@ -10,7 +10,6 @@ export {
 export * from './desktopBluetoothReducer';
 export * from './desktopBluetoothSelectors';
 
-export { initBluetoothThunk } from './initBluetoothThunk';
 export { bluetoothStartScanningThunk } from './bluetoothStartScanningThunk';
 export { bluetoothStopScanningThunk } from './bluetoothStopScanningThunk';
 export { bluetoothConnectDeviceThunk } from './bluetoothConnectDeviceThunk';

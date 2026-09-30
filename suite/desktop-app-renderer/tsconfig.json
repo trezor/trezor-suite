@@ -20,7 +20,6 @@
             "path": "../../suite-common/redux-utils"
         },
         { "path": "../analytics" },
-        { "path": "../bluetooth" },
         { "path": "../debug" },
         { "path": "../desktop-app-api" },
         { "path": "../desktop-app-api-electron" },
