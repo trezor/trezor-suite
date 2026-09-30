@@ -39,6 +39,8 @@ const mockState: {
     effectsCursor?: string;
     joinedApplied?: boolean;
     sep41Tokens: Sep41TokenMock[];
+    unreadableContracts: string[];
+    sep41TokensError?: Error;
     readContractIds?: string[];
     contractReceipts: unknown[];
     receiptContractIds?: string[];
@@ -49,6 +51,7 @@ const mockState: {
     operationRecords: [],
     effectRecords: [],
     sep41Tokens: [],
+    unreadableContracts: [],
     contractReceipts: [],
     ledgerEntries: [],
     horizonBalances: [],
@@ -170,8 +173,12 @@ jest.mock('@trezor/network-stellar/runtime', () => ({
             ...actual,
             readSep41Tokens: (_server: unknown, _holder: string, contractIds: string[]) => {
                 mockState.readContractIds = contractIds;
+                if (mockState.sep41TokensError) throw mockState.sep41TokensError;
 
-                return Promise.resolve(mockState.sep41Tokens);
+                return Promise.resolve({
+                    tokens: mockState.sep41Tokens,
+                    unreadable: mockState.unreadableContracts,
+                });
             },
             readContractTokenTransfers: ({ contractIds }: { contractIds: string[] }) => {
                 mockState.receiptContractIds = contractIds;
@@ -286,6 +293,8 @@ describe('Stellar worker account history', () => {
         mockState.operationRecords = [];
         mockState.joinedApplied = false;
         mockState.sep41Tokens = [];
+        mockState.unreadableContracts = [];
+        mockState.sep41TokensError = undefined;
         mockState.contractReceipts = [];
         mockState.receiptContractIds = undefined;
         mockState.readContractIds = undefined;
@@ -542,6 +551,49 @@ describe('Stellar worker account history', () => {
                 decimals: 18,
             },
         ]);
+    });
+
+    it('names the contracts the node would not answer for, so a holding is not dropped', async () => {
+        mockState.sep41Tokens = [];
+        mockState.unreadableContracts = [WATCHED_CONTRACT];
+
+        const result = await blockchain.getAccountInfo({
+            descriptor: DESCRIPTOR,
+            details: 'txs',
+            stellarContractTokens: [WATCHED_CONTRACT],
+        });
+
+        expect(result.tokens).toEqual([]);
+        expect(result.misc).toEqual(
+            expect.objectContaining({ stellarUnreadableContracts: [WATCHED_CONTRACT] }),
+        );
+    });
+
+    it('says nothing about any contract when the whole read failed', async () => {
+        mockState.sep41TokensError = new Error('rpc is down');
+
+        const result = await blockchain.getAccountInfo({
+            descriptor: DESCRIPTOR,
+            details: 'txs',
+            stellarContractTokens: [WATCHED_CONTRACT],
+        });
+
+        expect(result.tokens).toEqual([]);
+        expect(result.misc!.stellarUnreadableContracts).toEqual(
+            expect.arrayContaining([WATCHED_CONTRACT, STELLAR_CONTRACT_TOKENS[0]!.contract]),
+        );
+    });
+
+    it('leaves the account alone when every contract answered', async () => {
+        mockState.sep41Tokens = [{ contract: WATCHED_CONTRACT, balance: '42', decimals: 7 }];
+
+        const result = await blockchain.getAccountInfo({
+            descriptor: DESCRIPTOR,
+            details: 'txs',
+            stellarContractTokens: [WATCHED_CONTRACT],
+        });
+
+        expect(result.misc!.stellarUnreadableContracts).toBeUndefined();
     });
 
     it('drops a curated contract token the account does not hold', async () => {

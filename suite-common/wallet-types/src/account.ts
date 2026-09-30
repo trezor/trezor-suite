@@ -102,7 +102,12 @@ type AccountNetworkSpecific =
       }
     | {
           networkType: 'stellar';
-          misc: { stellarSequence: string; reserve: string; baseReserve: string };
+          misc: {
+              stellarSequence: string;
+              reserve: string;
+              baseReserve: string;
+              stellarUnreadableContracts?: string[];
+          };
           marker: undefined;
           stellarCursor: AccountInfo['stellarCursor'];
           page: undefined;

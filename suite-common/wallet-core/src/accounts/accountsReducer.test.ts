@@ -4,7 +4,11 @@ import { mockActionType, mockReducer } from '@suite-common/redux-utils/mocks';
 import { createTestCompositionRoot } from '@suite-common/test-utils';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { type Account } from '@suite-common/wallet-types';
-import { mockAccountToken, mockWalletAccount } from '@suite-common/wallet-types/mocks';
+import {
+    mockAccountToken,
+    mockWalletAccount,
+    networkSpecificDefaultStellar,
+} from '@suite-common/wallet-types/mocks';
 import { type AccountInfo } from '@trezor/connect';
 import type { Bip43Path } from '@trezor/crypto-utils';
 
@@ -248,10 +252,13 @@ describe('Account Reducer', () => {
 
         const CONTRACT_ID = 'CBI7UCH5KGSVQRO5H4SUCZUTZABCITZLRHQQZTWL2TK4RZ72TAR6IHRV';
 
-        const stellarAccount = mockWalletAccount({
-            symbol: asNetworkSymbol('xlm'),
-            deviceState: '1stTestnetAddress@device_id:0',
-        });
+        const stellarAccount = mockWalletAccount(
+            {
+                symbol: asNetworkSymbol('xlm'),
+                deviceState: '1stTestnetAddress@device_id:0',
+            },
+            networkSpecificDefaultStellar,
+        );
 
         const contractToken = mockAccountToken({
             standard: 'STELLAR-CONTRACT',
@@ -303,6 +310,42 @@ describe('Account Reducer', () => {
             const store = initStoreWithContractToken();
 
             store.dispatch(accountsActions.updateAccount(stellarAccount, stellarAccountInfo));
+
+            expect(store.getState().wallet.accounts[0]?.tokens).toEqual([]);
+        });
+
+        it('keeps a contract token the node would not answer for on a targeted fetch', () => {
+            const store = initStoreWithContractToken();
+
+            store.dispatch(
+                accountsActions.updateAccount(stellarAccount, {
+                    ...stellarAccountInfo,
+                    misc: {
+                        ...networkSpecificDefaultStellar.misc,
+                        stellarUnreadableContracts: [CONTRACT_ID],
+                    },
+                }),
+            );
+
+            expect(store.getState().wallet.accounts[0]?.tokens).toEqual([
+                expect.objectContaining({ contract: CONTRACT_ID, balance: '42' }),
+            ]);
+        });
+
+        it('still drops a contract token the node did answer for', () => {
+            const store = initStoreWithContractToken();
+
+            store.dispatch(
+                accountsActions.updateAccount(stellarAccount, {
+                    ...stellarAccountInfo,
+                    misc: {
+                        ...networkSpecificDefaultStellar.misc,
+                        stellarUnreadableContracts: [
+                            'CCW67TSZV3SSS2HXMBQ5JFGCKJNXKZM7UQUWUZPUTHXSTZLEO7SJMI75',
+                        ],
+                    },
+                }),
+            );
 
             expect(store.getState().wallet.accounts[0]?.tokens).toEqual([]);
         });
