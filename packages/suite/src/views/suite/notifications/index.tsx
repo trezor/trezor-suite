@@ -87,7 +87,7 @@ const NotificationsView = () => {
     );
 
     return (
-        <Column gap={16} width="100%" maxWidth={600} margin={{ horizontal: 'auto' }}>
+        <Column gap={16} width="100%" maxWidth={760} margin={{ horizontal: 'auto' }}>
             {selectedTab === 'transactions' && (
                 <Card>
                     <NotificationGroup notifications={transactionNotifications} />
