@@ -4,11 +4,16 @@ const stringifyArgs = (args: unknown[]): string =>
     args
         .map(arg => {
             if (typeof arg === 'string') return arg;
+            if (arg instanceof Error) return `${arg.toString()} ${arg.stack ?? ''}`;
             try {
                 return (
                     JSON.stringify(arg, (_k, v) => {
-                        if (v instanceof Error) return { message: v.toString(), stack: v.stack };
-                        if (typeof v === 'bigint' || typeof v === 'number') return v.toString();
+                        // a string returned by the replacer is serialized as is and never revisited
+                        if (v instanceof Error) return v.toString();
+                        // objects and arrays must be passed through untouched, otherwise the walk
+                        // stops at the root (the replacer is called with the whole value first)
+                        // and their keys never make it to the log
+                        if (v !== null && typeof v === 'object') return v;
 
                         return `(${typeof v} redacted...)`;
                     }) ?? String(arg)
