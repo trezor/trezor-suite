@@ -38,10 +38,10 @@ const setupStore = (uiEventHooks: Record<string, () => void>) =>
         DefaultTrezorUIEventHandlerThunkDeps,
         DefaultTrezorUIEventHandlerThunkState
     >({
-        services: () => ({ connectInitUiEventHooks: uiEventHooks }),
+        services: () => ({ connectInitUIEventHooks: uiEventHooks }),
     }).services.store;
 
-describe('defaultTrezorUIEventHandlerThunk - connectInitUiEventHooks', () => {
+describe('defaultTrezorUIEventHandlerThunk - connectInitUIEventHooks', () => {
     it('calls the hook registered for the dispatched event type and still dispatches the event', async () => {
         const requestWordHook = jest.fn();
         const store = setupStore({ [UI_REQUESTS.REQUEST_WORD]: requestWordHook });
