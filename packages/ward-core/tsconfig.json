@@ -1,0 +1,11 @@
+{
+    "extends": "../../tsconfig.base.json",
+    "compilerOptions": {
+        "skipLibCheck": false,
+        "outDir": "libDev"
+    },
+    "include": [
+        ".",
+        "src/__tests__/fixtures/*.json"
+    ]
+}

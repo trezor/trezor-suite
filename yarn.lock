@@ -17792,6 +17792,15 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"@trezor/ward-core@workspace:packages/ward-core":
+  version: 0.0.0-use.local
+  resolution: "@trezor/ward-core@workspace:packages/ward-core"
+  dependencies:
+    "@noble/curves": "npm:^2.0.1"
+    "@noble/hashes": "npm:^2.0.1"
+  languageName: unknown
+  linkType: soft
+
 "@trezor/webextension-mv3-sw-ts@workspace:packages/connect-examples/webextension":
   version: 0.0.0-use.local
   resolution: "@trezor/webextension-mv3-sw-ts@workspace:packages/connect-examples/webextension"

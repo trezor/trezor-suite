@@ -1,0 +1,19 @@
+{
+    "name": "@trezor/ward-core",
+    "version": "1.0.0",
+    "private": true,
+    "license": "See LICENSE.md in repo root",
+    "sideEffects": false,
+    "main": "src/index",
+    "scripts": {
+        "test:unit": "yarn g:jest",
+        "depcheck": "yarn g:depcheck",
+        "type-check": "yarn g:tsc --build",
+        "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'",
+        "gen:vectors": "../../../trezor-firmware/.venv/bin/python scripts/gen-vectors.py"
+    },
+    "dependencies": {
+        "@noble/curves": "^2.0.1",
+        "@noble/hashes": "^2.0.1"
+    }
+}
