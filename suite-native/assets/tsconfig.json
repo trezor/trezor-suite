@@ -5,9 +5,15 @@
         { "path": "../../suite-common/assets" },
         { "path": "../../suite-common/device" },
         {
+            "path": "../../suite-common/fiat-services"
+        },
+        {
             "path": "../../suite-common/formatters"
         },
         { "path": "../../suite-common/networks" },
+        {
+            "path": "../../suite-common/react-query"
+        },
         {
             "path": "../../suite-common/redux-utils"
         },

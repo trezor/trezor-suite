@@ -1,10 +1,10 @@
-import { useMemo } from 'react';
 import { useSelector } from 'react-redux';
 
 import { getNetworkDisplaySymbol, getNetworkDisplaySymbolName } from '@suite-common/wallet-config';
 import { type AccountsRootState, selectAccountNetworkSymbol } from '@suite-common/wallet-core';
 import { type AccountKey, type TokenAddress } from '@suite-common/wallet-types';
 import { isErc4626 } from '@suite-common/wallet-utils';
+import { AssetPriceChange } from '@suite-native/assets';
 import { Box, Card, HStack, Text, VStack } from '@suite-native/atoms';
 import { BaseCurrencyAmountFormatter } from '@suite-native/formatters';
 import { TokenIcon } from '@suite-native/icons';
@@ -30,38 +30,10 @@ const cardContentStyle = prepareNativeStyle(_ => ({
     alignItems: 'flex-start',
 }));
 
-const percentFormatter = new Intl.NumberFormat('en-US', {
-    style: 'percent',
-    maximumSignificantDigits: 3,
-    minimumSignificantDigits: 3,
-});
-
-interface PriceChangeLabelProps {
-    valuePercentageChange: number | null;
-}
-
-const PriceChangeLabel = ({ valuePercentageChange }: PriceChangeLabelProps) => {
-    const percentageChange = valuePercentageChange ?? 0;
-    const formattedPercentage = percentFormatter.format(percentageChange);
-
-    const textColor = useMemo(() => {
-        if (percentageChange === 0) return 'contentSecondary';
-
-        return percentageChange > 0 ? 'contentBrand' : 'contentCritical';
-    }, [percentageChange]);
-
-    return (
-        <Text variant="body-sm" priority="primary" color={textColor}>
-            {percentageChange > 0 ? '+' : ''}
-            {formattedPercentage}
-        </Text>
-    );
-};
-
-interface AssetPriceCardProps {
+type AssetPriceCardProps = {
     accountKey: AccountKey;
     tokenContract?: TokenAddress;
-}
+};
 
 export const AssetPriceCard = ({ accountKey, tokenContract }: AssetPriceCardProps) => {
     const { applyStyle } = useNativeStyles();
@@ -134,13 +106,7 @@ export const AssetPriceCard = ({ accountKey, tokenContract }: AssetPriceCardProp
                         />
 
                         {!isErc4626Token && (
-                            <HStack>
-                                <Text variant="body-sm" color="contentSecondary">
-                                    <Translation id="moduleAccountManagement.accountDetailContentScreen.assetPriceCard.changeIn7d" />
-                                </Text>
-
-                                <PriceChangeLabel valuePercentageChange={valuePercentageChange} />
-                            </HStack>
+                            <AssetPriceChange percentageChange={valuePercentageChange} />
                         )}
                     </Box>
                 </HStack>

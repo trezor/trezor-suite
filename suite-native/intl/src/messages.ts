@@ -210,6 +210,7 @@ export const messages = {
         rewardsReduced: 'No rewards',
     },
     assets: {
+        priceChangePeriod: '7d',
         dashboard: {
             discoveryProgress: {
                 loading: 'Loading...',
@@ -2083,9 +2084,6 @@ export const messages = {
                 changeIn7d: '7D change',
                 coinPrice: '{coinName} price',
             },
-            assetPriceCard: {
-                changeIn7d: '7d',
-            },
             yieldBadge: {
                 upToRate: 'Up to {apy}% APY',
                 yieldRate: '{apy}% APY',
@@ -2320,6 +2318,14 @@ export const messages = {
                 from: 'From {count}',
                 to: 'To {count}',
                 changeAddresses: 'Change {count,plural, one {address} other {addresses}}',
+            },
+        },
+    },
+    moduleAssets: {
+        assetDetailScreen: {
+            headerTitle: 'Asset details',
+            balanceSection: {
+                title: 'Your balance',
             },
         },
     },

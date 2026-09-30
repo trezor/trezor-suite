@@ -2,6 +2,7 @@ export enum RootStackRoutes {
     AppTabs = 'AppTabs',
     AccountDetailStack = 'AccountDetailStack',
     AccountOverview = 'AccountOverview',
+    AssetsStack = 'AssetsStack',
     OnboardingStack = 'OnboardingStack',
     DeviceOnboardingStack = 'DeviceOnboardingStack',
     AccountsImport = 'AccountsImport',
@@ -64,6 +65,10 @@ export enum RootStackRoutes {
 export enum AccountDetailStackRoutes {
     AccountDetail = 'AccountDetail',
     AccountSettings = 'AccountSettings',
+}
+
+export enum AssetsStackRoutes {
+    AssetDetail = 'AssetDetail',
 }
 
 export enum ActivityCenterStackRoutes {

@@ -199,6 +199,7 @@
 !/suite-native/module-accounts-import
 !/suite-native/module-activity-center
 !/suite-native/module-add-accounts
+!/suite-native/module-assets
 !/suite-native/module-authenticity-checks
 !/suite-native/module-authorize-device
 !/suite-native/module-check-backup

@@ -28,14 +28,24 @@ const preloadedState = {
     },
 };
 
-const mockFetchedRates = (weekAgoRate: number, currentRate: number) => {
-    getFiatRatesForTimestampsMock.mockResolvedValue({
-        ts: 0,
-        symbol: ethSymbol,
-        tickers: [
-            { ts: 0, rates: { usd: weekAgoRate } },
-            { ts: 0, rates: { usd: currentRate } },
-        ],
+const mockFetchedRates = (weekAgoRate: number | null, currentRate: number) => {
+    getFiatRatesForTimestampsMock.mockImplementation((_ticker, timestamps) => {
+        const [weekAgoTimestamp, currentTimestamp] = timestamps;
+
+        if (weekAgoTimestamp === undefined || currentTimestamp === undefined) {
+            throw new Error('Expected week-ago and current timestamps');
+        }
+
+        return Promise.resolve({
+            ts: 0,
+            symbol: ethSymbol,
+            tickers: [
+                ...(weekAgoRate === null
+                    ? []
+                    : [{ ts: weekAgoTimestamp, rates: { usd: weekAgoRate } }]),
+                { ts: currentTimestamp, rates: { usd: currentRate } },
+            ],
+        });
     });
 };
 
@@ -56,7 +66,7 @@ describe('useDayCoinPriceChange', () => {
             expect(result.current.currentValue?.toNumber()).toBe(110);
         });
 
-        expect(result.current.valuePercentageChange).toBeCloseTo(10 / 105);
+        expect(result.current.valuePercentageChange).toBeCloseTo(0.1);
         expect(result.current.underlyingAssetContract).toBeNull();
         expect(fetchErc4626UnderlyingAssetMock).not.toHaveBeenCalled();
         expect(getFiatRatesForTimestampsMock).toHaveBeenCalledWith(
@@ -89,7 +99,7 @@ describe('useDayCoinPriceChange', () => {
             expect(result.current.currentValue?.toNumber()).toBe(132);
         });
 
-        expect(result.current.valuePercentageChange).toBeCloseTo(10 / 105);
+        expect(result.current.valuePercentageChange).toBeCloseTo(0.1);
         expect(result.current.underlyingAssetContract).toBe(underlyingContract);
         expect(fetchErc4626UnderlyingAssetMock).toHaveBeenCalledWith({
             coin: ethSymbol,
@@ -125,5 +135,20 @@ describe('useDayCoinPriceChange', () => {
         expect(result.current.currentValue).toBeNull();
         expect(result.current.valuePercentageChange).toBeNull();
         expect(result.current.underlyingAssetContract).toBeNull();
+    });
+
+    it('keeps the current price when the historical rate is missing', async () => {
+        mockFetchedRates(null, 110);
+
+        const { result } = await renderHookWithStoreProvider(
+            () => useDayCoinPriceChange({ symbol: ethSymbol, tokenContract: underlyingContract }),
+            { preloadedState },
+        );
+
+        await waitFor(() => {
+            expect(result.current.currentValue?.toNumber()).toBe(110);
+        });
+
+        expect(result.current.valuePercentageChange).toBeNull();
     });
 });

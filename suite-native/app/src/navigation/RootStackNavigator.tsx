@@ -9,6 +9,7 @@ import { AccountOverviewScreen } from '@suite-native/module-accounts';
 import { AccountsImportStackNavigator } from '@suite-native/module-accounts-import';
 import { ActivityCenterStackNavigator } from '@suite-native/module-activity-center';
 import { AddCoinAccountStackNavigator } from '@suite-native/module-add-accounts';
+import { AssetsStackNavigator } from '@suite-native/module-assets';
 import { DeviceCompromisedModalScreen } from '@suite-native/module-authenticity-checks';
 import { AuthorizeDeviceStackNavigator } from '@suite-native/module-authorize-device';
 import {
@@ -117,6 +118,7 @@ export const RootStackNavigator = () => {
                 name={RootStackRoutes.AccountDetailStack}
                 component={AccountDetailStackNavigator}
             />
+            <RootStack.Screen name={RootStackRoutes.AssetsStack} component={AssetsStackNavigator} />
             <RootStack.Screen
                 options={{ title: RootStackRoutes.AccountOverview }}
                 name={RootStackRoutes.AccountOverview}

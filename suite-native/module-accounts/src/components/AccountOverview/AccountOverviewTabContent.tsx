@@ -4,11 +4,13 @@ import { useSelector } from 'react-redux';
 import { useNavigation } from '@react-navigation/native';
 
 import { useServices } from '@suite-common/dependency-injection';
+import { ExperimentId, useIsExperimentVariantActive } from '@suite-common/message-system';
 import { type AccountsRootState, selectAccountByKey } from '@suite-common/wallet-core';
 import { type AccountKey } from '@suite-common/wallet-types';
 import { events, injectNativeAnalytics } from '@suite-native/analytics';
 import {
     AccountDetailStackRoutes,
+    AssetsStackRoutes,
     type RootStackParamList,
     RootStackRoutes,
     SendStackRoutes,
@@ -39,6 +41,10 @@ export const AccountOverviewTabContent = ({
     const account = useSelector((state: AccountsRootState) =>
         selectAccountByKey(state, accountKey),
     );
+    const isAssetDetailFeatureEnabled = useIsExperimentVariantActive({
+        experimentId: ExperimentId.assetFirstHomeTable,
+        variant: 'B',
+    });
 
     const handleSelect = useCallback<OnSelectAsset>(
         ({ tokenContract, tokenSymbol }) => {
@@ -57,6 +63,14 @@ export const AccountOverviewTabContent = ({
                     screen: SendStackRoutes.SendOutputs,
                     params: { accountKey, tokenContract },
                 });
+            } else if (isAssetDetailFeatureEnabled && account) {
+                navigation.navigate(RootStackRoutes.AssetsStack, {
+                    screen: AssetsStackRoutes.AssetDetail,
+                    params: {
+                        networkSymbol: account.symbol,
+                        tokenContract,
+                    },
+                });
             } else {
                 navigation.navigate(RootStackRoutes.AccountDetailStack, {
                     screen: AccountDetailStackRoutes.AccountDetail,
@@ -68,7 +82,7 @@ export const AccountOverviewTabContent = ({
                 });
             }
         },
-        [flowType, account, accountKey, analytics, navigation],
+        [flowType, isAssetDetailFeatureEnabled, account, accountKey, analytics, navigation],
     );
 
     switch (activeTab) {
