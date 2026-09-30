@@ -940,7 +940,7 @@ export class Core extends EventEmitter {
         // Logger factory comes from the host composition root and must be ready before DeviceList
         // is created because device discovery/handshake can log during init.
         this.createLogger = settings.createLogger ?? noopCreateLogger;
-        this.coreLogger = this.createLogger('Core');
+        this.coreLogger = this.createLogger('@trezor/connect/Core');
 
         // do not send any event until Core is fully loaded
         // DeviceList emits TRANSPORT and DEVICE events if pendingTransportEvent is set
