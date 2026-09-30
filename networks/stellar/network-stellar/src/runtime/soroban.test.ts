@@ -392,6 +392,18 @@ describe(prepareContractTransaction.name, () => {
 });
 
 describe(prepareContractTokenTransfer.name, () => {
+    const RECIPIENT = 'GC23LNNVWW23LNNVWW23LNNVWW23LNNVWW23LNNVWW23LNNVWW23LKW6';
+
+    const transfer = (inclusionFee?: string) => ({
+        backendUrl: 'https://stellar.mock',
+        descriptor: HOLDER,
+        sequence: '1',
+        inclusionFee,
+        contract: CONTRACT,
+        destination: RECIPIENT,
+        amount: '10',
+    });
+
     afterEach(() => jest.restoreAllMocks());
 
     it('reports a failed simulation before anything reaches the device', async () => {
@@ -399,17 +411,54 @@ describe(prepareContractTokenTransfer.name, () => {
             error: 'HostError: Error(Contract, #1)',
         } as rpc.Api.SimulateTransactionErrorResponse);
 
-        await expect(
-            prepareContractTokenTransfer({
-                backendUrl: 'https://stellar.mock',
-                descriptor: HOLDER,
-                sequence: '1',
-                inclusionFee: '200',
-                contract: CONTRACT,
-                destination: 'GC23LNNVWW23LNNVWW23LNNVWW23LNNVWW23LNNVWW23LNNVWW23LKW6',
-                amount: '10',
-            }),
-        ).rejects.toBeInstanceOf(SorobanSimulationError);
+        await expect(prepareContractTokenTransfer(transfer('200'))).rejects.toBeInstanceOf(
+            SorobanSimulationError,
+        );
+    });
+
+    it('prices the transfer in the Soroban lane when no fee is given', async () => {
+        const getFeeStats = jest.spyOn(rpc.Server.prototype, 'getFeeStats').mockResolvedValue({
+            inclusionFee: { p70: '100' },
+            sorobanInclusionFee: { p70: '200' },
+        } as rpc.Api.GetFeeStatsResponse);
+        jest.spyOn(rpc.Server.prototype, 'simulateTransaction').mockResolvedValue({
+            error: 'HostError: Error(Contract, #1)',
+        } as rpc.Api.SimulateTransactionErrorResponse);
+
+        await expect(prepareContractTokenTransfer(transfer())).rejects.toBeInstanceOf(
+            SorobanSimulationError,
+        );
+        expect(getFeeStats).toHaveBeenCalled();
+    });
+
+    it('keeps the fee it was given, so signing rebuilds what composing quoted', async () => {
+        const getFeeStats = jest.spyOn(rpc.Server.prototype, 'getFeeStats');
+        jest.spyOn(rpc.Server.prototype, 'simulateTransaction').mockResolvedValue({
+            error: 'HostError: Error(Contract, #1)',
+        } as rpc.Api.SimulateTransactionErrorResponse);
+
+        await expect(prepareContractTokenTransfer(transfer('321'))).rejects.toBeInstanceOf(
+            SorobanSimulationError,
+        );
+        expect(getFeeStats).not.toHaveBeenCalled();
+    });
+
+    it('reports the fee it built with next to the resource fee the simulation added', async () => {
+        jest.spyOn(rpc.Server.prototype, 'getFeeStats').mockResolvedValue({
+            inclusionFee: { p70: '100' },
+            sorobanInclusionFee: { p70: '200' },
+        } as rpc.Api.GetFeeStatsResponse);
+        jest.spyOn(rpc.Server.prototype, 'simulateTransaction').mockResolvedValue(
+            {} as rpc.Api.SimulateTransactionSuccessResponse,
+        );
+        jest.spyOn(rpc, 'assembleTransaction').mockReturnValue({
+            build: () => ({ fee: '65736' }) as Transaction,
+        } as ReturnType<typeof rpc.assembleTransaction>);
+
+        await expect(prepareContractTokenTransfer(transfer())).resolves.toMatchObject({
+            inclusionFee: '200',
+            resourceFee: '65536',
+        });
     });
 });
 

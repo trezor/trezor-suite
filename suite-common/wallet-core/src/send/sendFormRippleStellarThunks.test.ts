@@ -7,6 +7,7 @@ import { composeRippleStellarTransactionFeeLevelsThunk } from './sendFormRippleS
 import { type BlockchainRootState } from '../blockchain/blockchainReducer';
 
 const mockPrepareContractTokenTransfer = jest.fn();
+const mockReadSorobanInclusionFee = jest.fn();
 const mockResolveStellarContractId = jest.fn();
 // The classic asset behind CONTRACT_TOKEN; any other contract id has no SAC id in these tests.
 const SAC_OF_CLASSIC_TOKEN = 'CCW67TSZV3SSS2HXMBQ5JFGCKJNXKZM7UQUWUZPUTHXSTZLEO7SJMI75';
@@ -17,6 +18,8 @@ jest.mock('@trezor/network-stellar/runtime', () => ({
         Promise.resolve({
             prepareContractTokenTransfer: (...args: unknown[]) =>
                 mockPrepareContractTokenTransfer(...args),
+            getStellarRpcServer: (url: string) => ({ url }),
+            readSorobanInclusionFee: (...args: unknown[]) => mockReadSorobanInclusionFee(...args),
             computeSorobanAssetContractId: (classicContract: string) => {
                 if (classicContract.startsWith('USDC-')) {
                     return { sorobanAssetContractId: SAC_OF_CLASSIC_TOKEN };
@@ -126,9 +129,12 @@ describe(composeRippleStellarTransactionFeeLevelsThunk.name, () => {
             },
         } as any);
         mockResolveStellarContractId.mockResolvedValue(undefined);
+        // The Soroban lane runs above the classic p70 `feeInfo` carries.
+        mockReadSorobanInclusionFee.mockResolvedValue('200');
         mockPrepareContractTokenTransfer.mockResolvedValue({
             transaction: { fee: '1234' },
-            resourceFee: '1134',
+            inclusionFee: '200',
+            resourceFee: '1034',
         });
     });
 
@@ -140,17 +146,21 @@ describe(composeRippleStellarTransactionFeeLevelsThunk.name, () => {
                 backendUrl: BACKEND_URL,
                 descriptor: account.descriptor,
                 sequence: '42',
-                inclusionFee: '100',
                 contract: CONTRACT_TOKEN,
                 destination: DESTINATION,
                 amount: '50000000',
                 isTestnet: false,
             }),
         );
+        // The lane is read where the envelope is built, so composing never passes one in.
+        expect(mockPrepareContractTokenTransfer).toHaveBeenCalledWith(
+            expect.not.objectContaining({ inclusionFee: expect.anything() }),
+        );
         expect(levels.normal).toMatchObject({
             type: 'final',
             fee: '1234',
-            feePerByte: '100',
+            // What the envelope was built with, so signing rebuilds what the user approved.
+            feePerByte: '200',
             totalSpent: '50000000',
             token: expect.objectContaining({ contract: CONTRACT_TOKEN }),
         });
@@ -179,7 +189,31 @@ describe(composeRippleStellarTransactionFeeLevelsThunk.name, () => {
         );
 
         expect(mockPrepareContractTokenTransfer).not.toHaveBeenCalled();
-        expect(levels.normal).toMatchObject({ type: 'nonfinal', fee: '100' });
+        // Still the Soroban lane, not the classic p70 the backend estimated.
+        expect(levels.normal).toMatchObject({ type: 'nonfinal', fee: '200' });
+    });
+
+    it('keeps a fee the user set themselves, rather than repricing it on the lane', async () => {
+        const levels = await compose(
+            formState({ selectedFee: 'custom', feePerUnit: '500' } as Partial<FormState>),
+        );
+
+        expect(levels.normal).toMatchObject({ feePerByte: '200' });
+        expect(levels.custom).toMatchObject({ feePerByte: '500' });
+    });
+
+    it('offers no cheaper custom level when the resource fee is what does not fit', async () => {
+        // Priced on the lane the transfer does not fit; a stroop less of inclusion fee would.
+        mockPrepareContractTokenTransfer.mockResolvedValue({
+            transaction: { fee: '10000000050' },
+            inclusionFee: '200',
+            resourceFee: '9999999850',
+        });
+
+        const levels = await compose(formState());
+
+        expect(levels.normal).toMatchObject({ type: 'error' });
+        expect(levels.custom).toBeUndefined();
     });
 
     it('leaves a classic asset to the inclusion fee alone', async () => {
