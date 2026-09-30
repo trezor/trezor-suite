@@ -69,16 +69,17 @@ const setOneFailurePerAttempt = (
     });
 };
 
-/** Convert quarantined failures/errors in memory to skipped for the CI result. */
+// Keep successful tests passed; only quarantine failures and errors.
 const applySuiteQuarantine = (
-    suite: any,
+    suite: JUnitTestSuite,
     projectName: string,
     quarantinedActions: Action[],
 ): void => {
     let quarantinedFailures = 0;
     let quarantinedErrors = 0;
+    let quarantinedCount = 0;
 
-    suite.testcase.forEach((tc: any) => {
+    suite.testcase?.forEach(tc => {
         const hasFailure = tc.failure !== undefined;
         const hasError = tc.error !== undefined;
         if (!hasFailure && !hasError) return;
@@ -101,9 +102,20 @@ const applySuiteQuarantine = (
             quarantinedErrors++;
         }
         tc.skipped = [{}];
+        quarantinedCount++;
+
+        // The Currents JUnit converter keeps only attempt 0 for skipped tests. Keep all retry
+        // artifacts on that attempt; their names still identify the original invocation.
+        tc.properties?.forEach(properties => {
+            properties.property?.forEach(property => {
+                property.$.name = property.$.name.replace(
+                    /^currents\.artifact\.attempt\.\d+\./,
+                    'currents.artifact.attempt.0.',
+                );
+            });
+        });
     });
 
-    const quarantinedCount = quarantinedFailures + quarantinedErrors;
     if (quarantinedCount === 0 || !suite.$) return;
 
     if (quarantinedFailures > 0) {
@@ -237,8 +249,8 @@ type ProcessJUnitReportParams = {
  * - Reshapes the failures into one <failure> per attempt so Currents shows each attempt separately.
  * - Attaches the Detox artifacts of every attempt and the instance attachments as Currents
  *   artifact properties.
- * - Writes the original outcomes and artifacts for Currents, then applies quarantine in memory
- *   when determining the CI result.
+ * - Marks quarantined failures/errors as skipped while keeping successful tests passed and all
+ *   their artifacts available to Currents.
  *
  * Returns true when there are still genuine (non-quarantined) failures remaining,
  * false when every failure was quarantined (or there were no failures).
@@ -300,12 +312,6 @@ export const processJUnitReport = async ({
             }
         });
 
-        recomputeAggregates(result.testsuites);
-
-        const newXml = new xml2js.Builder().buildObject(result);
-        fs.writeFileSync(reportPath, newXml);
-        console.log(`Processed and updated JUnit report for ${projectName}`);
-
         if (quarantinedActions.length > 0) {
             result.testsuites.testsuite.forEach((suite: any) => {
                 if (suite.testcase) {
@@ -313,6 +319,12 @@ export const processJUnitReport = async ({
                 }
             });
         }
+
+        recomputeAggregates(result.testsuites);
+
+        const newXml = new xml2js.Builder().buildObject(result);
+        fs.writeFileSync(reportPath, newXml);
+        console.log(`Processed and updated JUnit report for ${projectName}`);
 
         if (!grep && quarantinedActions.length === 0) return detoxFailed;
 
