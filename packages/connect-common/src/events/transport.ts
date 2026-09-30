@@ -37,12 +37,6 @@ export interface TransportRequestWebUSBDevice {
     payload?: undefined;
 }
 
-export interface TransportGetInfo {
-    id: string;
-    type: typeof TRANSPORT.GET_INFO;
-    payload?: undefined;
-}
-
 export type TransportEventMessage = TransportEvent & { event: typeof TRANSPORT_EVENT };
 
 export const createTransportMessage = <T extends TransportEvent['type']>(

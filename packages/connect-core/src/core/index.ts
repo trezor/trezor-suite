@@ -27,7 +27,6 @@ import type {
     CoreRequestMessage,
     DeviceIdentity,
     MethodInfo,
-    TransportInfo,
 } from '@trezor/connect-common';
 import { ERRORS } from '@trezor/connect-common/src/constants';
 import type { TrezorError } from '@trezor/connect-common/src/constants/errors';
@@ -834,12 +833,6 @@ export class Core extends EventEmitter {
                 }
                 break;
 
-            case TRANSPORT.GET_INFO:
-                this.sendCoreMessage(
-                    createResponseMessage(message.id, true, this.getActiveTransports()),
-                );
-                break;
-
             // messages from UI (popup/modal...)
             case UI_RESPONSE.RECEIVE_CONFIRMATION:
             case UI_RESPONSE.RECEIVE_PIN:
@@ -921,12 +914,6 @@ export class Core extends EventEmitter {
         this.removeAllListeners();
         this.abortController.abort();
         this.deviceList.dispose();
-    }
-
-    getActiveTransports(): TransportInfo[] | undefined {
-        if (this.deviceList.isConnected()) {
-            return this.deviceList.getActiveTransports();
-        }
     }
 
     async init(
