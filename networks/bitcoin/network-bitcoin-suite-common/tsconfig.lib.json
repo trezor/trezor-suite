@@ -3,6 +3,9 @@
     "compilerOptions": { "outDir": "./lib" },
     "include": ["./src"],
     "references": [
+        {
+            "path": "../../../packages/connect-common"
+        },
         { "path": "../network-bitcoin" },
         {
             "path": "../../network-module/network-module-suite-common-types"

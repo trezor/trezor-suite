@@ -43,7 +43,7 @@ import {
     prepareMessageSystemReducer,
 } from '@suite-common/message-system';
 import { validJws } from '@suite-common/message-system/src/__fixtures__/messageSystemActions';
-import { mockNetworksState } from '@suite-common/networks/mocks';
+import { mockNetworkModuleRepository, mockNetworksState } from '@suite-common/networks/mocks';
 import { type WithServices } from '@suite-common/redux-utils';
 import { mockActionType, mockReducer } from '@suite-common/redux-utils/mocks';
 import { mockSuiteSync } from '@suite-common/suite-sync/mocks';
@@ -387,6 +387,7 @@ const initStore = (state: InitThunkState) => {
             getTokenDefinitionsEnabledNetworks: asGetter(
                 () => state.wallet.settings.enabledNetworks,
             ),
+            networks: { networkModuleRepository: mockNetworkModuleRepository() },
             suiteRouterHistory,
             lockDevice: (isLocked: boolean): void => {
                 store.dispatch(lockDevice(isLocked));

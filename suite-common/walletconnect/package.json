@@ -8,12 +8,12 @@
     "scripts": {
         "depcheck": "yarn g:depcheck",
         "type-check": "yarn g:tsc --build",
-        "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'"
+        "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'",
+        "test:unit": "yarn g:jest"
     },
     "dependencies": {
         "@reduxjs/toolkit": "2.12.0",
         "@reown/walletkit": "^1.5.6",
-        "@scure/base": "^2.0.0",
         "@suite-common/analytics": "workspace:*",
         "@suite-common/connect-popup": "workspace:*",
         "@suite-common/device": "workspace:*",
@@ -24,19 +24,19 @@
         "@suite-common/suite-utils": "workspace:*",
         "@suite-common/toast-notifications": "workspace:*",
         "@suite-common/wallet-config": "workspace:*",
-        "@suite-common/wallet-constants": "workspace:*",
         "@suite-common/wallet-core": "workspace:*",
         "@suite-common/wallet-types": "workspace:*",
         "@suite-common/wallet-utils": "workspace:*",
         "@trezor/connect": "workspace:*",
-        "@trezor/connect-common": "workspace:*",
-        "@trezor/crypto-utils": "workspace:*",
         "@trezor/env-utils": "workspace:*",
-        "@trezor/network-stellar": "workspace:*",
-        "@trezor/type-utils": "workspace:^",
-        "@trezor/utils": "workspace:*",
+        "@trezor/network-module-suite-common-types": "workspace:*",
         "@walletconnect/core": "^2.23.10",
         "@walletconnect/types": "^2.23.10",
         "@walletconnect/utils": "^2.23.10"
+    },
+    "devDependencies": {
+        "@suite-common/dependency-injection": "workspace:*",
+        "@suite-common/message-system": "workspace:*",
+        "@trezor/analytics-uploader": "workspace:*"
     }
 }

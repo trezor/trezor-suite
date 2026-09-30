@@ -18,12 +18,12 @@ export const createNetworkModulesCompositionRoot = (
     //    1. register it here to have the runtime object for DI
     //    2. and in the `NetworkModules` to have static typings right
     const networkModules: NetworkModules = {
-        bitcoin: createBitcoinSuiteCommonNetworkModule(),
+        bitcoin: createBitcoinSuiteCommonNetworkModule(deps),
         ethereum: createEthereumSuiteCommonNetworkModule(deps),
         ripple: createRippleSuiteCommonNetworkModule(),
         cardano: createCardanoSuiteCommonNetworkModule(),
-        solana: createSolanaSuiteCommonNetworkModule(),
-        stellar: createStellarSuiteCommonNetworkModule(),
+        solana: createSolanaSuiteCommonNetworkModule(deps),
+        stellar: createStellarSuiteCommonNetworkModule(deps),
         tron: createTronSuiteCommonNetworkModule(),
     };
 

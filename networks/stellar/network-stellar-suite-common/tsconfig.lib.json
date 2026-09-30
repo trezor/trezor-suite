@@ -4,6 +4,9 @@
     "include": ["./src"],
     "references": [
         {
+            "path": "../../../packages/connect-common"
+        },
+        {
             "path": "../../network-module/network-module-suite-common-types"
         },
         { "path": "../network-stellar" }

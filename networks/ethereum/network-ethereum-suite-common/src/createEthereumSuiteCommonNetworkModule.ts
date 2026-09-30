@@ -10,8 +10,13 @@ import {
     createEthereumNamedAddressResolverCompositionRoot,
 } from './namedAddress/createEthereumNamedAddressResolverCompositionRoot';
 import { getNetworkConfig } from './networkConfig';
+import {
+    type EthereumWalletConnectAdapterDeps,
+    createEthereumWalletConnectAdapter,
+} from './walletConnect/createEthereumWalletConnectAdapter';
 
-type EthereumSuiteCommonNetworkModuleDeps = EthereumNamedAddressResolverCompositionRootDeps;
+type EthereumSuiteCommonNetworkModuleDeps = EthereumNamedAddressResolverCompositionRootDeps &
+    EthereumWalletConnectAdapterDeps;
 
 type EthereumSuiteCommonNetworkModule = SuiteCommonNetworkModule;
 
@@ -24,6 +29,7 @@ export const createEthereumSuiteCommonNetworkModule = (
     return createNetworkModule(supportedEthereumNetworks, {
         addressValidator: ethereumValidator,
         namedAddressResolver: ethereumNamedAddressResolver,
+        walletConnectAdapter: createEthereumWalletConnectAdapter(deps),
         getNetworkConfig,
     });
 };
