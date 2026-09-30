@@ -83,6 +83,43 @@ def run(seed: int, shared: int, steps: int = 120) -> dict:
     return {"seed": seed, "shared_prefix_bytes": shared, "steps": out}
 
 
+def wm_vectors() -> dict:
+    """The WM's signatures, from the firmware tests' MockWM and ward_keys -- the dev WM must match."""
+    fw = os.environ.get("TREZOR_FIRMWARE", "../trezor-firmware")
+    sys.path.insert(0, fw)
+    from tests import ward_keys as wk  # noqa: E402
+    from tests.ward_wm import DEBUG_WM_SEED, MockWM  # noqa: E402
+
+    wm = MockWM()
+    k_sig = hashlib.sha256(b"ward-core test K_sig").digest()
+    from trezorlib import _ed25519  # noqa: E402
+
+    ward_id = _ed25519.publickey_unsafe(k_sig)
+    r1, r2 = hashlib.sha256(b"r1").digest(), hashlib.sha256(b"r2").digest()
+    n1, n2, rn = bytes([1]) * 32, bytes([2]) * 32, bytes([9]) * 32
+    attest = {
+        "nonce": H(rn), "ward_id": H(ward_id), "from_counter": 1, "from_root": H(r1), "from_head_nonce": H(n1),
+        "to_counter": 2, "to_root": H(r2), "to_head_nonce": H(n2), "timestamp": 1700000002,
+    }
+    attest["signature"] = H(wm.sign(ward_id, rn, 1, r1, n1, 2, r2, n2, 1700000002))
+    genesis = dict(attest, from_counter=0, from_root=None, to_counter=0, to_root=None, to_head_nonce=H(n1))
+    genesis["signature"] = H(wm.sign(ward_id, rn, 0, None, n1, 0, None, n1, 1700000002))
+    return {
+        "debug_seed": H(DEBUG_WM_SEED),
+        "debug_pubkey": H(wm.pubkey),
+        "k_sig": H(k_sig),
+        "ward_id": H(ward_id),
+        "attest": attest,
+        "attest_genesis": genesis,
+        "wm_sig_commit": {"from_counter": 1, "from_root": H(r1), "to_counter": 2, "to_root": H(r2), "head_nonce": H(n1),
+                          "sig": H(wk.wm_sig(k_sig, ward_id, 1, r1, 2, r2, n1))},
+        "wm_sig_revert": {"from_counter": 2, "from_root": H(r2), "to_counter": 3, "to_root": H(r1), "head_nonce": H(n2),
+                          "sig": H(wk.wm_sig(k_sig, ward_id, 2, r2, 3, r1, n2, wk.TAG_WM_REVERT))},
+        "head_init": {"counter": 0, "root": None, "sig": H(wk.head_init_sig(k_sig, ward_id, 0, None))},
+        "empty_root": H(wk._root_or_empty(None)) if hasattr(wk, "_root_or_empty") else None,
+    }
+
+
 def main() -> None:
     rng = random.Random(1)
     commits = []
@@ -132,6 +169,7 @@ def main() -> None:
                 "fork_point": [{"a": [3, H(R("r3a"))], "b": [4, H(R("r4"))], "k": log.fork_point((3, R("r3a")), (4, R("r4")))},
                                {"a": [3, H(R("zz"))], "b": [4, H(R("r4"))], "k": log.fork_point((3, R("zz")), (4, R("r4")))}]},
     }
+    vectors["wm"] = wm_vectors()
     path = os.path.join(os.path.dirname(__file__), "../src/__tests__/fixtures/vectors.json")
     with open(path, "w") as f:
         json.dump(vectors, f, indent=1)

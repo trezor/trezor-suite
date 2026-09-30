@@ -7246,5 +7246,57 @@
                 "k": null
             }
         ]
+    },
+    "wm": {
+        "debug_seed": "41555448444220514d204445425547204b45592053454544207631202e2e2e2e",
+        "debug_pubkey": "17b4c21f6b55935405d5a48ee3f2f29f42d78c9a650d8f686a705b21ef62b0b6",
+        "k_sig": "fdd6a61e88a062a06089cff78e0c9912d33039846f8cc074682864c59bbf8bd2",
+        "ward_id": "475784f8692bd0bb95d2c2c6ccae7c90b7eaa31e8b3f85690085c411ea22bbb8",
+        "attest": {
+            "nonce": "0909090909090909090909090909090909090909090909090909090909090909",
+            "ward_id": "475784f8692bd0bb95d2c2c6ccae7c90b7eaa31e8b3f85690085c411ea22bbb8",
+            "from_counter": 1,
+            "from_root": "82f3e9c695dc6b8d1b11818d5701919e286de8d47f7c3eb3100c485f79e57828",
+            "from_head_nonce": "0101010101010101010101010101010101010101010101010101010101010101",
+            "to_counter": 2,
+            "to_root": "db77fd01af957221a4989b64b3770a83a3c56068405b9f0e9408feae57fd17e4",
+            "to_head_nonce": "0202020202020202020202020202020202020202020202020202020202020202",
+            "timestamp": 1700000002,
+            "signature": "0db216b3f2dc079033e5eed7c9a314556a987d1b3a014b35c4fd97689199e9ae06ac19c395f1f34a9670260eec471e798434665a0b34be3c0cc465bb5c03f608"
+        },
+        "attest_genesis": {
+            "nonce": "0909090909090909090909090909090909090909090909090909090909090909",
+            "ward_id": "475784f8692bd0bb95d2c2c6ccae7c90b7eaa31e8b3f85690085c411ea22bbb8",
+            "from_counter": 0,
+            "from_root": null,
+            "from_head_nonce": "0101010101010101010101010101010101010101010101010101010101010101",
+            "to_counter": 0,
+            "to_root": null,
+            "to_head_nonce": "0101010101010101010101010101010101010101010101010101010101010101",
+            "timestamp": 1700000002,
+            "signature": "9a7830e253b38f1b24215880df2866abb74f5fe144c1bd84e41fa98475ca6d374c7ee52d506e15e3ef2683bdc536882713dfb8d8164b35a239be3dfa461e820c"
+        },
+        "wm_sig_commit": {
+            "from_counter": 1,
+            "from_root": "82f3e9c695dc6b8d1b11818d5701919e286de8d47f7c3eb3100c485f79e57828",
+            "to_counter": 2,
+            "to_root": "db77fd01af957221a4989b64b3770a83a3c56068405b9f0e9408feae57fd17e4",
+            "head_nonce": "0101010101010101010101010101010101010101010101010101010101010101",
+            "sig": "1e669587b2dc613ab3806ba21f2e2bddc1e2ae1f3dd9844a7856447a3ffa4548b28aeb4ff368d229ffcb1314d5595562a57ff51d5a6a95481cb1ef50df8d2803"
+        },
+        "wm_sig_revert": {
+            "from_counter": 2,
+            "from_root": "db77fd01af957221a4989b64b3770a83a3c56068405b9f0e9408feae57fd17e4",
+            "to_counter": 3,
+            "to_root": "82f3e9c695dc6b8d1b11818d5701919e286de8d47f7c3eb3100c485f79e57828",
+            "head_nonce": "0202020202020202020202020202020202020202020202020202020202020202",
+            "sig": "8d38e8f32c3d991889f499a3d45d9dc8ce2329ba9600715ed7be9b3e9f727ea9a3e7f9cd52538895dfe49cd0f7d3b5119fe208a7aec62464e7246ebdb5d4630c"
+        },
+        "head_init": {
+            "counter": 0,
+            "root": null,
+            "sig": "5a4ebbd26ddefb58ea32175d192de751ad4505183f4a2dbe4d104792b612d859d82770a9d35925ae09cfa934d9f3f3ae819bac6c562f353a21e799cda1605504"
+        },
+        "empty_root": "084fed08b978af4d7d196a7446a86b58009e636b611db16211b65a9aadff29c5"
     }
 }
