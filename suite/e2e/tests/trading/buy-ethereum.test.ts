@@ -1,8 +1,11 @@
+import type { BuyTradeQuoteRequest } from 'invity-api';
+
 import { getCryptoId } from '@suite-common/trading';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { TestStream } from '@trezor/e2e-utils';
 import { localizeNumber } from '@trezor/utils';
 
+import { tradeEndpoint } from '../../fixtures/trading';
 import { expect, test } from '../../support/fixtures';
 import { createTestAnnotation } from '../../support/reporters/annotations';
 
@@ -30,6 +33,7 @@ test.describe('Trading - Buy Ethereum', { tag: ['@T3W1', '@T3T1'] }, () => {
         async ({ page, walletPage, tradingPage, tradingMock, tradingResponses }) => {
             let receiveAmount: string;
             let providerName: string;
+            const quotesRequest = page.waitForRequest(tradeEndpoint.buyQuotes);
 
             await test.step('Request to buy Ethereum', async () => {
                 await walletPage.openTradingGlobalButton.click();
@@ -44,6 +48,13 @@ test.describe('Trading - Buy Ethereum', { tag: ['@T3W1', '@T3T1'] }, () => {
                         await tradingPage.receiveAccount.activateNetworkForReceiveAccount(0);
                     },
                 });
+            });
+
+            await test.step('Fiat entry requests quotes in fiat and refills crypto', async () => {
+                const request: BuyTradeQuoteRequest = (await quotesRequest).postDataJSON();
+                expect(request.wantCrypto).toBe(false);
+                expect(request.fiatStringAmount).toBe(fiatAmount);
+                await expect(tradingPage.inputs.cryptoAmount).toHaveValue(/[1-9]/);
             });
 
             await test.step('Continue to preview and confirm the trade', async () => {
