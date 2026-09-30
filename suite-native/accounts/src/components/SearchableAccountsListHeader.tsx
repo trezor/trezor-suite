@@ -16,7 +16,7 @@ import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 import { AddAccountButton } from './AddAccountsButton';
 import { FilterCountBadge } from './FilterCountBadge';
 
-type SearchableAccountsListHeaderProps = {
+export type SearchableAccountsListHeaderProps = {
     title: ReactNode;
     onSearchInputChange: (value: string) => void;
     isSearchActive: boolean;
