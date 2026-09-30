@@ -15,6 +15,7 @@
         "@noble/hashes": "^2.0.1",
         "@scure/base": "^2.0.0",
         "@trezor/calldata": "workspace:*",
+        "@trezor/connect-common": "workspace:*",
         "@trezor/device-utils": "workspace:*",
         "@trezor/network-module-suite-common-types": "workspace:*",
         "@trezor/network-tron": "workspace:*",

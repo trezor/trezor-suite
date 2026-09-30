@@ -5,6 +5,9 @@
     "references": [
         { "path": "../../../packages/calldata" },
         {
+            "path": "../../../packages/connect-common"
+        },
+        {
             "path": "../../../packages/device-utils"
         },
         {
