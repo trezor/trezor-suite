@@ -84,7 +84,12 @@ describe(selectDeviceModelWithFlagshipFallback.name, () => {
 });
 
 describe(selectDeviceInstanceForConnectDevice.name, () => {
-    const standardWallet = mockSuiteDevice({ id: 'device-a', path: 'path-a', instance: 0 });
+    const standardWallet = mockSuiteDevice({
+        id: 'device-a',
+        path: 'path-a',
+        instance: 0,
+        state: { staticSessionId: 'standard@device-a:0' },
+    });
     const hiddenWallet = mockSuiteDevice({
         id: 'device-a',
         path: 'path-a',
@@ -98,29 +103,7 @@ describe(selectDeviceInstanceForConnectDevice.name, () => {
         device: { ...deviceReducerInitialState, devices, selectedDevice },
     });
 
-    it('resolves the instance authorized with the connect device static session id', () => {
-        const connectDevice = mockConnectDevice({
-            id: 'device-a',
-            path: 'path-a',
-            state: { staticSessionId: 'hidden@device-a:1' },
-        });
-
-        expect(selectDeviceInstanceForConnectDevice(createState(), connectDevice)).toBe(
-            hiddenWallet,
-        );
-    });
-
-    it('returns undefined when no instance is authorized with the static session id', () => {
-        const connectDevice = mockConnectDevice({
-            id: 'device-a',
-            path: 'path-a',
-            state: { staticSessionId: 'unknown@device-a:2' },
-        });
-
-        expect(selectDeviceInstanceForConnectDevice(createState(), connectDevice)).toBeUndefined();
-    });
-
-    it('prefers the selected instance of the physical device when the session is unknown', () => {
+    it('prefers the selected instance of the physical device', () => {
         const connectDevice = mockConnectDevice({ id: 'device-a', path: 'path-a' });
 
         expect(selectDeviceInstanceForConnectDevice(createState(hiddenWallet), connectDevice)).toBe(
@@ -128,12 +111,47 @@ describe(selectDeviceInstanceForConnectDevice.name, () => {
         );
     });
 
-    it('resolves the first instance of the physical device when another device is selected', () => {
-        const connectDevice = mockConnectDevice({ id: 'device-a', path: 'path-a' });
+    it('keeps the selected hidden wallet when the connect device reports the standard wallet session', () => {
+        const connectDevice = mockConnectDevice({
+            id: 'device-a',
+            path: 'path-a',
+            state: { staticSessionId: 'standard@device-a:0' },
+        });
+
+        expect(selectDeviceInstanceForConnectDevice(createState(hiddenWallet), connectDevice)).toBe(
+            hiddenWallet,
+        );
+    });
+
+    it('resolves the instance by static session id when another device is selected', () => {
+        const connectDevice = mockConnectDevice({
+            id: 'device-a',
+            path: 'path-a',
+            state: { staticSessionId: 'hidden@device-a:1' },
+        });
+
+        expect(selectDeviceInstanceForConnectDevice(createState(otherDevice), connectDevice)).toBe(
+            hiddenWallet,
+        );
+    });
+
+    it('resolves the first instance when another device is selected and the session is unknown', () => {
+        const connectDevice = mockConnectDevice({
+            id: 'device-a',
+            path: 'path-a',
+            state: { staticSessionId: 'unknown@device-a:2' },
+        });
 
         expect(selectDeviceInstanceForConnectDevice(createState(otherDevice), connectDevice)).toBe(
             standardWallet,
         );
+    });
+
+    it('resolves the first instance when nothing is selected', () => {
+        const state = { device: { ...deviceReducerInitialState, devices } };
+        const connectDevice = mockConnectDevice({ id: 'device-a', path: 'path-a' });
+
+        expect(selectDeviceInstanceForConnectDevice(state, connectDevice)).toBe(standardWallet);
     });
 
     it('matches a device without id by path and mode', () => {

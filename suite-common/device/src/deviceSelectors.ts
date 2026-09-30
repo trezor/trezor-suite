@@ -292,26 +292,35 @@ const isInstanceOfConnectDevice = (device: AcquiredDevice, connectDevice: Device
         : device.path === connectDevice.path && device.mode === connectDevice.mode;
 
 /**
- * Resolves the stored device instance a connect event belongs to. Matches by static session id
- * when the connect device carries one; otherwise matches the physical device and prefers its
- * selected instance. Returns `undefined` when no stored instance matches.
+ * Resolves the stored device instance a connect event belongs to. Matches the physical device and
+ * prefers its selected instance. The static session id of the connect device only decides between
+ * the instances when the selected device is another physical device, because a call made without
+ * an instance reports the session id of instance 0 regardless of the wallet the user operates.
+ * Returns `undefined` when no stored instance matches.
  */
 export const selectDeviceInstanceForConnectDevice = (
     state: DeviceRootState,
     connectDevice: Device,
 ): AcquiredDevice | undefined => {
-    const staticSessionId = connectDevice.state?.staticSessionId;
-    if (staticSessionId) {
-        return selectDeviceByStaticSessionId(state, staticSessionId);
-    }
-
     const instances = state.device.devices.filter(
         (device): device is AcquiredDevice =>
             isDeviceAcquired(device) && isInstanceOfConnectDevice(device, connectDevice),
     );
     const selectedDevice = selectSelectedDevice(state);
+    const selectedInstance = instances.find(instance =>
+        isSelectedInstance(selectedDevice, instance),
+    );
+    if (selectedInstance) {
+        return selectedInstance;
+    }
 
-    return instances.find(instance => isSelectedInstance(selectedDevice, instance)) ?? instances[0];
+    const staticSessionId = connectDevice.state?.staticSessionId;
+    const sessionInstance = instances.find(
+        instance =>
+            staticSessionId !== undefined && instance.state?.staticSessionId === staticSessionId,
+    );
+
+    return sessionInstance ?? instances[0];
 };
 
 export const selectDeviceUnavailableCapabilities = createMemoizedSelector(
