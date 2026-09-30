@@ -133,7 +133,10 @@ jobs:
           PERF_RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
           # Only a run on the base branch seals the baseline later runs are compared against.
           PERF_SEAL_BASELINE: ${{ github.event_name != 'pull_request' }}
-        run: yarn workspace @suite-native/app perf:publish
+        # Invoked directly rather than through a script in the app's package.json: that scripts
+        # block is an Expo fingerprint input, and an entry of ours there costs every run on this
+        # branch the cached-APK path and a ~50 minute native rebuild.
+        run: yarn workspace @suite-native/app exec tsx e2e/performance/publish.ts
 
       - name: Configure AWS credentials
         if: ${{ hashFiles('perf-upload/**') != '' }}
