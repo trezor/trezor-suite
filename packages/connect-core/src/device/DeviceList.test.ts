@@ -42,7 +42,9 @@ describe('DeviceList', () => {
             createLogger: noopCreateLogger,
         });
         eventsSpy = jest.fn();
-        list.on('transport-start', ({ apiType }) => eventsSpy('transport-start', apiType));
+        list.on('transport-start', ({ apiType, initialDeviceCount }) =>
+            eventsSpy('transport-start', apiType, initialDeviceCount),
+        );
         list.on('transport-error', ({ apiType }) => eventsSpy('transport-error', apiType));
         (
             [
@@ -186,7 +188,7 @@ describe('DeviceList', () => {
         // note: acquire - release - connect should be ok.
         // acquire - deviceList._takeAndCreateDevice start (run -> rurInner -> getFeatures -> release) -> deviceList._takeAndCreateDevice end => emit DEVICE.CONNECT
         expect(eventsSpy.mock.calls).toEqual([
-            ['transport-start', 'usb', undefined],
+            ['transport-start', 'usb', 3],
             ['device-connect', 'usb', '1'],
             ['device-connect', 'usb', '2'],
             ['device-connect', 'usb', '3'],
@@ -218,8 +220,8 @@ describe('DeviceList', () => {
         await list.pendingHandshakes();
 
         expect(eventsSpy.mock.calls).toEqual([
-            ['transport-start', 'usb', undefined],
-            ['transport-start', 'usb2', undefined],
+            ['transport-start', 'usb', 2],
+            ['transport-start', 'usb2', 3],
             ['device-connect', 'usb', '1'],
             ['device-connect', 'usb', '2'],
             ['device-connect', 'usb2', '1'],
@@ -250,7 +252,7 @@ describe('DeviceList', () => {
         await waitForNthEventOfType(list, 'device-connect', 3);
 
         expect(eventsSpy.mock.calls).toEqual([
-            ['transport-start', 'usb', undefined],
+            ['transport-start', 'usb', 0],
             ['device-connect', 'usb', '1'],
             ['device-connect', 'usb', '3'],
             ['device-connect', 'usb', '4'],

@@ -167,8 +167,8 @@ const waitForTransport = async ({ waitForDevice }: { waitForDevice: boolean }) =
     const transportPromise = createDeferred<boolean>();
     const devicePromise = createDeferred();
 
-    // TODO device should be awaited only when it's seen in the first enumerate call
-    TrezorConnect.on('transport-start', e => transportPromise.resolve(true));
+    // correct would be awaiting all the expected devices, but this may be enough
+    TrezorConnect.on('transport-start', e => transportPromise.resolve(!!e.initialDeviceCount));
     TrezorConnect.on('transport-error', () => transportPromise.resolve(false));
     TrezorConnect.on('device-connect', () => devicePromise.resolve());
     TrezorConnect.on('device-connect_unacquired', () => devicePromise.resolve());

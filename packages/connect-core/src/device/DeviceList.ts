@@ -63,10 +63,11 @@ const createAuthPenaltyManager = (priority = 2) => {
     return { get, add, remove };
 };
 
-const getTransportInfo = (transport: Transport) => ({
+const getTransportInfo = (transport: Transport, descriptors?: Descriptor[]): TransportInfo => ({
     apiType: transport.apiType,
     type: transport.name,
     version: transport.version,
+    initialDeviceCount: descriptors?.length,
 });
 
 interface DeviceListEvents {
@@ -264,7 +265,7 @@ export class DeviceList extends TypedEmitter<DeviceListEvents> implements IDevic
         transport.on(TRANSPORT.TREZOR_PUSH_NOTIFICATION, this.onPushNotification.bind(this));
         transport.on(TRANSPORT.BATTERY_LEVEL, this.onBatteryLevel.bind(this));
 
-        this.emit(TRANSPORT.START, getTransportInfo(transport)); // TODO emit descriptors
+        this.emit(TRANSPORT.START, getTransportInfo(transport, descriptors));
 
         transport.handleDescriptorsChange(descriptors);
         transport.listen();
