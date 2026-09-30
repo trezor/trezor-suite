@@ -11,11 +11,13 @@ import { PaymentMethods, PercentageOfBalanceParams } from '../../types';
 export class TradingFormInputs {
     readonly fiatAmount: Locator;
     readonly cryptoAmount: Locator;
+    readonly baseCurrencyAmount: Locator;
     readonly currencySelect: Locator;
     readonly currencyOption = (currency: BaseCurrencyCode) =>
         this.page.getByTestId(`@trading/form/currency-picker/option/${currency}`);
     readonly fractionButtons: Locator;
     readonly youPayError: Locator;
+    readonly youGetError: Locator;
     readonly youPayAssetSymbol: Locator;
     readonly youGetAssetSymbol: Locator;
     readonly receiveAmount: Locator;
@@ -35,9 +37,11 @@ export class TradingFormInputs {
     constructor(private readonly page: Page) {
         this.fiatAmount = this.page.getByTestId('@trading/form/fiat-input');
         this.cryptoAmount = this.page.getByTestId('@trading/form/crypto-input');
+        this.baseCurrencyAmount = this.page.getByTestId('@trading/form/base-currency-input');
         this.currencySelect = this.page.getByTestId('@trading/form/currency-picker/input');
         this.fractionButtons = this.page.getByTestId('@trading/form/fraction-buttons');
         this.youPayError = this.page.getByTestId('@trading/form/you-pay/error');
+        this.youGetError = this.page.getByTestId('@trading/form/you-get/error');
         this.youPayAssetSymbol = this.page
             .getByTestId('@trading/form/you-pay')
             .getByTestId('@asset-picker/display-symbol');

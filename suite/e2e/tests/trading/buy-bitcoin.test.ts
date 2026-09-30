@@ -1,7 +1,10 @@
+import type { BuyTradeQuoteRequest } from 'invity-api';
+
 import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { TestStream } from '@trezor/e2e-utils';
 import { localizeNumber } from '@trezor/utils';
 
+import { tradeEndpoint } from '../../fixtures/trading';
 import { expect, test } from '../../support/fixtures';
 import { createTestAnnotation } from '../../support/reporters/annotations';
 
@@ -12,6 +15,7 @@ const fiatCurrency = 'CZK';
 const formattedFiatAmount = `${fiatCurrency} ${localizeNumber(fiatAmount, 'en-US', 2)}`;
 const detailFiatAmount = localizeNumber(fiatAmount, 'en-US');
 const receiveAccountLabel = 'Bitcoin #2';
+const baseCurrencyAmount = '10';
 
 test.describe('Trading - Buy BTC', { tag: ['@T3W1', '@T3T1'] }, () => {
     test.use({ deviceSetup: { mnemonic: 'mnemonic_academic', passphrase_protection: true } });
@@ -67,6 +71,27 @@ test.describe('Trading - Buy BTC', { tag: ['@T3W1', '@T3T1'] }, () => {
         'Buy Bitcoin from best offer',
         { annotation: createTestAnnotation({ stream: TestStream.Trade }) },
         async ({ page, tradingPage, tradingMock, tradingResponses }) => {
+            await test.step('Base currency amount converts to the crypto the buy requests', async () => {
+                await page.expectReduxObjectNotToBeEmpty('wallet.trading.buy.buyInfo', {
+                    timeout: 30_000,
+                });
+                const quotesRequest = page.waitForRequest(tradeEndpoint.buyQuotes);
+                await tradingPage.inputs.baseCurrencyAmount.fill(baseCurrencyAmount);
+
+                const request: BuyTradeQuoteRequest = (await quotesRequest).postDataJSON();
+                await expect(tradingPage.inputs.cryptoAmount).toHaveValue(/[1-9]/);
+                const cryptoAmount = await tradingPage.inputs.cryptoAmount.inputValue();
+                expect(request.wantCrypto).toBe(true);
+                expect(request.cryptoStringAmount).toBe(cryptoAmount.replace(/,/g, ''));
+                await expect(tradingPage.inputs.baseCurrencyAmount).toHaveValue(baseCurrencyAmount);
+
+                await tradingPage.inputs.baseCurrencyAmount.clear();
+                await expect(tradingPage.inputs.cryptoAmount).toHaveValue('');
+                await expect(tradingPage.inputs.fiatAmount).toHaveValue('');
+            });
+
+            const quotesRequest = page.waitForRequest(tradeEndpoint.buyQuotes);
+
             await test.step('Fill in a buy request', async () => {
                 await tradingPage.fillBuyForm({
                     amount: fiatAmount,
@@ -77,6 +102,13 @@ test.describe('Trading - Buy BTC', { tag: ['@T3W1', '@T3T1'] }, () => {
                         });
                     },
                 });
+            });
+
+            await test.step('Fiat entry requests quotes in fiat and refills crypto', async () => {
+                const request: BuyTradeQuoteRequest = (await quotesRequest).postDataJSON();
+                expect(request.wantCrypto).toBe(false);
+                expect(request.fiatStringAmount).toBe(fiatAmount);
+                await expect(tradingPage.inputs.cryptoAmount).toHaveValue(/[1-9]/);
             });
 
             let receiveAmount: string;
