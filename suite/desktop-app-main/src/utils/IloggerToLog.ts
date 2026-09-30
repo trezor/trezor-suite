@@ -1,5 +1,7 @@
 import { type Log, type LogMessage as UtilsLogMessage } from '@trezor/utils';
 
+import { type LogLevel, logLevels } from '../libs/logger';
+
 const stringifyArgs = (args: unknown[]): string =>
     args
         .map(arg => {
@@ -25,16 +27,29 @@ const stringifyArgs = (args: unknown[]): string =>
         })
         .join(' ');
 
+/**
+ * ILogger applies the level filter itself, but only once it already has the message. Checking it
+ * here as well keeps us from serializing arguments of a message that is going to be dropped anyway,
+ * which matters on the hot protobuf path (Sending/Received is debug, production default is info).
+ */
+const forward =
+    (iLogger: ILogger, serviceName: string, level: Exclude<LogLevel, 'mute'>) =>
+    (...args: unknown[]) => {
+        if (logLevels.indexOf(iLogger.level) < logLevels.indexOf(level)) return;
+
+        iLogger[level](serviceName, stringifyArgs(args));
+    };
+
 /** take an instance of ILogger and return mimicked instance of Log while keeping more or less the same behavior  */
 export const convertILoggerToLog = (
     iLogger: ILogger,
     { serviceName }: { serviceName: string },
 ): Log => ({
-    log: (...args: unknown[]) => iLogger.info(serviceName, stringifyArgs(args)),
-    info: (...args: unknown[]) => iLogger.info(serviceName, stringifyArgs(args)),
-    debug: (...args: unknown[]) => iLogger.debug(serviceName, stringifyArgs(args)),
-    warn: (...args: unknown[]) => iLogger.warn(serviceName, stringifyArgs(args)),
-    error: (...args: unknown[]) => iLogger.error(serviceName, stringifyArgs(args)),
+    log: forward(iLogger, serviceName, 'info'),
+    info: forward(iLogger, serviceName, 'info'),
+    debug: forward(iLogger, serviceName, 'debug'),
+    warn: forward(iLogger, serviceName, 'warn'),
+    error: forward(iLogger, serviceName, 'error'),
     prefix: '',
     messages: [],
     enabled: true,

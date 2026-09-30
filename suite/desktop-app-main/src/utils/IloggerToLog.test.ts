@@ -1,12 +1,13 @@
 import { convertILoggerToLog } from './IloggerToLog';
+import { type LogLevel } from '../libs/logger';
 
-const createILoggerMock = () =>
+const createILoggerMock = (level: LogLevel = 'debug') =>
     ({
         error: jest.fn(),
         warn: jest.fn(),
         info: jest.fn(),
         debug: jest.fn(),
-        level: 'debug',
+        level,
     }) as unknown as ILogger & { debug: jest.Mock; error: jest.Mock };
 
 describe('convertILoggerToLog', () => {
@@ -41,6 +42,16 @@ describe('convertILoggerToLog', () => {
         expect(iLogger.error.mock.calls[1][1]).toBe(
             'onCall {"cause":"Error: device disconnected"}',
         );
+    });
+
+    it('does not serialize arguments of a message dropped by the level filter', () => {
+        const iLogger = createILoggerMock('info');
+        const arg = { toJSON: jest.fn() };
+
+        convertILoggerToLog(iLogger, { serviceName: 'svc' }).debug('Sending', arg);
+
+        expect(iLogger.debug).not.toHaveBeenCalled();
+        expect(arg.toJSON).not.toHaveBeenCalled();
     });
 
     it('does not throw on circular references', () => {

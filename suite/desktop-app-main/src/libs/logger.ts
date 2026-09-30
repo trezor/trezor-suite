@@ -12,7 +12,7 @@ import { isArrayMember } from '@trezor/utils';
 import { getBuildInfo, getComputerInfo } from './info';
 import { getSwitchValue, hasSwitch } from './process-switches';
 
-const logLevels = ['mute', 'error', 'warn', 'info', 'debug'] as const;
+export const logLevels = ['mute', 'error', 'warn', 'info', 'debug'] as const;
 
 export type LogLevel = (typeof logLevels)[number];
 const isLogLevel = (level: string): level is LogLevel => isArrayMember(level, logLevels);
