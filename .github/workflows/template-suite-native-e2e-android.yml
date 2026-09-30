@@ -295,6 +295,20 @@ jobs:
           if-no-files-found: ignore
           retention-days: 14
 
+      # TEMPORARY, for the benchmark branch only: the device logs are the app-to-test channel the
+      # performance samples travel on, and they are the one thing CI has never kept. Uploaded here
+      # so a run can be read back instead of reasoned about.
+      - name: "Store device logs"
+        if: always()
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
+        with:
+          name: android-device-logs-${{ matrix.TEST_GROUP }}
+          path: |
+            suite-native/app/artifacts/**/device.log
+            suite-native/app/artifacts/**/*.startup.log
+          if-no-files-found: ignore
+          retention-days: 3
+
       - name: "Store emulator crash reports"
         if: ${{ !cancelled() }}
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
