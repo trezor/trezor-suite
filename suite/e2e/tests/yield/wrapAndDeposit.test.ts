@@ -223,7 +223,7 @@ test.describe('eth yield deposit with wrap', { tag: ['@webOnly', '@T3W1', '@T3T1
                     },
                 });
                 await device.pressYes();
-                await expect(devicePrompt.cryptoAmountWithSymbolOf('amount-amount')).toHaveText(
+                await expect(devicePrompt.cryptoAmountWithSymbolOf('approve-amount')).toHaveText(
                     `${DEPOSIT_AMOUNT} WETH`,
                 );
                 await expect(device).toShowOnDisplay({
