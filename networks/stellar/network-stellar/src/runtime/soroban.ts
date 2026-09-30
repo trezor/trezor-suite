@@ -13,7 +13,7 @@ import {
     xdr,
 } from '@stellar/stellar-sdk';
 
-import { BigNumber, arrayChunk, isNotNullOrUndefined, resolveAfter } from '@trezor/utils';
+import { BigNumber, arrayChunk, resolveAfter } from '@trezor/utils';
 
 import { readSorobanInclusionFee } from './rpc/fees';
 import { getStellarRpcServer } from './rpc/server';
@@ -341,13 +341,26 @@ const readContractLedgerEntries = async (
     }
 };
 
+/**
+ * A contract that answered it holds nothing is not the same as one that never answered: dropping
+ * the second would take a holding off the account until some later refresh happened to succeed.
+ */
+type Sep41Read =
+    { status: 'held'; token: Sep41Token } | { status: 'absent' } | { status: 'unreadable' };
+
+export type Sep41TokenReads = {
+    tokens: Sep41Token[];
+    /** Contracts the node never answered for, in the order they were asked about. */
+    unreadable: string[];
+};
+
 /** Reads SEP-41 data for a contract list: one ledger read, then per-contract fallbacks. */
 export const readSep41Tokens = async (
     server: StellarRpcServer,
     holder: string,
     contractIds: string[],
     networkPassphrase: string = Networks.PUBLIC,
-): Promise<Sep41Token[]> => {
+): Promise<Sep41TokenReads> => {
     const startedAt = Date.now();
 
     // Known metadata keeps the contract's instance key out of the batch.
@@ -376,8 +389,8 @@ export const readSep41Tokens = async (
     // Capped per read, so one slow contract cannot discard the tokens that did resolve.
     const remainingBudget = () => Math.max(0, SEP41_READ_TIMEOUT_MS - (Date.now() - startedAt));
 
-    const tokens: (Sep41Token | undefined)[] = await Promise.all(
-        contractIds.map(async (contract): Promise<Sep41Token | undefined> => {
+    const reads: (Sep41Read | undefined)[] = await Promise.all(
+        contractIds.map(async (contract): Promise<Sep41Read | undefined> => {
             const result = ledgerEntries.get(contract);
             const cached = knownMetadata.get(contract);
             const metadata =
@@ -392,24 +405,36 @@ export const readSep41Tokens = async (
             // A missing entry is not a zero balance — the contract has to answer for itself.
             if (result?.balance == null || metadata?.decimals == null) return undefined;
 
-            return { contract, balance: result.balance, ...metadata };
+            return { status: 'held', token: { contract, balance: result.balance, ...metadata } };
         }),
     );
 
-    const readOne = (contract: string) =>
-        withTimeout(
-            getSep41Token(server, contract, holder, networkPassphrase).catch(() => undefined),
-            remainingBudget(),
+    const readOne = async (contract: string): Promise<Sep41Read> => {
+        const budget = remainingBudget();
+        if (budget === 0) return { status: 'unreadable' };
+
+        const read = await withTimeout(
+            getSep41Token(server, contract, holder, networkPassphrase).then(
+                (token): Sep41Read => (token ? { status: 'held', token } : { status: 'absent' }),
+                (): Sep41Read => ({ status: 'unreadable' }),
+            ),
+            budget,
         );
+
+        // `withTimeout` resolves undefined only when the budget ran out.
+        return read ?? { status: 'unreadable' };
+    };
 
     const queue = contractIds
         .map((contract, index) => ({ contract, index }))
-        .filter(({ index }) => !tokens[index]);
+        .filter(({ index }) => !reads[index]);
 
+    // Drained rather than abandoned once the budget is gone: `readOne` then answers without a
+    // request, so the contracts nobody got to are reported as unread instead of as not held.
     const readQueued = async () => {
         let next = queue.shift();
-        while (next && remainingBudget() > 0) {
-            tokens[next.index] = await readOne(next.contract);
+        while (next) {
+            reads[next.index] = await readOne(next.contract);
             next = queue.shift();
         }
     };
@@ -418,7 +443,10 @@ export const readSep41Tokens = async (
         Array.from({ length: Math.min(SEP41_READ_CONCURRENCY, queue.length) }, readQueued),
     );
 
-    return tokens.filter(isNotNullOrUndefined);
+    return {
+        tokens: reads.flatMap(read => (read?.status === 'held' ? [read.token] : [])),
+        unreadable: contractIds.filter((_, index) => reads[index]?.status === 'unreadable'),
+    };
 };
 
 export type PrepareContractTokenTransferParams = Omit<BuildContractTokenTransferParams, 'fee'> & {

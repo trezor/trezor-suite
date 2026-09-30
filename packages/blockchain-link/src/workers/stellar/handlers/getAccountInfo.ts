@@ -128,11 +128,14 @@ export const getAccountInfo = async (
         ]),
     ].filter(contract => !classicSacIds.has(contract));
 
-    const readContractTokens = async (): Promise<TokenInfo[]> => {
-        if (isTestnet || contractsToRead.length === 0) return [];
+    const readContractTokens = async (): Promise<{
+        tokens: TokenInfo[];
+        unreadable: string[];
+    }> => {
+        if (isTestnet || contractsToRead.length === 0) return { tokens: [], unreadable: [] };
 
         try {
-            const sep41Tokens = await readSep41Tokens(
+            const { tokens: sep41Tokens, unreadable } = await readSep41Tokens(
                 api.rpc,
                 payload.descriptor,
                 contractsToRead,
@@ -149,41 +152,49 @@ export const getAccountInfo = async (
             ]);
             const watched = new Set(watchedContracts);
 
-            return (
-                sep41Tokens
-                    // Curated tokens surface only when held; user-added ones stay visible at zero.
-                    .filter(token => token.balance !== '0' || watched.has(token.contract))
-                    .flatMap((token): TokenInfo[] => {
-                        const fallback = fallbackByContract.get(token.contract);
-                        const decimals = token.decimals ?? fallback?.decimals;
+            const tokens = sep41Tokens
+                // Curated tokens surface only when held; user-added ones stay visible at zero.
+                .filter(token => token.balance !== '0' || watched.has(token.contract))
+                .flatMap((token): TokenInfo[] => {
+                    const fallback = fallbackByContract.get(token.contract);
+                    const decimals = token.decimals ?? fallback?.decimals;
 
-                        // Defaulting to 7 decimals would inflate an 18-decimal holding 10^11 times.
-                        if (decimals == null) return [];
+                    // Defaulting to 7 decimals would inflate an 18-decimal holding 10^11 times.
+                    if (decimals == null) return [];
 
-                        return [
-                            {
-                                standard: 'STELLAR-CONTRACT',
-                                contract: token.contract,
-                                balance: token.balance,
-                                name: token.name ?? fallback?.name,
-                                symbol: (token.symbol ?? fallback?.symbol ?? '').toUpperCase(),
-                                decimals,
-                            },
-                        ];
-                    })
-            );
+                    return [
+                        {
+                            standard: 'STELLAR-CONTRACT',
+                            contract: token.contract,
+                            balance: token.balance,
+                            name: token.name ?? fallback?.name,
+                            symbol: (token.symbol ?? fallback?.symbol ?? '').toUpperCase(),
+                            decimals,
+                        },
+                    ];
+                });
+
+            return { tokens, unreadable };
         } catch (error) {
             // Contract-token enrichment must never break classic account loading.
             console.warn('Stellar: failed to read Soroban SEP-41 tokens', error);
 
-            return [];
+            // Nothing was read, so nothing can be said about any of them.
+            return { tokens: [], unreadable: contractsToRead };
         }
     };
 
     // Awaited only at assembly, so the RPC read overlaps the Horizon history fetch.
     const contractTokensPromise = readContractTokens();
     const mergeContractTokens = async () => {
-        account.tokens = [...(account.tokens ?? []), ...(await contractTokensPromise)];
+        const { tokens, unreadable } = await contractTokensPromise;
+
+        account.tokens = [...(account.tokens ?? []), ...tokens];
+
+        // Named so a holding already known is kept rather than read as one the account gave up.
+        if (unreadable.length > 0) {
+            account.misc = { ...account.misc, stellarUnreadableContracts: unreadable };
+        }
     };
 
     account.empty = false;
