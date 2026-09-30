@@ -106,6 +106,7 @@ jobs:
           name: ios-test-build
           path: |
             suite-native/app/ios/build/Build/Products/Release-iphonesimulator/TrezorSuiteDebug.app
+          retention-days: 7
 
   run_ios_e2e_tests:
     runs-on: macos-latest

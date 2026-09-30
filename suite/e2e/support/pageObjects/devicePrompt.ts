@@ -26,7 +26,7 @@ export class DevicePrompt {
             | 'swap_intent'
             | 'recipient_name',
     ) => this.page.getByTestId(`@modal/output-${section}`).getByTestId('@modal/output-value');
-    readonly cryptoAmountWithSymbolOf = (section: 'amount' | 'fee' | 'total') =>
+    readonly cryptoAmountWithSymbolOf = (section: 'amount' | 'amount-amount' | 'fee' | 'total') =>
         this.page
             .getByTestId(`@modal/output-${section}`)
             .getByTestId('@modal/crypto-amount-with-symbol');
@@ -133,7 +133,7 @@ export class DevicePrompt {
     // This secondary device prompt for Suite Sync happens on first label change per wallet
     @step()
     async confirmSuiteSyncSetup() {
-        await this.device.expectToContainOnDisplay('Sync');
+        await this.device.expectToContainOnDisplay('to use Suite Sync with this Trezor?');
         await this.confirmOnDevicePromptIsShown();
         await this.device.pressYes();
         // wait before closing the modal to prevent "Trezor Sync key retrieval failed" error

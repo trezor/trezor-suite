@@ -2,17 +2,9 @@ import { type CSSProperties } from 'react';
 
 import { Translation } from '@suite/intl';
 import { type Locale } from '@suite-common/suite-types';
-import {
-    asAmountSubunit,
-    asAmountUnit,
-    fromBaseCurrencyToCryptoUnit,
-    subunitsToUnits,
-    toFiatCurrency,
-    unitsToSubunits,
-} from '@suite-common/wallet-utils';
 import { type FractionButtonProps } from '@trezor/components';
 import { typographyStylesBase } from '@trezor/theme';
-import { BigNumber, clamp, localizeNumber } from '@trezor/utils';
+import { clamp, localizeNumber } from '@trezor/utils';
 
 import { type TradingUseFormActionsReturnProps } from 'src/types/trading/tradingForm';
 
@@ -50,52 +42,6 @@ export const getTradingAmountInputStyle = (
         fontWeight,
         letterSpacing,
     };
-};
-
-type TradingAmountConversionParams = {
-    rate: number | undefined;
-    decimals: number;
-    isInSats: boolean;
-};
-
-export const getTradingCryptoAmountFromBaseCurrency = ({
-    baseCurrencyAmount,
-    rate,
-    decimals,
-    isInSats,
-}: TradingAmountConversionParams & { baseCurrencyAmount: string }) => {
-    const cryptoAmount = fromBaseCurrencyToCryptoUnit({ fiatAmount: baseCurrencyAmount, rate });
-
-    if (!baseCurrencyAmount || !cryptoAmount) {
-        return '';
-    }
-
-    const roundedCryptoAmount = asAmountUnit(
-        cryptoAmount.decimalPlaces(decimals, BigNumber.ROUND_DOWN),
-    );
-
-    return isInSats
-        ? unitsToSubunits({ value: roundedCryptoAmount, decimals }).toFixed()
-        : roundedCryptoAmount.toFixed();
-};
-
-export const getTradingBaseCurrencyAmountFromCrypto = ({
-    cryptoAmount,
-    rate,
-    decimals,
-    isInSats,
-    baseCurrencyDecimals,
-}: TradingAmountConversionParams & { cryptoAmount: string; baseCurrencyDecimals: number }) => {
-    if (!cryptoAmount) {
-        return '';
-    }
-
-    const cryptoAmountInUnits = isInSats
-        ? subunitsToUnits({ value: asAmountSubunit(new BigNumber(cryptoAmount)), decimals })
-        : asAmountUnit(new BigNumber(cryptoAmount));
-    const baseCurrencyAmount = toFiatCurrency({ amount: cryptoAmountInUnits, rate });
-
-    return baseCurrencyAmount?.decimalPlaces(baseCurrencyDecimals).toFixed() ?? '';
 };
 
 export type FormPercentButtonValue = '10%' | '25%' | '50%' | 'max';

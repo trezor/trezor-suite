@@ -288,16 +288,10 @@ export class DeviceFixture {
 
     @step()
     async expectToContainOnDisplay(expectedText: string) {
-        await expect(async () => {
-            const displayBodyContent = (await this.getDisplayContent()).body;
-            const flattenedLines = displayBodyContent.map(line => line.join(' '));
-            const found = flattenedLines.some(line => line.includes(expectedText));
-
-            if (!found) {
-                throw new Error(
-                    `Expected text "${expectedText}" not found on the device display. Actual display text:\n"${JSON.stringify(flattenedLines, null, 2)}"`,
-                );
-            }
-        }).toPass({ timeout: 5_000 });
+        await expect
+            .poll(async () => (await TrezorUserEnvLink.getScreenContent()).body as string, {
+                message: `Expected text "${expectedText}" on the device display`,
+            })
+            .toContain(expectedText);
     }
 }

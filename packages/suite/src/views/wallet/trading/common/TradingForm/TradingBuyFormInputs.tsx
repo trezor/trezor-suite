@@ -137,6 +137,7 @@ export const TradingBuyFormInputs = () => {
                             cryptoInputName={TRADING_FORM_CRYPTO_INPUT}
                             fiatInputName={TRADING_FORM_FIAT_INPUT}
                             cryptoSelectName={TRADING_FORM_CRYPTO_CURRENCY_SELECT}
+                            isInSats={shouldBuyInSats}
                         />
                         <TradingFormInputBuyAsset
                             inputLabel="TR_TRADING_YOU_BUY"
