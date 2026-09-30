@@ -86,6 +86,14 @@ export const useConnectPopupWebextension = () => {
                 extensionIdRef.current = hashExtensionId;
                 setExtensionId(hashExtensionId);
             } else if (hashExtensionId !== extensionIdRef.current) {
+                // Not ours — drop it and clear the hash so the payload does not
+                // linger in the URL bar / history entry.
+                window.history.replaceState(
+                    null,
+                    '',
+                    window.location.pathname + window.location.search,
+                );
+
                 return;
             }
         }
