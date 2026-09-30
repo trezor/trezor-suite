@@ -21,7 +21,6 @@ import {
 import {
     TypedEmitter,
     arrayDistinct,
-    createDeferred,
     getSynchronize,
     isNotUndefined,
     resolveAfter,
@@ -82,7 +81,6 @@ interface DeviceListEvents {
 
 export interface IDeviceList {
     isConnected(): this is DeviceList;
-    pendingConnection(): Promise<void> | undefined;
     addAuthPenalty: DeviceList['addAuthPenalty'];
     removeAuthPenalty: DeviceList['removeAuthPenalty'];
     on: DeviceList['on'];
@@ -129,12 +127,8 @@ export class DeviceList extends TypedEmitter<DeviceListEvents> implements IDevic
         return !!this.getConnectedTransports().length;
     }
 
-    pendingConnection() {
-        const pending = Object.values(this.transportManagers)
-            .map(manager => manager.pending())
-            .filter(isNotUndefined);
-
-        if (pending.length) return Promise.all(pending).then(() => {});
+    async pendingHandshakes() {
+        await this.handshakeLock(() => {});
     }
 
     constructor({ createLogger }: ConstructorParams) {
@@ -234,10 +228,8 @@ export class DeviceList extends TypedEmitter<DeviceListEvents> implements IDevic
 
     private getOrCreateTransportManager(apiType: TransportApiType) {
         if (!this.transportManagers[apiType]) {
-            const manager = new TransportManager(this.initializeTransport.bind(this));
-            manager.on(TRANSPORT.START, transport =>
-                this.emit(TRANSPORT.START, getTransportInfo(transport)),
-            );
+            const manager = new TransportManager();
+            manager.on(TRANSPORT.START, this.onTransportStarted.bind(this));
             manager.on(TRANSPORT.ERROR, error => this.emit(TRANSPORT.ERROR, { apiType, error }));
             this.transportManagers[apiType] = manager;
         }
@@ -264,11 +256,7 @@ export class DeviceList extends TypedEmitter<DeviceListEvents> implements IDevic
         await Promise.all(promises);
     }
 
-    private async initializeTransport(
-        transport: Transport,
-        pendingTransportEvent: boolean,
-        signal: AbortSignal,
-    ) {
+    private onTransportStarted(transport: Transport, descriptors: Descriptor[]) {
         /**
          * listen to change of descriptors reported by @trezor/transport
          * we can say that this part lets connect know about
@@ -281,58 +269,10 @@ export class DeviceList extends TypedEmitter<DeviceListEvents> implements IDevic
         transport.on(TRANSPORT.TREZOR_PUSH_NOTIFICATION, this.onPushNotification.bind(this));
         transport.on(TRANSPORT.BATTERY_LEVEL, this.onBatteryLevel.bind(this));
 
-        // enumerating for the first time. we intentionally postpone emitting TRANSPORT_START
-        // event until we read descriptors for the first time
-        const enumerateResult = await transport.enumerate({ signal });
-
-        if (!enumerateResult.success) {
-            throw new Error(enumerateResult.error.message || enumerateResult.error.code);
-        }
-
-        const descriptors = enumerateResult.payload;
+        this.emit(TRANSPORT.START, getTransportInfo(transport)); // TODO emit descriptors
 
         transport.handleDescriptorsChange(descriptors);
         transport.listen();
-
-        if (pendingTransportEvent && descriptors.length) {
-            await this.waitForDevices(transport, signal);
-        }
-    }
-
-    /**
-     * Returned promise:
-     * - resolves when all the devices visible from given transport were handshaked
-     * - resolves after 10 secs (in order not to get stuck waiting for devices)
-     * - rejects when aborted (e.g. because of DeviceList reinit)
-     * - rejects when given transport emits an error
-     *
-     * Old note: when TRANSPORT.START_PENDING is emitted, we already know that transport is available
-     * but we wait with emitting TRANSPORT.START event to the implementator until we read from devices
-     * in case something wrong happens and we never finish reading from devices for whatever reason
-     * implementator could get stuck waiting from TRANSPORT.START event forever. To avoid this,
-     * we emit TRANSPORT.START event after autoResolveTransportEventTimeout
-     */
-    private waitForDevices(transport: Transport, signal: AbortSignal) {
-        const { promise, reject, resolve } = createDeferred();
-
-        const onAbort = () => reject(signal.reason);
-        signal.addEventListener('abort', onAbort);
-
-        const onError = (error: string) => reject(new Error(error));
-        transport.once(TRANSPORT.ERROR, onError);
-
-        const autoResolveTransportEventTimeout = setTimeout(resolve, 10000);
-
-        // this works because all initial device handshakes are started synchronously from
-        // initializeTransport -> transport.handleDescriptorsChange so this `resolve`
-        // in handshakeLock cannot be called before all of them are resolved
-        this.handshakeLock(resolve);
-
-        return promise.finally(() => {
-            transport.off(TRANSPORT.ERROR, onError);
-            signal.removeEventListener('abort', onAbort);
-            clearTimeout(autoResolveTransportEventTimeout);
-        });
     }
 
     getDeviceCount() {

@@ -969,10 +969,6 @@ export class Core extends EventEmitter {
             throw error;
         }
 
-        if (!transportReconnect) {
-            await this.deviceList.pendingConnection();
-        }
-
         // Core initialized successfully, disable throttle
         this.on(CORE_EVENT, onCoreEvent);
         this.off(CORE_EVENT, onCoreEventThrottled);
