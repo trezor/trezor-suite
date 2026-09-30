@@ -7,7 +7,9 @@ import { type WithServices } from '@suite-common/redux-utils';
 import { createTestCompositionRoot, renderHookWithStoreProvider } from '@suite-common/test-utils';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
 import {
+    FALLBACK_YIELD_GAS_RESERVE,
     type ResolvedYieldFlowData,
+    type YieldGasReserve,
     type YieldPositionFlowType,
     type YieldSessionState,
     initialStablecoinYieldSessionState,
@@ -130,17 +132,28 @@ const createTestServices = () =>
         services: () => ({ analytics: mockDesktopAnalytics() }),
     }).services;
 
+type RenderYieldFormOptions = {
+    flowType?: YieldPositionFlowType;
+    flowData?: ResolvedYieldFlowData;
+    gasReserve?: YieldGasReserve;
+};
+
 // Reads the mutable `mockSession` at render time, so reassign-then-rerender takes effect.
-const renderYieldForm = (flowType: YieldPositionFlowType = 'deposit') =>
+const renderYieldForm = ({
+    flowType = 'deposit',
+    flowData: currentFlowData = flowData,
+    gasReserve = FALLBACK_YIELD_GAS_RESERVE,
+}: RenderYieldFormOptions = {}) =>
     renderHookWithStoreProvider(
         () =>
             useYieldForm({
                 flowType,
-                flowData,
+                flowData: currentFlowData,
                 account,
                 vault,
                 flowKey: FLOW_KEY,
                 session: mockSession,
+                gasReserve,
             }),
         { services: createTestServices() },
     );
@@ -166,20 +179,99 @@ describe('useYieldForm', () => {
         expect(result.current.amountIssues).toEqual(['amount-too-high']);
     });
 
+    it('keeps the dynamic reserve aside from the wrap max amount', () => {
+        mockSession.step = 'wrap';
+        const { result } = renderYieldForm({
+            gasReserve: { minimum: '0.01', recommended: '0.05' },
+        });
+
+        expect(result.current.maxAmount).toBe('0.15');
+    });
+
+    it('offers nothing to wrap and reports insufficient fees within the reserve', () => {
+        mockSession.step = 'wrap';
+        const { result } = renderYieldForm({
+            gasReserve: { minimum: '0.1', recommended: '0.2' },
+        });
+
+        expect(result.current.maxAmount).toBe('0');
+        expect(result.current.nativeFeeStatus).toBe('insufficient');
+    });
+
+    it('reports sufficient fees on the wrap step above the reserve', () => {
+        mockSession.step = 'wrap';
+        const { result } = renderYieldForm();
+
+        expect(result.current.nativeFeeStatus).toBe('sufficient');
+    });
+
+    it.each([
+        { balance: '0.001', expected: 'insufficient' },
+        { balance: '0.003', expected: 'below-recommended' },
+        { balance: '0.2', expected: 'sufficient' },
+    ] as const)(
+        'reports the token vault fee status $expected for a $balance native balance',
+        ({ balance, expected }) => {
+            mockSession.step = 'approve';
+            const tokenVaultFlowData = {
+                ...flowData,
+                account: mockWalletAccount({
+                    symbol: asNetworkSymbol('eth'),
+                    formattedBalance: balance,
+                }),
+                isWrappedNativeVault: false,
+            } satisfies ResolvedYieldFlowData;
+            const { result } = renderHookWithStoreProvider(
+                () =>
+                    useYieldForm({
+                        flowType: 'deposit',
+                        flowData: tokenVaultFlowData,
+                        account: tokenVaultFlowData.account,
+                        vault,
+                        flowKey: FLOW_KEY,
+                        session: mockSession,
+                        gasReserve: { minimum: '0.002', recommended: '0.005' },
+                    }),
+                { services: createTestServices() },
+            );
+
+            expect(result.current.nativeFeeStatus).toBe(expected);
+        },
+    );
+
+    it('does not recommend a top-up after the wrap step of a wrapped-native vault', () => {
+        mockSession.step = 'approve';
+        const { result } = renderYieldForm({
+            gasReserve: { minimum: '0.1', recommended: '0.5' },
+        });
+
+        expect(result.current.nativeFeeStatus).toBe('sufficient');
+    });
+
+    it('never reports a fee status outside the deposit flow', () => {
+        mockSession.step = 'action';
+        const { result } = renderYieldForm({
+            flowType: 'withdraw',
+            gasReserve: { minimum: '1', recommended: '2' },
+        });
+
+        expect(result.current.nativeFeeStatus).toBe('sufficient');
+    });
+
     it.each([
         { flowType: 'deposit', expected: '25' },
         { flowType: 'withdraw', expected: '10' },
         { flowType: 'redeem', expected: '4' },
     ] as const)('derives the $flowType action max amount', ({ flowType, expected }) => {
         mockSession.step = 'action';
-        const { result } = renderYieldForm(flowType);
+        const { result } = renderYieldForm({ flowType });
 
         expect(result.current.maxAmount).toBe(expected);
     });
 
     it('uses the token balance as the unwrap max amount', () => {
         mockSession.step = 'unwrap';
-        const { result } = renderYieldForm('withdraw');
+        const { result } = renderYieldForm({ flowType: 'withdraw' });
 
         expect(result.current.maxAmount).toBe('25');
     });
@@ -326,6 +418,7 @@ describe('useYieldForm', () => {
                     vault,
                     flowKey: currentFlowKey,
                     session: mockSession,
+                    gasReserve: FALLBACK_YIELD_GAS_RESERVE,
                 }),
             {
                 services: createTestServices(),

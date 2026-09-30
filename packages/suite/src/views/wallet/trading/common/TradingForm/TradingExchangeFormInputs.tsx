@@ -15,10 +15,11 @@ import {
     selectTradingLoadingAndTimestamp,
     selectTradingSendAccount,
 } from '@suite-common/trading';
+import { useFetchFees } from '@suite-common/wallet-core';
 import { type TokenAddress } from '@suite-common/wallet-types';
 import { Box, Column, Row, Skeleton, Text, Tooltip } from '@trezor/components';
 
-import { useFetchFees } from 'src/components/wallet/Fees/CollapsibleFees/hooks/useFetchFees';
+import { useIsFeeRefetchDisabled } from 'src/components/wallet/Fees/CollapsibleFees/hooks/useIsFeeRefetchDisabled';
 import { useSelector } from 'src/hooks/suite';
 import { useSelectedTradingAsset } from 'src/hooks/wallet/trading/form/common/useSelectedTradingAsset';
 import { useTradingAssetDecimals } from 'src/hooks/wallet/trading/form/common/useTradingAssetDecimals';
@@ -31,7 +32,6 @@ import { useTradingQuoteAmounts } from 'src/views/wallet/trading/common/hooks/us
 import { useTradingSelectedQuote } from 'src/views/wallet/trading/common/hooks/useTradingSelectedQuote';
 
 import { TradingFormCard } from './TradingFormCard';
-import { TradingReceiveAddress } from '../TradingSelectedOffer/TradingReceiveAddress/TradingReceiveAddress';
 import { TradingSelectedOfferProvider } from '../TradingSelectedOffer/TradingSelectedOfferProvider';
 import { AssetPickerInputBalance } from './TradingFormInput/TradingFormInputAssetPicker';
 import { TradingFormInputBuyAsset } from './TradingFormInput/TradingFormInputBuyAsset/TradingFormInputBuyAsset';
@@ -46,6 +46,7 @@ import {
     TRADING_BASE_CURRENCY_SKELETON_WIDTH,
 } from './tradingFormInputsUtils';
 import { useTradingExchangeAssetSelect } from './useTradingExchangeAssetSelect';
+import { TradingReceiveAddress } from '../TradingSelectedOffer/TradingReceiveAddress/TradingReceiveAddress';
 
 export const TradingExchangeFormInputs = () => {
     const context = useTradingFormContext<TradingExchangeType>();
@@ -64,7 +65,8 @@ export const TradingExchangeFormInputs = () => {
     const { CryptoAmountFormatter } = useFormatters();
     const account = useSelector(state => selectTradingSendAccount(state, type));
 
-    useFetchFees({ networkSymbol: account?.symbol });
+    const isRefetchDisabled = useIsFeeRefetchDisabled();
+    useFetchFees({ networkSymbol: account?.symbol, isRefetchDisabled });
 
     const methods = useFormContext<TradingExchangeFormProps>();
     const {

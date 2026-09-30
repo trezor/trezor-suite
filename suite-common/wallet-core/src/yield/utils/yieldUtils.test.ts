@@ -12,6 +12,7 @@ import {
     buildYieldWrapTransactionData,
     getMaxWrapAmount,
     getNextYieldFlowStep,
+    getWrapReserveStatus,
     getWrappableNativeBalance,
     getYieldDepositAvailableBalance,
     getYieldDepositableBalance,
@@ -54,6 +55,8 @@ const flowData = {
         symbol: 'trUSDC',
     },
 } as unknown as Parameters<typeof buildYieldWithdrawCalldata>[0]['flowData'];
+
+const RESERVE = '0.005';
 
 describe('yieldUtils', () => {
     describe('buildYieldWithdrawCalldata', () => {
@@ -404,82 +407,145 @@ describe('yieldUtils', () => {
 
     describe('getWrappableNativeBalance', () => {
         it('keeps the gas reserve aside', () => {
-            expect(getWrappableNativeBalance('0.2')).toBe('0.195');
+            expect(getWrappableNativeBalance('0.2', RESERVE)).toBe('0.195');
         });
 
         it('floors at zero when the balance does not cover the reserve', () => {
-            expect(getWrappableNativeBalance('0.003')).toBe('0');
+            expect(getWrappableNativeBalance('0.003', RESERVE)).toBe('0');
+        });
+
+        it('floors at zero when the balance exactly matches the reserve', () => {
+            expect(getWrappableNativeBalance('0.005', RESERVE)).toBe('0');
         });
 
         it('treats an empty balance as zero', () => {
-            expect(getWrappableNativeBalance('')).toBe('0');
+            expect(getWrappableNativeBalance('', RESERVE)).toBe('0');
+        });
+
+        it('follows a dynamic reserve', () => {
+            expect(getWrappableNativeBalance('0.2', '0.02')).toBe('0.18');
         });
     });
 
     describe('getMaxWrapAmount', () => {
         it('keeps the gas reserve aside when the balance covers it', () => {
-            expect(getMaxWrapAmount('0.2')).toBe('0.195');
+            expect(getMaxWrapAmount('0.2', RESERVE)).toBe('0.195');
         });
 
         it('offers the whole balance when it does not cover the reserve', () => {
-            expect(getMaxWrapAmount('0.003')).toBe('0.003');
+            expect(getMaxWrapAmount('0.003', RESERVE)).toBe('0.003');
         });
 
         it('offers the whole balance when it exactly matches the reserve', () => {
-            expect(getMaxWrapAmount('0.005')).toBe('0.005');
+            expect(getMaxWrapAmount('0.005', RESERVE)).toBe('0.005');
         });
 
         // Max must offer an amount that is both usable and flagged, otherwise the button reads as
         // dead — the regression behind trezor/trezor-suite#30842.
         it('offers an amount that triggers the reserve recommendation', () => {
-            expect(shouldRecommendWrapReserve(getMaxWrapAmount('0.003'), '0.003')).toBe(true);
+            expect(
+                shouldRecommendWrapReserve({
+                    amountInput: getMaxWrapAmount('0.003', RESERVE),
+                    nativeFormattedBalance: '0.003',
+                    reserve: RESERVE,
+                }),
+            ).toBe(true);
         });
 
         it('treats an empty balance as zero', () => {
-            expect(getMaxWrapAmount('')).toBe('0');
+            expect(getMaxWrapAmount('', RESERVE)).toBe('0');
         });
 
         it('returns zero for a zero balance', () => {
-            expect(getMaxWrapAmount('0')).toBe('0');
+            expect(getMaxWrapAmount('0', RESERVE)).toBe('0');
         });
 
         it('returns zero for a negative balance', () => {
-            expect(getMaxWrapAmount('-1')).toBe('0');
+            expect(getMaxWrapAmount('-1', RESERVE)).toBe('0');
         });
 
         it('returns zero for non-numeric input', () => {
-            expect(getMaxWrapAmount('abc')).toBe('0');
+            expect(getMaxWrapAmount('abc', RESERVE)).toBe('0');
+        });
+    });
+
+    describe('getWrapReserveStatus', () => {
+        const getStatus = (amountInput: string, nativeFormattedBalance: string) =>
+            getWrapReserveStatus({ amountInput, nativeFormattedBalance, reserve: RESERVE });
+
+        it('reports the reserve kept at exactly balance minus the reserve (the Max amount)', () => {
+            expect(getStatus('0.995', '1')).toBe('kept');
+            expect(getStatus(getWrappableNativeBalance('0.2', RESERVE), '0.2')).toBe('kept');
+        });
+
+        it('reports the reserve eaten into above the Max amount', () => {
+            expect(getStatus('0.996', '1')).toBe('below');
+            expect(getStatus('1', '1')).toBe('below');
+        });
+
+        it('reports nothing when more than the reserve is left', () => {
+            expect(getStatus('0.9', '1')).toBe('none');
+        });
+
+        it('reports nothing above the balance, for an empty or zero amount, or malformed input', () => {
+            expect(getStatus('1.5', '1')).toBe('none');
+            expect(getStatus('', '1')).toBe('none');
+            expect(getStatus('0', '1')).toBe('none');
+            expect(getStatus('abc', '1')).toBe('none');
+        });
+
+        it('follows a dynamic reserve', () => {
+            expect(
+                getWrapReserveStatus({
+                    amountInput: '0.9',
+                    nativeFormattedBalance: '1',
+                    reserve: '0.1',
+                }),
+            ).toBe('kept');
         });
     });
 
     describe('shouldRecommendWrapReserve', () => {
+        const recommend = (amountInput: string, nativeFormattedBalance: string) =>
+            shouldRecommendWrapReserve({ amountInput, nativeFormattedBalance, reserve: RESERVE });
+
         it('does not recommend when enough native coin is left for the reserve', () => {
-            expect(shouldRecommendWrapReserve('0.9', '1')).toBe(false);
+            expect(recommend('0.9', '1')).toBe(false);
         });
 
         it('recommends at exactly balance minus the reserve (the Max amount)', () => {
-            expect(shouldRecommendWrapReserve('0.995', '1')).toBe(true);
+            expect(recommend('0.995', '1')).toBe(true);
         });
 
         it('recommends when the amount eats into the reserve', () => {
-            expect(shouldRecommendWrapReserve('0.996', '1')).toBe(true);
+            expect(recommend('0.996', '1')).toBe(true);
         });
 
         it('recommends when wrapping the whole balance', () => {
-            expect(shouldRecommendWrapReserve('1', '1')).toBe(true);
+            expect(recommend('1', '1')).toBe(true);
         });
 
         it('does not recommend when the amount exceeds the balance (hard error case)', () => {
-            expect(shouldRecommendWrapReserve('1.5', '1')).toBe(false);
+            expect(recommend('1.5', '1')).toBe(false);
         });
 
         it('does not recommend for an empty or zero amount', () => {
-            expect(shouldRecommendWrapReserve('', '1')).toBe(false);
-            expect(shouldRecommendWrapReserve('0', '1')).toBe(false);
+            expect(recommend('', '1')).toBe(false);
+            expect(recommend('0', '1')).toBe(false);
         });
 
         it('does not recommend for non-numeric input', () => {
-            expect(shouldRecommendWrapReserve('abc', '1')).toBe(false);
+            expect(recommend('abc', '1')).toBe(false);
+        });
+
+        it('follows a dynamic reserve', () => {
+            expect(
+                shouldRecommendWrapReserve({
+                    amountInput: '0.9',
+                    nativeFormattedBalance: '1',
+                    reserve: '0.1',
+                }),
+            ).toBe(true);
         });
     });
 
