@@ -53,6 +53,10 @@ const listStyle = prepareNativeStyle(() => ({
     flex: 1,
 }));
 
+const listContentStyle = prepareNativeStyle(({ spacings }) => ({
+    paddingHorizontal: spacings.sp16,
+}));
+
 type InactiveTokensSearchHeaderProps = {
     isLoading: boolean;
     onSearchChange: (value: string) => void;
@@ -79,7 +83,11 @@ const InactiveTokensSearchHeader = ({
     );
 };
 
-export const InactiveTokensTab = ({ accountKey, ListHeaderComponent }: InactiveTokensTabProps) => {
+export const InactiveTokensTab = ({
+    accountKey,
+    ListHeaderComponent,
+    onScroll,
+}: InactiveTokensTabProps) => {
     const navigation =
         useNavigation<StackNavigationProps<RootStackParamList, RootStackRoutes.AccountOverview>>();
     const { translate } = useTranslate();
@@ -162,6 +170,7 @@ export const InactiveTokensTab = ({ accountKey, ListHeaderComponent }: InactiveT
     return (
         <FlashList
             style={applyStyle(listStyle)}
+            contentContainerStyle={applyStyle(listContentStyle)}
             data={filteredTokens}
             keyExtractor={item => item.contract}
             renderItem={renderItem}
@@ -196,6 +205,7 @@ export const InactiveTokensTab = ({ accountKey, ListHeaderComponent }: InactiveT
                     </Button>
                 </View>
             }
+            onScroll={onScroll}
         />
     );
 };
