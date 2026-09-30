@@ -18,6 +18,14 @@ class TabBarActions {
         await detoxExpect(element(by.id('@screen/Accounts'))).toBeVisible();
     }
 
+    async navigateToEarn() {
+        const earnTabBarItem = element(by.id('@tabBar/EarnStack'));
+        await waitForVisible(earnTabBarItem);
+        await earnTabBarItem.tap();
+
+        await detoxExpect(element(by.id('@screen/Earn'))).toBeVisible();
+    }
+
     async navigateToSettings() {
         const settingsTabBarItem = element(by.id('@tabBar/Settings'));
         await waitForVisible(settingsTabBarItem);

@@ -1,7 +1,8 @@
 import { type ReactNode } from 'react';
 import { type GestureResponderHandlers } from 'react-native';
 
-export type PerformanceScreen = 'home' | 'accounts' | 'account-detail' | 'send' | 'receive';
+export type PerformanceScreen =
+    'home' | 'accounts' | 'account-detail' | 'send' | 'receive' | 'earn';
 
 export type PerformanceSample = {
     screen: PerformanceScreen;

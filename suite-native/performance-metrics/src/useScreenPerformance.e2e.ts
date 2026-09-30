@@ -57,6 +57,12 @@ const useIsScreenReady = (screen: PerformanceScreen, isReady?: boolean) => {
         case 'send':
         case 'account-detail':
             return isReady ?? false;
+        // The Earn screen has no single signal that its opportunities have arrived, so it is
+        // treated as interactive once it renders. That makes its time-to-interactive a
+        // mount-to-paint measure rather than a wait for content, which is enough to compare one
+        // build of this screen against another but is not comparable to the screens above.
+        case 'earn':
+            return true;
         default:
             return exhaustive(screen);
     }
