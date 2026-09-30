@@ -28,6 +28,21 @@ export const SETTINGS_ROUTES: Route['name'][] = [
     'settings-connected-apps',
 ] as const;
 
+const EARN_ROUTES: Route['name'][] = [
+    'suite-earn',
+    'earn-yield-deposit',
+    'earn-yield-withdraw',
+    'earn-yield-claim',
+    'earn-yield-unwrap',
+    'earn-yield-wrap',
+    'earn-tron',
+    'earn-tron-stake',
+    'earn-tron-vote',
+    'earn-tron-unstake',
+    'earn-tron-withdraw',
+    'earn-tron-claim',
+];
+
 type NavigationProps = {
     children?: React.ReactNode;
 };
@@ -56,8 +71,22 @@ export const Navigation = ({ children }: NavigationProps) => {
         newContentIndicatorIntro.hasPlayed = true;
     }, []);
 
-    const isActivityOpen = useSelector(selectRouteName) === 'notifications-index';
+    const routeName = useSelector(selectRouteName);
+    const isActivityOpen = routeName === 'notifications-index';
+    const isEarnOpen = routeName !== undefined && EARN_ROUTES.includes(routeName);
     const hasActivityIndicator = hasUnseenNotifications && !isActivityOpen;
+
+    useEffect(() => {
+        if (isActivityOpen && isActivityNewContentIndicatorVisible) {
+            dispatch(markNewContentIndicatorAsSeen(NewContentIndicatorId.Activity26_8));
+        }
+    }, [dispatch, isActivityNewContentIndicatorVisible, isActivityOpen]);
+
+    useEffect(() => {
+        if (isEarnOpen && isEarnNewContentIndicatorVisible) {
+            dispatch(markNewContentIndicatorAsSeen(NewContentIndicatorId.Earn26_8));
+        }
+    }, [dispatch, isEarnNewContentIndicatorVisible, isEarnOpen]);
 
     const reportSwapNavigation = useCallback(() => {
         analytics.report({
@@ -134,20 +163,7 @@ export const Navigation = ({ children }: NavigationProps) => {
                               isNewContentIndicatorAnimated: shouldAnimateNewContentIndicators,
                               onClick: handleEarnNavigation,
                               shortcut: ['ALT', 'KEY_E'],
-                              routes: [
-                                  'suite-earn',
-                                  'earn-yield-deposit',
-                                  'earn-yield-withdraw',
-                                  'earn-yield-claim',
-                                  'earn-yield-unwrap',
-                                  'earn-yield-wrap',
-                                  'earn-tron',
-                                  'earn-tron-stake',
-                                  'earn-tron-vote',
-                                  'earn-tron-unstake',
-                                  'earn-tron-withdraw',
-                                  'earn-tron-claim',
-                              ],
+                              routes: EARN_ROUTES,
                           } as NavigationItemProps,
                       ]
                     : []),
