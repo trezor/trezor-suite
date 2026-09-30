@@ -1,4 +1,5 @@
 import { type ReactNode, useCallback, useEffect, useRef, useState } from 'react';
+import { type NativeScrollEvent, type NativeSyntheticEvent } from 'react-native';
 import { useSelector } from 'react-redux';
 
 import { type BottomSheetModalMethods } from '@gorhom/bottom-sheet/lib/typescript/types';
@@ -29,8 +30,8 @@ type AccountsListWithFilterProps = {
     closeAction?: () => void;
     onAddAccount?: () => void;
     isSendFlow?: boolean;
-    isScrollDividerEnabled?: boolean;
     noHeaderPaddingTop?: boolean;
+    onScroll?: (event: NativeSyntheticEvent<NativeScrollEvent>) => void;
     children?: ReactNode;
 };
 
@@ -43,7 +44,7 @@ export const AccountsListWithFilter = ({
     closeAction,
     onAddAccount,
     isSendFlow,
-    isScrollDividerEnabled,
+    onScroll,
     noHeaderPaddingTop,
     children,
 }: AccountsListWithFilterProps) => {
@@ -134,7 +135,7 @@ export const AccountsListWithFilter = ({
                         onClearFilters={handleClearFilters}
                     />
                 }
-                isScrollDividerEnabled={isScrollDividerEnabled}
+                onScroll={onScroll}
             />
             <NetworkFilterBottomSheet
                 ref={filterBottomSheetRef}

@@ -2,6 +2,7 @@ import { useMemo } from 'react';
 
 import { isStakingSymbol } from '@suite-common/wallet-utils';
 import { AccountsListWithFilter, type OnSelectAccount } from '@suite-native/accounts';
+import { Box } from '@suite-native/atoms';
 import { DeviceManagerScreenHeader } from '@suite-native/device-manager';
 import { AccountsRediscoveryNeededWarning } from '@suite-native/discovery';
 import { Translation } from '@suite-native/intl';
@@ -14,6 +15,7 @@ import {
     Screen,
     type StackToStackCompositeScreenProps,
 } from '@suite-native/navigation';
+import { useScrollDivider } from '@suite-native/scrollview';
 import { isNetworkWithTokens } from '@suite-native/tokens';
 
 type ScreenNavigationProps = StackToStackCompositeScreenProps<
@@ -23,6 +25,8 @@ type ScreenNavigationProps = StackToStackCompositeScreenProps<
 >;
 
 export const AccountsScreen = ({ navigation, route }: ScreenNavigationProps) => {
+    const { scrollDivider, handleScroll } = useScrollDivider();
+
     const networksFilter = useMemo(
         () => route.params?.networksFilter ?? [],
         [route.params?.networksFilter],
@@ -46,17 +50,21 @@ export const AccountsScreen = ({ navigation, route }: ScreenNavigationProps) => 
     };
 
     return (
-        // noBottomPadding: SearchableAccountsListHeader owns the top spacing to accommodate filter badge overflow.
-        <Screen header={<DeviceManagerScreenHeader noBottomPadding />} isScrollable={false}>
-            <AccountsListWithFilter
-                title={<Translation id="moduleAccountManagement.accountsScreen.accountsTitle" />}
-                onSelectAccount={handleSelectAccount}
-                flowType="accounts"
-                networksFilter={networksFilter}
-                isScrollDividerEnabled
-            >
-                <AccountsRediscoveryNeededWarning />
-            </AccountsListWithFilter>
+        <Screen header={<DeviceManagerScreenHeader />} isScrollable={false} noHorizontalPadding>
+            {scrollDivider}
+            <Box flex={1} paddingHorizontal="sp16">
+                <AccountsListWithFilter
+                    title={
+                        <Translation id="moduleAccountManagement.accountsScreen.accountsTitle" />
+                    }
+                    onSelectAccount={handleSelectAccount}
+                    flowType="accounts"
+                    networksFilter={networksFilter}
+                    onScroll={handleScroll}
+                >
+                    <AccountsRediscoveryNeededWarning />
+                </AccountsListWithFilter>
+            </Box>
         </Screen>
     );
 };

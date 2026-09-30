@@ -1,4 +1,5 @@
 import { type ReactElement, useCallback } from 'react';
+import { type NativeScrollEvent, type NativeSyntheticEvent } from 'react-native';
 import { useSelector } from 'react-redux';
 
 import { FlashList, type ListRenderItemInfo } from '@shopify/flash-list';
@@ -6,7 +7,6 @@ import { FlashList, type ListRenderItemInfo } from '@shopify/flash-list';
 import { type NetworksRootState } from '@suite-common/networks';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { Box } from '@suite-native/atoms';
-import { useScrollDivider } from '@suite-native/scrollview';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
 import { AccountsListEmptyPlaceholder } from './AccountsListEmptyPlaceholder';
@@ -31,7 +31,7 @@ type AccountsListProps = {
     networkFilter?: NetworkSymbol[];
     ListHeaderComponent?: ReactElement;
     ListFooterComponent?: ReactElement;
-    isScrollDividerEnabled?: boolean;
+    onScroll?: (event: NativeSyntheticEvent<NativeScrollEvent>) => void;
 };
 
 export const AccountsList = ({
@@ -41,13 +41,12 @@ export const AccountsList = ({
     networkFilter = DEFAULT_NETWORK_FILTER,
     ListHeaderComponent,
     ListFooterComponent,
-    isScrollDividerEnabled = false,
+    onScroll,
 }: AccountsListProps) => {
     const accountListRows = useSelector((state: NativeAccountsRootState & NetworksRootState) =>
         selectFilteredDeviceAccountListRows(state, searchValue, isSendFlow, networkFilter),
     );
     const { applyStyle } = useNativeStyles();
-    const { scrollDivider, handleScroll } = useScrollDivider();
 
     const renderItem = useCallback(
         ({ item, index }: ListRenderItemInfo<FilteredDeviceAccountListRow>) => (
@@ -62,7 +61,6 @@ export const AccountsList = ({
 
     return (
         <Box flex={1}>
-            {isScrollDividerEnabled && scrollDivider}
             <FlashList
                 testID="@accountList"
                 style={applyStyle(listStyle)}
@@ -81,7 +79,7 @@ export const AccountsList = ({
                 ListFooterComponent={ListFooterComponent}
                 keyboardShouldPersistTaps="handled"
                 maintainVisibleContentPosition={{ disabled: true }}
-                onScroll={isScrollDividerEnabled ? handleScroll : undefined}
+                onScroll={onScroll}
             />
         </Box>
     );
