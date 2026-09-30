@@ -137,10 +137,6 @@ export class DeviceList extends TypedEmitter<DeviceListEvents> implements IDevic
         if (pending.length) return Promise.all(pending).then(() => {});
     }
 
-    getActiveTransports() {
-        return this.getConnectedTransports().map(getTransportInfo);
-    }
-
     constructor({ createLogger }: ConstructorParams) {
         super();
 
