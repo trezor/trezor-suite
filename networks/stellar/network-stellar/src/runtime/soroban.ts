@@ -15,6 +15,7 @@ import {
 
 import { BigNumber, arrayChunk, isNotNullOrUndefined, resolveAfter } from '@trezor/utils';
 
+import { readSorobanInclusionFee } from './rpc/fees';
 import { getStellarRpcServer } from './rpc/server';
 import {
     type BuildContractTokenTransferParams,
@@ -422,24 +423,35 @@ export const readSep41Tokens = async (
 
 export type PrepareContractTokenTransferParams = Omit<BuildContractTokenTransferParams, 'fee'> & {
     backendUrl: string;
-    /** What the transaction is built with; the simulation adds the resource fee on top. */
-    inclusionFee: string;
+    /**
+     * What the transaction is built with; the simulation adds the resource fee on top. Left out,
+     * the Soroban lane is read here — signing passes back what composing priced, so the envelope
+     * the device approves is the one that was quoted.
+     */
+    inclusionFee?: string;
 };
 
-/** Builds and simulates a SEP-41 transfer; `resourceFee` is what the simulation added on top. */
+/**
+ * Builds and simulates a SEP-41 transfer. `resourceFee` is what the simulation added on top, and
+ * `inclusionFee` is what it was built with, so a caller never has to guess which lane priced it.
+ */
 export const prepareContractTokenTransfer = async ({
     backendUrl,
     inclusionFee,
     ...transfer
 }: PrepareContractTokenTransferParams) => {
+    const server = getStellarRpcServer(backendUrl);
+    const fee = inclusionFee ?? (await readSorobanInclusionFee(server));
+
     const transaction = await prepareContractTransaction(
-        getStellarRpcServer(backendUrl),
-        buildContractTokenTransferTransaction({ ...transfer, fee: inclusionFee }),
+        server,
+        buildContractTokenTransferTransaction({ ...transfer, fee }),
     );
 
     return {
         transaction,
-        resourceFee: new BigNumber(transaction.fee).minus(inclusionFee).toFixed(),
+        inclusionFee: fee,
+        resourceFee: new BigNumber(transaction.fee).minus(fee).toFixed(),
     };
 };
 
