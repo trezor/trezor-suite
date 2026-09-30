@@ -13,6 +13,7 @@ export interface TransportInfo {
     apiType: Transport['apiType'];
     type: Transport['name'];
     version: string;
+    initialDeviceCount?: number;
 }
 
 export interface TransportError {
