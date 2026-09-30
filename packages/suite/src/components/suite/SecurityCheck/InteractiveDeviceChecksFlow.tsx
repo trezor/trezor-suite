@@ -81,14 +81,17 @@ export const InteractiveDeviceChecksFlow = () => {
     }
 
     const goToDeviceAuthentication = () => setIsAuthenticityCheckStep(true);
+    const handleFinishManualDeviceCheck = () => {
+        if (shouldAuthenticateSelectedDevice) {
+            goToDeviceAuthentication();
+        } else {
+            goToSuiteOrNextDevice();
+        }
+    };
 
     return (
         <Card paddingType="large">
-            <ManualDeviceCheck
-                goToDeviceAuthentication={goToDeviceAuthentication}
-                goToSuiteOrNextDevice={goToSuiteOrNextDevice}
-                shouldAuthenticateSelectedDevice={shouldAuthenticateSelectedDevice}
-            />
+            <ManualDeviceCheck onSuccess={handleFinishManualDeviceCheck} />
         </Card>
     );
 };

@@ -2246,10 +2246,6 @@ export const messages = defineMessages({
         defaultMessage: 'Set up my Trezor',
         id: 'TR_SETUP_MY_TREZOR',
     },
-    TR_YES_SETUP_MY_TREZOR: {
-        defaultMessage: 'Yes, I have',
-        id: 'TR_YES_SETUP_MY_TREZOR',
-    },
     TR_UNHIDE_TOKEN_TITLE: {
         defaultMessage: 'Show this token?',
         id: 'TR_UNHIDE_TOKEN_TITLE',

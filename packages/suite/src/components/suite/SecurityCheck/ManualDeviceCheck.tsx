@@ -1,4 +1,12 @@
-import { useEffect, useMemo, useState } from 'react';
+import {
+    type FC,
+    type PropsWithChildren,
+    type ReactNode,
+    useEffect,
+    useMemo,
+    useState,
+} from 'react';
+import { useSelector } from 'react-redux';
 
 import { events, injectDesktopAnalytics } from '@suite/analytics';
 import { TrezorLink } from '@suite/external-links';
@@ -28,10 +36,11 @@ import {
     TREZOR_SUPPORT_FW_ALREADY_INSTALLED,
     TREZOR_SUPPORT_IS_MY_DEVICE_SAFE,
     TREZOR_URL,
+    type Url,
 } from '@trezor/urls';
 
 import { Hologram } from 'src/components/onboarding/Hologram';
-import { useLayoutSize, useOnboarding, useSelector } from 'src/hooks/suite';
+import { useLayoutSize, useOnboarding } from 'src/hooks/suite';
 import { selectIsOnboardingActive } from 'src/reducers/onboarding/onboardingReducer';
 import { ContentFlex, useIsContentBelowBreakpoint } from 'src/support/suite/ContentFlex';
 
@@ -41,6 +50,26 @@ import { SecurityCheckLayout } from './components/SecurityCheckLayout';
 import { SecurityChecklist } from './components/SecurityChecklist';
 import { ContactSupport } from './components/ctas';
 import { type SecurityChecklistItem } from './types';
+
+/*
+ABOUT THIS FILE:
+
+The component structure in this file may seem confusing at first, but it has its reason: a device
+can undergo a Manual Device Check in three distinct cases:
+  A) uninitialized device without FW (fresh or factory-reset)
+  B) uninitialized device with FW (after a wipe or partial onboarding)
+  C) initialized device with FW (shown only once in fresh suite)
+
+Of course, an initialized device without FW is impossible (just for completness).
+
+There are two different behaviors: uninitialized goes to onboarding, initialized goes to suite,
+and two different UIs: a routine fresh device check, and more suspicious check if the device already has FW.
+  exception: a tooltip estimating how long does the onboarding take – that's a UI feature, but it's split along the initialized axis (related to onboarding).
+The complexity is there because of the overlap:
+  A) shows routine check UI, goes to onboarding.
+  B) shows suspicious UI, goes to onboarding.
+  C) shows suspicious UI, goes to suite.
+*/
 
 const firmwareInstalledChecklist = [
     {
@@ -97,88 +126,31 @@ const getNoFirmwareChecklist = (isBelowTablet: boolean) =>
         },
     ] as const satisfies SecurityChecklistItem[];
 
-type ManualDeviceCheckProps = {
-    goToDeviceAuthentication: () => void;
-    goToSuiteOrNextDevice: () => void;
-    shouldAuthenticateSelectedDevice: boolean;
+type BaseLayoutWithFlowProps = {
+    heading: ReactNode;
+    secondaryButtonLabel: ReactNode;
+    supportUrl: Url;
+    checklistItems: readonly SecurityChecklistItem[];
+    primaryButton: ReactNode;
 };
 
-export const ManualDeviceCheck = ({
-    goToDeviceAuthentication,
-    goToSuiteOrNextDevice,
-    shouldAuthenticateSelectedDevice,
-}: ManualDeviceCheckProps) => {
-    const { analytics, dispatch } = useServices(injectDesktopAnalytics, injectDispatch);
-    const { isBelowTablet } = useLayoutSize();
-    const recoveryStatus = useSelector(selectRecoveryStatus);
+/**
+ * Basic layout supporting both UI variants, which also implements the fully reversible check failure flow.
+ * The "failed" step has always the same UI.
+ */
+const BaseLayoutWithFlow = ({
+    heading,
+    secondaryButtonLabel,
+    supportUrl,
+    checklistItems,
+    primaryButton,
+}: BaseLayoutWithFlowProps) => {
     const device = useSelector(selectSelectedDevice);
-    const isVerticalLayout = useIsContentBelowBreakpoint(breakpoints.tablet);
-    const deviceId = device?.id;
-    const deviceModel = device?.features?.internal_model || DeviceModelInternal.UNKNOWN;
-    const isOnboardingActive = useSelector(selectIsOnboardingActive);
     const [isFailed, setIsFailed] = useState(false);
 
-    const { goToNextStep, rerun, updateAnalytics } = useOnboarding();
-
-    const initialized = !!device?.features?.initialized;
-    const isRecoveryInProgress = recoveryStatus === 'in-progress';
-    const isFirmwareInstalled = device?.firmware !== 'none';
-    const secondaryButtonText = isFirmwareInstalled ? 'TR_I_HAVE_NOT_USED_IT' : 'TR_I_HAVE_DOUBTS';
-    const primaryButtonTopText = isFirmwareInstalled
-        ? 'TR_YES_SETUP_MY_TREZOR'
-        : 'TR_SETUP_MY_TREZOR';
-    const headingText = isFirmwareInstalled
-        ? 'TR_USED_TREZOR_BEFORE'
-        : 'TR_ONBOARDING_DEVICE_CHECK';
-    const supportUrl = isFirmwareInstalled
-        ? TREZOR_SUPPORT_FW_ALREADY_INSTALLED
-        : TREZOR_SUPPORT_IS_MY_DEVICE_SAFE;
-
-    const checklistItems = isFirmwareInstalled
-        ? firmwareInstalledChecklist
-        : getNoFirmwareChecklist(isBelowTablet);
-
-    const toggleIsDeviceRejected = () => setIsFailed(current => !current);
-    const handleContinueButtonClick = () => {
-        dispatch(persistentDeviceDataActions.setManualDeviceCheckSuccess({ deviceId }));
-        if (shouldAuthenticateSelectedDevice) {
-            goToDeviceAuthentication();
-        } else {
-            goToSuiteOrNextDevice();
-        }
-    };
-
-    const handleSetupButtonClick = () => {
-        dispatch(persistentDeviceDataActions.setManualDeviceCheckSuccess({ deviceId }));
-        analytics.report(
-            {
-                type: events.deviceSetupStartedEvent.name,
-                payload: {
-                    deviceModel,
-                },
-            },
-            { force: true },
-        );
-
-        if (isRecoveryInProgress) {
-            rerun();
-        } else if (isOnboardingActive) {
-            goToNextStep('firmware');
-            // ensure that we are not stuck in the 'start' FullscreenApp
-            dispatch(gotoThunk({ routeName: 'onboarding-index' }));
-        } else {
-            dispatch(gotoThunk({ routeName: 'onboarding-index' }));
-        }
-    };
-
-    // Start measuring onboarding duration. In case of an ongoing recovery, the timer is started in middleware.
-    useEffect(() => {
-        if (!initialized && !isRecoveryInProgress) {
-            updateAnalytics({
-                startTime: Date.now(),
-            });
-        }
-    }, [initialized, isRecoveryInProgress, updateAnalytics]);
+    // Note: no need to persist failure, there are no details worth persisting, so we are persisting only explicit success or nothing.
+    const handleRejectDevice = () => setIsFailed(true);
+    const handleUndoRejectDevice = () => setIsFailed(false);
 
     const humanizedModelColor = useMemo(
         () =>
@@ -195,7 +167,7 @@ export const ManualDeviceCheck = ({
                     <SecurityCheckButton
                         intent="neutral"
                         priority="secondary"
-                        onClick={toggleIsDeviceRejected}
+                        onClick={handleUndoRejectDevice}
                     >
                         <Translation id="TR_BACK" />
                     </SecurityCheckButton>
@@ -220,16 +192,14 @@ export const ManualDeviceCheck = ({
                     priority="secondary"
                     size="small"
                     isUnderlined
-                    onClick={toggleIsDeviceRejected}
+                    onClick={handleRejectDevice}
                 >
                     <Translation id="TR_CONNECTED_DIFFERENT_DEVICE" />
                 </TextButton>
             </Column>
             <Divider margin={{ vertical: 32 }} />
             <Column gap={16}>
-                <H3>
-                    <Translation id={headingText} />
-                </H3>
+                <H3>{heading}</H3>
                 <SecurityChecklist items={checklistItems} />
             </Column>
             <ContentFlex
@@ -241,38 +211,194 @@ export const ManualDeviceCheck = ({
                 <SecurityCheckButton
                     intent="neutral"
                     priority="secondary"
-                    onClick={toggleIsDeviceRejected}
+                    onClick={handleRejectDevice}
                 >
-                    <Translation id={secondaryButtonText} />
+                    {secondaryButtonLabel}
                 </SecurityCheckButton>
-                {initialized ? (
-                    <SecurityCheckButton
-                        data-testid="@onboarding/complete-onboarding"
-                        onClick={handleContinueButtonClick}
-                        intent="brand"
-                    >
-                        <Translation id="TR_YES_CONTINUE" />
-                    </SecurityCheckButton>
-                ) : (
-                    <Tooltip
-                        content={
-                            <Note icon={ClockIcon}>
-                                <Translation id="TR_TAKES_N_MINUTES" />
-                            </Note>
-                        }
-                        placement="bottom"
-                        width={isVerticalLayout ? '100%' : undefined}
-                    >
-                        <SecurityCheckButton
-                            onClick={handleSetupButtonClick}
-                            data-testid="@onboarding/device-check/setup-button"
-                            intent="brand"
-                        >
-                            <Translation id={primaryButtonTopText} />
-                        </SecurityCheckButton>
-                    </Tooltip>
-                )}
+                {primaryButton}
             </ContentFlex>
         </SecurityCheckLayout>
+    );
+};
+
+type CommonUILayoutProps = {
+    onPrimaryButtonClick: () => void;
+    PrimaryButtonWrapper: FC<PropsWithChildren>;
+    dataTestId: string;
+};
+
+/**
+ * UI Layout with soft wording to routinely check a fresh device.
+ */
+const UILayoutWithoutFirmware = ({
+    onPrimaryButtonClick,
+    PrimaryButtonWrapper,
+    dataTestId,
+}: CommonUILayoutProps) => {
+    const { isBelowTablet } = useLayoutSize();
+
+    return (
+        <BaseLayoutWithFlow
+            heading={<Translation id="TR_ONBOARDING_DEVICE_CHECK" />}
+            secondaryButtonLabel={<Translation id="TR_I_HAVE_DOUBTS" />}
+            supportUrl={TREZOR_SUPPORT_IS_MY_DEVICE_SAFE}
+            checklistItems={getNoFirmwareChecklist(isBelowTablet)}
+            primaryButton={
+                <PrimaryButtonWrapper>
+                    <SecurityCheckButton
+                        onClick={onPrimaryButtonClick}
+                        data-testid={dataTestId}
+                        intent="brand"
+                    >
+                        <Translation id="TR_SETUP_MY_TREZOR" />
+                    </SecurityCheckButton>
+                </PrimaryButtonWrapper>
+            }
+        />
+    );
+};
+
+/**
+ * UI Layout with a more severe wording to raise suspicion, because the device already has a firmware.
+ */
+const UILayoutWithFirmware = ({
+    onPrimaryButtonClick,
+    PrimaryButtonWrapper,
+    dataTestId,
+}: CommonUILayoutProps) => (
+    <BaseLayoutWithFlow
+        heading={<Translation id="TR_USED_TREZOR_BEFORE" />}
+        secondaryButtonLabel={<Translation id="TR_I_HAVE_NOT_USED_IT" />}
+        supportUrl={TREZOR_SUPPORT_FW_ALREADY_INSTALLED}
+        checklistItems={firmwareInstalledChecklist}
+        primaryButton={
+            <PrimaryButtonWrapper>
+                <SecurityCheckButton
+                    data-testid={dataTestId}
+                    onClick={onPrimaryButtonClick}
+                    intent="brand"
+                >
+                    <Translation id="TR_YES_CONTINUE" />
+                </SecurityCheckButton>
+            </PrimaryButtonWrapper>
+        }
+    />
+);
+
+const TakesManyMinutesTooltip = ({ children }: PropsWithChildren) => {
+    const isVerticalLayout = useIsContentBelowBreakpoint(breakpoints.tablet);
+
+    return (
+        <Tooltip
+            content={
+                <Note icon={ClockIcon}>
+                    <Translation id="TR_TAKES_N_MINUTES" />
+                </Note>
+            }
+            placement="bottom"
+            width={isVerticalLayout ? '100%' : undefined}
+        >
+            {children}
+        </Tooltip>
+    );
+};
+
+/**
+ * Manual Device Check for an uninitialized device, which starts the onboarding flow.
+ */
+export const UninitializedManualDeviceCheck = () => {
+    const { analytics, dispatch } = useServices(injectDesktopAnalytics, injectDispatch);
+    const recoveryStatus = useSelector(selectRecoveryStatus);
+    const device = useSelector(selectSelectedDevice);
+    const deviceId = device?.id;
+    const deviceModel = device?.features?.internal_model || DeviceModelInternal.UNKNOWN;
+    const isOnboardingActive = useSelector(selectIsOnboardingActive);
+
+    const { goToNextStep, rerun, updateAnalytics } = useOnboarding();
+
+    const isRecoveryInProgress = recoveryStatus === 'in-progress';
+    const isFirmwareInstalled = device?.firmware !== 'none';
+
+    // Start measuring onboarding duration. In case of an ongoing recovery, the timer is started in middleware.
+    useEffect(() => {
+        if (!isRecoveryInProgress) {
+            updateAnalytics({
+                startTime: Date.now(),
+            });
+        }
+    }, [isRecoveryInProgress, updateAnalytics]);
+
+    const handleSetupButtonClick = () => {
+        dispatch(persistentDeviceDataActions.setManualDeviceCheckSuccess({ deviceId }));
+        analytics.report(
+            {
+                type: events.deviceSetupStartedEvent.name,
+                payload: {
+                    deviceModel,
+                },
+            },
+            { force: true },
+        );
+
+        if (isRecoveryInProgress) {
+            rerun();
+        } else if (isOnboardingActive) {
+            goToNextStep('firmware');
+            // ensure that we are not stuck in the 'start' FullscreenApp
+            dispatch(gotoThunk({ routeName: 'onboarding-index' }));
+        } else {
+            dispatch(gotoThunk({ routeName: 'onboarding-index' }));
+        }
+    };
+
+    const UILayoutComponent = isFirmwareInstalled ? UILayoutWithFirmware : UILayoutWithoutFirmware;
+
+    return (
+        <UILayoutComponent
+            onPrimaryButtonClick={handleSetupButtonClick}
+            PrimaryButtonWrapper={TakesManyMinutesTooltip}
+            dataTestId="@onboarding/device-check/setup-button"
+        />
+    );
+};
+
+type InitializedManualDeviceCheckProps = {
+    onSuccess: () => void;
+};
+
+/**
+ * Manual Device Check for an already initialized device, which is simply dismissed on success.
+ */
+export const InitializedManualDeviceCheck = ({ onSuccess }: InitializedManualDeviceCheckProps) => {
+    const { dispatch } = useServices(injectDispatch);
+    const device = useSelector(selectSelectedDevice);
+    const deviceId = device?.id;
+
+    const handleContinueButtonClick = () => {
+        dispatch(persistentDeviceDataActions.setManualDeviceCheckSuccess({ deviceId }));
+        onSuccess();
+    };
+
+    return (
+        <UILayoutWithFirmware
+            onPrimaryButtonClick={handleContinueButtonClick}
+            PrimaryButtonWrapper={({ children }: PropsWithChildren) => children}
+            dataTestId="@onboarding/complete-onboarding"
+        />
+    );
+};
+
+type ManualDeviceCheckProps = { onSuccess: () => void };
+
+// TODO this will be removed in subsequent refactoring, but in this commit, it works just like before!
+export const ManualDeviceCheck = ({ onSuccess }: ManualDeviceCheckProps) => {
+    const device = useSelector(selectSelectedDevice);
+
+    const initialized = !!device?.features?.initialized;
+
+    return initialized ? (
+        <InitializedManualDeviceCheck onSuccess={onSuccess} />
+    ) : (
+        <UninitializedManualDeviceCheck />
     );
 };
