@@ -11,7 +11,7 @@ import {
 import * as fixtures from './__fixtures__/rpc.fixture';
 import { readAccountState } from './account';
 import { decodeAccountEntry, decodeLedgerHeader, decodeTrustlineEntry } from './decode';
-import { readInclusionFee } from './fees';
+import { readInclusionFee, readSorobanInclusionFee } from './fees';
 import { readLatestLedger } from './ledger';
 import { buildAccountKey, buildTrustlineKey } from './ledgerKeys';
 import { readNetwork, readVersion } from './network';
@@ -122,15 +122,22 @@ describe('rpc/ledger', () => {
 });
 
 describe('rpc/fees', () => {
-    it('uses the p70 inclusion fee', async () => {
-        const server = asServer({
-            getFeeStats: () =>
-                Promise.resolve({ inclusionFee: { p70: '100' } } as Awaited<
-                    ReturnType<StellarRpcServer['getFeeStats']>
-                >),
-        });
+    // The two lanes surge-price independently, and the Soroban one runs well above the classic
+    // one even on a quiet network.
+    const server = asServer({
+        getFeeStats: () =>
+            Promise.resolve({
+                inclusionFee: { p70: '100' },
+                sorobanInclusionFee: { p70: '200' },
+            } as Awaited<ReturnType<StellarRpcServer['getFeeStats']>>),
+    });
 
+    it('uses the p70 inclusion fee', async () => {
         await expect(readInclusionFee(server)).resolves.toBe('100');
+    });
+
+    it('reads the Soroban lane, not the classic one', async () => {
+        await expect(readSorobanInclusionFee(server)).resolves.toBe('200');
     });
 });
 

@@ -220,9 +220,13 @@ export const composeRippleStellarTransactionFeeLevelsThunk = createThunk<
             });
         }
 
-        // A Soroban transfer also owes a resource fee that only a simulation can tell.
+        // A Soroban transfer also owes a resource fee that only a simulation can tell, and it is
+        // priced in the Soroban lane rather than the classic one `feeInfo` carries.
         let resourceFee: string | undefined;
-        if (account.networkType === 'stellar' && tokenInfo?.standard === 'STELLAR-CONTRACT') {
+        let sorobanInclusionFee: string | undefined;
+        const isContractTokenTransfer =
+            account.networkType === 'stellar' && tokenInfo?.standard === 'STELLAR-CONTRACT';
+        if (isContractTokenTransfer) {
             // The output amount is already in base units; the balance is kept in units.
             const amountToSend =
                 output.type === 'send-max' || output.type === 'send-max-noaddress'
@@ -234,24 +238,21 @@ export const composeRippleStellarTransactionFeeLevelsThunk = createThunk<
 
             const backendUrl = selectBlockchainUrl(getState(), account.symbol);
 
-            // Simulating needs a recipient; until then the levels stand on the inclusion fee alone.
+            // Simulating needs a recipient; until then only the inclusion half can be priced.
             if (address && backendUrl && new BigNumber(amountToSend).isGreaterThan(0)) {
                 const { prepareContractTokenTransfer } = await stellar();
 
-                // @ts-expect-error: indexing with noUncheckedIndexedAccess
-                const inclusionFee: string = predefinedLevels[0].feePerUnit;
-
                 try {
-                    ({ resourceFee } = await prepareContractTokenTransfer({
-                        backendUrl,
-                        descriptor: account.descriptor,
-                        sequence: account.misc.stellarSequence,
-                        inclusionFee,
-                        contract: tokenInfo.contract,
-                        destination: address,
-                        amount: amountToSend,
-                        isTestnet: isTestnet(account.symbol),
-                    }));
+                    ({ resourceFee, inclusionFee: sorobanInclusionFee } =
+                        await prepareContractTokenTransfer({
+                            backendUrl,
+                            descriptor: account.descriptor,
+                            sequence: account.misc.stellarSequence,
+                            contract: tokenInfo.contract,
+                            destination: address,
+                            amount: amountToSend,
+                            isTestnet: isTestnet(account.symbol),
+                        }));
                 } catch (error) {
                     const [reason = 'Simulation failed.'] = (
                         error instanceof Error ? error.message : String(error)
@@ -261,8 +262,26 @@ export const composeRippleStellarTransactionFeeLevelsThunk = createThunk<
                         reason: reason.slice(0, 200),
                     });
                 }
+            } else if (backendUrl) {
+                const { getStellarRpcServer, readSorobanInclusionFee } = await stellar();
+
+                // A placeholder priced in the wrong market is still worth avoiding.
+                sorobanInclusionFee = await readSorobanInclusionFee(
+                    getStellarRpcServer(backendUrl),
+                ).catch(() => undefined);
             }
         }
+
+        // The envelope has to be built with the fee the user approved, so a level the backend
+        // priced classically is repriced. A custom level is the user's own bid.
+        const composeLevels =
+            sorobanInclusionFee === undefined
+                ? predefinedLevels
+                : predefinedLevels.map(level =>
+                      level.label === 'custom'
+                          ? level
+                          : { ...level, feePerUnit: sorobanInclusionFee },
+                  );
 
         let requiredAmount: BigNumber | undefined;
         // additional check if recipient address is empty
@@ -294,23 +313,25 @@ export const composeRippleStellarTransactionFeeLevelsThunk = createThunk<
 
         // wrap response into PrecomposedLevels object where key is a FeeLevel label
         const resultLevels: PrecomposedLevels = {};
-        const response = predefinedLevels.map(level =>
+        const response = composeLevels.map(level =>
             calculate(availableBalance, output, level, requiredAmount, tokenInfo, resourceFee),
         );
         response.forEach((tx, index) => {
             // @ts-expect-error: indexing with noUncheckedIndexedAccess
-            const predefinedLevel: (typeof predefinedLevels)[number] = predefinedLevels[index];
-            const feeLabel = predefinedLevel.label;
+            const composeLevel: (typeof composeLevels)[number] = composeLevels[index];
+            const feeLabel = composeLevel.label;
             resultLevels[feeLabel] = tx;
         });
 
         const hasAtLeastOneValid = response.find(r => r.type !== 'error');
-        // there is no valid tx in predefinedLevels and there is no custom level
-        if (!hasAtLeastOneValid && !resultLevels.custom) {
+        // there is no valid tx in predefinedLevels and there is no custom level.
+        // A Soroban transfer is never rescued this way: the ladder walks the inclusion fee down a
+        // stroop at a time, while the resource fee it cannot touch is orders of magnitude larger.
+        if (!hasAtLeastOneValid && !resultLevels.custom && !isContractTokenTransfer) {
             const { minFee } = feeInfo;
-            const lastIndex = predefinedLevels.length - 1;
+            const lastIndex = composeLevels.length - 1;
             // @ts-expect-error: indexing with noUncheckedIndexedAccess
-            const lastLevel: (typeof predefinedLevels)[number] = predefinedLevels[lastIndex];
+            const lastLevel: (typeof composeLevels)[number] = composeLevels[lastIndex];
             const lastKnownFee = lastLevel.feePerUnit;
             let maxFee = new BigNumber(lastKnownFee).minus(1);
             // generate custom levels in range from lastKnownFee -1 to feeInfo.minFee (coinInfo in @trezor/connect)
@@ -453,8 +474,8 @@ export const signRippleStellarSendFormTransactionThunk = createThunk<
                         backendUrl,
                         descriptor: selectedAccount.descriptor,
                         sequence: selectedAccount.misc.stellarSequence,
-                        // Inclusion fee only; preparing adds the resource fee that the
-                        // displayed `fee` already carries.
+                        // What composing priced and the user approved: inclusion only, since
+                        // preparing adds back the resource fee the displayed `fee` already carries.
                         inclusionFee: precomposedTransaction.feePerByte,
                         contract: sentToken.contract,
                         destination: firstSignOutput.address,

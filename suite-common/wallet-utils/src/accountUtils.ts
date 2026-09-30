@@ -803,6 +803,9 @@ export const getAccountSpecific = (accountInfo: Partial<AccountInfo>, networkTyp
                 stellarSequence: misc?.stellarSequence ?? '0',
                 baseReserve: misc?.baseReserve ?? '0',
                 reserve: misc?.reserve ?? '0',
+                ...(misc?.stellarUnreadableContracts && {
+                    stellarUnreadableContracts: misc.stellarUnreadableContracts,
+                }),
             },
             marker: undefined,
             stellarCursor: accountInfo.stellarCursor,

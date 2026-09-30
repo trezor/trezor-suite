@@ -132,6 +132,8 @@ describe(readSep41Tokens.name, () => {
     const BATCH_FAILS = 'CCNJVGU2TKNJVGU2TKNJVGU2TKNJVGU2TKNJVGU2TKNJVGU2TKNJUHZI';
     const WARM_CACHE = 'CCNZXG43TONZXG43TONZXG43TONZXG43TONZXG43TONZXG43TONZXIBK';
     const BATCH_TIMES_OUT = 'CBGU2TKNJVGU2TKNJVGU2TKNJVGU2TKNJVGU2TKNJVGU2TKNJVGU3M7O';
+    const READ_THROWS = 'CCQ2DINBUGQ2DINBUGQ2DINBUGQ2DINBUGQ2DINBUGQ2DINBUGQ2CNSG';
+    const HOLDS_NOTHING = 'CCRKFIVCUKRKFIVCUKRKFIVCUKRKFIVCUKRKFIVCUKRKFIVCUKRKF52B';
 
     const metadataScVal = (decimal: number, symbol: string, name: string) =>
         nativeToScVal(
@@ -237,7 +239,7 @@ describe(readSep41Tokens.name, () => {
             ],
         });
 
-        const tokens = await readSep41Tokens(server, HOLDER, [BATCHED_A, BATCHED_B]);
+        const { tokens } = await readSep41Tokens(server, HOLDER, [BATCHED_A, BATCHED_B]);
 
         expect(getLedgerEntries).toHaveBeenCalledTimes(1);
         expect(simulateTransaction).not.toHaveBeenCalled();
@@ -260,7 +262,7 @@ describe(readSep41Tokens.name, () => {
         });
         respondToSimulations({ balance: bareBalance(99n) });
 
-        const tokens = await readSep41Tokens(server, HOLDER, [NO_BALANCE_ENTRY]);
+        const { tokens } = await readSep41Tokens(server, HOLDER, [NO_BALANCE_ENTRY]);
 
         expect(tokens).toEqual([
             {
@@ -284,7 +286,7 @@ describe(readSep41Tokens.name, () => {
         });
         respondToSimulations({ balance: bareBalance(5n) });
 
-        const tokens = await readSep41Tokens(server, HOLDER, [NO_METADATA_ENTRY]);
+        const { tokens } = await readSep41Tokens(server, HOLDER, [NO_METADATA_ENTRY]);
 
         expect(tokens).toEqual([
             {
@@ -306,7 +308,7 @@ describe(readSep41Tokens.name, () => {
             name: xdr.ScVal.scvString('Batch Fails'),
         });
 
-        const tokens = await readSep41Tokens(server, HOLDER, [BATCH_FAILS]);
+        const { tokens } = await readSep41Tokens(server, HOLDER, [BATCH_FAILS]);
 
         expect(tokens).toEqual([
             {
@@ -331,7 +333,7 @@ describe(readSep41Tokens.name, () => {
 
         const pending = readSep41Tokens(server, HOLDER, [BATCH_TIMES_OUT]);
         await jest.advanceTimersByTimeAsync(4_000);
-        const tokens = await pending;
+        const { tokens } = await pending;
 
         expect(tokens).toEqual([
             {
@@ -342,6 +344,29 @@ describe(readSep41Tokens.name, () => {
                 name: 'Slow Batch',
             },
         ]);
+    });
+
+    it('separates a contract that would not answer from one that answered it holds nothing', async () => {
+        simulateTransaction.mockImplementation((transaction: Transaction) => {
+            const [operation] = transaction.operations;
+            const invocation =
+                operation?.type === 'invokeHostFunction'
+                    ? (operation.func.value as unknown as xdr.InvokeContractArgs)
+                    : undefined;
+            const contract = invocation && Address.fromScAddress(invocation.contractAddress);
+
+            return contract?.toString() === READ_THROWS
+                ? Promise.reject(new Error('rpc is down'))
+                : Promise.resolve({ result: { retval: undefined } });
+        });
+
+        const { tokens, unreadable } = await readSep41Tokens(server, HOLDER, [
+            READ_THROWS,
+            HOLDS_NOTHING,
+        ]);
+
+        expect(tokens).toEqual([]);
+        expect(unreadable).toEqual([READ_THROWS]);
     });
 
     it('stops asking for the instance once a contract has described itself', async () => {
@@ -392,6 +417,18 @@ describe(prepareContractTransaction.name, () => {
 });
 
 describe(prepareContractTokenTransfer.name, () => {
+    const RECIPIENT = 'GC23LNNVWW23LNNVWW23LNNVWW23LNNVWW23LNNVWW23LNNVWW23LKW6';
+
+    const transfer = (inclusionFee?: string) => ({
+        backendUrl: 'https://stellar.mock',
+        descriptor: HOLDER,
+        sequence: '1',
+        inclusionFee,
+        contract: CONTRACT,
+        destination: RECIPIENT,
+        amount: '10',
+    });
+
     afterEach(() => jest.restoreAllMocks());
 
     it('reports a failed simulation before anything reaches the device', async () => {
@@ -399,17 +436,54 @@ describe(prepareContractTokenTransfer.name, () => {
             error: 'HostError: Error(Contract, #1)',
         } as rpc.Api.SimulateTransactionErrorResponse);
 
-        await expect(
-            prepareContractTokenTransfer({
-                backendUrl: 'https://stellar.mock',
-                descriptor: HOLDER,
-                sequence: '1',
-                inclusionFee: '200',
-                contract: CONTRACT,
-                destination: 'GC23LNNVWW23LNNVWW23LNNVWW23LNNVWW23LNNVWW23LNNVWW23LKW6',
-                amount: '10',
-            }),
-        ).rejects.toBeInstanceOf(SorobanSimulationError);
+        await expect(prepareContractTokenTransfer(transfer('200'))).rejects.toBeInstanceOf(
+            SorobanSimulationError,
+        );
+    });
+
+    it('prices the transfer in the Soroban lane when no fee is given', async () => {
+        const getFeeStats = jest.spyOn(rpc.Server.prototype, 'getFeeStats').mockResolvedValue({
+            inclusionFee: { p70: '100' },
+            sorobanInclusionFee: { p70: '200' },
+        } as rpc.Api.GetFeeStatsResponse);
+        jest.spyOn(rpc.Server.prototype, 'simulateTransaction').mockResolvedValue({
+            error: 'HostError: Error(Contract, #1)',
+        } as rpc.Api.SimulateTransactionErrorResponse);
+
+        await expect(prepareContractTokenTransfer(transfer())).rejects.toBeInstanceOf(
+            SorobanSimulationError,
+        );
+        expect(getFeeStats).toHaveBeenCalled();
+    });
+
+    it('keeps the fee it was given, so signing rebuilds what composing quoted', async () => {
+        const getFeeStats = jest.spyOn(rpc.Server.prototype, 'getFeeStats');
+        jest.spyOn(rpc.Server.prototype, 'simulateTransaction').mockResolvedValue({
+            error: 'HostError: Error(Contract, #1)',
+        } as rpc.Api.SimulateTransactionErrorResponse);
+
+        await expect(prepareContractTokenTransfer(transfer('321'))).rejects.toBeInstanceOf(
+            SorobanSimulationError,
+        );
+        expect(getFeeStats).not.toHaveBeenCalled();
+    });
+
+    it('reports the fee it built with next to the resource fee the simulation added', async () => {
+        jest.spyOn(rpc.Server.prototype, 'getFeeStats').mockResolvedValue({
+            inclusionFee: { p70: '100' },
+            sorobanInclusionFee: { p70: '200' },
+        } as rpc.Api.GetFeeStatsResponse);
+        jest.spyOn(rpc.Server.prototype, 'simulateTransaction').mockResolvedValue(
+            {} as rpc.Api.SimulateTransactionSuccessResponse,
+        );
+        jest.spyOn(rpc, 'assembleTransaction').mockReturnValue({
+            build: () => ({ fee: '65736' }) as Transaction,
+        } as ReturnType<typeof rpc.assembleTransaction>);
+
+        await expect(prepareContractTokenTransfer(transfer())).resolves.toMatchObject({
+            inclusionFee: '200',
+            resourceFee: '65536',
+        });
     });
 });
 
@@ -482,7 +556,7 @@ describe('readSep41Tokens fallback pool', () => {
         const contracts = contractList(30, 1);
         const { server, simulateTransaction, getPeak } = countingServer();
 
-        const tokens = await readSep41Tokens(server, HOLDER, contracts);
+        const { tokens } = await readSep41Tokens(server, HOLDER, contracts);
 
         expect(getPeak()).toBeLessThanOrEqual(24);
         expect(simulateTransaction).toHaveBeenCalledTimes(contracts.length * 4);
@@ -498,9 +572,11 @@ describe('readSep41Tokens fallback pool', () => {
             if (calls >= 24) now = 20_000;
         });
 
-        const tokens = await readSep41Tokens(server, HOLDER, contracts);
+        const { tokens, unreadable } = await readSep41Tokens(server, HOLDER, contracts);
 
         expect(tokens.map(({ contract }) => contract)).toEqual(contracts.slice(0, 6));
+        // Not read is not the same as not held; the rest are named so they can be kept.
+        expect(unreadable).toEqual(contracts.slice(6));
     });
 
     it('drops a cached read that ran out of time instead of waiting on it again', async () => {
@@ -516,7 +592,7 @@ describe('readSep41Tokens fallback pool', () => {
 
         const timedOut = readSep41Tokens(server, HOLDER, [contract]);
         await jest.advanceTimersByTimeAsync(10_000);
-        expect(await timedOut).toEqual([]);
+        expect(await timedOut).toEqual({ tokens: [], unreadable: [contract] });
         // Four calls per attempt: the balance and the three metadata entry points.
         expect(simulateTransaction).toHaveBeenCalledTimes(4);
 
@@ -525,7 +601,7 @@ describe('readSep41Tokens fallback pool', () => {
         const next = readSep41Tokens(server, HOLDER, [contract]);
         await jest.advanceTimersByTimeAsync(10_000);
         await jest.advanceTimersByTimeAsync(10_000);
-        expect(await next).toEqual([]);
+        expect(await next).toEqual({ tokens: [], unreadable: [contract] });
         expect(simulateTransaction).toHaveBeenCalledTimes(8);
     });
 });
