@@ -10476,6 +10476,19 @@ export const messages = defineMessages({
         defaultMessage:
             'We recommend leaving {amount} {nativeSymbol} so you can pay future network fees.',
     },
+    TR_EARN_YIELD_WRAP_RESERVE_KEPT: {
+        id: 'TR_EARN_YIELD_WRAP_RESERVE_KEPT',
+        defaultMessage: 'We left {amount} {nativeSymbol} so you can pay future network fees.',
+    },
+    TR_EARN_YIELD_INSUFFICIENT_FEE_RESERVE: {
+        id: 'TR_EARN_YIELD_INSUFFICIENT_FEE_RESERVE',
+        defaultMessage: 'You need at least {amount} {nativeSymbol} to cover the network fees.',
+    },
+    TR_EARN_YIELD_FEE_RESERVE_TOP_UP_RECOMMENDED: {
+        id: 'TR_EARN_YIELD_FEE_RESERVE_TOP_UP_RECOMMENDED',
+        defaultMessage:
+            'We recommend holding at least {amount} {nativeSymbol} to cover future network fees, including withdrawal.',
+    },
     TR_EARN_YIELD_WRAP_RECEIVING: {
         id: 'TR_EARN_YIELD_WRAP_RECEIVING',
         defaultMessage: 'Receiving',

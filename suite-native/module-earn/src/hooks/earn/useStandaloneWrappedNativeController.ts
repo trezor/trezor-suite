@@ -4,6 +4,7 @@ import { type RouteProp, useRoute } from '@react-navigation/native';
 
 import { events } from '@suite-common/analytics';
 import { getNetwork, getNetworkDisplaySymbol } from '@suite-common/wallet-config';
+import { YIELD_GAS_RESERVE_FALLBACK } from '@suite-common/wallet-constants';
 import {
     type AccountsRootState,
     type WrappedNativeFlowType,
@@ -121,13 +122,20 @@ export const useStandaloneWrappedNativeController = (flowType: WrappedNativeFlow
         form,
         amountInput: {
             balance: spentBalance,
-            maxAmount: isWrap ? getMaxWrapAmount(account.formattedBalance) : undefined,
+            maxAmount: isWrap
+                ? getMaxWrapAmount(account.formattedBalance, YIELD_GAS_RESERVE_FALLBACK.toFixed())
+                : undefined,
             tokenDecimals: isWrap ? undefined : wrappedNative.decimals,
             onCurrencyChange: reportCurrencyToggle,
             onMaxPress: flow.reportMaxSelected,
         },
         isReserveRecommended:
-            isWrap && shouldRecommendWrapReserve(amountValue ?? '', account.formattedBalance),
+            isWrap &&
+            shouldRecommendWrapReserve({
+                amountInput: amountValue ?? '',
+                nativeFormattedBalance: account.formattedBalance,
+                reserve: YIELD_GAS_RESERVE_FALLBACK.toFixed(),
+            }),
         isDeviceNotConnectedVisible: flow.isDeviceNotConnectedVisible,
         isFirmwareOutdatedVisible: flow.isFirmwareOutdatedVisible,
         hasFlowFailed: flow.hasFlowFailed,

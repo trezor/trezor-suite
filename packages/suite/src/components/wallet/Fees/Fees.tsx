@@ -1,7 +1,8 @@
+import { useFetchFees } from '@suite-common/wallet-core';
 import { Column } from '@trezor/components';
 
 import { CollapsibleFees, type CollapsibleFeesProps } from './CollapsibleFees/CollapsibleFees';
-import { useFetchFees } from './CollapsibleFees/hooks/useFetchFees';
+import { useIsFeeRefetchDisabled } from './CollapsibleFees/hooks/useIsFeeRefetchDisabled';
 import { FieldErrorBanner } from './FieldErrorBanner';
 
 export type FeesProps = Pick<
@@ -26,7 +27,8 @@ export const Fees = ({
     headerTypographyStyle,
     isOpen,
 }: FeesProps) => {
-    useFetchFees({ networkSymbol: account.symbol });
+    const isRefetchDisabled = useIsFeeRefetchDisabled();
+    useFetchFees({ networkSymbol: account.symbol, isRefetchDisabled });
 
     return (
         <Column gap={16} overflow="unset">

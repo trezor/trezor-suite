@@ -3,6 +3,7 @@ import { useCallback, useEffect } from 'react';
 import { type RouteProp, useIsFocused, useNavigation, useRoute } from '@react-navigation/native';
 
 import { getNetwork, getNetworkDisplaySymbol } from '@suite-common/wallet-config';
+import { YIELD_GAS_RESERVE_FALLBACK } from '@suite-common/wallet-constants';
 import {
     getMaxWrapAmount,
     getYieldVaultContractAddress,
@@ -143,7 +144,7 @@ export const useYieldDepositWrapController = () => {
         form: step.form,
         amountInput: {
             balance: nativeBalance,
-            maxAmount: getMaxWrapAmount(nativeBalance),
+            maxAmount: getMaxWrapAmount(nativeBalance, YIELD_GAS_RESERVE_FALLBACK.toFixed()),
             onCurrencyChange: reportCurrencyToggle,
             onMaxPress: reportMaxSelected,
         },
@@ -153,7 +154,11 @@ export const useYieldDepositWrapController = () => {
             tokenContract: toTokenAddress(resolvedToken.contractAddress ?? ''),
             tokenDecimals: resolvedToken.decimals,
         },
-        isReserveRecommended: shouldRecommendWrapReserve(amountValue ?? '', nativeBalance),
+        isReserveRecommended: shouldRecommendWrapReserve({
+            amountInput: amountValue ?? '',
+            nativeFormattedBalance: nativeBalance,
+            reserve: YIELD_GAS_RESERVE_FALLBACK.toFixed(),
+        }),
         isDeviceNotConnectedVisible: simulation.isDeviceNotConnectedVisible,
         isFirmwareOutdatedVisible: simulation.isFirmwareOutdatedVisible,
         feeSection: {
