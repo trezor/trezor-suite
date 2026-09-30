@@ -53,6 +53,8 @@ export type ConnectInitState = DeviceRootState &
     MessageSystemRootState &
     WalletSettingsRootState;
 
+// `dispatch` must be the store dispatch: defaultTrezorUIEventHandlerThunk reads
+// connectInitUiEventHooks from the thunk extra services.
 export type ConnectInitDeps = DispatchDep & {
     getState: () => ConnectInitState;
     analytics: Pick<AnalyticsDep['analytics'], 'report'>;
