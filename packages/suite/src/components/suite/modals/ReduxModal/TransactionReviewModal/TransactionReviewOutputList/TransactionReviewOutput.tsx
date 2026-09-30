@@ -564,7 +564,7 @@ const getOutputLines = ({
 
             return [
                 {
-                    id: `${type}-amount`,
+                    id: 'approve-amount',
                     label: (
                         <Translation
                             id={isApprovalTx ? 'TR_APPROVE_AMOUNT_TITLE' : 'TR_REVOKE_AMOUNT_TITLE'}
@@ -575,7 +575,7 @@ const getOutputLines = ({
                     type,
                 },
                 {
-                    id: `${type}-chain`,
+                    id: 'approve-chain',
                     label: <Translation id="TR_CHAIN" />,
                     value: value2,
                     type: 'data',
