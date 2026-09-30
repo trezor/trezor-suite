@@ -1,38 +1,39 @@
 import { type UnknownAction } from '@reduxjs/toolkit';
 
+import { type WithServices } from '@suite-common/redux-utils';
+
 import {
     type CreateTestStoreParams,
     type TestStoreResult,
     createTestStore,
 } from './createTestStore';
 
-type TestCompositionRootServices<
-    TStore extends TestStoreResult,
-    TServices extends object,
-> = TServices & Pick<TStore, 'dispatch' | 'getActions' | 'clearActions'>;
+type TestExtra = WithServices<object>;
 
-export type TestAppRoot<
-    TStore extends TestStoreResult = TestStoreResult,
-    TServices extends object = object,
-> = {
-    store: Omit<TStore, 'getActions' | 'clearActions'>;
-    services: TestCompositionRootServices<TStore, TServices>;
+export type TestAppRoot = {
+    store: Omit<TestStoreResult, 'getActions' | 'clearActions'>;
+    services: Pick<TestStoreResult, 'dispatch' | 'getActions' | 'clearActions'>;
 };
 
-type CreateTestCompositionRootParams<S, A extends UnknownAction, Extra> = Omit<
+// `extra` can be omitted only when `Extra` requires no services.
+type ExtraParams<Extra extends TestExtra> = TestExtra extends Extra
+    ? { extra?: Extra }
+    : { extra: Extra };
+
+type CreateTestCompositionRootParams<Extra extends TestExtra, S, A extends UnknownAction> = Omit<
     CreateTestStoreParams<S, A, Extra>,
     'extra'
 > &
-    ({ services: object } extends Extra ? { extra?: Extra } : { extra: Extra });
+    ExtraParams<Extra>;
 
 export const createTestCompositionRoot = <
-    Extra extends { services: object } = { services: object },
+    Extra extends TestExtra = TestExtra,
     S = any,
     A extends UnknownAction = UnknownAction,
 >({
     extra = { services: {} } as Extra,
     ...storeParams
-}: CreateTestCompositionRootParams<S, A, Extra>) => {
+}: CreateTestCompositionRootParams<Extra, S, A>) => {
     const { getActions, clearActions, ...store } = createTestStore({
         ...storeParams,
         extra,
