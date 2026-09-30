@@ -1,11 +1,12 @@
 import { combineReducers } from '@reduxjs/toolkit';
 
 import { mockActionType } from '@suite-common/redux-utils/mocks';
-import { createTestStore } from '@suite-common/test-utils';
+import { createTestCompositionRoot } from '@suite-common/test-utils';
 
 import * as fixtures from './__fixtures__/messageSystemActions';
 
 import {
+    type MessageSystemRootState,
     type MessageSystemState,
     initMessageSystemThunk,
     messageSystemActions,
@@ -16,24 +17,18 @@ const messageSystemReducer = prepareMessageSystemReducer({
     actionTypes: { storageLoad: mockActionType('storageLoad') },
 });
 
-const getInitialState = (state?: MessageSystemState) => ({
+const getInitialState = (state?: MessageSystemState): MessageSystemRootState => ({
     messageSystem: {
         ...messageSystemReducer(undefined, { type: 'foo' } as any),
         ...state,
     },
 });
 
-type State = ReturnType<typeof getInitialState>;
-
-const initStore = (preloadedState: State) => {
-    const store = createTestStore({
-        extra: undefined,
+const initStore = (preloadedState: MessageSystemRootState) =>
+    createTestCompositionRoot<void, MessageSystemRootState>({
         preloadedState,
         reducer: combineReducers({ messageSystem: messageSystemReducer }),
-    });
-
-    return store;
-};
+    }).services.store;
 
 jest.mock('../files/config.v1.ts', () => {
     const { validJwsWithSequence10 } = require('./__fixtures__/messageSystemActions');

@@ -1,16 +1,17 @@
 import { combineReducers } from '@reduxjs/toolkit';
 
-import { createTestStore } from '@suite-common/test-utils';
+import { createTestCompositionRoot } from '@suite-common/test-utils';
 import { type AccountKey } from '@suite-common/wallet-types';
 
 import { sellTradingFixtures } from './__fixtures__/sellTradingReducer';
-import { tradingSellActions, tradingSellReducer } from './sellReducer';
+import { type TradingSellState, tradingSellActions, tradingSellReducer } from './sellReducer';
+
+type State = { wallet: { trading: { sell: TradingSellState } } };
 
 describe('tradingSellReducer', () => {
     sellTradingFixtures.forEach(fixture => {
         it(fixture.description, () => {
-            const store = createTestStore({
-                extra: undefined,
+            const { store } = createTestCompositionRoot<void, State>({
                 reducer: combineReducers({
                     wallet: combineReducers({
                         trading: combineReducers({
@@ -25,7 +26,7 @@ describe('tradingSellReducer', () => {
                         },
                     },
                 },
-            });
+            }).services;
             fixture.actions.forEach(action => {
                 store.dispatch(action);
             });

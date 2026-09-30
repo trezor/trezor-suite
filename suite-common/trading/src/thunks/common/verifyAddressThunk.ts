@@ -23,7 +23,7 @@ export interface VerifyAddressThunk {
     path: string | undefined;
 }
 
-type VerifyAddressThunkState = ConfirmAddressOnDeviceThunkState &
+export type VerifyAddressThunkState = ConfirmAddressOnDeviceThunkState &
     TradingRootState &
     WalletSettingsRootState;
 

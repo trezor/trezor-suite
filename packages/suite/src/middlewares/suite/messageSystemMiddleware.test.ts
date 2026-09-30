@@ -1,20 +1,24 @@
 import { type Reducer, type UnknownAction, combineReducers, createReducer } from '@reduxjs/toolkit';
 
-import { torReducer } from '@suite/tor';
-import { prepareDeviceReducer } from '@suite-common/device';
-import { geolocationReducer } from '@suite-common/geolocation';
-import { messageSystemActions, prepareMessageSystemReducer } from '@suite-common/message-system';
+import { type TorState, torReducer } from '@suite/tor';
+import { type DeviceReducerState, prepareDeviceReducer } from '@suite-common/device';
+import { type DiscreetModeState } from '@suite-common/discreet-mode';
+import { type GeolocationState, geolocationReducer } from '@suite-common/geolocation';
+import {
+    type MessageSystemState,
+    messageSystemActions,
+    prepareMessageSystemReducer,
+} from '@suite-common/message-system';
 import {
     getValidExperimentIds,
     getValidMessages,
 } from '@suite-common/message-system/src/messageSystemUtils';
 import { mockActionType, mockReducer } from '@suite-common/redux-utils/mocks';
 import { type Action } from '@suite-common/suite-types';
-import { createTestStore } from '@suite-common/test-utils';
+import { createTestCompositionRoot } from '@suite-common/test-utils';
 
-import { type AppState } from 'src/reducers/store';
-import suiteReducer from 'src/reducers/suite/suiteReducer';
-import { walletReducers } from 'src/reducers/wallet';
+import suiteReducer, { type SuiteState } from 'src/reducers/suite/suiteReducer';
+import { type WalletState, walletReducers } from 'src/reducers/wallet';
 
 import messageSystemMiddleware from './messageSystemMiddleware';
 
@@ -23,12 +27,10 @@ jest.mock('@suite-common/message-system/src/messageSystemUtils', () => ({
     getValidMessages: jest.fn(),
     getValidExperimentIds: jest.fn(),
 }));
-const messageSystemReducer: Reducer<
-    ReturnType<ReturnType<typeof prepareMessageSystemReducer>>,
-    UnknownAction
-> = prepareMessageSystemReducer({
-    actionTypes: { storageLoad: mockActionType('storageLoad') },
-});
+const messageSystemReducer: Reducer<MessageSystemState, UnknownAction> =
+    prepareMessageSystemReducer({
+        actionTypes: { storageLoad: mockActionType('storageLoad') },
+    });
 const deviceReducer = prepareDeviceReducer({
     actionTypes: {
         setDeviceMetadata: mockActionType('setDeviceMetadata'),
@@ -42,15 +44,11 @@ const deviceReducer = prepareDeviceReducer({
     },
 });
 
-type WalletsState = ReturnType<typeof walletReducers>;
-type MessageSystemState = ReturnType<typeof messageSystemReducer>;
-type SuiteState = ReturnType<typeof suiteReducer>;
-
 const getInitialState = (
     messageSystem?: Partial<MessageSystemState>,
-    wallet?: Partial<WalletsState>,
+    wallet?: Partial<WalletState>,
     suite?: Partial<SuiteState>,
-): Partial<AppState> => ({
+): Pick<StoreState, 'wallet' | 'messageSystem' | 'suite' | 'geolocation'> => ({
     wallet: {
         ...walletReducers(undefined, { type: 'foo' } as any),
         ...wallet,
@@ -89,16 +87,24 @@ const reducer = combineReducers({
     device: deviceReducer,
     geolocation: geolocationReducer,
 });
+type StoreState = {
+    wallet: WalletState;
+    messageSystem: MessageSystemState;
+    suite: SuiteState;
+    tor: TorState;
+    discreetMode: DiscreetModeState;
+    device: DeviceReducerState;
+    geolocation: GeolocationState;
+};
 
-type State = ReturnType<typeof getInitialState>;
-
-const initStore = (preloadedState: State) => {
-    const store = createTestStore({
-        extra: undefined,
+const initStore = (
+    preloadedState: Pick<StoreState, 'wallet' | 'messageSystem' | 'suite' | 'geolocation'>,
+) => {
+    const { store } = createTestCompositionRoot<void, StoreState>({
         reducer,
         preloadedState,
         middleware: [messageSystemMiddleware],
-    });
+    }).services;
     store.subscribe(() => {
         const action = store.getActions().pop();
         if (action) {

@@ -1,7 +1,8 @@
-import { locksReducer } from '@suite/locks';
-import { modalReducer } from '@suite/modal';
-import { routerReducer } from '@suite/router';
+import { type LocksState, locksReducer } from '@suite/locks';
+import { type State as ModalState, modalReducer } from '@suite/modal';
+import { type RouterState, type SuiteRouterHistoryDep, routerReducer } from '@suite/router';
 import { mockSuiteRouterHistory } from '@suite/router/mocks';
+import { type WithServices } from '@suite-common/redux-utils';
 import { createTestCompositionRoot, renderHookWithStoreProvider } from '@suite-common/test-utils';
 
 import { useBuyFlow } from './useBuyFlow';
@@ -18,6 +19,13 @@ jest.mock('@suite-common/trading', () => {
     };
 });
 
+type State = {
+    router: RouterState;
+    locks: LocksState;
+    modal: ModalState;
+    wallet: { trading: { buy: { quotes: never[] } } };
+};
+
 type Props = {
     isFromRedirect?: boolean;
     quotesRequest?: unknown;
@@ -30,10 +38,7 @@ const renderBuyFlow = ({
     isAmountEmpty = false,
 }: Props = {}) => {
     const suiteRouterHistory = { ...mockSuiteRouterHistory(), navigate: jest.fn() };
-    const root = createTestCompositionRoot({
-        extra: {
-            services: { suiteRouterHistory },
-        },
+    const { services } = createTestCompositionRoot<WithServices<SuiteRouterHistoryDep>, State>({
         reducer: {
             router: routerReducer,
             locks: locksReducer,
@@ -43,6 +48,7 @@ const renderBuyFlow = ({
         preloadedState: {
             wallet: { trading: { buy: { quotes: [] } } },
         },
+        services: () => ({ suiteRouterHistory }),
     });
 
     renderHookWithStoreProvider(
@@ -52,10 +58,10 @@ const renderBuyFlow = ({
                 quotesRequest: quotesRequest as never,
                 isAmountEmpty,
             }),
-        { root },
+        { services },
     );
 
-    const { getActions } = root.services;
+    const { getActions } = services.store;
 
     return { getActions, suiteRouterHistory };
 };

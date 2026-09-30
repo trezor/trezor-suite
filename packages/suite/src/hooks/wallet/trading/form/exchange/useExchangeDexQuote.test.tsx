@@ -106,7 +106,7 @@ const renderExchangeDexQuote = ({
     isFormLoading?: boolean;
     isLoadingQuote?: boolean;
 }) => {
-    const root = createTestCompositionRoot({});
+    const { services } = createTestCompositionRoot<void, unknown>({});
 
     return renderHookWithStoreProvider(
         () => {
@@ -128,7 +128,7 @@ const renderExchangeDexQuote = ({
 
             return { dex, methods };
         },
-        { root },
+        { services },
     );
 };
 

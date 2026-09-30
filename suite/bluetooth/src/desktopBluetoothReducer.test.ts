@@ -2,12 +2,13 @@ import { combineReducers } from '@reduxjs/toolkit';
 
 import { type BluetoothManufacturerData } from '@suite-common/bluetooth';
 import { mockActionType } from '@suite-common/redux-utils/mocks';
-import { createTestStore } from '@suite-common/test-utils';
+import { createTestCompositionRoot } from '@suite-common/test-utils';
 import { asBluetoothDeviceId } from '@trezor/connect';
 import { DeviceModelInternal } from '@trezor/device-utils';
 
 import { type DesktopBluetoothDevice } from './DesktopBluetoothDevice';
 import {
+    type WithBluetoothRootState,
     initialDesktopBluetoothState,
     prepareDesktopBluetoothReducer,
     startConnectingBluetoothDevice,
@@ -35,13 +36,12 @@ const disconnectedDeviceB: DesktopBluetoothDevice = {
 
 describe('desktopBluetoothReducer', () => {
     it('starts and stops the auto-connection of the device', () => {
-        const store = createTestStore({
-            extra: undefined,
+        const { store } = createTestCompositionRoot<void, WithBluetoothRootState>({
             reducer: combineReducers({ bluetooth: bluetoothReducer }),
             preloadedState: {
                 bluetooth: { ...initialDesktopBluetoothState, knownDevices: [disconnectedDeviceB] },
             },
-        });
+        }).services;
 
         store.dispatch(startConnectingBluetoothDevice({ deviceId: disconnectedDeviceB.id }));
         expect(store.getState().bluetooth.connectingDeviceIds).toEqual([disconnectedDeviceB.id]);

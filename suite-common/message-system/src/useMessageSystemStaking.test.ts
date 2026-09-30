@@ -5,7 +5,7 @@ import { createTestCompositionRoot, renderHookWithStoreProvider } from '@suite-c
 import { asNetworkSymbol } from '@suite-common/wallet-config';
 
 import { messageSystemInitialState, prepareMessageSystemReducer } from './messageSystemReducer';
-import { type MessageSystemState } from './messageSystemTypes';
+import { type MessageSystemRootState, type MessageSystemState } from './messageSystemTypes';
 import { useMessageSystemStaking } from './useMessageSystemStaking';
 
 const ethSymbol = asNetworkSymbol('eth');
@@ -66,18 +66,18 @@ const stateWithDisabledFeatures = {
     },
 } as unknown as MessageSystemState;
 
-const createRoot = (state: MessageSystemState = stateWithDisabledFeatures) =>
-    createTestCompositionRoot({
+const createTestServices = (state: MessageSystemState = stateWithDisabledFeatures) =>
+    createTestCompositionRoot<void, MessageSystemRootState>({
         reducer: combineReducers({ messageSystem: messageSystemReducer }),
         preloadedState: { messageSystem: state } as { messageSystem: MessageSystemState },
-    });
+    }).services;
 
 const renderHook = (
     networkSymbol: Parameters<typeof useMessageSystemStaking>[0]['networkSymbol'],
     locale = 'en',
 ) =>
     renderHookWithStoreProvider(() => useMessageSystemStaking({ networkSymbol, locale }), {
-        root: createRoot(),
+        services: createTestServices(),
     });
 
 describe('useMessageSystemStaking', () => {
@@ -128,14 +128,14 @@ describe('useMessageSystemStaking', () => {
     );
 
     it('returns not disabled when no feature messages configured', () => {
-        const root = createRoot(messageSystemInitialState);
+        const services = createTestServices(messageSystemInitialState);
         const { result } = renderHookWithStoreProvider(
             () =>
                 useMessageSystemStaking({
                     networkSymbol: ethSymbol,
                     locale: 'en',
                 }),
-            { root },
+            { services },
         );
 
         expect(result.current).toMatchObject({

@@ -7,6 +7,7 @@ import { createTestCompositionRoot } from '@suite-common/test-utils';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { type FormStateTradingCryptoCurrency } from '@suite-common/wallet-types';
 
+import { type AppState } from 'src/reducers/store';
 import { renderWithProviders } from 'src/support/test-utils/hooksHelper';
 
 import {
@@ -30,13 +31,12 @@ const cryptoReceive: FormStateTradingCryptoCurrency = {
 };
 
 const renderAssets = (receive: TransactionReviewOutputAssetsProps['receive']) => {
-    const root = createTestCompositionRoot({
-        extra: { services: {} },
+    const { services } = createTestCompositionRoot<void, AppState>({
         preloadedState: mockInitialAppState,
     });
 
     renderWithProviders(
-        root,
+        services,
         <TransactionReviewOutputAssets
             title="My assets"
             state="active"

@@ -20,7 +20,12 @@ const messageSystemReducer = prepareMessageSystemReducer({
     actionTypes: { storageLoad: mockActionType('storageLoad') },
 });
 
-const createRoot = (
+type State = {
+    messageSystem: MessageSystemState;
+    analytics: { instanceId: string | undefined };
+};
+
+const createTestServices = (
     overrides: {
         messageSystem?: MessageSystemState;
         instanceId?: string | undefined;
@@ -30,42 +35,44 @@ const createRoot = (
     // distinguish an explicit `instanceId: undefined` from an absent key
     const instanceId = 'instanceId' in overrides ? overrides.instanceId : 'test-instance-id';
 
-    return createTestCompositionRoot({
+    return createTestCompositionRoot<void, State>({
         reducer: combineReducers({
             messageSystem: messageSystemReducer,
             analytics: (state = { instanceId }) => state,
         }),
         preloadedState: { messageSystem } as { messageSystem: MessageSystemState },
-    });
+    }).services;
 };
 
-const renderUseExperiment = (root = createRoot()) =>
-    renderHookWithStoreProvider(() => useExperiment(ExperimentId.tradingFeedbackForm), { root });
+const renderUseExperiment = (services = createTestServices()) =>
+    renderHookWithStoreProvider(() => useExperiment(ExperimentId.tradingFeedbackForm), {
+        services,
+    });
 
 describe('useExperiment', () => {
     it('returns undefined experiment and variant when experiment is not valid', () => {
-        const root = createRoot({ messageSystem: messageSystemInitialState });
-        const { result } = renderUseExperiment(root);
+        const services = createTestServices({ messageSystem: messageSystemInitialState });
+        const { result } = renderUseExperiment(services);
 
         expect(result.current.experiment).toBeUndefined();
         expect(result.current.activeExperimentVariant).toBeUndefined();
     });
 
     it('returns undefined variant when instanceId is missing', () => {
-        const root = createRoot({ instanceId: undefined });
-        const { result } = renderUseExperiment(root);
+        const services = createTestServices({ instanceId: undefined });
+        const { result } = renderUseExperiment(services);
 
         expect(result.current.experiment).toBeDefined();
         expect(result.current.activeExperimentVariant).toBeUndefined();
     });
 
     it('assigns the only group when it covers 100 %', () => {
-        const root = createRoot({
+        const services = createTestServices({
             messageSystem: createMessageSystemState({
                 groups: [{ variant: 'A', percentage: 100 }],
             }),
         });
-        const { result } = renderUseExperiment(root);
+        const { result } = renderUseExperiment(services);
 
         expect(result.current.activeExperimentVariant?.variant).toBe('A');
     });
@@ -82,7 +89,7 @@ describe('useExperiment', () => {
         ({ inclusion, expectedVariant }) => {
             jest.mocked(getIntegerInRangeFromString).mockReturnValueOnce(inclusion);
 
-            const root = createRoot({
+            const services = createTestServices({
                 messageSystem: createMessageSystemState({
                     groups: [
                         { variant: 'A', percentage: 30 },
@@ -91,7 +98,7 @@ describe('useExperiment', () => {
                     ],
                 }),
             });
-            const { result } = renderUseExperiment(root);
+            const { result } = renderUseExperiment(services);
 
             expect(result.current.activeExperimentVariant?.variant).toBe(expectedVariant);
         },
@@ -105,10 +112,10 @@ describe('useExperiment', () => {
     ])(
         'assigns variant $expectedVariant for inclusion override $inclusionOverride',
         ({ inclusionOverride, expectedVariant }) => {
-            const root = createRoot({
+            const services = createTestServices({
                 messageSystem: createMessageSystemState({ inclusionOverride }),
             });
-            const { result } = renderUseExperiment(root);
+            const { result } = renderUseExperiment(services);
 
             expect(result.current.activeExperimentVariant?.variant).toBe(expectedVariant);
         },
@@ -117,7 +124,7 @@ describe('useExperiment', () => {
 
 describe('useIsExperimentVariantActive', () => {
     it('returns true when the requested variant is active', () => {
-        const root = createRoot({
+        const services = createTestServices({
             messageSystem: createMessageSystemState({
                 groups: [{ variant: 'A', percentage: 100 }],
             }),
@@ -128,14 +135,14 @@ describe('useIsExperimentVariantActive', () => {
                     experimentId: ExperimentId.tradingFeedbackForm,
                     variant: 'A',
                 }),
-            { root },
+            { services },
         );
 
         expect(result.current).toBe(true);
     });
 
     it('returns false when the requested variant is not active', () => {
-        const root = createRoot({
+        const services = createTestServices({
             messageSystem: createMessageSystemState({
                 groups: [{ variant: 'A', percentage: 100 }],
             }),
@@ -146,7 +153,7 @@ describe('useIsExperimentVariantActive', () => {
                     experimentId: ExperimentId.tradingFeedbackForm,
                     variant: 'B',
                 }),
-            { root },
+            { services },
         );
 
         expect(result.current).toBe(false);

@@ -1,5 +1,5 @@
 import { coinjoinReducer } from '@suite/coinjoin';
-import { prepareDesktopDeviceReducer } from '@suite/device';
+import { type DesktopDeviceRootState, prepareDesktopDeviceReducer } from '@suite/device';
 import {
     NewContentIndicatorId,
     initialRunCompletedThunk,
@@ -9,18 +9,30 @@ import {
 } from '@suite/flags';
 import { initialMetadataState, metadataReducer } from '@suite/metadata';
 import { suiteSettingsInitialState } from '@suite/settings';
-import { prepareSuiteSyncReducer } from '@suite/suite-sync';
+import { type DesktopSuiteSyncRootState, prepareSuiteSyncReducer } from '@suite/suite-sync';
 import { deviceActions, selectDevices, selectDevicesCount } from '@suite-common/device';
 import { mockNetworksState } from '@suite-common/networks/mocks';
+import { persistentDeviceDataInitialState } from '@suite-common/persistent-device-data';
 import { asEncryptedHex } from '@suite-common/platform-encryption';
 import { prepareReceiveReducer } from '@suite-common/receive';
+import { type WithServices } from '@suite-common/redux-utils';
 import { mockActionType, mockReducer } from '@suite-common/redux-utils/mocks';
 import { setSuiteSyncOwner } from '@suite-common/suite-sync';
+import { type WithSuiteSyncQuotaManagerState } from '@suite-common/suite-sync-quota-manager';
 import { type SuiteSyncOwnerSerialized } from '@suite-common/suite-sync-storage';
 import { mockSuiteDevice } from '@suite-common/suite-types/mocks';
-import { createTestStore, testMocks, wireEnabledNetworksMock } from '@suite-common/test-utils';
+import {
+    createTestCompositionRoot,
+    testMocks,
+    wireEnabledNetworksMock,
+} from '@suite-common/test-utils';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
-import { changeCoinVisibilityThunk, transactionsActions } from '@suite-common/wallet-core';
+import {
+    type ChangeCoinVisibilityThunkState,
+    blockchainInitialState,
+    changeCoinVisibilityThunk,
+    transactionsActions,
+} from '@suite-common/wallet-core';
 import * as discoveryActions from '@suite-common/wallet-core';
 import { asAccountDescriptor } from '@suite-common/wallet-types';
 import { mockAccountKey, mockWalletAccount } from '@suite-common/wallet-types/mocks';
@@ -30,8 +42,11 @@ import { type StaticSessionId, asWalletDescriptor } from '@trezor/device-utils';
 import { storageLoad } from 'src/actions/suite/storageLifecycleActions';
 import { suiteSyncQuotaManagerSlice } from 'src/actions/suiteSyncQuotaManager/suiteSyncQuotaManagerSlice';
 import { SETTINGS } from 'src/config/suite';
-import { prepareStorageMiddleware } from 'src/middlewares/wallet/storageMiddleware';
-import suiteReducer from 'src/reducers/suite/suiteReducer';
+import {
+    type StorageMiddlewareState,
+    prepareStorageMiddleware,
+} from 'src/middlewares/wallet/storageMiddleware';
+import suiteReducer, { type SuiteRootState } from 'src/reducers/suite/suiteReducer';
 import {
     accountsReducer,
     discoveryReducer,
@@ -42,11 +57,18 @@ import {
     walletSettingsReducer,
 } from 'src/reducers/wallet';
 import graphReducer from 'src/reducers/wallet/graphReducer';
-import { type Db } from 'src/storage/createDb';
+import { type Db, type DbDep } from 'src/storage/createDb';
 import { type PreloadStore, createPreloadStore } from 'src/support/suite/createPreloadStore';
-import { type AcquiredDevice, type AppState } from 'src/types/suite';
+import { type AcquiredDevice } from 'src/types/suite';
 
 import * as storageActions from './storageActions';
+import {
+    type ForgetDeviceThunkState,
+    type RememberDeviceThunkState,
+    type SaveMetadataSettingsThunkState,
+    type SaveSuiteSettingsThunkState,
+    type SaveWalletSettingsThunkState,
+} from './storageActions';
 import { createInMemoryDbMock } from '../../../mocks/createInMemoryDbMock';
 
 const btcSymbol = asNetworkSymbol('btc');
@@ -125,37 +147,26 @@ const tx2 = getWalletTransaction({
     symbol: btcSymbol,
 });
 
-type PartialState = Pick<
-    AppState,
-    | 'suite'
-    | 'suiteSettings'
-    | 'device'
-    | 'suiteSync'
-    | 'suiteSyncQuotaManager'
-    | 'flags'
-    | 'metadata'
-    | 'networks'
-    | 'receive'
-> & {
-    wallet: Partial<
-        Pick<
-            AppState['wallet'],
-            | 'accounts'
-            | 'coinjoin'
-            | 'settings'
-            | 'discovery'
-            | 'send'
-            | 'transactions'
-            | 'graph'
-            | 'fiat'
-            | 'earnOnboarding'
-        >
-    >;
-};
+// The tested thunks and the storage middleware declare the persisted slices; the sync slices are
+// kept so that their reducers can apply the loaded storage.
+type State = ChangeCoinVisibilityThunkState &
+    DesktopDeviceRootState &
+    DesktopSuiteSyncRootState &
+    ForgetDeviceThunkState &
+    RememberDeviceThunkState &
+    SaveMetadataSettingsThunkState &
+    SaveSuiteSettingsThunkState &
+    SaveWalletSettingsThunkState &
+    StorageMiddlewareState &
+    SuiteRootState &
+    WithSuiteSyncQuotaManagerState;
 
-const getInitialState = (prevState?: Partial<PartialState>, action?: any) => ({
+type PartialState = Omit<State, 'wallet'> & { wallet: Partial<State['wallet']> };
+
+const getInitialState = (prevState?: Partial<PartialState>, action?: any): State => ({
     networks:
         prevState?.networks ?? mockNetworksState([asNetworkSymbol('btc'), asNetworkSymbol('ltc')]),
+    persistentDeviceData: prevState?.persistentDeviceData ?? persistentDeviceDataInitialState,
     suite: suiteReducer(
         prevState ? prevState.suite : undefined,
         action || ({ type: 'foo' } as any),
@@ -184,6 +195,7 @@ const getInitialState = (prevState?: Partial<PartialState>, action?: any) => ({
     receive: receiveReducer(prevState?.receive, action || ({ type: 'foo' } as any)),
     wallet: {
         accounts: accountsReducer(prevState?.wallet?.accounts, action || ({ type: 'foo' } as any)),
+        blockchain: prevState?.wallet?.blockchain ?? blockchainInitialState,
         coinjoin: coinjoinReducer(prevState?.wallet?.coinjoin, action || ({ type: 'foo' } as any)),
         settings: walletSettingsReducer(
             prevState?.wallet?.settings,
@@ -208,13 +220,9 @@ const getInitialState = (prevState?: Partial<PartialState>, action?: any) => ({
     },
 });
 
-type State = ReturnType<typeof getInitialState>;
-const mockStore = (db: Db, preloadedState: State) => {
-    const extra = { services: { db } };
-
-    return createTestStore({
-        extra,
-        middleware: [prepareStorageMiddleware(() => extra)],
+const mockStore = (db: Db, preloadedState: State) =>
+    createTestCompositionRoot<WithServices<DbDep>, State>({
+        middleware: [prepareStorageMiddleware(() => ({ services: { db } }))],
         reducer: (state = preloadedState, action) => {
             const nextState = getInitialState(state, action);
 
@@ -230,8 +238,8 @@ const mockStore = (db: Db, preloadedState: State) => {
             };
         },
         preloadedState,
-    });
-};
+        services: () => ({ db }),
+    }).services.store;
 
 const mockFetch = (data: any) =>
     jest.fn().mockImplementation(() =>

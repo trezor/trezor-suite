@@ -103,7 +103,7 @@ const goToPreviousStepThunk =
 
 const resetOnboarding = createAction(ONBOARDING.RESET_ONBOARDING);
 
-type GoToSuiteThunkState = DeviceRootState &
+export type GoToSuiteThunkState = DeviceRootState &
     GotoThunkState &
     OnboardingRootState &
     StartDiscoveryThunkState &
@@ -192,7 +192,7 @@ const goToSuiteThunk =
         }
     };
 
-type GoToNextStepThunkState = DeviceRootState &
+export type GoToNextStepThunkState = DeviceRootState &
     GotoThunkState &
     OnboardingRootState &
     StartDiscoveryThunkState &

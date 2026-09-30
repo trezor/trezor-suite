@@ -4,7 +4,7 @@ import { mockActionType } from '@suite-common/redux-utils/mocks';
 import { createTestCompositionRoot, renderHookWithStoreProvider } from '@suite-common/test-utils';
 
 import { messageSystemInitialState, prepareMessageSystemReducer } from './messageSystemReducer';
-import { type MessageSystemState } from './messageSystemTypes';
+import { type MessageSystemRootState, type MessageSystemState } from './messageSystemTypes';
 import { useMessageSystemYield } from './useMessageSystemYield';
 
 const messageSystemReducer = prepareMessageSystemReducer({
@@ -58,15 +58,15 @@ const stateWithDisabledFeatures = {
     },
 } as unknown as MessageSystemState;
 
-const createRoot = (state: MessageSystemState = stateWithDisabledFeatures) =>
-    createTestCompositionRoot({
+const createTestServices = (state: MessageSystemState = stateWithDisabledFeatures) =>
+    createTestCompositionRoot<void, MessageSystemRootState>({
         reducer: combineReducers({ messageSystem: messageSystemReducer }),
         preloadedState: { messageSystem: state } as { messageSystem: MessageSystemState },
-    });
+    }).services;
 
 const renderHook = (props: Parameters<typeof useMessageSystemYield>[0]) =>
     renderHookWithStoreProvider(() => useMessageSystemYield(props), {
-        root: createRoot(),
+        services: createTestServices(),
     });
 
 describe('useMessageSystemYield', () => {
@@ -108,10 +108,10 @@ describe('useMessageSystemYield', () => {
     });
 
     it('returns not disabled when no feature messages are configured', () => {
-        const root = createRoot(messageSystemInitialState);
+        const services = createTestServices(messageSystemInitialState);
         const { result } = renderHookWithStoreProvider(
             () => useMessageSystemYield({ type: 'deposit', locale: 'en' }),
-            { root },
+            { services },
         );
 
         expect(result.current).toMatchObject({

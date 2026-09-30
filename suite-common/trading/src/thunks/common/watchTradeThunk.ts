@@ -80,7 +80,7 @@ const watchTradeData = async <T extends TradingType>({
     };
 };
 
-type WatchTradeThunkState = TradingRootState;
+export type WatchTradeThunkState = TradingRootState;
 
 export const watchTradeThunk = createThunk<void, WatchTradeThunk, { state: WatchTradeThunkState }>(
     `${TRADING_THUNK_PREFIX}/watchTrade`,

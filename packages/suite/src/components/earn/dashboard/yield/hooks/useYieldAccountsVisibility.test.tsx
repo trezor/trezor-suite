@@ -3,15 +3,17 @@ import { createTestCompositionRoot, renderHookWithStoreProvider } from '@suite-c
 import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { type Account } from '@suite-common/wallet-types';
 
+import { type AppState } from 'src/reducers/store';
+
 import { useYieldAccountsVisibility } from './useYieldAccountsVisibility';
 import { type YieldAccountOpportunity } from '../types';
 
-const createRoot = () =>
-    createTestCompositionRoot({
+const createTestServices = () =>
+    createTestCompositionRoot<void, AppState>({
         preloadedState: {
             networks: mockNetworksState([asNetworkSymbol('eth'), asNetworkSymbol('base')]),
         },
-    });
+    }).services;
 
 const ethSymbol = asNetworkSymbol('eth');
 const baseSymbol = asNetworkSymbol('base');
@@ -73,7 +75,7 @@ describe('useYieldAccountsVisibility', () => {
 
             const { result } = renderHookWithStoreProvider(
                 () => useYieldAccountsVisibility({ yieldAccountOpportunities }),
-                { root: createRoot() },
+                { services: createTestServices() },
             );
 
             expect(result.current.displayedYieldAccountOpportunities).toHaveLength(1);
@@ -102,7 +104,7 @@ describe('useYieldAccountsVisibility', () => {
 
             const { result } = renderHookWithStoreProvider(
                 () => useYieldAccountsVisibility({ yieldAccountOpportunities }),
-                { root: createRoot() },
+                { services: createTestServices() },
             );
 
             const fallbackKeys = result.current.displayedYieldAccountOpportunities.map(
@@ -144,7 +146,7 @@ describe('useYieldAccountsVisibility', () => {
 
             const { result } = renderHookWithStoreProvider(
                 () => useYieldAccountsVisibility({ yieldAccountOpportunities }),
-                { root: createRoot() },
+                { services: createTestServices() },
             );
 
             expect(result.current.displayedYieldAccountOpportunities).toHaveLength(1);
@@ -183,7 +185,7 @@ describe('useYieldAccountsVisibility', () => {
 
             const { result } = renderHookWithStoreProvider(
                 () => useYieldAccountsVisibility({ yieldAccountOpportunities }),
-                { root: createRoot() },
+                { services: createTestServices() },
             );
 
             expect(result.current.displayedYieldAccountOpportunities).toHaveLength(1);
@@ -215,7 +217,7 @@ describe('useYieldAccountsVisibility', () => {
 
             const { result } = renderHookWithStoreProvider(
                 () => useYieldAccountsVisibility({ yieldAccountOpportunities }),
-                { root: createRoot() },
+                { services: createTestServices() },
             );
 
             expect(result.current.displayedYieldAccountOpportunities).toHaveLength(1);
@@ -241,7 +243,7 @@ describe('useYieldAccountsVisibility', () => {
 
             const { result } = renderHookWithStoreProvider(
                 () => useYieldAccountsVisibility({ yieldAccountOpportunities }),
-                { root: createRoot() },
+                { services: createTestServices() },
             );
 
             expect(result.current.displayedYieldAccountOpportunities).toHaveLength(1);

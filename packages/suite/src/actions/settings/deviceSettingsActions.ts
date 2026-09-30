@@ -112,7 +112,9 @@ export const changeWipeCodeThunk =
         }
     };
 
-type ResetDeviceThunkState = DeviceRootState & SuiteSettingsRootState & MessageSystemRootState;
+export type ResetDeviceThunkState = DeviceRootState &
+    SuiteSettingsRootState &
+    MessageSystemRootState;
 
 type ResetDeviceThunkDeps = { services: ReportSecurityCheckDep };
 

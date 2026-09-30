@@ -82,7 +82,7 @@ const getQuoteRequestData = ({
     return request;
 };
 
-type HandleSellRequestThunkState = TradingRootState;
+export type HandleSellRequestThunkState = TradingRootState;
 
 export const handleSellRequestThunk = createThunk<
     SellFiatTrade[],

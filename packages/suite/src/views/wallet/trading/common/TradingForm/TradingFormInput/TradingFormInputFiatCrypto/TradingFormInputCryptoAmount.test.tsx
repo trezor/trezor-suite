@@ -11,6 +11,7 @@ import { asNetworkSymbol, getNetwork } from '@suite-common/wallet-config';
 import { PROTO } from '@trezor/connect';
 
 import { BTC_ACCOUNT } from 'src/actions/wallet/trading/__fixtures__/tradingCommonActions/accounts';
+import { type AppState } from 'src/reducers/store';
 import { renderWithProviders } from 'src/support/test-utils/hooksHelper';
 import { type TradingGetCryptoQuoteAmountProps } from 'src/types/trading/trading';
 
@@ -102,7 +103,7 @@ const TradingFormTestHarness = ({ asset }: { asset: TradingAssetOption }) => {
 };
 
 const renderCryptoAmount = (asset: TradingAssetOption) => {
-    const root = createTestCompositionRoot({
+    const { services } = createTestCompositionRoot<void, AppState>({
         preloadedState: {
             ...mockInitialAppState,
             wallet: {
@@ -115,7 +116,7 @@ const renderCryptoAmount = (asset: TradingAssetOption) => {
         },
     });
 
-    renderWithProviders(root, <TradingFormTestHarness asset={asset} />);
+    renderWithProviders(services, <TradingFormTestHarness asset={asset} />);
 };
 
 describe('TradingFormInputCryptoAmount', () => {

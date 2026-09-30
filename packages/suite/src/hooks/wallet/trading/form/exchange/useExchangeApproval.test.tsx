@@ -38,14 +38,14 @@ const ACCOUNT = mockWalletAccount({ symbol: asNetworkSymbol('eth'), formattedBal
 const TRADE: ExchangeTrade = { exchange: 'provider-1', status: 'CONFIRM' };
 
 const renderExchangeApproval = (receiveAddress?: string) => {
-    const root = createTestCompositionRoot({});
+    const { services } = createTestCompositionRoot<void, unknown>({});
 
     const utils = renderHookWithStoreProvider(
         () => useExchangeApproval({ account: ACCOUNT, receiveAddress, extraField: undefined }),
-        { root },
+        { services },
     );
 
-    const { getActions } = root.services;
+    const { getActions } = services.store;
 
     return { ...utils, getActions };
 };

@@ -1,8 +1,11 @@
-import { createTestStore } from '@suite-common/test-utils';
+import { type TestCompositionStore, createTestCompositionRoot } from '@suite-common/test-utils';
 import { type Account } from '@suite-common/wallet-types';
 
 import { transactionsActions } from './transactionsActions';
-import { addFakePendingCardanoTxThunk } from './transactionsThunks';
+import {
+    type AddFakePendingCardanoTxThunkState,
+    addFakePendingCardanoTxThunk,
+} from './transactionsThunks';
 
 const account = {
     key: 'descriptor-ada-device',
@@ -15,16 +18,17 @@ const account = {
 const BLOCK_HEIGHT = 100;
 
 const initStore = () =>
-    createTestStore({
-        extra: undefined,
+    createTestCompositionRoot<void, AddFakePendingCardanoTxThunkState>({
         preloadedState: {
             wallet: {
                 blockchain: { ada: { blockHeight: BLOCK_HEIGHT } },
             },
         },
-    });
+    }).services.store;
 
-const dispatchFakePendingTx = async (store: ReturnType<typeof initStore>) => {
+const dispatchFakePendingTx = async (
+    store: TestCompositionStore<AddFakePendingCardanoTxThunkState, void>,
+) => {
     await store.dispatch(
         addFakePendingCardanoTxThunk({
             precomposedTransaction: { totalSpent: '2170000', fee: '170000' },

@@ -1,14 +1,16 @@
-import { type UnknownAction, combineReducers, createReducer } from '@reduxjs/toolkit';
+import { combineReducers, createReducer } from '@reduxjs/toolkit';
 
-import { selectedAccountReducer } from '@suite/account';
-import { locksReducer } from '@suite/locks';
-import { prepareMessageSystemReducer } from '@suite-common/message-system';
+import { type SelectedAccountState, selectedAccountReducer } from '@suite/account';
+import { type LocksState, locksReducer } from '@suite/locks';
+import { type MessageSystemState, prepareMessageSystemReducer } from '@suite-common/message-system';
+import { type NetworksState } from '@suite-common/networks';
 import { mockNetworksState } from '@suite-common/networks/mocks';
 import { mockActionType, mockReducer } from '@suite-common/redux-utils/mocks';
+import { type TrezorDevice } from '@suite-common/suite-types';
 import { mockSuiteDevice } from '@suite-common/suite-types/mocks';
-import { createTestStore, initPreloadedState, testMocks } from '@suite-common/test-utils';
+import { createTestCompositionRoot, initPreloadedState, testMocks } from '@suite-common/test-utils';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
-import { prepareAccountsReducer } from '@suite-common/wallet-core';
+import { type AccountsState, prepareAccountsReducer } from '@suite-common/wallet-core';
 import { mockSetAccountAddMetadata } from '@suite-common/wallet-core/mocks';
 
 import * as fixtures from './__fixtures__/coinjoinAccountActions';
@@ -16,6 +18,7 @@ import * as coinjoinAccountActions from './coinjoinAccountActions';
 import * as coinjoinClientActions from './coinjoinClientActions';
 import { coinjoinReducer } from './coinjoinReducer';
 import { CoinjoinService } from './coinjoinService';
+import { type CoinjoinState } from './coinjoinTypes';
 
 jest.mock('./coinjoinService', () => {
     const mock = jest.requireActual('./__fixtures__/mockCoinjoinService');
@@ -63,13 +66,26 @@ const rootReducer = combineReducers({
     }),
 });
 
-type State = ReturnType<typeof rootReducer>;
+// These fixtures dispatch several account thunks and assert changes across their shared reducers.
+type State = {
+    networks: NetworksState;
+    suite: { settings: { debug: Record<never, never> } };
+    locks: LocksState;
+    messageSystem: MessageSystemState;
+    device: { devices: TrezorDevice[]; selectedDevice: TrezorDevice };
+    modal: Record<never, never>;
+    wallet: {
+        coinjoin: CoinjoinState;
+        accounts: AccountsState;
+        selectedAccount: SelectedAccountState;
+        blockchain: { btc: { blockHeight: number } };
+        transactions: { transactions: Record<never, never> };
+    };
+};
 type Wallet = Partial<State['wallet']> & { devices?: State['device']['devices'] };
 
 const initStore = ({ accounts, coinjoin, devices }: Wallet = {}) =>
-    // State != suite AppState, therefore <any>
-    createTestStore<void, any, UnknownAction>({
-        extra: undefined,
+    createTestCompositionRoot<void, State>({
         reducer: rootReducer,
         preloadedState: initPreloadedState({
             rootReducer,
@@ -78,7 +94,7 @@ const initStore = ({ accounts, coinjoin, devices }: Wallet = {}) =>
                 wallet: { accounts, coinjoin },
             },
         }),
-    });
+    }).services.store;
 
 describe('coinjoinAccountActions', () => {
     beforeEach(() => {

@@ -1,4 +1,4 @@
-import { createTestStore } from '@suite-common/test-utils';
+import { type TestCompositionStore, createTestCompositionRoot } from '@suite-common/test-utils';
 import {
     AddressDisplayOptions,
     type FormState,
@@ -7,7 +7,10 @@ import {
 import TrezorConnect from '@trezor/connect';
 
 import { confirmedNonces, ethAccount, evmTx } from './__fixtures__/evmFixtures';
-import { signEthereumSendFormTransactionThunk } from './sendFormEthereumThunks';
+import {
+    type SignEthereumSendFormTransactionThunkState,
+    signEthereumSendFormTransactionThunk,
+} from './sendFormEthereumThunks';
 
 const precomposedTransaction = {
     type: 'final',
@@ -32,17 +35,19 @@ const formState = (overrides?: Partial<FormState>): FormState =>
     }) as unknown as FormState;
 
 const initStore = (txs = confirmedNonces(6)) =>
-    createTestStore({
-        extra: undefined,
+    createTestCompositionRoot<void, SignEthereumSendFormTransactionThunkState>({
         preloadedState: {
             wallet: {
                 transactions: { transactions: { [ethAccount.key]: txs } },
                 settings: { addressDisplayType: AddressDisplayOptions.ORIGINAL },
             },
         },
-    });
+    }).services.store;
 
-const sign = (store: ReturnType<typeof initStore>, form: FormState) =>
+const sign = (
+    store: TestCompositionStore<SignEthereumSendFormTransactionThunkState, void>,
+    form: FormState,
+) =>
     store
         .dispatch(
             signEthereumSendFormTransactionThunk({

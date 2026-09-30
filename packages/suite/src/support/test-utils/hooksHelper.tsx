@@ -2,6 +2,7 @@ import { type ReactNode } from 'react';
 import { IntlProvider } from 'react-intl';
 import { Provider } from 'react-redux';
 
+import { type Store } from '@reduxjs/toolkit';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import {
     type RenderHookOptions,
@@ -16,7 +17,6 @@ import userEvent from '@testing-library/user-event';
 
 import { ServicesProvider } from '@suite-common/dependency-injection';
 import { MockedFormatterProvider } from '@suite-common/formatters/mocks';
-import { type TestAppRoot } from '@suite-common/test-utils';
 
 import { ConnectedThemeProvider } from 'src/support/suite/ConnectedThemeProvider';
 
@@ -26,15 +26,18 @@ const testQueryClient = new QueryClient({
     defaultOptions: { queries: { retry: false } },
 });
 
-type SuiteProvidersProps = {
-    root: TestAppRoot;
+type SuiteProvidersProps<Services extends { store: Store }> = {
+    services: Services;
     children: ReactNode;
 };
 
-const SuiteProviders = ({ root, children }: SuiteProvidersProps) => (
+const SuiteProviders = <Services extends { store: Store }>({
+    services,
+    children,
+}: SuiteProvidersProps<Services>) => (
     <QueryClientProvider client={testQueryClient}>
-        <Provider store={root.store}>
-            <ServicesProvider services={root.services}>
+        <Provider store={services.store}>
+            <ServicesProvider services={services}>
                 <ConnectedThemeProvider>
                     <ResponsiveContextProvider>
                         <IntlProvider locale="en">
@@ -48,16 +51,18 @@ const SuiteProviders = ({ root, children }: SuiteProvidersProps) => (
 );
 
 // used in hooks tests
-export const renderWithProviders = (root: TestAppRoot, children: ReactNode): RenderResult =>
-    render(<SuiteProviders root={root}>{children}</SuiteProviders>);
+export const renderWithProviders = <Services extends { store: Store }>(
+    services: Services,
+    children: ReactNode,
+): RenderResult => render(<SuiteProviders services={services}>{children}</SuiteProviders>);
 
-export const renderHookWithProviders = <Result, Props>(
-    root: TestAppRoot,
+export const renderHookWithProviders = <Result, Props, Services extends { store: Store }>(
+    services: Services,
     callback: (props: Props) => Result,
     options?: Omit<RenderHookOptions<Props>, 'wrapper'>,
 ) =>
     renderHook(callback, {
-        wrapper: ({ children }) => <SuiteProviders root={root}>{children}</SuiteProviders>,
+        wrapper: ({ children }) => <SuiteProviders services={services}>{children}</SuiteProviders>,
         ...options,
     });
 

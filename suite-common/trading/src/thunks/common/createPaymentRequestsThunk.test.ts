@@ -4,13 +4,16 @@ import { type CryptoId, type ExchangeTradeSigned } from 'invity-api';
 import { deviceInitialState } from '@suite-common/device';
 import { createThunk } from '@suite-common/redux-utils';
 import { mockActionType } from '@suite-common/redux-utils/mocks';
-import { createTestStore } from '@suite-common/test-utils';
+import { createTestCompositionRoot } from '@suite-common/test-utils';
 import { initialWalletSettingsState } from '@suite-common/wallet-core';
 import { type Account, type GeneralPrecomposedTransaction } from '@suite-common/wallet-types';
 import TrezorConnect, { type Address, type PROTO } from '@trezor/connect';
 import { validatePath } from '@trezor/connect-common';
 
-import { createPaymentRequestsThunk } from './createPaymentRequestsThunk';
+import {
+    type CreatePaymentRequestsThunkState,
+    createPaymentRequestsThunk,
+} from './createPaymentRequestsThunk';
 import { getNonceThunk } from './getNonce';
 import { getPurchaseAddressThunk } from './getPurchaseAddress';
 import { getRefundAddressThunk } from './getRefundAddress';
@@ -212,8 +215,7 @@ describe('createPaymentRequestsThunk', () => {
     });
 
     const createMockStore = (preloadedState = {}) =>
-        createTestStore({
-            extra: undefined,
+        createTestCompositionRoot<void, CreatePaymentRequestsThunkState>({
             reducer: combineReducers({
                 device: () => deviceInitialState,
                 wallet: combineReducers({
@@ -238,7 +240,7 @@ describe('createPaymentRequestsThunk', () => {
                     },
                 },
             },
-        });
+        }).services.store;
 
     describe('exchange flow', () => {
         const mockExchangeQuote = {

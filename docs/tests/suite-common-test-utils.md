@@ -12,7 +12,7 @@ test intentionally covers the integration between business logic, Redux, and inj
 flowchart TD
     A{What are you testing?}
     A -- One thunk, reducer, selector, or service --> B[Call it directly]
-    A -- A connected part of the application --> C[Use createTestCompositionRoot]
+    A -- A connected part of the application --> C[Create a test composition root]
     C --> D[Run the behavior and assert the resulting state or UI]
 ```
 
@@ -62,59 +62,62 @@ Use the same principle for other business logic:
 - Create services with explicit mocked dependencies and call the service directly.
 - Render hooks without application providers when the hook does not depend on them.
 
-## Integration-test through `createTestCompositionRoot`
+## Integration-test with `createTestCompositionRoot`
 
 Use `createTestCompositionRoot` when Redux integration is part of what the test should prove. It
-creates a test application root containing the Redux store and the injected services used by that
-store.
+composes the test the same way an application composition root does: it creates the store, composes
+the services from it, and injects them. Thunks read their `extra` lazily, so the services are in
+place before anything is dispatched. The store belongs to the services; access it through
+`root.services.store`.
 
-Omit `extra` when the tested code has no injected dependencies; it defaults to `{ services: {} }`.
-When dependencies are required, pass them explicitly through `extra`.
+Every root declares the application contract it tests. The first type argument is the thunk
+dependency contract (`void` when nothing is injected), the second is the state shape. They
+type-check the composed services, the reducer and every dispatched thunk. Declare the state as an
+explicit type, such as an exported root-state type, instead of deriving it from the reducer with
+`ReturnType<typeof reducer>`: the contract then states what the tested code expects, and the reducer
+is checked against it. Pass static (non-service) extra dependencies such as `thunks` or `actions` as
+`extra`.
 
 ```ts
 import { createTestCompositionRoot } from '@suite-common/test-utils';
 
-const {
-    store: { getState },
-    services: { dispatch, getActions },
-} = createTestCompositionRoot({
-    extra: {
-        services: {
-            analytics: mockAnalytics(),
-        },
-    },
+const { services } = createTestCompositionRoot<CounterThunkDeps, CounterRootState>({
     reducer: {
         counter: counterReducer,
     },
     preloadedState: {
         counter: { value: 0 },
     },
+    services: () => ({ analytics: mockAnalytics() }),
 });
 
-dispatch(incrementCounter());
+services.store.dispatch(incrementCounter());
 
-expect(getState().counter.value).toBe(1);
-expect(getActions()).toContainEqual(incrementCounter());
+expect(services.store.getState().counter.value).toBe(1);
+expect(services.store.getActions()).toContainEqual(incrementCounter());
 ```
 
-Declare only the services and state needed by the tested application slice. The composition root
-also exposes `getActions` and `clearActions` as test services when action-level assertions are
-useful.
+Declare only the services and state needed by the tested application slice. The test store also
+exposes `getActions` and `clearActions` when action-level assertions are useful.
+
+When a tested service needs the store, compose it from the store passed to `services`:
+
+```ts
+const { services } = createTestCompositionRoot<SomeServiceDeps, State>({
+    reducer,
+    preloadedState,
+    services: store => ({
+        analytics: mockAnalytics(),
+        someService: createSomeService({ dispatch: store.dispatch, getState: store.getState }),
+    }),
+});
+```
+
+`root.extra` is the exact `extra` the thunks receive (`{ ...extra, services }`).
 
 The important difference from a thunk unit test is the assertion target: an integration test runs
 the Redux wiring and normally verifies the resulting state or rendered UI, not only whether one
 isolated function called another function.
-
-## Do not call `createTestStore` directly by default
-
-`createTestStore` is the low-level store utility used by `createTestCompositionRoot`. Application
-tests should use `createTestCompositionRoot` instead, so the store and its services stay together in
-the same shape as an application composition root.
-
-Call `createTestStore` directly only in exceptional low-level tests, such as testing store or
-middleware infrastructure where an application service container is deliberately outside the test
-boundary. It should not be the normal shortcut for testing thunks, hooks, components, or application
-flows.
 
 ## Testing hooks
 
@@ -126,22 +129,22 @@ import { renderHook } from '@suite-common/test-utils';
 const { result } = renderHook(() => useStandaloneHook());
 ```
 
-A hook that reads Redux state or injected services is an integration test. Create a test application
-root and pass it to `renderHookWithStoreProvider`:
+A hook that reads Redux state or injected services is an integration test. Create the test
+composition root and pass its services to `renderHookWithStoreProvider`:
 
 ```ts
 import { createTestCompositionRoot, renderHookWithStoreProvider } from '@suite-common/test-utils';
 
-const root = createTestCompositionRoot({
-    extra: { services: { analytics: mockAnalytics() } },
+const { services } = createTestCompositionRoot<CounterDeps, CounterRootState>({
     reducer: { counter: counterReducer },
     preloadedState: { counter: { value: 0 } },
+    services: () => ({ analytics: mockAnalytics() }),
 });
 
-const { result } = renderHookWithStoreProvider(() => useCounter(), { root });
+const { result } = renderHookWithStoreProvider(() => useCounter(), { services });
 ```
 
-The provider supplies both Redux and the injected services from the same test composition root.
+The provider supplies Redux from `services.store` and the injected services from `services`.
 
 ## Building preloaded state
 
@@ -159,5 +162,4 @@ const preloadedState = initPreloadedState({
 });
 ```
 
-Pass the result to `createTestCompositionRoot`; do not create a standalone store only to initialize
-state.
+Pass the result to `createTestCompositionRoot`.

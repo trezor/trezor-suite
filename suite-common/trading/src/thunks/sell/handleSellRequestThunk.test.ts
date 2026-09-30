@@ -2,11 +2,12 @@ import { combineReducers } from '@reduxjs/toolkit';
 import { type CryptoId, type SellFiatTrade } from 'invity-api';
 
 import { mockActionType } from '@suite-common/redux-utils/mocks';
-import { createTestStore } from '@suite-common/test-utils';
+import { createTestCompositionRoot } from '@suite-common/test-utils';
 import { getNetwork, toNetworkSymbolNonTestnet } from '@suite-common/wallet-config';
 import { mockAccountKey } from '@suite-common/wallet-types/mocks';
 import { convertAmountUnitsToSubunits } from '@suite-common/wallet-utils';
 
+import { type HandleSellRequestThunkState } from './handleSellRequestThunk';
 import {
     type QuoteRefetchingState,
     REFETCH_QUOTES_MAX_COUNT,
@@ -40,8 +41,7 @@ describe('handleSellRequestThunk', () => {
     tradeApi.createApiKey = () => {};
 
     const getMocks = (refetchQuotesOverride?: Partial<QuoteRefetchingState>) => {
-        const store = createTestStore({
-            extra: undefined,
+        const { store } = createTestCompositionRoot<void, HandleSellRequestThunkState>({
             reducer: combineReducers({
                 wallet: combineReducers({
                     trading: tradingReducer,
@@ -73,7 +73,7 @@ describe('handleSellRequestThunk', () => {
                     },
                 },
             },
-        });
+        }).services;
 
         const mockComposeRequestCallback = jest.fn();
 

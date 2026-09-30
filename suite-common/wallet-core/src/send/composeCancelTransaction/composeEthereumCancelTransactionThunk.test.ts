@@ -1,4 +1,4 @@
-import { createTestStore } from '@suite-common/test-utils';
+import { type TestCompositionStore, createTestCompositionRoot } from '@suite-common/test-utils';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
 import {
     type FeeInfo,
@@ -10,7 +10,10 @@ import {
 import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
 import TrezorConnect from '@trezor/connect';
 
-import { composeEthereumCancelTransactionThunk } from './composeEthereumCancelTransactionThunk';
+import {
+    type ComposeEthereumCancelTransactionThunkState,
+    composeEthereumCancelTransactionThunk,
+} from './composeEthereumCancelTransactionThunk';
 import { type EthAccount, evmTx } from '../__fixtures__/evmFixtures';
 
 const ONE_ETH = '1000000000000000000';
@@ -78,8 +81,7 @@ const cancellableTx = (
     }) as WalletAccountTransactionWithRequiredRbfParams;
 
 const initStore = (levels?: FeeInfo['levels']) =>
-    createTestStore({
-        extra: undefined,
+    createTestCompositionRoot<void, ComposeEthereumCancelTransactionThunkState>({
         preloadedState: {
             device: { selectedDevice: undefined },
             wallet: {
@@ -91,10 +93,10 @@ const initStore = (levels?: FeeInfo['levels']) =>
                         : { eth: { status: 'loaded', data: rawWeiFeeInfo(levels) } },
             },
         },
-    });
+    }).services.store;
 
 const compose = (
-    store: ReturnType<typeof initStore>,
+    store: TestCompositionStore<ComposeEthereumCancelTransactionThunkState, void>,
     tx: WalletAccountTransactionWithRequiredRbfParams,
     composeAccount: EthAccount = account,
 ) =>

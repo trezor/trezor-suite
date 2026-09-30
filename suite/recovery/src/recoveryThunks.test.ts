@@ -1,44 +1,37 @@
+import { type DesktopAnalyticsDep } from '@suite/analytics';
 import { mockDesktopAnalytics } from '@suite/analytics/mocks';
-import { createTestStore } from '@suite-common/test-utils';
+import { deviceInitialState } from '@suite-common/device';
+import { type WithServices } from '@suite-common/redux-utils';
+import { createTestCompositionRoot } from '@suite-common/test-utils';
 import { DeviceModelInternal } from '@trezor/device-utils';
 
-import { recoveryReducer } from './recoveryReducer';
-import { checkSeedThunk, recoverDeviceThunk } from './recoveryThunks';
+import { type RecoveryState, recoveryReducer } from './recoveryReducer';
+import { type RecoverDeviceThunkState, checkSeedThunk, recoverDeviceThunk } from './recoveryThunks';
 
-const getInitialState = (custom?: any): any => ({
-    suite: {
-        flags: {},
-        locks: [],
-    },
+const getInitialState = (custom?: Partial<RecoveryState>): RecoverDeviceThunkState => ({
     device: {
+        ...deviceInitialState,
         selectedDevice: {
-            features: {
-                major_version: 2,
-                internal_model: DeviceModelInternal.T2T1,
-            },
-        },
+            features: { major_version: 2, internal_model: DeviceModelInternal.T2T1 },
+        } as NonNullable<RecoverDeviceThunkState['device']['selectedDevice']>,
     },
     recovery: {
         ...recoveryReducer(undefined, { type: 'foo' }),
         ...custom,
     },
-    analytics: {
-        enabled: false,
-    },
 });
 
-const initStore = (custom?: any) => {
+const initStore = (custom?: Partial<RecoveryState>) => {
     const preloadedState = getInitialState(custom);
-    const store = createTestStore({
-        extra: { services: { analytics: mockDesktopAnalytics() } },
+
+    return createTestCompositionRoot<WithServices<DesktopAnalyticsDep>, RecoverDeviceThunkState>({
         preloadedState,
-        reducer: (state: any, action: any) => ({
+        reducer: (state = preloadedState, action) => ({
             ...state,
             recovery: recoveryReducer(state.recovery, action),
         }),
-    });
-
-    return store;
+        services: () => ({ analytics: mockDesktopAnalytics() }),
+    }).services.store;
 };
 
 describe('Recovery Thunks', () => {

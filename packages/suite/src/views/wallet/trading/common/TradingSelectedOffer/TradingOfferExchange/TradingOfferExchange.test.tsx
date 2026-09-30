@@ -144,12 +144,10 @@ const renderOfferExchange = ({
 
     const report = jest.fn();
     const navigate = jest.fn();
-    const services: DesktopAnalyticsDep & SuiteRouterHistoryDep = {
-        analytics: mockDesktopAnalytics(report),
-        suiteRouterHistory: { ...mockSuiteRouterHistory(), navigate },
-    };
-    const root = createTestCompositionRoot({
-        extra: { services },
+    const { services } = createTestCompositionRoot<
+        { services: DesktopAnalyticsDep & SuiteRouterHistoryDep },
+        AppState
+    >({
         preloadedState: {
             ...mockInitialAppState,
             router: { ...mockInitialAppState.router, hash: '#eth/0/normal' },
@@ -161,8 +159,12 @@ const renderOfferExchange = ({
                 },
             },
         } satisfies AppState,
+        services: () => ({
+            analytics: mockDesktopAnalytics(report),
+            suiteRouterHistory: { ...mockSuiteRouterHistory(), navigate },
+        }),
     });
-    renderWithProviders(root, <TradingOfferExchange />);
+    renderWithProviders(services, <TradingOfferExchange />);
 
     return { report, navigate };
 };

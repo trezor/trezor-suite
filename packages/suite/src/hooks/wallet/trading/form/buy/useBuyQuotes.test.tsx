@@ -3,8 +3,9 @@ import { type Resolver, useForm } from 'react-hook-form';
 import { act, waitFor } from '@testing-library/react';
 import type { BuyTrade, CryptoId } from 'invity-api';
 
-import { events } from '@suite/analytics';
+import { type DesktopAnalyticsDep, events } from '@suite/analytics';
 import { mockDesktopAnalytics } from '@suite/analytics/mocks';
+import { type WithServices } from '@suite-common/redux-utils';
 import { createTestCompositionRoot, renderHookWithStoreProvider } from '@suite-common/test-utils';
 import {
     type TradingAssetOption,
@@ -14,6 +15,8 @@ import {
     initialState as tradingInitialState,
 } from '@suite-common/trading';
 import { asNetworkSymbol, getNetwork } from '@suite-common/wallet-config';
+
+import { type AppState } from 'src/reducers/store';
 
 import { useBuyQuotes } from './useBuyQuotes';
 import { DEBOUNCE_DELAY_MS } from '../common/useTradingQuoteRequest';
@@ -86,9 +89,7 @@ const renderBuyQuotes = (
     { resolver }: RenderBuyQuotesOptions = {},
 ) => {
     const report = jest.fn();
-    const services = { analytics: mockDesktopAnalytics(report) };
-    const root = createTestCompositionRoot({
-        extra: { services },
+    const { services } = createTestCompositionRoot<WithServices<DesktopAnalyticsDep>, AppState>({
         preloadedState: {
             wallet: {
                 trading: {
@@ -97,6 +98,7 @@ const renderBuyQuotes = (
                 },
             },
         },
+        services: () => ({ analytics: mockDesktopAnalytics(report) }),
     });
 
     const rendered = renderHookWithStoreProvider(
@@ -110,7 +112,7 @@ const renderBuyQuotes = (
 
             return methods;
         },
-        { root },
+        { services },
     );
 
     return { ...rendered, report };

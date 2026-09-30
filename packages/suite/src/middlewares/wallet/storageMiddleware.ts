@@ -94,7 +94,7 @@ import { type DbDep } from 'src/storage/createDb';
 
 type StorageMiddlewareDeps = WithServices<DbDep>;
 
-type StorageMiddlewareState = AccountsRootState &
+export type StorageMiddlewareState = AccountsRootState &
     DeviceRootState &
     FiatRatesRootState &
     WalletSettingsRootState &
