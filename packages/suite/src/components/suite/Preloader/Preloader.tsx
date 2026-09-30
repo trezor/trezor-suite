@@ -25,11 +25,7 @@ import { initThunk } from 'src/actions/suite/initAction';
 import { useGuideDesktopMenu, useGuideKeyboard } from 'src/hooks/guide';
 import { useAppShortcuts, useSelector } from 'src/hooks/suite';
 import { useWindowVisibility } from 'src/hooks/suite/useWindowVisibility';
-import {
-    selectIsTransportInitialized,
-    selectPrerequisite,
-    selectSuiteLifecycle,
-} from 'src/selectors/suite/suiteSelectors';
+import { selectPrerequisite, selectSuiteLifecycle } from 'src/selectors/suite/suiteSelectors';
 import { Onboarding } from 'src/views/onboarding';
 import { AnalyticsConsentScreen } from 'src/views/start/AnalyticsConsentScreen';
 import { SuiteStart } from 'src/views/start/SuiteStart';
@@ -38,6 +34,7 @@ import { ErrorPage } from 'src/views/suite/ErrorPage';
 import { DatabaseCorruptedModal } from './DatabaseCorruptedModal';
 import { DatabaseUpgradeModal } from './DatabaseUpgradeModal';
 import { InitialLoading } from './InitialLoading';
+import { useWaitForTransport } from './useWaitForTransport';
 import { PrerequisitesGuide } from '../PrerequisitesGuide/PrerequisitesGuide';
 import { DeviceCompromisedScreen } from '../SecurityCheck/DeviceCompromisedScreen';
 import { useDeviceCompromisedNotification } from '../SecurityCheck/useDeviceCompromisedNotification';
@@ -60,7 +57,6 @@ const getFullscreenApp = (app: RouterAppWithParams['app']): FC | undefined => {
 // Memoised so that a re-render above it (Main) does not cascade through the whole app.
 export const Preloader = memo(function Preloader({ children }: PropsWithChildren) {
     const lifecycle = useSelector(selectSuiteLifecycle);
-    const isTransportInitialized = useSelector(selectIsTransportInitialized);
     const isRouterLoaded = useSelector(selectRouterLoaded);
     const routerApp = useSelector(selectRouterApp);
     const isForegroundApp = useSelector(selectIsForegroundApp);
@@ -72,6 +68,8 @@ export const Preloader = memo(function Preloader({ children }: PropsWithChildren
     const killswitch = useSelector(selectActiveKillswitchMessage);
 
     const isAnalyticsConsentConfirmed = useSelector(selectIsAnalyticsConfirmed);
+
+    const waitForTransport = useWaitForTransport();
 
     const { device } = useDevice();
     useReportDeviceCompromised({ device });
@@ -124,9 +122,9 @@ export const Preloader = memo(function Preloader({ children }: PropsWithChildren
         return <KillswitchMessageScreen />;
     }
 
-    // @trezor/connect was initialized, but didn't emit "TRANSPORT" event yet (it could take a while)
-    // display Loader as full page view
-    if (lifecycle.status !== 'ready' || !isRouterLoaded || !isTransportInitialized) {
+    // @trezor/connect was initialized, but didn't emit "TRANSPORT" event or initially connected
+    // devices yet (it could take a while), display Loader as full page view
+    if (lifecycle.status !== 'ready' || !isRouterLoaded || waitForTransport) {
         // TODO: multiplied by 5, temporarily. Now initActions incorrectly awaits altcoin specific logic which can trigger this timeout easily for bigger accounts
         return <InitialLoading timeout={90 * 5} />;
     }
