@@ -2,6 +2,7 @@ export { EmptyAmountSkeleton } from './components/EmptyAmountSkeleton';
 export { CoinToFiatAmountFormatter } from './components/CoinToFiatAmountFormatter';
 export { CryptoToFiatAmountFormatter } from './components/CryptoToFiatAmountFormatter';
 export { AddressFormatter } from './components/AddressFormatter';
+export { BaseCurrencyAmountHeaderFormatter } from './components/BaseCurrencyAmountHeaderFormatter';
 export { BaseCurrencyAmountLargeFormatter } from './components/BaseCurrencyAmountLargeFormatter';
 export {
     BaseCurrencyAmount,

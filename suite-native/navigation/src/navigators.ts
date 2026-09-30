@@ -22,6 +22,7 @@ import {
     type ActivityCenterStackRoutes,
     type AddCoinAccountStackRoutes,
     type AppTabsRoutes,
+    type AssetsStackRoutes,
     type AuthorizeDeviceStackRoutes,
     type DemoAccountQuestionnaireStackRoutes,
     type DeviceAuthenticityStackRoutes,
@@ -95,6 +96,13 @@ export type AccountDetailStackParamList = {
 export type SignAndVerifyStackParamList = {
     [SignAndVerifyStackRoutes.DeviceConnectionGuard]: undefined;
     [SignAndVerifyStackRoutes.ContinueOnTrezor]: undefined;
+};
+
+export type AssetsStackParamList = {
+    [AssetsStackRoutes.AssetDetail]: {
+        networkSymbol: NetworkSymbol;
+        tokenContract?: TokenAddress;
+    };
 };
 
 export type EarnStackParamList = {
@@ -515,6 +523,7 @@ export type PassphraseStackParamList = {
 export type RootStackParamList = {
     [RootStackRoutes.AppTabs]: NavigatorScreenParams<AppTabsParamList>;
     [RootStackRoutes.AccountDetailStack]: NavigatorScreenParams<AccountDetailStackParamList>;
+    [RootStackRoutes.AssetsStack]: NavigatorScreenParams<AssetsStackParamList>;
     [RootStackRoutes.AccountOverview]: {
         accountKey: AccountKey;
         tab?: AccountOverviewTab;
