@@ -1,8 +1,11 @@
+import type { BuyTradeQuoteRequest } from 'invity-api';
+
 import { getCryptoId } from '@suite-common/trading';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { TestStream } from '@trezor/e2e-utils';
 import { localizeNumber } from '@trezor/utils';
 
+import { tradeEndpoint } from '../../fixtures/trading';
 import { expect, test } from '../../support/fixtures';
 import { createTestAnnotation } from '../../support/reporters/annotations';
 
@@ -44,6 +47,7 @@ test.describe('Trading - Buy Solana token', { tag: ['@T3W1', '@T3T1'] }, () => {
             let fiatAmount: string;
             let cryptoAmountOfOffer: string;
             let providerName: string;
+            const quotesRequest = page.waitForRequest(tradeEndpoint.buyQuotes);
 
             await test.step('Request a specific crypto amount of USDC to buy', async () => {
                 await tradingPage.assetPicker.selectBuyAsset({
@@ -68,8 +72,15 @@ test.describe('Trading - Buy Solana token', { tag: ['@T3W1', '@T3T1'] }, () => {
                 });
             });
 
-            await test.step('Continue to the preview', async () => {
+            await test.step('Crypto entry requests quotes in crypto and refills fiat', async () => {
+                const request: BuyTradeQuoteRequest = (await quotesRequest).postDataJSON();
+                expect(request.wantCrypto).toBe(true);
+                expect(request.cryptoStringAmount).toBe(cryptoAmount);
+                await expect(tradingPage.inputs.cryptoAmount).toHaveValue(cryptoAmount);
                 await expect(tradingPage.inputs.fiatAmount).toHaveValue(/^[\d,]+(\.\d+)?$/);
+            });
+
+            await test.step('Continue to the preview', async () => {
                 fiatAmount = await tradingPage.inputs.fiatAmount.inputValue();
                 providerName = await tradingPage.quotes.selectedProviderName.innerText();
 

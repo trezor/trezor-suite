@@ -1,5 +1,6 @@
 import buyQuotesNegativeMax from './buy/quotes-buy-above-max.json';
 import buyQuotesNegativeMin from './buy/quotes-buy-below-min.json';
+import buyQuotesNegativeCryptoMin from './buy/quotes-buy-crypto-below-min.json';
 
 const tradeApiUrl = 'https://exchange.trezor.io';
 
@@ -18,4 +19,4 @@ export const tradeEndpoint = {
     sellWatch: `${tradeApiUrl}/api/v3/sell/fiat/watch/*`,
 } as const;
 
-export { buyQuotesNegativeMax, buyQuotesNegativeMin };
+export { buyQuotesNegativeCryptoMin, buyQuotesNegativeMax, buyQuotesNegativeMin };
