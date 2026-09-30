@@ -370,6 +370,11 @@ export interface AccountInfo {
         stellarSequence?: string;
         baseReserve?: string;
         reserve?: string;
+        /**
+         * Contracts whose SEP-41 balance the node did not answer for. Absent from `tokens` because
+         * it is unknown, not because the account stopped holding them.
+         */
+        stellarUnreadableContracts?: string[];
         // blockfrost
         rewards?: string;
         // ADA

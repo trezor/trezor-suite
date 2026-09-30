@@ -71,13 +71,20 @@ const update = (state: Account[], account: Account, options: UpdateOptions = {})
             delete next.marker;
         }
 
+        // A contract the node would not answer for is not one the account stopped holding, so its
+        // last known balance is kept rather than the token disappearing until a refresh succeeds.
+        const unreadableContracts = new Set(
+            next.networkType === 'stellar' ? (next.misc.stellarUnreadableContracts ?? []) : [],
+        );
+
         // Locally tracked tokens must survive an update built from an older account snapshot
         // (e.g. a concurrent sync). A wrapped-native (WETH) balance exists only as a local entry:
         // wrapping emits no ERC-20 Transfer, so the backend never reports the token on its own.
         // Only a blind update may keep a contract token, or removing one would never take effect.
         const keepsLocalTokens =
             next.networkType === 'ethereum' ||
-            (next.networkType === 'stellar' && !!options.isTokenTrackingBlind);
+            (next.networkType === 'stellar' &&
+                (!!options.isTokenTrackingBlind || unreadableContracts.size > 0));
 
         if (keepsLocalTokens && prevUnwrapped.tokens?.length) {
             const nextContracts = new Set(next.tokens?.map(token => token.contract.toLowerCase()));
@@ -85,7 +92,10 @@ const update = (state: Account[], account: Account, options: UpdateOptions = {})
                 token =>
                     !nextContracts.has(token.contract.toLowerCase()) &&
                     // A classic trustline the chain stopped reporting is genuinely closed.
-                    (next.networkType !== 'stellar' || token.standard === 'STELLAR-CONTRACT'),
+                    (next.networkType !== 'stellar' ||
+                        (token.standard === 'STELLAR-CONTRACT' &&
+                            (!!options.isTokenTrackingBlind ||
+                                unreadableContracts.has(token.contract)))),
             );
 
             if (locallyTrackedTokens.length > 0) {
