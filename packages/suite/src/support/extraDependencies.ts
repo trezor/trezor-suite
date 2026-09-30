@@ -207,10 +207,13 @@ export const extraDependencies: ExtraDependenciesStatic & TokenDefinitionsMiddle
             return state;
         },
         storageLoadFlags: (state: FlagsState, { payload }: StorageLoadAction) =>
-            payload.suiteSettings?.flags
+            payload.suiteSettings
                 ? {
                       ...state,
                       ...payload.suiteSettings.flags,
+                      // Missing IDs in saved state represent changes introduced since that run.
+                      seenNewContentIndicators:
+                          payload.suiteSettings.flags?.seenNewContentIndicators ?? {},
                       // The onboarding feedback banner is session-only: it is enabled when onboarding
                       // is completed and must not survive an app restart. Reset it on every load so a
                       // returning user only sees it again after completing onboarding once more.

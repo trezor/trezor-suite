@@ -6,8 +6,9 @@ import {
     createSliceWithExtraDeps,
 } from '@suite-common/redux-utils';
 import { DEVICE } from '@trezor/connect';
+import { typedObjectFromEntries } from '@trezor/utils';
 
-import { type NewContentIndicatorId } from './flagsConstants';
+import { NewContentIndicatorId } from './flagsConstants';
 
 export type FlagsState = {
     initialRun: boolean;
@@ -84,7 +85,11 @@ export const flagsInitialState: FlagsState = {
     hasSeenDisconnectTooltip: false,
     showNoDeviceEshopSidebarBanner: true,
     areNoDeviceEshopBannersDisabled: false,
-    seenNewContentIndicators: {},
+    // In a fresh Suite, all content is new, so we don't need to distinguish individual features as "new" → mark all as seen.
+    // See the unit test, which specifies this behavior.
+    seenNewContentIndicators: typedObjectFromEntries(
+        Object.values(NewContentIndicatorId).map(indicatorId => [indicatorId, true] as const),
+    ),
 };
 
 const flagsSlice = createSliceWithExtraDeps({
