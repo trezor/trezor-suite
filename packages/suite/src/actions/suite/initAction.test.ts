@@ -42,7 +42,7 @@ import {
     prepareMessageSystemReducer,
 } from '@suite-common/message-system';
 import { validJws } from '@suite-common/message-system/src/__fixtures__/messageSystemActions';
-import { mockNetworksState } from '@suite-common/networks/mocks';
+import { mockNetworkModuleRepository, mockNetworksState } from '@suite-common/networks/mocks';
 import { mockSuiteSync } from '@suite-common/suite-sync/mocks';
 import { mockGetAllowPrerelease, mockGetBinFilesBaseUrl } from '@suite-common/suite-types/mocks';
 import { createTestCompositionRoot } from '@suite-common/test-utils';
@@ -322,6 +322,7 @@ const initStore = (state: InitThunkState) => {
             getTokenDefinitionsEnabledNetworks: asGetter(
                 () => state.wallet.settings.enabledNetworks,
             ),
+            networks: { networkModuleRepository: mockNetworkModuleRepository() },
             suiteRouterHistory,
             lockDevice: (isLocked: boolean): void => {
                 store.dispatch(lockDevice(isLocked));

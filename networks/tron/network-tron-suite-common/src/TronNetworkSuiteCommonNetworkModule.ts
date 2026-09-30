@@ -7,11 +7,13 @@ import { supportedTronNetworks } from '@trezor/network-tron-types';
 
 import { tronValidator } from './addressValidator/tronAddressValidator';
 import { getAccountSyncInterval, getNetworkConfig } from './networkConfig';
+import { tronWalletConnectAdapter } from './walletConnect/tronWalletConnectAdapter';
 
 export const createTronSuiteCommonNetworkModule = (): SuiteCommonNetworkModule =>
     createNetworkModule(supportedTronNetworks, {
         icon: tronAssets,
         addressValidator: tronValidator,
+        walletConnectAdapter: tronWalletConnectAdapter,
         getNetworkConfig,
         getAccountSyncInterval,
     });
