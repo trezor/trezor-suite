@@ -271,13 +271,6 @@ const onCallDevice = async (
 ): Promise<void> => {
     const { deviceList, callMethods, sendCoreMessage, logger } = context;
     const responseID = message.id;
-    const { transports, pendingTransportEvent } = settingsStore.get();
-
-    if (!deviceList.isConnected() && !deviceList.pendingConnection()) {
-        // transport is missing try to initialize it once again
-        deviceList.init({ transports, pendingTransportEvent });
-    }
-    await deviceList.pendingConnection();
 
     // find device
     let tempDevice: Device | undefined;
