@@ -4,6 +4,7 @@ import { firmwareInitialState } from '@suite-common/firmware';
 import { messageSystemInitialState } from '@suite-common/message-system';
 import { type MockDispatch, createMockDispatch } from '@suite-common/redux-utils/mocks';
 import { type LockDevice } from '@suite-common/suite-types';
+import { mockConnectDevice } from '@suite-common/suite-types/mocks';
 import { testMocks } from '@suite-common/test-utils';
 import {
     defaultTrezorUIEventHandlerThunk,
@@ -262,7 +263,6 @@ describe('TrezorConnect Actions', () => {
             expect(actions).toEqual([
                 expect.objectContaining({ type: defaultTrezorUIEventHandlerThunk.pending.type }),
                 expect.objectContaining({ type: UI_EVENTS.BUTTON_REQUEST }),
-                expect.objectContaining({ type: '@suite/device/addButtonRequest' }),
                 expect.objectContaining({ type: defaultTrezorUIEventHandlerThunk.fulfilled.type }),
             ]);
             resolve();
@@ -270,7 +270,7 @@ describe('TrezorConnect Actions', () => {
 
         emitTestEvent(UI_EVENT, {
             type: UI_EVENTS.BUTTON_REQUEST,
-            payload: { code: 'ButtonRequest_ProtectCall' },
+            payload: { code: 'ButtonRequest_ProtectCall', device: mockConnectDevice() },
             callId: 'unscoped-call-id',
         });
 
@@ -278,7 +278,7 @@ describe('TrezorConnect Actions', () => {
         try {
             emitTestEvent(UI_EVENT, {
                 type: UI_EVENTS.BUTTON_REQUEST,
-                payload: { code: 'ButtonRequest_ProtectCall' },
+                payload: { code: 'ButtonRequest_ProtectCall', device: mockConnectDevice() },
                 callId: scopedCallId,
             });
 
@@ -341,7 +341,7 @@ describe('TrezorConnect Actions', () => {
 
         emitTestEvent(UI_EVENT, {
             type: UI_EVENTS.BUTTON_REQUEST,
-            payload: { code: 'ButtonRequest_ProtectCall' },
+            payload: { code: 'ButtonRequest_ProtectCall', device: mockConnectDevice() },
         });
 
         expect(onInvalidPinDepleted).toHaveBeenCalledTimes(1);

@@ -1,4 +1,5 @@
-import { mockSuiteDevice } from '@suite-common/suite-types/mocks';
+import { deviceActions, deviceInitialState } from '@suite-common/device';
+import { mockConnectDevice, mockSuiteDevice } from '@suite-common/suite-types/mocks';
 import { createTestCompositionRoot } from '@suite-common/test-utils';
 import { UI_EVENTS, UI_REQUESTS } from '@trezor/connect';
 import { createUiEventMessage, createUiRequestMessage } from '@trezor/connect-common';
@@ -33,12 +34,16 @@ const firmwareDownloadedEvent = createUiEventMessage(UI_EVENTS.FIRMWARE_DOWNLOAD
     firmwareType: FirmwareType.Universal,
 });
 
-const setupStore = (uiEventHooks: Record<string, () => void>) =>
+const setupStore = (
+    uiEventHooks: Record<string, () => void>,
+    preloadedState?: DefaultTrezorUIEventHandlerThunkState,
+) =>
     createTestCompositionRoot<
         DefaultTrezorUIEventHandlerThunkDeps,
         DefaultTrezorUIEventHandlerThunkState
     >({
         services: () => ({ connectInitUIEventHooks: uiEventHooks }),
+        preloadedState,
     }).services.store;
 
 describe('defaultTrezorUIEventHandlerThunk - connectInitUIEventHooks', () => {
@@ -86,5 +91,108 @@ describe('defaultTrezorUIEventHandlerThunk - connectInitUIEventHooks', () => {
         await expect(
             store.dispatch(defaultTrezorUIEventHandlerThunk(requestWordEvent)),
         ).resolves.toBeDefined();
+    });
+});
+
+describe('defaultTrezorUIEventHandlerThunk - button request attribution', () => {
+    const deviceA = mockSuiteDevice({ id: 'device-a', path: 'path-a' });
+    const deviceB = mockSuiteDevice({ id: 'device-b', path: 'path-b' });
+    const connectDeviceA = mockConnectDevice({ id: 'device-a', path: 'path-a' });
+    const connectDeviceB = mockConnectDevice({ id: 'device-b', path: 'path-b' });
+
+    const createState = (selectedDevice = deviceA): DefaultTrezorUIEventHandlerThunkState => ({
+        device: { ...deviceInitialState, devices: [deviceA, deviceB], selectedDevice },
+    });
+
+    const selectAddButtonRequestActions = (store: ReturnType<typeof setupStore>) =>
+        store.getActions().filter(deviceActions.addButtonRequest.match);
+
+    it('attaches a button request to the event device when another device is selected', async () => {
+        const store = setupStore({}, createState(deviceB));
+
+        await store.dispatch(
+            defaultTrezorUIEventHandlerThunk(
+                createUiEventMessage(UI_EVENTS.BUTTON_REQUEST, {
+                    code: 'ButtonRequest_ProtectCall',
+                    device: connectDeviceA,
+                }),
+            ),
+        );
+
+        expect(selectAddButtonRequestActions(store)).toEqual([
+            deviceActions.addButtonRequest({
+                device: deviceA,
+                buttonRequest: { code: 'ButtonRequest_ProtectCall' },
+            }),
+        ]);
+    });
+
+    it('attaches a PIN request to the event device when another device is selected', async () => {
+        const store = setupStore({}, createState(deviceB));
+
+        await store.dispatch(
+            defaultTrezorUIEventHandlerThunk(
+                createUiRequestMessage(UI_REQUESTS.REQUEST_PIN, {
+                    device: connectDeviceA,
+                    type: 'PinMatrixRequestType_Current',
+                }),
+            ),
+        );
+
+        expect(selectAddButtonRequestActions(store)).toEqual([
+            deviceActions.addButtonRequest({
+                device: deviceA,
+                buttonRequest: { code: 'PinMatrixRequestType_Current' },
+            }),
+        ]);
+    });
+
+    it('attaches concurrent requests of two devices to their own device', async () => {
+        const store = setupStore({}, createState(deviceA));
+
+        await Promise.all([
+            store.dispatch(
+                defaultTrezorUIEventHandlerThunk(
+                    createUiEventMessage(UI_EVENTS.BUTTON_REQUEST, {
+                        code: 'ButtonRequest_ProtectCall',
+                        device: connectDeviceA,
+                    }),
+                ),
+            ),
+            store.dispatch(
+                defaultTrezorUIEventHandlerThunk(
+                    createUiEventMessage(UI_EVENTS.PIN_INVALID, { device: connectDeviceB }),
+                ),
+            ),
+        ]);
+
+        expect(selectAddButtonRequestActions(store)).toEqual([
+            deviceActions.addButtonRequest({
+                device: deviceA,
+                buttonRequest: { code: 'ButtonRequest_ProtectCall' },
+            }),
+            deviceActions.addButtonRequest({
+                device: deviceB,
+                buttonRequest: { code: UI_EVENTS.PIN_INVALID },
+            }),
+        ]);
+    });
+
+    it('does not attach a button request when the event device is unknown', async () => {
+        const store = setupStore({}, createState(deviceA));
+
+        await store.dispatch(
+            defaultTrezorUIEventHandlerThunk(
+                createUiEventMessage(UI_EVENTS.BUTTON_REQUEST, {
+                    code: 'ButtonRequest_ProtectCall',
+                    device: mockConnectDevice({ id: 'device-c', path: 'path-c' }),
+                }),
+            ),
+        );
+
+        expect(selectAddButtonRequestActions(store)).toEqual([]);
+        expect(store.getActions()).toContainEqual(
+            expect.objectContaining({ type: UI_EVENTS.BUTTON_REQUEST }),
+        );
     });
 });

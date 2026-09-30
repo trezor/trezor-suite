@@ -3,6 +3,7 @@ import { A, pipe } from '@mobily/ts-belt';
 import { createWeakMapSelector, returnStableArrayIfEmpty } from '@suite-common/redux-utils';
 import { SUPPORTS_DEVICE_AUTHENTICITY_CHECK } from '@suite-common/suite-constants';
 import {
+    type AcquiredDevice,
     type BackupType,
     LANGUAGES,
     type Locale,
@@ -23,6 +24,8 @@ import {
     getIsThpDevice,
     getSortedDevicesWithoutInstances,
     getStatus,
+    isDeviceAcquired,
+    isSelectedInstance,
 } from '@suite-common/suite-utils';
 import { type Device, type DeviceState, type StaticSessionId } from '@trezor/connect';
 import {
@@ -282,6 +285,34 @@ export const selectDeviceByStaticSessionId = createMemoizedSelector(
                 isTrezorDeviceWithState(d) && d.state?.staticSessionId === staticSessionId,
         ),
 );
+
+const isInstanceOfConnectDevice = (device: AcquiredDevice, connectDevice: Device) =>
+    connectDevice.id
+        ? device.id === connectDevice.id
+        : device.path === connectDevice.path && device.mode === connectDevice.mode;
+
+/**
+ * Resolves the stored device instance a connect event belongs to. Matches by static session id
+ * when the connect device carries one; otherwise matches the physical device and prefers its
+ * selected instance. Returns `undefined` when no stored instance matches.
+ */
+export const selectDeviceInstanceForConnectDevice = (
+    state: DeviceRootState,
+    connectDevice: Device,
+): AcquiredDevice | undefined => {
+    const staticSessionId = connectDevice.state?.staticSessionId;
+    if (staticSessionId) {
+        return selectDeviceByStaticSessionId(state, staticSessionId);
+    }
+
+    const instances = state.device.devices.filter(
+        (device): device is AcquiredDevice =>
+            isDeviceAcquired(device) && isInstanceOfConnectDevice(device, connectDevice),
+    );
+    const selectedDevice = selectSelectedDevice(state);
+
+    return instances.find(instance => isSelectedInstance(selectedDevice, instance)) ?? instances[0];
+};
 
 export const selectDeviceUnavailableCapabilities = createMemoizedSelector(
     [selectSelectedDevice],

@@ -1,4 +1,8 @@
-import { type DeviceRootState, deviceActions, selectSelectedDevice } from '@suite-common/device';
+import {
+    type DeviceRootState,
+    deviceActions,
+    selectDeviceInstanceForConnectDevice,
+} from '@suite-common/device';
 import { type WithServices, createThunk } from '@suite-common/redux-utils';
 import { type ConnectInitUIEventHooksDep } from '@suite-common/suite-types';
 import { UI_EVENTS, UI_REQUESTS } from '@trezor/connect';
@@ -32,26 +36,26 @@ export const defaultTrezorUIEventHandlerThunk = createThunk<
 
     switch (action.type) {
         case UI_REQUESTS.REQUEST_PIN:
-        case UI_EVENTS.PIN_INVALID:
+        case UI_EVENTS.PIN_INVALID: {
+            const device = selectDeviceInstanceForConnectDevice(getState(), action.payload.device);
+            if (!device) break;
+
             dispatch(
                 deviceActions.addButtonRequest({
-                    // todo: note that this is not 'threadsafe', currently selected device is not necessarily the device
-                    // connect call was made for
-                    device: selectSelectedDevice(getState()),
+                    device,
                     buttonRequest: {
                         code: action.payload.type ? action.payload.type : action.type,
                     },
                 }),
             );
             break;
+        }
         case UI_EVENTS.BUTTON_REQUEST: {
-            const { device: _, ...request } = action.payload;
-            dispatch(
-                deviceActions.addButtonRequest({
-                    device: selectSelectedDevice(getState()),
-                    buttonRequest: request,
-                }),
-            );
+            const { device: connectDevice, ...request } = action.payload;
+            const device = selectDeviceInstanceForConnectDevice(getState(), connectDevice);
+            if (!device) break;
+
+            dispatch(deviceActions.addButtonRequest({ device, buttonRequest: request }));
             break;
         }
     }
