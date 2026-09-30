@@ -7,6 +7,8 @@ import { type Account } from '@suite-common/wallet-types';
 import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
 import TrezorConnect from '@trezor/connect';
 
+import { type AppState } from 'src/reducers/store';
+
 import { useCardanoStaking } from './useCardanoStaking';
 
 jest.mock('@trezor/connect', () => {
@@ -66,8 +68,7 @@ const mockAccountWithRewardsButNoDrep = (): Account =>
     );
 
 const renderCardanoStaking = (account: Account) => {
-    const root = createTestCompositionRoot({
-        extra: { services: {} },
+    const { services } = createTestCompositionRoot<void, AppState>({
         preloadedState: {
             wallet: {
                 selectedAccount: { account },
@@ -77,7 +78,7 @@ const renderCardanoStaking = (account: Account) => {
         },
     });
 
-    return renderHookWithStoreProvider(() => useCardanoStaking(), { root });
+    return renderHookWithStoreProvider(() => useCardanoStaking(), { services });
 };
 
 describe('useCardanoStaking', () => {

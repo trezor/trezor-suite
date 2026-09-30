@@ -12,6 +12,7 @@ import {
 } from '@suite-common/wallet-types';
 import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
 
+import { type AppState } from 'src/reducers/store';
 import { renderWithProviders } from 'src/support/test-utils/hooksHelper';
 
 import { TransactionReviewTotalOutput } from './TransactionReviewTotalOutput';
@@ -59,8 +60,7 @@ const buildFormState = (trading?: FormStateTrading): FormState => ({
 });
 
 const renderTotalOutput = (symbol: NetworkSymbol, trading?: FormStateTrading) => {
-    const root = createTestCompositionRoot({
-        extra: { services: {} },
+    const { services } = createTestCompositionRoot<void, AppState>({
         preloadedState: {
             ...mockInitialAppState,
             device: { ...mockInitialAppState.device, selectedDevice: device },
@@ -68,7 +68,7 @@ const renderTotalOutput = (symbol: NetworkSymbol, trading?: FormStateTrading) =>
     });
 
     renderWithProviders(
-        root,
+        services,
         <TransactionReviewTotalOutput
             account={mockWalletAccount({ symbol })}
             state="active"

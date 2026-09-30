@@ -5,20 +5,21 @@ import { type RenderHookOptions, renderHook } from '@testing-library/react';
 
 import { ServicesProvider } from '@suite-common/dependency-injection';
 
-import { type TestAppRoot } from './createTestCompositionRoot';
+type RenderHookOptionsExtended<
+    Props,
+    Services extends { store: Store },
+> = RenderHookOptions<Props> & {
+    services: Services;
+};
 
-export type TestStore = Store;
-
-type RenderHookOptionsExtended<Props> = RenderHookOptions<Props> & { root: TestAppRoot };
-
-export const renderHookWithStoreProvider = <Result, Props>(
+export const renderHookWithStoreProvider = <Result, Props, Services extends { store: Store }>(
     callback: (props: Props) => Result,
-    { wrapper: Wrapper, root, ...options }: RenderHookOptionsExtended<Props>,
+    { wrapper: Wrapper, services, ...options }: RenderHookOptionsExtended<Props, Services>,
 ) =>
     renderHook(callback, {
         wrapper: ({ children }) => (
-            <Provider store={root.store}>
-                <ServicesProvider services={root.services}>
+            <Provider store={services.store}>
+                <ServicesProvider services={services}>
                     {Wrapper ? <Wrapper>{children}</Wrapper> : children}
                 </ServicesProvider>
             </Provider>

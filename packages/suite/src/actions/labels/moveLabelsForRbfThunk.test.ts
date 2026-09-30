@@ -1,15 +1,15 @@
-import { type UnknownAction, combineReducers } from '@reduxjs/toolkit';
+import { combineReducers } from '@reduxjs/toolkit';
 
-import { prepareDebugReducer } from '@suite/debug';
 import { metadataReducer, selectLabelingDataForAccount } from '@suite/metadata';
 import { prepareSuiteSettingsReducer } from '@suite/settings';
+import { deviceInitialState } from '@suite-common/device';
+import { messageSystemInitialState } from '@suite-common/message-system';
 import { mockActionType, mockReducer } from '@suite-common/redux-utils/mocks';
 import { mockMigrateSuiteSyncLabelsForRbfTransaction } from '@suite-common/suite-rbf-labels-migrations-types/mocks';
 import { suiteSyncReducer } from '@suite-common/suite-sync';
-import { createTestStore, initPreloadedState } from '@suite-common/test-utils';
+import { createTestCompositionRoot, initPreloadedState } from '@suite-common/test-utils';
 
-import suiteReducer from 'src/reducers/suite/suiteReducer';
-import { accountsReducer, transactionsReducer } from 'src/reducers/wallet';
+import { accountsReducer } from 'src/reducers/wallet';
 
 import {
     accountReceivingCoins,
@@ -22,42 +22,36 @@ import {
     originalTransactionSpendAccount,
     transactionSendingCoinsReplacement,
 } from './__fixtures__/moveLabelsForRbfTransactions.fixture';
-import { type MoveLabelsForRbfThunkDeps, moveLabelsForRbfThunk } from './moveLabelsForRbfThunk';
+import {
+    type MoveLabelsForRbfThunkDeps,
+    type MoveLabelsForRbfThunkState,
+    asStateBeforePush,
+    moveLabelsForRbfThunk,
+} from './moveLabelsForRbfThunk';
 
 const rootReducer = combineReducers({
     wallet: combineReducers({
         accounts: accountsReducer,
-        transactions: transactionsReducer,
     }),
     metadata: metadataReducer,
-    suite: suiteReducer,
+    suite: (state: MoveLabelsForRbfThunkState['suite'] = { online: true }) => state,
     suiteSettings: prepareSuiteSettingsReducer({
         actionTypes: { storageLoad: mockActionType('storageLoad') },
         reducers: { storageLoadSuiteSettings: mockReducer() },
     }),
-    debug: prepareDebugReducer({
-        actionTypes: { storageLoad: mockActionType('storageLoad') },
-    }),
     suiteSync: suiteSyncReducer,
+    device: (state = deviceInitialState) => state,
+    messageSystem: (state = messageSystemInitialState) => state,
 });
-
-type TestState = ReturnType<typeof rootReducer>;
 
 const initStore = ({
     wallet,
     metadata,
 }: {
-    wallet: TestState['wallet'];
-    metadata: TestState['metadata'];
-}) => {
-    // State != suite AppState, therefore <any>
-    const extra: MoveLabelsForRbfThunkDeps = {
-        services: {
-            migrateSuiteSyncLabelsForRbfTransaction: mockMigrateSuiteSyncLabelsForRbfTransaction(),
-        },
-    };
-    const store = createTestStore<MoveLabelsForRbfThunkDeps, any, UnknownAction>({
-        extra,
+    wallet: MoveLabelsForRbfThunkState['wallet'];
+    metadata: MoveLabelsForRbfThunkState['metadata'];
+}) =>
+    createTestCompositionRoot<MoveLabelsForRbfThunkDeps, MoveLabelsForRbfThunkState>({
         reducer: rootReducer,
         preloadedState: initPreloadedState({
             rootReducer,
@@ -66,14 +60,20 @@ const initStore = ({
                 metadata,
             },
         }),
-    });
-
-    return store;
-};
+        services: () => ({
+            migrateSuiteSyncLabelsForRbfTransaction: mockMigrateSuiteSyncLabelsForRbfTransaction(),
+        }),
+    }).services.store;
 
 describe(moveLabelsForRbfThunk.name, () => {
     it('moves the labels onto new RBF transaction and deletes the label of the chained transaction', async () => {
         const store = initStore({
+            wallet: {
+                accounts: moveLabelsForRbfAccountsFixture,
+            },
+            metadata: moveLabelsForRbfMetadataStateFixture,
+        });
+        const stateBeforePush = asStateBeforePush({
             wallet: {
                 accounts: moveLabelsForRbfAccountsFixture,
                 transactions: {
@@ -82,7 +82,6 @@ describe(moveLabelsForRbfThunk.name, () => {
                     phishing: {},
                 },
             },
-            metadata: moveLabelsForRbfMetadataStateFixture,
         });
 
         await store.dispatch(
@@ -90,7 +89,7 @@ describe(moveLabelsForRbfThunk.name, () => {
                 newTxId: transactionSendingCoinsReplacement.txid,
                 prevTxId: originalTransactionSpendAccount.txid,
                 deviceStaticSessionId: 'abcd@cdef:1234',
-                stateBeforePush: store.getState(),
+                stateBeforePush,
             }),
         );
 

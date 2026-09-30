@@ -87,7 +87,7 @@ const getQuoteRequestData = ({
     };
 };
 
-type HandleBuyRequestThunkState = TradingRootState;
+export type HandleBuyRequestThunkState = TradingRootState;
 
 export const handleBuyRequestThunk = createThunk<
     BuyTrade[],

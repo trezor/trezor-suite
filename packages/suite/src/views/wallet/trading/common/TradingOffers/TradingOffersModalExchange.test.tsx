@@ -67,8 +67,7 @@ const quotes: ExchangeTrade[] = [
 ];
 
 const renderOffersModal = (exchangeQuotes: ExchangeTrade[]) => {
-    const root = createTestCompositionRoot({
-        extra: { services: {} },
+    const { services } = createTestCompositionRoot<void, AppState>({
         preloadedState: {
             ...mockInitialAppState,
             wallet: {
@@ -89,7 +88,7 @@ const renderOffersModal = (exchangeQuotes: ExchangeTrade[]) => {
         } satisfies AppState,
     });
 
-    renderWithProviders(root, <TradingOffersModalExchange onClose={() => undefined} />);
+    renderWithProviders(services, <TradingOffersModalExchange onClose={() => undefined} />);
 };
 
 const getRenderedProviders = () =>

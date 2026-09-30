@@ -6,10 +6,12 @@ import { type DesktopApiDep } from '@suite/desktop-app-api';
 import { mockGetHttpReceiverAddress } from '@suite/desktop-app-api/mocks';
 import { locksReducer } from '@suite/locks';
 import { modalReducer } from '@suite/modal';
-import { type SuiteRouterHistoryDep, routerReducer } from '@suite/router';
+import { type GotoThunkState, type SuiteRouterHistoryDep, routerReducer } from '@suite/router';
 import { mockSuiteRouterHistory } from '@suite/router/mocks';
 import { createTestCompositionRoot, renderHookWithStoreProvider } from '@suite-common/test-utils';
+import { type TradingRootState, initialState as tradingInitialState } from '@suite-common/trading';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
+import { type AccountsRootState } from '@suite-common/wallet-core';
 import { type Account, type AccountKey } from '@suite-common/wallet-types';
 import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
 
@@ -72,7 +74,10 @@ const DEFAULTS = {
     accounts: [ACCOUNT],
 } satisfies StateOverrides;
 
-const buildState = (overrides: StateOverrides = {}) => {
+// The hook reads trading and account selectors in addition to dispatching gotoThunk.
+type State = GotoThunkState & TradingRootState & AccountsRootState;
+
+const buildState = (overrides: StateOverrides = {}): Pick<State, 'wallet'> => {
     const { selectedQuote, receiveAddress, isLoading, accountKey, receiveAccountKey, accounts } = {
         ...DEFAULTS,
         ...overrides,
@@ -82,19 +87,15 @@ const buildState = (overrides: StateOverrides = {}) => {
         wallet: {
             accounts,
             trading: {
+                ...tradingInitialState,
                 buy: {
+                    ...tradingInitialState.buy,
                     selectedQuote,
                     receiveAddress,
                     isLoading,
                     tradingAccountKey: accountKey,
                     receiveAccountKey,
                     buyInfo: undefined,
-                },
-                sell: {
-                    tradingAccountKey: undefined,
-                },
-                exchange: {
-                    tradingAccountKey: undefined,
                 },
             },
         },
@@ -108,13 +109,10 @@ type UseTradingBuyConfirmServices = DesktopAnalyticsDep &
 const renderConfirm = (overrides?: StateOverrides) => {
     const state = buildState(overrides);
     const suiteRouterHistory = { ...mockSuiteRouterHistory(), navigate: jest.fn() };
-    const services: UseTradingBuyConfirmServices = {
-        analytics: mockDesktopAnalytics(),
-        suiteRouterHistory,
-        desktopApi: { getHttpReceiverAddress: mockGetHttpReceiverAddress() },
-    };
-    const root = createTestCompositionRoot({
-        extra: { services },
+    const { services } = createTestCompositionRoot<
+        { services: UseTradingBuyConfirmServices },
+        State
+    >({
         preloadedState: state,
         reducer: {
             router: routerReducer,
@@ -122,12 +120,17 @@ const renderConfirm = (overrides?: StateOverrides) => {
             modal: modalReducer,
             wallet: (wallet = state.wallet) => wallet,
         },
+        services: () => ({
+            analytics: mockDesktopAnalytics(),
+            suiteRouterHistory,
+            desktopApi: { getHttpReceiverAddress: mockGetHttpReceiverAddress() },
+        }),
     });
     const { result } = renderHookWithStoreProvider(() => useTradingBuyConfirm(), {
-        root,
+        services,
     });
 
-    return { root, result, suiteRouterHistory };
+    return { services, result, suiteRouterHistory };
 };
 
 describe('useTradingBuyConfirm', () => {

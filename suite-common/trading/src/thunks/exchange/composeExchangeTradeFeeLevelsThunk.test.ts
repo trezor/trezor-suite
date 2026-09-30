@@ -5,7 +5,7 @@ import { prepareDeviceReducer } from '@suite-common/device';
 import { createThunk } from '@suite-common/redux-utils';
 import { mockActionType, mockReducer } from '@suite-common/redux-utils/mocks';
 import { mockSuiteDevice } from '@suite-common/suite-types/mocks';
-import { createTestStore } from '@suite-common/test-utils';
+import { createTestCompositionRoot } from '@suite-common/test-utils';
 import {
     blockchainInitialState,
     composeSendFormTransactionFeeLevelsThunk,
@@ -13,6 +13,7 @@ import {
 } from '@suite-common/wallet-core';
 import { type Account, type FeesState } from '@suite-common/wallet-types';
 
+import { type ComposeExchangeTradeFeeLevelsThunkState } from './composeExchangeTradeFeeLevelsThunk';
 import { MIN_MAX_QUOTES_OK } from '../../__fixtures__/exchangeUtils';
 import { accountEth } from '../../__fixtures__/utils';
 import { type TradingState, initialState } from '../../reducers/tradingCommonReducer';
@@ -129,11 +130,9 @@ const getDexQuote = (): ExchangeTrade => ({
 });
 
 const getStore = (tradingState?: Partial<TradingState>) =>
-    createTestStore({
-        extra: undefined,
+    createTestCompositionRoot<void, ComposeExchangeTradeFeeLevelsThunkState>({
         reducer: combineReducers({
             wallet: combineReducers({
-                accounts: () => [account],
                 blockchain: () => blockchainInitialState,
                 fees: feesReducer,
                 settings: () => initialWalletSettingsState,
@@ -151,7 +150,7 @@ const getStore = (tradingState?: Partial<TradingState>) =>
             },
             device: { devices: [mockSuiteDevice()], selectedDevice: mockSuiteDevice() },
         },
-    });
+    }).services.store;
 
 const getExchangeState = (selectedQuote: ExchangeTrade): Partial<TradingState> => ({
     exchange: { ...initialState.exchange, selectedQuote },

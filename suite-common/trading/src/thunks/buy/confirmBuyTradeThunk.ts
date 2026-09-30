@@ -23,7 +23,7 @@ export type ConfirmTradeThunkProps = {
     processResponseData: (response: BuyTradeResponse) => void;
 };
 
-type ConfirmBuyTradeThunkState = TradingRootState;
+export type ConfirmBuyTradeThunkState = TradingRootState;
 
 export const confirmBuyTradeThunk = createThunk<
     BuyTrade | undefined,

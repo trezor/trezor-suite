@@ -1,7 +1,7 @@
 import { combineReducers } from '@reduxjs/toolkit';
 
 import { mockActionType, mockReducer } from '@suite-common/redux-utils/mocks';
-import { createTestStore } from '@suite-common/test-utils';
+import { createTestCompositionRoot } from '@suite-common/test-utils';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { type Account } from '@suite-common/wallet-types';
 import { mockAccountToken, mockWalletAccount } from '@suite-common/wallet-types/mocks';
@@ -25,15 +25,11 @@ interface InitStoreArgs {
     preloadedState?: AccountsRootState;
 }
 
-const initStore = ({ preloadedState }: InitStoreArgs = {}) => {
-    const store = createTestStore({
-        extra: undefined,
+const initStore = ({ preloadedState }: InitStoreArgs = {}) =>
+    createTestCompositionRoot<void, AccountsRootState>({
         reducer: { wallet: combineReducers({ accounts: accountsReducer }) },
         preloadedState,
-    });
-
-    return store;
-};
+    }).services.store;
 const getAccount = (a?: Partial<Account>) => ({
     descriptor: 'xpubDeFauLT1',
     symbol: btcSymbol,

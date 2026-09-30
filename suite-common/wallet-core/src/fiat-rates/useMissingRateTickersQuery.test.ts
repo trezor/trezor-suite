@@ -39,11 +39,8 @@ const missingRateTickers: TickerId[] = [
 ];
 
 const renderUseMissingRateTickersQuery = (dispatch = jest.fn()) => {
-    const root = createTestCompositionRoot({
-        extra: { services: {} },
-        preloadedState: {},
-    });
-    root.store.dispatch = dispatch;
+    const { services } = createTestCompositionRoot<void, unknown>({ preloadedState: {} });
+    services.store.dispatch = dispatch;
 
     return renderHookWithStoreProvider(
         () =>
@@ -51,7 +48,7 @@ const renderUseMissingRateTickersQuery = (dispatch = jest.fn()) => {
                 missingRateTickers,
                 baseCurrencyCode: 'usd',
             }),
-        { root },
+        { services },
     );
 };
 
@@ -61,10 +58,7 @@ describe('useMissingRateTickersQuery', () => {
     });
 
     it('disables the query when there are no missing rate tickers', () => {
-        const root = createTestCompositionRoot({
-            extra: { services: {} },
-            preloadedState: {},
-        });
+        const { services } = createTestCompositionRoot<void, unknown>({ preloadedState: {} });
 
         renderHookWithStoreProvider(
             () =>
@@ -72,7 +66,7 @@ describe('useMissingRateTickersQuery', () => {
                     missingRateTickers: [],
                     baseCurrencyCode: 'usd',
                 }),
-            { root },
+            { services },
         );
 
         expect(mockMissingRateTickersQueryKey).toHaveBeenCalledWith([], 'usd');

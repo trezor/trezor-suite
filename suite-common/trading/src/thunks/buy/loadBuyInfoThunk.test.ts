@@ -6,13 +6,20 @@ import {
     type FiatCurrenciesProps,
 } from 'invity-api';
 
-import { createTestStore } from '@suite-common/test-utils';
+import { createTestCompositionRoot } from '@suite-common/test-utils';
 
-import { buyInitialState, tradingBuyReducer } from '../../reducers/buyReducer';
+import {
+    type TradingBuyState,
+    buyInitialState,
+    tradingBuyReducer,
+} from '../../reducers/buyReducer';
 import { regional } from '../../regional';
 import { tradeApi } from '../../tradeApi';
 
 import { buyThunks } from './index';
+
+// The thunk has no state dependency; this slice is needed to assert its reducer updates.
+type State = { wallet: { trading: { buy: TradingBuyState } } };
 
 describe('loadBuyInfoThunk', () => {
     jest.mock('../../tradeApi');
@@ -20,8 +27,7 @@ describe('loadBuyInfoThunk', () => {
     tradeApi.setServersEnvironment = () => {};
     tradeApi.createApiKey = () => {};
 
-    const store = createTestStore({
-        extra: undefined,
+    const { store } = createTestCompositionRoot<void, State>({
         reducer: combineReducers({
             wallet: combineReducers({
                 trading: combineReducers({
@@ -36,7 +42,7 @@ describe('loadBuyInfoThunk', () => {
                 },
             },
         },
-    });
+    }).services;
 
     it('should load data when response is successful', async () => {
         const buyInfoAPI = {

@@ -1,10 +1,14 @@
 import { mockSuiteDevice } from '@suite-common/suite-types/mocks';
-import { createTestStore } from '@suite-common/test-utils';
+import { createTestCompositionRoot } from '@suite-common/test-utils';
 import { UI_EVENTS, UI_REQUESTS } from '@trezor/connect';
 import { createUiEventMessage, createUiRequestMessage } from '@trezor/connect-common';
 import { DeviceModelInternal, FirmwareType } from '@trezor/device-utils';
 
-import { defaultTrezorUIEventHandlerThunk } from './defaultTrezorUIEventHandlerThunk';
+import {
+    type DefaultTrezorUIEventHandlerThunkDeps,
+    type DefaultTrezorUIEventHandlerThunkState,
+    defaultTrezorUIEventHandlerThunk,
+} from './defaultTrezorUIEventHandlerThunk';
 
 const device = mockSuiteDevice();
 
@@ -30,9 +34,12 @@ const firmwareDownloadedEvent = createUiEventMessage(UI_EVENTS.FIRMWARE_DOWNLOAD
 });
 
 const setupStore = (uiEventHooks: Record<string, () => void>) =>
-    createTestStore({
-        extra: { services: { connectInitUiEventHooks: uiEventHooks } },
-    });
+    createTestCompositionRoot<
+        DefaultTrezorUIEventHandlerThunkDeps,
+        DefaultTrezorUIEventHandlerThunkState
+    >({
+        services: () => ({ connectInitUiEventHooks: uiEventHooks }),
+    }).services.store;
 
 describe('defaultTrezorUIEventHandlerThunk - connectInitUiEventHooks', () => {
     it('calls the hook registered for the dispatched event type and still dispatches the event', async () => {

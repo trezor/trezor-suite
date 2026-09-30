@@ -1,19 +1,32 @@
+import { type UnknownAction } from '@reduxjs/toolkit';
 import assert from 'assert';
+import { type ThunkAction } from 'redux-thunk';
 
-import type { SuiteSettingsState } from '@suite/settings';
-import { deviceActions, deviceInitialState, prepareDeviceReducer } from '@suite-common/device';
+import { type ForgetBluetoothDeviceDep } from '@suite-common/bluetooth';
+import {
+    type DeviceRootState,
+    deviceActions,
+    deviceInitialState,
+    prepareDeviceReducer,
+} from '@suite-common/device';
 import { persistentDeviceDataActions } from '@suite-common/persistent-device-data';
+import { type WithServices } from '@suite-common/redux-utils';
 import { mockActionType, mockReducer } from '@suite-common/redux-utils/mocks';
-import { type TrezorDevice } from '@suite-common/suite-types';
+import {
+    type OpenModalDep,
+    type ReportSecurityCheckDep,
+    type TrezorDevice,
+} from '@suite-common/suite-types';
 import { mockSuiteDevice } from '@suite-common/suite-types/mocks';
 import { notificationsActions } from '@suite-common/toast-notifications';
-import { wipeDeviceThunk } from '@suite-common/wallet-core';
+import {
+    type ForgetDevicePersistentDataThunkState,
+    wipeDeviceThunk,
+} from '@suite-common/wallet-core';
 import { type Response } from '@trezor/connect';
 
-import type suiteReducer from 'src/reducers/suite/suiteReducer';
-import { type ThunkAction } from 'src/types/suite';
-
 import * as deviceSettingsActions from '../deviceSettingsActions';
+import { type ResetDeviceThunkState } from '../deviceSettingsActions';
 
 export const deviceReducer = prepareDeviceReducer({
     actionTypes: {
@@ -28,18 +41,26 @@ export const deviceReducer = prepareDeviceReducer({
     },
 });
 
-export type DeviceSettingsFixtureState = {
-    suite: ReturnType<typeof suiteReducer>;
-    suiteSettings: SuiteSettingsState;
-    device: ReturnType<typeof deviceReducer>;
+export type DeviceSettingsFixtureState = DeviceRootState;
+
+export type DeviceSettingsActionsTestDeps = WithServices<ReportSecurityCheckDep> & {
+    actions: OpenModalDep;
+    thunks: ForgetBluetoothDeviceDep;
 };
+
+type DeviceSettingsAction = ThunkAction<
+    unknown,
+    ForgetDevicePersistentDataThunkState & ResetDeviceThunkState,
+    DeviceSettingsActionsTestDeps,
+    UnknownAction
+>;
 
 const deviceChange = mockSuiteDevice({ path: '1' }, { device_id: 'new-device-id' });
 assert(deviceChange.features !== undefined);
 
 type Fixture = {
     description: string;
-    action: () => ThunkAction;
+    action: () => DeviceSettingsAction;
     initialState: Partial<DeviceSettingsFixtureState>;
     deviceChange?: TrezorDevice;
     mocks: Awaited<Response<{ message: string }>>;

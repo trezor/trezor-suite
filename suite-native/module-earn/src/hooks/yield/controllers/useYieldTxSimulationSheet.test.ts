@@ -1,6 +1,5 @@
 import { combineReducers } from '@reduxjs/toolkit';
 
-import { type TestStore } from '@suite-common/test-utils';
 import {
     type YieldRootState,
     selectYieldSession,
@@ -65,7 +64,7 @@ const renderSimulationSheet = ({
     onConfirmed = jest.fn(),
     onReportAction = jest.fn(),
 }: {
-    store: TestStore;
+    store: ReturnType<typeof buildStore>;
     flowKey?: string | null;
     onConfirmed?: jest.Mock;
     onReportAction?: jest.Mock;

@@ -47,21 +47,19 @@ const getInitialState = (): ConnectInitThunkState => ({
 
 const createTestRoot = (lockDevice = mock<LockDevice>()) =>
     createTestCompositionRoot<ConnectInitThunkDeps, ConnectInitThunkState>({
-        extra: {
-            services: {
-                analytics: mockDesktopAnalytics(),
-                connectInitDeviceEventHooks: mockConnectInitDeviceEventHooks(),
-                connectInitSettings: mockConnectInitSettings(),
-                connectInitUiEventHooks: mockConnectInitUiEventHooks(),
-                createLogger: noopCreateLogger,
-                createTransports: mockCreateTransports(),
-                getAllowPrerelease: mockGetAllowPrerelease(),
-                getBinFilesBaseUrl: mockGetBinFilesBaseUrl(),
-                getDebugSettings: mockGetDebugSettings(),
-                getThpSettings: mockGetThpSettings(),
-                lockDevice,
-            },
-        },
+        services: () => ({
+            analytics: mockDesktopAnalytics(),
+            connectInitDeviceEventHooks: mockConnectInitDeviceEventHooks(),
+            connectInitSettings: mockConnectInitSettings(),
+            connectInitUiEventHooks: mockConnectInitUiEventHooks(),
+            createLogger: noopCreateLogger,
+            createTransports: mockCreateTransports(),
+            getAllowPrerelease: mockGetAllowPrerelease(),
+            getBinFilesBaseUrl: mockGetBinFilesBaseUrl(),
+            getDebugSettings: mockGetDebugSettings(),
+            getThpSettings: mockGetThpSettings(),
+            lockDevice,
+        }),
         middleware: [
             prepareSuiteMiddleware(() => ({ services: { suiteSync: mockSuiteSync() } })),
             buttonRequestMiddleware,
@@ -72,9 +70,11 @@ const createTestRoot = (lockDevice = mock<LockDevice>()) =>
 describe('buttonRequest middleware', () => {
     it('see what happens on pin change call', async () => {
         const lockDevice = mock<LockDevice>();
-        const { store, services } = createTestRoot(lockDevice);
-        await store.dispatch(connectInitThunk());
-        const call = store.dispatch(deviceSettingsActions.changePinThunk({ remove: false }));
+        const { services } = createTestRoot(lockDevice);
+        await services.store.dispatch(connectInitThunk());
+        const call = services.store.dispatch(
+            deviceSettingsActions.changePinThunk({ remove: false }),
+        );
         const { emitTestEvent } = testMocks.getTrezorConnectMock();
         // fake few ui events, just like when user is changing PIN
         emitTestEvent(UI_EVENT, {
@@ -93,7 +93,7 @@ describe('buttonRequest middleware', () => {
             observeSelectedDeviceThunk.pending.type,
             observeSelectedDeviceThunk.fulfilled.type,
         ];
-        const actions = services
+        const actions = services.store
             .getActions()
             .filter(action => !unrelatedActionTypes.includes(action.type));
 

@@ -4,17 +4,19 @@ import {
     type BluetoothDeviceCommon,
     prepareBluetoothReducerCreator,
 } from '@suite-common/bluetooth';
-import { deviceActions, prepareDeviceReducer } from '@suite-common/device';
+import { type DeviceReducerState, deviceActions, prepareDeviceReducer } from '@suite-common/device';
 import { preparePersistentDeviceDataReducer } from '@suite-common/persistent-device-data';
 import { mockActionType, mockReducer } from '@suite-common/redux-utils/mocks';
-import { createTestStore, filterThunkActionTypes } from '@suite-common/test-utils';
-import { prepareThpReducer } from '@suite-common/thp';
+import { createTestCompositionRoot, filterThunkActionTypes } from '@suite-common/test-utils';
+import { type ThpRootState, prepareThpReducer } from '@suite-common/thp';
 import { DEVICE } from '@trezor/connect';
 
 import { forgetPersistentDataPreloadedStateFixture } from './__fixtures__/forgetPersistentDataPreloadedState';
 import { handleDeviceDisconnectFixture } from './__fixtures__/handleDeviceDisconnect';
 import {
     type ForgetDevicePersistentDataThunkDeps,
+    type ForgetDevicePersistentDataThunkState,
+    type HandleDeviceDisconnectThunkState,
     forgetDevicePersistentDataThunk,
     handleDeviceDisconnectThunk,
 } from './deviceThunks';
@@ -47,8 +49,11 @@ const extra: ForgetDevicePersistentDataThunkDeps = {
     },
 };
 
+// THP is extra because this test also asserts cleanup handled by the THP reducer.
+type State = ForgetDevicePersistentDataThunkState & ThpRootState;
+
 const initStore = () =>
-    createTestStore({
+    createTestCompositionRoot<ForgetDevicePersistentDataThunkDeps, State>({
         extra,
         reducer: combineReducers({
             bluetooth: bluetoothReducer,
@@ -57,7 +62,7 @@ const initStore = () =>
             persistentDeviceData: persistentDeviceDataReducer,
         }),
         preloadedState: forgetPersistentDataPreloadedStateFixture,
-    });
+    }).services.store;
 
 describe(forgetDevicePersistentDataThunk.name, () => {
     it('forgets a single device data with Bluetooth and THP', async () => {
@@ -110,27 +115,26 @@ describe(forgetDevicePersistentDataThunk.name, () => {
     });
 });
 
-type DisconnectState = {
-    device: ReturnType<typeof deviceReducer>;
-};
-
 const getDisconnectInitialState = (state?: {
-    device?: Partial<ReturnType<typeof deviceReducer>>;
-}): DisconnectState => ({
+    device?: Partial<DeviceReducerState>;
+}): HandleDeviceDisconnectThunkState => ({
     device: {
         ...deviceReducer(undefined, { type: 'foo' }),
         ...state?.device,
     },
 });
 
-const initDisconnectStore = (state: DisconnectState) =>
-    createTestStore({
+const initDisconnectStore = (state: HandleDeviceDisconnectThunkState) =>
+    createTestCompositionRoot<
+        ForgetDevicePersistentDataThunkDeps,
+        HandleDeviceDisconnectThunkState
+    >({
         extra,
         reducer: combineReducers({
             device: deviceReducer,
         }),
         preloadedState: state,
-    });
+    }).services.store;
 
 describe(handleDeviceDisconnectThunk.name, () => {
     handleDeviceDisconnectFixture.forEach(fixture => {

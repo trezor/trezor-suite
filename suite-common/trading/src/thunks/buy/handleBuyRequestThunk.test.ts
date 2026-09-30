@@ -2,9 +2,10 @@ import { combineReducers } from '@reduxjs/toolkit';
 import { type CryptoId } from 'invity-api';
 
 import { mockActionType } from '@suite-common/redux-utils/mocks';
-import { createTestStore } from '@suite-common/test-utils';
+import { createTestCompositionRoot } from '@suite-common/test-utils';
 import { getNetwork, toNetworkSymbolNonTestnet } from '@suite-common/wallet-config';
 
+import { type HandleBuyRequestThunkState } from './handleBuyRequestThunk';
 import { ALTERNATIVE_QUOTES } from '../../__fixtures__/buyUtils';
 import {
     type QuoteRefetchingState,
@@ -44,8 +45,7 @@ describe('handleBuyRequestThunk', () => {
         refetchQuotesOverride?: Partial<QuoteRefetchingState>,
         coinsOverride?: NonNullable<typeof initialState.info.coins>,
     ) => {
-        const store = createTestStore({
-            extra: undefined,
+        const { store } = createTestCompositionRoot<void, HandleBuyRequestThunkState>({
             reducer: combineReducers({
                 wallet: combineReducers({
                     trading: tradingReducer,
@@ -78,7 +78,7 @@ describe('handleBuyRequestThunk', () => {
                     },
                 },
             },
-        });
+        }).services;
 
         const formValues: TradingBuyFormProps = {
             fiatInput: '1000',

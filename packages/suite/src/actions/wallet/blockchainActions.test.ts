@@ -1,26 +1,39 @@
-import { type UnknownAction } from '@reduxjs/toolkit';
-
 import { type TranslationKey } from '@suite/intl';
 import { type AnalyticsDep, type AnalyticsSharedEvents } from '@suite-common/analytics';
 import { asGetter } from '@suite-common/dependency-injection';
-import { deviceInitialState } from '@suite-common/device';
+import { type DeviceRootState, deviceInitialState } from '@suite-common/device';
+import { type NetworksRootState } from '@suite-common/networks';
 import { mockNetworksState } from '@suite-common/networks/mocks';
 import { type WithServices } from '@suite-common/redux-utils';
 import { type GetIsWindowVisibleDep } from '@suite-common/suite-types';
 import { mockSuiteDevice } from '@suite-common/suite-types/mocks';
-import { createTestStore, filterThunkActionTypes, testMocks } from '@suite-common/test-utils';
 import {
+    createTestCompositionRoot,
+    filterThunkActionTypes,
+    testMocks,
+} from '@suite-common/test-utils';
+import {
+    type NotificationsState,
     createNotificationsReducer,
     notificationsActions,
 } from '@suite-common/toast-notifications';
-import { tokenDefinitionsInitialState } from '@suite-common/token-definitions';
+import {
+    type TokenDefinitionsRootState,
+    tokenDefinitionsInitialState,
+} from '@suite-common/token-definitions';
+import { type TradingRootState } from '@suite-common/trading';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { mockGetSupportedNetworks } from '@suite-common/wallet-config/mocks';
 import {
+    type AccountsRootState,
     type AccountsState,
+    type BlockchainRootState,
     type BlockchainState,
     DEFAULT_NETWORK_SYNC_INTERVAL,
+    type FeesRootState,
+    type TransactionsRootState,
     type TransactionsState,
+    type WalletSettingsRootState,
     blockchainActions,
     feesReducer,
     initBlockchainThunk,
@@ -58,10 +71,28 @@ interface Args {
     transactions?: TransactionsState['transactions'];
 }
 
+// These fixtures exercise several blockchain thunks plus notification and window-dependent behavior.
+type State = AccountsRootState &
+    BlockchainRootState &
+    DeviceRootState &
+    FeesRootState &
+    NetworksRootState &
+    TokenDefinitionsRootState &
+    TradingRootState &
+    TransactionsRootState &
+    WalletSettingsRootState & {
+        notifications: NotificationsState<TranslationKey>;
+        suite: {
+            device: { state: { staticSessionId: string } };
+            settings: { debug: { showDebugMenu: boolean } };
+        };
+        window: { isVisible: boolean };
+    };
+
 const getInitialState = (
     { accounts, transactions, blockchain, fees }: Args = {},
     action: any = { type: 'initial' },
-) => ({
+): State => ({
     networks: mockNetworksState(mockGetSupportedNetworks()),
     wallet: {
         accounts: accountsReducer(accounts, action),
@@ -102,20 +133,11 @@ const getInitialState = (
     },
 });
 
-type State = ReturnType<typeof getInitialState>;
 type BlockchainActionsTestDeps = WithServices<
     AnalyticsDep & GetIsWindowVisibleDep & GetTradedAccountKeysDep
 >;
-const extra: BlockchainActionsTestDeps = {
-    services: {
-        analytics: mockAnalytics<AnalyticsSharedEvents>(),
-        getIsWindowVisible: asGetter(() => true),
-        getTradedAccountKeys: asGetter(() => []),
-    },
-};
 const mockStore = (preloadedState: State) =>
-    createTestStore<BlockchainActionsTestDeps, State, UnknownAction>({
-        extra,
+    createTestCompositionRoot<BlockchainActionsTestDeps, State>({
         reducer: (currentState = preloadedState, action) => {
             const state = currentState as State;
 
@@ -132,7 +154,12 @@ const mockStore = (preloadedState: State) =>
             };
         },
         preloadedState,
-    });
+        services: () => ({
+            analytics: mockAnalytics<AnalyticsSharedEvents>(),
+            getIsWindowVisible: asGetter(() => true),
+            getTradedAccountKeys: asGetter(() => []),
+        }),
+    }).services.store;
 
 describe('Blockchain Actions', () => {
     afterEach(() => {

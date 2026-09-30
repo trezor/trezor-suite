@@ -1,15 +1,19 @@
 import { type DesktopAnalyticsDep } from '@suite/analytics';
 import { events } from '@suite-common/analytics';
 import { asGetter } from '@suite-common/dependency-injection';
-import { createTestStore } from '@suite-common/test-utils';
+import { createTestCompositionRoot } from '@suite-common/test-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
-import { type YieldFlowResolvedData, yieldActions } from '@suite-common/wallet-core';
+import {
+    type ComposeYieldWithdrawTransactionThunkState,
+    type YieldFlowResolvedData,
+    yieldActions,
+} from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
 import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
 import { mockAnalytics } from '@trezor/analytics-uploader/mocks';
 
-import { type SendYieldTransactionDeps } from './signingHelpers';
+import { type SendYieldTransactionDeps, type SendYieldTransactionState } from './signingHelpers';
 import { submitYieldWithdrawThunk } from './submitYieldWithdrawThunk';
 
 const mockComposeYieldWithdrawTransactionThunk = jest.fn();
@@ -20,14 +24,8 @@ const mockSentResult = (txid: string) => ({ status: 'sent' as const, txid, fee: 
 const mockCancelledResult = { status: 'cancelled' as const };
 
 type SubmitYieldWithdrawThunkDeps = SendYieldTransactionDeps & { services: DesktopAnalyticsDep };
-
-const createExtra = (report: jest.Mock = jest.fn()): SubmitYieldWithdrawThunkDeps => ({
-    services: {
-        analytics: mockAnalytics(report),
-        getIsWindowVisible: asGetter(() => true),
-        getTradedAccountKeys: asGetter(() => []),
-    },
-});
+type SubmitYieldWithdrawThunkState = ComposeYieldWithdrawTransactionThunkState &
+    SendYieldTransactionState;
 
 jest.mock('@suite-common/wallet-core', () => ({
     ...jest.requireActual('@suite-common/wallet-core'),
@@ -68,7 +66,17 @@ const dispatchWithdraw = (
     report: jest.Mock,
     overrides: Partial<Parameters<typeof submitYieldWithdrawThunk>[0]> = {},
 ) => {
-    const store = createTestStore({ extra: createExtra(report), preloadedState: {} });
+    const { store } = createTestCompositionRoot<
+        SubmitYieldWithdrawThunkDeps,
+        SubmitYieldWithdrawThunkState
+    >({
+        preloadedState: {},
+        services: () => ({
+            analytics: mockAnalytics(report),
+            getIsWindowVisible: asGetter(() => true),
+            getTradedAccountKeys: asGetter(() => []),
+        }),
+    }).services;
 
     return store
         .dispatch(

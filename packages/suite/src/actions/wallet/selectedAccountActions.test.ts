@@ -1,11 +1,13 @@
 import { selectedAccountReducer } from '@suite/account';
-import { createTestStore } from '@suite-common/test-utils';
+import { createTestCompositionRoot } from '@suite-common/test-utils';
 
 import fixtures from './__fixtures__/selectedAccountActions';
-import { syncSelectedAccountThunk } from './selectedAccountActions';
+import {
+    type SyncSelectedAccountThunkState,
+    syncSelectedAccountThunk,
+} from './selectedAccountActions';
 
-const getInitialState = (initialState: any = {}) => ({
-    suite: {},
+const getInitialState = (initialState: any = {}): SyncSelectedAccountThunkState => ({
     device: {
         selectedDevice: undefined,
         ...initialState.device,
@@ -28,10 +30,8 @@ const getInitialState = (initialState: any = {}) => ({
     },
 });
 
-type State = ReturnType<typeof getInitialState>;
-const mockStore = (preloadedState: State) =>
-    createTestStore({
-        extra: undefined,
+const mockStore = (preloadedState: SyncSelectedAccountThunkState) =>
+    createTestCompositionRoot<void, SyncSelectedAccountThunkState>({
         reducer: (state = preloadedState, action) => ({
             ...state,
             wallet: {
@@ -40,7 +40,7 @@ const mockStore = (preloadedState: State) =>
             },
         }),
         preloadedState,
-    });
+    }).services.store;
 
 describe('selectedAccount Actions', () => {
     fixtures.forEach(f => {

@@ -8,6 +8,8 @@ import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { composeSendFormTransactionFeeLevelsThunk } from '@suite-common/wallet-core';
 import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
 
+import { type AppState } from 'src/reducers/store';
+
 import { useTradingExchangeTradeActions } from './useTradingExchangeTradeActions';
 
 const DEVICE_CANCEL_TOAST_ERROR = 'Cancelled';
@@ -183,14 +185,14 @@ describe('cancelling a swap on the device', () => {
     });
 
     it('reports the cancellation once and nothing else', async () => {
-        const root = createTestCompositionRoot({ preloadedState });
+        const { services } = createTestCompositionRoot<void, AppState>({ preloadedState });
         const { result } = renderHookWithStoreProvider(() => useTradingExchangeTradeActions(), {
-            root,
+            services,
         });
 
         const success = await result.current.sendTransaction();
 
-        const toasts = root.services
+        const toasts = services.store
             .getActions()
             .filter(action => action.type === notificationsActions.addToast.type);
 

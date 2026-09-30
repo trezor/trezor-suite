@@ -69,21 +69,19 @@ const getInitialState = (overrides: StateOverrides = {}): PublicKeyActionsTestSt
 
 const createTestRoot = (overrides?: StateOverrides) =>
     createTestCompositionRoot<ConnectInitThunkDeps, PublicKeyActionsTestState>({
-        extra: {
-            services: {
-                analytics: mockDesktopAnalytics(),
-                connectInitDeviceEventHooks: mockConnectInitDeviceEventHooks(),
-                connectInitSettings: mockConnectInitSettings(),
-                connectInitUiEventHooks: mockConnectInitUiEventHooks(),
-                createLogger: noopCreateLogger,
-                createTransports: mockCreateTransports(),
-                getAllowPrerelease: mockGetAllowPrerelease(),
-                getBinFilesBaseUrl: mockGetBinFilesBaseUrl(),
-                getDebugSettings: mockGetDebugSettings(),
-                getThpSettings: mockGetThpSettings(),
-                lockDevice: mock<LockDevice>(),
-            },
-        },
+        services: () => ({
+            analytics: mockDesktopAnalytics(),
+            connectInitDeviceEventHooks: mockConnectInitDeviceEventHooks(),
+            connectInitSettings: mockConnectInitSettings(),
+            connectInitUiEventHooks: mockConnectInitUiEventHooks(),
+            createLogger: noopCreateLogger,
+            createTransports: mockCreateTransports(),
+            getAllowPrerelease: mockGetAllowPrerelease(),
+            getBinFilesBaseUrl: mockGetBinFilesBaseUrl(),
+            getDebugSettings: mockGetDebugSettings(),
+            getThpSettings: mockGetThpSettings(),
+            lockDevice: mock<LockDevice>(),
+        }),
         preloadedState: getInitialState(overrides),
     });
 
@@ -91,12 +89,12 @@ describe('PublicKeyActions', () => {
     fixtures.forEach(f => {
         it(f.description, async () => {
             testMocks.setTrezorConnectFixtures(f.mocks.getPublicKey);
-            const { store, services } = createTestRoot(f.initialState);
-            await store.dispatch(connectInitThunk());
-            await store.dispatch(f.action() as any);
+            const { services } = createTestRoot(f.initialState);
+            await services.store.dispatch(connectInitThunk());
+            await services.store.dispatch(f.action() as any);
 
             if (f.result?.actions) {
-                expect(services.getActions()).toMatchObject(f.result.actions);
+                expect(services.store.getActions()).toMatchObject(f.result.actions);
             }
         });
     });

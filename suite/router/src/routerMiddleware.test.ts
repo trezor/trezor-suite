@@ -1,8 +1,8 @@
-import { createTestStore } from '@suite-common/test-utils';
+import { createTestCompositionRoot } from '@suite-common/test-utils';
 
 import { getRoute } from './router';
 import { routerMiddleware } from './routerMiddleware';
-import type { RouterState } from './routerReducer';
+import type { RouterRootState, RouterState } from './routerReducer';
 import { routerAppChanged, routerLocationChange, routerReducer } from './routerReducer';
 
 type LocationChangePayload = Parameters<typeof routerLocationChange>[0];
@@ -19,9 +19,8 @@ const getRequiredRoute = <TName extends NonNullable<LocationChangePayload['route
     return route as Extract<NonNullable<LocationChangePayload['route']>, { name: TName }>;
 };
 
-const initStore = (router?: Partial<RouterState>) => {
-    const store = createTestStore({
-        extra: undefined,
+const initStore = (router?: Partial<RouterState>) =>
+    createTestCompositionRoot<void, RouterRootState>({
         middleware: [routerMiddleware(() => ({}))],
         reducer: { router: routerReducer },
         preloadedState: {
@@ -30,10 +29,7 @@ const initStore = (router?: Partial<RouterState>) => {
                 ...router,
             },
         },
-    });
-
-    return store;
-};
+    }).services.store;
 
 describe('routerMiddleware', () => {
     describe('dispatch @router/appChanged action', () => {
