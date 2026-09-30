@@ -76,7 +76,7 @@ export const DefiTokensTab = ({ accountKey, onSelect }: DefiTokensTabProps) => {
                     variant="info"
                     icon="coins"
                     title={
-                        <Translation id="moduleAccountManagement.accountAssetsScreen.defiTokensSection.emptyTitle" />
+                        <Translation id="moduleAccountManagement.accountOverviewScreen.defiTokensSection.emptyTitle" />
                     }
                 />
             </Card>

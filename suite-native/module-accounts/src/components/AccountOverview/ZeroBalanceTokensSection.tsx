@@ -62,7 +62,7 @@ export const ZeroBalanceTokensSection = ({
         <>
             <PressableOpacity onPress={handleToggle} style={applyStyle(headerStyle, { isOpen })}>
                 <Text variant="body-sm">
-                    <Translation id="moduleAccountManagement.accountAssetsScreen.zeroBalanceSection.title" />
+                    <Translation id="moduleAccountManagement.accountOverviewScreen.zeroBalanceSection.title" />
                 </Text>
                 <AnimatedBox style={animatedCaretStyle}>
                     <Icon name="caretDown" size="small" />

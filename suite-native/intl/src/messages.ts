@@ -2014,7 +2014,7 @@ export const messages = {
             },
             title: 'My assets',
         },
-        accountAssetsScreen: {
+        accountOverviewScreen: {
             tab: {
                 tokens: 'Tokens {count, plural, =0 {} other { #}}',
                 defi: 'DeFi {count, plural, =0 {} other { #}}',

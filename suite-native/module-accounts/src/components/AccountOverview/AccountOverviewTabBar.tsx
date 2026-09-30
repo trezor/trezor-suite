@@ -6,7 +6,7 @@ import { Button } from '@suite-native/atoms';
 import { Translation, type TxKeyPath } from '@suite-native/intl';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
-import { type AccountAssetsFlow, type AccountAssetsTab } from './types';
+import { type AccountOverviewFlow, type AccountOverviewTab } from './types';
 import { useActiveTabScroll } from './useActiveTabScroll';
 
 const scrollStyle = prepareNativeStyle(() => ({
@@ -20,24 +20,24 @@ const scrollContentStyle = prepareNativeStyle(({ spacings }) => ({
 }));
 
 interface TabItem {
-    tab: AccountAssetsTab;
+    tab: AccountOverviewTab;
     icon: NonNullable<ComponentProps<typeof Button>['iconLeft']>;
     translationId: TxKeyPath;
     translationValues?: Record<string, number>;
     isVisible: boolean;
 }
 
-interface AccountAssetsTabBarProps {
-    activeTab: AccountAssetsTab;
-    flowType: AccountAssetsFlow;
+type AccountOverviewTabBarProps = {
+    activeTab: AccountOverviewTab;
+    flowType: AccountOverviewFlow;
     networkType?: NetworkType;
     tokenCount: number;
     defiTokenCount: number;
     hiddenTokenCount: number;
-    onTabChange: (tab: AccountAssetsTab) => void;
-}
+    onTabChange: (tab: AccountOverviewTab) => void;
+};
 
-export const AccountAssetsTabBar = ({
+export const AccountOverviewTabBar = ({
     activeTab,
     flowType,
     networkType,
@@ -45,7 +45,7 @@ export const AccountAssetsTabBar = ({
     defiTokenCount,
     hiddenTokenCount,
     onTabChange,
-}: AccountAssetsTabBarProps) => {
+}: AccountOverviewTabBarProps) => {
     const { applyStyle } = useNativeStyles();
     const { scrollViewRef, handleTabLayout, handleScroll, handleScrollViewLayout } =
         useActiveTabScroll(activeTab);
@@ -55,29 +55,29 @@ export const AccountAssetsTabBar = ({
             {
                 tab: 'tokens',
                 icon: 'coins',
-                translationId: 'moduleAccountManagement.accountAssetsScreen.tab.tokens',
+                translationId: 'moduleAccountManagement.accountOverviewScreen.tab.tokens',
                 translationValues: { count: tokenCount },
                 isVisible: true,
             },
             {
                 tab: 'defi',
                 icon: 'percent',
-                translationId: 'moduleAccountManagement.accountAssetsScreen.tab.defi',
+                translationId: 'moduleAccountManagement.accountOverviewScreen.tab.defi',
                 translationValues: { count: defiTokenCount },
                 isVisible: networkType === 'ethereum',
             },
             {
                 tab: 'hidden',
                 icon: 'eyeSlash',
-                translationId: 'moduleAccountManagement.accountAssetsScreen.tab.hidden',
+                translationId: 'moduleAccountManagement.accountOverviewScreen.tab.hidden',
                 translationValues: { count: hiddenTokenCount },
                 isVisible: true,
             },
             {
                 tab: 'inactive',
                 icon: 'coinSlash',
-                translationId: 'moduleAccountManagement.accountAssetsScreen.tab.inactive',
-                isVisible: networkType === 'stellar' && flowType === 'assets',
+                translationId: 'moduleAccountManagement.accountOverviewScreen.tab.inactive',
+                isVisible: networkType === 'stellar' && flowType === 'overview',
             },
         ],
         [tokenCount, defiTokenCount, hiddenTokenCount, networkType, flowType],

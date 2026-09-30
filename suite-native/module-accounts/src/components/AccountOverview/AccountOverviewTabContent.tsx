@@ -20,21 +20,21 @@ import { ActiveTokensTab } from './ActiveTokensTab';
 import { DefiTokensTab } from './DefiTokensTab';
 import { HiddenTokensTab } from './HiddenTokensTab';
 import { InactiveTokensTab } from './InactiveTokensTab';
-import { type AccountAssetsFlow, type AccountAssetsTab, type OnSelectAsset } from './types';
+import { type AccountOverviewFlow, type AccountOverviewTab, type OnSelectAsset } from './types';
 
-type AccountAssetsTabContentProps = {
+type AccountOverviewTabContentProps = {
     accountKey: AccountKey;
-    activeTab: AccountAssetsTab;
-    flowType: AccountAssetsFlow;
+    activeTab: AccountOverviewTab;
+    flowType: AccountOverviewFlow;
 };
 
-export const AccountAssetsTabContent = ({
+export const AccountOverviewTabContent = ({
     accountKey,
     activeTab,
     flowType,
-}: AccountAssetsTabContentProps) => {
+}: AccountOverviewTabContentProps) => {
     const navigation =
-        useNavigation<StackNavigationProps<RootStackParamList, RootStackRoutes.AccountAssets>>();
+        useNavigation<StackNavigationProps<RootStackParamList, RootStackRoutes.AccountOverview>>();
     const { analytics } = useServices(injectNativeAnalytics);
     const account = useSelector((state: AccountsRootState) =>
         selectAccountByKey(state, accountKey),
@@ -77,7 +77,7 @@ export const AccountAssetsTabContent = ({
                 <ActiveTokensTab
                     accountKey={accountKey}
                     onSelect={handleSelect}
-                    isStakingDisplayed={flowType === 'assets'}
+                    isStakingDisplayed={flowType === 'overview'}
                 />
             );
         case 'defi':

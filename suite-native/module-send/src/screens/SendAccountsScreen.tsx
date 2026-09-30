@@ -32,7 +32,7 @@ export const SendAccountsScreen = () => {
         });
 
         if (hasAnyKnownTokens) {
-            navigation.navigate(RootStackRoutes.AccountAssets, {
+            navigation.navigate(RootStackRoutes.AccountOverview, {
                 accountKey: account.key,
                 flowType: 'send',
             });

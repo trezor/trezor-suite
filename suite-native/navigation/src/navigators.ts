@@ -61,8 +61,8 @@ type AccountIdentityParams = RequireAllOrNone<
 >;
 
 export type CloseActionType = 'back' | 'close';
-export type AccountAssetsTab = 'tokens' | 'defi' | 'hidden' | 'inactive';
-export type AccountAssetsFlow = 'assets' | 'send';
+export type AccountOverviewTab = 'tokens' | 'defi' | 'hidden' | 'inactive';
+export type AccountOverviewFlow = 'overview' | 'send';
 export type DeviceSuspicionCause =
     | 'deviceLooksDifferent'
     | 'firmwareAlreadyInstalled'
@@ -515,10 +515,10 @@ export type PassphraseStackParamList = {
 export type RootStackParamList = {
     [RootStackRoutes.AppTabs]: NavigatorScreenParams<AppTabsParamList>;
     [RootStackRoutes.AccountDetailStack]: NavigatorScreenParams<AccountDetailStackParamList>;
-    [RootStackRoutes.AccountAssets]: {
+    [RootStackRoutes.AccountOverview]: {
         accountKey: AccountKey;
-        tab?: AccountAssetsTab;
-        flowType?: AccountAssetsFlow;
+        tab?: AccountOverviewTab;
+        flowType?: AccountOverviewFlow;
     } & AccountIdentityParams;
     [RootStackRoutes.OnboardingStack]: NavigatorScreenParams<OnboardingStackParamList>;
     [RootStackRoutes.DeviceOnboardingStack]: NavigatorScreenParams<DeviceOnboardingStackParamList>;
