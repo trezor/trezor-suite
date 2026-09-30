@@ -164,27 +164,39 @@ jobs:
         env:
           ORG_GRADLE_PROJECT_reactNativeArchitectures: x86_64
         run: |
+          cgroup_path="$(awk -F: '$1 == "0" || $2 ~ /(^|,)memory(,|$)/ { print $3; exit }' /proc/self/cgroup)"
+          if [ -r /sys/fs/cgroup/cgroup.controllers ]; then
+            cgroup_dir="/sys/fs/cgroup${cgroup_path}"
+          else
+            cgroup_dir="/sys/fs/cgroup/memory${cgroup_path}"
+          fi
+          printf '[cgroup] path=%s dir=%s\n' "$cgroup_path" "$cgroup_dir"
+          (
+            sudo dmesg -wT 2>&1 |
+              grep --line-buffered -Ei 'oom|out of memory|killed process|memory cgroup|allocation failure|dmesg:' |
+              sed -u 's/^/[kernel] /'
+          ) &
+          kernel_monitor_pid=$!
           (
             while true; do
               printf '[resources] %s\n' "$(date -u +%FT%TZ)"
               free -m
-              for metric in memory.current memory.peak memory.max; do
-                if [ -r "/sys/fs/cgroup/$metric" ]; then
-                  printf '%s=%s ' "$metric" "$(cat "/sys/fs/cgroup/$metric")"
+              df -Pm .
+              for metric in memory.current memory.peak memory.max memory.swap.current memory.swap.max memory.events memory.events.local memory.usage_in_bytes memory.max_usage_in_bytes memory.failcnt memory.oom_control memory.memsw.usage_in_bytes; do
+                if [ -r "$cgroup_dir/$metric" ]; then
+                  printf '[cgroup] %s: ' "$metric"
+                  tr '\n' ' ' < "$cgroup_dir/$metric"
+                  printf '\n'
                 fi
               done
-              if [ -r /sys/fs/cgroup/memory.events ]; then
-                tr '\n' ' ' < /sys/fs/cgroup/memory.events
-              fi
-              printf '\n'
               awk '$1 == "oom_kill" { print "oom_kill=" $2 }' /proc/vmstat
               sed 's/^/[memory-pressure] /' /proc/pressure/memory
               ps -eo pid,ppid,%cpu,rss,comm --sort=-rss | sed -n '1,12p'
-              sleep 15
+              sleep 2
             done
           ) &
           monitor_pid=$!
-          trap 'kill "$monitor_pid" 2>/dev/null || true' EXIT
+          trap 'kill "$monitor_pid" "$kernel_monitor_pid" 2>/dev/null || true' EXIT
           yarn exec detox build --configuration android.emu.release
 
       - name: save .apk to the aws s3 bucket
