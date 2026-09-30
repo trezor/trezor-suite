@@ -12,12 +12,11 @@ const colors: Record<string, string> = {
     '@trezor/connect-web': `color: ${blue}; background: #000;`,
     '@trezor/connect-webextension': `color: ${blue}; background: #000;`,
     // orange, api related
-    IFrame: `color: ${orange}; background: #000;`,
-    Core: `color: ${orange}; background: #000;`,
+    '@trezor/connect/Core': `color: ${orange}; background: #000;`,
     // green, device related
-    DeviceList: `color: ${green}; background: #000;`,
-    Device: `color: ${green}; background: #000;`,
-    DeviceCommands: `color: ${green}; background: #000;`,
+    '@trezor/connect/DeviceList': `color: ${green}; background: #000;`,
+    '@trezor/connect/Device': `color: ${green}; background: #000;`,
+    '@trezor/connect/DeviceCommands': `color: ${green}; background: #000;`,
     '@trezor/transport': `color: ${green}; background: #000;`,
 };
 
