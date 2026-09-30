@@ -1,4 +1,5 @@
 import { useRef } from 'react';
+import { useSelector } from 'react-redux';
 
 import { injectDesktopAnalytics } from '@suite/analytics';
 import { Translation } from '@suite/intl';
@@ -7,6 +8,7 @@ import {
     events as sharedEvents,
 } from '@suite-common/analytics';
 import { useServices } from '@suite-common/dependency-injection';
+import { selectHasBitcoinOnlyFirmware } from '@suite-common/device';
 import { injectDispatch } from '@suite-common/redux-utils';
 import { type TradeableAssetBalances, type TradingAssetOption } from '@suite-common/trading';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
@@ -19,9 +21,9 @@ import { globalSendReceiveFiltersActions } from 'src/slices/wallet/globalSendRec
 
 import { AssetSearchWithNetworkFilter } from '../../AssetSearchWithNetworkFilter/AssetSearchWithNetworkFilter';
 import { GLOBAL_RECEIVE_MODAL_HEIGHT } from '../constants';
+import { GlobalReceiveAccountsTab } from './GlobalReceiveAccountsTab';
 import { type GlobalReceiveAssetCatalogStatus } from '../hooks/useGlobalReceiveAssets';
 import { type GlobalReceiveTab } from '../types';
-import { GlobalReceiveAccountsTab } from './GlobalReceiveAccountsTab';
 import { GlobalReceiveAssetsTab } from './GlobalReceiveAssetsTab';
 
 type GlobalReceiveSearchStepProps = {
@@ -55,6 +57,8 @@ export const GlobalReceiveSearchStep = ({
     onRetry,
     onTabChange,
 }: GlobalReceiveSearchStepProps) => {
+    const isBitcoinOnlyFirmware = useSelector(selectHasBitcoinOnlyFirmware);
+
     const { analytics, dispatch } = useServices(injectDesktopAnalytics, injectDispatch);
     const listRef = useRef<HTMLDivElement>(null);
 
@@ -101,19 +105,21 @@ export const GlobalReceiveSearchStep = ({
         <AssetsModal
             heading={<Translation id="TR_RECEIVE" />}
             description={
-                <Translation
-                    id="TR_GLOBAL_RECEIVE_DESCRIPTION"
-                    values={{
-                        a: (...chunks) => (
-                            <Link
-                                href={HOW_TO_CHOOSE_RIGHT_NETWORK_URL}
-                                onClick={() => reportEntryInteraction('right-network-link')}
-                            >
-                                {chunks}
-                            </Link>
-                        ),
-                    }}
-                />
+                isBitcoinOnlyFirmware ? undefined : (
+                    <Translation
+                        id="TR_GLOBAL_RECEIVE_DESCRIPTION"
+                        values={{
+                            a: (...chunks) => (
+                                <Link
+                                    href={HOW_TO_CHOOSE_RIGHT_NETWORK_URL}
+                                    onClick={() => reportEntryInteraction('right-network-link')}
+                                >
+                                    {chunks}
+                                </Link>
+                            ),
+                        }}
+                    />
+                )
             }
             onClose={onCancel}
             height={GLOBAL_RECEIVE_MODAL_HEIGHT}
@@ -134,22 +140,24 @@ export const GlobalReceiveSearchStep = ({
                         onNetworkFilterOpen={() => reportEntryInteraction('network-filter-open')}
                         shouldResetSearchOnNetworkChange={false}
                     />
-                    <SubTabs activeItemId={activeTab}>
-                        <SubTabs.Item
-                            id="assets"
-                            data-testid="@global-receive/tab/assets"
-                            onClick={() => handleTabChange('assets')}
-                        >
-                            <Translation id="TR_GLOBAL_RECEIVE_ASSETS_TAB" />
-                        </SubTabs.Item>
-                        <SubTabs.Item
-                            id="accounts"
-                            data-testid="@global-receive/tab/accounts"
-                            onClick={() => handleTabChange('accounts')}
-                        >
-                            <Translation id="TR_GLOBAL_RECEIVE_ACCOUNTS_TAB" />
-                        </SubTabs.Item>
-                    </SubTabs>
+                    {!isBitcoinOnlyFirmware && (
+                        <SubTabs activeItemId={activeTab}>
+                            <SubTabs.Item
+                                id="assets"
+                                data-testid="@global-receive/tab/assets"
+                                onClick={() => handleTabChange('assets')}
+                            >
+                                <Translation id="TR_GLOBAL_RECEIVE_ASSETS_TAB" />
+                            </SubTabs.Item>
+                            <SubTabs.Item
+                                id="accounts"
+                                data-testid="@global-receive/tab/accounts"
+                                onClick={() => handleTabChange('accounts')}
+                            >
+                                <Translation id="TR_GLOBAL_RECEIVE_ACCOUNTS_TAB" />
+                            </SubTabs.Item>
+                        </SubTabs>
+                    )}
                 </Column>
 
                 {activeTab === 'assets' ? (
