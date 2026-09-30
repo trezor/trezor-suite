@@ -132,7 +132,7 @@ export const createNativeServicesCompositionRoot = (deps: NativeAppDeps): Native
         getAllowPrerelease,
         getBinFilesBaseUrl,
         // Native transports are selected by createTransports, not by debug settings.
-        getDebugSettings: toGetter(deps.getState, () => ({
+        getDebugSettings: asGetter(() => ({
             transports: [],
             showConnectLogs: false,
         })),
