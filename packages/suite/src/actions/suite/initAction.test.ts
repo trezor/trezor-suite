@@ -27,7 +27,7 @@ import { type ConnectInitThunkDeps, connectInitThunk } from '@suite-common/conne
 import {
     mockConnectInitDeviceEventHooks,
     mockConnectInitSettings,
-    mockConnectInitUiEventHooks,
+    mockConnectInitUIEventHooks,
     mockCreateTransports,
     mockGetDebugSettings,
     mockGetThpSettings,
@@ -376,7 +376,7 @@ const initStore = (state: InitThunkState) => {
             analytics: mockDesktopAnalytics(),
             connectInitDeviceEventHooks: mockConnectInitDeviceEventHooks(),
             connectInitSettings: mockConnectInitSettings(),
-            connectInitUiEventHooks: mockConnectInitUiEventHooks(),
+            connectInitUIEventHooks: mockConnectInitUIEventHooks(),
             createLogger: noopCreateLogger,
             createTransports: mockCreateTransports(),
             getAllowPrerelease: mockGetAllowPrerelease(),
