@@ -132,10 +132,11 @@ describe('defaultTrezorUIEventHandlerThunk - button request attribution', () => 
 
         await store.dispatch(
             defaultTrezorUIEventHandlerThunk(
-                createUiRequestMessage(UI_REQUESTS.REQUEST_PIN, {
-                    device: connectDeviceA,
-                    type: 'PinMatrixRequestType_Current',
-                }),
+                createUiRequestMessage(
+                    UI_REQUESTS.REQUEST_PIN,
+                    { device: connectDeviceA, type: 'PinMatrixRequestType_Current' },
+                    { requestId: 'pin-request' },
+                ),
             ),
         );
 
