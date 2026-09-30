@@ -97,6 +97,16 @@ const addEsmExtensionPlugin = ({ types }) => {
         if (next) node.value = next;
     };
 
+    // Matches the `import.meta.url` node. Only `new URL('<specifier>', import.meta.url)` carries a
+    // module specifier that must gain a runtime extension; every other `new URL(...)` builds a
+    // runtime address (e.g. `new URL('./api/status', origin)`) that must be left untouched.
+    const isImportMetaUrl = node =>
+        types.isMemberExpression(node) &&
+        types.isMetaProperty(node.object) &&
+        node.object.meta.name === 'import' &&
+        node.object.property.name === 'meta' &&
+        types.isIdentifier(node.property, { name: 'url' });
+
     return {
         name: 'add-esm-extension',
         visitor: {
@@ -115,9 +125,11 @@ const addEsmExtensionPlugin = ({ types }) => {
                 if (!types.isImport(nodePath.node.callee)) return;
                 modifyStringLiteral(nodePath.node.arguments[0], state);
             },
-            // Bundler worker idiom: new Worker(new URL('<specifier>', import.meta.url)).
+            // Bundler worker idiom: new Worker(new URL('<specifier>', import.meta.url)). The
+            // import.meta.url guard keeps runtime new URL('<path>', base) calls untouched.
             NewExpression(nodePath, state) {
                 if (!types.isIdentifier(nodePath.node.callee, { name: 'URL' })) return;
+                if (!isImportMetaUrl(nodePath.node.arguments[1])) return;
                 modifyStringLiteral(nodePath.node.arguments[0], state);
             },
             // Inline import("...") types in .d.ts files.

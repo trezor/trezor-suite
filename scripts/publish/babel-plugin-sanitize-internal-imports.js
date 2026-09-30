@@ -20,6 +20,15 @@ const sanitizeDynamicImport = src =>
  * e.g. @trezor/utils/src/bufferUtils → @trezor/utils/lib/bufferUtils
  */
 const sanitizeInternalImportsPlugin = ({ types }) => {
+    // Matches the `import.meta.url` node. Only `new URL('<specifier>', import.meta.url)` carries a
+    // module specifier; every other `new URL(...)` builds a runtime address that must be left alone.
+    const isImportMetaUrl = node =>
+        types.isMemberExpression(node) &&
+        types.isMetaProperty(node.object) &&
+        node.object.meta.name === 'import' &&
+        node.object.property.name === 'meta' &&
+        types.isIdentifier(node.property, { name: 'url' });
+
     const modifyESMImportPath = path => {
         const src = path.node.source?.value;
         if (!src) return;
@@ -85,9 +94,11 @@ const sanitizeInternalImportsPlugin = ({ types }) => {
             // e.g. new URL('@trezor/blockchain-link/src/workers/blockbook', import.meta.url)
             //   → new URL('@trezor/blockchain-link/lib/workers/blockbook', import.meta.url)
             // Published packages ship lib/ only, so a /src specifier cannot resolve for consumers.
+            // The import.meta.url guard keeps runtime new URL('<path>', base) calls untouched.
             NewExpression(path) {
                 if (!types.isIdentifier(path.node.callee, { name: 'URL' })) return;
-                const [first] = path.node.arguments;
+                const [first, second] = path.node.arguments;
+                if (!isImportMetaUrl(second)) return;
                 if (!types.isStringLiteral(first)) return;
                 first.value = sanitizeInternalImports(first.value, 'esm');
             },
