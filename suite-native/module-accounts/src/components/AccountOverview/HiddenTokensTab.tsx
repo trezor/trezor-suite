@@ -40,6 +40,10 @@ const listStyle = prepareNativeStyle(() => ({
     flex: 1,
 }));
 
+const listContentStyle = prepareNativeStyle(({ spacings }) => ({
+    paddingHorizontal: spacings.sp16,
+}));
+
 const sectionHeaderStyle = prepareNativeStyle(utils => ({
     paddingBottom: utils.spacings.sp8,
 }));
@@ -109,6 +113,7 @@ export const HiddenTokensTab = ({
     accountKey,
     onSelect,
     ListHeaderComponent,
+    onScroll,
 }: HiddenTokensTabProps) => {
     const { applyStyle } = useNativeStyles();
 
@@ -198,12 +203,14 @@ export const HiddenTokensTab = ({
     return (
         <FlashList
             style={applyStyle(listStyle)}
+            contentContainerStyle={applyStyle(listContentStyle)}
             data={listItems}
             keyExtractor={item => item.id}
             getItemType={item => item.type}
             renderItem={renderItem}
             ListHeaderComponent={ListHeaderComponent}
             ListEmptyComponent={HiddenTokensEmptyState}
+            onScroll={onScroll}
         />
     );
 };

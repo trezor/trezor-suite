@@ -8,6 +8,7 @@ import { ExperimentId, useIsExperimentVariantActive } from '@suite-common/messag
 import { type AccountsRootState, selectAccountByKey } from '@suite-common/wallet-core';
 import { type AccountKey } from '@suite-common/wallet-types';
 import { events, injectNativeAnalytics } from '@suite-native/analytics';
+import { Box } from '@suite-native/atoms';
 import {
     AccountDetailStackRoutes,
     AssetsStackRoutes,
@@ -16,6 +17,7 @@ import {
     SendStackRoutes,
     type StackNavigationProps,
 } from '@suite-native/navigation';
+import { useScrollDivider } from '@suite-native/scrollview';
 import { exhaustive } from '@trezor/type-utils';
 
 import { ActiveTokensTab } from './ActiveTokensTab';
@@ -23,9 +25,10 @@ import { DefiTokensTab } from './DefiTokensTab';
 import { HiddenTokensTab } from './HiddenTokensTab';
 import { InactiveTokensTab } from './InactiveTokensTab';
 import {
+    type AccountAssetsTabListProps,
     type AccountOverviewFlow,
     type AccountOverviewTab,
-    type AccountAssetsTabListProps,
+    type OnScroll,
     type OnSelectAsset,
 } from './types';
 
@@ -33,6 +36,75 @@ type AccountOverviewTabContentProps = AccountAssetsTabListProps & {
     accountKey: AccountKey;
     activeTab: AccountOverviewTab;
     flowType: AccountOverviewFlow;
+};
+
+type ActiveTabProps = AccountAssetsTabListProps & {
+    accountKey: AccountKey;
+    activeTab: AccountAssetsTab;
+    flowType: AccountAssetsFlow;
+    onSelect: OnSelectAsset;
+    onScroll: OnScroll;
+};
+
+const TokensTab = ({
+    accountKey,
+    activeTab,
+    flowType,
+    ListHeaderComponent,
+    onSelect,
+    onScroll,
+}: ActiveTabProps) => {
+    switch (activeTab) {
+        case 'tokens':
+            return (
+                <ActiveTokensTab
+                    accountKey={accountKey}
+                    onSelect={onSelect}
+                    isStakingDisplayed={flowType === 'overview'}
+                    ListHeaderComponent={ListHeaderComponent}
+                    onScroll={onScroll}
+                />
+            );
+        case 'defi':
+            return (
+                <DefiTokensTab
+                    accountKey={accountKey}
+                    onSelect={onSelect}
+                    ListHeaderComponent={ListHeaderComponent}
+                    onScroll={onScroll}
+                />
+            );
+        case 'hidden':
+            return (
+                <HiddenTokensTab
+                    accountKey={accountKey}
+                    onSelect={onSelect}
+                    ListHeaderComponent={ListHeaderComponent}
+                    onScroll={onScroll}
+                />
+            );
+        case 'inactive':
+            return (
+                <InactiveTokensTab
+                    accountKey={accountKey}
+                    ListHeaderComponent={ListHeaderComponent}
+                    onScroll={onScroll}
+                />
+            );
+        default:
+            return exhaustive(activeTab);
+    }
+};
+
+const ActiveTab = (props: ActiveTabProps) => {
+    const { scrollDivider, handleScroll } = useScrollDivider();
+
+    return (
+        <Box flex={1}>
+            {scrollDivider}
+            <TokensTab {...props} onScroll={handleScroll} />
+        </Box>
+    );
 };
 
 export const AccountOverviewTabContent = ({
@@ -47,6 +119,8 @@ export const AccountOverviewTabContent = ({
     const account = useSelector((state: AccountsRootState) =>
         selectAccountByKey(state, accountKey),
     );
+    const { scrollDivider, handleScroll } = useScrollDivider();
+
     const isAssetDetailFeatureEnabled = useIsExperimentVariantActive({
         experimentId: ExperimentId.assetFirstHomeTable,
         variant: 'B',
@@ -91,40 +165,17 @@ export const AccountOverviewTabContent = ({
         [flowType, isAssetDetailFeatureEnabled, account, accountKey, analytics, navigation],
     );
 
-    switch (activeTab) {
-        case 'tokens':
-            return (
-                <ActiveTokensTab
-                    accountKey={accountKey}
-                    onSelect={handleSelect}
-                    isStakingDisplayed={flowType === 'overview'}
-                    ListHeaderComponent={ListHeaderComponent}
-                />
-            );
-        case 'defi':
-            return (
-                <DefiTokensTab
-                    accountKey={accountKey}
-                    onSelect={handleSelect}
-                    ListHeaderComponent={ListHeaderComponent}
-                />
-            );
-        case 'hidden':
-            return (
-                <HiddenTokensTab
-                    accountKey={accountKey}
-                    onSelect={handleSelect}
-                    ListHeaderComponent={ListHeaderComponent}
-                />
-            );
-        case 'inactive':
-            return (
-                <InactiveTokensTab
-                    accountKey={accountKey}
-                    ListHeaderComponent={ListHeaderComponent}
-                />
-            );
-        default:
-            return exhaustive(activeTab);
-    }
+    return (
+        <Box flex={1}>
+            {scrollDivider}
+            <ActiveTab
+                accountKey={accountKey}
+                activeTab={activeTab}
+                flowType={flowType}
+                ListHeaderComponent={ListHeaderComponent}
+                onSelect={handleSelect}
+                onScroll={handleScroll}
+            />
+        </Box>
+    );
 };

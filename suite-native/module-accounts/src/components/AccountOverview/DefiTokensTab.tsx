@@ -22,6 +22,10 @@ const listStyle = prepareNativeStyle(() => ({
     flex: 1,
 }));
 
+const listContentStyle = prepareNativeStyle(({ spacings }) => ({
+    paddingHorizontal: spacings.sp16,
+}));
+
 type DefiTokenListItem = {
     type: 'token';
     id: string;
@@ -51,6 +55,7 @@ export const DefiTokensTab = ({
     accountKey,
     onSelect,
     ListHeaderComponent,
+    onScroll,
 }: DefiTokensTabProps) => {
     const { applyStyle } = useNativeStyles();
 
@@ -108,11 +113,13 @@ export const DefiTokensTab = ({
     return (
         <FlashList
             style={applyStyle(listStyle)}
+            contentContainerStyle={applyStyle(listContentStyle)}
             data={listItems}
             keyExtractor={item => item.id}
             renderItem={renderItem}
             ListHeaderComponent={ListHeaderComponent}
             ListEmptyComponent={DefiTokensEmptyState}
+            onScroll={onScroll}
         />
     );
 };
