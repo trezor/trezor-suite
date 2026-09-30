@@ -3,11 +3,12 @@ import type { MessagesSchema as PROTO } from '@trezor/protobuf';
 
 import type { TypedCall } from '../DeviceCommands';
 import { computeChunks, headerHash, parseAppImage, parseRootPacketTimestamp } from './appImage';
-import type { ModularAppDefinition } from './types';
+import type { ModularAppArtifacts, ModularAppDefinition } from './types';
 
 interface LoadModularAppParams {
     typedCall: TypedCall;
     appDef: ModularAppDefinition;
+    artifacts: ModularAppArtifacts;
     // Force the device to re-download the app even if it is already cached.
     forceReload?: boolean;
 }
@@ -19,9 +20,10 @@ interface LoadModularAppParams {
 export const loadModularApp = async ({
     typedCall,
     appDef,
+    artifacts,
     forceReload = false,
 }: LoadModularAppParams): Promise<number | undefined> => {
-    const image = parseAppImage(appDef.binary);
+    const image = parseAppImage(artifacts.binary);
     const versionParts = appDef.minVersion?.length ? appDef.minVersion : image.version;
     const version = {
         major: versionParts[0] ?? 0,
@@ -54,14 +56,14 @@ export const loadModularApp = async ({
         ['ExtAppRootPacketRequest', 'ExtAppDataChunkRequest', 'ExtAppLoaded'],
         {
             header: image.headerBytes.toString('hex'),
-            proof: appDef.proof.toString('hex'),
-            root_packet_timestamp: parseRootPacketTimestamp(appDef.rootPacket),
+            proof: artifacts.proof.toString('hex'),
+            root_packet_timestamp: parseRootPacketTimestamp(artifacts.rootPacket),
         },
     );
 
     if (resp.type === 'ExtAppRootPacketRequest') {
         resp = await typedCall('ExtAppRootPacketAck', ['ExtAppDataChunkRequest', 'ExtAppLoaded'], {
-            root_packet: appDef.rootPacket.toString('hex'),
+            root_packet: artifacts.rootPacket.toString('hex'),
         });
     }
 

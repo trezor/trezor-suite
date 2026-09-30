@@ -6,9 +6,6 @@ import { loadProtobufModules } from '../../data/protobufLoader';
 
 const APP: ModularAppDefinition = {
     id: 'test.app',
-    binary: Buffer.alloc(0),
-    proof: Buffer.alloc(0),
-    rootPacket: Buffer.alloc(0),
     messageIds: {
         TronGetAddress: 0,
         TronAddress: 1,

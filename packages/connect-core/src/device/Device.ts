@@ -651,13 +651,17 @@ export class Device extends TypedEmitter<DeviceEvents> implements IDevice {
     }
 
     async ensureModularAppLoaded(appDef: ModularAppDefinition, forceReload = false) {
-        if (!appDef.binary.length) return;
+        if (!appDef.loadArtifacts) return;
         if (this.loadedModularApps.has(appDef.id)) return;
+
+        const artifacts = await appDef.loadArtifacts();
+        if (!artifacts.binary.length) return;
 
         const session = this.getCurrentSession();
         const instanceId = await loadModularApp({
             typedCall: session.typedCall.bind(session),
             appDef,
+            artifacts,
             forceReload,
         });
         this.loadedModularApps.set(appDef.id, instanceId);

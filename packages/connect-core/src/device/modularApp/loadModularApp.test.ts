@@ -4,7 +4,7 @@ import { ERRORS } from '@trezor/connect-common/src/constants';
 
 import { computeChunks, parseAppImage } from './appImage';
 import { loadModularApp } from './loadModularApp';
-import type { ModularAppDefinition } from './types';
+import type { ModularAppArtifacts, ModularAppDefinition } from './types';
 
 const HEADER_SIZE = 512;
 const CHUNK_SIZE = 8;
@@ -40,12 +40,15 @@ const rootPacket = () => {
     return rp;
 };
 
-const makeApp = (binary: Buffer): ModularAppDefinition => ({
+const appDef: ModularAppDefinition = {
     id: 'test.app',
+    messageIds: {},
+};
+
+const makeArtifacts = (binary: Buffer): ModularAppArtifacts => ({
     binary,
     proof: Buffer.from('deadbeef', 'hex'),
     rootPacket: rootPacket(),
-    messageIds: {},
 });
 
 describe('modularApp/loadModularApp', () => {
@@ -59,7 +62,8 @@ describe('modularApp/loadModularApp', () => {
 
         const instanceId = await loadModularApp({
             typedCall: typedCall as never,
-            appDef: makeApp(buildBinary(payload)),
+            appDef,
+            artifacts: makeArtifacts(buildBinary(payload)),
         });
 
         expect(instanceId).toBe(5);
@@ -104,7 +108,8 @@ describe('modularApp/loadModularApp', () => {
 
         const instanceId = await loadModularApp({
             typedCall: typedCall as never,
-            appDef: makeApp(binary),
+            appDef,
+            artifacts: makeArtifacts(binary),
         });
 
         expect(instanceId).toBe(9);
@@ -125,7 +130,8 @@ describe('modularApp/loadModularApp', () => {
 
         await loadModularApp({
             typedCall: typedCall as never,
-            appDef: makeApp(buildBinary(payload)),
+            appDef,
+            artifacts: makeArtifacts(buildBinary(payload)),
             forceReload: true,
         });
 
@@ -141,7 +147,8 @@ describe('modularApp/loadModularApp', () => {
 
         const instanceId = await loadModularApp({
             typedCall: typedCall as never,
-            appDef: makeApp(buildBinary(payload)),
+            appDef,
+            artifacts: makeArtifacts(buildBinary(payload)),
         });
 
         expect(instanceId).toBeUndefined();
@@ -156,7 +163,8 @@ describe('modularApp/loadModularApp', () => {
         await expect(
             loadModularApp({
                 typedCall: typedCall as never,
-                appDef: makeApp(buildBinary(payload)),
+                appDef,
+                artifacts: makeArtifacts(buildBinary(payload)),
             }),
         ).rejects.toThrow('Invalid app');
     });
