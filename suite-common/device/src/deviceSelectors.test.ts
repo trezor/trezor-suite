@@ -1,5 +1,6 @@
 import { DEFAULT_FLAGSHIP_MODEL } from '@suite-common/suite-constants';
 import { mockConnectDevice, mockSuiteDevice } from '@suite-common/suite-types/mocks';
+import { asDeviceUniquePath } from '@trezor/connect-common';
 import { DeviceModelInternal } from '@trezor/device-utils';
 
 import { portfolioTrackerDevice } from './deviceConstants';
@@ -144,6 +145,14 @@ describe(selectDeviceInstanceForConnectDevice.name, () => {
 
         expect(selectDeviceInstanceForConnectDevice(createState(otherDevice), connectDevice)).toBe(
             standardWallet,
+        );
+    });
+
+    it('resolves the selected instance from a call device identified by path only', () => {
+        const callDevice = { path: asDeviceUniquePath('path-a') };
+
+        expect(selectDeviceInstanceForConnectDevice(createState(hiddenWallet), callDevice)).toBe(
+            hiddenWallet,
         );
     });
 

@@ -27,7 +27,12 @@ import {
     isDeviceAcquired,
     isSelectedInstance,
 } from '@suite-common/suite-utils';
-import { type Device, type DeviceState, type StaticSessionId } from '@trezor/connect';
+import {
+    type DeviceMode,
+    type DeviceState,
+    type DeviceUniquePath,
+    type StaticSessionId,
+} from '@trezor/connect';
 import {
     DeviceModelInternal,
     getFirmwareRevision,
@@ -286,21 +291,40 @@ export const selectDeviceByStaticSessionId = createMemoizedSelector(
         ),
 );
 
-const isInstanceOfConnectDevice = (device: AcquiredDevice, connectDevice: Device) =>
-    connectDevice.id
-        ? device.id === connectDevice.id
-        : device.path === connectDevice.path && device.mode === connectDevice.mode;
+/**
+ * Device as identified by connect: the `Device` of a UI event or the `device` params of a call.
+ */
+export type ConnectDeviceIdentity = {
+    path: DeviceUniquePath;
+    id?: string | null;
+    mode?: DeviceMode;
+    state?: DeviceState;
+};
+
+const isInstanceOfConnectDevice = (
+    device: AcquiredDevice,
+    connectDevice: ConnectDeviceIdentity,
+) => {
+    if (connectDevice.id) {
+        return device.id === connectDevice.id;
+    }
+    if (device.path !== connectDevice.path) {
+        return false;
+    }
+
+    return connectDevice.mode === undefined || device.mode === connectDevice.mode;
+};
 
 /**
- * Resolves the stored device instance a connect event belongs to. Matches the physical device and
- * prefers its selected instance. The static session id of the connect device only decides between
- * the instances when the selected device is another physical device, because a call made without
- * an instance reports the session id of instance 0 regardless of the wallet the user operates.
- * Returns `undefined` when no stored instance matches.
+ * Resolves the stored device instance a connect event or call belongs to. Matches the physical
+ * device and prefers its selected instance. The static session id of the connect device only
+ * decides between the instances when the selected device is another physical device, because a
+ * call made without an instance reports the session id of instance 0 regardless of the wallet the
+ * user operates. Returns `undefined` when no stored instance matches.
  */
 export const selectDeviceInstanceForConnectDevice = (
     state: DeviceRootState,
-    connectDevice: Device,
+    connectDevice: ConnectDeviceIdentity,
 ): AcquiredDevice | undefined => {
     const instances = state.device.devices.filter(
         (device): device is AcquiredDevice =>

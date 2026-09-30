@@ -1,10 +1,10 @@
 import { asGetter, mock } from '@suite-common/dependency-injection';
-import { deviceInitialState } from '@suite-common/device';
+import { deviceActions, deviceInitialState } from '@suite-common/device';
 import { firmwareInitialState } from '@suite-common/firmware';
 import { messageSystemInitialState } from '@suite-common/message-system';
 import { type MockDispatch, createMockDispatch } from '@suite-common/redux-utils/mocks';
 import { type LockDevice } from '@suite-common/suite-types';
-import { mockConnectDevice } from '@suite-common/suite-types/mocks';
+import { mockConnectDevice, mockSuiteDevice } from '@suite-common/suite-types/mocks';
 import { testMocks } from '@suite-common/test-utils';
 import {
     defaultTrezorUIEventHandlerThunk,
@@ -38,15 +38,18 @@ type ConnectInitThunkTestDeps = {
     extra: ConnectInitThunkDeps;
 };
 
-const state: ConnectInitThunkState = {
+const device = mockSuiteDevice();
+
+const createState = (deviceState = deviceInitialState): ConnectInitThunkState => ({
     wallet: { settings: initialWalletSettingsState },
-    device: deviceInitialState,
+    device: deviceState,
     firmware: firmwareInitialState,
     messageSystem: messageSystemInitialState,
-};
+});
 
 const createThunkDeps = (
     services: Partial<ConnectInitThunkDeps['services']> = {},
+    state = createState({ ...deviceInitialState, devices: [device], selectedDevice: device }),
 ): ConnectInitThunkTestDeps => {
     const getState = () => state;
     const extra: ConnectInitThunkDeps = {
@@ -242,9 +245,25 @@ describe('TrezorConnect Actions', () => {
 
         expect(extra.services.lockDevice).toHaveBeenNthCalledWith(1, true);
         expect(extra.services.lockDevice).toHaveBeenNthCalledWith(2, false);
-        expect(actions).toEqual([
-            expect.objectContaining({ type: '@suite/device/removeButtonRequests' }),
-        ]);
+        expect(actions).toEqual([deviceActions.removeButtonRequests({ device })]);
+    });
+
+    it('Wrapped method removes button requests from the device of the call', async () => {
+        const otherDevice = mockSuiteDevice({ id: 'device-b', path: 'path-b' });
+        const { actions, dispatch, getState, extra } = createThunkDeps(
+            {},
+            createState({
+                ...deviceInitialState,
+                devices: [device, otherDevice],
+                selectedDevice: otherDevice,
+            }),
+        );
+        await connectInitThunk()(dispatch, getState, extra);
+        actions.length = 0;
+
+        await testMocks.getTrezorConnectMock().getFeatures({ device: { path: device.path } });
+
+        expect(actions).toEqual([deviceActions.removeButtonRequests({ device })]);
     });
 
     it('only scoped callId-bearing UI events are swallowed by the global listener', async () => {
@@ -263,6 +282,10 @@ describe('TrezorConnect Actions', () => {
             expect(actions).toEqual([
                 expect.objectContaining({ type: defaultTrezorUIEventHandlerThunk.pending.type }),
                 expect.objectContaining({ type: UI_EVENTS.BUTTON_REQUEST }),
+                deviceActions.addButtonRequest({
+                    device,
+                    buttonRequest: { code: 'ButtonRequest_ProtectCall' },
+                }),
                 expect.objectContaining({ type: defaultTrezorUIEventHandlerThunk.fulfilled.type }),
             ]);
             resolve();

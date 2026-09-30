@@ -4,6 +4,7 @@ import { type AnalyticsDep, events as sharedEvents } from '@suite-common/analyti
 import {
     type DeviceRootState,
     deviceActions,
+    selectDeviceInstanceForConnectDevice,
     selectDevices,
     selectIsPendingTransportEvent,
     selectSelectedDevice,
@@ -170,11 +171,16 @@ export const connectInitThunk = createThunk<
         const result = await synchronize(() => original(params));
 
         lockDevice(false);
+        const callDevicePath = params.device?.path;
         dispatch(
             deviceActions.removeButtonRequests({
-                // todo: device not 'thread safe' - meaning that device to which button requests have been added to might not
-                // be the same re-selected device from this line. We should reuse device from params.
-                device: selectSelectedDevice(getState()),
+                device:
+                    callDevicePath === undefined
+                        ? selectSelectedDevice(getState())
+                        : selectDeviceInstanceForConnectDevice(getState(), {
+                              ...params.device,
+                              path: callDevicePath,
+                          }),
             }),
         );
 
