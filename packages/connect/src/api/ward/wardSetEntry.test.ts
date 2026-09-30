@@ -47,9 +47,8 @@ describe('WardSetEntry', () => {
             identity: { encoding: 1 },
             content: { encoding: 1 },
             counter: 7,
-            mac: '33'.repeat(32),
             auth_commit: '44'.repeat(32),
-            auth_sig: '55'.repeat(64),
+            wm_sig: '55'.repeat(64),
         };
         const { method } = makeMethod(WardSetEntry, 'wardSetEntry', PARAMS, ack);
 

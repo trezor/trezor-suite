@@ -109,6 +109,7 @@ export const WardFlushQueue = Type.Object(
     {
         app_id: Type.Optional(Type.String()),
         identifier: Type.Optional(Type.String()),
+        max_batch: Type.Optional(Type.Number()),
     },
     { $id: 'WardFlushQueue' },
 );

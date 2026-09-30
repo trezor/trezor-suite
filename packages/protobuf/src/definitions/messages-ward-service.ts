@@ -31,10 +31,11 @@ export const WardPublish = Type.Object(
         identity: Type.Optional(WardLeafIdentity),
         content: Type.Optional(WardLeafContent),
         counter: Type.Optional(Type.Number()),
-        mac: Type.Optional(Type.String()),
         auth_commit: Type.Optional(Type.String()),
         wm_sig: Type.Optional(Type.String()),
         nonce: Type.Optional(Type.String()),
+        from_root: Type.Optional(Type.String()),
+        new_root: Type.Optional(Type.String()),
     },
     { $id: 'WardPublish' },
 );
@@ -42,10 +43,10 @@ export const WardPublish = Type.Object(
 export type WardPublishAck = Static<typeof WardPublishAck>;
 export const WardPublishAck = Type.Object(
     {
-        counter: Type.Optional(Type.Number()),
-        mac: Type.Optional(Type.String()),
         timestamp: Type.Optional(Type.Number()),
         wm_signature: Type.Optional(Type.String()),
+        from_head_nonce: Type.Optional(Type.String()),
+        to_head_nonce: Type.Optional(Type.String()),
     },
     { $id: 'WardPublishAck' },
 );
@@ -104,7 +105,6 @@ export const WardSyncRequest = Type.Object(
         ward_id: Type.Optional(Type.String()),
         current_counter: Type.Optional(Type.Number()),
         current_root: Type.Optional(Type.String()),
-        current_mac: Type.Optional(Type.String()),
         head_init_sig: Type.Optional(Type.String()),
     },
     { $id: 'WardSyncRequest' },
@@ -118,11 +118,15 @@ export const WardSyncRequired = Type.Record(Type.Never(), Type.Never(), {
 export type WardSyncResponse = Static<typeof WardSyncResponse>;
 export const WardSyncResponse = Type.Object(
     {
-        counter: Type.Optional(Type.Number()),
-        mac: Type.Optional(Type.String()),
         timestamp: Type.Optional(Type.Number()),
         wm_signature: Type.Optional(Type.String()),
         links: Type.Array(WardChainLink),
+        to_counter: Type.Optional(Type.Number()),
+        to_root: Type.Optional(Type.String()),
+        from_counter: Type.Optional(Type.Number()),
+        from_root: Type.Optional(Type.String()),
+        from_head_nonce: Type.Optional(Type.String()),
+        to_head_nonce: Type.Optional(Type.String()),
     },
     { $id: 'WardSyncResponse' },
 );

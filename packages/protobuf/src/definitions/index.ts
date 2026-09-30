@@ -333,6 +333,8 @@ import {
     WardSetEntry,
 } from './messages-ward';
 import {
+    WardChainLinkAck,
+    WardChainRequest,
     WardEntryRequest,
     WardFlushQueueAck,
     WardIngestAttestation,
@@ -340,8 +342,8 @@ import {
     WardLeafAck,
     WardReconcile,
     WardReconcileAck,
-    WardRecoverCounter,
-    WardRecoverCounterAck,
+    WardRejoin,
+    WardRejoinAck,
     WardRollback,
     WardRollbackAck,
     WardSync,
@@ -707,7 +709,11 @@ export const MessageType = Type.Object(
         WardLeafAck,
         WardFlushQueueAck,
         WardVerifyChain,
+        WardChainRequest,
+        WardChainLinkAck,
         WardVerifyChainAck,
+        WardRejoin,
+        WardRejoinAck,
         WardSync,
         WardSyncAck,
         WardIngestAttestation,
@@ -716,8 +722,6 @@ export const MessageType = Type.Object(
         WardReconcileAck,
         WardRollback,
         WardRollbackAck,
-        WardRecoverCounter,
-        WardRecoverCounterAck,
         WardServiceOpen,
         WardServiceOpenAck,
         WardSyncRequest,
@@ -925,10 +929,11 @@ export type WireInMessage =
     | 'WardResetApp'
     | 'WardVerifyChain'
     | 'WardSync'
+    | 'WardChainLinkAck'
+    | 'WardRejoin'
     | 'WardIngestAttestation'
     | 'WardReconcile'
     | 'WardRollback'
-    | 'WardRecoverCounter'
     | 'WardServiceOpen'
     | 'WardSyncResponse'
     | 'WardSyncRequired'
@@ -1047,12 +1052,13 @@ export type WireOutMessage =
     | 'WardEntryRequest'
     | 'WardLeafAck'
     | 'WardFlushQueueAck'
+    | 'WardChainRequest'
     | 'WardVerifyChainAck'
+    | 'WardRejoinAck'
     | 'WardSyncAck'
     | 'WardIngestAttestationAck'
     | 'WardReconcileAck'
     | 'WardRollbackAck'
-    | 'WardRecoverCounterAck'
     | 'WardServiceOpenAck'
     | 'WardSyncRequest'
     | 'WardServiceFetch'

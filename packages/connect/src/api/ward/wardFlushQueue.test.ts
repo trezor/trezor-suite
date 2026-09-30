@@ -23,9 +23,8 @@ const LEAF_ACK = {
     identity: { encoding: 1 },
     content: { encoding: 1 },
     counter: 5,
-    mac: '22'.repeat(32),
     auth_commit: '33'.repeat(32),
-    auth_sig: '44'.repeat(64),
+    wm_sig: '44'.repeat(64),
     remaining: 2,
 };
 
