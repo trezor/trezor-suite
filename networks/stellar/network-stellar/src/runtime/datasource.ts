@@ -18,7 +18,6 @@ import { type ReadAccountHistoryParams, readAccountHistory } from './horizon/his
 import { readLatestLedgerFromHorizon } from './horizon/ledger';
 import { readVersionFromHorizon } from './horizon/network';
 import { readAccountState } from './rpc/account';
-import { readInclusionFee } from './rpc/fees';
 import { type StellarLedgerHead, readLatestLedger } from './rpc/ledger';
 import { readVersion } from './rpc/network';
 import { submitTransaction } from './rpc/submit';
@@ -34,7 +33,6 @@ export type StellarAccountStateRequest = {
 export type StellarDataSource = {
     readVersion: () => Promise<string>;
     readLatestLedger: () => Promise<StellarLedgerHead>;
-    readInclusionFee: () => Promise<string>;
     readAccountState: (request: StellarAccountStateRequest) => Promise<StellarAccountState>;
     readAccountHistory: (
         request: Omit<ReadAccountHistoryParams, 'horizon'>,
@@ -89,7 +87,6 @@ export const createStellarDataSource = (
                   () => readLatestLedgerFromHorizon(api.horizon),
                   true,
               ),
-    readInclusionFee: () => readInclusionFee(api.rpc),
     readAccountState: async ({ descriptor, knownAssets }) => {
         // A Horizon 404 is not proof of absence; the ledger entry decides, so RPC is read anyway.
         const record =
