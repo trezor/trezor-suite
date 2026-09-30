@@ -31,6 +31,7 @@ import {
     calculateTotalGasCost,
     convertAmountSubunitsToUnits,
     convertAmountUnitsToSubunits,
+    countOwnEvmNoncesFrom,
     fromGwei,
     fromWei,
     getAccountIdentity,
@@ -39,8 +40,10 @@ import {
     getEthereumEstimateFeeParams,
     getEvmNonceInfo,
     getEvmNonceInfoFromConfirmedNonce,
+    getEvmPendingNonceCeiling,
     getExternalComposeOutput,
     getTxStakeNameByDataHex,
+    hasUnknownPendingEvmTxs,
     isEip1559,
     isEvmApprovalTx,
     prepareEthereumTransaction,
@@ -53,11 +56,18 @@ import { asCoinSymbol } from '@trezor/connect-common';
 import { BigNumber } from '@trezor/utils';
 
 import { reportEthereumFeeEstimationFailed } from './reportEthereumFeeEstimationError';
+import {
+    reportEvmNonceAbovePending,
+    reportEvmNonceFetchFailed,
+    reportEvmTransactionWithoutVin,
+    reportEvmUnknownPendingTxs,
+} from './reportEvmNonceAnomaly';
 import { sendFormActions } from './sendFormActions';
 import { SEND_MODULE_PREFIX } from './sendFormConstants';
 import {
     type ComposeFeeLevelsError,
     type ComposeTransactionThunkArguments,
+    type EvmUnknownPendingNonces,
     type SignTransactionError,
     type SignTransactionThunkArguments,
 } from './sendFormTypes';
@@ -480,7 +490,67 @@ interface ResolveEthereumNonceParams {
 interface ResolveEthereumNonceResult {
     nonce: string;
     confirmedNonce: string;
+    // Highest nonce the backend's pending count can account for (see getEvmPendingNonceCeiling).
+    // Undefined for RBF and whenever the backend returned no usable pending nonce, which is the
+    // signal to skip the cross-check rather than to treat the nonce as suspect.
+    pendingNonceCeiling?: number;
+    // Set when the backend sees in-flight txs the account does not know about. Signing is gated on
+    // the user acknowledging this exact pair.
+    unknownPendingNonces?: EvmUnknownPendingNonces;
 }
+
+const parseNonce = (value: string | undefined) => {
+    if (value == null) return undefined;
+    const parsed = parseInt(value, 10);
+
+    return Number.isSafeInteger(parsed) && parsed >= 0 ? parsed : undefined;
+};
+
+// One immediate retry: a single dropped call otherwise downgrades signing to local derivation.
+const NONCE_FETCH_ATTEMPTS = 2;
+
+/**
+ * Fetches both of the account's nonces — `nonce` (mempool-inclusive) and `confirmedNonce`
+ * (mined-only) — in the single batched call blockbook already answers with both.
+ *
+ * Returns undefined once every attempt has failed. A backend failure must never block signing, so
+ * the caller falls back to local derivation — but it is no longer silent.
+ */
+const fetchEvmNonces = async (selectedAccount: AccountWithNetworkType<'ethereum'>) => {
+    let reason = 'unsuccessful-response';
+
+    for (let attempt = 1; attempt <= NONCE_FETCH_ATTEMPTS; attempt++) {
+        try {
+            const response = await TrezorConnect.getAccountInfo({
+                coin: asCoinSymbol(selectedAccount.symbol),
+                descriptor: selectedAccount.descriptor,
+                identity: tryGetAccountIdentity(selectedAccount),
+                details: 'basic',
+                confirmedNonce: true,
+                suppressBackupWarning: true,
+            });
+
+            if (response?.success) {
+                return {
+                    pendingNonce: parseNonce(response.payload.misc?.nonce),
+                    confirmedNonce: parseNonce(response.payload.misc?.confirmedNonce),
+                };
+            }
+
+            reason = response?.error?.code ?? response?.error?.message ?? 'unsuccessful-response';
+        } catch (error) {
+            reason = error instanceof Error ? error.message : 'threw';
+        }
+    }
+
+    reportEvmNonceFetchFailed({
+        account: selectedAccount,
+        reason,
+        attempts: NONCE_FETCH_ATTEMPTS,
+    });
+
+    return undefined;
+};
 
 export const resolveEthereumNonce = async ({
     selectedAccount,
@@ -496,33 +566,26 @@ export const resolveEthereumNonce = async ({
         return { nonce: rbfNonce, confirmedNonce: rbfNonce };
     }
 
-    // Use the account's nonce from the last sync as the base. Optionally override with blockbook's
-    // mined-only nonce (trezor/blockbook#1562) when the caller opts in — it costs an extra backend
-    // call but is authoritative and unaffected by local pending-tx state.
-    let accountNonce = parseInt(selectedAccount.misc?.nonce ?? '0', 10);
+    // The account's nonce from the last sync is only the starting point. When the caller opts in,
+    // the live response replaces it: its pending nonce is at least fresher, and its mined-only
+    // confirmedNonce (trezor/blockbook#1562) is authoritative and unaffected by local pending state.
+    let accountNonce = parseNonce(selectedAccount.misc?.nonce) ?? 0;
     let accountNonceIsConfirmed = false;
-    if (fetchConfirmedNonce) {
-        // A backend failure (rejection or unsuccessful response) must not block signing — swallow it
-        // and fall back to local derivation below.
-        try {
-            const accountInfoResponse = await TrezorConnect.getAccountInfo({
-                coin: asCoinSymbol(selectedAccount.symbol),
-                descriptor: selectedAccount.descriptor,
-                identity: tryGetAccountIdentity(selectedAccount),
-                details: 'basic',
-                confirmedNonce: true,
-                suppressBackupWarning: true,
-            });
+    let backendPendingNonce: number | undefined;
 
-            if (
-                accountInfoResponse?.success &&
-                accountInfoResponse.payload.misc?.confirmedNonce != null
-            ) {
-                accountNonce = parseInt(accountInfoResponse.payload.misc.confirmedNonce, 10);
-                accountNonceIsConfirmed = true;
-            }
-        } catch {
-            // ignore — local derivation below
+    if (fetchConfirmedNonce) {
+        const fetched = await fetchEvmNonces(selectedAccount);
+
+        if (fetched?.pendingNonce !== undefined) {
+            // Blockbook omits confirmedNonce when only the "latest" lookup failed, leaving the rest
+            // of the response valid. Its pending nonce is still live, so it beats the store copy —
+            // which is only as fresh as the last account sync — as the untrusted baseline.
+            accountNonce = fetched.pendingNonce;
+            backendPendingNonce = fetched.pendingNonce;
+        }
+        if (fetched?.confirmedNonce !== undefined) {
+            accountNonce = fetched.confirmedNonce;
+            accountNonceIsConfirmed = true;
         }
     }
 
@@ -534,7 +597,38 @@ export const resolveEthereumNonce = async ({
         ? getEvmNonceInfoFromConfirmedNonce(accountNonce, accountTransactions)
         : getEvmNonceInfo(accountNonce, accountTransactions);
 
-    return { nonce: nextNonce.toString(), confirmedNonce: confirmedNonce.toString() };
+    let pendingNonceCeiling: number | undefined;
+    let unknownPendingNonces: EvmUnknownPendingNonces | undefined;
+    if (backendPendingNonce !== undefined) {
+        pendingNonceCeiling = getEvmPendingNonceCeiling(backendPendingNonce, accountTransactions);
+
+        const pendingNonces = { pendingNonce: backendPendingNonce, confirmedNonce };
+        if (hasUnknownPendingEvmTxs(pendingNonces, accountTransactions)) {
+            unknownPendingNonces = pendingNonces;
+            reportEvmUnknownPendingTxs({
+                account: selectedAccount,
+                ...pendingNonces,
+                ownPendingCount: countOwnEvmNoncesFrom(confirmedNonce, accountTransactions),
+            });
+        }
+    }
+
+    // isSignedByAccount — which every nonce set above is filtered through — reads details.vin, so a
+    // transaction missing it silently drops out of the arithmetic. No producer omits it today; this
+    // exists so a regression that reintroduced the #30910 failure would not be silent.
+    const txsWithoutVin = accountTransactions.filter(
+        tx => tx.ethereumSpecific && !tx.details?.vin?.length,
+    ).length;
+    if (txsWithoutVin > 0) {
+        reportEvmTransactionWithoutVin({ account: selectedAccount, count: txsWithoutVin });
+    }
+
+    return {
+        nonce: nextNonce.toString(),
+        confirmedNonce: confirmedNonce.toString(),
+        pendingNonceCeiling,
+        unknownPendingNonces,
+    };
 };
 
 interface EthereumGetCurrentNonceThunkParams {
@@ -596,7 +690,12 @@ export const signEthereumSendFormTransactionThunk = createThunk<
         // next available nonce. When a custom nonce is provided, skip rbfParams so we get the
         // actual confirmed nonce for validation instead of the RBF nonce.
         const customNonce = formState.ethereumNonce;
-        const { nonce: resolvedNonce, confirmedNonce } = await dispatch(
+        const {
+            nonce: resolvedNonce,
+            confirmedNonce,
+            pendingNonceCeiling,
+            unknownPendingNonces,
+        } = await dispatch(
             ethereumGetCurrentNonceThunk({
                 selectedAccount,
                 rbfParams: customNonce ? undefined : formState.rbfParams,
@@ -615,9 +714,26 @@ export const signEthereumSendFormTransactionThunk = createThunk<
             nonce = customNonce;
         }
 
+        // Cross-check the nonce actually being signed — custom or resolved — against what the
+        // backend's pending count can account for. Deliberately not a rejection: the ceiling is
+        // built from a mempool view that legitimately lags (private relay, dropped cache entry),
+        // so the user keeps the decision and confirms or rejects on the device.
+        const isNonceAbovePending =
+            pendingNonceCeiling !== undefined && parseInt(nonce, 10) > pendingNonceCeiling;
+        if (isNonceAbovePending) {
+            reportEvmNonceAbovePending({
+                account: selectedAccount,
+                offeredNonce: parseInt(nonce, 10),
+                pendingNonceCeiling,
+                isCustomNonce: !!customNonce,
+            });
+        }
+
         // Store the exact nonce being signed so the review modal can display it without resolving
         // it again (which would race this in-progress signing).
         dispatch(sendFormActions.storeResolvedEthereumNonce(nonce));
+        dispatch(sendFormActions.storeIsEthereumNonceAbovePending(isNonceAbovePending));
+        dispatch(sendFormActions.storeHasUnknownPendingNonces(!!unknownPendingNonces));
 
         const { outputs: signOutputs } = formState;
         // @ts-expect-error: indexing with noUncheckedIndexedAccess

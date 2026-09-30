@@ -1426,6 +1426,7 @@ export const signAndPush: SignAndPush[] = [
             undefined, // updateFeeInfoThunk
             undefined, // estimateFee
             undefined, // getAccountInfo (signing-time confirmed-nonce check; falls back to local)
+            undefined, // getAccountInfo retry, before the fallback
             {
                 success: true,
                 payload: {

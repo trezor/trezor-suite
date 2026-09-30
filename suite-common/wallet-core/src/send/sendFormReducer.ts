@@ -31,6 +31,8 @@ export type SendState = {
     serializedTx?: SerializedTx; // Hexadecimal representation of signed transaction (payload for TrezorConnect.pushTransaction).
     accountKey?: AccountKey; // Account key for the transaction being processed.
     resolvedEthereumNonce?: string; // EVM nonce resolved at signing time, shown in the review modal.
+    isEthereumNonceAbovePending?: boolean; // Whether that nonce failed the pending-nonce cross-check.
+    hasUnknownPendingNonces?: boolean; // Whether the backend sees in-flight txs this account does not.
 };
 
 export const initialState: SendState = {
@@ -96,6 +98,18 @@ export const prepareSendFormReducer = createReducerWithExtraDeps(
             .addCase(sendFormActions.storeResolvedEthereumNonce, (state, { payload: nonce }) => {
                 state.resolvedEthereumNonce = nonce;
             })
+            .addCase(
+                sendFormActions.storeIsEthereumNonceAbovePending,
+                (state, { payload: isAbovePending }) => {
+                    state.isEthereumNonceAbovePending = isAbovePending;
+                },
+            )
+            .addCase(
+                sendFormActions.storeHasUnknownPendingNonces,
+                (state, { payload: hasUnknownPending }) => {
+                    state.hasUnknownPendingNonces = hasUnknownPending;
+                },
+            )
             .addCase(sendFormActions.discardTransaction, state => {
                 delete state.precomposedTx;
                 delete state.precomposedForm;
@@ -103,6 +117,8 @@ export const prepareSendFormReducer = createReducerWithExtraDeps(
                 delete state.signedTx;
                 delete state.accountKey;
                 delete state.resolvedEthereumNonce;
+                delete state.isEthereumNonceAbovePending;
+                delete state.hasUnknownPendingNonces;
             })
             .addCase(sendFormActions.clearSignedTransactionData, state => {
                 delete state.serializedTx;
@@ -110,6 +126,8 @@ export const prepareSendFormReducer = createReducerWithExtraDeps(
                 // Otherwise a retry after a failed push would briefly show the previous attempt's
                 // nonce in the review modal before signing resolves and stores a fresh one.
                 delete state.resolvedEthereumNonce;
+                delete state.isEthereumNonceAbovePending;
+                delete state.hasUnknownPendingNonces;
             })
             .addCase(sendFormActions.sendRaw, (state, { payload: sendRaw }) => {
                 state.sendRaw = sendRaw;
@@ -122,6 +140,8 @@ export const prepareSendFormReducer = createReducerWithExtraDeps(
                 delete state.signedTx;
                 delete state.accountKey;
                 delete state.resolvedEthereumNonce;
+                delete state.isEthereumNonceAbovePending;
+                delete state.hasUnknownPendingNonces;
             })
             .addCase(extra.actionTypes.storageLoad, extra.reducers.storageLoadFormDrafts)
             .addCase(accountsActions.removeAccount, (state, { payload }) => {
