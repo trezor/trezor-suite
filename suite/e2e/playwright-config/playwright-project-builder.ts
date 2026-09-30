@@ -3,6 +3,7 @@ import { RequireAtLeastOne } from 'type-fest';
 
 import { Model } from '@trezor/trezor-user-env-link';
 
+import { getLighthouseDebugPort, isLighthouseEnabled } from '../performance/lighthouseConfig';
 import { PlaywrightTarget, SuiteTestOptions } from '../support/testExtends/suiteTestOptions';
 
 export type PlaywrightProjectDefinition = RequireAtLeastOne<
@@ -44,6 +45,12 @@ export class PlaywrightProjectBuilder {
                         channel: 'chromium',
                         baseURL: process.env.BASE_URL || 'http://localhost:8000/',
                         target: PlaywrightTarget.Web,
+                        // The CDP endpoint Lighthouse attaches to; see performance/lighthouseConfig.
+                        ...(isLighthouseEnabled() && {
+                            launchOptions: {
+                                args: [`--remote-debugging-port=${getLighthouseDebugPort()}`],
+                            },
+                        }),
                     },
                     grepInvert: [/@desktopOnly/, /@group=manual/],
                     grep: [],

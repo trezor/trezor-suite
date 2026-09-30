@@ -8,6 +8,9 @@ import { AnalyticsFixture, AnalyticsHelper } from './analytics';
 import { ClipboardFixture } from './clipboard';
 import { isDesktopProject } from './common';
 import { databaseTabFixture } from './databaseTabFixture';
+import { LighthouseMode, getLighthouseMode } from '../performance/lighthouseConfig';
+import type { LighthouseFlow } from '../performance/lighthouseTimespan';
+import { startLighthouseFlow } from '../performance/lighthouseTimespan';
 import { measurePerformance } from '../performance/perfMeasure';
 import { EvoluClient } from './helpers/evoluClient';
 import { IndexedDbFixture } from './indexedDb';
@@ -92,6 +95,7 @@ type Fixtures = {
             interaction: () => Promise<void>,
         ) => Promise<PerfMetrics | null>;
     };
+    lighthouseFlow: LighthouseFlow;
 };
 
 const test = suiteBaseTest.extend<Fixtures>({
@@ -224,10 +228,30 @@ const test = suiteBaseTest.extend<Fixtures>({
         await use(evoluClient);
         await evoluClient.dispose();
     },
-    perf: async ({ page }, use, testInfo) => {
+    lighthouseFlow: [
+        async ({ page }, use, testInfo) => {
+            const flow = await startLighthouseFlow(page, testInfo);
+
+            try {
+                await flow.wrapTest(() => use(flow));
+            } finally {
+                await flow.finish();
+            }
+        },
+        // Auto only where a test that never takes the `perf` fixture is still meant to be profiled.
+        // Leaving it auto otherwise would hand a `page` to every test in the suite, including the
+        // ones that deliberately open none.
+        { auto: getLighthouseMode() === LighthouseMode.Test },
+    ],
+    // Lighthouse wraps the measurement rather than the other way round: its timespan then also
+    // covers the settling `measurePerformance` waits out, which costs Lighthouse nothing (the page
+    // is idle by then) and keeps the CDP work of opening a timespan out of the measured interaction.
+    perf: async ({ page, lighthouseFlow }, use, testInfo) => {
         await use({
             measure: (scenario, interaction) =>
-                measurePerformance(page, testInfo, scenario, interaction),
+                lighthouseFlow.timespan(scenario, () =>
+                    measurePerformance(page, testInfo, scenario, interaction),
+                ),
         });
     },
 });

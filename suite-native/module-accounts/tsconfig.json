@@ -35,6 +35,7 @@
             "path": "../module-stellar-token-management"
         },
         { "path": "../navigation" },
+        { "path": "../performance-metrics" },
         { "path": "../tokens" },
         {
             "path": "../../packages/styles-native"
