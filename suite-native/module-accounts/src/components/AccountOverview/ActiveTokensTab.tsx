@@ -26,6 +26,10 @@ const listStyle = prepareNativeStyle(() => ({
     flex: 1,
 }));
 
+const listContentStyle = prepareNativeStyle(({ spacings }) => ({
+    paddingHorizontal: spacings.sp16,
+}));
+
 type ActiveTokensTabProps = AccountAssetsTabListProps & {
     accountKey: AccountKey;
     onSelect: OnSelectAsset;
@@ -53,6 +57,7 @@ export const ActiveTokensTab = ({
     onSelect,
     isStakingDisplayed,
     ListHeaderComponent,
+    onScroll,
 }: ActiveTokensTabProps) => {
     const { applyStyle } = useNativeStyles();
     const { navigateToStakingDetail } = useStakingDetailNavigation();
@@ -150,11 +155,13 @@ export const ActiveTokensTab = ({
     return (
         <FlashList
             style={applyStyle(listStyle)}
+            contentContainerStyle={applyStyle(listContentStyle)}
             data={listItems}
             keyExtractor={getItemKey}
             getItemType={item => item.type}
             renderItem={renderItem}
             ListHeaderComponent={ListHeaderComponent}
+            onScroll={onScroll}
         />
     );
 };
