@@ -10,7 +10,7 @@ const stringifyArgs = (args: unknown[]): string =>
                         if (v instanceof Error) return { message: v.toString(), stack: v.stack };
                         if (typeof v === 'bigint' || typeof v === 'number') return v.toString();
 
-                        return String(`(${typeof v} redacted...)`);
+                        return `(${typeof v} redacted...)`;
                     }) ?? String(arg)
                 );
             } catch {
