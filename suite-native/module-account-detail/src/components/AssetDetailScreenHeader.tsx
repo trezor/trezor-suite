@@ -137,12 +137,12 @@ export const AssetDetailScreenHeader = ({
     const closeAction = () => {
         const rootNavigation =
             navigation.getParent<NativeStackNavigationProp<RootStackParamList>>();
-        const isAccountAssetsInStack = rootNavigation
+        const isAccountOverviewInStack = rootNavigation
             ?.getState()
-            .routes.some(stackRoute => stackRoute.name === RootStackRoutes.AccountAssets);
+            .routes.some(stackRoute => stackRoute.name === RootStackRoutes.AccountOverview);
 
-        if (rootNavigation && isAccountAssetsInStack) {
-            rootNavigation.popTo(RootStackRoutes.AccountAssets, {
+        if (rootNavigation && isAccountOverviewInStack) {
+            rootNavigation.popTo(RootStackRoutes.AccountOverview, {
                 accountKey: account.key,
                 tab: tokenTab,
             });

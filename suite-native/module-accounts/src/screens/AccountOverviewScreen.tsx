@@ -20,26 +20,31 @@ import {
 import { VStack } from '@suite-native/atoms';
 import { type RootStackParamList, type RootStackRoutes, Screen } from '@suite-native/navigation';
 
-import { AccountAssetsScreenHeader } from '../components/AccountAssets/AccountAssetsScreenHeader';
-import { AccountAssetsTabBar } from '../components/AccountAssets/AccountAssetsTabBar';
-import { AccountAssetsTabContent } from '../components/AccountAssets/AccountAssetsTabContent';
-import { AccountEarnPromoBanner } from '../components/AccountAssets/AccountEarnPromoBanner';
-import { type AccountAssetsTab } from '../components/AccountAssets/types';
+import { AccountEarnPromoBanner } from '../components/AccountOverview/AccountEarnPromoBanner';
+import { AccountOverviewScreenHeader } from '../components/AccountOverview/AccountOverviewScreenHeader';
+import { AccountOverviewTabBar } from '../components/AccountOverview/AccountOverviewTabBar';
+import { AccountOverviewTabContent } from '../components/AccountOverview/AccountOverviewTabContent';
+import { type AccountOverviewTab } from '../components/AccountOverview/types';
 
-export const AccountAssetsScreen = ({
+type AccountOverviewScreenProps = NativeStackScreenProps<
+    RootStackParamList,
+    RootStackRoutes.AccountOverview
+>;
+
+export const AccountOverviewScreen = ({
     route: {
         params: {
             accountKey: routeAccountKey,
             tab,
-            flowType = 'assets',
+            flowType = 'overview',
             networkSymbol,
             accountType,
             accountIndex,
         },
     },
     navigation,
-}: NativeStackScreenProps<RootStackParamList, RootStackRoutes.AccountAssets>) => {
-    const [activeTab, setActiveTab] = useState<AccountAssetsTab>(tab ?? 'tokens');
+}: AccountOverviewScreenProps) => {
+    const [activeTab, setActiveTab] = useState<AccountOverviewTab>(tab ?? 'tokens');
 
     useEffect(() => {
         if (tab !== undefined) {
@@ -73,14 +78,16 @@ export const AccountAssetsScreen = ({
     const isFailed = !!account && isAccountFailed(account);
 
     return (
-        <Screen header={<AccountAssetsScreenHeader accountKey={accountKey} flowType={flowType} />}>
+        <Screen
+            header={<AccountOverviewScreenHeader accountKey={accountKey} flowType={flowType} />}
+        >
             {isFailed ? (
                 <AccountDiscoveryFailedBanner accountKey={accountKey} />
             ) : (
                 <VStack spacing="sp16">
                     <AccountEarnPromoBanner account={account} />
 
-                    <AccountAssetsTabBar
+                    <AccountOverviewTabBar
                         activeTab={activeTab}
                         flowType={flowType}
                         networkType={account?.networkType}
@@ -89,7 +96,7 @@ export const AccountAssetsScreen = ({
                         hiddenTokenCount={manuallyHiddenTokens}
                         onTabChange={setActiveTab}
                     />
-                    <AccountAssetsTabContent
+                    <AccountOverviewTabContent
                         accountKey={accountKey}
                         activeTab={activeTab}
                         flowType={flowType}

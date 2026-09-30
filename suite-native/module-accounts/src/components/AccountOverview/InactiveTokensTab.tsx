@@ -49,7 +49,7 @@ const listFooterStyle = prepareNativeStyle(utils => ({
 
 export const InactiveTokensTab = ({ accountKey }: InactiveTokensTabProps) => {
     const navigation =
-        useNavigation<StackNavigationProps<RootStackParamList, RootStackRoutes.AccountAssets>>();
+        useNavigation<StackNavigationProps<RootStackParamList, RootStackRoutes.AccountOverview>>();
     const { translate } = useTranslate();
     const { showAlert } = useAlert();
     const { applyStyle } = useNativeStyles();

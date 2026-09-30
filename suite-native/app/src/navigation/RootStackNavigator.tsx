@@ -5,7 +5,7 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { isDevelopOrDebugEnv } from '@suite-native/config';
 import { BootloaderModeScreen } from '@suite-native/device-bootloader-mode';
 import { AccountDetailStackNavigator } from '@suite-native/module-account-detail';
-import { AccountAssetsScreen } from '@suite-native/module-accounts';
+import { AccountOverviewScreen } from '@suite-native/module-accounts';
 import { AccountsImportStackNavigator } from '@suite-native/module-accounts-import';
 import { ActivityCenterStackNavigator } from '@suite-native/module-activity-center';
 import { AddCoinAccountStackNavigator } from '@suite-native/module-add-accounts';
@@ -118,9 +118,9 @@ export const RootStackNavigator = () => {
                 component={AccountDetailStackNavigator}
             />
             <RootStack.Screen
-                options={{ title: RootStackRoutes.AccountAssets }}
-                name={RootStackRoutes.AccountAssets}
-                component={AccountAssetsScreen}
+                options={{ title: RootStackRoutes.AccountOverview }}
+                name={RootStackRoutes.AccountOverview}
+                component={AccountOverviewScreen}
             />
             <RootStack.Screen
                 name={RootStackRoutes.TransactionDetailStack}

@@ -21,16 +21,23 @@ import {
     type StackNavigationProps,
 } from '@suite-native/navigation';
 
-import { type AccountAssetsFlow } from './types';
+import { type AccountOverviewFlow } from './types';
 
-type AccountAssetsNavigationProps = StackNavigationProps<
+type AccountOverviewNavigationProps = StackNavigationProps<
     RootStackParamList,
-    RootStackRoutes.AccountAssets
+    RootStackRoutes.AccountOverview
 >;
 
-type Props = { accountKey: AccountKey; flowType?: AccountAssetsFlow };
+type AccountOverviewScreenHeaderProps = {
+    accountKey: AccountKey;
+    flowType?: AccountOverviewFlow;
+};
 
-const AccountAssetsScreenHeaderContent = ({ accountKey }: Omit<Props, 'flowType'>) => {
+type AccountOverviewScreenHeaderContentProps = Pick<AccountOverviewScreenHeaderProps, 'accountKey'>;
+
+const AccountOverviewScreenHeaderContent = ({
+    accountKey,
+}: AccountOverviewScreenHeaderContentProps) => {
     const account = useSelector((state: AccountsRootState) =>
         selectAccountByKey(state, accountKey),
     );
@@ -64,8 +71,11 @@ const AccountAssetsScreenHeaderContent = ({ accountKey }: Omit<Props, 'flowType'
     );
 };
 
-export const AccountAssetsScreenHeader = ({ accountKey, flowType }: Props) => {
-    const navigation = useNavigation<AccountAssetsNavigationProps>();
+export const AccountOverviewScreenHeader = ({
+    accountKey,
+    flowType,
+}: AccountOverviewScreenHeaderProps) => {
+    const navigation = useNavigation<AccountOverviewNavigationProps>();
 
     const handleSettingsNavigation = () => {
         navigation.navigate(RootStackRoutes.AccountDetailStack, {
@@ -76,7 +86,7 @@ export const AccountAssetsScreenHeader = ({ accountKey, flowType }: Props) => {
 
     return (
         <ScreenHeader
-            customContent={<AccountAssetsScreenHeaderContent accountKey={accountKey} />}
+            customContent={<AccountOverviewScreenHeaderContent accountKey={accountKey} />}
             closeActionType={flowType === 'send' ? 'back' : 'close'}
             rightIcon={
                 <IconButton
@@ -85,7 +95,7 @@ export const AccountAssetsScreenHeader = ({ accountKey, flowType }: Props) => {
                     size="medium"
                     iconName="gear"
                     onPress={handleSettingsNavigation}
-                    testID="@account-assets/settings-button"
+                    testID="@account-overview/settings-button"
                 />
             }
         />

@@ -71,7 +71,8 @@ const buildListItems = (
         listItems.push({
             type: 'section-header',
             id: 'header-unrecognized',
-            translationId: 'moduleAccountManagement.accountAssetsScreen.hiddenTokensSection.title',
+            translationId:
+                'moduleAccountManagement.accountOverviewScreen.hiddenTokensSection.title',
         });
         listItems.push({ type: 'warning', id: 'warning-unrecognized' });
         unrecognizedTokens.forEach((token, index) => {
@@ -120,7 +121,7 @@ export const HiddenTokensTab = ({ accountKey, onSelect }: HiddenTokensTabProps) 
                             <BannerInline
                                 intent="warning"
                                 title={
-                                    <Translation id="moduleAccountManagement.accountAssetsScreen.hiddenTokensSection.warning" />
+                                    <Translation id="moduleAccountManagement.accountOverviewScreen.hiddenTokensSection.warning" />
                                 }
                             />
                         </View>
@@ -161,7 +162,7 @@ export const HiddenTokensTab = ({ accountKey, onSelect }: HiddenTokensTabProps) 
                     variant="info"
                     icon="coins"
                     title={
-                        <Translation id="moduleAccountManagement.accountAssetsScreen.hiddenTokensSection.emptyTitle" />
+                        <Translation id="moduleAccountManagement.accountOverviewScreen.hiddenTokensSection.emptyTitle" />
                     }
                 />
             </Card>
