@@ -72,8 +72,8 @@ describe('Core', () => {
         // no events emitted before initialization
         expect(eventsSpy).toHaveBeenCalledTimes(0);
         await new Promise(resolve => setTimeout(resolve, 1));
-        // device + transport events emitted in next tick
-        expect(eventsSpy).toHaveBeenCalledTimes(2);
+        // transport events emitted in next tick
+        expect(eventsSpy.mock.calls).toMatchObject([[{ type: 'transport-start' }]]);
 
         coreManager.dispose();
     });
