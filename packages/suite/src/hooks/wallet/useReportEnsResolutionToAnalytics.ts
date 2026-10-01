@@ -1,16 +1,12 @@
 import { useEffect, useRef } from 'react';
 
+import { type SendEnsResolutionDirection, events, injectDesktopAnalytics } from '@suite/analytics';
 import { useServices } from '@suite-common/dependency-injection';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { type ResolveState, getSettledResolveDirection } from '@suite-common/wallet-core';
-import {
-    type SendEnsResolutionDirection,
-    events,
-    injectNativeAnalytics,
-} from '@suite-native/analytics';
 
 type UseReportEnsResolutionToAnalyticsParams = ResolveState & {
-    symbol: NetworkSymbol | null | undefined;
+    symbol: NetworkSymbol;
 };
 
 /**
@@ -25,13 +21,12 @@ export const useReportEnsResolutionToAnalytics = ({
     isSuccess,
     isError,
 }: UseReportEnsResolutionToAnalyticsParams) => {
-    const { analytics } = useServices(injectNativeAnalytics);
+    const { analytics } = useServices(injectDesktopAnalytics);
     const reportedDirectionsRef = useRef<SendEnsResolutionDirection[]>([]);
     const direction = getSettledResolveDirection({ mode, isFetching, isSuccess, isError });
 
     useEffect(() => {
-        if (!symbol || !direction) return;
-        if (reportedDirectionsRef.current.includes(direction)) return;
+        if (!direction || reportedDirectionsRef.current.includes(direction)) return;
 
         reportedDirectionsRef.current = [...reportedDirectionsRef.current, direction];
         analytics.report({
