@@ -70,6 +70,10 @@ export type RelayErrorCode =
     | 'no_store'
     | 'device_failure'
     | 'wm_conflict'
+    /** The WM holds a head BELOW the device's: its register regressed. Needs a rollback. */
+    | 'wm_behind'
+    /** The device's head is off the WM's history (a fork); `sync` with `{ rejoin: true }`. */
+    | 'needs_rejoin'
     | 'internal';
 
 export interface RelayError {

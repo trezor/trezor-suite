@@ -51,7 +51,7 @@ wardd  → client  { "id": 1, "result": { "counter": 5, "root": "…" } }
 | `openStore`   | `{ wardId, evoluNode }`                    | `{ counter, root }`                       | no                                         |
 | `serveEntry`  | `{ request, staged? }`                     | `WardEntryAck` body                       | no (used by Connect's `wardProvider` hook) |
 | `applyResult` | a `WardLeafAck` / `WardFlushQueueAck` body | `{ counter, root, published }`            | no                                         |
-| `sync`        | `{}`                                       | `{ counter, root }`                       | yes                                        |
+| `sync`        | `{ rejoin? }`                              | `{ counter, root, how }`                  | yes                                        |
 | `flush`       | `{ maxBatch? }`                            | `{ counter, root, published, remaining }` | yes                                        |
 | `status`      | `{}`                                       | `{ counter, root, wmCounter, wmRoot }`    | no                                         |
 
@@ -69,6 +69,9 @@ Each error is `{ id, error: { code, message } }`, with one of these codes:
 - `no_store`: `openStore` hasn't run
 - `device_failure`
 - `wm_conflict`: another writer moved the WM head first; retry after `sync`
+- `wm_behind`: the WM holds a head below the device's (its register regressed); needs a rollback
+- `needs_rejoin`: the device's head is off the WM's history; the user must confirm `sync` with
+  `{ rejoin: true }`, which discards the device's changes above the fork
 - `internal`
 
 ## Versioning

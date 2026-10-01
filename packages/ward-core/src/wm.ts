@@ -147,6 +147,8 @@ export interface WmClient {
         timestamp?: number;
     }): Promise<boolean>;
     headNonce(wardId: Uint8Array): Promise<Uint8Array | null>;
+    /** The head it holds, or null if the wallet is not enrolled. A null root is the empty tree. */
+    head(wardId: Uint8Array): Promise<{ counter: number; root: Uint8Array | null } | null>;
 }
 
 /** The WM's refusal: the head this transition was built on is not the head it holds. */
@@ -285,4 +287,66 @@ export class DevWm implements WmClient {
     headNonce(wardId: Uint8Array): Promise<Uint8Array | null> {
         return Promise.resolve(this.heads.get(toHex(wardId))?.headNonce ?? null);
     }
+
+    head(wardId: Uint8Array): Promise<{ counter: number; root: Uint8Array | null } | null> {
+        const h = this.heads.get(toHex(wardId));
+
+        return Promise.resolve(
+            h ? { counter: h.counter, root: equalBytes(h.root, EMPTY_ROOT) ? null : h.root } : null,
+        );
+    }
+
+    /**
+     * The WM's whole state, for a daemon to persist. A restart that forgot it would be a WM SWAP to
+     * every device that synced against it -- the head nonce they hold would no longer be current.
+     * The ledger goes too: a retired nonce must stay retired across restarts.
+     */
+    snapshot(): DevWmSnapshot {
+        const hex = (r: HeadRecord) => ({
+            ...r,
+            fromRoot: toHex(r.fromRoot),
+            root: toHex(r.root),
+            fromHeadNonce: toHex(r.fromHeadNonce),
+            headNonce: toHex(r.headNonce),
+        });
+
+        return {
+            heads: Object.fromEntries([...this.heads].map(([id, r]) => [id, hex(r)])),
+            retired: Object.fromEntries([...this.retired].map(([id, set]) => [id, [...set]])),
+        };
+    }
+
+    restore(snap: DevWmSnapshot): this {
+        this.heads = new Map(
+            Object.entries(snap.heads).map(([id, r]) => [
+                id,
+                {
+                    ...r,
+                    fromRoot: toBytes(r.fromRoot),
+                    root: toBytes(r.root),
+                    fromHeadNonce: toBytes(r.fromHeadNonce),
+                    headNonce: toBytes(r.headNonce),
+                },
+            ]),
+        );
+        this.retired = new Map(Object.entries(snap.retired).map(([id, l]) => [id, new Set(l)]));
+
+        return this;
+    }
+}
+
+export interface DevWmSnapshot {
+    heads: Record<
+        string,
+        {
+            fromCounter: number;
+            fromRoot: string;
+            counter: number;
+            root: string;
+            timestamp: number;
+            fromHeadNonce: string;
+            headNonce: string;
+        }
+    >;
+    retired: Record<string, string[]>;
 }
