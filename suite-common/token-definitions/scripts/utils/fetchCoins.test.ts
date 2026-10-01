@@ -274,13 +274,21 @@ describe('getContractAddress', () => {
 });
 
 describe('fetchAllCoins', () => {
+    const originalApiKey = process.env.COINGECKO_API_KEY;
+
     beforeEach(() => {
         fetchMock.mockReset();
         jest.spyOn(console, 'log').mockImplementation(() => undefined);
+        process.env.COINGECKO_API_KEY = 'test-api-key';
     });
 
     afterEach(() => {
         jest.restoreAllMocks();
+        if (originalApiKey === undefined) {
+            delete process.env.COINGECKO_API_KEY;
+        } else {
+            process.env.COINGECKO_API_KEY = originalApiKey;
+        }
     });
 
     it('should ask CoinGecko for the platforms and keep only the contracts it filled in', async () => {
@@ -316,5 +324,15 @@ describe('fetchAllCoins', () => {
         expect(requestedUrls()).toEqual([
             'https://pro-api.coingecko.com/api/v3/coins/list?include_platform=true',
         ]);
+        expect((fetchMock.mock.calls[0][0] as Request).headers.get('x-cg-pro-api-key')).toBe(
+            'test-api-key',
+        );
+    });
+
+    it('should fail without sending a request when COINGECKO_API_KEY is not set', async () => {
+        delete process.env.COINGECKO_API_KEY;
+
+        await expect(fetchAllCoins()).rejects.toThrow('COINGECKO_API_KEY is not set');
+        expect(fetchMock).not.toHaveBeenCalled();
     });
 });
