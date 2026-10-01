@@ -2,6 +2,7 @@
 
 - added: `hid` api (`node-hid`) for HID-only Trezor One devices (firmware 1.6.3 and older)
 - added: `allowedOrigins` option replacing the default origin allowlist
+- deprecated: `protocol: 'bridge'` on `/call` `/post` `/read`; responses now carry `Deprecation` and `Link` headers, behaviour is unchanged
 
 # 3.2.1
 
