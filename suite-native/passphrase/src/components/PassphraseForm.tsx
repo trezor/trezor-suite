@@ -5,11 +5,11 @@ import { useSelector } from 'react-redux';
 
 import { useServices } from '@suite-common/dependency-injection';
 import {
+    PASSPHRASE_MAX_LENGTH,
     selectHasDevicePassphraseEntryCapability,
     selectSelectedDevice,
 } from '@suite-common/device';
 import { injectDispatch } from '@suite-common/redux-utils';
-import { formInputsMaxLength } from '@suite-common/validators';
 import { submitPassphraseThunk } from '@suite-common/wallet-core';
 import { events, injectNativeAnalytics } from '@suite-native/analytics';
 import { Button, Card, TextDivider, VStack } from '@suite-native/atoms';
@@ -93,7 +93,7 @@ export const PassphraseForm = ({
                         <SecureTextInputField
                             label={inputLabel}
                             name="passphrase"
-                            maxLength={formInputsMaxLength.passphrase}
+                            maxLength={PASSPHRASE_MAX_LENGTH}
                             accessibilityLabel="passphrase input"
                             autoCapitalize="none"
                             onFocus={handleFocusInput}
