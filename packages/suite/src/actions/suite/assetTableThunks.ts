@@ -21,3 +21,20 @@ export const showSmallBalancesThunk = createThunk<
 
     await dispatch(storageActions.saveAssetTableThunk());
 });
+
+type DismissNewAssetTableBannerThunkState = AssetTableRootState;
+
+type DismissNewAssetTableBannerThunkDeps = WithServices<DbDep>;
+
+export const dismissNewAssetTableBannerThunk = createThunk<
+    void,
+    void,
+    {
+        state: DismissNewAssetTableBannerThunkState;
+        extra: DismissNewAssetTableBannerThunkDeps;
+    }
+>(`${ASSET_TABLE_PREFIX}/dismissNewBanner`, async (_, { dispatch }) => {
+    dispatch(assetTableActions.dismissNewBanner());
+
+    await dispatch(storageActions.saveAssetTableThunk());
+});
