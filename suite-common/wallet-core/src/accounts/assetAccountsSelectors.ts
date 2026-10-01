@@ -76,11 +76,13 @@ const toAssetAccounts = (account: Account): readonly AssetAccount[] => {
         isAccountVisible: account.visible,
     });
 
+    const coinAccounts = [toAssetAccount(undefined, account.formattedBalance, undefined)];
+
     const tokenAccounts = (account.tokens ?? [])
         .filter(token => !isNftToken(token) && new BigNumber(token.balance ?? '0').gt(0))
         .map(token => toAssetAccount(token.contract as TokenAddress, token.balance ?? '0', token));
 
-    return [toAssetAccount(undefined, account.formattedBalance, undefined), ...tokenAccounts];
+    return [...coinAccounts, ...tokenAccounts];
 };
 
 export type AssetAccountsRootState = AccountsRootState & TokenDefinitionsRootState;

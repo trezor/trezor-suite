@@ -4,6 +4,7 @@ import {
     selectEnabledNetworks,
     selectHiddenTokenReasons,
 } from '@suite-common/wallet-core';
+import { isCryptoDustAmount } from '@suite-common/wallet-utils';
 import { type StaticSessionId } from '@trezor/device-utils';
 
 import {
@@ -23,8 +24,15 @@ const describeAsset = (assetAccounts: AssetAccounts) => {
     return {
         assetAccounts,
         cryptoBalance,
+        tokenInfo,
         displaySymbol: getAssetDisplaySymbol({ symbol, tokenInfo }),
     };
+};
+
+const isDust = (assetAccounts: AssetAccounts) => {
+    const { cryptoBalance, tokenInfo } = sumAssetAccounts(assetAccounts);
+
+    return isCryptoDustAmount({ cryptoBalance, decimals: tokenInfo?.decimals });
 };
 
 const createHiddenAssetsSelector = (reason: HiddenTokenReason) =>
@@ -60,6 +68,25 @@ const createHiddenAssetsSelector = (reason: HiddenTokenReason) =>
         },
     );
 
-export const selectHiddenByUserAssets = createHiddenAssetsSelector('hiddenByUser');
+const createHiddenTokensSelectors = (reason: HiddenTokenReason) => {
+    const selectAssets = createHiddenAssetsSelector(reason);
 
-export const selectUnrecognizedAssets = createHiddenAssetsSelector('unrecognized');
+    return {
+        selectAssets: createMemoizedSelector([selectAssets], assets =>
+            returnStableArrayIfEmpty(assets.filter(assetAccounts => !isDust(assetAccounts))),
+        ),
+        selectDustRows: createMemoizedSelector([selectAssets], assets =>
+            returnStableArrayIfEmpty(assets.filter(assetAccounts => isDust(assetAccounts))),
+        ),
+    };
+};
+
+export const {
+    selectAssets: selectHiddenByUserAssets,
+    selectDustRows: selectHiddenByUserDustRows,
+} = createHiddenTokensSelectors('hiddenByUser');
+
+export const {
+    selectAssets: selectUnrecognizedAssets,
+    selectDustRows: selectUnrecognizedDustRows,
+} = createHiddenTokensSelectors('unrecognized');

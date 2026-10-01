@@ -8,11 +8,13 @@ import { type StaticSessionId } from '@trezor/device-utils';
 
 import { useSelector } from 'src/hooks/suite';
 
+import { HomeAssetDustRow } from './HomeAssetDustRow';
 import { HomeAssetRow } from './HomeAssetRow';
 import { HomeAssetTableFilterHeader } from './HomeAssetTableFilter';
 import {
     type AssetAccounts,
     type HomeAssetSection,
+    selectHomeAssetDustRows,
     selectHomeAssetSections,
 } from './homeAssetTableSelectors';
 import { HOME_ASSET_CELL_PADDING, type HomeAssetGrouping } from './homeAssetTableUtils';
@@ -65,8 +67,9 @@ type HomeAssetTableProps = {
 export const HomeAssetTable = ({ deviceState }: HomeAssetTableProps) => {
     const [grouping, setGrouping] = useState<HomeAssetGrouping>('default');
     const sections = useSelector(state => selectHomeAssetSections(grouping)(state, deviceState));
+    const dustRows = useSelector(state => selectHomeAssetDustRows(state, deviceState));
 
-    if (sections.every(section => section.rows.length === 0)) {
+    if (sections.every(section => section.rows.length === 0) && dustRows.length === 0) {
         return null;
     }
 
@@ -102,6 +105,7 @@ export const HomeAssetTable = ({ deviceState }: HomeAssetTableProps) => {
                                   ...renderRows(section.rows, deviceState, false),
                               ],
                     )}
+                    <HomeAssetDustRow rows={dustRows} deviceState={deviceState} />
                 </Table.Body>
             </Table>
         </Card>
