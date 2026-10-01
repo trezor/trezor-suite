@@ -7,6 +7,8 @@ import {
     type WalletAssetKey,
     getWalletAssetKey,
     selectAssetAccounts,
+    selectAssetAccountsByWallet,
+    selectCollectionsByDevice,
     selectHiddenAssetAccountKeys,
 } from './assetAccountsSelectors';
 
@@ -377,5 +379,44 @@ describe('what a write leaves alone', () => {
         const state = createState({ accounts: [mockAccount()] });
 
         expect(selectAssetAccounts(state)).toBe(selectAssetAccounts(state));
+    });
+});
+
+describe('the collections the selectors keep apart', () => {
+    const collectionAccount = () =>
+        mockAccount({
+            tokens: [
+                { contract: USDC_ON_ETH, balance: '100' },
+                { contract: UNKNOWN_TOKEN, balance: '1', standard: 'ERC721' },
+            ],
+        });
+
+    it('files a collection under the wallet that holds it', () => {
+        const state = createState({ accounts: [collectionAccount()] });
+
+        expect(
+            selectCollectionsByDevice(state)
+                .get(ALICE)
+                ?.map(assetAccount => assetAccount.contractAddress),
+        ).toEqual([UNKNOWN_TOKEN]);
+    });
+
+    it('leaves a collection out of the network it is held on', () => {
+        const state = createState({ accounts: [collectionAccount()] });
+
+        expect(
+            selectAssetAccountsByWallet(state)
+                .get(ALICE)
+                ?.get(ETH)
+                ?.map(held => held.contractAddress),
+        ).toEqual([undefined, USDC_ON_ETH]);
+    });
+
+    it('holds no collection of a wallet that has none', () => {
+        const state = createState({
+            accounts: [mockAccount({ tokens: [{ contract: USDC_ON_ETH, balance: '100' }] })],
+        });
+
+        expect(selectCollectionsByDevice(state).get(ALICE)).toBeUndefined();
     });
 });

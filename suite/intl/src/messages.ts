@@ -1797,6 +1797,31 @@ export const messages = defineMessages({
         defaultMessage: 'Show small balances',
         id: 'TR_HOME_ASSET_SMALL_BALANCES',
     },
+    TR_HOME_ASSET_NFTS: {
+        defaultMessage: 'NFTs',
+        id: 'TR_HOME_ASSET_NFTS',
+    },
+    TR_HOME_ASSET_NFT_SUMMARY: {
+        defaultMessage:
+            '{collections, plural, one {# collection} other {# collections}}{hidden, plural, =0 {} other { · # hidden}}',
+        id: 'TR_HOME_ASSET_NFT_SUMMARY',
+    },
+    TR_HOME_ASSET_NFT_VIEW_ONLY: {
+        defaultMessage: 'View-only · Not included in total',
+        id: 'TR_HOME_ASSET_NFT_VIEW_ONLY',
+    },
+    TR_HOME_ASSET_NFT_ITEMS: {
+        defaultMessage: '{count, plural, one {# item} other {# items}}',
+        id: 'TR_HOME_ASSET_NFT_ITEMS',
+    },
+    TR_HOME_ASSET_NFT_COLLECTION: {
+        defaultMessage: 'Collection',
+        id: 'TR_HOME_ASSET_NFT_COLLECTION',
+    },
+    TR_HOME_ASSET_NFT_NETWORK: {
+        defaultMessage: 'Network',
+        id: 'TR_HOME_ASSET_NFT_NETWORK',
+    },
     TR_HOME_ASSET_BANNER_TITLE: {
         defaultMessage: 'New — a simpler view of your assets',
         id: 'TR_HOME_ASSET_BANNER_TITLE',

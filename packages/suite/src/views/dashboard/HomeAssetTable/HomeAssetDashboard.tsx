@@ -12,6 +12,7 @@ import { HomeAssetBalanceCard } from './HomeAssetBalanceCard';
 import { HomeAssetTable } from './HomeAssetTable';
 import { type AssetAccounts, selectHomeAssetRows } from './homeAssetTableSelectors';
 import { DashboardPromoBanner } from '../DashboardPromoBanner/DashboardPromoBanner';
+import { HomeAssetNfts } from '../HomeAssetNfts/HomeAssetNfts';
 import { EmptyWallet } from '../PortfolioCard/EmptyWallet';
 import { PortfolioCardException } from '../PortfolioCard/PortfolioCardException';
 
@@ -47,6 +48,8 @@ export const HomeAssetDashboard = () => {
             <HomeAssetBalanceCard deviceState={deviceState} />
             <DashboardPromoBanner />
             <HomeAssetTable deviceState={deviceState} />
+            {/* The NFTs come after the table, and after anything the dashboard puts between. */}
+            <HomeAssetNfts deviceState={deviceState} />
         </Column>
     );
 };
