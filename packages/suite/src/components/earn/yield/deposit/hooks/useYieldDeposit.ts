@@ -1,7 +1,7 @@
 import { type YieldDtoV2 } from '@suite-common/earn-stablecoin-api';
 import { type Account } from '@suite-common/wallet-types';
 
-import { type YieldFlowContextValues, useYieldFlow } from '../hooks/useYieldFlow';
+import { type YieldFlowContextValues, useYieldFlow } from '../../hooks/useYieldFlow';
 
 type UseYieldDepositProps = {
     account: Account;

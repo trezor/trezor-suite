@@ -2,7 +2,7 @@ import { createContext, useContext } from 'react';
 
 import { throwError } from '@trezor/utils';
 
-import { type YieldFlowContextValues } from '../hooks/useYieldFlow';
+import { type YieldFlowContextValues } from '../../hooks/useYieldFlow';
 
 export const YieldDepositContext = createContext<YieldFlowContextValues | null>(null);
 YieldDepositContext.displayName = 'YieldDepositContext';

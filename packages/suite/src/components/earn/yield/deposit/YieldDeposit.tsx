@@ -11,10 +11,10 @@ import { useMessageSystemYield } from 'src/hooks/suite/useMessageSystemYield';
 import { useAllowance } from 'src/hooks/wallet/allowance/useAllowance';
 import { AllowanceContext } from 'src/hooks/wallet/allowance/useAllowanceContext';
 
-import { YieldDepositForm } from './YieldDepositForm';
-import { useYieldDeposit } from './useYieldDeposit';
-import { YieldDepositContext } from './useYieldDepositContext';
 import { YieldDisabledBanner } from '../common/YieldDisabledBanner';
+import { YieldDepositForm } from './YieldDepositForm/YieldDepositForm';
+import { useYieldDeposit } from './hooks/useYieldDeposit';
+import { YieldDepositContext } from './hooks/useYieldDepositContext';
 
 type YieldDepositProps = {
     account: Account;

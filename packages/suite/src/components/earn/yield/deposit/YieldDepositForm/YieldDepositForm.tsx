@@ -2,13 +2,8 @@ import { injectDesktopAnalytics } from '@suite/analytics';
 import { Translation } from '@suite/intl';
 import { events } from '@suite-common/analytics';
 import { useServices } from '@suite-common/dependency-injection';
-import { useFormatters } from '@suite-common/formatters';
 import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
-import {
-    getWrapReserveStatus,
-    getYieldFlowStepSequence,
-    splitYieldPendingTransaction,
-} from '@suite-common/wallet-core';
+import { getYieldFlowStepSequence, splitYieldPendingTransaction } from '@suite-common/wallet-core';
 import { getApyBreakdown } from '@suite-common/wallet-utils';
 import { Banner, Column, Text } from '@trezor/components';
 
@@ -16,20 +11,22 @@ import { FormattedCryptoAmount } from 'src/components/suite/FormattedCryptoAmoun
 import { useFetchFees } from 'src/components/wallet/Fees/CollapsibleFees/hooks/useFetchFees';
 import { useMessageSystemWrappedNative } from 'src/hooks/suite/useMessageSystemWrappedNative';
 
-import { useYieldDepositContext } from './useYieldDepositContext';
-import { YieldActionStep } from '../common/YieldActionStep';
-import { YieldActionStepWarning } from '../common/YieldActionStepWarning';
-import { YieldApproveModal } from '../common/YieldApproveModal';
-import { YieldApproveStep } from '../common/YieldApproveStep';
-import { YieldApprovedAmountCard } from '../common/YieldApprovedAmountCard';
-import { YieldDisabledBanner } from '../common/YieldDisabledBanner';
-import { YieldFlowCompleteDeposit } from '../common/YieldFlowCompleteDeposit';
-import { YieldFlowStepList } from '../common/YieldFlowStepList';
-import { YieldWrapStep } from '../common/YieldWrapStep';
+import { YieldActionStep } from '../../common/YieldActionStep';
+import { YieldApproveModal } from '../../common/YieldApproveModal';
+import { YieldApproveStep } from '../../common/YieldApproveStep';
+import { YieldApprovedAmountCard } from '../../common/YieldApprovedAmountCard';
+import { YieldDisabledBanner } from '../../common/YieldDisabledBanner';
+import { YieldFlowCompleteDeposit } from '../../common/YieldFlowCompleteDeposit';
+import { YieldFlowStepList } from '../../common/YieldFlowStepList';
+import { YieldWrapStep } from '../../common/YieldWrapStep';
+import { useYieldDepositContext } from '../hooks/useYieldDepositContext';
+import { ActionStepWarnings } from './ActionStepWarnings/ActionStepWarnings';
+import { ApproveStepWarnings } from './ApproveStepWarnings/ApproveStepWarnings';
+import { WrapStepWarnings } from './WrapStepWarnings/WrapStepWarnings';
+import { useModifyApprovalHandler } from './hooks/useModifyApprovalHandler';
 
 export const YieldDepositForm = () => {
     const { analytics } = useServices(injectDesktopAnalytics);
-    const { CryptoAmountFormatter } = useFormatters();
 
     const {
         account,
@@ -51,7 +48,6 @@ export const YieldDepositForm = () => {
         canRevokeAllowance,
         hasWrappedTokenBalance,
         amountIssues,
-        gasReserve,
         nativeFeeStatus,
         isApprovalInsufficient,
         isSubmittingApprove,
@@ -63,7 +59,6 @@ export const YieldDepositForm = () => {
         skipApprove,
         submitAction,
         revokeAllowance,
-        enterModifyApproval,
         handleApproveModalCancel,
         handleApproveSuccessTxid,
         openPendingTransaction,
@@ -72,6 +67,7 @@ export const YieldDepositForm = () => {
         setMaxAmount,
         flow,
     } = useYieldDepositContext();
+    const handleOnModify = useModifyApprovalHandler();
 
     useFetchFees({ networkSymbol: account.symbol });
 
@@ -98,94 +94,9 @@ export const YieldDepositForm = () => {
     });
     const hasAllowanceError = allowanceStatus === 'error';
     const isAmountEmpty = amountIssues.includes('amount-empty');
-    const isAmountTooHigh = amountIssues.includes('amount-too-high');
     const isAmountInvalidDecimals = amountIssues.includes('amount-invalid-decimals');
     const hasBlockingAmountIssue = amountIssues.length > 0;
-
-    const shouldCheckWrapAmount = !isAmountInvalidDecimals && !wrapPendingTransaction;
-    const shouldCheckApproveAmount = !isAmountInvalidDecimals && !approvalPendingTransaction;
-    const shouldCheckDepositAmount = !isAmountInvalidDecimals && !depositPendingTransaction;
-
     const isNativeFeeInsufficient = nativeFeeStatus === 'insufficient';
-
-    const formatReserve = (reserve: string) =>
-        CryptoAmountFormatter.format(reserve, {
-            symbol: account.symbol,
-            isBalance: true,
-            withSymbol: false,
-        });
-    // The wrap step blocks unless the balance exceeds the recommended reserve, the later steps
-    // only below the minimum one, so each quotes the threshold that blocks it.
-    const blockingReserve =
-        flow.currentStep === 'wrap' ? gasReserve.recommended : gasReserve.minimum;
-
-    const insufficientFeeReserve = isNativeFeeInsufficient
-        ? { amount: formatReserve(blockingReserve), nativeSymbol }
-        : undefined;
-
-    const feeReserveTopUpRecommendation =
-        nativeFeeStatus === 'below-recommended'
-            ? { amount: formatReserve(gasReserve.recommended), nativeSymbol }
-            : undefined;
-
-    // Max keeps the recommended reserve aside and says so; wrapping into it manually stays
-    // allowed with a recommendation, while a balance that does not exceed the reserve blocks the
-    // step outright. `isAmountTooHigh` only fires above the full balance, which the status
-    // already excludes.
-    const wrapReserveStatus =
-        flow.currentStep === 'wrap' && shouldCheckWrapAmount
-            ? getWrapReserveStatus({
-                  amountInput: liveAmount,
-                  nativeFormattedBalance: account.formattedBalance,
-                  reserve: gasReserve.recommended,
-              })
-            : 'none';
-
-    const wrapReserveNotice = { amount: formatReserve(gasReserve.recommended), nativeSymbol };
-
-    const renderWrapWarning = () => {
-        if (!wrapPendingTransaction && insufficientFeeReserve) {
-            return <YieldActionStepWarning insufficientFeeReserve={insufficientFeeReserve} />;
-        }
-
-        if (shouldCheckWrapAmount && isAmountTooHigh) {
-            return <YieldActionStepWarning isInsufficientFunds />;
-        }
-
-        if (wrapReserveStatus === 'kept') {
-            return <YieldActionStepWarning reserveKept={wrapReserveNotice} />;
-        }
-
-        if (wrapReserveStatus === 'below') {
-            return <YieldActionStepWarning reserveRecommendation={wrapReserveNotice} />;
-        }
-
-        return null;
-    };
-
-    const renderApproveWarning = () => {
-        if (approvalPendingTransaction) {
-            return undefined;
-        }
-
-        if (insufficientFeeReserve) {
-            return <YieldActionStepWarning insufficientFeeReserve={insufficientFeeReserve} />;
-        }
-
-        if (shouldCheckApproveAmount && isAmountTooHigh) {
-            return <YieldActionStepWarning isApproveOverBalance />;
-        }
-
-        if (feeReserveTopUpRecommendation) {
-            return (
-                <YieldActionStepWarning
-                    feeReserveTopUpRecommendation={feeReserveTopUpRecommendation}
-                />
-            );
-        }
-
-        return undefined;
-    };
 
     const handleOnApprovalSubmit = () => {
         analytics.report({
@@ -227,20 +138,6 @@ export const YieldDepositForm = () => {
         });
 
         revokeAllowance();
-    };
-
-    const handleOnModify = () => {
-        analytics.report({
-            type: events.yieldDepositEvent.name,
-            payload: {
-                type: 'modify-allowance',
-                action: 'continue',
-                networkSymbol: token.networkSymbol,
-                vaultId: vault.id,
-            },
-        });
-
-        enterModifyApproval();
     };
 
     const handleOnDeposit = () => {
@@ -390,7 +287,7 @@ export const YieldDepositForm = () => {
                                                 hasBlockingAmountIssue ||
                                                 isNativeFeeInsufficient
                                             }
-                                            warning={renderWrapWarning()}
+                                            warning={<WrapStepWarnings />}
                                             pendingTransaction={wrapPendingTransaction}
                                             fiatToggle={fiatToggle}
                                             onMaxClick={handleMaxClick}
@@ -434,7 +331,7 @@ export const YieldDepositForm = () => {
                                         hasApprovedAmountError={hasAllowanceError}
                                         approvalAction={approvalAction}
                                         canRevokeAllowance={canRevokeAllowance}
-                                        warning={renderApproveWarning()}
+                                        warning={<ApproveStepWarnings />}
                                         isDisabled={
                                             isAmountEmpty ||
                                             isAmountInvalidDecimals ||
@@ -481,19 +378,7 @@ export const YieldDepositForm = () => {
                                                 symbol={token.symbol}
                                             />
                                         }
-                                        warning={
-                                            shouldCheckDepositAmount ? (
-                                                <YieldActionStepWarning
-                                                    isInsufficientFunds={isAmountTooHigh}
-                                                    isApprovalInsufficient={isApprovalInsufficient}
-                                                    insufficientFeeReserve={insufficientFeeReserve}
-                                                    feeReserveTopUpRecommendation={
-                                                        feeReserveTopUpRecommendation
-                                                    }
-                                                    onModifyApproval={handleOnModify}
-                                                />
-                                            ) : undefined
-                                        }
+                                        warning={<ActionStepWarnings />}
                                         isDisabled={
                                             hasBlockingAmountIssue ||
                                             isApprovalInsufficient ||
