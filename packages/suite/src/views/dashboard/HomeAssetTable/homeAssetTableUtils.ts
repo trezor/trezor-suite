@@ -11,6 +11,18 @@ import { BigNumber } from '@trezor/utils';
 
 export type HomeAssetGrouping = 'default' | 'networks';
 
+export type HomeAssetArrangement = {
+    grouping: HomeAssetGrouping;
+    areSmallBalancesShown: boolean;
+};
+
+export const DEFAULT_HOME_ASSET_ARRANGEMENT: HomeAssetArrangement = {
+    grouping: 'default',
+    areSmallBalancesShown: true,
+};
+
+export const HOME_ASSET_COLLAPSED_ROW_COUNT = 25;
+
 export const HOME_ASSET_CELL_PADDING = {
     first: { vertical: 12, left: 20, right: 20 },
     last: { vertical: 12, left: 20, right: 20 },

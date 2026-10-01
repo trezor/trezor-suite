@@ -1793,6 +1793,10 @@ export const messages = defineMessages({
         defaultMessage: 'By networks',
         id: 'TR_HOME_ASSET_GROUPING_NETWORKS',
     },
+    TR_HOME_ASSET_SMALL_BALANCES: {
+        defaultMessage: 'Show small balances',
+        id: 'TR_HOME_ASSET_SMALL_BALANCES',
+    },
     TR_HOME_ASSET_DUST_BALANCE: {
         defaultMessage: 'Dust balance',
         id: 'TR_HOME_ASSET_DUST_BALANCE',

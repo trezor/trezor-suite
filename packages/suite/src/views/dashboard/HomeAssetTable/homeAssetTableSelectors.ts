@@ -24,6 +24,7 @@ import { type StaticSessionId } from '@trezor/device-utils';
 import { BigNumber } from '@trezor/utils';
 
 import {
+    type HomeAssetArrangement,
     type HomeAssetGrouping,
     getAssetDisplaySymbol,
     sumAssetAccounts,
@@ -303,7 +304,7 @@ export type HomeAssetSection = {
     rows: readonly AssetAccounts[];
 };
 
-const selectPricedRows = createMemoizedSelector(
+const selectLargeRows = createMemoizedSelector(
     [selectHomeAssetRows, selectAssetBalances, selectAssetFiatValues],
     (rows, balances, fiatValues): readonly AssetAccounts[] =>
         returnStableArrayIfEmpty(
@@ -319,35 +320,36 @@ const selectPricedRows = createMemoizedSelector(
     { memoizeOptions: { resultEqualityCheck: shallowEqual } },
 );
 
-export const selectHomeAssetDustRows = createMemoizedSelector(
-    [selectHomeAssetRows, selectAssetBalances, selectAssetFiatValues],
-    (rows, balances, fiatValues): readonly AssetAccounts[] =>
-        returnStableArrayIfEmpty(
-            rows.filter(assetAccounts =>
-                isDustAsset(
-                    assetAccounts,
-                    balances.get(assetAccounts),
-                    fiatValues.get(assetAccounts),
-                ),
-            ),
-        ),
-    { memoizeOptions: { resultEqualityCheck: shallowEqual } },
-);
+type RowsSelector = typeof selectHomeAssetRows;
 
-const selectDefaultSections = createMemoizedSelector(
-    [selectPricedRows],
-    (rows): readonly HomeAssetSection[] => [{ key: 'all', heading: undefined, rows }],
-);
+const toDefaultSections = (selectRows: RowsSelector) =>
+    createMemoizedSelector([selectRows], (rows): readonly HomeAssetSection[] => [
+        { key: 'all', heading: undefined, rows },
+    ]);
 
-const selectNetworkSections = createMemoizedSelector(
-    [selectPricedRows, selectAssetFiatValues],
-    (rows, fiatValues): readonly HomeAssetSection[] =>
-        groupAssetRowsByNetwork(rows, fiatValues).map(group => ({
-            key: group.symbol,
-            heading: { name: group.name, fiatValue: group.fiatValue },
-            rows: group.rows,
-        })),
-);
+const toNetworkSections = (selectRows: RowsSelector) =>
+    createMemoizedSelector(
+        [selectRows, selectAssetFiatValues],
+        (rows, fiatValues): readonly HomeAssetSection[] =>
+            groupAssetRowsByNetwork(rows, fiatValues).map(group => ({
+                key: group.symbol,
+                heading: { name: group.name, fiatValue: group.fiatValue },
+                rows: group.rows,
+            })),
+    );
 
-export const selectHomeAssetSections = (grouping: HomeAssetGrouping) =>
-    grouping === 'networks' ? selectNetworkSections : selectDefaultSections;
+const sectionSelectors = {
+    default: {
+        all: toDefaultSections(selectHomeAssetRows),
+        large: toDefaultSections(selectLargeRows),
+    },
+    networks: {
+        all: toNetworkSections(selectHomeAssetRows),
+        large: toNetworkSections(selectLargeRows),
+    },
+} satisfies Record<HomeAssetGrouping, Record<string, unknown>>;
+
+export const selectHomeAssetSections = ({
+    grouping,
+    areSmallBalancesShown,
+}: HomeAssetArrangement) => sectionSelectors[grouping][areSmallBalancesShown ? 'all' : 'large'];

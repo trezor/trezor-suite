@@ -5,46 +5,36 @@ import { gotoThunk } from '@suite/router';
 import { useServices } from '@suite-common/dependency-injection';
 import { injectDispatch } from '@suite-common/redux-utils';
 import {
-    Button,
     GhostContainer,
     Icon,
     Menu,
     Popover,
     type PopoverRef,
     Row,
+    Switch,
 } from '@trezor/components';
-import { CaretRightIcon, CheckIcon, FunnelSimpleIcon, XIcon } from '@trezor/icons';
+import { CaretRightIcon, CheckIcon, FunnelSimpleIcon } from '@trezor/icons';
 
-import { type HomeAssetGrouping } from './homeAssetTableUtils';
+import { type HomeAssetArrangement, type HomeAssetGrouping } from './homeAssetTableUtils';
 
 type HomeAssetTableFilterProps = {
-    grouping: HomeAssetGrouping;
-    onChange: (grouping: HomeAssetGrouping) => void;
+    arrangement: HomeAssetArrangement;
+    onChange: (arrangement: HomeAssetArrangement) => void;
 };
 
-export const HomeAssetTableFilter = ({ grouping, onChange }: HomeAssetTableFilterProps) => {
+export const HomeAssetTableFilter = ({ arrangement, onChange }: HomeAssetTableFilterProps) => {
     const popoverRef = useRef<PopoverRef>(null);
     const { dispatch } = useServices(injectDispatch);
 
-    if (grouping === 'networks') {
-        return (
-            <Button
-                size="small"
-                intent="info"
-                priority="secondary"
-                iconRight={XIcon}
-                onClick={() => onChange('default')}
-                data-testid="@dashboard/home-asset/grouping/clear"
-            >
-                <Translation id="TR_HOME_ASSET_GROUPING_NETWORKS" />
-            </Button>
-        );
-    }
+    const { grouping, areSmallBalancesShown } = arrangement;
 
     const choose = (chosen: HomeAssetGrouping) => {
-        onChange(chosen);
+        onChange({ ...arrangement, grouping: chosen });
         popoverRef.current?.close();
     };
+
+    const toggleSmallBalances = () =>
+        onChange({ ...arrangement, areSmallBalancesShown: !areSmallBalancesShown });
 
     return (
         <Popover
@@ -56,14 +46,30 @@ export const HomeAssetTableFilter = ({ grouping, onChange }: HomeAssetTableFilte
                     items={[
                         {
                             label: <Translation id="TR_HOME_ASSET_GROUPING_DEFAULT" />,
-                            iconRight: CheckIcon,
+                            iconRight: grouping === 'default' ? CheckIcon : undefined,
                             onClick: () => choose('default'),
                             'data-testid': '@dashboard/home-asset/grouping/default',
                         },
                         {
                             label: <Translation id="TR_HOME_ASSET_GROUPING_NETWORKS" />,
+                            iconRight: grouping === 'networks' ? CheckIcon : undefined,
                             onClick: () => choose('networks'),
                             'data-testid': '@dashboard/home-asset/grouping/networks',
+                        },
+                        {
+                            label: <Translation id="TR_HOME_ASSET_SMALL_BALANCES" />,
+                            elementRight: (
+                                <Row pointerEvents="none">
+                                    <Switch
+                                        size="small"
+                                        isChecked={areSmallBalancesShown}
+                                        data-testid="@dashboard/home-asset/small-balances"
+                                    />
+                                </Row>
+                            ),
+                            hasSeparatorBefore: true,
+                            closeOnClick: false,
+                            onClick: toggleSmallBalances,
                         },
                         {
                             label: <Translation id="TR_HIDDEN_TOKENS" />,
@@ -82,7 +88,11 @@ export const HomeAssetTableFilter = ({ grouping, onChange }: HomeAssetTableFilte
                 borderRadius={6}
                 data-testid="@dashboard/home-asset/grouping"
             >
-                <Icon as={FunnelSimpleIcon} size={16} intent="neutral" priority="secondary" />
+                <Icon
+                    as={FunnelSimpleIcon}
+                    size={16}
+                    color={grouping === 'networks' ? 'contentInfo' : 'contentPrimary'}
+                />
             </GhostContainer>
         </Popover>
     );
@@ -91,11 +101,11 @@ export const HomeAssetTableFilter = ({ grouping, onChange }: HomeAssetTableFilte
 type HomeAssetTableFilterHeaderProps = HomeAssetTableFilterProps;
 
 export const HomeAssetTableFilterHeader = ({
-    grouping,
+    arrangement,
     onChange,
 }: HomeAssetTableFilterHeaderProps) => (
     <Row gap={8} alignItems="center">
         <Translation id="TR_ASSET" />
-        <HomeAssetTableFilter grouping={grouping} onChange={onChange} />
+        <HomeAssetTableFilter arrangement={arrangement} onChange={onChange} />
     </Row>
 );
