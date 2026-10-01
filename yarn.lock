@@ -17091,18 +17091,18 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@tanstack/eslint-plugin-query@npm:5.101.4":
-  version: 5.101.4
-  resolution: "@tanstack/eslint-plugin-query@npm:5.101.4"
+"@tanstack/eslint-plugin-query@npm:5.103.1":
+  version: 5.103.1
+  resolution: "@tanstack/eslint-plugin-query@npm:5.103.1"
   dependencies:
     "@typescript-eslint/utils": "npm:^8.58.1"
   peerDependencies:
     eslint: ^8.57.0 || ^9.0.0 || ^10.0.0
-    typescript: ^5.4.0 || ^6.0.0
+    typescript: ^5.6.0 || ^6.0.0 || ^7.0.0
   peerDependenciesMeta:
     typescript:
       optional: true
-  checksum: 10/93f499c2d9a99187019462891896750103abfffcc1ffe11f675f2d9fa5125ffef643c389d47ee74c9a7fc7bcf288ec96ee5b10eac37f82b31041700080a3c4c0
+  checksum: 10/e6a38cbacbab0814f72e799d5046043269d154f6f9f055f8c9bdaed9b5624fa3b87561abf28e700c1b1f996d3f5d5e4bacf4372f1f7c008dd61f6f46cc19f592
   languageName: node
   linkType: hard
 
@@ -17920,7 +17920,7 @@ __metadata:
   dependencies:
     "@eslint/compat": "npm:^2.1.0"
     "@eslint/js": "npm:^10.0.1"
-    "@tanstack/eslint-plugin-query": "npm:5.101.4"
+    "@tanstack/eslint-plugin-query": "npm:5.103.1"
     eslint: "npm:^10.8.1"
     eslint-plugin-import: "npm:^2.32.0"
     eslint-plugin-jest: "npm:^29.16.1"
