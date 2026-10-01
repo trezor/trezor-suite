@@ -244,6 +244,7 @@
         { "path": "../dom-utils" },
         { "path": "../env-utils" },
         { "path": "../icons" },
+        { "path": "../logger" },
         {
             "path": "../../networks/ethereum/network-ethereum-suite-common"
         },

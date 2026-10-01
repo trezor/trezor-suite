@@ -26,9 +26,8 @@ import {
     type CancelParams,
     createCoreCallCancelMessage,
 } from '@trezor/connect-common/src/utils/cancelParams';
-import { noopLogger } from '@trezor/connect-common/src/utils/debug';
 import { createUUIDDeferredManager } from '@trezor/connect-common/src/utils/deferred';
-import type { Logger } from '@trezor/logger';
+import { type Logger, noopLogger } from '@trezor/logger';
 import { type AbstractTransportParams, TRANSPORT, type Transport } from '@trezor/transport-common';
 import { cloneObject } from '@trezor/utils';
 

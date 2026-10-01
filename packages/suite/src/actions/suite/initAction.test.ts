@@ -76,7 +76,7 @@ import {
     walletConnectInitialState,
 } from '@suite-common/walletconnect';
 import TrezorConnect from '@trezor/connect';
-import { noopCreateLogger } from '@trezor/connect-common';
+import { noopCreateLogger } from '@trezor/logger';
 
 import { SUITE } from 'src/actions/suite/constants';
 import {

@@ -27,7 +27,7 @@ import { type NetworkSymbol, asNetworkSymbol, getNetwork } from '@suite-common/w
 import { initialWalletSettingsState } from '@suite-common/wallet-core';
 import { type SelectedAccountLoaded } from '@suite-common/wallet-types';
 import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
-import { noopCreateLogger } from '@trezor/connect-common';
+import { noopCreateLogger } from '@trezor/logger';
 
 import { type ShowXpubThunkState } from 'src/actions/wallet/publicKeyActions';
 

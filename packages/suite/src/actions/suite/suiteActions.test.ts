@@ -49,7 +49,7 @@ import {
 } from '@suite-common/wallet-core';
 import { type GetTradedAccountKeysDep } from '@suite-common/wallet-types';
 import { mockGetTradedAccountKeys } from '@suite-common/wallet-types/mocks';
-import { noopCreateLogger } from '@trezor/connect-common';
+import { noopCreateLogger } from '@trezor/logger';
 
 import { markDeviceAsRecentlyConnectedThunk } from 'src/actions/wallet/markDeviceAsRecentlyConnectedThunk';
 import suiteReducer, {
