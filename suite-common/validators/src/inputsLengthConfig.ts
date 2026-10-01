@@ -18,6 +18,4 @@ export const formInputsMaxLength = {
     btcLocktime: 10, // max: 4294967294
     xrpDestinationTag: 10, // max: 4294967295
     ethereumNonce: 20, // max uint64: 18446744073709551615
-
-    stellarTextMemo: 28, // https://developers.stellar.org/docs/learn/encyclopedia/transactions-specialized/memos
 } as const;
