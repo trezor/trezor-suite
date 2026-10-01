@@ -112,6 +112,14 @@ type GetNextRequestedTransactionCountParams = {
  * Preserve the outstanding target, but start from the visible count when cached transfers or
  * the last fetched account page have already exceeded it.
  */
+/**
+ * The page that starts where the loaded list ends. Widening a direct-RPC history window can refill a
+ * partial last page, or come back empty, so this derives from what is loaded rather than the last
+ * page requested.
+ */
+export const getOlderHistoryPage = (loadedCount: number, pageSize: number) =>
+    Math.floor(loadedCount / pageSize) + 1;
+
 export const getNextRequestedTransactionCount = ({
     requestedCount,
     visibleCount,

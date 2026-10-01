@@ -2217,6 +2217,7 @@ export const messages = {
         receive: 'Receive',
         send: 'Send',
         more: 'Load more',
+        loadOlder: 'Load older transactions',
         status: {
             pending: 'Pending',
             confirmed: 'Confirmed',

@@ -171,6 +171,15 @@ export const messages = defineMessages({
             'No transactions found. Still looking? Show suspicious transactions using the filter menu above. Stay cautious—some may be risky.',
         id: 'TR_NO_VISIBLE_TRANSACTIONS',
     },
+    TR_NO_RECENT_TRANSACTIONS: {
+        defaultMessage:
+            'No recent transactions. Only recent history is loaded by default; use the button below to load older transactions.',
+        id: 'TR_NO_RECENT_TRANSACTIONS',
+    },
+    TR_HISTORY_COVERED_SINCE: {
+        defaultMessage: 'Showing transactions since {date}',
+        id: 'TR_HISTORY_COVERED_SINCE',
+    },
     TR_ACCOUNT_PASSPHRASE_DISABLED: {
         defaultMessage: 'Change passphrase settings to use this device',
         id: 'TR_ACCOUNT_PASSPHRASE_DISABLED',
@@ -6501,6 +6510,10 @@ export const messages = defineMessages({
     TR_ALL_TRANSACTIONS: {
         id: 'TR_ALL_TRANSACTIONS',
         defaultMessage: 'Transactions',
+    },
+    TR_LOAD_OLDER_TRANSACTIONS: {
+        id: 'TR_LOAD_OLDER_TRANSACTIONS',
+        defaultMessage: 'Load older transactions',
     },
     TR_TOKEN: {
         id: 'TR_TOKEN',

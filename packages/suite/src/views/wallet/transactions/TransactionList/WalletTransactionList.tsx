@@ -6,6 +6,7 @@ import {
     selectAreAllTransactionsLoaded,
     selectIsHideSuspiciousTransactions,
 } from '@suite-common/wallet-core';
+import { getOlderHistoryFrom, isDirectRpcHistoryUnscanned } from '@suite-common/wallet-utils';
 import { Card, Column, Text } from '@trezor/components';
 
 import { useSelector } from 'src/hooks/suite';
@@ -14,15 +15,21 @@ import { type Account, type WalletAccountTransaction } from 'src/types/wallet';
 import { TransactionList } from './TransactionList';
 import { useVisibleTransactions } from './useFetchTransactions';
 
-export const NoVisibleTransactions = () => (
+type EmptyListMessageProps = {
+    id: 'TR_NO_VISIBLE_TRANSACTIONS' | 'TR_NO_RECENT_TRANSACTIONS';
+};
+
+const EmptyListMessage = ({ id }: EmptyListMessageProps) => (
     <Card>
         <Column alignItems="center">
             <Text typographyStyle="body-sm" intent="neutral" priority="secondary">
-                <Translation id="TR_NO_VISIBLE_TRANSACTIONS" />
+                <Translation id={id} />
             </Text>
         </Column>
     </Card>
 );
+
+export const NoVisibleTransactions = () => <EmptyListMessage id="TR_NO_VISIBLE_TRANSACTIONS" />;
 
 interface TransactionListProps {
     symbol: WalletAccountTransaction['symbol'];
@@ -53,17 +60,28 @@ export const WalletTransactionList = ({
         enableFiltering: fraudTransactionPossible,
     });
 
+    // A direct-RPC backend only looked at a recent window, so finding nothing there is not the same
+    // as the account having no transactions.
+    const isRecentWindowEmpty =
+        result.allTransactions.length === 0 && getOlderHistoryFrom(account) !== undefined;
+
     return (
         <TransactionList
             key={account.key} // NOTE: ensure that transaction list is unmounted when account key changes
             areAllTransactionsLoaded={areAllTransactionsLoaded}
             customPageFetching={fraudTransactionPossible}
-            customNoTransactions={<NoVisibleTransactions />}
+            customNoTransactions={
+                isRecentWindowEmpty ? (
+                    <EmptyListMessage id="TR_NO_RECENT_TRANSACTIONS" />
+                ) : (
+                    <NoVisibleTransactions />
+                )
+            }
             allTransactions={result.allTransactions}
             transactions={result.visibleTransactions}
             symbol={symbol}
             account={account}
-            isLoading={result.isFetching}
+            isLoading={result.isFetching || isDirectRpcHistoryUnscanned(account)}
             customTotalItems={customTotalItems ?? result.visibleTotal}
             isExportable={isExportable}
             onPageRequested={setVisiblePages}
