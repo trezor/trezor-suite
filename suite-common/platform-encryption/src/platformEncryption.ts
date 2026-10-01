@@ -27,15 +27,15 @@ export const DecryptionFailed = (): DecryptionFailed => ({
 export type EncryptionError = EncryptionUnavailable;
 export type DecryptionError = EncryptionUnavailable | DecryptionFailed;
 
-export type EncryptParams<T extends EncryptableBranded> = { value: T };
-
-export type DecryptParams<T extends EncryptableBranded> = { value: EncryptedHex<T> };
-
 export type PlatformEncryptionDep = { platformEncryption: PlatformEncryption };
 
 export const injectPlatformEncryption = (services: any): PlatformEncryptionDep => ({
     platformEncryption: services.platformEncryption,
 });
+
+export type EncryptParams<T extends EncryptableBranded> = { value: T };
+
+export type DecryptParams<T extends EncryptableBranded> = { value: EncryptedHex<T> };
 
 /** @serviceContract */
 export interface PlatformEncryption {
