@@ -1,5 +1,4 @@
-import { yup } from '../config';
-import { formInputsMaxLength } from '../inputsLengthConfig';
+import { formInputsMaxLength, yup } from '@suite-common/validators';
 
 export const pinFormSchema = yup.object({
     pin: yup.string().required('Empty pin.').max(formInputsMaxLength.pin),
