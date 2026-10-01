@@ -3,6 +3,8 @@ import { useSelector } from 'react-redux';
 import { selectBaseCurrency, selectIsBaseCurrencyInSats } from '@suite-common/wallet-core';
 import { selectLocale } from '@suite-native/intl';
 
+import { getFormattedCurrencySymbol } from '../utils';
+
 const MAX_DECIMALS_LENGTH = 2;
 
 const getFormattedWholeNumber = ({ value, locale }: { value: string; locale: string }) => {
@@ -39,35 +41,6 @@ const getFormattedDecimalNumber = ({
     const decimalSeparator = getDecimalSeparator(locale);
 
     return `${decimalSeparator}${value.slice(0, MAX_DECIMALS_LENGTH)}`;
-};
-
-const getFormattedCurrencySymbol = ({
-    locale,
-    currency,
-    isSatsValue,
-}: {
-    locale: string;
-    currency: string;
-    isSatsValue: boolean;
-}) => {
-    if (isSatsValue) {
-        return 'sat';
-    }
-
-    const formatter = new Intl.NumberFormat(locale, {
-        style: 'currency',
-        currencyDisplay: 'symbol',
-        currency,
-        maximumFractionDigits: 0,
-    });
-
-    // we can not use formatter.formatToParts because it is not supported on iOS
-    // for this reason we need to use a regex on a dummy 0 value to get the currency symbol
-    const formattedValue = formatter.format(0);
-    const regex = /[\s0]+/g;
-    const cleanedCurrencySymbol = formattedValue.replace(regex, '');
-
-    return cleanedCurrencySymbol;
 };
 
 export const useFormattedGraphHeaderValues = (value: string = '0') => {

@@ -17,6 +17,10 @@ import { SellCard } from './SellCard';
 import { useSellForm } from '../../hooks/sell/useSellForm';
 import { createTradingPreloadedState } from '../../test-utils/tradingTestUtils';
 
+jest.mock('../../hooks/general/useAmountInputDecimals', () => ({
+    useAmountInputDecimals: () => 6,
+}));
+
 jest.mock('@react-navigation/native', () => ({
     ...jest.requireActual('@react-navigation/native'),
     useRoute: () => ({ params: {} }),
@@ -75,7 +79,9 @@ describe('SellCard', () => {
         expect(
             getByText(getTranslation('moduleTrading.selectFiat.buy.amountLabel')),
         ).toBeOnTheScreen();
-        expect(getByText('$99.00')).toBeOnTheScreen();
+        expect(
+            getByLabelText(getTranslation('moduleTrading.tradingScreen.baseCurrencyAmountLabel')),
+        ).toHaveDisplayValue('99');
         expect(
             getByLabelText(getTranslation('moduleTrading.selectCoin.buttonTitle')),
         ).toHaveTextContent(/USDC/);
