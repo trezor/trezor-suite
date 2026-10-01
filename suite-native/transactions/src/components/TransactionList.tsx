@@ -13,11 +13,17 @@ import {
     fetchAndUpdateAccountThunk,
     fetchTransactionsPageThunk,
     selectAccountTransactionsFetchStatus,
+    selectAccountTransactionsWithNulls,
     selectAreAllAccountTransactionsLoaded,
     selectIsPageAlreadyFetched,
 } from '@suite-common/wallet-core';
 import { type Account, type AccountKey, type TokenAddress } from '@suite-common/wallet-types';
-import { type MonthKey, groupTransactionsByDate, isPending } from '@suite-common/wallet-utils';
+import {
+    type MonthKey,
+    getOlderHistoryFrom,
+    groupTransactionsByDate,
+    isPending,
+} from '@suite-common/wallet-utils';
 import { Box } from '@suite-native/atoms';
 import { useScrollDivider } from '@suite-native/scrollview';
 import {
@@ -37,7 +43,7 @@ import { TransactionListItem } from './TransactionListItem';
 import { TransactionsEmptyState } from './TransactionsEmptyState';
 import { TransactionsListFooter } from './TransactionsListFooter';
 import { useFetchMissingTransactionFiatRates } from '../hooks/useFetchMissingTransactionFiatRates';
-import { getNextRequestedTransactionCount } from '../utils';
+import { getNextRequestedTransactionCount, getOlderHistoryPage } from '../utils';
 
 type RenderSectionHeaderParams = {
     section: {
@@ -190,33 +196,51 @@ export const TransactionList = ({
         (!tokenContract || page < Math.ceil(account.history.total / txnsPerPage));
     const shouldDeferEmptyState =
         (!!tokenContract || filter === 'staking' || filter === 'yield') && hasMoreTransactions;
+    // Direct-RPC history ends at the scanned window, not the first transaction. Reaching past it is
+    // left to the button, as auto-fill would keep scanning back for a token with no transfers.
+    const olderHistoryFrom =
+        isInitialPageLoaded && !hasMoreTransactions ? getOlderHistoryFrom(account) : undefined;
+    const loadedTransactionCount = useSelector(
+        (state: TransactionsRootState) =>
+            selectAccountTransactionsWithNulls(state, accountKey).length,
+    );
 
     const { scrollDivider, handleScroll } = useScrollDivider();
 
-    const handleOnLoadMore = useCallback(async () => {
-        // Initial loading, the button, and auto-fill share this lock before React rerenders.
-        if (isFetchingPageRef.current) return;
-        isFetchingPageRef.current = true;
-        const requestedPage = isInitialPageLoaded ? page + 1 : 1;
+    const fetchPage = useCallback(
+        async (requestedPage: number, from?: number) => {
+            // Initial loading, the button, and auto-fill share this lock before React rerenders.
+            if (isFetchingPageRef.current) return;
+            isFetchingPageRef.current = true;
 
-        try {
-            await dispatch(
-                fetchTransactionsPageThunk({
-                    accountKey,
-                    page: requestedPage,
-                    perPage: txnsPerPage,
-                }),
-            ).unwrap();
-            // Record the page this request fetched, rather than incrementing potentially newer state.
-            setPage(requestedPage);
-            // A successful partial page also unlocks pagination; shared idle status does not.
-            setIsInitialPageLoaded(true);
-        } catch {
-            // TODO handle error state (show retry button or something
-        } finally {
-            isFetchingPageRef.current = false;
-        }
-    }, [dispatch, accountKey, page, txnsPerPage, isInitialPageLoaded]);
+            try {
+                await dispatch(
+                    fetchTransactionsPageThunk({
+                        accountKey,
+                        page: requestedPage,
+                        perPage: txnsPerPage,
+                        // A widened window changes what the page holds, so a cached copy is stale.
+                        forceRefetch: from !== undefined,
+                        from,
+                    }),
+                ).unwrap();
+                // Record the page this request fetched, rather than incrementing potentially newer state.
+                setPage(requestedPage);
+                // A successful partial page also unlocks pagination; shared idle status does not.
+                setIsInitialPageLoaded(true);
+            } catch {
+                // TODO handle error state (show retry button or something
+            } finally {
+                isFetchingPageRef.current = false;
+            }
+        },
+        [dispatch, accountKey, txnsPerPage],
+    );
+
+    const handleOnLoadMore = useCallback(
+        () => fetchPage(isInitialPageLoaded ? page + 1 : 1),
+        [fetchPage, isInitialPageLoaded, page],
+    );
 
     useEffect(() => {
         if (!isInitialPageLoaded) {
@@ -316,7 +340,11 @@ export const TransactionList = ({
                 }),
             );
         }
-        handleOnLoadMore();
+        if (olderHistoryFrom !== undefined) {
+            fetchPage(getOlderHistoryPage(loadedTransactionCount, txnsPerPage), olderHistoryFrom);
+        } else {
+            handleOnLoadMore();
+        }
     };
 
     useFetchMissingTransactionFiatRates({ accountKey, isEnabled: data.length > 0 });
@@ -370,7 +398,8 @@ export const TransactionList = ({
                 ListHeaderComponent={listHeaderComponent}
                 ListFooterComponent={
                     <TransactionsListFooter
-                        hasMoreTransactions={hasMoreTransactions}
+                        hasMoreTransactions={hasMoreTransactions || olderHistoryFrom !== undefined}
+                        isOlderHistory={olderHistoryFrom !== undefined}
                         isLoading={isLoadingTransactions || shouldLoadMoreTokenTransactions}
                         onButtonPress={handleOnLoadMorePress}
                     />

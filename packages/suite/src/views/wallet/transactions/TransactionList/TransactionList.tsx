@@ -16,6 +16,7 @@ import { useSelector } from 'src/hooks/suite';
 import { selectAccountLabelsForSearch } from 'src/selectors/suite/selectAccountLabelsForSearch';
 import { type Account, type WalletAccountTransaction } from 'src/types/wallet';
 
+import { LoadOlderHistory } from './LoadOlderHistory';
 import { NoSearchResults } from './NoSearchResults';
 import { SkeletonTransactionItem } from './SkeletonTransactionItem';
 import { TransactionGroupedList } from './TransactionGroupedList';
@@ -213,6 +214,8 @@ export const TransactionList = ({
                             ))}
                     </Column>
                 )}
+
+                <LoadOlderHistory account={account} loadedCount={allTransactions.length} />
 
                 {showPagination && (
                     <Pagination

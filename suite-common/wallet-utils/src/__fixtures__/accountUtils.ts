@@ -597,25 +597,27 @@ const usdcInfo = (balance: string): TokenInfo => ({
 const storedUsdc = (balance: string) =>
     mockAccountToken({ contract: USDC_CONTRACT, symbol: 'USDC', decimals: 6, balance });
 
-// A plain RPC node cannot count transactions, so total stays at -1 on both sides and only the
-// token list can give a token transfer away.
-const evmRpcHistory = { total: -1, unconfirmed: 0 };
+// The count covers only the scanned window, so an unchanged count on both sides leaves the token
+// list as the one thing that can give a token transfer away.
+const evmRpcHistory = { total: 3, unconfirmed: 0 };
+const unscannedHistory = { total: -1, unconfirmed: 0 };
 const evmAccount = (
     backendType: 'blockbook' | 'evm-rpc',
     tokens: AccountWithNetworkType<'ethereum'>['tokens'],
+    accountHistory = evmRpcHistory,
 ) =>
     ({
         ...mockWalletAccount({
             symbol: asNetworkSymbol('eth'),
             balance: '0',
-            history: evmRpcHistory,
+            history: accountHistory,
             tokens,
         }),
         misc: { nonce: '0' },
         backendType,
     }) as AccountWithNetworkType<'ethereum'>;
-const evmFreshInfo = (tokens: TokenInfo[] | undefined) =>
-    ({ balance: '0', history: evmRpcHistory, misc: { nonce: '0' }, tokens }) as AccountInfo;
+const evmFreshInfo = (tokens: TokenInfo[] | undefined, freshHistory = evmRpcHistory) =>
+    ({ balance: '0', history: freshHistory, misc: { nonce: '0' }, tokens }) as AccountInfo;
 
 const evmTokenCases = [
     {
@@ -647,6 +649,12 @@ const evmTokenCases = [
         account: evmAccount('evm-rpc', [storedUsdc('0')]),
         freshInfo: evmFreshInfo(undefined),
         result: false,
+    },
+    {
+        description: 'direct rpc: history never scanned, so its transactions were never fetched',
+        account: evmAccount('evm-rpc', [], unscannedHistory),
+        freshInfo: evmFreshInfo(undefined, unscannedHistory),
+        result: true,
     },
     {
         description: 'blockbook: token list is not compared',

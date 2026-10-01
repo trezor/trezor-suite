@@ -20,11 +20,13 @@ import {
     getAccountSpecific,
     getBip43Type,
     getNetworkAccountFeatures,
+    getOlderHistoryFrom,
     getUtxoFromSignedTransaction,
     getUtxoOutpoint,
     hasNetworkFeatures,
     haveTokenBalancesChanged,
     isAccountOutdated,
+    isDirectRpcHistoryUnscanned,
     isTestnet,
     sortByBIP44AddressIndex,
     sortByCoin,
@@ -573,6 +575,42 @@ describe(haveTokenBalancesChanged.name, () => {
 
     it('ignores a stored token at zero that is no longer listed', () => {
         expect(haveTokenBalancesChanged([], [stored('0')])).toBe(false);
+    });
+});
+
+describe(getOlderHistoryFrom.name, () => {
+    it('reads the next step back on a direct-RPC account', () => {
+        const account: Account = {
+            ...mockWalletAccount({ symbol: ethSymbol }, { misc: { olderHistoryFrom: 1000 } }),
+            backendType: 'evm-rpc',
+        };
+
+        expect(getOlderHistoryFrom(account)).toBe(1000);
+    });
+
+    it('offers nothing on a backend that serves the whole history', () => {
+        const account: Account = {
+            ...mockWalletAccount({ symbol: ethSymbol }, { misc: { olderHistoryFrom: 1000 } }),
+            backendType: 'blockbook',
+        };
+
+        expect(getOlderHistoryFrom(account)).toBeUndefined();
+    });
+});
+
+describe(isDirectRpcHistoryUnscanned.name, () => {
+    const withHistory = (backendType: 'evm-rpc' | 'blockbook', total: number): Account => ({
+        ...mockWalletAccount({ symbol: ethSymbol, history: { total, unconfirmed: 0 } }),
+        backendType,
+    });
+
+    it('is true until a direct-RPC backend has scanned the account', () => {
+        expect(isDirectRpcHistoryUnscanned(withHistory('evm-rpc', -1))).toBe(true);
+        expect(isDirectRpcHistoryUnscanned(withHistory('evm-rpc', 0))).toBe(false);
+    });
+
+    it('ignores backends that report a real count', () => {
+        expect(isDirectRpcHistoryUnscanned(withHistory('blockbook', -1))).toBe(false);
     });
 });
 

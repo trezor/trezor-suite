@@ -14,10 +14,13 @@ import {
     isCold,
     syncHistory,
 } from '../history';
+import { getBlockTimestamps } from '../history/blockTime';
+import { HISTORY_STEP_BLOCKS } from '../history/constants';
 import { mapGetAccountInfoResponse } from '../mappers/accountInfo';
 import { getStakingPoolData } from '../staking/poolData';
 import { getTokenCandidates, trackTokenContract } from '../tokens/candidates';
 import { UNKNOWN_TOKEN_METADATA } from '../tokens/constants';
+import { getKnownTokens } from '../tokens/knownTokens';
 import { getTokenInfo, getTokenInfos } from '../tokens/tokenInfo';
 import type { Request } from '../types';
 import { toHex } from '../utils/hex';
@@ -75,6 +78,33 @@ const getTokens = async (
     );
 };
 
+// An address whose only activity is receiving a known token has no balance, nonce or scanned
+// history, so a balance-only request would report it empty and cut account discovery short.
+const holdsKnownToken = async (
+    details: AccountInfoDetails,
+    client: PublicClient,
+    address: `0x${string}`,
+    { balance, nonce }: { balance: bigint; nonce: number },
+) => {
+    if (wantsTokens(details) || balance > 0n || nonce > 0) return false;
+
+    const known = await getKnownTokens(client);
+    if (!known.length) return false;
+
+    const tokens = await getTokenInfos(client, address, known);
+
+    return tokens.some(token => token.balance !== '0');
+};
+
+// Suite shows how far back the list reaches, so a step that found nothing still visibly moves.
+const getHistoryCoveredSince = async (client: PublicClient, history: DescriptorHistory) => {
+    if (isCold(history)) return undefined;
+
+    const timestamps = await getBlockTimestamps(client, [history.syncedFrom]);
+
+    return timestamps.get(history.syncedFrom);
+};
+
 export const getAccountInfo = async (
     request: Request<MessageTypes.GetAccountInfo>,
 ): Promise<Responses.GetAccountInfo> => {
@@ -85,25 +115,28 @@ export const getAccountInfo = async (
 
     const includeTransactions = wantsTransactions(payload.details);
 
-    const [balance, nonce, pendingNonce, stakingPools] = await Promise.all([
-        client.getBalance({ address }),
-        client.getTransactionCount({ address }),
-        client.getTransactionCount({ address, blockTag: 'pending' }),
-        getStakingPoolData(client, address),
+    // Started together so the balance reads and the history sync share their first batch instead
+    // of the scan waiting a round trip for balances it does not need.
+    const [[balance, nonce, pendingNonce, stakingPools], history] = await Promise.all([
+        Promise.all([
+            client.getBalance({ address }),
+            client.getTransactionCount({ address }),
+            client.getTransactionCount({ address, blockTag: 'pending' }),
+            getStakingPoolData(client, address),
+        ]),
+        // Balances alone answer what the account holds and whether it is empty, so a request that
+        // only wants those costs no log scan at all — which is what account discovery asks for.
+        includeTransactions
+            ? syncHistory({
+                  client,
+                  state,
+                  descriptor: payload.descriptor,
+                  fromBlock: payload.from,
+              })
+            : getDescriptorHistory(state, payload.descriptor),
     ]);
 
-    // Balances alone answer what the account holds and whether it is empty, so a request that only
-    // wants those costs no log scan at all — which is what account discovery asks for.
-    const history = includeTransactions
-        ? await syncHistory({
-              client,
-              state,
-              descriptor: payload.descriptor,
-              fromBlock: payload.from,
-          })
-        : getDescriptorHistory(state, payload.descriptor);
-
-    const [page, tokens] = await Promise.all([
+    const [page, tokens, historyCoveredSince, isKnownTokenHeld] = await Promise.all([
         includeTransactions
             ? getHistoryPage({
                   client,
@@ -115,7 +148,16 @@ export const getAccountInfo = async (
               })
             : undefined,
         getTokens(request, client, address, history),
+        getHistoryCoveredSince(client, history),
+        holdsKnownToken(payload.details, client, address, { balance, nonce }),
     ]);
+
+    // Only meaningful once something has been scanned, and only while the window has a floor left
+    // to move: at block 0 the account's whole history is already covered.
+    const olderHistoryFrom =
+        !isCold(history) && history.syncedFrom > 0
+            ? Math.max(0, history.syncedFrom - HISTORY_STEP_BLOCKS)
+            : undefined;
 
     return mapGetAccountInfoResponse({
         descriptor: payload.descriptor,
@@ -131,5 +173,8 @@ export const getAccountInfo = async (
         txids: page?.txids,
         transactions: page?.transactions,
         page: page?.page,
+        olderHistoryFrom,
+        historyCoveredSince,
+        holdsKnownToken: isKnownTokenHeld,
     });
 };
