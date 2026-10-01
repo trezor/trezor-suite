@@ -71,7 +71,7 @@ describe('BuyCard', () => {
         });
     });
 
-    it('should convert cryptoValue to the base unit before passing it to CryptoToFiatValueBadge when bitcoin amount unit is sats', async () => {
+    it('should display base currency amount of cryptoValue in sats', async () => {
         await act(() => {
             form.setValue('asset', btcAsset);
         });
@@ -82,11 +82,12 @@ describe('BuyCard', () => {
             form.setValue('cryptoValue', '1234567123456');
         });
 
-        const { getByText, queryByText } = await renderBuyCard({
+        const { getByLabelText } = await renderBuyCard({
             wallet: { settings: { bitcoinAmountUnit: PROTO.AmountUnit.SATOSHI } },
         });
 
-        expect(getByText('12345.67123456-bitcoin')).toBeOnTheScreen();
-        expect(queryByText('1234567123456-bitcoin')).toBeNull();
+        expect(
+            getByLabelText(getTranslation('moduleTrading.tradingScreen.baseCurrencyAmountLabel')),
+        ).toHaveDisplayValue('12.35');
     });
 });

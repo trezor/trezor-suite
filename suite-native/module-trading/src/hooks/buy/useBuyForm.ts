@@ -189,5 +189,6 @@ export const clearBuyFormQuoteData = (form: BuyFormType) => {
     form.setValue('quote', undefined);
     form.setValue('fiatValue', undefined, { shouldValidate: true });
     form.setValue('cryptoValue', undefined, { shouldValidate: true });
+    form.setValue('cryptoBaseCurrencyValue', undefined);
     form.setValue('generalAlert', undefined);
 };

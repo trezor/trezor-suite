@@ -17,7 +17,7 @@ import { TradingCardSection } from '../general/TradingCardSection';
 import { SellFiatCurrencyPicker } from './fiat/SellFiatCurrencyPicker';
 import { SellSendAccountCryptoBalance } from './send/SellSendAccountCryptoBalance';
 import { SellSendAssetPicker } from './send/SellSendAssetPicker';
-import { SellSendFiatAmountBadge } from './send/SellSendFiatAmountBadge';
+import { SellSendBaseCurrencyAmountInput } from './send/SellSendBaseCurrencyAmountInput';
 
 type SellCardProps = {
     isAmountInputActive: boolean;
@@ -58,7 +58,7 @@ export const SellCard = ({ isAmountInputActive, shouldAnimateEntering }: SellCar
             >
                 <SellSendAssetPicker />
                 <HStack justifyContent="space-between" alignItems="center" spacing="sp4">
-                    <SellSendFiatAmountBadge />
+                    <SellSendBaseCurrencyAmountInput />
                     <SellSendAccountCryptoBalance />
                 </HStack>
                 {symbol && shouldShowBanner && (

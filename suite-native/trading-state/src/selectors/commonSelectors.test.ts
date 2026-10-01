@@ -25,6 +25,7 @@ import { FeatureFlag, featureFlagsInitialState } from '@suite-native/feature-fla
 import { appSettingsInitialState } from '@suite-native/settings';
 import {
     btcAsset,
+    ethAsset,
     getBtcAccount,
     getBuyTrade,
     getCardanoAccount,
@@ -33,18 +34,17 @@ import {
     getInitializedTradingState,
     getSellTrade,
     getWalletState,
+    usdcAsset,
 } from '@suite-native/trading-fixtures';
-import { type TradeableAsset } from '@suite-native/trading-types';
 import { type StaticSessionId } from '@trezor/device-utils';
-import { BigNumber } from '@trezor/utils';
 
 import { type TradingRootState, tradingInitialState } from '../reducers';
 import {
     selectAccountLabelWithNetworkFallback,
     selectAccountsWithTokensToSellSectionListByTradingType,
     selectActiveTradingType,
-    selectAmountInBaseFiatCurrency,
     selectEnabledTradingTypes,
+    selectFiatRateByTradeableAsset,
     selectIsAmountInputActive,
     selectIsTradingBlacklisted,
     selectIsTradingBuyEnabled,
@@ -557,44 +557,28 @@ describe('commonSelectors', () => {
         });
     });
 
-    describe('selectAmountInBaseFiatCurrency', () => {
+    describe('selectFiatRateByTradeableAsset', () => {
         const getStateWithRates = () => ({
             wallet: getWalletState(),
         });
 
-        it('should return undefined when symbol is not recognized', () => {
-            expect(
-                selectAmountInBaseFiatCurrency(
-                    getStateWithRates(),
-                    {} as any as TradeableAsset,
-                    '100',
-                ),
-            ).toBeUndefined();
+        it('should return undefined when asset is not set', () => {
+            expect(selectFiatRateByTradeableAsset(getStateWithRates(), undefined)).toBeUndefined();
         });
 
         it('should return undefined when rate is missing', () => {
             const state = getStateWithRates();
             state.wallet.fiat.current = {};
 
-            expect(selectAmountInBaseFiatCurrency(state, btcAsset, '100')).toBeUndefined();
+            expect(selectFiatRateByTradeableAsset(state, btcAsset)).toBeUndefined();
         });
 
-        it('should return rate', () => {
-            expect(selectAmountInBaseFiatCurrency(getStateWithRates(), btcAsset, '100')).toEqual(
-                new BigNumber('0.1'),
-            );
+        it('should return rate of native asset in base currency', () => {
+            expect(selectFiatRateByTradeableAsset(getStateWithRates(), ethAsset)).toBe(1000);
         });
 
-        it('should return undefined for invalid amount', () => {
-            expect(
-                selectAmountInBaseFiatCurrency(getStateWithRates(), btcAsset, 'not a number'),
-            ).toBeUndefined();
-        });
-
-        it('should return 0 for zero balance', () => {
-            expect(selectAmountInBaseFiatCurrency(getStateWithRates(), btcAsset, '0')).toEqual(
-                new BigNumber('0'),
-            );
+        it('should return rate of token in base currency', () => {
+            expect(selectFiatRateByTradeableAsset(getStateWithRates(), usdcAsset)).toBe(0.99);
         });
     });
 

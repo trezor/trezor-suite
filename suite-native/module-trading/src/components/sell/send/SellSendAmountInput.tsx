@@ -36,6 +36,8 @@ export const SellSendAmountInput = ({ showAssetsScreen, ref }: SellSendAmountInp
     const isLoading = useSelector(selectTradingSellIsLoading);
 
     const isAssetSelected = !!asset;
+    const isToolbarVisible =
+        focusedValue === 'cryptoStringAmount' || focusedValue === 'cryptoBaseCurrencyStringAmount';
 
     return (
         <>
@@ -58,7 +60,7 @@ export const SellSendAmountInput = ({ showAssetsScreen, ref }: SellSendAmountInp
                 symbol={account?.symbol}
                 contractAddress={asset?.contractAddress}
                 decimals={decimals}
-                isVisible={focusedValue === 'cryptoStringAmount'}
+                isVisible={isToolbarVisible}
                 maxSpendableAmount={metadata.maxSpendableAmount}
                 onSelectAmount={amount => {
                     inputControls.onChangeText(amount);

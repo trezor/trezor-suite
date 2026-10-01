@@ -1,7 +1,7 @@
 import { type Ref, useCallback, useImperativeHandle, useRef, useState } from 'react';
 import { type LayoutChangeEvent, Pressable, TextInput, type TextInputProps } from 'react-native';
 
-import { Box, BoxSkeleton, TEXT_MAX_FONT_MULTIPLIER, Text } from '@suite-native/atoms';
+import { BoxSkeleton, HStack, TEXT_MAX_FONT_MULTIPLIER, Text } from '@suite-native/atoms';
 import { truncateDecimals } from '@suite-native/helpers';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 import { type NativeTypographyStyle, typographyStylesBase } from '@trezor/theme';
@@ -220,8 +220,8 @@ export const AmountInput = ({
             testID={AMOUNT_INPUT_TEST_ID}
             onPress={wrapperOnPress}
         >
-            <Box
-                flexDirection="row"
+            <HStack
+                spacing="sp2"
                 alignItems="center"
                 style={applyStyle(contentStyle, {
                     lineHeight: getLineHeight(fontSize, sizeConfig),
@@ -256,7 +256,7 @@ export const AmountInput = ({
                     onPress={onPress}
                     {...inputProps}
                 />
-            </Box>
+            </HStack>
         </Pressable>
     );
 };

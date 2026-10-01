@@ -8,8 +8,9 @@ import {
     act,
     renderHookWithStoreProvider,
     renderWithStoreProvider,
+    userEvent,
 } from '@suite-native/test-utils-store';
-import { usdcAsset } from '@suite-native/trading-fixtures';
+import { ethAsset, usdcAsset } from '@suite-native/trading-fixtures';
 import { type ExchangeFormType } from '@suite-native/trading-types';
 
 import { ExchangeSendContent } from './ExchangeSendContent';
@@ -18,6 +19,10 @@ import {
     createTradingFeatureFlags,
     createTradingPreloadedState,
 } from '../../../test-utils/tradingTestUtils';
+
+jest.mock('../../../hooks/general/useAmountInputDecimals', () => ({
+    useAmountInputDecimals: () => 8,
+}));
 
 jest.mock('@react-navigation/native', () => ({
     ...jest.requireActual('@react-navigation/native'),
@@ -71,5 +76,36 @@ describe('ExchangeSendContent', () => {
         ).toHaveDisplayValue('100');
         expect(getByText(getTranslation('moduleTrading.tradingScreen.balance'))).toBeOnTheScreen();
         expect(getByText('- USDC')).toBeOnTheScreen();
+    });
+
+    describe('send amount inputs', () => {
+        const cryptoAmountLabel = getTranslation('moduleTrading.selectCoinToSell.amountLabel');
+        const baseCurrencyAmountLabel = getTranslation(
+            'moduleTrading.tradingScreen.baseCurrencyAmountLabel',
+        );
+
+        beforeEach(async () => {
+            await act(() => {
+                form.setValue('sendAsset', ethAsset);
+            });
+        });
+
+        it('should update base currency amount when typing crypto amount', async () => {
+            const { getByLabelText } = await renderExchangeSendContent();
+
+            await userEvent.type(getByLabelText(cryptoAmountLabel), '1.5');
+
+            expect(getByLabelText(baseCurrencyAmountLabel)).toHaveDisplayValue('1500');
+        });
+
+        it('should update crypto amount when typing base currency amount', async () => {
+            const { getByLabelText } = await renderExchangeSendContent();
+
+            await userEvent.type(getByLabelText(baseCurrencyAmountLabel), '250');
+
+            expect(form.getValues('sendCryptoAmount')).toBe('0.25');
+            expect(getByLabelText(cryptoAmountLabel)).toHaveDisplayValue('0.25');
+            expect(getByLabelText(baseCurrencyAmountLabel)).toHaveDisplayValue('250');
+        });
     });
 });

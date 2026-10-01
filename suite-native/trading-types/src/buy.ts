@@ -9,7 +9,10 @@ import type {
     TradeableAsset,
 } from './general';
 
-export type BuyFormValues = BaseFormValues<'fiatValue' | 'cryptoValue', BuyTrade> &
+export type BuyFormValues = BaseFormValues<
+    'fiatValue' | 'cryptoValue' | 'cryptoBaseCurrencyValue',
+    BuyTrade
+> &
     FormWithFiatCurrencyValues & {
         asset: TradeableAsset | undefined;
         receiveAccount: ReceiveAccount | undefined;
