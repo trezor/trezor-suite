@@ -1,8 +1,16 @@
 export type {
     NativeNetworkAccountDetailBanner,
-    NativeNetworkAccountDetailBanners,
     NativeNetworkAccountDetailBannerComponent,
+    NativeNetworkAccountDetailBanners,
 } from './NativeNetworkAccountDetailBanner';
 export { asNativeNetworkReducerKey, type NativeNetworkReducerKey } from './NativeNetworkReducerKey';
+export type {
+    NativeNetworkComponents,
+    NativeSendFeeSelectorProps,
+    NativeSendFieldProps,
+} from './NativeSendComponents';
 export type { SuiteNativeNetworkModule } from './SuiteNativeNetworkModule';
-export type { NativeNetworkSendFormComponent } from './NativeNetworkSendForm';
+export {
+    createNativeNetworkSendModule,
+    type NativeNetworkSendModule,
+} from './createNativeNetworkSendModule';

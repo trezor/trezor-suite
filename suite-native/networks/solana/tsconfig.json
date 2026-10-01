@@ -10,9 +10,6 @@
         },
         { "path": "../../atoms" },
         { "path": "../../intl" },
-        {
-            "path": "../network-module-suite-native-sendform-lego-bricks"
-        },
         { "path": "../network-module-types" },
         { "path": "../../storage" },
         {
@@ -20,6 +17,10 @@
         },
         {
             "path": "../../../networks/solana/network-solana"
-        }
+        },
+        {
+            "path": "../../../networks/solana/network-solana-suite-common"
+        },
+        { "path": "../../test-utils" }
     ]
 }

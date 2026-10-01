@@ -12,6 +12,7 @@
     },
     "dependencies": {
         "@reduxjs/toolkit": "2.12.0",
+        "@trezor/network-module-suite-common-types": "workspace:*",
         "@trezor/network-module-types": "workspace:*",
         "@trezor/type-utils": "workspace:*",
         "react": "19.2.3"

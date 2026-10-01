@@ -1,0 +1,18 @@
+{
+    "extends": "../../../tsconfig.base.json",
+    "compilerOptions": { "outDir": "libDev" },
+    "references": [
+        { "path": "../../atoms" },
+        { "path": "../network-module-types" },
+        {
+            "path": "../../../networks/network-module/network-module-types"
+        },
+        {
+            "path": "../../../networks/ripple/network-ripple"
+        },
+        {
+            "path": "../../../networks/ripple/network-ripple-suite-common"
+        },
+        { "path": "../../test-utils" }
+    ]
+}
