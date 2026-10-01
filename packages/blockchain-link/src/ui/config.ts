@@ -22,6 +22,35 @@ export default [
         },
     },
     {
+        // Needs `yarn dev:module`: the default dev build runs workers as Web Workers, which have no
+        // DOM for the anon-rpc sandbox. The passthrough client does not anonymize; it only
+        // exercises the sandbox.
+        blockchain: {
+            name: 'EVM RPC via anon-rpc (passthrough)',
+            worker: 'js/evm-rpc-worker.js',
+            server: ['https://ethereum-rpc.publicnode.com'],
+            anonRpc: {
+                specifier: '0x4fd77be300f31c5fe6ab266d35d27750a3478d27',
+                bootstrapRpcUrl: 'https://ethereum-rpc.publicnode.com',
+            },
+            debug: true,
+        },
+        data: {
+            address: '0x9eA3721B5Bf3b64b4418c38B603154d2D597FAE3',
+            accountInfoOptions: {
+                page: 0,
+                pageSize: 25,
+                contractFilter: undefined,
+            },
+            estimateFeeOptions: {
+                blocks: [1, 2, 10],
+            },
+            txid: '',
+            tx: '',
+            subscribe: '',
+        },
+    },
+    {
         blockchain: {
             name: 'HyperEVM',
             worker: 'js/blockbook-worker.js',

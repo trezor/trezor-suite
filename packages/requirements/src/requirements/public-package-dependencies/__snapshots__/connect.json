@@ -1,5 +1,6 @@
 {
     "prod": [
+        "@anon-rpc/browser-harness",
         "@bufbuild/protobuf",
         "@fivebinaries/coin-selection",
         "@noble/curves",

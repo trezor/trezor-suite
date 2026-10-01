@@ -1,4 +1,4 @@
-import { type PublicClient, createPublicClient } from 'viem';
+import { type PublicClient, createPublicClient, http } from 'viem';
 
 import { CustomError, MESSAGES, RESPONSES } from '@trezor/blockchain-link-types';
 import type { MessageTypes, Response } from '@trezor/blockchain-link-types';
@@ -15,6 +15,7 @@ import { pushTransaction } from './handlers/pushTransaction';
 import { rpcCall } from './handlers/rpcCall';
 import { cleanupSubscriptions, subscribe, unsubscribe } from './handlers/subscribe';
 import type { Request } from './types';
+import { type AnonRpcClient, createAnonRpcClient } from './utils/anonRpcClient';
 import { getChainId } from './utils/client';
 import { getTransportType } from './utils/transportType';
 
@@ -48,8 +49,16 @@ const onRequest = (request: Request<MessageTypes.Message>) => {
 };
 
 export class EvmRpcWorker extends BaseWorker<PublicClient> {
+    private anonRpcClient?: AnonRpcClient;
+
+    private closeAnonRpcClient() {
+        this.anonRpcClient?.close();
+        this.anonRpcClient = undefined;
+    }
+
     cleanup() {
         cleanupSubscriptions();
+        this.closeAnonRpcClient();
         super.cleanup();
     }
 
@@ -64,13 +73,31 @@ export class EvmRpcWorker extends BaseWorker<PublicClient> {
             throw new CustomError('invalid_param', 'Invalid URL');
         }
 
+        const { anonRpc } = this.settings;
+
+        // The anon-rpc client relays request/response fetches only, so a socket endpoint would
+        // have to bypass it. Refuse rather than connect unanonymized.
+        if (anonRpc && transportType !== http) {
+            throw new CustomError('invalid_param', 'anon-rpc requires an http(s) endpoint');
+        }
+
         this.state.url = url;
+        this.anonRpcClient = anonRpc ? await createAnonRpcClient(anonRpc) : undefined;
         const client = createPublicClient({
-            transport: transportType(url),
+            transport: this.anonRpcClient
+                ? http(url, { fetchFn: this.anonRpcClient.fetch })
+                : transportType(url),
         });
 
-        // Doubles as the connectivity probe, and primes the cache the handlers read from.
-        await getChainId(client);
+        try {
+            // Doubles as the connectivity probe, and primes the cache the handlers read from.
+            await getChainId(client);
+        } catch (error) {
+            // On failure the next endpoint is tried, and each attempt would otherwise leave its
+            // sandbox running.
+            this.closeAnonRpcClient();
+            throw error;
+        }
 
         this.post({ id: -1, type: RESPONSES.CONNECTED });
 

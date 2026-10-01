@@ -139,6 +139,22 @@ export interface ContractInfo {
 
 /* Common types used in both params and responses */
 
+/**
+ * Routes RPC traffic through an anon-rpc client: hash-pinned, untrusted code run in a sandbox
+ * (https://github.com/ethereum/anon-rpc). Browser main thread only; supported by the evm-rpc worker.
+ */
+export type AnonRpcSettings = {
+    // Address of the IWorkerSpecifier contract that pins the anon-rpc client bundle by hash.
+    specifier: string;
+    // Reads the specifier contract, so it must serve the chain the specifier is deployed on, which
+    // need not be the chain being connected. This one read is not anonymized, and a dishonest
+    // endpoint could pin different code, so it has to be trusted.
+    bootstrapRpcUrl: string;
+    // Delivered to the anon-rpc client as-is; its schema is defined by the client. Must be
+    // structured-cloneable.
+    config?: unknown;
+};
+
 export interface BlockchainSettings {
     name: string;
     worker: string | (() => any);
@@ -149,6 +165,7 @@ export interface BlockchainSettings {
     pingTimeout?: number;
     keepAlive?: boolean;
     throttleBlockEvent?: number;
+    anonRpc?: AnonRpcSettings;
 }
 
 /**

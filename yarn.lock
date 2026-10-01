@@ -52,6 +52,16 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@anon-rpc/browser-harness@npm:0.3.0":
+  version: 0.3.0
+  resolution: "@anon-rpc/browser-harness@npm:0.3.0"
+  dependencies:
+    "@kpstreams/webrtc-client": "npm:^0.2.1"
+    "@noble/hashes": "npm:^1.5.0"
+  checksum: 10/67d206d2a38aa08effe3c90eb13de6f8604c77ba5b8c93d20af049a21ec41a596d5b31bd4f7dd96cc4ffedcc63bf29d5067ccea8a1625178c26886fce8b5a87a
+  languageName: node
+  linkType: hard
+
 "@anthropic-ai/claude-agent-sdk-darwin-arm64@npm:0.3.218":
   version: 0.3.218
   resolution: "@anthropic-ai/claude-agent-sdk-darwin-arm64@npm:0.3.218"
@@ -5588,6 +5598,22 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@kpstreams/core@npm:^0.2.1":
+  version: 0.2.1
+  resolution: "@kpstreams/core@npm:0.2.1"
+  checksum: 10/102cc6104041be5ae8bfb291f016e2558dd09a41efad6c1951a426ef4dc9da34760a8fbcd6c04ec902436f1fe3eaf2465a87dc3d78d08818b874f36bca4232ba
+  languageName: node
+  linkType: hard
+
+"@kpstreams/webrtc-client@npm:^0.2.1":
+  version: 0.2.1
+  resolution: "@kpstreams/webrtc-client@npm:0.2.1"
+  dependencies:
+    "@kpstreams/core": "npm:^0.2.1"
+  checksum: 10/bed9502a6e8e7540524035280ae3b9b7d65baee5b73a76618a243106f1e278d8c4bd47eb8d297f7839037a48b6bc65b1cb31b68c7ba87fa7fa6987dc27e8097e
+  languageName: node
+  linkType: hard
+
 "@kwsites/file-exists@npm:^1.1.1":
   version: 1.1.1
   resolution: "@kwsites/file-exists@npm:1.1.1"
@@ -6110,7 +6136,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@noble/hashes@npm:1.8.0, @noble/hashes@npm:^1.0.0, @noble/hashes@npm:^1.2.0, @noble/hashes@npm:^1.6.0, @noble/hashes@npm:^1.8.0, @noble/hashes@npm:~1.8.0":
+"@noble/hashes@npm:1.8.0, @noble/hashes@npm:^1.0.0, @noble/hashes@npm:^1.2.0, @noble/hashes@npm:^1.5.0, @noble/hashes@npm:^1.6.0, @noble/hashes@npm:^1.8.0, @noble/hashes@npm:~1.8.0":
   version: 1.8.0
   resolution: "@noble/hashes@npm:1.8.0"
   checksum: 10/474b7f56bc6fb2d5b3a42132561e221b0ea4f91e590f4655312ca13667840896b34195e2b53b7f097ec080a1fdd3b58d902c2a8d0fbdf51d2e238b53808a177e
@@ -17466,6 +17492,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@trezor/blockchain-link@workspace:packages/blockchain-link"
   dependencies:
+    "@anon-rpc/browser-harness": "npm:0.3.0"
     "@trezor/blockchain-link-types": "workspace:*"
     "@trezor/blockchain-link-utils": "workspace:*"
     "@trezor/e2e-utils": "workspace:*"

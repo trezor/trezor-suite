@@ -13,6 +13,8 @@ const ERROR: { [key: string]: string | undefined } = {
     websocket_timeout: 'Websocket timeout',
     websocket_error_message: undefined,
     websocket_runtime_error: undefined,
+    anon_rpc_unsupported: 'anon-rpc requires a browser main thread',
+    anon_rpc_bootstrap: 'Unexpected bootstrap request:',
 };
 
 export class CustomError extends Error {
