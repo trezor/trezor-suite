@@ -7,6 +7,7 @@ import {
     REQUEST_MIN_GAP_MS,
     REQUEST_RETRIES,
     REQUEST_RETRY_BASE_DELAY_MS,
+    REQUEST_RETRY_MAX_DELAY_MS,
     REQUEST_TIMEOUT_MS,
     STELLAR_EXPERT_URL,
     STELLAR_HORIZON_URL,
@@ -44,11 +45,30 @@ const paceRequestsPerHost: NonNullable<ApiClientOptions['onRequest']> = async ({
     lastRequestAt.set(host, Date.now());
 };
 
+/**
+ * How long a server asked us to wait, from its `Retry-After` header: either a number of seconds or
+ * an HTTP date. A rate limiter knows its own window better than a backoff curve guesses it.
+ */
+const retryAfterMs = (response: Response | undefined) => {
+    const retryAfter = response?.headers.get('retry-after');
+    if (!retryAfter) return undefined;
+
+    const seconds = Number(retryAfter);
+    const waitFor = Number.isFinite(seconds)
+        ? seconds * 1_000
+        : Date.parse(retryAfter) - Date.now();
+
+    if (Number.isNaN(waitFor)) return undefined;
+
+    return Math.min(Math.max(waitFor, 0), REQUEST_RETRY_MAX_DELAY_MS);
+};
+
 // Rate limits and server errors pass with a retry, and so may a request that never got a response.
 // Any other status is an answer the server means, so repeating it would only waste the quota.
 const retryTransientFailures: NonNullable<ApiClientOptions['retry']> = {
     attempts: REQUEST_RETRIES,
-    delay: ({ attempt }) => REQUEST_RETRY_BASE_DELAY_MS * 3 ** (attempt - 1),
+    delay: ({ attempt, response }) =>
+        retryAfterMs(response) ?? REQUEST_RETRY_BASE_DELAY_MS * 3 ** (attempt - 1),
     when: ({ response }) => !response || response.status === 429 || response.status >= 500,
 };
 

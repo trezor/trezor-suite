@@ -26,6 +26,16 @@ export type CoinData = z.infer<typeof coinDataSchema>;
 
 export const coinListSchema = z.array(coinDataSchema);
 
+// `/coins/markets` leaves `market_cap` null for a coin it has no market data for, and omits the
+// coin entirely when it knows nothing about it. Both mean "no market cap", as opposed to a request
+// that never answered.
+export const coinMarketDataSchema = z.object({
+    id: z.string(),
+    market_cap: z.number().nullish(),
+});
+
+export const coinMarketsSchema = z.array(coinMarketDataSchema);
+
 // Only the fields the definitions are built from, with the same fallback as the coin list: one
 // NFT collection CoinGecko lists without a name must not fail the whole page.
 export const nftDataSchema = z.object({
