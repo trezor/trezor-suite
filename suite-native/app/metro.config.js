@@ -76,6 +76,9 @@ const cardanoSerializationLibPath = path.resolve(
     '../../networks/cardano/network-cardano/generated/csl-asmjs/cardano_serialization_lib.js',
 );
 
+// Keep the raised worker heap for comparison with the Cardano-stub runs using the default limit.
+require('v8').setFlagsFromString('--max-old-space-size=12288');
+
 /**
  * Metro configuration
  * https://facebook.github.io/metro/docs/configuration
