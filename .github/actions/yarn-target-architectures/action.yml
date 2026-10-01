@@ -1,0 +1,31 @@
+name: "Install native binaries for every target architecture"
+description: >-
+  Points Yarn's supportedArchitectures at the platform/arch set an electron-builder target is
+  packaged for. Must run before the install step.
+inputs:
+  platform:
+    description: "electron-builder target: linux | mac | win (mirrors the build:app:electron:* flags)"
+    required: true
+
+runs:
+  using: "composite"
+  steps:
+    - name: Configure yarn to fetch all target-arch native binaries
+      shell: bash
+      env:
+        PLATFORM: ${{ inputs.platform }}
+      run: |
+        # Native deps ship as optional packages guarded by os/cpu/libc and Yarn installs only the
+        # host's by default. electron-builder bundles node_modules as installed (npmRebuild is off)
+        # and these jobs cross-build, so every target arch must be listed here; "current" stays in
+        # every list so the host's own build tooling keeps installing.
+        case "$PLATFORM" in
+          linux) architectures='{"os":["current","linux"],"cpu":["current","x64","arm64"],"libc":["current","glibc"]}' ;;
+          mac) architectures='{"os":["current","darwin"],"cpu":["current","x64","arm64"]}' ;;
+          win) architectures='{"os":["current","win32"],"cpu":["current","x64"]}' ;;
+          *)
+            echo "Unknown platform: $PLATFORM" >&2
+            exit 1
+            ;;
+        esac
+        yarn config set supportedArchitectures --json "$architectures"
