@@ -29,6 +29,58 @@ export type Options = {
     memoryCap: number; // Maximum number of messages stored in memory
 };
 
+export type LogMessage = {
+    date: Date;
+    level: LogLevel;
+    topic: string;
+    text: string;
+};
+
+export type ILogger = {
+    /**
+     * Exit the Logger (will correctly end the log file)
+     */
+    exit: () => void;
+    /**
+     * Error message (level: 1)
+     * @param topic(string) - Log topic
+     * @param message(string | string[]) - Message content(s)
+     */
+    error: (topic: string, message: string | string[]) => void;
+    /**
+     * Warning message (level: 2)
+     * @param topic(string) - Log topic
+     * @param message(string | string[]) - Message content(s)
+     */
+    warn: (topic: string, message: string | string[]) => void;
+    /**
+     * Info message (level: 3)
+     * @param topic(string) - Log topic
+     * @param message(string | string[]) - Message content(s)
+     */
+    info: (topic: string, message: string | string[]) => void;
+    /**
+     * Debug message (level: 4)
+     * @param topic(string) - Log topic
+     * @param message(string | string[]) - Message content(s)
+     */
+    debug: (topic: string, message: string | string[]) => void;
+    /**
+     * Log Level getter/setter
+     */
+    get level(): LogLevel;
+    set level(level: LogLevel | undefined);
+    /**
+     * Options getter/setter
+     */
+    get config(): Options;
+    set config(options: Partial<Options> | undefined);
+    /**
+     * If logs are stored in memory, return array of logs
+     */
+    getLog: () => LogMessage[];
+};
+
 const logLevelSwitchValue = getSwitchValue('log-level');
 const logLevelByEnv = isDevEnv ? 'debug' : 'info';
 const logLevelDefault = isLogLevel(logLevelSwitchValue) ? logLevelSwitchValue : logLevelByEnv;
@@ -256,15 +308,15 @@ export class Logger implements ILogger {
         return logLevels[this.logLevel] ?? 'mute';
     }
 
-    public set level(level: LogLevel) {
-        this.logLevel = logLevels.indexOf(isLogLevel(level) ? level : logLevelDefault);
+    public set level(level: LogLevel | undefined) {
+        this.logLevel = logLevels.indexOf(level && isLogLevel(level) ? level : logLevelDefault);
     }
 
-    public get config() {
+    public get config(): Options {
         return this.options;
     }
 
-    public set config(options: Partial<Options>) {
+    public set config(options: Partial<Options> | undefined) {
         if (options) {
             this.options = {
                 ...this.options,

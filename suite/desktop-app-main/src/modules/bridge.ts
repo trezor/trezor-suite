@@ -96,9 +96,8 @@ let bridge: TrezordNodeProcess;
 const handleBridgeStatus = async ({
     mainThreadEmitter,
     mainWindowProxy,
-}: Pick<Dependencies, 'mainThreadEmitter' | 'mainWindowProxy'>) => {
-    const { logger } = global;
-
+    logger,
+}: Pick<Dependencies, 'mainThreadEmitter' | 'mainWindowProxy' | 'logger'>) => {
     logger.info('bridge', `Getting status`);
     const status = await bridge.status();
     logger.info('bridge', `Toggling bridge. Status: ${JSON.stringify(status)}`);
@@ -114,9 +113,7 @@ const handleBridgeStatus = async ({
     return status;
 };
 
-const loadBridge = async ({ store }: Pick<Dependencies, 'store'>) => {
-    const { logger } = global;
-
+const loadBridge = async ({ store, logger }: Pick<Dependencies, 'store' | 'logger'>) => {
     if (store.getBridgeSettings().doNotStartOnStartup) {
         return;
     }
@@ -136,7 +133,8 @@ export const initBackground = ({
     store,
     mainThreadEmitter,
     mainWindowProxy,
-}: Pick<Dependencies, 'store' | 'mainThreadEmitter' | 'mainWindowProxy'>) => {
+    logger,
+}: Pick<Dependencies, 'store' | 'mainThreadEmitter' | 'mainWindowProxy' | 'logger'>) => {
     let loaded = false;
 
     bridge = new TrezordNodeProcess(store);
@@ -159,6 +157,7 @@ export const initBackground = ({
                 logger.info(SERVICE_NAME, 'Detected that no bridge is running, starting it');
                 await loadBridge({
                     store,
+                    logger,
                 })
                     .catch(() => {})
                     .finally(() => {
@@ -166,6 +165,7 @@ export const initBackground = ({
                         handleBridgeStatus({
                             mainThreadEmitter,
                             mainWindowProxy,
+                            logger,
                         });
                     });
             }
@@ -177,7 +177,7 @@ export const initBackground = ({
             return;
         }
 
-        return scheduleAction(() => loadBridge({ store }), {
+        return scheduleAction(() => loadBridge({ store, logger }), {
             timeout: 3000,
         }).catch(err => {
             // Error ignored, user will see transport error afterwards
@@ -193,7 +193,7 @@ export const initBackground = ({
     return { onLoad, onQuit };
 };
 
-export const init = ({ store, mainWindowProxy, mainThreadEmitter }: Dependencies) => {
+export const init = ({ store, mainWindowProxy, mainThreadEmitter, logger }: Dependencies) => {
     ipcMain.handle('bridge/change-settings', (_, payload: Partial<BridgeSettings>) => {
         try {
             // merge: each control (Run-on-startup, usb implementation) sends only its own field,
@@ -218,7 +218,7 @@ export const init = ({ store, mainWindowProxy, mainThreadEmitter }: Dependencies
     });
 
     const toggleBridge = async (): Promise<InvokeResult> => {
-        const status = await handleBridgeStatus({ mainThreadEmitter, mainWindowProxy });
+        const status = await handleBridgeStatus({ mainThreadEmitter, mainWindowProxy, logger });
         try {
             if (status.service) {
                 await bridge.stop();
@@ -230,7 +230,7 @@ export const init = ({ store, mainWindowProxy, mainThreadEmitter }: Dependencies
         } catch (error) {
             return { success: false, error };
         } finally {
-            handleBridgeStatus({ mainThreadEmitter, mainWindowProxy });
+            handleBridgeStatus({ mainThreadEmitter, mainWindowProxy, logger });
         }
     };
 

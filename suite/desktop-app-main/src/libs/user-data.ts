@@ -7,6 +7,9 @@ import { isDevEnv } from '@suite-common/suite-utils';
 import type { Result } from '@trezor/type-utils';
 
 import { setAutoStartEnabled } from './auto-start';
+import type { ILogger } from './logger';
+
+type UserDataLogger = Pick<ILogger, 'error'>;
 
 export const resolveDirectoryInUserDataDir = (
     directory: string,
@@ -75,15 +78,19 @@ export const initUserData = () => {
     }
 };
 
-export const save: {
-    (directory: string, name: string, content: string, encoding: 'utf-8'): Promise<InvokeResult>;
-    (
-        directory: string,
-        name: string,
-        content: ArrayBuffer,
-        encoding: 'binary',
-    ): Promise<InvokeResult>;
-} = async (directory, name, content, encoding) => {
+type UserDataSaveParams = {
+    directory: string;
+    name: string;
+    logger: UserDataLogger;
+} & ({ content: string; encoding: 'utf-8' } | { content: ArrayBuffer; encoding: 'binary' });
+
+export const save = async ({
+    directory,
+    name,
+    content,
+    encoding,
+    logger,
+}: UserDataSaveParams): Promise<InvokeResult> => {
     const resolvedPathResult = resolvePathInUserDataDir(directory, name);
     if (!resolvedPathResult.success) {
         return { success: false, error: resolvedPathResult.error };
@@ -92,9 +99,9 @@ export const save: {
 
     let data: string | Buffer;
     if (encoding === 'binary') {
-        data = Buffer.from(content as ArrayBuffer);
+        data = Buffer.from(content);
     } else {
-        data = content as string;
+        data = content;
     }
 
     try {
@@ -108,13 +115,23 @@ export const save: {
 
         return { success: true };
     } catch (error) {
-        global.logger.error('user-data', `Save failed: ${error.message}`);
+        logger.error('user-data', `Save failed: ${error.message}`);
 
         return { success: false, error: error.message, code: error.code };
     }
 };
 
-export const read = async (directory: string, name: string): Promise<InvokeResult<string>> => {
+type UserDataReadParams = {
+    directory: string;
+    name: string;
+    logger: UserDataLogger;
+};
+
+export const read = async ({
+    directory,
+    name,
+    logger,
+}: UserDataReadParams): Promise<InvokeResult<string>> => {
     const resolvedPathResult = resolvePathInUserDataDir(directory, name);
     if (!resolvedPathResult.success) {
         return { success: false, error: resolvedPathResult.error };
@@ -132,13 +149,21 @@ export const read = async (directory: string, name: string): Promise<InvokeResul
 
         return { success: true, payload };
     } catch (error) {
-        global.logger.error('user-data', `Read failed: ${error.message}`);
+        logger.error('user-data', `Read failed: ${error.message}`);
 
         return { success: false, error: error.message, code: error.code };
     }
 };
 
-export const readDir = async (directory: string): Promise<InvokeResult<string[]>> => {
+type UserDataReadDirParams = {
+    directory: string;
+    logger: UserDataLogger;
+};
+
+export const readDir = async ({
+    directory,
+    logger,
+}: UserDataReadDirParams): Promise<InvokeResult<string[]>> => {
     const resolvedDirResult = resolveDirectoryInUserDataDir(directory);
     if (!resolvedDirResult.success) {
         return { success: false, error: resolvedDirResult.error };
@@ -159,17 +184,25 @@ export const readDir = async (directory: string): Promise<InvokeResult<string[]>
 
         return { success: true, payload: filteredDirFiles };
     } catch (error) {
-        global.logger.error('user-data', `Get folder file names failed: ${error.message}`);
+        logger.error('user-data', `Get folder file names failed: ${error.message}`);
 
         return { success: false, error: error.message, code: error.code };
     }
 };
 
-export const rename = async (
-    directory: string,
-    from: string,
-    to: string,
-): Promise<InvokeResult> => {
+type UserDataRenameParams = {
+    directory: string;
+    from: string;
+    to: string;
+    logger: UserDataLogger;
+};
+
+export const rename = async ({
+    directory,
+    from,
+    to,
+    logger,
+}: UserDataRenameParams): Promise<InvokeResult> => {
     const resolvedFromResult = resolvePathInUserDataDir(directory, from);
     if (!resolvedFromResult.success) {
         return { success: false, error: resolvedFromResult.error };
@@ -187,17 +220,21 @@ export const rename = async (
 
         return { success: true };
     } catch (error) {
-        global.logger.error('user-data', `Rename file name failed: ${error.message}`);
+        logger.error('user-data', `Rename file name failed: ${error.message}`);
 
         return { success: false, error: error.message, code: error.code };
     }
+};
+
+type UserDataClearParams = {
+    logger: UserDataLogger;
 };
 
 /**
  * Clear the whole app data folder, incl. technical artifacts by Electron and cache.
  * This contrasts with resetSuiteAppThunk, which only removes the user data, and it is driven from the Renderer.
  */
-export const clearAppData = async (): Promise<InvokeResult> => {
+export const clearAppData = async ({ logger }: UserDataClearParams): Promise<InvokeResult> => {
     // Autostart is persisted in OS integration, not in app data folder, so we need to erase it beforehand.
     setAutoStartEnabled(false);
     const localDataDir = path.normalize(app.getPath('userData'));
@@ -206,7 +243,7 @@ export const clearAppData = async (): Promise<InvokeResult> => {
 
         return { success: true };
     } catch (error) {
-        global.logger.error('user-data', `Remove dir failed: ${error.message}`);
+        logger.error('user-data', `Remove dir failed: ${error.message}`);
 
         return { success: false, error: error.message, code: error.code };
     }
@@ -238,7 +275,12 @@ export const getInfo = () => ({
     dir: path.normalize(app.getPath('userData')),
 });
 
-export const open = async (directory: string): Promise<InvokeResult> => {
+type UserDataOpenParams = {
+    directory: string;
+    logger: UserDataLogger;
+};
+
+export const open = async ({ directory, logger }: UserDataOpenParams): Promise<InvokeResult> => {
     const resolvedDirResult = resolveDirectoryInUserDataDir(directory);
     if (!resolvedDirResult.success) {
         return { success: false, error: resolvedDirResult.error };
@@ -253,7 +295,7 @@ export const open = async (directory: string): Promise<InvokeResult> => {
 
         return { success: true };
     } catch (error) {
-        global.logger.error('user-data', `Opening user data directory failed: ${error.message}`);
+        logger.error('user-data', `Opening user data directory failed: ${error.message}`);
 
         return { success: false, error: error.message, code: error.code };
     }

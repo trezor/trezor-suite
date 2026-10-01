@@ -4,11 +4,16 @@ import { type SuiteThemeVariant } from '@suite/desktop-app-api';
 
 import { ipcMain } from '../ipcMain';
 import type { ModuleInit } from './module';
+import type { ILogger } from '../libs/logger';
 import { Store } from '../libs/store';
 
-const setThemeManually = (theme: SuiteThemeVariant, store: Store) => {
-    const { logger } = global;
+type SetThemeManuallyParams = {
+    theme: SuiteThemeVariant;
+    store: Store;
+    logger: ILogger;
+};
 
+const setThemeManually = ({ theme, store, logger }: SetThemeManuallyParams) => {
     logger.info('theme', `Manually setting app window UI to ${theme} theme.`);
 
     nativeTheme.themeSource = theme;
@@ -17,9 +22,7 @@ const setThemeManually = (theme: SuiteThemeVariant, store: Store) => {
 
 export const SERVICE_NAME = 'theme';
 
-export const init: ModuleInit = ({ mainWindowProxy }) => {
-    const { logger } = global;
-
+export const init: ModuleInit = ({ mainWindowProxy, logger }) => {
     const store = Store.getStore();
 
     const theme = store.getThemeSettings();
@@ -28,7 +31,9 @@ export const init: ModuleInit = ({ mainWindowProxy }) => {
         nativeTheme.themeSource = theme;
     }
 
-    ipcMain.on('theme/change', (_, newTheme) => setThemeManually(newTheme, store));
+    ipcMain.on('theme/change', (_, newTheme) =>
+        setThemeManually({ theme: newTheme, store, logger }),
+    );
 
     nativeTheme.on('updated', () => {
         if (store.getThemeSettings() !== 'system') return;

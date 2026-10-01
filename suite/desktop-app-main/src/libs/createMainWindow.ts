@@ -8,6 +8,7 @@ import { colorVariants } from '@trezor/theme';
 
 import { APP_NAME } from './constants';
 import { isMainWindowUsable } from './isMainWindowUsable';
+import type { ILogger } from './logger';
 import { hasSwitch } from './process-switches';
 import { MIN_HEIGHT, MIN_WIDTH } from './screen';
 import { Store, type WinBoundsCoords } from './store';
@@ -16,9 +17,15 @@ type CreateMainWindowParams = {
     winBounds: WinBoundsCoords;
     store: Store;
     cspNonce: string;
+    logger: ILogger;
 };
 
-export const createMainWindow = ({ winBounds, cspNonce, store }: CreateMainWindowParams) => {
+export const createMainWindow = ({
+    winBounds,
+    cspNonce,
+    store,
+    logger,
+}: CreateMainWindowParams) => {
     const darkTheme =
         store.getThemeSettings() === 'dark' ||
         (store.getThemeSettings() === 'system' && nativeTheme.shouldUseDarkColors);

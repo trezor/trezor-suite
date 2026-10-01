@@ -1,5 +1,7 @@
 import { type Log, type LogMessage as UtilsLogMessage } from '@trezor/logger';
 
+import type { ILogger } from '../libs/logger';
+
 type ConvertILoggerToLogParams = { serviceName: string };
 
 /** take an instance of ILogger and return mimicked instance of Log while keeping more or less the same behavior  */

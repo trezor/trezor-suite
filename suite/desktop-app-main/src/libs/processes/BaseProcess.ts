@@ -4,6 +4,7 @@ import path from 'path';
 
 import { type TimerId } from '@trezor/type-utils';
 
+import type { ILogger } from '../logger';
 import { b2t } from '../utils';
 
 export type Status = {
@@ -18,7 +19,7 @@ export type Status = {
  * [env] additional env variables.
  * [stdio] inherit process stdio. doesn't work on windows, "inherit" works on linux/macos
  */
-export type Options = {
+export type BaseProcessOptions = {
     startupCooldown?: number;
     stopKillWait?: number;
     autoRestart?: number;
@@ -26,17 +27,24 @@ export type Options = {
     stdio?: IOType;
 };
 
-const defaultOptions: Options = {
+const defaultOptions: BaseProcessOptions = {
     startupCooldown: 0,
     stopKillWait: 10,
     autoRestart: 2,
 } as const;
 
+type BaseProcessConstructorParams = {
+    resourceName: string;
+    processName: string;
+    options: BaseProcessOptions;
+    logger: ILogger;
+};
+
 export abstract class BaseProcess {
     protected process: ChildProcess | null;
     private resourceName: string;
     private processName: string;
-    private options: Options;
+    private options: BaseProcessOptions;
     private startupThrottle: TimerId | null;
     private supportedSystems = ['linux-arm64', 'linux-x64', 'mac-arm64', 'mac-x64', 'win-x64'];
     private stopped = false;
@@ -48,7 +56,7 @@ export abstract class BaseProcess {
      * @param processName Process name (without extension)
      * @param options Additional options
      */
-    constructor(resourceName = '', processName = '', options = defaultOptions) {
+    constructor({ resourceName, processName, options, logger }: BaseProcessConstructorParams) {
         this.process = null;
         this.startupThrottle = null;
         this.resourceName = resourceName;
@@ -58,7 +66,6 @@ export abstract class BaseProcess {
             ...options,
         };
 
-        const { logger } = global;
         this.logger = logger;
         this.logTopic = `process-${this.processName}`;
 
