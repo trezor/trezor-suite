@@ -8,8 +8,7 @@ import { AnalyticsFixture, AnalyticsHelper } from './analytics';
 import { ClipboardFixture } from './clipboard';
 import { isDesktopProject } from './common';
 import { databaseTabFixture } from './databaseTabFixture';
-import { LighthouseMode, getLighthouseMode } from '../performance/lighthouseConfig';
-import type { LighthouseFlow } from '../performance/lighthouseTimespan';
+import { LighthouseMode } from '../performance/lighthouseConfig';
 import { startLighthouseFlow } from '../performance/lighthouseTimespan';
 import { measurePerformance } from '../performance/perfMeasure';
 import { EvoluClient } from './helpers/evoluClient';
@@ -95,7 +94,7 @@ type Fixtures = {
             interaction: () => Promise<void>,
         ) => Promise<PerfMetrics | null>;
     };
-    lighthouseFlow: LighthouseFlow;
+    lighthouseTestProfiler: void;
 };
 
 const test = suiteBaseTest.extend<Fixtures>({
@@ -228,32 +227,40 @@ const test = suiteBaseTest.extend<Fixtures>({
         await use(evoluClient);
         await evoluClient.dispose();
     },
-    lighthouseFlow: [
-        async ({ page }, use, testInfo) => {
-            const flow = await startLighthouseFlow(page, testInfo);
-
-            try {
-                await flow.wrapTest(() => use(flow));
-            } finally {
-                await flow.finish();
-            }
-        },
-        // Auto only where a test that never takes the `perf` fixture is still meant to be profiled.
-        // Leaving it auto otherwise would hand a `page` to every test in the suite, including the
-        // ones that deliberately open none.
-        { auto: getLighthouseMode() === LighthouseMode.Test },
-    ],
-    // Lighthouse wraps the measurement rather than the other way round: its timespan then also
-    // covers the settling `measurePerformance` waits out, which costs Lighthouse nothing (the page
-    // is idle by then) and keeps the CDP work of opening a timespan out of the measured interaction.
-    perf: async ({ page, lighthouseFlow }, use, testInfo) => {
+    // The timespan must wrap measurePerformance, or opening it lands inside the measured time.
+    perf: async ({ page, electronApp, electronConf }, use, testInfo) => {
+        if (!electronConf.measurePerf) {
+            throw new Error(
+                'perf.measure requires test.use({ electronConf: { measurePerf: true } }).',
+            );
+        }
+        const lighthouseFlow = await startLighthouseFlow({
+            page,
+            electronApp,
+            testInfo,
+            mode: LighthouseMode.Steps,
+        });
         await use({
             measure: (scenario, interaction) =>
                 lighthouseFlow.timespan(scenario, () =>
                     measurePerformance(page, testInfo, scenario, interaction),
                 ),
         });
+        await lighthouseFlow.finish();
     },
+    lighthouseTestProfiler: [
+        async ({ page, electronApp }, use, testInfo) => {
+            const lighthouseFlow = await startLighthouseFlow({
+                page,
+                electronApp,
+                testInfo,
+                mode: LighthouseMode.Test,
+            });
+            await lighthouseFlow.timespan(testInfo.title, () => use());
+            await lighthouseFlow.finish();
+        },
+        { auto: true },
+    ],
 });
 
 export { test };

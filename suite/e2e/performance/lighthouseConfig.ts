@@ -1,7 +1,7 @@
 /**
  * The switches that decide whether Lighthouse runs, kept apart from the flow itself so that the
- * Playwright config and the Electron launcher can read them without pulling Lighthouse — a heavy
- * ESM dependency — into every process that loads the config.
+ * Playwright config can read them without pulling Lighthouse — a heavy ESM dependency — into every
+ * process that loads the config.
  */
 
 const DEBUG_PORT_BASE = 9222;
@@ -11,7 +11,7 @@ export const LighthouseMode = {
     Off: 'off',
     /** One timespan per `perf.measure` block, i.e. around the interactions the suite already measures. */
     Steps: 'steps',
-    /** One timespan around the whole test body. */
+    /** One timespan per test, which also covers its hooks and fixture teardown. */
     Test: 'test',
 } as const;
 
@@ -32,8 +32,8 @@ export const getLighthouseMode = (): LighthouseMode => {
 export const isLighthouseEnabled = () => getLighthouseMode() !== LighthouseMode.Off;
 
 /**
- * Lighthouse drives the app through Puppeteer's own CDP session, so the app under test has to be
- * launched with a debugging endpoint for it to attach to.
+ * Web only: Playwright drives Chromium over a pipe, so the browser has to be launched with a
+ * debugging port for Lighthouse to attach to.
  *
  * One port per parallel worker, so a parallel or sharded run does not fight over a single endpoint.
  * Playwright sets `TEST_PARALLEL_INDEX` before a worker loads the config, so the launch arguments

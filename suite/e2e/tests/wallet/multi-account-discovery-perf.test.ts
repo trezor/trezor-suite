@@ -15,7 +15,10 @@ import { createTestAnnotation } from '../../support/reporters/annotations';
  * already perform is what that run buys.
  */
 test.describe('Performance', { tag: ['@T3W1', '@T3T1', '@perf'] }, () => {
-    test.use({ deviceSetup: { mnemonic: 'mnemonic_all' } });
+    test.use({
+        deviceSetup: { mnemonic: 'mnemonic_all' },
+        electronConf: { measurePerf: true },
+    });
 
     test.beforeEach(async ({ onboardingPage, settingsPage }) => {
         await onboardingPage.completeOnboarding();
