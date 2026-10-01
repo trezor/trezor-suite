@@ -19,6 +19,8 @@ jest.mock('../data/firmwareReleaseStore', () => {
     };
 });
 
+jest.spyOn(global, 'fetch').mockImplementation(() => Promise.reject());
+
 // import { createTestTransport } from '../device/__tests__/DeviceList.test';
 const { createTestTransport } = global.JestMocks;
 
