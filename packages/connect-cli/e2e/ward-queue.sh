@@ -53,7 +53,7 @@
 #
 # and for the SERVICE variant, the same with the interface built in:
 #
-#   xtask build firmware -e -d --pyopt false --model t3w1 --debug-link --ward-service-channel
+#   xtask build firmware -e -d --pyopt false --model t3w1 --debug-link --enable-ward-service-channel
 #   python3 core/emu.py -q -a -t -s -c bash <trezor-suite>/packages/connect-cli/e2e/ward-queue.sh
 #
 # The service variant needs a trezorlib for the daemon beside this file, plus the device tests'
@@ -805,7 +805,7 @@ if [ "$VARIANT" = service ]; then
 else
     echo "variant covered: CONNECT (WARD over the wallet channel; --service fails closed)"
     echo "the other one needs a build with the interface:"
-    echo "  xtask build firmware -e -d --pyopt false --model $MODEL_HINT --debug-link --ward-service-channel"
+    echo "  xtask build firmware -e -d --pyopt false --model $MODEL_HINT --debug-link --enable-ward-service-channel"
 fi
 
 echo

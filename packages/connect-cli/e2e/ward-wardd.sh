@@ -24,7 +24,7 @@
 #   python3 core/emu.py -q -a -t -s -c bash <trezor-suite>/packages/connect-cli/e2e/ward-wardd.sh
 #
 # -s matters: emulator B is started with the same SLIP-14 seed, which is what makes it the same
-# wallet. Not a service build (--ward-service-channel): there the device talks to its own daemon and
+# wallet. Not a service build (--enable-ward-service-channel): there the device talks to its own daemon and
 # wardd's relay has nothing to carry -- `ward-queue.sh` covers that build.
 #
 # wardd runs with --memory (a fresh replica and dev WM per run); its Evolu store is covered by its
@@ -79,7 +79,7 @@ fi
 if port_bound "$WARD_PORT"; then
     echo "This is a SERVICE build (udp $WARD_PORT is bound): the device has its own daemon, so there" >&2
     echo "is nothing for wardd's relay to carry. Use ward-queue.sh for it, or build without" >&2
-    echo "--ward-service-channel for this script." >&2
+    echo "--enable-ward-service-channel for this script." >&2
     exit 1
 fi
 
