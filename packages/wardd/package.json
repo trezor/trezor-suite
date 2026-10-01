@@ -1,0 +1,27 @@
+{
+    "name": "@trezor/wardd",
+    "version": "1.0.0",
+    "private": true,
+    "license": "See LICENSE.md in repo root",
+    "sideEffects": false,
+    "main": "src/index",
+    "scripts": {
+        "start": "tsx ./src/cli.ts",
+        "test:unit": "yarn g:jest",
+        "depcheck": "yarn g:depcheck",
+        "type-check": "yarn g:tsc --build",
+        "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'"
+    },
+    "dependencies": {
+        "@evolu/common": "8.0.0-next.5",
+        "@evolu/nodejs": "3.0.0-next.3",
+        "@noble/curves": "^2.0.1",
+        "@noble/hashes": "^2.0.1",
+        "@trezor/ward-core": "workspace:*",
+        "ws": "^8.20.0"
+    },
+    "devDependencies": {
+        "@types/ws": "^8.5.13",
+        "tsx": "^4.21.0"
+    }
+}
