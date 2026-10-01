@@ -26,10 +26,8 @@
         },
         { "path": "../router" },
         { "path": "../../packages/connect" },
-        {
-            "path": "../../packages/connect-common"
-        },
         { "path": "../../packages/env-utils" },
+        { "path": "../../packages/logger" },
         { "path": "../../packages/suite" },
         {
             "path": "../../packages/transport-common"

@@ -10,8 +10,8 @@ import type {
     TransportInfo,
 } from '@trezor/connect-common';
 import { ERRORS } from '@trezor/connect-common/src/constants';
-import type { CreateLogger } from '@trezor/connect-common/src/types/settings';
 import { parseStaticSessionId } from '@trezor/device-utils';
+import type { CreateLogger } from '@trezor/logger';
 import {
     type Descriptor,
     TRANSPORT,

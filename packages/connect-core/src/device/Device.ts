@@ -16,7 +16,6 @@ import type {
     UnavailableCapabilities,
 } from '@trezor/connect-common';
 import { DEVICE, ERRORS, FIRMWARE, UI_EVENTS } from '@trezor/connect-common';
-import type { CreateLogger } from '@trezor/connect-common/src/types/settings';
 import type { FirmwareRelease, TranslationMetadata } from '@trezor/device-utils';
 import {
     DeviceModelInternal,
@@ -24,7 +23,7 @@ import {
     getFirmwareVersionArray,
     models,
 } from '@trezor/device-utils';
-import type { Logger } from '@trezor/logger';
+import type { CreateLogger, Logger } from '@trezor/logger';
 import type { TransportProtocol } from '@trezor/protocol';
 import { thp as protocolThp, v1 as protocolV1, v2 as protocolV2 } from '@trezor/protocol';
 import {

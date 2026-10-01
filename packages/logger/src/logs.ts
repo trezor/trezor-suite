@@ -19,6 +19,10 @@ export interface Logger {
     error(...args: unknown[]): void;
 }
 
+export type CreateLogger = (prefix: string) => Logger;
+
+export type CreateLoggerDep = { createLogger?: CreateLogger };
+
 export class Log implements Logger {
     prefix: string;
     enabled: boolean;

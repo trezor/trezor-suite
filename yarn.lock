@@ -10878,6 +10878,7 @@ __metadata:
     "@suite-common/wallet-core": "workspace:*"
     "@trezor/connect": "workspace:*"
     "@trezor/connect-common": "workspace:*"
+    "@trezor/logger": "workspace:*"
     "@trezor/transport-common": "workspace:*"
     "@trezor/utils": "workspace:*"
   languageName: unknown
@@ -11106,6 +11107,7 @@ __metadata:
     "@suite-common/wallet-config": "workspace:*"
     "@suite-common/wallet-types": "workspace:*"
     "@trezor/connect": "workspace:*"
+    "@trezor/logger": "workspace:*"
     "@trezor/requirements": "workspace:*"
   languageName: unknown
   linkType: soft
@@ -16710,9 +16712,9 @@ __metadata:
     "@suite/router-config": "workspace:*"
     "@suite/sentry": "workspace:*"
     "@trezor/connect": "workspace:*"
-    "@trezor/connect-common": "workspace:*"
     "@trezor/env-utils": "workspace:*"
     "@trezor/eslint": "workspace:*"
+    "@trezor/logger": "workspace:*"
     "@trezor/suite": "workspace:*"
     "@trezor/transport-common": "workspace:*"
     "@trezor/transport-web": "workspace:*"

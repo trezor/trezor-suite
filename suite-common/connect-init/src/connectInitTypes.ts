@@ -6,8 +6,8 @@ import {
     type TransportName,
     type TransportsDep,
 } from '@suite-common/suite-types';
-import { type CreateLogger } from '@trezor/connect';
 import { type DefinitionsChannel } from '@trezor/connect-common';
+import type { CreateLogger } from '@trezor/logger';
 import { type Transport } from '@trezor/transport-common';
 
 export type {

@@ -27,7 +27,8 @@ import {
     type GetTradedAccountKeysDep,
     type SelectedAccountStatus,
 } from '@suite-common/wallet-types';
-import { type CreateLoggerDep, type ThpSettings } from '@trezor/connect';
+import type { ThpSettings } from '@trezor/connect';
+import type { CreateLoggerDep } from '@trezor/logger';
 
 export type CommonServices = SuiteSyncDep &
     NetworksDep &

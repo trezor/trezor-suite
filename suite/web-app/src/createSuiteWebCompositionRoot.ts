@@ -3,8 +3,8 @@ import { createBrowserHistory } from 'history';
 import { createWebauthnPlatformEncryption } from '@suite/platform-encryption-webauthn';
 import { asGetter } from '@suite-common/dependency-injection';
 import TrezorConnect from '@trezor/connect';
-import type { CreateLogger } from '@trezor/connect-common';
 import { resolveConnectPath } from '@trezor/env-utils';
+import type { CreateLogger } from '@trezor/logger';
 import { BridgeTransport } from '@trezor/transport-common';
 import { WebUsbTransport } from '@trezor/transport-web';
 
