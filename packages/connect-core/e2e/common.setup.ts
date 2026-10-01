@@ -3,7 +3,7 @@ import type { ApplySettings } from '@trezor/protobuf/src/definitions';
 import { BridgeTransport } from '@trezor/transport-common';
 import type { EmuStartOptsType, TrezorUserEnvLinkClass } from '@trezor/trezor-user-env-link';
 import { MNEMONICS, TrezorUserEnvLink } from '@trezor/trezor-user-env-link';
-import { versionUtils } from '@trezor/utils';
+import { createDeferred, versionUtils } from '@trezor/utils';
 
 import TrezorConnect from '../src';
 import { THP_CREDENTIALS_AUTOCONNECT } from './common-thp-credentials';
@@ -163,12 +163,31 @@ export const restartEmu = async (controller: TrezorUserEnvLinkClass) => {
     });
 };
 
-type InitParams = Partial<Parameters<typeof TrezorConnect.init>[0]> & { autoConfirm?: boolean };
+const waitForTransport = async ({ waitForDevice }: { waitForDevice: boolean }) => {
+    const transportPromise = createDeferred<boolean>();
+    const devicePromise = createDeferred();
+
+    // TODO device should be awaited only when it's seen in the first enumerate call
+    TrezorConnect.on('transport-start', e => transportPromise.resolve(true));
+    TrezorConnect.on('transport-error', () => transportPromise.resolve(false));
+    TrezorConnect.on('device-connect', () => devicePromise.resolve());
+    TrezorConnect.on('device-connect_unacquired', () => devicePromise.resolve());
+
+    const hasDevices = await transportPromise.promise;
+    if (waitForDevice && hasDevices) {
+        await devicePromise.promise;
+    }
+};
+
+type InitParams = Partial<Parameters<typeof TrezorConnect.init>[0]> & {
+    autoConfirm?: boolean;
+    waitForDevice?: boolean;
+};
 
 export const initTrezorConnect = async (
     // eslint-disable-next-line @typescript-eslint/no-shadow
     TrezorUserEnvLink: TrezorUserEnvLinkClass,
-    { autoConfirm = true, ...options }: InitParams = {},
+    { autoConfirm = true, waitForDevice = true, ...options }: InitParams = {},
 ) => {
     TrezorConnect.removeAllListeners();
 
@@ -219,6 +238,8 @@ export const initTrezorConnect = async (
         });
     }
 
+    const waitForTransportPromise = waitForTransport({ waitForDevice });
+
     await TrezorConnect.init({
         manifest: {
             appName: 'Trezor Connect Tests',
@@ -227,8 +248,8 @@ export const initTrezorConnect = async (
         },
         transports: [new BridgeTransport({ id: 'bridge', port: 21328 })],
         debug: true,
-        pendingTransportEvent: true,
-        transportReconnect: false,
+        pendingTransportEvent: false,
+        transportReconnect: true,
         thp: {
             appName: 'TrezorConnect',
             hostName: 'tests:e2e',
@@ -237,6 +258,8 @@ export const initTrezorConnect = async (
         },
         ...options,
     });
+
+    await waitForTransportPromise;
 };
 
 // skipping tests rules:
