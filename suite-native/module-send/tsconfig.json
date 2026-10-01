@@ -72,6 +72,9 @@
         {
             "path": "../../packages/connect-common"
         },
+        {
+            "path": "../../networks/solana/network-solana"
+        },
         { "path": "../../packages/react-utils" },
         {
             "path": "../../packages/styles-native"
