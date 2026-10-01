@@ -1,14 +1,14 @@
 import { combineReducers } from '@reduxjs/toolkit';
 
-import { createTestStore } from '@suite-common/test-utils';
+import { type TestCompositionStore, createTestCompositionRoot } from '@suite-common/test-utils';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { asAccountDescriptor } from '@suite-common/wallet-types';
 import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
 import { BigNumber } from '@trezor/utils';
 
-import { initYieldAllowanceThunk } from './yieldApprovalThunks';
+import { type InitYieldAllowanceThunkState, initYieldAllowanceThunk } from './yieldApprovalThunks';
 import { fetchAllowance } from '../../allowance/fetchAllowance';
-import { type YieldRootState, yieldActions, yieldReducer } from '../yieldReducer';
+import { yieldActions, yieldReducer } from '../yieldReducer';
 import { selectYieldSession } from '../yieldSelectors';
 import { type YieldFlowResolvedData } from '../yieldTypes';
 
@@ -51,23 +51,25 @@ const WRAPPED_AMOUNT = '0.2';
 const toSubunits = (weth: string) => new BigNumber(weth).shiftedBy(18);
 
 const initStore = () =>
-    createTestStore({
-        extra: undefined,
+    createTestCompositionRoot<void, InitYieldAllowanceThunkState>({
         reducer: combineReducers({
             wallet: combineReducers({ stablecoinYield: yieldReducer }),
         }),
-    });
+    }).services.store;
 
-const getStep = (store: ReturnType<typeof initStore>) =>
-    selectYieldSession(store.getState() as YieldRootState, 'deposit', FLOW_KEY).step;
+const getStep = (store: TestCompositionStore<InitYieldAllowanceThunkState, void>) =>
+    selectYieldSession(store.getState(), 'deposit', FLOW_KEY).step;
 
-const getApproval = (store: ReturnType<typeof initStore>) =>
-    selectYieldSession(store.getState() as YieldRootState, 'deposit', FLOW_KEY).approval;
+const getApproval = (store: TestCompositionStore<InitYieldAllowanceThunkState, void>) =>
+    selectYieldSession(store.getState(), 'deposit', FLOW_KEY).approval;
 
 // Seed a wrapped-native deposit session sitting on the `approve` step, with the
 // just-wrapped amount stored in `session.action.amount` (mirrors the wrap→approve
 // transition produced by resolveWrappedNativeStep after the wrap tx confirms).
-const seedWrappedDepositAtApprove = (store: ReturnType<typeof initStore>, amount: string) => {
+const seedWrappedDepositAtApprove = (
+    store: TestCompositionStore<InitYieldAllowanceThunkState, void>,
+    amount: string,
+) => {
     store.dispatch(
         yieldActions.initSession({
             flowType: 'deposit',

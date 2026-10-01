@@ -1,0 +1,46 @@
+name: "[Test] Cardano CSL asm.js"
+
+on:
+  schedule:
+    # Runs at midnight UTC every day at 01:00 AM CET
+    - cron: "0 0 * * *"
+  pull_request:
+    paths:
+      - ".github/workflows/test-cardano-csl-asmjs.yml"
+      - ".nvmrc"
+      - ".yarn/patches/**"
+      - ".yarnrc.yml"
+      - "package.json"
+      - "yarn.lock"
+      - "networks/cardano/network-cardano/package.json"
+      - "networks/cardano/network-cardano/generated/csl-asmjs/**"
+      - "networks/cardano/network-cardano/scripts/csl-asmjs/**"
+  workflow_dispatch:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.head_ref || github.run_id }}
+  cancel-in-progress: true
+
+jobs:
+  csl-asmjs-reproducible:
+    runs-on: ubuntu-latest
+    if: github.repository == 'trezor/trezor-suite'
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v6
+        with:
+          lfs: true
+
+      - name: Setup node
+        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v6
+        with:
+          node-version-file: ".nvmrc"
+
+      - name: Install SafeDep PMG
+        uses: safedep/pmg@0d4f89121c773b0009cc2f2dfb578d03603263f2 # v0.29.1
+        continue-on-error: true
+        with:
+          version: v0.19.1
+      - run: yarn install --immutable
+      - name: Rebuild CSL asm.js and compare with the committed files
+        run: yarn workspace @trezor/network-cardano verify:csl-asmjs

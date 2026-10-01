@@ -8,6 +8,7 @@
     "references": [
         { "path": "../crypto-utils" },
         { "path": "../device-utils" },
+        { "path": "../logger" },
         { "path": "../protobuf" },
         { "path": "../protocol" },
         { "path": "../schema-utils" },

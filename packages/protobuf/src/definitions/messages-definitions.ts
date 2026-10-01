@@ -62,6 +62,7 @@ export enum EthereumERC7730FieldFormatterType {
     FORMATTER_DATE = 5,
     FORMATTER_CALLDATA = 6,
     FORMATTER_ENUM = 7,
+    FORMATTER_DURATION = 8,
 }
 
 export type EnumEthereumERC7730FieldFormatterType = Static<
@@ -98,6 +99,8 @@ export const EthereumERC7730FieldInfo = Type.Object(
         formatter: EnumEthereumERC7730FieldFormatterType,
         token_path: Type.Optional(EthereumERC7730Path),
         threshold: Type.Optional(Type.String()),
+        threshold_message: Type.Optional(Type.String()),
+        native_currency_address: Type.Array(Type.String()),
         decimals: Type.Optional(Type.Number()),
         base: Type.Optional(Type.String()),
         prefix: Type.Optional(Type.Boolean()),

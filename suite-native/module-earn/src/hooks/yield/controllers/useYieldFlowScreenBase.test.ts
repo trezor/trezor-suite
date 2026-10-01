@@ -48,7 +48,6 @@ describe('useYieldFlowScreenBase', () => {
         await renderHookWithBasicProvider(() =>
             useYieldFlowScreenBase({
                 flowType: 'redeem',
-                messageSystemType: 'withdraw',
                 routeParams,
             }),
         );
@@ -57,6 +56,16 @@ describe('useYieldFlowScreenBase', () => {
             expect.objectContaining({ flowType: 'redeem' }),
         );
         expect(useMessageSystemYieldMock).toHaveBeenCalledWith('withdraw', {
+            vaultContractAddress,
+        });
+    });
+
+    it('keeps the flow type as the message-system key for the deposit flow', async () => {
+        await renderHookWithBasicProvider(() =>
+            useYieldFlowScreenBase({ flowType: 'deposit', routeParams }),
+        );
+
+        expect(useMessageSystemYieldMock).toHaveBeenCalledWith('deposit', {
             vaultContractAddress,
         });
     });

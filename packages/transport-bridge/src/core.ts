@@ -1,5 +1,6 @@
 import { WebUSB, usb } from 'usb';
 
+import type { Log } from '@trezor/logger';
 import {
     type TransportProtocol,
     bridge as protocolBridge,
@@ -31,7 +32,6 @@ import {
     success,
     unknownError,
 } from '@trezor/transport-common';
-import { type Log } from '@trezor/utils';
 
 export const createCore = (apiArg: 'usb' | 'udp' | AbstractApi, logger?: Log) => {
     let api: AbstractApi;

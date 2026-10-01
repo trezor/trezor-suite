@@ -7,6 +7,7 @@ import { events, injectDesktopAnalytics } from '@suite/analytics';
 import { selectIsDebugModeActive } from '@suite/debug';
 import { useDevice } from '@suite/device';
 import { useServices } from '@suite-common/dependency-injection';
+import { selectHasBitcoinOnlyFirmware } from '@suite-common/device';
 import { selectSupportedNetworkSymbols } from '@suite-common/networks';
 import { type TradingAssetOption } from '@suite-common/trading';
 import { selectAccounts, selectEnabledNetworks } from '@suite-common/wallet-core';
@@ -31,20 +32,23 @@ type GlobalReceiveModalProps = {
 };
 
 export const GlobalReceiveModal = ({ onCancel, onSubmit }: GlobalReceiveModalProps) => {
-    const { analytics } = useServices(injectDesktopAnalytics);
-    const { device } = useDevice();
-    const { isDiscoveryRunning } = useDiscovery();
-    const accountModal = useModal();
-    const [activeTab, setActiveTab] = useState<GlobalReceiveTab>('assets');
-    const [receiveStep, setReceiveStep] = useState<GlobalReceiveStep>('search');
-    const [selectedAssetCryptoId, setSelectedAssetCryptoId] = useState<CryptoId>();
-    const [wasSelectedAssetNetworkInactive, setWasSelectedAssetNetworkInactive] = useState(false);
-
+    const isBitcoinOnlyFirmware = useSelector(selectHasBitcoinOnlyFirmware);
     const accounts = useSelector(selectAccounts);
     const enabledNetworks = useSelector(selectEnabledNetworks);
     const supportedNetworks = useSelector(selectSupportedNetworkSymbols);
     const isDebug = useSelector(selectIsDebugModeActive);
     const filledSearch = useSelector(globalSendReceiveFiltersSelectors.filledSearch);
+
+    const { analytics } = useServices(injectDesktopAnalytics);
+    const { device } = useDevice();
+    const { isDiscoveryRunning } = useDiscovery();
+    const accountModal = useModal();
+    const [activeTab, setActiveTab] = useState<GlobalReceiveTab>(
+        isBitcoinOnlyFirmware ? 'accounts' : 'assets',
+    );
+    const [receiveStep, setReceiveStep] = useState<GlobalReceiveStep>('search');
+    const [selectedAssetCryptoId, setSelectedAssetCryptoId] = useState<CryptoId>();
+    const [wasSelectedAssetNetworkInactive, setWasSelectedAssetNetworkInactive] = useState(false);
 
     const { assets, balances, networks, catalogStatus, retry } = useGlobalReceiveAssets();
 

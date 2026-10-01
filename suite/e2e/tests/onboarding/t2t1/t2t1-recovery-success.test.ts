@@ -8,9 +8,9 @@ test.describe('Onboarding - recover wallet T2T1', { tag: ['@T2T1'] }, () => {
         setupEmulator: false,
     });
 
-    test.beforeEach(async ({ analyticsSection, onboardingPage }) => {
+    test.beforeEach(async ({ onboardingPage }) => {
         await onboardingPage.disableNecessaryFirmwareChecks();
-        await analyticsSection.passThroughAnalytics();
+        await onboardingPage.passThroughAnalyticsAndDeviceCheck();
     });
 
     test(

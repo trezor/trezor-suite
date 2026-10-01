@@ -1,6 +1,6 @@
 import { type UnknownAction } from '@reduxjs/toolkit';
 
-import { createTestStore } from '@suite-common/test-utils';
+import { createTestCompositionRoot } from '@suite-common/test-utils';
 import {
     checkIsActiveRouteAnyOf,
     checkIsDeviceOnboardingFocused,
@@ -22,6 +22,7 @@ import {
     thpPairingNavigationFixtures,
 } from './__fixtures__/deviceConnectionFixtures';
 import { deviceConnectionMiddleware } from './middlewares/deviceConnectionMiddleware';
+import { type NativeDeviceRootState } from './selectors';
 
 jest.mock('@suite-native/navigation', () => {
     const navigation = jest.requireActual('@suite-native/navigation');
@@ -40,14 +41,13 @@ jest.mock('@suite-native/navigation', () => {
 });
 
 const createMockStoreAndDispatch = (initialState: any, action: UnknownAction) => {
-    const mockStore = createTestStore({
-        extra: undefined,
+    const { store } = createTestCompositionRoot<void, NativeDeviceRootState>({
         middleware: [deviceConnectionMiddleware.middleware],
         preloadedState: initialState,
-    });
-    mockStore.dispatch(action);
+    }).services;
+    store.dispatch(action);
 
-    return mockStore;
+    return store;
 };
 
 describe('deviceConnectionMiddleware', () => {

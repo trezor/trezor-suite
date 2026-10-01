@@ -3,8 +3,10 @@ import { useForm } from 'react-hook-form';
 import { act, waitFor } from '@testing-library/react';
 import { type CryptoId, type ExchangeTrade } from 'invity-api';
 
-import { events } from '@suite/analytics';
+import { type DesktopAnalyticsDep, events } from '@suite/analytics';
 import { mockDesktopAnalytics } from '@suite/analytics/mocks';
+import { type AddressValidatorDep } from '@suite-common/networks';
+import { type WithServices } from '@suite-common/redux-utils';
 import { createTestCompositionRoot, renderHookWithStoreProvider } from '@suite-common/test-utils';
 import {
     TRADING_EXCHANGE_FORM_CEX,
@@ -20,6 +22,8 @@ import {
     toNetworkSymbolNonTestnet,
 } from '@suite-common/wallet-config';
 import { mockAccountKey } from '@suite-common/wallet-types/mocks';
+
+import { type AppState } from 'src/reducers/store';
 
 import { useExchangeQuotes } from './useExchangeQuotes';
 
@@ -146,13 +150,10 @@ const renderExchangeQuotes = (
     const { receiveAddress, receiveAccountKey, receiveAccountSymbol } = options;
     const network = 'network' in options ? options.network : getNetwork(btcSymbol);
     const report = jest.fn();
-    const services = {
-        networks: { addressValidator: mockAddressValidator },
-        analytics: mockDesktopAnalytics(report),
-    };
-
-    const root = createTestCompositionRoot({
-        extra: { services },
+    const { services } = createTestCompositionRoot<
+        WithServices<DesktopAnalyticsDep & { networks: AddressValidatorDep }>,
+        AppState
+    >({
         preloadedState: {
             wallet: {
                 trading: {
@@ -160,6 +161,10 @@ const renderExchangeQuotes = (
                 },
             },
         },
+        services: () => ({
+            networks: { addressValidator: mockAddressValidator },
+            analytics: mockDesktopAnalytics(report),
+        }),
     });
 
     const rendered = renderHookWithStoreProvider(
@@ -182,7 +187,7 @@ const renderExchangeQuotes = (
             return { methods, quotes };
         },
         {
-            root,
+            services,
             initialProps: {
                 currentNetwork: network,
                 currentReceiveAccountKey: receiveAccountKey,

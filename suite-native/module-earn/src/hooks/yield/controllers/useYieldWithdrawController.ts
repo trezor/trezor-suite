@@ -66,7 +66,6 @@ export const useYieldWithdrawController = () => {
 
     const { isFocused, messageSystem, session, yieldFlowData } = useYieldFlowScreenBase({
         flowType,
-        messageSystemType: 'withdraw',
         routeParams: route.params,
         shouldDisposeSessionOnGoBack: true,
     });

@@ -67,7 +67,7 @@ const createThunkDeps = (
                 showConnectLogs: false,
             })),
             getThpSettings: asGetter(() => ({ pairingMethods: ['CodeEntry'] })),
-            connectInitUiEventHooks: {},
+            connectInitUIEventHooks: {},
             thpHostName: undefined,
             lockDevice: mock<LockDevice>(),
             ...services,
@@ -313,11 +313,11 @@ describe('TrezorConnect Actions', () => {
         expect(onConnectUnacquired).toHaveBeenCalledWith(unacquiredPayload, []);
     });
 
-    it('connectInitUiEventHooks are called per action.type forwarded from the global listener', async () => {
+    it('connectInitUIEventHooks are called per action.type forwarded from the global listener', async () => {
         const onInvalidPinDepleted = jest.fn();
         const onRequestWord = jest.fn();
         const { actions, dispatch, getState, extra } = createThunkDeps({
-            connectInitUiEventHooks: {
+            connectInitUIEventHooks: {
                 [UI_EVENTS.PIN_INVALID_ATTEMPTS_DEPLETED]: onInvalidPinDepleted,
                 [UI_REQUESTS.REQUEST_WORD]: onRequestWord,
             },

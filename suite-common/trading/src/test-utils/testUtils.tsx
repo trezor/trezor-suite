@@ -1,6 +1,10 @@
 import { combineReducers } from '@reduxjs/toolkit';
 
-import { type NetworksRootState, networksReducer } from '@suite-common/networks';
+import {
+    type NetworksRootState,
+    type NetworksState,
+    networksReducer,
+} from '@suite-common/networks';
 import {
     type RenderHookOptions,
     createTestCompositionRoot,
@@ -35,6 +39,15 @@ export type TradingTestStateWithWalletSettings = {
     wallet: {
         trading: TradingState;
         settings: WalletSettingsState;
+        fiat: FiatRatesState;
+    };
+};
+
+type State = {
+    networks: NetworksState;
+    wallet: {
+        trading: TradingState;
+        settings: { localCurrency: string };
         fiat: FiatRatesState;
     };
 };
@@ -138,7 +151,7 @@ export const createSellInfoState = (providerInfos: Record<string, any> = {}): an
  *
  * This utility automatically creates a Redux store with the trading reducer
  * and wraps the hook in a Provider. It returns the standard React Testing Library
- * hook result plus the store instance for state assertions.
+ * hook result plus the test services; assert state through `services.store`.
  *
  * @template Result - Return type of the hook
  * @template Props - Props type for the hook (for rerendering)
@@ -146,7 +159,7 @@ export const createSellInfoState = (providerInfos: Record<string, any> = {}): an
  * @param options - Rendering options
  * @param options.preloadedState - Initial Redux state for the store
  * @param options.initialProps - Initial props to pass to the hook
- * @returns Hook result with additional `store` property
+ * @returns Hook result with additional `services` property (store in `services.store`)
  *
  * @example
  * ```ts
@@ -156,7 +169,7 @@ export const createSellInfoState = (providerInfos: Record<string, any> = {}): an
  * );
  *
  * // With preloaded state
- * const { result, store } = renderHookWithTradingStore(
+ * const { result, services } = renderHookWithTradingStore(
  *   () => useProviderMetadataChangeEffect('buy', 'changenow', true),
  *   {
  *     preloadedState: createTradingTestState({
@@ -186,7 +199,7 @@ export const renderHookWithTradingStore = <Result, Props = unknown>(
     callback: (props: Props) => Result,
     { preloadedState, ...options }: RenderHookWithTradingStoreOptions<Props> = {},
 ) => {
-    const root = createTestCompositionRoot({
+    const { services } = createTestCompositionRoot<void, State>({
         reducer: combineReducers({
             networks: networksReducer,
             wallet: combineReducers({
@@ -206,9 +219,9 @@ export const renderHookWithTradingStore = <Result, Props = unknown>(
 
     return {
         ...renderHookWithStoreProvider(callback, {
-            root,
+            services,
             ...options,
         }),
-        store: root.store,
+        services,
     };
 };

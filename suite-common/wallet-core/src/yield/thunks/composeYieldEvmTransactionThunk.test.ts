@@ -1,12 +1,14 @@
 import { combineReducers } from '@reduxjs/toolkit';
 
-import { deviceInitialState } from '@suite-common/device';
-import { createTestStore } from '@suite-common/test-utils';
+import { createTestCompositionRoot } from '@suite-common/test-utils';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { type FeeInfo, asAccountDescriptor } from '@suite-common/wallet-types';
 import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
 
-import { composeYieldEvmTransactionThunk } from './composeYieldEvmTransactionThunk';
+import {
+    type ComposeYieldEvmTransactionThunkState,
+    composeYieldEvmTransactionThunk,
+} from './composeYieldEvmTransactionThunk';
 import { accountsInitialState } from '../../accounts/accountsReducer';
 import { blockchainInitialState } from '../../blockchain/blockchainReducer';
 import { feesReducer } from '../../fees/feesReducer';
@@ -51,10 +53,8 @@ const buildFeeInfo = (levels: FeeInfo['levels']): FeeInfo => ({
 });
 
 const initStore = (feeInfo = buildFeeInfo([normalLevel])) =>
-    createTestStore({
-        extra: undefined,
+    createTestCompositionRoot<void, ComposeYieldEvmTransactionThunkState>({
         reducer: combineReducers({
-            device: () => deviceInitialState,
             wallet: combineReducers({
                 accounts: () => accountsInitialState,
                 blockchain: () => blockchainInitialState,
@@ -63,7 +63,6 @@ const initStore = (feeInfo = buildFeeInfo([normalLevel])) =>
             }),
         }),
         preloadedState: {
-            device: deviceInitialState,
             wallet: {
                 accounts: accountsInitialState,
                 blockchain: blockchainInitialState,
@@ -71,7 +70,7 @@ const initStore = (feeInfo = buildFeeInfo([normalLevel])) =>
                 transactions: transactionsInitialState,
             },
         },
-    });
+    }).services.store;
 
 const composeTransaction = async (
     payload: Parameters<typeof composeYieldEvmTransactionThunk>[0],

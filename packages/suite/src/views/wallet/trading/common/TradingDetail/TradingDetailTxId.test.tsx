@@ -2,8 +2,10 @@ import '@suite-common/test-utils/globalOverrides';
 
 import userEvent from '@testing-library/user-event';
 
+import { type DesktopAnalyticsDep } from '@suite/analytics';
 import { mockDesktopAnalytics } from '@suite/analytics/mocks';
 import { openModal } from '@suite/modal';
+import { type WithServices } from '@suite-common/redux-utils';
 import { createTestCompositionRoot } from '@suite-common/test-utils';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { transactionsInitialState } from '@suite-common/wallet-core';
@@ -46,15 +48,16 @@ const getInitialState = (): AppState => ({
 
 describe('TradingDetailTxId', () => {
     it('opens the transaction detail of the account holding the transaction', async () => {
-        const services = { analytics: mockDesktopAnalytics() };
-        const root = createTestCompositionRoot({
-            extra: { services },
-            preloadedState: getInitialState(),
-        });
-        const { getActions } = root.services;
+        const { services } = createTestCompositionRoot<WithServices<DesktopAnalyticsDep>, AppState>(
+            {
+                preloadedState: getInitialState(),
+                services: () => ({ analytics: mockDesktopAnalytics() }),
+            },
+        );
+        const { getActions } = services.store;
 
         const { container } = renderWithProviders(
-            root,
+            services,
             <TradingDetailTxId
                 value={payoutTxid}
                 account={sendAccount}
@@ -80,15 +83,16 @@ describe('TradingDetailTxId', () => {
     });
 
     it('falls back to the send account when the transaction is not on the receive account', async () => {
-        const services = { analytics: mockDesktopAnalytics() };
-        const root = createTestCompositionRoot({
-            extra: { services },
-            preloadedState: getInitialState(),
-        });
-        const { getActions } = root.services;
+        const { services } = createTestCompositionRoot<WithServices<DesktopAnalyticsDep>, AppState>(
+            {
+                preloadedState: getInitialState(),
+                services: () => ({ analytics: mockDesktopAnalytics() }),
+            },
+        );
+        const { getActions } = services.store;
 
         const { container } = renderWithProviders(
-            root,
+            services,
             <TradingDetailTxId
                 value="signedSendTxid"
                 account={sendAccount}

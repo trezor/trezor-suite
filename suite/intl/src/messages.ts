@@ -11364,10 +11364,6 @@ export const messages = defineMessages({
         defaultMessage:
             'We recommend leaving {amount} {networkDisplaySymbol} so you can pay voting fees.',
     },
-    TR_EARN_TRON_CLAIM_ADDRESS: {
-        id: 'TR_EARN_TRON_CLAIM_ADDRESS',
-        defaultMessage: 'Claim address',
-    },
     TR_EARN_TRON_WITHDRAW_COMPLETE: {
         id: 'TR_EARN_TRON_WITHDRAW_COMPLETE',
         defaultMessage: 'Withdrawal complete',
@@ -11391,6 +11387,10 @@ export const messages = defineMessages({
     TR_EARN_TRON_CLAIM_CONFIRM: {
         id: 'TR_EARN_TRON_CLAIM_CONFIRM',
         defaultMessage: 'Claim voting rewards?',
+    },
+    TR_EARN_TRON_CLAIM_WITHDRAW: {
+        id: 'TR_EARN_TRON_CLAIM_WITHDRAW',
+        defaultMessage: 'Claim unfrozen balance?',
     },
     TR_EARN_TRON_CLAIM_COMPLETE: {
         id: 'TR_EARN_TRON_CLAIM_COMPLETE',

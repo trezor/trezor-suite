@@ -13,15 +13,12 @@ import { useYieldSession } from '../useYieldSession';
 
 type UseYieldFlowScreenBaseParams = {
     flowType: YieldPositionFlowType;
-    /** Redeem uses the withdraw message-system key. */
-    messageSystemType?: YieldPositionFlowType;
     routeParams: YieldFlowParams;
     shouldDisposeSessionOnGoBack?: boolean;
 };
 
 export const useYieldFlowScreenBase = ({
     flowType,
-    messageSystemType = flowType,
     routeParams,
     shouldDisposeSessionOnGoBack,
 }: UseYieldFlowScreenBaseParams) => {
@@ -31,6 +28,7 @@ export const useYieldFlowScreenBase = ({
     const { flowKey, vault } = yieldFlowData;
 
     const vaultContractAddress = vault ? getYieldVaultContractAddress(vault) : undefined;
+    const messageSystemType = flowType === 'redeem' ? 'withdraw' : flowType;
     const messageSystem = useMessageSystemYield(messageSystemType, { vaultContractAddress });
 
     const session = useYieldSession({

@@ -112,7 +112,6 @@ export const Feature = {
         yield: {
             deposit: 'earn.yield.deposit',
             withdraw: 'earn.yield.withdraw',
-            redeem: 'earn.yield.redeem',
             claim: 'earn.yield.claim',
         } as const satisfies Record<YieldFlowType, string>,
         // Wrapping the native coin into its wrapped-native token (e.g. ETH → WETH) and back. It is

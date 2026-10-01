@@ -564,7 +564,7 @@ const constructNewFlow = ({
     }
 
     if (tronStaking?.kind === 'withdraw') {
-        outputs.push({ type: 'tron-withdraw', value: account.descriptor });
+        outputs.push({ type: 'tron-withdraw', value: '' });
 
         return outputs;
     }

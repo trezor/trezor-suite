@@ -22,6 +22,7 @@ import {
     type ActivityCenterStackRoutes,
     type AddCoinAccountStackRoutes,
     type AppTabsRoutes,
+    type AssetsStackRoutes,
     type AuthorizeDeviceStackRoutes,
     type DemoAccountQuestionnaireStackRoutes,
     type DeviceAuthenticityStackRoutes,
@@ -45,6 +46,7 @@ import {
     type RootStackRoutes,
     type SendStackRoutes,
     type SettingsStackRoutes,
+    type SignAndVerifyStackRoutes,
     type StellarManageTokenStackRoutes,
     type TradingStackRoutes,
     type TransactionDetailStackRoutes,
@@ -60,8 +62,8 @@ type AccountIdentityParams = RequireAllOrNone<
 >;
 
 export type CloseActionType = 'back' | 'close';
-export type AccountAssetsTab = 'tokens' | 'defi' | 'hidden' | 'inactive';
-export type AccountAssetsFlow = 'assets' | 'send';
+export type AccountOverviewTab = 'tokens' | 'defi' | 'hidden' | 'inactive';
+export type AccountOverviewFlow = 'overview' | 'send';
 export type DeviceSuspicionCause =
     | 'deviceLooksDifferent'
     | 'firmwareAlreadyInstalled'
@@ -89,6 +91,18 @@ export type AccountsStackParamList = {
 export type AccountDetailStackParamList = {
     [AccountDetailStackRoutes.AccountDetail]: AccountDetailParams;
     [AccountDetailStackRoutes.AccountSettings]: { accountKey: AccountKey };
+};
+
+export type SignAndVerifyStackParamList = {
+    [SignAndVerifyStackRoutes.DeviceConnectionGuard]: undefined;
+    [SignAndVerifyStackRoutes.ContinueOnTrezor]: undefined;
+};
+
+export type AssetsStackParamList = {
+    [AssetsStackRoutes.AssetDetail]: {
+        networkSymbol: NetworkSymbol;
+        tokenContract?: TokenAddress;
+    };
 };
 
 export type EarnStackParamList = {
@@ -509,16 +523,19 @@ export type PassphraseStackParamList = {
 export type RootStackParamList = {
     [RootStackRoutes.AppTabs]: NavigatorScreenParams<AppTabsParamList>;
     [RootStackRoutes.AccountDetailStack]: NavigatorScreenParams<AccountDetailStackParamList>;
-    [RootStackRoutes.AccountAssets]: {
+    [RootStackRoutes.AssetsStack]: NavigatorScreenParams<AssetsStackParamList>;
+    [RootStackRoutes.AccountOverview]: {
         accountKey: AccountKey;
-        tab?: AccountAssetsTab;
-        flowType?: AccountAssetsFlow;
+        tab?: AccountOverviewTab;
+        flowType?: AccountOverviewFlow;
     } & AccountIdentityParams;
     [RootStackRoutes.OnboardingStack]: NavigatorScreenParams<OnboardingStackParamList>;
     [RootStackRoutes.DeviceOnboardingStack]: NavigatorScreenParams<DeviceOnboardingStackParamList>;
     [RootStackRoutes.AuthorizeDeviceStack]: NavigatorScreenParams<AuthorizeDeviceStackParamList>;
     [RootStackRoutes.AccountsImport]: NavigatorScreenParams<AccountsImportStackParamList>;
     [RootStackRoutes.DemoAccountQuestionnaireStack]: NavigatorScreenParams<DemoAccountQuestionnaireStackParamList>;
+    [RootStackRoutes.SignAndVerify]: { accountKey: AccountKey };
+    [RootStackRoutes.SignAndVerifyStack]: undefined;
     [RootStackRoutes.TransactionDetailStack]: NavigatorScreenParams<TransactionDetailStackParamList>;
     [RootStackRoutes.DevUtils]: undefined;
     [RootStackRoutes.MessageSystemManager]: undefined;

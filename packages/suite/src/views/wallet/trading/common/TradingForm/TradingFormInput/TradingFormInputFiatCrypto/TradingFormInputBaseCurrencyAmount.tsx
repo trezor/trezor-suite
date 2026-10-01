@@ -94,6 +94,10 @@ export const TradingFormInputBaseCurrencyAmount = ({
     const baseCurrencyForm = useForm<BaseCurrencyAmountForm>({
         defaultValues: { [BASE_CURRENCY_AMOUNT_FIELD]: '' },
     });
+    const baseCurrencyAmount = useWatch({
+        control: baseCurrencyForm.control,
+        name: BASE_CURRENCY_AMOUNT_FIELD,
+    });
     const writtenCryptoAmountRef = useRef<string | undefined>(undefined);
 
     const currencyLabel = useMemo(() => {
@@ -194,7 +198,7 @@ export const TradingFormInputBaseCurrencyAmount = ({
 
     return (
         <Row
-            gap={4}
+            gap={2}
             flex="1"
             minWidth={0}
             alignItems="center"
@@ -205,7 +209,8 @@ export const TradingFormInputBaseCurrencyAmount = ({
             <Text
                 typographyStyle="body-sm"
                 intent={hasError ? 'critical' : 'neutral'}
-                priority={hasError ? 'primary' : 'secondary'}
+                priority="primary"
+                isDisabled={!hasError && !baseCurrencyAmount}
                 data-testid="@trading/form/base-currency-label"
             >
                 {currencyLabel}
@@ -216,7 +221,10 @@ export const TradingFormInputBaseCurrencyAmount = ({
                 flex="1"
                 name={BASE_CURRENCY_AMOUNT_FIELD}
                 placeholder="0"
-                style={{ color: hasError ? theme.contentCritical : undefined }}
+                style={{
+                    fontFeatureSettings: 'normal',
+                    color: hasError ? theme.contentCritical : undefined,
+                }}
                 locale={locale}
                 onChange={handleChange}
                 isDisabled={!rate}

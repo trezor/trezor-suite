@@ -100,7 +100,7 @@ const renderAssetSelect = (
     changeImplementation: UseTradingExchangeAssetSelectParams['onCryptoCurrencyChange'] = () =>
         Promise.resolve(),
 ) => {
-    const root = createTestCompositionRoot({});
+    const { services } = createTestCompositionRoot<void, unknown>({});
     const onCryptoCurrencyChange = jest.fn(changeImplementation);
     const setAmountLimits = jest.fn();
 
@@ -115,7 +115,7 @@ const renderAssetSelect = (
 
             return { methods, handlers };
         },
-        { root },
+        { services },
     );
 
     return { result, onCryptoCurrencyChange, setAmountLimits };

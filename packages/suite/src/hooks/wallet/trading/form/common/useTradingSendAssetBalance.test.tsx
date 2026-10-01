@@ -10,6 +10,8 @@ import {
     mockWalletAccount,
 } from '@suite-common/wallet-types/mocks';
 
+import { type AppState } from 'src/reducers/store';
+
 import { useTradingSendAssetBalance } from './useTradingSendAssetBalance';
 
 const btcSymbol = toNetworkSymbolNonTestnet('btc');
@@ -55,7 +57,7 @@ const SEND_CRYPTO_SELECT: TradingAssetSellOption = {
 const OUTPUT_CURRENCY: BaseCurrencyOption = { value: 'usd', label: 'USD' };
 
 const renderSendAssetBalance = (account = ACCOUNT, tokenAddress: string | null = null) => {
-    const root = createTestCompositionRoot({
+    const { services } = createTestCompositionRoot<void, AppState>({
         preloadedState: { wallet: { accounts: [account] } },
     });
 
@@ -69,7 +71,7 @@ const renderSendAssetBalance = (account = ACCOUNT, tokenAddress: string | null =
                 composedLevels: undefined,
                 composedTransactionInfo: { selectedFee: undefined },
             }),
-        { root },
+        { services },
     );
 };
 

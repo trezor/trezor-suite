@@ -5,10 +5,11 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { isDevelopOrDebugEnv } from '@suite-native/config';
 import { BootloaderModeScreen } from '@suite-native/device-bootloader-mode';
 import { AccountDetailStackNavigator } from '@suite-native/module-account-detail';
-import { AccountAssetsScreen } from '@suite-native/module-accounts';
+import { AccountOverviewScreen } from '@suite-native/module-accounts';
 import { AccountsImportStackNavigator } from '@suite-native/module-accounts-import';
 import { ActivityCenterStackNavigator } from '@suite-native/module-activity-center';
 import { AddCoinAccountStackNavigator } from '@suite-native/module-add-accounts';
+import { AssetsStackNavigator } from '@suite-native/module-assets';
 import { DeviceCompromisedModalScreen } from '@suite-native/module-authenticity-checks';
 import { AuthorizeDeviceStackNavigator } from '@suite-native/module-authorize-device';
 import {
@@ -49,6 +50,7 @@ import { PassphraseStackNavigator } from '@suite-native/module-passphrase';
 import { ReceiveStackNavigator } from '@suite-native/module-receive';
 import { SendStackNavigator } from '@suite-native/module-send';
 import { SettingsStackNavigator } from '@suite-native/module-settings';
+import { SignAndVerifyScreen, SignAndVerifyStackNavigator } from '@suite-native/module-sign-verify';
 import { StellarManageTokenStackNavigator } from '@suite-native/module-stellar-token-management';
 import {
     TradingBuyPreviewScreen,
@@ -116,10 +118,11 @@ export const RootStackNavigator = () => {
                 name={RootStackRoutes.AccountDetailStack}
                 component={AccountDetailStackNavigator}
             />
+            <RootStack.Screen name={RootStackRoutes.AssetsStack} component={AssetsStackNavigator} />
             <RootStack.Screen
-                options={{ title: RootStackRoutes.AccountAssets }}
-                name={RootStackRoutes.AccountAssets}
-                component={AccountAssetsScreen}
+                options={{ title: RootStackRoutes.AccountOverview }}
+                name={RootStackRoutes.AccountOverview}
+                component={AccountOverviewScreen}
             />
             <RootStack.Screen
                 name={RootStackRoutes.TransactionDetailStack}
@@ -327,6 +330,14 @@ export const RootStackNavigator = () => {
                 <RootStack.Screen
                     name={RootStackRoutes.AddCoinAccountStack}
                     component={AddCoinAccountStackNavigator}
+                />
+                <RootStack.Screen
+                    name={RootStackRoutes.SignAndVerify}
+                    component={SignAndVerifyScreen}
+                />
+                <RootStack.Screen
+                    name={RootStackRoutes.SignAndVerifyStack}
+                    component={SignAndVerifyStackNavigator}
                 />
                 <RootStack.Screen
                     name={RootStackRoutes.ReceiveStack}

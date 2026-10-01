@@ -279,7 +279,6 @@ const getOutputTitle = (
         case 'tron-vote':
             return <Translation id="TR_SUMMARY" />;
         case 'tron-withdraw':
-            return <Translation id="TR_SUMMARY" />;
         case 'tron-claim':
             return <Translation id="TR_STAKE_CLAIM" />;
         default:
@@ -564,7 +563,7 @@ const getOutputLines = ({
 
             return [
                 {
-                    id: `${type}-amount`,
+                    id: 'approve-amount',
                     label: (
                         <Translation
                             id={isApprovalTx ? 'TR_APPROVE_AMOUNT_TITLE' : 'TR_REVOKE_AMOUNT_TITLE'}
@@ -575,7 +574,7 @@ const getOutputLines = ({
                     type,
                 },
                 {
-                    id: `${type}-chain`,
+                    id: 'approve-chain',
                     label: <Translation id="TR_CHAIN" />,
                     value: value2,
                     type: 'data',
@@ -619,10 +618,9 @@ const getOutputLines = ({
         case 'tron-withdraw':
             return [
                 {
-                    id: 'address',
-                    type: 'safe-address',
-                    label: <Translation id="TR_EARN_TRON_CLAIM_ADDRESS" />,
-                    value,
+                    id: 'tron-withdraw',
+                    type: 'data',
+                    value: translationString('TR_EARN_TRON_CLAIM_WITHDRAW'),
                 },
             ];
         case 'tron-claim':

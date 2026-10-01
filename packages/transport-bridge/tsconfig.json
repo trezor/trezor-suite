@@ -4,6 +4,7 @@
     "references": [
         { "path": "../components" },
         { "path": "../eslint" },
+        { "path": "../logger" },
         { "path": "../node-utils" },
         { "path": "../protocol" },
         { "path": "../theme" },

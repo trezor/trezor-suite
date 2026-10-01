@@ -7,6 +7,7 @@ import {
     isFinalStatus,
     parseCryptoId,
     selectTradingExchangeFormStep,
+    selectTradingExchangeIsLoading,
     selectTradingExchangeSelectedQuote,
 } from '@suite-common/trading';
 import { selectSendPrecomposedTx } from '@suite-common/wallet-core';
@@ -42,6 +43,7 @@ export const useExchangeSignTransaction = ({
     const precomposedTransaction = useSelector(selectSendPrecomposedTx);
     const fromAccount = useSelector(selectExchangeSelectedSendAccount);
     const formStep = useSelector(selectTradingExchangeFormStep);
+    const isConfirmTradeLoading = useSelector(selectTradingExchangeIsLoading);
 
     const isSignDataFlow = formStep === 'SIGN_DATA';
     const isTXFinalType = precomposedTransaction?.type === 'final';
@@ -49,7 +51,8 @@ export const useExchangeSignTransaction = ({
 
     const { isLoading: isSimulationLoading } = useDexExchangeTxSimulation();
 
-    const isSigningPreparationLoading = (!isSignDataFlow && !isTXFinalType) || isSimulationLoading;
+    const isSigningPreparationLoading =
+        (!isSignDataFlow && !isTXFinalType) || isSimulationLoading || isConfirmTradeLoading;
 
     const handleSignTransaction = useCallback(() => {
         if (!quote || !fromAccount) {

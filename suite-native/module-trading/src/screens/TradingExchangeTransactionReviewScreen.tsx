@@ -23,6 +23,7 @@ export const TradingExchangeTransactionReviewScreen = ({
         signDataAndConfirm,
         isTransactionSendConsentRequested,
         resolveTransactionSendConsent,
+        isDexExchange,
     } = useExchangeFlow({ flowType });
 
     const analyticsReportCallback = useExchangeAnalyticReportCallback();
@@ -40,6 +41,7 @@ export const TradingExchangeTransactionReviewScreen = ({
             resolveTransactionSendConsent={resolveTransactionSendConsent}
             reportToAnalytics={analyticsReportCallback}
             exchangeFlowType={flowType}
+            isDexExchange={isDexExchange}
         />
     );
 };

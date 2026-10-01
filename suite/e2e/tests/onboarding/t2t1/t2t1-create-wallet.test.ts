@@ -15,9 +15,9 @@ test.describe('Onboarding - create wallet', { tag: ['@T2T1'] }, () => {
     test(
         'Success (Shamir backup)',
         { annotation: createTestAnnotation({ stream: TestStream.Growth }) },
-        async ({ device, analyticsSection, onboardingPage, devicePrompt }) => {
+        async ({ device, onboardingPage, devicePrompt }) => {
             await test.step('Device onboarding steps', async () => {
-                await analyticsSection.passThroughAnalytics();
+                await onboardingPage.passThroughAnalyticsAndDeviceCheck();
                 await onboardingPage.firmware.continueThroughFirmware();
             });
 

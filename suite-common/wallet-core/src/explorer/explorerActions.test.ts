@@ -1,12 +1,13 @@
 import { combineReducers } from '@reduxjs/toolkit';
 
 import { mockActionType, mockReducer } from '@suite-common/redux-utils/mocks';
-import { createTestStore } from '@suite-common/test-utils';
+import { createTestCompositionRoot } from '@suite-common/test-utils';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
 
 import { explorerActions } from './explorerActions';
 import {
     type ExplorerConfig,
+    type ExplorerState,
     explorerInitialState,
     prepareExplorerReducer,
 } from './explorerReducer';
@@ -18,8 +19,7 @@ const explorerReducer = prepareExplorerReducer({
 const btcSymbol = asNetworkSymbol('btc');
 
 const initStore = (state: Partial<ExplorerConfig> = {}) =>
-    createTestStore({
-        extra: undefined,
+    createTestCompositionRoot<void, ExplorerState>({
         reducer: {
             wallet: combineReducers({
                 explorer: explorerReducer,
@@ -30,7 +30,7 @@ const initStore = (state: Partial<ExplorerConfig> = {}) =>
                 explorer: { ...explorerInitialState, ...state },
             },
         },
-    });
+    }).services.store;
 
 describe('setExplorer', () => {
     test.each([

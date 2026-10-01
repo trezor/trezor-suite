@@ -363,6 +363,12 @@ export class TrezorUserEnvLinkClass extends TypedEmitter<WebsocketClientEvents> 
 
         return response;
     }
+    async getFeatures() {
+        await resolveAfter(EMU_RACE_CONDITION_WORKAROUND_DELAY);
+        const { response } = await this.client.send({ type: 'emulator-get-features' });
+
+        return response;
+    }
     async getPairingInfo(thp_channel_id: string, nfcData?: string) {
         // user-env expects something, cannot be undefined
         const d = nfcData ? Buffer.from(nfcData, 'hex') : undefined;

@@ -9,9 +9,13 @@ import {
     tradingThunks,
 } from '@suite-common/trading';
 import { mockGetSelectedAccount, mockGetTradingEnvironment } from '@suite-common/trading/mocks';
-import { type AccountsRootState, initialWalletSettingsState } from '@suite-common/wallet-core';
+import {
+    type AccountsRootState,
+    type WalletSettingsRootState,
+    initialWalletSettingsState,
+} from '@suite-common/wallet-core';
 import { type AccountKey, asAccountDescriptor } from '@suite-common/wallet-types';
-import { localeReducer } from '@suite-native/intl';
+import { type LocaleSliceRootState, localeReducer } from '@suite-native/intl';
 import {
     type PreloadedStatePartial,
     act,
@@ -26,20 +30,14 @@ import { useBuyData } from './useBuyData';
 import { useExchangeData } from '../exchange/useExchangeData';
 import { useSellData } from '../sell/useSellData';
 
-type State = TradingRootState & AccountsRootState;
+// The hook also selects wallet settings and locale while dispatching the trading load thunk.
+type State = TradingRootState & AccountsRootState & WalletSettingsRootState & LocaleSliceRootState;
 
 const btc1Account = getBtcAccount({ descriptor: asAccountDescriptor('btc1normal') });
 const btc2Account = getBtcAccount({ descriptor: asAccountDescriptor('btcAccount2') });
 const btc3Account = getBtcAccount({ descriptor: asAccountDescriptor('btcAccount3') });
 
 describe('useBuyData', () => {
-    const extra: LoadInitialDataThunkDeps = {
-        services: {
-            getSelectedAccount: mockGetSelectedAccount(),
-            getTradingEnvironment: mockGetTradingEnvironment(),
-        },
-    };
-
     const getAccounts = () => [
         btc1Account,
         btc2Account,
@@ -57,6 +55,16 @@ describe('useBuyData', () => {
         }),
     } as const;
 
+    const initStore = (preloadedState?: PreloadedStatePartial<State>) =>
+        createTestCompositionRoot<LoadInitialDataThunkDeps, State>({
+            reducer,
+            preloadedState,
+            services: () => ({
+                getSelectedAccount: mockGetSelectedAccount(),
+                getTradingEnvironment: mockGetTradingEnvironment(),
+            }),
+        }).services.store;
+
     const getInitializedStore = (tradingAccountKey: AccountKey | undefined) => {
         const tradingState: TradingState = getInitializedTradingState();
         tradingState.buy.tradingAccountKey = tradingAccountKey;
@@ -67,7 +75,7 @@ describe('useBuyData', () => {
             },
         };
 
-        return createTestCompositionRoot({ extra, reducer, preloadedState }).store;
+        return initStore(preloadedState);
     };
 
     const renderUseBuyData = async (
@@ -105,7 +113,7 @@ describe('useBuyData', () => {
                     }, 100);
                 }),
         );
-        const { store } = createTestCompositionRoot({ extra, reducer });
+        const store = initStore();
         const { result } = await renderUseBuyData(store);
 
         expect(result.current.isLoading).toBe(true);
@@ -113,7 +121,7 @@ describe('useBuyData', () => {
     });
 
     it('should settle after API queries are resolved', async () => {
-        const { store } = createTestCompositionRoot({ extra, reducer });
+        const store = initStore();
         const { result } = await renderUseBuyData(store);
 
         expect(result.current.isLoading).toBe(false);
@@ -127,7 +135,7 @@ describe('useBuyData', () => {
     ])(
         'reuses the catalog when remounting $section and refetches on Retry',
         async ({ useData }) => {
-            const { store } = createTestCompositionRoot({ extra, reducer });
+            const store = initStore();
             const buy = await renderUseBuyData(store);
             await buy.unmount();
             expect(global.fetch).toHaveBeenCalledTimes(4);
@@ -166,7 +174,7 @@ describe('useBuyData', () => {
             .spyOn(tradingThunks, 'loadInitialDataThunk')
             .mockImplementation((() => ({ type: 'TEST_ACTION' })) as () => any);
 
-        const { store } = createTestCompositionRoot({ extra, reducer });
+        const store = initStore();
         const { rerender } = await renderUseBuyData(store);
         await rerender({});
 
@@ -178,7 +186,7 @@ describe('useBuyData', () => {
             .spyOn(tradingThunks, 'loadInitialDataThunk')
             .mockImplementation((() => ({ type: 'TEST_ACTION' })) as () => any);
 
-        const { store } = createTestCompositionRoot({ extra, reducer });
+        const store = initStore();
         const { result } = await renderUseBuyData(store);
         await act(async () => {
             await result.current.refetch();

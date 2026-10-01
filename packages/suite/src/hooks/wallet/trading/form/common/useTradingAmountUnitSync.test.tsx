@@ -14,6 +14,8 @@ import { type Account } from '@suite-common/wallet-types';
 import { mockAccountKey, mockWalletAccount } from '@suite-common/wallet-types/mocks';
 import { PROTO } from '@trezor/connect';
 
+import { type AppState } from 'src/reducers/store';
+
 import { useTradingAmountUnitSync } from './useTradingAmountUnitSync';
 
 const btcSymbol = toNetworkSymbolNonTestnet('btc');
@@ -74,7 +76,7 @@ const DEFAULTS: TradingSellFormProps = {
 };
 
 const renderAmountUnitSync = (account: Account) => {
-    const root = createTestCompositionRoot({
+    const { services } = createTestCompositionRoot<void, AppState>({
         preloadedState: {
             wallet: { settings: { bitcoinAmountUnit: PROTO.AmountUnit.SATOSHI } },
         },
@@ -94,7 +96,7 @@ const renderAmountUnitSync = (account: Account) => {
 
             return methods;
         },
-        { root, initialProps: { account } },
+        { services, initialProps: { account } },
     );
 };
 

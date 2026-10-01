@@ -1,10 +1,10 @@
 import { combineReducers } from '@reduxjs/toolkit';
 
 import { deviceInitialState, selectSelectedDevice } from '@suite-common/device';
-import { createTestStore } from '@suite-common/test-utils';
+import { createTestCompositionRoot } from '@suite-common/test-utils';
 import TrezorConnect from '@trezor/connect';
 
-import { getNonceThunk } from './getNonce';
+import { type GetNonceThunkState, getNonceThunk } from './getNonce';
 
 jest.mock('@suite-common/device', () => ({
     ...jest.requireActual('@suite-common/device'),
@@ -34,12 +34,11 @@ describe('getNonce thunk', () => {
     });
 
     const createMockStore = () =>
-        createTestStore({
-            extra: undefined,
+        createTestCompositionRoot<void, GetNonceThunkState>({
             reducer: combineReducers({
                 device: () => deviceInitialState,
             }),
-        });
+        }).services.store;
 
     describe('successful nonce retrieval', () => {
         it('should successfully get nonce when device is available', async () => {

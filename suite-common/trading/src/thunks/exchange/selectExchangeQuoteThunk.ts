@@ -13,7 +13,7 @@ export type SelectExchangeQuoteThunkProps = {
     nextStep: () => void;
 };
 
-type SelectExchangeQuoteThunkState = TradingRootState;
+export type SelectExchangeQuoteThunkState = TradingRootState;
 
 export const selectExchangeQuoteThunk = createThunk<
     void,

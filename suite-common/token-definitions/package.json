@@ -29,9 +29,11 @@
         "@trezor/utils": "workspace:*"
     },
     "devDependencies": {
+        "@suite-common/http-client": "workspace:*",
         "@trezor/eslint": "workspace:*",
         "ajv": "^8.20.0",
         "jws": "^4.0.1",
-        "toml": "^4.1.2"
+        "toml": "^4.1.2",
+        "zod": "4.3.6"
     }
 }

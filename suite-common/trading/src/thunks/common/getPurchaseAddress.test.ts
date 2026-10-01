@@ -3,24 +3,26 @@ import { combineReducers } from '@reduxjs/toolkit';
 import { deviceInitialState } from '@suite-common/device';
 import { createThunk } from '@suite-common/redux-utils';
 import { mockActionType, mockReducer } from '@suite-common/redux-utils/mocks';
-import { createTestStore } from '@suite-common/test-utils';
+import { createTestCompositionRoot } from '@suite-common/test-utils';
 import {
     confirmAddressOnDeviceThunk,
     prepareWalletSettingsReducer,
 } from '@suite-common/wallet-core';
 import { type Account, AddressDisplayOptions } from '@suite-common/wallet-types';
 
-import { getPurchaseAddressThunk } from './getPurchaseAddress';
+import { type GetPurchaseAddressThunkState, getPurchaseAddressThunk } from './getPurchaseAddress';
 import { accounts } from '../../reducers/__fixtures__/account';
-import { initialState } from '../../reducers/tradingCommonReducer';
-import { prepareTradingReducer } from '../../reducers/tradingReducer';
 
-const tradingReducer = prepareTradingReducer({
-    actionTypes: { storageLoad: mockActionType('storageLoad') },
-});
 const walletSettingsReducer = prepareWalletSettingsReducer({
     actionTypes: { storageLoad: mockActionType('storageLoad') },
     reducers: { storageLoadWalletSettings: mockReducer() },
+});
+const reducer = combineReducers({
+    device: () => deviceInitialState,
+    wallet: combineReducers({
+        accounts: () => accounts,
+        settings: walletSettingsReducer,
+    }),
 });
 
 jest.mock('@suite-common/wallet-core', () => ({
@@ -57,26 +59,10 @@ describe('getPurchaseAddress thunk', () => {
         jest.clearAllMocks();
     });
 
-    const createMockStore = (preloadedState = {}) =>
-        createTestStore({
-            extra: undefined,
-            reducer: combineReducers({
-                device: () => deviceInitialState,
-                wallet: combineReducers({
-                    accounts: () => accounts,
-                    settings: walletSettingsReducer,
-                    trading: tradingReducer,
-                }),
-            }),
-            preloadedState: {
-                wallet: {
-                    trading: {
-                        ...initialState,
-                        ...preloadedState,
-                    },
-                },
-            },
-        });
+    const createMockStore = () =>
+        createTestCompositionRoot<void, GetPurchaseAddressThunkState>({
+            reducer,
+        }).services.store;
 
     describe('successful address confirmation', () => {
         it('should successfully get purchase address and MAC', async () => {
@@ -123,23 +109,17 @@ describe('getPurchaseAddress thunk', () => {
                 })),
             );
 
-            const storeWithNonChunked = createTestStore({
-                extra: undefined,
-                reducer: combineReducers({
-                    device: () => deviceInitialState,
-                    wallet: combineReducers({
-                        accounts: () => accounts,
-                        settings: walletSettingsReducer,
-                        trading: tradingReducer,
-                    }),
-                }),
+            const { store: storeWithNonChunked } = createTestCompositionRoot<
+                void,
+                GetPurchaseAddressThunkState
+            >({
+                reducer,
                 preloadedState: {
                     wallet: {
                         settings: { addressDisplayType: AddressDisplayOptions.ORIGINAL },
-                        trading: initialState,
                     },
                 },
-            });
+            }).services;
 
             const result = await storeWithNonChunked.dispatch(
                 getPurchaseAddressThunk({ account: mockAccount, address: mockAddress }),

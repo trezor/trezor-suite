@@ -1,4 +1,4 @@
-import { createTestStore } from '@suite-common/test-utils';
+import { createTestCompositionRoot } from '@suite-common/test-utils';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
 
 import { notificationsActions } from './notificationsActions';
@@ -15,15 +15,11 @@ interface InitStoreArgs {
     preloadedState?: NotificationsRootState;
 }
 
-const initStore = ({ preloadedState }: InitStoreArgs = {}) => {
-    const store = createTestStore({
-        extra: undefined,
+const initStore = ({ preloadedState }: InitStoreArgs = {}) =>
+    createTestCompositionRoot<void, NotificationsRootState>({
         reducer: { notifications: notificationsReducer },
         preloadedState,
-    });
-
-    return store;
-};
+    }).services.store;
 
 const mockedNotifications: NotificationsState = [
     {

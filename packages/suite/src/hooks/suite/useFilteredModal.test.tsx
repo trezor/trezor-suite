@@ -2,8 +2,8 @@ import { Provider } from 'react-redux';
 
 import { render } from '@testing-library/react';
 
-import type { State as ModalState } from '@suite/modal';
-import { createTestStore } from '@suite-common/test-utils';
+import type { ModalRootState, State as ModalState } from '@suite/modal';
+import { createTestCompositionRoot } from '@suite-common/test-utils';
 
 import { filters, fixtures } from './__fixtures__/useFilteredModal';
 import { useFilteredModal } from './useFilteredModal';
@@ -26,10 +26,9 @@ const Component = ({
 describe('Modal filtering', () => {
     fixtures.forEach(([desc, modal, expected]) => {
         it(desc, () => {
-            const store = createTestStore({
-                extra: undefined,
+            const { store } = createTestCompositionRoot<void, ModalRootState>({
                 preloadedState: { modal },
-            });
+            }).services;
             const results: Result[] = [];
             const { unmount } = render(
                 <Provider store={store}>

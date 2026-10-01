@@ -1,7 +1,8 @@
 export enum RootStackRoutes {
     AppTabs = 'AppTabs',
     AccountDetailStack = 'AccountDetailStack',
-    AccountAssets = 'AccountAssets',
+    AccountOverview = 'AccountOverview',
+    AssetsStack = 'AssetsStack',
     OnboardingStack = 'OnboardingStack',
     DeviceOnboardingStack = 'DeviceOnboardingStack',
     AccountsImport = 'AccountsImport',
@@ -20,6 +21,8 @@ export enum RootStackRoutes {
     DevUtils = 'DevUtils',
     MessageSystemManager = 'MessageSystemManager',
     MessageSystemExperiments = 'MessageSystemExperiments',
+    SignAndVerify = 'SignAndVerify',
+    SignAndVerifyStack = 'SignAndVerifyStack',
     TransactionDetailStack = 'TransactionDetailStack',
     ReceiveStack = 'ReceiveStack',
     SendStack = 'SendStack',
@@ -62,6 +65,10 @@ export enum RootStackRoutes {
 export enum AccountDetailStackRoutes {
     AccountDetail = 'AccountDetail',
     AccountSettings = 'AccountSettings',
+}
+
+export enum AssetsStackRoutes {
+    AssetDetail = 'AssetDetail',
 }
 
 export enum ActivityCenterStackRoutes {
@@ -249,6 +256,11 @@ export enum DemoAccountQuestionnaireStackRoutes {
 
 export enum AccountsStackRoutes {
     Accounts = 'Accounts',
+}
+
+export enum SignAndVerifyStackRoutes {
+    DeviceConnectionGuard = 'DeviceConnectionGuard',
+    ContinueOnTrezor = 'ContinueOnTrezor',
 }
 
 export enum EarnStackRoutes {

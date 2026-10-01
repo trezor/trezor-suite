@@ -21,6 +21,7 @@ uses a pure-JS (asm.js) build of the same CSL version, reduced to the parts coin
 | `scripts/csl-asmjs/trace.js`                | Records `keep-list.json` by running the coin-selection tests against the complete CSL build.     |
 | `scripts/csl-asmjs/traceWasmExports.cjs`    | Proxy used by `trace.js` to record touched exports.                                              |
 | `scripts/csl-asmjs/generate.test.ts`        | Fails when the committed build is stale or edited, by comparing hashes with `manifest.json`.     |
+| `scripts/csl-asmjs/verify.sh`               | Rebuilds `generated/csl-asmjs/` from scratch and fails unless it matches the committed files.    |
 | `jest.config.cjs`                           | Project `wasm`: all tests against the desktop (WASM) build. Includes `jest.config.asmjs.cjs`.    |
 | `jest.config.asmjs.cjs`                     | Project `asmjs`: parity and scenario tests against the generated (mobile) build.                 |
 | `jest.config.csl-trace.cjs`                 | Used only by `trace.js`.                                                                         |
@@ -53,6 +54,25 @@ to `generated/csl-asmjs/cardano_serialization_lib.js`.
 
 Commit `scripts/csl-asmjs/keep-list.json` and `generated/csl-asmjs/` together. Push LFS objects
 before the branch (`git lfs push origin <branch>`) if the pre-push hook does not.
+
+### Reproducing the build
+
+`generate.test.ts` only compares hashes, so it cannot tell whether the committed build really comes
+from the pinned inputs. `verify.sh` can: it deletes `generated/csl-asmjs/`, runs `generate.js` and
+fails unless `git status` of `generated/csl-asmjs/` stays clean. CI runs it in
+`.github/workflows/test-cardano-csl-asmjs.yml`.
+
+To check a pull request locally, on a clean checkout of its branch:
+
+```sh
+git lfs pull
+yarn
+yarn workspace @trezor/network-cardano verify:csl-asmjs
+```
+
+A failure lists the files that differ: the committed build was not produced by the committed
+scripts and pinned dependencies. Restore the committed files with
+`git checkout -- networks/cardano/network-cardano/generated/csl-asmjs`.
 
 ### Tests
 

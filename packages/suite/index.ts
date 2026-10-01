@@ -7,3 +7,4 @@ export { type AppState, rootReducer } from './src/reducers/store';
 export { createSuiteServicesCompositionRoot } from './src/support/createSuiteCompositionRoot';
 export { extraDependencies } from './src/support/extraDependencies';
 export { type PreloadStoreAction } from './src/support/suite/createPreloadStore';
+export { type DashboardBannerType } from './src/views/dashboard/DashboardPromoBanner/dashboardBannerTypes';

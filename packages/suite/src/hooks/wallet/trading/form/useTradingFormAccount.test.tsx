@@ -4,6 +4,8 @@ import { type Account, asAccountDescriptor } from '@suite-common/wallet-types';
 import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
 import type { StaticSessionId } from '@trezor/connect';
 
+import { type AppState } from 'src/reducers/store';
+
 import { useTradingFormAccount } from './useTradingFormAccount';
 
 const ethSymbol = asNetworkSymbol('eth');
@@ -45,10 +47,12 @@ const renderForSell = (
     sellTradingAccountKey?: string,
     accounts: Account[] = [FIRST_ELIGIBLE_ACCOUNT, TRADE_ACCOUNT],
 ) => {
-    const root = createTestCompositionRoot({
+    const { services } = createTestCompositionRoot<void, AppState>({
         preloadedState: buildState(accounts, sellTradingAccountKey),
     });
-    const { result } = renderHookWithStoreProvider(() => useTradingFormAccount('sell'), { root });
+    const { result } = renderHookWithStoreProvider(() => useTradingFormAccount('sell'), {
+        services,
+    });
 
     return result;
 };

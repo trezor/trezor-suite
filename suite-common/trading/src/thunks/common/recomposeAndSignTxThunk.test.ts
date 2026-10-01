@@ -5,7 +5,7 @@ import { createThunk } from '@suite-common/redux-utils';
 import { mockActionType, mockReducer } from '@suite-common/redux-utils/mocks';
 import { type TrezorDevice } from '@suite-common/suite-types';
 import { mockSuiteDevice } from '@suite-common/suite-types/mocks';
-import { createTestStore } from '@suite-common/test-utils';
+import { createTestCompositionRoot } from '@suite-common/test-utils';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
 import {
     blockchainInitialState,
@@ -15,6 +15,7 @@ import {
 import { type Account, type FeesState } from '@suite-common/wallet-types';
 import { type TokenInfo } from '@trezor/connect';
 
+import { type RecomposeAndSignTxThunkState } from './recomposeAndSignTxThunk';
 import { accountBtc } from '../../__fixtures__/utils';
 import { type TradingState, initialState } from '../../reducers/tradingCommonReducer';
 import { prepareTradingReducer } from '../../reducers/tradingReducer';
@@ -152,8 +153,7 @@ describe('recomposeAndSignTxThunk', () => {
             } as TrezorDevice,
         };
 
-        const store = createTestStore({
-            extra: undefined,
+        const { store } = createTestCompositionRoot<void, RecomposeAndSignTxThunkState>({
             reducer: combineReducers({
                 wallet: combineReducers({
                     accounts: () => [account],
@@ -182,7 +182,7 @@ describe('recomposeAndSignTxThunk', () => {
                     },
                 },
             },
-        });
+        }).services;
         const tradingFormState = {
             activeSection: 'exchange' as const,
             isSlip24Active: false,
@@ -698,47 +698,64 @@ describe('recomposeAndSignTxThunk', () => {
         ).toBe('EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v');
     });
 
-    it('should reject as cancelled when the signing flow returns no result', async () => {
-        const { store, account, tradingFormState } = getMocks();
+    it.each([
+        { signingResult: undefined, expectedType: 'sign-cancelled' },
+        {
+            signingResult: { success: false, error: { code: 'sign-transaction-timeout' } },
+            expectedType: 'sign-transaction-timeout',
+        },
+        {
+            signingResult: { success: false, error: { code: 'sign-transaction-failed' } },
+            expectedType: 'sign-tx-error',
+        },
+    ])(
+        'should reject as $expectedType when signing returns $signingResult',
+        async ({ signingResult, expectedType }) => {
+            const { store, account, tradingFormState } = getMocks();
 
-        const mockSignAndPushSendFormTransaction = jest.fn().mockResolvedValueOnce(undefined);
+            const mockSignAndPushSendFormTransaction = jest
+                .fn()
+                .mockResolvedValueOnce(signingResult);
 
-        (composeSendFormTransactionFeeLevelsThunk as unknown as jest.Mock).mockImplementationOnce(
-            createThunk(
-                composeSendFormTransactionFeeLevelsThunk.typePrefix,
-                (_, { fulfillWithValue }) =>
-                    fulfillWithValue({
-                        normal: {
-                            type: 'final',
-                            outputs: [
-                                {
-                                    amount: '10000000',
-                                },
-                            ],
-                        },
-                    }),
-            ),
-        );
+            (
+                composeSendFormTransactionFeeLevelsThunk as unknown as jest.Mock
+            ).mockImplementationOnce(
+                createThunk(
+                    composeSendFormTransactionFeeLevelsThunk.typePrefix,
+                    (_, { fulfillWithValue }) =>
+                        fulfillWithValue({
+                            normal: {
+                                type: 'final',
+                                outputs: [
+                                    {
+                                        amount: '10000000',
+                                    },
+                                ],
+                            },
+                        }),
+                ),
+            );
 
-        const response = await store.dispatch(
-            tradingThunks.recomposeAndSignTxThunk({
-                account,
-                address: 'address',
-                amount: '0.1',
-                tradingFormState,
-                signAndPushSendFormTransaction: mockSignAndPushSendFormTransaction,
-            }),
-        );
+            const response = await store.dispatch(
+                tradingThunks.recomposeAndSignTxThunk({
+                    account,
+                    address: 'address',
+                    amount: '0.1',
+                    tradingFormState,
+                    signAndPushSendFormTransaction: mockSignAndPushSendFormTransaction,
+                }),
+            );
 
-        expect(response.meta.requestStatus).toBe('rejected');
-        expect(response.payload).toEqual({
-            type: 'sign-cancelled',
-            error: {
-                id: 'TR_TRADING_CANNOT_SEND_TRANSACTION',
-            },
-        });
-        expect(mockSignAndPushSendFormTransaction).toHaveBeenCalledTimes(1);
-    });
+            expect(response.meta.requestStatus).toBe('rejected');
+            expect(response.payload).toEqual({
+                type: expectedType,
+                error: {
+                    id: 'TR_TRADING_CANNOT_SEND_TRANSACTION',
+                },
+            });
+            expect(mockSignAndPushSendFormTransaction).toHaveBeenCalledTimes(1);
+        },
+    );
 
     it('should return successful recomposed and signed transaction using custom fees', async () => {
         const { store, account, tradingFormState } = getMocks({

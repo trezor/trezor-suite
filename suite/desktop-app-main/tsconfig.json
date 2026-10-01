@@ -44,6 +44,7 @@
         { "path": "../../packages/env-utils" },
         { "path": "../../packages/eslint" },
         { "path": "../../packages/ipc-proxy" },
+        { "path": "../../packages/logger" },
         { "path": "../../packages/node-utils" },
         {
             "path": "../../packages/request-manager"

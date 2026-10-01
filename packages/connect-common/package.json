@@ -61,6 +61,7 @@
     "dependencies": {
         "@trezor/crypto-utils": "workspace:*",
         "@trezor/device-utils": "workspace:*",
+        "@trezor/logger": "workspace:*",
         "@trezor/protobuf": "workspace:*",
         "@trezor/protocol": "workspace:^",
         "@trezor/schema-utils": "workspace:*",

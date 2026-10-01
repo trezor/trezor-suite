@@ -19,7 +19,7 @@ type SelectExchangeQuoteThunkProps = {
     fractionButton?: number;
 };
 
-type SelectExchangeQuoteThunkState = GotoThunkState & TradingRootState;
+export type SelectExchangeQuoteThunkState = GotoThunkState & TradingRootState;
 
 type SelectExchangeQuoteThunkDeps = GotoThunkDeps & WithServices<DesktopAnalyticsDep>;
 

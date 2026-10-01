@@ -3,7 +3,7 @@ import { type SellFiatTrade } from 'invity-api';
 
 import { createThunk } from '@suite-common/redux-utils';
 import { mockActionType } from '@suite-common/redux-utils/mocks';
-import { createTestStore } from '@suite-common/test-utils';
+import { createTestCompositionRoot } from '@suite-common/test-utils';
 import { getNetwork } from '@suite-common/wallet-config';
 import { type Account } from '@suite-common/wallet-types';
 import { mockAccountKey } from '@suite-common/wallet-types/mocks';
@@ -16,6 +16,7 @@ import { tradeApi } from '../../tradeApi';
 import { type TradingTransactionSell } from '../../types';
 import { sellUtilsFixtures } from '../../utils/sell/__fixtures__/sellUtils';
 import { tradingThunks } from '../common';
+import { type SendSellTransactionThunkState } from './sendSellTransactionThunk';
 
 import { sellThunks } from './index';
 
@@ -59,8 +60,7 @@ describe('sendSellTransactionThunk', () => {
         }) as SellFiatTrade;
 
     const getMocks = (initialSellState?: Partial<TradingSellState>) => {
-        const store = createTestStore({
-            extra: undefined,
+        const { store } = createTestCompositionRoot<void, SendSellTransactionThunkState>({
             reducer: combineReducers({
                 wallet: combineReducers({
                     trading: tradingReducer,
@@ -78,7 +78,7 @@ describe('sendSellTransactionThunk', () => {
                     },
                 },
             },
-        });
+        }).services;
 
         const account = accountBtc as Account;
         const trade: TradingTransactionSell = {

@@ -62,22 +62,24 @@ const renderUseTradingRequestedAmountShortfall = (
     quote: BuyTrade | SellFiatTrade | ExchangeTrade,
     { buyQuotesRequest, sellQuotesRequest, exchangeQuotesRequest }: QuotesRequests = {},
 ) => {
-    const root = createTestCompositionRoot({
-        extra: { services: {} },
+    const { services } = createTestCompositionRoot<void, TradingRootState>({
         preloadedState: {
             wallet: {
                 trading: {
                     ...initialState,
                     buy: { ...initialState.buy, quotesRequest: buyQuotesRequest },
                     sell: { ...initialState.sell, quotesRequest: sellQuotesRequest },
-                    exchange: { ...initialState.exchange, quotesRequest: exchangeQuotesRequest },
+                    exchange: {
+                        ...initialState.exchange,
+                        quotesRequest: exchangeQuotesRequest,
+                    },
                 },
             },
         } satisfies TradingRootState,
     });
 
     return renderHookWithStoreProvider(() => useTradingRequestedAmountShortfall({ quote }), {
-        root,
+        services,
     });
 };
 

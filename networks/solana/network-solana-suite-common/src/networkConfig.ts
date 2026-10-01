@@ -2,6 +2,7 @@ import { DeviceModelInternal } from '@trezor/device-utils';
 import {
     type Explorer,
     type SuiteCommonNetworkConfig,
+    asDisplayOrderKey,
     asProtocol,
 } from '@trezor/network-module-suite-common-types';
 import type { SolanaNetworkSymbol } from '@trezor/network-solana/constants';
@@ -20,6 +21,7 @@ type NetworkConfig = SuiteCommonNetworkConfig & {
 export const networkConfigBySymbol = {
     sol: {
         color: '#9945ff',
+        displayOrder: asDisplayOrderKey('aA'),
         protocols: [asProtocol('solana'), asProtocol('sol')],
         displaySymbol: 'SOL',
         name: 'Solana',
@@ -59,6 +61,7 @@ export const networkConfigBySymbol = {
     },
     dsol: {
         color: '#9945ff',
+        displayOrder: asDisplayOrderKey('aO'),
         protocols: [asProtocol('dsol')],
         displaySymbol: 'dSOL',
         name: 'Solana Devnet',

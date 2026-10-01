@@ -33,6 +33,7 @@
     "dependencies": {
         "@trezor/components": "workspace:*",
         "@trezor/eslint": "workspace:*",
+        "@trezor/logger": "workspace:*",
         "@trezor/node-utils": "workspace:*",
         "@trezor/protocol": "workspace:*",
         "@trezor/theme": "workspace:*",

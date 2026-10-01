@@ -15,6 +15,7 @@ import { type BaseCurrencyCode } from '@trezor/blockchain-link-types';
 import { intermediaryTheme } from '@trezor/components';
 import { PROTO } from '@trezor/connect';
 
+import { type AppState } from 'src/reducers/store';
 import { renderWithProviders } from 'src/support/test-utils/hooksHelper';
 
 import { TradingFormInputBaseCurrencyAmount } from './TradingFormInputBaseCurrencyAmount';
@@ -138,7 +139,7 @@ const renderBaseCurrencyAmount = ({
     btcUsdRate = BTC_USD_RATE.rate,
     ...harnessProps
 }: RenderBaseCurrencyAmountParams = {}) => {
-    const root = createTestCompositionRoot({
+    const { services } = createTestCompositionRoot<void, AppState>({
         preloadedState: {
             ...mockInitialAppState,
             wallet: {
@@ -160,7 +161,7 @@ const renderBaseCurrencyAmount = ({
         },
     });
 
-    renderWithProviders(root, <TradingFormTestHarness {...harnessProps} />);
+    renderWithProviders(services, <TradingFormTestHarness {...harnessProps} />);
 };
 
 describe('TradingFormInputBaseCurrencyAmount', () => {

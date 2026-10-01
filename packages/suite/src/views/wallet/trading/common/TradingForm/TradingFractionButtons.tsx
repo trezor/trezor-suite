@@ -1,6 +1,8 @@
 import { useMemo } from 'react';
 import { type UseFormReturn } from 'react-hook-form';
 
+import styled from 'styled-components';
+
 import { events, injectDesktopAnalytics } from '@suite/analytics';
 import { useServices } from '@suite-common/dependency-injection';
 import { TRADING_FORM_AMOUNT_INPUT_SOURCE } from '@suite-common/trading';
@@ -10,7 +12,18 @@ import { useTradingFormContext } from 'src/hooks/wallet/trading/form/useTradingC
 import { type TradingAllFormProps } from 'src/types/trading/tradingForm';
 import { isTradingSellContext } from 'src/utils/wallet/trading/tradingTypingUtils';
 
+import { TRADING_FORM_CARD_COMPONENT } from './TradingFormCard';
 import { generateFractionButtons } from './tradingFormInputsUtils';
+
+const FractionButtonsContainer = styled.div`
+    opacity: 0;
+    transition: opacity 0.15s ease-in-out;
+
+    [data-component='${TRADING_FORM_CARD_COMPONENT}']:hover &,
+    &:focus-within {
+        opacity: 1;
+    }
+`;
 
 export const TradingFractionButtons = () => {
     const context = useTradingFormContext<'sell' | 'exchange'>();
@@ -24,26 +37,28 @@ export const TradingFractionButtons = () => {
     );
 
     return (
-        <Row gap={12} data-testid="@trading/form/fraction-buttons">
-            {fractionButtons.map(({ id, children, isDisabled, percentValue, onClick }) => (
-                <TextButton
-                    key={id}
-                    intent="brand"
-                    size="small"
-                    isUnderlined
-                    isDisabled={isDisabled}
-                    onClick={() => {
-                        analytics.report({
-                            type: events.appFormPercentButtonsEvent.name,
-                            payload: { type: analyticsType, value: percentValue },
-                        });
-                        setValue(TRADING_FORM_AMOUNT_INPUT_SOURCE, 'fraction');
-                        onClick();
-                    }}
-                >
-                    {children}
-                </TextButton>
-            ))}
-        </Row>
+        <FractionButtonsContainer>
+            <Row gap={12} data-testid="@trading/form/fraction-buttons">
+                {fractionButtons.map(({ id, children, isDisabled, percentValue, onClick }) => (
+                    <TextButton
+                        key={id}
+                        intent="brand"
+                        size="small"
+                        isUnderlined
+                        isDisabled={isDisabled}
+                        onClick={() => {
+                            analytics.report({
+                                type: events.appFormPercentButtonsEvent.name,
+                                payload: { type: analyticsType, value: percentValue },
+                            });
+                            setValue(TRADING_FORM_AMOUNT_INPUT_SOURCE, 'fraction');
+                            onClick();
+                        }}
+                    >
+                        {children}
+                    </TextButton>
+                ))}
+            </Row>
+        </FractionButtonsContainer>
     );
 };

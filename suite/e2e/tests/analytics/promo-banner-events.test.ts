@@ -1,10 +1,10 @@
 import { EventType } from '@suite/analytics/src/constants';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { TestCategory, TestPriority, TestStream, createTestAnnotation } from '@trezor/e2e-utils';
+import type { DashboardBannerType } from '@trezor/suite';
 
 import { isDesktopProject } from '../../support/common';
 import { expect, test } from '../../support/fixtures';
-import { PromoBannerType } from '../../support/pageObjects/dashboardPage';
 
 test.describe('Analytics Events - Promo Banner', { tag: ['@T3T1', '@optional'] }, () => {
     test.beforeEach(async ({ onboardingPage, settingsPage }) => {
@@ -16,7 +16,7 @@ test.describe('Analytics Events - Promo Banner', { tag: ['@T3T1', '@optional'] }
     });
 
     // --- Promo Banner Events ---
-    const bannerTypes: PromoBannerType[] = ['ts7'];
+    const bannerTypes: DashboardBannerType[] = ['ts7'];
 
     for (const bannerType of bannerTypes) {
         test(
@@ -29,7 +29,7 @@ test.describe('Analytics Events - Promo Banner', { tag: ['@T3T1', '@optional'] }
                     stream: TestStream.Growth,
                 }),
             },
-            async ({ analyticsHelper, dashboardPage, settingsPage, page, target }) => {
+            async ({ analyticsHelper, dashboardPage, promoBanner, settingsPage, page, target }) => {
                 await test.step('Add dashboard promo banner', async () => {
                     await settingsPage.debugTab.addBanner(bannerType);
                 });
@@ -51,7 +51,7 @@ test.describe('Analytics Events - Promo Banner', { tag: ['@T3T1', '@optional'] }
 
                     if (isDesktopProject(target)) {
                         // Perform the action
-                        await dashboardPage.promoBannerButton(bannerType).click();
+                        await promoBanner.promoCTAButton(bannerType).click();
 
                         // Await the listeners
                         payload = await analyticsPromise;
@@ -63,7 +63,7 @@ test.describe('Analytics Events - Promo Banner', { tag: ['@T3T1', '@optional'] }
                          */
                         const pagePromise = page.context().waitForEvent('page');
                         // Perform the action
-                        await dashboardPage.promoBannerButton(bannerType).click();
+                        await promoBanner.promoCTAButton(bannerType).click();
 
                         // Await the listeners
                         const [analyticsPayload, newPage] = await Promise.all([

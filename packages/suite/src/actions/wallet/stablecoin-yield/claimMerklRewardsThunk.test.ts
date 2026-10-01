@@ -2,16 +2,16 @@ import { type DesktopAnalyticsDep } from '@suite/analytics';
 import { asGetter } from '@suite-common/dependency-injection';
 import { USER_CANCELLED_ERROR_CODES } from '@suite-common/earn-stablecoin';
 import { mockSuiteDevice } from '@suite-common/suite-types/mocks';
-import { createTestStore } from '@suite-common/test-utils';
+import { createTestCompositionRoot } from '@suite-common/test-utils';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
-import { yieldActions } from '@suite-common/wallet-core';
+import { type EthereumGetCurrentNonceThunkState, yieldActions } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
 import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
 import { mockAnalytics } from '@trezor/analytics-uploader/mocks';
 import TrezorConnect from '@trezor/connect';
 
 import { claimMerklRewardsThunk } from './claimMerklRewardsThunk';
-import { type SendYieldTransactionDeps } from './signingHelpers';
+import { type SendYieldTransactionDeps, type SendYieldTransactionState } from './signingHelpers';
 
 const mockOpenDeferredModal = jest.fn();
 const mockEstimateYieldFeeLevel = jest.fn();
@@ -22,14 +22,7 @@ const mockDevice = mockSuiteDevice({
 });
 
 type ClaimMerklRewardsThunkDeps = SendYieldTransactionDeps & { services: DesktopAnalyticsDep };
-
-const createExtra = (report: jest.Mock = jest.fn()): ClaimMerklRewardsThunkDeps => ({
-    services: {
-        analytics: mockAnalytics(report),
-        getIsWindowVisible: asGetter(() => true),
-        getTradedAccountKeys: asGetter(() => []),
-    },
-});
+type ClaimMerklRewardsThunkState = SendYieldTransactionState & EthereumGetCurrentNonceThunkState;
 
 jest.mock('@suite/modal', () => ({
     preserveModal: () => ({ type: 'mock/preserveModal' }),
@@ -93,7 +86,17 @@ const account = mockWalletAccount({
 const rewards = [{}] as Parameters<typeof claimMerklRewardsThunk>[0]['rewards'];
 
 const dispatchClaim = (report: jest.Mock) => {
-    const store = createTestStore({ extra: createExtra(report), preloadedState: {} });
+    const { store } = createTestCompositionRoot<
+        ClaimMerklRewardsThunkDeps,
+        ClaimMerklRewardsThunkState
+    >({
+        preloadedState: {},
+        services: () => ({
+            analytics: mockAnalytics(report),
+            getIsWindowVisible: asGetter(() => true),
+            getTradedAccountKeys: asGetter(() => []),
+        }),
+    }).services;
 
     return store
         .dispatch(claimMerklRewardsThunk({ account, flowKey: 'flow-1', rewards }))

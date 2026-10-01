@@ -12,7 +12,7 @@ export type BluetoothServiceRootState = WithBluetoothRootState &
     FirmwareRootState;
 
 export type BluetoothServiceThunkDispatch = WithServices<
-    DesktopApiDep<'openSystemSettings' | 'appFocus'> & BluetoothDep
+    DesktopApiDep<'openSystemSettings'> & BluetoothDep
 >;
 
 export type BluetoothDep = {

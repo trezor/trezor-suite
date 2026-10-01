@@ -13,6 +13,8 @@ import {
 import { toNetworkSymbolNonTestnet } from '@suite-common/wallet-config';
 import { mockAccountKey, mockWalletAccount } from '@suite-common/wallet-types/mocks';
 
+import { type AppState } from 'src/reducers/store';
+
 import { useExchangeFormInputs } from './useExchangeFormInputs';
 
 jest.mock('src/hooks/wallet/useBitcoinAmountUnit', () => ({
@@ -106,7 +108,7 @@ const DEFAULTS: TradingExchangeFormProps = {
 const mockComposeRequest = jest.fn();
 
 const renderExchangeFormInputs = () => {
-    const root = createTestCompositionRoot({
+    const { services } = createTestCompositionRoot<void, AppState>({
         preloadedState: {
             wallet: { accounts: [ACCOUNT] },
         },
@@ -133,10 +135,10 @@ const renderExchangeFormInputs = () => {
 
             return { inputs, methods };
         },
-        { root },
+        { services },
     );
 
-    const { getActions } = root.services;
+    const { getActions } = services.store;
 
     return { ...utils, getActions };
 };

@@ -5,12 +5,14 @@ import { createTestCompositionRoot, renderHookWithStoreProvider } from '@suite-c
 import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { blockchainActions } from '@suite-common/wallet-core';
 
+import { type AppState } from 'src/reducers/store';
+
 import { useGapLimitForm } from './useGapLimitForm';
 
 const SYMBOL = asNetworkSymbol('btc');
 
 const renderGapLimitForm = (savedGapLimit?: number) => {
-    const root = createTestCompositionRoot({
+    const { services } = createTestCompositionRoot<void, AppState>({
         preloadedState: {
             wallet: {
                 blockchain: {
@@ -19,9 +21,9 @@ const renderGapLimitForm = (savedGapLimit?: number) => {
             },
         },
     });
-    const { result } = renderHookWithStoreProvider(() => useGapLimitForm(SYMBOL), { root });
+    const { result } = renderHookWithStoreProvider(() => useGapLimitForm(SYMBOL), { services });
 
-    const { getActions } = root.services;
+    const { getActions } = services.store;
 
     return { getActions, result };
 };

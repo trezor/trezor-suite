@@ -210,6 +210,7 @@ export const messages = {
         rewardsReduced: 'No rewards',
     },
     assets: {
+        priceChangePeriod: '7d',
         dashboard: {
             discoveryProgress: {
                 loading: 'Loading...',
@@ -2014,7 +2015,7 @@ export const messages = {
             },
             title: 'My assets',
         },
-        accountAssetsScreen: {
+        accountOverviewScreen: {
             tab: {
                 tokens: 'Tokens {count, plural, =0 {} other { #}}',
                 defi: 'DeFi {count, plural, =0 {} other { #}}',
@@ -2044,6 +2045,7 @@ export const messages = {
             coin: 'Network',
             accountType: 'Account type',
             derivationPath: 'Derivation path',
+            signAndVerifyButton: 'Sign & verify',
             xpubBottomSheet: {
                 xpub: {
                     title: 'Public key (XPUB)',
@@ -2081,9 +2083,6 @@ export const messages = {
             coinPriceCard: {
                 changeIn7d: '7D change',
                 coinPrice: '{coinName} price',
-            },
-            assetPriceCard: {
-                changeIn7d: '7d',
             },
             yieldBadge: {
                 upToRate: 'Up to {apy}% APY',
@@ -2319,6 +2318,14 @@ export const messages = {
                 from: 'From {count}',
                 to: 'To {count}',
                 changeAddresses: 'Change {count,plural, one {address} other {addresses}}',
+            },
+        },
+    },
+    moduleAssets: {
+        assetDetailScreen: {
+            headerTitle: 'Asset details',
+            balanceSection: {
+                title: 'Your balance',
             },
         },
     },
@@ -4082,6 +4089,12 @@ export const messages = {
         tradingReviewOutputs: {
             title: 'Confirm on Trezor',
             submitButton: 'Send transaction',
+            expiredAlert: {
+                title: 'Transaction confirmation expired',
+                description:
+                    'Not confirmed on your Trezor in time. Go back to the summary to try again.',
+                button: 'Back to summary',
+            },
             signData: {
                 heading: 'Sign EIP-712 typed data',
                 address: 'Address',
@@ -4999,5 +5012,48 @@ export const messages = {
     biometricsButton: 'Unlock with biometrics',
     search: {
         noResults: 'No results',
+    },
+    signAndVerify: {
+        tabs: {
+            sign: 'Sign',
+            verify: 'Verify',
+        },
+        format: {
+            label: 'Format',
+            values: {
+                trezor: 'Trezor (BIP-137)',
+                electrum: 'Electrum',
+                rawKey: 'Raw key',
+                cose: 'COSE (CIP-30)',
+            },
+        },
+        address: {
+            label: 'Address',
+            badges: {
+                stake: 'Stake',
+                fresh: 'Fresh',
+                change: 'Change',
+            },
+        },
+        message: {
+            label: 'Message',
+        },
+        hex: {
+            label: 'Hex',
+        },
+        signature: {
+            label: 'Signature',
+            placeholder: 'Generated after signing',
+        },
+        buttons: {
+            sign: 'Sign',
+            verify: 'Verify',
+            clear: 'Clear',
+        },
+        results: {
+            signed: 'Message signed',
+            verified: 'Message verified',
+            failed: 'Verification failed',
+        },
     },
 };

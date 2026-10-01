@@ -5,6 +5,8 @@ import { type NetworkSymbol, asNetworkSymbol } from '@suite-common/wallet-config
 import { asAccountDescriptor } from '@suite-common/wallet-types';
 import { mockAccountToken, mockWalletAccount } from '@suite-common/wallet-types/mocks';
 
+import { type AppState } from 'src/reducers/store';
+
 import { getYieldOpportunityData, useYieldTableData } from './useYieldTableData';
 
 const ethSymbol = asNetworkSymbol('eth');
@@ -201,8 +203,7 @@ describe(useYieldTableData.name, () => {
             formattedBalance: '1',
         });
 
-        const root = createTestCompositionRoot({
-            extra: { services: {} },
+        const { services } = createTestCompositionRoot<void, AppState>({
             preloadedState: {
                 device: { selectedDevice: undefined },
                 networks: mockNetworksState([ethSymbol]),
@@ -215,7 +216,7 @@ describe(useYieldTableData.name, () => {
                     visibleAccounts: [emptyAccount, nativeOnlyAccount],
                     visibleAccountSymbols: new Set<NetworkSymbol>([ethSymbol]),
                 }),
-            { root },
+            { services },
         );
 
         const opportunities = result.current.yieldAccountOpportunities;
