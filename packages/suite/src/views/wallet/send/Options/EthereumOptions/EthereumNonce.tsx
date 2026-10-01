@@ -2,7 +2,6 @@ import { useState } from 'react';
 import { useWatch } from 'react-hook-form';
 
 import { Translation, useTranslation } from '@suite/intl';
-import { formInputsMaxLength } from '@suite-common/validators';
 import { getEthereumRbfFeeInfo, selectAccountTransactions } from '@suite-common/wallet-core';
 import { type FormState } from '@suite-common/wallet-types';
 import {
@@ -15,6 +14,7 @@ import {
 } from '@suite-common/wallet-utils';
 import { Card, Column, H4, IconButton, Input, Note, Row, TextButton } from '@trezor/components';
 import { InfoIcon, WarningIcon, XIcon } from '@trezor/icons';
+import { ETHEREUM_NONCE_MAX_DIGITS } from '@trezor/network-ethereum/constants';
 import { BigNumber } from '@trezor/utils';
 
 import { useSelector } from 'src/hooks/suite';
@@ -177,7 +177,7 @@ export const EthereumNonce = ({ displayNonce, confirmedNonce, onCancel }: Ethere
                     defaultValue={getDefaultValue(nonceFieldName) || ''}
                     inputMode="numeric"
                     hasError={!!error}
-                    maxLength={formInputsMaxLength.ethereumNonce}
+                    maxLength={ETHEREUM_NONCE_MAX_DIGITS}
                     placeholder={displayNonce}
                     bottomText={error?.message || null}
                     data-testid="ethereum-nonce-input"
