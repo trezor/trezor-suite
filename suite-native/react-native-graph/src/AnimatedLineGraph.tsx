@@ -1,7 +1,7 @@
 import { type ReactElement, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { type LayoutChangeEvent, StyleSheet, View } from 'react-native';
 import { GestureDetector } from 'react-native-gesture-handler';
-import Reanimated, {
+import {
     FadeInDown,
     FadeInUp,
     cancelAnimation,
@@ -30,6 +30,7 @@ import {
     vec,
 } from '@shopify/react-native-skia';
 
+import { AnimatedView } from '@suite-native/atoms';
 import { clamp, hexToRgba } from '@trezor/utils';
 
 import { BlurOverlay } from './BlurOverlay';
@@ -466,12 +467,12 @@ export function AnimatedLineGraph<TEventPayload extends object>({
     return (
         <View {...props}>
             <GestureDetector gesture={gesture}>
-                <Reanimated.View style={[styles.container, axisLabelContainerStyle]}>
+                <AnimatedView style={[styles.container, axisLabelContainerStyle]}>
                     {/* Top Label (max price) */}
                     {TopAxisLabel != null && (
-                        <Reanimated.View style={styles.axisRow} entering={FadeInUp.delay(300)}>
+                        <AnimatedView style={styles.axisRow} entering={FadeInUp.delay(300)}>
                             <TopAxisLabel />
-                        </Reanimated.View>
+                        </AnimatedView>
                     )}
 
                     {/* Actual Skia Graph */}
@@ -594,11 +595,11 @@ export function AnimatedLineGraph<TEventPayload extends object>({
 
                     {/* Bottom Label (min price) */}
                     {BottomAxisLabel != null && (
-                        <Reanimated.View style={styles.axisRow} entering={FadeInDown.delay(300)}>
+                        <AnimatedView style={styles.axisRow} entering={FadeInDown.delay(300)}>
                             <BottomAxisLabel />
-                        </Reanimated.View>
+                        </AnimatedView>
                     )}
-                </Reanimated.View>
+                </AnimatedView>
             </GestureDetector>
 
             {/* Tooltip displayed on hover on EventComponent. */}

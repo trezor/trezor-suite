@@ -7,6 +7,7 @@ import {
     type TextInputProps,
 } from 'react-native';
 import { type TextInput as GHTextInput } from 'react-native-gesture-handler';
+// eslint-disable-next-line @typescript-eslint/no-restricted-imports -- The raw Animated.Text label animates its font size; the styled Text atom would also set font size.
 import Animated, {
     Easing,
     interpolate,

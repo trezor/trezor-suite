@@ -5,10 +5,11 @@ import {
     useKeyboardState,
     useReanimatedKeyboardAnimation,
 } from 'react-native-keyboard-controller';
-import Animated, { useAnimatedStyle, useSharedValue, withTiming } from 'react-native-reanimated';
+import { useAnimatedStyle, useSharedValue, withTiming } from 'react-native-reanimated';
 
 import { BottomTabBarHeightContext } from '@react-navigation/bottom-tabs';
 
+import { AnimatedView } from '@suite-native/atoms';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
 const TOOLBAR_BOTTOM_OFFSET = 32;
@@ -92,11 +93,11 @@ export const KeyboardToolbar = ({
             importantForAccessibility={isInteractive ? 'auto' : 'no-hide-descendants'}
             testID="@keyboard/toolbar"
         >
-            <Animated.View
+            <AnimatedView
                 style={[applyStyle(toolbarContentStyle, { hasPadding }), animatedVisibilityStyle]}
             >
                 {children}
-            </Animated.View>
+            </AnimatedView>
         </KeyboardStickyView>
     );
 };
