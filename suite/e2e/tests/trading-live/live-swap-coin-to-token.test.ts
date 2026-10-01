@@ -40,10 +40,6 @@ test.describe(
                 atIndex: 0,
                 tokenName: 'USD Coin',
             });
-            if (usdcBalanceValue < 20) {
-                return;
-            }
-
             const lowerUsdcBalanceValue = usdcBalanceValue - 0.5;
 
             await walletPage.openSwapTrading({ symbol: baseSymbol, atIndex: 0 });

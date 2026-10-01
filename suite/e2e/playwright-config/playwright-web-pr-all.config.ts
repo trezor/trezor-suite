@@ -17,7 +17,7 @@ import { PlaywrightTarget } from '../support/testExtends/suiteTestOptions';
  */
 const target = PlaywrightTarget.Web;
 const definition: PlaywrightProjectDefinition[] = [
-    { model: Model.T3W1, additionalGrepInvert: /@skipOnPR/, currentsTags: tagsPr },
+    { model: Model.T3W1, currentsTags: tagsPr },
     { model: Model.T3T1, additionalGrepInvert: /@skipOnPR/, currentsTags: tagsPr },
     { model: Model.T3B1, additionalGrepInvert: /@skipOnPR/, currentsTags: tagsPr },
     { model: Model.T2T1, additionalGrepInvert: /@skipOnPR/, currentsTags: tagsPr },

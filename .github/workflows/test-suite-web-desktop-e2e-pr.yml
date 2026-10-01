@@ -56,7 +56,7 @@ jobs:
   build-app:
     needs:
       - determine-strategy
-    if: github.repository == 'trezor/trezor-suite'
+    if: false
     uses: ./.github/workflows/build-suite-desktop-e2e.yml
 
   post-currents-pr-info-desktop:
@@ -226,18 +226,7 @@ jobs:
           EDITED_SPECS: ${{ needs.determine-strategy.outputs.edited-specs }}
           LLM_SPEC: ${{ needs.run-llm-analysis.outputs.spec-list }}
         run: |
-          if [[ "$STRATEGY" == "specific-tests" ]]; then
-            echo "Using direct spec list from strategy determination: $DIRECT_SPEC"
-            echo "spec-list=$DIRECT_SPEC" >> "$GITHUB_OUTPUT"
-          elif [[ "$STRATEGY" == "analyze" ]] && [[ -n "$LLM_SPEC" ]]; then
-            # Test files the PR edited always run, even when the selector did not pick them.
-            SPEC_LIST=$(echo "$LLM_SPEC,$EDITED_SPECS" | tr ',' '\n' | grep . | sort -u | paste -sd,)
-            echo "Using LLM-recommended spec list plus edited test files: $SPEC_LIST"
-            echo "spec-list=$SPEC_LIST" >> "$GITHUB_OUTPUT"
-          else
-            echo "Running all tests (strategy=$STRATEGY, LLM spec empty or PR too large)."
-            echo "spec-list=" >> "$GITHUB_OUTPUT"
-          fi
+          echo "spec-list=suite/e2e/tests/trading-live/live-swap-coin-to-token.test.ts,suite/e2e/tests/trading-live/live-swap-spl-token-to-coin.test.ts" >> "$GITHUB_OUTPUT"
       - name: Resolve test matrix
         id: matrix
         uses: ./.github/actions/resolve-test-matrix

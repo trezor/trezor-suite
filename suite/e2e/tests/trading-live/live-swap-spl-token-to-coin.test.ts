@@ -18,7 +18,6 @@ const formattedSendAmount = `${localizeNumber(sendAmount)} ${sendTokenSymbol}`;
 const accountLabel = 'Solana #2';
 
 // afterEach constants
-const usdtTopUpThreshold = parseFloat(sendAmount) * 3;
 const solFeeReserve = 0.05;
 const topUpProvider = 'SideShift';
 
@@ -42,16 +41,11 @@ test.describe(
         });
 
         test.afterEach(async ({ tradingPage, devicePrompt, walletPage }) => {
-            // Only top up when USDT on Solana #2 has run low; otherwise leave the account as is.
-            const usdtBalance = await walletPage.getTokenBalance({
+            await walletPage.getTokenBalance({
                 symbol: solSymbol,
                 atIndex: 1,
                 tokenName: sendAssetName,
             });
-            if (usdtBalance >= usdtTopUpThreshold) {
-                return;
-            }
-
             await walletPage.openAccount({ symbol: solSymbol, atIndex: 1 });
             const balanceText = await walletPage.topPanelBalance.innerText();
             const solBalance = parseFloat(balanceText);
