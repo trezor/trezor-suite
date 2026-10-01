@@ -1,4 +1,4 @@
-import { useMemo } from 'react';
+import { type CSSProperties, useMemo } from 'react';
 import { useFormContext, useWatch } from 'react-hook-form';
 
 import { Translation } from '@suite/intl';
@@ -44,6 +44,7 @@ import {
     TRADING_AMOUNT_PLACEHOLDER,
     TRADING_AMOUNT_SKELETON_WIDTH,
     TRADING_BASE_CURRENCY_SKELETON_WIDTH,
+    getTradingAmountInputStyle,
 } from './tradingFormInputsUtils';
 import { useTradingExchangeAssetSelect } from './useTradingExchangeAssetSelect';
 
@@ -100,6 +101,17 @@ export const TradingExchangeFormInputs = () => {
     const { isBtcSatsAmountUnit: shouldReceiveInSats } = useBitcoinAmountUnit(
         receiveCryptoSelect?.networkSymbol,
     );
+    const receiveAmountStyle: CSSProperties = {
+        ...getTradingAmountInputStyle(
+            receiveAmount && receiveCryptoSelect
+                ? CryptoAmountFormatter.format(receiveAmount, {
+                      symbol: receiveCryptoSelect.networkSymbol,
+                      withSymbol: false,
+                      smallestUnitsOverride: shouldReceiveInSats,
+                  })
+                : TRADING_AMOUNT_PLACEHOLDER,
+        ),
+    };
 
     const { handleSellAssetSelect, handleReceiveAssetSelect } = useTradingExchangeAssetSelect({
         methods,
@@ -175,6 +187,7 @@ export const TradingExchangeFormInputs = () => {
                             <Column
                                 gap={8}
                                 flex="1"
+                                minWidth={0}
                                 alignItems="flex-start"
                                 data-testid="@trading/form/receive-amount-zone"
                             >
@@ -186,7 +199,7 @@ export const TradingExchangeFormInputs = () => {
                                     />
                                 ) : (
                                     <Text
-                                        typographyStyle="headline-md"
+                                        style={receiveAmountStyle}
                                         isDisabled={!receiveAmount}
                                         data-testid="@trading/form/receive-amount"
                                     >
