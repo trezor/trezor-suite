@@ -1,7 +1,7 @@
 import { Translation } from '@suite/intl';
-import { formInputsMaxLength } from '@suite-common/validators';
 import { Card, Column, H4, IconButton, Row, Textarea, Tooltip } from '@trezor/components';
 import { XIcon } from '@trezor/icons';
+import { SOLANA_MEMO_MAX_BYTES } from '@trezor/network-solana/constants';
 
 import { useSendFormContext } from 'src/hooks/wallet';
 
@@ -23,7 +23,7 @@ export const SolanaMemo = ({ close }: SolanaMemoProps) => {
     const inputValue = getDefaultValue(inputName) || '';
     const error = errors[inputName];
     const memoByteSize = Buffer.from(watch(inputName) || '', 'utf8').length;
-    const isMemoTooLong = memoByteSize > formInputsMaxLength.solanaMemo;
+    const isMemoTooLong = memoByteSize > SOLANA_MEMO_MAX_BYTES;
 
     const handleClose = () => {
         resetDefaultValue(inputName);
@@ -56,13 +56,13 @@ export const SolanaMemo = ({ close }: SolanaMemoProps) => {
                 <Textarea
                     hasError={isMemoTooLong || !!error}
                     defaultValue={inputValue}
-                    maxLength={formInputsMaxLength.solanaMemo}
+                    maxLength={SOLANA_MEMO_MAX_BYTES}
                     bottomText={error?.message}
                     innerRef={inputRef}
                     {...inputField}
                     characterCount={{
                         current: memoByteSize,
-                        max: formInputsMaxLength.solanaMemo,
+                        max: SOLANA_MEMO_MAX_BYTES,
                     }}
                 />
             </Column>

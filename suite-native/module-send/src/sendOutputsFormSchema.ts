@@ -10,6 +10,7 @@ import {
     isDecimalsValid,
 } from '@suite-common/wallet-utils';
 import { type FeeLevelsMaxAmount } from '@suite-native/transaction-management';
+import { SOLANA_MEMO_MAX_BYTES } from '@trezor/network-solana/constants';
 import { BigNumber, isNotNullOrUndefined } from '@trezor/utils';
 
 export type SendFormFormContext = {
@@ -410,7 +411,7 @@ export const sendOutputsFormValidationSchema = yup.object({
                         case 'stellar':
                             return formInputsMaxLength.stellarTextMemo;
                         case 'solana':
-                            return formInputsMaxLength.solanaMemo;
+                            return SOLANA_MEMO_MAX_BYTES;
                         default:
                             throw new Error(`Unsupported network type: ${networkType}`);
                     }

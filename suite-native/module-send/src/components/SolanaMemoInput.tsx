@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 
-import { formInputsMaxLength } from '@suite-common/validators';
 import {
     BottomSheetModal,
     Button,
@@ -14,6 +13,7 @@ import {
 } from '@suite-native/atoms';
 import { useFormContext, useWatch } from '@suite-native/forms';
 import { Translation, useTranslate } from '@suite-native/intl';
+import { SOLANA_MEMO_MAX_BYTES } from '@trezor/network-solana/constants';
 
 import { type SendFieldName, type SendOutputsFormValues } from '../sendOutputsFormSchema';
 
@@ -89,25 +89,22 @@ export const SolanaMemoInput = () => {
                             placeholder={translate(
                                 'moduleSend.outputs.recipients.solana.memo.inputPlaceholder',
                             )}
-                            maxLength={formInputsMaxLength.solanaMemo}
+                            maxLength={SOLANA_MEMO_MAX_BYTES}
                             asBottomSheetInput
                         />
                         <Text
                             variant="body-xs"
                             color={
-                                memoByteSize > formInputsMaxLength.solanaMemo
+                                memoByteSize > SOLANA_MEMO_MAX_BYTES
                                     ? 'contentCritical'
                                     : 'contentSecondary'
                             }
                             textAlign="left"
                         >
-                            {memoByteSize}/{formInputsMaxLength.solanaMemo} bytes
+                            {memoByteSize}/{SOLANA_MEMO_MAX_BYTES} bytes
                         </Text>
                     </VStack>
-                    <Button
-                        onPress={handleSave}
-                        isDisabled={memoByteSize > formInputsMaxLength.solanaMemo}
-                    >
+                    <Button onPress={handleSave} isDisabled={memoByteSize > SOLANA_MEMO_MAX_BYTES}>
                         <Translation id="moduleSend.outputs.recipients.solana.memo.saveButton" />
                     </Button>
                     {currentMemo && (

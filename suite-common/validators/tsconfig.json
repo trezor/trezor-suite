@@ -2,9 +2,6 @@
     "extends": "../../tsconfig.base.json",
     "compilerOptions": { "outDir": "libDev" },
     "references": [
-        {
-            "path": "../../networks/solana/network-solana"
-        },
         { "path": "../../packages/utils" }
     ]
 }

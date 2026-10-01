@@ -13,7 +13,6 @@
         "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'"
     },
     "dependencies": {
-        "@trezor/network-solana": "workspace:*",
         "@trezor/utils": "workspace:*",
         "yup": "1.7.1"
     }
