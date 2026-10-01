@@ -319,6 +319,9 @@ export class TrezordNode {
             (req, res, next) => {
                 if (req.headers.origin) {
                     res.setHeader('Access-Control-Allow-Origin', req.headers.origin);
+                    // neither header is CORS-safelisted, without this a browser-origin client
+                    // receives them on the wire but reads null from res.headers.get()
+                    res.setHeader('Access-Control-Expose-Headers', 'Deprecation, Link');
                 }
 
                 next(req, res);

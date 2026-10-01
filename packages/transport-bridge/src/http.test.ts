@@ -388,7 +388,11 @@ describe('http', () => {
 
             // bridgeApiCall discards response headers, so talk to the server directly.
             // http.request rather than fetch: fetch's connection pool keeps jest from exiting.
-            const post = (endpoint: string, body: Record<string, unknown>) =>
+            const post = (
+                endpoint: string,
+                body: Record<string, unknown>,
+                headers: Record<string, string> = {},
+            ) =>
                 new Promise<{ status?: number; headers: http.IncomingHttpHeaders }>(
                     (resolve, reject) => {
                         const req = http.request(
@@ -398,6 +402,7 @@ describe('http', () => {
                                 headers: {
                                     'Content-Type': 'application/json',
                                     Connection: 'close',
+                                    ...headers,
                                 },
                             },
                             res => {
@@ -427,6 +432,19 @@ describe('http', () => {
                 expect(res.headers.deprecation).toBe(DEPRECATION);
                 expect(res.headers.link).toBe(LINK);
             });
+
+            // the requests above carry no Origin, a browser-origin client additionally needs
+            // both header names in Access-Control-Expose-Headers to be able to read them
+            const fromBrowserOrigin = await post(
+                'call',
+                { protocol: 'bridge', data: GET_FEATURES },
+                { Origin: 'https://trezor.io' },
+            );
+            expect(fromBrowserOrigin.headers.deprecation).toBe(DEPRECATION);
+            expect(fromBrowserOrigin.headers.link).toBe(LINK);
+            expect(fromBrowserOrigin.headers['access-control-expose-headers']).toBe(
+                'Deprecation, Link',
+            );
 
             const supportedV1 = [
                 await post('call', { protocol: 'v1', data: '3f2323' + GET_FEATURES }),
