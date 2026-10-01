@@ -8,8 +8,7 @@ import {
     withSendFormLayout,
 } from '@suite-native/network-module-suite-native-sendform-lego-bricks';
 
-import { solanaActions, selectSolanaSendFormAddress } from '../solanaSlice';
-
+import { selectSolanaSendFormAddress, solanaActions } from '../solanaSlice';
 import { SolanaFeeSelection } from './SolanaFeeSelection';
 
 const SolanaSendFormFields = () => {

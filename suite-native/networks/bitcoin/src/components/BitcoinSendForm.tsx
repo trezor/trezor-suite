@@ -9,7 +9,6 @@ import {
 } from '@suite-native/network-module-suite-native-sendform-lego-bricks';
 
 import { bitcoinActions, selectBitcoinSendFormAddress } from '../bitcoinSlice';
-
 import { BitcoinFeeSelection } from './BitcoinFeeSelection';
 
 const BitcoinSendFormFields = () => {

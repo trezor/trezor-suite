@@ -4,7 +4,7 @@ import { useServices } from '@suite-common/dependency-injection';
 import { injectDispatch } from '@suite-common/redux-utils';
 import { HStack, Radio, Text, VStack } from '@suite-native/atoms';
 
-import { solanaActions, selectSolanaSendFormPriorityFee } from '../solanaSlice';
+import { selectSolanaSendFormPriorityFee, solanaActions } from '../solanaSlice';
 
 const priorityFeeOptions = [
     { label: 'No priority', lamports: 0 },
