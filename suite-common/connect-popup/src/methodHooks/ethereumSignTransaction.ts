@@ -1,12 +1,8 @@
 import { selectSelectedDevice } from '@suite-common/device';
 import { selectSupportedNetworkSymbols } from '@suite-common/networks';
 import { asNetworkSymbol, getNetworkByEvmChainId } from '@suite-common/wallet-config';
-import {
-    accountsActions,
-    selectAccountForNetworkSymbolAndPath,
-    sendFormActions,
-} from '@suite-common/wallet-core';
-import { type Account, type PrecomposedTransactionFinal } from '@suite-common/wallet-types';
+import { selectAccountForNetworkSymbolAndPath, sendFormActions } from '@suite-common/wallet-core';
+import { type PrecomposedTransactionFinal } from '@suite-common/wallet-types';
 import TrezorConnect from '@trezor/connect';
 import type {
     CallMethodKeys,
@@ -18,12 +14,12 @@ import { getSerializedPath, validatePath } from '@trezor/connect-common';
 import type { Bip43Path } from '@trezor/crypto-utils';
 
 import { connectPopupActions } from '../connectPopupActions';
-import { createPlaceholderAccount } from './utils';
+import { createPlaceholderAccount, createTemporaryAccountsRegistry } from './utils';
 import { getPermissionDeferred } from '../connectPopupPromiseManager';
 import { selectConnectPopupCall } from '../connectPopupReducer';
 import { type PostCallHookParams, type PreCallHookParams } from './types';
 
-const temporaryAccounts: Account[] = [];
+const temporaryAccounts = createTemporaryAccountsRegistry();
 
 const _storePrecomposedTransaction = ({
     typedPayload,
@@ -100,7 +96,7 @@ const preCallHook = async <M extends CallMethodKeys>({
             const createdAccount = await dispatch(
                 createPlaceholderAccount(network, path, selectSupportedNetworkSymbols(getState())),
             );
-            temporaryAccounts.push(createdAccount.payload.account);
+            temporaryAccounts.track(createdAccount.payload.account);
             selectedAccount = createdAccount.payload.account;
         }
         if (!selectedAccount) {
@@ -179,11 +175,7 @@ const preCallHook = async <M extends CallMethodKeys>({
 };
 
 const postCallHook = <M extends CallMethodKeys>({ dispatch }: PostCallHookParams<M>) => {
-    if (temporaryAccounts.length) {
-        // Remove temporary accounts
-        dispatch(accountsActions.removeAccount(temporaryAccounts));
-        temporaryAccounts.length = 0;
-    }
+    temporaryAccounts.cleanup(dispatch);
 
     return false;
 };

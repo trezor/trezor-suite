@@ -1,8 +1,7 @@
 import { selectSelectedDevice } from '@suite-common/device';
 import { selectSupportedNetworkSymbols } from '@suite-common/networks';
 import { getNetwork } from '@suite-common/wallet-config';
-import { accountsActions, selectAccountForNetworkSymbolAndPath } from '@suite-common/wallet-core';
-import { type Account } from '@suite-common/wallet-types';
+import { selectAccountForNetworkSymbolAndPath } from '@suite-common/wallet-core';
 import TrezorConnect from '@trezor/connect';
 import type { CallMethodKeys, StellarSignTransaction } from '@trezor/connect';
 import { getSerializedPath, validatePath } from '@trezor/connect-common';
@@ -11,9 +10,9 @@ import type { Bip43Path } from '@trezor/crypto-utils';
 import { connectPopupActions } from '../connectPopupActions';
 import { getPermissionDeferred } from '../connectPopupPromiseManager';
 import { type PostCallHookParams, type PreCallHookParams } from './types';
-import { createPlaceholderAccount } from './utils';
+import { createPlaceholderAccount, createTemporaryAccountsRegistry } from './utils';
 
-const temporaryAccounts: Account[] = [];
+const temporaryAccounts = createTemporaryAccountsRegistry();
 
 const preCallHook = async <M extends CallMethodKeys>({
     method,
@@ -46,7 +45,7 @@ const preCallHook = async <M extends CallMethodKeys>({
             const createdAccount = await dispatch(
                 createPlaceholderAccount(network, path, selectSupportedNetworkSymbols(getState())),
             );
-            temporaryAccounts.push(createdAccount.payload.account);
+            temporaryAccounts.track(createdAccount.payload.account);
             selectedAccount = createdAccount.payload.account;
         }
         if (!selectedAccount) {
@@ -89,10 +88,7 @@ const preCallHook = async <M extends CallMethodKeys>({
 };
 
 export function postCallHook<M extends CallMethodKeys>({ dispatch }: PostCallHookParams<M>) {
-    if (temporaryAccounts.length) {
-        dispatch(accountsActions.removeAccount(temporaryAccounts));
-        temporaryAccounts.length = 0;
-    }
+    temporaryAccounts.cleanup(dispatch);
 
     return false;
 }
