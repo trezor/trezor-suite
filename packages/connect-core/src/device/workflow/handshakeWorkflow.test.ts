@@ -1,5 +1,5 @@
 import { parseConnectSettings } from '@trezor/connect-common/src/data/connectSettings';
-import { noopCreateLogger } from '@trezor/connect-common/src/utils/debug';
+import { noopCreateLogger } from '@trezor/logger';
 
 import { handshakeCancel } from './handshake';
 import { getLocalFirmwareConfig } from '../../data/firmwareInfo';

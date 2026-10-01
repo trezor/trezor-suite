@@ -21,7 +21,7 @@ import { mockGetAllowPrerelease, mockGetBinFilesBaseUrl } from '@suite-common/su
 import { createTestCompositionRoot, testMocks } from '@suite-common/test-utils';
 import { initialWalletSettingsState } from '@suite-common/wallet-core';
 import { BLOCKCHAIN_EVENT, DEVICE_EVENT, TRANSPORT_EVENT, UI_EVENT } from '@trezor/connect';
-import { noopCreateLogger } from '@trezor/connect-common';
+import { noopCreateLogger } from '@trezor/logger';
 
 const getInitialState = (): ConnectInitThunkState => ({
     device: deviceInitialState,

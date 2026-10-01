@@ -30,7 +30,7 @@ import {
     observeSelectedDeviceThunk,
 } from '@suite-common/wallet-core';
 import { UI_EVENT, UI_EVENTS, UI_REQUEST, UI_REQUESTS } from '@trezor/connect';
-import { noopCreateLogger } from '@trezor/connect-common';
+import { noopCreateLogger } from '@trezor/logger';
 
 import * as deviceSettingsActions from 'src/actions/settings/deviceSettingsActions';
 import buttonRequestMiddleware from 'src/middlewares/suite/buttonRequestMiddleware';
