@@ -1,4 +1,5 @@
 import { type ReactNode, useState } from 'react';
+import { useSelector } from 'react-redux';
 
 import { selectIsDebugModeActive } from '@suite/debug';
 import { Translation, type TranslationKey } from '@suite/intl';
@@ -6,12 +7,15 @@ import { OnboardingCard } from '@suite/onboarding-components';
 import { useServices } from '@suite-common/dependency-injection';
 import { selectSelectedDevice } from '@suite-common/device';
 import { checkDeviceAuthenticityThunk } from '@suite-common/device-authenticity';
-import { selectDeviceAuthenticityByDeviceId } from '@suite-common/persistent-device-data';
+import {
+    type PersistentDeviceDataRootState,
+    selectDeviceAuthenticityByDeviceId,
+} from '@suite-common/persistent-device-data';
 import { injectDispatch } from '@suite-common/redux-utils';
 import { Card, Column, Grid, Icon, type IconComponent, Paragraph } from '@trezor/components';
 import { CpuIcon, ListChecksIcon, ShieldCheckIcon } from '@trezor/icons';
 
-import { useLayoutSize, useSelector } from 'src/hooks/suite';
+import { useLayoutSize } from 'src/hooks/suite';
 
 import { SecurityCheckFail } from './components/SecurityCheckFail';
 import { AuthenticateDeviceSupportButton } from './components/ctas';
@@ -31,7 +35,7 @@ type DeviceAuthenticityCheckProps = {
  */
 export const DeviceAuthenticityCheck = ({ onSuccess }: DeviceAuthenticityCheckProps) => {
     const device = useSelector(selectSelectedDevice);
-    const selectedDeviceAuthenticity = useSelector(state =>
+    const selectedDeviceAuthenticity = useSelector((state: PersistentDeviceDataRootState) =>
         selectDeviceAuthenticityByDeviceId(state, device?.id),
     );
     const isDebugModeActive = useSelector(selectIsDebugModeActive);
