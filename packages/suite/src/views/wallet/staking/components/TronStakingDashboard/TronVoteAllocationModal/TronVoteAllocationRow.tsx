@@ -2,7 +2,7 @@ import { type TrxStats } from '@suite-common/earn-staking-api';
 import { type TronVote } from '@trezor/blockchain-link-types';
 import { Table } from '@trezor/components';
 
-import { formatApr } from 'src/components/earn/staking/tron/voteUtils';
+import { formatApr } from 'src/components/earn/staking/tron/utils/voteUtils';
 
 interface TronVoteAllocationRowProps {
     vote: TronVote;

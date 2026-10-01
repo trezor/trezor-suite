@@ -109,8 +109,10 @@ export { composeTronVoteFeeLevelsThunk } from './staking/tron/actions/vote/compo
 export { submitTronVoteThunk } from './staking/tron/actions/vote/submitVote';
 export {
     type TronVoteAllocation,
-    isTronVoteFlow,
-    resolveVoteAllocations,
+    getAllocatedVotesTotal,
+    getCurrentVoteAllocations,
+    getTotalVotes,
+    splitVotesEvenly,
 } from './staking/tron/actions/vote/voteContract';
 export { composeTronWithdrawFeeLevelsThunk } from './staking/tron/actions/withdraw/composeWithdraw';
 export { submitTronWithdrawThunk } from './staking/tron/actions/withdraw/submitWithdraw';

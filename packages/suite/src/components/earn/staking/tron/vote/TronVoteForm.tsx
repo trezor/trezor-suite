@@ -2,18 +2,16 @@ import { FormProvider } from 'react-hook-form';
 
 import { Translation } from '@suite/intl';
 import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
-import { Banner, Card, Column, Text } from '@trezor/components';
-import { BigNumber } from '@trezor/utils';
+import { Banner, Column, Row, Text } from '@trezor/components';
 
 import { useMessageSystemStaking } from 'src/hooks/suite/useMessageSystemStaking';
 
+import { TronVoteAllocationSection } from './TronVoteAllocationSection';
+import { TronVoteRemainingVotes } from './TronVoteRemainingVotes';
+import { TronVoteSubmitButton } from './TronVoteSubmitButton';
 import { useTronStakeContext } from '../TronStakeContext';
 import { TronStakeFees } from '../TronStakeFees';
-import { TronStakeInfoRow } from '../TronStakeInfoRow';
 import { TronStakePendingTransaction } from '../TronStakePendingTransaction';
-import { TronVoteApr } from './TronVoteApr';
-import { TronVoteRepresentativeSelect } from './TronVoteRepresentativeSelect';
-import { TronVoteSubmitButton } from './TronVoteSubmitButton';
 
 export const TronVoteForm = () => {
     const { account, form, actions, fees } = useTronStakeContext();
@@ -23,30 +21,20 @@ export const TronVoteForm = () => {
 
     const hasInsufficientFunds = fees.composedLevels?.normal?.type === 'error';
 
-    const totalVotingPower =
-        account.networkType === 'tron'
-            ? account.misc.tronResources?.stakingInfo?.totalVotingPower
-            : undefined;
-    const votes = Math.floor(new BigNumber(totalVotingPower ?? 0).toNumber());
-
     return (
         <FormProvider {...form.methods}>
             <Column gap={16}>
-                <Text typographyStyle="headline-md">
-                    <Translation id="TR_EARN_TRON_CHANGE_REPRESENTATIVE" />
-                </Text>
+                <Row gap={8} width="100%" justifyContent="space-between" alignItems="flex-end">
+                    <Text typographyStyle="headline-md">
+                        <Translation id="TR_EARN_TRON_CHANGE_REPRESENTATIVE" />
+                    </Text>
+
+                    <TronVoteRemainingVotes />
+                </Row>
 
                 {isVotingDisabled && <Banner intent="warning" description={votingMessageContent} />}
 
-                <Card type="contrast" paddingType="none">
-                    <TronStakeInfoRow label={<Translation id="TR_TRON_VOTES" />}>
-                        <Text typographyStyle="body-md-strong">{votes}</Text>
-                    </TronStakeInfoRow>
-                </Card>
-
-                <TronVoteRepresentativeSelect />
-
-                <TronVoteApr />
+                <TronVoteAllocationSection />
 
                 <TronStakeFees />
 

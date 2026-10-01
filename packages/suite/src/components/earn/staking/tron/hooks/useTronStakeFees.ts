@@ -3,15 +3,12 @@ import { useEffect, useMemo, useState } from 'react';
 import { useServices } from '@suite-common/dependency-injection';
 import { injectDispatch } from '@suite-common/redux-utils';
 import {
-    type TronFlow,
     type TronStakeStepId,
     composeTronClaimFeeLevelsThunk,
     composeTronFreezeFeeLevelsThunk,
     composeTronUnstakeFeeLevelsThunk,
     composeTronVoteFeeLevelsThunk,
     composeTronWithdrawFeeLevelsThunk,
-    isTronVoteFlow,
-    resolveVoteAllocations,
     selectRawNetworkFeeInfo,
 } from '@suite-common/wallet-core';
 import { type Account, type FeeInfo, type PrecomposedLevels } from '@suite-common/wallet-types';
@@ -20,8 +17,8 @@ import { exhaustive } from '@trezor/type-utils';
 
 import { useSelector } from 'src/hooks/suite';
 
-import { resolveVotedRepresentativeAddress } from '../voteUtils';
 import { type useTronStakeForm } from './useTronStakeForm';
+import { parseVoteAllocations } from '../utils/voteUtils';
 
 interface TronStakeFees {
     feeInfo: FeeInfo;
@@ -32,21 +29,14 @@ interface UseTronStakeFeesProps {
     account: Account;
     form: ReturnType<typeof useTronStakeForm>;
     step: TronStakeStepId;
-    flow: TronFlow;
 }
 
-export const useTronStakeFees = ({
-    account,
-    form,
-    step,
-    flow,
-}: UseTronStakeFeesProps): TronStakeFees => {
+export const useTronStakeFees = ({ account, form, step }: UseTronStakeFeesProps): TronStakeFees => {
     const { dispatch } = useServices(injectDispatch);
 
     const amount = form.methods.watch('amount');
     const resourceType = form.methods.watch('resourceType');
-    const representative = form.methods.watch('representative');
-    const customRepresentativeAddress = form.methods.watch('customRepresentativeAddress');
+    const voteAllocations = form.methods.watch('voteAllocations');
 
     const rawFeeInfo = useSelector(state => selectRawNetworkFeeInfo(state, account.symbol));
     const feeInfo = useMemo(
@@ -63,20 +53,11 @@ export const useTronStakeFees = ({
                         .unwrap()
                         .catch(() => undefined);
             case 'vote': {
-                const representativeAddress = resolveVotedRepresentativeAddress({
-                    representative,
-                    customRepresentativeAddress,
-                });
+                const allocations = parseVoteAllocations(voteAllocations);
 
-                if (!representativeAddress || !isTronVoteFlow(flow)) {
+                if (allocations.length === 0) {
                     return undefined;
                 }
-
-                const allocations = resolveVoteAllocations({
-                    account,
-                    representativeAddress,
-                    flow,
-                });
 
                 return () =>
                     dispatch(composeTronVoteFeeLevelsThunk({ account, allocations }))
@@ -103,16 +84,7 @@ export const useTronStakeFees = ({
             default:
                 return exhaustive(step);
         }
-    }, [
-        step,
-        flow,
-        account,
-        amount,
-        resourceType,
-        representative,
-        customRepresentativeAddress,
-        dispatch,
-    ]);
+    }, [step, account, amount, resourceType, voteAllocations, dispatch]);
 
     const [composedLevels, setComposedLevels] = useState<PrecomposedLevels | undefined>(undefined);
 

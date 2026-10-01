@@ -32,7 +32,8 @@ export const composeTronVoteFeeLevelsThunk = createThunk<
             return rejectWithValue({ kind: 'compose-failed', message: 'Invalid network type.' });
         }
 
-        const contract = buildVoteContract(account, allocations);
+        const votedAllocations = allocations.filter(({ count }) => count > 0);
+        const contract = buildVoteContract(account, votedAllocations);
 
         if (!contract) {
             return rejectWithValue({
@@ -72,8 +73,8 @@ export const composeTronVoteFeeLevelsThunk = createThunk<
             feePerByte: feeLevel.feePerUnit ?? '0',
             bytes,
             inputs: [],
-            outputs: allocations.map(({ address }) => ({ address, amount: '0' })),
-            outputsPermutation: allocations.map((_, index) => index),
+            outputs: votedAllocations.map(({ address }) => ({ address, amount: '0' })),
+            outputsPermutation: votedAllocations.map((_, index) => index),
         };
 
         return { normal: tx };

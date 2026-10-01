@@ -5,8 +5,9 @@ import * as tronUtils from '@trezor/network-tron/utils';
 import {
     buildVoteContract,
     buildVoteReviewForm,
+    getAllocatedVotesTotal,
     getCurrentVoteAllocations,
-    resolveVoteAllocations,
+    splitVotesEvenly,
 } from './voteContract';
 
 const OWNER_ADDRESS = 'TVDGpn4hCSzJ5nkHPLetk8KQBtwaTppnkr';
@@ -76,98 +77,36 @@ describe('getCurrentVoteAllocations', () => {
     });
 });
 
-describe('resolveVoteAllocations', () => {
-    describe('in the stake flow', () => {
-        it('keeps the existing allocations and assigns only the available votes to a new representative', () => {
-            const account = buildTronAccount(
-                buildStakingInfo({
-                    totalVotingPower: '46',
-                    availableVotingPower: '30',
-                    votes: [{ address: REPRESENTATIVE_A, voteCount: '16' }],
-                }),
-            );
-
-            expect(
-                resolveVoteAllocations({
-                    account,
-                    representativeAddress: REPRESENTATIVE_B,
-                    flow: 'stake',
-                }),
-            ).toEqual([
+describe('getAllocatedVotesTotal', () => {
+    it('sums the votes across allocations', () => {
+        expect(
+            getAllocatedVotesTotal([
                 { address: REPRESENTATIVE_A, count: 16 },
                 { address: REPRESENTATIVE_B, count: 30 },
-            ]);
-        });
-
-        it('adds the available votes to a representative the account already votes for', () => {
-            const account = buildTronAccount(
-                buildStakingInfo({
-                    totalVotingPower: '46',
-                    availableVotingPower: '30',
-                    votes: [{ address: REPRESENTATIVE_A, voteCount: '16' }],
-                }),
-            );
-
-            expect(
-                resolveVoteAllocations({
-                    account,
-                    representativeAddress: REPRESENTATIVE_A,
-                    flow: 'stake',
-                }),
-            ).toEqual([{ address: REPRESENTATIVE_A, count: 46 }]);
-        });
-
-        it('assigns the whole available power when nothing has been voted yet', () => {
-            const account = buildTronAccount(
-                buildStakingInfo({ totalVotingPower: '46', availableVotingPower: '46' }),
-            );
-
-            expect(
-                resolveVoteAllocations({
-                    account,
-                    representativeAddress: REPRESENTATIVE_A,
-                    flow: 'stake',
-                }),
-            ).toEqual([{ address: REPRESENTATIVE_A, count: 46 }]);
-        });
-
-        it('returns the existing allocations untouched when no votes are available', () => {
-            const account = buildTronAccount(
-                buildStakingInfo({
-                    totalVotingPower: '16',
-                    availableVotingPower: '0',
-                    votes: [{ address: REPRESENTATIVE_A, voteCount: '16' }],
-                }),
-            );
-
-            expect(
-                resolveVoteAllocations({
-                    account,
-                    representativeAddress: REPRESENTATIVE_B,
-                    flow: 'stake',
-                }),
-            ).toEqual([{ address: REPRESENTATIVE_A, count: 16 }]);
-        });
+            ]),
+        ).toBe(46);
     });
 
-    describe('in the standalone vote flow', () => {
-        it('moves the entire voting power to the chosen representative', () => {
-            const account = buildTronAccount(
-                buildStakingInfo({
-                    totalVotingPower: '46',
-                    availableVotingPower: '0',
-                    votes: [{ address: REPRESENTATIVE_A, voteCount: '46' }],
-                }),
-            );
+    it('is zero for no allocations', () => {
+        expect(getAllocatedVotesTotal([])).toBe(0);
+    });
+});
 
-            expect(
-                resolveVoteAllocations({
-                    account,
-                    representativeAddress: REPRESENTATIVE_B,
-                    flow: 'vote',
-                }),
-            ).toEqual([{ address: REPRESENTATIVE_B, count: 46 }]);
-        });
+describe('splitVotesEvenly', () => {
+    it('splits the votes into whole shares, giving the remainder to the first shares', () => {
+        expect(splitVotesEvenly({ votes: 46, shares: 3 })).toEqual([16, 15, 15]);
+    });
+
+    it('splits evenly divisible votes equally', () => {
+        expect(splitVotesEvenly({ votes: 10, shares: 2 })).toEqual([5, 5]);
+    });
+
+    it('returns empty shares when there is nothing to split', () => {
+        expect(splitVotesEvenly({ votes: 0, shares: 2 })).toEqual([0, 0]);
+    });
+
+    it('returns no shares when nobody receives them', () => {
+        expect(splitVotesEvenly({ votes: 46, shares: 0 })).toEqual([]);
     });
 });
 

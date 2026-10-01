@@ -1,23 +1,27 @@
-import { useFormState, useWatch } from 'react-hook-form';
+import { useWatch } from 'react-hook-form';
 
 import { events, injectDesktopAnalytics } from '@suite/analytics';
 import { useDevice } from '@suite/device';
 import { Translation } from '@suite/intl';
 import { useServices } from '@suite-common/dependency-injection';
-import { selectHasRunningDiscovery } from '@suite-common/wallet-core';
+import { getTotalVotes, selectHasRunningDiscovery } from '@suite-common/wallet-core';
 import { Button, Tooltip } from '@trezor/components';
 
 import { useSelector } from 'src/hooks/suite';
 import { useMessageSystemStaking } from 'src/hooks/suite/useMessageSystemStaking';
 
 import { useTronStakeContext } from '../TronStakeContext';
-import { CUSTOM_REPRESENTATIVE } from './constants';
+import {
+    getRemainingVotes,
+    getVotingDelegationAnalyticsValue,
+    parseVoteAllocations,
+} from '../utils/voteUtils';
 
 export const TronVoteSubmitButton = () => {
     const { device, isLocked } = useDevice();
     const { analytics } = useServices(injectDesktopAnalytics);
     const isDiscoveryRunning = useSelector(selectHasRunningDiscovery);
-    const { account, form, actions, fees } = useTronStakeContext();
+    const { account, form, actions, fees, representatives } = useTronStakeContext();
     const { isSubmitting, pendingTxid, submitAction } = actions;
     const { control } = form.methods;
 
@@ -25,14 +29,11 @@ export const TronVoteSubmitButton = () => {
 
     const hasInsufficientFunds = fees.composedLevels?.normal?.type === 'error';
 
-    const representative = useWatch({ control, name: 'representative' });
-    const customRepresentativeAddress = useWatch({ control, name: 'customRepresentativeAddress' });
-    const { errors } = useFormState({ control });
-
-    const isRepresentativeSelected =
-        representative === CUSTOM_REPRESENTATIVE
-            ? customRepresentativeAddress.trim().length > 0 && !errors.customRepresentativeAddress
-            : representative.length > 0;
+    const allocations = useWatch({ control, name: 'voteAllocations' });
+    const parsedAllocations = parseVoteAllocations(allocations);
+    const hasVotesToSubmit = parsedAllocations.some(({ count }) => count > 0);
+    const isOverAllocated =
+        getRemainingVotes({ totalVotes: getTotalVotes(account), allocations }) < 0;
 
     const isDeviceLocked = !!device?.connected && !!device?.available && isLocked();
 
@@ -53,7 +54,10 @@ export const TronVoteSubmitButton = () => {
                 action: 'continue',
                 step: 'stake-form-modal',
                 networkSymbol: account.symbol,
-                votingDelegation: representative,
+                votingDelegation: getVotingDelegationAnalyticsValue(
+                    parsedAllocations,
+                    representatives.data,
+                ),
             },
         });
     };
@@ -66,7 +70,8 @@ export const TronVoteSubmitButton = () => {
                 onClick={handleClick}
                 isDisabled={
                     isVotingDisabled ||
-                    !isRepresentativeSelected ||
+                    !hasVotesToSubmit ||
+                    isOverAllocated ||
                     isSubmitting ||
                     isDeviceLocked ||
                     hasInsufficientFunds ||

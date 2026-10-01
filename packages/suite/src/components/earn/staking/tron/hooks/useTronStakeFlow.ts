@@ -36,7 +36,7 @@ export const useTronStakeFlow = ({
 
     const form = useTronStakeForm({ account, flow });
     const actions = useTronStakeActions({ account, form, flow });
-    const fees = useTronStakeFees({ account, form, step: actions.step, flow });
+    const fees = useTronStakeFees({ account, form, step: actions.step });
 
     const { methods } = form;
 

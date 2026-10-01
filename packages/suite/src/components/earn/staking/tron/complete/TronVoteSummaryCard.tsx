@@ -1,20 +1,22 @@
 import { Translation } from '@suite/intl';
-import { Card, Column, Divider, Icon, Row, Text } from '@trezor/components';
+import { Card, Column, Icon, Row, Text } from '@trezor/components';
 import { CheckCircleFilledIcon } from '@trezor/icons';
 
 import { useTronStakeContext } from '../TronStakeContext';
 import { TronStakeInfoRow } from '../TronStakeInfoRow';
-import { formatApr, resolveVotedRepresentativeAddress } from '../voteUtils';
+import { parseVoteCount } from '../utils/voteUtils';
+import { TronVoteAllocationTable } from '../vote/TronVoteAllocationTable';
 
 export const TronVoteSummaryCard = () => {
     const { form, representatives } = useTronStakeContext();
 
-    const votedAddress = resolveVotedRepresentativeAddress(form.methods.getValues());
-    const apr = (representatives.data ?? []).find(({ address }) => address === votedAddress)?.apr;
+    const allocations = form.methods
+        .getValues('voteAllocations')
+        .filter(({ votes }) => (parseVoteCount(votes) ?? 0) > 0);
 
     return (
-        <Card type="contrast" paddingType="none">
-            <Column gap={0}>
+        <Column gap={16} alignItems="stretch">
+            <Card type="contrast" paddingType="none">
                 <TronStakeInfoRow label={<Translation id="TR_EARN_YIELD_STATUS" />}>
                     <Row alignItems="center" gap={8}>
                         <Icon as={CheckCircleFilledIcon} intent="brand" />
@@ -23,13 +25,14 @@ export const TronVoteSummaryCard = () => {
                         </Text>
                     </Row>
                 </TronStakeInfoRow>
+            </Card>
 
-                <Divider color="borderNeutral" margin={0} />
-
-                <TronStakeInfoRow label={<Translation id="TR_EARN_TRON_APR_LABEL" />}>
-                    <Text typographyStyle="body-md-strong">{formatApr(apr)}</Text>
-                </TronStakeInfoRow>
-            </Column>
-        </Card>
+            <Card paddingType="none">
+                <TronVoteAllocationTable
+                    allocations={allocations}
+                    representatives={representatives.data}
+                />
+            </Card>
+        </Column>
     );
 };

@@ -8,7 +8,10 @@ import TrezorConnect from '@trezor/connect';
 import { createDeferred } from '@trezor/utils';
 
 import { submitTronVoteThunk } from './submitVote';
-import { type AddFakePendingTronTxThunkState } from '../../../../transactions/transactionsThunks';
+import {
+    type AddFakePendingTronTxThunkState,
+    addFakePendingTronTxThunk,
+} from '../../../../transactions/transactionsThunks';
 import { reportTronVoteTxId } from '../../shared/reportTronVoteTxId';
 import { signTronContract } from '../../shared/signTronContract';
 import { tronStakeActions } from '../../tronStakingReducer';
@@ -291,6 +294,50 @@ describe('submitTronVoteThunk', () => {
                         { address: OTHER_REPRESENTATIVE_ADDRESS, votes: '30' },
                     ],
                 },
+            }),
+        ]);
+    });
+
+    it('leaves representatives without votes out of the review and the pending transaction', async () => {
+        const store = initStore();
+
+        await store.dispatch(
+            submitTronVoteThunk({
+                account: buildAccount(),
+                device,
+                flow: FLOW,
+                allocations: [
+                    { address: REPRESENTATIVE_ADDRESS, count: 16 },
+                    { address: OTHER_REPRESENTATIVE_ADDRESS, count: 0 },
+                ],
+                requestPushApproval: () => Promise.resolve(true),
+            }),
+        );
+
+        const storedForms = store
+            .getActions()
+            .filter(tronStakeActions.storePrecomposedTransaction.match)
+            .map(action => action.payload.precomposedForm);
+        expect(storedForms).toEqual([
+            expect.objectContaining({
+                tronStaking: {
+                    kind: 'vote',
+                    votes: '16',
+                    allocations: [{ address: REPRESENTATIVE_ADDRESS, votes: '16' }],
+                },
+            }),
+        ]);
+
+        const pendingTransactionArguments = store
+            .getActions()
+            .filter(addFakePendingTronTxThunk.pending.match)
+            .map(action => action.meta.arg);
+        expect(pendingTransactionArguments).toEqual([
+            expect.objectContaining({
+                target: { addresses: [REPRESENTATIVE_ADDRESS], amount: '0' },
+                tronSpecific: expect.objectContaining({
+                    votes: [{ address: REPRESENTATIVE_ADDRESS, count: '16' }],
+                }),
             }),
         ]);
     });

@@ -26,7 +26,7 @@ import {
 import { WarningIcon } from '@trezor/icons';
 import { BigNumber } from '@trezor/utils';
 
-import { formatApr } from 'src/components/earn/staking/tron/voteUtils';
+import { formatApr } from 'src/components/earn/staking/tron/utils/voteUtils';
 import { BaseCurrencyValue, FormattedCryptoAmount } from 'src/components/suite';
 import { useMessageSystemStaking } from 'src/hooks/suite/useMessageSystemStaking';
 

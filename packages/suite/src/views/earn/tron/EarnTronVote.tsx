@@ -12,5 +12,5 @@ export const EarnTronVote = () => {
         return <AccountNotExists />;
     }
 
-    return <TronVote account={account} />;
+    return <TronVote key={account.key} account={account} />;
 };
