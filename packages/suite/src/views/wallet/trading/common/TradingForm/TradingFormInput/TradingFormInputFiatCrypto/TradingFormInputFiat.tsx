@@ -13,7 +13,7 @@ import {
     TRADING_FORM_OUTPUT_FIAT,
     type TradingBuyFormProps,
 } from '@suite-common/trading';
-import { formInputsMaxLength } from '@suite-common/validators';
+import { AMOUNT_MAX_LENGTH } from '@suite-common/wallet-core';
 import { getDecimalsForBaseCurrency } from '@suite-common/wallet-utils';
 import { type BaseCurrencyCode, isFiatBaseCurrencyCode } from '@trezor/blockchain-link-types';
 import { Skeleton } from '@trezor/components';
@@ -176,7 +176,7 @@ const TradingFormInputFiatContent = ({
             isDisabled={isDerivedAmountLoading}
             control={control}
             rules={fiatInputRules}
-            maxLength={formInputsMaxLength.amount}
+            maxLength={AMOUNT_MAX_LENGTH}
             data-testid="@trading/form/fiat-input"
         />
     );

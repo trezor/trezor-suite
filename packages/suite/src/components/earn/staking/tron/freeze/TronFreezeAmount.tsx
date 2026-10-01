@@ -6,9 +6,9 @@ import { selectLanguage } from '@suite/settings';
 import { useServices } from '@suite-common/dependency-injection';
 import { useFormatters } from '@suite-common/formatters';
 import { injectDispatch } from '@suite-common/redux-utils';
-import { formInputsMaxLength } from '@suite-common/validators';
 import { getNetwork, getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import {
+    AMOUNT_MAX_LENGTH,
     TRON_STAKING_RESERVE,
     composeTronFreezeFeeLevelsThunk,
     getStakingLimitsByNetworkSymbol,
@@ -230,7 +230,7 @@ export const TronFreezeAmount = () => {
         locale,
         control,
         rules: currency === 'crypto' ? cryptoInputRules : fiatInputRules,
-        maxLength: currency === 'crypto' ? formInputsMaxLength.amount : formInputsMaxLength.fiat,
+        maxLength: AMOUNT_MAX_LENGTH,
         isDisabled,
         hasError,
         onChange: currency === 'crypto' ? handleCryptoAmountChange : handleFiatAmountChange,

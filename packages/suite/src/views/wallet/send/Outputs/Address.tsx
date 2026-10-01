@@ -26,8 +26,8 @@ import { useQueryClient } from '@suite-common/react-query';
 import { injectDispatch, injectGetState } from '@suite-common/redux-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { isAmountPresent, parseTransferUri } from '@suite-common/transfer-uri';
-import { formInputsMaxLength } from '@suite-common/validators';
 import {
+    ADDRESS_MAX_LENGTH,
     NAMED_ADDRESS_RESOLVE_DEBOUNCE_MS,
     getResolveNamedAddressQueryOptions,
     useResolveNamedAddress,
@@ -691,7 +691,7 @@ export const Address = ({ output, outputId, outputsCount }: AddressProps) => {
             bottomTextIconComponent={getBottomTextIconComponent()}
             data-testid={inputName}
             defaultValue={addressValue}
-            maxLength={formInputsMaxLength.address}
+            maxLength={ADDRESS_MAX_LENGTH}
             innerRef={inputRef}
             {...inputField}
         />

@@ -2,8 +2,8 @@ import { useFormState, useWatch } from 'react-hook-form';
 
 import { Translation, useTranslation } from '@suite/intl';
 import { selectLanguage } from '@suite/settings';
-import { formInputsMaxLength } from '@suite-common/validators';
 import { getNetwork, getNetworkDisplaySymbol } from '@suite-common/wallet-config';
+import { AMOUNT_MAX_LENGTH } from '@suite-common/wallet-core';
 import { toFiatCurrency } from '@suite-common/wallet-utils';
 import { Banner, Button, Column, Row, Text } from '@trezor/components';
 import { NumberInput } from '@trezor/product-components';
@@ -83,7 +83,7 @@ export const TronUnstakeAmount = () => {
         locale,
         control,
         rules: currency === 'crypto' ? cryptoInputRules : fiatInputRules,
-        maxLength: currency === 'crypto' ? formInputsMaxLength.amount : formInputsMaxLength.fiat,
+        maxLength: AMOUNT_MAX_LENGTH,
         isDisabled,
         hasError,
         onChange: currency === 'crypto' ? onCryptoAmountChange : onFiatAmountChange,

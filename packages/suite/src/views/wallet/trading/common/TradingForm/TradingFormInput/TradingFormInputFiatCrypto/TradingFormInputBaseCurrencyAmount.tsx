@@ -12,9 +12,9 @@ import {
     TRADING_FORM_OUTPUT_MAX,
     getNetworkDecimalsWithFallback,
 } from '@suite-common/trading';
-import { formInputsMaxLength } from '@suite-common/validators';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import {
+    AMOUNT_MAX_LENGTH,
     type FiatRatesRootState,
     selectBaseCurrency,
     selectFiatRatesByFiatRateKey,
@@ -229,7 +229,7 @@ export const TradingFormInputBaseCurrencyAmount = ({
                 onChange={handleChange}
                 isDisabled={!rate}
                 control={baseCurrencyForm.control}
-                maxLength={formInputsMaxLength.amount}
+                maxLength={AMOUNT_MAX_LENGTH}
                 data-testid="@trading/form/base-currency-input"
             />
         </Row>
