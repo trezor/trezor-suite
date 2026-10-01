@@ -118,6 +118,8 @@ describe(`TrezorConnect methods`, () => {
                         ) {
                             await setup(controller, setupConfig);
                             lastSetupConfig = setupConfig;
+                            TrezorConnect.dispose();
+                            await initTrezorConnect(controller);
                         }
 
                         // Coins enabled for this call's session: the test case's defaults (e.g.
