@@ -2,7 +2,7 @@ import { useEffect } from 'react';
 
 import { type FormOptions } from '@suite-common/wallet-types';
 import { Column } from '@trezor/components';
-import { ETHEREUM_DATA_MAX_BYTES } from '@trezor/network-ethereum/constants';
+import { TRON_DATA_MAX_BYTES } from '@trezor/network-tron/constants';
 
 import { useSendFormContext } from 'src/hooks/wallet';
 
@@ -38,7 +38,7 @@ export const TronOptions = () => {
             {isNoteEnabled && <TronNote close={toggleNote} />}
 
             {isDataEnabled && !token && (
-                <TransactionData maxBytes={ETHEREUM_DATA_MAX_BYTES} close={toggleData} />
+                <TransactionData maxBytes={TRON_DATA_MAX_BYTES} close={toggleData} />
             )}
         </Column>
     );

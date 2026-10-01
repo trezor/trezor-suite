@@ -166,6 +166,7 @@
         "@trezor/network-ripple": "workspace:*",
         "@trezor/network-solana": "workspace:*",
         "@trezor/network-stellar": "workspace:*",
+        "@trezor/network-tron": "workspace:*",
         "@trezor/product-components": "workspace:*",
         "@trezor/react-utils": "workspace:*",
         "@trezor/styles": "workspace:*",
