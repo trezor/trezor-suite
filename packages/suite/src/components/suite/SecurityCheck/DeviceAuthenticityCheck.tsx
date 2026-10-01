@@ -26,6 +26,29 @@ const items: { id: string; icon: IconComponent; text: TranslationKey }[] = [
     { id: 'checks', icon: ListChecksIcon, text: 'TR_DEVICE_AUTHENTICITY_ITEM_3' },
 ];
 
+const ExplanationBeforeCheck = () => {
+    const { isBelowTablet } = useLayoutSize();
+
+    return (
+        <Grid columns={isBelowTablet ? 1 : items.length} gap={48}>
+            {items.map(({ id, icon, text }) => (
+                <Column key={id} gap={24} alignItems="center">
+                    <Icon as={icon} size={32} />
+                    <Paragraph
+                        intent="neutral"
+                        priority="secondary"
+                        typographyStyle="body-sm"
+                        align="center"
+                        textWrap="pretty"
+                    >
+                        <Translation id={text} />
+                    </Paragraph>
+                </Column>
+            ))}
+        </Grid>
+    );
+};
+
 type DeviceAuthenticityCheckProps = {
     onSuccess: () => void;
 };
@@ -41,7 +64,6 @@ export const DeviceAuthenticityCheck = ({ onSuccess }: DeviceAuthenticityCheckPr
     const isDebugModeActive = useSelector(selectIsDebugModeActive);
     const { dispatch } = useServices(injectDispatch);
     const [isLoading, setIsLoading] = useState(false);
-    const { isBelowTablet } = useLayoutSize();
 
     if (!device) return null;
 
@@ -132,24 +154,7 @@ export const DeviceAuthenticityCheck = ({ onSuccess }: DeviceAuthenticityCheckPr
             isConfirmedOnDevice={isWaitingForConfirmation}
             isActionAbortable
         >
-            {!isCheckSuccessful && (
-                <Grid columns={isBelowTablet ? 1 : items.length} gap={48}>
-                    {items.map(({ id, icon, text }) => (
-                        <Column key={id} gap={24} alignItems="center">
-                            <Icon as={icon} size={32} />
-                            <Paragraph
-                                intent="neutral"
-                                priority="secondary"
-                                typographyStyle="body-sm"
-                                align="center"
-                                textWrap="pretty"
-                            >
-                                <Translation id={text} />
-                            </Paragraph>
-                        </Column>
-                    ))}
-                </Grid>
-            )}
+            {!isCheckSuccessful && <ExplanationBeforeCheck />}
         </OnboardingCard>
     );
 };
