@@ -6,19 +6,19 @@ import {
     withSendFormLayout,
 } from '@suite-native/network-module-suite-native-sendform-lego-bricks';
 
-import { BitcoinFeeSelection } from './BitcoinFeeSelection';
+import { SolanaFeeSelection } from './SolanaFeeSelection';
 
-const BitcoinSendFormFields = () => {
+const SolanaSendFormFields = () => {
     const [address, setAddress] = useState('');
 
     return (
         <VStack spacing={24}>
             <SendFormAddressInput value={address} onChangeText={setAddress} />
-            <BitcoinFeeSelection />
+            <SolanaFeeSelection />
         </VStack>
     );
 };
 
-export const BitcoinSendForm = withSendFormLayout(BitcoinSendFormFields, {
-    title: 'Send Bitcoin',
+export const SolanaSendForm = withSendFormLayout(SolanaSendFormFields, {
+    title: 'Send Solana',
 });

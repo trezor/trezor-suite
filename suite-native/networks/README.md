@@ -21,10 +21,15 @@ package does not inspect network-specific state or persistence configuration.
 suite-native/networks/
 ├── native-common-networks/  → @suite-native/networks
 ├── network-module-types/    → @suite-native/network-module-suite-native-types
+├── network-module-suite-native-sendform-lego-bricks/
+│                           → @suite-native/network-module-suite-native-sendform-lego-bricks
 ├── bitcoin/                 → @suite-native/network-bitcoin
 └── solana/                  → @suite-native/network-solana
 ```
 
-The Bitcoin module provides a placeholder `getSendForm` capability that returns its component.
+The Bitcoin and Solana modules provide synthetic `getSendForm` capabilities that return their components.
 Consumers can retrieve it through `nativeNetworks.getSendForm(networkSymbol)`; networks without
-this capability return `undefined`. The existing send flow does not use this placeholder yet.
+this capability return `undefined`. The forms reuse a layout HOC and a controlled address input from
+`@suite-native/network-module-suite-native-sendform-lego-bricks`. Bitcoin owns its sat/vB fee-rate
+selector, while Solana owns its priority-fee selector. Fees are fixed examples and all input state
+stays local to the forms. The existing send flow does not use these synthetic forms yet.

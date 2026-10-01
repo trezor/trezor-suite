@@ -16,6 +16,7 @@
         "@suite-common/redux-utils": "workspace:*",
         "@suite-native/atoms": "workspace:*",
         "@suite-native/intl": "workspace:*",
+        "@suite-native/network-module-suite-native-sendform-lego-bricks": "workspace:*",
         "@suite-native/network-module-suite-native-types": "workspace:*",
         "@suite-native/storage": "workspace:*",
         "@trezor/network-module-types": "workspace:*",

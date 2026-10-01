@@ -14393,11 +14393,21 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@suite-native/network-bitcoin@workspace:suite-native/networks/bitcoin"
   dependencies:
+    "@suite-native/atoms": "workspace:*"
+    "@suite-native/network-module-suite-native-sendform-lego-bricks": "workspace:*"
     "@suite-native/network-module-suite-native-types": "workspace:*"
     "@trezor/network-bitcoin": "workspace:*"
     "@trezor/network-module-types": "workspace:*"
     react: "npm:19.2.3"
-    react-native: "npm:0.86.0"
+  languageName: unknown
+  linkType: soft
+
+"@suite-native/network-module-suite-native-sendform-lego-bricks@workspace:*, @suite-native/network-module-suite-native-sendform-lego-bricks@workspace:suite-native/networks/network-module-suite-native-sendform-lego-bricks":
+  version: 0.0.0-use.local
+  resolution: "@suite-native/network-module-suite-native-sendform-lego-bricks@workspace:suite-native/networks/network-module-suite-native-sendform-lego-bricks"
+  dependencies:
+    "@suite-native/atoms": "workspace:*"
+    react: "npm:19.2.3"
   languageName: unknown
   linkType: soft
 
@@ -14421,6 +14431,7 @@ __metadata:
     "@suite-common/redux-utils": "workspace:*"
     "@suite-native/atoms": "workspace:*"
     "@suite-native/intl": "workspace:*"
+    "@suite-native/network-module-suite-native-sendform-lego-bricks": "workspace:*"
     "@suite-native/network-module-suite-native-types": "workspace:*"
     "@suite-native/storage": "workspace:*"
     "@trezor/network-module-types": "workspace:*"

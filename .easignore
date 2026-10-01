@@ -285,6 +285,7 @@
 /suite-native/networks/*
 !/suite-native/networks/bitcoin
 !/suite-native/networks/native-common-networks
+!/suite-native/networks/network-module-suite-native-sendform-lego-bricks
 !/suite-native/networks/network-module-types
 !/suite-native/networks/solana
 

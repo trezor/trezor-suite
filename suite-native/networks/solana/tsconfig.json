@@ -10,6 +10,9 @@
         },
         { "path": "../../atoms" },
         { "path": "../../intl" },
+        {
+            "path": "../network-module-suite-native-sendform-lego-bricks"
+        },
         { "path": "../network-module-types" },
         { "path": "../../storage" },
         {
