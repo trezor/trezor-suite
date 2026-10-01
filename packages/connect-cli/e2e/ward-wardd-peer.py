@@ -52,10 +52,17 @@ def main() -> int:
     ap.add_argument("--ident")
     ap.add_argument("--value")
     ap.add_argument("--batch", type=int, default=1)
+    ap.add_argument(
+        "--verbose", action="store_true", help="trezorlib's wire log on stderr"
+    )
     args = ap.parse_args()
+    if args.verbose:
+        from trezorlib import log
 
+        log.enable_debug_output()
+
+    # the constructor opens the transport itself; opening it again raises "already open"
     debug = DebugLink(UdpTransport(f"127.0.0.1:{args.port + 1}"), auto_interact=True)
-    debug.open()
     try:
         client = get_default_client(
             "ward-wardd-peer",
@@ -88,7 +95,7 @@ def main() -> int:
     except ward_relay.WarddError as e:
         out = {"error": e.code, "message": str(e)}
     finally:
-        debug.transport.close()
+        debug.close()
 
     print(json.dumps(out))
     return 0 if "error" not in out else 1

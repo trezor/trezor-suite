@@ -223,31 +223,59 @@ if [ "$WALLET" != v1 ]; then
 else
     echo
     echo "== B. a second emulator, the SAME wallet (SLIP-14), through the Python and Rust bindings"
-    # setsid: emulator B gets its own process group, so cleanup stops emu.py AND the emulator
-    env -u TREZOR_PROFILE_DIR -u TREZOR_UDP_PORT setsid python3 "$TREZOR_FIRMWARE/core/emu.py" -q -a -t -s -P "$PEER_PORT" -c -- sleep 100000 \
-        > "$WORK/peer-emu.log" 2>&1 < /dev/null &
+    echo "B0. starting emulator B (same SLIP-14 seed) on udp $PEER_PORT/$((PEER_PORT + 1))"
+    # setsid: emulator B gets its own process group, so cleanup stops emu.py AND the emulator.
+    # Not -q: its output is the first thing to read if it does not come up.
+    env -u TREZOR_PROFILE_DIR -u TREZOR_UDP_PORT setsid python3 "$TREZOR_FIRMWARE/core/emu.py" \
+        -a -t -s -P "$PEER_PORT" -c -- sleep 100000 > "$WORK/peer-emu.log" 2>&1 < /dev/null &
     PEER_PID=$!
-    for _ in $(seq 1 150); do
-        port_bound "$PEER_PORT" && port_bound "$((PEER_PORT + 1))" && break
-        sleep 0.2
+    PEER_UP=""
+    for _ in $(seq 1 120); do
+        if port_bound "$PEER_PORT" && port_bound "$((PEER_PORT + 1))"; then
+            PEER_UP=1
+            break
+        fi
+        kill -0 "$PEER_PID" 2>/dev/null || break
+        sleep 0.5
     done
+    if [ -z "$PEER_UP" ]; then
+        echo "  FAIL emulator B did not come up (B and C skipped). Its log:"
+        tail -20 "$WORK/peer-emu.log" | sed 's/^/         /'
+        failures=$((failures + 1))
+    fi
+fi
+
+if [ "$WALLET" = v1 ] && [ -n "${PEER_UP:-}" ]; then
+    echo "  ok   emulator B is up"
     PY="python3"
     [ -x "$TREZOR_FIRMWARE/.venv/bin/python" ] && PY="$TREZOR_FIRMWARE/.venv/bin/python"
-    PEER="$PY $HERE/ward-wardd-peer.py --port $PEER_PORT --wardd $WARDD_URL --token-file $TOKEN_FILE"
+    PEER_LOG="$WORK/peer.log"
+    # -u and --verbose: the peer's wire log goes to $PEER_LOG, shown when a step fails
+    peer() {
+        local started=$SECONDS out
+        echo "  ..   peer $1 (${SECONDS}s)" >&2
+        out="$(timeout 90 "$PY" -u "$HERE/ward-wardd-peer.py" --verbose --port "$PEER_PORT" \
+            --wardd "$WARDD_URL" --token-file "$TOKEN_FILE" "$@" 2>>"$PEER_LOG")"
+        local rc=$?
+        [ $rc -eq 124 ] && out="TIMED OUT after $((SECONDS - started))s; last of the peer's log:
+$(tail -15 "$PEER_LOG")"
+        echo "$out"
+    }
 
-    WARD_ID_OUT="$(timeout 150 $PEER ward-id 2>&1)"
+    WARD_ID_OUT="$(peer ward-id)"
     check "emulator B is a fresh device of the same wallet" '"counter": 0' "$WARD_ID_OUT"
     WARD_ID="$(sed -nE 's/.*"ward_id": "([0-9a-f]+)".*/\1/p' <<<"$WARD_ID_OUT")"
 
     echo "B1. Python binding: B catches up from 0 to 5 by walking A's chain back"
-    SYNC_B="$(timeout 150 $PEER sync 2>&1)"
+    SYNC_B="$(peer sync)"
     check "verified along the chain" '"how": "verifyChain"' "$SYNC_B"
     check "and adopted counter 5" '"counter": 5' "$SYNC_B"
 
     echo "B2. Rust binding: the same device, a new session, reconciles at 5"
+    echo "  ..   building the Rust example (the first run compiles it)"
     cargo build -q --manifest-path "$TREZOR_FIRMWARE/rust/ward-relay/Cargo.toml" --features codec \
         --example emulator 2>"$WORK/cargo.log" || cat "$WORK/cargo.log"
-    RUST_B="$(timeout 150 cargo run -q --manifest-path "$TREZOR_FIRMWARE/rust/ward-relay/Cargo.toml" \
+    RUST_B="$(timeout 90 cargo run -q --manifest-path "$TREZOR_FIRMWARE/rust/ward-relay/Cargo.toml" \
         --features codec --example emulator -- sync --wardd "$WARDD_URL" --token-file "$TOKEN_FILE" \
         --emulator "127.0.0.1:$PEER_PORT" 2>&1)"
     check "reconciled at 5" '"counter":5' "$RUST_B"
@@ -255,9 +283,9 @@ else
     echo "B3. B writes: queue two, flush through wardd -- a second writer on the same history"
     for i in 1 2; do
         check "B queued P$i" '"queued": true' \
-            "$(timeout 150 $PEER queue --appid peer_app --ident "P$i" --value "p$i" 2>&1)"
+            "$(peer queue --appid peer_app --ident "P$i" --value "p$i")"
     done
-    FLUSH_B="$(timeout 300 $PEER flush 2>&1)"
+    FLUSH_B="$(peer flush)"
     check "B published two" '"published": 2' "$FLUSH_B"
     check "the head is at 7" '"counter": 7' "$FLUSH_B"
 
