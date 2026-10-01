@@ -3,12 +3,14 @@ import { Translation } from '@suite-native/intl';
 
 type TransactionsListFooterProps = {
     hasMoreTransactions: boolean;
+    isOlderHistory: boolean;
     isLoading: boolean;
     onButtonPress: () => void;
 };
 
 export const TransactionsListFooter = ({
     hasMoreTransactions,
+    isOlderHistory,
     isLoading,
     onButtonPress,
 }: TransactionsListFooterProps) => {
@@ -27,7 +29,9 @@ export const TransactionsListFooter = ({
                     onPress={onButtonPress}
                     testID="@transactions/list/more-button"
                 >
-                    <Translation id="transactions.more" />
+                    <Translation
+                        id={isOlderHistory ? 'transactions.loadOlder' : 'transactions.more'}
+                    />
                 </Button>
             </Box>
         );

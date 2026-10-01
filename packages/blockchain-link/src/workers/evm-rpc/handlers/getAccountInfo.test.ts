@@ -4,14 +4,15 @@ import type { MessageTypes, Response } from '@trezor/blockchain-link-types';
 
 import { getAccountInfo } from './getAccountInfo';
 import { WorkerState } from '../../state';
-import { TRANSFER_TOPIC } from '../history/constants';
+import { HISTORY_STEP_BLOCKS, TRANSFER_TOPIC } from '../history/constants';
+import { getDescriptorHistory } from '../history/state';
 import type { Request } from '../types';
 
 const ME = '0xcAe32Cd53A96209fA02C0c0cfE165a5c97d456dF';
 const OTHER = '0x1111111111111111111111111111111111111111';
 const SENTINEL = '0xfffffffffffffffffffffffffffffffffffffffe';
 const ARC_TESTNET_CHAIN_ID = 5042002;
-const LATEST = 1_000_000;
+const LATEST = 24_000_000;
 
 // What the Arc testnet known-token list holds.
 const EURC = '0x89B50855Aa3bE2F677cD6303Cec089B5F319D72a' as const;
@@ -179,15 +180,29 @@ beforeEach(() => {
 
 describe(getAccountInfo.name, () => {
     it('keeps a cheap probe cheap and reports the transaction count as unknown', async () => {
-        const { payload, rpcRequest, contractCall } = createRequest({ details: 'basic' });
+        const { payload, rpcRequest, contractCall } = createRequest({
+            details: 'basic',
+            tokenBalance: 0n,
+        });
 
         const { payload: info } = await getAccountInfo(payload);
 
         expect(rpcRequest).not.toHaveBeenCalled();
-        expect(contractCall).not.toHaveBeenCalled();
-        expect(mockGetKnownTokens).not.toHaveBeenCalled();
+        // an untouched account only gets its known-token balances read
+        expect(contractCall).toHaveBeenCalled();
         expect(info.history.total).toBe(-1);
         expect(info.empty).toBe(true);
+    });
+
+    it('reads no token balances for an account its own balance already shows as used', async () => {
+        const { payload, client, contractCall } = createRequest({ details: 'basic' });
+        Object.assign(client, { getBalance: () => Promise.resolve(1n) });
+
+        const { payload: info } = await getAccountInfo(payload);
+
+        expect(contractCall).not.toHaveBeenCalled();
+        expect(mockGetKnownTokens).not.toHaveBeenCalled();
+        expect(info.empty).toBe(false);
     });
 
     it('scans and reports a real count once transactions are asked for', async () => {
@@ -256,12 +271,13 @@ describe(`${getAccountInfo.name} token discovery`, () => {
         expect(probe.rpcRequest).not.toHaveBeenCalled();
     });
 
-    it('leaves tokens to the follow-up request that asks for them', async () => {
+    it('counts a known token as use on an account that never sent anything', async () => {
         const held = createRequest({ details: 'basic', tokenBalance: 5n });
 
         const { payload: info } = await getAccountInfo(held.payload);
 
-        expect(held.contractCall).not.toHaveBeenCalled();
+        expect(info.empty).toBe(false);
+        // listing it is still left to the follow-up request that asks for tokens
         expect(info.tokens).toBeUndefined();
     });
 
@@ -390,6 +406,64 @@ describe(`${getAccountInfo.name} token discovery`, () => {
     });
 });
 
+describe(`${getAccountInfo.name} reaching further back`, () => {
+    it('offers nothing to load while no window has been scanned', async () => {
+        const { payload } = createRequest({ details: 'basic' });
+
+        const { payload: info } = await getAccountInfo(payload);
+
+        expect(info.misc?.olderHistoryFrom).toBeUndefined();
+    });
+
+    it('offers a block one step below the scanned window once it has one', async () => {
+        const { payload, state } = createRequest({
+            details: 'txids',
+            logs: () => [nativeLog(LATEST, '0xaaa')],
+        });
+
+        const { payload: info } = await getAccountInfo(payload);
+        const { syncedFrom } = getDescriptorHistory(state, ME);
+
+        expect(syncedFrom).toBeGreaterThan(0);
+        expect(info.misc?.olderHistoryFrom).toBe(syncedFrom - HISTORY_STEP_BLOCKS);
+    });
+
+    it('reports when the scanned window starts, so a step that found nothing still shows progress', async () => {
+        const { payload } = createRequest({ details: 'txids' });
+
+        const { payload: info } = await getAccountInfo(payload);
+
+        // the harness answers every getBlock with timestamp 1
+        expect(info.misc?.historyCoveredSince).toBe(1);
+    });
+
+    it('reports no window start before anything has been scanned', async () => {
+        const { payload } = createRequest({ details: 'basic' });
+
+        const { payload: info } = await getAccountInfo(payload);
+
+        expect(info.misc?.historyCoveredSince).toBeUndefined();
+    });
+
+    it('stops offering more once the window reaches the first block', async () => {
+        const { payload, state } = createRequest({
+            details: 'txids',
+            logs: () => [nativeLog(LATEST, '0xaaa')],
+        });
+        await getAccountInfo(payload);
+
+        // the account view asked for everything down to the genesis block, and got it
+        const toGenesis = createRequest({ details: 'txids', state, logs: () => [] });
+        const { payload: info } = await getAccountInfo({
+            ...toGenesis.payload,
+            payload: { ...toGenesis.payload.payload, from: 0 },
+        } as typeof toGenesis.payload);
+
+        expect(getDescriptorHistory(state, ME).syncedFrom).toBe(0);
+        expect(info.misc?.olderHistoryFrom).toBeUndefined();
+    });
+});
+
 describe(`${getAccountInfo.name} request cost`, () => {
     it('does not re-read transactions it has already mapped', async () => {
         const state = new WorkerState();
@@ -406,6 +480,56 @@ describe(`${getAccountInfo.name} request cost`, () => {
 
         // the same transaction, still mapped only once across both calls
         expect(second.txReads()).toBe(readsAfterFirst);
+    });
+
+    // The transport batches whatever is requested together, so these decide the round trips.
+    it('reads a whole page of transactions at once', async () => {
+        const txids = Array.from(
+            { length: 25 },
+            (_, i) => `0x${(i + 1).toString(16).padStart(64, '0')}`,
+        );
+        const { payload, client } = createRequest({
+            details: 'txs',
+            logs: () => txids.map((txid, i) => nativeLog(LATEST - i, txid)),
+        });
+        const getTransaction = client.getTransaction as unknown as jest.Mock;
+        const read = getTransaction.getMockImplementation();
+        const inFlight = { now: 0, max: 0 };
+        getTransaction.mockImplementation(async args => {
+            inFlight.now++;
+            inFlight.max = Math.max(inFlight.max, inFlight.now);
+            await new Promise(resolve => setTimeout(resolve, 0));
+            inFlight.now--;
+
+            return read?.(args);
+        });
+
+        const { payload: info } = await getAccountInfo(payload);
+
+        expect(info.history.transactions).toHaveLength(25);
+        expect(inFlight.max).toBe(25);
+    });
+
+    it('starts the history sync without waiting for the balance', async () => {
+        const { payload, client } = createRequest({ details: 'txids' });
+        const order: string[] = [];
+        Object.assign(client, {
+            getBalance: async () => {
+                await new Promise(resolve => setTimeout(resolve, 0));
+                order.push('balance');
+
+                return 0n;
+            },
+            getBlockNumber: () => {
+                order.push('blockNumber');
+
+                return Promise.resolve(BigInt(LATEST));
+            },
+        });
+
+        await getAccountInfo(payload);
+
+        expect(order).toEqual(['blockNumber', 'balance']);
     });
 });
 

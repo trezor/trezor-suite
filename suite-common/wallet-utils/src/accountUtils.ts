@@ -685,6 +685,21 @@ export const haveTokenBalancesChanged = (
     return freshDiffers || heldTokenGone;
 };
 
+/**
+ * A direct-RPC backend scans a window of blocks rather than the whole chain. This is the block to
+ * send as `from` to reach one step further back, or undefined once nothing older is reachable.
+ */
+export const getOlderHistoryFrom = (account: Account) =>
+    account.networkType === 'ethereum' && account.backendType === 'evm-rpc'
+        ? account.misc.olderHistoryFrom
+        : undefined;
+
+/** A direct-RPC backend reports -1 until it has scanned the account's history at least once. */
+export const isDirectRpcHistoryUnscanned = (account: Account) =>
+    account.networkType === 'ethereum' &&
+    account.backendType === 'evm-rpc' &&
+    account.history.total === -1;
+
 export const isAccountOutdated = (account: Account, freshInfo: AccountInfo) => {
     if (
         // if backend/coin supports addrTxCount, compare it instead of total
@@ -724,9 +739,12 @@ export const isAccountOutdated = (account: Account, freshInfo: AccountInfo) => {
                 JSON.stringify(freshInfo?.misc?.stakingPools) !==
                     JSON.stringify(account?.misc?.stakingPools) ||
                 // A plain RPC node has no transaction count to compare, so on direct RPC a token
-                // moving is only visible in the token list itself.
+                // moving is only visible in the token list itself. An unscanned history counts
+                // as outdated too, or an account holding only the native asset never gets its
+                // transactions fetched.
                 (account.backendType === 'evm-rpc' &&
-                    haveTokenBalancesChanged(freshInfo.tokens, account.tokens))
+                    (freshInfo.history.total === -1 ||
+                        haveTokenBalancesChanged(freshInfo.tokens, account.tokens)))
             );
         case 'cardano': {
             const freshStaking = freshInfo.misc?.staking;
