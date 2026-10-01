@@ -220,7 +220,7 @@
         "@types/webpack-bundle-analyzer": "^4.7.0",
         "@types/webpack-plugin-serve": "^1.4.7",
         "babel-loader": "^10.1.1",
-        "babel-plugin-styled-components": "^2.1.4",
+        "babel-plugin-styled-components": "^2.3.0",
         "buffer": "^6.0.3",
         "core-js": "^3.49.0",
         "crypto-browserify": "3.12.1",
