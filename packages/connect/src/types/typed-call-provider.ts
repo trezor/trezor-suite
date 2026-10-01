@@ -20,6 +20,8 @@ type SendResult = { success: true; payload: undefined } | { success: false; erro
  */
 export interface TypedCallProvider {
     typedCall: Messages.TypedCall;
+    /** A relay's call: any response type, WARD pulls returned rather than answered. */
+    relayCall?: (type: string, msg?: Record<string, unknown>) => Promise<MessageResponse>;
     isDisposed: () => boolean;
     cancelCall: () => Promise<CallResult>;
     call: (

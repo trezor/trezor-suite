@@ -297,5 +297,12 @@ export const DeviceCommands = (deviceTypedCall: TypedCallProvider) => {
         preauthorize,
         getAccountDescriptor,
         typedCall,
+        relayCall: (type: string, msg?: Record<string, unknown>) => {
+            if (!deviceTypedCall.relayCall) {
+                throw ERRORS.TypedError('Runtime', 'this device session cannot relay');
+            }
+
+            return deviceTypedCall.relayCall(type, msg);
+        },
     };
 };

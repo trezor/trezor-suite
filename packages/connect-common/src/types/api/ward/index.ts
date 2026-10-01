@@ -6,6 +6,7 @@ import type { wardGetEntry } from './wardGetEntry';
 import type { wardQueueDeleteEntry } from './wardQueueDeleteEntry';
 import type { wardQueueGetEntry } from './wardQueueGetEntry';
 import type { wardQueueSetEntry } from './wardQueueSetEntry';
+import type { wardRelay } from './wardRelay';
 import type { wardResetApp } from './wardResetApp';
 import type { wardSetEntry } from './wardSetEntry';
 
@@ -20,5 +21,6 @@ export const TrezorConnectWard = Type.Object({
     wardQueueDeleteEntry: Type.Unsafe<typeof wardQueueDeleteEntry>(),
     wardFlushQueue: Type.Unsafe<typeof wardFlushQueue>(),
     wardResetApp: Type.Unsafe<typeof wardResetApp>(),
+    wardRelay: Type.Unsafe<typeof wardRelay>(),
 });
 export type TrezorConnectWard = Static<typeof TrezorConnectWard>;

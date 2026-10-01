@@ -84,3 +84,62 @@ describe('DeviceCurrentSession: WardEntryRequest loopback', () => {
         expect(calls.map(c => c.name)).toEqual(['WardGetEntry', 'Cancel']);
     });
 });
+
+describe('DeviceCurrentSession: relayCall', () => {
+    it('hands a WARD pull back to the relay instead of answering it from the provider', async () => {
+        const { session, calls, prompt } = setup([
+            { type: 'WardEntryRequest', message: { entry_key: 'ff' } },
+        ]);
+
+        const res = await session.relayCall('WardFlushQueue', {});
+
+        expect(res).toEqual({ type: 'WardEntryRequest', message: { entry_key: 'ff' } });
+        expect(prompt).not.toHaveBeenCalled();
+        expect(calls.map(c => c.name)).toEqual(['WardFlushQueue']);
+    });
+
+    it('returns a chain pull and any final response type, with no expected type to name', async () => {
+        const { session } = setup([
+            { type: 'WardChainRequest', message: { to_counter: 3 } },
+            { type: 'WardVerifyChainAck', message: { counter: 3 } },
+        ]);
+
+        await expect(session.relayCall('WardVerifyChain', {})).resolves.toMatchObject({
+            type: 'WardChainRequest',
+        });
+        await expect(session.relayCall('WardChainLinkAck', { links: [] })).resolves.toMatchObject({
+            type: 'WardVerifyChainAck',
+        });
+    });
+
+    it('still handles what the user is part of: a button request is acked, not relayed', async () => {
+        const { session, calls } = setup([
+            { type: 'ButtonRequest', message: { code: 'ButtonRequest_Other' } },
+            { type: 'WardRejoinAck', message: { counter: 4, discarded: 1 } },
+        ]);
+        (session as any).device.emit = () => {};
+
+        await expect(session.relayCall('WardRejoin', { fork_counter: 2 })).resolves.toMatchObject({
+            type: 'WardRejoinAck',
+        });
+        expect(calls.map(c => c.name)).toEqual(['WardRejoin', 'ButtonAck']);
+    });
+
+    it('throws a device Failure, as typedCall does', async () => {
+        const { session } = setup([
+            {
+                type: 'Failure',
+                message: { code: 'Failure_DataError', message: 'does not descend' },
+            },
+        ]);
+
+        await expect(session.relayCall('WardVerifyChain', {})).rejects.toThrow('does not descend');
+    });
+
+    it('refuses a message name the protocol does not have', async () => {
+        const { session, calls } = setup([]);
+
+        await expect(session.relayCall('NotAMessage', {})).rejects.toThrow('unknown message');
+        expect(calls).toHaveLength(0);
+    });
+});

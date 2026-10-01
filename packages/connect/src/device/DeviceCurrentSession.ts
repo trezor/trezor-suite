@@ -89,6 +89,9 @@ const fail = (msg: string) =>
 
 export type { TypedCallProvider } from '../types/typed-call-provider';
 
+/** What `relayCall` hands back to the relay instead of handling: the WARD conversation's pulls. */
+const RELAY_PASS_THROUGH = ['WardEntryRequest', 'WardChainRequest'];
+
 export class DeviceCurrentSession implements TypedCallProvider {
     private readonly device: IDevice;
     private readonly transport: Transport;
@@ -138,20 +141,7 @@ export class DeviceCurrentSession implements TypedCallProvider {
         // msg is allowed to be undefined for some calls, in that case the schema is an empty object
         Assert(Messages.MessageType.properties[type], msg);
 
-        this.abortController = new AbortController();
-        const { signal } = this.abortController;
-        const abortPromise = new Promise<Error>(resolve =>
-            signal.addEventListener('abort', () => resolve(signal.reason)),
-        );
-        const callPromise = this.callLoop(type, msg, abortPromise);
-        this.callPromise = callPromise;
-        const response = await callPromise;
-        this.callPromise = undefined;
-        this.abortController = undefined;
-
-        if (!response.success) throw response.error;
-
-        const { payload } = response;
+        const payload = await this.runCallLoop(type, msg, []);
         const receivedType = payload.type;
 
         if (isExpectedResponse(payload, expectedType)) {
@@ -177,10 +167,58 @@ export class DeviceCurrentSession implements TypedCallProvider {
         }
     }
 
+    private async runCallLoop(
+        type: Messages.MessageKey,
+        msg: Record<string, unknown>,
+        passThrough: readonly string[],
+    ) {
+        this.abortController = new AbortController();
+        const { signal } = this.abortController;
+        const abortPromise = new Promise<Error>(resolve =>
+            signal.addEventListener('abort', () => resolve(signal.reason)),
+        );
+        const callPromise = this.callLoop(type, msg as never, abortPromise, passThrough);
+        this.callPromise = callPromise;
+        const response = await callPromise;
+        this.callPromise = undefined;
+        this.abortController = undefined;
+
+        if (!response.success) throw response.error;
+
+        return response.payload;
+    }
+
+    /**
+     * A call made on behalf of a RELAY -- `wardRelay`, which carries a conversation between the
+     * device and the local WARD service. Two differences from `typedCall`, and only these:
+     *
+     * - ANY RESPONSE TYPE is returned, since the relay forwards whatever the device said and the
+     *   service, not this layer, knows what it expected;
+     * - WARD PULLS ARE RETURNED, not answered. `WardEntryRequest` / `WardChainRequest` are the
+     *   conversation itself, owned by the service holding the replica. Answering them here, from the
+     *   registered `wardProvider`, would be answering the service's question behind its back -- and
+     *   a provider backed by that same service would wait on the conversation it is inside of.
+     *
+     * Everything the user is involved in -- button requests, PIN, passphrase -- is handled exactly
+     * as for any other call. A `Failure` throws, as from `typedCall`.
+     */
+    relayCall(type: string, msg: Record<string, unknown> = {}) {
+        const schema = Messages.MessageType.properties[type as Messages.MessageKey];
+        if (!schema) {
+            return Promise.reject(
+                ERRORS.TypedError('Method_InvalidParameter', `unknown message ${type}`),
+            );
+        }
+        Assert(schema, msg);
+
+        return this.runCallLoop(type as Messages.MessageKey, msg, RELAY_PASS_THROUGH);
+    }
+
     private async callLoop<T extends Messages.MessageKey>(
         type: T,
         msg: Messages.MessagePayload<T>,
         abortPromise: Promise<Error>,
+        passThrough: readonly string[] = [],
     ) {
         let [name, data] = [type, msg];
         let pinUnlocked = false;
@@ -215,6 +253,8 @@ export class DeviceCurrentSession implements TypedCallProvider {
             if (!response.success) return response;
 
             const res = response.payload;
+
+            if (passThrough.includes(res.type)) return success(res);
 
             switch (res.type) {
                 case 'Failure': {

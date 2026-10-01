@@ -123,6 +123,7 @@ const connectPublicCallableMethodGroups = {
         'wardQueueDeleteEntry',
         'wardFlushQueue',
         'wardResetApp',
+        'wardRelay',
     ],
 } as const;
 
