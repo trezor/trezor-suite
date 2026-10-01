@@ -69,6 +69,9 @@ const rootOf = (v: string | null | undefined): Uint8Array | null => {
     return equalBytes(b, EMPTY_ROOT) ? null : b;
 };
 
+const sameRoot = (a: Uint8Array | null, b: Uint8Array | null) =>
+    equalBytes(a ?? EMPTY_ROOT, b ?? EMPTY_ROOT);
+
 /** Bytes to the wire, leaving the field out when it is absent -- never `null`. */
 const opt = (key: string, v: Uint8Array | null | undefined): Json =>
     v && v.length ? { [key]: toHex(v) } : {};
@@ -158,7 +161,10 @@ export class WardHost {
      * host between the two leaves the row as a dead branch -- harmless, and kept, since it is this
      * device's side of any later rejoin.
      */
-    private async applyInner(result: WardResultJson) {
+    private async applyInner(
+        result: WardResultJson,
+        expect: { fromRoot?: Uint8Array | null; toRoot?: Uint8Array | null } = {},
+    ) {
         const { trie, head } = await this.replica();
         if (!result.auth_commit) {
             applyToTrie(trie, result); // refuses a "no change" the replica contradicts
@@ -178,8 +184,22 @@ export class WardHost {
                     `${head.counter}. Sync and flush again`,
             );
         }
+        // THE DEVICE'S OWN ROOTS, where it states them (a service-build WardPublish does): both
+        // ends must be the ones this replica builds, or the two hold different trees
+        if ('fromRoot' in expect && !sameRoot(expect.fromRoot ?? null, head.root)) {
+            throw new RelayFailure(
+                'wm_conflict',
+                'the device built on another tree at this counter',
+            );
+        }
         applyToTrie(trie, result);
         const toRoot = trie.root();
+        if ('toRoot' in expect && !sameRoot(expect.toRoot ?? null, toRoot)) {
+            throw new RelayFailure(
+                'wm_conflict',
+                'this replica builds a different root for the change',
+            );
+        }
         const headNonce = await this.wm.headNonce(this.wardId);
         const minted =
             headNonce &&
@@ -245,6 +265,134 @@ export class WardHost {
         await this.onWmChange();
 
         return { counter: link.toCounter, root: link.toRoot, published: true };
+    }
+
+    // --- THE SERVICE BUILD: the device asks, this host answers -------------------------------
+    //
+    // The same replica, WM and checks as the connect path, with the conversation inverted: on a
+    // service build the device talks to wardd over its own interface and pulls what it needs. A
+    // port of tests/ward_service.py `MockWardService`, minus its failure-mode knobs.
+
+    /** WardSyncRequest -> WardSyncResponse: the WM's attested step, and the links into it. */
+    serviceSync(req: Json) {
+        return this.exclusive(async () => {
+            const wardId = toBytes(req.ward_id ?? '');
+            if (!equalBytes(wardId, this.wardId)) {
+                throw new Error('a sync for another wallet than this store');
+            }
+            const current: Head = {
+                counter: req.current_counter ?? 0,
+                root: rootOf(req.current_root),
+            };
+            if (!(await this.wm.headNonce(wardId))) {
+                // first contact: enrol from the device's opening head (genesis only -- see syncInner)
+                if (current.counter !== 0) {
+                    throw new Error(
+                        'the WM does not know this wallet and enrols only at counter 0',
+                    );
+                }
+                await this.wm.enrol(wardId, current.root, toBytes(req.head_init_sig ?? ''));
+                await this.onWmChange();
+            }
+            const att = await this.wm.attest(wardId, toBytes(req.nonce ?? ''));
+            const { trie, head } = await this.replica();
+            // THE WM'S LINE, oldest first, from the device's head on: what it needs to walk forward
+            const line = head.counter
+                ? trie.linksEndingAt(head.counter, head.root, Number.MAX_SAFE_INTEGER).reverse()
+                : [];
+            const links = line
+                .filter(l => l.fromCounter >= current.counter)
+                .map(l => ({
+                    from_counter: l.fromCounter,
+                    ...opt('from_root', l.fromRoot),
+                    to_counter: l.toCounter,
+                    ...opt('to_root', l.toRoot),
+                    auth_commit: toHex(l.authCommit),
+                }));
+
+            return {
+                name: 'WardSyncResponse',
+                message: {
+                    from_counter: att.fromCounter,
+                    ...opt('from_root', rootOf(toHex(att.fromRoot))),
+                    to_counter: att.toCounter,
+                    ...opt('to_root', rootOf(toHex(att.toRoot))),
+                    timestamp: att.timestamp,
+                    wm_signature: toHex(att.signature),
+                    from_head_nonce: toHex(att.fromHeadNonce),
+                    to_head_nonce: toHex(att.toHeadNonce),
+                    links,
+                },
+            };
+        });
+    }
+
+    /** WardServiceFetch -> WardEntryAck, or WardSyncRequired when the device is not at our head. */
+    serviceFetch(req: Json) {
+        return this.exclusive(async () => {
+            const { trie, head } = await this.replica();
+            // HEAD-AWARE: a proof against a root the device does not hold would fail on the device
+            // with nothing to say why. Both fields, since roots may share a counter across forks.
+            const current: Head = {
+                counter: req.current_counter ?? 0,
+                root: rootOf(req.current_root),
+            };
+            if (current.counter !== head.counter || !sameRoot(current.root, head.root)) {
+                return { name: 'WardSyncRequired', message: {} };
+            }
+
+            return {
+                name: 'WardEntryAck',
+                message: serveEntry(trie, { entry_key: req.entry_key }) as unknown as Json,
+            };
+        });
+    }
+
+    /**
+     * WardPublish -> WardPublishAck, or WardPublishConflict when it is definitively not landing.
+     *
+     * STAGE, CAS, PROMOTE -- the write-ahead order a real wardd needs, and the append-only log
+     * gives it for nothing: the row is staged first, and it is the head only once the WM's
+     * compare-and-swap points at it. A refused CAS leaves a dead row, never a half-applied tree.
+     */
+    servicePublish(req: Json) {
+        return this.exclusive(async () => {
+            const result: WardResultJson = {
+                entry_key: req.entry_key,
+                identity: req.identity,
+                content: req.content,
+                counter: req.counter,
+                auth_commit: req.auth_commit,
+                wm_sig: req.wm_sig,
+            };
+            try {
+                await this.applyInner(result, {
+                    fromRoot: rootOf(req.from_root),
+                    toRoot: rootOf(req.new_root),
+                });
+            } catch (e) {
+                if (e instanceof RelayFailure && e.code === 'wm_conflict') {
+                    const wmHead = await this.wm.head(this.wardId);
+
+                    return {
+                        name: 'WardPublishConflict',
+                        message: { head_counter: wmHead?.counter ?? 0 },
+                    };
+                }
+                throw e;
+            }
+            const att = await this.wm.attest(this.wardId, toBytes(req.nonce ?? ''));
+
+            return {
+                name: 'WardPublishAck',
+                message: {
+                    timestamp: att.timestamp,
+                    wm_signature: toHex(att.signature),
+                    from_head_nonce: toHex(att.fromHeadNonce),
+                    to_head_nonce: toHex(att.toHeadNonce),
+                },
+            };
+        });
     }
 
     private async answerChain(device: Device, trie: WardTrie, reply: RelayMessage) {

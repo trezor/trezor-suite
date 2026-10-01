@@ -3,6 +3,11 @@
  * wardd --port 21329 --data-dir ~/.trezor-ward [--token-file F] [--memory] [--relay URL] [--origin O]...
  *
  * With no --token-file, a token is generated into `<data-dir>/token` (mode 0600) and reused.
+ *
+ * wardd --service [--port 21324] [--state-file F]   (also accepted: --debug-port, --key-file, --verbose)
+ *
+ * SERVES A SERVICE BUILD over its WARD interface instead -- the command line of the Python daemon
+ * it replaces, so `--port` here is the device's WIRE port and the interface is found at +7.
  */
 import { randomBytes } from 'crypto';
 import { promises as fs } from 'fs';
@@ -11,6 +16,7 @@ import path from 'path';
 
 import { DEFAULT_ORIGINS, DEFAULT_PORT, startServer } from './server';
 import { Wardd } from './service';
+import { runServiceDaemon } from './serviceMode/daemon';
 
 const args = process.argv.slice(2);
 const flag = (name: string) => args.includes(`--${name}`);
@@ -35,7 +41,28 @@ const readOrCreateToken = async (dataDir: string, tokenFile?: string) => {
     }
 };
 
+const service = async () => {
+    const log = (line: string) => process.stdout.write(`${line}\n`);
+    if (value('key-file')) {
+        log('NOTE --key-file is unused: a codec service interface carries no identity to pin');
+    }
+    let stop: () => void = () => {};
+    const stopped = new Promise<void>(resolve => {
+        stop = resolve;
+    });
+    process.on('SIGINT', stop);
+    process.on('SIGTERM', stop);
+    const code = await runServiceDaemon({
+        port: Number(value('port') ?? 21324),
+        stateFile: value('state-file') ?? null,
+        log,
+        stopped,
+    });
+    process.exit(code);
+};
+
 const main = async () => {
+    if (flag('service')) return service();
     const memory = flag('memory');
     const dataDir = value('data-dir') ?? path.join(os.homedir(), '.trezor-ward');
     await fs.mkdir(dataDir, { recursive: true, mode: 0o700 });

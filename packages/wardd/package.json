@@ -17,13 +17,13 @@
         "@evolu/nodejs": "3.0.0-next.3",
         "@noble/curves": "^2.0.1",
         "@noble/hashes": "^2.0.1",
+        "@trezor/protobuf": "workspace:*",
         "@trezor/ward-core": "workspace:*",
         "ws": "^8.20.0"
     },
     "devDependencies": {
         "@trezor/connect": "workspace:*",
         "@trezor/connect-common": "workspace:*",
-        "@trezor/protobuf": "workspace:*",
         "@trezor/schema-utils": "workspace:*",
         "@types/ws": "^8.5.13",
         "tsx": "^4.21.0"

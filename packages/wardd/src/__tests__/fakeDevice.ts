@@ -356,4 +356,158 @@ export class FakeDevice {
                 : { ...leaves[0], ...authorisation },
         );
     }
+
+    // --- THE SERVICE BUILD: the device asks a daemon, and checks what comes back ----------------
+
+    private serviceNonce: Uint8Array | null = null;
+    private servicePending: { to: Head; nonce: Uint8Array } | null = null;
+
+    /** WardSyncRequest: this device's head, a fresh nonce, the opening-head authorisation. */
+    serviceSyncRequest(): RelayMessage {
+        this.serviceNonce = randomBytes(32);
+        const { counter, root } = this.head;
+
+        return msg('WardSyncRequest', {
+            nonce: toHex(this.serviceNonce),
+            ward_id: toHex(this.wardId),
+            current_counter: counter,
+            ...wireRoot('current_root', root),
+            head_init_sig: toHex(
+                ed25519.sign(
+                    wmPreimage(
+                        TAG_WM_INIT,
+                        this.wardId,
+                        counter,
+                        root,
+                        counter,
+                        root,
+                        NO_HEAD_NONCE,
+                    ),
+                    this.keys.kSig,
+                ),
+            ),
+        });
+    }
+
+    private verifyAttestation(nonce: Uint8Array, m: Json, from: Head, to: Head) {
+        const body = {
+            fromCounter: from.counter,
+            fromRoot: from.root,
+            fromHeadNonce: toBytes(m.from_head_nonce),
+            toCounter: to.counter,
+            toRoot: to.root,
+            toHeadNonce: toBytes(m.to_head_nonce),
+            timestamp: m.timestamp ?? 0,
+        };
+        if (
+            !ed25519.verify(
+                toBytes(m.wm_signature),
+                attestationPreimage(nonce, this.wardId, body),
+                this.wmPubkey,
+            )
+        ) {
+            throw new Error('attestation does not verify');
+        }
+    }
+
+    /** WardSyncResponse: verify the step, walk the links forward from this head, adopt. */
+    onServiceSyncResponse(m: Json) {
+        if (!this.serviceNonce) throw new Error('no sync round is open');
+        const from = { counter: m.from_counter ?? 0, root: fromWire(m.from_root) };
+        const to = { counter: m.to_counter ?? 0, root: fromWire(m.to_root) };
+        this.verifyAttestation(this.serviceNonce, m, from, to);
+        this.serviceNonce = null;
+        let cursor = this.head;
+        for (const l of (m.links ?? []) as Json[]) {
+            const lf = { counter: l.from_counter, root: fromWire(l.from_root) };
+            const lt = { counter: l.to_counter, root: fromWire(l.to_root) };
+            if (!same(lf, cursor)) continue;
+            this.checkLink(lf, lt, toBytes(l.auth_commit));
+            cursor = lt;
+        }
+        if (!same(cursor, to)) throw new Error('the links do not reach the attested head');
+        this.head = to;
+        this.headNonce = toBytes(m.to_head_nonce);
+        this.online = true;
+    }
+
+    /** WardServiceFetch for the next queued change, from this device's head. */
+    serviceFetchRequest(): RelayMessage {
+        const change = this.queue[0];
+        if (!change) throw new Error('nothing queued');
+
+        return msg('WardServiceFetch', {
+            entry_key: toHex(change.entryKey),
+            current_counter: this.head.counter,
+            ...wireRoot('current_root', this.head.root),
+        });
+    }
+
+    /** WardPublish for the next queued change, proved with the fetched leaf. */
+    servicePublishRequest(fetched: Json): RelayMessage {
+        const change = this.queue[0]!;
+        const proof = ((fetched.proof ?? []) as string[]).map(toBytes);
+        const present = !!(fetched.identity || fetched.content);
+        const oldCommit = present ? commitOf('address', fetched.identity, fetched.content) : null;
+        const newCommit = change.leaf
+            ? commitOf('address', change.leaf.identity, change.leaf.content)
+            : null;
+        let root: Uint8Array;
+        if (present && newCommit)
+            root = updateRoot(change.entryKey, oldCommit!, newCommit, proof, this.head.root);
+        else if (present) root = deleteRoot(change.entryKey, oldCommit!, proof, this.head.root);
+        else if (newCommit) {
+            root = insertRoot(
+                change.entryKey,
+                newCommit,
+                proof,
+                this.head.root,
+                fetched.witness_entry_key ? toBytes(fetched.witness_entry_key) : null,
+                fetched.witness_commit ? toBytes(fetched.witness_commit) : null,
+            );
+        } else throw new Error('the fake does not model deleting an absent entry');
+        const to = { counter: this.head.counter + 1, root };
+        const nonce = randomBytes(32);
+        this.servicePending = { to, nonce };
+
+        return msg('WardPublish', {
+            entry_key: toHex(change.entryKey),
+            ...(change.leaf
+                ? { identity: change.leaf.identity, content: change.leaf.content }
+                : {}),
+            counter: to.counter,
+            auth_commit: toHex(this.authCommit(this.head, to)),
+            wm_sig: toHex(
+                ed25519.sign(
+                    wmPreimage(
+                        TAG_WM_HEAD,
+                        this.wardId,
+                        this.head.counter,
+                        this.head.root,
+                        to.counter,
+                        to.root,
+                        this.headNonce,
+                    ),
+                    this.keys.kSig,
+                ),
+            ),
+            nonce: toHex(nonce),
+            ...wireRoot('from_root', this.head.root),
+            ...wireRoot('new_root', to.root),
+        });
+    }
+
+    /** WardPublishAck: the WM attests THIS step, bound to the publish nonce -- then it is adopted. */
+    onServicePublishAck(m: Json) {
+        const pending = this.servicePending;
+        if (!pending) throw new Error('no publish in flight');
+        this.verifyAttestation(pending.nonce, m, this.head, pending.to);
+        if (!equalBytes(toBytes(m.from_head_nonce), this.headNonce)) {
+            throw new Error('the attested step consumed another head nonce');
+        }
+        this.head = pending.to;
+        this.headNonce = toBytes(m.to_head_nonce);
+        this.queue.shift();
+        this.servicePending = null;
+    }
 }

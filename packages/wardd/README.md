@@ -39,6 +39,30 @@ yarn workspace @trezor/wardd start [--port 21329] [--data-dir ~/.trezor-ward] \
 stops it cleanly. Supervise that process directly, not a wrapper such as `yarn` or the `tsx` binary:
 those spawn a child `node`, and stopping the wrapper alone leaves wardd running.
 
+## Serving a service build
+
+On a service build the device doesn't ask the calling app for WARD data; it asks a daemon on its
+own WARD interface. `wardd --service` is that daemon:
+
+```text
+node --import tsx src/cli.ts --service [--port 21324] [--state-file F]
+```
+
+- **`--port`** is the device's wire port; the interface is found at `+7`.
+- **First,** wardd probes which transport the interface speaks, then binds with `WardServiceOpen`.
+  From then on it only answers what the device asks: `WardSyncRequest`, `WardServiceFetch` and
+  `WardPublish`. They're answered from the same replica, development WM and checks as the connect
+  path.
+- **A publish is staged, compare-and-swapped, then promoted:** its row is appended first, and it
+  becomes the head only once the WM accepts it.
+- **`--state-file`** holds the wallet, the replica's links and the WM, rewritten after every change,
+  so a restart resumes.
+- **`--key-file` and `--debug-port`** are accepted for compatibility with the Python daemon it
+  replaces, and are unused: a codec interface has no identity to pin and no pairing screen.
+- **Log lines** (`BOUND`, `SERVED <n> <Request> -> <Reply>`, `STOPPED <n>`) are the Python daemon's,
+  which `connect-cli/e2e/ward-queue.sh` parses. That script uses wardd by default, or the Python
+  daemon with `WARD_SERVICE_DAEMON=python`.
+
 ## End to end
 
 `packages/connect-cli/e2e/ward-wardd.sh` runs the full arc on an emulator: Connect, then a second
@@ -50,6 +74,6 @@ reading the result. The header of that script explains how to run it.
 - **The production WM** (`trezor-suite-sync`) still speaks attestation v1. wardd uses the
   development WM behind `WmClient` until the production WM speaks v6.
 - **Rollback:** a WM below the device is reported (`wm_behind`) but not repaired.
-- **Service builds**, where the device talks to wardd directly over its WARD interface: that's
-  Part 8 of the plan.
+- **THP service interfaces:** `wardd --service` serves the codec interface, which every service
+  build has by default. A `ward_service_thp` build still needs `ward-service-daemon.py`.
 - **Suite desktop:** wardd isn't bundled with Suite desktop yet.
