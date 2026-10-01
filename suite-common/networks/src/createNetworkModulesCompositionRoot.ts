@@ -14,18 +14,15 @@ type NetworkModulesCompositionRootDeps = NetworkSuiteCommonModuleApi;
 export const createNetworkModulesCompositionRoot = (
     deps: NetworkModulesCompositionRootDeps,
 ): NetworkModules => {
-    // When adding a new Network Module, you have to
-    //    1. register it here to have the runtime object for DI
-    //    2. and in the `NetworkModules` to have static typings right
-    const networkModules: NetworkModules = {
-        bitcoin: createBitcoinSuiteCommonNetworkModule(),
-        ethereum: createEthereumSuiteCommonNetworkModule(deps),
-        ripple: createRippleSuiteCommonNetworkModule(),
-        cardano: createCardanoSuiteCommonNetworkModule(),
-        solana: createSolanaSuiteCommonNetworkModule(),
-        stellar: createStellarSuiteCommonNetworkModule(),
-        tron: createTronSuiteCommonNetworkModule(),
-    };
+    const networkModules: NetworkModules = [
+        createBitcoinSuiteCommonNetworkModule(),
+        createEthereumSuiteCommonNetworkModule(deps),
+        createRippleSuiteCommonNetworkModule(),
+        createCardanoSuiteCommonNetworkModule(),
+        createSolanaSuiteCommonNetworkModule(),
+        createStellarSuiteCommonNetworkModule(),
+        createTronSuiteCommonNetworkModule(),
+    ];
 
     return networkModules;
 };
