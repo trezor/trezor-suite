@@ -84,6 +84,16 @@ describe('reverseResolveAddressOnchain', () => {
         return args[1];
     };
 
+    it('sends the lookup on the given backend identity', async () => {
+        succeedWith(REVERSE_SUCCESS);
+
+        await reverseResolveAddressOnchain(VITALIK_ADDRESS, 'eth', { identity: 'deviceState' });
+
+        expect(mockBlockchainEvmRpcCall).toHaveBeenCalledWith(
+            expect.objectContaining({ identity: 'deviceState' }),
+        );
+    });
+
     // Both networks we resolve on are L1s, whose registries keep primary names in the default
     // `addr.reverse` namespace. Sepolia's own chain namespace is live but empty, so asking for
     // it returns nothing — see `REVERSE_COIN_TYPE`.
