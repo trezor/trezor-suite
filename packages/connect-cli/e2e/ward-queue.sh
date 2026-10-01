@@ -314,10 +314,24 @@ trap cleanup EXIT
 # script so the two hosts cannot end up aiming at different emulators. --key-file is what makes a
 # restart possible at all: the device pins the daemon's static key in flash, so a daemon that comes
 # back with a fresh one is refused rather than merely unrecognised.
+# WHICH DAEMON: wardd itself (`wardd --service`, packages/wardd), or -- with
+# WARD_SERVICE_DAEMON=python -- the Python stand-in it replaces, kept until wardd has passed this
+# script on every service build. Same command line, same log lines; this script cannot tell them
+# apart, which is the point. wardd serves the CODEC interface (every build's default); a
+# ward_service_thp build still needs the Python one.
+#
+# wardd runs as ONE node process (`node --import tsx`), so $! is the daemon and stop_daemon's TERM
+# reaches it -- the tsx binary would interpose a parent and leave the daemon bound on a stop.
 start_daemon() {
-    python3 "$HERE/ward-service-daemon.py" --port "$WIRE_PORT" --debug-port "$DEBUG_PORT" \
-        --key-file "$DAEMON_KEY" --state-file "$DAEMON_STATE" \
-        > >(tee -a "$DAEMON_LOG") 2>&1 &
+    if [ "${WARD_SERVICE_DAEMON:-wardd}" = python ]; then
+        python3 "$HERE/ward-service-daemon.py" --port "$WIRE_PORT" --debug-port "$DEBUG_PORT" \
+            --key-file "$DAEMON_KEY" --state-file "$DAEMON_STATE" \
+            > >(tee -a "$DAEMON_LOG") 2>&1 &
+    else
+        node --import tsx "$SUITE/packages/wardd/src/cli.ts" --service --port "$WIRE_PORT" \
+            --debug-port "$DEBUG_PORT" --key-file "$DAEMON_KEY" --state-file "$DAEMON_STATE" \
+            > >(tee -a "$DAEMON_LOG") 2>&1 &
+    fi
     DAEMON_PID=$!
 
     # Waited for rather than slept on: the handshake, the pairing and the announce take an
