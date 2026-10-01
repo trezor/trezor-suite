@@ -14437,7 +14437,6 @@ __metadata:
     "@trezor/network-module-types": "workspace:*"
     "@trezor/network-solana": "workspace:*"
     react: "npm:19.2.3"
-    react-native: "npm:0.86.0"
     react-redux: "npm:9.3.0"
     redux-persist: "npm:6.0.0"
   languageName: unknown

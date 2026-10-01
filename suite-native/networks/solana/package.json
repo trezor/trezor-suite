@@ -22,7 +22,6 @@
         "@trezor/network-module-types": "workspace:*",
         "@trezor/network-solana": "workspace:*",
         "react": "19.2.3",
-        "react-native": "0.86.0",
         "react-redux": "9.3.0",
         "redux-persist": "6.0.0"
     }
