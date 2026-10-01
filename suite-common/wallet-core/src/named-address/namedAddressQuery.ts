@@ -28,6 +28,27 @@ export const getResolveMode = (support: NamedAddressSupport, value: string): Res
     return 'idle';
 };
 
+export type ResolveState = {
+    mode: ResolveMode;
+    isFetching: boolean;
+    isSuccess: boolean;
+    isError: boolean;
+};
+
+// Stays `null` until a lookup settles, so a value the user abandoned mid-typing is never counted.
+export const getSettledResolveDirection = ({
+    mode,
+    isFetching,
+    isSuccess,
+    isError,
+}: ResolveState): 'direct' | 'reverse' | null => {
+    if (isFetching || !(isSuccess || isError)) return null;
+    if (mode === 'forward') return 'direct';
+    if (mode === 'reverse') return 'reverse';
+
+    return null;
+};
+
 export type ResolveNamedAddressQueryParams = GetNamedAddressSupportDep & {
     value: string;
     symbol: NetworkSymbol | null | undefined;

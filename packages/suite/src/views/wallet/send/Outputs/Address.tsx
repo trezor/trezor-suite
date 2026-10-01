@@ -57,6 +57,7 @@ import { InputError } from 'src/components/wallet';
 import { type InputErrorProps } from 'src/components/wallet/InputError';
 import { useSelector } from 'src/hooks/suite';
 import { useSendFormContext } from 'src/hooks/wallet';
+import { useReportEnsResolutionToAnalytics } from 'src/hooks/wallet/useReportEnsResolutionToAnalytics';
 import { selectIsSuiteOnline } from 'src/selectors/suite/suiteSelectors';
 import { captureSentryMessage } from 'src/utils/suite/sentry';
 
@@ -133,9 +134,19 @@ export const Address = ({ output, outputId, outputsCount }: AddressProps) => {
     const {
         mode: namedAddressMode,
         isResolving,
+        isFetching: isFetchingNamedAddress,
+        isSuccess: isNamedAddressSuccess,
+        isError: isNamedAddressError,
         resolvedAddress: resolvedNamedAddress,
         reverseResolvedName,
     } = useResolveNamedAddress(address, symbol);
+    useReportEnsResolutionToAnalytics({
+        symbol,
+        mode: namedAddressMode,
+        isFetching: isFetchingNamedAddress,
+        isSuccess: isNamedAddressSuccess,
+        isError: isNamedAddressError,
+    });
     // Reverse resolution runs for every hex address typed; it is a bonus lookup, so it must not
     // announce itself or occupy the bottom text the way a name the user typed does.
     const isResolvingNamedAddress = namedAddressMode === 'forward' && isResolving;
