@@ -61,10 +61,10 @@ export const createNetworkModule = <TSymbol extends string>(
                 isSupportedNetwork(symbol) && resolver.supportsNamedAddress(symbol),
             isNameLike: resolver.isNameLike,
             isAddressLike: resolver.isAddressLike,
-            resolveNamedAddress: async (value, symbol) =>
-                await resolver.resolveNamedAddress(value, narrow(symbol)),
-            reverseResolveAddress: async (address, symbol) =>
-                await resolver.reverseResolveAddress(address, narrow(symbol)),
+            resolveNamedAddress: async (value, symbol, options) =>
+                await resolver.resolveNamedAddress(value, narrow(symbol), options),
+            reverseResolveAddress: async (address, symbol, options) =>
+                await resolver.reverseResolveAddress(address, narrow(symbol), options),
         },
         getSupportedNetworks: () => asNetworkSymbols(supportedNetworks),
         getNetworkConfig: symbol => definition.getNetworkConfig(narrow(symbol)),

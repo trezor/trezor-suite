@@ -31,8 +31,8 @@ const getNamedAddressSupport: GetNamedAddressSupport = symbol => {
     return { isSupported: true, isNameLike, resolver: namedAddressResolver };
 };
 
-const queryOptions = (value: string, symbol: NetworkSymbol | null) =>
-    getResolveNamedAddressQueryOptions({ getNamedAddressSupport, value, symbol });
+const queryOptions = (value: string, symbol: NetworkSymbol | null, identity?: string) =>
+    getResolveNamedAddressQueryOptions({ getNamedAddressSupport, value, symbol, identity });
 
 const RESOLVED_HEX = '0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045';
 
@@ -67,6 +67,14 @@ describe('getResolveNamedAddressQueryOptions', () => {
         it('keys each value separately', () => {
             expect(queryOptions('vitalik.eth', asNetworkSymbol('eth')).queryKey).not.toEqual(
                 queryOptions('nick.eth', asNetworkSymbol('eth')).queryKey,
+            );
+        });
+
+        // The answer is public and identical whoever asks, so accounts share one entry instead
+        // of each paying for the same lookup.
+        it('keys the same value alike across backend identities', () => {
+            expect(queryOptions('vitalik.eth', 'eth', 'deviceA').queryKey).toEqual(
+                queryOptions('vitalik.eth', 'eth', 'deviceB').queryKey,
             );
         });
 
@@ -111,7 +119,9 @@ describe('getResolveNamedAddressQueryOptions', () => {
                 queryOptions('  vitalik.eth  ', asNetworkSymbol('eth')),
             );
 
-            expect(mockResolveNamedAddress).toHaveBeenCalledWith('vitalik.eth', 'eth');
+            expect(mockResolveNamedAddress).toHaveBeenCalledWith('vitalik.eth', 'eth', {
+                identity: undefined,
+            });
         });
 
         it('refetches once the entry is invalidated', async () => {
@@ -150,8 +160,22 @@ describe('getResolveNamedAddressQueryOptions', () => {
 
             await queryClient.ensureQueryData(queryOptions(RESOLVED_HEX, asNetworkSymbol('eth')));
 
-            expect(mockReverseResolveAddress).toHaveBeenCalledWith(RESOLVED_HEX, 'eth');
+            expect(mockReverseResolveAddress).toHaveBeenCalledWith(RESOLVED_HEX, 'eth', {
+                identity: undefined,
+            });
             expect(mockResolveNamedAddress).not.toHaveBeenCalled();
+        });
+
+        it('hands the backend identity to both modes', async () => {
+            mockResolveNamedAddress.mockResolvedValue(RESOLVED_HEX);
+            mockReverseResolveAddress.mockResolvedValue('vitalik.eth');
+
+            await queryClient.ensureQueryData(queryOptions('vitalik.eth', 'eth', 'deviceState'));
+            await queryClient.ensureQueryData(queryOptions(RESOLVED_HEX, 'eth', 'deviceState'));
+
+            const options = { identity: 'deviceState' };
+            expect(mockResolveNamedAddress).toHaveBeenCalledWith('vitalik.eth', 'eth', options);
+            expect(mockReverseResolveAddress).toHaveBeenCalledWith(RESOLVED_HEX, 'eth', options);
         });
 
         it('rejects rather than resolving an unsupported symbol', async () => {

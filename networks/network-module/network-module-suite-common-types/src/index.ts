@@ -1,6 +1,6 @@
 export { addressType } from './AddressValidator';
 export type { AddressType, AddressValidator } from './AddressValidator';
-export type { NamedAddressResolver } from './NamedAddressResolver';
+export type { NamedAddressResolveOptions, NamedAddressResolver } from './NamedAddressResolver';
 export { createNetworkModule } from './createNetworkModule';
 export type { NetworkModuleDefinition } from './createNetworkModule';
 export { asDisplayOrderKey } from './DisplayOrderKey';
