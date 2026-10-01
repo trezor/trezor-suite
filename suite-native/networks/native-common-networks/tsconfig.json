@@ -8,8 +8,12 @@
         {
             "path": "../../../suite-common/networks"
         },
+        { "path": "../bitcoin" },
         { "path": "../network-module-types" },
         { "path": "../solana" },
-        { "path": "../../storage" }
+        { "path": "../../storage" },
+        {
+            "path": "../../../packages/utils"
+        }
     ]
 }

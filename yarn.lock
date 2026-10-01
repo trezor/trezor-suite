@@ -14389,12 +14389,23 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"@suite-native/network-bitcoin@workspace:*, @suite-native/network-bitcoin@workspace:suite-native/networks/bitcoin":
+  version: 0.0.0-use.local
+  resolution: "@suite-native/network-bitcoin@workspace:suite-native/networks/bitcoin"
+  dependencies:
+    "@suite-native/network-module-suite-native-types": "workspace:*"
+    "@trezor/network-bitcoin": "workspace:*"
+    "@trezor/network-module-types": "workspace:*"
+    react: "npm:19.2.3"
+    react-native: "npm:0.86.0"
+  languageName: unknown
+  linkType: soft
+
 "@suite-native/network-module-suite-native-types@workspace:*, @suite-native/network-module-suite-native-types@workspace:suite-native/networks/network-module-types":
   version: 0.0.0-use.local
   resolution: "@suite-native/network-module-suite-native-types@workspace:suite-native/networks/network-module-types"
   dependencies:
     "@reduxjs/toolkit": "npm:2.12.0"
-    "@suite-common/wallet-types": "workspace:*"
     "@trezor/network-module-types": "workspace:*"
     "@trezor/type-utils": "workspace:*"
     react: "npm:19.2.3"
@@ -14428,6 +14439,7 @@ __metadata:
     "@reduxjs/toolkit": "npm:2.12.0"
     "@suite-common/dependency-injection": "workspace:*"
     "@suite-common/networks": "workspace:*"
+    "@suite-native/network-bitcoin": "workspace:*"
     "@suite-native/network-module-suite-native-types": "workspace:*"
     "@suite-native/network-solana": "workspace:*"
     "@suite-native/storage": "workspace:*"

@@ -81,10 +81,10 @@
         },
         { "path": "../module-trading" },
         { "path": "../module-transactions" },
+        { "path": "../navigation" },
         {
             "path": "../networks/native-common-networks"
         },
-        { "path": "../navigation" },
         { "path": "../sentry" },
         { "path": "../services" },
         { "path": "../settings" },

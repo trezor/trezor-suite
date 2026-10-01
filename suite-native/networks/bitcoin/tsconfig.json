@@ -1,0 +1,13 @@
+{
+    "extends": "../../../tsconfig.base.json",
+    "compilerOptions": { "outDir": "libDev" },
+    "references": [
+        { "path": "../network-module-types" },
+        {
+            "path": "../../../networks/bitcoin/network-bitcoin"
+        },
+        {
+            "path": "../../../networks/network-module/network-module-types"
+        }
+    ]
+}

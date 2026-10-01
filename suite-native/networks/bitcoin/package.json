@@ -1,5 +1,5 @@
 {
-    "name": "@suite-native/network-module-suite-native-types",
+    "name": "@suite-native/network-bitcoin",
     "version": "1.0.0",
     "private": true,
     "license": "See LICENSE.md in repo root",
@@ -11,9 +11,10 @@
         "type-check": "yarn g:tsc --build"
     },
     "dependencies": {
-        "@reduxjs/toolkit": "2.12.0",
+        "@suite-native/network-module-suite-native-types": "workspace:*",
+        "@trezor/network-bitcoin": "workspace:*",
         "@trezor/network-module-types": "workspace:*",
-        "@trezor/type-utils": "workspace:*",
-        "react": "19.2.3"
+        "react": "19.2.3",
+        "react-native": "0.86.0"
     }
 }

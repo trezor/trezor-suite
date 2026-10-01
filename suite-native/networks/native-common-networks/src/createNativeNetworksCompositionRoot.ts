@@ -15,6 +15,8 @@ export const combineNetworkReducers = (networkModules: NativeNetworkModules): Re
     const reducers = new Map<NativeNetworkReducerKey, Reducer>();
 
     networkModules.forEach(networkModule => {
+        if (!networkModule.reducer) return;
+
         const { key, reducer } = networkModule.reducer;
 
         if (reducers.has(key)) {
@@ -47,6 +49,8 @@ export const createNativeNetworksCompositionRoot = (
     return {
         reducer: combineNetworkReducers(networkModules),
         services: {
+            getSendForm: networkSymbol =>
+                networkModuleRepository.get(networkSymbol)?.getSendForm?.(),
             getAccountDetailBanners: networkSymbol =>
                 networkModuleRepository.get(networkSymbol)?.accountDetailBanners ?? [],
         },
