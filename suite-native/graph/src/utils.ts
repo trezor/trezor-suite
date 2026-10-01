@@ -99,6 +99,36 @@ export const omitErrorMessageSensitiveData = (string: string) => {
     return msg;
 };
 
+export const getGraphError = (error: unknown): Error => {
+    if (error instanceof Error) {
+        return error;
+    }
+
+    // Errors thrown inside blockchain-link workers cross the worker boundary as plain
+    // `{ message, name, stack }` objects, so `instanceof Error` fails and `String(error)`
+    // would yield "[object Object]". Rebuild a real Error, preserving the original name and
+    // stack so `checkAndReportGraphError` still forwards them to Sentry.
+    if (
+        typeof error === 'object' &&
+        error !== null &&
+        'message' in error &&
+        typeof error.message === 'string'
+    ) {
+        const graphError = new Error(error.message);
+
+        if ('name' in error && typeof error.name === 'string') {
+            graphError.name = error.name;
+        }
+        if ('stack' in error && typeof error.stack === 'string') {
+            graphError.stack = error.stack;
+        }
+
+        return graphError;
+    }
+
+    return new Error(String(error));
+};
+
 export const checkAndReportGraphError = (error: Error | null) => {
     if (error) {
         // A new Error object has to be created, to not override the original data.
