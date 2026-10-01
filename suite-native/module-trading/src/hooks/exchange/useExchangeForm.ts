@@ -29,6 +29,7 @@ import {
 import type { ExchangeFormType, ExchangeFormValues } from '@suite-native/trading-types';
 
 import { exchangeFormValidationSchema } from '../../utils/exchange/exchangeFormValidationSchema';
+import { setExchangeSendCryptoAmount } from '../../utils/exchange/exchangeSendAmountUtils';
 import { type TradingFormWithMetadata } from '../general/form/tradingFormTypes';
 import { useContextForTradingForm } from '../general/form/useContextForTradingForm';
 import { useProviderMetadataChangeEffect } from '../general/form/useProviderMetadataChangeEffect';
@@ -239,7 +240,7 @@ export const useExchangeForm = (): TradingFormWithMetadata<ExchangeFormType> => 
     const receiveAsset = useWatch({ control, name: 'receiveAsset' });
 
     const onSendAssetCleared = useCallback(() => {
-        setValue('sendCryptoAmount', undefined, { shouldValidate: true });
+        setExchangeSendCryptoAmount(setValue, undefined);
         dispatch(exchangeActions.sendAssetChanged());
     }, [dispatch, setValue]);
 
@@ -275,7 +276,7 @@ export const useExchangeForm = (): TradingFormWithMetadata<ExchangeFormType> => 
 
 export const clearExchangeFormQuoteData = (form: ExchangeFormType) => {
     form.setValue('quote', undefined);
-    form.setValue('sendCryptoAmount', undefined, { shouldValidate: true });
+    setExchangeSendCryptoAmount(form.setValue, undefined);
     form.setValue('receiveCryptoAmount', undefined, { shouldValidate: true });
     form.setValue('generalAlert', undefined);
 };

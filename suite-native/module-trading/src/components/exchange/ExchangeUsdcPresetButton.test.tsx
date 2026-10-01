@@ -81,7 +81,9 @@ describe('ExchangeUsdcPresetButton', () => {
                 expect.objectContaining({ symbol: 'USDC', networkId: 'ethereum' }),
             );
             expect(mockSetValue).toHaveBeenCalledWith('sendAccount', ethAccountWithUsdc);
-            expect(mockSetValue).toHaveBeenCalledWith('sendCryptoAmount', '1');
+            expect(mockSetValue).toHaveBeenCalledWith('sendCryptoAmount', '1', {
+                shouldValidate: true,
+            });
             expect(mockSetValue).toHaveBeenCalledWith(
                 'receiveAsset',
                 expect.objectContaining({ symbol: 'USDT', networkId: 'ethereum' }),

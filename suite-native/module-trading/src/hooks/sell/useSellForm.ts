@@ -167,6 +167,7 @@ export const useSellForm = (): TradingFormWithMetadata<SellFormType> => {
 
     const onSendAssetCleared = useCallback(() => {
         form.setValue('cryptoStringAmount', undefined, { shouldValidate: true });
+        form.setValue('cryptoBaseCurrencyStringAmount', undefined);
         dispatch(sellActions.sendAssetChanged());
     }, [dispatch, form]);
 
@@ -196,6 +197,7 @@ export const useSellForm = (): TradingFormWithMetadata<SellFormType> => {
 export const clearSellFormQuoteData = (form: SellFormType) => {
     form.setValue('quote', undefined);
     form.setValue('cryptoStringAmount', undefined, { shouldValidate: true });
+    form.setValue('cryptoBaseCurrencyStringAmount', undefined);
     form.setValue('fiatStringAmount', undefined, { shouldValidate: true });
     form.setValue('generalAlert', undefined);
 };

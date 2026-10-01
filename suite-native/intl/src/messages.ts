@@ -3899,6 +3899,7 @@ export const messages = {
             selectedReceiveMethod: 'Selected receive method',
             provider: 'Provider',
             quotesLoadingLabel: 'Searching for your best offer...',
+            baseCurrencyAmountLabel: 'Amount in base currency',
             footer: {
                 providerDisclaimer: 'This service is offered by {companyName}, not Trezor.',
                 termsApply: 'Terms apply',

@@ -19,7 +19,7 @@ export type ExtendedSellCryptoPaymentMethod =
     | 'fasterPayment';
 
 export type SellFormValues = BaseFormValues<
-    'cryptoStringAmount' | 'fiatStringAmount',
+    'cryptoStringAmount' | 'cryptoBaseCurrencyStringAmount' | 'fiatStringAmount',
     SellFiatTrade
 > &
     FormWithSendAccountValues &
