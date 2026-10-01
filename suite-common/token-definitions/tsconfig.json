@@ -3,7 +3,6 @@
     "compilerOptions": { "outDir": "libDev" },
     "references": [
         { "path": "../dependency-injection" },
-        { "path": "../http-client" },
         { "path": "../redux-utils" },
         { "path": "../wallet-config" },
         { "path": "../wallet-types" },
@@ -18,6 +17,7 @@
         { "path": "../../packages/env-utils" },
         { "path": "../../packages/type-utils" },
         { "path": "../../packages/utils" },
+        { "path": "../http-client" },
         { "path": "../../packages/eslint" }
     ]
 }
