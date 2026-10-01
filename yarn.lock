@@ -417,7 +417,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@babel/helper-annotate-as-pure@npm:^7.22.5, @babel/helper-annotate-as-pure@npm:^7.29.7":
+"@babel/helper-annotate-as-pure@npm:^7.25.9, @babel/helper-annotate-as-pure@npm:^7.29.7":
   version: 7.29.7
   resolution: "@babel/helper-annotate-as-pure@npm:7.29.7"
   dependencies:
@@ -501,7 +501,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@babel/helper-module-imports@npm:^7.16.7, @babel/helper-module-imports@npm:^7.22.5, @babel/helper-module-imports@npm:^7.25.9, @babel/helper-module-imports@npm:^7.29.7":
+"@babel/helper-module-imports@npm:^7.16.7, @babel/helper-module-imports@npm:^7.25.9, @babel/helper-module-imports@npm:^7.29.7":
   version: 7.29.7
   resolution: "@babel/helper-module-imports@npm:7.29.7"
   dependencies:
@@ -883,7 +883,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@babel/plugin-syntax-jsx@npm:^7.22.5, @babel/plugin-syntax-jsx@npm:^7.27.1, @babel/plugin-syntax-jsx@npm:^7.29.7, @babel/plugin-syntax-jsx@npm:^7.7.2":
+"@babel/plugin-syntax-jsx@npm:^7.25.9, @babel/plugin-syntax-jsx@npm:^7.27.1, @babel/plugin-syntax-jsx@npm:^7.29.7, @babel/plugin-syntax-jsx@npm:^7.7.2":
   version: 7.29.7
   resolution: "@babel/plugin-syntax-jsx@npm:7.29.7"
   dependencies:
@@ -18065,7 +18065,7 @@ __metadata:
     "@types/redux-logger": "npm:^3.0.13"
     "@types/web": "npm:^0.0.345"
     "@uiw/react-codemirror": "npm:^4.25.9"
-    babel-plugin-styled-components: "npm:^2.1.4"
+    babel-plugin-styled-components: "npm:^2.3.0"
     codemirror-json-schema: "npm:^0.8.1"
     codemirror-json5: "npm:^1.0.3"
     copy-webpack-plugin: "npm:^14.0.0"
@@ -18987,7 +18987,7 @@ __metadata:
     "@types/webpack-plugin-serve": "npm:^1.4.7"
     "@zxing/library": "npm:^0.21.3"
     babel-loader: "npm:^10.1.1"
-    babel-plugin-styled-components: "npm:^2.1.4"
+    babel-plugin-styled-components: "npm:^2.3.0"
     buffer: "npm:^6.0.3"
     core-js: "npm:^3.49.0"
     crypto-browserify: "npm:3.12.1"
@@ -19081,7 +19081,7 @@ __metadata:
     "@trezor/transport-common": "workspace:*"
     "@trezor/utils": "workspace:*"
     babel-loader: "npm:^10.1.1"
-    babel-plugin-styled-components: "npm:^2.1.4"
+    babel-plugin-styled-components: "npm:^2.3.0"
     esbuild: "npm:^0.28.0"
     html-inline-script-webpack-plugin: "npm:^3.2.1"
     html-webpack-plugin: "npm:5.6.8"
@@ -23016,18 +23016,18 @@ __metadata:
   languageName: node
   linkType: hard
 
-"babel-plugin-styled-components@npm:^2.1.4":
-  version: 2.1.4
-  resolution: "babel-plugin-styled-components@npm:2.1.4"
+"babel-plugin-styled-components@npm:^2.3.0":
+  version: 2.3.0
+  resolution: "babel-plugin-styled-components@npm:2.3.0"
   dependencies:
-    "@babel/helper-annotate-as-pure": "npm:^7.22.5"
-    "@babel/helper-module-imports": "npm:^7.22.5"
-    "@babel/plugin-syntax-jsx": "npm:^7.22.5"
-    lodash: "npm:^4.17.21"
-    picomatch: "npm:^2.3.1"
+    "@babel/helper-annotate-as-pure": "npm:^7.25.9"
+    "@babel/helper-module-imports": "npm:^7.25.9"
+    "@babel/plugin-syntax-jsx": "npm:^7.25.9"
+    picomatch: "npm:^4.0.2"
   peerDependencies:
+    "@babel/core": ^7.0.0
     styled-components: ">= 2"
-  checksum: 10/34f10dd4d44cf1c8605097dd4796e2d1443266ebc686f10a9f56b5d1492b5c3de9c13d7e30b075756610adf592ed807cc8145189d00b4454f6af9879a19a5e0b
+  checksum: 10/30453bb7dee5d782d417a29332b09d865da6759951f340a865b1c29c5ab8aad50dd9de984aba014cbac451924faf702aba72bb42c9e5a81c475e1de84d0bb7a4
   languageName: node
   linkType: hard
 
