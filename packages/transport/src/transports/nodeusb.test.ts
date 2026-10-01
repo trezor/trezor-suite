@@ -29,25 +29,14 @@ const getApi = (transport: NodeUsbTransport) =>
     transport['api'] as unknown as { usbInterface: { getDevices: () => Promise<unknown> } };
 
 describe('NodeUsbTransport usb implementation selection', () => {
-    it('defaults to legacy usb 2.x (UsbApiLegacy) when usbImplementation is omitted', () => {
-        const transport = new NodeUsbTransport({ id: 'test' });
+    it.each([
+        ['omitted defaults to legacy usb 2.x (UsbApiLegacy)', undefined, UsbApiLegacy],
+        ["'legacy' selects usb 2.x (UsbApiLegacy)", 'legacy', UsbApiLegacy],
+        ["'nusb' selects usb 3.x (UsbApi)", 'nusb', UsbApi],
+    ] as const)('usbImplementation %s', (_, usbImplementation, Api) => {
+        const transport = new NodeUsbTransport({ id: 'test', usbImplementation });
 
-        expect(transport['api']).toBeInstanceOf(UsbApiLegacy);
-        expect(transport['api']).not.toBeInstanceOf(UsbApi);
-    });
-
-    it("uses nusb (UsbApi) for usbImplementation 'nusb'", () => {
-        const transport = new NodeUsbTransport({ id: 'test', usbImplementation: 'nusb' });
-
-        expect(transport['api']).toBeInstanceOf(UsbApi);
-        expect(transport['api']).not.toBeInstanceOf(UsbApiLegacy);
-    });
-
-    it("uses legacy usb 2.x (UsbApiLegacy) for usbImplementation 'legacy'", () => {
-        const transport = new NodeUsbTransport({ id: 'test', usbImplementation: 'legacy' });
-
-        expect(transport['api']).toBeInstanceOf(UsbApiLegacy);
-        expect(transport['api']).not.toBeInstanceOf(UsbApi);
+        expect(transport['api']).toBeInstanceOf(Api);
     });
 
     it('loads only the selected addon, and only on first use', async () => {
