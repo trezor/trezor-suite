@@ -100,10 +100,7 @@ export const assertDeviceListConnected: (
 type ConstructorParams = {
     createLogger: CreateLogger;
 };
-type InitParams = Pick<
-    ConnectSettings,
-    'transports' | 'pendingTransportEvent' | 'transportReconnect'
->;
+type InitParams = Pick<ConnectSettings, 'transports'>;
 
 export class DeviceList extends TypedEmitter<DeviceListEvents> implements IDeviceList {
     private readonly transportManagers: Partial<Record<TransportApiType, TransportManager>> = {};
@@ -237,7 +234,7 @@ export class DeviceList extends TypedEmitter<DeviceListEvents> implements IDevic
         return this.transportManagers[apiType];
     }
 
-    async init({ transports, transportReconnect, pendingTransportEvent }: InitParams = {}) {
+    async init({ transports }: InitParams = {}) {
         // throws when unknown transport is requested, in that case nothing is changed
         this.transports = createTransportList(this.transports, transports);
 
@@ -248,8 +245,6 @@ export class DeviceList extends TypedEmitter<DeviceListEvents> implements IDevic
             .map(apiType =>
                 this.getOrCreateTransportManager(apiType).init({
                     transports: this.transports.filter(t => t.apiType === apiType),
-                    transportReconnect,
-                    pendingTransportEvent,
                 }),
             );
 

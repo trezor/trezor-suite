@@ -57,7 +57,6 @@ import { createConnectInitUIEventHooks } from './createConnectInitUIEventHooks';
 import { type AppState } from '../types/suite';
 
 const connectInitSettings: ConnectInitSettings = {
-    transportReconnect: true,
     debug: false,
     manifest: {
         email: 'info@trezor.io',

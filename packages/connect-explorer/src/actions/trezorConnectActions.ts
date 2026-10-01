@@ -25,7 +25,6 @@ export const init =
 
         const connectOptions = {
             coreMode,
-            transportReconnect: true,
             debug: true,
             manifest: {
                 email: 'info@trezor.io',

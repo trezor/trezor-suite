@@ -108,7 +108,6 @@ export const createNativeServicesCompositionRoot = (deps: NativeAppDeps): Native
                 `Save data: ${data} into file: ${fileName}. Implementation on phone not ready.`,
             ),
         connectInitSettings: {
-            transportReconnect: false,
             debug: false,
             manifest: {
                 email: 'info@trezor.io',

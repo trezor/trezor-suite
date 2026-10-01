@@ -317,7 +317,6 @@ const run = async () => {
     await TrezorConnect.init({
         manifest: { appUrl: 'a', appName: 'TrezorConnect Cli', email: 'b' },
         transports: [transport],
-        pendingTransportEvent: false,
         debug: args.debug,
         // connect runs in-process here, so supply the core logger factory directly.
         // TODO(logger-unification): build from a unified app-wide logger instead of initLog.

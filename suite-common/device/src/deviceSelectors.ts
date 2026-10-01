@@ -59,12 +59,6 @@ export const selectIsAnyDeviceSelected = createMemoizedSelector(
 export const selectSimulatedEntropyCheckFail = (state: DeviceRootState) =>
     state.device.simulatedEntropyCheckFail;
 
-// Derived selectors
-export const selectIsPendingTransportEvent = createMemoizedSelector(
-    [selectDevices],
-    devices => devices.length < 1,
-);
-
 export const selectIsDeviceUnlocked = createMemoizedSelector(
     [selectSelectedDevice],
     device => !!device?.features?.unlocked,
