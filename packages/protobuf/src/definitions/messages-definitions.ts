@@ -62,6 +62,7 @@ export enum EthereumERC7730FieldFormatterType {
     FORMATTER_DATE = 5,
     FORMATTER_CALLDATA = 6,
     FORMATTER_ENUM = 7,
+    FORMATTER_DURATION = 8,
 }
 
 export type EnumEthereumERC7730FieldFormatterType = Static<
