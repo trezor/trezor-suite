@@ -64,11 +64,27 @@ const validateSessionParams: ParamsValidatorHandler<{
     }
 };
 
+/**
+ * RFC 9745 structured field Date, set to the release date of the deprecation (2026-10-01).
+ * No `Sunset` header accompanies it: RFC 8594 would require an HTTP-date and no removal
+ * date is being committed to.
+ */
+const DEPRECATION_DATE = '@1790812800';
+const DEPRECATION_LINK =
+    '<https://github.com/trezor/trezor-suite/issues/23794>; rel="deprecation"; type="text/html"';
+
 const validateProtocolMessageBody =
     (withData: boolean): RequestHandler<string, ReturnType<typeof validateProtocolMessage>> =>
     (request, response, next) => {
         try {
             const body = validateProtocolMessage(request.body, withData);
+
+            if (body.protocol === 'bridge') {
+                // Accepted but deprecated: migrate by prepending the v1 magic `3f2323` to the
+                // payload and sending `protocol: 'v1'`. Behaviour is otherwise unchanged.
+                response.appendHeader('Deprecation', DEPRECATION_DATE);
+                response.appendHeader('Link', DEPRECATION_LINK);
+            }
 
             return next({ ...request, body }, response);
         } catch (error) {

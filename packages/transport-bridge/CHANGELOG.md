@@ -1,3 +1,7 @@
+# Unreleased
+
+- deprecated: `protocol: 'bridge'` on `/call` `/post` `/read`; responses now carry `Deprecation` and `Link` headers, behaviour is unchanged
+
 # 3.2.1
 
 - added: `/abort` endpoint

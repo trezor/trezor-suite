@@ -1,4 +1,5 @@
 import EventEmitter from 'events';
+import http from 'http';
 
 import { getFreePort } from '@trezor/node-utils';
 import { UdpApi } from '@trezor/transport/src/api/udp';
@@ -378,6 +379,76 @@ describe('http', () => {
                 body: JSON.stringify({ protocol: 'v0' }),
             });
             expect(res.success).toBe(false);
+
+            await trezordNode.stop();
+        });
+
+        it('protocol bridge responses carry the deprecation headers', async () => {
+            const { trezordNode, url } = await setupTrezordNode();
+
+            // bridgeApiCall discards response headers, so talk to the server directly.
+            // http.request rather than fetch: fetch's connection pool keeps jest from exiting.
+            const post = (endpoint: string, body: Record<string, unknown>) =>
+                new Promise<{ status?: number; headers: http.IncomingHttpHeaders }>(
+                    (resolve, reject) => {
+                        const req = http.request(
+                            `${url}${endpoint}/1`,
+                            {
+                                method: 'POST',
+                                headers: {
+                                    'Content-Type': 'application/json',
+                                    Connection: 'close',
+                                },
+                            },
+                            res => {
+                                res.resume();
+                                res.on('end', () =>
+                                    resolve({ status: res.statusCode, headers: res.headers }),
+                                );
+                            },
+                        );
+                        req.on('error', reject);
+                        req.end(JSON.stringify(body));
+                    },
+                );
+
+            const DEPRECATION = '@1790812800';
+            const LINK =
+                '<https://github.com/trezor/trezor-suite/issues/23794>; rel="deprecation"; type="text/html"';
+
+            const deprecated = [
+                await post('call', { protocol: 'bridge', data: GET_FEATURES }),
+                await post('post', { protocol: 'bridge', data: GET_FEATURES }),
+                await post('read', { protocol: 'bridge' }),
+            ];
+            deprecated.forEach(res => {
+                // behaviour is unchanged, the request still succeeds
+                expect(res.status).toBe(200);
+                expect(res.headers.deprecation).toBe(DEPRECATION);
+                expect(res.headers.link).toBe(LINK);
+            });
+
+            const supportedV1 = [
+                await post('call', { protocol: 'v1', data: '3f2323' + GET_FEATURES }),
+                await post('post', { protocol: 'v1', data: '3f2323' + GET_FEATURES }),
+                await post('read', { protocol: 'v1' }),
+            ];
+            expect(supportedV1.map(res => res.status)).toEqual([200, 200, 200]);
+
+            // v2 is rejected further down by core for the missing `thpState` this test does
+            // not set up; the middleware under test has already run by then
+            const supportedV2 = await post('post', { protocol: 'v2', data: '0412380000' });
+
+            const supported = [...supportedV1, supportedV2];
+            supported.forEach(res => {
+                expect(res.headers.deprecation).toBe(undefined);
+                expect(res.headers.link).toBe(undefined);
+            });
+
+            // RFC 8594 would require a removal date; none is being committed to
+            [...deprecated, ...supported].forEach(res => {
+                expect(res.headers.sunset).toBe(undefined);
+            });
 
             await trezordNode.stop();
         });
