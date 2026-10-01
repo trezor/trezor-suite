@@ -11891,9 +11891,6 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@suite-common/validators@workspace:suite-common/validators"
   dependencies:
-    "@suite-common/networks": "workspace:*"
-    "@suite-common/wallet-config": "workspace:*"
-    "@suite-common/wallet-utils": "workspace:*"
     "@trezor/network-solana": "workspace:*"
     "@trezor/utils": "workspace:*"
     yup: "npm:1.7.1"

@@ -13,9 +13,6 @@
         "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'"
     },
     "dependencies": {
-        "@suite-common/networks": "workspace:*",
-        "@suite-common/wallet-config": "workspace:*",
-        "@suite-common/wallet-utils": "workspace:*",
         "@trezor/network-solana": "workspace:*",
         "@trezor/utils": "workspace:*",
         "yup": "1.7.1"

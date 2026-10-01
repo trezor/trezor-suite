@@ -7,11 +7,6 @@ import { useFocusEffect } from '@react-navigation/native';
 
 import { useServices } from '@suite-common/dependency-injection';
 import { injectAddressValidator } from '@suite-common/networks';
-import {
-    type XpubFormContext,
-    type XpubFormValues,
-    xpubFormValidationSchema,
-} from '@suite-common/validators';
 import { getNetworkType } from '@suite-common/wallet-config';
 import { isAddressBasedNetwork } from '@suite-common/wallet-utils';
 import { SelectableNetworkItem } from '@suite-native/accounts';
@@ -41,6 +36,7 @@ import { DevXpub } from '../components/DevXpub';
 import { XpubHint } from '../components/XpubHint';
 import { XpubHintBottomSheet } from '../components/XpubHintBottomSheet';
 import { XpubImportSection, networkTypeToTitleTxKeyMap } from '../components/XpubImportSection';
+import { type XpubFormContext, type XpubFormValues, xpubFormValidationSchema } from '../xpubSchema';
 
 const FORM_BUTTON_FADE_IN_DURATION = 200;
 
