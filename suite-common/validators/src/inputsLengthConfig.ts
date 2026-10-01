@@ -11,5 +11,4 @@ export const formInputsMaxLength = {
     tronNote: 512,
 
     btcLocktime: 10, // max: 4294967294
-    xrpDestinationTag: 10, // max: 4294967295
 } as const;

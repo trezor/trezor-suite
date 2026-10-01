@@ -7,6 +7,9 @@ export const RIPPLE_DECIMALS = 6;
 export const RIPPLE_BASE_RESERVE_DEFAULT = '10000000'; // 10 XRP
 export const RIPPLE_OWNER_RESERVE_DEFAULT = '2000000'; // 2 XRP
 
+// Destination tags are uint32: max 4294967295, which is 10 decimal digits.
+export const RIPPLE_DESTINATION_TAG_MAX_DIGITS = 10;
+
 // XRPL timestamps are based on the Ripple Epoch (2000-01-01T00:00:00Z).
 // To convert to a standard Unix timestamp, add this offset.
 // https://xrpl.org/docs/references/protocol/data-types/basic-data-types#specifying-time
