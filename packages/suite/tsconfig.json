@@ -255,6 +255,9 @@
             "path": "../../networks/network-module/network-module-suite-common-types"
         },
         {
+            "path": "../../networks/ripple/network-ripple"
+        },
+        {
             "path": "../../networks/solana/network-solana"
         },
         {

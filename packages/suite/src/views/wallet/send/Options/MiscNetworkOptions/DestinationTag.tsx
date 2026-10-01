@@ -1,10 +1,10 @@
 import { Translation, useTranslation } from '@suite/intl';
-import { formInputsMaxLength } from '@suite-common/validators';
 import { type NetworkSymbol, getNetwork } from '@suite-common/wallet-config';
 import { U_INT_32 } from '@suite-common/wallet-constants';
 import { isInteger } from '@suite-common/wallet-utils';
 import { Banner, Button, Card, Column, Input, Note, Row, Switch } from '@trezor/components';
 import { WarningIcon } from '@trezor/icons';
+import { RIPPLE_DESTINATION_TAG_MAX_DIGITS } from '@trezor/network-ripple/constants';
 import { STELLAR_TEXT_MEMO_MAX_BYTES } from '@trezor/network-stellar/constants';
 import { BigNumber } from '@trezor/utils';
 
@@ -100,7 +100,7 @@ export const DestinationTag = ({ networkSymbol }: DestinationTagProps) => {
                             defaultValue={inputValue}
                             maxLength={
                                 networkType === 'ripple'
-                                    ? formInputsMaxLength.xrpDestinationTag
+                                    ? RIPPLE_DESTINATION_TAG_MAX_DIGITS
                                     : STELLAR_TEXT_MEMO_MAX_BYTES
                             }
                             label={<Translation id="DESTINATION_TAG" />}
