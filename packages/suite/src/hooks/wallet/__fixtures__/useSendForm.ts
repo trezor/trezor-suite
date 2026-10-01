@@ -300,6 +300,7 @@ export const getRootReducer: any = (selectedAccount = BTC_ACCOUNT, fees = DEFAUL
             () => {},
         ),
         device: createReducer({ selectedDevice: DEVICE, devices: [DEVICE] }, () => {}),
+        tokenDefinitions: createReducer({}, () => ({})),
         wallet: combineReducers({
             send: sendFormReducer,
             accounts: createReducer(
@@ -312,6 +313,10 @@ export const getRootReducer: any = (selectedAccount = BTC_ACCOUNT, fees = DEFAUL
                 () => ({}),
             ),
             selectedAccount: createReducer(selectedAccount, () => ({})),
+            phishing: createReducer(
+                { dustPhishing: { isEnabled: false, dustThreshold: '0' } },
+                () => ({}),
+            ),
             coinjoin: createReducer({ accounts: [] }, () => ({})),
             stake: createReducer(stakeInitialState, () => ({})),
             discovery: createReducer([], () => ({})),
@@ -415,6 +420,7 @@ export const getRootReducer: any = (selectedAccount = BTC_ACCOUNT, fees = DEFAUL
             transactions: createReducer(
                 {
                     transactions: {},
+                    phishing: {},
                 },
                 () => ({}),
             ),

@@ -63,6 +63,10 @@ test.describe('ENS in the send form', { tag: ['@T3W1', '@T3T1'] }, () => {
             await expect(tradingPage.sendAddressHint).toHaveTranslation('TR_ENS_WALLET_ADDRESS', {
                 values: { address: resolvedAddress },
             });
+            // The recipient check runs on the address the name resolved to.
+            await expect(tradingPage.sendAddressSecondaryHint).toHaveTranslation(
+                'TR_ADDRESS_NEW_RECIPIENT',
+            );
         },
     );
 
@@ -127,6 +131,9 @@ test.describe('ENS in the send form', { tag: ['@T3W1', '@T3T1'] }, () => {
             await expect(tradingPage.sendAddressHint).toHaveTranslation('TR_ENS_PRIMARY_NAME', {
                 values: { name: ensName },
             });
+            await expect(tradingPage.sendAddressSecondaryHint).toHaveTranslation(
+                'TR_ADDRESS_NEW_RECIPIENT',
+            );
             await expect(tradingPage.sendAddressInput).toHaveValue(resolvedAddress);
         },
     );
