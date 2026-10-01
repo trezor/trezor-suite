@@ -40,7 +40,7 @@ export type ReverseResolveAddressViaEnsUniversalResolverDeps = CallEnsUniversalR
  */
 export const createReverseResolveAddressViaEnsUniversalResolver =
     (deps: ReverseResolveAddressViaEnsUniversalResolverDeps): ReverseResolveAddress =>
-    async (address, symbol) => {
+    async (address, symbol, options) => {
         const data = buildCalldata(
             Calldata.evm.ens.reverse.encode({
                 lookupAddress: asHex(address),
@@ -54,7 +54,7 @@ export const createReverseResolveAddressViaEnsUniversalResolver =
             const [primary] = decodeFunctionResult({
                 abi: EVM_ABI.ens.reverse,
                 functionName: 'reverse',
-                data: await deps.callEnsUniversalResolver(symbol, data),
+                data: await deps.callEnsUniversalResolver(symbol, data, options?.identity),
             });
 
             return primary || null;

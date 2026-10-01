@@ -24,6 +24,7 @@ export const createResolveNamedAddressViaEnsUniversalResolver = (
         name: string,
         symbol: EthereumNetworkSymbol,
         profileData: Hex,
+        identity?: string,
     ) => {
         const response = await deps.callEnsUniversalResolver(
             symbol,
@@ -34,6 +35,7 @@ export const createResolveNamedAddressViaEnsUniversalResolver = (
                 }),
                 'resolve',
             ),
+            identity,
         );
 
         const [result] = decodeFunctionResult({
@@ -57,7 +59,7 @@ export const createResolveNamedAddressViaEnsUniversalResolver = (
         return trim(address) === '0x00' ? null : address;
     };
 
-    return async (value, symbol) => {
+    return async (value, symbol, options) => {
         // A name no conformant resolver could hold — `isNameLike` accepts shapes ENSIP-15
         // rejects, such as an underscore. Answering "no record" beats falling through to a backend
         // that cannot do better either.
@@ -73,6 +75,7 @@ export const createResolveNamedAddressViaEnsUniversalResolver = (
                 name,
                 symbol,
                 buildCalldata(Calldata.evm.ens.addr.encode({ node: namehash(name) }), 'addr'),
+                options?.identity,
             );
 
             return decodeAddressResult(result);

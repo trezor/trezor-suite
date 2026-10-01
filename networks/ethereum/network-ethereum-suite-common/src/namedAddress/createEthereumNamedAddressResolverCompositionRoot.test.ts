@@ -15,7 +15,7 @@ const deps: EthereumNamedAddressResolverCompositionRootDeps = {
     }),
 };
 const { ethereumNamedAddressResolver } = createEthereumNamedAddressResolverCompositionRoot(deps);
-const { resolveNamedAddress } = ethereumNamedAddressResolver;
+const { resolveNamedAddress, reverseResolveAddress } = ethereumNamedAddressResolver;
 
 /**
  * Guards the number of requests a single resolution costs, through the real resolver and its
@@ -115,5 +115,45 @@ describe('resolution request cost', () => {
 
         expect(resolved).toBe(RESOLVED_ADDRESS);
         expect(mockGetAccountInfo).toHaveBeenCalledTimes(1);
+    });
+});
+
+describe('backend identity', () => {
+    beforeEach(() => {
+        mockBlockchainEvmRpcCall.mockReset();
+        mockGetAccountInfo.mockReset();
+    });
+
+    it('sends both the onchain lookup and the Blockbook fallback on the given identity', async () => {
+        mockBlockchainEvmRpcCall.mockResolvedValue({
+            success: false,
+            error: { message: 'Backend not connected' },
+        });
+        mockGetAccountInfo.mockResolvedValue({
+            success: true,
+            payload: { descriptor: RESOLVED_ADDRESS },
+        });
+
+        await resolveNamedAddress('vitalik.eth', 'eth', { identity: 'account-identity' });
+
+        expect(mockBlockchainEvmRpcCall).toHaveBeenCalledWith(
+            expect.objectContaining({ identity: 'account-identity' }),
+        );
+        expect(mockGetAccountInfo).toHaveBeenCalledWith(
+            expect.objectContaining({ identity: 'account-identity' }),
+        );
+    });
+
+    it('sends the reverse lookup on the given identity', async () => {
+        mockBlockchainEvmRpcCall.mockResolvedValue({
+            success: false,
+            error: { message: 'execution reverted' },
+        });
+
+        await reverseResolveAddress(RESOLVED_ADDRESS, 'eth', { identity: 'account-identity' });
+
+        expect(mockBlockchainEvmRpcCall).toHaveBeenCalledWith(
+            expect.objectContaining({ identity: 'account-identity' }),
+        );
     });
 });
