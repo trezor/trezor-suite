@@ -18,22 +18,22 @@ export const calculate = (
     isNewAccount?: boolean,
     userCallDataHex?: string,
 ): PrecomposedTransaction => {
+    if (userCallDataHex) {
+        return calculateRawContractCall(
+            availableBalance,
+            output,
+            feeLevel,
+            networkSymbol,
+            bytes,
+            hasMemo,
+        );
+    }
     if (token) {
         return calculateTrc20Transfer(
             availableBalance,
             output,
             feeLevel,
             token,
-            networkSymbol,
-            bytes,
-            hasMemo,
-        );
-    }
-    if (userCallDataHex) {
-        return calculateRawContractCall(
-            availableBalance,
-            output,
-            feeLevel,
             networkSymbol,
             bytes,
             hasMemo,

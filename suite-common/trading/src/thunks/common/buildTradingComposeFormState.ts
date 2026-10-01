@@ -32,7 +32,9 @@ const getShouldIncludeToken = ({
     transactionData,
 }: Pick<BuildTradingComposeFormStateParams, 'account' | 'device' | 'transactionData'>) =>
     !transactionData ||
-    (isApprovalFlowSupported(device) && isEvmApprovalTx(transactionData)) ||
+    (getNetwork(account.symbol).networkType === 'ethereum' &&
+        isApprovalFlowSupported(device) &&
+        isEvmApprovalTx(transactionData)) ||
     getNetwork(account.symbol).networkType === 'solana';
 
 export const buildTradingComposeFormState = ({
