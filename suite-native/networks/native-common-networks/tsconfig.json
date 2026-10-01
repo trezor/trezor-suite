@@ -8,12 +8,22 @@
         {
             "path": "../../../suite-common/networks"
         },
+        {
+            "path": "../../../suite-common/redux-utils"
+        },
+        { "path": "../../atoms" },
         { "path": "../bitcoin" },
+        {
+            "path": "../network-module-suite-native-sendform-lego-bricks"
+        },
         { "path": "../network-module-types" },
+        { "path": "../ripple" },
         { "path": "../solana" },
         { "path": "../../storage" },
         {
-            "path": "../../../packages/utils"
-        }
+            "path": "../../../networks/network-module/network-module-suite-common-types"
+        },
+        { "path": "../../../packages/utils" },
+        { "path": "../../test-utils-store" }
     ]
 }

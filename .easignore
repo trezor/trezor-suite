@@ -287,6 +287,7 @@
 !/suite-native/networks/native-common-networks
 !/suite-native/networks/network-module-suite-native-sendform-lego-bricks
 !/suite-native/networks/network-module-types
+!/suite-native/networks/ripple
 !/suite-native/networks/solana
 
 # Never uploaded, including out of the allowed directories

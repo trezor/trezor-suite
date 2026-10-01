@@ -8,6 +8,7 @@
     "scripts": {
         "depcheck": "yarn g:depcheck",
         "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'",
+        "test:unit": "yarn g:jest:native",
         "type-check": "yarn g:tsc --build"
     },
     "dependencies": {
@@ -16,13 +17,16 @@
         "@suite-common/redux-utils": "workspace:*",
         "@suite-native/atoms": "workspace:*",
         "@suite-native/intl": "workspace:*",
-        "@suite-native/network-module-suite-native-sendform-lego-bricks": "workspace:*",
         "@suite-native/network-module-suite-native-types": "workspace:*",
         "@suite-native/storage": "workspace:*",
         "@trezor/network-module-types": "workspace:*",
         "@trezor/network-solana": "workspace:*",
+        "@trezor/network-solana-suite-common": "workspace:*",
         "react": "19.2.3",
         "react-redux": "9.3.0",
         "redux-persist": "6.0.0"
+    },
+    "devDependencies": {
+        "@suite-native/test-utils": "workspace:*"
     }
 }

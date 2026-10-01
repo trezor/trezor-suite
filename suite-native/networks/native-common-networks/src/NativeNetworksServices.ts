@@ -1,11 +1,12 @@
 import type { NetworkSymbol } from '@suite-common/networks';
 import type {
     NativeNetworkAccountDetailBanners,
-    NativeNetworkSendFormComponent,
+    NativeNetworkSendModule,
 } from '@suite-native/network-module-suite-native-types';
 
 export type NativeNetworksServices = {
-    getSendForm: (networkSymbol: NetworkSymbol) => NativeNetworkSendFormComponent | undefined;
+    /** The network's send declaration, strategy and slot components; undefined when it has no send form. */
+    getSend: (networkSymbol: NetworkSymbol) => NativeNetworkSendModule | undefined;
     getAccountDetailBanners: (networkSymbol: NetworkSymbol) => NativeNetworkAccountDetailBanners;
 };
 

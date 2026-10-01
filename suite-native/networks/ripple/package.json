@@ -1,0 +1,25 @@
+{
+    "name": "@suite-native/network-ripple",
+    "version": "1.0.0",
+    "private": true,
+    "license": "See LICENSE.md in repo root",
+    "sideEffects": false,
+    "main": "src/index",
+    "scripts": {
+        "depcheck": "yarn g:depcheck",
+        "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'",
+        "test:unit": "yarn g:jest:native",
+        "type-check": "yarn g:tsc --build"
+    },
+    "dependencies": {
+        "@suite-native/atoms": "workspace:*",
+        "@suite-native/network-module-suite-native-types": "workspace:*",
+        "@trezor/network-module-types": "workspace:*",
+        "@trezor/network-ripple": "workspace:*",
+        "@trezor/network-ripple-suite-common": "workspace:*",
+        "react": "19.2.3"
+    },
+    "devDependencies": {
+        "@suite-native/test-utils": "workspace:*"
+    }
+}

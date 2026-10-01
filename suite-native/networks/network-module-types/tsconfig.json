@@ -3,10 +3,11 @@
     "compilerOptions": { "outDir": "libDev" },
     "references": [
         {
-            "path": "../../../networks/network-module/network-module-types"
+            "path": "../../../networks/network-module/network-module-suite-common-types"
         },
         {
-            "path": "../../../packages/type-utils"
-        }
+            "path": "../../../networks/network-module/network-module-types"
+        },
+        { "path": "../../../packages/type-utils" }
     ]
 }

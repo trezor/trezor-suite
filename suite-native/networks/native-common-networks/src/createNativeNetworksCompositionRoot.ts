@@ -1,6 +1,5 @@
 import { type Reducer, combineReducers } from '@reduxjs/toolkit';
 
-import type { NativeNetworkReducerKey } from '@suite-native/network-module-suite-native-types';
 import { type MMKVStorageDep } from '@suite-native/storage';
 import { typedObjectFromEntries } from '@trezor/utils';
 
@@ -10,9 +9,13 @@ import {
     type NativeNetworkModules,
     createNativeModulesCompositionRoot,
 } from './createNativeModulesCompositionRoot';
+import { sendFormReducer } from './sendFormSlice';
+
+/** State the generic send form owns for every network; modules cannot claim this key. */
+const SEND_FORM_REDUCER_KEY = 'sendForm';
 
 export const combineNetworkReducers = (networkModules: NativeNetworkModules): Reducer => {
-    const reducers = new Map<NativeNetworkReducerKey, Reducer>();
+    const reducers = new Map<string, Reducer>([[SEND_FORM_REDUCER_KEY, sendFormReducer]]);
 
     networkModules.forEach(networkModule => {
         if (!networkModule.reducer) return;
@@ -49,8 +52,7 @@ export const createNativeNetworksCompositionRoot = (
     return {
         reducer: combineNetworkReducers(networkModules),
         services: {
-            getSendForm: networkSymbol =>
-                networkModuleRepository.get(networkSymbol)?.getSendForm?.(),
+            getSend: networkSymbol => networkModuleRepository.get(networkSymbol)?.send,
             getAccountDetailBanners: networkSymbol =>
                 networkModuleRepository.get(networkSymbol)?.accountDetailBanners ?? [],
         },

@@ -1,7 +1,8 @@
-import { bitcoinInitialState } from '@suite-native/network-bitcoin/mocks';
 import { solanaInitialState } from '@suite-native/network-solana/mocks';
 
+import { sendFormInitialState } from '../src/sendFormSlice';
+
 export const nativeNetworksInitialState = {
-    bitcoin: bitcoinInitialState,
+    sendForm: sendFormInitialState,
     solana: solanaInitialState,
 };
