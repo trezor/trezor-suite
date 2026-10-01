@@ -33,6 +33,7 @@
     },
     "dependencies": {
         "@trezor/ipc-proxy": "workspace:*",
+        "@trezor/logger": "workspace:*",
         "@trezor/transport-common": "workspace:*",
         "@trezor/utils": "workspace:*",
         "@trezor/websocket-client": "workspace:*"

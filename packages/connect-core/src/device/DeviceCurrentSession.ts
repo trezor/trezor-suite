@@ -2,6 +2,7 @@
 
 import { DEVICE } from '@trezor/connect-common';
 import { ERRORS } from '@trezor/connect-common/src/constants';
+import type { Logger } from '@trezor/logger';
 import { MessagesSchema as Messages } from '@trezor/protobuf';
 import { Assert } from '@trezor/schema-utils';
 import {
@@ -11,7 +12,7 @@ import {
     type Transport,
     isErrorWithoutDeviceInteraction,
 } from '@trezor/transport-common';
-import { type Logger, scheduleAction } from '@trezor/utils';
+import { scheduleAction } from '@trezor/utils';
 
 import type { IDevice } from '../types/idevice';
 import type { TypedCallProvider } from '../types/typed-call-provider';

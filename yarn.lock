@@ -15801,6 +15801,7 @@ __metadata:
     "@trezor/env-utils": "workspace:*"
     "@trezor/eslint": "workspace:*"
     "@trezor/ipc-proxy": "workspace:*"
+    "@trezor/logger": "workspace:*"
     "@trezor/node-utils": "workspace:*"
     "@trezor/request-manager": "workspace:*"
     "@trezor/theme": "workspace:*"
@@ -17565,6 +17566,7 @@ __metadata:
     "@trezor/device-authenticity": "workspace:^"
     "@trezor/device-utils": "workspace:*"
     "@trezor/eslint": "workspace:*"
+    "@trezor/logger": "workspace:*"
     "@trezor/network-cardano": "workspace:*"
     "@trezor/protobuf": "workspace:*"
     "@trezor/protocol": "workspace:^"
@@ -17598,6 +17600,7 @@ __metadata:
     "@trezor/device-authenticity": "workspace:*"
     "@trezor/device-utils": "workspace:*"
     "@trezor/eslint": "workspace:*"
+    "@trezor/logger": "workspace:*"
     "@trezor/network-cardano": "workspace:*"
     "@trezor/network-solana": "workspace:*"
     "@trezor/network-stellar": "workspace:*"
@@ -17810,6 +17813,7 @@ __metadata:
     "@playwright/test": "npm:1.62.1"
     "@trezor/connect-common": "workspace:*"
     "@trezor/eslint": "workspace:*"
+    "@trezor/logger": "workspace:*"
     "@trezor/requirements": "workspace:*"
     "@trezor/type-utils": "workspace:*"
     "@trezor/utils": "workspace:*"
@@ -17979,6 +17983,14 @@ __metadata:
 "@trezor/ipc-proxy@workspace:*, @trezor/ipc-proxy@workspace:packages/ipc-proxy":
   version: 0.0.0-use.local
   resolution: "@trezor/ipc-proxy@workspace:packages/ipc-proxy"
+  languageName: unknown
+  linkType: soft
+
+"@trezor/logger@workspace:*, @trezor/logger@workspace:packages/logger":
+  version: 0.0.0-use.local
+  resolution: "@trezor/logger@workspace:packages/logger"
+  peerDependencies:
+    tslib: ^2.6.2
   languageName: unknown
   linkType: soft
 
@@ -18171,6 +18183,7 @@ __metadata:
   resolution: "@trezor/node-utils@workspace:packages/node-utils"
   dependencies:
     "@braintree/sanitize-url": "npm:^7.1.2"
+    "@trezor/logger": "workspace:*"
     "@trezor/type-utils": "workspace:*"
     "@trezor/utils": "workspace:*"
     ajv: "npm:^8.20.0"
@@ -18702,6 +18715,7 @@ __metadata:
   resolution: "@trezor/transport-bluetooth@workspace:packages/transport-bluetooth"
   dependencies:
     "@trezor/ipc-proxy": "workspace:*"
+    "@trezor/logger": "workspace:*"
     "@trezor/transport-common": "workspace:*"
     "@trezor/utils": "workspace:*"
     "@trezor/websocket-client": "workspace:*"
@@ -18722,6 +18736,7 @@ __metadata:
     "@babel/preset-typescript": "npm:^7.29.7"
     "@trezor/components": "workspace:*"
     "@trezor/eslint": "workspace:*"
+    "@trezor/logger": "workspace:*"
     "@trezor/node-utils": "workspace:*"
     "@trezor/protocol": "workspace:*"
     "@trezor/theme": "workspace:*"
@@ -18749,6 +18764,7 @@ __metadata:
   resolution: "@trezor/transport-common@workspace:packages/transport-common"
   dependencies:
     "@trezor/eslint": "workspace:*"
+    "@trezor/logger": "workspace:*"
     "@trezor/protobuf": "workspace:*"
     "@trezor/protocol": "workspace:*"
     "@trezor/type-utils": "workspace:*"
@@ -18787,6 +18803,7 @@ __metadata:
   dependencies:
     "@jest/types": "npm:^29.6.3"
     "@trezor/eslint": "workspace:*"
+    "@trezor/logger": "workspace:*"
     "@trezor/protobuf": "workspace:*"
     "@trezor/transport-bridge": "workspace:*"
     "@trezor/transport-common": "workspace:*"

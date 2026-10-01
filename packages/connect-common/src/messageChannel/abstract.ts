@@ -3,9 +3,9 @@
  * this file is bundled into content script so be careful what you are importing not to bloat the bundle
  */
 
+import type { Log } from '@trezor/logger';
 import { type Deferred, TypedEmitter, createDeferred, scheduleAction } from '@trezor/utils';
 
-import type { Log } from '../utils/debug';
 import { createUUIDDeferredManager } from '../utils/deferred';
 
 export interface AbstractMessageChannelConstructorParams {

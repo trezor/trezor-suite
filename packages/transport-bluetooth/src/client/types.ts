@@ -1,6 +1,5 @@
-import type { Logger, TypedEmitter } from '@trezor/utils';
-
-export type { Logger } from '@trezor/utils';
+import type { Logger } from '@trezor/logger';
+import type { TypedEmitter } from '@trezor/utils';
 
 export interface TrezorBluetoothSettings {
     url: string;

@@ -1,4 +1,4 @@
-import { Log } from '@trezor/utils';
+import { Log } from '@trezor/logger';
 
 import { TrezordNode } from './http';
 

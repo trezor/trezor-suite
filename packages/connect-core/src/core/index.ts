@@ -33,14 +33,10 @@ import { ERRORS } from '@trezor/connect-common/src/constants';
 import type { TrezorError } from '@trezor/connect-common/src/constants/errors';
 import { parseLocalFirmwares } from '@trezor/connect-common/src/data/connectSettings';
 import type { CreateLogger } from '@trezor/connect-common/src/types/settings';
-import {
-    type LogWriter,
-    noopCreateLogger,
-    noopLogger,
-    setLogWriter,
-} from '@trezor/connect-common/src/utils/debug';
+import { noopCreateLogger, noopLogger, setLogWriter } from '@trezor/connect-common/src/utils/debug';
+import type { LogWriter, Logger } from '@trezor/logger';
 import { TRANSPORT, TRANSPORT_ERROR } from '@trezor/transport-common';
-import { type Logger, createDeferred, createLazy, throwError } from '@trezor/utils';
+import { createDeferred, createLazy, throwError } from '@trezor/utils';
 
 import type { AbstractMethod } from './AbstractMethod';
 import { getMethod } from './method';

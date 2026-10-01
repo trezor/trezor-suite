@@ -52,6 +52,7 @@
 !/packages/env-utils
 !/packages/eslint
 !/packages/icons
+!/packages/logger
 !/packages/node-utils
 !/packages/protobuf
 !/packages/protocol

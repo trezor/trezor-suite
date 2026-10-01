@@ -4,6 +4,7 @@
     "references": [
         { "path": "../transport-common" },
         { "path": "../eslint" },
+        { "path": "../logger" },
         { "path": "../protobuf" },
         { "path": "../transport-bridge" },
         { "path": "../trezor-user-env-link" },

@@ -7,8 +7,8 @@ import {
     type Message,
 } from '@trezor/connect-common/src/messageChannel/abstract';
 import type { Manifest, PermissionRequest } from '@trezor/connect-common/src/types';
-import { type Log } from '@trezor/connect-common/src/utils/debug';
 import { getOrigin } from '@trezor/connect-common/src/utils/urlUtils';
+import { type Log } from '@trezor/logger';
 import type { IntervalId } from '@trezor/type-utils';
 import { type Deferred, createDeferred } from '@trezor/utils';
 

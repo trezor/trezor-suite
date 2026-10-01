@@ -1,5 +1,6 @@
 import { FIRMWARE } from '@trezor/connect-common';
-import { type Logger, isArrayMember } from '@trezor/utils';
+import type { Logger } from '@trezor/logger';
+import { isArrayMember } from '@trezor/utils';
 
 import { checkFirmwareHash } from './checkFirmwareHash';
 import type { IDevice } from '../../types/idevice';

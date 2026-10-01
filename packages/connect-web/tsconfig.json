@@ -13,6 +13,7 @@
     "include": ["."],
     "references": [
         { "path": "../connect-common" },
+        { "path": "../logger" },
         { "path": "../utils" },
         { "path": "../websocket-client" },
         { "path": "../eslint" },

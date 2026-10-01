@@ -16,8 +16,9 @@ import {
 } from '@trezor/connect-common';
 import { ERRORS } from '@trezor/connect-common/src/constants';
 import { getFirmwareOrBootloaderVersionArray } from '@trezor/device-utils';
+import type { Logger } from '@trezor/logger';
 import { MessagesSchema as PROTO } from '@trezor/protobuf';
-import { type Logger, resolveAfter } from '@trezor/utils';
+import { resolveAfter } from '@trezor/utils';
 import { isEqual, isNewer } from '@trezor/utils/src/versionUtils';
 
 import {

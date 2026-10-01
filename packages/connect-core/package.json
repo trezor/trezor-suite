@@ -80,6 +80,7 @@
         "@trezor/crypto-utils": "workspace:*",
         "@trezor/device-authenticity": "workspace:*",
         "@trezor/device-utils": "workspace:*",
+        "@trezor/logger": "workspace:*",
         "@trezor/network-cardano": "workspace:*",
         "@trezor/network-solana": "workspace:*",
         "@trezor/network-stellar": "workspace:*",
