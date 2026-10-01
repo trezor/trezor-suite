@@ -21,6 +21,8 @@ const syncIntervalBySymbol: Readonly<Record<EthereumNetworkSymbol, number>> = {
     etc: DEFAULT_ACCOUNT_SYNC_INTERVAL,
     tsep: DEFAULT_ACCOUNT_SYNC_INTERVAL,
     thod: DEFAULT_ACCOUNT_SYNC_INTERVAL,
+    arc: DEFAULT_ACCOUNT_SYNC_INTERVAL,
+    tarc: DEFAULT_ACCOUNT_SYNC_INTERVAL,
 };
 
 const getExplorerUrls = (baseUrl: string): Explorer => ({

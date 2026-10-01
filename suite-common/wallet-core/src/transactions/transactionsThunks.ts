@@ -734,6 +734,12 @@ type FetchTransactionsPageThunkParams = {
     perPage: number;
     noLoading?: boolean;
     forceRefetch?: boolean;
+    /**
+     * Oldest block the backend should cover. Direct-RPC backends scan a window rather than the
+     * whole chain, so this is how history older than that window is reached; they remember it, so
+     * later pages come back without repeating it.
+     */
+    from?: number;
 };
 
 type FetchTransactionsPageThunkState = AccountsRootState &
@@ -748,7 +754,7 @@ export const fetchTransactionsPageThunk = createThunk<
     }
 >(
     `${TRANSACTIONS_MODULE_PREFIX}/fetchTransactionsPageThunk`,
-    async ({ accountKey, page, perPage, forceRefetch }, { dispatch, getState }) => {
+    async ({ accountKey, page, perPage, forceRefetch, from }, { dispatch, getState }) => {
         const account = selectAccountByKey(getState(), accountKey);
         if (!account) {
             throw new Error(`Account not found: ${accountKey}`);
@@ -777,6 +783,7 @@ export const fetchTransactionsPageThunk = createThunk<
             details: 'txs',
             page, // useful for every network except ripple and stellar
             pageSize: perPage,
+            ...(from !== undefined ? { from } : {}),
             pageCursor: stellarCursor,
             // set marker only if it is not undefined (ripple), otherwise it fails on marker validation
             // if back on first page, the marker is reset

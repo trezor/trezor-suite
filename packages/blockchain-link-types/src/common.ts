@@ -356,6 +356,12 @@ export interface AccountInfo {
         contractInfo?: ContractInfo;
         stakingPools?: StakingPool[];
         addressAliases?: { [key: string]: AddressAlias };
+        /**
+         * Direct-RPC backends scan a window of blocks rather than the whole chain. This is what to
+         * send back as `from` to reach one step further back; absent once the scan has reached the
+         * first block, or before anything has been scanned.
+         */
+        olderHistoryFrom?: number;
         // XRP
         sequence?: number;
         // Stellar

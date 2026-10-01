@@ -43,6 +43,8 @@ it('preserves the account sync cadence of every registered network', () => {
         etc: 60_000,
         tsep: 60_000,
         thod: 60_000,
+        arc: 60_000,
+        tarc: 60_000,
         ada: 60_000,
         xrp: 60_000,
         txrp: 60_000,

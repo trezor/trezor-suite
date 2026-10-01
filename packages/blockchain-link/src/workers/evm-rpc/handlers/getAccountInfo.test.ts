@@ -4,7 +4,8 @@ import type { MessageTypes, Response } from '@trezor/blockchain-link-types';
 
 import { getAccountInfo } from './getAccountInfo';
 import { WorkerState } from '../../state';
-import { TRANSFER_TOPIC } from '../history/constants';
+import { HISTORY_STEP_BLOCKS, TRANSFER_TOPIC } from '../history/constants';
+import { getDescriptorHistory } from '../history/state';
 import type { Request } from '../types';
 
 const ME = '0xcAe32Cd53A96209fA02C0c0cfE165a5c97d456dF';
@@ -369,6 +370,47 @@ describe(`${getAccountInfo.name} token discovery`, () => {
         const { payload: info } = await getAccountInfo(retry.payload);
 
         expect(info.history.total).toBe(1);
+    });
+});
+
+describe(`${getAccountInfo.name} reaching further back`, () => {
+    it('offers nothing to load while no window has been scanned', async () => {
+        const { payload } = createRequest({ details: 'basic' });
+
+        const { payload: info } = await getAccountInfo(payload);
+
+        expect(info.misc?.olderHistoryFrom).toBeUndefined();
+    });
+
+    it('offers a block one step below the scanned window once it has one', async () => {
+        const { payload, state } = createRequest({
+            details: 'txids',
+            logs: () => [nativeLog(LATEST, '0xaaa')],
+        });
+
+        const { payload: info } = await getAccountInfo(payload);
+        const { syncedFrom } = getDescriptorHistory(state, ME);
+
+        expect(syncedFrom).toBeGreaterThan(0);
+        expect(info.misc?.olderHistoryFrom).toBe(syncedFrom - HISTORY_STEP_BLOCKS);
+    });
+
+    it('stops offering more once the window reaches the first block', async () => {
+        const { payload, state } = createRequest({
+            details: 'txids',
+            logs: () => [nativeLog(LATEST, '0xaaa')],
+        });
+        await getAccountInfo(payload);
+
+        // the account view asked for everything down to the genesis block, and got it
+        const toGenesis = createRequest({ details: 'txids', state, logs: () => [] });
+        const { payload: info } = await getAccountInfo({
+            ...toGenesis.payload,
+            payload: { ...toGenesis.payload.payload, from: 0 },
+        } as typeof toGenesis.payload);
+
+        expect(getDescriptorHistory(state, ME).syncedFrom).toBe(0);
+        expect(info.misc?.olderHistoryFrom).toBeUndefined();
     });
 });
 

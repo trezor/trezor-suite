@@ -14,6 +14,7 @@ import {
     isCold,
     syncHistory,
 } from '../history';
+import { HISTORY_STEP_BLOCKS } from '../history/constants';
 import { mapGetAccountInfoResponse } from '../mappers/accountInfo';
 import { getStakingPoolData } from '../staking/poolData';
 import { getTokenCandidates, trackTokenContract } from '../tokens/candidates';
@@ -110,6 +111,13 @@ export const getAccountInfo = async (
         getTokens(request, client, address, history),
     ]);
 
+    // Only meaningful once something has been scanned, and only while the window has a floor left
+    // to move: at block 0 the account's whole history is already covered.
+    const olderHistoryFrom =
+        !isCold(history) && history.syncedFrom > 0
+            ? Math.max(0, history.syncedFrom - HISTORY_STEP_BLOCKS)
+            : undefined;
+
     return mapGetAccountInfoResponse({
         descriptor: payload.descriptor,
         balance,
@@ -124,5 +132,6 @@ export const getAccountInfo = async (
         txids: page?.txids,
         transactions: page?.transactions,
         page: page?.page,
+        olderHistoryFrom,
     });
 };

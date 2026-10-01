@@ -19,6 +19,8 @@ interface MapGetAccountInfoResponseParams {
     txids?: string[];
     transactions?: Transaction[];
     page?: AccountInfo['page'];
+    /** Block to ask for next to reach further back, when anything older is reachable. */
+    olderHistoryFrom?: number;
 }
 
 export const mapGetAccountInfoResponse = ({
@@ -32,6 +34,7 @@ export const mapGetAccountInfoResponse = ({
     txids,
     transactions,
     page,
+    olderHistoryFrom,
 }: MapGetAccountInfoResponseParams): Responses.GetAccountInfo => {
     // Tokens and transactions both count: an address that only ever received an ERC-20 has no
     // balance and no nonce, and reporting it as empty would cut account discovery short.
@@ -56,6 +59,7 @@ export const mapGetAccountInfoResponse = ({
             misc: {
                 nonce: nonce.toString(),
                 stakingPools: stakingPools && stakingPools.length > 0 ? stakingPools : undefined,
+                olderHistoryFrom,
             },
             page,
         },
