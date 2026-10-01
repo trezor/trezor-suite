@@ -12,6 +12,7 @@ import {
     selectTradingExchangeSelectedQuote,
     selectTradingSendAccount,
     tokenSupportsIncreasingAllowance,
+    tradingExchangeActions,
     useApprovalStep,
     useTradingUtils,
 } from '@suite-common/trading';
@@ -46,6 +47,7 @@ export const TradingFormApproval = () => {
 
     const {
         watch,
+        getValues,
         approveTransaction,
         revokeApproval,
         refreshQuotes,
@@ -151,6 +153,7 @@ export const TradingFormApproval = () => {
             return;
         }
 
+        dispatch(tradingExchangeActions.saveFormValues(getValues()));
         dispatch(
             selectExchangeQuoteThunk({
                 quote: selectedQuote,

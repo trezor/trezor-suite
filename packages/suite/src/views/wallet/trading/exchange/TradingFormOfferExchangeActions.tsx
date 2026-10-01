@@ -31,6 +31,7 @@ export const TradingFormOfferExchangeActions = () => {
     const context = useTradingFormContext<'exchange'>();
     const {
         watch,
+        getValues,
         shouldSendInSats,
         tradingReceiveAddress,
         isLoadingQuote,
@@ -129,6 +130,7 @@ export const TradingFormOfferExchangeActions = () => {
 
             if (!newTrade) return;
 
+            dispatch(tradingExchangeActions.saveFormValues(getValues()));
             dispatch(
                 selectExchangeQuoteThunk({
                     quote: newTrade,
