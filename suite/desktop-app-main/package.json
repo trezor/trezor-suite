@@ -36,6 +36,7 @@
         "@trezor/env-utils": "workspace:*",
         "@trezor/eslint": "workspace:*",
         "@trezor/ipc-proxy": "workspace:*",
+        "@trezor/logger": "workspace:*",
         "@trezor/node-utils": "workspace:*",
         "@trezor/request-manager": "workspace:*",
         "@trezor/theme": "workspace:*",

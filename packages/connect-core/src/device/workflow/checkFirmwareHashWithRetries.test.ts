@@ -1,6 +1,6 @@
 import type { DeviceUniquePath } from '@trezor/connect-common';
+import { Log } from '@trezor/logger';
 import type { Descriptor } from '@trezor/transport-common';
-import { Log } from '@trezor/utils';
 
 import { Device } from '../Device';
 import { checkFirmwareHash } from './checkFirmwareHash';

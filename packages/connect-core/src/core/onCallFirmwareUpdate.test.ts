@@ -2,9 +2,10 @@ import { UI_EVENTS } from '@trezor/connect-common';
 import { parseConnectSettings } from '@trezor/connect-common/src/data/connectSettings';
 import { noopCreateLogger } from '@trezor/connect-common/src/utils/debug';
 import { DeviceModelInternal, FirmwareType } from '@trezor/device-utils';
+import { Log } from '@trezor/logger';
 import { v1 as protocolV1 } from '@trezor/protocol';
 import { buildMessage } from '@trezor/transport-common';
-import { Log, bufferUtils } from '@trezor/utils';
+import { bufferUtils } from '@trezor/utils';
 
 import { onCallFirmwareUpdate } from './onCallFirmwareUpdate';
 import { calculateFirmwareHash } from '../api/firmware/calculateFirmwareHash';

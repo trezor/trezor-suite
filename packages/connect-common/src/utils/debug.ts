@@ -1,4 +1,4 @@
-import { type Logger, LogsManager } from '@trezor/utils';
+import { type Logger, LogsManager } from '@trezor/logger';
 
 import type { CreateLogger } from '../types/settings';
 
@@ -38,5 +38,3 @@ export const noopLogger: Logger = {
 };
 
 export const noopCreateLogger: CreateLogger = () => noopLogger;
-
-export type { LogMessage, LogWriter, Log } from '@trezor/utils';

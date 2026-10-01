@@ -6,6 +6,7 @@
     },
     "include": ["."],
     "references": [
+        { "path": "../logger" },
         { "path": "../type-utils" },
         { "path": "../utils" }
     ]

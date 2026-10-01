@@ -1,6 +1,6 @@
 import { LogsManager } from './logsManager';
 
-describe('utils/debug', () => {
+describe('logger', () => {
     it('max entries', () => {
         const logsManager = new LogsManager({});
 

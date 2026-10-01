@@ -1,3 +1,4 @@
+import type { Logger } from '@trezor/logger';
 import {
     PROTOCOL_MALFORMED,
     type ThpState,
@@ -6,7 +7,6 @@ import {
 } from '@trezor/protocol';
 import { THP_CONTROL_BYTE } from '@trezor/protocol/src/protocol-v2/constants';
 import { SCHEDULE_ACTION_TIMEOUT_ERROR_MESSAGE, scheduleAction } from '@trezor/utils';
-import type { Logger } from '@trezor/utils';
 
 import type { AbstractApi, AbstractApiArgsOmitPath } from '../api/abstract';
 import { receive } from '../utils/receive';

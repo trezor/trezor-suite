@@ -19,6 +19,7 @@
     "devDependencies": {
         "@jest/types": "^29.6.3",
         "@trezor/eslint": "workspace:*",
+        "@trezor/logger": "workspace:*",
         "@trezor/protobuf": "workspace:*",
         "@trezor/transport-bridge": "workspace:*",
         "@trezor/trezor-user-env-link": "workspace:^",

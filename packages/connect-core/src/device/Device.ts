@@ -24,6 +24,7 @@ import {
     getFirmwareVersionArray,
     models,
 } from '@trezor/device-utils';
+import type { Logger } from '@trezor/logger';
 import type { TransportProtocol } from '@trezor/protocol';
 import { thp as protocolThp, v1 as protocolV1, v2 as protocolV2 } from '@trezor/protocol';
 import {
@@ -34,7 +35,7 @@ import {
     type Transport,
     type TransportDeviceEvent,
 } from '@trezor/transport-common';
-import type { Deferred, Logger } from '@trezor/utils';
+import type { Deferred } from '@trezor/utils';
 import {
     TypedEmitter,
     cloneObject,

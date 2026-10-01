@@ -2,6 +2,7 @@
 
 import { WebUSB } from 'usb';
 
+import { Log } from '@trezor/logger';
 import { protobufManager } from '@trezor/protobuf';
 import * as bitcoinProto from '@trezor/protobuf/src/definitions/messages-bitcoin_pb';
 import * as commonProto from '@trezor/protobuf/src/definitions/messages-common_pb';
@@ -10,7 +11,7 @@ import * as messagesProto from '@trezor/protobuf/src/definitions/messages_pb';
 import { TrezordNode } from '@trezor/transport-bridge/src';
 import { BridgeTransport } from '@trezor/transport-common';
 import { TrezorUserEnvLinkClass } from '@trezor/trezor-user-env-link';
-import { Log, scheduleAction } from '@trezor/utils';
+import { scheduleAction } from '@trezor/utils';
 
 export const env = {
     USE_HW: process.env.USE_HW === 'true',

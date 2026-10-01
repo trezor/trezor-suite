@@ -28,8 +28,9 @@ import {
 } from '@trezor/connect-common/src/utils/cancelParams';
 import { noopLogger } from '@trezor/connect-common/src/utils/debug';
 import { createUUIDDeferredManager } from '@trezor/connect-common/src/utils/deferred';
+import type { Logger } from '@trezor/logger';
 import { type AbstractTransportParams, TRANSPORT, type Transport } from '@trezor/transport-common';
-import { type Logger, cloneObject } from '@trezor/utils';
+import { cloneObject } from '@trezor/utils';
 
 import { updateProxy } from '../backend/BlockchainLink';
 import { initCoreState } from '../core';
