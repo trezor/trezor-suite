@@ -31,6 +31,8 @@ export const getResolveMode = (support: NamedAddressSupport, value: string): Res
 export type ResolveNamedAddressQueryParams = GetNamedAddressSupportDep & {
     value: string;
     symbol: NetworkSymbol | null | undefined;
+    /** Backend identity the lookup rides on; see `tryGetAccountIdentity`. */
+    identity?: string;
 };
 
 /**
@@ -45,11 +47,12 @@ export const getResolveNamedAddressQueryOptions = ({
     getNamedAddressSupport,
     value,
     symbol,
+    identity,
 }: ResolveNamedAddressQueryParams) => {
     const trimmedValue = value.trim();
     const support = getNamedAddressSupport(symbol);
 
-    // eslint-disable-next-line @tanstack/query/exhaustive-deps -- cache identity is symbol + value; the resolver is the network module those two select, and a live object never belongs in a key
+    // eslint-disable-next-line @tanstack/query/exhaustive-deps -- cache identity is symbol + value; the resolver is the network module those two select, and a live object never belongs in a key. The backend identity picks the connection, not the answer, so accounts share one entry rather than each paying for the same lookup
     return {
         queryKey: commonQueryKeys.resolveNamedAddress(symbol ?? 'unknown', trimmedValue),
         queryFn: () => {
@@ -62,8 +65,8 @@ export const getResolveNamedAddressQueryOptions = ({
             }
 
             return mode === 'forward'
-                ? support.resolver.resolveNamedAddress(trimmedValue, symbol)
-                : support.resolver.reverseResolveAddress(trimmedValue, symbol);
+                ? support.resolver.resolveNamedAddress(trimmedValue, symbol, { identity })
+                : support.resolver.reverseResolveAddress(trimmedValue, symbol, { identity });
         },
         staleTime: STALE_TIME_MS,
         gcTime: GC_TIME_MS,

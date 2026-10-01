@@ -5,7 +5,11 @@ import { useDebouncedValue } from '@trezor/react-utils';
 
 import { getResolveMode, getResolveNamedAddressQueryOptions } from './namedAddressQuery';
 
-export const useResolveNamedAddress = (value: string, symbol: NetworkSymbol | null | undefined) => {
+export const useResolveNamedAddress = (
+    value: string,
+    symbol: NetworkSymbol | null | undefined,
+    identity?: string,
+) => {
     const { getNamedAddressSupport } = useServices(injectGetNamedAddressSupport);
     // Normalize at the entry so the queryKey, debounce comparison and queryable check
     // all agree on a single canonical form — "test.eth" and "test.eth " must share cache.
@@ -24,6 +28,7 @@ export const useResolveNamedAddress = (value: string, symbol: NetworkSymbol | nu
             getNamedAddressSupport,
             value: debouncedValue,
             symbol,
+            identity,
         }),
         // `enabled` guarantees a supported symbol whenever the query runs.
         enabled: !isDebouncing && debouncedMode !== 'idle',

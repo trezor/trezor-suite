@@ -23,8 +23,22 @@ describe('resolveViaBlockbook', () => {
         expect(mockGetAccountInfo).toHaveBeenCalledWith({
             descriptor: 'vitalik.eth',
             coin: 'eth',
+            identity: undefined,
             details: 'basic',
         });
+    });
+
+    it('rides the given backend identity', async () => {
+        mockGetAccountInfo.mockResolvedValue({
+            success: true,
+            payload: { descriptor: VITALIK_ADDRESS },
+        });
+
+        await resolveViaBlockbook('vitalik.eth', 'eth', { identity: 'deviceState' });
+
+        expect(mockGetAccountInfo).toHaveBeenCalledWith(
+            expect.objectContaining({ identity: 'deviceState' }),
+        );
     });
 
     // Whatever comes back is signed as the recipient, so a descriptor that is not an address —
