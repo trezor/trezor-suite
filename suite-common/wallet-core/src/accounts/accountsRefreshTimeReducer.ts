@@ -49,6 +49,11 @@ const accountsRefreshTimeSlice = createSlice({
 export const { accountRefreshed } = accountsRefreshTimeSlice.actions;
 export const accountsRefreshTimeReducer = accountsRefreshTimeSlice.reducer;
 
+export const selectAccountRefreshTime = (
+    state: AccountsRefreshTimeRootState,
+    accountKey: Account['key'],
+): number | undefined => state.wallet.accountsRefreshTime[accountKey];
+
 export const isAccountStaleSelector = (
     state: AccountsRefreshTimeRootState,
     accountKey: Account['key'],
