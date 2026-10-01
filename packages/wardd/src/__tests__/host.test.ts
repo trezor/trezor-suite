@@ -5,8 +5,8 @@
  */
 import { type DevWm, serveEntry, toBytes, toHex } from '@trezor/ward-core';
 
-import { type InMemoryWardBackend, type StoredLink } from '../backend';
-import { type WardHost } from '../host';
+import { InMemoryWardBackend, type StoredLink } from '../backend';
+import { WardHost } from '../host';
 import { materialize } from '../replica';
 import { Wardd } from '../service';
 import { FakeDevice, newWallet } from './fakeDevice';
@@ -185,6 +185,28 @@ describe('wardd conversations', () => {
                 ? Promise.resolve({ name: 'Failure', message: { message: 'no' } })
                 : a.call(m as never);
         await expect(host.sync(refusing)).rejects.toMatchObject({ code: 'device_failure' });
+    });
+});
+
+describe('a failed append', () => {
+    it('publishes nothing and releases the wallet', async () => {
+        const wardd = await Wardd.create({ dataDir: null, memory: true });
+        const a = new FakeDevice();
+        const failing = new InMemoryWardBackend();
+        let fail = true;
+        const append = failing.append.bind(failing);
+        failing.append = link =>
+            fail ? Promise.reject(new Error('the write failed')) : append(link);
+        const host = new WardHost(a.wardId, failing, wardd.wm);
+        a.enqueue('alice', '1');
+        await expect(host.flush(a.call)).rejects.toThrow('the write failed');
+        // THE WM DID NOT MOVE: nothing is published that was not stored
+        expect(await wardd.wm.head(a.wardId)).toEqual({ counter: 0, root: null });
+        // AND THE LOCK IS FREE: the next call runs rather than waiting on the failed one
+        await expect(host.status()).resolves.toMatchObject({ counter: 0, wmCounter: 0 });
+        // once writes work again, the change -- still queued on the device -- goes through
+        fail = false;
+        await expect(host.flush(a.call)).resolves.toMatchObject({ counter: 1, published: 1 });
     });
 });
 

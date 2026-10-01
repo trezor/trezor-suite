@@ -155,8 +155,71 @@ const createNodeRun = (dataDir: string | null) => {
     const run = createRun(evoluDeps);
     run.onAbort(() => evoluDeps[Symbol.dispose]());
 
-    return run;
+    return { run, evoluError: evoluDeps.evoluError };
 };
+
+/** What `settled` listens to for failure: Evolu's shared error store, or a test's stand-in. */
+export interface ErrorStore {
+    get(): unknown;
+    subscribe(listener: () => void): () => void;
+}
+
+export class AppendFailed extends Error {
+    constructor(message: string) {
+        super(message);
+        this.name = 'AppendFailed';
+    }
+}
+
+/**
+ * A write that SETTLES, whatever Evolu does. `start` begins it and calls `done` on success; the
+ * promise rejects instead if Evolu reports an error while it is pending, or if it has not settled
+ * within `timeoutMs`.
+ *
+ * WHY BOTH. Evolu's db worker reports a failed mutation on its shared error store rather than to the
+ * mutation, so a failure means `onComplete` never fires -- and a promise waiting on it alone never
+ * settles, holding the wallet's lock and every call behind it. The error store catches the failure
+ * Evolu does report; the timeout bounds the one it does not.
+ *
+ * ANY error while pending rejects, not only "ours": the store does not say which mutation failed,
+ * and rejecting a write that in fact landed costs nothing here -- the log is append-only, so it is a
+ * row no WM head points at, exactly what a lost race leaves.
+ */
+export const settled = (
+    start: (done: () => void) => void,
+    opts: { errors: ErrorStore; timeoutMs: number },
+): Promise<void> =>
+    new Promise<void>((resolve, reject) => {
+        const before = opts.errors.get();
+        let finished = false;
+        // the two handles to release, set once the write is under way
+        const held: { timer?: ReturnType<typeof setTimeout>; unsubscribe: () => void } = {
+            unsubscribe: () => {},
+        };
+        const finish = (error?: Error) => {
+            if (finished) return;
+            finished = true;
+            clearTimeout(held.timer);
+            held.unsubscribe();
+            if (error) reject(error);
+            else resolve();
+        };
+        held.unsubscribe = opts.errors.subscribe(() => {
+            const error = opts.errors.get();
+            if (error && error !== before) {
+                finish(new AppendFailed(`Evolu reported an error: ${JSON.stringify(error)}`));
+            }
+        });
+        held.timer = setTimeout(
+            () => finish(new AppendFailed(`the write did not settle within ${opts.timeoutMs} ms`)),
+            opts.timeoutMs,
+        );
+        try {
+            start(() => finish());
+        } catch (e) {
+            finish(e instanceof Error ? e : new AppendFailed(String(e)));
+        }
+    });
 
 export interface EvoluBackendOptions {
     wardId: Uint8Array;
@@ -165,7 +228,11 @@ export interface EvoluBackendOptions {
     dataDir: string | null;
     /** an Evolu relay to replicate through; none keeps the replica local */
     relayUrl?: string;
+    /** how long an append may take before it is failed; see `settled` */
+    appendTimeoutMs?: number;
 }
+
+const DEFAULT_APPEND_TIMEOUT_MS = 30_000;
 
 export class EvoluWardBackend implements WardBackend {
     private constructor(
@@ -173,12 +240,14 @@ export class EvoluWardBackend implements WardBackend {
         private readonly wardId: string,
         private readonly query: ReturnType<typeof createQuery>,
         private readonly unsubscribe: () => void,
-        private readonly run: ReturnType<typeof createNodeRun>,
+        private readonly run: ReturnType<typeof createNodeRun>['run'],
+        private readonly errors: ErrorStore,
+        private readonly appendTimeoutMs: number,
     ) {}
 
     static async open(opts: EvoluBackendOptions): Promise<EvoluWardBackend> {
         const owner = wardOwner(wardOwnerSecret(opts.evoluNode));
-        const run = createNodeRun(opts.dataDir);
+        const { run, evoluError } = createNodeRun(opts.dataDir);
         const evolu = getOrThrow(
             await run(
                 createEvolu(WardSchema, {
@@ -199,7 +268,15 @@ export class EvoluWardBackend implements WardBackend {
         const unsubscribe = evolu.subscribeQuery(query)(() => {});
         await evolu.loadQuery(query);
 
-        return new EvoluWardBackend(evolu, wardId, query, unsubscribe, run);
+        return new EvoluWardBackend(
+            evolu,
+            wardId,
+            query,
+            unsubscribe,
+            run,
+            evoluError,
+            opts.appendTimeoutMs ?? DEFAULT_APPEND_TIMEOUT_MS,
+        );
     }
 
     load(): Promise<StoredLink[]> {
@@ -213,19 +290,23 @@ export class EvoluWardBackend implements WardBackend {
 
     append(link: StoredLink): Promise<void> {
         // ONE MUTATION: Evolu applies a microtask's mutations in one SQLite transaction, and this
-        // is the only one -- the whole transition, batch included, or nothing.
-        return new Promise(resolve => {
-            this.evolu.upsert(
-                'wardLink',
-                {
-                    id: createIdFromString(linkId(link)),
-                    wardId: this.wardId,
-                    toCounter: getOrThrow(NonNegativeInt.from(link.toCounter)),
-                    body: JSON.stringify(link),
-                },
-                { onComplete: resolve },
-            );
-        });
+        // is the only one -- the whole transition, batch included, or nothing. SETTLED either way:
+        // a failure Evolu reports, or none at all, rejects rather than hanging (see `settled`).
+        return settled(
+            done => {
+                this.evolu.upsert(
+                    'wardLink',
+                    {
+                        id: createIdFromString(linkId(link)),
+                        wardId: this.wardId,
+                        toCounter: getOrThrow(NonNegativeInt.from(link.toCounter)),
+                        body: JSON.stringify(link),
+                    },
+                    { onComplete: done },
+                );
+            },
+            { errors: this.errors, timeoutMs: this.appendTimeoutMs },
+        );
     }
 
     async close(): Promise<void> {
