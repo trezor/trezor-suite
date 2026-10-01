@@ -1,6 +1,7 @@
 import { shallowEqual } from 'react-redux';
 
 import { type DeviceRootState } from '@suite-common/device';
+import { NetworkNameFormatter } from '@suite-common/formatters';
 import { createWeakMapSelector, returnStableArrayIfEmpty } from '@suite-common/redux-utils';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import {
@@ -22,7 +23,11 @@ import { type BaseCurrencyCode, type TokenInfo } from '@trezor/blockchain-link-t
 import { type StaticSessionId } from '@trezor/device-utils';
 import { BigNumber } from '@trezor/utils';
 
-import { getAssetDisplaySymbol, sumAssetAccounts } from './homeAssetTableUtils';
+import {
+    type HomeAssetGrouping,
+    getAssetDisplaySymbol,
+    sumAssetAccounts,
+} from './homeAssetTableUtils';
 
 export type HomeAssetTableState = AssetAccountsRootState &
     DeviceRootState &
@@ -33,7 +38,7 @@ const createMemoizedSelector = createWeakMapSelector.withTypes<HomeAssetTableSta
 
 export type AssetAccounts = readonly [AssetAccount, ...AssetAccount[]];
 
-const asAsset = (held: readonly AssetAccount[]): AssetAccounts | undefined =>
+export const asAsset = (held: readonly AssetAccount[]): AssetAccounts | undefined =>
     held.length === 0 ? undefined : (held as unknown as AssetAccounts);
 
 const ZERO_FIAT_VALUE = new BigNumber(0);
@@ -234,3 +239,66 @@ export const selectHomeAssetTotals = createMemoizedSelector(
         };
     },
 );
+
+type HomeAssetNetworkGroup = {
+    symbol: NetworkSymbol;
+    name: string;
+    fiatValue: BigNumber;
+    rows: AssetAccounts[];
+};
+
+const groupAssetRowsByNetwork = (
+    rows: readonly AssetAccounts[],
+    fiatValues: ReadonlyMap<AssetAccounts, BigNumber>,
+): HomeAssetNetworkGroup[] => {
+    const groupsBySymbol = new Map<NetworkSymbol, HomeAssetNetworkGroup>();
+
+    rows.forEach(assetAccounts => {
+        const [{ symbol }] = assetAccounts;
+        const fiatValue = fiatValues.get(assetAccounts) ?? ZERO_FIAT_VALUE;
+        const group = groupsBySymbol.get(symbol);
+
+        if (group === undefined) {
+            groupsBySymbol.set(symbol, {
+                symbol,
+                name: NetworkNameFormatter.format(symbol),
+                fiatValue,
+                rows: [assetAccounts],
+            });
+
+            return;
+        }
+
+        group.fiatValue = group.fiatValue.plus(fiatValue);
+        group.rows.push(assetAccounts);
+    });
+
+    return [...groupsBySymbol.values()].sort(
+        (left, right) =>
+            right.fiatValue.comparedTo(left.fiatValue) || left.name.localeCompare(right.name),
+    );
+};
+
+export type HomeAssetSection = {
+    key: string;
+    heading: { name: string; fiatValue: BigNumber } | undefined;
+    rows: readonly AssetAccounts[];
+};
+
+const selectDefaultSections = createMemoizedSelector(
+    [selectHomeAssetRows],
+    (rows): readonly HomeAssetSection[] => [{ key: 'all', heading: undefined, rows }],
+);
+
+const selectNetworkSections = createMemoizedSelector(
+    [selectHomeAssetRows, selectAssetFiatValues],
+    (rows, fiatValues): readonly HomeAssetSection[] =>
+        groupAssetRowsByNetwork(rows, fiatValues).map(group => ({
+            key: group.symbol,
+            heading: { name: group.name, fiatValue: group.fiatValue },
+            rows: group.rows,
+        })),
+);
+
+export const selectHomeAssetSections = (grouping: HomeAssetGrouping) =>
+    grouping === 'networks' ? selectNetworkSections : selectDefaultSections;
