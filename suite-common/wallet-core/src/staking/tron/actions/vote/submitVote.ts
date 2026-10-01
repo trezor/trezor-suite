@@ -73,7 +73,8 @@ export const submitTronVoteThunk = createThunk<
             return;
         }
 
-        const contract = buildVoteContract(account, allocations);
+        const votedAllocations = allocations.filter(({ count }) => count > 0);
+        const contract = buildVoteContract(account, votedAllocations);
 
         if (!contract) {
             dispatch(
@@ -90,7 +91,9 @@ export const submitTronVoteThunk = createThunk<
         dispatch(tronStakeActions.submitStarted({ accountKey, flow }));
 
         try {
-            const composed = await dispatch(composeTronVoteFeeLevelsThunk({ account, allocations }))
+            const composed = await dispatch(
+                composeTronVoteFeeLevelsThunk({ account, allocations: votedAllocations }),
+            )
                 .unwrap()
                 .catch(() => undefined);
             const precomposedTx = composed?.normal?.type === 'final' ? composed.normal : undefined;
@@ -110,7 +113,7 @@ export const submitTronVoteThunk = createThunk<
             dispatch(
                 tronStakeActions.storePrecomposedTransaction({
                     precomposedTx,
-                    precomposedForm: buildVoteReviewForm(allocations),
+                    precomposedForm: buildVoteReviewForm(votedAllocations),
                     accountKey,
                 }),
             );
@@ -212,11 +215,14 @@ export const submitTronVoteThunk = createThunk<
                     amount: '0',
                     fee: precomposedTx.fee ?? '0',
                     type: 'self',
-                    target: { addresses: allocations.map(({ address }) => address), amount: '0' },
+                    target: {
+                        addresses: votedAllocations.map(({ address }) => address),
+                        amount: '0',
+                    },
                     tronSpecific: {
                         contractType: 'VoteWitnessContract',
                         operation: 'vote',
-                        votes: allocations.map(({ address, count }) => ({
+                        votes: votedAllocations.map(({ address, count }) => ({
                             address,
                             count: String(count),
                         })),

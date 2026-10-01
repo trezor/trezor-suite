@@ -55,9 +55,9 @@ const ERC20_REVOKE_DATA = buildApprovalTransactionData({
 // Canonical WETH (Wrapped Ether) — clear-signed wrap/unwrap (deposit/withdraw) on mainnet
 const WETH_MAINNET = '0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2';
 const WETH_DEPOSIT_DATA = '0xd0e30db0'; // deposit() — wrap
+const WETH_WITHDRAW_DATA = `0x2e1a7d4d${'00'.repeat(32)}`; // withdraw(uint256) — unwrap
 const TRON_REPRESENTATIVE_A = 'TN3W4H6rK2ce4vX9YnFQHwKENnHjoxb3m9';
 const TRON_REPRESENTATIVE_B = 'TKWJhMU8NAviZ9TN5hroaFQPZ83FNctzz4';
-const WETH_WITHDRAW_DATA = `0x2e1a7d4d${'00'.repeat(32)}`; // withdraw(uint256) — unwrap
 // WBNB on BSC — a wrapped native the firmware does NOT clear-sign
 const WBNB_BSC = '0xbb4CdB9CBd36B01bD1cBaEBF2De08d9173bc095c';
 

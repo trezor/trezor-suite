@@ -11477,6 +11477,54 @@ export const messages = defineMessages({
         id: 'TR_EARN_TRON_NO_VOTES',
         defaultMessage: 'You haven’t voted for any representatives yet.',
     },
+    TR_EARN_TRON_SELECT_REPRESENTATIVES: {
+        id: 'TR_EARN_TRON_SELECT_REPRESENTATIVES',
+        defaultMessage: 'Select representatives',
+    },
+    TR_EARN_TRON_SELECT_REPRESENTATIVES_DESCRIPTION: {
+        id: 'TR_EARN_TRON_SELECT_REPRESENTATIVES_DESCRIPTION',
+        defaultMessage: 'You can vote for one or multiple representatives.',
+    },
+    TR_EARN_TRON_CHANGE_REPRESENTATIVES: {
+        id: 'TR_EARN_TRON_CHANGE_REPRESENTATIVES',
+        defaultMessage: 'Change representatives',
+    },
+    TR_EARN_TRON_ADD_REPRESENTATIVE: {
+        id: 'TR_EARN_TRON_ADD_REPRESENTATIVE',
+        defaultMessage: 'Add representative',
+    },
+    TR_EARN_TRON_REMAINING_VOTES_OF_TOTAL: {
+        id: 'TR_EARN_TRON_REMAINING_VOTES_OF_TOTAL',
+        defaultMessage: '{remaining} / {total} remaining votes',
+    },
+    TR_EARN_TRON_REMAINING_VOTES_LABEL: {
+        id: 'TR_EARN_TRON_REMAINING_VOTES_LABEL',
+        defaultMessage: 'Remaining votes',
+    },
+    TR_EARN_TRON_REASSIGN_VOTES: {
+        id: 'TR_EARN_TRON_REASSIGN_VOTES',
+        defaultMessage: 'Reassign your votes',
+    },
+    TR_EARN_TRON_REASSIGN_VOTES_DESCRIPTION: {
+        id: 'TR_EARN_TRON_REASSIGN_VOTES_DESCRIPTION',
+        defaultMessage: 'Remove votes from one representative to assign them to another.',
+    },
+    TR_EARN_TRON_APR_TOOLTIP: {
+        id: 'TR_EARN_TRON_APR_TOOLTIP',
+        defaultMessage: 'Estimated annual return from rewards.',
+    },
+    TR_EARN_TRON_REPRESENTATIVE_ALREADY_SELECTED: {
+        id: 'TR_EARN_TRON_REPRESENTATIVE_ALREADY_SELECTED',
+        defaultMessage: 'This representative is already selected.',
+    },
+    TR_EARN_TRON_VOTES_EXCEED_TOTAL: {
+        id: 'TR_EARN_TRON_VOTES_EXCEED_TOTAL',
+        defaultMessage: 'You can assign at most {total} votes.',
+    },
+    TR_EARN_TRON_INVALID_VOTE_COUNT: {
+        id: 'TR_EARN_TRON_INVALID_VOTE_COUNT',
+        defaultMessage: 'Enter a whole number of votes.',
+    },
     TR_EARN_TRON_UNSTAKING: {
         id: 'TR_EARN_TRON_UNSTAKING',
         defaultMessage: 'Unstaking (~{days} days)',
@@ -11566,21 +11614,9 @@ export const messages = defineMessages({
         id: 'TR_EARN_TRON_ENERGY_REDUCTION',
         defaultMessage: '{count, plural, =0 {} one {-# energy} other {-# energy}}',
     },
-    TR_EARN_TRON_SELECT_REPRESENTATIVE: {
-        id: 'TR_EARN_TRON_SELECT_REPRESENTATIVE',
-        defaultMessage: 'Select representative',
-    },
-    TR_EARN_TRON_ENTER_DIFFERENT_REPRESENTATIVE: {
-        id: 'TR_EARN_TRON_ENTER_DIFFERENT_REPRESENTATIVE',
-        defaultMessage: 'Enter different representative',
-    },
     TR_EARN_TRON_ENTER_REPRESENTATIVE_ADDRESS: {
         id: 'TR_EARN_TRON_ENTER_REPRESENTATIVE_ADDRESS',
         defaultMessage: 'Enter representative address',
-    },
-    TR_EARN_TRON_APR: {
-        id: 'TR_EARN_TRON_APR',
-        defaultMessage: 'APR {apr}%',
     },
     TR_EARN_DEFI_YIELD_IN_A_NUTSHELL: {
         id: 'TR_EARN_DEFI_YIELD_IN_A_NUTSHELL',

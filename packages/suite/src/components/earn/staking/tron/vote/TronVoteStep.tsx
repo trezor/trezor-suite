@@ -6,12 +6,11 @@ import { Banner, Column } from '@trezor/components';
 
 import { useMessageSystemStaking } from 'src/hooks/suite/useMessageSystemStaking';
 
+import { TronVoteAllocationSection } from './TronVoteAllocationSection';
+import { TronVoteSubmitButton } from './TronVoteSubmitButton';
 import { useTronStakeContext } from '../TronStakeContext';
 import { TronStakeFees } from '../TronStakeFees';
 import { TronStakePendingTransaction } from '../TronStakePendingTransaction';
-import { TronVoteApr } from './TronVoteApr';
-import { TronVoteRepresentativeSelect } from './TronVoteRepresentativeSelect';
-import { TronVoteSubmitButton } from './TronVoteSubmitButton';
 
 export const TronVoteStep = () => {
     const { form, actions, account, fees } = useTronStakeContext();
@@ -26,9 +25,7 @@ export const TronVoteStep = () => {
             <Column gap={16}>
                 {isVotingDisabled && <Banner intent="warning" description={votingMessageContent} />}
 
-                <TronVoteRepresentativeSelect />
-
-                <TronVoteApr />
+                <TronVoteAllocationSection />
 
                 <TronStakeFees />
 

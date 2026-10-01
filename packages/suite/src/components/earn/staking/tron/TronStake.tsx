@@ -10,6 +10,7 @@ import { TronStakeSummaryCard } from './complete/TronStakeSummaryCard';
 import { TronFreezeStep } from './freeze/TronFreezeStep';
 import { useTronStakeFlow } from './hooks/useTronStakeFlow';
 import { TronVoteStep } from './vote/TronVoteStep';
+import { TronVoteStepTitle } from './vote/TronVoteStepTitle';
 
 interface TronStakeProps {
     account: Account;
@@ -96,23 +97,7 @@ export const TronStake = ({ account }: TronStakeProps) => {
 
                                 <StepList.Item
                                     state={getStepState('vote')}
-                                    title={
-                                        <Column gap={2} width="100%">
-                                            <Text
-                                                typographyStyle="body-xs"
-                                                intent="neutral"
-                                                priority="secondary"
-                                                case="uppercase"
-                                            >
-                                                <Translation
-                                                    id="TR_STEP_OF_TOTAL"
-                                                    values={{ index: 2, total: 2 }}
-                                                />
-                                            </Text>
-
-                                            <Translation id="TR_EARN_TRON_VOTE_STEP_TITLE" />
-                                        </Column>
-                                    }
+                                    title={<TronVoteStepTitle isActive={step === 'vote'} />}
                                 >
                                     {step === 'vote' && <TronVoteStep />}
                                 </StepList.Item>

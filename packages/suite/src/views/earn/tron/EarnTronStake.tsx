@@ -12,5 +12,5 @@ export const EarnTronStake = () => {
         return <AccountNotExists />;
     }
 
-    return <TronStake account={account} />;
+    return <TronStake key={account.key} account={account} />;
 };
