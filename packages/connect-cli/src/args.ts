@@ -45,8 +45,10 @@ export const HELP = `@trezor/connect CLI arguments:
                                                 --method=ward_restore   (wired, --queue only)
                                                 --method=ward_delete     (wired, --queue only)
                                                 --method=ward_display   (wired; --queue, or --service)
-                                                --method=ward_flush     (wired, --service only)
+                                                --method=ward_flush     (wired; --service, or --wardd)
                                                 --method=ward_reset_app (wired, no flags)
+                                                --method=ward_sync      (wired, --wardd only)
+                                                --method=ward_status    (wired, --wardd only)
                                                 --method=ward_update    (not wired yet)
     --params=<json>                           Extra params passed to the method (JSON object)
                                                 --params='{"use_passphrase": true}'
@@ -132,6 +134,25 @@ export const HELP = `@trezor/connect CLI arguments:
                                                 works when the pinned app cannot ask. Discards no
                                                 entry, queued change or root.
 
+  Through wardd, the local WARD service (packages/wardd)
+    --wardd=<ws://127.0.0.1:21329>            Hand WARD's tree operations to wardd, which holds the
+                                                replica (in Evolu) and drives the device; this CLI
+                                                only carries messages on the device's session. Also
+                                                registers wardd as connect's wardProvider.
+    --wardd-token=<token>                     wardd's pairing token, or
+    --wardd-token-file=<path>                   the file holding it (default ~/.trezor-ward/token,
+                                                where wardd writes it)
+    --method=ward_sync --wardd=...            Bring the device to the WM's head: reconcile, or walk
+                                                the chain when it is several steps behind.
+    --method=ward_sync --wardd=... --rejoin   A device off the WM's history (a fork) is refused
+                                                with needs_rejoin; --rejoin asks to discard its
+                                                changes above the fork, confirmed on the device.
+    --method=ward_flush --wardd=... [--batch=N]
+                                              Publish EVERYTHING queued, syncing after each, in one
+                                                device session; --batch folds up to N (max 8) changes
+                                                into one transition.
+    --method=ward_status --wardd=...          The replica's head and the WM's.
+
   Backing the queue up (both --queue only)
     --method=ward_backup --queue --appid=example.com --ident=addr1
                                               Prints 0x... -- the queued change, with a MAC the
@@ -147,7 +168,16 @@ export const HELP = `@trezor/connect CLI arguments:
 // Flags whose value must survive EXACTLY as typed. Everything else is lowercased for convenience,
 // which is fine for a method name and wrong for a value the device hashes: `--appid=TEST` lowercased
 // derives a different entry_key than the same entry written any other way, and nothing would say so.
-const VERBATIM_FLAGS = ['params', 'appid', 'ident', 'value', 'entry', 'target'];
+const VERBATIM_FLAGS = [
+    'params',
+    'appid',
+    'ident',
+    'value',
+    'entry',
+    'target',
+    'wardd-token',
+    'wardd-token-file',
+];
 // --compact takes no value, so it needs no place in VERBATIM_FLAGS above.
 
 // read and parse application arguments

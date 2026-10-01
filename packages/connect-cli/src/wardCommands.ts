@@ -23,6 +23,8 @@ export const WARD_COMMAND_NAMES = [
     'ward_restore',
     'ward_flush',
     'ward_reset_app',
+    'ward_sync',
+    'ward_status',
 ] as const;
 
 export type WardCommandName = (typeof WARD_COMMAND_NAMES)[number];
@@ -116,7 +118,7 @@ export const wardCommands: Record<WardCommandName, WardCommand> = {
         // one. Naming an entry is for the case the device cannot resolve itself -- a COMPACT record
         // keeps a hash of its identity, and a hash cannot be turned back into a keyed path.
         requiredParams: [],
-        optionalParams: ['appid', 'ident', 'service'],
+        optionalParams: ['appid', 'ident', 'service', 'wardd', 'batch'],
         // `--queue` IS THE OPPOSITE OF THIS COMMAND. Every other command here can operate on the
         // device's own store alone; publishing is the act of leaving it, so there is no offline
         // form to ask for and the flag is rejected rather than ignored.
@@ -133,6 +135,23 @@ export const wardCommands: Record<WardCommandName, WardCommand> = {
         optionalParams: [],
         supportsQueue: false,
         run: notWired('ward_reset_app'),
+    },
+    ward_sync: {
+        name: 'ward_sync',
+        description:
+            "Bring the device to the WM's head through wardd (--wardd; --rejoin after a fork)",
+        requiredParams: ['wardd'],
+        optionalParams: ['rejoin'],
+        supportsQueue: false,
+        run: notWired('ward_sync'),
+    },
+    ward_status: {
+        name: 'ward_status',
+        description: "wardd's replica head and the WM's, for this device's wallet (--wardd)",
+        requiredParams: ['wardd'],
+        optionalParams: [],
+        supportsQueue: false,
+        run: notWired('ward_status'),
     },
 };
 

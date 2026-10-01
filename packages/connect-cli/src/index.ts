@@ -7,6 +7,8 @@ import TrezorConnect, {
     type UiRequestThpPairing,
     initLog,
 } from '@trezor/connect';
+// eslint-disable-next-line @typescript-eslint/no-restricted-imports -- the wardd binding is not public API yet: the barrel takes no code exports (#27376)
+import { createWarddProvider } from '@trezor/connect/src/ward/createWarddProvider';
 
 import { HELP, args } from './args';
 import { stdioManager } from './stdio';
@@ -18,7 +20,7 @@ import {
     isDebugLinkInteraction,
 } from './transport';
 import { getWardCommand, missingWardParams } from './wardCommands';
-import { runWardCommand } from './wardRunners';
+import { runWardCommand, warddOptions } from './wardRunners';
 
 /* eslint-disable no-console */
 
@@ -124,6 +126,9 @@ const runTestCase = async (device: Device) => {
             ...(args.target !== undefined ? { target: args.target } : {}),
             ...(args.compact !== undefined ? { compact: args.compact } : {}),
             ...(args.service !== undefined ? { service: args.service } : {}),
+            ...(args.wardd !== undefined ? { wardd: warddOptions() } : {}),
+            ...(args.batch !== undefined ? { batch: Number(args.batch) } : {}),
+            ...(args.rejoin !== undefined ? { rejoin: !!args.rejoin } : {}),
         };
         // `scope` was the JSON name for what the flags call `ident`. Aliasing it here means one
         // vocabulary reaches the registry and the runners, so neither has to know both spellings.
@@ -410,6 +415,9 @@ const run = async () => {
         // connect runs in-process here, so supply the core logger factory directly.
         // TODO(logger-unification): build from a unified app-wide logger instead of initLog.
         createLogger: (prefix: string) => initLog(prefix, !!args.debug),
+        // `--wardd`: the device's mid-call pulls are answered from wardd's replica. Without it the
+        // stub stays registered and every pull fails loudly, exactly as before.
+        ...(args.wardd !== undefined ? { wardProvider: createWarddProvider(warddOptions()) } : {}),
         thp: {
             appName: 'TrezorConnect Cli',
             hostName: 'localhost',

@@ -13,10 +13,15 @@
  */
 
 import fs from 'fs';
+import os from 'os';
+import path from 'path';
 
 import TrezorConnect, { type Device } from '@trezor/connect';
+// eslint-disable-next-line @typescript-eslint/no-restricted-imports -- the wardd binding is not public API yet: the barrel takes no code exports (#27376)
+import { WARDD_DEFAULT_URL } from '@trezor/connect/src/ward/warddClient';
 import { protobufManager } from '@trezor/protobuf';
 
+import { args } from './args';
 import { type WardCommandContext, type WardCommandName, wardCommands } from './wardCommands';
 
 /** Protobuf `bytes` cross the connect boundary as hex. */
@@ -24,6 +29,52 @@ const toHex = (value: string) => Buffer.from(value, 'utf8').toString('hex');
 const fromHex = (value: string) => Buffer.from(value, 'hex').toString('utf8');
 
 const DEFAULT_APP_ID = 'connect-cli';
+
+/**
+ * Where wardd is and how to prove we may use it: `--wardd[=url]` and its token, taken from
+ * `--wardd-token`, `--wardd-token-file`, or the file wardd itself writes on first start.
+ */
+export const warddOptions = () => {
+    const url = typeof args.wardd === 'string' ? args.wardd : WARDD_DEFAULT_URL;
+    if (typeof args['wardd-token'] === 'string') return { url, token: args['wardd-token'] };
+    const file =
+        typeof args['wardd-token-file'] === 'string'
+            ? args['wardd-token-file']
+            : path.join(os.homedir(), '.trezor-ward', 'token');
+    try {
+        return { url, token: fs.readFileSync(file, 'utf8').trim() };
+    } catch {
+        throw new Error(
+            `no wardd token: pass --wardd-token, or --wardd-token-file (${file} not readable)`,
+        );
+    }
+};
+
+/**
+ * `ward_sync`, `ward_status`, `ward_flush --wardd`: one `wardRelay` call each, so the whole
+ * conversation runs on ONE device session -- the device's WARD sync state is session state, and
+ * connect opens a new session per method call.
+ */
+const wardRelay = async (
+    device: Device,
+    params: Record<string, any>,
+    op: 'sync' | 'flush' | 'status',
+    extra: { rejoin?: boolean; maxBatch?: number } = {},
+) => {
+    const result = await TrezorConnect.wardRelay({ device, ...params.wardd, op, ...extra });
+
+    if (!result.success) {
+        throw new Error(`${result.error.code}: ${result.error.message}`);
+    }
+
+    return result.payload;
+};
+
+const wardSync = ({ params }: WardCommandContext, device: Device) =>
+    wardRelay(device, params, 'sync', { rejoin: params.rejoin || undefined });
+
+const wardStatus = ({ params }: WardCommandContext, device: Device) =>
+    wardRelay(device, params, 'status');
 
 /**
  * The backup blob: `0x` + the protobuf-encoded `WardQueueGetAck`.
@@ -390,9 +441,22 @@ const wardFlush = async (context: WardCommandContext, device: Device) => {
         );
     }
 
+    // THROUGH wardd, the queue is drained whole: wardd syncs, flushes, stores, publishes and syncs
+    // again, round after round, on one session. Naming an entry is a single-change publish, which
+    // this path does not do -- refused rather than silently draining everything instead.
+    if (params.wardd && !params.service) {
+        if (params.appid !== undefined || params.ident !== undefined) {
+            throw new Error(
+                'ward_flush --wardd drains the whole queue; publishing one named change is --service only',
+            );
+        }
+
+        return wardRelay(device, params, 'flush', { maxBatch: params.batch });
+    }
+
     if (!params.service) {
         throw new Error(
-            "publishing a queued change pulls the entry's current leaf and proves it against a synced session, which needs a registered wardProvider (host store); not wired yet — pass --service if this device serves WARD over its own channel",
+            "publishing a queued change pulls the entry's current leaf and proves it against a synced session, which needs a host store — pass --wardd to use the local WARD service, or --service if this device serves WARD over its own channel",
         );
     }
 
@@ -505,6 +569,14 @@ export const runWardCommand = (
 
     if (name === 'ward_reset_app') {
         return wardResetApp(context, device);
+    }
+
+    if (name === 'ward_sync') {
+        return wardSync(context, device);
+    }
+
+    if (name === 'ward_status') {
+        return wardStatus(context, device);
     }
 
     if (name === 'ward_delete') {
