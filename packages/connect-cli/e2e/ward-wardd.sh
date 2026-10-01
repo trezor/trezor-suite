@@ -205,7 +205,7 @@ check "replica at 2" "counter: 2" "$STATUS"
 check "WM at 2" "wmCounter: 2" "$STATUS"
 
 echo "A5. sync again, from a new session: the device is already at the head"
-check "a second session reconciles at 2" "how: 'reconcile'" \
+check "a second session reconciles at 2 (the device names its counter, not its root)" "how: 'reconcile'" \
     "$(timeout 150 $CLI --method=ward_sync $WARDD 2>&1)"
 
 echo "A6. queue three, flush them as ONE batched transition"
@@ -227,11 +227,15 @@ else
     # setsid: emulator B gets its own process group, so cleanup stops emu.py AND the emulator.
     # Not -q: its output is the first thing to read if it does not come up.
     env -u TREZOR_PROFILE_DIR -u TREZOR_UDP_PORT setsid python3 "$TREZOR_FIRMWARE/core/emu.py" \
-        -a -t -s -P "$PEER_PORT" -c -- sleep 100000 > "$WORK/peer-emu.log" 2>&1 < /dev/null &
+        -a -t -s -P "$PEER_PORT" -c -- sh -c 'echo PEER-READY; exec sleep 100000' \
+        > "$WORK/peer-emu.log" 2>&1 < /dev/null &
     PEER_PID=$!
     PEER_UP=""
-    for _ in $(seq 1 120); do
-        if port_bound "$PEER_PORT" && port_bound "$((PEER_PORT + 1))"; then
+    for _ in $(seq 1 240); do
+        # READY IS THE MARKER, not the ports: emu.py binds them, then loads the SLIP-14 seed over
+        # debuglink, and only then runs the command that prints it. A call in between goes
+        # unanswered -- the first run's `ward-id` waited out its whole timeout there.
+        if grep -q PEER-READY "$WORK/peer-emu.log" 2>/dev/null; then
             PEER_UP=1
             break
         fi
@@ -265,6 +269,10 @@ $(tail -15 "$PEER_LOG")"
     WARD_ID_OUT="$(peer ward-id)"
     check "emulator B is a fresh device of the same wallet" '"counter": 0' "$WARD_ID_OUT"
     WARD_ID="$(sed -nE 's/.*"ward_id": "([0-9a-f]+)".*/\1/p' <<<"$WARD_ID_OUT")"
+    if [ -z "$WARD_ID" ]; then
+        echo "  FAIL no ward_id from emulator B, so C1 cannot name the wallet"
+        failures=$((failures + 1))
+    fi
 
     echo "B1. Python binding: B catches up from 0 to 5 by walking A's chain back"
     SYNC_B="$(peer sync)"
@@ -297,7 +305,9 @@ $(tail -15 "$PEER_LOG")"
 
     echo "C1. Java binding: the same store, the same head"
     JR="$TREZOR_FIRMWARE/java/ward-relay"
-    if "$JR/build.sh" > "$WORK/java-build.log" 2>&1; then
+    if [ -z "$WARD_ID" ]; then
+        echo "  skip (no ward_id, see B)"
+    elif "$JR/build.sh" > "$WORK/java-build.log" 2>&1; then
         JCP="$(ls "$JR"/.deps/*.jar | grep -v junit | paste -sd:):$JR/out/main"
         JAVA_OUT="$(timeout 60 java -cp "$JCP" "$HERE/WarddSmoke.java" "$WARDD_URL" "$TOKEN_FILE" "$WARD_ID" 2>&1)"
         check "Java sees counter 7" '"counter":7' "$JAVA_OUT"
