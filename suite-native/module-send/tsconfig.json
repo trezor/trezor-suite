@@ -78,6 +78,9 @@
         {
             "path": "../../networks/stellar/network-stellar"
         },
+        {
+            "path": "../../networks/tron/network-tron"
+        },
         { "path": "../../packages/react-utils" },
         {
             "path": "../../packages/styles-native"

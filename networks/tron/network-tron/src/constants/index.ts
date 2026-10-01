@@ -21,3 +21,9 @@ export const TRON_CREATE_ACCOUNT_FEE_SUN = 100_000;
 // transfer activates a not-yet-existing recipient account. This is separate from — and charged
 // on top of — the bandwidth cost above (`TRON_CREATE_ACCOUNT_FEE_SUN`).
 export const TRON_ACCOUNT_ACTIVATION_FEE_SUN = 1_000_000;
+
+// Transaction data has a 16kB limit for protobuf single message encoding in firmware.
+// For UTF-16 encoding: 16384 B / 2 = 8192 B
+export const TRON_DATA_MAX_BYTES = 8192;
+
+export const TRON_NOTE_MAX_BYTES = 512;
