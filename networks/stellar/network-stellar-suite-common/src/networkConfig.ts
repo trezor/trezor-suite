@@ -1,10 +1,16 @@
 import {
+    DEFAULT_ACCOUNT_SYNC_INTERVAL,
     type Explorer,
     type SuiteCommonNetworkConfig,
     asDisplayOrderKey,
     asProtocol,
 } from '@trezor/network-module-suite-common-types';
 import { STELLAR_DECIMALS, type StellarNetworkSymbol } from '@trezor/network-stellar/constants';
+
+const syncIntervalBySymbol: Readonly<Record<StellarNetworkSymbol, number>> = {
+    xlm: DEFAULT_ACCOUNT_SYNC_INTERVAL,
+    txlm: DEFAULT_ACCOUNT_SYNC_INTERVAL,
+};
 
 const getExplorerUrls = (baseUrl: string): Explorer => ({
     base: baseUrl,
@@ -60,3 +66,6 @@ export const networkConfigBySymbol = {
 
 export const getNetworkConfig = (symbol: StellarNetworkSymbol): SuiteCommonNetworkConfig =>
     networkConfigBySymbol[symbol];
+
+export const getAccountSyncInterval = (symbol: StellarNetworkSymbol): number =>
+    syncIntervalBySymbol[symbol];

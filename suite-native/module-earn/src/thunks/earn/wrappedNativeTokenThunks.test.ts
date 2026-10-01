@@ -1,4 +1,5 @@
 import { asGetter } from '@suite-common/dependency-injection';
+import { mockGetAccountSyncInterval } from '@suite-common/networks/mocks';
 import { type TestCompositionStore, createTestCompositionRoot } from '@suite-common/test-utils';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { accountsActions } from '@suite-common/wallet-core';
@@ -55,6 +56,7 @@ const buildStore = (storeAccount: Account) =>
         },
         services: () => ({
             analytics: mockNativeAnalytics(),
+            networks: { getAccountSyncInterval: mockGetAccountSyncInterval() },
             getIsWindowVisible: asGetter(() => true),
             getTradedAccountKeys: asGetter(() => []),
         }),

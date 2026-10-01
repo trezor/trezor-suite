@@ -9,7 +9,7 @@ import {
     type EthereumNamedAddressResolverCompositionRootDeps,
     createEthereumNamedAddressResolverCompositionRoot,
 } from './namedAddress/createEthereumNamedAddressResolverCompositionRoot';
-import { getNetworkConfig } from './networkConfig';
+import { getAccountSyncInterval, getNetworkConfig } from './networkConfig';
 
 type EthereumSuiteCommonNetworkModuleDeps = EthereumNamedAddressResolverCompositionRootDeps;
 
@@ -25,5 +25,6 @@ export const createEthereumSuiteCommonNetworkModule = (
         addressValidator: ethereumValidator,
         namedAddressResolver: ethereumNamedAddressResolver,
         getNetworkConfig,
+        getAccountSyncInterval,
     });
 };

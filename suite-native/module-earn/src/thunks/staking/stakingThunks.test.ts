@@ -1,6 +1,7 @@
 import { combineReducers, isFulfilled, isRejected } from '@reduxjs/toolkit';
 
 import { type MessageSystemState, messageSystemInitialState } from '@suite-common/message-system';
+import { mockGetAccountSyncInterval } from '@suite-common/networks/mocks';
 import { mockActionType, mockReducer } from '@suite-common/redux-utils/mocks';
 import { type TrezorDevice } from '@suite-common/suite-types';
 import { mockGetIsWindowVisible, mockOnModalCancel } from '@suite-common/suite-types/mocks';
@@ -190,6 +191,7 @@ const buildStore = ({
         }),
         services: () => ({
             analytics: mockNativeAnalytics(),
+            networks: { getAccountSyncInterval: mockGetAccountSyncInterval() },
             getIsWindowVisible: mockGetIsWindowVisible(),
             getTradedAccountKeys: mockGetTradedAccountKeys(),
         }),

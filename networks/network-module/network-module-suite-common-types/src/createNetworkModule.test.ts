@@ -8,6 +8,7 @@ const createTestResolver = () => {
             isAddressValid: () => true,
             getAddressType: () => undefined,
         },
+        getAccountSyncInterval: symbol => (symbol === 'aaa' ? 40_000 : 60_000),
         getNetworkConfig: () => {
             throw new Error('Network config is not used by resolver tests.');
         },
@@ -55,5 +56,35 @@ describe('createNetworkModule named address resolver', () => {
         await expect(resolver.reverseResolveAddress('0x123', symbol)).rejects.toThrow(
             'Unsupported network symbol: zzz',
         );
+    });
+});
+
+describe('createNetworkModule account sync interval', () => {
+    const getAccountSyncInterval = jest.fn((symbol: 'aaa' | 'taaa') =>
+        symbol === 'aaa' ? 40_000 : 60_000,
+    );
+    const networkModule = createNetworkModule(['aaa', 'taaa'], {
+        addressValidator: {
+            isAddressValid: () => true,
+            getAddressType: () => undefined,
+        },
+        getNetworkConfig: () => {
+            throw new Error('Network config is not used by interval tests.');
+        },
+        getAccountSyncInterval,
+    });
+
+    it('uses the interval configured for each supported symbol', () => {
+        expect(networkModule.getAccountSyncInterval(asNetworkSymbol('aaa'))).toBe(40_000);
+        expect(networkModule.getAccountSyncInterval(asNetworkSymbol('taaa'))).toBe(60_000);
+    });
+
+    it('rejects unsupported symbols before looking up their interval', () => {
+        getAccountSyncInterval.mockClear();
+
+        expect(() => networkModule.getAccountSyncInterval(asNetworkSymbol('zzz'))).toThrow(
+            'Unsupported network symbol: zzz',
+        );
+        expect(getAccountSyncInterval).not.toHaveBeenCalled();
     });
 });

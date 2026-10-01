@@ -1,7 +1,7 @@
 import { type AnalyticsDep } from '@suite-common/analytics';
 import { type DeviceRootState, selectDevices } from '@suite-common/device';
 import { type LegacyNetworkSymbol } from '@suite-common/legacy-network-config';
-import { type NetworksRootState } from '@suite-common/networks';
+import { type GetAccountSyncIntervalDep, type NetworksRootState } from '@suite-common/networks';
 import { type WithServices, createThunk } from '@suite-common/redux-utils';
 import { type GetIsWindowVisibleDep } from '@suite-common/suite-types';
 import { notificationsActions } from '@suite-common/toast-notifications';
@@ -58,26 +58,6 @@ import {
     type WalletSettingsRootState,
     selectEnabledNetworks,
 } from '../settings/walletSettingsReducer';
-
-export const DEFAULT_NETWORK_SYNC_INTERVAL = 60 * 1000; // 1 minute
-
-const NETWORK_SYNC_INTERVALS: Partial<Record<LegacyNetworkSymbol, number>> = {
-    bsc: DEFAULT_NETWORK_SYNC_INTERVAL / 1.5,
-    pol: DEFAULT_NETWORK_SYNC_INTERVAL / 1.5,
-    op: DEFAULT_NETWORK_SYNC_INTERVAL / 1.5,
-    base: DEFAULT_NETWORK_SYNC_INTERVAL / 1.5,
-    arb: DEFAULT_NETWORK_SYNC_INTERVAL / 1.5,
-    avax: DEFAULT_NETWORK_SYNC_INTERVAL / 1.5,
-    trx: DEFAULT_NETWORK_SYNC_INTERVAL / 1.5,
-    rhc: DEFAULT_NETWORK_SYNC_INTERVAL / 1.5,
-    hype: DEFAULT_NETWORK_SYNC_INTERVAL / 1.5,
-    sol: DEFAULT_NETWORK_SYNC_INTERVAL * 5,
-};
-
-const getNetworkSyncInterval = (
-    symbol: NetworkSymbol,
-    defaultInterval: number = DEFAULT_NETWORK_SYNC_INTERVAL,
-) => NETWORK_SYNC_INTERVALS[symbol as LegacyNetworkSymbol] ?? defaultInterval;
 
 type ReconnectBlockchainThunkParams = {
     symbol: NetworkSymbol;
@@ -287,7 +267,9 @@ export type SyncAccountsWithBlockchainThunkState = BlockchainRootState &
     FetchAndUpdateAccountThunkState;
 
 export type SyncAccountsWithBlockchainThunkDeps = WithServices<
-    AnalyticsDep & GetIsWindowVisibleDep & GetTradedAccountKeysDep
+    AnalyticsDep &
+        GetIsWindowVisibleDep &
+        GetTradedAccountKeysDep & { networks: GetAccountSyncIntervalDep }
 >;
 
 export const syncAccountsWithBlockchainThunk = createThunk<
@@ -303,7 +285,10 @@ export const syncAccountsWithBlockchainThunk = createThunk<
         const accounts = selectAccounts(getState());
         const blockchain = selectBlockchainState(getState());
         const {
-            services: { getIsWindowVisible },
+            services: {
+                getIsWindowVisible,
+                networks: { getAccountSyncInterval },
+            },
         } = extra;
         const isWindowVisible = getIsWindowVisible();
 
@@ -331,7 +316,7 @@ export const syncAccountsWithBlockchainThunk = createThunk<
 
         const timeout = setTimeout(
             () => dispatch(syncAccountsWithBlockchainThunk(symbol)),
-            getNetworkSyncInterval(symbol),
+            getAccountSyncInterval(symbol),
         );
 
         dispatch(blockchainActions.synced({ symbol, timeout }));
@@ -341,9 +326,7 @@ export const syncAccountsWithBlockchainThunk = createThunk<
 type OnBlockchainConnectThunkState = SyncAccountsWithBlockchainThunkState &
     GetOrFetchRawFeeInfoThunkState;
 
-type OnBlockchainConnectThunkDeps = WithServices<
-    AnalyticsDep & GetIsWindowVisibleDep & GetTradedAccountKeysDep
->;
+type OnBlockchainConnectThunkDeps = SyncAccountsWithBlockchainThunkDeps;
 
 export const onBlockchainConnectThunk = createThunk<
     void,
@@ -366,9 +349,7 @@ export const onBlockchainConnectThunk = createThunk<
 
 type OnBlockMinedThunkState = SyncAccountsWithBlockchainThunkState;
 
-type OnBlockMinedThunkDeps = WithServices<
-    AnalyticsDep & GetIsWindowVisibleDep & GetTradedAccountKeysDep
->;
+type OnBlockMinedThunkDeps = SyncAccountsWithBlockchainThunkDeps;
 
 export const onBlockMinedThunk = createThunk<
     unknown,
@@ -482,9 +463,7 @@ export const onBlockchainNotificationThunk = createThunk<
 
 type OnBlockchainDisconnectThunkState = SyncAccountsWithBlockchainThunkState;
 
-type OnBlockchainDisconnectThunkDeps = WithServices<
-    AnalyticsDep & GetIsWindowVisibleDep & GetTradedAccountKeysDep
->;
+type OnBlockchainDisconnectThunkDeps = SyncAccountsWithBlockchainThunkDeps;
 
 export const onBlockchainDisconnectThunk = createThunk<
     void,
@@ -493,43 +472,47 @@ export const onBlockchainDisconnectThunk = createThunk<
         state: OnBlockchainDisconnectThunkState;
         extra: OnBlockchainDisconnectThunkDeps;
     }
->(`${BLOCKCHAIN_MODULE_PREFIX}/onBlockchainDisconnectThunk`, (error, { dispatch, getState }) => {
-    const network = getNetworkOptional(error.coin.shortcut.toLowerCase());
-    if (!network) return;
+>(
+    `${BLOCKCHAIN_MODULE_PREFIX}/onBlockchainDisconnectThunk`,
+    (error, { dispatch, getState, extra }) => {
+        const network = getNetworkOptional(error.coin.shortcut.toLowerCase());
+        if (!network) return;
 
-    const { symbol } = network;
-    const blockchain = selectBlockchainState(getState())[symbol as LegacyNetworkSymbol];
-    const hasAccounts = findAccountsByNetwork(symbol, selectAccounts(getState())).length > 0;
+        const { symbol } = network;
+        const blockchain = selectBlockchainState(getState())[symbol as LegacyNetworkSymbol];
+        const hasAccounts = findAccountsByNetwork(symbol, selectAccounts(getState())).length > 0;
 
-    /**
-     * Without accounts there is nothing to sync, so stop the chain (coin disabled, last account removed).
-     * BLOCKCHAIN.CONNECT re-seeds it when the network is used again.
-     */
-    if (!hasAccounts) {
-        if (blockchain.syncTimeout) {
-            tryClearTimeout(blockchain.syncTimeout);
-            dispatch(blockchainActions.synced({ symbol, timeout: undefined }));
+        /**
+         * Without accounts there is nothing to sync, so stop the chain (coin disabled, last account removed).
+         * BLOCKCHAIN.CONNECT re-seeds it when the network is used again.
+         */
+        if (!hasAccounts) {
+            if (blockchain.syncTimeout) {
+                tryClearTimeout(blockchain.syncTimeout);
+                dispatch(blockchainActions.synced({ symbol, timeout: undefined }));
+            }
+
+            return;
         }
 
-        return;
-    }
-
-    /**
-     * While accounts exist, an error must never kill the sync chain.
-     * - EVM networks keep one websocket per wallet identity plus a default one,
-     *   and each of them posts a coin-level BLOCKCHAIN.ERROR when it drops — including terminal disconnects
-     *   that are never followed by a CONNECT that would re-seed the chain
-     * - An armed timer re-arms itself in syncAccountsWithBlockchainThunk,
-     *   and its account fetches fail harmlessly while the backend is down
-     *   and drive the lazy reconnection once it is back — so keep it,
-     *   and arm a new one only when none is left
-     *   (also guards against repeated errors from a failing reconnection loop endlessly deferring the next sync).
-     */
-    if (!blockchain.syncTimeout) {
-        const timeout = setTimeout(
-            () => dispatch(syncAccountsWithBlockchainThunk(symbol)),
-            getNetworkSyncInterval(symbol),
-        );
-        dispatch(blockchainActions.synced({ symbol, timeout }));
-    }
-});
+        /**
+         * While accounts exist, an error must never kill the sync chain.
+         * - EVM networks keep one websocket per wallet identity plus a default one,
+         *   and each of them posts a coin-level BLOCKCHAIN.ERROR when it drops — including terminal disconnects
+         *   that are never followed by a CONNECT that would re-seed the chain
+         * - An armed timer re-arms itself in syncAccountsWithBlockchainThunk,
+         *   and its account fetches fail harmlessly while the backend is down
+         *   and drive the lazy reconnection once it is back — so keep it,
+         *   and arm a new one only when none is left
+         *   (also guards against repeated errors from a failing reconnection loop endlessly deferring the next sync).
+         */
+        if (!blockchain.syncTimeout) {
+            const { getAccountSyncInterval } = extra.services.networks;
+            const timeout = setTimeout(
+                () => dispatch(syncAccountsWithBlockchainThunk(symbol)),
+                getAccountSyncInterval(symbol),
+            );
+            dispatch(blockchainActions.synced({ symbol, timeout }));
+        }
+    },
+);

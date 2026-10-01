@@ -5,10 +5,11 @@ import {
 import { supportedTronNetworks } from '@trezor/network-tron/constants';
 
 import { tronValidator } from './addressValidator/tronAddressValidator';
-import { getNetworkConfig } from './networkConfig';
+import { getAccountSyncInterval, getNetworkConfig } from './networkConfig';
 
 export const createTronSuiteCommonNetworkModule = (): SuiteCommonNetworkModule =>
     createNetworkModule(supportedTronNetworks, {
         addressValidator: tronValidator,
         getNetworkConfig,
+        getAccountSyncInterval,
     });

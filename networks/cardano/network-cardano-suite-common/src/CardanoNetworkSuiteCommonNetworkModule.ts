@@ -5,10 +5,11 @@ import {
 } from '@trezor/network-module-suite-common-types';
 
 import { adaValidator } from './addressValidator/cardanoAddressValidator';
-import { getNetworkConfig } from './networkConfig';
+import { getAccountSyncInterval, getNetworkConfig } from './networkConfig';
 
 export const createCardanoSuiteCommonNetworkModule = (): SuiteCommonNetworkModule =>
     createNetworkModule(supportedCardanoNetworks, {
         addressValidator: adaValidator,
         getNetworkConfig,
+        getAccountSyncInterval,
     });

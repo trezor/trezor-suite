@@ -1,6 +1,6 @@
 import { createAction, isFulfilled, isRejected } from '@reduxjs/toolkit';
 
-import { asGetter } from '@suite-common/dependency-injection';
+import { asGetter, createMockDeps } from '@suite-common/dependency-injection';
 import { selectIsMevProtectionFeatureEnabled } from '@suite-common/mev';
 import { createTestCompositionRoot } from '@suite-common/test-utils';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
@@ -85,6 +85,9 @@ const dispatchCancel = () => {
         },
         services: () => ({
             analytics: mockNativeAnalytics(),
+            networks: createMockDeps<PushSendFormTransactionThunkDeps['services']['networks']>({
+                getAccountSyncInterval: null,
+            }),
             getIsWindowVisible: asGetter(() => true),
             getTradedAccountKeys: asGetter(() => []),
         }),
