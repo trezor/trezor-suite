@@ -15,10 +15,16 @@ import {
 } from '@suite-common/trading';
 import { DEFAULT_PAYMENT, DEFAULT_VALUES } from '@suite-common/wallet-constants';
 import { selectVisibleDeviceAccounts } from '@suite-common/wallet-core';
-import { getContractAddressForNetworkSymbol } from '@suite-common/wallet-utils';
+import {
+    asAmountUnit,
+    getContractAddressForNetworkSymbol,
+    unitsToSubunits,
+} from '@suite-common/wallet-utils';
 import { useCurrentRef } from '@trezor/react-utils';
+import { BigNumber } from '@trezor/utils';
 
 import { useSelector } from 'src/hooks/suite';
+import { useBitcoinAmountUnit } from 'src/hooks/wallet/useBitcoinAmountUnit';
 import { resolveAddressAndToken } from 'src/utils/wallet/trading/tradingUtils';
 
 export const useTradingSellFormRedirectValues = (
@@ -66,39 +72,53 @@ export const useTradingSellFormRedirectValues = (
         };
     }, [createAssetOptionFromCryptoId, findAccountRef, quotesRequest?.cryptoCurrency]);
 
-    const { address, token } = resolveAddressAndToken(
-        sendCrypto?.account,
-        sendCrypto?.asset?.contractAddress,
+    const { isBtcSatsAmountUnit: shouldSendInSats } = useBitcoinAmountUnit(
+        sendCrypto?.account.symbol,
     );
 
-    return isFromRedirect && quotesRequest && sendCrypto
-        ? {
-              ...DEFAULT_VALUES,
-              amountInCrypto: quotesRequest.amountInCrypto,
-              sendCryptoSelect: sendCrypto?.asset,
-              countrySelect: getDefaultCountry(quotesRequest.country as TradingCountryCode),
-              countrySubdivisionSelect: getDefaultCountrySubdivision(quotesRequest.subdivision),
-              paymentMethod: quotesRequest.paymentMethod && {
-                  value: quotesRequest.paymentMethod,
-                  label: quotesRequest.paymentMethod,
-              },
-              feeLimit: composed?.feeLimit ?? '',
-              feePerUnit: composed?.feePerByte ?? '',
-              maxFeePerGas: composed?.maxFeePerGas ?? '',
-              maxPriorityFeePerGas: composed?.maxPriorityFeePerGas ?? '',
-              selectedFee,
-              selectedUtxos: [],
-              options: ['broadcast'],
-              outputs: [
-                  {
-                      ...DEFAULT_PAYMENT,
-                      fiat: quotesRequest.fiatStringAmount as string,
-                      currency: buildTradingBaseCurrencyOptionFromFiat(quotesRequest.fiatCurrency),
-                      amount: quotesRequest.cryptoStringAmount as string,
-                      address,
-                      token,
-                  },
-              ],
-          }
-        : null;
+    if (!isFromRedirect || !quotesRequest || !sendCrypto) {
+        return null;
+    }
+
+    const { address, token } = resolveAddressAndToken(
+        sendCrypto.account,
+        sendCrypto.asset.contractAddress,
+    );
+    const { cryptoStringAmount } = quotesRequest;
+    const amount =
+        cryptoStringAmount && shouldSendInSats
+            ? unitsToSubunits({
+                  value: asAmountUnit(new BigNumber(cryptoStringAmount)),
+                  symbol: sendCrypto.account.symbol,
+              }).toFixed()
+            : cryptoStringAmount;
+
+    return {
+        ...DEFAULT_VALUES,
+        amountInCrypto: quotesRequest.amountInCrypto,
+        sendCryptoSelect: sendCrypto.asset,
+        countrySelect: getDefaultCountry(quotesRequest.country as TradingCountryCode),
+        countrySubdivisionSelect: getDefaultCountrySubdivision(quotesRequest.subdivision),
+        paymentMethod: quotesRequest.paymentMethod && {
+            value: quotesRequest.paymentMethod,
+            label: quotesRequest.paymentMethod,
+        },
+        feeLimit: composed?.feeLimit ?? '',
+        feePerUnit: composed?.feePerByte ?? '',
+        maxFeePerGas: composed?.maxFeePerGas ?? '',
+        maxPriorityFeePerGas: composed?.maxPriorityFeePerGas ?? '',
+        selectedFee,
+        selectedUtxos: [],
+        options: ['broadcast'],
+        outputs: [
+            {
+                ...DEFAULT_PAYMENT,
+                fiat: quotesRequest.fiatStringAmount ?? '',
+                currency: buildTradingBaseCurrencyOptionFromFiat(quotesRequest.fiatCurrency),
+                amount: amount ?? '',
+                address,
+                token,
+            },
+        ],
+    };
 };
