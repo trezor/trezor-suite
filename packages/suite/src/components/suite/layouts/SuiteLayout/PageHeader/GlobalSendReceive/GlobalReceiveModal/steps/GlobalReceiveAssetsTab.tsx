@@ -55,6 +55,7 @@ const AssetsNoResults = ({ onViewAccountsClick }: { onViewAccountsClick: () => v
         gap={8}
         // Adjust for optical center.
         padding={{ bottom: 16 }}
+        data-testid="@global-receive/empty/assets"
     >
         <H4 typographyStyle="body-md" align="center">
             <Translation id="TR_GLOBAL_RECEIVE_NO_RESULTS" />
@@ -62,7 +63,7 @@ const AssetsNoResults = ({ onViewAccountsClick }: { onViewAccountsClick: () => v
         <Paragraph typographyStyle="body-sm" priority="secondary" intent="neutral" align="center">
             <Translation id="TR_GLOBAL_RECEIVE_NO_ASSETS_RESULTS_DESCRIPTION" />
         </Paragraph>
-        <Link onClick={onViewAccountsClick}>
+        <Link onClick={onViewAccountsClick} data-testid="@global-receive/empty/view-accounts">
             <Translation id="TR_GLOBAL_RECEIVE_VIEW_ACCOUNTS" />
         </Link>
     </Column>

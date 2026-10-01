@@ -21,7 +21,11 @@ import { GLOBAL_RECEIVE_LIST_HEIGHT, GLOBAL_RECEIVE_LIST_MIN_HEIGHT } from '../c
 import { type GlobalReceiveAssetListItem } from '../globalReceiveAssetUtils';
 
 type GlobalReceiveListItem =
-    | { type: 'group-label'; label: 'TR_MY_ASSETS' | 'TR_GLOBAL_RECEIVE_ALL_ASSETS' }
+    | {
+          type: 'group-label';
+          group: 'my-assets' | 'all-assets';
+          label: 'TR_MY_ASSETS' | 'TR_GLOBAL_RECEIVE_ALL_ASSETS';
+      }
     | { type: 'group-space' }
     | ({ type: 'asset' } & GlobalReceiveAssetListItem);
 
@@ -61,13 +65,14 @@ export const GlobalReceiveAssetList = ({
         }
 
         return [
-            { type: 'group-label', label: 'TR_MY_ASSETS' },
+            { type: 'group-label', group: 'my-assets', label: 'TR_MY_ASSETS' },
             ...assetsWithBalance.map(item => ({ type: 'asset' as const, ...item })),
             ...(assetsWithoutBalance.length > 0
                 ? [
                       { type: 'group-space' as const },
                       {
                           type: 'group-label' as const,
+                          group: 'all-assets' as const,
                           label: 'TR_GLOBAL_RECEIVE_ALL_ASSETS' as const,
                       },
                       ...assetsWithoutBalance.map(item => ({ type: 'asset' as const, ...item })),
@@ -80,7 +85,13 @@ export const GlobalReceiveAssetList = ({
         (item: GlobalReceiveListItem) => {
             switch (item.type) {
                 case 'group-label':
-                    return <AssetGroupLabel label={item.label} priority="secondary" />;
+                    return (
+                        <AssetGroupLabel
+                            label={item.label}
+                            priority="secondary"
+                            data-testid={`@global-receive/group/${item.group}`}
+                        />
+                    );
                 case 'group-space':
                     return <AssetGroupSpace size="lg" />;
                 case 'asset': {

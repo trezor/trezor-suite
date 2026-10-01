@@ -9,6 +9,7 @@ export class ToastSection {
     readonly approvedAmount: Locator;
     readonly txSent: Locator;
     readonly yieldDeposit: Locator;
+    readonly accountsDiscovered: Locator;
     readonly toast = (preset: ActivityPreset): Locator => this.page.getByTestId(`@toast/${preset}`);
     readonly toastCloseButton = (preset: ToastActivityPreset): Locator =>
         this.page.getByTestId(`@toast/${preset}/close`);
@@ -18,6 +19,7 @@ export class ToastSection {
         this.approvedAmount = this.page.getByTestId('@toast/tx-approved/amount');
         this.txSent = this.page.getByTestId('@toast/tx-sent');
         this.yieldDeposit = this.page.getByTestId('@toast/tx-yield-deposit');
+        this.accountsDiscovered = this.page.getByTestId('@toast/accounts-discovered');
     }
 
     @step()
