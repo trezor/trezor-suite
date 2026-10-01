@@ -7,6 +7,4 @@ export const formInputsMaxLength = {
     amount: 255,
     fiat: 255,
     opReturn: 255,
-
-    btcLocktime: 10, // max: 4294967294
 } as const;
