@@ -559,7 +559,7 @@ export const messages = defineMessages({
         id: 'TR_TRADING_DISABLE_TOR',
     },
     TR_NO_OFFERS_AVAILABLE: {
-        defaultMessage: 'No offers available.',
+        defaultMessage: 'No offers available',
         id: 'TR_NO_OFFERS_AVAILABLE',
     },
     TR_READY_ON: {
@@ -827,12 +827,12 @@ export const messages = defineMessages({
         id: 'TR_EXCHANGE_CENTRALIZED_EXCHANGE',
     },
     TR_TRADING_EXCHANGE_FIXED_OFFERS_HEADING: {
-        defaultMessage: 'Fixed-rate offers',
+        defaultMessage: 'Fixed-rate CEX',
         id: 'TR_TRADING_EXCHANGE_FIXED_OFFERS_HEADING',
         dynamic: true,
     },
     TR_TRADING_EXCHANGE_FLOAT_OFFERS_HEADING: {
-        defaultMessage: 'Floating-rate offers',
+        defaultMessage: 'Floating-rate CEX',
         id: 'TR_TRADING_EXCHANGE_FLOAT_OFFERS_HEADING',
         dynamic: true,
     },
@@ -1481,11 +1481,11 @@ export const messages = defineMessages({
     },
     TR_TRADING_FIX_RATE_DESCRIPTION: {
         id: 'TR_TRADING_FIX_RATE_DESCRIPTION',
-        defaultMessage: 'Your rate is locked for 15 minutes. Costs slightly more.',
+        defaultMessage: 'Lock in your rate for 15 minutes by paying a higher fee.',
     },
     TR_TRADING_FLOATING_RATE_DESCRIPTION: {
         id: 'TR_TRADING_FLOATING_RATE_DESCRIPTION',
-        defaultMessage: 'The final amount can change as the market moves.',
+        defaultMessage: 'Get an estimated rate that may adjust with real-time market changes.',
     },
     TR_TRADING_CEX_TOOLTIP: {
         id: 'TR_TRADING_CEX_TOOLTIP',
@@ -1512,11 +1512,11 @@ export const messages = defineMessages({
         id: 'TR_TRADING_KYC_REQUIRED',
     },
     TR_TRADING_KYC_NO_REFUND: {
-        defaultMessage: 'KYC is only required in exceptional cases.',
+        defaultMessage: 'KYC may be required in exceptional cases.',
         id: 'TR_TRADING_KYC_NO_REFUND',
     },
     TR_TRADING_KYC_YES_REFUND: {
-        defaultMessage: 'KYC is only required in exceptional cases.',
+        defaultMessage: 'KYC may be required in exceptional cases.',
         id: 'TR_TRADING_KYC_YES_REFUND',
     },
     TR_TRADING_KYC_NO_KYC: {
@@ -2381,7 +2381,7 @@ export const messages = defineMessages({
         id: 'TR_ENS_PRIMARY_NAME',
     },
     TR_ENS_RESOLVE_FAILED: {
-        defaultMessage: 'Could not resolve name. Check that the name is correct.',
+        defaultMessage: 'Could not resolve name. Check it is correct.',
         id: 'TR_ENS_RESOLVE_FAILED',
     },
     TR_SEND_ADDRESS_CONFIRMATION_ENS_NOTE: {
@@ -4072,19 +4072,19 @@ export const messages = defineMessages({
         id: 'TR_YOUR_CURRENT_FIRMWARE_UNKNOWN',
     },
     TR_YOUR_CURRENT_VERSION: {
-        defaultMessage: 'Current version {version}',
+        defaultMessage: 'Current version: {version}',
         id: 'TR_YOUR_CURRENT_VERSION',
     },
     TR_YOUR_NEW_VERSION: {
-        defaultMessage: 'Version {version} is available.',
+        defaultMessage: 'New version: {version}',
         id: 'TR_YOUR_NEW_VERSION',
     },
     TR_YOUR_NEW_VERSION_IS_DOWNLOADING: {
-        defaultMessage: 'Version {version} is downloading...',
+        defaultMessage: 'Downloading: {version}',
         id: 'TR_YOUR_NEW_VERSION_IS_DOWNLOADING',
     },
     TR_YOUR_NEW_VERSION_IS_READY: {
-        defaultMessage: 'Version {version} has been downloaded and is ready to be installed.',
+        defaultMessage: 'Ready to install: {version}',
         id: 'TR_YOUR_NEW_VERSION_IS_READY',
     },
     TR_YOUR_TREZOR_IS_NOT_BACKED_UP: {
@@ -4219,7 +4219,7 @@ export const messages = defineMessages({
     TR_ACCOUNT_TYPE_ROOT_DESC: {
         id: 'TR_ACCOUNT_TYPE_ROOT_DESC',
         defaultMessage:
-            'Root accounts hold funds directly on the coin-level derivation path used by some wallets, enabling smooth migration to Trezor.',
+            'Root accounts hold funds directly at the coin level of the derivation path, allowing accounts from compatible wallets to migrate smoothly to Trezor.',
     },
     TR_ACCOUNT_TYPE_LEGACY_DESC: {
         id: 'TR_ACCOUNT_TYPE_LEGACY_DESC',
@@ -5053,7 +5053,7 @@ export const messages = defineMessages({
     },
     MODAL_ADD_ACCOUNT_NO_EMPTY_ACCOUNT: {
         id: 'MODAL_ADD_ACCOUNT_NO_EMPTY_ACCOUNT',
-        defaultMessage: "There isn't an empty account available.",
+        defaultMessage: 'An empty account already exists. Use it before adding a new one.',
     },
     MODAL_ADD_ACCOUNT_PREVIOUS_EMPTY: {
         id: 'MODAL_ADD_ACCOUNT_PREVIOUS_EMPTY',
@@ -7676,7 +7676,7 @@ export const messages = defineMessages({
     },
     SETTINGS_UPDATE_AVAILABLE: {
         id: 'SETTINGS_UPDATE_AVAILABLE',
-        defaultMessage: 'Get the latest version',
+        defaultMessage: 'Download update',
     },
     SETTINGS_UPDATE_DOWNLOADING: {
         id: 'SETTINGS_UPDATE_DOWNLOADING',
