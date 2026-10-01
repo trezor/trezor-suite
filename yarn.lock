@@ -13771,6 +13771,7 @@ __metadata:
   dependencies:
     "@react-navigation/bottom-tabs": "npm:7.13.0"
     "@suite-common/dependency-injection": "workspace:*"
+    "@suite-native/atoms": "workspace:*"
     "@suite-native/test-utils": "workspace:*"
     "@trezor/styles-native": "workspace:*"
     react: "npm:19.2.3"
@@ -15115,6 +15116,7 @@ __metadata:
   resolution: "@suite-native/react-native-graph@workspace:suite-native/react-native-graph"
   dependencies:
     "@shopify/react-native-skia": "npm:2.6.2"
+    "@suite-native/atoms": "workspace:*"
     "@trezor/eslint": "workspace:*"
     "@trezor/utils": "workspace:*"
     "@types/react": "npm:19.2.14"

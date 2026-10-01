@@ -1,5 +1,6 @@
 import { type ReactNode, useCallback, useEffect } from 'react';
 import { Pressable, type PressableProps } from 'react-native';
+// eslint-disable-next-line @typescript-eslint/no-restricted-imports -- This raw Animated.Text uses button-specific typography rather than the styled Text atom.
 import Animated, {
     cancelAnimation,
     useAnimatedStyle,

@@ -1,3 +1,4 @@
+import { fileURLToPath } from 'node:url';
 import tseslint from 'typescript-eslint';
 
 import { areExpensiveChecksEnabled } from './expensiveChecks.mjs';
@@ -77,6 +78,11 @@ const electronIpcMainRestrictedImport = {
     message: 'Use the local ipcMain wrapper instead.',
 };
 
+const commonRestrictedImports = {
+    paths: [{ name: '.' }, { name: '..' }, { name: '../..' }, electronIpcMainRestrictedImport],
+    patterns: [buildArtifactPatterns, networksPackagePattern, ...connectDeepImportPatterns],
+};
+
 export const restrictedImportsPatterns = [
     buildArtifactPatterns,
     suiteInternalPatterns,
@@ -98,22 +104,7 @@ export const typescriptConfig = [
                     allow: ['_', 'error', 'resolve', 'reject', 'fetch'],
                 },
             ],
-            '@typescript-eslint/no-restricted-imports': [
-                'error',
-                {
-                    paths: [
-                        { name: '.' },
-                        { name: '..' },
-                        { name: '../..' },
-                        electronIpcMainRestrictedImport,
-                    ],
-                    patterns: [
-                        buildArtifactPatterns,
-                        networksPackagePattern,
-                        ...connectDeepImportPatterns,
-                    ],
-                },
-            ],
+            '@typescript-eslint/no-restricted-imports': ['error', commonRestrictedImports],
 
             // Additions from "plugin:@typescript-eslint/strict" (we may turn this on one day as a whole)
             '@typescript-eslint/no-useless-constructor': ['error'],
@@ -134,6 +125,38 @@ export const typescriptConfig = [
                 'error',
                 {
                     minimumDescriptionLength: 0, // Todo: reconsider
+                },
+            ],
+        },
+    },
+    {
+        // An absolute base also applies when a native package has its own ESLint config.
+        basePath: fileURLToPath(new URL(`../../../${allRoots.suiteNative}`, import.meta.url)),
+        files: ['**/*.{js,mjs,cjs,ts,jsx,tsx}'],
+        ignores: ['atoms/src/Animated/**'],
+        rules: {
+            '@typescript-eslint/no-restricted-imports': [
+                'error',
+                {
+                    ...commonRestrictedImports,
+                    paths: [
+                        ...commonRestrictedImports.paths,
+                        {
+                            name: 'react-native-reanimated',
+                            importNames: ['default', 'createAnimatedComponent'],
+                            allowTypeImports: true,
+                            message:
+                                'Use animated components from @suite-native/atoms so reduced motion is handled consistently. Import Reanimated hooks, animation builders and types by name.',
+                        },
+                    ],
+                    patterns: [
+                        ...commonRestrictedImports.patterns,
+                        {
+                            group: ['react-native-reanimated/*'],
+                            message:
+                                'Use the public react-native-reanimated entry point for hooks and types, and @suite-native/atoms for animated components.',
+                        },
+                    ],
                 },
             ],
         },
