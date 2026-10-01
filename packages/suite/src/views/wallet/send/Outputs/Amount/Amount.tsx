@@ -4,9 +4,8 @@ import { events, injectDesktopAnalytics } from '@suite/analytics';
 import { Translation, useTranslation } from '@suite/intl';
 import { selectLanguage } from '@suite/settings';
 import { useServices } from '@suite-common/dependency-injection';
-import { formInputsMaxLength } from '@suite-common/validators';
 import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
-import { selectIsNetworkReserveEnabled } from '@suite-common/wallet-core';
+import { AMOUNT_MAX_LENGTH, selectIsNetworkReserveEnabled } from '@suite-common/wallet-core';
 import { type Output, type TokenAddress } from '@suite-common/wallet-types';
 import {
     convertAmountUnitsToSubunits,
@@ -227,7 +226,7 @@ export const Amount = ({ output, outputId }: AmountProps) => {
                         name={amountName}
                         data-testid={amountName}
                         defaultValue={amountValue}
-                        maxLength={formInputsMaxLength.amount}
+                        maxLength={AMOUNT_MAX_LENGTH}
                         rules={cryptoAmountRules}
                         control={control}
                         rightContent={

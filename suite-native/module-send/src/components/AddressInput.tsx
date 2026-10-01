@@ -13,9 +13,9 @@ import {
 } from '@suite-common/networks';
 import { injectGetState } from '@suite-common/redux-utils';
 import { parseTransferUri } from '@suite-common/transfer-uri';
-import { formInputsMaxLength } from '@suite-common/validators';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import {
+    ADDRESS_MAX_LENGTH,
     type AccountsRootState,
     selectAccountByKey,
     selectAccountNetworkSymbol,
@@ -309,7 +309,7 @@ export const AddressInput = ({ index, accountKey, onQrNetworkMismatch }: Address
                 name={addressFieldName}
                 testID={addressFieldName}
                 onChangeText={handleChangeValue}
-                maxLength={formInputsMaxLength.address}
+                maxLength={ADDRESS_MAX_LENGTH}
                 accessibilityLabel="address input"
                 rightIcon={<QrCodeBottomSheetIcon onCodeScanned={handleScanAddressQRCode} />}
             />
