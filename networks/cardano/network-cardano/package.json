@@ -46,6 +46,7 @@
         "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'",
         "generate:csl-asmjs": "node ./scripts/csl-asmjs/generate.js",
         "trace:csl-asmjs": "node ./scripts/csl-asmjs/trace.js",
+        "verify:csl-asmjs": "./scripts/csl-asmjs/verify.sh",
         "test:unit": "yarn g:jest --passWithNoTests",
         "type-check": "yarn g:tsc --build tsconfig.json",
         "build:lib": "yarn g:rimraf ./lib && yarn g:tsc --build tsconfig.lib.json && ../../../scripts/publish/replace-imports.sh ./lib"
