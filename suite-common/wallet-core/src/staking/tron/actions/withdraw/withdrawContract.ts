@@ -1,5 +1,6 @@
 import { type Account, type FormState } from '@suite-common/wallet-types';
 import * as tronUtils from '@trezor/network-tron/utils';
+
 type BuildWithdrawExpireUnfreezeContractParams = { ownerHex: string };
 
 export const buildWithdrawExpireUnfreezeContract = ({
