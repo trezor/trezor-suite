@@ -1,5 +1,6 @@
 {
     "prod": [
+        "@anon-rpc/browser-harness",
         "@bufbuild/protobuf",
         "@emurgo/cardano-serialization-lib-browser",
         "@emurgo/cardano-serialization-lib-nodejs",

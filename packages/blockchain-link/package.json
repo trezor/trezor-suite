@@ -79,6 +79,7 @@
         "worker-loader": "^3.0.8"
     },
     "dependencies": {
+        "@anon-rpc/browser-harness": "0.3.0",
         "@trezor/blockchain-link-types": "workspace:*",
         "@trezor/blockchain-link-utils": "workspace:*",
         "@trezor/env-utils": "workspace:*",
