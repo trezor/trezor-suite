@@ -1,7 +1,13 @@
-import { Page, TestInfo } from '@playwright/test';
-import { writeFileSync } from 'fs';
+import { ElectronApplication, Page, TestInfo } from '@playwright/test';
+import { readFileSync, writeFileSync } from 'fs';
 import { type Flags, generateReport, startFlow } from 'lighthouse';
-import { type Browser, type Page as BrowserPage, connect } from 'puppeteer-core';
+import path from 'path';
+import {
+    type Browser,
+    type Page as BrowserPage,
+    type ConnectOptions,
+    connect,
+} from 'puppeteer-core';
 
 import { buildFlowDocument, resolveSurface } from '@trezor/perf-e2e';
 
@@ -24,8 +30,8 @@ import { writeFlowDocument } from './perfHistory';
  *
  * Why it talks to the app through Puppeteer rather than the Playwright page: Lighthouse drives the
  * target with Puppeteer's CDPSession, using wildcard `'*'` protocol events, `session.id()` and
- * `sessionattached` — none of which Playwright's CDPSession exposes. So the app is launched with a
- * remote debugging port and `puppeteer-core` attaches to the very target the test is driving.
+ * `sessionattached` — none of which Playwright's CDPSession exposes. So `puppeteer-core` attaches
+ * to the app's CDP endpoint and to the very target the test is driving.
  */
 
 // Lands in the test's output dir (`test-results/<project>-<test>/`), for looking at locally. The
@@ -48,10 +54,8 @@ const AS_IS_FLAGS: Flags = {
 };
 
 export type LighthouseFlow = {
-    /** Records a timespan around `interaction` in `Steps` mode, and just runs it otherwise. */
+    /** Records a timespan around `interaction`. */
     timespan: <T>(name: string, interaction: () => Promise<T>) => Promise<T>;
-    /** Records a timespan around the whole test body in `Test` mode, and just runs it otherwise. */
-    wrapTest: (body: () => Promise<void>) => Promise<void>;
     /** Audits the recorded steps and writes the flow document. */
     finish: () => Promise<void>;
 };
@@ -60,8 +64,24 @@ export type LighthouseFlow = {
 // exactly as it does without profiling.
 const passthroughFlow: LighthouseFlow = {
     timespan: (_name, interaction) => interaction(),
-    wrapTest: body => body(),
     finish: async () => {},
+};
+
+// Electron writes the CDP port Playwright had it open to DevToolsActivePort; desktop needs no fixed port.
+const resolveEndpoint = async (
+    electronApp: ElectronApplication | undefined,
+): Promise<ConnectOptions> => {
+    if (!electronApp) {
+        return { browserURL: `http://127.0.0.1:${getLighthouseDebugPort()}` };
+    }
+
+    const userDataDir = await electronApp.evaluate(({ app }) => app.getPath('userData'));
+    const [port, browserPath] = readFileSync(
+        path.join(userDataDir, 'DevToolsActivePort'),
+        'utf8',
+    ).split('\n');
+
+    return { browserWSEndpoint: `ws://127.0.0.1:${port}${browserPath}` };
 };
 
 /**
@@ -69,16 +89,14 @@ const passthroughFlow: LighthouseFlow = {
  * and an infrastructure fault must not decide a test's verdict. The run loses its profile and says
  * so; the suite stays green on its own merits.
  */
-const connectToAppUnderTest = async (): Promise<Browser | null> => {
-    const browserURL = `http://127.0.0.1:${getLighthouseDebugPort()}`;
-
+const connectToAppUnderTest = async (
+    electronApp: ElectronApplication | undefined,
+): Promise<Browser | null> => {
     try {
-        return await connect({ browserURL, defaultViewport: null });
+        return await connect({ ...(await resolveEndpoint(electronApp)), defaultViewport: null });
     } catch (error) {
         console.warn(
-            `[lighthouse] no debugging endpoint at ${browserURL}, so this test is not profiled. ` +
-                'The app under test must be launched with --remote-debugging-port: see buildArgs in ' +
-                'support/electron.ts for desktop and PlaywrightProjectBuilder for web.',
+            '[lighthouse] could not attach to the app under test, so this test is not profiled:',
             error,
         );
 
@@ -111,17 +129,24 @@ const findPageUnderTest = async (browser: Browser, page: Page): Promise<BrowserP
     return pageUnderTest;
 };
 
-export const startLighthouseFlow = async (
-    page: Page,
-    testInfo: TestInfo,
-): Promise<LighthouseFlow> => {
-    const mode = getLighthouseMode();
+type StartLighthouseFlowParams = {
+    page: Page;
+    electronApp: ElectronApplication | undefined;
+    testInfo: TestInfo;
+    mode: Exclude<LighthouseMode, typeof LighthouseMode.Off>;
+};
 
-    if (mode === LighthouseMode.Off) {
+export const startLighthouseFlow = async ({
+    page,
+    electronApp,
+    testInfo,
+    mode,
+}: StartLighthouseFlowParams): Promise<LighthouseFlow> => {
+    if (getLighthouseMode() !== mode) {
         return passthroughFlow;
     }
 
-    const browser = await connectToAppUnderTest();
+    const browser = await connectToAppUnderTest(electronApp);
 
     if (!browser) {
         return passthroughFlow;
@@ -138,7 +163,7 @@ export const startLighthouseFlow = async (
     const flow = await startFlow(pageUnderTest, { name: testInfo.title, flags: AS_IS_FLAGS });
     let recordedSteps = 0;
 
-    const record = async <T>(name: string, interaction: () => Promise<T>): Promise<T> => {
+    const timespan = async <T>(name: string, interaction: () => Promise<T>): Promise<T> => {
         await flow.startTimespan({ name });
 
         try {
@@ -159,10 +184,7 @@ export const startLighthouseFlow = async (
     };
 
     return {
-        timespan: (name, interaction) =>
-            mode === LighthouseMode.Steps ? record(name, interaction) : interaction(),
-
-        wrapTest: body => (mode === LighthouseMode.Test ? record(testInfo.title, body) : body()),
+        timespan,
 
         finish: async () => {
             try {
