@@ -1,4 +1,4 @@
-import { type Action, type Localization } from '@suite-common/suite-types';
+import { type Action, type Feature, type Localization } from '@suite-common/suite-types';
 
 import { messageSystemInitialState } from '../src/messageSystemReducer';
 import { type MessageSystemState } from '../src/messageSystemTypes';
@@ -17,7 +17,11 @@ const EMPTY_LOCALIZATION: Localization = {
  * `selectIsFeatureEnabled(state, domain)` reads from tests without hand-rolling
  * the full `Action`/`Message` shape at each call site.
  */
-const featureFlagAction = (id: string, flags: Record<string, boolean>): Action => ({
+const featureFlagAction = (
+    id: string,
+    flags: Record<string, boolean>,
+    payloads: Record<string, Feature['payload']>,
+): Action => ({
     conditions: [{}],
     message: {
         id,
@@ -26,7 +30,11 @@ const featureFlagAction = (id: string, flags: Record<string, boolean>): Action =
         variant: 'info',
         category: 'feature',
         content: EMPTY_LOCALIZATION,
-        feature: Object.entries(flags).map(([domain, flag]) => ({ domain, flag })),
+        feature: Object.entries(flags).map(([domain, flag]) => ({
+            domain,
+            flag,
+            payload: payloads[domain],
+        })),
     },
 });
 
@@ -47,6 +55,7 @@ const FEATURE_FLAG_ACTION_ID = 'test-feature-flags-action';
  */
 export const mockMessageSystemStateWithFeatureFlags = (
     flags: Record<string, boolean>,
+    payloads: Record<string, Feature['payload']> = {},
 ): MessageSystemState => ({
     ...messageSystemInitialState,
     validMessages: {
@@ -57,6 +66,6 @@ export const mockMessageSystemStateWithFeatureFlags = (
         version: 1,
         timestamp: '1970-01-01T00:00:00Z',
         sequence: 1,
-        actions: [featureFlagAction(FEATURE_FLAG_ACTION_ID, flags)],
+        actions: [featureFlagAction(FEATURE_FLAG_ACTION_ID, flags, payloads)],
     },
 });

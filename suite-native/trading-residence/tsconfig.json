@@ -20,7 +20,6 @@
         { "path": "../intl" },
         { "path": "../navigation" },
         { "path": "../trading-atoms" },
-        { "path": "../trading-consts" },
         { "path": "../trading-state" },
         {
             "path": "../../packages/analytics-uploader"

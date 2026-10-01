@@ -1,10 +1,14 @@
-import { type Feature } from '@suite-common/suite-types';
+import fs from 'fs';
+
+import { type Feature, type MessageSystem } from '@suite-common/suite-types';
 
 import {
+    getTradingResidenceCountries,
     isYieldFeatureApplicableForVault,
     parseTimeoutThresholdsPerModel,
 } from './featureFlagUtils';
 import { Feature as FeatureDefinitions } from './messageSystemTypes';
+import { CONFIG_PATH } from '../scripts/constants';
 
 describe(parseTimeoutThresholdsPerModel.name, () => {
     it('returns empty object if feature is undefined', () => {
@@ -82,4 +86,42 @@ describe(isYieldFeatureApplicableForVault.name, () => {
             );
         },
     );
+});
+
+describe(getTradingResidenceCountries.name, () => {
+    const residenceFeature = (payload?: Feature['payload']): Feature => ({
+        domain: FeatureDefinitions.trading.restrictions.residence,
+        flag: true,
+        payload,
+    });
+
+    it.each([
+        ['undefined feature', undefined, []],
+        ['feature without payload', residenceFeature(), []],
+        ['countries not an array', residenceFeature({ countries: 'CZ' }), []],
+        ['empty countries', residenceFeature({ countries: [] }), []],
+        [
+            'mixed countries',
+            residenceFeature({ countries: ['CZ', 'cz', 'ZZ', 1, null, 'US'] }),
+            ['CZ', 'US'],
+        ],
+    ] as const satisfies [string, Feature | undefined, readonly string[]][])(
+        'returns countries for %s',
+        (_description, feature, expected) => {
+            expect(getTradingResidenceCountries(feature)).toEqual(expected);
+        },
+    );
+
+    it('accepts every country of the bundled config residence feature', () => {
+        const config: MessageSystem = JSON.parse(fs.readFileSync(CONFIG_PATH, 'utf-8'));
+        const residenceFeatures = config.actions
+            .flatMap(action => action.message.feature ?? [])
+            .filter(
+                feature => feature.domain === FeatureDefinitions.trading.restrictions.residence,
+            );
+
+        residenceFeatures.forEach(feature => {
+            expect(getTradingResidenceCountries(feature)).toEqual(feature.payload?.countries);
+        });
+    });
 });

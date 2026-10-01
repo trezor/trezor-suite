@@ -4,6 +4,7 @@ import {
     type MessageSystemRootState,
     messageSystemInitialState,
 } from '@suite-common/message-system';
+import { mockMessageSystemStateWithFeatureFlags } from '@suite-common/message-system/mocks';
 import { type FeatureFlagsRootState, featureFlagsReducer } from '@suite-native/feature-flags';
 import { getTranslation } from '@suite-native/intl';
 import { OnboardingStackRoutes } from '@suite-native/navigation';
@@ -63,7 +64,7 @@ describe('BiometricsScreen', () => {
         jest.clearAllMocks();
     });
 
-    it('should redirect to TradingLocation screen on Skip press when isTradingResidenceCheckEnabled is set to true', async () => {
+    it('should redirect to TradingLocation screen on Skip press when residence check message is enabled', async () => {
         store = createLightStore({
             reducer: {
                 featureFlags: featureFlagsReducer,
@@ -72,18 +73,17 @@ describe('BiometricsScreen', () => {
                     systemLocaleCode: 'en-US',
                     isSystemLocaleUsed: true,
                 }),
-                messageSystem: createStaticReducer(messageSystemInitialState),
+                messageSystem: createStaticReducer(
+                    mockMessageSystemStateWithFeatureFlags({
+                        'trading.restrictions.residence': true,
+                    }),
+                ),
                 wallet: createStaticReducer({
                     settings: {
                         localCurrency: 'usd',
                         bitcoinAmountUnit: 0,
                     },
                 }),
-            },
-            preloadedState: {
-                featureFlags: {
-                    isTradingResidenceCheckEnabled: true,
-                },
             },
         });
         const { getByText } = await renderBiometricsScreen();
@@ -95,7 +95,7 @@ describe('BiometricsScreen', () => {
         expect(mockNavigate).toHaveBeenCalledWith(OnboardingStackRoutes.TradingLocation);
     });
 
-    it('should redirect to Home screen on Skip press when isTradingResidenceCheckEnabled is set to false', async () => {
+    it('should redirect to Home screen on Skip press when residence check message is absent', async () => {
         store = createLightStore({
             reducer: {
                 featureFlags: featureFlagsReducer,
@@ -111,11 +111,6 @@ describe('BiometricsScreen', () => {
                         bitcoinAmountUnit: 0,
                     },
                 }),
-            },
-            preloadedState: {
-                featureFlags: {
-                    isTradingResidenceCheckEnabled: false,
-                },
             },
         });
         const { getByText } = await renderBiometricsScreen();

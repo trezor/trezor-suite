@@ -11,7 +11,6 @@ const featureFlagsTitleMap = {
     [FeatureFlagEnum.AreExperimentalOnlyNetworksEnabled]: '🧪 Experimental only networks',
     [FeatureFlagEnum.IsCardanoSendEnabled]: 'Cardano send',
     [FeatureFlagEnum.IsDebugKeysAllowed]: 'Device Auth Check Debug Keys',
-    [FeatureFlagEnum.IsTradingResidenceCheckEnabled]: '💰 Trading Residence Check',
     [FeatureFlagEnum.IsTradingDebugEnabled]: '💰 Trading Debug Mode',
     [FeatureFlagEnum.IsN4w1BackupEnabled]: 'N4W1 Backup',
 } as const satisfies Record<FeatureFlagEnum, string>;

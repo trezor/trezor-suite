@@ -150,12 +150,16 @@ const getPreloadedState = ({
             flag: slip24,
         });
     }
+    if (residence !== undefined) {
+        features.push({
+            domain: 'trading.restrictions.residence',
+            flag: residence,
+            payload: { countries: ['CZ'] },
+        });
+    }
 
     return {
-        featureFlags: {
-            ...featureFlagsInitialState,
-            [FeatureFlag.IsTradingResidenceCheckEnabled]: residence ?? false,
-        },
+        featureFlags: featureFlagsInitialState,
         messageSystem: {
             config: {
                 version: 1,

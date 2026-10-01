@@ -47,7 +47,6 @@ import {
     deviceAuthorizationInitialState,
 } from '@suite-native/device-authorization';
 import {
-    FeatureFlag,
     type FeatureFlagsRootState,
     type FeatureFlagsState,
     featureFlagsInitialState,
@@ -135,7 +134,6 @@ export const createTradingFeatureFlags = (
     overrides: Partial<FeatureFlagsState> = {},
 ): FeatureFlagsState => ({
     ...featureFlagsInitialState,
-    [FeatureFlag.IsTradingResidenceCheckEnabled]: false,
     ...overrides,
 });
 

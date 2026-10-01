@@ -2,11 +2,16 @@ import { onOnboarding } from '../pageObjects/onboardingActions';
 import { onSettings } from '../pageObjects/settingsActions';
 import { onTabBar } from '../pageObjects/tabBarActions';
 import { onTradingResidence } from '../pageObjects/trading/tradingResidenceActions';
-import { openApp } from '../support/setup';
+import { openApp, preparePreloadedReduxState } from '../support/setup';
+
+const preloadedState = preparePreloadedReduxState({ messageSystem: { configSource: 'local' } });
 
 describe('Country selection onboarding [@noDevice @iosOnly]', () => {
     beforeEach(async () => {
-        await openApp({ args: { isTradingResidenceCheckEnabled: true } });
+        await openApp({
+            args: { isTradingResidenceCheckEnabled: true, preloadedState },
+            waitForAppLoaded: false,
+        });
         await onOnboarding.finishOnboarding();
         await onTradingResidence.expectOnboardingScreenVisible();
     });
