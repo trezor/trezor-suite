@@ -47,6 +47,16 @@ describe('wardd conversations', () => {
         expect((await host.replica()).trie.size).toBe(2);
     });
 
+    it('reconciles a device already at the head above genesis, whose root it is not told', async () => {
+        // the firmware names its root only at counter 0; a host that read the absent root as the
+        // empty tree mistook the head for another branch and walked the chain instead
+        const { a, host } = await setup();
+        a.enqueue('alice', 'v1');
+        a.enqueue('bob', 'v1');
+        await host.flush(a.call);
+        await expect(host.sync(a.call)).resolves.toMatchObject({ counter: 2, how: 'reconcile' });
+    });
+
     it('updates and deletes through the same path', async () => {
         const { a, host } = await setup();
         a.enqueue('alice', 'v1');

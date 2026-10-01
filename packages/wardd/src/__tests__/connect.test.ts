@@ -56,7 +56,10 @@ const relay = (device: FakeDevice, url: string, payload: Record<string, unknown>
     const relayCall = jest.fn(async (name: string, message: Record<string, unknown>) => {
         // the session's schema check on what it SENDS, as `relayCall` runs it: stricter than the
         // encoder (repeated fields must be present), and it refused an ack the encoder took
-        Assert((MessagesSchema.MessageType.properties as Record<string, never>)[name]!, message);
+        Assert(
+            (MessagesSchema.MessageType.properties as unknown as Record<string, never>)[name]!,
+            message,
+        );
         const reply = await device.call({
             name,
             message: stripAbsent(throughCodec(name, message)),

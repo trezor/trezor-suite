@@ -69,9 +69,6 @@ const rootOf = (v: string | null | undefined): Uint8Array | null => {
     return equalBytes(b, EMPTY_ROOT) ? null : b;
 };
 
-const sameHead = (a: Head, b: Head) =>
-    a.counter === b.counter && equalBytes(a.root ?? EMPTY_ROOT, b.root ?? EMPTY_ROOT);
-
 /** Bytes to the wire, leaving the field out when it is absent -- never `null`. */
 const opt = (key: string, v: Uint8Array | null | undefined): Json =>
     v && v.length ? { [key]: toHex(v) } : {};
@@ -281,6 +278,8 @@ export class WardHost {
                 'the device is on another wallet than this store',
             );
         }
+        // the device reports its ROOT only at genesis (apps/ward/sync.py); above it, `root` is
+        // absent and means "not said", NOT the empty tree -- see `forkOf`
         const dev: Head = { counter: ack.counter ?? 0, root: rootOf(ack.root) };
 
         if (!(await this.wm.headNonce(wardId))) {
@@ -325,27 +324,49 @@ export class WardHost {
             );
         }
 
-        if (sameHead(dev, to) || sameHead(dev, from)) {
-            const r = expectReply(
-                await device({
-                    name: 'WardReconcile',
-                    message: opt('auth_commit', into?.authCommit),
-                }),
-                'WardReconcileAck',
-            );
-
-            return { counter: r.counter ?? 0, root: r.new_root || null, how: 'reconcile' };
-        }
         if (dev.counter > to.counter) {
             throw new RelayFailure(
                 'wm_behind',
                 `the device is at ${dev.counter} but the WM holds ${to.counter}`,
             );
         }
-        const fork = trie.forkPoint([dev.counter, dev.root], [to.counter, to.root]);
-        // null: this replica cannot place the device's head at all. Let the device's walk decide;
-        // it is the one that must not be talked into anything.
-        if (fork === null || fork === dev.counter) {
+        // A REJOIN ONLY WHEN ASKED, and only from a branch this replica can name: it discards the
+        // device's changes above the fork, which the user confirms on the device.
+        const fork = opts.rejoin ? this.forkOf(trie, dev, to) : null;
+        if (fork !== null) {
+            const r = expectReply(
+                await this.answerChain(
+                    device,
+                    trie,
+                    await device({ name: 'WardRejoin', message: { fork_counter: fork } }),
+                ),
+                'WardRejoinAck',
+            );
+
+            return {
+                counter: r.counter ?? 0,
+                root: r.new_root || null,
+                how: 'rejoin',
+                discarded: r.discarded ?? 0,
+            };
+        }
+        try {
+            // AT THE HEAD, OR ONE STEP BELOW IT: the link into the head. At the same counter on
+            // another branch, or one below it on another branch, the device refuses -- it holds
+            // the root this host was not told.
+            if (dev.counter === to.counter || dev.counter === from.counter) {
+                const r = expectReply(
+                    await device({
+                        name: 'WardReconcile',
+                        message: opt('auth_commit', into?.authCommit),
+                    }),
+                    'WardReconcileAck',
+                );
+
+                return { counter: r.counter ?? 0, root: r.new_root || null, how: 'reconcile' };
+            }
+            // FURTHER BELOW: the device walks the chain back to its own head, and is the judge
+            // of whether it gets there.
             const r = expectReply(
                 await this.answerChain(
                     device,
@@ -356,28 +377,48 @@ export class WardHost {
             );
 
             return { counter: r.counter ?? 0, root: r.new_root || null, how: 'verifyChain' };
+        } catch (e) {
+            // A REFUSAL THAT A FORK EXPLAINS is reported as one: the user can then choose to rejoin.
+            const forked =
+                e instanceof RelayFailure &&
+                e.code === 'device_failure' &&
+                this.forkOf(trie, dev, to);
+            if (forked !== null && forked !== false) {
+                throw new RelayFailure(
+                    'needs_rejoin',
+                    `the device's head is off the WM's history; they share counter ${forked} (${e.message})`,
+                );
+            }
+            throw e;
         }
-        if (!opts.rejoin) {
-            throw new RelayFailure(
-                'needs_rejoin',
-                `the device's head is off the WM's history; they share counter ${fork}`,
-            );
-        }
-        const r = expectReply(
-            await this.answerChain(
-                device,
-                trie,
-                await device({ name: 'WardRejoin', message: { fork_counter: fork } }),
-            ),
-            'WardRejoinAck',
-        );
+    }
 
-        return {
-            counter: r.counter ?? 0,
-            root: r.new_root || null,
-            how: 'rejoin',
-            discarded: r.discarded ?? 0,
-        };
+    /**
+     * The counter the device's branch shares with the WM's, or null if this replica cannot say.
+     *
+     * ABOVE GENESIS THE DEVICE NAMES ITS COUNTER BUT NOT ITS ROOT (apps/ward/sync.py), so the
+     * candidates are the roots this replica holds at that counter that are OFF the WM's history.
+     * One such branch is a fork this replica can name; none, or several, is not.
+     */
+    private forkOf(trie: WardTrie, dev: Head, to: Head): number | null {
+        const onWmLine = new Set(
+            trie
+                .linksEndingAt(to.counter, to.root, Number.MAX_SAFE_INTEGER)
+                .map(l => `${l.toCounter}/${toHex(l.toRoot ?? EMPTY_ROOT)}`),
+        );
+        onWmLine.add(`${to.counter}/${toHex(to.root ?? EMPTY_ROOT)}`);
+        const candidates =
+            dev.counter === 0
+                ? [dev.root]
+                : trie.links.filter(l => l.toCounter === dev.counter).map(l => l.toRoot);
+        const forks = new Set<number>();
+        for (const root of candidates) {
+            if (onWmLine.has(`${dev.counter}/${toHex(root ?? EMPTY_ROOT)}`)) continue;
+            const f = trie.forkPoint([dev.counter, root], [to.counter, to.root]);
+            if (f !== null) forks.add(f);
+        }
+
+        return forks.size === 1 ? [...forks][0]! : null;
     }
 
     /**

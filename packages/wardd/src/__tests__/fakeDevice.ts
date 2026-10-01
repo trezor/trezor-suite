@@ -183,7 +183,8 @@ export class FakeDevice {
             nonce: toHex(this.nonce),
             ward_id: toHex(this.wardId),
             counter,
-            ...wireRoot('root', root),
+            // as the firmware: the root only at genesis (apps/ward/sync.py)
+            ...(counter === 0 ? wireRoot('root', root) : {}),
             head_init_sig: toHex(
                 ed25519.sign(
                     wmPreimage(
