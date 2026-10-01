@@ -114,6 +114,48 @@ describe('wardd conversations', () => {
         expect(b.head).toEqual(a.head);
     });
 
+    it('decides reconcile, chain walk or rejoin correctly across a batched transition', async () => {
+        // ONE LINK, SEVERAL COUNTERS: the WM's branch is a single batch 2 -> 5, so a backward walk
+        // steps from 5 straight to 2. Each sync must still pick the step the device can take.
+        const { keys, a, host, wm } = await setup();
+        const b = new FakeDevice(keys);
+        const c = new FakeDevice(keys);
+        a.enqueue('x1', '1');
+        a.enqueue('x2', '2');
+        await host.flush(a.call); // 0 -> 1 -> 2
+        await host.sync(b.call);
+        await host.sync(c.call);
+        const atTwo = wm.snapshot();
+        // b's branch: 2 -> 3 -> 4, single steps
+        b.enqueue('b3', '3');
+        b.enqueue('b4', '4');
+        await expect(host.flush(b.call)).resolves.toMatchObject({ counter: 4, published: 2 });
+        // the WM is restored to 2, and a writes ONE batch 2 -> 5 on top
+        wm.restore(atTwo);
+        for (const k of ['a3', 'a4', 'a5']) a.enqueue(k, k);
+        await expect(host.flush(a.call, { maxBatch: 8 })).resolves.toMatchObject({
+            counter: 5,
+            published: 1,
+        });
+
+        // at the batch's START: the one batched step is reconciled outright
+        await expect(host.sync(c.call)).resolves.toMatchObject({ counter: 5, how: 'reconcile' });
+        // from genesis: the walk crosses the batch link in one step, 5 -> 2, and on to 0
+        const d = new FakeDevice(keys);
+        await expect(host.sync(d.call)).resolves.toMatchObject({ counter: 5, how: 'verifyChain' });
+        // at 4, a counter INSIDE the batch's span on the WM's branch: no walk can land there, so
+        // it is a fork -- at 2, the last state both branches stood at
+        await expect(host.sync(b.call)).rejects.toMatchObject({ code: 'needs_rejoin' });
+        await expect(host.sync(b.call, { rejoin: true })).resolves.toMatchObject({
+            how: 'rejoin',
+            counter: 5,
+            discarded: 2,
+        });
+        expect(b.head).toEqual(a.head);
+        expect(c.head).toEqual(a.head);
+        expect(d.head).toEqual(a.head);
+    });
+
     it('refuses a result minted on a head that has since moved, and stores nothing of it', async () => {
         const { keys, a, host } = await setup();
         const b = new FakeDevice(keys);
