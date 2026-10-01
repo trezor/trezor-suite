@@ -3,6 +3,7 @@ import { Menu, type MenuItemConstructorOptions, app, shell } from 'electron';
 import { isCodesignBuild } from '@trezor/env-utils';
 
 import { restartApp } from './app-utils';
+import type { ILogger } from './logger';
 import type { MainWindowProxy } from './main-window-proxy';
 import { hasSwitch } from './process-switches';
 
@@ -17,13 +18,18 @@ type MenuItem = Omit<MenuItemConstructorOptions, 'submenu'> & {
     submenu: MenuItemConstructorOptions[];
 };
 
+type BuildMainMenuParams = {
+    mainWindowProxy: MainWindowProxy;
+    logger: ILogger;
+};
+
 // for those wondering why is this a function, it is because otherwise app.name used in the template has incorrect value @suite/desktop-app instead of "Trezor Suite"
-export const buildMainMenu = (mainWindowProxy: MainWindowProxy) => {
+export const buildMainMenu = ({ mainWindowProxy, logger }: BuildMainMenuParams) => {
     // { role: 'fileMenu' }
     const fileMenu: MenuItem = {
         label: 'File',
         submenu: [
-            { label: 'Restart', click: restartApp },
+            { label: 'Restart', click: () => restartApp({ logger }) },
             isMac ? { role: 'close' } : { role: 'quit' },
         ],
     };

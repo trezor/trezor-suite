@@ -12,15 +12,14 @@ import { getFreePort } from '@trezor/node-utils';
 import { type BootstrapEvent } from '@trezor/request-manager';
 
 import { ipcMain } from '../ipcMain';
+import type { Dependencies } from './module';
 import { isMainWindowUsable } from '../libs/isMainWindowUsable';
 import { hasSwitch } from '../libs/process-switches';
 import { TorExternalProcess } from '../libs/processes/TorExternalProcess';
 import { TorProcess, type TorProcessStatus } from '../libs/processes/TorProcess';
 import { app } from '../typed-electron';
-import type { Dependencies } from './module';
 
-const load = async ({ mainWindowProxy, store, mainThreadEmitter }: Dependencies) => {
-    const { logger } = global;
+const load = async ({ mainWindowProxy, store, mainThreadEmitter, logger }: Dependencies) => {
     const initialSettings = store.getTorSettings();
 
     const freePorts = await getFreePort(2);
@@ -36,10 +35,13 @@ const load = async ({ mainWindowProxy, store, mainThreadEmitter }: Dependencies)
     const settings = store.getTorSettings();
 
     const bundledTorProcess = new TorProcess({
-        host: settings.host,
-        port: settings.port,
-        controlPort: settings.controlPort,
-        torDataDir: settings.torDataDir,
+        options: {
+            host: settings.host,
+            port: settings.port,
+            controlPort: settings.controlPort,
+            torDataDir: settings.torDataDir,
+        },
+        logger,
     });
 
     const externalTorProcess = new TorExternalProcess({
@@ -350,8 +352,7 @@ export const init: TorModule = dependencies => {
     };
 
     const onQuit = async () => {
-        const { logger } = global;
-        logger.info('tor', 'Stopping (app quit)');
+        dependencies.logger.info('tor', 'Stopping (app quit)');
         await getTarget()?.stop();
     };
 

@@ -8,9 +8,7 @@ import { isValidProtocol } from '../libs/protocol';
 
 export const SERVICE_NAME = 'custom-protocols';
 
-export const init: ModuleInit = ({ mainWindowProxy }) => {
-    const { logger } = global;
-
+export const init: ModuleInit = ({ mainWindowProxy, logger }) => {
     const protocols = process.env.PROTOCOLS as unknown as string[];
     protocols.forEach((p: string) => app.setAsDefaultProtocolClient(p));
 
@@ -34,7 +32,7 @@ export const init: ModuleInit = ({ mainWindowProxy }) => {
             if (protocol) {
                 event.preventDefault();
 
-                global.logger.debug(
+                logger.debug(
                     SERVICE_NAME,
                     `App is running and handling '${protocol}' custom protocol (Linux, Windows)`,
                 );

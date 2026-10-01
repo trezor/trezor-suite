@@ -5,6 +5,7 @@ import { type TimerId } from '@trezor/type-utils';
 import { ipcMain } from './ipcMain';
 import { isMainWindowUsable } from './libs/isMainWindowUsable';
 import { loadIndex } from './libs/loadIndex';
+import type { ILogger } from './libs/logger';
 
 const HANG_WAIT = 30000;
 
@@ -22,8 +23,9 @@ const showDialog = async (mainWindow: BrowserWindow) => {
     return actions[resp.response] ?? 'wait';
 };
 
-type HandshakeAndHangDetectParams = {
+type HandshakeAndHangDetectDeps = {
     mainWindow: BrowserWindow;
+    logger: ILogger;
     statePatch?: Record<string, any>;
 };
 
@@ -33,8 +35,8 @@ type HandshakeAndHangDetectParams = {
 export const handshakeAndHangDetect = ({
     mainWindow,
     statePatch,
-}: HandshakeAndHangDetectParams) => {
-    const { logger } = global;
+    logger,
+}: HandshakeAndHangDetectDeps) => {
     const handshakeHandler = () => Promise.resolve({});
     let timeout: TimerId;
 
@@ -65,7 +67,7 @@ export const handshakeAndHangDetect = ({
 
             return Promise.resolve({ statePatch });
         });
-        loadIndex(mainWindow);
+        loadIndex({ mainWindow, logger });
     });
     const cleanup = () => {
         ipcMain.removeHandler('handshake/client');

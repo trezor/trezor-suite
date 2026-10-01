@@ -32,9 +32,8 @@ export const init: ModuleInit = ({
     store,
     mainThreadEmitter,
     powerSaveBlocker,
+    logger,
 }) => {
-    const { logger } = global;
-
     const backends: ThreadProxy<CoinjoinBackend>[] = [];
     const clients: CoinjoinClient[] = [];
 
@@ -45,7 +44,7 @@ export const init: ModuleInit = ({
     const getCoinjoinProcess = async () => {
         if (!coinjoinProcess) {
             const [port] = await getFreePort();
-            coinjoinProcess = new CoinjoinProcess(port);
+            coinjoinProcess = new CoinjoinProcess({ port, logger });
         }
 
         return coinjoinProcess;
