@@ -1,17 +1,14 @@
 {
     "extends": "../../tsconfig.base.json",
-    "compilerOptions": {
-        "outDir": "libDev"
-    },
+    "compilerOptions": { "outDir": "libDev" },
     "references": [
+        { "path": "../atoms" },
         {
             "path": "../../packages/styles-native"
         },
         {
             "path": "../../suite-common/dependency-injection"
         },
-        {
-            "path": "../test-utils"
-        }
+        { "path": "../test-utils" }
     ]
 }
