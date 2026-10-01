@@ -48,9 +48,7 @@ export const measurePerformance = async (
     );
     if (!installed) {
         // eslint-disable-next-line no-console
-        console.log(
-            `[perf] instrumentation not installed (web run, or PERF=0) — skipping "${scenario}"`,
-        );
+        console.log(`[perf] instrumentation not installed (web run) — skipping "${scenario}"`);
         await interaction();
 
         return null;
