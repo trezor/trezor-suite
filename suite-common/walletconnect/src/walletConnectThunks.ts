@@ -1,10 +1,9 @@
-import { unwrapResult } from '@reduxjs/toolkit';
 import { type IWalletKit, type WalletKitTypes } from '@reown/walletkit';
 
 import { type AnalyticsDep, events } from '@suite-common/analytics';
 import * as trezorConnectPopupActions from '@suite-common/connect-popup';
 import { type DeviceRootState } from '@suite-common/device';
-import { type NetworksRootState } from '@suite-common/networks';
+import { type NetworkModuleRepositoryDep, type NetworksRootState } from '@suite-common/networks';
 import { type WithServices, createThunk } from '@suite-common/redux-utils';
 import { isDevEnv } from '@suite-common/suite-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
@@ -17,18 +16,19 @@ import {
 import { type Account } from '@suite-common/wallet-types';
 import { type CallMethodResponse } from '@trezor/connect';
 
+import { walletConnectActions } from './walletConnectActions';
+import { PROJECT_ID, WALLETCONNECT_METADATA, WALLETCONNECT_MODULE } from './walletConnectConstants';
+import {
+    getNamespaces,
+    getProposalNetworks,
+    getWalletConnectNamespaceId,
+} from './walletConnectNetworks';
+import { type WalletConnectStateRootState, selectPendingProposal } from './walletConnectReducer';
 import {
     type WalletConnectRequestThunkDeps,
     type WalletConnectRequestThunkState,
-    getAdapterByMethod,
-    getAdapterByNetwork,
-    getNamespaces,
-    processNamespaces,
-} from './adapters';
-import { walletConnectActions } from './walletConnectActions';
-import { PROJECT_ID, WALLETCONNECT_METADATA, WALLETCONNECT_MODULE } from './walletConnectConstants';
-import { type WalletConnectStateRootState, selectPendingProposal } from './walletConnectReducer';
-import { type PendingConnectionProposalNetwork } from './walletConnectTypes';
+    walletConnectRequestThunk,
+} from './walletConnectRequestThunk';
 
 let walletKit: IWalletKit;
 
@@ -40,7 +40,10 @@ type SuccessfulAccountsThunkState = AccountsRootState &
 type SessionAuthenticateThunkState = trezorConnectPopupActions.ConnectPopupCallThunkState &
     SuccessfulAccountsThunkState;
 
-type SessionAuthenticateThunkDeps = trezorConnectPopupActions.ConnectPopupCallThunkDeps;
+type NetworkModuleRepositoryThunkDeps = WithServices<{ networks: NetworkModuleRepositoryDep }>;
+
+type SessionAuthenticateThunkDeps = trezorConnectPopupActions.ConnectPopupCallThunkDeps &
+    NetworkModuleRepositoryThunkDeps;
 
 const sessionAuthenticateThunk = createThunk<
     void,
@@ -48,93 +51,99 @@ const sessionAuthenticateThunk = createThunk<
         event: WalletKitTypes.SessionAuthenticate;
     },
     { state: SessionAuthenticateThunkState; extra: SessionAuthenticateThunkDeps }
->(`${WALLETCONNECT_MODULE}/sessionAuthenticateThunk`, async ({ event }, { getState, dispatch }) => {
-    const { buildAuthObject, getSdkError, populateAuthPayload } =
-        await import('@walletconnect/utils');
+>(
+    `${WALLETCONNECT_MODULE}/sessionAuthenticateThunk`,
+    async ({ event }, { getState, dispatch, extra }) => {
+        const { buildAuthObject, getSdkError, populateAuthPayload } =
+            await import('@walletconnect/utils');
 
-    // Support for Sign-In with Ethereum (SIWE) message, enhanced by ReCaps (ReCap Capabilities)
-    try {
-        const accounts = selectAllSuccessfulAccountsToList(getState());
-        const supportedNamespaces = getNamespaces(accounts);
-        // @ts-expect-error: indexing with noUncheckedIndexedAccess
-        const eip155Namespace: (typeof supportedNamespaces)[keyof typeof supportedNamespaces] =
-            supportedNamespaces.eip155;
-        const authPayload = populateAuthPayload({
-            authPayload: event.params.authPayload,
-            chains: eip155Namespace.chains,
-            methods: eip155Namespace.methods,
-        });
-        const ethAccount = accounts.find(a => a.symbol === 'eth');
-        if (!ethAccount) {
-            throw new Error('No ETH account');
-        }
-        const iss = `eip155:1:${ethAccount.descriptor}`;
-        const message = walletKit.formatAuthMessage({
-            request: authPayload,
-            iss,
-        });
+        // Support for Sign-In with Ethereum (SIWE) message, enhanced by ReCaps (ReCap Capabilities)
+        try {
+            const accounts = selectAllSuccessfulAccountsToList(getState());
+            const supportedNamespaces = getNamespaces({
+                accounts,
+                networkModuleRepository: extra.services.networks.networkModuleRepository,
+            });
+            // @ts-expect-error: indexing with noUncheckedIndexedAccess
+            const eip155Namespace: (typeof supportedNamespaces)[keyof typeof supportedNamespaces] =
+                supportedNamespaces.eip155;
+            const authPayload = populateAuthPayload({
+                authPayload: event.params.authPayload,
+                chains: eip155Namespace.chains,
+                methods: eip155Namespace.methods,
+            });
+            const ethAccount = accounts.find(a => a.symbol === 'eth');
+            if (!ethAccount) {
+                throw new Error('No ETH account');
+            }
+            const iss = `eip155:1:${ethAccount.descriptor}`;
+            const message = walletKit.formatAuthMessage({
+                request: authPayload,
+                iss,
+            });
 
-        dispatch(
-            trezorConnectPopupActions.connectPopupCallThunk({
-                source: {
-                    type: 'walletconnect' as const,
-                    origin: event.verifyContext.verified.origin,
-                    manifest: {
-                        appName: event.params.requester.metadata.name,
-                        appIcon: event.params.requester.metadata.icons?.[0],
-                    },
-                },
-                method: 'ethereumSignMessage',
-                payload: {
-                    path: ethAccount.path,
-                    message,
-                },
-            }),
-        );
-        const response = await trezorConnectPopupActions.getPopupCallDeferred(true).promise;
-        if (!response.success) {
-            throw new Error('Sign message error');
-        }
-        const typedPayload = response.payload as CallMethodResponse<'ethereumSignMessage'>;
-
-        const auth = buildAuthObject(
-            authPayload,
-            {
-                t: 'eip191',
-                s: `0x${typedPayload.signature}`,
-            },
-            iss,
-        );
-
-        const { session } = await walletKit.approveSessionAuthenticate({
-            id: event.id,
-            auths: [auth],
-        });
-        if (session) {
             dispatch(
-                walletConnectActions.saveSession({
-                    ...session,
-                    validation: event.verifyContext.verified.validation,
+                trezorConnectPopupActions.connectPopupCallThunk({
+                    source: {
+                        type: 'walletconnect' as const,
+                        origin: event.verifyContext.verified.origin,
+                        manifest: {
+                            appName: event.params.requester.metadata.name,
+                            appIcon: event.params.requester.metadata.icons?.[0],
+                        },
+                    },
+                    method: 'ethereumSignMessage',
+                    payload: {
+                        path: ethAccount.path,
+                        message,
+                    },
                 }),
             );
+            const response = await trezorConnectPopupActions.getPopupCallDeferred(true).promise;
+            if (!response.success) {
+                throw new Error('Sign message error');
+            }
+            const typedPayload = response.payload as CallMethodResponse<'ethereumSignMessage'>;
+
+            const auth = buildAuthObject(
+                authPayload,
+                {
+                    t: 'eip191',
+                    s: `0x${typedPayload.signature}`,
+                },
+                iss,
+            );
+
+            const { session } = await walletKit.approveSessionAuthenticate({
+                id: event.id,
+                auths: [auth],
+            });
+            if (session) {
+                dispatch(
+                    walletConnectActions.saveSession({
+                        ...session,
+                        validation: event.verifyContext.verified.validation,
+                    }),
+                );
+            }
+        } catch (error) {
+            dispatch(
+                notificationsActions.addToast({
+                    type: 'error',
+                    error: error.message,
+                }),
+            );
+            await walletKit.rejectSessionAuthenticate({
+                id: event.id,
+                reason: getSdkError('USER_REJECTED'),
+            });
         }
-    } catch (error) {
-        dispatch(
-            notificationsActions.addToast({
-                type: 'error',
-                error: error.message,
-            }),
-        );
-        await walletKit.rejectSessionAuthenticate({
-            id: event.id,
-            reason: getSdkError('USER_REJECTED'),
-        });
-    }
-});
+    },
+);
 
 type SessionProposalThunkState = SuccessfulAccountsThunkState;
 
-type SessionProposalThunkDeps = WithServices<AnalyticsDep>;
+type SessionProposalThunkDeps = WithServices<AnalyticsDep> & NetworkModuleRepositoryThunkDeps;
 
 const sessionProposalThunk = createThunk<
     void,
@@ -144,10 +153,11 @@ const sessionProposalThunk = createThunk<
     { state: SessionProposalThunkState; extra: SessionProposalThunkDeps }
 >(`${WALLETCONNECT_MODULE}/sessionProposalThunk`, ({ event }, { dispatch, getState, extra }) => {
     // Check supported networks
-    const accounts = selectAllSuccessfulAccountsToList(getState());
-    const networks: PendingConnectionProposalNetwork[] = [];
-    processNamespaces(accounts, networks, event.params.requiredNamespaces, true);
-    processNamespaces(accounts, networks, event.params.optionalNamespaces, false);
+    const networks = getProposalNetworks({
+        accounts: selectAllSuccessfulAccountsToList(getState()),
+        networkModuleRepository: extra.services.networks.networkModuleRepository,
+        proposal: event.params,
+    });
 
     dispatch(
         walletConnectActions.createSessionProposal({
@@ -170,7 +180,7 @@ const sessionProposalThunk = createThunk<
 
 type SessionRequestThunkState = WalletConnectRequestThunkState;
 
-type SessionRequestThunkDeps = WalletConnectRequestThunkDeps;
+type SessionRequestThunkDeps = WalletConnectRequestThunkDeps & WithServices<AnalyticsDep>;
 
 const sessionRequestThunk = createThunk<
     void,
@@ -180,13 +190,7 @@ const sessionRequestThunk = createThunk<
     { state: SessionRequestThunkState; extra: SessionRequestThunkDeps }
 >(`${WALLETCONNECT_MODULE}/sessionRequestThunk`, async ({ event }, { dispatch, extra }) => {
     try {
-        const adapter = getAdapterByMethod(event.params.request.method);
-        if (!adapter) {
-            throw new Error('Unsupported method');
-        }
-
-        const result = await dispatch(adapter.requestThunk({ event }));
-        const payload = unwrapResult(result);
+        const payload = await dispatch(walletConnectRequestThunk({ event })).unwrap();
 
         await walletKit.respondSessionRequest({
             topic: event.topic,
@@ -222,15 +226,20 @@ const sessionRequestThunk = createThunk<
 // Selected Account was switched in Suite
 type SwitchSelectedAccountThunkState = SuccessfulAccountsThunkState;
 
+type SwitchSelectedAccountThunkDeps = NetworkModuleRepositoryThunkDeps;
+
 export const switchSelectedAccountThunk = createThunk<
     void,
     { account: Account; sessionTopic: string },
-    { state: SwitchSelectedAccountThunkState }
+    { state: SwitchSelectedAccountThunkState; extra: SwitchSelectedAccountThunkDeps }
 >(
     `${WALLETCONNECT_MODULE}/switchSelectedAccountThunk`,
-    async ({ account, sessionTopic }, { getState }) => {
+    async ({ account, sessionTopic }, { getState, extra }) => {
         const accounts = selectAllSuccessfulAccountsToList(getState());
-        const updatedNamespaces = getNamespaces([account, ...accounts]);
+        const updatedNamespaces = getNamespaces({
+            accounts: [account, ...accounts],
+            networkModuleRepository: extra.services.networks.networkModuleRepository,
+        });
         const network = getNetwork(account.symbol);
         if (!network) {
             return console.warn(`No network found for account symbol ${account.symbol}`);
@@ -255,17 +264,19 @@ export const switchSelectedAccountThunk = createThunk<
             topic: sessionTopic,
             namespaces: approvedNamespaces,
         });
-        const adapter = getAdapterByNetwork(account.networkType);
-        if (!adapter) {
-            return console.warn(`No adapter found for network type ${account.networkType}`);
+        const namespaceId = getWalletConnectNamespaceId({
+            symbol: account.symbol,
+            networkModuleRepository: extra.services.networks.networkModuleRepository,
+        });
+        if (!namespaceId) {
+            return console.warn(`No WalletConnect namespace found for network ${account.symbol}`);
         }
         const sessionNamespaces = session.namespaces;
-        const { namespaceId } = adapter;
         // @ts-expect-error: indexing with noUncheckedIndexedAccess
         const sessionNamespace: (typeof sessionNamespaces)[string] = sessionNamespaces[namespaceId];
         const { chains } = sessionNamespace;
         if (!chains) {
-            return console.warn(`No chains found for namespace ${adapter.namespaceId}`);
+            return console.warn(`No chains found for namespace ${namespaceId}`);
         }
 
         const approvedEvents = sessionNamespace.events ?? [];
@@ -298,7 +309,7 @@ export const switchSelectedAccountThunk = createThunk<
 
 type SessionProposalApproveThunkState = SuccessfulAccountsThunkState & WalletConnectStateRootState;
 
-type SessionProposalApproveThunkDeps = WithServices<AnalyticsDep>;
+type SessionProposalApproveThunkDeps = WithServices<AnalyticsDep> & SwitchSelectedAccountThunkDeps;
 
 export const sessionProposalApproveThunk = createThunk<
     void,
@@ -318,10 +329,13 @@ export const sessionProposalApproveThunk = createThunk<
             }
 
             const accounts = selectAllSuccessfulAccountsToList(getState());
-            const supportedNamespaces = getNamespaces([
-                ...(selectedDefaultAccount ? [selectedDefaultAccount] : []),
-                ...accounts,
-            ]);
+            const supportedNamespaces = getNamespaces({
+                accounts: [
+                    ...(selectedDefaultAccount ? [selectedDefaultAccount] : []),
+                    ...accounts,
+                ],
+                networkModuleRepository: extra.services.networks.networkModuleRepository,
+            });
             const approvedNamespaces = buildApprovedNamespaces({
                 proposal: pendingProposal.params,
                 supportedNamespaces,

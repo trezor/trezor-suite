@@ -1,10 +1,15 @@
-import { type NetworkSymbol, asNetworkSymbols } from '@trezor/network-module-types';
+import {
+    type NetworkSymbol,
+    asNetworkSymbol,
+    asNetworkSymbols,
+} from '@trezor/network-module-types';
 import { isArrayMember } from '@trezor/utils';
 
 import type { AddressValidator } from './AddressValidator';
 import type { NamedAddressResolver } from './NamedAddressResolver';
 import type { SuiteCommonNetworkConfig } from './SuiteCommonNetworkConfig';
 import type { SuiteCommonNetworkModule } from './SuiteCommonNetworkModule';
+import type { WalletConnectAccount, WalletConnectAdapter } from './WalletConnectAdapter';
 
 /**
  * A module's own capabilities, stated in terms of the symbols that module supports.
@@ -17,6 +22,9 @@ export type NetworkModuleDefinition<TSymbol extends string> = {
 
     /** Only for networks with a name system; see `NamedAddressResolver`. */
     namedAddressResolver?: NamedAddressResolver<TSymbol>;
+
+    /** Only for networks offered to dApps; see `WalletConnectAdapter`. */
+    walletConnectAdapter?: WalletConnectAdapter<TSymbol>;
 
     getNetworkConfig: (symbol: TSymbol) => SuiteCommonNetworkConfig;
 };
@@ -47,7 +55,11 @@ export const createNetworkModule = <TSymbol extends string>(
         return symbol;
     };
 
-    const resolver = definition.namedAddressResolver;
+    const narrowAccount = (
+        account: WalletConnectAccount<NetworkSymbol>,
+    ): WalletConnectAccount<TSymbol> => ({ ...account, symbol: narrow(account.symbol) });
+
+    const { namedAddressResolver: resolver, walletConnectAdapter } = definition;
 
     return {
         addressValidator: {
@@ -65,6 +77,31 @@ export const createNetworkModule = <TSymbol extends string>(
                 await resolver.resolveNamedAddress(value, narrow(symbol)),
             reverseResolveAddress: async (address, symbol) =>
                 await resolver.reverseResolveAddress(address, narrow(symbol)),
+        },
+        walletConnectAdapter: walletConnectAdapter && {
+            namespaceId: walletConnectAdapter.namespaceId,
+            methods: walletConnectAdapter.methods,
+            events: walletConnectAdapter.events,
+            getChainIds: symbol => walletConnectAdapter.getChainIds(narrow(symbol)),
+            getAccountAddress: account =>
+                walletConnectAdapter.getAccountAddress(narrowAccount(account)),
+            // The app hands over the accounts of every network, the module gets only its own.
+            handleRequest: async context =>
+                await walletConnectAdapter.handleRequest({
+                    ...context,
+                    accounts: context.accounts
+                        .filter(account => isSupportedNetwork(account.symbol))
+                        .map(narrowAccount),
+                    sessionSymbol:
+                        context.sessionSymbol && isSupportedNetwork(context.sessionSymbol)
+                            ? context.sessionSymbol
+                            : undefined,
+                    resolveNonce: account =>
+                        context.resolveNonce({
+                            ...account,
+                            symbol: asNetworkSymbol(account.symbol),
+                        }),
+                }),
         },
         getSupportedNetworks: () => asNetworkSymbols(supportedNetworks),
         getNetworkConfig: symbol => definition.getNetworkConfig(narrow(symbol)),

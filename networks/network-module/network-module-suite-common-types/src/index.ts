@@ -9,6 +9,14 @@ export type { NetworkSuiteCommonModuleApi } from './NetworkSuiteCommonModuleApi'
 export { asProtocol } from './Protocol';
 export type { Protocol } from './Protocol';
 export type { SuiteCommonNetworkModule } from './SuiteCommonNetworkModule';
+export type {
+    WalletConnectAccount,
+    WalletConnectAdapter,
+    WalletConnectCallDevice,
+    WalletConnectCallDeviceResult,
+    WalletConnectRequest,
+    WalletConnectRequestContext,
+} from './WalletConnectAdapter';
 
 export {
     TREZOR_CONNECT_BACKENDS,

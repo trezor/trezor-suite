@@ -6,9 +6,20 @@ import {
 
 import { bitcoinValidator } from './addressValidator/bitcoinAddressValidator';
 import { getNetworkConfig } from './networkConfig';
+import {
+    type BitcoinWalletConnectAdapterDeps,
+    createBitcoinWalletConnectAdapter,
+} from './walletConnect/createBitcoinWalletConnectAdapter';
 
-export const createBitcoinSuiteCommonNetworkModule = (): SuiteCommonNetworkModule =>
+type BitcoinSuiteCommonNetworkModuleDeps = BitcoinWalletConnectAdapterDeps;
+
+type BitcoinSuiteCommonNetworkModule = SuiteCommonNetworkModule;
+
+export const createBitcoinSuiteCommonNetworkModule = (
+    deps: BitcoinSuiteCommonNetworkModuleDeps,
+): BitcoinSuiteCommonNetworkModule =>
     createNetworkModule(supportedBitcoinNetworks, {
         addressValidator: bitcoinValidator,
+        walletConnectAdapter: createBitcoinWalletConnectAdapter(deps),
         getNetworkConfig,
     });
