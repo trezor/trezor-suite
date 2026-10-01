@@ -1,7 +1,7 @@
 import type { WardProvider } from '@trezor/connect-common';
 import type { MessagesSchema as PROTO } from '@trezor/protobuf';
 
-import { WarddClient, type WarddClientOptions, stripNulls } from './warddClient';
+import { WarddClient, type WarddClientOptions, stripAbsent } from './warddClient';
 
 /**
  * A `wardProvider` backed by `wardd`: the device's mid-call pulls are answered from the local WARD
@@ -60,15 +60,15 @@ export const createWarddProvider = (options: WarddClientOptions): WarddProvider 
             const ack = await (
                 await connected()
             ).call('serveEntry', {
-                request: stripNulls(request),
+                request: stripAbsent(request),
                 staged,
             });
 
-            return stripNulls(ack) as PROTO.WardEntryAck;
+            return stripAbsent(ack) as PROTO.WardEntryAck;
         },
 
         async applyResult(message) {
-            return (await connected()).call('applyResult', stripNulls(message));
+            return (await connected()).call('applyResult', stripAbsent(message));
         },
 
         async status() {

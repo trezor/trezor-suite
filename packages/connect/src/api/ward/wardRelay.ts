@@ -6,7 +6,7 @@ import { Assert } from '@trezor/schema-utils';
 import type { MethodMessage } from '../../core/AbstractMethod';
 import { AbstractMethod } from '../../core/AbstractMethod';
 import type { DeviceCommands } from '../../device/DeviceCommands';
-import { WarddClient, WarddError, type WarddMessage, stripNulls } from '../../ward/warddClient';
+import { WarddClient, WarddError, type WarddMessage, stripAbsent } from '../../ward/warddClient';
 
 /**
  * `wardRelay`: lend the device to `wardd` for one WARD conversation (sync, flush), or ask it for its
@@ -61,9 +61,10 @@ export default class WardRelay extends AbstractMethod<'wardRelay', WardRelaySche
         // call here, and wardd reports it as `device_failure`.
         const device = async ({ name, message }: WarddMessage): Promise<WarddMessage> => {
             try {
-                const res = await cmd.relayCall(name, stripNulls(message));
+                const res = await cmd.relayCall(name, stripAbsent(message));
 
-                return { name: res.type, message: res.message as Record<string, unknown> };
+                // the relay's form, not the decoder's: see `stripAbsent`
+                return { name: res.type, message: stripAbsent(res.message) };
             } catch (error) {
                 if (error instanceof ERRORS.TrezorError) {
                     return {
@@ -78,7 +79,8 @@ export default class WardRelay extends AbstractMethod<'wardRelay', WardRelaySche
         let client: WarddClient | undefined;
         try {
             client = await WarddClient.connect({ url, token });
-            if (op !== 'status' || this.params.wardId) await this.openStore(client, cmd);
+            // every op names its wallet -- `status` included, or wardd has no store to report on
+            await this.openStore(client, cmd);
             if (op === 'sync')
                 return await client.call('sync', { rejoin: !!this.params.rejoin }, device);
             if (op === 'flush') {

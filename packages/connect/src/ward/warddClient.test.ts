@@ -2,7 +2,7 @@ import { type AddressInfo } from 'net';
 import { WebSocket, WebSocketServer } from 'ws';
 
 import { createWarddProvider } from './createWarddProvider';
-import { WarddClient, WarddError, stripNulls } from './warddClient';
+import { WarddClient, WarddError, stripAbsent } from './warddClient';
 
 // A SCRIPTED wardd: enough of the relay contract to see what the client sends, and to run a
 // conversation whose every deviceCall must be answered before the result arrives.
@@ -167,10 +167,34 @@ describe('createWarddProvider', () => {
     });
 });
 
-describe('stripNulls', () => {
-    it('drops absent fields at every depth, keeping arrays and falsy values', () => {
+describe('stripAbsent', () => {
+    it('drops nulls, keeping falsy values', () => {
         expect(
-            stripNulls({ a: null, b: 0, c: { d: undefined, e: '' }, f: [{ g: null, h: false }] }),
+            stripAbsent({ a: null, b: 0, c: { d: undefined, e: '' }, f: [{ g: null, h: false }] }),
         ).toEqual({ b: 0, c: { e: '' }, f: [{ h: false }] });
+    });
+
+    it("drops the decoder's empty submessages and lists, so one leaf arm stays one arm", () => {
+        // exactly what Connect's decoder makes of a sealed leaf with no identity
+        const decoded = {
+            entry_key: 'aa',
+            identity: {},
+            content: {
+                encoding: 0,
+                encrypted: { nonce: '01', tag: '02', ct: '03' },
+                plaintext: {},
+            },
+            from_counter: null,
+            leaves: [],
+        };
+        expect(stripAbsent(decoded)).toEqual({
+            entry_key: 'aa',
+            content: { encoding: 0, encrypted: { nonce: '01', tag: '02', ct: '03' } },
+        });
+    });
+
+    it('keeps an empty top-level message', () => {
+        expect(stripAbsent({})).toEqual({});
+        expect(stripAbsent({ links: [] })).toEqual({});
     });
 });
