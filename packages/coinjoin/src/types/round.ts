@@ -1,3 +1,4 @@
+import type { Logger } from '@trezor/logger';
 import type { Network } from '@trezor/utxo-lib';
 
 import type { AccountAddress } from './account';
@@ -8,7 +9,6 @@ import type {
     CoinjoinRoundParameters,
     Round,
 } from './coordinator';
-import type { Logger } from './logger';
 import type { RawLiquidityClue } from './middleware';
 import type { CoinjoinPrisonShape } from './prison';
 import type { EndRoundState, RoundPhase, SessionPhase } from '../enums';

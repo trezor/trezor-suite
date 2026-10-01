@@ -17880,6 +17880,7 @@ __metadata:
     "@trezor/blockchain-link-types": "workspace:*"
     "@trezor/blockchain-link-utils": "workspace:*"
     "@trezor/eslint": "workspace:*"
+    "@trezor/logger": "workspace:*"
     "@trezor/node-utils": "workspace:*"
     "@trezor/type-utils": "workspace:*"
     "@trezor/utils": "workspace:*"
