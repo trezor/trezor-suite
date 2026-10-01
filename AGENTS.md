@@ -40,6 +40,7 @@ Nested mandatory skills still apply within their stated scope.
   to the general named-export rule.
 - Commits/PRs: [Git conventions](skills/git-and-commit-guidelines/SKILL.md).
   PR reviews: [PR review](skills/pr-review/SKILL.md).
+  QA notes: [QA notes](skills/qa-notes/SKILL.md).
   Style proposals: [Contribution guide](skills/skills-and-code-style-contribution/SKILL.md).
 
 The architecture and verification rules below supersede conflicting generalizations in the Packages
