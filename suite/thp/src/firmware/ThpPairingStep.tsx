@@ -10,6 +10,7 @@ import { ThpCodeEntryStep } from './ThpCodeEntryStep';
 import { ThpCodeInvalidStep } from './ThpCodeInvalidStep';
 import { ThpPairingConfirmStep } from './ThpPairingConfirmStep';
 import { ThpPairingStartStep } from './ThpPairingStartStep';
+
 type ThpPairingStepProps = { heading: ReactNode };
 
 // reflection of packages/suite/src/components/onboarding/ThpPairingStep/ThpPairingStep.tsx

@@ -14,6 +14,7 @@ import { validatePath } from '@trezor/connect-common';
 import { BigNumber, formatBigUintToLE } from '@trezor/utils';
 
 import { cryptoIdToNetworkAndContractAddress } from '../../utils';
+
 type FormatSlip24SendAmountByNetworkParams = {
     value: string | number;
     network: Network;
@@ -31,6 +32,7 @@ export const formatSlip24SendAmountByNetwork = ({
         bytesLength,
     });
 };
+
 type FormatSlip24AddressByNetworkParams = {
     address: string;
     network: Network;
