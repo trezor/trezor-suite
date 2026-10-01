@@ -5,6 +5,7 @@
         { "path": "../ward-core" },
         { "path": "../connect" },
         { "path": "../connect-common" },
-        { "path": "../protobuf" }
+        { "path": "../protobuf" },
+        { "path": "../schema-utils" }
     ]
 }

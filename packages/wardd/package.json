@@ -24,6 +24,7 @@
         "@trezor/connect": "workspace:*",
         "@trezor/connect-common": "workspace:*",
         "@trezor/protobuf": "workspace:*",
+        "@trezor/schema-utils": "workspace:*",
         "@types/ws": "^8.5.13",
         "tsx": "^4.21.0"
     }

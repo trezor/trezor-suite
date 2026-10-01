@@ -17812,6 +17812,7 @@ __metadata:
     "@trezor/connect": "workspace:*"
     "@trezor/connect-common": "workspace:*"
     "@trezor/protobuf": "workspace:*"
+    "@trezor/schema-utils": "workspace:*"
     "@trezor/ward-core": "workspace:*"
     "@types/ws": "npm:^8.5.13"
     tsx: "npm:^4.21.0"

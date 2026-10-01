@@ -12,12 +12,13 @@ import WardRelay from '@trezor/connect/src/api/ward/wardRelay';
 import { createWarddProvider } from '@trezor/connect/src/ward/createWarddProvider';
 // eslint-disable-next-line @typescript-eslint/no-restricted-imports -- the wardd binding is not public API yet: the barrel takes no code exports (#27376)
 import { stripAbsent } from '@trezor/connect/src/ward/warddClient';
-import { protobufManager } from '@trezor/protobuf';
+import { MessagesSchema, protobufManager } from '@trezor/protobuf';
 import * as commonProto from '@trezor/protobuf/src/definitions/messages-common_pb';
 import * as wardConnectProto from '@trezor/protobuf/src/definitions/messages-ward-connect_pb';
 import * as wardProto from '@trezor/protobuf/src/definitions/messages-ward_pb';
 import * as messagesProto from '@trezor/protobuf/src/definitions/messages_pb';
 import * as optionsProto from '@trezor/protobuf/src/definitions/options_pb';
+import { Assert } from '@trezor/schema-utils';
 import { toHex } from '@trezor/ward-core';
 
 import { startServer } from '../server';
@@ -53,6 +54,9 @@ const relay = (device: FakeDevice, url: string, payload: Record<string, unknown>
         payload: { method: 'wardRelay', token: TOKEN, url, ...payload },
     } as never);
     const relayCall = jest.fn(async (name: string, message: Record<string, unknown>) => {
+        // the session's schema check on what it SENDS, as `relayCall` runs it: stricter than the
+        // encoder (repeated fields must be present), and it refused an ack the encoder took
+        Assert((MessagesSchema.MessageType.properties as Record<string, never>)[name]!, message);
         const reply = await device.call({
             name,
             message: stripAbsent(throughCodec(name, message)),

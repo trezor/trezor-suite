@@ -174,7 +174,7 @@ describe('stripAbsent', () => {
         ).toEqual({ b: 0, c: { e: '' }, f: [{ h: false }] });
     });
 
-    it("drops the decoder's empty submessages and lists, so one leaf arm stays one arm", () => {
+    it("drops the decoder's empty submessages, so one leaf arm stays one arm", () => {
         // exactly what Connect's decoder makes of a sealed leaf with no identity
         const decoded = {
             entry_key: 'aa',
@@ -190,11 +190,13 @@ describe('stripAbsent', () => {
         expect(stripAbsent(decoded)).toEqual({
             entry_key: 'aa',
             content: { encoding: 0, encrypted: { nonce: '01', tag: '02', ct: '03' } },
+            leaves: [],
         });
     });
 
-    it('keeps an empty top-level message', () => {
+    it('keeps an empty top-level message, and empty lists -- the schemas require them', () => {
         expect(stripAbsent({})).toEqual({});
-        expect(stripAbsent({ links: [] })).toEqual({});
+        expect(stripAbsent({ proof: [] })).toEqual({ proof: [] });
+        expect(stripAbsent({ links: [{}] })).toEqual({ links: [{}] });
     });
 });

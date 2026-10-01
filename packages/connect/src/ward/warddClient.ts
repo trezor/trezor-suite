@@ -51,35 +51,32 @@ type Pending = {
 
 /**
  * The relay's canonical form: ABSENT FIELDS ARE OMITTED. Connect's protobuf decoder does not produce
- * it -- an absent scalar comes back `null`, an absent repeated field `[]`, and an absent SUBMESSAGE
- * an empty object `{}`. That last one is not cosmetic: a WARD leaf part sets exactly one arm, and
- * `{ encrypted: {...}, plaintext: {} }` reads as BOTH, which wardd -- like the firmware -- refuses.
- * Its encoder in turn refuses `null` for a scalar.
+ * it -- an absent scalar comes back `null` and an absent SUBMESSAGE an empty object `{}`. That last
+ * one is not cosmetic: a WARD leaf part sets exactly one arm, and `{ encrypted: {...}, plaintext: {} }`
+ * reads as BOTH, which wardd -- like the firmware -- refuses. The encoder in turn refuses `null`.
  *
  * So everything crossing between Connect's codec and the relay goes through here, in both
- * directions. Dropping an empty nested object or list loses nothing the wire carried: an empty
- * submessage and an absent one frame to the same commit, and an empty repeated field is an absent
- * one. The top-level object is kept even when empty (`WardSync {}` is a message).
+ * directions: nulls and empty NESTED objects go, which loses nothing the wire carried (an empty
+ * submessage and an absent one frame to the same commit). EMPTY LISTS STAY: an empty repeated field
+ * is the same as an absent one on the wire, but Connect's message schemas require repeated fields to
+ * be present, so a `WardEntryAck` without `proof: []` is refused before it is sent. The top-level
+ * object is kept even when empty (`WardSync {}` is a message).
  */
 export const stripAbsent = (value: unknown): any => {
-    const strip = (v: unknown): unknown => {
-        if (Array.isArray(v)) {
-            const items = v.map(strip).filter(item => item !== undefined);
-
-            return items.length ? items : undefined;
-        }
+    const strip = (v: unknown, nested: boolean): unknown => {
+        if (Array.isArray(v)) return v.map(item => strip(item, false)).filter(i => i !== undefined);
         if (v && typeof v === 'object') {
             const entries = Object.entries(v)
-                .map(([k, inner]) => [k, strip(inner)] as const)
+                .map(([k, inner]) => [k, strip(inner, true)] as const)
                 .filter(([, inner]) => inner !== undefined);
 
-            return entries.length ? Object.fromEntries(entries) : undefined;
+            return entries.length || !nested ? Object.fromEntries(entries) : undefined;
         }
 
         return v === null ? undefined : v;
     };
 
-    return strip(value) ?? (Array.isArray(value) ? [] : {});
+    return strip(value, false);
 };
 
 export class WarddClient {
