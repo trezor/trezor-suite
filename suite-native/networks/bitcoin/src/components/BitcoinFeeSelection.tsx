@@ -1,6 +1,10 @@
-import { useState } from 'react';
+import { useSelector } from 'react-redux';
 
+import { useServices } from '@suite-common/dependency-injection';
+import { injectDispatch } from '@suite-common/redux-utils';
 import { SegmentedControl, Text, VStack } from '@suite-native/atoms';
+
+import { bitcoinActions, selectBitcoinSendFormFeeRate } from '../bitcoinSlice';
 
 const feeRateOptions = [
     { label: 'Economy', value: '1' },
@@ -9,7 +13,12 @@ const feeRateOptions = [
 ];
 
 export const BitcoinFeeSelection = () => {
-    const [feeRate, setFeeRate] = useState('5');
+    const feeRate = useSelector(selectBitcoinSendFormFeeRate);
+    const { dispatch } = useServices(injectDispatch);
+
+    const handleFeeRateChange = (value: string) => {
+        dispatch(bitcoinActions.setSendFormFeeRate(value));
+    };
 
     return (
         <VStack spacing={12}>
@@ -17,7 +26,7 @@ export const BitcoinFeeSelection = () => {
             <SegmentedControl
                 options={feeRateOptions}
                 selectedValue={feeRate}
-                onValueChange={setFeeRate}
+                onValueChange={handleFeeRateChange}
             />
             <Text>Fee rate: {feeRate} sat/vB</Text>
         </VStack>

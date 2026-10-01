@@ -31,5 +31,10 @@ The Bitcoin and Solana modules provide synthetic `getSendForm` capabilities that
 Consumers can retrieve it through `nativeNetworks.getSendForm(networkSymbol)`; networks without
 this capability return `undefined`. The forms reuse a layout HOC and a controlled address input from
 `@suite-native/network-module-suite-native-sendform-lego-bricks`. Bitcoin owns its sat/vB fee-rate
-selector, while Solana owns its priority-fee selector. Fees are fixed examples and all input state
-stays local to the forms. The existing send flow does not use these synthetic forms yet.
+selector, while Solana owns its priority-fee selector. Fees are fixed examples. Each module owns a
+separate Redux slice with its own send-form address,
+fee selection, actions, and selectors: `nativeNetworks.bitcoin.sendForm` and
+`nativeNetworks.solana.sendForm`. The duplicated state intentionally demonstrates module ownership;
+the shared UI package stays stateless. Draft values survive component remounts within the same store
+but are not persisted to disk. Solana persists only its existing banner flag. The existing send flow
+does not use these synthetic forms yet.

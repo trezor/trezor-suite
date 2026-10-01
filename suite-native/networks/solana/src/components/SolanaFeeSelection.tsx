@@ -1,6 +1,10 @@
-import { useState } from 'react';
+import { useSelector } from 'react-redux';
 
+import { useServices } from '@suite-common/dependency-injection';
+import { injectDispatch } from '@suite-common/redux-utils';
 import { HStack, Radio, Text, VStack } from '@suite-native/atoms';
+
+import { solanaActions, selectSolanaSendFormPriorityFee } from '../solanaSlice';
 
 const priorityFeeOptions = [
     { label: 'No priority', lamports: 0 },
@@ -9,7 +13,12 @@ const priorityFeeOptions = [
 ];
 
 export const SolanaFeeSelection = () => {
-    const [priorityFee, setPriorityFee] = useState(1000);
+    const priorityFee = useSelector(selectSolanaSendFormPriorityFee);
+    const { dispatch } = useServices(injectDispatch);
+
+    const handlePriorityFeeChange = (value: number) => {
+        dispatch(solanaActions.setSendFormPriorityFee(value));
+    };
 
     return (
         <VStack spacing={12}>
@@ -19,7 +28,7 @@ export const SolanaFeeSelection = () => {
                     <Radio
                         value={option.lamports}
                         isChecked={priorityFee === option.lamports}
-                        onPress={setPriorityFee}
+                        onPress={handlePriorityFeeChange}
                         accessibilityRole="radio"
                         accessibilityLabel={`${option.label}: ${option.lamports} lamports`}
                         accessibilityState={{ checked: priorityFee === option.lamports }}

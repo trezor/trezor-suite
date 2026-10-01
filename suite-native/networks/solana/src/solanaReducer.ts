@@ -7,7 +7,8 @@ import { type SolanaState, solanaInitialState, solanaReducer } from './solanaSli
 const LEGACY_BANNER_FLAGS_PERSIST_KEY = 'bannerFlags';
 const SOLANA_PERSIST_KEY = 'solana';
 
-type MigratedSolanaState = (PersistedState & SolanaState) | undefined;
+type MigratedSolanaState =
+    (PersistedState & Pick<SolanaState, 'isLimitedHistoryBannerClosed'>) | undefined;
 type MigrateSolanaState = (state: PersistedState) => Promise<MigratedSolanaState>;
 type MigrateSolanaStateDeps = MMKVStorageDep;
 type PrepareSolanaReducerDeps = MMKVStorageDep;

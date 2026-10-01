@@ -2,6 +2,12 @@
     "extends": "../../../tsconfig.base.json",
     "compilerOptions": { "outDir": "libDev" },
     "references": [
+        {
+            "path": "../../../suite-common/dependency-injection"
+        },
+        {
+            "path": "../../../suite-common/redux-utils"
+        },
         { "path": "../../atoms" },
         {
             "path": "../network-module-suite-native-sendform-lego-bricks"
