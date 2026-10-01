@@ -54,6 +54,8 @@ export * from './selectors';
 export type * from './send/composeCancelTransaction/cancelTransactionTypes';
 export * from './send/composeCancelTransaction/composeCancelTransactionThunk';
 export * from './send/composeCancelTransaction/composeEthereumCancelTransactionThunk';
+export * from './send/recipientHistory';
+export * from './send/recipientHistorySelectors';
 export * from './send/sendFormActions';
 export * from './send/sendFormConstants';
 export * from './send/sendFormEthereumThunks';
