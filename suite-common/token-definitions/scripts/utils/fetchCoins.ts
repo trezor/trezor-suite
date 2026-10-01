@@ -5,7 +5,14 @@ import { z } from 'zod';
 import { blockfrostUtils } from '@trezor/blockchain-link-utils';
 import { type Result, err, ok } from '@trezor/type-utils';
 
-import { coinGeckoApi, publicApi, requestResult, stellarExpertApi, stellarHorizonApi } from './api';
+import {
+    coinGeckoApi,
+    getCoinGeckoHeaders,
+    publicApi,
+    requestResult,
+    stellarExpertApi,
+    stellarHorizonApi,
+} from './api';
 import { AdvancedTokenStructure, TokenStructureType } from '../../src/tokenDefinitionsTypes';
 import {
     type CoinData,
@@ -272,7 +279,7 @@ const fetchStellarTokenRating = async (
 };
 
 export const fetchAllCoins = async (): Promise<CoinData[]> => {
-    const coins = await fetchCoinList();
+    const coins = await fetchCoinList({ headers: getCoinGeckoHeaders() });
 
     console.log('Number of coin records fetched (ALL):', coins.length);
 

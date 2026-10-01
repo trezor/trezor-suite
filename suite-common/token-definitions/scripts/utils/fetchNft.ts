@@ -1,7 +1,7 @@
 /* eslint-disable no-console */
 import { unique } from '@trezor/utils';
 
-import { coinGeckoApi } from './api';
+import { coinGeckoApi, getCoinGeckoHeaders } from './api';
 import {
     AdvancedTokenStructure,
     SimpleTokenStructure,
@@ -17,6 +17,7 @@ const fetchNftList = coinGeckoApi('/nfts/list', {
 
 const fetchNftPage = (page: number, assetPlatformId: string) =>
     fetchNftList({
+        headers: getCoinGeckoHeaders(),
         params: {
             page,
             per_page: NFTS_PER_PAGE,

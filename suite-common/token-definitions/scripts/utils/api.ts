@@ -76,10 +76,17 @@ const createApiClient = ({ baseUrl, headers }: CreateApiClientParams) =>
         onRetry: warnAboutRetry,
     });
 
-export const coinGeckoApi = createApiClient({
-    baseUrl: COINGECKO_API_URL,
-    headers: { 'x-cg-pro-api-key': process.env.COINGECKO_API_KEY! },
-});
+export const coinGeckoApi = createApiClient({ baseUrl: COINGECKO_API_URL });
+
+// Resolved per request rather than when the module loads, so importing the clients needs no key.
+export const getCoinGeckoHeaders = () => {
+    const apiKey = process.env.COINGECKO_API_KEY;
+    if (!apiKey) {
+        throw new Error('COINGECKO_API_KEY is not set, cannot fetch from CoinGecko');
+    }
+
+    return { 'x-cg-pro-api-key': apiKey };
+};
 
 export const stellarExpertApi = createApiClient({ baseUrl: STELLAR_EXPERT_URL });
 
