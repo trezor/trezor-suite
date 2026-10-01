@@ -10,6 +10,14 @@
 import WardRelay from '@trezor/connect/src/api/ward/wardRelay';
 // eslint-disable-next-line @typescript-eslint/no-restricted-imports -- the wardd binding is not public API yet: the barrel takes no code exports (#27376)
 import { createWarddProvider } from '@trezor/connect/src/ward/createWarddProvider';
+// eslint-disable-next-line @typescript-eslint/no-restricted-imports -- the wardd binding is not public API yet: the barrel takes no code exports (#27376)
+import { stripAbsent } from '@trezor/connect/src/ward/warddClient';
+import { protobufManager } from '@trezor/protobuf';
+import * as commonProto from '@trezor/protobuf/src/definitions/messages-common_pb';
+import * as wardConnectProto from '@trezor/protobuf/src/definitions/messages-ward-connect_pb';
+import * as wardProto from '@trezor/protobuf/src/definitions/messages-ward_pb';
+import * as messagesProto from '@trezor/protobuf/src/definitions/messages_pb';
+import * as optionsProto from '@trezor/protobuf/src/definitions/options_pb';
 import { toHex } from '@trezor/ward-core';
 
 import { startServer } from '../server';
@@ -18,6 +26,26 @@ import { FakeDevice, newWallet } from './fakeDevice';
 
 const TOKEN = 'connect-test';
 
+protobufManager.load([
+    wardConnectProto,
+    wardProto,
+    commonProto,
+    messagesProto,
+    optionsProto,
+] as never);
+
+/**
+ * THROUGH CONNECT'S REAL CODEC, both ways, as the device session does. Going out, Connect must be
+ * able to encode what wardd sent, and the device sees the wire -- absent is absent. Coming back,
+ * the reply is exactly what Connect's decoder makes of it: absent submessages as `{}`, absent
+ * scalars as `null`, absent lists as `[]`. A mock that skipped this hid a real-device failure.
+ */
+const throughCodec = (name: string, message: Record<string, unknown>) => {
+    const { message: wire } = protobufManager.encode(name, message);
+
+    return protobufManager.decode(name, wire).message as Record<string, unknown>;
+};
+
 /** A WardRelay method whose device session is the fake device. */
 const relay = (device: FakeDevice, url: string, payload: Record<string, unknown>) => {
     const method = new WardRelay({
@@ -25,14 +53,17 @@ const relay = (device: FakeDevice, url: string, payload: Record<string, unknown>
         payload: { method: 'wardRelay', token: TOKEN, url, ...payload },
     } as never);
     const relayCall = jest.fn(async (name: string, message: Record<string, unknown>) => {
-        const reply = await device.call({ name, message });
+        const reply = await device.call({
+            name,
+            message: stripAbsent(throughCodec(name, message)),
+        });
         if (reply.name === 'Failure') {
             // as the session does: a device Failure throws a TrezorError
             const { ERRORS } = await import('@trezor/connect-common/src/constants');
             throw new ERRORS.TrezorError('Failure_DataError', String(reply.message.message));
         }
 
-        return { type: reply.name, message: reply.message };
+        return { type: reply.name, message: throughCodec(reply.name, reply.message as never) };
     });
     method.getDevice = () => ({ getCommands: () => ({ relayCall }) }) as never;
 
@@ -128,13 +159,17 @@ describe('createWarddProvider against wardd', () => {
         await relay(device, url, { op: 'flush' }).run();
 
         const provider = createWarddProvider({ url, token: TOKEN });
-        await provider.openStore({ wardId: toHex(device.wardId) });
-        // the device asks for a second change's path; wardd proves its absence from the replica
-        device.enqueue('bob', 'bc1q-bob');
-        const ack = await provider.serveEntry({ entry_key: toHex(device.queue[0]!.entryKey) });
-        expect(ack.proof).toEqual([]);
-        expect(ack.witness_entry_key).toBeDefined();
-        await provider.dispose?.();
-        await server.close();
+        try {
+            await provider.openStore({ wardId: toHex(device.wardId) });
+            // the device asks for a second change's path; wardd proves its absence from the replica
+            device.enqueue('bob', 'bc1q-bob');
+            const ack = await provider.serveEntry({ entry_key: toHex(device.queue[0]!.entryKey) });
+            expect(ack.proof ?? []).toEqual([]); // empty and absent are one thing on the wire
+            expect(ack.witness_entry_key).toBeDefined();
+        } finally {
+            // a failed assertion must not leave the socket open, or the run never exits
+            await provider.dispose?.();
+            await server.close();
+        }
     });
 });

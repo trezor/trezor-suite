@@ -50,9 +50,15 @@ const wireRoot = (key: string, r: Uint8Array): Json =>
 const fromWire = (v: string | undefined | null) => (v ? toBytes(v) : EMPTY_ROOT);
 const msg = (name: string, message: Json = {}): RelayMessage => ({ name, message });
 
-const plain = (bytes: Uint8Array): WardPart => ({
-    encoding: 1,
-    plaintext: { content: toHex(bytes) },
+/**
+ * A SEALED part, as a real device builds every leaf (encoding 0). The fake does not encrypt -- the
+ * host never opens a part, so only the framing matters -- but the shape is the real one, which is
+ * what a codec in between gets to mangle.
+ */
+const sealed = (bytes: Uint8Array, keyType?: string): WardPart => ({
+    encoding: 0,
+    ...(keyType ? { key_type: keyType } : {}),
+    encrypted: { nonce: toHex(randomBytes(12)), tag: toHex(randomBytes(16)), ct: toHex(bytes) },
 });
 
 export interface WalletKeys {
@@ -86,7 +92,10 @@ export class FakeDevice {
             leaf:
                 value === null
                     ? null
-                    : { identity: plain(id), content: plain(new TextEncoder().encode(value)) },
+                    : {
+                          identity: sealed(id, 'address'),
+                          content: sealed(new TextEncoder().encode(value)),
+                      },
         });
     }
 

@@ -4,6 +4,7 @@
     "references": [
         { "path": "../ward-core" },
         { "path": "../connect" },
-        { "path": "../connect-common" }
+        { "path": "../connect-common" },
+        { "path": "../protobuf" }
     ]
 }

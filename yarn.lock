@@ -17811,6 +17811,7 @@ __metadata:
     "@noble/hashes": "npm:^2.0.1"
     "@trezor/connect": "workspace:*"
     "@trezor/connect-common": "workspace:*"
+    "@trezor/protobuf": "workspace:*"
     "@trezor/ward-core": "workspace:*"
     "@types/ws": "npm:^8.5.13"
     tsx: "npm:^4.21.0"
