@@ -1,4 +1,5 @@
 export { mockGetNetworkConfig } from './mockGetNetworkConfig';
+export { mockGetAccountSyncInterval } from './mockGetAccountSyncInterval';
 export {
     type MockNetworkSymbol,
     getMockNetworkMetadata,

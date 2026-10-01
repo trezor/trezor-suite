@@ -1,5 +1,6 @@
 import { type AnalyticsSharedEvents } from '@suite-common/analytics';
 import { asGetter } from '@suite-common/dependency-injection';
+import { mockGetAccountSyncInterval } from '@suite-common/networks/mocks';
 import { type TestCompositionStore, createTestCompositionRoot } from '@suite-common/test-utils';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
@@ -23,6 +24,7 @@ const initStore = (preloadedState?: unknown) =>
         preloadedState,
         services: () => ({
             analytics: mockAnalytics<AnalyticsSharedEvents>(),
+            networks: { getAccountSyncInterval: mockGetAccountSyncInterval() },
             getIsWindowVisible: asGetter(() => true),
             getTradedAccountKeys: asGetter(() => []),
         }),

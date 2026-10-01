@@ -1,11 +1,9 @@
 import { type TranslationKey } from '@suite/intl';
-import { type AnalyticsDep, type AnalyticsSharedEvents } from '@suite-common/analytics';
+import { type AnalyticsSharedEvents } from '@suite-common/analytics';
 import { asGetter } from '@suite-common/dependency-injection';
 import { type DeviceRootState, deviceInitialState } from '@suite-common/device';
 import { type NetworksRootState } from '@suite-common/networks';
-import { mockNetworksState } from '@suite-common/networks/mocks';
-import { type WithServices } from '@suite-common/redux-utils';
-import { type GetIsWindowVisibleDep } from '@suite-common/suite-types';
+import { mockGetAccountSyncInterval, mockNetworksState } from '@suite-common/networks/mocks';
 import { mockSuiteDevice } from '@suite-common/suite-types/mocks';
 import {
     createTestCompositionRoot,
@@ -29,8 +27,8 @@ import {
     type AccountsState,
     type BlockchainRootState,
     type BlockchainState,
-    DEFAULT_NETWORK_SYNC_INTERVAL,
     type FeesRootState,
+    type SyncAccountsWithBlockchainThunkDeps,
     type TransactionsRootState,
     type TransactionsState,
     type WalletSettingsRootState,
@@ -45,9 +43,10 @@ import {
     preloadFeeInfoThunk,
     setCustomBackendThunk,
 } from '@suite-common/wallet-core';
-import { type FeesState, type GetTradedAccountKeysDep } from '@suite-common/wallet-types';
+import { type FeesState } from '@suite-common/wallet-types';
 import { mockAnalytics } from '@trezor/analytics-uploader/mocks';
 import { PROTO } from '@trezor/connect';
+import { DEFAULT_ACCOUNT_SYNC_INTERVAL } from '@trezor/network-module-suite-common-types';
 import { typedObjectKeys } from '@trezor/utils';
 
 import {
@@ -133,11 +132,8 @@ const getInitialState = (
     },
 });
 
-type BlockchainActionsTestDeps = WithServices<
-    AnalyticsDep & GetIsWindowVisibleDep & GetTradedAccountKeysDep
->;
 const mockStore = (preloadedState: State) =>
-    createTestCompositionRoot<BlockchainActionsTestDeps, State>({
+    createTestCompositionRoot<SyncAccountsWithBlockchainThunkDeps, State>({
         reducer: (currentState = preloadedState, action) => {
             const state = currentState as State;
 
@@ -156,6 +152,7 @@ const mockStore = (preloadedState: State) =>
         preloadedState,
         services: () => ({
             analytics: mockAnalytics<AnalyticsSharedEvents>(),
+            networks: { getAccountSyncInterval: mockGetAccountSyncInterval() },
             getIsWindowVisible: asGetter(() => true),
             getTradedAccountKeys: asGetter(() => []),
         }),
@@ -224,7 +221,7 @@ describe('Blockchain Actions', () => {
                     // The armed timer must actually continue the chain, not just exist: firing
                     // it has to run syncAccountsWithBlockchainThunk, which re-arms via a second
                     // synced action.
-                    await jest.advanceTimersByTimeAsync(DEFAULT_NETWORK_SYNC_INTERVAL);
+                    await jest.advanceTimersByTimeAsync(DEFAULT_ACCOUNT_SYNC_INTERVAL);
                     const syncedActions = store
                         .getActions()
                         .filter(blockchainActions.synced.match)

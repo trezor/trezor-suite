@@ -1,5 +1,6 @@
 import { type AnalyticsDep, events } from '@suite-common/analytics';
 import { asGetter } from '@suite-common/dependency-injection';
+import { mockGetAccountSyncInterval } from '@suite-common/networks/mocks';
 import { type WithServices } from '@suite-common/redux-utils';
 import { createTestCompositionRoot } from '@suite-common/test-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
@@ -59,6 +60,7 @@ const buildStore = (report?: jest.Mock) =>
         preloadedState: {},
         services: () => ({
             analytics: mockAnalytics(report),
+            networks: { getAccountSyncInterval: mockGetAccountSyncInterval() },
             getIsWindowVisible: asGetter(() => true),
             getTradedAccountKeys: asGetter(() => []),
         }),

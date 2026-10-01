@@ -1,11 +1,27 @@
 import type { EthereumNetworkSymbol } from '@trezor/network-ethereum/constants';
 import {
+    DEFAULT_ACCOUNT_SYNC_INTERVAL,
     type Explorer,
     type SuiteCommonNetworkConfig,
     asDisplayOrderKey,
     asProtocol,
 } from '@trezor/network-module-suite-common-types';
 import { asNetworkSymbol } from '@trezor/network-module-types';
+
+const syncIntervalBySymbol: Readonly<Record<EthereumNetworkSymbol, number>> = {
+    eth: DEFAULT_ACCOUNT_SYNC_INTERVAL,
+    pol: DEFAULT_ACCOUNT_SYNC_INTERVAL / 1.5,
+    bsc: DEFAULT_ACCOUNT_SYNC_INTERVAL / 1.5,
+    arb: DEFAULT_ACCOUNT_SYNC_INTERVAL / 1.5,
+    base: DEFAULT_ACCOUNT_SYNC_INTERVAL / 1.5,
+    op: DEFAULT_ACCOUNT_SYNC_INTERVAL / 1.5,
+    rhc: DEFAULT_ACCOUNT_SYNC_INTERVAL / 1.5,
+    hype: DEFAULT_ACCOUNT_SYNC_INTERVAL / 1.5,
+    avax: DEFAULT_ACCOUNT_SYNC_INTERVAL / 1.5,
+    etc: DEFAULT_ACCOUNT_SYNC_INTERVAL,
+    tsep: DEFAULT_ACCOUNT_SYNC_INTERVAL,
+    thod: DEFAULT_ACCOUNT_SYNC_INTERVAL,
+};
 
 const getExplorerUrls = (baseUrl: string): Explorer => ({
     base: baseUrl,
@@ -450,3 +466,6 @@ export const networkConfigBySymbol = {
 
 export const getNetworkConfig = (symbol: EthereumNetworkSymbol): SuiteCommonNetworkConfig =>
     networkConfigBySymbol[symbol];
+
+export const getAccountSyncInterval = (symbol: EthereumNetworkSymbol): number =>
+    syncIntervalBySymbol[symbol];

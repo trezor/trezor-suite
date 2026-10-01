@@ -19,6 +19,8 @@ export type NetworkModuleDefinition<TSymbol extends string> = {
     namedAddressResolver?: NamedAddressResolver<TSymbol>;
 
     getNetworkConfig: (symbol: TSymbol) => SuiteCommonNetworkConfig;
+
+    getAccountSyncInterval: (symbol: TSymbol) => number;
 };
 
 /**
@@ -68,5 +70,6 @@ export const createNetworkModule = <TSymbol extends string>(
         },
         getSupportedNetworks: () => asNetworkSymbols(supportedNetworks),
         getNetworkConfig: symbol => definition.getNetworkConfig(narrow(symbol)),
+        getAccountSyncInterval: symbol => definition.getAccountSyncInterval(narrow(symbol)),
     };
 };

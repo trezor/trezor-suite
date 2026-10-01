@@ -1,6 +1,7 @@
 import { type SelectedAccountState, selectedAccountReducer } from '@suite/account';
 import { mockDesktopAnalytics } from '@suite/analytics/mocks';
 import { type RouterState } from '@suite/router';
+import { mockGetAccountSyncInterval } from '@suite-common/networks/mocks';
 import { mockActionType, mockReducer } from '@suite-common/redux-utils/mocks';
 import { mockGetIsWindowVisible } from '@suite-common/suite-types/mocks';
 import { createTestCompositionRoot, testMocks } from '@suite-common/test-utils';
@@ -143,6 +144,7 @@ const mockStore = (preloadedState: State) =>
         preloadedState,
         services: () => ({
             analytics: mockDesktopAnalytics(),
+            networks: { getAccountSyncInterval: mockGetAccountSyncInterval() },
             getIsWindowVisible: mockGetIsWindowVisible(),
             getTradedAccountKeys: mockGetTradedAccountKeys(),
         }),

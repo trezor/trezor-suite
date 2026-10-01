@@ -5,10 +5,11 @@ import {
 import { supportedSolanaNetworks } from '@trezor/network-solana/constants';
 
 import { solanaValidator } from './addressValidator/solanaAddressValidator';
-import { getNetworkConfig } from './networkConfig';
+import { getAccountSyncInterval, getNetworkConfig } from './networkConfig';
 
 export const createSolanaSuiteCommonNetworkModule = (): SuiteCommonNetworkModule =>
     createNetworkModule(supportedSolanaNetworks, {
         addressValidator: solanaValidator,
         getNetworkConfig,
+        getAccountSyncInterval,
     });

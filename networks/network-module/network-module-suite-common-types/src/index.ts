@@ -1,3 +1,4 @@
+export { DEFAULT_ACCOUNT_SYNC_INTERVAL } from './AccountSyncInterval';
 export { addressType } from './AddressValidator';
 export type { AddressType, AddressValidator } from './AddressValidator';
 export type { NamedAddressResolver } from './NamedAddressResolver';

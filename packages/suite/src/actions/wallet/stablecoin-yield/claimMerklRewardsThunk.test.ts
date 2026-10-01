@@ -1,6 +1,7 @@
 import { type DesktopAnalyticsDep } from '@suite/analytics';
 import { asGetter } from '@suite-common/dependency-injection';
 import { USER_CANCELLED_ERROR_CODES } from '@suite-common/earn-stablecoin';
+import { mockGetAccountSyncInterval } from '@suite-common/networks/mocks';
 import { mockSuiteDevice } from '@suite-common/suite-types/mocks';
 import { createTestCompositionRoot } from '@suite-common/test-utils';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
@@ -93,6 +94,7 @@ const dispatchClaim = (report: jest.Mock) => {
         preloadedState: {},
         services: () => ({
             analytics: mockAnalytics(report),
+            networks: { getAccountSyncInterval: mockGetAccountSyncInterval() },
             getIsWindowVisible: asGetter(() => true),
             getTradedAccountKeys: asGetter(() => []),
         }),
