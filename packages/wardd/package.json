@@ -21,6 +21,8 @@
         "ws": "^8.20.0"
     },
     "devDependencies": {
+        "@trezor/connect": "workspace:*",
+        "@trezor/connect-common": "workspace:*",
         "@types/ws": "^8.5.13",
         "tsx": "^4.21.0"
     }

@@ -1,5 +1,9 @@
 {
     "extends": "../../tsconfig.base.json",
     "compilerOptions": { "outDir": "libDev" },
-    "references": [{ "path": "../ward-core" }]
+    "references": [
+        { "path": "../ward-core" },
+        { "path": "../connect" },
+        { "path": "../connect-common" }
+    ]
 }
