@@ -37,7 +37,6 @@ export const DeviceAuthenticityCheck = ({ onSuccess }: DeviceAuthenticityCheckPr
     const isDebugModeActive = useSelector(selectIsDebugModeActive);
     const { dispatch } = useServices(injectDispatch);
     const [isLoading, setIsLoading] = useState(false);
-    const [isSubmitted, setIsSubmitted] = useState(false);
     const { isBelowTablet } = useLayoutSize();
 
     if (!device) return null;
@@ -47,8 +46,8 @@ export const DeviceAuthenticityCheck = ({ onSuccess }: DeviceAuthenticityCheckPr
             request.code === 'ButtonRequest_Other' || // Device Authenticity prompt
             request.code === 'ButtonRequest_PinEntry', // Device can be locked, and we can get Pin Request first
     );
-    const isCheckFailed = isSubmitted && selectedDeviceAuthenticity?.valid === false;
-    const isCheckSuccessful = isSubmitted && selectedDeviceAuthenticity?.valid === true;
+    const isCheckFailed = selectedDeviceAuthenticity?.valid === false;
+    const isCheckSuccessful = selectedDeviceAuthenticity?.valid === true;
 
     const getHeading = (): ReactNode => {
         if (isCheckSuccessful) return <Translation id="TR_CONGRATS" />;
@@ -85,7 +84,6 @@ export const DeviceAuthenticityCheck = ({ onSuccess }: DeviceAuthenticityCheckPr
                 }),
             );
             setIsLoading(false);
-            setIsSubmitted(true);
         };
 
         return isCheckSuccessful ? (
