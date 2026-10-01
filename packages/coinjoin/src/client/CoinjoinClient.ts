@@ -1,3 +1,4 @@
+import { type LogLevel, type Logger, stringifyLogArgs } from '@trezor/logger';
 import { TypedEmitter } from '@trezor/utils';
 
 import { Account } from './Account';
@@ -10,8 +11,6 @@ import type {
     CoinjoinClientSettings,
     CoinjoinResponseEvent,
     CoinjoinStatusEvent,
-    LogLevel,
-    Logger,
     RegisterAccountParams,
 } from '../types';
 import { redacted } from '../utils/redacted';
@@ -270,12 +269,15 @@ export class CoinjoinClient extends TypedEmitter<CoinjoinClientEvents> {
     }
 
     private getLogger(): Logger {
-        const emit = (level: LogLevel) => (payload: string) =>
-            this.emit('log', { level, payload: redacted(payload) });
+        const emit =
+            (level: LogLevel) =>
+            (...args: unknown[]) =>
+                this.emit('log', { level, payload: redacted(stringifyLogArgs(args)) });
 
         return {
             debug: emit('debug'),
             info: emit('info'),
+            log: emit('log'),
             warn: emit('warn'),
             error: emit('error'),
         };

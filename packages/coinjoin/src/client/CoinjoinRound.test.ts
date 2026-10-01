@@ -1,3 +1,4 @@
+import { loggerMock } from '@trezor/logger/mocks';
 import * as trezorUtils from '@trezor/utils';
 
 import { createServer } from '../../mocks/server';
@@ -34,12 +35,7 @@ jest.mock('../constants', () => {
 
 describe(`CoinjoinRound`, () => {
     let server: Awaited<ReturnType<typeof createServer>>;
-    const logger = {
-        warn: jest.fn(),
-        info: jest.fn(),
-        error: jest.fn(),
-        debug: jest.fn(),
-    };
+    const logger = loggerMock;
 
     beforeAll(async () => {
         server = await createServer();

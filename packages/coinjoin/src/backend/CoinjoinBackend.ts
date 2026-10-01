@@ -1,3 +1,4 @@
+import { type LogLevel, type Logger, stringifyLogArgs } from '@trezor/logger';
 import { TypedEmitter } from '@trezor/utils';
 
 import { CoinjoinBackendClient } from './CoinjoinBackendClient';
@@ -8,7 +9,7 @@ import { deriveAddresses, isTaprootAddress } from './backendUtils';
 import { createPendingTransaction } from './createPendingTx';
 import { getAccountInfo } from './getAccountInfo';
 import { scanAccount } from './scanAccount';
-import type { CoinjoinBackendSettings, LogEvent, LogLevel, Logger } from '../types';
+import type { CoinjoinBackendSettings, LogEvent } from '../types';
 import type {
     AccountCache,
     ScanAccountCheckpoint,
@@ -155,11 +156,15 @@ export class CoinjoinBackend extends TypedEmitter<Events> {
     }
 
     private getLogger(): Logger {
-        const emit = (level: LogLevel) => (payload: string) => this.emit('log', { level, payload });
+        const emit =
+            (level: LogLevel) =>
+            (...args: unknown[]) =>
+                this.emit('log', { level, payload: stringifyLogArgs(args) });
 
         return {
             debug: emit('debug'),
             info: emit('info'),
+            log: emit('log'),
             warn: emit('warn'),
             error: emit('error'),
         };
