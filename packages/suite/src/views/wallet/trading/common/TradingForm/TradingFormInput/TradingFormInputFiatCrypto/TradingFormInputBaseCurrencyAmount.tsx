@@ -198,7 +198,7 @@ export const TradingFormInputBaseCurrencyAmount = ({
 
     return (
         <Row
-            gap={4}
+            gap={2}
             flex="1"
             minWidth={0}
             alignItems="center"
