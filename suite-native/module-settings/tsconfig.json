@@ -51,7 +51,6 @@
         { "path": "../banners" },
         { "path": "../biometrics" },
         { "path": "../coin-enabling" },
-        { "path": "../config" },
         { "path": "../device" },
         { "path": "../device-manager" },
         { "path": "../experimental-features" },

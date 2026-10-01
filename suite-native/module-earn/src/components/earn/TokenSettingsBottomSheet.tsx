@@ -4,6 +4,7 @@ import { useSelector } from 'react-redux';
 
 import { type BottomSheetModalMethods } from '@gorhom/bottom-sheet/lib/typescript/types';
 import { useNavigation } from '@react-navigation/native';
+import { useAtomValue } from 'jotai';
 
 import { events } from '@suite-common/analytics';
 import { useServices } from '@suite-common/dependency-injection';
@@ -36,7 +37,6 @@ import {
     TouchableSwitchRow,
     VStack,
 } from '@suite-native/atoms';
-import { isDevelopOrDebugEnv } from '@suite-native/config';
 import {
     AddressFormatter,
     CoinToFiatAmountFormatter,
@@ -53,6 +53,7 @@ import {
     type StackNavigationProps,
     WrappedNativeTokenStackRoutes,
 } from '@suite-native/navigation';
+import { isDevUtilsEnabledAtom } from '@suite-native/storage';
 import {
     type TokensRootState as NativeTokensRootState,
     selectAccountTokenInfo,
@@ -128,6 +129,7 @@ export const TokenSettingsBottomSheet = forwardRef(
             selectIsUnrecognizedToken(state, accountKey, tokenContract),
         );
         const isPortfolioTrackerDevice = useSelector(selectIsPortfolioTrackerDevice);
+        const isDevUtilsEnabled = useAtomValue(isDevUtilsEnabledAtom);
         const { isFirmwareSupported, showFirmwareUpdateAlert } =
             useWrappedNativeFirmwareUpdateAlert();
         const {
@@ -167,7 +169,7 @@ export const TokenSettingsBottomSheet = forwardRef(
         };
 
         const { unwrap: unwrapEntry, wrap: wrapEntry } = getWrappedNativeTokenEntries({
-            isDebugEnvironment: isDevelopOrDebugEnv(),
+            isDevUtilsEnabled,
             isPortfolioTrackerDevice,
             isUnwrapDisabled,
             isWrapDisabled,

@@ -12,7 +12,7 @@ type WrappedNativeTokenEntry = {
 };
 
 type GetWrappedNativeTokenEntriesParams = {
-    isDebugEnvironment: boolean;
+    isDevUtilsEnabled: boolean;
     isPortfolioTrackerDevice: boolean;
     isUnwrapDisabled: boolean;
     isWrapDisabled: boolean;
@@ -22,7 +22,7 @@ type GetWrappedNativeTokenEntriesParams = {
 };
 
 export const getWrappedNativeTokenEntries = ({
-    isDebugEnvironment,
+    isDevUtilsEnabled,
     isPortfolioTrackerDevice,
     isUnwrapDisabled,
     isWrapDisabled,
@@ -36,7 +36,7 @@ export const getWrappedNativeTokenEntries = ({
         wrap: {
             isDisabled: isWrapDisabled,
             isDisplayed:
-                isDebugEnvironment &&
+                isDevUtilsEnabled &&
                 isEthereumAccount &&
                 !tokenContract &&
                 !!getWrappedNativeAddress(symbol),
