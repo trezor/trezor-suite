@@ -65,9 +65,10 @@ const validateSessionParams: ParamsValidatorHandler<{
 };
 
 /**
- * RFC 9745 structured field Date, set to the release date of the deprecation (2026-10-01).
- * No `Sunset` header accompanies it: RFC 8594 would require an HTTP-date and no removal
- * date is being committed to.
+ * RFC 9745 structured field Date: 2026-10-01T00:00:00Z, the date this deprecation was
+ * introduced. A past date is valid and reads as "deprecated since". No `Sunset` header
+ * accompanies it: RFC 8594 would require an HTTP-date and no removal date is being
+ * committed to.
  */
 const DEPRECATION_DATE = '@1790812800';
 const DEPRECATION_LINK =
