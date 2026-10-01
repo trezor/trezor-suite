@@ -246,6 +246,9 @@
         { "path": "../icons" },
         { "path": "../logger" },
         {
+            "path": "../../networks/ethereum/network-ethereum"
+        },
+        {
             "path": "../../networks/ethereum/network-ethereum-suite-common"
         },
         {
