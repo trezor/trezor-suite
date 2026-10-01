@@ -40,7 +40,7 @@ type NativeTransport = 'BridgeTransport' | 'NativeUsbTransport' | 'NativeBluetoo
 
 const transportsPerDeviceType = {
     device: Platform.select<NativeTransport[]>({
-        ios: ['BridgeTransport', 'NativeBluetoothTransport'],
+        ios: ['NativeBluetoothTransport'],
         android: ['NativeUsbTransport', 'NativeBluetoothTransport'],
         default: ['BridgeTransport'],
     }),
