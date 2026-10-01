@@ -2,12 +2,14 @@ import { type PersistedState, getStoredState } from 'redux-persist';
 
 import { type MMKVStorageDep, preparePersistReducer } from '@suite-native/storage';
 
-import { solanaInitialState, solanaReducer } from './solanaSlice';
+import { type SolanaState, solanaInitialState, solanaReducer } from './solanaSlice';
 
 const LEGACY_BANNER_FLAGS_PERSIST_KEY = 'bannerFlags';
 const SOLANA_PERSIST_KEY = 'solana';
 
-type MigrateSolanaState = (state: PersistedState) => Promise<PersistedState>;
+type MigratedSolanaState =
+    (PersistedState & Pick<SolanaState, 'isLimitedHistoryBannerClosed'>) | undefined;
+type MigrateSolanaState = (state: PersistedState) => Promise<MigratedSolanaState>;
 type MigrateSolanaStateDeps = MMKVStorageDep;
 type PrepareSolanaReducerDeps = MMKVStorageDep;
 
@@ -27,7 +29,7 @@ const getIsLimitedHistoryBannerClosed = (state: unknown): boolean | undefined =>
 
 const createMigrateSolanaState =
     (deps: MigrateSolanaStateDeps): MigrateSolanaState =>
-    async (state: PersistedState): Promise<PersistedState> => {
+    async state => {
         if (!state) {
             return state;
         }

@@ -1,0 +1,1 @@
+export { createBitcoinNativeNetworkModule } from './createBitcoinNativeNetworkModule';

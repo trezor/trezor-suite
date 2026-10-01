@@ -1,7 +1,11 @@
 import type { NetworkSymbol } from '@suite-common/networks';
-import type { NativeNetworkAccountDetailBanners } from '@suite-native/network-module-suite-native-types';
+import type {
+    NativeNetworkAccountDetailBanners,
+    NativeNetworkSendFormComponent,
+} from '@suite-native/network-module-suite-native-types';
 
 export type NativeNetworksServices = {
+    getSendForm: (networkSymbol: NetworkSymbol) => NativeNetworkSendFormComponent | undefined;
     getAccountDetailBanners: (networkSymbol: NetworkSymbol) => NativeNetworkAccountDetailBanners;
 };
 

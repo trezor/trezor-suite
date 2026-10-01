@@ -1,5 +1,5 @@
 {
-    "name": "@suite-native/network-module-suite-native-types",
+    "name": "@suite-native/network-module-suite-native-sendform-lego-bricks",
     "version": "1.0.0",
     "private": true,
     "license": "See LICENSE.md in repo root",
@@ -11,9 +11,7 @@
         "type-check": "yarn g:tsc --build"
     },
     "dependencies": {
-        "@reduxjs/toolkit": "2.12.0",
-        "@trezor/network-module-types": "workspace:*",
-        "@trezor/type-utils": "workspace:*",
+        "@suite-native/atoms": "workspace:*",
         "react": "19.2.3"
     }
 }

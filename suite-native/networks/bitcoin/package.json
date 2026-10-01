@@ -1,5 +1,5 @@
 {
-    "name": "@suite-native/network-solana",
+    "name": "@suite-native/network-bitcoin",
     "version": "1.0.0",
     "private": true,
     "license": "See LICENSE.md in repo root",
@@ -15,14 +15,11 @@
         "@suite-common/dependency-injection": "workspace:*",
         "@suite-common/redux-utils": "workspace:*",
         "@suite-native/atoms": "workspace:*",
-        "@suite-native/intl": "workspace:*",
         "@suite-native/network-module-suite-native-sendform-lego-bricks": "workspace:*",
         "@suite-native/network-module-suite-native-types": "workspace:*",
-        "@suite-native/storage": "workspace:*",
+        "@trezor/network-bitcoin": "workspace:*",
         "@trezor/network-module-types": "workspace:*",
-        "@trezor/network-solana": "workspace:*",
         "react": "19.2.3",
-        "react-redux": "9.3.0",
-        "redux-persist": "6.0.0"
+        "react-redux": "9.3.0"
     }
 }
