@@ -65,11 +65,36 @@ const validateSessionParams: ParamsValidatorHandler<{
     }
 };
 
+/**
+ * RFC 9745 structured field Date: 2026-11-01T00:00:00Z, pinned to the release that first carries
+ * this deprecation (@trezor/transport-bridge 3.3.0, shipped in Suite 26.11). RFC 9745 defines the
+ * value as the date the resource was or will be deprecated, so it names that release and not the
+ * date this change was authored; move it with the heading in CHANGELOG.md if the release slips to
+ * another month. No `Sunset` header accompanies it: RFC 8594 would require an HTTP-date and no
+ * removal date is being committed to.
+ */
+const DEPRECATION_DATE = '@1793491200';
+const DEPRECATION_LINK =
+    '<https://github.com/trezor/trezor-suite/issues/23794>; rel="deprecation"; type="text/html"';
+
 const validateProtocolMessageBody =
     (withData: boolean): RequestHandler<string, ReturnType<typeof validateProtocolMessage>> =>
     (request, response, next) => {
         try {
             const body = validateProtocolMessage(request.body, withData);
+
+            if (body.protocol === 'bridge') {
+                // Accepted but deprecated: migrate by prepending the v1 magic `3f2323` to the
+                // payload and sending `protocol: 'v1'`. Behaviour is otherwise unchanged.
+                response.appendHeader('Deprecation', DEPRECATION_DATE);
+                response.appendHeader('Link', DEPRECATION_LINK);
+                // Pre-emptive: neither header is CORS-safelisted, so a browser-origin client
+                // would receive them on the wire but read null from res.headers.get(). No such
+                // client can reach this code today, HttpServer registers no OPTIONS route and so
+                // answers no preflight, and the node clients that spoof `Origin` for the gate in
+                // `start()` ignore CORS entirely.
+                response.appendHeader('Access-Control-Expose-Headers', 'Deprecation, Link');
+            }
 
             return next({ ...request, body }, response);
         } catch (error) {
