@@ -1,6 +1,6 @@
 import type { BlockchainSettings } from '@trezor/blockchain-link';
 import type { DeviceModelInternal } from '@trezor/device-utils';
-import type { Logger } from '@trezor/logger';
+import type { CreateLogger } from '@trezor/logger';
 import type { ThpCredentials, ThpPairingMethod } from '@trezor/protocol';
 import type { Static } from '@trezor/schema-utils';
 import { Type } from '@trezor/schema-utils';
@@ -35,10 +35,6 @@ export type ThpSettings = {
 };
 
 export type ConnectSettingsTransport = Transport;
-
-export type CreateLogger = (prefix: string) => Logger;
-
-export type CreateLoggerDep = { createLogger?: CreateLogger };
 
 // #23879 originally expected the permission system to extend this object with per-network
 // fields (e.g. `permissions`, `backends`). It went the other way: `EnabledNetwork` stayed a

@@ -34,7 +34,6 @@ import {
 import TrezorConnect, {
     BLOCKCHAIN_EVENT,
     type CallMethodPayload,
-    type CreateLoggerDep,
     DEVICE,
     DEVICE_EVENT,
     TRANSPORT_EVENT,
@@ -42,6 +41,7 @@ import TrezorConnect, {
     UI_REQUEST,
 } from '@trezor/connect';
 import { asCoinSymbol } from '@trezor/connect-common';
+import type { CreateLoggerDep } from '@trezor/logger';
 import { getSynchronize, isArrayMember } from '@trezor/utils';
 
 import { blacklist } from './blacklist';
