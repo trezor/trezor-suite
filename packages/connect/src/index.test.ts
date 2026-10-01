@@ -1,3 +1,4 @@
+import { createLoggerMock } from '@trezor/logger/mocks/loggerMock';
 import type { Transport } from '@trezor/transport-common';
 
 const core = { handleMessage: jest.fn() };
@@ -74,11 +75,9 @@ describe('@trezor/connect node entry point', () => {
     });
 
     it('passes the manifest-derived id and the injected logger to the defaults', async () => {
-        const logger = { debug: jest.fn(), log: jest.fn(), warn: jest.fn(), error: jest.fn() };
-        const createLogger = jest.fn(() => logger as never);
-        await TrezorConnect.init({ manifest, createLogger });
+        await TrezorConnect.init({ manifest, createLogger: createLoggerMock });
 
-        expect(createLogger).toHaveBeenCalledWith('@trezor/transport');
+        expect(createLoggerMock).toHaveBeenCalledWith('@trezor/transport');
         // `id` is protected on AbstractTransport; it is the bridge session owner shown to the user.
         expect(
             initTransports().map(transport => (transport as unknown as { id: string }).id),

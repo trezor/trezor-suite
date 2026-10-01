@@ -1,9 +1,9 @@
+import type { Logger } from '@trezor/logger';
 import { arrayPartition } from '@trezor/utils';
 import { type Network, address as addressBjs } from '@trezor/utxo-lib';
 
 import * as middleware from './middleware';
 import { type EnhancedVinVout, type Transaction } from '../types/backend';
-import { type Logger } from '../types/logger';
 import { type AnalyzeExternalVinVout, type AnalyzeInternalVinVout } from '../types/middleware';
 
 interface AnalyzeTransactionsOptions {
