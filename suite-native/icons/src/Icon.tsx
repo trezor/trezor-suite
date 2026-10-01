@@ -1,5 +1,6 @@
 import { useMemo } from 'react';
 import { Text, type TextProps } from 'react-native';
+// eslint-disable-next-line @typescript-eslint/no-restricted-imports -- The icon font needs raw Animated.Text; importing atoms would create an atoms-to-icons dependency cycle.
 import Animated, { type SharedValue, useAnimatedStyle } from 'react-native-reanimated';
 
 import { MOBILE_ICON_FONT_NAME } from '@suite-common/icons';
