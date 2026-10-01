@@ -412,11 +412,17 @@ export const selectTradingProviderCompanyName = (
 export const selectTradingBuyQuotesRequest = (state: TradingRootState) =>
     state.wallet.trading.buy.quotesRequest;
 
+export const selectTradingBuyFormValues = (state: TradingRootState) =>
+    state.wallet.trading.buy.formValues;
+
 export const selectTradingBuyIsFromRedirect = (state: TradingRootState) =>
     state.wallet.trading.buy.isFromRedirect;
 
 export const selectTradingExchangeQuotesRequest = (state: TradingRootState) =>
     state.wallet.trading.exchange.quotesRequest;
+
+export const selectTradingExchangeFormValues = (state: TradingRootState) =>
+    state.wallet.trading.exchange.formValues;
 
 export const selectTradingExchangeIsFromRedirect = (state: TradingRootState) =>
     state.wallet.trading.exchange.isFromRedirect;
@@ -426,6 +432,9 @@ export const selectTradingExchangeQuotes = (state: TradingRootState) =>
 
 export const selectTradingSellQuotesRequest = (state: TradingRootState) =>
     state.wallet.trading.sell.quotesRequest;
+
+export const selectTradingSellFormValues = (state: TradingRootState) =>
+    state.wallet.trading.sell.formValues;
 
 export const selectTradingSellIsFromRedirect = (state: TradingRootState) =>
     state.wallet.trading.sell.isFromRedirect;

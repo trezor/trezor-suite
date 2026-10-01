@@ -15,6 +15,7 @@ import {
     selectTradingComposedTransactionInfo,
     selectTradingExchangeActiveTrade,
     selectTradingExchangeAmountLimits,
+    selectTradingExchangeFormValues,
     selectTradingExchangeInfo,
     selectTradingExchangeIsFromRedirect,
     selectTradingExchangeIsLoading,
@@ -52,6 +53,7 @@ export const useTradingExchangeForm = (): TradingExchangeFormContextProps => {
     const { dispatch } = useServices(injectDispatch);
     const isFromRedirect = useSelector(selectTradingExchangeIsFromRedirect);
     const transactionId = useSelector(selectTradingExchangeTransactionId);
+    const savedFormValues = useSelector(selectTradingExchangeFormValues);
     const selectedQuote = useSelector(selectTradingExchangeSelectedQuote);
     const amountLimits = useSelector(selectTradingExchangeAmountLimits);
     const isLoading = useSelector(selectTradingExchangeIsLoading);
@@ -75,10 +77,11 @@ export const useTradingExchangeForm = (): TradingExchangeFormContextProps => {
     const network = symbol ? getNetwork(symbol) : undefined;
 
     const { defaultValues } = useTradingExchangeFormDefaultValues(accountKey, cryptoId);
+    const initialValues = savedFormValues ?? defaultValues;
 
     const methods = useForm<TradingExchangeFormProps>({
         mode: 'onChange',
-        defaultValues,
+        defaultValues: initialValues,
     });
 
     const { reset, register, formState, control } = methods;
@@ -206,7 +209,7 @@ export const useTradingExchangeForm = (): TradingExchangeFormContextProps => {
     useTradingFormReset({
         isInfoReady: !!exchangeInfo?.providerInfos,
         reset,
-        defaultValues,
+        defaultValues: initialValues,
     });
 
     // Subscribe to blocks for Solana, since they are not fetched globally

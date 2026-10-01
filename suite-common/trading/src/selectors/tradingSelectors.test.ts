@@ -33,6 +33,7 @@ import {
     selectTradingActiveSection,
     selectTradingBuy,
     selectTradingBuyAmountLimits,
+    selectTradingBuyFormValues,
     selectTradingBuyInfo,
     selectTradingBuyIsFromRedirect,
     selectTradingBuyIsLoading,
@@ -62,6 +63,7 @@ import {
     selectTradingExchangeDexQuoteApprovalPrefetchLoadingByQuoteId,
     selectTradingExchangeDexQuotes,
     selectTradingExchangeFormStep,
+    selectTradingExchangeFormValues,
     selectTradingExchangeInfo,
     selectTradingExchangeIsFromRedirect,
     selectTradingExchangeIsLoading,
@@ -95,6 +97,7 @@ import {
     selectTradingSellActiveTrade,
     selectTradingSellAmountLimits,
     selectTradingSellFormStep,
+    selectTradingSellFormValues,
     selectTradingSellInfo,
     selectTradingSellIsFromRedirect,
     selectTradingSellLastErrorMessage,
@@ -635,6 +638,10 @@ describe('tradingSelectors', () => {
         expect(selectTradingBuyQuotesRequest(state)).toBe(state.wallet.trading.buy.quotesRequest);
     });
 
+    it('selectTradingBuyFormValues should return correct data', () => {
+        expect(selectTradingBuyFormValues(state)).toBe(state.wallet.trading.buy.formValues);
+    });
+
     it('selectTradingBuyIsFromRedirect should return correct data', () => {
         state.wallet.trading.buy.isFromRedirect = true;
 
@@ -645,6 +652,16 @@ describe('tradingSelectors', () => {
         expect(selectTradingExchangeQuotesRequest(state)).toBe(
             state.wallet.trading.exchange.quotesRequest,
         );
+    });
+
+    it('selectTradingExchangeFormValues should return correct data', () => {
+        expect(selectTradingExchangeFormValues(state)).toBe(
+            state.wallet.trading.exchange.formValues,
+        );
+    });
+
+    it('selectTradingSellFormValues should return correct data', () => {
+        expect(selectTradingSellFormValues(state)).toBe(state.wallet.trading.sell.formValues);
     });
 
     it('selectTradingExchangeIsFromRedirect should return correct data', () => {
