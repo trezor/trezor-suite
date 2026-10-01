@@ -35,8 +35,9 @@ yarn workspace @trezor/wardd start [--port 21329] [--data-dir ~/.trezor-ward] \
     - the development WM's state is `<data-dir>/dev-wm.json`, so a restart isn't read as a WM swap;
     - `--relay` replicates the store through an Evolu relay.
 
-Run it as a single process (`node --import tsx src/cli.ts`, as `start` does). The `tsx` binary
-spawns a child `node`, and stopping it would leave wardd running.
+`start` runs wardd as one `node` process (`node --import tsx src/cli.ts`), and SIGINT or SIGTERM
+stops it cleanly. Supervise that process directly, not a wrapper such as `yarn` or the `tsx` binary:
+those spawn a child `node`, and stopping the wrapper alone leaves wardd running.
 
 ## End to end
 
