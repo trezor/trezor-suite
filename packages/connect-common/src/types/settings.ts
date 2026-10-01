@@ -60,9 +60,7 @@ export interface ConnectSettings {
     // (no-op) — there is no internal fallback.
     // TODO(logger-unification): unify connect's logger with the rest of the app's loggers.
     createLogger?: CreateLogger;
-    transportReconnect?: boolean;
     transports?: ConnectSettingsTransport[];
-    pendingTransportEvent?: boolean;
     // URL for binary files such as firmware, may be local or remote
     binFilesBaseUrl?: string;
     // enable firmware hash check automatically when device connects. Requires binFilesBaseUrl to be set.

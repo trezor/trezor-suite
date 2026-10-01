@@ -949,12 +949,12 @@ export class Core extends EventEmitter {
             throw error;
         }
 
-        const { transports, pendingTransportEvent, transportReconnect } = settingsStore.get();
+        const { transports } = settingsStore.get();
 
         this.on(CORE_EVENT, onCoreEvent);
 
         try {
-            this.deviceList.init({ transports, pendingTransportEvent, transportReconnect });
+            this.deviceList.init({ transports });
         } catch (error) {
             this.sendCoreMessage(createTransportMessage(TRANSPORT.ERROR, { error }));
             throw error;
@@ -963,10 +963,10 @@ export class Core extends EventEmitter {
 }
 
 const resetTransports = async ({ deviceList, sendCoreMessage }: CoreContext) => {
-    const { transports, pendingTransportEvent, transportReconnect } = settingsStore.get();
+    const { transports } = settingsStore.get();
 
     try {
-        await deviceList.init({ transports, pendingTransportEvent, transportReconnect });
+        await deviceList.init({ transports });
     } catch (error) {
         // do nothing
         sendCoreMessage(createTransportMessage(TRANSPORT.ERROR, { error }));

@@ -27,7 +27,6 @@ const { createTestTransport } = global.JestMocks;
 const getSettings = (partial: Partial<ConnectSettings> = {}) =>
     parseConnectSettings({
         transports: [createTestTransport()],
-        transportReconnect: false,
         ...partial,
     });
 
