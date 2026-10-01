@@ -23,6 +23,8 @@ export type CreateLogger = (prefix: string) => Logger;
 
 export type CreateLoggerDep = { createLogger?: CreateLogger };
 
+export type LogLevel = keyof Logger;
+
 export class Log implements Logger {
     prefix: string;
     enabled: boolean;
