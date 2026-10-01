@@ -7,6 +7,7 @@ import type { ConnectPopupResponse } from '@suite/desktop-app-api';
 import { type Deferred, createDeferred } from '@trezor/utils';
 
 import { ipcMain } from '../ipcMain';
+import type { ILogger } from './logger';
 
 const LOG_PREFIX = 'connect-popup-messages';
 
@@ -44,11 +45,9 @@ export const setAppInit = (deferred: Deferred<void> | undefined) => {
  * Register the shared IPC handlers for connect-popup/response and connect-popup/ready.
  * Must be called exactly once, before any connect-popup calls are made.
  */
-export const initConnectPopupResponseHandler = () => {
+export const initConnectPopupResponseHandler = (logger: ILogger) => {
     if (initialized) return;
     initialized = true;
-
-    const { logger } = global;
 
     ipcMain.handle('connect-popup/response', (_, response: ConnectPopupResponse) => {
         const success = (response as { success?: boolean })?.success;

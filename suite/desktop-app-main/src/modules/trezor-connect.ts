@@ -74,8 +74,8 @@ export const initBackground: ModuleInitBackground = ({
     mainThreadEmitter,
     store,
     powerSaveBlocker,
+    logger,
 }) => {
-    const { logger } = global;
     let createLogger: ConnectSettings['createLogger'];
 
     logger.info(SERVICE_NAME, `Starting service`);
@@ -111,7 +111,7 @@ export const initBackground: ModuleInitBackground = ({
                 if (method === 'init') {
                     logger.info(SERVICE_NAME, `Retrieving stored firmwares`);
                     const [settings] = params;
-                    const localFirmwares = await getStoredFirmwares();
+                    const localFirmwares = await getStoredFirmwares(logger);
                     if (settings.thp) {
                         // upgrade THP hostName with codesign (dev/local) suffix
                         settings.thp.appName = APP_NAME;

@@ -73,6 +73,7 @@ type ExposeConnectWsParams = {
     mainWindowProxy: Dependencies['mainWindowProxy'];
     httpReceiver: ReturnType<typeof createHttpReceiver>;
     store: Dependencies['store'];
+    logger: Dependencies['logger'];
 };
 
 export const exposeConnectWs = ({
@@ -80,9 +81,8 @@ export const exposeConnectWs = ({
     mainWindowProxy,
     httpReceiver,
     store,
+    logger,
 }: ExposeConnectWsParams) => {
-    const { logger } = global;
-
     const wss = new WebSocketServer({
         noServer: true,
     });
@@ -237,7 +237,10 @@ export const exposeConnectWs = ({
                                   name: processOnPort.name,
                                   fullPath: processOnPort.fullPath,
                                   warning: !!processOnPort.warning,
-                                  icon: await getProcessIcon(processOnPort.fullPath),
+                                  icon: await getProcessIcon({
+                                      path: processOnPort.fullPath,
+                                      logger,
+                                  }),
                               }
                             : undefined,
                         manifest: {

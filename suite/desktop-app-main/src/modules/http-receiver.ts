@@ -7,12 +7,12 @@ import { isMacOs, isWindows } from '@trezor/env-utils';
 import { isArrayMember } from '@trezor/utils';
 
 import { ipcMain } from '../ipcMain';
+import { type ModuleInitBackground } from './module';
 import { restartApp } from '../libs/app-utils';
 import { initConnectPopupResponseHandler } from '../libs/connect-popup-messages';
 import { exposeConnectWs } from '../libs/connect-ws';
 import { createHttpReceiver } from '../libs/http-receiver';
 import { app } from '../typed-electron';
-import { type ModuleInitBackground } from './module';
 
 export const SERVICE_NAME = 'http-receiver';
 
@@ -26,8 +26,8 @@ export const initBackground: ModuleInitBackground = ({
     mainWindowProxy,
     mainThreadEmitter,
     store,
+    logger,
 }) => {
-    const { logger } = global;
     let httpReceiver: ReturnType<typeof createHttpReceiver> | null = null;
 
     const onLoad = async () => {
@@ -39,6 +39,7 @@ export const initBackground: ModuleInitBackground = ({
         // External request handler.
         // Note that if we override the `port` to something else than 21335, it might break google oauth
         const receiver = createHttpReceiver({
+            logger,
             getStatus: () => ({
                 appVersion: app.getVersion(),
                 connectPopupWsEnabled: connectPopupEnabled(),
@@ -100,15 +101,21 @@ export const initBackground: ModuleInitBackground = ({
         ipcMain.handle('connect-popup/enabled', () => connectPopupEnabled());
         ipcMain.handle('connect-popup/set-enabled', (_, enabled: boolean) => {
             store.setConnectSettings({ disableWs: !enabled });
-            restartApp();
+            restartApp({ logger });
         });
         // Initialize the shared connect-popup response handler. This must be called
         // before any connect-popup calls are made, regardless of whether WS is enabled,
         // so that MCP and other transports can also use the connect-popup flow.
-        initConnectPopupResponseHandler();
+        initConnectPopupResponseHandler(logger);
 
         if (connectPopupEnabled()) {
-            exposeConnectWs({ mainThreadEmitter, httpReceiver: receiver, mainWindowProxy, store });
+            exposeConnectWs({
+                mainThreadEmitter,
+                httpReceiver: receiver,
+                mainWindowProxy,
+                store,
+                logger,
+            });
         }
 
         logger.info(SERVICE_NAME, 'Starting server');

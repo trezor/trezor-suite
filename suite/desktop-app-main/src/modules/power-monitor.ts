@@ -4,7 +4,7 @@ import type { ModuleInit } from './module';
 
 export const SERVICE_NAME = 'power-monitor';
 
-export const init: ModuleInit = ({ mainWindowProxy }) => {
+export const init: ModuleInit = ({ mainWindowProxy, logger }) => {
     powerMonitor.on('lock-screen', () => {
         logger.info('power-monitor', 'Lock screen event detected');
     });
