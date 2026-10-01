@@ -76,11 +76,6 @@ const cardanoSerializationLibPath = path.resolve(
     '../../networks/cardano/network-cardano/generated/csl-asmjs/cardano_serialization_lib.js',
 );
 
-// Transforming the multi-megabyte Cardano Serialization Lib asm.js file exceeds the default worker
-// heap (4.5 GB). Worker threads created after this call inherit the cap; memory is allocated only
-// as needed, not reserved up front.
-require('v8').setFlagsFromString('--max-old-space-size=12288');
-
 /**
  * Metro configuration
  * https://facebook.github.io/metro/docs/configuration
@@ -146,6 +141,10 @@ const config = {
                 filePath: require.resolve(filePath),
                 type: 'sourceFile',
             });
+
+            if (moduleName === '@trezor/network-cardano/runtime') {
+                return getSourceFile('./e2e/mocks/cardano-runtime.js');
+            }
 
             if (
                 moduleName === '@emurgo/cardano-serialization-lib-nodejs' ||

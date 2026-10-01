@@ -86,16 +86,9 @@ jobs:
           role-to-assume: arn:aws:iam::538326561891:role/gh_actions_trezor_suite_dev_deploy
           aws-region: eu-central-1
 
-      - name: Check if native build exists in AWS bucket
+      - name: Force fresh APK build for memory experiment
         id: s3_build_cache
-        run: |
-          if [ "$GITHUB_EVENT_NAME" = "workflow_dispatch" ]; then
-            echo "hit=false" >> "$GITHUB_OUTPUT"
-          elif aws s3 ls s3://dev.suite.sldev.cz/suite-mobile/${{ steps.expo-fingerprint.outputs.HASH }} --summarize; then
-            echo "hit=true" >> "$GITHUB_OUTPUT"
-          else
-            echo "hit=false" >> "$GITHUB_OUTPUT"
-          fi
+        run: echo "hit=false" >> "$GITHUB_OUTPUT"
 
       ################ CACHE HIT - REPLACE JS BUNDLE ONLY ##############
 
@@ -198,11 +191,6 @@ jobs:
           monitor_pid=$!
           trap 'kill "$monitor_pid" "$kernel_monitor_pid" 2>/dev/null || true' EXIT
           yarn exec detox build --configuration android.emu.release
-
-      - name: save .apk to the aws s3 bucket
-        if: steps.s3_build_cache.outputs.hit == 'false' && github.event_name != 'workflow_dispatch'
-        working-directory: ./suite-native/app/android/app/build/outputs
-        run: aws s3 cp . s3://dev.suite.sldev.cz/suite-mobile/${{ steps.expo-fingerprint.outputs.HASH }}/ --recursive
 
       - name: Upload Android build artifact
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
