@@ -5,6 +5,7 @@ import { U_INT_32 } from '@suite-common/wallet-constants';
 import { isInteger } from '@suite-common/wallet-utils';
 import { Banner, Button, Card, Column, Input, Note, Row, Switch } from '@trezor/components';
 import { WarningIcon } from '@trezor/icons';
+import { STELLAR_TEXT_MEMO_MAX_BYTES } from '@trezor/network-stellar/constants';
 import { BigNumber } from '@trezor/utils';
 
 import { useGuideOpenNode } from 'src/hooks/guide';
@@ -100,7 +101,7 @@ export const DestinationTag = ({ networkSymbol }: DestinationTagProps) => {
                             maxLength={
                                 networkType === 'ripple'
                                     ? formInputsMaxLength.xrpDestinationTag
-                                    : formInputsMaxLength.stellarTextMemo
+                                    : STELLAR_TEXT_MEMO_MAX_BYTES
                             }
                             label={<Translation id="DESTINATION_TAG" />}
                             bottomText={error?.message || null}

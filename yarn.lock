@@ -14195,6 +14195,7 @@ __metadata:
     "@trezor/connect": "workspace:*"
     "@trezor/connect-common": "workspace:*"
     "@trezor/network-solana": "workspace:*"
+    "@trezor/network-stellar": "workspace:*"
     "@trezor/react-utils": "workspace:*"
     "@trezor/requirements": "workspace:*"
     "@trezor/styles-native": "workspace:*"

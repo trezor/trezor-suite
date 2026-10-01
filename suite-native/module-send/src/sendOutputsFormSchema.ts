@@ -1,6 +1,6 @@
 import { isAddressDeprecated, isBech32AddressUppercase } from '@suite-common/address';
 import { type AddressValidator, type NamedAddressSupport } from '@suite-common/networks';
-import { formInputsMaxLength, yup } from '@suite-common/validators';
+import { yup } from '@suite-common/validators';
 import { type NetworkSymbol, getDisplaySymbol, getNetworkType } from '@suite-common/wallet-config';
 import { U_INT_32 } from '@suite-common/wallet-constants';
 import { type FeeInfo, type Output } from '@suite-common/wallet-types';
@@ -11,6 +11,7 @@ import {
 } from '@suite-common/wallet-utils';
 import { type FeeLevelsMaxAmount } from '@suite-native/transaction-management';
 import { SOLANA_MEMO_MAX_BYTES } from '@trezor/network-solana/constants';
+import { STELLAR_TEXT_MEMO_MAX_BYTES } from '@trezor/network-stellar/constants';
 import { BigNumber, isNotNullOrUndefined } from '@trezor/utils';
 
 export type SendFormFormContext = {
@@ -409,7 +410,7 @@ export const sendOutputsFormValidationSchema = yup.object({
                 const destinationTagMaxLength = (() => {
                     switch (networkType) {
                         case 'stellar':
-                            return formInputsMaxLength.stellarTextMemo;
+                            return STELLAR_TEXT_MEMO_MAX_BYTES;
                         case 'solana':
                             return SOLANA_MEMO_MAX_BYTES;
                         default:
