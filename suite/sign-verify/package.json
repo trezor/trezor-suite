@@ -13,6 +13,7 @@
     },
     "dependencies": {
         "@hookform/resolvers": "^5.4.0",
+        "@suite-common/analytics": "workspace:*",
         "@suite-common/dependency-injection": "workspace:*",
         "@suite-common/device": "workspace:*",
         "@suite-common/networks": "workspace:*",
@@ -26,8 +27,8 @@
         "@suite-common/wallet-types": "workspace:*",
         "@suite-common/wallet-utils": "workspace:*",
         "@suite/address": "workspace:*",
-        "@suite/analytics": "workspace:*",
         "@suite/intl": "workspace:*",
+        "@trezor/analytics-uploader": "workspace:*",
         "@trezor/components": "workspace:*",
         "@trezor/connect-common": "workspace:*",
         "@trezor/dom-utils": "workspace:*",

@@ -3,6 +3,9 @@
     "compilerOptions": { "outDir": "libDev" },
     "references": [
         {
+            "path": "../../../suite-common/analytics"
+        },
+        {
             "path": "../../../suite-common/dependency-injection"
         },
         {
@@ -14,7 +17,6 @@
         {
             "path": "../../../suite-common/wallet-types"
         },
-        { "path": "../../../suite/analytics" },
         { "path": "../../../suite/device" },
         { "path": "../../../suite/intl" },
         { "path": "../../../suite/sign-verify" },
@@ -26,10 +28,10 @@
         },
         { "path": "../network-ethereum" },
         {
-            "path": "../../network-module/network-module"
+            "path": "../../network-module/network-module-suite-types"
         },
         {
-            "path": "../../network-module/network-module-suite-types"
+            "path": "../../network-module/network-module-types"
         },
         {
             "path": "../../../suite-common/device"
@@ -45,6 +47,9 @@
         },
         {
             "path": "../../../suite-common/wallet-core"
+        },
+        {
+            "path": "../../../packages/analytics-uploader"
         }
     ]
 }

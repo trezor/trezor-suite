@@ -13,7 +13,7 @@
     "dependencies": {
         "@suite-common/wallet-types": "workspace:*",
         "@suite/intl": "workspace:*",
-        "@trezor/network-module": "workspace:*",
+        "@trezor/network-module-types": "workspace:*",
         "react": "19.2.3"
     },
     "devDependencies": {

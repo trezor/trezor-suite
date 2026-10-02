@@ -1,6 +1,6 @@
 import { type Dispatch } from 'redux';
 
-import { type DesktopAnalyticsDep } from '@suite/analytics';
+import { type AnalyticsDep } from '@suite-common/analytics';
 import {
     type SignVerifyRootState,
     asError,
@@ -26,15 +26,13 @@ export type CardanoSignVerifyConnectDep = GetTrezorConnectDep<'cardanoSignMessag
 
 type SignThunkState = SignVerifyRootState;
 
-type SignThunkDeps = WithServices<DesktopAnalyticsDep>;
+type SignThunkDeps = WithServices<AnalyticsDep>;
 
 type CardanoAccount = AccountWithNetworkType<'cardano'>;
 
 export type CardanoSignVerifyActions = ReturnType<typeof createCardanoSignVerifyActions>;
 
-export const createCardanoSignVerifyActions = ({
-    getTrezorConnect,
-}: CardanoSignVerifyConnectDep) => {
+export const createCardanoSignVerifyActions = (deps: CardanoSignVerifyConnectDep) => {
     const signThunk =
         (
             account: CardanoAccount,
@@ -59,7 +57,7 @@ export const createCardanoSignVerifyActions = ({
                           }
                         : getAddressParameters(account, serializedPath);
 
-                const response = await getTrezorConnect().cardanoSignMessage({
+                const response = await deps.getTrezorConnect().cardanoSignMessage({
                     device,
                     path,
                     payload,

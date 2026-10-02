@@ -1,5 +1,5 @@
 import { supportedCardanoNetworks } from '@trezor/network-cardano/constants';
-import { asNetworkSymbols } from '@trezor/network-module';
+import { asNetworkSymbols } from '@trezor/network-module-types';
 import type { SuiteNetworkModule } from '@trezor/network-module-suite-types';
 
 import { CardanoSignVerify } from './CardanoSignVerify';

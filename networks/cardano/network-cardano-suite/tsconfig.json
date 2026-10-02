@@ -3,6 +3,9 @@
     "compilerOptions": { "outDir": "libDev" },
     "references": [
         {
+            "path": "../../../suite-common/analytics"
+        },
+        {
             "path": "../../../suite-common/dependency-injection"
         },
         {
@@ -20,7 +23,6 @@
         {
             "path": "../../../suite-common/wallet-utils"
         },
-        { "path": "../../../suite/analytics" },
         { "path": "../../../suite/device" },
         { "path": "../../../suite/intl" },
         { "path": "../../../suite/sign-verify" },
@@ -32,10 +34,10 @@
         },
         { "path": "../network-cardano" },
         {
-            "path": "../../network-module/network-module"
+            "path": "../../network-module/network-module-suite-types"
         },
         {
-            "path": "../../network-module/network-module-suite-types"
+            "path": "../../network-module/network-module-types"
         },
         { "path": "../../../packages/protobuf" },
         {
@@ -52,6 +54,9 @@
         },
         {
             "path": "../../../suite-common/wallet-core"
+        },
+        {
+            "path": "../../../packages/analytics-uploader"
         }
     ]
 }

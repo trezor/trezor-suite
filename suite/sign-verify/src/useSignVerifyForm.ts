@@ -17,8 +17,6 @@ import { yup } from '@suite-common/validators';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { type Account } from '@suite-common/wallet-types';
 
-
-
 type SignVerifyContext = {
     addressValidator: AddressValidator;
     isSignPage: boolean;

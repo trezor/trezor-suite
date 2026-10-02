@@ -21,7 +21,7 @@ import {
 } from '@suite/sign-verify';
 import { useServices } from '@suite-common/dependency-injection';
 import { type ReceiveRootState, selectTouchedAddresses } from '@suite-common/receive';
-import { selectDispatch } from '@suite-common/redux-utils';
+import { injectDispatch } from '@suite-common/redux-utils';
 import { yup } from '@suite-common/validators';
 import { type AccountWithNetworkType } from '@suite-common/wallet-types';
 import { Button, Card, Column } from '@trezor/components';
@@ -64,7 +64,7 @@ const CardanoSignVerifyForm = ({
 }: CardanoSignVerifyFormProps) => {
     const [outcome, setOutcome] = useState<SignVerifyOutcome>('idle');
 
-    const { dispatch } = useServices(selectDispatch);
+    const { dispatch } = useServices(injectDispatch);
 
     const {
         control,

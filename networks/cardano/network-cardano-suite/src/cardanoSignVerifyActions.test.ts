@@ -1,6 +1,5 @@
-import { events } from '@suite/analytics';
-import { mockDesktopAnalytics } from '@suite/analytics/mocks';
 import { type SignVerifyRootState } from '@suite/sign-verify';
+import { type AnalyticsSharedEvents, events } from '@suite-common/analytics';
 import { deviceInitialState } from '@suite-common/device';
 import { type TrezorDevice } from '@suite-common/suite-types';
 import { mockSuiteDevice } from '@suite-common/suite-types/mocks';
@@ -9,6 +8,7 @@ import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { initialWalletSettingsState } from '@suite-common/wallet-core';
 import { type AccountWithNetworkType } from '@suite-common/wallet-types';
 import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
+import { mockAnalytics } from '@trezor/analytics-uploader/mocks';
 
 import { createCardanoSignVerifyActions } from './cardanoSignVerifyActions';
 
@@ -43,13 +43,13 @@ const createState = (selectedDevice: TrezorDevice | undefined): SignVerifyRootSt
 
 describe('Cardano sign actions', () => {
     let dispatch: jest.Mock;
-    let deps: { services: { analytics: ReturnType<typeof mockDesktopAnalytics> } };
+    let deps: { services: { analytics: ReturnType<typeof mockAnalytics<AnalyticsSharedEvents>> } };
 
     const getState = () => createState(CONNECTED_DEVICE);
 
     beforeEach(() => {
         dispatch = jest.fn();
-        deps = { services: { analytics: mockDesktopAnalytics() } };
+        deps = { services: { analytics: mockAnalytics<AnalyticsSharedEvents>() } };
     });
 
     it('reports the raw public key when the COSE format is not chosen', async () => {

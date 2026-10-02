@@ -1,4 +1,5 @@
-import { type DesktopAnalytics, events } from '@suite/analytics';
+import { type AnalyticsSharedEvents, events } from '@suite-common/analytics';
+import { type Analytics } from '@trezor/analytics-uploader';
 
 type SignMessageAttributes = {
     status: 'success' | 'error' | 'cancelled';
@@ -19,10 +20,12 @@ type VerifyMessageAttributes = {
     hex: boolean;
 };
 
-export const reportSignMessage = (analytics: DesktopAnalytics, payload: SignMessageAttributes) =>
-    analytics.report({ type: events.coinSignMessageEvent.name, payload });
+export const reportSignMessage = (
+    analytics: Analytics<AnalyticsSharedEvents>,
+    payload: SignMessageAttributes,
+) => analytics.report({ type: events.coinSignMessageEvent.name, payload });
 
 export const reportVerifyMessage = (
-    analytics: DesktopAnalytics,
+    analytics: Analytics<AnalyticsSharedEvents>,
     payload: VerifyMessageAttributes,
 ) => analytics.report({ type: events.coinVerifyMessageEvent.name, payload });

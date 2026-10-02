@@ -1,4 +1,4 @@
-import type { NetworkSymbol } from '@trezor/network-module';
+import type { NetworkSymbol } from '@trezor/network-module-types';
 import type { SuiteNetworkModule } from '@trezor/network-module-suite-types';
 import { isArrayMember, typedObjectValues } from '@trezor/utils';
 
@@ -45,7 +45,7 @@ export const createSuiteNetworkModuleRepository = (
     };
 };
 
-export const selectSuiteNetworkModuleRepositoryDep = (
+export const injectSuiteNetworkModuleRepository = (
     services: any,
 ): SuiteNetworkModuleRepositoryDep => ({
     suiteNetworkModuleRepository: services.suiteNetworkModuleRepository,

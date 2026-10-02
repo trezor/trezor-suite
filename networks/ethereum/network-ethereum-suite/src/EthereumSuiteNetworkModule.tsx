@@ -1,5 +1,5 @@
 import { supportedEthereumNetworks } from '@trezor/network-ethereum/constants';
-import { asNetworkSymbols } from '@trezor/network-module';
+import { asNetworkSymbols } from '@trezor/network-module-types';
 import type { SuiteNetworkModule } from '@trezor/network-module-suite-types';
 
 import { EthereumSignVerify } from './EthereumSignVerify';

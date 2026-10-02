@@ -1,6 +1,6 @@
 import { type Dispatch } from 'redux';
 
-import { type DesktopAnalyticsDep } from '@suite/analytics';
+import { type AnalyticsDep } from '@suite-common/analytics';
 import {
     type SignVerifyRootState,
     type VerifyMessageResult,
@@ -29,23 +29,21 @@ type ShowAddressThunkState = SignVerifyRootState;
 
 type SignThunkState = SignVerifyRootState;
 
-type SignThunkDeps = WithServices<DesktopAnalyticsDep>;
+type SignThunkDeps = WithServices<AnalyticsDep>;
 
 type VerifyThunkState = SignVerifyRootState;
 
-type VerifyThunkDeps = WithServices<DesktopAnalyticsDep>;
+type VerifyThunkDeps = WithServices<AnalyticsDep>;
 
 export type BitcoinSignVerifyActions = ReturnType<typeof createBitcoinSignVerifyActions>;
 
-export const createBitcoinSignVerifyActions = ({
-    getTrezorConnect,
-}: BitcoinSignVerifyConnectDep) => {
+export const createBitcoinSignVerifyActions = (deps: BitcoinSignVerifyConnectDep) => {
     const showAddressThunk =
         (account: Account, address: string, path: string) =>
         (dispatch: Dispatch, getState: () => ShowAddressThunkState) =>
             getSignVerifyStateParams(account, getState)
                 .then(({ device, coin, chunkify }) =>
-                    getTrezorConnect().getAddress({
+                    deps.getTrezorConnect().getAddress({
                         device,
                         address,
                         path,
@@ -78,7 +76,7 @@ export const createBitcoinSignVerifyActions = ({
 
             try {
                 const { device, coin } = await getSignVerifyStateParams(account, getState);
-                const response = await getTrezorConnect().signMessage({
+                const response = await deps.getTrezorConnect().signMessage({
                     device,
                     path,
                     coin: asCoinSymbol(coin),
@@ -133,7 +131,7 @@ export const createBitcoinSignVerifyActions = ({
 
             try {
                 const { device, coin } = await getSignVerifyStateParams(account, getState);
-                const response = await getTrezorConnect().verifyMessage({
+                const response = await deps.getTrezorConnect().verifyMessage({
                     device,
                     address,
                     coin: asCoinSymbol(coin),
