@@ -23,7 +23,13 @@ export default withNextra({
     images: {
         unoptimized: true,
     },
-    transpilePackages: ['codemirror-json-schema', 'json-schema-library', '@trezor/components'],
+    transpilePackages: [
+        'codemirror-json-schema',
+        'json-schema-library',
+        '@trezor/components',
+        '@trezor/network-module-types',
+        '@trezor/product-components',
+    ],
     compiler: {
         styledComponents: true,
     },

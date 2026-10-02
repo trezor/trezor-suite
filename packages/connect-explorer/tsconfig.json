@@ -29,6 +29,10 @@
         { "path": "../connect-webextension" },
         { "path": "../device-authenticity" },
         { "path": "../icons" },
+        {
+            "path": "../../networks/network-module/network-module-types"
+        },
+        { "path": "../product-components" },
         { "path": "../protobuf" },
         { "path": "../schema-utils" },
         { "path": "../theme" },
