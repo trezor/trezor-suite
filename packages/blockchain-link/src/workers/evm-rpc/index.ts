@@ -17,7 +17,7 @@ import { pushTransaction } from './handlers/pushTransaction';
 import { rpcCall } from './handlers/rpcCall';
 import { cleanupSubscriptions, subscribe, unsubscribe } from './handlers/subscribe';
 import type { Request } from './types';
-import { type AnonRpcClient, createAnonRpcClient } from './utils/anonRpcClient';
+import { type AnonRpcLease, anonRpcClientPool } from './utils/anonRpcClient';
 import { getChainId } from './utils/client';
 import { getTransport, getTransportType } from './utils/transportType';
 
@@ -53,16 +53,16 @@ const onRequest = (request: Request<MessageTypes.Message>) => {
 };
 
 export class EvmRpcWorker extends BaseWorker<PublicClient> {
-    private anonRpcClient?: AnonRpcClient;
+    private anonRpcLease?: AnonRpcLease;
 
-    private closeAnonRpcClient() {
-        this.anonRpcClient?.close();
-        this.anonRpcClient = undefined;
+    private releaseAnonRpcLease() {
+        this.anonRpcLease?.release();
+        this.anonRpcLease = undefined;
     }
 
     cleanup() {
         cleanupSubscriptions(this.state);
-        this.closeAnonRpcClient();
+        this.releaseAnonRpcLease();
         super.cleanup();
     }
 
@@ -86,12 +86,12 @@ export class EvmRpcWorker extends BaseWorker<PublicClient> {
         }
 
         this.state.url = url;
-        this.anonRpcClient = anonRpc ? await createAnonRpcClient(anonRpc) : undefined;
+        this.anonRpcLease = anonRpc ? await anonRpcClientPool.acquire(anonRpc) : undefined;
         const client = createPublicClient({
-            transport: this.anonRpcClient
+            transport: this.anonRpcLease
                 ? http(url, {
                       batch: { batchSize: RPC_BATCH_SIZE },
-                      fetchFn: this.anonRpcClient.fetch,
+                      fetchFn: this.anonRpcLease.fetch,
                   })
                 : transport,
         });
@@ -100,9 +100,9 @@ export class EvmRpcWorker extends BaseWorker<PublicClient> {
             // Doubles as the connectivity probe, and primes the cache the handlers read from.
             await getChainId(client);
         } catch (error) {
-            // On failure the next endpoint is tried, and each attempt would otherwise leave its
-            // sandbox running.
-            this.closeAnonRpcClient();
+            // The endpoint failed, not necessarily the shared anon-rpc client, so it is released
+            // rather than closed before the next endpoint is tried.
+            this.releaseAnonRpcLease();
             throw error;
         }
 
