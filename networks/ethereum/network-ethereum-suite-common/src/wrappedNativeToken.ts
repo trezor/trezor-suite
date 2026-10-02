@@ -5,10 +5,9 @@ import {
     isWrappedNativeToken as isEthereumWrappedNativeToken,
     isSupportedEthereumNetwork,
 } from '@trezor/network-ethereum/constants';
+import type { NetworkSymbol } from '@trezor/network-module-types';
 
-// TODO(#30663): Replace `string` with the shared branded `NetworkSymbol` after
-// #30561 is merged.
-export const getWrappedNativeToken = (networkSymbol: string) => {
+export const getWrappedNativeToken = (networkSymbol: NetworkSymbol) => {
     if (!isSupportedEthereumNetwork(networkSymbol)) {
         return undefined;
     }
@@ -16,9 +15,7 @@ export const getWrappedNativeToken = (networkSymbol: string) => {
     return getEthereumWrappedNativeToken(networkSymbol);
 };
 
-// TODO(#30663): Replace `string` with the shared branded `NetworkSymbol` after
-// #30561 is merged.
-export const getWrappedNativeAddress = (networkSymbol: string) => {
+export const getWrappedNativeAddress = (networkSymbol: NetworkSymbol) => {
     if (!isSupportedEthereumNetwork(networkSymbol)) {
         return undefined;
     }
@@ -26,9 +23,7 @@ export const getWrappedNativeAddress = (networkSymbol: string) => {
     return getEthereumWrappedNativeAddress(networkSymbol);
 };
 
-// TODO(#30663): Replace `string` with the shared branded `NetworkSymbol` after
-// #30561 is merged.
-export const getWrappedNativeSymbol = (networkSymbol: string) => {
+export const getWrappedNativeSymbol = (networkSymbol: NetworkSymbol) => {
     if (!isSupportedEthereumNetwork(networkSymbol)) {
         return undefined;
     }
@@ -36,10 +31,8 @@ export const getWrappedNativeSymbol = (networkSymbol: string) => {
     return getEthereumWrappedNativeSymbol(networkSymbol);
 };
 
-// TODO(#30663): Replace `string` with the shared branded `NetworkSymbol` after
-// #30561 is merged.
 export const isWrappedNativeToken = (
-    networkSymbol: string,
+    networkSymbol: NetworkSymbol,
     contractAddress?: string | null,
 ): boolean => {
     if (!isSupportedEthereumNetwork(networkSymbol)) {

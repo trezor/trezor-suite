@@ -1,9 +1,10 @@
+import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { type WalletAccountTransaction } from '@suite-common/wallet-types';
 import { getWrappedNativeAddress } from '@trezor/network-ethereum-suite-common';
 
 import { findTrackedEvmTransaction, getEvmPendingTxStatus } from './evmPendingTxUtils';
 
-const wrappedNativeAddress = getWrappedNativeAddress('eth')!;
+const wrappedNativeAddress = getWrappedNativeAddress(asNetworkSymbol('eth'))!;
 const vaultAddress = '0x58d97b57bb95320f9a05dc918aef65434969c2b2';
 // deposit(uint256 assets, address receiver) into the vault.
 const vaultDepositData =

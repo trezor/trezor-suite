@@ -38,7 +38,7 @@ jest.mock('@suite-common/wallet-core', () => ({
 }));
 
 const ethSymbol = asNetworkSymbol('eth');
-const WETH = getWrappedNativeToken('eth')!;
+const WETH = getWrappedNativeToken(ethSymbol)!;
 
 const account = mockWalletAccount({ symbol: ethSymbol }) as Account;
 
