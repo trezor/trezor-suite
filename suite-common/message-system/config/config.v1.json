@@ -7,6 +7,46 @@
             "conditions": [
                 {
                     "environment": {
+                        "desktop": ">=26.10.0",
+                        "mobile": "!",
+                        "web": "*"
+                    }
+                }
+            ],
+            "message": {
+                "id": "aa7dae0d-e790-4cae-b962-840622ccb005",
+                "priority": 6,
+                "dismissible": true,
+                "variant": "info",
+                "category": "feature",
+                "content": {
+                    "en-GB": "Placeholder",
+                    "en": "Placeholder",
+                    "es": "Placeholder",
+                    "cs": "Placeholder",
+                    "de": "Placeholder",
+                    "fr": "Placeholder",
+                    "it": "Placeholder",
+                    "pt": "Placeholder",
+                    "tr": "Placeholder",
+                    "ru": "Placeholder",
+                    "ja": "Placeholder",
+                    "uk": "Placeholder",
+                    "hu": "Placeholder"
+                },
+                "feature": [
+                    {
+                        "domain": "dashboard.promoBanner",
+                        "visibleBanner": "trade-upgrade",
+                        "flag": true
+                    }
+                ]
+            }
+        },
+        {
+            "conditions": [
+                {
+                    "environment": {
                         "desktop": ">=22.4.3",
                         "mobile": "!",
                         "web": ">=22.4.3",

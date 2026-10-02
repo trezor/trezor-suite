@@ -10180,6 +10180,19 @@ export const messages = defineMessages({
         id: 'TR_DASHBOARD_REFERRAL_BUTTON',
         defaultMessage: 'Earn $20 per referral',
     },
+    TR_PROMO_BANNER_DASHBOARD_TRADE_UPGRADE_TITLE: {
+        id: 'TR_PROMO_BANNER_DASHBOARD_TRADE_UPGRADE_TITLE',
+        defaultMessage: 'Trading in Trezor Suite just got an upgrade',
+    },
+    TR_PROMO_BANNER_DASHBOARD_TRADE_UPGRADE_DESCRIPTION: {
+        id: 'TR_PROMO_BANNER_DASHBOARD_TRADE_UPGRADE_DESCRIPTION',
+        defaultMessage:
+            'Discover new DEX swaps, more routes, better rates, readable trades on your device before approval, and a fresh design.',
+    },
+    TR_PROMO_BANNER_DASHBOARD_TRADE_UPGRADE_BUTTON: {
+        id: 'TR_PROMO_BANNER_DASHBOARD_TRADE_UPGRADE_BUTTON',
+        defaultMessage: 'See what’s new',
+    },
     TR_PROMO_BANNER_DASHBOARD_TS7_TITLE: {
         id: 'TR_PROMO_BANNER_DASHBOARD_TS7_TITLE',
         defaultMessage: 'Introducing Trezor Safe 7',

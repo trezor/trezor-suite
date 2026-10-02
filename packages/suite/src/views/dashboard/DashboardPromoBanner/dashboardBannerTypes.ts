@@ -1,6 +1,6 @@
 import { isArrayMember } from '@trezor/utils';
 
-export const dashboardBannerTypes = ['ts7', 'defi-yield', 'eth-vault'] as const;
+export const dashboardBannerTypes = ['ts7', 'defi-yield', 'eth-vault', 'trade-upgrade'] as const;
 export type DashboardBannerType = (typeof dashboardBannerTypes)[number];
 export type DashboardBannerTypeWithNull = DashboardBannerType | null;
 

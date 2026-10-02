@@ -68,7 +68,7 @@ export const Banner = ({
                     padding={getResponsiveValue({
                         default: { left: 24, right: 32, bottom: 24, top: 16 },
                         laptop: { horizontal: 24, bottom: 24, top: 16 },
-                        tablet: { horizontal: 12, top: 8, bottom: 4 },
+                        tablet: { horizontal: 12, right: 32, top: 8, bottom: 4 },
                     })}
                     flex="1"
                     gap={12}
