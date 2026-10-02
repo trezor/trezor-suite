@@ -61,6 +61,7 @@ jobs:
       - uses: ./.github/actions/node-modules-cache
         with:
           profile: ${{ matrix.profile }}
+          save: "true"
       - name: Install SafeDep PMG
         if: runner.os == 'Linux'
         uses: safedep/pmg@0d4f89121c773b0009cc2f2dfb578d03603263f2 # v0.29.1
