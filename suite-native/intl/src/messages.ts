@@ -5104,6 +5104,7 @@ export const messages = {
         },
         hex: {
             label: 'Hex',
+            invalid: 'Not a valid hex',
         },
         signature: {
             label: 'Signature',
