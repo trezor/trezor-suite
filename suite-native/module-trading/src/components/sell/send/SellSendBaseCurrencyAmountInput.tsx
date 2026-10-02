@@ -1,3 +1,5 @@
+import { type Ref } from 'react';
+import { type TextInput } from 'react-native';
 import { useSelector } from 'react-redux';
 
 import { selectTradingSellIsLoading } from '@suite-common/trading';
@@ -8,13 +10,21 @@ import { useSellFormContext } from '../../../hooks/sell/useSellFormContext';
 import { useSellSendBaseCurrencyAmount } from '../../../hooks/sell/useSellSendBaseCurrencyAmount';
 import { TradingBaseCurrencyAmountInput } from '../../general/TradingBaseCurrencyAmountInput';
 
+export type SellSendBaseCurrencyAmountInputProps = {
+    showAssetsScreen: () => void;
+    ref?: Ref<TextInput>;
+};
+
 const SELL_SEND_BASE_CURRENCY_INPUT_TEST_ID = '@trading/sell/send-base-currency-amount-input';
 
-export const SellSendBaseCurrencyAmountInput = () => {
+export const SellSendBaseCurrencyAmountInput = ({
+    showAssetsScreen,
+    ref,
+}: SellSendBaseCurrencyAmountInputProps) => {
     const isLoading = useSelector(selectTradingSellIsLoading);
 
     const { control, setValue } = useSellFormContext();
-    const amountInCrypto = useWatch({ control, name: 'amountInCrypto' });
+    const [asset, amountInCrypto] = useWatch({ control, name: ['sendAsset', 'amountInCrypto'] });
     const { hasError } = useField({ name: 'cryptoStringAmount' });
     const { baseCurrencyAmount, isConversionAvailable, setBaseCurrencyAmount } =
         useSellSendBaseCurrencyAmount();
@@ -24,12 +34,16 @@ export const SellSendBaseCurrencyAmountInput = () => {
         setValue,
     );
 
+    const isAssetSelected = !!asset;
+
     return (
         <TradingBaseCurrencyAmountInput
+            ref={ref}
             value={baseCurrencyAmount}
             onChangeText={setBaseCurrencyAmount}
             onFocus={onFocus}
             onBlur={onBlur}
+            onPress={isAssetSelected ? undefined : showAssetsScreen}
             hasError={hasError}
             isEditable={isConversionAvailable}
             isLoading={isLoading && !amountInCrypto}

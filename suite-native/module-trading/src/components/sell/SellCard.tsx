@@ -2,7 +2,7 @@ import { useSelector } from 'react-redux';
 
 import { cryptoIdToNetworkSymbol } from '@suite-common/trading';
 import { type AccountsRootState, selectAccountFormattedBalance } from '@suite-common/wallet-core';
-import { Box, HStack } from '@suite-native/atoms';
+import { Box } from '@suite-native/atoms';
 import { useWatch } from '@suite-native/forms';
 import { Translation } from '@suite-native/intl';
 import {
@@ -15,9 +15,7 @@ import { useSellFormContext } from '../../hooks/sell/useSellFormContext';
 import { TradingCard } from '../general/TradingCard';
 import { TradingCardSection } from '../general/TradingCardSection';
 import { SellFiatCurrencyPicker } from './fiat/SellFiatCurrencyPicker';
-import { SellSendAccountCryptoBalance } from './send/SellSendAccountCryptoBalance';
 import { SellSendAssetPicker } from './send/SellSendAssetPicker';
-import { SellSendBaseCurrencyAmountInput } from './send/SellSendBaseCurrencyAmountInput';
 
 type SellCardProps = {
     isAmountInputActive: boolean;
@@ -57,10 +55,6 @@ export const SellCard = ({ isAmountInputActive, shouldAnimateEntering }: SellCar
                 titleAction={<SellFormFieldErrorBadge fieldName="cryptoStringAmount" />}
             >
                 <SellSendAssetPicker />
-                <HStack justifyContent="space-between" alignItems="center" spacing="sp4">
-                    <SellSendBaseCurrencyAmountInput />
-                    <SellSendAccountCryptoBalance />
-                </HStack>
                 {symbol && shouldShowBanner && (
                     <NetworkReserveBanner
                         symbol={symbol}

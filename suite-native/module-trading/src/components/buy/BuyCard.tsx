@@ -1,10 +1,7 @@
-import { HStack } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 
-import { BuyBaseCurrencyAmountInput } from './BuyBaseCurrencyAmountInput';
 import { BuyFiatCurrencyPicker } from './BuyFiatCurrencyPicker';
 import { BuyFormFieldErrorBadge } from './BuyFormFieldErrorBadge';
-import { BuyReceiveAccountCryptoBalance } from './BuyReceiveAccountCryptoBalance';
 import { BuyTradeableAssetPicker } from './BuyTradeableAssetPicker';
 import { TradingCard } from '../general/TradingCard';
 import { TradingCardSection } from '../general/TradingCardSection';
@@ -35,10 +32,6 @@ export const BuyCard = ({ isAmountInputActive, shouldAnimateEntering }: BuyCardP
             titleAction={<BuyFormFieldErrorBadge fieldName="cryptoValue" />}
         >
             <BuyTradeableAssetPicker />
-            <HStack justifyContent="space-between" alignItems="center" spacing="sp4">
-                <BuyBaseCurrencyAmountInput />
-                <BuyReceiveAccountCryptoBalance />
-            </HStack>
         </TradingCardSection>
     </TradingCard>
 );

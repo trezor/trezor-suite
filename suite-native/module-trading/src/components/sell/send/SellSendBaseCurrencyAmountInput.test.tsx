@@ -6,6 +6,7 @@ import { Form } from '@suite-native/forms';
 import { getTranslation } from '@suite-native/intl';
 import {
     act,
+    fireEvent,
     renderHookWithStoreProvider,
     renderWithStoreProvider,
     screen,
@@ -34,19 +35,24 @@ const services: NativeAnalyticsDep & { networks: NetworkModuleRepositoryDep } = 
 
 describe('SellSendBaseCurrencyAmountInput', () => {
     let form: SellFormType;
+    const showAssetsScreenMock = jest.fn();
     const preloadedState = createTradingPreloadedState({ tradeType: 'sell' });
     const baseCurrencyAmountLabel = getTranslation(
         'moduleTrading.tradingScreen.baseCurrencyAmountLabel',
     );
 
     const renderInput = async () =>
-        await renderWithStoreProvider(<SellSendBaseCurrencyAmountInput />, {
-            wrapper: ({ children }) => <Form form={form}>{children}</Form>,
-            preloadedState,
-            services,
-        });
+        await renderWithStoreProvider(
+            <SellSendBaseCurrencyAmountInput showAssetsScreen={showAssetsScreenMock} />,
+            {
+                wrapper: ({ children }) => <Form form={form}>{children}</Form>,
+                preloadedState,
+                services,
+            },
+        );
 
     beforeEach(async () => {
+        showAssetsScreenMock.mockClear();
         const { result } = await renderHookWithStoreProvider(() => useSellForm(), {
             preloadedState,
             services,
@@ -86,5 +92,24 @@ describe('SellSendBaseCurrencyAmountInput', () => {
         const { getByLabelText } = await renderInput();
 
         expect(getByLabelText(baseCurrencyAmountLabel)).toHaveDisplayValue('500');
+    });
+
+    it('should show assets screen on press when no asset is selected', async () => {
+        await act(() => {
+            form.setValue('sendAsset', undefined);
+        });
+        const { getByLabelText } = await renderInput();
+
+        await fireEvent.press(getByLabelText(baseCurrencyAmountLabel));
+
+        expect(showAssetsScreenMock).toHaveBeenCalledTimes(1);
+    });
+
+    it('should not show assets screen on press when an asset is selected', async () => {
+        const { getByLabelText } = await renderInput();
+
+        await fireEvent.press(getByLabelText(baseCurrencyAmountLabel));
+
+        expect(showAssetsScreenMock).not.toHaveBeenCalled();
     });
 });
