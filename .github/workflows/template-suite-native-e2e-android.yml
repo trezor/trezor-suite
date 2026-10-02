@@ -76,7 +76,7 @@ jobs:
           key: node_modules-native-full-${{ hashFiles('yarn.lock') }}
 
       - name: Install SafeDep PMG
-        uses: safedep/pmg@0d4f89121c773b0009cc2f2dfb578d03603263f2 # v0.29.1
+        uses: safedep/pmg@5ac0f275b83d9d5a9342c6aae977ec32fa330daa # v1
         continue-on-error: true
         with:
           version: v0.19.1
