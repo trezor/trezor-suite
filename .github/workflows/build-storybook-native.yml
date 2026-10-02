@@ -39,22 +39,6 @@ jobs:
         if: hashFiles('.github/actions/yarn-cache/action.yml') != ''
         uses: ./.github/actions/yarn-cache
 
-      - name: Install node and yarn
-        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v6
-        with:
-          node-version-file: ".nvmrc"
-          cache: ${{ hashFiles('.github/actions/yarn-cache/action.yml') == '' && 'yarn' || '' }}
-
-      - name: Restore shared Yarn downloads
-        if: hashFiles('.github/actions/yarn-cache/action.yml') != ''
-        uses: ./.github/actions/yarn-cache
-
-      - name: Setup node_modules cache
-        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v5
-        with:
-          path: node_modules
-          key: node_modules/${{ github.ref }}/${{github.run_id}}
-
       - name: Install SafeDep PMG
         uses: safedep/pmg@0d4f89121c773b0009cc2f2dfb578d03603263f2 # v0.29.1
         continue-on-error: true
