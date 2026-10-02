@@ -27,14 +27,17 @@ export type SearchableAccountsListHeaderProps = {
     onAddAccount?: () => void;
     onFilterPress?: () => void;
     activeFilterCount?: number;
+    noPaddingTop?: boolean;
 };
 
 const HEADER_ANIMATION_DURATION = 100;
 
-const searchFormContainerStyle = prepareNativeStyle(({ spacings }) => ({
-    marginBottom: spacings.sp8,
-    paddingTop: spacings.sp16,
-}));
+const searchFormContainerStyle = prepareNativeStyle<{ noPaddingTop: boolean }>(
+    ({ spacings }, { noPaddingTop }) => ({
+        marginBottom: spacings.sp8,
+        paddingTop: noPaddingTop ? 0 : spacings.sp16,
+    }),
+);
 
 export const SearchableAccountsListHeader = ({
     title,
@@ -47,6 +50,7 @@ export const SearchableAccountsListHeader = ({
     onAddAccount,
     onFilterPress,
     activeFilterCount = 0,
+    noPaddingTop = false,
 }: SearchableAccountsListHeaderProps) => {
     const isFirstRender = useSharedValue(true);
     const { applyStyle } = useNativeStyles();
@@ -79,7 +83,7 @@ export const SearchableAccountsListHeader = ({
     };
 
     return (
-        <Box style={applyStyle(searchFormContainerStyle)}>
+        <Box style={applyStyle(searchFormContainerStyle, { noPaddingTop })}>
             {isSearchActive ? (
                 <SearchForm
                     placeholder="accounts.searchForm.searchAccountsPlaceholder"
