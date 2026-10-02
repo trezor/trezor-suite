@@ -11,7 +11,7 @@ jest.mock('@sentry/react-native/metro', () => ({
 }));
 
 jest.mock('@storybook/react-native/metro/withStorybook', () => ({
-    withStorybook: config => config,
+    withStorybook: jest.fn(config => config),
 }));
 
 jest.mock('metro-config', () => ({
@@ -47,5 +47,50 @@ describe('Metro crypto resolution', () => {
         expect(resolveCryptoFrom('packages', 'protocol', 'src', 'tools.ts').filePath).toBe(
             'crypto',
         );
+    });
+});
+
+describe('Detox Storybook resolution', () => {
+    const originalDetoxBuild = process.env.EXPO_PUBLIC_IS_DETOX_BUILD;
+    const originalEnvironment = process.env.EXPO_PUBLIC_ENVIRONMENT;
+
+    afterEach(() => {
+        if (originalDetoxBuild === undefined) {
+            delete process.env.EXPO_PUBLIC_IS_DETOX_BUILD;
+        } else {
+            process.env.EXPO_PUBLIC_IS_DETOX_BUILD = originalDetoxBuild;
+        }
+
+        if (originalEnvironment === undefined) {
+            delete process.env.EXPO_PUBLIC_ENVIRONMENT;
+        } else {
+            process.env.EXPO_PUBLIC_ENVIRONMENT = originalEnvironment;
+        }
+    });
+
+    it('disables Storybook and resolves its app import to a stub', () => {
+        process.env.EXPO_PUBLIC_IS_DETOX_BUILD = 'true';
+        process.env.EXPO_PUBLIC_ENVIRONMENT = 'debug';
+
+        jest.isolateModules(() => {
+            const detoxConfig = require('../metro.config');
+            const { withStorybook } = require('@storybook/react-native/metro/withStorybook');
+            const context = {
+                originModulePath: path.join(path.sep, 'workspace', 'app', 'index.js'),
+                resolveRequest: jest.fn((_, moduleName) => ({
+                    filePath: moduleName,
+                    type: 'sourceFile',
+                })),
+            };
+
+            expect(withStorybook).toHaveBeenCalledWith(
+                expect.anything(),
+                expect.objectContaining({ enabled: false }),
+            );
+            expect(
+                detoxConfig.resolver.resolveRequest(context, '@suite-native/storybook', 'android')
+                    .filePath,
+            ).toMatch(/e2e\/mocks\/storybook\.js$/);
+        });
     });
 });

@@ -14,6 +14,7 @@ const jsonExpoConfig = getSentryExpoConfig(__dirname);
 const defaultSourceExts = [...jsonExpoConfig.resolver.sourceExts, 'md'];
 const additionalSourceExts = process.env.RN_SRC_EXT ? process.env.RN_SRC_EXT.split(',') : [];
 const sourceExts = [...additionalSourceExts, ...defaultSourceExts];
+const isDetoxBuild = process.env.EXPO_PUBLIC_IS_DETOX_BUILD === 'true';
 
 // Packages whose ESM build Metro would pick via `exports`, but which we need to resolve to
 // their CommonJS build instead.
@@ -154,6 +155,10 @@ const config = {
                 return { filePath: cardanoSerializationLibPath, type: 'sourceFile' };
             }
 
+            if (isDetoxBuild && moduleName === '@suite-native/storybook') {
+                return getSourceFile('./e2e/mocks/storybook.js');
+            }
+
             if (process.env.EXPO_PUBLIC_IS_DETOX_BUILD && moduleName === '@trezor/connect') {
                 // Mock some Trezor Connect methods to avoid network flakiness during e2e tests.
                 return getSourceFile('./e2e/mocks/trezor-connect.js');
@@ -168,7 +173,7 @@ const config = {
 const configWithStorybook = mergeConfig(
     jsonExpoConfig,
     withStorybook(config, {
-        enabled: process.env.EXPO_PUBLIC_ENVIRONMENT !== 'production',
+        enabled: process.env.EXPO_PUBLIC_ENVIRONMENT !== 'production' && !isDetoxBuild,
         configPath: './../storybook/.rnstorybook',
     }),
 );
