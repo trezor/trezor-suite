@@ -14,21 +14,17 @@ set -euo pipefail
 : "${TEAM:?TEAM environment variable is required}"
 
 REPO="trezor/trezor-suite"
-ISSUE_TEMPLATE=".github/ISSUE_TEMPLATE/07_deps_maintenance_task.md"
+ISSUE_TEMPLATE_DIR="scripts/templates/monthly-deps-issue"
+TEAM_TEMPLATE="$ISSUE_TEMPLATE_DIR/${TEAM%% *}.md"
 ISSUE_BODY_FILE="/tmp/issue_body.md"
 
-# Prepare issue body (strip YAML frontmatter and expand team-specific tasks)
-awk -v team="$TEAM" '
-    /^---$/ { f = !f; next }
-    f { next }
-    /^<!--- Wallet-specific dependency tasks -->$/ {
-        if (team ~ /^Suite-Wallet( |$)/) {
-            print "- [ ] update dependencies in [trezor-suite-sync](https://github.com/trezor/trezor-suite-sync/)"
-        }
-        next
-    }
-    { print }
-' "$ISSUE_TEMPLATE" > "$ISSUE_BODY_FILE"
+# Compose the common checklist, optional team checklist, and shared footer.
+cat "$ISSUE_TEMPLATE_DIR/common.md" > "$ISSUE_BODY_FILE"
+if [ -f "$TEAM_TEMPLATE" ]; then
+    cat "$TEAM_TEMPLATE" >> "$ISSUE_BODY_FILE"
+fi
+printf '\n' >> "$ISSUE_BODY_FILE"
+cat "$ISSUE_TEMPLATE_DIR/footer.md" >> "$ISSUE_BODY_FILE"
 
 # Calculate previous month/year
 CURRENT_MONTH=$(( 10#$(date +%m) ))
