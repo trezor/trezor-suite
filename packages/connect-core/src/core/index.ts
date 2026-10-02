@@ -40,7 +40,7 @@ import {
     noopLogger,
 } from '@trezor/logger';
 import { TRANSPORT, TRANSPORT_ERROR } from '@trezor/transport-common';
-import { createDeferred, createLazy, throwError } from '@trezor/utils';
+import { createLazy, throwError } from '@trezor/utils';
 
 import type { AbstractMethod } from './AbstractMethod';
 import { getMethod } from './method';
@@ -923,13 +923,6 @@ export class Core extends EventEmitter {
         this.createLogger = settings.createLogger ?? noopCreateLogger;
         this.coreLogger = this.createLogger('Core');
 
-        // do not send any event until Core is fully loaded
-        // DeviceList emits TRANSPORT and DEVICE events if pendingTransportEvent is set
-        const throttlePromise = createDeferred();
-        throttlePromise.promise.catch(() => {});
-        const onCoreEventThrottled = (message: CoreEventMessage) =>
-            throttlePromise.promise.then(() => onCoreEvent(message));
-
         try {
             // enabledNetworks has its own store (the single source of truth); keep it out of
             // settingsStore so no reader picks up a stale, unsanitized snapshot.
@@ -950,29 +943,22 @@ export class Core extends EventEmitter {
 
             this._deviceList = new DeviceList({ createLogger: this.createLogger });
             initDeviceList(this.getCoreContext());
-
-            this.on(CORE_EVENT, onCoreEventThrottled);
         } catch (error) {
             // TODO: kill app
             this.coreLogger.error('init', error);
-            throttlePromise.reject(error);
             throw error;
         }
 
         const { transports, pendingTransportEvent, transportReconnect } = settingsStore.get();
 
+        this.on(CORE_EVENT, onCoreEvent);
+
         try {
             this.deviceList.init({ transports, pendingTransportEvent, transportReconnect });
         } catch (error) {
             this.sendCoreMessage(createTransportMessage(TRANSPORT.ERROR, { error }));
-            throttlePromise.reject(error);
             throw error;
         }
-
-        // Core initialized successfully, disable throttle
-        this.on(CORE_EVENT, onCoreEvent);
-        this.off(CORE_EVENT, onCoreEventThrottled);
-        setTimeout(throttlePromise.resolve, 0);
     }
 }
 
