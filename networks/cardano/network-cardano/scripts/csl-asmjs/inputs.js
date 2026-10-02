@@ -5,7 +5,7 @@ import { createHash } from 'node:crypto';
 import fs from 'node:fs';
 import path from 'node:path';
 
-import { findCoinSelectionExports } from './coinSelectionExports.js';
+import { findCoinSelectionExports, findReachableExports } from './coinSelectionExports.js';
 
 export const getSha256 = buffer => createHash('sha256').update(buffer).digest('hex');
 
@@ -49,6 +49,7 @@ export const readInputs = (scriptDir, require) => {
     const glueSource = patchGlue(
         fs.readFileSync(path.join(glueDir, 'cardano_serialization_lib_bg.js'), 'utf8'),
     );
+    const reachableExports = findReachableExports(coinSelectionLibDir, glueSource);
     const entrySource = fs.readFileSync(path.join(glueDir, 'cardano_serialization_lib.js'));
     const binaryenVersion = require('binaryen/package.json').version;
 
@@ -60,6 +61,7 @@ export const readInputs = (scriptDir, require) => {
             getSha256(entrySource),
             ...SCRIPT_FILES.map(file => getSha256(fs.readFileSync(path.join(scriptDir, file)))),
             referencedExports.join('\n'),
+            reachableExports.join('\n'),
             binaryenVersion,
         ].join('\n'),
     );
@@ -68,6 +70,7 @@ export const readInputs = (scriptDir, require) => {
         wasmBytes,
         keepList,
         referencedExports,
+        reachableExports,
         glueSource,
         entrySource,
         binaryenVersion,
