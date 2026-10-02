@@ -18,7 +18,7 @@ import { type NativeAnalyticsDep, events } from '@suite-native/analytics';
 import { mockNativeAnalytics } from '@suite-native/analytics/mocks';
 import { featureFlagsInitialState } from '@suite-native/feature-flags';
 import { Form } from '@suite-native/forms';
-import { localeReducer } from '@suite-native/intl';
+import { getTranslation, localeReducer } from '@suite-native/intl';
 import {
     type PreloadedStatePartial,
     createLightStore,
@@ -168,6 +168,18 @@ describe('ExchangeSendAssetPicker', () => {
         const { getByLabelText } = await renderExchangeSendAssetPicker();
 
         await fireEvent.press(getByLabelText('Select asset'));
+
+        expect(mockNavigate).toHaveBeenCalledWith('TradingMyAsset', {
+            tradingType: 'exchange',
+        });
+    });
+
+    it('should navigate to the my asset screen on base currency input press without an asset', async () => {
+        const { getByLabelText } = await renderExchangeSendAssetPicker();
+
+        await fireEvent.press(
+            getByLabelText(getTranslation('moduleTrading.tradingScreen.baseCurrencyAmountLabel')),
+        );
 
         expect(mockNavigate).toHaveBeenCalledWith('TradingMyAsset', {
             tradingType: 'exchange',
