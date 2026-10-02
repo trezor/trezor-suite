@@ -36,6 +36,10 @@ module.exports = {
     },
     testEnvironment: 'jsdom',
     preset: 'jest-expo',
+    // Resolves Reanimated/Worklets to their web variants under jest. Without it the native
+    // initializers run and throw (e.g. `setCSSEventHandler is not available in JSReanimated`).
+    // See https://docs.swmansion.com/react-native-reanimated/docs/guides/testing/
+    resolver: 'react-native-reanimated/jest/resolver',
     // SWC has no Flow support; React Native source in node_modules (allowed through
     // transformIgnorePatterns) ships Flow types, so .js/.jsx must go through babel.
     // Inspiration from GH issue comment: https://github.com/swc-project/jest/issues/85#issuecomment-1122482982
