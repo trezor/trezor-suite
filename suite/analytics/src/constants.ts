@@ -72,6 +72,7 @@ export enum EventType {
     SelectWalletType = 'select-wallet-type',
     SendConfirmedOnDevice = 'send/confirmed-on-device',
     SendDetailOpened = 'send/detail-opened',
+    SendEnsResolution = 'send/ens-resolution',
     SendInitialised = 'send/initialised',
     SendQrScan = 'send/qr-scan',
     // eslint-disable-next-line local-rules/analytics-event-name
