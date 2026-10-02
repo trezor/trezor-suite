@@ -12,6 +12,7 @@ import { TokenIcon } from '@suite-native/icons';
 import { YieldBadge } from '@suite-native/module-earn';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
+import { AssetDetailPressable } from './AssetDetailPressable';
 import { useYourPositionCardYieldBadge } from '../hooks/useYourPositionCardYieldBadge';
 
 const cardStyle = prepareNativeStyle(utils => ({
@@ -56,86 +57,88 @@ export const YourPositionCard = ({ account, token }: YourPositionCardProps) => {
         : null;
 
     return (
-        <Card style={applyStyle(cardStyle)} noShadow>
-            <HStack alignItems="center" flex={1}>
-                <Box marginRight="sp6">
-                    <TokenIcon
-                        networkSymbol={symbol}
-                        contractAddress={token?.contract}
-                        tokenSymbol={token?.symbol || token?.name}
-                        showNetworkIcon
-                        size="medium"
-                    />
-                </Box>
+        <AssetDetailPressable networkSymbol={symbol} tokenContract={token?.contract}>
+            <Card style={applyStyle(cardStyle)} noShadow>
+                <HStack alignItems="center" flex={1}>
+                    <Box marginRight="sp6">
+                        <TokenIcon
+                            networkSymbol={symbol}
+                            contractAddress={token?.contract}
+                            tokenSymbol={token?.symbol || token?.name}
+                            showNetworkIcon
+                            size="medium"
+                        />
+                    </Box>
 
-                <HStack alignItems="center" justifyContent="space-between" flex={1}>
-                    <Box style={applyStyle(cardContentStyle)}>
-                        <HStack>
-                            <Text variant="body-sm-strong" color="contentPrimary">
-                                {tokenSymbol}
+                    <HStack alignItems="center" justifyContent="space-between" flex={1}>
+                        <Box style={applyStyle(cardContentStyle)}>
+                            <HStack>
+                                <Text variant="body-sm-strong" color="contentPrimary">
+                                    {tokenSymbol}
+                                </Text>
+
+                                {yieldBadge && account && (
+                                    <YieldBadge
+                                        apy={yieldBadge.apy}
+                                        variant={yieldBadgeVariant}
+                                        vaultId={yieldBadge.vaultId ?? ''}
+                                        account={account}
+                                    />
+                                )}
+                            </HStack>
+
+                            <Text variant="body-sm" color="contentSecondary" numberOfLines={1}>
+                                {tokenName}
                             </Text>
+                        </Box>
 
-                            {yieldBadge && account && (
-                                <YieldBadge
-                                    apy={yieldBadge.apy}
-                                    variant={yieldBadgeVariant}
-                                    vaultId={yieldBadge.vaultId ?? ''}
-                                    account={account}
+                        <Box alignItems="flex-end" flexShrink={1}>
+                            {token ? (
+                                <TokenToFiatAmountFormatter
+                                    symbol={symbol}
+                                    value={balance}
+                                    contract={token.contract}
+                                    numberOfLines={1}
+                                    adjustsFontSizeToFit
+                                    variant="body-sm-strong"
+                                    color="contentPrimary"
+                                />
+                            ) : (
+                                <CryptoToFiatAmountFormatter
+                                    value={balance}
+                                    symbol={symbol}
+                                    isBalance={true}
+                                    numberOfLines={1}
+                                    adjustsFontSizeToFit
+                                    variant="body-sm-strong"
                                 />
                             )}
-                        </HStack>
 
-                        <Text variant="body-sm" color="contentSecondary" numberOfLines={1}>
-                            {tokenName}
-                        </Text>
-                    </Box>
-
-                    <Box alignItems="flex-end" flexShrink={1}>
-                        {token ? (
-                            <TokenToFiatAmountFormatter
-                                symbol={symbol}
-                                value={balance}
-                                contract={token.contract}
-                                numberOfLines={1}
-                                adjustsFontSizeToFit
-                                variant="body-sm-strong"
-                                color="contentPrimary"
-                            />
-                        ) : (
-                            <CryptoToFiatAmountFormatter
-                                value={balance}
-                                symbol={symbol}
-                                isBalance={true}
-                                numberOfLines={1}
-                                adjustsFontSizeToFit
-                                variant="body-sm-strong"
-                            />
-                        )}
-
-                        {token ? (
-                            <CompactTokenAmountFormatter
-                                value={asDecimalTokenAmount(token.balance ?? '0')}
-                                tokenSymbol={tokenAmountSymbol}
-                                tokenDecimals={token.decimals}
-                                numberOfLines={1}
-                                adjustsFontSizeToFit
-                                variant="body-sm"
-                                color="contentSecondary"
-                            />
-                        ) : (
-                            <CompactCryptoAmountFormatter
-                                value={balance}
-                                symbol={symbol}
-                                isBalance={true}
-                                numberOfLines={1}
-                                adjustsFontSizeToFit
-                                variant="body-sm"
-                                color="contentSecondary"
-                            />
-                        )}
-                    </Box>
+                            {token ? (
+                                <CompactTokenAmountFormatter
+                                    value={asDecimalTokenAmount(token.balance ?? '0')}
+                                    tokenSymbol={tokenAmountSymbol}
+                                    tokenDecimals={token.decimals}
+                                    numberOfLines={1}
+                                    adjustsFontSizeToFit
+                                    variant="body-sm"
+                                    color="contentSecondary"
+                                />
+                            ) : (
+                                <CompactCryptoAmountFormatter
+                                    value={balance}
+                                    symbol={symbol}
+                                    isBalance={true}
+                                    numberOfLines={1}
+                                    adjustsFontSizeToFit
+                                    variant="body-sm"
+                                    color="contentSecondary"
+                                />
+                            )}
+                        </Box>
+                    </HStack>
                 </HStack>
-            </HStack>
-        </Card>
+            </Card>
+        </AssetDetailPressable>
     );
 };
