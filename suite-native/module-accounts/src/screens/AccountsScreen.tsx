@@ -1,20 +1,20 @@
 import { useMemo } from 'react';
 
-import { isStakingSymbol } from '@suite-common/wallet-utils';
-import { AccountsListWithFilter, type OnSelectAccount } from '@suite-native/accounts';
+import {
+    AccountsListWithFilter,
+    type OnSelectAccount,
+    useNavigateToAccount,
+} from '@suite-native/accounts';
 import { DeviceManagerScreenHeader } from '@suite-native/device-manager';
 import { AccountsRediscoveryNeededWarning } from '@suite-native/discovery';
 import { Translation } from '@suite-native/intl';
 import {
-    AccountDetailStackRoutes,
     type AccountsStackParamList,
     type AccountsStackRoutes,
     type RootStackParamList,
-    RootStackRoutes,
     Screen,
     type StackToStackCompositeScreenProps,
 } from '@suite-native/navigation';
-import { isNetworkWithTokens } from '@suite-native/tokens';
 
 type ScreenNavigationProps = StackToStackCompositeScreenProps<
     AccountsStackParamList,
@@ -22,26 +22,17 @@ type ScreenNavigationProps = StackToStackCompositeScreenProps<
     RootStackParamList
 >;
 
-export const AccountsScreen = ({ navigation, route }: ScreenNavigationProps) => {
+export const AccountsScreen = ({ route }: ScreenNavigationProps) => {
+    const navigateToAccount = useNavigateToAccount();
     const networksFilter = useMemo(
         () => route.params?.networksFilter ?? [],
         [route.params?.networksFilter],
     );
 
     const handleSelectAccount: OnSelectAccount = ({ account }) => {
-        const { key: accountKey, symbol } = account;
-
-        if (isNetworkWithTokens(symbol) || isStakingSymbol(symbol)) {
-            navigation.navigate(RootStackRoutes.AccountOverview, { accountKey });
-
-            return;
-        }
-        navigation.navigate(RootStackRoutes.AccountDetailStack, {
-            screen: AccountDetailStackRoutes.AccountDetail,
-            params: {
-                accountKey,
-                closeActionType: 'back',
-            },
+        navigateToAccount({
+            accountKey: account.key,
+            networkSymbol: account.symbol,
         });
     };
 
