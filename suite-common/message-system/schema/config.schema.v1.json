@@ -229,6 +229,10 @@
                                 "type": "string",
                                 "minLength": 1
                             },
+                            "name": {
+                                "type": "string",
+                                "description": "Human readable name of the experiment, shown in the debug settings"
+                            },
                             "groups": {
                                 "type": "array",
                                 "items": {

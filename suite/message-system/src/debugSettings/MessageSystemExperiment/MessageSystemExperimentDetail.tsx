@@ -78,8 +78,9 @@ export const MessageSystemExperimentDetail = ({
     activeGroup,
 }: MessageSystemExperimentDetailProps) => {
     const ranges = buildExperimentGroupRanges(experiment.groups);
-    const experimentName =
+    const registeredName =
         experiment.id in EXPERIMENT_MAP ? EXPERIMENT_MAP[experiment.id as ExperimentId] : undefined;
+    const experimentName = experiment.name ?? registeredName;
 
     return (
         <>
@@ -90,9 +91,10 @@ export const MessageSystemExperimentDetail = ({
                 intent="neutral"
                 priority="primary"
             >
-                {experimentName ? (
+                {experimentName !== undefined ? (
                     <Text>
-                        <strong>Name:</strong> {experimentName ?? 'Unknown experiment'}
+                        <strong>Name:</strong> {experimentName}
+                        {registeredName === undefined && ' (not registered in the app)'}
                     </Text>
                 ) : (
                     <Text intent="warning">Unknown experiment</Text>
