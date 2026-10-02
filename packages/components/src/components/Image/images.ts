@@ -12,6 +12,8 @@ export const IMAGES = {
     DASHBOARD_PROMO_BANNER_T3W1: 'dashboard-promo-banner/t3w1.webp',
     DASHBOARD_PROMO_BANNER_T3W1_2x: 'dashboard-promo-banner/t3w1@2x.webp',
     DASHBOARD_PROMO_BANNER_TEX: 'dashboard-promo-banner/tex.webp',
+    DASHBOARD_PROMO_BANNER_TRADE_UPGRADE: 'dashboard-promo-banner/trade-upgrade.webp',
+    DASHBOARD_PROMO_BANNER_TRADE_UPGRADE_2x: 'dashboard-promo-banner/trade-upgrade@2x.webp',
     DASHBOARD_PROMO_BANNER_UNDERLINE: 'dashboard-promo-banner/underline.svg',
     DASHBOARD_FEEDBACK_BANNER: 'dashboard-feedback-banner/feedback.webp',
     DASHBOARD_FEEDBACK_BANNER_2x: 'dashboard-feedback-banner/feedback@2x.webp',

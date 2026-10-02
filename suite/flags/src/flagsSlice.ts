@@ -22,6 +22,7 @@ export type FlagsState = {
     showTS7DashboardPromoBanner: boolean;
     showDefiYieldDashboardPromoBanner: boolean;
     showETHVaultDashboardPromoBanner: boolean;
+    showTradeUpgradeDashboardPromoBanner: boolean;
     showOnboardingFeedbackBanner: boolean;
     showSettingsDesktopAppPromoBanner: boolean;
     activateAssetsBannerClosed: boolean;
@@ -65,6 +66,7 @@ export const flagsInitialState: FlagsState = {
     showTS7DashboardPromoBanner: true,
     showDefiYieldDashboardPromoBanner: true,
     showETHVaultDashboardPromoBanner: true,
+    showTradeUpgradeDashboardPromoBanner: true,
     showOnboardingFeedbackBanner: false,
     showSettingsDesktopAppPromoBanner: true,
     activateAssetsBannerClosed: false,

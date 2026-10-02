@@ -6,6 +6,7 @@ import { DeviceModelInternal, hasBitcoinOnlyFirmware } from '@trezor/device-util
 import { DefiYieldBanner } from './DefiYieldBanner';
 import { ETHVaultBanner } from './ETHVaultBanner';
 import { TS7Banner } from './TS7Banner';
+import { TradeUpgradeBanner } from './TradeUpgradeBanner';
 import { type DashboardBannerType } from './dashboardBannerTypes';
 
 export type BannerHandlers = {
@@ -32,6 +33,11 @@ type DashboardBannerDefinition = {
  * The `Record<DashboardBannerType, ...>` typing guarantees every banner type is handled.
  */
 export const DASHBOARD_BANNERS: Record<DashboardBannerType, DashboardBannerDefinition> = {
+    'trade-upgrade': {
+        flag: 'showTradeUpgradeDashboardPromoBanner',
+        isEligible: ({ selectedDevice }) => !hasBitcoinOnlyFirmware(selectedDevice),
+        render: handlers => <TradeUpgradeBanner {...handlers} />,
+    },
     ts7: {
         flag: 'showTS7DashboardPromoBanner',
         isEligible: ({ selectedDevice }) =>
