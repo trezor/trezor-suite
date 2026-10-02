@@ -1,0 +1,38 @@
+name: "[Chore] Warm shared Yarn downloads"
+
+on:
+  push:
+    branches: [develop]
+    paths:
+      - "yarn.lock"
+      - ".yarnrc.yml"
+      - ".yarn/releases/**"
+      - ".github/actions/yarn-cache/**"
+      - ".github/workflows/chore-warm-yarn-cache.yml"
+  schedule:
+    - cron: "17 */6 * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: warm-yarn-cache-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  warm:
+    if: github.repository == 'trezor/trezor-suite' && github.ref == 'refs/heads/develop'
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, macos-latest]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v6
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v6
+        with:
+          node-version-file: ".nvmrc"
+      - uses: ./.github/actions/yarn-cache
+      - name: Populate Yarn downloads
+        run: yarn --immutable --mode=skip-build
