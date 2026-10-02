@@ -10216,6 +10216,18 @@ export const messages = defineMessages({
         id: 'TR_PROMO_BANNER_DASHBOARD_DEFI_YIELD_BUTTON',
         defaultMessage: 'Get started',
     },
+    TR_PROMO_BANNER_DASHBOARD_TRADING_EXPERIENCE_TITLE: {
+        id: 'TR_PROMO_BANNER_DASHBOARD_TRADING_EXPERIENCE_TITLE',
+        defaultMessage: 'Trading in Suite just got an upgrade',
+    },
+    TR_PROMO_BANNER_DASHBOARD_TRADING_EXPERIENCE_DESCRIPTION: {
+        id: 'TR_PROMO_BANNER_DASHBOARD_TRADING_EXPERIENCE_DESCRIPTION',
+        defaultMessage: 'Discover new DEX swaps, better rates, and a fresh design.',
+    },
+    TR_PROMO_BANNER_DASHBOARD_TRADING_EXPERIENCE_BUTTON: {
+        id: 'TR_PROMO_BANNER_DASHBOARD_TRADING_EXPERIENCE_BUTTON',
+        defaultMessage: "See what's new",
+    },
     TR_ONBOARDING_FEEDBACK_BANNER_TITLE: {
         id: 'TR_ONBOARDING_FEEDBACK_BANNER_TITLE',
         defaultMessage: 'Help us improve',
