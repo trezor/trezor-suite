@@ -1090,30 +1090,35 @@ export const connectPopupResolveSelectAccountThunk = createThunk<
     getPermissionDeferred().resolve();
 });
 
-export const connectPopupCancelThunk = createThunk<void, { error?: string; callId?: string }, void>(
-    `${CONNECT_POPUP_MODULE}/cancelThunk`,
-    ({ error, callId }, { dispatch, getState }) => {
-        const activeCall = selectConnectPopupCall(getState());
+type ConnectPopupCancelThunkState = ConnectPopupStateRootState;
 
-        getPermissionDeferred().reject(TypedError('Method_Cancel'));
-        TrezorConnect.cancel({ reason: error, callId });
-        // Clear the button requests so the modal reflects the cancel without waiting for the aborted
-        // call to settle; keyed by the stored device path (undefined before the device phase = no-op).
-        dispatch(deviceActions.removeButtonRequests({ path: activeCall?.devicePath }));
+export const connectPopupCancelThunk = createThunk<
+    void,
+    { error?: string; callId?: string },
+    {
+        state: ConnectPopupCancelThunkState;
+    }
+>(`${CONNECT_POPUP_MODULE}/cancelThunk`, ({ error, callId }, { dispatch, getState }) => {
+    const activeCall = selectConnectPopupCall(getState());
 
-        dispatch(connectPopupActions.finishCall());
+    getPermissionDeferred().reject(TypedError('Method_Cancel'));
+    TrezorConnect.cancel({ reason: error, callId });
+    // Clear the button requests so the modal reflects the cancel without waiting for the aborted
+    // call to settle; keyed by the stored device path (undefined before the device phase = no-op).
+    dispatch(deviceActions.removeButtonRequests({ path: activeCall?.devicePath }));
 
-        // Resolve the popup-call deferred directly so the cancel response
-        // reaches the caller immediately.  Without this, the response
-        // depends on TrezorConnect.cancel() propagating through the
-        // internal core, interrupting the device, and eventually causing
-        // the catch block in connectPopupCallInnerThunk to resolve the
-        // deferred — which may not happen reliably (e.g. the device
-        // interrupt doesn't complete, or the Suite popup tab closes
-        // before RESPONSE_EVENT is sent).
-        getPopupCallDeferred().resolve({
-            success: false,
-            error: serializeError(TypedError('Method_Interrupted')),
-        });
-    },
-);
+    dispatch(connectPopupActions.finishCall());
+
+    // Resolve the popup-call deferred directly so the cancel response
+    // reaches the caller immediately.  Without this, the response
+    // depends on TrezorConnect.cancel() propagating through the
+    // internal core, interrupting the device, and eventually causing
+    // the catch block in connectPopupCallInnerThunk to resolve the
+    // deferred — which may not happen reliably (e.g. the device
+    // interrupt doesn't complete, or the Suite popup tab closes
+    // before RESPONSE_EVENT is sent).
+    getPopupCallDeferred().resolve({
+        success: false,
+        error: serializeError(TypedError('Method_Interrupted')),
+    });
+});
