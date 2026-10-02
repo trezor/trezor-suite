@@ -29,9 +29,14 @@ import { selectAccountItemForGraph } from '../selectors';
 type AccountDetailGraphProps = {
     accountKey: AccountKey;
     tokenContract?: TokenAddress;
+    areEventsEnabled?: boolean;
 };
 
-export const AccountDetailGraph = ({ accountKey, tokenContract }: AccountDetailGraphProps) => {
+export const AccountDetailGraph = ({
+    accountKey,
+    tokenContract,
+    areEventsEnabled = true,
+}: AccountDetailGraphProps) => {
     const { dispatch } = useServices(injectDispatch);
     const resetGraph = useSetAtom(accountDetailGraphAtoms.resetGraphAtom);
     const graphInstanceId = getAccountGraphInstanceId({ accountKey, tokenContract });
@@ -50,9 +55,10 @@ export const AccountDetailGraph = ({ accountKey, tokenContract }: AccountDetailG
     const { refetchGraph: refetchAccountGraph } = useGraphData({
         instanceId: graphInstanceId,
         accounts,
-        eventsAccount: accountItem,
+        eventsAccount: areEventsEnabled ? accountItem : undefined,
         timeframeHours: accountGraphTimeframe,
         backendSymbol: accountItem?.symbol ?? asNetworkSymbol('btc'),
+        isEnabled: isHistoryEnabledAccount,
     });
 
     const graphPoints = useAtomValue(accountDetailGraphAtoms.graphPointsAtom);
@@ -94,7 +100,7 @@ export const AccountDetailGraph = ({ accountKey, tokenContract }: AccountDetailG
                 loading={isLoading}
                 error={error}
                 onTryAgain={handleTryAgain}
-                events={graphEvents}
+                events={areEventsEnabled ? graphEvents : undefined}
             />
             <AccountDetailGraphTimeSwitch accountKey={accountKey} tokenContract={tokenContract} />
         </>
