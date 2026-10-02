@@ -18,7 +18,7 @@ import { Translation, type TxKeyPath } from '@suite-native/intl';
 import { TokenYieldRateBadge } from '@suite-native/module-earn';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
-import { type OnSelectAsset } from './types';
+import { type AccountAssetsTabListProps, type OnSelectAsset } from './types';
 
 type SectionHeaderListItem = { type: 'section-header'; id: string; translationId: TxKeyPath };
 type WarningListItem = { type: 'warning'; id: string };
@@ -31,10 +31,18 @@ type TokenListItem = {
 };
 type HiddenListItem = SectionHeaderListItem | WarningListItem | TokenListItem;
 
-type HiddenTokensTabProps = {
+type HiddenTokensTabProps = AccountAssetsTabListProps & {
     accountKey: AccountKey;
     onSelect: OnSelectAsset;
 };
+
+const listStyle = prepareNativeStyle(() => ({
+    flex: 1,
+}));
+
+const listContentStyle = prepareNativeStyle(({ spacings }) => ({
+    paddingHorizontal: spacings.sp16,
+}));
 
 const sectionHeaderStyle = prepareNativeStyle(utils => ({
     paddingBottom: utils.spacings.sp8,
@@ -89,7 +97,24 @@ const buildListItems = (
     return listItems;
 };
 
-export const HiddenTokensTab = ({ accountKey, onSelect }: HiddenTokensTabProps) => {
+const HiddenTokensEmptyState = () => (
+    <Card>
+        <PictogramTitleHeader
+            variant="info"
+            icon="coins"
+            title={
+                <Translation id="moduleAccountManagement.accountOverviewScreen.hiddenTokensSection.emptyTitle" />
+            }
+        />
+    </Card>
+);
+
+export const HiddenTokensTab = ({
+    accountKey,
+    onSelect,
+    ListHeaderComponent,
+    onScroll,
+}: HiddenTokensTabProps) => {
     const { applyStyle } = useNativeStyles();
 
     const account = useSelector((state: AccountsRootState) =>
@@ -127,16 +152,20 @@ export const HiddenTokensTab = ({ accountKey, onSelect }: HiddenTokensTabProps) 
                         </View>
                     );
                 case 'token':
+                    if (!account) {
+                        return null;
+                    }
+
                     return (
                         <AccountsListTokenItem
                             token={item.token}
-                            account={account!}
+                            account={account}
                             hasBackground
                             isFirst={item.isFirst}
                             isLast={item.isLast}
                             badges={
                                 <TokenYieldRateBadge
-                                    account={account!}
+                                    account={account}
                                     token={item.token}
                                     variant="active"
                                 />
@@ -173,10 +202,15 @@ export const HiddenTokensTab = ({ accountKey, onSelect }: HiddenTokensTabProps) 
 
     return (
         <FlashList
+            style={applyStyle(listStyle)}
+            contentContainerStyle={applyStyle(listContentStyle)}
             data={listItems}
             keyExtractor={item => item.id}
             getItemType={item => item.type}
             renderItem={renderItem}
+            ListHeaderComponent={ListHeaderComponent}
+            ListEmptyComponent={<HiddenTokensEmptyState />}
+            onScroll={onScroll}
         />
     );
 };

@@ -80,28 +80,31 @@ export const AccountOverviewScreen = ({
     return (
         <Screen
             header={<AccountOverviewScreenHeader accountKey={accountKey} flowType={flowType} />}
+            isScrollable={false}
+            noHorizontalPadding
         >
             {isFailed ? (
                 <AccountDiscoveryFailedBanner accountKey={accountKey} />
             ) : (
-                <VStack spacing="sp16">
-                    <AccountEarnPromoBanner account={account} />
-
-                    <AccountOverviewTabBar
-                        activeTab={activeTab}
-                        flowType={flowType}
-                        networkType={account?.networkType}
-                        tokenCount={tokenCount}
-                        defiTokenCount={defiTokenCount}
-                        hiddenTokenCount={manuallyHiddenTokens}
-                        onTabChange={setActiveTab}
-                    />
-                    <AccountOverviewTabContent
-                        accountKey={accountKey}
-                        activeTab={activeTab}
-                        flowType={flowType}
-                    />
-                </VStack>
+                <AccountOverviewTabContent
+                    accountKey={accountKey}
+                    activeTab={activeTab}
+                    flowType={flowType}
+                    ListHeaderComponent={
+                        <VStack spacing="sp16" marginBottom="sp16">
+                            <AccountEarnPromoBanner account={account} />
+                            <AccountOverviewTabBar
+                                activeTab={activeTab}
+                                flowType={flowType}
+                                networkType={account?.networkType}
+                                tokenCount={tokenCount}
+                                defiTokenCount={defiTokenCount}
+                                hiddenTokenCount={manuallyHiddenTokens}
+                                onTabChange={setActiveTab}
+                            />
+                        </VStack>
+                    }
+                />
             )}
         </Screen>
     );

@@ -17,11 +17,20 @@ import {
     TokenYieldRateBadge,
     useStakingDetailNavigation,
 } from '@suite-native/module-earn';
+import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
 import { ZeroBalanceTokensSection } from './ZeroBalanceTokensSection';
-import { type OnSelectAsset } from './types';
+import { type AccountAssetsTabListProps, type OnSelectAsset } from './types';
 
-type ActiveTokensTabProps = {
+const listStyle = prepareNativeStyle(() => ({
+    flex: 1,
+}));
+
+const listContentStyle = prepareNativeStyle(({ spacings }) => ({
+    paddingHorizontal: spacings.sp16,
+}));
+
+type ActiveTokensTabProps = AccountAssetsTabListProps & {
     accountKey: AccountKey;
     onSelect: OnSelectAsset;
     isStakingDisplayed: boolean;
@@ -47,7 +56,10 @@ export const ActiveTokensTab = ({
     accountKey,
     onSelect,
     isStakingDisplayed,
+    ListHeaderComponent,
+    onScroll,
 }: ActiveTokensTabProps) => {
+    const { applyStyle } = useNativeStyles();
     const { navigateToStakingDetail } = useStakingDetailNavigation();
 
     const activeTokensSections = useSelector((state: NativeAccountsRootState) =>
@@ -142,10 +154,14 @@ export const ActiveTokensTab = ({
 
     return (
         <FlashList
+            style={applyStyle(listStyle)}
+            contentContainerStyle={applyStyle(listContentStyle)}
             data={listItems}
             keyExtractor={getItemKey}
             getItemType={item => item.type}
             renderItem={renderItem}
+            ListHeaderComponent={ListHeaderComponent}
+            onScroll={onScroll}
         />
     );
 };
