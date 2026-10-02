@@ -1,29 +1,29 @@
+import { sha256 } from '@noble/hashes/sha2.js';
+import { bytesToHex } from '@noble/hashes/utils.js';
 import * as crossFetch from 'cross-fetch';
 import { afterAll, afterEach, beforeAll, beforeEach, describe, expect, it, vi } from 'vitest';
 
+import type { DeviceButtonRequestPayload } from '@trezor/connect-common';
 import { BridgeTransport } from '@trezor/transport-common';
-import { type EmuStartOptsType, Model } from '@trezor/trezor-user-env-link';
+import { type EmuStartOptsType } from '@trezor/trezor-user-env-link';
 
+import {
+    type ReviewPage,
+    assertRawReview,
+    assertReviewFields,
+    getReviewFields,
+    normalizeReviewText,
+    traverseReview,
+} from './clearSigningReview';
 import TrezorConnect, { UI_EVENTS } from '../../../src';
 import { clearSigningScenarios } from '../../__fixtures__/clearSigning';
 import { getController, initTrezorConnect, setup, skipTest } from '../../common.setup';
-
-type DisplayLayout = {
-    Content?: { paragraphs: string[][] };
-    content?: { content?: { paragraphs: string[][] }; paragraphs?: string[][] };
-    flow_page?: { text: string[] };
-};
-
-const normalizeDisplayValue = (value: string) =>
-    value
-        .replace(/(\d)-\s+(?=\d)/g, '$1')
-        .replace(/\s/g, '')
-        .toLowerCase();
 
 // Observe real downloads without substituting the production definition bytes.
 vi.mock('cross-fetch', { spy: true });
 const { default: fetch } = await vi.importActual<typeof crossFetch>('cross-fetch');
 const downloadedDefinitions = new Set<string>();
+const definitionHashes = new Map<string, string>();
 const fetchSpy = vi.mocked(crossFetch.default).mockImplementation(async (...args) => {
     const response = await fetch(...args);
     if (
@@ -31,61 +31,30 @@ const fetchSpy = vi.mocked(crossFetch.default).mockImplementation(async (...args
         String(args[0]).startsWith('https://data.trezor.io/firmware/definitions/eth/')
     ) {
         downloadedDefinitions.add(String(args[0]));
+        definitionHashes.set(
+            String(args[0]),
+            bytesToHex(sha256(new Uint8Array(await response.clone().arrayBuffer()))),
+        );
     }
 
     return response;
 });
 
 const controller = getController();
-const displayedValues: string[] = [];
+const reviews: ReviewPage[][] = [];
 let confirmations = Promise.resolve();
 let confirmationError: unknown;
-let expectedReviewValues: string[] = [];
 const emulatorOptions: EmuStartOptsType = JSON.parse(process.env.EMULATOR_START_OPTS ?? '{}');
 
-const captureDisplay = async () => {
-    const { tokens } = await controller.getDebugState();
-    const layout: DisplayLayout = JSON.parse(tokens.join(''));
-    const paragraphs =
-        layout.Content?.paragraphs ??
-        layout.content?.content?.paragraphs ??
-        layout.content?.paragraphs ??
-        layout.flow_page?.text.map(text => [text]);
-    if (!paragraphs) {
-        throw new Error('Readable text missing from the Trezor display');
-    }
-    const values = paragraphs.map(lines => normalizeDisplayValue(lines.join('')));
-    displayedValues.push(...values);
-
-    return values;
-};
-
-const confirmAndCapture = () => {
+const confirmAndCapture = (request: DeviceButtonRequestPayload) => {
     confirmations = confirmations
         .then(async () => {
-            // Connect has received the ButtonRequest before the debug-link readiness probe.
-            let values = await captureDisplay();
-            for (const [index, value] of expectedReviewValues.entries()) {
-                const nextValue = expectedReviewValues[index + 1];
-                if (values.includes(value) && nextValue && !values.includes(nextValue)) {
-                    // Visit every review page before confirming on smaller displays.
-                    if (emulatorOptions.model === Model.T3W1) {
-                        await controller.clickEmu({ x: 200, y: 480 });
-                    } else {
-                        await controller.swipeEmu('up');
-                    }
-                    await expect
-                        .poll(
-                            async () => {
-                                values = await captureDisplay();
-
-                                return values;
-                            },
-                            { timeout: 5_000 },
-                        )
-                        .toContain(nextValue);
-                }
-            }
+            reviews.push(
+                await traverseReview(controller, {
+                    model: emulatorOptions.model,
+                    pages: request.pages,
+                }),
+            );
             await controller.pressYes();
         })
         .catch(error => {
@@ -114,8 +83,9 @@ describe.skipIf(Boolean(skipTest(['1'])))('Production Ethereum clear signing', (
     });
 
     beforeEach(() => {
-        displayedValues.length = 0;
+        reviews.length = 0;
         downloadedDefinitions.clear();
+        definitionHashes.clear();
         confirmationError = undefined;
     });
 
@@ -134,8 +104,10 @@ describe.skipIf(Boolean(skipTest(['1'])))('Production Ethereum clear signing', (
     });
 
     for (const scenario of clearSigningScenarios) {
-        it(`Displays readable ${scenario.name} details on Trezor`, async () => {
-            expectedReviewValues = scenario.reviewValues.map(normalizeDisplayValue);
+        const testName = scenario.knownRawFallback
+            ? `Reproduces known raw-data fallback for ${scenario.name}`
+            : `Displays readable ${scenario.name} details on Trezor`;
+        it(testName, async () => {
             const result = await TrezorConnect.ethereumSignTransaction({
                 path: "m/44'/60'/0'/0/0",
                 transaction: scenario.transaction,
@@ -151,15 +123,43 @@ describe.skipIf(Boolean(skipTest(['1'])))('Production Ethereum clear signing', (
             expect(downloadedDefinitions).toContain(
                 `https://data.trezor.io/firmware/definitions/eth/chain-id/1/${scenario.definitionPath}`,
             );
-            expect(
-                scenario.providers.some(provider =>
-                    displayedValues.includes(normalizeDisplayValue(provider)),
-                ),
-            ).toBe(true);
-            for (const value of [scenario.intent, ...scenario.reviewValues]) {
-                expect(displayedValues).toContain(normalizeDisplayValue(value));
+            const displayedValues = reviews
+                .flat()
+                .flatMap(page => page.paragraphs.map(normalizeReviewText));
+            const hasProvider = scenario.providers.some(provider =>
+                displayedValues.includes(normalizeReviewText(provider)),
+            );
+            const fields = reviews.flatMap(getReviewFields);
+            assertReviewFields(fields, [{ label: 'Maximum fee', value: '0.0005 ETH' }]);
+            if (scenario.knownRawFallback) {
+                expect(
+                    definitionHashes.get(
+                        `https://data.trezor.io/firmware/definitions/eth/chain-id/1/${scenario.definitionPath}`,
+                    ),
+                    'Production descriptor changed; review and remove the known-fallback marker',
+                ).toBe(scenario.knownRawFallback.definitionHash);
+                assertRawReview(reviews, scenario.transaction.data);
+                expect(hasProvider).toBe(false);
+                expect(displayedValues).not.toContain(normalizeReviewText(scenario.intent));
+                for (const definitionPath of [
+                    'network.dat',
+                    'token-c02aaa39b223fe8d0a0e5c4f27ead9083c756cc2.dat',
+                ]) {
+                    expect(
+                        downloadedDefinitions,
+                        JSON.stringify([...downloadedDefinitions]),
+                    ).toContain(
+                        `https://data.trezor.io/firmware/definitions/eth/chain-id/1/${definitionPath}`,
+                    );
+                }
+                console.warn(
+                    `Known production defect (${scenario.knownRawFallback.url}): ${scenario.knownRawFallback.reason}; maker review still displays raw calldata`,
+                );
+            } else {
+                expect(hasProvider).toBe(true);
+                expect(displayedValues).toContain(normalizeReviewText(scenario.intent));
+                assertReviewFields(fields, scenario.reviewFields);
             }
-            expect(displayedValues.some(value => value.startsWith('maximumfee'))).toBe(true);
         });
     }
 });
