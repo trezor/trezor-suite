@@ -9,7 +9,7 @@ cat > "$fixture/bin/gh" <<'MOCK'
 #!/usr/bin/env bash
 set -euo pipefail
 case "$*" in
-    *actions/caches?*)
+    *'actions/caches?'*)
         printf '1\trefs/heads/develop\t100\n2\trefs/pull/10/merge\t200\n3\trefs/pull/11/merge\t300\n4\trefs/pull/10/merge\t400\n5\trefs/heads/feature\t500\n'
         ;;
     *pulls/10*) printf 'closed\n' ;;
