@@ -15,6 +15,11 @@ on:
         type: "string"
         required: false
         default: "2-latest"
+      testsFirmwareBranch:
+        description: "Firmware branch to build the emulator from (takes precedence over testsFirmware; example: bieleluk/sdk-wip)"
+        type: "string"
+        required: false
+        default: ""
       testFirmwareModel:
         description: "Firmware model for the tests (example: T3T1)"
         type: "string"
@@ -89,6 +94,8 @@ jobs:
         run: echo "ADDITIONAL_ARGS=$ADDITIONAL_ARGS -r" >> "$GITHUB_ENV"
       - if: ${{ inputs.transport }}
         run: echo "ADDITIONAL_ARGS=$ADDITIONAL_ARGS -t ${{ inputs.transport }}" >> "$GITHUB_ENV"
+      - if: ${{ inputs.testsFirmwareBranch }}
+        run: echo "ADDITIONAL_ARGS=$ADDITIONAL_ARGS -b ${{ inputs.testsFirmwareBranch }}" >> "$GITHUB_ENV"
       - run: './docker/docker-connect-test.sh ${{ inputs.testEnv }} -p "${{ inputs.testPattern }}" -f "${{ inputs.testsFirmware }}" $ADDITIONAL_ARGS'
       - name: Extract and Upload Logs
         if: ${{ !cancelled() }}

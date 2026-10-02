@@ -49,6 +49,9 @@ import { DeviceCommands } from './DeviceCommands';
 import type { TypedCallProvider } from './DeviceCurrentSession';
 import { DeviceCurrentSession } from './DeviceCurrentSession';
 import { checkFirmwareRevision } from './checkFirmwareRevision';
+import { getModularAppTypedCall } from './modularApp/appCommands';
+import { loadModularApp } from './modularApp/loadModularApp';
+import type { ModularAppDefinition } from './modularApp/types';
 import { abortThpWorkflow, getThpChannel } from './thp';
 import { getAllNetworks } from '../data/coinInfo';
 import {
@@ -139,6 +142,10 @@ export class Device extends TypedEmitter<DeviceEvents> implements IDevice {
 
     private keepTransportSession = false;
     private currentSession?: DeviceCurrentSession;
+
+    // App id -> instance id of modular apps loaded in the current session. Undefined marks firmware
+    // without modular app support.
+    private loadedModularApps = new Map<string, number | undefined>();
 
     private instance = 0;
 
@@ -283,6 +290,8 @@ export class Device extends TypedEmitter<DeviceEvents> implements IDevice {
                         this.sessionAcquired,
                         this.createLogger('DeviceCommands'),
                     );
+                    // Loaded modular app instances belong to the previous session.
+                    this.loadedModularApps.clear();
 
                     return result;
                 } else {
@@ -639,6 +648,37 @@ export class Device extends TypedEmitter<DeviceEvents> implements IDevice {
 
     getCommands() {
         return DeviceCommands(this.getCurrentSession());
+    }
+
+    async ensureModularAppLoaded(appDef: ModularAppDefinition, forceReload = false) {
+        if (!appDef.loadArtifacts) return;
+        if (this.loadedModularApps.has(appDef.id)) return;
+
+        const artifacts = await appDef.loadArtifacts();
+        if (!artifacts.binary.length) return;
+
+        const session = this.getCurrentSession();
+        const instanceId = await loadModularApp({
+            typedCall: session.typedCall.bind(session),
+            appDef,
+            artifacts,
+            forceReload,
+        });
+        this.loadedModularApps.set(appDef.id, instanceId);
+    }
+
+    // Falls back to the native `typedCall` for firmware without modular app support.
+    getModularAppCommands(appDef: ModularAppDefinition) {
+        const session = this.getCurrentSession();
+        const rawTypedCall = session.typedCall.bind(session);
+        const instanceId = this.loadedModularApps.get(appDef.id);
+
+        return {
+            typedCall:
+                instanceId === undefined
+                    ? rawTypedCall
+                    : getModularAppTypedCall(rawTypedCall, appDef, instanceId),
+        };
     }
 
     setInstance(instance = 0) {

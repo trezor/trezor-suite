@@ -179,6 +179,10 @@ const inner = async (context: CoreContext, method: AbstractMethod<any>, device: 
         });
     }
 
+    if (method.requiredApp) {
+        await device.ensureModularAppLoaded(method.requiredApp);
+    }
+
     // run method
     try {
         const response = await method.run({ sendCoreMessage, createUiPromise: uiPromises.create });
