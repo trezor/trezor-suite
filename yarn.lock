@@ -12231,7 +12231,6 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@suite-common/validators@workspace:suite-common/validators"
   dependencies:
-    "@trezor/utils": "workspace:*"
     yup: "npm:1.7.1"
   languageName: unknown
   linkType: soft
@@ -16424,6 +16423,15 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"@suite/forms@workspace:*, @suite/forms@workspace:suite/forms":
+  version: 0.0.0-use.local
+  resolution: "@suite/forms@workspace:suite/forms"
+  dependencies:
+    "@trezor/utils": "workspace:*"
+    yup: "npm:1.7.1"
+  languageName: unknown
+  linkType: soft
+
 "@suite/github@workspace:*, @suite/github@workspace:suite/github":
   version: 0.0.0-use.local
   resolution: "@suite/github@workspace:suite/github"
@@ -16532,8 +16540,8 @@ __metadata:
     "@suite-common/message-system": "workspace:*"
     "@suite-common/redux-utils": "workspace:*"
     "@suite-common/suite-types": "workspace:*"
-    "@suite-common/validators": "workspace:*"
     "@suite/external-links": "workspace:*"
+    "@suite/forms": "workspace:*"
     "@suite/intl": "workspace:*"
     "@suite/router": "workspace:*"
     "@suite/settings": "workspace:*"
@@ -16756,9 +16764,9 @@ __metadata:
     "@reduxjs/toolkit": "npm:2.12.0"
     "@suite-common/redux-utils": "workspace:*"
     "@suite-common/test-utils": "workspace:*"
-    "@suite-common/validators": "workspace:*"
     "@suite-common/wallet-config": "workspace:*"
     "@suite-common/wallet-types": "workspace:*"
+    "@suite/forms": "workspace:*"
     "@suite/locks": "workspace:*"
     "@suite/modal": "workspace:*"
     "@suite/router-config": "workspace:*"
@@ -16811,12 +16819,12 @@ __metadata:
     "@suite-common/redux-utils": "workspace:*"
     "@suite-common/sign-verify": "workspace:*"
     "@suite-common/toast-notifications": "workspace:*"
-    "@suite-common/validators": "workspace:*"
     "@suite-common/wallet-config": "workspace:*"
     "@suite-common/wallet-types": "workspace:*"
     "@suite-common/wallet-utils": "workspace:*"
     "@suite/address": "workspace:*"
     "@suite/device": "workspace:*"
+    "@suite/forms": "workspace:*"
     "@suite/intl": "workspace:*"
     "@trezor/components": "workspace:*"
     "@trezor/dom-utils": "workspace:*"
@@ -18944,7 +18952,6 @@ __metadata:
     "@suite-common/transaction-search": "workspace:*"
     "@suite-common/transfer-uri": "workspace:*"
     "@suite-common/tx-simulation": "workspace:^"
-    "@suite-common/validators": "workspace:*"
     "@suite-common/wallet-config": "workspace:*"
     "@suite-common/wallet-constants": "workspace:*"
     "@suite-common/wallet-core": "workspace:*"
@@ -18971,6 +18978,7 @@ __metadata:
     "@suite/feature-feedback": "workspace:*"
     "@suite/firmware-upgrade": "workspace:*"
     "@suite/flags": "workspace:*"
+    "@suite/forms": "workspace:*"
     "@suite/github": "workspace:*"
     "@suite/idb-migration-utils": "workspace:*"
     "@suite/intl": "workspace:*"

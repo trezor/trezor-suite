@@ -3,12 +3,12 @@ import { type UseFormReturn, useForm, useWatch } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 
 import { injectDesktopAnalytics } from '@suite/analytics';
+import { yup } from '@suite/forms';
 import { type TranslationFunction, useTranslation } from '@suite/intl';
 import { events } from '@suite-common/analytics';
 import { useServices } from '@suite-common/dependency-injection';
 import { selectSelectedDeviceLabelOrName } from '@suite-common/device';
 import { injectDispatch } from '@suite-common/redux-utils';
-import { yup } from '@suite-common/validators';
 import { isAscii } from '@trezor/utils';
 
 import { applySettingsThunk } from 'src/actions/settings/deviceSettingsActions';

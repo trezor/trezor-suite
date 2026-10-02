@@ -3,9 +3,7 @@
     "version": "1.0.0",
     "private": true,
     "license": "See LICENSE.md in repo root",
-    "sideEffects": [
-        "src/config.ts"
-    ],
+    "sideEffects": false,
     "main": "src/index",
     "scripts": {
         "depcheck": "yarn g:depcheck",
@@ -13,7 +11,6 @@
         "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'"
     },
     "dependencies": {
-        "@trezor/utils": "workspace:*",
         "yup": "1.7.1"
     }
 }

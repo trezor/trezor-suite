@@ -1,4 +1,4 @@
-import { yup } from '@suite-common/validators';
+import { yup } from '@suite/forms';
 import {
     type AccountType,
     type NetworkSymbol,
