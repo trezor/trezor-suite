@@ -3,15 +3,22 @@ import { AnonRpcWorker } from '@anon-rpc/browser-harness';
 import { MESSAGES } from '@trezor/blockchain-link-types';
 import type { AnonRpcSettings, BlockchainSettings } from '@trezor/blockchain-link-types';
 
-import type { AnonRpcClient } from './utils/anonRpcClient';
-
 import { EvmRpcWorker } from './index';
 
 jest.mock('@anon-rpc/browser-harness', () => ({ AnonRpcWorker: jest.fn() }));
 
-const ANON_RPC: AnonRpcSettings = {
-    specifier: '0x4fd77be300f31c5fe6ab266d35d27750a3478d27',
-    bootstrapRpcUrl: 'https://bootstrap.example',
+// Matches the shared pool's grace period before an unused client is closed.
+const IDLE_CLOSE_DELAY = 60_000;
+
+// Clients are pooled per network for the whole module, so each test uses a network of its own.
+let networkCount = 0;
+const createAnonRpcSettings = (): AnonRpcSettings => {
+    networkCount += 1;
+
+    return {
+        specifier: `0x${networkCount.toString(16).padStart(40, '0')}`,
+        bootstrapRpcUrl: 'https://bootstrap.example',
+    };
 };
 
 // Fails before anything is sent, so the worker's own error path is what gets exercised.
@@ -31,12 +38,19 @@ const respond = (url: string, init?: RequestInit) => {
     return Promise.resolve(new Response(JSON.stringify(body)));
 };
 
-const mockAnonRpcClient = (): jest.Mocked<AnonRpcClient> => ({
+type MockAnonRpcClient = {
+    fetch: jest.Mock;
+    close: jest.Mock;
+    ready: Promise<void>;
+};
+
+const mockAnonRpcClient = (): MockAnonRpcClient => ({
     fetch: jest.fn((input: RequestInfo | URL, init?: RequestInit) => respond(String(input), init)),
     close: jest.fn(),
+    ready: new Promise(() => {}),
 });
 
-const createdClients: jest.Mocked<AnonRpcClient>[] = [];
+const createdClients: MockAnonRpcClient[] = [];
 
 const getCreatedClient = (index: number) => {
     const client = createdClients[index];
@@ -62,6 +76,8 @@ describe('EvmRpcWorker with anon-rpc', () => {
     let directFetch: jest.SpyInstance;
 
     beforeEach(() => {
+        // Advancing with real time keeps viem's own timeouts working.
+        jest.useFakeTimers({ advanceTimers: true });
         createdClients.length = 0;
         jest.mocked(AnonRpcWorker).mockReset();
         jest.mocked(AnonRpcWorker).mockImplementation(() => {
@@ -82,15 +98,18 @@ describe('EvmRpcWorker with anon-rpc', () => {
     afterEach(() => {
         Reflect.deleteProperty(globalThis, 'document');
         directFetch.mockRestore();
+        jest.clearAllTimers();
+        jest.useRealTimers();
     });
 
     it('sends RPC traffic only through the anon-rpc client', async () => {
-        const worker = await createWorker({ anonRpc: ANON_RPC });
+        const anonRpc = createAnonRpcSettings();
+        const worker = await createWorker({ anonRpc });
 
         await worker.connect();
 
         expect(AnonRpcWorker).toHaveBeenCalledWith(
-            expect.objectContaining({ address: ANON_RPC.specifier }),
+            expect.objectContaining({ address: anonRpc.specifier }),
         );
         expect(createdClients).toHaveLength(1);
         expect(getCreatedClient(0).fetch).toHaveBeenCalledWith(RPC_URL, expect.anything());
@@ -98,7 +117,10 @@ describe('EvmRpcWorker with anon-rpc', () => {
     });
 
     it('refuses a socket endpoint instead of connecting unanonymized', async () => {
-        const worker = await createWorker({ anonRpc: ANON_RPC, server: ['wss://rpc.example'] });
+        const worker = await createWorker({
+            anonRpc: createAnonRpcSettings(),
+            server: ['wss://rpc.example'],
+        });
 
         await expect(worker.connect()).rejects.toThrow('All backends are down');
 
@@ -106,41 +128,59 @@ describe('EvmRpcWorker with anon-rpc', () => {
         expect(directFetch).not.toHaveBeenCalled();
     });
 
-    it('closes the sandbox of a failed endpoint before trying the next one', async () => {
+    it('keeps the client when an endpoint fails, and tries the next endpoint through it', async () => {
         const worker = await createWorker({
-            anonRpc: ANON_RPC,
+            anonRpc: createAnonRpcSettings(),
             server: [UNREACHABLE_URL, RPC_URL],
         });
 
         await worker.connect();
 
-        expect(createdClients).toHaveLength(2);
+        expect(createdClients).toHaveLength(1);
         expect(getCreatedClient(0).fetch).toHaveBeenCalledWith(UNREACHABLE_URL, expect.anything());
-        expect(getCreatedClient(0).close).toHaveBeenCalledTimes(1);
-        expect(getCreatedClient(1).close).not.toHaveBeenCalled();
+        expect(getCreatedClient(0).fetch).toHaveBeenCalledWith(RPC_URL, expect.anything());
+        expect(getCreatedClient(0).close).not.toHaveBeenCalled();
     });
 
-    it('closes the sandbox when every endpoint fails', async () => {
-        const worker = await createWorker({ anonRpc: ANON_RPC, server: [UNREACHABLE_URL] });
+    it('lets go of the client when every endpoint fails', async () => {
+        const worker = await createWorker({
+            anonRpc: createAnonRpcSettings(),
+            server: [UNREACHABLE_URL],
+        });
 
         await expect(worker.connect()).rejects.toThrow('All backends are down');
+        jest.advanceTimersByTime(IDLE_CLOSE_DELAY);
 
-        expect(createdClients).toHaveLength(1);
         expect(getCreatedClient(0).close).toHaveBeenCalledTimes(1);
     });
 
-    it('closes the sandbox on disconnect', async () => {
-        const worker = await createWorker({ anonRpc: ANON_RPC });
+    it('lets go of the client on disconnect', async () => {
+        const worker = await createWorker({ anonRpc: createAnonRpcSettings() });
         await worker.connect();
 
         worker.disconnect();
+        jest.advanceTimersByTime(IDLE_CLOSE_DELAY);
 
         expect(getCreatedClient(0).close).toHaveBeenCalledTimes(1);
+    });
+
+    it('shares one client between connections to the same network', async () => {
+        const anonRpc = createAnonRpcSettings();
+        const first = await createWorker({ anonRpc });
+        const second = await createWorker({ anonRpc });
+
+        await first.connect();
+        await second.connect();
+        first.disconnect();
+        jest.advanceTimersByTime(IDLE_CLOSE_DELAY);
+
+        expect(createdClients).toHaveLength(1);
+        expect(getCreatedClient(0).close).not.toHaveBeenCalled();
     });
 
     it('fails closed outside a browser main thread', async () => {
         Reflect.deleteProperty(globalThis, 'document');
-        const worker = await createWorker({ anonRpc: ANON_RPC });
+        const worker = await createWorker({ anonRpc: createAnonRpcSettings() });
 
         await expect(worker.connect()).rejects.toThrow('All backends are down');
 
