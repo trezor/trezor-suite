@@ -96,6 +96,7 @@ export class Blockchain {
             server,
             debug: options.debug,
             proxy: options.proxy,
+            anonRpc: blockchainLink.anonRpc,
             // register EVM and Tron blocks once per 12+ seconds
             ...(this.coinInfo.type === 'ethereum' ||
             ['TRX', 'tTRX'].includes(this.coinInfo.shortcut)

@@ -1,4 +1,5 @@
 export { mockAccountKey } from './mockAccountKey';
+export { mockGetAnonRpcSettings } from './mockGetAnonRpcSettings';
 export { mockGetTradedAccountKeys } from './mockGetTradedAccountKeys';
 export {
     mockWalletAccount,

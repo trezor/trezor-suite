@@ -89,6 +89,12 @@ export const EXPERIMENTAL_FEATURES: Record<ExperimentalFeature, ExperimentalFeat
             await desktopApi.mcpSetEnabled(newValue);
         },
     },
+    'anon-rpc': {
+        title: { id: 'TR_EXPERIMENTAL_ANON_RPC' },
+        description: { id: 'TR_EXPERIMENTAL_ANON_RPC_DESCRIPTION' },
+        // On desktop, Connect runs in the main process, which has no browser sandbox for anon-rpc.
+        isDisabled: () => isDesktop(),
+    },
     'gap-limit': {
         title: { id: 'TR_EXPERIMENTAL_GAP_LIMIT' },
         description: { id: 'TR_EXPERIMENTAL_GAP_LIMIT_DESCRIPTION' },

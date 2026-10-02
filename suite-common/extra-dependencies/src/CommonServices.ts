@@ -24,6 +24,7 @@ import {
 } from '@suite-common/suite-types';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import {
+    type GetAnonRpcSettingsDep,
     type GetTradedAccountKeysDep,
     type SelectedAccountStatus,
 } from '@suite-common/wallet-types';
@@ -46,6 +47,7 @@ export type CommonServices = SuiteSyncDep &
     GetIsWindowVisibleDep &
     GetLanguageDep &
     LockDeviceDep &
+    GetAnonRpcSettingsDep &
     GetTradedAccountKeysDep & {
         saveAs: (data: Blob, fileName: string) => void;
         // Getters, so a component cannot read them during render and miss later state changes.

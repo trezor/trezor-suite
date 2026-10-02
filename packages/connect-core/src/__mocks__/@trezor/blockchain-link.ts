@@ -19,8 +19,11 @@ class BlockchainLink {
     }
     /* */
 
+    settings: any;
+
     constructor(args: any) {
         this.name = args.name;
+        this.settings = args;
     }
 
     connect() {

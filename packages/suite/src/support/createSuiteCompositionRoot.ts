@@ -16,7 +16,12 @@ import {
     type SuiteRouterHistoryDep,
     createSuiteRouterHistory,
 } from '@suite/router';
-import { selectDebugSettings, selectLanguage, selectTradeServerEnvironment } from '@suite/settings';
+import {
+    selectDebugSettings,
+    selectHasExperimentalFeature,
+    selectLanguage,
+    selectTradeServerEnvironment,
+} from '@suite/settings';
 import { createSuiteSyncDesktopCompositionRoot } from '@suite/suite-sync';
 import { createBip329CompositionRoot } from '@suite-common/bip329';
 import {
@@ -43,6 +48,7 @@ import { type GetBinFilesBaseUrlDep, type ReloadAppDep } from '@suite-common/sui
 import { type ThpHostNameDep } from '@suite-common/thp';
 import { selectTradedAccountKeys } from '@suite-common/trading';
 import { selectAccountsByDeviceState } from '@suite-common/wallet-core';
+import type { CustomBackend } from '@suite-common/wallet-types';
 import { type GetTrezorConnectPrivilegedDep } from '@trezor/connect';
 import { isDesktop } from '@trezor/env-utils';
 import type { CreateLoggerDep } from '@trezor/logger';
@@ -51,6 +57,7 @@ import { type SuiteReduxStore } from 'src/reducers/createReduxStore';
 import { selectIsWindowVisible } from 'src/reducers/suite/windowReducer';
 import { type DbDep } from 'src/storage/createDb';
 import { reportSecurityCheck } from 'src/utils/suite/sentry';
+import { getAnonRpcSettings } from 'src/utils/wallet/anonRpcUtils';
 
 import { createConnectInitDeviceEventHooks } from './createConnectInitDeviceEventHooks';
 import { createConnectInitUIEventHooks } from './createConnectInitUIEventHooks';
@@ -203,6 +210,12 @@ export const createSuiteServicesCompositionRoot = (deps: SuiteAppDeps): SuiteSer
             (state: AppState) => state.wallet.selectedAccount,
         ),
         getIsWindowVisible: toGetter(deps.getState, selectIsWindowVisible),
+        getAnonRpcSettings: toGetter(deps.getState, (state: AppState, backend: CustomBackend) =>
+            getAnonRpcSettings({
+                backend,
+                isAnonRpcEnabled: selectHasExperimentalFeature('anon-rpc')(state),
+            }),
+        ),
         getTradingEnvironment: toGetter(deps.getState, selectTradeServerEnvironment),
         getTradedAccountKeys: toGetter(deps.getState, selectTradedAccountKeys),
         getThpSettings: toGetter(deps.getState, (state: AppState) => ({

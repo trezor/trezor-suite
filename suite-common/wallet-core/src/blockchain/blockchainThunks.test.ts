@@ -1,12 +1,18 @@
 import { combineReducers } from '@reduxjs/toolkit';
 
+import { asGetter, mock } from '@suite-common/dependency-injection';
 import { mockActionType, mockReducer } from '@suite-common/redux-utils/mocks';
 import { createTestCompositionRoot } from '@suite-common/test-utils';
 import { type NetworkSymbol, asNetworkSymbol } from '@suite-common/wallet-config';
-import TrezorConnect from '@trezor/connect';
+import type { CustomBackend, GetAnonRpcSettingsDep } from '@suite-common/wallet-types';
+import TrezorConnect, { type BlockchainLinkAnonRpc } from '@trezor/connect';
 
 import { blockchainInitialState, prepareBlockchainReducer } from './blockchainReducer';
-import { type SetCustomBackendThunkState, setCustomBackendThunk } from './blockchainThunks';
+import {
+    type SetCustomBackendThunkDeps,
+    type SetCustomBackendThunkState,
+    setCustomBackendThunk,
+} from './blockchainThunks';
 import {
     initialWalletSettingsState,
     prepareWalletSettingsReducer,
@@ -22,9 +28,24 @@ const walletSettingsReducer = prepareWalletSettingsReducer({
 });
 
 const electrumUrl = '127.0.0.1:50001:t';
+const evmRpcUrl = 'https://eth-rpc.example';
 
-const initStore = (enabledNetworks: NetworkSymbol[]) =>
-    createTestCompositionRoot<void, SetCustomBackendThunkState>({
+const anonRpc: BlockchainLinkAnonRpc = {
+    specifier: '0x700dA3193D35fA54Cd3fBf29B66f2a2A0385659e',
+    bootstrapRpcUrl: evmRpcUrl,
+    config: { gateways: ['127.0.0.1:1:certhash'] },
+};
+
+type InitStoreParams = {
+    enabledNetworks: NetworkSymbol[];
+    getAnonRpcSettings?: GetAnonRpcSettingsDep['getAnonRpcSettings'];
+};
+
+const initStore = ({
+    enabledNetworks,
+    getAnonRpcSettings = asGetter(() => undefined),
+}: InitStoreParams) =>
+    createTestCompositionRoot<SetCustomBackendThunkDeps, SetCustomBackendThunkState>({
         reducer: combineReducers({
             wallet: combineReducers({
                 blockchain: blockchainReducer,
@@ -42,6 +63,13 @@ const initStore = (enabledNetworks: NetworkSymbol[]) =>
                             urls: { electrum: [electrumUrl] },
                         },
                     },
+                    eth: {
+                        ...blockchainInitialState.eth,
+                        backends: {
+                            selected: 'evm-rpc' as const,
+                            urls: { 'evm-rpc': [evmRpcUrl] },
+                        },
+                    },
                 },
                 settings: {
                     ...initialWalletSettingsState,
@@ -49,6 +77,7 @@ const initStore = (enabledNetworks: NetworkSymbol[]) =>
                 },
             },
         },
+        services: () => ({ getAnonRpcSettings }),
     }).services.store;
 
 describe(setCustomBackendThunk.name, () => {
@@ -61,7 +90,7 @@ describe(setCustomBackendThunk.name, () => {
         const reconnect = jest
             .spyOn(TrezorConnect, 'blockchainUnsubscribeFiatRates')
             .mockResolvedValue({ success: true, payload: { subscribed: false } });
-        const store = initStore([asNetworkSymbol('btc')]);
+        const store = initStore({ enabledNetworks: [asNetworkSymbol('btc')] });
 
         await store.dispatch(setCustomBackendThunk(asNetworkSymbol('btc')));
 
@@ -83,7 +112,7 @@ describe(setCustomBackendThunk.name, () => {
         const reconnect = jest
             .spyOn(TrezorConnect, 'blockchainUnsubscribeFiatRates')
             .mockResolvedValue({ success: true, payload: { subscribed: false } });
-        const store = initStore([]);
+        const store = initStore({ enabledNetworks: [] });
 
         await store.dispatch(setCustomBackendThunk(asNetworkSymbol('btc')));
 
@@ -92,5 +121,33 @@ describe(setCustomBackendThunk.name, () => {
             blockchainLink: { type: 'electrum', url: [electrumUrl] },
         });
         expect(reconnect).not.toHaveBeenCalled();
+    });
+    it('routes a custom backend through anon-rpc when the app asks for it', async () => {
+        const setCustomBackend = jest
+            .spyOn(TrezorConnect, 'blockchainSetCustomBackend')
+            .mockResolvedValue({ success: true, payload: true });
+        jest.spyOn(TrezorConnect, 'blockchainUnsubscribeFiatRates').mockResolvedValue({
+            success: true,
+            payload: { subscribed: false },
+        });
+        const getAnonRpcSettings = mock<(backend: CustomBackend) => BlockchainLinkAnonRpc>(
+            () => anonRpc,
+        );
+        const store = initStore({
+            enabledNetworks: [asNetworkSymbol('eth')],
+            getAnonRpcSettings: asGetter(getAnonRpcSettings),
+        });
+
+        await store.dispatch(setCustomBackendThunk(asNetworkSymbol('eth')));
+
+        expect(getAnonRpcSettings).toHaveBeenCalledWith({
+            symbol: 'eth',
+            type: 'evm-rpc',
+            urls: [evmRpcUrl],
+        });
+        expect(setCustomBackend).toHaveBeenCalledWith({
+            coin: 'eth',
+            blockchainLink: { type: 'evm-rpc', url: [evmRpcUrl], anonRpc },
+        });
     });
 });

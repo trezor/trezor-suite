@@ -11,6 +11,7 @@ import {
     COINJOIN_NETWORK_TAG,
     COINJOIN_REPORT_TAG,
     type ChainableBeforeSend,
+    dropAnonRpcClientLogs,
     redactInvalidParameterValue,
     redactSentryEvent,
 } from '@suite-common/sentry';
@@ -70,7 +71,11 @@ const redactCoinjoinData: ChainableBeforeSend = event => {
 };
 
 const beforeSend: ChainableBeforeSend = event =>
-    redactSentryEvent(redactInvalidParameterValue(redactUserPath(redactCoinjoinData(event))));
+    redactSentryEvent(
+        redactInvalidParameterValue(
+            redactUserPath(redactCoinjoinData(dropAnonRpcClientLogs(event))),
+        ),
+    );
 
 const beforeBreadcrumb: Options['beforeBreadcrumb'] = breadcrumb => {
     // filter out analytics requests and image fetches

@@ -70,6 +70,7 @@ import {
     stakeDataActions,
     updateMissingTxFiatRatesThunk,
 } from '@suite-common/wallet-core';
+import { mockGetAnonRpcSettings } from '@suite-common/wallet-types/mocks';
 import {
     type WalletConnectInitThunkDeps,
     walletConnectInitThunk,
@@ -383,6 +384,7 @@ const initStore = (state: InitThunkState) => {
             getBinFilesBaseUrl: mockGetBinFilesBaseUrl(),
             getDebugSettings: mockGetDebugSettings(),
             getIsWindowVisible: asGetter(() => true),
+            getAnonRpcSettings: mockGetAnonRpcSettings(),
             getThpSettings: mockGetThpSettings(),
             getTokenDefinitionsEnabledNetworks: asGetter(
                 () => state.wallet.settings.enabledNetworks,

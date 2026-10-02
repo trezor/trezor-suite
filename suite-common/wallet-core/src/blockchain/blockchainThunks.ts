@@ -11,7 +11,12 @@ import {
     isNetworkSymbol,
     isNetworkUsingExternalBackend,
 } from '@suite-common/wallet-config';
-import type { Account, CustomBackend, GetTradedAccountKeysDep } from '@suite-common/wallet-types';
+import type {
+    Account,
+    CustomBackend,
+    GetAnonRpcSettingsDep,
+    GetTradedAccountKeysDep,
+} from '@suite-common/wallet-types';
 import {
     asAmountSubunit,
     findAccountDevice,
@@ -74,14 +79,15 @@ export const reconnectBlockchainThunk = createThunk<unknown, ReconnectBlockchain
         }),
 );
 
-const setBackendsToConnect = (backends: CustomBackend[]) =>
+const setBackendsToConnect = (backends: CustomBackend[], deps: GetAnonRpcSettingsDep) =>
     Promise.all(
-        backends.map(({ symbol, type, urls }) =>
+        backends.map(backend =>
             TrezorConnect.blockchainSetCustomBackend({
-                coin: asCoinSymbol(symbol),
+                coin: asCoinSymbol(backend.symbol),
                 blockchainLink: {
-                    type,
-                    url: urls,
+                    type: backend.type,
+                    url: backend.urls,
+                    anonRpc: deps.getAnonRpcSettings(backend),
                 },
             }),
         ),
@@ -89,42 +95,47 @@ const setBackendsToConnect = (backends: CustomBackend[]) =>
 
 export type SetCustomBackendThunkState = BlockchainRootState & WalletSettingsRootState;
 
+export type SetCustomBackendThunkDeps = WithServices<GetAnonRpcSettingsDep>;
+
 export const setCustomBackendThunk = createThunk<
     unknown,
     NetworkSymbol,
-    { state: SetCustomBackendThunkState }
->(`${BLOCKCHAIN_MODULE_PREFIX}/setCustomBackendThunk`, async (symbol, { dispatch, getState }) => {
-    const blockchain = selectBlockchainState(getState());
-    const backends = [
-        getBackendFromSettings(symbol, blockchain[symbol as LegacyNetworkSymbol].backends),
-    ];
-    const result = await setBackendsToConnect(backends);
+    { state: SetCustomBackendThunkState; extra: SetCustomBackendThunkDeps }
+>(
+    `${BLOCKCHAIN_MODULE_PREFIX}/setCustomBackendThunk`,
+    async (symbol, { dispatch, getState, extra }) => {
+        const blockchain = selectBlockchainState(getState());
+        const backends = [
+            getBackendFromSettings(symbol, blockchain[symbol as LegacyNetworkSymbol].backends),
+        ];
+        const result = await setBackendsToConnect(backends, extra.services);
 
-    // a disabled network has nothing to sync, so do not open a connection to its backend
-    if (selectEnabledNetworks(getState()).includes(symbol)) {
-        await dispatch(reconnectBlockchainThunk({ symbol }));
-    }
+        // a disabled network has nothing to sync, so do not open a connection to its backend
+        if (selectEnabledNetworks(getState()).includes(symbol)) {
+            await dispatch(reconnectBlockchainThunk({ symbol }));
+        }
 
-    return result;
-});
+        return result;
+    },
+);
 
 export type InitBlockchainThunkState = AccountsRootState &
     BlockchainRootState &
     WalletSettingsRootState &
     NetworksRootState;
 
-export type InitBlockchainThunkDeps = WithServices<AnalyticsDep>;
+export type InitBlockchainThunkDeps = WithServices<AnalyticsDep & GetAnonRpcSettingsDep>;
 
 export const initBlockchainThunk = createThunk<
     void,
     void,
     { state: InitBlockchainThunkState; extra: InitBlockchainThunkDeps }
->(`${BLOCKCHAIN_MODULE_PREFIX}/initBlockchainThunk`, async (_, { dispatch, getState }) => {
+>(`${BLOCKCHAIN_MODULE_PREFIX}/initBlockchainThunk`, async (_, { dispatch, getState, extra }) => {
     await dispatch(preloadFeeInfoThunk());
 
     // Load custom blockbook backend
     const backends = selectCustomBackends(getState());
-    await setBackendsToConnect(backends);
+    await setBackendsToConnect(backends, extra.services);
 
     const accounts = selectAccounts(getState());
     if (accounts.length <= 0) {

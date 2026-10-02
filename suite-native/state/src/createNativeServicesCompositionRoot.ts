@@ -133,6 +133,8 @@ export const createNativeServicesCompositionRoot = (deps: NativeAppDeps): Native
                 }
             }),
         getLanguage: toGetter(deps.getState, selectSupportedLanguageLocale),
+        // anon-rpc needs a browser sandbox, which the mobile app does not have.
+        getAnonRpcSettings: asGetter(() => undefined),
         getTokenDefinitionsEnabledNetworks: toGetter(
             deps.getState,
             selectTokenDefinitionsEnabledNetworks,

@@ -35,10 +35,22 @@ export const CoinSupport = Type.Record(
     Type.Union([Type.String(), Type.Literal(false)]),
 );
 
+export type BlockchainLinkAnonRpc = Static<typeof BlockchainLinkAnonRpc>;
+export const BlockchainLinkAnonRpc = Type.Object({
+    // IWorkerSpecifier contract that pins the anon-rpc client bundle by hash.
+    specifier: Type.String(),
+    // Reads the specifier, so it must serve the chain the specifier is deployed on. Not anonymized.
+    bootstrapRpcUrl: Type.String(),
+    // Delivered to the anon-rpc client as-is; its schema is defined by the client.
+    config: Type.Optional(Type.Unknown()),
+});
+
 export type BlockchainLink = Static<typeof BlockchainLink>;
 export const BlockchainLink = Type.Object({
     type: Type.String(),
     url: Type.Array(Type.String()),
+    // Routes the backend's RPC through an anon-rpc client. Only evm-rpc backends in a browser.
+    anonRpc: Type.Optional(BlockchainLinkAnonRpc),
 });
 
 type Common = Static<typeof Common>;

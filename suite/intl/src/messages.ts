@@ -6074,6 +6074,15 @@ export const messages = defineMessages({
         id: 'TR_TRON_TX_UNDELEGATE_RESOURCE',
         defaultMessage: 'Undelegate resource',
     },
+    TR_EXPERIMENTAL_ANON_RPC: {
+        id: 'TR_EXPERIMENTAL_ANON_RPC',
+        defaultMessage: 'Anonymous RPC',
+    },
+    TR_EXPERIMENTAL_ANON_RPC_DESCRIPTION: {
+        id: 'TR_EXPERIMENTAL_ANON_RPC_DESCRIPTION',
+        defaultMessage:
+            'Send the traffic of your custom Ethereum EVM RPC backend over Tor using the anon-rpc tor-js client, so the backend does not see your IP address. It still sees which addresses you look up. Relies on a public demonstration gateway that may be slow or unavailable. Web only.',
+    },
     TR_EXPERIMENTAL_GAP_LIMIT: {
         id: 'TR_EXPERIMENTAL_GAP_LIMIT',
         defaultMessage: 'Gap limit',

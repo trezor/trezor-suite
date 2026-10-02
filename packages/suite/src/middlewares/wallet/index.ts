@@ -23,6 +23,7 @@ import {
 
 import { type DbDep } from 'src/storage/createDb';
 
+import { anonRpcMiddleware } from './anonRpcMiddleware';
 import graphMiddleware from './graphMiddleware';
 import { replaceByFeeErrorMiddleware } from './replaceByFeeErrorMiddleware';
 import { prepareStorageMiddleware } from './storageMiddleware';
@@ -50,6 +51,7 @@ export const getWalletMiddlewares = (
     tradingMiddleware,
     coinjoinMiddleware,
     replaceByFeeErrorMiddleware,
+    anonRpcMiddleware,
     prepareConnectPopupMiddleware(getExtra),
     prepareWalletConnectMiddleware(getExtra),
     prepareSuiteSyncMiddleware(getExtra),
