@@ -2,6 +2,8 @@ import * as yup from 'yup';
 
 import { isAscii, isHex } from '@trezor/utils';
 
+// Messages are translation keys; must be rendered via `Translation` / intl `translationString`.
+// Maybe it could be centralized in @trezor/components, like suite-native has it in the `Input` atom?
 yup.setLocale({
     string: {
         max: 'TR_EXCEEDS_MAX',
