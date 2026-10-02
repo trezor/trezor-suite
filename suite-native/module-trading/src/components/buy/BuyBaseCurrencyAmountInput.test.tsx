@@ -4,7 +4,7 @@ import { type NativeAnalyticsDep } from '@suite-native/analytics';
 import { mockNativeAnalytics } from '@suite-native/analytics/mocks';
 import { Form } from '@suite-native/forms';
 import { getTranslation } from '@suite-native/intl';
-import { act, screen, userEvent } from '@suite-native/test-utils-store';
+import { act, fireEvent, screen, userEvent } from '@suite-native/test-utils-store';
 import { coinInfoToTradeableAsset } from '@suite-native/trading-atoms';
 import { ethAsset, getInitializedTradingState, usdcAsset } from '@suite-native/trading-fixtures';
 import { type BuyFormType } from '@suite-native/trading-types';
@@ -35,6 +35,7 @@ const services: NativeAnalyticsDep & { networks: NetworkModuleRepositoryDep } = 
 
 describe('BuyBaseCurrencyAmountInput', () => {
     let form: BuyFormType;
+    const showAssetsSheetMock = jest.fn();
     const overrides = {
         wallet: { trading: getInitializedTradingState() },
         featureFlags: createTradingFeatureFlags(),
@@ -44,13 +45,17 @@ describe('BuyBaseCurrencyAmountInput', () => {
     );
 
     const renderInput = async () =>
-        await renderWithTradingProvider(<BuyBaseCurrencyAmountInput />, {
-            overrides,
-            services,
-            wrapper: ({ children }) => <Form form={form}>{children}</Form>,
-        });
+        await renderWithTradingProvider(
+            <BuyBaseCurrencyAmountInput showAssetsSheet={showAssetsSheetMock} />,
+            {
+                overrides,
+                services,
+                wrapper: ({ children }) => <Form form={form}>{children}</Form>,
+            },
+        );
 
     beforeEach(async () => {
+        showAssetsSheetMock.mockClear();
         const { result } = await renderHookWithTradingProvider(() => useBuyForm(), {
             overrides,
             services,
@@ -108,5 +113,24 @@ describe('BuyBaseCurrencyAmountInput', () => {
 
         expect(form.getValues('cryptoValue')).toBe('100');
         expect(getByLabelText(baseCurrencyAmountLabel)).toHaveDisplayValue('99');
+    });
+
+    it('should show assets sheet on press when no asset is selected', async () => {
+        await act(() => {
+            form.setValue('asset', undefined);
+        });
+        const { getByLabelText } = await renderInput();
+
+        await fireEvent.press(getByLabelText(baseCurrencyAmountLabel));
+
+        expect(showAssetsSheetMock).toHaveBeenCalledTimes(1);
+    });
+
+    it('should not show assets sheet on press when an asset is selected', async () => {
+        const { getByLabelText } = await renderInput();
+
+        await fireEvent.press(getByLabelText(baseCurrencyAmountLabel));
+
+        expect(showAssetsSheetMock).not.toHaveBeenCalled();
     });
 });
