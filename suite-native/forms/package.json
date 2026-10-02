@@ -3,7 +3,9 @@
     "version": "1.0.0",
     "private": true,
     "license": "See LICENSE.md in repo root",
-    "sideEffects": false,
+    "sideEffects": [
+        "src/yup.ts"
+    ],
     "main": "src/index",
     "scripts": {
         "depcheck": "yarn g:depcheck",
@@ -21,6 +23,7 @@
         "react-hook-form": "^7.77.0",
         "react-native": "0.86.0",
         "react-native-reanimated": "4.5.0",
-        "type-fest": "5.5.0"
+        "type-fest": "5.5.0",
+        "yup": "1.7.1"
     }
 }

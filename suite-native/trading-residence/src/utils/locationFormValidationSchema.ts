@@ -1,3 +1,3 @@
-import { yup } from '@suite-common/validators';
+import { yup } from '@suite-native/forms';
 
 export const locationFormValidationSchema = yup.object({});

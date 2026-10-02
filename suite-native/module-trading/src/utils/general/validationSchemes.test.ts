@@ -1,7 +1,7 @@
 import { useFormatters } from '@suite-common/formatters';
-import { type yup } from '@suite-common/validators';
 import { type NetworkSymbol, asNetworkSymbol } from '@suite-common/wallet-config';
 import { asBaseCurrencyAmount } from '@suite-common/wallet-types';
+import { type yup } from '@suite-native/forms';
 import { getTranslation } from '@suite-native/intl';
 import { renderHookWithBasicProvider } from '@suite-native/test-utils';
 import type { TradingFormContext } from '@suite-native/trading-types';

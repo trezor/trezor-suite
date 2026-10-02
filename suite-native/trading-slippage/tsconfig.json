@@ -6,9 +6,6 @@
             "path": "../../suite-common/dependency-injection"
         },
         { "path": "../../suite-common/trading" },
-        {
-            "path": "../../suite-common/validators"
-        },
         { "path": "../atoms" },
         { "path": "../forms" },
         { "path": "../helpers" },

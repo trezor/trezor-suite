@@ -34,9 +34,6 @@
         },
         { "path": "../../suite-common/support" },
         {
-            "path": "../../suite-common/validators"
-        },
-        {
             "path": "../../suite-common/wallet-config"
         },
         {

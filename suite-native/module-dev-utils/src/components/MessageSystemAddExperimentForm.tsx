@@ -12,9 +12,8 @@ import {
 } from '@suite-common/message-system';
 import { injectDispatch } from '@suite-common/redux-utils';
 import { type Experiments } from '@suite-common/suite-types';
-import { yup } from '@suite-common/validators';
 import { Button, HStack, Select, Text, VStack } from '@suite-native/atoms';
-import { Form, TextInputField, useForm } from '@suite-native/forms';
+import { Form, TextInputField, useForm, yup } from '@suite-native/forms';
 
 type ExperimentFormValues = {
     experimentJson: string;

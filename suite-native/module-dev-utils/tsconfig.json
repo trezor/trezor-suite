@@ -34,9 +34,6 @@
             "path": "../../suite-common/suite-types"
         },
         { "path": "../../suite-common/trading" },
-        {
-            "path": "../../suite-common/validators"
-        },
         { "path": "../alerts" },
         { "path": "../analytics" },
         { "path": "../atoms" },

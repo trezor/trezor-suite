@@ -20,9 +20,6 @@
         },
         { "path": "../../suite-common/thp" },
         {
-            "path": "../../suite-common/validators"
-        },
-        {
             "path": "../../suite-common/wallet-core"
         },
         { "path": "../alerts" },

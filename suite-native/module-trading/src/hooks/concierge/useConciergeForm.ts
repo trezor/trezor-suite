@@ -1,8 +1,7 @@
 import { useSelector } from 'react-redux';
 
 import { type TradingCountryCode, nonSanctionedRegional } from '@suite-common/trading';
-import { yup } from '@suite-common/validators';
-import { useForm } from '@suite-native/forms';
+import { useForm, yup } from '@suite-native/forms';
 import { selectTradingResidenceCountry } from '@suite-native/trading-state';
 import { type ConciergeFormValues } from '@suite-native/trading-types';
 

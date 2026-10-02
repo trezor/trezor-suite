@@ -6,7 +6,6 @@ import { useFocusEffect } from '@react-navigation/native';
 
 import { useServices } from '@suite-common/dependency-injection';
 import { injectDispatch } from '@suite-common/redux-utils';
-import { yup } from '@suite-common/validators';
 import {
     type BackendType,
     type Network,
@@ -21,7 +20,7 @@ import {
 } from '@suite-common/wallet-core';
 import { events, injectNativeAnalytics } from '@suite-native/analytics';
 import { type SelectItemType } from '@suite-native/atoms';
-import { useForm, useWatch } from '@suite-native/forms';
+import { useForm, useWatch, yup } from '@suite-native/forms';
 import { useTranslate } from '@suite-native/intl';
 import TrezorConnect, { BLOCKCHAIN, type BlockchainError } from '@trezor/connect';
 

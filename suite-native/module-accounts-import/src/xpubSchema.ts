@@ -1,7 +1,7 @@
 import { type AddressValidator } from '@suite-common/networks';
-import { yup } from '@suite-common/validators';
 import { type NetworkSymbol, getNetworkType } from '@suite-common/wallet-config';
 import { isAddressBasedNetwork } from '@suite-common/wallet-utils';
+import { yup } from '@suite-native/forms';
 import { isNotNullOrUndefined } from '@trezor/utils';
 
 export type XpubFormContext = {

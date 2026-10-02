@@ -1,8 +1,7 @@
 import { type Store } from '@reduxjs/toolkit';
 
 import { selectTradingProviderMetadata } from '@suite-common/trading';
-import { yup } from '@suite-common/validators';
-import { useForm } from '@suite-native/forms';
+import { useForm, yup } from '@suite-native/forms';
 import { buyMercuryo } from '@suite-native/trading-fixtures';
 import { type TradingRootState } from '@suite-native/trading-state';
 
