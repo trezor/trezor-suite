@@ -1,9 +1,10 @@
-import Animated, { FadeIn, FadeOut } from 'react-native-reanimated';
+import { FadeIn, FadeOut } from 'react-native-reanimated';
 
 import { BannerFull, type BannerFullProps } from './BannerFull';
+import { AnimatedView } from '../Animated/AnimatedView';
 
 export const AnimatedBannerFull = (props: BannerFullProps) => (
-    <Animated.View entering={FadeIn} exiting={FadeOut}>
+    <AnimatedView entering={FadeIn} exiting={FadeOut}>
         <BannerFull {...props} />
-    </Animated.View>
+    </AnimatedView>
 );

@@ -12447,7 +12447,6 @@ __metadata:
     "@suite-native/intl": "workspace:*"
     "@suite-native/labeling": "workspace:*"
     "@suite-native/navigation": "workspace:*"
-    "@suite-native/scrollview": "workspace:*"
     "@suite-native/search": "workspace:*"
     "@suite-native/test-utils": "workspace:*"
     "@suite-native/test-utils-store": "workspace:*"
@@ -12849,7 +12848,6 @@ __metadata:
     "@suite-native/helpers": "workspace:*"
     "@suite-native/icons": "workspace:*"
     "@suite-native/intl": "workspace:^"
-    "@suite-native/scrollview": "workspace:*"
     "@suite-native/test-utils": "workspace:*"
     "@trezor/env-utils": "workspace:*"
     "@trezor/react-utils": "workspace:*"
@@ -13590,6 +13588,7 @@ __metadata:
   dependencies:
     "@react-navigation/bottom-tabs": "npm:7.13.0"
     "@suite-common/dependency-injection": "workspace:*"
+    "@suite-native/atoms": "workspace:*"
     "@suite-native/test-utils": "workspace:*"
     "@trezor/styles-native": "workspace:*"
     react: "npm:19.2.3"
@@ -14945,6 +14944,7 @@ __metadata:
   resolution: "@suite-native/react-native-graph@workspace:suite-native/react-native-graph"
   dependencies:
     "@shopify/react-native-skia": "npm:2.6.2"
+    "@suite-native/atoms": "workspace:*"
     "@trezor/eslint": "workspace:*"
     "@trezor/utils": "workspace:*"
     "@types/react": "npm:19.2.14"
@@ -14959,10 +14959,8 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@suite-native/scrollview@workspace:suite-native/scrollview"
   dependencies:
-    "@trezor/styles-native": "workspace:*"
     react: "npm:19.2.3"
     react-native: "npm:0.86.0"
-    react-native-reanimated: "npm:4.5.0"
   languageName: unknown
   linkType: soft
 
@@ -15800,7 +15798,6 @@ __metadata:
     "@suite-native/intl": "workspace:*"
     "@suite-native/labeling": "workspace:*"
     "@suite-native/navigation": "workspace:*"
-    "@suite-native/scrollview": "workspace:*"
     "@suite-native/suite-sync": "workspace:*"
     "@suite-native/test-utils-store": "workspace:*"
     "@suite-native/tokens": "workspace:*"
@@ -15841,6 +15838,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@suite-native/video-assets@workspace:suite-native/video-assets"
   dependencies:
+    "@suite-native/atoms": "workspace:*"
     "@trezor/styles-native": "workspace:*"
     expo: "npm:~57.0.23"
     expo-video: "npm:~57.0.1"

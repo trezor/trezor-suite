@@ -12,10 +12,10 @@ import {
 } from '@gorhom/bottom-sheet';
 import { type BottomSheetModalMethods } from '@gorhom/bottom-sheet/lib/typescript/types';
 
-import { useScrollDivider } from '@suite-native/scrollview';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
 import { Box, type BoxProps } from '../Box';
+import { useScrollDivider } from '../useScrollDivider';
 import { BottomSheetHeader } from './BottomSheetHeader';
 import { BottomSheetModalContent } from './BottomSheetModalContent';
 import { useBottomSheetInteractionGate } from './hooks/useBottomSheetInteractionGate';

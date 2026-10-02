@@ -1,11 +1,16 @@
 export * from './Accordion/AccordionContent';
 export * from './Accordion/AccordionList';
+export * from './Animated/AnimatedBox';
+export * from './Animated/AnimatedPressable';
+export * from './Animated/AnimatedScrollView';
+export * from './Animated/AnimatedStack';
+export * from './Animated/AnimatedText';
+export * from './Animated/AnimatedView';
 export * from './BaseAmountInputs';
 export * from './BannerInline/BannerInline';
 export * from './BannerInline/AnimatedBannerInline';
 export * from './InlineAlertText';
 export * from './Text';
-export * from './AnimatedBox';
 export * from './Box';
 export * from './Hint';
 export * from './HoldToConfirmButton';
@@ -96,3 +101,5 @@ export * from './SubTabs';
 export { useDebugView } from './DebugView';
 export { TouchableSwitchRow, TouchableSwitchRowDescription } from './TouchableSwitchRow';
 export { type AlertBoxIntent } from './BannerFull/types';
+
+export * from './useScrollDivider';

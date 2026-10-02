@@ -6,10 +6,10 @@ import {
     StatusBar,
     useWindowDimensions,
 } from 'react-native';
-import Animated, { FadeIn, LinearTransition, SlideInUp } from 'react-native-reanimated';
+import { FadeIn, LinearTransition, SlideInUp } from 'react-native-reanimated';
 import { type EdgeInsets, useSafeAreaInsets } from 'react-native-safe-area-context';
 
-import { Box, HStack, ScreenHeaderWrapper } from '@suite-native/atoms';
+import { AnimatedView, Box, HStack, ScreenHeaderWrapper } from '@suite-native/atoms';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 import { nativeBorders } from '@trezor/theme';
 
@@ -100,12 +100,12 @@ export const DeviceManagerModal = ({
                 style={applyStyle(modalBackgroundOverlayStyle, { windowWidth, windowHeight })}
                 onPress={handlePressOutside}
             >
-                <Animated.View entering={SlideInUp.damping(30)}>
-                    <Animated.View
+                <AnimatedView entering={SlideInUp.damping(30)}>
+                    <AnimatedView
                         style={applyStyle(deviceManagerModalWrapperStyle, { insets })}
                         layout={LinearTransition}
                     >
-                        <Animated.View
+                        <AnimatedView
                             style={applyStyle(deviceSwitchWrapperStyle, { insets })}
                             layout={LinearTransition}
                         >
@@ -130,11 +130,11 @@ export const DeviceManagerModal = ({
                                     </HStack>
                                 </ScreenHeaderWrapper>
                             </Pressable>
-                            <Animated.View entering={FadeIn}>{children}</Animated.View>
-                        </Animated.View>
-                    </Animated.View>
+                            <AnimatedView entering={FadeIn}>{children}</AnimatedView>
+                        </AnimatedView>
+                    </AnimatedView>
                     {footer}
-                </Animated.View>
+                </AnimatedView>
             </Pressable>
         </Modal>
     );

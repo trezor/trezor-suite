@@ -1,5 +1,6 @@
 import { type ReactNode, useCallback, useEffect } from 'react';
 import { Pressable, type PressableProps } from 'react-native';
+// eslint-disable-next-line @typescript-eslint/no-restricted-imports -- This raw Animated.Text uses button-specific typography rather than the styled Text atom.
 import Animated, {
     cancelAnimation,
     useAnimatedStyle,
@@ -11,6 +12,7 @@ import { Icon, type IconName } from '@suite-native/icons';
 import { type NativeStyleObject, prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 import { type Color } from '@trezor/theme';
 
+import { AnimatedView } from '../Animated/AnimatedView';
 import { Loader } from '../Loader';
 import { HStack } from '../Stack';
 import { pressTimingConfig } from '../constants';
@@ -142,9 +144,9 @@ export const TextButton = ({
         >
             <HStack alignItems="center" justifyContent="center" spacing={textButtonGapMap[size]}>
                 {isLoading && (
-                    <Animated.View testID={testID ? `${testID}/loading` : undefined}>
+                    <AnimatedView testID={testID ? `${testID}/loading` : undefined}>
                         <Loader color={disabledColor} size={textButtonIconSizeMap[size]} />
-                    </Animated.View>
+                    </AnimatedView>
                 )}
                 {!isLoading && !!iconLeft && (
                     <Icon.Animated

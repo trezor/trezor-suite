@@ -1,7 +1,7 @@
 import { useEffect } from 'react';
-import Animated, { FadeIn, FadeOut } from 'react-native-reanimated';
+import { FadeIn, FadeOut } from 'react-native-reanimated';
 
-import { Box, HStack, Text } from '@suite-native/atoms';
+import { AnimatedView, Box, HStack, Text } from '@suite-native/atoms';
 import { Icon } from '@suite-native/icons';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 import { type Color } from '@trezor/theme';
@@ -102,7 +102,7 @@ export const Toast = ({ toast }: ToastProps) => {
     }, [toast, hideToast]);
 
     return (
-        <Animated.View
+        <AnimatedView
             entering={FadeIn.duration(TOAST_ANIMATION_DURATION)}
             exiting={FadeOut.duration(TOAST_ANIMATION_DURATION)}
             style={applyStyle(ToastContainerStyle, {
@@ -125,6 +125,6 @@ export const Toast = ({ toast }: ToastProps) => {
                     {message}
                 </Text>
             </HStack>
-        </Animated.View>
+        </AnimatedView>
     );
 };

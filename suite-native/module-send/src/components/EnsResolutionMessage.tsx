@@ -1,6 +1,6 @@
-import Animated, { FadeIn, FadeOut } from 'react-native-reanimated';
+import { FadeIn, FadeOut } from 'react-native-reanimated';
 
-import { Box, HStack, Loader, Text } from '@suite-native/atoms';
+import { AnimatedView, Box, HStack, Loader, Text } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 
 type EnsResolutionMessageProps = {
@@ -47,7 +47,7 @@ export const EnsResolutionMessage = ({
     if (!message) return null;
 
     return (
-        <Animated.View entering={FadeIn} exiting={FadeOut}>
+        <AnimatedView entering={FadeIn} exiting={FadeOut}>
             <HStack spacing="sp4" marginLeft="sp12" alignItems="center">
                 {isResolving && <Loader size="small" color="contentSecondary" />}
                 <Box flex={1}>
@@ -60,6 +60,6 @@ export const EnsResolutionMessage = ({
                     </Text>
                 </Box>
             </HStack>
-        </Animated.View>
+        </AnimatedView>
     );
 };

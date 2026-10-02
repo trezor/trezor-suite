@@ -1,11 +1,11 @@
 import React from 'react';
-import Animated, { LinearTransition } from 'react-native-reanimated';
+import { LinearTransition } from 'react-native-reanimated';
 import { useSelector } from 'react-redux';
 
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { type AccountsRootState, selectAccountByKey } from '@suite-common/wallet-core';
 import { type AccountKey } from '@suite-common/wallet-types';
-import { CardDivider, VStack } from '@suite-native/atoms';
+import { AnimatedView, CardDivider, VStack } from '@suite-native/atoms';
 
 import { AddressInput } from './AddressInput';
 import { AmountInputs } from './AmountInputs';
@@ -41,12 +41,12 @@ export const RecipientInputs = ({
             <CardDivider />
             <AmountInputs index={index} maxSpendableAmount={maxSpendableAmount} />
             {hasDestinationTag && (
-                <Animated.View layout={LinearTransition}>
+                <AnimatedView layout={LinearTransition}>
                     <VStack spacing="sp16">
                         <CardDivider />
                         <DestinationTagInput networkSymbol={account.symbol} />
                     </VStack>
-                </Animated.View>
+                </AnimatedView>
             )}
         </VStack>
     );

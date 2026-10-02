@@ -5,7 +5,6 @@ import {
     type TextProps as RNTextProps,
     type TextStyle,
 } from 'react-native';
-import Animated from 'react-native-reanimated';
 
 import {
     type NativeStyleObject,
@@ -118,5 +117,3 @@ export const Text = React.forwardRef<RNText, TextProps>(
 );
 
 Text.displayName = 'Text';
-
-export const AnimatedText = Animated.createAnimatedComponent(Text);

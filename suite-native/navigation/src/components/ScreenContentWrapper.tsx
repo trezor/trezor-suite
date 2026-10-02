@@ -8,7 +8,8 @@ import {
 import { type NativeScrollEvent } from 'react-native/Libraries/Components/ScrollView/ScrollView';
 import { type NativeSyntheticEvent } from 'react-native/Libraries/Types/CoreEventTypes';
 
-import { ScrollViewContext, useScrollDivider } from '@suite-native/scrollview';
+import { useScrollDivider } from '@suite-native/atoms';
+import { ScrollViewContext } from '@suite-native/scrollview';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
 import { useDynamicHeader } from './DynamicHeader/DynamicScreenHeaderContext';

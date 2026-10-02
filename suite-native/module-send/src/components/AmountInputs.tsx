@@ -1,4 +1,4 @@
-import Animated, { LinearTransition } from 'react-native-reanimated';
+import { LinearTransition } from 'react-native-reanimated';
 import { useSelector } from 'react-redux';
 
 import { useRoute } from '@react-navigation/native';
@@ -10,6 +10,7 @@ import {
     useDisplayBaseCurrency,
 } from '@suite-common/wallet-core';
 import { events, injectNativeAnalytics } from '@suite-native/analytics';
+import { AnimatedView } from '@suite-native/atoms';
 import { type ActiveView, AnimatedDoubleInput, HStack, Text, VStack } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 import {
@@ -53,11 +54,11 @@ export const AmountInputs = ({ index, maxSpendableAmount }: AmountInputProps) =>
     return (
         <VStack spacing="sp12">
             <HStack flex={1} justifyContent="space-between" alignItems="center">
-                <Animated.View layout={LinearTransition}>
+                <AnimatedView layout={LinearTransition}>
                     <Text variant="body-sm">
                         <Translation id="moduleSend.outputs.recipients.amountLabel" />
                     </Text>
-                </Animated.View>
+                </AnimatedView>
                 <SendMaxSwitch
                     outputIndex={index}
                     accountKey={accountKey}

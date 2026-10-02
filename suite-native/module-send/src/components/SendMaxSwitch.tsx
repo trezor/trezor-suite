@@ -1,6 +1,6 @@
 import { useWatch } from 'react-hook-form';
 import { Keyboard } from 'react-native';
-import Animated, { FadeIn } from 'react-native-reanimated';
+import { FadeIn } from 'react-native-reanimated';
 import { useSelector } from 'react-redux';
 
 import { getNetwork } from '@suite-common/wallet-config';
@@ -12,7 +12,7 @@ import {
 } from '@suite-common/wallet-core';
 import { type AccountKey, type TokenAddress } from '@suite-common/wallet-types';
 import { getDecimalsForBaseCurrency } from '@suite-common/wallet-utils';
-import { HStack, Switch, Text } from '@suite-native/atoms';
+import { AnimatedView, HStack, Switch, Text } from '@suite-native/atoms';
 import { useCryptoFiatConverters } from '@suite-native/formatters';
 import { useFormContext } from '@suite-native/forms';
 import { Translation } from '@suite-native/intl';
@@ -93,7 +93,7 @@ export const SendMaxSwitch = ({
 
     return (
         isSendMaxVisible && (
-            <Animated.View entering={FadeIn}>
+            <AnimatedView entering={FadeIn}>
                 <HStack alignItems="center" spacing="sp8">
                     <Text variant="body-sm">
                         <Translation id="moduleSend.outputs.recipients.maxButton" />
@@ -101,7 +101,7 @@ export const SendMaxSwitch = ({
 
                     <Switch isChecked={isSendMaxEnabled} onChange={toggleSendMax} />
                 </HStack>
-            </Animated.View>
+            </AnimatedView>
         )
     );
 };

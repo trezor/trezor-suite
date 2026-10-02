@@ -1,6 +1,6 @@
 import { type ReactNode } from 'react';
 import { View } from 'react-native';
-import Animated, {
+import {
     type EntryExitAnimationFunction,
     FadeOut,
     useSharedValue,
@@ -8,7 +8,7 @@ import Animated, {
     withTiming,
 } from 'react-native-reanimated';
 
-import { Box, HStack, IconButton, Text } from '@suite-native/atoms';
+import { AnimatedView, Box, HStack, IconButton, Text } from '@suite-native/atoms';
 import { type AddCoinFlowType, type CloseActionType, GoBackIcon } from '@suite-native/navigation';
 import { SEARCH_INPUT_ANIMATION_DURATION, SearchForm } from '@suite-native/search';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
@@ -87,7 +87,7 @@ export const SearchableAccountsListHeader = ({
                     onInputChange={onSearchInputChange}
                 />
             ) : (
-                <Animated.View
+                <AnimatedView
                     entering={enteringFadeInAnimation}
                     exiting={FadeOut.duration(HEADER_ANIMATION_DURATION)}
                 >
@@ -140,7 +140,7 @@ export const SearchableAccountsListHeader = ({
                             )}
                         </HStack>
                     </HStack>
-                </Animated.View>
+                </AnimatedView>
             )}
         </Box>
     );

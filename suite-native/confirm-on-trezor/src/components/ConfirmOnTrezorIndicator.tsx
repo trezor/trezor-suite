@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import Animated, {
+import {
     Easing,
     interpolate,
     useAnimatedStyle,
@@ -8,7 +8,7 @@ import Animated, {
     withTiming,
 } from 'react-native-reanimated';
 
-import { AnimatedBox } from '@suite-native/atoms';
+import { AnimatedBox, AnimatedView } from '@suite-native/atoms';
 import { isDetoxTestBuild } from '@suite-native/config';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
@@ -83,9 +83,9 @@ export const ConfirmOnTrezorIndicator = () => {
 
     return (
         <AnimatedBox style={applyStyle(containerStyle)}>
-            <Animated.View style={[applyStyle(shadowRingStyle), animatedShadowStyle]} />
-            <Animated.View style={[applyStyle(ringStyle), animatedRingStyle]} />
-            <Animated.View style={[applyStyle(centerDotStyle), animatedCenterStyle]} />
+            <AnimatedView style={[applyStyle(shadowRingStyle), animatedShadowStyle]} />
+            <AnimatedView style={[applyStyle(ringStyle), animatedRingStyle]} />
+            <AnimatedView style={[applyStyle(centerDotStyle), animatedCenterStyle]} />
         </AnimatedBox>
     );
 };

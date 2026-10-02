@@ -1,9 +1,10 @@
 import { type ReactNode, useRef } from 'react';
-import Animated, { LinearTransition } from 'react-native-reanimated';
+import { LinearTransition } from 'react-native-reanimated';
 
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { useDisplayBaseCurrency } from '@suite-common/wallet-core';
 
+import { AnimatedView } from './Animated/AnimatedView';
 import {
     AnimatedDoubleInput,
     type RenderInputProps,
@@ -38,11 +39,11 @@ export const BaseAmountInputs = ({
 
     return (
         <VStack spacing="sp12">
-            <Animated.View layout={LinearTransition}>
+            <AnimatedView layout={LinearTransition}>
                 <HStack flex={1} justifyContent="space-between" alignItems="center">
                     {renderTopRow()}
                 </HStack>
-            </Animated.View>
+            </AnimatedView>
             {shallDisplayBaseCurrency ? (
                 <AnimatedDoubleInput
                     renderPrimary={props => renderCryptoInput(props)}

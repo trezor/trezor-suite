@@ -1,6 +1,6 @@
 import { type ReactNode, useEffect } from 'react';
 import { Pressable } from 'react-native';
-import Animated, {
+import {
     cancelAnimation,
     useAnimatedStyle,
     useSharedValue,
@@ -8,6 +8,8 @@ import Animated, {
 } from 'react-native-reanimated';
 
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
+
+import { AnimatedView } from '../Animated/AnimatedView';
 
 export type RenderViewProps = {
     isDisabled?: boolean;
@@ -75,13 +77,13 @@ export const AnimatedViewWrapper = ({
     const onPress = focused ? undefined : handleViewSwitch;
 
     return (
-        <Animated.View style={[applyStyle(wrapperStyle, { focused }), animatedStyle]}>
+        <AnimatedView style={[applyStyle(wrapperStyle, { focused }), animatedStyle]}>
             <Pressable onPress={onPress}>
                 {renderView({
                     isDisabled: !focused,
                     onPress,
                 })}
             </Pressable>
-        </Animated.View>
+        </AnimatedView>
     );
 };
