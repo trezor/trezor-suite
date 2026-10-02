@@ -323,6 +323,10 @@ export const findAccountsByNetwork = <T extends Account>(symbol: NetworkSymbol, 
 export const findAccountsByDescriptor = (descriptor: string, accounts: Account[]) =>
     accounts.filter(a => a.descriptor === descriptor);
 
+type GetFirmwareDescriptorOptions = {
+    withChecksum?: boolean;
+};
+
 /**
  * The descriptor to show the user in firmware (`h`) form. Suite stores the canonical apostrophe
  * form, but on-device confirmation and QR codes must match what firmware renders, so display
@@ -330,7 +334,7 @@ export const findAccountsByDescriptor = (descriptor: string, accounts: Account[]
  */
 export const getFirmwareDescriptor = (
     account: Pick<Account, 'descriptor' | 'descriptorChecksum'>,
-    { withChecksum = false }: { withChecksum?: boolean } = {},
+    { withChecksum = false }: GetFirmwareDescriptorOptions = {},
 ): string => {
     const firmwareDescriptor = toFirmwareDescriptor(account.descriptor);
 
