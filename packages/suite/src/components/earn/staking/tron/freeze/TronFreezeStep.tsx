@@ -1,5 +1,4 @@
-import { FormProvider } from 'react-hook-form';
-
+import { Form } from '@suite/form';
 import { Translation } from '@suite/intl';
 import { Banner, Card, Column, Divider } from '@trezor/components';
 
@@ -18,8 +17,10 @@ export const TronFreezeStep = () => {
 
     const { isStakingDisabled, stakingMessageContent } = useMessageSystemStaking(account.symbol);
 
+    const { formState } = form.methods;
+
     return (
-        <FormProvider {...form.methods}>
+        <Form form={form.methods} formState={formState}>
             <Column gap={16}>
                 {isStakingDisabled && (
                     <Banner intent="warning" description={stakingMessageContent} />
@@ -48,6 +49,6 @@ export const TronFreezeStep = () => {
                     title={<Translation id="TR_EARN_TRON_PENDING_FREEZE" />}
                 />
             </Column>
-        </FormProvider>
+        </Form>
     );
 };

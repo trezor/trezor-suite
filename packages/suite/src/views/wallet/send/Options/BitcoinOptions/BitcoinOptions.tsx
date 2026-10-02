@@ -12,6 +12,11 @@ import { CoinControl } from './CoinControl/CoinControl';
 import { Locktime } from './Locktime/Locktime';
 
 export const BitcoinOptions = () => {
+    // React Compiler: `getDefaultValue` reads the form imperatively, so a compiled render-time read
+    // of it freezes as soon as its own identity is stable. Remove once these reads move to
+    // `useWatch` or out of render.
+    'use no memo';
+
     const {
         addOutput,
         control,

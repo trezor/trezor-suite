@@ -25,7 +25,6 @@ import {
     getTronWithdrawableBalance,
     isSupportedTronStakingNetworkSymbol,
     isTronClaimSupported,
-    isTronRewardClaimOnCooldown,
     isTronStakingActive,
 } from './tronStakingUtils';
 
@@ -173,28 +172,6 @@ describe('Tron reward claim cooldown', () => {
             expect(getTronRewardClaimCooldownEndsAt(account)).toBe(
                 NOW_SECONDS + TRON_REWARD_CLAIM_COOLDOWN_SECONDS,
             );
-        });
-    });
-
-    describe('isTronRewardClaimOnCooldown', () => {
-        it('returns false when rewards were never withdrawn', () => {
-            expect(isTronRewardClaimOnCooldown(buildTronAccount())).toBe(false);
-        });
-
-        it('returns true within 24h of the last withdrawal', () => {
-            const account = buildTronAccount({
-                stakingInfo: buildStakingInfo({ latestWithdrawTime: NOW_SECONDS - 100 }),
-            });
-            expect(isTronRewardClaimOnCooldown(account)).toBe(true);
-        });
-
-        it('returns false once the 24h cooldown has passed', () => {
-            const account = buildTronAccount({
-                stakingInfo: buildStakingInfo({
-                    latestWithdrawTime: NOW_SECONDS - TRON_REWARD_CLAIM_COOLDOWN_SECONDS - 1,
-                }),
-            });
-            expect(isTronRewardClaimOnCooldown(account)).toBe(false);
         });
     });
 });

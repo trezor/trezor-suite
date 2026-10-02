@@ -1,5 +1,6 @@
-import { FormProvider, useWatch } from 'react-hook-form';
+import { useWatch } from 'react-hook-form';
 
+import { Form } from '@suite/form';
 import { Translation } from '@suite/intl';
 import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import { Banner, Card, Column, Divider, Text } from '@trezor/components';
@@ -26,8 +27,10 @@ export const TronUnstakeForm = () => {
     const amount = useWatch({ control: form.methods.control, name: 'amount' });
     const showReduction = new BigNumber(amount || 0).gt(0);
 
+    const { formState } = form.methods;
+
     return (
-        <FormProvider {...form.methods}>
+        <Form form={form.methods} formState={formState}>
             <Column gap={16}>
                 <Column gap={4}>
                     <Text typographyStyle="headline-md">
@@ -80,6 +83,6 @@ export const TronUnstakeForm = () => {
                     title={<Translation id="TR_EARN_TRON_PENDING_UNSTAKE" />}
                 />
             </Column>
-        </FormProvider>
+        </Form>
     );
 };

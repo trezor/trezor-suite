@@ -38,6 +38,13 @@ export const reactConfig = [
             'react-hooks/set-state-in-effect': 'off', // TODO fix & reenable, though this anti-pattern is unfortunately quite widespread
             'react-hooks/refs': 'off', // Too restrictive. Reading ref in render is often desired, though must be carefully considered
             'react-hooks/use-memo': 'off', // Too restrictive: enforces inline function in useMemo (forbids using variable)
+            'react-hooks/config': 'error',
+            'react-hooks/gating': 'error',
+            'react-hooks/incompatible-library': 'error',
+            'react-hooks/preserve-manual-memoization': 'error',
+            'react-hooks/purity': 'error',
+            'react-hooks/set-state-in-render': 'error',
+            'react-hooks/unsupported-syntax': 'error',
         },
     },
     ...(areExpensiveChecksEnabled
@@ -45,16 +52,9 @@ export const reactConfig = [
         : [
               {
                   rules: {
-                      'react-hooks/preserve-manual-memoization': 'off',
-                      'react-hooks/incompatible-library': 'off',
                       'react-hooks/immutability': 'off',
                       'react-hooks/globals': 'off',
                       'react-hooks/error-boundaries': 'off',
-                      'react-hooks/purity': 'off',
-                      'react-hooks/set-state-in-render': 'off',
-                      'react-hooks/unsupported-syntax': 'off',
-                      'react-hooks/config': 'off',
-                      'react-hooks/gating': 'off',
                   },
               },
           ]),

@@ -1,7 +1,8 @@
 import { useMemo } from 'react';
-import { FormProvider, useForm } from 'react-hook-form';
+import { useForm } from 'react-hook-form';
 import { useIntl } from 'react-intl';
 
+import { Form } from '@suite/form';
 import { Translation, messages } from '@suite/intl';
 import { onReceiveFee } from '@suite/modal';
 import { selectConnectPopupCall } from '@suite-common/connect-popup';
@@ -103,8 +104,14 @@ export const SelectFeeModal = ({ data }: SelectAccountModalProps) => {
 
     const methods = useForm<FormState>({ defaultValues });
 
+    // Keep `formState` as its own binding: the spread object is a react-hook-form ref that
+    // never changes identity, so without it the React Compiler caches the `useFees` argument
+    // once and `useFees` reads validation errors frozen at their first-render value.
+    const { formState } = methods;
+
     const { changeFeeLevel } = useFees({
         ...methods,
+        formState,
         defaultValue: defaultValues.selectedFee,
         feeInfo,
         composeRequest: () => {},
@@ -153,14 +160,14 @@ export const SelectFeeModal = ({ data }: SelectAccountModalProps) => {
                     </>
                 }
             >
-                <FormProvider {...methods}>
+                <Form form={methods} formState={formState}>
                     <Column gap={16}>
                         {popupCall?.state === 'ongoing' && popupCall?.payload?.outputs && (
                             <OutputsSummary account={account} outputs={popupCall.payload.outputs} />
                         )}
                         <Fees account={account} feeInfo={feeInfo} changeFeeLevel={changeFeeLevel} />
                     </Column>
-                </FormProvider>
+                </Form>
             </Modal.ModalBase>
         </ConnectModalBackdrop>
     );

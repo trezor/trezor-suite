@@ -5,12 +5,7 @@ import { Translation, useTranslation } from '@suite/intl';
 import { gotoThunk } from '@suite/router';
 import { useServices } from '@suite-common/dependency-injection';
 import { injectDispatch } from '@suite-common/redux-utils';
-import {
-    getTronRewardClaimCooldownEndsAt,
-    getTronStakingRewards,
-    isTronClaimSupported,
-    isTronRewardClaimOnCooldown,
-} from '@suite-common/wallet-core';
+import { getTronStakingRewards, isTronClaimSupported } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
 import {
     Box,
@@ -28,6 +23,8 @@ import { BaseCurrencyValue, CountdownTimer, FormattedCryptoAmount } from 'src/co
 import { useFirmwareUpgradeModal } from 'src/hooks/suite/useFirmwareUpgradeModal';
 import { useMessageSystemStaking } from 'src/hooks/suite/useMessageSystemStaking';
 
+import { useTronRewardsClaimCoolDown } from './hooks/useTronRewardsClaimCoolDown';
+
 interface TronVotingRewardsCardProps {
     account: Account;
 }
@@ -40,8 +37,7 @@ export const TronVotingRewardsCard = ({ account }: TronVotingRewardsCardProps) =
         useFirmwareUpgradeModal();
 
     const rewards = getTronStakingRewards(account);
-    const isClaimOnCooldown = isTronRewardClaimOnCooldown(account);
-    const claimCooldownEndsAt = getTronRewardClaimCooldownEndsAt(account);
+    const { isClaimOnCooldown, claimCooldownEndsAt } = useTronRewardsClaimCoolDown(account);
     const isClaimFirmwareOutdated = !isTronClaimSupported(device);
 
     const { isClaimingDisabled, claimingMessageContent } = useMessageSystemStaking(account.symbol);

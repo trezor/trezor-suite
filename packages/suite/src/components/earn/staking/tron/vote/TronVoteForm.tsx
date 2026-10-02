@@ -1,5 +1,4 @@
-import { FormProvider } from 'react-hook-form';
-
+import { Form } from '@suite/form';
 import { Translation } from '@suite/intl';
 import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import { Banner, Card, Column, Text } from '@trezor/components';
@@ -29,8 +28,10 @@ export const TronVoteForm = () => {
             : undefined;
     const votes = Math.floor(new BigNumber(totalVotingPower ?? 0).toNumber());
 
+    const { formState } = form.methods;
+
     return (
-        <FormProvider {...form.methods}>
+        <Form form={form.methods} formState={formState}>
             <Column gap={16}>
                 <Text typographyStyle="headline-md">
                     <Translation id="TR_EARN_TRON_CHANGE_REPRESENTATIVE" />
@@ -77,6 +78,6 @@ export const TronVoteForm = () => {
                     title={<Translation id="TR_EARN_TRON_PENDING_VOTE" />}
                 />
             </Column>
-        </FormProvider>
+        </Form>
     );
 };

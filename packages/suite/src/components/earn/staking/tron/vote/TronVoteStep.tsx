@@ -1,5 +1,4 @@
-import { FormProvider } from 'react-hook-form';
-
+import { Form } from '@suite/form';
 import { Translation } from '@suite/intl';
 import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import { Banner, Column } from '@trezor/components';
@@ -21,8 +20,10 @@ export const TronVoteStep = () => {
 
     const hasInsufficientFunds = fees.composedLevels?.normal?.type === 'error';
 
+    const { formState } = form.methods;
+
     return (
-        <FormProvider {...form.methods}>
+        <Form form={form.methods} formState={formState}>
             <Column gap={16}>
                 {isVotingDisabled && <Banner intent="warning" description={votingMessageContent} />}
 
@@ -59,6 +60,6 @@ export const TronVoteStep = () => {
                     title={<Translation id="TR_EARN_TRON_PENDING_VOTE" />}
                 />
             </Column>
-        </FormProvider>
+        </Form>
     );
 };

@@ -23,7 +23,8 @@
         "type-check": "yarn g:tsc --build tsconfig.json",
         "test:unit": "yarn g:jest",
         "test-unit:watch": "yarn g:jest -o --watch",
-        "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'"
+        "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'",
+        "react-compiler:check": "yarn g:tsx ./webpack/checkReactCompilerFrozenReads.ts"
     },
     "dependencies": {
         "@floating-ui/react": "^0.27.17",
@@ -117,6 +118,7 @@
         "@suite/feature-feedback": "workspace:*",
         "@suite/firmware-upgrade": "workspace:*",
         "@suite/flags": "workspace:*",
+        "@suite/form": "workspace:*",
         "@suite/github": "workspace:*",
         "@suite/idb-migration-utils": "workspace:*",
         "@suite/intl": "workspace:*",
@@ -207,6 +209,7 @@
         "styled-components": "^6.3.9"
     },
     "devDependencies": {
+        "@babel/core": "7.29.7",
         "@pmmmwh/react-refresh-webpack-plugin": "^0.6.2",
         "@sentry/webpack-plugin": "^5.4.0",
         "@testing-library/jest-dom": "7.0.1",
@@ -225,6 +228,7 @@
         "@types/webpack-bundle-analyzer": "^4.7.0",
         "@types/webpack-plugin-serve": "^1.4.7",
         "babel-loader": "^10.1.1",
+        "babel-plugin-react-compiler": "^1.0.0",
         "babel-plugin-styled-components": "^2.3.0",
         "buffer": "^6.0.3",
         "core-js": "^3.49.0",
