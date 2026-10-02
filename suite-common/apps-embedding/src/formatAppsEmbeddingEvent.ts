@@ -1,12 +1,23 @@
 import { exhaustive } from '@trezor/type-utils';
 
-import { type AppsEmbeddingEvent, type AppsEmbeddingWindowOpenOutcome } from './types';
+import {
+    type AppsEmbeddingEvent,
+    type AppsEmbeddingHttpAuthOutcome,
+    type AppsEmbeddingWindowOpenOutcome,
+} from './types';
 
 // A record rather than a nested switch: adding an outcome then fails to compile here too.
 const WINDOW_OPEN_OUTCOME_LABEL: Record<AppsEmbeddingWindowOpenOutcome, string> = {
     denied: 'denied',
     'opened-in-app': 'opened in an app window',
-    'opened-in-system-browser': 'opened in the system browser',
+};
+
+const HTTP_AUTH_OUTCOME_LABEL: Record<AppsEmbeddingHttpAuthOutcome, string> = {
+    requested: 'requested',
+    submitted: 'credentials submitted',
+    cancelled: 'cancelled by the user',
+    dismissed: 'dismissed',
+    refused: 'refused by the host',
 };
 
 const MAX_MESSAGE_DATA_LENGTH = 500;
@@ -43,6 +54,10 @@ export const formatAppsEmbeddingEvent = (event: AppsEmbeddingEvent): string => {
             return `window.open ${WINDOW_OPEN_OUTCOME_LABEL[event.outcome]} — ${event.url}`;
         case 'navigation-blocked':
             return `navigation blocked — ${event.url}`;
+        case 'http-auth':
+            return `HTTP auth ${HTTP_AUTH_OUTCOME_LABEL[event.outcome]} — ${event.origin}${
+                event.detail === undefined ? '' : ` (${event.detail})`
+            }`;
         case 'closed':
             return `closed — ${event.detail}`;
         default:

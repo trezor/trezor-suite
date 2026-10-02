@@ -1,4 +1,8 @@
+import z from 'zod';
+
 import { type TorStatus } from '@suite/tor-types';
+import { appsEmbeddingEntryId } from '@suite-common/apps-embedding';
+import { httpsUrl } from '@suite-common/schemas/src/general/url';
 
 import { type ExtractUndefined } from './methods';
 
@@ -167,3 +171,50 @@ export type ConnectPopupResponse = {
           error: any;
       }
 );
+
+export const inAppBrowserBounds = z.strictObject({
+    x: z.number(),
+    y: z.number(),
+    width: z.number(),
+    height: z.number(),
+});
+
+export type InAppBrowserBounds = z.infer<typeof inAppBrowserBounds>;
+
+export const inAppBrowserOpenPayload = z.strictObject({
+    /**
+     * Only for demo purposes. Prod. code will pass solely `entryId`, no custom URLs are going to be allowed.
+     */
+    url: httpsUrl,
+    redirectExternalOrigins: z.array(httpsUrl),
+    popupExternalOrigins: z.array(httpsUrl),
+
+    /**
+     * Once we'll ditch demo, it's going to be required.
+     */
+    entryId: appsEmbeddingEntryId.optional(),
+});
+
+export type InAppBrowserOpenPayload = z.infer<typeof inAppBrowserOpenPayload>;
+
+/**
+ * Events forwarded from the main-process WebContentsView host
+ */
+export type InAppBrowserHostEvent =
+    | { type: 'navigated'; url: string }
+    // Not a log line but the state the in-app browser bar renders from: which history buttons are
+    // live and what the address field shows. The renderer cannot derive any of it — the history
+    // belongs to a WebContents it has no handle on — so the host pushes it on every navigation and
+    // once when the view opens.
+    | { type: 'navigation-state'; url: string; canGoBack: boolean; canGoForward: boolean }
+    | { type: 'loaded'; url: string }
+    | { type: 'load-failed'; url: string; error: string }
+    // Spelled out rather than imported from `@suite-common/apps-embedding`, like the rest of this
+    // union. The renderer maps one onto the other, so a member added here and not there stops
+    // compiling at that mapping.
+    | {
+          type: 'window-open-attempt';
+          url: string;
+          outcome: 'denied' | 'opened-in-app';
+      }
+    | { type: 'navigation-blocked'; url: string };

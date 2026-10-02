@@ -56,6 +56,31 @@ export const APPS_EMBEDDING_CATALOG: AppsEmbeddingCatalogEntry[] = [
         ],
     },
     {
+        id: 'tor-check',
+        name: 'Tor check',
+        description:
+            "check.torproject.org — reports whether the visitor arrived over Tor and from which address. A quick way to see that the embedded page follows Suite's Tor setting; meaningful on desktop only, the one platform where Suite routes anything through Tor.",
+        url: 'https://check.torproject.org/',
+        communication: [],
+        platformSpecific: [
+            {
+                kind: 'web',
+                expectedBehavior:
+                    "Suite web routes nothing through Tor, so the page can only report the browser's own address. Whether it renders at all depends on the site's framing headers and, in preview/production builds, on frame-src.",
+            },
+            {
+                kind: 'desktop',
+                expectedBehavior:
+                    'With Tor off the page says the browser is not using Tor and shows the real address (via the system proxy, if any). With Tor on it congratulates and shows a Tor exit address; opened while Tor is still bootstrapping it fails to load rather than leaking, since the session is already routed. Toggling Tor while the page is open drops its connections — reload and the verdict flips.',
+            },
+            {
+                kind: 'mobile',
+                expectedBehavior:
+                    "Suite mobile has no Tor at all; the page reports the device's own address.",
+            },
+        ],
+    },
+    {
         id: 'apple-pay-demo',
         name: 'Apple Pay demo',
         description: 'Apple demo merchant exercising the ApplePaySession API.',
@@ -103,41 +128,12 @@ export const APPS_EMBEDDING_CATALOG: AppsEmbeddingCatalogEntry[] = [
                 redirectExternalOrigins: ['https://pay.google.com', 'https://accounts.google.com'],
                 // The sheet prefers a window of its own — it posts the result back through
                 // window.opener — and the sign-in step inside it does the same.
-                popupExternalOrigins: ['https://pay.google.com', 'https://accounts.google.com'],
-            },
-            {
-                kind: 'mobile',
-                expectedBehavior:
-                    'Google Pay does not work in plain WebViews at all — it requires Chrome Custom Tabs.',
-            },
-        ],
-        communication: [],
-    },
-    {
-        // Deliberately a near-duplicate of `google-pay-demo`: the two differ in
-        // `openPopupInSystemBrowser` and nothing else, so the popup destinations can be compared on
-        // the same flow without editing the catalog. One of them goes away once that comparison is
-        // settled.
-        id: 'google-pay-demo-system-browser',
-        name: 'Google Pay demo (system browser popup)',
-        description:
-            'The same Google Pay demo, with the payment sheet handed to the default browser instead of an app window.',
-        url: 'https://gpay-live-demo.web.app/',
-        platformSpecific: [
-            {
-                kind: 'web',
-                expectedBehavior:
-                    'No different from the other Google Pay entry — the popup destination is a desktop-host setting and the iframe cannot act on it.',
-                allow: 'payment',
-            },
-            {
-                kind: 'desktop',
-                expectedBehavior:
-                    'The sheet opens in the default browser and the embedded page keeps none of its cookies, so watch whether the flow completes at all: without window.opener the merchant page can only learn the result from a redirect back to itself. The event log says "opened in the system browser". Refused while Tor is running, since the handoff would leave the proxy.',
-                persistSession: true,
-                openPopupInSystemBrowser: true,
-                redirectExternalOrigins: ['https://pay.google.com', 'https://accounts.google.com'],
-                popupExternalOrigins: ['https://pay.google.com', 'https://accounts.google.com'],
+                popupExternalOrigins: [
+                    'https://pay.google.com',
+                    'https://accounts.google.com',
+                    'https://accounts.youtube.com',
+                    'https://accounts.google.cz',
+                ],
             },
             {
                 kind: 'mobile',
@@ -163,7 +159,7 @@ export const APPS_EMBEDDING_CATALOG: AppsEmbeddingCatalogEntry[] = [
                 kind: 'desktop',
                 expectedBehavior:
                     'Loads in the WebContentsView — X-Frame-Options does not apply to a top-level browsing context.',
-                openPopupInSystemBrowser: true,
+                popupExternalOrigins: ['https://accounts.youtube.com'],
             },
             {
                 kind: 'mobile',
@@ -189,7 +185,6 @@ export const APPS_EMBEDDING_CATALOG: AppsEmbeddingCatalogEntry[] = [
                 kind: 'desktop',
                 expectedBehavior:
                     'PaymentRequest constructor exists but Electron ships no payment apps.',
-                openPopupInSystemBrowser: true,
             },
             {
                 kind: 'mobile',

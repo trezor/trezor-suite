@@ -4,7 +4,10 @@ import {
     type DesktopApi,
     type RendererChannels,
     type StrictIpcRenderer,
+    inAppBrowserBounds,
+    inAppBrowserOpenPayload,
 } from '@suite/desktop-app-api';
+import { appsEmbeddingEntryId } from '@suite-common/apps-embedding';
 
 import * as validation from './validation';
 
@@ -215,4 +218,48 @@ export const createDesktopApiBridge = <R extends StrictIpcRenderer<any, IpcRende
 
     // Browser Window
     reloadBrowserWindow: () => ipcRenderer.invoke('browser-window/reload'),
+
+    // In-app browser (debug-only)
+    inAppBrowserOpenView: payload => {
+        if (inAppBrowserOpenPayload.safeParse(payload).success) {
+            return ipcRenderer.invoke('in-app-browser/open-view', payload);
+        }
+
+        validation.rejectInAppBrowserInvalidCall('open-view', payload);
+
+        return Promise.resolve();
+    },
+    inAppBrowserCloseView: () => ipcRenderer.invoke('in-app-browser/close-view'),
+    inAppBrowserSetBounds(bounds) {
+        if (inAppBrowserBounds.safeParse(bounds).success) {
+            return ipcRenderer.invoke('in-app-browser/set-bounds', bounds);
+        }
+
+        validation.rejectInAppBrowserInvalidCall('set-bounds', bounds);
+
+        return Promise.resolve();
+    },
+    inAppBrowserSetVisible(visible: boolean) {
+        if (validation.isPrimitive('boolean', visible)) {
+            return ipcRenderer.invoke('in-app-browser/set-visible', visible);
+        }
+
+        validation.rejectInAppBrowserInvalidCall('set-visible', visible);
+
+        return Promise.resolve();
+    },
+    inAppBrowserClearData(entryId) {
+        if (appsEmbeddingEntryId.safeParse(entryId).success) {
+            return ipcRenderer.invoke('in-app-browser/clear-data', entryId);
+        }
+
+        validation.rejectInAppBrowserInvalidCall('clear-data', entryId);
+
+        return Promise.resolve({ success: false, error: 'invalid params' });
+    },
+    inAppBrowserGoBack: () => ipcRenderer.invoke('in-app-browser/go-back'),
+    inAppBrowserGoForward: () => ipcRenderer.invoke('in-app-browser/go-forward'),
+    inAppBrowserReload: () => ipcRenderer.invoke('in-app-browser/reload'),
+    inAppBrowserToggleDevTools: () => ipcRenderer.invoke('in-app-browser/toggle-dev-tools'),
+    inAppBrowserCanOpenDevTools: () => ipcRenderer.invoke('in-app-browser/can-open-dev-tools'),
 });
