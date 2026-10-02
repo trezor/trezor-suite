@@ -23,7 +23,6 @@ export const ExchangeCard = ({ isAmountInputActive }: ExchangeCardProps) => (
             <ExchangeSendContent />
         </TradingCardSection>
         <TradingCardSection
-            readOnly
             testID={`${EXCHANGE_CARD_TEST_ID}/receiveSection`}
             title={<Translation id="moduleTrading.selectCoin.title" />}
         >

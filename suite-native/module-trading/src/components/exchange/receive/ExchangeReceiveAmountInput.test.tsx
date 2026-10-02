@@ -5,10 +5,7 @@ import { act, fireEvent } from '@suite-native/test-utils-store';
 import { btcAsset, mercuryoFixedWorstQuote, usdcAsset } from '@suite-native/trading-fixtures';
 import { type ExchangeFormType } from '@suite-native/trading-types';
 
-import {
-    ExchangeReceiveAmountInput,
-    type ExchangeReceiveAmountInputProps,
-} from './ExchangeReceiveAmountInput';
+import { ExchangeReceiveAmountInput } from './ExchangeReceiveAmountInput';
 import { useExchangeForm } from '../../../hooks/exchange/useExchangeForm';
 import {
     type PreloadedStatePartial,
@@ -16,6 +13,14 @@ import {
     renderHookWithTradingProvider,
     renderWithTradingProvider,
 } from '../../../test-utils/tradingTestUtils';
+
+const mockShowAlert = jest.fn();
+jest.mock('@suite-native/alerts', () => ({
+    useAlert: () => ({
+        showAlert: mockShowAlert,
+        hideAlert: jest.fn(),
+    }),
+}));
 
 describe('ExchangeReceiveAmountInput', () => {
     let form: ExchangeFormType;
@@ -28,19 +33,16 @@ describe('ExchangeReceiveAmountInput', () => {
     };
 
     const renderExchangeReceiveAmountInput = async (
-        props: Partial<ExchangeReceiveAmountInputProps> = {},
         extraOverrides: PreloadedStatePartial<TradingTestPreloadedState> = {},
     ) =>
-        await renderWithTradingProvider(
-            <ExchangeReceiveAmountInput showAssetsSheet={jest.fn()} {...props} />,
-            {
-                tradeType: 'exchange',
-                overrides: { ...baseOverrides, ...extraOverrides },
-                wrapper: ({ children }) => <Form form={form}>{children}</Form>,
-            },
-        );
+        await renderWithTradingProvider(<ExchangeReceiveAmountInput />, {
+            tradeType: 'exchange',
+            overrides: { ...baseOverrides, ...extraOverrides },
+            wrapper: ({ children }) => <Form form={form}>{children}</Form>,
+        });
 
     beforeEach(async () => {
+        mockShowAlert.mockClear();
         const { result } = await renderHookWithTradingProvider(() => useExchangeForm(), {
             tradeType: 'exchange',
             overrides: baseOverrides,
@@ -66,24 +68,30 @@ describe('ExchangeReceiveAmountInput', () => {
         ).toHaveDisplayValue('0.00083554');
     });
 
-    it('should call showAssetsSheet callback on press', async () => {
-        const showAssetsSheetMock = jest.fn();
-        const { getByLabelText } = await renderExchangeReceiveAmountInput({
-            showAssetsSheet: showAssetsSheetMock,
-        });
+    it('should show not available alert on press', async () => {
+        const { getByLabelText } = await renderExchangeReceiveAmountInput();
 
         await fireEvent.press(
             getByLabelText(getTranslation('moduleTrading.selectCoin.amountLabel')),
         );
 
-        expect(showAssetsSheetMock).toHaveBeenCalled();
+        expect(mockShowAlert).toHaveBeenCalledTimes(1);
+        expect(mockShowAlert).toHaveBeenCalledWith(
+            expect.objectContaining({
+                title: getTranslation('moduleTrading.selectCoin.amountNotAvailableAlert.title'),
+                description: getTranslation(
+                    'moduleTrading.selectCoin.amountNotAvailableAlert.description',
+                ),
+                pictogramVariant: 'info',
+                primaryButtonTitle: getTranslation('generic.buttons.gotIt'),
+            }),
+        );
     });
 
     it('should display loading skeleton when quotes are being fetched', async () => {
-        const { getByLabelText } = await renderExchangeReceiveAmountInput(
-            {},
-            { wallet: { trading: { exchange: { isLoading: true } } } },
-        );
+        const { getByLabelText } = await renderExchangeReceiveAmountInput({
+            wallet: { trading: { exchange: { isLoading: true } } },
+        });
 
         expect(
             getByLabelText(getTranslation('moduleTrading.tradingScreen.quotesLoadingLabel')),
