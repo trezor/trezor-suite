@@ -1,7 +1,7 @@
 import { A, pipe } from '@mobily/ts-belt';
 import { fromUnixTime, getUnixTime } from 'date-fns';
 
-import { type Dispatch } from '@suite-common/redux-utils';
+import { type Dispatch, unwrapWithError } from '@suite-common/redux-utils';
 import type { NetworkSymbol } from '@suite-common/wallet-config';
 import { fetchTransactionsFromNowUntilTimestampThunk } from '@suite-common/wallet-core';
 import type { AccountKey, Timestamp, TokenAddress } from '@suite-common/wallet-types';
@@ -139,14 +139,16 @@ export const getAccountMovementEvents = async ({
             return [];
         }
         if (isLocalBalanceHistoryCoin(symbol)) {
-            const allTransactions = await dispatch(
-                fetchTransactionsFromNowUntilTimestampThunk({
-                    accountKey: account.accountKey,
-                    timestamp: startOfTimeFrameDate
-                        ? (getUnixTime(startOfTimeFrameDate) as Timestamp)
-                        : null,
-                }),
-            ).unwrap();
+            const allTransactions = await unwrapWithError(
+                dispatch(
+                    fetchTransactionsFromNowUntilTimestampThunk({
+                        accountKey: account.accountKey,
+                        timestamp: startOfTimeFrameDate
+                            ? (getUnixTime(startOfTimeFrameDate) as Timestamp)
+                            : null,
+                    }),
+                ),
+            );
 
             const movements = getAccountHistoryMovementFromTransactions({
                 transactions: allTransactions,
