@@ -40,8 +40,8 @@ type AccountOverviewTabContentProps = AccountAssetsTabListProps & {
 
 type ActiveTabProps = AccountAssetsTabListProps & {
     accountKey: AccountKey;
-    activeTab: AccountAssetsTab;
-    flowType: AccountAssetsFlow;
+    activeTab: AccountOverviewTab;
+    flowType: AccountOverviewFlow;
     onSelect: OnSelectAsset;
     onScroll: OnScroll;
 };
