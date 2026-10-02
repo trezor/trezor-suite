@@ -26,7 +26,7 @@ import { submitWrapNativeTokenThunk } from 'src/actions/wallet/wrapNativeTokenTh
 import { useMessageSystemWrappedNative } from 'src/hooks/suite/useMessageSystemWrappedNative';
 
 import { WrappedNativeFlowComplete } from '../common/WrappedNativeFlowComplete';
-import { YieldActionStepWarning } from '../common/YieldActionStepWarning';
+import { YieldActionStepWarning } from '../common/YieldActionStepWarning/YieldActionStepWarning';
 import { YieldDisabledBanner } from '../common/YieldDisabledBanner';
 import { YieldFlowTransferRow } from '../common/YieldFlowTransferRow';
 import { YieldWrapStep } from '../common/YieldWrapStep';

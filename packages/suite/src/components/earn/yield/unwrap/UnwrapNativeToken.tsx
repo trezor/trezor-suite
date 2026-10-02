@@ -25,7 +25,7 @@ import { useSelector } from 'src/hooks/suite';
 import { useMessageSystemWrappedNative } from 'src/hooks/suite/useMessageSystemWrappedNative';
 
 import { WrappedNativeFlowComplete } from '../common/WrappedNativeFlowComplete';
-import { YieldActionStepWarning } from '../common/YieldActionStepWarning';
+import { YieldActionStepWarning } from '../common/YieldActionStepWarning/YieldActionStepWarning';
 import { YieldDisabledBanner } from '../common/YieldDisabledBanner';
 import { YieldFlowTransferRow } from '../common/YieldFlowTransferRow';
 import { YieldUnwrapStep } from '../common/YieldUnwrapStep';
