@@ -74,6 +74,20 @@ describe('getIframeInstance', () => {
         await expect(promise).resolves.toBeUndefined();
     });
 
+    it('rebuilds the iframe when the page removed it', async () => {
+        const iframe = getIframeInstance();
+        await createAndLoad(iframe);
+        const first = getElement(iframe);
+
+        document.body.innerHTML = '';
+
+        const promise = iframe.create(SRC);
+        expect(getElement(iframe)).not.toBe(first);
+
+        fireLoad(iframe);
+        await expect(promise).resolves.toBeUndefined();
+    });
+
     // Guard for the original PR #29770 fix: a load timeout must clear the
     // rejected initPromise so the next create() starts fresh.
     it('clears the rejected init promise on load timeout (#29770)', async () => {
