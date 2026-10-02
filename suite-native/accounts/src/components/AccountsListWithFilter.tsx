@@ -30,6 +30,7 @@ type AccountsListWithFilterProps = {
     onAddAccount?: () => void;
     isSendFlow?: boolean;
     isScrollDividerEnabled?: boolean;
+    noHeaderPaddingTop?: boolean;
     children?: ReactNode;
 };
 
@@ -43,6 +44,7 @@ export const AccountsListWithFilter = ({
     onAddAccount,
     isSendFlow,
     isScrollDividerEnabled,
+    noHeaderPaddingTop,
     children,
 }: AccountsListWithFilterProps) => {
     const [searchValue, setSearchValue] = useState('');
@@ -120,6 +122,7 @@ export const AccountsListWithFilter = ({
                             onAddAccount={onAddAccount}
                             onFilterPress={isNetworkFilterVisible ? handleFilterPress : undefined}
                             activeFilterCount={filteredNetworks.length}
+                            noPaddingTop={noHeaderPaddingTop}
                         />
                         {children}
                     </>
