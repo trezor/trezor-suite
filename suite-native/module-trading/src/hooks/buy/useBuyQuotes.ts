@@ -4,6 +4,7 @@ import { useSelector } from 'react-redux';
 import { isFulfilled } from '@reduxjs/toolkit';
 
 import { useServices } from '@suite-common/dependency-injection';
+import { selectNetworkConfigs } from '@suite-common/networks';
 import { injectDispatch } from '@suite-common/redux-utils';
 import { invariant } from '@suite-common/suite-utils';
 import {
@@ -115,6 +116,7 @@ const useBuyQuotesThunk = (
     const platformInfo = useSelector((state: TradingRootState) =>
         selectTradingPlatformByCryptoId(state, asset?.cryptoId),
     );
+    const networkConfigs = useSelector(selectNetworkConfigs);
     const {
         isFetchAllowed,
         cryptoId,
@@ -138,7 +140,12 @@ const useBuyQuotesThunk = (
 
         const payload: HandleBuyRequestThunkProps = {
             network,
-            formValues: tradingBuyFormToTradingBuyFormProps(form, coinInfo, platformInfo),
+            formValues: tradingBuyFormToTradingBuyFormProps(
+                form,
+                coinInfo,
+                platformInfo,
+                networkConfigs,
+            ),
             shouldSendInSats,
         };
         const requestPromise = dispatch(buyThunks.handleRequestThunk(payload));
@@ -152,7 +159,16 @@ const useBuyQuotesThunk = (
                 },
             });
         }
-    }, [form, coinInfo, platformInfo, shouldSendInSats, quotesPromiseRef, dispatch, analytics]);
+    }, [
+        form,
+        coinInfo,
+        platformInfo,
+        networkConfigs,
+        shouldSendInSats,
+        quotesPromiseRef,
+        dispatch,
+        analytics,
+    ]);
 
     const requestQuotes = useEffectEvent(() => {
         if (quotesPromiseRef.current?.abort) {

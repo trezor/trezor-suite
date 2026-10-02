@@ -3,6 +3,7 @@ import { createSelector } from '@reduxjs/toolkit';
 import type { Protocol } from '@trezor/network-module-suite-common-types';
 import { typedObjectFromEntries, typedObjectValues } from '@trezor/utils';
 
+import type { NetworkMetadata } from './NetworkMetadata';
 import type { NetworksRootState } from './networksReducer';
 import type { NetworkSymbol } from '../src/NetworkModules';
 
@@ -22,10 +23,16 @@ export const selectNetworkNamesMap = createSelector(
               ),
 );
 
-// Keep this helper private: consumers should select only the concrete values they need,
-// rather than subscribe to the entire network configuration.
-const selectNetworkConfig = (state: NetworksRootState, symbol: NetworkSymbol) =>
-    state.networks?.[symbol] ?? null;
+export const selectNetworkConfig = (
+    state: NetworksRootState,
+    symbol: NetworkSymbol,
+): NetworkMetadata | null => state.networks?.[symbol] ?? null;
+
+export const selectNetworkConfigs = createSelector(
+    [(state: NetworksRootState) => state.networks],
+    (networks): readonly NetworkMetadata[] =>
+        networks === null ? [] : typedObjectValues(networks),
+);
 
 export const selectNetworkColor = (state: NetworksRootState, symbol?: NetworkSymbol | null) =>
     symbol ? selectNetworkConfig(state, symbol)?.color : undefined;

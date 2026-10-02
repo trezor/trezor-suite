@@ -12136,7 +12136,7 @@ __metadata:
     ajv: "npm:^8.20.0"
     jws: "npm:^4.0.1"
     toml: "npm:^4.1.2"
-    zod: "npm:4.3.6"
+    zod: "npm:4.6.5"
   languageName: unknown
   linkType: soft
 
@@ -12170,6 +12170,8 @@ __metadata:
     "@trezor/connect": "workspace:*"
     "@trezor/connect-common": "workspace:*"
     "@trezor/env-utils": "workspace:*"
+    "@trezor/network-module-suite-common-types": "workspace:*"
+    "@trezor/network-module-types": "workspace:*"
     "@trezor/network-solana": "workspace:*"
     "@trezor/react-utils": "workspace:*"
     "@trezor/type-utils": "workspace:*"
@@ -17812,7 +17814,7 @@ __metadata:
     "@trezor/utils": "workspace:*"
     "@trezor/utxo-lib": "workspace:*"
     socks-proxy-agent: "npm:8.0.5"
-    zod: "npm:4.3.6"
+    zod: "npm:4.6.5"
   peerDependencies:
     tslib: ^2.6.2
   languageName: unknown
