@@ -8,6 +8,7 @@ import { useAmountInputTransformers } from '@suite-native/helpers';
 import { useTranslate } from '@suite-native/intl';
 import { getSymbolFromTradeableAsset } from '@suite-native/trading-atoms';
 
+import { CRYPTO_AMOUNT_INPUT_HIT_SLOP } from '../../../constants';
 import { useAmountInputDecimals } from '../../../hooks/general/useAmountInputDecimals';
 import { useSellFormContext } from '../../../hooks/sell/useSellFormContext';
 import { useSellInputFormControls } from '../../../hooks/sell/useSellInputFormControls';
@@ -43,6 +44,7 @@ export const SellSendAmountInput = ({ showAssetsScreen, ref }: SellSendAmountInp
         <>
             <AmountInput
                 ref={ref}
+                hitSlop={CRYPTO_AMOUNT_INPUT_HIT_SLOP}
                 {...inputControls}
                 accessibilityLabel={translate('moduleTrading.selectCoinToSell.amountLabel')}
                 editable={isAssetSelected}

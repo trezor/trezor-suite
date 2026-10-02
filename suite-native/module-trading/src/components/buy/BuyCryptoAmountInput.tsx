@@ -9,6 +9,7 @@ import { useTranslate } from '@suite-native/intl';
 import { getSymbolFromTradeableAsset } from '@suite-native/trading-atoms';
 import { MAX_CRYPTO_DECIMALS } from '@suite-native/trading-consts';
 
+import { CRYPTO_AMOUNT_INPUT_HIT_SLOP } from '../../constants';
 import { useBuyFormContext } from '../../hooks/buy/useBuyFormContext';
 import { useBuyInputFormControls } from '../../hooks/buy/useBuyInputFormControls';
 import { AmountInput } from '../general/Input/AmountInput';
@@ -37,6 +38,7 @@ export const BuyCryptoAmountInput = ({ showAssetsSheet, ref }: CryptoAmountInput
     return (
         <AmountInput
             ref={ref}
+            hitSlop={CRYPTO_AMOUNT_INPUT_HIT_SLOP}
             {...inputControls}
             accessibilityLabel={translate('moduleTrading.selectCoin.amountLabel')}
             editable={isAssetSelected}
