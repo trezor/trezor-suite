@@ -5,7 +5,8 @@ export type ExperimentalFeature =
     | 'experimental-networks'
     | 'mcp-server'
     | 'gap-limit'
-    | 'custom-evm-networks';
+    | 'custom-evm-networks'
+    | 'anon-rpc';
 
 /**
  * Set of features that are truly experimental (as opposed to regular features
@@ -17,6 +18,7 @@ export const experimentalFeedbackFeatureSet: ReadonlySet<ExperimentalFeature> =
         'tor-external',
         'slip24',
         'experimental-networks',
+        'anon-rpc',
     ]);
 
 export type FeedbackFeatureName = ExperimentalFeature | 'suite-sync' | 'stablecoin-yield';

@@ -25,6 +25,7 @@ import {
 } from '@suite-common/walletconnect';
 import {
     type DbDep,
+    anonRpcMiddleware,
     graphMiddleware,
     prepareStorageMiddleware,
     replaceByFeeErrorMiddleware,
@@ -55,6 +56,7 @@ export const getWalletMiddlewares = (
     tradingMiddleware,
     coinjoinMiddleware,
     replaceByFeeErrorMiddleware,
+    anonRpcMiddleware,
     prepareWalletConnectMiddleware(getExtra),
     prepareSuiteSyncMiddleware(getExtra),
 ];

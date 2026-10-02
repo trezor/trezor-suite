@@ -14,4 +14,5 @@ export const translatedFeedbackFeatures: Record<FeedbackFeatureName, Translation
     'suite-sync': 'TR_EXPERIMENTAL_SUITE_SYNC_TITLE',
     'stablecoin-yield': 'TR_EARN_DEFI_YIELD',
     'custom-evm-networks': 'TR_EXPERIMENTAL_CUSTOM_EVM_NETWORKS',
+    'anon-rpc': 'TR_EXPERIMENTAL_ANON_RPC',
 };

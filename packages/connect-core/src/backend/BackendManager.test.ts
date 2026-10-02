@@ -195,4 +195,37 @@ describe('backend/BackendManager', () => {
 
         expect(connects).toBeLessThanOrEqual(6);
     });
+    describe('anon-rpc', () => {
+        const ethereumCoinInfo = {
+            shortcut: 'ETH',
+            type: 'ethereum',
+            blockchainLink: { type: 'blockbook', url: ['default_url'] },
+        } as CoinInfo;
+
+        const anonRpc = {
+            specifier: '0x700dA3193D35fA54Cd3fBf29B66f2a2A0385659e',
+            bootstrapRpcUrl: 'https://custom.example',
+            config: { gateways: ['127.0.0.1:1:certhash'] },
+        };
+
+        it("passes a custom backend's anon-rpc settings to blockchain-link", async () => {
+            manager.setCustom('ETH', { type: 'evm-rpc', url: ['https://custom.example'], anonRpc });
+
+            const backend = await manager.getOrConnect({ coinInfo: ethereumCoinInfo, postMessage });
+
+            expect(backend.link.settings).toMatchObject({
+                server: ['https://custom.example'],
+                anonRpc,
+            });
+        });
+
+        it('drops anon-rpc when the custom backend is replaced without it', async () => {
+            manager.setCustom('ETH', { type: 'evm-rpc', url: ['https://custom.example'], anonRpc });
+            manager.setCustom('ETH', { type: 'evm-rpc', url: ['https://custom.example'] });
+
+            const backend = await manager.getOrConnect({ coinInfo: ethereumCoinInfo, postMessage });
+
+            expect(backend.link.settings.anonRpc).toBeUndefined();
+        });
+    });
 });

@@ -11,6 +11,7 @@ import {
     COINJOIN_NETWORK_TAG,
     COINJOIN_REPORT_TAG,
     type ChainableBeforeSend,
+    dropAnonRpcClientLogs,
     redactInvalidParameterValue,
     redactSentryEvent,
 } from '@suite-common/sentry';
@@ -106,7 +107,7 @@ export const redactEventUrlParams: ChainableBeforeSend = event => {
 const beforeSend: ChainableBeforeSend = event =>
     redactSentryEvent(
         redactInvalidParameterValue(
-            redactUserPath(redactEventUrlParams(redactCoinjoinData(event))),
+            redactUserPath(redactEventUrlParams(redactCoinjoinData(dropAnonRpcClientLogs(event)))),
         ),
     );
 

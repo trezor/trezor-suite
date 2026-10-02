@@ -22,6 +22,7 @@ export {
 } from './src/middlewares/suite/suiteMiddleware';
 export { default as graphMiddleware } from './src/middlewares/wallet/graphMiddleware';
 export { default as walletMiddleware } from './src/middlewares/wallet/walletMiddleware';
+export { anonRpcMiddleware } from './src/middlewares/wallet/anonRpcMiddleware';
 export { replaceByFeeErrorMiddleware } from './src/middlewares/wallet/replaceByFeeErrorMiddleware';
 export { prepareStorageMiddleware } from './src/middlewares/wallet/storageMiddleware';
 export { tradingMiddleware as walletTradingMiddleware } from './src/middlewares/wallet/tradingMiddleware';
@@ -302,6 +303,7 @@ export { InactiveTokensTable } from './src/views/wallet/tokens/inactive-tokens/I
 export { TradingFormEmbed } from './src/views/wallet/trading/common/TradingFormEmbed/TradingFormEmbed';
 export { SolanaLimitedHistoryBanner } from './src/components/wallet/WalletLayout/AccountBanners/SolanaLimitedHistoryBanner';
 export { isNetworkWithGraphFeature } from './src/utils/wallet/graph/utils';
+export { getAnonRpcSettings } from './src/utils/wallet/anonRpcUtils';
 export { TradeBox } from './src/views/wallet/transactions/TradeBox/TradeBox';
 export { SingleAccountTransactionList } from './src/views/wallet/transactions/TransactionList/SingleAccountTransactionList';
 export { AccountEmpty } from './src/views/wallet/transactions/components/AccountEmpty';

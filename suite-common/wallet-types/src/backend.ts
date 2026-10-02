@@ -1,6 +1,8 @@
 import { type LegacyNetworkSymbol } from '@suite-common/legacy-network-config';
 import { type BackendType, type NetworkSymbol } from '@suite-common/wallet-config';
 import type { CardanoProtocolParameters } from '@trezor/blockchain-link-types';
+import type { BlockchainLinkAnonRpc } from '@trezor/connect';
+import { type Getter } from '@trezor/dependency-injection';
 import { type TimerId } from '@trezor/type-utils';
 
 /**
@@ -16,6 +18,11 @@ export type CustomBackend = {
     symbol: NetworkSymbol;
     type: BackendType;
     urls: string[];
+};
+
+export type GetAnonRpcSettingsDep = {
+    // The anon-rpc network a backend's RPC is routed through, or undefined to connect directly.
+    getAnonRpcSettings: Getter<[backend: CustomBackend], BlockchainLinkAnonRpc | undefined>;
 };
 
 export type BackendSettings = Partial<{

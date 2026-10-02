@@ -27,6 +27,8 @@ import {
     type BlockchainRootState,
     type BlockchainState,
     type FeesRootState,
+    type InitBlockchainThunkDeps,
+    type SetCustomBackendThunkDeps,
     type StellarContractTokensRootState,
     type SyncAccountsWithBlockchainThunkDeps,
     type TransactionsRootState,
@@ -48,6 +50,7 @@ import {
     stellarContractTokensInitialState,
 } from '@suite-common/wallet-core';
 import { type FeesState } from '@suite-common/wallet-types';
+import { mockGetAnonRpcSettings } from '@suite-common/wallet-types/mocks';
 import { mockAnalytics } from '@trezor/analytics-uploader/mocks';
 import { PROTO } from '@trezor/connect';
 import { asGetter } from '@trezor/dependency-injection';
@@ -138,8 +141,13 @@ const getInitialState = (
     },
 });
 
+// The tests dispatch the init and custom backend thunks as well as account syncing.
+type BlockchainActionsTestDeps = SyncAccountsWithBlockchainThunkDeps &
+    InitBlockchainThunkDeps &
+    SetCustomBackendThunkDeps;
+
 const mockStore = (preloadedState: State) =>
-    createTestCompositionRoot<SyncAccountsWithBlockchainThunkDeps, State>({
+    createTestCompositionRoot<BlockchainActionsTestDeps, State>({
         reducer: (currentState = preloadedState, action) => {
             const state = currentState as State;
 
@@ -161,6 +169,7 @@ const mockStore = (preloadedState: State) =>
             networks: { getAccountSyncInterval: mockGetAccountSyncInterval() },
             getIsWindowVisible: asGetter(() => true),
             getTradedAccountKeys: asGetter(() => []),
+            getAnonRpcSettings: mockGetAnonRpcSettings(),
         }),
     }).services.store;
 

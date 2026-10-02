@@ -10,7 +10,12 @@ import { lockDevice } from '@suite/locks';
 import { selectLabelingDataForAccount } from '@suite/metadata';
 import { createMetadataMigrationCompositionRoot } from '@suite/metadata-migration';
 import { type HistoryDep, createSuiteRouterHistory } from '@suite/router';
-import { selectDebugSettings, selectLanguage, selectTradeServerEnvironment } from '@suite/settings';
+import {
+    selectDebugSettings,
+    selectHasExperimentalFeature,
+    selectLanguage,
+    selectTradeServerEnvironment,
+} from '@suite/settings';
 import { selectIsTorEnabled } from '@suite/tor';
 import { createSuiteSyncDesktopCompositionRoot } from '@suite-app/suite-sync';
 import { createBip329CompositionRoot } from '@suite-common/bip329';
@@ -54,6 +59,7 @@ import {
     selectAccountsByDeviceState,
     selectAccountsTransactions,
 } from '@suite-common/wallet-core';
+import type { CustomBackend } from '@suite-common/wallet-types';
 import { type GetTrezorConnectPrivilegedDep } from '@trezor/connect';
 import { toGetter } from '@trezor/dependency-injection';
 import { isDesktop } from '@trezor/env-utils';
@@ -67,7 +73,12 @@ import { createRippleSuiteNetworkModule } from '@trezor/network-ripple-suite';
 import { createSolanaSuiteNetworkModule } from '@trezor/network-solana-suite';
 import { createStellarSuiteNetworkModule } from '@trezor/network-stellar-suite';
 import { createTronSuiteNetworkModule } from '@trezor/network-tron-suite';
-import { type DbDep, reportSecurityCheck, selectIsWindowVisible } from '@trezor/suite';
+import {
+    type DbDep,
+    getAnonRpcSettings,
+    reportSecurityCheck,
+    selectIsWindowVisible,
+} from '@trezor/suite';
 
 import { createConnectInitDeviceEventHooks } from './createConnectInitDeviceEventHooks';
 import { createConnectInitUIEventHooks } from './createConnectInitUIEventHooks';
@@ -263,6 +274,12 @@ export const createSuiteServicesCompositionRoot = (deps: SuiteAppDeps): SuiteSer
         getLanguage: toGetter(deps.getState, selectLanguage),
         getSelectedAccount: toGetter(deps.getState, selectFullSelectedAccount),
         getIsWindowVisible: toGetter(deps.getState, selectIsWindowVisible),
+        getAnonRpcSettings: toGetter(deps.getState, (state: AppState, backend: CustomBackend) =>
+            getAnonRpcSettings({
+                backend,
+                isAnonRpcEnabled: selectHasExperimentalFeature('anon-rpc')(state),
+            }),
+        ),
         getTradingEnvironment: toGetter(deps.getState, selectTradeServerEnvironment),
         getTradedAccountKeys: toGetter(deps.getState, selectTradedAccountKeys),
         getThpSettings: toGetter(deps.getState, (state: AppState) => ({

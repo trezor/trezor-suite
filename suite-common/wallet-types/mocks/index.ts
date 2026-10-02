@@ -1,5 +1,6 @@
 export { mockAccountKey } from './mockAccountKey';
 export { mockAccountToken } from './mockAccountToken';
+export { mockGetAnonRpcSettings } from './mockGetAnonRpcSettings';
 export { mockGetTradedAccountKeys } from './mockGetTradedAccountKeys';
 export {
     MOCK_CARDANO_EVERSTAKE_DREP_ID,
