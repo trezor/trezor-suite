@@ -78,8 +78,8 @@ jobs:
         uses: actions/cache/restore@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v5
         with:
           path: .eslintcache
-          key: eslint-root-v2-${{ runner.os }}-${{ hashFiles('eslint.config.mjs', 'eslint-local-rules/**', 'packages/eslint/**', 'yarn.lock') }}-${{ github.sha }}
-          restore-keys: eslint-root-v2-${{ runner.os }}-${{ hashFiles('eslint.config.mjs', 'eslint-local-rules/**', 'packages/eslint/**', 'yarn.lock') }}-
+          key: eslint-root-v2-${{ runner.os }}-${{ hashFiles('eslint.config.mjs', 'eslint-local-rules/**', 'packages/eslint/src/**/*.mjs', 'packages/eslint/eslint.config.mjs', 'packages/eslint/package.json', 'yarn.lock') }}-${{ github.sha }}
+          restore-keys: eslint-root-v2-${{ runner.os }}-${{ hashFiles('eslint.config.mjs', 'eslint-local-rules/**', 'packages/eslint/src/**/*.mjs', 'packages/eslint/eslint.config.mjs', 'packages/eslint/package.json', 'yarn.lock') }}-
       - name: Lint JS
         env:
           ESLINT_RUN_EXPENSIVE_CHECKS: "true"
