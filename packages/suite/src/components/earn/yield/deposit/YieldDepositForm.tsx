@@ -20,7 +20,7 @@ import { useMessageSystemWrappedNative } from 'src/hooks/suite/useMessageSystemW
 
 import { useYieldDepositContext } from './useYieldDepositContext';
 import { YieldActionStep } from '../common/YieldActionStep';
-import { YieldActionStepWarning } from '../common/YieldActionStepWarning';
+import { YieldActionStepWarning } from '../common/YieldActionStepWarning/YieldActionStepWarning';
 import { YieldApproveModal } from '../common/YieldApproveModal';
 import { YieldApproveStep } from '../common/YieldApproveStep';
 import { YieldApprovedAmountCard } from '../common/YieldApprovedAmountCard';

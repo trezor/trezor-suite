@@ -19,7 +19,7 @@ import { useMessageSystemWrappedNative } from 'src/hooks/suite/useMessageSystemW
 
 import { useYieldWithdrawContext } from './useYieldWithdrawContext';
 import { YieldActionStep } from '../common/YieldActionStep';
-import { YieldActionStepWarning } from '../common/YieldActionStepWarning';
+import { YieldActionStepWarning } from '../common/YieldActionStepWarning/YieldActionStepWarning';
 import { YieldDisabledBanner } from '../common/YieldDisabledBanner';
 import { YieldFlowCompleteWithdraw } from '../common/YieldFlowCompleteWithdraw';
 import { YieldFlowStepList } from '../common/YieldFlowStepList';
