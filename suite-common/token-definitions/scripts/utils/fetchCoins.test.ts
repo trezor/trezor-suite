@@ -223,6 +223,21 @@ describe('getContractAddress', () => {
                 err({ type: 'CONTRACT_HAS_NO_ASSET', contractAddress: sorobanAddress }),
             );
         });
+
+        it('should treat a contract that wraps no asset as an answer, not a failure', async () => {
+            // StellarExpert answers about these contracts, it just leaves `asset` out. Reading
+            // that as a failed lookup stops the whole release over a dozen valid answers.
+            mockStellarExpert(
+                new Response(JSON.stringify({ contract: sorobanAddress, created: 1708482513 }), {
+                    status: 200,
+                    headers: { 'Content-Type': 'application/json' },
+                }),
+            );
+
+            expect(await getContractAddress('stellar', { stellar: sorobanAddress })).toEqual(
+                err({ type: 'CONTRACT_HAS_NO_ASSET', contractAddress: sorobanAddress }),
+            );
+        });
     });
 
     describe('Other platforms', () => {
