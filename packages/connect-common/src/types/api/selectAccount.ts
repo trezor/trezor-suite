@@ -2,7 +2,7 @@ import type { Static } from '@trezor/schema-utils';
 import { Type } from '@trezor/schema-utils';
 
 import { CoinSymbolParam } from '../coinInfo';
-import type { Params, Response } from '../params';
+import type { DeviceFreeParams, Response } from '../params';
 
 // Account derivation variant. Mirrors the `type` values in `ACCOUNT_TYPES`
 // (see discoverAccounts.ts). For account-based networks (EVM) the relevant
@@ -99,4 +99,6 @@ export const SelectedAccount = Type.Object({
 
 // Always returns an array, even for a 'single' selection — mirrors eth_requestAccounts, and keeps
 // the response shape independent of what selectionType numerically resolves to.
-export declare function selectAccount(params: Params<SelectAccount>): Response<SelectedAccount[]>;
+export declare function selectAccount(
+    params: DeviceFreeParams<SelectAccount>,
+): Response<SelectedAccount[]>;

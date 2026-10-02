@@ -1,6 +1,6 @@
 import type { TronComposeTransaction, TronComposedTransaction } from './common';
-import type { Params, Response } from '../../params';
+import type { DeviceFreeParams, Response } from '../../params';
 
 export declare function tronComposeTransaction(
-    params: Params<TronComposeTransaction>,
+    params: DeviceFreeParams<TronComposeTransaction>,
 ): Response<TronComposedTransaction>;

@@ -10,7 +10,7 @@ import {
     type CardanoInput,
     type CardanoOutput,
 } from './common';
-import { DerivationPath, type Params, type Response } from '../../params';
+import { DerivationPath, type DeviceFreeParams, type Response } from '../../params';
 import type {
     PrecomposeResultError,
     PrecomposeResultFinal,
@@ -185,5 +185,5 @@ const _paramsOld: CardanoComposeTransactionParams = {} as CardanoComposeTransact
 [_params, _paramsOld];
 
 export declare function cardanoComposeTransaction(
-    params: Params<CardanoComposeTransactionParams>,
+    params: DeviceFreeParams<CardanoComposeTransactionParams>,
 ): Response<PrecomposedTransactionCardano[]>;

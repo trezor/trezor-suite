@@ -13,7 +13,7 @@ import type {
 } from '@trezor/utxo-lib';
 
 import type { ComposeParams } from './common';
-import type { Params, Response } from '../../params';
+import type { DeviceFreeParams, Response } from '../../params';
 
 // @trezor/utxo-lib `composeTx` ComposeInput required fields intersects AccountUtxo
 export type ComposeUtxo = AccountUtxo & Partial<ComposeInputBase>;
@@ -63,5 +63,5 @@ export type PrecomposedResult =
     PrecomposeResultError | PrecomposeResultNonFinal | PrecomposeResultFinal;
 
 export declare function composeTransaction(
-    params: Params<PrecomposeParams>,
+    params: DeviceFreeParams<PrecomposeParams>,
 ): Response<PrecomposedResult[]>;

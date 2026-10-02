@@ -1,7 +1,7 @@
 import type { BlockchainLinkParams, BlockchainLinkResponse } from '@trezor/blockchain-link';
 
-import type { CommonParamsWithCoin, Response } from '../../params';
+import type { DeviceFreeCommonParamsWithCoin, Response } from '../../params';
 
 export declare function blockchainEvmRpcCall(
-    params: CommonParamsWithCoin & BlockchainLinkParams<'rpcCall'>,
+    params: DeviceFreeCommonParamsWithCoin & BlockchainLinkParams<'rpcCall'>,
 ): Response<BlockchainLinkResponse<'rpcCall'>>;
