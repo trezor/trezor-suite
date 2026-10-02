@@ -39,8 +39,6 @@ export const readInputs = (scriptDir, require) => {
     const glueDir = path.dirname(
         require.resolve('@emurgo/cardano-serialization-lib-asmjs/cardano_serialization_lib_bg.js'),
     );
-    const keepListPath = path.join(scriptDir, 'keep-list.json');
-    const keepList = JSON.parse(fs.readFileSync(keepListPath, 'utf8'));
     const coinSelectionLibDir = path.join(
         path.dirname(require.resolve('@fivebinaries/coin-selection/package.json')),
         'lib/cjs',
@@ -55,7 +53,6 @@ export const readInputs = (scriptDir, require) => {
     const inputsHash = getSha256(
         [
             getSha256(wasmBytes),
-            getSha256(fs.readFileSync(keepListPath)),
             getSha256(glueSource),
             getSha256(entrySource),
             ...SCRIPT_FILES.map(file => getSha256(fs.readFileSync(path.join(scriptDir, file)))),
@@ -66,7 +63,6 @@ export const readInputs = (scriptDir, require) => {
 
     return {
         wasmBytes,
-        keepList,
         reachableExports,
         glueSource,
         entrySource,
