@@ -3,6 +3,8 @@ import { type FieldError, useController } from 'react-hook-form';
 import { useSelector } from 'react-redux';
 
 import { useDevice } from '@suite/device';
+import { yup } from '@suite/forms';
+import { Translation, type TranslationKey, useTranslation } from '@suite-lego/intl';
 import {
     FormatSwitch,
     SIGN_VERIFY_BASE_DEFAULT_VALUES,
@@ -17,14 +19,12 @@ import {
     useSignVerifyCopyValue,
     useSignVerifyForm,
 } from '@suite/sign-verify';
-import { useServices } from '@suite-common/dependency-injection';
 import { type ReceiveRootState, selectTouchedAddresses } from '@suite-common/receive';
-import { selectDispatch } from '@suite-common/redux-utils';
-import { yup } from '@suite-common/validators';
 import { type Account } from '@suite-common/wallet-types';
-import { Translation, type TranslationKey, useTranslation } from '@suite-lego/intl';
 import { Button, Card, Column } from '@trezor/components';
+import { useServices } from '@trezor/dependency-injection';
 import { type SignVerifyProps } from '@trezor/network-module-suite-types';
+import { injectDispatch } from '@trezor/redux-utils';
 
 import { type BitcoinSignVerifyActions } from './bitcoinSignVerifyActions';
 import { getBitcoinSignAddresses } from './getBitcoinSignAddresses';
@@ -59,7 +59,7 @@ const BitcoinSignVerifyForm = ({
 }: BitcoinSignVerifyFormProps) => {
     const [outcome, setOutcome] = useState<SignVerifyOutcome>('idle');
 
-    const { dispatch } = useServices(selectDispatch);
+    const { dispatch } = useServices(injectDispatch);
 
     const isSignPage = page === 'sign';
 
