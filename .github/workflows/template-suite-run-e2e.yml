@@ -2,6 +2,11 @@ name: "Reusable Run Playwright E2E Tests"
 on:
   workflow_call:
     inputs:
+      dependency-artifact-name:
+        description: "Prepared Yarn installation to share across test shards."
+        required: false
+        type: string
+        default: ""
       target:
         description: "Playwright target name. (web|desktop)"
         required: true
@@ -129,7 +134,15 @@ jobs:
           node-version-file: ".nvmrc"
           cache: yarn
 
+      - name: Restore prepared installation
+        if: inputs.dependency-artifact-name != ''
+        uses: ./.github/actions/yarn-install-artifact
+        with:
+          operation: download
+          name: ${{ inputs.dependency-artifact-name }}
+
       - name: Restore installed dependencies
+        if: inputs.dependency-artifact-name == ''
         uses: ./.github/actions/node-modules-cache
         with:
           profile: suite-e2e
