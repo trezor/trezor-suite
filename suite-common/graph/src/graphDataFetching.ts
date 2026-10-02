@@ -4,6 +4,7 @@ import { A, D, F, G, O, pipe } from '@mobily/ts-belt';
 import { fromUnixTime, getUnixTime } from 'date-fns';
 
 import { getFiatRatesForTimestamps } from '@suite-common/fiat-services';
+import { unwrapWithError } from '@suite-common/redux-utils';
 import { type NetworkSymbol, getNetworkType } from '@suite-common/wallet-config';
 import { fetchTransactionsFromNowUntilTimestamp } from '@suite-common/wallet-core';
 import { type Timestamp, type TokenAddress } from '@suite-common/wallet-types';
@@ -170,12 +171,14 @@ const getAccountBalanceHistory = async ({
             };
         }
         if (isLocalBalanceHistoryCoin(symbol)) {
-            const allTransactions = await dispatch(
-                fetchTransactionsFromNowUntilTimestamp({
-                    accountKey,
-                    timestamp: startOfTimeFrameDateTimestamp,
-                }),
-            ).unwrap();
+            const allTransactions = await unwrapWithError(
+                dispatch(
+                    fetchTransactionsFromNowUntilTimestamp({
+                        accountKey,
+                        timestamp: startOfTimeFrameDateTimestamp,
+                    }),
+                ),
+            );
 
             const movements = getAccountHistoryMovementFromTransactions({
                 transactions: allTransactions,
