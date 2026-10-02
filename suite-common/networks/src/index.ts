@@ -11,6 +11,8 @@ export {
 export { type NetworkMetadata } from '../reduxState/NetworkMetadata';
 export {
     selectNetworkColor,
+    selectNetworkConfig,
+    selectNetworkConfigs,
     selectNetworkNamesMap,
     selectNetworkSymbolForProtocol,
     selectSupportedNetworkSymbols,

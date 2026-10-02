@@ -44,6 +44,7 @@ export * from './hooks/useTradingDetail';
 export type * from './types/tradingDetail';
 export type * from './types';
 export * from './utils';
+export { createAssetOption } from './utils/createAssetOption';
 export * from './utils/apiKeyUtils';
 export * from './utils/tradingAccountUtils';
 export * from './utils/buy/buyUtils';
