@@ -14,6 +14,7 @@ import { bytesToHumanReadable, serializeError } from '@trezor/utils';
 
 import { type ModuleInit, mainThreadEmitter } from './module';
 import { ipcMain } from '../ipcMain';
+import type { ILogger } from '../libs/logger';
 import { parseCustomFeedURL } from '../libs/parseCustomFeedURL';
 import { getSwitchValue, hasSwitch } from '../libs/process-switches';
 import { getSignatureFile, verifySignature } from '../libs/update-checker';
@@ -34,15 +35,19 @@ const disableUpdater = hasSwitch('disable-updater');
 const preReleaseFlag = hasSwitch('pre-release');
 const customFeedURL = getSwitchValue('updater-url');
 
-const getFeedURL = ({ allowPrerelease = false }) => {
+type GetFeedURLParams = {
+    allowPrerelease?: boolean;
+    logger: ILogger;
+};
+
+const getFeedURL = ({ allowPrerelease = false, logger }: GetFeedURLParams) => {
     const defaultFeedURL = defaultFeedURLs[allowPrerelease ? 'preRelease' : 'latest'];
-    const warn = (message: string) => global.logger.warn(SERVICE_NAME, message);
+    const warn = (message: string) => logger.warn(SERVICE_NAME, message);
 
     return parseCustomFeedURL({ customFeedURL, defaultFeedURL, warn });
 };
 
-export const init: ModuleInit = ({ mainWindowProxy, store }) => {
-    const { logger } = global;
+export const init: ModuleInit = ({ mainWindowProxy, store, logger }) => {
     if (!isFeatureFlagEnabled('DESKTOP_AUTO_UPDATER') && !enableUpdater) {
         logger.info(SERVICE_NAME, 'Disabled via feature flag');
 
@@ -93,7 +98,7 @@ export const init: ModuleInit = ({ mainWindowProxy, store }) => {
     const updateSettings = store.getUpdateSettings();
     let allowPrerelease = preReleaseFlag || updateSettings.allowPrerelease;
     let { isAutomaticUpdateEnabled } = updateSettings;
-    let feedURL = getFeedURL({ allowPrerelease });
+    let feedURL = getFeedURL({ allowPrerelease, logger });
 
     autoUpdater.logger = null;
 
@@ -313,7 +318,7 @@ export const init: ModuleInit = ({ mainWindowProxy, store }) => {
         store.setUpdateSettings({ ...settings, allowPrerelease: value });
         allowPrerelease = value;
 
-        feedURL = getFeedURL({ allowPrerelease });
+        feedURL = getFeedURL({ allowPrerelease, logger });
         autoUpdater.setFeedURL(feedURL);
         logger.info(SERVICE_NAME, `New feed url: ${feedURL}`);
     });

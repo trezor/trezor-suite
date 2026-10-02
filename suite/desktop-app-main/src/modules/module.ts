@@ -5,6 +5,7 @@ import { type InterceptedEvent } from '@trezor/request-manager';
 import { TypedEmitter } from '@trezor/utils';
 
 import { type PowerSaveBlocker } from '../libs/createPowerSaveBlocker';
+import type { ILogger } from '../libs/logger';
 import { type MainWindowProxy } from '../libs/main-window-proxy';
 import type { Store } from '../libs/store';
 
@@ -39,6 +40,7 @@ export type Dependencies = {
     mainThreadEmitter: MainThreadEmitter;
     cspNonce: string;
     powerSaveBlocker: PowerSaveBlocker;
+    logger: ILogger;
 };
 
 export type ModuleInterface = {

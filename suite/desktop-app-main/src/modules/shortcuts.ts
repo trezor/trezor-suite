@@ -9,8 +9,7 @@ import { Store } from '../libs/store';
 
 export const SERVICE_NAME = 'shortcuts';
 
-export const init: ModuleInit = ({ mainWindowProxy }) => {
-    const { logger } = global;
+export const init: ModuleInit = ({ mainWindowProxy, logger }) => {
     const store = Store.getStore();
 
     // DevTools are disabled by default, to avoid inadvertent self-XSS for users. But for development & testing convenience, it's available either:
@@ -53,7 +52,7 @@ export const init: ModuleInit = ({ mainWindowProxy }) => {
         restartAppShortcuts.forEach(shortcut => {
             electronLocalshortcut.register(mainWindow, shortcut, () => {
                 logger.info(SERVICE_NAME, `${shortcut} pressed to restart app`);
-                restartApp();
+                restartApp({ logger });
             });
         });
     });
