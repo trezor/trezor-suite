@@ -1,16 +1,16 @@
-import { useEffect, useMemo } from 'react';
+import { useEffect } from 'react';
 import { useSelector } from 'react-redux';
 
 import { useServices } from '@suite-common/dependency-injection';
+import { ExperimentId, useIsExperimentVariantActive } from '@suite-common/message-system';
 import { type Account, type TokenAddress } from '@suite-common/wallet-types';
 import { events, injectNativeAnalytics } from '@suite-native/analytics';
 import { Screen } from '@suite-native/navigation';
 import { type TokensRootState, selectAccountTokenInfo } from '@suite-native/tokens';
-import { TransactionList } from '@suite-native/transactions';
 
-import { AccountDetailEmptyState } from '../components/AccountDetailEmptyState';
+import { AccountDetailLegacyContent } from '../components/AccountDetailLegacyContent';
+import { AccountDetailSummaryContent } from '../components/AccountDetailSummaryContent';
 import { AssetDetailScreenHeader } from '../components/AssetDetailScreenHeader';
-import { TransactionListHeader } from '../components/TransactionListHeader';
 
 type AccountDetailContentScreenProps = {
     account: Account;
@@ -22,6 +22,10 @@ export const AccountDetailContentScreen = ({
     tokenContract,
 }: AccountDetailContentScreenProps) => {
     const { analytics } = useServices(injectNativeAnalytics);
+    const isAssetFirstHomeTableEnabled = useIsExperimentVariantActive({
+        experimentId: ExperimentId.assetFirstHomeTable,
+        variant: 'B',
+    });
     const token = useSelector((state: TokensRootState) =>
         selectAccountTokenInfo(state, account.key, tokenContract),
     );
@@ -39,31 +43,25 @@ export const AccountDetailContentScreen = ({
         }
     }, [account, token?.symbol, token?.contract, analytics, token]);
 
-    const listHeaderComponent = useMemo(
-        () => <TransactionListHeader accountKey={account.key} tokenContract={tokenContract} />,
-        [account.key, tokenContract],
-    );
-
-    const listEmptyComponent = useMemo(
-        () => <AccountDetailEmptyState accountKey={account.key} tokenContract={tokenContract} />,
-        [account.key, tokenContract],
-    );
-
     return (
         <Screen
-            /** Adding scrollable wraps content in ScrollView which is unwanted for this screen because list component already adds the scrollview **/
-            isScrollable={false}
-            header={<AssetDetailScreenHeader account={account} tokenContract={tokenContract} />}
+            isScrollable={isAssetFirstHomeTableEnabled}
+            header={
+                <AssetDetailScreenHeader
+                    account={account}
+                    tokenContract={tokenContract}
+                    isBalanceDisplayed={!isAssetFirstHomeTableEnabled}
+                />
+            }
             noHorizontalPadding
-            noBottomPadding
-            hasBottomInset={false}
+            noBottomPadding={!isAssetFirstHomeTableEnabled}
+            hasBottomInset={isAssetFirstHomeTableEnabled}
         >
-            <TransactionList
-                account={account}
-                tokenContract={tokenContract}
-                listHeaderComponent={listHeaderComponent}
-                listEmptyComponent={listEmptyComponent}
-            />
+            {isAssetFirstHomeTableEnabled ? (
+                <AccountDetailSummaryContent account={account} />
+            ) : (
+                <AccountDetailLegacyContent account={account} tokenContract={tokenContract} />
+            )}
         </Screen>
     );
 };

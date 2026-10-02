@@ -78,9 +78,7 @@ export const AccountOverviewScreen = ({
     const isFailed = !!account && isAccountFailed(account);
 
     return (
-        <Screen
-            header={<AccountOverviewScreenHeader accountKey={accountKey} flowType={flowType} />}
-        >
+        <Screen header={<AccountOverviewScreenHeader accountKey={accountKey} />}>
             {isFailed ? (
                 <AccountDiscoveryFailedBanner accountKey={accountKey} />
             ) : (
