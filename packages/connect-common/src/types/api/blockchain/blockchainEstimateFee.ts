@@ -1,7 +1,7 @@
 import type { BlockchainLinkParams, BlockchainLinkResponse } from '@trezor/blockchain-link';
 
 import type { FeeInfo, FeeLevel } from '../../fees';
-import type { CommonParamsWithCoin, Response } from '../../params';
+import type { DeviceFreeCommonParamsWithCoin, Response } from '../../params';
 
 export interface BlockchainEstimateFee {
     request?: BlockchainLinkParams<'estimateFee'> & {
@@ -28,8 +28,8 @@ export interface BlockchainEstimatedFeeLevel extends EstimatedFee {
 }
 
 export declare function blockchainEstimateFee(
-    params: CommonParamsWithCoin & BlockchainEstimateFee,
+    params: DeviceFreeCommonParamsWithCoin & BlockchainEstimateFee,
 ): Response<BlockchainEstimatedFee>;
 export declare function blockchainEstimateFee(
-    params: CommonParamsWithCoin & BlockchainEstimateFeeLevel,
+    params: DeviceFreeCommonParamsWithCoin & BlockchainEstimateFeeLevel,
 ): Response<BlockchainEstimatedFeeLevel>;

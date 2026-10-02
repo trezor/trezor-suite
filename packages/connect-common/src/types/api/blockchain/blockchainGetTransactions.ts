@@ -1,8 +1,8 @@
 import type { Transaction } from '@trezor/blockchain-link';
 
-import type { CommonParamsWithCoin, Response } from '../../params';
+import type { DeviceFreeCommonParamsWithCoin, Response } from '../../params';
 
-export type BlockchainGetTransactions = CommonParamsWithCoin & {
+export type BlockchainGetTransactions = DeviceFreeCommonParamsWithCoin & {
     txs: string[];
     descriptor?: string;
 };

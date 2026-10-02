@@ -1,7 +1,7 @@
 import type { BlockchainLinkResponse } from '@trezor/blockchain-link';
 
-import type { CommonParamsWithCoin, Response } from '../../params';
+import type { DeviceFreeCommonParamsWithCoin, Response } from '../../params';
 
 export declare function blockchainGetInfo(
-    params: CommonParamsWithCoin,
+    params: DeviceFreeCommonParamsWithCoin,
 ): Response<BlockchainLinkResponse<'getInfo'>>;

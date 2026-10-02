@@ -14,9 +14,11 @@ export interface DeviceIdentity {
     instance?: number;
 }
 
-export interface CommonParams {
-    device?: DeviceIdentity & { useEmptyPassphrase?: boolean };
-    keepSession?: boolean;
+/**
+ * Common parameters of methods that never talk to a device (`useDevice = false` at runtime).
+ * `device` and `keepSession` are intentionally absent, because such methods ignore both.
+ */
+export interface DeviceFreeCommonParams {
     /**
      * Client-provided correlation token forwarded to related UI events during this call.
      * Must be a valid UUID; the method validator throws `Method_InvalidParameter` otherwise.
@@ -34,7 +36,14 @@ export interface CommonParams {
     __precomposed?: boolean;
 }
 
+export interface CommonParams extends DeviceFreeCommonParams {
+    device?: DeviceIdentity & { useEmptyPassphrase?: boolean };
+    keepSession?: boolean;
+}
+
 export type Params<T> = CommonParams & T & { bundle?: undefined };
+
+export type DeviceFreeParams<T> = DeviceFreeCommonParams & T & { bundle?: undefined };
 
 interface Bundle<T> {
     bundle: T[];
@@ -44,10 +53,14 @@ export const Bundle = <T extends TSchema>(type: T) =>
 
 export type BundledParams<T> = CommonParams & Bundle<T>;
 
-export interface CommonParamsWithCoin extends CommonParams {
+interface CoinParams {
     coin: CoinSymbol;
     identity?: string; // ensures that different backend connections are opened for different identities
 }
+
+export interface CommonParamsWithCoin extends CommonParams, CoinParams {}
+
+export interface DeviceFreeCommonParamsWithCoin extends DeviceFreeCommonParams, CoinParams {}
 
 export interface OkWithDevice<T> extends Ok<T> {
     device?: DeviceIdentity;

@@ -164,7 +164,6 @@ const bitcoinRequestThunk = createThunk<
                 // changeAddress, which is added as a send-max output that takes the rest.
                 changeAddress: getUnusedChangeAddress(account.addresses?.change),
                 feeLevels: feeLevels.payload.levels,
-                device,
             });
             if (!precomposedTransaction.success) {
                 console.error('composeTransaction error', precomposedTransaction);
