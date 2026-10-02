@@ -30,6 +30,7 @@ export const AssetDetailAccounts = () => {
                 {accountBalances.map(({ accountKey, accountLabel, cryptoBalance }) => (
                     <AssetDetailAccountItem
                         key={accountKey}
+                        accountKey={accountKey}
                         accountLabel={accountLabel}
                         cryptoBalance={cryptoBalance}
                     />
