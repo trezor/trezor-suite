@@ -1,11 +1,10 @@
 import { type Store } from '@reduxjs/toolkit';
 
-import { yup } from '@suite-common/validators';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { type FiatRatesRootState, type WalletSettingsRootState } from '@suite-common/wallet-core';
 import { type TokenAddress } from '@suite-common/wallet-types';
 import { mockAccountKey } from '@suite-common/wallet-types/mocks';
-import { Form, useForm } from '@suite-native/forms';
+import { Form, useForm, yup } from '@suite-native/forms';
 import { getTranslation } from '@suite-native/intl';
 import {
     createStoreFromPreloadedState,

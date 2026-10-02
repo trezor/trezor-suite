@@ -17,7 +17,6 @@
         "@reduxjs/toolkit": "2.12.0",
         "@suite-common/dependency-injection": "workspace:*",
         "@suite-common/trading": "workspace:*",
-        "@suite-common/validators": "workspace:*",
         "@suite-native/atoms": "workspace:*",
         "@suite-native/forms": "workspace:*",
         "@suite-native/helpers": "workspace:*",

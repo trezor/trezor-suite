@@ -10,9 +10,8 @@ import {
     updateSuiteSyncDebugEnabled,
 } from '@suite-common/suite-sync';
 import { injectChangeRelayUrl } from '@suite-common/suite-sync-types';
-import { yup } from '@suite-common/validators';
 import { Button, Card, CheckBox, HStack, Text, VStack } from '@suite-native/atoms';
-import { Form, TextInputField, useForm } from '@suite-native/forms';
+import { Form, TextInputField, useForm, yup } from '@suite-native/forms';
 import { useToast } from '@suite-native/toasts';
 
 const DEFAULT_CUSTOM_RELAY_URL = '';

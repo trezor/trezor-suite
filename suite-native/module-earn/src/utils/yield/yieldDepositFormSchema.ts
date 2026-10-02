@@ -1,5 +1,5 @@
-import { yup } from '@suite-common/validators';
 import { isDecimalsValid } from '@suite-common/wallet-utils';
+import { yup } from '@suite-native/forms';
 import { type Translate } from '@suite-native/intl';
 import { BigNumber } from '@trezor/utils';
 

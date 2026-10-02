@@ -5,9 +5,8 @@ import {
     MAX_LENGTH_SIGNATURE,
     type VerifyMessageResult,
 } from '@suite-common/sign-verify';
-import { yup } from '@suite-common/validators';
 import { type Account } from '@suite-common/wallet-types';
-import { useForm } from '@suite-native/forms';
+import { useForm, yup } from '@suite-native/forms';
 
 import { useVerifyMessage } from './useVerifyMessage';
 

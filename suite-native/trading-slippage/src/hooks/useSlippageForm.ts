@@ -7,8 +7,7 @@ import {
     TRADING_SETTINGS_MAX_SLIPPAGE_PERCENTAGE_DEFAULT,
     getSlippageFormValidationSchema,
 } from '@suite-common/trading';
-import { yup } from '@suite-common/validators';
-import { useForm } from '@suite-native/forms';
+import { useForm, yup } from '@suite-native/forms';
 import { useTranslate } from '@suite-native/intl';
 
 type SlippageForm = ReturnType<typeof useForm<SlippageFormValues>>;

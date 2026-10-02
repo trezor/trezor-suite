@@ -21,7 +21,6 @@
         "@suite-common/flags": "workspace:*",
         "@suite-common/redux-utils": "workspace:*",
         "@suite-common/trading": "workspace:*",
-        "@suite-common/validators": "workspace:*",
         "@suite-native/analytics": "workspace:*",
         "@suite-native/atoms": "workspace:*",
         "@suite-native/forms": "workspace:*",

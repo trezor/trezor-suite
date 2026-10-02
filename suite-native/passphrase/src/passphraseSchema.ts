@@ -1,5 +1,5 @@
 import { PASSPHRASE_MAX_LENGTH } from '@suite-common/device';
-import { yup } from '@suite-common/validators';
+import { yup } from '@suite-native/forms';
 
 export const passphraseFormSchema = yup.object({
     passphrase: yup
