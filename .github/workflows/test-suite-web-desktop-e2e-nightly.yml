@@ -21,6 +21,10 @@ env:
   STAGING_SUITE_SERVER_URL: "https://staging-suite.trezor.io"
 
 jobs:
+  prepare-e2e-dependencies:
+    if: github.repository == 'trezor/trezor-suite'
+    uses: ./.github/workflows/build-suite-e2e-dependencies.yml
+
   # ── Desktop ────────────────────────────────────────────────────────────────
 
   build-app:
@@ -30,6 +34,7 @@ jobs:
   run-e2e-suite-desktop-tests:
     if: github.repository == 'trezor/trezor-suite'
     needs:
+      - prepare-e2e-dependencies
       - build-app
     strategy:
       fail-fast: false
@@ -37,6 +42,7 @@ jobs:
         TEST_GROUP: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
     uses: ./.github/workflows/template-suite-run-e2e.yml
     with:
+      dependency-artifact-name: suite-e2e-yarn-install
       target: "desktop"
       pw-config: "./playwright-config/playwright-desktop-nightly.config.ts"
       test-group: ${{ matrix.TEST_GROUP }}
@@ -95,6 +101,7 @@ jobs:
   run-e2e-suite-web-tests:
     if: github.repository == 'trezor/trezor-suite'
     needs:
+      - prepare-e2e-dependencies
       - build-web
       - build-connect
     strategy:
@@ -103,6 +110,7 @@ jobs:
         TEST_GROUP: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
     uses: ./.github/workflows/template-suite-run-e2e.yml
     with:
+      dependency-artifact-name: suite-e2e-yarn-install
       target: "web"
       pw-config: "./playwright-config/playwright-web-nightly.config.ts"
       test-group: ${{ matrix.TEST_GROUP }}

@@ -33,6 +33,10 @@ env:
   STAGING_SUITE_SERVER_URL: "https://staging-suite.trezor.io"
 
 jobs:
+  prepare-e2e-dependencies:
+    if: github.repository == 'trezor/trezor-suite'
+    uses: ./.github/workflows/build-suite-e2e-dependencies.yml
+
   determine-strategy:
     name: Determine test strategy
     if: github.repository == 'trezor/trezor-suite'
@@ -100,6 +104,7 @@ jobs:
       needs.build-app.result == 'success' &&
       needs.resolve-spec-list.result == 'success'
     needs:
+      - prepare-e2e-dependencies
       - determine-strategy
       - build-app
       - resolve-spec-list
@@ -109,6 +114,7 @@ jobs:
         TEST_GROUP: ${{ fromJSON(needs.resolve-spec-list.outputs.matrix-desktop) }}
     uses: ./.github/workflows/template-suite-run-e2e.yml
     with:
+      dependency-artifact-name: suite-e2e-yarn-install
       target: "desktop"
       pw-config: ${{ needs.resolve-spec-list.outputs.spec-list != '' && './playwright-config/playwright-desktop-pr-all.config.ts' || './playwright-config/playwright-desktop-pr.config.ts' }}
       test-group: ${{ matrix.TEST_GROUP }}
@@ -313,6 +319,7 @@ jobs:
       needs.build-connect.result == 'success' &&
       needs.resolve-spec-list.result == 'success'
     needs:
+      - prepare-e2e-dependencies
       - determine-strategy
       - build-web
       - build-connect
@@ -323,6 +330,7 @@ jobs:
         TEST_GROUP: ${{ fromJSON(needs.resolve-spec-list.outputs.matrix-web) }}
     uses: ./.github/workflows/template-suite-run-e2e.yml
     with:
+      dependency-artifact-name: suite-e2e-yarn-install
       target: "web"
       pw-config: ${{ needs.resolve-spec-list.outputs.spec-list != '' && './playwright-config/playwright-web-pr-all.config.ts' || './playwright-config/playwright-web-pr.config.ts' }}
       test-group: ${{ matrix.TEST_GROUP }}

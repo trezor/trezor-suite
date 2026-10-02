@@ -32,6 +32,10 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
+  prepare-e2e-dependencies:
+    if: github.repository == 'trezor/trezor-suite'
+    uses: ./.github/workflows/build-suite-e2e-dependencies.yml
+
   build-app:
     if: github.repository == 'trezor/trezor-suite'
     uses: ./.github/workflows/build-suite-desktop-e2e.yml
@@ -39,6 +43,7 @@ jobs:
   run-e2e-connect-tests:
     if: github.repository == 'trezor/trezor-suite'
     needs:
+      - prepare-e2e-dependencies
       - build-app
     strategy:
       fail-fast: false
@@ -46,6 +51,7 @@ jobs:
         TEST_GROUP: [1]
     uses: ./.github/workflows/template-suite-run-e2e.yml
     with:
+      dependency-artifact-name: suite-e2e-yarn-install
       target: "desktop"
       pw-config: "./playwright-config/playwright-desktop-connect-pr.config.ts"
       test-group: ${{ matrix.TEST_GROUP }}

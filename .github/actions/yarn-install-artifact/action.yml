@@ -1,0 +1,50 @@
+name: "Transfer Yarn installation"
+description: "Shares a complete installation within one workflow run without using repository cache storage."
+inputs:
+  operation:
+    description: "upload or download"
+    required: true
+  name:
+    description: "Artifact name, unique to this dependency profile within the run."
+    required: true
+runs:
+  using: "composite"
+  steps:
+    - name: Archive installation
+      if: inputs.operation == 'upload'
+      shell: bash
+      env:
+        ARCHIVE: ${{ runner.temp }}/yarn-install-${{ inputs.name }}.tar.gz
+      run: bash "$GITHUB_ACTION_PATH/archive.sh" save "$ARCHIVE"
+
+    - name: Upload installation
+      if: inputs.operation == 'upload'
+      uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
+      with:
+        name: ${{ inputs.name }}
+        path: ${{ runner.temp }}/yarn-install-${{ inputs.name }}.tar.gz
+        compression-level: 0
+        retention-days: 1
+        overwrite: true
+        if-no-files-found: error
+
+    - name: Download installation
+      id: download
+      if: inputs.operation == 'download'
+      continue-on-error: true
+      uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8
+      with:
+        name: ${{ inputs.name }}
+        path: ${{ runner.temp }}/yarn-install-${{ inputs.name }}
+
+    - name: Restore installation
+      if: inputs.operation == 'download' && steps.download.outcome == 'success'
+      shell: bash
+      env:
+        ARCHIVE: ${{ runner.temp }}/yarn-install-${{ inputs.name }}/yarn-install-${{ inputs.name }}.tar.gz
+      run: bash "$GITHUB_ACTION_PATH/archive.sh" restore "$ARCHIVE"
+
+    - name: Report expired installation
+      if: inputs.operation == 'download' && steps.download.outcome == 'failure'
+      shell: bash
+      run: echo "::notice::Installation artifact unavailable; the following Yarn install will prepare dependencies."
