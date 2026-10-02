@@ -5,7 +5,7 @@ import { selectIsDebugModeActive } from '@suite/debug';
 import { Translation, type TranslationKey } from '@suite/intl';
 import { OnboardingCard } from '@suite/onboarding-components';
 import { useServices } from '@suite-common/dependency-injection';
-import { selectSelectedDevice } from '@suite-common/device';
+import { selectDeviceButtonRequests, selectSelectedDevice } from '@suite-common/device';
 import { checkDeviceAuthenticityThunk } from '@suite-common/device-authenticity';
 import {
     type PersistentDeviceDataRootState,
@@ -58,6 +58,7 @@ type DeviceAuthenticityCheckProps = {
  */
 export const DeviceAuthenticityCheck = ({ onSuccess }: DeviceAuthenticityCheckProps) => {
     const device = useSelector(selectSelectedDevice);
+    const buttonRequests = useSelector(selectDeviceButtonRequests);
     const selectedDeviceAuthenticity = useSelector((state: PersistentDeviceDataRootState) =>
         selectDeviceAuthenticityByDeviceId(state, device?.id),
     );
@@ -67,7 +68,7 @@ export const DeviceAuthenticityCheck = ({ onSuccess }: DeviceAuthenticityCheckPr
 
     if (!device) return null;
 
-    const isWaitingForConfirmation = device.buttonRequests.some(
+    const isWaitingForConfirmation = buttonRequests.some(
         request =>
             request.code === 'ButtonRequest_Other' || // Device Authenticity prompt
             request.code === 'ButtonRequest_PinEntry', // Device can be locked, and we can get Pin Request first

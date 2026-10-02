@@ -402,6 +402,7 @@ describe('Storage actions', () => {
             getInitialState({
                 device: {
                     devices: [dev1, dev2, dev2Instance1],
+                    buttonRequestsByPath: {},
                     isConnectionModalOpen: false,
                     defaultConnectionMode: 'cable',
                 },
@@ -493,6 +494,7 @@ describe('Storage actions', () => {
             getInitialState({
                 device: {
                     devices: [dev1, dev2],
+                    buttonRequestsByPath: {},
                     isConnectionModalOpen: false,
                     defaultConnectionMode: 'cable',
                 },
@@ -536,6 +538,7 @@ describe('Storage actions', () => {
             getInitialState({
                 device: {
                     devices: [dev1Connected],
+                    buttonRequestsByPath: {},
                     isConnectionModalOpen: false,
                     defaultConnectionMode: 'cable',
                 },
@@ -574,6 +577,7 @@ describe('Storage actions', () => {
             getInitialState({
                 device: {
                     devices: [dev1],
+                    buttonRequestsByPath: {},
                     isConnectionModalOpen: false,
                     defaultConnectionMode: 'cable',
                 },
