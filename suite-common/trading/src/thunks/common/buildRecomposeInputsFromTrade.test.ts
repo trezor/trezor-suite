@@ -84,6 +84,7 @@ describe('buildRecomposeInputsFromTrade', () => {
                 dexTx,
                 partnerPaymentExtraId: 'memo-dex',
                 serializedTx: '0xabcd',
+                networkType: 'ethereum',
             });
 
             expect(result).toEqual({
@@ -96,11 +97,23 @@ describe('buildRecomposeInputsFromTrade', () => {
             });
         });
 
+        it('does not recalculate the custom fee limit for a bitcoin PSBT', () => {
+            const result = buildRecomposeInputsFromTrade({
+                dexTx,
+                partnerPaymentExtraId: undefined,
+                serializedTx: 'cHNidP8B',
+                networkType: 'bitcoin',
+            });
+
+            expect(result.recalculateCustomLimit).toBe(false);
+        });
+
         it('forwards undefined serializedTx without synthesizing a default', () => {
             const result = buildRecomposeInputsFromTrade({
                 dexTx,
                 partnerPaymentExtraId: 'memo-dex',
                 serializedTx: undefined,
+                networkType: 'ethereum',
             });
 
             expect(result.transactionData).toBeUndefined();

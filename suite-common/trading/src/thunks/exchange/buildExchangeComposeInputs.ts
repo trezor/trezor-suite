@@ -71,6 +71,7 @@ const buildDexComposeInputs = ({
             dexTx,
             partnerPaymentExtraId: quote.partnerPaymentExtraId,
             serializedTx,
+            networkType,
         }),
     };
 };
