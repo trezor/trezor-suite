@@ -1,5 +1,5 @@
 // Builds generated/csl-asmjs/ (committed, Git LFS): Emurgo's CSL WASM pruned to the exports
-// coin-selection can reach and the traced keep-list.json, translated to asm.js for Hermes.
+// coin-selection can reach, translated to asm.js for Hermes.
 // See README.md.
 /* eslint-disable import/no-extraneous-dependencies -- Build tooling, not runtime dependencies. */
 import fs from 'node:fs';
@@ -15,7 +15,6 @@ const outputDir = path.resolve(scriptDir, '../../generated/csl-asmjs');
 
 const {
     wasmBytes,
-    keepList,
     referencedExports,
     reachableExports,
     glueSource,
@@ -42,7 +41,7 @@ for (let index = 0; index < wasmModule.getNumExports(); index++) {
     exportNames.push(binaryen.getExportInfo(wasmModule.getExportByIndex(index)).name);
 }
 
-const usedExports = new Set([...keepList.usedExports, ...referencedExports, ...reachableExports]);
+const usedExports = new Set([...referencedExports, ...reachableExports]);
 
 const isKept = exportName =>
     exportName === 'memory' ||
