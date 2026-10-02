@@ -1,0 +1,30 @@
+{
+    "policyId": "mainnet-2026-09",
+    "policyVersion": 1,
+    "chainId": "1",
+    "checkpoint": {
+        "root": "0x0d8b2a74d120daa87e6cfb56daa450de5a342b5658a166b1d5d0e0ac482b51bd",
+        "epoch": 477970,
+        "slot": 15295040,
+        "timestampSeconds": 1790364503,
+        "sources": [
+            "https://mainnet.checkpoint.sigp.io/eth/v1/beacon/states/head/finality_checkpoints",
+            "https://beaconstate-mainnet.chainsafe.io/eth/v1/beacon/states/head/finality_checkpoints",
+            "https://mainnet-checkpoint-sync.attestant.io/eth/v1/beacon/states/head/finality_checkpoints"
+        ],
+        "obtainedAt": "2026-09-25T19:47:35.680Z"
+    },
+    "endpoints": {
+        "prover": ["https://mainnet.colibri-proof.tech", "https://mainnet1.colibri-proof.tech"],
+        "beaconApi": [
+            "https://mainnet.colibri-proof.tech/consensus",
+            "https://ethereum-beacon-api.publicnode.com"
+        ],
+        "checkpointz": [
+            "https://mainnet.checkpoint.sigp.io",
+            "https://beaconstate-mainnet.chainsafe.io",
+            "https://mainnet-checkpoint-sync.attestant.io"
+        ]
+    },
+    "reviewExpiresAt": "2026-12-01T00:00:00.000Z"
+}

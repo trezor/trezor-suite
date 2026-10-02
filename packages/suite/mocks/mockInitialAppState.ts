@@ -130,4 +130,5 @@ export const mockInitialAppState: AppState = {
         networkSymbol: undefined,
     },
     featureFeedback: featureFeedbackInitialState,
+    verifiedNonce: { entries: {}, info: null },
 };

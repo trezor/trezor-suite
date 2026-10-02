@@ -6092,6 +6092,137 @@ export const messages = defineMessages({
         defaultMessage:
             'Enable the MCP (Model Context Protocol) server to allow AI agents interact with your Trezor. The server runs on localhost only.',
     },
+    TR_EXPERIMENTAL_VERIFIED_NONCE: {
+        id: 'TR_EXPERIMENTAL_VERIFIED_NONCE',
+        defaultMessage: 'Verified account nonce',
+    },
+    TR_EXPERIMENTAL_VERIFIED_NONCE_DESCRIPTION: {
+        id: 'TR_EXPERIMENTAL_VERIFIED_NONCE_DESCRIPTION',
+        defaultMessage:
+            'Verify the on-chain nonce of an Ethereum account against authenticated Ethereum state with a light-client verifier bundled in Suite. Ethereum mainnet only.',
+    },
+    TR_VERIFIED_NONCE_HEADER: {
+        id: 'TR_VERIFIED_NONCE_HEADER',
+        defaultMessage: 'On-chain account nonce',
+    },
+    TR_VERIFIED_NONCE_DESCRIPTION: {
+        id: 'TR_VERIFIED_NONCE_DESCRIPTION',
+        defaultMessage:
+            'Suite verified this nonce against authenticated Ethereum state. Pending transactions are not included. This check was performed on your computer, not on your Trezor.',
+    },
+    TR_VERIFIED_NONCE_VERIFY: {
+        id: 'TR_VERIFIED_NONCE_VERIFY',
+        defaultMessage: 'Verify account nonce',
+    },
+    TR_VERIFIED_NONCE_VERIFYING: {
+        id: 'TR_VERIFIED_NONCE_VERIFYING',
+        defaultMessage: 'Verifying account nonce…',
+    },
+    TR_VERIFIED_NONCE_VALUE: {
+        id: 'TR_VERIFIED_NONCE_VALUE',
+        defaultMessage: 'On-chain nonce: {nonce}',
+    },
+    TR_VERIFIED_NONCE_LAST_VALUE: {
+        id: 'TR_VERIFIED_NONCE_LAST_VALUE',
+        defaultMessage: 'Last verified nonce: {nonce}',
+    },
+    TR_VERIFIED_NONCE_VERIFIED_IN_SUITE: {
+        id: 'TR_VERIFIED_NONCE_VERIFIED_IN_SUITE',
+        defaultMessage: 'Verified in Suite',
+    },
+    TR_VERIFIED_NONCE_OUT_OF_DATE: {
+        id: 'TR_VERIFIED_NONCE_OUT_OF_DATE',
+        defaultMessage: 'Out of date',
+    },
+    TR_VERIFIED_NONCE_BLOCK: {
+        id: 'TR_VERIFIED_NONCE_BLOCK',
+        defaultMessage: 'Block {blockNumber}, observed {ageSeconds} s ago',
+    },
+    TR_VERIFIED_NONCE_VERIFY_AGAIN: {
+        id: 'TR_VERIFIED_NONCE_VERIFY_AGAIN',
+        defaultMessage: 'Verify again',
+    },
+    TR_VERIFIED_NONCE_FAILED: {
+        id: 'TR_VERIFIED_NONCE_FAILED',
+        defaultMessage: 'Nonce could not be verified ({code})',
+    },
+    TR_VERIFIED_NONCE_UNAVAILABLE: {
+        id: 'TR_VERIFIED_NONCE_UNAVAILABLE',
+        defaultMessage: 'Nonce verification is not available on this computer ({code})',
+    },
+    TR_VERIFIED_NONCE_LOCAL_NEXT: {
+        id: 'TR_VERIFIED_NONCE_LOCAL_NEXT',
+        defaultMessage:
+            'Next nonce Suite would use: {nonce} (includes pending transactions, not verified)',
+    },
+    TR_VERIFIED_NONCE_SHOW_DETAILS: {
+        id: 'TR_VERIFIED_NONCE_SHOW_DETAILS',
+        defaultMessage: 'Show verification details',
+    },
+    TR_VERIFIED_NONCE_HIDE_DETAILS: {
+        id: 'TR_VERIFIED_NONCE_HIDE_DETAILS',
+        defaultMessage: 'Hide verification details',
+    },
+    TR_VERIFIED_NONCE_COPY_RECORD: {
+        id: 'TR_VERIFIED_NONCE_COPY_RECORD',
+        defaultMessage: 'Copy verification record',
+    },
+    TR_VERIFIED_NONCE_RECORD_COPIED: {
+        id: 'TR_VERIFIED_NONCE_RECORD_COPIED',
+        defaultMessage: 'Verification record copied',
+    },
+    TR_VERIFIED_NONCE_DETAIL_BLOCK: {
+        id: 'TR_VERIFIED_NONCE_DETAIL_BLOCK',
+        defaultMessage: 'Block {number}, {time}',
+    },
+    TR_VERIFIED_NONCE_DETAIL_BLOCK_HASH: {
+        id: 'TR_VERIFIED_NONCE_DETAIL_BLOCK_HASH',
+        defaultMessage: 'Block hash {hash}',
+    },
+    TR_VERIFIED_NONCE_DETAIL_STATE_ROOT: {
+        id: 'TR_VERIFIED_NONCE_DETAIL_STATE_ROOT',
+        defaultMessage: 'State root {hash}',
+    },
+    TR_VERIFIED_NONCE_DETAIL_CONSENSUS: {
+        id: 'TR_VERIFIED_NONCE_DETAIL_CONSENSUS',
+        defaultMessage:
+            'Beacon slot {slot}, signed by {participants} of 512 sync committee members at slot {signedSlot} (period {period}, {proofType})',
+    },
+    TR_VERIFIED_NONCE_DETAIL_TRUST: {
+        id: 'TR_VERIFIED_NONCE_DETAIL_TRUST',
+        defaultMessage:
+            'Trust anchor: policy {policyId} v{policyVersion}, checkpoint epoch {epoch}',
+    },
+    TR_VERIFIED_NONCE_DETAIL_CHECKPOINT_ROOT: {
+        id: 'TR_VERIFIED_NONCE_DETAIL_CHECKPOINT_ROOT',
+        defaultMessage: 'Checkpoint root {hash}',
+    },
+    TR_VERIFIED_NONCE_DETAIL_PROOF: {
+        id: 'TR_VERIFIED_NONCE_DETAIL_PROOF',
+        defaultMessage: 'Proof: {bytes} bytes, SHA-256 {sha256}',
+    },
+    TR_VERIFIED_NONCE_DETAIL_NETWORK: {
+        id: 'TR_VERIFIED_NONCE_DETAIL_NETWORK',
+        defaultMessage:
+            'Proof from {prover}, consensus data from {beacon}; {requests} requests, {bytes} bytes, {duration} ms, {mode}',
+    },
+    TR_VERIFIED_NONCE_DETAIL_VERIFIER: {
+        id: 'TR_VERIFIED_NONCE_DETAIL_VERIFIER',
+        defaultMessage: 'Verified by Colibri {revision} (native addon) inside Suite Desktop',
+    },
+    TR_VERIFIED_NONCE_COLD_START: {
+        id: 'TR_VERIFIED_NONCE_COLD_START',
+        defaultMessage: 'cold start',
+    },
+    TR_VERIFIED_NONCE_WARM_START: {
+        id: 'TR_VERIFIED_NONCE_WARM_START',
+        defaultMessage: 'warm start',
+    },
+    TR_VERIFIED_NONCE_HOW_TO_VERIFY: {
+        id: 'TR_VERIFIED_NONCE_HOW_TO_VERIFY',
+        defaultMessage:
+            'Verify it yourself: ask a node you trust for eth_getTransactionCount of this address at block {blockNumber}, look up the block hash and the checkpoint root on a block explorer or beacon node, or re-run the verification from the copied record with "yarn workspace @suite/colibri-nonce-verifier verify-record <file>".',
+    },
     TR_MCP_CLIENT_CONFIGURATION: {
         id: 'TR_MCP_CLIENT_CONFIGURATION',
         defaultMessage: 'Client configuration',

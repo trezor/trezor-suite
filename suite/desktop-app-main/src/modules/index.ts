@@ -42,6 +42,7 @@ import * as theme from './theme';
 import * as tray from './tray';
 import * as trezorConnect from './trezor-connect';
 import * as userData from './user-data';
+import * as verifiedNonce from './verified-nonce';
 import * as windowControls from './window-controls';
 
 // General modules (both dev & prod)
@@ -81,6 +82,7 @@ const MODULES: Module[] = [
     powerMonitor,
     mcpServer,
     responseHeaders,
+    verifiedNonce,
 ];
 
 const MODULES_BACKGROUND: ModuleBackground[] = [bridge, trezorConnect, httpReceiverModule, tray];

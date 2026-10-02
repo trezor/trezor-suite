@@ -7,10 +7,12 @@ import { useDevice } from '@suite/device';
 import { LearnMoreButton } from '@suite/external-links';
 import { Translation, type TranslationKey } from '@suite/intl';
 import { useReceiveDisabled } from '@suite/receive';
+import { selectHasExperimentalFeature } from '@suite/settings';
 import { useServices } from '@suite-common/dependency-injection';
 import { injectDispatch } from '@suite-common/redux-utils';
 import { getAccountTypeTech } from '@suite-common/wallet-utils';
 import { Button, Card, Column, InfoItem, Paragraph } from '@trezor/components';
+import { isDesktop } from '@trezor/env-utils';
 import { typography } from '@trezor/theme';
 import { HELP_CENTER_BIP32_URL, HELP_CENTER_XPUB_URL, type Url } from '@trezor/urls';
 
@@ -24,6 +26,7 @@ import { AccountNonce } from './AccountNonce';
 import { CoinjoinLogs } from './CoinjoinLogs';
 import { CoinjoinSetup } from './CoinjoinSetup/CoinjoinSetup';
 import { RescanAccount } from './RescanAccount';
+import { VerifiedAccountNonce } from './VerifiedAccountNonce';
 import { Bip329Labels } from '../labels/Bip329Labels';
 
 const Heading = styled.h3`
@@ -70,6 +73,7 @@ const DetailsRow = ({ title, description, learnMoreUrl, children }: DetailsRowPr
 const Details = () => {
     const { device, isLocked } = useDevice();
     const selectedAccount = useSelector(selectFullSelectedAccount);
+    const hasVerifiedNonceFeature = useSelector(selectHasExperimentalFeature('verified-nonce'));
     const { isReceiveDisabled, ReceiveDisabledWrapper } = useReceiveDisabled();
 
     const { dispatch } = useServices(injectDispatch);
@@ -171,6 +175,17 @@ const Details = () => {
                             <AccountNonce account={account} />
                         </DetailsRow>
                     )}
+                    {account.networkType === 'ethereum' &&
+                        account.symbol === 'eth' &&
+                        isDesktop() &&
+                        hasVerifiedNonceFeature && (
+                            <DetailsRow
+                                title="TR_VERIFIED_NONCE_HEADER"
+                                description={<Translation id="TR_VERIFIED_NONCE_DESCRIPTION" />}
+                            >
+                                <VerifiedAccountNonce account={account} />
+                            </DetailsRow>
+                        )}
                     <Bip329Labels account={account} isLoading={locked} />
                 </Column>
             </Card>

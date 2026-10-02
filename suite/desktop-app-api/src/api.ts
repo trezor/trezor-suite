@@ -24,6 +24,11 @@ import {
     type UpdateProgress,
 } from './messages';
 import { type InvokeMethod, type ListenerMethod, type SendMethod } from './methods';
+import {
+    type NonceVerifierInfo,
+    type VerifiedNonceRequest,
+    type VerifiedNonceResult,
+} from './verifiedNonce';
 
 // Event messages from renderer to main process
 // Sent by DesktopApi.[method] via ipcRenderer.send (see ./main)
@@ -176,6 +181,11 @@ export interface InvokeChannels {
 
     // Browser Window
     'browser-window/reload': () => void;
+
+    // Verified account nonce (experimental)
+    'verified-nonce/get-info': () => NonceVerifierInfo;
+    'verified-nonce/verify': (request: VerifiedNonceRequest) => VerifiedNonceResult;
+    'verified-nonce/cancel': (payload: { requestId: string }) => void;
 }
 
 type DesktopApiListener = ListenerMethod<RendererChannels>;
@@ -267,4 +277,9 @@ export type DesktopApi = {
 
     // Browser Window
     reloadBrowserWindow: DesktopApiInvoke<'browser-window/reload'>;
+
+    // Verified account nonce (experimental)
+    getVerifiedNonceInfo: DesktopApiInvoke<'verified-nonce/get-info'>;
+    verifyAccountNonce: DesktopApiInvoke<'verified-nonce/verify'>;
+    cancelAccountNonceVerification: DesktopApiInvoke<'verified-nonce/cancel'>;
 };
