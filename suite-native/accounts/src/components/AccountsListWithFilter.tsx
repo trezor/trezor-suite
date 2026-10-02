@@ -15,8 +15,8 @@ import {
 import { type OnSelectAccount } from '../types';
 import { AccountsList } from './AccountsList/AccountsList';
 import { AccountsListFooter } from './AccountsListFooter';
-import { AccountsListHeader } from './AccountsListHeader';
 import { NetworkFilterBottomSheet } from './NetworkFilterBottomSheet';
+import { SearchableAccountsListHeader } from './SearchableAccountsListHeader';
 
 const EMPTY_NETWORKS_FILTER: NetworkSymbol[] = [];
 
@@ -108,20 +108,21 @@ export const AccountsListWithFilter = ({
                 networkFilter={filteredNetworks}
                 isSendFlow={isSendFlow}
                 ListHeaderComponent={
-                    <AccountsListHeader
-                        title={title}
-                        onSearchInputChange={setSearchValue}
-                        isSearchActive={isSearchActive}
-                        onSearchActiveChange={setIsSearchActive}
-                        flowType={flowType}
-                        closeActionType={closeActionType}
-                        closeAction={closeAction}
-                        onAddAccount={onAddAccount}
-                        onFilterPress={isNetworkFilterVisible ? handleFilterPress : undefined}
-                        activeFilterCount={filteredNetworks.length}
-                    >
+                    <>
+                        <SearchableAccountsListHeader
+                            title={title}
+                            onSearchInputChange={setSearchValue}
+                            isSearchActive={isSearchActive}
+                            onSearchActiveChange={setIsSearchActive}
+                            flowType={flowType}
+                            closeActionType={closeActionType}
+                            closeAction={closeAction}
+                            onAddAccount={onAddAccount}
+                            onFilterPress={isNetworkFilterVisible ? handleFilterPress : undefined}
+                            activeFilterCount={filteredNetworks.length}
+                        />
                         {children}
-                    </AccountsListHeader>
+                    </>
                 }
                 ListFooterComponent={
                     <AccountsListFooter
