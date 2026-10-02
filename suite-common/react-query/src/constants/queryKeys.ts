@@ -59,6 +59,7 @@ export const desktopQueryKeys = {
     ],
     dateFnsLocale: (language: string) => ['date-fns-locale', language],
     defaultUrls: (symbol: string) => ['default-urls', symbol],
+    rankedTokenDefinitions: () => ['ranked-token-definitions'],
     proxyImage: (src?: string) => ['proxy-image', src],
     inactiveTokens: (symbol: string, accountKey?: string) =>
         accountKey ? ['inactive-tokens', symbol, accountKey] : ['inactive-tokens', symbol],
