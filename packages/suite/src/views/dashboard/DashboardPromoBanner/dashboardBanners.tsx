@@ -6,6 +6,7 @@ import { DeviceModelInternal, hasBitcoinOnlyFirmware } from '@trezor/device-util
 import { DefiYieldBanner } from './DefiYieldBanner';
 import { ETHVaultBanner } from './ETHVaultBanner';
 import { TS7Banner } from './TS7Banner';
+import { TradingExperienceBanner } from './TradingExperienceBanner';
 import { type DashboardBannerType } from './dashboardBannerTypes';
 
 export type BannerHandlers = {
@@ -47,5 +48,10 @@ export const DASHBOARD_BANNERS: Record<DashboardBannerType, DashboardBannerDefin
         flag: 'showETHVaultDashboardPromoBanner',
         isEligible: ({ selectedDevice }) => !hasBitcoinOnlyFirmware(selectedDevice),
         render: handlers => <ETHVaultBanner {...handlers} />,
+    },
+    'trading-experience': {
+        flag: 'showTradingExperienceDashboardPromoBanner',
+        isEligible: ({ selectedDevice }) => !hasBitcoinOnlyFirmware(selectedDevice),
+        render: handlers => <TradingExperienceBanner {...handlers} />,
     },
 };
