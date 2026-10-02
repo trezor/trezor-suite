@@ -1,7 +1,7 @@
 import { selectFullSelectedAccount } from '@suite/account';
 import { useDevice } from '@suite/device';
-import { selectSuiteNetworkModuleRepositoryDep } from '@suite/networks';
-import { useServices } from '@suite-common/dependency-injection';
+import { injectSuiteNetworkModuleRepository } from '@suite/networks';
+import { useServices } from '@trezor/dependency-injection';
 
 import { WalletLayout, WalletSubpageHeading } from 'src/components/wallet';
 import { useSelector } from 'src/hooks/suite';
@@ -9,7 +9,7 @@ import { ConnectDeviceGenericPromo } from 'src/views/wallet/receive/components/C
 
 export const SignVerifyPage = () => {
     const selectedAccount = useSelector(selectFullSelectedAccount);
-    const { suiteNetworkModuleRepository } = useServices(selectSuiteNetworkModuleRepositoryDep);
+    const { suiteNetworkModuleRepository } = useServices(injectSuiteNetworkModuleRepository);
     const { device } = useDevice();
     const { account } = selectedAccount;
 

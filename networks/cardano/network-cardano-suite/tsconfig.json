@@ -3,16 +3,19 @@
     "compilerOptions": { "outDir": "libDev" },
     "references": [
         {
-            "path": "../../../suite-common/dependency-injection"
+            "path": "../../../suite-common/analytics"
+        },
+        {
+            "path": "../../../packages/dependency-injection"
         },
         {
             "path": "../../../suite-common/receive"
         },
         {
-            "path": "../../../suite-common/redux-utils"
+            "path": "../../../packages/redux-utils"
         },
         {
-            "path": "../../../suite-common/validators"
+            "path": "../../../suite/forms"
         },
         {
             "path": "../../../suite-common/wallet-types"
@@ -20,7 +23,6 @@
         {
             "path": "../../../suite-common/wallet-utils"
         },
-        { "path": "../../../suite/analytics" },
         { "path": "../../../suite/device" },
         { "path": "../../../suite/intl" },
         { "path": "../../../suite/sign-verify" },
@@ -30,12 +32,12 @@
         {
             "path": "../../../packages/connect-common"
         },
-        { "path": "../network-cardano" },
-        {
-            "path": "../../network-module/network-module"
-        },
+        { "path": "../network-cardano-types" },
         {
             "path": "../../network-module/network-module-suite-types"
+        },
+        {
+            "path": "../../network-module/network-module-types"
         },
         { "path": "../../../packages/protobuf" },
         {
@@ -52,6 +54,9 @@
         },
         {
             "path": "../../../suite-common/wallet-core"
+        },
+        {
+            "path": "../../../packages/analytics-uploader"
         }
     ]
 }

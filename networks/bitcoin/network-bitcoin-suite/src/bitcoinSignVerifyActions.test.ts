@@ -1,6 +1,5 @@
-import { events } from '@suite/analytics';
-import { mockDesktopAnalytics } from '@suite/analytics/mocks';
 import { type SignVerifyRootState } from '@suite/sign-verify';
+import { type AnalyticsSharedEvents, events } from '@suite-common/analytics';
 import { deviceInitialState } from '@suite-common/device';
 import { type TrezorDevice } from '@suite-common/suite-types';
 import { mockSuiteDevice } from '@suite-common/suite-types/mocks';
@@ -8,6 +7,7 @@ import { testMocks } from '@suite-common/test-utils';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { initialWalletSettingsState } from '@suite-common/wallet-core';
 import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
+import { mockAnalytics } from '@trezor/analytics-uploader/mocks';
 
 import { createBitcoinSignVerifyActions } from './bitcoinSignVerifyActions';
 
@@ -33,7 +33,7 @@ const createState = (selectedDevice: TrezorDevice | undefined): SignVerifyRootSt
 
 describe('Bitcoin sign/verify actions', () => {
     let dispatch: jest.Mock;
-    let deps: { services: { analytics: ReturnType<typeof mockDesktopAnalytics> } };
+    let deps: { services: { analytics: ReturnType<typeof mockAnalytics<AnalyticsSharedEvents>> } };
 
     // The thunks only read the selected device and the address display type, so a state literal
     // is enough — no store, no middleware.
@@ -41,7 +41,7 @@ describe('Bitcoin sign/verify actions', () => {
 
     beforeEach(() => {
         dispatch = jest.fn();
-        deps = { services: { analytics: mockDesktopAnalytics() } };
+        deps = { services: { analytics: mockAnalytics<AnalyticsSharedEvents>() } };
     });
 
     const dispatchedToastTypes = () =>

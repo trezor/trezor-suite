@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from 'react';
 import { type FieldError } from 'react-hook-form';
 
 import { useDevice } from '@suite/device';
+import { yup } from '@suite/forms';
 import { Translation, type TranslationKey, useTranslation } from '@suite/intl';
 import {
     SIGN_VERIFY_BASE_DEFAULT_VALUES,
@@ -16,12 +17,11 @@ import {
     useSignVerifyCopyValue,
     useSignVerifyForm,
 } from '@suite/sign-verify';
-import { useServices } from '@suite-common/dependency-injection';
-import { selectDispatch } from '@suite-common/redux-utils';
-import { yup } from '@suite-common/validators';
 import { type Account } from '@suite-common/wallet-types';
 import { Button, Card, Column } from '@trezor/components';
+import { useServices } from '@trezor/dependency-injection';
 import { type SignVerifyProps } from '@trezor/network-module-suite-types';
+import { injectDispatch } from '@trezor/redux-utils';
 
 import { type EthereumSignVerifyActions } from './ethereumSignVerifyActions';
 import { getEthereumSignAddresses } from './getEthereumSignAddresses';
@@ -44,7 +44,7 @@ const EthereumSignVerifyForm = ({
 }: EthereumSignVerifyFormProps) => {
     const [outcome, setOutcome] = useState<SignVerifyOutcome>('idle');
 
-    const { dispatch } = useServices(selectDispatch);
+    const { dispatch } = useServices(injectDispatch);
 
     const isSignPage = page === 'sign';
 

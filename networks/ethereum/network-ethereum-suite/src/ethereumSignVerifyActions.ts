@@ -1,6 +1,6 @@
 import { type Dispatch } from 'redux';
 
-import { type DesktopAnalyticsDep } from '@suite/analytics';
+import { type AnalyticsDep } from '@suite-common/analytics';
 import {
     type SignVerifyRootState,
     type VerifyMessageResult,
@@ -15,9 +15,9 @@ import {
     reportSignMessage,
     reportVerifyMessage,
 } from '@suite/sign-verify';
-import { type WithServices } from '@suite-common/redux-utils';
 import { type Account } from '@suite-common/wallet-types';
 import { type GetTrezorConnectDep } from '@trezor/connect-common';
+import { type WithServices } from '@trezor/redux-utils';
 
 export type EthereumSignVerifyConnectDep = GetTrezorConnectDep<
     'ethereumGetAddress' | 'ethereumSignMessage' | 'ethereumVerifyMessage'
@@ -27,23 +27,21 @@ type ShowAddressThunkState = SignVerifyRootState;
 
 type SignThunkState = SignVerifyRootState;
 
-type SignThunkDeps = WithServices<DesktopAnalyticsDep>;
+type SignThunkDeps = WithServices<AnalyticsDep>;
 
 type VerifyThunkState = SignVerifyRootState;
 
-type VerifyThunkDeps = WithServices<DesktopAnalyticsDep>;
+type VerifyThunkDeps = WithServices<AnalyticsDep>;
 
 export type EthereumSignVerifyActions = ReturnType<typeof createEthereumSignVerifyActions>;
 
-export const createEthereumSignVerifyActions = ({
-    getTrezorConnect,
-}: EthereumSignVerifyConnectDep) => {
+export const createEthereumSignVerifyActions = (deps: EthereumSignVerifyConnectDep) => {
     const showAddressThunk =
         (account: Account, address: string, path: string) =>
         (dispatch: Dispatch, getState: () => ShowAddressThunkState) =>
             getSignVerifyStateParams(account, getState)
                 .then(({ device, chunkify }) =>
-                    getTrezorConnect().ethereumGetAddress({
+                    deps.getTrezorConnect().ethereumGetAddress({
                         device,
                         address,
                         path,
@@ -64,7 +62,7 @@ export const createEthereumSignVerifyActions = ({
 
             try {
                 const { device } = await getSignVerifyStateParams(account, getState);
-                const response = await getTrezorConnect().ethereumSignMessage({
+                const response = await deps.getTrezorConnect().ethereumSignMessage({
                     device,
                     path,
                     message,
@@ -114,7 +112,7 @@ export const createEthereumSignVerifyActions = ({
 
             try {
                 const { device } = await getSignVerifyStateParams(account, getState);
-                const response = await getTrezorConnect().ethereumVerifyMessage({
+                const response = await deps.getTrezorConnect().ethereumVerifyMessage({
                     device,
                     address,
                     message,

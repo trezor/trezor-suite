@@ -2,9 +2,6 @@ export {
     type SuiteNetworkModuleRepository,
     type SuiteNetworkModuleRepositoryDep,
     createSuiteNetworkModuleRepository,
-    selectSuiteNetworkModuleRepositoryDep,
+    injectSuiteNetworkModuleRepository,
 } from './SuiteNetworkModuleRepository';
-export {
-    type StaticSuiteNetworkModulesDep,
-    type SuiteNetworkModules,
-} from './SuiteNetworkModules';
+export { type StaticSuiteNetworkModulesDep, type SuiteNetworkModules } from './SuiteNetworkModules';

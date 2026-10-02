@@ -17,8 +17,6 @@ import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { type Account } from '@suite-common/wallet-types';
 import { useServices } from '@trezor/dependency-injection';
 
-
-
 type SignVerifyContext = {
     addressValidator: AddressValidator;
     isSignPage: boolean;
