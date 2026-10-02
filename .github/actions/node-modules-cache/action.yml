@@ -1,0 +1,45 @@
+name: "Shared installed dependencies"
+description: "Restores complete Yarn installation profiles; only trusted develop runs save them."
+inputs:
+  profile:
+    description: "Dependency profile matching the workspaces installed by the caller."
+    required: true
+runs:
+  using: "composite"
+  steps:
+    - name: Get Node version
+      id: node
+      shell: bash
+      run: echo "version=$(node -p 'process.versions.node')" >> "$GITHUB_OUTPUT"
+
+    - name: Restore installed dependencies
+      if: github.ref != 'refs/heads/develop' || !contains(fromJSON('["push", "schedule", "workflow_dispatch"]'), github.event_name)
+      uses: actions/cache/restore@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v5
+      with:
+        path: |
+          node_modules
+          packages/*/node_modules
+          packages/connect-examples/*/node_modules
+          networks/*/*/node_modules
+          suite/*/node_modules
+          suite-common/*/node_modules
+          suite-native/*/node_modules
+          scripts/node_modules
+          .yarn/install-state.gz
+        key: node-modules-v2-${{ runner.os }}-${{ runner.arch }}-${{ steps.node.outputs.version }}-${{ inputs.profile }}-${{ hashFiles('yarn.lock', '.yarnrc.yml', '.nvmrc', '.yarn/releases/*.cjs', '.yarn/patches/**', 'package.json', 'packages/*/package.json', 'packages/connect-examples/*/package.json', 'networks/*/*/package.json', 'suite/*/package.json', 'suite-common/*/package.json', 'suite-native/*/package.json', 'scripts/package.json') }}
+
+    - name: Restore and save shared installed dependencies
+      if: github.ref == 'refs/heads/develop' && contains(fromJSON('["push", "schedule", "workflow_dispatch"]'), github.event_name)
+      uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v5
+      with:
+        path: |
+          node_modules
+          packages/*/node_modules
+          packages/connect-examples/*/node_modules
+          networks/*/*/node_modules
+          suite/*/node_modules
+          suite-common/*/node_modules
+          suite-native/*/node_modules
+          scripts/node_modules
+          .yarn/install-state.gz
+        key: node-modules-v2-${{ runner.os }}-${{ runner.arch }}-${{ steps.node.outputs.version }}-${{ inputs.profile }}-${{ hashFiles('yarn.lock', '.yarnrc.yml', '.nvmrc', '.yarn/releases/*.cjs', '.yarn/patches/**', 'package.json', 'packages/*/package.json', 'packages/connect-examples/*/package.json', 'networks/*/*/package.json', 'suite/*/package.json', 'suite-common/*/package.json', 'suite-native/*/package.json', 'scripts/package.json') }}
