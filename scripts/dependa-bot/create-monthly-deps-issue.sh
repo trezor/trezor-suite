@@ -3,7 +3,7 @@
 # Creates a monthly dependency maintenance GitHub issue for a given team,
 # adds it to the Suite project board, and sets Team and Release fields.
 #
-# Usage: TEAM=Suite-Growth ./create-monthly-deps-issue.sh
+# Usage: TEAM=Suite-Growth ./scripts/dependa-bot/create-monthly-deps-issue.sh
 #
 # Environment variables:
 #   TEAM     (required) - e.g. Suite-Growth, Suite-Wallet, Suite-Trade, Suite-Earn, Suite-Networks
@@ -14,7 +14,7 @@ set -euo pipefail
 : "${TEAM:?TEAM environment variable is required}"
 
 REPO="trezor/trezor-suite"
-ISSUE_TEMPLATE_DIR="scripts/templates/monthly-deps-issue"
+ISSUE_TEMPLATE_DIR="scripts/dependa-bot"
 TEAM_TEMPLATE="$ISSUE_TEMPLATE_DIR/${TEAM%% *}.md"
 ISSUE_BODY_FILE="/tmp/issue_body.md"
 
