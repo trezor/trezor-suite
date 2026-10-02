@@ -21,8 +21,6 @@ import {
     type StackNavigationProps,
 } from '@suite-native/navigation';
 
-import { type AccountOverviewFlow } from './types';
-
 type AccountOverviewNavigationProps = StackNavigationProps<
     RootStackParamList,
     RootStackRoutes.AccountOverview
@@ -30,7 +28,6 @@ type AccountOverviewNavigationProps = StackNavigationProps<
 
 type AccountOverviewScreenHeaderProps = {
     accountKey: AccountKey;
-    flowType?: AccountOverviewFlow;
 };
 
 type AccountOverviewScreenHeaderContentProps = Pick<AccountOverviewScreenHeaderProps, 'accountKey'>;
@@ -73,7 +70,6 @@ const AccountOverviewScreenHeaderContent = ({
 
 export const AccountOverviewScreenHeader = ({
     accountKey,
-    flowType,
 }: AccountOverviewScreenHeaderProps) => {
     const navigation = useNavigation<AccountOverviewNavigationProps>();
 
@@ -87,7 +83,7 @@ export const AccountOverviewScreenHeader = ({
     return (
         <ScreenHeader
             customContent={<AccountOverviewScreenHeaderContent accountKey={accountKey} />}
-            closeActionType={flowType === 'send' ? 'back' : 'close'}
+            closeActionType="back"
             rightIcon={
                 <IconButton
                     intent="neutral"

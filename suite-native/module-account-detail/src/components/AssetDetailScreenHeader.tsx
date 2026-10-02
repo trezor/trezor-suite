@@ -3,6 +3,7 @@ import { useSelector } from 'react-redux';
 import { type RouteProp, useNavigation, useRoute } from '@react-navigation/native';
 import { type NativeStackNavigationProp } from '@react-navigation/native-stack';
 
+import { getNetworkDisplaySymbolName } from '@suite-common/wallet-config';
 import { type FiatRatesRootState, type WalletSettingsRootState } from '@suite-common/wallet-core';
 import { type Account, type TokenAddress } from '@suite-common/wallet-types';
 import { isAccountFailed, isStakingSymbol } from '@suite-common/wallet-utils';
@@ -11,7 +12,7 @@ import {
     type NativeAccountsRootState,
     selectAccountFiatBalance,
 } from '@suite-native/accounts';
-import { HStack, IconButton, VStack, useBottomSheetModal } from '@suite-native/atoms';
+import { HStack, IconButton, Text, VStack, useBottomSheetModal } from '@suite-native/atoms';
 import { BaseCurrencyAmountFormatter } from '@suite-native/formatters';
 import { TokenIcon } from '@suite-native/icons';
 import { TokenSettingsBottomSheet } from '@suite-native/module-earn';
@@ -34,11 +35,15 @@ type AccountDetailNavigationProps = StackNavigationProps<
 
 type AssetDetailScreenHeaderContentProps = {
     account: Account;
+    isBalanceDisplayed: boolean;
 };
 
-const AssetDetailScreenHeaderContent = ({ account }: AssetDetailScreenHeaderContentProps) => {
+const AssetDetailScreenHeaderContent = ({
+    account,
+    isBalanceDisplayed,
+}: AssetDetailScreenHeaderContentProps) => {
     const fiatBalance = useSelector((state: NativeAccountsRootState) =>
-        selectAccountFiatBalance(state, account.key),
+        isBalanceDisplayed ? selectAccountFiatBalance(state, account.key) : undefined,
     );
 
     return (
@@ -54,12 +59,17 @@ const AssetDetailScreenHeaderContent = ({ account }: AssetDetailScreenHeaderCont
                     showAccountTypeBadge
                 />
 
-                {!isAccountFailed(account) && (
+                {isBalanceDisplayed && !isAccountFailed(account) && (
                     <BaseCurrencyAmountFormatter
                         value={fiatBalance}
                         variant="body-sm"
                         color="contentSecondary"
                     />
+                )}
+                {!isBalanceDisplayed && (
+                    <Text variant="body-sm" color="contentSecondary">
+                        {getNetworkDisplaySymbolName(account.symbol)}
+                    </Text>
                 )}
             </VStack>
         </HStack>
@@ -116,11 +126,13 @@ const AssetDetailScreenSettingsButton = ({
 interface AssetDetailScreenHeaderProps {
     account: Account;
     tokenContract?: TokenAddress;
+    isBalanceDisplayed?: boolean;
 }
 
 export const AssetDetailScreenHeader = ({
     account,
     tokenContract,
+    isBalanceDisplayed = true,
 }: AssetDetailScreenHeaderProps) => {
     const navigation = useNavigation<NativeStackNavigationProp<AccountDetailStackParamList>>();
     const route =
@@ -155,7 +167,12 @@ export const AssetDetailScreenHeader = ({
 
     return (
         <ScreenHeader
-            customContent={<AssetDetailScreenHeaderContent account={account} />}
+            customContent={
+                <AssetDetailScreenHeaderContent
+                    account={account}
+                    isBalanceDisplayed={isBalanceDisplayed}
+                />
+            }
             rightIcon={
                 <AssetDetailScreenSettingsButton account={account} tokenContract={tokenContract} />
             }
