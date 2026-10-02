@@ -1,13 +1,15 @@
-import { type NetworkSymbol } from '@suite-common/wallet-config';
-import { type TokenAddress } from '@suite-common/wallet-types';
+import { Divider, VStack } from '@suite-native/atoms';
 
+import { AssetDetailAccounts } from './AssetDetailAccounts';
+import { AssetDetailBalance } from './AssetDetailBalance';
 import { AssetDetailPriceSection } from './AssetDetailPriceSection';
 
-type AssetDetailHeaderProps = {
-    networkSymbol: NetworkSymbol;
-    tokenContract?: TokenAddress;
-};
-
-export const AssetDetailHeader = ({ networkSymbol, tokenContract }: AssetDetailHeaderProps) => (
-    <AssetDetailPriceSection networkSymbol={networkSymbol} tokenContract={tokenContract} />
+export const AssetDetailHeader = () => (
+    <VStack spacing={0}>
+        <AssetDetailPriceSection />
+        <Divider />
+        <AssetDetailBalance />
+        <Divider />
+        <AssetDetailAccounts />
+    </VStack>
 );

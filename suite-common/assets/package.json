@@ -18,5 +18,8 @@
         "@suite-common/wallet-core": "workspace:*",
         "@suite-common/wallet-types": "workspace:*",
         "@trezor/utils": "workspace:*"
+    },
+    "devDependencies": {
+        "@suite-common/suite-types": "workspace:*"
     }
 }
