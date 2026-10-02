@@ -61,6 +61,7 @@ export const AccountsScreen = ({ navigation, route }: ScreenNavigationProps) => 
                     flowType="accounts"
                     networksFilter={networksFilter}
                     onScroll={handleScroll}
+                    noHeaderPaddingTop
                 >
                     <AccountsRediscoveryNeededWarning />
                 </AccountsListWithFilter>
