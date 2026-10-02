@@ -1,13 +1,12 @@
-import { type RefObject, memo } from 'react';
+import { type RefObject, memo, useMemo } from 'react';
 
 import { type TranslationKey, useTranslation } from '@suite/intl';
 import { selectHasBitcoinOnlyFirmware } from '@suite-common/device';
-import { isNetworkIconSymbol } from '@suite-common/icons';
-import { selectNetworkNamesMap, selectNetworkSymbolForProtocol } from '@suite-common/networks';
+import { selectNetworkSymbolForProtocol } from '@suite-common/networks';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { selectEnabledNetworks } from '@suite-common/wallet-core';
 import { type GlobalSendReceiveType } from '@suite-common/wallet-types';
-import { NetworkIcon, SearchAsset, TokenIcon } from '@trezor/product-components';
+import { SearchAsset } from '@trezor/product-components';
 
 import { useListScrollReset } from 'src/components/suite/asset-picker/hooks';
 import { useSelector } from 'src/hooks/suite';
@@ -45,15 +44,20 @@ export const AssetSearchWithNetworkFilter = memo(function AssetSearchWithNetwork
         availableNetworks: providedNetworks,
         shouldResetSearchOnNetworkChange,
     });
-    const enabledNetworks = useSelector(selectEnabledNetworks);
-    const networkNamesMap = useSelector(selectNetworkNamesMap);
     const protocolScheme = useSelector(selectProtocolSendFormScheme);
+    const enabledNetworks = useSelector(selectEnabledNetworks);
 
     const protocolSymbol = useSelector(state =>
         selectNetworkSymbolForProtocol(state, protocolScheme),
     );
 
-    const networks = protocolSymbol ? [protocolSymbol] : (providedNetworks ?? enabledNetworks);
+    // Keep the protocol array stable for selectNetworkOptions and the option/icon memoization.
+    // useNetworkSelect depends on individual fields, so recreating selectConfig does not
+    // invalidate those caches by itself.
+    const networks = useMemo(
+        () => (protocolSymbol ? [protocolSymbol] : (providedNetworks ?? enabledNetworks)),
+        [protocolSymbol, providedNetworks, enabledNetworks],
+    );
 
     const { translationString } = useTranslation();
 
@@ -62,15 +66,7 @@ export const AssetSearchWithNetworkFilter = memo(function AssetSearchWithNetwork
     const selectConfig = isBitcoinOnlyFirmware
         ? undefined
         : {
-              networks: networks.map(symbol => ({
-                  symbol,
-                  name: networkNamesMap?.[symbol] ?? symbol,
-                  icon: isNetworkIconSymbol(symbol) ? (
-                      <NetworkIcon size={20} networkSymbol={symbol} />
-                  ) : (
-                      <TokenIcon size={20} symbol={symbol} />
-                  ),
-              })),
+              networks,
               selectedNetwork: networkFilter,
               onChange: (networkSymbol: NetworkSymbol | undefined) => {
                   setNetworkFilter(networkSymbol);

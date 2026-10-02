@@ -14,11 +14,11 @@ import {
     Text,
     variables,
 } from '@trezor/components';
-import type { CoinSymbol, PermissionRequest } from '@trezor/connect-common';
+import { type CoinSymbol, type PermissionRequest, isCoinSymbol } from '@trezor/connect-common';
 import { CheckIcon, FadersIcon, LightningIcon } from '@trezor/icons';
+import { selectNetworkOptions, useNetworkDisplaySelector } from '@trezor/product-components';
 
 import * as trezorConnectActions from '../actions/trezorConnectActions';
-import { allCoinsSelect } from '../constants/coins';
 import { useActions, useSelector } from '../hooks';
 import { RequestedPermissions } from './RequestedPermissions';
 import {
@@ -43,13 +43,6 @@ const DEFAULT_MANIFEST = {
     appUrl: '@trezor/connect-explorer',
     appIcon: 'https://trezor.io/favicon/apple-touch-icon.png',
 };
-
-// The allCoinsSelect list infers `value` as a widened string for its inline entries; re-narrow to
-// CoinSymbol so the enabledNetworks selection stays typed.
-const NETWORK_OPTIONS: { value: CoinSymbol; label: string }[] = allCoinsSelect.map(coin => ({
-    value: coin.value as CoinSymbol,
-    label: coin.label,
-}));
 
 const getDefaultCoreMode = (): CoreMode => {
     if (typeof window === 'undefined') return 'auto';
@@ -169,6 +162,7 @@ const CopyWrapper = styled.div`
 `;
 
 export const ConnectInitForm = () => {
+    const networks = useNetworkDisplaySelector(selectNetworkOptions);
     const isInitializing = useSelector(selectIsConnectInitializing);
     const isInitSuccess = useSelector(selectIsConnectInitSuccess);
     const initError = useSelector(selectConnectInitError);
@@ -283,18 +277,22 @@ export const ConnectInitForm = () => {
                     Networks the host enables up front. Leave empty to use Connect defaults.
                 </Text>
                 <Chips>
-                    {NETWORK_OPTIONS.map(coin => (
-                        <Chip
-                            key={coin.value}
-                            type="button"
-                            $active={enabledCoins.includes(coin.value)}
-                            aria-pressed={enabledCoins.includes(coin.value)}
-                            onClick={() => toggleCoin(coin.value)}
-                            data-testid={`@init/network/${coin.value}`}
-                        >
-                            {coin.label}
-                        </Chip>
-                    ))}
+                    {networks.map(({ symbol, name }) => {
+                        if (!isCoinSymbol(symbol)) return null;
+
+                        return (
+                            <Chip
+                                key={symbol}
+                                type="button"
+                                $active={enabledCoins.includes(symbol)}
+                                aria-pressed={enabledCoins.includes(symbol)}
+                                onClick={() => toggleCoin(symbol)}
+                                data-testid={`@init/network/${symbol}`}
+                            >
+                                {name}
+                            </Chip>
+                        );
+                    })}
                 </Chips>
             </FieldGroup>
 
