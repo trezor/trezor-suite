@@ -1,5 +1,5 @@
 // Builds generated/csl-asmjs/ (committed, Git LFS): Emurgo's CSL WASM pruned to the exports
-// coin-selection references and the traced keep-list.json, translated to asm.js for Hermes.
+// coin-selection can reach and the traced keep-list.json, translated to asm.js for Hermes.
 // See README.md.
 /* eslint-disable import/no-extraneous-dependencies -- Build tooling, not runtime dependencies. */
 import fs from 'node:fs';
@@ -16,7 +16,7 @@ const outputDir = path.resolve(scriptDir, '../../generated/csl-asmjs');
 const {
     wasmBytes,
     keepList,
-    referencedExports,
+    reachableExports,
     glueSource,
     entrySource,
     binaryenVersion,
@@ -41,28 +41,14 @@ for (let index = 0; index < wasmModule.getNumExports(); index++) {
     exportNames.push(binaryen.getExportInfo(wasmModule.getExportByIndex(index)).name);
 }
 
-// wasm-bindgen exports `__wbg_<class>_free` per class and `<class>_<method>` per method.
-const classNames = exportNames
-    .map(exportName => exportName.match(/^__wbg_([a-z0-9]+)_free$/)?.[1])
-    .filter(Boolean);
-const getClassOf = exportName =>
-    classNames.find(
-        className =>
-            exportName.startsWith(`${className}_`) || exportName.startsWith(`__wbg_${className}_`),
-    );
+const usedExports = new Set([...keepList.usedExports, ...reachableExports]);
 
-const usedExports = new Set([...keepList.usedExports, ...referencedExports]);
-const usedClasses = new Set([...usedExports].map(getClassOf).filter(Boolean));
-
-const isKept = exportName => {
-    if (exportName === 'memory' || exportName.startsWith('__wbindgen')) return true;
-    // The glue registers a FinalizationRegistry for every class at load, used or not.
-    if (/^__wbg_[a-z0-9]+_free$/.test(exportName)) return true;
-    if (usedExports.has(exportName)) return true;
-
-    // Whole classes, so an untraced code path within a used class cannot hit a missing method.
-    return usedClasses.has(getClassOf(exportName));
-};
+// Runtime plumbing is already reachable through the glue; kept explicitly as a safety net.
+const isKept = exportName =>
+    exportName === 'memory' ||
+    exportName.startsWith('__wbindgen') ||
+    /^__wbg_[a-z0-9]+_free$/.test(exportName) ||
+    usedExports.has(exportName);
 
 const keptExports = exportNames.filter(isKept);
 exportNames.filter(name => !isKept(name)).forEach(name => wasmModule.removeExport(name));
