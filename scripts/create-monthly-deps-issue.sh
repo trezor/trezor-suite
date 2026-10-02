@@ -17,8 +17,18 @@ REPO="trezor/trezor-suite"
 ISSUE_TEMPLATE=".github/ISSUE_TEMPLATE/07_deps_maintenance_task.md"
 ISSUE_BODY_FILE="/tmp/issue_body.md"
 
-# Prepare issue body (strip YAML frontmatter delimited by ---)
-awk '/^---$/{f=!f; next} !f' "$ISSUE_TEMPLATE" > "$ISSUE_BODY_FILE"
+# Prepare issue body (strip YAML frontmatter and expand team-specific tasks)
+awk -v team="$TEAM" '
+    /^---$/ { f = !f; next }
+    f { next }
+    /^<!--- Wallet-specific dependency tasks -->$/ {
+        if (team ~ /^Suite-Wallet( |$)/) {
+            print "- [ ] update dependencies in [trezor-suite-sync](https://github.com/trezor/trezor-suite-sync/)"
+        }
+        next
+    }
+    { print }
+' "$ISSUE_TEMPLATE" > "$ISSUE_BODY_FILE"
 
 # Calculate previous month/year
 CURRENT_MONTH=$(( 10#$(date +%m) ))

@@ -16,6 +16,9 @@ assignees: ''
     - [ ] make sure the versions are consistent across all yarn workspaces
     - [ ] run `yarn dedupe`, consider impact carefully
     - [ ] pin exact versions when appropriate (use your best judgement)
+
+<!--- Wallet-specific dependency tasks -->
+
 - [ ] check the source repository for code changes if feasible, or changelog _at the very least_
     - [ ] carefully check any external code flagged by Socket Security
 - [ ] ensure TS and CI tests are ✅
