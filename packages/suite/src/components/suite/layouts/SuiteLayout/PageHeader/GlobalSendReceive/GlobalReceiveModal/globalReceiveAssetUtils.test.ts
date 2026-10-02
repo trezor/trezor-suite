@@ -1,11 +1,17 @@
 import { type CryptoId } from 'invity-api';
 
-import { type TradeableAssetBalance, type TradingAssetOption } from '@suite-common/trading';
-import { asNetworkSymbol } from '@suite-common/wallet-config';
+import { type RankedTokenStructure } from '@suite-common/token-definitions';
+import {
+    type TradeableAssetBalance,
+    type TradingAssetOption,
+    getCryptoId,
+} from '@suite-common/trading';
+import { asNetworkSymbol, getMainnets } from '@suite-common/wallet-config';
 import { asBaseCurrencyAmount } from '@suite-common/wallet-types';
-import { BigNumber } from '@trezor/utils';
+import { BigNumber, getIndexOrThrow } from '@trezor/utils';
 
 import {
+    buildGlobalReceiveAssetOptions,
     getGlobalReceiveAssetDescriptionValues,
     getGlobalReceiveAssetSections,
 } from './globalReceiveAssetUtils';
@@ -140,7 +146,7 @@ describe(getGlobalReceiveAssetSections.name, () => {
         expect(result.assetsWithoutBalance).toEqual([]);
     });
 
-    it('uses the swap destination featured order before the incoming order', () => {
+    it('puts unheld native coins first without pinning featured tokens', () => {
         const balances = new Map<CryptoId, TradeableAssetBalance>([
             [ethereum.id, createBalance('20')],
         ]);
@@ -166,7 +172,7 @@ describe(getGlobalReceiveAssetSections.name, () => {
         ]);
     });
 
-    it('uses the shared trading search ranking for multichain assets', () => {
+    it('searches multichain assets and native coins by their network', () => {
         const result = getGlobalReceiveAssetSections({
             assets: [bitcoin, arbitrumUSDC, ethereumUSDC, ethereum],
             balances: new Map(),
@@ -181,13 +187,14 @@ describe(getGlobalReceiveAssetSections.name, () => {
         ]);
 
         const networkResult = getGlobalReceiveAssetSections({
-            assets: [bitcoin, arbitrumUSDC, ethereumUSDC, ethereum],
+            assets: [bitcoin, arbitrumUSDC, ethereumUSDC, ethereum, arbitrumEthereum],
             balances: new Map(),
             search: 'arbitrum',
             networkSymbol: undefined,
         });
 
         expect(networkResult.assetsWithoutBalance.map(({ asset }) => asset.id)).toEqual([
+            arbitrumEthereum.id,
             arbitrumUSDC.id,
         ]);
     });
@@ -229,5 +236,190 @@ describe(getGlobalReceiveAssetSections.name, () => {
         });
 
         expect(result.assetsWithoutBalance.map(({ asset }) => asset.id)).toEqual([ethereumUSDC.id]);
+    });
+
+    it('preserves catalogue order in search results instead of ranking matches alphabetically', () => {
+        const highestRanked = createAsset({
+            id: 'ethereum--highest',
+            name: 'Zeta USD Coin',
+            displaySymbol: 'USDC',
+            networkSymbol: 'eth',
+        });
+        const result = getGlobalReceiveAssetSections({
+            assets: [highestRanked, ethereumUSDC, arbitrumUSDC],
+            balances: new Map(),
+            search: 'usd coin',
+            networkSymbol: undefined,
+        });
+
+        expect(result.assetsWithoutBalance.map(({ asset }) => asset.id)).toEqual([
+            highestRanked.id,
+            ethereumUSDC.id,
+            arbitrumUSDC.id,
+        ]);
+    });
+
+    it('keeps a held token before an unheld native asset in a network search', () => {
+        const result = getGlobalReceiveAssetSections({
+            assets: [arbitrumEthereum, arbitrumUSDC],
+            balances: new Map([[arbitrumUSDC.id, createBalance('10')]]),
+            search: 'arbitrum',
+            networkSymbol: asNetworkSymbol('arb'),
+        });
+
+        expect(result.assetsWithBalance.map(({ asset }) => asset.id)).toEqual([arbitrumUSDC.id]);
+        expect(result.assetsWithoutBalance.map(({ asset }) => asset.id)).toEqual([
+            arbitrumEthereum.id,
+        ]);
+    });
+
+    it.each(['USD COIN', 'usdc', 'Ethereum', 'eth', '0X-USDC'])('searches by %s', search => {
+        const result = getGlobalReceiveAssetSections({
+            assets: [ethereumUSDC],
+            balances: new Map(),
+            search,
+            networkSymbol: undefined,
+        });
+
+        expect(result.assetsWithoutBalance.map(({ asset }) => asset.id)).toEqual([ethereumUSDC.id]);
+    });
+});
+
+const rankedDefinitions: RankedTokenStructure = [
+    {
+        assetPlatformId: 'polygon-pos',
+        address: '0xAbCd',
+        symbol: 'usdc',
+        name: 'USD Coin',
+        marketCap: 100,
+    },
+    {
+        assetPlatformId: 'binance-smart-chain',
+        address: '0xDcBa',
+        symbol: 'usdt',
+        name: 'Tether',
+        marketCap: 90,
+    },
+    {
+        assetPlatformId: 'arbitrum-one',
+        address: '0xAbCd',
+        symbol: 'usdc',
+        name: 'USD Coin',
+        marketCap: 80,
+    },
+    {
+        assetPlatformId: 'solana',
+        address: 'So11111111111111111111111111111111111111112',
+        symbol: 'wsol',
+        name: 'Wrapped SOL',
+        marketCap: 70,
+    },
+    {
+        assetPlatformId: 'stellar',
+        address: 'USDC-GA5ZSEJYB37JRC5AVSPW4Y5V4E4IJKMSKZP4B2M5ES7KX7RKREAC7BHJ',
+        symbol: 'usdc',
+        name: 'USD Coin',
+        marketCap: 0,
+    },
+];
+
+describe(buildGlobalReceiveAssetOptions.name, () => {
+    const polygonToken = getIndexOrThrow(rankedDefinitions, 0);
+    const wrappedSolToken = getIndexOrThrow(rankedDefinitions, 3);
+    const stellarToken = getIndexOrThrow(rankedDefinitions, 4);
+
+    it('includes all eligible native mainnets even with no token definitions', () => {
+        const networks = getMainnets();
+        const assets = buildGlobalReceiveAssetOptions({ networks, definitions: [] });
+
+        expect(assets.map(asset => asset.networkSymbol)).toEqual(
+            networks.map(network => network.symbol),
+        );
+        expect(assets.every(asset => asset.isNativeToken)).toBe(true);
+        expect(assets.map(asset => asset.id)).toEqual(
+            networks.map(network => getCryptoId(network.symbol)),
+        );
+    });
+
+    it('maps platforms using their CoinGecko ID, normalizes display symbols, and preserves token rank', () => {
+        const assets = buildGlobalReceiveAssetOptions({
+            networks: getMainnets(),
+            definitions: rankedDefinitions,
+        });
+        const tokens = assets.filter(asset => !asset.isNativeToken);
+
+        expect(tokens.map(asset => asset.networkSymbol)).toEqual([
+            'pol',
+            'bsc',
+            'arb',
+            'sol',
+            'xlm',
+        ]);
+        expect(tokens.map(asset => asset.id)).toEqual([
+            'polygon-pos--0xabcd',
+            'binance-smart-chain--0xdcba',
+            'arbitrum-one--0xabcd',
+            `solana--${wrappedSolToken.address}`,
+            `stellar--${stellarToken.address}`,
+        ]);
+        expect(tokens.map(asset => asset.displaySymbol)).toEqual([
+            'USDC',
+            'USDT',
+            'USDC',
+            'WSOL',
+            'USDC',
+        ]);
+        expect(tokens[3]).toMatchObject({
+            name: 'Wrapped SOL',
+            isNativeToken: false,
+            contractAddress: wrappedSolToken.address,
+        });
+    });
+
+    it('excludes unsupported networks locally and ignores unknown catalogue platforms', () => {
+        const networks = getMainnets().filter(network => network.symbol === 'sol');
+        const assets = buildGlobalReceiveAssetOptions({
+            networks,
+            definitions: [...rankedDefinitions, { ...polygonToken, assetPlatformId: 'unknown' }],
+        });
+
+        expect(assets.map(asset => asset.id)).toEqual([
+            'solana',
+            `solana--${wrappedSolToken.address}`,
+        ]);
+    });
+
+    it('keeps the highest-ranked entry when contracts normalize to the same ID', () => {
+        const assets = buildGlobalReceiveAssetOptions({
+            networks: getMainnets(),
+            definitions: [
+                polygonToken,
+                { ...polygonToken, address: '0xabcd', name: 'Duplicate', marketCap: 0 },
+            ],
+        });
+
+        expect(assets.filter(asset => !asset.isNativeToken).map(asset => asset.name)).toEqual([
+            'USD Coin',
+        ]);
+    });
+
+    it('uses token IDs compatible with the local balance lookup', () => {
+        const assets = buildGlobalReceiveAssetOptions({
+            networks: getMainnets(),
+            definitions: rankedDefinitions,
+        });
+        const balance = createBalance('25');
+        const result = getGlobalReceiveAssetSections({
+            assets,
+            balances: new Map([
+                [getCryptoId(asNetworkSymbol('sol'), wrappedSolToken.address), balance],
+            ]),
+            search: '',
+            networkSymbol: undefined,
+        });
+
+        expect(result.assetsWithBalance).toEqual([
+            { asset: expect.objectContaining({ name: 'Wrapped SOL' }), balance },
+        ]);
     });
 });
