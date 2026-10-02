@@ -1,5 +1,5 @@
 // Builds generated/csl-asmjs/ (committed, Git LFS): Emurgo's CSL WASM pruned to the exports
-// coin-selection can reach and the traced keep-list.json, translated to asm.js for Hermes.
+// coin-selection can reach, translated to asm.js for Hermes.
 // See README.md.
 /* eslint-disable import/no-extraneous-dependencies -- Build tooling, not runtime dependencies. */
 import fs from 'node:fs';
@@ -13,15 +13,8 @@ const require = createRequire(import.meta.url);
 const scriptDir = path.dirname(fileURLToPath(import.meta.url));
 const outputDir = path.resolve(scriptDir, '../../generated/csl-asmjs');
 
-const {
-    wasmBytes,
-    keepList,
-    reachableExports,
-    glueSource,
-    entrySource,
-    binaryenVersion,
-    inputsHash,
-} = readInputs(scriptDir, require);
+const { wasmBytes, reachableExports, glueSource, entrySource, binaryenVersion, inputsHash } =
+    readInputs(scriptDir, require);
 
 const manifestPath = path.join(outputDir, 'manifest.json');
 const existingManifest = fs.existsSync(manifestPath)
@@ -41,7 +34,7 @@ for (let index = 0; index < wasmModule.getNumExports(); index++) {
     exportNames.push(binaryen.getExportInfo(wasmModule.getExportByIndex(index)).name);
 }
 
-const usedExports = new Set([...keepList.usedExports, ...reachableExports]);
+const usedExports = new Set(reachableExports);
 
 // Runtime plumbing is already reachable through the glue; kept explicitly as a safety net.
 const isKept = exportName =>
