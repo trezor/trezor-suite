@@ -1,0 +1,29 @@
+name: "Shared Chromium cache"
+description: "Caches the Suite Web browser by Playwright version instead of the entire lockfile."
+outputs:
+  cache-hit:
+    description: "Whether the Chromium cache was restored."
+    value: ${{ steps.restore.outputs.cache-hit || steps.shared.outputs.cache-hit || 'false' }}
+runs:
+  using: "composite"
+  steps:
+    - name: Get Playwright version
+      id: playwright
+      shell: bash
+      run: echo "version=$(node -p "require('./suite/e2e/package.json').devDependencies['@playwright/test']")" >> "$GITHUB_OUTPUT"
+
+    - name: Restore Chromium
+      id: restore
+      if: github.ref != 'refs/heads/develop' || !contains(fromJSON('["push", "schedule", "workflow_dispatch"]'), github.event_name)
+      uses: actions/cache/restore@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v5
+      with:
+        path: ~/.cache/ms-playwright
+        key: playwright-chromium-v2-${{ runner.os }}-${{ runner.arch }}-${{ steps.playwright.outputs.version }}
+
+    - name: Restore and save shared Chromium
+      id: shared
+      if: github.ref == 'refs/heads/develop' && contains(fromJSON('["push", "schedule", "workflow_dispatch"]'), github.event_name)
+      uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v5
+      with:
+        path: ~/.cache/ms-playwright
+        key: playwright-chromium-v2-${{ runner.os }}-${{ runner.arch }}-${{ steps.playwright.outputs.version }}
