@@ -99,8 +99,10 @@ const renderNavigation = ({
 
 const activityIndicator = '@suite/menu/notifications/new-content-indicator';
 const earnIndicator = '@suite/menu/suite-earn/new-content-indicator';
+const swapIndicator = '@suite/menu/wallet-trading-exchange/new-content-indicator';
 const activityButton = '@suite/menu/notifications';
 const earnButton = '@suite/menu/suite-earn';
+const swapButton = '@suite/menu/wallet-trading-exchange';
 const buttonDotIndicator = '[data-component="StatusBadge"]';
 
 const transactionNotification: TransactionNotification = {
@@ -123,18 +125,95 @@ describe('Navigation new-content indicators', () => {
 
         expect(screen.queryByTestId(activityIndicator)).not.toBeInTheDocument();
         expect(screen.queryByTestId(earnIndicator)).not.toBeInTheDocument();
+        expect(screen.queryByTestId(swapIndicator)).not.toBeInTheDocument();
 
         fireEvent.click(screen.getByTestId(earnButton));
         fireEvent.click(screen.getByTestId(activityButton));
-        expect(analytics.report).not.toHaveBeenCalled();
+        fireEvent.click(screen.getByTestId(swapButton));
+        expect(analytics.report).toHaveBeenCalledTimes(1);
+        expect(analytics.report).toHaveBeenCalledWith({
+            type: events.tradeNavigateEvent.name,
+            payload: { action: 'navigate', type: 'exchange', from: 'sidebar' },
+        });
     });
 
-    it('keeps Activity and Earn visible independently for an existing installation', () => {
+    it('keeps Activity, Earn and Swap visible independently for an existing installation', () => {
         renderNavigation();
 
         expect(screen.getByTestId(activityIndicator)).toHaveTextContent('TR_NEW');
         expect(screen.getByTestId(earnIndicator)).toHaveTextContent('TR_NEW');
+        expect(screen.getByTestId(swapIndicator)).toHaveTextContent('TR_NEW');
     });
+
+    it.each([false, true])(
+        'clears Swap independently and reports its badge click once when collapsed=%s',
+        isCollapsed => {
+            const root = renderNavigation({ isCollapsed });
+            const button = screen.getByTestId(swapButton);
+
+            if (isCollapsed) {
+                expect(button.querySelector(buttonDotIndicator)).toBeInTheDocument();
+                expect(screen.queryByTestId(swapIndicator)).not.toBeInTheDocument();
+            } else {
+                expect(screen.getByTestId(swapIndicator)).toHaveTextContent('TR_NEW');
+            }
+
+            fireEvent.click(button);
+            fireEvent.click(button);
+
+            expect(screen.queryByTestId(swapIndicator)).not.toBeInTheDocument();
+            expect(button.querySelector(buttonDotIndicator)).not.toBeInTheDocument();
+            expect(root.services.store.getState().flags.seenNewContentIndicators).toEqual({
+                [NewContentIndicatorId.Swap26_10]: true,
+            });
+            expect(analytics.report.mock.calls).toEqual([
+                [
+                    {
+                        type: events.tradeNavigateEvent.name,
+                        payload: { action: 'navigate', type: 'exchange', from: 'sidebar' },
+                    },
+                ],
+                [
+                    {
+                        type: events.appNewContentBadgeEvent.name,
+                        payload: { badgeId: NewContentIndicatorId.Swap26_10, origin: 'nav' },
+                    },
+                ],
+                [
+                    {
+                        type: events.tradeNavigateEvent.name,
+                        payload: { action: 'navigate', type: 'exchange', from: 'sidebar' },
+                    },
+                ],
+            ]);
+        },
+    );
+
+    it.each([
+        '/accounts/coinmarket/exchange',
+        '/accounts/coinmarket/exchange/confirm',
+        '/accounts/coinmarket/exchange/detail',
+    ] as const)('clears Swap on direct entry to %s without click analytics', pathname => {
+        const root = renderNavigation({ pathname });
+
+        expect(root.services.store.getState().flags.seenNewContentIndicators).toEqual({
+            [NewContentIndicatorId.Swap26_10]: true,
+        });
+        expect(screen.queryByTestId(swapIndicator)).not.toBeInTheDocument();
+        expect(screen.getByTestId(earnIndicator)).toBeInTheDocument();
+        expect(screen.getByTestId(activityIndicator)).toBeInTheDocument();
+        expect(analytics.report).not.toHaveBeenCalled();
+    });
+
+    it.each(['/accounts/coinmarket/buy', '/accounts/coinmarket/sell'] as const)(
+        'keeps Swap unseen when starting at %s',
+        pathname => {
+            renderNavigation({ pathname });
+
+            expect(screen.getByTestId(swapIndicator)).toBeInTheDocument();
+            expect(analytics.report).not.toHaveBeenCalled();
+        },
+    );
 
     it.each([
         {
@@ -192,17 +271,23 @@ describe('Navigation new-content indicators', () => {
         expect(analytics.report).not.toHaveBeenCalled();
     });
 
-    it('clears a section opened outside sidebar navigation', async () => {
-        const root = renderNavigation();
+    it.each([
+        { pathname: '/earn', indicator: earnIndicator },
+        { pathname: '/accounts/coinmarket/exchange', indicator: swapIndicator },
+    ] as const)(
+        'clears $pathname opened outside sidebar navigation',
+        async ({ pathname, indicator }) => {
+            const root = renderNavigation();
 
-        await act(async () => {
-            await root.services.store.dispatch(onLocationChangeThunk({ pathname: '/earn' }));
-        });
+            await act(async () => {
+                await root.services.store.dispatch(onLocationChangeThunk({ pathname }));
+            });
 
-        expect(screen.queryByTestId(earnIndicator)).not.toBeInTheDocument();
-        expect(screen.getByTestId(activityIndicator)).toBeInTheDocument();
-        expect(analytics.report).not.toHaveBeenCalled();
-    });
+            expect(screen.queryByTestId(indicator)).not.toBeInTheDocument();
+            expect(screen.getByTestId(activityIndicator)).toBeInTheDocument();
+            expect(analytics.report).not.toHaveBeenCalled();
+        },
+    );
 
     it.each([
         {
@@ -224,8 +309,10 @@ describe('Navigation new-content indicators', () => {
         expect(screen.queryByTestId(earnIndicator)).not.toBeInTheDocument();
         expect(root.services.store.getState().flags.seenNewContentIndicators).toEqual({
             ...seenRetiredIndicators,
-            ...flagsInitialState.seenNewContentIndicators,
+            [NewContentIndicatorId.Activity26_8]: true,
+            [NewContentIndicatorId.Earn26_8]: true,
         });
+        expect(screen.getByTestId(swapIndicator)).toBeInTheDocument();
         expect(analytics.report).toHaveBeenCalledTimes(1);
         expect(analytics.report).toHaveBeenCalledWith({
             type: events.appNewContentBadgeEvent.name,
