@@ -1,4 +1,5 @@
 import { type FC, useCallback, useEffect, useMemo, useState } from 'react';
+import { useSelector } from 'react-redux';
 
 import { events, injectDesktopAnalytics } from '@suite/analytics';
 import { selectIsAppsEmbeddingAvailable } from '@suite/apps-embedding-demo';
@@ -23,7 +24,6 @@ import {
     RepeatIcon,
 } from '@trezor/icons';
 
-import { useSelector } from 'src/hooks/suite';
 import { useResponsiveContext } from 'src/support/suite/ResponsiveContext';
 
 import { NavigationItem, type NavigationItemProps } from './NavigationItem';
@@ -51,6 +51,12 @@ const EARN_ROUTES: Route['name'][] = [
     'earn-tron-claim',
 ];
 
+const SWAP_ROUTES: Route['name'][] = [
+    'wallet-trading-exchange',
+    'wallet-trading-exchange-confirm',
+    'wallet-trading-exchange-detail',
+];
+
 type NavigationProps = {
     children?: React.ReactNode;
 };
@@ -74,6 +80,9 @@ export const Navigation = ({ children }: NavigationProps) => {
     const isEarnNewContentIndicatorVisible = useSelector(
         selectIsNewContentIndicatorVisible(NewContentIndicatorId.Earn26_8),
     );
+    const isSwapNewContentIndicatorVisible = useSelector(
+        selectIsNewContentIndicatorVisible(NewContentIndicatorId.Swap26_10),
+    );
     const [shouldAnimateNewContentIndicators] = useState(() => !newContentIndicatorIntro.hasPlayed);
 
     useEffect(() => {
@@ -83,6 +92,7 @@ export const Navigation = ({ children }: NavigationProps) => {
     const routeName = useSelector(selectRouteName);
     const isActivityOpen = routeName === 'notifications-index';
     const isEarnOpen = routeName !== undefined && EARN_ROUTES.includes(routeName);
+    const isSwapOpen = routeName !== undefined && SWAP_ROUTES.includes(routeName);
     const hasActivityIndicator = hasUnseenNotifications && !isActivityOpen;
 
     useEffect(() => {
@@ -97,7 +107,13 @@ export const Navigation = ({ children }: NavigationProps) => {
         }
     }, [dispatch, isEarnNewContentIndicatorVisible, isEarnOpen]);
 
-    const reportSwapNavigation = useCallback(() => {
+    useEffect(() => {
+        if (isSwapOpen && isSwapNewContentIndicatorVisible) {
+            dispatch(markNewContentIndicatorAsSeen(NewContentIndicatorId.Swap26_10));
+        }
+    }, [dispatch, isSwapNewContentIndicatorVisible, isSwapOpen]);
+
+    const handleSwapNavigation = useCallback(() => {
         analytics.report({
             type: events.tradeNavigateEvent.name,
             payload: {
@@ -106,7 +122,19 @@ export const Navigation = ({ children }: NavigationProps) => {
                 from: 'sidebar',
             },
         });
-    }, [analytics]);
+
+        if (isSwapNewContentIndicatorVisible) {
+            analytics.report({
+                type: events.appNewContentBadgeEvent.name,
+                payload: {
+                    badgeId: NewContentIndicatorId.Swap26_10,
+                    origin: 'nav',
+                },
+            });
+
+            dispatch(markNewContentIndicatorAsSeen(NewContentIndicatorId.Swap26_10));
+        }
+    }, [analytics, dispatch, isSwapNewContentIndicatorVisible]);
 
     const handleActivityNavigation = useCallback(() => {
         if (isActivityNewContentIndicatorVisible) {
@@ -160,8 +188,10 @@ export const Navigation = ({ children }: NavigationProps) => {
                               nameId: 'TR_TRADING_SWAP',
                               icon: RepeatIcon,
                               goToRoute: 'wallet-trading-exchange',
-                              routes: ['wallet-trading-exchange'],
-                              onClick: reportSwapNavigation,
+                              routes: SWAP_ROUTES,
+                              hasNewContentIndicator: isSwapNewContentIndicatorVisible,
+                              isNewContentIndicatorAnimated: shouldAnimateNewContentIndicators,
+                              onClick: handleSwapNavigation,
                               shortcut: ['ALT', 'KEY_X'],
                           } as NavigationItemProps,
                           {
@@ -211,7 +241,8 @@ export const Navigation = ({ children }: NavigationProps) => {
                 startRoute,
                 isBtcOnly,
                 isAppsEmbeddingAvailable,
-                reportSwapNavigation,
+                handleSwapNavigation,
+                isSwapNewContentIndicatorVisible,
                 isEarnNewContentIndicatorVisible,
                 shouldAnimateNewContentIndicators,
                 handleEarnNavigation,

@@ -63,19 +63,16 @@ describe('flagsSlice', () => {
         });
     });
 
-    it('marks only the selected new-content indicator as seen', () => {
+    it.each(Object.values(NewContentIndicatorId))('marks only %s as seen', indicatorId => {
         const store = initUnseenStore();
 
-        store.dispatch(markNewContentIndicatorAsSeen(NewContentIndicatorId.Activity26_8));
+        store.dispatch(markNewContentIndicatorAsSeen(indicatorId));
 
-        expect(
-            selectIsNewContentIndicatorVisible(NewContentIndicatorId.Activity26_8)(
-                store.getState(),
-            ),
-        ).toBe(false);
-        expect(
-            selectIsNewContentIndicatorVisible(NewContentIndicatorId.Earn26_8)(store.getState()),
-        ).toBe(true);
+        Object.values(NewContentIndicatorId).forEach(id => {
+            expect(selectIsNewContentIndicatorVisible(id)(store.getState())).toBe(
+                id !== indicatorId,
+            );
+        });
     });
 
     it('marks a new-content indicator as seen idempotently', () => {
@@ -100,17 +97,21 @@ describe('flagsSlice', () => {
         expect(selectIsNewContentIndicatorVisible(indicatorId)(store.getState())).toBe(true);
         expect(store.getState().flags.seenNewContentIndicators).toEqual({
             [NewContentIndicatorId.Earn26_8]: true,
+            [NewContentIndicatorId.Swap26_10]: true,
         });
     });
 
     it('shows a newly introduced ID missing from an existing baseline', () => {
         const store = initStore({
             ...flagsInitialState,
-            seenNewContentIndicators: { [NewContentIndicatorId.Activity26_8]: true },
+            seenNewContentIndicators: {
+                [NewContentIndicatorId.Activity26_8]: true,
+                [NewContentIndicatorId.Earn26_8]: true,
+            },
         });
 
         expect(
-            selectIsNewContentIndicatorVisible(NewContentIndicatorId.Earn26_8)(store.getState()),
+            selectIsNewContentIndicatorVisible(NewContentIndicatorId.Swap26_10)(store.getState()),
         ).toBe(true);
         expect(
             selectIsNewContentIndicatorVisible(NewContentIndicatorId.Activity26_8)(

@@ -282,12 +282,15 @@ describe('Storage actions', () => {
     });
 
     it('should store suite settings in the db and update them automatically', async () => {
-        const store = mockStore(db, getInitialState());
+        const previousState = getInitialState();
+        previousState.flags = { ...previousState.flags, seenNewContentIndicators: {} };
+        const store = mockStore(db, previousState);
         const f = global.fetch;
         global.fetch = mockFetch({ TR_ID: 'Message' });
         await store.dispatch(storageActions.saveSuiteSettingsThunk());
         await store.dispatch(initialRunCompletedThunk({ isFreshDeviceSetup: true }));
         await store.dispatch(markNewContentIndicatorAsSeen(NewContentIndicatorId.Activity26_8));
+        await store.dispatch(markNewContentIndicatorAsSeen(NewContentIndicatorId.Swap26_10));
         await store.dispatch(
             setNewContentIndicatorSeen({
                 indicatorId: NewContentIndicatorId.Earn26_8,
@@ -301,6 +304,7 @@ describe('Storage actions', () => {
         expect(reloadedStore.getState().flags.seenNewContentIndicators).toEqual({
             [NewContentIndicatorId.Activity26_8]: true,
             [NewContentIndicatorId.Earn26_8]: true,
+            [NewContentIndicatorId.Swap26_10]: true,
         });
         global.fetch = f;
     });
