@@ -9,14 +9,12 @@
             "path": "../../suite-common/test-utils"
         },
         {
-            "path": "../../suite-common/validators"
-        },
-        {
             "path": "../../suite-common/wallet-config"
         },
         {
             "path": "../../suite-common/wallet-types"
         },
+        { "path": "../forms" },
         { "path": "../locks" },
         { "path": "../modal" },
         { "path": "../router-config" },

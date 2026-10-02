@@ -17,9 +17,6 @@
             "path": "../../suite-common/toast-notifications"
         },
         {
-            "path": "../../suite-common/validators"
-        },
-        {
             "path": "../../suite-common/wallet-config"
         },
         {
@@ -30,6 +27,7 @@
         },
         { "path": "../address" },
         { "path": "../device" },
+        { "path": "../forms" },
         { "path": "../intl" },
         { "path": "../../packages/components" },
         { "path": "../../packages/dom-utils" },
