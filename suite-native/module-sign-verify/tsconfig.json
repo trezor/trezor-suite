@@ -33,7 +33,10 @@
         { "path": "../forms" },
         { "path": "../intl" },
         { "path": "../navigation" },
-        { "path": "../../packages/styles-native" }
+        {
+            "path": "../../packages/styles-native"
+        },
+        { "path": "../../packages/utils" }
     ],
     "include": [".", "**/*.json"]
 }
