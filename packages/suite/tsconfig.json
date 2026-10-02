@@ -151,9 +151,6 @@
             "path": "../../suite-common/tx-simulation"
         },
         {
-            "path": "../../suite-common/validators"
-        },
-        {
             "path": "../../suite-common/wallet-config"
         },
         {
@@ -199,6 +196,7 @@
             "path": "../../suite/firmware-upgrade"
         },
         { "path": "../../suite/flags" },
+        { "path": "../../suite/forms" },
         { "path": "../../suite/github" },
         {
             "path": "../../suite/idb-migration-utils"

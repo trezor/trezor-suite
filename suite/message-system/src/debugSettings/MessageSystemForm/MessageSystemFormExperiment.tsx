@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useSelector } from 'react-redux';
 
+import { yup } from '@suite/forms';
 import { useTranslation } from '@suite/intl';
 import { useServices } from '@suite-common/dependency-injection';
 import {
@@ -14,7 +15,6 @@ import {
 } from '@suite-common/message-system';
 import { injectDispatch } from '@suite-common/redux-utils';
 import { type Experiments } from '@suite-common/suite-types';
-import { yup } from '@suite-common/validators';
 import { Button, Column, Row } from '@trezor/components';
 
 import { MessageSystemJsonEditor } from './MessageSystemJsonEditor';
