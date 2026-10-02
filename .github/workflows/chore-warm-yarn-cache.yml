@@ -34,5 +34,7 @@ jobs:
         with:
           node-version-file: ".nvmrc"
       - uses: ./.github/actions/yarn-cache
+        with:
+          save: "true"
       - name: Populate Yarn downloads
         run: yarn --immutable --mode=skip-build
