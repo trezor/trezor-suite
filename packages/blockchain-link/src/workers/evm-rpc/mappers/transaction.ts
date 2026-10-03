@@ -12,16 +12,16 @@ import { getTransactionType } from '../utils/transactionType';
 
 interface MapTransactionParams {
     tx: Transaction;
-    receipt: TransactionReceipt;
+    receipt?: TransactionReceipt;
     block?: Block;
     userAddress?: string;
 }
 
-const getTransactionStatus = (receipt: TransactionReceipt): number => {
-    if (receipt.status === 'success') {
+const getTransactionStatus = (receipt?: TransactionReceipt): number => {
+    if (receipt?.status === 'success') {
         return 1;
     }
-    if (receipt.status === 'reverted') {
+    if (receipt?.status === 'reverted') {
         return 0;
     }
 
@@ -35,14 +35,18 @@ export const mapGetTransactionResponse = ({
     userAddress,
 }: MapTransactionParams): Responses.GetTransaction => {
     const { value, gasPrice } = tx;
-    const { gasUsed, effectiveGasPrice } = receipt;
+    const effectiveGasPrice = receipt?.effectiveGasPrice ?? 0n;
     // effectiveGasPrice is the price actually charged and differs from the gasPrice bid on L2s;
     // use it when positive, otherwise fall back to the gasPrice bid (mirrors blockbook).
     const feeGasPrice = effectiveGasPrice > 0n ? effectiveGasPrice : (gasPrice ?? 0n);
-    const fee = (gasUsed * feeGasPrice).toString(10);
+    // A transaction that is not mined yet has no receipt, the fee it can cost at most is
+    // the whole gas limit.
+    const fee = ((receipt?.gasUsed ?? tx.gas) * feeGasPrice).toString(10);
 
     const blockTime = block ? Number(block.timestamp) : 0;
     const blockHash = tx.blockHash || '';
+    // Consumers read blockHeight 0 as pending.
+    const blockHeight = tx.blockNumber === null ? 0 : Number(tx.blockNumber);
 
     // this does not work as userAddress is not known. As of now it always returns 'unknown'
     const txType = userAddress
@@ -77,7 +81,7 @@ export const mapGetTransactionResponse = ({
             type: txType,
             txid: tx.hash,
             blockTime,
-            blockHeight: Number(tx.blockNumber),
+            blockHeight,
             blockHash,
             amount: value.toString(),
             fee,
@@ -104,7 +108,7 @@ export const mapGetTransactionResponse = ({
                 status: getTransactionStatus(receipt),
                 nonce: tx.nonce,
                 gasLimit: Number(tx.gas),
-                gasUsed: Number(receipt.gasUsed),
+                gasUsed: receipt ? Number(receipt.gasUsed) : undefined,
                 gasPrice: gasPrice?.toString(),
                 effectiveGasPrice:
                     effectiveGasPrice > 0n ? effectiveGasPrice.toString() : undefined,

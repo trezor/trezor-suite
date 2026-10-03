@@ -1,3 +1,5 @@
+import { TransactionReceiptNotFoundError } from 'viem';
+
 import { CustomError } from '@trezor/blockchain-link-types';
 import type { MessageTypes, ResponseTypes as Responses } from '@trezor/blockchain-link-types';
 
@@ -13,13 +15,24 @@ export const getTransaction = async (
 
     const [tx, receipt] = await Promise.all([
         client.getTransaction({ hash }),
-        client.getTransactionReceipt({ hash }),
+        // A transaction that is broadcast but not mined yet has no receipt and no block.
+        client.getTransactionReceipt({ hash }).catch(error => {
+            if (error instanceof TransactionReceiptNotFoundError) {
+                return undefined;
+            }
+
+            throw error;
+        }),
     ]);
 
     if (!tx) {
         throw new CustomError('worker_runtime', `Transaction ${hash} not found`);
     }
-    const block = await client.getBlock({ blockNumber: tx.blockNumber });
+
+    const block =
+        tx.blockNumber === null
+            ? undefined
+            : await client.getBlock({ blockNumber: tx.blockNumber });
 
     return mapGetTransactionResponse({ tx, receipt, block, userAddress: '' });
 };
