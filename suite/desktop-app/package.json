@@ -28,6 +28,7 @@
         "_______ DO NOT REMOVE DEPENDENCIES unless you are sure of consequences! _______": "In this package they have special meaning, see core.webpack.config"
     },
     "dependencies": {
+        "node-hid": "3.4.0",
         "openpgp": "^6.3.1",
         "usb": "^3.1.0",
         "usb-legacy": "npm:usb@2.17.0"
