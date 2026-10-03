@@ -44,11 +44,16 @@ type InitParams = {
     transports: Transport[];
 };
 
+const RECONNECT_INITIAL_DELAY_MS = 1000;
+const RECONNECT_MAX_DELAY_MS = 30_000;
+
 export class TransportManager extends TypedEmitter<TransportManagerEvents> {
     private lock = createOverrideLock();
     private transports: Transport[] = [];
     private activeTransport?: Transport;
     private upgradeTimeout?: ReturnType<typeof setTimeout>;
+    private reconnectAttempt = 0;
+    private lastEmittedError?: string;
 
     pending() {
         return this.lock.getPending();
@@ -60,6 +65,7 @@ export class TransportManager extends TypedEmitter<TransportManagerEvents> {
 
     init({ transports }: InitParams) {
         this.transports = transports;
+        this.resetReconnectState();
 
         return this.lock.override('New init', signal => this.createInitPromise(signal));
     }
@@ -77,6 +83,32 @@ export class TransportManager extends TypedEmitter<TransportManagerEvents> {
 
             return Promise.resolve();
         });
+    }
+
+    private resetReconnectState() {
+        this.reconnectAttempt = 0;
+        delete this.lastEmittedError;
+    }
+
+    // A transport which cannot initialize at all would otherwise be retried once per second
+    // forever, which is a measurable cost on mobile, so the delay grows up to a ceiling.
+    private getReconnectDelay() {
+        const delay = Math.min(
+            RECONNECT_INITIAL_DELAY_MS * 2 ** this.reconnectAttempt,
+            RECONNECT_MAX_DELAY_MS,
+        );
+        this.reconnectAttempt += 1;
+
+        return delay;
+    }
+
+    // Every reconnect attempt fails for the same reason until something changes, hosts don't need
+    // to be told repeatedly.
+    private emitError(error: string) {
+        if (error === this.lastEmittedError) return;
+
+        this.lastEmittedError = error;
+        this.emit(TRANSPORT.ERROR, error);
     }
 
     private async selectTransport(
@@ -145,19 +177,20 @@ export class TransportManager extends TypedEmitter<TransportManagerEvents> {
                     }
 
                     transport.on(TRANSPORT.ERROR, error => {
-                        this.emit(TRANSPORT.ERROR, error);
+                        this.emitError(error);
                         clearTimeout(this.upgradeTimeout);
                         this.lock
                             .override('Transport error', async signal => {
                                 delete this.activeTransport;
                                 transport.stop();
-                                await resolveAfter(1000, signal);
+                                await resolveAfter(this.getReconnectDelay(), signal);
                                 await this.createInitPromise(signal);
                             })
                             .catch(() => {});
                     });
 
                     this.activeTransport = transport;
+                    this.resetReconnectState();
                     this.emit(TRANSPORT.START, transport, descriptors);
                 } else {
                     this.emit(TRANSPORT.ERROR, 'Transport disabled');
@@ -169,11 +202,11 @@ export class TransportManager extends TypedEmitter<TransportManagerEvents> {
                 this.scheduleUpgradeCheck();
             }
         } catch (error) {
-            this.emit(TRANSPORT.ERROR, error?.message);
+            this.emitError(error?.message);
             if (!abortSignal.aborted) {
                 this.lock
                     .override('Reconnecting', async signal => {
-                        await resolveAfter(1000, signal);
+                        await resolveAfter(this.getReconnectDelay(), signal);
                         await this.createInitPromise(signal);
                     })
                     .catch(() => {});
