@@ -14,6 +14,16 @@ export class WebPopup extends Popup {
     private iframe = getIframeInstance();
     private channelId = getWeakRandomId(16);
 
+    // Rebuild the per-session state a failed open() leaves behind so the retry
+    // starts as clean as a page reload: the hidden iframe (a failure after it has
+    // loaded, e.g. `connect-popup-err=handshake-timeout`, keeps its `initPromise`
+    // resolved so create() would reuse it) and the channel id. The two must
+    // change together, because the iframe reads the id from its own `src`.
+    private resetForRetry(): void {
+        this.iframe.destroy();
+        this.channelId = getWeakRandomId(16);
+    }
+
     protected createChannel(): AbstractMessageChannel<CoreEventMessage> {
         return new WindowWindowChannel<CoreEventMessage>({
             windowHere: window,
@@ -83,7 +93,7 @@ export class WebPopup extends Popup {
                     popupOrigin,
                 );
 
-                this.handleOpenFailure(message.error);
+                // Rejects the awaited init() below, which reports the failure once.
                 iframeWindowChannel.abortHandshake(message.error);
             }
         });
@@ -94,6 +104,10 @@ export class WebPopup extends Popup {
         } catch (error) {
             this.handleOpenFailure(error.message);
             iframeWindowChannel.disconnect();
+            // Leave `windowResult` open: the popup redirects itself to its error
+            // page (`connect-popup-err=...`), right away if the postMessage above
+            // reached it, otherwise once its own bootstrap handshake times out.
+            this.resetForRetry();
 
             const isBootstrapError = Object.values(BootstrapError).includes(error.message);
             if (isBootstrapError) {
