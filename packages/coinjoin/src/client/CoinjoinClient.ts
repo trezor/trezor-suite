@@ -1,3 +1,4 @@
+import type { LogLevel, Logger } from '@trezor/logger';
 import { TypedEmitter } from '@trezor/utils';
 
 import { Account } from './Account';
@@ -10,8 +11,6 @@ import type {
     CoinjoinClientSettings,
     CoinjoinResponseEvent,
     CoinjoinStatusEvent,
-    LogLevel,
-    Logger,
     RegisterAccountParams,
 } from '../types';
 import { redacted } from '../utils/redacted';
@@ -274,6 +273,7 @@ export class CoinjoinClient extends TypedEmitter<CoinjoinClientEvents> {
             this.emit('log', { level, payload: redacted(payload) });
 
         return {
+            log: emit('info'),
             debug: emit('debug'),
             info: emit('info'),
             warn: emit('warn'),

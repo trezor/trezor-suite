@@ -1,3 +1,4 @@
+import { loggerMock } from '@trezor/logger/mocks/loggerMock';
 import { networks } from '@trezor/utxo-lib';
 
 import { ended } from './endedRound';
@@ -6,12 +7,7 @@ import { createCoinjoinRound } from '../../__fixtures__/round.fixture';
 import { EndRoundState, RoundPhase, WabiSabiProtocolErrorCode } from '../../enums';
 
 describe('ended', () => {
-    const logger = {
-        warn: jest.fn(),
-        info: jest.fn(),
-        error: jest.fn(),
-        debug: jest.fn(),
-    };
+    const logger = loggerMock;
 
     const options: any = {
         coordinatorName: 'CoinJoinCoordinatorIdentifier',
