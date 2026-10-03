@@ -2,7 +2,7 @@ import { selectSelectedAccount } from '@suite/account';
 import { Translation } from '@suite/intl';
 import { selectConnectPopupCall } from '@suite-common/connect-popup';
 import { selectSelectedDevice } from '@suite-common/device';
-import { convertTaprootXpub } from '@trezor/utils';
+import { getFirmwareDescriptor } from '@suite-common/wallet-utils';
 
 import { showXpubThunk } from 'src/actions/wallet/publicKeyActions';
 import { useSelector } from 'src/hooks/suite';
@@ -28,24 +28,15 @@ export const ConfirmXpubModal = (
     // TODO: special case for Connect Popup
     if (!account) return <ConfirmActionModal device={device} />;
 
-    const xpub =
-        account.descriptorChecksum !== undefined
-            ? `${account.descriptor}#${account.descriptorChecksum}`
-            : account.descriptor;
-
-    // Suite internally uses apostrophe, but FW uses 'h' for taproot descriptors,
-    // and we want to show it correctly to the user
-    const xpubWithReplacedApostropheWithH = convertTaprootXpub({
-        xpub,
-        direction: 'apostrophe-to-h',
-    });
+    // Firmware shows taproot descriptors with 'h' where Suite stores '; display the matching form.
+    const xpub = getFirmwareDescriptor(account, { withChecksum: true });
 
     return (
         <ConfirmValueModal
             account={account}
             heading={<Translation id="TR_XPUB" />}
             validateOnDevice={showXpubThunk}
-            value={xpubWithReplacedApostropheWithH ?? xpub}
+            value={xpub}
             isValueChunked={false}
             data-testid="@metadata/copy-xpub-button"
             {...props}

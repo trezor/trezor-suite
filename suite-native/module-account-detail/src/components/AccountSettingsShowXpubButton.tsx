@@ -4,6 +4,7 @@ import { useSelector } from 'react-redux';
 import { selectIsDeviceBackupRequired, selectSelectedDevice } from '@suite-common/device';
 import { type AccountsRootState, selectAccountByKey } from '@suite-common/wallet-core';
 import { type AccountKey } from '@suite-common/wallet-types';
+import { getFirmwareDescriptor } from '@suite-common/wallet-utils';
 import { useAlert } from '@suite-native/alerts';
 import { Button, useBottomSheetModal } from '@suite-native/atoms';
 import { selectHasFirmwareAuthenticityCheckHardFailedForSelectedDevice } from '@suite-native/device';
@@ -11,7 +12,6 @@ import { Translation, useTranslate } from '@suite-native/intl';
 import { SUITE_MOBILE_SUPPORT_URL, useOpenLink } from '@suite-native/link';
 import { WalletBackupNotSetWarningBottomSheet } from '@suite-native/module-device-onboarding';
 import { XpubQRCodeBottomSheet } from '@suite-native/qr-code';
-import { convertTaprootXpub } from '@trezor/utils';
 
 export const AccountSettingsShowXpubButton = ({ accountKey }: { accountKey: AccountKey }) => {
     const openLink = useOpenLink();
@@ -66,10 +66,8 @@ export const AccountSettingsShowXpubButton = ({ accountKey }: { accountKey: Acco
 
     if (!account) return null;
 
-    // Suite uses apostrophe in Taproot descriptors but FW uses 'h' – make sure they match.
-    const accountXpub =
-        convertTaprootXpub({ xpub: account.descriptor, direction: 'apostrophe-to-h' }) ??
-        account.descriptor;
+    // Firmware shows taproot descriptors with 'h' where Suite stores '; match it for the QR code.
+    const accountXpub = getFirmwareDescriptor(account);
 
     return (
         <>
