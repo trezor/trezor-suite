@@ -135,4 +135,9 @@ export const mockInitialAppState: AppState = {
         networkSymbol: undefined,
     },
     featureFeedback: featureFeedbackInitialState,
+    contacts: {
+        byWallet: {},
+        deviceAuthority: {},
+        relay: { isConnected: false },
+    },
 };

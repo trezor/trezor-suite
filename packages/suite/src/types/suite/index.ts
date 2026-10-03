@@ -52,6 +52,7 @@ import type { StorageAction } from 'src/actions/suite/storageActions';
 import type { SuiteAction } from 'src/actions/suite/suiteActions';
 import type { WindowAction } from 'src/actions/suite/windowActions';
 import type { AppState } from 'src/reducers/store';
+import type { ContactsAction } from 'src/reducers/suite/contactsReducer';
 import { type GlobalSendReceiveAction } from 'src/slices/wallet/globalSendReceiveFilters';
 import type { WalletAction } from 'src/types/wallet';
 
@@ -137,6 +138,7 @@ type DesktopUpdateAction = ReturnType<
 export type Action =
     | AnalyticsAction
     | BackupAction
+    | ContactsAction
     | DebugAction
     | DiscreetModeAction
     | BioAuthAction

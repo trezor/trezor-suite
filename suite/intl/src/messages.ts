@@ -5831,6 +5831,15 @@ export const messages = defineMessages({
         defaultMessage:
             'View transaction details on your Trezor in a human-readable format before confirming.',
     },
+    TR_EXPERIMENTAL_CONTACTS: {
+        id: 'TR_EXPERIMENTAL_CONTACTS',
+        defaultMessage: 'Contacts',
+    },
+    TR_EXPERIMENTAL_CONTACTS_DESCRIPTION: {
+        id: 'TR_EXPERIMENTAL_CONTACTS_DESCRIPTION',
+        defaultMessage:
+            'Keep an address book of Nostr identities and confirm their keys on your Trezor, which anchors them in WARD with the names you give them. Addresses you share are published unencrypted to the Nostr relays you add. Requires debug firmware with WARD support and a WARD service running locally.',
+    },
     TR_EARLY_ACCESS: {
         id: 'TR_EARLY_ACCESS',
         defaultMessage: 'Early Access Program',
