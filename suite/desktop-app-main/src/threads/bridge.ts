@@ -7,11 +7,13 @@ import { convertILoggerToLog } from '../utils/IloggerToLog';
 interface TrezordNodeSettings {
     port: number;
     api: 'legacy' | 'nusb' | 'udp';
+    hidOrigins?: string[];
 }
 
-const init = (settings: TrezordNodeSettings) =>
+const init = ({ hidOrigins = [], ...settings }: TrezordNodeSettings) =>
     new TrezordNode({
         ...settings,
+        hid: hidOrigins.length > 0 ? { origins: hidOrigins } : undefined,
         assetPrefix: '../../build/node-bridge',
         /**
          * We need a different instance from the global logger instance. Because we want to save bridge logs to memory
