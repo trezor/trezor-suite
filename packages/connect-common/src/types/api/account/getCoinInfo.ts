@@ -1,4 +1,6 @@
 import type { CoinInfo } from '../../coinInfo';
-import type { CommonParams, Response } from '../../params';
+import type { DeviceFreeCommonParams, Response } from '../../params';
 
-export declare function getCoinInfo(params: CommonParams & { coin: string }): Response<CoinInfo>;
+export declare function getCoinInfo(
+    params: DeviceFreeCommonParams & { coin: string },
+): Response<CoinInfo>;

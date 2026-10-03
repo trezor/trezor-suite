@@ -1,7 +1,7 @@
 import type { BlockchainLink, CoinSymbol } from '../../coinInfo';
-import type { CommonParams, Response } from '../../params';
+import type { DeviceFreeCommonParams, Response } from '../../params';
 
-export type BlockchainSetCustomBackend = CommonParams & {
+export type BlockchainSetCustomBackend = DeviceFreeCommonParams & {
     coin: CoinSymbol;
     blockchainLink?: BlockchainLink;
 };

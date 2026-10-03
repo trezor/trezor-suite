@@ -6,7 +6,7 @@ import type { Static } from '@trezor/schema-utils';
 import { Type } from '@trezor/schema-utils';
 
 import { CoinSymbolParam } from '../../coinInfo';
-import type { Params, Response } from '../../params';
+import type { DeviceFreeParams, Response } from '../../params';
 
 export type PushTransaction = Static<typeof PushTransaction>;
 export const PushTransaction = Type.Object({
@@ -27,7 +27,7 @@ export interface PushedTransaction {
 }
 
 export declare function pushTransaction(
-    params: Params<PushTransaction>,
+    params: DeviceFreeParams<PushTransaction>,
 ): Response<PushedTransaction>;
 
 // TODO: rename to blockchainPushTransaction ?

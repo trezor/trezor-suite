@@ -163,7 +163,6 @@ const bitcoinRequestThunk = createThunk<
                     utxo: account.utxo!,
                 },
                 feeLevels: feeLevels.payload.levels,
-                device,
             });
             if (!precomposedTransaction.success) {
                 console.error('composeTransaction error', precomposedTransaction);

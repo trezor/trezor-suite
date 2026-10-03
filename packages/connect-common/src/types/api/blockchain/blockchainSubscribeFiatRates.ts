@@ -1,8 +1,8 @@
 import type { BlockchainLinkResponse } from '@trezor/blockchain-link';
 
-import type { CommonParamsWithCoin, Response } from '../../params';
+import type { DeviceFreeCommonParamsWithCoin, Response } from '../../params';
 
-export type BlockchainSubscribeFiatRates = CommonParamsWithCoin & {
+export type BlockchainSubscribeFiatRates = DeviceFreeCommonParamsWithCoin & {
     currency?: string;
 };
 

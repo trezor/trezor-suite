@@ -1,6 +1,6 @@
 import type { SolanaComposeTransaction, SolanaComposedTransaction } from './common';
-import type { Params, Response } from '../../params';
+import type { DeviceFreeParams, Response } from '../../params';
 
 export declare function solanaComposeTransaction(
-    params: Params<SolanaComposeTransaction>,
+    params: DeviceFreeParams<SolanaComposeTransaction>,
 ): Response<SolanaComposedTransaction>;

@@ -1,5 +1,5 @@
-import type { CommonParamsWithCoin, Response } from '../../params';
+import type { DeviceFreeCommonParamsWithCoin, Response } from '../../params';
 
 export declare function blockchainDisconnect(
-    params: CommonParamsWithCoin,
+    params: DeviceFreeCommonParamsWithCoin,
 ): Response<{ disconnected: boolean }>;

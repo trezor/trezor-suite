@@ -3,7 +3,7 @@ import type { ComposeInput as ComposeInputBase } from '@trezor/utxo-lib';
 
 import type { PrecomposeResultFinal } from './composeTransaction';
 import { type CoinSymbol } from '../../coinInfo';
-import type { Params, Response } from '../../params';
+import type { DeviceFreeParams, Response } from '../../params';
 
 export type ComposeUtxo = AccountUtxo & Partial<ComposeInputBase>;
 
@@ -21,4 +21,6 @@ export type ComposePsbtResult = PrecomposeResultFinal & {
     locktime: number;
 };
 
-export declare function composePsbt(params: Params<ComposePsbtParams>): Response<ComposePsbtResult>;
+export declare function composePsbt(
+    params: DeviceFreeParams<ComposePsbtParams>,
+): Response<ComposePsbtResult>;

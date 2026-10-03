@@ -1,6 +1,6 @@
-import type { CommonParams, Response } from '../../params';
+import type { DeviceFreeCommonParams, Response } from '../../params';
 
-export type BlockchainEvmRpcGetChainId = CommonParams & {
+export type BlockchainEvmRpcGetChainId = DeviceFreeCommonParams & {
     url: string;
 };
 

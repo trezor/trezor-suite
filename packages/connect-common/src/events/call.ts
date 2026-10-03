@@ -15,7 +15,7 @@ type UnwrappedResponse<Response> =
 // https://github.com/microsoft/TypeScript/issues/32164
 // there is no native way how to get Parameters<Fn> for overloaded function
 // current TrezorConnect api methods have exactly 2 overloads (if any)
-type OverloadedMethod<Method, Params extends Record<string, string>> = Method extends {
+type OverloadedMethod<Method, Params> = Method extends {
     (params: infer P1): infer R1;
     (params: infer P2): infer R2;
 }
@@ -24,13 +24,18 @@ type OverloadedMethod<Method, Params extends Record<string, string>> = Method ex
       ? (params: Params & P[0]) => R // - method in NOT overloaded, one set of params and one set of result (example: signTransaction)
       : never;
 
-type UnwrappedMethod<Method, Params extends Record<string, string>> = Method extends () => infer R
-    ? (params: Params & CommonParams) => R // - method doesn't have params (example: dispose, disableWebUSB)
+type UnwrappedMethod<Method, Params> = Method extends () => infer R
+    ? (params: Params) => R // - method doesn't have params (example: dispose, disableWebUSB)
     : OverloadedMethod<Method, Params>;
 
-// map TrezorConnect api with unwrapped methods
+// map TrezorConnect api with unwrapped methods. `CommonParams` is intersected into every payload on
+// purpose: `call()` is the loose escape hatch the popup host forwards foreign payloads through, so it
+// keeps accepting `device`/`keepSession` even for methods whose own signature omits them.
 type CallApi = {
-    [K in keyof TrezorConnectCallable]: UnwrappedMethod<TrezorConnectCallable[K], { method: K }>;
+    [K in keyof TrezorConnectCallable]: UnwrappedMethod<
+        TrezorConnectCallable[K],
+        CommonParams & { method: K }
+    >;
 };
 
 export type CallMethodKeys = keyof TrezorConnectCallable;
