@@ -1,4 +1,5 @@
 import {
+    getTransactionWithFiatAmountsFixtures,
     isDustValuePhishingFixtures,
     isFakeTokenPhishingFixtures,
     isPhishingTransactionFixtures,
@@ -8,6 +9,7 @@ import {
 import { DUST_PHISHING_THRESHOLD } from './constants';
 import { detectors } from './detectors';
 import { isPhishingTransaction } from './phishing';
+import { getTransactionWithFiatAmounts } from './utils';
 
 describe('isDustValuePhishing', () => {
     isDustValuePhishingFixtures.forEach(({ testName, transaction, result }) => {
@@ -61,4 +63,17 @@ describe('isPhishingTransaction', () => {
             ).toBe(result);
         });
     });
+});
+
+describe('getTransactionWithFiatAmounts', () => {
+    getTransactionWithFiatAmountsFixtures.forEach(
+        ({ testName, transaction, historicRates, tokenAmountInFiat }) => {
+            test(testName, () => {
+                expect(
+                    getTransactionWithFiatAmounts({ transaction, historicRates }).tokens[0]
+                        ?.amountInFiat,
+                ).toBe(tokenAmountInFiat);
+            });
+        },
+    );
 });
