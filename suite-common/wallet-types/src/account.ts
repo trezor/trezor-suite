@@ -72,6 +72,8 @@ type AccountNetworkSpecific =
               contractInfo?: ContractInfo;
               stakingPools?: StakingPool[];
               addressAliases?: { [key: string]: AddressAlias };
+              /** Direct RPC only: what to send as `from` to reach further back in history. */
+              olderHistoryFrom?: number;
           };
           marker: undefined;
           stellarCursor: undefined;

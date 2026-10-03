@@ -177,3 +177,40 @@ export const getTokenInfos = async (
         );
     });
 };
+
+/** Metadata only, for labelling transfers of tokens whose balance is irrelevant. */
+export const getTokenMetadataMap = async (
+    client: PublicClient,
+    contractAddresses: readonly `0x${string}`[],
+): Promise<Map<string, TokenMetadata>> => {
+    const cache = getMetadataCache(client);
+    const map = new Map<string, TokenMetadata>();
+
+    const missing: `0x${string}`[] = [];
+    contractAddresses.forEach(contract => {
+        const key = contract.toLowerCase();
+        const cached = cache.get(key);
+        if (cached) {
+            map.set(key, cached);
+        } else if (!missing.some(pending => pending.toLowerCase() === key)) {
+            missing.push(contract);
+        }
+    });
+
+    if (!missing.length) return map;
+
+    const results = await batchRead(client, missing.flatMap(metadataCalls));
+
+    missing.forEach((contract, index) => {
+        const assembled = assembleMetadata(
+            results.slice(index * METADATA_CALL_COUNT, (index + 1) * METADATA_CALL_COUNT),
+        );
+        const key = contract.toLowerCase();
+        map.set(key, assembled.metadata);
+        if (assembled.cacheable) {
+            cache.set(key, assembled.metadata);
+        }
+    });
+
+    return map;
+};

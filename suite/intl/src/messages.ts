@@ -6458,6 +6458,10 @@ export const messages = defineMessages({
         id: 'TR_ALL_TRANSACTIONS',
         defaultMessage: 'Transactions',
     },
+    TR_LOAD_OLDER_TRANSACTIONS: {
+        id: 'TR_LOAD_OLDER_TRANSACTIONS',
+        defaultMessage: 'Load older transactions',
+    },
     TR_TOKEN: {
         id: 'TR_TOKEN',
         defaultMessage: 'Token',

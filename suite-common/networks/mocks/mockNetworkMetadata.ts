@@ -28,6 +28,8 @@ export type MockNetworkSymbol =
     | 'regtest'
     | 'tsep'
     | 'thod'
+    | 'arc'
+    | 'tarc'
     | 'dsol'
     | 'txrp'
     | 'txlm'
@@ -558,6 +560,50 @@ export const mockNetworkMetadata: Readonly<Record<MockNetworkSymbol, NetworkMeta
             tx: 'https://hoodi.etherscan.io/tx/',
             address: 'https://hoodi.etherscan.io/address/',
             nft: 'https://hoodi.etherscan.io/nft/',
+        },
+    },
+    arc: {
+        symbol: asNetworkSymbol('arc'),
+        displayOrder: asDisplayOrderKey('aNV'),
+        bip43Path: "m/44'/60'/0'/0/i",
+        accountTypes: {},
+        features: [],
+        backendOptions: [],
+        yieldXyzId: null,
+        name: 'Arc',
+        displaySymbol: 'USDC',
+        networkType: 'ethereum',
+        decimals: 18,
+        testnet: false,
+        color: '#2775ca',
+        protocols: [asProtocol('arc')],
+        explorer: {
+            base: 'https://explorer.arc.io',
+            tx: 'https://explorer.arc.io/tx/',
+            address: 'https://explorer.arc.io/address/',
+            nft: 'https://explorer.arc.io/nft/',
+        },
+    },
+    tarc: {
+        symbol: asNetworkSymbol('tarc'),
+        displayOrder: asDisplayOrderKey('aNk'),
+        bip43Path: "m/44'/60'/0'/0/i",
+        accountTypes: {},
+        features: [],
+        backendOptions: [],
+        yieldXyzId: null,
+        name: 'Arc Testnet',
+        displaySymbol: 'tUSDC',
+        networkType: 'ethereum',
+        decimals: 18,
+        testnet: true,
+        color: '#2775ca',
+        protocols: [asProtocol('tarc')],
+        explorer: {
+            base: 'https://testnet.arcscan.app',
+            tx: 'https://testnet.arcscan.app/tx/',
+            address: 'https://testnet.arcscan.app/address/',
+            nft: 'https://testnet.arcscan.app/nft/',
         },
     },
     dsol: {
