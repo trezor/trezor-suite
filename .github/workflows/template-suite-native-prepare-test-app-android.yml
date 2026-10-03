@@ -39,14 +39,10 @@ jobs:
           node-version-file: ".nvmrc"
           cache: yarn
 
-      - name: Setup node_modules cache
-        id: node-modules-cache
-        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v5
+      - name: Restore installed dependencies
+        uses: ./.github/actions/node-modules-cache
         with:
-          path: |
-            node_modules
-            suite-native/app/node_modules
-          key: node_modules-native-full-${{ hashFiles('yarn.lock') }}
+          profile: native-full
 
       - name: Install SafeDep PMG
         uses: safedep/pmg@0d4f89121c773b0009cc2f2dfb578d03603263f2 # v0.29.1

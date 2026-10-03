@@ -1,0 +1,81 @@
+name: "[Chore] Warm shared installed dependencies"
+
+on:
+  push:
+    branches: [develop]
+    paths:
+      - "**/package.json"
+      - "yarn.lock"
+      - ".nvmrc"
+      - ".yarnrc.yml"
+      - ".yarn/releases/**"
+      - ".yarn/patches/**"
+      - ".github/actions/node-modules-cache/**"
+      - ".github/workflows/chore-warm-node-modules.yml"
+  schedule:
+    - cron: "31 */6 * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: warm-node-modules-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  warm:
+    if: github.repository == 'trezor/trezor-suite' && github.ref == 'refs/heads/develop'
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: ubuntu-latest
+            profile: suite-web-e2e
+            workspaces: "@suite/web-app @trezor/suite @suite/app-assets @suite-common/message-system"
+          - os: ubuntu-latest
+            profile: suite-desktop-e2e
+            workspaces: "@suite/desktop-app @suite/desktop-app-main @trezor/suite @suite/app-assets @trezor/transport-bridge @suite-common/message-system @suite/desktop-app-renderer"
+          - os: ubuntu-latest
+            profile: suite-e2e
+            workspaces: "@trezor/suite-e2e"
+          - os: ubuntu-latest
+            profile: native-full
+            workspaces: ""
+          - os: macos-latest
+            profile: native-full
+            workspaces: ""
+    runs-on: ${{ matrix.os }}
+    env:
+      NODE_ENV: ${{ matrix.profile == 'native-full' && 'test' || '' }}
+      PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD: "1"
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v6
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v6
+        with:
+          node-version-file: ".nvmrc"
+          cache: ${{ hashFiles('.github/actions/yarn-cache/action.yml') == '' && 'yarn' || '' }}
+      - name: Restore shared Yarn downloads
+        if: hashFiles('.github/actions/yarn-cache/action.yml') != ''
+        uses: ./.github/actions/yarn-cache
+      - uses: ./.github/actions/node-modules-cache
+        with:
+          profile: ${{ matrix.profile }}
+          save: "true"
+      - name: Install SafeDep PMG
+        if: runner.os == 'Linux'
+        uses: safedep/pmg@0d4f89121c773b0009cc2f2dfb578d03603263f2 # v0.29.1
+        continue-on-error: true
+        with:
+          version: v0.19.1
+      - name: Prepare complete installation
+        env:
+          WORKSPACES: ${{ matrix.workspaces }}
+        shell: bash
+        run: |
+          if [[ -z "$WORKSPACES" ]]; then
+            yarn --immutable
+          else
+            read -r -a workspaces <<< "$WORKSPACES"
+            yarn workspaces focus "${workspaces[@]}"
+          fi
