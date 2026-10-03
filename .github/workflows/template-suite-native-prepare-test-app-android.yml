@@ -157,6 +157,18 @@ jobs:
 
       ############# CACHE MISS - COMPILE A FRESH .APK FILE #############
 
+      - name: Add swap for full Android build
+        if: steps.s3_build_cache.outputs.hit == 'false'
+        run: |
+          swap_file="$RUNNER_TEMP/android-build-extra.swap"
+          df -Pm "$RUNNER_TEMP"
+          sudo dd if=/dev/zero of="$swap_file" bs=1M count=4096 status=none
+          sudo chmod 600 "$swap_file"
+          sudo mkswap "$swap_file"
+          sudo swapon "$swap_file"
+          swapon --show
+          free -m
+
       - name: Build a new Detox test .apk
         if: steps.s3_build_cache.outputs.hit == 'false'
         working-directory: ./suite-native/app
