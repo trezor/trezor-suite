@@ -1,4 +1,4 @@
-import { useNavigationRemoveActionInterceptor } from '@suite-native/navigation';
+import { useNavigationRemoveGuard, useOnNavigationRemove } from '@suite-native/navigation';
 import { renderHookWithBasicProvider } from '@suite-native/test-utils';
 
 import { useNavigationRemoveInterceptorAlert } from './useNavigationRemoveInterceptorAlert';
@@ -8,7 +8,8 @@ const mockHideStayOnScreenAlert = jest.fn();
 
 jest.mock('@suite-native/navigation', () => ({
     ...jest.requireActual('@suite-native/navigation'),
-    useNavigationRemoveActionInterceptor: jest.fn(),
+    useNavigationRemoveGuard: jest.fn(),
+    useOnNavigationRemove: jest.fn(),
 }));
 
 jest.mock('./useShowStayOnScreenAlert', () => ({
@@ -22,9 +23,7 @@ type RenderUseNavigationRemoveInterceptorAlertOptions = Partial<
     Parameters<typeof useNavigationRemoveInterceptorAlert>[0]
 >;
 
-const mockedUseNavigationRemoveActionInterceptor = jest.mocked(
-    useNavigationRemoveActionInterceptor,
-);
+const mockedUseNavigationRemoveGuard = jest.mocked(useNavigationRemoveGuard);
 
 const renderUseNavigationRemoveInterceptorAlert = async ({
     onRemoveConfirmed = jest.fn(),
@@ -41,8 +40,7 @@ const renderUseNavigationRemoveInterceptorAlert = async ({
         }),
     );
 
-const getPreventNavigationRemoveProps = () =>
-    mockedUseNavigationRemoveActionInterceptor.mock.calls.at(-1)?.[0];
+const getGuardProps = () => mockedUseNavigationRemoveGuard.mock.calls.at(-1)?.[0];
 
 describe('useNavigationRemoveInterceptorAlert', () => {
     beforeEach(() => {
@@ -62,7 +60,10 @@ describe('useNavigationRemoveInterceptorAlert', () => {
             alertOptions,
         });
 
-        getPreventNavigationRemoveProps()?.onInterceptedAction?.({ type: 'GO_BACK' });
+        getGuardProps()?.onBlocked?.({
+            action: { type: 'GO_BACK' },
+            continueNavigation: jest.fn(),
+        });
 
         expect(mockShowStayOnScreenAlert).toHaveBeenCalledTimes(1);
         expect(mockShowStayOnScreenAlert).toHaveBeenCalledWith({
@@ -75,15 +76,30 @@ describe('useNavigationRemoveInterceptorAlert', () => {
     it('should hide stay on screen alert on allowed remove action', async () => {
         await renderUseNavigationRemoveInterceptorAlert();
 
-        getPreventNavigationRemoveProps()?.onAllowedAction?.({ type: 'PUSH' });
+        jest.mocked(useOnNavigationRemove)
+            .mock.calls.at(-1)?.[0]
+            .onRemoveAttempt({ type: 'REPLACE' });
 
         expect(mockHideStayOnScreenAlert).toHaveBeenCalledTimes(1);
     });
 
-    it('should pass shouldPrevent to useNavigationRemoveActionInterceptor', async () => {
+    it('should keep the alert visible on back attempts', async () => {
+        await renderUseNavigationRemoveInterceptorAlert();
+
+        for (const type of ['GO_BACK', 'POP']) {
+            jest.mocked(useOnNavigationRemove).mock.calls.at(-1)?.[0].onRemoveAttempt({ type });
+        }
+
+        expect(mockHideStayOnScreenAlert).not.toHaveBeenCalled();
+    });
+
+    it('should pass shouldPrevent to useNavigationRemoveGuard', async () => {
         await renderUseNavigationRemoveInterceptorAlert({ shouldPrevent: false });
 
-        expect(mockedUseNavigationRemoveActionInterceptor).toHaveBeenCalledWith(
+        expect(jest.mocked(useOnNavigationRemove)).toHaveBeenCalledWith(
+            expect.objectContaining({ isEnabled: false }),
+        );
+        expect(mockedUseNavigationRemoveGuard).toHaveBeenCalledWith(
             expect.objectContaining({
                 isEnabled: false,
             }),

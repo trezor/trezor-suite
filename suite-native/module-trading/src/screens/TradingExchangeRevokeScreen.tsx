@@ -14,13 +14,14 @@ import {
 import { BannerInline, VStack } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 import {
+    BACK_NAVIGATION_ACTIONS,
     DynamicScreenHeader,
     type RootStackParamList,
     type RootStackRoutes,
     Screen,
     ScreenHeader,
     type StackProps,
-    useNavigationRemoveActionInterceptor,
+    useOnNavigationRemove,
 } from '@suite-native/navigation';
 import { useExchangeAnalyticsStepReport } from '@suite-native/trading-analytics';
 
@@ -37,7 +38,6 @@ type TradingExchangeRevokeScreenProps = StackProps<
 
 const TradingExchangeRevokeScreenContent = ({
     route: { params },
-    navigation,
 }: TradingExchangeRevokeScreenProps) => {
     const { shouldIncreaseLimit } = params;
     const { dispatch } = useServices(injectDispatch);
@@ -110,11 +110,11 @@ const TradingExchangeRevokeScreenContent = ({
         };
     }, [quote, isReady, dispatch, confirmApproval, reportToAnalytics]);
 
-    useNavigationRemoveActionInterceptor({
-        onInterceptedAction: action => {
+    useOnNavigationRemove({
+        actionTypes: BACK_NAVIGATION_ACTIONS,
+        onRemoveAttempt: () => {
             dispatch(tradingExchangeActions.saveSelectedQuote(undefined));
             reportToAnalytics('cancel');
-            navigation.dispatch(action);
         },
     });
 

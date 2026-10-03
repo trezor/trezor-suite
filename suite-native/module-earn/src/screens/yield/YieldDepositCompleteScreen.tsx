@@ -15,11 +15,12 @@ import { injectNativeAnalytics } from '@suite-native/analytics';
 import { Text } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 import {
+    BACK_NAVIGATION_ACTIONS,
     type StackNavigationProps,
     type YieldStackParamList,
     YieldStackRoutes,
     useNavigateToInitialScreen,
-    useOverrideBackNavigation,
+    useNavigationRemoveGuard,
 } from '@suite-native/navigation';
 
 import { ApyDottedUnderline } from '../../components/earn/ApyDottedUnderline';
@@ -69,7 +70,10 @@ export const YieldDepositCompleteScreen = () => {
         navigateToInitialScreen();
     }, [account?.symbol, analytics, dispatch, flowKey, navigateToInitialScreen, vault?.id]);
 
-    useOverrideBackNavigation({ onNavigateBack: handleExit });
+    useNavigationRemoveGuard({
+        actionTypes: BACK_NAVIGATION_ACTIONS,
+        onBlocked: handleExit,
+    });
 
     useEffect(() => {
         if (resolutionStatus !== 'resolved') {
