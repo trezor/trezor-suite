@@ -173,12 +173,44 @@ them.
 
 Follow the [PR review](skills/pr-review/SKILL.md) skill for reviews and leave review outcomes as comments.
 
-## Confidential data — never send it off the device
+## Confidential data — keep it out of telemetry
 
-Account/device confidential data must never leave the device to any external sink (analytics, Sentry,
-off-device logging, breadcrumbs, request URLs, any remote endpoint). Trace the actual value at the call
-site, not just the field type, and check the whole repo for outbound reporting.
+"Leave the machine" below means the user's computer or phone, not the Trezor hardware device.
 
 Confidential (see `redactAccount`/`redactDevice` in `suite-common/logger/src/utils.ts`): device
-id/label/state, static session id, `session_id`; account descriptor/xpub/key, addresses, UTXOs, txids;
-exact balances/amounts; labels and free-form user text; passphrase/seed/PIN/wipe code.
+id/label/state, static session id, `session_id`; account descriptor/xpub/key, addresses, UTXOs,
+txids; exact balances/amounts; labels and free-form user text; passphrase/seed/PIN/wipe code.
+
+Confidential data must never reach a telemetry or diagnostic sink — analytics, Sentry, crash
+reports, automatically shipped logs, breadcrumbs, third-party monitoring. This is absolute, and it
+also covers values derived from confidential data (hashes, truncations, per-item anchors, URL
+fragments) whenever the result can re-identify an account, device or transaction.
+
+Confidential data may leave the machine only to do what the user asked the application to do:
+
+- Wallet backends (`packages/blockchain-link`): discovery, balances, history, UTXOs, fee estimation
+  and broadcast, to the default or user-configured server.
+- Trading (`suite-common/trading`), earn and staking (`suite-common/earn-staking-api`,
+  `suite-common/earn-stablecoin-api`): the addresses and amounts the operation needs.
+- Transaction simulation (`suite-common/tx-simulation`), coinjoin coordinators
+  (`packages/coinjoin`) and WalletConnect (`suite-common/walletconnect`): the transaction, round or
+  session the user initiated.
+- Labeling and Suite Sync (`suite-common/suite-sync`, `suite/metadata` providers): ciphertext only.
+- Explorer links and other user-initiated navigation.
+- User-authored submissions and exports — the feedback form (`suite-common/feedback`) and the
+  application log. Never silently enrich these with wallet state; keep their redaction controls
+  working.
+
+Labels and free-form user text never leave the machine in plaintext — only end-to-end encrypted
+with a device-derived key.
+
+Adding a new remote destination, or sending a confidential field a request does not already carry,
+requires explicit approval; it is not a routine implementation detail. Do not weaken existing
+privacy mechanisms: per-account Tor identity (`getAccountIdentity` in
+`suite-common/wallet-utils/src/backendUtils.ts`), the `cdn.trezor.io` proxies that keep the user's
+IP away from third parties, the analytics-consent gate
+(`suite-common/sentry/src/redactSentryEvent.ts`) and the analytics redaction helpers
+(`redactAnchor`/`redactRouterUrl` in `packages/suite/src/utils/suite/analytics.ts`).
+
+Trace the actual value at the call site, not just the field type, and check the whole repo for
+outbound reporting.
