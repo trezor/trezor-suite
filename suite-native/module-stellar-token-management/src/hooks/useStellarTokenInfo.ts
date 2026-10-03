@@ -1,9 +1,8 @@
 import { useEffect, useState } from 'react';
 
 import type { StellarTokenInfo, TokenAddress } from '@suite-common/wallet-types';
+import { lazyStellarTokenMetadata as lazyTokenMetadata } from '@suite-common/wallet-utils';
 import { STELLAR_DECIMALS } from '@trezor/network-stellar/constants';
-
-import { lazyTokenMetadata } from './useInactiveStellarTokens';
 
 export const useStellarTokenInfo = (tokenContract: TokenAddress) => {
     const [tokenInfo, setTokenInfo] = useState<StellarTokenInfo | null>(null);
