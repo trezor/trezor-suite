@@ -73,20 +73,23 @@ jobs:
         uses: ./.github/actions/nx-checkout
       - name: "Minimal yarn install"
         uses: ./.github/actions/minimal-yarn-install
-      - name: ESlint Cache
-        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v5
+      - name: Restore root ESLint cache
+        id: root-eslint-cache
+        uses: actions/cache/restore@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v5
         with:
-          # Most of the ESLint cache is handled by Nx. However, it can't handle the root cache.
-          # That's why we include only the root .eslintcache (and only root eslint config hash as cache key)
-          # (context: https://github.com/trezor/trezor-suite/pull/26006#discussion_r2949341349)
-          path: |
-            './.eslintcache'
-            '!**/node_modules'
-          key: ${{ runner.os }}-node-${{ hashFiles('./eslint.config.mjs') }} }}
+          path: .eslintcache
+          key: eslint-root-v2-${{ runner.os }}-${{ hashFiles('eslint.config.mjs', 'eslint-local-rules/**', 'packages/eslint/src/**/*.mjs', 'packages/eslint/eslint.config.mjs', 'packages/eslint/package.json', 'yarn.lock') }}-${{ github.sha }}
+          restore-keys: eslint-root-v2-${{ runner.os }}-${{ hashFiles('eslint.config.mjs', 'eslint-local-rules/**', 'packages/eslint/src/**/*.mjs', 'packages/eslint/eslint.config.mjs', 'packages/eslint/package.json', 'yarn.lock') }}-
       - name: Lint JS
         env:
           ESLINT_RUN_EXPENSIVE_CHECKS: "true"
         run: yarn lint:js --output-style=stream
+      - name: Save updated root ESLint cache
+        if: steps.root-eslint-cache.outputs.cache-hit != 'true' && hashFiles('.eslintcache') != ''
+        uses: actions/cache/save@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v5
+        with:
+          path: .eslintcache
+          key: ${{ steps.root-eslint-cache.outputs.cache-primary-key }}
       - name: Lint Styles
         run: yarn lint:styles --output-style=stream
       - name: Check rust files changes
