@@ -11,6 +11,8 @@ import {
     type AbstractApi,
     type AcquireInput,
     type BridgeProtocolMessage,
+    DEVICE_TYPE,
+    type Descriptor,
     type DescriptorApiLevel,
     TRANSPORT_ERROR as ERRORS,
     type PathInternal,
@@ -32,7 +34,22 @@ import {
     unknownError,
 } from '@trezor/transport-common';
 
-export const createCore = (apiArg: 'legacy' | 'nusb' | 'udp' | AbstractApi, logger?: Log) => {
+import { CompositeApi } from './api/composite';
+import { HidApi } from './api/hid';
+
+type CreateCoreOptions = {
+    /**
+     * Adds a lazily enabled HID api for HID-only Trezor One devices (534c:0001). Such devices
+     * and their sessions are then served only to callers that pass `isHidAllowed`.
+     */
+    hid?: boolean;
+};
+
+export const createCore = (
+    apiArg: 'legacy' | 'nusb' | 'udp' | AbstractApi,
+    logger?: Log,
+    { hid = false }: CreateCoreOptions = {},
+) => {
     let api: AbstractApi;
 
     const sessionsBackground = new SessionsBackground();
@@ -68,6 +85,16 @@ export const createCore = (apiArg: 'legacy' | 'nusb' | 'udp' | AbstractApi, logg
     } else {
         api = apiArg;
     }
+
+    if (hid && apiArg !== 'udp' && !(api instanceof CompositeApi)) {
+        api = new CompositeApi({
+            logger,
+            usbApi: api,
+            // Lazy-require, the addon is loaded only when a client allowed to use HID shows up.
+            createHidApi: () => new HidApi({ logger, nodeHid: require('node-hid') }),
+        });
+    }
+    const compositeApi = api instanceof CompositeApi ? api : undefined;
 
     // Descriptors from node-bridge should always have apiType usb in order to be consistent with BridgeTransport.apiType
     const transformApiType = (descriptor: DescriptorApiLevel): DescriptorApiLevel => ({
@@ -140,6 +167,27 @@ export const createCore = (apiArg: 'legacy' | 'nusb' | 'udp' | AbstractApi, logg
         }
     };
 
+    const findDescriptor = async (predicate: (descriptor: Descriptor) => boolean) => {
+        const sessionsResult = await sessionsClient.getSessions();
+
+        return sessionsResult.success
+            ? sessionsResult.payload.descriptors.find(predicate)
+            : undefined;
+    };
+
+    const isHidDescriptor = (descriptor?: Descriptor) => descriptor?.type === DEVICE_TYPE.TypeT1Hid;
+
+    /**
+     * HID-only devices keep the PIN and passphrase of the previous owner unlocked, so a session
+     * on such a device must stay out of reach of every caller that is not allowed to use HID.
+     */
+    const isHidSessionDenied = async (session: Session, isHidAllowed?: boolean) =>
+        !!compositeApi &&
+        !isHidAllowed &&
+        isHidDescriptor(await findDescriptor(descriptor => descriptor.session === session));
+
+    const enableHid = () => compositeApi?.enableHid() ?? Promise.resolve(false);
+
     const enumerate = async ({ signal }: { signal: AbortSignal }) => {
         const enumerateResult = await api.enumerate(signal);
 
@@ -158,8 +206,19 @@ export const createCore = (apiArg: 'legacy' | 'nusb' | 'udp' | AbstractApi, logg
         acquireInput: Omit<AcquireInput, 'previous'> & {
             previous: Session | 'null';
             signal: AbortSignal;
-        } & { sessionOwner: string },
+        } & { sessionOwner: string; isHidAllowed?: boolean },
     ) => {
+        if (
+            compositeApi &&
+            !acquireInput.isHidAllowed &&
+            isHidDescriptor(
+                await findDescriptor(descriptor => descriptor.path === acquireInput.path),
+            )
+        ) {
+            // The same answer libusb gives for a HID-only device, clients show it as unreadable.
+            return error({ code: ERRORS.INTERFACE_UNABLE_TO_OPEN_DEVICE });
+        }
+
         const acquireIntentResult = await sessionsClient.acquireIntent({
             path: acquireInput.path,
             previous: acquireInput.previous === 'null' ? null : acquireInput.previous,
@@ -189,7 +248,14 @@ export const createCore = (apiArg: 'legacy' | 'nusb' | 'udp' | AbstractApi, logg
         return acquireIntentResult;
     };
 
-    const release = async ({ session }: Omit<ReleaseInput, 'path'>) => {
+    const release = async ({
+        session,
+        isHidAllowed,
+    }: Omit<ReleaseInput, 'path'> & { isHidAllowed?: boolean }) => {
+        if (await isHidSessionDenied(session, isHidAllowed)) {
+            return error({ code: ERRORS.SESSION_NOT_FOUND });
+        }
+
         const releaseIntentResult = await sessionsClient.releaseIntent({ session });
 
         // on failure releaseIntent already freed the lock (or never took it); use
@@ -246,11 +312,17 @@ export const createCore = (apiArg: 'legacy' | 'nusb' | 'udp' | AbstractApi, logg
         protocol: protocolName,
         signal,
         thpState,
+        isHidAllowed,
     }: BridgeProtocolMessage & {
         session: Session;
         signal: AbortSignal;
+        isHidAllowed?: boolean;
     }) => {
         logger?.debug(`core: call: session: ${session} ${protocolName}`);
+        if (await isHidSessionDenied(session, isHidAllowed)) {
+            return error({ code: ERRORS.SESSION_NOT_FOUND });
+        }
+
         const sessionsResult = await sessionsClient.getPathBySession({
             session,
         });
@@ -326,10 +398,16 @@ export const createCore = (apiArg: 'legacy' | 'nusb' | 'udp' | AbstractApi, logg
         protocol: protocolName,
         signal,
         thpState,
+        isHidAllowed,
     }: BridgeProtocolMessage & {
         session: Session;
         signal: AbortSignal;
+        isHidAllowed?: boolean;
     }) => {
+        if (await isHidSessionDenied(session, isHidAllowed)) {
+            return error({ code: ERRORS.SESSION_NOT_FOUND });
+        }
+
         const sessionsResult = await sessionsClient.getPathBySession({
             session,
         });
@@ -380,10 +458,16 @@ export const createCore = (apiArg: 'legacy' | 'nusb' | 'udp' | AbstractApi, logg
         protocol: protocolName,
         signal,
         thpState,
+        isHidAllowed,
     }: BridgeProtocolMessage & {
         session: Session;
         signal: AbortSignal;
+        isHidAllowed?: boolean;
     }) => {
+        if (await isHidSessionDenied(session, isHidAllowed)) {
+            return error({ code: ERRORS.SESSION_NOT_FOUND });
+        }
+
         const sessionsResult = await sessionsClient.getPathBySession({
             session,
         });
@@ -445,6 +529,8 @@ export const createCore = (apiArg: 'legacy' | 'nusb' | 'udp' | AbstractApi, logg
     };
 
     return {
+        enableHid,
+        isHidSessionDenied,
         enumerate,
         acquire,
         release,
