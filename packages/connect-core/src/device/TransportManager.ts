@@ -30,9 +30,7 @@ const createOverrideLock = () => {
         return promise as Promise<T>;
     };
 
-    const getPending = () => promise;
-
-    return { override, getPending };
+    return { override };
 };
 
 type TransportManagerEvents = {
@@ -54,10 +52,6 @@ export class TransportManager extends TypedEmitter<TransportManagerEvents> {
     private upgradeTimeout?: ReturnType<typeof setTimeout>;
     private reconnectAttempt = 0;
     private lastEmittedError?: string;
-
-    pending() {
-        return this.lock.getPending();
-    }
 
     get() {
         return this.activeTransport;
