@@ -2,6 +2,7 @@
  * Bridge runner
  */
 import { type InvokeResult } from '@suite/desktop-app-api';
+import { isDevEnv } from '@suite-common/suite-utils';
 import { type TrezordNode } from '@trezor/transport-bridge';
 import { scheduleAction } from '@trezor/utils';
 
@@ -16,6 +17,22 @@ import { b2t } from '../libs/utils';
 const bridgeTest = hasSwitch('bridge-test');
 
 export const SERVICE_NAME = 'bridge';
+
+// The web app that moves funds off HID-only Trezor One devices (firmware 1.6.3 and older) talks
+// to the device through this bridge. Suite itself never opens such a device.
+const TREZOR_ONE_MIGRATION_ORIGIN = 'https://old-trezors.trezor.io';
+const TREZOR_ONE_MIGRATION_DEV_ORIGIN = 'http://localhost:5181';
+
+const getHidOrigins = () => {
+    // HID support targets Windows and macOS only, on Linux the bridge stays as it was.
+    if (bridgeTest || process.platform === 'linux') {
+        return [];
+    }
+
+    return isDevEnv
+        ? [TREZOR_ONE_MIGRATION_ORIGIN, TREZOR_ONE_MIGRATION_DEV_ORIGIN]
+        : [TREZOR_ONE_MIGRATION_ORIGIN];
+};
 
 class TrezordNodeProcess {
     private readonly proxy;
@@ -35,7 +52,7 @@ class TrezordNodeProcess {
         const usbImplementation =
             this.store.getBridgeSettings().usbImplementation === 'nusb' ? 'nusb' : 'legacy';
         const api = bridgeTest ? 'udp' : usbImplementation;
-        await this.proxy.run({ api });
+        await this.proxy.run({ api, hidOrigins: getHidOrigins() });
         // Call `start` again in case of respawning due to keepAlive
         this.proxy.watch('started', () => this.proxy.request(mode, []));
         await this.proxy.request(mode, []);

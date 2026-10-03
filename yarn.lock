@@ -16271,6 +16271,7 @@ __metadata:
   dependencies:
     electron: "npm:43.2.0"
     electron-builder: "npm:26.15.7"
+    node-hid: "npm:3.4.0"
     openpgp: "npm:^6.3.1"
     usb: "npm:^3.1.0"
     usb-legacy: "npm:usb@2.17.0"
