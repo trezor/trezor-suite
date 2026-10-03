@@ -33,7 +33,8 @@ export const createBackgroundScan = (deps: BackgroundScanDeps): BackgroundScan =
         );
 
     const shouldScan = () =>
-        selectAdapterStatus(getState()) === 'enabled' && hasDisconnectedKnownDevice();
+        ['enabled', 'unknown'].includes(selectAdapterStatus(getState())) &&
+        hasDisconnectedKnownDevice();
 
     const run = async (signal: AbortSignal) => {
         while (!signal.aborted && shouldScan()) {

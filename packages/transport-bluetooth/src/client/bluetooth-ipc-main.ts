@@ -1,4 +1,4 @@
-import { TypedEmitter, resolveAfter } from '@trezor/utils';
+import { TypedEmitter } from '@trezor/utils';
 
 import { TrezorBluetooth } from './trezor-bluetooth';
 import type {
@@ -106,41 +106,6 @@ export class BluetoothIpc extends TypedEmitter<BluetoothIpcEvents> implements Bl
                 await this.connectApi();
                 await this.api.send('set_state', {
                     devices: this.state.knownDevices,
-                });
-
-                const initialScan = await this.api
-                    .send('start_scan')
-                    // todo: bluetooth-ipc-main.init is called in inInitBluetoothThunk. If it returns an error there, thunk does not proceed and listeners are not registered.
-                    // This is a hotfix, I believe, that initBluetoothThunks call to bluetoothIpc.init should only check that ipc channel is established, nothing more.
-                    .catch(error => {
-                        console.warn('Initial start_scan error', error);
-                        if (
-                            error.message.includes('Adapter disabled') || // <-- when bluetooth is off
-                            error.message.includes('Adapter missing') // <-- when app permissions removed
-                        ) {
-                            this.emit('adapter-event', 'disabled');
-
-                            return undefined;
-                        }
-                        throw error;
-                    });
-
-                if (!initialScan) {
-                    // Nothing is scanning, so there is nothing to wait for.
-                    return this.result();
-                }
-
-                if (initialScan.devices.length === 0) {
-                    // wait. devices may not be returned immediately
-                    await resolveAfter(1000);
-                }
-
-                // Block start_scan before this stop.
-                await this.serializeScan(async () => {
-                    if (this.shouldScan) return;
-                    await this.api.send('stop_scan');
-                }).catch(error => {
-                    console.warn('Initial stop_scan error', error);
                 });
             } catch (error) {
                 return this.result(error.message);
