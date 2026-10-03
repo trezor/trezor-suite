@@ -20,7 +20,7 @@ type CreateTransactionBuilderParams = {
     descriptor: string;
     sequence: string;
     fee: string;
-    destinationTag?: string;
+    memo?: string;
     isTestnet?: boolean;
 };
 
@@ -28,7 +28,7 @@ const createTransactionBuilder = ({
     descriptor,
     sequence,
     fee,
-    destinationTag,
+    memo,
     isTestnet = false,
 }: CreateTransactionBuilderParams) => {
     const source = new Account(descriptor, sequence);
@@ -38,8 +38,8 @@ const createTransactionBuilder = ({
         networkPassphrase: isTestnet ? Networks.TESTNET : Networks.PUBLIC,
     }).setTimebounds(0, 0);
 
-    if (destinationTag) {
-        txBuilder.addMemo(Memo.text(destinationTag));
+    if (memo) {
+        txBuilder.addMemo(Memo.text(memo));
     }
 
     return txBuilder;
@@ -60,16 +60,10 @@ export const buildSendTransaction = ({
     destination,
     amount,
     asset,
-    destinationTag,
+    memo,
     isTestnet,
 }: BuildSendTransactionParams) => {
-    const txBuilder = createTransactionBuilder({
-        descriptor,
-        sequence,
-        fee,
-        destinationTag,
-        isTestnet,
-    });
+    const txBuilder = createTransactionBuilder({ descriptor, sequence, fee, memo, isTestnet });
 
     if (destinationActivated) {
         txBuilder.addOperation(
@@ -102,16 +96,10 @@ const buildTrustlineTransaction = ({
     fee,
     asset,
     limit,
-    destinationTag,
+    memo,
     isTestnet,
 }: BuildTrustlineTransactionParams) => {
-    const txBuilder = createTransactionBuilder({
-        descriptor,
-        sequence,
-        fee,
-        destinationTag,
-        isTestnet,
-    });
+    const txBuilder = createTransactionBuilder({ descriptor, sequence, fee, memo, isTestnet });
 
     txBuilder.addOperation(
         Operation.changeTrust({
@@ -150,16 +138,10 @@ export const buildContractTokenTransferTransaction = ({
     contract,
     destination,
     amount,
-    destinationTag,
+    memo,
     isTestnet,
 }: BuildContractTokenTransferParams) => {
-    const txBuilder = createTransactionBuilder({
-        descriptor,
-        sequence,
-        fee,
-        destinationTag,
-        isTestnet,
-    });
+    const txBuilder = createTransactionBuilder({ descriptor, sequence, fee, memo, isTestnet });
 
     txBuilder.addOperation(
         new Contract(contract).call(

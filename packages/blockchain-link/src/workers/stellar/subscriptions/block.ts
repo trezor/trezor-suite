@@ -1,8 +1,8 @@
 import { RESPONSES } from '@trezor/blockchain-link-types';
+import stellar from '@trezor/network-stellar/runtime';
 import { type IntervalId } from '@trezor/type-utils';
 
 import type { Context } from '../types';
-import { fetchLatestLedger } from '../utils';
 
 // Stellar typically produces a new block every 5 seconds.
 // Our requirements for real-time updates are not high; let us update every 15 seconds.
@@ -11,9 +11,12 @@ const BLOCK_SUBSCRIBE_INTERVAL_MS = 1000 * 15;
 export const subscribeBlock = async ({ state, connect, post }: Context) => {
     if (state.getSubscription('block')) return { subscribed: true };
     const api = await connect();
+    const { createStellarDataSource } = await stellar();
+
+    const dataSource = createStellarDataSource(api);
 
     const fetchBlock = async () => {
-        const { sequence: blockHeight, hash: blockHash } = await fetchLatestLedger(api);
+        const { sequence: blockHeight, hash: blockHash } = await dataSource.readLatestLedger();
         post({
             id: -1,
             type: RESPONSES.NOTIFICATION,
