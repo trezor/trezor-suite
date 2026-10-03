@@ -3,16 +3,13 @@ import { useSelector } from 'react-redux';
 import { cryptoIdToNetworkSymbol } from '@suite-common/trading';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { type AccountsRootState, selectAccountFormattedBalance } from '@suite-common/wallet-core';
-import { HStack } from '@suite-native/atoms';
 import { useWatch } from '@suite-native/forms';
 import {
     NetworkReserveBanner,
     useIsNetworkReserveBannerVisible,
 } from '@suite-native/transaction-management';
 
-import { ExchangeSendAccountCryptoBalance } from './ExchangeSendAccountCryptoBalance';
 import { ExchangeSendAssetPicker } from './ExchangeSendAssetPicker';
-import { ExchangeSendBaseCurrencyAmountInput } from './ExchangeSendBaseCurrencyAmountInput';
 import { useExchangeFormContext } from '../../../hooks/exchange/useExchangeFormContext';
 
 type ExchangeNetworkReserveBannerProps = {
@@ -57,10 +54,6 @@ export const ExchangeSendContent = () => {
     return (
         <>
             <ExchangeSendAssetPicker />
-            <HStack justifyContent="space-between" alignItems="center" spacing="sp4">
-                <ExchangeSendBaseCurrencyAmountInput />
-                <ExchangeSendAccountCryptoBalance />
-            </HStack>
             {!!symbol && (
                 <ExchangeNetworkReserveBanner
                     symbol={symbol}

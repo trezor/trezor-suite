@@ -1,5 +1,11 @@
 import { type Ref, useCallback, useImperativeHandle, useRef, useState } from 'react';
-import { type LayoutChangeEvent, Pressable, TextInput, type TextInputProps } from 'react-native';
+import {
+    type Insets,
+    type LayoutChangeEvent,
+    Pressable,
+    TextInput,
+    type TextInputProps,
+} from 'react-native';
 
 import { BoxSkeleton, HStack, TEXT_MAX_FONT_MULTIPLIER, Text } from '@suite-native/atoms';
 import { truncateDecimals } from '@suite-native/helpers';
@@ -49,8 +55,9 @@ export type AmountInputProps = {
     loadingAccessibilityLabel?: string;
     size?: AmountInputSize;
     prefix?: string;
+    hitSlop?: Insets | number;
     ref?: Ref<TextInput>;
-} & Omit<TextInputProps, 'style' | 'onLayout' | 'onContentSizeChange' | 'onChangeText'>;
+} & Omit<TextInputProps, 'style' | 'onLayout' | 'onContentSizeChange' | 'onChangeText' | 'hitSlop'>;
 
 export const AMOUNT_INPUT_TEST_ID = '@trading/amountInput/wrapper';
 export const AMOUNT_INPUT_CONTENT_TEST_ID = '@trading/amountInput/content';
@@ -168,6 +175,7 @@ export const AmountInput = ({
     loadingAccessibilityLabel,
     size = 'medium',
     prefix,
+    hitSlop,
     ref,
     ...inputProps
 }: AmountInputProps) => {
@@ -215,6 +223,7 @@ export const AmountInput = ({
     // It would also allow us to remove `innerRef` and `useImperativeHandle` logic.
     return (
         <Pressable
+            hitSlop={hitSlop}
             style={applyStyle(boxStyle)}
             onLayout={onBoxLayout}
             testID={AMOUNT_INPUT_TEST_ID}

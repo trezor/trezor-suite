@@ -81,6 +81,14 @@ describe('AmountInput', () => {
         expect(getByLabelText('INPUT')).toHaveStyle({ color: palette.lightRed700 });
     });
 
+    it('should apply hitSlop to the wrapper instead of the text input', async () => {
+        const hitSlop = { top: 16 };
+        const { getByLabelText } = await renderAmountInput({ hitSlop });
+
+        expect(screen.getByTestId(AMOUNT_INPUT_TEST_ID)).toHaveProp('hitSlop', hitSlop);
+        expect(getByLabelText('INPUT')).not.toHaveProp('hitSlop');
+    });
+
     it('should have font size of 34 before layout events', async () => {
         const { getByLabelText } = await renderAmountInput({});
 
