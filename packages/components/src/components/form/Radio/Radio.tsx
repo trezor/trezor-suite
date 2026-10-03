@@ -32,7 +32,10 @@ const FakeInput = styled.div`
         height: 12px;
         border-radius: 50%;
         opacity: 0;
-        transition: 0.2s ease-in-out;
+        transition:
+            opacity 0.2s ease-in-out,
+            transform 0.2s ease-in-out,
+            background-color 0.2s ease-in-out;
         transform: scale(0);
     }
 

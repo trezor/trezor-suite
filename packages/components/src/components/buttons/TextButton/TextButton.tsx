@@ -52,7 +52,7 @@ const TextButtonContainer = styled.button<
     white-space: nowrap;
     max-width: 100%;
     -webkit-app-region: no-drag;
-    transition: 0.1s ease-in-out;
+    transition: color 0.1s ease-in-out;
 
     &:disabled {
         cursor: not-allowed;

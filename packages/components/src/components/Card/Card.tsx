@@ -47,7 +47,11 @@ const Container = styled.section<ContainerProps & TransientAllowedFrameProps>`
     border-radius: 16px;
     overflow: hidden;
     cursor: ${({ $isClickable }) => ($isClickable ? 'pointer' : 'default')};
-    transition: 0.2s ease-in-out;
+    transition:
+        background 0.2s ease-in-out,
+        outline 0.2s ease-in-out,
+        outline-offset 0.2s ease-in-out,
+        box-shadow 0.2s ease-in-out;
 
     &:focus-visible {
         ${commonFocusStyles}
