@@ -1,0 +1,22 @@
+{
+    "extends": "../../../tsconfig.base.json",
+    "compilerOptions": { "outDir": "libDev" },
+    "references": [
+        {
+            "path": "../../../suite-common/dependency-injection"
+        },
+        {
+            "path": "../../../suite-common/redux-utils"
+        },
+        { "path": "../../atoms" },
+        { "path": "../../intl" },
+        { "path": "../network-module-types" },
+        { "path": "../../storage" },
+        {
+            "path": "../../../networks/network-module/network-module-types"
+        },
+        {
+            "path": "../../../networks/solana/network-solana"
+        }
+    ]
+}

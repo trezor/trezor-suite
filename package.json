@@ -14,6 +14,7 @@
             "packages/*",
             "packages/connect-examples/*",
             "suite-native/*",
+            "suite-native/networks/*",
             "suite-common/*",
             "suite/*",
             "scripts"

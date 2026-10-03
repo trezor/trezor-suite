@@ -6,7 +6,6 @@ import { DEVICE } from '@trezor/connect';
 
 export interface BannerFlagsState {
     isStellarLimitedHistoryBannerClosed: boolean; // banner in account view (Overview tab) presenting limited history for Stellar
-    isSolanaLimitedHistoryBannerClosed: boolean; // banner in account view (Overview tab) presenting limited history for Solana
     isGetTrezorBannerClosed: boolean; // promo banner on Home dashboard nudging users without a device to the eShop
     areGetTrezorPromoBannersDisabled: boolean; // permanently disabled once a physical device has ever been connected
     isOnboardingFeedbackBannerEnabled: boolean; // feedback banner on Home dashboard shown after completing device onboarding
@@ -22,7 +21,6 @@ export type BannerFlagsSliceRootState = {
 
 export const bannerFlagsInitialState: BannerFlagsState = {
     isStellarLimitedHistoryBannerClosed: false,
-    isSolanaLimitedHistoryBannerClosed: false,
     isGetTrezorBannerClosed: false,
     areGetTrezorPromoBannersDisabled: false,
     isOnboardingFeedbackBannerEnabled: false,
@@ -38,9 +36,6 @@ export const bannerFlagsSlice = createSlice({
     reducers: {
         setIsStellarLimitedHistoryBannerClosed: state => {
             state.isStellarLimitedHistoryBannerClosed = true;
-        },
-        setIsSolanaLimitedHistoryBannerClosed: state => {
-            state.isSolanaLimitedHistoryBannerClosed = true;
         },
         setIsGetTrezorBannerClosed: state => {
             state.isGetTrezorBannerClosed = true;
@@ -82,7 +77,6 @@ export const bannerFlagsSlice = createSlice({
 
 export const bannerFlagsPersistWhitelist: Array<keyof BannerFlagsState> = [
     'isStellarLimitedHistoryBannerClosed',
-    'isSolanaLimitedHistoryBannerClosed',
     'isGetTrezorBannerClosed',
     'areGetTrezorPromoBannersDisabled',
     'isOnboardingFeedbackBannerEnabled',
@@ -94,9 +88,6 @@ export const bannerFlagsPersistWhitelist: Array<keyof BannerFlagsState> = [
 
 export const selectIsStellarLimitedHistoryBannerClosed = (state: BannerFlagsSliceRootState) =>
     state.bannerFlags.isStellarLimitedHistoryBannerClosed;
-
-export const selectIsSolanaLimitedHistoryBannerClosed = (state: BannerFlagsSliceRootState) =>
-    state.bannerFlags.isSolanaLimitedHistoryBannerClosed;
 
 export const selectIsGetTrezorBannerClosed = (state: BannerFlagsSliceRootState) =>
     state.bannerFlags.isGetTrezorBannerClosed;
@@ -121,7 +112,6 @@ export const selectIsEarnBannerClosed = (state: BannerFlagsSliceRootState, symbo
 
 export const {
     setIsStellarLimitedHistoryBannerClosed,
-    setIsSolanaLimitedHistoryBannerClosed,
     setIsGetTrezorBannerClosed,
     setIsOnboardingFeedbackBannerEnabled,
     setIsDefiYieldPromoBannerClosed,

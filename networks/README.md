@@ -2,7 +2,7 @@
 
 Network-specific packages are organized by network "families". The goal is to keep all logic related to one coin family in a single folder, with packages separated by technical layer. Technical-layer packages have a predefined suffix and public API, so they can be imported from the rest of the monorepo. Optional packages may use a custom suffix, but must only be imported from within their network's directory.
 
-Every package name must start with `network-`, followed by the network name (for example, `bitcoin`) and either a predefined technical-layer suffix or a custom suffix. Its directory must have the same name and be located directly under the corresponding network directory.
+Every package under `networks/` must start with `network-`, followed by the network name (for example, `bitcoin`) and either a predefined technical-layer suffix or a custom suffix. Its directory must have the same name and be located directly under the corresponding network directory.
 
 ## Technical layers
 
@@ -11,13 +11,20 @@ Every package name must start with `network-`, followed by the network name (for
 | Connect      | `@trezor/network-<network>-connect`      |
 | Suite        | `@trezor/network-<network>-suite`        |
 | Suite Common | `@trezor/network-<network>-suite-common` |
-| Suite Native | `@trezor/network-<network>-suite-native` |
+| Suite Native | `@suite-native/network-<network>`        |
 
-Suite and Suite Native packages may depend on Suite Common. Suite Common must remain platform-independent and must not depend on Suite or Suite Native.
+Suite packages may depend on Suite Common. Suite Common must remain platform-independent and must not depend on Suite.
+
+Suite Native network packages are kept under `suite-native/networks/<network>` rather than this
+directory. Their shared module interface lives in
+`suite-native/networks/network-module-types`, while `native-common-networks` registers and composes
+the concrete modules. This lets native network packages depend on other
+`@suite-native/*` packages while keeping the platform-independent packages under `networks/` free of
+application-layer dependencies.
 
 All the 3rd party dependencies related to a network should be defined inside that network's directory. Moreover, currently they're defined only inside general, no-suffix packages, e.g. `network-cardano` (previously coins packages) and dynamically exported.
 
-The complete structure for Bitcoin illustrates all four layers alongside optional internal packages:
+The complete structure for Bitcoin illustrates the platform-independent and Suite layers alongside optional internal packages:
 
 ```
 networks/
@@ -26,14 +33,21 @@ networks/
 │   ├── network-bitcoin-connect/       → @trezor/network-bitcoin-connect
 │   ├── network-bitcoin-suite/         → @trezor/network-bitcoin-suite
 │   ├── network-bitcoin-suite-common/  → @trezor/network-bitcoin-suite-common
-│   ├── network-bitcoin-suite-native/  → @trezor/network-bitcoin-suite-native
 │   ├── network-bitcoin-bip32/         → @trezor/network-bitcoin-bip32 (custom/internal)
 │   └── network-bitcoin-coinjoin/      → @trezor/network-bitcoin-coinjoin (custom/internal)
 └── <network>/
     ├── network-<network>-connect/
     ├── network-<network>-suite/
-    ├── network-<network>-suite-common/
-    └── network-<network>-suite-native/
+    └── network-<network>-suite-common/
+```
+
+The corresponding Suite Native structure is:
+
+```
+suite-native/networks/
+├── native-common-networks/ → @suite-native/networks
+├── network-module-types/   → @suite-native/network-module-suite-native-types
+└── <network>/              → @suite-native/network-<network>
 ```
 
 ## Custom package structure
