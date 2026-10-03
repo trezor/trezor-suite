@@ -5,7 +5,6 @@ import TrezorConnect, {
     UI_EVENTS,
     UI_RESPONSE,
 } from '@trezor/connect';
-import { initLog } from '@trezor/connect-common';
 import { type IpcProxyHandlerOptions, createIpcProxyHandler } from '@trezor/ipc-proxy';
 import { NodeUsbTransport, UdpTransport } from '@trezor/transport';
 import { BridgeTransport } from '@trezor/transport-common';
@@ -18,6 +17,7 @@ import { looselyTypedIpcMain } from '../ipcMain';
 import { APP_NAME } from '../libs/constants';
 import { getComputerName } from '../libs/info';
 import { getSwitchValue } from '../libs/process-switches';
+import { convertILoggerToLog } from '../utils/IloggerToLog';
 
 export const SERVICE_NAME = '@trezor/connect';
 
@@ -148,9 +148,8 @@ export const initBackground: ModuleInitBackground = ({
                     }
                     // Core runs in this (main) process; the renderer cannot send a logger factory
                     // across IPC, so build it here from the serializable `debug` enabled hint.
-                    // TODO(logger-unification): build from a unified app-wide logger instead of initLog.
                     settings.debug = settings.debug || getSwitchValue('log-level') === 'debug';
-                    createLogger = (prefix: string) => initLog(prefix, !!settings.debug);
+                    createLogger = serviceName => convertILoggerToLog(logger, { serviceName });
                     settings.createLogger = createLogger;
                     settings.transports = getTransportsParam(
                         settings.transports,
