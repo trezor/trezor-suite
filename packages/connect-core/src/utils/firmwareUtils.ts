@@ -79,8 +79,9 @@ export const getFirmwareType = (features: Features) => {
             !features.capabilities.includes('Capability_Bitcoin_like')
                 ? FirmwareType.BitcoinOnly
                 : FirmwareType.Universal;
-    } else if (getFirmwareMode(features) === 'bootloader' && features.unit_btconly) {
-        // This is a factory reset bitcoin-only device, should be considered bitcoin-only.
+    } else if (features.unit_btconly) {
+        // Reaching this branch means getFirmwareMode is 'bootloader' (the previous branch
+        // excluded every other mode), so a bitcoin-only unit here is a factory reset device.
         type = FirmwareType.BitcoinOnly;
     }
 

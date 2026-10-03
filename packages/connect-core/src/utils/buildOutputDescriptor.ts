@@ -63,11 +63,9 @@ export const buildOutputDescriptor = ({
 
     let path = `m/${purpose}h/${coinType}h/${account}h`;
     if (purpose === PURPOSE_SLIP25) {
-        if (scriptType === 'SPENDTAPROOT') {
-            path += '/1h';
-        } else {
-            return undefined;
-        }
+        // Reaching SLIP25 purpose guarantees scriptType is SPENDTAPROOT: it is the only script
+        // type mapped to PURPOSE_SLIP25, and any other combination already returned above.
+        path += '/1h';
     }
 
     const fmtMap: Record<Exclude<PROTO.InternalInputScriptType, 'SPENDMULTISIG'>, string> = {

@@ -42,7 +42,6 @@ const getSizeForModel = ({
     // Fix for T3W1 2.9.3, which had a bug causing the calculated area to be 16kB smaller.
     // This can be removed once 2.9.3 is no longer supported.
     if (
-        firmwareVersion !== undefined &&
         internal_model === DeviceModelInternal.T3W1 &&
         versionUtils.isEqual(firmwareVersion, [2, 9, 3])
     ) {
