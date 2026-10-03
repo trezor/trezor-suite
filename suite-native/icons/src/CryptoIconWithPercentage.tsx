@@ -20,6 +20,7 @@ import { useNativeStyles } from '@trezor/styles-native';
 import { type CSSColor, palette } from '@trezor/theme';
 
 import { PizzaIcon, usePizzaAnimation } from './PizzaIcon';
+import { useNetworkIcon } from './useNetworkIcon';
 
 const CANVAS_SIZE = 48;
 const ICON_SIZE = 32;
@@ -38,8 +39,14 @@ export const CryptoIconWithPercentage = ({
     percentage,
     percentageOffset,
 }: CryptoIconProps) => {
-    const iconSymbol: string = iconName;
-    const iconSvg = useSVG(isCryptoIconSymbol(iconSymbol) ? cryptoIcons[iconSymbol] : null);
+    const network = useNetworkIcon(iconName);
+    const iconSvg = useSVG(
+        network
+            ? network.icon.getIcons(network.symbol).coin
+            : isCryptoIconSymbol(iconName)
+              ? cryptoIcons[iconName]
+              : null,
+    );
     const { utils } = useNativeStyles();
     const colorScheme = useActiveColorScheme();
 

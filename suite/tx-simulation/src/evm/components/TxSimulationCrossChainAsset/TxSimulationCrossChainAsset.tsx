@@ -1,8 +1,8 @@
+import { AssetIcon } from '@suite/asset-icon';
 import { Translation } from '@suite/intl';
 import { type CrossChainAssetDiff, getNetworkByBlockaidChain } from '@suite-common/tx-simulation';
 import { IconCircle, Row } from '@trezor/components';
 import { CoinsIcon } from '@trezor/icons';
-import { TokenIcon } from '@trezor/product-components';
 
 import { TxSimulationAssetRow } from '../../../common';
 
@@ -47,7 +47,7 @@ export function TxSimulationCrossChainAsset({ assetDiff }: TxSimulationCrossChai
     return (
         <Row columnGap={8} padding={{ horizontal: 16, vertical: 12 }}>
             {network && asset.symbol ? (
-                <TokenIcon
+                <AssetIcon
                     symbol={network.symbol}
                     contractAddress={'address' in asset ? asset.address : undefined}
                     size={32}

@@ -102,6 +102,7 @@
         "@suite/analytics": "workspace:*",
         "@suite/app-assets": "workspace:*",
         "@suite/apps-embedding-demo": "workspace:*",
+        "@suite/asset-icon": "workspace:*",
         "@suite/authenticity-checks": "workspace:*",
         "@suite/backup": "workspace:*",
         "@suite/bluetooth": "workspace:*",

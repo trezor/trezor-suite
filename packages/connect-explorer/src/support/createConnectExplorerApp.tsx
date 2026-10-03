@@ -2,6 +2,7 @@ import { type ComponentType } from 'react';
 
 import { type AppProps } from 'next/app';
 
+import { type CoinIcons } from '@trezor/connect-explorer-theme';
 import type { NetworkConfigStore } from '@trezor/network-module-types';
 import { NetworkDisplayProvider } from '@trezor/product-components';
 
@@ -10,6 +11,7 @@ import { type ConnectExplorerReduxStore } from '../store/createConnectExplorerRe
 
 export type ConnectExplorerServices = {
     store: ConnectExplorerReduxStore;
+    coinIcons: CoinIcons;
     networkDisplayStore: NetworkConfigStore;
 };
 
@@ -22,7 +24,11 @@ export type ConnectExplorerApp = () => ComponentType<AppProps>;
 export const createConnectExplorerApp = (deps: ConnectExplorerAppDeps): ConnectExplorerApp => {
     const AppWithServices = (props: AppProps) => (
         <NetworkDisplayProvider store={deps.services.networkDisplayStore}>
-            <ConnectExplorerAppRoot {...props} store={deps.services.store} />
+            <ConnectExplorerAppRoot
+                {...props}
+                store={deps.services.store}
+                coinIcons={deps.services.coinIcons}
+            />
         </NetworkDisplayProvider>
     );
 

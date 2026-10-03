@@ -1,4 +1,5 @@
 import { Address } from '@suite/address';
+import { TokenIcon } from '@suite/asset-icon';
 import { useFormatters } from '@suite-common/formatters';
 import { getNetwork } from '@suite-common/wallet-config';
 import { selectBaseCurrency } from '@suite-common/wallet-core';

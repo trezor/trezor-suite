@@ -2,9 +2,11 @@ import type { NetworkSymbol } from '@trezor/network-module-types';
 
 import type { AddressValidator } from './AddressValidator';
 import type { NamedAddressResolver } from './NamedAddressResolver';
+import type { NetworkIcon } from './NetworkIcon';
 import type { SuiteCommonNetworkConfig } from './SuiteCommonNetworkConfig';
 
 export type SuiteCommonNetworkModule = {
+    icon: NetworkIcon<NetworkSymbol>;
     addressValidator: AddressValidator<NetworkSymbol>;
 
     /** Only for networks with a name system; see `NamedAddressResolver`. */

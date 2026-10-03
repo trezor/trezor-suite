@@ -13,11 +13,12 @@ import styled from 'styled-components';
 import { Select } from '@trezor/components';
 import { TokenIcon } from '@trezor/product-components';
 import { typography } from '@trezor/theme';
-import { arrayPartition } from '@trezor/utils';
+import { arrayPartition, typedObjectKeys } from '@trezor/utils';
 
 import { Anchor } from './anchor';
 import { Collapse } from './collapse';
 import { useActiveAnchor } from '../contexts/active-anchor';
+import { useCoinIcons } from '../contexts/coin-icons';
 import { useMenu } from '../contexts/menu';
 import { FocusedItemContext, OnFocusItemContext } from '../contexts/sidebar-focus';
 import { useConfig } from '../contexts/useConfig';
@@ -110,19 +111,8 @@ export function Menu({
     const route = useFSRoute();
     const prevRoute = useRef(route);
 
-    const coinSymbols = {
-        bitcoin: 'btc',
-        cardano: 'ada',
-        ethereum: 'eth',
-        litecoin: 'ltc',
-        monero: 'xmr',
-        ripple: 'xrp',
-        solana: 'sol',
-        stellar: 'xlm',
-        tezos: 'xtz',
-        tron: 'trx',
-    };
-    const coinNames = Object.keys(coinSymbols);
+    const coinIcons = useCoinIcons();
+    const coinNames = typedObjectKeys(coinIcons);
     const routeCoinSegment = route.split('/')[2] ?? '';
     const defaultActiveCoin = coinNames.includes(routeCoinSegment) ? routeCoinSegment : 'bitcoin';
     const [activeCoin, setActiveCoin] = useState(defaultActiveCoin);
@@ -179,8 +169,8 @@ export function Menu({
                     options={methodsOptions}
                     formatOptionLabel={option => (
                         <Option>
-                            {coinSymbols[option.value] && (
-                                <TokenIcon size={20} symbol={coinSymbols[option.value]} />
+                            {coinIcons[option.value] && (
+                                <TokenIcon size={20} src={coinIcons[option.value]} />
                             )}
                             <Label>{option.label}</Label>
                         </Option>

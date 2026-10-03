@@ -1,9 +1,9 @@
 import { AnimatePresence, type MotionProps, motion } from 'framer-motion';
 import styled from 'styled-components';
 
+import { NetworkIcon } from '@suite/asset-icon';
 import { getNetwork } from '@suite-common/wallet-config';
 import { TOOLTIP_DELAY_NORMAL, Tooltip, motionEasing } from '@trezor/components';
-import { NetworkIcon } from '@trezor/product-components';
 
 import { useAccountSearch } from 'src/hooks/suite';
 

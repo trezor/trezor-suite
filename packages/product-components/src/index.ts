@@ -1,7 +1,3 @@
-export {
-    isCryptoIconSymbol as isCoinSymbol,
-    isNetworkIconSymbol as isNetworkSymbolWithIcon,
-} from '@suite-common/icons';
 export { CardList, type CardListProps } from '@trezor/components';
 export { AssetShareIndicator } from './components/AssetShareIndicator/AssetShareIndicator';
 export { ConfirmOnDevicePill } from './components/ConfirmOnDevice/ConfirmOnDevicePill';
@@ -61,7 +57,6 @@ export {
     type TokenIconProps,
     type TokenIconSize,
 } from './components/TokenIcon/tokenIconTypes';
-export { shouldShowNetworkIcon } from './components/TokenIcon/tokenIconUtils';
 export * from './components/TokenIconSet/TokenIconSet';
 export { TooltipRow } from './components/TooltipRow/TooltipRow';
 export * from './components/TopAssets/TopAssets';
@@ -74,3 +69,4 @@ export {
 export { selectNetworkOptions } from './network-display/networkDisplaySelectors';
 export { getLargeModelImagePath, getModelFrontColor } from './utils/getModelFrontColor';
 export { mapTrezorModelToFilledIcon, mapTrezorModelToIcon } from './utils/mapTrezorModelToIcon';
+export { NetworkIconBadge } from './components/NetworkIcon/NetworkIconBadge';

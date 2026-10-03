@@ -2,6 +2,7 @@ import { useMemo, useState } from 'react';
 
 import styled from 'styled-components';
 
+import { AssetIcon } from '@suite/asset-icon';
 import { Translation } from '@suite/intl';
 import { useServices } from '@suite-common/dependency-injection';
 import { desktopQueryKeys, useQuery } from '@suite-common/react-query';
@@ -10,7 +11,6 @@ import { notificationsActions } from '@suite-common/toast-notifications';
 import { type SelectedAccountLoaded, type StellarTokenInfo } from '@suite-common/wallet-types';
 import { getStellarInactiveTokens } from '@suite-common/wallet-utils';
 import { Button, Card, Row, Table, Text, Tooltip } from '@trezor/components';
-import { TokenIcon } from '@trezor/product-components';
 
 import { Loading } from 'src/components/suite';
 import { StellarManageTokenModal } from 'src/components/suite/modals/ReduxModal/UserContextModal/StellarManageTokenModal';
@@ -132,7 +132,7 @@ export const InactiveTokensTable = ({ selectedAccount, searchQuery }: InactiveTo
                         <Table.Row key={token.contract}>
                             <Table.Cell>
                                 <Row gap={8}>
-                                    <TokenIcon
+                                    <AssetIcon
                                         placeholder={token.name || token.symbol || ''}
                                         symbol={account.symbol}
                                         contractAddress={token.contract}

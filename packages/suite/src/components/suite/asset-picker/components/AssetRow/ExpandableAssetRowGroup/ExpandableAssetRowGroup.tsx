@@ -2,10 +2,11 @@ import { Fragment, type ReactNode } from 'react';
 
 import styled from 'styled-components';
 
+import { AssetIconSet } from '@suite/asset-icon';
 import { Translation, type TranslationKey } from '@suite/intl';
 import { Box, Collapsible, Row, Text } from '@trezor/components';
 import { CaretUpDownIcon, CaretUpDownReverseIcon } from '@trezor/icons';
-import { TokenIconSet, type TokenIconSetToken } from '@trezor/product-components';
+import { type TokenIconSetToken } from '@trezor/product-components';
 
 import { type AccountWithOptionalLabel, type AssetRowOption } from '../../../types';
 import {
@@ -82,7 +83,7 @@ export function ExpandableAssetRowGroup({
 
                         <Row alignItems="center" gap={12}>
                             {!expanded && (
-                                <TokenIconSet
+                                <AssetIconSet
                                     symbol={account.symbol}
                                     tokens={items.map(getIconSetToken)}
                                     size={24}

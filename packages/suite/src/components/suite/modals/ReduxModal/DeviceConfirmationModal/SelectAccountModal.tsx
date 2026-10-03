@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 
 import { AccountLabel } from '@suite/account';
+import { NetworkIcon } from '@suite/asset-icon';
 import { Translation } from '@suite/intl';
 import { onReceiveAccount } from '@suite/modal';
 import { useServices } from '@suite-common/dependency-injection';
@@ -9,7 +10,6 @@ import { selectAccounts } from '@suite-common/wallet-core';
 import { Card, Column, Icon, Modal, Row, Skeleton, SubTabs, Table } from '@trezor/components';
 import { type UiRequestSelectAccount } from '@trezor/connect';
 import { CaretRightIcon } from '@trezor/icons';
-import { NetworkIcon, isNetworkSymbolWithIcon } from '@trezor/product-components';
 
 import { ConnectCallSource } from 'src/components/suite/ConnectCallSource';
 import { ConnectModalBackdrop } from 'src/components/suite/ConnectModalBackdrop';
@@ -120,12 +120,7 @@ export const SelectAccountModal = ({ data }: SelectAccountModalProps) => {
                                         >
                                             <Table.Cell>
                                                 <Row gap={12}>
-                                                    {isNetworkSymbolWithIcon(symbol) && (
-                                                        <NetworkIcon
-                                                            networkSymbol={symbol}
-                                                            size={24}
-                                                        />
-                                                    )}
+                                                    <NetworkIcon networkSymbol={symbol} size={24} />
                                                     {suiteAccount ? (
                                                         <AccountLabel account={suiteAccount} />
                                                     ) : (

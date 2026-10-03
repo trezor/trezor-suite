@@ -4,6 +4,10 @@ import { type NetworkModuleDefinition, createNetworkModule } from './createNetwo
 
 const createTestResolver = () => {
     const definition: NetworkModuleDefinition<'aaa' | 'taaa'> = {
+        icon: {
+            getIcons: () => ({ coin: 'coin.svg', network: 'network.svg' }),
+            getTokenLogoIdentifiers: (_symbol, contract) => [contract],
+        },
         addressValidator: {
             isAddressValid: () => true,
             getAddressType: () => undefined,

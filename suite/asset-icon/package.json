@@ -1,0 +1,28 @@
+{
+    "name": "@suite/asset-icon",
+    "version": "1.0.0",
+    "private": true,
+    "license": "See LICENSE.md in repo root",
+    "sideEffects": false,
+    "main": "src/index",
+    "scripts": {
+        "depcheck": "yarn g:depcheck",
+        "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'",
+        "test:unit": "yarn g:jest",
+        "type-check": "yarn g:tsc --build"
+    },
+    "dependencies": {
+        "@suite-common/dependency-injection": "workspace:*",
+        "@suite-common/networks": "workspace:*",
+        "@trezor/asset-utils": "workspace:*",
+        "@trezor/product-components": "workspace:*",
+        "@trezor/react-utils": "workspace:*",
+        "react": "19.2.3",
+        "styled-components": "^6.3.9"
+    },
+    "devDependencies": {
+        "@testing-library/react": "^16.3.2",
+        "@trezor/components": "workspace:*",
+        "@types/react": "19.2.14"
+    }
+}

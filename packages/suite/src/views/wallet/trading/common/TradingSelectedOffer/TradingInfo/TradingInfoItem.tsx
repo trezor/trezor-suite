@@ -2,13 +2,13 @@ import { type CryptoId } from 'invity-api';
 
 import { AccountLabel } from '@suite/account';
 import { Address } from '@suite/address';
+import { AssetIcon } from '@suite/asset-icon';
 import { Translation, useTranslation } from '@suite/intl';
 import { selectShouldAnimateLoadingSkeleton } from '@suite/ui-animations';
 import { cryptoIdToNetworkSymbolAndContractAddress, useTradingAssets } from '@suite-common/trading';
 import { getNetworkDisplaySymbolName } from '@suite-common/wallet-config';
 import { type Account } from '@suite-common/wallet-types';
 import { Card, Column, Row, Skeleton, Text } from '@trezor/components';
-import { TokenIcon } from '@trezor/product-components';
 
 import { BaseCurrencyValue } from 'src/components/suite';
 import { useSelector } from 'src/hooks/suite';
@@ -100,9 +100,9 @@ export const TradingInfoItem = ({
                     <Row padding={16} gap={8} justifyContent="space-between">
                         <Row gap={8} alignItems="center">
                             {isNativeToken ? (
-                                <TokenIcon size={40} symbol={symbol} showNetworkIcon />
+                                <AssetIcon size={40} symbol={symbol} showNetworkIcon />
                             ) : (
-                                <TokenIcon
+                                <AssetIcon
                                     size={40}
                                     symbol={networkSymbol}
                                     contractAddress={contractAddress}

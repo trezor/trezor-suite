@@ -1,5 +1,6 @@
 import styled from 'styled-components';
 
+import { AssetIcon } from '@suite/asset-icon';
 import { Translation, type TranslationKey } from '@suite/intl';
 import {
     type RewardDtoV2,
@@ -11,7 +12,6 @@ import { getApyPercent } from '@suite-common/wallet-utils';
 import { Column, Divider, Icon, Row, Text } from '@trezor/components';
 import { ChartLineIcon } from '@trezor/icons';
 import { isWrappedNativeToken } from '@trezor/network-ethereum-suite-common';
-import { TokenIcon } from '@trezor/product-components';
 import { belowBreakpoint, breakpoints } from '@trezor/theme';
 
 const RewardList = styled.div`
@@ -136,7 +136,7 @@ export const EarnYieldApyBreakdown = ({
 
                     return (
                         <RewardRow key={index}>
-                            <TokenIcon
+                            <AssetIcon
                                 placeholder={displaySymbol || reward.token.name || 'token'}
                                 symbol={networkSymbol}
                                 contractAddress={reward.token.address}

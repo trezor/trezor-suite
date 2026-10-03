@@ -1,5 +1,6 @@
+import { TokenIcon } from '@suite/asset-icon';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
-import { QrCode, TokenIcon } from '@trezor/product-components';
+import { QrCode } from '@trezor/product-components';
 
 // Kept small so the badge stays well within QR level H's ~30% error-correction budget and never
 // damages the encoded data.

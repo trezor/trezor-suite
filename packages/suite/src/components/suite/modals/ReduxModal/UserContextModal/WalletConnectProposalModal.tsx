@@ -2,6 +2,7 @@ import { useMemo, useState } from 'react';
 
 import styled from 'styled-components';
 
+import { NetworkIcon } from '@suite/asset-icon';
 import { Translation } from '@suite/intl';
 import { closeModal } from '@suite/modal';
 import { gotoThunk } from '@suite/router';
@@ -32,7 +33,6 @@ import {
     Tooltip,
 } from '@trezor/components';
 import { ShieldCheckFilledIcon, ShieldWarningFilledIcon } from '@trezor/icons';
-import { NetworkIcon } from '@trezor/product-components';
 
 import { ConnectAppIcon } from 'src/components/suite/ConnectAppIcon';
 import { useSelector } from 'src/hooks/suite';

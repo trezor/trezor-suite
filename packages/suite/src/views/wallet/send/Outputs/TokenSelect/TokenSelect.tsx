@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from 'react';
 
 import { Address, copyAddressToClipboard, showCopyAddressModal } from '@suite/address';
+import { AssetIcon } from '@suite/asset-icon';
 import { selectIsCopyAddressModalShown } from '@suite/flags';
 import { Translation } from '@suite/intl';
 import { useServices } from '@suite-common/dependency-injection';
@@ -22,7 +23,6 @@ import {
 } from '@suite-common/wallet-utils';
 import { Banner, Card, Column, IconButton, Link, Row, Text } from '@trezor/components';
 import { CaretDownIcon } from '@trezor/icons';
-import { TokenIcon } from '@trezor/product-components';
 
 import { setSendFormPrefill } from 'src/actions/suite/suiteActions';
 import { BaseCurrencyValue, FormattedCryptoAmount, HiddenPlaceholder } from 'src/components/suite';
@@ -116,7 +116,7 @@ export const TokenSelect = ({ outputId }: TokenSelectProps) => {
                 <Row justifyContent="space-between" height={64}>
                     <Row justifyContent="flex-start" gap={12}>
                         {selectedToken ? (
-                            <TokenIcon
+                            <AssetIcon
                                 symbol={account.symbol}
                                 contractAddress={selectedToken?.contract}
                                 size={24}
@@ -125,7 +125,7 @@ export const TokenSelect = ({ outputId }: TokenSelectProps) => {
                                 shouldTryToFetch={isTokenKnown}
                             />
                         ) : (
-                            <TokenIcon symbol={account.symbol} size={40} showNetworkIcon />
+                            <AssetIcon symbol={account.symbol} size={40} showNetworkIcon />
                         )}
                         <Column alignItems="flex-start">
                             <Row justifyContent="flex-start">

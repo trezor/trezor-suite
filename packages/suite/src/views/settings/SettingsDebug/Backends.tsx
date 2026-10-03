@@ -1,5 +1,6 @@
 import styled from 'styled-components';
 
+import { TokenIcon } from '@suite/asset-icon';
 import { Translation } from '@suite/intl';
 import { openModal } from '@suite/modal';
 import { useServices } from '@suite-common/dependency-injection';
@@ -8,7 +9,7 @@ import { type NetworkSymbol, getNetwork } from '@suite-common/wallet-config';
 import { selectEnabledNetworks, selectNetworkBlockchainInfo } from '@suite-common/wallet-core';
 import { type ConnectionStatus } from '@suite-common/wallet-types';
 import { Button } from '@trezor/components';
-import { SectionItem, TokenIcon } from '@trezor/product-components';
+import { SectionItem } from '@trezor/product-components';
 import { typography } from '@trezor/theme';
 
 import { StatusLight } from 'src/components/suite';

@@ -27,6 +27,7 @@ const cryptoAssetsTypesConfig = [
     {
         name: 'cryptoIcons',
         dirname: 'cryptoAssets/cryptoIcons',
+        moduleAssets: true,
         typeName: 'CryptoIconName',
     },
 ];
@@ -41,7 +42,12 @@ const paymentMethodLogosAssetsTypesConfig = [
 ];
 
 const networkAssetsTypesConfig = [
-    { name: 'networkIcons', dirname: 'cryptoAssets/networkIcons', typeName: 'NetworkIconName' },
+    {
+        name: 'networkIcons',
+        dirname: 'cryptoAssets/networkIcons',
+        typeName: 'NetworkIconName',
+        moduleAssets: true,
+    },
 ];
 
 // https://github.com/svg/svgo#built-in-plugins
@@ -102,23 +108,73 @@ const listRasterAssets = assetsDirname => {
         .map(fileName => ({ fileName }));
 };
 
+// The compatibility catalogs used by native discover module-owned assets automatically.
+const listNetworkAssets = legacyDirname => {
+    const kind = path.basename(legacyDirname);
+    const networksDir = path.resolve(__dirname, '../../networks');
+    const directories = fs.existsSync(path.resolve(__dirname, legacyDirname))
+        ? [{ assetDirname: legacyDirname }]
+        : [];
+    for (const family of fs.readdirSync(networksDir, { withFileTypes: true })) {
+        if (!family.isDirectory()) continue;
+        const familyDir = path.join(networksDir, family.name);
+        for (const module of fs.readdirSync(familyDir, { withFileTypes: true })) {
+            if (!module.isDirectory() || !module.name.endsWith('-assets')) continue;
+            const assetsDir = path.join(familyDir, module.name, 'assets', kind);
+            if (fs.existsSync(assetsDir)) {
+                const packageJson = JSON.parse(
+                    fs.readFileSync(path.join(familyDir, module.name, 'package.json'), 'utf8'),
+                );
+                directories.push({
+                    assetDirname: path.relative(__dirname, assetsDir),
+                    packageName: packageJson.name,
+                });
+            }
+        }
+    }
+    const assets = directories
+        .flatMap(({ assetDirname, packageName }) =>
+            fs
+                .readdirSync(path.resolve(__dirname, assetDirname))
+                .filter(fileName => fileName.endsWith('.svg'))
+                .map(fileName => ({ fileName, assetDirname, packageName })),
+        )
+        .sort((a, b) => a.fileName.localeCompare(b.fileName));
+    const seen = new Set();
+    for (const { fileName } of assets) {
+        if (seen.has(fileName)) throw new Error(`Duplicate ${kind} asset: ${fileName}`);
+        seen.add(fileName);
+    }
+
+    return assets;
+};
+
 const getOptimizedAssetTypes = assetTypesArray =>
-    assetTypesArray.map(config => ({
-        ...config,
-        assets: config.raster
-            ? listRasterAssets(config.dirname)
-            : optimizeSvgAssets(config.dirname),
-    }));
+    assetTypesArray.map(config => {
+        if (config.moduleAssets) {
+            return { ...config, assets: listNetworkAssets(config.dirname) };
+        }
+
+        return {
+            ...config,
+            assets: config.raster
+                ? listRasterAssets(config.dirname)
+                : optimizeSvgAssets(config.dirname),
+        };
+    });
 
 const generateIconsFileContent = assetTypesArray => {
     const mappedAssetTypes = assetTypesArray.map(
         ({ name, assets, dirname, typeName }) => `
            export const ${name} = {
             ${assets
-                .map(
-                    ({ fileName }) =>
-                        `${fileName.replace(/\.(svg|webp)$/, '')}: require('../${dirname}/${fileName}')`,
-                )
+                .map(({ fileName, assetDirname = dirname, packageName }) => {
+                    const importPath = packageName
+                        ? `${packageName}/assets/${path.basename(assetDirname)}`
+                        : `../${assetDirname}`;
+
+                    return `${fileName.replace(/\.(svg|webp)$/, '')}: require('${importPath}/${fileName}')`;
+                })
                 .join(',')}
         } as const;
         export type ${typeName} = keyof typeof ${name};
@@ -134,8 +190,8 @@ const generateIconsFileContent = assetTypesArray => {
 };
 
 const writeOptimizedAssets = assetTypesArray => {
-    assetTypesArray.forEach(({ assets, dirname, raster }) => {
-        if (raster) {
+    assetTypesArray.forEach(({ assets, dirname, raster, moduleAssets }) => {
+        if (raster || moduleAssets) {
             return;
         }
         assets.forEach(({ fileName, content }) =>
@@ -163,16 +219,23 @@ const generateFileForAssetTypes = async (assetTypesArray, outputFilePath) => {
 };
 
 (async () => {
-    console.log('Generating icons TS file...');
-    await generateFileForAssetTypes(assetTypesConfig, iconsFilePath);
-    console.log(chalk.green('Icons TS file generated successfully'));
+    if (!process.argv.includes('--network-icons-only')) {
+        console.log('Generating icons TS file...');
+        await generateFileForAssetTypes(assetTypesConfig, iconsFilePath);
+        console.log(chalk.green('Icons TS file generated successfully'));
+    }
     console.log('Generating crypto icons TS file...');
     await generateFileForAssetTypes(cryptoAssetsTypesConfig, cryptoIconsPath);
     console.log(chalk.green('Crypto icons TS file generated successfully'));
     console.log('Generating network icons TS file...');
     await generateFileForAssetTypes(networkAssetsTypesConfig, networkIconsPath);
     console.log(chalk.green('Network icons TS file generated successfully'));
-    console.log('Generating payment method logos TS file...');
-    await generateFileForAssetTypes(paymentMethodLogosAssetsTypesConfig, paymentMethodLogosPath);
-    console.log(chalk.green('Payment method logos TS file generated successfully'));
+    if (!process.argv.includes('--network-icons-only')) {
+        console.log('Generating payment method logos TS file...');
+        await generateFileForAssetTypes(
+            paymentMethodLogosAssetsTypesConfig,
+            paymentMethodLogosPath,
+        );
+        console.log(chalk.green('Payment method logos TS file generated successfully'));
+    }
 })();

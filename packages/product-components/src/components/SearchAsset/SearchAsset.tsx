@@ -4,23 +4,23 @@ import { MagnifyingGlassIcon } from '@trezor/icons';
 import { SearchAssetNetworkSelect } from './SearchAssetNetworkSelect';
 import type { SearchAssetSelectConfig } from './hooks/useNetworkSelect';
 
-export type SearchAssetProps = {
+export type SearchAssetProps<TSymbol extends string = string> = {
     searchPlaceholder: string;
     search: string;
     setSearch: (value: string) => void;
-    selectConfig?: SearchAssetSelectConfig;
+    selectConfig?: SearchAssetSelectConfig<TSymbol>;
     onMenuOpen?: () => void;
     autoFocus?: boolean;
 };
 
-export const SearchAsset = ({
+export const SearchAsset = <TSymbol extends string>({
     searchPlaceholder,
     search,
     setSearch,
     selectConfig,
     onMenuOpen,
     autoFocus = false,
-}: SearchAssetProps) => {
+}: SearchAssetProps<TSymbol>) => {
     const dataTestIdBase = '@asset-picker/search';
 
     return (

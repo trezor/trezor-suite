@@ -2,6 +2,7 @@ import { FormProvider } from 'react-hook-form';
 
 import { type CryptoId, type DexApprovalType } from 'invity-api';
 
+import { AssetIcon, NetworkIcon } from '@suite/asset-icon';
 import { DebugOnlyBadge, selectIsDebugModeActive } from '@suite/debug';
 import { useDevice } from '@suite/device';
 import { Translation, type TranslationKey } from '@suite/intl';
@@ -19,7 +20,6 @@ import {
     Text,
 } from '@trezor/components';
 import { CaretDownIcon, InfoIcon, WarningIcon } from '@trezor/icons';
-import { NetworkIcon, TokenIcon } from '@trezor/product-components';
 import { useAsyncClickHandler } from '@trezor/react-utils';
 
 import { AccountLabeling } from 'src/components/suite/labeling/AccountLabeling';
@@ -142,7 +142,7 @@ export const ApproveModal = (props: ApproveModalProps) => {
                                     <Translation id="TR_APPROVAL_CURRENT_LIMIT" />
                                 </Text>
                                 <Row gap={8}>
-                                    <TokenIcon
+                                    <AssetIcon
                                         symbol={account.symbol}
                                         contractAddress={token.contract}
                                         size={20}

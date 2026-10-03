@@ -4,7 +4,6 @@ import { Column, Icon, Row, Text } from '@trezor/components';
 import { ArrowRightIcon } from '@trezor/icons';
 
 import { ExchangeAmountWithSymbol } from './ExchangeAmountWithSymbol';
-import { ExchangeAssetWithFallback } from './ExchangeAssetWithFallback';
 import { type ExchangeInfoAmountSide, type ExchangeInfoAsset } from './notificationsTypes';
 
 export type { ExchangeInfoAmountSide, ExchangeInfoAsset } from './notificationsTypes';
@@ -33,10 +32,10 @@ export const ExchangeInfoNotification = ({
                 {message}
             </Text>
             <Row gap={8} alignItems="center">
-                <ExchangeAssetWithFallback asset={send} />
+                {send.icon}
                 <ExchangeAmountWithSymbol amount={sendAmount} asset={send} />
                 <Icon as={ArrowRightIcon} size={20} />
-                <ExchangeAssetWithFallback asset={receive} />
+                {receive.icon}
                 <ExchangeAmountWithSymbol amount={receiveAmount} asset={receive} />
             </Row>
         </Column>

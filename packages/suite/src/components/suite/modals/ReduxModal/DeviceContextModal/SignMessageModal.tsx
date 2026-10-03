@@ -1,6 +1,7 @@
 import styled from 'styled-components';
 
 import { AccountLabel } from '@suite/account';
+import { TokenIcon } from '@suite/asset-icon';
 import { Translation } from '@suite/intl';
 import type { DeviceRootState } from '@suite-common/device';
 import { type TrezorDevice } from '@suite-common/suite-types';
@@ -17,7 +18,7 @@ import {
 import { findAccountsByAddress } from '@suite-common/wallet-utils';
 import { Card, Column, DotIndicator, H4, Modal, Row } from '@trezor/components';
 import TrezorConnect from '@trezor/connect';
-import { ConfirmOnDevicePill, TokenIcon } from '@trezor/product-components';
+import { ConfirmOnDevicePill } from '@trezor/product-components';
 
 import { ConnectCallSource } from 'src/components/suite/ConnectCallSource';
 import { ConnectModalBackdrop } from 'src/components/suite/ConnectModalBackdrop';
