@@ -44,12 +44,26 @@ export const parsePsbt = ({
         }
 
         const address_n = getHDPath(utxo.path);
+        const script_type = getScriptType(address_n);
+        if (!script_type) {
+            throw TypedError(
+                'Method_InvalidParameter',
+                `parsePsbt: Unsupported input script type at [${index}]`,
+            );
+        }
+        if (script_type === 'SPENDMULTISIG') {
+            // Multisig inputs require a `multisig` (pubkeys) field that cannot be derived here.
+            throw TypedError(
+                'Method_InvalidParameter',
+                `parsePsbt: Multisig inputs are not supported at [${index}]`,
+            );
+        }
         inputs.push({
             prev_hash: utxo.txid,
             prev_index: input.index,
             amount: utxo.amount,
             address_n,
-            script_type: getScriptType(address_n),
+            script_type,
             sequence: input.sequence,
         });
 
@@ -84,6 +98,14 @@ export const parsePsbt = ({
                 throw TypedError(
                     'Method_InvalidParameter',
                     `parsePsbt: Invalid op_return_data at [${index}]`,
+                );
+            }
+            if (BigInt(output.value) !== BigInt(0)) {
+                // Trezor forces OP_RETURN amount to 0; a non-zero value here would make the
+                // reported fee/totalSpent diverge from the transaction that gets signed.
+                throw TypedError(
+                    'Method_InvalidParameter',
+                    `parsePsbt: OP_RETURN output must have zero value at [${index}]`,
                 );
             }
             outputs.push({
