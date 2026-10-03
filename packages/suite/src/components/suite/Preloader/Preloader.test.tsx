@@ -169,6 +169,10 @@ describe(`${Preloader.name} component`, () => {
         });
     });
 
+    afterEach(() => {
+        jest.useRealTimers();
+    });
+
     it('Loading: suite is loading', () => {
         const { services } = createTestCompositionRoot<PreloaderTestDeps, AppState>({
             preloadedState: getInitialState({
@@ -259,7 +263,6 @@ describe(`${Preloader.name} component`, () => {
         expect(findByTestId('@connect-device-prompt')).not.toBeNull();
 
         unmount();
-        jest.useRealTimers();
     });
 
     it('Remembered device is in the reducer', () => {
