@@ -344,4 +344,209 @@ export default [
             marker: undefined,
         },
     },
+    {
+        // DeliverMax is only the maximum the sender authorised - on a partial payment
+        // (Flags & tfPartialPayment) the sender chooses how much of that is actually
+        // delivered, and only meta.delivered_amount reports it. This transaction
+        // authorises 25718124 drops but only delivers 4200000; a wallet reading
+        // DeliverMax as the received amount would overstate a real receive by ~6.1x.
+        description: 'With partial payment',
+        params: {
+            descriptor: 'rfkV3EoXimH6JrG1QAyofgbVhnyZZDjWSj',
+            details: 'txs',
+        },
+        serverFixtures: [
+            {
+                method: 'account_info',
+                response: xrpAccount.account_info.validated,
+            },
+            {
+                method: 'account_info',
+                response: xrpAccount.account_info.current,
+            },
+            {
+                method: 'account_tx',
+                response: {
+                    status: 'success',
+                    type: 'response',
+                    result: {
+                        account: 'rfkV3EoXimH6JrG1QAyofgbVhnyZZDjWSj',
+                        transactions: [
+                            {
+                                hash: '73C90DEB024FDBFCEC80DAB423CD98B4E77D3D34C9E85B4E3EE1DAB43F49F9DE',
+                                meta: {
+                                    TransactionIndex: 7,
+                                    TransactionResult: 'tesSUCCESS',
+                                    delivered_amount: '4200000',
+                                },
+                                tx_json: {
+                                    Account: 'r4eEbLKZGbVSBHnSUBZW8i5XaMjGLdqT4a',
+                                    DeliverMax: '25718124',
+                                    Destination: 'rfkV3EoXimH6JrG1QAyofgbVhnyZZDjWSj',
+                                    Fee: '6000',
+                                    Flags: 2147483648 + 131072, // tfFullyCanonicalSig | tfPartialPayment
+                                    LastLedgerSequence: 47457602,
+                                    Sequence: 157331,
+                                    SigningPubKey:
+                                        '038CF47114672A12B269AEE015BF7A8438609B994B0640E4B28B2F56E93D948B15',
+                                    TransactionType: 'Payment',
+                                    TxnSignature:
+                                        '30440220665BEB140619A36C737929487519B862D1592225568CBEBC248972AD8453D8EE0220020852427CE83EC4BD8A5BFB48B7DA573FFC042A1E3BE9A513FC04F3C3D45B12',
+                                    date: 611932692,
+                                    hash: '',
+                                    inLedger: 47455208,
+                                    ledger_index: 47455208,
+                                },
+                            },
+                        ],
+                    },
+                },
+            },
+        ],
+        response: {
+            descriptor: 'rfkV3EoXimH6JrG1QAyofgbVhnyZZDjWSj',
+            balance: '20000000',
+            availableBalance: '10000000',
+            empty: false,
+            history: {
+                total: -1,
+                unconfirmed: 0,
+                transactions: [
+                    {
+                        type: 'recv',
+                        txid: '73C90DEB024FDBFCEC80DAB423CD98B4E77D3D34C9E85B4E3EE1DAB43F49F9DE',
+                        amount: '4200000',
+                        fee: '6000',
+                        blockTime: 1558617492,
+                        blockHeight: 47455208,
+                        blockHash:
+                            '73C90DEB024FDBFCEC80DAB423CD98B4E77D3D34C9E85B4E3EE1DAB43F49F9DE',
+                        targets: [
+                            {
+                                addresses: ['rfkV3EoXimH6JrG1QAyofgbVhnyZZDjWSj'],
+                                isAddress: true,
+                                amount: '4200000',
+                                n: 0,
+                            },
+                        ],
+                        tokens: [],
+                        internalTransfers: [],
+                        feeRate: undefined,
+                        details: {
+                            vin: [],
+                            vout: [],
+                            size: 0,
+                            totalInput: '0',
+                            totalOutput: '0',
+                        },
+                        rippleSpecific: { destinationTag: undefined },
+                    },
+                ],
+            },
+            misc: { sequence: 2, reserve: '10000000' },
+            marker: undefined,
+        },
+    },
+    {
+        // delivered_amount can be the literal string 'unavailable' when the server can't
+        // determine it (some old validated ledgers). That sentinel is still typeof
+        // 'string' and must not be mistaken for a real drops amount - it must fall back
+        // to DeliverMax, same as when delivered_amount is absent entirely.
+        description: "With delivered_amount: 'unavailable' sentinel",
+        params: {
+            descriptor: 'rfkV3EoXimH6JrG1QAyofgbVhnyZZDjWSj',
+            details: 'txs',
+        },
+        serverFixtures: [
+            {
+                method: 'account_info',
+                response: xrpAccount.account_info.validated,
+            },
+            {
+                method: 'account_info',
+                response: xrpAccount.account_info.current,
+            },
+            {
+                method: 'account_tx',
+                response: {
+                    status: 'success',
+                    type: 'response',
+                    result: {
+                        account: 'rfkV3EoXimH6JrG1QAyofgbVhnyZZDjWSj',
+                        transactions: [
+                            {
+                                hash: '8F7B96A6CF38B9DE9CB6F82594452FDB4EE8C31D014AF0FB959FABA8871C74C8',
+                                meta: {
+                                    TransactionIndex: 9,
+                                    TransactionResult: 'tesSUCCESS',
+                                    delivered_amount: 'unavailable',
+                                },
+                                tx_json: {
+                                    Account: 'r4eEbLKZGbVSBHnSUBZW8i5XaMjGLdqT4a',
+                                    DeliverMax: '25718124',
+                                    Destination: 'rfkV3EoXimH6JrG1QAyofgbVhnyZZDjWSj',
+                                    Fee: '6000',
+                                    Flags: 2147483648,
+                                    LastLedgerSequence: 47457602,
+                                    Sequence: 157331,
+                                    SigningPubKey:
+                                        '038CF47114672A12B269AEE015BF7A8438609B994B0640E4B28B2F56E93D948B15',
+                                    TransactionType: 'Payment',
+                                    TxnSignature:
+                                        '30440220665BEB140619A36C737929487519B862D1592225568CBEBC248972AD8453D8EE0220020852427CE83EC4BD8A5BFB48B7DA573FFC042A1E3BE9A513FC04F3C3D45B12',
+                                    date: 611932692,
+                                    hash: '',
+                                    inLedger: 47455208,
+                                    ledger_index: 47455208,
+                                },
+                            },
+                        ],
+                    },
+                },
+            },
+        ],
+        response: {
+            descriptor: 'rfkV3EoXimH6JrG1QAyofgbVhnyZZDjWSj',
+            balance: '20000000',
+            availableBalance: '10000000',
+            empty: false,
+            history: {
+                total: -1,
+                unconfirmed: 0,
+                transactions: [
+                    {
+                        type: 'recv',
+                        txid: '8F7B96A6CF38B9DE9CB6F82594452FDB4EE8C31D014AF0FB959FABA8871C74C8',
+                        amount: '25718124',
+                        fee: '6000',
+                        blockTime: 1558617492,
+                        blockHeight: 47455208,
+                        blockHash:
+                            '8F7B96A6CF38B9DE9CB6F82594452FDB4EE8C31D014AF0FB959FABA8871C74C8',
+                        targets: [
+                            {
+                                addresses: ['rfkV3EoXimH6JrG1QAyofgbVhnyZZDjWSj'],
+                                isAddress: true,
+                                amount: '25718124',
+                                n: 0,
+                            },
+                        ],
+                        tokens: [],
+                        internalTransfers: [],
+                        feeRate: undefined,
+                        details: {
+                            vin: [],
+                            vout: [],
+                            size: 0,
+                            totalInput: '0',
+                            totalOutput: '0',
+                        },
+                        rippleSpecific: { destinationTag: undefined },
+                    },
+                ],
+            },
+            misc: { sequence: 2, reserve: '10000000' },
+            marker: undefined,
+        },
+    },
 ];
