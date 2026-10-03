@@ -25,7 +25,11 @@ import {
     subunitsToUnits,
     tryGetAccountIdentity,
 } from '@suite-common/wallet-utils';
-import TrezorConnect, { type AccountInfo, type TokenInfo } from '@trezor/connect';
+import TrezorConnect, {
+    type AccountInfo,
+    type GetAccountInfo as GetAccountInfoParams,
+    type TokenInfo,
+} from '@trezor/connect';
 import { asCoinSymbol } from '@trezor/connect-common';
 import { BigNumber } from '@trezor/utils';
 
@@ -51,6 +55,16 @@ import {
     selectEvmPrivatePendingHint,
     selectTransactions,
 } from '../transactions/transactionsSelectors';
+
+// The cheap first request of a refresh. Blockbook reports enough in `basic` to tell that
+// something changed; a plain RPC node reports no transaction count, so there the token list is the
+// only thing that gives an incoming token transfer away.
+const getRefreshDetails = (account: Account): GetAccountInfoParams['details'] => {
+    if (account.networkType === 'solana') return 'txids';
+    if (account.backendType === 'evm-rpc') return 'tokens';
+
+    return 'basic';
+};
 
 const fetchAccountTokens = async (account: Account, payloadTokens: AccountInfo['tokens']) => {
     const tokens: TokenInfo[] = [];
@@ -187,7 +201,7 @@ export const fetchAndUpdateAccountThunk = createThunk<
             coin: asCoinSymbol(account.symbol),
             identity: tryGetAccountIdentity(account),
             descriptor: account.descriptor,
-            details: account.networkType === 'solana' ? 'txids' : 'basic',
+            details: getRefreshDetails(account),
             suppressBackupWarning: true,
             tokenAccountsPubKeys,
             protocols: account.networkType === 'ethereum' ? ['erc4626'] : undefined,
