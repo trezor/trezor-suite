@@ -1,0 +1,21 @@
+appId: io.trezor.suite.develop
+name: Warm reload — graph + fiat-rate render from persisted state
+tags:
+  - suite-native
+  - performance
+---
+# Prerequisite: run a passphrase variant flow first (open-passphrase-*.yaml) to set
+# up and persist the wallet (view-only). This flow only relaunches and measures.
+#
+# Flashlight must force-stop the app BEFORE this runs (via --beforeEachCommand), so
+# launchApp starts the single fresh process Flashlight profiles — no mid-measurement
+# restart (which crashes Flashlight's per-process profiler).
+- launchApp:
+    clearState: false
+
+# Measured endpoint: the fiat balance is fully rendered (the loading Skeleton has
+# been replaced by the real @home/portfolio/fiat-balance-header amount).
+- extendedWaitUntil:
+    visible:
+      id: "@home/portfolio/fiat-balance-header"
+    timeout: 120000

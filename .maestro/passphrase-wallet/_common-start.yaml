@@ -1,0 +1,45 @@
+appId: io.trezor.suite.develop
+name: (subflow) passphrase — device setup + onboarding up to coin selection
+---
+# Device setup with passphrase protection enabled.
+# Requires the shim on :9011 and `adb reverse tcp:21328 tcp:21328`.
+- runScript: setupDevice.js
+
+# App onboarding.
+- launchApp:
+    clearState: true
+- extendedWaitUntil:
+    visible:
+      id: "@onboarding/Welcome/nextBtn"
+    timeout: 35000
+- tapOn:
+    id: "@onboarding/Welcome/nextBtn"
+    retryTapIfNoChange: true
+- tapOn:
+    id: "@onboarding/AnalyticsConsent/nextBtn"
+    retryTapIfNoChange: true
+- tapOn:
+    id: "@onboarding/Biometrics/skipBtn"
+    retryTapIfNoChange: true
+- waitForAnimationToEnd
+- runFlow:
+    when:
+      visible:
+        id: "@trading-residence"
+    commands:
+      - tapOn:
+          text: "Not now"
+          retryTapIfNoChange: true
+
+# Open the coin-enabling screen via Get started.
+- extendedWaitUntil:
+    visible:
+      id: "@screen/Home"
+    timeout: 35000
+- tapOn:
+    id: "@home/get-started-button"
+    retryTapIfNoChange: true
+- extendedWaitUntil:
+    visible:
+      id: "@screen/CoinEnablingInit"
+    timeout: 20000
