@@ -1,0 +1,1 @@
+- [ ] update dependencies in [trezor-suite-sync](https://github.com/trezor/trezor-suite-sync/)
