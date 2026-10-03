@@ -1,3 +1,7 @@
+# 3.3.0
+
+- added: optional HID api (`node-hid`) for HID-only Trezor One devices (firmware 1.6.3 and older), restricted to exact origins passed in `hid.origins`
+
 # 3.2.1
 
 - added: `/abort` endpoint
