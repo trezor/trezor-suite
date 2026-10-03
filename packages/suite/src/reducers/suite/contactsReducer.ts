@@ -2,8 +2,11 @@ import { type PayloadAction, createSlice } from '@reduxjs/toolkit';
 
 import { type DebugRootState, selectIsDebugModeActive } from '@suite/debug';
 import { type SuiteSettingsRootState, selectHasExperimentalFeature } from '@suite/settings';
+import { deviceActions } from '@suite-common/device';
 import { type StaticSessionId } from '@trezor/connect';
 
+import { STORAGE } from 'src/actions/suite/constants';
+import { type StorageLoadAction } from 'src/actions/suite/storageActions';
 import { type Attestation } from 'src/utils/contacts/attestation';
 import { isContactsSlip44 } from 'src/utils/contacts/coin';
 import { isValidNpubHex } from 'src/utils/contacts/npub';
@@ -612,6 +615,41 @@ const contactsSlice = createSlice({
             getWalletDraft(state, payload.deviceState).isOnboarded = true;
         },
     },
+    extraReducers: builder => {
+        builder
+            // This runs while the store is created, so a throw on a corrupt row would stop Suite
+            // from starting. A row that is not an object is skipped.
+            .addCase(STORAGE.LOAD, (state: ContactsState, { payload }: StorageLoadAction) => {
+                payload.contacts.forEach(({ key, value }) => {
+                    if (!isObjectRecord(value)) return;
+
+                    state.byWallet[key] = sanitizeContactsWalletState(value);
+                });
+                payload.contactsDeviceAuthority.forEach(({ key, value }) => {
+                    if (!isObjectRecord(value)) return;
+
+                    const authority = normalizeDeviceAuthority(value);
+                    const roster = state.byWallet[key]?.contacts ?? {};
+                    // The two stores are written separately, so an interrupted removal can leave a
+                    // removed contact's anchor behind. It must not come back, or a re-add of the
+                    // same identity would be payable without the device.
+                    Object.keys(authority.anchoredNpubs).forEach(npub => {
+                        if (roster[npub] === undefined) delete authority.anchoredNpubs[npub];
+                    });
+                    state.deviceAuthority[key] = authority;
+                });
+            })
+            // Storage drops a forgotten wallet's rows, so memory must drop them too. Otherwise
+            // authorizing the same wallet again would bring its contacts and anchors back, and
+            // remembering it would write them to storage again.
+            .addCase(deviceActions.forgetDevice, (state: ContactsState, { payload }) => {
+                const deviceState = payload.device.state?.staticSessionId;
+                if (!deviceState) return;
+
+                delete state.byWallet[deviceState];
+                delete state.deviceAuthority[deviceState];
+            });
+    },
 });
 
 export const contactsActions = contactsSlice.actions;
@@ -624,6 +662,16 @@ export const selectDeviceAuthority = (
     state: ContactsRootState,
     deviceState: StaticSessionId,
 ): DeviceAuthorityState => state.contacts.deviceAuthority[deviceState] ?? EMPTY_DEVICE_AUTHORITY;
+
+/**
+ * The authority entry as stored, or undefined when the wallet never had one. Persistence reads this
+ * instead of selectDeviceAuthority, whose empty fallback would give every remembered wallet an
+ * authority row, even one that never confirmed a contact.
+ */
+export const selectStoredDeviceAuthority = (
+    state: ContactsRootState,
+    deviceState: StaticSessionId,
+): DeviceAuthorityState | undefined => state.contacts.deviceAuthority[deviceState];
 
 /**
  * Returns the stored object by reference, so callers can memoize on it: the reference changes only

@@ -1,5 +1,9 @@
 # Storage changelog
 
+## 26.8.0.3
+
+- create `contacts` and `contactsDeviceAuthority` object stores for per-wallet contacts of remembered devices
+
 ## 26.8.0.2
 
 - convert `walletSettings.hideSuspiciousTransactions` from a single boolean to a per-network record

@@ -1,8 +1,12 @@
 import { debugInitialState } from '@suite/debug';
 import { type ExperimentalFeature } from '@suite/experimental';
 import { suiteSettingsInitialState } from '@suite/settings';
+import { deviceActions } from '@suite-common/device';
+import { mockSuiteDevice } from '@suite-common/suite-types/mocks';
 import { type StaticSessionId } from '@trezor/connect';
 
+import { STORAGE } from 'src/actions/suite/constants';
+import { type StorageLoadAction } from 'src/actions/suite/storageActions';
 import { type Attestation } from 'src/utils/contacts/attestation';
 import { SHARE_RECLAIM_WINDOW_MS } from 'src/utils/contacts/sharing';
 
@@ -965,5 +969,223 @@ describe('selectIsContactsFeatureEnabled', () => {
     // The flag stays stored, but its toggle is hidden outside debug mode.
     it('is off after leaving debug mode, although the feature stays enabled', () => {
         expect(selectIsContactsFeatureEnabled(featureState(['contacts'], false))).toBe(false);
+    });
+});
+
+describe('contacts persistence', () => {
+    const ALICE = 'a'.repeat(64);
+    const BOB = 'b'.repeat(64);
+
+    // The reducer reads only the contacts part of the storage payload.
+    const storageLoad = (
+        payload: Pick<StorageLoadAction['payload'], 'contacts' | 'contactsDeviceAuthority'>,
+    ) => ({ type: STORAGE.LOAD, payload }) as StorageLoadAction;
+
+    const forget = (staticSessionId: StaticSessionId) =>
+        deviceActions.forgetDevice({ device: mockSuiteDevice({ state: { staticSessionId } }) });
+
+    it('STORAGE.LOAD restores the contacts and device authority of every stored wallet', () => {
+        const state = contactsReducer(
+            undefined,
+            storageLoad({
+                contacts: [
+                    {
+                        key: WALLET_A,
+                        value: {
+                            ...createEmptyWalletState(),
+                            contacts: { [ALICE]: contact(ALICE) },
+                        },
+                    },
+                    {
+                        key: WALLET_B,
+                        value: {
+                            ...createEmptyWalletState(),
+                            contacts: { [BOB]: contact(BOB, true) },
+                            isOnboarded: true,
+                        },
+                    },
+                ],
+                contactsDeviceAuthority: [
+                    {
+                        key: WALLET_A,
+                        value: { anchoredNpubs: { [ALICE]: { label: 'Alice', anchoredAt: 1 } } },
+                    },
+                ],
+            }),
+        );
+
+        expect(state.byWallet[WALLET_A]?.contacts).toEqual({ [ALICE]: contact(ALICE) });
+        expect(state.byWallet[WALLET_B]?.isOnboarded).toBe(true);
+        expect(
+            contactPaymentNpub(
+                contact(ALICE),
+                selectDeviceAuthority({ contacts: state }, WALLET_A),
+            ),
+        ).toBe(ALICE);
+        // A stored verified flag without a stored anchor grants no payability.
+        expect(state.deviceAuthority[WALLET_B]).toBeUndefined();
+        expect(
+            contactPaymentNpub(
+                contact(BOB, true),
+                selectDeviceAuthority({ contacts: state }, WALLET_B),
+            ),
+        ).toBeUndefined();
+    });
+
+    it('STORAGE.LOAD drops a corrupt contact from a stored blob', () => {
+        const BAD = 'not-hex-☠';
+
+        const state = contactsReducer(
+            undefined,
+            storageLoad({
+                contacts: [
+                    {
+                        key: WALLET_A,
+                        value: {
+                            ...createEmptyWalletState(),
+                            contacts: {
+                                [ALICE]: contact(ALICE),
+                                [BAD]: {
+                                    npub: BAD,
+                                    label: 'corrupt',
+                                    addedAt: 1,
+                                    isVerified: false,
+                                },
+                            },
+                        },
+                    },
+                ],
+                contactsDeviceAuthority: [],
+            }),
+        );
+
+        expect(Object.keys(state.byWallet[WALLET_A]!.contacts)).toEqual([ALICE]);
+    });
+
+    it("STORAGE.LOAD trims a contact's unpaid addresses to the cap, dropping the oldest", () => {
+        const verifiedAddresses = Object.fromEntries(
+            Array.from({ length: MAX_UNSPENT_CONTACT_ADDRESSES + 1 }, (_, index) => [
+                `addr${index}`,
+                { ...attestation(ALICE, `addr${index}`), createdAt: index + 1 },
+            ]),
+        );
+
+        const state = contactsReducer(
+            undefined,
+            storageLoad({
+                contacts: [
+                    {
+                        key: WALLET_A,
+                        value: { ...createEmptyWalletState(), verifiedAddresses },
+                    },
+                ],
+                contactsDeviceAuthority: [],
+            }),
+        );
+
+        const loaded = state.byWallet[WALLET_A]!.verifiedAddresses;
+        expect(Object.keys(loaded)).toHaveLength(MAX_UNSPENT_CONTACT_ADDRESSES);
+        expect(loaded.addr0).toBeUndefined();
+    });
+
+    // Regression: STORAGE.LOAD runs while the store is created, so a throw there stopped Suite from
+    // starting.
+    it('STORAGE.LOAD skips a stored row that is not an object and loads the others', () => {
+        const nullRow = { key: WALLET_B, value: null };
+
+        const state = contactsReducer(
+            undefined,
+            storageLoad({
+                contacts: [
+                    // @ts-expect-error A corrupt stored row may hold null.
+                    nullRow,
+                    {
+                        key: WALLET_A,
+                        value: {
+                            ...createEmptyWalletState(),
+                            contacts: { [ALICE]: contact(ALICE) },
+                        },
+                    },
+                ],
+                // @ts-expect-error A corrupt stored row may hold null.
+                contactsDeviceAuthority: [nullRow],
+            }),
+        );
+
+        expect(state.byWallet[WALLET_B]).toBeUndefined();
+        expect(state.deviceAuthority[WALLET_B]).toBeUndefined();
+        expect(state.byWallet[WALLET_A]?.contacts).toEqual({ [ALICE]: contact(ALICE) });
+    });
+
+    it('STORAGE.LOAD drops a stored anchor whose contact is not in the stored roster', () => {
+        const anchors = {
+            [ALICE]: { label: 'Alice', anchoredAt: 1 },
+            [BOB]: { label: 'Bob', anchoredAt: 1 },
+        };
+
+        const state = contactsReducer(
+            undefined,
+            storageLoad({
+                contacts: [
+                    {
+                        key: WALLET_A,
+                        value: {
+                            ...createEmptyWalletState(),
+                            contacts: { [ALICE]: contact(ALICE) },
+                        },
+                    },
+                ],
+                contactsDeviceAuthority: [
+                    { key: WALLET_A, value: { anchoredNpubs: anchors } },
+                    { key: WALLET_B, value: { anchoredNpubs: anchors } },
+                ],
+            }),
+        );
+
+        expect(state.deviceAuthority[WALLET_A]).toEqual({
+            anchoredNpubs: { [ALICE]: { label: 'Alice', anchoredAt: 1 } },
+        });
+        expect(state.deviceAuthority[WALLET_B]).toEqual({ anchoredNpubs: {} });
+    });
+
+    it('STORAGE.LOAD fills a stored device authority that lacks its anchored set', () => {
+        const state = contactsReducer(
+            undefined,
+            storageLoad({
+                contacts: [],
+                // @ts-expect-error A corrupt stored blob may miss its fields.
+                contactsDeviceAuthority: [{ key: WALLET_A, value: {} }],
+            }),
+        );
+
+        expect(state.deviceAuthority[WALLET_A]).toEqual({ anchoredNpubs: {} });
+    });
+
+    it("forgetDevice drops the wallet's contacts and device authority and keeps other wallets", () => {
+        let state = contactsReducer(
+            undefined,
+            contactsActions.contactUpserted({ deviceState: WALLET_A, contact: contact(ALICE) }),
+        );
+        state = contactsReducer(
+            state,
+            contactsActions.contactAnchored({ deviceState: WALLET_A, npub: ALICE, label: 'Alice' }),
+        );
+        state = contactsReducer(
+            state,
+            contactsActions.contactUpserted({ deviceState: WALLET_B, contact: contact(BOB) }),
+        );
+        state = contactsReducer(
+            state,
+            contactsActions.contactAnchored({ deviceState: WALLET_B, npub: BOB, label: 'Bob' }),
+        );
+
+        state = contactsReducer(state, forget(WALLET_A));
+
+        expect(state.byWallet[WALLET_A]).toBeUndefined();
+        expect(state.deviceAuthority[WALLET_A]).toBeUndefined();
+        expect(state.byWallet[WALLET_B]?.contacts).toEqual({ [BOB]: contact(BOB) });
+        expect(isLocallyAnchored(selectDeviceAuthority({ contacts: state }, WALLET_B), BOB)).toBe(
+            true,
+        );
     });
 });
