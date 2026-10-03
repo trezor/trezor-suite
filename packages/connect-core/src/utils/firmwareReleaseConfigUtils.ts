@@ -30,15 +30,14 @@ const fetchRemoteFwConfig = async (firmwareChannel: FirmwareChannel) => {
     const path = `${MIDDLE_PATH}/${CONFIG_PATH}${JWS_CONFIG.REMOTE_FILENAME}`;
     const remoteReleasesUrl = new URL(path, BASE_URL);
 
-    try {
-        const controller = new AbortController();
-        const timeoutId = setTimeout(
-            () => controller.abort('Request timed out'),
-            JWS_CONFIG.REQUEST_TIMEOUT_MS,
-        );
+    const controller = new AbortController();
+    const timeoutId = setTimeout(
+        () => controller.abort('Request timed out'),
+        JWS_CONFIG.REQUEST_TIMEOUT_MS,
+    );
 
+    try {
         const response = await fetch(remoteReleasesUrl.toString(), { signal: controller.signal });
-        clearTimeout(timeoutId);
 
         if (!response.ok) {
             throw new Error(`HTTP error! Status: ${response.status}`);
@@ -52,6 +51,8 @@ const fetchRemoteFwConfig = async (firmwareChannel: FirmwareChannel) => {
             `Failed to fetch remote: ${error instanceof Error ? error.message : String(error)}`,
             { cause: error },
         );
+    } finally {
+        clearTimeout(timeoutId);
     }
 };
 

@@ -5,7 +5,6 @@ import {
     type DeviceRootState,
     deviceActions,
     selectDevices,
-    selectIsPendingTransportEvent,
     selectSelectedDevice,
 } from '@suite-common/device';
 import { type FirmwareRootState, selectEffectiveFirmwareChannel } from '@suite-common/firmware';
@@ -202,7 +201,6 @@ export const connectInitThunk = createThunk<
         await TrezorConnect.init({
             ...connectInitSettings,
             binFilesBaseUrl,
-            pendingTransportEvent: selectIsPendingTransportEvent(getState()),
             transports: createTransports(debugTransports),
             thp,
             debug: showConnectLogs,

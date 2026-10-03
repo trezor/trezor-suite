@@ -42,7 +42,9 @@ describe('DeviceList', () => {
             createLogger: noopCreateLogger,
         });
         eventsSpy = jest.fn();
-        list.on('transport-start', ({ apiType }) => eventsSpy('transport-start', apiType));
+        list.on('transport-start', ({ apiType, initialDeviceCount }) =>
+            eventsSpy('transport-start', apiType, initialDeviceCount),
+        );
         list.on('transport-error', ({ apiType }) => eventsSpy('transport-error', apiType));
         (
             [
@@ -95,10 +97,10 @@ describe('DeviceList', () => {
             } as const),
         );
 
-        list.init({ transports: [transport], pendingTransportEvent: true });
+        const init = list.init({ transports: [transport] });
         // transport-error is not emitted yet because list.init is not awaited
         expect(eventsSpy).toHaveBeenCalledTimes(0);
-        await list.pendingConnection();
+        await init;
         expect(eventsSpy).toHaveBeenCalledTimes(1);
     });
 
@@ -112,41 +114,41 @@ describe('DeviceList', () => {
             } as const),
         );
 
-        list.init({ transports: [transport], pendingTransportEvent: true });
+        const init = list.init({ transports: [transport] });
         // transport-error is not emitted yet because list.init is not awaited
         expect(eventsSpy).toHaveBeenCalledTimes(0);
-        await list.pendingConnection();
+        await init;
         expect(eventsSpy).toHaveBeenCalledTimes(1);
         expect(eventsSpy.mock.calls[0][0]).toEqual('transport-error');
     });
 
-    it('.init() with pendingTransportEvent (unacquired device)', async () => {
+    it('.init() with unacquired device', async () => {
         const transport = createTestTransport({
             openDevice: () =>
                 Promise.resolve({ success: false, error: { code: 'wrong previous session' } }),
         });
 
-        list.init({ transports: [transport], pendingTransportEvent: true });
-        await list.pendingConnection();
+        await list.init({ transports: [transport] });
+        await list.pendingHandshakes();
 
         const events = eventsSpy.mock.calls.map(call => call[0]);
-        expect(events).toEqual(['device-connect_unacquired', 'transport-start']);
+        expect(events).toEqual(['transport-start', 'device-connect_unacquired']);
     });
 
-    it('.init() with pendingTransportEvent (disconnected device)', async () => {
+    it('.init() with disconnected device', async () => {
         const transport = createTestTransport({
             openDevice: () =>
                 Promise.resolve({ success: false, error: { code: 'device not found' } }),
         });
 
-        list.init({ transports: [transport], pendingTransportEvent: true });
-        await list.pendingConnection();
+        await list.init({ transports: [transport] });
+        await list.pendingHandshakes();
 
         expect(eventsSpy).toHaveBeenCalledTimes(1);
         expect(eventsSpy.mock.calls[0][0]).toEqual('transport-start');
     });
 
-    it('.init() with pendingTransportEvent (unreadable device)', async () => {
+    it('.init() with unreadable device', async () => {
         const transport = createTestTransport({
             read: () =>
                 Promise.resolve({
@@ -155,14 +157,24 @@ describe('DeviceList', () => {
                 }),
         });
 
-        list.init({ transports: [transport], pendingTransportEvent: true });
-        await list.pendingConnection();
+        await list.init({ transports: [transport] });
+        await list.pendingHandshakes();
 
         const events = eventsSpy.mock.calls.map(call => call[0]);
-        expect(events).toEqual(['device-connect_unacquired', 'transport-start']);
+        expect(events).toEqual(['transport-start', 'device-connect_unacquired']);
     });
 
-    it('.init() with pendingTransportEvent (multiple acquired devices)', async () => {
+    it('.init() with connected device', async () => {
+        const transport = createTestTransport();
+
+        await list.init({ transports: [transport] });
+        await list.pendingHandshakes();
+
+        const events = eventsSpy.mock.calls.map(call => call[0]);
+        expect(events).toEqual(['transport-start', 'device-connect']);
+    });
+
+    it('.init() with multiple acquired devices', async () => {
         const transport = createTestTransport({
             enumerate: () => ({
                 success: true,
@@ -170,20 +182,20 @@ describe('DeviceList', () => {
             }),
         });
 
-        list.init({ transports: [transport], pendingTransportEvent: true });
-        await list.pendingConnection();
+        await list.init({ transports: [transport] });
+        await list.pendingHandshakes();
 
         // note: acquire - release - connect should be ok.
         // acquire - deviceList._takeAndCreateDevice start (run -> rurInner -> getFeatures -> release) -> deviceList._takeAndCreateDevice end => emit DEVICE.CONNECT
         expect(eventsSpy.mock.calls).toEqual([
+            ['transport-start', 'usb', 3],
             ['device-connect', 'usb', '1'],
             ['device-connect', 'usb', '2'],
             ['device-connect', 'usb', '3'],
-            ['transport-start', 'usb', undefined],
         ]);
     });
 
-    it('.init() with pendingTransportEvent (multiple transports)', async () => {
+    it('.init() with multiple transports and devices', async () => {
         const transportA = createTestTransport({
             enumerate: () => ({ success: true, payload: [{ path: '1' }, { path: '2' }] }),
             openDevice: (path: string) =>
@@ -204,33 +216,17 @@ describe('DeviceList', () => {
             type: 'usb2',
         });
 
-        list.init({ transports: [transportA, transportB], pendingTransportEvent: true });
-
-        await list.pendingConnection();
+        await list.init({ transports: [transportA, transportB] });
+        await list.pendingHandshakes();
 
         expect(eventsSpy.mock.calls).toEqual([
+            ['transport-start', 'usb', 2],
+            ['transport-start', 'usb2', 3],
             ['device-connect', 'usb', '1'],
             ['device-connect', 'usb', '2'],
-            ['transport-start', 'usb', undefined],
             ['device-connect', 'usb2', '1'],
             ['device-connect', 'usb2', '3'],
-            ['transport-start', 'usb2', undefined],
         ]);
-    });
-
-    it('.init() without pendingTransportEvent (device connected after start)', async () => {
-        const transport = createTestTransport();
-
-        list.init({ transports: [transport] });
-        await list.pendingConnection();
-        // transport start emitted almost immediately (after first enumerate)
-        expect(eventsSpy).toHaveBeenCalledTimes(1);
-
-        // wait for device-connect event
-        await new Promise(resolve => list.on('device-connect', resolve));
-
-        const events = eventsSpy.mock.calls.map(call => call[0]);
-        expect(events).toEqual(['transport-start', 'device-connect']);
     });
 
     it('multiple devices connected after .init()', async () => {
@@ -244,8 +240,8 @@ describe('DeviceList', () => {
             },
         });
 
-        list.init({ transports: [transport], pendingTransportEvent: true });
-        await list.pendingConnection();
+        await list.init({ transports: [transport] });
+        await list.pendingHandshakes();
 
         // emit TRANSPORT.CHANGE 3 times
         onChangeCallback([{ path: '1' }, { path: '2' }]);
@@ -256,7 +252,7 @@ describe('DeviceList', () => {
         await waitForNthEventOfType(list, 'device-connect', 3);
 
         expect(eventsSpy.mock.calls).toEqual([
-            ['transport-start', 'usb', undefined],
+            ['transport-start', 'usb', 0],
             ['device-connect', 'usb', '1'],
             ['device-connect', 'usb', '3'],
             ['device-connect', 'usb', '4'],
@@ -295,8 +291,8 @@ describe('DeviceList', () => {
             },
         });
 
-        list.init({ transports: [transport], pendingTransportEvent: true });
-        await list.pendingConnection();
+        await list.init({ transports: [transport] });
+        await list.pendingHandshakes();
 
         const device = list.getOnlyDevice();
         if (!device) throw new Error('Device is missing');

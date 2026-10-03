@@ -483,13 +483,15 @@ export class Device extends TypedEmitter<DeviceEvents> implements IDevice {
     }
 
     async interrupt(reason: Error) {
+        const { runAbort, currentSession, currentRun } = this;
+
         await abortThpWorkflow(this);
-        await this.currentSession?.abort(reason);
+        await currentSession?.abort(reason);
 
         // reject inner defer
-        this.runAbort?.abort(reason);
+        runAbort?.abort(reason);
 
-        await this.currentRun;
+        await currentRun;
     }
 
     get currentRun() {

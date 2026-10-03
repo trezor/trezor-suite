@@ -13,6 +13,7 @@ export interface TransportInfo {
     apiType: Transport['apiType'];
     type: Transport['name'];
     version: string;
+    initialDeviceCount?: number;
 }
 
 export interface TransportError {
@@ -34,12 +35,6 @@ export interface TransportSetTransports {
 
 export interface TransportRequestWebUSBDevice {
     type: typeof TRANSPORT.REQUEST_DEVICE;
-    payload?: undefined;
-}
-
-export interface TransportGetInfo {
-    id: string;
-    type: typeof TRANSPORT.GET_INFO;
     payload?: undefined;
 }
 

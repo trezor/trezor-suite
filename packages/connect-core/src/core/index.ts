@@ -27,7 +27,6 @@ import type {
     CoreRequestMessage,
     DeviceIdentity,
     MethodInfo,
-    TransportInfo,
 } from '@trezor/connect-common';
 import { ERRORS } from '@trezor/connect-common/src/constants';
 import type { TrezorError } from '@trezor/connect-common/src/constants/errors';
@@ -41,7 +40,7 @@ import {
     noopLogger,
 } from '@trezor/logger';
 import { TRANSPORT, TRANSPORT_ERROR } from '@trezor/transport-common';
-import { createDeferred, createLazy, throwError } from '@trezor/utils';
+import { createLazy, throwError } from '@trezor/utils';
 
 import type { AbstractMethod } from './AbstractMethod';
 import { getMethod } from './method';
@@ -272,13 +271,6 @@ const onCallDevice = async (
 ): Promise<void> => {
     const { deviceList, callMethods, sendCoreMessage, logger } = context;
     const responseID = message.id;
-    const { transports, pendingTransportEvent } = settingsStore.get();
-
-    if (!deviceList.isConnected() && !deviceList.pendingConnection()) {
-        // transport is missing try to initialize it once again
-        deviceList.init({ transports, pendingTransportEvent });
-    }
-    await deviceList.pendingConnection();
 
     // find device
     let tempDevice: Device | undefined;
@@ -834,12 +826,6 @@ export class Core extends EventEmitter {
                 }
                 break;
 
-            case TRANSPORT.GET_INFO:
-                this.sendCoreMessage(
-                    createResponseMessage(message.id, true, this.getActiveTransports()),
-                );
-                break;
-
             // messages from UI (popup/modal...)
             case UI_RESPONSE.RECEIVE_CONFIRMATION:
             case UI_RESPONSE.RECEIVE_PIN:
@@ -923,12 +909,6 @@ export class Core extends EventEmitter {
         this.deviceList.dispose();
     }
 
-    getActiveTransports(): TransportInfo[] | undefined {
-        if (this.deviceList.isConnected()) {
-            return this.deviceList.getActiveTransports();
-        }
-    }
-
     async init(
         settings: ConnectSettings,
         onCoreEvent: (message: CoreEventMessage) => void,
@@ -942,13 +922,6 @@ export class Core extends EventEmitter {
         // is created because device discovery/handshake can log during init.
         this.createLogger = settings.createLogger ?? noopCreateLogger;
         this.coreLogger = this.createLogger('Core');
-
-        // do not send any event until Core is fully loaded
-        // DeviceList emits TRANSPORT and DEVICE events if pendingTransportEvent is set
-        const throttlePromise = createDeferred();
-        throttlePromise.promise.catch(() => {});
-        const onCoreEventThrottled = (message: CoreEventMessage) =>
-            throttlePromise.promise.then(() => onCoreEvent(message));
 
         try {
             // enabledNetworks has its own store (the single source of truth); keep it out of
@@ -970,41 +943,30 @@ export class Core extends EventEmitter {
 
             this._deviceList = new DeviceList({ createLogger: this.createLogger });
             initDeviceList(this.getCoreContext());
-
-            this.on(CORE_EVENT, onCoreEventThrottled);
         } catch (error) {
             // TODO: kill app
             this.coreLogger.error('init', error);
-            throttlePromise.reject(error);
             throw error;
         }
 
-        const { transports, pendingTransportEvent, transportReconnect } = settingsStore.get();
+        const { transports } = settingsStore.get();
+
+        this.on(CORE_EVENT, onCoreEvent);
 
         try {
-            this.deviceList.init({ transports, pendingTransportEvent, transportReconnect });
+            this.deviceList.init({ transports });
         } catch (error) {
             this.sendCoreMessage(createTransportMessage(TRANSPORT.ERROR, { error }));
-            throttlePromise.reject(error);
             throw error;
         }
-
-        if (!transportReconnect) {
-            await this.deviceList.pendingConnection();
-        }
-
-        // Core initialized successfully, disable throttle
-        this.on(CORE_EVENT, onCoreEvent);
-        this.off(CORE_EVENT, onCoreEventThrottled);
-        setTimeout(throttlePromise.resolve, 0);
     }
 }
 
 const resetTransports = async ({ deviceList, sendCoreMessage }: CoreContext) => {
-    const { transports, pendingTransportEvent, transportReconnect } = settingsStore.get();
+    const { transports } = settingsStore.get();
 
     try {
-        await deviceList.init({ transports, pendingTransportEvent, transportReconnect });
+        await deviceList.init({ transports });
     } catch (error) {
         // do nothing
         sendCoreMessage(createTransportMessage(TRANSPORT.ERROR, { error }));
