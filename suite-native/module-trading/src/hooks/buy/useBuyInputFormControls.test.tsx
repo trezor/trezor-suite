@@ -51,27 +51,31 @@ describe('useBuyInputFormControls', () => {
         expect(result.current.onChangeText).toBe(initialOnChangeText);
     });
 
-    it('should switch to fiat amount and clear crypto amount on fiat input change', async () => {
+    it('should switch to fiat amount and clear crypto amounts on fiat input change', async () => {
         form.setValue('amountInCrypto', true);
         form.setValue('cryptoValue', '0.1');
+        form.setValue('cryptoBaseCurrencyValue', '100');
         const { result } = await renderUseBuyInputFormControls('fiatValue');
 
         await act(() => result.current.onChangeText('100'));
 
         expect(form.getValues('fiatValue')).toBe('100');
         expect(form.getValues('cryptoValue')).toBeUndefined();
+        expect(form.getValues('cryptoBaseCurrencyValue')).toBeUndefined();
         expect(form.getValues('amountInCrypto')).toBe(false);
     });
 
-    it('should switch to crypto amount and clear fiat amount on crypto input change', async () => {
+    it('should switch to crypto amount and clear other amounts on crypto input change', async () => {
         form.setValue('amountInCrypto', false);
         form.setValue('fiatValue', '100');
+        form.setValue('cryptoBaseCurrencyValue', '100');
         const { result } = await renderUseBuyInputFormControls('cryptoValue');
 
         await act(() => result.current.onChangeText('0.1'));
 
         expect(form.getValues('cryptoValue')).toBe('0.1');
         expect(form.getValues('fiatValue')).toBeUndefined();
+        expect(form.getValues('cryptoBaseCurrencyValue')).toBeUndefined();
         expect(form.getValues('amountInCrypto')).toBe(true);
     });
 });

@@ -95,10 +95,6 @@ const createFeatureFlagsMemoizedSelector = createWeakMapSelector.withTypes<
     MessageSystemRootState & FeatureFlagsRootState
 >();
 
-const createFiatRatesMemoizedSelector = createWeakMapSelector.withTypes<
-    FiatRatesRootState & WalletSettingsRootState & TradingRootState
->();
-
 export const selectTradingEnvironment = (state: TradingRootState) =>
     state.wallet.trading.tradingEnvironment;
 
@@ -227,30 +223,20 @@ export const selectActiveTradingType = (state: TradingRootState) =>
 export const selectHasActiveTradingType = (state: TradingRootState) =>
     state.wallet.trading.activeTradingType !== null;
 
-export const selectAmountInBaseFiatCurrency = createFiatRatesMemoizedSelector(
-    [
-        selectCurrentFiatRates,
-        selectBaseCurrency,
-        (_state, asset: TradeableAsset) => asset,
-        (_state, _symbol, amount: string) => amount,
-    ],
-    (fiatRates, localCurrency, asset, amount) => {
-        const symbol = getSymbolFromTradeableAsset(asset);
+export const selectFiatRateByTradeableAsset = (
+    state: FiatRatesRootState & WalletSettingsRootState,
+    asset: TradeableAsset | undefined,
+): number | undefined => {
+    const symbol = getSymbolFromTradeableAsset(asset);
 
-        if (!symbol || !fiatRates) {
-            return undefined;
-        }
+    if (!symbol) {
+        return undefined;
+    }
 
-        const fiatRateKey = getFiatRateKey(symbol, localCurrency, asset.contractAddress);
-        const rate = fiatRates[fiatRateKey]?.rate;
+    const fiatRateKey = getFiatRateKey(symbol, selectBaseCurrency(state), asset?.contractAddress);
 
-        if (!rate) {
-            return undefined;
-        }
-
-        return toFiatCurrency({ amount, rate }) || undefined;
-    },
-);
+    return selectCurrentFiatRates(state)?.[fiatRateKey]?.rate;
+};
 
 export const selectAccountsWithTokensToSellSectionListByTradingType =
     createCombinedMemoizedSelector(
