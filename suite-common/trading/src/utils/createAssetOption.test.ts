@@ -1,10 +1,118 @@
 import { type CryptoId } from 'invity-api';
 
-import { createAssetOption } from './useTradingAssets';
+import { mockNetworkMetadata } from '@suite-common/networks/mocks';
+import { asNetworkSymbol, getNetwork } from '@suite-common/wallet-config';
+
+import { createAssetOption } from './createAssetOption';
 import coins from '../__fixtures__/coins.json';
 import platforms from '../__fixtures__/platforms.json';
 
+const bitcoinConfig = { ...mockNetworkMetadata.btc, ...getNetwork(asNetworkSymbol('btc')) };
+const ethereumConfig = { ...mockNetworkMetadata.eth, ...getNetwork(asNetworkSymbol('eth')) };
+const baseConfig = { ...mockNetworkMetadata.base, ...getNetwork(asNetworkSymbol('base')) };
+const networkConfigs = [bitcoinConfig, ethereumConfig, baseConfig];
+
 describe('createAssetOption', () => {
+    it.each([
+        ['testnet', { testnet: true }],
+        ['missing CoinGecko ID', { coingeckoId: undefined }],
+        ['missing trading ID', { tradeCryptoId: undefined }],
+    ] as const)('rejects a native asset with %s', (_, overrides) => {
+        expect(
+            createAssetOption({
+                cryptoId: 'bitcoin' as CryptoId,
+                coinInfo: coins.bitcoin,
+                networkConfigs: [{ ...bitcoinConfig, ...overrides }],
+            }),
+        ).toBeNull();
+    });
+
+    it('uses the display symbol supplied by the network config', () => {
+        expect(
+            createAssetOption({
+                cryptoId: 'bitcoin' as CryptoId,
+                coinInfo: coins.bitcoin,
+                networkConfigs: [{ ...bitcoinConfig, displaySymbol: 'MODULE_BTC' }],
+            }),
+        ).toMatchObject({ displaySymbol: 'MODULE_BTC' });
+    });
+
+    it('rejects an asset before network configs are loaded', () => {
+        expect(
+            createAssetOption({
+                cryptoId: 'bitcoin' as CryptoId,
+                coinInfo: coins.bitcoin,
+                networkConfigs: [],
+            }),
+        ).toBeNull();
+    });
+
+    it('accepts a native asset registered outside the legacy network list', () => {
+        const symbol = asNetworkSymbol('new-network');
+
+        expect(
+            createAssetOption({
+                cryptoId: 'new-network' as CryptoId,
+                coinInfo: coins.bitcoin,
+                networkConfigs: [
+                    {
+                        ...bitcoinConfig,
+                        symbol,
+                        name: 'New Network',
+                        displaySymbol: 'NEW',
+                        coingeckoId: 'new-network',
+                        tradeCryptoId: 'new-network',
+                    },
+                ],
+            }),
+        ).toMatchObject({
+            isNativeToken: true,
+            symbol,
+            networkSymbol: symbol,
+            networkName: 'New Network',
+            displaySymbol: 'NEW',
+        });
+    });
+
+    it.each([
+        ['testnet', { testnet: true }],
+        ['missing CoinGecko ID', { coingeckoId: undefined }],
+    ] as const)('rejects a token with %s', (_, overrides) => {
+        const cryptoId = 'ethereum--0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48';
+        expect(
+            createAssetOption({
+                cryptoId: cryptoId as CryptoId,
+                coinInfo: coins[cryptoId],
+                networkConfigs: [{ ...ethereumConfig, ...overrides }],
+                platformInfo: platforms.ethereum,
+            }),
+        ).toBeNull();
+    });
+
+    it('rejects a token on an unsupported platform', () => {
+        const cryptoId = 'unknown--0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48' as CryptoId;
+
+        expect(
+            createAssetOption({
+                cryptoId,
+                coinInfo: coins.bitcoin,
+                networkConfigs,
+                platformInfo: { ...platforms.ethereum, nativeCoinSymbol: 'unknown' },
+            }),
+        ).toBeNull();
+    });
+
+    it('rejects an unrecognized native asset without a token contract', () => {
+        expect(
+            createAssetOption({
+                cryptoId: 'unknown' as CryptoId,
+                coinInfo: coins.bitcoin,
+                networkConfigs,
+                platformInfo: platforms.ethereum,
+            }),
+        ).toBeNull();
+    });
+
     it('should return correct data for Bitcoin', () => {
         const coinInfo = coins.bitcoin;
 
@@ -12,6 +120,7 @@ describe('createAssetOption', () => {
             createAssetOption({
                 cryptoId: 'bitcoin' as CryptoId,
                 coinInfo,
+                networkConfigs,
             }),
         ).toEqual({
             isNativeToken: true,
@@ -36,6 +145,7 @@ describe('createAssetOption', () => {
             createAssetOption({
                 cryptoId: cryptoId as CryptoId,
                 coinInfo,
+                networkConfigs,
                 platformInfo,
             }),
         ).toEqual({
@@ -61,6 +171,7 @@ describe('createAssetOption', () => {
             createAssetOption({
                 cryptoId: cryptoId as CryptoId,
                 coinInfo,
+                networkConfigs,
                 platformInfo,
             }),
         ).toEqual({
@@ -86,6 +197,7 @@ describe('createAssetOption', () => {
             createAssetOption({
                 cryptoId: cryptoId as CryptoId,
                 coinInfo,
+                networkConfigs,
                 platformInfo,
             }),
         ).toEqual({
@@ -111,6 +223,7 @@ describe('createAssetOption', () => {
             createAssetOption({
                 cryptoId: cryptoId as CryptoId,
                 coinInfo,
+                networkConfigs,
                 platformInfo,
             }),
         ).toEqual({

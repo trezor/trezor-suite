@@ -19,12 +19,7 @@ import type {
 } from 'invity-api';
 
 import { type CountryCode } from '@suite-common/geolocation';
-import {
-    type Network,
-    type NetworkConfig,
-    type NetworkDisplaySymbol,
-    type NetworkSymbol,
-} from '@suite-common/wallet-config';
+import { type Network } from '@suite-common/networks';
 import {
     type Account,
     type AccountKey,
@@ -34,6 +29,8 @@ import {
     type TokenAddress,
 } from '@suite-common/wallet-types';
 import { type PROTO, type TokenInfo } from '@trezor/connect';
+import { type SuiteCommonNetworkConfig } from '@trezor/network-module-suite-common-types';
+import { type NetworkSymbol } from '@trezor/network-module-types';
 import { type Err, type Ok, type PrimitiveType } from '@trezor/type-utils';
 
 import type * as constants from './constants';
@@ -64,17 +61,17 @@ export type TradingTradeSellExchangeType = Exclude<TradingType, TradingBuyType>;
 
 type TradingAssetOptionBase = {
     id: CryptoId;
-    coingeckoId: NonNullable<NetworkConfig['coingeckoId']>;
-    networkName: NetworkConfig['name'];
+    coingeckoId: NonNullable<SuiteCommonNetworkConfig['coingeckoId']>;
+    networkName: SuiteCommonNetworkConfig['name'];
     networkSymbol: NetworkSymbol;
     displaySymbolName?: string;
 };
 
 export type TradingAssetOptionNativeToken = TradingAssetOptionBase & {
     isNativeToken: true;
-    name: NetworkConfig['name'];
+    name: SuiteCommonNetworkConfig['name'];
     symbol: NetworkSymbol;
-    displaySymbol: NetworkDisplaySymbol;
+    displaySymbol: SuiteCommonNetworkConfig['displaySymbol'];
     contractAddress: null | typeof constants.CONTRACT_ADDRESS_FOR_NATIVE_TOKEN;
 };
 
