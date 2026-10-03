@@ -953,12 +953,11 @@ export class Core extends EventEmitter {
 
         this.on(CORE_EVENT, onCoreEvent);
 
-        try {
-            this.deviceList.init({ transports });
-        } catch (error) {
+        // `init` is intentionally not awaited, but it may still reject, e.g. for an unknown
+        // transport name or when a concurrent `init`/`dispose` supersedes it.
+        this.deviceList.init({ transports }).catch(error => {
             this.sendCoreMessage(createTransportMessage(TRANSPORT.ERROR, { error }));
-            throw error;
-        }
+        });
     }
 }
 
