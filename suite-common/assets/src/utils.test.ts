@@ -41,4 +41,20 @@ describe('calculateAssetsPercentage', () => {
         expect(btc?.fiatPercentage).toBeCloseTo(100);
         expect(btc?.fiatPercentageOffset).toBe(0);
     });
+
+    it('calculateAssetsPercentage - NaN balance does not poison other assets', () => {
+        const assetsWithPercentage = calculateAssetsPercentage(
+            fixtures.assetsFixtureWithNaNBalance,
+        );
+        const btc = assetsWithPercentage[0];
+        const eth = assetsWithPercentage[1];
+
+        // the NaN asset itself contributes nothing
+        expect(btc?.fiatPercentage).toBe(0);
+        expect(btc?.fiatPercentageOffset).toBe(0);
+
+        // the valid asset still gets a real percentage instead of NaN
+        expect(eth?.fiatPercentage).toBeCloseTo(100);
+        expect(eth?.fiatPercentageOffset).toBe(0);
+    });
 });
