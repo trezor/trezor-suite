@@ -11,8 +11,11 @@ import type { Logger } from '@trezor/utils';
  * replaces -- nothing else in connect needs to change when it does.
  */
 export const createWardProviderStub = (logger: Logger): WardProvider => ({
-    serveEntry: request => {
-        logger.debug('ward provider stub: WardEntryRequest', request);
+    serveEntry: () => {
+        // Never log the request. Its `entry_key` (and `staged.entry_key` in a batched flush) is
+        // derived from the passphrase-dependent K_path, so it is a stable per-wallet identifier,
+        // and the connect logger can leave the device. Only the refusal itself is recorded.
+        logger.debug('ward provider stub: WardEntryRequest refused, no wardProvider registered');
 
         throw ERRORS.TypedError('Runtime', 'wardProvider.serveEntry is not implemented');
     },

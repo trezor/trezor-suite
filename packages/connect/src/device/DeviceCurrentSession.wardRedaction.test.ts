@@ -4,10 +4,12 @@ import { DeviceCurrentSession } from './DeviceCurrentSession';
 import type { IDevice } from '../types/idevice';
 
 // WARD payloads carry user secrets (entry value, plaintext leaf content, restore-capable MAC) and
-// the labels that key them (app_id/identifier/entry_key). DeviceCurrentSession.call() logs every
-// message it sends and receives, so those must be redacted there -- the same guard the blacklist
-// already gives PassphraseAck.passphrase and CipheredKeyValue.value. This pins that redaction at the
-// call boundary rather than trusting each new WARD message to remember to opt in.
+// the labels that key them (app_id/identifier/entry_key), and wardRelay's Evolu node request carries
+// a delegated identity proof and returns a secret node. Contacts on WARD add the Nostr identity and
+// the address it signs. DeviceCurrentSession.call() logs every message it sends and receives, so
+// those must be redacted there -- the same guard the blacklist already gives
+// PassphraseAck.passphrase and CipheredKeyValue.value. This pins that redaction at the call boundary
+// rather than trusting each new WARD message to remember to opt in.
 
 const setup = () => {
     const debug = jest.fn();
@@ -30,10 +32,15 @@ const setup = () => {
         getThpState: () => undefined,
     } as unknown as IDevice;
 
-    const session = new DeviceCurrentSession(device, transport, '1' as Session, {
-        debug,
-        warn: () => {},
-    } as any);
+    const session = new DeviceCurrentSession(
+        device,
+        transport,
+        '1' as Session,
+        {
+            debug,
+            warn: () => {},
+        } as any,
+    );
 
     const respondWith = (response: { type: string; message: any }) => {
         next = response;
@@ -93,5 +100,102 @@ describe('DeviceCurrentSession: WARD log redaction', () => {
         // Routing fields survive, so the draining loop stays debuggable.
         expect(text).toContain('"remaining":2');
         expect(text).toContain('"counter":5');
+    });
+
+    it("redacts a batched flush's staged leaf in the relayed entry request", async () => {
+        const { session, respondWith, loggedText } = setup();
+        respondWith({
+            type: 'WardEntryRequest',
+            message: {
+                entry_key: 'KEY_PATH_SECRET',
+                staged: { entry_key: 'STAGED_KEY_SECRET', commit: 'STAGED_COMMIT_SECRET' },
+            },
+        });
+
+        await session.relayCall('WardFlushQueue', { max_batch: 4 });
+
+        const text = loggedText();
+        expect(text).not.toContain('KEY_PATH_SECRET');
+        expect(text).not.toContain('STAGED_KEY_SECRET');
+        expect(text).not.toContain('STAGED_COMMIT_SECRET');
+        expect(text).toContain('(redacted...)');
+    });
+
+    it('redacts the delegated identity proof and the Evolu node it unlocks', async () => {
+        const { session, respondWith, loggedText } = setup();
+        respondWith({ type: 'EvoluNode', message: { data: 'EVOLU_NODE_SECRET' } });
+
+        await session.typedCall('EvoluGetNode', 'EvoluNode', {
+            proof_of_delegated_identity: 'PROOF_SECRET',
+        });
+
+        const text = loggedText();
+        expect(text).not.toContain('PROOF_SECRET');
+        expect(text).not.toContain('EVOLU_NODE_SECRET');
+        expect(text).toContain('(redacted...)');
+    });
+
+    it('redacts the THP credential and the delegated identity key it returns', async () => {
+        const { session, respondWith, loggedText } = setup();
+        respondWith({
+            type: 'EvoluDelegatedIdentityKey',
+            message: { private_key: 'KEY_SECRET', rotation_index: 0 },
+        });
+
+        await session.typedCall('EvoluGetDelegatedIdentityKey', 'EvoluDelegatedIdentityKey', {
+            thp_credential: 'CRED_SECRET',
+        });
+
+        const text = loggedText();
+        expect(text).not.toContain('CRED_SECRET');
+        expect(text).not.toContain('KEY_SECRET');
+        expect(text).toContain('(redacted...)');
+    });
+
+    it('redacts the Nostr identity', async () => {
+        const { session, respondWith, loggedText } = setup();
+        respondWith({ type: 'NostrPubkey', message: { pubkey: 'IDENTITY_SECRET' } });
+
+        await session.typedCall('NostrGetPubkey', 'NostrPubkey', { address_n: [] });
+
+        const text = loggedText();
+        expect(text).not.toContain('IDENTITY_SECRET');
+        expect(text).toContain('(redacted...)');
+    });
+
+    it('redacts the signed content and the signer identity and keeps the event id', async () => {
+        const { session, respondWith, loggedText } = setup();
+        respondWith({
+            type: 'NostrEventSignature',
+            message: { pubkey: 'IDENTITY_SECRET', id: 'event-id', signature: 'sig' },
+        });
+
+        await session.typedCall('NostrSignEvent', 'NostrEventSignature', {
+            address_n: [],
+            created_at: 1,
+            kind: 27923,
+            tags: [],
+            content: '0:ADDRESS_SECRET',
+        });
+
+        const text = loggedText();
+        expect(text).not.toContain('ADDRESS_SECRET');
+        expect(text).not.toContain('IDENTITY_SECRET');
+        expect(text).toContain('"id":"event-id"');
+    });
+
+    it('redacts the ward id in the sync reply and keeps the head counter', async () => {
+        const { session, respondWith, loggedText } = setup();
+        respondWith({
+            type: 'WardSyncAck',
+            message: { nonce: 'aa', ward_id: 'WARD_ID_SECRET', counter: 3 },
+        });
+
+        await session.relayCall('WardSync', {});
+
+        const text = loggedText();
+        expect(text).not.toContain('WARD_ID_SECRET');
+        expect(text).toContain('"counter":3');
+        expect(text).toContain('(redacted...)');
     });
 });
