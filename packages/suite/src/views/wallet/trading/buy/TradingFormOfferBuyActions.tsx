@@ -4,6 +4,7 @@ import { injectDispatch } from '@suite-common/redux-utils';
 import {
     selectTradingBuyReceiveAccountKey,
     selectTradingBuyReceiveAddress,
+    tradingBuyActions,
 } from '@suite-common/trading';
 import { selectAccountByKey } from '@suite-common/wallet-core';
 import { Button } from '@trezor/components';
@@ -21,6 +22,7 @@ export const TradingFormOfferBuyActions = () => {
     const { dispatch } = useServices(injectDispatch);
     const context = useTradingFormContext<'buy'>();
     const {
+        getValues,
         form: { state },
     } = context;
 
@@ -48,6 +50,7 @@ export const TradingFormOfferBuyActions = () => {
 
     const onSelectQuote = () => {
         if (!quote) return;
+        dispatch(tradingBuyActions.saveFormValues(getValues()));
         dispatch(selectBuyQuoteThunk({ quote }));
     };
 

@@ -7,9 +7,14 @@ import {
 } from 'invity-api';
 
 import { type AccountKey } from '@suite-common/wallet-types';
+import { cloneObject } from '@trezor/utils';
 
 import { TRADING_EXCHANGE_PREFIX } from '../constants';
-import { type TradingExchangeAmountLimitProps, type TradingExchangeStepType } from '../types';
+import {
+    type TradingExchangeAmountLimitProps,
+    type TradingExchangeFormProps,
+    type TradingExchangeStepType,
+} from '../types';
 
 export interface ExchangeInfo {
     providerInfos: Record<string, ExchangeProviderInfo>;
@@ -20,6 +25,7 @@ export interface ExchangeInfo {
 export interface TradingExchangeState {
     exchangeInfo?: ExchangeInfo;
     quotesRequest?: ExchangeTradeQuoteRequest;
+    formValues?: TradingExchangeFormProps;
     quotes: ExchangeTrade[];
     // internal selected account key in trading section
     tradingAccountKey?: AccountKey;
@@ -40,6 +46,7 @@ export const exchangeInitialState: TradingExchangeState = {
     exchangeInfo: undefined,
     transactionId: undefined,
     quotesRequest: undefined,
+    formValues: undefined,
     quotes: [],
     tradingAccountKey: undefined,
     receiveAccountKey: undefined,
@@ -69,6 +76,12 @@ const tradingExchangeSlice = createSlice({
         ) {
             state.quotesRequest = action.payload;
         },
+        saveFormValues(
+            state: TradingExchangeState,
+            action: PayloadAction<TradingExchangeFormProps>,
+        ) {
+            state.formValues = cloneObject(action.payload);
+        },
         saveQuotes(state: TradingExchangeState, action: PayloadAction<ExchangeTrade[]>) {
             state.quotes = action.payload;
         },
@@ -76,12 +89,20 @@ const tradingExchangeSlice = createSlice({
             state.quotes = [];
             state.selectedQuote = undefined;
         },
+        clearQuotesAndParams(state: TradingExchangeState) {
+            state.quotes = [];
+            state.quotesRequest = undefined;
+            state.formValues = undefined;
+            state.selectedQuote = undefined;
+            state.amountLimits = undefined;
+        },
         setTradingAccountKey(
             state: TradingExchangeState,
             action: PayloadAction<AccountKey | undefined>,
         ) {
             if (action.payload !== state.tradingAccountKey) {
                 state.amountLimits = undefined;
+                state.formValues = undefined;
             }
             if (action.payload === undefined) {
                 state.quotes = [];

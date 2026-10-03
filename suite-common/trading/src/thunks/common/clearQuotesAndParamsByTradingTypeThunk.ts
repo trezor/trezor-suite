@@ -3,11 +3,12 @@ import { exhaustive } from '@trezor/type-utils';
 
 import { TRADING_THUNK_PREFIX } from '../../constants';
 import { tradingBuyActions } from '../../reducers/buyReducer';
+import { tradingExchangeActions } from '../../reducers/exchangeReducer';
 import { tradingSellActions } from '../../reducers/sellReducer';
-import { type TradingTradeBuySellType } from '../../types';
+import { type TradingType } from '../../types';
 
 export type ClearQuotesAndParamsByTradingTypeThunkProps = {
-    tradingType: TradingTradeBuySellType;
+    tradingType: TradingType;
 };
 
 export const clearQuotesAndParamsByTradingTypeThunk = createThunk<
@@ -22,6 +23,10 @@ export const clearQuotesAndParamsByTradingTypeThunk = createThunk<
 
         case 'sell':
             dispatch(tradingSellActions.clearQuotesAndParams());
+            break;
+
+        case 'exchange':
+            dispatch(tradingExchangeActions.clearQuotesAndParams());
             break;
 
         default:

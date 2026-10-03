@@ -12,6 +12,7 @@ import {
     selectTradingComposedTransactionInfo,
     selectTradingSellActiveTrade,
     selectTradingSellAmountLimits,
+    selectTradingSellFormValues,
     selectTradingSellInfo,
     selectTradingSellIsFromRedirect,
     selectTradingSellIsLoading,
@@ -43,6 +44,7 @@ export const useTradingSellForm = (): TradingSellFormContextProps => {
     const { dispatch } = useServices(injectDispatch);
     const isLoading = useSelector(selectTradingSellIsLoading);
     const quotesRequest = useSelector(selectTradingSellQuotesRequest);
+    const savedFormValues = useSelector(selectTradingSellFormValues);
     const isFromRedirect = useSelector(selectTradingSellIsFromRedirect);
     const transactionId = useSelector(selectTradingSellTransactionId);
     const sellInfo = useSelector(selectTradingSellInfo);
@@ -69,9 +71,10 @@ export const useTradingSellForm = (): TradingSellFormContextProps => {
         sellInfo?.countrySubdivision,
     );
     const redirectValues = useTradingSellFormRedirectValues(isFromRedirect, quotesRequest);
+    const initialValues = redirectValues ?? savedFormValues ?? defaultValues;
     const methods = useForm<TradingSellFormProps>({
         mode: 'onChange',
-        defaultValues: redirectValues ?? defaultValues,
+        defaultValues: initialValues,
     });
     const { register, reset, control, formState, getValues } = methods;
     // Watch only those values that are relevant in the render function
@@ -159,7 +162,7 @@ export const useTradingSellForm = (): TradingSellFormContextProps => {
     useTradingFormReset({
         isInfoReady: !!sellInfo,
         reset,
-        defaultValues,
+        defaultValues: initialValues,
     });
 
     // Subscribe to blocks for Solana, since they are not fetched globally

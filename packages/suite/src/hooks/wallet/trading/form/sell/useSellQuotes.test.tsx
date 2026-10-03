@@ -1,4 +1,4 @@
-import { useForm, useWatch } from 'react-hook-form';
+import { type Resolver, useForm, useWatch } from 'react-hook-form';
 
 import { act, waitFor } from '@testing-library/react';
 import { type CryptoId, type SellFiatTrade } from 'invity-api';
@@ -127,13 +127,15 @@ const wait = (ms: number) =>
             }),
     );
 
+type RenderSellQuotesOptions = {
+    resolver?: Resolver<TradingSellFormProps>;
+    validateAmount?: (sendCryptoSelect: TradingAssetSellOption | undefined) => true | string;
+};
+
 const renderSellQuotes = (
     defaultValues: TradingSellFormProps,
-    options: {
-        validateAmount?: (sendCryptoSelect: TradingAssetSellOption | undefined) => true | string;
-    } = {},
+    { resolver, validateAmount }: RenderSellQuotesOptions = {},
 ) => {
-    const { validateAmount } = options;
     const initialProps: { currentNetwork: Network | undefined } = {
         currentNetwork: getNetwork(btcSymbol),
     };
@@ -155,6 +157,7 @@ const renderSellQuotes = (
             const methods = useForm<TradingSellFormProps>({
                 mode: 'onChange',
                 defaultValues,
+                resolver,
             });
             const sendCryptoSelect = useWatch({
                 control: methods.control,
@@ -333,6 +336,20 @@ describe('useSellQuotes', () => {
                 payload: { type: 'sell', count: QUOTES.length, input: 'base-currency' },
             }),
         );
+    });
+
+    it('fetches despite an invalid field outside the active amount (custom fee)', async () => {
+        const invalidFeeResolver: Resolver<TradingSellFormProps> = () => ({
+            values: {},
+            errors: { feePerUnit: { type: 'manual', message: 'invalid' } },
+        });
+        const { result } = renderSellQuotes(VALID_DEFAULTS, { resolver: invalidFeeResolver });
+
+        await act(async () => {
+            await result.current.trigger();
+        });
+
+        await waitFor(() => expect(mockHandleRequest).toHaveBeenCalledTimes(1), { timeout: 1500 });
     });
 
     it('clears quotes eagerly when the network becomes undefined', async () => {

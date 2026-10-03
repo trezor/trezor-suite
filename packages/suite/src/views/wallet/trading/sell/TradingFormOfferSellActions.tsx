@@ -22,6 +22,7 @@ export const TradingFormOfferSellActions = () => {
     const context = useTradingFormContext<'sell'>();
     const {
         watch,
+        getValues,
         shouldSendInSats,
         form: { state, helpers },
     } = context;
@@ -63,6 +64,7 @@ export const TradingFormOfferSellActions = () => {
             dispatch(tradingSellActions.setFormStep('SEND_TRANSACTION'));
         }
 
+        dispatch(tradingSellActions.saveFormValues(getValues()));
         dispatch(selectSellQuoteThunk({ quote, fractionButton: helpers.fractionButton }));
     };
 
