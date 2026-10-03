@@ -15816,6 +15816,7 @@ __metadata:
     "@suite-native/clipboard": "workspace:*"
     "@suite-native/icons": "workspace:*"
     "@suite-native/intl": "workspace:*"
+    "@suite-native/test-utils": "workspace:*"
     "@trezor/utils": "workspace:*"
     react: "npm:19.2.3"
     react-native: "npm:0.86.0"
