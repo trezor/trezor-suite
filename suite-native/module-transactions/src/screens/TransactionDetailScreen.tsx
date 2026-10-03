@@ -29,8 +29,11 @@ import {
 
 import { CancelEvmTransactionButton } from '../components/CancelEvmTransactionButton';
 import { TransactionDetailData } from '../components/TransactionDetailData';
+import { TransactionDetailError } from '../components/TransactionDetailError';
 import { TransactionDetailHeader } from '../components/TransactionDetailHeader';
+import { TransactionDetailSkeleton } from '../components/TransactionDetailSkeleton';
 import { TransactionDetailTitle } from '../components/TransactionDetailTitle';
+import { useFetchTransactionById } from '../hooks/useFetchTransactionById';
 
 export const TransactionDetailScreen = ({
     route,
@@ -55,6 +58,11 @@ export const TransactionDetailScreen = ({
     const account = useSelector((state: AccountsRootState) =>
         selectAccountByKey(state, accountKey),
     );
+    const transactionFetch = useFetchTransactionById({
+        accountKey,
+        txid,
+        isEnabled: !transaction,
+    });
 
     useEffect(() => {
         if (transaction) {
@@ -69,9 +77,9 @@ export const TransactionDetailScreen = ({
         }
     }, [transaction, tokenTransfer, analytics]);
 
-    if (!transaction) return null;
-
-    const isUnstakeTransaction = getUnstakeTxAmount(transaction) !== undefined;
+    const isUnstakeTransaction = transaction
+        ? getUnstakeTxAmount(transaction) !== undefined
+        : false;
 
     const handleOpenBlockchain = () => {
         analytics.report({
@@ -80,51 +88,61 @@ export const TransactionDetailScreen = ({
         openInBlockchain();
     };
 
-    const allOutputs = account !== null ? createTargets({ transaction, account }) : [];
+    const allOutputs =
+        transaction && account !== null ? createTargets({ transaction, account }) : [];
+
+    const headerContent = transaction ? (
+        <HStack spacing="sp8" alignItems="center" justifyContent="center">
+            <TransactionDetailTitle
+                transaction={transaction}
+                isPending={isPending}
+                tokenTransfer={tokenTransfer}
+            />
+        </HStack>
+    ) : undefined;
+    const unavailableContent =
+        transactionFetch.isError && !transactionFetch.isFetching ? (
+            <TransactionDetailError onRetry={transactionFetch.retry} />
+        ) : (
+            <TransactionDetailSkeleton />
+        );
 
     return (
         <Screen
             header={
-                <ScreenHeader
-                    closeActionType={closeActionType}
-                    customContent={
-                        <HStack spacing="sp8" alignItems="center" justifyContent="center">
-                            <TransactionDetailTitle
-                                transaction={transaction}
-                                isPending={isPending}
-                                tokenTransfer={tokenTransfer}
-                            />
-                        </HStack>
-                    }
-                />
+                <ScreenHeader closeActionType={closeActionType} customContent={headerContent} />
             }
         >
-            <VStack spacing="sp24">
+            {transaction ? (
                 <VStack spacing="sp24">
-                    <TransactionDetailHeader
-                        transaction={transaction}
-                        tokenTransfer={tokenTransfer}
-                        allOutputs={allOutputs}
-                    />
-                    {isUnstakeTransaction && (
-                        <InstantStakeBanner accountKey={accountKey} transaction={transaction} />
-                    )}
-                    <TransactionDetailData
-                        transaction={transaction}
-                        accountKey={accountKey}
-                        tokenTransfer={tokenTransfer}
-                    />
+                    <VStack spacing="sp24">
+                        <TransactionDetailHeader
+                            transaction={transaction}
+                            tokenTransfer={tokenTransfer}
+                            allOutputs={allOutputs}
+                        />
+                        {isUnstakeTransaction && (
+                            <InstantStakeBanner accountKey={accountKey} transaction={transaction} />
+                        )}
+                        <TransactionDetailData
+                            transaction={transaction}
+                            accountKey={accountKey}
+                            tokenTransfer={tokenTransfer}
+                        />
+                    </VStack>
+                    <CancelEvmTransactionButton accountKey={accountKey} transaction={transaction} />
+                    <Button
+                        iconRight="arrowUpRight"
+                        onPress={handleOpenBlockchain}
+                        intent="neutral"
+                        priority="secondary"
+                    >
+                        <Translation id="transactions.detail.exploreButton" />
+                    </Button>
                 </VStack>
-                <CancelEvmTransactionButton accountKey={accountKey} transaction={transaction} />
-                <Button
-                    iconRight="arrowUpRight"
-                    onPress={handleOpenBlockchain}
-                    intent="neutral"
-                    priority="secondary"
-                >
-                    <Translation id="transactions.detail.exploreButton" />
-                </Button>
-            </VStack>
+            ) : (
+                unavailableContent
+            )}
         </Screen>
     );
 };
