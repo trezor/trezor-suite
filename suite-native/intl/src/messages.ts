@@ -3975,6 +3975,10 @@ export const messages = {
             title: 'You get',
             buttonTitle: 'Select asset',
             amountLabel: 'You get',
+            amountNotAvailableAlert: {
+                title: 'Not available yet',
+                description: "For now, swaps only let you enter the amount you're paying.",
+            },
         },
         fiatCurrencySheet: {
             title: 'Currency',

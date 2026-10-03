@@ -6,11 +6,10 @@ import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
 type TradingCardSectionStyleProps = {
     bottomBorder: boolean;
-    readOnly: boolean;
 };
 
 const tradingCardSectionStyle = prepareNativeStyle<TradingCardSectionStyleProps>(
-    ({ borders, colors, spacings }, { bottomBorder, readOnly }) => ({
+    ({ borders, colors, spacings }, { bottomBorder }) => ({
         borderBottomWidth: 0,
         borderBottomColor: colors.surfaceBorderRaised,
         paddingHorizontal: spacings.sp20,
@@ -24,18 +23,6 @@ const tradingCardSectionStyle = prepareNativeStyle<TradingCardSectionStyleProps>
                     borderBottomWidth: borders.widths.small,
                 },
             },
-            {
-                condition: readOnly,
-                style: {
-                    borderColor: colors.surfaceBorderRaised,
-                    backgroundColor: colors.surfaceFillPage,
-                    borderBottomLeftRadius: borders.radii.r16,
-                    borderBottomRightRadius: borders.radii.r16,
-                    borderTopWidth: 0,
-                    borderWidth: borders.widths.small,
-                    borderBottomWidth: borders.widths.small,
-                },
-            },
         ],
     }),
 );
@@ -44,7 +31,6 @@ export type TradingCardSectionProps = {
     title?: ReactNode;
     titleAction?: ReactNode;
     bottomBorder?: boolean;
-    readOnly?: boolean;
     testID?: string;
     children: ReactNode;
 };
@@ -53,17 +39,13 @@ export const TradingCardSection = ({
     title,
     titleAction,
     bottomBorder = false,
-    readOnly = false,
     testID,
     children,
 }: TradingCardSectionProps) => {
     const { applyStyle } = useNativeStyles();
 
     return (
-        <VStack
-            style={applyStyle(tradingCardSectionStyle, { bottomBorder, readOnly })}
-            testID={testID}
-        >
+        <VStack style={applyStyle(tradingCardSectionStyle, { bottomBorder })} testID={testID}>
             {title !== undefined && (
                 <HStack justifyContent="space-between" alignItems="center">
                     <CardTitle>{title}</CardTitle>
