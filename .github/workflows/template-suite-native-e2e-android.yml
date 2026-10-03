@@ -85,6 +85,8 @@ jobs:
           echo -e "\nenableHardenedMode: false" >> .yarnrc.yml
 
       - name: Install Yarn dependencies
+        env:
+          PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD: "1"
         run: yarn install --immutable
 
       # Detox runtime may indirectly import the built config, and that would crash if message-system is not built
