@@ -29,16 +29,9 @@ jobs:
         continue-on-error: true
         with:
           version: v0.19.1
-      - name: Get yarn cache directory path
-        id: yarn-cache-dir-path
-        run: echo "dir=$(yarn config get cacheFolder)" >> $GITHUB_OUTPUT
-      - name: Yarn Cache
-        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v5
-        with:
-          path: ${{ steps.yarn-cache-dir-path.outputs.dir }}
-          key: yarn-cache-folder-${{ hashFiles('**/yarn.lock', '.yarnrc.yml') }}
-          restore-keys: |
-            yarn-cache-folder-
+      - name: Restore shared Yarn downloads
+        uses: ./.github/actions/yarn-cache
+
       # We can skip the build for all dependencies, even for those whitelisted, because this process is used only to validate the yarn.lock file and populate the cache.
       - name: Install deps
         run: |

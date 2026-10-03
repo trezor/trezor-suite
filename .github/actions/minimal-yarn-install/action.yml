@@ -10,18 +10,8 @@ runs:
       with:
         node-version-file: ".nvmrc"
 
-    - name: Get yarn cache directory path
-      id: yarn-cache-dir-path
-      shell: bash
-      run: echo "dir=$(yarn config get cacheFolder)" >> $GITHUB_OUTPUT
-
-    - name: Yarn Cache
-      uses: actions/cache@27d5ce7f107fe9357f9df03efb73ab90386fccae # v5
-      with:
-        path: ${{ steps.yarn-cache-dir-path.outputs.dir }}
-        key: yarn-cache-folder-${{ hashFiles('**/yarn.lock', '.yarnrc.yml') }}
-        restore-keys: |
-          yarn-cache-folder-
+    - name: Restore shared Yarn downloads
+      uses: ./.github/actions/yarn-cache
 
     # We don't need to run in hardened mode because it's enough to run hardened install only in "Setup and Cache Dependencies" step
     - name: Modify .yarnrc.yml to disable hardened mode
