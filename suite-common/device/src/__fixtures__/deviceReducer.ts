@@ -1,5 +1,6 @@
 import { type TrezorDevice } from '@suite-common/suite-types';
 import { mockConnectDevice, mockSuiteDevice } from '@suite-common/suite-types/mocks';
+import { isDeviceAcquired } from '@suite-common/suite-utils';
 import { DEVICE } from '@trezor/connect';
 import { type DeepPartial } from '@trezor/type-utils';
 
@@ -9,6 +10,16 @@ import { type DeviceReducerState, deviceReducerInitialState } from '../deviceRed
 // Default devices
 const CONNECT_DEVICE = mockConnectDevice();
 const SUITE_DEVICE = mockSuiteDevice();
+
+// Narrows the mock for payloads that accept acquired devices only.
+const mockAcquiredDevice = (...args: Parameters<typeof mockSuiteDevice>) => {
+    const device = mockSuiteDevice(...args);
+    if (!isDeviceAcquired(device)) {
+        throw new Error('Mocked device is expected to be acquired.');
+    }
+
+    return device;
+};
 
 type Fixture<TAction> = {
     description: string;
@@ -672,6 +683,114 @@ const changed: Fixture<ReturnType<typeof deviceActions.deviceChanged>>[] = [
             ),
         ],
     },
+    {
+        description: `Sync sessionId and deriveCardano from connect for the same wallet`,
+        initialState: {
+            ...deviceReducerInitialState,
+            devices: [
+                mockSuiteDevice({
+                    path: '1',
+                    connected: true,
+                    state: {
+                        staticSessionId: '1stTestnet@device_id:0',
+                        sessionId: 'stale-session',
+                    },
+                }),
+            ],
+        },
+        actions: [
+            {
+                type: DEVICE.CHANGED,
+                payload: mockConnectDevice({
+                    path: '1',
+                    state: {
+                        staticSessionId: '1stTestnet@device_id:0',
+                        sessionId: 'fresh-session',
+                        deriveCardano: true,
+                    },
+                }),
+            },
+        ],
+        result: [
+            {
+                state: {
+                    staticSessionId: '1stTestnet@device_id:0',
+                    sessionId: 'fresh-session',
+                    deriveCardano: true,
+                },
+            },
+        ],
+    },
+    {
+        description: `Keep the wallet key but sync sessionId when the same wallet is reported with a new device_id (device wiped and recovered with the same seed)`,
+        initialState: {
+            ...deviceReducerInitialState,
+            devices: [
+                mockSuiteDevice({
+                    path: '1',
+                    connected: true,
+                    state: {
+                        staticSessionId: '1stTestnet@device_id:0',
+                        sessionId: 'stale-session',
+                    },
+                }),
+            ],
+        },
+        actions: [
+            {
+                type: DEVICE.CHANGED,
+                payload: mockConnectDevice(
+                    {
+                        path: '1',
+                        state: {
+                            staticSessionId: '1stTestnet@new-device-id:0',
+                            sessionId: 'fresh-session',
+                        },
+                    },
+                    { device_id: 'new-device-id' },
+                ),
+            },
+        ],
+        result: [
+            {
+                id: 'new-device-id',
+                state: { staticSessionId: '1stTestnet@device_id:0', sessionId: 'fresh-session' },
+            },
+        ],
+    },
+    {
+        description: `Do not sync sessionId from a different wallet`,
+        initialState: {
+            ...deviceReducerInitialState,
+            devices: [
+                mockSuiteDevice({
+                    path: '1',
+                    connected: true,
+                    state: {
+                        staticSessionId: '1stTestnet@device_id:0',
+                        sessionId: 'stale-session',
+                    },
+                }),
+            ],
+        },
+        actions: [
+            {
+                type: DEVICE.CHANGED,
+                payload: mockConnectDevice({
+                    path: '1',
+                    state: {
+                        staticSessionId: 'otherWallet@device_id:0',
+                        sessionId: 'other-session',
+                    },
+                }),
+            },
+        ],
+        result: [
+            {
+                state: { staticSessionId: '1stTestnet@device_id:0', sessionId: 'stale-session' },
+            },
+        ],
+    },
 ];
 
 const selectDevice: Array<
@@ -1112,6 +1231,73 @@ const remember: Fixture<ReturnType<typeof deviceActions.setRememberDevice>>[] = 
     },
 ];
 
+const setDeviceState: Fixture<ReturnType<typeof deviceActions.setDeviceState>>[] = [
+    {
+        description: `Authorize a connected device without state`,
+        initialState: {
+            ...deviceReducerInitialState,
+            devices: [mockSuiteDevice({ path: '1', connected: true })],
+        },
+        actions: [
+            {
+                type: deviceActions.setDeviceState.type,
+                payload: {
+                    device: mockAcquiredDevice({ path: '1', connected: true }),
+                    state: { staticSessionId: '1stTestnet@device_id:0', sessionId: 'session' },
+                    useEmptyPassphrase: true,
+                },
+            },
+        ],
+        result: [
+            {
+                state: { staticSessionId: '1stTestnet@device_id:0', sessionId: 'session' },
+                useEmptyPassphrase: true,
+            },
+        ],
+    },
+    {
+        description: `Keep the wallet key when the same wallet is re-authorized with a new device_id (device wiped and recovered with the same seed)`,
+        initialState: {
+            ...deviceReducerInitialState,
+            devices: [
+                mockSuiteDevice(
+                    {
+                        path: '1',
+                        connected: true,
+                        state: {
+                            staticSessionId: '1stTestnet@device_id:0',
+                            sessionId: 'stale-session',
+                        },
+                    },
+                    { device_id: 'new-device-id' },
+                ),
+            ],
+        },
+        actions: [
+            {
+                type: deviceActions.setDeviceState.type,
+                payload: {
+                    device: mockAcquiredDevice(
+                        { path: '1', connected: true },
+                        { device_id: 'new-device-id' },
+                    ),
+                    state: {
+                        staticSessionId: '1stTestnet@new-device-id:0',
+                        sessionId: 'fresh-session',
+                    },
+                    useEmptyPassphrase: true,
+                },
+            },
+        ],
+        result: [
+            {
+                id: 'new-device-id',
+                state: { staticSessionId: '1stTestnet@device_id:0', sessionId: 'fresh-session' },
+            },
+        ],
+    },
+];
+
 export default {
     connect,
     disconnect,
@@ -1119,4 +1305,5 @@ export default {
     selectDevice,
     forget,
     remember,
+    setDeviceState,
 };
