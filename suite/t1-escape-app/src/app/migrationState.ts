@@ -92,9 +92,13 @@ export type MigrationState = {
     transfers: Transfer[];
 };
 
+// Nothing more happens to a transfer that is confirmed, or whose coins another transaction took.
+const isFinalSweepStatus = (status: SweepStatus | undefined) =>
+    status === 'confirmed' || status === 'spent-by-another-transaction';
+
 /** True while the fate of some transfer of the old wallet is still open on the network. */
 export const isTransferUnsettled = ({ stage, status, inFlightTransactions }: Transfer) =>
-    (stage === 'broadcast' && status !== 'confirmed') || inFlightTransactions > 0;
+    (stage === 'broadcast' && !isFinalSweepStatus(status)) || inFlightTransactions > 0;
 
 export const INITIAL_MIGRATION_STATE: MigrationState = {
     step: 'intro',
