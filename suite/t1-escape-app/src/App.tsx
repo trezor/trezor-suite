@@ -1,0 +1,147 @@
+import { Banner, Column } from '@trezor/components';
+
+import { useMigration } from './app/useMigration';
+import { buildScanReport } from './discovery/scanReport';
+import {
+    getDiscoverableAccountTypes,
+    wipesAfterWrongPinAttempts,
+} from './firmware/firmwareSupport';
+import { DeviceLostBanner } from './ui/DeviceLostBanner';
+import { PageLayout } from './ui/PageLayout';
+import { PinMatrix } from './ui/PinMatrix';
+import { DestinationStep } from './ui/steps/DestinationStep';
+import { DeviceStep } from './ui/steps/DeviceStep';
+import { DiscoveryStep } from './ui/steps/DiscoveryStep';
+import { IntroStep } from './ui/steps/IntroStep';
+import { PassphraseStep } from './ui/steps/PassphraseStep';
+import { PreflightStep } from './ui/steps/PreflightStep';
+import { SummaryStep } from './ui/steps/SummaryStep';
+import { TransfersStep } from './ui/steps/TransfersStep';
+
+export const App = () => {
+    const { state, controller } = useMigration();
+    const { step, device, deviceLostReason } = state;
+
+    const isBusy = state.activity !== undefined;
+    const isDeviceUsable = deviceLostReason === undefined && !state.isDeviceReleased;
+    const report =
+        device && state.walletKind
+            ? buildScanReport({
+                  accounts: state.accounts,
+                  scannedAccountTypes: getDiscoverableAccountTypes(device.firmwareVersion),
+                  walletKind: state.walletKind,
+              })
+            : undefined;
+
+    const renderStep = () => {
+        switch (step) {
+            case 'intro':
+                return <IntroStep onStart={controller.runPreflight} />;
+            case 'preflight':
+                return (
+                    <PreflightStep
+                        issue={state.preflightIssue}
+                        isChecking={isBusy}
+                        onRetry={controller.runPreflight}
+                    />
+                );
+            case 'device':
+                return (
+                    <DeviceStep
+                        issue={state.deviceIssue}
+                        isConnecting={isBusy}
+                        onConnect={controller.connectDevice}
+                    />
+                );
+            case 'passphrase':
+                return (
+                    <PassphraseStep
+                        error={state.passphraseError}
+                        isBusy={isBusy}
+                        onSubmit={controller.submitPassphrase}
+                    />
+                );
+            case 'discovery':
+                return (
+                    <DiscoveryStep
+                        accounts={state.accounts}
+                        report={report}
+                        error={state.discoveryError}
+                        isBusy={isBusy}
+                        isDeviceUsable={isDeviceUsable}
+                        onStart={controller.startDiscovery}
+                        onScanMore={controller.scanMoreAccounts}
+                        onContinue={controller.confirmDiscovery}
+                    />
+                );
+            case 'destination':
+                return device ? (
+                    <DestinationStep
+                        firmwareVersion={device.firmwareVersion}
+                        error={state.destinationError}
+                        isBusy={isBusy}
+                        onSubmit={controller.submitDestination}
+                    />
+                ) : null;
+            case 'transfers':
+                return device && state.destination ? (
+                    <TransfersStep
+                        transfers={state.transfers}
+                        destination={state.destination}
+                        firmwareVersion={device.firmwareVersion}
+                        isBusy={isBusy}
+                        isDeviceUsable={isDeviceUsable}
+                        isDeviceReleased={state.isDeviceReleased}
+                        onSign={controller.signTransfer}
+                        onBroadcast={controller.broadcastTransfer}
+                        onRetry={controller.retryTransfer}
+                        onRefresh={controller.refreshTransfers}
+                        onEditDestination={controller.editDestination}
+                        onFinish={controller.finish}
+                    />
+                ) : null;
+            case 'summary':
+                return (
+                    <SummaryStep
+                        isDeviceLocked={state.isDeviceLocked}
+                        transfers={state.transfers}
+                        report={report}
+                        onRefresh={controller.refreshTransfers}
+                    />
+                );
+            // no default
+        }
+    };
+
+    return (
+        <PageLayout>
+            <Column gap={16}>
+                {deviceLostReason && <DeviceLostBanner reason={deviceLostReason} />}
+                {state.unexpectedError !== undefined && (
+                    <Banner
+                        intent="critical"
+                        title="Something unexpected went wrong"
+                        description={`${state.unexpectedError}. Nothing further was done. If a signed transaction is shown below, copy it before you reload the page.`}
+                    />
+                )}
+                {state.isConfirmationOnDeviceRequested && !deviceLostReason && (
+                    <Banner
+                        intent="info"
+                        title="Look at your Trezor"
+                        description="It is waiting for you to confirm or reject what it shows."
+                    />
+                )}
+                {state.isPinRequested && device && (
+                    <PinMatrix
+                        isWipedAfterWrongAttempts={wipesAfterWrongPinAttempts(
+                            device.firmwareVersion,
+                        )}
+                        onSubmit={controller.submitPin}
+                        onCancel={controller.cancelPin}
+                    />
+                )}
+                {renderStep()}
+            </Column>
+        </PageLayout>
+    );
+};
