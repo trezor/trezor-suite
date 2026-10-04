@@ -26,13 +26,13 @@ type TransfersStepProps = {
 
 type GetFinishLabelParams = {
     isDeviceReleased: boolean;
-    hasUnsignedPlans: boolean;
+    hasTransfersToSign: boolean;
 };
 
-const getFinishLabel = ({ isDeviceReleased, hasUnsignedPlans }: GetFinishLabelParams) => {
+const getFinishLabel = ({ isDeviceReleased, hasTransfersToSign }: GetFinishLabelParams) => {
     if (isDeviceReleased) return 'Show the summary';
 
-    return hasUnsignedPlans
+    return hasTransfersToSign
         ? 'Stop here and lock the Trezor'
         : 'Lock the Trezor and show the summary';
 };
@@ -52,7 +52,12 @@ export const TransfersStep = ({
     onFinish,
 }: TransfersStepProps) => {
     const isAnythingSigned = transfers.some(({ stage }) => stage !== 'ready');
-    const hasUnsignedPlans = transfers.some(({ stage, plan }) => stage === 'ready' && plan);
+    // A transfer that is signed but not sent yet can still be followed by further ones, which
+    // are composed only after it is sent. Locking the Trezor before that would strand them.
+    const hasTransfersToSign = transfers.some(
+        ({ stage, plan, followingTransactions }) =>
+            (stage === 'ready' && plan) || (stage !== 'broadcast' && followingTransactions > 0),
+    );
     const hasUnsentTransactions = transfers.some(
         ({ stage }) => stage === 'signed' || stage === 'broadcasting',
     );
@@ -139,10 +144,10 @@ export const TransfersStep = ({
                     <Row gap={8}>
                         <Button
                             isDisabled={isBusy || (isDeviceReleased && hasUnsentTransactions)}
-                            priority={hasUnsignedPlans ? 'secondary' : 'primary'}
+                            priority={hasTransfersToSign ? 'secondary' : 'primary'}
                             onClick={onFinish}
                         >
-                            {getFinishLabel({ isDeviceReleased, hasUnsignedPlans })}
+                            {getFinishLabel({ isDeviceReleased, hasTransfersToSign })}
                         </Button>
                         {hasPendingTransfers && (
                             <Button priority="secondary" onClick={onRefresh}>

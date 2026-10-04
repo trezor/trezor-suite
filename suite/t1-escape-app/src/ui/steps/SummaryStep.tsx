@@ -1,6 +1,7 @@
 import { Banner, Button, Card, Column, H2, H4, Paragraph } from '@trezor/components';
 
-import { type Transfer, isTransferUnsettled } from '../../app/migrationState';
+import type { Transfer } from '../../app/migrationState';
+import { summarizeTransfers } from '../../app/transferSummary';
 import { ACCOUNT_TYPE_DEFINITIONS } from '../../bitcoin/accountType';
 import type { ScanReport } from '../../discovery/scanReport';
 import { BulletList } from '../BulletList';
@@ -19,15 +20,8 @@ const getAccountLabel = ({ account }: Transfer) =>
     `${ACCOUNT_TYPE_DEFINITIONS[account.accountType].label} account #${account.accountIndex + 1}`;
 
 export const SummaryStep = ({ isDeviceLocked, transfers, report, onRefresh }: SummaryStepProps) => {
-    const sent = transfers.filter(({ stage }) => stage === 'broadcast');
-    const notSent = transfers.filter(({ stage, plan }) => stage !== 'broadcast' && plan);
-    const leftoverAmounts = transfers.flatMap(({ leftovers }) =>
-        leftovers.map(({ utxo }) => utxo.amount),
-    );
-    const hasPending = transfers.some(isTransferUnsettled);
-    // The headline claims a confirmed transfer only when that is true for every transfer
-    // that was prepared. Coins that were deliberately left behind are listed right below it.
-    const isEverythingConfirmed = sent.length > 0 && notSent.length === 0 && !hasPending;
+    const { sent, notSent, leftoverAmounts, hasPending, isEverythingConfirmed } =
+        summarizeTransfers(transfers);
 
     const getHeadline = () => {
         if (isEverythingConfirmed) return 'Confirmed transfer of the funds found in this scope';
@@ -83,7 +77,10 @@ export const SummaryStep = ({ isDeviceLocked, transfers, report, onRefresh }: Su
                             <BulletList>
                                 {notSent.map(transfer => (
                                     <BulletList.Item key={transfer.key}>
-                                        {getAccountLabel(transfer)}: transfer was not sent
+                                        {getAccountLabel(transfer)}:{' '}
+                                        {transfer.plan
+                                            ? 'transfer was not sent'
+                                            : 'could not be checked, its coins were not moved'}
                                     </BulletList.Item>
                                 ))}
                                 {leftoverAmounts.length > 0 && (
