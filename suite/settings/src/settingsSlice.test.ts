@@ -7,6 +7,8 @@ import {
     selectContactsRelayUrls,
     selectLanguage,
     selectTheme,
+    selectWarddToken,
+    selectWarddUrl,
 } from './settingsSelectors';
 import {
     prepareSuiteSettingsReducer,
@@ -68,5 +70,39 @@ describe('settingsSlice', () => {
         store.dispatch(suiteSettingsActions.setContactsRelayUrls([]));
 
         expect(selectContactsRelayUrls(store.getState())).toEqual([]);
+    });
+
+    it('connects to the default wardd without a pairing token by default', () => {
+        const store = initStore();
+
+        expect(selectWarddUrl(store.getState())).toBe('ws://127.0.0.1:21329');
+        expect(selectWarddToken(store.getState())).toBeUndefined();
+    });
+
+    it('stores the wardd connection in the debug settings', () => {
+        const store = initStore();
+
+        store.dispatch(
+            suiteSettingsActions.setDebugMode({
+                warddUrl: 'ws://localhost:4000',
+                warddToken: 'pairing-token',
+            }),
+        );
+
+        expect(selectWarddUrl(store.getState())).toBe('ws://localhost:4000');
+        expect(selectWarddToken(store.getState())).toBe('pairing-token');
+
+        store.dispatch(suiteSettingsActions.setDebugMode({ warddToken: '' }));
+
+        expect(selectWarddToken(store.getState())).toBeUndefined();
+    });
+
+    it('never selects a stored wardd URL that is not on this machine', () => {
+        const store = initStore({
+            ...suiteSettingsInitialState,
+            debug: { ...suiteSettingsInitialState.debug, warddUrl: 'ws://wardd.example.com' },
+        });
+
+        expect(selectWarddUrl(store.getState())).toBe('ws://127.0.0.1:21329');
     });
 });

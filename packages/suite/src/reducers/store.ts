@@ -11,7 +11,7 @@ import {
     combineReducers,
     configureStore,
 } from '@reduxjs/toolkit';
-import { createLogger } from 'redux-logger';
+import { type ReduxLoggerOptions, createLogger } from 'redux-logger';
 
 import { type BackupState, backupMiddleware, backupReducer } from '@suite/backup';
 import { MODAL_OPEN_USER_CONTEXT } from '@suite/modal';
@@ -51,6 +51,7 @@ import {
 } from 'src/slices/wallet/globalSendReceiveFilters';
 import type { PreloadStoreAction } from 'src/support/suite/preloadStore';
 import { type Action } from 'src/types/suite';
+import { redactLoggedAction, redactLoggedState } from 'src/utils/suite/reduxLoggerRedaction';
 
 import { type BioAuthState, prepareBioAuthReducer } from './bioAuth';
 import { type DesktopState, desktopReducer } from './desktop';
@@ -116,6 +117,27 @@ const rootReducer = combineReducers({
 
 const loggerExcludedActions = [addLog.type];
 
+const excludeLogger = (_getState: any, action: any): boolean =>
+    // exclude generated lifecycle actions
+    // https://redux-toolkit.js.org/api/createAsyncThunk#promise-lifecycle-actions
+    !action?.meta?.requestId &&
+    // explicitly excluded actions
+    !loggerExcludedActions.includes(action.type);
+
+export const reduxLoggerOptions: ReduxLoggerOptions = {
+    level: 'info',
+    predicate: excludeLogger,
+    collapsed: true,
+    actionTransformer: redactLoggedAction,
+    stateTransformer: redactLoggedState,
+};
+
+export const reduxDevToolsOptions: DevToolsEnhancerOptions = {
+    actionsDenylist: loggerExcludedActions,
+    actionSanitizer: redactLoggedAction,
+    stateSanitizer: redactLoggedState,
+};
+
 type GetCustomMiddlewareDeps = GetSuiteMiddlewareDeps & GetWalletMiddlewaresDeps;
 
 const getCustomMiddleware = (getExtra: () => GetCustomMiddlewareDeps | null) => {
@@ -128,18 +150,7 @@ const getCustomMiddleware = (getExtra: () => GetCustomMiddlewareDeps | null) => 
     ];
 
     if (!isCodesignBuild()) {
-        const excludeLogger = (_getState: any, action: any): boolean =>
-            // exclude generated lifecycle actions
-            // https://redux-toolkit.js.org/api/createAsyncThunk#promise-lifecycle-actions
-            !action?.meta?.requestId &&
-            // explicitly excluded actions
-            !loggerExcludedActions.includes(action.type);
-
-        const logger = createLogger({
-            level: 'info',
-            predicate: excludeLogger,
-            collapsed: true,
-        });
+        const logger = createLogger(reduxLoggerOptions);
         middleware.push(logger);
     }
 
@@ -150,9 +161,7 @@ const devTools: DevToolsEnhancerOptions | false =
     typeof window === 'object' &&
     '__REDUX_DEVTOOLS_EXTENSION_COMPOSE__' in window &&
     window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__
-        ? {
-              actionsDenylist: loggerExcludedActions,
-          }
+        ? reduxDevToolsOptions
         : false;
 
 const patchConfirm = (statePatch: any) =>

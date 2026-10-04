@@ -45,6 +45,7 @@
         "@suite-common/connect-init": "workspace:*",
         "@suite-common/connect-popup": "workspace:*",
         "@suite-common/delegated-identity-key": "workspace:*",
+        "@suite-common/delegated-identity-key-types": "workspace:*",
         "@suite-common/dependency-injection": "workspace:*",
         "@suite-common/device": "workspace:*",
         "@suite-common/device-authenticity": "workspace:*",

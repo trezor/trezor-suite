@@ -33,6 +33,13 @@ export interface DebugModeOptions {
     definitionsChannel?: DefinitionsChannel;
     isN4w1BackupEnabled: boolean;
     showTranslationKeys: boolean;
+    /** wardd, the local WARD service. Unset means `WARDD_DEFAULT_URL`. */
+    warddUrl?: string;
+    /**
+     * wardd's pairing token. It is a credential: send it only to wardd, never log it, and never put
+     * it in an action that is logged or sent to Sentry.
+     */
+    warddToken?: string;
 }
 
 export interface AutodetectSettings {

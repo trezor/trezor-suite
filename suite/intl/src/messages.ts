@@ -5840,6 +5840,61 @@ export const messages = defineMessages({
         defaultMessage:
             'Keep an address book of Nostr identities and confirm their keys on your Trezor, which anchors them in WARD with the names you give them. Addresses you share are published unencrypted to the Nostr relays you add. Requires debug firmware with WARD support and a WARD service running locally.',
     },
+    TR_WARD_ERROR_MISSING_TOKEN: {
+        id: 'TR_WARD_ERROR_MISSING_TOKEN',
+        defaultMessage: 'Enter the pairing token of your WARD service in the debug settings.',
+    },
+    TR_WARD_ERROR_NO_DEVICE: {
+        id: 'TR_WARD_ERROR_NO_DEVICE',
+        defaultMessage: 'Connect your Trezor and open the wallet.',
+    },
+    TR_WARD_ERROR_WALLET_CHANGED: {
+        id: 'TR_WARD_ERROR_WALLET_CHANGED',
+        defaultMessage: 'Another wallet was selected before WARD finished.',
+    },
+    TR_WARD_ERROR_CANCELLED: {
+        id: 'TR_WARD_ERROR_CANCELLED',
+        defaultMessage: 'The WARD request was cancelled on your Trezor.',
+    },
+    TR_WARD_ERROR_UNREACHABLE: {
+        id: 'TR_WARD_ERROR_UNREACHABLE',
+        defaultMessage:
+            'The WARD service is not reachable. Check that it is running at the URL in the debug settings.',
+    },
+    TR_WARD_ERROR_UNAUTHORISED: {
+        id: 'TR_WARD_ERROR_UNAUTHORISED',
+        defaultMessage: 'The WARD service rejected the pairing token.',
+    },
+    TR_WARD_ERROR_VERSION_MISMATCH: {
+        id: 'TR_WARD_ERROR_VERSION_MISMATCH',
+        defaultMessage: 'The WARD service speaks a version of the protocol that Suite does not.',
+    },
+    TR_WARD_ERROR_NO_STORE: {
+        id: 'TR_WARD_ERROR_NO_STORE',
+        defaultMessage: 'The WARD service has not opened the store of this wallet.',
+    },
+    TR_WARD_ERROR_DEVICE_FAILURE: {
+        id: 'TR_WARD_ERROR_DEVICE_FAILURE',
+        defaultMessage: 'Your Trezor could not complete the WARD request.',
+    },
+    TR_WARD_ERROR_WM_CONFLICT: {
+        id: 'TR_WARD_ERROR_WM_CONFLICT',
+        defaultMessage: 'Another WARD write was published first. Try again.',
+    },
+    TR_WARD_ERROR_WM_BEHIND: {
+        id: 'TR_WARD_ERROR_WM_BEHIND',
+        defaultMessage:
+            'The WARD witness is behind your Trezor. The WARD service cannot repair this yet.',
+    },
+    TR_WARD_ERROR_NEEDS_REJOIN: {
+        id: 'TR_WARD_ERROR_NEEDS_REJOIN',
+        defaultMessage:
+            'The WARD history on your Trezor no longer matches the witness. Suite cannot rejoin it yet.',
+    },
+    TR_WARD_ERROR_INTERNAL: {
+        id: 'TR_WARD_ERROR_INTERNAL',
+        defaultMessage: 'The WARD request failed.',
+    },
     TR_EARLY_ACCESS: {
         id: 'TR_EARLY_ACCESS',
         defaultMessage: 'Early Access Program',
