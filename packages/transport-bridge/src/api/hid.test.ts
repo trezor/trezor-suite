@@ -309,7 +309,32 @@ describe(HidApi.name, () => {
                 success: false,
                 error: { code: ERRORS.DEVICE_DISCONNECTED_DURING_ACTION },
             });
-            expect(handle.read).toHaveBeenCalledTimes(1);
+        });
+
+        it('discards the reports the previous session left unread on a takeover', async () => {
+            const { api, handle, path } = await setup();
+            await api.openDevice(path);
+            const staleReport = Buffer.alloc(64, 0x3f);
+            const freshReport = Buffer.alloc(64, 0x21);
+            handle.read
+                .mockResolvedValueOnce(staleReport)
+                .mockResolvedValueOnce(staleReport)
+                .mockResolvedValueOnce(undefined)
+                .mockResolvedValueOnce(freshReport);
+
+            await api.openDevice(path, { reset: true });
+
+            expect(handle.read).toHaveBeenCalledTimes(3);
+            expect(await api.read(path)).toEqual({ success: true, payload: freshReport });
+        });
+
+        it('keeps queued reports when the device is opened without a takeover', async () => {
+            const { api, handle, path } = await setup();
+            await api.openDevice(path);
+
+            await api.openDevice(path);
+
+            expect(handle.read).not.toHaveBeenCalled();
         });
     });
 
