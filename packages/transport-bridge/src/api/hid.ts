@@ -17,7 +17,10 @@ import {
 } from '@trezor/transport-common';
 import { resolveAfter } from '@trezor/utils';
 
-export const HID_PATH_PREFIX = 'hid-';
+const HID_PATH_PREFIX = 'hid-';
+
+/** Tells the devices served by `HidApi` apart from the ones of the usb apis. */
+export const isHidPath = (path: PathInternal) => path.startsWith(HID_PATH_PREFIX);
 
 // Vendor-defined usage page of the Trezor One wire interface. The U2F and debug link interfaces
 // of the same device use different pages and must not be opened.
@@ -27,6 +30,9 @@ const ENUMERATE_INTERVAL = 500;
 // A short timeout keeps the read loop responsive to abort, takeover and close. trezord-go
 // segfaulted on Windows when a handle was closed while a blocking read was in flight.
 const READ_TIMEOUT = 50;
+// Upper bound for the reports thrown away on a session takeover. A response of the firmware
+// spans a few reports, the limit only keeps a misbehaving device from blocking the takeover.
+const MAX_DISCARDED_REPORTS = 64;
 const UNNUMBERED_REPORT_ID = Buffer.from([0x00]);
 // A continuation-like packet without a message header, which the firmware ignores.
 const REPORT_ID_PROBE = Buffer.concat([Buffer.from('?'), Buffer.alloc(63, 0xff)]);
@@ -155,6 +161,7 @@ export class HidApi extends AbstractApi {
             if (options?.reset) {
                 openedDevice.readGeneration += 1;
                 await Promise.allSettled(Array.from(openedDevice.pendingTransfers));
+                await this.discardQueuedReports(openedDevice);
             }
 
             return success(undefined);
@@ -210,6 +217,17 @@ export class HidApi extends AbstractApi {
         }
 
         return undefined;
+    }
+
+    // A response the previous owner never read stays queued on the handle. The new owner would
+    // take it for the answer to its first call.
+    private async discardQueuedReports(device: OpenedDevice) {
+        for (let discarded = 0; discarded < MAX_DISCARDED_REPORTS; discarded += 1) {
+            const report = await this.trackTransfer(device, device.handle.read(READ_TIMEOUT)).catch(
+                () => undefined,
+            );
+            if (!report?.length) return;
+        }
     }
 
     private trackTransfer<T>(device: OpenedDevice, transfer: Promise<T>) {

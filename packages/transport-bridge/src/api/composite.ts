@@ -11,15 +11,13 @@ import {
     success,
 } from '@trezor/transport-common';
 
-import { HID_PATH_PREFIX } from './hid';
+import { isHidPath } from './hid';
 
 type CompositeApiParams = Omit<AbstractApiConstructorParams, 'type'> & {
     usbApi: AbstractApi;
     /** Called at most once, when the HID backend is enabled. May throw. */
     createHidApi: () => AbstractApi;
 };
-
-const isHidPath = (path: PathInternal) => path.startsWith(HID_PATH_PREFIX);
 
 /**
  * Serves all devices through the USB api and, once enabled, HID-only Trezor One devices
@@ -50,10 +48,17 @@ export class CompositeApi extends AbstractApi {
 
     /**
      * Loads the HID backend. It is not loaded at startup so that a broken native addon cannot
-     * affect users who never need it. The outcome is final for the lifetime of the process.
+     * affect users who never need it. Success is final, a failed attempt is repeated by the
+     * next call.
      */
     public enableHid() {
-        this.hidActivation ??= this.activateHid();
+        this.hidActivation ??= this.activateHid().then(isEnabled => {
+            if (!isEnabled) {
+                this.hidActivation = undefined;
+            }
+
+            return isEnabled;
+        });
 
         return this.hidActivation;
     }

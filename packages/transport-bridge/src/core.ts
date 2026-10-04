@@ -35,7 +35,7 @@ import {
 } from '@trezor/transport-common';
 
 import { CompositeApi } from './api/composite';
-import { HidApi } from './api/hid';
+import { HidApi, isHidPath } from './api/hid';
 
 type CreateCoreOptions = {
     /**
@@ -177,14 +177,18 @@ export const createCore = (
 
     const isHidDescriptor = (descriptor?: Descriptor) => descriptor?.type === DEVICE_TYPE.TypeT1Hid;
 
-    /**
-     * HID-only devices keep the PIN and passphrase of the previous owner unlocked, so a session
-     * on such a device must stay out of reach of every caller that is not allowed to use HID.
-     */
-    const isHidSessionDenied = async (session: Session, isHidAllowed?: boolean) =>
-        !!compositeApi &&
-        !isHidAllowed &&
-        isHidDescriptor(await findDescriptor(descriptor => descriptor.session === session));
+    // HID-only devices keep the PIN and passphrase of the previous owner unlocked, so a session
+    // on such a device does not exist for a caller that is not allowed to use HID.
+    const isHidPathDenied = (path: PathInternal, isHidAllowed?: boolean) =>
+        !!compositeApi && !isHidAllowed && isHidPath(path);
+
+    const isHidSessionDenied = async (session: Session, isHidAllowed?: boolean) => {
+        if (!compositeApi || isHidAllowed) return false;
+
+        const sessionsResult = await sessionsClient.getPathBySession({ session });
+
+        return sessionsResult.success && isHidPath(sessionsResult.payload.path);
+    };
 
     const enableHid = () => compositeApi?.enableHid() ?? Promise.resolve(false);
 
@@ -319,10 +323,6 @@ export const createCore = (
         isHidAllowed?: boolean;
     }) => {
         logger?.debug(`core: call: session: ${session} ${protocolName}`);
-        if (await isHidSessionDenied(session, isHidAllowed)) {
-            return error({ code: ERRORS.SESSION_NOT_FOUND });
-        }
-
         const sessionsResult = await sessionsClient.getPathBySession({
             session,
         });
@@ -333,6 +333,9 @@ export const createCore = (
         }
         const protocol = getProtocol(protocolName);
         const { path } = sessionsResult.payload;
+        if (isHidPathDenied(path, isHidAllowed)) {
+            return error({ code: ERRORS.SESSION_NOT_FOUND });
+        }
         logger?.debug(`core: call: retrieved path ${path} for session ${session}`);
 
         return api.runInIsolation({ lock: { read: true, write: true }, path }, async () => {
@@ -404,10 +407,6 @@ export const createCore = (
         signal: AbortSignal;
         isHidAllowed?: boolean;
     }) => {
-        if (await isHidSessionDenied(session, isHidAllowed)) {
-            return error({ code: ERRORS.SESSION_NOT_FOUND });
-        }
-
         const sessionsResult = await sessionsClient.getPathBySession({
             session,
         });
@@ -417,6 +416,9 @@ export const createCore = (
         }
         const protocol = getProtocol(protocolName);
         const { path } = sessionsResult.payload;
+        if (isHidPathDenied(path, isHidAllowed)) {
+            return error({ code: ERRORS.SESSION_NOT_FOUND });
+        }
         if (protocol.name === 'v2') {
             if (!thpState) {
                 return error({ code: ERRORS.THP_STATE_ERROR, message: 'ThpStateMissing' });
@@ -464,10 +466,6 @@ export const createCore = (
         signal: AbortSignal;
         isHidAllowed?: boolean;
     }) => {
-        if (await isHidSessionDenied(session, isHidAllowed)) {
-            return error({ code: ERRORS.SESSION_NOT_FOUND });
-        }
-
         const sessionsResult = await sessionsClient.getPathBySession({
             session,
         });
@@ -477,6 +475,9 @@ export const createCore = (
         }
         const protocol = getProtocol(protocolName);
         const { path } = sessionsResult.payload;
+        if (isHidPathDenied(path, isHidAllowed)) {
+            return error({ code: ERRORS.SESSION_NOT_FOUND });
+        }
 
         return api.runInIsolation({ lock: { read: true, write: false }, path }, async () => {
             if (protocol.name === 'v2') {

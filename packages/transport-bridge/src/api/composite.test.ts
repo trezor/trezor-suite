@@ -98,8 +98,6 @@ describe(CompositeApi.name, () => {
         });
 
         expect(await composite.enableHid()).toBe(false);
-        expect(await composite.enableHid()).toBe(false);
-        expect(createHidApi).toHaveBeenCalledTimes(1);
         expect(await composite.enumerate()).toEqual({
             success: true,
             payload: [USB_T2, USB_T1_HID],
@@ -109,6 +107,19 @@ describe(CompositeApi.name, () => {
             payload: undefined,
         });
         expect(usb.methods.openDevice).toHaveBeenCalledWith(USB_T2_PATH, undefined);
+    });
+
+    it('tries to load the HID api again after a failed attempt', async () => {
+        const { composite, createHidApi } = setup();
+        createHidApi.mockImplementationOnce(() => {
+            throw new Error('Cannot find module node-hid');
+        });
+
+        expect(await composite.enableHid()).toBe(false);
+        expect(await composite.enableHid()).toBe(true);
+        expect(await composite.enableHid()).toBe(true);
+        expect(createHidApi).toHaveBeenCalledTimes(2);
+        expect(await composite.enumerate()).toEqual({ success: true, payload: [USB_T2, HID_T1] });
     });
 
     it('treats a HID api that cannot enumerate as unavailable', async () => {
