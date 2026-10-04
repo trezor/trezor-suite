@@ -21,6 +21,10 @@ export const getAccountAddresses = (info: AccountInfo): Address[] =>
         ? [...info.addresses.used, ...info.addresses.unused, ...info.addresses.change]
         : [];
 
+// Blockbook leaves `balance` out for an address that was never used, although the shared type
+// declares it as always present.
+const isFunded = (balance: string | undefined) => balance !== undefined && balance !== '0';
+
 export type LoadAccountSnapshotParams = {
     backend: Backend;
     account: DiscoveredAccount;
@@ -52,7 +56,7 @@ export const loadAccountSnapshot = async ({
 
     const coveredAddresses = new Set(accountUtxos.payload.map(utxo => utxo.address));
     const uncoveredFundedAddresses = getAccountAddresses(info.payload).filter(
-        ({ address, balance }) => balance !== '0' && !coveredAddresses.has(address),
+        ({ address, balance }) => isFunded(balance) && !coveredAddresses.has(address),
     );
 
     const utxos = [...accountUtxos.payload];

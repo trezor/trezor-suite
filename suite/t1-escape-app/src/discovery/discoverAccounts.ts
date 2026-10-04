@@ -19,7 +19,7 @@ export const SCAN_MORE_ACCOUNTS_STEP = 5;
 export type ScannedAccount = {
     account: DiscoveredAccount;
     snapshot: AccountSnapshot;
-    /** No transaction and no balance, neither with the standard nor with the deep address gap. */
+    /** No transaction and no balance within the deep address gap. */
     isEmpty: boolean;
 };
 
@@ -34,7 +34,7 @@ export type ScanAccountParams = {
 
 /**
  * Scans one account: the public key comes from the device, the history from the backend. The
- * first backend pass uses the standard address gap, the second one the deep gap.
+ * backend is asked with the deep address gap, which covers everything the standard gap finds.
  */
 export const scanAccount = async ({
     call,
@@ -45,19 +45,13 @@ export const scanAccount = async ({
     const account = await getAccountPublicKey({ call, accountType, accountIndex });
     if (!account.success) return account;
 
-    const standardScan = await backend.getAccountInfo({
-        descriptor: account.payload.descriptor,
-        details: 'basic',
-    });
-    if (!standardScan.success) return standardScan;
-
     const snapshot = await loadAccountSnapshot({ backend, account: account.payload });
     if (!snapshot.success) return snapshot;
 
     return ok({
         account: account.payload,
         snapshot: snapshot.payload,
-        isEmpty: standardScan.payload.empty && snapshot.payload.info.empty,
+        isEmpty: snapshot.payload.info.empty,
     });
 };
 
