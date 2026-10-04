@@ -16895,6 +16895,36 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"@suite/t1-escape-app@workspace:suite/t1-escape-app":
+  version: 0.0.0-use.local
+  resolution: "@suite/t1-escape-app@workspace:suite/t1-escape-app"
+  dependencies:
+    "@suite-common/dependency-injection": "workspace:*"
+    "@trezor/blockchain-link": "workspace:*"
+    "@trezor/blockchain-link-types": "workspace:*"
+    "@trezor/components": "workspace:*"
+    "@trezor/connect-common": "workspace:*"
+    "@trezor/connect-core": "workspace:*"
+    "@trezor/eslint": "workspace:*"
+    "@trezor/protobuf": "workspace:*"
+    "@trezor/protocol": "workspace:*"
+    "@trezor/theme": "workspace:*"
+    "@trezor/transport-common": "workspace:*"
+    "@trezor/type-utils": "workspace:*"
+    "@trezor/utils": "workspace:*"
+    "@trezor/utxo-lib": "workspace:*"
+    "@types/jest": "npm:30.0.0"
+    "@types/node": "npm:22.13.10"
+    "@types/react-dom": "npm:19.2.3"
+    "@vitejs/plugin-react": "npm:^6.0.1"
+    react: "npm:19.2.3"
+    react-dom: "npm:19.2.3"
+    styled-components: "npm:^6.3.9"
+    vite: "npm:^8.0.7"
+    vite-plugin-node-polyfills: "npm:^0.26.0"
+  languageName: unknown
+  linkType: soft
+
 "@suite/test-utils@workspace:suite/test-utils":
   version: 0.0.0-use.local
   resolution: "@suite/test-utils@workspace:suite/test-utils"
