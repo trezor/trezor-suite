@@ -40,6 +40,14 @@ export const PageName = () => {
         );
     }
 
+    if (currentRoute === 'suite-contacts') {
+        return (
+            <BasicName>
+                <Translation id="TR_CONTACTS" />
+            </BasicName>
+        );
+    }
+
     if (currentRoute === 'notifications-index') {
         return (
             <BasicName>

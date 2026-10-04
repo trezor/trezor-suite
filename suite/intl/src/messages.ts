@@ -5895,6 +5895,427 @@ export const messages = defineMessages({
         id: 'TR_WARD_ERROR_INTERNAL',
         defaultMessage: 'The WARD request failed.',
     },
+    TR_CONTACTS: {
+        id: 'TR_CONTACTS',
+        defaultMessage: 'Contacts',
+    },
+    TR_CONTACTS_DISABLED_TITLE: {
+        id: 'TR_CONTACTS_DISABLED_TITLE',
+        defaultMessage: 'Contacts are turned off',
+    },
+    TR_CONTACTS_DISABLED_DESCRIPTION: {
+        id: 'TR_CONTACTS_DISABLED_DESCRIPTION',
+        defaultMessage:
+            'Contacts are an experimental feature that needs debug mode. Turn them on in Settings under Experimental features.',
+    },
+    TR_CONTACTS_DEVICE_REQUIRED_TITLE: {
+        id: 'TR_CONTACTS_DEVICE_REQUIRED_TITLE',
+        defaultMessage: 'Connect your Trezor',
+    },
+    TR_CONTACTS_DEVICE_REQUIRED_DESCRIPTION: {
+        id: 'TR_CONTACTS_DEVICE_REQUIRED_DESCRIPTION',
+        defaultMessage:
+            'Contacts belong to a wallet, so connect and unlock your Trezor to view and manage them.',
+    },
+    TR_CONTACTS_WARDD_SETUP: {
+        id: 'TR_CONTACTS_WARDD_SETUP',
+        defaultMessage:
+            'Verifying a contact needs the WARD service running on this computer. Enter its pairing token in Settings > Debug > WARD pairing token.',
+    },
+    TR_CONTACTS_WELCOME_TITLE: {
+        id: 'TR_CONTACTS_WELCOME_TITLE',
+        defaultMessage: 'Pay the people you know',
+    },
+    TR_CONTACTS_WELCOME_DESC: {
+        id: 'TR_CONTACTS_WELCOME_DESC',
+        defaultMessage:
+            'Add other Trezor Suite users, confirm their keys on your Trezor, and pay them at addresses they signed for you.',
+    },
+    TR_CONTACTS_WELCOME_NEW_DESC: {
+        id: 'TR_CONTACTS_WELCOME_NEW_DESC',
+        defaultMessage: 'Your Trezor derives it from this wallet. There is nothing to set up.',
+    },
+    TR_CONTACTS_WELCOME_NEW_CTA: {
+        id: 'TR_CONTACTS_WELCOME_NEW_CTA',
+        defaultMessage: 'Get started',
+    },
+    TR_CONTACTS_MY_IDENTITY: {
+        id: 'TR_CONTACTS_MY_IDENTITY',
+        defaultMessage: 'Your contact identity',
+    },
+    TR_CONTACTS_MY_IDENTITY_DESCRIPTION: {
+        id: 'TR_CONTACTS_MY_IDENTITY_DESCRIPTION',
+        defaultMessage:
+            'Give this to other Suite users so they can add you as a contact. It is derived from this wallet, so each passphrase wallet has its own.',
+    },
+    TR_CONTACTS_IDENTITY_LOADING: {
+        id: 'TR_CONTACTS_IDENTITY_LOADING',
+        defaultMessage: 'Reading your identity from your Trezor…',
+    },
+    TR_CONTACTS_LOAD_IDENTITY: {
+        id: 'TR_CONTACTS_LOAD_IDENTITY',
+        defaultMessage: 'Show identity',
+    },
+    TR_CONTACTS_LOAD_IDENTITY_LOCKED: {
+        id: 'TR_CONTACTS_LOAD_IDENTITY_LOCKED',
+        defaultMessage:
+            'Your identity is read from your Trezor. Connect and unlock it to show your identity.',
+    },
+    TR_CONTACTS_IDENTITY_QR_SECTION: {
+        id: 'TR_CONTACTS_IDENTITY_QR_SECTION',
+        defaultMessage: 'Show QR code',
+    },
+    TR_CONTACTS_MY_IDENTITY_KEY_SECTION: {
+        id: 'TR_CONTACTS_MY_IDENTITY_KEY_SECTION',
+        defaultMessage: 'Show key for verification',
+    },
+    TR_CONTACTS_MY_IDENTITY_KEY_DESCRIPTION: {
+        id: 'TR_CONTACTS_MY_IDENTITY_KEY_DESCRIPTION',
+        defaultMessage:
+            'A contact who verifies you sees this Key on their Trezor. Read it out to them so they can check that it matches.',
+    },
+    TR_CONTACTS_LIST_TITLE: {
+        id: 'TR_CONTACTS_LIST_TITLE',
+        defaultMessage: 'Your contacts',
+    },
+    TR_CONTACTS_ADD: {
+        id: 'TR_CONTACTS_ADD',
+        defaultMessage: 'Add contact',
+    },
+    TR_CONTACTS_SEARCH_PLACEHOLDER: {
+        id: 'TR_CONTACTS_SEARCH_PLACEHOLDER',
+        defaultMessage: 'Search by name or npub',
+    },
+    TR_CONTACTS_SEARCH_NO_MATCH: {
+        id: 'TR_CONTACTS_SEARCH_NO_MATCH',
+        defaultMessage: 'No contacts match your search.',
+    },
+    TR_CONTACTS_EMPTY_TITLE: {
+        id: 'TR_CONTACTS_EMPTY_TITLE',
+        defaultMessage: 'No contacts yet',
+    },
+    TR_CONTACTS_EMPTY: {
+        id: 'TR_CONTACTS_EMPTY',
+        defaultMessage: 'Add someone by their npub. You can paste it or scan their QR code.',
+    },
+    TR_CONTACTS_GROUP_UNVERIFIED: {
+        id: 'TR_CONTACTS_GROUP_UNVERIFIED',
+        defaultMessage: 'Needs verification',
+    },
+    TR_CONTACTS_GROUP_VERIFIED: {
+        id: 'TR_CONTACTS_GROUP_VERIFIED',
+        defaultMessage: 'Verified',
+    },
+    TR_CONTACTS_RELAY_CONNECTED: {
+        id: 'TR_CONTACTS_RELAY_CONNECTED',
+        defaultMessage: 'Relay connected',
+    },
+    TR_CONTACTS_RELAY_CONNECTING: {
+        id: 'TR_CONTACTS_RELAY_CONNECTING',
+        defaultMessage: 'Relay connecting…',
+    },
+    TR_CONTACTS_RELAY_NONE: {
+        id: 'TR_CONTACTS_RELAY_NONE',
+        defaultMessage: 'No relay',
+    },
+    TR_CONTACTS_RELAY_NOT_CONNECTED: {
+        id: 'TR_CONTACTS_RELAY_NOT_CONNECTED',
+        defaultMessage: 'Relay not connected',
+    },
+    TR_CONTACTS_RELAY_MANAGE: {
+        id: 'TR_CONTACTS_RELAY_MANAGE',
+        defaultMessage: 'Manage relays',
+    },
+    TR_CONTACTS_RELAYS: {
+        id: 'TR_CONTACTS_RELAYS',
+        defaultMessage: 'Nostr relays for contacts',
+    },
+    TR_CONTACTS_RELAYS_DESCRIPTION: {
+        id: 'TR_CONTACTS_RELAYS_DESCRIPTION',
+        defaultMessage:
+            'Contacts exchange receiving addresses through these Nostr relays. Each relay receives your shared addresses, your contact identity and the identities of your contacts in plain text. Suite has no default relay, so nothing is exchanged until you add one. The desktop app allows connections to the relays you add here.',
+    },
+    TR_CONTACTS_RELAYS_EMPTY: {
+        id: 'TR_CONTACTS_RELAYS_EMPTY',
+        defaultMessage: 'No relay added. Addresses are not exchanged until you add one.',
+    },
+    TR_CONTACTS_RELAYS_INVALID: {
+        id: 'TR_CONTACTS_RELAYS_INVALID',
+        defaultMessage:
+            'Enter a wss:// URL, or a ws:// URL of a relay on this computer. The URL must not contain a user name, password, query or fragment.',
+    },
+    TR_CONTACTS_RELAYS_DUPLICATE: {
+        id: 'TR_CONTACTS_RELAYS_DUPLICATE',
+        defaultMessage: 'This relay is already in the list.',
+    },
+    TR_CONTACTS_RELAYS_LIMIT: {
+        id: 'TR_CONTACTS_RELAYS_LIMIT',
+        defaultMessage: 'The relay list is full. Remove a relay to add another.',
+    },
+    TR_CONTACTS_ADD_MODAL_TITLE: {
+        id: 'TR_CONTACTS_ADD_MODAL_TITLE',
+        defaultMessage: 'Add a contact',
+    },
+    TR_CONTACTS_ADD_DESCRIPTION: {
+        id: 'TR_CONTACTS_ADD_DESCRIPTION',
+        defaultMessage:
+            'Add a Suite user by their contact identity. Verify them on your Trezor afterwards to exchange addresses with them.',
+    },
+    TR_CONTACTS_NAME: {
+        id: 'TR_CONTACTS_NAME',
+        defaultMessage: 'Name',
+    },
+    TR_CONTACTS_NAME_TOO_LONG: {
+        id: 'TR_CONTACTS_NAME_TOO_LONG',
+        defaultMessage: 'Name is too long ({length}/{max} bytes).',
+    },
+    TR_CONTACTS_IDENTITY: {
+        id: 'TR_CONTACTS_IDENTITY',
+        defaultMessage: 'Identity (npub)',
+    },
+    TR_CONTACTS_ADD_NPUB_HINT: {
+        id: 'TR_CONTACTS_ADD_NPUB_HINT',
+        defaultMessage: 'Ask your contact for their npub. It starts with npub1.',
+    },
+    TR_CONTACTS_INVALID_IDENTITY: {
+        id: 'TR_CONTACTS_INVALID_IDENTITY',
+        defaultMessage: 'Enter a valid npub or 64-character hex key.',
+    },
+    TR_CONTACTS_IDENTITY_IS_SELF: {
+        id: 'TR_CONTACTS_IDENTITY_IS_SELF',
+        defaultMessage: 'This is your own identity.',
+    },
+    TR_CONTACTS_IDENTITY_DUPLICATE: {
+        id: 'TR_CONTACTS_IDENTITY_DUPLICATE',
+        defaultMessage: 'This contact is already in your list.',
+    },
+    TR_CONTACTS_VERIFIED: {
+        id: 'TR_CONTACTS_VERIFIED',
+        defaultMessage: 'Verified',
+    },
+    TR_CONTACTS_NOT_VERIFIED: {
+        id: 'TR_CONTACTS_NOT_VERIFIED',
+        defaultMessage: 'Unverified',
+    },
+    TR_CONTACTS_VERIFIED_TOOLTIP: {
+        id: 'TR_CONTACTS_VERIFIED_TOOLTIP',
+        defaultMessage:
+            "You confirmed this contact's Key on your Trezor, so you can exchange addresses with this contact and pay them. The Key belongs to the right person only if it matched the one they read out to you.",
+    },
+    TR_CONTACTS_UNVERIFIED_TOOLTIP: {
+        id: 'TR_CONTACTS_UNVERIFIED_TOOLTIP',
+        defaultMessage:
+            'Not confirmed on your Trezor yet. Addresses are exchanged only with contacts you confirmed on your Trezor.',
+    },
+    TR_CONTACTS_VERIFY: {
+        id: 'TR_CONTACTS_VERIFY',
+        defaultMessage: 'Verify on Trezor',
+    },
+    TR_CONTACTS_VERIFY_TOOLTIP: {
+        id: 'TR_CONTACTS_VERIFY_TOOLTIP',
+        defaultMessage:
+            "Your Trezor shows this contact's Key, not their name. Confirm only if the Key matches the one your contact reads out from their Suite. The name you gave them is then saved with the Key in WARD, and you can exchange addresses with this contact.",
+    },
+    TR_CONTACTS_IDENTITY_KEY: {
+        id: 'TR_CONTACTS_IDENTITY_KEY',
+        defaultMessage: 'Key on Trezor',
+    },
+    TR_CONTACTS_VERIFY_KEY_HINT: {
+        id: 'TR_CONTACTS_VERIFY_KEY_HINT',
+        defaultMessage:
+            'When you verify, check that the Key on your Trezor matches the one your contact reads out from their Suite.',
+    },
+    TR_CONTACTS_VERIFY_LOCKED: {
+        id: 'TR_CONTACTS_VERIFY_LOCKED',
+        defaultMessage: 'A contact is verified on your Trezor. Connect and unlock it to verify.',
+    },
+    TR_CONTACTS_MENU_MORE: {
+        id: 'TR_CONTACTS_MENU_MORE',
+        defaultMessage: 'More actions',
+    },
+    TR_CONTACTS_RENAME: {
+        id: 'TR_CONTACTS_RENAME',
+        defaultMessage: 'Rename',
+    },
+    TR_CONTACTS_REMOVE_CONFIRM_TITLE: {
+        id: 'TR_CONTACTS_REMOVE_CONFIRM_TITLE',
+        defaultMessage: 'Remove contact?',
+    },
+    TR_CONTACTS_REMOVE_CONFIRM_DESCRIPTION: {
+        id: 'TR_CONTACTS_REMOVE_CONFIRM_DESCRIPTION',
+        defaultMessage:
+            'Remove {label} and the addresses you exchanged from this wallet. The name stays in WARD, but Suite no longer treats this contact as verified.',
+    },
+    TR_CONTACTS_REMOVE_CONFIRM_DESCRIPTION_LOCAL: {
+        id: 'TR_CONTACTS_REMOVE_CONFIRM_DESCRIPTION_LOCAL',
+        defaultMessage: 'Remove {label} and the addresses you exchanged from this wallet.',
+    },
+    TR_CONTACTS_WARD_NOT_PUBLISHED: {
+        id: 'TR_CONTACTS_WARD_NOT_PUBLISHED',
+        defaultMessage:
+            'Your Trezor queued the name, but WARD has not published it yet. It is published with the next WARD write, or with Flush now in the debug settings.',
+    },
+    TR_CONTACTS_ADDRESSES_TITLE: {
+        id: 'TR_CONTACTS_ADDRESSES_TITLE',
+        defaultMessage: 'Exchanged addresses',
+    },
+    TR_CONTACTS_BUFFER_THEIR_ADDRESSES: {
+        id: 'TR_CONTACTS_BUFFER_THEIR_ADDRESSES',
+        defaultMessage: 'Their addresses (you can pay to)',
+    },
+    TR_CONTACTS_BUFFER_MY_SHARED_ADDRESSES: {
+        id: 'TR_CONTACTS_BUFFER_MY_SHARED_ADDRESSES',
+        defaultMessage: 'Your shared addresses',
+    },
+    TR_CONTACTS_BUFFER_THEIR_EMPTY: {
+        id: 'TR_CONTACTS_BUFFER_THEIR_EMPTY',
+        defaultMessage: 'No addresses from this contact yet.',
+    },
+    TR_CONTACTS_BUFFER_MINE_EMPTY: {
+        id: 'TR_CONTACTS_BUFFER_MINE_EMPTY',
+        defaultMessage: 'You have not shared any addresses with this contact yet.',
+    },
+    TR_CONTACTS_BUFFER_USED: {
+        id: 'TR_CONTACTS_BUFFER_USED',
+        defaultMessage: 'used',
+    },
+    TR_CONTACTS_BUFFER_AVAILABLE: {
+        id: 'TR_CONTACTS_BUFFER_AVAILABLE',
+        defaultMessage: 'available',
+    },
+    TR_CONTACTS_REQUEST_ADDRESS: {
+        id: 'TR_CONTACTS_REQUEST_ADDRESS',
+        defaultMessage: 'Request address',
+    },
+    TR_CONTACTS_REQUEST_SENT: {
+        id: 'TR_CONTACTS_REQUEST_SENT',
+        defaultMessage: 'Requested',
+    },
+    TR_CONTACTS_REQUEST_ADDRESS_TOOLTIP: {
+        id: 'TR_CONTACTS_REQUEST_ADDRESS_TOOLTIP',
+        defaultMessage:
+            'Ask this contact for a fresh address through your relays. It arrives when their Suite answers, so you do not need to be online at the same time.',
+    },
+    TR_CONTACTS_EXCHANGE_NEEDS_VERIFY: {
+        id: 'TR_CONTACTS_EXCHANGE_NEEDS_VERIFY',
+        defaultMessage:
+            'Verify this contact on your Trezor first. Addresses are exchanged only with verified contacts.',
+    },
+    TR_CONTACTS_EXCHANGE_NEEDS_RELAY: {
+        id: 'TR_CONTACTS_EXCHANGE_NEEDS_RELAY',
+        defaultMessage:
+            'Add a Nostr relay first. Addresses are exchanged only through the relays you add.',
+    },
+    TR_CONTACTS_SHARE_ADDRESS: {
+        id: 'TR_CONTACTS_SHARE_ADDRESS',
+        defaultMessage: 'Share address',
+    },
+    TR_CONTACTS_SHARE_ADDRESS_TOOLTIP: {
+        id: 'TR_CONTACTS_SHARE_ADDRESS_TOOLTIP',
+        defaultMessage:
+            'Sign one of your receiving addresses on your Trezor and send it to this contact, so they can pay you without asking.',
+    },
+    TR_CONTACTS_SHARED_COUNT_TOOLTIP: {
+        id: 'TR_CONTACTS_SHARED_COUNT_TOOLTIP',
+        defaultMessage: 'Fresh addresses this contact currently holds from you.',
+    },
+    TR_CONTACTS_SHARE_GAP_LIMIT: {
+        id: 'TR_CONTACTS_SHARE_GAP_LIMIT',
+        defaultMessage:
+            'This account has no fresh address left to share within the gap limit: the others were shared with contacts or given out on the Receive page, and the last one is kept for the Receive page. Sharing more could hide funds on recovery. Wait until one of them is paid to, or until an old unused share is reclaimed.',
+    },
+    TR_CONTACTS_SHARE_LOCKED: {
+        id: 'TR_CONTACTS_SHARE_LOCKED',
+        defaultMessage:
+            'Sharing an address is confirmed on your Trezor. Connect and unlock it to share.',
+    },
+    TR_CONTACTS_SHARE_PICK_ACCOUNT: {
+        id: 'TR_CONTACTS_SHARE_PICK_ACCOUNT',
+        defaultMessage: 'Choose which account to receive on.',
+    },
+    TR_CONTACTS_SHARE_FRESH_ADDRESSES: {
+        id: 'TR_CONTACTS_SHARE_FRESH_ADDRESSES',
+        defaultMessage: 'Fresh addresses',
+    },
+    TR_CONTACTS_SHARE_FRESH_HINT: {
+        id: 'TR_CONTACTS_SHARE_FRESH_HINT',
+        defaultMessage:
+            'Pick a fresh, unused address. A new address for each contact keeps your contacts unlinkable. Your Trezor then signs the address with your contact identity.',
+    },
+    TR_CONTACTS_SHARE_CONFIRM_ON_DEVICE: {
+        id: 'TR_CONTACTS_SHARE_CONFIRM_ON_DEVICE',
+        defaultMessage: 'Check on your Trezor that it shows the address you picked, then confirm…',
+    },
+    TR_CONTACTS_REQUESTS_TITLE: {
+        id: 'TR_CONTACTS_REQUESTS_TITLE',
+        defaultMessage: 'Address requests',
+    },
+    TR_CONTACTS_REQUESTS_DESCRIPTION: {
+        id: 'TR_CONTACTS_REQUESTS_DESCRIPTION',
+        defaultMessage:
+            'A contact asked for one of your receiving addresses so they can pay you. Share a fresh one or ignore the request. Nothing is shared until you confirm it on your Trezor.',
+    },
+    TR_CONTACTS_REQUESTS_WANTS_ADDRESS: {
+        id: 'TR_CONTACTS_REQUESTS_WANTS_ADDRESS',
+        defaultMessage: 'Wants a receiving address',
+    },
+    TR_CONTACTS_REQUESTS_IGNORE: {
+        id: 'TR_CONTACTS_REQUESTS_IGNORE',
+        defaultMessage: 'Ignore this request',
+    },
+    TR_CONTACTS_ERROR_WALLET_CHANGED: {
+        id: 'TR_CONTACTS_ERROR_WALLET_CHANGED',
+        defaultMessage: 'The wallet changed before the action finished. Try again.',
+    },
+    TR_CONTACTS_ERROR_CANCELLED: {
+        id: 'TR_CONTACTS_ERROR_CANCELLED',
+        defaultMessage: 'The action was cancelled on your Trezor.',
+    },
+    TR_CONTACTS_ERROR_DEVICE_FAILURE: {
+        id: 'TR_CONTACTS_ERROR_DEVICE_FAILURE',
+        defaultMessage: 'Your Trezor could not complete the action.',
+    },
+    TR_CONTACTS_ERROR_FIRMWARE_UNSUPPORTED: {
+        id: 'TR_CONTACTS_ERROR_FIRMWARE_UNSUPPORTED',
+        defaultMessage: 'Contacts need Trezor debug firmware with Nostr and WARD support.',
+    },
+    TR_CONTACTS_ERROR_INVALID_LABEL: {
+        id: 'TR_CONTACTS_ERROR_INVALID_LABEL',
+        defaultMessage: 'The name is empty or too long for your Trezor.',
+    },
+    TR_CONTACTS_ERROR_UNKNOWN_CONTACT: {
+        id: 'TR_CONTACTS_ERROR_UNKNOWN_CONTACT',
+        defaultMessage: 'This contact is not in your list, or it is not verified on your Trezor.',
+    },
+    TR_CONTACTS_ERROR_MISSING_IDENTITY: {
+        id: 'TR_CONTACTS_ERROR_MISSING_IDENTITY',
+        defaultMessage:
+            'Your contact identity has not been read from your Trezor yet. Use Show identity first.',
+    },
+    TR_CONTACTS_ERROR_UNSUPPORTED_ACCOUNT: {
+        id: 'TR_CONTACTS_ERROR_UNSUPPORTED_ACCOUNT',
+        defaultMessage:
+            'Only Bitcoin and Bitcoin testnet accounts can share addresses with contacts.',
+    },
+    TR_CONTACTS_ERROR_NO_FRESH_ADDRESS: {
+        id: 'TR_CONTACTS_ERROR_NO_FRESH_ADDRESS',
+        defaultMessage:
+            'This account has no fresh address to share. Wait until a shared address is used, or pick another account.',
+    },
+    TR_CONTACTS_ERROR_INVALID_ATTESTATION: {
+        id: 'TR_CONTACTS_ERROR_INVALID_ATTESTATION',
+        defaultMessage:
+            'The signature from your Trezor did not verify, so the address was not shared.',
+    },
+    TR_CONTACTS_ERROR_ADDRESS_MISMATCH: {
+        id: 'TR_CONTACTS_ERROR_ADDRESS_MISMATCH',
+        defaultMessage:
+            'Your Trezor could not confirm that this address belongs to the account, so it was not shared.',
+    },
+    TR_CONTACTS_ERROR_INTERNAL: {
+        id: 'TR_CONTACTS_ERROR_INTERNAL',
+        defaultMessage: 'The action could not be completed.',
+    },
     TR_EARLY_ACCESS: {
         id: 'TR_EARLY_ACCESS',
         defaultMessage: 'Early Access Program',

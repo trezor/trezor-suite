@@ -9,12 +9,23 @@ import {
 } from '@suite/flags';
 import { type Route, selectRouteName } from '@suite/router';
 import { useServices } from '@suite-common/dependency-injection';
-import { selectHasBitcoinOnlyFirmware } from '@suite-common/device';
+import { selectHasBitcoinOnlyFirmware, selectSelectedDevice } from '@suite-common/device';
 import { selectHasUnseenTransactionNotifications } from '@suite-common/toast-notifications';
 import { Column } from '@trezor/components';
-import { BellIcon, GearSixIcon, HouseIcon, PiggyBankIcon, RepeatIcon } from '@trezor/icons';
+import {
+    AddressBookIcon,
+    BellIcon,
+    GearSixIcon,
+    HouseIcon,
+    PiggyBankIcon,
+    RepeatIcon,
+} from '@trezor/icons';
 
 import { useDispatch, useSelector } from 'src/hooks/suite';
+import {
+    selectHasPendingAddressRequests,
+    selectIsContactsFeatureEnabled,
+} from 'src/reducers/suite/contactsReducer';
 import { useResponsiveContext } from 'src/support/suite/ResponsiveContext';
 
 import { NavigationItem, type NavigationItemProps } from './NavigationItem';
@@ -44,6 +55,10 @@ export const Navigation = ({ children }: NavigationProps) => {
     const isBtcOnly = useSelector(selectHasBitcoinOnlyFirmware);
 
     const hasUnseenNotifications = useSelector(selectHasUnseenTransactionNotifications);
+    const isContactsFeatureEnabled = useSelector(selectIsContactsFeatureEnabled);
+    const hasPendingAddressRequests = useSelector(state =>
+        selectHasPendingAddressRequests(state, selectSelectedDevice(state)?.state?.staticSessionId),
+    );
     const isActivityNewContentIndicatorVisible = useSelector(
         selectIsNewContentIndicatorVisible(NewContentIndicatorId.Activity26_8),
     );
@@ -151,6 +166,18 @@ export const Navigation = ({ children }: NavigationProps) => {
                           } as NavigationItemProps,
                       ]
                     : []),
+                ...(isContactsFeatureEnabled
+                    ? [
+                          {
+                              nameId: 'TR_CONTACTS',
+                              icon: AddressBookIcon,
+                              goToRoute: 'suite-contacts',
+                              routes: ['suite-contacts'],
+                              hasIndicator: hasPendingAddressRequests,
+                              'data-testid': '@suite/menu/contacts',
+                          } as NavigationItemProps,
+                      ]
+                    : []),
                 {
                     nameId: 'TR_NOTIFICATIONS',
                     icon: BellIcon,
@@ -182,6 +209,8 @@ export const Navigation = ({ children }: NavigationProps) => {
                 hasActivityIndicator,
                 isActivityNewContentIndicatorVisible,
                 handleActivityNavigation,
+                isContactsFeatureEnabled,
+                hasPendingAddressRequests,
             ],
         );
 

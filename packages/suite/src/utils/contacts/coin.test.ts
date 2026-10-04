@@ -1,6 +1,12 @@
 import { type Account } from '@suite-common/wallet-types';
 
-import { accountSlip44, isContactsSlip44, networkNameForSlip44, slip44FromPath } from './coin';
+import {
+    accountSlip44,
+    isContactsAccount,
+    isContactsSlip44,
+    networkNameForSlip44,
+    slip44FromPath,
+} from './coin';
 
 const account = (symbol: string, path: string): Account =>
     ({ networkType: 'bitcoin', symbol, path }) as unknown as Account;
@@ -43,6 +49,25 @@ describe('contacts coin utils', () => {
             [2, 60, -1, 0.5, Number.NaN].forEach(slip44 =>
                 expect(isContactsSlip44(slip44)).toBe(false),
             );
+        });
+    });
+
+    describe('isContactsAccount', () => {
+        it('accepts Bitcoin mainnet, testnet and regtest accounts', () => {
+            expect(isContactsAccount(account('btc', "m/84'/0'/0'"))).toBe(true);
+            expect(isContactsAccount(account('test', "m/84'/1'/0'"))).toBe(true);
+            expect(isContactsAccount(account('regtest', "m/84'/1'/0'"))).toBe(true);
+        });
+
+        it('rejects other coins of the Bitcoin network type and other network types', () => {
+            expect(isContactsAccount(account('ltc', "m/84'/2'/0'"))).toBe(false);
+            expect(
+                isContactsAccount({
+                    networkType: 'ethereum',
+                    symbol: 'eth',
+                    path: "m/44'/60'/0'/0/0",
+                } as unknown as Account),
+            ).toBe(false);
         });
     });
 

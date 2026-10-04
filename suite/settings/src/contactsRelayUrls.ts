@@ -41,6 +41,13 @@ const parseValidContactsRelayUrl = (url: string) => {
     return isLocalRelay ? parsedUrl : undefined;
 };
 
+/** Whether both URLs name the same relay, e.g. with and without the trailing slash. */
+export const isSameContactsRelayUrl = (url: string, otherUrl: string): boolean => {
+    const href = parseUrl(url.trim())?.href;
+
+    return href !== undefined && href === parseUrl(otherUrl.trim())?.href;
+};
+
 /**
  * Whether the contacts address exchange may use this relay. The exchange publishes addresses in
  * plain text, so a remote relay must be reached over TLS (`wss://`). Credentials, a query and a

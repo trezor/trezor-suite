@@ -35,6 +35,13 @@ export const isContactsSlip44 = (slip44: number): boolean =>
     Object.hasOwn(CANONICAL_BITCOIN_SYMBOL, slip44);
 
 /**
+ * Whether an account can share or request contact addresses. Other coins of the Bitcoin network
+ * type have their own coin types, which the exchange ignores.
+ */
+export const isContactsAccount = (account: Account): boolean =>
+    account.networkType === 'bitcoin' && isContactsSlip44(accountSlip44(account));
+
+/**
  * Human network name for a coin type. Prefers the network of an account the user holds (a regtest
  * account names coin type 1 "Bitcoin Regtest"), and otherwise falls back to the canonical Bitcoin
  * network, so an address for a coin the user does not hold still carries a network name instead of

@@ -1,6 +1,7 @@
 import {
     MAX_CONTACTS_RELAY_URLS,
     getValidContactsRelayUrls,
+    isSameContactsRelayUrl,
     isValidContactsRelayUrl,
 } from './contactsRelayUrls';
 
@@ -72,5 +73,25 @@ describe('getValidContactsRelayUrls', () => {
         expect(getValidContactsRelayUrls([1, null, 'wss://relay.example.com'])).toEqual([
             'wss://relay.example.com',
         ]);
+    });
+});
+
+describe('isSameContactsRelayUrl', () => {
+    it.each(['wss://relay.example.com/', 'WSS://Relay.Example.com', 'wss://relay.example.com:443'])(
+        'matches %s to wss://relay.example.com',
+        url => {
+            expect(isSameContactsRelayUrl('wss://relay.example.com', url)).toBe(true);
+        },
+    );
+
+    it.each(['wss://relay.example.com:7447', 'wss://relay.example.com/nostr', 'not a url'])(
+        'tells %s apart from wss://relay.example.com',
+        url => {
+            expect(isSameContactsRelayUrl('wss://relay.example.com', url)).toBe(false);
+        },
+    );
+
+    it('never matches two unparsable URLs', () => {
+        expect(isSameContactsRelayUrl('not a url', 'not a url')).toBe(false);
     });
 });
