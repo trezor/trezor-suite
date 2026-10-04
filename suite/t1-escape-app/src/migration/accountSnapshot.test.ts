@@ -80,6 +80,39 @@ describe('loadAccountSnapshot', () => {
         ]);
     });
 
+    it('does not query addresses that were never used', async () => {
+        const chain = mockBackend();
+        const { account, utxos } = mockFundedAccount({
+            chain,
+            wallet,
+            accountType: 'p2pkh',
+            amounts: ['100000'],
+        });
+        // Blockbook reports a never used address without any amounts, which is not what the
+        // shared type promises. The cast reproduces that shape.
+        const neverUsed = [1, 2, 3].map(
+            addressIndex =>
+                ({
+                    address: wallet.getAddress({ accountType: 'p2pkh', addressIndex }),
+                    path: wallet.getAddressPath({ accountType: 'p2pkh', addressIndex }),
+                    transfers: 0,
+                }) as Address,
+        );
+        chain.accountInfos.set(
+            account.descriptor,
+            mockAccountInfo({
+                descriptor: account.descriptor,
+                empty: false,
+                addresses: { used: [address(0, '100000')], unused: neverUsed, change: neverUsed },
+            }),
+        );
+
+        const snapshot = await loadAccountSnapshot({ backend: chain.backend, account });
+
+        expect(snapshot.success && snapshot.payload.utxos).toEqual(utxos);
+        expect(chain.backend.getAccountUtxo.mock.calls).toEqual([[account.descriptor]]);
+    });
+
     it.each(['getAccountInfo', 'getAccountUtxo'] as const)(
         'passes a failure of %s through',
         async method => {

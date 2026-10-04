@@ -1,7 +1,6 @@
 import { isWalletEmpty, scanAccount, scanAccountRange } from './discoverAccounts';
 import { discoverWallet } from './discoverWallet';
 import { buildScanReport } from './scanReport';
-import { mockAccountInfo } from '../../mocks/mockAccountInfo';
 import { mockBackend, mockFundedAccount } from '../../mocks/mockBackend';
 import { type MockDeviceParams, mockDevice } from '../../mocks/mockDevice';
 import { mockWallet } from '../../mocks/mockWallet';
@@ -33,7 +32,7 @@ const setup = (deviceParams: Partial<MockDeviceParams> = {}) => {
 };
 
 describe('scanAccount', () => {
-    it('scans with the standard gap first and with the deep gap second', async () => {
+    it('scans the account once, with the deep address gap', async () => {
         const { wallet, chain, session } = setup();
         const { account } = mockFundedAccount({
             chain,
@@ -51,25 +50,12 @@ describe('scanAccount', () => {
 
         expect(scanned).toMatchObject({ success: true, payload: { account, isEmpty: false } });
         expect(chain.backend.getAccountInfo.mock.calls).toEqual([
-            [{ descriptor: account.descriptor, details: 'basic' }],
             [expect.objectContaining({ descriptor: account.descriptor, details: 'txs', gap: 100 })],
         ]);
     });
 
-    it('counts an account as used when only the deep gap finds history', async () => {
-        const { wallet, chain, session } = setup();
-        const { account } = mockFundedAccount({
-            chain,
-            wallet,
-            accountType: 'p2pkh',
-            amounts: ['100000'],
-        });
-        chain.backend.getAccountInfo.mockImplementationOnce(() =>
-            Promise.resolve({
-                success: true,
-                payload: mockAccountInfo({ descriptor: account.descriptor, empty: true }),
-            }),
-        );
+    it('reports an account without history as empty', async () => {
+        const { chain, session } = setup();
 
         const scanned = await scanAccount({
             call: session.call,
@@ -78,7 +64,7 @@ describe('scanAccount', () => {
             accountIndex: 0,
         });
 
-        expect(scanned.success && scanned.payload.isEmpty).toBe(false);
+        expect(scanned.success && scanned.payload.isEmpty).toBe(true);
     });
 });
 
