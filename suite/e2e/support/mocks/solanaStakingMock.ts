@@ -5,9 +5,12 @@ import { PASSTHROUGH, SolanaRpcServerMock } from '@trezor/e2e-utils';
 import solSimulateStakeTransaction from '../../fixtures/staking/sol-simulate-stake-transaction.json';
 import solStakeTransaction from '../../fixtures/staking/sol-stake-transactionResponse.json';
 import {
+    SolanaReward,
     SolanaStakingAccount,
+    rewards,
     solStakingAccountDeactivating,
     solStakingAccountFirst,
+    totalReward,
 } from '../../fixtures/staking/sol-staking-accounts';
 import { step } from '../common';
 
@@ -41,6 +44,7 @@ export class SolanaStakingMock {
     ]);
     private epoch = INITIAL_EPOCH;
     private stakeAccounts: SolanaStakingAccount[] = [];
+    private rewardsHistory: SolanaReward[] = rewards.response.rewards;
     private simulatedTransaction: unknown = solSimulateStakeTransaction;
     private transactionConfirmed = false;
     private revision = 0;
@@ -139,6 +143,34 @@ export class SolanaStakingMock {
     async setupUnstakingAccount() {
         this.setStakeAccounts([solStakingAccountDeactivating.payload]);
         await this.setEpoch(solStakingAccountDeactivating.deactivationEpoch);
+    }
+
+    @step()
+    setRewardsHistory(rewardsHistory: SolanaReward[]) {
+        this.rewardsHistory = rewardsHistory;
+    }
+
+    @step()
+    async mockRewardsHistory() {
+        await this.page.route(rewards.url, async route => {
+            const url = new URL(route.request().url());
+            const limit = Number(url.searchParams.get('limit') ?? 10);
+            const offset = Number(url.searchParams.get('offset') ?? 0);
+
+            await route.fulfill({
+                json: {
+                    rewards: this.rewardsHistory.slice(offset, offset + limit),
+                    totalCount: this.rewardsHistory.length,
+                },
+            });
+        });
+    }
+
+    @step()
+    async mockTotalRewards() {
+        await this.page.route(totalReward.url, async route => {
+            await route.fulfill({ json: totalReward.response });
+        });
     }
 
     private registerHandlers() {
