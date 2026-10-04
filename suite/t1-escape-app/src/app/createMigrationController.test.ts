@@ -12,6 +12,7 @@ import { type MockDeviceParams, mockDevice } from '../../mocks/mockDevice';
 import { mockWallet } from '../../mocks/mockWallet';
 import type { BridgeConnection } from '../device/createBridgeConnection';
 import type { DeviceLostReason } from '../device/deviceSession';
+import type { SignedSweepRecord } from '../migration/sweepLedger';
 
 const DESTINATION = '3J98t1WpEZ73CNmQviecrnyiWrnqRhWNLy';
 
@@ -78,6 +79,47 @@ const setup = ({
         reportLost?.(reason);
     };
 
+    const recoverDevice = () => {
+        lostReason = undefined;
+    };
+
+    // Makes the backend show the signed transfer as a transaction spending its inputs.
+    const showOnNetwork = ({ plan }: SignedSweepRecord, blockHeight: number) => {
+        const { descriptor } = funded.account;
+        chain.utxos.set(descriptor, []);
+        chain.accountInfos.set(descriptor, {
+            ...chain.accountInfos.get(descriptor)!,
+            history: {
+                total: 3,
+                unconfirmed: blockHeight > 0 ? 0 : 1,
+                transactions: [
+                    mockHistoryTransaction({
+                        blockHeight,
+                        details: {
+                            vin: plan.utxos.map((utxo, n) => ({
+                                txid: utxo.txid,
+                                n,
+                                isAddress: true,
+                                isAccountOwned: true,
+                            })),
+                            vout: [
+                                {
+                                    n: 0,
+                                    isAddress: true,
+                                    addresses: [DESTINATION],
+                                    value: plan.amount,
+                                },
+                            ],
+                            size: 0,
+                            totalInput: '0',
+                            totalOutput: '0',
+                        },
+                    }),
+                ],
+            },
+        });
+    };
+
     const reachTransfers = async () => {
         await controller.runPreflight();
         await controller.connectDevice();
@@ -86,7 +128,18 @@ const setup = ({
         await controller.submitDestination(DESTINATION);
     };
 
-    return { controller, chain, device, bridge, release, funded, loseDevice, reachTransfers };
+    return {
+        controller,
+        chain,
+        device,
+        bridge,
+        release,
+        funded,
+        loseDevice,
+        recoverDevice,
+        showOnNetwork,
+        reachTransfers,
+    };
 };
 
 const waitUntil = async (condition: () => boolean) => {
@@ -195,6 +248,26 @@ describe('migration controller', () => {
 
             expect(controller.getState().deviceIssue).toEqual({ type: 'unable-to-open' });
         });
+    });
+
+    it('lets the user connect again after the device went away while connecting', async () => {
+        const { controller, release, loseDevice, recoverDevice } = setup();
+        await controller.runPreflight();
+
+        loseDevice('disconnected');
+        await controller.connectDevice();
+        expect(controller.getState()).toMatchObject({
+            step: 'device',
+            deviceLostReason: 'disconnected',
+            deviceIssue: { type: 'device-lost' },
+        });
+        expect(release).toHaveBeenCalledTimes(1);
+
+        recoverDevice();
+        await controller.connectDevice();
+
+        expect(controller.getState()).toMatchObject({ step: 'discovery' });
+        expect(controller.getState().deviceLostReason).toBeUndefined();
     });
 
     it('moves the funds from discovery to a confirmed transfer and locks the device', async () => {
@@ -440,6 +513,41 @@ describe('migration controller', () => {
             [signed.record?.hex],
         ]);
         expect(device.countCalls('SignTx')).toBe(1);
+    });
+
+    it('counts a failed broadcast as sent when the network already has the transaction', async () => {
+        const { controller, chain, showOnNetwork, reachTransfers } = setup();
+        await reachTransfers();
+        await controller.signTransfer(controller.getState().transfers[0]!.key);
+        const signed = controller.getState().transfers[0]!;
+
+        // The first answer got lost on the way; the server refuses the retry as a duplicate.
+        showOnNetwork(signed.record!, -1);
+        chain.backend.pushTransaction.mockResolvedValueOnce({
+            success: false,
+            error: { type: 'backend', message: 'transaction already in mempool' },
+        });
+        await controller.broadcastTransfer(signed.key);
+
+        const [transfer] = controller.getState().transfers;
+        expect(transfer).toMatchObject({ stage: 'broadcast', status: 'pending' });
+        expect(transfer?.error).toBeUndefined();
+    });
+
+    it('does not report its own pending transfer as one from elsewhere', async () => {
+        const { controller, showOnNetwork, reachTransfers } = setup();
+        await reachTransfers();
+        await controller.signTransfer(controller.getState().transfers[0]!.key);
+        const signed = controller.getState().transfers[0]!;
+        await controller.broadcastTransfer(signed.key);
+
+        showOnNetwork(signed.record!, -1);
+        await controller.refreshTransfers();
+
+        expect(controller.getState().transfers[0]).toMatchObject({
+            status: 'pending',
+            inFlightTransactions: 0,
+        });
     });
 
     it('prepares the next transfer of an account that needs more than one', async () => {

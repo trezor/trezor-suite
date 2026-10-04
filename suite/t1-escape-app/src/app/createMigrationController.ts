@@ -25,11 +25,11 @@ import {
 import { discoverWallet } from '../discovery/discoverWallet';
 import { getDiscoverableAccountTypes } from '../firmware/firmwareSupport';
 import { getAccountAddresses, loadAccountSnapshot } from '../migration/accountSnapshot';
-import { evaluateAccountState } from '../migration/accountState';
+import { type InFlightTransfer, evaluateAccountState } from '../migration/accountState';
 import { prepareSweep } from '../migration/prepareSweep';
 import { signSweep } from '../migration/signSweep';
 import { type SweepLedger, createSweepLedger } from '../migration/sweepLedger';
-import { broadcastSweep, evaluateSweepStatus } from '../migration/sweepStatus';
+import { type SweepStatus, broadcastSweep, evaluateSweepStatus } from '../migration/sweepStatus';
 import { type EnvironmentInfo, getEnvironmentIssue } from '../preflight/environment';
 import type { LocalNetworkAccessState } from '../preflight/localNetworkAccess';
 
@@ -166,7 +166,11 @@ export const createMigrationController = (deps: MigrationControllerDeps): Migrat
 
     const connectDevice: MigrationController['connectDevice'] = () =>
         runExclusive('Looking for your Trezor', async () => {
-            setState({ deviceIssue: undefined });
+            if (session) return;
+
+            // Until a session is established nothing was unlocked or shown on the device, so a
+            // device that went away during an earlier attempt does not end the migration.
+            setState({ deviceIssue: undefined, deviceLostReason: undefined });
 
             const found = await deps.bridge.findDevice();
             if (!found.success) {
@@ -317,6 +321,14 @@ export const createMigrationController = (deps: MigrationControllerDeps): Migrat
         }
     };
 
+    // Pending transactions signed in this page session are tracked as transfers of their own.
+    // Only the remaining ones, such as a transfer from before a reload, count as in flight.
+    const countInFlightFromElsewhere = (inFlight: readonly InFlightTransfer[]) =>
+        inFlight.filter(
+            ({ spentOutpoints }) =>
+                !spentOutpoints.every(outpoint => ledger.isOutpointSigned(outpoint)),
+        ).length;
+
     const prepareTransfer = async (account: DiscoveredAccount): Promise<Transfer | undefined> => {
         const { device, destination } = state;
         if (!device || !destination) return undefined;
@@ -348,7 +360,7 @@ export const createMigrationController = (deps: MigrationControllerDeps): Migrat
             plan,
             leftovers,
             followingTransactions,
-            inFlightTransactions: accountState.inFlight.length,
+            inFlightTransactions: countInFlightFromElsewhere(accountState.inFlight),
         };
     };
 
@@ -436,24 +448,6 @@ export const createMigrationController = (deps: MigrationControllerDeps): Migrat
             await replaceWithFreshPlan(transfer, signed.error);
         });
 
-    const refreshStatus = async (transfer: Transfer) => {
-        const snapshot = await loadAccountSnapshot({
-            backend: deps.backend,
-            account: transfer.account,
-        });
-        if (!snapshot.success) return;
-
-        const { record } = transfer;
-        updateTransfer(transfer.key, {
-            // Transfers from before a page reload have no record. They are followed through
-            // the pending transactions of the account instead.
-            inFlightTransactions: evaluateAccountState(snapshot.payload).inFlight.length,
-            ...(record && transfer.stage === 'broadcast'
-                ? { status: evaluateSweepStatus({ snapshot: snapshot.payload, record }) }
-                : {}),
-        });
-    };
-
     const broadcastTransfer: MigrationController['broadcastTransfer'] = key =>
         runExclusive('Sending the transaction', async () => {
             const transfer = state.transfers.find(current => current.key === key);
@@ -465,16 +459,33 @@ export const createMigrationController = (deps: MigrationControllerDeps): Migrat
 
             // The stored bytes are sent, on the first attempt and on every later one.
             const pushed = await broadcastSweep({ backend: deps.backend, record });
-            if (!pushed.success) {
-                updateTransfer(key, {
-                    stage: isFirstBroadcast ? 'signed' : 'broadcast',
-                    error: { type: 'broadcast-failed', message: pushed.error.message },
-                });
+            let status: SweepStatus = 'pending';
 
-                return;
+            if (!pushed.success) {
+                // A failed request does not prove the network lacks the transaction: an answer
+                // can get lost, and the retry is then refused as a duplicate. What spends the
+                // inputs decides.
+                const snapshot = await loadAccountSnapshot({
+                    backend: deps.backend,
+                    account: transfer.account,
+                });
+                const networkStatus = snapshot.success
+                    ? evaluateSweepStatus({ snapshot: snapshot.payload, record })
+                    : undefined;
+
+                if (networkStatus !== 'pending' && networkStatus !== 'confirmed') {
+                    updateTransfer(key, {
+                        stage: isFirstBroadcast ? 'signed' : 'broadcast',
+                        error: { type: 'broadcast-failed', message: pushed.error.message },
+                    });
+
+                    return;
+                }
+
+                status = networkStatus;
             }
 
-            updateTransfer(key, { stage: 'broadcast', status: 'pending' });
+            updateTransfer(key, { stage: 'broadcast', status });
 
             if (isFirstBroadcast && transfer.followingTransactions > 0) {
                 const next = await prepareTransfer(transfer.account);
@@ -488,8 +499,38 @@ export const createMigrationController = (deps: MigrationControllerDeps): Migrat
 
         isRefreshingTransfers = true;
         try {
-            for (const transfer of state.transfers) {
-                if (isTransferUnsettled(transfer)) await refreshStatus(transfer);
+            // One snapshot per account serves all of its transfers.
+            const accounts = new Map(
+                state.transfers
+                    .filter(isTransferUnsettled)
+                    .map(({ account }) => [getAccountKey(account), account]),
+            );
+
+            for (const [accountKey, account] of accounts) {
+                const snapshot = await loadAccountSnapshot({ backend: deps.backend, account });
+                if (!snapshot.success) continue;
+
+                const inFlightTransactions = countInFlightFromElsewhere(
+                    evaluateAccountState(snapshot.payload).inFlight,
+                );
+
+                state.transfers
+                    .filter(transfer => getAccountKey(transfer.account) === accountKey)
+                    .forEach(({ key, record, stage }) =>
+                        updateTransfer(key, {
+                            // Transfers from before a page reload have no record. They are
+                            // followed through the pending transactions of the account instead.
+                            inFlightTransactions,
+                            ...(record && stage === 'broadcast'
+                                ? {
+                                      status: evaluateSweepStatus({
+                                          snapshot: snapshot.payload,
+                                          record,
+                                      }),
+                                  }
+                                : {}),
+                        }),
+                    );
             }
         } finally {
             isRefreshingTransfers = false;
