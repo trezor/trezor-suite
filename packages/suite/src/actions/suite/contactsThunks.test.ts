@@ -81,6 +81,7 @@ import {
     getFreshContactAddressThunk,
     handleRelayEventThunk,
     loadIdentityThunk,
+    markContactAddressSpentThunk,
     removeContactThunk,
     renameContactThunk,
     requestAddressFromContactThunk,
@@ -916,6 +917,35 @@ describe('contactsThunks', () => {
                 .unwrap();
 
             expect(result).toBeUndefined();
+        });
+    });
+
+    describe('markContactAddressSpentThunk', () => {
+        it('stops handing out a contact address once it was paid to', async () => {
+            const { store } = createTestStore({
+                wallet: walletWithContact({
+                    verifiedAddresses: { [ADDRESS_1]: signedAttestation({ address: ADDRESS_1 }) },
+                }),
+                authority: anchoredAuthority(CONTACT_NPUB),
+            });
+
+            await store.dispatch(markContactAddressSpentThunk({ address: ADDRESS_1 }));
+
+            await expect(
+                store
+                    .dispatch(
+                        getFreshContactAddressThunk({ npub: CONTACT_NPUB, slip44: SLIP44_BTC }),
+                    )
+                    .unwrap(),
+            ).resolves.toBeUndefined();
+        });
+
+        it('stores nothing for an address that is not a contact address', async () => {
+            const { store, getPersistedActions } = createTestStore();
+
+            await store.dispatch(markContactAddressSpentThunk({ address: MY_ADDRESS }));
+
+            expect(getPersistedActions()).toHaveLength(0);
         });
     });
 

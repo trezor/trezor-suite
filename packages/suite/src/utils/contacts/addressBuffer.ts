@@ -1,5 +1,5 @@
 import { type SharedAddress } from 'src/reducers/suite/contactsReducer';
-import { type Attestation } from 'src/utils/contacts/attestation';
+import { type Attestation, verifyAttestation } from 'src/utils/contacts/attestation';
 
 /**
  * One row of a contact's address buffer: either their address I can pay to, or my address I shared
@@ -45,3 +45,24 @@ export const outboundAddressEntries = (
             createdAt: shared.sharedAt,
             slip44: shared.attestation.slip44,
         }));
+
+type IsFreshAttestationParams = {
+    attestation: Attestation;
+    slip44: number;
+    spentContactAddresses: Record<string, boolean>;
+};
+
+/**
+ * Whether I can pay to a contact's attested address in this coin: I have not paid to it yet, and
+ * its signature still verifies, so a stored record is never trusted as is. The send form enables a
+ * contact by this rule and getFreshContactAddressThunk hands out an address by it, so a contact
+ * shown as payable always yields an address.
+ */
+export const isFreshAttestation = ({
+    attestation,
+    slip44,
+    spentContactAddresses,
+}: IsFreshAttestationParams): boolean =>
+    attestation.slip44 === slip44 &&
+    !spentContactAddresses[attestation.address] &&
+    verifyAttestation(attestation, attestation.npub);

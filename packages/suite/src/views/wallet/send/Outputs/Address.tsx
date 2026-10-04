@@ -50,6 +50,7 @@ import { useSendFormContext } from 'src/hooks/wallet';
 import { selectIsSuiteOnline } from 'src/selectors/suite/suiteSelectors';
 import { captureSentryMessage } from 'src/utils/suite/sentry';
 
+import { ContactAddressPicker } from './ContactAddressPicker';
 import { DevAddressBook } from './DevAddressBook';
 
 const autocorrectTranslationKeys: Record<NonNullable<AddressCorrection>['type'], TranslationKey> = {
@@ -509,6 +510,7 @@ export const Address = ({ output, outputId, outputsCount }: AddressProps) => {
             }
             labelRight={
                 <Row gap={16}>
+                    <ContactAddressPicker outputId={outputId} />
                     {isDebug && <DevAddressBook outputId={outputId} account={account} />}
                     {shouldShowLabelAction && broadcastEnabled && (
                         <Text typographyStyle="body-sm" as="div">

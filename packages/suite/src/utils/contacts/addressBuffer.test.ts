@@ -1,11 +1,19 @@
+import { schnorr } from '@noble/curves/secp256k1.js';
+import { bytesToHex, hexToBytes } from '@noble/hashes/utils.js';
+
 import { type SharedAddress } from 'src/reducers/suite/contactsReducer';
 import {
     type AddressEntry,
     inboundAddressEntries,
+    isFreshAttestation,
     outboundAddressEntries,
     sortAddressEntries,
 } from 'src/utils/contacts/addressBuffer';
-import { type Attestation } from 'src/utils/contacts/attestation';
+import {
+    ATTESTATION_KIND,
+    type Attestation,
+    attestationEventId,
+} from 'src/utils/contacts/attestation';
 
 const attestation = (over: Partial<Attestation>): Attestation => ({
     npub: 'peer',
@@ -91,5 +99,65 @@ describe('outboundAddressEntries', () => {
         const entries = outboundAddressEntries(sharedAddresses, {}, 'peer');
 
         expect(entries.map(e => e.address)).toEqual(['a']);
+    });
+});
+
+describe('isFreshAttestation', () => {
+    const CONTACT_SECRET = hexToBytes('22'.repeat(32));
+    const ADDRESS = 'bc1qcontactaddress000000000000000000000001';
+
+    const signedAttestation = (slip44 = 0): Attestation => {
+        const unsigned = {
+            npub: bytesToHex(schnorr.getPublicKey(CONTACT_SECRET)),
+            address: ADDRESS,
+            slip44,
+            createdAt: 1_700_000_000,
+            kind: ATTESTATION_KIND,
+        };
+        const eventId = attestationEventId(unsigned);
+
+        return {
+            ...unsigned,
+            eventId,
+            signature: bytesToHex(schnorr.sign(hexToBytes(eventId), CONTACT_SECRET)),
+        };
+    };
+
+    it('accepts an unpaid address of the coin I pay in', () => {
+        expect(
+            isFreshAttestation({
+                attestation: signedAttestation(),
+                slip44: 0,
+                spentContactAddresses: {},
+            }),
+        ).toBe(true);
+    });
+
+    it('rejects an address of another coin or one I already paid to', () => {
+        expect(
+            isFreshAttestation({
+                attestation: signedAttestation(1),
+                slip44: 0,
+                spentContactAddresses: {},
+            }),
+        ).toBe(false);
+        expect(
+            isFreshAttestation({
+                attestation: signedAttestation(),
+                slip44: 0,
+                spentContactAddresses: { [ADDRESS]: true },
+            }),
+        ).toBe(false);
+    });
+
+    it('rejects a stored attestation whose address was changed after signing', () => {
+        const attestation = {
+            ...signedAttestation(),
+            address: 'bc1qcontactaddress000000000000000000000002',
+        };
+
+        expect(isFreshAttestation({ attestation, slip44: 0, spentContactAddresses: {} })).toBe(
+            false,
+        );
     });
 });

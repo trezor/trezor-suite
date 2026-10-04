@@ -46,6 +46,15 @@ import { isCardanoTx, isRbfBumpFeeTransaction } from '@suite-common/wallet-utils
 import { type PROTO, type StaticSessionId } from '@trezor/connect';
 import { getSynchronize } from '@trezor/utils';
 
+import {
+    type MarkContactAddressSpentThunkState,
+    markContactAddressSpentThunk,
+} from 'src/actions/suite/contactsThunks';
+import {
+    type ContactsFeatureRootState,
+    selectIsContactsFeatureEnabled,
+} from 'src/reducers/suite/contactsReducer';
+
 import { RBF_ERROR_ALREADY_MINED } from './replaceByFeeErrorThunk';
 import { MODULE_PREFIX } from './sendThunksConsts';
 import {
@@ -243,7 +252,9 @@ type SignAndPushSendFormTransactionThunkParams = {
 
 type SignAndPushSendFormTransactionThunkState = ApplySendFormMetadataLabelsThunkState &
     CancelSignSendFormTransactionThunkState &
+    ContactsFeatureRootState &
     EnhancePrecomposedTransactionThunkState &
+    MarkContactAddressSpentThunkState &
     MessageSystemRootState &
     PushSendFormTransactionThunkState &
     SignTransactionThunkState &
@@ -353,6 +364,15 @@ export const signAndPushSendFormTransactionThunk = createThunk<
 
         const result = pushResponse.payload;
         const { txid } = result.payload;
+
+        // Paying a contact's address twice would link the payments, so a paid address is never
+        // offered again. Marking only after the broadcast keeps the address fresh when the push is
+        // cancelled or fails. The thunk only updates local state, so it cannot affect the sent tx.
+        if (selectIsContactsFeatureEnabled(getState())) {
+            formState.outputs.forEach(({ address }) => {
+                if (address) dispatch(markContactAddressSpentThunk({ address }));
+            });
+        }
 
         if (isBumpFeeRbf && device.state?.staticSessionId) {
             dispatch(

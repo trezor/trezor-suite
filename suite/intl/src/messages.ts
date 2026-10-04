@@ -6089,6 +6089,14 @@ export const messages = defineMessages({
         id: 'TR_CONTACTS_IDENTITY_DUPLICATE',
         defaultMessage: 'This contact is already in your list.',
     },
+    TR_CONTACTS_PAY_CONTACT: {
+        id: 'TR_CONTACTS_PAY_CONTACT',
+        defaultMessage: 'Pay a contact',
+    },
+    TR_CONTACTS_NO_FRESH_ADDRESS: {
+        id: 'TR_CONTACTS_NO_FRESH_ADDRESS',
+        defaultMessage: 'No unused address for this network',
+    },
     TR_CONTACTS_VERIFIED: {
         id: 'TR_CONTACTS_VERIFIED',
         defaultMessage: 'Verified',

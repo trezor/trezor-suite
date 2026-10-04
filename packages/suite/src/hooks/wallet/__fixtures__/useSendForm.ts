@@ -27,12 +27,19 @@ import {
     networkSpecificDefaultEthereum,
     networkSpecificDefaultRipple,
 } from '@suite-common/wallet-types/mocks';
-import { PROTO } from '@trezor/connect';
+import { PROTO, type StaticSessionId } from '@trezor/connect';
 import { type DeepPartial } from '@trezor/type-utils';
 
 import { type AppState } from 'src/reducers/store';
+import {
+    type ContactsState,
+    contactsActions,
+    contactsReducer,
+    createEmptyWalletState,
+} from 'src/reducers/suite/contactsReducer';
 import protocolReducer from 'src/reducers/suite/protocolReducer';
 import { extraDependencies } from 'src/support/extraDependencies';
+import { ATTESTATION_KIND } from 'src/utils/contacts/attestation';
 
 const sendFormReducer = prepareSendFormReducer(extraDependencies);
 
@@ -459,6 +466,7 @@ export const getRootReducer: any = (selectedAccount = BTC_ACCOUNT, fees = DEFAUL
             state => state,
         ),
         connectPopup: createReducer({}, () => ({})),
+        contacts: contactsReducer,
     });
 
 const DEFAULT_DRAFT = {
@@ -1446,6 +1454,31 @@ const getComposeResponse = (resp?: any) => ({
     ...resp,
 });
 
+// The wallet of DEVICE and BTC_ACCOUNT.
+const WALLET_STATIC_SESSION_ID: StaticSessionId = '1stTestnetAddress@device_id:0';
+
+// A contact's address the wallet can pay to. Only its key matters to the send flow.
+const getContactsWithAddress = (address: string): ContactsState => ({
+    byWallet: {
+        [WALLET_STATIC_SESSION_ID]: {
+            ...createEmptyWalletState(),
+            verifiedAddresses: {
+                [address]: {
+                    npub: 'c'.repeat(64),
+                    address,
+                    slip44: 0,
+                    createdAt: 1,
+                    kind: ATTESTATION_KIND,
+                    signature: 'd'.repeat(128),
+                    eventId: 'e'.repeat(64),
+                },
+            },
+        },
+    },
+    deviceAuthority: {},
+    relay: { isConnected: false },
+});
+
 type SignAndPush = {
     description: string;
     store: any;
@@ -1698,6 +1731,39 @@ export const signAndPush: SignAndPush[] = [
                 },
                 {
                     type: 'mock-redirect',
+                },
+            ],
+        },
+    },
+    {
+        description: 'Success: marks a paid contact address spent after the push',
+        store: {
+            send: {
+                drafts: getDraft(),
+            },
+            isContactsFeatureEnabled: true,
+            contacts: getContactsWithAddress('A'),
+        },
+        connect: [
+            undefined, // updateFeeInfoThunk
+            getComposeResponse(),
+            {
+                success: true,
+                payload: {
+                    serializedTx: 'serializedABCD',
+                    signedTransaction: {
+                        txid: 'txid',
+                        vin: [],
+                        vout: [],
+                    },
+                },
+            },
+        ],
+        result: {
+            actions: [
+                {
+                    type: contactsActions.contactAddressSpent.type,
+                    payload: { deviceState: WALLET_STATIC_SESSION_ID, address: 'A' },
                 },
             ],
         },

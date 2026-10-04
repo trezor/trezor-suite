@@ -16,6 +16,7 @@ import {
 import { type FormState } from '@suite-common/wallet-types';
 import { type PROTO } from '@trezor/connect';
 
+import { type ContactsState } from 'src/reducers/suite/contactsReducer';
 import {
     type UserAction,
     actionSequence,
@@ -72,6 +73,8 @@ interface Args {
     coinjoin?: any;
     bitcoinAmountUnit?: PROTO.AmountUnit;
     protocol?: Partial<RootReducerState['protocol']>;
+    isContactsFeatureEnabled?: boolean;
+    contacts?: ContactsState;
 }
 
 const TrezorConnect = testMocks.getTrezorConnectMock();
@@ -83,6 +86,8 @@ const initStore = ({
     coinjoin,
     bitcoinAmountUnit,
     protocol,
+    isContactsFeatureEnabled,
+    contacts,
 }: Args = {}) => {
     const rootReducer = fixtures.getRootReducer(selectedAccount, fees);
 
@@ -94,10 +99,16 @@ const initStore = ({
                 coinjoin,
                 settings: { bitcoinAmountUnit, enabledNetworks: ['thod'] },
             },
-            suiteSettings: { ...suiteSettingsInitialState, language: 'en' },
-            debug: debugInitialState,
+            suiteSettings: {
+                ...suiteSettingsInitialState,
+                language: 'en',
+                ...(isContactsFeatureEnabled ? { experimental: ['contacts'] } : {}),
+            },
+            // Contacts are on only in debug mode.
+            debug: { ...debugInitialState, showDebugMenu: !!isContactsFeatureEnabled },
             router: { route: { name: 'wallet-send' } },
             ...(protocol ? { protocol } : {}),
+            ...(contacts ? { contacts } : {}),
         },
     });
 

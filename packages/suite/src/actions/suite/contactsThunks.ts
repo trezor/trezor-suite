@@ -57,6 +57,7 @@ import {
     queryRelaysOnce,
     reconcileRelayPool,
 } from 'src/services/nostr/relayPool';
+import { isFreshAttestation } from 'src/utils/contacts/addressBuffer';
 import {
     ATTESTATION_KIND,
     type Attestation,
@@ -911,10 +912,12 @@ export const getFreshContactAddressThunk = createThunk<
         .filter(
             attestation =>
                 attestation.npub === paymentNpub &&
-                attestation.slip44 === slip44 &&
-                !contactsWallet.spentContactAddresses[attestation.address] &&
                 !excluded.has(attestation.address) &&
-                verifyAttestation(attestation, paymentNpub),
+                isFreshAttestation({
+                    attestation,
+                    slip44,
+                    spentContactAddresses: contactsWallet.spentContactAddresses,
+                }),
         )
         .sort((a, b) => a.createdAt - b.createdAt)[0];
 
@@ -927,17 +930,23 @@ type MarkContactAddressSpentThunkParams = {
     address: string;
 };
 
-export type MarkContactAddressSpentThunkState = DeviceRootState;
+export type MarkContactAddressSpentThunkState = DeviceRootState & ContactsRootState;
 
-/** Records a payment to a contact's address so it is never offered again. */
+/**
+ * Records a payment to a contact's address so it is never offered again. Any other address is
+ * ignored, so the send form passes every address it paid to and none of them is stored.
+ */
 export const markContactAddressSpentThunk = createThunk<
     void,
     MarkContactAddressSpentThunkParams,
     { state: MarkContactAddressSpentThunkState }
 >(`${CONTACTS_PREFIX}/markContactAddressSpent`, ({ address }, { dispatch, getState }) => {
     const wallet = getSelectedWallet(getState());
+    const contactsWallet = wallet && selectContactsWallet(getState(), wallet.deviceState);
 
-    if (!wallet) return;
+    if (!wallet || !contactsWallet || !Object.hasOwn(contactsWallet.verifiedAddresses, address)) {
+        return;
+    }
 
     dispatch(contactsActions.contactAddressSpent({ deviceState: wallet.deviceState, address }));
 });
