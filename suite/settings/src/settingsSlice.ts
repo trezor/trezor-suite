@@ -14,6 +14,7 @@ import type { DefinitionsChannel } from '@trezor/connect-common';
 import { isWeb } from '@trezor/env-utils';
 import { type SuiteThemeVariant } from '@trezor/suite-desktop-api';
 
+import { getValidContactsRelayUrls } from './contactsRelayUrls';
 import { SIDEBAR_WIDTH_NUMERIC } from './suiteConstants';
 
 /**
@@ -62,6 +63,11 @@ export interface SuiteSettingsState {
     sidebarWidth: number;
     isCoinsFilterVisible: boolean;
     suiteSyncRelayUrl: string | null;
+    /**
+     * Nostr relays for the contacts address exchange. Suite has no default relay, so an empty
+     * list means contacts publish nothing and receive nothing.
+     */
+    contactsRelayUrls: string[];
     autoEject: boolean;
 }
 
@@ -105,6 +111,7 @@ export const suiteSettingsInitialState: SuiteSettingsState = {
     sidebarWidth: SIDEBAR_WIDTH_NUMERIC,
     isCoinsFilterVisible: false,
     suiteSyncRelayUrl: null,
+    contactsRelayUrls: [],
     autoEject: false,
 };
 
@@ -159,6 +166,9 @@ const suiteSettingsSlice = createSliceWithExtraDeps({
             { payload }: PayloadAction<boolean>,
         ) => {
             state.isCoinsFilterVisible = payload;
+        },
+        setContactsRelayUrls: (state: SuiteSettingsState, { payload }: PayloadAction<string[]>) => {
+            state.contactsRelayUrls = getValidContactsRelayUrls(payload);
         },
         setOnionLinks: (state: SuiteSettingsState, { payload }: PayloadAction<boolean>) => {
             state.torOnionLinks = payload;

@@ -175,6 +175,9 @@ export interface InvokeChannels {
 
     // Browser Window
     'browser-window/reload': () => void;
+
+    // Contacts relays: hostnames the request filter admits in addition to its static allowlist
+    'contacts-relays/set-allowed-hosts': (hosts: string[]) => void;
 }
 
 type DesktopApiListener = ListenerMethod<RendererChannels>;
@@ -263,4 +266,7 @@ export type DesktopApi = {
 
     // Browser Window
     reloadBrowserWindow: DesktopApiInvoke<'browser-window/reload'>;
+
+    // Contacts relays
+    setContactsRelayAllowedHosts: DesktopApiInvoke<'contacts-relays/set-allowed-hosts'>;
 };

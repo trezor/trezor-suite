@@ -222,5 +222,14 @@ export const factory = <R extends StrictIpcRenderer<any, IpcRendererEvent>>(
 
         // Browser Window
         reloadBrowserWindow: () => ipcRenderer.invoke('browser-window/reload'),
+
+        // Contacts relays
+        setContactsRelayAllowedHosts: hosts => {
+            if (validation.isStringArray(hosts)) {
+                return ipcRenderer.invoke('contacts-relays/set-allowed-hosts', hosts);
+            }
+
+            return Promise.resolve();
+        },
     };
 };

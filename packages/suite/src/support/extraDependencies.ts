@@ -23,6 +23,7 @@ import {
 } from '@suite/router';
 import {
     type SuiteSettingsState,
+    getValidContactsRelayUrls,
     selectDebugSettings,
     selectLanguage,
     selectTradeServerEnvironment,
@@ -460,6 +461,11 @@ export const extraDependencies: ExtraDependenciesStatic = {
                     ...state.enabledSecurityChecks,
                     ...loadedSettings.enabledSecurityChecks,
                 },
+                // Another build may have saved the list under other rules, and a list saved before
+                // relays existed has none.
+                contactsRelayUrls: Array.isArray(loadedSettings.contactsRelayUrls)
+                    ? getValidContactsRelayUrls(loadedSettings.contactsRelayUrls)
+                    : state.contactsRelayUrls,
             };
         },
         storageLoadReceiveAccounts: (state: ReceiveState, { payload }: StorageLoadAction) => {

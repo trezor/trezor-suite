@@ -2,7 +2,12 @@ import { configureStore } from '@reduxjs/toolkit';
 
 import { extraDependenciesCommonMock } from '@suite-common/test-utils';
 
-import { selectAutodetectLanguage, selectLanguage, selectTheme } from './settingsSelectors';
+import {
+    selectAutodetectLanguage,
+    selectContactsRelayUrls,
+    selectLanguage,
+    selectTheme,
+} from './settingsSelectors';
 import {
     prepareSuiteSettingsReducer,
     suiteSettingsActions,
@@ -34,5 +39,34 @@ describe('settingsSlice', () => {
         store.dispatch(suiteSettingsActions.setLanguage('cs-CZ'));
 
         expect(selectLanguage(store.getState())).toBe('cs-CZ');
+    });
+
+    it('has no contacts relay by default', () => {
+        const store = initStore();
+
+        expect(selectContactsRelayUrls(store.getState())).toEqual([]);
+    });
+
+    it('stores only valid contacts relay URLs', () => {
+        const store = initStore();
+
+        store.dispatch(
+            suiteSettingsActions.setContactsRelayUrls([
+                'wss://relay.example.com',
+                'ws://relay.example.com',
+                'https://relay.example.com',
+                ' ws://127.0.0.1:7777 ',
+                'wss://relay.example.com',
+            ]),
+        );
+
+        expect(selectContactsRelayUrls(store.getState())).toEqual([
+            'wss://relay.example.com',
+            'ws://127.0.0.1:7777',
+        ]);
+
+        store.dispatch(suiteSettingsActions.setContactsRelayUrls([]));
+
+        expect(selectContactsRelayUrls(store.getState())).toEqual([]);
     });
 });

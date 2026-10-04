@@ -115,11 +115,11 @@ export type ContactsRootState = {
 
 export type ContactsFeatureRootState = SuiteSettingsRootState & DebugRootState;
 
-// The relay replays its stored backlog on every reconnect. These caps must stay above the number
-// of events one reconnect can replay, otherwise an evicted id that is still replayed would be served
-// again or would bring a dismissed request back.
-const MAX_SERVED_REQUEST_IDS = 2000;
-const MAX_DISMISSED_REQUEST_IDS = 2000;
+// Every relay of a wallet replays its stored backlog when the wallet's pool is rebuilt. These caps
+// must stay above the number of events all of them together can replay, otherwise an evicted id
+// that is still replayed would be served again or would bring a dismissed request back.
+export const MAX_SERVED_REQUEST_IDS = 2000;
+export const MAX_DISMISSED_REQUEST_IDS = 2000;
 // Bounds one inbox row, so a contact spamming retries for one coin cannot grow it without limit.
 const MAX_PENDING_REQUEST_EVENT_IDS = 64;
 
