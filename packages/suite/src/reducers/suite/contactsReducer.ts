@@ -121,7 +121,7 @@ export type ContactsFeatureRootState = SuiteSettingsRootState & DebugRootState;
 export const MAX_SERVED_REQUEST_IDS = 2000;
 export const MAX_DISMISSED_REQUEST_IDS = 2000;
 // Bounds one inbox row, so a contact spamming retries for one coin cannot grow it without limit.
-const MAX_PENDING_REQUEST_EVENT_IDS = 64;
+export const MAX_PENDING_REQUEST_EVENT_IDS = 64;
 
 /**
  * Pending requests are keyed by (npub, slip44), so a contact who asks for a mainnet and a testnet
@@ -681,6 +681,10 @@ export const selectContactsWallet = (
     state: ContactsRootState,
     deviceState: StaticSessionId,
 ): ContactsWalletState | undefined => state.contacts.byWallet[deviceState];
+
+export const selectContactsWallets = (
+    state: ContactsRootState,
+): Partial<Record<StaticSessionId, ContactsWalletState>> => state.contacts.byWallet;
 
 const EMPTY_RELAY_URL_STATUSES: Record<string, boolean> = {};
 

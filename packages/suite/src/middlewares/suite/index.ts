@@ -11,6 +11,8 @@ import {
     prepareAnalyticsMiddleware,
 } from './analyticsMiddleware';
 import buttonRequest from './buttonRequestMiddleware';
+import { contactsRelayMiddleware } from './contactsRelayMiddleware';
+import { contactsSharedAddressMiddleware } from './contactsSharedAddressMiddleware';
 import events from './eventsMiddleware';
 import log from './logsMiddleware';
 import messageSystem from './messageSystemMiddleware';
@@ -30,6 +32,8 @@ export const getSuiteMiddleware = (
     prepareSuiteMiddleware(getExtra),
     prepareAnalyticsMiddleware(getExtra),
     buttonRequest,
+    contactsRelayMiddleware,
+    contactsSharedAddressMiddleware,
     events,
     preparePushNotificationMiddleware(getExtra),
     metadataMiddleware,

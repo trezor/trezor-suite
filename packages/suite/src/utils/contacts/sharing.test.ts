@@ -1,3 +1,4 @@
+import { getReceiveAddressForFlowEntry } from '@suite-common/address';
 import { type Account } from '@suite-common/wallet-types';
 import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
 
@@ -52,6 +53,7 @@ const utxoAccount = (unused: (string | MockAddress)[], used: MockAddress[] = [])
 
 const noExclusions: ReceiveFlowExclusions = {
     touchedAddresses: [],
+    currentFreshAddress: undefined,
     labeledUnusedAddresses: [],
     pendingAddresses: [],
 };
@@ -132,15 +134,15 @@ describe('outstandingSharedCountForPeer', () => {
 });
 
 describe('accountShareCapacity', () => {
-    it('is the count of unused addresses not currently shared', () => {
-        const account = utxoAccount(['a0', 'a1', 'a2']);
+    it('is the count of unused addresses not currently shared, without the highest one', () => {
+        const account = utxoAccount(['a0', 'a1', 'a2', 'a3']);
         const wallet = { sharedAddresses: { a0: shared('a0', NOW) }, spentSharedAddresses: {} };
 
         expect(accountShareCapacity({ account, wallet, now: NOW, ...noExclusions })).toBe(2);
     });
 
-    it('is 0 when every unused address is already outstanding (gap exhausted → block sharing)', () => {
-        const account = utxoAccount(['a0', 'a1']);
+    it('is 0 when every shareable address is already outstanding (gap exhausted → block sharing)', () => {
+        const account = utxoAccount(['a0', 'a1', 'a2']);
         const wallet = {
             sharedAddresses: { a0: shared('a0', NOW), a1: shared('a1', NOW) },
             spentSharedAddresses: {},
@@ -150,7 +152,7 @@ describe('accountShareCapacity', () => {
     });
 
     it('recovers capacity once a share passes the reclaim window', () => {
-        const account = utxoAccount(['a0', 'a1']);
+        const account = utxoAccount(['a0', 'a1', 'a2']);
         const wallet = {
             sharedAddresses: {
                 // Reclaimed, so a0 is fresh again.
@@ -164,7 +166,7 @@ describe('accountShareCapacity', () => {
     });
 
     it('frees capacity once a shared address is used on-chain', () => {
-        const account = utxoAccount(['a0', 'a1']);
+        const account = utxoAccount(['a0', 'a1', 'a2']);
         const wallet = {
             sharedAddresses: { a0: shared('a0', NOW), a1: shared('a1', NOW) },
             spentSharedAddresses: { a0: true },
@@ -175,16 +177,25 @@ describe('accountShareCapacity', () => {
 });
 
 describe('getShareableAddresses', () => {
-    it('skips an address revealed or copied on the Receive page and every unused one below it', () => {
-        const account = utxoAccount(['a0', 'a1', 'a2', 'a3']);
+    it('skips an address revealed on the Receive page and every unused one below it', () => {
+        const account = utxoAccount(['a0', 'a1', 'a2', 'a3', 'top']);
 
         expect(
             shareableAddresses(account, { touchedAddresses: [receiveInfo(account, 'a1')] }),
         ).toEqual(['a2', 'a3']);
     });
 
+    it('skips the address the Receive page shows and every unused one below it', () => {
+        const account = utxoAccount(['a0', 'a1', 'a2', 'top']);
+
+        // Copying or verifying the shown address leaves no touch.
+        expect(
+            shareableAddresses(account, { currentFreshAddress: receiveInfo(account, 'a1') }),
+        ).toEqual(['a2']);
+    });
+
     it('skips a labeled unused address and every unused one below it', () => {
-        const account = utxoAccount(['a0', 'a1', 'a2']);
+        const account = utxoAccount(['a0', 'a1', 'a2', 'top']);
 
         expect(
             shareableAddresses(account, { labeledUnusedAddresses: [receiveInfo(account, 'a1')] }),
@@ -192,7 +203,7 @@ describe('getShareableAddresses', () => {
     });
 
     it('skips an address with a pending transaction and every unused one below it', () => {
-        const account = utxoAccount(['a0', 'a1', 'a2']);
+        const account = utxoAccount(['a0', 'a1', 'a2', 'top']);
 
         expect(shareableAddresses(account, { pendingAddresses: ['a1'] })).toEqual(['a2']);
     });
@@ -202,6 +213,7 @@ describe('getShareableAddresses', () => {
             { address: 'a0', index: 0 },
             { address: 'a1', index: 1, transfers: 1 },
             { address: 'a2', index: 2 },
+            { address: 'top', index: 3 },
         ]);
 
         expect(shareableAddresses(account)).toEqual(['a2']);
@@ -213,6 +225,7 @@ describe('getShareableAddresses', () => {
             [
                 { address: 'a1', index: 1 },
                 { address: 'a3', index: 3 },
+                { address: 'top', index: 4 },
             ],
             [{ address: 'u2', index: 2 }],
         );
@@ -221,7 +234,7 @@ describe('getShareableAddresses', () => {
     });
 
     it('skips an address another contact holds, but not the addresses below it', () => {
-        const account = utxoAccount(['a0', 'a1', 'a2']);
+        const account = utxoAccount(['a0', 'a1', 'a2', 'top']);
         const wallet = { sharedAddresses: { a1: shared('a1', NOW) }, spentSharedAddresses: {} };
 
         expect(
@@ -230,7 +243,7 @@ describe('getShareableAddresses', () => {
     });
 
     it('offers a reclaimed share again although sharing marked it touched', () => {
-        const account = utxoAccount(['a0', 'a1']);
+        const account = utxoAccount(['a0', 'a1', 'top']);
         const wallet = {
             sharedAddresses: { a0: shared('a0', NOW - SHARE_RECLAIM_WINDOW_MS - 1) },
             spentSharedAddresses: {},
@@ -239,6 +252,31 @@ describe('getShareableAddresses', () => {
         expect(
             shareableAddresses(account, { touchedAddresses: [receiveInfo(account, 'a0')] }, wallet),
         ).toEqual(['a0', 'a1']);
+    });
+
+    it('never offers the highest unused address, the Receive page fallback', () => {
+        const account = utxoAccount(['a0', 'a1', 'a2']);
+        const sharedList = shareableAddresses(account);
+        const wallet = {
+            sharedAddresses: Object.fromEntries(
+                sharedList.map(address => [address, shared(address, NOW)]),
+            ),
+            spentSharedAddresses: {},
+        };
+
+        expect(sharedList).toEqual(['a0', 'a1']);
+        // Every share is touched, so the Receive page can only show the highest unused address,
+        // which sharing never takes.
+        expect(
+            getReceiveAddressForFlowEntry({
+                account,
+                touchedAddresses: sharedList.map(address => receiveInfo(account, address)),
+                labeledUnusedAddresses: [],
+                pendingAddresses: [],
+                isAccountUtxoBased: true,
+            })?.address,
+        ).toBe('a2');
+        expect(shareableAddresses(account, {}, wallet)).toEqual([]);
     });
 
     it('offers nothing for an account without discovered addresses', () => {

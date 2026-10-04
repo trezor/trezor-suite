@@ -1,7 +1,21 @@
+import {
+    type SelectAddressLabelsForAccountState,
+    selectAddressLabelsForAccount,
+} from '@suite/address';
 import { getFreshAddresses } from '@suite-common/address';
+import {
+    type ReceiveRootState,
+    selectCurrentFreshAddress,
+    selectTouchedAddresses,
+} from '@suite-common/receive';
+import {
+    type TransactionsRootState,
+    selectPendingAccountAddresses,
+} from '@suite-common/wallet-core';
 import { type Account, type ReceiveInfo } from '@suite-common/wallet-types';
 import { isUtxoBased } from '@suite-common/wallet-utils';
 import { type AccountAddress } from '@trezor/connect';
+import { comparePath } from '@trezor/crypto-utils';
 
 import { type ContactsWalletState, type SharedAddress } from 'src/reducers/suite/contactsReducer';
 
@@ -64,13 +78,42 @@ export const outstandingSharedCountForPeer = (
 };
 
 /**
- * What Suite's receive flow treats as given out besides on-chain use: addresses revealed or copied
- * on the Receive page, labeled unused addresses and addresses with a pending transaction.
+ * What Suite's receive flow treats as given out besides on-chain use: addresses revealed on the
+ * Receive page, the address it currently shows, labeled unused addresses and addresses with a
+ * pending transaction.
  */
 export type ReceiveFlowExclusions = {
     touchedAddresses: ReceiveInfo[];
+    /** Copying or verifying the shown address does not mark it touched. */
+    currentFreshAddress: ReceiveInfo | undefined;
     labeledUnusedAddresses: ReceiveInfo[];
     pendingAddresses: string[];
+};
+
+export type SelectReceiveFlowExclusionsState = ReceiveRootState &
+    TransactionsRootState &
+    SelectAddressLabelsForAccountState;
+
+/** The receive flow's exclusions for one account, read the way the Receive page reads them. */
+export const selectReceiveFlowExclusions = (
+    state: SelectReceiveFlowExclusionsState,
+    account: Account,
+): ReceiveFlowExclusions => {
+    const unused = account.addresses?.unused ?? [];
+    // The Receive page reads the selected account's labels. Addresses are shared from any account,
+    // so the labels are read by the account's key.
+    const addressLabels = selectAddressLabelsForAccount(state, {
+        addresses: unused.map(({ address }) => address),
+        accountKey: account.key,
+        deviceStaticId: account.deviceState,
+    });
+
+    return {
+        touchedAddresses: selectTouchedAddresses(state, account.key),
+        currentFreshAddress: selectCurrentFreshAddress(state, account.key),
+        labeledUnusedAddresses: unused.filter(({ address }) => !!addressLabels[address]),
+        pendingAddresses: selectPendingAccountAddresses(state, account.key),
+    };
 };
 
 type GetShareableAddressesParams = ReceiveFlowExclusions & {
@@ -78,6 +121,13 @@ type GetShareableAddressesParams = ReceiveFlowExclusions & {
     wallet: SharingWallet;
     now: number;
 };
+
+const getHighestPathAddress = (addresses: AccountAddress[]) =>
+    addresses.reduce<AccountAddress | undefined>(
+        (highest, address) =>
+            !highest || comparePath(address.path, highest.path) > 0 ? address : highest,
+        undefined,
+    );
 
 /**
  * The receive addresses of this account that can be shared with a contact. They are fresh by the
@@ -91,6 +141,7 @@ export const getShareableAddresses = ({
     wallet,
     now,
     touchedAddresses,
+    currentFreshAddress,
     labeledUnusedAddresses,
     pendingAddresses,
 }: GetShareableAddressesParams): AccountAddress[] => {
@@ -107,11 +158,25 @@ export const getShareableAddresses = ({
     const unusedWithActivity = unused.filter(
         ({ address, transfers }) => transfers > 0 || pendingAddresses.includes(address),
     );
+    // Once every address of the window is touched, the Receive page falls back to the highest
+    // unused one and ignores touches. Never sharing that one keeps the Receive page from showing
+    // an address a contact holds.
+    const receivePageFallbackAddress = getHighestPathAddress(unused);
 
     return getFreshAddresses(
         account,
-        [...touchedOutsideShares, ...labeledUnusedAddresses, ...unusedWithActivity, ...used],
-        [...pendingAddresses, ...outstandingSharedAddresses(wallet, now)],
+        [
+            ...touchedOutsideShares,
+            ...(currentFreshAddress ? [currentFreshAddress] : []),
+            ...labeledUnusedAddresses,
+            ...unusedWithActivity,
+            ...used,
+        ],
+        [
+            ...pendingAddresses,
+            ...outstandingSharedAddresses(wallet, now),
+            ...(receivePageFallbackAddress ? [receivePageFallbackAddress.address] : []),
+        ],
         isUtxoBased(account),
     );
 };
