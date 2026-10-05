@@ -1,4 +1,4 @@
-import { yup } from '@suite-common/validators';
+import * as yup from 'yup';
 
 import { SLIPPAGE_MAX, SLIPPAGE_MIN } from '../constants';
 

@@ -142,7 +142,6 @@
 !/suite-common/transaction-search
 !/suite-common/transfer-uri
 !/suite-common/tx-simulation
-!/suite-common/validators
 !/suite-common/wallet-config
 !/suite-common/wallet-constants
 !/suite-common/wallet-core

@@ -1,8 +1,9 @@
 import { useCallback, useMemo, useState } from 'react';
 import { useSelector } from 'react-redux';
 
+import * as yup from 'yup';
+
 import { type Action, type Category } from '@suite-common/suite-types';
-import { yup } from '@suite-common/validators';
 
 import { selectMessageSystemConfig } from './messageSystemSelectors';
 import { getDefaultActionByCategory } from './messageSystemUtils';
