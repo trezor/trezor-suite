@@ -1,5 +1,7 @@
 import { useRef, useState } from 'react';
+import { useSelector } from 'react-redux';
 
+import { DebugOnlyBadge, selectIsDebugModeActive } from '@suite/debug';
 import { Translation, useTranslation } from '@suite/intl';
 import { useServices } from '@suite-common/dependency-injection';
 import { type TrxStats } from '@suite-common/earn-staking-api';
@@ -45,6 +47,7 @@ export const TronSelectRepresentativesModal = ({
 }: TronSelectRepresentativesModalProps) => {
     const { translationString } = useTranslation();
     const { addressValidator } = useServices(injectAddressValidator);
+    const isDebugModeActive = useSelector(selectIsDebugModeActive);
 
     const knownAddresses = (representatives ?? []).map(({ address }) => address);
 
@@ -188,6 +191,30 @@ export const TronSelectRepresentativesModal = ({
 
                         {customRepresentatives.map(representative => {
                             const error = getCustomAddressError(representative);
+                            const toggleCustomRepresentative = () =>
+                                updateCustomRepresentative(representative.id, {
+                                    isSelected: !representative.isSelected,
+                                });
+
+                            if (!isDebugModeActive) {
+                                return (
+                                    <Table.Row key={representative.id}>
+                                        <Table.Cell colSpan={2}>
+                                            <Checkbox
+                                                isChecked={representative.isSelected}
+                                                onChange={toggleCustomRepresentative}
+                                                verticalAlignment="center"
+                                            >
+                                                <TronRepresentativeCell
+                                                    address={representative.address}
+                                                    representatives={representatives}
+                                                    isAddressShown
+                                                />
+                                            </Checkbox>
+                                        </Table.Cell>
+                                    </Table.Row>
+                                );
+                            }
 
                             return (
                                 <Table.Row key={representative.id}>
@@ -195,11 +222,7 @@ export const TronSelectRepresentativesModal = ({
                                         <Row gap={12} alignItems="center" width="100%">
                                             <Checkbox
                                                 isChecked={representative.isSelected}
-                                                onChange={() =>
-                                                    updateCustomRepresentative(representative.id, {
-                                                        isSelected: !representative.isSelected,
-                                                    })
-                                                }
+                                                onChange={toggleCustomRepresentative}
                                                 verticalAlignment="center"
                                             />
                                             <Column flex="1">
@@ -237,20 +260,26 @@ export const TronSelectRepresentativesModal = ({
                             );
                         })}
 
-                        <Table.Row>
-                            <Table.Cell colSpan={2} align="center">
-                                <Button
-                                    intent="neutral"
-                                    priority="secondary"
-                                    size="small"
-                                    iconLeft={PlusIcon}
-                                    onClick={addCustomRepresentative}
-                                    isDisabled={!canAddCustomRepresentative}
-                                >
-                                    <Translation id="TR_EARN_TRON_ADD_REPRESENTATIVE" />
-                                </Button>
-                            </Table.Cell>
-                        </Table.Row>
+                        {isDebugModeActive && (
+                            <Table.Row>
+                                <Table.Cell colSpan={2} align="center">
+                                    <Row justifyContent="center">
+                                        <DebugOnlyBadge>
+                                            <Button
+                                                intent="neutral"
+                                                priority="secondary"
+                                                size="small"
+                                                iconLeft={PlusIcon}
+                                                onClick={addCustomRepresentative}
+                                                isDisabled={!canAddCustomRepresentative}
+                                            >
+                                                <Translation id="TR_EARN_TRON_ADD_REPRESENTATIVE" />
+                                            </Button>
+                                        </DebugOnlyBadge>
+                                    </Row>
+                                </Table.Cell>
+                            </Table.Row>
+                        )}
                     </Table.Body>
                 </Table>
             </Card>
