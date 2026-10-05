@@ -37,6 +37,12 @@ type UntrackEarnTransactionPayload = {
     txid: string;
 };
 
+type ReplaceEarnTransactionTxidPayload = {
+    accountKey: AccountKey;
+    prevTxid: string;
+    newTxid: string;
+};
+
 const earnTransactionsSlice = createSlice({
     name: 'earnTransactions',
     initialState: earnTransactionsInitialState,
@@ -57,6 +63,19 @@ const earnTransactionsSlice = createSlice({
             if (Object.keys(accountTransactions).length === 0) {
                 delete state[accountKey];
             }
+        },
+        replaceEarnTransactionTxid: (
+            state,
+            action: PayloadAction<ReplaceEarnTransactionTxidPayload>,
+        ) => {
+            const { accountKey, prevTxid, newTxid } = action.payload;
+            const accountTransactions = state[accountKey];
+            const tracked = accountTransactions?.[prevTxid];
+
+            if (!accountTransactions || !tracked) return;
+
+            delete accountTransactions[prevTxid];
+            accountTransactions[newTxid] = tracked;
         },
     },
     extraReducers: builder => {

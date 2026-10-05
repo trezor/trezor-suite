@@ -12300,6 +12300,10 @@ export const messages = defineMessages({
         id: 'TOAST_TX_STAKE_PENDING',
         defaultMessage: 'Your staking transaction is pending',
     },
+    TOAST_TX_STAKE_SPED_UP: {
+        id: 'TOAST_TX_STAKE_SPED_UP',
+        defaultMessage: 'Your staking transaction has been sped up',
+    },
     TOAST_TX_STAKE_CONFIRMED: {
         id: 'TOAST_TX_STAKE_CONFIRMED',
         defaultMessage: 'Your staking transaction has been processed on the blockchain',
@@ -12308,6 +12312,10 @@ export const messages = defineMessages({
         id: 'TOAST_TX_UNSTAKE_PENDING',
         defaultMessage: 'Your unstaking transaction is pending',
     },
+    TOAST_TX_UNSTAKE_SPED_UP: {
+        id: 'TOAST_TX_UNSTAKE_SPED_UP',
+        defaultMessage: 'Your unstaking transaction has been sped up',
+    },
     TOAST_TX_UNSTAKE_CONFIRMED: {
         id: 'TOAST_TX_UNSTAKE_CONFIRMED',
         defaultMessage: 'Your unstaking transaction has been processed on the blockchain',
@@ -12315,6 +12323,10 @@ export const messages = defineMessages({
     TOAST_TX_CLAIM_PENDING: {
         id: 'TOAST_TX_CLAIM_PENDING',
         defaultMessage: 'Your claim is pending',
+    },
+    TOAST_TX_CLAIM_SPED_UP: {
+        id: 'TOAST_TX_CLAIM_SPED_UP',
+        defaultMessage: 'Your claim has been sped up',
     },
     TOAST_TX_CLAIM_CONFIRMED: {
         id: 'TOAST_TX_CLAIM_CONFIRMED',

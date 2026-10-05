@@ -102,6 +102,36 @@ describe('earnTransactionsReducer', () => {
         expect(state).toEqual(initial);
     });
 
+    it('moves a tracked transaction to the txid of its fee bump', () => {
+        const state = earnTransactionsReducer(
+            { [account.key]: { tx1: { flow: 'stake' }, tx2: { flow: 'claim' } } },
+            earnTransactionsActions.replaceEarnTransactionTxid({
+                accountKey: account.key,
+                prevTxid: 'tx1',
+                newTxid: 'tx1-bumped',
+            }),
+        );
+
+        expect(state).toEqual({
+            [account.key]: { 'tx1-bumped': { flow: 'stake' }, tx2: { flow: 'claim' } },
+        });
+    });
+
+    it('ignores a fee bump of a transaction it does not track', () => {
+        const initial = { [account.key]: { tx1: { flow: 'stake' as const } } };
+
+        const state = earnTransactionsReducer(
+            initial,
+            earnTransactionsActions.replaceEarnTransactionTxid({
+                accountKey: account.key,
+                prevTxid: 'unknown',
+                newTxid: 'unknown-bumped',
+            }),
+        );
+
+        expect(state).toEqual(initial);
+    });
+
     it('forgets the transactions of a removed account only', () => {
         const state = earnTransactionsReducer(
             {

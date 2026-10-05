@@ -138,6 +138,18 @@ const PRESETS: Preset[] = [
             }),
     },
     {
+        value: 'tx-staked-sped-up',
+        label: 'Transaction: Stake sped-up',
+        build: ({ device, seen }) =>
+            notificationsActions.addToast({
+                type: 'tx-staked',
+                stage: 'sped-up',
+                device,
+                ...MOCK_TX,
+                seen,
+            }),
+    },
+    {
         value: 'tx-staked-confirmed',
         label: 'Transaction: Stake confirmed',
         build: ({ device, seen }) =>
@@ -162,6 +174,18 @@ const PRESETS: Preset[] = [
             }),
     },
     {
+        value: 'tx-unstaked-sped-up',
+        label: 'Transaction: Unstake sped-up',
+        build: ({ device, seen }) =>
+            notificationsActions.addToast({
+                type: 'tx-unstaked',
+                stage: 'sped-up',
+                device,
+                ...MOCK_TX,
+                seen,
+            }),
+    },
+    {
         value: 'tx-unstaked-confirmed',
         label: 'Transaction: Unstake confirmed',
         build: ({ device, seen }) =>
@@ -180,6 +204,18 @@ const PRESETS: Preset[] = [
             notificationsActions.addToast({
                 type: 'tx-claimed',
                 stage: 'pending',
+                device,
+                ...MOCK_TX,
+                seen,
+            }),
+    },
+    {
+        value: 'tx-claimed-sped-up',
+        label: 'Transaction: Claim sped-up',
+        build: ({ device, seen }) =>
+            notificationsActions.addToast({
+                type: 'tx-claimed',
+                stage: 'sped-up',
                 device,
                 ...MOCK_TX,
                 seen,

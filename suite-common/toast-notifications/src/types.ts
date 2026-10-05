@@ -88,7 +88,7 @@ type ReceivedTransactionNotification = {
     token?: Pick<TokenInfo, 'contract' | 'name' | 'symbol' | 'decimals'>;
 } & TransactionNotificationPayload;
 
-export type EarnTransactionStage = 'pending' | 'confirmed';
+export type EarnTransactionStage = 'pending' | 'sped-up' | 'confirmed';
 
 type EarnTransactionNotificationPayload = {
     stage: EarnTransactionStage;
