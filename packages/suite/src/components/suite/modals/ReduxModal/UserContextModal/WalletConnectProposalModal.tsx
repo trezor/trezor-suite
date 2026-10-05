@@ -176,8 +176,10 @@ export const WalletConnectProposalModal = ({ eventId }: WalletConnectProposalMod
                         />
 
                         <Column gap={4}>
-                            <Row gap={12}>
-                                <Text>{pendingProposal.params.proposer.metadata.name}</Text>
+                            <Row columnGap={12} rowGap={2} flexWrap="wrap">
+                                <Text overflowWrap="anywhere" ellipsisLineCount={2}>
+                                    {pendingProposal.params.proposer.metadata.name}
+                                </Text>
                                 <Text intent="neutral" priority="secondary">
                                     {pendingProposal.params.proposer.metadata.url}
                                 </Text>
