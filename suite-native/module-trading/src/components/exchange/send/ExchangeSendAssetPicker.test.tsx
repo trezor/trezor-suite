@@ -11,6 +11,7 @@ import { asNetworkSymbol } from '@suite-common/wallet-config';
 import {
     type AccountsRootState,
     type WalletSettingsRootState,
+    feesInitialState,
     initialWalletSettingsState,
 } from '@suite-common/wallet-core';
 import { asBaseCurrencyAmount } from '@suite-common/wallet-types';
@@ -147,6 +148,7 @@ describe('ExchangeSendAssetPicker', () => {
                 wallet: combineReducers({
                     settings: createStaticReducer(initialWalletSettingsState),
                     accounts: createStaticReducer(walletState.accounts),
+                    fees: createStaticReducer(feesInitialState),
                     fiat: createStaticReducer(walletState.fiat),
                     send: createStaticReducer(walletState.send),
                     trading: tradingSlice.prepareReducer({

@@ -1,9 +1,10 @@
 import { type Store } from '@reduxjs/toolkit';
-import { type CryptoId } from 'invity-api';
+import { type BtcSwapComposeTemplate, type CryptoId } from 'invity-api';
 
 import {
     type MinimalExchangeFormProps,
     TRADE_API_RELOAD_QUOTES_AFTER_SECONDS,
+    deriveBitcoinSwapFromAddresses,
     tradingActions,
     tradingExchangeActions,
 } from '@suite-common/trading';
@@ -23,6 +24,7 @@ import {
 import { type TradingRootState } from '@suite-native/trading-state';
 import { type ExchangeFormValues, type ReceiveAccount } from '@suite-native/trading-types';
 import { PROTO } from '@trezor/connect';
+import { createDeferred } from '@trezor/utils';
 
 import { useExchangeForm } from './useExchangeForm';
 import { useExchangeQuotes } from './useExchangeQuotes';
@@ -46,6 +48,7 @@ jest.mock('@trezor/react-utils', () => {
 
 jest.mock('@suite-common/trading', () => ({
     ...jest.requireActual('@suite-common/trading'),
+    deriveBitcoinSwapFromAddresses: jest.fn(),
     exchangeThunks: {
         handleRequestThunk: (payload: unknown) => ({
             type: 'handleRequestThunkMock',
@@ -54,13 +57,30 @@ jest.mock('@suite-common/trading', () => ({
     },
 }));
 
+const mockDeriveBitcoinSwapFromAddresses = jest.mocked(deriveBitcoinSwapFromAddresses);
+
+const BTC_SWAP_COMPOSE_TEMPLATE: BtcSwapComposeTemplate = {
+    extraOutputs: [{ type: 'opreturn', dataHex: 'aa' }],
+};
+
 describe('useExchangeQuotes', () => {
-    const getInitializedStore = (bitcoinAmountUnit = PROTO.AmountUnit.BITCOIN) =>
+    const getInitializedStore = (
+        bitcoinAmountUnit = PROTO.AmountUnit.BITCOIN,
+        btcSwapComposeTemplate?: BtcSwapComposeTemplate,
+    ) =>
         createTradingTestStore({
             tradeType: 'exchange',
             overrides: {
                 wallet: {
-                    trading: getInitializedTradingState(),
+                    trading: btcSwapComposeTemplate
+                        ? {
+                              ...getInitializedTradingState(),
+                              info: {
+                                  ...getInitializedTradingState().info,
+                                  config: { btcSwapComposeTemplate },
+                              },
+                          }
+                        : getInitializedTradingState(),
                     accounts: [btc1NormalAccount, eth1NormalAccount],
                     settings: {
                         bitcoinAmountUnit,
@@ -82,6 +102,8 @@ describe('useExchangeQuotes', () => {
 
     beforeEach(() => {
         mockReport.mockClear();
+        mockDeriveBitcoinSwapFromAddresses.mockReset();
+        mockDeriveBitcoinSwapFromAddresses.mockResolvedValue(undefined);
     });
 
     it('should query quotes once all required data is selected', async () => {
@@ -423,6 +445,90 @@ describe('useExchangeQuotes', () => {
                 shouldSendInSats: false,
             },
         });
+    });
+
+    it('should request quotes with the input addresses of a bitcoin swap', async () => {
+        mockDeriveBitcoinSwapFromAddresses.mockResolvedValue({
+            addresses: ['input-address-1', 'input-address-2'],
+            amount: '100000',
+        });
+        const store = getInitializedStore(PROTO.AmountUnit.BITCOIN, BTC_SWAP_COMPOSE_TEMPLATE);
+        const dispatchSpy = jest.spyOn(store, 'dispatch');
+        const { result } = await renderUseExchangeQuotes(store);
+        const { form } = result.current;
+
+        await act(async () => {
+            form.setValue('sendAsset', btcAsset);
+            form.setValue('receiveAsset', ethAsset);
+            form.setValue('sendCryptoAmount', '0.001');
+            form.setValue('sendAccount', btc1NormalAccount);
+            await Promise.resolve();
+        });
+
+        await waitFor(() =>
+            expect(dispatchSpy).toHaveBeenCalledWith({
+                type: 'handleRequestThunkMock',
+                payload: expect.objectContaining({
+                    formValues: expect.objectContaining({
+                        fromAddress: 'input-address-1;input-address-2',
+                    }),
+                }),
+            }),
+        );
+        expect(mockDeriveBitcoinSwapFromAddresses).toHaveBeenCalledWith(
+            expect.objectContaining({
+                account: btc1NormalAccount,
+                sendStringAmount: '0.001',
+                btcSwapComposeTemplate: BTC_SWAP_COMPOSE_TEMPLATE,
+            }),
+        );
+    });
+
+    it('should not request quotes for an amount replaced while composing the bitcoin swap', async () => {
+        const firstDerivation =
+            createDeferred<Awaited<ReturnType<typeof deriveBitcoinSwapFromAddresses>>>();
+        mockDeriveBitcoinSwapFromAddresses.mockImplementation(({ sendStringAmount }) =>
+            sendStringAmount === '0.001'
+                ? firstDerivation.promise
+                : Promise.resolve({ addresses: ['input-address-2'], amount: '200000' }),
+        );
+        const store = getInitializedStore(PROTO.AmountUnit.BITCOIN, BTC_SWAP_COMPOSE_TEMPLATE);
+        const dispatchSpy = jest.spyOn(store, 'dispatch');
+        const { result } = await renderUseExchangeQuotes(store);
+        const { form } = result.current;
+
+        await act(async () => {
+            form.setValue('sendAsset', btcAsset);
+            form.setValue('receiveAsset', ethAsset);
+            form.setValue('sendAccount', btc1NormalAccount);
+            form.setValue('sendCryptoAmount', '0.001');
+            await Promise.resolve();
+        });
+        await act(async () => {
+            form.setValue('sendCryptoAmount', '0.002');
+            await Promise.resolve();
+        });
+        await act(async () => {
+            firstDerivation.resolve({ addresses: ['input-address-1'], amount: '100000' });
+            await firstDerivation.promise;
+        });
+
+        const quoteRequests = dispatchSpy.mock.calls.filter(
+            ([action]) => (action as { type?: string }).type === 'handleRequestThunkMock',
+        );
+        expect(quoteRequests).toEqual([
+            [
+                {
+                    type: 'handleRequestThunkMock',
+                    payload: expect.objectContaining({
+                        formValues: expect.objectContaining({
+                            outputs: [{ amount: '0.002' }],
+                            fromAddress: 'input-address-2',
+                        }),
+                    }),
+                },
+            ],
+        ]);
     });
 
     describe('analytics', () => {
