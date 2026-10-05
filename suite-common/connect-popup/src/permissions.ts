@@ -9,7 +9,7 @@ import {
 } from '@trezor/connect';
 import { unique } from '@trezor/utils/src/unique';
 
-import { type ConnectCallSource } from './connectPopupTypes';
+import { type ConnectCallSource, UNKNOWN_PROCESS } from './connectPopupTypes';
 
 // A `PermissionRequest.coin` is the canonical lowercase `CoinSymbol`: call-derived permissions are
 // lowercased in `coinPerm`, host-declared ones in `sanitizeRequestedPermissions`. Everything below
@@ -64,6 +64,14 @@ export const isSameConnectApp = (app: ConnectCallSource, source: ConnectCallSour
     app.type === source.type &&
     app.origin === source.origin &&
     app.process?.fullPath === source.process?.fullPath;
+
+/**
+ * Permissions are remembered only for a caller that can be told apart from others: not for a desktop
+ * process that could not be identified, and not for the origin `null` that browsers send for every
+ * sandboxed or local page.
+ */
+export const canRememberPermissions = (source: ConnectCallSource): boolean =>
+    source.origin !== 'null' && source.process?.fullPath !== UNKNOWN_PROCESS.fullPath;
 
 export const permissionsAreCovered = (
     requested: PermissionRequest[],

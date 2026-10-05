@@ -7,6 +7,7 @@ import { events } from '@suite-common/analytics';
 import {
     CALL_SOURCE_DESKTOP_WS,
     CALL_SOURCE_MCP,
+    UNKNOWN_PROCESS,
     connectPopupCallThunk,
     connectPopupCancelThunk,
     queuePopupCall,
@@ -145,11 +146,7 @@ export const useConnectPopupDesktop = () => {
                                   }
                                 : {
                                       type: CALL_SOURCE_DESKTOP_WS,
-                                      process: params.process ?? {
-                                          name: 'Unknown',
-                                          fullPath: 'Unknown',
-                                          warning: true,
-                                      },
+                                      process: params.process ?? UNKNOWN_PROCESS,
                                       origin: params.origin,
                                       manifest: params.manifest,
                                       // Cast across the IPC boundary, same as `params.method` above.

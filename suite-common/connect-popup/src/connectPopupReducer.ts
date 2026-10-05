@@ -10,7 +10,11 @@ import {
     type ConnectPopupCall,
     type ConnectPopupCallWithState,
 } from './connectPopupTypes';
-import { canonicalizePermissionCoins, isSameConnectApp } from './permissions';
+import {
+    canRememberPermissions,
+    canonicalizePermissionCoins,
+    isSameConnectApp,
+} from './permissions';
 
 export type ConnectPopupState = {
     activeCall?: ConnectPopupCall;
@@ -195,6 +199,10 @@ export const prepareConnectPopupReducer = createReducerWithExtraDeps(
                 }
             })
             .addCase(connectPopupActions.rememberAppPermissions, (state, { payload }) => {
+                if (!canRememberPermissions(payload)) {
+                    return;
+                }
+
                 const existing = state.permissions.find(p => p.origin === payload.origin);
                 if (!existing || !isSameConnectApp(existing, payload)) {
                     // One app per origin: permissions remembered for another source type or

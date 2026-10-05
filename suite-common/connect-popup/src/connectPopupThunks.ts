@@ -57,6 +57,7 @@ import {
 import { compatibilityHooks, postCallHooks, preCallHooks, validateCallHooks } from './methodHooks';
 import type { DistributiveOmit } from './methodHooks/types';
 import {
+    canRememberPermissions,
     deriveCardanoEnabledNetworks,
     isSameConnectApp,
     mergePermissions,
@@ -158,11 +159,13 @@ export const connectPopupCallInnerThunk = createThunk<
             // already covered, even if the app declared more than it has been granted so far.
             const rememberedApps = selectConnectAppPermissions(getState());
 
-            const isRemembered = rememberedApps.some(
-                app =>
-                    isSameConnectApp(app, source) &&
-                    permissionsAreCovered(callPermissions, app.allowedPermissions),
-            );
+            const isRemembered =
+                canRememberPermissions(source) &&
+                rememberedApps.some(
+                    app =>
+                        isSameConnectApp(app, source) &&
+                        permissionsAreCovered(callPermissions, app.allowedPermissions),
+                );
 
             if (!isRemembered && source.type !== CALL_SOURCE_WALLETCONNECT) {
                 // Create the deferred BEFORE dispatching requestPermissions.

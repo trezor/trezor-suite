@@ -32,6 +32,7 @@ import {
     CALL_SOURCE_MCP,
     CALL_SOURCE_WEB,
     type ConnectCallSource,
+    UNKNOWN_PROCESS,
 } from './connectPopupTypes';
 
 type DeviceResponse = Awaited<CallMethodAnyResponse>;
@@ -512,5 +513,30 @@ describe('connectPopupCallThunk remembered permissions', () => {
         expect(store.getState().connectPopup.permissions).toEqual([
             expect.objectContaining({ process: otherProcess, allowedPermissions: [signing] }),
         ]);
+    });
+
+    describe.each([
+        ['a desktop app whose process is unknown', { ...desktopSource, process: UNKNOWN_PROCESS }],
+        ['an app with the origin null', { ...desktopSource, origin: 'null' }],
+    ])('for %s', (_, unidentifiedSource) => {
+        it('does not remember permissions', () => {
+            const store = createStore();
+            store.dispatch(
+                connectPopupActions.rememberAppPermissions({
+                    ...unidentifiedSource,
+                    allowedPermissions: [accountInfo],
+                }),
+            );
+
+            expect(store.getState().connectPopup.permissions).toEqual([]);
+        });
+
+        it('asks for permissions even when they are remembered', async () => {
+            const store = createStore([
+                { ...unidentifiedSource, allowedPermissions: [accountInfo] },
+            ]);
+
+            expect(await asksForPermissions(store, unidentifiedSource)).toBe(true);
+        });
     });
 });
