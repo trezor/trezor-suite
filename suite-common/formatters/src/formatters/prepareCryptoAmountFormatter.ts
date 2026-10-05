@@ -24,7 +24,10 @@ import { formatCompactCryptoAmount, isMoneyLikeToken } from '../utils/formatComp
 import { truncateCryptoAmount } from '../utils/truncateCryptoAmount';
 
 // Keeps the symbol from wrapping onto a separate (possibly hidden) line.
-export const NON_BREAKING_SPACE = '\u00A0';
+const NON_BREAKING_SPACE = '\u00A0';
+
+export const joinAmountWithSymbol = (amount: string, symbol: string): string =>
+    `${amount}${NON_BREAKING_SPACE}${symbol}`;
 
 export type CryptoAmountFormatterInputValue = string;
 
@@ -197,9 +200,7 @@ const appendSymbol = ({ value, config, formatterContext }: AppendSymbolParams) =
               })
             : symbol;
 
-    const symbolSuffix = formattedSymbol ? `${NON_BREAKING_SPACE}${formattedSymbol}` : '';
-
-    return `${value}${symbolSuffix}`;
+    return formattedSymbol ? joinAmountWithSymbol(value, formattedSymbol) : value;
 };
 
 export const prepareCryptoAmountFormatter = (config: FormatterConfig) =>

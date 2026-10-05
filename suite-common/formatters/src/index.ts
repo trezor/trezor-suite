@@ -8,6 +8,7 @@ export * from './utils/currencyAmountParts';
 export * from './utils/clearAddressPrefix';
 export {
     BASE_CRYPTO_MAX_DISPLAYED_DECIMALS,
+    joinAmountWithSymbol,
     type CryptoAmountFormatterFormatStyle,
 } from './formatters/prepareCryptoAmountFormatter';
 export { getCompactAmount } from './utils/getCompactAmount';
