@@ -38,6 +38,11 @@ for (const code of [
     "export { default as Animated } from 'react-native-reanimated';",
     "export * from 'react-native-reanimated';",
     "import { AnimatedView } from 'react-native-reanimated/src/component/View';",
+    "import Lottie from 'lottie-react-native';",
+    "import { LottieView } from 'lottie-react-native';",
+    "import * as Lottie from 'lottie-react-native';",
+    "export * from 'lottie-react-native';",
+    "import Lottie from 'lottie-react-native/src/LottieView';",
 ]) {
     test(`rejects native component import: ${code}`, async () => {
         const errors = await lintRestrictedImports({ code });
@@ -52,6 +57,9 @@ for (const code of [
     "import type Animated from 'react-native-reanimated';",
     "import type * as Reanimated from 'react-native-reanimated';",
     "import { AnimatedView, AnimatedScrollView, AnimatedText } from '@suite-native/atoms';",
+    "import type Lottie from 'lottie-react-native';",
+    "import { type AnimationObject, type LottieViewProps } from 'lottie-react-native';",
+    "import { LottieView } from '@suite-native/atoms';",
 ]) {
     test(`allows native hooks, builders, types and atoms: ${code}`, async () => {
         assert.deepEqual(await lintRestrictedImports({ code }), []);
@@ -72,6 +80,24 @@ test('requires animated atoms inside the rest of the atoms package', async () =>
     const errors = await lintRestrictedImports({
         code: "import Animated from 'react-native-reanimated';",
         filename: `${repositoryRoot}suite-native/atoms/src/Button/Button.tsx`,
+    });
+    assert.equal(errors.length, 1);
+});
+
+test('allows native Lottie imports in the shared animated atom implementation', async () => {
+    assert.deepEqual(
+        await lintRestrictedImports({
+            code: "import Lottie from 'lottie-react-native';",
+            filename: `${repositoryRoot}suite-native/atoms/src/Animated/LottieView.tsx`,
+        }),
+        [],
+    );
+});
+
+test('requires the shared Lottie atom inside Spinner', async () => {
+    const errors = await lintRestrictedImports({
+        code: "import Lottie from 'lottie-react-native';",
+        filename: `${repositoryRoot}suite-native/atoms/src/Spinner/Spinner.tsx`,
     });
     assert.equal(errors.length, 1);
 });

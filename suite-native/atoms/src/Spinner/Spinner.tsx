@@ -1,8 +1,9 @@
 import { useEffect, useRef, useState } from 'react';
-
-import LottieView from 'lottie-react-native';
+import { useReducedMotion } from 'react-native-reanimated';
 
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
+
+import { LottieView, type LottieViewRef } from '../Animated/LottieView';
 
 const ANIMATION_SPEED = 1.5;
 
@@ -31,14 +32,26 @@ type AnimationName = keyof typeof animationsMap;
 const END_FRAME_WHITELIST: AnimationName[] = ['success', 'error'];
 
 export const Spinner = ({ loadingState, onComplete, endFrame, size = 50 }: SpinnerProps) => {
-    const animationRef = useRef<LottieView>(null);
+    const animationRef = useRef<LottieViewRef>(null);
+    const completedLoadingState = useRef<SpinnerLoadingState>('idle');
     const [currentAnimation, setCurrentAnimation] = useState<AnimationName>('start');
     const { applyStyle } = useNativeStyles();
+    const isReducedMotion = useReducedMotion();
 
     useEffect(() => {
+        if (isReducedMotion) return;
+
         const shouldPlayPartial = END_FRAME_WHITELIST.includes(currentAnimation) && endFrame;
         animationRef.current?.play(0, shouldPlayPartial ? endFrame : undefined);
-    }, [currentAnimation, endFrame]);
+    }, [currentAnimation, endFrame, isReducedMotion]);
+
+    useEffect(() => {
+        // Completion must not depend on an animation finishing when playback is disabled.
+        if (isReducedMotion && completedLoadingState.current !== loadingState) {
+            completedLoadingState.current = loadingState;
+            if (loadingState !== 'idle') onComplete?.();
+        }
+    }, [isReducedMotion, loadingState, onComplete]);
 
     const handleAnimationFinish = () => {
         if (currentAnimation === 'start') {
@@ -55,13 +68,22 @@ export const Spinner = ({ loadingState, onComplete, endFrame, size = 50 }: Spinn
         }
     };
 
+    const displayedAnimation = isReducedMotion ? loadingState : currentAnimation;
+    const source = animationsMap[displayedAnimation];
+    const endProgress =
+        endFrame === undefined
+            ? 1
+            : Math.max(0, Math.min(1, (endFrame - source.ip) / (source.op - source.ip)));
+    const reducedMotionProgress = displayedAnimation === 'idle' ? 0.5 : endProgress;
+
     return (
         <LottieView
             resizeMode="cover"
             loop={false}
             ref={animationRef}
             speed={ANIMATION_SPEED}
-            source={animationsMap[currentAnimation]}
+            source={source}
+            reducedMotionProgress={reducedMotionProgress}
             onAnimationFinish={handleAnimationFinish}
             style={applyStyle(spinnerStyle, { size })}
         />
