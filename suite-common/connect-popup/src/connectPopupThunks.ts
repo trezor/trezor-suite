@@ -215,14 +215,16 @@ export const connectPopupCallInnerThunk = createThunk<
             device = selectSelectedDevice(getState());
             if (!device) throw TypedError('Device_Disconnected');
 
+            // The call runs on the wallet selected in Suite (shown in the popup), so its `device`
+            // comes after the payload.
             const response = await TrezorConnect.call({
+                ...modifiedPayload,
                 device: {
                     path: device.path,
                     instance: device.instance,
                     state: device.state,
                     useEmptyPassphrase: device.useEmptyPassphrase,
                 },
-                ...modifiedPayload,
                 callId,
                 method,
             } as CallMethodPayload);
@@ -445,13 +447,13 @@ export const connectPopupVerifyAddressThunk = createThunk<
         try {
             // @ts-expect-error: method is dynamic
             const res = await TrezorConnect[call.method]({
+                ...call.addresses?.[index]?.validatePayload,
                 device: {
                     path: device.path,
                     instance: device.instance,
                     state: device.state,
                     useEmptyPassphrase: device.useEmptyPassphrase,
                 },
-                ...call.addresses?.[index]?.validatePayload,
                 showOnTrezor: true,
                 chunked: false,
                 callId: call.callId,

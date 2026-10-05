@@ -11,7 +11,11 @@ import { TypedError, serializeError } from '@trezor/connect-common/src/constants
 import { getSynchronize } from '@trezor/utils';
 
 import { connectPopupActions } from './connectPopupActions';
-import { queuePopupCall } from './connectPopupPromiseManager';
+import {
+    createPopupCallDeferred,
+    getPermissionDeferred,
+    queuePopupCall,
+} from './connectPopupPromiseManager';
 import { prepareConnectPopupReducer } from './connectPopupReducer';
 import {
     type ConnectPopupCallThunkDeps,
@@ -20,6 +24,7 @@ import {
     connectPopupCallThunk,
     connectPopupCancelThunk,
     connectPopupDeeplinkThunk,
+    connectPopupVerifyAddressThunk,
 } from './connectPopupThunks';
 import { CALL_SOURCE_WEB, type ConnectCallSource } from './connectPopupTypes';
 
@@ -321,5 +326,79 @@ describe('connectPopupCallThunk responses', () => {
 
         expect(secondResponse.value).toEqual(interrupted);
         await answerDeviceCall('first', signature('signature-first'));
+    });
+});
+
+describe('connectPopupCallThunk device', () => {
+    const selectedWallet = {
+        path: device.path,
+        instance: device.instance,
+        state: device.state,
+        useEmptyPassphrase: device.useEmptyPassphrase,
+    };
+    const address: DeviceResponse = {
+        success: true,
+        payload: { address: 'address', path: [], serializedPath: "m/84'/0'/0'/0/0" },
+    };
+
+    beforeEach(() => {
+        jest.spyOn(TrezorConnect, 'call').mockImplementation(params =>
+            Promise.resolve(
+                '__info' in params
+                    ? ({
+                          success: true,
+                          payload: { info: 'Get address', requiredPermissions: [], useUi: true },
+                      } as DeviceResponse)
+                    : address,
+            ),
+        );
+    });
+
+    afterEach(() => jest.restoreAllMocks());
+
+    it('runs the call on the wallet selected in Suite when the payload names another one', async () => {
+        const store = createStore();
+        const deferred = createPopupCallDeferred();
+        store.dispatch(
+            connectPopupCallThunk({
+                method: 'signMessage',
+                payload: { path: "m/84'/0'/0'/0/0", message: 'message', device: { instance: 2 } },
+                source,
+                responseId: deferred.id,
+            }),
+        );
+        await approveWhenAsked(store);
+        await deferred.promise;
+
+        expect(TrezorConnect.call).toHaveBeenLastCalledWith(
+            expect.objectContaining({ device: selectedWallet }),
+        );
+    });
+
+    it('shows an address on the wallet selected in Suite when the payload names another one', async () => {
+        // The device keeps showing the address, the user exports it without confirming.
+        jest.spyOn(TrezorConnect, 'getAddress').mockImplementation(() => new Promise(() => {}));
+        const store = createStore();
+        const deferred = createPopupCallDeferred();
+        store.dispatch(
+            connectPopupCallThunk({
+                method: 'getAddress',
+                payload: { path: "m/84'/0'/0'/0/0", device: { instance: 2 } },
+                source,
+                responseId: deferred.id,
+            }),
+        );
+        await approveWhenAsked(store);
+        await waitFor(
+            () => store.getState().connectPopup.activeCall?.state === 'address-confirmation',
+        );
+
+        store.dispatch(connectPopupVerifyAddressThunk({ index: 0 }));
+        getPermissionDeferred().resolve();
+        await deferred.promise;
+
+        expect(TrezorConnect.getAddress).toHaveBeenCalledWith(
+            expect.objectContaining({ device: selectedWallet, showOnTrezor: true }),
+        );
     });
 });
