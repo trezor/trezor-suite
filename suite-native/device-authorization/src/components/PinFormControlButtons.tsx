@@ -111,7 +111,7 @@ export const PinFormControlButtons = ({ onSuccess }: PinFormControlButtonsProps)
         return {
             height: animatedHeight.value,
         };
-    }, [pinLength, containerHeight]);
+    });
 
     const handleOnLayout = (event: LayoutChangeEvent) =>
         setContainerHeight(event.nativeEvent.layout.height);

@@ -21,12 +21,9 @@ const errorStyle = prepareNativeStyle(utils => ({
 export const FeeOptionErrorMessage = ({ isVisible }: FeeOptionErrorMessageProps) => {
     const { applyStyle } = useNativeStyles();
 
-    const animatedErrorStyle = useAnimatedStyle(
-        () => ({
-            height: withTiming(isVisible ? ERROR_HEIGHT : 0),
-        }),
-        [isVisible],
-    );
+    const animatedErrorStyle = useAnimatedStyle(() => ({
+        height: withTiming(isVisible ? ERROR_HEIGHT : 0),
+    }));
 
     if (!isVisible) {
         return null;

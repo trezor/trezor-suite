@@ -123,21 +123,15 @@ export const FeeOption = ({
         ? 'elementFillFieldSelected'
         : 'elementFillCriticalBold';
 
-    const borderAnimationValue = useDerivedValue(
-        () => (isChecked ? withTiming(1) : withTiming(0)),
-        [isChecked],
-    );
+    const borderAnimationValue = useDerivedValue(() => (isChecked ? withTiming(1) : withTiming(0)));
 
-    const animatedCardStyle = useAnimatedStyle(
-        () => ({
-            borderColor: interpolateColor(
-                isInteractive ? borderAnimationValue.value : 0,
-                [0, 1],
-                [utils.colors.surfaceFillPage, utils.colors[highlightColor]],
-            ),
-        }),
-        [borderAnimationValue, highlightColor, isInteractive],
-    );
+    const animatedCardStyle = useAnimatedStyle(() => ({
+        borderColor: interpolateColor(
+            isInteractive ? borderAnimationValue.value : 0,
+            [0, 1],
+            [utils.colors.surfaceFillPage, utils.colors[highlightColor]],
+        ),
+    }));
 
     const label = feeLabelsMap[feeKey];
     const networkType = getNetworkType(symbol);

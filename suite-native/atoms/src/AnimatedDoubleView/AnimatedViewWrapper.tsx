@@ -64,13 +64,10 @@ export const AnimatedViewWrapper = ({
         };
     }, [focused, scale, translateY, unfocusedOffset]);
 
-    const animatedStyle = useAnimatedStyle(
-        () => ({
-            transform: [{ scale: scale.value }, { translateY: translateY.value }],
-            zIndex: focused ? 1 : 0,
-        }),
-        [focused],
-    );
+    const animatedStyle = useAnimatedStyle(() => ({
+        transform: [{ scale: scale.value }, { translateY: translateY.value }],
+        zIndex: focused ? 1 : 0,
+    }));
 
     const onPress = focused ? undefined : handleViewSwitch;
 

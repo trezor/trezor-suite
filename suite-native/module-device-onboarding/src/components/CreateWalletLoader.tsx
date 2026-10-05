@@ -17,10 +17,7 @@ export const CreateWalletLoader = () => {
 
     const loaderWidth = windowWidth - LOADER_HORIZONTAL_MARGIN;
     const animationProgress = useSharedValue(0);
-    const animatedLoaderWidth = useDerivedValue(
-        () => animationProgress.value * loaderWidth,
-        [loaderWidth],
-    );
+    const animatedLoaderWidth = useDerivedValue(() => animationProgress.value * loaderWidth);
 
     useEffect(() => {
         animationProgress.value = withTiming(1, {
