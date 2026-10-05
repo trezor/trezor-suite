@@ -58,6 +58,7 @@ import { compatibilityHooks, postCallHooks, preCallHooks, validateCallHooks } fr
 import type { DistributiveOmit } from './methodHooks/types';
 import {
     deriveCardanoEnabledNetworks,
+    isSameConnectApp,
     mergePermissions,
     permissionsAreCovered,
     sanitizeRequestedPermissions,
@@ -159,8 +160,7 @@ export const connectPopupCallInnerThunk = createThunk<
 
             const isRemembered = rememberedApps.some(
                 app =>
-                    app.origin === source.origin &&
-                    app.process?.fullPath === source.process?.fullPath &&
+                    isSameConnectApp(app, source) &&
                     permissionsAreCovered(callPermissions, app.allowedPermissions),
             );
 

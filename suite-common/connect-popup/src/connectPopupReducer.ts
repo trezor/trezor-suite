@@ -10,7 +10,7 @@ import {
     type ConnectPopupCall,
     type ConnectPopupCallWithState,
 } from './connectPopupTypes';
-import { canonicalizePermissionCoins } from './permissions';
+import { canonicalizePermissionCoins, isSameConnectApp } from './permissions';
 
 export type ConnectPopupState = {
     activeCall?: ConnectPopupCall;
@@ -196,7 +196,10 @@ export const prepareConnectPopupReducer = createReducerWithExtraDeps(
             })
             .addCase(connectPopupActions.rememberAppPermissions, (state, { payload }) => {
                 const existing = state.permissions.find(p => p.origin === payload.origin);
-                if (!existing) {
+                if (!existing || !isSameConnectApp(existing, payload)) {
+                    // One app per origin: permissions remembered for another source type or
+                    // process of this origin are replaced, never extended.
+                    state.permissions = state.permissions.filter(p => p.origin !== payload.origin);
                     state.permissions.push(payload);
 
                     return;

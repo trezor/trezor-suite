@@ -9,6 +9,8 @@ import {
 } from '@trezor/connect';
 import { unique } from '@trezor/utils/src/unique';
 
+import { type ConnectCallSource } from './connectPopupTypes';
+
 // A `PermissionRequest.coin` is the canonical lowercase `CoinSymbol`: call-derived permissions are
 // lowercased in `coinPerm`, host-declared ones in `sanitizeRequestedPermissions`. Everything below
 // therefore compares coins with `===`.
@@ -53,6 +55,15 @@ export const permissionIcons = {
     push_tx: 'broadcast',
     internal: 'cube',
 } as const satisfies Record<PermissionRequest['permission'], string>;
+
+/**
+ * Whether permissions remembered for `app` belong to the caller `source`: the same source type,
+ * origin and process.
+ */
+export const isSameConnectApp = (app: ConnectCallSource, source: ConnectCallSource): boolean =>
+    app.type === source.type &&
+    app.origin === source.origin &&
+    app.process?.fullPath === source.process?.fullPath;
 
 export const permissionsAreCovered = (
     requested: PermissionRequest[],

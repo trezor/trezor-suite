@@ -26,7 +26,13 @@ import {
     connectPopupDeeplinkThunk,
     connectPopupVerifyAddressThunk,
 } from './connectPopupThunks';
-import { CALL_SOURCE_WEB, type ConnectCallSource } from './connectPopupTypes';
+import {
+    type AppRememberedPermission,
+    CALL_SOURCE_DESKTOP_WS,
+    CALL_SOURCE_MCP,
+    CALL_SOURCE_WEB,
+    type ConnectCallSource,
+} from './connectPopupTypes';
 
 type DeviceResponse = Awaited<CallMethodAnyResponse>;
 
@@ -38,7 +44,7 @@ const device = mockSuiteDevice({
 });
 const deviceState: DeviceReducerState = { ...deviceInitialState, selectedDevice: device };
 
-const createStore = () =>
+const createStore = (permissions: AppRememberedPermission[] = []) =>
     createTestCompositionRoot<ConnectPopupCallThunkDeps, ConnectPopupCallThunkState>({
         services: () => ({
             analytics: {
@@ -59,7 +65,7 @@ const createStore = () =>
             device: (state: DeviceReducerState = deviceState) => state,
         }),
         preloadedState: {
-            connectPopup: { activeCall: undefined, permissions: [] },
+            connectPopup: { activeCall: undefined, permissions },
             device: deviceState,
         },
     }).services.store;
@@ -400,5 +406,111 @@ describe('connectPopupCallThunk device', () => {
         expect(TrezorConnect.getAddress).toHaveBeenCalledWith(
             expect.objectContaining({ device: selectedWallet, showOnTrezor: true }),
         );
+    });
+});
+
+describe('connectPopupCallThunk remembered permissions', () => {
+    const accountInfo = { permission: 'read_account_info', coin: 'btc' } as const;
+    const signing = { permission: 'sign' } as const;
+    const client = { name: 'client', fullPath: '/usr/bin/client', warning: false };
+    const mcpSource: ConnectCallSource = {
+        type: CALL_SOURCE_MCP,
+        origin: 'mcp://localhost',
+        process: client,
+        manifest: { appName: 'Client' },
+    };
+    const desktopSource: ConnectCallSource = {
+        type: CALL_SOURCE_DESKTOP_WS,
+        origin: 'mcp://localhost',
+        process: client,
+        manifest: { appName: 'Client' },
+    };
+
+    beforeEach(() => {
+        jest.spyOn(TrezorConnect, 'call').mockImplementation(params =>
+            Promise.resolve(
+                '__info' in params
+                    ? ({
+                          success: true,
+                          payload: {
+                              info: 'Get account info',
+                              requiredPermissions: [accountInfo],
+                              useUi: false,
+                          },
+                      } as DeviceResponse)
+                    : ({ success: true, payload: {} } as DeviceResponse),
+            ),
+        );
+    });
+
+    afterEach(() => jest.restoreAllMocks());
+
+    // Starts a call and returns whether it waits for the user to grant permissions.
+    const asksForPermissions = async (store: Store, callSource: ConnectCallSource) => {
+        const deferred = createPopupCallDeferred();
+        store.dispatch(
+            connectPopupCallThunk({
+                method: 'getAccountInfo',
+                payload: { coin: 'btc', path: "m/84'/0'/0'" },
+                source: callSource,
+                responseId: deferred.id,
+            }),
+        );
+        await flush();
+        const isAsking = store.getState().connectPopup.activeCall?.state === 'permission-request';
+        if (isAsking) {
+            store.dispatch(connectPopupActions.approvePermissions());
+        }
+        await deferred.promise;
+
+        return isAsking;
+    };
+
+    it('uses permissions remembered for the same app', async () => {
+        const store = createStore([{ ...mcpSource, allowedPermissions: [accountInfo] }]);
+
+        expect(await asksForPermissions(store, mcpSource)).toBe(false);
+    });
+
+    it('adds permissions remembered again for the same app to its entry', () => {
+        const store = createStore([{ ...desktopSource, allowedPermissions: [accountInfo] }]);
+        store.dispatch(
+            connectPopupActions.rememberAppPermissions({
+                ...desktopSource,
+                allowedPermissions: [signing],
+            }),
+        );
+
+        expect(store.getState().connectPopup.permissions).toEqual([
+            expect.objectContaining({ allowedPermissions: [accountInfo, signing] }),
+        ]);
+    });
+
+    it('asks for permissions that are remembered only for an app of another source type', async () => {
+        const store = createStore([{ ...mcpSource, allowedPermissions: [accountInfo] }]);
+
+        expect(await asksForPermissions(store, desktopSource)).toBe(true);
+    });
+
+    it('does not add permissions remembered for one app to another app of the same origin', () => {
+        const store = createStore();
+        const otherProcess = { ...client, fullPath: '/usr/bin/other' };
+        store.dispatch(
+            connectPopupActions.rememberAppPermissions({
+                ...desktopSource,
+                allowedPermissions: [accountInfo],
+            }),
+        );
+        store.dispatch(
+            connectPopupActions.rememberAppPermissions({
+                ...desktopSource,
+                process: otherProcess,
+                allowedPermissions: [signing],
+            }),
+        );
+
+        expect(store.getState().connectPopup.permissions).toEqual([
+            expect.objectContaining({ process: otherProcess, allowedPermissions: [signing] }),
+        ]);
     });
 });
