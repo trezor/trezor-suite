@@ -48,6 +48,18 @@ export const getBitcoinNetworkOrThrow = (
     return coinInfo;
 };
 
+// The Bitcoin network of the key at `path`: `coinInfo` when the path is in its SLIP-44 coin type,
+// otherwise the network of the path's coin type, if any. `crossChain` and the v9 btc fallback
+// derive keys outside `coinInfo`, so their permissions name this network instead.
+export const getBitcoinNetworkOfPath = (
+    path: number[],
+    coinInfo: Readonly<BitcoinNetworkInfo>,
+): Readonly<BitcoinNetworkInfo> | undefined => {
+    const pathNetwork = getBitcoinNetwork(path);
+
+    return pathNetwork?.slip44 === coinInfo.slip44 ? coinInfo : pathNetwork;
+};
+
 export const getEthereumNetwork = (
     symbolOrPath: CoinSymbol | number[],
 ): Readonly<EthereumNetworkInfo> | undefined => {
