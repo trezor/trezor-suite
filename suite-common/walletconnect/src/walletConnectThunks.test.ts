@@ -15,14 +15,17 @@ import {
 } from '@suite-common/wallet-core';
 import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
 
+import { walletConnectActions } from './walletConnectActions';
 import {
     type WalletConnectStateRootState,
     prepareWalletConnectReducer,
+    selectSessionByTopic,
 } from './walletConnectReducer';
 import {
     type WalletConnectInitThunkDeps,
     type WalletConnectInitThunkState,
     sessionProposalApproveThunk,
+    switchSelectedAccountThunk,
     walletConnectInitThunk,
 } from './walletConnectThunks';
 
@@ -39,7 +42,12 @@ const mockApproveSession = jest.fn<
 const mockUpdateSession = jest.fn<
     Promise<void>,
     [{ topic: string; namespaces: SessionTypes.Namespaces }]
->();
+>(({ topic, namespaces }) => {
+    const session = mockSessions[topic];
+    if (session) mockSessions[topic] = { ...session, namespaces };
+
+    return Promise.resolve();
+});
 
 jest.mock('@walletconnect/core', () => ({ Core: jest.fn() }));
 jest.mock('@reown/walletkit', () => ({
@@ -157,12 +165,47 @@ const waitFor = async (condition: () => boolean) => {
     expect(condition()).toBe(true);
 };
 
+const createSession = (
+    topic: string,
+    namespaces: SessionTypes.Namespaces,
+    optionalNamespaces: ProposalTypes.OptionalNamespaces,
+): SessionTypes.Struct => ({
+    topic,
+    pairingTopic: 'pairing',
+    relay: { protocol: 'irn' },
+    expiry: Math.floor(Date.now() / 1000) + 300,
+    acknowledged: true,
+    controller: '00',
+    namespaces,
+    requiredNamespaces: {},
+    optionalNamespaces,
+    self: {
+        publicKey: '00',
+        metadata: { name: 'Wallet', description: '', url: 'https://wallet.example', icons: [] },
+    },
+    peer: {
+        publicKey: '01',
+        metadata: { name: 'App', description: '', url: 'https://app.example', icons: [] },
+    },
+});
+
 const ethereumNamespace = { chains: [ETHEREUM], methods: ['personal_sign'], events: [] };
 const bitcoinNamespace = { methods: ['getAccountAddresses'], events: [] };
 
-describe('walletConnect session proposal', () => {
-    let store: ReturnType<typeof createStore>;
+let store: ReturnType<typeof createStore>;
 
+beforeAll(async () => {
+    store = createStore();
+    // The init thunk declares the state of every request handler, the flows under test read
+    // only the slices of this store.
+    await walletConnectInitThunk()(
+        store.dispatch,
+        store.getState as () => WalletConnectInitThunkState,
+        extra,
+    );
+});
+
+describe('walletConnect session proposal', () => {
     const receiveProposal = async (proposal: WalletKitTypes.SessionProposal) => {
         mockHandlers.sessionProposal?.(proposal);
         await waitFor(
@@ -171,17 +214,6 @@ describe('walletConnect session proposal', () => {
 
         return store.getState().walletConnect.pendingProposal?.networks ?? [];
     };
-
-    beforeAll(async () => {
-        store = createStore();
-        // The init thunk declares the state of every request handler, the proposal flow reads
-        // only the slices of this store.
-        await walletConnectInitThunk()(
-            store.dispatch,
-            store.getState as () => WalletConnectInitThunkState,
-            extra,
-        );
-    });
 
     it.each([
         { id: 1, field: 'requiredNamespaces' },
@@ -243,5 +275,47 @@ describe('walletConnect session proposal', () => {
 
         expect(grantedChains).toEqual(expect.arrayContaining([ETHEREUM, BITCOIN]));
         expect(grantedChains.filter(chain => !listedChains.includes(chain))).toEqual([]);
+    });
+});
+
+describe('walletConnect account switch', () => {
+    const switchAccount = async (topic: string) => {
+        const session = createSession(
+            topic,
+            {
+                bip122: {
+                    chains: [BITCOIN],
+                    accounts: [`${BITCOIN}:bc1qprevious`],
+                    ...bitcoinNamespace,
+                },
+            },
+            { bip122: { chains: [BITCOIN], ...bitcoinNamespace } },
+        );
+        mockSessions[topic] = session;
+        store.dispatch(walletConnectActions.saveSession(session));
+
+        await store.dispatch(
+            switchSelectedAccountThunk({ account: bitcoinAccount, sessionTopic: topic }),
+        );
+
+        return {
+            requestedNamespaces: mockUpdateSession.mock.lastCall?.[0].namespaces,
+            storedNamespaces: selectSessionByTopic(store.getState(), topic)?.namespaces,
+        };
+    };
+
+    it('stores the namespaces the session is updated with', async () => {
+        const { requestedNamespaces, storedNamespaces } = await switchAccount('switch');
+
+        expect(requestedNamespaces?.bip122?.accounts).toEqual([`${BITCOIN}:bc1qfirst`]);
+        expect(storedNamespaces).toEqual(requestedNamespaces);
+    });
+
+    it('keeps the stored namespaces when WalletKit keeps the previous ones', async () => {
+        mockUpdateSession.mockImplementationOnce(() => Promise.resolve());
+
+        const { storedNamespaces } = await switchAccount('switch-unsent');
+
+        expect(storedNamespaces?.bip122?.accounts).toEqual([`${BITCOIN}:bc1qprevious`]);
     });
 });

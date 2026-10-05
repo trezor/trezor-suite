@@ -27,7 +27,11 @@ import {
 } from './adapters';
 import { walletConnectActions } from './walletConnectActions';
 import { PROJECT_ID, WALLETCONNECT_METADATA, WALLETCONNECT_MODULE } from './walletConnectConstants';
-import { type WalletConnectStateRootState, selectPendingProposal } from './walletConnectReducer';
+import {
+    type WalletConnectStateRootState,
+    selectPendingProposal,
+    selectSessionByTopic,
+} from './walletConnectReducer';
 import { type PendingConnectionProposalNetwork } from './walletConnectTypes';
 
 let walletKit: IWalletKit;
@@ -239,7 +243,7 @@ const sessionRequestThunk = createThunk<
 });
 
 // Selected Account was switched in Suite
-type SwitchSelectedAccountThunkState = SuccessfulAccountsThunkState;
+type SwitchSelectedAccountThunkState = SuccessfulAccountsThunkState & WalletConnectStateRootState;
 
 export const switchSelectedAccountThunk = createThunk<
     void,
@@ -247,7 +251,7 @@ export const switchSelectedAccountThunk = createThunk<
     { state: SwitchSelectedAccountThunkState }
 >(
     `${WALLETCONNECT_MODULE}/switchSelectedAccountThunk`,
-    async ({ account, sessionTopic }, { getState }) => {
+    async ({ account, sessionTopic }, { dispatch, getState }) => {
         const accounts = selectAllSuccessfulAccountsToList(getState());
         const updatedNamespaces = getNamespaces([account, ...accounts]);
         const network = getNetwork(account.symbol);
@@ -274,6 +278,17 @@ export const switchSelectedAccountThunk = createThunk<
             topic: sessionTopic,
             namespaces: approvedNamespaces,
         });
+        // WalletKit keeps the previous namespaces when the update cannot be sent.
+        const updatedSession = walletKit.getActiveSessions()[sessionTopic];
+        const storedSession = selectSessionByTopic(getState(), sessionTopic);
+        if (updatedSession && storedSession) {
+            dispatch(
+                walletConnectActions.saveSession({
+                    ...storedSession,
+                    namespaces: updatedSession.namespaces,
+                }),
+            );
+        }
         const adapter = getAdapterByNetwork(account.networkType);
         if (!adapter) {
             return console.warn(`No adapter found for network type ${account.networkType}`);
