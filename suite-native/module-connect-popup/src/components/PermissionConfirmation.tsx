@@ -3,7 +3,11 @@ import { useSelector } from 'react-redux';
 
 import { useNavigation } from '@react-navigation/native';
 
-import { connectPopupActions, selectConnectPopupCall } from '@suite-common/connect-popup';
+import {
+    canRememberPermissions,
+    connectPopupActions,
+    selectConnectPopupCall,
+} from '@suite-common/connect-popup';
 import { useServices } from '@suite-common/dependency-injection';
 import { injectDispatch } from '@suite-common/redux-utils';
 import {
@@ -39,6 +43,8 @@ export const PermissionConfirmation = () => {
             />
         );
     }
+
+    const canRemember = canRememberPermissions(popupCall.source);
 
     const onConfirm = () => {
         if (isRemembered) {
@@ -83,19 +89,23 @@ export const PermissionConfirmation = () => {
 
                 <GroupedPermissionsList permissions={popupCall.methodInfo.permissionTypes} />
 
-                <TextDivider title="moduleConnectPopup.optional" />
+                {canRemember && (
+                    <>
+                        <TextDivider title="moduleConnectPopup.optional" />
 
-                <PressableOpacity onPress={() => setIsRemembered(!isRemembered)}>
-                    <HStack spacing="sp16" padding="sp8" alignItems="center">
-                        <CheckBox
-                            isChecked={isRemembered}
-                            onChange={() => setIsRemembered(!isRemembered)}
-                        />
-                        <Text color="contentSecondary" variant="body-sm">
-                            <Translation id="moduleConnectPopup.alwaysAllow" />
-                        </Text>
-                    </HStack>
-                </PressableOpacity>
+                        <PressableOpacity onPress={() => setIsRemembered(!isRemembered)}>
+                            <HStack spacing="sp16" padding="sp8" alignItems="center">
+                                <CheckBox
+                                    isChecked={isRemembered}
+                                    onChange={() => setIsRemembered(!isRemembered)}
+                                />
+                                <Text color="contentSecondary" variant="body-sm">
+                                    <Translation id="moduleConnectPopup.alwaysAllow" />
+                                </Text>
+                            </HStack>
+                        </PressableOpacity>
+                    </>
+                )}
             </Card>
 
             <VStack spacing="sp12">

@@ -28,6 +28,7 @@ import {
 } from './connectPopupThunks';
 import {
     type AppRememberedPermission,
+    CALL_SOURCE_DEEPLINK,
     CALL_SOURCE_DESKTOP_WS,
     CALL_SOURCE_MCP,
     CALL_SOURCE_WEB,
@@ -515,6 +516,23 @@ describe('connectPopupCallThunk remembered permissions', () => {
         ]);
     });
 
+    it('uses permissions remembered for a deeplink app with an https callback', async () => {
+        const deeplinkSource: ConnectCallSource = {
+            type: CALL_SOURCE_DEEPLINK,
+            origin: 'https://app.example',
+            manifest: { appName: 'App' },
+        };
+        const store = createStore();
+        store.dispatch(
+            connectPopupActions.rememberAppPermissions({
+                ...deeplinkSource,
+                allowedPermissions: [accountInfo],
+            }),
+        );
+
+        expect(await asksForPermissions(store, deeplinkSource)).toBe(false);
+    });
+
     describe.each([
         ['a desktop app whose process is unknown', { ...desktopSource, process: UNKNOWN_PROCESS }],
         ['an app with the origin null', { ...desktopSource, origin: 'null' }],
@@ -525,6 +543,14 @@ describe('connectPopupCallThunk remembered permissions', () => {
                 origin: 'abcdefghijklmnopabcdefghijklmnop',
                 manifest: { appName: 'App' },
                 isOriginSelfDeclared: true,
+            } satisfies ConnectCallSource,
+        ],
+        [
+            'a deeplink app whose callback is not https',
+            {
+                type: CALL_SOURCE_DEEPLINK,
+                origin: 'exampleapp://connect',
+                manifest: { appName: 'App' },
             } satisfies ConnectCallSource,
         ],
     ])('for %s', (_, unidentifiedSource) => {
