@@ -205,7 +205,11 @@ export const exposeConnectWs = ({
             }
             if (message.type === POPUP.HANDSHAKE) {
                 const filterSelf = !process.env.PLAYWRIGHT_RUN; // ignore own process, unless testing
-                processOnPort = await findProcessFromIncomingPort(port, filterSelf).catch(() => {
+                processOnPort = await findProcessFromIncomingPort(
+                    port,
+                    filterSelf,
+                    req.socket,
+                ).catch(() => {
                     logger.error(LOG_PREFIX, 'findProcessFromIncomingPort failed');
 
                     return undefined;
