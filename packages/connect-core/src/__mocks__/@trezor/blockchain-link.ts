@@ -47,6 +47,9 @@ class BlockchainLink {
     subscribe() {
         return Promise.resolve({ subscribed: true });
     }
+    pushTransaction() {
+        return Promise.resolve('');
+    }
 }
 
 module.exports = {
