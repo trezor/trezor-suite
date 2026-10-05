@@ -2,6 +2,7 @@ import { memo } from 'react';
 
 import { Column } from '@trezor/components';
 
+import { HomeAssetFeedback } from './HomeAssetFeedback';
 import { HomeAssetTable } from './HomeAssetsTable/HomeAssetTable';
 import { HomeBalanceCard } from './HomeBalance/HomeBalanceCard';
 import { DashboardPromoBanner } from '../dashboard/DashboardPromoBanner/DashboardPromoBanner';
@@ -11,5 +12,6 @@ export const HomeAssetDashboard = memo(() => (
         <HomeBalanceCard />
         <DashboardPromoBanner />
         <HomeAssetTable />
+        <HomeAssetFeedback />
     </Column>
 ));
