@@ -51,6 +51,15 @@ export const desktopApiRestrictedImports = [
     { name: '@suite/desktop-app-api-electron', message: desktopApiImplementationMessage },
 ];
 
+export const selectorRestrictedImports = [
+    {
+        name: '@reduxjs/toolkit',
+        importNames: ['createSelector'],
+        message:
+            'Use createWeakMapSelector.withTypes<RootState>() from @suite-common/redux-utils to define a typed createMemoizedSelector factory instead.',
+    },
+];
+
 /**
  * Build-artifact imports stay blocked for these files through
  * `@typescript-eslint/no-restricted-imports`, which this does not touch.
@@ -59,7 +68,7 @@ export const desktopApiRestrictedImports = [
 export const desktopApiCompositionRootAllowance = {
     files: ['**/preload.ts', '**/createSuiteDesktopCompositionRoot.ts'],
     rules: {
-        'no-restricted-imports': 'off',
+        'no-restricted-imports': ['error', { paths: selectorRestrictedImports }],
     },
 };
 
@@ -78,6 +87,7 @@ export const importConfig = [
         },
         rules: {
             // Additional
+            'no-restricted-imports': ['error', { paths: selectorRestrictedImports }],
             'import/no-default-export': 'error', // We don't want to use default exports, always use named exports
             'import/no-anonymous-default-export': [
                 'error',

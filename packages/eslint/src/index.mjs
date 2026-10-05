@@ -10,6 +10,7 @@ import {
     desktopApiCompositionRootAllowance,
     desktopApiRestrictedImports,
     importConfig,
+    selectorRestrictedImports,
 } from './importConfig.mjs';
 import {
     javascriptConfig,
@@ -34,6 +35,7 @@ export {
     noCastedObjectHelpersSyntax,
     noRestrictedSyntax,
     restrictedImportsPatterns,
+    selectorRestrictedImports,
 };
 
 /** @type {Config[]} */
