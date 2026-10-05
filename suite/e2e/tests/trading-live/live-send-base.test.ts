@@ -27,12 +27,13 @@ const feeWrapFormat = {
     lengthOverride: 16,
 };
 
-// This test is vulnerable to being run twice simultaneously
-// in such case nonce will collide and second transaction will fail
-// To avoid this, we tag this way to unsure it runs only once per night
+// The PEPE send is declared after the Base ETH send. Tests in this file run in
+// that order on one worker, so the token transaction spends the nonce after the
+// ETH send. @optional keeps the file off the full PR run; desktop T3W1 specific
+// firmware keeps one nightly run.
 test.describe(
     'Live - Send Base',
-    { tag: ['@desktopOnly', '@skipOnPR', '@T3W1', '@specificFirmware'] },
+    { tag: ['@desktopOnly', '@optional', '@T3W1', '@specificFirmware'] },
     () => {
         test.use({
             deviceSetup: { mnemonic: 'mnemonic_academic', passphrase_protection: true },
