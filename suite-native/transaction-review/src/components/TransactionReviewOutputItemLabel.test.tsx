@@ -23,6 +23,7 @@ describe('TransactionReviewOutputItemLabel', () => {
         ],
         ['contract', getTranslation('transactionManagement.review.outputs.contractLabel')],
         ['data', getTranslation('transactionManagement.review.outputs.transactionDataLabel')],
+        ['opreturn', getTranslation('transactionManagement.review.outputs.opReturnLabel')],
         [
             'recipient_name',
             getTranslation('transactionManagement.review.outputs.recipientProviderNameOutputLabel'),
@@ -44,7 +45,7 @@ describe('TransactionReviewOutputItemLabel', () => {
         expect(getByTestId('label')).toHaveTextContent(expectedLabel);
     });
 
-    it.each<TransactionReviewOutputType>(['opreturn', 'locktime', 'fee', 'txid', 'gas'])(
+    it.each<TransactionReviewOutputType>(['locktime', 'fee', 'txid', 'gas'])(
         'should fall back to the raw type for unsupported type "%s"',
         async type => {
             const { getByTestId } = await renderLabel(type);
