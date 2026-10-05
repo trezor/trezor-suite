@@ -242,10 +242,18 @@ const ensureHexPrefix = (value: string | undefined): `0x${string}` | undefined =
     return (value.startsWith('0x') ? value : `0x${value}`) as `0x${string}`;
 };
 
-const normalizeDomain = (domain: LooseTypedDataDomain): TypedDataDomain => {
+// String values of domain fields declared as `string` (such as Injective's
+// `verifyingContract: 'cosmos'`) are hashed as text, as core firmware does, so they
+// are not converted.
+const normalizeDomain = (
+    domain: LooseTypedDataDomain,
+    domainTypes: readonly { name: string; type: string }[],
+): TypedDataDomain => {
+    const isString = (name: keyof LooseTypedDataDomain) =>
+        domainTypes.some(field => field.name === name && field.type === 'string');
     let { chainId } = domain;
 
-    if (typeof chainId === 'string') {
+    if (typeof chainId === 'string' && !isString('chainId')) {
         try {
             chainId = BigInt(chainId);
         } catch {
@@ -261,12 +269,15 @@ const normalizeDomain = (domain: LooseTypedDataDomain): TypedDataDomain => {
     const saltAsString =
         domain.salt instanceof ArrayBuffer ? arrayBufferToHex(domain.salt) : domain.salt;
 
+    // viem's TypedDataDomain does not type these fields as `string`.
     return {
         ...domain,
         chainId,
-        verifyingContract: ensureHexPrefix(domain.verifyingContract),
-        salt: ensureHexPrefix(saltAsString),
-    };
+        verifyingContract: isString('verifyingContract')
+            ? domain.verifyingContract
+            : ensureHexPrefix(domain.verifyingContract),
+        salt: isString('salt') ? saltAsString : ensureHexPrefix(saltAsString),
+    } as TypedDataDomain;
 };
 
 export const transformTypedData = <
@@ -295,7 +306,7 @@ export const transformTypedData = <
     }
 
     const domain_separator_hash = hashDomain({
-        domain: normalizeDomain(data.domain),
+        domain: normalizeDomain(data.domain, data.types.EIP712Domain),
         types: data.types as any,
     }).slice(2);
 
