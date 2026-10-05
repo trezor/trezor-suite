@@ -35,6 +35,7 @@
             "path": "../../suite-common/wallet-utils"
         },
         { "path": "../analytics" },
+        { "path": "../app-init" },
         { "path": "../atoms" },
         { "path": "../formatters" },
         { "path": "../icons" },

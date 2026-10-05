@@ -30,6 +30,7 @@
         "@suite-common/wallet-types": "workspace:*",
         "@suite-common/wallet-utils": "workspace:*",
         "@suite-native/analytics": "workspace:*",
+        "@suite-native/app-init": "workspace:*",
         "@suite-native/atoms": "workspace:*",
         "@suite-native/formatters": "workspace:*",
         "@suite-native/icons": "workspace:*",

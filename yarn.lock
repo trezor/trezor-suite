@@ -12771,6 +12771,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@suite-native/app-init@workspace:suite-native/app-init"
   dependencies:
+    "@reduxjs/toolkit": "npm:2.12.0"
     "@suite-common/connect-init": "workspace:*"
     "@suite-common/earn-stablecoin-api": "workspace:*"
     "@suite-common/message-system": "workspace:*"
@@ -12780,7 +12781,6 @@ __metadata:
     "@suite-common/walletconnect": "workspace:*"
     "@suite-native/analytics-redux": "workspace:*"
     "@suite-native/settings": "workspace:*"
-    "@suite-native/state": "workspace:*"
   languageName: unknown
   linkType: soft
 
@@ -13149,6 +13149,7 @@ __metadata:
     "@suite-common/wallet-core": "workspace:*"
     "@suite-common/wallet-types": "workspace:*"
     "@suite-native/analytics": "workspace:*"
+    "@suite-native/app-init": "workspace:*"
     "@trezor/connect": "workspace:*"
     "@trezor/connect-common": "workspace:*"
     react: "npm:19.2.3"
@@ -13665,6 +13666,7 @@ __metadata:
     "@suite-common/wallet-types": "workspace:*"
     "@suite-common/wallet-utils": "workspace:*"
     "@suite-native/analytics": "workspace:*"
+    "@suite-native/app-init": "workspace:*"
     "@suite-native/atoms": "workspace:*"
     "@suite-native/formatters": "workspace:*"
     "@suite-native/icons": "workspace:*"
@@ -14515,6 +14517,7 @@ __metadata:
     "@suite-native/accounts": "workspace:*"
     "@suite-native/alerts": "workspace:*"
     "@suite-native/analytics": "workspace:*"
+    "@suite-native/app-init": "workspace:*"
     "@suite-native/assets": "workspace:*"
     "@suite-native/atoms": "workspace:*"
     "@suite-native/banners": "workspace:*"
@@ -15241,6 +15244,7 @@ __metadata:
     "@suite-common/wallet-core": "workspace:*"
     "@suite-common/walletconnect": "workspace:*"
     "@suite-native/analytics": "workspace:*"
+    "@suite-native/app-init": "workspace:*"
     "@suite-native/banners": "workspace:*"
     "@suite-native/biometrics": "workspace:*"
     "@suite-native/blockchain": "workspace:*"

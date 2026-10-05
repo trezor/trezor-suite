@@ -11,6 +11,7 @@ import * as SplashScreen from 'expo-splash-screen';
 
 import { FormatterProvider } from '@suite-common/formatters';
 import { ReactNativeQueryProvider } from '@suite-common/react-query/src/components/ReactNativeQueryProvider';
+import { selectIsAppReady } from '@suite-native/app-init';
 import { selectShouldUserBeAuthenticated } from '@suite-native/biometrics';
 import { useFormattersConfig } from '@suite-native/formatters-config';
 import { IntlProvider } from '@suite-native/intl';
@@ -22,7 +23,6 @@ import {
     type NativeServices,
     type StorePersistorDep,
     StoreProvider,
-    selectIsAppReady,
 } from '@suite-native/state';
 
 import { BannersRenderer } from './BannersRenderer';

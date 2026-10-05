@@ -17,10 +17,10 @@ import {
     selectEnabledNetworks,
 } from '@suite-common/wallet-core';
 import { events, injectNativeAnalytics } from '@suite-native/analytics';
+import { selectIsAppReady } from '@suite-native/app-init';
 import { selectIsBiometricsEnabled } from '@suite-native/biometrics';
 import { selectSupportedLanguageLocale } from '@suite-native/intl';
 import { selectIsOnboardingFinished } from '@suite-native/settings';
-import { selectIsAppReady } from '@suite-native/state';
 import { useUserColorScheme } from '@suite-native/theme';
 
 export const useReportAppInitToAnalytics = () => {
