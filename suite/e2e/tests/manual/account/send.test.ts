@@ -41,20 +41,16 @@ test.describe.skip('Account send', { tag: ['@group=manual'] }, () => {
         {
             annotation: createTestAnnotation({
                 testCase:
-                    'Verifies all recipient address validations: format, contract addresses, ATA check, reserves, checksum, deprecated addresses and Taproot firmware check.',
+                    'Verifies recipient address checks that are still manual: Tron contract warning, XRP/XLM reserve, and a deprecated Litecoin address.',
                 prerequisites: [
+                    'ALSO COVERED BY AUTO TEST: tests/wallet/send-address-validation.test.ts → invalid address, foreign network, Ethereum checksum, Ethereum contract warning, Solana token-account warning (web only)',
                     'Seeded Trezor device',
-                    'Connected Trezor Suite with BTC, EVM, Tron, Solana and XRP/XLM accounts funded',
+                    'Connected Trezor Suite with Tron, XRP or XLM, and Litecoin accounts funded',
                 ],
                 steps: [
-                    'Open the Send form and enter an invalid address; confirm a validation error is shown',
-                    'Enter an address of a different network and confirm it is rejected',
-                    'On an EVM account, enter a known contract address and confirm a warning about sending to a contract is shown',
-                    'On a Tron account, enter a contract address and confirm the same contract warning is shown',
-                    'On a Solana token send, enter an address and confirm the associated token account (ATA) check runs and communicates the result',
+                    'On a Tron account, enter a contract address and confirm a warning about sending to a contract is shown',
                     'On an XRP/XLM account, send to a new (unfunded) address and confirm the network reserve requirement is communicated',
-                    'On an EVM account, enter a valid address with wrong checksum casing and confirm Suite warns and offers checksum autocorrect',
-                    'Enter a deprecated address format (e.g. LTC legacy 3-address) and confirm the deprecation warning is shown',
+                    'On a Litecoin account, enter a legacy address starting with 3 and confirm the deprecation warning is shown',
                 ],
                 category: TestCategory.Accounts,
                 priority: TestPriority.Critical,
