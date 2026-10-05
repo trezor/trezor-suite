@@ -1,8 +1,4 @@
-import { type RefObject, useCallback, useEffect, useEffectEvent, useRef } from 'react';
 import { useSelector } from 'react-redux';
-
-import { isFulfilled } from '@reduxjs/toolkit';
-import type { ExchangeTrade } from 'invity-api';
 
 import { useServices } from '@suite-common/dependency-injection';
 import { injectDispatch } from '@suite-common/redux-utils';
@@ -12,39 +8,31 @@ import {
     cryptoIdToNetwork,
     exchangeThunks,
     selectTradingExchangeIsLoading,
-    useTradingRefetchScheduler,
 } from '@suite-common/trading';
 import { type WalletSettingsRootState, selectIsAmountInSats } from '@suite-common/wallet-core';
-import { type AnalyticsNativeEvents, events, injectNativeAnalytics } from '@suite-native/analytics';
+import { events, injectNativeAnalytics } from '@suite-native/analytics';
 import { useFormState, useWatch } from '@suite-native/forms';
 import { getSymbolFromTradeableAsset } from '@suite-native/trading-atoms';
 import { exchangeActions, selectExchangeQuotes } from '@suite-native/trading-state';
-import { type AbortablePromise, type ExchangeFormType } from '@suite-native/trading-types';
-import { type Analytics } from '@trezor/analytics-uploader';
-import { useDebounce } from '@trezor/react-utils';
+import { type ExchangeFormType } from '@suite-native/trading-types';
 import { noop } from '@trezor/utils';
 
 import { tradingExchangeFormToTradingExchangeFormProps } from '../../utils/exchange/quotesUtils';
 import { getReceiveAccountAddressText } from '../../utils/general/receiveAccountUtils';
-import { useQuotesInvalidator } from '../general/useQuotesInvalidator';
+import { getQuotesRequestKey, useQuotesRequest } from '../general/useQuotesRequest';
 
-type ExchangeQuoteRequestState = {
-    isFetchAllowed: boolean;
-    sendAsset: string | undefined;
-    receiveAsset: string | undefined;
-    sendCryptoAmount: string | undefined;
-    sendAccountDescriptor: string | undefined;
-    receiveAccountAddress: string | undefined;
-};
-
-const useExchangeQuoteRequestState = (
-    control: ExchangeFormType['control'],
-): ExchangeQuoteRequestState => {
+export const useExchangeQuotes = ({ getValues, control }: ExchangeFormType) => {
+    const { analytics, dispatch } = useServices(injectNativeAnalytics, injectDispatch);
     const [sendAsset, receiveAsset, sendCryptoAmount, sendAccount, receiveAccount] = useWatch({
         control,
         name: ['sendAsset', 'receiveAsset', 'sendCryptoAmount', 'sendAccount', 'receiveAccount'],
     });
     const { isValid } = useFormState({ control });
+    const shouldSendInSats = useSelector((state: WalletSettingsRootState) =>
+        selectIsAmountInSats(state, getSymbolFromTradeableAsset(sendAsset)),
+    );
+    const quotes = useSelector(selectExchangeQuotes);
+    const isLoading = useSelector(selectTradingExchangeIsLoading);
 
     const isFetchAllowed =
         isValid &&
@@ -53,59 +41,15 @@ const useExchangeQuoteRequestState = (
         !!sendCryptoAmount &&
         parseFloat(sendCryptoAmount) > 0;
 
-    const receiveAccountAddress = getReceiveAccountAddressText(receiveAccount);
-
-    return {
-        isFetchAllowed,
+    const requestKey = getQuotesRequestKey(isFetchAllowed, {
         sendAsset: sendAsset?.cryptoId,
         receiveAsset: receiveAsset?.cryptoId,
         sendCryptoAmount,
         sendAccountDescriptor: sendAccount?.descriptor,
-        receiveAccountAddress,
-    };
-};
+        receiveAccountAddress: getReceiveAccountAddressText(receiveAccount),
+    });
 
-const waitForPromiseAndReport = async (
-    promise: AbortablePromise | undefined,
-    analytics: Analytics<AnalyticsNativeEvents>,
-) => {
-    if (!promise) {
-        return;
-    }
-
-    const action = await promise;
-    if (isFulfilled(action) && (action.payload as ExchangeTrade[]).length > 0) {
-        analytics.report({
-            type: events.tradingQuoteReceivedEvent.name,
-            payload: {
-                type: 'exchange',
-            },
-        });
-    }
-};
-
-const useExchangeQuotesThunk = (
-    { getValues, control }: ExchangeFormType,
-    requestState: ExchangeQuoteRequestState,
-    quotesPromiseRef: RefObject<AbortablePromise | undefined>,
-    debounce: ReturnType<typeof useDebounce>,
-) => {
-    const { analytics, dispatch } = useServices(injectNativeAnalytics, injectDispatch);
-    const asset = useWatch({ control, name: 'sendAsset' });
-    const symbol = getSymbolFromTradeableAsset(asset);
-    const shouldSendInSats = useSelector((state: WalletSettingsRootState) =>
-        selectIsAmountInSats(state, symbol),
-    );
-    const {
-        isFetchAllowed,
-        sendAsset,
-        receiveAsset,
-        sendCryptoAmount,
-        sendAccountDescriptor,
-        receiveAccountAddress,
-    } = requestState;
-
-    const fetchQuotes = useCallback(async () => {
+    const fetchQuotes = () => {
         const selectedAsset = getValues('sendAsset');
         invariant(selectedAsset, 'Asset is not defined');
         const network = cryptoIdToNetwork(selectedAsset.cryptoId);
@@ -118,66 +62,24 @@ const useExchangeQuotesThunk = (
             composeRequestCallback: noop,
         };
 
-        quotesPromiseRef.current = dispatch(exchangeThunks.handleRequestThunk(payload));
-        await waitForPromiseAndReport(quotesPromiseRef.current, analytics);
-    }, [getValues, shouldSendInSats, quotesPromiseRef, dispatch, analytics]);
+        return dispatch(exchangeThunks.handleRequestThunk(payload));
+    };
 
-    const requestQuotes = useEffectEvent(() => {
-        if (quotesPromiseRef.current?.abort) {
-            quotesPromiseRef.current.abort('Request was replaced by another one.');
-        }
+    const reportQuotesReceived = () =>
+        analytics.report({
+            type: events.tradingQuoteReceivedEvent.name,
+            payload: {
+                type: 'exchange',
+            },
+        });
 
-        debounce(fetchQuotes);
-    });
-
-    useEffect(() => {
-        if (!isFetchAllowed) {
-            return;
-        }
-
-        requestQuotes();
-    }, [
-        isFetchAllowed,
-        sendAsset,
-        receiveAsset,
-        sendCryptoAmount,
-        sendAccountDescriptor,
-        receiveAccountAddress,
-    ]);
-
-    useTradingRefetchScheduler({
-        onRefetch: () => {
-            if (!isFetchAllowed) return;
-            debounce(fetchQuotes);
-        },
-    });
-};
-
-const useExchangeQuotesInvalidator = (
-    isFormValid: boolean,
-    quotesPromiseRef: RefObject<AbortablePromise | undefined>,
-    debounce: ReturnType<typeof useDebounce>,
-) => {
-    const quotes = useSelector(selectExchangeQuotes);
-    const isLoading = useSelector(selectTradingExchangeIsLoading);
-
-    useQuotesInvalidator({
-        isFormValid,
+    useQuotesRequest({
+        requestKey,
+        fetchQuotes,
+        onQuotesReceived: reportQuotesReceived,
         isLoading,
-        anyQuotesLoaded: quotes.length > 0,
-        quotesPromiseRef,
-        debounce,
-        getClearRequestAction: exchangeActions.clearQuotesAndQuotesRequest,
-        getClearStateAction: exchangeActions.clearState,
+        hasQuotes: quotes.length > 0,
+        clearQuotesAction: exchangeActions.clearQuotesAndQuotesRequest,
+        clearStateAction: exchangeActions.clearState,
     });
-};
-
-export const useExchangeQuotes = (form: ExchangeFormType) => {
-    const debounce = useDebounce();
-    const promiseRef = useRef<AbortablePromise | undefined>(undefined);
-
-    const requestState = useExchangeQuoteRequestState(form.control);
-
-    useExchangeQuotesInvalidator(requestState.isFetchAllowed, promiseRef, debounce);
-    useExchangeQuotesThunk(form, requestState, promiseRef, debounce);
 };
