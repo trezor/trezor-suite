@@ -39,6 +39,14 @@ export default class ComposeTransaction extends AbstractMethod<'composeTransacti
             { name: 'sortingStrategy', type: 'string' },
         ]);
 
+        if (payload.changeAddress) {
+            validateParams(payload.changeAddress, [
+                { name: 'address', type: 'string', required: true },
+                { name: 'path', type: 'string', required: true },
+            ]);
+            pathUtils.validatePath(payload.changeAddress.path);
+        }
+
         const coinInfo = getBitcoinNetworkOrThrow(payload.coin);
 
         // validate each output and transform into @trezor/utxo-lib/compose format
