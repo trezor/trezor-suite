@@ -1,0 +1,18 @@
+{
+    "groups": [
+        {
+            "name": "Mark",
+            "layers": [
+                {
+                    "name": "Lock",
+                    "image-name": "lock.png",
+                    "glass": false
+                }
+            ],
+            "shadow": { "kind": "none", "opacity": 0 },
+            "specular": false,
+            "translucency": { "enabled": false, "value": 0 }
+        }
+    ],
+    "supported-platforms": { "squares": "shared" }
+}
