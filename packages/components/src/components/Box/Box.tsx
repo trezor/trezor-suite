@@ -77,7 +77,7 @@ const Container = styled.div<
         $backgroundColorOnInteraction &&
         css`
             &:hover,
-            &:focus {
+            &:focus-visible {
                 background: ${theme[$backgroundColorOnInteraction]};
             }
         `}
