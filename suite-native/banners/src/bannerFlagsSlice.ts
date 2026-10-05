@@ -12,6 +12,7 @@ export interface BannerFlagsState {
     isOnboardingFeedbackBannerEnabled: boolean; // feedback banner on Home dashboard shown after completing device onboarding
     isDefiYieldPromoBannerClosed: boolean; // promo banner on Home dashboard nudging users to earn yield on their assets
     isEthVaultPromoBannerClosed: boolean; // promo banner on Home dashboard nudging users to earn with ETH
+    isTradingExperiencePromoBannerClosed: boolean; // promo banner on Home dashboard introducing the new trading experience
     isTs7PromoBannerClosed: boolean; // promo banner on Home dashboard nudging users to buy Trezor Safe 7
     closedEarnBannerSymbols: NetworkSymbol[]; // networks for which the promo earn banner in account view was closed
 }
@@ -28,6 +29,7 @@ export const bannerFlagsInitialState: BannerFlagsState = {
     isOnboardingFeedbackBannerEnabled: false,
     isDefiYieldPromoBannerClosed: false,
     isEthVaultPromoBannerClosed: false,
+    isTradingExperiencePromoBannerClosed: false,
     isTs7PromoBannerClosed: false,
     closedEarnBannerSymbols: [],
 };
@@ -53,6 +55,9 @@ export const bannerFlagsSlice = createSlice({
         },
         setIsEthVaultPromoBannerClosed: state => {
             state.isEthVaultPromoBannerClosed = true;
+        },
+        setIsTradingExperiencePromoBannerClosed: state => {
+            state.isTradingExperiencePromoBannerClosed = true;
         },
         setIsTs7PromoBannerClosed: state => {
             state.isTs7PromoBannerClosed = true;
@@ -88,6 +93,7 @@ export const bannerFlagsPersistWhitelist: Array<keyof BannerFlagsState> = [
     'isOnboardingFeedbackBannerEnabled',
     'isDefiYieldPromoBannerClosed',
     'isEthVaultPromoBannerClosed',
+    'isTradingExperiencePromoBannerClosed',
     'isTs7PromoBannerClosed',
     'closedEarnBannerSymbols',
 ];
@@ -113,6 +119,9 @@ export const selectIsDefiYieldPromoBannerClosed = (state: BannerFlagsSliceRootSt
 export const selectIsEthVaultPromoBannerClosed = (state: BannerFlagsSliceRootState) =>
     state.bannerFlags.isEthVaultPromoBannerClosed;
 
+export const selectIsTradingExperiencePromoBannerClosed = (state: BannerFlagsSliceRootState) =>
+    state.bannerFlags.isTradingExperiencePromoBannerClosed;
+
 export const selectIsTs7PromoBannerClosed = (state: BannerFlagsSliceRootState) =>
     state.bannerFlags.isTs7PromoBannerClosed;
 
@@ -126,6 +135,7 @@ export const {
     setIsOnboardingFeedbackBannerEnabled,
     setIsDefiYieldPromoBannerClosed,
     setIsEthVaultPromoBannerClosed,
+    setIsTradingExperiencePromoBannerClosed,
     setIsTs7PromoBannerClosed,
     setIsEarnBannerClosed,
 } = bannerFlagsSlice.actions;

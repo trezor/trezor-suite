@@ -9,19 +9,27 @@ import {
     selectFeaturesConfig,
 } from '@suite-common/message-system';
 import { createWeakMapSelector } from '@suite-common/redux-utils';
+import { type FeatureFlagsRootState } from '@suite-native/feature-flags';
+import { selectIsTradingEnabled } from '@suite-native/trading-state';
+import { type TradingRootState } from '@suite-native/trading-types';
 
 import {
     type BannerFlagsSliceRootState,
     selectIsDefiYieldPromoBannerClosed,
     selectIsEthVaultPromoBannerClosed,
+    selectIsTradingExperiencePromoBannerClosed,
     selectIsTs7PromoBannerClosed,
 } from './bannerFlagsSlice';
 
-type PromoBannersRootState = MessageSystemRootState & BannerFlagsSliceRootState & DeviceRootState;
+type PromoBannersRootState = MessageSystemRootState &
+    BannerFlagsSliceRootState &
+    DeviceRootState &
+    FeatureFlagsRootState &
+    TradingRootState;
 
 const createMemoizedSelector = createWeakMapSelector.withTypes<PromoBannersRootState>();
 
-export type VisiblePromoBannerKey = 'ts7' | 'defi-yield' | 'eth-vault';
+export type VisiblePromoBannerKey = 'ts7' | 'defi-yield' | 'eth-vault' | 'trading-experience';
 
 const selectPromoBannerMessages = (state: MessageSystemRootState) =>
     selectFeaturesConfig(state, Feature.banners.dashboard.promo);
@@ -70,21 +78,40 @@ export const selectIsEthVaultPromoBannerDisplayed = createMemoizedSelector(
         !hasOnlyPortfolioDevice,
 );
 
+export const selectIsTradingExperiencePromoBannerDisplayed = createMemoizedSelector(
+    [
+        selectPromoBannerMessages,
+        selectIsTradingExperiencePromoBannerClosed,
+        selectHasBitcoinOnlyFirmware,
+        selectHasOnlyPortfolioDevice,
+        selectIsTradingEnabled,
+    ],
+    (bannerMessages, isClosed, hasBitcoinOnlyFirmware, hasOnlyPortfolioDevice, isTradingEnabled) =>
+        isPromoBannerFeatureEnabled(bannerMessages, 'trading-experience') &&
+        !isClosed &&
+        !hasBitcoinOnlyFirmware &&
+        !hasOnlyPortfolioDevice &&
+        isTradingEnabled,
+);
+
 export const selectVisiblePromoBanners = createMemoizedSelector(
     [
         selectIsTs7PromoBannerDisplayed,
         selectIsDefiYieldPromoBannerDisplayed,
         selectIsEthVaultPromoBannerDisplayed,
+        selectIsTradingExperiencePromoBannerDisplayed,
     ],
     (
         isTs7PromoBannerDisplayed,
         isDefiYieldPromoBannerDisplayed,
         isEthVaultPromoBannerDisplayed,
+        isTradingExperiencePromoBannerDisplayed,
     ): VisiblePromoBannerKey[] => {
         const visibleBanners: VisiblePromoBannerKey[] = [];
         if (isTs7PromoBannerDisplayed) visibleBanners.push('ts7');
         if (isDefiYieldPromoBannerDisplayed) visibleBanners.push('defi-yield');
         if (isEthVaultPromoBannerDisplayed) visibleBanners.push('eth-vault');
+        if (isTradingExperiencePromoBannerDisplayed) visibleBanners.push('trading-experience');
 
         return visibleBanners;
     },
