@@ -1,5 +1,7 @@
 import { expect as detoxExpect } from 'detox';
 
+import { joinAmountWithSymbol } from '@suite-common/formatters';
+
 import { wait, waitForEnabled, waitForVisible } from '../../support/utils';
 import { onTabBar } from '../tabBarActions';
 import { TradingActions } from './TradingActions';
@@ -106,7 +108,7 @@ export abstract class TradingFormActions extends TradingActions {
 
     async selectBtcFreshAddress(accountName: string) {
         await this.selectReceiveAccount(accountName, true);
-        await this.expectReceiveAccountBalance('0 BTC');
+        await this.expectReceiveAccountBalance(joinAmountWithSymbol('0', 'BTC'));
     }
 
     async expectReceiveAccountBalance(expectedValue: string) {

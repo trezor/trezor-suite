@@ -1,6 +1,7 @@
 import { expect as jestExpect } from '@jest/globals';
 import { expect as detoxExpect } from 'detox';
 
+import { joinAmountWithSymbol } from '@suite-common/formatters';
 import { Model, TrezorUserEnvLink } from '@trezor/trezor-user-env-link';
 
 import { onboardingCompletedState } from '../fixtures/onboardingCompletedState';
@@ -35,7 +36,9 @@ const emptyPassphraseFlow = async (passphrase: string) => {
 const expectEmptyWallet = async () => {
     await onPassphrase.expectSwitcherSubheader('Passphrase wallet #1');
 
-    await detoxExpect(element(by.id('@assets/cryptoAmount/regtest'))).toHaveText('0 BTC REGTEST');
+    await detoxExpect(element(by.id('@assets/cryptoAmount/regtest'))).toHaveText(
+        joinAmountWithSymbol('0', 'BTC REGTEST'),
+    );
 };
 
 const expectNonEmptyWallet = async () => {
@@ -44,8 +47,8 @@ const expectNonEmptyWallet = async () => {
     const amountEl = element(by.id('@assets/cryptoAmount/regtest'));
     const { text } = (await amountEl.getAttributes()) as { text: string };
 
-    jestExpect(text).not.toBe('0 BTC REGTEST');
-    jestExpect(text).toMatch(/[0-9.]+ BTC REGTEST/);
+    jestExpect(text).not.toBe(joinAmountWithSymbol('0', 'BTC REGTEST'));
+    jestExpect(text).toMatch(new RegExp(joinAmountWithSymbol('[0-9.]+', 'BTC REGTEST')));
 };
 
 const preloadedState = preparePreloadedReduxState(
