@@ -6,7 +6,8 @@ import {
     asDisplayOrderKey,
     asProtocol,
 } from '@trezor/network-module-suite-common-types';
-import { TRON_DECIMALS, type TronNetworkSymbol } from '@trezor/network-tron/constants';
+import { TRON_DECIMALS } from '@trezor/network-tron/constants';
+import type { TronNetworkSymbol } from '@trezor/network-tron-types';
 
 const syncIntervalBySymbol: Readonly<Record<TronNetworkSymbol, number>> = {
     trx: DEFAULT_ACCOUNT_SYNC_INTERVAL / 1.5,

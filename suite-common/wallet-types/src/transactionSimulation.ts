@@ -5,8 +5,8 @@ import type {
     SolanaSignTransaction,
     StellarSignTransaction,
 } from '@trezor/connect';
-import type { SolanaNetworkSymbol } from '@trezor/network-solana/constants';
-import type { StellarNetworkSymbol } from '@trezor/network-stellar/constants';
+import type { SolanaNetworkSymbol } from '@trezor/network-solana-types';
+import type { StellarNetworkSymbol } from '@trezor/network-stellar-types';
 
 type TxSimulationActionBase = {
     sourceOrigin: string;

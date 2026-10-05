@@ -11247,8 +11247,8 @@ __metadata:
     "@trezor/connect": "workspace:*"
     "@trezor/connect-common": "workspace:^"
     "@trezor/crypto-utils": "workspace:*"
-    "@trezor/network-solana": "workspace:*"
-    "@trezor/network-stellar": "workspace:*"
+    "@trezor/network-solana-types": "workspace:*"
+    "@trezor/network-stellar-types": "workspace:*"
     "@trezor/type-utils": "workspace:^"
     "@trezor/utils": "workspace:*"
     "@types/react": "npm:19.2.14"
@@ -12229,8 +12229,9 @@ __metadata:
     "@suite-common/wallet-constants": "workspace:*"
     "@suite-common/wallet-types": "workspace:*"
     "@suite-common/wallet-utils": "workspace:*"
-    "@trezor/network-solana": "workspace:*"
+    "@trezor/network-solana-types": "workspace:*"
     "@trezor/network-stellar": "workspace:*"
+    "@trezor/network-stellar-types": "workspace:*"
     "@trezor/type-utils": "workspace:*"
     "@trezor/utils": "workspace:*"
     react: "npm:19.2.3"
@@ -12309,6 +12310,7 @@ __metadata:
     "@trezor/network-ethereum-suite-common": "workspace:*"
     "@trezor/network-ripple": "workspace:*"
     "@trezor/network-solana": "workspace:*"
+    "@trezor/network-solana-types": "workspace:*"
     "@trezor/network-stellar": "workspace:*"
     "@trezor/network-tron": "workspace:*"
     "@trezor/protobuf": "workspace:*"
@@ -12337,8 +12339,8 @@ __metadata:
     "@trezor/connect": "workspace:*"
     "@trezor/crypto-utils": "workspace:*"
     "@trezor/device-utils": "workspace:*"
-    "@trezor/network-solana": "workspace:*"
-    "@trezor/network-stellar": "workspace:*"
+    "@trezor/network-solana-types": "workspace:*"
+    "@trezor/network-stellar-types": "workspace:*"
     "@trezor/type-utils": "workspace:*"
     "@trezor/utils": "workspace:^"
     "@types/invity-api": "npm:^1.1.22"
@@ -18404,15 +18406,15 @@ __metadata:
   dependencies:
     "@noble/hashes": "npm:^2.0.1"
     "@scure/base": "npm:^2.0.0"
-    "@trezor/network-bitcoin": "workspace:*"
+    "@trezor/network-bitcoin-types": "workspace:*"
     "@trezor/network-module-suite-common-types": "workspace:*"
     "@trezor/utils": "workspace:*"
   languageName: unknown
   linkType: soft
 
-"@trezor/network-bitcoin@workspace:*, @trezor/network-bitcoin@workspace:networks/bitcoin/network-bitcoin":
+"@trezor/network-bitcoin-types@workspace:*, @trezor/network-bitcoin-types@workspace:networks/bitcoin/network-bitcoin-types":
   version: 0.0.0-use.local
-  resolution: "@trezor/network-bitcoin@workspace:networks/bitcoin/network-bitcoin"
+  resolution: "@trezor/network-bitcoin-types@workspace:networks/bitcoin/network-bitcoin-types"
   dependencies:
     "@trezor/utils": "workspace:*"
   languageName: unknown
@@ -18425,9 +18427,18 @@ __metadata:
     "@scure/base": "npm:^2.0.0"
     "@trezor/device-utils": "workspace:*"
     "@trezor/network-cardano": "workspace:*"
+    "@trezor/network-cardano-types": "workspace:*"
     "@trezor/network-module-suite-common-types": "workspace:*"
     cbor: "npm:^10.0.12"
     crc: "npm:^4.3.2"
+  languageName: unknown
+  linkType: soft
+
+"@trezor/network-cardano-types@workspace:*, @trezor/network-cardano-types@workspace:networks/cardano/network-cardano-types":
+  version: 0.0.0-use.local
+  resolution: "@trezor/network-cardano-types@workspace:networks/cardano/network-cardano-types"
+  dependencies:
+    "@trezor/utils": "workspace:*"
   languageName: unknown
   linkType: soft
 
@@ -18439,7 +18450,6 @@ __metadata:
     "@emurgo/cardano-serialization-lib-browser": "npm:13.2.0"
     "@emurgo/cardano-serialization-lib-nodejs": "npm:13.2.0"
     "@fivebinaries/coin-selection": "npm:3.0.0"
-    "@trezor/utils": "workspace:*"
     binaryen: "npm:132.0.0"
     cbor: "npm:^10.0.12"
   languageName: unknown
@@ -18454,6 +18464,7 @@ __metadata:
     "@suite-common/dependency-injection": "workspace:*"
     "@trezor/connect-common": "workspace:*"
     "@trezor/network-ethereum": "workspace:*"
+    "@trezor/network-ethereum-types": "workspace:*"
     "@trezor/network-module-suite-common-types": "workspace:*"
     "@trezor/network-module-types": "workspace:*"
     "@trezor/utils": "workspace:*"
@@ -18461,11 +18472,19 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"@trezor/network-ethereum-types@workspace:*, @trezor/network-ethereum-types@workspace:networks/ethereum/network-ethereum-types":
+  version: 0.0.0-use.local
+  resolution: "@trezor/network-ethereum-types@workspace:networks/ethereum/network-ethereum-types"
+  dependencies:
+    "@trezor/utils": "workspace:*"
+  languageName: unknown
+  linkType: soft
+
 "@trezor/network-ethereum@workspace:*, @trezor/network-ethereum@workspace:networks/ethereum/network-ethereum":
   version: 0.0.0-use.local
   resolution: "@trezor/network-ethereum@workspace:networks/ethereum/network-ethereum"
   dependencies:
-    "@trezor/utils": "workspace:*"
+    "@trezor/network-ethereum-types": "workspace:*"
     viem: "npm:^2.54.1"
   languageName: unknown
   linkType: soft
@@ -18499,6 +18518,15 @@ __metadata:
     "@scure/base": "npm:^2.0.0"
     "@trezor/network-module-suite-common-types": "workspace:*"
     "@trezor/network-ripple": "workspace:*"
+    "@trezor/network-ripple-types": "workspace:*"
+  languageName: unknown
+  linkType: soft
+
+"@trezor/network-ripple-types@workspace:*, @trezor/network-ripple-types@workspace:networks/ripple/network-ripple-types":
+  version: 0.0.0-use.local
+  resolution: "@trezor/network-ripple-types@workspace:networks/ripple/network-ripple-types"
+  dependencies:
+    "@trezor/utils": "workspace:*"
   languageName: unknown
   linkType: soft
 
@@ -18506,7 +18534,6 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@trezor/network-ripple@workspace:networks/ripple/network-ripple"
   dependencies:
-    "@trezor/utils": "workspace:*"
     xrpl: "npm:4.6.0"
   languageName: unknown
   linkType: soft
@@ -18518,7 +18545,15 @@ __metadata:
     "@scure/base": "npm:^2.0.0"
     "@trezor/device-utils": "workspace:*"
     "@trezor/network-module-suite-common-types": "workspace:*"
-    "@trezor/network-solana": "workspace:*"
+    "@trezor/network-solana-types": "workspace:*"
+  languageName: unknown
+  linkType: soft
+
+"@trezor/network-solana-types@workspace:*, @trezor/network-solana-types@workspace:networks/solana/network-solana-types":
+  version: 0.0.0-use.local
+  resolution: "@trezor/network-solana-types@workspace:networks/solana/network-solana-types"
+  dependencies:
+    "@trezor/utils": "workspace:*"
   languageName: unknown
   linkType: soft
 
@@ -18535,6 +18570,7 @@ __metadata:
     "@solana/kit": "npm:^6.9.0"
     "@solana/rpc-api": "npm:^6.9.0"
     "@solana/rpc-types": "npm:^6.9.0"
+    "@trezor/network-solana-types": "workspace:*"
     "@trezor/type-utils": "workspace:*"
     "@trezor/utils": "workspace:*"
   languageName: unknown
@@ -18548,7 +18584,16 @@ __metadata:
     "@scure/base": "npm:^2.0.0"
     "@trezor/network-module-suite-common-types": "workspace:*"
     "@trezor/network-stellar": "workspace:*"
+    "@trezor/network-stellar-types": "workspace:*"
     crc: "npm:^4.3.2"
+  languageName: unknown
+  linkType: soft
+
+"@trezor/network-stellar-types@workspace:*, @trezor/network-stellar-types@workspace:networks/stellar/network-stellar-types":
+  version: 0.0.0-use.local
+  resolution: "@trezor/network-stellar-types@workspace:networks/stellar/network-stellar-types"
+  dependencies:
+    "@trezor/utils": "workspace:*"
   languageName: unknown
   linkType: soft
 
@@ -18570,6 +18615,15 @@ __metadata:
     "@trezor/device-utils": "workspace:*"
     "@trezor/network-module-suite-common-types": "workspace:*"
     "@trezor/network-tron": "workspace:*"
+    "@trezor/network-tron-types": "workspace:*"
+  languageName: unknown
+  linkType: soft
+
+"@trezor/network-tron-types@workspace:*, @trezor/network-tron-types@workspace:networks/tron/network-tron-types":
+  version: 0.0.0-use.local
+  resolution: "@trezor/network-tron-types@workspace:networks/tron/network-tron-types"
+  dependencies:
+    "@trezor/utils": "workspace:*"
   languageName: unknown
   linkType: soft
 
@@ -18578,7 +18632,6 @@ __metadata:
   resolution: "@trezor/network-tron@workspace:networks/tron/network-tron"
   dependencies:
     "@noble/hashes": "npm:^2.0.1"
-    "@trezor/utils": "workspace:*"
   languageName: unknown
   linkType: soft
 
@@ -18631,6 +18684,7 @@ __metadata:
     "@trezor/eslint": "workspace:*"
     "@trezor/icons": "workspace:*"
     "@trezor/network-ethereum": "workspace:*"
+    "@trezor/network-ethereum-types": "workspace:*"
     "@trezor/network-module-types": "workspace:*"
     "@trezor/react-utils": "workspace:*"
     "@trezor/theme": "workspace:*"

@@ -1,5 +1,6 @@
 import { DeviceModelInternal } from '@trezor/device-utils';
-import { CARDANO_DECIMALS, type CardanoNetworkSymbol } from '@trezor/network-cardano/constants';
+import { CARDANO_DECIMALS } from '@trezor/network-cardano/constants';
+import type { CardanoNetworkSymbol } from '@trezor/network-cardano-types';
 import {
     DEFAULT_ACCOUNT_SYNC_INTERVAL,
     type Explorer,

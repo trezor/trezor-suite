@@ -2,7 +2,7 @@ import { sha256 } from '@noble/hashes/sha2.js';
 import { base58 } from '@scure/base';
 
 import { type AddressValidator, addressType } from '@trezor/network-module-suite-common-types';
-import type { TronNetworkSymbol } from '@trezor/network-tron/constants';
+import type { TronNetworkSymbol } from '@trezor/network-tron-types';
 
 const TRON_ADDRESS_TYPE = 0x41;
 

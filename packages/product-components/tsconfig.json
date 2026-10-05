@@ -40,6 +40,9 @@
             "path": "../../networks/ethereum/network-ethereum"
         },
         {
+            "path": "../../networks/ethereum/network-ethereum-types"
+        },
+        {
             "path": "../../networks/network-module/network-module-types"
         },
         { "path": "../react-utils" },

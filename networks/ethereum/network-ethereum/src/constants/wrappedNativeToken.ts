@@ -1,4 +1,4 @@
-import type { EthereumNetworkSymbol } from './networkSymbol';
+import type { EthereumNetworkSymbol } from '@trezor/network-ethereum-types';
 
 type WrappedNativeToken = {
     readonly address: `0x${string}`;

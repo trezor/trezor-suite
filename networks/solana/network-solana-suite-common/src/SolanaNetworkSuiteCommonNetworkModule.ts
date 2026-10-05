@@ -2,7 +2,7 @@ import {
     type SuiteCommonNetworkModule,
     createNetworkModule,
 } from '@trezor/network-module-suite-common-types';
-import { supportedSolanaNetworks } from '@trezor/network-solana/constants';
+import { supportedSolanaNetworks } from '@trezor/network-solana-types';
 
 import { solanaValidator } from './addressValidator/solanaAddressValidator';
 import { getAccountSyncInterval, getNetworkConfig } from './networkConfig';

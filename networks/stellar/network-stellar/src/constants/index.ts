@@ -1,7 +1,5 @@
 import { BigNumber } from '@trezor/utils';
 
-export { isSupportedStellarNetwork, supportedStellarNetworks } from './networkSymbol';
-export type { StellarNetworkSymbol } from './networkSymbol';
 export * from './memo';
 export * from './rpc';
 export { STELLAR_CONTRACT_TOKENS } from './soroban';

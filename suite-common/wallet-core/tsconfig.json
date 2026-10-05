@@ -63,6 +63,9 @@
             "path": "../../networks/solana/network-solana"
         },
         {
+            "path": "../../networks/solana/network-solana-types"
+        },
+        {
             "path": "../../networks/stellar/network-stellar"
         },
         {

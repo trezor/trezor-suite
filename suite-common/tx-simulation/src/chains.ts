@@ -8,8 +8,8 @@ import {
     getNetwork,
     getNetworkByEvmChainId,
 } from '@suite-common/wallet-config';
-import { type SolanaNetworkSymbol } from '@trezor/network-solana/constants';
-import { type StellarNetworkSymbol } from '@trezor/network-stellar/constants';
+import type { SolanaNetworkSymbol } from '@trezor/network-solana-types';
+import type { StellarNetworkSymbol } from '@trezor/network-stellar-types';
 
 type EvmChainId = Extract<NetworkConfig, { networkType: 'ethereum' }>['chainId'];
 type BlockaidSolanaChain = NonNullable<MessageScanParams['chain']>;

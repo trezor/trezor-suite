@@ -1,4 +1,4 @@
-import { supportedCardanoNetworks } from '@trezor/network-cardano/constants';
+import { supportedCardanoNetworks } from '@trezor/network-cardano-types';
 import {
     type SuiteCommonNetworkModule,
     createNetworkModule,

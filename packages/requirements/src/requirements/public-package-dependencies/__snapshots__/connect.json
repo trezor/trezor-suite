@@ -33,6 +33,7 @@
         "@trezor/network-cardano",
         "@trezor/network-ripple",
         "@trezor/network-solana",
+        "@trezor/network-solana-types",
         "@trezor/network-stellar",
         "@trezor/network-tron",
         "@trezor/protobuf",

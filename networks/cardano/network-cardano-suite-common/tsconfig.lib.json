@@ -7,6 +7,7 @@
             "path": "../../../packages/device-utils"
         },
         { "path": "../network-cardano" },
+        { "path": "../network-cardano-types" },
         {
             "path": "../../network-module/network-module-suite-common-types"
         }
