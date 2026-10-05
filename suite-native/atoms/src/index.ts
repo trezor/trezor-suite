@@ -6,6 +6,7 @@ export * from './Animated/AnimatedScrollView';
 export * from './Animated/AnimatedStack';
 export * from './Animated/AnimatedText';
 export * from './Animated/AnimatedView';
+export * from './Animated/LottieView';
 export * from './BaseAmountInputs';
 export * from './BannerInline/BannerInline';
 export * from './BannerInline/AnimatedBannerInline';
