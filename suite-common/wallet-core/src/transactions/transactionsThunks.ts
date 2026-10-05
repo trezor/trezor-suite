@@ -59,10 +59,6 @@ import {
     selectBlockchainHeightBySymbol,
     selectGapLimit,
 } from '../blockchain/blockchainReducer';
-import {
-    type EarnTransactionsRootState,
-    earnTransactionsActions,
-} from '../earn/earnTransactionsReducer';
 import { type FeesRootState, selectRawNetworkFeeInfo } from '../fees/feesReducer';
 import { ethereumGetCurrentNonceThunk } from '../send/sendFormEthereumThunks';
 import { type SendRootState } from '../send/sendFormReducer';
@@ -93,7 +89,6 @@ interface ReplaceTransactionThunkParams {
 }
 
 export type ReplaceTransactionThunkState = AccountsRootState &
-    EarnTransactionsRootState &
     SendRootState &
     TransactionsRootState;
 
@@ -163,16 +158,6 @@ export const replaceTransactionThunk = createThunk<
 
         // dispatch all replace actions
         actions.forEach(a => dispatch(a));
-
-        origTransactions.forEach(origTx => {
-            dispatch(
-                earnTransactionsActions.replaceEarnTransactionTxid({
-                    accountKey: origTx.key,
-                    prevTxid: precomposedTransaction.prevTxid,
-                    newTxid,
-                }),
-            );
-        });
     },
 );
 

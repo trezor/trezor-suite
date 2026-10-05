@@ -163,17 +163,20 @@ const pushTransactionThunk =
                 });
             }
 
-            if (stakeType === 'stake' || stakeType === 'unstake' || stakeType === 'claim') {
-                dispatch(
-                    notifyEarnTransactionBroadcastThunk({
-                        account,
-                        device,
-                        txid,
-                        flow: stakeType,
-                        stage: isRbfBumpFeeTransaction(precomposedTx) ? 'sped-up' : 'pending',
-                    }),
-                );
-            }
+            const bumpedPrevTxid = isRbfBumpFeeTransaction(precomposedTx)
+                ? precomposedTx.prevTxid
+                : undefined;
+
+            dispatch(
+                notifyEarnTransactionBroadcastThunk({
+                    account,
+                    device,
+                    txid,
+                    flow: stakeType === 'change-delegate' ? 'vote' : stakeType,
+                    stage: bumpedPrevTxid ? 'sped-up' : 'pending',
+                    prevTxid: bumpedPrevTxid,
+                }),
+            );
 
             if (isRbfBumpFeeTransaction(precomposedTx)) {
                 // notification from the backend may be delayed.

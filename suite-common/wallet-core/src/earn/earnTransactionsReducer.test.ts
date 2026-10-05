@@ -8,6 +8,7 @@ import {
     earnTransactionsReducer,
     selectTrackedEarnTransaction,
 } from './earnTransactionsReducer';
+import { mockEarnTransactionsState, mockTrackedEarnTransaction } from '../../mocks';
 import { accountsActions } from '../accounts/accountsActions';
 
 const account = mockWalletAccount({
@@ -21,6 +22,22 @@ const otherAccount = mockWalletAccount({
     descriptor: asAccountDescriptor('accB'),
 });
 
+const stakeTx1 = mockTrackedEarnTransaction({
+    accountKey: account.key,
+    txid: 'tx1',
+    flow: 'stake',
+});
+const claimTx2 = mockTrackedEarnTransaction({
+    accountKey: account.key,
+    txid: 'tx2',
+    flow: 'claim',
+});
+const otherAccountTx1 = mockTrackedEarnTransaction({
+    accountKey: otherAccount.key,
+    txid: 'tx1',
+    flow: 'unstake',
+});
+
 const toRootState = (earnTransactions: EarnTransactionsState) => ({
     wallet: { earnTransactions },
 });
@@ -29,16 +46,12 @@ describe('earnTransactionsReducer', () => {
     it('tracks a broadcast earn transaction under its account', () => {
         const state = earnTransactionsReducer(
             {},
-            earnTransactionsActions.trackEarnTransaction({
-                accountKey: account.key,
-                txid: 'tx1',
-                flow: 'stake',
-            }),
+            earnTransactionsActions.trackEarnTransaction(stakeTx1),
         );
 
-        expect(selectTrackedEarnTransaction(toRootState(state), account.key, 'tx1')).toEqual({
-            flow: 'stake',
-        });
+        expect(selectTrackedEarnTransaction(toRootState(state), account.key, 'tx1')).toEqual(
+            stakeTx1,
+        );
         expect(
             selectTrackedEarnTransaction(toRootState(state), account.key, 'tx2'),
         ).toBeUndefined();
@@ -47,100 +60,45 @@ describe('earnTransactionsReducer', () => {
         ).toBeUndefined();
     });
 
-    it('keeps other tracked transactions of the account when one is untracked', () => {
-        let state = earnTransactionsReducer(
-            {},
-            earnTransactionsActions.trackEarnTransaction({
-                accountKey: account.key,
-                txid: 'tx1',
-                flow: 'stake',
-            }),
-        );
-        state = earnTransactionsReducer(
-            state,
-            earnTransactionsActions.trackEarnTransaction({
-                accountKey: account.key,
-                txid: 'tx2',
-                flow: 'claim',
-            }),
+    it('replaces the record when the same transaction is tracked again', () => {
+        const state = earnTransactionsReducer(
+            mockEarnTransactionsState([stakeTx1]),
+            earnTransactionsActions.trackEarnTransaction({ ...stakeTx1, flow: 'claim' }),
         );
 
-        state = earnTransactionsReducer(
-            state,
-            earnTransactionsActions.untrackEarnTransaction({
-                accountKey: account.key,
-                txid: 'tx1',
-            }),
-        );
-
-        expect(state).toEqual({ [account.key]: { tx2: { flow: 'claim' } } });
+        expect(state).toEqual(mockEarnTransactionsState([{ ...stakeTx1, flow: 'claim' }]));
     });
 
-    it('drops the account entry once its last transaction is untracked', () => {
+    it('keeps other tracked transactions when one is untracked', () => {
         const state = earnTransactionsReducer(
-            { [account.key]: { tx1: { flow: 'unstake' } } },
+            mockEarnTransactionsState([stakeTx1, claimTx2, otherAccountTx1]),
             earnTransactionsActions.untrackEarnTransaction({
                 accountKey: account.key,
                 txid: 'tx1',
             }),
         );
 
-        expect(state).toEqual({});
+        expect(state).toEqual(mockEarnTransactionsState([claimTx2, otherAccountTx1]));
     });
 
     it('ignores untracking of an unknown transaction', () => {
-        const initial = { [account.key]: { tx1: { flow: 'unstake' as const } } };
-
         const state = earnTransactionsReducer(
-            initial,
+            mockEarnTransactionsState([stakeTx1]),
             earnTransactionsActions.untrackEarnTransaction({
                 accountKey: account.key,
                 txid: 'nope',
             }),
         );
 
-        expect(state).toEqual(initial);
-    });
-
-    it('moves a tracked transaction to the txid of its fee bump', () => {
-        const state = earnTransactionsReducer(
-            { [account.key]: { tx1: { flow: 'stake' }, tx2: { flow: 'claim' } } },
-            earnTransactionsActions.replaceEarnTransactionTxid({
-                accountKey: account.key,
-                prevTxid: 'tx1',
-                newTxid: 'tx1-bumped',
-            }),
-        );
-
-        expect(state).toEqual({
-            [account.key]: { 'tx1-bumped': { flow: 'stake' }, tx2: { flow: 'claim' } },
-        });
-    });
-
-    it('ignores a fee bump of a transaction it does not track', () => {
-        const initial = { [account.key]: { tx1: { flow: 'stake' as const } } };
-
-        const state = earnTransactionsReducer(
-            initial,
-            earnTransactionsActions.replaceEarnTransactionTxid({
-                accountKey: account.key,
-                prevTxid: 'unknown',
-                newTxid: 'unknown-bumped',
-            }),
-        );
-
-        expect(state).toEqual(initial);
+        expect(state).toEqual(mockEarnTransactionsState([stakeTx1]));
     });
 
     it('forgets the transactions of a removed account only', () => {
         const state = earnTransactionsReducer(
-            {
-                [account.key]: { tx1: { flow: 'stake' } },
-                [otherAccount.key]: { tx2: { flow: 'claim' } },
-            },
+            mockEarnTransactionsState([stakeTx1, claimTx2, otherAccountTx1]),
             accountsActions.removeAccount([account]),
         );
 
-        expect(state).toEqual({ [otherAccount.key]: { tx2: { flow: 'claim' } } });
+        expect(state).toEqual(mockEarnTransactionsState([otherAccountTx1]));
     });
 });
