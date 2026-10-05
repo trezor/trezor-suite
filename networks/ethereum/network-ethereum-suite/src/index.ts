@@ -1,0 +1,1 @@
+export { createEthereumSuiteNetworkModule } from './EthereumSuiteNetworkModule';
