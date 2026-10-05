@@ -6,6 +6,7 @@ import { Translation } from '@suite/intl';
 import { useServices } from '@suite-common/dependency-injection';
 import { getTotalVotes, selectHasRunningDiscovery } from '@suite-common/wallet-core';
 import { Button, Tooltip } from '@trezor/components';
+import { InfoIcon } from '@trezor/icons';
 
 import { useSelector } from 'src/hooks/suite';
 import { useMessageSystemStaking } from 'src/hooks/suite/useMessageSystemStaking';
@@ -32,8 +33,26 @@ export const TronVoteSubmitButton = () => {
     const allocations = useWatch({ control, name: 'voteAllocations' });
     const parsedAllocations = parseVoteAllocations(allocations);
     const hasVotesToSubmit = parsedAllocations.some(({ count }) => count > 0);
-    const isOverAllocated =
-        getRemainingVotes({ totalVotes: getTotalVotes(account), allocations }) < 0;
+    const totalVotes = getTotalVotes(account);
+    const isOverAllocated = getRemainingVotes({ totalVotes, allocations }) < 0;
+
+    const getAllocationTooltipContent = () => {
+        if (!hasVotesToSubmit) {
+            return <Translation id="TR_EARN_TRON_ASSIGN_AT_LEAST_ONE_VOTE" />;
+        }
+
+        if (isOverAllocated) {
+            return (
+                <Translation id="TR_EARN_TRON_VOTES_EXCEED_TOTAL" values={{ total: totalVotes }} />
+            );
+        }
+
+        return undefined;
+    };
+
+    const tooltipContent = isVotingDisabled
+        ? votingMessageContent
+        : (getAllocationTooltipContent() ?? votingMessageContent);
 
     const isDeviceLocked = !!device?.connected && !!device?.available && isLocked();
 
@@ -63,8 +82,9 @@ export const TronVoteSubmitButton = () => {
     };
 
     return (
-        <Tooltip content={votingMessageContent}>
+        <Tooltip content={tooltipContent}>
             <Button
+                iconLeft={tooltipContent ? InfoIcon : undefined}
                 size="large"
                 width="100%"
                 onClick={handleClick}
