@@ -19,8 +19,9 @@
         "@suite-common/wallet-constants": "workspace:*",
         "@suite-common/wallet-types": "workspace:*",
         "@suite-common/wallet-utils": "workspace:*",
-        "@trezor/network-solana": "workspace:*",
+        "@trezor/network-solana-types": "workspace:*",
         "@trezor/network-stellar": "workspace:*",
+        "@trezor/network-stellar-types": "workspace:*",
         "@trezor/type-utils": "workspace:*",
         "@trezor/utils": "workspace:*",
         "react": "19.2.3"

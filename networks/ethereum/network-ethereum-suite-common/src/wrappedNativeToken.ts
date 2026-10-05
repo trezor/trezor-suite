@@ -3,8 +3,8 @@ import {
     getWrappedNativeSymbol as getEthereumWrappedNativeSymbol,
     getWrappedNativeToken as getEthereumWrappedNativeToken,
     isWrappedNativeToken as isEthereumWrappedNativeToken,
-    isSupportedEthereumNetwork,
 } from '@trezor/network-ethereum/constants';
+import { isSupportedEthereumNetwork } from '@trezor/network-ethereum-types';
 import type { NetworkSymbol } from '@trezor/network-module-types';
 
 /**

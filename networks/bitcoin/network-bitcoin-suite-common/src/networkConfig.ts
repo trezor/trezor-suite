@@ -1,4 +1,4 @@
-import type { BitcoinNetworkSymbol } from '@trezor/network-bitcoin/constants';
+import type { BitcoinNetworkSymbol } from '@trezor/network-bitcoin-types';
 import {
     DEFAULT_ACCOUNT_SYNC_INTERVAL,
     type Explorer,

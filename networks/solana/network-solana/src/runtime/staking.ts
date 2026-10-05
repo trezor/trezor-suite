@@ -10,6 +10,7 @@ import {
     getWithdrawInstruction,
 } from '@solana-program/stake';
 
+import type { SolanaNetworkSymbol } from '@trezor/network-solana-types';
 import { serializeError } from '@trezor/utils';
 
 import {
@@ -20,7 +21,6 @@ import {
     MAX_DEACTIVATE_ACCOUNTS_WITH_SPLIT,
     MIN_STAKE_DELEGATION,
     STAKE_ACCOUNT_V2_SIZE,
-    type SolanaNetworkSymbol,
     StakeState,
 } from '../constants';
 import type {

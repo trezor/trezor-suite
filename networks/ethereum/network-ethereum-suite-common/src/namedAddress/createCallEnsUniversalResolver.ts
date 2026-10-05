@@ -1,7 +1,7 @@
 import type { Hex } from 'viem';
 
 import type { GetTrezorConnectDep } from '@trezor/connect-common';
-import type { EthereumNetworkSymbol } from '@trezor/network-ethereum/constants';
+import type { EthereumNetworkSymbol } from '@trezor/network-ethereum-types';
 
 import { asHex } from './ensUniversalResolverUtils';
 import { ONCHAIN_CALL_TIMEOUT_MS } from './namedAddressUtils';

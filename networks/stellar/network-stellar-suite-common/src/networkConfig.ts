@@ -5,7 +5,8 @@ import {
     asDisplayOrderKey,
     asProtocol,
 } from '@trezor/network-module-suite-common-types';
-import { STELLAR_DECIMALS, type StellarNetworkSymbol } from '@trezor/network-stellar/constants';
+import { STELLAR_DECIMALS } from '@trezor/network-stellar/constants';
+import type { StellarNetworkSymbol } from '@trezor/network-stellar-types';
 
 const syncIntervalBySymbol: Readonly<Record<StellarNetworkSymbol, number>> = {
     xlm: DEFAULT_ACCOUNT_SYNC_INTERVAL,

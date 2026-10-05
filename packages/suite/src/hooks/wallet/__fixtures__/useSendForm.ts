@@ -1004,7 +1004,8 @@ export const setMax: any[] = [
                 },
             },
             {
-                type: 'input',
+                // Paste once so slow typing cannot trigger an intermediate debounced compose.
+                type: 'paste',
                 element: 'outputs.0.address',
                 value: '3AnYTd2FGxJLNKL1AzxfW3FJMntp9D2KKX',
                 result: {

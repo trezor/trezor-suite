@@ -1,4 +1,4 @@
-import type { EthereumNetworkSymbol } from '@trezor/network-ethereum/constants';
+import type { EthereumNetworkSymbol } from '@trezor/network-ethereum-types';
 import {
     DEFAULT_ACCOUNT_SYNC_INTERVAL,
     type Explorer,

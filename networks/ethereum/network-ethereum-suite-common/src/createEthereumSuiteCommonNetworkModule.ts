@@ -1,4 +1,4 @@
-import { supportedEthereumNetworks } from '@trezor/network-ethereum/constants';
+import { supportedEthereumNetworks } from '@trezor/network-ethereum-types';
 import {
     type SuiteCommonNetworkModule,
     createNetworkModule,

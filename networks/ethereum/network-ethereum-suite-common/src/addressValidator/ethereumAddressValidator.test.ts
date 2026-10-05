@@ -1,7 +1,7 @@
 import {
     type EthereumNetworkSymbol,
     supportedEthereumNetworks,
-} from '@trezor/network-ethereum/constants';
+} from '@trezor/network-ethereum-types';
 import { type AddressType, addressType } from '@trezor/network-module-suite-common-types';
 
 import { ethereumValidator } from './ethereumAddressValidator';

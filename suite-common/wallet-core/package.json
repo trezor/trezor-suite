@@ -58,6 +58,7 @@
         "@trezor/network-ethereum-suite-common": "workspace:*",
         "@trezor/network-ripple": "workspace:*",
         "@trezor/network-solana": "workspace:*",
+        "@trezor/network-solana-types": "workspace:*",
         "@trezor/network-stellar": "workspace:*",
         "@trezor/network-tron": "workspace:*",
         "@trezor/protobuf": "workspace:*",

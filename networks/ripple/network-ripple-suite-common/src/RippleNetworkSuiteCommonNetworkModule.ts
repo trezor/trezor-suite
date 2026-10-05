@@ -2,7 +2,7 @@ import {
     type SuiteCommonNetworkModule,
     createNetworkModule,
 } from '@trezor/network-module-suite-common-types';
-import { supportedRippleNetworks } from '@trezor/network-ripple/constants';
+import { supportedRippleNetworks } from '@trezor/network-ripple-types';
 
 import { rippleValidator } from './addressValidator/rippleAddressValidator';
 import { getAccountSyncInterval, getNetworkConfig } from './networkConfig';

@@ -138,6 +138,9 @@ export const actionSequence = async <A extends UserAction[]>(
 
             // NOTE: typing or clearing inputs requires extra user action for proper render
             await user.click(element);
+        } else if (action.type === 'paste') {
+            await user.click(element);
+            await user.paste(action.value ?? '');
         }
 
         // wait for compose

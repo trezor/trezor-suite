@@ -12,9 +12,9 @@ import { formatNetworkAmount } from '@suite-common/wallet-utils';
 import TrezorConnect from '@trezor/connect';
 import { asCoinSymbol } from '@trezor/connect-common';
 import { getSuiteVersion } from '@trezor/env-utils';
-import type { SolanaNetworkSymbol } from '@trezor/network-solana/constants';
 import solana from '@trezor/network-solana/runtime';
 import type { Fee, PrepareStakeSolTxResponse } from '@trezor/network-solana/types';
+import type { SolanaNetworkSymbol } from '@trezor/network-solana-types';
 import { BigNumber } from '@trezor/utils';
 
 import { type AccountsRootState } from '../../accounts/accountsReducer';

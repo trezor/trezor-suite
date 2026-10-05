@@ -1,4 +1,4 @@
-import { supportedBitcoinNetworks } from '@trezor/network-bitcoin/constants';
+import { supportedBitcoinNetworks } from '@trezor/network-bitcoin-types';
 import {
     type SuiteCommonNetworkModule,
     createNetworkModule,

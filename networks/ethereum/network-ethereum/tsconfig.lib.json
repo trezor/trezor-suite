@@ -6,6 +6,6 @@
     },
     "include": ["./src"],
     "references": [
-        { "path": "../../../packages/utils" }
+        { "path": "../network-ethereum-types" }
     ]
 }

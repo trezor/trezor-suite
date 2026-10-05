@@ -6,7 +6,7 @@ import {
     asDisplayOrderKey,
     asProtocol,
 } from '@trezor/network-module-suite-common-types';
-import type { SolanaNetworkSymbol } from '@trezor/network-solana/constants';
+import type { SolanaNetworkSymbol } from '@trezor/network-solana-types';
 
 const syncIntervalBySymbol: Readonly<Record<SolanaNetworkSymbol, number>> = {
     sol: DEFAULT_ACCOUNT_SYNC_INTERVAL * 5,

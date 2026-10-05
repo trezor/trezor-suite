@@ -10,10 +10,9 @@ import {
     MAX_DEACTIVATE_ACCOUNTS_WITH_SPLIT,
     MIN_STAKE_DELEGATION,
     SOLANA_EPOCH_DAYS,
-    type SolanaNetworkSymbol,
     StakeState,
-    isSupportedSolanaNetwork,
 } from '@trezor/network-solana/constants';
+import { type SolanaNetworkSymbol, isSupportedSolanaNetwork } from '@trezor/network-solana-types';
 import { BigNumber } from '@trezor/utils';
 
 export function isSupportedSolStakingNetworkSymbol(

@@ -1,4 +1,4 @@
-import type { EthereumNetworkSymbol } from '@trezor/network-ethereum/constants';
+import type { EthereumNetworkSymbol } from '@trezor/network-ethereum-types';
 
 import { isAddressLike, isNameLike, supportsNamedAddress } from './namedAddressUtils';
 

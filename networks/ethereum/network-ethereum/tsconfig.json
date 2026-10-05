@@ -3,6 +3,6 @@
     "compilerOptions": { "outDir": "libDev" },
     "include": [".", "**/*.json"],
     "references": [
-        { "path": "../../../packages/utils" }
+        { "path": "../network-ethereum-types" }
     ]
 }
