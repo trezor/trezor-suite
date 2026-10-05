@@ -66,11 +66,10 @@ export const useConnectPopupNavigation = () => {
         if (connectPopupCall?.state === 'deeplink-callback') {
             // Note: we intentionally don't use canOpenURL here.
             // It would require us to add all possible schemes of 3rd party apps to the Info.plist
-            Linking.openURL(connectPopupCall.callbackUrl).catch(error => {
-                // Sanitize error message to prevent sensitive URL query parameters from being sent to Sentry.
-                throw error instanceof Error
-                    ? new Error(error.message.replace(/response=[^&:' ]*/, 'response=[redacted]'))
-                    : error;
+            Linking.openURL(connectPopupCall.callbackUrl).catch(() => {
+                // The platform error repeats the callback URL with its response (older Android
+                // versions also in decoded form), so the failure is reported without it.
+                throw new Error('Could not open the deeplink callback URL');
             });
         } else if (connectPopupCall) {
             navigation.navigate(RootStackRoutes.ConnectPopup);
