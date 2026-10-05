@@ -105,7 +105,7 @@ export default class SolanaSignTransaction extends AbstractMethod<'solanaSignTra
 
     async payloadToPrecomposed() {
         try {
-            const { getDecompiledMessage } = await solana();
+            const { getAssociatedTokenAccountAddress, getDecompiledMessage } = await solana();
             const decompiledMessage = getDecompiledMessage(
                 this.params.proto.serialized_tx,
                 this.params.serialize,
@@ -157,9 +157,21 @@ export default class SolanaSignTransaction extends AbstractMethod<'solanaSignTra
                         const tokenInfoIndex = tokenAccountInfos.findIndex(
                             t =>
                                 t.token_account === destinationATA &&
-                                t.token_mint === parsed.accounts.mint.address,
+                                t.token_mint === parsed.accounts.mint.address &&
+                                t.token_program === parsed.programAddress,
                         );
                         const tokenInfo = tokenAccountInfos[tokenInfoIndex];
+                        // Same rule as the firmware: the base address stands for the destination
+                        // only when the destination is its associated token account.
+                        const recipient =
+                            tokenInfo?.base_address &&
+                            (await getAssociatedTokenAccountAddress(
+                                tokenInfo.base_address,
+                                parsed.accounts.mint.address,
+                                'spl-token',
+                            )) === destinationATA
+                                ? tokenInfo.base_address
+                                : destinationATA;
                         if (!sendAmount.isZero()) {
                             throw ERRORS.TypedError(
                                 'Runtime',
@@ -167,7 +179,7 @@ export default class SolanaSignTransaction extends AbstractMethod<'solanaSignTra
                             );
                         }
                         outputs.push({
-                            address: tokenInfo?.base_address || destinationATA,
+                            address: recipient,
                             amount: parsed.data.amount.toString(),
                             script_type: 'PAYTOADDRESS' as const,
                         });
