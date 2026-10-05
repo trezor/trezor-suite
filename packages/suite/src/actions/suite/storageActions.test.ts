@@ -532,6 +532,19 @@ describe('Storage actions', () => {
         await store.dispatch(storageActions.forgetDeviceThunk(dev2));
     });
 
+    it('should ignore stored accounts of networks unknown to this build', async () => {
+        const unknownNetworkAccounts = ['arc', 'tarc'].map(symbol => ({
+            ...acc1,
+            symbol: asNetworkSymbol(symbol),
+        }));
+        await db.addItems('accounts', [acc1, ...unknownNetworkAccounts], true);
+
+        const store = mockStore(db, getInitialState());
+        store.dispatch((await preloadStore())!);
+
+        expect(store.getState().wallet.accounts).toEqual([acc1]);
+    });
+
     it('should update device settings in the db', async () => {
         // device needs to be connected otherwise devices reducer doesn't update the device
         const dev1Connected = { ...dev1, connected: true } as const;
