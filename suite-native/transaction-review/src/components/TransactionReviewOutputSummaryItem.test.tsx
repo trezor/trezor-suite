@@ -8,18 +8,26 @@ import {
     type TransactionReviewTestProviderProps,
     renderWithTransactionReview,
 } from '../__fixtures__/renderWithTransactionReview';
-import { BTC_ACCOUNT_KEY, ETH_ACCOUNT_KEY, USDC_CONTRACT } from '../__fixtures__/walletState';
+import {
+    ADA_ACCOUNT_KEY,
+    BTC_ACCOUNT_KEY,
+    ETH_ACCOUNT_KEY,
+    HOSKY_CONTRACT,
+    USDC_CONTRACT,
+} from '../__fixtures__/walletState';
 
 jest.mock('./TransactionReviewOutputItemValues', () => ({
     TransactionReviewOutputItemValues: ({
         translationKey,
         value,
+        tokenContract,
     }: {
         translationKey: string;
         value: string;
+        tokenContract?: string;
     }) => (
         <MockText>
-            Values: [{translationKey}]-[{value}]
+            Values: [{translationKey}]-[{value}]{tokenContract ? `-[${tokenContract}]` : ''}
         </MockText>
     ),
 }));
@@ -89,10 +97,39 @@ describe('TransactionReviewOutputSummaryItem', () => {
         });
 
         expect(
-            getByText('Values: [transactionManagement.review.outputs.summary.amount]-[1000]'),
+            getByText(
+                `Values: [transactionManagement.review.outputs.summary.amount]-[1000]-[${USDC_CONTRACT}]`,
+            ),
         ).toBeOnTheScreen();
         expect(
-            getByText('Values: [transactionManagement.review.outputs.summary.maxFee]-[10]'),
+            getByText(
+                `Values: [transactionManagement.review.outputs.summary.maxFee]-[10]-[${USDC_CONTRACT}]`,
+            ),
+        ).toBeOnTheScreen();
+    });
+
+    it('should render total amount including fee for a Cardano transaction', async () => {
+        const { getByText } = await renderSummary({ accountKey: ADA_ACCOUNT_KEY });
+
+        expect(
+            getByText('Values: [transactionManagement.review.outputs.summary.totalAmount]-[1000]'),
+        ).toBeOnTheScreen();
+        expect(
+            getByText('Values: [transactionManagement.review.outputs.summary.fee]-[10]'),
+        ).toBeOnTheScreen();
+    });
+
+    it('should render total amount and fee in ADA for a Cardano token transaction', async () => {
+        const { getByText } = await renderSummary({
+            accountKey: ADA_ACCOUNT_KEY,
+            tokenContract: HOSKY_CONTRACT,
+        });
+
+        expect(
+            getByText('Values: [transactionManagement.review.outputs.summary.totalAmount]-[1000]'),
+        ).toBeOnTheScreen();
+        expect(
+            getByText('Values: [transactionManagement.review.outputs.summary.fee]-[10]'),
         ).toBeOnTheScreen();
     });
 });
