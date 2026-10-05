@@ -64,6 +64,7 @@ export * from './send/sendFormReducer';
 export * from './send/sendFormSelectors';
 export * from './send/sendFormThunks';
 export type * from './send/sendFormTypes';
+export * from './send/transactionCreatedAnalytics';
 export * from './send/tron/deriveColdRecipient';
 export * from './send/useEvmNonceInfo';
 export * from './settings/useDisplayBaseCurrency';

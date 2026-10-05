@@ -1,21 +1,34 @@
+import { createAction } from '@reduxjs/toolkit';
 import type { CryptoId, ExchangeTrade } from 'invity-api';
 
+import { asGetter } from '@suite-common/dependency-injection';
+import { mockGetAccountSyncInterval } from '@suite-common/networks/mocks';
 import { type ReduxStoreWithThunk } from '@suite-common/redux-utils';
+import { mockSuiteSync } from '@suite-common/suite-sync/mocks';
 import {
     tradingBuyActions,
     tradingExchangeActions,
     tradingSellActions,
 } from '@suite-common/trading';
-import { type Account, type TokenAddress, type TokenInfoBranded } from '@suite-common/wallet-types';
+import { blockchainInitialState } from '@suite-common/wallet-core';
+import {
+    type Account,
+    type FormState,
+    type TokenAddress,
+    type TokenInfoBranded,
+} from '@suite-common/wallet-types';
 import { getFormDraftKey } from '@suite-common/wallet-utils';
+import { mockNativeAnalytics } from '@suite-native/analytics/mocks';
 import { selectAccountTokenInfo } from '@suite-native/tokens';
 import { eth1NormalAccount, invityDexQuote } from '@suite-native/trading-fixtures';
 
-import { createTradingTestStore } from './test-utils/tradingTestUtils';
+import { createTradingPreloadedState, createTradingTestStore } from './test-utils/tradingTestUtils';
 import {
     type ComposeEvmApprovalFeeLevelsThunkState,
+    type SignAndPushSendFormTransactionThunkDeps,
     clearTradingStateThunk,
     composeEvmApprovalFeeLevelsThunk,
+    signAndPushSendFormTransactionThunk,
 } from './thunks';
 
 jest.mock('@trezor/connect', () => ({
@@ -306,6 +319,87 @@ describe('thunks', () => {
 
             const draft = localStore.getState().wallet.formDrafts[formDraftKey];
             expect(draft?.outputs[0]?.token).toBe('0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48');
+        });
+    });
+
+    describe(signAndPushSendFormTransactionThunk.typePrefix, () => {
+        const report = jest.fn();
+        const onModalCancel = createAction('mock/onModalCancel');
+        const pushExtra: SignAndPushSendFormTransactionThunkDeps = {
+            actions: { onModalCancel },
+            services: {
+                analytics: mockNativeAnalytics(report),
+                networks: { getAccountSyncInterval: mockGetAccountSyncInterval() },
+                getIsWindowVisible: asGetter(() => true),
+                getTradedAccountKeys: asGetter(() => []),
+                suiteSync: mockSuiteSync(),
+            },
+        };
+
+        const formState: FormState = {
+            outputs: [],
+            selectedFee: 'normal',
+            feePerUnit: '',
+            feeLimit: '',
+            options: ['broadcast'],
+            isCoinControlEnabled: false,
+            hasCoinControlBeenOpened: false,
+            selectedUtxos: [],
+            trading: { activeSection: 'exchange', isSlip24Active: false },
+        };
+
+        const runThunk = (selectedQuote: ExchangeTrade, isPushApproved: boolean) => {
+            const thunkResults = [
+                { payload: mockPrecomposedLevels.normal },
+                { payload: undefined },
+                { payload: { success: true, payload: { txid: 'txid' } } },
+            ];
+            const pushDispatch = jest.fn((action: unknown) =>
+                typeof action === 'function' ? thunkResults.shift() : action,
+            );
+            const preloadedState = createTradingPreloadedState({
+                tradeType: 'exchange',
+                overrides: { wallet: { trading: { exchange: { selectedQuote } } } },
+            });
+            const state = {
+                ...preloadedState,
+                wallet: { ...preloadedState.wallet, blockchain: blockchainInitialState },
+            };
+
+            return signAndPushSendFormTransactionThunk({
+                formState,
+                precomposedTransaction: mockPrecomposedLevels.normal,
+                selectedAccount: eth1NormalAccount,
+                waitForPushApprovalPromise: () => Promise.resolve(isPushApproved),
+            })(pushDispatch, () => state, pushExtra);
+        };
+
+        it.each([
+            { isDex: false, txType: 'trade-cex' },
+            { isDex: true, txType: 'trade-dex' },
+        ])(
+            'should report transaction-created as $txType once the push is approved',
+            async ({ isDex, txType }) => {
+                await runThunk({ ...invityDexQuote, isDex }, true);
+
+                expect(report).toHaveBeenCalledWith({
+                    type: 'transaction-created',
+                    payload: expect.objectContaining({
+                        action: 'sent',
+                        symbol: eth1NormalAccount.symbol,
+                        broadcast: true,
+                        txType,
+                        accountIndex: eth1NormalAccount.index,
+                        accountType: eth1NormalAccount.accountType,
+                    }),
+                });
+            },
+        );
+
+        it('should not report transaction-created when the push is not approved', async () => {
+            await runThunk(invityDexQuote, false);
+
+            expect(report).not.toHaveBeenCalled();
         });
     });
 });

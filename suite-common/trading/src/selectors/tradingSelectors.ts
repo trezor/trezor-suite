@@ -40,6 +40,7 @@ import {
 import {
     type Account,
     type AccountKey,
+    type FormStateTrading,
     type SelectedAccountStatus,
 } from '@suite-common/wallet-types';
 import { exhaustive } from '@trezor/type-utils';
@@ -438,6 +439,14 @@ export const selectTradingExchangeSelectedQuoteSwapSlippage = (state: TradingRoo
 
 export const selectTradingExchangeSelectedQuoteIsDex = (state: TradingRootState) =>
     state.wallet.trading.exchange.selectedQuote?.isDex;
+
+export const selectTradingTransactionType = (
+    state: TradingRootState,
+    activeSection: FormStateTrading['activeSection'],
+) =>
+    activeSection === 'exchange' && selectTradingExchangeSelectedQuoteIsDex(state)
+        ? 'trade-dex'
+        : 'trade-cex';
 
 export const selectTradingSellSelectedQuote = (state: TradingRootState) =>
     state.wallet.trading.sell.selectedQuote;

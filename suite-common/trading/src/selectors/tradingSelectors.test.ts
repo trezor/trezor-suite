@@ -114,6 +114,7 @@ import {
     selectTradingTradeByOrderId,
     selectTradingTrades,
     selectTradingTradesForSelectedDevice,
+    selectTradingTransactionType,
     selectValidTradingBuyQuotes,
     selectValidTradingSellQuotes,
 } from './tradingSelectors';
@@ -703,6 +704,30 @@ describe('tradingSelectors', () => {
         expect(selectTradingExchangeSelectedQuoteIsDex(state)).toBe(
             state.wallet.trading.exchange.selectedQuote?.isDex,
         );
+    });
+
+    describe(selectTradingTransactionType.name, () => {
+        it.each([
+            { activeSection: 'sell', isDex: true, expected: 'trade-cex' },
+            { activeSection: 'exchange', isDex: false, expected: 'trade-cex' },
+            { activeSection: 'exchange', isDex: true, expected: 'trade-dex' },
+        ] as const)(
+            'should return $expected for $activeSection with isDex $isDex',
+            ({ activeSection, isDex, expected }) => {
+                state.wallet.trading.exchange.selectedQuote = {
+                    ...tradeApiFixtures.exchangeTrade,
+                    isDex,
+                };
+
+                expect(selectTradingTransactionType(state, activeSection)).toBe(expected);
+            },
+        );
+
+        it('should return trade-cex for exchange without a selected quote', () => {
+            state.wallet.trading.exchange.selectedQuote = undefined;
+
+            expect(selectTradingTransactionType(state, 'exchange')).toBe('trade-cex');
+        });
     });
 
     it('selectTradingSellSelectedQuote should return correct data', () => {

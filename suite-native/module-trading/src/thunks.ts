@@ -1,6 +1,7 @@
 import { isFulfilled, isRejected } from '@reduxjs/toolkit';
 import { type DexApprovalType, type ExchangeTrade } from 'invity-api';
 
+import { events } from '@suite-common/analytics';
 import { Calldata } from '@suite-common/calldata';
 import {
     type MevProtectionRootState,
@@ -17,6 +18,7 @@ import {
     selectTradingExchangeSelectedQuote,
     selectTradingSellProviders,
     selectTradingSellSelectedQuote,
+    selectTradingTransactionType,
     tradingBuyActions,
     tradingActions as tradingCommonActions,
     tradingExchangeActions,
@@ -36,6 +38,7 @@ import {
     composeSendFormTransactionFeeLevelsThunk,
     enhancePrecomposedTransactionThunk,
     formDraftActions,
+    getTransactionCreatedEventPayload,
     pushSendFormTransactionThunk,
     selectDeepCopyOfFormDraft,
     selectIsMevProtectionEnabled,
@@ -490,7 +493,8 @@ type SignAndPushSendFormTransactionThunkParams = TradingSignAndPushSendFormTrans
     waitForPushApprovalPromise: () => Promise<boolean>;
 };
 
-export type SignAndPushSendFormTransactionThunkState = MevProtectionRootState &
+export type SignAndPushSendFormTransactionThunkState = TradingRootState &
+    MevProtectionRootState &
     EnhancePrecomposedTransactionThunkState &
     SignTradingTransactionThunkState &
     PushSendFormTransactionThunkState &
@@ -517,7 +521,7 @@ export const signAndPushSendFormTransactionThunk = createThunk<
             paymentRequests,
             waitForPushApprovalPromise,
         },
-        { dispatch, getState, rejectWithValue, fulfillWithValue },
+        { dispatch, getState, rejectWithValue, fulfillWithValue, extra },
     ) => {
         const enhanceResponse = await dispatch(
             enhancePrecomposedTransactionThunk({
@@ -551,6 +555,22 @@ export const signAndPushSendFormTransactionThunk = createThunk<
 
         if (!pushApproval) {
             return rejectWithValue('Push approval not received');
+        }
+
+        if (formState.trading) {
+            extra.services.analytics.report({
+                type: events.transactionCreatedEvent.name,
+                payload: getTransactionCreatedEventPayload({
+                    action: 'sent',
+                    account: selectedAccount,
+                    precomposedForm: formState,
+                    tokens: enhancedPrecomposedTransaction.token?.symbol ?? '',
+                    txType: selectTradingTransactionType(
+                        getState(),
+                        formState.trading.activeSection,
+                    ),
+                }),
+            });
         }
 
         const isMevProtectionEnabled =

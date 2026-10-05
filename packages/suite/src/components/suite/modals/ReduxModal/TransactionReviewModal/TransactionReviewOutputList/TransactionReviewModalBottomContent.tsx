@@ -8,6 +8,7 @@ import { selectConnectPopupCall } from '@suite-common/connect-popup';
 import { useServices } from '@suite-common/dependency-injection';
 import { injectDispatch } from '@suite-common/redux-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
+import { getTransactionCreatedEventPayload } from '@suite-common/wallet-core';
 import {
     type Account,
     type FormState,
@@ -26,7 +27,6 @@ import { copyToClipboard, download } from '@trezor/dom-utils';
 import { type Deferred } from '@trezor/utils';
 
 import { useSelector } from 'src/hooks/suite';
-import { getTransactionCreatedEventPayload } from 'src/utils/suite/analytics';
 
 import { type TxInfoState, hasTxValidityExpired, selectTxType } from '../utils';
 
@@ -99,7 +99,7 @@ export const TransactionReviewModalBottomContent = ({
             type: events.transactionCreatedEvent.name,
             payload: getTransactionCreatedEventPayload({
                 action,
-                symbol,
+                account,
                 precomposedForm,
                 tokens: outputs
                     .filter((output: TransactionReviewOutput) => output.token?.symbol)
