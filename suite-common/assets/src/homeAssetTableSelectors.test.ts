@@ -7,7 +7,10 @@ import { type StaticSessionId } from '@trezor/device-utils';
 import {
     type HomeAssetTableState,
     selectHomeAssetTotals,
+    selectNetworkFiatValue,
+    selectShownNetworkSymbols,
     selectShownWalletAssetKeys,
+    selectShownWalletAssetKeysOfNetwork,
     selectWalletAssetAmount,
 } from './homeAssetTableSelectors';
 
@@ -84,6 +87,11 @@ const createState = ({
             fiat: { current: rates, lastWeek: {}, historic: {} },
         },
         tokenDefinitions: { [ETH]: definitions, [POL]: definitions, [DSOL]: definitions },
+        networks: {
+            [BTC]: { symbol: BTC, name: 'Bitcoin' },
+            [ETH]: { symbol: ETH, name: 'Ethereum' },
+            [POL]: { symbol: POL, name: 'Polygon PoS' },
+        },
     } as unknown as HomeAssetTableState;
 };
 
@@ -310,10 +318,96 @@ describe('the total over the wallet', () => {
     });
 
     it('adds up every asset of the wallet', () => {
-        expect(selectHomeAssetTotals(state).fiatValue.toFixed()).toBe('56000');
+        expect(selectHomeAssetTotals(state).fiatValue?.toFixed()).toBe('56000');
+    });
+
+    it('says nothing at all while no asset of the wallet can be priced', () => {
+        const unpriced = createState({
+            accounts: [mockAccount({ symbol: ETH, balance: '2' })],
+        });
+
+        expect(selectHomeAssetTotals(unpriced).fiatValue).toBeUndefined();
     });
 
     it('says nothing about a week ago when no rate for it is known', () => {
         expect(selectHomeAssetTotals(state).weekChange).toBeUndefined();
+    });
+});
+
+describe('the networks the table can be grouped by', () => {
+    const bitcoin = mockAccount({ symbol: BTC, index: 0, balance: '1' });
+    const ethereum = mockAccount({ symbol: ETH, index: 1, balance: '1' });
+    const bitcoinKey = getWalletAssetKey({ deviceState: ALICE, symbol: BTC });
+    const ethereumKey = getWalletAssetKey({ deviceState: ALICE, symbol: ETH });
+    // Bitcoin outranks Ethereum until Ethereum's balance is written up.
+    const rates = { ...mockRate(BTC, 100000), ...mockRate(ETH, 3000) };
+
+    const stateWithEthereumBalance = (balance: string) =>
+        createState({
+            accounts: [bitcoin, { ...ethereum, formattedBalance: balance }],
+            rates,
+        });
+
+    it('lists the networks held, the most valuable first', () => {
+        expect(selectShownNetworkSymbols(stateWithEthereumBalance('1'))).toEqual([BTC, ETH]);
+    });
+
+    it('hands back the same networks and rows when a balance changes but the order does not', () => {
+        const before = stateWithEthereumBalance('1');
+        const after = stateWithEthereumBalance('2');
+
+        const symbolsBefore = selectShownNetworkSymbols(before);
+        // Every section asks, as the table does: reselect keeps one previous result per selector,
+        // not one per argument, so asking for a single network would hide a cross-argument miss.
+        const rowsBefore = [BTC, ETH].map(symbol =>
+            selectShownWalletAssetKeysOfNetwork(before, symbol),
+        );
+        const rowsAfter = [BTC, ETH].map(symbol =>
+            selectShownWalletAssetKeysOfNetwork(after, symbol),
+        );
+
+        expect(selectWalletAssetAmount(after, ethereumKey)).toBe('2');
+        expect(selectShownNetworkSymbols(after)).toBe(symbolsBefore);
+        expect(rowsAfter[0]).toBe(rowsBefore[0]);
+        expect(rowsAfter[1]).toBe(rowsBefore[1]);
+    });
+
+    it('hands back a new list when a balance change reorders the networks', () => {
+        expect(selectShownNetworkSymbols(stateWithEthereumBalance('100'))).toEqual([ETH, BTC]);
+    });
+
+    it('gives each network only the rows held on it', () => {
+        const state = stateWithEthereumBalance('1');
+
+        expect(selectShownWalletAssetKeysOfNetwork(state, BTC)).toEqual([bitcoinKey]);
+        expect(selectShownWalletAssetKeysOfNetwork(state, ETH)).toEqual([ethereumKey]);
+    });
+
+    it('is worth what the rows held on it are worth', () => {
+        const state = createState({
+            accounts: [
+                bitcoin,
+                mockAccount({
+                    symbol: ETH,
+                    index: 1,
+                    balance: '1',
+                    tokens: [{ symbol: 'usdc', contract: USDC_ON_ETH, balance: '500' }],
+                }),
+            ],
+            rates: { ...rates, ...mockRate(ETH, 1, USDC_ON_ETH) },
+        });
+
+        expect(selectNetworkFiatValue(state, BTC)).toBe('100000');
+        expect(selectNetworkFiatValue(state, ETH)).toBe('3500');
+    });
+
+    it('says nothing about what a network is worth while nothing it holds can be priced', () => {
+        const state = createState({
+            accounts: [bitcoin, { ...ethereum, formattedBalance: '1' }],
+            rates: { ...mockRate(BTC, 100000) },
+        });
+
+        expect(selectNetworkFiatValue(state, BTC)).toBe('100000');
+        expect(selectNetworkFiatValue(state, ETH)).toBeUndefined();
     });
 });

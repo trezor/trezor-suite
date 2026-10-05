@@ -1785,6 +1785,14 @@ export const messages = defineMessages({
         defaultMessage: '7d',
         id: 'TR_HOME_ASSET_WEEK_PERIOD',
     },
+    TR_HOME_ASSET_GROUPING_DEFAULT: {
+        defaultMessage: 'Default',
+        id: 'TR_HOME_ASSET_GROUPING_DEFAULT',
+    },
+    TR_HOME_ASSET_GROUPING_NETWORKS: {
+        defaultMessage: 'By networks',
+        id: 'TR_HOME_ASSET_GROUPING_NETWORKS',
+    },
     TR_ASSET: {
         defaultMessage: 'Asset',
         id: 'TR_ASSET',

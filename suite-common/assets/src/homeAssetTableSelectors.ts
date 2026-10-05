@@ -1,6 +1,7 @@
 import { shallowEqual } from 'react-redux';
 
 import { type DeviceRootState } from '@suite-common/device';
+import { type NetworksRootState, selectNetworkNamesMap } from '@suite-common/networks';
 import { createWeakMapSelector, returnStableArrayIfEmpty } from '@suite-common/redux-utils';
 import { type NetworkSymbol, getAssetName, getDisplaySymbol } from '@suite-common/wallet-config';
 import {
@@ -25,6 +26,7 @@ import { sumAssetAccounts } from './homeAssetTableUtils';
 
 export type HomeAssetTableState = AssetAccountsRootState &
     DeviceRootState &
+    NetworksRootState &
     FiatRatesRootState &
     WalletSettingsRootState;
 
@@ -151,6 +153,118 @@ export const selectShownWalletAssetKeys = createMemoizedSelector(
     { memoizeOptions: { resultEqualityCheck: shallowEqual } },
 );
 
+export type HomeAssetGrouping = 'default' | 'networks';
+
+const haveSameNetworkGrouping = (
+    left: ReadonlyMap<NetworkSymbol, readonly WalletAssetKey[]>,
+    right: ReadonlyMap<NetworkSymbol, readonly WalletAssetKey[]>,
+) =>
+    left.size === right.size &&
+    [...left].every(([symbol, assetKeys]) => {
+        const held = right.get(symbol);
+
+        return (
+            held?.length === assetKeys.length &&
+            assetKeys.every((assetKey, index) => held[index] === assetKey)
+        );
+    });
+
+/**
+ * Which rows belong to which network. It is rebuilt whenever an account is written, but a rebuild
+ * that lands on the same grouping is thrown away, so a balance or a rate leaves every section
+ * holding the very array it was handed.
+ */
+const selectShownAssetKeysByNetwork = createMemoizedSelector(
+    [selectWalletAssets, selectShownWalletAssetKeys],
+    (assets, assetKeys): ReadonlyMap<NetworkSymbol, readonly WalletAssetKey[]> => {
+        const byNetwork = new Map<NetworkSymbol, WalletAssetKey[]>();
+
+        assetKeys.forEach(assetKey => {
+            const symbol = assets.get(assetKey)?.symbol;
+
+            if (symbol === undefined) {
+                return;
+            }
+
+            const held = byNetwork.get(symbol);
+
+            if (held === undefined) {
+                byNetwork.set(symbol, [assetKey]);
+
+                return;
+            }
+
+            held.push(assetKey);
+        });
+
+        return byNetwork;
+    },
+    { memoizeOptions: { resultEqualityCheck: haveSameNetworkGrouping } },
+);
+
+/**
+ * What each network is worth. Only this is redone when a balance or a rate moves. A network nothing
+ * can price — a testnet, or rates that have yet to land — is left out: a total of zero would be a lie.
+ */
+const selectNetworkFiatValues = createMemoizedSelector(
+    [selectShownAssetKeysByNetwork, selectWalletAssetValues],
+    (byNetwork, values): ReadonlyMap<NetworkSymbol, BigNumber> => {
+        const worth = new Map<NetworkSymbol, BigNumber>();
+
+        byNetwork.forEach((assetKeys, symbol) => {
+            const priced = assetKeys.filter(assetKey => values.has(assetKey));
+
+            if (priced.length === 0) {
+                return;
+            }
+
+            worth.set(
+                symbol,
+                priced.reduce(
+                    (total, assetKey) => total.plus(values.get(assetKey) ?? ZERO_FIAT_VALUE),
+                    ZERO_FIAT_VALUE,
+                ),
+            );
+        });
+
+        return worth;
+    },
+);
+
+/** The networks the shown assets are held on, the most valuable network first. */
+export const selectShownNetworkSymbols = createMemoizedSelector(
+    [selectShownAssetKeysByNetwork, selectNetworkFiatValues],
+    (byNetwork, worth): readonly NetworkSymbol[] =>
+        returnStableArrayIfEmpty(
+            [...byNetwork.keys()].sort(
+                (left, right) =>
+                    (worth.get(right) ?? ZERO_FIAT_VALUE).comparedTo(
+                        worth.get(left) ?? ZERO_FIAT_VALUE,
+                    ) ?? 0,
+            ),
+        ),
+    { memoizeOptions: { resultEqualityCheck: shallowEqual } },
+);
+
+// No `resultEqualityCheck` on purpose: reselect keeps one previous result per selector rather than
+// one per argument, so with a section per network each would be compared against its neighbour's
+// list and none would ever match. Handing back the array the grouping already holds needs no check.
+export const selectShownWalletAssetKeysOfNetwork = createMemoizedSelector(
+    [selectShownAssetKeysByNetwork, (_state: HomeAssetTableState, symbol: NetworkSymbol) => symbol],
+    (byNetwork, symbol): readonly WalletAssetKey[] =>
+        returnStableArrayIfEmpty(byNetwork.get(symbol) ?? []),
+);
+
+export const selectNetworkName = createMemoizedSelector(
+    [selectNetworkNamesMap, (_state: HomeAssetTableState, symbol: NetworkSymbol) => symbol],
+    (names, symbol) => names?.[symbol],
+);
+
+export const selectNetworkFiatValue = createMemoizedSelector(
+    [selectNetworkFiatValues, (_state: HomeAssetTableState, symbol: NetworkSymbol) => symbol],
+    (worth, symbol) => worth.get(symbol)?.toFixed(),
+);
+
 const selectWalletAsset = createMemoizedSelector(
     [selectWalletAssets, (_state: HomeAssetTableState, assetKey: WalletAssetKey) => assetKey],
     (assets, assetKey) => assets.get(assetKey),
@@ -183,7 +297,8 @@ export const selectWalletAssetTokenDecimals = (
 ) => selectWalletAsset(state, assetKey)?.tokenDecimals;
 
 export type HomeAssetTotals = {
-    fiatValue: BigNumber;
+    /** Undefined while nothing the wallet holds can be priced — a total of zero would be a lie. */
+    fiatValue: BigNumber | undefined;
     weekChange: BigNumber | undefined;
     weekChangePercent: BigNumber | undefined;
 };
@@ -200,7 +315,8 @@ export const selectHomeAssetTotals = createMemoizedSelector(
                 ZERO_FIAT_VALUE,
             );
 
-        const fiatValue = addUp(values, assetKeys);
+        const priced = assetKeys.filter(assetKey => values.has(assetKey));
+        const fiatValue = priced.length === 0 ? undefined : addUp(values, priced);
 
         // An asset priced in only one of the two weeks would read as a gain or a loss it never
         // made, so the change is over the assets both weeks could price.

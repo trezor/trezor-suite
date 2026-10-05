@@ -15,14 +15,19 @@ const TabularNumbers = styled.span`
 `;
 
 type HomeTotalBalanceProps = {
-    fiatValue: BigNumber;
+    fiatValue: BigNumber | undefined;
 };
 
 export const HomeTotalBalance = memo(({ fiatValue }: HomeTotalBalanceProps) => {
     const locale = useSelector(selectLanguage);
 
     const { currencySymbol, wholeNumber, decimalNumber, isCurrencySymbolFirst } =
-        useCurrencyAmountParts({ value: fiatValue.toFixed(), locale });
+        useCurrencyAmountParts({ value: fiatValue?.toFixed(), locale });
+
+    // Nothing the wallet holds can be priced; a total of zero would say the wallet is empty.
+    if (fiatValue === undefined) {
+        return null;
+    }
 
     const symbol = (
         <Text typographyStyle="headline-lg" color="contentTertiary">
