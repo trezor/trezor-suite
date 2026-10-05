@@ -123,7 +123,8 @@ fn run_agent(
 
     loop {
         conn.process(Duration::from_millis(200))?;
-        if matches!(abort.try_recv(), Ok(())) {
+        // A dropped sender stops the agent too, so it never outlives the pairing that started it.
+        if !matches!(abort.try_recv(), Err(mpsc::TryRecvError::Empty)) {
             break;
         }
     }
