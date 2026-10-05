@@ -18,7 +18,7 @@ import {
     validateCardanoDrep,
 } from '@suite-common/wallet-core';
 import { type SelectedAccountLoaded } from '@suite-common/wallet-types';
-import { Card, Column, Modal, Tooltip } from '@trezor/components';
+import { Banner, Card, Column, Modal, Tooltip } from '@trezor/components';
 
 import { BASE_VOTING_PREFERENCE_OPTIONS, VotingPreferenceCard } from 'src/components/earn';
 import { Fees } from 'src/components/wallet/Fees/Fees';
@@ -28,6 +28,7 @@ import {
     ChangeDelegateFormContext,
     useChangeDelegateForm,
 } from 'src/hooks/wallet/useChangeDelegateForm';
+import { CRYPTO_INPUT } from 'src/types/earn/earnFormFields';
 
 import { CurrentVotingPreference } from './CurrentVotingPreference';
 
@@ -61,6 +62,7 @@ export const StakeChangeDelegateModalLoaded = ({
         methods,
         handleSubmit,
         signTx,
+        formState: { errors },
     } = changeDelegateContextValues;
 
     const currentDrepId = getCardanoAccountDrepId(account);
@@ -150,6 +152,8 @@ export const StakeChangeDelegateModalLoaded = ({
         return { isDisabled: false };
     }, [selectedVotingDelegation, currentDrepId, isEverstake]);
 
+    const composeErrorMessage = (errors[CRYPTO_INPUT] ?? errors.outputs?.[0]?.amount)?.message;
+
     const isDisabled =
         isSelectionInvalid || isVotingDisabled || composedLevels?.[selectedFee]?.type !== 'final';
 
@@ -162,8 +166,14 @@ export const StakeChangeDelegateModalLoaded = ({
             return <Translation id="TR_STAKE_CHANGE_DELEGATE_DISABLED_TOOLTIP" />;
         }
 
-        return undefined;
-    }, [isVotingDisabled, votingMessageContent, isSelectionInvalid, errorType]);
+        return composeErrorMessage;
+    }, [
+        isVotingDisabled,
+        votingMessageContent,
+        isSelectionInvalid,
+        errorType,
+        composeErrorMessage,
+    ]);
 
     const options = useMemo(
         () =>
@@ -208,6 +218,9 @@ export const StakeChangeDelegateModalLoaded = ({
                             options={options}
                             currentDrepId={currentDrepId}
                         />
+                        {composeErrorMessage && (
+                            <Banner intent="critical" description={composeErrorMessage} />
+                        )}
                         <Card type="raised" paddingType="small">
                             <Fees
                                 feeInfo={feeInfo}
