@@ -8,5 +8,6 @@ export {
     getWrappedNativeToken,
     isWrappedNativeToken,
 } from './wrappedNativeToken';
+export { getNativeErc20Token } from './nativeErc20Token';
 
 export { networkConfigBySymbol } from './networkConfig';
