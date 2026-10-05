@@ -236,6 +236,63 @@ describe('createFormStateForSendForm', () => {
             expect(formState.ethereumAdjustGasLimit).toBe('1.25');
         });
 
+        it('should send a native coin exposed as an ERC-20 through its ERC-20 contract for value-less DEX quotes', () => {
+            const dexQuote: ExchangeTrade = {
+                exchange: 'lifi',
+                send: 'usd-coin' as any,
+                sendStringAmount: '4',
+                receive: 'arc--0xbef5f6d51cb62b58e6a8f77868681825c6fe21c1' as any,
+                receiveStringAmount: '3.47',
+                status: 'CONFIRM',
+                orderId: 'dex-order-arc',
+                isDex: true,
+                dexTx: {
+                    from: '0xUserAddress',
+                    to: '0xDexRouterAddress',
+                    data: '0xabcdef1234567890',
+                    value: '0',
+                },
+            };
+
+            const formState = createFormStateForSendForm({
+                quote: dexQuote,
+                networkType: 'ethereum',
+                providers: { lifi: exchangeInvity },
+                sendAccountKey,
+            });
+
+            expect(formState.outputs[0]?.token).toBe('0x3600000000000000000000000000000000000000');
+            expect(formState.outputs[0]?.address).toBe('0xDexRouterAddress');
+        });
+
+        it('should keep a native coin without an ERC-20 face as a native send for DEX quotes', () => {
+            const dexQuote: ExchangeTrade = {
+                exchange: '1inch',
+                send: 'ethereum' as any,
+                sendStringAmount: '1.0',
+                receive: 'ethereum--0xTokenAddress' as any,
+                receiveStringAmount: '1000.0',
+                status: 'CONFIRM',
+                orderId: 'dex-order-eth',
+                isDex: true,
+                dexTx: {
+                    from: '0xUserAddress',
+                    to: '0xDexRouterAddress',
+                    data: '0xabcdef1234567890',
+                    value: '1000000000000000000',
+                },
+            };
+
+            const formState = createFormStateForSendForm({
+                quote: dexQuote,
+                networkType: 'ethereum',
+                providers: { '1inch': exchangeInvity },
+                sendAccountKey,
+            });
+
+            expect(formState.outputs[0]?.token).toBeNull();
+        });
+
         it('should convert Solana DEX transaction data from base64 to hex', () => {
             const dexQuote: ExchangeTrade = {
                 exchange: 'jupiter',

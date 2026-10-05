@@ -2,9 +2,10 @@ import { useSelector } from 'react-redux';
 
 import {
     cryptoIdToNetworkAndContractAddress,
+    getDexQuoteTokenContract,
     selectTradingExchangeSelectedQuote,
 } from '@suite-common/trading';
-import { findToken, isAllowanceUnlimited } from '@suite-common/wallet-utils';
+import { findAccountToken, isAllowanceUnlimited } from '@suite-common/wallet-utils';
 import { HStack, Text } from '@suite-native/atoms';
 import { Icon, TokenIcon } from '@suite-native/icons';
 import { Translation } from '@suite-native/intl';
@@ -28,7 +29,9 @@ export const RevokeLimitInfoRow = () => {
         decimals,
         symbol: tokenSymbol,
         name: tokenName,
-    } = findToken(sendAccount?.tokens, contractAddress) ?? {};
+    } = (sendAccount &&
+        findAccountToken(sendAccount, contractAddress ?? getDexQuoteTokenContract(quote))) ??
+    {};
 
     const showUnlimitedAllowanceLabel =
         preapprovedStringAmount &&

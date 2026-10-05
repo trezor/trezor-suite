@@ -7,6 +7,7 @@ import type {
 
 import {
     cryptoIdToNetworkAndContractAddress,
+    getDexQuoteTokenContract,
     getTradingFormState,
     isExchangeTrade,
     isSellFiatTrade,
@@ -82,7 +83,7 @@ export const createFormStateForSendForm = ({
 
         if (exchangeQuote.send) {
             const { contractAddress } = cryptoIdToNetworkAndContractAddress(exchangeQuote.send);
-            sendTokenContract = contractAddress;
+            sendTokenContract = contractAddress ?? getDexQuoteTokenContract(exchangeQuote);
         }
         if (!destinationTag) {
             destinationTag = exchangeQuote.partnerPaymentExtraId;

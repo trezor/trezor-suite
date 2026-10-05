@@ -3,7 +3,11 @@ import { useSelector } from 'react-redux';
 
 import { useNavigation } from '@react-navigation/native';
 
-import { parseCryptoId, selectTradingExchangeSelectedQuote } from '@suite-common/trading';
+import {
+    getDexQuoteTokenContract,
+    parseCryptoId,
+    selectTradingExchangeSelectedQuote,
+} from '@suite-common/trading';
 import { type TokenAddress } from '@suite-common/wallet-types';
 import { Box, Button, ScreenFooterGradient } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
@@ -55,7 +59,8 @@ export const ApprovalButton = ({ isReady, isDisabled, flowType }: ApprovalButton
 
     const handleContinue = () => {
         const tokenContract = quote.send
-            ? (parseCryptoId(quote.send)?.contractAddress as TokenAddress)
+            ? ((parseCryptoId(quote.send)?.contractAddress ??
+                  getDexQuoteTokenContract(quote)) as TokenAddress)
             : undefined;
         if (!fromAccount || !tokenContract) {
             console.warn('account or tokenContract is not defined');

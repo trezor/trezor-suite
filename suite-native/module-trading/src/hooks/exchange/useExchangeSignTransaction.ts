@@ -4,6 +4,7 @@ import { useSelector } from 'react-redux';
 import { useNavigation } from '@react-navigation/native';
 
 import {
+    getDexQuoteTokenContract,
     isFinalStatus,
     parseCryptoId,
     selectTradingExchangeFormStep,
@@ -65,7 +66,8 @@ export const useExchangeSignTransaction = ({
         }
 
         const tokenContract = quote.send
-            ? (parseCryptoId(quote.send)?.contractAddress as TokenAddress)
+            ? ((parseCryptoId(quote.send)?.contractAddress ??
+                  getDexQuoteTokenContract(quote)) as TokenAddress)
             : undefined;
 
         navigation.navigate(RootStackRoutes.TradingExchangeTransactionReview, {

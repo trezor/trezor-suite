@@ -24,8 +24,12 @@ import {
     type TokenInfoBranded,
     type TokenSymbol,
 } from '@suite-common/wallet-types';
-import { isNftToken, shouldUppercaseTokenSymbol } from '@suite-common/wallet-utils';
-import { type TokenInfo, type TokenTransfer } from '@trezor/blockchain-link';
+import {
+    findAccountToken,
+    isNftToken,
+    shouldUppercaseTokenSymbol,
+} from '@suite-common/wallet-utils';
+import { type TokenTransfer } from '@trezor/blockchain-link';
 
 import { type TypedTokenTransfer, type WalletAccountTransaction } from './types';
 import { isNetworkWithTokens } from './utils';
@@ -43,16 +47,11 @@ export const selectAccountTokenInfo = createMemoizedSelector(
         (_state, _accountKey?: AccountKey, tokenAddress?: TokenAddress) => tokenAddress,
     ],
     (account, tokenAddress?: TokenAddress): TokenInfoBranded | null => {
-        if (!account?.tokens) {
+        if (!account) {
             return null;
         }
 
-        const lowerCaseTokenAddress = tokenAddress?.toLowerCase();
-
-        const token = A.find(
-            account.tokens,
-            (t: TokenInfo) => t.contract.toLowerCase() === lowerCaseTokenAddress,
-        );
+        const token = findAccountToken(account, tokenAddress);
 
         if (!token) {
             return null;

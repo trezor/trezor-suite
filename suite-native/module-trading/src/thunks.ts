@@ -11,6 +11,7 @@ import {
     type TradingExchangeType,
     type TradingSellType,
     type TradingSignAndPushSendFormTransactionProps,
+    getDexQuoteTokenContract,
     parseCryptoId,
     selectTradingExchangeProviders,
     selectTradingExchangeReceiveAccountKey,
@@ -330,7 +331,8 @@ export const composeEvmApprovalFeeLevelsThunk = createThunk<
                 return rejectWithValue('Could not extract spender from dexTx data');
             }
 
-            const { contractAddress } = parseCryptoId(send);
+            const contractAddress =
+                parseCryptoId(send).contractAddress ?? getDexQuoteTokenContract(quote);
             if (!contractAddress) {
                 return rejectWithValue('Could not extract token contract address');
             }

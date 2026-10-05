@@ -1,5 +1,9 @@
-import { cryptoIdToNetworkAndContractAddress, getApprovalStatus } from '@suite-common/trading';
-import { findToken, isAllowanceUnlimited } from '@suite-common/wallet-utils';
+import {
+    cryptoIdToNetworkAndContractAddress,
+    getApprovalStatus,
+    getDexQuoteTokenContract,
+} from '@suite-common/trading';
+import { findAccountToken, isAllowanceUnlimited } from '@suite-common/wallet-utils';
 import { HStack, Text, VStack } from '@suite-native/atoms';
 import { useWatch } from '@suite-native/forms';
 import { DebugModeView } from '@suite-native/trading-debug';
@@ -13,7 +17,10 @@ export const ExchangeFormQuoteDebugView = () => {
 
     const approvalStatus = getApprovalStatus(quote);
     const { contractAddress } = cryptoIdToNetworkAndContractAddress(quote?.send);
-    const { decimals } = findToken(sendAccount?.tokens, contractAddress) ?? {};
+    const { decimals } =
+        (sendAccount &&
+            findAccountToken(sendAccount, contractAddress ?? getDexQuoteTokenContract(quote))) ??
+        {};
 
     let preapproved = 'not defined';
     if (quote?.preapprovedStringAmount) {
