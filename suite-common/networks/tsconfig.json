@@ -4,6 +4,7 @@
     "references": [
         { "path": "../earn-stablecoin-defs" },
         { "path": "../legacy-network-config" },
+        { "path": "../redux-utils" },
         {
             "path": "../../networks/bitcoin/network-bitcoin-suite-common"
         },
