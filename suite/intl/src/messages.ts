@@ -1793,6 +1793,19 @@ export const messages = defineMessages({
         defaultMessage: 'By networks',
         id: 'TR_HOME_ASSET_GROUPING_NETWORKS',
     },
+    TR_HOME_ASSET_BANNER_TITLE: {
+        defaultMessage: 'New! A simpler view of your assets',
+        id: 'TR_HOME_ASSET_BANNER_TITLE',
+    },
+    TR_HOME_ASSET_BANNER_TEXT: {
+        defaultMessage:
+            'Each asset is totaled across every account that holds it. Click on it to see more details.',
+        id: 'TR_HOME_ASSET_BANNER_TEXT',
+    },
+    TR_HOME_ASSET_FEEDBACK_TITLE: {
+        defaultMessage: 'How do you like the new asset table?',
+        id: 'TR_HOME_ASSET_FEEDBACK_TITLE',
+    },
     TR_ASSET: {
         defaultMessage: 'Asset',
         id: 'TR_ASSET',

@@ -43,6 +43,9 @@ export type FlagsState = {
     hasSeenDisconnectTooltip: boolean;
     showNoDeviceEshopSidebarBanner: boolean;
     areNoDeviceEshopBannersDisabled: boolean;
+    // Temporary: both go with the asset-first experiment, along with the cards they dismiss.
+    homeAssetTableNewBannerClosed: boolean;
+    homeAssetTableFeedbackClosed: boolean;
     seenNewContentIndicators: Partial<Record<NewContentIndicatorId, true>>;
 };
 
@@ -87,6 +90,8 @@ export const flagsInitialState: FlagsState = {
     hasSeenDisconnectTooltip: false,
     showNoDeviceEshopSidebarBanner: true,
     areNoDeviceEshopBannersDisabled: false,
+    homeAssetTableNewBannerClosed: false,
+    homeAssetTableFeedbackClosed: false,
     // In a fresh Suite, all content is new, so we don't need to distinguish individual features as "new" → mark all as seen.
     // See the unit test, which specifies this behavior.
     seenNewContentIndicators: typedObjectFromEntries(
@@ -168,6 +173,10 @@ export const selectAreNoDeviceEshopBannersDisabled = (state: FlagsRootState) =>
     state.flags.areNoDeviceEshopBannersDisabled;
 export const selectHasSeenDisconnectTooltip = (state: FlagsRootState) =>
     state.flags.hasSeenDisconnectTooltip;
+export const selectIsHomeAssetTableNewBannerClosed = (state: FlagsRootState) =>
+    state.flags.homeAssetTableNewBannerClosed;
+export const selectIsHomeAssetTableFeedbackClosed = (state: FlagsRootState) =>
+    state.flags.homeAssetTableFeedbackClosed;
 export const selectIsNewContentIndicatorVisible =
     (indicatorId: NewContentIndicatorId) => (state: FlagsRootState) =>
         state.flags.seenNewContentIndicators[indicatorId] !== true;

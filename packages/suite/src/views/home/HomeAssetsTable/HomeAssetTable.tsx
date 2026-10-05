@@ -15,6 +15,7 @@ import { Card, Table } from '@trezor/components';
 import { useSelector } from 'src/hooks/suite';
 
 import { HomeAssetNetworkSection } from './HomeAssetNetworkSection';
+import { HomeAssetNewBanner } from './HomeAssetNewBanner';
 import { HomeAssetRow } from './HomeAssetRow';
 import { HomeAssetTableFilterHeader } from './HomeAssetTableFilter';
 import { HOME_ASSET_CELL_PADDING } from './homeAssetTableLayout';
@@ -43,6 +44,7 @@ export const HomeAssetTable = () => {
 
     return (
         <Card paddingType="none" data-testid="@dashboard/home-asset-table">
+            <HomeAssetNewBanner />
             <Table isRowHighlightedOnHover colWidths={[{ minWidth: '200px' }, {}, {}]}>
                 <Table.Header>
                     <Table.Row>
