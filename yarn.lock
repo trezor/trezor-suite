@@ -14946,7 +14946,6 @@ __metadata:
     "@suite-native/trading-types": "workspace:*"
     "@suite-native/transaction-management": "workspace:*"
     "@suite-native/transaction-review": "workspace:*"
-    "@trezor/analytics-uploader": "workspace:*"
     "@trezor/blockchain-link-types": "workspace:*"
     "@trezor/connect": "workspace:*"
     "@trezor/connect-common": "workspace:*"

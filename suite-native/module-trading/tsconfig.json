@@ -86,9 +86,6 @@
         { "path": "../transaction-management" },
         { "path": "../transaction-review" },
         {
-            "path": "../../packages/analytics-uploader"
-        },
-        {
             "path": "../../packages/blockchain-link-types"
         },
         { "path": "../../packages/connect" },

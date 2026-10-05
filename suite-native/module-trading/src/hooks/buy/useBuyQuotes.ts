@@ -1,7 +1,4 @@
-import { type RefObject, useCallback, useEffect, useEffectEvent, useRef } from 'react';
 import { useSelector } from 'react-redux';
-
-import { isFulfilled } from '@reduxjs/toolkit';
 
 import { useServices } from '@suite-common/dependency-injection';
 import { selectNetworkConfigs } from '@suite-common/networks';
@@ -15,32 +12,20 @@ import {
     selectTradingBuyIsLoading,
     selectTradingCoinInfoByCryptoId,
     selectTradingPlatformByCryptoId,
-    useTradingRefetchScheduler,
 } from '@suite-common/trading';
 import { type WalletSettingsRootState, selectIsAmountInSats } from '@suite-common/wallet-core';
 import { events, injectNativeAnalytics } from '@suite-native/analytics';
 import { useWatch } from '@suite-native/forms';
 import { getSymbolFromTradeableAsset } from '@suite-native/trading-atoms';
 import { buyActions, selectValidTradingBuyQuotesNative } from '@suite-native/trading-state';
-import { type AbortablePromise, type BuyFormType } from '@suite-native/trading-types';
-import { useDebounce } from '@trezor/react-utils';
+import { type BuyFormType } from '@suite-native/trading-types';
 
 import { tradingBuyFormToTradingBuyFormProps } from '../../utils/buy/quotesUtils';
 import { getReceiveAccountAddressText } from '../../utils/general/receiveAccountUtils';
-import { useQuotesInvalidator } from '../general/useQuotesInvalidator';
+import { getQuotesRequestKey, useQuotesRequest } from '../general/useQuotesRequest';
 
-type BuyQuoteRequestState = {
-    isFetchAllowed: boolean;
-    cryptoId: string | undefined;
-    fiatCurrency: string | undefined;
-    amount: string | undefined;
-    amountInCrypto: boolean | undefined;
-    country: string | undefined;
-    countrySubdivision: string | undefined;
-    receiveAccountAddress: string | undefined;
-};
-
-const useBuyQuoteRequestState = ({ control }: BuyFormType): BuyQuoteRequestState => {
+export const useBuyQuotes = (form: BuyFormType) => {
+    const { analytics, dispatch } = useServices(injectNativeAnalytics, injectDispatch);
     const [
         asset,
         fiatCurrency,
@@ -51,7 +36,7 @@ const useBuyQuoteRequestState = ({ control }: BuyFormType): BuyQuoteRequestState
         countrySubdivision,
         receiveAccount,
     ] = useWatch({
-        control,
+        control: form.control,
         name: [
             'asset',
             'fiatCurrency',
@@ -63,52 +48,8 @@ const useBuyQuoteRequestState = ({ control }: BuyFormType): BuyQuoteRequestState
             'receiveAccount',
         ],
     });
-
-    const amount = amountInCrypto ? cryptoValue : fiatValue;
-    const isFetchAllowed = !!(asset && fiatCurrency && amount && parseFloat(amount) > 0);
-
-    return {
-        isFetchAllowed,
-        cryptoId: asset?.cryptoId,
-        fiatCurrency,
-        amount,
-        amountInCrypto,
-        country: country?.value,
-        countrySubdivision: countrySubdivision?.value,
-        receiveAccountAddress: getReceiveAccountAddressText(receiveAccount),
-    };
-};
-
-const useBuyQuotesInvalidator = (
-    isFormValid: boolean,
-    quotesPromiseRef: RefObject<AbortablePromise | undefined>,
-    debounce: ReturnType<typeof useDebounce>,
-) => {
-    const quotes = useSelector(selectValidTradingBuyQuotesNative);
-    const isLoading = useSelector(selectTradingBuyIsLoading);
-
-    useQuotesInvalidator({
-        isFormValid,
-        isLoading,
-        anyQuotesLoaded: quotes.length > 0,
-        quotesPromiseRef,
-        debounce,
-        getClearRequestAction: buyActions.clearQuotesAndQuotesRequest,
-        getClearStateAction: buyActions.clearState,
-    });
-};
-
-const useBuyQuotesThunk = (
-    form: BuyFormType,
-    requestState: BuyQuoteRequestState,
-    quotesPromiseRef: RefObject<AbortablePromise | undefined>,
-    debounce: ReturnType<typeof useDebounce>,
-) => {
-    const { analytics, dispatch } = useServices(injectNativeAnalytics, injectDispatch);
-    const asset = useWatch({ control: form.control, name: 'asset' });
-    const symbol = getSymbolFromTradeableAsset(asset);
     const shouldSendInSats = useSelector((state: WalletSettingsRootState) =>
-        selectIsAmountInSats(state, symbol),
+        selectIsAmountInSats(state, getSymbolFromTradeableAsset(asset)),
     );
     const coinInfo = useSelector((state: TradingRootState) =>
         selectTradingCoinInfoByCryptoId(state, asset?.cryptoId),
@@ -116,19 +57,24 @@ const useBuyQuotesThunk = (
     const platformInfo = useSelector((state: TradingRootState) =>
         selectTradingPlatformByCryptoId(state, asset?.cryptoId),
     );
+    const quotes = useSelector(selectValidTradingBuyQuotesNative);
+    const isLoading = useSelector(selectTradingBuyIsLoading);
     const networkConfigs = useSelector(selectNetworkConfigs);
-    const {
-        isFetchAllowed,
-        cryptoId,
+
+    const amount = amountInCrypto ? cryptoValue : fiatValue;
+    const isFetchAllowed = !!(asset && fiatCurrency && amount && parseFloat(amount) > 0);
+
+    const requestKey = getQuotesRequestKey(isFetchAllowed, {
+        cryptoId: asset?.cryptoId,
         fiatCurrency,
         amount,
         amountInCrypto,
-        country,
-        countrySubdivision,
-        receiveAccountAddress,
-    } = requestState;
+        country: country?.value,
+        countrySubdivision: countrySubdivision?.value,
+        receiveAccountAddress: getReceiveAccountAddressText(receiveAccount),
+    });
 
-    const fetchQuotes = useCallback(async () => {
+    const fetchQuotes = () => {
         if (!coinInfo) {
             return;
         }
@@ -148,67 +94,25 @@ const useBuyQuotesThunk = (
             ),
             shouldSendInSats,
         };
-        const requestPromise = dispatch(buyThunks.handleRequestThunk(payload));
-        quotesPromiseRef.current = requestPromise;
-        const action = await requestPromise;
-        if (isFulfilled(action) && action.payload.length > 0) {
-            analytics.report({
-                type: events.tradingQuoteReceivedEvent.name,
-                payload: {
-                    type: 'buy',
-                },
-            });
-        }
-    }, [
-        form,
-        coinInfo,
-        platformInfo,
-        networkConfigs,
-        shouldSendInSats,
-        quotesPromiseRef,
-        dispatch,
-        analytics,
-    ]);
 
-    const requestQuotes = useEffectEvent(() => {
-        if (quotesPromiseRef.current?.abort) {
-            quotesPromiseRef.current.abort('Request was replaced by another one.');
-        }
+        return dispatch(buyThunks.handleRequestThunk(payload));
+    };
 
-        debounce(fetchQuotes);
+    const reportQuotesReceived = () =>
+        analytics.report({
+            type: events.tradingQuoteReceivedEvent.name,
+            payload: {
+                type: 'buy',
+            },
+        });
+
+    useQuotesRequest({
+        requestKey,
+        fetchQuotes,
+        onQuotesReceived: reportQuotesReceived,
+        isLoading,
+        hasQuotes: quotes.length > 0,
+        clearQuotesAction: buyActions.clearQuotesAndQuotesRequest,
+        clearStateAction: buyActions.clearState,
     });
-
-    useEffect(() => {
-        if (!isFetchAllowed) {
-            return;
-        }
-
-        requestQuotes();
-    }, [
-        isFetchAllowed,
-        cryptoId,
-        fiatCurrency,
-        amount,
-        amountInCrypto,
-        country,
-        countrySubdivision,
-        receiveAccountAddress,
-    ]);
-
-    useTradingRefetchScheduler({
-        onRefetch: () => {
-            if (!isFetchAllowed) return;
-            debounce(fetchQuotes);
-        },
-    });
-};
-
-export const useBuyQuotes = (form: BuyFormType) => {
-    const debounce = useDebounce();
-    const promiseRef = useRef<AbortablePromise | undefined>(undefined);
-
-    const requestState = useBuyQuoteRequestState(form);
-
-    useBuyQuotesInvalidator(requestState.isFetchAllowed, promiseRef, debounce);
-    useBuyQuotesThunk(form, requestState, promiseRef, debounce);
 };
