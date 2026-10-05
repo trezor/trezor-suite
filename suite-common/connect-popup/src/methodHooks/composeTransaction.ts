@@ -1,17 +1,49 @@
-import type { CallMethodKeys } from '@trezor/connect';
+import type { AccountAddresses, CallMethodKeys, PrecomposeParams } from '@trezor/connect';
 
 import type { CompatibilityHookParams, CompatibilityHookResult } from './types';
+
+type LegacyPrecomposeParams = Omit<PrecomposeParams, 'path' | 'utxo' | 'changeAddress'> & {
+    // Former `account` param, since replaced by top-level `path`, `utxo` and `changeAddress`.
+    account?: Pick<PrecomposeParams, 'path' | 'utxo'> & {
+        addresses: AccountAddresses;
+    };
+};
+
+const isCurrentPrecomposeParams = (
+    params: PrecomposeParams | LegacyPrecomposeParams,
+): params is PrecomposeParams =>
+    ('path' in params && !!params.path) ||
+    ('utxo' in params && !!params.utxo) ||
+    ('changeAddress' in params && !!params.changeAddress);
 
 const compatibilityHook = <M extends CallMethodKeys>({
     method,
     payload,
 }: CompatibilityHookParams<M>): CompatibilityHookResult<M> | undefined => {
-    if (method === 'composeTransaction') {
-        return 'account' in payload && payload.account
-            ? { method, payload }
-            : // Interactive flow of composeTransaction was deprecated in favour of sendTransaction
-              ({ method: 'sendTransaction', payload } as CompatibilityHookResult<M>);
+    if (method !== 'composeTransaction') {
+        return undefined;
     }
+
+    const typedPayload = payload as PrecomposeParams | LegacyPrecomposeParams;
+
+    if (isCurrentPrecomposeParams(typedPayload)) {
+        return { method, payload };
+    }
+
+    const { account, ...rest } = typedPayload;
+
+    if (account) {
+        const { path, utxo, addresses } = account;
+        const changeAddress =
+            addresses?.change.find(address => !address.transfers) ?? addresses?.change.at(-1);
+
+        const patchedPayload = { ...rest, path, utxo, changeAddress };
+
+        return { method, payload: patchedPayload } as CompatibilityHookResult<M>;
+    }
+
+    // Interactive flow of composeTransaction was deprecated in favour of sendTransaction.
+    return { method: 'sendTransaction', payload } as CompatibilityHookResult<M>;
 };
 
 export const composeTransaction = { compatibilityHook };
