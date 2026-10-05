@@ -2,7 +2,6 @@ import { type CallMethodAnyResponse } from '@trezor/connect';
 import { type Deferred, createDeferred } from '@trezor/utils';
 
 type GetDeferred<Resolve> = (clear?: boolean) => Deferred<Resolve>;
-type AwaitDeferred = () => Promise<void>;
 
 // Custom helper, createDeferredManager didn't fit the needs here
 const createDeferredWrapper = <Resolve = void>(id: string) => {
@@ -24,18 +23,63 @@ const createDeferredWrapper = <Resolve = void>(id: string) => {
         return _deferred;
     };
 
-    const awaitDeferred = async () => {
-        await _deferred?.promise;
-    };
-
-    return { getDeferred, awaitDeferred };
+    return { getDeferred };
 };
 
-// Deferred for the entire Connect call
-const callDeferredWrapper = createDeferredWrapper<Awaited<CallMethodAnyResponse>>('popup-call');
-export const getPopupCallDeferred: GetDeferred<Awaited<CallMethodAnyResponse>> =
-    callDeferredWrapper.getDeferred;
-export const queuePopupCall: AwaitDeferred = callDeferredWrapper.awaitDeferred;
+type PopupCallResponse = Awaited<CallMethodAnyResponse>;
+
+// Each popup call has its own deferred for the response, found by the `responseId` the call
+// carries, so a call can only settle the deferred of its own caller.
+const popupCallDeferreds = new Map<string, Deferred<PopupCallResponse, string>>();
+// The most recently started popup call, which queued calls wait for.
+let latestPopupCall: Deferred<PopupCallResponse, string> | undefined;
+
+/**
+ * Creates the deferred for the response of a popup call that starts right away. Pass its `id` as
+ * `responseId` of the call.
+ */
+export const createPopupCallDeferred = () => {
+    const deferred = createDeferred<PopupCallResponse, string>(crypto.randomUUID());
+    popupCallDeferreds.set(deferred.id, deferred);
+    latestPopupCall = deferred;
+    deferred.promise
+        .finally(() => {
+            popupCallDeferreds.delete(deferred.id);
+            if (latestPopupCall === deferred) latestPopupCall = undefined;
+        })
+        .catch(() => {});
+
+    return deferred;
+};
+
+/**
+ * Waits until the latest popup call has settled, then creates the deferred for the next one. The
+ * deferred is created in the same tick as the check, so of several waiters only one starts.
+ */
+export const queuePopupCall = async () => {
+    while (latestPopupCall) {
+        await latestPopupCall.promise;
+    }
+
+    return createPopupCallDeferred();
+};
+
+export const resolvePopupCall = (responseId: string | undefined, response: PopupCallResponse) => {
+    if (responseId) popupCallDeferreds.get(responseId)?.resolve(response);
+};
+
+/**
+ * Settles the active call while it is still pending, otherwise the most recently started call. A
+ * cancel uses it to reach a call that has not become the active one yet, or one that ended without
+ * a response (e.g. a device error the user closed).
+ */
+export const resolveActiveOrLatestPopupCall = (
+    activeResponseId: string | undefined,
+    response: PopupCallResponse,
+) => {
+    const activeDeferred = activeResponseId ? popupCallDeferreds.get(activeResponseId) : undefined;
+    (activeDeferred ?? latestPopupCall)?.resolve(response);
+};
 
 // Deferred for the permission request
 const permissionDeferredWrapper = createDeferredWrapper('popup-permission');

@@ -9,6 +9,7 @@ import { createTestCompositionRoot } from '@suite-common/test-utils';
 import TrezorConnect from '@trezor/connect';
 
 import { connectPopupActions } from './connectPopupActions';
+import { createPopupCallDeferred } from './connectPopupPromiseManager';
 import { prepareConnectPopupReducer } from './connectPopupReducer';
 import {
     type ConnectPopupCallThunkDeps,
@@ -176,7 +177,14 @@ describe('connectPopupCancelThunk', () => {
 
         const startCallOnDevice = async (payload: { path: string; callId?: string }) => {
             const store = createCallStore();
-            store.dispatch(connectPopupCallThunk({ method: 'getAddress', payload, source }));
+            store.dispatch(
+                connectPopupCallThunk({
+                    method: 'getAddress',
+                    payload,
+                    source,
+                    responseId: createPopupCallDeferred().id,
+                }),
+            );
             await waitFor(
                 () => store.getState().connectPopup.activeCall?.state === 'permission-request',
             );

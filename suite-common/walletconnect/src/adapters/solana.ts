@@ -75,6 +75,7 @@ const solanaSignTransactionThunk = createThunk<
             throw new Error('Account not found');
         }
 
+        const deferred = trezorConnectPopupActions.createPopupCallDeferred();
         dispatch(
             trezorConnectPopupActions.connectPopupCallThunk({
                 method: 'solanaSignTransaction',
@@ -95,10 +96,12 @@ const solanaSignTransactionThunk = createThunk<
                         appIcon: session.peer.metadata.icons?.[0],
                     },
                 },
+                responseId: deferred.id,
             }),
         );
-        const response = (await trezorConnectPopupActions.getPopupCallDeferred(true)
-            .promise) as Result<CallMethodResponse<'solanaSignTransaction'>>;
+        const response = (await deferred.promise) as Result<
+            CallMethodResponse<'solanaSignTransaction'>
+        >;
         if (!response.success || !response.payload.serializedTx) {
             console.error('solana_signTransaction error', response);
             throw new Error('Solana signing error');

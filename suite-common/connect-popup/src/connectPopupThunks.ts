@@ -35,7 +35,12 @@ import type { Bip43PathTemplate } from '@trezor/crypto-utils';
 import { resolveAfter } from '@trezor/utils';
 
 import { connectPopupActions } from './connectPopupActions';
-import { getPermissionDeferred, getPopupCallDeferred } from './connectPopupPromiseManager';
+import {
+    createPopupCallDeferred,
+    getPermissionDeferred,
+    resolveActiveOrLatestPopupCall,
+    resolvePopupCall,
+} from './connectPopupPromiseManager';
 import {
     type ConnectPopupStateRootState,
     selectConnectAppPermissions,
@@ -64,6 +69,9 @@ type ConnectPopupCallThunkParams<M extends CallMethodKeys> = {
     method: M;
     payload: DistributiveOmit<CallMethodParams<M>, 'method'>;
     source: ConnectCallSource;
+    // Id of the deferred that receives the response (see createPopupCallDeferred). A retried call
+    // keeps the id of the call it retries.
+    responseId?: string;
 };
 
 export type ConnectPopupCallInnerThunkState = DeviceRootState & ConnectPopupStateRootState;
@@ -82,7 +90,7 @@ export const connectPopupCallInnerThunk = createThunk<
     { state: ConnectPopupCallInnerThunkState; extra: ConnectPopupCallInnerThunkDeps }
 >(
     `${CONNECT_POPUP_MODULE}/callThunk`,
-    async ({ source, ...params }, { dispatch, getState, extra }) => {
+    async ({ source, responseId, ...params }, { dispatch, getState, extra }) => {
         try {
             const { method, payload } = compatibilityHooks({ ...params, source });
             // Store the caller's token before permissions or device selection so a cancel can be
@@ -136,6 +144,7 @@ export const connectPopupCallInnerThunk = createThunk<
                     payload,
                     source,
                     callId,
+                    responseId,
                 }),
             );
 
@@ -254,7 +263,7 @@ export const connectPopupCallInnerThunk = createThunk<
                 },
             });
 
-            getPopupCallDeferred().resolve(response);
+            resolvePopupCall(responseId, response);
         } catch (error) {
             console.error('connectPopupCallThunk', error);
             if (error?.error === 'switching-device') {
@@ -292,7 +301,7 @@ export const connectPopupCallInnerThunk = createThunk<
                 },
             });
 
-            getPopupCallDeferred().resolve({
+            resolvePopupCall(responseId, {
                 success: false,
                 error: serializeError(error),
             });
@@ -305,7 +314,7 @@ export const connectPopupCallInnerThunk = createThunk<
 // Typed thunk that takes the method as a generic parameter
 // Original thunk is exposed as well for using .fulfilled, .rejected, etc.
 export const connectPopupCallThunk = <M extends CallMethodKeys>(
-    params: ConnectPopupCallThunkParams<M>,
+    params: ConnectPopupCallThunkParams<M> & { responseId: string },
 ): AsyncThunkAction<
     void,
     ConnectPopupCallThunkParams<M>,
@@ -374,6 +383,7 @@ export const connectPopupDeeplinkThunk = createThunk<
         return;
     }
 
+    const deferred = createPopupCallDeferred();
     dispatch(
         connectPopupCallThunk({
             source: {
@@ -386,9 +396,10 @@ export const connectPopupDeeplinkThunk = createThunk<
             },
             method: method as CallMethodKeys,
             payload,
+            responseId: deferred.id,
         }),
     );
-    const response = await getPopupCallDeferred(true).promise;
+    const response = await deferred.promise;
     callbackUrl.searchParams.set('response', JSON.stringify(response));
     dispatch(
         connectPopupActions.deeplinkCallback({
@@ -1040,7 +1051,7 @@ export const connectPopupVerifySelectAccountThunk = createThunk<
 
 // Finalizes the picker. The selectAccount methodHook is awaiting `getPermissionDeferred`; on cancel
 // we reject it (the call thunk's catch maps Method_Cancel to the final error response), on confirm
-// we override the placeholder method response with the user's selection via `getPopupCallDeferred`
+// we override the placeholder method response with the user's selection via `resolvePopupCall`
 // and unblock the hook (which then flips the picker into its `exported` phase). Mirrors
 // ConnectAddressConfirmation: after export the modal stays open so the user can keep verifying the
 // exported addresses on device, and only `finishCall` (Close) actually closes it.
@@ -1089,7 +1100,7 @@ export const connectPopupResolveSelectAccountThunk = createThunk<
     // Export: deliver the selection to the 3rd-party app and flip the picker into its `exported`
     // phase, then unblock the methodHook. Do NOT finishCall — keep the modal open so the user can
     // keep verifying the exported addresses on device (mirrors ConnectAddressConfirmation).
-    getPopupCallDeferred().resolve({
+    resolvePopupCall(call.responseId, {
         success: true,
         payload,
     } as Awaited<CallMethodAnyResponse>);
@@ -1135,7 +1146,7 @@ export const connectPopupCancelThunk = createThunk<
     // deferred — which may not happen reliably (e.g. the device
     // interrupt doesn't complete, or the Suite popup tab closes
     // before RESPONSE_EVENT is sent).
-    getPopupCallDeferred().resolve({
+    resolveActiveOrLatestPopupCall(activeCall?.responseId, {
         success: false,
         error: serializeError(TypedError('Method_Interrupted')),
     });
