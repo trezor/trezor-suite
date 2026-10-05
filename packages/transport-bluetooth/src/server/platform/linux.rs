@@ -84,7 +84,9 @@ fn get_device_proxy(
     ),
     dbus::Error,
 > {
-    let device_path = format!("/org/bluez/{}", id);
+    // `Proxy::new` panics on an invalid object path: check it before opening a connection.
+    let device_path = dbus::Path::new(format!("/org/bluez/{}", id))
+        .map_err(|error| dbus::Error::new_failed(&error))?;
     let (resource, conn) = dbus_tokio::connection::new_system_sync()?;
     let connection_task = tokio::spawn(resource);
     let timeout = Duration::from_millis(timeout.into());
