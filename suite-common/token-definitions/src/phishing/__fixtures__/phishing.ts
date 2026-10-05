@@ -1,3 +1,4 @@
+import { asNetworkSymbol } from '@suite-common/wallet-config';
 import type {
     RatesByTimestamps,
     Timestamp,
@@ -962,7 +963,9 @@ const BLOCK_TIME = 1699999200 as Timestamp;
 
 // 1 whole unit of the token is worth $10
 const historicRates = {
-    [getFiatRateKey('eth', DUST_PHISHING_THRESHOLD_CURRENCY, CONTRACT)]: { [BLOCK_TIME]: 10 },
+    [getFiatRateKey(asNetworkSymbol('eth'), DUST_PHISHING_THRESHOLD_CURRENCY, CONTRACT)]: {
+        [BLOCK_TIME]: 10,
+    },
 } as unknown as RatesByTimestamps;
 
 const transactionWithTokenDecimals = (decimals: number | undefined) =>
