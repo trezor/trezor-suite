@@ -61,6 +61,15 @@ describe('cloneObject', () => {
             expect(cloned.byteLength).toBe(original.byteLength);
         });
 
+        it('should keep an own __proto__ key as a property', () => {
+            const original = JSON.parse('{"a":1,"nested":{"__proto__":{"b":2}}}');
+            const cloned = cloneObject(original);
+            expect(cloned).toEqual(original);
+            expect(Object.getPrototypeOf(cloned.nested)).toBe(Object.prototype);
+            expect(Object.keys(cloned.nested)).toEqual(['__proto__']);
+            expect(cloned.nested.b).toBeUndefined();
+        });
+
         it('should clone typed arrays', () => {
             const original = new Uint8Array([1, 2, 3]);
             const cloned = cloneObject(original);
