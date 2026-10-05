@@ -1,4 +1,4 @@
-import { execFileSync } from 'node:child_process';
+import { execFileSync, spawnSync } from 'node:child_process';
 
 const ACCESSIBILITY_DOMAIN = 'com.apple.Accessibility';
 const REDUCED_MOTION_KEY = 'ReduceMotionEnabled';
@@ -11,30 +11,39 @@ const runSimulatorDefaults = (simulatorId: string, args: string[]) =>
     });
 
 const readReducedMotion = (simulatorId: string): boolean | undefined => {
-    let value: string;
-
-    try {
-        value = runSimulatorDefaults(simulatorId, [
+    const { error, status, stdout, stderr } = spawnSync(
+        'xcrun',
+        [
+            'simctl',
+            'spawn',
+            simulatorId,
+            'defaults',
             'read',
             ACCESSIBILITY_DOMAIN,
             REDUCED_MOTION_KEY,
-        ])
-            .toString()
-            .trim();
-    } catch (error) {
-        if (
-            error instanceof Error &&
-            'status' in error &&
-            error.status === 1 &&
-            'stderr' in error &&
-            Buffer.isBuffer(error.stderr) &&
-            error.stderr.toString().includes('does not exist')
-        ) {
-            return undefined;
-        }
+        ],
+        {
+            encoding: 'utf8',
+            timeout: 10_000,
+            stdio: ['ignore', 'pipe', 'pipe'],
+        },
+    );
 
+    if (error) {
         throw error;
     }
+
+    if (status === 1 && stderr.includes('does not exist')) {
+        return undefined;
+    }
+
+    if (status !== 0) {
+        throw new Error(
+            `Failed to read reduced motion preference (exit status ${status}): ${stderr.trim()}`,
+        );
+    }
+
+    const value = stdout.trim();
 
     if (value !== '0' && value !== '1') {
         throw new Error(`Unexpected reduced motion preference: ${value}`);

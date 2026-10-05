@@ -1,26 +1,41 @@
-import { execFileSync } from 'node:child_process';
+import { type SpawnSyncReturns, execFileSync, spawnSync } from 'node:child_process';
 
 import { enableIOSReducedMotion, restoreIOSReducedMotion } from './reducedMotion';
 
 jest.mock('node:child_process');
 
 const execFileSyncMock = jest.mocked(execFileSync);
+const spawnSyncMock = jest.mocked(spawnSync);
 let isReducedMotionEnabled: boolean | undefined;
+
+const mockCommandResult = (
+    overrides: Partial<SpawnSyncReturns<string>> = {},
+): SpawnSyncReturns<string> => ({
+    pid: 1,
+    output: [],
+    stdout: '0\n',
+    stderr: '',
+    status: 0,
+    signal: null,
+    ...overrides,
+});
 
 describe('iOS E2E reduced motion', () => {
     beforeEach(() => {
         isReducedMotionEnabled = false;
+        spawnSyncMock.mockImplementation(() =>
+            mockCommandResult(
+                isReducedMotionEnabled === undefined
+                    ? {
+                          status: 1,
+                          stdout: '',
+                          stderr: 'The domain/default pair does not exist',
+                      }
+                    : { stdout: isReducedMotionEnabled ? '1\n' : '0\n' },
+            ),
+        );
         execFileSyncMock.mockImplementation((_, args) => {
             switch (args?.[4]) {
-                case 'read':
-                    if (isReducedMotionEnabled === undefined) {
-                        throw Object.assign(new Error('Missing preference'), {
-                            status: 1,
-                            stderr: Buffer.from('The domain/default pair does not exist'),
-                        });
-                    }
-
-                    return Buffer.from(isReducedMotionEnabled ? '1\n' : '0\n');
                 case 'write':
                     isReducedMotionEnabled = args[8] === 'true';
 
@@ -38,6 +53,7 @@ describe('iOS E2E reduced motion', () => {
     afterEach(() => {
         restoreIOSReducedMotion();
         execFileSyncMock.mockReset();
+        spawnSyncMock.mockReset();
     });
 
     it.each([false, true, undefined])('restores the original preference (%s)', originalValue => {
@@ -70,15 +86,39 @@ describe('iOS E2E reduced motion', () => {
         expect(isReducedMotionEnabled).toBe(true);
     });
 
-    it('does not override the preference when reading it fails', () => {
-        const error = new Error('Simulator unavailable');
-        execFileSyncMock.mockImplementationOnce(() => {
-            throw error;
-        });
+    it.each(['ENOENT', 'ETIMEDOUT'])('preserves the preference on a process error (%s)', code => {
+        const error = Object.assign(new Error(code), { code });
+        spawnSyncMock.mockReturnValueOnce(mockCommandResult({ error, status: null }));
 
         expect(() => enableIOSReducedMotion('simulator')).toThrow(error);
         expect(isReducedMotionEnabled).toBe(false);
-        expect(execFileSyncMock).toHaveBeenCalledTimes(1);
+        expect(execFileSyncMock).not.toHaveBeenCalled();
+    });
+
+    it.each<[number | null, string]>([
+        [1, 'Simulator unavailable'],
+        [2, 'The domain/default pair does not exist'],
+        [null, ''],
+    ])('preserves the preference when the read command fails (status %s)', (status, stderr) => {
+        spawnSyncMock.mockReturnValueOnce(
+            mockCommandResult({ status, stderr, signal: status === null ? 'SIGTERM' : null }),
+        );
+
+        expect(() => enableIOSReducedMotion('simulator')).toThrow(
+            `Failed to read reduced motion preference (exit status ${status})`,
+        );
+        expect(isReducedMotionEnabled).toBe(false);
+        expect(execFileSyncMock).not.toHaveBeenCalled();
+    });
+
+    it.each(['', 'yes', '2'])('preserves the preference when the value is invalid (%s)', stdout => {
+        spawnSyncMock.mockReturnValueOnce(mockCommandResult({ stdout }));
+
+        expect(() => enableIOSReducedMotion('simulator')).toThrow(
+            'Unexpected reduced motion preference',
+        );
+        expect(isReducedMotionEnabled).toBe(false);
+        expect(execFileSyncMock).not.toHaveBeenCalled();
     });
 
     it('keeps the original preference available when restoration fails', () => {
