@@ -11595,6 +11595,10 @@ export const messages = defineMessages({
         id: 'TR_EARN_TRON_INVALID_VOTE_COUNT',
         defaultMessage: 'Enter a whole number of votes.',
     },
+    TR_EARN_TRON_ASSIGN_AT_LEAST_ONE_VOTE: {
+        id: 'TR_EARN_TRON_ASSIGN_AT_LEAST_ONE_VOTE',
+        defaultMessage: 'Assign at least one vote to continue.',
+    },
     TR_EARN_TRON_UNSTAKING: {
         id: 'TR_EARN_TRON_UNSTAKING',
         defaultMessage: 'Unstaking (~{days} days)',
