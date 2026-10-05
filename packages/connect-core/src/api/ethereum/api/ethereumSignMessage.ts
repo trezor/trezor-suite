@@ -36,7 +36,7 @@ export default class EthereumSignMessage extends AbstractMethod<'ethereumSignMes
 
         const readableMessage = payload.hex ? hexToText(payload.message) : payload.message;
 
-        const params = { proto: { address_n, message: messageHex }, readableMessage };
+        const params = { proto: { address_n, message: messageHex }, readableMessage, network };
 
         super(message, params);
         this.requiredFirmwareCoins = [network];
