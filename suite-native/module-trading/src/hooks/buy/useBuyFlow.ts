@@ -121,10 +121,7 @@ export const useBuyFlow = (form: BuyFormType) => {
                 quote: candidateQuote,
                 returnUrl,
                 loginRequest: formResponse => openBrowserForFormData(formResponse, returnUrl),
-                nextStep: () => {
-                    navigation.navigate(RootStackRoutes.TradingBuyPreview);
-                    form.reset();
-                },
+                nextStep: () => navigation.navigate(RootStackRoutes.TradingBuyPreview),
             }),
         );
     };

@@ -149,6 +149,17 @@ describe('useBuyPreviewFlow', () => {
 
             expect(mockConfirmTradeThunk).not.toHaveBeenCalled();
         });
+
+        it('does not request form reset before the trade is confirmed', async () => {
+            const store = getInitializedStore({ withFullState: true });
+            const { result } = await renderHook(store);
+
+            await act(() => {
+                result.current.confirmTrade();
+            });
+
+            expect(store.getState().wallet.trading.formResetRequestedFor).toBeUndefined();
+        });
     });
 
     describe('handleTradeResponse', () => {
@@ -173,6 +184,28 @@ describe('useBuyPreviewFlow', () => {
             expect(mockPopToTop).toHaveBeenCalledTimes(1);
             expect(store.getState().wallet.trading.buy.selectedQuote).toBeUndefined();
             expect(store.getState().wallet.trading.tradeOrderIdToBeOpened).toBe('order-123');
+        });
+
+        it('requests buy form reset before navigating back to the trading screen', async () => {
+            const store = getInitializedStore({ withFullState: true });
+            const { result } = await renderHook(store);
+
+            await act(() => {
+                result.current.confirmTrade();
+            });
+
+            mockPopToTop.mockImplementationOnce(() => {
+                expect(store.getState().wallet.trading.formResetRequestedFor).toBe('buy');
+            });
+
+            await act(async () => {
+                await getProcessResponseData()({
+                    trade: { orderId: 'order-123' },
+                });
+            });
+
+            expect(mockPopToTop).toHaveBeenCalledTimes(1);
+            expect(store.getState().wallet.trading.formResetRequestedFor).toBe('buy');
         });
 
         it('navigates to trading screen before clearing Redux state and opening trade detail', async () => {

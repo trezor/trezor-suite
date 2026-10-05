@@ -75,6 +75,7 @@ export const useBuyPreviewFlow = () => {
             await openBrowserForFormData(response.tradeForm.form, returnUrl);
         }
 
+        dispatch(tradingActions.requestTradingFormReset('buy'));
         navigation.popToTop();
         dispatch(tradingBuyActions.clearQuotesAndParams());
 

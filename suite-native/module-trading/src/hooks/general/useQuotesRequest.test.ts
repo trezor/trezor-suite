@@ -16,12 +16,21 @@ import {
     renderHookWithTradingProvider,
 } from '../../test-utils/tradingTestUtils';
 
+let mockIsFocused = true;
+let mockShouldRunDebouncedCallback = true;
+
+jest.mock('@react-navigation/native', () => ({
+    ...jest.requireActual('@react-navigation/native'),
+    useIsFocused: () => mockIsFocused,
+}));
+
 jest.mock('@trezor/react-utils', () => {
     const originalModule = jest.requireActual('@trezor/react-utils');
 
     return {
         ...originalModule,
-        useDebounce: () => (fn: () => unknown) => fn(),
+        useDebounce: () => (fn: () => unknown) =>
+            mockShouldRunDebouncedCallback ? fn() : undefined,
     };
 });
 
@@ -82,6 +91,8 @@ describe('useQuotesRequest', () => {
 
     beforeEach(() => {
         store = createTradingTestStore();
+        mockIsFocused = true;
+        mockShouldRunDebouncedCallback = true;
     });
 
     it('should not fetch quotes without a request key', async () => {
@@ -248,5 +259,109 @@ describe('useQuotesRequest', () => {
         });
 
         expect(fetchQuotes).not.toHaveBeenCalled();
+    });
+
+    describe('screen focus', () => {
+        const getParams = (
+            fetchQuotes: UseQuotesRequestParams['fetchQuotes'],
+            requestKey: string | undefined,
+        ): UseQuotesRequestParams => ({
+            requestKey,
+            fetchQuotes,
+            isLoading: false,
+            hasQuotes: false,
+            clearQuotesAction,
+            clearStateAction,
+        });
+
+        it('should abort the pending request when the screen loses focus', async () => {
+            const quotesPromise = createQuotesPromise();
+            const fetchQuotes = mock<UseQuotesRequestParams['fetchQuotes']>(() => quotesPromise);
+            const { rerender } = await renderUseQuotesRequest(getParams(fetchQuotes, 'key-1'));
+
+            mockIsFocused = false;
+            await act(() => {
+                rerender(getParams(fetchQuotes, 'key-1'));
+            });
+
+            expect(quotesPromise.abort).toHaveBeenCalledWith('Screen lost focus.');
+        });
+
+        it('should not fetch quotes while the screen is not focused', async () => {
+            mockIsFocused = false;
+            const fetchQuotes = mock<UseQuotesRequestParams['fetchQuotes']>(() =>
+                createQuotesPromise(),
+            );
+            const { rerender } = await renderUseQuotesRequest(getParams(fetchQuotes, 'key-1'));
+
+            await act(() => {
+                rerender(getParams(fetchQuotes, 'key-2'));
+            });
+
+            expect(fetchQuotes).not.toHaveBeenCalled();
+        });
+
+        it('should fetch quotes immediately when the screen regains focus', async () => {
+            const fetchQuotes = mock<UseQuotesRequestParams['fetchQuotes']>(() =>
+                createQuotesPromise(),
+            );
+            const { rerender } = await renderUseQuotesRequest(getParams(fetchQuotes, 'key-1'));
+            fetchQuotes.mockClear();
+
+            mockIsFocused = false;
+            await act(() => {
+                rerender(getParams(fetchQuotes, 'key-1'));
+            });
+
+            // A debounced request would never run, so only an immediate fetch can be observed.
+            mockShouldRunDebouncedCallback = false;
+            mockIsFocused = true;
+            await act(() => {
+                rerender(getParams(fetchQuotes, 'key-1'));
+            });
+
+            expect(fetchQuotes).toHaveBeenCalledTimes(1);
+        });
+
+        it('should not fetch quotes when the screen regains focus without a request key', async () => {
+            const fetchQuotes = mock<UseQuotesRequestParams['fetchQuotes']>();
+            const { rerender } = await renderUseQuotesRequest(getParams(fetchQuotes, undefined));
+
+            mockIsFocused = false;
+            await act(() => {
+                rerender(getParams(fetchQuotes, undefined));
+            });
+            mockIsFocused = true;
+            await act(() => {
+                rerender(getParams(fetchQuotes, undefined));
+            });
+
+            expect(fetchQuotes).not.toHaveBeenCalled();
+        });
+
+        it('should not refetch quotes when the refetch time elapsed while the screen is not focused', async () => {
+            const fetchQuotes = mock<UseQuotesRequestParams['fetchQuotes']>(() =>
+                createQuotesPromise(),
+            );
+            const { rerender } = await renderUseQuotesRequest(getParams(fetchQuotes, 'key-1'));
+            fetchQuotes.mockClear();
+
+            mockIsFocused = false;
+            await act(() => {
+                rerender(getParams(fetchQuotes, 'key-1'));
+            });
+            await act(() => {
+                store.dispatch(
+                    tradingActions.setRefetchQuotesTimestamp(
+                        Date.now() - TRADE_API_RELOAD_QUOTES_AFTER_SECONDS * 1000,
+                    ),
+                );
+            });
+            await act(async () => {
+                await new Promise(resolve => setTimeout(resolve, 0));
+            });
+
+            expect(fetchQuotes).not.toHaveBeenCalled();
+        });
     });
 });

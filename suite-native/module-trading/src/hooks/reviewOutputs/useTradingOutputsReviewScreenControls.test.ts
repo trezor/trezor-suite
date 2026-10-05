@@ -35,6 +35,7 @@ type State = TradingRootState & AccountsRootState & SendRootState & NativeSendRo
 
 type RenderUseTradingOutputsReviewScreenControlsParams = {
     accountKey?: AccountKey;
+    tradingType?: 'sell' | 'exchange';
     exchangeFlowType?: ExchangeFlowType;
     isDexExchange?: boolean;
 };
@@ -148,6 +149,7 @@ describe('useTradingOutputsReviewScreenControls', () => {
 
     const renderUseTradingOutputsReviewScreenControls = ({
         accountKey,
+        tradingType = 'exchange',
         isDexExchange,
     }: RenderUseTradingOutputsReviewScreenControlsParams = {}) =>
         renderHookWithStoreProvider(
@@ -160,6 +162,7 @@ describe('useTradingOutputsReviewScreenControls', () => {
                             .getState()
                             .wallet.accounts.find((account: Account) => account.symbol === 'btc')!
                             .key,
+                    tradingType,
                     signAndSendTransaction: mockSignAndSendTransaction,
                     resolveTransactionSendConsent: mockResolveTransactionSendConsent,
                     reportToAnalytics: mockReportToAnalytics,
@@ -234,9 +237,27 @@ describe('useTradingOutputsReviewScreenControls', () => {
             expect(mockReportToAnalytics).toHaveBeenCalledWith('sign-and-send', 'continue');
         });
 
+        it('should request exchange form reset before navigating back to the trading screen', async () => {
+            await renderUseTradingOutputsReviewScreenControls();
+            mockPopToTop.mockImplementationOnce(() => {
+                expect(store.getState().wallet.trading.formResetRequestedFor).toBe('exchange');
+            });
+
+            await act(() => {
+                const { nextStep } = (
+                    mockSignAndSendTransaction.mock.lastCall as unknown as [
+                        TradingExchangeSignAndSendTransactionProps,
+                    ]
+                )[0];
+                nextStep();
+            });
+
+            expect(mockPopToTop).toHaveBeenCalledTimes(1);
+        });
+
         it('should navigate to trade detail and report sell analytics', async () => {
             store = createTestStore('sell');
-            await renderUseTradingOutputsReviewScreenControls();
+            await renderUseTradingOutputsReviewScreenControls({ tradingType: 'sell' });
 
             expect(mockSignAndSendTransaction).toHaveBeenCalledWith(
                 expect.objectContaining({
@@ -255,6 +276,7 @@ describe('useTradingOutputsReviewScreenControls', () => {
             });
             expect(mockPopToTop).toHaveBeenCalledTimes(1);
             expect(store.getState().wallet.trading.tradeOrderIdToBeOpened).toBe('orderId');
+            expect(store.getState().wallet.trading.formResetRequestedFor).toBe('sell');
             expect(mockReportToAnalytics).toHaveBeenLastCalledWith('sign-and-send', 'continue');
         });
 
@@ -356,6 +378,7 @@ describe('useTradingOutputsReviewScreenControls', () => {
             expect(mockReportToAnalytics).toHaveBeenCalledWith('sign-and-send', 'cancel');
 
             expect(mockPopToTop).toHaveBeenCalledTimes(1);
+            expect(store.getState().wallet.trading.formResetRequestedFor).toBe('exchange');
         });
     });
 
@@ -470,6 +493,7 @@ describe('useTradingOutputsReviewScreenControls', () => {
                 mockUseConfirmOnTrezorController.revealConfirmOnTrezorSheet,
             ).not.toHaveBeenCalled();
             expect(mockSignAndSendTransaction).not.toHaveBeenCalled();
+            expect(store.getState().wallet.trading.formResetRequestedFor).toBeUndefined();
         });
 
         it('should release the old consent and sign again on non-DEX swap retry', async () => {
@@ -532,11 +556,26 @@ describe('useTradingOutputsReviewScreenControls', () => {
 
             expect(mockPopToTop).toHaveBeenCalledTimes(1);
             expect(mockReportToAnalytics).toHaveBeenCalledWith('sign-and-send', 'cancel');
+            expect(store.getState().wallet.trading.formResetRequestedFor).toBe('exchange');
+        });
+
+        it('should request form reset before navigating back to the trading screen', async () => {
+            await renderUseTradingOutputsReviewScreenControls();
+            mockPopToTop.mockImplementationOnce(() => {
+                expect(store.getState().wallet.trading.formResetRequestedFor).toBe('exchange');
+            });
+
+            await act(() => {
+                const onReviewCanceled = mockUseOutputsReviewBackInterceptor.mock.lastCall?.[0];
+                onReviewCanceled();
+            });
+
+            expect(mockPopToTop).toHaveBeenCalledTimes(1);
         });
 
         it('should report cancel for sell', async () => {
             store = createTestStore('sell');
-            await renderUseTradingOutputsReviewScreenControls();
+            await renderUseTradingOutputsReviewScreenControls({ tradingType: 'sell' });
 
             await act(() => {
                 const onReviewCanceled = mockUseOutputsReviewBackInterceptor.mock.lastCall?.[0];
@@ -545,6 +584,7 @@ describe('useTradingOutputsReviewScreenControls', () => {
 
             expect(mockPopToTop).toHaveBeenCalledTimes(1);
             expect(mockReportToAnalytics).toHaveBeenLastCalledWith('sign-and-send', 'cancel');
+            expect(store.getState().wallet.trading.formResetRequestedFor).toBe('sell');
         });
     });
 

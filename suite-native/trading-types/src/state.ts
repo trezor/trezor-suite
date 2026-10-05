@@ -4,6 +4,7 @@ import type {
     TradingState as CommonTradingState,
     TradeServerEnvironment,
     TradingCountryCode,
+    TradingType,
     TradingTypeWithConcierge,
 } from '@suite-common/trading';
 
@@ -27,6 +28,7 @@ export interface TradingState extends CommonTradingState {
     residence: TradingResidenceState;
     tradingEnvironment: TradeServerEnvironment;
     tradeOrderIdToBeOpened: string | undefined;
+    formResetRequestedFor: TradingType | undefined;
     isAmountInputActive: boolean;
     activeTradingType: TradingTypeWithConcierge | undefined;
     providerConfirmationStatus: ProviderConfirmationStatus;

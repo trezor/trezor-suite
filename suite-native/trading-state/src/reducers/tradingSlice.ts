@@ -61,6 +61,7 @@ export const tradingSlice = createSliceWithExtraDeps({
         ) => {
             state.tradingEnvironment = payload;
             state.tradeOrderIdToBeOpened = undefined;
+            state.formResetRequestedFor = undefined;
             buyReducer(state.buy, buyActions.clearState());
             exchangeReducer(state.exchange, exchangeActions.clearState());
             sellReducer(state.sell, sellActions.clearState());
@@ -70,6 +71,12 @@ export const tradingSlice = createSliceWithExtraDeps({
         },
         clearTradeOrderIdToBeOpened: (state: TradingState) => {
             state.tradeOrderIdToBeOpened = undefined;
+        },
+        requestTradingFormReset: (state: TradingState, { payload }: PayloadAction<TradingType>) => {
+            state.formResetRequestedFor = payload;
+        },
+        clearTradingFormResetRequest: (state: TradingState) => {
+            state.formResetRequestedFor = undefined;
         },
         setIsAmountInputActive: (state: TradingState, { payload }: PayloadAction<boolean>) => {
             state.isAmountInputActive = payload;

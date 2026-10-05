@@ -73,6 +73,7 @@ export const TradingTransactionReview = memo(
         } = useTradingOutputsReviewScreenControls({
             orderId,
             accountKey,
+            tradingType,
             isDexExchange,
             signAndSendTransaction,
             resolveTransactionSendConsent,

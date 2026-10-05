@@ -26,7 +26,7 @@ import { type TradingRootState, selectTradingResidenceCountry } from '@suite-nat
 import { type BuyFormType, type TradeableAsset } from '@suite-native/trading-types';
 import { PROTO } from '@trezor/connect';
 
-import { clearBuyFormQuoteData, useBuyForm } from './useBuyForm';
+import { useBuyForm } from './useBuyForm';
 import { createTradingTestStore } from '../../test-utils/tradingTestUtils';
 
 type State = TradingRootState & AccountsRootState & WalletSettingsRootState;
@@ -709,27 +709,6 @@ describe('useBuyForm', () => {
             });
 
             expect(selectTradingResidenceCountry(store.getState())).toBe('CA');
-        });
-    });
-
-    describe('clearBuyFormQuoteData', () => {
-        it('should clear quote, fiatValue, cryptoValue and generalAlert data', async () => {
-            const store = getInitializedStore();
-            const { result } = await renderUseTradingBuyForm(store);
-
-            await act(() => {
-                result.current.setValue('fiatValue', '10');
-                result.current.setValue('cryptoValue', '10');
-                result.current.setValue('quote', mercuryoApplePayBuyQuote);
-            });
-
-            await act(() => {
-                clearBuyFormQuoteData(result.current);
-            });
-
-            expect(result.current.getValues('quote')).toBeUndefined();
-            expect(result.current.getValues('fiatValue')).toBeUndefined();
-            expect(result.current.getValues('cryptoValue')).toBeUndefined();
         });
     });
 });
