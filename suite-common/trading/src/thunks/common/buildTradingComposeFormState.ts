@@ -8,7 +8,7 @@ import {
     type FormState,
     type FormStateTrading,
 } from '@suite-common/wallet-types';
-import { isEvmApprovalTx } from '@suite-common/wallet-utils';
+import { isEvmApprovalTx, isNativeErc20Contract } from '@suite-common/wallet-utils';
 
 import { type TradingComposedTransactionInfo } from '../../reducers/tradingCommonReducer';
 
@@ -34,6 +34,27 @@ const getShouldIncludeToken = ({
     !transactionData ||
     (isApprovalFlowSupported(device) && isEvmApprovalTx(transactionData)) ||
     getNetwork(account.symbol).networkType === 'solana';
+
+type GetComposeTokenParams = Pick<
+    BuildTradingComposeFormStateParams,
+    'account' | 'address' | 'transactionData' | 'composed'
+>;
+
+const getComposeToken = ({
+    account,
+    address,
+    transactionData,
+    composed,
+}: GetComposeTokenParams) => {
+    if (composed.token?.contract) {
+        return composed.token.contract;
+    }
+
+    const isNativeErc20Approval =
+        isEvmApprovalTx(transactionData) && isNativeErc20Contract(account.symbol, address);
+
+    return isNativeErc20Approval ? address : null;
+};
 
 export const buildTradingComposeFormState = ({
     account,
@@ -62,7 +83,9 @@ export const buildTradingComposeFormState = ({
                           address,
                           amount,
                           currency: DEFAULT_PAYMENT.currency,
-                          token: shouldIncludeToken ? (composed.token?.contract ?? null) : null,
+                          token: shouldIncludeToken
+                              ? getComposeToken({ account, address, transactionData, composed })
+                              : null,
                       },
                   ],
         setMaxOutputId: !composed.token?.contract ? setMaxOutputId : undefined,

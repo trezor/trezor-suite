@@ -7,13 +7,13 @@ import type {
     ExchangeTradeStatus,
 } from 'invity-api';
 
-import { invariant } from '@suite-common/suite-utils';
 import { type Network } from '@suite-common/wallet-config';
-import { type Account } from '@suite-common/wallet-types';
+import { type Account, toTokenAddress } from '@suite-common/wallet-types';
 import {
     asAmountUnit,
     buildApprovalTransactionData,
     getErc20ApproveSpender,
+    getNativeErc20Contract,
     tokenSupportsIncreasingAllowance,
     unitsToSubunits,
 } from '@suite-common/wallet-utils';
@@ -50,8 +50,52 @@ const isNativeCryptoId = (cryptoId?: CryptoId) => {
 export const isSendingEvmNativeToken = (cryptoId?: CryptoId) =>
     isEvmCryptoId(cryptoId) && isNativeCryptoId(cryptoId);
 
-export const requiresErc20Approval = (cryptoId?: CryptoId) =>
+const requiresContractApproval = (cryptoId?: CryptoId) =>
     isEvmCryptoId(cryptoId) && !isNativeCryptoId(cryptoId);
+
+const getNativeErc20SendContract = (cryptoId?: CryptoId) => {
+    const network = cryptoIdToNetwork(cryptoId);
+
+    if (!network || !isNativeCryptoId(cryptoId)) {
+        return undefined;
+    }
+
+    const nativeErc20Contract = getNativeErc20Contract(network.symbol);
+
+    return nativeErc20Contract ? toTokenAddress(nativeErc20Contract) : undefined;
+};
+
+export const requiresErc20Approval = (cryptoId?: CryptoId) =>
+    requiresContractApproval(cryptoId) || !!getNativeErc20SendContract(cryptoId);
+
+export const isNativeErc20DexQuote = (quote?: ExchangeTrade): boolean =>
+    !!quote?.isDex &&
+    !!getNativeErc20SendContract(quote.send) &&
+    (!quote.dexTx || new BigNumber(quote.dexTx.value).isZero());
+
+export const getErc20ApprovalContract = (cryptoId?: CryptoId) => {
+    if (!cryptoId) {
+        return undefined;
+    }
+
+    if (isNativeCryptoId(cryptoId)) {
+        return getNativeErc20SendContract(cryptoId);
+    }
+
+    return parseCryptoId(cryptoId).contractAddress;
+};
+
+export const getDexQuoteTokenContract = (quote?: ExchangeTrade) => {
+    if (!quote?.send) {
+        return undefined;
+    }
+
+    if (requiresContractApproval(quote.send)) {
+        return parseCryptoId(quote.send).contractAddress;
+    }
+
+    return isNativeErc20DexQuote(quote) ? getNativeErc20SendContract(quote.send) : undefined;
+};
 
 // loop through quotes and if all quotes are either with error below minimum or over maximum, return error message
 const getAmountLimits = ({
@@ -139,7 +183,9 @@ export const hasEip712SignData = (quote?: ExchangeTrade) =>
     quote?.status === 'SIGN_DATA' && hasEip712SignDataType(quote);
 
 export const requiresTokenApproval = (quote?: ExchangeTrade): boolean =>
-    !!quote?.isDex && requiresErc20Approval(quote.send) && !hasEip712SignData(quote);
+    !!quote?.isDex &&
+    !hasEip712SignData(quote) &&
+    (requiresContractApproval(quote.send) || isNativeErc20DexQuote(quote));
 
 export const getDisplayNetworkFee = (
     quote: ExchangeTrade | undefined,
@@ -159,11 +205,7 @@ export const getApprovalStatus = (candidateQuote?: ExchangeTrade): ApprovalStatu
         candidateQuote.preapprovedStringAmount && candidateQuote.preapprovedStringAmount !== '0';
 
     if (isApprovalTxPreApproved && candidateQuote.status === 'APPROVAL_REQ') {
-        // send is defined as requiresTokenApproval checks for it, but we need to assert it for TypeScript
-        invariant(candidateQuote.send, 'candidateQuote.send not defined!');
-        const { contractAddress } = parseCryptoId(candidateQuote.send);
-
-        return tokenSupportsIncreasingAllowance(contractAddress)
+        return tokenSupportsIncreasingAllowance(getDexQuoteTokenContract(candidateQuote))
             ? 'needs_increase'
             : 'needs_revoke';
     }

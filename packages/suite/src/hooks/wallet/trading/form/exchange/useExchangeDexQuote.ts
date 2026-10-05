@@ -12,6 +12,8 @@ import {
     type TradingExchangeFormProps,
     type TradingExchangeFormType,
     getDexEstimationData,
+    getDexQuoteTokenContract,
+    isNativeErc20DexQuote,
     requiresErc20Approval,
 } from '@suite-common/trading';
 import { isAccountBasedNetwork } from '@suite-common/wallet-config';
@@ -54,10 +56,16 @@ export const useExchangeDexQuote = ({
     const { dispatch } = useServices(injectDispatch);
     const { setValue, control } = methods;
 
-    const [transactionData, outputAddress, ethereumAdjustGasLimit] = useWatch({
-        control,
-        name: ['transactionData', TRADING_FORM_OUTPUT_ADDRESS, 'ethereumAdjustGasLimit'],
-    });
+    const [transactionData, outputAddress, ethereumAdjustGasLimit, ethereumNativeErc20Contract] =
+        useWatch({
+            control,
+            name: [
+                'transactionData',
+                TRADING_FORM_OUTPUT_ADDRESS,
+                'ethereumAdjustGasLimit',
+                'ethereumNativeErc20Contract',
+            ],
+        });
 
     const accountRef = useCurrentRef(account);
     const composeRequestRef = useCurrentRef(composeRequest);
@@ -95,6 +103,7 @@ export const useExchangeDexQuote = ({
         if (exchangeType !== TRADING_EXCHANGE_FORM_DEX) {
             setValue('transactionData', '');
             setValue(TRADING_FORM_OUTPUT_ADDRESS, '');
+            setValue('ethereumNativeErc20Contract', undefined);
 
             return;
         }
@@ -104,6 +113,7 @@ export const useExchangeDexQuote = ({
         if (!quote?.dexTx) {
             setValue('transactionData', '');
             setValue(TRADING_FORM_OUTPUT_ADDRESS, '');
+            setValue('ethereumNativeErc20Contract', undefined);
 
             return;
         }
@@ -113,6 +123,10 @@ export const useExchangeDexQuote = ({
         setValue('transactionData', getDexEstimationData(quote) ?? '');
         setValue(TRADING_FORM_OUTPUT_ADDRESS, dexTx.to);
         setValue('ethereumAdjustGasLimit', ETHEREUM_ADJUST_GAS_LIMIT);
+        setValue(
+            'ethereumNativeErc20Contract',
+            isNativeErc20DexQuote(quote) ? getDexQuoteTokenContract(quote) : undefined,
+        );
     }, [
         dexQuotes,
         selectedQuote,
@@ -128,7 +142,13 @@ export const useExchangeDexQuote = ({
     const transactionShape = getEvmTransactionTextSignature(transactionData);
     useEffect(() => {
         fetchFeesAndComposeRef.current();
-    }, [transactionShape, outputAddress, ethereumAdjustGasLimit, fetchFeesAndComposeRef]);
+    }, [
+        transactionShape,
+        outputAddress,
+        ethereumAdjustGasLimit,
+        ethereumNativeErc20Contract,
+        fetchFeesAndComposeRef,
+    ]);
 
     return { fetchFeesAndCompose };
 };

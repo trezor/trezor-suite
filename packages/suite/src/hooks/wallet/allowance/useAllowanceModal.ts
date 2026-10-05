@@ -3,10 +3,10 @@ import { useCallback, useEffect, useMemo, useState } from 'react';
 import { type CryptoId, type DexApprovalType } from 'invity-api';
 
 import { type TranslationKey, isTranslationKey } from '@suite/intl';
-import { parseCryptoId } from '@suite-common/trading';
+import { getErc20ApprovalContract } from '@suite-common/trading';
 import { REVOKE_ALLOWANCE_AMOUNT } from '@suite-common/wallet-core';
 import { type Account, type AllowanceType } from '@suite-common/wallet-types';
-import { asAmountSubunit, findToken, getAllowanceAmount } from '@suite-common/wallet-utils';
+import { asAmountSubunit, findAccountToken, getAllowanceAmount } from '@suite-common/wallet-utils';
 import { useCurrentRef } from '@trezor/react-utils';
 import { BigNumber } from '@trezor/utils';
 
@@ -42,8 +42,8 @@ export const useAllowanceModal = ({
         type === 'REVOKE' ? 'ZERO' : 'MINIMAL',
     );
 
-    const { contractAddress: contract = '' } = parseCryptoId(cryptoId);
-    const token = findToken(account.tokens, contract);
+    const contract = getErc20ApprovalContract(cryptoId) ?? '';
+    const token = findAccountToken(account, contract);
 
     const {
         inputAmount = asAmountSubunit(new BigNumber(0)),

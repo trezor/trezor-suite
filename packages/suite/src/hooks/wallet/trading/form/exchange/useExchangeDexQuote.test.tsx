@@ -97,6 +97,7 @@ const mockComposeRequest = jest.fn();
 
 type RenderExchangeDexQuoteParams = {
     defaultValues: TradingExchangeFormProps;
+    selectedQuote?: ExchangeTrade;
     dexQuotes?: ExchangeTrade[];
     isFormLoading?: boolean;
     isLoadingQuote?: boolean;
@@ -104,6 +105,7 @@ type RenderExchangeDexQuoteParams = {
 
 const renderExchangeDexQuote = ({
     defaultValues,
+    selectedQuote,
     dexQuotes = [],
     isFormLoading = false,
     isLoadingQuote = false,
@@ -123,7 +125,7 @@ const renderExchangeDexQuote = ({
                 isLoadingQuote,
                 exchangeType: defaultValues.exchangeType,
                 sendCryptoSelect: defaultValues.sendCryptoSelect,
-                selectedQuote: undefined,
+                selectedQuote,
                 dexQuotes,
                 composeRequest: mockComposeRequest,
             });
@@ -153,6 +155,58 @@ describe('useExchangeDexQuote', () => {
             expect(result.current.methods.getValues('transactionData')).toBe('0xabcdef1234567890');
             expect(result.current.methods.getValues('ethereumAdjustGasLimit')).toBeDefined();
         });
+    });
+
+    it('composes the selected value-less DEX quote of a native coin through its ERC-20 contract', async () => {
+        const arcSendCryptoSelect: TradingAssetSellOption = {
+            ...SEND_CRYPTO_SELECT,
+            id: 'usd-coin' as CryptoId,
+        };
+        const arcApprovalQuote: ExchangeTrade = {
+            exchange: 'lifi',
+            send: 'usd-coin' as CryptoId,
+            receive: 'arc--0xbef5f6d51cb62b58e6a8f77868681825c6fe21c1' as CryptoId,
+            isDex: true,
+            status: 'APPROVAL_REQ',
+            dexTx: {
+                from: '0xUserAddress',
+                to: '0x3600000000000000000000000000000000000000',
+                data: '0xabcdef1234567890',
+                value: '0',
+            },
+        };
+
+        const { result } = renderExchangeDexQuote({
+            defaultValues: buildDefaults({
+                exchangeType: TRADING_EXCHANGE_FORM_DEX,
+                sendCryptoSelect: arcSendCryptoSelect,
+            }),
+            selectedQuote: arcApprovalQuote,
+            dexQuotes: [DEX_QUOTE],
+        });
+
+        await waitFor(() => {
+            expect(result.current.methods.getValues('outputs.0.address')).toBe(
+                '0x3600000000000000000000000000000000000000',
+            );
+            expect(result.current.methods.getValues('ethereumNativeErc20Contract')).toBe(
+                '0x3600000000000000000000000000000000000000',
+            );
+        });
+    });
+
+    it('does not compose a native coin without an ERC-20 face through a token contract', async () => {
+        const { result } = renderExchangeDexQuote({
+            defaultValues: buildDefaults({ exchangeType: TRADING_EXCHANGE_FORM_DEX }),
+            dexQuotes: [DEX_QUOTE],
+        });
+
+        await waitFor(() => {
+            expect(result.current.methods.getValues('outputs.0.address')).toBe(
+                '0xDexRouterAddress',
+            );
+        });
+        expect(result.current.methods.getValues('ethereumNativeErc20Contract')).toBeUndefined();
     });
 
     it('clears transaction data and receive address for a non-DEX exchange type', async () => {

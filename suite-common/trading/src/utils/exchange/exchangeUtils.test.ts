@@ -9,6 +9,7 @@ import {
     deriveBitcoinSwapFromAddresses,
     getApprovalStatus,
     getDexEstimationData,
+    getDexQuoteTokenContract,
     getDisplayNetworkFee,
     hasEip712SignDataType,
     requiresErc20Approval,
@@ -24,6 +25,15 @@ const USDT_CRYPTO_ID = 'ethereum--0xdac17f958d2ee523a2206206994597c13d831ec7' as
 const DAI_CRYPTO_ID = 'ethereum--0x6b175474e89094c44da98b954eedeac495271d0f' as CryptoId;
 const USDT_SOLANA_CRYPTO_ID = 'solana--Es9vMFrzaCERmJfrF4H2FYD4KCoNkY11McCe8BenwNYB' as CryptoId;
 const USDC_BASE_CRYPTO_ID = 'base--0x833589fcd6edb6e08f4c7c32d4f71b54bda02913' as CryptoId;
+const ARC_USDC_CRYPTO_ID = 'usd-coin' as CryptoId;
+const ARC_NATIVE_ERC20_CONTRACT = '0x3600000000000000000000000000000000000000';
+
+const getArcDexTx = (value: string) => ({
+    from: '0x9CD02a26cD336D0Fe784FB7995f6e5c9e3776258',
+    to: ARC_NATIVE_ERC20_CONTRACT,
+    data: '0x',
+    value,
+});
 
 describe('requiresErc20Approval', () => {
     it('should return false when no crypto id is provided', () => {
@@ -51,6 +61,10 @@ describe('requiresErc20Approval', () => {
     it('should return false for a non-EVM network, both native and token', () => {
         expect(requiresErc20Approval('solana' as CryptoId)).toBe(false);
         expect(requiresErc20Approval(USDT_SOLANA_CRYPTO_ID)).toBe(false);
+    });
+
+    it('should return true for a native coin that is also exposed as an ERC-20', () => {
+        expect(requiresErc20Approval(ARC_USDC_CRYPTO_ID)).toBe(true);
     });
 });
 
@@ -145,6 +159,48 @@ describe('requiresTokenApproval', () => {
         expect(result).toBe(true);
     });
 
+    it('should return true for a DEX quote spending the ERC-20 face of a native coin', () => {
+        const quote = {
+            orderId: 'test-order',
+            isDex: true,
+            send: ARC_USDC_CRYPTO_ID,
+            dexTx: getArcDexTx('0'),
+        };
+        const result = requiresTokenApproval(quote);
+        expect(result).toBe(true);
+    });
+
+    it('should return true for a DEX quote of a native coin exposed as an ERC-20 before the quote has a dexTx', () => {
+        const quote = {
+            orderId: 'test-order',
+            isDex: true,
+            send: ARC_USDC_CRYPTO_ID,
+        };
+        const result = requiresTokenApproval(quote);
+        expect(result).toBe(true);
+    });
+
+    it('should return false for a DEX quote paying a native coin exposed as an ERC-20 as msg.value', () => {
+        const quote = {
+            orderId: 'test-order',
+            isDex: true,
+            send: ARC_USDC_CRYPTO_ID,
+            dexTx: getArcDexTx('4'),
+        };
+        const result = requiresTokenApproval(quote);
+        expect(result).toBe(false);
+    });
+
+    it('should return false for a CEX quote of a native coin exposed as an ERC-20', () => {
+        const quote = {
+            orderId: 'test-order',
+            isDex: false,
+            send: ARC_USDC_CRYPTO_ID,
+        };
+        const result = requiresTokenApproval(quote);
+        expect(result).toBe(false);
+    });
+
     it('should return false for DEX quotes with ERC-20 tokens when status is SIGN_DATA with EIP-712 data', () => {
         const quote = {
             orderId: 'test-order',
@@ -212,6 +268,19 @@ describe('getApprovalStatus', () => {
         };
         const result = getApprovalStatus(quote);
         expect(result).toBe('needs_revoke');
+    });
+
+    it('should return "needs_increase" for a preapproved ERC-20 face of a native coin with status APPROVAL_REQ', () => {
+        const quote = {
+            orderId: 'test-order',
+            preapprovedStringAmount: '0.001',
+            isDex: true,
+            send: ARC_USDC_CRYPTO_ID,
+            dexTx: getArcDexTx('0'),
+            status: 'APPROVAL_REQ' as const,
+        };
+        const result = getApprovalStatus(quote);
+        expect(result).toBe('needs_increase');
     });
 
     it('should return "needs_approval" when preapprovedStringAmount is "0" and isDex is true', () => {
@@ -288,6 +357,36 @@ describe('getApprovalStatus', () => {
         };
         const result = getApprovalStatus(quote);
         expect(result).toBe('needs_approval');
+    });
+});
+
+describe('getDexQuoteTokenContract', () => {
+    it('should return the ERC-20 face contract for a native coin spent through it', () => {
+        const quote = {
+            orderId: 'test-order',
+            isDex: true,
+            send: ARC_USDC_CRYPTO_ID,
+            dexTx: getArcDexTx('0'),
+        };
+        expect(getDexQuoteTokenContract(quote)).toBe(ARC_NATIVE_ERC20_CONTRACT);
+    });
+
+    it('should return the token contract for an ERC-20 token', () => {
+        const quote = {
+            orderId: 'test-order',
+            isDex: true,
+            send: USDT_CRYPTO_ID,
+        };
+        expect(getDexQuoteTokenContract(quote)).toBe('0xdac17f958d2ee523a2206206994597c13d831ec7');
+    });
+
+    it('should return undefined for a native coin without an ERC-20 face', () => {
+        const quote = {
+            orderId: 'test-order',
+            isDex: true,
+            send: 'ethereum' as CryptoId,
+        };
+        expect(getDexQuoteTokenContract(quote)).toBeUndefined();
     });
 });
 
