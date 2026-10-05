@@ -83,6 +83,12 @@ module.exports = {
         files: ['entitlements.mac.inherit.plist'],
         extraResources: [
             {
+                // macOS 26+ reads the Dock icon from this catalog. The legacy icns has no
+                // dark appearance, so Dark Mode otherwise draws a black lock on a black tile.
+                from: 'mac-icon/Assets.car',
+                to: 'Assets.car',
+            },
+            {
                 from: 'build/static/bin/tor/mac-${arch}',
                 to: 'bin/tor',
             },
@@ -104,6 +110,7 @@ module.exports = {
         entitlements: 'entitlements.mac.inherit.plist',
         entitlementsInherit: 'entitlements.mac.inherit.plist',
         extendInfo: {
+            CFBundleIconName: 'Icon',
             NSBluetoothAlwaysUsageDescription:
                 'Allow Trezor Suite to use Bluetooth to securely connect and communicate with your Trezor device.',
             // Delete those keys from Info.plist, Electron adds them by default but Trezor Suite does not need these permissions
