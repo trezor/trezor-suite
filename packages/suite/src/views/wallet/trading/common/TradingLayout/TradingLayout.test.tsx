@@ -15,6 +15,11 @@ import { mockInitialAppState } from '../../../../../../mocks/mockInitialAppState
 
 jest.mock('@suite-common/tx-simulation', () => ({}));
 
+jest.mock('@suite-common/wallet-core', () => ({
+    ...jest.requireActual('@suite-common/wallet-core'),
+    selectHasRunningDiscovery: () => true,
+}));
+
 type TranslationProps = { id: string };
 
 jest.mock('@suite/intl', () => ({
@@ -44,7 +49,7 @@ const buildState = (): AppState => ({
 });
 
 describe('TradingLayout', () => {
-    it('always renders children regardless of visible accounts or device state', () => {
+    it('renders the discovery warning above navigation and children', () => {
         const { services } = createTestCompositionRoot<WithServices<DesktopAnalyticsDep>, AppState>(
             {
                 preloadedState: buildState(),
@@ -59,9 +64,14 @@ describe('TradingLayout', () => {
             </TradingLayout>,
         );
 
-        expect(screen.getByTestId('trading-layout-navigation')).toHaveTextContent(
-            'wallet-trading-buy',
+        const discoveryWarning = screen.getByTestId('@warning/trezorDiscovery');
+        const navigation = screen.getByTestId('trading-layout-navigation');
+        const content = screen.getByTestId('trading-content');
+
+        expect(discoveryWarning.compareDocumentPosition(navigation)).toBe(
+            Node.DOCUMENT_POSITION_FOLLOWING,
         );
-        expect(screen.getByTestId('trading-content')).toBeInTheDocument();
+        expect(navigation).toHaveTextContent('wallet-trading-buy');
+        expect(navigation.compareDocumentPosition(content)).toBe(Node.DOCUMENT_POSITION_FOLLOWING);
     });
 });
