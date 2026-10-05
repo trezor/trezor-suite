@@ -6,7 +6,7 @@ import { mockActionType } from '@suite-common/redux-utils/mocks';
 import { type LockDevice } from '@suite-common/suite-types';
 import { mockSuiteDevice } from '@suite-common/suite-types/mocks';
 import { createTestCompositionRoot } from '@suite-common/test-utils';
-import TrezorConnect, { type CallMethodAnyResponse } from '@trezor/connect';
+import TrezorConnect, { type CallMethodAnyResponse, type CallMethodParams } from '@trezor/connect';
 import { TypedError, serializeError } from '@trezor/connect-common/src/constants/errors';
 import { getSynchronize } from '@trezor/utils';
 
@@ -35,6 +35,7 @@ import {
     type ConnectCallSource,
     UNKNOWN_PROCESS,
 } from './connectPopupTypes';
+import type { DistributiveOmit } from './methodHooks/types';
 
 type DeviceResponse = Awaited<CallMethodAnyResponse>;
 
@@ -573,5 +574,84 @@ describe('connectPopupCallThunk remembered permissions', () => {
 
             expect(await asksForPermissions(store, unidentifiedSource)).toBe(true);
         });
+    });
+});
+
+describe('connectPopupCallThunk cipherKeyValue', () => {
+    const signing = { permission: 'sign' } as const;
+    const labelingRequest = {
+        path: "m/10015'/0'",
+        key: 'Enable labeling?',
+        value: '00'.repeat(32),
+        encrypt: true,
+        askOnEncrypt: true,
+        askOnDecrypt: true,
+    };
+    const otherRequest = { ...labelingRequest, key: 'Other key' };
+
+    beforeEach(() => {
+        jest.spyOn(TrezorConnect, 'call').mockImplementation(params =>
+            Promise.resolve(
+                '__info' in params
+                    ? ({
+                          success: true,
+                          payload: {
+                              info: 'Cipher key value',
+                              requiredPermissions: [signing],
+                              useUi: true,
+                          },
+                      } as DeviceResponse)
+                    : ({ success: true, payload: { value: '00' } } as DeviceResponse),
+            ),
+        );
+    });
+
+    afterEach(() => jest.restoreAllMocks());
+
+    // The app has the method's permission remembered, so the call reaches the device unless the
+    // request itself is refused.
+    const callCipherKeyValue = (
+        payload: DistributiveOmit<CallMethodParams<'cipherKeyValue'>, 'method'>,
+    ) => {
+        const store = createStore([{ ...source, allowedPermissions: [signing] }]);
+        const deferred = createPopupCallDeferred();
+        store.dispatch(
+            connectPopupCallThunk({
+                method: 'cipherKeyValue',
+                payload,
+                source,
+                responseId: deferred.id,
+            }),
+        );
+
+        return deferred.promise;
+    };
+
+    it.each([
+        ['alone', labelingRequest],
+        ['in a bundle', { bundle: [otherRequest, labelingRequest] }],
+        ['followed by a NUL character', { ...labelingRequest, key: 'Enable labeling?\0' }],
+    ])(
+        'does not pass a request for the Suite labeling key %s to the device',
+        async (_, payload) => {
+            const response = await callCipherKeyValue(payload);
+
+            expect(response).toEqual(
+                expect.objectContaining({
+                    success: false,
+                    error: expect.objectContaining({ code: 'Method_NotAllowed' }),
+                }),
+            );
+            expect(TrezorConnect.call).toHaveBeenCalledTimes(1);
+            expect(TrezorConnect.call).toHaveBeenCalledWith(
+                expect.objectContaining({ __info: true }),
+            );
+        },
+    );
+
+    it('passes requests for other keys to the device', async () => {
+        const response = await callCipherKeyValue(otherRequest);
+
+        expect(response).toEqual({ success: true, payload: { value: '00' } });
     });
 });
