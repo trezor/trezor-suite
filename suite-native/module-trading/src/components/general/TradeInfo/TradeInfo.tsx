@@ -28,7 +28,7 @@ export const TradeInfo = ({ trade, accountKey, tradingType, children }: TradeInf
         <Card noPadding>
             <ProviderInfoRow exchange={trade?.exchange} tradingType={tradingType} noBorder />
             <Divider style={applyStyle(dividerStyle)} />
-            <TradeFeeInfoRow accountKey={accountKey} tradingType={tradingType} />
+            <TradeFeeInfoRow trade={trade} accountKey={accountKey} tradingType={tradingType} />
             {children}
         </Card>
     );

@@ -1,7 +1,19 @@
 import { useSelector } from 'react-redux';
 
-import type { TradingExchangeType, TradingSellType } from '@suite-common/trading';
-import { type FormDraftRootState, selectDeepCopyOfFormDraft } from '@suite-common/wallet-core';
+import type { ExchangeTrade, SellFiatTrade } from 'invity-api';
+
+import {
+    type TradingExchangeType,
+    type TradingSellType,
+    hasFixedPsbtFee,
+    isExchangeTrade,
+} from '@suite-common/trading';
+import {
+    type AccountsRootState,
+    type FormDraftRootState,
+    selectAccountNetworkType,
+    selectDeepCopyOfFormDraft,
+} from '@suite-common/wallet-core';
 import type { AccountKey, FeeLevelLabel } from '@suite-common/wallet-types';
 import { getFormDraftKeyByTradeType } from '@suite-native/trading-state';
 import { FeeSelectorRow } from '@suite-native/transaction-management';
@@ -10,16 +22,22 @@ import { useComposeTradingTransaction } from '../../../hooks/general/useComposeT
 import { updateTradingSelectedFeeLevelThunk } from '../../../thunks';
 
 export type TradeFeeInfoRowProps = {
+    trade: ExchangeTrade | SellFiatTrade | undefined;
     accountKey: AccountKey;
     tradingType: TradingSellType | TradingExchangeType;
 };
 
-export const TradeFeeInfoRow = ({ accountKey, tradingType }: TradeFeeInfoRowProps) => {
+export const TradeFeeInfoRow = ({ trade, accountKey, tradingType }: TradeFeeInfoRowProps) => {
     const { composeTradingTransaction } = useComposeTradingTransaction({ tradeType: tradingType });
     const formDraftKey = getFormDraftKeyByTradeType(tradingType);
     const formDraft = useSelector((state: FormDraftRootState) =>
         selectDeepCopyOfFormDraft(state, formDraftKey),
     );
+    const networkType = useSelector((state: AccountsRootState) =>
+        selectAccountNetworkType(state, accountKey),
+    );
+    const isFeeFixed =
+        !!trade && !!networkType && isExchangeTrade(trade) && hasFixedPsbtFee(trade, networkType);
 
     return (
         <FeeSelectorRow
@@ -30,6 +48,7 @@ export const TradeFeeInfoRow = ({ accountKey, tradingType }: TradeFeeInfoRowProp
             formDraft={formDraft}
             formDraftKey={formDraftKey}
             onFeeConfirmed={composeTradingTransaction}
+            isReadOnly={isFeeFixed}
         />
     );
 };

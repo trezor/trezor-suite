@@ -8,11 +8,13 @@ import { TronFeeSummaryRow } from './TronFeeSummaryCard/TronFeeSummaryRow';
 import { type UseFeeSelectorParams, useFeeSelector } from '../../hooks/fees/useFeeSelector';
 import { useTronFeeBreakdown } from '../../hooks/fees/useTronFeeBreakdown';
 
-type FeeSelectorRowProps = UseFeeSelectorParams;
+type FeeSelectorRowProps = UseFeeSelectorParams & {
+    isReadOnly?: boolean;
+};
 
 const FEE_SELECTOR_ROW_TEST_ID = '@transactionManagement/fee-selector-row';
 
-export const FeeSelectorRow = (props: FeeSelectorRowProps) => {
+export const FeeSelectorRow = ({ isReadOnly = false, ...props }: FeeSelectorRowProps) => {
     const {
         form,
         fee,
@@ -49,7 +51,7 @@ export const FeeSelectorRow = (props: FeeSelectorRowProps) => {
     }
 
     const isTron = networkType === 'tron';
-    const isPressable = !isTron || isTrc20;
+    const isPressable = !isReadOnly && (!isTron || isTrc20);
 
     return (
         <>
@@ -73,7 +75,7 @@ export const FeeSelectorRow = (props: FeeSelectorRowProps) => {
                         symbol={symbol}
                         networkType={networkType}
                         areFeesLoading={areFeesLoading}
-                        withCaret={!isTron}
+                        withCaret={!isTron && !isReadOnly}
                     />
                 )}
             </Pressable>
