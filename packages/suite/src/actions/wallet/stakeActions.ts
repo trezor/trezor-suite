@@ -175,7 +175,7 @@ const pushTransactionThunk =
                 dispatch(
                     notificationsActions.addToast({
                         type: EARN_TRANSACTION_TOAST_TYPE[stakeType],
-                        stage: 'pending',
+                        stage: isRbfBumpFeeTransaction(precomposedTx) ? 'sped-up' : 'pending',
                         device,
                         descriptor: account.descriptor,
                         symbol: account.symbol,

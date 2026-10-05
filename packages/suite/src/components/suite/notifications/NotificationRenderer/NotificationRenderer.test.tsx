@@ -279,6 +279,21 @@ describe('NotificationRenderer transaction broadcasts', () => {
     );
 
     it.each(['tx-staked', 'tx-unstaked', 'tx-claimed'] as const)(
+        'renders a sped-up %s with the warning variant and piggy-bank icon',
+        type => {
+            renderNotification({
+                ...earnTransactionPayload,
+                type,
+                stage: 'sped-up',
+            });
+
+            const notificationView = screen.getByTestId('notification-view');
+            expect(notificationView).toHaveAttribute('data-variant', 'warning');
+            expect(notificationView).toHaveAttribute('data-icon', 'piggy-bank');
+        },
+    );
+
+    it.each(['tx-staked', 'tx-unstaked', 'tx-claimed'] as const)(
         'renders a confirmed %s with the success variant and piggy-bank icon',
         type => {
             renderNotification({

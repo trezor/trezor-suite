@@ -40,9 +40,21 @@ import { type NotificationViewProps } from '../Notifications/NotificationGroup/N
 type LocalizedNotificationEntry = NotificationEntry<TranslationKey>;
 
 const EARN_TOAST_MESSAGES = {
-    'tx-staked': { pending: 'TOAST_TX_STAKE_PENDING', confirmed: 'TOAST_TX_STAKE_CONFIRMED' },
-    'tx-unstaked': { pending: 'TOAST_TX_UNSTAKE_PENDING', confirmed: 'TOAST_TX_UNSTAKE_CONFIRMED' },
-    'tx-claimed': { pending: 'TOAST_TX_CLAIM_PENDING', confirmed: 'TOAST_TX_CLAIM_CONFIRMED' },
+    'tx-staked': {
+        pending: 'TOAST_TX_STAKE_PENDING',
+        'sped-up': 'TOAST_TX_STAKE_SPED_UP',
+        confirmed: 'TOAST_TX_STAKE_CONFIRMED',
+    },
+    'tx-unstaked': {
+        pending: 'TOAST_TX_UNSTAKE_PENDING',
+        'sped-up': 'TOAST_TX_UNSTAKE_SPED_UP',
+        confirmed: 'TOAST_TX_UNSTAKE_CONFIRMED',
+    },
+    'tx-claimed': {
+        pending: 'TOAST_TX_CLAIM_PENDING',
+        'sped-up': 'TOAST_TX_CLAIM_SPED_UP',
+        confirmed: 'TOAST_TX_CLAIM_CONFIRMED',
+    },
 } as const satisfies Record<
     'tx-staked' | 'tx-unstaked' | 'tx-claimed',
     Record<EarnTransactionStage, TranslationKey>
