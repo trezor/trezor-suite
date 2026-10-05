@@ -64,6 +64,9 @@ type ConnectPopupCallThunkParams<M extends CallMethodKeys> = {
     method: M;
     payload: DistributiveOmit<CallMethodParams<M>, 'method'>;
     source: ConnectCallSource;
+    // Token of the call being retried, taken from the stored call the restart spreads. A retry or a
+    // device switch keeps it, so a cancel still names the call it is meant to end.
+    callId?: string;
 };
 
 export type ConnectPopupCallInnerThunkState = DeviceRootState & ConnectPopupStateRootState;
@@ -82,12 +85,14 @@ export const connectPopupCallInnerThunk = createThunk<
     { state: ConnectPopupCallInnerThunkState; extra: ConnectPopupCallInnerThunkDeps }
 >(
     `${CONNECT_POPUP_MODULE}/callThunk`,
-    async ({ source, ...params }, { dispatch, getState, extra }) => {
+    async ({ source, callId: retriedCallId, ...params }, { dispatch, getState, extra }) => {
         try {
             const { method, payload } = compatibilityHooks({ ...params, source });
             // Store the caller's token before permissions or device selection so a cancel can be
-            // matched throughout the entire popup flow.
-            const { callId } = payload as { callId?: string };
+            // matched throughout the entire popup flow. A call without a token of its own gets one,
+            // so that its cancel ends only this call.
+            const callId =
+                (payload as { callId?: string }).callId ?? retriedCallId ?? crypto.randomUUID();
 
             if (!connectCallableMethods.includes(method)) throw TypedError('Method_Unsupported');
 
@@ -210,6 +215,7 @@ export const connectPopupCallInnerThunk = createThunk<
                     useEmptyPassphrase: device.useEmptyPassphrase,
                 },
                 ...modifiedPayload,
+                callId,
                 method,
             } as CallMethodPayload);
             response.id = undefined;
@@ -438,6 +444,7 @@ export const connectPopupVerifyAddressThunk = createThunk<
                 ...call.addresses?.[index]?.validatePayload,
                 showOnTrezor: true,
                 chunked: false,
+                callId: call.callId,
             });
             const validatedStatus = res.success ? 'valid' : 'failed';
             dispatch(
@@ -980,6 +987,7 @@ export const connectPopupVerifySelectAccountThunk = createThunk<
                     coin: candidate.symbol,
                     showOnTrezor: true,
                     derivationType: getDerivationType(accountType),
+                    callId: call.callId,
                 });
                 if (!res.success) {
                     console.error('connectPopupVerifySelectAccountThunk (xpub)', res.error);
@@ -1015,6 +1023,7 @@ export const connectPopupVerifySelectAccountThunk = createThunk<
                               derivationType: getDerivationType(accountType),
                           }
                         : undefined,
+                callId: call.callId,
             });
 
             if (!res.success) {
@@ -1110,7 +1119,7 @@ export const connectPopupCancelThunk = createThunk<
     if (
         activeCall?.callId !== undefined &&
         activeCall.state !== 'finished' &&
-        callId !== undefined &&
+        callId &&
         callId !== activeCall.callId
     ) {
         TrezorConnect.cancel({ reason: error, callId });
@@ -1119,8 +1128,10 @@ export const connectPopupCancelThunk = createThunk<
     }
 
     getPermissionDeferred().reject(TypedError('Method_Cancel'));
-    // Without a token Core keeps its legacy behavior of aborting every in-flight call.
-    TrezorConnect.cancel({ reason: error, callId: callId ?? activeCall?.callId });
+    // Without a token Core would abort every in-flight call, including Suite's own, so a popup
+    // cancel reaches Core only when it names a call. An empty callId names none.
+    const scopedCallId = callId || activeCall?.callId;
+    if (scopedCallId) TrezorConnect.cancel({ reason: error, callId: scopedCallId });
     // todo: probably not needed to call explicitly anymore
     dispatch(deviceActions.removeButtonRequests({}));
 
