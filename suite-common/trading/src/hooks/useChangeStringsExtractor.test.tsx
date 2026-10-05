@@ -9,6 +9,7 @@ import {
     type SellFiatTrade,
 } from 'invity-api';
 
+import { joinAmountWithSymbol } from '@suite-common/formatters';
 import { MockedFormatterProvider } from '@suite-common/formatters/mocks';
 
 import { useChangeStringsExtractor } from './useChangeStringsExtractor';
@@ -87,7 +88,7 @@ describe('useChangeStringsExtractor', () => {
             fromCurrency: 'USD',
             fromStringValue: '$1,234.00',
             toCurrency: ETHEREUM_CRYPTO_ID,
-            toStringValue: '0.462586 ETH',
+            toStringValue: joinAmountWithSymbol('0.462586', 'ETH'),
             fromValue: '1234',
             toValue: '0.462586',
             isFromCrypto: false,
@@ -100,7 +101,7 @@ describe('useChangeStringsExtractor', () => {
 
         expect(result.current).toEqual({
             fromCurrency: BITCOIN_CRYPTO_ID,
-            fromStringValue: '1.22 BTC',
+            fromStringValue: joinAmountWithSymbol('1.22', 'BTC'),
             toCurrency: 'USD',
             toStringValue: '$100.00',
             fromValue: '1.22',
@@ -115,9 +116,9 @@ describe('useChangeStringsExtractor', () => {
 
         expect(result.current).toEqual({
             fromCurrency: USDC_CRYPTO_ID,
-            fromStringValue: '10.1232 USDC',
+            fromStringValue: joinAmountWithSymbol('10.1232', 'USDC'),
             toCurrency: ETHEREUM_CRYPTO_ID,
-            toStringValue: '0.462586 ETH',
+            toStringValue: joinAmountWithSymbol('0.462586', 'ETH'),
             fromValue: '10.1232',
             toValue: '0.462586',
             isFromCrypto: true,
