@@ -17,6 +17,7 @@
         {
             "path": "../../suite-common/wallet-types"
         },
+        { "path": "../app-init" },
         { "path": "../../packages/connect" },
         {
             "path": "../../packages/connect-common"

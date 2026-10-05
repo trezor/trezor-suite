@@ -41,6 +41,7 @@ import {
     yieldReducer,
 } from '@suite-common/wallet-core';
 import { prepareWalletConnectReducer } from '@suite-common/walletconnect';
+import { appReducer } from '@suite-native/app-init';
 import { bannerFlagsPersistWhitelist, bannerFlagsReducer } from '@suite-native/banners';
 import { biometricsPersistWhitelist, biometricsSlice } from '@suite-native/biometrics';
 import { prepareBluetoothReducer } from '@suite-native/bluetooth';
@@ -82,7 +83,6 @@ import {
 import { tradingInitialState, tradingSlice } from '@suite-native/trading-state';
 import { prepareSendFormReducer } from '@suite-native/transaction-management';
 
-import { appReducer } from './appSlice';
 import { extraDependencies } from './createNativeExtraDependencies';
 import { receivePersistTransform } from './receivePersistTransform';
 

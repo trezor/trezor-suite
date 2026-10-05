@@ -48,7 +48,12 @@ import {
     selectEarnYieldWorkerBaseUrl,
     selectIsOnboardingFinished,
 } from '@suite-native/settings';
-import { setIsAppReady } from '@suite-native/state';
+
+import {
+    PostOnboardingInitializationStatus,
+    setIsAppReady,
+    setPostOnboardingInitializationStatus,
+} from './appSlice';
 
 const ACTION_PREFIX = '@suite-native/app';
 
@@ -73,11 +78,27 @@ export const postOnboardingInitThunk = createThunk<
 >(`${ACTION_PREFIX}/postOnboardingInit`, async (_, { dispatch, getState }) => {
     // Do not initialize Connect or anything else related to it, if there is an app-wide killswitch via message-system.
     const activeKillswitchMessage = selectActiveKillswitchMessage(getState());
-    if (activeKillswitchMessage) return;
+    if (activeKillswitchMessage) {
+        dispatch(
+            setPostOnboardingInitializationStatus(PostOnboardingInitializationStatus.Disabled),
+        );
+
+        return;
+    }
+
+    dispatch(
+        setPostOnboardingInitializationStatus(PostOnboardingInitializationStatus.Initializing),
+    );
+
+    // Create Portfolio Tracker device before rendering the application shell.
+    dispatch(createImportedDeviceThunk());
+
+    let hasInitializationError = false;
 
     try {
         await dispatch(connectInitThunk()).unwrap();
     } catch (error) {
+        hasInitializationError = true;
         console.error(`Connect init error: ${JSON.stringify(error)}`);
     }
 
@@ -85,8 +106,17 @@ export const postOnboardingInitThunk = createThunk<
         // Needs to be finished before any TrezorConnect.blockchain* calls.
         await dispatch(initBlockchainThunk()).unwrap();
     } catch (error) {
+        hasInitializationError = true;
         console.error(`Blockchain init error: ${JSON.stringify(error)}`);
     }
+
+    dispatch(
+        setPostOnboardingInitializationStatus(
+            hasInitializationError
+                ? PostOnboardingInitializationStatus.Error
+                : PostOnboardingInitializationStatus.Ready,
+        ),
+    );
 
     dispatch(periodicCheckTokenDefinitionsThunk());
     dispatch(initStakeDataThunk());
@@ -97,9 +127,6 @@ export const postOnboardingInitThunk = createThunk<
             localCurrency: selectBaseCurrency(getState()),
         }),
     );
-
-    // Create Portfolio Tracker device if it doesn't exist
-    dispatch(createImportedDeviceThunk());
 
     dispatch(walletConnectInitThunk());
 });
@@ -130,7 +157,7 @@ export const applicationInitThunk = createThunk<
     dispatch(initDevicesThunk());
 
     if (selectIsOnboardingFinished(getState())) {
-        await dispatch(postOnboardingInitThunk());
+        dispatch(postOnboardingInitThunk());
     }
 
     // Tell the application to render

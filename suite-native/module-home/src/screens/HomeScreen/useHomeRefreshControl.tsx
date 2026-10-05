@@ -1,8 +1,10 @@
 import { type RefObject, useCallback, useMemo, useState } from 'react';
 import { RefreshControl } from 'react-native';
+import { useSelector } from 'react-redux';
 
 import { useServices } from '@suite-common/dependency-injection';
 import { injectDispatch } from '@suite-common/redux-utils';
+import { selectCanUseAppServices } from '@suite-native/app-init';
 import { syncAllAccountsWithBlockchainThunk } from '@suite-native/blockchain';
 import { useNativeStyles } from '@trezor/styles-native';
 
@@ -17,6 +19,7 @@ export const useHomeRefreshControl = ({
 }) => {
     const [isRefreshing, setIsRefreshing] = useState(false);
     const { dispatch } = useServices(injectDispatch);
+    const canUseAppServices = useSelector(selectCanUseAppServices);
     const {
         utils: { colors },
     } = useNativeStyles();
@@ -35,7 +38,7 @@ export const useHomeRefreshControl = ({
     }, [dispatch, portfolioGraphRef]);
 
     const refreshControl = useMemo(() => {
-        if (isDiscoveredDeviceAccountless) return undefined;
+        if (!canUseAppServices || isDiscoveredDeviceAccountless) return undefined;
 
         return (
             <RefreshControl
@@ -44,7 +47,7 @@ export const useHomeRefreshControl = ({
                 colors={[colors.elementFillBrandBold]}
             />
         );
-    }, [isDiscoveredDeviceAccountless, handleRefresh, colors, isRefreshing]);
+    }, [canUseAppServices, isDiscoveredDeviceAccountless, handleRefresh, colors, isRefreshing]);
 
     return refreshControl;
 };
