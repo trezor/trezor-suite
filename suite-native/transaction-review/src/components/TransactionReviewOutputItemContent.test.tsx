@@ -124,11 +124,14 @@ describe('TransactionReviewOutputItemContent', () => {
         );
     });
 
-    it('should render hex data for type "data"', async () => {
-        const { getByTestId } = await renderContent(output('data', '0xabcd'));
+    it.each<TransactionReviewOutputType>(['data', 'opreturn'])(
+        'should render hex data for type "%s"',
+        async type => {
+            const { getByTestId } = await renderContent(output(type, '0xabcd'));
 
-        expect(getByTestId(CONTENT_TEST_ID)).toHaveTextContent('0xabcd');
-    });
+            expect(getByTestId(CONTENT_TEST_ID)).toHaveTextContent('0xabcd');
+        },
+    );
 
     it('should truncate long hex data and offer a show-more control', async () => {
         const { getByTestId } = await renderContent(output('data', 'd'.repeat(301)));
@@ -183,7 +186,6 @@ describe('TransactionReviewOutputItemContent', () => {
     });
 
     it.each<TransactionReviewOutputType>([
-        'opreturn',
         'locktime',
         'fee',
         'txid',
