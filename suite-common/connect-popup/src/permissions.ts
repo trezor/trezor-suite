@@ -67,11 +67,13 @@ export const isSameConnectApp = (app: ConnectCallSource, source: ConnectCallSour
 
 /**
  * Permissions are remembered only for a caller that can be told apart from others: not for a desktop
- * process that could not be identified, and not for the origin `null` that browsers send for every
- * sandboxed or local page.
+ * process that could not be identified, not for the origin `null` that browsers send for every
+ * sandboxed or local page, and not for an origin that only the caller itself states.
  */
 export const canRememberPermissions = (source: ConnectCallSource): boolean =>
-    source.origin !== 'null' && source.process?.fullPath !== UNKNOWN_PROCESS.fullPath;
+    !source.isOriginSelfDeclared &&
+    source.origin !== 'null' &&
+    source.process?.fullPath !== UNKNOWN_PROCESS.fullPath;
 
 export const permissionsAreCovered = (
     requested: PermissionRequest[],

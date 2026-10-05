@@ -518,6 +518,15 @@ describe('connectPopupCallThunk remembered permissions', () => {
     describe.each([
         ['a desktop app whose process is unknown', { ...desktopSource, process: UNKNOWN_PROCESS }],
         ['an app with the origin null', { ...desktopSource, origin: 'null' }],
+        [
+            'an app whose origin it states itself',
+            {
+                type: CALL_SOURCE_WEB,
+                origin: 'abcdefghijklmnopabcdefghijklmnop',
+                manifest: { appName: 'App' },
+                isOriginSelfDeclared: true,
+            } satisfies ConnectCallSource,
+        ],
     ])('for %s', (_, unidentifiedSource) => {
         it('does not remember permissions', () => {
             const store = createStore();

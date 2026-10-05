@@ -2,6 +2,7 @@ import { combineReducers } from '@reduxjs/toolkit';
 
 import {
     type AppRememberedPermission,
+    CALL_SOURCE_WEB,
     type ConnectPopupCallThunkDeps,
     type ConnectPopupCallThunkState,
     connectPopupActions,
@@ -157,6 +158,52 @@ describe('useConnectPopupWebextension', () => {
 
         expect(services.store.getState().connectPopup.activeCall).toBeUndefined();
         expect(sendMessage).not.toHaveBeenCalledWith(OTHER_EXTENSION_ID, expect.anything());
+        unmount();
+    });
+
+    it('ignores a message that names no extension id', async () => {
+        services = createServices();
+        const { unmount } = await openSession(EXTENSION_ID);
+        window.location.hash = `message=${encodeURIComponent(JSON.stringify(accountInfoCall))}`;
+        await settle();
+
+        expect(services.store.getState().connectPopup.activeCall).toBeUndefined();
+        unmount();
+    });
+
+    it('asks for permissions also when they are remembered for the extension id', async () => {
+        services = createServices([
+            {
+                type: CALL_SOURCE_WEB,
+                origin: EXTENSION_ID,
+                manifest: { appName: 'App' },
+                allowedPermissions: [{ permission: 'read_account_info', coin: 'btc' }],
+            },
+        ]);
+        const { unmount } = await openSession(EXTENSION_ID);
+        await writeFragment(EXTENSION_ID, accountInfoCall);
+
+        expect(services.store.getState().connectPopup.activeCall?.state).toBe('permission-request');
+        unmount();
+    });
+
+    it('ignores a hash whose extension id is not a Chromium extension id', async () => {
+        services = createServices();
+        const { unmount } = await openSession('https://app.example');
+        await writeFragment('https://app.example', accountInfoCall);
+
+        expect(services.store.getState().connectPopup.activeCall).toBeUndefined();
+        expect(sendMessage).not.toHaveBeenCalled();
+        unmount();
+    });
+
+    it('keeps working on a page without the chrome global', async () => {
+        Reflect.deleteProperty(globalThis, 'chrome');
+        services = createServices();
+        const { unmount } = await openSession(EXTENSION_ID);
+        await writeFragment(EXTENSION_ID, accountInfoCall);
+
+        expect(services.store.getState().connectPopup.activeCall?.state).toBe('permission-request');
         unmount();
     });
 });

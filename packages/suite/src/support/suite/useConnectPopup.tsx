@@ -56,6 +56,8 @@ export interface ConnectPopupLink {
     handshakeConfirmMessage?: ConnectPopupOutgoingMessage;
     /** The origin string to use as `source.origin` for the popup call thunk. */
     origin: string;
+    /** Whether `origin` is stated only by the caller's own messages, not by the browser. */
+    isOriginSelfDeclared?: boolean;
 }
 
 /**
@@ -116,6 +118,7 @@ export const useConnectPopup = (
                         source: {
                             type: CALL_SOURCE_WEB,
                             origin: popupLink.origin,
+                            isOriginSelfDeclared: popupLink.isOriginSelfDeclared,
                             manifest: manifest.current,
                             requestedPermissions: requestedPermissions.current,
                         },

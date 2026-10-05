@@ -42,6 +42,9 @@ export const UNKNOWN_PROCESS: ConnectProcessInfo = {
 };
 export type ConnectCallSource = {
     origin: string;
+    // Set when `origin` is stated only by the caller's own messages (the Suite Web webextension link
+    // reads it from the URL hash), so it does not tell this caller apart from others.
+    isOriginSelfDeclared?: boolean;
     // Permissions the host declared up front (via ConnectSettings.requestedPermissions), carried on
     // the handshake. Sanitized in connectPopupCallInnerThunk so the first consent covers the set.
     requestedPermissions?: PermissionRequest[];
