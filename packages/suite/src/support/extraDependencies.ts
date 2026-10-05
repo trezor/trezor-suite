@@ -127,9 +127,11 @@ export const extraDependencies: ExtraDependenciesStatic & TokenDefinitionsMiddle
         storageLoadAccounts: (_, { payload }: StorageLoadAction) =>
             // Storage returns accounts in IndexedDB key order, sort them like the reducer does.
             sortByCoin(
-                payload.accounts.map(acc =>
-                    acc.backendType === 'coinjoin' ? fixLoadedCoinjoinAccount(acc) : acc,
-                ),
+                payload.accounts
+                    .filter(acc => payload.supportedNetworks.includes(acc.symbol))
+                    .map(acc =>
+                        acc.backendType === 'coinjoin' ? fixLoadedCoinjoinAccount(acc) : acc,
+                    ),
                 payload.supportedNetworks,
             ),
         setDeviceMetadataReducer: (
