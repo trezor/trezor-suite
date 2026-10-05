@@ -11682,7 +11682,6 @@ __metadata:
     "@suite-common/suite-types": "workspace:*"
     "@suite-common/suite-utils": "workspace:*"
     "@suite-common/test-utils": "workspace:*"
-    "@suite-common/validators": "workspace:*"
     "@suite-common/wallet-config": "workspace:*"
     "@trezor/connect": "workspace:*"
     "@trezor/device-utils": "workspace:*"
@@ -11700,6 +11699,7 @@ __metadata:
     react-redux: "npm:9.3.0"
     semver: "npm:^7.7.1"
     tsx: "npm:^4.21.0"
+    yup: "npm:1.7.1"
   languageName: unknown
   linkType: soft
 
@@ -11991,7 +11991,6 @@ __metadata:
     "@suite-common/suite-types": "workspace:*"
     "@suite-common/toast-notifications": "workspace:*"
     "@suite-common/transaction-search": "workspace:*"
-    "@suite-common/validators": "workspace:*"
     "@suite-common/wallet-config": "workspace:*"
     "@suite-common/wallet-core": "workspace:*"
     "@suite-common/wallet-types": "workspace:*"
@@ -12004,6 +12003,7 @@ __metadata:
     "@trezor/type-utils": "workspace:*"
     "@trezor/urls": "workspace:*"
     "@trezor/utils": "workspace:*"
+    yup: "npm:1.7.1"
   languageName: unknown
   linkType: soft
 
@@ -12165,7 +12165,6 @@ __metadata:
     "@suite-common/toast-notifications": "workspace:*"
     "@suite-common/token-definitions": "workspace:*"
     "@suite-common/tx-simulation": "workspace:*"
-    "@suite-common/validators": "workspace:*"
     "@suite-common/wallet-config": "workspace:*"
     "@suite-common/wallet-constants": "workspace:*"
     "@suite-common/wallet-core": "workspace:*"
@@ -12186,6 +12185,7 @@ __metadata:
     react: "npm:19.2.3"
     react-intl: "npm:^8.1.3"
     react-redux: "npm:9.3.0"
+    yup: "npm:1.7.1"
   languageName: unknown
   linkType: soft
 
@@ -12232,14 +12232,6 @@ __metadata:
     "@trezor/type-utils": "workspace:*"
     "@trezor/utils": "workspace:*"
     react: "npm:19.2.3"
-  languageName: unknown
-  linkType: soft
-
-"@suite-common/validators@workspace:*, @suite-common/validators@workspace:suite-common/validators":
-  version: 0.0.0-use.local
-  resolution: "@suite-common/validators@workspace:suite-common/validators"
-  dependencies:
-    yup: "npm:1.7.1"
   languageName: unknown
   linkType: soft
 
