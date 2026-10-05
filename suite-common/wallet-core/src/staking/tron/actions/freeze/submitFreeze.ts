@@ -8,6 +8,7 @@ import { BigNumber } from '@trezor/utils';
 
 import { type FreezeThunkArguments, composeTronFreezeFeeLevelsThunk } from './composeFreeze';
 import { buildFreezeContract, buildFreezeReviewForm } from './freezeContract';
+import { notifyEarnTransactionBroadcastThunk } from '../../../../earn/earnTransactionsThunks';
 import {
     type AddFakePendingTronTxThunkState,
     addFakePendingTronTxThunk,
@@ -172,6 +173,7 @@ export const submitTronFreezeThunk = createThunk<
                 }),
             );
 
+            dispatch(notifyEarnTransactionBroadcastThunk({ account, device, txid, flow }));
             dispatch(tronStakeActions.submitFinished({ accountKey, flow, txid }));
         } finally {
             onSettled?.();

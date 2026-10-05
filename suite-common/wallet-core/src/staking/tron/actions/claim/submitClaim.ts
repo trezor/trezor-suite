@@ -7,6 +7,7 @@ import { BigNumber } from '@trezor/utils';
 
 import { buildClaimContract, buildClaimReviewForm } from './claimContract';
 import { type ClaimThunkArguments, composeTronClaimFeeLevelsThunk } from './composeClaim';
+import { notifyEarnTransactionBroadcastThunk } from '../../../../earn/earnTransactionsThunks';
 import {
     type AddFakePendingTronTxThunkState,
     addFakePendingTronTxThunk,
@@ -166,6 +167,7 @@ export const submitTronClaimThunk = createThunk<
                 }),
             );
 
+            dispatch(notifyEarnTransactionBroadcastThunk({ account, device, txid, flow }));
             dispatch(tronStakeActions.submitFinished({ accountKey, flow, txid }));
         } finally {
             onSettled?.();

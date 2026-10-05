@@ -4,7 +4,15 @@ import { type AccountKey } from '@suite-common/wallet-types';
 
 import { accountsActions } from '../accounts/accountsActions';
 
-export type EarnTransactionFlow = 'stake' | 'unstake' | 'claim';
+export type EarnTransactionFlow =
+    | 'stake'
+    | 'unstake'
+    | 'claim'
+    | 'withdraw'
+    | 'vote'
+    | 'yield-deposit'
+    | 'yield-withdraw'
+    | 'yield-claim';
 
 export type TrackedEarnTransaction = {
     flow: EarnTransactionFlow;
@@ -22,7 +30,14 @@ export const EARN_TRANSACTION_TOAST_TYPE = {
     stake: 'tx-staked',
     unstake: 'tx-unstaked',
     claim: 'tx-claimed',
+    withdraw: 'tx-withdrawn',
+    vote: 'tx-voted',
+    'yield-deposit': 'tx-yield-deposit',
+    'yield-withdraw': 'tx-yield-withdraw',
+    'yield-claim': 'tx-yield-claim',
 } as const satisfies Record<EarnTransactionFlow, string>;
+
+export type EarnTransactionToastType = (typeof EARN_TRANSACTION_TOAST_TYPE)[EarnTransactionFlow];
 
 export const earnTransactionsInitialState: EarnTransactionsState = {};
 

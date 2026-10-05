@@ -7,6 +7,7 @@ import { BigNumber } from '@trezor/utils';
 
 import { type WithdrawThunkArguments, composeTronWithdrawFeeLevelsThunk } from './composeWithdraw';
 import { buildWithdrawContract, buildWithdrawReviewForm } from './withdrawContract';
+import { notifyEarnTransactionBroadcastThunk } from '../../../../earn/earnTransactionsThunks';
 import {
     type AddFakePendingTronTxThunkState,
     addFakePendingTronTxThunk,
@@ -166,6 +167,7 @@ export const submitTronWithdrawThunk = createThunk<
                 }),
             );
 
+            dispatch(notifyEarnTransactionBroadcastThunk({ account, device, txid, flow }));
             dispatch(tronStakeActions.submitFinished({ accountKey, flow, txid }));
         } finally {
             onSettled?.();

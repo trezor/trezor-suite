@@ -8,6 +8,7 @@ import { asCoinSymbol } from '@trezor/connect-common';
 
 import { type VoteThunkArguments, composeTronVoteFeeLevelsThunk } from './composeVote';
 import { buildVoteContract, buildVoteReviewForm } from './voteContract';
+import { notifyEarnTransactionBroadcastThunk } from '../../../../earn/earnTransactionsThunks';
 import {
     type AddFakePendingTronTxThunkState,
     addFakePendingTronTxThunk,
@@ -230,6 +231,7 @@ export const submitTronVoteThunk = createThunk<
                 }),
             );
 
+            dispatch(notifyEarnTransactionBroadcastThunk({ account, device, txid, flow }));
             dispatch(tronStakeActions.submitFinished({ accountKey, flow, txid }));
         } finally {
             onSettled?.();

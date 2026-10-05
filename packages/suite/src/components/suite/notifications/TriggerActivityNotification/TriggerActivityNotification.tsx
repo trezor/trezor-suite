@@ -233,6 +233,126 @@ const PRESETS: Preset[] = [
                 seen,
             }),
     },
+    {
+        value: 'tx-withdrawn-pending',
+        label: 'Transaction: Withdraw pending',
+        build: ({ device, seen }) =>
+            notificationsActions.addToast({
+                type: 'tx-withdrawn',
+                stage: 'pending',
+                device,
+                ...MOCK_TX,
+                seen,
+            }),
+    },
+    {
+        value: 'tx-withdrawn-confirmed',
+        label: 'Transaction: Withdraw confirmed',
+        build: ({ device, seen }) =>
+            notificationsActions.addToast({
+                type: 'tx-withdrawn',
+                stage: 'confirmed',
+                device,
+                ...MOCK_TX,
+                seen,
+            }),
+    },
+    {
+        value: 'tx-voted-pending',
+        label: 'Transaction: Vote pending',
+        build: ({ device, seen }) =>
+            notificationsActions.addToast({
+                type: 'tx-voted',
+                stage: 'pending',
+                device,
+                ...MOCK_TX,
+                seen,
+            }),
+    },
+    {
+        value: 'tx-voted-confirmed',
+        label: 'Transaction: Vote confirmed',
+        build: ({ device, seen }) =>
+            notificationsActions.addToast({
+                type: 'tx-voted',
+                stage: 'confirmed',
+                device,
+                ...MOCK_TX,
+                seen,
+            }),
+    },
+    {
+        value: 'tx-yield-deposit-pending',
+        label: 'Transaction: Yield deposit pending',
+        build: ({ device, seen }) =>
+            notificationsActions.addToast({
+                type: 'tx-yield-deposit',
+                stage: 'pending',
+                device,
+                ...MOCK_TX,
+                seen,
+            }),
+    },
+    {
+        value: 'tx-yield-deposit-confirmed',
+        label: 'Transaction: Yield deposit confirmed',
+        build: ({ device, seen }) =>
+            notificationsActions.addToast({
+                type: 'tx-yield-deposit',
+                stage: 'confirmed',
+                device,
+                ...MOCK_TX,
+                seen,
+            }),
+    },
+    {
+        value: 'tx-yield-withdraw-pending',
+        label: 'Transaction: Yield withdraw pending',
+        build: ({ device, seen }) =>
+            notificationsActions.addToast({
+                type: 'tx-yield-withdraw',
+                stage: 'pending',
+                device,
+                ...MOCK_TX,
+                seen,
+            }),
+    },
+    {
+        value: 'tx-yield-withdraw-confirmed',
+        label: 'Transaction: Yield withdraw confirmed',
+        build: ({ device, seen }) =>
+            notificationsActions.addToast({
+                type: 'tx-yield-withdraw',
+                stage: 'confirmed',
+                device,
+                ...MOCK_TX,
+                seen,
+            }),
+    },
+    {
+        value: 'tx-yield-claim-pending',
+        label: 'Transaction: Yield claim pending',
+        build: ({ device, seen }) =>
+            notificationsActions.addToast({
+                type: 'tx-yield-claim',
+                stage: 'pending',
+                device,
+                ...MOCK_TX,
+                seen,
+            }),
+    },
+    {
+        value: 'tx-yield-claim-confirmed',
+        label: 'Transaction: Yield claim confirmed',
+        build: ({ device, seen }) =>
+            notificationsActions.addToast({
+                type: 'tx-yield-claim',
+                stage: 'confirmed',
+                device,
+                ...MOCK_TX,
+                seen,
+            }),
+    },
 ];
 
 const options = PRESETS.map(({ value, label }) => ({ value, label }));

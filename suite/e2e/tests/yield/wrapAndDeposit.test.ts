@@ -14,7 +14,6 @@ import {
 import { createTestAnnotation } from '../../support/reporters/annotations';
 
 const { wethPrime } = YIELD_VAULTS;
-const ETH_ACCOUNT_NAME = 'Ethereum #1';
 const DEPOSIT_AMOUNT = '10';
 const DEPOSIT_AMOUNT_FORMATTED = '10.00';
 const YIELD_WETH_VAULT_DISPLAY_NAME = ['Trezor Steakhouse', '\n', 'ETH Prime Vault'];
@@ -393,8 +392,7 @@ test.describe('eth yield deposit with wrap', { tag: ['@webOnly', '@T3W1', '@T3T1
                 await devicePrompt.sendButton.click();
 
                 await expect(toastSection.yieldDepositMessage).toHaveTranslation(
-                    'TOAST_TX_YIELD_DEPOSIT',
-                    { values: { account: ETH_ACCOUNT_NAME } },
+                    'TOAST_TX_DEPOSIT_PENDING',
                 );
                 await expect(yieldFlowSection.flowCompleteHeading).toHaveTranslation(
                     'TR_EARN_YIELD_DEPOSIT_COMPLETE',

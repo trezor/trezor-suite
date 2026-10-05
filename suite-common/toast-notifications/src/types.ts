@@ -106,17 +106,25 @@ type ClaimedTransactionNotification = {
     type: 'tx-claimed';
 } & EarnTransactionNotificationPayload;
 
+type WithdrawnTransactionNotification = {
+    type: 'tx-withdrawn';
+} & EarnTransactionNotificationPayload;
+
+type VotedTransactionNotification = {
+    type: 'tx-voted';
+} & EarnTransactionNotificationPayload;
+
 type YieldDepositTransactionNotification = {
     type: 'tx-yield-deposit';
-} & BaseTransactionNotificationPayload;
+} & EarnTransactionNotificationPayload;
 
 type YieldWithdrawTransactionNotification = {
     type: 'tx-yield-withdraw';
-} & BaseTransactionNotificationPayload;
+} & EarnTransactionNotificationPayload;
 
 type YieldClaimTransactionNotification = {
     type: 'tx-yield-claim';
-} & BaseTransactionNotificationPayload;
+} & EarnTransactionNotificationPayload;
 
 type AccountAddedNotification = {
     type: 'account-added';
@@ -251,6 +259,8 @@ export type ToastPayload<TranslationKey extends UnknownTranslationKey = UnknownT
     | StakedTransactionNotification
     | UnstakedTransactionNotification
     | ClaimedTransactionNotification
+    | WithdrawnTransactionNotification
+    | VotedTransactionNotification
     | YieldDepositTransactionNotification
     | YieldWithdrawTransactionNotification
     | YieldClaimTransactionNotification

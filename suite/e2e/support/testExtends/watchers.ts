@@ -74,6 +74,8 @@ const expectedWarningToastTestIds = new Set([
     '@toast/tx-sent',
     '@toast/tx-staked',
     '@toast/tx-unstaked',
+    '@toast/tx-voted',
+    '@toast/tx-withdrawn',
     '@toast/tx-yield-claim',
     '@toast/tx-yield-deposit',
     '@toast/tx-yield-withdraw',

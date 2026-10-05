@@ -262,8 +262,18 @@ describe('NotificationRenderer transaction broadcasts', () => {
     });
 
     const { amount: _amount, ...earnTransactionPayload } = transactionPayload;
+    const earnToastTypes = [
+        'tx-staked',
+        'tx-unstaked',
+        'tx-claimed',
+        'tx-withdrawn',
+        'tx-voted',
+        'tx-yield-deposit',
+        'tx-yield-withdraw',
+        'tx-yield-claim',
+    ] as const;
 
-    it.each(['tx-staked', 'tx-unstaked', 'tx-claimed'] as const)(
+    it.each(earnToastTypes)(
         'renders a pending %s with the warning variant and piggy-bank icon',
         type => {
             renderNotification({
@@ -278,7 +288,7 @@ describe('NotificationRenderer transaction broadcasts', () => {
         },
     );
 
-    it.each(['tx-staked', 'tx-unstaked', 'tx-claimed'] as const)(
+    it.each(earnToastTypes)(
         'renders a sped-up %s with the warning variant and piggy-bank icon',
         type => {
             renderNotification({
@@ -293,7 +303,7 @@ describe('NotificationRenderer transaction broadcasts', () => {
         },
     );
 
-    it.each(['tx-staked', 'tx-unstaked', 'tx-claimed'] as const)(
+    it.each(earnToastTypes)(
         'renders a confirmed %s with the success variant and piggy-bank icon',
         type => {
             renderNotification({
