@@ -117,11 +117,7 @@ test.describe('sol staking', { tag: ['@T3W1', '@T3T1'] }, () => {
                 solanaStakingMock.confirmTransaction();
                 solanaStakingMock.setStakeAccounts([solStakingAccountFirst.payload]);
                 await devicePrompt.sendButton.click();
-                await stakingSection.verifyStakingToast({
-                    type: 'staked',
-                    account: 'Solana #1',
-                    amount: stakedAndRentFormatted,
-                });
+                await stakingSection.verifyStakingToast({ type: 'staked' });
             });
 
             await test.step('Verify pending on dashboard', async () => {

@@ -18,6 +18,7 @@ import { EarnFlow } from '@suite-common/suite-types/src/staking';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import {
     type BlockchainRootState,
+    EARN_TRANSACTION_TOAST_TYPE,
     type EthereumGetCurrentNonceThunkState,
     type ReplaceTransactionThunkState,
     type StakeRootState,
@@ -25,6 +26,7 @@ import {
     type SyncAccountsWithBlockchainThunkState,
     type WalletSettingsRootState,
     addFakePendingCardanoTxThunk,
+    earnTransactionsActions,
     isSupportedAdaStakingNetworkSymbol,
     isSupportedEthStakingNetworkSymbol,
     isSupportedSolStakingNetworkSymbol,
@@ -43,7 +45,6 @@ import {
     type WalletAccountTransaction,
 } from '@suite-common/wallet-types';
 import {
-    formatNetworkAmount,
     getMevProtectedTxData,
     isCardanoTx,
     isRbfBumpFeeTransaction,
@@ -53,7 +54,6 @@ import TrezorConnect from '@trezor/connect';
 import { asCoinSymbol } from '@trezor/connect-common';
 import { type SerializedError } from '@trezor/connect-common/src/constants/errors';
 import { type Err } from '@trezor/type-utils';
-import { BigNumber } from '@trezor/utils';
 
 import * as stakeFormCardanoActions from './stake/stakeFormCardanoActions';
 import * as stakeFormEthereumActions from './stake/stakeFormEthereumActions';
@@ -154,22 +154,8 @@ const pushTransactionThunk =
         // close modal regardless result
         dispatch(closeModal());
 
-        const spentWithoutFee = new BigNumber(precomposedTx.totalSpent)
-            .minus(precomposedTx.fee)
-            .toString();
-
-        // The total amount without the fee, in main units.
-        const amount = formatNetworkAmount(spentWithoutFee, account.symbol);
-
         if (sentTx.success) {
             const { txid } = sentTx.payload;
-            const notificationPayload = {
-                amount,
-                device,
-                descriptor: account.descriptor,
-                symbol: account.symbol,
-                txid,
-            };
 
             if (cardanoPoolDelegation) {
                 extra.services.analytics.report({
@@ -178,27 +164,22 @@ const pushTransactionThunk =
                 });
             }
 
-            if (stakeType === 'stake') {
+            if (stakeType === 'stake' || stakeType === 'unstake' || stakeType === 'claim') {
                 dispatch(
-                    notificationsActions.addToast({
-                        type: 'tx-staked',
-                        ...notificationPayload,
+                    earnTransactionsActions.trackEarnTransaction({
+                        accountKey: account.key,
+                        txid,
+                        flow: stakeType,
                     }),
                 );
-            }
-            if (stakeType === 'unstake') {
                 dispatch(
                     notificationsActions.addToast({
-                        type: 'tx-unstaked',
-                        ...notificationPayload,
-                    }),
-                );
-            }
-            if (stakeType === 'claim') {
-                dispatch(
-                    notificationsActions.addToast({
-                        type: 'tx-claimed',
-                        ...notificationPayload,
+                        type: EARN_TRANSACTION_TOAST_TYPE[stakeType],
+                        stage: 'pending',
+                        device,
+                        descriptor: account.descriptor,
+                        symbol: account.symbol,
+                        txid,
                     }),
                 );
             }

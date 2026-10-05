@@ -25,6 +25,7 @@ import { prepareTokenDefinitionsReducer } from '@suite-common/token-definitions'
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import {
     accountsRefreshTimeReducer,
+    earnTransactionsReducer,
     feesReducer,
     formDraftReducer,
     prepareAccountsReducer,
@@ -282,6 +283,7 @@ export const prepareRootReducers = (deps: PrepareRootReducersDeps) => {
         accounts: accountsReducer,
         earnOnboarding: earnOnboardingReducer,
         accountsRefreshTime: accountsRefreshTimeReducer,
+        earnTransactions: earnTransactionsReducer,
         blockchain: blockchainPersistedReducer,
         explorer: explorerPersistedReducer,
         fiat: fiatRatesReducer,

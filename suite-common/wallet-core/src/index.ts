@@ -31,6 +31,7 @@ export * from './discovery/discoverySelectors';
 export * from './discovery/discoveryThunks';
 export * from './discovery/passphraseWalletThunks';
 export * from './earn/earnDepositsFiatUtils';
+export * from './earn/earnTransactionsReducer';
 export * from './explorer/explorerActions';
 export * from './explorer/explorerReducer';
 export * from './explorer/explorerSelectors';

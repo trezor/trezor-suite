@@ -12300,17 +12300,29 @@ export const messages = defineMessages({
         id: 'TR_STAKE_MIN_AMOUNT_TOOLTIP',
         defaultMessage: 'Minimum amount to stake is {amount} {networkDisplaySymbol}',
     },
-    TOAST_TX_STAKED: {
-        id: 'TOAST_TX_STAKED',
-        defaultMessage: 'Staked from {account}',
+    TOAST_TX_STAKE_PENDING: {
+        id: 'TOAST_TX_STAKE_PENDING',
+        defaultMessage: 'Your staking transaction is pending',
     },
-    TOAST_TX_UNSTAKED: {
-        id: 'TOAST_TX_UNSTAKED',
-        defaultMessage: 'Unstaked from {account}',
+    TOAST_TX_STAKE_CONFIRMED: {
+        id: 'TOAST_TX_STAKE_CONFIRMED',
+        defaultMessage: 'Your staking transaction has been processed on the blockchain',
     },
-    TOAST_TX_CLAIMED: {
-        id: 'TOAST_TX_CLAIMED',
-        defaultMessage: 'Claimed from {account}',
+    TOAST_TX_UNSTAKE_PENDING: {
+        id: 'TOAST_TX_UNSTAKE_PENDING',
+        defaultMessage: 'Your unstaking transaction is pending',
+    },
+    TOAST_TX_UNSTAKE_CONFIRMED: {
+        id: 'TOAST_TX_UNSTAKE_CONFIRMED',
+        defaultMessage: 'Your unstaking transaction has been processed on the blockchain',
+    },
+    TOAST_TX_CLAIM_PENDING: {
+        id: 'TOAST_TX_CLAIM_PENDING',
+        defaultMessage: 'Your claim is pending',
+    },
+    TOAST_TX_CLAIM_CONFIRMED: {
+        id: 'TOAST_TX_CLAIM_CONFIRMED',
+        defaultMessage: 'Your claim has been processed on the blockchain',
     },
     TOAST_TX_YIELD_DEPOSIT: {
         id: 'TOAST_TX_YIELD_DEPOSIT',
@@ -12323,10 +12335,6 @@ export const messages = defineMessages({
     TOAST_TX_YIELD_CLAIM: {
         id: 'TOAST_TX_YIELD_CLAIM',
         defaultMessage: 'Claim transaction from {account} has been broadcast',
-    },
-    TOAST_SUCCESSFUL_CLAIM: {
-        id: 'TOAST_SUCCESSFUL_CLAIM',
-        defaultMessage: '{networkDisplaySymbol} claimed successfully',
     },
     TOAST_ESTIMATED_FEE_ERROR: {
         id: 'TOAST_ESTIMATED_FEE_ERROR',
