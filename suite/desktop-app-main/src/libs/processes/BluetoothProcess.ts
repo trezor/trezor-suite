@@ -78,12 +78,33 @@ export class BluetoothProcess extends BaseProcess {
         };
     }
 
-    start() {
+    private async isServedWithoutToken(): Promise<boolean> {
+        try {
+            const resp = await fetch(this.getUrl(), {
+                method: 'GET',
+                headers: {
+                    Origin: 'https://electron.trezor.io',
+                },
+            });
+
+            return resp.ok;
+        } catch {
+            // A server that requires the token closes the connection instead of answering.
+            return false;
+        }
+    }
+
+    async start() {
         if (this.debug) {
             process.env.RUST_LOG = 'debug';
             process.env.RUST_BACKTRACE = '1';
         }
 
-        return super.start();
+        await super.start();
+
+        if (await this.isServedWithoutToken()) {
+            await this.stop();
+            throw new Error('Bluetooth server does not require the authorization token');
+        }
     }
 }
