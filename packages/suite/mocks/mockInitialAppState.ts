@@ -19,12 +19,14 @@ import { quotaManagerInitialState } from '@suite-common/suite-sync-quota-manager
 
 import { type OnboardingState } from 'src/reducers/onboarding/onboardingReducer';
 import { type AppState } from 'src/reducers/store';
+import { assetTableInitialState } from 'src/reducers/suite/assetTableReducer';
 import { type ProtocolState } from 'src/reducers/suite/protocolReducer';
 import { suiteInitialState } from 'src/reducers/suite/suiteReducer';
 import { walletReducers } from 'src/reducers/wallet';
 
 export const mockInitialAppState: AppState = {
     networks: null,
+    assetTable: assetTableInitialState,
     suite: suiteInitialState,
     discreetMode: {
         isActive: false,

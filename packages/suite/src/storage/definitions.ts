@@ -40,6 +40,7 @@ import { type StaticSessionId } from '@trezor/connect';
 import { type FirmwareChannel } from '@trezor/connect-common/src/types/firmware';
 
 import type { BioAuthState } from 'src/reducers/bioAuth';
+import type { AssetTableState } from 'src/reducers/suite/assetTableReducer';
 import type { SuiteState } from 'src/reducers/suite/suiteReducer';
 import type { Account, WalletAccountTransaction } from 'src/types/wallet';
 
@@ -82,6 +83,10 @@ export interface SuiteDBSchema extends DBSchema {
             order: number;
             blockTime: number; // TODO: blockTime can be undefined
         };
+    };
+    assetTable: {
+        key: 'assetTable';
+        value: AssetTableState;
     };
     explorer: {
         key: NetworkSymbol;

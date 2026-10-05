@@ -28,6 +28,7 @@ import { type WalletConnectState, prepareWalletConnectReducer } from '@suite-com
 
 import { extraDependencies } from 'src/support/extraDependencies';
 
+import assetTable, { type AssetTableState } from './assetTableReducer';
 import guide, { type GuideState } from './guideReducer';
 import protocol, { type ProtocolState } from './protocolReducer';
 import suite, { type SuiteState } from './suiteReducer';
@@ -65,10 +66,12 @@ export type SuiteReducersState = {
     featureFeedback: FeatureFeedbackState<FeedbackFeatureName>;
     connectPopup: ConnectPopupState;
     walletConnect: WalletConnectState;
+    assetTable: AssetTableState;
 };
 
 export const suiteReducers: ReducersMapObject<SuiteReducersState, UnknownAction> = {
     suite,
+    assetTable,
     discreetMode: discreetModeReducer,
     tor: torReducer,
     suiteSettings,

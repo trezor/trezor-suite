@@ -19,6 +19,8 @@ export type FeedbackCardProps = {
     onSubmit: (rating: Rating, description: string) => void;
     onRatingSelect?: (rating: Rating) => void;
     defaultView?: FeedbackCardView;
+    /** Puts the ratings under the heading instead of across the card from it. */
+    isStacked?: boolean;
 };
 
 export const FeedbackCard = ({
@@ -31,6 +33,7 @@ export const FeedbackCard = ({
     onSubmit,
     onRatingSelect,
     defaultView = 'form',
+    isStacked = false,
 }: FeedbackCardProps) => {
     const [rating, setRating] = useState<Rating | undefined>();
     const [feedbackText, setFeedbackText] = useState('');
@@ -76,11 +79,24 @@ export const FeedbackCard = ({
     return (
         <>
             <Card>
-                <Row gap={16} justifyContent="space-between" alignItems="center" flexWrap="wrap">
-                    <H3 typographyStyle="body-md-strong">{heading}</H3>
+                {isStacked ? (
+                    <Column gap={16} alignItems="flex-start">
+                        <H3 typographyStyle="body-md-strong">{heading}</H3>
 
-                    <EmojiRatingSelector value={rating} onChange={handleRatingSelect} />
-                </Row>
+                        <EmojiRatingSelector value={rating} onChange={handleRatingSelect} />
+                    </Column>
+                ) : (
+                    <Row
+                        gap={16}
+                        justifyContent="space-between"
+                        alignItems="center"
+                        flexWrap="wrap"
+                    >
+                        <H3 typographyStyle="body-md-strong">{heading}</H3>
+
+                        <EmojiRatingSelector value={rating} onChange={handleRatingSelect} />
+                    </Row>
+                )}
             </Card>
 
             {rating !== undefined && (
