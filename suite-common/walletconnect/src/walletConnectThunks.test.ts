@@ -13,7 +13,7 @@ import {
     type WalletSettingsRootState,
     initialWalletSettingsState,
 } from '@suite-common/wallet-core';
-import { asAccountDescriptor } from '@suite-common/wallet-types';
+import { type Account, asAccountDescriptor } from '@suite-common/wallet-types';
 import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
 
 import { walletConnectActions } from './walletConnectActions';
@@ -32,6 +32,7 @@ import {
 
 const ETHEREUM = 'eip155:1';
 const BITCOIN = 'bip122:000000000019d6689c085ae165831e93';
+const LITECOIN = 'bip122:12a765e31ffd4059bada1e25190f6e98';
 const SOLANA = 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp';
 const SOLANA_LEGACY = 'solana:4sGjMW1sUnHzSxGspuhpqLDx6wiyjNtZ';
 const STATIC_SESSION_ID = 'address@device:0';
@@ -58,6 +59,10 @@ const mockUpdateSession = jest.fn<
 
     return Promise.resolve();
 });
+const mockEmitSessionEvent = jest.fn<
+    ReturnType<IWalletKit['emitSessionEvent']>,
+    Parameters<IWalletKit['emitSessionEvent']>
+>();
 const mockRespondSessionRequest = jest.fn<
     ReturnType<IWalletKit['respondSessionRequest']>,
     Parameters<IWalletKit['respondSessionRequest']>
@@ -79,7 +84,7 @@ jest.mock('@reown/walletkit', () => ({
                 approveSession: mockApproveSession,
                 rejectSession: jest.fn(),
                 updateSession: mockUpdateSession,
-                emitSessionEvent: jest.fn(),
+                emitSessionEvent: mockEmitSessionEvent,
                 respondSessionRequest: mockRespondSessionRequest,
             }),
     },
@@ -99,6 +104,26 @@ const bitcoinAccount = mockWalletAccount({
             {
                 address: 'bc1qfirst',
                 path: "m/84'/0'/0'/0/0",
+                transfers: 0,
+                balance: '0',
+                sent: '0',
+                received: '0',
+            },
+        ],
+        change: [],
+    },
+});
+const litecoinAccount = mockWalletAccount({
+    symbol: asNetworkSymbol('ltc'),
+    deviceState: STATIC_SESSION_ID,
+    descriptor: asAccountDescriptor('litecoinDescriptor'),
+    path: "m/84'/2'/0'",
+    addresses: {
+        used: [],
+        unused: [
+            {
+                address: 'ltc1qfirst',
+                path: "m/84'/2'/0'/0/0",
                 transfers: 0,
                 balance: '0',
                 sent: '0',
@@ -150,13 +175,14 @@ const walletState: State['wallet'] = {
     accounts: [
         ethereumAccount,
         bitcoinAccount,
+        litecoinAccount,
         otherWalletBitcoinAccount,
         solanaAccount,
         otherWalletSolanaAccount,
     ],
     settings: {
         ...initialWalletSettingsState,
-        enabledNetworks: [ethereumAccount.symbol, bitcoinAccount.symbol],
+        enabledNetworks: [ethereumAccount.symbol, bitcoinAccount.symbol, litecoinAccount.symbol],
     },
 };
 const deviceState: State['device'] = { devices: [device], selectedDevice: device };
@@ -371,6 +397,40 @@ describe('walletConnect account switch', () => {
         const { storedNamespaces } = await switchAccount('switch-unsent');
 
         expect(storedNamespaces?.bip122?.accounts).toEqual([`${BITCOIN}:bc1qprevious`]);
+    });
+
+    const switchAccountWithEvents = async (topic: string, chains: string[], account: Account) => {
+        const bitcoinEvents = { methods: ['getAccountAddresses'], events: ['accountsChanged'] };
+        const session = createSession(
+            topic,
+            { bip122: { chains, accounts: [], ...bitcoinEvents } },
+            { bip122: { chains, ...bitcoinEvents } },
+        );
+        mockSessions[topic] = session;
+        store.dispatch(walletConnectActions.saveSession(session));
+
+        await store.dispatch(switchSelectedAccountThunk({ account, sessionTopic: topic }));
+
+        return mockEmitSessionEvent.mock.calls
+            .filter(call => call[0].topic === topic)
+            .map(([{ event }]) => event);
+    };
+
+    it('announces only the accounts of the session', async () => {
+        expect(await switchAccountWithEvents('events', [BITCOIN], bitcoinAccount)).toEqual([
+            { name: 'accountsChanged', data: [`${BITCOIN}:bc1qfirst`] },
+        ]);
+    });
+
+    it('announces the selected account first', async () => {
+        const event = {
+            name: 'accountsChanged',
+            data: [`${LITECOIN}:ltc1qfirst`, `${BITCOIN}:bc1qfirst`],
+        };
+
+        expect(
+            await switchAccountWithEvents('events-order', [BITCOIN, LITECOIN], litecoinAccount),
+        ).toEqual([event, event]);
     });
 });
 

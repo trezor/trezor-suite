@@ -305,6 +305,7 @@ export const switchSelectedAccountThunk = createThunk<
         const approvedEvents = sessionNamespace.events ?? [];
         // @ts-expect-error: indexing with noUncheckedIndexedAccess
         const updatedNamespace: (typeof updatedNamespaces)[string] = updatedNamespaces[namespaceId];
+        const sessionAccounts = updatedSession?.namespaces[namespaceId]?.accounts ?? [];
         for (const chainId of chains) {
             if (network.chainId && approvedEvents.includes('chainChanged')) {
                 await walletKit.emitSessionEvent({
@@ -321,7 +322,9 @@ export const switchSelectedAccountThunk = createThunk<
                     topic: sessionTopic,
                     event: {
                         name: 'accountsChanged',
-                        data: [...updatedNamespace.accounts],
+                        data: updatedNamespace.accounts.filter(accountId =>
+                            sessionAccounts.includes(accountId),
+                        ),
                     },
                     chainId,
                 });
