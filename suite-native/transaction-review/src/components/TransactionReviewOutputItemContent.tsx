@@ -65,6 +65,7 @@ export const TransactionReviewOutputItemContent = ({
             );
 
         case 'data':
+        case 'opreturn':
             return <TransactionReviewOutputHexData value={output.value} />;
 
         case 'recipient_name':
