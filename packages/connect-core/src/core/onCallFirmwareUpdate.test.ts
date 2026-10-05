@@ -200,7 +200,7 @@ const setupTest = () => {
     const waitForDeviceList = async (f: ResponseFixture[]) => {
         fixtures.push(...f);
         await deviceList.init({ transports: [transport] });
-        await deviceList.pendingHandshakes();
+        await new Promise(resolve => deviceList.once('device-connect', resolve));
     };
 
     const postMessage = ({ type, payload }: any) => {

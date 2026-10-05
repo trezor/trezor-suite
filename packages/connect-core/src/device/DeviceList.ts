@@ -125,11 +125,6 @@ export class DeviceList extends TypedEmitter<DeviceListEvents> implements IDevic
         return !!this.getConnectedTransports().length;
     }
 
-    // Test seam, no production code path waits for the initial handshakes to settle.
-    async pendingHandshakes() {
-        await this.handshakeLock(() => {});
-    }
-
     constructor({ createLogger }: ConstructorParams) {
         super();
 
