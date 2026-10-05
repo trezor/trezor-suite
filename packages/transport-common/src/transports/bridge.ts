@@ -210,7 +210,14 @@ export class BridgeTransport extends AbstractTransport {
     }
 
     private getRequestBody(body: Buffer, protocol: TransportProtocol, thpState?: ThpState) {
-        return createProtocolMessage(body, protocol, thpState?.serialize());
+        if (!thpState) {
+            return createProtocolMessage(body, protocol);
+        }
+
+        // The bridge needs only the channel state to encode and decode frames.
+        const { properties, credentials, ...channelState } = thpState.serialize();
+
+        return createProtocolMessage(body, protocol, channelState);
     }
 
     // in some setups abort signal is resolved on the client-side but never resolves on the server-size (like android OkHttp request)
