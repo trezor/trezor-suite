@@ -148,6 +148,14 @@ export const createTx = (
                 );
             }
 
+            // The manager.tz %do entrypoint accepts only a zero amount.
+            if (transaction.amount !== 0) {
+                throw ERRORS.TypedError(
+                    'Method_InvalidParameter',
+                    'Tezos parameters_manager requires amount 0',
+                );
+            }
+
             if (parameters_manager.set_delegate) {
                 message = {
                     ...message,
