@@ -19,6 +19,9 @@ export type WalletType = (typeof WalletType)[keyof typeof WalletType];
 
 export type SuspiciousTransactionsFilter = 'showAll' | 'hideSuspicious' | 'showUnblurred';
 
+/** How the home asset table is cut up: as one list, or a section per network. */
+export type HomeAssetsTableGrouping = 'default' | 'networks';
+
 export interface WalletSettings {
     localCurrency: BaseCurrencyCode;
     enabledNetworks: NetworkSymbol[];
@@ -28,4 +31,5 @@ export interface WalletSettings {
     networkReserve: boolean;
     isAutoEjectEnabled: boolean;
     addressDisplayType: AddressDisplayOptions;
+    homeAssetsTableGrouping: HomeAssetsTableGrouping;
 }

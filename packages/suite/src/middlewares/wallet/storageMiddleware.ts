@@ -70,6 +70,7 @@ import {
     setAutoEjectEnabled,
     setBaseCurrency,
     setBitcoinAmountUnits,
+    setHomeAssetsTableGrouping,
     setMevProtection,
     setNetworkReserve,
     setSuspiciousTransactionsFilter,
@@ -564,6 +565,7 @@ export const prepareStorageMiddleware = createMiddlewareWithExtraDeps<
             setNetworkReserve,
             setAutoEjectEnabled,
             setAddressDisplayType,
+            setHomeAssetsTableGrouping,
             setSuspiciousTransactionsFilter,
         )(action)
     ) {

@@ -39,6 +39,7 @@ const initialState: WalletSettingsState = {
     networkReserve: true,
     isAutoEjectEnabled: false,
     addressDisplayType: AddressDisplayOptions.CHUNKED,
+    homeAssetsTableGrouping: 'default',
 };
 export const initialWalletSettingsState: WalletSettingsState = initialState;
 
@@ -51,6 +52,7 @@ export const walletSettingsPersistedWhitelist: Array<keyof WalletSettingsState> 
     'networkReserve',
     'isAutoEjectEnabled',
     'addressDisplayType',
+    'homeAssetsTableGrouping',
 ];
 
 export type WalletSettingsReducerDeps = ActionTypesDep<'storageLoad'> &
@@ -118,6 +120,15 @@ export const prepareWalletSettingsReducer = createReducerWithExtraDeps(
                 state.addressDisplayType = action.payload;
             },
         );
+        builder.addCase(
+            walletSettingsActions.setHomeAssetsTableGrouping.type,
+            (
+                state,
+                action: ReturnType<typeof walletSettingsActions.setHomeAssetsTableGrouping>,
+            ) => {
+                state.homeAssetsTableGrouping = action.payload;
+            },
+        );
     },
 );
 
@@ -141,6 +152,8 @@ export const selectIsSuspiciousTransactionsBlurringEnabled = (
 ) => selectSuspiciousTransactionsFilter(state, symbol) !== 'showUnblurred';
 export const selectBitcoinAmountUnit = (state: WalletSettingsRootState) =>
     state.wallet.settings.bitcoinAmountUnit;
+export const selectHomeAssetsTableGrouping = (state: WalletSettingsRootState) =>
+    state.wallet.settings.homeAssetsTableGrouping;
 export const selectIsDeviceAutoEjectEnabled = (state: WalletSettingsRootState) =>
     state.wallet.settings.isAutoEjectEnabled;
 

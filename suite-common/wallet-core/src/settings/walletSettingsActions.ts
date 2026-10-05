@@ -3,6 +3,7 @@ import { createAction } from '@reduxjs/toolkit';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import {
     type AddressDisplayOptions,
+    type HomeAssetsTableGrouping,
     type SuspiciousTransactionsFilter,
 } from '@suite-common/wallet-types';
 import type { BaseCurrencyCode } from '@trezor/blockchain-link-types';
@@ -51,6 +52,11 @@ export const setAutoEjectEnabled = createAction(
 export const setAddressDisplayType = createAction(
     WALLET_SETTINGS.SET_ADDRESS_DISPLAY_TYPE,
     (value: AddressDisplayOptions) => ({ payload: value }),
+);
+
+export const setHomeAssetsTableGrouping = createAction(
+    WALLET_SETTINGS.SET_HOME_ASSETS_TABLE_GROUPING,
+    (value: HomeAssetsTableGrouping) => ({ payload: value }),
 );
 
 export const changeCoinVisibilityEvent = createAction(
