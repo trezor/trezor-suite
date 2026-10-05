@@ -129,7 +129,7 @@ describe('DeviceList', () => {
         });
 
         await list.init({ transports: [transport] });
-        await list.pendingHandshakes();
+        await waitForNthEventOfType(list, 'device-connect_unacquired', 1);
 
         const events = eventsSpy.mock.calls.map(call => call[0]);
         expect(events).toEqual(['transport-start', 'device-connect_unacquired']);
@@ -142,7 +142,6 @@ describe('DeviceList', () => {
         });
 
         await list.init({ transports: [transport] });
-        await list.pendingHandshakes();
 
         expect(eventsSpy).toHaveBeenCalledTimes(1);
         expect(eventsSpy.mock.calls[0][0]).toEqual('transport-start');
@@ -158,7 +157,7 @@ describe('DeviceList', () => {
         });
 
         await list.init({ transports: [transport] });
-        await list.pendingHandshakes();
+        await waitForNthEventOfType(list, 'device-connect_unacquired', 1);
 
         const events = eventsSpy.mock.calls.map(call => call[0]);
         expect(events).toEqual(['transport-start', 'device-connect_unacquired']);
@@ -168,7 +167,7 @@ describe('DeviceList', () => {
         const transport = createTestTransport();
 
         await list.init({ transports: [transport] });
-        await list.pendingHandshakes();
+        await waitForNthEventOfType(list, 'device-connect', 1);
 
         const events = eventsSpy.mock.calls.map(call => call[0]);
         expect(events).toEqual(['transport-start', 'device-connect']);
@@ -183,7 +182,7 @@ describe('DeviceList', () => {
         });
 
         await list.init({ transports: [transport] });
-        await list.pendingHandshakes();
+        await waitForNthEventOfType(list, 'device-connect', 3);
 
         // note: acquire - release - connect should be ok.
         // acquire - deviceList._takeAndCreateDevice start (run -> rurInner -> getFeatures -> release) -> deviceList._takeAndCreateDevice end => emit DEVICE.CONNECT
@@ -217,7 +216,7 @@ describe('DeviceList', () => {
         });
 
         await list.init({ transports: [transportA, transportB] });
-        await list.pendingHandshakes();
+        await waitForNthEventOfType(list, 'device-connect', 4);
 
         expect(eventsSpy.mock.calls).toEqual([
             ['transport-start', 'usb', 2],
@@ -241,7 +240,6 @@ describe('DeviceList', () => {
         });
 
         await list.init({ transports: [transport] });
-        await list.pendingHandshakes();
 
         // emit TRANSPORT.CHANGE 3 times
         onChangeCallback([{ path: '1' }, { path: '2' }]);
@@ -292,7 +290,7 @@ describe('DeviceList', () => {
         });
 
         await list.init({ transports: [transport] });
-        await list.pendingHandshakes();
+        await waitForNthEventOfType(list, 'device-connect', 1);
 
         const device = list.getOnlyDevice();
         if (!device) throw new Error('Device is missing');
