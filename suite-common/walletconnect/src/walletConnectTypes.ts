@@ -36,6 +36,8 @@ export interface WalletConnectSession {
             icons: string[];
         };
     };
+    self?: { publicKey: string };
+    controller?: string;
     lastAccount?: Account;
 }
 

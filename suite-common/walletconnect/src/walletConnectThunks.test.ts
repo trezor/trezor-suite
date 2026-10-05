@@ -1,5 +1,5 @@
 import { configureStore } from '@reduxjs/toolkit';
-import { type WalletKitTypes } from '@reown/walletkit';
+import { type IWalletKit, type WalletKitTypes } from '@reown/walletkit';
 import { type ProposalTypes, type SessionTypes } from '@walletconnect/types';
 
 import { type DeviceRootState } from '@suite-common/device';
@@ -13,6 +13,7 @@ import {
     type WalletSettingsRootState,
     initialWalletSettingsState,
 } from '@suite-common/wallet-core';
+import { asAccountDescriptor } from '@suite-common/wallet-types';
 import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
 
 import { walletConnectActions } from './walletConnectActions';
@@ -31,10 +32,19 @@ import {
 
 const ETHEREUM = 'eip155:1';
 const BITCOIN = 'bip122:000000000019d6689c085ae165831e93';
+const SOLANA = 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp';
+const SOLANA_LEGACY = 'solana:4sGjMW1sUnHzSxGspuhpqLDx6wiyjNtZ';
 const STATIC_SESSION_ID = 'address@device:0';
+const OTHER_STATIC_SESSION_ID = 'address@other:0';
+
+type MockEventHandlers = {
+    [TEvent in keyof WalletKitTypes.EventArguments]: (
+        event: WalletKitTypes.EventArguments[TEvent],
+    ) => void;
+};
 
 const mockSessions: Record<string, SessionTypes.Struct> = {};
-const mockHandlers: { sessionProposal?: (event: WalletKitTypes.SessionProposal) => void } = {};
+const mockHandlers: Partial<MockEventHandlers> = {};
 const mockApproveSession = jest.fn<
     Promise<SessionTypes.Struct>,
     [{ id: number; namespaces: SessionTypes.Namespaces }]
@@ -48,14 +58,21 @@ const mockUpdateSession = jest.fn<
 
     return Promise.resolve();
 });
+const mockRespondSessionRequest = jest.fn<
+    ReturnType<IWalletKit['respondSessionRequest']>,
+    Parameters<IWalletKit['respondSessionRequest']>
+>();
 
 jest.mock('@walletconnect/core', () => ({ Core: jest.fn() }));
 jest.mock('@reown/walletkit', () => ({
     WalletKit: {
         init: () =>
             Promise.resolve({
-                on: (name: string, handler: (event: WalletKitTypes.SessionProposal) => void) => {
-                    if (name === 'session_proposal') mockHandlers.sessionProposal = handler;
+                on: <TEvent extends keyof MockEventHandlers>(
+                    name: TEvent,
+                    handler: MockEventHandlers[TEvent],
+                ) => {
+                    mockHandlers[name] = handler;
                 },
                 getActiveSessions: () => mockSessions,
                 getPendingSessionProposals: () => ({}),
@@ -63,6 +80,7 @@ jest.mock('@reown/walletkit', () => ({
                 rejectSession: jest.fn(),
                 updateSession: mockUpdateSession,
                 emitSessionEvent: jest.fn(),
+                respondSessionRequest: mockRespondSessionRequest,
             }),
     },
 }));
@@ -90,6 +108,36 @@ const bitcoinAccount = mockWalletAccount({
         change: [],
     },
 });
+const otherWalletBitcoinAccount = mockWalletAccount({
+    symbol: asNetworkSymbol('btc'),
+    deviceState: OTHER_STATIC_SESSION_ID,
+    descriptor: asAccountDescriptor('otherBitcoinDescriptor'),
+    path: "m/84'/0'/0'",
+    addresses: {
+        used: [],
+        unused: [
+            {
+                address: 'bc1qother',
+                path: "m/84'/0'/0'/0/0",
+                transfers: 0,
+                balance: '0',
+                sent: '0',
+                received: '0',
+            },
+        ],
+        change: [],
+    },
+});
+const solanaAccount = mockWalletAccount({
+    symbol: asNetworkSymbol('sol'),
+    deviceState: STATIC_SESSION_ID,
+    descriptor: asAccountDescriptor('solanaDescriptor'),
+});
+const otherWalletSolanaAccount = mockWalletAccount({
+    symbol: asNetworkSymbol('sol'),
+    deviceState: OTHER_STATIC_SESSION_ID,
+    descriptor: asAccountDescriptor('otherSolanaDescriptor'),
+});
 const device = mockSuiteDevice({ state: { staticSessionId: STATIC_SESSION_ID } });
 
 type State = AccountsRootState &
@@ -99,7 +147,13 @@ type State = AccountsRootState &
     WalletConnectStateRootState;
 
 const walletState: State['wallet'] = {
-    accounts: [ethereumAccount, bitcoinAccount],
+    accounts: [
+        ethereumAccount,
+        bitcoinAccount,
+        otherWalletBitcoinAccount,
+        solanaAccount,
+        otherWalletSolanaAccount,
+    ],
     settings: {
         ...initialWalletSettingsState,
         enabledNetworks: [ethereumAccount.symbol, bitcoinAccount.symbol],
@@ -207,7 +261,7 @@ beforeAll(async () => {
 
 describe('walletConnect session proposal', () => {
     const receiveProposal = async (proposal: WalletKitTypes.SessionProposal) => {
-        mockHandlers.sessionProposal?.(proposal);
+        mockHandlers.session_proposal?.(proposal);
         await waitFor(
             () => store.getState().walletConnect.pendingProposal?.eventId === proposal.id,
         );
@@ -317,5 +371,101 @@ describe('walletConnect account switch', () => {
         const { storedNamespaces } = await switchAccount('switch-unsent');
 
         expect(storedNamespaces?.bip122?.accounts).toEqual([`${BITCOIN}:bc1qprevious`]);
+    });
+});
+
+describe('walletConnect session requests', () => {
+    const namespaces: SessionTypes.Namespaces = {
+        bip122: { chains: [BITCOIN], accounts: [`${BITCOIN}:bc1qfirst`], ...bitcoinNamespace },
+        solana: {
+            chains: [SOLANA, SOLANA_LEGACY],
+            accounts: [
+                `${SOLANA}:${solanaAccount.descriptor}`,
+                `${SOLANA_LEGACY}:${solanaAccount.descriptor}`,
+            ],
+            methods: ['solana_getAccounts'],
+            events: [],
+        },
+    };
+    const session = createSession('requests', namespaces, {});
+    // A sign-in session is controlled by the peer.
+    const peerControlledSession = {
+        ...createSession('requests-peer', namespaces, {}),
+        controller: '01',
+    };
+
+    const request = async (
+        topic: string,
+        id: number,
+        chainId: string,
+        method: string,
+        params: unknown,
+    ) => {
+        mockHandlers.session_request?.({
+            id,
+            topic,
+            params: { request: { method, params }, chainId },
+            verifyContext: {
+                verified: { origin: 'https://app.example', validation: 'UNKNOWN', verifyUrl: '' },
+            },
+        });
+        const findResponse = () =>
+            mockRespondSessionRequest.mock.calls.find(([{ response }]) => response.id === id)?.[0]
+                .response;
+        await waitFor(() => findResponse() !== undefined);
+
+        return findResponse();
+    };
+
+    beforeAll(() => {
+        store.dispatch(walletConnectActions.saveSession(session));
+        store.dispatch(walletConnectActions.saveSession(peerControlledSession));
+    });
+
+    it('answers getAccountAddresses for an account of the session', async () => {
+        expect(
+            await request(session.topic, 11, BITCOIN, 'getAccountAddresses', {
+                account: 'bc1qfirst',
+            }),
+        ).toEqual({
+            id: 11,
+            jsonrpc: '2.0',
+            result: [
+                {
+                    address: 'bc1qfirst',
+                    publicKey: bitcoinAccount.descriptor,
+                    path: bitcoinAccount.path,
+                },
+            ],
+        });
+    });
+
+    it('answers getAccountAddresses only for accounts of the session', async () => {
+        expect(
+            await request(session.topic, 12, BITCOIN, 'getAccountAddresses', {
+                account: 'bc1qother',
+            }),
+        ).toEqual({ id: 12, jsonrpc: '2.0', result: undefined });
+    });
+
+    it('lists only the Solana accounts of the session', async () => {
+        expect(await request(session.topic, 13, SOLANA, 'solana_getAccounts', {})).toEqual({
+            id: 13,
+            jsonrpc: '2.0',
+            result: [{ pubkey: solanaAccount.descriptor }],
+        });
+    });
+
+    it('answers account reads only in sessions with namespaces set by Suite', async () => {
+        const { topic } = peerControlledSession;
+
+        expect(
+            await request(topic, 14, BITCOIN, 'getAccountAddresses', { account: 'bc1qfirst' }),
+        ).toEqual({ id: 14, jsonrpc: '2.0', result: undefined });
+        expect(await request(topic, 15, SOLANA, 'solana_getAccounts', {})).toEqual({
+            id: 15,
+            jsonrpc: '2.0',
+            result: [],
+        });
     });
 });

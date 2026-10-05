@@ -19,6 +19,7 @@ import {
     type WalletConnectAdapter,
     type WalletConnectNamespace,
 } from '../walletConnectTypes';
+import { getSessionAccountIds } from '../walletConnectUtils';
 
 const methods = [
     'sendTransfer',
@@ -69,6 +70,9 @@ const bitcoinRequestThunk = createThunk<
     switch (event.params.request.method) {
         case 'getAccountAddresses': {
             const { account: firstAddress } = event.params.request.params;
+            // The store holds every remembered wallet; answer only for accounts of this session.
+            const sessionAccountIds = getSessionAccountIds(session, 'bip122');
+            if (!sessionAccountIds.includes(`${event.params.chainId}:${firstAddress}`)) return;
             const accounts = selectAccounts(getState());
             const account = findAccount(accounts, firstAddress);
             if (!account?.addresses) return;
