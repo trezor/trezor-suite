@@ -3,6 +3,7 @@ import {
     desktopApiCompositionRootAllowance,
     desktopApiRestrictedImports,
     eslint,
+    selectorRestrictedImports,
 } from '@trezor/eslint';
 
 export default [
@@ -12,7 +13,7 @@ export default [
             'no-restricted-imports': [
                 'error',
                 {
-                    paths: [...desktopApiRestrictedImports],
+                    paths: [...desktopApiRestrictedImports, ...selectorRestrictedImports],
                     patterns: [
                         {
                             regex: '/libDev/src',
