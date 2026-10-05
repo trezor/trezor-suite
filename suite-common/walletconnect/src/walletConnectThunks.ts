@@ -144,31 +144,48 @@ const sessionProposalThunk = createThunk<
         event: WalletKitTypes.SessionProposal;
     },
     { state: SessionProposalThunkState; extra: SessionProposalThunkDeps }
->(`${WALLETCONNECT_MODULE}/sessionProposalThunk`, ({ event }, { dispatch, getState, extra }) => {
-    // Check supported networks
-    const accounts = selectAllSuccessfulAccountsToList(getState());
-    const networks: PendingConnectionProposalNetwork[] = [];
-    processNamespaces(accounts, networks, event.params.requiredNamespaces, true);
-    processNamespaces(accounts, networks, event.params.optionalNamespaces, false);
+>(
+    `${WALLETCONNECT_MODULE}/sessionProposalThunk`,
+    async ({ event }, { dispatch, getState, extra }) => {
+        const { normalizeNamespaces } = await import('@walletconnect/utils');
 
-    dispatch(
-        walletConnectActions.createSessionProposal({
-            eventId: event.id,
-            params: event.params,
-            expired: false,
+        // Check supported networks
+        const accounts = selectAllSuccessfulAccountsToList(getState());
+        const networks: PendingConnectionProposalNetwork[] = [];
+        // The approval (buildApprovedNamespaces) reads keys like 'bip122:<chain id>' as chains of
+        // their namespace, so the requested networks are listed from the same normalized form.
+        processNamespaces(
+            accounts,
             networks,
-            ...event.verifyContext.verified,
-        }),
-    );
-    extra.services.analytics.report({
-        type: events.walletConnectProposalEvent.name,
-        payload: {
-            origin: event.verifyContext.verified.origin,
-            validation: event.verifyContext.verified.validation,
-            networks: networks.map(network => network.namespaceId),
-        },
-    });
-});
+            normalizeNamespaces(event.params.requiredNamespaces),
+            true,
+        );
+        processNamespaces(
+            accounts,
+            networks,
+            normalizeNamespaces(event.params.optionalNamespaces),
+            false,
+        );
+
+        dispatch(
+            walletConnectActions.createSessionProposal({
+                eventId: event.id,
+                params: event.params,
+                expired: false,
+                networks,
+                ...event.verifyContext.verified,
+            }),
+        );
+        extra.services.analytics.report({
+            type: events.walletConnectProposalEvent.name,
+            payload: {
+                origin: event.verifyContext.verified.origin,
+                validation: event.verifyContext.verified.validation,
+                networks: networks.map(network => network.namespaceId),
+            },
+        });
+    },
+);
 
 type SessionRequestThunkState = WalletConnectRequestThunkState;
 
