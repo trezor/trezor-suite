@@ -10,7 +10,11 @@ import { type DeviceRootState, selectSelectedDevice } from '@suite-common/device
 import { type AdaPools } from '@suite-common/earn-staking-api';
 import { type WithServices } from '@suite-common/redux-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
-import { EVERSTAKE_POOL_NAMES, type NetworkSymbol } from '@suite-common/wallet-config';
+import {
+    EVERSTAKE_POOL_NAMES,
+    type NetworkSymbol,
+    getNetworkDisplaySymbol,
+} from '@suite-common/wallet-config';
 import { CARDANO_EVERSTAKE_DREP } from '@suite-common/wallet-constants';
 import {
     type AccountVotingDelegation,
@@ -36,7 +40,9 @@ import {
     type CardanoAction,
     type ComposeActionContext,
     type ExternalOutput,
+    type PrecomposedLevels,
     type PrecomposedTransaction,
+    type PrecomposedTransactionError,
     type PrecomposedTransactionFinal,
     type SelectedAccountStatus,
     type StakeFormState,
@@ -298,6 +304,30 @@ const calculateOutputAmount = (account: Account, stakeType: StakeType, totalSpen
     }).toString();
 };
 
+const getComposeErrorLevels = (
+    composeError: string,
+    symbol: NetworkSymbol,
+    predefinedLevels: FeeLevel[],
+): PrecomposedLevels => {
+    const errorLevel: PrecomposedTransactionError =
+        composeError === 'UTXO_BALANCE_INSUFFICIENT'
+            ? {
+                  type: 'error',
+                  error: 'AMOUNT_NOT_ENOUGH_CURRENCY_FEE',
+                  errorMessage: {
+                      id: 'AMOUNT_NOT_ENOUGH_CURRENCY_FEE',
+                      values: { networkDisplaySymbol: getNetworkDisplaySymbol(symbol) },
+                  },
+              }
+            : {
+                  type: 'error',
+                  error: 'TR_GENERIC_ERROR_TITLE',
+                  errorMessage: { id: 'TR_GENERIC_ERROR_TITLE' },
+              };
+
+    return Object.fromEntries(predefinedLevels.map(level => [level.label, errorLevel]));
+};
+
 type ComposeTransactionThunkState = SelectedAccountRootState & StakeRootState;
 
 export const composeTransactionThunk =
@@ -318,6 +348,21 @@ export const composeTransactionThunk =
             votingDelegation,
         );
         const { txPlan } = txData || {};
+
+        const { feeInfo } = formState;
+        if (!feeInfo) return;
+
+        const { levels } = feeInfo;
+        const predefinedLevels = levels.filter(l => l.label !== 'custom');
+
+        if (txPlan?.type === 'error') {
+            return getComposeErrorLevels(
+                txPlan.error,
+                selectedAccount.account.symbol,
+                predefinedLevels,
+            );
+        }
+
         if (txPlan?.type !== 'final') return;
 
         const amountAda = calculateOutputAmount(
@@ -351,12 +396,6 @@ export const composeTransactionThunk =
                       },
                   }
                 : undefined;
-
-        const { feeInfo } = formState;
-        if (!feeInfo) return;
-
-        const { levels } = feeInfo;
-        const predefinedLevels = levels.filter(l => l.label !== 'custom');
 
         return composeStakingTransaction(
             formValuesExtended,

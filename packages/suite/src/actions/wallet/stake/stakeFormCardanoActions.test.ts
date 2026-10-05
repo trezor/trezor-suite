@@ -1,12 +1,26 @@
 import { type AdaPools } from '@suite-common/earn-staking-api';
-import { asNetworkSymbol } from '@suite-common/wallet-config';
+import { asNetworkSymbol, getNetwork } from '@suite-common/wallet-config';
 import { CARDANO_EVERSTAKE_DREP } from '@suite-common/wallet-constants';
-import { type AccountVotingDelegation } from '@suite-common/wallet-core';
-import { type Account, type AccountKey, type CardanoAction } from '@suite-common/wallet-types';
+import {
+    type AccountVotingDelegation,
+    type VotingDelegationOption,
+    getStakeFormsDefaultValues,
+} from '@suite-common/wallet-core';
+import {
+    type Account,
+    type AccountKey,
+    type CardanoAction,
+    type ComposeActionContext,
+    type StakeFormState,
+} from '@suite-common/wallet-types';
 import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
 import TrezorConnect, { type CardanoCertificate, PROTO } from '@trezor/connect';
 
-import { CardanoComposeError, prepareTxPlan } from './stakeFormCardanoActions';
+import {
+    CardanoComposeError,
+    composeTransactionThunk,
+    prepareTxPlan,
+} from './stakeFormCardanoActions';
 
 jest.mock('@trezor/connect', () => {
     const actual = jest.requireActual('@trezor/connect');
@@ -92,6 +106,13 @@ const mockComposeSuccess = () => {
     cardanoComposeTransactionMock.mockResolvedValue({
         success: true,
         payload: [{ type: 'final', fee: '174301', deposit: '2000000' }],
+    });
+};
+
+const mockComposeError = (error: string) => {
+    cardanoComposeTransactionMock.mockResolvedValue({
+        success: true,
+        payload: [{ type: 'error', error }],
     });
 };
 
@@ -433,5 +454,85 @@ describe('prepareTxPlan', () => {
             ).resolves.not.toBeNull();
             expect(getVoteDelegationCertificate()?.dRep).toEqual(abstainDrep);
         });
+    });
+});
+
+describe('composeTransactionThunk', () => {
+    type ThunkState = ReturnType<Parameters<ReturnType<typeof composeTransactionThunk>>[1]>;
+
+    const network = getNetwork('ada');
+
+    const compose = (account: Account, option: VotingDelegationOption) => {
+        const formValues = getStakeFormsDefaultValues({
+            address: account.descriptor,
+            stakeType: 'change-delegate',
+        }) as unknown as StakeFormState;
+        const formState: ComposeActionContext = {
+            account,
+            network,
+            feeInfo: {
+                blockHeight: 1,
+                blockTime: 20,
+                minFee: 1,
+                maxFee: 100,
+                minPriorityFee: 0,
+                levels: [{ label: 'normal', feePerUnit: '44', blocks: -1 }],
+            },
+        };
+        const state = {
+            wallet: {
+                selectedAccount: { status: 'loaded', account, network },
+                stake: {
+                    votingDelegation: { accountKey: account.key, option },
+                    data: { data: {} },
+                },
+            },
+        } as unknown as ThunkState;
+
+        return composeTransactionThunk(formValues, formState)(jest.fn(), () => state);
+    };
+
+    beforeEach(() => {
+        cardanoComposeTransactionMock.mockReset();
+    });
+
+    it.each([
+        [
+            'UTXO_BALANCE_INSUFFICIENT',
+            {
+                type: 'error',
+                error: 'AMOUNT_NOT_ENOUGH_CURRENCY_FEE',
+                errorMessage: {
+                    id: 'AMOUNT_NOT_ENOUGH_CURRENCY_FEE',
+                    values: { networkDisplaySymbol: 'ADA' },
+                },
+            },
+        ],
+        [
+            'UTXO_NOT_FRAGMENTED_ENOUGH',
+            {
+                type: 'error',
+                error: 'TR_GENERIC_ERROR_TITLE',
+                errorMessage: { id: 'TR_GENERIC_ERROR_TITLE' },
+            },
+        ],
+    ])(
+        'turns the coin selection failure %s into an error level the form can show',
+        async (error, expectedLevel) => {
+            mockComposeError(error);
+
+            const levels = await compose(createStakeReadyAccount(), { type: 'abstain' });
+
+            expect(levels?.normal).toEqual(expectedLevel);
+        },
+    );
+
+    it('returns nothing when the current delegation is kept, as there is nothing to compose', async () => {
+        const levels = await compose(createCardanoAccount({ drepId: PREDEFINED_DREP_ID }), {
+            type: 'current',
+        });
+
+        expect(levels).toBeUndefined();
+        expect(cardanoComposeTransactionMock).not.toHaveBeenCalled();
     });
 });
