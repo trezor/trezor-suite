@@ -244,11 +244,7 @@ test.describe('Staking - Cardano', { tag: ['@T3W1', '@T3T1'] }, () => {
                     },
                 });
                 await devicePrompt.waitForPromptAndConfirm();
-                await stakingSection.verifyStakingToast({
-                    type: 'staked',
-                    account: 'Cardano #1',
-                    amount: finalBalanceFormatted,
-                });
+                await stakingSection.verifyStakingToast({ type: 'staked' });
             });
 
             await test.step('Verify account is staked', async () => {

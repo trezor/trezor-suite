@@ -261,16 +261,34 @@ describe('NotificationRenderer transaction broadcasts', () => {
         expect(notificationView).toHaveAttribute('data-variant', 'warning');
     });
 
+    const { amount: _amount, ...earnTransactionPayload } = transactionPayload;
+
     it.each(['tx-staked', 'tx-unstaked', 'tx-claimed'] as const)(
-        'renders a %s broadcast with the warning variant and piggy-bank icon',
+        'renders a pending %s with the warning variant and piggy-bank icon',
         type => {
             renderNotification({
-                ...transactionPayload,
+                ...earnTransactionPayload,
                 type,
+                stage: 'pending',
             });
 
             const notificationView = screen.getByTestId('notification-view');
             expect(notificationView).toHaveAttribute('data-variant', 'warning');
+            expect(notificationView).toHaveAttribute('data-icon', 'piggy-bank');
+        },
+    );
+
+    it.each(['tx-staked', 'tx-unstaked', 'tx-claimed'] as const)(
+        'renders a confirmed %s with the success variant and piggy-bank icon',
+        type => {
+            renderNotification({
+                ...earnTransactionPayload,
+                type,
+                stage: 'confirmed',
+            });
+
+            const notificationView = screen.getByTestId('notification-view');
+            expect(notificationView).toHaveAttribute('data-variant', 'success');
             expect(notificationView).toHaveAttribute('data-icon', 'piggy-bank');
         },
     );

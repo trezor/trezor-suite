@@ -4,15 +4,13 @@ import { colorVariants } from '@trezor/theme';
 import { hexToRgba } from '@trezor/utils';
 
 import { RewardsList } from './rewardList';
-import { step, toCompactAmountWithSymbol } from '../../common';
+import { step } from '../../common';
 import { expect } from '../../testExtends/customMatchers';
 
 const fiatAmountRegex = /^\$\d{1,3}(,\d{3})*\.\d{2}$/;
 
 type VerifyStakingToastParams = {
     type: 'staked' | 'unstaked' | 'claimed';
-    account: string;
-    amount: string;
 };
 
 type ExpectStakingAmountsParams = {
@@ -79,13 +77,10 @@ export class StakingSection {
     readonly cryptoTicker: Locator;
     readonly stakedToast: Locator;
     readonly stakedToastMessage: Locator;
-    readonly stakedToastAmount: Locator;
     readonly unstakedToast: Locator;
     readonly unstakedToastMessage: Locator;
-    readonly unstakedToastAmount: Locator;
     readonly claimedToast: Locator;
     readonly claimedToastMessage: Locator;
-    readonly claimedToastAmount: Locator;
     readonly claimRewardsButton: Locator;
     readonly cardanoRewardAmount: Locator;
     readonly cardanoDepositAmount: Locator;
@@ -162,13 +157,10 @@ export class StakingSection {
         this.cryptoTicker = this.page.getByTestId('@staking/form/crypto-input/input-addon');
         this.stakedToast = this.page.getByTestId('@toast/tx-staked');
         this.stakedToastMessage = this.page.getByTestId('@toast/tx-staked/message');
-        this.stakedToastAmount = this.page.getByTestId('@toast/tx-staked/amount');
         this.unstakedToast = this.page.getByTestId('@toast/tx-unstaked');
         this.unstakedToastMessage = this.page.getByTestId('@toast/tx-unstaked/message');
-        this.unstakedToastAmount = this.page.getByTestId('@toast/tx-unstaked/amount');
         this.claimedToast = this.page.getByTestId('@toast/tx-claimed');
         this.claimedToastMessage = this.page.getByTestId('@toast/tx-claimed/message');
-        this.claimedToastAmount = this.page.getByTestId('@toast/tx-claimed/amount');
         this.claimRewardsButton = this.page.getByTestId('@account/staking/claim-rewards-button');
         this.cardanoRewardAmount = this.page.getByTestId('@account/staking/rewards-with-symbol');
         this.cardanoDepositAmount = this.page.getByTestId(
@@ -181,38 +173,24 @@ export class StakingSection {
         this.claimWarningBanner = this.page.getByTestId('@modal/claim/fee-warning-banner');
     }
 
-    /**
-     * @param params.type - The staking toast type ('staked' | 'unstaked' | 'claimed')
-     * @param params.account - The account label shown in the toast (e.g., 'Solana #1')
-     * @param params.amount - The expected amount with symbol (e.g., '0.1 SOL')
-     */
     @step()
-    async verifyStakingToast({ type, account, amount }: VerifyStakingToastParams) {
+    async verifyStakingToast({ type }: VerifyStakingToastParams) {
         const toasts = {
             staked: {
                 messageLocator: this.stakedToastMessage,
-                amountLocator: this.stakedToastAmount,
-                translationKey: 'TOAST_TX_STAKED',
+                translationKey: 'TOAST_TX_STAKE_PENDING',
             },
             unstaked: {
                 messageLocator: this.unstakedToastMessage,
-                amountLocator: this.unstakedToastAmount,
-                translationKey: 'TOAST_TX_UNSTAKED',
+                translationKey: 'TOAST_TX_UNSTAKE_PENDING',
             },
             claimed: {
                 messageLocator: this.claimedToastMessage,
-                amountLocator: this.claimedToastAmount,
-                translationKey: 'TOAST_TX_CLAIMED',
+                translationKey: 'TOAST_TX_CLAIM_PENDING',
             },
         } as const;
-        const toast = toasts[type];
 
-        await expect(toast.messageLocator).toHaveTranslation(toast.translationKey, {
-            values: { account },
-        });
-        // The toast shows compact amounts, so the exact values the callers pass are reduced
-        // here rather than in each of them.
-        await expect(toast.amountLocator).toHaveText(toCompactAmountWithSymbol(amount));
+        await expect(toasts[type].messageLocator).toHaveTranslation(toasts[type].translationKey);
     }
 
     @step()

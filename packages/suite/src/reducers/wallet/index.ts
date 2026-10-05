@@ -7,6 +7,7 @@ import {
     type AccountsRefreshTimeState,
     type AccountsState,
     type EarnOnboardingState,
+    type EarnTransactionsState,
     type ExplorerConfig,
     type FiatRatesState,
     type FormDraftState,
@@ -18,6 +19,7 @@ import {
     type TronStakeReducerState,
     type YieldState,
     accountsRefreshTimeReducer,
+    earnTransactionsReducer,
     feesReducer,
     prepareAccountsReducer,
     prepareBlockchainReducer,
@@ -70,6 +72,7 @@ export type WalletState = {
     discovery: Discovery;
     accounts: AccountsState;
     accountsRefreshTime: AccountsRefreshTimeState;
+    earnTransactions: EarnTransactionsState;
     selectedAccount: SelectedAccountStatus;
     fees: FeesState;
     blockchain: BlockchainNetworks;
@@ -99,6 +102,7 @@ export const walletReducers: Reducer<
     discovery: discoveryReducer,
     accounts: accountsReducer,
     accountsRefreshTime: accountsRefreshTimeReducer,
+    earnTransactions: earnTransactionsReducer,
     selectedAccount: selectedAccountReducer,
     fees: feesReducer,
     blockchain: blockchainReducer,

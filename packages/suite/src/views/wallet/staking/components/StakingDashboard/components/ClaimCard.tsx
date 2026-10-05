@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef } from 'react';
+import { useMemo } from 'react';
 
 import { selectSelectedAccount } from '@suite/account';
 import { events, injectDesktopAnalytics } from '@suite/analytics';
@@ -6,7 +6,6 @@ import { Translation } from '@suite/intl';
 import { openModal } from '@suite/modal';
 import { useServices } from '@suite-common/dependency-injection';
 import { injectDispatch } from '@suite-common/redux-utils';
-import { notificationsActions } from '@suite-common/toast-notifications';
 import {
     getStakingDataForNetwork,
     selectAccountClaimTransactions,
@@ -34,28 +33,6 @@ export const ClaimCard = () => {
     const { canClaim = false, claimableAmount = '0' } =
         getStakingDataForNetwork(selectedAccount) ?? {};
     const isClaimButtonDisabled = isClaimingDisabled || !selectedAccount;
-
-    // Show success message when claim tx confirmation is complete.
-    const prevIsClaimPending = useRef(false);
-
-    useEffect(() => {
-        // Reset prevIsClaimPending when account changes
-        prevIsClaimPending.current = false;
-    }, [selectedAccount?.key]);
-
-    useEffect(() => {
-        if (prevIsClaimPending.current && !isClaimPending && selectedAccount?.symbol) {
-            dispatch(
-                notificationsActions.addToast({
-                    type: 'successful-claim',
-                    symbol: selectedAccount.symbol,
-                }),
-            );
-            prevIsClaimPending.current = false;
-        }
-
-        prevIsClaimPending.current = isClaimPending;
-    }, [dispatch, isClaimPending, selectedAccount?.symbol, selectedAccount?.key]);
 
     const openClaimModal = () => {
         if (!isClaimButtonDisabled) {

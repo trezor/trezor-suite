@@ -27,6 +27,7 @@ import {
     type AccountsState,
     type BlockchainRootState,
     type BlockchainState,
+    type EarnTransactionsRootState,
     type FeesRootState,
     type StellarContractTokensRootState,
     type SyncAccountsWithBlockchainThunkDeps,
@@ -76,6 +77,7 @@ interface Args {
 type State = AccountsRootState &
     BlockchainRootState &
     DeviceRootState &
+    EarnTransactionsRootState &
     FeesRootState &
     NetworksRootState &
     StellarContractTokensRootState &
@@ -98,6 +100,7 @@ const getInitialState = (
     networks: mockNetworksState(mockGetSupportedNetworks()),
     wallet: {
         accounts: accountsReducer(accounts, action),
+        earnTransactions: {},
         transactions: transactionsReducer(
             {
                 transactions: transactions || {},
