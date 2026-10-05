@@ -462,11 +462,19 @@ describe('composeTransactionThunk', () => {
 
     const network = getNetwork('ada');
 
-    const compose = (account: Account, option: VotingDelegationOption) => {
-        const formValues = getStakeFormsDefaultValues({
-            address: account.descriptor,
-            stakeType: 'change-delegate',
-        }) as unknown as StakeFormState;
+    const compose = (
+        account: Account,
+        option: VotingDelegationOption,
+        selectedFee: StakeFormState['selectedFee'] = 'normal',
+    ) => {
+        const formValues = {
+            ...getStakeFormsDefaultValues({
+                address: account.descriptor,
+                stakeType: 'change-delegate',
+            }),
+            selectedFee,
+            feePerUnit: '50',
+        } as unknown as StakeFormState;
         const formState: ComposeActionContext = {
             account,
             network,
@@ -526,6 +534,28 @@ describe('composeTransactionThunk', () => {
             expect(levels?.normal).toEqual(expectedLevel);
         },
     );
+
+    it('keeps the selected custom fee level in the error levels, so the form never waits for a missing level', async () => {
+        mockComposeError('UTXO_BALANCE_INSUFFICIENT');
+
+        const levels = await compose(createStakeReadyAccount(), { type: 'abstain' }, 'custom');
+
+        expect(levels).toEqual({
+            normal: expect.objectContaining({ type: 'error' }),
+            custom: expect.objectContaining({ type: 'error' }),
+        });
+    });
+
+    it('composes the selected custom fee level alongside the predefined ones', async () => {
+        mockComposeSuccess();
+
+        const levels = await compose(createStakeReadyAccount(), { type: 'abstain' }, 'custom');
+
+        expect(levels).toEqual({
+            normal: expect.objectContaining({ type: 'final', fee: '174301' }),
+            custom: expect.objectContaining({ type: 'final', fee: '174301' }),
+        });
+    });
 
     it('returns nothing when the current delegation is kept, as there is nothing to compose', async () => {
         const levels = await compose(createCardanoAccount({ drepId: PREDEFINED_DREP_ID }), {

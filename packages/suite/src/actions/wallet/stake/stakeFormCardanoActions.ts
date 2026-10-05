@@ -354,6 +354,14 @@ export const composeTransactionThunk =
 
         const { levels } = feeInfo;
         const predefinedLevels = levels.filter(l => l.label !== 'custom');
+        if (formValues.selectedFee === 'custom') {
+            predefinedLevels.push({
+                label: 'custom',
+                feePerUnit: formValues.feePerUnit,
+                feeLimit: formValues.feeLimit,
+                blocks: -1,
+            });
+        }
 
         if (txPlan?.type === 'error') {
             return getComposeErrorLevels(
