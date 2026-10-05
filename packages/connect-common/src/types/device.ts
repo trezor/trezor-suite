@@ -5,7 +5,7 @@ import {
     type TranslationMetadata,
 } from '@trezor/device-utils';
 import type { MessagesSchema as PROTO } from '@trezor/protobuf';
-import type { ThpStateSerialized } from '@trezor/protocol';
+import type { ThpCredentials, ThpStateSerialized } from '@trezor/protocol';
 import type { Descriptor } from '@trezor/transport-common';
 import type { Branded } from '@trezor/type-utils';
 
@@ -65,7 +65,7 @@ export type DeviceState = {
 
 export type DeviceThpState = {
     properties?: ThpStateSerialized['properties'];
-    credentials: ThpStateSerialized['credentials'];
+    credentials: Omit<ThpCredentials, 'host_static_key'>[];
     channel: string;
 };
 

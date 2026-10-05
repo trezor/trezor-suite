@@ -19,7 +19,7 @@ export const addCredential = createAction(
 
 export const removeCredentials = createAction(
     `${THP_PREFIX}/removeCredentials`,
-    (payload: { credentials: ThpCredentials[] }) => ({
+    (payload: { credentials: Pick<ThpCredentials, 'credential'>[] }) => ({
         payload,
     }),
 );

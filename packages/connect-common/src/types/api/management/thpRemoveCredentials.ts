@@ -4,5 +4,5 @@ import type { ThpCredentials } from '@trezor/protocol';
 import type { CommonParams, Response } from '../../params';
 
 export declare function thpRemoveCredentials(
-    params: CommonParams & { credentials?: ThpCredentials[] },
+    params: CommonParams & { credentials?: Pick<ThpCredentials, 'credential'>[] },
 ): Response<PROTO.Success>;

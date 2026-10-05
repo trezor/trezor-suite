@@ -7,7 +7,7 @@ import { THP_PREFIX, thpActions } from './thpActions';
 
 type RemoveThpCredentialsThunkParams = {
     device?: TrezorDevice;
-    credentials?: ThpCredentials[];
+    credentials?: Pick<ThpCredentials, 'credential'>[];
 };
 
 export const removeThpCredentialsThunk = createThunk<void, RemoveThpCredentialsThunkParams, void>(
