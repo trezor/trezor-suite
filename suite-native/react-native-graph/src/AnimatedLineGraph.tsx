@@ -321,7 +321,7 @@ export function AnimatedLineGraph<TEventPayload extends object>({
         if (from == null || to == null) return to ?? straightLine;
 
         return to.interpolate(from, interpolateProgress.value) ?? to;
-    }, [interpolateProgress, paths]);
+    });
 
     const gradientPath = useDerivedValue(() => {
         const { from, to } = gradientPaths.value;
@@ -429,7 +429,6 @@ export function AnimatedLineGraph<TEventPayload extends object>({
                 runOnJS(setFingerPoint)(fingerX);
             }
         },
-        [isActive, setFingerX, width, x, loading],
     );
 
     useAnimatedReaction(
@@ -437,7 +436,6 @@ export function AnimatedLineGraph<TEventPayload extends object>({
         active => {
             runOnJS(setIsActive)(active);
         },
-        [isActive, setIsActive],
     );
 
     useEffect(() => {

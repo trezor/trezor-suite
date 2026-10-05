@@ -169,12 +169,9 @@ export const FeesFooter = ({
 
     const isSubmitButtonVisible = isSubmittable && withSubmitButton;
 
-    const animatedFooterStyle = useAnimatedStyle(
-        () => ({
-            paddingBottom: withTiming(isSubmitButtonVisible ? CARD_BOTTOM_PADDING : 0),
-        }),
-        [isSubmitButtonVisible],
-    );
+    const animatedFooterStyle = useAnimatedStyle(() => ({
+        paddingBottom: withTiming(isSubmitButtonVisible ? CARD_BOTTOM_PADDING : 0),
+    }));
 
     return (
         <>
