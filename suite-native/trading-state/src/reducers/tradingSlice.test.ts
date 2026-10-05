@@ -274,6 +274,45 @@ describe('tradingSlice', () => {
         });
     });
 
+    describe('formResetRequestedFor', () => {
+        it('should have undefined as initial formResetRequestedFor', () => {
+            const state = tradingReducer(undefined, { type: 'undefined_action' });
+
+            expect(state.formResetRequestedFor).toBeUndefined();
+        });
+
+        it('requestTradingFormReset should set formResetRequestedFor', () => {
+            const state = tradingReducer(
+                undefined,
+                tradingActions.requestTradingFormReset('exchange'),
+            );
+
+            expect(state.formResetRequestedFor).toBe('exchange');
+        });
+
+        it('clearTradingFormResetRequest should clear formResetRequestedFor', () => {
+            const actions = [
+                tradingActions.requestTradingFormReset('buy'),
+                tradingActions.clearTradingFormResetRequest(),
+            ];
+
+            const state = actions.reduce(tradingReducer, undefined) as TradingState;
+
+            expect(state.formResetRequestedFor).toBeUndefined();
+        });
+
+        it('setTradingEnvironment should clear formResetRequestedFor', () => {
+            const prevState: TradingState = {
+                ...tradingInitialState,
+                formResetRequestedFor: 'sell',
+            };
+
+            const state = tradingReducer(prevState, tradingActions.setTradingEnvironment('dev'));
+
+            expect(state.formResetRequestedFor).toBeUndefined();
+        });
+    });
+
     describe('clearSelectedAccounts', () => {
         it('should clear receiveAddress', () => {
             const prevState: TradingState = {

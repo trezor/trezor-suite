@@ -5,7 +5,7 @@ import { useNavigation } from '@react-navigation/native';
 
 import { useServices } from '@suite-common/dependency-injection';
 import { injectDispatch } from '@suite-common/redux-utils';
-import { isSilentSendRejection } from '@suite-common/trading';
+import { type TradingType, isSilentSendRejection } from '@suite-common/trading';
 import { sendFormActions } from '@suite-common/wallet-core';
 import { type AccountKey } from '@suite-common/wallet-types';
 import { useConfirmOnTrezorController } from '@suite-native/confirm-on-trezor';
@@ -35,6 +35,7 @@ export type UseTradingOutputsReviewScreenControlsProps = Pick<
 > & {
     orderId: string;
     accountKey: AccountKey;
+    tradingType: Exclude<TradingType, 'buy'>;
     reportToAnalytics: TradingExchangeAnalyticReportCallback | TradingSellAnalyticReportCallback;
     isDexExchange?: boolean;
 };
@@ -42,6 +43,7 @@ export type UseTradingOutputsReviewScreenControlsProps = Pick<
 export const useTradingOutputsReviewScreenControls = ({
     orderId,
     accountKey,
+    tradingType,
     signAndSendTransaction,
     resolveTransactionSendConsent,
     reportToAnalytics,
@@ -72,17 +74,19 @@ export const useTradingOutputsReviewScreenControls = ({
         activeSigningAttemptIdRef.current += 1;
         resolveTransactionSendConsent(false);
         TrezorConnect.cancel('tx-cancelled');
+        dispatch(tradingActions.requestTradingFormReset(tradingType));
         navigation.popToTop();
         reportToAnalytics('sign-and-send', 'cancel');
-    }, [navigation, reportToAnalytics, resolveTransactionSendConsent]);
+    }, [dispatch, navigation, reportToAnalytics, resolveTransactionSendConsent, tradingType]);
 
     useOutputsReviewBackInterceptor(onReviewCanceled);
 
     const nextStep: TradingTransactionSignAndSendProps['nextStep'] = useCallback(() => {
+        dispatch(tradingActions.requestTradingFormReset(tradingType));
         navigation.popToTop();
         reportToAnalytics('sign-and-send', 'continue');
         dispatch(tradingActions.setTradeOrderIdToBeOpened(orderId));
-    }, [dispatch, navigation, orderId, reportToAnalytics]);
+    }, [dispatch, navigation, orderId, reportToAnalytics, tradingType]);
 
     const startSigning = useCallback(() => {
         signingExecutedRef.current = true;

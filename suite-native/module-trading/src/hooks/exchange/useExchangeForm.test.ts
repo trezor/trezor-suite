@@ -32,7 +32,7 @@ import { type TradingRootState } from '@suite-native/trading-state';
 import { type ExchangeFormType } from '@suite-native/trading-types';
 import { PROTO } from '@trezor/connect';
 
-import { clearExchangeFormQuoteData, useExchangeForm } from './useExchangeForm';
+import { useExchangeForm } from './useExchangeForm';
 import { createTradingTestStore } from '../../test-utils/tradingTestUtils';
 
 type State = TradingRootState & AccountsRootState & WalletSettingsRootState;
@@ -710,28 +710,6 @@ describe('useExchangeForm', () => {
 
                 expect(result.current.getValues('generalAlert')).toBeUndefined();
             });
-        });
-    });
-
-    describe('clearExchangeFormQuoteData', () => {
-        it('should clear quote, sendCryptoAmount, receiveCryptoAmount and generalAlert data', async () => {
-            const { result } = await renderUseExchangeForm();
-
-            await act(() => {
-                result.current.setValue('quote', mercuryoFixedWorstQuote as ExchangeTrade);
-                result.current.setValue('sendCryptoAmount', '10');
-                result.current.setValue('receiveCryptoAmount', '10');
-                result.current.setValue('generalAlert', 'test');
-            });
-
-            await act(() => {
-                clearExchangeFormQuoteData(result.current);
-            });
-
-            expect(result.current.getValues('quote')).toBeUndefined();
-            expect(result.current.getValues('sendCryptoAmount')).toBeUndefined();
-            expect(result.current.getValues('receiveCryptoAmount')).toBeUndefined();
-            expect(result.current.getValues('generalAlert')).toBeUndefined();
         });
     });
 });

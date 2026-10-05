@@ -15,6 +15,7 @@ import {
     type TradeServerEnvironment,
     type TradingCountryCode,
     type TradingRootStateWithDeviceAndAccounts,
+    type TradingType,
     selectTradingProviderMetadata,
 } from '@suite-common/trading';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
@@ -58,6 +59,7 @@ import {
     selectTradesToWatchByAccount,
     selectTradingAccountKeyByOrderId,
     selectTradingEnvironment,
+    selectTradingFormResetRequestedFor,
     selectTradingProviderConfirmationStatus,
     selectVisibleDeviceAccountsByNetworkSymbolSorted,
 } from './commonSelectors';
@@ -96,6 +98,7 @@ const getPreloadedState = ({
     slip24,
     residence,
     countryCode,
+    formResetRequestedFor,
 }: {
     buy?: boolean;
     sell?: boolean;
@@ -106,6 +109,7 @@ const getPreloadedState = ({
     slip24?: boolean;
     residence?: boolean;
     countryCode?: TradingCountryCode | undefined;
+    formResetRequestedFor?: TradingType | undefined;
 }) => {
     const features: Feature[] = [];
     if (buy !== undefined) {
@@ -210,6 +214,7 @@ const getPreloadedState = ({
                     ...tradingInitialState.residence,
                     country: countryCode,
                 },
+                formResetRequestedFor,
             },
         },
     };
@@ -537,6 +542,18 @@ describe('commonSelectors', () => {
             const firstCall = selectEnabledTradingTypes(getPreloadedState(flags));
             const secondCall = selectEnabledTradingTypes(getPreloadedState(flags));
             expect(firstCall).toBe(secondCall);
+        });
+    });
+
+    describe('selectTradingFormResetRequestedFor', () => {
+        it('should return the trading type for which a reset is requested', () => {
+            const state = getPreloadedState({ formResetRequestedFor: 'exchange' });
+            expect(selectTradingFormResetRequestedFor(state)).toBe('exchange');
+        });
+
+        it('should return undefined if no reset is requested', () => {
+            const state = getPreloadedState({ formResetRequestedFor: undefined });
+            expect(selectTradingFormResetRequestedFor(state)).toBeUndefined();
         });
     });
 

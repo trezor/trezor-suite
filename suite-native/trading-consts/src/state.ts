@@ -12,6 +12,7 @@ export const tradingInitialState: TradingState = {
     residence: residenceInitialState,
     tradingEnvironment: 'production',
     tradeOrderIdToBeOpened: undefined,
+    formResetRequestedFor: undefined,
     isAmountInputActive: false,
     activeTradingType: undefined,
     providerConfirmationStatus: 'inactive',

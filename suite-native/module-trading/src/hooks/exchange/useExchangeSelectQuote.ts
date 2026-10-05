@@ -32,7 +32,6 @@ import {
 import { type ExchangeFormType } from '@suite-native/trading-types';
 import { exhaustive } from '@trezor/type-utils';
 
-import { clearExchangeFormQuoteData } from './useExchangeForm';
 import { isFullySelectedReceiveAccount } from '../../utils/general/receiveAccountUtils';
 
 type NavigationProps = StackToStackCompositeNavigationProps<
@@ -96,10 +95,7 @@ export const useExchangeSelectQuote = (form: ExchangeFormType) => {
         await dispatch(
             exchangeThunks.selectQuoteThunk({
                 quote: candidateQuote,
-                nextStep: () => {
-                    clearExchangeFormQuoteData(form);
-                    nextStep(getApprovalStatus(candidateQuote), candidateQuote);
-                },
+                nextStep: () => nextStep(getApprovalStatus(candidateQuote), candidateQuote),
             }),
         );
     };

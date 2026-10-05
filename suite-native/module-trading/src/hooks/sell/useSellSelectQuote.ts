@@ -23,8 +23,6 @@ import { useSellAnalyticReportCallback } from '@suite-native/trading-analytics';
 import { selectSellSelectedSendAccount } from '@suite-native/trading-state';
 import { type SellFormType } from '@suite-native/trading-types';
 
-import { clearSellFormQuoteData } from './useSellForm';
-
 type NavigationProps = StackToStackCompositeNavigationProps<
     TradingStackParamList,
     TradingStackRoutes.Trading,
@@ -70,7 +68,6 @@ export const useSellSelectQuote = (form: SellFormType): SellSelectQuoteReturn =>
         const nextStep = () => {
             // bank account and txn handling will be done in the next step
             navigation.navigate(RootStackRoutes.TradingSellPreview);
-            clearSellFormQuoteData(form);
         };
 
         await dispatch(
@@ -86,7 +83,6 @@ export const useSellSelectQuote = (form: SellFormType): SellSelectQuoteReturn =>
         sellInfo?.providerInfos,
         dispatch,
         navigation,
-        form,
     ]);
 
     return {
