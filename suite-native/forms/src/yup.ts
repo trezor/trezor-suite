@@ -1,14 +1,14 @@
 import * as yup from 'yup';
 
-// Placeholder copy for the messages yup emits for bare `.required()` / `.max()` calls.
-// Should be later replaced by an implementation of a localization module.
+import { type TxKeyPath } from '@suite-native/intl';
+
 yup.setLocale({
-    string: {
-        max: 'Number of characters exceeded',
-    },
     mixed: {
-        required: 'Field is mandatory',
+        required: 'forms.errors.mixed.required',
     },
-});
+    string: {
+        max: 'forms.errors.string.max',
+    },
+} satisfies Record<string, Record<string, TxKeyPath>>);
 
 export { yup };

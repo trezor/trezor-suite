@@ -82,6 +82,16 @@ export const messages = {
             content: 'Update to continue using Trezor Suite. Your funds are secure.',
         },
     },
+    forms: {
+        errors: {
+            mixed: {
+                required: 'Field is mandatory',
+            },
+            string: {
+                max: 'Number of characters exceeded',
+            },
+        },
+    },
     suiteSync: {
         label: 'Label',
         addLabel: 'Add label',
