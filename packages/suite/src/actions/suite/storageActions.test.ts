@@ -281,6 +281,23 @@ describe('Storage actions', () => {
         expect(store.getState().wallet.settings).toEqual(settings);
     });
 
+    it('should ignore stored enabled networks unknown to this build', async () => {
+        const store = mockStore(db, getInitialState());
+        await db.addItem(
+            'walletSettings',
+            {
+                ...store.getState().wallet.settings,
+                enabledNetworks: [btcSymbol, asNetworkSymbol('arc'), asNetworkSymbol('tarc')],
+            },
+            'wallet',
+            true,
+        );
+
+        store.dispatch((await preloadStore())!);
+
+        expect(store.getState().wallet.settings.enabledNetworks).toEqual([btcSymbol]);
+    });
+
     it('should store suite settings in the db and update them automatically', async () => {
         const previousState = getInitialState();
         previousState.flags = { ...previousState.flags, seenNewContentIndicators: {} };
