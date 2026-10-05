@@ -172,12 +172,6 @@ export default class SolanaSignTransaction extends AbstractMethod<'solanaSignTra
                             )) === destinationATA
                                 ? tokenInfo.base_address
                                 : destinationATA;
-                        if (!sendAmount.isZero()) {
-                            throw ERRORS.TypedError(
-                                'Runtime',
-                                'Multiple token transfers in a single transaction are not supported',
-                            );
-                        }
                         outputs.push({
                             address: recipient,
                             amount: parsed.data.amount.toString(),
@@ -194,11 +188,21 @@ export default class SolanaSignTransaction extends AbstractMethod<'solanaSignTra
                     }
                     case 'other':
                     default:
-                        break;
+                        // The review has to list everything the transaction sends, and an
+                        // instruction it does not decode may send funds as well.
+                        throw ERRORS.TypedError('Runtime', 'Unsupported instruction');
                 }
             }
             if (outputs.length === 0) {
                 throw ERRORS.TypedError('Runtime', 'No outputs decoded');
+            }
+            // The total of a token transfer is shown in units of its token, so it can stand for
+            // that transfer only.
+            if (token && outputs.length > 1) {
+                throw ERRORS.TypedError(
+                    'Runtime',
+                    'Token transfers combined with other transfers are not supported',
+                );
             }
 
             const fee = baseFee.plus(feePerUnit.multipliedBy(feeLimit).dividedBy(1e6));
