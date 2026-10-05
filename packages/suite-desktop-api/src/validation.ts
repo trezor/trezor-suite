@@ -25,6 +25,9 @@ export const isObject = (shape: { [key: string]: OptionalPrimitive }, value: any
 const validThemes: Array<SuiteThemeVariant> = ['light', 'dark', 'system'];
 export const isTheme = (theme: any) => validThemes.includes(theme);
 
+export const isStringArray = (value: unknown): value is string[] =>
+    Array.isArray(value) && value.every(item => typeof item === 'string');
+
 const validChannels: Array<keyof RendererChannels> = [
     'oauth/response',
     'update/checking',

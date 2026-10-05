@@ -2,6 +2,7 @@ import { type ExperimentalFeature } from '@suite/experimental';
 import { defaultEarnYieldWorkerBaseUrl } from '@suite-common/earn-stablecoin-api';
 
 import { type SuiteSettingsRootState } from './settingsSlice';
+import { WARDD_DEFAULT_URL, isValidWarddUrl } from './warddUrl';
 
 export const selectSuiteSettings = (state: SuiteSettingsRootState) => state.suiteSettings;
 export const selectLanguage = (state: SuiteSettingsRootState) => state.suiteSettings.language;
@@ -59,3 +60,14 @@ export const selectIsN4w1BackupEnabled = (state: SuiteSettingsRootState) =>
     state.suiteSettings.debug.isN4w1BackupEnabled;
 export const selectShowTranslationKeys = (state: SuiteSettingsRootState) =>
     state.suiteSettings.debug.showTranslationKeys;
+export const selectContactsRelayUrls = (state: SuiteSettingsRootState) =>
+    state.suiteSettings.contactsRelayUrls;
+// A stored URL that is not on this machine falls back to the default, so the pairing token cannot
+// be sent anywhere else, whatever is in storage.
+export const selectWarddUrl = (state: SuiteSettingsRootState): string => {
+    const { warddUrl } = state.suiteSettings.debug;
+
+    return warddUrl !== undefined && isValidWarddUrl(warddUrl) ? warddUrl : WARDD_DEFAULT_URL;
+};
+export const selectWarddToken = (state: SuiteSettingsRootState): string | undefined =>
+    state.suiteSettings.debug.warddToken || undefined;

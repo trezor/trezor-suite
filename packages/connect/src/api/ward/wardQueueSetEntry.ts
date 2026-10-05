@@ -13,10 +13,12 @@ import { AbstractMethod } from '../../core/AbstractMethod';
  * either a leaf to store or a receipt to ignore, decided by state the caller cannot see.
  * Queueing is asked for by name now, and its ack type can only mean one thing.
  *
- * THERE IS NOTHING TO STORE IN THE RESULT. `WardQueueSetAck` carries the keyed path and nothing
- * else -- no leaf, no counter, no mac, because none of them can be derived without current
- * state. Keep the path: it is how the host's store is organised, and the host has no other way
- * to learn it. The change itself arrives later, sealed, through `WardFlushQueue`.
+ * THERE IS NOTHING TO STORE IN THE RESULT. `WardQueueSetAck` is EMPTY -- no leaf, no counter, no
+ * mac, because none of them exists yet; the message TYPE is what says the change was queued rather
+ * than applied. The keyed path is not here either: the queue is addressed by (app_id, identifier)
+ * end to end, so the host needs no path to find the entry again, and the `WardFlushQueue` response
+ * carries it once the change reaches the tree. The change itself arrives later, sealed, through
+ * `WardFlushQueue`.
  *
  * WITH `mac` THIS IS A RESTORE of a change the device exported for backup. The three fields must be
  * exactly what `WardQueueGetAck` returned, because the device MACs them together with the path and

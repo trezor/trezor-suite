@@ -29,6 +29,7 @@ import { breakpoints } from '@trezor/theme';
 
 import { SettingsLayout } from 'src/components/settings/SettingsLayout';
 import { useSelector } from 'src/hooks/suite';
+import { selectIsContactsFeatureEnabled } from 'src/reducers/suite/contactsReducer';
 import { useIsContentBelowBreakpoint } from 'src/support/suite/ContentFlex';
 
 import { AddressDisplay } from './AddressDisplay';
@@ -41,6 +42,7 @@ import { BioAuthSettings } from './BioAuthSettings';
 import { BitcoinAmountUnit } from './BitcoinAmountUnit';
 import { ClearStorage } from './ClearStorage';
 import { ConnectLabelingProvider } from './ConnectLabelingProvider';
+import { ContactsRelays } from './ContactsRelays';
 import { DesktopSuiteBanner } from './DesktopSuiteBanner';
 import { DisconnectLabelingProvider } from './DisconnectLabelingProvider';
 import { DustPhishing } from './DustPhishing';
@@ -81,6 +83,7 @@ export const SettingsGeneral = ({ torSettings }: SettingsGeneralProps) => {
     });
 
     const mcpServerEnabled = useSelector(selectHasExperimentalFeature('mcp-server'));
+    const isContactsFeatureEnabled = useSelector(selectIsContactsFeatureEnabled);
 
     const isProviderConnected = useSelector(selectSelectedProviderForLabels);
     const isMevProtectionSettingsVisible = useSelector(selectIsMevProtectionSettingsVisible);
@@ -162,6 +165,7 @@ export const SettingsGeneral = ({ torSettings }: SettingsGeneralProps) => {
                 {desktopUpdate.enabled && <EarlyAccess />}
                 <AddressDisplay />
                 {isNetworkReserveSettingsVisible && <NetworkReserve />}
+                {isContactsFeatureEnabled && <ContactsRelays />}
                 <TestnetNetworks />
                 <NftSection />
             </SettingsSection>

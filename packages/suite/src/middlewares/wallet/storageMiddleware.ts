@@ -54,10 +54,12 @@ import {
 import { type AccountKey } from '@suite-common/wallet-types';
 import { findAccountDevice, isAccountSuccessful } from '@suite-common/wallet-utils';
 import { walletConnectActions } from '@suite-common/walletconnect';
+import { typedObjectKeys } from '@trezor/utils';
 
 import { STORAGE, SUITE } from 'src/actions/suite/constants';
 import * as storageActions from 'src/actions/suite/storageActions';
 import { GRAPH } from 'src/actions/wallet/constants';
+import { contactsActions } from 'src/reducers/suite/contactsReducer';
 import { db } from 'src/storage';
 import type { AppState, Dispatch, GetState, Action as SuiteAction } from 'src/types/suite';
 import type { WalletAction } from 'src/types/wallet';
@@ -101,6 +103,39 @@ const defineRememberedDeviceHandler = <
         deps: RememberedDeviceSaveDeps,
     ) => void;
 }): RememberedDeviceHandler => handler;
+
+type ContactsStore = 'contacts' | 'contactsDeviceAuthority';
+
+// The relay status is app-global and in-memory only; every other contacts action is wallet-scoped.
+type PersistedContactsActionName = Exclude<keyof typeof contactsActions, 'relayStatusUpdated'>;
+
+/**
+ * The stores each wallet-scoped contacts action changes. It is keyed by every action of the slice,
+ * so a new action does not compile until it is decided where it is persisted.
+ */
+const CONTACTS_STORES_BY_ACTION: Record<PersistedContactsActionName, readonly ContactsStore[]> = {
+    identityLoaded: ['contacts'],
+    contactUpserted: ['contacts'],
+    // Removal drops the contact's anchor too. Keeping the stored one would bring it back on the
+    // next start, and a re-add of the same identity would be payable without the device.
+    contactRemoved: ['contacts', 'contactsDeviceAuthority'],
+    requestServed: ['contacts'],
+    addressRequestReceived: ['contacts'],
+    addressRequestCleared: ['contacts'],
+    addressRequestDismissed: ['contacts'],
+    addressVerified: ['contacts'],
+    contactAddressSpent: ['contacts'],
+    sharedAddressRecorded: ['contacts'],
+    sharedAddressUsed: ['contacts'],
+    contactsOnboarded: ['contacts'],
+    contactAnchored: ['contactsDeviceAuthority'],
+    contactUnanchored: ['contactsDeviceAuthority'],
+};
+
+const getContactsActionMatchers = (store: ContactsStore) =>
+    typedObjectKeys(CONTACTS_STORES_BY_ACTION)
+        .filter(actionName => CONTACTS_STORES_BY_ACTION[actionName].includes(store))
+        .map(actionName => contactsActions[actionName].match);
 
 // Device-scoped data must be persisted only for remembered devices. Do not check
 // getIsDeviceRemembered by hand — register a handler here and the loop in the middleware below
@@ -295,6 +330,26 @@ const rememberedDeviceHandlers: RememberedDeviceHandler[] = [
             getDeviceByAccountKey(action.payload.accountKey as AccountKey, state),
         save: ({ action }, { dispatch }) => {
             dispatch(storageActions.saveCoinjoinAccount(action.payload.accountKey as AccountKey));
+        },
+    }),
+    defineRememberedDeviceHandler({
+        match: getContactsActionMatchers('contacts'),
+        getDevice: (action, state) =>
+            selectDeviceByStaticSessionId(state, action.payload.deviceState),
+        save: ({ action }, { dispatch }) => {
+            dispatch(storageActions.saveContactsThunk({ deviceState: action.payload.deviceState }));
+        },
+    }),
+    defineRememberedDeviceHandler({
+        match: getContactsActionMatchers('contactsDeviceAuthority'),
+        getDevice: (action, state) =>
+            selectDeviceByStaticSessionId(state, action.payload.deviceState),
+        save: ({ action }, { dispatch }) => {
+            dispatch(
+                storageActions.saveContactsDeviceAuthorityThunk({
+                    deviceState: action.payload.deviceState,
+                }),
+            );
         },
     }),
 ];
@@ -525,6 +580,7 @@ export const storageMiddleware = (api: MiddlewareAPI<Dispatch, AppState>) => {
                 case SUITE.EVM_CONFIRM_EXPLANATION_MODAL:
                 case SUITE.EVM_CLOSE_EXPLANATION_BANNER:
                 case suiteSettingsActions.setIsCoinsFilterVisible.type:
+                case suiteSettingsActions.setContactsRelayUrls.type:
                     api.dispatch(storageActions.saveSuiteSettings());
                     break;
                 case debugActions.setShowDebugMenu.type:

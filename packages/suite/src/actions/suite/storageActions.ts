@@ -30,6 +30,11 @@ import { type StaticSessionId } from '@trezor/connect';
 import { parseStaticSessionId } from '@trezor/device-utils';
 import { cloneObject, isNotNullOrUndefined, typedObjectKeys } from '@trezor/utils';
 
+import {
+    type ContactsRootState,
+    selectContactsWallet,
+    selectStoredDeviceAuthority,
+} from 'src/reducers/suite/contactsReducer';
 import { db } from 'src/storage';
 import type { PreloadStoreAction } from 'src/support/suite/preloadStore';
 import type { AppState, Dispatch, GetState, TrezorDevice } from 'src/types/suite';
@@ -280,6 +285,8 @@ export const forgetDevice = (device: TrezorDevice) => (_: Dispatch, getState: Ge
     return Promise.all([
         db.removeItemByPK('devices', staticSessionId),
         db.removeItemByPK('suiteSyncOwners', staticSessionId),
+        db.removeItemByPK('contacts', staticSessionId),
+        db.removeItemByPK('contactsDeviceAuthority', staticSessionId),
         db.removeItemByIndex('accounts', 'deviceState', staticSessionId),
         db.removeItemByIndex('txs', 'deviceState', staticSessionId),
         db.removeItemByIndex('graph', 'deviceState', staticSessionId),
@@ -371,6 +378,45 @@ export const savePhishingMetadata =
         return db.addItem('phishingMetadata', newState, 'phishingMetadata', true);
     };
 
+type SaveContactsParams = {
+    deviceState: StaticSessionId;
+};
+
+type SaveContactsThunkState = ContactsRootState;
+
+/**
+ * Writes the contacts of one wallet. Dispatch it only for a remembered device, as storageMiddleware
+ * and rememberDevice do; like the other device-scoped savers it does not check that itself.
+ */
+export const saveContactsThunk = createThunk<
+    void,
+    SaveContactsParams,
+    { state: SaveContactsThunkState }
+>(`${STORAGE.MODULE_PREFIX}/saveContacts`, async ({ deviceState }, { getState }) => {
+    if (!db.isAccessible()) return;
+
+    const wallet = selectContactsWallet(getState(), deviceState);
+    if (!wallet) return;
+
+    await db.addItem('contacts', wallet, deviceState, true);
+});
+
+type SaveContactsDeviceAuthorityThunkState = ContactsRootState;
+
+/** Writes the device authority of one wallet, under the same rule as saveContactsThunk. */
+export const saveContactsDeviceAuthorityThunk = createThunk<
+    void,
+    SaveContactsParams,
+    { state: SaveContactsDeviceAuthorityThunkState }
+>(`${STORAGE.MODULE_PREFIX}/saveContactsDeviceAuthority`, async ({ deviceState }, { getState }) => {
+    if (!db.isAccessible()) return;
+
+    const authority = selectStoredDeviceAuthority(getState(), deviceState);
+    if (!authority) return;
+
+    await db.addItem('contactsDeviceAuthority', authority, deviceState, true);
+});
+
 export const rememberDevice =
     (device: TrezorDevice) => async (dispatch: Dispatch, getState: GetState) => {
         if (!db.isAccessible()) return;
@@ -410,6 +456,11 @@ export const rememberDevice =
                 saveGraph(graphData),
                 // eslint-disable-next-line  @typescript-eslint/no-use-before-define
                 dispatch(saveDeviceMetadataError(device)),
+                // Contacts changed before the device was remembered exist only in memory so far.
+                dispatch(saveContactsThunk({ deviceState: device.state.staticSessionId })),
+                dispatch(
+                    saveContactsDeviceAuthorityThunk({ deviceState: device.state.staticSessionId }),
+                ),
                 ...accountPromises,
             ]);
         } catch (error) {

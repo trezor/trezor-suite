@@ -64,6 +64,13 @@ export const EXPERIMENTAL_FEATURES: Record<ExperimentalFeature, ExperimentalFeat
         description: { id: 'TR_EXPERIMENTAL_SLIP24_DESCRIPTION' },
         isDisabled: ({ isDebug }) => !isDebug,
     },
+    // No routeName: it would replace this feature's toggle with a "Go to" button. Everything the
+    // feature does is gated by selectIsContactsFeatureEnabled instead.
+    contacts: {
+        title: { id: 'TR_EXPERIMENTAL_CONTACTS' },
+        description: { id: 'TR_EXPERIMENTAL_CONTACTS_DESCRIPTION' },
+        isDisabled: ({ isDebug }) => !isDebug,
+    },
     'experimental-networks': {
         title: {
             id: 'TR_EXPERIMENTAL_NETWORKS',

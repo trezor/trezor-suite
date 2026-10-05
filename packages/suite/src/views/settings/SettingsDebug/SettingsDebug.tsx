@@ -48,6 +48,7 @@ import { TransportBackends } from './TransportBackends';
 import { TrezorConnectLogs } from './TrezorConnectLogs';
 import { TriggerHighlight } from './TriggerHighlight';
 import { TriggerToast } from './TriggerToast';
+import { WardDebug } from './WardDebug';
 import { WipeData } from './WipeData';
 
 export const SettingsDebug = () => {
@@ -154,6 +155,9 @@ export const SettingsDebug = () => {
                 title="Trezor Host Protocol"
             >
                 <ResetThpCredentials />
+            </SettingsSection>
+            <SettingsSection hasVerticalLayout={hasContentBelowTabletWidth} title="WARD">
+                <WardDebug />
             </SettingsSection>
             <SettingsSection hasVerticalLayout={hasContentBelowTabletWidth} title="TrezorConnect">
                 <TrezorConnectLogs />

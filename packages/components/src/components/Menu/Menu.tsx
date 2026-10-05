@@ -129,35 +129,48 @@ export const Menu = forwardRef<HTMLUListElement, MenuProps>(
     ({ items, content, onClose, ...rest }, ref) => {
         const frameProps = pickAndPrepareFrameProps(rest, allowedMenuFrameProps);
         const visibleItems = items?.filter(item => !item.isHidden);
-        const [focusedItemIndex, setFocusedItemIndex] = useState(
-            visibleItems?.length ? visibleItems.findIndex(item => !item.isDisabled) : null,
-        );
+        const firstEnabledIndex = visibleItems?.findIndex(item => !item.isDisabled) ?? -1;
+        const [focusedItemIndex, setFocusedItemIndex] = useState<number | null>(null);
+        // The index the user moved to counts only while it holds an enabled item, because the items
+        // can change after it was set. Otherwise the focus rests on the first enabled item of the
+        // current items, so it appears once an item becomes enabled. Without an enabled item nothing
+        // can take the focus, so no keyboard handler is attached.
+        const isFocusedIndexUsable =
+            focusedItemIndex !== null &&
+            visibleItems?.[focusedItemIndex] !== undefined &&
+            !visibleItems[focusedItemIndex].isDisabled;
+        const fallbackFocusedIndex = firstEnabledIndex >= 0 ? firstEnabledIndex : null;
+        const effectiveFocusedIndex = isFocusedIndexUsable
+            ? focusedItemIndex
+            : fallbackFocusedIndex;
 
         // handle selecting an item
         useEffect(() => {
             const handleKeyDown = (e: KeyboardEvent) => {
-                if (!visibleItems?.length || focusedItemIndex === null) {
+                if (!visibleItems?.length || effectiveFocusedIndex === null) {
                     return;
                 }
 
                 if (e.key === ' ' || e.key === 'Enter') {
                     e.preventDefault();
 
-                    const focusedItem = visibleItems[focusedItemIndex];
+                    const focusedItem = visibleItems[effectiveFocusedIndex];
 
-                    if (focusedItem?.closeOnClick !== false) onClose?.();
-                    focusedItem?.onClick?.();
+                    if (!focusedItem || focusedItem.isDisabled) return;
+
+                    if (focusedItem.closeOnClick !== false) onClose?.();
+                    focusedItem.onClick?.();
                 }
             };
 
-            if (focusedItemIndex !== null && visibleItems?.length) {
+            if (effectiveFocusedIndex !== null && visibleItems?.length) {
                 document.addEventListener('keydown', handleKeyDown);
 
                 return () => {
                     document.removeEventListener('keydown', handleKeyDown);
                 };
             }
-        }, [focusedItemIndex, visibleItems, onClose]);
+        }, [effectiveFocusedIndex, visibleItems, onClose]);
 
         // handle keyboard navigation
         useEffect(() => {
@@ -166,33 +179,38 @@ export const Menu = forwardRef<HTMLUListElement, MenuProps>(
                     (e.key === 'ArrowUp' || e.key === 'ArrowDown') &&
                     visibleItems &&
                     visibleItems.length > 0 &&
-                    focusedItemIndex !== null
+                    effectiveFocusedIndex !== null
                 ) {
                     e.preventDefault();
-                    let indexCandidate = focusedItemIndex;
+                    let indexCandidate = effectiveFocusedIndex;
+                    let stepCount = 0;
                     const direction = e.key === 'ArrowUp' ? -1 : 1;
                     const getNextIndex = (index: number, dir: number) =>
                         (index + dir + visibleItems.length) % visibleItems.length;
 
+                    // The search ends back at the focused item at the latest; the round limit
+                    // keeps it finite even if that item is ever not in the list.
                     do {
                         indexCandidate = getNextIndex(indexCandidate, direction);
+                        stepCount += 1;
                     } while (
                         visibleItems[indexCandidate]?.isDisabled &&
-                        indexCandidate !== focusedItemIndex
+                        indexCandidate !== effectiveFocusedIndex &&
+                        stepCount < visibleItems.length
                     );
 
                     setFocusedItemIndex(indexCandidate);
                 }
             };
 
-            if (focusedItemIndex !== null && visibleItems?.length) {
+            if (effectiveFocusedIndex !== null && visibleItems?.length) {
                 document.addEventListener('keydown', handleKeyDown);
 
                 return () => {
                     document.removeEventListener('keydown', handleKeyDown);
                 };
             }
-        }, [visibleItems, focusedItemIndex]);
+        }, [visibleItems, effectiveFocusedIndex]);
 
         return (
             <Container
@@ -206,7 +224,7 @@ export const Menu = forwardRef<HTMLUListElement, MenuProps>(
                         <MenuList ref={ref}>
                             {visibleItems?.map((item, index) => (
                                 <MenuItem
-                                    isKeyboardSelected={index === focusedItemIndex}
+                                    isKeyboardSelected={index === effectiveFocusedIndex}
                                     onMouseEnter={() =>
                                         !item.isDisabled && setFocusedItemIndex(index)
                                     }

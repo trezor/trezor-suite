@@ -38,6 +38,7 @@ import { type StaticSessionId } from '@trezor/connect';
 import { type FirmwareChannel } from '@trezor/connect-common/src/types/firmware';
 
 import type { BioAuthState } from 'src/reducers/bioAuth';
+import type { ContactsWalletState, DeviceAuthorityState } from 'src/reducers/suite/contactsReducer';
 import type { SuiteState } from 'src/reducers/suite/suiteReducer';
 import type { Account, WalletAccountTransaction } from 'src/types/wallet';
 
@@ -178,6 +179,22 @@ export interface SuiteDBSchema extends DBSchema {
     suiteSyncOwners: {
         key: StaticSessionId;
         value: EncryptedHex<SuiteSyncOwnerSerialized>;
+    };
+    /**
+     * Contacts of one wallet, keyed by its full static session id. Written only for remembered
+     * devices; the static session id is the key, never part of the value.
+     */
+    contacts: {
+        key: StaticSessionId;
+        value: ContactsWalletState;
+    };
+    /**
+     * Contacts whose key the user confirmed on the device, keyed like `contacts`. It decides who
+     * can be paid, so it has its own store and a roster write never carries it.
+     */
+    contactsDeviceAuthority: {
+        key: StaticSessionId;
+        value: DeviceAuthorityState;
     };
     suiteSyncQuotaManager: {
         key: 'suiteSyncQuotaManager';

@@ -144,6 +144,23 @@ describe('DesktopApi', () => {
             expect(spy).toHaveBeenCalledTimes(1); // invalid param not processed
         });
 
+        it('DesktopApi.setContactsRelayAllowedHosts', async () => {
+            const spy = jest
+                .spyOn(ipcRenderer, 'invoke')
+                .mockImplementation(() => Promise.resolve());
+            await api.setContactsRelayAllowedHosts(['relay.example.com', 'localhost']);
+            expect(spy).toHaveBeenCalledWith('contacts-relays/set-allowed-hosts', [
+                'relay.example.com',
+                'localhost',
+            ]);
+
+            // @ts-expect-error invalid param (not an array)
+            await api.setContactsRelayAllowedHosts('relay.example.com');
+            // @ts-expect-error invalid param (array of non-strings)
+            await api.setContactsRelayAllowedHosts([1, 2]);
+            expect(spy).toHaveBeenCalledTimes(1); // invalid params not processed
+        });
+
         it('DesktopApi.metadataWrite', async () => {
             const spy = jest
                 .spyOn(ipcRenderer, 'invoke')

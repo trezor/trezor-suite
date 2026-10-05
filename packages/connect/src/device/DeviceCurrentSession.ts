@@ -39,9 +39,29 @@ const blacklist: Record<string, string[] | true> = {
     WardQueueGetEntry: ['app_id', 'identifier'],
     WardQueueDeleteEntry: ['app_id', 'identifier'],
     WardFlushQueue: ['app_id', 'identifier'],
-    WardEntryRequest: ['entry_key'],
+    // `staged` carries a batched flush's next leaf (its own entry_key and commit). filterForLog
+    // replaces top-level fields only, so the nested object is redacted as a whole.
+    WardEntryRequest: ['entry_key', 'staged'],
     WardMutationApplied: ['entry_key'],
     WardFlushQueueApplied: ['entry_key'],
+    // wardRelay's openStore asks the device for the Evolu node: the proof authorizes that request,
+    // and the node is the secret that the Evolu store owner is derived from.
+    EvoluGetNode: ['proof_of_delegated_identity'],
+    EvoluNode: true,
+    // The delegated identity key mints that proof. Asking for it presents the THP pairing
+    // credential, and every WARD relay call fetches the key when none is cached yet.
+    EvoluGetDelegatedIdentityKey: ['thp_credential'],
+    EvoluDelegatedIdentityKey: true,
+    // The Nostr pubkey is a stable per-wallet identity, like `ward_id` below, and the signed content
+    // is free-form text: Suite signs the address it gives to a contact. That address still reaches
+    // this log through the getAddress Suite calls before signing to check the derivation, because
+    // `Address.address` is logged for every getAddress and is not redacted here.
+    NostrPubkey: ['pubkey'],
+    NostrEventSignature: ['pubkey'],
+    NostrSignEvent: ['content'],
+    // wardRelay's openStore syncs first. `ward_id` is a stable per-wallet identifier; the head
+    // fields (counter/nonce) are kept for debugging.
+    WardSyncAck: ['ward_id'],
 };
 
 type AbortableOptions = {

@@ -35,13 +35,22 @@ import { type StaticSessionId, asWalletDescriptor } from '@trezor/device-utils';
 import { suiteSyncQuotaManagerSlice } from 'src/actions/suiteSyncQuotaManager/suiteSyncQuotaManagerSlice';
 import { SETTINGS } from 'src/config/suite';
 import { storageMiddleware } from 'src/middlewares/wallet/storageMiddleware';
+import {
+    type Contact,
+    contactPaymentNpub,
+    contactsActions,
+    contactsReducer,
+    createEmptyWalletState,
+    isLocallyAnchored,
+    selectDeviceAuthority,
+} from 'src/reducers/suite/contactsReducer';
 import suiteReducer from 'src/reducers/suite/suiteReducer';
 import { accountsReducer, fiatRatesReducer, transactionsReducer } from 'src/reducers/wallet';
 import graphReducer from 'src/reducers/wallet/graphReducer';
 import { db } from 'src/storage';
 import { extraDependencies } from 'src/support/extraDependencies';
 import { preloadStore } from 'src/support/suite/preloadStore';
-import { type AcquiredDevice, type AppState } from 'src/types/suite';
+import { type AcquiredDevice, type AppState, type TrezorDevice } from 'src/types/suite';
 
 import * as storageActions from './storageActions';
 
@@ -115,6 +124,7 @@ type PartialState = Pick<
     | 'flags'
     | 'metadata'
     | 'receive'
+    | 'contacts'
 > & {
     wallet: Partial<
         Pick<
@@ -158,6 +168,7 @@ const getInitialState = (prevState?: Partial<PartialState>, action?: any) => ({
         action || ({ type: 'foo' } as any),
     ),
     receive: receiveReducer(prevState?.receive, action || ({ type: 'foo' } as any)),
+    contacts: contactsReducer(prevState?.contacts, action || ({ type: 'foo' } as any)),
     wallet: {
         accounts: accountsReducer(prevState?.wallet?.accounts, action || ({ type: 'foo' } as any)),
         coinjoin: coinjoinReducer(prevState?.wallet?.coinjoin, action || ({ type: 'foo' } as any)),
@@ -198,6 +209,7 @@ const mockStore = (preloadedState: State) =>
                 suiteSync: nextState.suiteSync,
                 device: nextState.device,
                 wallet: nextState.wallet,
+                contacts: nextState.contacts,
             };
         },
         preloadedState,
@@ -559,6 +571,128 @@ describe('Storage actions', () => {
         });
         expect(store.getState().metadata.error).toEqual({
             'other-device': true,
+        });
+    });
+
+    describe('contacts', () => {
+        const NPUB = 'c'.repeat(64);
+        const contact: Contact = { npub: NPUB, label: 'Carol', addedAt: 1, isVerified: true };
+
+        const createStoreWithDevice = (device: TrezorDevice) =>
+            mockStore(
+                getInitialState({
+                    device: {
+                        devices: [device],
+                        persistentDeviceData: [],
+                        isConnectionModalOpen: false,
+                        defaultConnectionMode: 'cable',
+                    },
+                }),
+            );
+
+        const changeContacts = (
+            store: ReturnType<typeof mockStore>,
+            deviceState: StaticSessionId,
+        ) => {
+            store.dispatch(contactsActions.contactUpserted({ deviceState, contact }));
+            store.dispatch(
+                contactsActions.contactAnchored({ deviceState, npub: NPUB, label: 'Carol' }),
+            );
+        };
+
+        // The middleware writes are not awaitable via dispatch.
+        const waitForMiddlewareWrites = () => new Promise(resolve => setTimeout(resolve, 100));
+
+        it('should store contacts of a remembered wallet, load them and remove them on forgetDevice', async () => {
+            const deviceState: StaticSessionId = 'contactsRemembered@device_d_id:0';
+            const device = mockSuiteDevice({
+                state: { staticSessionId: deviceState },
+                remember: true,
+            });
+            const store = createStoreWithDevice(device);
+
+            changeContacts(store, deviceState);
+            await waitForMiddlewareWrites();
+
+            const loadedStore = mockStore(getInitialState());
+            loadedStore.dispatch((await preloadStore())!);
+
+            expect(loadedStore.getState().contacts.byWallet[deviceState]).toEqual({
+                ...createEmptyWalletState(),
+                identityNpub: undefined,
+                contacts: { [NPUB]: contact },
+            });
+            expect(loadedStore.getState().contacts.deviceAuthority[deviceState]).toEqual({
+                anchoredNpubs: { [NPUB]: { label: 'Carol', anchoredAt: expect.any(Number) } },
+            });
+
+            await store.dispatch(storageActions.forgetDevice(device));
+
+            expect(await db.getItemByPK('contacts', deviceState)).toBeUndefined();
+            expect(await db.getItemByPK('contactsDeviceAuthority', deviceState)).toBeUndefined();
+        });
+
+        it('should keep contacts of a wallet that is not remembered in memory until it is remembered', async () => {
+            const deviceState: StaticSessionId = 'contactsNotRemembered@device_e_id:0';
+            const device = mockSuiteDevice({
+                state: { staticSessionId: deviceState },
+                remember: false,
+            });
+            const store = createStoreWithDevice(device);
+
+            changeContacts(store, deviceState);
+            await waitForMiddlewareWrites();
+
+            expect(await db.getItemByPK('contacts', deviceState)).toBeUndefined();
+            expect(await db.getItemByPK('contactsDeviceAuthority', deviceState)).toBeUndefined();
+
+            await store.dispatch(storageActions.rememberDevice(device));
+
+            expect((await db.getItemByPK('contacts', deviceState))?.contacts).toEqual({
+                [NPUB]: contact,
+            });
+            expect(
+                (await db.getItemByPK('contactsDeviceAuthority', deviceState))?.anchoredNpubs,
+            ).toEqual({ [NPUB]: { label: 'Carol', anchoredAt: expect.any(Number) } });
+
+            await store.dispatch(storageActions.forgetDevice(device));
+        });
+
+        // Regression: removal saved only the roster, so the anchor came back on the next start and
+        // a re-added contact was payable without a device confirmation.
+        it('should not bring back the anchor of a removed contact after a restart', async () => {
+            const deviceState: StaticSessionId = 'contactsRemoved@device_f_id:0';
+            const device = mockSuiteDevice({
+                state: { staticSessionId: deviceState },
+                remember: true,
+            });
+            const store = createStoreWithDevice(device);
+
+            changeContacts(store, deviceState);
+            store.dispatch(contactsActions.contactRemoved({ deviceState, npub: NPUB }));
+            await waitForMiddlewareWrites();
+
+            expect(
+                (await db.getItemByPK('contactsDeviceAuthority', deviceState))?.anchoredNpubs,
+            ).toEqual({});
+
+            const loadedStore = mockStore(getInitialState());
+            loadedStore.dispatch((await preloadStore())!);
+            loadedStore.dispatch(
+                contactsActions.contactUpserted({
+                    deviceState,
+                    contact: { ...contact, isVerified: false },
+                }),
+            );
+
+            const { contacts } = loadedStore.getState();
+            const auth = selectDeviceAuthority({ contacts }, deviceState);
+            expect(isLocallyAnchored(auth, NPUB)).toBe(false);
+            expect(
+                contactPaymentNpub(contacts.byWallet[deviceState]!.contacts[NPUB]!, auth),
+            ).toBeUndefined();
+
+            await store.dispatch(storageActions.forgetDevice(device));
         });
     });
 });
