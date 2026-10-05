@@ -79,10 +79,23 @@ export function EvmTxSimulationReviewContent({
 
     if (!simulation) {
         return (
-            <BannerFull
-                intent="critical"
-                title={<Translation id="moduleConnectPopup.simulation.simulationStatusError" />}
-            />
+            <VStack spacing="sp16">
+                {headerContent}
+                <TxSimulationRiskBanner
+                    intent="critical"
+                    title={<Translation id="moduleConnectPopup.simulation.simulationStatusError" />}
+                    disclaimerAccepted={disclaimerAccepted}
+                    setDisclaimerAccepted={setDisclaimerAccepted}
+                />
+                <Button
+                    testID={confirmTestID}
+                    isDisabled={!disclaimerAccepted || isConfirmDisabled}
+                    onPress={onConfirm}
+                >
+                    <Translation id="generic.buttons.continue" />
+                </Button>
+                {cancelButton}
+            </VStack>
         );
     }
 
