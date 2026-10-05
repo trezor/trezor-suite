@@ -8,6 +8,7 @@ import { BigNumber } from '@trezor/utils';
 
 import { type UnstakeThunkArguments, composeTronUnstakeFeeLevelsThunk } from './composeUnstake';
 import { buildUnstakeContract, buildUnstakeReviewForm } from './unstakeContract';
+import { notifyEarnTransactionBroadcastThunk } from '../../../../earn/earnTransactionsThunks';
 import {
     type AddFakePendingTronTxThunkState,
     addFakePendingTronTxThunk,
@@ -172,6 +173,7 @@ export const submitTronUnstakeThunk = createThunk<
                 }),
             );
 
+            dispatch(notifyEarnTransactionBroadcastThunk({ account, device, txid, flow }));
             dispatch(tronStakeActions.submitFinished({ accountKey, flow, txid }));
         } finally {
             onSettled?.();

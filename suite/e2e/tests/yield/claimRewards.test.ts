@@ -162,8 +162,7 @@ test.describe('stablecoin yield claim', { tag: ['@webOnly', '@T3W1', '@T3T1'] },
 
                 await expect(yieldFlowSection.claimedToast).toBeVisible();
                 await expect(yieldFlowSection.claimedToastMessage).toHaveTranslation(
-                    'TOAST_TX_YIELD_CLAIM',
-                    { values: { account: ethAccountName } },
+                    'TOAST_TX_CLAIM_PENDING',
                 );
                 await expect(yieldFlowSection.flowCompleteHeading).toHaveTranslation(
                     'TR_EARN_YIELD_CLAIM_COMPLETE',

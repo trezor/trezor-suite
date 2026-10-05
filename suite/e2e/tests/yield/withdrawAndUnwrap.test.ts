@@ -15,7 +15,6 @@ import {
 import { createTestAnnotation } from '../../support/reporters/annotations';
 
 const { wethPrime } = YIELD_VAULTS;
-const ETH_ACCOUNT_NAME = 'Ethereum #1';
 const WITHDRAW_AMOUNT = '5';
 const WITHDRAW_AMOUNT_FORMATTED = '5.00';
 // The dashboard shows the deposited position compactly: 8 shares at pricePerShare 1.25 = 10.
@@ -197,8 +196,7 @@ test.describe('eth yield withdrawal with unwrap', { tag: ['@webOnly', '@T3W1', '
                 await devicePrompt.sendButton.click();
 
                 await expect(toastSection.yieldWithdrawMessage).toHaveTranslation(
-                    'TOAST_TX_YIELD_WITHDRAW',
-                    { values: { account: ETH_ACCOUNT_NAME } },
+                    'TOAST_TX_WITHDRAW_PENDING',
                 );
                 await expect(yieldFlowSection.pendingTransactionLabel).toHaveTranslation(
                     'TR_EARN_YIELD_PENDING_WITHDRAW',

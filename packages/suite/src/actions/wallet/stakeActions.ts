@@ -18,7 +18,6 @@ import { EarnFlow } from '@suite-common/suite-types/src/staking';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import {
     type BlockchainRootState,
-    EARN_TRANSACTION_TOAST_TYPE,
     type EthereumGetCurrentNonceThunkState,
     type ReplaceTransactionThunkState,
     type StakeRootState,
@@ -26,10 +25,10 @@ import {
     type SyncAccountsWithBlockchainThunkState,
     type WalletSettingsRootState,
     addFakePendingCardanoTxThunk,
-    earnTransactionsActions,
     isSupportedAdaStakingNetworkSymbol,
     isSupportedEthStakingNetworkSymbol,
     isSupportedSolStakingNetworkSymbol,
+    notifyEarnTransactionBroadcastThunk,
     replaceTransactionThunk,
     selectIsMevProtectionEnabled,
     selectStake,
@@ -166,20 +165,12 @@ const pushTransactionThunk =
 
             if (stakeType === 'stake' || stakeType === 'unstake' || stakeType === 'claim') {
                 dispatch(
-                    earnTransactionsActions.trackEarnTransaction({
-                        accountKey: account.key,
+                    notifyEarnTransactionBroadcastThunk({
+                        account,
+                        device,
                         txid,
                         flow: stakeType,
-                    }),
-                );
-                dispatch(
-                    notificationsActions.addToast({
-                        type: EARN_TRANSACTION_TOAST_TYPE[stakeType],
                         stage: isRbfBumpFeeTransaction(precomposedTx) ? 'sped-up' : 'pending',
-                        device,
-                        descriptor: account.descriptor,
-                        symbol: account.symbol,
-                        txid,
                     }),
                 );
             }

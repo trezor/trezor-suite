@@ -10,21 +10,10 @@ import {
 } from '@suite/intl';
 import { TRADING_ERROR_MESSAGE } from '@suite/trading';
 import { selectSelectedDeviceLabelOrName } from '@suite-common/device';
-import {
-    AUTH_DEVICE,
-    type EarnTransactionStage,
-    type NotificationEntry,
-} from '@suite-common/toast-notifications';
+import { AUTH_DEVICE, type NotificationEntry } from '@suite-common/toast-notifications';
 import { getTradingErrorDisplay } from '@suite-common/trading';
 import { DEVICE } from '@trezor/connect';
-import {
-    ArrowDownIcon,
-    ArrowUpIcon,
-    CheckIcon,
-    GearIcon,
-    PiggyBankIcon,
-    TorBrowserIcon,
-} from '@trezor/icons';
+import { ArrowDownIcon, ArrowUpIcon, CheckIcon, GearIcon, TorBrowserIcon } from '@trezor/icons';
 import { exhaustive } from '@trezor/type-utils';
 
 import { useSelector } from 'src/hooks/suite';
@@ -32,33 +21,13 @@ import { useSelector } from 'src/hooks/suite';
 import { ActionRenderer } from './ActionRenderer';
 import { AutoEjectRenderer } from './AutoEjectRenderer';
 import { CoinProtocolRenderer } from './CoinProtocolRenderer';
+import { EarnTransactionRenderer } from './EarnTransactionRenderer';
 import { ExchangeInfoRenderer } from './ExchangeInfoRenderer';
 import { TransactionRenderer } from './TransactionRenderer';
 import { WrapInfoRenderer } from './WrapInfoRenderer';
 import { type NotificationViewProps } from '../Notifications/NotificationGroup/NotificationList/NotificationView';
 
 type LocalizedNotificationEntry = NotificationEntry<TranslationKey>;
-
-const EARN_TOAST_MESSAGES = {
-    'tx-staked': {
-        pending: 'TOAST_TX_STAKE_PENDING',
-        'sped-up': 'TOAST_TX_STAKE_SPED_UP',
-        confirmed: 'TOAST_TX_STAKE_CONFIRMED',
-    },
-    'tx-unstaked': {
-        pending: 'TOAST_TX_UNSTAKE_PENDING',
-        'sped-up': 'TOAST_TX_UNSTAKE_SPED_UP',
-        confirmed: 'TOAST_TX_UNSTAKE_CONFIRMED',
-    },
-    'tx-claimed': {
-        pending: 'TOAST_TX_CLAIM_PENDING',
-        'sped-up': 'TOAST_TX_CLAIM_SPED_UP',
-        confirmed: 'TOAST_TX_CLAIM_CONFIRMED',
-    },
-} as const satisfies Record<
-    'tx-staked' | 'tx-unstaked' | 'tx-claimed',
-    Record<EarnTransactionStage, TranslationKey>
->;
 
 export type NotificationRendererProps<
     T extends LocalizedNotificationEntry['type'] = LocalizedNotificationEntry['type'],
@@ -642,57 +611,105 @@ export const NotificationRenderer = ({
             );
 
         case 'tx-staked':
-        case 'tx-unstaked':
-        case 'tx-claimed':
             return (
-                <TransactionRenderer
+                <EarnTransactionRenderer
                     render={render}
                     notification={notification}
-                    icon={PiggyBankIcon}
-                    variant={notification.stage === 'confirmed' ? 'success' : 'warning'}
-                    message={EARN_TOAST_MESSAGES[notification.type][notification.stage]}
-                    messageValues={{}}
+                    messages={{
+                        pending: 'TOAST_TX_STAKE_PENDING',
+                        'sped-up': 'TOAST_TX_STAKE_SPED_UP',
+                        confirmed: 'TOAST_TX_STAKE_CONFIRMED',
+                    }}
+                />
+            );
+
+        case 'tx-unstaked':
+            return (
+                <EarnTransactionRenderer
+                    render={render}
+                    notification={notification}
+                    messages={{
+                        pending: 'TOAST_TX_UNSTAKE_PENDING',
+                        'sped-up': 'TOAST_TX_UNSTAKE_SPED_UP',
+                        confirmed: 'TOAST_TX_UNSTAKE_CONFIRMED',
+                    }}
+                />
+            );
+
+        case 'tx-claimed':
+            return (
+                <EarnTransactionRenderer
+                    render={render}
+                    notification={notification}
+                    messages={{
+                        pending: 'TOAST_TX_CLAIM_PENDING',
+                        'sped-up': 'TOAST_TX_CLAIM_SPED_UP',
+                        confirmed: 'TOAST_TX_CLAIM_CONFIRMED',
+                    }}
+                />
+            );
+
+        case 'tx-withdrawn':
+            return (
+                <EarnTransactionRenderer
+                    render={render}
+                    notification={notification}
+                    messages={{
+                        pending: 'TOAST_TX_WITHDRAW_PENDING',
+                        'sped-up': 'TOAST_TX_WITHDRAW_SPED_UP',
+                        confirmed: 'TOAST_TX_WITHDRAW_CONFIRMED',
+                    }}
+                />
+            );
+
+        case 'tx-voted':
+            return (
+                <EarnTransactionRenderer
+                    render={render}
+                    notification={notification}
+                    messages={{
+                        pending: 'TOAST_TX_VOTE_PENDING',
+                        'sped-up': 'TOAST_TX_VOTE_SPED_UP',
+                        confirmed: 'TOAST_TX_VOTE_CONFIRMED',
+                    }}
                 />
             );
 
         case 'tx-yield-deposit':
             return (
-                <TransactionRenderer
+                <EarnTransactionRenderer
                     render={render}
                     notification={notification}
-                    icon={ArrowUpIcon}
-                    variant="warning"
-                    message="TOAST_TX_YIELD_DEPOSIT"
-                    messageValues={{
-                        account: notification.descriptor,
+                    messages={{
+                        pending: 'TOAST_TX_DEPOSIT_PENDING',
+                        'sped-up': 'TOAST_TX_DEPOSIT_SPED_UP',
+                        confirmed: 'TOAST_TX_DEPOSIT_CONFIRMED',
                     }}
                 />
             );
 
         case 'tx-yield-withdraw':
             return (
-                <TransactionRenderer
+                <EarnTransactionRenderer
                     render={render}
                     notification={notification}
-                    icon={ArrowUpIcon}
-                    variant="warning"
-                    message="TOAST_TX_YIELD_WITHDRAW"
-                    messageValues={{
-                        account: notification.descriptor,
+                    messages={{
+                        pending: 'TOAST_TX_WITHDRAW_PENDING',
+                        'sped-up': 'TOAST_TX_WITHDRAW_SPED_UP',
+                        confirmed: 'TOAST_TX_WITHDRAW_CONFIRMED',
                     }}
                 />
             );
 
         case 'tx-yield-claim':
             return (
-                <TransactionRenderer
+                <EarnTransactionRenderer
                     render={render}
                     notification={notification}
-                    icon={ArrowUpIcon}
-                    variant="warning"
-                    message="TOAST_TX_YIELD_CLAIM"
-                    messageValues={{
-                        account: notification.descriptor,
+                    messages={{
+                        pending: 'TOAST_TX_CLAIM_PENDING',
+                        'sped-up': 'TOAST_TX_CLAIM_SPED_UP',
+                        confirmed: 'TOAST_TX_CLAIM_CONFIRMED',
                     }}
                 />
             );

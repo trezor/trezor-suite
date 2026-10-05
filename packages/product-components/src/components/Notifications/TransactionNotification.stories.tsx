@@ -98,6 +98,26 @@ const transactionNotificationConfig: Record<
             symbol: asNetworkSymbol('eth'),
         },
     },
+    'tx-withdrawn': {
+        toastIcon: ArrowUpIcon,
+        intent: 'brand',
+        message: 'Your withdrawal is pending',
+        amount: '',
+        transaction: {
+            notificationType: 'tx-withdrawn',
+            symbol: asNetworkSymbol('trx'),
+        },
+    },
+    'tx-voted': {
+        toastIcon: ArrowUpIcon,
+        intent: 'brand',
+        message: 'Your vote is pending',
+        amount: '',
+        transaction: {
+            notificationType: 'tx-voted',
+            symbol: asNetworkSymbol('trx'),
+        },
+    },
     'tx-approved': {
         toastIcon: ArrowUpIcon,
         intent: 'brand',

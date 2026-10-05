@@ -3,13 +3,13 @@ import { openDeferredModal } from '@suite/modal';
 import { events } from '@suite-common/analytics';
 import { type StablecoinYieldTxSimulationParams } from '@suite-common/earn-stablecoin';
 import { createThunk } from '@suite-common/redux-utils';
-import { notificationsActions } from '@suite-common/toast-notifications';
 import {
     type ComposeYieldDepositTransactionThunkState,
     YIELD_PREFIX,
     type YieldFlowResolvedData,
     composeYieldDepositTransactionThunk,
     getYieldDepositErrorTranslationKey,
+    notifyEarnTransactionBroadcastThunk,
     openYieldApproveModal,
     setYieldError,
     yieldActions,
@@ -137,11 +137,10 @@ export const submitYieldDepositThunk = createThunk<
             }
 
             dispatch(
-                notificationsActions.addToast({
-                    type: 'tx-yield-deposit',
-                    descriptor: flowData.account.descriptor,
-                    symbol: flowData.account.symbol,
+                notifyEarnTransactionBroadcastThunk({
+                    account: flowData.account,
                     txid: sendResult.txid,
+                    flow: 'yield-deposit',
                 }),
             );
 

@@ -12332,17 +12332,41 @@ export const messages = defineMessages({
         id: 'TOAST_TX_CLAIM_CONFIRMED',
         defaultMessage: 'Your claim has been processed on the blockchain',
     },
-    TOAST_TX_YIELD_DEPOSIT: {
-        id: 'TOAST_TX_YIELD_DEPOSIT',
-        defaultMessage: 'Deposit transaction from {account} has been broadcast',
+    TOAST_TX_WITHDRAW_PENDING: {
+        id: 'TOAST_TX_WITHDRAW_PENDING',
+        defaultMessage: 'Your withdrawal is pending',
     },
-    TOAST_TX_YIELD_WITHDRAW: {
-        id: 'TOAST_TX_YIELD_WITHDRAW',
-        defaultMessage: 'Withdrawal transaction from {account} has been broadcast',
+    TOAST_TX_WITHDRAW_SPED_UP: {
+        id: 'TOAST_TX_WITHDRAW_SPED_UP',
+        defaultMessage: 'Your withdrawal has been sped up',
     },
-    TOAST_TX_YIELD_CLAIM: {
-        id: 'TOAST_TX_YIELD_CLAIM',
-        defaultMessage: 'Claim transaction from {account} has been broadcast',
+    TOAST_TX_WITHDRAW_CONFIRMED: {
+        id: 'TOAST_TX_WITHDRAW_CONFIRMED',
+        defaultMessage: 'Your withdrawal has been processed on the blockchain',
+    },
+    TOAST_TX_VOTE_PENDING: {
+        id: 'TOAST_TX_VOTE_PENDING',
+        defaultMessage: 'Your vote is pending',
+    },
+    TOAST_TX_VOTE_SPED_UP: {
+        id: 'TOAST_TX_VOTE_SPED_UP',
+        defaultMessage: 'Your vote has been sped up',
+    },
+    TOAST_TX_VOTE_CONFIRMED: {
+        id: 'TOAST_TX_VOTE_CONFIRMED',
+        defaultMessage: 'Your vote has been processed on the blockchain',
+    },
+    TOAST_TX_DEPOSIT_PENDING: {
+        id: 'TOAST_TX_DEPOSIT_PENDING',
+        defaultMessage: 'Your deposit is pending',
+    },
+    TOAST_TX_DEPOSIT_SPED_UP: {
+        id: 'TOAST_TX_DEPOSIT_SPED_UP',
+        defaultMessage: 'Your deposit has been sped up',
+    },
+    TOAST_TX_DEPOSIT_CONFIRMED: {
+        id: 'TOAST_TX_DEPOSIT_CONFIRMED',
+        defaultMessage: 'Your deposit has been processed on the blockchain',
     },
     TOAST_ESTIMATED_FEE_ERROR: {
         id: 'TOAST_ESTIMATED_FEE_ERROR',
