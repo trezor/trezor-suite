@@ -193,7 +193,15 @@ export const extraDependencies: ExtraDependenciesStatic & TokenDefinitionsMiddle
             });
         },
         storageLoadWalletSettings: (state: WalletSettingsState, { payload }: StorageLoadAction) =>
-            payload.walletSettings ? { ...state, ...payload.walletSettings } : state,
+            payload.walletSettings
+                ? {
+                      ...state,
+                      ...payload.walletSettings,
+                      enabledNetworks: payload.walletSettings.enabledNetworks.filter(symbol =>
+                          payload.supportedNetworks.includes(symbol),
+                      ),
+                  }
+                : state,
         // this is deprecated, bioAuth settings is now stored in electron store
         storageLoadBioAuth: (state: BioAuthState, { payload }: StorageLoadAction) => {
             if (!payload?.bioAuth) return state;
