@@ -86,8 +86,9 @@ export const connectPopupCallInnerThunk = createThunk<
         try {
             const { method, payload } = compatibilityHooks({ ...params, source });
             // Store the caller's token before permissions or device selection so a cancel can be
-            // matched throughout the entire popup flow.
-            const { callId } = payload as { callId?: string };
+            // matched throughout the entire popup flow. A call without a token of its own gets one,
+            // so that its cancel ends only this call.
+            const callId = (payload as { callId?: string }).callId ?? crypto.randomUUID();
 
             if (!connectCallableMethods.includes(method)) throw TypedError('Method_Unsupported');
 
@@ -213,6 +214,7 @@ export const connectPopupCallInnerThunk = createThunk<
                     useEmptyPassphrase: device.useEmptyPassphrase,
                 },
                 ...modifiedPayload,
+                callId,
                 method,
             } as CallMethodPayload);
             response.id = undefined;
@@ -441,6 +443,7 @@ export const connectPopupVerifyAddressThunk = createThunk<
                 ...call.addresses?.[index]?.validatePayload,
                 showOnTrezor: true,
                 chunked: false,
+                callId: call.callId,
             });
             const validatedStatus = res.success ? 'valid' : 'failed';
             dispatch(
@@ -1108,15 +1111,17 @@ export const connectPopupCancelThunk = createThunk<
 
     // A scoped cancel for another call still needs to reach Core, but must not tear down the
     // active popup.
-    if (activeCall?.callId !== undefined && callId !== undefined && callId !== activeCall.callId) {
+    if (activeCall?.callId !== undefined && callId && callId !== activeCall.callId) {
         TrezorConnect.cancel({ reason: error, callId });
 
         return;
     }
 
     getPermissionDeferred().reject(TypedError('Method_Cancel'));
-    // Without a token Core keeps its legacy behavior of aborting every in-flight call.
-    TrezorConnect.cancel({ reason: error, callId: callId ?? activeCall?.callId });
+    // Without a token Core would abort every in-flight call, including Suite's own, so a popup
+    // cancel reaches Core only when it names a call. An empty callId names none.
+    const scopedCallId = callId || activeCall?.callId;
+    if (scopedCallId) TrezorConnect.cancel({ reason: error, callId: scopedCallId });
     // todo: probably not needed to call explicitly anymore
     dispatch(deviceActions.removeButtonRequests({}));
 
