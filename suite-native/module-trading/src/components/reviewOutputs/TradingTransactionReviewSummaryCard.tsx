@@ -13,7 +13,6 @@ import {
 import { VStack } from '@suite-native/atoms';
 import { useTranslate } from '@suite-native/intl';
 import type { ExchangeFlowType } from '@suite-native/navigation';
-import { isNetworkWithTokens } from '@suite-native/tokens';
 import {
     type TransactionReviewOutputsState,
     selectIsClearSignedTradingSwap,
@@ -21,6 +20,7 @@ import {
 import {
     TransactionReviewOutputCard,
     TransactionReviewOutputItemValues,
+    isNonCardanoNetworkWithTokens,
 } from '@suite-native/transaction-review';
 import { BigNumber } from '@trezor/utils';
 
@@ -118,7 +118,6 @@ export const TradingTransactionReviewSummaryCard = ({
         return null;
     }
     const { state, totalSpent, fee } = summaryOutput;
-    const isNetworkSupportingTokens = isNetworkWithTokens(symbol);
 
     return (
         <View onLayout={onLayout}>
@@ -127,7 +126,7 @@ export const TradingTransactionReviewSummaryCard = ({
                 outputState={state}
             >
                 <VStack spacing="sp16">
-                    {isNetworkSupportingTokens ? (
+                    {isNonCardanoNetworkWithTokens(symbol) ? (
                         <TokenEnabledValues
                             accountKey={accountKey}
                             totalSpent={totalSpent}

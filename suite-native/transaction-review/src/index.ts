@@ -4,3 +4,4 @@ export { TransactionReviewOutputItemValues } from './components/TransactionRevie
 export { TxValidityTimer } from './components/TxValidityTimer';
 export * from './hooks/useActiveStepOffset';
 export * from './screens/TransactionReviewScreen';
+export { isNonCardanoNetworkWithTokens } from './utils';
