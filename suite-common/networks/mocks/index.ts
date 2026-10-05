@@ -8,3 +8,4 @@ export {
 export { mockNetworksState } from './mockNetworksState';
 export { mockNetworkModule } from './mockNetworkModule';
 export { mockNetworkModuleRepository } from './mockNetworkModuleRepository';
+export { mockNetworkIcon } from './mockNetworkIcon';

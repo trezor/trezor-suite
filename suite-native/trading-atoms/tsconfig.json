@@ -41,6 +41,13 @@
         },
         { "path": "../test-utils" },
         { "path": "../test-utils-store" },
-        { "path": "../trading-fixtures" }
+        { "path": "../trading-fixtures" },
+        { "path": "../../suite-common/networks" },
+        {
+            "path": "../../packages/dependency-injection"
+        },
+        {
+            "path": "../../networks/network-module/network-module-types"
+        }
     ]
 }

@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
+import { useSelector } from 'react-redux';
 
 import { CopyToClipboard } from 'nextra/components';
 import styled from 'styled-components';
@@ -16,11 +17,11 @@ import {
 } from '@trezor/components';
 import { type CoinSymbol, type PermissionRequest, isCoinSymbol } from '@trezor/connect-common';
 import { CheckIcon, FadersIcon, LightningIcon } from '@trezor/icons';
-import { selectNetworkOptions, useNetworkDisplaySelector } from '@trezor/product-components';
+import { selectNetworkOptions } from '@trezor/product-components';
 
-import * as trezorConnectActions from '../actions/trezorConnectActions';
-import { useActions, useSelector } from '../hooks';
 import { RequestedPermissions } from './RequestedPermissions';
+import * as trezorConnectActions from '../actions/trezorConnectActions';
+import { useActions } from '../hooks';
 import {
     selectConnectInitError,
     selectIsConnectInitSuccess,
@@ -162,7 +163,7 @@ const CopyWrapper = styled.div`
 `;
 
 export const ConnectInitForm = () => {
-    const networks = useNetworkDisplaySelector(selectNetworkOptions);
+    const networks = useSelector(selectNetworkOptions);
     const isInitializing = useSelector(selectIsConnectInitializing);
     const isInitSuccess = useSelector(selectIsConnectInitSuccess);
     const initError = useSelector(selectConnectInitError);

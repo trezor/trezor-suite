@@ -2,6 +2,11 @@ import { type Store } from '@reduxjs/toolkit';
 
 import { type DeviceRootState } from '@suite-common/device';
 import { type NetworksRootState } from '@suite-common/networks';
+import {
+    mockNetworkIcon,
+    mockNetworkModule,
+    mockNetworkModuleRepository,
+} from '@suite-common/networks/mocks';
 import { tradingBuyActions } from '@suite-common/trading';
 import { type AccountsRootState } from '@suite-common/wallet-core';
 import { type NativeAnalyticsDep, events } from '@suite-native/analytics';
@@ -21,6 +26,7 @@ import {
 import { type TradingRootState, buyActions } from '@suite-native/trading-state';
 import { type BuyFormType } from '@suite-native/trading-types';
 import { FirmwareType } from '@trezor/connect';
+import { type NetworkSymbol } from '@trezor/network-module-types';
 
 import { BuyTradeableAssetPicker } from './BuyTradeableAssetPicker';
 import { useBuyForm } from '../../hooks/buy/useBuyForm';
@@ -29,6 +35,12 @@ import {
     renderHookWithTradingProvider,
     renderWithTradingProvider,
 } from '../../test-utils/tradingTestUtils';
+
+const networkModule = mockNetworkModule();
+const networkModuleRepository = mockNetworkModuleRepository({
+    get: () => networkModule,
+    isSupportedNetwork: (_symbol): _symbol is NetworkSymbol => true,
+});
 
 type State = TradingRootState &
     AccountsRootState &
@@ -106,7 +118,13 @@ describe('BuyTradeableAssetPicker', () => {
             <Form form={form}>
                 <BuyTradeableAssetPicker />
             </Form>,
-            { services: { ...services, store } },
+            {
+                services: {
+                    ...services,
+                    store,
+                    networks: { networkIcon: mockNetworkIcon(), networkModuleRepository },
+                },
+            },
         );
         await act(async () => {
             await act(() => Promise.resolve());

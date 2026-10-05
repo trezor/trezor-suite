@@ -12,10 +12,10 @@ const buildArtifactPatterns = {
         'Import from the package root instead. Deep paths into "lib/" or "libDev/" target build artifacts that may not exist or may diverge from the workspace source.',
 };
 
-// Bare network packages expose sectioned entry points. Type contracts and Suite layer packages
+// Bare network packages expose sectioned entry points. Assets, type contracts and Suite layer packages
 // keep root imports; a dash in a network name alone does not exempt a bare package.
 const networksPackagePattern = {
-    regex: '^@trezor/(?![^/]*-(?:types|suite(?:-common|-native)?)$)network-[^/]+$',
+    regex: '^@trezor/(?![^/]*-(?:assets|types|suite(?:-common|-native)?)$)network-[^/]+$',
     message: 'Import from /constants, /runtime or /types subpath.',
 };
 

@@ -1,10 +1,23 @@
+import {
+    mockNetworkIcon,
+    mockNetworkModule,
+    mockNetworkModuleRepository,
+} from '@suite-common/networks/mocks';
 import { asBaseCurrencyAmount } from '@suite-common/wallet-types';
 import { fireEvent } from '@suite-native/test-utils-store';
 import { btcAsset, usdcAsset } from '@suite-native/trading-fixtures';
+
+import { type NetworkSymbol } from '@trezor/network-module-types';
 import { BigNumber } from '@trezor/utils';
 
 import { TradeableAssetListItem, type TradeableAssetListItemProps } from './TradeableAssetListItem';
 import { renderWithTradingProvider } from '../../../test-utils/tradingTestUtils';
+
+const networkModule = mockNetworkModule();
+const networkModuleRepository = mockNetworkModuleRepository({
+    get: () => networkModule,
+    isSupportedNetwork: (_symbol): _symbol is NetworkSymbol => true,
+});
 
 describe('TradeableAssetListItem', () => {
     const renderComponent = async ({
@@ -14,6 +27,7 @@ describe('TradeableAssetListItem', () => {
     }: Partial<TradeableAssetListItemProps>) =>
         await renderWithTradingProvider(
             <TradeableAssetListItem asset={asset} balance={balance} onPress={onPress} />,
+            { services: { networks: { networkIcon: mockNetworkIcon(), networkModuleRepository } } },
         );
 
     it('should render with correct labels', async () => {

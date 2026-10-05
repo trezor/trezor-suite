@@ -1,0 +1,1 @@
+export { solanaAssets } from './solanaAssets';

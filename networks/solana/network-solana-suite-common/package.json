@@ -14,7 +14,9 @@
     "dependencies": {
         "@scure/base": "^2.0.0",
         "@trezor/device-utils": "workspace:*",
+        "@trezor/network-assets-types": "workspace:*",
         "@trezor/network-module-suite-common-types": "workspace:*",
+        "@trezor/network-solana-assets": "workspace:*",
         "@trezor/network-solana-types": "workspace:*"
     }
 }

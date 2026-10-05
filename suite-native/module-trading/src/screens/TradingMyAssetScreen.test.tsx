@@ -1,6 +1,11 @@
 import { type RouteProp } from '@react-navigation/native';
 import type { CryptoId } from 'invity-api';
 
+import {
+    mockNetworkIcon,
+    mockNetworkModule,
+    mockNetworkModuleRepository,
+} from '@suite-common/networks/mocks';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { asBaseCurrencyAmount } from '@suite-common/wallet-types';
 import {
@@ -13,10 +18,18 @@ import { fireEvent } from '@suite-native/test-utils-store';
 import { btc1NormalAccount } from '@suite-native/trading-fixtures';
 import { selectAccountsWithTokensToSellSectionListByTradingType } from '@suite-native/trading-state';
 import { type MyAsset } from '@suite-native/trading-types';
+
+import { type NetworkSymbol } from '@trezor/network-module-types';
 import { BigNumber } from '@trezor/utils';
 
 import { TradingMyAssetScreen, type TradingMyAssetScreenProps } from './TradingMyAssetScreen';
 import { renderWithTradingProvider } from '../test-utils/tradingTestUtils';
+
+const networkModule = mockNetworkModule();
+const networkModuleRepository = mockNetworkModuleRepository({
+    get: () => networkModule,
+    isSupportedNetwork: (_symbol): _symbol is NetworkSymbol => true,
+});
 
 const bitcoinAsset: MyAsset = {
     name: 'Bitcoin',
@@ -76,6 +89,11 @@ describe('TradingMyAssetScreen', () => {
         async tradingType => {
             const { getByText } = await renderWithTradingProvider(
                 <TradingMyAssetScreen navigation={navigation} route={createRoute(tradingType)} />,
+                {
+                    services: {
+                        networks: { networkIcon: mockNetworkIcon(), networkModuleRepository },
+                    },
+                },
             );
 
             await fireEvent.press(getByText('BTC'));

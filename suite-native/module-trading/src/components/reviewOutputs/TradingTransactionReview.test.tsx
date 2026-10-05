@@ -1,3 +1,8 @@
+import {
+    mockNetworkIcon,
+    mockNetworkModule,
+    mockNetworkModuleRepository,
+} from '@suite-common/networks/mocks';
 import { type TokenAddress } from '@suite-common/wallet-types';
 import { mockAccountKey } from '@suite-common/wallet-types/mocks';
 import { getTranslation } from '@suite-native/intl';
@@ -6,12 +11,19 @@ import {
     btc1NormalAccount,
     oneInchFusionPlusWithEip712SignDataQuote,
 } from '@suite-native/trading-fixtures';
+import { type NetworkSymbol } from '@trezor/network-module-types';
 
 import {
     TradingTransactionReview,
     type TradingTransactionReviewProps,
 } from './TradingTransactionReview';
 import { renderWithTradingProvider } from '../../test-utils/tradingTestUtils';
+
+const networkModule = mockNetworkModule();
+const networkModuleRepository = mockNetworkModuleRepository({
+    get: () => networkModule,
+    isSupportedNetwork: (_symbol): _symbol is NetworkSymbol => true,
+});
 
 jest.mock('@react-navigation/native', () => ({
     ...jest.requireActual('@react-navigation/native'),
@@ -85,7 +97,10 @@ describe('TradingTransactionReview', () => {
                 exchangeFlowType="swap"
                 {...props}
             />,
-            { tradeType: 'exchange' },
+            {
+                tradeType: 'exchange',
+                services: { networks: { networkIcon: mockNetworkIcon(), networkModuleRepository } },
+            },
         );
 
     beforeEach(() => {
@@ -227,6 +242,7 @@ describe('TradingTransactionReview', () => {
                         },
                     },
                 },
+                services: { networks: { networkIcon: mockNetworkIcon(), networkModuleRepository } },
             },
         );
 

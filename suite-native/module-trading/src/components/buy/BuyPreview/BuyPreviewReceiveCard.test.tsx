@@ -1,9 +1,21 @@
+import {
+    mockNetworkIcon,
+    mockNetworkModule,
+    mockNetworkModuleRepository,
+} from '@suite-common/networks/mocks';
 import { getTranslation } from '@suite-native/intl';
 import { act } from '@suite-native/test-utils-store';
 import { btc1NormalAccount, mercuryoApplePayBuyQuote } from '@suite-native/trading-fixtures';
+import { type NetworkSymbol } from '@trezor/network-module-types';
 
 import { BuyPreviewReceiveCard } from './BuyPreviewReceiveCard';
 import { renderWithTradingProvider } from '../../../test-utils/tradingTestUtils';
+
+const networkModule = mockNetworkModule();
+const networkModuleRepository = mockNetworkModuleRepository({
+    get: () => networkModule,
+    isSupportedNetwork: (_symbol): _symbol is NetworkSymbol => true,
+});
 
 describe('BuyPreviewReceiveCard', () => {
     const withReceiveAccount = {
@@ -20,7 +32,11 @@ describe('BuyPreviewReceiveCard', () => {
     const renderBuyPreviewReceiveCard = async (overrides?: typeof withReceiveAccount) => {
         const result = await renderWithTradingProvider(
             <BuyPreviewReceiveCard quote={mercuryoApplePayBuyQuote} />,
-            { tradeType: 'buy', overrides },
+            {
+                tradeType: 'buy',
+                overrides,
+                services: { networks: { networkIcon: mockNetworkIcon(), networkModuleRepository } },
+            },
         );
         await act(() => Promise.resolve());
 

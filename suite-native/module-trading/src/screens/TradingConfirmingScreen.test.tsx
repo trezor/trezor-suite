@@ -1,5 +1,10 @@
 import { type Store } from '@reduxjs/toolkit';
 
+import {
+    mockNetworkIcon,
+    mockNetworkModule,
+    mockNetworkModuleRepository,
+} from '@suite-common/networks/mocks';
 import type { TransactionStatus } from '@suite-common/trading';
 import {
     selectTradingExchangeSelectedQuote,
@@ -19,9 +24,16 @@ import {
     useNavigationRemoveInterceptorAlert,
     useTransactionDetails,
 } from '@suite-native/transaction-management';
+import { type NetworkSymbol } from '@trezor/network-module-types';
 
 import { TradingConfirmingScreen } from './TradingConfirmingScreen';
 import { createTradingTestStore } from '../test-utils/tradingTestUtils';
+
+const networkModule = mockNetworkModule();
+const networkModuleRepository = mockNetworkModuleRepository({
+    get: () => networkModule,
+    isSupportedNetwork: (_symbol): _symbol is NetworkSymbol => true,
+});
 
 type State = TradingRootState & AccountsRootState;
 
@@ -110,7 +122,13 @@ describe('TradingConfirmingScreen', () => {
 
         return await renderWithStoreProvider(
             <TradingConfirmingScreen navigation={mockNavigation} route={mockUseRoute()} />,
-            { services: { analytics: mockNativeAnalytics(mockAnalyticsReport), store } },
+            {
+                services: {
+                    analytics: mockNativeAnalytics(mockAnalyticsReport),
+                    store,
+                    networks: { networkIcon: mockNetworkIcon(), networkModuleRepository },
+                },
+            },
         );
     };
 

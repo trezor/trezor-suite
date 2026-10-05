@@ -1,3 +1,8 @@
+import {
+    mockNetworkIcon,
+    mockNetworkModule,
+    mockNetworkModuleRepository,
+} from '@suite-common/networks/mocks';
 import { mockSuiteSync } from '@suite-common/suite-sync/mocks';
 import { type SuiteSyncDep } from '@suite-common/suite-sync-types';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
@@ -10,8 +15,15 @@ import {
     type StackToStackCompositeScreenProps,
 } from '@suite-native/navigation';
 import { renderWithStoreProvider } from '@suite-native/test-utils-store';
+import { type NetworkSymbol } from '@trezor/network-module-types';
 
 import { AccountSettingsScreen } from './AccountSettingsScreen';
+
+const networkModule = mockNetworkModule();
+const networkModuleRepository = mockNetworkModuleRepository({
+    get: () => networkModule,
+    isSupportedNetwork: (_symbol): _symbol is NetworkSymbol => true,
+});
 
 jest.mock('@react-navigation/native', () => ({
     ...jest.requireActual('@react-navigation/native'),
@@ -64,7 +76,13 @@ describe('AccountSettingsScreen', () => {
                 route={buildRoute(btcAccount.key)}
                 navigation={navigationMock}
             />,
-            { preloadedState: buildPreloadedState(btcAccount), services },
+            {
+                preloadedState: buildPreloadedState(btcAccount),
+                services: {
+                    ...services,
+                    networks: { networkIcon: mockNetworkIcon(), networkModuleRepository },
+                },
+            },
         );
 
         // The text appears in both the trigger button and the XpubQRCodeBottomSheet's show button.
@@ -83,7 +101,13 @@ describe('AccountSettingsScreen', () => {
                 route={buildRoute(ethAccount.key)}
                 navigation={navigationMock}
             />,
-            { preloadedState: buildPreloadedState(ethAccount), services },
+            {
+                preloadedState: buildPreloadedState(ethAccount),
+                services: {
+                    ...services,
+                    networks: { networkIcon: mockNetworkIcon(), networkModuleRepository },
+                },
+            },
         );
 
         expect(

@@ -1,3 +1,4 @@
+import type { NetworkIcon } from '@trezor/network-assets-types';
 import { type NetworkSymbol, asNetworkSymbols } from '@trezor/network-module-types';
 import { isArrayMember } from '@trezor/utils';
 
@@ -9,10 +10,11 @@ import type { SuiteCommonNetworkModule } from './SuiteCommonNetworkModule';
 /**
  * A module's own capabilities, stated in terms of the symbols that module supports.
  *
- * Everything here takes the module's closed symbol type rather than the open `NetworkSymbol`:
- * `createNetworkModule` narrows once at the boundary, so a module never restates the check.
+ * Network behavior takes the module's closed symbol type rather than the open `NetworkSymbol`.
+ * `createNetworkModule` narrows behavior calls at the boundary; icons use the shared contract.
  */
 export type NetworkModuleDefinition<TSymbol extends string> = {
+    icon: NetworkIcon;
     addressValidator: AddressValidator<TSymbol>;
 
     /** Only for networks with a name system; see `NamedAddressResolver`. */
@@ -28,7 +30,7 @@ export type NetworkModuleDefinition<TSymbol extends string> = {
  *
  * The module's closed symbol type is inferred from the list of networks it supports, which is
  * also the only check it needs: the open `NetworkSymbol` that shared layers pass is narrowed
- * against that list before any capability is reached. A symbol the module does not support is
+ * against that list before network behavior is reached. A symbol the module does not support is
  * therefore rejected at its edge, and the capabilities themselves are written against the closed
  * symbol type with no per-call conversion.
  */
@@ -52,6 +54,7 @@ export const createNetworkModule = <TSymbol extends string>(
     const resolver = definition.namedAddressResolver;
 
     return {
+        icon: definition.icon,
         addressValidator: {
             isAddressValid: (address, symbol) =>
                 definition.addressValidator.isAddressValid(address, narrow(symbol)),

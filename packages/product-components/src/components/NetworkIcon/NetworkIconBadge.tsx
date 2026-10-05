@@ -2,7 +2,7 @@ import { type ReactNode } from 'react';
 
 import styled from 'styled-components';
 
-import { type NetworkIconSymbol } from '@suite-common/icons/src/iconSymbols';
+import { type NetworkSymbol } from '@trezor/network-module-types';
 
 import { NetworkIcon, type NetworkIconSize } from './NetworkIcon';
 
@@ -80,7 +80,7 @@ const BadgeWrapper = styled.div<{ $iconSize: NetworkIconSize }>`
 `;
 
 type NetworkIconBadgeProps = {
-    networkSymbol: NetworkIconSymbol;
+    networkSymbol: NetworkSymbol;
     parentSize: NetworkIconSize;
     children: ReactNode;
     'data-testid'?: string;

@@ -1,7 +1,3 @@
-export {
-    isCryptoIconSymbol as isCoinSymbol,
-    isNetworkIconSymbol as isNetworkSymbolWithIcon,
-} from '@suite-common/icons';
 export { CardList, type CardListProps } from '@trezor/components';
 export { AssetShareIndicator } from './components/AssetShareIndicator/AssetShareIndicator';
 export { ConfirmOnDevicePill } from './components/ConfirmOnDevice/ConfirmOnDevicePill';
@@ -61,16 +57,33 @@ export {
     type TokenIconProps,
     type TokenIconSize,
 } from './components/TokenIcon/tokenIconTypes';
-export { shouldShowNetworkIcon } from './components/TokenIcon/tokenIconUtils';
 export * from './components/TokenIconSet/TokenIconSet';
 export { TooltipRow } from './components/TooltipRow/TooltipRow';
 export * from './components/TopAssets/TopAssets';
 export { TrezorLogo } from './components/TrezorLogo/TrezorLogo';
 export type { NetworkConfig } from './network-display/NetworkConfig';
 export {
-    NetworkDisplayProvider,
-    useNetworkDisplaySelector,
-} from './network-display/NetworkDisplayProvider';
-export { selectNetworkOptions } from './network-display/networkDisplaySelectors';
+    selectNetworkOptions,
+    selectNetworkDisplayConfig,
+    selectNetworkConfigs,
+    selectNetworkConfig,
+    selectNetworkConfigByCoingeckoId,
+    selectDisplaySymbol,
+} from './network-display/networkDisplaySelectors';
 export { getLargeModelImagePath, getModelFrontColor } from './utils/getModelFrontColor';
 export { mapTrezorModelToFilledIcon, mapTrezorModelToIcon } from './utils/mapTrezorModelToIcon';
+export { NetworkIconBadge } from './components/NetworkIcon/NetworkIconBadge';
+export type {
+    ProductComponentsServices,
+    ProductComponentsIconServices,
+} from './services/ProductComponentsServices';
+export { shouldShowNetworkIcon } from './components/TokenIcon/tokenIconUtils';
+export {
+    injectGetCryptoIcon,
+    injectGetNetworkIcon,
+    injectHasCryptoIcon,
+    injectHasNetworkIcon,
+    injectIsTestnetNetworkIcon,
+    injectIsWrappedNativeToken,
+    injectGetTokenLogoIdentifiers,
+} from './services/networkServices';

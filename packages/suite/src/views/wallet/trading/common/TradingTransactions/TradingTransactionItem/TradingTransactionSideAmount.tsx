@@ -1,7 +1,14 @@
+import { useSelector } from 'react-redux';
+
 import { getFiatCurrencyFlag } from '@suite-common/flags';
 import { cryptoIdToNetworkSymbolAndContractAddress, useTradingUtils } from '@suite-common/trading';
 import { Flag, Row } from '@trezor/components';
-import { shouldShowNetworkIcon } from '@trezor/product-components';
+import { useServices } from '@trezor/dependency-injection';
+import {
+    injectHasNetworkIcon,
+    selectNetworkConfigs,
+    shouldShowNetworkIcon,
+} from '@trezor/product-components';
 import { exhaustive } from '@trezor/type-utils';
 
 import { FormattedCryptoAmount, HiddenPlaceholder } from 'src/components/suite';
@@ -18,6 +25,8 @@ export const TradingTransactionSideAmount = ({
     side,
     'data-testid': dataTestId,
 }: TradingTransactionSideAmountProps) => {
+    const deps = useServices(injectHasNetworkIcon);
+    const networks = useSelector(selectNetworkConfigs);
     const { cryptoIdToSymbolAndContractAddress } = useTradingUtils();
 
     switch (side.type) {
@@ -34,7 +43,12 @@ export const TradingTransactionSideAmount = ({
                     <TradingCoinLogo
                         cryptoId={side.cryptoId}
                         size={32}
-                        showNetworkIcon={shouldShowNetworkIcon(networkSymbol, contractAddress)}
+                        showNetworkIcon={shouldShowNetworkIcon(
+                            deps,
+                            { networks },
+                            networkSymbol,
+                            contractAddress,
+                        )}
                     />
                     <FormattedCryptoAmount
                         value={side.amount}

@@ -13,8 +13,13 @@
     },
     "include": [".", "**/*.json"],
     "references": [
+        { "path": "../dependency-injection" },
+        { "path": "../react-utils" },
+        { "path": "../asset-utils" },
+        {
+            "path": "../../networks/network-module/network-assets-types"
+        },
         { "path": "../../suite-common/feedback" },
-        { "path": "../../suite-common/icons" },
         { "path": "../../suite-common/jsonl" },
         {
             "path": "../../suite-common/suite-constants"
@@ -25,27 +30,13 @@
         {
             "path": "../../suite-common/toast-notifications"
         },
-        {
-            "path": "../../suite-common/wallet-config"
-        },
-        {
-            "path": "../../suite-common/wallet-utils"
-        },
-        { "path": "../asset-utils" },
         { "path": "../components" },
         { "path": "../device-utils" },
         { "path": "../env-utils" },
         { "path": "../icons" },
         {
-            "path": "../../networks/ethereum/network-ethereum"
-        },
-        {
-            "path": "../../networks/ethereum/network-ethereum-types"
-        },
-        {
             "path": "../../networks/network-module/network-module-types"
         },
-        { "path": "../react-utils" },
         { "path": "../theme" },
         { "path": "../type-utils" },
         { "path": "../utils" },

@@ -1,3 +1,8 @@
+import {
+    mockNetworkIcon,
+    mockNetworkModule,
+    mockNetworkModuleRepository,
+} from '@suite-common/networks/mocks';
 import { events } from '@suite-native/analytics';
 import { mockNativeAnalytics } from '@suite-native/analytics/mocks';
 import { getTranslation } from '@suite-native/intl';
@@ -7,9 +12,16 @@ import {
     moonpayCreditCardSellQuote,
     sellMoonpay,
 } from '@suite-native/trading-fixtures';
+import { type NetworkSymbol } from '@trezor/network-module-types';
 
 import { TradingSellPreviewScreen } from './TradingSellPreviewScreen';
 import { renderWithTradingProvider } from '../test-utils/tradingTestUtils';
+
+const networkModule = mockNetworkModule();
+const networkModuleRepository = mockNetworkModuleRepository({
+    get: () => networkModule,
+    isSupportedNetwork: (_symbol): _symbol is NetworkSymbol => true,
+});
 
 jest.mock('@react-navigation/native', () => ({
     ...jest.requireActual('@react-navigation/native'),
@@ -31,7 +43,10 @@ describe('TradingSellPreviewScreen', () => {
 
         return await renderWithTradingProvider(<TradingSellPreviewScreen />, {
             tradeType: 'sell',
-            services: { analytics: mockNativeAnalytics(mockAnalyticsReport) },
+            services: {
+                analytics: mockNativeAnalytics(mockAnalyticsReport),
+                networks: { networkIcon: mockNetworkIcon(), networkModuleRepository },
+            },
             overrides: { wallet: { trading: tradingState } },
         });
     };

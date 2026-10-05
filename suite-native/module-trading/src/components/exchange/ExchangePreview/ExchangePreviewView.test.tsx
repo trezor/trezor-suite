@@ -1,3 +1,8 @@
+import {
+    mockNetworkIcon,
+    mockNetworkModule,
+    mockNetworkModuleRepository,
+} from '@suite-common/networks/mocks';
 import { getTranslation } from '@suite-native/intl';
 import { within } from '@suite-native/test-utils';
 import {
@@ -8,11 +13,18 @@ import {
     oneInchFusionPlusWithEip712SignDataQuote,
     oneInchFusionPlusWithoutEip712SignDataQuote,
 } from '@suite-native/trading-fixtures';
+import { type NetworkSymbol } from '@trezor/network-module-types';
 
 import { ExchangePreviewView, type ExchangePreviewViewProps } from './ExchangePreviewView';
 import { useDexExchangeTxSimulation } from '../../../hooks/exchange/useDexExchangeTxSimulation';
 import { useExchangeIssue } from '../../../hooks/exchange/useExchangeIssue';
 import { renderWithTradingProvider } from '../../../test-utils/tradingTestUtils';
+
+const networkModule = mockNetworkModule();
+const networkModuleRepository = mockNetworkModuleRepository({
+    get: () => networkModule,
+    isSupportedNetwork: (_symbol): _symbol is NetworkSymbol => true,
+});
 
 jest.mock('../../../hooks/exchange/useDexExchangeTxSimulation', () => ({
     useDexExchangeTxSimulation: jest.fn(),
@@ -73,6 +85,7 @@ describe('ExchangePreviewView', () => {
                         },
                     },
                 },
+                services: { networks: { networkIcon: mockNetworkIcon(), networkModuleRepository } },
             },
         );
 

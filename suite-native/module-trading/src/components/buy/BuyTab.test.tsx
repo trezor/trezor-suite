@@ -1,5 +1,5 @@
 import { type NetworkModuleRepositoryDep } from '@suite-common/networks';
-import { mockNetworkModuleRepository } from '@suite-common/networks/mocks';
+import { mockNetworkModuleRepository, mockNetworkIcon } from '@suite-common/networks/mocks';
 import { type NativeAnalyticsDep } from '@suite-native/analytics';
 import { mockNativeAnalytics } from '@suite-native/analytics/mocks';
 import { getTranslation } from '@suite-native/intl';
@@ -49,7 +49,13 @@ describe('BuyTab', () => {
     });
 
     const renderBuyTab = async (overrides?: PreloadedStatePartial<TradingTestPreloadedState>) =>
-        await renderWithTradingProvider(<BuyTab />, { overrides, services });
+        await renderWithTradingProvider(<BuyTab />, {
+            overrides,
+            services: {
+                ...services,
+                networks: { networkIcon: mockNetworkIcon(), ...services.networks },
+            },
+        });
 
     const expectSkeleton = () => {
         expect(screen.getAllByTestId('BoxSkeleton').length).toBeGreaterThan(0);

@@ -1,6 +1,11 @@
 import { type Store } from '@reduxjs/toolkit';
 
 import { type DeviceRootState } from '@suite-common/device';
+import {
+    mockNetworkIcon,
+    mockNetworkModule,
+    mockNetworkModuleRepository,
+} from '@suite-common/networks/mocks';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { type AccountsRootState } from '@suite-common/wallet-core';
 import { asAccountDescriptor } from '@suite-common/wallet-types';
@@ -14,9 +19,16 @@ import {
 import { type TradingRootState } from '@suite-native/trading-state';
 import { type ReceiveAccount } from '@suite-native/trading-types';
 import { type StaticSessionId } from '@trezor/connect';
+import { type NetworkSymbol } from '@trezor/network-module-types';
 
 import { AccountListItem } from './AccountListItem';
 import { createTradingTestStore } from '../../../test-utils/tradingTestUtils';
+
+const networkModule = mockNetworkModule();
+const networkModuleRepository = mockNetworkModuleRepository({
+    get: () => networkModule,
+    isSupportedNetwork: (_symbol): _symbol is NetworkSymbol => true,
+});
 
 type State = TradingRootState & AccountsRootState & DeviceRootState;
 
@@ -79,7 +91,12 @@ describe('AccountListItem', () => {
 
         return await renderWithStoreProvider(
             <AccountListItem onPress={onPressMock} receiveAccount={receiveAccount} />,
-            { services: { store } },
+            {
+                services: {
+                    store,
+                    networks: { networkIcon: mockNetworkIcon(), networkModuleRepository },
+                },
+            },
         );
     };
 

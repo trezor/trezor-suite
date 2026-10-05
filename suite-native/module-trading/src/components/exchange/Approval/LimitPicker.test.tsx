@@ -1,13 +1,25 @@
 import { type Store } from '@reduxjs/toolkit';
 
+import {
+    mockNetworkIcon,
+    mockNetworkModule,
+    mockNetworkModuleRepository,
+} from '@suite-common/networks/mocks';
 import { selectTradingExchangeSelectedQuote, tradingExchangeActions } from '@suite-common/trading';
 import { getTranslation } from '@suite-native/intl';
 import { renderWithStoreProvider, userEvent, within } from '@suite-native/test-utils-store';
 import { mercuryoFixedWorstQuote } from '@suite-native/trading-fixtures';
 import { type TradingRootState } from '@suite-native/trading-state';
+import { type NetworkSymbol } from '@trezor/network-module-types';
 
 import { LimitPicker } from './LimitPicker';
 import { createTradingTestStore } from '../../../test-utils/tradingTestUtils';
+
+const networkModule = mockNetworkModule();
+const networkModuleRepository = mockNetworkModuleRepository({
+    get: () => networkModule,
+    isSupportedNetwork: (_symbol): _symbol is NetworkSymbol => true,
+});
 
 type State = TradingRootState;
 
@@ -29,7 +41,12 @@ describe('LimitPicker', () => {
                     );
                 }}
             />,
-            { services: { store } },
+            {
+                services: {
+                    store,
+                    networks: { networkIcon: mockNetworkIcon(), networkModuleRepository },
+                },
+            },
         );
 
     beforeEach(() => {

@@ -1,5 +1,10 @@
 import { type RouteProp, useNavigation } from '@react-navigation/native';
 
+import {
+    mockNetworkIcon,
+    mockNetworkModule,
+    mockNetworkModuleRepository,
+} from '@suite-common/networks/mocks';
 import { tradingBuyActions } from '@suite-common/trading';
 import { getTranslation } from '@suite-native/intl';
 import type { RootStackParamList, RootStackRoutes } from '@suite-native/navigation';
@@ -9,6 +14,7 @@ import {
     selectBuySelectedReceiveAccount,
     selectExchangeSelectedReceiveAccount,
 } from '@suite-native/trading-state';
+import { type NetworkSymbol } from '@trezor/network-module-types';
 
 import { TradingReceiveAddressPickerScreen } from './TradingReceiveAddressPickerScreen';
 import {
@@ -16,6 +22,12 @@ import {
     type TradingTestPreloadedState,
     createTradingTestStore,
 } from '../test-utils/tradingTestUtils';
+
+const networkModule = mockNetworkModule();
+const networkModuleRepository = mockNetworkModuleRepository({
+    get: () => networkModule,
+    isSupportedNetwork: (_symbol): _symbol is NetworkSymbol => true,
+});
 
 const navigationPopToTop = jest.fn();
 const navigationGoBack = jest.fn();
@@ -58,7 +70,10 @@ describe('TradingReceiveAddressPickerScreen', () => {
             overrides,
         });
         const result = await renderWithStoreProvider(<TradingReceiveAddressPickerScreen />, {
-            services: { store },
+            services: {
+                store,
+                networks: { networkIcon: mockNetworkIcon(), networkModuleRepository },
+            },
         });
 
         return { ...result, store };

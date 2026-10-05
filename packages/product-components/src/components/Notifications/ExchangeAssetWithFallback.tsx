@@ -1,6 +1,9 @@
-import { getDisplaySymbol } from '@suite-common/wallet-config';
+import { useSelector } from 'react-redux';
+
+import type { NetworkConfigState } from '@trezor/network-module-types';
 
 import { type ExchangeInfoAsset } from './notificationsTypes';
+import { selectDisplaySymbol } from '../../network-display/networkDisplaySelectors';
 import { TokenIcon } from '../TokenIcon/TokenIcon';
 
 type ExchangeAssetWithFallbackProps = {
@@ -8,7 +11,10 @@ type ExchangeAssetWithFallbackProps = {
 };
 
 export const ExchangeAssetWithFallback = ({ asset }: ExchangeAssetWithFallbackProps) => {
-    const resolvedDisplaySymbol = asset.displaySymbol ?? getDisplaySymbol(asset.symbol);
+    const resolvedDisplaySymbol = useSelector(
+        (state: NetworkConfigState) =>
+            asset.displaySymbol ?? selectDisplaySymbol(state, asset.symbol),
+    );
 
     return (
         asset.icon ?? (

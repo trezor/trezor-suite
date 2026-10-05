@@ -2,11 +2,24 @@ import type { CryptoId } from 'invity-api';
 
 import { CryptoAmountRow, type CryptoAmountRowProps } from './CryptoAmountRow';
 import { renderWithTradingProvider } from '../../test-utils/tradingTestUtils';
+import {
+    mockNetworkIcon,
+    mockNetworkModule,
+    mockNetworkModuleRepository,
+} from '@suite-common/networks/mocks';
+import { type NetworkSymbol } from '@trezor/network-module-types';
+
+const networkModule = mockNetworkModule();
+const networkModuleRepository = mockNetworkModuleRepository({
+    get: () => networkModule,
+    isSupportedNetwork: (_symbol): _symbol is NetworkSymbol => true,
+});
 
 describe('CryptoAmountRow', () => {
     const renderCryptoAmountRow = async (overriders: Partial<CryptoAmountRowProps>) =>
         await renderWithTradingProvider(
             <CryptoAmountRow cryptoId={'bitcoin' as CryptoId} direction="from" {...overriders} />,
+            { services: { networks: { networkIcon: mockNetworkIcon(), networkModuleRepository } } },
         );
 
     it('should render nothing for unknown cryptoId', async () => {

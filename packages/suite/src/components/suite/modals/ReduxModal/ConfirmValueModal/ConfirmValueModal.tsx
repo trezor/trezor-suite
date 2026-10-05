@@ -44,7 +44,7 @@ import {
     WarningFilledIcon,
     WarningIcon,
 } from '@trezor/icons';
-import { ConfirmOnDevicePill, QrCode, TokenIcon } from '@trezor/product-components';
+import { TokenIcon, ConfirmOnDevicePill, QrCode } from '@trezor/product-components';
 
 import { useGuideOpenNode } from 'src/hooks/guide';
 import { useSelector } from 'src/hooks/suite';

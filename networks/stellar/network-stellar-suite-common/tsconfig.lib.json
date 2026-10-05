@@ -4,9 +4,13 @@
     "include": ["./src"],
     "references": [
         {
+            "path": "../../network-module/network-assets-types"
+        },
+        {
             "path": "../../network-module/network-module-suite-common-types"
         },
         { "path": "../network-stellar" },
+        { "path": "../network-stellar-assets" },
         { "path": "../network-stellar-types" }
     ]
 }

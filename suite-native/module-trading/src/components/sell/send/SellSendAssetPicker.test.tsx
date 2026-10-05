@@ -2,7 +2,7 @@ import { type Store } from '@reduxjs/toolkit';
 import type { CryptoId } from 'invity-api';
 
 import { type NetworkModuleRepositoryDep } from '@suite-common/networks';
-import { mockNetworkModuleRepository } from '@suite-common/networks/mocks';
+import { mockNetworkModuleRepository, mockNetworkIcon } from '@suite-common/networks/mocks';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { type AccountsRootState, type WalletSettingsRootState } from '@suite-common/wallet-core';
 import { asBaseCurrencyAmount } from '@suite-common/wallet-types';
@@ -104,7 +104,11 @@ describe('SellSendAssetPicker', () => {
 
     const renderSellSendAssetPicker = async () =>
         await renderWithStoreProvider(<SellSendAssetPicker />, {
-            services: { ...services, store },
+            services: {
+                ...services,
+                store,
+                networks: { networkIcon: mockNetworkIcon(), ...services.networks },
+            },
             wrapper: ({ children }) => <Form form={form}>{children}</Form>,
         });
 

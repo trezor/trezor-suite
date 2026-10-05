@@ -40,11 +40,14 @@
     "devDependencies": {
         "@suite-common/device": "workspace:*",
         "@suite-common/message-system": "workspace:*",
+        "@suite-common/networks": "workspace:*",
         "@suite-common/suite-sync": "workspace:*",
         "@suite-common/wallet-core": "workspace:*",
         "@suite-native/test-utils": "workspace:*",
         "@suite-native/test-utils-store": "workspace:*",
         "@suite-native/trading-fixtures": "workspace:*",
+        "@trezor/dependency-injection": "workspace:*",
+        "@trezor/network-module-types": "workspace:*",
         "@types/invity-api": "^1.1.22"
     }
 }

@@ -1,7 +1,15 @@
+import { useSelector } from 'react-redux';
+
 import { getDisplaySymbol } from '@suite-common/wallet-config';
 import { type Account, asBaseCurrencyAmount } from '@suite-common/wallet-types';
 import { Row } from '@trezor/components';
-import { TokenIcon, shouldShowNetworkIcon } from '@trezor/product-components';
+import { useServices } from '@trezor/dependency-injection';
+import {
+    TokenIcon,
+    injectHasNetworkIcon,
+    selectNetworkConfigs,
+    shouldShowNetworkIcon,
+} from '@trezor/product-components';
 
 import { type TokensWithRates } from 'src/utils/wallet/tokenUtils';
 
@@ -30,6 +38,9 @@ export function AssetRowToken({
 }: AssetRowTokenProps) {
     const isDisabled = !onClick;
 
+    const deps = useServices(injectHasNetworkIcon);
+    const networks = useSelector(selectNetworkConfigs);
+
     return (
         <ItemClickableContainer
             onClick={() => {
@@ -44,7 +55,12 @@ export function AssetRowToken({
                     symbol={account.symbol}
                     contractAddress={token.contract}
                     placeholder={getDisplaySymbol(token.symbol!, token.contract)}
-                    showNetworkIcon={shouldShowNetworkIcon(account.symbol, token.contract)}
+                    showNetworkIcon={shouldShowNetworkIcon(
+                        deps,
+                        { networks },
+                        account.symbol,
+                        token.contract,
+                    )}
                 />
                 <AssetDetails
                     name={token.name!}

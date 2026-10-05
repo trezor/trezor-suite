@@ -1,10 +1,22 @@
 import type { FiatCurrencyCode } from 'invity-api';
 
+import {
+    mockNetworkIcon,
+    mockNetworkModule,
+    mockNetworkModuleRepository,
+} from '@suite-common/networks/mocks';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { Text } from '@suite-native/atoms';
 import { renderWithBasicProvider } from '@suite-native/test-utils';
+import { type NetworkSymbol } from '@trezor/network-module-types';
 
 import { TradingAsset } from './TradingAsset';
+
+const networkModule = mockNetworkModule();
+const networkModuleRepository = mockNetworkModuleRepository({
+    get: () => networkModule,
+    isSupportedNetwork: (_symbol): _symbol is NetworkSymbol => true,
+});
 
 describe('TradingAsset', () => {
     it('renders a crypto name with its symbol and network badge by default', async () => {
@@ -17,6 +29,7 @@ describe('TradingAsset', () => {
                 symbol="USDC"
                 testID="@test/trading-asset"
             />,
+            { services: { networks: { networkIcon: mockNetworkIcon(), networkModuleRepository } } },
         );
 
         expect(getByTestId('@test/trading-asset/primary-label')).toHaveTextContent('USD Coin');
@@ -35,6 +48,7 @@ describe('TradingAsset', () => {
                 symbol="USDC"
                 testID="@test/trading-asset"
             />,
+            { services: { networks: { networkIcon: mockNetworkIcon(), networkModuleRepository } } },
         );
 
         expect(getByTestId('@test/trading-asset/primary-label')).toHaveTextContent('USDC');
@@ -54,6 +68,7 @@ describe('TradingAsset', () => {
                 symbol="USD"
                 testID="@test/trading-asset"
             />,
+            { services: { networks: { networkIcon: mockNetworkIcon(), networkModuleRepository } } },
         );
 
         expect(getByLabelText('flag-US')).toHaveStyle({ height: 32, width: 32 });
@@ -73,6 +88,7 @@ describe('TradingAsset', () => {
                 symbol="XYZ"
                 testID="@test/trading-asset"
             />,
+            { services: { networks: { networkIcon: mockNetworkIcon(), networkModuleRepository } } },
         );
 
         expect(getByTestId('@test/trading-asset/primary-label')).toHaveTextContent('XYZ');

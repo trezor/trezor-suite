@@ -1,5 +1,10 @@
 import type { BuyTrade, ProviderMetadata } from 'invity-api';
 
+import {
+    mockNetworkIcon,
+    mockNetworkModule,
+    mockNetworkModuleRepository,
+} from '@suite-common/networks/mocks';
 import { events } from '@suite-native/analytics';
 import { mockNativeAnalytics } from '@suite-native/analytics/mocks';
 import { getTranslation } from '@suite-native/intl';
@@ -8,9 +13,16 @@ import {
     getInitializedTradingState,
     mercuryoApplePayBuyQuote,
 } from '@suite-native/trading-fixtures';
+import { type NetworkSymbol } from '@trezor/network-module-types';
 
 import { TradingBuyPreviewScreen } from './TradingBuyPreviewScreen';
 import { renderWithTradingProvider } from '../test-utils/tradingTestUtils';
+
+const networkModule = mockNetworkModule();
+const networkModuleRepository = mockNetworkModuleRepository({
+    get: () => networkModule,
+    isSupportedNetwork: (_symbol): _symbol is NetworkSymbol => true,
+});
 
 jest.mock('@react-navigation/native', () => ({
     ...jest.requireActual('@react-navigation/native'),
@@ -37,7 +49,10 @@ describe('TradingBuyPreviewScreen', () => {
 
         return await renderWithTradingProvider(<TradingBuyPreviewScreen />, {
             tradeType: 'buy',
-            services: { analytics: mockNativeAnalytics(mockAnalyticsReport) },
+            services: {
+                analytics: mockNativeAnalytics(mockAnalyticsReport),
+                networks: { networkIcon: mockNetworkIcon(), networkModuleRepository },
+            },
             overrides: { wallet: { trading: tradingState } },
         });
     };

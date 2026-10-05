@@ -1,5 +1,12 @@
+import {
+    mockNetworkIcon,
+    mockNetworkModule,
+    mockNetworkModuleRepository,
+} from '@suite-common/networks/mocks';
 import { UINT256_MAX } from '@suite-common/suite-constants';
 import { eth1NormalAccount, mercuryoFixedWorstQuote } from '@suite-native/trading-fixtures';
+
+import { type NetworkSymbol } from '@trezor/network-module-types';
 import { BigNumber } from '@trezor/utils';
 
 import { RevokeLimitInfoRow } from './RevokeLimitInfoRow';
@@ -9,6 +16,12 @@ import {
     renderWithTradingProvider,
 } from '../../../test-utils/tradingTestUtils';
 
+const networkModule = mockNetworkModule();
+const networkModuleRepository = mockNetworkModuleRepository({
+    get: () => networkModule,
+    isSupportedNetwork: (_symbol): _symbol is NetworkSymbol => true,
+});
+
 describe('RevokeLimitInfoRow', () => {
     const renderRevokeLimitInfoRow = async (
         overrides: PreloadedStatePartial<TradingTestPreloadedState> = {},
@@ -16,6 +29,7 @@ describe('RevokeLimitInfoRow', () => {
         await renderWithTradingProvider(<RevokeLimitInfoRow />, {
             tradeType: 'exchange',
             overrides,
+            services: { networks: { networkIcon: mockNetworkIcon(), networkModuleRepository } },
         });
 
     const withPreselectedQuote: PreloadedStatePartial<TradingTestPreloadedState> = {

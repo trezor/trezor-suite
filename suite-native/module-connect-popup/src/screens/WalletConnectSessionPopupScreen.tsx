@@ -181,10 +181,7 @@ export const WalletConnectSessionPopupScreen = () => {
                                         })}
                                     >
                                         {network.symbol && (
-                                            <NetworkIcon
-                                                symbol={network.symbol as any}
-                                                size="large"
-                                            />
+                                            <NetworkIcon symbol={network.symbol} size="large" />
                                         )}
                                         <Text>
                                             {network.name}

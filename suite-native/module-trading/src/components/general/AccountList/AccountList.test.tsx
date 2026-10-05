@@ -1,5 +1,10 @@
 import { useNavigation } from '@react-navigation/native';
 
+import {
+    mockNetworkIcon,
+    mockNetworkModule,
+    mockNetworkModuleRepository,
+} from '@suite-common/networks/mocks';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { getTranslation } from '@suite-native/intl';
 import { RootStackRoutes } from '@suite-native/navigation';
@@ -14,6 +19,7 @@ import {
     selectBuySelectedReceiveAccount,
     selectExchangeSelectedReceiveAccount,
 } from '@suite-native/trading-state';
+import { type NetworkSymbol } from '@trezor/network-module-types';
 
 import { AccountList, type AccountsListProps, keyExtractor } from './AccountList';
 import {
@@ -21,6 +27,12 @@ import {
     type TradingTestPreloadedState,
     createTradingTestStore,
 } from '../../../test-utils/tradingTestUtils';
+
+const networkModule = mockNetworkModule();
+const networkModuleRepository = mockNetworkModuleRepository({
+    get: () => networkModule,
+    isSupportedNetwork: (_symbol): _symbol is NetworkSymbol => true,
+});
 
 const navigationNavigate = jest.fn();
 const navigationPopToTop = jest.fn();
@@ -66,7 +78,12 @@ describe('AccountList', () => {
                 {...props}
                 data={props.data ?? data}
             />,
-            { services: { store } },
+            {
+                services: {
+                    store,
+                    networks: { networkIcon: mockNetworkIcon(), networkModuleRepository },
+                },
+            },
         );
 
         return { ...result, store };

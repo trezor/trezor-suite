@@ -4,10 +4,6 @@ Please import it directly `@suite-common/icons/src/icons` because otherwise it w
 Mobile app doesn't support treeshaking.
 */
 export * from './tokenIcons';
-export * from './cryptoIcons';
-export * from './networkIcons';
-export * from './iconSymbols';
-export * from './iconUtils';
 export * from './coinImages';
 export * from './paymentMethodLogos';
 export * from './constants';

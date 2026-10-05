@@ -1,12 +1,24 @@
+import {
+    mockNetworkIcon,
+    mockNetworkModule,
+    mockNetworkModuleRepository,
+} from '@suite-common/networks/mocks';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { type Account, asAccountDescriptor } from '@suite-common/wallet-types';
 import { mockAccountKey } from '@suite-common/wallet-types/mocks';
 import { getTranslation } from '@suite-native/intl';
 import { fireEvent } from '@suite-native/test-utils-store';
 import { type ReceiveAccount } from '@suite-native/trading-types';
+import { type NetworkSymbol } from '@trezor/network-module-types';
 
 import { AccountListAddressItem } from './AccountListAddressItem';
 import { renderWithTradingProvider } from '../../../test-utils/tradingTestUtils';
+
+const networkModule = mockNetworkModule();
+const networkModuleRepository = mockNetworkModuleRepository({
+    get: () => networkModule,
+    isSupportedNetwork: (_symbol): _symbol is NetworkSymbol => true,
+});
 
 jest.mock('@suite-common/wallet-core', () => {
     const fiatRate = { rate: 1e8 };
@@ -62,6 +74,7 @@ describe('AccountListAddressItem', () => {
                 isFreshAddress={isFreshAddress}
                 onPress={onPressMock}
             />,
+            { services: { networks: { networkIcon: mockNetworkIcon(), networkModuleRepository } } },
         );
 
     beforeEach(() => {

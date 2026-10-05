@@ -1,6 +1,6 @@
 import { type Meta, type StoryObj } from '@storybook/react';
 
-import { asNetworkSymbol } from '@suite-common/wallet-config';
+import { asNetworkSymbol } from '@trezor/network-module-types';
 
 import { type Asset, TopAssets } from './TopAssets';
 

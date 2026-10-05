@@ -1,6 +1,6 @@
 import { mockMessageSystemStateWithFeatureFlags } from '@suite-common/message-system/mocks';
 import { type NetworkModuleRepositoryDep } from '@suite-common/networks';
-import { mockNetworkModuleRepository } from '@suite-common/networks/mocks';
+import { mockNetworkModuleRepository, mockNetworkIcon } from '@suite-common/networks/mocks';
 import { type NativeAnalyticsDep } from '@suite-native/analytics';
 import { mockNativeAnalytics } from '@suite-native/analytics/mocks';
 import { getTranslation } from '@suite-native/intl';
@@ -43,7 +43,10 @@ jest.mock('@react-navigation/native', () => ({
 describe('TradingTabContent', () => {
     const renderTradingTabContent = async (isBlacklisted: boolean = false) =>
         await renderWithTradingProvider(<TradingTabContent />, {
-            services,
+            services: {
+                ...services,
+                networks: { networkIcon: mockNetworkIcon(), ...services.networks },
+            },
             overrides: {
                 wallet: {
                     trading: {

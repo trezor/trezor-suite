@@ -48,7 +48,7 @@ import {
     WalletIcon,
     XCircleIcon,
 } from '@trezor/icons';
-import { NetworkIcon, isNetworkSymbolWithIcon } from '@trezor/product-components';
+import { NetworkIcon, selectNetworkDisplayConfig } from '@trezor/product-components';
 
 import { ConnectAppIcon } from 'src/components/suite/ConnectAppIcon';
 import { ConnectProcessLabel } from 'src/components/suite/ConnectProcessLabel';
@@ -126,10 +126,10 @@ type GroupBadgeProps = { coin?: string };
 // mirrors NetworkIcon for the device group (no coin) or altcoins that suite has
 // no network icon for.
 const GroupBadge = ({ coin }: GroupBadgeProps) => {
-    const symbol = coin?.toLowerCase();
+    const network = useSelector(state => selectNetworkDisplayConfig(state, coin ?? ''));
 
-    if (symbol && isNetworkSymbolWithIcon(symbol)) {
-        return <NetworkIcon networkSymbol={symbol} size={24} />;
+    if (network) {
+        return <NetworkIcon networkSymbol={network.symbol} size={24} />;
     }
 
     return (

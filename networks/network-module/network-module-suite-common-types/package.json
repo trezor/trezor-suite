@@ -15,6 +15,7 @@
         "@trezor/connect-common": "workspace:*",
         "@trezor/crypto-utils": "workspace:*",
         "@trezor/device-utils": "workspace:*",
+        "@trezor/network-assets-types": "workspace:*",
         "@trezor/network-module-types": "workspace:*",
         "@trezor/type-utils": "workspace:*",
         "@trezor/utils": "workspace:*"

@@ -1,16 +1,29 @@
 import type { CryptoId } from 'invity-api';
 
+import {
+    mockNetworkIcon,
+    mockNetworkModule,
+    mockNetworkModuleRepository,
+} from '@suite-common/networks/mocks';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { asBaseCurrencyAmount } from '@suite-common/wallet-types';
 import { getTranslation } from '@suite-native/intl';
 import { fireEvent } from '@suite-native/test-utils-store';
 import { eth1NormalAccount } from '@suite-native/trading-fixtures';
 import { type MyAsset } from '@suite-native/trading-types';
+
+import { type NetworkSymbol } from '@trezor/network-module-types';
 import { BigNumber } from '@trezor/utils';
 
 import { MyAssetList } from './MyAssetList';
 import { type MyAssetsSection } from '../../../hooks/general/useMyAssetsFilteredData';
 import { renderWithTradingProvider } from '../../../test-utils/tradingTestUtils';
+
+const networkModule = mockNetworkModule();
+const networkModuleRepository = mockNetworkModuleRepository({
+    get: () => networkModule,
+    isSupportedNetwork: (_symbol): _symbol is NetworkSymbol => true,
+});
 
 const createAsset = (name: string, isEnabled = true): MyAsset => ({
     name,
@@ -48,6 +61,7 @@ describe('MyAssetList', () => {
                 selectedNetworkFilter={undefined}
                 testID={testID}
             />,
+            { services: { networks: { networkIcon: mockNetworkIcon(), networkModuleRepository } } },
         );
 
     it('expands low-balance and non-tradeable groups independently', async () => {

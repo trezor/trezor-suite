@@ -1,6 +1,12 @@
+import {
+    mockNetworkIcon,
+    mockNetworkModule,
+    mockNetworkModuleRepository,
+} from '@suite-common/networks/mocks';
 import { mockAccountKey } from '@suite-common/wallet-types/mocks';
 import { getTranslation } from '@suite-native/intl';
 import { eth1NormalAccount, mercuryoFixedWorstQuote } from '@suite-native/trading-fixtures';
+import { type NetworkSymbol } from '@trezor/network-module-types';
 
 import { ExchangeRevokeDetails } from './ExchangeRevokeDetails';
 import {
@@ -8,6 +14,12 @@ import {
     type TradingTestPreloadedState,
     renderWithTradingProvider,
 } from '../../../test-utils/tradingTestUtils';
+
+const networkModule = mockNetworkModule();
+const networkModuleRepository = mockNetworkModuleRepository({
+    get: () => networkModule,
+    isSupportedNetwork: (_symbol): _symbol is NetworkSymbol => true,
+});
 
 describe('ExchangeRevokeDetails', () => {
     const errorSpy = jest.spyOn(console, 'error').mockImplementation(() => {});
@@ -29,6 +41,7 @@ describe('ExchangeRevokeDetails', () => {
         await renderWithTradingProvider(<ExchangeRevokeDetails exchange="mercuryo" />, {
             tradeType: 'exchange',
             overrides,
+            services: { networks: { networkIcon: mockNetworkIcon(), networkModuleRepository } },
         });
 
     beforeEach(() => {

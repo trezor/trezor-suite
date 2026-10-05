@@ -1,6 +1,12 @@
+import {
+    mockNetworkIcon,
+    mockNetworkModule,
+    mockNetworkModuleRepository,
+} from '@suite-common/networks/mocks';
 import { mockAccountKey } from '@suite-common/wallet-types/mocks';
 import { getTranslation } from '@suite-native/intl';
 import { eth1NormalAccount, mercuryoFixedWorstQuote } from '@suite-native/trading-fixtures';
+import { type NetworkSymbol } from '@trezor/network-module-types';
 
 import { ExchangeApprovalDetails } from './ExchangeApprovalDetails';
 import {
@@ -8,6 +14,12 @@ import {
     type TradingTestPreloadedState,
     renderWithTradingProvider,
 } from '../../../test-utils/tradingTestUtils';
+
+const networkModule = mockNetworkModule();
+const networkModuleRepository = mockNetworkModuleRepository({
+    get: () => networkModule,
+    isSupportedNetwork: (_symbol): _symbol is NetworkSymbol => true,
+});
 
 // Mock FeeSelector to avoid deep dependency chain (useFeesManagement, etc.)
 jest.mock('@suite-native/transaction-management', () => ({
@@ -41,6 +53,7 @@ describe('ExchangeApprovalDetails', () => {
             {
                 tradeType: 'exchange',
                 overrides,
+                services: { networks: { networkIcon: mockNetworkIcon(), networkModuleRepository } },
             },
         );
 

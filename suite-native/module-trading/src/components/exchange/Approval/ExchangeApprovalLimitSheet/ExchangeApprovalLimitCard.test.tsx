@@ -1,11 +1,23 @@
+import {
+    mockNetworkIcon,
+    mockNetworkModule,
+    mockNetworkModuleRepository,
+} from '@suite-common/networks/mocks';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { Text } from '@suite-native/atoms';
 import { act, fireEvent, renderWithBasicProvider } from '@suite-native/test-utils';
+import { type NetworkSymbol } from '@trezor/network-module-types';
 
 import {
     ExchangeApprovalLimitCard,
     type ExchangeApprovalLimitCardProps,
 } from './ExchangeApprovalLimitCard';
+
+const networkModule = mockNetworkModule();
+const networkModuleRepository = mockNetworkModuleRepository({
+    get: () => networkModule,
+    isSupportedNetwork: (_symbol): _symbol is NetworkSymbol => true,
+});
 
 const mockOnChange = jest.fn();
 
@@ -20,6 +32,7 @@ describe('ExchangeApprovalLimitCard', () => {
                 onChange={mockOnChange}
                 {...props}
             />,
+            { services: { networks: { networkIcon: mockNetworkIcon(), networkModuleRepository } } },
         );
         await act(async () => {
             await act(() => Promise.resolve());

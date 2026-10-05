@@ -3,9 +3,13 @@
     "compilerOptions": { "outDir": "libDev" },
     "references": [
         {
+            "path": "../../network-module/network-assets-types"
+        },
+        {
             "path": "../../network-module/network-module-suite-common-types"
         },
         { "path": "../network-ripple" },
+        { "path": "../network-ripple-assets" },
         { "path": "../network-ripple-types" }
     ]
 }

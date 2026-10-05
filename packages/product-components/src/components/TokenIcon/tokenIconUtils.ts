@@ -1,11 +1,12 @@
-import { isNetworkIconSymbol } from '@suite-common/icons/src/iconUtils';
+import type { NetworkIcon } from '@trezor/network-assets-types';
+import type { NetworkConfigState, NetworkSymbol } from '@trezor/network-module-types';
+
 import {
-    type NetworkSymbolExtended,
-    getNetwork,
-    getNetworkByCoingeckoId,
-    getNetworkFeatures,
-    isNetworkSymbol,
-} from '@suite-common/wallet-config';
+    selectNetworkConfig,
+    selectNetworkConfigByCoingeckoId,
+} from '../../network-display/networkDisplaySelectors';
+
+export type ShouldShowNetworkIconDeps = Pick<NetworkIcon, 'hasNetworkIcon'>;
 
 export const ZERO_ADDRESS = '0x0000000000000000000000000000000000000000';
 
@@ -21,34 +22,42 @@ export const makeAddressKey = (coingeckoId: string, address: string) =>
     `${coingeckoId}::${address}`;
 
 export function shouldShowNetworkIcon(
-    networkSymbol?: NetworkSymbolExtended,
+    deps: ShouldShowNetworkIconDeps,
+    state: NetworkConfigState,
+    networkSymbol?: NetworkSymbol,
     contractAddress?: string | null,
-) {
-    return (
+): boolean {
+    return !!(
         networkSymbol &&
-        isNetworkIconSymbol(networkSymbol) &&
-        isNetworkSymbol(networkSymbol) &&
+        deps.hasNetworkIcon(networkSymbol) &&
         Boolean(contractAddress) &&
-        getNetworkFeatures(networkSymbol).includes('tokens')
+        selectNetworkConfig(state, networkSymbol)?.features?.includes('tokens')
     );
 }
 
 export const getCoingeckoIdAndContractAddressIncludesNativeTokens = (
+    state: NetworkConfigState,
     coingeckoId: string,
-    contractAddress: string[] | undefined,
+    contractAddress: readonly string[] | undefined,
 ) => {
-    const mainNetworkSymbol = getNetworkByCoingeckoId(coingeckoId)?.displaySymbol.toLowerCase();
+    const mainNetworkSymbol = selectNetworkConfigByCoingeckoId(
+        state,
+        coingeckoId,
+    )?.displaySymbol?.toLowerCase();
 
     const addresses = ([] as Array<string | undefined>)
-        .concat(contractAddress ?? [])
+        .concat(contractAddress ? [...contractAddress] : [])
         .map(addr => addr ?? ZERO_ADDRESS);
 
     const hasNative = addresses.length === 0 || addresses.includes(ZERO_ADDRESS);
 
-    const shouldUseTradeId = hasNative && !!mainNetworkSymbol && isNetworkSymbol(mainNetworkSymbol);
+    const nativeConfig = mainNetworkSymbol
+        ? selectNetworkConfig(state, mainNetworkSymbol)
+        : undefined;
+    const shouldUseTradeId = hasNative && !!nativeConfig;
 
     const resolvedCoingeckoId = shouldUseTradeId
-        ? (getNetwork(mainNetworkSymbol).tradeCryptoId ?? coingeckoId)
+        ? (nativeConfig.tradeCryptoId ?? coingeckoId)
         : coingeckoId;
 
     return {

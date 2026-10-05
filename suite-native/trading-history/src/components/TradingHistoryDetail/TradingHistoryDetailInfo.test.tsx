@@ -1,7 +1,7 @@
 import type { CryptoId } from 'invity-api';
 
 import { type NetworkModuleRepositoryDep } from '@suite-common/networks';
-import { mockNetworkModuleRepository } from '@suite-common/networks/mocks';
+import { mockNetworkModuleRepository, mockNetworkIcon } from '@suite-common/networks/mocks';
 import { type TradingTransaction } from '@suite-common/trading';
 import { getTranslation } from '@suite-native/intl';
 import { userEvent } from '@suite-native/test-utils';
@@ -41,7 +41,10 @@ describe('TradingHistoryDetailInfo', () => {
                         },
                     },
                 },
-                services,
+                services: {
+                    ...services,
+                    networks: { networkIcon: mockNetworkIcon(), ...services.networks },
+                },
             },
         );
 

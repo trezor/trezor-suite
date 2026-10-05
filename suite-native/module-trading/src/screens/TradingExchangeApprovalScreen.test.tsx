@@ -1,6 +1,11 @@
 import { type NavigationAction, type RouteProp } from '@react-navigation/native';
 import { type Store } from '@reduxjs/toolkit';
 
+import {
+    mockNetworkIcon,
+    mockNetworkModule,
+    mockNetworkModuleRepository,
+} from '@suite-common/networks/mocks';
 import { selectTradingExchangeSelectedQuote, tradingExchangeActions } from '@suite-common/trading';
 import { events } from '@suite-native/analytics';
 import { mockNativeAnalytics } from '@suite-native/analytics/mocks';
@@ -13,9 +18,16 @@ import {
 import { fireEvent } from '@suite-native/test-utils-store';
 import { eth1NormalAccount, mercuryoFixedWorstQuote } from '@suite-native/trading-fixtures';
 import { type TradingRootState } from '@suite-native/trading-state';
+import { type NetworkSymbol } from '@trezor/network-module-types';
 
 import { TradingExchangeApprovalScreen } from './TradingExchangeApprovalScreen';
 import { createTradingTestStore, renderWithTradingProvider } from '../test-utils/tradingTestUtils';
+
+const networkModule = mockNetworkModule();
+const networkModuleRepository = mockNetworkModuleRepository({
+    get: () => networkModule,
+    isSupportedNetwork: (_symbol): _symbol is NetworkSymbol => true,
+});
 
 type State = TradingRootState;
 
@@ -104,7 +116,11 @@ describe('TradingExchangeApprovalScreen', () => {
                 navigation={{ dispatch: mockNavigationDispatch } as any}
             />,
             {
-                services: { analytics: mockNativeAnalytics(mockAnalyticsReport), store },
+                services: {
+                    analytics: mockNativeAnalytics(mockAnalyticsReport),
+                    store,
+                    networks: { networkIcon: mockNetworkIcon(), networkModuleRepository },
+                },
                 tradeType: 'exchange',
             },
         );

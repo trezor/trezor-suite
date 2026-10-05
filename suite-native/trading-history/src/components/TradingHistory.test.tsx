@@ -1,3 +1,8 @@
+import {
+    mockNetworkIcon,
+    mockNetworkModule,
+    mockNetworkModuleRepository,
+} from '@suite-common/networks/mocks';
 import { getTranslation } from '@suite-native/intl';
 import { fireEvent, userEvent } from '@suite-native/test-utils-store';
 import {
@@ -6,6 +11,7 @@ import {
     getExchangeTrade,
     getSellTrade,
 } from '@suite-native/trading-fixtures';
+import { type NetworkSymbol } from '@trezor/network-module-types';
 
 import { TradingHistory } from './TradingHistory';
 import {
@@ -13,6 +19,12 @@ import {
     type TradingTestPreloadedState,
     renderWithTradingHistoryProvider,
 } from '../test-utils/tradingHistoryTestUtils';
+
+const networkModule = mockNetworkModule();
+const networkModuleRepository = mockNetworkModuleRepository({
+    get: () => networkModule,
+    isSupportedNetwork: (_symbol): _symbol is NetworkSymbol => true,
+});
 
 const mockGoBack = jest.fn();
 const mockOpenTradeDetail = jest.fn();
@@ -87,6 +99,7 @@ describe('TradingHistoryScreen', () => {
             <TradingHistory onOpenTradeDetail={mockOpenTradeDetail} />,
             {
                 overrides: getOverrides(trades),
+                services: { networks: { networkIcon: mockNetworkIcon(), networkModuleRepository } },
             },
         );
 

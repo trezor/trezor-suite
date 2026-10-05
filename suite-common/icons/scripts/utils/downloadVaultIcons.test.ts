@@ -2,8 +2,12 @@ import fs from 'fs/promises';
 import { join } from 'path';
 import sharp from 'sharp';
 
+import { isWrappedNativeToken } from '@trezor/network-ethereum/constants';
+import { ethereumAssets } from '@trezor/network-ethereum-assets';
+import { createEthereumIcon } from '@trezor/network-ethereum-suite-common';
+
 import { COIN_IMAGE_SIZES, ICONS_URL_BASE, createCoinImageName } from '../../src/coinImages';
-import { CRYPTO_ICONS_SVG_PATH, FILES_CRYPTOICONS_PATH, YIELD_VAULTS_URL } from '../constants';
+import { FILES_CRYPTOICONS_PATH, YIELD_VAULTS_URL } from '../constants';
 import { rasterizeSvg } from './images';
 
 // `readFile` stays real so the bundled-icon path actually rasterizes the design-system SVG, while
@@ -102,11 +106,15 @@ const writtenIcon = (fileName: string): Buffer | undefined =>
 const requestedUrls = () => fetchMock.mock.calls.map(([input]) => urlOf(input));
 
 // What the app itself renders for a native coin, i.e. what the published vault icon has to equal.
-const bundledIcon = async (networkSymbol: string, size: (typeof COIN_IMAGE_SIZES)[number]) =>
-    await rasterizeSvg(
-        await fs.readFile(join(CRYPTO_ICONS_SVG_PATH, `${networkSymbol}.svg`)),
-        size,
-    );
+const ethereumIcon = createEthereumIcon({ ethereumAssets, isWrappedNativeToken });
+const bundledIcon = async (networkSymbol: string, size: (typeof COIN_IMAGE_SIZES)[number]) => {
+    if (!ethereumIcon.hasNetworkIcon(networkSymbol)) {
+        throw new Error(`Missing bundled coin icon: ${networkSymbol}`);
+    }
+    const svg = await fs.readFile(ethereumIcon.getIconPaths(networkSymbol).coin);
+
+    return await rasterizeSvg(svg, size);
+};
 
 describe('downloadVaultIcons', () => {
     let consoleErrorSpy: jest.SpyInstance;
@@ -199,6 +207,28 @@ describe('downloadVaultIcons', () => {
                 height: size,
             });
         }
+    });
+
+    it('uses the Arc module SVG for its native USDC vaults', async () => {
+        mockFetchRoutes(
+            vaultListRoute({
+                arc: [
+                    vault({
+                        address: ETH_USDC_VAULT,
+                        underlyingToken: '0x3600000000000000000000000000000000000000',
+                        coingeckoId: 'usd-coin',
+                    }),
+                ],
+            }),
+        );
+
+        await downloadVaultIcons();
+
+        expect(requestedUrls()).toEqual([YIELD_VAULTS_URL]);
+        expect(writtenIcon(`arc--${ETH_USDC_VAULT}@24.webp`)).toEqual(await bundledIcon('arc', 24));
+        expect(writtenIcon(`arc--${ETH_USDC_VAULT}@24.webp`)).not.toEqual(
+            await bundledIcon('eth', 24),
+        );
     });
 
     it('resolves an L2 wrapped-native underlying to the settlement layer native coin', async () => {

@@ -8,6 +8,7 @@ import { type DesktopAnalyticsDep } from '@suite/analytics';
 import { mockDesktopAnalytics } from '@suite/analytics/mocks';
 import { type SuiteRouterHistoryDep } from '@suite/router';
 import { mockSuiteRouterHistory } from '@suite/router/mocks';
+import { mockNetworkIcon } from '@suite-common/networks/mocks';
 import { type WithServices } from '@suite-common/redux-utils';
 import { mockSuiteDevice } from '@suite-common/suite-types/mocks';
 import { createTestCompositionRoot } from '@suite-common/test-utils';
@@ -28,6 +29,8 @@ import { renderWithProviders } from 'src/support/test-utils/hooksHelper';
 
 import { TradingTransactionsList } from './TradingTransactionsList';
 import { mockInitialAppState } from '../../../../../../mocks/mockInitialAppState';
+
+const networkIcon = mockNetworkIcon();
 
 const BITCOIN = 'bitcoin' as CryptoId;
 const ETHEREUM = 'ethereum' as CryptoId;
@@ -133,7 +136,10 @@ const renderList = (trades: TradingTransaction[]) => {
         }),
     });
 
-    return renderWithProviders(services, <TradingTransactionsList />);
+    return renderWithProviders(
+        { ...services, networks: { networkIcon } },
+        <TradingTransactionsList />,
+    );
 };
 
 const getRowOrderIds = () =>

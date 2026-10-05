@@ -3,6 +3,7 @@ import {
     type SuiteCommonNetworkModule,
 } from '@trezor/network-module-suite-common-types';
 
+import { mockNetworkIcon } from './mockNetworkIcon';
 import { mockNetworkMetadata } from './mockNetworkMetadata';
 
 export const mockNetworkModule = (
@@ -15,5 +16,6 @@ export const mockNetworkModule = (
     getSupportedNetworks: () => [],
     getAccountSyncInterval: () => DEFAULT_ACCOUNT_SYNC_INTERVAL,
     getNetworkConfig: () => ({ ...mockNetworkMetadata.btc, color: '#000000', protocols: [] }),
+    icon: mockNetworkIcon(),
     ...overrides,
 });

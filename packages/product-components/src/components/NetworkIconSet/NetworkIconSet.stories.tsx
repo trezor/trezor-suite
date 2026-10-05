@@ -1,17 +1,12 @@
 import { type Meta, type StoryObj } from '@storybook/react';
 
-import {
-    type NetworkConfigState,
-    type NetworkConfigStore,
-    asNetworkSymbol,
-} from '@trezor/network-module-types';
+import { asNetworkSymbol } from '@trezor/network-module-types';
 import { spacingValues } from '@trezor/theme';
 
 import {
     NetworkIconSet as NetworkIconSetComponent,
     type NetworkIconSetProps,
 } from './NetworkIconSet';
-import { NetworkDisplayProvider } from '../../network-display/NetworkDisplayProvider';
 import { allowedTokenIconSizes } from '../TokenIcon/tokenIconTypes';
 
 const NETWORK_1 = asNetworkSymbol('btc');
@@ -19,29 +14,9 @@ const NETWORK_2 = asNetworkSymbol('eth');
 const NETWORK_3 = asNetworkSymbol('ltc');
 const NETWORK_4 = asNetworkSymbol('ada');
 
-const networkConfigState: NetworkConfigState = {
-    networks: {
-        [NETWORK_1]: { name: 'Bitcoin' },
-        [NETWORK_2]: { name: 'Ethereum' },
-        [NETWORK_3]: { name: 'Litecoin' },
-        [NETWORK_4]: { name: 'Cardano' },
-    },
-};
-const networkDisplayStore: NetworkConfigStore = {
-    getState: () => networkConfigState,
-    subscribe: () => () => {},
-};
-
 const meta: Meta<typeof NetworkIconSetComponent> = {
     title: 'NetworkIconSet',
     component: NetworkIconSetComponent,
-    decorators: [
-        Story => (
-            <NetworkDisplayProvider store={networkDisplayStore}>
-                <Story />
-            </NetworkDisplayProvider>
-        ),
-    ],
 };
 export default meta;
 

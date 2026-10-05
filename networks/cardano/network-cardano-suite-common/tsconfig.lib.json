@@ -4,9 +4,16 @@
     "include": ["./src"],
     "references": [
         {
+            "path": "../../../packages/blockchain-link-utils"
+        },
+        {
             "path": "../../../packages/device-utils"
         },
+        {
+            "path": "../../network-module/network-assets-types"
+        },
         { "path": "../network-cardano" },
+        { "path": "../network-cardano-assets" },
         { "path": "../network-cardano-types" },
         {
             "path": "../../network-module/network-module-suite-common-types"

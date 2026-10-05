@@ -1,11 +1,23 @@
 import type { CryptoId } from 'invity-api';
 
+import {
+    mockNetworkIcon,
+    mockNetworkModule,
+    mockNetworkModuleRepository,
+} from '@suite-common/networks/mocks';
 import { Text } from '@suite-native/atoms';
 import { getTranslation } from '@suite-native/intl';
 import { renderWithStoreProvider, userEvent } from '@suite-native/test-utils-store';
 import { getWalletState, mercuryoFixedBestQuote } from '@suite-native/trading-fixtures';
+import { type NetworkSymbol } from '@trezor/network-module-types';
 
 import { LimitInfoRow } from './LimitInfoRow';
+
+const networkModule = mockNetworkModule();
+const networkModuleRepository = mockNetworkModuleRepository({
+    get: () => networkModule,
+    isSupportedNetwork: (_symbol): _symbol is NetworkSymbol => true,
+});
 
 type LimitInfoRowProps = React.ComponentProps<typeof LimitInfoRow>;
 
@@ -39,6 +51,7 @@ describe('LimitInfoRow', () => {
 
         return await renderWithStoreProvider(<LimitInfoRow {...defaultProps} {...props} />, {
             preloadedState,
+            services: { networks: { networkIcon: mockNetworkIcon(), networkModuleRepository } },
         });
     };
 

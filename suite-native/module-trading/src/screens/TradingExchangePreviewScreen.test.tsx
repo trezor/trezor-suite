@@ -2,6 +2,11 @@ import { type RouteProp } from '@react-navigation/native';
 import { type Store } from '@reduxjs/toolkit';
 import type { ExchangeTrade } from 'invity-api';
 
+import {
+    mockNetworkIcon,
+    mockNetworkModule,
+    mockNetworkModuleRepository,
+} from '@suite-common/networks/mocks';
 import { type AccountsRootState } from '@suite-common/wallet-core';
 import { asAccountDescriptor } from '@suite-common/wallet-types';
 import { type NativeAnalyticsDep, events } from '@suite-native/analytics';
@@ -19,6 +24,7 @@ import {
     oneInchFusionPlusWithEip712SignDataQuote,
 } from '@suite-native/trading-fixtures';
 import { type TradingRootState } from '@suite-native/trading-state';
+import { type NetworkSymbol } from '@trezor/network-module-types';
 
 import {
     TradingExchangePreviewScreen,
@@ -27,6 +33,12 @@ import {
 import { useDexExchangeTxSimulation } from '../hooks/exchange/useDexExchangeTxSimulation';
 import { useExchangeIssue } from '../hooks/exchange/useExchangeIssue';
 import { createTradingTestStore } from '../test-utils/tradingTestUtils';
+
+const networkModule = mockNetworkModule();
+const networkModuleRepository = mockNetworkModuleRepository({
+    get: () => networkModule,
+    isSupportedNetwork: (_symbol): _symbol is NetworkSymbol => true,
+});
 
 type State = TradingRootState & AccountsRootState;
 
@@ -175,7 +187,13 @@ describe('TradingExchangePreviewScreen', () => {
                 navigation={createNavigationProps()}
                 route={createRouteProps(isApproved)}
             />,
-            { services: { ...services, store: testStore } },
+            {
+                services: {
+                    ...services,
+                    store: testStore,
+                    networks: { networkIcon: mockNetworkIcon(), networkModuleRepository },
+                },
+            },
         );
 
         ({ unmount } = result);

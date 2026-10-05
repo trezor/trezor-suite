@@ -1,5 +1,10 @@
 import type { SellFiatTrade } from 'invity-api';
 
+import {
+    mockNetworkIcon,
+    mockNetworkModule,
+    mockNetworkModuleRepository,
+} from '@suite-common/networks/mocks';
 import type { TradingTransactionSell } from '@suite-common/trading';
 import { getTranslation } from '@suite-native/intl';
 import { act, waitFor } from '@suite-native/test-utils-store';
@@ -11,9 +16,16 @@ import {
     sellMoonpay,
 } from '@suite-native/trading-fixtures';
 import { type ProviderConfirmationStatus } from '@suite-native/trading-types';
+import { type NetworkSymbol } from '@trezor/network-module-types';
 
 import { TradingSellCompletionScreen } from './TradingSellCompletionScreen';
 import { renderWithTradingProvider } from '../test-utils/tradingTestUtils';
+
+const networkModule = mockNetworkModule();
+const networkModuleRepository = mockNetworkModuleRepository({
+    get: () => networkModule,
+    isSupportedNetwork: (_symbol): _symbol is NetworkSymbol => true,
+});
 
 jest.mock('@react-navigation/native', () => ({
     ...jest.requireActual('@react-navigation/native'),
@@ -96,6 +108,7 @@ describe('TradingSellCompletionScreen', () => {
                     }),
                 },
             },
+            services: { networks: { networkIcon: mockNetworkIcon(), networkModuleRepository } },
         });
 
         await act(() => Promise.resolve());

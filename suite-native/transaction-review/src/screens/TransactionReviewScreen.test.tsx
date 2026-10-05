@@ -1,17 +1,29 @@
 import { type ReactNode } from 'react';
 import { View } from 'react-native';
 
+import {
+    mockNetworkIcon,
+    mockNetworkModule,
+    mockNetworkModuleRepository,
+} from '@suite-common/networks/mocks';
 import { type TransactionReviewStatefulOutput } from '@suite-common/wallet-types';
 import { mockAccountKey } from '@suite-common/wallet-types/mocks';
 import { Text as MockText } from '@suite-native/atoms';
 import { getTranslation } from '@suite-native/intl';
 import { renderWithStoreProvider } from '@suite-native/test-utils-store';
+import { type NetworkSymbol } from '@trezor/network-module-types';
 
 import {
     TransactionReviewScreen,
     type TransactionReviewTxValidityFlow,
 } from './TransactionReviewScreen';
 import { ETH_ACCOUNT_KEY, mockWalletState } from '../__fixtures__/walletState';
+
+const networkModule = mockNetworkModule();
+const networkModuleRepository = mockNetworkModuleRepository({
+    get: () => networkModule,
+    isSupportedNetwork: (_symbol): _symbol is NetworkSymbol => true,
+});
 
 const mockUsePreventRemove = jest.fn();
 const mockNavigation = {
@@ -100,7 +112,10 @@ describe('TransactionReviewScreen', () => {
                 sendButtonTestId={SEND_BUTTON_TEST_ID}
                 {...props}
             />,
-            { preloadedState: { wallet: mockWalletState() } },
+            {
+                preloadedState: { wallet: mockWalletState() },
+                services: { networks: { networkIcon: mockNetworkIcon(), networkModuleRepository } },
+            },
         );
 
     beforeEach(() => {

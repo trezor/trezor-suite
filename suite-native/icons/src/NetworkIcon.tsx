@@ -10,20 +10,14 @@ import {
     useSVG,
 } from '@shopify/react-native-skia';
 
-import {
-    type NetworkIconName,
-    getNetworkIconName,
-    isNetworkIconSymbol,
-    isTestnetNetworkIconSymbol,
-    networkIcons,
-} from '@suite-common/icons';
-import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { useTranslate } from '@suite-native/intl';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 import { type CSSColor } from '@trezor/theme';
 
+import { useNetworkAssets } from './useNetworkAssets';
+
 interface NetworkIconProps {
-    symbol: NetworkSymbol;
+    symbol: string;
     size?: NetworkIconSize | number;
 }
 
@@ -44,19 +38,19 @@ const iconStyle = prepareNativeStyle<{ width: number; height: number }>((_, { wi
 }));
 
 type NetworkIconCanvasProps = {
-    iconName: NetworkIconName;
+    source: string | number;
     size: number;
     backgroundColor: CSSColor;
     iconColor: CSSColor;
 };
 
 const NetworkIconCanvas = ({
-    iconName,
+    source,
     size,
     backgroundColor,
     iconColor,
 }: NetworkIconCanvasProps) => {
-    const iconSvg = useSVG(networkIcons[iconName]);
+    const iconSvg = useSVG(source);
 
     if (!iconSvg) {
         return null;
@@ -88,15 +82,14 @@ const NetworkIconCanvas = ({
 export const NetworkIcon = ({ symbol, size = 'small' }: NetworkIconProps) => {
     const { applyStyle, utils } = useNativeStyles();
     const { translate } = useTranslate();
+    const icons = useNetworkAssets(symbol);
 
     const sizeNumber = typeof size === 'number' ? size : networkIconSizes[size];
 
-    if (!isNetworkIconSymbol(symbol)) {
-        return null;
-    }
+    if (!icons) return null;
 
-    const iconName = getNetworkIconName(symbol);
-    const isTestnet = isTestnetNetworkIconSymbol(symbol);
+    const source = icons.network;
+    const isTestnet = icons.testnet;
     const backgroundColor = isTestnet
         ? utils.colors.elementFillCriticalBold
         : utils.colors.elementFillContrast;
@@ -112,7 +105,7 @@ export const NetworkIcon = ({ symbol, size = 'small' }: NetworkIconProps) => {
             style={applyStyle(iconStyle, { width: sizeNumber, height: sizeNumber })}
         >
             <NetworkIconCanvas
-                iconName={iconName}
+                source={source}
                 size={sizeNumber}
                 backgroundColor={backgroundColor}
                 iconColor={iconColor}

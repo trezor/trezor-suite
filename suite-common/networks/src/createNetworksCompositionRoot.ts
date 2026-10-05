@@ -10,6 +10,7 @@ import { createGetNamedAddressSupport } from './createGetNamedAddressSupport';
 import { createGetNetworkConfig } from './createGetNetworkConfig';
 import { createGetNetworkConfigs } from './createGetNetworkConfigs';
 import { createLoadNetworkModules } from './createLoadNetworkModules';
+import { createNetworkIcon } from './createNetworkIcon';
 import { createNetworkModulesCompositionRoot } from './createNetworkModulesCompositionRoot';
 
 export type NetworksCompositionRootDeps = NetworkSuiteCommonModuleApi & { dispatch: Dispatch };
@@ -26,6 +27,7 @@ export const createNetworksCompositionRoot = (
     });
 
     return {
+        networkIcon: createNetworkIcon({ networkModuleRepository }),
         networkModuleRepository,
         getNetworkConfig,
         getAccountSyncInterval: createGetAccountSyncInterval({ networkModuleRepository }),

@@ -8,7 +8,11 @@
         {
             "path": "../../../packages/connect-common"
         },
+        {
+            "path": "../../network-module/network-assets-types"
+        },
         { "path": "../network-ethereum" },
+        { "path": "../network-ethereum-assets" },
         { "path": "../network-ethereum-types" },
         {
             "path": "../../network-module/network-module-suite-common-types"
