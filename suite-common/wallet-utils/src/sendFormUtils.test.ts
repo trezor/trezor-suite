@@ -8,6 +8,7 @@ import {
     calculateMax,
     calculateTotal,
     calculateTotalGasCost,
+    findAccountToken,
     findComposeErrors,
     getAmountValidationResult,
     getBitcoinComposeOutputs,
@@ -22,6 +23,8 @@ import {
 
 const btcSymbol = asNetworkSymbol('btc');
 const ethSymbol = asNetworkSymbol('eth');
+const arcSymbol = asNetworkSymbol('arc');
+const ARC_NATIVE_ERC20_CONTRACT = '0x3600000000000000000000000000000000000000';
 
 describe('sendForm utils', () => {
     fixtures.prepareEthereumTransaction.forEach(f => {
@@ -541,6 +544,43 @@ describe('sendForm utils', () => {
             });
         });
     });
+    describe(findAccountToken.name, () => {
+        it('resolves the ERC-20 face of a native coin from the native balance', () => {
+            const arcAccount = mockWalletAccount({
+                symbol: arcSymbol,
+                availableBalance: '4123456789012345678',
+                tokens: [],
+            });
+
+            expect(
+                findAccountToken(arcAccount, ARC_NATIVE_ERC20_CONTRACT.toUpperCase()),
+            ).toMatchObject({
+                contract: ARC_NATIVE_ERC20_CONTRACT,
+                decimals: 6,
+                balance: '4.123456',
+            });
+        });
+
+        it('does not resolve the same contract on a network without an ERC-20 face', () => {
+            const ethAccount = mockWalletAccount({
+                symbol: ethSymbol,
+                availableBalance: '4123456789012345678',
+                tokens: [],
+            });
+
+            expect(findAccountToken(ethAccount, ARC_NATIVE_ERC20_CONTRACT)).toBeUndefined();
+        });
+
+        it('returns the account token when the contract is in the account tokens', () => {
+            const ethAccount = mockWalletAccount({
+                symbol: ethSymbol,
+                tokens: [{ contract: '0xabc', balance: '200', decimals: 18, standard: 'ERC20' }],
+            });
+
+            expect(findAccountToken(ethAccount, '0xABC')).toBe(ethAccount.tokens?.[0]);
+        });
+    });
+
     describe(getLowestFeeFromLevels.name, () => {
         it('should return lowest fee from levels, excluding the custom', () => {
             const levels = [

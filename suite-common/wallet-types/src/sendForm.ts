@@ -89,6 +89,7 @@ export interface FormState {
     bitcoinLocktimeDatetime?: string;
     ethereumNonce?: string; // TODO: ethereum RBF
     ethereumAdjustGasLimit?: string; // if used, final gas limit = estimated limit * ethereumAdjustGasLimit
+    ethereumNativeErc20Contract?: string;
     transactionData?: string; // used for solana serialized txn from trading api, ethereum, tron txn hex data or bitcoin psbt hex data
     destinationTag?: string; // For Ripple, Stellar, Solana, and Tron
     tronStaking?: TronStakingFormState;

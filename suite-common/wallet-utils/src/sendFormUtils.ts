@@ -49,6 +49,7 @@ import {
     type PROTO,
     type TokenInfo,
 } from '@trezor/connect';
+import { getNativeErc20Token } from '@trezor/network-ethereum-suite-common';
 import { BigNumber, typedObjectKeys } from '@trezor/utils';
 
 import {
@@ -337,6 +338,47 @@ export const findToken = (tokens: Account['tokens'], address?: string | null) =>
     return tokens.find(t => t.contract.toLowerCase() === address.toLowerCase());
 };
 
+export const getNativeErc20Contract = (networkSymbol: NetworkSymbol) =>
+    getNativeErc20Token(networkSymbol)?.contract;
+
+export const isNativeErc20Contract = (networkSymbol: NetworkSymbol, contract?: string | null) => {
+    const nativeErc20Contract = getNativeErc20Contract(networkSymbol);
+
+    return (
+        !!nativeErc20Contract &&
+        !!contract &&
+        nativeErc20Contract.toLowerCase() === contract.toLowerCase()
+    );
+};
+
+export const getNativeErc20TokenInfo = (
+    account: Pick<Account, 'symbol' | 'availableBalance'>,
+    contract?: string | null,
+): TokenInfo | undefined => {
+    const nativeErc20Token = getNativeErc20Token(account.symbol);
+
+    if (!nativeErc20Token || !isNativeErc20Contract(account.symbol, contract)) {
+        return undefined;
+    }
+
+    return {
+        standard: 'ERC20',
+        contract: nativeErc20Token.contract,
+        symbol: nativeErc20Token.symbol,
+        name: nativeErc20Token.symbol,
+        decimals: nativeErc20Token.decimals,
+        balance: new BigNumber(account.availableBalance)
+            .shiftedBy(-getNetwork(account.symbol).decimals)
+            .decimalPlaces(nativeErc20Token.decimals, BigNumber.ROUND_DOWN)
+            .toFixed(),
+    };
+};
+
+export const findAccountToken = (
+    account: Pick<Account, 'symbol' | 'tokens' | 'availableBalance'>,
+    contract?: string | null,
+) => findToken(account.tokens, contract) ?? getNativeErc20TokenInfo(account, contract);
+
 // BTC composeTransaction
 // returns ComposeOutput[]
 export const getBitcoinComposeOutputs = (
@@ -417,7 +459,7 @@ export const getApprovalComposeOutput = (
         return undefined;
     }
 
-    const tokenInfo = findToken(account.tokens, contract);
+    const tokenInfo = findAccountToken(account, contract);
     const decimals = tokenInfo ? tokenInfo.decimals : network.decimals;
 
     return {
@@ -453,7 +495,7 @@ export const getExternalComposeOutput = (
     const isMaxActive = typeof values.setMaxOutputId === 'number';
     if (!isMaxActive && !amount) return; // incomplete Output
 
-    const tokenInfo = findToken(account.tokens, token);
+    const tokenInfo = findAccountToken(account, token);
     const decimals = tokenInfo ? tokenInfo.decimals : network.decimals;
     const formattedAmount = convertAmountUnitsToSubunits(amount, decimals);
 

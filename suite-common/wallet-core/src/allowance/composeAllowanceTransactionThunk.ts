@@ -7,7 +7,7 @@ import {
     type FeeLevelLabel,
     type PrecomposedLevels,
 } from '@suite-common/wallet-types';
-import { findToken, getAccountIdentity } from '@suite-common/wallet-utils';
+import { findAccountToken, getAccountIdentity } from '@suite-common/wallet-utils';
 import TrezorConnect from '@trezor/connect';
 import { asCoinSymbol } from '@trezor/connect-common';
 import { BigNumber, typedObjectFromEntries } from '@trezor/utils';
@@ -38,7 +38,7 @@ export const composeAllowanceTransactionThunk = createThunk<
 >(
     `${ALLOWANCE_MODULE_PREFIX}/composeAllowanceTransactionThunk`,
     async ({ feeInfo, account, contract, selectedFee, customFee, data }, { rejectWithValue }) => {
-        const token = findToken(account.tokens, contract);
+        const token = findAccountToken(account, contract);
 
         if (!token) {
             return rejectWithValue({

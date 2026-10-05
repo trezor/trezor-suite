@@ -13,6 +13,7 @@ import {
     ETH_TRANSFER_BACKUP_GAS_LIMIT,
 } from '@suite-common/wallet-constants';
 import {
+    type Account,
     type AccountWithNetworkType,
     AddressDisplayOptions,
     type ComposeActionContext,
@@ -40,9 +41,11 @@ import {
     getEvmNonceInfo,
     getEvmNonceInfoFromConfirmedNonce,
     getExternalComposeOutput,
+    getNativeErc20TokenInfo,
     getTxStakeNameByDataHex,
     isEip1559,
     isEvmApprovalTx,
+    isNativeErc20Contract,
     prepareEthereumTransaction,
     subunitsToUnits,
     tryGetAccountIdentity,
@@ -270,6 +273,32 @@ export const calculate = (
     return payloadData;
 };
 
+type GetNativeErc20TokenInfoAfterFeeParams = {
+    account: Account;
+    contract: string;
+    level: FeeLevel;
+};
+
+const getNativeErc20TokenInfoAfterFee = ({
+    account,
+    contract,
+    level,
+}: GetNativeErc20TokenInfoAfterFeeParams) => {
+    const fee = calculateTotalGasCost(
+        fromGwei(level.maxFeePerGas || level.feePerUnit).toWei(),
+        level.feeLimit,
+    );
+    const availableBalanceAfterFee = BigNumber.max(
+        new BigNumber(account.availableBalance).minus(fee),
+        0,
+    ).toFixed();
+
+    return getNativeErc20TokenInfo(
+        { symbol: account.symbol, availableBalance: availableBalanceAfterFee },
+        contract,
+    );
+};
+
 type ComposeEthereumTransactionFeeLevelsThunkState = DeviceRootState & TransactionsRootState;
 
 export const composeEthereumTransactionFeeLevelsThunk = createThunk<
@@ -291,8 +320,9 @@ export const composeEthereumTransactionFeeLevelsThunk = createThunk<
         const { outputs } = formState;
         // @ts-expect-error: indexing with noUncheckedIndexedAccess
         const firstOutput: (typeof outputs)[number] = outputs[0];
+        const outputToken = firstOutput.token ?? formState.ethereumNativeErc20Contract ?? null;
         const contract = isApprovalFlowSupported(device)
-            ? (firstOutput.token ?? undefined)
+            ? (outputToken ?? undefined)
             : firstOutput.address;
 
         if (isApproveTx && !contract) {
@@ -304,7 +334,11 @@ export const composeEthereumTransactionFeeLevelsThunk = createThunk<
 
         const composedOutput = isApproveTx
             ? getApprovalComposeOutput(contract, account, network)
-            : getExternalComposeOutput(formState, account, network);
+            : getExternalComposeOutput(
+                  { ...formState, outputs: [{ ...firstOutput, token: outputToken }] },
+                  account,
+                  network,
+              );
 
         if (!composedOutput)
             return rejectWithValue({
@@ -407,6 +441,11 @@ export const composeEthereumTransactionFeeLevelsThunk = createThunk<
             });
         }
 
+        const nativeErc20Contract =
+            tokenInfo && isNativeErc20Contract(account.symbol, tokenInfo.contract)
+                ? tokenInfo.contract
+                : undefined;
+
         // wrap response into PrecomposedLevels object where key is a FeeLevel label
         const resultLevels: PrecomposedLevels = {};
         const response = predefinedLevels.map(level =>
@@ -414,7 +453,13 @@ export const composeEthereumTransactionFeeLevelsThunk = createThunk<
                 availableBalance,
                 output,
                 level,
-                tokenInfo,
+                nativeErc20Contract
+                    ? getNativeErc20TokenInfoAfterFee({
+                          account,
+                          contract: nativeErc20Contract,
+                          level,
+                      })
+                    : tokenInfo,
                 composeContext,
                 isNetworkReserveEnabled,
             ),
