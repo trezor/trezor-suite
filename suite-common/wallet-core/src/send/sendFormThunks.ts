@@ -93,10 +93,10 @@ import {
     syncAccountsWithBlockchainThunk,
 } from '../blockchain/blockchainThunks';
 import {
-    EARN_TRANSACTION_TOAST_TYPE,
     type EarnTransactionsRootState,
     selectTrackedEarnTransaction,
 } from '../earn/earnTransactionsReducer';
+import { notifyEarnTransactionBroadcastThunk } from '../earn/earnTransactionsThunks';
 import { type FeesRootState } from '../fees/feesReducer';
 import {
     type WalletSettingsRootState,
@@ -515,12 +515,11 @@ export const pushSendFormTransactionThunk = createThunk<
             : '0';
 
         const evmApprovalData = Calldata.evm.erc20.approve.decode(precomposedForm?.transactionData);
-        const spedUpEarnTransaction = isRbfBumpFeeTransaction(precomposedTransaction)
-            ? selectTrackedEarnTransaction(
-                  getState(),
-                  selectedAccount.key,
-                  precomposedTransaction.prevTxid,
-              )
+        const bumpedPrevTxid = isRbfBumpFeeTransaction(precomposedTransaction)
+            ? precomposedTransaction.prevTxid
+            : undefined;
+        const spedUpEarnTransaction = bumpedPrevTxid
+            ? selectTrackedEarnTransaction(getState(), selectedAccount.key, bumpedPrevTxid)
             : undefined;
 
         if (pushTxResponse.success) {
@@ -566,13 +565,13 @@ export const pushSendFormTransactionThunk = createThunk<
                 );
             } else if (spedUpEarnTransaction) {
                 dispatch(
-                    notificationsActions.addToast({
-                        type: EARN_TRANSACTION_TOAST_TYPE[spedUpEarnTransaction.flow],
-                        stage: 'sped-up',
+                    notifyEarnTransactionBroadcastThunk({
+                        account: selectedAccount,
                         device,
-                        descriptor: selectedAccount.descriptor,
-                        symbol: selectedAccount.symbol,
                         txid,
+                        flow: spedUpEarnTransaction.flow,
+                        stage: 'sped-up',
+                        prevTxid: bumpedPrevTxid,
                     }),
                 );
             } else {
