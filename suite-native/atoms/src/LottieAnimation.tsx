@@ -1,10 +1,11 @@
 import React, { useMemo } from 'react';
 
-import Lottie, { type AnimationObject } from 'lottie-react-native';
+import { type AnimationObject } from 'lottie-react-native';
 
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 import { type CSSColor } from '@trezor/theme';
 
+import { LottieView } from './Animated/LottieView';
 import { useIllustrationColors } from './useIllustrationColors';
 
 type LottieAnimationSize = 'standard' | 'small';
@@ -68,7 +69,7 @@ export const LottieAnimation = ({ source, size = 'standard' }: LottieAnimationPr
     }, [source, lineColor, fillColor]);
 
     return (
-        <Lottie
+        <LottieView
             source={colorizedSource}
             style={applyStyle(animationStyle, { size })}
             autoPlay

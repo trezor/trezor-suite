@@ -148,6 +148,13 @@ export const typescriptConfig = [
                             message:
                                 'Use animated components from @suite-native/atoms so reduced motion is handled consistently. Import Reanimated hooks, animation builders and types by name.',
                         },
+                        {
+                            name: 'lottie-react-native',
+                            importNames: ['default', 'LottieView'],
+                            allowTypeImports: true,
+                            message:
+                                'Use LottieView from @suite-native/atoms so reduced motion is handled consistently.',
+                        },
                     ],
                     patterns: [
                         ...commonRestrictedImports.patterns,
@@ -155,6 +162,11 @@ export const typescriptConfig = [
                             group: ['react-native-reanimated/*'],
                             message:
                                 'Use the public react-native-reanimated entry point for hooks and types, and @suite-native/atoms for animated components.',
+                        },
+                        {
+                            group: ['lottie-react-native/*'],
+                            message:
+                                'Use LottieView from @suite-native/atoms so reduced motion is handled consistently.',
                         },
                     ],
                 },
