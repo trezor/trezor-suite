@@ -36,7 +36,8 @@ export class BluetoothProcess extends BaseProcess {
     }
 
     getUrl() {
-        return `http://localhost:${this.port}/`;
+        // The server listens on 127.0.0.1 only, while localhost may resolve to ::1 first.
+        return `http://127.0.0.1:${this.port}/`;
     }
 
     getToken() {

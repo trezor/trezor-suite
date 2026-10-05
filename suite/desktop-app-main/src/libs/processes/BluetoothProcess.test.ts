@@ -52,6 +52,12 @@ describe('BluetoothProcess', () => {
         jest.restoreAllMocks();
     });
 
+    it('uses the address the server listens on', () => {
+        expect(new BluetoothProcess({ port: 21400, logger }).getUrl()).toBe(
+            'http://127.0.0.1:21400/',
+        );
+    });
+
     it('keeps a server that requires the token', async () => {
         const bluetoothProcess = new BluetoothProcess({ port: 21400, logger });
         const child = mockServer({ url: bluetoothProcess.getUrl(), requiresToken: true });
