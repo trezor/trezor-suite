@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useEffectEvent, useRef } from 'react';
+import { useCallback, useEffect, useEffectEvent } from 'react';
 import { useSelector } from 'react-redux';
 
 import { useServices } from '@suite-common/dependency-injection';
@@ -9,11 +9,10 @@ import {
     useAllowanceTxTracking,
     useTradingExchangeWatchApproval,
 } from '@suite-common/trading';
-import { sendFormActions } from '@suite-common/wallet-core';
 import { Translation } from '@suite-native/intl';
 import {
     type RootStackParamList,
-    RootStackRoutes,
+    type RootStackRoutes,
     Screen,
     type StackProps,
     useNavigateToInitialScreen,
@@ -29,6 +28,7 @@ import {
 import { ConfirmationQuoteDebugView } from '../components/exchange/Confirmation/ConfirmationQuoteDebugView';
 import { ExchangeConfirmationHeader } from '../components/exchange/Confirmation/ExchangeConfirmationHeader';
 import { ExchangeConfirmationInfo } from '../components/exchange/Confirmation/ExchangeConfirmationInfo';
+import { ExchangeConfirmationNavigator } from '../components/exchange/Confirmation/ExchangeConfirmationNavigator';
 import { ExchangeConfirmationTitle } from '../components/exchange/Confirmation/ExchangeConfirmationTitle';
 import { ExploreInBlockchainButton } from '../components/exchange/Confirmation/ExploreInBlockchainButton';
 import { TradingDeviceConnectionGuard } from '../components/general/TradingDeviceConnectionGuard';
@@ -38,10 +38,7 @@ export type TradingConfirmingScreenProps = StackProps<
     RootStackRoutes.TradingConfirming
 >;
 
-export const TradingConfirmingScreen = ({
-    route: { params },
-    navigation,
-}: TradingConfirmingScreenProps) => {
+export const TradingConfirmingScreen = ({ route: { params } }: TradingConfirmingScreenProps) => {
     const { flowType } = params;
 
     const { dispatch } = useServices(injectDispatch);
@@ -52,8 +49,6 @@ export const TradingConfirmingScreen = ({
     const reportToAnalytics = useExchangeAnalyticsStepReport(
         flowType === 'approve' ? 'approval-confirming' : 'revoke-confirming',
     );
-
-    const hasNavigatedRef = useRef(false);
 
     const {
         status: originalStatus,
@@ -112,52 +107,10 @@ export const TradingConfirmingScreen = ({
         isEnabled: isConfirmed && flowType !== 'revoke',
     });
 
-    useEffect(() => {
-        if (!activeQuote || hasNavigatedRef.current || !isConfirmed) {
-            return;
-        }
-
-        if (flowType === 'revoke') {
-            hasNavigatedRef.current = true;
-            dispatch(sendFormActions.dispose());
-            dispatch(tradingExchangeActions.saveSelectedQuote(undefined));
-            navigation.popToTop();
-            reportToAnalytics('continue');
-
-            return;
-        }
-
-        if (activeQuote.status === 'CONFIRM') {
-            hasNavigatedRef.current = true;
-            dispatch(sendFormActions.dispose());
-            navigation.popToTop();
-            navigation.push(RootStackRoutes.TradingExchangePreview, { isApproved: true });
-            reportToAnalytics('continue');
-
-            return;
-        }
-
-        if (activeQuote.status === 'APPROVAL_REQ') {
-            hasNavigatedRef.current = true;
-            dispatch(sendFormActions.dispose());
-            dispatch(
-                tradingExchangeActions.saveSelectedQuote({
-                    ...activeQuote,
-                    approvalSendTxHash: undefined,
-                    approvalType: undefined,
-                }),
-            );
-            navigation.popToTop();
-            navigation.push(RootStackRoutes.TradingExchangeApproval, {
-                isRevoked: flowType === 'revoke-and-approve',
-            });
-            reportToAnalytics('continue');
-        }
-    }, [activeQuote, flowType, isConfirmed, dispatch, navigation, reportToAnalytics]);
-
     return (
         <TradingDeviceConnectionGuard>
             <Screen header={<ExchangeConfirmationHeader flowType={flowType} />}>
+                <ExchangeConfirmationNavigator flowType={flowType} isConfirmed={isConfirmed} />
                 <ConfirmationQuoteDebugView
                     forceStatus={forceStatus}
                     approvalTxid={approvalTxid}
