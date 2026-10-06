@@ -206,7 +206,8 @@ jobs:
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
         with:
           name: android-perf-report-${{ matrix.TEST_GROUP }}
-          path: suite-native/app/artifacts/performance/perf-report.json
+          # The directory, not just the report: the benchmark writes its own file beside it.
+          path: suite-native/app/artifacts/performance/
           if-no-files-found: ignore
           retention-days: 14
 
