@@ -11,6 +11,7 @@ import {
     formatCardanoWithdrawal,
     formatNetworkAmount,
     getCardanoStakingSignValue,
+    getContractAddressForNetworkSymbol,
     getFiatRateKey,
     getTxOperation,
     isStakeTypeTx,
@@ -222,7 +223,7 @@ export const AmountDetails = ({ tx, isTestnet }: AmountDetailsProps) => {
                                             withSign={true}
                                             alignMultitoken="flex-start"
                                             linkTypographyStyle="body-sm"
-                                            data-testid={`@modal/tx-details/token-amount/${transfer.contract.toLowerCase()}`}
+                                            data-testid={`@modal/tx-details/token-amount/${getContractAddressForNetworkSymbol(tx.symbol, transfer.contract)}`}
                                         />
                                     </Text>
                                 </Table.Cell>

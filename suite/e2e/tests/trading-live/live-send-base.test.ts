@@ -29,8 +29,8 @@ const feeWrapFormat = {
 
 // The PEPE send is declared after the Base ETH send. Tests in this file run in
 // that order on one worker, so the token transaction spends the nonce after the
-// ETH send. @optional keeps the file off the full PR run; desktop T3W1 specific
-// firmware keeps one nightly run.
+// ETH send. @optional keeps it out of the full PR run; it still runs nightly and
+// on a PR that edits or is related to this file.
 test.describe(
     'Live - Send Base',
     { tag: ['@desktopOnly', '@optional', '@T3W1', '@specificFirmware'] },
