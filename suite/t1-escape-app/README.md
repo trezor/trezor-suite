@@ -38,7 +38,7 @@ yarn workspace @suite/t1-escape-app build
 yarn workspace @suite/t1-escape-app preview
 ```
 
-The `[Build] t1-escape-app` workflow uploads a build to `dev.suite.sldev.cz/t1-escape-app`. That copy is good for looking at the screens only: the bridge refuses to open a HID device for its origin.
+The `[Build] t1-escape-app` workflow builds every pull request that touches this package and uploads it to `https://dev.suite.sldev.cz/t1-escape-app/<branch>/`, the same way Suite Web is deployed. That copy is good for looking at the screens only: the bridge refuses to open a HID device for its origin.
 
 ## Production response headers
 
