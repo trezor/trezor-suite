@@ -58,8 +58,8 @@ jest.mock(
 const DEVICE_STATE: StaticSessionId = '1stTestnetAddress@device_id:0';
 
 const account = mockWalletAccount({
-    symbol: asNetworkSymbol('eth'),
-    balance: '1000000000000000000',
+    symbol: asNetworkSymbol('btc'),
+    balance: '100000000',
 });
 
 const renderWithNetworkFee = (composed: { fee: string } | undefined) => {

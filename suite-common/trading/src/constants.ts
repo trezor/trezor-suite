@@ -1,4 +1,4 @@
-import { type SellFiatFlowType } from 'invity-api';
+import { type CryptoId, type SellFiatFlowType } from 'invity-api';
 
 import { type NetworkType, asNetworkSymbol } from '@suite-common/wallet-config';
 
@@ -16,6 +16,8 @@ export const TRADING_EXCHANGE_THUNK_PREFIX = `${TRADING_EXCHANGE_PREFIX}/thunk`;
 export const TRADING_SELL_THUNK_PREFIX = `${TRADING_SELL_PREFIX}/thunk`;
 
 export const TRADING_DEFAULT_CRYPTO_CURRENCY = asNetworkSymbol('btc');
+export const TRADING_EXCHANGE_DEFAULT_SEND_CRYPTO_ID =
+    'ethereum--0xdac17f958d2ee523a2206206994597c13d831ec7' as CryptoId;
 export const TRADING_DEFAULT_PAYMENT_METHOD = 'creditCard' as const;
 export const TRADING_DEFAULT_SELL_FLOWS: SellFiatFlowType[] = ['BANK_ACCOUNT', 'PAYMENT_GATE'];
 export const TRADING_SLIP24_SUPPORTED_NETWORK_TYPES: NetworkType[] = [

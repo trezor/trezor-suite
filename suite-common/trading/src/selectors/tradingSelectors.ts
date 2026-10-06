@@ -46,6 +46,8 @@ import { exhaustive } from '@trezor/type-utils';
 import { unique, versionUtils } from '@trezor/utils';
 
 import {
+    TRADING_DEFAULT_CRYPTO_CURRENCY,
+    TRADING_EXCHANGE_DEFAULT_SEND_CRYPTO_ID,
     TRADING_EXCHANGE_FORM_DEX,
     TRADING_SLIP24_MIN_FIRMWARE_VERSION,
     TRADING_SLIP24_SELL_MIN_FIRMWARE_VERSION,
@@ -82,6 +84,7 @@ import {
 } from '../types';
 import {
     cryptoIdToNetwork,
+    cryptoIdToNetworkSymbol,
     cryptoIdToNetworkSymbolAndContractAddress,
     getTradingQuotesByPaymentMethod,
     getTradingQuotesDedupedByProvider,
@@ -1092,8 +1095,10 @@ const selectPreferredTradingAccount = (
  * Selection priority:
  * 1) Preferred account (selected trading account key OR prefilled.key) if eligible.
  * 2) First account with the same symbol as the preferred account that is eligible.
- * 3) First eligible visible account (default preselect once discovery is done).
- * 4) Otherwise undefined — no eligible account exists, the form renders empty.
+ * 3) Default symbol account (USDT network for exchange, otherwise TRADING_DEFAULT_CRYPTO_CURRENCY):
+ *    the first eligible one, otherwise the first one regardless of balance.
+ * 4) buy: first visible account — buy always needs an account and cannot render empty.
+ * 5) Otherwise undefined — no account of the default symbol exists, the form renders empty.
  */
 export const selectTradingFormAccount = createMemoizedFormAccountSelector(
     [
@@ -1129,19 +1134,44 @@ export const selectTradingFormAccount = createMemoizedFormAccountSelector(
             return sameSymbolAccount;
         }
 
-        return visibleDeviceAccounts.find(account => isEligible(account, eligibilityCryptoId));
+        const defaultSymbol =
+            tradingType === 'exchange'
+                ? cryptoIdToNetworkSymbol(TRADING_EXCHANGE_DEFAULT_SEND_CRYPTO_ID)
+                : TRADING_DEFAULT_CRYPTO_CURRENCY;
+        const defaultSymbolAccounts = visibleDeviceAccounts.filter(
+            account => account.symbol === defaultSymbol,
+        );
+
+        return (
+            defaultSymbolAccounts.find(account => isEligible(account)) ??
+            defaultSymbolAccounts[0] ??
+            (tradingType === 'buy' ? visibleDeviceAccounts[0] : undefined)
+        );
     },
 );
 
 export const selectTradingFormCryptoId = createMemoizedFormAccountSelector(
-    [selectTradingFormAccount, selectTradingPrefilledFromAccount],
-    (account, prefilled): CryptoId | undefined => {
+    [
+        selectTradingFormAccount,
+        selectTradingPrefilledFromAccount,
+        (_state: TradingFormAccountRootState, tradingType: TradingType) => tradingType,
+    ],
+    (account, prefilled, tradingType): CryptoId | undefined => {
         if (!account) {
             return undefined;
         }
 
         if (prefilled.key && prefilled.cryptoId && account.key === prefilled.key) {
             return prefilled.cryptoId;
+        }
+
+        if (
+            tradingType === 'exchange' &&
+            !prefilled.key &&
+            !prefilled.cryptoId &&
+            account.symbol === cryptoIdToNetworkSymbol(TRADING_EXCHANGE_DEFAULT_SEND_CRYPTO_ID)
+        ) {
+            return TRADING_EXCHANGE_DEFAULT_SEND_CRYPTO_ID;
         }
 
         return (getNetwork(account.symbol).tradeCryptoId ?? 'bitcoin') as CryptoId;
