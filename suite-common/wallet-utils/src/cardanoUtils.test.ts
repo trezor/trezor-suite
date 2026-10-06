@@ -2,6 +2,7 @@ import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { CARDANO, PROTO } from '@trezor/connect';
 
 import * as fixtures from './__fixtures__/cardanoUtils';
+import { getUnusedChangeAddress } from './accountUtils';
 import {
     formatMaxOutputAmount,
     getAddressParameters,
@@ -12,7 +13,6 @@ import {
     getProtocolMagic,
     getShortFingerprint,
     getStakingPath,
-    getUnusedChangeAddress,
     getVotingCertificates,
     isCardanoTx,
     transformUserOutputs,
@@ -59,7 +59,7 @@ describe('cardano utils', () => {
 
     fixtures.getChangeAddressParameters.forEach(f => {
         it(`getChangeAddressParameters: ${f.description}`, () => {
-            const address = getUnusedChangeAddress(f.account);
+            const address = getUnusedChangeAddress(f.account.addresses.change);
             const res = address && {
                 address: address.address,
                 addressParameters: getAddressParameters(f.account, address.path),

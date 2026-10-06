@@ -1,3 +1,4 @@
+import { getUnusedChangeAddress } from '@suite-common/wallet-utils';
 import type { AccountAddresses, CallMethodKeys, PrecomposeParams } from '@trezor/connect';
 
 import type { CompatibilityHookParams, CompatibilityHookResult } from './types';
@@ -34,8 +35,7 @@ const compatibilityHook = <M extends CallMethodKeys>({
 
     if (account) {
         const { path, utxo, addresses } = account;
-        const changeAddress =
-            addresses?.change.find(address => !address.transfers) ?? addresses?.change.at(-1);
+        const changeAddress = getUnusedChangeAddress(addresses?.change);
 
         const patchedPayload = { ...rest, path, utxo, changeAddress };
 

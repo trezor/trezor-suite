@@ -1085,6 +1085,14 @@ export const getAccountAddresses = (account: Account) =>
     account.addresses
         ? account.addresses.unused.concat(account.addresses.used).concat(account.addresses.change)
         : [];
+
+/**
+ * Returns the first change address without transfers. Falls back to the last one if all are used,
+ * which should not happen.
+ */
+export const getUnusedChangeAddress = (changeAddresses: AccountAddress[] = []) =>
+    changeAddresses.find(address => !address.transfers) ?? changeAddresses.at(-1);
+
 type GetPendingAccountParams = {
     account: Account;
     receivingAccount?: boolean;

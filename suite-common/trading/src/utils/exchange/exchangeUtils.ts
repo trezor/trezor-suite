@@ -14,6 +14,7 @@ import {
     asAmountUnit,
     buildApprovalTransactionData,
     getErc20ApproveSpender,
+    getUnusedChangeAddress,
     tokenSupportsIncreasingAllowance,
     unitsToSubunits,
 } from '@suite-common/wallet-utils';
@@ -324,8 +325,7 @@ export const deriveBitcoinSwapFromAddresses = async ({
         });
     }
 
-    const changeAddress =
-        account.addresses.change.find(a => !a.transfers) ?? account.addresses.change.at(-1);
+    const changeAddress = getUnusedChangeAddress(account.addresses.change);
 
     const composeParams: Parameters<typeof TrezorConnect.composeTransaction>[0] = {
         outputs: [

@@ -4,7 +4,7 @@ import type {
     ChainedTransactions,
     WalletAccountTransaction,
 } from '@suite-common/wallet-types';
-import { getMyInputsFromTransaction } from '@suite-common/wallet-utils';
+import { getMyInputsFromTransaction, getUnusedChangeAddress } from '@suite-common/wallet-utils';
 import TrezorConnect, {
     DEFAULT_SORTING_STRATEGY,
     type PrecomposeResultFinal,
@@ -33,10 +33,8 @@ const resolveCancelAddress = (
     return (
         // take first change address used as an output in original transaction
         addresses.change.find(a => usedOwnedAddresses.includes(a.address)) ??
-        // or the first unused change address
-        addresses.change.find(a => !a.transfers) ??
-        // or fall back to the last known change address
-        addresses.change.at(-1)
+        // or the first unused change address, falling back to the last known one
+        getUnusedChangeAddress(addresses.change)
     );
 };
 
