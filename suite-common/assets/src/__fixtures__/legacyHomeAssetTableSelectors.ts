@@ -22,7 +22,16 @@ import { getFiatRateKey, toFiatCurrency } from '@suite-common/wallet-utils';
 import { type BaseCurrencyCode } from '@trezor/blockchain-link-types';
 import { BigNumber } from '@trezor/utils';
 
-import { sumAssetAccounts } from './homeAssetTableUtils';
+// The selector implementation the index chain replaced, kept verbatim as the baseline the
+// performance test measures against. Not exported from the package.
+
+const sumAssetAccounts = (assetAccounts: readonly AssetAccount[]) => ({
+    cryptoBalance: assetAccounts.reduce(
+        (total, assetAccount) => total.plus(assetAccount.cryptoBalance),
+        new BigNumber(0),
+    ),
+    tokenInfo: assetAccounts.find(assetAccount => assetAccount.tokenInfo !== undefined)?.tokenInfo,
+});
 
 export type HomeAssetTableState = AssetAccountsRootState &
     DeviceRootState &

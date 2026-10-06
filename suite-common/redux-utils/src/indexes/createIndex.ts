@@ -1,6 +1,6 @@
 import { shallowEqual } from 'react-redux';
 
-import { createIndexQueries, settleSnapshot, toChanges } from './indexSnapshot';
+import { createIndexQueries, createRevisions, settleSnapshot, toChanges } from './indexSnapshot';
 import {
     type IdMaker,
     type Index,
@@ -50,6 +50,7 @@ export const createIndex = <TState, TEntity, TId extends IndexId, TParts = never
     // accounts array comes back is answered without a build. The last build is the baseline a
     // value not seen before is matched against.
     const builds = new WeakMap<object, Snapshot>();
+    const nextRevision = createRevisions();
     let last: Snapshot | undefined;
 
     const build = (sourceEntities: Iterable<TEntity>, previous: Snapshot | undefined): Snapshot => {
@@ -85,7 +86,13 @@ export const createIndex = <TState, TEntity, TId extends IndexId, TParts = never
 
         const removed = previous?.ids.filter(id => !byId.has(id)) ?? [];
 
-        return settleSnapshot(byId, ids, toChanges(added, removed, updated), previous);
+        return settleSnapshot(
+            byId,
+            ids,
+            toChanges(added, removed, updated),
+            previous,
+            nextRevision,
+        );
     };
 
     const read = (state: TState): Snapshot => {

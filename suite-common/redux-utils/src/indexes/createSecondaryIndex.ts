@@ -1,3 +1,4 @@
+import { wayTo } from './indexSnapshot';
 import {
     type IndexId,
     type IndexKey,
@@ -202,7 +203,15 @@ export const createSecondaryIndex = <
             return known;
         }
 
-        last = last === undefined ? file(primary) : refile(primary, last);
+        const way = wayTo(last?.primary, primary);
+
+        if (last !== undefined && way === 'same') {
+            last = { ...last, primary };
+        } else if (last !== undefined && way === 'changes') {
+            last = refile(primary, last);
+        } else {
+            last = file(primary);
+        }
         filings.set(primary, last);
 
         return last;

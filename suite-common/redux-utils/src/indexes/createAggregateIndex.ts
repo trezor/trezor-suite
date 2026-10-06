@@ -1,6 +1,12 @@
 import { shallowEqual } from 'react-redux';
 
-import { createIndexQueries, settleSnapshot, toChanges } from './indexSnapshot';
+import {
+    createIndexQueries,
+    createRevisions,
+    settleSnapshot,
+    toChanges,
+    wayTo,
+} from './indexSnapshot';
 import {
     type AggregateIndexDefinition,
     type Index,
@@ -50,6 +56,7 @@ export const createAggregateIndex = <
         IndexSnapshot<TSourceId, TSource>,
         Filed<TSourceId, TId, TItem, TEntity>
     >();
+    const nextRevision = createRevisions();
     let last: Filed<TSourceId, TId, TItem, TEntity> | undefined;
 
     const expandOnce = (entity: TSource): readonly TItem[] => {
@@ -131,7 +138,13 @@ export const createAggregateIndex = <
             sourceSnapshot,
             itemsBySourceId,
             sourceIdsById,
-            snapshot: settleSnapshot(byId, [...byId.keys()], toChanges([], [], []), undefined),
+            snapshot: settleSnapshot(
+                byId,
+                [...byId.keys()],
+                toChanges([], [], []),
+                undefined,
+                nextRevision,
+            ),
         };
     };
 
@@ -227,6 +240,7 @@ export const createAggregateIndex = <
                 [...byId.keys()],
                 toChanges(addedIds, removedIds, updatedIds),
                 previous.snapshot,
+                nextRevision,
             ),
         };
     };
@@ -239,7 +253,15 @@ export const createAggregateIndex = <
             return known.snapshot;
         }
 
-        last = last === undefined ? file(sourceSnapshot) : refile(sourceSnapshot, last);
+        const way = wayTo(last?.sourceSnapshot, sourceSnapshot);
+
+        if (last !== undefined && way === 'same') {
+            last = { ...last, sourceSnapshot };
+        } else if (last !== undefined && way === 'changes') {
+            last = refile(sourceSnapshot, last);
+        } else {
+            last = file(sourceSnapshot);
+        }
         builds.set(sourceSnapshot, last);
 
         return last.snapshot;

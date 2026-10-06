@@ -213,12 +213,15 @@ describe('createIndex telling what changed since the build before', () => {
         expect(changes).toEqual({ added: ['carol'], removed: ['bob'], updated: ['alice'] });
     });
 
-    it('reports against the build before, not the one before that', () => {
+    it('keeps the changes on a snapshot nothing moved past, relative to the revision they are from', () => {
         const index = createTotalsIndex();
-        index.read({ totals: [alice] });
-        index.read({ totals: [alice, bob] });
+        const first = index.read({ totals: [alice] });
+        const second = index.read({ totals: [alice, bob] });
 
-        expect(index.read({ totals: [alice, bob] }).changes.added).toEqual([]);
+        expect(index.read({ totals: [{ ...alice }, bob] })).toBe(second);
+        expect(second.changes.added).toEqual(['bob']);
+        expect(second.changesSince).toBe(first.revision);
+        expect(second.revision).toBe(first.revision + 1);
     });
 });
 

@@ -1,6 +1,12 @@
 import { shallowEqual } from 'react-redux';
 
-import { createIndexQueries, settleSnapshot, toChanges } from './indexSnapshot';
+import {
+    createIndexQueries,
+    createRevisions,
+    settleSnapshot,
+    toChanges,
+    wayTo,
+} from './indexSnapshot';
 import {
     type DerivedIndexDefinition,
     type Index,
@@ -54,6 +60,7 @@ export const createDerivedIndex = <
     // baseline a snapshot not seen before is maintained from. A joined index that moved under the
     // same source snapshot is caught by comparing its snapshots.
     const builds = new WeakMap<IndexSnapshot<TId, TSource>, Filed<TId, TEntity, TJoin>>();
+    const nextRevision = createRevisions();
     let last: Filed<TId, TEntity, TJoin> | undefined;
 
     const joinIdsOf = (entity: TSource): JoinIds<TJoin> => joinBy?.(entity) ?? {};
@@ -97,17 +104,25 @@ export const createDerivedIndex = <
             sourceSnapshot,
             joinSnapshots,
             joinIdsById,
-            snapshot: settleSnapshot(byId, order(byId), toChanges([], [], []), undefined),
+            snapshot: settleSnapshot(
+                byId,
+                order(byId),
+                toChanges([], [], []),
+                undefined,
+                nextRevision,
+            ),
         };
     };
 
-    const changedJoinIds = (joinSnapshots: JoinSnapshots, previous: JoinSnapshots) => {
+    type Way = ReturnType<typeof wayTo>;
+
+    const changedJoinIds = (joinSnapshots: JoinSnapshots, joinWays: Record<string, Way>) => {
         const changed: Record<string, ReadonlySet<IndexId>> = {};
 
         joinNames.forEach(joinName => {
             const snapshot = joinSnapshots[joinName];
 
-            if (snapshot !== undefined && snapshot !== previous[joinName]) {
+            if (snapshot !== undefined && joinWays[joinName] === 'changes') {
                 const { added, removed, updated } = snapshot.changes;
                 changed[joinName] = new Set([...added, ...removed, ...updated]);
             }
@@ -120,12 +135,15 @@ export const createDerivedIndex = <
         sourceSnapshot: IndexSnapshot<TId, TSource>,
         joinSnapshots: JoinSnapshots,
         previous: Filed<TId, TEntity, TJoin>,
+        sourceWay: Way,
+        joinWays: Record<string, Way>,
     ): Filed<TId, TEntity, TJoin> => {
-        const changedSource = new Set<TId>([
-            ...sourceSnapshot.changes.added,
-            ...sourceSnapshot.changes.updated,
-        ]);
-        const changedJoins = changedJoinIds(joinSnapshots, previous.joinSnapshots);
+        const changedSource = new Set<TId>(
+            sourceWay === 'changes'
+                ? [...sourceSnapshot.changes.added, ...sourceSnapshot.changes.updated]
+                : [],
+        );
+        const changedJoins = changedJoinIds(joinSnapshots, joinWays);
         const namesChanged = Object.keys(changedJoins);
 
         const byId = new Map<TId, TEntity>();
@@ -183,6 +201,7 @@ export const createDerivedIndex = <
                 order(byId),
                 toChanges(added, removed, updated),
                 previous.snapshot,
+                nextRevision,
             ),
         };
     };
@@ -201,16 +220,39 @@ export const createDerivedIndex = <
 
         const known = builds.get(sourceSnapshot);
         const haveJoinsMoved = (built: Filed<TId, TEntity, TJoin>) =>
-            joinNames.some(joinName => built.joinSnapshots[joinName] !== joinSnapshots[joinName]);
+            joinNames.some(joinName => {
+                const snapshot = joinSnapshots[joinName];
+
+                return (
+                    snapshot !== undefined &&
+                    wayTo(built.joinSnapshots[joinName], snapshot) !== 'same'
+                );
+            });
 
         if (known !== undefined && !haveJoinsMoved(known)) {
             return known.snapshot;
         }
 
-        last =
-            last === undefined
-                ? file(sourceSnapshot, joinSnapshots)
-                : refile(sourceSnapshot, joinSnapshots, last);
+        // The source and every joined index must be followable from what was built last; a
+        // joined index that was built past that is a reason to start over, as the source is.
+        const sourceWay = wayTo(last?.sourceSnapshot, sourceSnapshot);
+        const joinWays: Record<string, Way> = {};
+
+        joinNames.forEach(joinName => {
+            const snapshot = joinSnapshots[joinName];
+            joinWays[joinName] =
+                snapshot === undefined ? 'same' : wayTo(last?.joinSnapshots[joinName], snapshot);
+        });
+
+        const ways = [sourceWay, ...Object.values(joinWays)];
+
+        if (last !== undefined && ways.every(way => way === 'same')) {
+            last = { ...last, sourceSnapshot, joinSnapshots };
+        } else if (last !== undefined && ways.every(way => way !== 'rebuild')) {
+            last = refile(sourceSnapshot, joinSnapshots, last, sourceWay, joinWays);
+        } else {
+            last = file(sourceSnapshot, joinSnapshots);
+        }
         builds.set(sourceSnapshot, last);
 
         return last.snapshot;

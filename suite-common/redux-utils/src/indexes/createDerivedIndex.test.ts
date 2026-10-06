@@ -136,6 +136,38 @@ describe('createDerivedIndex joining an index over another part of the state', (
     });
 });
 
+describe('createDerivedIndex over an index that had to start over', () => {
+    it('does not take a rebuilt snapshot for the one it was built over', () => {
+        const totals = createIndex({
+            name: 'totals',
+            source: (state: State) => state.assets,
+            getId: (asset: Asset) => asset.key,
+        });
+        const doubled = createDerivedIndex({
+            name: 'doubled',
+            source: totals,
+            toEntity: (asset: Asset) => ({ key: asset.key, amount: asset.amount * 2 }),
+        });
+        const labelled = createDerivedIndex({
+            name: 'labelled',
+            source: doubled,
+            toEntity: (asset: { key: string; amount: number }) => `${asset.key}:${asset.amount}`,
+        });
+        const noRates: Rate[] = [];
+
+        expect(labelled.getById({ assets: [btc], rates: noRates }, 'btc')).toBe('btc:4');
+
+        // The middle link is moved two builds on without the top link looking, so that the top
+        // link's baseline can no longer be followed and the middle link has to start over.
+        doubled.read({ assets: [{ ...btc, amount: 5 }], rates: noRates });
+        doubled.read({ assets: [{ ...btc, amount: 7 }], rates: noRates });
+
+        expect(labelled.getById({ assets: [{ ...btc, amount: 7 }], rates: noRates }, 'btc')).toBe(
+            'btc:14',
+        );
+    });
+});
+
 describe('createDerivedIndex following a write', () => {
     it('makes again only the entity whose source changed', () => {
         const { index, derive } = createPricedIndex();

@@ -9,12 +9,18 @@ export type IndexChanges<TId extends IndexId> = {
     readonly updated: readonly TId[];
 };
 
-/** What one read of an index hands back. `entities` follows `ids`. */
+/**
+ * What one read of an index hands back. `entities` follows `ids`. `changes` is relative to the
+ * snapshot whose `revision` is `changesSince` — an index built over this one follows the changes
+ * only from that snapshot, and rebuilds from any other.
+ */
 export type IndexSnapshot<TId extends IndexId, TEntity> = {
     readonly ids: readonly TId[];
     readonly entities: readonly TEntity[];
     readonly byId: ReadonlyMap<TId, TEntity>;
     readonly changes: IndexChanges<TId>;
+    readonly revision: number;
+    readonly changesSince: number;
 };
 
 /**
