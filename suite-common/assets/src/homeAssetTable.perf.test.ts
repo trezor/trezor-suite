@@ -1,16 +1,25 @@
 import {
+    createAggregateIndex,
+    createDerivedIndex,
     createIndex,
     createSecondaryIndex,
     createWeakMapSelector,
 } from '@suite-common/redux-utils';
-import { type NetworkSymbol, asNetworkSymbol } from '@suite-common/wallet-config';
+import {
+    type NetworkSymbol,
+    asNetworkSymbol,
+    getAssetName,
+    getDisplaySymbol,
+} from '@suite-common/wallet-config';
 import {
     type WalletAssetKey,
+    getWalletAssetKey,
     selectBaseCurrency,
     selectCurrentFiatRates,
     selectDeviceAssetAccounts,
     selectEnabledNetworks,
     selectHiddenAssetAccountKeySet,
+    selectVisibleDeviceAccounts,
 } from '@suite-common/wallet-core';
 import { type Account, type TokenAddress } from '@suite-common/wallet-types';
 import { getFiatRateKey, toFiatCurrency } from '@suite-common/wallet-utils';
@@ -143,6 +152,7 @@ type PerfAsset = {
     symbol: NetworkSymbol;
     contractAddress: TokenAddress | undefined;
     displaySymbol: string;
+    name: string;
     // Primitives only, so that an asset rebuilt from the same accounts is shallowly the same.
     amount: string;
 };
@@ -176,7 +186,15 @@ const selectPerfAssets = createPerfSelector(
                     assetKey: assetAccount.assetKey,
                     symbol: assetAccount.symbol,
                     contractAddress: assetAccount.contractAddress,
-                    displaySymbol: assetAccount.tokenInfo?.symbol ?? assetAccount.symbol,
+                    displaySymbol: getDisplaySymbol(
+                        assetAccount.tokenInfo?.symbol ?? assetAccount.symbol,
+                        assetAccount.contractAddress,
+                    ),
+                    name: getAssetName({
+                        symbol: assetAccount.symbol,
+                        tokenName: assetAccount.tokenInfo?.name,
+                        tokenSymbol: assetAccount.tokenInfo?.symbol,
+                    }),
                 },
                 balance: (held?.balance ?? new BigNumber(0)).plus(assetAccount.cryptoBalance),
             });
@@ -236,6 +254,115 @@ const selectPerfNetworkFiatValue = (state: HomeAssetTableState, symbol: NetworkS
         .reduce((total, asset) => total.plus(asset.fiatValue ?? 0), new BigNumber(0))
         .toFixed();
 
+// --- The change-driven chain: every link does work only for what the link before said changed.
+
+type Position = {
+    assetKey: WalletAssetKey;
+    symbol: NetworkSymbol;
+    contractAddress: TokenAddress | undefined;
+    tokenSymbol: string | undefined;
+    tokenName: string | undefined;
+    balance: string;
+};
+
+type FoldedAsset = PerfAsset;
+
+type RateEntry = { key: string; rate: number | undefined };
+
+const accountsIndex = createIndex({
+    name: 'chainAccounts',
+    source: selectVisibleDeviceAccounts,
+    getId: (account: Account) => account.key,
+});
+
+// One account into the positions it holds — what `toAssetAccounts` does, memoised per account by
+// the aggregate index.
+const toPositions = (account: Account): Position[] => [
+    {
+        assetKey: getWalletAssetKey({ deviceState: account.deviceState, symbol: account.symbol }),
+        symbol: account.symbol,
+        contractAddress: undefined,
+        tokenSymbol: undefined,
+        tokenName: undefined,
+        balance: account.formattedBalance,
+    },
+    ...(account.tokens ?? [])
+        .filter(token => new BigNumber(token.balance ?? '0').gt(0))
+        .map(token => ({
+            assetKey: getWalletAssetKey({
+                deviceState: account.deviceState,
+                symbol: account.symbol,
+                contractAddress: token.contract as TokenAddress,
+            }),
+            symbol: account.symbol,
+            contractAddress: token.contract as TokenAddress,
+            tokenSymbol: token.symbol,
+            tokenName: token.name,
+            balance: token.balance ?? '0',
+        })),
+];
+
+const chainAssetsIndex = createAggregateIndex({
+    name: 'chainAssets',
+    source: accountsIndex,
+    expand: toPositions,
+    getId: (position: Position) =>
+        NETWORKS.includes(position.symbol) ? position.assetKey : undefined,
+    // The same arithmetic as the selectors: BigNumber in, string out.
+    reduce: (asset: FoldedAsset | undefined, position: Position): FoldedAsset => ({
+        assetKey: position.assetKey,
+        symbol: position.symbol,
+        contractAddress: position.contractAddress,
+        displaySymbol: getDisplaySymbol(
+            position.tokenSymbol ?? position.symbol,
+            position.contractAddress,
+        ),
+        name: getAssetName({
+            symbol: position.symbol,
+            tokenName: position.tokenName,
+            tokenSymbol: position.tokenSymbol,
+        }),
+        amount: new BigNumber(asset?.amount ?? 0).plus(position.balance).toFixed(),
+    }),
+});
+
+const selectRateEntries = createPerfSelector([selectCurrentFiatRates], (rates): RateEntry[] =>
+    Object.entries(rates ?? {}).map(([key, rate]) => ({ key, rate: rate?.rate })),
+);
+
+const ratesIndex = createIndex({
+    name: 'chainRates',
+    source: selectRateEntries,
+    getId: (entry: RateEntry) => entry.key,
+});
+
+const chainPricedIndex = createDerivedIndex({
+    name: 'chainPricedAssets',
+    source: chainAssetsIndex,
+    lookups: { rate: ratesIndex },
+    getLookupIds: (asset: FoldedAsset) => ({
+        rate: ratesIndex.asId(getFiatRateKey(asset.symbol, 'usd', asset.contractAddress)),
+    }),
+    derive: (asset: FoldedAsset, { rate }): PerfPricedAsset => ({
+        ...asset,
+        fiatValue: toFiatCurrency({ amount: asset.amount, rate: rate?.rate })?.toFixed(),
+    }),
+    sort: (left, right) =>
+        new BigNumber(right.fiatValue ?? 0).comparedTo(new BigNumber(left.fiatValue ?? 0)) ?? 0,
+});
+
+const chainByNetwork = createSecondaryIndex({
+    name: 'chainAssetsByNetwork',
+    source: chainPricedIndex,
+    getKeys: (asset: PerfPricedAsset) => asset.symbol,
+});
+
+const selectChainNetworkFiatValue = (state: HomeAssetTableState, symbol: NetworkSymbol) =>
+    chainByNetwork
+        .getEntities(state, chainByNetwork.asKey(symbol))
+        .reduce((total, asset) => total.plus(asset.fiatValue ?? 0), new BigNumber(0))
+        .toFixed();
+
 // --- Reading the table the way the components do.
 
 type TableRead = {
@@ -274,6 +401,29 @@ const readThroughSelectors = (state: HomeAssetTableState): TableRead => {
     };
 };
 
+const readThroughChain = (state: HomeAssetTableState): TableRead => {
+    const rows = chainPricedIndex.getIds(state);
+    const sections = chainByNetwork.getKeys(state);
+
+    return {
+        rows,
+        rowValues: new Map(
+            rows.map(assetKey => {
+                const asset = chainPricedIndex.getById(state, assetKey);
+
+                return [assetKey, [asset?.symbol, asset?.displaySymbol, asset?.amount]];
+            }),
+        ),
+        sections,
+        sectionValues: new Map(
+            sections.map(symbol => [
+                symbol,
+                [chainByNetwork.getIds(state, symbol), selectChainNetworkFiatValue(state, symbol)],
+            ]),
+        ),
+    };
+};
+
 const readThroughIndexes = (state: HomeAssetTableState): TableRead => {
     const rows = pricedAssetsIndex.getIds(state);
     const sections = assetsByNetwork.getKeys(state);
@@ -281,7 +431,11 @@ const readThroughIndexes = (state: HomeAssetTableState): TableRead => {
     return {
         rows,
         rowValues: new Map(
-            rows.map(assetKey => [assetKey, [pricedAssetsIndex.getById(state, assetKey)]]),
+            rows.map(assetKey => {
+                const asset = pricedAssetsIndex.getById(state, assetKey);
+
+                return [assetKey, [asset?.symbol, asset?.displaySymbol, asset?.amount]];
+            }),
         ),
         sections,
         sectionValues: new Map(
@@ -325,6 +479,41 @@ const writeOneBalance: Scenario = {
     }),
 };
 
+// One token's balance inside one account — the deepest write the store sees.
+const oneTokenBalanceWritten: Scenario = {
+    name: 'one token balance written, deep in one account',
+    next: ({ accounts, rates }) => ({
+        accounts: accounts.map((account, position) =>
+            position === ACCOUNTS_PER_NETWORK + 7
+                ? {
+                      ...account,
+                      tokens: (account.tokens ?? []).map((token, tokenPosition) =>
+                          tokenPosition === TOKENS_PER_ACCOUNT - 1
+                              ? { ...token, balance: '12345' }
+                              : token,
+                      ),
+                  }
+                : account,
+        ),
+        rates,
+    }),
+};
+
+const halfTheBalancesWritten: Scenario = {
+    name: 'every other account balance written',
+    next: ({ accounts, rates }) => ({
+        accounts: accounts.map((account, position) =>
+            position % 2 === 0 ? { ...account, formattedBalance: '99' } : account,
+        ),
+        rates,
+    }),
+};
+
+const everyAccountRebuiltUnchanged: Scenario = {
+    name: 'every account rebuilt, same values',
+    next: ({ accounts, rates }) => ({ accounts: accounts.map(account => ({ ...account })), rates }),
+};
+
 const ratesTick: Scenario = {
     name: 'fiat rates replaced, same values',
     next: ({ accounts }) => ({ accounts, rates: createRates() }),
@@ -343,7 +532,7 @@ const accountAdded: Scenario = {
 
 type Measurement = {
     scenario: string;
-    reader: 'selectors' | 'indexes';
+    reader: 'selectors' | 'indexes' | 'chain';
     ms: number;
     rowsChanged: number;
     sectionsChanged: number;
@@ -494,8 +683,12 @@ describe(`the home asset table over ${NETWORKS.length * ACCOUNTS_PER_NETWORK} ac
         const state = createState(createFixture());
 
         expect(readThroughIndexes(state).rows).toEqual(readThroughSelectors(state).rows);
+        expect(readThroughChain(state).rows).toEqual(readThroughSelectors(state).rows);
         expect(readThroughIndexes(state).rows).toHaveLength(rowCount);
         expect(readThroughIndexes(state).sections).toEqual(readThroughSelectors(state).sections);
+        expect([...readThroughChain(state).sections].sort()).toEqual(
+            [...readThroughSelectors(state).sections].sort(),
+        );
     });
 
     it('measures both readers', () => {
@@ -504,10 +697,18 @@ describe(`the home asset table over ${NETWORKS.length * ACCOUNTS_PER_NETWORK} ac
         for (const [reader, read] of [
             ['selectors', readThroughSelectors],
             ['indexes', readThroughIndexes],
+            ['chain', readThroughChain],
         ] as const) {
             measurements.push(measureCold(reader, read), measureCached(reader, read));
 
-            for (const scenario of [writeOneBalance, ratesTick, accountAdded]) {
+            for (const scenario of [
+                writeOneBalance,
+                oneTokenBalanceWritten,
+                halfTheBalancesWritten,
+                everyAccountRebuiltUnchanged,
+                ratesTick,
+                accountAdded,
+            ]) {
                 measurements.push(measure(reader, read, scenario));
             }
 
@@ -527,7 +728,7 @@ describe(`the home asset table over ${NETWORKS.length * ACCOUNTS_PER_NETWORK} ac
         // A write to one account's balance reaches the row of that asset and its network and
         // nothing else — through both readers: the selectors answer primitives per row and keep
         // their lists through hand-written equality checks, the indexes keep them by construction.
-        for (const reader of ['selectors', 'indexes'] as const) {
+        for (const reader of ['selectors', 'indexes', 'chain'] as const) {
             expect(of(reader, writeOneBalance.name).rowsChanged).toBe(1);
             expect(of(reader, writeOneBalance.name).sectionsChanged).toBe(1);
             expect(of(reader, ratesTick.name).rowsChanged).toBe(0);
@@ -560,6 +761,19 @@ describe(`the home asset table over ${NETWORKS.length * ACCOUNTS_PER_NETWORK} ac
 
         expect(indexedDiscovery.rowsChanged).toBe(discovery.rowsChanged);
         expect(indexedDiscovery.sectionsChanged).toBeLessThanOrEqual(discovery.sectionsChanged);
+
+        // The change-driven chain does the same work for a reader and far less for a write: a
+        // balance write reaches one account, one asset and one price.
+        const chainDiscovery = measurements.find(
+            measurement =>
+                measurement.reader === 'chain' && measurement.scenario.startsWith('discovery'),
+        ) as Measurement;
+
+        expect(chainDiscovery.rowsChanged).toBe(discovery.rowsChanged);
+        expect(chainDiscovery.sectionsChanged).toBeLessThanOrEqual(discovery.sectionsChanged);
+        expect(of('chain', writeOneBalance.name).ms).toBeLessThan(
+            of('selectors', writeOneBalance.name).ms,
+        );
         expect(indexedDiscovery.ms).toBeLessThan(Math.max(discovery.ms * 3, 50));
     });
 });
