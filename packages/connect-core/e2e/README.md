@@ -28,7 +28,7 @@ TESTS_PATTERN="init" yarn workspace @trezor/connect-core test:e2e:web
 
 ## Referenced transactions
 
-Bitcoin-like coins `signTransaction` method requires additional data about transactions referenced from used inputs. `@trezor/connect` doesn't fetch them from the backend, so the caller must provide them via the `refTxs` (or `account.transactions`) param. [see docs](https://connect.trezor.io/9/methods/bitcoin/signTransaction/)
+Bitcoin-like coins `signTransaction` method requires additional data about transactions referenced from used inputs. `@trezor/connect` doesn't fetch them from the backend, so the caller must provide them via the `refTxs` (or `account.transactions`) param. [see docs](https://connect.trezor.io/10/methods/bitcoin/signTransaction/)
 
 Test fixtures provide them via the [getRefTxs](./__fixtures__/refTxs.ts) helper, which loads them from the `./__fixtures__/refTxs` directory, stored in the same structure as in [trezor-firmware](https://github.com/trezor/trezor-firmware/tree/main/tests/txcache) repository.
 
