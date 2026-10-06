@@ -1,8 +1,8 @@
 // origin: https://github.com/trezor/connect/blob/develop/src/js/core/methods/tx/TransactionComposer.js
 
-import type { Address } from '@trezor/blockchain-link-types';
 import type {
     BitcoinNetworkInfo,
+    ComposeChangeAddress,
     ComposeResult,
     ComposeUtxo,
     DiscoveryAccountType,
@@ -19,7 +19,7 @@ import { DEFAULT_BITCOIN_LONGTERM_FEE_RATE } from '../../data/defaultFeeLevels';
 
 type Options = {
     txType: DiscoveryAccountType;
-    changeAddress: Address | undefined;
+    changeAddress: ComposeChangeAddress | undefined;
     utxos: ComposeUtxo[];
     outputs: ComposeOutput[];
     coinInfo: BitcoinNetworkInfo;
