@@ -679,17 +679,14 @@ export class Device extends TypedEmitter<DeviceEvents> implements IDevice {
     }
 
     async initialize(useCardanoDerivation: boolean) {
-        let payload: PROTO.Initialize | undefined;
-        if (this.features) {
-            const { sessionId, deriveCardano } = this.getState() || {};
-            // If the user has BIP-39 seed, and Initialize(derive_cardano=True) is not sent,
-            // all Cardano calls will fail because the root secret will not be available.
-            payload = {
-                derive_cardano: deriveCardano || useCardanoDerivation,
-            };
-            if (sessionId) {
-                payload.session_id = sessionId;
-            }
+        const { sessionId, deriveCardano } = this.getState() || {};
+        // If the user has BIP-39 seed, and Initialize(derive_cardano=True) is not sent,
+        // all Cardano calls will fail because the root secret will not be available.
+        const payload: PROTO.Initialize = {
+            derive_cardano: deriveCardano || useCardanoDerivation,
+        };
+        if (sessionId) {
+            payload.session_id = sessionId;
         }
 
         const { message } = await this.getCurrentSession().typedCall(
