@@ -415,9 +415,6 @@ export const selectTradingBuyQuotesRequest = (state: TradingRootState) =>
 export const selectTradingBuyFormValues = (state: TradingRootState) =>
     state.wallet.trading.buy.formValues;
 
-export const selectTradingBuyIsFromRedirect = (state: TradingRootState) =>
-    state.wallet.trading.buy.isFromRedirect;
-
 export const selectTradingExchangeQuotesRequest = (state: TradingRootState) =>
     state.wallet.trading.exchange.quotesRequest;
 

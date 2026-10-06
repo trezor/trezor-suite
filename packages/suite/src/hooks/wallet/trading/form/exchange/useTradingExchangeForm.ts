@@ -13,17 +13,15 @@ import {
     type TradingExchangeFormProps,
     hasEip712SignDataType,
     selectTradingComposedTransactionInfo,
-    selectTradingExchangeActiveTrade,
     selectTradingExchangeAmountLimits,
     selectTradingExchangeFormValues,
     selectTradingExchangeInfo,
-    selectTradingExchangeIsFromRedirect,
     selectTradingExchangeIsLoading,
     selectTradingExchangeSelectedQuote,
-    selectTradingExchangeTransactionId,
     selectTradingSendAccount,
     selectTradingVerifiedAddress,
     tradingExchangeActions,
+    tradingThunks,
 } from '@suite-common/trading';
 import { getNetwork } from '@suite-common/wallet-config';
 import { type Account } from '@suite-common/wallet-types';
@@ -41,9 +39,9 @@ import { type TradingExchangeFormContextProps } from 'src/types/trading/tradingF
 
 import { useExchangeApproval } from './useExchangeApproval';
 import { useExchangeDexQuote } from './useExchangeDexQuote';
-import { useExchangeFlow } from './useExchangeFlow';
 import { useExchangeFormInputs } from './useExchangeFormInputs';
 import { useExchangeQuotes } from './useExchangeQuotes';
+import { useTradingClearStaleQuotes } from '../common/useTradingClearStaleQuotes';
 import { useTradingFormReset } from '../common/useTradingFormReset';
 import { useTradingFormAccount } from '../useTradingFormAccount';
 import { useTradingReceiveAddress } from '../useTradingReceiveAddress';
@@ -51,8 +49,6 @@ import { useTradingReceiveAddress } from '../useTradingReceiveAddress';
 export const useTradingExchangeForm = (): TradingExchangeFormContextProps => {
     const type = 'exchange';
     const { dispatch } = useServices(injectDispatch);
-    const isFromRedirect = useSelector(selectTradingExchangeIsFromRedirect);
-    const transactionId = useSelector(selectTradingExchangeTransactionId);
     const savedFormValues = useSelector(selectTradingExchangeFormValues);
     const selectedQuote = useSelector(selectTradingExchangeSelectedQuote);
     const amountLimits = useSelector(selectTradingExchangeAmountLimits);
@@ -62,7 +58,6 @@ export const useTradingExchangeForm = (): TradingExchangeFormContextProps => {
     const composedTransactionInfo = useSelector(selectTradingComposedTransactionInfo);
     const { tradingAccountKey: accountKey, cryptoId } = useTradingFormAccount(type);
 
-    const trade = useSelector(selectTradingExchangeActiveTrade);
     const account = useSelector(state => selectTradingSendAccount(state, type));
 
     const [showReserveBanner, setShowReserveBanner] = useState<boolean>(false);
@@ -204,7 +199,11 @@ export const useTradingExchangeForm = (): TradingExchangeFormContextProps => {
 
     const { confirmTrade } = useTradingExchangeTradeActions();
 
-    useExchangeFlow({ isFromRedirect, trade, transactionId, isAmountEmpty });
+    useEffect(() => {
+        dispatch(tradingThunks.loadInitialDataThunk({ activeSection: type }));
+    }, [dispatch]);
+
+    useTradingClearStaleQuotes({ type, isAmountEmpty });
 
     useTradingFormReset({
         isInfoReady: !!exchangeInfo?.providerInfos,
