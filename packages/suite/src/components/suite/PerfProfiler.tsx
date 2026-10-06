@@ -1,5 +1,9 @@
 import { Profiler, type ReactNode, useEffect } from 'react';
 
+import { useServices } from '@suite-common/dependency-injection';
+import { injectStore } from '@suite-common/redux-utils';
+import { accountsActions, selectVisibleDeviceAccounts } from '@suite-common/wallet-core';
+
 type PerfController = { recordRender?: (id: string, durationMs: number) => void };
 
 export type PerfTotals = {
@@ -54,6 +58,65 @@ const reportRender = (id: string, _phase: unknown, actualDuration: number) => {
     );
 };
 
+type Store = {
+    getState: () => never;
+    dispatch: (action: unknown) => unknown;
+};
+
+const nextTick = () =>
+    new Promise(resolve => {
+        setTimeout(resolve, 0);
+    });
+
+/**
+ * Writes one account balance at a time, the way discovery does, and says what the profiled
+ * subtree spent rendering them. The same writes on either implementation, so the two can be
+ * compared without a device, a network or a wallet in the way.
+ */
+const createBenchmark =
+    (store: Store) =>
+    async (writes = 50) => {
+        const accounts = selectVisibleDeviceAccounts(store.getState());
+
+        if (accounts.length === 0) {
+            console.warn('[perf] no visible accounts to write to');
+
+            return;
+        }
+
+        totals.clear();
+        console.warn(`[perf] writing ${writes} account balances, one at a time`);
+
+        const started = performance.now();
+
+        for (let write = 0; write < writes; write++) {
+            const account = accounts[write % accounts.length] as (typeof accounts)[number];
+
+            store.dispatch(
+                accountsActions.updateAccount({
+                    ...account,
+                    formattedBalance: String(
+                        Number(account.formattedBalance ?? 0) + (write + 1) / 1000,
+                    ),
+                }),
+            );
+
+            // One commit per write, as a write from discovery gets.
+            await nextTick();
+        }
+
+        const elapsed = performance.now() - started;
+        const held = totals.get('home-asset-table');
+
+        console.warn(
+            `[perf] ${writes} writes over ${accounts.length} accounts took ${round(elapsed)} ms; the table rendered ${
+                held?.renders ?? 0
+            } times for ${round(held?.totalMs ?? 0)} ms`,
+        );
+
+        return readTotals();
+    };
+
 if (typeof window !== 'undefined') {
     (window as unknown as { perf: unknown }).perf = {
         /** What every profiled subtree has cost since the page loaded, or since `reset()`. */
@@ -77,8 +140,18 @@ type PerfProfilerProps = {
  * `window.perf`, and the end-to-end performance instrumentation where that is installed.
  */
 export const PerfProfiler = ({ id, children }: PerfProfilerProps) => {
+    const { store } = useServices(injectStore);
+
     useEffect(() => {
-        console.warn(`[perf] profiling "${id}" — every render of it is logged below`);
+        (window as unknown as { perf: { bench?: unknown } }).perf.bench = createBenchmark(
+            store as unknown as Store,
+        );
+    }, [store]);
+
+    useEffect(() => {
+        console.warn(
+            `[perf] profiling "${id}" — every render is logged; perf.bench(50) writes 50 account balances and reports what they cost`,
+        );
 
         return () => {
             console.warn(`[perf] stopped profiling "${id}"`);
