@@ -58,7 +58,7 @@ export class CoreInSuiteWeb implements ConnectImpl {
         debug,
         requestedPermissions,
     }: ConnectImplSettings): Promise<void> {
-        this.logger.enabled = !!debug;
+        this.logger.enable(!!debug);
 
         if (!this._popupManager) {
             const resolvedEnv = env ?? getEnv();
