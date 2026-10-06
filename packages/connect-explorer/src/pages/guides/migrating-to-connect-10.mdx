@@ -25,7 +25,7 @@ The guide follows the order of an actual upgrade: install Connect 10, fix your `
 npm install @trezor/connect-web@10
 ```
 
-The Suite-hosted flow needs **Trezor Suite 26.7.2 or newer** to host the Connect core. Older Suite versions do not expose the local Connect server, so requests will not be handled.
+The Suite-hosted flow needs **Trezor Suite 26.3.1 or newer**, both on desktop and in the mobile app. Suite desktop 25.8.1 to 26.2.x already runs the local Connect server by default but returns errors in the Connect 9 format, which Connect 10 cannot read: a failed call loses its error code and message and does not fall back to Suite Web.
 
 Found a bug, or have feedback? Open an issue at [github.com/trezor/trezor-suite](https://github.com/trezor/trezor-suite/issues/new/choose).
 
@@ -34,6 +34,8 @@ Found a bug, or have feedback? Open an issue at [github.com/trezor/trezor-suite]
 - [ ] Add `manifest.appName` to your `init()` call. It is now **required**.
 
 - [ ] Add `manifest.appIcon`: a URL to an icon sized for a 64px circle. Optional, but it is what Suite shows in the permission prompt, so in practice you want it.
+
+- [ ] Call `TrezorConnect.init()` before any other method. `TrezorConnect.manifest()` is removed, so pass the manifest to `init()`. Connect 10 does not initialize itself on the first method call.
 
 - [ ] Migrate to ESM: `import TrezorConnect from '@trezor/connect'`. If you cannot migrate off CJS, use a dynamic `import()`, or stay on v9.
 
@@ -56,7 +58,7 @@ TrezorConnect.init({
 
 Both items below are **HTTP response headers your server sends with the page that hosts your integration** — not Connect settings, and not something Connect can change on your behalf. If a CDN, framework or security middleware sets them for you, that is where to adjust them.
 
-- [ ] `Content-Security-Policy`: allow `https://suite.trezor.io` in `frame-src` (or `child-src`), so your page may embed Suite Web.
+- [ ] `Content-Security-Policy`: allow `https://suite.trezor.io` in `frame-src` (or `child-src`), so your page may embed Suite Web, and `ws://127.0.0.1:21335` in `connect-src` (or `default-src`), so your page may reach Suite desktop.
 
 - [ ] `Cross-Origin-Opener-Policy`: must not be `same-origin`, which would sever the popup's `window.opener` handle back to your page. Use `same-origin-allow-popups` or `unsafe-none`.
 
@@ -80,7 +82,7 @@ Skip any item whose API you do not use.
     - Path-taking methods (`getAddress`, `getPublicKey`, …) fall back to deriving the network from `path`.
     - These throw `Method_UnknownCoin` with no fallback: `getAccountInfo`, `selectAccount`, `verifyMessage`, `composeTransaction`, `signTransaction`, `signMessage`, `getOwnershipId`, `getOwnershipProof`, and the `blockchain*` family.
 
-- [ ] **Check that the coins you use are still supported.** Coins that no current device supports have been dropped from Connect's coin definitions, so naming one behaves exactly like naming an unknown coin. [Supported coins](/details/coins) is the current list.
+- [ ] **Check that the coins you use are still supported.** Coins whose networks are dead, abandoned or obsolete have been dropped from Connect's coin definitions, even where Trezor firmware still supports some of them. Naming one behaves exactly like naming an unknown coin. [Supported coins](/details/coins) is the current list.
 
 - [ ] **`getPublicKey` no longer falls back to Bitcoin for other networks.** In v9, `getPublicKey({ coin: 'eth', … })` silently returned a Bitcoin xpub. Now the network must resolve to a bitcoin-like coin — from `coin`, or failing that from the derivation `path` — otherwise the call throws `Method_UnknownCoin`. Use the per-coin methods (`ethereumGetPublicKey`, `cardanoGetPublicKey`, …) for non-bitcoin networks.
 
@@ -96,6 +98,8 @@ Skip any item whose API you do not use.
     In v9 these existed because your app hosted the popup: you subscribed to `DEVICE_EVENT` and `UI_EVENT`, answered a UI request with `uiResponse`, and could change settings mid-session. In v10 the device connection and every prompt belong to Suite, so there are no events to observe and no UI request to answer. Delete the listeners and any state you derived from them — each method call resolves to its own `{ success, payload }`, which is the only result your app needs.
 
 - [ ] **Update type imports:** where you referenced the `TrezorConnect` type, use `TrezorConnectPublicAPI<ConnectDynamicSettings>` from `@trezor/connect-web`. In most code `typeof TrezorConnect` is enough and you do not need the named type at all.
+
+- [ ] **Read errors from `error`, not from `payload`.** In `@trezor/connect`, `@trezor/connect-web` and `@trezor/connect-webextension`, a failed call resolves to `{ success: false, error: { message, code } }`. Replace `payload.error` with `error.message` and `payload.code` with `error.code`.
 
 - [ ] **Drop your direct dependency on `@trezor/connect-plugin-ethereum`** and remove manual `transformTypedData` calls. Its logic is inlined into `@trezor/connect`. The 10.x plugin is a stub that throws.
 

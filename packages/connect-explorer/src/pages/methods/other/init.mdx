@@ -4,6 +4,8 @@ import { ParamsTable } from '../../../components/ParamsTable';
 
 export const InitSchema = Type.Object({
     manifest: Type.Object({
+        appName: Type.String(),
+        appIcon: Type.Optional(Type.String()),
         appUrl: Type.String(),
         email: Type.String(),
     }),
@@ -19,25 +21,26 @@ export const InitSchema = Type.Object({
     coreMode: Type.Optional(
         Type.Union([
             Type.Literal('auto'),
-            Type.Literal('core-in-suite-desktop'),
-            Type.Literal('core-in-suite-web'),
+            Type.Literal('suite-desktop'),
+            Type.Literal('suite-web'),
         ]),
     ),
 });
 
 export const paramDescriptions = {
-    manifest: 'Application manifest with your email and appUrl.',
+    manifest:
+        'Application manifest. `appName`, `appUrl` and `email` are required. `appIcon` is optional: a URL to an icon that Suite shows in the permission prompt.',
     debug: 'default `false`. Prints debug logs.',
     requestedPermissions:
         'Permissions your application will need, declared up front so the user can approve the whole set in a single prompt instead of being asked per call. See [Permissions](/details/permissions).',
     coreMode: `default \`auto\`.
-In the default \`auto\` mode, TrezorConnect will automatically choose \`core-in-suite-desktop\` if Suite desktop is available and \`core-in-suite-web\` otherwise, to allow for webUSB use.`,
+In the default \`auto\` mode, TrezorConnect tries Suite desktop first and uses Suite Web when Suite desktop is not running. \`suite-web\` always uses Suite Web.`,
 };
 
 ## Init
 
-To initiate TrezorConnect, please provide the manifest object with your email and appURL. This is crucial for us to identify your use of TrezorConnect and to contact you if necessary.
-If the manifest object is not set, TrezorConnect methods will not be available.
+To initiate TrezorConnect, please provide the manifest object with your appName, email and appUrl. This is crucial for us to identify your use of TrezorConnect and to contact you if necessary.
+If the manifest or its `appName` is missing, `init()` fails with `Init_ManifestMissing`. Call `init()` before any other TrezorConnect method.
 
 It is also possible to customize more advanced options for TrezorConnect.
 
