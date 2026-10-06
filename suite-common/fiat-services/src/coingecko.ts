@@ -47,39 +47,25 @@ const fetchCoinGecko = async (url: string, skipCache?: boolean) => {
  * Build coinUrl using defined coin ids
  */
 const buildCoinUrls = async (ticker: TickerId) => {
-    const { coingeckoId, tradeCryptoId, fiatRateCryptoId, settlementLayer, networkType } =
-        getNetwork(ticker.symbol);
+    const { coingeckoId, fiatRateCryptoId, networkType } = getNetwork(ticker.symbol);
+
+    if (!ticker.tokenAddress) {
+        if (!fiatRateCryptoId) {
+            console.error('buildCoinUrls: cannot find fiatRateCryptoId for', ticker);
+
+            return [];
+        }
+
+        return [`${COINGECKO_API_BASE_URL}/coins/${fiatRateCryptoId}`];
+    }
+
     if (!coingeckoId) {
         console.error('buildCoinUrls: cannot find coingeckoId for ', ticker);
 
         return [];
     }
 
-    let baseId: string = coingeckoId;
-    if (networkType === 'ethereum') {
-        if (ticker.tokenAddress) {
-            // token on network -> network coingecko id
-            baseId = coingeckoId;
-        } else if (fiatRateCryptoId) {
-            baseId = fiatRateCryptoId;
-        } else if (settlementLayer) {
-            baseId = getNetwork(settlementLayer)?.coingeckoId ?? coingeckoId;
-        } else {
-            // native token on network -> native token coingecko id
-            if (!tradeCryptoId) {
-                console.error('buildCoinUrls: cannot find tradeCryptoId for', ticker);
-
-                return [];
-            }
-            baseId = tradeCryptoId;
-        }
-    }
-
-    const baseUrl = `${COINGECKO_API_BASE_URL}/coins/${baseId}`;
-
-    if (!ticker.tokenAddress) {
-        return [baseUrl];
-    }
+    const baseUrl = `${COINGECKO_API_BASE_URL}/coins/${coingeckoId}`;
 
     if (networkType === 'cardano') {
         const { policyId } = parseAsset(ticker.tokenAddress || '');
