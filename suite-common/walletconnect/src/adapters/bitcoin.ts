@@ -7,7 +7,7 @@ import { createThunk } from '@suite-common/redux-utils';
 import { getNetwork, networksCollection } from '@suite-common/wallet-config';
 import { type AccountsRootState, selectAccounts } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
-import { getAccountIdentity } from '@suite-common/wallet-utils';
+import { getAccountIdentity, getUnusedChangeAddress } from '@suite-common/wallet-utils';
 import TrezorConnect, { type CallMethodResponse, type ComposeOutput } from '@trezor/connect';
 import { asCoinSymbol } from '@trezor/connect-common';
 import type { Bip43Path } from '@trezor/crypto-utils';
@@ -155,17 +155,14 @@ const bitcoinRequestThunk = createThunk<
                 throw new Error('blockchainEstimateFee error');
             }
 
-            // will be unused in case changeAddress param is present as well
-            const change =
-                account.addresses?.change.find(a => !a.transfers) ??
-                account.addresses?.change.at(-1);
-
             const precomposedTransaction = await TrezorConnect.composeTransaction({
                 outputs,
                 coin: asCoinSymbol(account.symbol),
                 path: account.path,
                 utxo: account.utxo!,
-                changeAddress: change,
+                // The account change address stays unused when the dApp passes its own
+                // changeAddress, which is added as a send-max output that takes the rest.
+                changeAddress: getUnusedChangeAddress(account.addresses?.change),
                 feeLevels: feeLevels.payload.levels,
                 device,
             });

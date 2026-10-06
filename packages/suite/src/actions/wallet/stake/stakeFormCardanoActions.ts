@@ -153,7 +153,7 @@ export const prepareTxPlan = async ({
 }: PrepareTxPlanParams) => {
     if (account?.networkType !== 'cardano') return;
 
-    const changeAddress = getUnusedChangeAddress(account);
+    const changeAddress = getUnusedChangeAddress(account.addresses?.change);
     const stakingPath = getStakingPath(account);
 
     const {

@@ -38,17 +38,6 @@ export const getAddressType = () => PROTO.CardanoAddressType.BASE;
 
 export const getNetworkId = () => CARDANO.NETWORK_IDS.mainnet;
 
-export const getUnusedChangeAddress = (account: Pick<Account, 'addresses'>) => {
-    if (!account.addresses) return;
-
-    // Find first unused change address or fallback to the last address if all are used (should not happen)
-    const changeAddress =
-        account.addresses.change.find(a => !a.transfers) ||
-        account.addresses.change[account.addresses.change.length - 1];
-
-    return changeAddress;
-};
-
 export const getAddressParameters = (account: Pick<Account, 'index'>, path: string) => ({
     path,
     addressType: getAddressType(),

@@ -39,7 +39,7 @@ export const composeCardanoTransactionFeeLevelsThunk = createThunk<
     `${SEND_MODULE_PREFIX}/composeCardanoTransactionFeeLevelsThunk`,
     async ({ formState, composeContext }, { dispatch, rejectWithValue }) => {
         const { account, feeInfo } = composeContext;
-        const changeAddress = getUnusedChangeAddress(account);
+        const changeAddress = getUnusedChangeAddress(account.addresses?.change);
         if (!changeAddress || !account.utxo || !account.addresses)
             return rejectWithValue({
                 error: 'fee-levels-compose-failed',
