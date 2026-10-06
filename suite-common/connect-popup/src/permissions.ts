@@ -11,6 +11,7 @@ import { isArrayMember } from '@trezor/utils';
 import { unique } from '@trezor/utils/src/unique';
 
 import {
+    CALL_SOURCE_DEEPLINK,
     CALL_SOURCE_WALLETCONNECT,
     type ConnectCallSource,
     UNKNOWN_PROCESS,
@@ -87,6 +88,23 @@ export const canRememberPermissions = (source: ConnectCallSource): boolean =>
     source.type !== CALL_SOURCE_WALLETCONNECT &&
     source.origin !== 'null' &&
     source.process?.fullPath !== UNKNOWN_PROCESS.fullPath;
+
+/**
+ * The caller as it is stored with a remembered grant. `isConnectV9` and `isConnectV9Certain` are
+ * read off the live call (see getConnectV9Deeplink), and a grant is persisted and outlives the
+ * update of the app to Connect 10, so they are not kept with it.
+ */
+export const toRememberedConnectApp = (source: ConnectCallSource): ConnectCallSource => {
+    if (source.type !== CALL_SOURCE_DEEPLINK) return source;
+
+    const {
+        isConnectV9: _isConnectV9,
+        isConnectV9Certain: _isConnectV9Certain,
+        ...remembered
+    } = source;
+
+    return remembered;
+};
 
 export const groupPermissionsByCoin = (permissions: PermissionRequest[]): GroupedPermissions[] => {
     const order: (CoinSymbol | undefined)[] = [];

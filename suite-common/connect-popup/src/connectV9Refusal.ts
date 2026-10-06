@@ -7,7 +7,7 @@ import {
 import { TrezorError } from '@trezor/connect-common/src/constants/errors';
 
 import { type ConnectCallSource } from './connectPopupTypes';
-import { isConnectV9Source } from './connectV9';
+import { isCertainConnectV9Source } from './connectV9';
 
 const DEFAULT_REFUSAL_MESSAGE =
     'Trezor Suite declined this request from an app that uses Trezor Connect 9. Ask the app developer to update to Trezor Connect 10.';
@@ -19,14 +19,16 @@ const hasMessageSystem = (
 /**
  * The text that a call from a Connect 9 app is declined with, or undefined when the call goes on as
  * usual. Calls are declined only while the message-system config has a feature message for
- * `connect.v9.refuse` with flag true. Calls from other apps are never declined here.
+ * `connect.v9.refuse` with flag true, and only when the app is known to use Connect 9 (see
+ * isCertainConnectV9Source) — a guessed one keeps the notice but is never turned away. Calls from
+ * other apps are never declined here.
  */
 export const selectConnectV9RefusalMessage = (
     state: Partial<MessageSystemRootState>,
     source: ConnectCallSource,
 ): string | undefined => {
     // A store without the message system declines nothing.
-    if (!hasMessageSystem(state) || !isConnectV9Source(source)) return undefined;
+    if (!hasMessageSystem(state) || !isCertainConnectV9Source(source)) return undefined;
 
     // Not selectIsFeatureEnabled: it reads a domain that is missing from the config as enabled.
     const isRefusalEnabled = selectFeatureConfig(state, Feature.connectV9.refuse)?.flag === true;

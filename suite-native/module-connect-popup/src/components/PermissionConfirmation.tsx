@@ -7,6 +7,7 @@ import {
     canRememberPermissions,
     connectPopupActions,
     selectConnectPopupCall,
+    toRememberedConnectApp,
 } from '@suite-common/connect-popup';
 import {
     Button,
@@ -51,7 +52,7 @@ export const PermissionConfirmation = () => {
             dispatch(
                 connectPopupActions.rememberAppPermissions({
                     allowedPermissions: popupCall.methodInfo.permissionTypes,
-                    ...popupCall.source,
+                    ...toRememberedConnectApp(popupCall.source),
                 }),
             );
         }

@@ -4,7 +4,7 @@ import {
     messageSystemInitialState,
 } from '@suite-common/message-system';
 
-import { CALL_SOURCE_WEB, type ConnectCallSource } from './connectPopupTypes';
+import { CALL_SOURCE_DEEPLINK, CALL_SOURCE_WEB, type ConnectCallSource } from './connectPopupTypes';
 import { selectConnectV9RefusalMessage } from './connectV9Refusal';
 
 const DEFAULT_REFUSAL_MESSAGE =
@@ -41,6 +41,14 @@ const connectV9Source: ConnectCallSource = {
     manifest: { appName: 'App', npmVersion: '9.7.3' },
 };
 
+const guessedConnectV9Deeplink: ConnectCallSource = {
+    type: CALL_SOURCE_DEEPLINK,
+    origin: 'myapp://callback',
+    manifest: { appName: 'App' },
+    isConnectV9: true,
+    isConnectV9Certain: false,
+};
+
 describe('selectConnectV9RefusalMessage', () => {
     it('declines a call from a Connect 9 app with the configured text', () => {
         expect(
@@ -72,6 +80,13 @@ describe('selectConnectV9RefusalMessage', () => {
                 ...connectV9Source,
                 manifest: { appName: 'App', npmVersion: '10.0.0' },
             }),
+        ).toBeUndefined();
+    });
+
+    // The call id alone is a hint for the deprecation notice, not a reason to turn an app away.
+    it('declines no deeplink call that is only guessed to be a Connect 9 one', () => {
+        expect(
+            selectConnectV9RefusalMessage(createState({ flag: true }), guessedConnectV9Deeplink),
         ).toBeUndefined();
     });
 });
