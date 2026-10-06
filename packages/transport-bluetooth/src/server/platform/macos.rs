@@ -65,7 +65,7 @@ pub async fn try_to_subscribe(ctx: &ConnectDeviceContext) -> Result<(), Platform
     // that runs out of time marks the device as `PairingError`.
     let timeout = Duration::from_millis(ctx.params.timeout as u64).max(DEFAULT_PAIRING_TIMEOUT);
 
-    let subscription_task = tokio::spawn(async move {
+    let mut subscription_task = tokio::spawn(async move {
         let mut tries = 0;
         loop {
             let is_connected = subscription_device.is_connected().await.unwrap_or(false);
@@ -122,9 +122,16 @@ pub async fn try_to_subscribe(ctx: &ConnectDeviceContext) -> Result<(), Platform
         }
     });
 
-    let result = subscription_task
-        .await
-        .unwrap_or(SubscriptionResult::Error("Unknown".to_string()));
+    // The elapsed time is checked between attempts only, and `is_connected` or
+    // `subscribe` may not resolve at all, so the timeout also bounds the whole task.
+    let result = match tokio::time::timeout(timeout, &mut subscription_task).await {
+        Ok(result) => result.unwrap_or(SubscriptionResult::Error("Unknown".to_string())),
+        Err(_) => {
+            info!("subscription_task did not finish in time");
+            subscription_task.abort();
+            SubscriptionResult::Error("Subscription timeout".to_string())
+        }
+    };
     pairing_prompt.abort();
 
     match result {
