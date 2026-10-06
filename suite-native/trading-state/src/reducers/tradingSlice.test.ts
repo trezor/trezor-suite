@@ -67,7 +67,6 @@ describe('tradingSlice', () => {
             expect(state.tradingEnvironment).toBe('dev');
             expect(state.buy).toEqual({
                 quotes: [],
-                isFromRedirect: false,
                 isLoading: false,
             });
         });
@@ -98,7 +97,6 @@ describe('tradingSlice', () => {
 
             expect(state.buy).toEqual({
                 quotes: [],
-                isFromRedirect: false,
                 isLoading: false,
             });
         });

@@ -15,11 +15,11 @@ import {
     selectTradingBuyAmountLimits,
     selectTradingBuyFormValues,
     selectTradingBuyInfo,
-    selectTradingBuyIsFromRedirect,
     selectTradingBuyIsLoading,
     selectTradingBuyQuotesRequest,
     selectTradingBuySelectedQuote,
     tradingBuyActions,
+    tradingThunks,
 } from '@suite-common/trading';
 import { getNetwork } from '@suite-common/wallet-config';
 
@@ -29,10 +29,9 @@ import { useServerEnvironment } from 'src/hooks/wallet/trading/useServerEnvirome
 import { useBitcoinAmountUnit } from 'src/hooks/wallet/useBitcoinAmountUnit';
 import { type TradingBuyFormContextProps } from 'src/types/trading/tradingForm';
 
-import { useBuyFlow } from './useBuyFlow';
 import { useBuyQuotes } from './useBuyQuotes';
 import { useTradingBuyFormDefaultValues } from './useTradingBuyFormDefaultValues';
-import { useTradingBuyFormRedirectValues } from './useTradingBuyFormRedirectValues';
+import { useTradingClearStaleQuotes } from '../common/useTradingClearStaleQuotes';
 import { useTradingFiatValues } from '../common/useTradingFiatValues';
 import { useTradingFormReset } from '../common/useTradingFormReset';
 import { useTradingFormAccount } from '../useTradingFormAccount';
@@ -43,7 +42,6 @@ export const useTradingBuyForm = (): TradingBuyFormContextProps => {
     const { dispatch } = useServices(injectDispatch);
 
     const buyInfo = useSelector(selectTradingBuyInfo);
-    const isFromRedirect = useSelector(selectTradingBuyIsFromRedirect);
     const quotesRequest = useSelector(selectTradingBuyQuotesRequest);
     const savedFormValues = useSelector(selectTradingBuyFormValues);
     const selectedQuote = useSelector(selectTradingBuySelectedQuote);
@@ -68,8 +66,7 @@ export const useTradingBuyForm = (): TradingBuyFormContextProps => {
     useTradingFiatValues(fiatTradingValuesParams);
 
     const { defaultValues } = useTradingBuyFormDefaultValues(cryptoId, buyInfo);
-    const redirectValues = useTradingBuyFormRedirectValues(isFromRedirect, quotesRequest);
-    const initialValues = redirectValues ?? savedFormValues ?? defaultValues;
+    const initialValues = savedFormValues ?? defaultValues;
     const methods = useForm<TradingBuyFormProps>({
         mode: 'onChange',
         defaultValues: initialValues,
@@ -126,7 +123,11 @@ export const useTradingBuyForm = (): TradingBuyFormContextProps => {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [receiveAddress]);
 
-    useBuyFlow({ isFromRedirect, quotesRequest, isAmountEmpty });
+    useEffect(() => {
+        dispatch(tradingThunks.loadInitialDataThunk({ activeSection: type }));
+    }, [dispatch]);
+
+    useTradingClearStaleQuotes({ type, isAmountEmpty });
 
     useTradingFormReset({
         isInfoReady: !!buyInfo,

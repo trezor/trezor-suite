@@ -134,7 +134,6 @@ export const useTradingRedirect = () => {
         }
         prefilledAccountFromRedirect(params);
         dispatch(tradingBuyActions.saveQuoteRequest(request));
-        dispatch(tradingBuyActions.setIsFromRedirect(true));
         dispatch(gotoThunk({ routeName: 'wallet-trading-buy' }));
     };
 
@@ -172,7 +171,9 @@ export const useTradingRedirect = () => {
         }
         prefilledAccountFromRedirect(params);
         dispatch(tradingSellActions.saveQuoteRequest(request));
-        dispatch(tradingSellActions.setIsFromRedirect(true));
+        if (orderId) {
+            dispatch(tradingSellActions.setIsFromRedirect(true));
+        }
         const composed = {
             feeLimit,
             feePerByte: feePerByte || '',

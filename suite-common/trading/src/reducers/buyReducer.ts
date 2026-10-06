@@ -23,7 +23,6 @@ export interface BuyInfo {
 
 export interface TradingBuyState {
     buyInfo?: BuyInfo;
-    isFromRedirect: boolean;
     quotesRequest?: BuyTradeQuoteRequest;
     formValues?: TradingBuyFormProps;
     quotes: BuyTrade[];
@@ -39,7 +38,6 @@ export interface TradingBuyState {
 
 export const buyInitialState: TradingBuyState = {
     transactionId: undefined,
-    isFromRedirect: false,
     buyInfo: undefined,
     quotesRequest: undefined,
     formValues: undefined,
@@ -58,9 +56,6 @@ const tradingBuySlice = createSlice({
     reducers: {
         saveBuyInfo(state: TradingBuyState, action: PayloadAction<BuyInfo>) {
             state.buyInfo = action.payload;
-        },
-        setIsFromRedirect(state: TradingBuyState, action: PayloadAction<boolean>) {
-            state.isFromRedirect = action.payload;
         },
         saveQuoteRequest(state: TradingBuyState, action: PayloadAction<BuyTradeQuoteRequest>) {
             state.quotesRequest = action.payload;

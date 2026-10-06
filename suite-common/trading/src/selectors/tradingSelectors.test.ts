@@ -35,7 +35,6 @@ import {
     selectTradingBuyAmountLimits,
     selectTradingBuyFormValues,
     selectTradingBuyInfo,
-    selectTradingBuyIsFromRedirect,
     selectTradingBuyIsLoading,
     selectTradingBuyLastErrorMessage,
     selectTradingBuyLoadingTimestampAndStatus,
@@ -640,12 +639,6 @@ describe('tradingSelectors', () => {
 
     it('selectTradingBuyFormValues should return correct data', () => {
         expect(selectTradingBuyFormValues(state)).toBe(state.wallet.trading.buy.formValues);
-    });
-
-    it('selectTradingBuyIsFromRedirect should return correct data', () => {
-        state.wallet.trading.buy.isFromRedirect = true;
-
-        expect(selectTradingBuyIsFromRedirect(state)).toBe(true);
     });
 
     it('selectTradingExchangeQuotesRequest should return correct data', () => {
