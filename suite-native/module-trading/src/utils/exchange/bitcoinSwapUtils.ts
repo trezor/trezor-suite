@@ -46,7 +46,7 @@ export const getBitcoinSwapFromAddress = async ({
         feePerUnit: getNormalFeePerUnit(feeInfo),
         shouldSendInSats,
         btcSwapComposeTemplate,
-    });
+    }).catch(() => undefined);
 
     return result?.addresses.join(';');
 };
@@ -73,7 +73,7 @@ export const getBitcoinSwapMaxAmount = async ({
         setMaxOutputId: 0,
         feePerUnit: getNormalFeePerUnit(feeInfo),
         btcSwapComposeTemplate,
-    });
+    }).catch(() => undefined);
 
     if (!result?.amount) {
         return undefined;

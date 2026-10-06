@@ -70,6 +70,12 @@ describe('bitcoinSwapUtils', () => {
             await expect(getBitcoinSwapFromAddress(getParams())).resolves.toBeUndefined();
         });
 
+        it('should return undefined when deriving input addresses throws', async () => {
+            mockDeriveBitcoinSwapFromAddresses.mockRejectedValue(new Error('Unreachable case'));
+
+            await expect(getBitcoinSwapFromAddress(getParams())).resolves.toBeUndefined();
+        });
+
         it('should not derive input addresses for a non-bitcoin account', async () => {
             await expect(
                 getBitcoinSwapFromAddress({ ...getParams(), account: eth1NormalAccount }),
@@ -115,6 +121,18 @@ describe('bitcoinSwapUtils', () => {
             expect(mockDeriveBitcoinSwapFromAddresses).toHaveBeenCalledWith(
                 expect.objectContaining({ feePerUnit: undefined }),
             );
+        });
+
+        it('should return undefined when deriving the send-max amount throws', async () => {
+            mockDeriveBitcoinSwapFromAddresses.mockRejectedValue(new Error('Unreachable case'));
+
+            await expect(
+                getBitcoinSwapMaxAmount({
+                    account: btc1NormalAccount,
+                    btcSwapComposeTemplate,
+                    feeInfo,
+                }),
+            ).resolves.toBeUndefined();
         });
 
         it('should not derive the max amount for a non-bitcoin account', async () => {
