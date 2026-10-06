@@ -101,11 +101,11 @@ const createAccounts = () =>
         ),
     );
 
-const createRates = () => ({
+const createRates = (tick = 0) => ({
     ...Object.fromEntries(
         NETWORKS.map(network => [
             getFiatRateKey(network, 'usd'),
-            { rate: NETWORK_RATES[network] ?? 1 },
+            { rate: (NETWORK_RATES[network] ?? 1) + (network === BTC ? tick : 0) },
         ]),
     ),
     ...Object.fromEntries(
@@ -514,6 +514,11 @@ const everyAccountRebuiltUnchanged: Scenario = {
     next: ({ accounts, rates }) => ({ accounts: accounts.map(account => ({ ...account })), rates }),
 };
 
+const oneRateMoved: Scenario = {
+    name: 'fiat rates replaced, one rate moved',
+    next: ({ accounts }) => ({ accounts, rates: createRates(1_000) }),
+};
+
 const ratesTick: Scenario = {
     name: 'fiat rates replaced, same values',
     next: ({ accounts }) => ({ accounts, rates: createRates() }),
@@ -611,13 +616,15 @@ const measureCached = (
 const measureDiscovery = (
     reader: Measurement['reader'],
     read: (state: HomeAssetTableState) => TableRead,
+    ratesTickEvery = 0,
 ): Measurement => {
     const samples: number[] = [];
     let rowsChanged = 0;
     let sectionsChanged = 0;
 
     for (let repeat = 0; repeat < REPEATS; repeat++) {
-        const rates = createRates();
+        let rates = createRates();
+        let writes = 0;
         const discovered: Account[] = [];
         let total = 0;
         let changedRows = 0;
@@ -625,6 +632,13 @@ const measureDiscovery = (
         let previous = read(createState({ accounts: discovered, rates }));
 
         const write = (accounts: Account[]) => {
+            writes += 1;
+
+            // A rate lands between the account writes, as the ticker does during discovery.
+            if (ratesTickEvery > 0 && writes % ratesTickEvery === 0) {
+                rates = createRates(writes);
+            }
+
             const state = createState({ accounts, rates });
             let next: TableRead | undefined;
 
@@ -653,7 +667,9 @@ const measureDiscovery = (
     }
 
     return {
-        scenario: `discovery: ${NETWORKS.length * ACCOUNTS_PER_NETWORK} accounts, 2 writes each`,
+        scenario:
+            `discovery: ${NETWORKS.length * ACCOUNTS_PER_NETWORK} accounts, 2 writes each` +
+            (ratesTickEvery > 0 ? `, a rate moves every ${ratesTickEvery} writes` : ''),
         reader,
         ms: median(samples),
         rowsChanged,
@@ -668,7 +684,7 @@ const report = (measurements: Measurement[]) => {
 
     const lines = measurements.map(
         ({ scenario, reader, ms, rowsChanged, sectionsChanged }) =>
-            `${scenario.padEnd(44)} ${reader.padEnd(10)} ${ms.toFixed(3).padStart(9)} ms` +
+            `${scenario.padEnd(66)} ${reader.padEnd(10)} ${ms.toFixed(3).padStart(9)} ms` +
             `  rows changed ${String(rowsChanged).padStart(4)}` +
             `  sections changed ${String(sectionsChanged).padStart(3)}`,
     );
@@ -707,12 +723,13 @@ describe(`the home asset table over ${NETWORKS.length * ACCOUNTS_PER_NETWORK} ac
                 halfTheBalancesWritten,
                 everyAccountRebuiltUnchanged,
                 ratesTick,
+                oneRateMoved,
                 accountAdded,
             ]) {
                 measurements.push(measure(reader, read, scenario));
             }
 
-            measurements.push(measureDiscovery(reader, read));
+            measurements.push(measureDiscovery(reader, read), measureDiscovery(reader, read, 10));
         }
 
         report(measurements);
