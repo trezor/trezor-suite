@@ -1,15 +1,31 @@
 name: "[Build] t1-escape-app"
+# Builds the old Trezor One migration page and deploys it to dev.suite.sldev.cz/t1-escape-app/<branch>/,
+# the same way suite-web is deployed. On that origin the bridge refuses to open HID devices,
+# so the deployed copy is good for looking at the screens only.
 
 permissions:
-  id-token: write
-  contents: read
+  id-token: write # for fetching the OIDC token
+  contents: read # for actions/checkout
 
 on:
+  push:
+    branches:
+      - develop
+    paths:
+      - "suite/t1-escape-app/**"
+      - ".github/workflows/build-t1-escape-app.yml"
+  pull_request:
+    paths:
+      - "suite/t1-escape-app/**"
+      - ".github/workflows/build-t1-escape-app.yml"
   workflow_dispatch:
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.head_ref || github.run_id }}
   cancel-in-progress: true
+
+env:
+  DEV_SERVER_URL: "https://dev.suite.sldev.cz"
 
 jobs:
   build-t1-escape-app:
@@ -24,6 +40,11 @@ jobs:
         with:
           role-to-assume: arn:aws:iam::538326561891:role/gh_actions_trezor_suite_dev_deploy
           aws-region: eu-central-1
+
+      - name: Extract branch name
+        id: extract_branch
+        run: |
+          echo "branch=${GITHUB_HEAD_REF:-${GITHUB_REF#refs/heads/}}" >> $GITHUB_OUTPUT
 
       - name: Setup node
         uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v6
@@ -43,11 +64,12 @@ jobs:
 
       - name: Build t1-escape-app
         env:
-          BASE_PATH: /t1-escape-app/
+          BASE_PATH: /t1-escape-app/${{ steps.extract_branch.outputs.branch }}/
         run: yarn workspace @suite/t1-escape-app build
 
       - name: Upload t1-escape-app to dev.suite.sldev.cz
         env:
-          T1_ESCAPE_APP_DEPLOY_PATH: s3://dev.suite.sldev.cz/t1-escape-app
+          DEPLOY_PATH: s3://dev.suite.sldev.cz/t1-escape-app/${{ steps.extract_branch.outputs.branch }}
         run: |
-          aws s3 sync --delete ./suite/t1-escape-app/dist ${T1_ESCAPE_APP_DEPLOY_PATH}
+          aws s3 sync --delete ./suite/t1-escape-app/dist ${DEPLOY_PATH}
+          echo "Deployed to ${DEV_SERVER_URL}/t1-escape-app/${{ steps.extract_branch.outputs.branch }}/" >> $GITHUB_STEP_SUMMARY
