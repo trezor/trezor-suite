@@ -163,3 +163,82 @@ export type SecondaryIndexDefinition<
     /** The index to look up — of any parts type, since only its snapshots are read. */
     source: { read: (state: TState) => IndexSnapshot<TId, TEntity> };
 };
+
+/** Any index read only for its snapshots — of whatever id, entity and parts type. */
+export type IndexSnapshotSource<TState, TId extends IndexId, TEntity> = {
+    read: (state: TState) => IndexSnapshot<TId, TEntity>;
+};
+
+/**
+ * Many source entities into one entity per id: each source entity expands into items, the items
+ * sharing an id are folded into the entity. Driven by what the source says changed, so a write to
+ * one source entity re-expands it and re-folds the ids it contributes to, and nothing else.
+ */
+export type AggregateIndexDefinition<
+    TState,
+    TSourceId extends IndexId,
+    TSource,
+    TItem,
+    TName extends string,
+    TGivenId extends IndexId,
+    TEntity,
+> = {
+    name: TName;
+    source: IndexSnapshotSource<TState, TSourceId, TSource>;
+    /** One source entity into the items to fold. Called once per source entity while it is the same object. */
+    expand: (source: TSource) => Iterable<TItem>;
+    /** The id an item folds into; `undefined` leaves the item out. */
+    getId: (item: TItem) => TGivenId | undefined;
+    /** Folds the items under one id, from `undefined` on every fold. */
+    reduce: (accumulated: TEntity | undefined, item: TItem) => TEntity;
+    /** Whether a re-folded entity is the one held. Shallow equality by default. */
+    isEqual?: (previous: TEntity, next: TEntity) => boolean;
+};
+
+export type LookupIdOf<TLookup> =
+    TLookup extends IndexSnapshotSource<never, infer TId, unknown> ? TId : never;
+
+export type LookupEntityOf<TLookup> =
+    TLookup extends IndexSnapshotSource<never, IndexId, infer TEntity> ? TEntity : never;
+
+export type Lookups<TState> = Record<string, IndexSnapshotSource<TState, IndexId, unknown>>;
+
+/**
+ * The state every lookup needs, read off the lookups themselves: one `infer` across all their
+ * `read` parameters gives the intersection. `unknown` without lookups, so it adds nothing.
+ */
+export type LookupStateOf<TLookups> = [keyof TLookups] extends [never]
+    ? unknown
+    : TLookups[keyof TLookups] extends { read: (state: infer TLookupState) => unknown }
+      ? TLookupState
+      : unknown;
+
+export type LookupIds<TLookups> = { [TName in keyof TLookups]?: LookupIdOf<TLookups[TName]> };
+
+export type LookupEntities<TLookups> = {
+    [TName in keyof TLookups]: LookupEntityOf<TLookups[TName]> | undefined;
+};
+
+/**
+ * One entity per source entity, derived from it and from the entities it names in other indexes.
+ * Re-derived only when its source entity changed or one of the lookup entities it named did.
+ */
+export type DerivedIndexDefinition<
+    TState,
+    TId extends IndexId,
+    TSource,
+    TLookups extends Lookups<never>,
+    TEntity,
+> = {
+    name: string;
+    source: IndexSnapshotSource<TState, TId, TSource>;
+    /** Other indexes to join; the derived index reads the state they need as well as the source's. */
+    lookups?: TLookups;
+    /** Which entity of each lookup a source entity depends on; left out, none. */
+    getLookupIds?: (source: TSource) => LookupIds<TLookups>;
+    derive: (source: TSource, lookups: LookupEntities<TLookups>) => TEntity;
+    /** The order of `ids` and `entities`; without it, the order of the source. */
+    sort?: (left: TEntity, right: TEntity) => number;
+    /** Whether a re-derived entity is the one held. Shallow equality by default. */
+    isEqual?: (previous: TEntity, next: TEntity) => boolean;
+};

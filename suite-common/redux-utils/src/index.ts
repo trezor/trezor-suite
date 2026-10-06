@@ -13,4 +13,6 @@ export * from './unwrapWithError';
 export type * from './indexes/indexTypes';
 export * from './indexes/createIndex';
 export * from './indexes/createSecondaryIndex';
+export * from './indexes/createAggregateIndex';
+export * from './indexes/createDerivedIndex';
 export { EMPTY_INDEX_ENTITIES, EMPTY_INDEX_IDS } from './indexes/indexUtils';

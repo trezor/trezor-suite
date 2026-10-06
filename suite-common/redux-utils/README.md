@@ -179,10 +179,55 @@ const middleware = [
 ];
 ```
 
-## createIndex and createSecondaryIndex
+## Indexes
 
 Lookups over store entities, built from a selector rather than kept beside the store, so they
-cannot drift from the data. Three parts, each owning one thing:
+cannot drift from the data. Every index hands back the same snapshot while nothing it reads
+changed, and every build says which ids were added, removed and updated — so an index built over
+another index is driven by that change set and does work only for what moved. Four links:
+
+| Link                   | Shape | Re-does, on a write                                                               |
+| ---------------------- | ----- | --------------------------------------------------------------------------------- |
+| `createIndex`          | 1 → 1 | One shallow compare per entity; the fold of none.                                 |
+| `createAggregateIndex` | N → 1 | Expands the changed source entities, re-folds the ids they contribute to.         |
+| `createDerivedIndex`   | 1 → 1 | Re-derives the entities whose source or named lookup entity changed.              |
+| `createSecondaryIndex` | 1 → N | Asks the changed entities where they belong, relists the keys they moved between. |
+
+The home asset table as such a chain — a write to one account re-expands one account, re-folds
+the assets it holds, re-prices those, and touches no list but the one that moved:
+
+```typescript
+const accountsIndex = createIndex({
+    name: 'accounts',
+    source: selectVisibleDeviceAccounts,
+    getId: a => a.key,
+});
+const assetsIndex = createAggregateIndex({
+    name: 'assets',
+    source: accountsIndex,
+    expand: toPositions, //          one account into the positions it holds, memoised per account
+    getId: position => position.assetKey,
+    reduce: sumInto, //              the positions under one asset key into the asset
+});
+const ratesIndex = createIndex({ name: 'rates', source: selectRateEntries, getId: r => r.key });
+const pricedAssetsIndex = createDerivedIndex({
+    name: 'pricedAssets',
+    source: assetsIndex,
+    lookups: { rate: ratesIndex },
+    getLookupIds: asset => ({ rate: asset.rateKey }),
+    derive: (asset, { rate }) => price(asset, rate),
+    sort: byFiatValue,
+});
+const assetsByNetwork = createSecondaryIndex({
+    name: 'assetsByNetwork',
+    source: pricedAssetsIndex,
+    getKeys: a => a.symbol,
+});
+```
+
+### createIndex and createSecondaryIndex
+
+Three parts, each owning one thing:
 
 - **A selector owns the shape.** It flattens, aggregates, orders and gives every entity its id —
   plain `createWeakMapSelector` code, free to rebuild its objects on every write.
