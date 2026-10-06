@@ -13,6 +13,7 @@ import {
     queuePopupCall,
     selectConnectPopupCall,
     selectIsConnectAppSilentModeByOrigin,
+    toConnectV9ErrorPayload,
 } from '@suite-common/connect-popup';
 import { selectSelectedDevice } from '@suite-common/device';
 import { injectDispatch } from '@suite-common/redux-utils';
@@ -164,7 +165,7 @@ export const useConnectPopupDesktop = () => {
                     desktopApi.connectPopupResponse({
                         success: false,
                         error: response.error,
-                        payload: response.error, // for backward compatibility with v9
+                        payload: toConnectV9ErrorPayload(response.error),
                         id: params.id,
                     });
                 }
