@@ -22,6 +22,11 @@ const BTC_ACCOUNT_DESCRIPTOR =
 export const USDC_CONTRACT = '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48' as TokenAddress;
 export const HOSKY_CONTRACT =
     'a0028f350aaabe0545fdcb56b039bfb08e4bb4d8c4d7c3c7d481c235484f534b59' as TokenAddress;
+export const CARDANO_TOKEN_CONTRACT =
+    '57fca08abbaddee36da742a839f7d83a7e1d2419f1507fcbf391652243484f43' as TokenAddress;
+export const CARDANO_TOKEN_FINGERPRINT = 'asset1pwhywk7x54g739z3dqs245q62yu47vjh8gapjv';
+export const CARDANO_NO_DECIMALS_TOKEN_CONTRACT =
+    'f0ff48bbb7bbe9d59a40f1ce90e9e9d0ff5002ec48f232b49ca0fb9a6e6f6465' as TokenAddress;
 
 export const mockEthAccount = (): Account =>
     mockWalletAccount({
@@ -67,6 +72,24 @@ export const mockAdaAccount = (): Account =>
                 contract: HOSKY_CONTRACT,
                 decimals: 0,
                 balance: '100',
+            }),
+            mockAccountToken({
+                name: CARDANO_TOKEN_FINGERPRINT,
+                symbol: 'CHOC',
+                contract: CARDANO_TOKEN_CONTRACT,
+                fingerprint: CARDANO_TOKEN_FINGERPRINT,
+                standard: 'BLOCKFROST',
+                decimals: 5,
+                balance: '1000000',
+            }),
+            mockAccountToken({
+                name: 'asset1l8ed6nmt5secvlurjl5p0vr8v49qqfsuduv02u',
+                symbol: 'NODE',
+                contract: CARDANO_NO_DECIMALS_TOKEN_CONTRACT,
+                fingerprint: 'asset1l8ed6nmt5secvlurjl5p0vr8v49qqfsuduv02u',
+                standard: 'BLOCKFROST',
+                decimals: 0,
+                balance: '10',
             }),
         ],
     });

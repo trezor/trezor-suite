@@ -4841,6 +4841,8 @@ export const messages = {
                 tradedAssetsReceiveLabel: 'You receive',
                 swapIntentLabel: 'Intent',
                 swapIntentValue: 'Swap',
+                cardanoFingerprintLabel: 'Fingerprint',
+                cardanoTrezorAmountLabel: 'Trezor amount',
                 summary: {
                     label: 'Total including fee',
                     totalAmount: 'Total amount',

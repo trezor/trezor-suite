@@ -9,7 +9,14 @@ import { within } from '@suite-native/test-utils-store';
 
 import { TransactionReviewOutputItemContent } from './TransactionReviewOutputItemContent';
 import { renderWithTransactionReview } from '../__fixtures__/renderWithTransactionReview';
-import { ETH_ACCOUNT_KEY, USDC_CONTRACT } from '../__fixtures__/walletState';
+import {
+    ADA_ACCOUNT_KEY,
+    CARDANO_NO_DECIMALS_TOKEN_CONTRACT,
+    CARDANO_TOKEN_CONTRACT,
+    CARDANO_TOKEN_FINGERPRINT,
+    ETH_ACCOUNT_KEY,
+    USDC_CONTRACT,
+} from '../__fixtures__/walletState';
 
 jest.mock('./TransactionReviewOutputItemValues', () => ({
     TransactionReviewOutputItemValues: ({
@@ -79,6 +86,65 @@ describe('TransactionReviewOutputItemContent', () => {
         expect(getByTestId(CONTENT_TEST_ID)).toHaveTextContent(
             `Values: [${ETH_ACCOUNT_KEY}]-[no-token]-[transactionManagement.review.outputs.amountLabel]-[1000]`,
         );
+    });
+
+    it('should render the fingerprint and Trezor amount for a Cardano token', async () => {
+        const { getByTestId } = await renderContent(output('amount', '150000'), {
+            accountKey: ADA_ACCOUNT_KEY,
+            tokenContract: CARDANO_TOKEN_CONTRACT,
+        });
+
+        const content = getByTestId(CONTENT_TEST_ID);
+
+        expect(
+            within(content).getByText(
+                getTranslation('transactionManagement.review.outputs.cardanoFingerprintLabel'),
+            ),
+        ).toBeOnTheScreen();
+        expect(within(content).getByText(CARDANO_TOKEN_FINGERPRINT)).toBeOnTheScreen();
+        expect(
+            within(content).getByText(
+                getTranslation('transactionManagement.review.outputs.cardanoTrezorAmountLabel'),
+            ),
+        ).toBeOnTheScreen();
+        expect(within(content).getByText('150000')).toBeOnTheScreen();
+    });
+
+    it('should omit the Trezor amount for a Cardano token without decimals', async () => {
+        const { getByTestId } = await renderContent(output('amount', '7'), {
+            accountKey: ADA_ACCOUNT_KEY,
+            tokenContract: CARDANO_NO_DECIMALS_TOKEN_CONTRACT,
+        });
+
+        const content = getByTestId(CONTENT_TEST_ID);
+
+        expect(
+            within(content).getByText(
+                getTranslation('transactionManagement.review.outputs.cardanoFingerprintLabel'),
+            ),
+        ).toBeOnTheScreen();
+        expect(
+            within(content).queryByText(
+                getTranslation('transactionManagement.review.outputs.cardanoTrezorAmountLabel'),
+            ),
+        ).toBeNull();
+    });
+
+    it('should not render Cardano token details for a native ADA amount', async () => {
+        const { queryByText } = await renderContent(output('amount', '1000'), {
+            accountKey: ADA_ACCOUNT_KEY,
+        });
+
+        expect(
+            queryByText(
+                getTranslation('transactionManagement.review.outputs.cardanoFingerprintLabel'),
+            ),
+        ).toBeNull();
+        expect(
+            queryByText(
+                getTranslation('transactionManagement.review.outputs.cardanoTrezorAmountLabel'),
+            ),
+        ).toBeNull();
     });
 
     it('should render the destination tag value when set', async () => {
