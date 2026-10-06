@@ -3,27 +3,193 @@ import { shallowEqual } from 'react-redux';
 import { type DeviceRootState } from '@suite-common/device';
 import { type NetworksRootState, selectNetworkNamesMap } from '@suite-common/networks';
 import { createWeakMapSelector, returnStableArrayIfEmpty } from '@suite-common/redux-utils';
+import { selectTokenDefinitions } from '@suite-common/token-definitions';
 import { type NetworkSymbol, getAssetName, getDisplaySymbol } from '@suite-common/wallet-config';
 import {
-    type AssetAccount,
     type AssetAccountsRootState,
     type FiatRatesRootState,
     type WalletAssetKey,
     type WalletSettingsRootState,
+    getTokens,
+    getWalletAssetKey,
+    selectAccounts,
     selectBaseCurrency,
     selectCurrentFiatRates,
-    selectDeviceAssetAccounts,
     selectEnabledNetworks,
-    selectHiddenAssetAccountKeySet,
     selectLastWeekFiatRates,
+    selectVisibleDeviceAccounts,
 } from '@suite-common/wallet-core';
-import { type RatesByKey, type TokenAddress } from '@suite-common/wallet-types';
-import { getFiatRateKey, toFiatCurrency } from '@suite-common/wallet-utils';
-import { type BaseCurrencyCode } from '@trezor/blockchain-link-types';
+import {
+    type Account,
+    type AccountKey,
+    type RatesByKey,
+    type TokenAddress,
+} from '@suite-common/wallet-types';
+import { getFiatRateKey, isNftToken, toFiatCurrency } from '@suite-common/wallet-utils';
+import { type BaseCurrencyCode, type TokenInfo } from '@trezor/blockchain-link-types';
+import { type StaticSessionId } from '@trezor/device-utils';
 import { BigNumber } from '@trezor/utils';
 
-// The selector implementation the index chain replaced, kept verbatim as the baseline the
-// performance test measures against. Not exported from the package.
+// The selector implementation the index chain replaced, kept as the baseline the performance
+// test measures against — with the wallet-core selectors it needed, which went with it. Not
+// exported from the package.
+
+type AssetAccountKey = string;
+
+type AssetAccount = {
+    assetAccountKey: AssetAccountKey;
+    accountKey: AccountKey;
+    assetKey: WalletAssetKey;
+    deviceState: StaticSessionId;
+    symbol: NetworkSymbol;
+    contractAddress: TokenAddress | undefined;
+    cryptoBalance: string;
+    tokenInfo: TokenInfo | undefined;
+};
+
+const getAssetAccountKey = (accountKey: AccountKey, contractAddress: TokenAddress | undefined) =>
+    `${accountKey}/${contractAddress ?? ''}` as AssetAccountKey;
+
+const toAssetAccounts = (account: Account): readonly AssetAccount[] => {
+    const toAssetAccount = (
+        contractAddress: TokenAddress | undefined,
+        cryptoBalance: string,
+        tokenInfo: TokenInfo | undefined,
+    ): AssetAccount => ({
+        assetAccountKey: getAssetAccountKey(account.key, contractAddress),
+        accountKey: account.key,
+        assetKey: getWalletAssetKey({
+            deviceState: account.deviceState,
+            symbol: account.symbol,
+            contractAddress,
+        }),
+        deviceState: account.deviceState,
+        symbol: account.symbol,
+        contractAddress,
+        cryptoBalance,
+        tokenInfo,
+    });
+
+    const tokenAccounts = (account.tokens ?? [])
+        .filter(token => !isNftToken(token) && new BigNumber(token.balance ?? '0').gt(0))
+        .map(token => toAssetAccount(token.contract as TokenAddress, token.balance ?? '0', token));
+
+    return [toAssetAccount(undefined, account.formattedBalance, undefined), ...tokenAccounts];
+};
+
+const createLegacySelector = createWeakMapSelector.withTypes<AssetAccountsRootState>();
+
+const selectAssetAccounts = createLegacySelector([selectAccounts], accounts =>
+    returnStableArrayIfEmpty(accounts.flatMap(toAssetAccounts)),
+);
+
+export const selectDeviceAssetAccounts = createLegacySelector(
+    [selectVisibleDeviceAccounts],
+    accounts => returnStableArrayIfEmpty(accounts.flatMap(toAssetAccounts)),
+);
+
+type AssetAccountsByContract = ReadonlyMap<TokenAddress, readonly AssetAccount[]>;
+
+const selectAssetAccountsByToken = createLegacySelector(
+    [selectAssetAccounts],
+    (assetAccounts): ReadonlyMap<NetworkSymbol, AssetAccountsByContract> => {
+        const byNetwork = new Map<NetworkSymbol, Map<TokenAddress, AssetAccount[]>>();
+
+        assetAccounts.forEach(assetAccount => {
+            const { symbol, contractAddress } = assetAccount;
+
+            if (contractAddress === undefined) {
+                return;
+            }
+
+            let byContract = byNetwork.get(symbol);
+
+            if (byContract === undefined) {
+                byContract = new Map<TokenAddress, AssetAccount[]>();
+                byNetwork.set(symbol, byContract);
+            }
+
+            const held = byContract.get(contractAddress);
+
+            if (held === undefined) {
+                byContract.set(contractAddress, [assetAccount]);
+            } else {
+                held.push(assetAccount);
+            }
+        });
+
+        return byNetwork;
+    },
+);
+
+type HiddenTokenReason = 'hiddenByUser' | 'unrecognized';
+
+const selectHiddenTokenReasons = createLegacySelector(
+    [selectAssetAccountsByToken, selectTokenDefinitions],
+    (
+        byNetwork,
+        tokenDefinitions,
+    ): ReadonlyMap<NetworkSymbol, ReadonlyMap<TokenAddress, HiddenTokenReason>> => {
+        const reasons = new Map<NetworkSymbol, Map<TokenAddress, HiddenTokenReason>>();
+
+        byNetwork.forEach((byContract, symbol) => {
+            byContract.forEach((group, contractAddress) => {
+                const [assetAccount] = group;
+
+                if (assetAccount?.tokenInfo === undefined) {
+                    return;
+                }
+
+                const { hiddenWithBalance, hiddenWithoutBalance, unverifiedWithBalance } =
+                    getTokens({
+                        tokens: [assetAccount.tokenInfo],
+                        symbol,
+                        tokenDefinitions: tokenDefinitions?.[symbol]?.coin,
+                    });
+
+                const isHiddenByUser = hiddenWithBalance.length + hiddenWithoutBalance.length > 0;
+
+                if (!isHiddenByUser && unverifiedWithBalance.length === 0) {
+                    return;
+                }
+
+                const hiddenOnNetwork =
+                    reasons.get(symbol) ?? new Map<TokenAddress, HiddenTokenReason>();
+
+                hiddenOnNetwork.set(
+                    contractAddress,
+                    isHiddenByUser ? 'hiddenByUser' : 'unrecognized',
+                );
+                reasons.set(symbol, hiddenOnNetwork);
+            });
+        });
+
+        return reasons;
+    },
+);
+
+const selectHiddenAssetAccountKeys = createLegacySelector(
+    [selectAssetAccountsByToken, selectHiddenTokenReasons],
+    (byNetwork, reasons) => {
+        const keys: AssetAccountKey[] = [];
+
+        reasons.forEach((hiddenOnNetwork, symbol) => {
+            hiddenOnNetwork.forEach((_reason, contractAddress) => {
+                byNetwork
+                    .get(symbol)
+                    ?.get(contractAddress)
+                    ?.forEach(assetAccount => keys.push(assetAccount.assetAccountKey));
+            });
+        });
+
+        return returnStableArrayIfEmpty(keys);
+    },
+);
+
+export const selectHiddenAssetAccountKeySet = createLegacySelector(
+    [selectHiddenAssetAccountKeys],
+    (keys): ReadonlySet<AssetAccountKey> => new Set(keys),
+);
 
 const sumAssetAccounts = (assetAccounts: readonly AssetAccount[]) => ({
     cryptoBalance: assetAccounts.reduce(

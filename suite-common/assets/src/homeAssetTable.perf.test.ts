@@ -16,9 +16,7 @@ import {
     getWalletAssetKey,
     selectBaseCurrency,
     selectCurrentFiatRates,
-    selectDeviceAssetAccounts,
     selectEnabledNetworks,
-    selectHiddenAssetAccountKeySet,
     selectVisibleDeviceAccounts,
 } from '@suite-common/wallet-core';
 import { type Account, type TokenAddress } from '@suite-common/wallet-types';
@@ -28,6 +26,8 @@ import { BigNumber } from '@trezor/utils';
 
 import {
     type HomeAssetTableState,
+    selectDeviceAssetAccounts,
+    selectHiddenAssetAccountKeySet,
     selectNetworkFiatValue,
     selectShownNetworkSymbols,
     selectShownWalletAssetKeys,

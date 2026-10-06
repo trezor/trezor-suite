@@ -293,31 +293,17 @@ export const selectNetworkName = createMemoizedSelector(
 export const selectNetworkFiatValue = (state: HomeAssetTableState, symbol: NetworkSymbol) =>
     networksIndex.getById(state, symbol)?.fiatValue;
 
-export const selectWalletAssetSymbol = (state: HomeAssetTableState, assetKey: WalletAssetKey) =>
-    pricedAssetsIndex.getById(state, assetKey)?.symbol;
+const selectWalletAssetField =
+    <TField extends keyof PricedAsset>(field: TField) =>
+    (state: HomeAssetTableState, assetKey: WalletAssetKey) =>
+        pricedAssetsIndex.getById(state, assetKey)?.[field];
 
-export const selectWalletAssetContractAddress = (
-    state: HomeAssetTableState,
-    assetKey: WalletAssetKey,
-) => pricedAssetsIndex.getById(state, assetKey)?.contractAddress;
-
-export const selectWalletAssetDisplaySymbol = (
-    state: HomeAssetTableState,
-    assetKey: WalletAssetKey,
-) => pricedAssetsIndex.getById(state, assetKey)?.displaySymbol;
-
-export const selectWalletAssetAmount = (state: HomeAssetTableState, assetKey: WalletAssetKey) =>
-    pricedAssetsIndex.getById(state, assetKey)?.amount;
-
-export const selectWalletAssetTokenSymbol = (
-    state: HomeAssetTableState,
-    assetKey: WalletAssetKey,
-) => pricedAssetsIndex.getById(state, assetKey)?.tokenSymbol;
-
-export const selectWalletAssetTokenDecimals = (
-    state: HomeAssetTableState,
-    assetKey: WalletAssetKey,
-) => pricedAssetsIndex.getById(state, assetKey)?.tokenDecimals;
+export const selectWalletAssetSymbol = selectWalletAssetField('symbol');
+export const selectWalletAssetContractAddress = selectWalletAssetField('contractAddress');
+export const selectWalletAssetDisplaySymbol = selectWalletAssetField('displaySymbol');
+export const selectWalletAssetAmount = selectWalletAssetField('amount');
+export const selectWalletAssetTokenSymbol = selectWalletAssetField('tokenSymbol');
+export const selectWalletAssetTokenDecimals = selectWalletAssetField('tokenDecimals');
 
 export type HomeAssetTotals = {
     /** Undefined while nothing the wallet holds can be priced — a total of zero would be a lie. */
